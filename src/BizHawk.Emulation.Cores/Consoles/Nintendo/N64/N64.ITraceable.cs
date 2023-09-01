@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			uint pc = (uint)regs["PC"].Value;
 			string disasm = Disassemble(MemoryDomains.SystemBus, pc, out int length);
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			for (int i = 1; i < 32; i++) // r0 is always zero
 			{

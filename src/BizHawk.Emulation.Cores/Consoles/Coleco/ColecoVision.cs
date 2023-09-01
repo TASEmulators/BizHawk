@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ColecoSettings settings,
 			ColecoSyncSettings syncSettings)
 		{
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 			_syncSettings = syncSettings ?? new ColecoSyncSettings();
 			bool skipBios = _syncSettings.SkipBiosIntro;

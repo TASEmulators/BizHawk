@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 
 		private static ControllerDefinition CreateControllerDefinition(bool[] inputsActive)
 		{
-			ControllerDefinition ret = new ControllerDefinition("TIC-80 Controller");
+			ControllerDefinition ret = new("TIC-80 Controller");
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -222,7 +222,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			LibTIC80.TIC80Inputs inputs = new LibTIC80.TIC80Inputs
+			LibTIC80.TIC80Inputs inputs = new()
 			{
 				MouseX = (sbyte)controller.AxisValue("Mouse Position X"),
 				MouseY = (sbyte)controller.AxisValue("Mouse Position Y"),

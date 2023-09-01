@@ -134,7 +134,7 @@ namespace BizHawk.Emulation.Cores
 
 		private static PadSchema Mouse(int controller)
 		{
-			AxisSpec range = new AxisSpec((-127).RangeTo(127), 0);
+			AxisSpec range = new((-127).RangeTo(127), 0);
 			return new PadSchema
 			{
 				Size = new Size(345, 225),

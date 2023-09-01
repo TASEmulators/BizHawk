@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					throw new InvalidOperationException("s must be numeric only");
 			}
 
-			System.IO.MemoryStream result = new System.IO.MemoryStream();
+			System.IO.MemoryStream result = new();
 
 			for (int i = 0; i < 33; i++)
 				result.WriteByte(8);

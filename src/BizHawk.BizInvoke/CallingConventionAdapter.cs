@@ -277,7 +277,7 @@ namespace BizHawk.BizInvoke
 			{
 				_memory.Protect(_memory.Start, _memory.Size, MemoryBlock.Protection.RW);
 				var ss = _memory.GetStream(_memory.Start + (ulong)index * BlockSize, BlockSize, true);
-				BinaryWriter bw = new BinaryWriter(ss);
+				BinaryWriter bw = new(ss);
 
 				// The thunks all take the expected parameters in the expected places, but additionally take the parameter
 				// of the function to call as a hidden extra parameter in rax.

@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common
 				return;
 			if (_masterFrame == -1)
 			{
-				SaveStateStream sss = new SaveStateStream(this);
+				SaveStateStream sss = new(this);
 				_stateSource.SaveStateBinary(new BinaryWriter(sss));
 				(_master, _scratch) = (_scratch, _master);
 				_masterLength = (int)sss.Position;
@@ -100,7 +100,7 @@ namespace BizHawk.Client.Common
 				return;
 
 			{
-				SaveStateStream sss = new SaveStateStream(this);
+				SaveStateStream sss = new(this);
 				_stateSource.SaveStateBinary(new BinaryWriter(sss));
 
 				Work(() =>
@@ -116,7 +116,7 @@ namespace BizHawk.Client.Common
 						}
 
 						int lengthHolder = _masterLength;
-						ReadOnlySpan<byte> lengthHolderSpan = new ReadOnlySpan<byte>(&lengthHolder, 4);
+						ReadOnlySpan<byte> lengthHolderSpan = new(&lengthHolder, 4);
 
 						zeldas.Write(lengthHolderSpan);
 
@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common
 		private unsafe void RefillMaster(ZwinderBuffer.StateInformation state)
 		{
 			int lengthHolder = 0;
-			Span<byte> lengthHolderSpan = new Span<byte>(&lengthHolder, 4);
+			Span<byte> lengthHolderSpan = new(&lengthHolder, 4);
 			using var rs = state.GetReadStream();
 			var zeldas = SpanStream.GetOrBuild(rs);
 			zeldas.Read(lengthHolderSpan);

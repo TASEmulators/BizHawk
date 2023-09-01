@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int? AddMovieToList(string filename, bool force)
 		{
-			using HawkFile file = new HawkFile(filename);
+			using HawkFile file = new(filename);
 			if (!file.Exists)
 			{
 				return null;
@@ -189,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			List<int> indices = new List<int>();
+			List<int> indices = new();
 
 			// Pull out matching names
 			for (int i = 0; i < _movieList.Count; i++)
@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// Prefer tas files
 			// but `_movieList` should only contain `.bk2` and `.tasproj` so... isn't that all of them? or, it is now I've fixed the case-sensitivity bug --yoshi
-			List<int> tas = new List<int>();
+			List<int> tas = new();
 			for (int i = 0; i < indices.Count; i++)
 			{
 				foreach (string ext in MovieService.MovieExtensions)
@@ -257,10 +257,10 @@ namespace BizHawk.Client.EmuHawk
 
 			string directory = _config.PathEntries.MovieAbsolutePath();
 			Directory.CreateDirectory(directory);
-			Queue<string> dpTodo = new Queue<string>();
-			List<string> fpTodo = new List<string>();
+			Queue<string> dpTodo = new();
+			List<string> fpTodo = new();
 			dpTodo.Enqueue(directory);
-			Dictionary<string, int> ordinals = new Dictionary<string, int>();
+			Dictionary<string, int> ordinals = new();
 
 			while (dpTodo.Count > 0)
 			{
@@ -327,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 				var indexes = MovieView.SelectedIndices;
 				if (indexes.Count > 0)
 				{
-					StringBuilder copyStr = new StringBuilder();
+					StringBuilder copyStr = new();
 					foreach (int index in indexes)
 					{
 						copyStr
@@ -391,7 +391,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var (k, v) in _movieList[firstIndex].HeaderEntries)
 			{
-				ListViewItem item = new ListViewItem(k);
+				ListViewItem item = new(k);
 				item.SubItems.Add(v);
 				item.ToolTipText = v;
 				switch (k)
@@ -441,11 +441,11 @@ namespace BizHawk.Client.EmuHawk
 				DetailsView.Items.Add(item);
 			}
 
-			ListViewItem fpsItem = new ListViewItem("Fps");
+			ListViewItem fpsItem = new("Fps");
 			fpsItem.SubItems.Add($"{_movieList[firstIndex].FrameRate:0.#######}");
 			DetailsView.Items.Add(fpsItem);
 
-			ListViewItem framesItem = new ListViewItem("Frames");
+			ListViewItem framesItem = new("Frames");
 			framesItem.SubItems.Add(_movieList[firstIndex].FrameCount.ToString());
 			DetailsView.Items.Add(framesItem);
 			CommentsBtn.Enabled = _movieList[firstIndex].Comments.Any();
@@ -463,7 +463,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DetailsView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
-			List<MovieDetails> detailsList = new List<MovieDetails>();
+			List<MovieDetails> detailsList = new();
 			for (int i = 0; i < DetailsView.Items.Count; i++)
 			{
 				detailsList.Add(new MovieDetails
@@ -496,7 +496,7 @@ namespace BizHawk.Client.EmuHawk
 			DetailsView.Items.Clear();
 			foreach (var detail in detailsList)
 			{
-				ListViewItem item = new ListViewItem { Text = detail.Keys, BackColor = detail.BackgroundColor };
+				ListViewItem item = new() { Text = detail.Keys, BackColor = detail.BackgroundColor };
 				item.SubItems.Add(detail.Values);
 				DetailsView.Items.Add(item);
 			}
@@ -514,7 +514,7 @@ namespace BizHawk.Client.EmuHawk
 				var movie = _movieSession.Get(_movieList[MovieView.SelectedIndices[0]].Filename);
 				movie.Load();
 				// TODO movie should be disposed if movie is ITasMovie
-				EditCommentsForm form = new EditCommentsForm(movie, _movieSession.ReadOnly);
+				EditCommentsForm form = new(movie, _movieSession.ReadOnly);
 				form.Show();
 			}
 		}

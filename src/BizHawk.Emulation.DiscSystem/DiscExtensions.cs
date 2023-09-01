@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private static Disc CreateImpl(DiscType? type, string path, Action<string> errorCallback)
 		{
 			//--- load the disc in a context which will let us abort if it's going to take too long
-			DiscMountJob discMountJob = new DiscMountJob(fromPath: path, slowLoadAbortThreshold: 8);
+			DiscMountJob discMountJob = new(fromPath: path, slowLoadAbortThreshold: 8);
 			discMountJob.Run();
 			
 			if (discMountJob.OUT_SlowLoadAborted)

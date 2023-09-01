@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				MemoryStream ms = new MemoryStream();
+				MemoryStream ms = new();
 				if (StartsFromSaveRam && emulator.HasSaveRam())
 				{
 					emulator.AsSaveRam().StoreSaveRam(SaveRam!);
@@ -214,7 +214,7 @@ namespace BizHawk.Client.Common
 			errorMessage = "";
 			int? stateFrame = null;
 
-			List<string> newLog = new List<string>();
+			List<string> newLog = new();
 			int? timelineBranchFrame = null;
 
 			// We are in record mode so replace the movie log with the one from the savestate

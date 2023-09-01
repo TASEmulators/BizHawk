@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 	{
 		static QuickNES()
 		{
-			DynamicLibraryImportResolver resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				$"libquicknes{(OSTailoredCode.IsUnixHost ? ".dll.so.0.7.0" : ".dll")}", hasLimitedLifetime: false);
 			QN = BizInvoker.GetInvoker<LibQuickNES>(resolver, CallingConventionAdapters.Native);
 			QN.qn_setup_mappers();
@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			var chrrom = _memoryDomains["CHR VROM"];
 			var prgrom = _memoryDomains["PRG ROM"]!;
 
-			MemoryStream ms = new MemoryStream();
+			MemoryStream ms = new();
 			for (int i = 0; i < prgrom.Size; i++)
 				ms.WriteByte(prgrom.PeekByte(i));
 			if (chrrom != null)

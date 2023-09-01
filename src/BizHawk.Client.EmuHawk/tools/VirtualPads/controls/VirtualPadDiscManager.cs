@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			List<string> buttons = new List<string> { "- NONE -" };
+			List<string> buttons = new() { "- NONE -" };
 			buttons.AddRange(psx.HackyDiscButtons);
 
 			lvDiscs.Items.Clear();
@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			int idx = 0;
 			foreach (string button in buttons)
 			{
-				ListViewItem lvi = new ListViewItem { Text = idx.ToString() };
+				ListViewItem lvi = new() { Text = idx.ToString() };
 				lvi.SubItems.Add(button);
 				lvDiscs.Items.Add(lvi);
 				idx++;

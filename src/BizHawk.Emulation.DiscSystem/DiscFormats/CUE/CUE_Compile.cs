@@ -226,7 +226,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			if (options.Count > 1)
 				Warn($"Multiple options resolving referenced cue file; choosing: {Path.GetFileName(choice)}");
 
-			CompiledCueFile cfi = new CompiledCueFile();
+			CompiledCueFile cfi = new();
 			curr_file = cfi;
 			OUT_CompiledCueFiles.Add(cfi);
 
@@ -248,7 +248,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					//TODO - fix exception-throwing inside
 					//TODO - verify stream-disposing semantics
 					var fs = File.OpenRead(choice);
-					using Blob_WaveFile blob = new Blob_WaveFile();
+					using Blob_WaveFile blob = new();
 					try
 					{
 						blob.Load(fs);
@@ -395,7 +395,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 			//add a track 0, for addressing convenience.
 			//note: for future work, track 0 may need emulation (accessible by very negative LBA--the TOC is stored there)
-			CompiledCueTrack track0 = new CompiledCueTrack
+			CompiledCueTrack track0 = new()
 			{
 				Number = 0,
 			};

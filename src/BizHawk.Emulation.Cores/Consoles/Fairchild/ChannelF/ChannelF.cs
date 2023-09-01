@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		[CoreConstructor(VSystemID.Raw.ChannelF)]
 		public ChannelF(CoreLoadParameters<ChannelFSettings, ChannelFSyncSettings> lp)
 		{
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 			CoreComm = lp.Comm;
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();

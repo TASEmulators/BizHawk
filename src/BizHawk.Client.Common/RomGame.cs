@@ -147,7 +147,7 @@ namespace BizHawk.Client.Common
 			CheckForPatchOptions();
 
 			if (patch is null) return;
-			using HawkFile patchFile = new HawkFile(patch);
+			using HawkFile patchFile = new(patch);
 			patchFile.BindFirstOf(".ips");
 			if (!patchFile.IsBound) patchFile.BindFirstOf(".bps");
 			if (!patchFile.IsBound) return;

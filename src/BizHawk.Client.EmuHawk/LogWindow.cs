@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonCopyAll_Click(object sender, EventArgs e)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			lock(_lines)
 				foreach (string s in _lines)
 					sb.AppendLine(s);
@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddToGameDbBtn_Click(object sender, EventArgs e)
 		{
-			using RomStatusPicker picker = new RomStatusPicker();
+			using RomStatusPicker picker = new();
 			var result = picker.ShowDialog();
 			if (result.IsOk())
 			{

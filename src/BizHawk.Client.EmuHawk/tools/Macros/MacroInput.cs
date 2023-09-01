@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ReplaceBox.Enabled = OverlayBox.Enabled = PlaceNum.Enabled = CurrentMovie is ITasMovie;
 
-			MovieZone main = new MovieZone(Emulator, Tools, MovieSession, 0, CurrentMovie.InputLogLength)
+			MovieZone main = new(Emulator, Tools, MovieSession, 0, CurrentMovie.InputLogLength)
 			{
 				Name = "Entire Movie"
 			};
@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			MovieZone newZone = new MovieZone(Emulator, Tools, MovieSession, (int) StartNum.Value, (int) (EndNum.Value - StartNum.Value + 1))
+			MovieZone newZone = new(Emulator, Tools, MovieSession, (int) StartNum.Value, (int) (EndNum.Value - StartNum.Value + 1))
 			{
 				Name = $"Zone {_zones.Count}"
 			};

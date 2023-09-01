@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public int Timestamp {
 			readonly get => MSF.ToInt(min.DecimalValue, sec.DecimalValue, frame.DecimalValue);
 			set {
-				Timestamp ts = new Timestamp(value);
+				Timestamp ts = new(value);
 				min.DecimalValue = ts.MIN; sec.DecimalValue = ts.SEC; frame.DecimalValue = ts.FRAC;
 			}
 		}
@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public int AP_Timestamp {
 			readonly get => MSF.ToInt(ap_min.DecimalValue, ap_sec.DecimalValue, ap_frame.DecimalValue);
 			set {
-				Timestamp ts = new Timestamp(value);
+				Timestamp ts = new(value);
 				ap_min.DecimalValue = ts.MIN; ap_sec.DecimalValue = ts.SEC; ap_frame.DecimalValue = ts.FRAC;
 			}
 		}

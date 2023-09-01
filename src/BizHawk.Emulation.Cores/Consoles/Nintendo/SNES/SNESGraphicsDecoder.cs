@@ -408,7 +408,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			int OBSEL_NameSel = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.OBSEL_NAMESEL);
 			int OBSEL_NameBase = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.OBSEL_NAMEBASE);
 
-			ScreenInfo si = new ScreenInfo
+			ScreenInfo si = new()
 			{
 				Mode = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG_MODE),
 				Mode1_BG3_Priority = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3_PRIORITY) == 1,

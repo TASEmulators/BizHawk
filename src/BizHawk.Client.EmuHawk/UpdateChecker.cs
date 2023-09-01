@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 			request.UserAgent = "BizHawk";
 			request.KeepAlive = false;
 			using HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-			using StreamReader responseStream = new StreamReader(response.GetResponseStream());
+			using StreamReader responseStream = new(response.GetResponseStream());
 			return responseStream.ReadToEnd();
 		}
 

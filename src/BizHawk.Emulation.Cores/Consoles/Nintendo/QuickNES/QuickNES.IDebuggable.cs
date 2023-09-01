@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			int[] regs = new int[6];
-			Dictionary<string, RegisterValue> ret = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> ret = new();
 			QN.qn_get_cpuregs(Context, regs);
 			ret["A"] = (byte)regs[0];
 			ret["X"] = (byte)regs[1];

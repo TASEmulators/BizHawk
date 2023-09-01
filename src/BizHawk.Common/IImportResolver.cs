@@ -39,7 +39,7 @@ namespace BizHawk.Common
 			: UnixSearchPaths.Select(dir => dir + orig)
 				.FirstOrDefault(s =>
 				{
-					FileInfo fi = new FileInfo(s);
+					FileInfo fi = new(s);
 					return fi.Exists && (fi.Attributes & FileAttributes.Directory) != FileAttributes.Directory;
 				})
 				?? orig; // don't MakeAbsolute, just pass through and hope something lower-level magically makes it work

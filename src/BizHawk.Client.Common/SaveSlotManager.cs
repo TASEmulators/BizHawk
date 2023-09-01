@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					FileInfo file = new FileInfo($"{saveStatePrefix}.QuickSave{i % 10}.State");
+					FileInfo file = new($"{saveStatePrefix}.QuickSave{i % 10}.State");
 					if (file.Directory != null && file.Directory.Exists == false)
 					{
 						file.Directory.Create();
@@ -77,9 +77,9 @@ namespace BizHawk.Client.Common
 		public void SwapBackupSavestate(IMovie movie, string path, int currentSlot)
 		{
 			// Takes the .state and .bak files and swaps them
-			FileInfo state = new FileInfo(path);
-			FileInfo backup = new FileInfo($"{path}.bak");
-			FileInfo temp = new FileInfo($"{path}.bak.tmp");
+			FileInfo state = new(path);
+			FileInfo backup = new($"{path}.bak");
+			FileInfo temp = new($"{path}.bak.tmp");
 
 			if (!state.Exists || !backup.Exists)
 			{

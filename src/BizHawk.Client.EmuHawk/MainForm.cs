@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var (groupLabel, appliesTo, coreNames) in Config.CorePickerUIData.Select(static tuple => (GroupLabel: tuple.AppliesTo[0], tuple.AppliesTo, tuple.CoreNames))
 				.OrderBy(static tuple => tuple.GroupLabel))
 			{
-				ToolStripMenuItem submenu = new ToolStripMenuItem { Text = groupLabel };
+				ToolStripMenuItem submenu = new() { Text = groupLabel };
 				void ClickHandler(object clickSender, EventArgs clickArgs)
 				{
 					string coreName = ((ToolStripMenuItem) clickSender).Text;
@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 				submenu.DropDownItems.AddRange(coreNames.Select(coreName => {
-					ToolStripMenuItem entry = new ToolStripMenuItem { Text = coreName };
+					ToolStripMenuItem entry = new() { Text = coreName };
 					entry.Click += ClickHandler;
 					return (ToolStripItem) entry;
 				}).ToArray());
@@ -92,14 +92,14 @@ namespace BizHawk.Client.EmuHawk
 				CoresSubMenu.DropDownItems.Add(submenu);
 			}
 			CoresSubMenu.DropDownItems.Add(new ToolStripSeparator { AutoSize = true });
-			ToolStripMenuItem GBInSGBMenuItem = new ToolStripMenuItem { Text = "GB in SGB" };
+			ToolStripMenuItem GBInSGBMenuItem = new() { Text = "GB in SGB" };
 			GBInSGBMenuItem.Click += (_, _) =>
 			{
 				Config.GbAsSgb ^= true;
 				if (Emulator.SystemId is VSystemID.Raw.GB or VSystemID.Raw.GBC or VSystemID.Raw.SGB) FlagNeedsReboot();
 			};
 			CoresSubMenu.DropDownItems.Add(GBInSGBMenuItem);
-			ToolStripMenuItem setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core..." };
+			ToolStripMenuItem setLibretroCoreToolStripMenuItem = new() { Text = "Set Libretro Core..." };
 			setLibretroCoreToolStripMenuItem.Click += (_, _) => RunLibretroCoreChooser();
 			CoresSubMenu.DropDownItems.Add(setLibretroCoreToolStripMenuItem);
 			CoresSubMenu.DropDownOpened += (_, _) => GBInSGBMenuItem.Checked = Config.GbAsSgb;
@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public CoreComm CreateCoreComm()
 		{
-			CoreFileProvider cfp = new CoreFileProvider(
+			CoreFileProvider cfp = new(
 				this,
 				FirmwareManager,
 				Config.PathEntries,
@@ -1300,7 +1300,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TakeScreenshot(string path)
 		{
-			FileInfo fi = new FileInfo(path);
+			FileInfo fi = new(path);
 			if (fi.Directory != null && !fi.Directory.Exists)
 			{
 				fi.Directory.Create();
@@ -1757,7 +1757,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 
 				if (_inResizeLoop)
 				{
@@ -1793,7 +1793,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				sb.Append(string.IsNullOrEmpty(VersionInfo.CustomBuildString)
 					? "BizHawk"
 					: VersionInfo.CustomBuildString);
@@ -1916,8 +1916,8 @@ namespace BizHawk.Client.EmuHawk
 					string saveRamPath = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
 					if (Config.AutosaveSaveRAM)
 					{
-						FileInfo saveram = new FileInfo(saveRamPath);
-						FileInfo autosave = new FileInfo(Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie));
+						FileInfo saveram = new(saveRamPath);
+						FileInfo autosave = new(Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie));
 						if (autosave.Exists && autosave.LastWriteTime > saveram.LastWriteTime)
 						{
 							AddOnScreenMessage("AutoSaveRAM is newer than last saved SaveRAM");
@@ -1944,7 +1944,7 @@ namespace BizHawk.Client.EmuHawk
 
 						// why do we silently truncate\pad here instead of warning\erroring?
 						sram = new byte[oldRam.Length];
-						using BinaryReader reader = new BinaryReader(new FileStream(saveRamPath, FileMode.Open, FileAccess.Read));
+						using BinaryReader reader = new(new FileStream(saveRamPath, FileMode.Open, FileAccess.Read));
 						reader.Read(sram, 0, sram.Length);
 					}
 
@@ -1973,11 +1973,11 @@ namespace BizHawk.Client.EmuHawk
 					path =  Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
 				}
 
-				FileInfo file = new FileInfo(path);
+				FileInfo file = new(path);
 				string newPath = $"{path}.new";
-				FileInfo newFile = new FileInfo(newPath);
+				FileInfo newFile = new(newPath);
 				string backupPath = $"{path}.bak";
-				FileInfo backupFile = new FileInfo(backupPath);
+				FileInfo backupFile = new(backupPath);
 				if (file.Directory != null && !file.Directory.Exists)
 				{
 					try
@@ -1995,7 +1995,7 @@ namespace BizHawk.Client.EmuHawk
 				if (saveram == null)
 					return true;
 
-				using (BinaryWriter writer = new BinaryWriter(new FileStream(newPath, FileMode.Create, FileAccess.Write)))
+				using (BinaryWriter writer = new(new FileStream(newPath, FileMode.Create, FileAccess.Write)))
 					writer.Write(saveram, 0, saveram.Length);
 
 				if (file.Exists)
@@ -2170,7 +2170,7 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreSubMenu.Text = sysID;
 			GenericCoreSubMenu.DropDownItems.Clear();
 
-			ToolStripMenuItem settingsMenuItem = new ToolStripMenuItem { Text = "&Settings" };
+			ToolStripMenuItem settingsMenuItem = new() { Text = "&Settings" };
 			settingsMenuItem.Click += GenericCoreSettingsMenuItem_Click;
 			GenericCoreSubMenu.DropDownItems.Add(settingsMenuItem);
 
@@ -2222,7 +2222,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ioa = OpenAdvancedSerializer.ParseWithLegacy(rom);
 
-			LoadRomArgs args = new LoadRomArgs
+			LoadRomArgs args = new()
 			{
 				OpenAdvanced = ioa
 			};
@@ -2373,7 +2373,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public BitmapBuffer MakeScreenshotImage()
 		{
-			BitmapBuffer ret = new BitmapBuffer(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBuffer().ToArray());
+			BitmapBuffer ret = new(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBuffer().ToArray());
 			ret.DiscardAlpha();
 			return ret;
 		}
@@ -2426,7 +2426,7 @@ namespace BizHawk.Client.EmuHawk
 		// sends a simulation of a plain alt key keystroke
 		private void SendPlainAltKey(int lparam)
 		{
-			Message m = new Message { WParam = new IntPtr(0xF100), LParam = new IntPtr(lparam), Msg = 0x0112, HWnd = Handle };
+			Message m = new() { WParam = new IntPtr(0xF100), LParam = new IntPtr(lparam), Msg = 0x0112, HWnd = Handle };
 			base.WndProc(ref m);
 		}
 
@@ -3411,7 +3411,7 @@ namespace BizHawk.Client.EmuHawk
 					// handle directories first
 					if (ext == "<directory>")
 					{
-						using FolderBrowserEx fbd = new FolderBrowserEx();
+						using FolderBrowserEx fbd = new();
 						if (this.ShowDialogWithTempMute(fbd) is DialogResult.Cancel)
 						{
 							aw.Dispose();
@@ -3619,7 +3619,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int? LoadArchiveChooser(HawkFile file)
 		{
-			using ArchiveChooser ac = new ArchiveChooser(file);
+			using ArchiveChooser ac = new(file);
 			if (this.ShowDialogAsChild(ac).IsOk())
 			{
 				return ac.SelectedMemberIndex;
@@ -3683,7 +3683,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string ChoosePlatformForRom(RomGame rom)
 		{
-			using PlatformChooser platformChooser = new PlatformChooser(Config)
+			using PlatformChooser platformChooser = new(Config)
 			{
 				RomGame = rom
 			};
@@ -3748,7 +3748,7 @@ namespace BizHawk.Client.EmuHawk
 					return false;
 				}
 
-				RomLoader loader = new RomLoader(Config)
+				RomLoader loader = new(Config)
 				{
 					ChooseArchive = LoadArchiveChooser,
 					ChoosePlatform = ChoosePlatformForRom,
@@ -3834,7 +3834,7 @@ namespace BizHawk.Client.EmuHawk
 						// determine the xml assets and create RomStatusDetails for all of them
 						XmlGame xmlGame = XmlGame.Create(new HawkFile(oaOpenrom.Path));
 
-						using StringWriter xSw = new StringWriter();
+						using StringWriter xSw = new();
 
 						for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
 						{
@@ -4297,7 +4297,7 @@ namespace BizHawk.Client.EmuHawk
 
 			string path = $"{SaveStatePrefix()}.{quickSlotName}.State";
 
-			FileInfo file = new FileInfo(path);
+			FileInfo file = new(path);
 			if (file.Directory != null && !file.Directory.Exists)
 			{
 				file.Directory.Create();
@@ -4321,7 +4321,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			bool PromptToSwitchCore(string currentCore, string recommendedCore, Action disableCurrentCore)
 			{
-				using MsgBox box = new MsgBox(
+				using MsgBox box = new(
 					$"While the {currentCore} core is faster, it is not nearly as accurate as {recommendedCore}.{Environment.NewLine}It is recommended that you switch to the {recommendedCore} core for movie recording.{Environment.NewLine}Switch to {recommendedCore}?",
 					"Accuracy Warning",
 					MessageBoxIcon.Warning);
@@ -4370,7 +4370,7 @@ namespace BizHawk.Client.EmuHawk
 
 			string path = Config.PathEntries.SaveStateAbsolutePath(Game.System);
 
-			FileInfo file = new FileInfo(path);
+			FileInfo file = new(path);
 			if (file.Directory != null && !file.Directory.Exists)
 			{
 				file.Directory.Create();
@@ -4682,7 +4682,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ForwardSingleInstanceStartup(string[] args)
 		{
-			using NamedPipeClientStream namedPipeClientStream = new NamedPipeClientStream(".", "pipe-{84125ACB-F570-4458-9748-321F887FE795}", PipeDirection.Out);
+			using NamedPipeClientStream namedPipeClientStream = new(".", "pipe-{84125ACB-F570-4458-9748-321F887FE795}", PipeDirection.Out);
 			try
 			{
 				namedPipeClientStream.Connect(0);
@@ -4702,13 +4702,13 @@ namespace BizHawk.Client.EmuHawk
 			//MIT LICENSE - https://www.autoitconsulting.com/site/development/single-instance-winform-app-csharp-mutex-named-pipes/
 
 			// Create a new pipe accessible by local authenticated users, disallow network
-			SecurityIdentifier sidNetworkService = new SecurityIdentifier(WellKnownSidType.NetworkServiceSid, null);
-			SecurityIdentifier sidWorld = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+			SecurityIdentifier sidNetworkService = new(WellKnownSidType.NetworkServiceSid, null);
+			SecurityIdentifier sidWorld = new(WellKnownSidType.WorldSid, null);
 
-			PipeSecurity pipeSecurity = new PipeSecurity();
+			PipeSecurity pipeSecurity = new();
 
 			// Deny network access to the pipe
-			PipeAccessRule accessRule = new PipeAccessRule(sidNetworkService, PipeAccessRights.ReadWrite, AccessControlType.Deny);
+			PipeAccessRule accessRule = new(sidNetworkService, PipeAccessRights.ReadWrite, AccessControlType.Deny);
 			pipeSecurity.AddAccessRule(accessRule);
 
 			// Alow Everyone to read/write
@@ -4749,7 +4749,7 @@ namespace BizHawk.Client.EmuHawk
 
 				//a bit over-engineered in case someone wants to send a script or a rom or something
 				//buffer size is set to something tiny so that we are continually testing it
-				MemoryStream payloadBytes = new MemoryStream();
+				MemoryStream payloadBytes = new();
 				while (true)
 				{
 					byte[] bytes = new byte[16];

@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public SpectrumBase _machine { get; set; }
 		private byte[] LineStatus;
 		private int[] _keyLine;
-		private string[] _nonMatrixKeys;
 
 		public bool IsIssue2Keyboard { get; set; }
 
@@ -25,11 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public string[] KeyboardMatrix { get; set; }
 
-		public string[] NonMatrixKeys
-		{
-			get => _nonMatrixKeys;
-			set => _nonMatrixKeys = value;
-		}
+		public string[] NonMatrixKeys { get; set; }
 
 		public StandardKeyboard(SpectrumBase machine)
 		{
@@ -55,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				"Key Space", "Key Symbol Shift", "Key M", "Key N", "Key B"
 			};
 
-			List<string> nonMatrix = new List<string>();
+			List<string> nonMatrix = new();
 
 			foreach (string key in _machine.Spectrum.ZXSpectrumControllerDefinition.BoolButtons)
 			{

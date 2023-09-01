@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Components.x86
 
 		public DisassemblyInfo Disassemble(int addr)
 		{
-			DisassemblyInfo info = new DisassemblyInfo { Addr = addr };
+			DisassemblyInfo info = new() { Addr = addr };
 			byte op1 = ReadMemory(addr++);
 			switch (op1)
 			{
@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Components.x86
 			}
 
 			info.Length = addr - info.Addr;
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			for (int p = info.Addr; p < info.Addr + info.Length; p++)
 				sb.AppendFormat("{0:X2}", ReadMemory(p));
 			info.RawBytes = sb.ToString();

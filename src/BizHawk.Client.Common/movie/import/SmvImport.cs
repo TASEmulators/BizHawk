@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common.movie.import
 			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Snes9X;
 
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
-			using BinaryReader r = new BinaryReader(fs);
+			using BinaryReader r = new(fs);
 
 			// 000 4-byte signature: 53 4D 56 1A "SMV\x1A"
 			string signature = new(r.ReadChars(4));
@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			int highestControllerIndex = 1 + Array.LastIndexOf(controllersUsed, true);
-			Snes9x.SyncSettings ss = new Snes9x.SyncSettings();
+			Snes9x.SyncSettings ss = new();
 
 			switch (highestControllerIndex)
 			{
@@ -190,7 +190,7 @@ namespace BizHawk.Client.Common.movie.import
 				Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 			}
 
-			Snes9xControllers _controllers = new Snes9xControllers(ss);
+			Snes9xControllers _controllers = new(ss);
 			Result.Movie.LogKey = new Bk2LogEntryGenerator("SNES", new Bk2Controller(_controllers.ControllerDefinition)).GenerateLogKey();
 			SimpleController controllers = new(_controllers.ControllerDefinition);
 

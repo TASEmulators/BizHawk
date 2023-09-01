@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 				var ser = emu.ServiceProvider;
 				foreach (var t in ser.AvailableServices.Where(type => type != emu.GetType()))
 				{
-					ServiceInfo si = new ServiceInfo(t, ser.GetService(t));
+					ServiceInfo si = new(t, ser.GetService(t));
 					Services.Add(si.TypeName, si);
 				}
 
@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private TreeNode CreateCoreTree(CoreInfo ci)
 		{
-			TreeNode ret = new TreeNode
+			TreeNode ret = new()
 			{
 				Text = ci.CoreName + (ci.Released ? "" : " (UNRELEASED)"),
 				ForeColor = ci.Released ? Color.Black : Color.DarkGray
@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var service in ci.Services.Values)
 			{
 				string img = service.Complete ? "Good" : "Bad";
-				TreeNode serviceNode = new TreeNode
+				TreeNode serviceNode = new()
 				{
 					Text = service.TypeName,
 					ForeColor = service.Complete ? Color.Black : Color.Red,
@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 				&& !ci.Services.ContainsKey(t.ToString()) && !ci.NotApplicableTypes.Contains(t.ToString())))
 			{
 				string img = "Bad";
-				TreeNode serviceNode = new TreeNode
+				TreeNode serviceNode = new()
 				{
 					Text = service.ToString(),
 					ForeColor = Color.Red,
@@ -222,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!KnownCores.ContainsKey(core.Name))
 				{
 					string img = "Unknown";
-					TreeNode coreNode = new TreeNode
+					TreeNode coreNode = new()
 					{
 						Text = core.Name + (core.CoreAttr.Released ? "" : " (UNRELEASED)"),
 						ForeColor = core.CoreAttr.Released ? Color.Black : Color.DarkGray,
@@ -239,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
-			CoreInfo ci = new CoreInfo(Emulator);
+			CoreInfo ci = new(Emulator);
 			KnownCores[ci.CoreName] = ci;
 
 			DoCurrentCoreTree(ci);

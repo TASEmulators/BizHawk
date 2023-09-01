@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 		}
 		private static JToken Serialize(object o)
 		{
-			TypeNameEncapsulator tne = new TypeNameEncapsulator { o = o };
+			TypeNameEncapsulator tne = new() { o = o };
 			return JToken.FromObject(tne, ConfigService.Serializer)["o"];
 
 			// Maybe todo:  This code is identical to the code above, except that it does not emit the legacy "$type"

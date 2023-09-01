@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			LibsnesCore.SnesSettings s = (LibsnesCore.SnesSettings) settable.GetSettings();
 			LibsnesCore.SnesSyncSettings ss = (LibsnesCore.SnesSyncSettings) settable.GetSyncSettings();
-			using SNESOptions dlg = new SNESOptions
+			using SNESOptions dlg = new()
 			{
 				RandomizedInitialState = ss.RandomizedInitialState,
 				AlwaysDoubleSize = s.AlwaysDoubleSize,

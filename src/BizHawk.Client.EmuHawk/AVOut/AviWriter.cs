@@ -259,7 +259,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public IDisposable AcquireVideoCodecToken(Config config)
 		{
-			Parameters tempParams = new Parameters
+			Parameters tempParams = new()
 			{
 				height = 256,
 				width = 256,
@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 				a_samplerate = 44100,
 				a_channels = 2
 			};
-			AviWriterSegment temp = new AviWriterSegment();
+			AviWriterSegment temp = new();
 			string tempfile = Path.GetTempFileName();
 			File.Delete(tempfile);
 			tempfile = Path.ChangeExtension(tempfile, "avi");
@@ -427,7 +427,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public static CodecToken CreateFromAVICOMPRESSOPTIONS(ref AVIWriterImports.AVICOMPRESSOPTIONS opts)
 			{
-				CodecToken ret = new CodecToken
+				CodecToken ret = new()
 				{
 					_comprOptions = opts,
 					codec = Decode_mmioFOURCC(opts.fccHandler),
@@ -477,8 +477,8 @@ namespace BizHawk.Client.EmuHawk
 		
 			private byte[] SerializeToByteArray()
 			{
-				MemoryStream m = new MemoryStream();
-				BinaryWriter b = new BinaryWriter(m);
+				MemoryStream m = new();
+				BinaryWriter b = new(m);
 
 				b.Write(_comprOptions.fccType);
 				b.Write(_comprOptions.fccHandler);
@@ -499,8 +499,8 @@ namespace BizHawk.Client.EmuHawk
 
 			private static CodecToken DeSerializeFromByteArray(byte[] data)
 			{
-				MemoryStream m = new MemoryStream(data, false);
-				BinaryReader b = new BinaryReader(m);
+				MemoryStream m = new(data, false);
+				BinaryReader b = new(m);
 
 				AVIWriterImports.AVICOMPRESSOPTIONS comprOptions = new();
 
@@ -535,7 +535,7 @@ namespace BizHawk.Client.EmuHawk
 					b.Close();
 				}
 
-				CodecToken ret = new CodecToken
+				CodecToken ret = new()
 				{
 					_comprOptions = comprOptions,
 					Format = format,

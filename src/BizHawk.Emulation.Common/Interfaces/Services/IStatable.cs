@@ -55,8 +55,8 @@ namespace BizHawk.Emulation.Common
 			{
 				byte[] state = new byte[hex.Length / 2];
 				state.ReadFromHexFast(hex);
-				using MemoryStream ms = new MemoryStream(state);
-				using BinaryReader br = new BinaryReader(ms);
+				using MemoryStream ms = new(state);
+				using BinaryReader br = new(ms);
 				core.LoadStateBinary(br);
 			}
 		}
@@ -68,8 +68,8 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public static void LoadStateBinary(this IStatable core, byte[] state)
 		{
-			using MemoryStream ms = new MemoryStream(state, false);
-			using BinaryReader br = new BinaryReader(ms);
+			using MemoryStream ms = new(state, false);
+			using BinaryReader br = new(ms);
 			core.LoadStateBinary(br);
 		}
 
@@ -79,8 +79,8 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public static byte[] CloneSavestate(this IStatable core)
 		{
-			using MemoryStream ms = new MemoryStream();
-			using BinaryWriter bw = new BinaryWriter(ms);
+			using MemoryStream ms = new();
+			using BinaryWriter bw = new(ms);
 			core.SaveStateBinary(bw);
 			bw.Flush();
 			byte[] stateBuffer = ms.ToArray();

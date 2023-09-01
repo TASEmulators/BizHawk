@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 
 		public string Generate()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			foreach (var (button, range, mnemonicChar) in _cachedInputSpecs)
 			{

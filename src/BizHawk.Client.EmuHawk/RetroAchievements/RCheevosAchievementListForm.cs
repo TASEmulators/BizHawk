@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			flowLayoutPanel1.Controls.Clear();
 			DisposeCheevoForms();
-			List<RCheevosAchievementForm> cheevoForms = new List<RCheevosAchievementForm>();
+			List<RCheevosAchievementForm> cheevoForms = new();
 			foreach (var cheevo in cheevos)
 			{
 				cheevoForms.Add(new(cheevo, getCheevoProgress));

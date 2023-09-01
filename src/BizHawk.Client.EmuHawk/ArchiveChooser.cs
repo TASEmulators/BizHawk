@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < items.Count; i++)
 			{
 				var item = items[i];
-				ListViewItem lvi = new ListViewItem { Tag = i };
+				ListViewItem lvi = new() { Tag = i };
 				lvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				lvi.Text = item.Name;
 				long size = item.Size;

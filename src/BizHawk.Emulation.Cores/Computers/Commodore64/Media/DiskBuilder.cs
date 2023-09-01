@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			int currentSector = 0;
 			int interleaveStart = 0;
 			int sectorInterleave = 3;
-			List<LocatedEntry> directory = new List<LocatedEntry>();
+			List<LocatedEntry> directory = new();
 
 			int GetOutputOffset(int t, int s) => trackByteOffsets[t] + (s * 256);
 
@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				int dataLength = entry.Data == null ? 0 : entry.Data.Length;
 				int lengthInSectors = dataLength / 254;
 				int dataRemaining = dataLength;
-				LocatedEntry directoryEntry = new LocatedEntry
+				LocatedEntry directoryEntry = new()
 				{
 					Entry = entry,
 					LengthInSectors = lengthInSectors + 1,

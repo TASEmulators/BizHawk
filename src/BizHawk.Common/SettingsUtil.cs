@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Reflection.Emit;
 using System.Collections.Concurrent;
 using System.ComponentModel;
@@ -54,7 +53,7 @@ namespace BizHawk.Common
 
 		private static DefaultValueSetter CreateSetter(Type t)
 		{
-			DynamicMethod dyn = new DynamicMethod($"SetDefaultValues_{t.Name}", null, new[] { typeof(object), typeof(object[]) }, false);
+			DynamicMethod dyn = new($"SetDefaultValues_{t.Name}", null, new[] { typeof(object), typeof(object[]) }, false);
 			var il = dyn.GetILGenerator();
 			List<object> DefaultValues = new();
 

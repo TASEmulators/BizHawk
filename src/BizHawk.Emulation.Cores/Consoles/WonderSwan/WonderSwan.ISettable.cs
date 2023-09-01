@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			public BizSwan.Settings GetNativeSettings()
 			{
-				BizSwan.Settings ret = new BizSwan.Settings();
+				BizSwan.Settings ret = new();
 				if (EnableBG) ret.LayerMask |= BizSwan.LayerFlags.BG;
 				if (EnableFG) ret.LayerMask |= BizSwan.LayerFlags.FG;
 				if (EnableSprites) ret.LayerMask |= BizSwan.LayerFlags.Sprite;
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			public BizSwan.SyncSettings GetNativeSettings()
 			{
-				BizSwan.SyncSettings ret = new BizSwan.SyncSettings
+				BizSwan.SyncSettings ret = new()
 				{
 					color = Color,
 					userealtime = UseRealTime,

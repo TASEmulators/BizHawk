@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			_mBaseDirectory = dir ?? string.Empty;
 			string framesDirFragment = $"{fileNoExt}_frames";
 			_mFramesDirectory = Path.Combine(_mBaseDirectory, framesDirFragment);
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			sb.AppendLine("version=1");
 			sb.AppendLine($"framesdir={framesDirFragment}");
 			File.WriteAllText(_mProjectFile, sb.ToString());
@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddFrame(IVideoProvider source)
 		{
-			using BitmapBuffer bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
+			using BitmapBuffer bb = new(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
 			string subPath = GetAndCreatePathForFrameNum(_mCurrFrame);
 			string path = $"{subPath}.png";
 			bb.ToSysdrawingBitmap().Save(path, ImageFormat.Png);
@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			string subPath = GetAndCreatePathForFrameNum(_mCurrFrame);
 			string path = $"{subPath}.wav";
-			WavWriterV wwv = new WavWriterV();
+			WavWriterV wwv = new();
 			wwv.SetAudioParameters(_paramSampleRate, _paramChannels, _paramBits);
 			wwv.OpenFile(path);
 			wwv.AddSamples(samples);
@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			int numChunks = (s.Length + len - 1) / len;
-			List<string> output = new List<string>(numChunks);
+			List<string> output = new(numChunks);
 			for (int i = 0, j = 0; i < numChunks; i++, j += len)
 			{
 				int todo = len;

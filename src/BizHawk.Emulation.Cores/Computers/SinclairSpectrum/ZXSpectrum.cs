@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public ZXSpectrum(
 			CoreLoadParameters<ZXSpectrumSettings, ZXSpectrumSyncSettings> lp)
 		{
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 			CoreComm = lp.Comm;
 
@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			PutSyncSettings(syncSettings);
 			PutSettings(settings);
 
-			List<JoystickType> joysticks = new List<JoystickType>
+			List<JoystickType> joysticks = new()
 			{
 				syncSettings.JoystickType1,
 				syncSettings.JoystickType2,

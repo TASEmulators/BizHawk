@@ -700,7 +700,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			MovieZone loadZone = new MovieZone(path, MainForm, Emulator, MovieSession, Tools)
+			MovieZone loadZone = new(path, MainForm, Emulator, MovieSession, Tools)
 			{
 				Start = TasView.SelectionStartIndex!.Value,
 			};
@@ -1184,7 +1184,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var currentMarker = CurrentTasMovie.Markers.Single(m => m.Frame == e.OldCell.RowIndex.Value);
 				int newFrame = e.NewCell.RowIndex.Value;
-				TasMovieMarker newMarker = new TasMovieMarker(newFrame, currentMarker.Message);
+				TasMovieMarker newMarker = new(newFrame, currentMarker.Message);
 				CurrentTasMovie.Markers.Remove(currentMarker);
 				CurrentTasMovie.Markers.Add(newMarker);
 				RefreshDialog();
@@ -1200,7 +1200,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetFontMenuItem_Click(object sender, EventArgs e)
 		{
-			using FontDialog fontDialog = new FontDialog
+			using FontDialog fontDialog = new()
 			{
 				ShowColor = false,
 				Font = TasView.Font

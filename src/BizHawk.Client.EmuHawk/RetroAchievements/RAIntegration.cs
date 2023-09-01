@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 			var tsmiddi = _raDropDownItems;
 			tsmiddi.Clear();
 			{
-				ToolStripMenuItem tsi = new ToolStripMenuItem("Shutdown RetroAchievements");
+				ToolStripMenuItem tsi = new("Shutdown RetroAchievements");
 				tsi.Click += (_, _) => _shutdownRACallback();
 				tsmiddi.Add(tsi);
 
@@ -71,14 +71,14 @@ namespace BizHawk.Client.EmuHawk
 				tsi.CheckedChanged += (_, _) => _getConfig().RAAutostart ^= true;
 				tsmiddi.Add(tsi);
 
-				ToolStripSeparator tss = new ToolStripSeparator();
+				ToolStripSeparator tss = new();
 				tsmiddi.Add(tss);
 			}
 			for (int i = 0; i < numItems; i++)
 			{
 				if (_menuItems[i].Label != IntPtr.Zero)
 				{
-					ToolStripMenuItem tsi = new ToolStripMenuItem(Marshal.PtrToStringUni(_menuItems[i].Label))
+					ToolStripMenuItem tsi = new(Marshal.PtrToStringUni(_menuItems[i].Label))
 					{
 						Checked = _menuItems[i].Checked != 0,
 					};
@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					ToolStripSeparator tss = new ToolStripSeparator();
+					ToolStripSeparator tss = new();
 					tsmiddi.Add(tss);
 				}
 			}
@@ -251,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!OverlayActive) return;
 
-			RAInterface.ControllerInput ci = new RAInterface.ControllerInput
+			RAInterface.ControllerInput ci = new()
 			{
 				UpPressed = _inputManager.ClientControls["RA Up"],
 				DownPressed = _inputManager.ClientControls["RA Down"],

@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int w = pictureBox1.Size.Width;
 			int h = pictureBox1.Size.Height;
-			Bitmap bmp = new Bitmap(w, h);
+			Bitmap bmp = new(w, h);
 			byte[] pal = _settings.Palette;
 
 			for (int j = 0; j < h; j++)

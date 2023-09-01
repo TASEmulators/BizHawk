@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		{
 			if (o != _settings)
 			{
-				BsnesApi.LayerEnables enables = new BsnesApi.LayerEnables
+				BsnesApi.LayerEnables enables = new()
 				{
 					BG1_Prio0 = o.ShowBG1_0,
 					BG1_Prio1 = o.ShowBG1_1,

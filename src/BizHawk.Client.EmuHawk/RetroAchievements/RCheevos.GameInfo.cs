@@ -114,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					Bitmap image = new Bitmap(new MemoryStream(serv_resp));
+					Bitmap image = new(new MemoryStream(serv_resp));
 					Image = image;
 				}
 				catch
@@ -166,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public IEnumerable<RCheevoHttpRequest> LoadImages()
 			{
-				List<RCheevoHttpRequest> requests = new List<RCheevoHttpRequest>(1 + (_cheevos?.Count ?? 0) * 2);
+				List<RCheevoHttpRequest> requests = new(1 + (_cheevos?.Count ?? 0) * 2);
 
 				_gameBadgeImageRequest = new(ImageName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_GAME);
 				requests.Add(_gameBadgeImageRequest);
@@ -192,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 				ImageName = resp.ImageName;
 				RichPresenseScript = resp.RichPresenceScript;
 
-				Dictionary<int, Cheevo> cheevos = new Dictionary<int, Cheevo>();
+				Dictionary<int, Cheevo> cheevos = new();
 				LibRCheevos.rc_api_achievement_definition_t* cptr = (LibRCheevos.rc_api_achievement_definition_t*)resp.achievements;
 				for (int i = 0; i < resp.num_achievements; i++)
 				{
@@ -201,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_cheevos = cheevos;
 
-				Dictionary<int, LBoard> lboards = new Dictionary<int, LBoard>();
+				Dictionary<int, LBoard> lboards = new();
 				LibRCheevos.rc_api_leaderboard_definition_t* lptr = (LibRCheevos.rc_api_leaderboard_definition_t*)resp.leaderboards;
 				for (int i = 0; i < resp.num_leaderboards; i++)
 				{
@@ -267,7 +267,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int SendHash(string hash)
 		{
-			ResolveHashRequest resolveHashRequest = new ResolveHashRequest(hash);
+			ResolveHashRequest resolveHashRequest = new(hash);
 			PushRequest(resolveHashRequest);
 			resolveHashRequest.Wait(); // currently, this is done synchronously
 			return resolveHashRequest.GameID;
@@ -314,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private GameData GetGameData(int id)
 		{
-			GameDataRequest gameDataRequest = new GameDataRequest(Username, ApiToken, id, () => AllowUnofficialCheevos);
+			GameDataRequest gameDataRequest = new(Username, ApiToken, id, () => AllowUnofficialCheevos);
 			PushRequest(gameDataRequest);
 			gameDataRequest.Wait();
 			return gameDataRequest.GameData;

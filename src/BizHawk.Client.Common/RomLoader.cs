@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 
 		private object GetCoreSettings(Type t, Type settingsType)
 		{
-			SettingsLoadArgs e = new SettingsLoadArgs(t, settingsType);
+			SettingsLoadArgs e = new(t, settingsType);
 			if (OnLoadSettings == null)
 				throw new InvalidOperationException("Frontend failed to provide a settings getter");
 			OnLoadSettings(this, e);
@@ -89,7 +89,7 @@ namespace BizHawk.Client.Common
 
 		private object GetCoreSyncSettings(Type t, Type syncSettingsType)
 		{
-			SettingsLoadArgs e = new SettingsLoadArgs(t, syncSettingsType);
+			SettingsLoadArgs e = new(t, syncSettingsType);
 			if (OnLoadSyncSettings == null)
 				throw new InvalidOperationException("Frontend failed to provide a sync settings getter");
 			OnLoadSyncSettings(this, e);
@@ -222,7 +222,7 @@ namespace BizHawk.Client.Common
 		{
 			// TODO - use more sophisticated IDer
 			var discType = new DiscIdentifier(disc).DetectDiscType();
-			DiscHasher discHasher = new DiscHasher(disc);
+			DiscHasher discHasher = new(disc);
 			string discHash = discType == DiscType.SonyPSX
 				? discHasher.Calculate_PSX_BizIDHash()
 				: discHasher.OldHash();
@@ -273,7 +273,7 @@ namespace BizHawk.Client.Common
 
 			game = MakeGameFromDisc(disc, ext, Path.GetFileNameWithoutExtension(file.Name));
 
-			CoreInventoryParameters cip = new CoreInventoryParameters(this)
+			CoreInventoryParameters cip = new(this)
 			{
 				Comm = nextComm,
 				Game = game,
@@ -294,7 +294,7 @@ namespace BizHawk.Client.Common
 		private void LoadM3U(string path, CoreComm nextComm, HawkFile file, string forcedCoreName, out IEmulator nextEmulator, out GameInfo game)
 		{
 			M3U_File m3u;
-			using (StreamReader sr = new StreamReader(path))
+			using (StreamReader sr = new(path))
 				m3u = M3U_File.Read(sr);
 			if (m3u.Entries.Count == 0)
 				throw new InvalidOperationException("Can't load an empty M3U");
@@ -316,7 +316,7 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException("Couldn't load any contents of the M3U as discs");
 
 			game = MakeGameFromDisc(discs[0].DiscData, Path.GetExtension(m3u.Entries[0].Path), discs[0].DiscName);
-			CoreInventoryParameters cip = new CoreInventoryParameters(this)
+			CoreInventoryParameters cip = new(this)
 			{
 				Comm = nextComm,
 				Game = game,
@@ -355,7 +355,7 @@ namespace BizHawk.Client.Common
 					.ToList();
 				if (cores.Count == 0) throw new InvalidOperationException("No core was found to try on the game");
 			}
-			List<Exception> exceptions = new List<Exception>();
+			List<Exception> exceptions = new();
 			foreach (var core in cores)
 			{
 				try
@@ -473,7 +473,7 @@ namespace BizHawk.Client.Common
 					nextEmulator = nextEmulatorBak;
 					break;
 			}
-			CoreInventoryParameters cip = new CoreInventoryParameters(this)
+			CoreInventoryParameters cip = new(this)
 			{
 				Comm = nextComm,
 				Game = game,
@@ -499,7 +499,7 @@ namespace BizHawk.Client.Common
 			{
 				return new GZipStream(instream, CompressionMode.Decompress).ReadAllBytes();
 			}
-			PSF psf = new PSF();
+			PSF psf = new();
 			psf.Load(path, CbDeflater);
 			nextEmulator = new Octoshock(
 				nextComm,
@@ -524,7 +524,7 @@ namespace BizHawk.Client.Common
 				game = xmlGame.GI;
 
 				string system = game.System;
-				CoreInventoryParameters cip = new CoreInventoryParameters(this)
+				CoreInventoryParameters cip = new(this)
 				{
 					Comm = nextComm,
 					Game = game,
@@ -599,7 +599,7 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					using HawkFile f = new HawkFile(path, allowArchives: true);
+					using HawkFile f = new(path, allowArchives: true);
 					if (!HandleArchiveBinding(f)) throw;
 					LoadOther(nextComm, f, ext: ext, forcedCoreName: null, out nextEmulator, out rom, out game, out cancel);
 				}
@@ -623,7 +623,7 @@ namespace BizHawk.Client.Common
 
 			bool allowArchives = true;
 			if (OpenAdvanced is OpenAdvanced_MAME || MAMEMachineDB.IsMAMEMachine(path)) allowArchives = false;
-			using HawkFile file = new HawkFile(path, false, allowArchives);
+			using HawkFile file = new(path, false, allowArchives);
 			if (!file.Exists && OpenAdvanced is not OpenAdvanced_LibretroNoGame) return false; // if the provided file doesn't even exist, give up! (unless libretro no game is used)
 
 			CanonicalFullPath = file.CanonicalFullPath;
@@ -641,7 +641,7 @@ namespace BizHawk.Client.Common
 					// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
 					// game name == name of core
 					Game = game = new GameInfo { Name = Path.GetFileNameWithoutExtension(launchLibretroCore), System = VSystemID.Raw.Libretro };
-					LibretroHost retro = new LibretroHost(nextComm, game, launchLibretroCore);
+					LibretroHost retro = new(nextComm, game, launchLibretroCore);
 					nextEmulator = retro;
 
 					if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))

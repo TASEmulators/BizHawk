@@ -30,8 +30,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			_core.mame_nvram_save();
 
-			using MemoryStream ms = new MemoryStream();
-			using BinaryWriter writer = new BinaryWriter(ms);
+			using MemoryStream ms = new();
+			using BinaryWriter writer = new(ms);
 
 			writer.Write(NVRAM_MAGIC);
 			writer.Write(_nvramFilenames.Count);
@@ -54,8 +54,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				return;
 			}
 
-			using MemoryStream ms = new MemoryStream(data, false);
-			using BinaryReader reader = new BinaryReader(ms);
+			using MemoryStream ms = new(data, false);
+			using BinaryReader reader = new(ms);
 
 			if (reader.ReadString() != NVRAM_MAGIC)
 			{
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				throw new InvalidOperationException($"Wrong NVRAM file count! (got {cnt}, expected {_nvramFilenames.Count})");
 			}
 
-			List<string> nvramFilesToClose = new List<string>();
+			List<string> nvramFilesToClose = new();
 			void RemoveFiles()
 			{
 				foreach (string nvramFileToClose in nvramFilesToClose)

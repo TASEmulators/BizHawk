@@ -16,8 +16,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public byte[] CloneSaveRam()
 		{
-			using MemoryStream ms = new MemoryStream();
-			using BinaryWriter bw = new BinaryWriter(ms);
+			using MemoryStream ms = new();
+			using BinaryWriter bw = new(ms);
 
 			SaveDelta();
 			bw.Write(DiskCount);
@@ -31,8 +31,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public void StoreSaveRam(byte[] data)
 		{
-			using MemoryStream ms = new MemoryStream(data, false);
-			using BinaryReader br = new BinaryReader(ms);
+			using MemoryStream ms = new(data, false);
+			using BinaryReader br = new(ms);
 
 			int ndisks = br.ReadInt32();
 

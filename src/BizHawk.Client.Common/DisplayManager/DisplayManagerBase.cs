@@ -87,20 +87,20 @@ namespace BizHawk.Client.Common
 
 			if (dispMethod is EDispMethod.OpenGL or EDispMethod.D3D9)
 			{
-				FileInfo fiHq2x = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk/hq2x.cgp"));
+				FileInfo fiHq2x = new(Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk/hq2x.cgp"));
 				if (fiHq2x.Exists)
 				{
 					using var stream = fiHq2x.OpenRead();
 					_shaderChainHq2X = new(_gl, new(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
-				FileInfo fiScanlines = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk/BizScanlines.cgp"));
+				FileInfo fiScanlines = new(Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk/BizScanlines.cgp"));
 				if (fiScanlines.Exists)
 				{
 					using var stream = fiScanlines.OpenRead();
 					_shaderChainScanlines = new(_gl, new(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
 				string bicubicPath = dispMethod == EDispMethod.D3D9 ? "Shaders/BizHawk/bicubic-normal.cgp" : "Shaders/BizHawk/bicubic-fast.cgp";
-				FileInfo fiBicubic = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, bicubicPath));
+				FileInfo fiBicubic = new(Path.Combine(PathUtils.ExeDirectoryPath, bicubicPath));
 				if (fiBicubic.Exists)
 				{
 					using var stream = fiBicubic.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -213,7 +213,7 @@ namespace BizHawk.Client.Common
 			_shaderChainUser?.Dispose();
 			if (File.Exists(GlobalConfig.DispUserFilterPath))
 			{
-				FileInfo fi = new FileInfo(GlobalConfig.DispUserFilterPath);
+				FileInfo fi = new(GlobalConfig.DispUserFilterPath);
 				using var stream = fi.OpenRead();
 				_shaderChainUser = new(_gl, new(stream), Path.GetDirectoryName(GlobalConfig.DispUserFilterPath));
 			}
@@ -260,7 +260,7 @@ namespace BizHawk.Client.Common
 		private FilterProgram BuildDefaultChain(Size chainInSize, Size chainOutSize, bool includeOSD, bool includeUserFilters)
 		{
 			// select user special FX shader chain
-			Dictionary<string, object> selectedChainProperties = new Dictionary<string, object>();
+			Dictionary<string, object> selectedChainProperties = new();
 			RetroShaderChain selectedChain = null;
 			switch (GlobalConfig.TargetDisplayFilter)
 			{
@@ -283,11 +283,11 @@ namespace BizHawk.Client.Common
 
 			var fCoreScreenControl = CreateCoreScreenControl();
 
-			FinalPresentation fPresent = new FinalPresentation(chainOutSize);
-			SourceImage fInput = new SourceImage(chainInSize);
-			OSD fOSD = new OSD(includeOSD, OSD, _theOneFont);
+			FinalPresentation fPresent = new(chainOutSize);
+			SourceImage fInput = new(chainInSize);
+			OSD fOSD = new(includeOSD, OSD, _theOneFont);
 
-			FilterProgram chain = new FilterProgram();
+			FilterProgram chain = new();
 
 			//add the first filter, encompassing output from the emulator core
 			chain.AddFilter(fInput, "input");
@@ -314,7 +314,7 @@ namespace BizHawk.Client.Common
 				if (size.Width < 1) size.Width = 1;
 				if (size.Height < 1) size.Height = 1;
 
-				FinalPresentation fPadding = new FinalPresentation(size);
+				FinalPresentation fPadding = new(size);
 				chain.AddFilter(fPadding, "padding");
 				fPadding.Config_PadOnly = true;
 				fPadding.Padding = padding;
@@ -327,7 +327,7 @@ namespace BizHawk.Client.Common
 			{
 				if (GlobalConfig.DispPrescale != 1)
 				{
-					PrescaleFilter fPrescale = new PrescaleFilter() { Scale = GlobalConfig.DispPrescale };
+					PrescaleFilter fPrescale = new() { Scale = GlobalConfig.DispPrescale };
 					chain.AddFilter(fPrescale, "user_prescale");
 				}
 			}
@@ -341,7 +341,7 @@ namespace BizHawk.Client.Common
 			// AutoPrescale makes no sense for a None final filter
 			if (GlobalConfig.DispAutoPrescale && GlobalConfig.DispFinalFilter != (int)FinalPresentation.eFilterOption.None)
 			{
-				AutoPrescaleFilter apf = new AutoPrescaleFilter();
+				AutoPrescaleFilter apf = new();
 				chain.AddFilter(apf, "auto_prescale");
 			}
 
@@ -391,7 +391,7 @@ namespace BizHawk.Client.Common
 		{
 			for (int i = 0; i < retroChain.Passes.Length; i++)
 			{
-				RetroShaderPass rsp = new RetroShaderPass(retroChain, i);
+				RetroShaderPass rsp = new(retroChain, i);
 				string fname = $"{name}[{i}]";
 				program.AddFilter(rsp, fname);
 				rsp.Parameters = properties;
@@ -407,7 +407,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var luaNativeTexture = _apiHawkSurfaceFrugalizers[surfaceID].Get(luaNativeSurface);
-			LuaLayer fLuaLayer = new LuaLayer();
+			LuaLayer fLuaLayer = new();
 			fLuaLayer.SetTexture(luaNativeTexture);
 			chain.AddFilter(fLuaLayer, surfaceID.GetName());
 		}
@@ -426,7 +426,7 @@ namespace BizHawk.Client.Common
 			if (_currentFilterProgram == null) return p;
 
 			// otherwise, have the filter program untransform it
-			Vector2 v = new Vector2(p.X, p.Y);
+			Vector2 v = new(p.X, p.Y);
 			v = _currentFilterProgram.UntransformPoint("default", v);
 
 			return new((int)v.X, (int)v.Y);
@@ -444,7 +444,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// otherwise, have the filter program untransform it
-			Vector2 v = new Vector2(p.X, p.Y);
+			Vector2 v = new(p.X, p.Y);
 			v = _currentFilterProgram.TransformPoint("default", v);
 			return new((int)v.X, (int)v.Y);
 		}
@@ -460,7 +460,7 @@ namespace BizHawk.Client.Common
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
 			bool displayNothing = GlobalConfig.DispSpeedupFeatures == 0;
-			JobInfo job = new JobInfo
+			JobInfo job = new()
 			{
 				VideoProvider = videoProvider,
 				Simulate = displayNothing,
@@ -487,7 +487,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public BitmapBuffer RenderOffscreen(IVideoProvider videoProvider, bool includeOSD)
 		{
-			JobInfo job = new JobInfo
+			JobInfo job = new()
 			{
 				VideoProvider = videoProvider,
 				Simulate = false,
@@ -505,7 +505,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public BitmapBuffer RenderOffscreenLua(IVideoProvider videoProvider)
 		{
-			JobInfo job = new JobInfo
+			JobInfo job = new()
 			{
 				VideoProvider = videoProvider,
 				Simulate = false,
@@ -617,7 +617,7 @@ namespace BizHawk.Client.Common
 			if (bufferHeight < 1) bufferHeight = 1;
 
 			// old stuff
-			FakeVideoProvider fvp = new FakeVideoProvider(bufferWidth, bufferHeight, virtualWidth, virtualHeight);
+			FakeVideoProvider fvp = new(bufferWidth, bufferHeight, virtualWidth, virtualHeight);
 			Size chainOutsize;
 
 			if (arActive)
@@ -627,7 +627,7 @@ namespace BizHawk.Client.Common
 					if (arInteger)
 					{
 						// ALERT COPYPASTE LAUNDROMAT
-						Vector2 AR = new Vector2(virtualWidth / (float) bufferWidth, virtualHeight / (float) bufferHeight);
+						Vector2 AR = new(virtualWidth / (float) bufferWidth, virtualHeight / (float) bufferHeight);
 						float targetPar = AR.X / AR.Y;
 
 						// this would malfunction for AR <= 0.5 or AR >= 2.0
@@ -702,7 +702,7 @@ namespace BizHawk.Client.Common
 			chainOutsize.Width += ClientExtraPadding.Left + ClientExtraPadding.Right;
 			chainOutsize.Height += ClientExtraPadding.Top + ClientExtraPadding.Bottom;
 
-			JobInfo job = new JobInfo
+			JobInfo job = new()
 			{
 				VideoProvider = fvp,
 				Simulate = true,
@@ -844,7 +844,7 @@ namespace BizHawk.Client.Common
 			_currEmuHeight = bufferHeight;
 
 			//build the default filter chain and set it up with services filters will need
-			Size chainInsize = new Size(bufferWidth, bufferHeight);
+			Size chainInsize = new(bufferWidth, bufferHeight);
 
 			var filterProgram = BuildDefaultChain(chainInsize, chainOutsize, job.IncludeOSD, job.IncludeUserFilters);
 			filterProgram.GuiRenderer = _renderer;

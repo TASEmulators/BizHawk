@@ -6,15 +6,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	{
 		public int LagCount { get; set; } = 0;
 
-		public bool IsLagFrame
-		{
-			get => _isLag;
-			set => _isLag = value;
-		}
+		public bool IsLagFrame { get; set; } = false;
 
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
-
-		private bool _isLag = false;
 
 		/// <summary>
 		/// Cycles through all the input callbacks

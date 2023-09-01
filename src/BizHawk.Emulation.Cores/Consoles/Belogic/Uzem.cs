@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			LibUzem.FrameInfo ret = new LibUzem.FrameInfo();
+			LibUzem.FrameInfo ret = new();
 			if (_mouseEnabled)
 			{
 				ret.ButtonsP1 = EncodeDelta(controller.AxisValue("P1 Mouse X")) << 24

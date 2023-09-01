@@ -193,8 +193,8 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <exception cref="CDIParseException">malformed cdi format</exception>
 		public static CDIFile ParseFrom(Stream stream)
 		{
-			CDIFile cdif = new CDIFile();
-			using BinaryReader br = new BinaryReader(stream);
+			CDIFile cdif = new();
+			using BinaryReader br = new(stream);
 
 			try
 			{
@@ -230,7 +230,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 				for (int i = 0; i <= cdif.NumSessions; i++)
 				{
-					CDISession session = new CDISession();
+					CDISession session = new();
 					stream.Seek(1, SeekOrigin.Current); // unknown byte
 					session.NumTracks = br.ReadByte();
 					stream.Seek(13, SeekOrigin.Current); // unknown bytes
@@ -249,7 +249,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 					for (int j = 0; j < session.NumTracks; j++)
 					{
-						CDITrack track = new CDITrack();
+						CDITrack track = new();
 						ParseTrackHeader(track);
 
 						ushort indexes = br.ReadUInt16();
@@ -265,7 +265,7 @@ namespace BizHawk.Emulation.DiscSystem
 						uint numCdTextBlocks = br.ReadUInt32();
 						for (int k = 0; k < numCdTextBlocks; k++)
 						{
-							CDICDText cdTextBlock = new CDICDText();
+							CDICDText cdTextBlock = new();
 							for (int l = 0; l < 18; l++)
 							{
 								byte cdTextLen = br.ReadByte();
@@ -418,7 +418,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static LoadResults LoadCDIPath(string path)
 		{
-			LoadResults ret = new LoadResults
+			LoadResults ret = new()
 			{
 				CdiPath = path
 			};
@@ -427,7 +427,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (!File.Exists(path)) throw new CDIParseException("Malformed CDI format: nonexistent CDI file!");
 
 				CDIFile cdif;
-				using (FileStream infCDI = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+				using (FileStream infCDI = new(path, FileMode.Open, FileAccess.Read, FileShare.Read))
 					cdif = ParseFrom(infCDI);
 
 				ret.ParsedCDIFile = cdif;
@@ -448,7 +448,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (!loadResults.Valid)
 				throw loadResults.FailureException;
 
-			Disc disc = new Disc();
+			Disc disc = new();
 			var cdif = loadResults.ParsedCDIFile;
 
 			IBlob cdiBlob = new Blob_RawFile { PhysicalPath = cdiPath };
@@ -458,7 +458,7 @@ namespace BizHawk.Emulation.DiscSystem
 			int blobOffset = 0;
 			for (int i = 0; i < cdif.NumSessions; i++)
 			{
-				DiscSession session = new DiscSession { Number = i + 1 };
+				DiscSession session = new() { Number = i + 1 };
 
 				// leadin track
 				// we create this only for session 2+, not session 1
@@ -492,7 +492,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 					RawTOCEntry EmitRawTOCEntry()
 					{
-						SubchannelQ q = default(SubchannelQ);
+						SubchannelQ q = default;
 						//absent some kind of policy for how to set it, this is a safe assumption
 						const byte kADR = 1;
 						q.SetStatus(kADR, (EControlQ)track.Control);
@@ -575,7 +575,7 @@ namespace BizHawk.Emulation.DiscSystem
 					});
 				}
 
-				Synthesize_A0A1A2_Job TOCMiscInfo = new Synthesize_A0A1A2_Job(
+				Synthesize_A0A1A2_Job TOCMiscInfo = new(
 					firstRecordedTrackNumber: trackOffset + 1,
 					lastRecordedTrackNumber: trackOffset + cdif.Sessions[i].NumTracks,
 					sessionFormat: (SessionFormat)(cdif.Tracks[trackOffset + cdif.Sessions[i].NumTracks - 1].SessionType * 0x10),

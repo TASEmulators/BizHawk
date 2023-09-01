@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			byte[] core = null;
 			if (ser.IsWriter)
 			{
-				MemoryStream ms = new MemoryStream();
+				MemoryStream ms = new();
 				ms.Close();
 				core = ms.ToArray();
 			}

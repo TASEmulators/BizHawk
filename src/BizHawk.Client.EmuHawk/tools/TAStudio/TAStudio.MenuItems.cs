@@ -270,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 			Cursor = Cursors.WaitCursor;
 			Update();
 			string exportResult = " not exported.";
-			FileInfo file = new FileInfo(bk2.Filename);
+			FileInfo file = new(bk2.Filename);
 			if (file.Exists)
 			{
 				var result = MainForm.DoWithTempMute(() => MessageBox.Show(
@@ -430,7 +430,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_tasClipboard.Clear();
 				int[] list = TasView.SelectedRows.ToArray();
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 
 				foreach (int index in list)
 				{
@@ -549,7 +549,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_tasClipboard.Clear();
 				int[] list = TasView.SelectedRows.ToArray();
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 
 				foreach (int index in list) // copy of CopyMenuItem_Click()
 				{
@@ -635,7 +635,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneFramesXTimesMenuItem_Click(object sender, EventArgs e)
 		{
-			using FramesPrompt framesPrompt = new FramesPrompt("Clone # Times", "Insert times to clone:");
+			using FramesPrompt framesPrompt = new("Clone # Times", "Insert times to clone:");
 			if (framesPrompt.ShowDialog().IsOk())
 			{
 				CloneFramesXTimes(framesPrompt.Frames);
@@ -694,7 +694,7 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.Focused && TasView.AnyRowsSelected)
 			{
 				int insertionFrame = TasView.SelectionStartIndex ?? 0;
-				using FramesPrompt framesPrompt = new FramesPrompt();
+				using FramesPrompt framesPrompt = new();
 				if (framesPrompt.ShowDialog().IsOk())
 				{
 					InsertNumFrames(insertionFrame, framesPrompt.Frames);
@@ -816,7 +816,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMaxUndoLevelsMenuItem_Click(object sender, EventArgs e)
 		{
-			using InputPrompt prompt = new InputPrompt
+			using InputPrompt prompt = new()
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Number of Undo Levels to keep",
@@ -845,7 +845,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetBranchCellHoverIntervalMenuItem_Click(object sender, EventArgs e)
 		{
-			using InputPrompt prompt = new InputPrompt
+			using InputPrompt prompt = new()
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "ScreenshotPopUp Delay",
@@ -866,7 +866,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetSeekingCutoffIntervalMenuItem_Click(object sender, EventArgs e)
 		{
-			using InputPrompt prompt = new InputPrompt
+			using InputPrompt prompt = new()
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Seeking Cutoff Interval",
@@ -889,7 +889,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetAutosaveIntervalMenuItem_Click(object sender, EventArgs e)
 		{
-			using InputPrompt prompt = new InputPrompt
+			using InputPrompt prompt = new()
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Autosave Interval in seconds\nSet to 0 to disable",
@@ -971,7 +971,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Exceptions in PatternsForm are not caught by the debugger, I have no idea why.
 			// Exceptions in UndoForm are caught, which makes it weirder.
-			PatternsForm pForm = new PatternsForm(this) { Owner = this };
+			PatternsForm pForm = new(this) { Owner = this };
 			pForm.Show();
 		}
 
@@ -1003,7 +1003,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CommentsMenuItem_Click(object sender, EventArgs e)
 		{
-			EditCommentsForm form = new EditCommentsForm(CurrentTasMovie, false);
+			EditCommentsForm form = new(CurrentTasMovie, false);
 			form.Show();
 		}
 
@@ -1121,13 +1121,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColorSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using TAStudioColorSettingsForm colorSettings = new TAStudioColorSettingsForm(Palette, p => Settings.Palette = p);
+			using TAStudioColorSettingsForm colorSettings = new(Palette, p => Settings.Palette = p);
 			this.ShowDialogAsChild(colorSettings);
 		}
 
 		private void WheelScrollSpeedMenuItem_Click(object sender, EventArgs e)
 		{
-			InputPrompt inputPrompt = new InputPrompt
+			InputPrompt inputPrompt = new()
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Frames per tick:",
@@ -1169,7 +1169,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var column in columns)
 			{
-				ToolStripMenuItem menuItem = new ToolStripMenuItem
+				ToolStripMenuItem menuItem = new()
 				{
 					Text = $"{column.Text} ({column.Name})",
 					Checked = column.Visible,
@@ -1238,7 +1238,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (keysMenus.Length > 0)
 			{
-				ToolStripMenuItem item = new ToolStripMenuItem("Show Keys")
+				ToolStripMenuItem item = new("Show Keys")
 				{
 					CheckOnClick = true,
 					Checked = false
@@ -1267,7 +1267,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (playerMenus[i].HasDropDownItems)
 				{
-					ToolStripMenuItem item = new ToolStripMenuItem($"Show Player {i}")
+					ToolStripMenuItem item = new($"Show Player {i}")
 					{
 						CheckOnClick = true,
 						Checked = playerMenus[i].DropDownItems.OfType<ToolStripMenuItem>().Any(mi => mi.Checked)

@@ -76,7 +76,7 @@ namespace BizHawk.Client.Common
 
 		public static LuaSandbox CreateSandbox(LuaThread thread, string initialDirectory)
 		{
-			LuaSandbox sandbox = new LuaSandbox();
+			LuaSandbox sandbox = new();
 			SandboxForThread.Add(thread, sandbox);
 			sandbox.SetSandboxCurrentDirectory(initialDirectory);
 			return sandbox;

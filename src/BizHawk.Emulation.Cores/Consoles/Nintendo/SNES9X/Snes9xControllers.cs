@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 			private static int ButtonOrder(string btn)
 			{
-				Dictionary<string, int> order = new Dictionary<string, int>
+				Dictionary<string, int> order = new()
 				{
 					["0Up"] = 0, ["0Down"] = 1, ["0Left"] = 2, ["0Right"] = 3, ["0Select"] = 4, ["0Start"] = 5, ["0Y"] = 6, ["0B"] = 7, ["0X"] = 8, ["0A"] = 9
 					, ["0L"] = 10, ["0R"] = 11

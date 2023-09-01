@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 				subMenu.DropDownItems.Add(new ToolStripSeparatorEx());
 			}
 
-			ToolStripMenuItem closeMenuItem = new ToolStripMenuItem
+			ToolStripMenuItem closeMenuItem = new()
 			{
 				Name = "CloseBtn",
 				Text = "&Close",
@@ -277,7 +277,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (dest == null)
 					{
-						ToolStripMenuItem submenu = new ToolStripMenuItem("&Settings");
+						ToolStripMenuItem submenu = new("&Settings");
 						ms.Items.Add(submenu);
 						dest = submenu.DropDownItems;
 					}
@@ -558,7 +558,7 @@ namespace BizHawk.Client.EmuHawk
 				_owner.CheatList.NewList(GenerateDefaultCheatFilename(), autosave: true);
 			}
 
-			List<IToolForm> unavailable = new List<IToolForm>();
+			List<IToolForm> unavailable = new();
 
 			foreach (var tool in _tools)
 			{
@@ -825,7 +825,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			string path = _config.PathEntries.CheatsAbsolutePath(_game.System);
 
-			FileInfo f = new FileInfo(path);
+			FileInfo f = new(path);
 			if (f.Directory != null && f.Directory.Exists == false)
 			{
 				f.Directory.Create();

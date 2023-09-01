@@ -168,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 				_ffmpeg.CancelErrorRead();
 			}
 
-			StringBuilder s = new StringBuilder();
+			StringBuilder s = new();
 			s.Append(_commandline);
 			s.Append('\n');
 			while (_stderr.Count > 0)
@@ -212,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!FFmpegService.QueryServiceAvailable())
 			{
-				using FFmpegDownloaderForm form = new FFmpegDownloaderForm();
+				using FFmpegDownloaderForm form = new();
 				_dialogParent.ShowDialogWithTempMute(form);
 				if (!FFmpegService.QueryServiceAvailable()) return null;
 			}

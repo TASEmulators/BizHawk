@@ -92,8 +92,8 @@ namespace BizHawk.Emulation.Cores.Components.ARM
 
 		public string DisassembleStuff(uint addr, uint opcode)
 		{
-			Darm_T d = new Darm_T();
-			Darm_Str_T s = new Darm_Str_T();
+			Darm_T d = new();
+			Darm_Str_T s = new();
 			if (!Disassemble(d, (ushort)opcode, (ushort)(opcode >> 16), addr))
 				return null;
 			if (Str(d, s, false))

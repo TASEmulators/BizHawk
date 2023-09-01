@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns>false if user canceled; true if user consented</returns>
 		public static bool DoCompressionDlg(ref int threads, ref int compLevel, int tMin, int tMax, int cMin, int cMax, IWin32Window hwnd)
 		{
-			JmdForm j = new JmdForm
+			JmdForm j = new()
 			{
 				threadsBar = { Minimum = tMin, Maximum = tMax },
 				compressionBar = { Minimum = cMin, Maximum = cMax }

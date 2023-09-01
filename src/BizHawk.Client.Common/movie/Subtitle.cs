@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder("subtitle ");
+			StringBuilder sb = new("subtitle ");
 			sb
 				.Append(Frame).Append(' ')
 				.Append(X).Append(' ')
@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 
 		public string ToSubRip(int index, double fps, bool addColorTag)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			sb.Append(index);
 			sb.Append("\r\n");

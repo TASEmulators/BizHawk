@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			const MemoryDomain.Endian le = MemoryDomain.Endian.Little;
 
-			List<MemoryDomain> mm = new List<MemoryDomain>
+			List<MemoryDomain> mm = new()
 			{
 				(_iwram = new MemoryDomainIntPtr("IWRAM", le, IntPtr.Zero, 32 * 1024, true, 4)),
 				(_ewram = new MemoryDomainIntPtr("EWRAM", le, IntPtr.Zero, 256 * 1024, true, 4)),

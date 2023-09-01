@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <exception cref="InvalidOperationException">first track of <see cref="TOCRaw"/> is not <c>1</c></exception>
 		public void Run()
 		{
-			DiscSectorReader dsr = new DiscSectorReader(IN_Disc) { Policy = { DeterministicClearBuffer = false } };
+			DiscSectorReader dsr = new(IN_Disc) { Policy = { DeterministicClearBuffer = false } };
 
 			//add a lead-in track
 			Tracks.Add(new()
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.DiscSystem
 			for (int i = TOCRaw.FirstRecordedTrackNumber; i <= TOCRaw.LastRecordedTrackNumber; i++)
 			{
 				var item = TOCRaw.TOCItems[i];
-				DiscTrack track = new DiscTrack
+				DiscTrack track = new()
 				{
 					Number = i,
 					Control = item.Control,

@@ -55,9 +55,9 @@ namespace BizHawk.Common
 			src.Seek(-4, SeekOrigin.End);
 			src.Read(tmp, 0, 4);
 			src.Seek(0, SeekOrigin.Begin);
-			using GZipStream gs = new GZipStream(src, CompressionMode.Decompress, true);
+			using GZipStream gs = new(src, CompressionMode.Decompress, true);
 			byte[] data = new byte[BitConverter.ToInt32(tmp, 0)];
-			using MemoryStream ms = new MemoryStream(data);
+			using MemoryStream ms = new(data);
 			gs.CopyTo(ms);
 			return data;
 		}
@@ -134,7 +134,7 @@ namespace BizHawk.Common
 				if (c is >= 'a' and <= 'f') return c - 0x57;
 				throw new ArgumentException(message: "not a hex digit", paramName: nameof(c));
 			}
-			using MemoryStream ms = new MemoryStream();
+			using MemoryStream ms = new();
 			for (int i = 0, l = str.Length / 2; i != l; i++) ms.WriteByte((byte) ((CharToNybble(str[2 * i]) << 4) + CharToNybble(str[2 * i + 1])));
 			return ms.ToArray();
 		}

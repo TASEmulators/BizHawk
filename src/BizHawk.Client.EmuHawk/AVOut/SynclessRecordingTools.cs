@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			int width, height;
-			using(Bitmap bmp = new Bitmap(_mFrameInfos[0].PngPath))
+			using(Bitmap bmp = new(_mFrameInfos[0].PngPath))
 			{
 				width = bmp.Width;
 				height = bmp.Height;
@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 				initFileName: initFileName);
 			if (result is null) return;
 
-			using AviWriter avw = new AviWriter(this);
+			using AviWriter avw = new(this);
 			avw.SetAudioParameters(44100, 2, 16); // hacky
 			avw.SetMovieParameters(60, 1); // hacky
 			avw.SetVideoParameters(width, height);
@@ -129,17 +129,17 @@ namespace BizHawk.Client.EmuHawk
 			avw.OpenFile(result);
 			foreach (var fi in _mFrameInfos)
 			{
-				using (BitmapBuffer bb = new BitmapBuffer(fi.PngPath, new BitmapLoadOptions()))
+				using (BitmapBuffer bb = new(fi.PngPath, new BitmapLoadOptions()))
 				{
-					BitmapBufferVideoProvider bbvp = new BitmapBufferVideoProvider(bb);
+					BitmapBufferVideoProvider bbvp = new(bb);
 					avw.AddFrame(bbvp);
 				}
 
 				// offset = 44 dec
 				byte[] wavBytes = File.ReadAllBytes(fi.WavPath);
-				MemoryStream ms = new MemoryStream(wavBytes) { Position = 44 };
-				BinaryReader br = new BinaryReader(ms);
-				List<short> sampleData = new List<short>();
+				MemoryStream ms = new(wavBytes) { Position = 44 };
+				BinaryReader br = new(ms);
+				List<short> sampleData = new();
 				while (br.BaseStream.Position != br.BaseStream.Length)
 				{
 					sampleData.Add(br.ReadInt16());

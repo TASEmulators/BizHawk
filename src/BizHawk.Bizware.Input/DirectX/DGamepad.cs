@@ -60,7 +60,7 @@ namespace BizHawk.Bizware.Input
 #endif
 					joystick.Acquire();
 
-					DGamepad p = new DGamepad(joystick, Devices.Count);
+					DGamepad p = new(joystick, Devices.Count);
 					Devices.Add(p);
 				}
 			}
@@ -261,7 +261,7 @@ namespace BizHawk.Bizware.Input
 			// my first clue that it doesn't work is that LEFT  and RIGHT _AREN'T USED_
 			// I should just look for C++ examples instead of trying to look for SlimDX examples
 
-			EffectParameters parameters = new EffectParameters
+			EffectParameters parameters = new()
 			{
 				Duration = 0x2710,
 				Gain = 0x2710,

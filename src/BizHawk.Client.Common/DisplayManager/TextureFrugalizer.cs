@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 
 		public Texture2d Get(IDisplaySurface ds)
 		{
-			using BitmapBuffer bb = new BitmapBuffer(ds.PeekBitmap(), new BitmapLoadOptions());
+			using BitmapBuffer bb = new(ds.PeekBitmap(), new BitmapLoadOptions());
 			return Get(bb);
 		}
 		public Texture2d Get(BitmapBuffer bb)

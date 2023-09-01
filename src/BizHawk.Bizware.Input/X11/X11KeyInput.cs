@@ -74,7 +74,7 @@ namespace BizHawk.Bizware.Input
 					_ = XQueryKeymap(Display, keys);
 				}
 
-				List<KeyEvent> eventList = new List<KeyEvent>();
+				List<KeyEvent> eventList = new();
 				for (int keycode = 0; keycode < 256; keycode++)
 				{
 					bool keystate = (keys[keycode >> 3] >> (keycode & 0x07) & 0x01) != 0;
@@ -106,7 +106,7 @@ namespace BizHawk.Bizware.Input
 
 					for (int i = keyboard->min_key_code; i <= keyboard->max_key_code; i++)
 					{
-						string name = new string(keyboard->names->keys[i].name, 0, 4);
+						string name = new(keyboard->names->keys[i].name, 0, 4);
 						var key = name switch
 						{
 							"TLDE" => DistinctKey.OemTilde,
@@ -201,7 +201,7 @@ namespace BizHawk.Bizware.Input
 					}
 					else
 					{
-						XKeyEvent e = new XKeyEvent
+						XKeyEvent e = new()
 						{
 							display = Display,
 							keycode = i,

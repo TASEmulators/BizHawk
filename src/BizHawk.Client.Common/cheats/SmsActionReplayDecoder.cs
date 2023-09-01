@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common.cheats
 				return new InvalidCheatCode("Action Replay Codes must be 9 characters with a dash after the third character");
 			}
 
-			DecodeResult result = new DecodeResult { Size = WatchSize.Byte };
+			DecodeResult result = new() { Size = WatchSize.Byte };
 
 			string s = code.Remove(0, 2);
 			string ramAddress = s.Remove(4, 2).Replace("-", "");

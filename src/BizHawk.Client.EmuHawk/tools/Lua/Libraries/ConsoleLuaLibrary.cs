@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("getluafunctionslist", "returns a list of implemented functions")]
 		public string GetLuaFunctionsList()
 		{
-			StringBuilder list = new StringBuilder();
+			StringBuilder list = new();
 			foreach (var function in _luaLibsImpl.Docs)
 			{
 				list.AppendLine(function.Name);
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			void SerializeAndWrite(object output)
 				=> sb.Append(output switch

@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		{
 			if (_cachedSettingsInfo is null)
 			{
-				using Saturnus n = new Saturnus(comm);
+				using Saturnus n = new(comm);
 				n.InitForSettingsInfo("ss.wbx");
 				_cachedSettingsInfo = n.SettingsInfo.Clone();
 			}
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		{
 			if (lp.Roms.Count > 0)
 				throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");
-			Dictionary<string, FirmwareID> firmwares = new Dictionary<string, FirmwareID>
+			Dictionary<string, FirmwareID> firmwares = new()
 			{
 				{ "FIRMWARE:$J", new("SAT", "J") },
 				{ "FIRMWARE:$U", new("SAT", "U") },
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				devCount -= 5;
 			if (SettingsQuery("ss.input.sport2.multitap") != "1")
 				devCount -= 5;
-			HashSet<string> ret = new HashSet<string>();
+			HashSet<string> ret = new();
 			for (int i = 1; i <= 12; i++)
 			{
 				if (i > devCount)

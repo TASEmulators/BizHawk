@@ -58,7 +58,7 @@ namespace BizHawk.BizInvoke
 		/// <returns></returns>
 		public static int ComputeStringOffset()
 		{
-			string s = new string(Array.Empty<char>());
+			string s = new(Array.Empty<char>());
 			int ret;
 			fixed(char* fx = s)
 			{
@@ -92,7 +92,7 @@ namespace BizHawk.BizInvoke
 		public static int ComputeObjectArrayElementOffset()
 		{
 			object[] obj = new object[4];
-			DynamicMethod method = new DynamicMethod("ComputeObjectArrayElementOffsetHelper", typeof(int), new[] { typeof(object[]) }, typeof(string).Module, true);
+			DynamicMethod method = new("ComputeObjectArrayElementOffsetHelper", typeof(int), new[] { typeof(object[]) }, typeof(string).Module, true);
 			var il = method.GetILGenerator();
 			var local = il.DeclareLocal(typeof(object[]), true);
 			il.Emit(OpCodes.Ldarg_0);
@@ -122,7 +122,7 @@ namespace BizHawk.BizInvoke
 			}
 
 			object obj = FormatterServices.GetUninitializedObject(fi.DeclaringType);
-			DynamicMethod method = new DynamicMethod("ComputeFieldOffsetHelper", typeof(int), new[] { typeof(object) }, typeof(string).Module, true);
+			DynamicMethod method = new("ComputeFieldOffsetHelper", typeof(int), new[] { typeof(object) }, typeof(string).Module, true);
 			var il = method.GetILGenerator();
 			var local = il.DeclareLocal(fi.DeclaringType, true);
 			il.Emit(OpCodes.Ldarg_0);

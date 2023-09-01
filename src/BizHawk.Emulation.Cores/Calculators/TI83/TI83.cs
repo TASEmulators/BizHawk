@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 		[CoreConstructor(VSystemID.Raw.TI83)]
 		public TI83(CoreLoadParameters<TI83CommonSettings, object> lp)
 		{
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 			PutSettings(lp.Settings ?? new TI83CommonSettings());
 

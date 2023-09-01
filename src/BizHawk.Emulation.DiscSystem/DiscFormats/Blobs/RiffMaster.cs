@@ -251,7 +251,7 @@ namespace BizHawk.Emulation.DiscSystem
 				subchunks.Clear();
 				foreach (var (subchunkTag, s) in dictionary)
 				{
-					RiffSubchunk rs = new RiffSubchunk
+					RiffSubchunk rs = new()
 					{
 						tag = subchunkTag,
 						Source = new MemoryStream(System.Text.Encoding.ASCII.GetBytes(s)),
@@ -287,7 +287,7 @@ namespace BizHawk.Emulation.DiscSystem
 				throw new FormatException("chunk too big");
 			if (tag is "RIFF" or "LIST")
 			{
-				RiffContainer rc = new RiffContainer
+				RiffContainer rc = new()
 				{
 					tag = tag,
 					type = ReadTag(br)
@@ -301,7 +301,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 			else
 			{
-				RiffSubchunk rsc = new RiffSubchunk
+				RiffSubchunk rsc = new()
 				{
 					tag = tag,
 					Source = br.BaseStream,

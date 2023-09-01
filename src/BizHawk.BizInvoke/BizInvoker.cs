@@ -93,7 +93,7 @@ namespace BizHawk.BizInvoke
 
 		static BizInvoker()
 		{
-			AssemblyName aname = new AssemblyName("BizInvokeProxyAssembly");
+			AssemblyName aname = new("BizInvokeProxyAssembly");
 			ImplAssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
 			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizInvokerModule");
 			ClassFieldOffset = BizInvokerUtilities.ComputeClassFirstFieldOffset();
@@ -174,7 +174,7 @@ namespace BizHawk.BizInvoke
 			}
 
 			// hooks that will be run on the created proxy object
-			List<Action<object, IImportResolver, ICallingConventionAdapter>> postCreateHooks = new List<Action<object, IImportResolver, ICallingConventionAdapter>>();
+			List<Action<object, IImportResolver, ICallingConventionAdapter>> postCreateHooks = new();
 
 			var type = ImplModuleBuilder.DefineType($"Bizhawk.BizInvokeProxy{baseType.Name}", TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, baseType);
 
@@ -331,7 +331,7 @@ namespace BizHawk.BizInvoke
 		{
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
-			List<ParameterLoadInfo> paramLoadInfos = new List<ParameterLoadInfo>();
+			List<ParameterLoadInfo> paramLoadInfos = new();
 			var returnType = baseMethod.ReturnType;
 			if (returnType != typeof(void) && !returnType.IsPrimitive && !returnType.IsPointer && !returnType.IsEnum)
 			{

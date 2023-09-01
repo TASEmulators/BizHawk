@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 			// quickly check if the user is running this as a 32 bit process somehow
 			if (!Environment.Is64BitProcess)
 			{
-				using (ExceptionBox box = new ExceptionBox($"EmuHawk requires a 64 bit environment in order to run! EmuHawk will now close.")) box.ShowDialog();
+				using (ExceptionBox box = new($"EmuHawk requires a 64 bit environment in order to run! EmuHawk will now close.")) box.ShowDialog();
 				Process.GetCurrentProcess().Kill();
 				return;
 			}
@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 				// some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
 				// We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
 				static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
-				Queue<DirectoryInfo> todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
+				Queue<DirectoryInfo> todo = new(new[] { new DirectoryInfo(dllDir) });
 				while (todo.Count != 0)
 				{
 					var di = todo.Dequeue();
@@ -232,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 							new ExceptionBox(new Exception($"Initialization of OpenGL Display Method failed; falling back to {Name}")).ShowDialog();
 							return TryInitIGL(initialConfig.DispMethod = Method);
 						}
-						IGL_OpenGL igl = new IGL_OpenGL();
+						IGL_OpenGL igl = new();
 						// need to have a context active for checking renderer, will be disposed afterwards
 						using (new SDL2OpenGLContext(3, 0, false, false))
 						{

@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public void Load(string wavePath)
 		{
-			FileStream stream = new FileStream(wavePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+			FileStream stream = new(wavePath, FileMode.Open, FileAccess.Read, FileShare.Read);
 			Load(stream);
 		}
 
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.DiscSystem
 			try
 			{
 				RiffSource = null;
-				RiffMaster rm = new RiffMaster();
+				RiffMaster rm = new();
 				rm.LoadStream(stream);
 				RiffSource = rm;
 

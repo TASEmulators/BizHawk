@@ -389,7 +389,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private static string DisassembleRegisterList0(uint registers)
 		{
-			StringBuilder str = new StringBuilder();
+			StringBuilder str = new();
 			int count = 0;
 			bool snip = false;
 			for (int i = 0; i < 8; i++)
@@ -444,7 +444,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private static string DisassembleRegisterList1(uint registers)
 		{
-			StringBuilder str = new StringBuilder();
+			StringBuilder str = new();
 			int count = 0;
 			bool snip = false;
 			for (int i = 0; i < 8; i++)

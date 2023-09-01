@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 
 		public bool Load(string path, bool disableOnLoad)
 		{
-			FileInfo file = new FileInfo(path);
+			FileInfo file = new(path);
 			if (!file.Exists)
 			{
 				return false;
@@ -104,8 +104,8 @@ namespace BizHawk.Client.Common
 
 		public void Save(string path)
 		{
-			using StreamWriter sw = new StreamWriter(path);
-			StringBuilder sb = new StringBuilder();
+			using StreamWriter sw = new(path);
+			StringBuilder sb = new();
 			string saveDirectory = Path.GetDirectoryName(Path.GetFullPath(path));
 			foreach (var file in this)
 			{

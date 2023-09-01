@@ -364,7 +364,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public override ZXSpectrum.CDLResult ReadCDL(ushort addr)
         {
-			ZXSpectrum.CDLResult result = new ZXSpectrum.CDLResult();
+			ZXSpectrum.CDLResult result = new();
 
             int divisor = addr / 0x4000;
             result.Address = addr % 0x4000;

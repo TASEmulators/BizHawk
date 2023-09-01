@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var rc = ClientRectangle;
 				StringFormat fmt = new(StringFormat.GenericTypographic);
-				using SolidBrush br = new SolidBrush(ForeColor);
+				using SolidBrush br = new(ForeColor);
 				e.Graphics.DrawString(this.Text, this.Font, br, rc, fmt);
 			}
 		}

@@ -71,9 +71,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_cdTocCallback = CDTOCCallback;
 			_cdSectorCallback = CDSectorCallback;
 
-			List<string> filesToRemove = new List<string>();
+			List<string> filesToRemove = new();
 
-			LibNymaCore.FrontendFirmwareNotify firmwareDelegate = new LibNymaCore.FrontendFirmwareNotify((name) =>
+			LibNymaCore.FrontendFirmwareNotify firmwareDelegate = new((name) =>
 			{
 				if (firmwares != null && firmwares.TryGetValue(name, out var id))
 				{
@@ -237,7 +237,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (controller.IsPressed("Close Tray"))
 				flags |= LibNymaCore.BizhawkFlags.CloseTray;
 
-			LibNymaCore.FrameInfo ret = new LibNymaCore.FrameInfo
+			LibNymaCore.FrameInfo ret = new()
 			{
 				Flags = flags,
 				Command = controller.IsPressed("Power")
@@ -286,7 +286,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private List<string> GetLayerData()
 		{
-			List<string> ret = new List<string>();
+			List<string> ret = new();
 			byte* p = _nyma.GetLayerData();
 			if (p == null)
 				return ret;

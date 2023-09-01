@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 				} while (_multiHasNext);
 				if (OnProgress != null)
 				{
-					ProgressEventArgs e = new ProgressEventArgs(i + 1, _files.Count);
+					ProgressEventArgs e = new(i + 1, _files.Count);
 					OnProgress(this, e);
 					if (e.ShouldCancel)
 					{
@@ -154,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_current.Game = _ldr.Game;
 				_current.CoreType = emu.GetType();
-				Controller controller = new Controller(emu.ControllerDefinition);
+				Controller controller = new(emu.ControllerDefinition);
 				_current.BoardName = emu.HasBoardInfo() ? emu.AsBoardInfo().BoardName : null;
 
 				_current.Frames = 0;

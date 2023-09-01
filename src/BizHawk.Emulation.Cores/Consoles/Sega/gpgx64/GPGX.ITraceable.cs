@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				uint pc = (uint)regs["M68K PC"].Value;
 				string disasm = Disassembler.Disassemble(MemoryDomains.SystemBus, pc & 0xFFFFFF, out _);
 
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 
 				foreach (var r in regs)
 				{

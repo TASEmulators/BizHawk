@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var coreComm = _createCoreComm();
-				using LibretroHost retro = new LibretroHost(coreComm, _game, core, true);
+				using LibretroHost retro = new(coreComm, _game, core, true);
 				btnLibretroLaunchGame.Enabled = true;
 				if (retro.Description.SupportsNoGame)
 					btnLibretroLaunchNoGame.Enabled = true;
@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnLibretroLaunchGame_Click(object sender, EventArgs e)
 		{
-			List<FilesystemFilter> entries = new List<FilesystemFilter> { new FilesystemFilter("ROMs", _currentDescription.ValidExtensions.Split('|')) };
+			List<FilesystemFilter> entries = new() { new FilesystemFilter("ROMs", _currentDescription.ValidExtensions.Split('|')) };
 			if (!_currentDescription.NeedsArchives) entries.Add(FilesystemFilter.Archives); // "needs archives" means the relevant archive extensions are already in the list, and we shouldn't scan archives for roms
 			SuggestedExtensionFilter = new(entries.ToArray());
 			Result = AdvancedRomLoaderType.LibretroLaunchGame;

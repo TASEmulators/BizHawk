@@ -257,7 +257,7 @@ namespace BizHawk.Emulation.DiscSystem
 					TrackType = CUE.CueTrackType.Mode1_2352;
 			}
 
-			CUE.SS_Gap ss_gap = new CUE.SS_Gap
+			CUE.SS_Gap ss_gap = new()
 			{
 				Policy = Policy,
 				sq = sq,

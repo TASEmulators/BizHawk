@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			uint* regs = (uint*)r;
 			uint pc = regs![16] & 0xFFFFFF;
 			string disasm = _disassembler.DisassembleM68K(this.AsMemoryDomains().SystemBus, pc, out _);
-			StringBuilder regInfo = new StringBuilder(216);
+			StringBuilder regInfo = new(216);
 			for (int i = 0; i < 8; i++)
 			{
 				regInfo.Append($"D{i}:{regs[i]:X8} ");
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			uint* regs = (uint*)r;
 			pc &= 0xFFFFFF;
 			string disasm = _disassembler.DisassembleRISC(true, this.AsMemoryDomains().SystemBus, pc, out _);
-			StringBuilder regInfo = new StringBuilder(411);
+			StringBuilder regInfo = new(411);
 			for (int i = 0; i < 32; i++)
 			{
 				regInfo.Append($"r{i}:{regs![i]:X8} ");
@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			uint* regs = (uint*)r;
 			pc &= 0xFFFFFF;
 			string disasm = _disassembler.DisassembleRISC(false, this.AsMemoryDomains().SystemBus, pc, out _);
-			StringBuilder regInfo = new StringBuilder(411);
+			StringBuilder regInfo = new(411);
 			for (int i = 0; i < 32; i++)
 			{
 				regInfo.Append($"r{i}:{regs![i]:X8} ");

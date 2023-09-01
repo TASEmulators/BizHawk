@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public void SaveStateText(TextWriter writer)
 		{
-			TextState<TextStateData> s = new TextState<TextStateData>();
+			TextState<TextStateData> s = new();
 			s.Prepare();
 			var ff = s.GetFunctionPointersSave();
 			LibLynx.TxtStateSave(Core, ref ff);

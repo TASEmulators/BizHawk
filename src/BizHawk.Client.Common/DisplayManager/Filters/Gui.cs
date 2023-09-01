@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common.Filters
 				// apply the zooming algorithm (pasted and reworked, for now)
 				// ALERT COPYPASTE LAUNDROMAT
 
-				Vector2 AR = new Vector2(virtualWidth / (float) textureWidth, virtualHeight / (float) textureHeight);
+				Vector2 AR = new(virtualWidth / (float) textureWidth, virtualHeight / (float) textureHeight);
 				float targetPar = AR.X / AR.Y;
 				var PS = Vector2.One; // this would malfunction for AR <= 0.5 or AR >= 2.0
 
@@ -349,7 +349,7 @@ namespace BizHawk.Client.Common.Filters
 		public override void SetInputFormat(string channel, SurfaceState state)
 		{
 			CrunchNumbers();
-			SurfaceState ss = new SurfaceState(new(outputSize), SurfaceDisposition.RenderTarget);
+			SurfaceState ss = new(new(outputSize), SurfaceDisposition.RenderTarget);
 			DeclareOutput(ss, channel);
 		}
 
@@ -462,8 +462,8 @@ namespace BizHawk.Client.Common.Filters
 			{
 				var rect = _citra.TouchScreenRectangle;
 				bool rotated = _citra.TouchScreenRotated;
-				float bufferWidth = (float)_citra.AsVideoProvider().BufferWidth;
-				float bufferHeight = (float)_citra.AsVideoProvider().BufferHeight;
+				float bufferWidth = _citra.AsVideoProvider().BufferWidth;
+				float bufferHeight = _citra.AsVideoProvider().BufferHeight;
 
 				// reset the point's origin to the top left of the screen
 				point.X -= rect.X;
@@ -692,7 +692,7 @@ namespace BizHawk.Client.Common.Filters
 			var outputSize = state.SurfaceFormat.Size;
 			outputSize.Width *= Scale;
 			outputSize.Height *= Scale;
-			SurfaceState ss = new SurfaceState(new(outputSize), SurfaceDisposition.RenderTarget);
+			SurfaceState ss = new(new(outputSize), SurfaceDisposition.RenderTarget);
 			DeclareOutput(ss, channel);
 		}
 
@@ -807,7 +807,7 @@ namespace BizHawk.Client.Common.Filters
 			var size = FindInput().SurfaceFormat.Size;
 			
 			FilterProgram.GuiRenderer.Begin(size.Width, size.Height);
-			OSDBlitter blitter = new OSDBlitter(_font, FilterProgram.GuiRenderer, new(0, 0, size.Width, size.Height));
+			OSDBlitter blitter = new(_font, FilterProgram.GuiRenderer, new(0, 0, size.Width, size.Height));
 			FilterProgram.GuiRenderer.EnableBlending();
 			_manager.DrawScreenInfo(blitter);
 			_manager.DrawMessages(blitter);

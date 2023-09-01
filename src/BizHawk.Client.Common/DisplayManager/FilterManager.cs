@@ -164,7 +164,7 @@ namespace BizHawk.Client.Common.FilterManager
 			}
 
 			bool obtainedFirstOutput = false;
-			SurfaceState currState = new SurfaceState(null);
+			SurfaceState currState = new(null);
 
 			for (int i = 0; i < Filters.Count; i++)
 			{
@@ -193,7 +193,7 @@ namespace BizHawk.Client.Common.FilterManager
 						// (if so, insert a render filter)
 						case SurfaceDisposition.RenderTarget when currState.SurfaceDisposition == SurfaceDisposition.Texture:
 						{
-								Render renderer = new Render();
+							Render renderer = new();
 							Filters.Insert(i, renderer);
 							Compile(channel, inSize, outsize, finalTarget);
 							return;
@@ -202,7 +202,7 @@ namespace BizHawk.Client.Common.FilterManager
 						// (if so, the current render target gets resolved, and made no longer current
 						case SurfaceDisposition.Texture when currState.SurfaceDisposition == SurfaceDisposition.RenderTarget:
 						{
-								Resolve resolver = new Resolve();
+							Resolve resolver = new();
 							Filters.Insert(i, resolver);
 							Compile(channel, inSize, outsize, finalTarget);
 							return;
@@ -264,7 +264,7 @@ namespace BizHawk.Client.Common.FilterManager
 			// if the current output disposition is a texture, we need to render it
 			if (currState.SurfaceDisposition == SurfaceDisposition.Texture)
 			{
-				Render renderer = new Render();
+				Render renderer = new();
 				Filters.Insert(Filters.Count, renderer);
 				Compile(channel, inSize, outsize, finalTarget);
 				return;

@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			int y = 4;
 			foreach (string buttonName in buttonList)
 			{
-				AnalogBindControl ctrl = new AnalogBindControl(buttonName, _realConfigObject[buttonName])
+				AnalogBindControl ctrl = new(buttonName, _realConfigObject[buttonName])
 				{
 					Location = new Point(x, y)
 				};

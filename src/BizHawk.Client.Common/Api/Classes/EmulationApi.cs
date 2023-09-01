@@ -113,7 +113,7 @@ namespace BizHawk.Client.Common
 			{
 				if (DebuggableCore != null)
 				{
-					Dictionary<string, ulong> table = new Dictionary<string, ulong>();
+					Dictionary<string, ulong> table = new();
 					foreach (var (name, rv) in DebuggableCore.GetCpuFlagsAndRegisters()) table[name] = rv.Value;
 					return table;
 				}

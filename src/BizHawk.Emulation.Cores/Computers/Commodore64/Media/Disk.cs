@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			}
 			int[] result = new int[FluxEntriesPerTrack];
 			int lengthBits = (paddedLength * 8) - 7;
-			List<long> offsets = new List<long>();
+			List<long> offsets = new();
 			int remainingBits = lengthBits;
 
 			const long bitsNum = FluxEntriesPerTrack * FluxBitsPerEntry;

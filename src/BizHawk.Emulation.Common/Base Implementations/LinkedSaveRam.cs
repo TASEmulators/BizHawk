@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Common
 
 		public byte[] CloneSaveRam()
 		{
-			List<byte[]> linkedBuffers = new List<byte[]>();
+			List<byte[]> linkedBuffers = new();
 			int len = 0;
 			for (int i = 0; i < _numCores; i++)
 			{

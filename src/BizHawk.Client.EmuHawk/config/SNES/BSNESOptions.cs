@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			BsnesCore.SnesSettings s = (BsnesCore.SnesSettings) settable.GetSettings();
 			BsnesCore.SnesSyncSettings ss = (BsnesCore.SnesSyncSettings) settable.GetSyncSettings();
-			using BSNESOptions dlg = new BSNESOptions(s, ss)
+			using BSNESOptions dlg = new(s, ss)
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
 				CropSGBFrame = s.CropSGBFrame,

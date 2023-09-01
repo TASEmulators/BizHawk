@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 			//   exposure is ignored
 
 			// The page received image
-			Bitmap page = new Bitmap(PaperWidth, height);
+			Bitmap page = new(PaperWidth, height);
 
 			var bmp = page.LockBits(new Rectangle(0, 0, PaperWidth, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 			using (Graphics g = Graphics.FromImage(_printerHistory))
 			{
 				// Make it brown
-				ImageAttributes a = new ImageAttributes();
+				ImageAttributes a = new();
 				a.SetColorMatrix(_paperAdjustment);
 
 				g.DrawImage(page, new Rectangle(0, oldHeight + topMargin, page.Width, page.Height), 0F, 0F, page.Width, page.Height, GraphicsUnit.Pixel, a);
@@ -148,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ResizeHistory(int height)
 		{
 			// copy to a new image of height
-			Bitmap newHistory = new Bitmap(PaperWidth, height);
+			Bitmap newHistory = new(PaperWidth, height);
 			using (Graphics g = Graphics.FromImage(newHistory))
 			{
 				g.Clear(Color.FromArgb((int)PaperColor));

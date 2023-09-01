@@ -957,7 +957,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				yield return new ToolStripSeparator();
 
-				ToolStripMenuItem rotate = new ToolStripMenuItem
+				ToolStripMenuItem rotate = new()
 				{
 					Name = "RotateMenuItem",
 					Text = "Rotate",
@@ -1841,7 +1841,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns>The cell with row number and RollColumn reference, both of which can be null. </returns>
 		private Cell CalculatePointedCell(int x, int y)
 		{
-			Cell newCell = new Cell();
+			Cell newCell = new();
 			List<RollColumn> columns = AllColumns.VisibleColumns.ToList();
 
 			// If pointing to a column header

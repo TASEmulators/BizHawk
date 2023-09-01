@@ -247,7 +247,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				using StringContent content = new StringContent(post, Encoding.UTF8, "application/x-www-form-urlencoded");
+				using StringContent content = new(post, Encoding.UTF8, "application/x-www-form-urlencoded");
 				using var response = await _http.PostAsync(url, content).ConfigureAwait(false);
 				return response.IsSuccessStatusCode
 					? await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false)

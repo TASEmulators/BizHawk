@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 				foreach (string fieldName in fieldNames)
 				{
-					DriverSetting setting = new DriverSetting
+					DriverSetting setting = new()
 					{
 						Name = fieldName,
 						GameName = _gameShortName,
@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			string[] ROMs = ROMsInfo.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			string tempDefault = string.Empty;
 
-			DriverSetting setting = new DriverSetting
+			DriverSetting setting = new()
 			{
 				Name = "BIOS",
 				GameName = _gameShortName,

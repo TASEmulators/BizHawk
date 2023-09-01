@@ -504,7 +504,7 @@ namespace BizHawk.Client.Common
 
 				// The text isn't written out using GenericTypographic, so measuring it using GenericTypographic seemed to make it worse.
 				// And writing it out with GenericTypographic just made it uglier. :p
-				Font font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
+				Font font = new(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
 				Size sizeOfText = g.MeasureString(message, font, 0, new StringFormat(StringFormat.GenericDefault)).ToSize();
 
 				switch (horizalign?.ToLowerInvariant())
@@ -595,7 +595,7 @@ namespace BizHawk.Client.Common
 						break;
 				}
 				using var g = GetGraphics(surfaceID);
-				Font font = new Font(_displayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
+				Font font = new(_displayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
 				Size sizeOfText = g.MeasureString(message, font, width: 0, PixelTextFormat).ToSize();
 				if (backcolor.HasValue) g.FillRectangle(GetBrush(backcolor.Value), new Rectangle(new Point(x, y), sizeOfText + new Size(1, 0)));
 				g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
@@ -632,7 +632,7 @@ namespace BizHawk.Client.Common
 				y -= oy;
 			}
 
-			MessagePosition pos = new MessagePosition{ X = x, Y = y, Anchor = (MessagePosition.AnchorType)a };
+			MessagePosition pos = new() { X = x, Y = y, Anchor = (MessagePosition.AnchorType)a };
 			_displayManager.OSD.AddGuiText(message,  pos, Color.Black, forecolor ?? Color.White);
 		}
 

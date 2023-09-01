@@ -35,7 +35,7 @@ namespace BizHawk.Common
 		private static readonly Regex rxHasAudio = new(@"Stream \#(\d*(\.|\:)\d*)\: Audio", RegexOptions.Compiled);
 		public static AudioQueryResult QueryAudio(string path)
 		{
-			AudioQueryResult ret = new AudioQueryResult();
+			AudioQueryResult ret = new();
 			string stdout = Run("-i", path).Text;
 			ret.IsAudio = rxHasAudio.Matches(stdout).Count > 0;
 			return ret;
@@ -86,9 +86,9 @@ namespace BizHawk.Common
 			};
 			Mutex m = new();
 
-			StringBuilder outputBuilder = new StringBuilder();
-			TaskCompletionSource<bool> outputCloseEvent = new TaskCompletionSource<bool>();
-			TaskCompletionSource<bool> errorCloseEvent = new TaskCompletionSource<bool>();
+			StringBuilder outputBuilder = new();
+			TaskCompletionSource<bool> outputCloseEvent = new();
+			TaskCompletionSource<bool> errorCloseEvent = new();
 
 			proc.OutputDataReceived += (s, e) =>
 			{

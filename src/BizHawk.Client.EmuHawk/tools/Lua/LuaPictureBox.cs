@@ -165,7 +165,7 @@ namespace BizHawk.Client.EmuHawk
 		public void DrawImageRegion(string path, int sourceX, int sourceY, int sourceWidth, int sourceHeight, int destX, int destY, int? destWidth = null, int? destHeight = null)
 		{
 			var img = _imageCache.GetValueOrPut(path, Image.FromFile);
-			Rectangle destRect = new Rectangle(destX, destY, destWidth ?? sourceWidth, destHeight ?? sourceHeight);
+			Rectangle destRect = new(destX, destY, destWidth ?? sourceWidth, destHeight ?? sourceHeight);
 
 			Graphics boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawImage(img, destRect, sourceX, sourceY, sourceWidth, sourceHeight, GraphicsUnit.Pixel);
@@ -294,8 +294,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			StringFormat f = new StringFormat(StringFormat.GenericDefault);
-			Font font = new Font(family, fontSize ?? 12, fStyle, GraphicsUnit.Pixel);
+			StringFormat f = new(StringFormat.GenericDefault);
+			Font font = new(family, fontSize ?? 12, fStyle, GraphicsUnit.Pixel);
 			Graphics boxBackground = Graphics.FromImage(Image);
 
 			Size sizeOfText = boxBackground.MeasureString(message, font, 0, f).ToSize();

@@ -78,7 +78,7 @@ namespace BizHawk.Bizware.Audio
 							blockAlign: _sound.BlockAlign,
 							bitsPerSample: _sound.BytesPerSample * 8);
 
-						SoundBufferDescription desc = new SoundBufferDescription
+						SoundBufferDescription desc = new()
 						{
 							Format = format,
 							Flags =

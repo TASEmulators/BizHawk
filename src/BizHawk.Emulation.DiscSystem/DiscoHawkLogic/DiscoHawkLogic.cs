@@ -30,19 +30,19 @@ namespace BizHawk.Emulation.DiscSystem
 				sw.WriteLine("BEGIN COMPARE: {0}\nSRC {1} vs DST {2}", infile, loadDiscInterface, cmpif);
 
 				//reload the original disc, with new policies as needed
-				DiscMountJob dmj = new DiscMountJob(
+				DiscMountJob dmj = new(
 					fromPath: infile,
 					discMountPolicy: new DiscMountPolicy { CUE_PregapContradictionModeA = cmpif != DiscInterface.MednaDisc },
 					discInterface: loadDiscInterface);
 				dmj.Run();
 				srcDisc = dmj.OUT_Disc;
 
-				DiscMountJob dstDmj = new DiscMountJob(fromPath: infile, discInterface: cmpif);
+				DiscMountJob dstDmj = new(fromPath: infile, discInterface: cmpif);
 				dstDmj.Run();
 				dstDisc = dstDmj.OUT_Disc;
 
-				DiscSectorReader srcDsr = new DiscSectorReader(srcDisc);
-				DiscSectorReader dstDsr = new DiscSectorReader(dstDisc);
+				DiscSectorReader srcDsr = new(srcDisc);
+				DiscSectorReader dstDsr = new(dstDisc);
 
 				var srcToc = srcDisc.TOC;
 				var dstToc = dstDisc.TOC;
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 				void SwDumpChunk(int lba, int dispAddr, int addr, int count, int numOffenders)
 				{
-					HashSet<int> hashedOffenders = new HashSet<int>();
+					HashSet<int> hashedOffenders = new();
 					for (int i = 0; i < numOffenders; i++)
 					{
 						hashedOffenders.Add(offenders[i]);
@@ -224,8 +224,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private static List<string> FindCuesRecurse(string dir)
 		{
-			List<string> ret = new List<string>();
-			Queue<string> dpTodo = new Queue<string>();
+			List<string> ret = new();
+			Queue<string> dpTodo = new();
 			dpTodo.Enqueue(dir);
 			for (; ; )
 			{
@@ -268,7 +268,7 @@ namespace BizHawk.Emulation.DiscSystem
 			string dirArg = null;
 			string infile = null;
 			var loadDiscInterface = DiscInterface.BizHawk;
-			List<DiscInterface> compareDiscInterfaces = new List<DiscInterface>();
+			List<DiscInterface> compareDiscInterfaces = new();
 			bool hawk = false;
 			bool music = false;
 			bool overwrite = false;
@@ -328,8 +328,8 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				verbose = false;
 				var todo = FindCuesRecurse(dirArg);
-				ParallelOptions po = new ParallelOptions();
-				CancellationTokenSource cts = new CancellationTokenSource();
+				ParallelOptions po = new();
+				CancellationTokenSource cts = new();
 				po.CancellationToken = cts.Token;
 				po.MaxDegreeOfParallelism = 1;
 				if(po.MaxDegreeOfParallelism < 0) po.MaxDegreeOfParallelism = 1;
@@ -351,7 +351,7 @@ namespace BizHawk.Emulation.DiscSystem
 						if(!blocked)
 							foreach (var cmpif in compareDiscInterfaces)
 							{
-								StringWriter sw = new StringWriter();
+								StringWriter sw = new();
 								bool success = CompareFile(fp, loadDiscInterface, cmpif, verbose, cts, sw);
 								if (!success)
 								{
@@ -377,7 +377,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			if (compareDiscInterfaces.Count != 0)
 			{
-				StringWriter sw = new StringWriter();
+				StringWriter sw = new();
 				foreach (var cmpif in compareDiscInterfaces)
 				{
 					CompareFile(infile, loadDiscInterface, cmpif, verbose, null, sw);

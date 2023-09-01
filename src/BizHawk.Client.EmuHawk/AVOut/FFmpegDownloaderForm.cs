@@ -37,9 +37,9 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				using (ManualResetEvent evt = new ManualResetEvent(false))
+				using (ManualResetEvent evt = new(false))
 				{
-					using System.Net.WebClient client = new System.Net.WebClient();
+					using System.Net.WebClient client = new();
 					System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 					client.DownloadFileAsync(new Uri(FFmpegService.Url), fn);
 					client.DownloadProgressChanged += (object sender, System.Net.DownloadProgressChangedEventArgs e) =>
@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 
 				//try acquiring file
-				using (HawkFile hf = new HawkFile(fn))
+				using (HawkFile hf = new(fn))
 				{
 					using var exe = OSTailoredCode.IsUnixHost ? hf.BindArchiveMember("ffmpeg") : hf.BindFirstOf(".exe");
 					byte[] data = exe!.ReadAllBytes();
@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 			failed = false;
 			succeeded = false;
 			pct = 0;
-			Thread t = new Thread(ThreadProc);
+			Thread t = new(ThreadProc);
 			t.Start();
 		}
 

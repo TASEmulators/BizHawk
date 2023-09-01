@@ -284,8 +284,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		{
 			SaveDeltas(); // update the current deltas
 
-			using MemoryStream ms = new MemoryStream();
-			using BinaryWriter bw = new BinaryWriter(ms);
+			using MemoryStream ms = new();
+			using BinaryWriter bw = new(ms);
 			bw.Write(_usedDiskTracks.Length);
 			for (int i = 0; i < _usedDiskTracks.Length; i++)
 			{
@@ -301,8 +301,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
 		public void StoreSaveRam(byte[] data)
 		{
-			using MemoryStream ms = new MemoryStream(data, false);
-			using BinaryReader br = new BinaryReader(ms);
+			using MemoryStream ms = new(data, false);
+			using BinaryReader br = new(ms);
 
 			int ndisks = br.ReadInt32();
 			if (ndisks != _usedDiskTracks.Length)

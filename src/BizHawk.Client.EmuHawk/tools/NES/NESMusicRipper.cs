@@ -118,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// load template
 			XElement templateRoot;
-			using (ZipArchive zfTemplate = new ZipArchive(new FileStream(templatePath, FileMode.Open, FileAccess.Read), ZipArchiveMode.Read))
+			using (ZipArchive zfTemplate = new(new FileStream(templatePath, FileMode.Open, FileAccess.Read), ZipArchiveMode.Read))
 			{
 				var entry = zfTemplate.Entries.Single(entry => entry.FullName == "Song.xml");
 				using var stream = entry.Open();
@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 			var xPatternPool = xPatterns.Parent;
 			xPatterns.Remove();
 
-			StringWriter writer = new StringWriter();
+			StringWriter writer = new();
 			writer.WriteLine("<Patterns>");
 
 
@@ -411,7 +411,7 @@ namespace BizHawk.Client.EmuHawk
 			File.Delete(outPath);
 			File.Copy(templatePath, outPath);
 
-			using ZipArchive zfOutput = new ZipArchive(new FileStream(outPath, FileMode.Create, FileAccess.Write), ZipArchiveMode.Create);
+			using ZipArchive zfOutput = new(new FileStream(outPath, FileMode.Create, FileAccess.Write), ZipArchiveMode.Create);
 			using (var stream = zfOutput.CreateEntry("Song.xml").Open())
 			{
 				templateRoot.Save(stream);
@@ -446,7 +446,7 @@ namespace BizHawk.Client.EmuHawk
 			int noiseNote = FindNearestNote(noiseFreq);
 
 			// create the record
-			ApuState rec = new ApuState
+			ApuState rec = new()
 			{
 				Pulse0 =
 				{

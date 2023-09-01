@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		[CoreConstructor(VSystemID.Raw.A26)]
 		public Atari2600(GameInfo game, byte[] rom, Atari2600.A2600Settings settings, Atari2600.A2600SyncSettings syncSettings)
 		{
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 
 			_ram = new byte[128];
@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// here we advance past start up irregularities to see how long a frame is based on calls to Vsync
 			// we run 72 frames, then run 270 scanlines worth of cycles.
 			// if we don't hit a new frame, we can be pretty confident we are in PAL
-			using Atari2600 emu = new Atari2600(newGame, rom, null, null);
+			using Atari2600 emu = new(newGame, rom, null, null);
 			for (int i = 0; i < 72; i++)
 			{
 				emu.FrameAdvance(NullController.Instance, false, false);

@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 					gb3RomPtr = GetGBRomOrNull(2),
 					gb4RomPtr = GetGBRomOrNull(3)) 
 				{
-					LibAres64.LoadData loadData = new LibAres64.LoadData
+					LibAres64.LoadData loadData = new()
 					{
 						PifData = (IntPtr)pifPtr,
 						PifLen = pif.Length,
@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		private static ControllerDefinition CreateControllerDefinition(LibAres64.ControllerType[] controllerSettings)
 		{
-			ControllerDefinition ret = new ControllerDefinition("Nintendo 64 Controller");
+			ControllerDefinition ret = new("Nintendo 64 Controller");
 			for (int i = 0; i < 4; i++)
 			{
 				if (controllerSettings[i] == LibAres64.ControllerType.Mouse)
@@ -441,7 +441,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 			if (!systemCheck) return default;
 
-			ReadOnlySpan<byte> dataFormat = new ReadOnlySpan<byte>(disk, systemOffset, 0xE8);
+			ReadOnlySpan<byte> dataFormat = new(disk, systemOffset, 0xE8);
 
 			int diskIndex = 0;
 			byte[] ret = new byte[0x435B0C0];

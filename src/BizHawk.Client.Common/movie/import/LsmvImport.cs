@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -28,7 +27,7 @@ namespace BizHawk.Client.Common.movie.import
 			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.SubBsnes115;
 
 			// .LSMV movies are .zip files containing data files.
-			using FileStream fs = new FileStream(SourceFile.FullName, FileMode.Open, FileAccess.Read);
+			using FileStream fs = new(SourceFile.FullName, FileMode.Open, FileAccess.Read);
 			{
 				byte[] data = new byte[4];
 				fs.Read(data, 0, 4);
@@ -40,9 +39,9 @@ namespace BizHawk.Client.Common.movie.import
 				fs.Position = 0;
 			}
 
-			using ZipArchive zip = new ZipArchive(fs, ZipArchiveMode.Read, true);
+			using ZipArchive zip = new(fs, ZipArchiveMode.Read, true);
 
-			BsnesCore.SnesSyncSettings ss = new BsnesCore.SnesSyncSettings();
+			BsnesCore.SnesSyncSettings ss = new();
 
 			string platform = VSystemID.Raw.SNES;
 
@@ -92,7 +91,7 @@ namespace BizHawk.Client.Common.movie.import
 					string authors = Encoding.UTF8.GetString(stream.ReadAllBytes());
 					string authorList = "";
 					string authorLast = "";
-					using (StringReader reader = new StringReader(authors))
+					using (StringReader reader = new(authors))
 					{
 						// Each author is on a different line.
 						while (reader.ReadLine() is string line)
@@ -167,7 +166,7 @@ namespace BizHawk.Client.Common.movie.import
 					// Insert an empty frame in lsmv snes movies
 					// see https://github.com/TASEmulators/BizHawk/issues/721
 					Result.Movie.AppendFrame(EmptyLmsvFrame());
-					using (StringReader reader = new StringReader(input))
+					using (StringReader reader = new(input))
 					{
 						while(reader.ReadLine() is string line)
 						{
@@ -229,7 +228,7 @@ namespace BizHawk.Client.Common.movie.import
 				{
 					using var stream = item.Open();
 					string subtitles = Encoding.UTF8.GetString(stream.ReadAllBytes());
-					using StringReader reader = new StringReader(subtitles);
+					using StringReader reader = new(subtitles);
 					while (reader.ReadLine() is string line)
 					{
 						string subtitle = ImportTextSubtitle(line);

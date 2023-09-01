@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.DiscSystem.SBI
 		public static bool QuickCheckISSBI(string path)
 		{
 			using var fs = File.OpenRead(path);
-			BinaryReader br = new BinaryReader(fs);
+			BinaryReader br = new(fs);
 			string sig = br.ReadStringFixedUtf8(4);
 			return sig == "SBI\0";
 		}

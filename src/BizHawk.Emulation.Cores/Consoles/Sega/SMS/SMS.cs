@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		[CoreConstructor(VSystemID.Raw.GG)]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, SmsSettings settings, SmsSyncSettings syncSettings)
 		{
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 			Settings = settings ?? new SmsSettings();
 			SyncSettings = syncSettings ?? new SmsSyncSettings();

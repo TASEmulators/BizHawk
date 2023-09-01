@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			KeyStatus = new bool[8 * 10];
 
 			// nonmatrix keys (anything that hasnt already been taken)
-			List<string> nonMatrix = new List<string>();
+			List<string> nonMatrix = new();
 
 			foreach (string key in _machine.CPC.AmstradCPCControllerDefinition.BoolButtons)
 			{

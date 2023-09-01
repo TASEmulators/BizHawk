@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					label3.Text = "Status: Running...";
 					int numFrames = (int)numericUpDownFrames.Value;
-					List<string> files = new List<string>(listBox1.Items.Count);
+					List<string> files = new(listBox1.Items.Count);
 					foreach (string s in listBox1.Items)
 					{
 						files.Add(s);

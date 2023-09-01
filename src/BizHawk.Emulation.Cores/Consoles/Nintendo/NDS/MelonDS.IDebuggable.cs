@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			uint[] regs = new uint[2 * 16];
 			_core.GetRegs(regs);
 
-			Dictionary<string, RegisterValue> ret = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> ret = new();
 			for (int i = 0; i < 2; i++)
 			{
 				int ncpu = i == 0 ? 9 : 7;

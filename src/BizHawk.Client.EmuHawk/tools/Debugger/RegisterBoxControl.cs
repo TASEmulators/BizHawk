@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (_canSetCpuRegisters)
 				{
-					TextBox t = new TextBox
+					TextBox t = new()
 					{
 						Name = name,
 						Text = rv.Value.ToHexString(rv.BitSize / 4),
@@ -195,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (flags.Any())
 			{
-				Panel p = new Panel
+				Panel p = new()
 				{
 					Name = "FlagPanel",
 					Location = new Point(UIHelper.ScaleX(5), y),
@@ -206,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var (name, rv) in registers.Where(r => r.Value.BitSize == 1).OrderByDescending(x => x.Key))
 				{
-					CheckBox c = new CheckBox
+					CheckBox c = new()
 					{
 						Appearance = Appearance.Button,
 						Name = name,

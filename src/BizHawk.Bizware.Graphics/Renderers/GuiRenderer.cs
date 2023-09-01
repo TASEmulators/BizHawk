@@ -212,7 +212,7 @@ namespace BizHawk.Bizware.Graphics
 
 		private void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
-			Art art = new Art((ArtManager)null)
+			Art art = new((ArtManager)null)
 			{
 				Width = w,
 				Height = h

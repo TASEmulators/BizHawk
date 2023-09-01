@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			comboDisplayType.DataSource = displayTypeItems;
 			comboDisplayType.SelectedIndex = 2;
 
-			List<PaletteTypeItem> paletteTypeItems = new List<PaletteTypeItem>
+			List<PaletteTypeItem> paletteTypeItems = new()
 			{
 				// must be in same order as enum
 				new PaletteTypeItem("BizHawk", SnesColors.ColorType.BizHawk),
@@ -589,7 +589,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Rectangle GetPaletteRegion(int start, int num)
 		{
-			Rectangle ret = new Rectangle
+			Rectangle ret = new()
 			{
 				X = start % 16,
 				Y = start / 16,
@@ -617,8 +617,8 @@ namespace BizHawk.Client.EmuHawk
 			int width = cellTotalSize * region.Width;
 			int height = cellTotalSize * region.Height;
 
-			Rectangle rect = new Rectangle(x, y, width, height);
-			using Pen pen = new Pen(color);
+			Rectangle rect = new(x, y, width, height);
+			using Pen pen = new(color);
 			g.DrawRectangle(pen, rect);
 		}
 
@@ -635,7 +635,7 @@ namespace BizHawk.Client.EmuHawk
 			if (selection == eDisplayType.OBJTiles0) bpp = 4;
 			if (selection == eDisplayType.OBJTiles1) bpp = 4;
 
-			SNESGraphicsDecoder.PaletteSelection ret = new SNESGraphicsDecoder.PaletteSelection();
+			SNESGraphicsDecoder.PaletteSelection ret = new();
 			if(bpp == 0) return ret;
 
 			//mode7 ext is fixed to use the top 128 colors
@@ -661,7 +661,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int pixsize = paletteCellSize * 16 + paletteCellSpacing * 17;
 			int cellTotalSize = (paletteCellSize + paletteCellSpacing);
-			Bitmap bmp = new Bitmap(pixsize, pixsize, PixelFormat.Format32bppArgb);
+			Bitmap bmp = new(pixsize, pixsize, PixelFormat.Format32bppArgb);
 			using (Graphics g = Graphics.FromImage(bmp))
 			{
 				for (int y = 0; y < 16; y++)
@@ -670,7 +670,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						int rgb555 = lastPalette[y * 16 + x];
 						int color = gd.Colorize(rgb555);
-						using SolidBrush brush = new SolidBrush(Color.FromArgb(color));
+						using SolidBrush brush = new(Color.FromArgb(color));
 						g.FillRectangle(brush, new Rectangle(paletteCellSpacing + x * cellTotalSize, paletteCellSpacing + y * cellTotalSize, paletteCellSize, paletteCellSize));
 					}
 				}
@@ -688,7 +688,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				if (IsDisplayTypeOBJ(CurrDisplaySelection))
 				{
-					SNESGraphicsDecoder.PaletteSelection ps = new SNESGraphicsDecoder.PaletteSelection(128, 128);
+					SNESGraphicsDecoder.PaletteSelection ps = new(128, 128);
 					region = GetPaletteRegion(ps);
 					DrawPaletteRegion(g, Color.FromArgb(192, 128, 255, 255), region);
 				}
@@ -858,7 +858,7 @@ namespace BizHawk.Client.EmuHawk
 			var tp = tabctrlDetails.SelectedTab;
 
 			//clone the currently selected tab page into the destination
-			ArrayList oldControls = new ArrayList(pnGroupFreeze.Controls);
+			ArrayList oldControls = new(pnGroupFreeze.Controls);
 			pnGroupFreeze.Controls.Clear();
 			foreach (Control control in tp.Controls) pnGroupFreeze.Controls.Add(control.Clone());
 			foreach (Control control in oldControls) control.Dispose();
@@ -939,7 +939,7 @@ namespace BizHawk.Client.EmuHawk
 				int tileSize = si.BG[bgs.bgnum].TileSize;
 				int pixels = tileSize * tileSize;
 
-				Bitmap bmp = new Bitmap(tileSize, tileSize, PixelFormat.Format32bppArgb);
+				Bitmap bmp = new(tileSize, tileSize, PixelFormat.Format32bppArgb);
 				var bmpData = bmp.LockBits(new Rectangle(0, 0, tileSize, tileSize), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 				if (viewBgMode == SNESGraphicsDecoder.BGMode.Mode7)
@@ -963,7 +963,7 @@ namespace BizHawk.Client.EmuHawk
 				//view a tileset tile
 				int bpp = currTileDataState.Bpp;
 
-				Bitmap bmp = new Bitmap(8, 8, PixelFormat.Format32bppArgb);
+				Bitmap bmp = new(8, 8, PixelFormat.Format32bppArgb);
 				var bmpdata = bmp.LockBits(new Rectangle(0, 0, 8, 8), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 				if (currTileDataState.Type == eDisplayType.TilesMode7)
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, false, 1, currTileDataState.Tile, 1);
@@ -987,7 +987,7 @@ namespace BizHawk.Client.EmuHawk
 				var bounds = si.ObjSizeBoundsSquare;
 				int width = bounds.Width;
 				int height = bounds.Height;
-				Bitmap bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+				Bitmap bmp = new(width, height, PixelFormat.Format32bppArgb);
 				var bmpData = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 				gd.RenderSpriteToScreen((int*)bmpData.Scan0, bmpData.Stride / 4, 0, 0, si, currObjDataState.Number);
 				bmp.UnlockBits(bmpData);
@@ -995,7 +995,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Bitmap bmp = new Bitmap(8, 8, PixelFormat.Format32bppArgb);
+				Bitmap bmp = new(8, 8, PixelFormat.Format32bppArgb);
 				viewerTile.SetBitmap(bmp);
 			}
 		}
@@ -1198,7 +1198,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void pnBackdropColor_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			ColorDialog cd = new ColorDialog
+			ColorDialog cd = new()
 			{
 				Color = pnBackdropColor.BackColor
 			};

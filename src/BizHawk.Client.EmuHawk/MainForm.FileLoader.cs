@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool LoadRom(string filename, string archive = null)
 		{
-			LoadRomArgs args = new LoadRomArgs
+			LoadRomArgs args = new()
 			{
 				OpenAdvanced = new OpenAdvanced_OpenRom {Path = filename}
 			};

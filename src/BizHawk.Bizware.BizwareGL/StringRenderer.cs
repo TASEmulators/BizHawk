@@ -118,7 +118,7 @@ namespace BizHawk.Bizware.BizwareGL
 				var tex = TexturePages[bfc.TexturePage];
 				float w = tex.Width;
 				float h = tex.Height;
-				Rectangle bounds = new Rectangle(bfc.X, bfc.Y, bfc.Width, bfc.Height);
+				Rectangle bounds = new(bfc.X, bfc.Y, bfc.Width, bfc.Height);
 				float u0 = bounds.Left / w;
 				float v0 = bounds.Top / h;
 				float u1 = bounds.Right / w;

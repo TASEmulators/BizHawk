@@ -206,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 
 		private SyncSettings _syncSettings;
 
-		public object GetSettings() => new object();
+		public object GetSettings() => new();
 
 		public SyncSettings GetSyncSettings() => _syncSettings.Clone();
 

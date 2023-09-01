@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HotkeyConfig_Load(object sender, EventArgs e)
 		{
-			AutoCompleteStringCollection source = new AutoCompleteStringCollection();
+			AutoCompleteStringCollection source = new();
 			source.AddRange(HotkeyInfo.AllHotkeys.Keys.ToArray());
 
 			SearchBox.AutoCompleteCustomSource = source;
@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 					continue; // skip RA hotkeys if it can't be used
 				}
 
-				TabPage tb = new TabPage { Name = tab, Text = tab };
+				TabPage tb = new() { Name = tab, Text = tab };
 				var bindings = HotkeyInfo.AllHotkeys.Where(kvp => kvp.Value.TabGroup == tab)
 					.OrderBy(static kvp => kvp.Value.Ordinal).ThenBy(static kvp => kvp.Value.DisplayName);
 				int x = UIHelper.ScaleX(6);
@@ -94,14 +94,14 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var (k, b) in bindings)
 				{
-					Label l = new Label
+					Label l = new()
 					{
 						Text = b.DisplayName,
 						Location = new Point(x, y),
 						Size = new Size(iwOffsetX - UIHelper.ScaleX(2), UIHelper.ScaleY(15))
 					};
 
-					InputCompositeWidget w = new InputCompositeWidget(_config.ModifierKeysEffective)
+					InputCompositeWidget w = new(_config.ModifierKeysEffective)
 					{
 						Location = new Point(x + iwOffsetX, y + iwOffsetY),
 						AutoTab = AutoTabCheckBox.Checked,

@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Common
 
 			void Option(string systemId, string id, in FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 			{
-				FirmwareOption option = new FirmwareOption(new(systemId, id), ff.Hash, ff.Size, ff.IsBad ? FirmwareOptionStatus.Bad : status);
+				FirmwareOption option = new(new(systemId, id), ff.Hash, ff.Size, ff.IsBad ? FirmwareOptionStatus.Bad : status);
 				options.Add(option);
 				filesByOption[option] = ff;
 			}

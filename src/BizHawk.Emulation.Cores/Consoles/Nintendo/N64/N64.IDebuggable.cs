@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			// note: the approach this code takes is highly bug-prone
 			// warning: tracer magically relies on these register names!
-			Dictionary<string, RegisterValue> ret = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> ret = new();
 			byte[] data = new byte[32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + 32 * 8];
 			api.getRegisters(data);
 

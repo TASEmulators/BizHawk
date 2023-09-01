@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common.movie.import
 
 		protected override void RunImport()
 		{
-			PCEngine.PCESyncSettings ss = new PCEngine.PCESyncSettings
+			PCEngine.PCESyncSettings ss = new()
 			{
 				Port1 = PceControllerType.Unplugged,
 				Port2 = PceControllerType.Unplugged,

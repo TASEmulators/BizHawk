@@ -292,12 +292,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)
 		{
-			using OpenAdvancedChooser oac = new OpenAdvancedChooser(this, Config, CreateCoreComm, Game, RunLibretroCoreChooser);
+			using OpenAdvancedChooser oac = new(this, Config, CreateCoreComm, Game, RunLibretroCoreChooser);
 			if (this.ShowDialogWithTempMute(oac) == DialogResult.Cancel) return;
 
 			if (oac.Result == AdvancedRomLoaderType.LibretroLaunchNoGame)
 			{
-				LoadRomArgs argsNoGame = new LoadRomArgs
+				LoadRomArgs argsNoGame = new()
 				{
 					OpenAdvanced = new OpenAdvanced_LibretroNoGame(Config.LibretroCore)
 				};
@@ -305,7 +305,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			LoadRomArgs args = new LoadRomArgs();
+			LoadRomArgs args = new();
 
 			var filter = RomLoader.RomFilter;
 
@@ -416,7 +416,7 @@ namespace BizHawk.Client.EmuHawk
 			// Nag user to user a more accurate core, but let them continue anyway
 			EnsureCoreIsAccurate();
 
-			using RecordMovie form = new RecordMovie(this, Config, Game, Emulator, MovieSession, FirmwareManager);
+			using RecordMovie form = new(this, Config, Game, Emulator, MovieSession, FirmwareManager);
 			this.ShowDialogWithTempMute(form);
 		}
 
@@ -430,7 +430,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			using PlayMovie form = new PlayMovie(this, Config, Game, Emulator, MovieSession, CanProvideFirmware);
+			using PlayMovie form = new(this, Config, Game, Emulator, MovieSession, CanProvideFirmware);
 			this.ShowDialogWithTempMute(form);
 		}
 
@@ -760,7 +760,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
 		{
-			using ControllerConfig controller = new ControllerConfig(this, Emulator, Config);
+			using ControllerConfig controller = new(this, Emulator, Config);
 			if (!this.ShowDialogWithTempMute(controller).IsOk()) return;
 			AddOnScreenMessage("Controller settings saved");
 
@@ -770,7 +770,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HotkeysMenuItem_Click(object sender, EventArgs e)
 		{
-			using HotkeyConfig hotkeyConfig = new HotkeyConfig(Config);
+			using HotkeyConfig hotkeyConfig = new(Config);
 			if (!this.ShowDialogWithTempMute(hotkeyConfig).IsOk()) return;
 			AddOnScreenMessage("Hotkey settings saved");
 
@@ -792,19 +792,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FirmwaresMenuItem_Click(object sender, EventArgs e)
 		{
-			using FirmwaresConfig configForm = new FirmwaresConfig(this, FirmwareManager, Config.FirmwareUserSpecifications, Config.PathEntries);
+			using FirmwaresConfig configForm = new(this, FirmwareManager, Config.FirmwareUserSpecifications, Config.PathEntries);
 			this.ShowDialogWithTempMute(configForm);
 		}
 
 		private void MessagesMenuItem_Click(object sender, EventArgs e)
 		{
-			using MessageConfig form = new MessageConfig(Config);
+			using MessageConfig form = new(Config);
 			if (this.ShowDialogWithTempMute(form).IsOk()) AddOnScreenMessage("Message settings saved");
 		}
 
 		private void PathsMenuItem_Click(object sender, EventArgs e)
 		{
-			using PathConfig form = new PathConfig(Config.PathEntries, Game.System, newPath => MovieSession.BackupDirectory = newPath);
+			using PathConfig form = new(Config.PathEntries, Game.System, newPath => MovieSession.BackupDirectory = newPath);
 			if (this.ShowDialogWithTempMute(form).IsOk()) AddOnScreenMessage("Path settings saved");
 		}
 
@@ -819,7 +819,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			var oldOutputMethod = Config.SoundOutputMethod;
 			string oldDevice = Config.SoundDevice;
-			using SoundConfig form = new SoundConfig(this, Config, GetDeviceNamesCallback);
+			using SoundConfig form = new(this, Config, GetDeviceNamesCallback);
 			if (!this.ShowDialogWithTempMute(form).IsOk()) return;
 
 			AddOnScreenMessage("Sound settings saved");
@@ -838,7 +838,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutofireMenuItem_Click(object sender, EventArgs e)
 		{
-			using AutofireConfig form = new AutofireConfig(Config, InputManager.AutoFireController, InputManager.AutofireStickyXorAdapter);
+			using AutofireConfig form = new(Config, InputManager.AutoFireController, InputManager.AutofireStickyXorAdapter);
 			if (this.ShowDialogWithTempMute(form).IsOk()) AddOnScreenMessage("Autofire settings saved");
 		}
 
@@ -856,7 +856,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileExtensionsMenuItem_Click(object sender, EventArgs e)
 		{
-			using FileExtensionPreferences form = new FileExtensionPreferences(Config.PreferredPlatformsForExtensions);
+			using FileExtensionPreferences form = new(Config.PreferredPlatformsForExtensions);
 			if (this.ShowDialogWithTempMute(form).IsOk()) AddOnScreenMessage("Rom Extension Preferences changed");
 		}
 
@@ -870,14 +870,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CustomizeMenuItem_Click(object sender, EventArgs e)
 		{
-			using EmuHawkOptions form = new EmuHawkOptions(Config, BumpAutoFlushSaveRamTimer);
+			using EmuHawkOptions form = new(Config, BumpAutoFlushSaveRamTimer);
 			if (!this.ShowDialogWithTempMute(form).IsOk()) return;
 			AddOnScreenMessage("Custom configurations saved.");
 		}
 
 		private void ProfilesMenuItem_Click(object sender, EventArgs e)
 		{
-			using ProfileConfig form = new ProfileConfig(Config, this);
+			using ProfileConfig form = new(Config, this);
 			if (!this.ShowDialogWithTempMute(form).IsOk()) return;
 			AddOnScreenMessage("Profile settings saved");
 
@@ -1143,7 +1143,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BatchRunnerMenuItem_Click(object sender, EventArgs e)
 		{
-			using BatchRun form = new BatchRun(this, Config, CreateCoreComm);
+			using BatchRun form = new(this, Config, CreateCoreComm);
 			this.ShowDialogWithTempMute(form);
 		}
 
@@ -1710,7 +1710,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (int i = 0; i < appleII.DiskCount; i++)
 				{
-					ToolStripMenuItem menuItem = new ToolStripMenuItem
+					ToolStripMenuItem menuItem = new()
 					{
 						Name = $"Disk{i + 1}",
 						Text = $"Disk{i + 1}",
@@ -1744,7 +1744,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (int i = 0; i < c64.DiskCount; i++)
 				{
-					ToolStripMenuItem menuItem = new ToolStripMenuItem
+					ToolStripMenuItem menuItem = new()
 					{
 						Name = $"Disk{i + 1}",
 						Text = $"Disk{i + 1}",
@@ -1874,7 +1874,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					string name = speccy._tapeInfo[i].Name;
 
-					ToolStripMenuItem menuItem = new ToolStripMenuItem
+					ToolStripMenuItem menuItem = new()
 					{
 						Name = $"{i}_{name}",
 						Text = $"{i}: {name}",
@@ -1908,7 +1908,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					string name = speccy._diskInfo[i].Name;
 
-					ToolStripMenuItem menuItem = new ToolStripMenuItem
+					ToolStripMenuItem menuItem = new()
 					{
 						Name = $"{i}_{name}",
 						Text = $"{i}: {name}",
@@ -2003,7 +2003,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					string name = ams._tapeInfo[i].Name;
 
-					ToolStripMenuItem menuItem = new ToolStripMenuItem
+					ToolStripMenuItem menuItem = new()
 					{
 						Name = $"{i}_{name}",
 						Text = $"{i}: {name}",
@@ -2037,7 +2037,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					string name = ams._diskInfo[i].Name;
 
-					ToolStripMenuItem menuItem = new ToolStripMenuItem
+					ToolStripMenuItem menuItem = new()
 					{
 						Name = $"{i}_{name}",
 						Text = $"{i}: {name}",
@@ -2082,7 +2082,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AboutMenuItem_Click(object sender, EventArgs e)
 		{
-			using BizBox form = new BizBox();
+			using BizBox form = new();
 			this.ShowDialogWithTempMute(form);
 		}
 
@@ -2158,7 +2158,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			FileInfo file = new FileInfo($"{SaveStatePrefix()}.QuickSave{Config.SaveSlot % 10}.State.bak");
+			FileInfo file = new($"{SaveStatePrefix()}.QuickSave{Config.SaveSlot % 10}.State.bak");
 
 			if (file.Exists)
 			{
@@ -2225,11 +2225,11 @@ namespace BizHawk.Client.EmuHawk
 		private void AddSubtitleContextMenuItem_Click(object sender, EventArgs e)
 		{
 			// TODO: rethink this?
-			SubtitleMaker subForm = new SubtitleMaker();
+			SubtitleMaker subForm = new();
 			subForm.DisableFrame();
 
 			int index = -1;
-			Subtitle sub = new Subtitle();
+			Subtitle sub = new();
 			for (int i = 0; i < MovieSession.Movie.Subtitles.Count; i++)
 			{
 				sub = MovieSession.Movie.Subtitles[i];
@@ -2329,7 +2329,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// We do not check if the user is actually setting a profile here.
 			// This is intentional.
-			using ProfileConfig profileForm = new ProfileConfig(Config, this);
+			using ProfileConfig profileForm = new(Config, this);
 			this.ShowDialogWithTempMute(profileForm);
 			Config.FirstBoot = false;
 			ProfileFirstBootLabel.Visible = false;

@@ -67,7 +67,7 @@ namespace BizHawk.Client.Common
 
 		public static string Serialize(IOpenAdvanced ioa)
 		{
-			StringWriter sw = new StringWriter();
+			StringWriter sw = new();
 			sw.Write("{0}*", ioa.TypeName);
 			ioa.Serialize(sw);
 			return sw.ToString();

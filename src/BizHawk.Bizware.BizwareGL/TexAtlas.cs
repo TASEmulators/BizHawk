@@ -50,14 +50,14 @@ namespace BizHawk.Bizware.BizwareGL
 					// this is where the texture size range is determined.
 					// we run this every time we make an atlas, in case we want to variably control the maximum texture output size.
 					// ALSO - we accumulate data in there, so we need to refresh it each time. ... lame.
-					List<TryFitParam> todoSizes = new List<TryFitParam>();
+					List<TryFitParam> todoSizes = new();
 					for (int i = 3; i <= MaxSizeBits; i++)
 					{
 						for (int j = 3; j <= MaxSizeBits; j++)
 						{
 							int w = 1 << i;
 							int h = 1 << j;
-							TryFitParam tfp = new TryFitParam(w, h);
+							TryFitParam tfp = new(w, h);
 							todoSizes.Add(tfp);
 						}
 					}
@@ -65,7 +65,7 @@ namespace BizHawk.Bizware.BizwareGL
 					//run the packing algorithm on each potential size
 					Parallel.ForEach(todoSizes, (param) =>
 					{
-						RectangleBinPack rbp = new RectangleBinPack();
+						RectangleBinPack rbp = new();
 						rbp.Init(16384, 16384);
 						param.rbp.Init(param.w, param.h);
 

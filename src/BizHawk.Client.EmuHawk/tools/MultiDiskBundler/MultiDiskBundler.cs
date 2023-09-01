@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult = DialogResult.OK;
 			Close();
 
-			LoadRomArgs lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
+			LoadRomArgs lra = new() { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
 			_ = MainForm.LoadRom(fileInfo.FullName, lra);
 		}
 
@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int start = 3 + (FileSelectorPanel.Controls.Count * 43);
 
-			GroupBox groupBox = new GroupBox
+			GroupBox groupBox = new()
 			{
 				Text = "",
 				Location = UIHelper.Scale(new Point(6, start)),
@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
 			};
 
-			MultiDiskFileSelector mdf = new MultiDiskFileSelector(MainForm, Config.PathEntries,
+			MultiDiskFileSelector mdf = new(MainForm, Config.PathEntries,
 				() => MainForm.CurrentlyOpenRom, () => SystemDropDown.SelectedItem?.ToString())
 			{
 				Location = UIHelper.Scale(new Point(7, 12)),
@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 					string basePath = Path.GetDirectoryName(name.SubstringBefore('|'));
 					if (string.IsNullOrEmpty(basePath))
 					{
-						FileInfo fileInfo = new FileInfo(name);
+						FileInfo fileInfo = new(name);
 						basePath = Path.GetDirectoryName(fileInfo.FullName);
 					}
 

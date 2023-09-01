@@ -635,7 +635,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private MobileBmpView MakeMBVWidget(string text, int w, int h)
 		{
-			MobileBmpView mbv = new MobileBmpView { Text = text };
+			MobileBmpView mbv = new() { Text = text };
 			mbv.BmpView.Text = text;
 			mbv.TopLevel = false;
 			mbv.ChangeViewSize(w, h);
@@ -647,7 +647,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private MobileDetailView MakeMDVWidget(string text, int w, int h)
 		{
-			MobileDetailView mdv = new MobileDetailView { Text = text };
+			MobileDetailView mdv = new() { Text = text };
 			mdv.BmpView.Text = text;
 			mdv.TopLevel = false;
 			mdv.ClientSize = new Size(w, h);

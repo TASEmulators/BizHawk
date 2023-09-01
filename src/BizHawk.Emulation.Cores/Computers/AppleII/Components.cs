@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			NoSlotClock = new NoSlotClock(Video);
 			DiskIIController = new DiskIIController(Video, diskIIRom);
 
-			EmptyPeripheralCard emptySlot = new EmptyPeripheralCard(Video);
+			EmptyPeripheralCard emptySlot = new(Video);
 
 			// Necessary because of tangling dependencies between memory and video classes
 			Memory.Initialize(

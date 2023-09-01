@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			if (lp.Roms.Count != 3)
 				throw new InvalidOperationException("Wrong number of roms");
 
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 
 			Link3xSettings = lp.Settings ?? new GBLink3xSettings();
@@ -47,13 +47,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 				GBHawkControllerDeck.DefaultControllerName,
 				GBHawkControllerDeck.DefaultControllerName);
 
-			GBHawk.GBHawk.GBSettings tempSetL = new GBHawk.GBHawk.GBSettings();
-			GBHawk.GBHawk.GBSettings tempSetC = new GBHawk.GBHawk.GBSettings();
-			GBHawk.GBHawk.GBSettings tempSetR = new GBHawk.GBHawk.GBSettings();
+			GBHawk.GBHawk.GBSettings tempSetL = new();
+			GBHawk.GBHawk.GBSettings tempSetC = new();
+			GBHawk.GBHawk.GBSettings tempSetR = new();
 
-			GBHawk.GBHawk.GBSyncSettings tempSyncL = new GBHawk.GBHawk.GBSyncSettings();
-			GBHawk.GBHawk.GBSyncSettings tempSyncC = new GBHawk.GBHawk.GBSyncSettings();
-			GBHawk.GBHawk.GBSyncSettings tempSyncR = new GBHawk.GBHawk.GBSyncSettings();
+			GBHawk.GBHawk.GBSyncSettings tempSyncL = new();
+			GBHawk.GBHawk.GBSyncSettings tempSyncC = new();
+			GBHawk.GBHawk.GBSyncSettings tempSyncR = new();
 
 			tempSyncL.ConsoleMode = Link3xSyncSettings.ConsoleMode_L;
 			tempSyncC.ConsoleMode = Link3xSyncSettings.ConsoleMode_C;

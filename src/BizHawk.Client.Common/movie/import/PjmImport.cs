@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.PSX;
 
 			using var fs = SourceFile.OpenRead();
-			using BinaryReader br = new BinaryReader(fs);
+			using BinaryReader br = new(fs);
 			var info = ParseHeader(Result.Movie, "PJM ", br);
 
 			fs.Seek(info.ControllerDataOffset, SeekOrigin.Begin);
@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 
 		protected MiscHeaderInfo ParseHeader(IMovie movie, string expectedMagic, BinaryReader br)
 		{
-			MiscHeaderInfo info = new MiscHeaderInfo();
+			MiscHeaderInfo info = new();
 
 			string magic = new(br.ReadChars(4));
 			if (magic != expectedMagic)
@@ -125,7 +125,7 @@ namespace BizHawk.Client.Common
 					return info;
 			}
 
-			Octoshock.SyncSettings syncSettings = new Octoshock.SyncSettings
+			Octoshock.SyncSettings syncSettings = new()
 			{
 				FIOConfig =
 				{
@@ -172,7 +172,7 @@ namespace BizHawk.Client.Common
 
 		protected void ParseBinaryInputLog(BinaryReader br, IMovie movie, MiscHeaderInfo info)
 		{
-			Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
+			Octoshock.SyncSettings settings = new();
 			settings.FIOConfig.Devices8 = new[]
 			{
 				info.Player1Type,
@@ -307,7 +307,7 @@ namespace BizHawk.Client.Common
 
 			for (int frame = 0; frame < info.FrameCount; ++frame)
 			{
-				string mnemonicStr = new string(br.ReadChars(strCount));
+				string mnemonicStr = new(br.ReadChars(strCount));
 
 				// Junk whitespace at the end of a file
 				if (string.IsNullOrWhiteSpace(mnemonicStr))

@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Api.CMD_power();
 			}
 
-			LibsnesApi.LayerEnables enables = new LibsnesApi.LayerEnables
+			LibsnesApi.LayerEnables enables = new()
 			{
 				BG1_Prio0 = _settings.ShowBG1_0,
 				BG1_Prio1 = _settings.ShowBG1_1,

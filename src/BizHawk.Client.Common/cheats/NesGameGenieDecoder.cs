@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common.cheats
 				return new InvalidCheatCode("Game Genie codes need to be six or eight characters in length.");
 			}
 
-			DecodeResult result = new DecodeResult { Size = WatchSize.Byte };
+			DecodeResult result = new() { Size = WatchSize.Byte };
 			// char 3 bit 3 denotes the code length.
 			if (code.Length == 6)
 			{

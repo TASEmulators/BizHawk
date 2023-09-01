@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private void SetupMemoryDomains()
 		{
-			List<MemoryDomain> domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new()
 			{
 				new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				addr =>
@@ -31,10 +31,10 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			if (use_SGM)
 			{
-				MemoryDomainByteArray SGMLRam = new MemoryDomainByteArray("SGM Low RAM", MemoryDomain.Endian.Little, SGM_low_RAM, true, 1);
+				MemoryDomainByteArray SGMLRam = new("SGM Low RAM", MemoryDomain.Endian.Little, SGM_low_RAM, true, 1);
 				domains.Add(SGMLRam);
 
-				MemoryDomainByteArray SGMHRam = new MemoryDomainByteArray("SGM High RAM", MemoryDomain.Endian.Little, SGM_high_RAM, true, 1);
+				MemoryDomainByteArray SGMHRam = new("SGM High RAM", MemoryDomain.Endian.Little, SGM_high_RAM, true, 1);
 				domains.Add(SGMHRam);
 			}
 
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 			else
 			{
-				MemoryDomainByteArray m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
+				MemoryDomainByteArray m = new(name, MemoryDomain.Endian.Little, data, true, 1);
 				_byteArrayDomains.Add(name, m);
 			}
 		}

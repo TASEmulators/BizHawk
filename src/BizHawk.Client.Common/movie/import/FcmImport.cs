@@ -20,8 +20,8 @@ namespace BizHawk.Client.Common.movie.import
 		{
 			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.NesHawk;
 
-			using BinaryReader r = new BinaryReader(SourceFile.Open(FileMode.Open, FileAccess.Read));
-			string signature = new string(r.ReadChars(4));
+			using BinaryReader r = new(SourceFile.Open(FileMode.Open, FileAccess.Read));
+			string signature = new(r.ReadChars(4));
 			if (signature != "FCM\x1A")
 			{
 				Result.Errors.Add("This is not a valid .FCM file.");
@@ -30,9 +30,9 @@ namespace BizHawk.Client.Common.movie.import
 
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.NES;
 
-			NES.NESSyncSettings syncSettings = new NES.NESSyncSettings();
+			NES.NESSyncSettings syncSettings = new();
 
-			NESControlSettings controllerSettings = new NESControlSettings
+			NESControlSettings controllerSettings = new()
 			{
 				NesLeftPort = nameof(ControllerNES),
 				NesRightPort = nameof(ControllerNES)
@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common.movie.import
 			Result.Movie.Comments.Add($"{EmulationOrigin} FCEU {emuVersion}");
 
 			// 034 name of the ROM used - UTF8 encoded nul-terminated string.
-			List<byte> gameBytes = new List<byte>();
+			List<byte> gameBytes = new();
 			while (r.PeekChar() != 0)
 			{
 				gameBytes.Add(r.ReadByte());
@@ -130,7 +130,7 @@ namespace BizHawk.Client.Common.movie.import
 			 name and ends at the savestate offset. This string is displayed as "Author Info" in the Windows version of the
 			 emulator.
 			*/
-			List<byte> authorBytes = new List<byte>();
+			List<byte> authorBytes = new();
 			while (r.PeekChar() != 0)
 			{
 				authorBytes.Add(r.ReadByte());

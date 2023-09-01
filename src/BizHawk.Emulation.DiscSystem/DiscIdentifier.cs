@@ -189,7 +189,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (_disc.TOC.SessionFormat == SessionFormat.Type20_CDXA)
 				discView = EDiscStreamView.DiscStreamView_Mode2_Form1_2048;
 
-			ISOFile iso = new ISOFile();
+			ISOFile iso = new();
 			bool isIso = iso.Parse(new DiscStream(_disc, discView, 0));
 
 			if (!isIso)

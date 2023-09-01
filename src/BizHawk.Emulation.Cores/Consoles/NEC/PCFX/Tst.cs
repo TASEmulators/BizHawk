@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 		{
 			if (_cachedSettingsInfo is null)
 			{
-				using Tst n = new Tst(comm);
+				using Tst n = new(comm);
 				n.InitForSettingsInfo("pcfx.wbx");
 				_cachedSettingsInfo = n.SettingsInfo.Clone();
 			}
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 		{
 			if (lp.Roms.Count > 0)
 				throw new InvalidOperationException("To load a PC-FX game, please load the CUE file and not the BIN file.");
-			Dictionary<string, FirmwareID> firmwares = new Dictionary<string, FirmwareID>
+			Dictionary<string, FirmwareID> firmwares = new()
 			{
 				{ "FIRMWARE:pcfx.rom", new("PCFX", "BIOS") },
 			};
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 				devCount -= 3;
 			if (SettingsQuery("pcfx.input.port2.multitap") != "1")
 				devCount -= 3;
-			HashSet<string> ret = new HashSet<string>();
+			HashSet<string> ret = new();
 			for (int i = 1; i <= 8; i++)
 			{
 				if (i > devCount)

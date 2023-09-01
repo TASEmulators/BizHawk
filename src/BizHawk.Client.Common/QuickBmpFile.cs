@@ -284,8 +284,8 @@ namespace BizHawk.Client.Common
 
 		public static unsafe void Save(IVideoProvider v, Stream s, int w, int h)
 		{
-			BITMAPFILEHEADER bf = new BITMAPFILEHEADER();
-			BITMAPINFOHEADER bi = new BITMAPINFOHEADER();
+			BITMAPFILEHEADER bf = new();
+			BITMAPINFOHEADER bi = new();
 			bf.bfType = 0x4d42;
 			bf.bfOffBits = bf.bfSize + bi.biSize;
 

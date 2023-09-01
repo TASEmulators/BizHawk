@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_movieSession.Movie.IsFinished())
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				sb
 					.Append(_emulator.Frame)
 					.Append('/')
@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 
 			if (_movieSession.Movie.IsPlayingOrFinished())
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				sb
 					.Append(_emulator.Frame)
 					.Append('/')
@@ -317,7 +317,7 @@ namespace BizHawk.Client.Common
 
 			if (_inputManager.ClientControls["Autohold"] || _inputManager.ClientControls["Autofire"])
 			{
-				StringBuilder sb = new StringBuilder("Held: ");
+				StringBuilder sb = new("Held: ");
 
 				foreach (string sticky in _inputManager.StickyXorAdapter.CurrentStickies)
 				{

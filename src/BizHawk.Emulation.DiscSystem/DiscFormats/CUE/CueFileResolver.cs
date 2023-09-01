@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				fileInfos = fisBaseDir;
 			}
 
-			List<FileInfo> results = new List<FileInfo>();
+			List<FileInfo> results = new();
 			foreach (var fi in fileInfos)
 			{
 				string ext = Path.GetExtension(fi.FullName).ToLowerInvariant();

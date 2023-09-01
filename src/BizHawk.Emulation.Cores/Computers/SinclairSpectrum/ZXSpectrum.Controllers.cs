@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				ControllerDefinition definition = new("ZXSpectrum Controller");
 
 				// joysticks
-				List<string> joys1 = new List<string>
+				List<string> joys1 = new()
 				{
 					// P1 Joystick
 					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button",
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					definition.CategoryLabels[s] = "J1 (" + SyncSettings.JoystickType1 + ")";
 				}
 
-				List<string> joys2 = new List<string>
+				List<string> joys2 = new()
 				{
 					// P2 Joystick
 					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button",
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					definition.CategoryLabels[s] = "J2 (" + SyncSettings.JoystickType2 + ")";
 				}
 
-				List<string> joys3 = new List<string>
+				List<string> joys3 = new()
 				{
 					// P3 Joystick
 					"P3 Up", "P3 Down", "P3 Left", "P3 Right", "P3 Button",
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// keyboard
-				List<string> keys = new List<string>
+				List<string> keys = new()
 				{
 					// Controller mapping includes all keyboard keys from the following models:
 					// https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/ZXSpectrum48k.jpg/1200px-ZXSpectrum48k.jpg
@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// Power functions
-				List<string> power = new List<string>
+				List<string> power = new()
 				{
 					// Power functions
 					"Reset", "Power"
@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// Datacorder (tape device)
-				List<string> tape = new List<string>
+				List<string> tape = new()
 				{
 					// Tape functions
 					"Play Tape", "Stop Tape", "RTZ Tape", "Record Tape", "Insert Next Tape",
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// Datacorder (tape device)
-				List<string> disk = new List<string>
+				List<string> disk = new()
 				{
 					// Tape functions
 					"Insert Next Disk", "Insert Previous Disk", /*"Eject Current Disk",*/ "Get Disk Status"

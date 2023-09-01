@@ -192,11 +192,11 @@ namespace BizHawk.Client.EmuHawk
 			_boldFixedFont = new Font(_fixedFont, FontStyle.Bold);
 
 			// populate ListView from firmware DB
-			Dictionary<string, ListViewGroup> groups = new Dictionary<string, ListViewGroup>();
+			Dictionary<string, ListViewGroup> groups = new();
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
 				string sysID = fr.ID.System;
-				ListViewItem lvi = new ListViewItem
+				ListViewItem lvi = new()
 				{
 					Tag = fr,
 					UseItemStyleForSubItems = false,
@@ -452,7 +452,7 @@ namespace BizHawk.Client.EmuHawk
 					// to always be copied to the global firmwares directory
 					if (hf.IsArchive)
 					{
-						ArchiveChooser ac = new ArchiveChooser(new HawkFile(filePath));
+						ArchiveChooser ac = new(new HawkFile(filePath));
 						if (!ac.ShowDialog(this).IsOk()) return;
 
 						var insideFile = hf.BindArchiveMember(ac.SelectedMemberIndex);
@@ -473,7 +473,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								try
 								{
-									FileInfo fi = new FileInfo(filePath);
+									FileInfo fi = new(filePath);
 									filePath = Path.Combine(firmwarePath, fi.Name);
 									File.Copy(result, filePath);
 								}
@@ -518,7 +518,7 @@ namespace BizHawk.Client.EmuHawk
 			// get all options for this firmware (in order)
 			var options = FirmwareDatabase.FirmwareOptions.Where(fo => fo.ID == fr.ID);
 
-			FirmwaresConfigInfo fciDialog = new FirmwaresConfigInfo
+			FirmwaresConfigInfo fciDialog = new()
 			{
 				lblFirmware =
 				{
@@ -576,7 +576,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				FileInfo fi = new FileInfo(f);
+				FileInfo fi = new(f);
 				if (!fi.Exists)
 				{
 					return false;
@@ -619,7 +619,7 @@ namespace BizHawk.Client.EmuHawk
 			string errors = "";
 			foreach(string f in files)
 			{
-				using HawkFile hf = new HawkFile(f);
+				using HawkFile hf = new(f);
 				if (hf.IsArchive)
 				{
 					// blech. the worst extraction code in the universe.

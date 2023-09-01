@@ -102,8 +102,8 @@ namespace BizHawk.Common
 				.OrderBy(fi => (int)Marshal.OffsetOf(t, fi.Name))
 				.ToList();
 
-			DynamicMethod rmeth = new DynamicMethod($"{t.Name}_r", null, new[] { typeof(object), typeof(BinaryReader) }, true);
-			DynamicMethod wmeth = new DynamicMethod($"{t.Name}_w", null, new[] { typeof(object), typeof(BinaryWriter) }, true);
+			DynamicMethod rmeth = new($"{t.Name}_r", null, new[] { typeof(object), typeof(BinaryReader) }, true);
+			DynamicMethod wmeth = new($"{t.Name}_w", null, new[] { typeof(object), typeof(BinaryWriter) }, true);
 
 			{
 				var il = rmeth.GetILGenerator();

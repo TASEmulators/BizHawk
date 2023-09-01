@@ -32,7 +32,7 @@ namespace BizHawk.Client.DiscoHawk
 			// otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
 			// some people are getting MOTW through a combination of browser used to download BizHawk, and program used to dearchive it
 			static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
-			Queue<DirectoryInfo> todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
+			Queue<DirectoryInfo> todo = new(new[] { new DirectoryInfo(dllDir) });
 			while (todo.Count != 0)
 			{
 				var di = todo.Dequeue();
@@ -70,7 +70,7 @@ namespace BizHawk.Client.DiscoHawk
 
 			if (args.Length == 0)
 			{
-				using MainDiscoForm dialog = new MainDiscoForm();
+				using MainDiscoForm dialog = new();
 				dialog.ShowDialog();
 			}
 			else
@@ -79,7 +79,7 @@ namespace BizHawk.Client.DiscoHawk
 					args,
 					results =>
 					{
-						using ComparisonResults cr = new ComparisonResults { textBox1 = { Text = results } };
+						using ComparisonResults cr = new() { textBox1 = { Text = results } };
 						cr.ShowDialog();
 					});
 			}

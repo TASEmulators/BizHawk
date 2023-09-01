@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				return C64Format.Unknown;
 			}
 
-			using BinaryReader reader = new BinaryReader(new MemoryStream(data));
+			using BinaryReader reader = new(new MemoryStream(data));
 			string header = Encoding.GetEncoding(437).GetString(reader.ReadBytes(0x10));
 
 			if (header.StartsWithOrdinal("C64 CARTRIDGE   "))

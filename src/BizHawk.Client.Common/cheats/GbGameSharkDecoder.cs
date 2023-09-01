@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common.cheats
 				return new InvalidCheatCode("All GameShark Codes for GameBoy need to start with 00 or 01");
 			}
 
-			DecodeResult result = new DecodeResult { Size = WatchSize.Byte };
+			DecodeResult result = new() { Size = WatchSize.Byte };
 
 			code = code.Remove(0, 2);
 

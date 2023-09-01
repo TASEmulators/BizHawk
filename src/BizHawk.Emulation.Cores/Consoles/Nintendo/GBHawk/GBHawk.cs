@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		[CoreConstructor(VSystemID.Raw.GBC)]
 		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ GBSettings settings, GBSyncSettings syncSettings, bool subframe = false)
 		{
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 
 			cpu = new LR35902
 			{

@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public int BufferWidth { get; private set; }
 
-		public int BufferHeight => _vheight;
+		public int BufferHeight { get; private set; }
 
 		public int BackgroundColor => unchecked((int)0xff000000);
 
@@ -23,7 +23,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public int VsyncDenominator { get; }
 
 		private int[] _vidBuff = new int[0];
-		private int _vheight;
 
 		private void UpdateVideoInitial()
 		{
@@ -33,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			// so instead, just assume a 320x224 size now; if that happens to be wrong, it'll be fixed soon enough.
 
 			BufferWidth = 320;
-			_vheight = 224;
-			_vidBuff = new int[BufferWidth * _vheight];
+			BufferHeight = 224;
+			_vidBuff = new int[BufferWidth * BufferHeight];
 			for (int i = 0; i < _vidBuff.Length; i++)
 			{
 				_vidBuff[i] = unchecked((int)0xff000000);
@@ -56,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				Core.gpgx_get_video(out int gpwidth, out int gpheight, out int gppitch, ref src);
 
 				BufferWidth = gpwidth;
-				_vheight = gpheight;
+				BufferHeight = gpheight;
 
 				if (_settings.PadScreen320 && BufferWidth == 256)
 					BufferWidth = 320;
@@ -64,8 +63,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				int xpad = (BufferWidth - gpwidth) / 2;
 				int xpad2 = BufferWidth - gpwidth - xpad;
 
-				if (_vidBuff.Length < BufferWidth * _vheight)
-					_vidBuff = new int[BufferWidth * _vheight];
+				if (_vidBuff.Length < BufferWidth * BufferHeight)
+					_vidBuff = new int[BufferWidth * BufferHeight];
 
 				int rinc = (gppitch / 4) - gpwidth;
 				fixed (int* pdst_ = _vidBuff)

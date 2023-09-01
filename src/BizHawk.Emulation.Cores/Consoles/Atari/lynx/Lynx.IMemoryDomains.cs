@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 	{
 		private void SetupMemoryDomains()
 		{
-			List<MemoryDomain> mms = new List<MemoryDomain>
+			List<MemoryDomain> mms = new()
 			{
 				new MemoryDomainIntPtr("RAM", MemoryDomain.Endian.Little, LibLynx.GetRamPointer(Core), 65536, true, 2)
 			};

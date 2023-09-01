@@ -598,7 +598,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		private void ExecuteEmulatorThread()
 		{
 			emulator_running = true;
-			StartupCallback cb = new StartupCallback(() => m64pStartupComplete.Set());
+			StartupCallback cb = new(() => m64pStartupComplete.Set());
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_EXECUTE, 0,
 				Marshal.GetFunctionPointerForDelegate(cb));
 			emulator_running = false;
@@ -1001,7 +1001,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		{
 			static IntPtr GetDLIRPtrByRefl(DynamicLibraryImportResolver dlir) => (IntPtr) fiDLIRInternalPtr.GetValue(dlir);
 			if (plugins.ContainsKey(type)) DetachPlugin(type);
-			DynamicLibraryImportResolver lib = new DynamicLibraryImportResolver(PluginName);
+			DynamicLibraryImportResolver lib = new(PluginName);
 			var libPtr = GetDLIRPtrByRefl(lib);
 			GetTypedDelegate<PluginStartup>(libPtr, "PluginStartup")(GetDLIRPtrByRefl(Library), null, null);
 			if (m64pCoreAttachPlugin(type, libPtr) != m64p_error.M64ERR_SUCCESS)

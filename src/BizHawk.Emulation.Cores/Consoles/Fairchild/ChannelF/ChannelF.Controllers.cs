@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				string pre = "P1 ";
 
 				// sticks
-				List<string> stickR = new List<string>
+				List<string> stickR = new()
 				{
 					// P1 (right) stick
 					pre + "Forward", pre + "Back", pre + "Left", pre + "Right", pre + "CCW", pre + "CW", pre + "Pull", pre + "Push"
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				pre = "P2 ";
 
-				List<string> stickL = new List<string>
+				List<string> stickL = new()
 				{
 					// P2 (left) stick
 					pre + "Forward", pre + "Back", pre + "Left", pre + "Right", pre + "CCW", pre + "CW", pre + "Pull", pre + "Push"
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				}
 
 				// console
-				List<string> consoleButtons = new List<string>
+				List<string> consoleButtons = new()
 				{
 					"TIME", "MODE", "HOLD", "START", "RESET"
 				};

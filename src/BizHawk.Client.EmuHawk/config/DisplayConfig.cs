@@ -279,21 +279,21 @@ namespace BizHawk.Client.EmuHawk
 			//test the preset
 			using (var stream = File.OpenRead(choice))
 			{
-				RetroShaderPreset cgp = new RetroShaderPreset(stream);
+				RetroShaderPreset cgp = new(stream);
 
 				// try compiling it
 				bool ok = false;
 				string errors = "";
 				try
 				{
-					RetroShaderChain filter = new RetroShaderChain(_gl, cgp, Path.GetDirectoryName(choice));
+					RetroShaderChain filter = new(_gl, cgp, Path.GetDirectoryName(choice));
 					ok = filter.Available;
 					errors = filter.Errors;
 				}
 				catch {}
 				if (!ok)
 				{
-					using ExceptionBox errorForm = new ExceptionBox(errors);
+					using ExceptionBox errorForm = new(errors);
 					this.ShowDialogAsChild(errorForm);
 					return;
 				}

@@ -212,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 			string path = MakePath();
 			if (!string.IsNullOrWhiteSpace(path))
 			{
-				FileInfo test = new FileInfo(path);
+				FileInfo test = new(path);
 				if (test.Exists)
 				{
 					bool result = DialogController.ShowMessageBox2($"{path} already exists, overwrite?", "Confirm overwrite", EMsgBoxIcon.Warning, useOKCancel: true);
@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var movieToRecord = _movieSession.Get(path);
 
-				FileInfo fileInfo = new FileInfo(path);
+				FileInfo fileInfo = new(path);
 				if (!fileInfo.Exists)
 				{
 					Directory.CreateDirectory(fileInfo.DirectoryName);
@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						using StringWriter sw = new StringWriter();
+						using StringWriter sw = new();
 						core.SaveStateText(sw);
 						movieToRecord.TextSavestate = sw.ToString();
 					}

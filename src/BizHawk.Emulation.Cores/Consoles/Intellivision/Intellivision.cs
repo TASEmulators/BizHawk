@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		[CoreConstructor(VSystemID.Raw.INTV)]
 		public Intellivision(CoreComm comm, byte[] rom, Intellivision.IntvSettings settings, Intellivision.IntvSyncSettings syncSettings)
 		{
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 			_rom = rom;
 			_settings = settings ?? new IntvSettings();

@@ -704,7 +704,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveBotFile(string path)
 		{
-			BotData data = new BotData
+			BotData data = new()
 			{
 				Best = _bestBotAttempt,
 				ControlProbabilities = ControlProbabilities,
@@ -768,7 +768,7 @@ namespace BizHawk.Client.EmuHawk
 			ControlProbabilityPanel.Controls.Clear();
 			foreach (string button in Emulator.ControllerDefinition.BoolButtons)
 			{
-				BotControlsRow control = new BotControlsRow
+				BotControlsRow control = new()
 				{
 					ButtonName = button,
 					Probability = 0.0,
@@ -940,7 +940,7 @@ namespace BizHawk.Client.EmuHawk
 				BestTieBreak2Box.Text = _bestBotAttempt.TieBreak2.ToString();
 				BestTieBreak3Box.Text = _bestBotAttempt.TieBreak3.ToString();
 
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				foreach (string logEntry in _bestBotAttempt.Log)
 				{
 					sb.AppendLine(logEntry);
@@ -965,7 +965,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PressButtons(bool clear_log)
 		{
-			Random rand = new Random((int)DateTime.Now.Ticks);
+			Random rand = new((int)DateTime.Now.Ticks);
 
 			foreach (string button in Emulator.ControllerDefinition.BoolButtons)
 			{

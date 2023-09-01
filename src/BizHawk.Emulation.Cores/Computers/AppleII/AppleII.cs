@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 					
 			_romSet = lp.Roms.Select(GetRomAndExt).ToList();
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 
 			const string TRACE_HEADER = "6502: PC, opcode, register (A, X, Y, P, SP, Cy), flags (NVTBDIZC)";

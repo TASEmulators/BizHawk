@@ -579,7 +579,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			InputPrompt i = new InputPrompt
+			InputPrompt i = new()
 			{
 				Text = $"Text for branch {index + 1}",
 				TextInputType = InputPrompt.InputType.Text,

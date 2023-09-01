@@ -86,7 +86,7 @@ namespace BizHawk.Client.Common
 
 		public TasMovieMarkerList DeepClone()
 		{
-			TasMovieMarkerList ret = new TasMovieMarkerList(_movie);
+			TasMovieMarkerList ret = new(_movie);
 			for (int i = 0; i < Count; i++)
 			{
 				// used to copy markers between branches
@@ -104,7 +104,7 @@ namespace BizHawk.Client.Common
 
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			foreach (var marker in this)
 			{
 				sb.AppendLine(marker.ToString());

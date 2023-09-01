@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.DiscSystem
 			CRC32 crc = new();
 			byte[] buffer2352 = new byte[2352];
 
-			DiscSectorReader dsr = new DiscSectorReader(disc)
+			DiscSectorReader dsr = new(disc)
 			{
 				Policy = { DeterministicClearBuffer = false } // live dangerously
 			};
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.DiscSystem
 			CRC32 crc = new();
 			byte[] buffer2352 = new byte[2352];
 
-			DiscSectorReader dsr = new DiscSectorReader(disc)
+			DiscSectorReader dsr = new(disc)
 			{
 				Policy = { DeterministicClearBuffer = false } // live dangerously
 			};
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public string OldHash()
 		{
 			byte[] buffer = new byte[512 * 2352];
-			DiscSectorReader dsr = new DiscSectorReader(disc);
+			DiscSectorReader dsr = new(disc);
 			foreach (var track in disc.Session1.Tracks)
 			{
 				if (track.IsAudio)

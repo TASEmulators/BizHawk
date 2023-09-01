@@ -377,7 +377,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected static IReadOnlyList<MemFunctions> CreateMemoryBanks(ConsoleID consoleId, IMemoryDomains domains, IDebuggable debuggable)
 		{
-			List<MemFunctions> mfs = new List<MemFunctions>();
+			List<MemFunctions> mfs = new();
 
 			void TryAddDomain(string domain, int? size = null, int addressMangler = 0)
 			{

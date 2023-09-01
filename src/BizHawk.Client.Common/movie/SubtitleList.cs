@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			Sort();
 			ForEach(subtitle => sb.AppendLine(subtitle.ToString()));
 			return sb.ToString();
@@ -76,8 +76,8 @@ namespace BizHawk.Client.Common
 		public string ToSubRip(double fps)
 		{
 			int index = 1;
-			StringBuilder sb = new StringBuilder();
-			List<Subtitle> subs = new List<Subtitle>();
+			StringBuilder sb = new();
+			List<Subtitle> subs = new();
 			foreach (var subtitle in this)
 			{
 				subs.Add(new Subtitle(subtitle));

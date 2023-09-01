@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 
 			byte[] bytes = _hexEditor.ConvertTextToBytes(FindBox.Text);
 
-			StringBuilder byteString = new StringBuilder();
+			StringBuilder byteString = new();
 			foreach (byte b in bytes)
 			{
 				byteString.Append($"{b:X2}");

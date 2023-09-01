@@ -180,7 +180,7 @@ namespace BizHawk.Client.Common
 
 		protected string CommentsString()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			foreach (string comment in Comments)
 			{

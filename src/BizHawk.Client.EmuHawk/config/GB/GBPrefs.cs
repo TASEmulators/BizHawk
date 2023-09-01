@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 			Gameboy.GambatteSettings s = (Gameboy.GambatteSettings) settable.GetSettings();
 			Gameboy.GambatteSyncSettings ss = (Gameboy.GambatteSyncSettings) settable.GetSyncSettings();
 
-			using GBPrefs dlg = new GBPrefs(dialogParent.DialogController);
+			using GBPrefs dlg = new(dialogParent.DialogController);
 			dlg.gbPrefControl1.PutSettings(config, game, movieSession, s, ss);
 			var result = dialogParent.ShowDialogAsChild(dlg);
 			if (result.IsOk())

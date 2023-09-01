@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				MakeMemoryDomain("SGB WRAM", LibsnesApi.SNES_MEMORY.SGB_WRAM, MemoryDomain.Endian.Little);
 
 				//uhhh why can't this be done with MakeMemoryDomain? improve that.
-				MemoryDomainByteArray romDomain = new MemoryDomainByteArray("SGB CARTROM", MemoryDomain.Endian.Little, romData, true, 1);
+				MemoryDomainByteArray romDomain = new("SGB CARTROM", MemoryDomain.Endian.Little, romData, true, 1);
 				_memoryDomainList.Add(romDomain);
 
 				// the last 1 byte of this is special.. its an interrupt enable register, instead of ram. weird. maybe its actually ram and just getting specially used?
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			byte* blockPtr = Api.QUERY_get_memory_data(id);
 
-			MemoryDomainIntPtrMonitor md = new MemoryDomainIntPtrMonitor(name, MemoryDomain.Endian.Little, (IntPtr)blockPtr, size,
+			MemoryDomainIntPtrMonitor md = new(name, MemoryDomain.Endian.Little, (IntPtr)blockPtr, size,
 				true,
 				byteSize, Api);
 
@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			byte* blockPtr = Api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.WRAM);
 
-			MemoryDomainDelegate md = new MemoryDomainDelegate("System Bus", 0x1000000, MemoryDomain.Endian.Little,
+			MemoryDomainDelegate md = new("System Bus", 0x1000000, MemoryDomain.Endian.Little,
 				addr =>
 				{
 					using (Api.EnterExit())

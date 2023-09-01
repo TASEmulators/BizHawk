@@ -78,7 +78,7 @@ namespace BizHawk.Bizware.Input
 			int instanceId = SDL_JoystickGetDeviceInstanceID(deviceIndex);
 			if (!Gamepads.ContainsKey(instanceId))
 			{
-				SDL2Gamepad gamepad = new SDL2Gamepad(deviceIndex);
+				SDL2Gamepad gamepad = new(deviceIndex);
 				Gamepads.Add(gamepad.InstanceID, gamepad);
 			}
 			else

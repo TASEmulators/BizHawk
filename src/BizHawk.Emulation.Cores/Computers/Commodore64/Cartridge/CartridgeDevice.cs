@@ -13,18 +13,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public static CartridgeDevice Load(byte[] crtFile)
 		{
-			using MemoryStream mem = new MemoryStream(crtFile);
-			BinaryReader reader = new BinaryReader(mem);
+			using MemoryStream mem = new(crtFile);
+			BinaryReader reader = new(mem);
 
 			if (new string(reader.ReadChars(16)) != "C64 CARTRIDGE   ")
 			{
 				return null;
 			}
 
-			List<int> chipAddress = new List<int>();
-			List<int> chipBank = new List<int>();
-			List<int[]> chipData = new List<int[]>();
-			List<int> chipType = new List<int>();
+			List<int> chipAddress = new();
+			List<int> chipBank = new();
+			List<int[]> chipData = new();
+			List<int> chipType = new();
 
 			int headerLength = ReadCRTInt(reader);
 			int version = ReadCRTShort(reader);

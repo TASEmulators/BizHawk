@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			Dictionary<string, RegisterValue> ret = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> ret = new();
 			ulong[] data = new ulong[32 + 3]; // GPRs, lo, hi, pc (todo: other regs)
 			_core.GetRegisters(data);
 

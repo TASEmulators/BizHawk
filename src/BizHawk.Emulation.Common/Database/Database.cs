@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Common
 
 		public static void SaveDatabaseEntry(CompactGameInfo gameInfo, string filename = "gamedb_user.txt")
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			sb
 				.Append("sha1:") // TODO: how do we know it is sha1?
 				.Append(gameInfo.Hash)
@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (!inUser) _expected.Remove(Path.GetFileName(path));
 			//reminder: this COULD be done on several threads, if it takes even longer
-			using StreamReader reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
+			using StreamReader reader = new(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
 			while (reader.EndOfStream == false)
 			{
 				string line = reader.ReadLine() ?? "";
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Common
 
 					string[] items = line.Split('\t');
 
-					CompactGameInfo game = new CompactGameInfo
+					CompactGameInfo game = new()
 					{
 						Hash = FormatHash(items[0]),
 						Status = items[1].Trim()
@@ -225,7 +225,7 @@ namespace BizHawk.Emulation.Common
 			}
 
 			// rom is not in database. make some best-guesses
-			GameInfo game = new GameInfo
+			GameInfo game = new()
 			{
 				Hash = hashSHA1,
 				Status = RomStatus.NotInDatabase,
@@ -371,7 +371,7 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".DSK":
-					DskIdentifier dId = new DskIdentifier(romData);
+					DskIdentifier dId = new(romData);
 					game.System = dId.IdentifiedSystem;
 					break;
 

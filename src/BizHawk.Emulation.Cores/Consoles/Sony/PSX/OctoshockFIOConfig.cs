@@ -11,7 +11,7 @@
 
 		public OctoshockFIOConfigLogical ToLogical()
 		{
-			OctoshockFIOConfigLogical lc = new OctoshockFIOConfigLogical();
+			OctoshockFIOConfigLogical lc = new();
 			lc.PopulateFrom(this);
 			return lc;
 		}

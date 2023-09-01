@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			foreach (var (k, v) in this) sb.Append(k).Append(' ').Append(v).AppendLine();
 			return sb.ToString();
 		}

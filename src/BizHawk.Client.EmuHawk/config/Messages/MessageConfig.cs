@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 			int y = 12;
 			foreach (var (name, pos) in Positions)
 			{
-				MessageRow row = new MessageRow
+				MessageRow row = new()
 				{
 					Name = name,
 					Location = new Point(10, y)
@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 			int y = 20;
 			foreach (var (name, argb) in Colors)
 			{
-				ColorRow row = new ColorRow
+				ColorRow row = new()
 				{
 					Name = name,
 					Location = new Point(10, y),

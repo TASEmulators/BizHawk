@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				List<WaterboxMemoryDomain> memoryDomains = _memoryAreas.Select(a => WaterboxMemoryDomain.Create(a, _exe)).ToList();
 				var primaryDomain = memoryDomains.Single(static md => md.Definition.Flags.HasFlag(LibWaterboxCore.MemoryDomainFlags.Primary));
 
-				MemoryDomainList mdl = new MemoryDomainList(
+				MemoryDomainList mdl = new(
 					memoryDomains.Cast<MemoryDomain>()
 						.Concat(new[] { _exe.GetPagesDomain() })
 						.ToList()
@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					{
 						foreach (var area in _saveramAreas)
 						{
-							MemoryDomainStream stream = new MemoryDomainStream(area);
+							MemoryDomainStream stream = new(area);
 							int cmp = (area.Definition.Flags & LibWaterboxCore.MemoryDomainFlags.OneFilled) != 0 ? -1 : 0;
 							while (true)
 							{
@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			using (_exe.EnterExit())
 			{
 				byte[] ret = new byte[_saveramSize];
-				MemoryStream dest = new MemoryStream(ret, true);
+				MemoryStream dest = new(ret, true);
 				foreach (var area in _saveramAreas)
 				{
 					new MemoryDomainStream(area).CopyTo(dest);
@@ -176,7 +176,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					throw new InvalidOperationException("Saveram size mismatch");
 				using (_exe.EnterExit())
 				{
-					MemoryStream source = new MemoryStream(data, false);
+					MemoryStream source = new(data, false);
 					foreach (var area in _saveramAreas)
 					{
 						WaterboxUtils.CopySome(source, new MemoryDomainStream(area), area.Size);

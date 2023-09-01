@@ -24,13 +24,13 @@ namespace BizHawk.Emulation.DiscSystem.SBI
 		public override void Run()
 		{
 			using var fs = File.OpenRead(IN_Path);
-			BinaryReader br = new BinaryReader(fs);
+			BinaryReader br = new(fs);
 			string sig = br.ReadStringFixedUtf8(4);
 			if (sig != "SBI\0")
 				throw new SBIParseException("Missing magic number");
 
-			SubQPatchData ret = new SubQPatchData();
-			List<short> bytes = new List<short>();
+			SubQPatchData ret = new();
+			List<short> bytes = new();
 
 			//read records until done
 			for (; ; )
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.DiscSystem.SBI
 				int m = BCD2.BCDToInt(br.ReadByte());
 				int s = BCD2.BCDToInt(br.ReadByte());
 				int f = BCD2.BCDToInt(br.ReadByte());
-				Timestamp ts = new Timestamp(m, s, f);
+				Timestamp ts = new(m, s, f);
 				ret.ABAs.Add(ts.Sector);
 				int type = br.ReadByte();
 				switch (type)

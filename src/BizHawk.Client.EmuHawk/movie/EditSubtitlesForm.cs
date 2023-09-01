@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditSubtitlesForm_Load(object sender, EventArgs e)
 		{
-			SubtitleList subs = new SubtitleList();
+			SubtitleList subs = new();
 			subs.AddRange(_selectedMovie.Subtitles);
 
 			for (int x = 0; x < subs.Count; x++)
@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 				_selectedMovie.Subtitles.Clear();
 				for (int i = 0; i < SubGrid.Rows.Count - 1; i++)
 				{
-					Subtitle sub = new Subtitle();
+					Subtitle sub = new();
 					
 					var c = SubGrid.Rows[i].Cells[0];
 					try { sub.Frame = int.Parse(c.Value.ToString()); }
@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 				return new Subtitle();
 			}
 
-			Subtitle sub = new Subtitle();
+			Subtitle sub = new();
 
 			if (int.TryParse(SubGrid.Rows[index].Cells[0].Value.ToString(), out int frame))
 			{
@@ -192,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			using SubtitleMaker s = new SubtitleMaker { Sub = GetRow(c[0].Index) };
+			using SubtitleMaker s = new() { Sub = GetRow(c[0].Index) };
 			if (s.ShowDialog().IsOk())
 			{
 				ChangeRow(s.Sub, SubGrid.SelectedRows[0].Index);
@@ -253,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 					color = Color.FromArgb(hex);
 				}
 
-				using ColorDialog picker = new ColorDialog { AllowFullOpen = true, AnyColor = true, Color = color };
+				using ColorDialog picker = new() { AllowFullOpen = true, AnyColor = true, Color = color };
 				if (picker.ShowDialog().IsOk())
 				{
 					SubGrid[e.ColumnIndex, e.RowIndex].Value = picker.Color.ToArgb().ToHexString(8);

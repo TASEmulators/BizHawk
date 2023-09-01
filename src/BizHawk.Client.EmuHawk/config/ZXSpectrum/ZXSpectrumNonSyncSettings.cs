@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int currColor = _settings.BackgroundColor;
 			System.Drawing.Color c = System.Drawing.Color.FromArgb(currColor);
-			using ColorDialog cd = new ColorDialog();
+			using ColorDialog cd = new();
 
 			System.Drawing.Color[] colors =
 			{

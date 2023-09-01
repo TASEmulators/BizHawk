@@ -308,7 +308,7 @@ namespace BizHawk.Emulation.DiscSystem
 			EndianBitConverter bc = EndianBitConverter.CreateForLittleEndian();
 			bool isDvd = false;
 
-			AFile aFile = new AFile { MDSPath = stream.Name };
+			AFile aFile = new() { MDSPath = stream.Name };
 
 			stream.Seek(0, SeekOrigin.Begin);
 
@@ -333,7 +333,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			// parse sessions
-			Dictionary<int, ASession> aSessions = new Dictionary<int, ASession>();
+			Dictionary<int, ASession> aSessions = new();
 
 			stream.Seek(aFile.Header.SessionOffset, SeekOrigin.Begin);
 			for (int se = 0; se < aFile.Header.SessionCount; se++)
@@ -342,7 +342,7 @@ namespace BizHawk.Emulation.DiscSystem
 				stream.Read(sessionHeader, 0, 24);
 				//sessionHeader.Reverse().ToArray();
 
-				ASession session = new ASession
+				ASession session = new()
 				{
 					SessionStart = bc.ToInt32(sessionHeader.Take(4).ToArray()),
 					SessionEnd = bc.ToInt32(sessionHeader.Skip(4).Take(4).ToArray()),
@@ -361,7 +361,7 @@ namespace BizHawk.Emulation.DiscSystem
 			long footerOffset = 0;
 
 			// parse track blocks
-			Dictionary<int, ATrack> aTracks = new Dictionary<int, ATrack>();
+			Dictionary<int, ATrack> aTracks = new();
 
 			// iterate through each session block
 			foreach (var session in aSessions.Values)
@@ -373,7 +373,7 @@ namespace BizHawk.Emulation.DiscSystem
 				for (int bl = 0; bl < session.AllBlocks; bl++)
 				{
 					byte[] trackHeader = new byte[80];
-					ATrack track = new ATrack();
+					ATrack track = new();
 
 					stream.Read(trackHeader, 0, 80);
 
@@ -428,7 +428,7 @@ namespace BizHawk.Emulation.DiscSystem
 						stream.Seek(track.FooterOffset, SeekOrigin.Begin);
 						stream.Read(foot, 0, 16);
 
-						AFooter f = new AFooter
+						AFooter f = new()
 						{
 							FilenameOffset = bc.ToInt32(foot.Take(4).ToArray()),
 							WideChar = bc.ToInt32(foot.Skip(4).Take(4).ToArray())
@@ -518,7 +518,7 @@ namespace BizHawk.Emulation.DiscSystem
 			aFile.ParsedSession = new();
 			foreach (var s in aSessions.Values)
 			{
-				Session session = new Session();
+				Session session = new();
 
 				if (!aTracks.TryGetValue(s.FirstTrack, out var startTrack))
 				{
@@ -625,14 +625,14 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static LoadResults LoadMDSPath(string path)
 		{
-			LoadResults ret = new LoadResults { MdsPath = path };
+			LoadResults ret = new() { MdsPath = path };
 			//ret.MdfPath = Path.ChangeExtension(path, ".mdf");
 			try
 			{
 				if (!File.Exists(path)) throw new MDSParseException("Malformed MDS format: nonexistent MDS file!");
 
 				AFile mdsf;
-				using (FileStream infMDS = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+				using (FileStream infMDS = new(path, FileMode.Open, FileAccess.Read, FileShare.Read))
 					mdsf = Parse(infMDS);
 
 				ret.ParsedMDSFile = mdsf;
@@ -650,7 +650,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <exception cref="MDSParseException">path reference no longer points to file</exception>
 		private static Dictionary<int, IBlob> MountBlobs(AFile mdsf, Disc disc)
 		{
-			Dictionary<int, IBlob> BlobIndex = new Dictionary<int, IBlob>();
+			Dictionary<int, IBlob> BlobIndex = new();
 
 			int count = 0;
 			foreach (var track in mdsf.Tracks)
@@ -661,7 +661,7 @@ namespace BizHawk.Emulation.DiscSystem
 						throw new MDSParseException($"Malformed MDS format: nonexistent image file: {file}");
 
 					//mount the file			
-					Blob_RawFile mdfBlob = new Blob_RawFile { PhysicalPath = file };
+					Blob_RawFile mdfBlob = new() { PhysicalPath = file };
 
 					bool dupe = false;
 					foreach (var re in disc.DisposableResources)
@@ -703,7 +703,7 @@ namespace BizHawk.Emulation.DiscSystem
 			int Control = adrc & 0x0F;
 			int ADR = adrc >> 4;
 
-			SubchannelQ q = new SubchannelQ
+			SubchannelQ q = new()
 			{
 				q_status = SubchannelQ.ComputeStatus(ADR, (EControlQ)(Control & 0xF)),
 				q_tno = tno,
@@ -728,7 +728,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (!loadResults.Valid)
 				throw loadResults.FailureException;
 
-			Disc disc = new Disc();
+			Disc disc = new();
 
 			// load all blobs
 			var BlobIndex = MountBlobs(loadResults.ParsedMDSFile, disc);
@@ -752,7 +752,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			//analyze the RAWTocEntries to figure out what type of track track 1 is
-			Synthesize_DiscTOC_From_RawTOCEntries_Job tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job(disc.Session1.RawTOCEntries);
+			Synthesize_DiscTOC_From_RawTOCEntries_Job tocSynth = new(disc.Session1.RawTOCEntries);
 			tocSynth.Run();
 
 			// now build the sectors
@@ -840,7 +840,7 @@ namespace BizHawk.Emulation.DiscSystem
 						{
 							relMSF++;
 
-							CUE.SS_Gap ss_gap = new CUE.SS_Gap()
+							CUE.SS_Gap ss_gap = new()
 							{
 								Policy = IN_DiscMountPolicy,
 								TrackType = pregapTrackType
@@ -924,7 +924,7 @@ namespace BizHawk.Emulation.DiscSystem
 						int Control = adrc & 0x0F;
 						int ADR = adrc >> 4;
 
-						SubchannelQ q = new SubchannelQ
+						SubchannelQ q = new()
 						{
 							q_status = SubchannelQ.ComputeStatus(ADR, (EControlQ)(Control & 0xF)),
 							q_tno = BCD2.FromDecimal(track.Point),

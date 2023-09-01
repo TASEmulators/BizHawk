@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 			Header[HeaderKeys.EmulatorVersion] = VersionInfo.GetEmuVersion();
 			CreateDirectoryIfNotExists(fn);
 
-			using ZipStateSaver bs = new ZipStateSaver(fn, Session.Settings.MovieCompressionLevel);
+			using ZipStateSaver bs = new(fn, Session.Settings.MovieCompressionLevel);
 			AddLumps(bs, isBackup);
 
 			if (!isBackup)
@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 
 		private static void CreateDirectoryIfNotExists(string fn)
 		{
-			FileInfo file = new FileInfo(fn);
+			FileInfo file = new(fn);
 			if (file.Directory != null && !file.Directory.Exists)
 			{
 				Directory.CreateDirectory(file.Directory.ToString());

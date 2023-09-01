@@ -64,8 +64,8 @@ namespace BizHawk.Common
 		private static void ThreadProc()
 		{
 			// squirrely logic, trying not to create garbage
-			HashSet<string> knownTempDirs = new HashSet<string>();
-			List<DirectoryInfo> dis = new List<DirectoryInfo>();
+			HashSet<string> knownTempDirs = new();
+			List<DirectoryInfo> dis = new();
 			for (;;)
 			{
 				lock (typeof(TempFileManager))

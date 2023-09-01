@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		private void InitMemoryDomains()
 		{
-			List<MemoryDomain> domains = new List<MemoryDomain>()
+			List<MemoryDomain> domains = new()
 			{
 				(_fcram = new("FCRAM", MemoryDomain.Endian.Little, IntPtr.Zero, 0, true, 4)),
 				(_vram = new("VRAM", MemoryDomain.Endian.Little, IntPtr.Zero, 0, true, 4)),

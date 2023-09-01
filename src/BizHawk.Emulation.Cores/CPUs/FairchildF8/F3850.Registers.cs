@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			Dictionary<string, RegisterValue> res = new Dictionary<string, RegisterValue>
+			Dictionary<string, RegisterValue> res = new()
 			{
 				["A"] = Regs[A],
 				["W"] = Regs[W],

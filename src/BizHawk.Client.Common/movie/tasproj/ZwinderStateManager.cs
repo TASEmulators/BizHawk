@@ -267,7 +267,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			MemoryStream ms = new MemoryStream();
+			MemoryStream ms = new();
 			source.SaveStateBinary(new BinaryWriter(ms));
 			_reserved.Add(frame, ms.ToArray());
 			AddStateCache(frame);
@@ -547,7 +547,7 @@ namespace BizHawk.Client.Common
 			if (version == 0)
 				settings.AncientStateInterval = br.ReadInt32();
 
-			ZwinderStateManager ret = new ZwinderStateManager(current, recent, gaps, reserveCallback, settings);
+			ZwinderStateManager ret = new(current, recent, gaps, reserveCallback, settings);
 
 			int ancientCount = br.ReadInt32();
 			for (int i = 0; i < ancientCount; i++)

@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		[CoreConstructor(VSystemID.Raw.AmstradCPC)]
 		public AmstradCPC(CoreLoadParameters<AmstradCPCSettings, AmstradCPCSyncSettings> lp)
 		{
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 			CoreComm = lp.Comm;
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				case MachineType.CPC464:
 					_machine = new CPC464(this, _cpu, files, autoTape, bType);
-					List<RomData> roms64 = new List<RomData>
+					List<RomData> roms64 = new()
 					{
 						RomData.InitROM(MachineType.CPC464, GetFirmware(0x4000, "OS464ROM"), RomData.ROMChipType.Lower),
 						RomData.InitROM(MachineType.CPC464, GetFirmware(0x4000, "BASIC1-0ROM"), RomData.ROMChipType.Upper, 0)
@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 				case MachineType.CPC6128:
 					_machine = new CPC6128(this, _cpu, files, autoTape, bType);
-					List<RomData> roms128 = new List<RomData>
+					List<RomData> roms128 = new()
 					{
 						RomData.InitROM(MachineType.CPC6128, GetFirmware(0x4000, "OS6128ROM"), RomData.ROMChipType.Lower),
 						RomData.InitROM(MachineType.CPC6128, GetFirmware(0x4000, "BASIC1-1ROM"), RomData.ROMChipType.Upper, 0),

@@ -99,8 +99,8 @@ namespace BizHawk.Client.EmuHawk
 				short[] waveform = (short[])ch.Wave.Clone();
 
 				// hash it
-				MemoryStream ms = new MemoryStream(_waveformTemp);
-				BinaryWriter bw = new BinaryWriter(ms);
+				MemoryStream ms = new(_waveformTemp);
+				BinaryWriter bw = new(ms);
 				foreach (short s in waveform)
 				{
 					bw.Write(s);
@@ -178,14 +178,14 @@ namespace BizHawk.Client.EmuHawk
 		private void BtnExport_Click(object sender, EventArgs e)
 		{
 			string tmpFilename = $"{Path.GetTempFileName()}.zip";
-			using (FileStream stream = new FileStream(tmpFilename, FileMode.Create, FileAccess.Write, FileShare.Read))
+			using (FileStream stream = new(tmpFilename, FileMode.Create, FileAccess.Write, FileShare.Read))
 			{
-				using ZipArchive zip = new ZipArchive(stream, ZipArchiveMode.Create);
+				using ZipArchive zip = new(stream, ZipArchiveMode.Create);
 
 				foreach (var entry in _psgEntries)
 				{
-					MemoryStream ms = new MemoryStream();
-					BinaryWriter bw = new BinaryWriter(ms);
+					MemoryStream ms = new();
+					BinaryWriter bw = new(ms);
 					bw.Write(EmptyWav, 0, EmptyWav.Length);
 					ms.Position = 0x18; // samplerate and avgbytespersecond
 					bw.Write(20000);
@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 			lvPsgWaveforms.Items.Clear();
 			foreach (var entry in _psgEntries)
 			{
-				ListViewItem lvi = new ListViewItem(entry.Name);
+				ListViewItem lvi = new(entry.Name);
 				lvi.SubItems.Add(entry.HitCount.ToString());
 				lvPsgWaveforms.Items.Add(lvi);
 			}

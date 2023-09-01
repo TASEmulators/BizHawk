@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				XmlDocument x = new XmlDocument();
+				XmlDocument x = new();
 				x.Load(f.GetStream());
 				var y = x.SelectSingleNode("./BizHawk-XMLGame");
 				if (y == null)
@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 					return null;
 				}
 
-				XmlGame ret = new XmlGame
+				XmlGame ret = new()
 				{
 					GI =
 					{
@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 				var n = y.SelectSingleNode("./LoadAssets");
 				if (n != null)
 				{
-					MemoryStream hashStream = new MemoryStream();
+					MemoryStream hashStream = new();
 					int? originalIndex = null;
 
 					foreach (XmlNode a in n.ChildNodes)
@@ -77,7 +77,7 @@ namespace BizHawk.Client.Common
 							fullPath = Path.Combine(fullPath, filename.SubstringBefore('|'));
 							try
 							{
-								using HawkFile hf = new HawkFile(fullPath, allowArchives: !MAMEMachineDB.IsMAMEMachine(fullPath));
+								using HawkFile hf = new(fullPath, allowArchives: !MAMEMachineDB.IsMAMEMachine(fullPath));
 								if (hf.IsArchive)
 								{
 									var archiveItem = hf.ArchiveItems.First(ai => ai.Name == filename.Split('|').Skip(1).First());

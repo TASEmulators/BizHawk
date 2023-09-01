@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			bool diskDriveEnabled = _board.DiskDrive != null;
 			bool tapeDriveEnabled = _board.TapeDrive != null;
 
-			List<MemoryDomain> domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new()
 			{
 				C64MemoryDomainFactory.Create("System Bus", 0x10000, a => _board.Cpu.Peek(a), (a, v) => _board.Cpu.Poke(a, v)),
 				C64MemoryDomainFactory.Create("RAM", 0x10000, a => _board.Ram.Peek(a), (a, v) => _board.Ram.Poke(a, v)),

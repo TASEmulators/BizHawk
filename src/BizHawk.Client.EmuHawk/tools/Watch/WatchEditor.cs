@@ -233,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 					DoEdit();
 					break;
 				case Mode.Duplicate:
-					List<Watch> tempWatchList = new List<Watch>();
+					List<Watch> tempWatchList = new();
 					tempWatchList.AddRange(Watches);
 					Watches.Clear();
 					foreach (var watch in tempWatchList)

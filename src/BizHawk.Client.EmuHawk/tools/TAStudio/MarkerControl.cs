@@ -177,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 			TasMovieMarker marker;
 			if (editText)
 			{
-				InputPrompt i = new InputPrompt
+				InputPrompt i = new()
 				{
 					Text = $"Marker for frame {frame}",
 					TextInputType = InputPrompt.InputType.Text,
@@ -226,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 		public void EditMarkerPopUp(TasMovieMarker marker, bool followCursor = false)
 		{
 			int markerFrame = marker.Frame;
-			InputPrompt i = new InputPrompt
+			InputPrompt i = new()
 			{
 				Text = $"Marker for frame {markerFrame}",
 				TextInputType = InputPrompt.InputType.Text,
@@ -255,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 		public void EditMarkerFramePopUp(TasMovieMarker marker)
 		{
 			int markerFrame = marker.Frame;
-			InputPrompt i = new InputPrompt
+			InputPrompt i = new()
 			{
 				Text = $"Marker for frame {markerFrame}",
 				TextInputType = InputPrompt.InputType.Unsigned,

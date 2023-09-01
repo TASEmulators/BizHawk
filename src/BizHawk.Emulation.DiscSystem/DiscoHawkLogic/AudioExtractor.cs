@@ -11,7 +11,7 @@ namespace BizHawk.Client.DiscoHawk
 	{
 		public static void Extract(Disc disc, string path, string fileBase, Func<string, bool?> getOverwritePolicy)
 		{
-			DiscSectorReader dsr = new DiscSectorReader(disc);
+			DiscSectorReader dsr = new(disc);
 
 			bool shouldHalt = false;
 			bool? overwriteExisting = null; // true = overwrite, false = skip existing, null = unset

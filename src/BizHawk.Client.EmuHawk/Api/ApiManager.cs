@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 
 		static ApiManager()
 		{
-			List<(Type, Type, ConstructorInfo, Type[])> list = new List<(Type, Type, ConstructorInfo, Type[])>();
+			List<(Type, Type, ConstructorInfo, Type[])> list = new();
 			foreach (var implType in Common.ReflectionCache.Types.Concat(ReflectionCache.Types)
 				.Where(t => /*t.IsClass &&*/t.IsSealed)) // small optimisation; api impl. types are all sealed classes
 			{
@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			IEmulator emulator,
 			IGameInfo game)
 		{
-			Dictionary<Type, object> avail = new Dictionary<Type, object>
+			Dictionary<Type, object> avail = new()
 			{
 				[typeof(Action<string>)] = logCallback,
 				[typeof(IMainFormForApi)] = mainForm,

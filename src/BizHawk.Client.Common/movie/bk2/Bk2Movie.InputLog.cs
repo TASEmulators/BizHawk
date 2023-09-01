@@ -113,7 +113,7 @@ namespace BizHawk.Client.Common
 		{
 			// This function will compare the movie data to the savestate movie data to see if they match
 			errorMessage = "";
-			List<string> newLog = new List<string>();
+			List<string> newLog = new();
 			int stateFrame = 0;
 			string line;
 			while ((line = reader.ReadLine()) != null)

@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			// TODO: is 8bit for byte arrays and 16bit for ushort correct here?
 			// If ushort is correct, how about little endian?
-			List<MemoryDomain> domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new()
 			{
 				new MemoryDomainDelegate(
 					"Main RAM",

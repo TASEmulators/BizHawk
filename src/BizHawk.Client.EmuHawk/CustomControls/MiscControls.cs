@@ -29,15 +29,15 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnPaint(PaintEventArgs pevent)
 		{
 			// draw text-label part of the control with something so that it isn't hallofmirrorsy
-			using(SolidBrush brush = new SolidBrush(Parent.BackColor))
+			using(SolidBrush brush = new(Parent.BackColor))
 				pevent.Graphics.FillRectangle(brush, ClientRectangle);
 
-			Rectangle r = new Rectangle(ClientRectangle.Location, SystemInformation.MenuCheckSize);
+			Rectangle r = new(ClientRectangle.Location, SystemInformation.MenuCheckSize);
 			var glyphLoc = ClientRectangle;
 			glyphLoc.Size = SystemInformation.MenuCheckSize;
 
 			// draw the selectedbackdrop color roughly where the glyph belongs
-			using (SolidBrush brush = new SolidBrush(_checkBackColor))
+			using (SolidBrush brush = new(_checkBackColor))
 				pevent.Graphics.FillRectangle(brush, glyphLoc);
 
 			// draw a checkbox menu glyph (we could do this more elegantly with DrawFrameControl)

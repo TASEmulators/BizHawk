@@ -15,7 +15,7 @@ namespace BizHawk.Bizware.Input
 		{
 			if (!IPCActive)
 			{
-				Thread t = new Thread(IPCThread) { IsBackground = true };
+				Thread t = new(IPCThread) { IsBackground = true };
 				t.Start();
 				IPCActive = true;
 			}
@@ -31,12 +31,12 @@ namespace BizHawk.Bizware.Input
 
 			while (true)
 			{
-				using NamedPipeServerStream pipe = new NamedPipeServerStream(pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 1024, 1024);
+				using NamedPipeServerStream pipe = new(pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 1024, 1024);
 				try
 				{
 					pipe.WaitForConnection();
 
-					BinaryReader br = new BinaryReader(pipe);
+					BinaryReader br = new(pipe);
 
 					while (true)
 					{

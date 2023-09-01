@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		{
 			if (_cachedSettingsInfo is null)
 			{
-				using HyperNyma n = new HyperNyma(comm);
+				using HyperNyma n = new(comm);
 				n.InitForSettingsInfo("hyper.wbx");
 				_cachedSettingsInfo = n.SettingsInfo.Clone();
 			}
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		public HyperNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, VSystemID.Raw.PCE, "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{
-			Dictionary<string, FirmwareID> firmwares = new Dictionary<string, FirmwareID>();
+			Dictionary<string, FirmwareID> firmwares = new();
 			if (lp.Discs.Count > 0)
 			{
 				_hasCds = true;
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			using(_exe.EnterExit())
 			{
 				int[] palScratch = new int[512];
-				PceGpuData v = new PceGpuData();
+				PceGpuData v = new();
 				_hyperNyma.GetVramInfo(v, vdc);
 				fixed(int* p = palScratch)
 				{

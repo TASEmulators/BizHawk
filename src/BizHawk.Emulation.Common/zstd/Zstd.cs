@@ -376,7 +376,7 @@ namespace BizHawk.Emulation.Common
 
 		static Zstd()
 		{
-			DynamicLibraryImportResolver resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "libzstd.so.1" : "libzstd.dll", hasLimitedLifetime: false);
 			_lib = BizInvoker.GetInvoker<LibZstd>(resolver, CallingConventionAdapters.Native);
 
@@ -473,10 +473,10 @@ namespace BizHawk.Emulation.Common
 			}
 			src.Seek(0, SeekOrigin.Begin);
 
-			using ZstdDecompressionStreamContext dctx = new ZstdDecompressionStreamContext();
+			using ZstdDecompressionStreamContext dctx = new();
 			dctx.InitContext();
-			using ZstdDecompressionStream dstream = new ZstdDecompressionStream(src, dctx);
-			MemoryStream ret = new MemoryStream();
+			using ZstdDecompressionStream dstream = new(src, dctx);
+			MemoryStream ret = new();
 			dstream.CopyTo(ret);
 			return ret;
 		}

@@ -120,13 +120,13 @@ namespace BizHawk.Bizware.Graphics
 		public Texture2d LoadTexture(Bitmap bitmap)
 		{
 			Bitmap sdBitmap = (Bitmap)bitmap.Clone();
-			GDIPlusTexture gtex = new GDIPlusTexture { SDBitmap = sdBitmap };
+			GDIPlusTexture gtex = new() { SDBitmap = sdBitmap };
 			return new(this, gtex, bitmap.Width, bitmap.Height);
 		}
 
 		public Texture2d LoadTexture(Stream stream)
 		{
-			using BitmapBuffer bmp = new BitmapBuffer(stream, new());
+			using BitmapBuffer bmp = new(stream, new());
 			return LoadTexture(bmp);
 		}
 
@@ -147,25 +147,25 @@ namespace BizHawk.Bizware.Graphics
 		{
 			// definitely needed (by TextureFrugalizer at least)
 			var sdBitmap = bmp.ToSysdrawingBitmap();
-			GDIPlusTexture gtex = new GDIPlusTexture { SDBitmap = sdBitmap };
+			GDIPlusTexture gtex = new() { SDBitmap = sdBitmap };
 			return new(this, gtex, bmp.Width, bmp.Height);
 		}
 
 		public BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
 			GDIPlusTexture gtex = (GDIPlusTexture)tex.Opaque;
-			BitmapLoadOptions blow = new BitmapLoadOptions
+			BitmapLoadOptions blow = new()
 			{
 				AllowWrap = false // must be an independent resource
 			};
 
-			BitmapBuffer bb = new BitmapBuffer(gtex.SDBitmap, blow);
+			BitmapBuffer bb = new(gtex.SDBitmap, blow);
 			return bb;
 		}
 
 		public Texture2d LoadTexture(string path)
 		{
-			using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+			using FileStream fs = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 			return LoadTexture(fs);
 		}
 
@@ -210,14 +210,14 @@ namespace BizHawk.Bizware.Graphics
 
 		public RenderTarget CreateRenderTarget(int w, int h)
 		{
-			GDIPlusTexture gtex = new GDIPlusTexture
+			GDIPlusTexture gtex = new()
 			{
 				SDBitmap = new(w, h, PixelFormat.Format32bppArgb)
 			};
-			Texture2d tex = new Texture2d(this, gtex, w, h);
+			Texture2d tex = new(this, gtex, w, h);
 
-			GDIPlusRenderTarget grt = new GDIPlusRenderTarget(() => BufferedGraphicsContext);
-			RenderTarget rt = new RenderTarget(this, grt, tex);
+			GDIPlusRenderTarget grt = new(() => BufferedGraphicsContext);
+			RenderTarget rt = new(this, grt, tex);
 			grt.Target = rt;
 			return rt;
 		}

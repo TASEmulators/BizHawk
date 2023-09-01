@@ -102,8 +102,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 		private static byte[] ConvertSectorToGcr(byte[] source, byte sectorNo, byte trackNo, byte formatA, byte formatB, int gapLength, ErrorType errorType, out int bitsWritten)
 		{
-			using MemoryStream mem = new MemoryStream();
-			using BinaryWriter writer = new BinaryWriter(mem);
+			using MemoryStream mem = new();
+			using BinaryWriter writer = new(mem);
 
 			if (errorType == ErrorType.IdMismatch)
 			{
@@ -142,8 +142,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			int[] gcr = new int[8];
 			byte[] data = new byte[4];
 			int count = source.Length;
-			using MemoryStream mem = new MemoryStream();
-			BinaryWriter writer = new BinaryWriter(mem);
+			using MemoryStream mem = new();
+			BinaryWriter writer = new(mem);
 
 			for (int i = 0; i < count; i += 4)
 			{
@@ -180,12 +180,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			byte formatB = source[D64_DISK_ID_OFFSET + 0x00];
 			byte formatA = source[D64_DISK_ID_OFFSET + 0x01];
 
-			using MemoryStream mem = new MemoryStream(source);
-			BinaryReader reader = new BinaryReader(mem);
-			List<byte[]> trackDatas = new List<byte[]>();
-			List<int> trackLengths = new List<int>();
-			List<int> trackNumbers = new List<int>();
-			List<int> trackDensities = new List<int>();
+			using MemoryStream mem = new(source);
+			BinaryReader reader = new(mem);
+			List<byte[]> trackDatas = new();
+			List<int> trackLengths = new();
+			List<int> trackNumbers = new();
+			List<int> trackDensities = new();
 			var errorType = ErrorType.NoError;
 			int trackCount;
 			int errorOffset = -1;
@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				}
 				int sectors = SectorsPerTrack[i];
 				int trackLengthBits = 0;
-				using MemoryStream trackMem = new MemoryStream();
+				using MemoryStream trackMem = new();
 				for (int j = 0; j < sectors; j++)
 				{
 					byte[] sectorData = reader.ReadBytes(256);

@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			int spacing = 25;
 			foreach (var platform in _availableSystems)
 			{
-				RadioButton radio = new RadioButton
+				RadioButton radio = new()
 				{
 					Text = platform.FullName,
 					Location = UIHelper.Scale(new Point(15, 15 + (count * spacing))),

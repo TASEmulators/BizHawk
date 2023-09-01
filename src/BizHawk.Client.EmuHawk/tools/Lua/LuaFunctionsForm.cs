@@ -121,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			foreach (int index in FunctionView.SelectedIndices)
 			{
 				var itm = _filteredList[index];

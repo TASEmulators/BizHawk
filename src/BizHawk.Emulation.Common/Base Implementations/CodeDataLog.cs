@@ -135,8 +135,8 @@ namespace BizHawk.Emulation.Common
 
 		private Dictionary<string, long> SaveInternal(Stream s, bool forReal)
 		{
-			Dictionary<string, long> ret = new Dictionary<string, long>();
-			BinaryWriter w = new BinaryWriter(s);
+			Dictionary<string, long> ret = new();
+			BinaryWriter w = new(s);
 			w.Write("BIZHAWK-CDL-2");
 			w.Write(SubType!.PadRight(15));
 			w.Write(Count);
@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.Common
 		/// <exception cref="InvalidOperationException">contents of <paramref name="s"/> do not begin with valid file header</exception>
 		public void Load(Stream s)
 		{
-			BinaryReader br = new BinaryReader(s);
+			BinaryReader br = new(s);
 			string id = br.ReadString();
 			SubType = id switch
 			{

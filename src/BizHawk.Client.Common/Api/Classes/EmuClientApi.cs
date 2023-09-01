@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common
 				eventHandled = false;
 				return;
 			}
-			BeforeQuickLoadEventArgs e = new BeforeQuickLoadEventArgs(quickSaveSlotName);
+			BeforeQuickLoadEventArgs e = new(quickSaveSlotName);
 			BeforeQuickLoad(sender, e);
 			eventHandled = e.Handled;
 		}
@@ -126,7 +126,7 @@ namespace BizHawk.Client.Common
 				eventHandled = false;
 				return;
 			}
-			BeforeQuickSaveEventArgs e = new BeforeQuickSaveEventArgs(quickSaveSlotName);
+			BeforeQuickSaveEventArgs e = new(quickSaveSlotName);
 			BeforeQuickSave(sender, e);
 			eventHandled = e.Handled;
 		}

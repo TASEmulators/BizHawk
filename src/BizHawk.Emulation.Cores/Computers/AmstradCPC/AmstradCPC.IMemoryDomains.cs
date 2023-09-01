@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		private void SetupMemoryDomains()
 		{
-			List<MemoryDomain> domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new()
 			{
 				new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 			else
 			{
-				MemoryDomainByteArray m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
+				MemoryDomainByteArray m = new(name, MemoryDomain.Endian.Little, data, true, 1);
 				_byteArrayDomains.Add(name, m);
 			}
 #pragma warning restore MEN014

@@ -12,13 +12,13 @@ namespace BizHawk.Client.Common
 
 		private static void WriteZipVersion(Stream s)
 		{
-			using StreamWriter sw = new StreamWriter(s);
+			using StreamWriter sw = new(s);
 			sw.WriteLine("2"); // version 1.0.2
 		}
 
 		private static void WriteEmuVersion(Stream s)
 		{
-			using StreamWriter sw = new StreamWriter(s);
+			using StreamWriter sw = new(s);
 			sw.WriteLine(VersionInfo.GetEmuVersion());
 		}
 
@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 		{
 			PutLump(lump, s =>
 			{
-				BinaryWriter bw = new BinaryWriter(s);
+				BinaryWriter bw = new(s);
 				callback(bw);
 				bw.Flush();
 			});

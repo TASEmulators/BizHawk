@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 
 		public void LoadCoreStateFromMemory(string identifier)
 		{
-			Guid guid = new Guid(identifier);
+			Guid guid = new(identifier);
 			try
 			{
 				StatableCore.LoadStateBinary(_memorySavestates[guid]);

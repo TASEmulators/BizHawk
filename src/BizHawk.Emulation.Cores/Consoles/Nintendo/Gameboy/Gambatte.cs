@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[CoreConstructor(VSystemID.Raw.SGB)]
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, GambatteSettings settings, GambatteSyncSettings syncSettings, bool deterministic)
 		{
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ser.Register<IDisassemblable>(_disassembler);
 			ServiceProvider = ser;
 			const string TRACE_HEADER = "LR35902: PC, opcode, registers (A, F, B, C, D, E, H, L, LY, SP, CY)";
@@ -271,7 +271,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public static ControllerDefinition CreateControllerDefinition(bool sgb, bool sub, bool tilt, bool rumble, bool remote)
 		{
-			ControllerDefinition ret = new ControllerDefinition((sub ? "Subframe " : "") + "Gameboy Controller" + (tilt ? " + Tilt" : ""));
+			ControllerDefinition ret = new((sub ? "Subframe " : "") + "Gameboy Controller" + (tilt ? " + Tilt" : ""));
 			if (sub)
 			{
 				ret.AddAxis("Input Length", 0.RangeTo(35112), 35112);

@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static ToolStripMenuItem ToColumnsMenu(this InputRoll inputRoll, Action changeCallback)
 		{
-			ToolStripMenuItem menu = new ToolStripMenuItem
+			ToolStripMenuItem menu = new()
 			{
 				Name = "GeneratedColumnsSubMenu",
 				Text = "Columns"
@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var column in columns)
 			{
-				ToolStripMenuItem menuItem = new ToolStripMenuItem
+				ToolStripMenuItem menuItem = new()
 				{
 					Name = column.Name,
 					Text = $"{column.Text} ({column.Name})",
@@ -148,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 				return "";
 			}
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			// walk over each selected item and subitem within it to generate a string from it
 			foreach (int index in indexes)
@@ -185,8 +185,8 @@ namespace BizHawk.Client.EmuHawk
 			var columnHeader = Win32Imports.SendMessage(listViewControl.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
 			for (int columnNumber = 0, l = listViewControl.Columns.Count; columnNumber < l; columnNumber++)
 			{
-				IntPtr columnPtr = new IntPtr(columnNumber);
-				Win32Imports.HDITEM item = new Win32Imports.HDITEM { mask = Win32Imports.HDITEM.Mask.Format };
+				IntPtr columnPtr = new(columnNumber);
+				Win32Imports.HDITEM item = new() { mask = Win32Imports.HDITEM.Mask.Format };
 				if (Win32Imports.SendMessage(columnHeader, HDM_GETITEM, columnPtr, ref item) == IntPtr.Zero) throw new Win32Exception();
 				if (columnNumber != columnIndex || order == SortOrder.None)
 				{
@@ -220,8 +220,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public static Bitmap ToBitMap(this Control control)
 		{
-			Bitmap b = new Bitmap(control.Width, control.Height);
-			Rectangle rect = new Rectangle(new Point(0, 0), control.Size);
+			Bitmap b = new(control.Width, control.Height);
+			Rectangle rect = new(new Point(0, 0), control.Size);
 			control.DrawToBitmap(b, rect);
 			return b;
 		}

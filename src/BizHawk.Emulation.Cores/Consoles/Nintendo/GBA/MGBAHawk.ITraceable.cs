@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			var regs = GetCpuFlagsAndRegisters();
 			ulong wordSize = (regs["CPSR"].Value & 32) == 0 ? 4UL : 2UL;
 			ulong pc = regs["R15"].Value - wordSize * 2;
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			for (int i = 0; i < RegisterNames.Length; i++)
 			{

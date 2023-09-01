@@ -296,7 +296,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public static LibGPGX.CDData GetCDDataStruct(Disc cd)
 		{
-			LibGPGX.CDData ret = new LibGPGX.CDData();
+			LibGPGX.CDData ret = new();
 
 			var ses = cd.Session1;
 			int ntrack = ses.InformationTrackCount;
@@ -389,7 +389,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public VDPView UpdateVDPViewContext()
 		{
-			LibGPGX.VDPView v = new LibGPGX.VDPView();
+			LibGPGX.VDPView v = new();
 			Core.gpgx_get_vdp_view(v);
 			Core.gpgx_flush_vram(); // fully regenerate internal caches as needed
 			return new VDPView(v, _elf);

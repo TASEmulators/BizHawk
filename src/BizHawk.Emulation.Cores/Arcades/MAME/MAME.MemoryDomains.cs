@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void InitMemoryDomains()
 		{
-			List<MemoryDomain> domains = new List<MemoryDomain>();
+			List<MemoryDomain> domains = new();
 
 			int systemBusAddressShift = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceAddressShift);
 			int dataWidth = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceDataWidth) >> 3; // mame returns in bits

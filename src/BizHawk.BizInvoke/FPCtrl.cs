@@ -37,7 +37,7 @@ namespace BizHawk.BizInvoke
 			_memory = new(4096);
 			_memory.Protect(_memory.Start, _memory.Size, MemoryBlock.Protection.RW);
 			var ss = _memory.GetStream(_memory.Start, 64, true);
-			BinaryWriter bw = new BinaryWriter(ss);
+			BinaryWriter bw = new(ss);
 
 			// FYI: The push/pop is only needed on Windows, but doesn't do any harm on Linux
 

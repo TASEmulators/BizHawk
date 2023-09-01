@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 			IDictionary<string, Dictionary<string, AnalogBind>> analogBinds,
 			IDictionary<string, Dictionary<string, FeedbackBind>> feedbackBinds)
 		{
-			Controller ret = new Controller(def);
+			Controller ret = new(def);
 			if (allBinds.TryGetValue(def.Name, out var binds))
 			{
 				foreach (string btn in def.BoolButtons)
@@ -138,7 +138,7 @@ namespace BizHawk.Client.Common
 			int on,
 			int off)
 		{
-			AutofireController ret = new AutofireController(emulator, on, off);
+			AutofireController ret = new(emulator, on, off);
 			if (allBinds.TryGetValue(emulator.ControllerDefinition.Name, out var binds))
 			{
 				foreach (string btn in emulator.ControllerDefinition.BoolButtons)

@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		{
 			if (_cachedSettingsInfo is null)
 			{
-				using NeoGeoPort n = new NeoGeoPort(comm);
+				using NeoGeoPort n = new(comm);
 				n.InitForSettingsInfo("ngp.wbx");
 				_cachedSettingsInfo = n.SettingsInfo.Clone();
 			}

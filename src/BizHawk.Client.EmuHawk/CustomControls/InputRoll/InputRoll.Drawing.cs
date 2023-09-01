@@ -625,7 +625,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (itemColor != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
 					{
-						Cell cell = new Cell
+						Cell cell = new()
 						{
 							Column = column,
 							RowIndex = i

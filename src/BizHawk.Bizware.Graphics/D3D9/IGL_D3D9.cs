@@ -65,7 +65,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			// get the native window handle
-			SDL_SysWMinfo wminfo = default(SDL_SysWMinfo);
+			SDL_SysWMinfo wminfo = default;
 			SDL_GetVersion(out wminfo.version);
 			SDL_GetWindowWMInfo(_offscreenSdl2Window, ref wminfo);
 			if (wminfo.subsystem != SDL_SYSWM_TYPE.SDL_SYSWM_WINDOWS)
@@ -93,7 +93,7 @@ namespace BizHawk.Bizware.Graphics
 		private void CreateDevice()
 		{
 			// this object is only used for creating a device, it's not needed afterwards
-			using Direct3D d3d9 = new Direct3D();
+			using Direct3D d3d9 = new();
 
 			var pp = MakePresentParameters();
 
@@ -230,7 +230,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			try
 			{
-				ShaderWrapper sw = new ShaderWrapper();
+				ShaderWrapper sw = new();
 
 				// ShaderFlags.EnableBackwardsCompatibility - used this once upon a time (please leave a note about why)
 				var result = ShaderBytecode.Compile(
@@ -242,7 +242,7 @@ namespace BizHawk.Bizware.Graphics
 				sw.PS = new(_device, result);
 				sw.Bytecode = result;
 
-				Shader s = new Shader(this, sw, true);
+				Shader s = new(this, sw, true);
 				sw.IGLShader = s;
 
 				return s;
@@ -263,7 +263,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			try
 			{
-				ShaderWrapper sw = new ShaderWrapper();
+				ShaderWrapper sw = new();
 
 				var result = ShaderBytecode.Compile(
 					shaderSource: source,
@@ -274,7 +274,7 @@ namespace BizHawk.Bizware.Graphics
 				sw.VS = new(_device, result);
 				sw.Bytecode = result;
 
-				Shader s = new Shader(this, sw, true);
+				Shader s = new(this, sw, true);
 				sw.IGLShader = s;
 
 				return s;
@@ -375,7 +375,7 @@ namespace BizHawk.Bizware.Graphics
 			// must be placed at the end
 			ves[vertexLayout.Items.Count] = VertexElement.VertexDeclarationEnd;
 
-			PipelineWrapper pw = new PipelineWrapper
+			PipelineWrapper pw = new()
 			{
 				VertexDeclaration = new(_device, ves),
 				VertexShader = (ShaderWrapper)vertexShader.Opaque,
@@ -384,12 +384,12 @@ namespace BizHawk.Bizware.Graphics
 			};
 
 			// scan uniforms from reflection
-			List<UniformInfo> uniforms = new List<UniformInfo>();
+			List<UniformInfo> uniforms = new();
 			var vsct = pw.VertexShader.Bytecode.ConstantTable;
 			var psct = pw.FragmentShader.Bytecode.ConstantTable;
 			foreach (var ct in new[] { vsct, psct })
 			{
-				Queue<(string, EffectHandle)> todo = new Queue<(string, EffectHandle)>();
+				Queue<(string, EffectHandle)> todo = new();
 				int n = ct.Description.Constants;
 				for (int i = 0; i < n; i++)
 				{
@@ -416,8 +416,8 @@ namespace BizHawk.Bizware.Graphics
 						continue;
 					}
 
-					UniformInfo ui = new UniformInfo();
-					UniformWrapper uw = new UniformWrapper();
+					UniformInfo ui = new();
+					UniformWrapper uw = new();
 
 					ui.Opaque = uw;
 					string name = prefix + descr.Name;
@@ -606,21 +606,21 @@ namespace BizHawk.Bizware.Graphics
 
 		public Texture2d LoadTexture(Bitmap bitmap)
 		{
-			using BitmapBuffer bmp = new BitmapBuffer(bitmap, new());
+			using BitmapBuffer bmp = new(bitmap, new());
 			return LoadTexture(bmp);
 		}
 
 		public Texture2d LoadTexture(Stream stream)
 		{
-			using BitmapBuffer bmp = new BitmapBuffer(stream, new());
+			using BitmapBuffer bmp = new(stream, new());
 			return LoadTexture(bmp);
 		}
 
 		public Texture2d CreateTexture(int width, int height)
 		{
-			Texture tex = new Texture(_device, width, height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
-			TextureWrapper tw = new TextureWrapper { Texture = tex };
-			Texture2d ret = new Texture2d(this, tw, width, height);
+			Texture tex = new(_device, width, height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+			TextureWrapper tw = new() { Texture = tex };
+			Texture2d ret = new(this, tw, width, height);
 			return ret;
 		}
 
@@ -644,8 +644,8 @@ namespace BizHawk.Bizware.Graphics
 					throw new InvalidOperationException();
 				}
 
-				ReadOnlySpan<byte> srcSpan = new ReadOnlySpan<byte>(bmpData.Scan0.ToPointer(), bmpData.Stride * bmp.Height);
-				Span<byte> dstSpan = new Span<byte>(dr.DataPointer.ToPointer(), dr.Pitch * bmp.Height);
+				ReadOnlySpan<byte> srcSpan = new(bmpData.Scan0.ToPointer(), bmpData.Stride * bmp.Height);
+				Span<byte> dstSpan = new(dr.DataPointer.ToPointer(), dr.Pitch * bmp.Height);
 				srcSpan.CopyTo(dstSpan);
 			}
 			finally
@@ -666,7 +666,7 @@ namespace BizHawk.Bizware.Graphics
 		public BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
 			// TODO - lazy create and cache resolving target in RT
-			using Texture target = new Texture(_device, tex.IntWidth, tex.IntHeight, 1, Usage.None, Format.A8R8G8B8, Pool.SystemMemory);
+			using Texture target = new(_device, tex.IntWidth, tex.IntHeight, 1, Usage.None, Format.A8R8G8B8, Pool.SystemMemory);
 			TextureWrapper tw = (TextureWrapper)tex.Opaque;
 
 			_device.GetRenderTargetData(tw.Texture.GetSurfaceLevel(0), target.GetSurfaceLevel(0));
@@ -692,7 +692,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public Texture2d LoadTexture(string path)
 		{
-			using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+			using FileStream fs = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 			return LoadTexture(fs);
 		}
 
@@ -739,9 +739,9 @@ namespace BizHawk.Bizware.Graphics
 
 		public RenderTarget CreateRenderTarget(int w, int h)
 		{
-			TextureWrapper tw = new TextureWrapper { Texture = CreateRenderTargetTexture(w, h) };
-			Texture2d tex = new Texture2d(this, tw, w, h);
-			RenderTarget rt = new RenderTarget(this, tw, tex);
+			TextureWrapper tw = new() { Texture = CreateRenderTargetTexture(w, h) };
+			Texture2d tex = new(this, tw, w, h);
+			RenderTarget rt = new(this, tw, tex);
 			_renderTargets.Add(rt);
 			return rt;
 		}

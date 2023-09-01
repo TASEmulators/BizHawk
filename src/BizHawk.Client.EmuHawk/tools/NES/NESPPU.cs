@@ -295,7 +295,7 @@ namespace BizHawk.Client.EmuHawk
 		private static Bitmap Section(Image srcBitmap, Rectangle section, bool is8x16)
 		{
 			// Create the new bitmap and associated graphics object
-			Bitmap bmp = new Bitmap(64, 64);
+			Bitmap bmp = new(64, 64);
 			Graphics g = Graphics.FromImage(bmp);
 
 			// Draw the specified section of the source bitmap to the new one
@@ -615,7 +615,7 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = $"Address: 0x{addr:X4}";
 			int val;
 
-			Bitmap bmp = new Bitmap(64, 64);
+			Bitmap bmp = new(64, 64);
 			Graphics g = Graphics.FromImage(bmp);
 
 			byte[] palRam = _ppu.GetPalRam();

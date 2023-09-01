@@ -747,7 +747,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Video output buffer
 		/// </summary>
 		public int[] ScreenBuffer;
-		private int _bufferHeight;
 
 		public int BackgroundColor
 		{
@@ -768,11 +767,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public int BufferWidth { get; set; }
 
-		public int BufferHeight
-		{
-			get => _bufferHeight;
-			set => _bufferHeight = value;
-		}
+		public int BufferHeight { get; set; }
 
 		public int VsyncNumerator
 		{

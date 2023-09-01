@@ -53,9 +53,9 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				using (ManualResetEvent evt = new ManualResetEvent(false))
+				using (ManualResetEvent evt = new(false))
 				{
-					using System.Net.WebClient client = new System.Net.WebClient();
+					using System.Net.WebClient client = new();
 					System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 					client.DownloadFileAsync(new Uri(_url), fn);
 					client.DownloadProgressChanged += (object sender, System.Net.DownloadProgressChangedEventArgs e) =>
@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 
 				//try acquiring file
-				using (HawkFile dll = new HawkFile(fn))
+				using (HawkFile dll = new(fn))
 				{
 					byte[] data = dll!.ReadAllBytes();
 

@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 				url = url.Replace("http:", "https:");
 			}
 
-			using RAIntegrationDownloaderForm downloadForm = new RAIntegrationDownloaderForm(url);
+			using RAIntegrationDownloaderForm downloadForm = new(url);
 			downloadForm.ShowDialog();
 			return downloadForm.DownloadSucceeded();
 		}
@@ -62,12 +62,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				HttpCommunication http = new HttpCommunication(null, "https://retroachievements.org/dorequest.php?r=latestintegration", null);
+				HttpCommunication http = new(null, "https://retroachievements.org/dorequest.php?r=latestintegration", null);
 				var info = JsonConvert.DeserializeObject<Dictionary<string, object>>(http.ExecGet());
 				if (info.TryGetValue("Success", out object success) && (bool)success)
 				{
-					Version lastestVer = new Version((string)info["LatestVersion"]);
-					Version minVer = new Version((string)info["MinimumVersion"]);
+					Version lastestVer = new((string)info["LatestVersion"]);
+					Version minVer = new((string)info["MinimumVersion"]);
 
 					if (_version < minVer)
 					{

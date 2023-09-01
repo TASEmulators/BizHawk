@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		static Sameboy()
 		{
-			DynamicLibraryImportResolver resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "libsameboy.so" : "libsameboy.dll", hasLimitedLifetime: false);
 			LibSameboy = BizInvoker.GetInvoker<LibSameboy>(resolver, CallingConventionAdapters.Native);
 		}
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public Sameboy(CoreComm comm, GameInfo game, byte[] gbs, SameboySettings settings, SameboySyncSettings syncSettings)
 			: this(comm, game, null, settings, syncSettings, false)
 		{
-			LibSameboy.GBSInfo gbsInfo = new LibSameboy.GBSInfo
+			LibSameboy.GBSInfo gbsInfo = new()
 			{
 				TrackCount = 0,
 				FirstTrack = 0,

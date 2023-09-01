@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		static MGBAHawk()
 		{
-			DynamicLibraryImportResolver resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "libmgba.dll.so" : "mgba.dll", hasLimitedLifetime: false);
 			LibmGBA = BizInvoker.GetInvoker<LibmGBA>(resolver, CallingConventionAdapters.Native);
 		}
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			try
 			{
 				CreateMemoryDomains(rom.Length);
-				BasicServiceProvider ser = new BasicServiceProvider(this);
+				BasicServiceProvider ser = new(this);
 				ser.Register<IDisassemblable>(new ArmV4Disassembler());
 				ser.Register<IMemoryDomains>(_memoryDomains);
 
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		private static LibmGBA.OverrideInfo GetOverrideInfo(SyncSettings syncSettings)
 		{
-			LibmGBA.OverrideInfo ret = new LibmGBA.OverrideInfo
+			LibmGBA.OverrideInfo ret = new()
 			{
 				Savetype = syncSettings.OverrideSaveType,
 				Hardware = LibmGBA.Hardware.None,

@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 						// emu lib may be null now, depending on order of ReflectionCache.Types, but definitely won't be null when this is called
 						guiLib.CreateLuaCanvasCallback = (width, height, x, y) =>
 						{
-							LuaCanvas canvas = new LuaCanvas(EmulationLuaLibrary, width, height, x, y, _th, LogToLuaConsole);
+							LuaCanvas canvas = new(EmulationLuaLibrary, width, height, x, y, _th, LogToLuaConsole);
 							canvas.Show();
 							return _th.ObjectToTable(canvas);
 						};
@@ -298,7 +298,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaFile luaFile,
 			string name = null)
 		{
-			NamedLuaFunction nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile,
+			NamedLuaFunction nlf = new(function, theEvent, logCallback, luaFile,
 				() => { _lua.NewThread(out var thread); return thread; }, name);
 			RegisteredFunctions.Add(nlf);
 			return nlf;

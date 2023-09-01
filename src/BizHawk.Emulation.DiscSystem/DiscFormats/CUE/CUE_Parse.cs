@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				string line = tr.ReadLine()?.Trim();
 				if (line is null) break;
 				if (line == string.Empty) continue;
-				CueLineParser clp = new CueLineParser(line);
+				CueLineParser clp = new(line);
 
 				string key = clp.ReadToken().ToUpperInvariant();
 				
@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 					case "FILE":
 						{
-								string path = clp.ReadPath();
+							string path = clp.ReadPath();
 							CueFileType ft;
 							if (clp.EOF)
 							{
@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							}
 							else
 							{
-									string strType = clp.ReadToken().ToUpperInvariant();
+								string strType = clp.ReadToken().ToUpperInvariant();
 								switch (strType)
 								{
 									default:
@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							CueTrackFlags flags = default;
 							while (!clp.EOF)
 							{
-									string flag = clp.ReadToken().ToUpperInvariant();
+								string flag = clp.ReadToken().ToUpperInvariant();
 								switch (flag)
 								{
 									case "DATA":
@@ -245,14 +245,14 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								Error("Incomplete INDEX command");
 								break;
 							}
-								string strindexnum = clp.ReadToken();
+							string strindexnum = clp.ReadToken();
 							if (!int.TryParse(strindexnum, out int indexnum) || indexnum < 0 || indexnum > 99)
 							{
 								Error($"Invalid INDEX number: {strindexnum}");
 								break;
 							}
-								string str_timestamp = clp.ReadToken();
-								Timestamp ts = new Timestamp(str_timestamp);
+							string str_timestamp = clp.ReadToken();
+							Timestamp ts = new(str_timestamp);
 							if (!ts.Valid && !IN_Strict)
 							{
 								//try cleaning it up
@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							Warn("Ignoring empty ISRC command");
 						else
 						{
-								string isrc = clp.ReadToken();
+							string isrc = clp.ReadToken();
 							if (isrc.Length != 12)
 								Warn($"Invalid ISRC code ignored: {isrc}");
 							else
@@ -293,8 +293,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					case "POSTGAP":
 					case "PREGAP":
 						{
-								string str_msf = clp.ReadToken();
-								Timestamp msf = new Timestamp(str_msf);
+							string str_msf = clp.ReadToken();
+							Timestamp msf = new(str_msf);
 							if (!msf.Valid)
 								Error($"Ignoring {{0}} with invalid length MSF: {str_msf}", key);
 							else
@@ -309,10 +309,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 					case "REM":
 						{
-								string comment = clp.ReadLine();
-								// cues don't support multiple sessions themselves, but it is common for rips to put SESSION # in REM fields
-								// so, if we have such a REM, we'll check if the comment starts with SESSION, and interpret that as a session "command"
-								string trimmed = comment.Trim();
+							string comment = clp.ReadLine();
+							// cues don't support multiple sessions themselves, but it is common for rips to put SESSION # in REM fields
+							// so, if we have such a REM, we'll check if the comment starts with SESSION, and interpret that as a session "command"
+							string trimmed = comment.Trim();
 							if (trimmed.StartsWith("SESSION ", StringComparison.OrdinalIgnoreCase) && int.TryParse(trimmed.Substring(8), out int number) && number > 0)
 							{
 								OUT_CueFile.Commands.Add(new CUE_File.Command.SESSION(number));
@@ -340,7 +340,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								break;
 							}
 
-								string str_tracknum = clp.ReadToken();
+							string str_tracknum = clp.ReadToken();
 							if (!int.TryParse(str_tracknum, out int tracknum) || tracknum is < 1 or > 99)
 							{
 								Error($"Invalid TRACK number: {str_tracknum}");
@@ -350,7 +350,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							// TODO - check sequentiality? maybe as a warning
 
 							CueTrackType tt;
-								string str_trackType = clp.ReadToken();
+							string str_trackType = clp.ReadToken();
 							switch (str_trackType.ToUpperInvariant())
 							{
 								default:

@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		[CoreConstructor(VSystemID.Raw.O2)]
 		public O2Hawk(CoreComm comm, GameInfo game, byte[] rom, O2Settings settings, O2SyncSettings syncSettings)
 		{
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 
 			cpu = new I8048
 			{

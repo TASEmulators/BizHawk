@@ -205,7 +205,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			int w = maxx - minx + 1;
 			int h = maxy - miny + 1;
-			BitmapBuffer bbRet = new BitmapBuffer(w, h);
+			BitmapBuffer bbRet = new(w, h);
 			for (int y = 0; y < h; y++)
 			{
 				for (int x = 0; x < w; x++)
@@ -249,7 +249,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public BitmapBuffer(string fname, BitmapLoadOptions options)
 		{
-			using FileStream fs = new FileStream(fname, FileMode.Open, FileAccess.Read, FileShare.Read);
+			using FileStream fs = new(fname, FileMode.Open, FileAccess.Read, FileShare.Read);
 			LoadInternal(fs, null, options);
 		}
 
@@ -534,7 +534,7 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 
 			var pf = HasAlpha ? PixelFormat.Format32bppArgb : PixelFormat.Format24bppRgb;
-			Bitmap bmp = new Bitmap(Width, Height, pf);
+			Bitmap bmp = new(Width, Height, pf);
 			ToSysdrawingBitmap(bmp);
 			return bmp;
 		}

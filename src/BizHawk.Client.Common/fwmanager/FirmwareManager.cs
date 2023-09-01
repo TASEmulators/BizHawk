@@ -123,14 +123,14 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				FileInfo fi = new FileInfo(f);
+				FileInfo fi = new(f);
 				if (!fi.Exists) return false;
 
 				// weed out filesizes first to reduce the unnecessary overhead of a hashing operation
 				if (!_firmwareSizes.Contains(fi.Length)) return false;
 
 				// check the hash
-				RealFirmwareReader reader = new RealFirmwareReader();
+				RealFirmwareReader reader = new();
 				reader.Read(fi);
 				string hash = reader.Dict.Values.First().Hash;
 				return FirmwareDatabase.FirmwareFiles.Any(a => a.Hash == hash);
@@ -143,10 +143,10 @@ namespace BizHawk.Client.Common
 
 		public void DoScanAndResolve(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications)
 		{
-			RealFirmwareReader reader = new RealFirmwareReader();
+			RealFirmwareReader reader = new();
 
 			// build a list of files under the global firmwares path, and build a hash for each of them (as ResolutionInfo) while we're at it
-			Queue<DirectoryInfo> todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(pathEntries.AbsolutePathFor(pathEntries.FirmwaresPathFragment, null)) });
+			Queue<DirectoryInfo> todo = new(new[] { new DirectoryInfo(pathEntries.AbsolutePathFor(pathEntries.FirmwaresPathFragment, null)) });
 			while (todo.Count != 0)
 			{
 				var di = todo.Dequeue();
@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common
 				ri.Hash = null;
 
 				// check whether it exists
-				FileInfo fi = new FileInfo(userSpec);
+				FileInfo fi = new(userSpec);
 				if (!fi.Exists)
 				{
 					ri.Missing = true;

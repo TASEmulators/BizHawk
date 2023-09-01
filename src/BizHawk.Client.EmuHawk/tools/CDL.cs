@@ -241,13 +241,13 @@ namespace BizHawk.Client.EmuHawk
 		private bool _autoloading;
 		public void LoadFile(string path)
 		{
-			using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+			using (FileStream fs = new(path, FileMode.Open, FileAccess.Read))
 			{
-				CodeDataLog newCDL = new CodeDataLog();
+				CodeDataLog newCDL = new();
 				newCDL.Load(fs);
 
 				//have the core create a CodeDataLog to check mapping information against
-				CodeDataLog testCDL = new CodeDataLog();
+				CodeDataLog testCDL = new();
 				CodeDataLogger.NewCDL(testCDL);
 				if (!newCDL.Check(testCDL))
 				{
@@ -337,7 +337,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RunSave()
 		{
 			_recent.Add(_currentFilename);
-			using FileStream fs = new FileStream(_currentFilename, FileMode.Create, FileAccess.Write);
+			using FileStream fs = new(_currentFilename, FileMode.Create, FileAccess.Write);
 			_cdl.Save(fs);
 		}
 
@@ -400,8 +400,8 @@ namespace BizHawk.Client.EmuHawk
 
 				if (file != null)
 				{
-					using FileStream fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
-					CodeDataLog newCDL = new CodeDataLog();
+					using FileStream fs = new(file.FullName, FileMode.Open, FileAccess.Read);
+					CodeDataLog newCDL = new();
 					newCDL.Load(fs);
 					if (!_cdl.Check(newCDL))
 					{
@@ -441,7 +441,7 @@ namespace BizHawk.Client.EmuHawk
 			string result = this.ShowFileSaveDialog(initDir: Config!.PathEntries.ToolsAbsolutePath());
 			if (result is not null)
 			{
-				using FileStream fs = new FileStream(result, FileMode.Create, FileAccess.Write);
+				using FileStream fs = new(result, FileMode.Create, FileAccess.Write);
 				CodeDataLogger.DisassembleCDL(fs, _cdl);
 			}
 		}
@@ -547,7 +547,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TsbExportText_Click(object sender, EventArgs e)
 		{
-			using StringWriter sw = new StringWriter();
+			using StringWriter sw = new();
 			foreach(string[] line in _listContents)
 			{
 				foreach (string entry in line)

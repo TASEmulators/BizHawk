@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			LibsnesCore.SnesSettings settings, LibsnesCore.SnesSyncSettings syncSettings)
 		{
 			_baseRomPath = baseRomPath;
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 
 			const string TRACE_HEADER = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, DB, flags (NVMXDIZC), V, H)";

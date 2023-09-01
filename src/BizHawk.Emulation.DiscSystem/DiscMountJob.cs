@@ -84,11 +84,11 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					var session = OUT_Disc.Sessions[i];
 					//1. TOC from RawTOCEntries
-					Synthesize_DiscTOC_From_RawTOCEntries_Job tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job(session.RawTOCEntries);
+					Synthesize_DiscTOC_From_RawTOCEntries_Job tocSynth = new(session.RawTOCEntries);
 					tocSynth.Run();
 					session.TOC = tocSynth.Result;
 					//2. DiscTracks from TOC
-					Synthesize_DiscTracks_From_DiscTOC_Job tracksSynth = new Synthesize_DiscTracks_From_DiscTOC_Job(OUT_Disc, session);
+					Synthesize_DiscTracks_From_DiscTOC_Job tracksSynth = new(OUT_Disc, session);
 					tracksSynth.Run();
 				}
 				
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//(although note only VirtualJaguar currently deals with multisession discs and it doesn't care about the leadout so far)
 				if (IN_DiscInterface != DiscInterface.MednaDisc)
 				{
-					SS_Leadout ss_leadout = new SS_Leadout
+					SS_Leadout ss_leadout = new()
 					{
 						SessionNumber = OUT_Disc.Sessions.Count - 1,
 						Policy = IN_DiscMountPolicy
@@ -111,9 +111,9 @@ namespace BizHawk.Emulation.DiscSystem
 				string sbiPath = Path.ChangeExtension(IN_FromPath, ".sbi");
 				if (File.Exists(sbiPath) && SBI.SBIFormat.QuickCheckISSBI(sbiPath))
 				{
-					SBI.LoadSBIJob loadSbiJob = new SBI.LoadSBIJob(sbiPath);
+					SBI.LoadSBIJob loadSbiJob = new(sbiPath);
 					loadSbiJob.Run();
-					ApplySBIJob applySbiJob = new ApplySBIJob();
+					ApplySBIJob applySbiJob = new();
 					applySbiJob.Run(OUT_Disc, loadSbiJob.OUT_Data, IN_DiscMountPolicy.SBI_As_Mednafen);
 				}
 			}
@@ -129,13 +129,13 @@ namespace BizHawk.Emulation.DiscSystem
 
 				//TODO make sure code is designed so no matter what happens, a disc is disposed in case of errors.
 				// perhaps the CUE_Format2 (once renamed to something like Context) can handle that
-				CueFileResolver cfr = new CueFileResolver();
-				CUE_Context cueContext = new CUE_Context { DiscMountPolicy = IN_DiscMountPolicy, Resolver = cfr };
+				CueFileResolver cfr = new();
+				CUE_Context cueContext = new() { DiscMountPolicy = IN_DiscMountPolicy, Resolver = cfr };
 
 				if (!cfr.IsHardcodedResolve) cfr.SetBaseDirectory(cueDirPath);
 
 				// parse the cue file
-				ParseCueJob parseJob = new ParseCueJob(cueContent);
+				ParseCueJob parseJob = new(cueContent);
 				bool okParse = true;
 				try
 				{
@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 				// compile the cue file
 				// includes resolving required bin files and finding out what would processing would need to happen in order to load the cue
-				CompileCueJob compileJob = new CompileCueJob(parseJob.OUT_CueFile, cueContext);
+				CompileCueJob compileJob = new(parseJob.OUT_CueFile, cueContext);
 				bool okCompile = true;
 				try
 				{
@@ -176,7 +176,7 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 
 				// actually load it all up
-				LoadCueJob loadJob = new LoadCueJob(compileJob);
+				LoadCueJob loadJob = new(compileJob);
 				loadJob.Run();
 				//TODO need better handling of log output
 				if (!string.IsNullOrEmpty(loadJob.OUT_Log)) Console.WriteLine(loadJob.OUT_Log);

@@ -178,12 +178,12 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private static List<CCDSection> ParseSections(Stream stream)
 		{
-			List<CCDSection> sections = new List<CCDSection>();
+			List<CCDSection> sections = new();
 
 			//TODO - do we need to attempt to parse out the version tag in a first pass?
 			//im doing this from a version 3 example
 
-			StreamReader sr = new StreamReader(stream);
+			StreamReader sr = new(stream);
 			CCDSection currSection = null;
 			while (true)
 			{
@@ -251,7 +251,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <exception cref="CCDParseException">parsed <see cref="CCDFile.DataTracksScrambled"/> is <c>1</c>, parsed session number is not <c>1</c>, or malformed entry</exception>
 		public static CCDFile ParseFrom(Stream stream)
 		{
-			CCDFile ccdf = new CCDFile();
+			CCDFile ccdf = new();
 
 			var sections = ParseSections(stream);
 			ccdf.Version = PreParseIntegrityCheck(sections);
@@ -271,7 +271,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (section.Name.StartsWithOrdinal("SESSION"))
 				{
 					int sesnum = int.Parse(section.Name.Split(' ')[1]);
-					CCDSession session = new CCDSession(sesnum);
+					CCDSession session = new(sesnum);
 					ccdf.Sessions.Add(session);
 					if (sesnum != ccdf.Sessions.Count)
 						throw new CCDParseException("Malformed CCD format: wrong session number in sequence");
@@ -281,7 +281,7 @@ namespace BizHawk.Emulation.DiscSystem
 				else if (section.Name.StartsWithOrdinal("ENTRY"))
 				{
 					int entryNum = int.Parse(section.Name.Split(' ')[1]);
-					CCDTocEntry entry = new CCDTocEntry(entryNum);
+					CCDTocEntry entry = new(entryNum);
 					ccdf.TOCEntries.Add(entry);
 					
 					entry.Session = section.FetchOrFail("SESSION");
@@ -308,7 +308,7 @@ namespace BizHawk.Emulation.DiscSystem
 				else if (section.Name.StartsWithOrdinal("TRACK"))
 				{
 					int entryNum = int.Parse(section.Name.Split(' ')[1]);
-					CCDTrack track = new CCDTrack(entryNum);
+					CCDTrack track = new(entryNum);
 					ccdf.Tracks.Add(track);
 					ccdf.TracksByNumber[entryNum] = track;
 					foreach (var (k, v) in section)
@@ -335,7 +335,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static LoadResults LoadCCDPath(string path)
 		{
-			LoadResults ret = new LoadResults
+			LoadResults ret = new()
 			{
 				CcdPath = path,
 				ImgPath = Path.ChangeExtension(path, ".img"),
@@ -346,7 +346,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (!File.Exists(path)) throw new CCDParseException("Malformed CCD format: nonexistent CCD file!");
 
 				CCDFile ccdf;
-				using (FileStream infCCD = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+				using (FileStream infCCD = new(path, FileMode.Open, FileAccess.Read, FileShare.Read))
 					ccdf = ParseFrom(infCCD);
 
 				ret.ParsedCCDFile = ccdf;
@@ -363,7 +363,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static void Dump(Disc disc, string path)
 		{
-			using (StreamWriter sw = new StreamWriter(path))
+			using (StreamWriter sw = new(path))
 			{
 				//NOTE: IsoBuster requires the A0,A1,A2 RawTocEntries to be first or else it can't do anything with the tracks
 				//if we ever get them in a different order, we'll have to re-order them here
@@ -436,7 +436,7 @@ namespace BizHawk.Emulation.DiscSystem
 			string imgPath = Path.ChangeExtension(path, ".img");
 			string subPath = Path.ChangeExtension(path, ".sub");
 			byte[] buf2448 = new byte[2448];
-			DiscSectorReader dsr = new DiscSectorReader(disc);
+			DiscSectorReader dsr = new(disc);
 
 			using var imgFile = File.OpenWrite(imgPath);
 			using var subFile = File.OpenWrite(subPath);
@@ -487,7 +487,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (!loadResults.Valid)
 				throw loadResults.FailureException;
 
-			Disc disc = new Disc();
+			Disc disc = new();
 
 			IBlob imgBlob = null;
 			long imgLen = -1;
@@ -502,7 +502,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					if (Blob_ECM.IsECM(ecmPath))
 					{
-						Blob_ECM ecm = new Blob_ECM();
+						Blob_ECM ecm = new();
 						ecm.Load(ecmPath);
 						imgBlob = ecm;
 						imgLen = ecm.Length;
@@ -512,7 +512,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (imgBlob == null)
 			{
 				if (!File.Exists(loadResults.ImgPath)) throw new CCDParseException("Malformed CCD format: nonexistent IMG file!");
-				Blob_RawFile imgFile = new Blob_RawFile() { PhysicalPath = loadResults.ImgPath };
+				Blob_RawFile imgFile = new() { PhysicalPath = loadResults.ImgPath };
 				imgLen = imgFile.Length;
 				imgBlob = imgFile;
 			}
@@ -520,7 +520,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//mount the SUB file
 			if (!File.Exists(loadResults.SubPath)) throw new CCDParseException("Malformed CCD format: nonexistent SUB file!");
-			Blob_RawFile subFile = new Blob_RawFile { PhysicalPath = loadResults.SubPath };
+			Blob_RawFile subFile = new() { PhysicalPath = loadResults.SubPath };
 			disc.DisposableResources.Add(subFile);
 			long subLen = subFile.Length;
 
@@ -532,7 +532,7 @@ namespace BizHawk.Emulation.DiscSystem
 			var ccdf = loadResults.ParsedCCDFile;
 
 			//the only instance of a sector synthesizer we'll need
-			SS_CCD synth = new SS_CCD();
+			SS_CCD synth = new();
 
 			// create the initial session
 			int curSession = 1;
@@ -564,7 +564,7 @@ namespace BizHawk.Emulation.DiscSystem
 					_ => ino.BCDValue
 				};
 
-				SubchannelQ q = new SubchannelQ
+				SubchannelQ q = new()
 				{
 					q_status = SubchannelQ.ComputeStatus(entry.ADR, (EControlQ)(entry.Control & 0xF)),
 					q_tno = tno,
@@ -583,7 +583,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			//analyze the RAWTocEntries to figure out what type of track track 1 is
-			Synthesize_DiscTOC_From_RawTOCEntries_Job tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job(disc.Session1.RawTOCEntries);
+			Synthesize_DiscTOC_From_RawTOCEntries_Job tocSynth = new(disc.Session1.RawTOCEntries);
 			tocSynth.Run();
 			
 			//Add sectors for the mandatory track 1 pregap, which isn't stored in the CCD file
@@ -604,7 +604,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			for (int i = 0; i < 150; i++)
 			{
-				CUE.SS_Gap ss_gap = new CUE.SS_Gap()
+				CUE.SS_Gap ss_gap = new()
 				{
 					Policy = IN_DiscMountPolicy,
 					TrackType = pregapTrackType

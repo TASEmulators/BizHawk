@@ -26,7 +26,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void GenerateLogEntry_ExclamationForUnknownButtons()
 		{
 			SimpleController controller = new(new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "Unknown Button" } }.MakeImmutable());
-			Bk2LogEntryGenerator lg = new Bk2LogEntryGenerator("NES", controller);
+			Bk2LogEntryGenerator lg = new("NES", controller);
 			controller["Unknown Button"] = true;
 			string actual = lg.GenerateLogEntry();
 			Assert.AreEqual("|!|", actual);
@@ -36,7 +36,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void GenerateLogEntry_BoolPressed_GeneratesMnemonic()
 		{
 			_boolController["A"] = true;
-			Bk2LogEntryGenerator lg = new Bk2LogEntryGenerator("NES", _boolController);
+			Bk2LogEntryGenerator lg = new("NES", _boolController);
 			string actual = lg.GenerateLogEntry();
 			Assert.AreEqual("|A|", actual);
 		}
@@ -45,7 +45,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void GenerateLogEntry_BoolUnPressed_GeneratesPeriod()
 		{
 			_boolController["A"] = false;
-			Bk2LogEntryGenerator lg = new Bk2LogEntryGenerator("NES", _boolController);
+			Bk2LogEntryGenerator lg = new("NES", _boolController);
 			string actual = lg.GenerateLogEntry();
 			Assert.AreEqual("|.|", actual);
 		}
@@ -53,7 +53,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void GenerateLogEntry_Floats()
 		{
-			Bk2LogEntryGenerator lg = new Bk2LogEntryGenerator("NES", _axisController);
+			Bk2LogEntryGenerator lg = new("NES", _axisController);
 			string actual = lg.GenerateLogEntry();
 			Assert.AreEqual("|    0,    0,|", actual);
 		}

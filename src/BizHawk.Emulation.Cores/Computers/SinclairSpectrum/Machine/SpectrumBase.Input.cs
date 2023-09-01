@@ -281,7 +281,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		protected void InitJoysticks(List<JoystickType> joys)
 		{
-			List<IJoystick> jCollection = new List<IJoystick>();
+			List<IJoystick> jCollection = new();
 
 			for (int i = 0; i < joys.Count; i++)
 			{

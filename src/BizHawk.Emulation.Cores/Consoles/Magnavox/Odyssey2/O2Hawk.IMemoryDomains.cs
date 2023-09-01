@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void SetupMemoryDomains()
 		{
-			List<MemoryDomain> domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new()
 			{
 				new MemoryDomainDelegate(
 					"Main RAM",
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			if (cart_RAM != null)
 			{
-				MemoryDomainByteArray CartRam = new MemoryDomainByteArray("Cart RAM", MemoryDomain.Endian.Little, cart_RAM, true, 1);
+				MemoryDomainByteArray CartRam = new("Cart RAM", MemoryDomain.Endian.Little, cart_RAM, true, 1);
 				domains.Add(CartRam);
 			}
 

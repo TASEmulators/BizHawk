@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result is null) return false;
 				if (result is false) CheatList.DisableAll();
 			}
-			Dictionary<string, string> oldPreferredCores = new Dictionary<string, string>(Config.PreferredCores);
+			Dictionary<string, string> oldPreferredCores = new(Config.PreferredCores);
 			try
 			{
 				try
@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (MoviePlatformMismatchException ex)
 				{
-					using Form ownerForm = new Form { TopMost = true };
+					using Form ownerForm = new() { TopMost = true };
 					MessageBox.Show(ownerForm, ex.Message, "Movie/Platform Mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return false;
 				}

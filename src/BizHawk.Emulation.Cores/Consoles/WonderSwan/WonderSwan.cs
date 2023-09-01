@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			Dictionary<string, RegisterValue> ret = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> ret = new();
 			for (int i = (int)BizSwan.NecRegsMin; i <= (int)BizSwan.NecRegsMax; i++)
 			{
 				BizSwan.NecRegs en = (BizSwan.NecRegs)i;

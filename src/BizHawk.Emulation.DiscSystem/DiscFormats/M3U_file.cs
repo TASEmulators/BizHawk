@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		public static M3U_File Read(StreamReader sr)
 		{
-			M3U_File ret = new M3U_File();
+			M3U_File ret = new();
 			return !ret.Parse(sr) ? null : ret;
 		}
 
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.DiscSystem
 					continue;
 				}
 
-				Entry e = new Entry
+				Entry e = new()
 				{
 					Path = line,
 					Runtime = runtime,

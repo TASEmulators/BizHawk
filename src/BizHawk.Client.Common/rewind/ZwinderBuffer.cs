@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 			{
 				case IRewindSettings.BackingStoreType.Memory:
 				{
-						MemoryBlock buffer = new MemoryBlock((ulong)Size);
+					MemoryBlock buffer = new((ulong)Size);
 					buffer.Protect(buffer.Start, buffer.Size, MemoryBlock.Protection.RW);
 					_disposables.Add(buffer);
 					_backingStore = new MemoryViewStream(true, true, (long)buffer.Start, (long)buffer.Size);
@@ -42,8 +42,8 @@ namespace BizHawk.Client.Common
 				}
 				case IRewindSettings.BackingStoreType.TempFile:
 				{
-						string filename = TempFileManager.GetTempFilename("ZwinderBuffer");
-						FileStream filestream = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite, FileShare.None, 4096, FileOptions.DeleteOnClose);
+					string filename = TempFileManager.GetTempFilename("ZwinderBuffer");
+					FileStream filestream = new(filename, FileMode.Create, FileAccess.ReadWrite, FileShare.None, 4096, FileOptions.DeleteOnClose);
 					filestream.SetLength(Size);
 					_backingStore = filestream;
 					_disposables.Add(filestream);
@@ -230,7 +230,7 @@ namespace BizHawk.Client.Common
 					? (_states[_firstStateIndex].Start - start) & _sizeMask
 					: Size;
 			}
-			SaveStateStream stream = new SaveStateStream(_backingStore, start, _sizeMask, initialMaxSize, notifySizeReached);
+			SaveStateStream stream = new(_backingStore, start, _sizeMask, initialMaxSize, notifySizeReached);
 
 			if (_useCompression)
 			{

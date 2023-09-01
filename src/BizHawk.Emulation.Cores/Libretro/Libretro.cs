@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		static LibretroHost()
 		{
-			DynamicLibraryImportResolver resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "libLibretroBridge.so" : "libLibretroBridge.dll", hasLimitedLifetime: false);
 
 			bridge = BizInvoker.GetInvoker<LibretroBridge>(resolver, CallingConventionAdapters.Native);
@@ -264,7 +264,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public RetroDescription CalculateDescription()
 		{
-			RetroDescription descr = new RetroDescription();
+			RetroDescription descr = new();
 			api.retro_get_system_info(out var sys_info);
 			descr.LibraryName = Mershul.PtrToStringUtf8(sys_info.library_name);
 			descr.LibraryVersion = Mershul.PtrToStringUtf8(sys_info.library_version);

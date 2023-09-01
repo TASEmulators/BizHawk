@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			public static CPCMachineMetaData GetMetaObject(MachineType type)
 			{
-				CPCMachineMetaData m = new CPCMachineMetaData { MachineType = type };
+				CPCMachineMetaData m = new() { MachineType = type };
 
 				switch (type)
 				{
@@ -190,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			public static string GetMetaString(MachineType type)
 			{
 				var m = GetMetaObject(type);
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 
 				// get longest title
 				int titleLen = 0;

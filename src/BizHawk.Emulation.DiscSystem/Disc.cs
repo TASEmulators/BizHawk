@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public static Disc LoadAutomagic(string path)
 		{
-			DiscMountJob job = new DiscMountJob(fromPath: path/*, discInterface: DiscInterface.MednaDisc <-- TEST*/);
+			DiscMountJob job = new(fromPath: path/*, discInterface: DiscInterface.MednaDisc <-- TEST*/);
 			job.Run();
 			return job.OUT_Disc;
 		}
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			int totsize = lba_count * 2048;
 			byte[] ret = new byte[totsize];
-			DiscSectorReader dsr = new DiscSectorReader(this) { Policy = { DeterministicClearBuffer = false } };
+			DiscSectorReader dsr = new(this) { Policy = { DeterministicClearBuffer = false } };
 			for (int i = 0; i < lba_count; i++)
 			{
 				dsr.ReadLBA_2048(lba_start + i, ret, i*2048);

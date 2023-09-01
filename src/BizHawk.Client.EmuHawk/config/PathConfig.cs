@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 				int y = UIHelper.ScaleY(14);
 				foreach (var path in paths)
 				{
-					TextBox box = new TextBox
+					TextBox box = new()
 					{
 						Text = path.Path,
 						Location = new Point(x, y),
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 						AutoCompleteSource = AutoCompleteSource.CustomSource
 					};
 
-					Button btn = new Button
+					Button btn = new()
 					{
 						Text = "",
 						Image = Properties.Resources.OpenFile,
@@ -97,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 					string tempSystem = path.System;
 					btn.Click += (sender, args) => BrowseFolder(tempBox, tempPath, tempSystem);
 
-					Label label = new Label
+					Label label = new()
 					{
 						Text = path.Type,
 						Location = new Point(widgetOffset + buttonWidth + padding, y + UIHelper.ScaleY(4)),
@@ -115,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			void AddTabPageForSystem(string system, string systemDisplayName)
 			{
-				TabPage t = new TabPage
+				TabPage t = new()
 				{
 					Name = system,
 					Text = systemDisplayName,
@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 			if (OSTailoredCode.IsUnixHost)
 			{
 				// FolderBrowserEx doesn't work in Mono for obvious reasons
-				using FolderBrowserDialog f = new FolderBrowserDialog
+				using FolderBrowserDialog f = new()
 				{
 					Description = $"Set the directory for {name}",
 					SelectedPath = _pathEntries.AbsolutePathFor(box.Text, system)
@@ -198,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				using FolderBrowserEx f = new FolderBrowserEx
+				using FolderBrowserEx f = new()
 				{
 					Description = $"Set the directory for {name}",
 					SelectedPath = _pathEntries.AbsolutePathFor(box.Text, system)

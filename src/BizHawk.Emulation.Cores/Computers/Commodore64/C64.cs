@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			PutSyncSettings(lp.SyncSettings ?? new C64SyncSettings());
 			PutSettings(lp.Settings ?? new C64Settings());
 
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 
 			CoreComm = lp.Comm;

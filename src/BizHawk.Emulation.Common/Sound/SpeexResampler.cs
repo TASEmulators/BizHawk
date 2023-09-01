@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Common
 		private static readonly LibSpeexDSP NativeDSP;
 		static SpeexResampler()
 		{
-			DynamicLibraryImportResolver resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "libspeexdsp.so.1" : "libspeexdsp.dll", hasLimitedLifetime: false);
 			NativeDSP = BizInvoker.GetInvoker<LibSpeexDSP>(resolver, CallingConventionAdapters.Native);
 		}

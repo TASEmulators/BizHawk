@@ -160,10 +160,10 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		public CoreInventory(IEnumerable<IEnumerable<Type>> assys)
 		{
-			Dictionary<Type, Core> systemsFlat = new Dictionary<Type, Core>();
+			Dictionary<Type, Core> systemsFlat = new();
 			void ProcessConstructor(Type type, CoreConstructorAttribute consAttr, CoreAttribute coreAttr, ConstructorInfo cons)
 			{
-				Core core = new Core(type, consAttr, coreAttr, cons);
+				Core core = new(type, consAttr, coreAttr, cons);
 				_systems.GetValueOrPutNew(consAttr.System).Add(core);
 				systemsFlat[type] = core;
 			}

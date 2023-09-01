@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public string GenerateLogKey()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			sb.Append("LogKey:");
 
 			foreach (var group in _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0))
@@ -67,7 +67,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public IDictionary<string, string> Map()
 		{
-			Dictionary<string, string> dict = new Dictionary<string, string>();
+			Dictionary<string, string> dict = new();
 			foreach (string button in _source.Definition.OrderedControlsFlat)
 			{
 				if (_source.Definition.BoolButtons.Contains(button))
@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 
 		private string CreateLogEntry(bool createEmpty = false)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			sb.Append('|');
 

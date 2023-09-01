@@ -118,8 +118,8 @@ namespace BizHawk.Client.EmuHawk
 
 			// split the list of all settings into buckets by player number, or supplied category
 			// the order that buttons appeared in determines the order of the tabs
-			List<KeyValuePair<string, List<string>>> orderedBuckets = new List<KeyValuePair<string, List<string>>>();
-			Dictionary<string, List<string>> buckets = new Dictionary<string, List<string>>();
+			List<KeyValuePair<string, List<string>>> orderedBuckets = new();
+			Dictionary<string, List<string>> buckets = new();
 
 			// by iterating through only the controller's active buttons, we're silently
 			// discarding anything that's not on the controller right now.  due to the way
@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!buckets.ContainsKey(categoryLabel))
 				{
-					List<string> l = new List<string>();
+					List<string> l = new();
 					buckets.Add(categoryLabel, l);
 					orderedBuckets.Add(new KeyValuePair<string, List<string>>(categoryLabel, l));
 				}
@@ -152,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				// create multiple tabs
-				TabControl tt = new TabControl { Dock = DockStyle.Fill };
+				TabControl tt = new() { Dock = DockStyle.Fill };
 				dest.Controls.Add(tt);
 				int pageIdx = 0;
 				foreach (var (tabName, buttons) in orderedBuckets)
@@ -268,11 +268,11 @@ namespace BizHawk.Client.EmuHawk
 			// Uberhack
 			if (controlName == "Commodore 64 Controller")
 			{
-				PictureBox pictureBox2 = new PictureBox
-					{
-						Image = Properties.Resources.C64Keyboard.Value,
-						Size = Properties.Resources.C64Keyboard.Value.Size
-					};
+				PictureBox pictureBox2 = new()
+				{
+					Image = Properties.Resources.C64Keyboard.Value,
+					Size = Properties.Resources.C64Keyboard.Value.Size
+				};
 				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.C64Keyboard.Value.Width;
 				pictureBox1.Height /= 2;
 				pictureBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;

@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		private void SetupMemoryDomains()
 		{
-			List<MemoryDomain> domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new()
 			{
 				new MemoryDomainDelegate(
 					"System Bus", 
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			if (SaveRAM != null)
 			{
-				MemoryDomainDelegate saveRamDomain = new MemoryDomainDelegate("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
+				MemoryDomainDelegate saveRamDomain = new("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
 					addr => SaveRAM[addr],
 					(addr, value) => { SaveRAM[addr] = value; SaveRamModified = true; }, 1);
 				domains.Add(saveRamDomain);
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			}
 			else
 			{
-				MemoryDomainByteArray m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
+				MemoryDomainByteArray m = new(name, MemoryDomain.Endian.Little, data, true, 1);
 				_byteArrayDomains.Add(name, m);
 			}
 		}

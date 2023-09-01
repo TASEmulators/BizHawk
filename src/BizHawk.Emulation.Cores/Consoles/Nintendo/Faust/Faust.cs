@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 		{
 			if (_cachedSettingsInfo is null)
 			{
-				using Faust n = new Faust(comm);
+				using Faust n = new(comm);
 				n.InitForSettingsInfo("faust.wbx");
 				_cachedSettingsInfo = n.SettingsInfo.Clone();
 			}
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 				devCount -= 3;
 			if (SettingsQuery("snes_faust.input.sport2.multitap") != "1")
 				devCount -= 3;
-			HashSet<string> ret = new HashSet<string>();
+			HashSet<string> ret = new();
 			for (int i = 1; i <= 8; i++)
 			{
 				if (i > devCount)

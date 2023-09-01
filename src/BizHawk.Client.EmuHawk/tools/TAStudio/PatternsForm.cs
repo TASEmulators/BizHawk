@@ -235,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (index != -1)
 			{
-				List<bool> p = new List<bool>();
+				List<bool> p = new();
 				for (int i = 0; i < _counts.Count; i++)
 				{
 					for (int c = 0; c < _counts[i]; c++)
@@ -257,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 					index = _tastudio.MovieSession.MovieController.Definition.Axes.IndexOf(SelectedButton);
 				}
 
-				List<int> p = new List<int>();
+				List<int> p = new();
 				for (int i = 0; i < _counts.Count; i++)
 				{
 					for (int c = 0; c < _counts[i]; c++)

@@ -89,11 +89,11 @@ namespace BizHawk.Client.Common
 
 			try
 			{
-				FileInfo file = new FileInfo(filepath);
+				FileInfo file = new(filepath);
 				if (file.Exists)
 				{
 					using var reader = file.OpenText();
-					JsonTextReader r = new JsonTextReader(reader);
+					JsonTextReader r = new(reader);
 					config = (T)Serializer.Deserialize(r, typeof(T));
 				}
 			}
@@ -107,11 +107,11 @@ namespace BizHawk.Client.Common
 
 		public static void Save(string filepath, object config)
 		{
-			FileInfo file = new FileInfo(filepath);
+			FileInfo file = new(filepath);
 			try
 			{
 				using var writer = file.CreateText();
-				JsonTextWriter w = new JsonTextWriter(writer) { Formatting = Formatting.Indented };
+				JsonTextWriter w = new(writer) { Formatting = Formatting.Indented };
 				Serializer.Serialize(w, config);
 			}
 			catch
@@ -128,8 +128,8 @@ namespace BizHawk.Client.Common
 
 		public static object LoadWithType(string serialized)
 		{
-			using StringReader tr = new StringReader(serialized);
-			using JsonTextReader jr = new JsonTextReader(tr);
+			using StringReader tr = new(serialized);
+			using JsonTextReader jr = new(tr);
 			TypeNameEncapsulator tne = (TypeNameEncapsulator)Serializer.Deserialize(jr, typeof(TypeNameEncapsulator));
 
 			// in the case of trying to deserialize nothing, tne will be nothing
@@ -139,9 +139,9 @@ namespace BizHawk.Client.Common
 
 		public static string SaveWithType(object o)
 		{
-			using StringWriter sw = new StringWriter();
-			using JsonTextWriter jw = new JsonTextWriter(sw) { Formatting = Formatting.None };
-			TypeNameEncapsulator tne = new TypeNameEncapsulator { o = o };
+			using StringWriter sw = new();
+			using JsonTextWriter jw = new(sw) { Formatting = Formatting.None };
+			TypeNameEncapsulator tne = new() { o = o };
 			Serializer.Serialize(jw, tne, typeof(TypeNameEncapsulator));
 			sw.Flush();
 			return sw.ToString();

@@ -421,7 +421,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			using HawkFile file = new HawkFile(path);
+			using HawkFile file = new(path);
 
 			return file.Exists && file.IsArchive;
 		}
@@ -434,7 +434,7 @@ namespace BizHawk.Client.EmuHawk
 				return new byte[] { 0xFF };
 			}
 
-			using HawkFile file = new HawkFile(path);
+			using HawkFile file = new(path);
 
 			if (!file.Exists)
 			{
@@ -504,7 +504,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GenerateAddressString()
 		{
-			StringBuilder addrStr = new StringBuilder();
+			StringBuilder addrStr = new();
 
 			for (int i = 0; i < _rowsVisible; i++)
 			{
@@ -532,7 +532,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GenerateMemoryViewString(bool forWindow)
 		{
-			StringBuilder rowStr = new StringBuilder();
+			StringBuilder rowStr = new();
 			var hexValues = MakeValues(DataSize);
 			var charValues = MakeValues(1);
 			for (int i = 0; i < _rowsVisible; i++)
@@ -591,7 +591,7 @@ namespace BizHawk.Client.EmuHawk
 			end = Math.Min(end, _domain.Size);
 			end &= -(long)dataSize;
 
-			Dictionary<long, long> dict = new Dictionary<long, long>();
+			Dictionary<long, long> dict = new();
 
 			if (end <= start)
 				return dict;
@@ -603,7 +603,7 @@ namespace BizHawk.Client.EmuHawk
 				default:
 				case 1:
 				{
-						byte[] vals = new byte[end - start];
+					byte[] vals = new byte[end - start];
 					_domain.BulkPeekByte(range, vals);
 					int i = 0;
 					for (long addr = start; addr < end; addr += dataSize)
@@ -612,7 +612,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				case 2:
 				{
-						ushort[] vals = new ushort[(end - start) >> 1];
+					ushort[] vals = new ushort[(end - start) >> 1];
 					_domain.BulkPeekUshort(range, BigEndian, vals);
 					int i = 0;
 					for (long addr = start; addr < end; addr += dataSize)
@@ -621,7 +621,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				case 4:
 				{
-						uint[] vals = new uint[(end - start) >> 2];
+					uint[] vals = new uint[(end - start) >> 2];
 					_domain.BulkPeekUint(range, BigEndian, vals);
 					int i = 0;
 					for (long addr = start; addr < end; addr += dataSize)
@@ -832,7 +832,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_secondaryHighlightedAddresses.Any())
 			{
-				List<Cheat> cheats = new List<Cheat>();
+				List<Cheat> cheats = new();
 				foreach (long address in _secondaryHighlightedAddresses)
 				{
 					Watch watch = Watch.GenerateWatch(
@@ -878,8 +878,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveFileBinary(string path)
 		{
-			FileInfo file = new FileInfo(path);
-			using BinaryWriter binWriter = new BinaryWriter(File.Open(file.FullName, FileMode.Create));
+			FileInfo file = new(path);
+			using BinaryWriter binWriter = new(File.Open(file.FullName, FileMode.Create));
 			for (int i = 0; i < _domain.Size; i++)
 			{
 				binWriter.Write(_domain.PeekByte(i));
@@ -1186,7 +1186,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_textTable.Clear();
-			FileInfo file = new FileInfo(path);
+			FileInfo file = new(path);
 			if (!file.Exists)
 			{
 				return false;
@@ -1268,9 +1268,9 @@ namespace BizHawk.Client.EmuHawk
 			string path = GetSaveFileFromUser();
 			if (!string.IsNullOrWhiteSpace(path))
 			{
-				FileInfo file = new FileInfo(path);
-				using StreamWriter sw = new StreamWriter(file.FullName);
-				StringBuilder sb = new StringBuilder();
+				FileInfo file = new(path);
+				using StreamWriter sw = new(file.FullName);
+				StringBuilder sb = new();
 
 				for (int i = 0; i < _domain.Size / 16; i++)
 				{
@@ -1359,7 +1359,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// find the maximum length of the exported string
 			int maximumLength = addresses.Length * (export ? 3 : 2) + 8;
-			StringBuilder sb = new StringBuilder(maximumLength);
+			StringBuilder sb = new(maximumLength);
 
 			// generate it differently for export (as you see it) or copy (raw bytes)
 			if (export)
@@ -1495,7 +1495,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_romDomain != null)
 			{
-				ToolStripMenuItem romMenuItem = new ToolStripMenuItem
+				ToolStripMenuItem romMenuItem = new()
 				{
 					Text = _romDomain.Name,
 					Checked = _domain.Name == _romDomain.Name
@@ -1522,7 +1522,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GoToAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			using InputPrompt inputPrompt = new InputPrompt
+			using InputPrompt inputPrompt = new()
 			{
 				Text = "Go to Address",
 				StartLocation = this.ChildPointToScreen(MemoryViewerBox),
@@ -1586,7 +1586,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			List<long> addresses = new List<long>();
+			List<long> addresses = new();
 			if (_highlightedAddress.HasValue)
 			{
 				addresses.Add(_highlightedAddress.Value);
@@ -1607,7 +1607,7 @@ namespace BizHawk.Client.EmuHawk
 						Common.WatchDisplayType.Hex,
 						BigEndian));
 
-				using RamPoke poke = new RamPoke(DialogController, watches, MainForm.CheatList)
+				using RamPoke poke = new(DialogController, watches, MainForm.CheatList)
 				{
 					InitialLocation = this.ChildPointToScreen(AddressLabel),
 					ParentTool = this
@@ -1620,7 +1620,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetColorsMenuItem_Click(object sender, EventArgs e)
 		{
-			using HexColorsForm form = new HexColorsForm(this);
+			using HexColorsForm form = new(this);
 			this.ShowDialogWithTempMute(form);
 		}
 
@@ -2014,7 +2014,7 @@ namespace BizHawk.Client.EmuHawk
 
 						int width = (_fontWidth * 2 * (int)cheat.Size) + (gaps * _fontWidth);
 
-						Rectangle rect = new Rectangle(GetAddressCoordinates(cheat.Address ?? 0), new Size(width, _fontHeight));
+						Rectangle rect = new(GetAddressCoordinates(cheat.Address ?? 0), new Size(width, _fontHeight));
 						e.Graphics.DrawRectangle(_blackPen, rect);
 						_freezeBrush.Color = Colors.Freeze;
 						e.Graphics.FillRectangle(_freezeBrush, rect);
@@ -2029,12 +2029,12 @@ namespace BizHawk.Client.EmuHawk
 				// Create a slight offset to increase rectangle sizes
 				var point = GetAddressCoordinates(addressHighlighted);
 				int textX = (int)GetTextX(addressHighlighted);
-				Point textPoint = new Point(textX, point.Y);
+				Point textPoint = new(textX, point.Y);
 
-				Rectangle rect = new Rectangle(point, new Size(_fontWidth * 2 * DataSize + (NeedsExtra(addressHighlighted) ? _fontWidth : 0) + 2, _fontHeight));
+				Rectangle rect = new(point, new Size(_fontWidth * 2 * DataSize + (NeedsExtra(addressHighlighted) ? _fontWidth : 0) + 2, _fontHeight));
 				e.Graphics.DrawRectangle(_blackPen, rect);
 
-				Rectangle textRect = new Rectangle(textPoint, new Size(_fontWidth * DataSize, _fontHeight));
+				Rectangle textRect = new(textPoint, new Size(_fontWidth * DataSize, _fontHeight));
 
 				if (MainForm.CheatList.IsActive(_domain, addressHighlighted))
 				{
@@ -2056,12 +2056,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var point = GetAddressCoordinates(address);
 					int textX = (int)GetTextX(address);
-					Point textPoint = new Point(textX, point.Y);
+					Point textPoint = new(textX, point.Y);
 
-					Rectangle rect = new Rectangle(point, new Size(_fontWidth * 2 * DataSize + 2, _fontHeight));
+					Rectangle rect = new(point, new Size(_fontWidth * 2 * DataSize + 2, _fontHeight));
 					e.Graphics.DrawRectangle(_blackPen, rect);
 
-					Rectangle textRect = new Rectangle(textPoint, new Size(_fontWidth * DataSize, _fontHeight));
+					Rectangle textRect = new(textPoint, new Size(_fontWidth * DataSize, _fontHeight));
 
 					if (MainForm.CheatList.IsActive(_domain, address))
 					{
@@ -2187,7 +2187,7 @@ namespace BizHawk.Client.EmuHawk
 			}.ToString());
 #endif
 
-			using StringWriter sw = new StringWriter();
+			using StringWriter sw = new();
 			for (int i = 0; i < 4; i++)
 			{
 				sw.WriteLine("{0,18:0.00000} {1,18:0.00000} {2,18:0.00000} {3,18:0.00000}", matVals[i, 0], matVals[i, 1], matVals[i, 2], matVals[i, 3]);

@@ -121,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 					x += columnWidth;
 				}
 
-				InputCompositeWidget iw = new InputCompositeWidget(_effectiveModList)
+				InputCompositeWidget iw = new(_effectiveModList)
 				{
 					Location = new Point(x, y),
 					Size = new Size(_inputSize, UIHelper.ScaleY(23)),
@@ -134,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 				iw.BringToFront();
 				Controls.Add(iw);
 				_inputs.Add(iw);
-				Label label = new Label
+				Label label = new()
 				{
 					Location = new Point(x + _inputSize + _labelPadding, y + UIHelper.ScaleY(3)),
 					Size = new Size(labelWidth, UIHelper.ScaleY(15)),

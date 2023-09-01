@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 
 		static RCheevos()
 		{
-			DynamicLibraryImportResolver resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "librcheevos.so" : "librcheevos.dll", hasLimitedLifetime: false);
 			_lib = BizInvoker.GetInvoker<LibRCheevos>(resolver, CallingConventionAdapters.Native);
 
@@ -58,11 +58,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			raDropDownItems.Clear();
 
-			ToolStripMenuItem shutDownRAItem = new ToolStripMenuItem("Shutdown RetroAchievements");
+			ToolStripMenuItem shutDownRAItem = new("Shutdown RetroAchievements");
 			shutDownRAItem.Click += (_, _) => _shutdownRACallback();
 			raDropDownItems.Add(shutDownRAItem);
 
-			ToolStripMenuItem autoStartRAItem = new ToolStripMenuItem("Autostart RetroAchievements")
+			ToolStripMenuItem autoStartRAItem = new("Autostart RetroAchievements")
 			{
 				Checked = _getConfig().RAAutostart,
 				CheckOnClick = true,
@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			autoStartRAItem.CheckedChanged += (_, _) => _getConfig().RAAutostart ^= true;
 			raDropDownItems.Add(autoStartRAItem);
 
-			ToolStripMenuItem loginItem = new ToolStripMenuItem("Login")
+			ToolStripMenuItem loginItem = new("Login")
 			{
 				Visible = !LoggedIn
 			};
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			raDropDownItems.Add(loginItem);
 
-			ToolStripMenuItem logoutItem = new ToolStripMenuItem("Logout")
+			ToolStripMenuItem logoutItem = new("Logout")
 			{
 				Visible = LoggedIn
 			};
@@ -97,10 +97,10 @@ namespace BizHawk.Client.EmuHawk
 			LoginStatusChanged += () => loginItem.Visible = !LoggedIn;
 			LoginStatusChanged += () => logoutItem.Visible = LoggedIn;
 
-			ToolStripSeparator tss = new ToolStripSeparator();
+			ToolStripSeparator tss = new();
 			raDropDownItems.Add(tss);
 
-			ToolStripMenuItem enableCheevosItem = new ToolStripMenuItem("Enable Achievements")
+			ToolStripMenuItem enableCheevosItem = new("Enable Achievements")
 			{
 				Checked = CheevosActive,
 				CheckOnClick = true
@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			enableCheevosItem.CheckedChanged += (_, _) => CheevosActive ^= true;
 			raDropDownItems.Add(enableCheevosItem);
 
-			ToolStripMenuItem enableLboardsItem = new ToolStripMenuItem("Enable Leaderboards")
+			ToolStripMenuItem enableLboardsItem = new("Enable Leaderboards")
 			{
 				Checked = LBoardsActive,
 				CheckOnClick = true,
@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 			enableLboardsItem.CheckedChanged += (_, _) => LBoardsActive ^= true;
 			raDropDownItems.Add(enableLboardsItem);
 
-			ToolStripMenuItem enableRichPresenceItem = new ToolStripMenuItem("Enable Rich Presence")
+			ToolStripMenuItem enableRichPresenceItem = new("Enable Rich Presence")
 			{
 				Checked = RichPresenceActive,
 				CheckOnClick = true
@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			enableRichPresenceItem.CheckedChanged += (_, _) => RichPresenceActive ^= true;
 			raDropDownItems.Add(enableRichPresenceItem);
 
-			ToolStripMenuItem enableHardcoreItem = new ToolStripMenuItem("Enable Hardcore Mode")
+			ToolStripMenuItem enableHardcoreItem = new("Enable Hardcore Mode")
 			{
 				Checked = HardcoreMode,
 				CheckOnClick = true
@@ -149,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_hardcoreModeMenuItem = enableHardcoreItem;
 
-			ToolStripMenuItem enableSoundEffectsItem = new ToolStripMenuItem("Enable Sound Effects")
+			ToolStripMenuItem enableSoundEffectsItem = new("Enable Sound Effects")
 			{
 				Checked = EnableSoundEffects,
 				CheckOnClick = true
@@ -157,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 			enableSoundEffectsItem.CheckedChanged += (_, _) => EnableSoundEffects ^= true;
 			raDropDownItems.Add(enableSoundEffectsItem);
 
-			ToolStripMenuItem enableUnofficialCheevosItem = new ToolStripMenuItem("Test Unofficial Achievements")
+			ToolStripMenuItem enableUnofficialCheevosItem = new("Test Unofficial Achievements")
 			{
 				Checked = AllowUnofficialCheevos,
 				CheckOnClick = true
@@ -168,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			tss = new ToolStripSeparator();
 			raDropDownItems.Add(tss);
 
-			ToolStripMenuItem viewGameInfoItem = new ToolStripMenuItem("View Game Info");
+			ToolStripMenuItem viewGameInfoItem = new("View Game Info");
 			viewGameInfoItem.Click += (_, _) =>
 			{
 				_gameInfoForm.OnFrameAdvance(_gameData.GameBadge, _gameData.TotalCheevoPoints(HardcoreMode),
@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			raDropDownItems.Add(viewGameInfoItem);
 
-			ToolStripMenuItem viewCheevoListItem = new ToolStripMenuItem("View Achievement List");
+			ToolStripMenuItem viewCheevoListItem = new("View Achievement List");
 			viewCheevoListItem.Click += (_, _) =>
 			{
 				_cheevoListForm.OnFrameAdvance(HardcoreMode, true);

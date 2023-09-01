@@ -39,8 +39,8 @@ namespace BizHawk.Common.PathExtensions
 #endif
 			}
 
-			Uri parentUri = new Uri(parentPath.RemoveSuffix(Path.DirectorySeparatorChar));
-			for (DirectoryInfo childUri = new DirectoryInfo(childPath); childUri != null; childUri = childUri.Parent)
+			Uri parentUri = new(parentPath.RemoveSuffix(Path.DirectorySeparatorChar));
+			for (DirectoryInfo childUri = new(childPath); childUri != null; childUri = childUri.Parent)
 			{
 				if (new Uri(childUri.FullName) == parentUri) return true;
 			}
@@ -79,7 +79,7 @@ namespace BizHawk.Common.PathExtensions
 				if (File.Exists(path1.SubstringBefore('|'))) return FileAttributes.Normal;
 				throw new FileNotFoundException();
 			}
-			StringBuilder path = new StringBuilder(260 /* = MAX_PATH */);
+			StringBuilder path = new(260 /* = MAX_PATH */);
 			return Win32Imports.PathRelativePathTo(path, fromPath, GetPathAttribute(fromPath), toPath, GetPathAttribute(toPath))
 				? path.ToString()
 				: throw new ArgumentException(message: "Paths must have a common prefix", paramName: nameof(toPath));
@@ -99,7 +99,7 @@ namespace BizHawk.Common.PathExtensions
 				// FileInfo for normalisation ("C:\a\b\..\c" => "C:\a\c")
 				string mycwd = cwd ?? (OSTailoredCode.IsUnixHost ? Environment.CurrentDirectory : CWDHacks.Get());
 				string finalpath = $"{mycwd}/{path}";
-				FileInfo fi = new FileInfo(finalpath);
+				FileInfo fi = new(finalpath);
 				return fi.FullName;
 			}
 		}

@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 				.ThenBy(f => f.Name);
 			foreach (var nlf in functions)
 			{
-				ListViewItem item = new ListViewItem { Text = nlf.Event };
+				ListViewItem item = new() { Text = nlf.Event };
 				item.SubItems.Add(nlf.Name);
 				item.SubItems.Add(nlf.Guid.ToString());
 				FunctionView.Items.Add(item);

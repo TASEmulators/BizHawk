@@ -82,9 +82,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					}
 				};
 
-				List<string> finalDevices = new List<string>();
+				List<string> finalDevices = new();
 
-				List<byte> switchPreviousFrame = new List<byte>();
+				List<byte> switchPreviousFrame = new();
 				for (int port = 0, devByteStart = 0; port < allPorts.Count; port++)
 				{
 					var portInfo = allPorts[port];
@@ -121,8 +121,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						if (input.Type == InputType.Padding)
 							continue;
 
-						int bitSize = (int)input.BitSize;
-						int bitOffset = (int)input.BitOffset;
+						int bitSize = input.BitSize;
+						int bitOffset = input.BitOffset;
 						int byteStart = devByteStart + bitOffset / 8;
 						bitOffset %= 8;
 						string baseName = input.Name;
@@ -350,7 +350,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// On some cores, some controller ports are not relevant when certain settings are off (like multitap).
 		/// Override this if your core has such an issue
 		/// </summary>
-		protected virtual HashSet<string> ComputeHiddenPorts() => new HashSet<string>();
+		protected virtual HashSet<string> ComputeHiddenPorts() => new();
 
 		public class PortResult
 		{

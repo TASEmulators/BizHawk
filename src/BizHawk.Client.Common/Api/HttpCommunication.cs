@@ -67,7 +67,7 @@ namespace BizHawk.Client.Common
 		public string SendScreenshot(string url = null, string parameter = "screenshot")
 		{
 			string url1 = url ?? PostUrl;
-			FormUrlEncodedContent content = new FormUrlEncodedContent(new Dictionary<string, string> { [parameter] = Convert.ToBase64String(_takeScreenshotCallback()) });
+			FormUrlEncodedContent content = new(new Dictionary<string, string> { [parameter] = Convert.ToBase64String(_takeScreenshotCallback()) });
 			Task<string> postResponse = null;
 			int trials = 5;
 			while (postResponse == null && trials > 0)

@@ -20,13 +20,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// this shouldn't throw in practice, this is only called when loading was successful!
 			using var disc = DiscExtensions.CreateAnyType(path, e => throw new(e));
-			DiscSectorReader dsr = new DiscSectorReader(disc)
+			DiscSectorReader dsr = new(disc)
 			{
 				Policy = { DeterministicClearBuffer = false } // let's make this a little faster
 			};
 
 			byte[] buf2048 = new byte[2048];
-			List<byte> buffer = new List<byte>();
+			List<byte> buffer = new();
 
 			int FirstDataTrackLBA()
 			{
@@ -168,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							const string _jaguarHeader = "ATARI APPROVED DATA HEADER ATRI";
 							const string _jaguarBSHeader = "TARA IPARPVODED TA AEHDAREA RT";
-							List<byte> buffer = new List<byte>();
+							List<byte> buffer = new();
 							byte[] buf2352 = new byte[2352];
 
 							// find the boot track header
@@ -294,7 +294,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected IReadOnlyList<int> GetRAGameIds(IOpenAdvanced ioa, ConsoleID consoleID)
 		{
-			List<int> ret = new List<int>();
+			List<int> ret = new();
 			switch (ioa.TypeName)
 			{
 				case OpenAdvancedTypes.OpenRom:
@@ -303,8 +303,8 @@ namespace BizHawk.Client.EmuHawk
 
 						if (ext == ".m3u")
 						{
-							using HawkFile file = new HawkFile(ioa.SimplePath);
-							using StreamReader sr = new StreamReader(file.GetStream());
+							using HawkFile file = new(ioa.SimplePath);
+							using StreamReader sr = new(file.GetStream());
 							M3U_File m3u = M3U_File.Read(sr);
 							m3u.Rebase(Path.GetDirectoryName(ioa.SimplePath));
 							ret.AddRange(m3u.Entries.Select(entry => HashDisc(entry.Path, consoleID)));
@@ -351,7 +351,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								using HawkFile file = new HawkFile(ioa.SimplePath);
+								using HawkFile file = new(ioa.SimplePath);
 								byte[] rom = file.ReadAllBytes();
 								ret.Add(IdentifyRom(rom));
 							}
@@ -369,7 +369,7 @@ namespace BizHawk.Client.EmuHawk
 				case OpenAdvancedTypes.Libretro:
 					{
 						// can't know what's here exactly, so we'll just hash the entire thing
-						using HawkFile file = new HawkFile(ioa.SimplePath);
+						using HawkFile file = new(ioa.SimplePath);
 						byte[] rom = file.ReadAllBytes();
 						ret.Add(IdentifyRom(rom));
 						break;

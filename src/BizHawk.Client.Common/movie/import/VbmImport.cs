@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common.movie.import
 		protected override void RunImport()
 		{
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
-			using BinaryReader r = new BinaryReader(fs);
+			using BinaryReader r = new(fs);
 			bool is_GBC = false;
 
 			// 000 4-byte signature: 56 42 4D 1A "VBM\x1A"

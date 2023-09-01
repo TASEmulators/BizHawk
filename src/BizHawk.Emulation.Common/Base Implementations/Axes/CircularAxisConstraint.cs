@@ -19,8 +19,8 @@ namespace BizHawk.Emulation.Common
 
 		public (int X, int Y) ApplyTo(int rawX, int rawY)
 		{
-			double xVal = (double) rawX;
-			double yVal = (double) rawY;
+			double xVal = rawX;
+			double yVal = rawY;
 			double length = Math.Sqrt(xVal * xVal + yVal * yVal);
 			double ratio = Magnitude / length;
 			return ratio < 1.0

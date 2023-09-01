@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.DiscSystem
 			buffer16[offset + 0] = 0x00;
 			for (int i = 1; i < 11; i++) buffer16[offset + i] = 0xFF;
 			buffer16[offset + 11] = 0x00;
-			Timestamp ts = new Timestamp(LBA + 150);
+			Timestamp ts = new(LBA + 150);
 			buffer16[offset + 12] = BCD2.IntToBCD(ts.MIN);
 			buffer16[offset + 13] = BCD2.IntToBCD(ts.SEC);
 			buffer16[offset + 14] = BCD2.IntToBCD(ts.FRAC);

@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public PutSettingsDirtyBits PutSettings(SameboySettings o)
 		{
-			LibSameboy.NativeSettings settings = new LibSameboy.NativeSettings
+			LibSameboy.NativeSettings settings = new()
 			{
 				Palette = o.GBPalette,
 				CustomPalette = o.GetCustomPalette(),

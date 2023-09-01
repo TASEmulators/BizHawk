@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//TODO - endian bug. need an endian-independent binary reader with good license (miscutils is apache license)
 			//extension methods on binary reader wont suffice, we need something that lets you control the endianness used for reading. a complete replacement.
-			BinaryReader br = new BinaryReader(stream);
+			BinaryReader br = new(stream);
 			EDC = br.ReadInt32();
 
 			Length = logOffset;
@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static bool IsECM(string path)
 		{
-			using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+			using FileStream fs = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 			int e = fs.ReadByte();
 			int c = fs.ReadByte();
 			int m = fs.ReadByte();

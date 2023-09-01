@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Cores
 
 		private static PadSchema FdsConsoleButtons(int diskSize)
 		{
-			List<ButtonSchema> buttons = new List<ButtonSchema>
+			List<ButtonSchema> buttons = new()
 			{
 				new ButtonSchema(10, 15, "Reset"),
 				new ButtonSchema(58, 15, "Power"),

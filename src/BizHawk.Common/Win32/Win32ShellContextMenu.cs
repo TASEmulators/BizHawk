@@ -241,7 +241,7 @@ namespace BizHawk.Common
 
 		private Win32ShellContextMenu(string path)
 		{
-			Uri uri = new Uri(path);
+			Uri uri = new(path);
 
 			// this should be the only scheme used in practice
 			if (uri.Scheme != "file")
@@ -295,8 +295,8 @@ namespace BizHawk.Common
 
 		public static void ShowContextMenu(string path, IntPtr parentWindow, int x, int y)
 		{
-			Win32ShellContextMenu ctxMenu = new Win32ShellContextMenu(path);
-			using TempMenu menu = new TempMenu();
+			Win32ShellContextMenu ctxMenu = new(path);
+			using TempMenu menu = new();
 			const int CmdFirst = 0x8000;
 			ctxMenu.ComInterface.QueryContextMenu(menu.Handle, 0, CmdFirst, int.MaxValue, CMF.EXPLORE);
 			int command = TrackPopupMenuEx(menu.Handle, TPM.TPM_RETURNCMD, x, y, parentWindow, IntPtr.Zero);

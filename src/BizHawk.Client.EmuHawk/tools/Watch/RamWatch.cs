@@ -391,7 +391,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedItems.Any())
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				foreach (var watch in SelectedItems)
 				{
 					sb.AppendLine(watch.ToString());
@@ -439,7 +439,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (SelectedWatches.Any())
 			{
-				WatchEditor we = new WatchEditor
+				WatchEditor we = new()
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView),
 					MemoryDomains = MemoryDomains
@@ -469,7 +469,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (SelectedSeparators.Any() && !duplicate)
 			{
-				InputPrompt inputPrompt = new InputPrompt
+				InputPrompt inputPrompt = new()
 				{
 					Text = "Edit Separator",
 					StartLocation = this.ChildPointToScreen(WatchListView),
@@ -754,7 +754,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewWatchMenuItem_Click(object sender, EventArgs e)
 		{
-			WatchEditor we = new WatchEditor
+			WatchEditor we = new()
 			{
 				InitialLocation = this.ChildPointToScreen(WatchListView),
 				MemoryDomains = MemoryDomains
@@ -817,7 +817,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedWatches.Any())
 			{
-				RamPoke poke = new RamPoke(DialogController, SelectedWatches, MainForm.CheatList)
+				RamPoke poke = new(DialogController, SelectedWatches, MainForm.CheatList)
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView)
 				};
@@ -955,7 +955,7 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Insert(_watches.Count, watch);
 			}
 
-			List<int> newInd = new List<int>();
+			List<int> newInd = new();
 			for (int i = 0, x = _watches.Count - indices.Count; i < indices.Count; i++, x++)
 			{
 				newInd.Add(x);

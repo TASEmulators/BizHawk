@@ -9,9 +9,9 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	{
 		private void SetupMemoryDomains()
 		{
-			List<MemoryDomain> domains = new List<MemoryDomain>();
+			List<MemoryDomain> domains = new();
 
-			MemoryDomainDelegate mainRamDomain = new MemoryDomainDelegate("Main RAM", 0x10000, MemoryDomain.Endian.Little,
+			MemoryDomainDelegate mainRamDomain = new("Main RAM", 0x10000, MemoryDomain.Endian.Little,
 				addr =>
 				{
 					if (addr is < 0 or > 0x10000) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			domains.Add(mainRamDomain);
 
-			MemoryDomainDelegate auxRamDomain = new MemoryDomainDelegate("Auxiliary RAM", 0x10000, MemoryDomain.Endian.Little,
+			MemoryDomainDelegate auxRamDomain = new("Auxiliary RAM", 0x10000, MemoryDomain.Endian.Little,
 				addr =>
 				{
 					if (addr is < 0 or > 0x10000) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			domains.Add(auxRamDomain);
 
-			MemoryDomainDelegate systemBusDomain = new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
+			MemoryDomainDelegate systemBusDomain = new("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				addr =>
 				{
 					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");

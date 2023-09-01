@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			Config config)
 				where T : IMainFormForTools, IDialogParent
 		{
-			VideoWriterChooserForm dlg = new VideoWriterChooserForm(owner, emulator, config)
+			VideoWriterChooserForm dlg = new(owner, emulator, config)
 			{
 				checkBoxASync = { Checked = config.VideoWriterAudioSyncEffective },
 				checkBoxPad = { Checked = config.AVWriterPad },

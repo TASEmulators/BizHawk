@@ -37,7 +37,7 @@ namespace BizHawk.Tests.Common.MultiPredicateSort
 		[TestMethod]
 		public void TestRigidSort()
 		{
-			RigidMultiPredicateSort<(int X, string Y)> sorts = new RigidMultiPredicateSort<(int X, string Y)>(new Dictionary<string, Func<(int X, string Y), IComparable>>
+			RigidMultiPredicateSort<(int X, string Y)> sorts = new(new Dictionary<string, Func<(int X, string Y), IComparable>>
 			{
 				["by_x"] = t => t.X,
 				["by_y"] = t => t.Y

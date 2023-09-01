@@ -14,9 +14,9 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 
 		private void SetupMemoryDomains()
 		{
-			List<MemoryDomain> domains = new List<MemoryDomain>();
+			List<MemoryDomain> domains = new();
 
-			MemoryDomainDelegate systemBusDomain = new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
+			MemoryDomainDelegate systemBusDomain = new("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 			}
 			else
 			{
-				MemoryDomainByteArray m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
+				MemoryDomainByteArray m = new(name, MemoryDomain.Endian.Little, data, true, 1);
 				_byteArrayDomains.Add(name, m);
 			}
 		}

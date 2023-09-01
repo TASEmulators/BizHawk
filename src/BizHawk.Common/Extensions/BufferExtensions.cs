@@ -55,7 +55,7 @@ namespace BizHawk.Common.BufferExtensions
 		/// </summary>
 		public static string BytesToHexString(this byte[] bytes)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			foreach (byte b in bytes)
 			{
 				sb.AppendFormat("{0:X2}", b);

@@ -19,11 +19,11 @@
 
 		private void RunMednaDisc()
 		{
-			Disc disc = new Disc();
+			Disc disc = new();
 			OUT_Disc = disc;
 
 			//create a MednaDisc and give it to the disc for ownership
-			MednaDisc md = new MednaDisc(IN_FromPath);
+			MednaDisc md = new(IN_FromPath);
 			disc.DisposableResources.Add(md);
 
 			//"length of disc" for BizHawk's purposes (NOT a robust concept!) is determined by beginning of leadout track
@@ -34,7 +34,7 @@
 			disc.SynthParams.MednaDisc = md;
 
 			//this is the sole sector synthesizer we'll need
-			SS_MednaDisc synth = new SS_MednaDisc();
+			SS_MednaDisc synth = new();
 			OUT_Disc.SynthProvider = new SimpleSectorSynthProvider { SS = synth };
 
 			//ADR (q-Mode) is necessarily 0x01 for a RawTOCEntry
@@ -58,9 +58,9 @@
 				if (!m_te.Valid)
 					continue;
 
-				Timestamp m_ts = new Timestamp((int)m_te.lba + 150); //these are supposed to be absolute timestamps
+				Timestamp m_ts = new((int)m_te.lba + 150); //these are supposed to be absolute timestamps
 
-				SubchannelQ q = new SubchannelQ
+				SubchannelQ q = new()
 				{
 					q_status = SubchannelQ.ComputeStatus(kADR, (EControlQ) m_te.control),
 					q_tno = BCD2.FromDecimal(0), //unknown with mednadisc
@@ -85,7 +85,7 @@
 			}
 
 			// synth A0 and A1 entries (indicating first and last recorded tracks and also session type)
-			SubchannelQ qA0 = new SubchannelQ
+			SubchannelQ qA0 = new()
 			{
 				q_status = SubchannelQ.ComputeStatus(kADR, kUnknownControl),
 				q_tno = BCD2.FromDecimal(0), //unknown with mednadisc
@@ -100,7 +100,7 @@
 				q_crc = 0, //meaningless
 			};
 			disc.Session1.RawTOCEntries.Add(new() { QData = qA0 });
-			SubchannelQ qA1 = new SubchannelQ
+			SubchannelQ qA1 = new()
 			{
 				q_status = SubchannelQ.ComputeStatus(kADR, kUnknownControl),
 				q_tno = BCD2.FromDecimal(0), //unknown with mednadisc

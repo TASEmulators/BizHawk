@@ -146,7 +146,7 @@ namespace BizHawk.Client.Common
 
 		public bool Load()
 		{
-			FileInfo file = new FileInfo(Filename);
+			FileInfo file = new(Filename);
 			if (!file.Exists)
 			{
 				return false;

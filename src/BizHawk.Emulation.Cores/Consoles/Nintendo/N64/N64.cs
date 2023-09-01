@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_disableExpansionSlot = _syncSettings.DisableExpansionSlot;
 
 			// Override the user's expansion slot setting if it is mentioned in the gamedb (it is mentioned but the game MUST have this setting or else not work
-			if (game.OptionValue("expansionpak") != null && game.OptionValue("expansionpak") == "1")
+			if (game.OptionValue("expansionpak") is not null and "1")
 			{
 				_disableExpansionSlot = false;
 				IsOverridingUserExpansionSlotSetting = true;
@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private void StartThreadLoop()
 		{
-			Thread thread = new Thread(ThreadLoop) { IsBackground = true };
+			Thread thread = new(ThreadLoop) { IsBackground = true };
 			thread.Start(); // will this solve the hanging process problem?
 		}
 

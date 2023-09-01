@@ -280,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!Directory.Exists(dir))
 				return;
 
-			FileSystemWatcher watcher = new FileSystemWatcher
+			FileSystemWatcher watcher = new()
 			{
 				Path = dir,
 				Filter = file,
@@ -326,7 +326,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				LuaFile luaFile = new LuaFile("", absolutePath);
+				LuaFile luaFile = new("", absolutePath);
 
 				LuaImp.ScriptList.Add(luaFile);
 				LuaListView.RowCount = LuaImp.ScriptList.Count;
@@ -1277,7 +1277,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LuaListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
 			string columnToSort = e.Column.Name;
-			List<LuaFile> luaListTemp = new List<LuaFile>();
+			List<LuaFile> luaListTemp = new();
 			if (columnToSort != _lastColumnSorted)
 			{
 				_sortReverse = false;

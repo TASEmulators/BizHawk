@@ -292,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AddBreakpointDialog.BreakpointOperation operation = (AddBreakpointDialog.BreakpointOperation)op;
 
-			AddBreakpointDialog b = new AddBreakpointDialog(operation)
+			AddBreakpointDialog b = new(operation)
 			{
 				MaxAddressSize = MemoryDomains.SystemBus.Size - 1
 			};

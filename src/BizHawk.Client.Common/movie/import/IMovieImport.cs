@@ -93,7 +93,7 @@ namespace BizHawk.Client.Common
 				if (result is null)
 					return null; // skip hash migration when the dialog was canceled
 
-				using HawkFile rom = new HawkFile(result);
+				using HawkFile rom = new(result);
 				if (rom.IsArchive) rom.BindFirst();
 				ReadOnlySpan<byte> romData = (ReadOnlySpan<byte>) rom.ReadAllBytes();
 				if (romData.Length % 1024 == 512)
@@ -161,7 +161,7 @@ namespace BizHawk.Client.Common
 
 		public static ImportResult Error(string errorMsg)
 		{
-			ImportResult result = new ImportResult();
+			ImportResult result = new();
 			result.Errors.Add(errorMsg);
 			return result;
 		}

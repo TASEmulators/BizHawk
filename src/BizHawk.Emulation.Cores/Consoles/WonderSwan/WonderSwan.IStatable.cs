@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public void SaveStateText(TextWriter writer)
 		{
-			TextState<TextStateData> s = new TextState<TextStateData>();
+			TextState<TextStateData> s = new();
 			s.Prepare();
 			var ff = s.GetFunctionPointersSave();
 			BizSwan.bizswan_txtstatesave(Core, ref ff);
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			writer.Write(savebuff.Length);
 			writer.Write(savebuff);
 
-			TextStateData d = new TextStateData();
+			TextStateData d = new();
 			SaveTextStateData(d);
 			BinaryQuickSerializer.Write(d, writer);
 		}

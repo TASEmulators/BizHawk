@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// FDS and NSF have a unique activation setup
 			if (Board is FDS)
 			{
-				FDS newfds = new FDS();
+				FDS newfds = new();
 				FDS oldfds = Board as FDS;
 				newfds.biosrom = oldfds.biosrom;
 				newfds.SetDiskImage(oldfds.GetDiskImage());
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (Board is NSFBoard)
 			{
-				NSFBoard newnsf = new NSFBoard();
+				NSFBoard newnsf = new();
 				NSFBoard oldnsf = Board as NSFBoard;
 				newnsf.InitNSF(oldnsf.nsf);
 				newboard = newnsf;
@@ -81,8 +81,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		static NES()
 		{
-			List<Type> highPriority = new List<Type>();
-			List<Type> normalPriority = new List<Type>();
+			List<Type> highPriority = new();
+			List<Type> normalPriority = new();
 
 			//scan types in this assembly to find ones that implement boards to add them to the list
 			foreach (var type in Emulation.Cores.ReflectionCache.Types)

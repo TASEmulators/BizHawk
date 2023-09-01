@@ -46,7 +46,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public Art LoadArt(string path)
 		{
-			using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+			using FileStream fs = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 			return LoadArtInternal(new BitmapBuffer(path, new BitmapLoadOptions()));
 		}
 
@@ -54,7 +54,7 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			AssertIsOpen(true);
 
-			Art a = new Art(this);
+			Art a = new(this);
 			ArtLooseTextureAssociation.Add((a, tex));
 			ManagedArts.Add(a);
 
@@ -91,7 +91,7 @@ namespace BizHawk.Bizware.BizwareGL
 				throw new InvalidOperationException("Art files too big for atlas");
 
 			// prepare the output buffer
-			BitmapBuffer bmpResult = new BitmapBuffer(results[0].Size);
+			BitmapBuffer bmpResult = new(results[0].Size);
 
 			//for each item, copy it into the output buffer and set the tex parameters on them
 			for (int i = 0; i < atlasItems.Count; i++)
@@ -111,8 +111,8 @@ namespace BizHawk.Bizware.BizwareGL
 					}
 				}
 
-				float myDestWidth = (float)bmpResult.Width;
-				float myDestHeight = (float)bmpResult.Height;
+				float myDestWidth = bmpResult.Width;
+				float myDestHeight = bmpResult.Height;
 
 				art.u0 = dx / myDestWidth;
 				art.v0 = dy / myDestHeight;

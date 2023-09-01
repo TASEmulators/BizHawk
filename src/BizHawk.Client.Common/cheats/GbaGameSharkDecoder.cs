@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common.cheats
 				return new InvalidCheatCode("All GBA GameShark Codes need to be 17 characters in length with a space after the first eight.");
 			}
 
-			DecodeResult result = new DecodeResult
+			DecodeResult result = new()
 			{
 				Size = code.First() switch
 				{

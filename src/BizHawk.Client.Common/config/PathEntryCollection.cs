@@ -148,7 +148,7 @@ namespace BizHawk.Client.Common
 				if (!Paths.Exists(p => p.System == defaultPath.System && p.Type == defaultPath.Type)) Paths.Add(defaultPath);
 			}
 
-			List<PathEntry> entriesToRemove = new List<PathEntry>();
+			List<PathEntry> entriesToRemove = new();
 
 			// Remove entries that no longer exist in defaults
 			foreach (var pathEntry in Paths)

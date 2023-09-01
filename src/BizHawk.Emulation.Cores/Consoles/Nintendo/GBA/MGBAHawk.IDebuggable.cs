@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			int[] values = new int[RegisterNames.Length];
 			LibmGBA.BizGetRegisters(Core, values);
-			Dictionary<string, RegisterValue> ret = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> ret = new();
 			for (int i = 0; i < RegisterNames.Length; i++)
 			{
 				ret[RegisterNames[i]] = new(values[i]);

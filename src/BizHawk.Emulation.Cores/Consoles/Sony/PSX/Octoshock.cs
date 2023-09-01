@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					}
 				}
 
-				StringWriter sw = new StringWriter();
+				StringWriter sw = new();
 				foreach (var d in lp.Discs)
 				{
 					string discHash = new DiscHasher(d.DiscData).Calculate_PSX_BizIDHash();
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 				foreach (var disc in discs)
 				{
-					DiscInterface discInterface = new DiscInterface(disc,
+					DiscInterface discInterface = new(disc,
 						di =>
 						{
 							//if current disc this delegate disc, activity is happening
@@ -268,7 +268,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			else
 				OctoshockDll.shock_Peripheral_Connect(psx, 0x02, fioCfg.Devices8[4]);
 
-			OctoshockDll.ShockMemcardTransaction memcardTransaction = new OctoshockDll.ShockMemcardTransaction()
+			OctoshockDll.ShockMemcardTransaction memcardTransaction = new()
 			{
 				transaction = OctoshockDll.eShockMemcardTransaction.Connect
 			};
@@ -449,7 +449,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				cbActivity(this);
 
 				//todo - cache reader
-				DiscSectorReader dsr = new DiscSectorReader(Disc);
+				DiscSectorReader dsr = new(Disc);
 				int readed = dsr.ReadLBA_2448(lba, SectorBuffer, 0);
 				if (readed == 2448)
 				{
@@ -496,7 +496,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public string CalculateDiscHashes()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			try
 			{
 				foreach (var disc in Discs)
@@ -809,7 +809,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			OctoshockDll.shock_SetLEC(psx, _SyncSettings.EnableLEC);
 
-			OctoshockDll.ShockRenderOptions ropts = new OctoshockDll.ShockRenderOptions()
+			OctoshockDll.ShockRenderOptions ropts = new()
 			{
 				scanline_start = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? _Settings.ScanlineStart_NTSC : _Settings.ScanlineStart_PAL,
 				scanline_end = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? _Settings.ScanlineEnd_NTSC : _Settings.ScanlineEnd_PAL,
@@ -965,7 +965,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				{
 					fixed (byte* pbuf = buf)
 					{
-						OctoshockDll.ShockMemcardTransaction transaction = new OctoshockDll.ShockMemcardTransaction
+						OctoshockDll.ShockMemcardTransaction transaction = new()
 						{
 							buffer128k = pbuf + idx * 128 * 1024,
 							transaction = OctoshockDll.eShockMemcardTransaction.Read
@@ -987,7 +987,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				{
 					fixed (byte* pbuf = data)
 					{
-						OctoshockDll.ShockMemcardTransaction transaction = new OctoshockDll.ShockMemcardTransaction
+						OctoshockDll.ShockMemcardTransaction transaction = new()
 						{
 							buffer128k = pbuf + idx * 128 * 1024,
 							transaction = OctoshockDll.eShockMemcardTransaction.Write
@@ -1008,7 +1008,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				{
 					if (cfg.Memcards[i])
 					{
-						OctoshockDll.ShockMemcardTransaction transaction = new OctoshockDll.ShockMemcardTransaction
+						OctoshockDll.ShockMemcardTransaction transaction = new()
 						{
 							transaction = OctoshockDll.eShockMemcardTransaction.CheckDirty
 						};
@@ -1029,7 +1029,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		private void StudySaveBufferSize()
 		{
-			OctoshockDll.ShockStateTransaction transaction = new OctoshockDll.ShockStateTransaction
+			OctoshockDll.ShockStateTransaction transaction = new()
 			{
 				transaction = OctoshockDll.eShockStateTransaction.BinarySize
 			};
@@ -1043,7 +1043,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			fixed (byte* psavebuff = savebuff)
 			{
-				OctoshockDll.ShockStateTransaction transaction = new OctoshockDll.ShockStateTransaction()
+				OctoshockDll.ShockStateTransaction transaction = new()
 				{
 					transaction = OctoshockDll.eShockStateTransaction.BinarySave,
 					buffer = psavebuff,
@@ -1069,7 +1069,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			fixed (byte* psavebuff = savebuff)
 			{
-				OctoshockDll.ShockStateTransaction transaction = new OctoshockDll.ShockStateTransaction()
+				OctoshockDll.ShockStateTransaction transaction = new()
 				{
 					transaction = OctoshockDll.eShockStateTransaction.BinaryLoad,
 					buffer = psavebuff,
@@ -1112,7 +1112,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			public SyncSettings()
 			{
 				//initialize with single controller and memcard
-				OctoshockFIOConfigUser user = new OctoshockFIOConfigUser();
+				OctoshockFIOConfigUser user = new();
 				user.Memcards[0] = true;
 				user.Memcards[1] = false;
 				user.Multitaps[0] = user.Multitaps[0] = false;

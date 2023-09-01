@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters) : this(loadParameters, false) { }
 		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters, bool subframe = false)
 		{
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 
 			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath, null);

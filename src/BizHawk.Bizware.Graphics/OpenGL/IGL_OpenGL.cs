@@ -194,16 +194,16 @@ namespace BizHawk.Bizware.Graphics
 #endif
 
 			// get all the uniforms
-			List<UniformInfo> uniforms = new List<UniformInfo>();
+			List<UniformInfo> uniforms = new();
 			GL.GetProgram(pid, GLEnum.ActiveUniforms, out int nUniforms);
-			List<int> samplers = new List<int>();
+			List<int> samplers = new();
 
 			for (uint i = 0; i < nUniforms; i++)
 			{
 				GL.GetActiveUniform(pid, i, 1024, out _, out _, out UniformType type, out string name);
 				int loc = GL.GetUniformLocation(pid, name);
 
-				UniformInfo ui = new UniformInfo { Name = name, Opaque = loc };
+				UniformInfo ui = new() { Name = name, Opaque = loc };
 
 				if (type == UniformType.Sampler2D)
 				{
@@ -222,7 +222,7 @@ namespace BizHawk.Bizware.Graphics
 			if (!vertexShader.Available) success = false;
 			if (!fragmentShader.Available) success = false;
 
-			PipelineWrapper pw = new PipelineWrapper { pid = pid, VertexShader = vertexShader, FragmentShader = fragmentShader, SamplerLocs = samplers };
+			PipelineWrapper pw = new() { pid = pid, VertexShader = vertexShader, FragmentShader = fragmentShader, SamplerLocs = samplers };
 
 			return new(this, pw, success, vertexLayout, uniforms, memo);
 		}
@@ -282,7 +282,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public VertexLayout CreateVertexLayout()
 		{
-			VertexLayoutWrapper vlw = new VertexLayoutWrapper()
+			VertexLayoutWrapper vlw = new()
 			{
 				vao = GL.GenVertexArray(),
 				vbo = GL.GenBuffer(),
@@ -387,7 +387,7 @@ namespace BizHawk.Bizware.Graphics
 
 			unsafe
 			{
-				ReadOnlySpan<byte> vertexes = new ReadOnlySpan<byte>(data.ToPointer(), count * stride);
+				ReadOnlySpan<byte> vertexes = new(data.ToPointer(), count * stride);
 
 				// BufferData reallocs and BufferSubData doesn't, so only use the former if size changes
 				if (vertexes.Length != vlw.bufferLen)
@@ -485,13 +485,13 @@ namespace BizHawk.Bizware.Graphics
 
 		public Texture2d LoadTexture(Bitmap bitmap)
 		{
-			using BitmapBuffer bmp = new BitmapBuffer(bitmap, new());
+			using BitmapBuffer bmp = new(bitmap, new());
 			return LoadTexture(bmp);
 		}
 
 		public Texture2d LoadTexture(Stream stream)
 		{
-			using BitmapBuffer bmp = new BitmapBuffer(stream, new());
+			using BitmapBuffer bmp = new(stream, new());
 			return LoadTexture(bmp);
 		}
 
@@ -528,7 +528,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			// create a texture for it
 			uint texId = GL.GenTexture();
-			Texture2d tex = new Texture2d(this, texId, w, h);
+			Texture2d tex = new(this, texId, w, h);
 
 			GL.BindTexture(TextureTarget.Texture2D, texId);
 			GL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8, (uint)w, (uint)h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, null);
@@ -597,7 +597,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			// note - this is dangerous since it changes the bound texture. could we save it?
 			BindTexture2d(tex);
-			BitmapBuffer bb = new BitmapBuffer(tex.IntWidth, tex.IntHeight);
+			BitmapBuffer bb = new(tex.IntWidth, tex.IntHeight);
 			var bmpdata = bb.LockBits();
 			GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bmpdata.Scan0.ToPointer());
 			bb.UnlockBits(bmpdata);
@@ -606,7 +606,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public Texture2d LoadTexture(string path)
 		{
-			using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+			using FileStream fs = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 			return LoadTexture(fs);
 		}
 
@@ -650,7 +650,7 @@ namespace BizHawk.Bizware.Graphics
 
 		private BizShader CreateShader(ShaderType type, string source, bool required)
 		{
-			ShaderWrapper sw = new ShaderWrapper();
+			ShaderWrapper sw = new();
 			string info = string.Empty;
 
 			_ = GL.GetError();
@@ -663,7 +663,7 @@ namespace BizHawk.Bizware.Graphics
 				sid = 0;
 			}
 
-			BizShader ret = new BizShader(this, sw, ok)
+			BizShader ret = new(this, sw, ok)
 			{
 				Errors = info
 			};

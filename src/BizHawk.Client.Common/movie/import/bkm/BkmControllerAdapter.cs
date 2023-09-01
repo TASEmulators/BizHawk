@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MnemonicChecker c = new(mnemonic);
 
 			_myBoolButtons.Clear();
 
@@ -220,7 +220,7 @@ namespace BizHawk.Client.Common
 
 		private void SetGBAControllersAsMnemonic(string mnemonic)
 		{
-			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MnemonicChecker c = new(mnemonic);
 			_myBoolButtons.Clear();
 			if (mnemonic.Length < 2)
 			{
@@ -241,7 +241,7 @@ namespace BizHawk.Client.Common
 
 		private void SetGenesis6ControllersAsMnemonic(string mnemonic)
 		{
-			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MnemonicChecker c = new(mnemonic);
 			_myBoolButtons.Clear();
 
 			if (mnemonic.Length < 2)
@@ -282,7 +282,7 @@ namespace BizHawk.Client.Common
 
 		private void SetGenesis3ControllersAsMnemonic(string mnemonic)
 		{
-			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MnemonicChecker c = new(mnemonic);
 			_myBoolButtons.Clear();
 
 			if (mnemonic.Length < 2)
@@ -323,7 +323,7 @@ namespace BizHawk.Client.Common
 
 		private void SetSNESControllersAsMnemonic(string mnemonic)
 		{
-			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MnemonicChecker c = new(mnemonic);
 			_myBoolButtons.Clear();
 
 			if (mnemonic.Length < 2)
@@ -359,7 +359,7 @@ namespace BizHawk.Client.Common
 
 		private void SetLynxControllersAsMnemonic(string mnemonic)
 		{
-			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MnemonicChecker c = new(mnemonic);
 			_myBoolButtons.Clear();
 
 			if (mnemonic.Length < 2)
@@ -391,7 +391,7 @@ namespace BizHawk.Client.Common
 
 		private void SetN64ControllersAsMnemonic(string mnemonic)
 		{
-			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MnemonicChecker c = new(mnemonic);
 			_myBoolButtons.Clear();
 
 			if (mnemonic.Length < 2)
@@ -433,7 +433,7 @@ namespace BizHawk.Client.Common
 
 		private void SetSaturnControllersAsMnemonic(string mnemonic)
 		{
-			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MnemonicChecker c = new(mnemonic);
 			_myBoolButtons.Clear();
 
 			if (mnemonic.Length < 2)
@@ -469,7 +469,7 @@ namespace BizHawk.Client.Common
 
 		private void SetAtari7800AsMnemonic(string mnemonic)
 		{
-			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MnemonicChecker c = new(mnemonic);
 			_myBoolButtons.Clear();
 
 			if (mnemonic.Length < 5)
@@ -515,7 +515,7 @@ namespace BizHawk.Client.Common
 
 		private void SetDualGameBoyControllerAsMnemonic(string mnemonic)
 		{
-			MnemonicChecker checker = new MnemonicChecker(mnemonic);
+			MnemonicChecker checker = new(mnemonic);
 			_myBoolButtons.Clear();
 			for (int i = 0; i < BkmMnemonicConstants.DgbMnemonic.Length; i++)
 			{
@@ -529,7 +529,7 @@ namespace BizHawk.Client.Common
 
 		private void SetWonderSwanControllerAsMnemonic(string mnemonic)
 		{
-			MnemonicChecker checker = new MnemonicChecker(mnemonic);
+			MnemonicChecker checker = new(mnemonic);
 			_myBoolButtons.Clear();
 			for (int i = 0; i < BkmMnemonicConstants.WsMnemonic.Length; i++)
 			{
@@ -543,7 +543,7 @@ namespace BizHawk.Client.Common
 
 		private void SetC64ControllersAsMnemonic(string mnemonic)
 		{
-			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MnemonicChecker c = new(mnemonic);
 			_myBoolButtons.Clear();
 
 			for (int player = 1; player <= BkmMnemonicConstants.Players[ControlType]; player++)

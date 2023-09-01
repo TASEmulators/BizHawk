@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getluafunctionslist", "returns a list of implemented functions")]
 		public static string GetLuaFunctionsList()
 		{
-			StringBuilder list = new StringBuilder();
+			StringBuilder list = new();
 			foreach (var function in typeof(CommLuaLibrary).GetMethods())
 			{
 				list.AppendLine(function.ToString());

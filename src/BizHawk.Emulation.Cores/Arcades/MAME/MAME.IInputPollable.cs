@@ -24,9 +24,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			string[] buttonFields = MameGetString(MAMELuaCommand.GetButtonFields).Split(';');
 			string[] analogFields = MameGetString(MAMELuaCommand.GetAnalogFields).Split(';');
 
-			List<string> buttonFieldList = new List<string>();
-			List<string> analogFieldList = new List<string>();
-			List<IntPtr> fieldPtrList = new List<IntPtr>();
+			List<string> buttonFieldList = new();
+			List<string> analogFieldList = new();
+			List<IntPtr> fieldPtrList = new();
 
 			void AddFieldPtr(string tag, string field)
 			{

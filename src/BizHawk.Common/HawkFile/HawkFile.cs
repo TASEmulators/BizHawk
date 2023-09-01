@@ -270,7 +270,7 @@ namespace BizHawk.Common
 		public byte[] ReadAllBytes()
 		{
 			using var stream = GetStream();
-			using MemoryStream ms = new MemoryStream((int) stream.Length);
+			using MemoryStream ms = new((int) stream.Length);
 			stream.CopyTo(ms);
 			return ms.GetBuffer();
 		}

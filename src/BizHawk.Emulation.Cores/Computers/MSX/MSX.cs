@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			Disasm_Length = LibMSX.MSX_getdisasmlength(MSX_Pntr);
 			Reg_String_Length = LibMSX.MSX_getregstringlength(MSX_Pntr);
 
-			StringBuilder newHeader = new StringBuilder(Header_Length);
+			StringBuilder newHeader = new(Header_Length);
 			LibMSX.MSX_getheader(MSX_Pntr, newHeader, Header_Length);
 
 			Console.WriteLine(Header_Length + " " + Disasm_Length + " " + Reg_String_Length);

@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common.movie.import
 	{
 		protected override void RunImport()
 		{
-			BkmMovie bkm = new BkmMovie { Filename = SourceFile.FullName };
+			BkmMovie bkm = new() { Filename = SourceFile.FullName };
 			bkm.Load();
 
 			for (int i = 0; i < bkm.InputLogLength; i++)

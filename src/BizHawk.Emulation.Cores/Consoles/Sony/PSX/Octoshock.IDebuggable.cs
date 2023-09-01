@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			Dictionary<string, RegisterValue> ret = new();
-			OctoshockDll.ShockRegisters_CPU regs = new OctoshockDll.ShockRegisters_CPU();
+			OctoshockDll.ShockRegisters_CPU regs = new();
 
 			OctoshockDll.shock_GetRegisters_CPU(psx, ref regs);
 
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		private void SetMemoryDomains()
 		{
-			List<MemoryDomain> mmd = new List<MemoryDomain>();
+			List<MemoryDomain> mmd = new();
 
 			OctoshockDll.shock_GetMemData(psx, out var ptr, out int size, OctoshockDll.eMemType.MainRAM);
 			mmd.Add(new MemoryDomainIntPtr("MainRAM", MemoryDomain.Endian.Little, ptr, size, true, 4));

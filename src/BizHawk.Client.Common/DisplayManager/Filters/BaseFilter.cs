@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common.Filters
 
 		private IOSurfaceInfo DeclareIO(SurfaceDirection direction, string channel, SurfaceDisposition disposition)
 		{
-			IOSurfaceInfo iosi = new IOSurfaceInfo
+			IOSurfaceInfo iosi = new()
 			{
 				SurfaceDirection = direction,
 				Channel = channel,

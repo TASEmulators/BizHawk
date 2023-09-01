@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		// pre-display operations happen, and Cycle55 is the X-raster position where post-display operations happen.
 		public static int[] TimingBuilder_Act(int[] timing, int cycle14, int sprite0Ba, int sprDisp)
 		{
-			List<int> result = new List<int>();
+			List<int> result = new();
 
 			int length = timing.Length;
 			for (int i = 0; i < length; i++)
@@ -254,7 +254,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		// (specifically on an NTSC 6567R8) and DelayAmount is the number of positions to lag.
 		public static int[] TimingBuilder_XRaster(int start, int width, int count, int delayOffset, int delayAmount)
 		{
-			List<int> result = new List<int>();
+			List<int> result = new();
 			int rasterX = start;
 			bool delayed = false;
 			count >>= 2;

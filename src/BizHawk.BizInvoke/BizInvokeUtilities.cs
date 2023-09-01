@@ -64,7 +64,7 @@ namespace BizHawk.BizInvoke
 			delegateInvoke.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
 
 			// add the [UnmanagedFunctionPointer] to the delegate so interop will know how to call it
-			CustomAttributeBuilder attr = new CustomAttributeBuilder(
+			CustomAttributeBuilder attr = new(
 				typeof(UnmanagedFunctionPointerAttribute).GetConstructor(new[] { typeof(CallingConvention) })!,
 				new object[] { nativeCall });
 			delegateType.SetCustomAttribute(attr);

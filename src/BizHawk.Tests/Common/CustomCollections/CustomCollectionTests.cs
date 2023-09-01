@@ -12,7 +12,7 @@ namespace BizHawk.Tests.Common.CustomCollections
 		[TestMethod]
 		public void TestSortedListAddRemove()
 		{
-			SortedList<int> list = new SortedList<int>(new[] { 1, 3, 4, 7, 8, 9, 11 })
+			SortedList<int> list = new(new[] { 1, 3, 4, 7, 8, 9, 11 })
 			{
 				5, // `Insert` when `BinarySearch` returns negative
 				8 // `Insert` when `BinarySearch` returns non-negative
@@ -25,7 +25,7 @@ namespace BizHawk.Tests.Common.CustomCollections
 		[TestMethod]
 		public void TestSortedListContains()
 		{
-			SortedList<int> list = new SortedList<int>(new[] { 1, 3, 4, 7, 8, 9, 11 });
+			SortedList<int> list = new(new[] { 1, 3, 4, 7, 8, 9, 11 });
 			Assert.IsFalse(list.Contains(6)); // `Contains` when `BinarySearch` returns negative
 			Assert.IsTrue(list.Contains(11)); // `Contains` when `BinarySearch` returns non-negative
 		}
@@ -37,7 +37,7 @@ namespace BizHawk.Tests.Common.CustomCollections
 		[DataRow(new[] { 4, 7 }, new int[] { }, 0)]
 		public void TestSortedListRemoveAfter(int[] before, int[] after, int removeItem)
 		{
-			SortedList<int> sortlist = new SortedList<int>(before);
+			SortedList<int> sortlist = new(before);
 			sortlist.RemoveAfter(removeItem);
 			Assert.IsTrue(sortlist.ToArray().SequenceEqual(after));
 		}

@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 			byte[] bios = Zstd.DecompressZstdStream(new MemoryStream(brev.Value)).ToArray();
 
-			LibVirtualJaguar.Settings settings = new LibVirtualJaguar.Settings
+			LibVirtualJaguar.Settings settings = new()
 			{
 				NTSC = _syncSettings.NTSC,
 				UseBIOS = !_syncSettings.SkipBIOS,
@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		private static ControllerDefinition CreateControllerDefinition(bool p1, bool p2)
 		{
-			ControllerDefinition ret = new ControllerDefinition("Jaguar Controller");
+			ControllerDefinition ret = new("Jaguar Controller");
 
 			if (p1)
 			{
@@ -253,9 +253,9 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		private void CDTOCCallback(IntPtr dst)
 		{
 			int nsessions = _cd.Sessions.Count - 1;
-			Timestamp lastLeadOutTs = new Timestamp(_cd.Sessions[nsessions].LeadoutLBA + 150);
+			Timestamp lastLeadOutTs = new(_cd.Sessions[nsessions].LeadoutLBA + 150);
 
-			LibVirtualJaguar.TOC toc = new LibVirtualJaguar.TOC
+			LibVirtualJaguar.TOC toc = new()
 			{
 				Padding0 = 0,
 				Padding1 = 0,
@@ -276,12 +276,12 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				{
 					var track = session.Tracks[j + 1];
 					toc.Tracks[trackNum].TrackNum = (byte)track.Number;
-					Timestamp ts = new Timestamp(track.LBA + 150);
+					Timestamp ts = new(track.LBA + 150);
 					toc.Tracks[trackNum].StartMins = ts.MIN;
 					toc.Tracks[trackNum].StartSecs = ts.SEC;
 					toc.Tracks[trackNum].StartFrames = ts.FRAC;
 					toc.Tracks[trackNum].SessionNum = (byte)(i - 1);
-					Timestamp durTs = new Timestamp(track.NextTrack.LBA - track.LBA);
+					Timestamp durTs = new(track.NextTrack.LBA - track.LBA);
 					toc.Tracks[trackNum].DurMins = durTs.MIN;
 					toc.Tracks[trackNum].DurSecs = durTs.SEC;
 					toc.Tracks[trackNum].DurFrames = durTs.FRAC;

@@ -28,13 +28,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public static byte[] ExportSZX(SpectrumBase machine)
 		{
-			SZX s = new SZX(machine);
+			SZX s = new(machine);
 
 			byte[] result = null;
 
-			using (MemoryStream ms = new MemoryStream())
+			using (MemoryStream ms = new())
 			{
-				using (BinaryWriter r = new BinaryWriter(ms))
+				using (BinaryWriter r = new(ms))
 				{
 					// temp buffer
 					byte[] buff;
@@ -233,7 +233,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTRAMPAGE GetZXSTRAMPAGE(byte page, byte[] RAM)
 		{
-			ZXSTRAMPAGE s = new ZXSTRAMPAGE
+			ZXSTRAMPAGE s = new()
 			{
 				wFlags = 0, // uncompressed only at the moment
 				chPageNo = page,
@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTCREATOR GetZXSTCREATOR()
 		{
-			ZXSTCREATOR s = new ZXSTCREATOR();
+			ZXSTCREATOR s = new();
 			char[] str = "BIZHAWK EMULATOR".ToCharArray();
 			s.szCreator = new char[32];
 			for (int i = 0; i < str.Length; i++)
@@ -257,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTZ80REGS GetZXSTZ80REGS()
 		{
-			ZXSTZ80REGS s = new ZXSTZ80REGS
+			ZXSTZ80REGS s = new()
 			{
 				AF = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["AF"].Value,
 				BC = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["BC"].Value,
@@ -295,7 +295,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTSPECREGS GetZXSTSPECREGS()
 		{
-			ZXSTSPECREGS s = new ZXSTSPECREGS
+			ZXSTSPECREGS s = new()
 			{
 				chBorder = _machine.ULADevice.BorderColor > 7 ? (byte)0 : (byte)_machine.ULADevice.BorderColor,
 				chFe = _machine.LastFe
@@ -363,7 +363,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTKEYBOARD GetZXSTKEYBOARD()
 		{
-			ZXSTKEYBOARD s = new ZXSTKEYBOARD
+			ZXSTKEYBOARD s = new()
 			{
 				dwFlags = 0 //no issue 2 emulation
 			};
@@ -373,7 +373,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTJOYSTICK GetZXSTJOYSTICK()
 		{
-			ZXSTJOYSTICK s = new ZXSTJOYSTICK
+			ZXSTJOYSTICK s = new()
 			{
 				dwFlags = 0 //depreciated
 			};
@@ -384,7 +384,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTAYBLOCK GetZXSTAYBLOCK()
 		{
-			ZXSTAYBLOCK s = new ZXSTAYBLOCK
+			ZXSTAYBLOCK s = new()
 			{
 				cFlags = 0, // no external units
 				chCurrentRegister = (byte)_machine.AYDevice.SelectedRegister
@@ -401,7 +401,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		#pragma warning disable IDE0051
 		private ZXSTTAPE GetZXSTTAPE()
 		{
-			ZXSTTAPE s = new ZXSTTAPE();
+			ZXSTTAPE s = new();
 			s.wFlags |= (int)CassetteRecorderState.ZXSTTP_EMBEDDED;
 			s.wCurrentBlockNo = (ushort)_machine.TapeDevice.CurrentDataBlockIndex;
 			s.dwCompressedSize = _machine.tapeImages[_machine.TapeDevice.CurrentDataBlockIndex].Length;
@@ -417,7 +417,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTPLUS3 GetZXSTPLUS3()
 		{
-			ZXSTPLUS3 s = new ZXSTPLUS3
+			ZXSTPLUS3 s = new()
 			{
 				chNumDrives = 1,
 				fMotorOn = _machine.UPDDiskDevice.FDD_FLAG_MOTOR ? (byte)1 : (byte)0
@@ -427,7 +427,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTDSKFILE GetZXSTDSKFILE()
 		{
-			ZXSTDSKFILE s = new ZXSTDSKFILE
+			ZXSTDSKFILE s = new()
 			{
 				wFlags = 0,
 				chDriveNum = 0,

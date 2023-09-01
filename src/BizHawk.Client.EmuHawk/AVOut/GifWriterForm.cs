@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static GifWriter.GifToken DoTokenForm(IWin32Window parent, Config config)
 		{
-			using GifWriterForm dlg = new GifWriterForm
+			using GifWriterForm dlg = new()
 			{
 				numericUpDown1 = { Value = config.GifWriterFrameskip },
 				numericUpDown2 = { Value = config.GifWriterDelay }

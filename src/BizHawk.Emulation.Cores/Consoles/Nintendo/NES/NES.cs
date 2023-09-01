@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		[CoreConstructor(VSystemID.Raw.NES)]
 		public NES(CoreComm comm, GameInfo game, byte[] rom, NESSettings settings, NESSyncSettings syncSettings, bool subframe = false)
 		{
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 
 			byte[] fdsBios = comm.CoreFileProvider.GetFirmware(new("NES", "Bios_FDS"));
@@ -345,11 +345,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				origin = EDetectionOrigin.NSF;
 				LoadWriteLine("Loading as NSF");
-				NSFFormat nsf = new NSFFormat();
+				NSFFormat nsf = new();
 				nsf.WrapByteArray(file);
 				
 				cart = new CartInfo();
-				NSFBoard nsfboard = new NSFBoard();
+				NSFBoard nsfboard = new();
 				nsfboard.Create(this);
 				nsfboard.Rom = rom;
 				nsfboard.InitNSF( nsf);
@@ -379,7 +379,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (fdsbios == null)
 					throw new MissingFirmwareException("Missing FDS Bios");
 				cart = new CartInfo();
-				FDS fdsboard = new FDS
+				FDS fdsboard = new()
 				{
 					biosrom = fdsbios
 				};
@@ -465,7 +465,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						//8KB prg can't be stored in iNES format, which counts 16KB prg banks.
 						//so a correct hash will include only 8KB.
 						LoadWriteLine("Since this rom has a 16 KB PRG, we'll hash it as 8KB too for bootgod's DB:");
-						MemoryStream msTemp = new MemoryStream();
+						MemoryStream msTemp = new();
 						msTemp.Write(file, 16, 8 * 1024); //add prg
 						if (file.Length >= (16 * 1024 + iNesHeaderInfo.ChrSize * 1024 + 16))
 						{
@@ -655,7 +655,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//create the board's rom and vrom
 			if (iNesHeaderInfo != null)
 			{
-				using MemoryStream ms = new MemoryStream(file, false);
+				using MemoryStream ms = new(file, false);
 				ms.Seek(16, SeekOrigin.Begin); // ines header
 				//pluck the necessary bytes out of the file
 				if (iNesHeaderInfo.TrainerSize != 0)
@@ -686,7 +686,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else
 			{
 				// we should only get here for boards with no header
-				MemoryStream ms = new MemoryStream(file, false);
+				MemoryStream ms = new(file, false);
 				ms.Seek(0, SeekOrigin.Begin);
 
 				Board.Rom = new byte[choice.PrgSize * 1024];

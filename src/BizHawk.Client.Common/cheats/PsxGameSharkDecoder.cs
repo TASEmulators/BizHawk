@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common.cheats
 				return new InvalidCheatCode("All PSX GameShark Cheats need to be 13 characters in length.");
 			}
 
-			DecodeResult result = new DecodeResult();
+			DecodeResult result = new();
 
 			string type = code.Substring(0, 2);
 			result.Size = type switch

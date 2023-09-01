@@ -19,9 +19,9 @@ namespace BizHawk.Client.Common
 			const string emulator = "FCEUX";
 			string platform = VSystemID.Raw.NES; // TODO: FDS?
 
-			NES.NESSyncSettings syncSettings = new NES.NESSyncSettings();
+			NES.NESSyncSettings syncSettings = new();
 
-			NESControlSettings controllerSettings = new NESControlSettings
+			NESControlSettings controllerSettings = new()
 			{
 				NesLeftPort = nameof(UnpluggedNES),
 				NesRightPort = nameof(UnpluggedNES)

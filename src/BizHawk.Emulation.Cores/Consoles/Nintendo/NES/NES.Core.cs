@@ -835,7 +835,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			//Console.WriteLine("cont " + value + " frame " + Frame);
 
-			StrobeInfo si = new StrobeInfo(latched4016, value);
+			StrobeInfo si = new(latched4016, value);
 			ControllerDeck.Strobe(si, _controller);
 			latched4016 = value;
 			new_strobe = (value & 1) > 0;

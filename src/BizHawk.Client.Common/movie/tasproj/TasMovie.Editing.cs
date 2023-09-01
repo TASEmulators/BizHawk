@@ -187,7 +187,7 @@ namespace BizHawk.Client.Common
 
 		public void InsertInput(int frame, string inputState)
 		{
-			List<string> inputLog = new List<string> { inputState };
+			List<string> inputLog = new() { inputState };
 			InsertInput(frame, inputLog); // ChangeLog handled within
 		}
 
@@ -206,7 +206,7 @@ namespace BizHawk.Client.Common
 		public void InsertInput(int frame, IEnumerable<IController> inputStates)
 		{
 			// ChangeLog is done in the InsertInput call.
-			List<string> inputLog = new List<string>();
+			List<string> inputLog = new();
 
 			foreach (var input in inputStates)
 			{

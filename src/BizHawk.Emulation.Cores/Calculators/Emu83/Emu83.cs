@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 
 		static Emu83()
 		{
-			DynamicLibraryImportResolver resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "libemu83.so" : "libemu83.dll", hasLimitedLifetime: false);
 			LibEmu83 = BizInvoker.GetInvoker<LibEmu83>(resolver, CallingConventionAdapters.Native);
 		}

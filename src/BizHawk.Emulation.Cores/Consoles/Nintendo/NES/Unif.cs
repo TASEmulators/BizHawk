@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public Unif(Stream s)
 		{
-			BinaryReader br = new BinaryReader(s, Encoding.ASCII);
+			BinaryReader br = new(s, Encoding.ASCII);
 
 			if (!Encoding.ASCII.GetBytes("UNIF")
 				.SequenceEqual(br.ReadBytes(4)))
@@ -51,8 +51,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Chunks.Add(chunkId, chunkData);
 			}
 
-			MemoryStream prgs = new MemoryStream();
-			MemoryStream chrs = new MemoryStream();
+			MemoryStream prgs = new();
+			MemoryStream chrs = new();
 			for (int i = 0; i < 16; i++)
 			{
 				TryAdd(prgs, $"PRG{i:X1}");

@@ -547,7 +547,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadFileFromRecent(string path)
 		{
-			FileInfo file = new FileInfo(path);
+			FileInfo file = new(path);
 
 			if (!file.Exists)
 			{
@@ -814,7 +814,7 @@ namespace BizHawk.Client.EmuHawk
 					_currentFileName = file.FullName;
 				}
 
-				WatchList watches = new WatchList(MemoryDomains, Emu.SystemId);
+				WatchList watches = new(MemoryDomains, Emu.SystemId);
 				watches.Load(file.FullName, append);
 				Settings.RecentSearches.Add(watches.CurrentFileName);
 
@@ -884,7 +884,7 @@ namespace BizHawk.Client.EmuHawk
 		private void GoToSpecifiedAddress()
 		{
 			WatchListView.DeselectAll();
-			InputPrompt prompt = new InputPrompt
+			InputPrompt prompt = new()
 			{
 				Text = "Go to Address",
 				StartLocation = this.ChildPointToScreen(WatchListView),
@@ -973,7 +973,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!string.IsNullOrWhiteSpace(_currentFileName))
 			{
-				WatchList watches = new WatchList(MemoryDomains, Emu.SystemId) { CurrentFileName = _currentFileName };
+				WatchList watches = new(MemoryDomains, Emu.SystemId) { CurrentFileName = _currentFileName };
 				for (int i = 0; i < _searches.Count; i++)
 				{
 					watches.Add(_searches[i]);
@@ -1002,7 +1002,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			WatchList watches = new WatchList(MemoryDomains, Emu.SystemId) { CurrentFileName = _currentFileName };
+			WatchList watches = new(MemoryDomains, Emu.SystemId) { CurrentFileName = _currentFileName };
 			for (int i = 0; i < _searches.Count; i++)
 			{
 				watches.Add(_searches[i]);
@@ -1052,12 +1052,12 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var type in types)
 			{
-				ToolStripMenuItem item = new ToolStripMenuItem
-					{
-						Name = $"{type}ToolStripMenuItem",
-						Text = Watch.DisplayTypeToString(type),
-						Checked = _settings.Type == type
-					};
+				ToolStripMenuItem item = new()
+				{
+					Name = $"{type}ToolStripMenuItem",
+					Text = Watch.DisplayTypeToString(type),
+					Checked = _settings.Type == type
+				};
 				var type1 = type;
 				item.Click += (o, ev) => DoDisplayTypeClick(type1);
 
@@ -1365,7 +1365,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedItems.Any())
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				foreach (var watch in SelectedItems)
 				{
 					sb.AppendLine(watch.ToString());
@@ -1589,7 +1589,7 @@ namespace BizHawk.Client.EmuHawk
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			if (Path.GetExtension(filePaths[0]) == ".wch")
 			{
-				FileInfo file = new FileInfo(filePaths[0]);
+				FileInfo file = new(filePaths[0]);
 				if (file.Exists)
 				{
 					LoadWatchFile(file, false);

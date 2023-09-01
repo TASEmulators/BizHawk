@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		static Citra()
 		{
-			DynamicLibraryImportResolver resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "libcitra-headless.so" : "citra-headless.dll", hasLimitedLifetime: false);
 			_core = BizInvoker.GetInvoker<LibCitra>(resolver, CallingConventionAdapters.Native);
 		}

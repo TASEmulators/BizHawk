@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 		private ToolStripMenuItem GenerateToolTipFromFileName(string fileName)
 		{
 			if (fileName == null) throw new Exception();
-			ToolStripMenuItem item = new ToolStripMenuItem(Path.GetFileName(fileName))
+			ToolStripMenuItem item = new(Path.GetFileName(fileName))
 			{
 				Enabled = false,
 				Image = Properties.Resources.ExclamationRed,

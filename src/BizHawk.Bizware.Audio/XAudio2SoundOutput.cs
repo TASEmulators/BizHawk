@@ -27,7 +27,7 @@ namespace BizHawk.Bizware.Audio
 				return null;
 			}
 
-			using IMMDeviceEnumerator enumerator = new IMMDeviceEnumerator();
+			using IMMDeviceEnumerator enumerator = new();
 			var devices = enumerator.EnumAudioEndpoints(DataFlow.Render);
 			var device = devices.FirstOrDefault(capDevice => capDevice.FriendlyName == deviceName);
 			if (device is null)
@@ -62,7 +62,7 @@ namespace BizHawk.Bizware.Audio
 
 		public static IEnumerable<string> GetDeviceNames()
 		{
-			using IMMDeviceEnumerator enumerator = new IMMDeviceEnumerator();
+			using IMMDeviceEnumerator enumerator = new();
 			var devices = enumerator.EnumAudioEndpoints(DataFlow.Render);
 			return devices.Select(capDevice => capDevice.FriendlyName);
 		}
@@ -78,7 +78,7 @@ namespace BizHawk.Bizware.Audio
 			BufferSizeSamples = _sound.MillisecondsToSamples(_sound.ConfigBufferSizeMs);
 			MaxSamplesDeficit = BufferSizeSamples;
 
-			WaveFormat format = new WaveFormat(_sound.SampleRate, _sound.BytesPerSample * 8, _sound.ChannelCount);
+			WaveFormat format = new(_sound.SampleRate, _sound.BytesPerSample * 8, _sound.ChannelCount);
 			_sourceVoice = _device.CreateSourceVoice(format);
 
 			_bufferPool = new();

@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_syncSettings.InitialWRamStatePattern != null && _syncSettings.InitialWRamStatePattern.Any())
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				foreach (byte b in _syncSettings.InitialWRamStatePattern)
 				{
 					sb.Append($"{b:X2}");

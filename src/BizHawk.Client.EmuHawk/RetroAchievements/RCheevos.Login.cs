@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool DoLogin(string username, string apiToken = null, string password = null)
 		{
-			LoginRequest loginRequest = new LoginRequest(username, apiToken, password);
+			LoginRequest loginRequest = new(username, apiToken, password);
 			PushRequest(loginRequest);
 			loginRequest.Wait();
 
@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			using RCheevosLoginForm loginForm = new RCheevosLoginForm((username, password) => DoLogin(username, password: password));
+			using RCheevosLoginForm loginForm = new((username, password) => DoLogin(username, password: password));
 			loginForm.ShowDialog();
 
 			config.RAUsername = Username;

@@ -85,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 			static VirtualPadButton GenVirtualPadButton(InputManager inputManager, ButtonSchema button)
 			{
 				var icon = button.Icon == null ? null : _buttonImages[button.Icon.Value];
-				VirtualPadButton buttonControl = new VirtualPadButton
+				VirtualPadButton buttonControl = new()
 				{
 					InputManager = inputManager,
 					Name = button.Name,

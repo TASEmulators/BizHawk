@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public bool AttemptToLoadCheatFile(IMemoryDomains domains)
 		{
-			FileInfo file = new FileInfo(_defaultFileName);
+			FileInfo file = new(_defaultFileName);
 			return file.Exists && Load(domains, file.FullName, false);
 		}
 
@@ -256,13 +256,13 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				FileInfo file = new FileInfo(path);
+				FileInfo file = new(path);
 				if (file.Directory != null && !file.Directory.Exists)
 				{
 					file.Directory.Create();
 				}
 
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 
 				foreach (var cheat in _cheatList)
 				{
@@ -309,7 +309,7 @@ namespace BizHawk.Client.Common
 
 		public bool Load(IMemoryDomains domains, string path, bool append)
 		{
-			FileInfo file = new FileInfo(path);
+			FileInfo file = new(path);
 			if (file.Exists == false)
 			{
 				return false;

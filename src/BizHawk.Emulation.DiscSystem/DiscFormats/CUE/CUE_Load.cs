@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			BlobInfos = new();
 			foreach (var ccf in IN_CompileJob.OUT_CompiledCueFiles)
 			{
-				BlobInfo bi = new BlobInfo();
+				BlobInfo bi = new();
 				BlobInfos.Add(bi);
 
 				IBlob file_blob;
@@ -88,14 +88,14 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					case CompiledCueFileType.Unknown:
 						{
 							//raw files:
-							Blob_RawFile blob = new Blob_RawFile { PhysicalPath = ccf.FullPath };
+							Blob_RawFile blob = new() { PhysicalPath = ccf.FullPath };
 							OUT_Disc.DisposableResources.Add(file_blob = blob);
 							bi.Length = blob.Length;
 							break;
 						}
 					case CompiledCueFileType.ECM:
 						{
-							Blob_ECM blob = new Blob_ECM();
+							Blob_ECM blob = new();
 							OUT_Disc.DisposableResources.Add(file_blob = blob);
 							blob.Load(ccf.FullPath);
 							bi.Length = blob.Length;
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 						}
 					case CompiledCueFileType.WAVE:
 						{
-							Blob_WaveFile blob = new Blob_WaveFile();
+							Blob_WaveFile blob = new();
 							OUT_Disc.DisposableResources.Add(file_blob = blob);
 							blob.Load(ccf.FullPath);
 							bi.Length = blob.Length;
@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							}
 							AudioDecoder dec = new();
 							byte[] buf = dec.AcquireWaveData(ccf.FullPath);
-							Blob_WaveFile blob = new Blob_WaveFile();
+							Blob_WaveFile blob = new();
 							OUT_Disc.DisposableResources.Add(file_blob = blob);
 							blob.Load(new MemoryStream(buf));
 							bi.Length = buf.Length;
@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		{
 			//add RawTOCEntries A0 A1 A2 to round out the TOC
 			var sessionInfo = IN_CompileJob.OUT_CompiledSessionInfo[CurrentSession.Number];
-			Synthesize_A0A1A2_Job TOCMiscInfo = new Synthesize_A0A1A2_Job(
+			Synthesize_A0A1A2_Job TOCMiscInfo = new(
 				firstRecordedTrackNumber: sessionInfo.FirstRecordedTrackNumber,
 				lastRecordedTrackNumber: sessionInfo.LastRecordedTrackNumber,
 				sessionFormat: sessionInfo.SessionFormat,
@@ -393,7 +393,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				int specifiedPostgapLength = cct.PostgapLength.Sector;
 				for (int s = 0; s < specifiedPostgapLength; s++)
 				{
-					SS_Gap ss = new SS_Gap
+					SS_Gap ss = new()
 					{
 						TrackType = cct.TrackType // TODO - old track type in some < -150 cases?
 					};

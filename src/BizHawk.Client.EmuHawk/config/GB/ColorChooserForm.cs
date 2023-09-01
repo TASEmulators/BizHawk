@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 				return; // i = -1;
 
-			using ColorDialog dlg = new ColorDialog
+			using ColorDialog dlg = new()
 			{
 				AllowFullOpen = true,
 				AnyColor = true,
@@ -170,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns>null on failure</returns>
 		public static int[] LoadPalFile(TextReader f)
 		{
-			Dictionary<string, int> lines = new Dictionary<string, int>();
+			Dictionary<string, int> lines = new();
 
 			string line;
 			while ((line = f.ReadLine()) != null)
@@ -229,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void DoColorChooserFormDialog(IDialogParent parent, Config config, IGameInfo game, Gameboy.GambatteSettings s)
 		{
-			using ColorChooserForm dlg = new ColorChooserForm(parent.DialogController, config, game);
+			using ColorChooserForm dlg = new(parent.DialogController, config, game);
 
 			dlg.SetAllColors(s.GBPalette);
 
@@ -250,7 +250,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				using StreamReader f = new StreamReader(filename);
+				using StreamReader f = new(filename);
 				int[] newColors = LoadPalFile(f) ?? throw new Exception();
 				SetAllColors(newColors);
 			}
@@ -267,7 +267,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				using StreamWriter f = new StreamWriter(filename);
+				using StreamWriter f = new(filename);
 				int[] saveColors = new int[12];
 				for (int i = 0; i < 12; i++)
 				{

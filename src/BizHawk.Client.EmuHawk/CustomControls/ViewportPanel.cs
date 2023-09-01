@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					using (SolidBrush sb = new SolidBrush(Color.Black))
+					using (SolidBrush sb = new(Color.Black))
 					{
 						g.FillRectangle(sb, _bmp.Width, 0, Width - _bmp.Width, Height);
 						g.FillRectangle(sb, 0, _bmp.Height, _bmp.Width, Height - _bmp.Height);

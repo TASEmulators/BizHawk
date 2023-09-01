@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static IntPtr OpenFileCallback(string utf8_path)
 		{
-			HawkFile file = new HawkFile(utf8_path);
+			HawkFile file = new(utf8_path);
 
 			// this probably shouldn't ever happen
 			if (!file.Exists || !file.IsBound || !file.GetStream().CanSeek || !file.GetStream().CanRead)
@@ -207,7 +207,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static IntPtr OpenTrackCallback(string path, int tracknum)
 		{
-			RCTrack track = new RCTrack(path, tracknum);
+			RCTrack track = new(path, tracknum);
 
 			if (!track.IsAvailable)
 			{
@@ -244,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 		// outputs results in the console
 		public static void DebugHash()
 		{
-			using OpenFileDialog ofd = new OpenFileDialog
+			using OpenFileDialog ofd = new()
 			{
 				CheckFileExists = true,
 				CheckPathExists = true,
@@ -269,9 +269,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				case ".m3u":
 				{
-					using HawkFile file = new HawkFile(path);
-					using StreamReader sr = new StreamReader(file.GetStream());
-						M3U_File m3u = M3U_File.Read(sr);
+					using HawkFile file = new(path);
+					using StreamReader sr = new(file.GetStream());
+					M3U_File m3u = M3U_File.Read(sr);
 					m3u.Rebase(Path.GetDirectoryName(path));
 					foreach (var entry in m3u.Entries)
 					{
@@ -282,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				case ".xml":
 				{
-						XmlGame xml = XmlGame.Create(new(path));
+					XmlGame xml = XmlGame.Create(new(path));
 					foreach (var kvp in xml.Assets)
 					{
 						InternalDebugHash(kvp.Key);
@@ -312,10 +312,10 @@ namespace BizHawk.Client.EmuHawk
 					return Path.GetFileName(path).ToLowerInvariant();
 				}
 
-				using HawkFile file = new HawkFile(path);
+				using HawkFile file = new(path);
 				if (file.IsArchive && !file.IsBound)
 				{
-					using ArchiveChooser ac = new ArchiveChooser(file);
+					using ArchiveChooser ac = new(file);
 					if (ac.ShowDialog().IsOk())
 					{
 						file.BindArchiveMember(ac.SelectedMemberIndex);
@@ -371,8 +371,8 @@ namespace BizHawk.Client.EmuHawk
 					return ConsoleID.Arcade;
 				}
 
-				using HawkFile file = new HawkFile(path);
-				RomGame rom = new RomGame(file);
+				using HawkFile file = new(path);
+				RomGame rom = new(file);
 				return rom.GameInfo.System switch
 				{
 					VSystemID.Raw.A26 => ConsoleID.Atari2600,

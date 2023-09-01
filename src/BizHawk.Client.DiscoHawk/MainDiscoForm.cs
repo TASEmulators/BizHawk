@@ -91,7 +91,7 @@ namespace BizHawk.Client.DiscoHawk
 
 		private static List<string> ValidateDrop(IDataObject ido)
 		{
-			List<string> ret = new List<string>();
+			List<string> ret = new();
 			string[] files = (string[])ido.GetData(DataFormats.FileDrop);
 			if (files == null) return new();
 			foreach (string str in files)

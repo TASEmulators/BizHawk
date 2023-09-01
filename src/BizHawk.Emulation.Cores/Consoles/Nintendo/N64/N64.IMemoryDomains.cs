@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				};
 			}
 
-			MemoryDomainDelegate md = new MemoryDomainDelegate(name, size, endian, peekByte, pokeByte, 4);
+			MemoryDomainDelegate md = new(name, size, endian, peekByte, pokeByte, 4);
 
 			_memoryDomains.Add(md);
 		}

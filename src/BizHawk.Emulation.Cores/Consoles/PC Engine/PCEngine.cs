@@ -311,7 +311,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Cpu.ResetPC();
 
 			Tracer = new TraceBuffer(Cpu.TraceHeader);
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IDisassemblable>(Cpu);
@@ -331,7 +331,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				if (!sizes.TryGetValue(m.Name, out int size) || size <= m.MaxOffs) sizes[m.Name] = m.MaxOffs;
 			}
 
-			List<string> keys = new List<string>(sizes.Keys);
+			List<string> keys = new(sizes.Keys);
 			foreach (string key in keys)
 			{
 				// becase we were looking at offsets, and each bank is 8192 big, we need to add that size

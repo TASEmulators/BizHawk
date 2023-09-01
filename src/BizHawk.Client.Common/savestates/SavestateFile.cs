@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 		{
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
-			using ZipStateSaver bs = new ZipStateSaver(filename, config.CompressionLevelNormal);
+			using ZipStateSaver bs = new(filename, config.CompressionLevelNormal);
 
 			using (new SimpleTime("Save Core"))
 			{

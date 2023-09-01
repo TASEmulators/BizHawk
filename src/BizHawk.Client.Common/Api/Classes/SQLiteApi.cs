@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 				_dbConnection?.Dispose();
 				_dbConnection = new(new SqliteConnectionStringBuilder { DataSource = name }.ToString());
 				_dbConnection.Open();
-				using SqliteCommand initCmds = new SqliteCommand(null, _dbConnection);
+				using SqliteCommand initCmds = new(null, _dbConnection);
 				// Allows for reads and writes to happen at the same time
 				initCmds.CommandText = "PRAGMA journal_mode = 'wal'";
 				initCmds.ExecuteNonQuery();
@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 			try
 			{
 				_dbConnection.Open();
-				using SqliteCommand cmd = new SqliteCommand(query, _dbConnection);
+				using SqliteCommand cmd = new(query, _dbConnection);
 				cmd.ExecuteNonQuery();
 				result = "Command ran successfully";
 			}
@@ -75,14 +75,14 @@ namespace BizHawk.Client.Common
 			try
 			{
 				_dbConnection.Open();
-				using SqliteCommand command = new SqliteCommand($"PRAGMA read_uncommitted =1;{query}", _dbConnection);
+				using SqliteCommand command = new($"PRAGMA read_uncommitted =1;{query}", _dbConnection);
 				using var reader = command.ExecuteReader();
 				if (reader.HasRows)
 				{
 					string[] columns = new string[reader.FieldCount];
 					for (int i = 0, l = reader.FieldCount; i < l; i++) columns[i] = reader.GetName(i);
 					long rowCount = 0;
-					Dictionary<string, object> table = new Dictionary<string, object>();
+					Dictionary<string, object> table = new();
 					while (reader.Read())
 					{
 						for (int i = 0, l = reader.FieldCount; i < l; i++) table[$"{columns[i]} {rowCount}"] = reader.GetValue(i);

@@ -18,13 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public ushort LoadBytesRoutineAddress { get; set; }
 		public ushort SaveBytesResumeAddress { get; set; }
 		public ushort LoadBytesResumeAddress { get; set; }
-		public ushort LoadBytesInvalidHeaderAddress
-		{
-			get => _loadBytesInvalidHeaderAddress;
-			set => _loadBytesInvalidHeaderAddress = value;
-		}
-
-		private ushort _loadBytesInvalidHeaderAddress;
+		public ushort LoadBytesInvalidHeaderAddress { get; set; }
 
 		public static RomData InitROM(MachineType machineType, byte[] rom)
 		{

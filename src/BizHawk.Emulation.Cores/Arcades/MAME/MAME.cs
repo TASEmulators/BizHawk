@@ -149,9 +149,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				{
 					// if this is deflate, unzip the zip, and rezip it without compression
 					// this is to get around some zlib bug?
-					using MemoryStream ret = new MemoryStream();
+					using MemoryStream ret = new();
 					ret.Write(rom.FileData, 0, rom.FileData.Length);
-					using (ZipArchive zip = new ZipArchive(ret, ZipArchiveMode.Update, leaveOpen: true))
+					using (ZipArchive zip = new(ret, ZipArchiveMode.Update, leaveOpen: true))
 					{
 						foreach (string entryName in zip.Entries.Select(e => e.FullName).ToList())
 						{
@@ -192,7 +192,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			// https://docs.mamedev.org/commandline/commandline-index.html
-			List<string> args = new List<string>
+			List<string> args = new()
 			{
 				 "mame"                                 // dummy, internally discarded by index, so has to go first
 				, _gameFileName                         // no dash for rom names

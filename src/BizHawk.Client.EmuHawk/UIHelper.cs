@@ -22,13 +22,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public static int ScaleY(int size) => (int)Math.Round(size * AutoScaleFactorY);
 
-		public static Point Scale(Point p) => new Point(ScaleX(p.X), ScaleY(p.Y));
+		public static Point Scale(Point p) => new(ScaleX(p.X), ScaleY(p.Y));
 
-		public static Size Scale(Size s) => new Size(ScaleX(s.Width), ScaleY(s.Height));
+		public static Size Scale(Size s) => new(ScaleX(s.Width), ScaleY(s.Height));
 
 		private static SizeF GetCurrentAutoScaleSize(AutoScaleMode autoScaleMode)
 		{
-			using Form form = new Form { AutoScaleMode = autoScaleMode };
+			using Form form = new() { AutoScaleMode = autoScaleMode };
 			return form.CurrentAutoScaleDimensions;
 		}
 

@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			Dictionary<string, int> regs = new Dictionary<string, int>
+			Dictionary<string, int> regs = new()
 			{
 				["A"] = _machine.Cpu.RA,
 				["X"] = _machine.Cpu.RX,
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				["Flag T"] = _machine.Cpu.FlagT ? 1 : 0
 			};
 
-			Dictionary<string, RegisterValue> dic = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> dic = new();
 
 			foreach (var reg in regs)
 			{

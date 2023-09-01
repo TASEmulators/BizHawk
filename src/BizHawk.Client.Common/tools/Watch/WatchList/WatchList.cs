@@ -199,7 +199,7 @@ namespace BizHawk.Client.Common
 		/// <param name="reverse">Defines the order of the sort. Ascending (true) or descending (false)</param>
 		public void OrderWatches(string column, bool reverse)
 		{
-			List<int> separatorIndices = new List<int>();
+			List<int> separatorIndices = new();
 			for (int i = 0; i < _watchList.Count; i++)
 			{
 				if (_watchList[i].IsSeparator)
@@ -330,9 +330,9 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			using (StreamWriter sw = new StreamWriter(CurrentFileName))
+			using (StreamWriter sw = new(CurrentFileName))
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				sb.Append("SystemID ").AppendLine(_systemId);
 
 				foreach (var watch in _watchList)
@@ -360,7 +360,7 @@ namespace BizHawk.Client.Common
 
 		private bool LoadFile(string path, bool append)
 		{
-			FileInfo file = new FileInfo(path);
+			FileInfo file = new(path);
 			if (file.Exists == false)
 			{
 				return false;

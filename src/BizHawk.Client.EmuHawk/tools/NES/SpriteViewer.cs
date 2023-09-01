@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 		public SpriteViewer()
 		{
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-			Size pSize = new Size(256, 96);
+			Size pSize = new(256, 96);
 			Sprites = new Bitmap(pSize.Width, pSize.Height);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
@@ -31,8 +31,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ScreenshotToClipboard()
 		{
-			Bitmap b = new Bitmap(Width, Height);
-			Rectangle rect = new Rectangle(new Point(0, 0), Size);
+			Bitmap b = new(Width, Height);
+			Rectangle rect = new(new Point(0, 0), Size);
 			DrawToBitmap(b, rect);
 
 			using var img = b;

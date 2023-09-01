@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common.movie.import
 		protected override void RunImport()
 		{
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
-			using BinaryReader r = new BinaryReader(fs);
+			using BinaryReader r = new(fs);
 			
 			// 000 16-byte signature and format version: "Gens Movie TEST9"
 			string signature = new(r.ReadChars(15));
@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common.movie.import
 				? LibGPGX.INPUT_DEVICE.DEVICE_PAD6B
 				: LibGPGX.INPUT_DEVICE.DEVICE_PAD3B;
 
-			GPGX.GPGXSyncSettings ss = new GPGX.GPGXSyncSettings
+			GPGX.GPGXSyncSettings ss = new()
 			{
 				UseSixButton = player1Config == '6' || player2Config == '6',
 				ControlTypeLeft = GPGX.ControlType.Normal,
@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common.movie.import
 					: LibGPGX.INPUT_DEVICE.DEVICE_PAD3B;
 			}
 
-			GPGXControlConverter controlConverter = new GPGXControlConverter(input, false);
+			GPGXControlConverter controlConverter = new(input, false);
 			
 			SimpleController controller = new(controlConverter.ControllerDef);
 

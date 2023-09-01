@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (_syncSettings.ThreadedRendering)
 				loadFlags |= LibMelonDS.LoadFlags.THREADED_RENDERING;
 
-			LibMelonDS.FirmwareSettings fwSettings = new LibMelonDS.FirmwareSettings();
+			LibMelonDS.FirmwareSettings fwSettings = new();
 			byte[] name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
 			fwSettings.FirmwareUsernameLength = name.Length;
 			fwSettings.FirmwareLanguage = _syncSettings.FirmwareLanguage;
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			byte[] message = _syncSettings.FirmwareMessage.Length != 0 ? Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage) : new byte[1];
 			fwSettings.FirmwareMessageLength = message.Length;
 
-			LibMelonDS.LoadData loadData = new LibMelonDS.LoadData
+			LibMelonDS.LoadData loadData = new()
 			{
 				DsRomLength = roms[0].Length,
 				GbaRomLength = gbacartpresent ? roms[1].Length : 0,
@@ -239,7 +239,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static byte[] DecideNAND(ICoreFileProvider cfp, bool isDSiEnhanced, byte regionFlags)
 		{
 			// TODO: priority settings?
-			List<string> nandOptions = new List<string> { "NAND (JPN)", "NAND (USA)", "NAND (EUR)", "NAND (AUS)", "NAND (CHN)", "NAND (KOR)" };
+			List<string> nandOptions = new() { "NAND (JPN)", "NAND (USA)", "NAND (EUR)", "NAND (AUS)", "NAND (CHN)", "NAND (KOR)" };
 			if (isDSiEnhanced) // NB: Core makes cartridges region free regardless, DSiWare must follow DSi region locking however (we'll enforce it regardless)
 			{
 				nandOptions.Clear();
@@ -262,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private static byte[] GetTMDData(ulong titleId)
 		{
-			using ZipArchive zip = new ZipArchive(Zstd.DecompressZstdStream(new MemoryStream(Resources.TMDS.Value)), ZipArchiveMode.Read, false);
+			using ZipArchive zip = new(Zstd.DecompressZstdStream(new MemoryStream(Resources.TMDS.Value)), ZipArchiveMode.Read, false);
 			using var tmd = zip.GetEntry($"{titleId:x16}.tmd")?.Open() ?? throw new($"Cannot find TMD for title ID {titleId:x16}, please report");
 			return tmd.ReadAllBytes();
 		}

@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			int w = pictureBoxPalette.Size.Width;
 			int h = pictureBoxPalette.Size.Height;
 
-			Bitmap bmp = new Bitmap(w, h);
+			Bitmap bmp = new(w, h);
 			for (int j = 0; j < h; j++)
 			{
 				int cy = j * 4 / h;
@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (PalettePath.Text.Length > 0)
 				{
-					HawkFile palette = new HawkFile(PalettePath.Text);
+					HawkFile palette = new(PalettePath.Text);
 
 					if (palette.Exists)
 					{

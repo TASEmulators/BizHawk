@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 
 			// get baseline maxes from a default config object
-			NES.NESSettings d = new NES.NESSettings();
+			NES.NESSettings d = new();
 			trackBar1.Minimum = d.APU_vol;
 		}
 

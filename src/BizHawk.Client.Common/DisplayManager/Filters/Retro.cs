@@ -137,7 +137,7 @@ namespace BizHawk.Client.Common.Filters
 		public RetroShaderPreset(Stream stream)
 		{
 			string content = new StreamReader(stream).ReadToEnd();
-			Dictionary<string, string> dict = new Dictionary<string, string>();
+			Dictionary<string, string> dict = new();
 
 			// parse the key-value-pair format of the file
 			content = content.Replace("\r", "");
@@ -180,7 +180,7 @@ namespace BizHawk.Client.Common.Filters
 			int nShaders = FetchInt(dict, "shaders", 0);
 			for (int i = 0; i < nShaders; i++)
 			{
-				ShaderPass sp = new ShaderPass { Index = i };
+				ShaderPass sp = new() { Index = i };
 				Passes.Add(sp);
 
 				sp.InputFilterLinear = FetchBool(dict, $"filter_linear{i}", false); // Should this value not be defined, the filtering option is implementation defined.

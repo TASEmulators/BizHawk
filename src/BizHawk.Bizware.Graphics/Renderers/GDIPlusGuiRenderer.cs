@@ -82,7 +82,7 @@ namespace BizHawk.Bizware.Graphics
 				new float[] { 0, 0, 0, 0, 1 },
 			};
 
-			ColorMatrix colorMatrix = new ColorMatrix(colorMatrixElements);
+			ColorMatrix colorMatrix = new(colorMatrixElements);
 			CurrentImageAttributes.SetColorMatrix(colorMatrix,ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 		}
 

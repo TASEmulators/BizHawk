@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			using (_elf.EnterExit())
 			{
-				List<MemoryDomain> mm = new List<MemoryDomain>();
+				List<MemoryDomain> mm = new();
 				for (int i = LibGPGX.MIN_MEM_DOMAIN; i <= LibGPGX.MAX_MEM_DOMAIN; i++)
 				{
 					var area = IntPtr.Zero;
@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						mm.Add(new MemoryDomainIntPtrSwap16Monitor(name, endian, area, size, true, _elf));
 					}
 				}
-				MemoryDomainDelegate m68Bus = new MemoryDomainDelegate("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,
+				MemoryDomainDelegate m68Bus = new("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,
 					addr =>
 					{
 						uint a = (uint)addr;
@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				if (IsMegaCD)
 				{
-					MemoryDomainDelegate s68Bus = new MemoryDomainDelegate("S68K BUS", 0x1000000, MemoryDomain.Endian.Big,
+					MemoryDomainDelegate s68Bus = new("S68K BUS", 0x1000000, MemoryDomain.Endian.Big,
 					addr =>
 					{
 						uint a = (uint)addr;

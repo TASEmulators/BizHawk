@@ -18,7 +18,7 @@ namespace BizHawk.Common.IOExtensions
 
 		public static byte[] ReadAllBytes(this Stream stream)
 		{
-			MemoryStream outStream = new MemoryStream();
+			MemoryStream outStream = new();
 			stream.CopyTo(outStream);
 
 			return outStream.ToArray();
@@ -30,7 +30,7 @@ namespace BizHawk.Common.IOExtensions
 			byte[] buffer = new byte[BUFF_SIZE];
 
 			int bytesRead;
-			MemoryStream outStream = new MemoryStream();
+			MemoryStream outStream = new();
 
 			while ((bytesRead = br.Read(buffer, 0, BUFF_SIZE)) > 0)
 			{
@@ -60,7 +60,7 @@ namespace BizHawk.Common.IOExtensions
 		/// <returns></returns>
 		public static string ReadStringUtf8NullTerminated(this BinaryReader br)
 		{
-			using MemoryStream ms = new MemoryStream();
+			using MemoryStream ms = new();
 			for (;;)
 			{
 				byte b = br.ReadByte();

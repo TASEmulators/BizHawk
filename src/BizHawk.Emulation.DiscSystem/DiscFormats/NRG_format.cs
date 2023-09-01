@@ -362,10 +362,10 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			bool v2 = chunkID == "CUEX";
-			NRGCue ret = new NRGCue { ChunkID = chunkID, ChunkSize = chunkSize };
+			NRGCue ret = new() { ChunkID = chunkID, ChunkSize = chunkSize };
 			for (int i = 0; i < chunkSize; i += 8)
 			{
-				NRGTrackIndex trackIndex = new NRGTrackIndex
+				NRGTrackIndex trackIndex = new()
 				{
 					ADRControl = chunkData[i + 0],
 					Track = BCD2.FromBCD(chunkData[i + 1]),
@@ -397,7 +397,7 @@ namespace BizHawk.Emulation.DiscSystem
 				throw new NRGParseException("Malformed NRG format: DAO chunk is less than 22 bytes!");
 			}
 
-			NRGDAOTrackInfo ret = new NRGDAOTrackInfo
+			NRGDAOTrackInfo ret = new()
 			{
 				ChunkID = chunkID,
 				ChunkSize = chunkSize,
@@ -430,7 +430,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			for (int i = 22; i < chunkSize; i += v2 ? 42 : 30)
 			{
-				NRGDAOTrack track = new NRGDAOTrack
+				NRGDAOTrack track = new()
 				{
 					Isrc = Encoding.ASCII.GetString(chunkData.Slice(i, 12)).TrimEnd('\0'),
 					SectorSize = BinaryPrimitives.ReadUInt16BigEndian(chunkData.Slice(i + 12, sizeof(ushort))),
@@ -482,7 +482,7 @@ namespace BizHawk.Emulation.DiscSystem
 				throw new NRGParseException($"Malformed NRG format: {chunkID} chunk was not a multiple of {trackSize}!");
 			}
 
-			NRGTAOTrackInfo ret = new NRGTAOTrackInfo
+			NRGTAOTrackInfo ret = new()
 			{
 				ChunkID = chunkID,
 				ChunkSize = chunkSize,
@@ -490,7 +490,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			for (int i = 0; i < chunkSize; i += trackSize)
 			{
-				NRGTAOTrack track = new NRGTAOTrack();
+				NRGTAOTrack track = new();
 
 				if (chunkID == "ETN2")
 				{
@@ -586,7 +586,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			// might be legal to have a 0 sized CDTX chunk?
 
-			NRGCdText ret = new NRGCdText
+			NRGCdText ret = new()
 			{
 				ChunkID = chunkID,
 				ChunkSize = chunkSize,
@@ -626,7 +626,7 @@ namespace BizHawk.Emulation.DiscSystem
 				throw new NRGParseException("Malformed NRG format: Missing null terminator in AFNM chunk!");
 			}
 
-			NRGFilenames ret = new NRGFilenames
+			NRGFilenames ret = new()
 			{
 				ChunkID = chunkID,
 				ChunkSize = chunkSize,
@@ -683,8 +683,8 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <exception cref="NRGParseException">malformed nrg format</exception>
 		public static NRGFile ParseFrom(Stream stream)
 		{
-			NRGFile nrgf = new NRGFile();
-			using BinaryReader br = new BinaryReader(stream);
+			NRGFile nrgf = new();
+			using BinaryReader br = new(stream);
 
 			try
 			{
@@ -894,7 +894,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static LoadResults LoadNRGPath(string path)
 		{
-			LoadResults ret = new LoadResults
+			LoadResults ret = new()
 			{
 				NrgPath = path
 			};
@@ -903,7 +903,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (!File.Exists(path)) throw new NRGParseException("Malformed NRG format: nonexistent NRG file!");
 
 				NRGFile nrgf;
-				using (FileStream infNRG = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+				using (FileStream infNRG = new(path, FileMode.Open, FileAccess.Read, FileShare.Read))
 					nrgf = ParseFrom(infNRG);
 
 				ret.ParsedNRGFile = nrgf;
@@ -924,7 +924,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (!loadResults.Valid)
 				throw loadResults.FailureException;
 
-			Disc disc = new Disc();
+			Disc disc = new();
 			var nrgf = loadResults.ParsedNRGFile;
 
 			IBlob nrgBlob = new Blob_RawFile { PhysicalPath = nrgPath };
@@ -936,7 +936,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			for (int i = 0; i < nsessions; i++)
 			{
-				DiscSession session = new DiscSession { Number = i + 1 };
+				DiscSession session = new() { Number = i + 1 };
 
 				int startTrack, endTrack;
 				SessionFormat sessionFormat;
@@ -953,7 +953,7 @@ namespace BizHawk.Emulation.DiscSystem
 					sessionFormat = (SessionFormat)nrgf.TOCTs[i].DiskType;
 				}
 
-				Synthesize_A0A1A2_Job TOCMiscInfo = new Synthesize_A0A1A2_Job(
+				Synthesize_A0A1A2_Job TOCMiscInfo = new(
 					firstRecordedTrackNumber: startTrack,
 					lastRecordedTrackNumber: endTrack,
 					sessionFormat: sessionFormat,
@@ -964,7 +964,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					if (trackIndex.Track.BCDValue is not (0 or 0xAA) && trackIndex.Index.BCDValue == 1)
 					{
-						SubchannelQ q = default(SubchannelQ);
+						SubchannelQ q = default;
 						q.q_status = trackIndex.ADRControl;
 						q.q_tno = BCD2.FromBCD(0);
 						q.q_index = trackIndex.Track;

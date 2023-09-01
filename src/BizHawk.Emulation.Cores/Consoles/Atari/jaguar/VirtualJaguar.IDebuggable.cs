@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			uint* regs = stackalloc uint[18 + 32 + 32 + 32 + 32 + 2];
 			_core.GetRegisters((IntPtr)regs);
 
-			Dictionary<string, RegisterValue> ret = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> ret = new();
 			// M68K data regs
 			for (int i = 0; i < 8; i++)
 			{

@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static Bitmap UpscaleBadge(Bitmap src)
 		{
-			Bitmap ret = new Bitmap(120, 120);
+			Bitmap ret = new(120, 120);
 			using Graphics g = Graphics.FromImage(ret);
 			g.InterpolationMode = InterpolationMode.NearestNeighbor;
 			g.PixelOffsetMode = PixelOffsetMode.Half;

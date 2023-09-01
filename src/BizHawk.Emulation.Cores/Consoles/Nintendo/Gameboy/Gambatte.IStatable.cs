@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		internal TextState<TextStateData> SaveState()
 		{
-			TextState<TextStateData> s = new TextState<TextStateData>();
+			TextState<TextStateData> s = new();
 			s.Prepare();
 			var ff = s.GetFunctionPointersSave();
 			LibGambatte.gambatte_newstatesave_ex(GambatteState, ref ff);

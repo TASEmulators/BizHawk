@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		[CoreConstructor(VSystemID.Raw.VEC)]
 		public VectrexHawk(CoreComm comm, byte[] rom, VectrexHawk.VectrexSyncSettings syncSettings)
 		{
-			BasicServiceProvider ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 
 			cpu = new MC6809
 			{

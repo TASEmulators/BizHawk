@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Common
 
 			foreach (uint address in addresses)
 			{
-				MemoryCallback callback = new MemoryCallback(
+				MemoryCallback callback = new(
 					scope,
 					MemoryCallbackType.Read,
 					"InputCallback" + address,

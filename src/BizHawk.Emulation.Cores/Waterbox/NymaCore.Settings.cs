@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// </summary>
 			public void Normalize(NymaSettingsInfo info)
 			{
-				List<string> toRemove = new List<string>();
+				List<string> toRemove = new();
 				foreach (var kvp in MednafenValues)
 				{
 					if (!info.AllSettingsByKey.ContainsKey(kvp.Key))
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// </summary>
 			public void Normalize(NymaSettingsInfo info)
 			{
-				List<string> toRemove = new List<string>();
+				List<string> toRemove = new();
 				foreach (var kvp in MednafenValues)
 				{
 					if (!info.AllSettingsByKey.ContainsKey(kvp.Key))
@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					MednafenValues.Remove(key);
 				}
-				List<int> toRemovePort = new List<int>();
+				List<int> toRemovePort = new();
 				foreach (var kvp in PortDevices)
 				{
 					if (info.Ports.Count <= kvp.Key || info.Ports[kvp.Key].DefaultSettingsValue == kvp.Value)
@@ -275,7 +275,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 		private void InitAllSettingsInfo(List<NPortInfoT> allPorts)
 		{
-			NymaSettingsInfo s = new NymaSettingsInfo();
+			NymaSettingsInfo s = new();
 
 			foreach (var kvp in ExtraOverrides.Concat(SettingOverrides))
 			{

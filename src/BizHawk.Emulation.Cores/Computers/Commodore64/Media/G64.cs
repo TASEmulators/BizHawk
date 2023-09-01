@@ -9,13 +9,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 	{
 		public static Disk Read(byte[] source)
 		{
-			using MemoryStream mem = new MemoryStream(source);
-			using BinaryReader reader = new BinaryReader(mem);
-			string id = new string(reader.ReadChars(8));
-			List<byte[]> trackDatas = new List<byte[]>();
-			List<int> trackLengths = new List<int>();
-			List<int> trackNumbers = new List<int>();
-			List<int> trackDensities = new List<int>();
+			using MemoryStream mem = new(source);
+			using BinaryReader reader = new(mem);
+			string id = new(reader.ReadChars(8));
+			List<byte[]> trackDatas = new();
+			List<int> trackLengths = new();
+			List<int> trackNumbers = new();
+			List<int> trackDensities = new();
 
 			if (id == @"GCR-1541")
 			{
@@ -71,8 +71,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 			ushort trackMaxLength = (ushort)Math.Max(7928, trackData.Max(d => d.Length));
 
-			using MemoryStream mem = new MemoryStream();
-			using BinaryWriter writer = new BinaryWriter(mem);
+			using MemoryStream mem = new();
+			using BinaryWriter writer = new(mem);
 
 			// header ID
 			writer.Write("GCR-1541".ToCharArray());
@@ -87,11 +87,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			writer.Write(trackMaxLength);
 
 			// combine track data
-			List<int> offsets = new List<int>();
-			List<int> densities = new List<int>();
-			using (MemoryStream trackMem = new MemoryStream())
+			List<int> offsets = new();
+			List<int> densities = new();
+			using (MemoryStream trackMem = new())
 			{
-				BinaryWriter trackMemWriter = new BinaryWriter(trackMem);
+				BinaryWriter trackMemWriter = new(trackMem);
 				for (int i = 0; i < trackCount; i++)
 				{
 					if (trackNumbers.Contains(i))

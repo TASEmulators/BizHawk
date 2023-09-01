@@ -36,8 +36,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private MAMEMachineDB(string basePath)
 		{
-			using HawkFile mameMachineFile = new HawkFile(Path.Combine(basePath, "mame_machines.txt"));
-			using StreamReader sr = new StreamReader(mameMachineFile.GetStream());
+			using HawkFile mameMachineFile = new(Path.Combine(basePath, "mame_machines.txt"));
+			using StreamReader sr = new(mameMachineFile.GetStream());
 			while (true)
 			{
 				string line = sr.ReadLine();

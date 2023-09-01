@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private OctoshockFIOConfigUser UserConfigFromGui()
 		{
-			OctoshockFIOConfigUser uc = new OctoshockFIOConfigUser
+			OctoshockFIOConfigUser uc = new()
 			{
 				Memcards = { [0] = cbMemcard_1.Checked, [1] = cbMemcard_2.Checked },
 				Multitaps = { [0] = cbMultitap_1.Checked, [1] = cbMultitap_2.Checked }

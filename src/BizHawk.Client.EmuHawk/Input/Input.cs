@@ -121,12 +121,12 @@ namespace BizHawk.Client.EmuHawk
 			else if (currentModifier is not 0U)
 				mods &= ~currentModifier;
 
-			InputEvent ie = new InputEvent
-				{
-					EventType = newState ? InputEventType.Press : InputEventType.Release,
-					LogicalButton = new(button1, mods, () => _getConfigCallback().ModifierKeysEffective),
-					Source = source
-				};
+			InputEvent ie = new()
+			{
+				EventType = newState ? InputEventType.Press : InputEventType.Release,
+				LogicalButton = new(button1, mods, () => _getConfigCallback().ModifierKeysEffective),
+				Source = source
+			};
 			_lastState[button1] = newState;
 
 			if (!_ignoreEventsNextPoll)

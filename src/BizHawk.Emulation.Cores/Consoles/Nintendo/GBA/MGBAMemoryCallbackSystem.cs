@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				throw new NotImplementedException("Non 0xFFFFFFFF address masks are not currently implemented.");
 			}
 
-			CallbackContainer container = new CallbackContainer(callback);
+			CallbackContainer container = new(callback);
 
 			if (container.Callback.Type == MemoryCallbackType.Execute)
 			{

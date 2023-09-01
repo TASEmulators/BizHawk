@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common.movie.import
 		protected override void RunImport()
 		{
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.SAT;
-			Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings ss = new Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings
+			Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings ss = new()
 			{
 				PortDevices =
 				{

@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		static Lynx()
 		{
-			DynamicLibraryImportResolver resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "libbizlynx.dll.so" : "bizlynx.dll", hasLimitedLifetime: false);
 			LibLynx = BizInvoker.GetInvoker<LibLynx>(resolver, CallingConventionAdapters.Native);
 		}
@@ -38,8 +38,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			byte[] realfile = null;
 
 			{
-				using MemoryStream ms = new MemoryStream(file, false);
-				using BinaryReader br = new BinaryReader(ms);
+				using MemoryStream ms = new(file, false);
+				using BinaryReader br = new(ms);
 				string header = Encoding.ASCII.GetString(br.ReadBytes(4));
 				int p0 = br.ReadUInt16();
 				int p1 = br.ReadUInt16();

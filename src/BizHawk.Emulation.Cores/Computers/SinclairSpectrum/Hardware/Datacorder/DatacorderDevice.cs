@@ -622,7 +622,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				ushort d = (ushort)(_cpu.Regs[_cpu.Ixl] + (_cpu.Regs[_cpu.Ixh] << 8) + 1);
 				_machine.WriteBus(d, v);
 			}
-			ushort pc = (ushort)0x05DF;
+			ushort pc = 0x05DF;
 
 			if (_cpu.Regs[_cpu.E] + (_cpu.Regs[_cpu.D] << 8) == toRead &&
 				toRead + 1 < tData.Length)

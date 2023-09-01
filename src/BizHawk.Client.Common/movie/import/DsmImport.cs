@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 		{
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.NDS;
 
-			NDS.NDSSyncSettings syncSettings = new NDS.NDSSyncSettings();
+			NDS.NDSSyncSettings syncSettings = new();
 
 			using var sr = SourceFile.OpenText();
 			string line;

@@ -14,9 +14,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private void SetupMemoryDomains()
 		{
-			List<MemoryDomain> domains = new List<MemoryDomain>();
+			List<MemoryDomain> domains = new();
 
-			MemoryDomainDelegate systemBusDomain = new MemoryDomainDelegate("System Bus (21 bit)", 0x200000, MemoryDomain.Endian.Little,
+			MemoryDomainDelegate systemBusDomain = new("System Bus (21 bit)", 0x200000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					if (addr is < 0 or > 0x1FFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				wordSize: 2);
 			domains.Add(systemBusDomain);
 
-			MemoryDomainDelegate cpuBusDomain = new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
+			MemoryDomainDelegate cpuBusDomain = new("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 			else
 			{
-				MemoryDomainByteArray m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
+				MemoryDomainByteArray m = new(name, MemoryDomain.Endian.Little, data, true, 1);
 				_byteArrayDomains.Add(name, m);
 			}
 		}
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 			else
 			{
-				MemoryDomainUshortArray m = new MemoryDomainUshortArray(name, MemoryDomain.Endian.Big, data, true);
+				MemoryDomainUshortArray m = new(name, MemoryDomain.Endian.Big, data, true);
 				_ushortArrayDomains.Add(name, m);
 			}
 		}

@@ -339,7 +339,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			var m = GetMetaObject(type);
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			// get longest title
 			int titleLen = 0;
@@ -372,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				string[] arr = d.Value.Split(' ');
 				//int cnt = 0;
 
-				List<string> builder = new List<string>();
+				List<string> builder = new();
 				string working = "";
 				foreach (string s in arr)
 				{

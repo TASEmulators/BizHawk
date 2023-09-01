@@ -57,7 +57,7 @@ namespace BizHawk.Bizware.Input
 			{
 				if (_keyboard == null || _keyboard.Acquire().Failure || _keyboard.Poll().Failure) return Enumerable.Empty<KeyEvent>();
 
-				List<KeyEvent> eventList = new List<KeyEvent>();
+				List<KeyEvent> eventList = new();
 				while (true)
 				{
 					try

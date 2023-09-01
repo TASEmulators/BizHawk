@@ -13,7 +13,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 	{
 		private ZwinderStateManager CreateSmallZwinder(IStatable ss)
 		{
-			ZwinderStateManager zw = new ZwinderStateManager(new ZwinderStateManagerSettings
+			ZwinderStateManager zw = new(new ZwinderStateManagerSettings
 			{
 				CurrentBufferSize = 1,
 				CurrentTargetFrameLength = 10000,
@@ -24,7 +24,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 				AncientStateInterval = 50000
 			}, f => false);
 
-			MemoryStream ms = new MemoryStream();
+			MemoryStream ms = new();
 			ss.SaveStateBinary(new BinaryWriter(ms));
 			zw.Engage(ms.ToArray());
 			return zw;
@@ -35,8 +35,8 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void SaveCreateRoundTrip()
 		{
-			MemoryStream ms = new MemoryStream();
-			ZwinderStateManager zw = new ZwinderStateManager(new ZwinderStateManagerSettings
+			MemoryStream ms = new();
+			ZwinderStateManager zw = new(new ZwinderStateManagerSettings
 			{
 				CurrentBufferSize = 16,
 				CurrentTargetFrameLength = 10000,
@@ -48,7 +48,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			}, f => false);
 			zw.SaveStateHistory(new BinaryWriter(ms));
 			byte[] buff = ms.ToArray();
-			MemoryStream rms = new MemoryStream(buff, false);
+			MemoryStream rms = new(buff, false);
 
 			ZwinderStateManager zw2 = ZwinderStateManager.Create(new BinaryReader(rms), zw.Settings, f => false);
 
@@ -61,12 +61,12 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void CountEvictWorks()
 		{
-			using ZwinderBuffer zb = new ZwinderBuffer(new RewindConfig
+			using ZwinderBuffer zb = new(new RewindConfig
 			{
 				BufferSize = 1,
 				TargetFrameLength = 1
 			});
-			StateSource ss = new StateSource
+			StateSource ss = new()
 			{
 				PaddingData = new byte[10]
 			};
@@ -87,8 +87,8 @@ namespace BizHawk.Tests.Client.Common.Movie
 				BufferSize = 1,
 				TargetFrameLength = 10
 			};
-			ZwinderBuffer buff = new ZwinderBuffer(config);
-			StateSource ss = new StateSource { PaddingData = new byte[500] };
+			ZwinderBuffer buff = new(config);
+			StateSource ss = new() { PaddingData = new byte[500] };
 			for (int frame = 0; frame < 2090; frame++)
 			{
 				ss.Frame = frame;
@@ -101,7 +101,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			Assert.AreEqual(StateSource.GetFrameNumberInState(buff.GetState(0).GetReadStream()), 10);
 			Assert.AreEqual(StateSource.GetFrameNumberInState(buff.GetState(2079).GetReadStream()), 2089);
 
-			MemoryStream ms = new MemoryStream();
+			MemoryStream ms = new();
 			buff.SaveStateBinary(new BinaryWriter(ms));
 			ms.Position = 0;
 			ZwinderBuffer buff2 = ZwinderBuffer.Create(new BinaryReader(ms), config);
@@ -118,8 +118,8 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void StateBeforeFrame()
 		{
-			StateSource ss = new StateSource { PaddingData = new byte[1000] };
-			ZwinderStateManager zw = new ZwinderStateManager(new ZwinderStateManagerSettings
+			StateSource ss = new() { PaddingData = new byte[1000] };
+			ZwinderStateManager zw = new(new ZwinderStateManagerSettings
 			{
 				CurrentBufferSize = 1,
 				CurrentTargetFrameLength = 10000,
@@ -130,7 +130,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 				AncientStateInterval = 50000
 			}, f => false);
 			{
-				MemoryStream ms = new MemoryStream();
+				MemoryStream ms = new();
 				ss.SaveStateBinary(new BinaryWriter(ms));
 				zw.Engage(ms.ToArray());
 			}
@@ -362,7 +362,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void StateCache()
 		{
 			var ss = CreateStateSource();
-			ZwinderStateManager zw = new ZwinderStateManager(new ZwinderStateManagerSettings
+			ZwinderStateManager zw = new(new ZwinderStateManagerSettings
 			{
 				CurrentBufferSize = 2,
 				CurrentTargetFrameLength = 1000,
@@ -424,11 +424,11 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void WhatIfTheHeadStateWrapsAround()
 		{
-			StateSource ss = new StateSource
+			StateSource ss = new()
 			{
 				PaddingData = new byte[400 * 1000]
 			};
-			using ZwinderBuffer zw = new ZwinderBuffer(new RewindConfig
+			using ZwinderBuffer zw = new(new RewindConfig
 			{
 				BufferSize = 1,
 				TargetFrameLength = 1
@@ -448,7 +448,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void TestReadByteCorruption()
 		{
-			using ZwinderBuffer zw = new ZwinderBuffer(new RewindConfig
+			using ZwinderBuffer zw = new(new RewindConfig
 			{
 				BufferSize = 1,
 				TargetFrameLength = 1
@@ -470,7 +470,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void TestReadBytesCorruption()
 		{
-			using ZwinderBuffer zw = new ZwinderBuffer(new RewindConfig
+			using ZwinderBuffer zw = new(new RewindConfig
 			{
 				BufferSize = 1,
 				TargetFrameLength = 1
@@ -495,7 +495,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void TestWriteByteCorruption()
 		{
-			using ZwinderBuffer zw = new ZwinderBuffer(new RewindConfig
+			using ZwinderBuffer zw = new(new RewindConfig
 			{
 				BufferSize = 1,
 				TargetFrameLength = 1
@@ -532,8 +532,8 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void BufferStressTest()
 		{
-			Random r = new Random(8675309);
-			using ZwinderBuffer zw = new ZwinderBuffer(new RewindConfig
+			Random r = new(8675309);
+			using ZwinderBuffer zw = new(new RewindConfig
 			{
 				BufferSize = 1,
 				TargetFrameLength = 1
@@ -547,7 +547,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 					zw.Capture(i, s =>
 					{
 						int length = r.Next(40000);
-						BinaryWriter bw = new BinaryWriter(s);
+						BinaryWriter bw = new(s);
 						var bytes = buff.AsSpan(0, length);
 						r.NextBytes(bytes);
 						bw.Write(length);
@@ -559,7 +559,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 				{
 					var info = zw.GetState(i);
 					var s = info.GetReadStream();
-					BinaryReader br = new BinaryReader(s);
+					BinaryReader br = new(s);
 					int length = info.Size;
 					if (length != br.ReadInt32() + 8)
 						throw new Exception("Length field corrupted");
@@ -592,7 +592,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 
 			public static int GetFrameNumberInState(Stream stream)
 			{
-				StateSource ss = new StateSource();
+				StateSource ss = new();
 				ss.LoadStateBinary(new BinaryReader(stream));
 				return ss.Frame;
 			}

@@ -275,7 +275,7 @@ namespace BizHawk.Emulation.Common
 
 		private static List<string> ToControlNameList(IEnumerable<string> buttonList, int? controllerNum = null)
 		{
-			List<string> buttons = new List<string>();
+			List<string> buttons = new();
 			foreach (string button in buttonList)
 			{
 				if (controllerNum != null && button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
@@ -293,7 +293,7 @@ namespace BizHawk.Emulation.Common
 
 		public static IReadOnlyDictionary<string, object> ToDictionary(this IController controller, int? controllerNum = null)
 		{
-			Dictionary<string, object> dict = new Dictionary<string, object>();
+			Dictionary<string, object> dict = new();
 			if (controllerNum == null)
 			{
 				foreach (string buttonName in controller.Definition.BoolButtons) dict[buttonName] = controller.IsPressed(buttonName);

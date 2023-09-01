@@ -375,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 			/// <param name="source">zlibed frame with width and height prepended</param>
 			public void AddVideo(byte[] source)
 			{
-				JmdPacket j = new JmdPacket
+				JmdPacket j = new()
 				{
 					Stream = 0,
 					Subtype = 1,// zlib compressed, other possibility is 0 = uncompressed
@@ -416,7 +416,7 @@ namespace BizHawk.Client.EmuHawk
 			/// <param name="r">right sample</param>
 			private void DoAudioPacket(short l, short r)
 			{
-				JmdPacket j = new JmdPacket
+				JmdPacket j = new()
 				{
 					Stream = 1,
 					Subtype = 1, // raw PCM audio
@@ -542,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDisposable AcquireVideoCodecToken(Config config)
 		{
-			CodecToken ret = new CodecToken();
+			CodecToken ret = new();
 
 			// load from config and sanitize
 			int t = Math.Min(Math.Max(config.JmdThreads, 1), 6);
@@ -712,7 +712,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns>zlib compressed frame, with width and height prepended</returns>
 		private byte[] GzipFrame(VideoCopy v)
 		{
-			MemoryStream m = new MemoryStream();
+			MemoryStream m = new();
 
 			// write frame height and width first
 			m.WriteByte((byte)(v.BufferWidth >> 8));
@@ -720,7 +720,7 @@ namespace BizHawk.Client.EmuHawk
 			m.WriteByte((byte)(v.BufferHeight >> 8));
 			m.WriteByte((byte)(v.BufferHeight & 255));
 
-			GZipStream g = new GZipStream(m, GetCompressionLevel(_token.CompressionLevel), true); // leave memory stream open so we can pick its contents
+			GZipStream g = new(m, GetCompressionLevel(_token.CompressionLevel), true); // leave memory stream open so we can pick its contents
 			g.Write(v.VideoBuffer, 0, v.VideoBuffer.Length);
 			g.Flush();
 			g.Close();

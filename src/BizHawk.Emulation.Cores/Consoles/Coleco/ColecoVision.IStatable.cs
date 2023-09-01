@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			byte[] core = null;
 			if (ser.IsWriter)
 			{
-				using MemoryStream ms = new MemoryStream();
+				using MemoryStream ms = new();
 				ms.Close();
 				core = ms.ToArray();
 			}

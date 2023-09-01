@@ -558,7 +558,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			// try to run the current mouseover, to refresh if the mouse is being held over a pane while the emulator runs
 			// this doesn't really work well; the update rate seems to be throttled
-			MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, Cursor.Position.X, Cursor.Position.Y, 0);
+			MouseEventArgs e = new(MouseButtons.None, 0, Cursor.Position.X, Cursor.Position.Y, 0);
 			OnMouseMove(e);
 		}
 
@@ -676,7 +676,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewDetails.ChangeBitmapSize(8, 10);
 			if (bmpViewDetails.Height != 80)
 				bmpViewDetails.Height = 80;
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			x /= 16;
 			y /= 16;
 			int* pal = (int*)(sprite ? spPal : bgPal) + x * 4;
@@ -721,7 +721,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewDetails.ChangeBitmapSize(8, 8);
 			if (bmpViewDetails.Height != 64)
 				bmpViewDetails.Height = 64;
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			x /= 8;
 			y /= 8;
 			int tileIndex = y * 16 + x;
@@ -746,7 +746,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewDetails.ChangeBitmapSize(8, 8);
 			if (bmpViewDetails.Height != 64)
 				bmpViewDetails.Height = 64;
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			bool secondMap = win ? _lcdc.Bit(6) : _lcdc.Bit(3);
 			int mapOffset = secondMap ? 0x1c00 : 0x1800;
 			x /= 8;
@@ -793,7 +793,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewDetails.ChangeBitmapSize(8, tall ? 16 : 8);
 			if (bmpViewDetails.Height != bmpViewDetails.Bmp.Height * 8)
 				bmpViewDetails.Height = bmpViewDetails.Bmp.Height * 8;
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			byte* oament = (byte*)oam + 4 * x;
 			int sy = oament[0];
@@ -983,7 +983,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonChangeColor_Click(object sender, EventArgs e)
 		{
-			using ColorDialog dlg = new ColorDialog
+			using ColorDialog dlg = new()
 			{
 				AllowFullOpen = true,
 				AnyColor = true,
