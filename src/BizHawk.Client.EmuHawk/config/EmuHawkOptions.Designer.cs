@@ -165,7 +165,7 @@
 			// 
 			this.label2.Location = new System.Drawing.Point(26, 112);
 			this.label2.Name = "label2";
-			this.label2.Text = "When this is set, the client will receive user input even when focus is lost";
+			this.label2.Text = "\"Eavesdrops\" on keyboard and gamepad input while other programs are focused.";
 			// 
 			// AcceptBackgroundInputCheckbox
 			// 
