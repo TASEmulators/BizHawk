@@ -168,6 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Config.FirstBoot)
 			{
 				ProfileFirstBootLabel.Visible = true;
+				AddOnScreenMessage("Click the blue silhouette below for onboarding");
 			}
 
 			HandleToggleLightAndLink();
