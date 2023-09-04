@@ -98,7 +98,7 @@ Released binaries can be found right here on GitHub (also linked at the top of t
 
 [![Windows | binaries](https://img.shields.io/badge/Windows-binaries-%230078D6.svg?logo=windows&logoColor=0078D6&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 
-Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [over on TASVideos](https://tasvideos.org/Bizhawk/ReleaseHistory).
+Click `BizHawk-<version>-win-x64.zip` to download it. Also note the changelog, the full version of which is [over on TASVideos](https://tasvideos.org/Bizhawk/ReleaseHistory).
 Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
 
 Run `EmuHawk.exe` to start. If startup is blocked by a Windows SmartScreen dialog, click "More Info" to reveal the override button. Third-party antivirus may also block startup. There are some command-line arguments you can use: see [*Passing command-line arguments*](#passing-command-line-arguments).
