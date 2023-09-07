@@ -113,8 +113,8 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("A9B124948A19BB5A295EC208FCA8180476BDFEBB", 3145728, "BSX", "Rom_SoundNovel_Tsukuru", "Satellaview_SoundNovel_Tsukuru.sfc", "Sound-Novel Tsukūru Rom");
 			FirmwareAndOption("357AC4826297A6496035E3951CACDA55DCAE4B1B", 4194304, "BSX", "Rom_Tsuri", "Satellaview_Bass_Tsuri.sfc", "Itoi Shigesato no Bass Tsuri No. 1 Rom");
 
-			FirmwareAndOption("79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C", 262144, "PCECD", "Bios", "PCECD_3.0-(J).pce", "Super CD Bios (J)");
-			FirmwareAndOption("014881A959E045E00F4DB8F52955200865D40280", 32768, "PCECD", "GE-Bios", "PCECD_gecard.pce", "Games Express CD Card (Japan)");
+			FirmwareAndOption("79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C", 262144, "PCECD", "Bios", "NEC_PCECD_3.0-(J).pce", "Super CD Bios (J)");
+			FirmwareAndOption("014881A959E045E00F4DB8F52955200865D40280", 32768, "PCECD", "GE-Bios", "NEC_PCECD_gecard.pce", "Games Express CD Card (Japan)");
 
 			Firmware("A78", "Bios_NTSC", "NTSC Bios");
 #if false
@@ -126,8 +126,8 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("45BEDC4CBDEAC66C7DF59E9E599195C778D86A92", 8192, "Coleco", "Bios", "Coleco_Bios.bin", "Bios");
 
-			FirmwareAndOption("B9BBF5BB0EAC52D039A4A993A2D8064B862C9E28", 4096, "VEC", "Bios", "Vectrex_Bios.bin", "Bios");
-			FirmwareAndOption("65D07426B520DDD3115D40F255511E0FD2E20AE7", 8192, "VEC", "Minestorm", "Vectrex_Minestorm.vec", "Game");
+			FirmwareAndOption("B9BBF5BB0EAC52D039A4A993A2D8064B862C9E28", 4096, "VEC", "Bios", "VEC_Bios.bin", "Bios");
+			FirmwareAndOption("65D07426B520DDD3115D40F255511E0FD2E20AE7", 8192, "VEC", "Minestorm", "VEC_Minestorm.vec", "Game");
 
 			var gbaNormal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "GBA_bios.rom", "Bios (World)");
 			var gbaJDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "GBA_bios_Debug-(J).rom", "Bios (J Debug)");
@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption(SHA1Checksum.Dummy, 0, "3DS", "aes_keys", "aes_keys.txt", "AES Keys");
 			FirmwareAndOption(SHA1Checksum.Dummy, 0, "3DS", "seeddb", "seeddb.bin", "SEEDDB");
 
-			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "LYNX_boot.img", "Boot Rom");
+			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "Atari_LYNX_boot.img", "Boot Rom");
 
 			FirmwareAndOption("5A65B922B562CB1F57DAB51B73151283F0E20C7A", 8192, "INTV", "EROM", "INTV_EROM.bin", "Executive Rom");
 			FirmwareAndOption("F9608BB4AD1CFE3640D02844C7AD8E0BCD974917", 2048, "INTV", "GROM", "INTV_GROM.bin", "Graphics Rom");
@@ -189,12 +189,12 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("282EB7BC819AAD2A12FD954E76F7838A4E1A7929", 16384, "ZXSpectrum", "TRDOSROM", "ZX_trdos.rom", "TRDOS ROM");
 
 			// MSX
-			FirmwareAndOption("2F997E8A57528518C82AB3693FDAE243DBBCC508", 32768, "MSX", "bios_test_ext", "MSX_cbios_main_msx1.rom", "MSX BIOS (C-BIOS v0.29a)");
+			FirmwareAndOption("2F997E8A57528518C82AB3693FDAE243DBBCC508", 32768, "MSX", "bios_test_ext", "Microsoft_MSX_cbios_main_msx1.rom", "MSX BIOS (C-BIOS v0.29a)");
 			//FirmwareAndOption("E998F0C441F4F1800EF44E42CD1659150206CF79", 16384, "MSX", "bios_pal", "MSX_8020-20bios.rom", "MSX BIOS (Philips VG-8020)");
 			//FirmwareAndOption("DF48902F5F12AF8867AE1A87F255145F0E5E0774", 16384, "MSX", "bios_jp", "MSX_4000bios.rom", "MSX BIOS (FS-4000)");
-			FirmwareAndOption("409E82ADAC40F6BDD18EB6C84E8B2FBDC7FB5498", 32768, "MSX", "bios_basic_usa", "MSX.rom", "MSX BIOS and BASIC");
-			FirmwareAndOption("3656BB3BBC17D280D2016FE4F6FF3CDED3082A41", 32768, "MSX", "bios_basic_usa", "MSX.rom", "MSX 1.0 BIOS and BASIC");
-			FirmwareAndOption("302AFB5D8BE26C758309CA3DF611AE69CCED2821", 32768, "MSX", "bios_basic_jpn", "MSX_jpn.rom", "MSX 1.0 JPN BIOS and BASIC");
+			FirmwareAndOption("409E82ADAC40F6BDD18EB6C84E8B2FBDC7FB5498", 32768, "MSX", "bios_basic_usa", "Microsoft_MSX.rom", "MSX BIOS and BASIC");
+			FirmwareAndOption("3656BB3BBC17D280D2016FE4F6FF3CDED3082A41", 32768, "MSX", "bios_basic_usa", "Microsoft_MSX_1.0.rom", "MSX 1.0 BIOS and BASIC");
+			FirmwareAndOption("302AFB5D8BE26C758309CA3DF611AE69CCED2821", 32768, "MSX", "bios_basic_jpn", "Microsoft_MSX_jpn.rom", "MSX 1.0 JPN BIOS and BASIC");
 
 			// Channel F
 			FirmwareAndOption("81193965A374D77B99B4743D317824B53C3E3C78", 1024, "ChannelF", "ChannelF_sl131253", "ChannelF_SL31253.rom", "Channel F Rom0");
@@ -446,13 +446,13 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("B2E1955D957A475DE2411770452EFF4EA19F4CEE", 1024, "O2", "BIOS-O2", "O2_Odyssey2.bin", "Odyssey 2 Bios");
 			FirmwareAndOption("A6120AED50831C9C0D95DBDF707820F601D9452E", 1024, "O2", "BIOS-C52", "O2_PhillipsC52.bin", "Phillips C52 Bios");
-			FirmwareAndOption("5130243429B40B01A14E1304D0394B8459A6FBAE", 1024, "O2", "BIOS-G7400", "G7400_bios.bin", "G7400 Bios");
+			FirmwareAndOption("5130243429B40B01A14E1304D0394B8459A6FBAE", 1024, "O2", "BIOS-G7400", "O2_G7400_bios.bin", "G7400 Bios");
 
 			Firmware("GB", "World", "Game Boy Boot Rom");
-			Option("GB", "World", File("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "dmg.bin", "Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
+			Option("GB", "World", File("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "GB_dmg.bin", "Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
 			// Early revisions of GB/C boot ROMs are not well-supported because the corresponding CPU differences are not emulated.
-			Option("GB", "World", File("8BD501E31921E9601788316DBD3CE9833A97BCBC", 256, "dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Unacceptable);
-			Option("GB", "World", File("4E68F9DA03C310E84C523654B9026E51F26CE7F0", 256, "mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
+			Option("GB", "World", File("8BD501E31921E9601788316DBD3CE9833A97BCBC", 256, "GB_dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Unacceptable);
+			Option("GB", "World", File("4E68F9DA03C310E84C523654B9026E51F26CE7F0", 256, "GB_mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
 			FirmwarePatchData gbCommonPatchAt0xFD = new(0xFD, new byte[] { 0xFE }); // 2 pairs, all have either 0x01 or 0xFF at this octet
 			AddPatchAndMaybeReverse(new(
 				"4ED31EC6B0B175BB109C0EB5FD3D193DA823339F",
@@ -462,25 +462,25 @@ namespace BizHawk.Emulation.Common
 			// these are only used for supported SGB cores
 			// placed in GB as these are within the Game Boy side rather than the SNES side
 			Firmware("GB", "SGB", "Super Game Boy Boot Rom");
-			Option("GB", "SGB", File("AA2F50A77DFB4823DA96BA99309085A3C6278515", 256, "sgb.bin", "Super Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
+			Option("GB", "SGB", File("AA2F50A77DFB4823DA96BA99309085A3C6278515", 256, "GB_sgb.bin", "Super Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
 			Firmware("GB", "SGB2", "Super Game Boy 2 Boot Rom");
-			Option("GB", "SGB2", File("93407EA10D2F30AB96A314D8ECA44FE160AEA734", 256, "sgb2.bin", "Super Game Boy 2 Boot Rom"), FirmwareOptionStatus.Ideal);
+			Option("GB", "SGB2", File("93407EA10D2F30AB96A314D8ECA44FE160AEA734", 256, "GB_sgb2.bin", "Super Game Boy 2 Boot Rom"), FirmwareOptionStatus.Ideal);
 			AddPatchAndMaybeReverse(new(
 				"AA2F50A77DFB4823DA96BA99309085A3C6278515",
 				gbCommonPatchAt0xFD,
 				"93407EA10D2F30AB96A314D8ECA44FE160AEA734"));
 
 			Firmware("GBC", "World", "Game Boy Color Boot Rom");
-			Option("GBC", "World", File("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
+			Option("GBC", "World", File("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "GBC_cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
 			// CGB E models have the logo reading TOCTOU patched (only relevant for bootlegs that logo swap)
-			Option("GBC", "World", File("F5F33729A956131D9C44310F0AE3BB0599E9EC3E", 2304, "cgbE.bin", "Game Boy Color Boot Rom (Late Revision)"));
-			Option("GBC", "World", File("DF5A0D2D49DE38FBD31CC2AAB8E62C8550E655C0", 2304, "cgb0.bin", "Game Boy Color Boot Rom (Early Revision)"), FirmwareOptionStatus.Unacceptable);
+			Option("GBC", "World", File("F5F33729A956131D9C44310F0AE3BB0599E9EC3E", 2304, "GBC_cgbE.bin", "Game Boy Color Boot Rom (Late Revision)"));
+			Option("GBC", "World", File("DF5A0D2D49DE38FBD31CC2AAB8E62C8550E655C0", 2304, "GBC_cgb0.bin", "Game Boy Color Boot Rom (Early Revision)"), FirmwareOptionStatus.Unacceptable);
 			Firmware("GBC", "AGB", "Game Boy Color Boot Rom (GBA)");
-			Option("GBC", "AGB", File("FA5287E24B0FA533B3B5EF2B28A81245346C1A0F", 2304, "agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
+			Option("GBC", "AGB", File("FA5287E24B0FA533B3B5EF2B28A81245346C1A0F", 2304, "GBC_agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
 			// early GBAs did not patch the logo reading TOCTOU (only relevant for bootlegs that logo swap)
-			Option("GBC", "AGB", File("0DAAC31ACB6CB346FC954368ACB02ACB3ADCC3AB", 2304, "agb0.bin", "Game Boy Color Boot Rom (GBA, Early Revision)"));
+			Option("GBC", "AGB", File("0DAAC31ACB6CB346FC954368ACB02ACB3ADCC3AB", 2304, "GBC_agb0.bin", "Game Boy Color Boot Rom (GBA, Early Revision)"));
 			// functionally equal to agb0.bin (no TOCTOU patch)
-			Option("GBC", "AGB", File("1ECAFA77AB3172193F3305486A857F443E28EBD9", 2304, "agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
+			Option("GBC", "AGB", File("1ECAFA77AB3172193F3305486A857F443E28EBD9", 2304, "GBC_agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
 			AddPatchAndMaybeReverse(new(
 				"1293D68BF9643BC4F36954C1E80E38F39864528D",
 				new FirmwarePatchData(0xF3, new byte[] { 0x03, 0x00, 0xCD, 0x1D, 0xD5, 0xAA, 0x4F, 0x90, 0x74 }),
