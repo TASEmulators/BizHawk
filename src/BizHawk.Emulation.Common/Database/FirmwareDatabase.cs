@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Common
 				allPatches.Add(new(fpo.TargetHash, fpo.Patches.Reverse().ToArray(), fpo.BaseHash));
 			}
 
-			// FDS has two OK variants  (http:\\tcrf.net/Family_Computer_Disk_System)
+			// FDS has two OK variants  (http://tcrf.net/Family_Computer_Disk_System)
 			var fdsNintendo = File("57FE1BDEE955BB48D357E463CCBF129496930B62", 8192, "FDS_disksys-nintendo.rom", "Bios (Nintendo)");
 			var fdsTwinFc = File("E4E41472C454F928E53EB10E0509BF7D1146ECC1", 8192, "FDS_disksys-nintendo.rom", "Bios (TwinFC)");
 			Firmware("NES", "Bios_FDS", "Bios");
@@ -109,13 +109,29 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("337E0C4BDBF544787B543A1FB83AFBA7526191B9", 1048576, "BSX", "Rom_Ongaku_Tsukuru", "Satellaview_Ongaku_Tsukuru.sfc", "Ongaku Tsukūru: Kanadēru Rom");
 			FirmwareAndOption("A9B124948A19BB5A295EC208FCA8180476BDFEBB", 3145728, "BSX", "Rom_SoundNovel_Tsukuru", "Satellaview_SoundNovel_Tsukuru.sfc", "Sound-Novel Tsukūru Rom");
 			FirmwareAndOption("357AC4826297A6496035E3951CACDA55DCAE4B1B", 4194304, "BSX", "Rom_Tsuri", "Satellaview_Bass_Tsuri.sfc", "Itoi Shigesato no Bass Tsuri No. 1 Rom");
-			
+
+			FirmwareAndOption("79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C", 262144, "PCECD", "Bios", "NEC_PCECD_3.0-(J).pce", "Super CD Bios (J)");
+			FirmwareAndOption("014881A959E045E00F4DB8F52955200865D40280", 32768, "PCECD", "GE-Bios", "NEC_PCECD_gecard.pce", "Games Express CD Card (Japan)");
+
+			Firmware("A78", "Bios_NTSC", "NTSC Bios");
+#if false
+			Option("A78", "Bios_NTSC", File("CE236581AB7921B59DB95BA12837C22F160896CB", 4096, "A78_NTSC_speed_bios.bin", "NTSC Bios speed"));
+#endif
+			Option("A78", "Bios_NTSC", File("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", 4096, "A78_NTSC_bios.bin", "NTSC Bios"));
+			FirmwareAndOption("5A140136A16D1D83E4FF32A19409CA376A8DF874", 16384, "A78", "Bios_PAL", "A78_PAL_BIOS.bin", "PAL Bios");
+			FirmwareAndOption("A3AF676991391A6DD716C79022D4947206B78164", 4096, "A78", "Bios_HSC", "A78_highscore.bin", "Highscore Bios");
+
+			FirmwareAndOption("45BEDC4CBDEAC66C7DF59E9E599195C778D86A92", 8192, "Coleco", "Bios", "Coleco_Bios.bin", "Bios");
+
+			FirmwareAndOption("B9BBF5BB0EAC52D039A4A993A2D8064B862C9E28", 4096, "VEC", "Bios", "VEC_Bios.bin", "Bios");
+			FirmwareAndOption("65D07426B520DDD3115D40F255511E0FD2E20AE7", 8192, "VEC", "Minestorm", "VEC_Minestorm.vec", "Game");
+
 			var gbaNormal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "GBA_bios.rom", "Bios (World)");
 			var gbaJDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "GBA_bios_Debug-(J).rom", "Bios (J Debug)");
 			Firmware("GBA", "Bios", "Bios");
 			Option("GBA", "Bios", in gbaNormal);
 			Option("GBA", "Bios", in gbaJDebug);
-			
+
 			FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", 16384, "NDS", "bios7", "NDS_Bios7.bin", "ARM7 BIOS");
 			FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", 4096, "NDS", "bios9", "NDS_Bios9.bin", "ARM9 BIOS");
 			// CHECKME: bios7i supposedly is different due to crypto keys and such, but yet it seems to work for various different NAND dumps?
@@ -150,91 +166,14 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (KOR)", "DSi_Nand_KOR.bin", "DSi NAND (Korea)");
 
 			// bleh, undefined hash AND size...
-			// Are these Keys Unique per Device?
 			FirmwareAndOption(SHA1Checksum.Dummy, 0, "3DS", "aes_keys", "aes_keys.txt", "AES Keys");
 			FirmwareAndOption(SHA1Checksum.Dummy, 0, "3DS", "seeddb", "seeddb.bin", "SEEDDB");
-			
-			// GB
-			Firmware("GB", "World", "Game Boy Boot Rom");
-			Option("GB", "World", File("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "GB_dmg.bin", "Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
-			// Early revisions of GB/C boot ROMs are not well-supported because the corresponding CPU differences are not emulated.
-			Option("GB", "World", File("8BD501E31921E9601788316DBD3CE9833A97BCBC", 256, "GB_dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Unacceptable);
-			Option("GB", "World", File("4E68F9DA03C310E84C523654B9026E51F26CE7F0", 256, "GB_mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
-			FirmwarePatchData gbCommonPatchAt0xFD = new(0xFD, new byte[] { 0xFE }); // 2 pairs, all have either 0x01 or 0xFF at this octet
-			AddPatchAndMaybeReverse(new(
-				"4ED31EC6B0B175BB109C0EB5FD3D193DA823339F",
-				gbCommonPatchAt0xFD,
-				"4E68F9DA03C310E84C523654B9026E51F26CE7F0"));
 
-			// these are only used for supported SGB cores
-			// placed in GB as these are within the Game Boy side rather than the SNES side
-			Firmware("GB", "SGB", "Super Game Boy Boot Rom");
-			Option("GB", "SGB", File("AA2F50A77DFB4823DA96BA99309085A3C6278515", 256, "GB_sgb.bin", "Super Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
-			Firmware("GB", "SGB2", "Super Game Boy 2 Boot Rom");
-			Option("GB", "SGB2", File("93407EA10D2F30AB96A314D8ECA44FE160AEA734", 256, "GB_sgb2.bin", "Super Game Boy 2 Boot Rom"), FirmwareOptionStatus.Ideal);
-			AddPatchAndMaybeReverse(new(
-				"AA2F50A77DFB4823DA96BA99309085A3C6278515",
-				gbCommonPatchAt0xFD,
-				"93407EA10D2F30AB96A314D8ECA44FE160AEA734"));
+			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "Atari_LYNX_boot.img", "Boot Rom");
 
-			// GBC
-			Firmware("GBC", "World", "Game Boy Color Boot Rom");
-			Option("GBC", "World", File("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "GBC_cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
-			Option("GBC", "World", File("DF5A0D2D49DE38FBD31CC2AAB8E62C8550E655C0", 2304, "GBC_cgb0.bin", "Game Boy Color Boot Rom (Early Revision)"), FirmwareOptionStatus.Unacceptable);
-			Firmware("GBC", "AGB", "Game Boy Color Boot Rom (GBA)");
-			Option("GBC", "AGB", File("FA5287E24B0FA533B3B5EF2B28A81245346C1A0F", 2304, "GBC_agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
-			// early GBAs did not patch the logo reading TOCTOU (only relevant for bootlegs that logo swap)
-			Option("GBC", "AGB", File("0DAAC31ACB6CB346FC954368ACB02ACB3ADCC3AB", 2304, "GBC_agb0.bin", "Game Boy Color Boot Rom (GBA, Early Revision)"), FirmwareOptionStatus.Acceptable);
-			// functionally equal to agb0.bin (no TOCTOU patch)
-			Option("GBC", "AGB", File("1ECAFA77AB3172193F3305486A857F443E28EBD9", 2304, "GBC_agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
-			AddPatchAndMaybeReverse(new(
-				"1293D68BF9643BC4F36954C1E80E38F39864528D",
-				new FirmwarePatchData(0xF3, new byte[] { 0x03, 0x00, 0xCD, 0x1D, 0xD5, 0xAA, 0x4F, 0x90, 0x74 }),
-				"1ECAFA77AB3172193F3305486A857F443E28EBD9"));
-			
-			// N64 DD
-			Firmware("N64DD", "IPL JPN", "N64DD Japan IPL");
-			var ddv10 = File("58670C0063793A8F3BE957D71D937B618829BA9E", 4 * 1024 * 1024, "64DD_IPL_v10_JPN.bin", "N64DD JPN IPL v1.0 (Beta)");
-			var ddv11 = File("B3E26DBB4E945F78C918FABC5B9E60FCF262C47B", 4 * 1024 * 1024, "64DD_IPL_v11_JPN.bin", "N64DD JPN IPL v1.1 (Beta)");
-			var ddv12 = File("BF861922DCB78C316360E3E742F4F70FF63C9BC3", 4 * 1024 * 1024, "64DD_IPL_v12_JPN.bin", "N64DD JPN IPL v1.2 (Retail)");
-			Option("N64DD", "IPL JPN", in ddv10, FirmwareOptionStatus.Unacceptable);
-			Option("N64DD", "IPL JPN", in ddv11, FirmwareOptionStatus.Unacceptable);
-			Option("N64DD", "IPL JPN", in ddv12, FirmwareOptionStatus.Ideal);
-			FirmwareAndOption("10C4173C2A7EB09C6579818F72EF18FA0B6D32DE", 4 * 1024 * 1024, "N64DD", "IPL DEV", "64DD_IPL_DEV.bin", "N64DD Development IPL");
-			FirmwareAndOption("3C5B93CA231550C68693A14F03CEA8D5DBD1BE9E", 4 * 1024 * 1024, "N64DD", "IPL USA", "64DD_IPL_USA.bin", "N64DD Prototype USA IPL");
-			
-			// PCE  AKA TG-16
-			FirmwareAndOption("79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C", 262144, "PCECD", "Bios", "PCECD_3.0-(J).pce", "Super CD Bios (J)");
-			FirmwareAndOption("014881A959E045E00F4DB8F52955200865D40280", 32768, "PCECD", "GE-Bios", "PCECD_gecard.pce", "Games Express CD Card (Japan)");
-
-			// Atari 7800
-			Firmware("A78", "Bios_NTSC", "NTSC Bios");
-			//If WHAT is False???  The Above Value?
-#if false
-			Option("A78", "Bios_NTSC", File("CE236581AB7921B59DB95BA12837C22F160896CB", 4096, "A78_NTSC_speed_bios.bin", "NTSC Bios speed"));
-#endif
-			Option("A78", "Bios_NTSC", File("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", 4096, "A78_NTSC_bios.bin", "NTSC Bios"));
-			FirmwareAndOption("5A140136A16D1D83E4FF32A19409CA376A8DF874", 16384, "A78", "Bios_PAL", "A78_PAL_BIOS.bin", "PAL Bios");
-			FirmwareAndOption("A3AF676991391A6DD716C79022D4947206B78164", 4096, "A78", "Bios_HSC", "A78_highscore.bin", "Highscore Bios");
-
-			// ColecoVision
-			FirmwareAndOption("45BEDC4CBDEAC66C7DF59E9E599195C778D86A92", 8192, "Coleco", "Bios", "Coleco_Bios.bin", "Bios");
-
-			// VEC
-			FirmwareAndOption("B9BBF5BB0EAC52D039A4A993A2D8064B862C9E28", 4096, "VEC", "Bios", "Vectrex_Bios.bin", "Bios");
-			FirmwareAndOption("65D07426B520DDD3115D40F255511E0FD2E20AE7", 8192, "VEC", "Minestorm", "Vectrex_Minestorm.vec", "Game");
-
-
-
-
-			// Lynx
-			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "LYNX_boot.img", "Boot Rom");
-
-			// Intellivision
 			FirmwareAndOption("5A65B922B562CB1F57DAB51B73151283F0E20C7A", 8192, "INTV", "EROM", "INTV_EROM.bin", "Executive Rom");
 			FirmwareAndOption("F9608BB4AD1CFE3640D02844C7AD8E0BCD974917", 2048, "INTV", "GROM", "INTV_GROM.bin", "Graphics Rom");
 
-			// C64
 			FirmwareAndOption("1D503E56DF85A62FEE696E7618DC5B4E781DF1BB", 8192, "C64", "Kernal", "C64_Kernal.bin", "Kernal Rom");
 			FirmwareAndOption("79015323128650C742A3694C9429AA91F355905E", 8192, "C64", "Basic", "C64_Basic.bin", "Basic Rom");
 			FirmwareAndOption("ADC7C31E18C7C7413D54802EF2F4193DA14711AA", 4096, "C64", "Chargen", "C64_Chargen.bin", "Chargen Rom");
@@ -246,18 +185,17 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("282EB7BC819AAD2A12FD954E76F7838A4E1A7929", 16384, "ZXSpectrum", "TRDOSROM", "ZX_trdos.rom", "TRDOS ROM");
 
 			// MSX
-			FirmwareAndOption("2F997E8A57528518C82AB3693FDAE243DBBCC508", 32768, "MSX", "bios_test_ext", "MSX_cbios_main_msx1.rom", "MSX BIOS (C-BIOS v0.29a)");
+			FirmwareAndOption("2F997E8A57528518C82AB3693FDAE243DBBCC508", 32768, "MSX", "bios_test_ext", "Microsoft_MSX_cbios_main_msx1.rom", "MSX BIOS (C-BIOS v0.29a)");
 			//FirmwareAndOption("E998F0C441F4F1800EF44E42CD1659150206CF79", 16384, "MSX", "bios_pal", "MSX_8020-20bios.rom", "MSX BIOS (Philips VG-8020)");
 			//FirmwareAndOption("DF48902F5F12AF8867AE1A87F255145F0E5E0774", 16384, "MSX", "bios_jp", "MSX_4000bios.rom", "MSX BIOS (FS-4000)");
-			FirmwareAndOption("409E82ADAC40F6BDD18EB6C84E8B2FBDC7FB5498", 32768, "MSX", "bios_basic_usa", "MSX.rom", "MSX BIOS and BASIC");
-			FirmwareAndOption("3656BB3BBC17D280D2016FE4F6FF3CDED3082A41", 32768, "MSX", "bios_basic_usa", "MSX_1.0.rom", "MSX 1.0 BIOS and BASIC");
-			FirmwareAndOption("302AFB5D8BE26C758309CA3DF611AE69CCED2821", 32768, "MSX", "bios_basic_jpn", "MSX_jpn.rom", "MSX 1.0 JPN BIOS and BASIC");
+			FirmwareAndOption("409E82ADAC40F6BDD18EB6C84E8B2FBDC7FB5498", 32768, "MSX", "bios_basic_usa", "Microsoft_MSX.rom", "MSX BIOS and BASIC");
+			FirmwareAndOption("3656BB3BBC17D280D2016FE4F6FF3CDED3082A41", 32768, "MSX", "bios_basic_usa", "Microsoft_MSX_1.0.rom", "MSX 1.0 BIOS and BASIC");
+			FirmwareAndOption("302AFB5D8BE26C758309CA3DF611AE69CCED2821", 32768, "MSX", "bios_basic_jpn", "Microsoft_MSX_jpn.rom", "MSX 1.0 JPN BIOS and BASIC");
 
 			// Channel F
 			FirmwareAndOption("81193965A374D77B99B4743D317824B53C3E3C78", 1024, "ChannelF", "ChannelF_sl131253", "ChannelF_SL31253.rom", "Channel F Rom0");
 			FirmwareAndOption("8F70D1B74483BA3A37E86CF16C849D601A8C3D2C", 1024, "ChannelF", "ChannelF_sl131254", "ChannelF_SL31254.rom", "Channel F Rom1");
 
-			// Saturn
 			// for saturn, we think any bios region can pretty much run any iso
 			// so, we're going to lay this out carefully so that we choose things in a sensible order, but prefer the correct region
 			var ss_100_j = File("2B8CB4F87580683EB4D760E4ED210813D667F0A2", 524288, "SAT_1.00-(J).bin", "Bios v1.00 (J)");
@@ -282,9 +220,26 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("A67CD4F550751F8B91DE2B8B74528AB4E0C11C77", 2 * 1024 * 1024, "SAT", "KOF95", "SAT_KoF95.bin", "King of Fighters cartridge");
 			//Firmware("SAT", "ULTRAMAN", "Ultraman cartridge");
 			FirmwareAndOption("56C1B93DA6B660BF393FBF48CA47569000EF4047", 2 * 1024 * 1024, "SAT", "ULTRAMAN", "SAT_Ultraman.bin", "Ultraman cartridge");
-			
-			
-			// mega cd  AKA  Sega CD
+
+			var ti83_102 = File("CE08F6A808701FC6672230A790167EE485157561", 262144, "TI83_102.rom", "TI-83 Rom v1.02"); // ?? is this size correct?
+			var ti83_103 = File("8399E384804D8D29866CAA4C8763D7A61946A467", 262144, "TI83_103.rom", "TI-83 Rom v1.03"); // ?? is this size correct?
+			var ti83_104 = File("33877FF637DC5F4C5388799FD7E2159B48E72893", 262144, "TI83_104.rom", "TI-83 Rom v1.04"); // ?? is this size correct?
+			var ti83_106 = File("3D65C2A1B771CE8E5E5A0476EC1AA9C9CDC0E833", 262144, "TI83_106.rom", "TI-83 Rom v1.06"); // ?? is this size correct?
+			var ti83_107 = File("EF66DAD3E7B2B6A86F326765E7DFD7D1A308AD8F", 262144, "TI83_107.rom", "TI-83 Rom v1.07"); // formerly the 1.?? recommended one
+			var ti83_108 = File("9C74F0B61655E9E160E92164DB472AD7EE02B0F8", 262144, "TI83_108.rom", "TI-83 Rom v1.08"); // ?? is this size correct?
+			var ti83p_103 = File("37EAEEB9FB5C18FB494E322B75070E80CC4D858E", 262144, "TI83p_103b.rom", "TI-83 Plus Rom v1.03"); // ?? is this size correct?
+			var ti83p_112 = File("6615DF5554076B6B81BD128BF847D2FF046E556B", 262144, "TI83p_112.rom", "TI-83 Plus Rom v1.12"); // ?? is this size correct?
+			Firmware("TI83", "Rom", "TI-83 Rom");
+			Option("TI83", "Rom", in ti83_102);
+			Option("TI83", "Rom", in ti83_103);
+			Option("TI83", "Rom", in ti83_104);
+			Option("TI83", "Rom", in ti83_106);
+			Option("TI83", "Rom", in ti83_107);
+			Option("TI83", "Rom", in ti83_108);
+			Option("TI83", "Rom", in ti83p_103);
+			Option("TI83", "Rom", in ti83p_112);
+
+			// mega cd
 			var jp_mcda_211c = File("219D284DCF63CE366A4DC6D1FF767A0D2EEA283D", 131072, "MCD_aiwa_jp_211c.bin", "Mega CD Aiwa JP (v2.11c)");
 			var us_scd1_100 = File("C5C24E6439A148B7F4C7EA269D09B7A23FE25075", 131072, "SCD_m1_us_100.bin", "Sega CD Model 1 US (v1.00)");
 			var us_scd1_100_h = File("2F397218764502F184F23055055BC5728C71F259", 131072, "SCD_m1_us_100[h].bin", "Sega CD Model 1 US (v1.00) [h]", isBad: true);
@@ -320,7 +275,6 @@ namespace BizHawk.Emulation.Common
 			var jp_wm_100W = File("3FC9358072F74BD24E3E297EA11B2BF15A7AF891", 131072, "WM_jp_100W.bin", "Wondermega JP (v1.00W)");
 			var us_xeye = File("651F14D5A5E0ECB974A60C0F43B1D2006323FB09", 131072, "XEye_us.bin", "X'Eye US");
 
-			//This also works with the NEC PC-Engine
 			var us_la_104 = File("AA811861F8874775075BD3F53008C8AAF59B07DB", 131072, "LA_us_104.bin", "LaserActive US (v1.04)");
 			var jp_la_105 = File("B3B1D880E288B6DC79EEC0FF1B0480C229EC141D", 131072, "LA_us_105.bin", "LaserActive JP (v1.05)");
 			var jp_la_102 = File("26237B333DB4A4C6770297FA5E655EA95840D5D9", 131072, "LA_us_102.bin", "LaserActive JP (v1.02)");
@@ -380,7 +334,7 @@ namespace BizHawk.Emulation.Common
 			Option("GEN", "CD_BIOS_US", in us_la_104);
 			Option("GEN", "CD_BIOS_US", in us_la_102);
 
-			// 32X  AKA  Super 32X
+
 			FirmwareAndOption("DBEBD76A448447CB6E524AC3CB0FD19FC065D944", 256, "32X", "G", "32X_G_BIOS.BIN", "32x 68k BIOS");
 			FirmwareAndOption("1E5B0B2441A4979B6966D942B20CC76C413B8C5E", 2048, "32X", "M", "32X_M_BIOS.BIN", "32x SH2 MASTER BIOS");
 			FirmwareAndOption("4103668C1BBD66C5E24558E73D4F3F92061A109A", 1024, "32X", "S", "32X_S_BIOS.BIN", "32x SH2 SLAVE BIOS");
@@ -400,33 +354,13 @@ namespace BizHawk.Emulation.Common
 			Option("SMS", "Japan", in sms_jp_21);
 			Option("SMS", "Korea", in sms_kr);
 
-			// TI-83
-			var ti83_102 = File("CE08F6A808701FC6672230A790167EE485157561", 262144, "TI-83_102.rom", "TI-83 Rom v1.02"); // ?? is this size correct?
-			var ti83_103 = File("8399E384804D8D29866CAA4C8763D7A61946A467", 262144, "TI-83_103.rom", "TI-83 Rom v1.03"); // ?? is this size correct?
-			var ti83_104 = File("33877FF637DC5F4C5388799FD7E2159B48E72893", 262144, "TI-83_104.rom", "TI-83 Rom v1.04"); // ?? is this size correct?
-			var ti83_106 = File("3D65C2A1B771CE8E5E5A0476EC1AA9C9CDC0E833", 262144, "TI-83_106.rom", "TI-83 Rom v1.06"); // ?? is this size correct?
-			var ti83_107 = File("EF66DAD3E7B2B6A86F326765E7DFD7D1A308AD8F", 262144, "TI-83_107.rom", "TI-83 Rom v1.07"); // formerly the 1.?? recommended one
-			var ti83_108 = File("9C74F0B61655E9E160E92164DB472AD7EE02B0F8", 262144, "TI-83_108.rom", "TI-83 Rom v1.08"); // ?? is this size correct?
-			var ti83p_103 = File("37EAEEB9FB5C18FB494E322B75070E80CC4D858E", 262144, "TI-83p_103b.rom", "TI-83 Plus Rom v1.03"); // ?? is this size correct?
-			var ti83p_112 = File("6615DF5554076B6B81BD128BF847D2FF046E556B", 262144, "TI-83p_112.rom", "TI-83 Plus Rom v1.12"); // ?? is this size correct?
-			Firmware("TI83", "Rom", "TI-83 Rom");
-			Option("TI83", "Rom", in ti83_102);
-			Option("TI83", "Rom", in ti83_103);
-			Option("TI83", "Rom", in ti83_104);
-			Option("TI83", "Rom", in ti83_106);
-			Option("TI83", "Rom", in ti83_107);
-			Option("TI83", "Rom", in ti83_108);
-			Option("TI83", "Rom", in ti83p_103);
-			Option("TI83", "Rom", in ti83p_112);
-
-
 			// PSX
-			// http:\\forum.fobby.net/index.php?t=msg&goto=2763 [f]
-			// http:\\www.psxdev.net/forum/viewtopic.php?f=69&t=56 [p]
-			// https:\\en.wikipedia.org/wiki/PlayStation_models#Comparison_of_models [w]
-			// https:\\github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g]
-			// http:\\redump.org/datfile/psx-bios/ also
-			// http:\\emulation.gametechwiki.com/index.php/File_Hashes [t]
+			// http://forum.fobby.net/index.php?t=msg&goto=2763 [f]
+			// http://www.psxdev.net/forum/viewtopic.php?f=69&t=56 [p]
+			// https://en.wikipedia.org/wiki/PlayStation_models#Comparison_of_models [w]
+			// https://github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g]
+			// http://redump.org/datfile/psx-bios/ also
+			// http://emulation.gametechwiki.com/index.php/File_Hashes [t]
 			var ps_10j = File("343883A7B555646DA8CEE54AADD2795B6E7DD070", 524288, "PSX_1.0(J).bin", "PSX BIOS (Version 1.0 J)", "Used on SCPH-1000, DTL-H1000 [g]. This is Rev for A hardware [w].");
 			var ps_11j = File("B06F4A861F74270BE819AA2A07DB8D0563A7CC4E", 524288, "PSX_1.1(J).bin", "PSX BIOS (Version 1.1 01/22/95)", "Used on SCPH-3000, DTL-H1000H [g]. This is for Rev B hardware [w].");
 			var ps_20a = File("649895EFD79D14790EABB362E94EB0622093DFB9", 524288, "PSX_2.0(A).bin", "PSX BIOS (Version 2.0 05/07/95 A)", "Used on DTL-H1001 [g]. This is for Rev B hardware [w].");
@@ -496,15 +430,6 @@ namespace BizHawk.Emulation.Common
 			Option("PSX", "E", in ps_dtl_h2000, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "J", in ps_dtl_h2000, FirmwareOptionStatus.Unacceptable);
 
-			/*Firmware("PS2", "BIOS", "PS2 Bios");
-			Option("PS2", "BIOS", File("FBD54BFC020AF34008B317DCB80B812DD29B3759", 4 * 1024 * 1024, "ps2-0230j-20080220.bin", "PS2 Bios"));
-			Option("PS2", "BIOS", File("8361D615CC895962E0F0838489337574DBDC9173", 4 * 1024 * 1024, "ps2-0220a-20060905.bin", "PS2 Bios"));
-			Option("PS2", "BIOS", File("DA5AACEAD2FB55807D6D4E70B1F10F4FDCFD3281", 4 * 1024 * 1024, "ps2-0220e-20060905.bin", "PS2 Bios"));
-			Option("PS2", "BIOS", File("3BAF847C1C217AA71AC6D298389C88EDB3DB32E2", 4 * 1024 * 1024, "ps2-0220j-20060905.bin", "PS2 Bios"));
-			Option("PS2", "BIOS", File("F9229FE159D0353B9F0632F3FDC66819C9030458", 4 * 1024 * 1024, "ps2-0230a-20080220.bin", "PS2 Bios"), FirmwareOptionStatus.Ideal);
-			Option("PS2", "BIOS", File("9915B5BA56798F4027AC1BD8D10ABE0C1C9C326A", 4 * 1024 * 1024, "ps2-0230e-20080220.bin", "PS2 Bios"));*/
-
-			// Apple IIe
 			Firmware("AppleII", "AppleIIe", "AppleIIe.rom");
 			var appleII_AppleIIe = File("B8EA90ABE135A0031065E01697C4A3A20D51198B", 16384, "AppleIIe.rom", "Apple II e");
 			Option("AppleII", "AppleIIe", in appleII_AppleIIe);
@@ -512,13 +437,46 @@ namespace BizHawk.Emulation.Common
 			var appleII_DiskII = File("D4181C9F046AAFC3FB326B381BAAC809D9E38D16", 256, "AppleIIe_DiskII.rom", "Disk II");
 			Option("AppleII", "DiskII", in appleII_DiskII);
 
-
 			FirmwareAndOption("B2E1955D957A475DE2411770452EFF4EA19F4CEE", 1024, "O2", "BIOS-O2", "O2_Odyssey2.bin", "Odyssey 2 Bios");
 			FirmwareAndOption("A6120AED50831C9C0D95DBDF707820F601D9452E", 1024, "O2", "BIOS-C52", "O2_PhillipsC52.bin", "Phillips C52 Bios");
 			FirmwareAndOption("5130243429B40B01A14E1304D0394B8459A6FBAE", 1024, "O2", "BIOS-G7400", "O2_G7400_bios.bin", "G7400 Bios");
 
+			Firmware("GB", "World", "Game Boy Boot Rom");
+			Option("GB", "World", File("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "GB_dmg.bin", "Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
+			// Early revisions of GB/C boot ROMs are not well-supported because the corresponding CPU differences are not emulated.
+			Option("GB", "World", File("8BD501E31921E9601788316DBD3CE9833A97BCBC", 256, "GB_dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Unacceptable);
+			Option("GB", "World", File("4E68F9DA03C310E84C523654B9026E51F26CE7F0", 256, "GB_mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
+			FirmwarePatchData gbCommonPatchAt0xFD = new(0xFD, new byte[] { 0xFE }); // 2 pairs, all have either 0x01 or 0xFF at this octet
+			AddPatchAndMaybeReverse(new(
+				"4ED31EC6B0B175BB109C0EB5FD3D193DA823339F",
+				gbCommonPatchAt0xFD,
+				"4E68F9DA03C310E84C523654B9026E51F26CE7F0"));
 
-			//PC-FX
+			// these are only used for supported SGB cores
+			// placed in GB as these are within the Game Boy side rather than the SNES side
+			Firmware("GB", "SGB", "Super Game Boy Boot Rom");
+			Option("GB", "SGB", File("AA2F50A77DFB4823DA96BA99309085A3C6278515", 256, "GB_sgb.bin", "Super Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
+			Firmware("GB", "SGB2", "Super Game Boy 2 Boot Rom");
+			Option("GB", "SGB2", File("93407EA10D2F30AB96A314D8ECA44FE160AEA734", 256, "GB_sgb2.bin", "Super Game Boy 2 Boot Rom"), FirmwareOptionStatus.Ideal);
+			AddPatchAndMaybeReverse(new(
+				"AA2F50A77DFB4823DA96BA99309085A3C6278515",
+				gbCommonPatchAt0xFD,
+				"93407EA10D2F30AB96A314D8ECA44FE160AEA734"));
+
+			Firmware("GBC", "World", "Game Boy Color Boot Rom");
+			Option("GBC", "World", File("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "GBC_cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
+			Option("GBC", "World", File("DF5A0D2D49DE38FBD31CC2AAB8E62C8550E655C0", 2304, "GBC_cgb0.bin", "Game Boy Color Boot Rom (Early Revision)"), FirmwareOptionStatus.Unacceptable);
+			Firmware("GBC", "AGB", "Game Boy Color Boot Rom (GBA)");
+			Option("GBC", "AGB", File("FA5287E24B0FA533B3B5EF2B28A81245346C1A0F", 2304, "GBC_agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
+			// early GBAs did not patch the logo reading TOCTOU (only relevant for bootlegs that logo swap)
+			Option("GBC", "AGB", File("0DAAC31ACB6CB346FC954368ACB02ACB3ADCC3AB", 2304, "GBC_agb0.bin", "Game Boy Color Boot Rom (GBA, Early Revision)"), FirmwareOptionStatus.Acceptable);
+			// functionally equal to agb0.bin (no TOCTOU patch)
+			Option("GBC", "AGB", File("1ECAFA77AB3172193F3305486A857F443E28EBD9", 2304, "GBC_agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
+			AddPatchAndMaybeReverse(new(
+				"1293D68BF9643BC4F36954C1E80E38F39864528D",
+				new FirmwarePatchData(0xF3, new byte[] { 0x03, 0x00, 0xCD, 0x1D, 0xD5, 0xAA, 0x4F, 0x90, 0x74 }),
+				"1ECAFA77AB3172193F3305486A857F443E28EBD9"));
+
 			Firmware("PCFX", "BIOS", "PCFX bios");
 			var pcfxbios = File("1A77FD83E337F906AECAB27A1604DB064CF10074", 1024 * 1024, "PCFX_bios.bin", "PCFX BIOS 1.00");
 			var pcfxv101 = File("8B662F7548078BE52A871565E19511CCCA28C5C8", 1024 * 1024, "PCFX_v101.bin", "PCFX BIOS 1.01");
@@ -528,9 +486,23 @@ namespace BizHawk.Emulation.Common
 			var fxscsi = File("65482A23AC5C10A6095AEE1DB5824CCA54EAD6E5", 512 * 1024, "PCFX_fx-scsi.rom", "PCFX SCSI ROM");
 			Option("PCFX", "SCSIROM", in fxscsi);
 
+			Firmware("N64DD", "IPL JPN", "N64DD Japan IPL");
+			var ddv10 = File("58670C0063793A8F3BE957D71D937B618829BA9E", 4 * 1024 * 1024, "64DD_IPL_v10_JPN.bin", "N64DD JPN IPL v1.0 (Beta)");
+			var ddv11 = File("B3E26DBB4E945F78C918FABC5B9E60FCF262C47B", 4 * 1024 * 1024, "64DD_IPL_v11_JPN.bin", "N64DD JPN IPL v1.1 (Beta)");
+			var ddv12 = File("BF861922DCB78C316360E3E742F4F70FF63C9BC3", 4 * 1024 * 1024, "64DD_IPL_v12_JPN.bin", "N64DD JPN IPL v1.2 (Retail)");
+			Option("N64DD", "IPL JPN", in ddv10, FirmwareOptionStatus.Unacceptable);
+			Option("N64DD", "IPL JPN", in ddv11, FirmwareOptionStatus.Unacceptable);
+			Option("N64DD", "IPL JPN", in ddv12, FirmwareOptionStatus.Ideal);
+			FirmwareAndOption("10C4173C2A7EB09C6579818F72EF18FA0B6D32DE", 4 * 1024 * 1024, "N64DD", "IPL DEV", "64DD_IPL_DEV.bin", "N64DD Development IPL");
+			FirmwareAndOption("3C5B93CA231550C68693A14F03CEA8D5DBD1BE9E", 4 * 1024 * 1024, "N64DD", "IPL USA", "64DD_IPL_USA.bin", "N64DD Prototype USA IPL");
 
-
-
+			/*Firmware("PS2", "BIOS", "PS2 Bios");
+			Option("PS2", "BIOS", File("FBD54BFC020AF34008B317DCB80B812DD29B3759", 4 * 1024 * 1024, "ps2-0230j-20080220.bin", "PS2 Bios"));
+			Option("PS2", "BIOS", File("8361D615CC895962E0F0838489337574DBDC9173", 4 * 1024 * 1024, "ps2-0220a-20060905.bin", "PS2 Bios"));
+			Option("PS2", "BIOS", File("DA5AACEAD2FB55807D6D4E70B1F10F4FDCFD3281", 4 * 1024 * 1024, "ps2-0220e-20060905.bin", "PS2 Bios"));
+			Option("PS2", "BIOS", File("3BAF847C1C217AA71AC6D298389C88EDB3DB32E2", 4 * 1024 * 1024, "ps2-0220j-20060905.bin", "PS2 Bios"));
+			Option("PS2", "BIOS", File("F9229FE159D0353B9F0632F3FDC66819C9030458", 4 * 1024 * 1024, "ps2-0230a-20080220.bin", "PS2 Bios"), FirmwareOptionStatus.Ideal);
+			Option("PS2", "BIOS", File("9915B5BA56798F4027AC1BD8D10ABE0C1C9C326A", 4 * 1024 * 1024, "ps2-0230e-20080220.bin", "PS2 Bios"));*/
 
 			AllPatches = allPatches;
 			FirmwareFilesByHash = filesByHash;
