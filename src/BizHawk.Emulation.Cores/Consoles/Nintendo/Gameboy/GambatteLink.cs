@@ -50,7 +50,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				_linkedCores[i] = new Gameboy(lp.Comm, lp.Roms[i].Game, lp.Roms[i].RomData, _settings._linkedSettings[i], _syncSettings._linkedSyncSettings[i], lp.DeterministicEmulationRequested);
 				_linkedCores[i].ConnectInputCallbackSystem(_inputCallbacks);
 				_linkedCores[i].ConnectMemoryCallbackSystem(_memoryCallbacks, i);
-				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: false, sub: false, tilt: false, rumble: false, remote: false));
+				isAnySgb = isAnySgb || isSgb(i);
+				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: isSgb(i), sub: false, tilt: false, rumble: false, remote: false));
 				_linkedBlips[i] = new BlipBuffer(1024);
 				_linkedBlips[i].SetRates(2097152 * 2, 44100);
 				_linkedOverflow[i] = 0;
@@ -68,6 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			FrameBuffer = CreateVideoBuffer();
 			VideoBuffer = CreateVideoBuffer();
+			SgbVideoBuffer = CreateSGBVideoBuffer();
 
 			GBLinkController = CreateControllerDefinition();
 
@@ -145,11 +147,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private ControllerDefinition CreateControllerDefinition()
 		{
 			ControllerDefinition ret = new($"GB Link {_numCores}x Controller");
+			int p = 0;
 			for (int i = 0; i < _numCores; i++)
 			{
+				p += 1;
 				ret.BoolButtons.AddRange(
-					new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Power" }
-						.Select(s => $"P{i + 1} {s}"));
+						new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Power" }
+							.Select(s => $"P{p} {s}"));
+				if (isSgb(i)) // one Player tab per SNES controller for SGB; SNES power button on the first Player tab
+				{
+					for (int j = 1; j < 4; j++)
+					{
+						p += 1;
+						ret.BoolButtons.AddRange(
+						new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" }
+							.Select(s => $"P{p} {s}"));
+					}
+				}
 			}
 			ret.BoolButtons.Add("Toggle Link Connection");
 			if (_numCores > 2)
@@ -158,6 +172,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				ret.BoolButtons.Add("Toggle Link Spacing");
 			}
 			return ret.MakeImmutable();
+		}
+
+		private bool isSgb(int i)
+		{
+			return _linkedCores[i].IsSgb;
+		}
+
+
+		public bool isAnySgb { get; set; }
+
+		private bool showBorder(int i)
+		{
+			return isSgb(i) && _settings._linkedSettings[i].ShowBorder;
+		}
+
+		public bool showAnyBorder()
+		{
+			return Enumerable.Range(0, _numCores).Any(showBorder);
 		}
 
 		private const int P1 = 0;

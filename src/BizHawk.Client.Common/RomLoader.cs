@@ -483,7 +483,7 @@ namespace BizHawk.Client.Common
 						return;
 					}
 
-					if (_config.GbAsSgb)
+					if (_config.PreferredCores[game.System].Contains(CoreNames.Bsnes))
 					{
 						game.System = VSystemID.Raw.SGB;
 					}

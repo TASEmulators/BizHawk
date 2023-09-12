@@ -21,11 +21,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				if (controller.IsPressed(s))
 				{
+					int p = 0;
 					for (int i = 0; i < _numCores; i++)
 					{
-						if (s.Contains($"P{i + 1} "))
+						if (isSgb(i))
 						{
-							_linkedConts[i].Set(s.Replace($"P{i + 1} ", ""));
+							for (int j = 1; j <= 4; j++)
+							{
+								p += 1;
+								if (s.Contains($"P{p} "))
+								{
+									if (s.Contains($"Power"))
+									{
+										_linkedConts[i].Set(s.Replace($"P{p} ", ""));
+									}
+									else
+									{
+										_linkedConts[i].Set(s.Replace($"P{p} ", $"P{j} "));
+									}
+								}
+							}
+						}
+						else
+						{
+							p += 1;
+							if (s.Contains($"P{p} "))
+							{
+								_linkedConts[i].Set(s.Replace($"P{p} ", ""));
+							}
 						}
 					}
 				}
@@ -68,10 +91,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			unsafe
 			{
-				fixed (int* fbuff = &FrameBuffer[0])
+				fixed (int* fbuff = &FrameBuffer[0], svbuff = SgbVideoBuffer)
 				{
 					// use pitch to have both cores write to the same frame buffer, interleaved
 					int Pitch = 160 * _numCores;
+					int sgbPitch = 256 * _numCores;
 
 					fixed (short* sbuff = &SoundBuffer[0])
 					{
@@ -103,6 +127,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 										for (int j = 0; j < 144; j++)
 										{
 											Array.Copy(FrameBuffer, (i * 160) + (j * Pitch), VideoBuffer, (i * 160) + (j * Pitch), 160);
+										}
+										if (isAnySgb)
+										{
+											if (isSgb(i)) // all SGB borders will be displayed when any of them has the option enabled
+											{
+												if (LibGambatte.gambatte_updatescreenborder(_linkedCores[i].GambatteState, svbuff + (i * 256), sgbPitch) != 0)
+												{
+													throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_updatescreenborder)}() returned non-zero (border error???)");
+												}
+											}
+											else
+											{
+												for (int j = 0; j < 144; j++)
+												{
+													Array.Copy(FrameBuffer, (i * 160) + (j * Pitch), SgbVideoBuffer, (i * 256 + 48) + (40 + j) * sgbPitch, 160);
+												}
+											}
 										}
 									}
 
