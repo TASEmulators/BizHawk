@@ -7,7 +7,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class Gameboy : IEmulator, IBoardInfo
 	{
-		public IEmulatorServiceProvider ServiceProvider { get; }
+		private readonly BasicServiceProvider _serviceProvider;
+		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
 		public ControllerDefinition ControllerDefinition { get; }
 
@@ -120,11 +121,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						}
 					}
 					break;
+				default:
+					throw new InvalidOperationException();
 			}
 
 			if (IsSgb)
 			{
-				ProcessSgbSound((int)samplesEmittedInFrame, rendersound && !Muted);
+				ProcessSgbSound(rendersound && !Muted);
 			}
 
 			ProcessMbcSound(rendersound && !Muted);

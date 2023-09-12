@@ -42,12 +42,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private void CDCallbackProc(int addr, LibGambatte.CDLog_AddrType addrtype, LibGambatte.CDLog_Flags flags)
 		{
-			if (_cdl == null || !_cdl.Active)
+			if (_cdl is not { Active: true })
 			{
 				return;
 			}
 
-			string key = addrtype switch
+			var key = addrtype switch
 			{
 				LibGambatte.CDLog_AddrType.ROM => "ROM",
 				LibGambatte.CDLog_AddrType.HRAM => "HRAM",

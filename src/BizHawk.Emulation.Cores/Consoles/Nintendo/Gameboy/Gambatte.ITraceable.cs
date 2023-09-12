@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.LR35902;
@@ -12,32 +13,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private void MakeTrace(IntPtr _s)
 		{
-			int[] s = new int[14];
-			System.Runtime.InteropServices.Marshal.Copy(_s, s, 0, 14);
-			ushort PC = (ushort)s[1];
+			var s = new int[14];
+			Marshal.Copy(_s, s, 0, 14);
+			var PC = (ushort)s[1];
 
 			Tracer.Put(new(
 				disassembly: LR35902.Disassemble(
 					PC,
-					addr => {
+					addr =>
+					{
 						if (addr == PC)
 						{
 							//opcode
 							return (byte)((s[12] >> 16) & 0xFF);
 						}
-						else
+
+						if (addr == ((PC + 1) & 0xFFFF))
 						{
-							if (addr == ((PC + 1) & 0xFFFF))
-							{
-								//high operand
-								return (byte)((s[12] >> 8) & 0xFF);
-							}
-							else
-							{
-								//low operand
-								return (byte)(s[12] & 0xFF);
-							}
+							//high operand
+							return (byte)((s[12] >> 8) & 0xFF);
 						}
+
+						//low operand
+						return (byte)(s[12] & 0xFF);
 					},
 					_settings.RgbdsSyntax,
 					out _).PadRight(36),
