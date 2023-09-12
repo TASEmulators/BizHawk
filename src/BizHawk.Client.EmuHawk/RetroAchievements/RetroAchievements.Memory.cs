@@ -372,7 +372,6 @@ namespace BizHawk.Client.EmuHawk
 			[ConsoleID.MasterSystem] = new[] { (0xC000, 0x2000) },
 			[ConsoleID.GameGear] = new[] { (0xC000, 0x2000) },
 			[ConsoleID.Colecovision] = new[] { (0x6000, 0x400) },
-			[ConsoleID.GBA] = new[] { (0x3000000, 0x8000), (0x2000000, 0x40000) },
 			[ConsoleID.SG1000] = new[] { (0xC000, 0x2000), (0x2000, 0x2000), (0x8000, 0x2000) },
 		};
 
@@ -486,6 +485,11 @@ namespace BizHawk.Client.EmuHawk
 								mfs.Add(new(domains[wram], 0x2000, 0x6000));
 							}
 						}
+						break;
+					case ConsoleID.GBA:
+						mfs.Add(new(domains["IWRAM"], 0, domains["IWRAM"].Size));
+						mfs.Add(new(domains["EWRAM"], 0, domains["EWRAM"].Size));
+						mfs.Add(new(domains["SRAM"], 0, domains["SRAM"].Size));
 						break;
 					case ConsoleID.SegaCD:
 						mfs.Add(new(domains["68K RAM"], 0, domains["68K RAM"].Size, 1));
