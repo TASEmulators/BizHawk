@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private OctoshockFIOConfigUser UserConfigFromGui()
 		{
-			var uc = new OctoshockFIOConfigUser
+			OctoshockFIOConfigUser uc = new()
 			{
 				Memcards = { [0] = cbMemcard_1.Checked, [1] = cbMemcard_2.Checked },
 				Multitaps = { [0] = cbMultitap_1.Checked, [1] = cbMultitap_2.Checked }
@@ -128,15 +128,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void Cb_Changed(object sender, EventArgs e)
-		{
-			RefreshLabels();
-		}
+		private void Cb_Changed(object sender, EventArgs e) => RefreshLabels();
 
-		private void Combo_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			RefreshLabels();
-		}
+		private void Combo_SelectedIndexChanged(object sender, EventArgs e) => RefreshLabels();
 
 		private void BtnOk_Click(object sender, EventArgs e)
 		{

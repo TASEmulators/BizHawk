@@ -75,14 +75,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			data = new byte[0];
 		}
 
-		public bool IsTransferring()
-		{
-			return stream_idx < data.Length;
-		}
-		private static bool IsDigtsSupported(int count)
-		{
-			return count.In(MIN_DIGITS, MAX_DIGITS);
-		}
+		public bool IsTransferring() => stream_idx < data.Length;
+		private static bool IsDigtsSupported(int count) => count.In(MIN_DIGITS, MAX_DIGITS);
 
 		public static bool ValidString(string s, out string why)
 		{
@@ -95,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			foreach (char c in s)
 			{
-				if (c < '0' || c > '9')
+				if (c is < '0' or > '9')
 				{
 					why = "String must be numeric only!";
 					return false;
@@ -107,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void Transfer(string s)
 		{
-			if (!ValidString(s, out var why))
+			if (!ValidString(s, out string why))
 				throw new InvalidOperationException(why);
 
 			Reset();
@@ -116,13 +110,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			for (int i = 0; i < s.Length; i++)
 			{
-				if (s[i] >= '0' && s[i] <= '9')
+				if (s[i] is >= '0' and <= '9')
 					code[i] = (byte)(s[i] - '0');
 				else
 					throw new InvalidOperationException("s must be numeric only");
 			}
 
-			var result = new System.IO.MemoryStream();
+			System.IO.MemoryStream result = new();
 
 			for (int i = 0; i < 33; i++)
 				result.WriteByte(8);
@@ -223,9 +217,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// d3
 		/// </summary>
-		public bool GetOutput()
-		{
-			return output == 8;
-		}
+		public bool GetOutput() => output == 8;
 	}
 }

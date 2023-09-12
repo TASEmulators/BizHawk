@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			var controls = new NESControlSettings
+			NESControlSettings controls = new()
 			{
 				Famicom = checkBoxFamicom.Checked,
 				FamicomExpPort = (string)comboBoxFamicom.SelectedItem,

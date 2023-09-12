@@ -21,14 +21,11 @@ namespace BizHawk.Client.EmuHawk
 			Icon = ToolIcon;
 		}
 
-		public override void Restart()
-		{
-			textBox1_TextChanged(null, null);
-		}
+		public override void Restart() => textBox1_TextChanged(null, null);
 
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
-			if (!DatachBarcode.ValidString(textBox1.Text, out var why))
+			if (!DatachBarcode.ValidString(textBox1.Text, out string why))
 			{
 				label3.Text = $"Invalid: {why}";
 				label3.Visible = true;
@@ -41,9 +38,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void button1_Click(object sender, EventArgs e)
-		{
-			Reader.Transfer(textBox1.Text);
-		}
+		private void button1_Click(object sender, EventArgs e) => Reader.Transfer(textBox1.Text);
 	}
 }

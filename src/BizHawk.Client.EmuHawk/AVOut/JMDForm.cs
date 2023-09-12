@@ -13,10 +13,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		private void ThreadsBar_Scroll(object sender, EventArgs e)
-		{
-			threadTop.Text = $"Number of compression threads: {threadsBar.Value}";
-		}
+		private void ThreadsBar_Scroll(object sender, EventArgs e) => threadTop.Text = $"Number of compression threads: {threadsBar.Value}";
 
 		private void CompressionBar_Scroll(object sender, EventArgs e)
 		{
@@ -38,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns>false if user canceled; true if user consented</returns>
 		public static bool DoCompressionDlg(ref int threads, ref int compLevel, int tMin, int tMax, int cMin, int cMax, IWin32Window hwnd)
 		{
-			var j = new JmdForm
+			JmdForm j = new()
 			{
 				threadsBar = { Minimum = tMin, Maximum = tMax },
 				compressionBar = { Minimum = cMin, Maximum = cMax }
@@ -53,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			j.compressionLeft.Text = $"{cMin}";
 			j.compressionRight.Text = $"{cMax}";
 
-			DialogResult d = j.ShowDialog(hwnd);
+			var d = j.ShowDialog(hwnd);
 
 			threads = j.threadsBar.Value;
 			compLevel = j.compressionBar.Value;

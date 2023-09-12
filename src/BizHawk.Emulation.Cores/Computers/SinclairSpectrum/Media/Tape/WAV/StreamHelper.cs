@@ -46,10 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			stream.Write(data, 0, data.Length);
 		}
 
-		public static void Write(Stream stream, byte[] value)
-		{
-			stream.Write(value, 0, value.Length);
-		}
+		public static void Write(Stream stream, byte[] value) => stream.Write(value, 0, value.Length);
 
 
 		public static void Read(Stream stream, out int value)
@@ -96,9 +93,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			value = (sbyte)data[0];
 		}
 
-		public static void Read(Stream stream, byte[] value)
-		{
-			stream.Read(value, 0, value.Length);
-		}
+		public static void Read(Stream stream, byte[] value) => stream.Read(value, 0, value.Length);
 	}
 }

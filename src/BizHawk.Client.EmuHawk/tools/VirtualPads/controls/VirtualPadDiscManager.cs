@@ -42,15 +42,15 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var buttons = new List<string> { "- NONE -" };
+			List<string> buttons = new() { "- NONE -" };
 			buttons.AddRange(psx.HackyDiscButtons);
 
 			lvDiscs.Items.Clear();
 
 			int idx = 0;
-			foreach (var button in buttons)
+			foreach (string button in buttons)
 			{
-				var lvi = new ListViewItem { Text = idx.ToString() };
+				ListViewItem lvi = new() { Text = idx.ToString() };
 				lvi.SubItems.Add(button);
 				lvDiscs.Items.Add(lvi);
 				idx++;
@@ -123,11 +123,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool ReadOnly { get; set; }
 
-		private void lvDiscs_SelectedIndexChanged(object sender, EventArgs e)
-		{
+		private void lvDiscs_SelectedIndexChanged(object sender, EventArgs e) =>
 			// emergency measure: if no selection, set no disc
 			_inputManager.StickyXorAdapter.SetAxis(_discSelectName, lvDiscs.SelectedIndices.Count == 0 ? 0 : lvDiscs.SelectedIndices[0]);
-		}
 
 		private void btnClose_Click(object sender, EventArgs e)
 		{

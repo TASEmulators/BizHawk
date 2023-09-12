@@ -12,7 +12,7 @@ namespace BizHawk.BizInvoke
 
 		public MemoryBlockWindowsPal(ulong size)
 		{
-			var ptr = (ulong)Kernel32.VirtualAlloc(
+			ulong ptr = (ulong)Kernel32.VirtualAlloc(
 				UIntPtr.Zero, Z.UU(size), Kernel32.AllocationType.MEM_RESERVE | Kernel32.AllocationType.MEM_COMMIT, Kernel32.MemoryProtection.NOACCESS);
 			if (ptr == 0)
 				throw new InvalidOperationException($"{nameof(Kernel32.VirtualAlloc)}() returned NULL");
@@ -28,15 +28,14 @@ namespace BizHawk.BizInvoke
 
 		private static Kernel32.MemoryProtection GetKernelMemoryProtectionValue(Protection prot)
 		{
-			Kernel32.MemoryProtection p;
-			switch (prot)
+			var p = prot switch
 			{
-				case Protection.None: p = Kernel32.MemoryProtection.NOACCESS; break;
-				case Protection.R: p = Kernel32.MemoryProtection.READONLY; break;
-				case Protection.RW: p = Kernel32.MemoryProtection.READWRITE; break;
-				case Protection.RX: p = Kernel32.MemoryProtection.EXECUTE_READ; break;
-				default: throw new ArgumentOutOfRangeException(nameof(prot));
-			}
+				Protection.None => Kernel32.MemoryProtection.NOACCESS,
+				Protection.R => Kernel32.MemoryProtection.READONLY,
+				Protection.RW => Kernel32.MemoryProtection.READWRITE,
+				Protection.RX => Kernel32.MemoryProtection.EXECUTE_READ,
+				_ => throw new ArgumentOutOfRangeException(nameof(prot)),
+			};
 			return p;
 		}
 

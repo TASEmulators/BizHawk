@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public static class VideoWriterInventory
 	{
-		private static readonly Dictionary<string, VideoWriterInfo> VideoWriters = new Dictionary<string, VideoWriterInfo>();
+		private static readonly Dictionary<string, VideoWriterInfo> VideoWriters = new();
 
 		static VideoWriterInventory()
 		{

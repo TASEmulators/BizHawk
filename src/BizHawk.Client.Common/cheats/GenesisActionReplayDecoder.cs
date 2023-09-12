@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common.cheats
 				return new InvalidCheatCode("Action Replay/Pro Action Replay Codes need to contain a colon after the sixth character.");
 			}
 
-			var parseString = code.Remove(0, 2);
+			string parseString = code.Remove(0, 2);
 			return code.Length switch
 			{
 				9 =>

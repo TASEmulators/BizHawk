@@ -32,8 +32,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Table_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
-			var key = (TKey)e.Row[0];
-			var value = (TValue)e.Row[1];
+			TKey key = (TKey)e.Row[0];
+			TValue value = (TValue)e.Row[1];
 
 			switch (e.Action)
 			{

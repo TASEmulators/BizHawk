@@ -56,8 +56,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PortComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			var leftPort = (BsnesApi.BSNES_INPUT_DEVICE) Port1ComboBox.SelectedIndex;
-			var rightPort = (BsnesApi.BSNES_INPUT_DEVICE) Port2ComboBox.SelectedIndex;
+			BsnesApi.BSNES_INPUT_DEVICE leftPort = (BsnesApi.BSNES_INPUT_DEVICE) Port1ComboBox.SelectedIndex;
+			BsnesApi.BSNES_INPUT_DEVICE rightPort = (BsnesApi.BSNES_INPUT_DEVICE) Port2ComboBox.SelectedIndex;
 			ToggleMouseSection(leftPort == BsnesApi.BSNES_INPUT_DEVICE.Mouse || rightPort == BsnesApi.BSNES_INPUT_DEVICE.Mouse);
 		}
 

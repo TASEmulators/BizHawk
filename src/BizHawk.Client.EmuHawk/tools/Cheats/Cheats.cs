@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -99,10 +99,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadFileFromRecent(string path)
 		{
-			var askResult = !MainForm.CheatList.Changes || AskSaveChanges();
+			bool askResult = !MainForm.CheatList.Changes || AskSaveChanges();
 			if (askResult)
 			{
-				var loadResult = MainForm.CheatList.Load(Core, path, append: false);
+				bool loadResult = MainForm.CheatList.Load(Core, path, append: false);
 				if (!loadResult)
 				{
 					Config.Cheats.Recent.HandleLoadError(MainForm, path);
@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (file != null)
 			{
-				var result = true;
+				bool result = true;
 				if (MainForm.CheatList.Changes)
 				{
 					result = AskSaveChanges();
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool SaveAs()
 		{
-			var fileName = MainForm.CheatList.CurrentFileName;
+			string fileName = MainForm.CheatList.CurrentFileName;
 			if (string.IsNullOrWhiteSpace(fileName))
 			{
 				fileName = Game.FilesystemSafeName();
@@ -178,10 +178,7 @@ namespace BizHawk.Client.EmuHawk
 			CheatListView.Refresh();
 		}
 
-		private void ColumnToggleCallback()
-		{
-			Settings.Columns = CheatListView.AllColumns;
-		}
+		private void ColumnToggleCallback() => Settings.Columns = CheatListView.AllColumns;
 
 		private void ToggleGameGenieButton()
 		{
@@ -223,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var columnName = column.Name;
+			string columnName = column.Name;
 
 			switch (columnName)
 			{
@@ -294,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoSelectedIndexChange()
 		{
-			var selected = SelectedCheats.Take(2).ToList(); // is this saving that much overhead by not enumerating the whole selection? could display the row count if we did
+			List<Cheat> selected = SelectedCheats.Take(2).ToList(); // is this saving that much overhead by not enumerating the whole selection? could display the row count if we did
 			if (selected.Count is 0)
 			{
 				CheatEditor.ClearForm();
@@ -317,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartNewList()
 		{
-			var result = !MainForm.CheatList.Changes || AskSaveChanges();
+			bool result = !MainForm.CheatList.Changes || AskSaveChanges();
 			if (result)
 			{
 				MainForm.CheatList.NewList(Tools.GenerateDefaultCheatFilename());
@@ -329,25 +326,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewList()
 		{
-			var result = !MainForm.CheatList.Changes || AskSaveChanges();
+			bool result = !MainForm.CheatList.Changes || AskSaveChanges();
 			if (result)
 			{
 				StartNewList();
 			}
 		}
 
-		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			SaveMenuItem.Enabled = MainForm.CheatList.Changes;
-		}
+		private void FileSubMenu_DropDownOpened(object sender, EventArgs e) => SaveMenuItem.Enabled = MainForm.CheatList.Changes;
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 			=> RecentSubMenu.ReplaceDropDownItems(Config!.Cheats.Recent.RecentMenu(this, LoadFileFromRecent, "Cheats"));
 
-		private void NewMenuItem_Click(object sender, EventArgs e)
-		{
-			NewList();
-		}
+		private void NewMenuItem_Click(object sender, EventArgs e) => NewList();
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
@@ -401,7 +392,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
 		{
-			var items = SelectedItems.ToList();
+			List<Cheat> items = SelectedItems.ToList();
 			if (items.Any())
 			{
 				foreach (var item in items)
@@ -423,13 +414,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MoveUpMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = SelectedIndices.ToList();
+			List<int> indices = SelectedIndices.ToList();
 			if (indices.Count == 0 || indices[0] == 0)
 			{
 				return;
 			}
 
-			foreach (var index in indices)
+			foreach (int index in indices)
 			{
 				var cheat = MainForm.CheatList[index];
 				MainForm.CheatList.Remove(cheat);
@@ -439,7 +430,7 @@ namespace BizHawk.Client.EmuHawk
 			var newIndices = indices.Select(t => t - 1);
 
 			CheatListView.DeselectAll();
-			foreach (var index in newIndices)
+			foreach (int index in newIndices)
 			{
 				CheatListView.SelectRow(index, true);
 			}
@@ -450,14 +441,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = SelectedIndices.ToList();
+			List<int> indices = SelectedIndices.ToList();
 			if (indices.Count == 0
 				|| indices[^1] == MainForm.CheatList.Count - 1) // at end already
 			{
 				return;
 			}
 
-			for (var i = indices.Count - 1; i >= 0; i--)
+			for (int i = indices.Count - 1; i >= 0; i--)
 			{
 				var cheat = MainForm.CheatList[indices[i]];
 				MainForm.CheatList.Remove(cheat);
@@ -469,7 +460,7 @@ namespace BizHawk.Client.EmuHawk
 			var newIndices = indices.Select(t => t + 1);
 
 			CheatListView.DeselectAll();
-			foreach (var index in newIndices)
+			foreach (int index in newIndices)
 			{
 				CheatListView.SelectRow(index, true);
 			}
@@ -489,15 +480,9 @@ namespace BizHawk.Client.EmuHawk
 			CheatListView.Refresh();
 		}
 
-		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
-		{	
-			MainForm.CheatList.DisableAll();
-		}
+		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e) => MainForm.CheatList.DisableAll();
 
-		private void OpenGameGenieEncoderDecoderMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<GameShark>();
-		}
+		private void OpenGameGenieEncoderDecoderMenuItem_Click(object sender, EventArgs e) => Tools.Load<GameShark>();
 
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -506,21 +491,13 @@ namespace BizHawk.Client.EmuHawk
 			DisableCheatsOnLoadMenuItem.Checked = Config.Cheats.DisableOnLoad;
 		}
 
-		private void AlwaysLoadCheatsMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Cheats.LoadFileByGame ^= true;
-		}
+		private void AlwaysLoadCheatsMenuItem_Click(object sender, EventArgs e) => Config.Cheats.LoadFileByGame ^= true;
 
-		private void AutoSaveCheatsMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Cheats.AutoSaveOnClose ^= true;
-		}
+		private void AutoSaveCheatsMenuItem_Click(object sender, EventArgs e) => Config.Cheats.AutoSaveOnClose ^= true;
 
-		private void CheatsOnOffLoadMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Cheats.DisableOnLoad ^= true;
-		}
+		private void CheatsOnOffLoadMenuItem_Click(object sender, EventArgs e) => Config.Cheats.DisableOnLoad ^= true;
 
+#pragma warning disable IDE0051
 		[RestoreDefaults]
 		private void RestoreDefaults()
 		{
@@ -540,11 +517,9 @@ namespace BizHawk.Client.EmuHawk
 			CheatListView.AllColumns.Clear();
 			SetColumns();
 		}
+#pragma warning restore IDE0051
 
-		private void CheatListView_DoubleClick(object sender, EventArgs e)
-		{
-			ToggleMenuItem_Click(sender, e);
-		}
+		private void CheatListView_DoubleClick(object sender, EventArgs e) => ToggleMenuItem_Click(sender, e);
 
 		private void CheatListView_KeyDown(object sender, KeyEventArgs e)
 		{
@@ -560,10 +535,7 @@ namespace BizHawk.Client.EmuHawk
 			DoSelectedIndexChange();
 		}
 
-		private void CheatListView_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			DoSelectedIndexChange();
-		}
+		private void CheatListView_SelectedIndexChanged(object sender, EventArgs e) => DoSelectedIndexChange();
 
 		private void CheatListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
@@ -582,7 +554,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewCheatForm_DragDrop(object sender, DragEventArgs e)
 		{
-			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			if (Path.GetExtension(filePaths[0]) == ".cht")
 			{
 				LoadFile(new FileInfo(filePaths[0]), append: false);
@@ -591,10 +563,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void NewCheatForm_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Set(DragDropEffects.Copy);
-		}
+		private void NewCheatForm_DragEnter(object sender, DragEventArgs e) => e.Set(DragDropEffects.Copy);
 
 		private void CheatsContextMenu_Opening(object sender, CancelEventArgs e)
 		{
@@ -607,7 +576,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
 		{
-			var selected = SelectedCheats.ToList();
+			List<Cheat> selected = SelectedCheats.ToList();
 			if (selected.Any())
 			{
 				Tools.Load<HexEditor>();

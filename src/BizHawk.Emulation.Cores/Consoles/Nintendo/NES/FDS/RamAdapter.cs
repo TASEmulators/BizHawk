@@ -32,10 +32,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// todo: implement CRC.  since the RamAdapter itself doesn't implement it, broken is not a problem
 			// since its not contained in dumps, no way to be sure that the implementation is right
 
-			MemoryStream inp = new MemoryStream(inputdisk, false);
-			BinaryReader br = new BinaryReader(inp);
+			MemoryStream inp = new(inputdisk, false);
+			BinaryReader br = new(inp);
 
-			MemoryStream ret = new MemoryStream();
+			MemoryStream ret = new();
 
 			// block 1: header
 			byte[] header = br.ReadBytes(56);
@@ -616,7 +616,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			var tmp = disk[diskpos >> 3];
+			byte tmp = disk[diskpos >> 3];
 			tmp &= unchecked((byte)~(1 << (diskpos & 7)));
 			if (bittowrite)
 				tmp |= (byte)(1 << (diskpos & 7));
@@ -624,12 +624,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			diskpos++;
 		}
 
-		private void MoveDummy()
-		{
+		private void MoveDummy() =>
 			// It seems that the real disk doesn't keep on running at normal speed to the end while restting
 			// Whoever told me that was mistaken...
 			diskpos += 5000;
-		}
 
 
 	}

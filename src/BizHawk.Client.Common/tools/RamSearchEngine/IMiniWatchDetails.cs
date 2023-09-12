@@ -28,10 +28,7 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 			SetPreviousToCurrent(domain, false);
 		}
 
-		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
-		{
-			_previous = _prevFrame = MiniByteWatch.GetByte(Address, domain);
-		}
+		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian) => _previous = _prevFrame = MiniByteWatch.GetByte(Address, domain);
 
 		public long Previous => _previous;
 
@@ -39,7 +36,7 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 
 		public void Update(PreviousType type, MemoryDomain domain, bool bigEndian)
 		{
-			var value = MiniByteWatch.GetByte(Address, domain);
+			byte value = MiniByteWatch.GetByte(Address, domain);
 
 			if (value != _prevFrame)
 			{
@@ -84,10 +81,7 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 			SetPreviousToCurrent(domain, bigEndian);
 		}
 
-		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
-		{
-			_previous = _prevFrame = MiniWordWatch.GetUshort(Address, domain, bigEndian);
-		}
+		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian) => _previous = _prevFrame = MiniWordWatch.GetUshort(Address, domain, bigEndian);
 
 		public long Previous => _previous;
 
@@ -95,7 +89,7 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 
 		public void Update(PreviousType type, MemoryDomain domain, bool bigEndian)
 		{
-			var value = MiniWordWatch.GetUshort(Address, domain, bigEndian);
+			ushort value = MiniWordWatch.GetUshort(Address, domain, bigEndian);
 			if (value != Previous)
 			{
 				ChangeCount++;
@@ -139,10 +133,7 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 			SetPreviousToCurrent(domain, bigEndian);
 		}
 
-		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
-		{
-			_previous = _prevFrame = MiniDWordWatch.GetUint(Address, domain, bigEndian);
-		}
+		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian) => _previous = _prevFrame = MiniDWordWatch.GetUint(Address, domain, bigEndian);
 
 		public long Previous => (int)_previous;
 
@@ -150,7 +141,7 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 
 		public void Update(PreviousType type, MemoryDomain domain, bool bigEndian)
 		{
-			var value = MiniDWordWatch.GetUint(Address, domain, bigEndian);
+			uint value = MiniDWordWatch.GetUint(Address, domain, bigEndian);
 			if (value != Previous)
 			{
 				ChangeCount++;

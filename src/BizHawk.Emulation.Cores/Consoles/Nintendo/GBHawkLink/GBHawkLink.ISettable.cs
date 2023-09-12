@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		private GBLinkSettings linkSettings = new GBLinkSettings();
-		public GBLinkSyncSettings linkSyncSettings = new GBLinkSyncSettings();
+		private GBLinkSettings linkSettings = new();
+		public GBLinkSyncSettings linkSyncSettings = new();
 
 		public class GBLinkSettings
 		{
@@ -146,10 +146,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 			public GBLinkSyncSettings() => SettingsUtil.SetDefaultValues(this);
 
-			public static bool NeedsReboot(GBLinkSyncSettings x, GBLinkSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(GBLinkSyncSettings x, GBLinkSyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

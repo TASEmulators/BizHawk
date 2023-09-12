@@ -67,9 +67,9 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				_ => throw new InvalidOperationException(),
 			};
 
-			var bios = Zstd.DecompressZstdStream(new MemoryStream(brev.Value)).ToArray();
+			byte[] bios = Zstd.DecompressZstdStream(new MemoryStream(brev.Value)).ToArray();
 
-			var settings = new LibVirtualJaguar.Settings
+			LibVirtualJaguar.Settings settings = new()
 			{
 				NTSC = _syncSettings.NTSC,
 				UseBIOS = !_syncSettings.SkipBIOS,
@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				_core.SetCdCallbacks(_cdTocCallback, _cdReadCallback);
 
 				_saveRamSize = _syncSettings.UseMemoryTrack ? 0x20000 : 0;
-				var memtrack = _syncSettings.UseMemoryTrack
+				byte[] memtrack = _syncSettings.UseMemoryTrack
 					? Zstd.DecompressZstdStream(new MemoryStream(Resources.JAGUAR_MEMTRACK_ROM.Value)).ToArray()
 					: null;
 
@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				_cdTocCallback = null;
 				_cdReadCallback = null;
 				_saveRamSize = 128;
-				var rom = lp.Roms[0].FileData;
+				byte[] rom = lp.Roms[0].FileData;
 				unsafe
 				{
 					fixed (byte* rp = rom, bp = bios)
@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		private static ControllerDefinition CreateControllerDefinition(bool p1, bool p2)
 		{
-			var ret = new ControllerDefinition("Jaguar Controller");
+			ControllerDefinition ret = new("Jaguar Controller");
 
 			if (p1)
 			{
@@ -252,10 +252,10 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		private void CDTOCCallback(IntPtr dst)
 		{
-			var nsessions = _cd.Sessions.Count - 1;
-			var lastLeadOutTs = new Timestamp(_cd.Sessions[nsessions].LeadoutLBA + 150);
+			int nsessions = _cd.Sessions.Count - 1;
+			Timestamp lastLeadOutTs = new(_cd.Sessions[nsessions].LeadoutLBA + 150);
 
-			var toc = new LibVirtualJaguar.TOC
+			LibVirtualJaguar.TOC toc = new()
 			{
 				Padding0 = 0,
 				Padding1 = 0,
@@ -268,20 +268,20 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				Tracks = new LibVirtualJaguar.TOC.Track[127],
 			};
 
-			var trackNum = 0;
-			for (var i = 1; i < _cd.Sessions.Count; i++)
+			int trackNum = 0;
+			for (int i = 1; i < _cd.Sessions.Count; i++)
 			{
 				var session = _cd.Sessions[i];
-				for (var j = 0; j < session.InformationTrackCount; j++)
+				for (int j = 0; j < session.InformationTrackCount; j++)
 				{
 					var track = session.Tracks[j + 1];
 					toc.Tracks[trackNum].TrackNum = (byte)track.Number;
-					var ts = new Timestamp(track.LBA + 150);
+					Timestamp ts = new(track.LBA + 150);
 					toc.Tracks[trackNum].StartMins = ts.MIN;
 					toc.Tracks[trackNum].StartSecs = ts.SEC;
 					toc.Tracks[trackNum].StartFrames = ts.FRAC;
 					toc.Tracks[trackNum].SessionNum = (byte)(i - 1);
-					var durTs = new Timestamp(track.NextTrack.LBA - track.LBA);
+					Timestamp durTs = new(track.NextTrack.LBA - track.LBA);
 					toc.Tracks[trackNum].DurMins = durTs.MIN;
 					toc.Tracks[trackNum].DurSecs = durTs.SEC;
 					toc.Tracks[trackNum].DurFrames = durTs.FRAC;

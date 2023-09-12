@@ -68,7 +68,7 @@ namespace BizHawk.Common
 	{
 		private const ulong MIN_LONG_NEGATION_AS_ULONG = 9223372036854775808UL;
 
-		private static readonly ArithmeticException ExclusiveRangeMinValExc = new ArithmeticException("exclusive range end is min value of integral type");
+		private static readonly ArithmeticException ExclusiveRangeMinValExc = new("exclusive range end is min value of integral type");
 
 		/// <returns><paramref name="value"/> if it's contained in <paramref name="range"/>, or else whichever bound of <paramref name="range"/> is closest to <paramref name="value"/></returns>
 		public static T ConstrainWithin<T>(this T value, Range<T> range) where T : unmanaged, IComparable<T> => value.CompareTo(range.Start) < 0
@@ -115,7 +115,7 @@ namespace BizHawk.Common
 		/// <inheritdoc cref="Enumerate(Range{float},float)"/>
 		public static IEnumerable<double> Enumerate(this Range<double> range, double step)
 		{
-			var d = range.Start;
+			double d = range.Start;
 			while (d < range.EndInclusive)
 			{
 				yield return d;
@@ -127,7 +127,7 @@ namespace BizHawk.Common
 		/// <remarks>beware precision errors</remarks>
 		public static IEnumerable<float> Enumerate(this Range<float> range, float step)
 		{
-			var f = range.Start;
+			float f = range.Start;
 			while (f < range.EndInclusive)
 			{
 				yield return f;
@@ -138,14 +138,14 @@ namespace BizHawk.Common
 
 		public static IEnumerable<int> Enumerate(this Range<int> range)
 		{
-			var i = range.Start;
+			int i = range.Start;
 			while (i < range.EndInclusive) yield return i++;
 			yield return i;
 		}
 
 		public static IEnumerable<long> Enumerate(this Range<long> range)
 		{
-			var l = range.Start;
+			long l = range.Start;
 			while (l < range.EndInclusive) yield return l++;
 			yield return l;
 		}
@@ -156,14 +156,14 @@ namespace BizHawk.Common
 
 		public static IEnumerable<uint> Enumerate(this Range<uint> range)
 		{
-			var i = range.Start;
+			uint i = range.Start;
 			while (i < range.EndInclusive) yield return i++;
 			yield return i;
 		}
 
 		public static IEnumerable<ulong> Enumerate(this Range<ulong> range)
 		{
-			var l = range.Start;
+			ulong l = range.Start;
 			while (l < range.EndInclusive) yield return l++;
 			yield return l;
 		}
@@ -172,10 +172,10 @@ namespace BizHawk.Common
 
 		public static Range<T> GetImmutableCopy<T>(this Range<T> range) where T : unmanaged, IComparable<T> => GetMutableCopy(range);
 
-		public static MutableRange<T> GetMutableCopy<T>(this Range<T> range) where T : unmanaged, IComparable<T> => new MutableRange<T>(range.Start, range.EndInclusive);
+		public static MutableRange<T> GetMutableCopy<T>(this Range<T> range) where T : unmanaged, IComparable<T> => new(range.Start, range.EndInclusive);
 
 		/// <inheritdoc cref="MutableRange{T}(T,T)"/>
-		public static MutableRange<T> MutableRangeTo<T>(this T start, T endInclusive) where T : unmanaged, IComparable<T> => new MutableRange<T>(start, endInclusive);
+		public static MutableRange<T> MutableRangeTo<T>(this T start, T endInclusive) where T : unmanaged, IComparable<T> => new(start, endInclusive);
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
 		public static MutableRange<byte> MutableRangeToExclusive(this byte start, byte endExclusive) => endExclusive == byte.MinValue

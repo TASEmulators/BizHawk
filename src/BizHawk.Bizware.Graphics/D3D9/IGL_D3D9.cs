@@ -65,7 +65,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			// get the native window handle
-			var wminfo = default(SDL_SysWMinfo);
+			SDL_SysWMinfo wminfo = default;
 			SDL_GetVersion(out wminfo.version);
 			SDL_GetWindowWMInfo(_offscreenSdl2Window, ref wminfo);
 			if (wminfo.subsystem != SDL_SYSWM_TYPE.SDL_SYSWM_WINDOWS)
@@ -93,7 +93,7 @@ namespace BizHawk.Bizware.Graphics
 		private void CreateDevice()
 		{
 			// this object is only used for creating a device, it's not needed afterwards
-			using var d3d9 = new Direct3D();
+			using Direct3D d3d9 = new();
 
 			var pp = MakePresentParameters();
 
@@ -213,7 +213,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public void FreeTexture(Texture2d tex)
 		{
-			var tw = (TextureWrapper)tex.Opaque;
+			TextureWrapper tw = (TextureWrapper)tex.Opaque;
 			tw.Texture.Dispose();
 		}
 
@@ -230,7 +230,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			try
 			{
-				var sw = new ShaderWrapper();
+				ShaderWrapper sw = new();
 
 				// ShaderFlags.EnableBackwardsCompatibility - used this once upon a time (please leave a note about why)
 				var result = ShaderBytecode.Compile(
@@ -242,7 +242,7 @@ namespace BizHawk.Bizware.Graphics
 				sw.PS = new(_device, result);
 				sw.Bytecode = result;
 
-				var s = new Shader(this, sw, true);
+				Shader s = new(this, sw, true);
 				sw.IGLShader = s;
 
 				return s;
@@ -263,7 +263,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			try
 			{
-				var sw = new ShaderWrapper();
+				ShaderWrapper sw = new();
 
 				var result = ShaderBytecode.Compile(
 					shaderSource: source,
@@ -274,7 +274,7 @@ namespace BizHawk.Bizware.Graphics
 				sw.VS = new(_device, result);
 				sw.Bytecode = result;
 
-				var s = new Shader(this, sw, true);
+				Shader s = new(this, sw, true);
 				sw.IGLShader = s;
 
 				return s;
@@ -315,7 +315,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			if (!vertexShader.Available || !fragmentShader.Available)
 			{
-				var errors = $"Vertex Shader:\r\n {vertexShader.Errors} \r\n-------\r\nFragment Shader:\r\n{fragmentShader.Errors}";
+				string errors = $"Vertex Shader:\r\n {vertexShader.Errors} \r\n-------\r\nFragment Shader:\r\n{fragmentShader.Errors}";
 				if (required)
 				{
 					throw new InvalidOperationException($"Couldn't build required GL pipeline:\r\n{errors}");
@@ -324,8 +324,8 @@ namespace BizHawk.Bizware.Graphics
 				return new(this, null, false, null, null, null) { Errors = errors };
 			}
 
-			var ves = new VertexElement[vertexLayout.Items.Count + 1];
-			var stride = 0;
+			VertexElement[] ves = new VertexElement[vertexLayout.Items.Count + 1];
+			int stride = 0;
 			foreach (var (i, item) in vertexLayout.Items)
 			{
 				DeclarationType declType;
@@ -375,7 +375,7 @@ namespace BizHawk.Bizware.Graphics
 			// must be placed at the end
 			ves[vertexLayout.Items.Count] = VertexElement.VertexDeclarationEnd;
 
-			var pw = new PipelineWrapper
+			PipelineWrapper pw = new()
 			{
 				VertexDeclaration = new(_device, ves),
 				VertexShader = (ShaderWrapper)vertexShader.Opaque,
@@ -384,14 +384,14 @@ namespace BizHawk.Bizware.Graphics
 			};
 
 			// scan uniforms from reflection
-			var uniforms = new List<UniformInfo>();
+			List<UniformInfo> uniforms = new();
 			var vsct = pw.VertexShader.Bytecode.ConstantTable;
 			var psct = pw.FragmentShader.Bytecode.ConstantTable;
 			foreach (var ct in new[] { vsct, psct })
 			{
-				var todo = new Queue<(string, EffectHandle)>();
-				var n = ct.Description.Constants;
-				for (var i = 0; i < n; i++)
+				Queue<(string, EffectHandle)> todo = new();
+				int n = ct.Description.Constants;
+				for (int i = 0; i < n; i++)
 				{
 					var handle = ct.GetConstant(null, i);
 					todo.Enqueue((string.Empty, handle));
@@ -406,8 +406,8 @@ namespace BizHawk.Bizware.Graphics
 
 					if (descr.StructMembers != 0)
 					{
-						var newPrefix = $"{prefix}{descr.Name}.";
-						for (var j = 0; j < descr.StructMembers; j++)
+						string newPrefix = $"{prefix}{descr.Name}.";
+						for (int j = 0; j < descr.StructMembers; j++)
 						{
 							var subHandle = ct.GetConstant(handle, j);
 							todo.Enqueue((newPrefix, subHandle));
@@ -416,11 +416,11 @@ namespace BizHawk.Bizware.Graphics
 						continue;
 					}
 
-					var ui = new UniformInfo();
-					var uw = new UniformWrapper();
+					UniformInfo ui = new();
+					UniformWrapper uw = new();
 
 					ui.Opaque = uw;
-					var name = prefix + descr.Name;
+					string name = prefix + descr.Name;
 
 					// uniforms done through the entry point signature have $ in their names which isn't helpful, so get rid of that
 					name = name.RemovePrefix('$');
@@ -457,7 +457,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public void Internal_FreeShader(Shader shader)
 		{
-			var sw = (ShaderWrapper)shader.Opaque;
+			ShaderWrapper sw = (ShaderWrapper)shader.Opaque;
 			sw.Bytecode.Dispose();
 			sw.PS?.Dispose();
 			sw.VS?.Dispose();
@@ -500,7 +500,7 @@ namespace BizHawk.Bizware.Graphics
 				return;
 			}
 
-			var pw = (PipelineWrapper)pipeline.Opaque;
+			PipelineWrapper pw = (PipelineWrapper)pipeline.Opaque;
 			_device.PixelShader = pw.FragmentShader.PS;
 			_device.VertexShader = pw.VertexShader.VS;
 			_device.VertexDeclaration = pw.VertexDeclaration;
@@ -510,7 +510,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			foreach (var ui in uniform.UniformInfos)
 			{
-				var uw = (UniformWrapper)ui.Opaque;
+				UniformWrapper uw = (UniformWrapper)ui.Opaque;
 				uw.CT.SetValue(_device, uw.EffectHandle, value);
 			}
 		}
@@ -522,7 +522,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			foreach (var ui in uniform.UniformInfos)
 			{
-				var uw = (UniformWrapper)ui.Opaque;
+				UniformWrapper uw = (UniformWrapper)ui.Opaque;
 				uw.CT.SetValue(_device, uw.EffectHandle, mat.ToSharpDXMatrix(!transpose));
 			}
 		}
@@ -531,7 +531,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			foreach (var ui in uniform.UniformInfos)
 			{
-				var uw = (UniformWrapper)ui.Opaque;
+				UniformWrapper uw = (UniformWrapper)ui.Opaque;
 				uw.CT.SetValue(_device, uw.EffectHandle, value.ToSharpDXVector4());
 			}
 		}
@@ -540,7 +540,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			foreach (var ui in uniform.UniformInfos)
 			{
-				var uw = (UniformWrapper)ui.Opaque;
+				UniformWrapper uw = (UniformWrapper)ui.Opaque;
 				uw.CT.SetValue(_device, uw.EffectHandle, value.ToSharpDXVector2());
 			}
 		}
@@ -549,7 +549,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			foreach (var ui in uniform.UniformInfos)
 			{
-				var uw = (UniformWrapper)ui.Opaque;
+				UniformWrapper uw = (UniformWrapper)ui.Opaque;
 				uw.CT.SetValue(_device, uw.EffectHandle, value);
 			}
 		}
@@ -559,7 +559,7 @@ namespace BizHawk.Bizware.Graphics
 			var v = Array.ConvertAll(values, v => v.ToSharpDXVector4());
 			foreach (var ui in uniform.UniformInfos)
 			{
-				var uw = (UniformWrapper)ui.Opaque;
+				UniformWrapper uw = (UniformWrapper)ui.Opaque;
 				uw.CT.SetValue(_device, uw.EffectHandle, v);
 			}
 		}
@@ -571,7 +571,7 @@ namespace BizHawk.Bizware.Graphics
 				return; // uniform was optimized out
 			}
 
-			var tw = (TextureWrapper)tex.Opaque;
+			TextureWrapper tw = (TextureWrapper)tex.Opaque;
 			foreach (var ui in uniform.UniformInfos)
 			{
 				if (!ui.IsSampler)
@@ -590,7 +590,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public void SetTextureWrapMode(Texture2d tex, bool clamp)
 		{
-			var tw = (TextureWrapper)tex.Opaque;
+			TextureWrapper tw = (TextureWrapper)tex.Opaque;
 			tw.WrapClamp = clamp ? TextureAddress.Clamp : TextureAddress.Wrap;
 		}
 
@@ -606,34 +606,32 @@ namespace BizHawk.Bizware.Graphics
 
 		public Texture2d LoadTexture(Bitmap bitmap)
 		{
-			using var bmp = new BitmapBuffer(bitmap, new());
+			using BitmapBuffer bmp = new(bitmap, new());
 			return LoadTexture(bmp);
 		}
 
 		public Texture2d LoadTexture(Stream stream)
 		{
-			using var bmp = new BitmapBuffer(stream, new());
+			using BitmapBuffer bmp = new(stream, new());
 			return LoadTexture(bmp);
 		}
 
 		public Texture2d CreateTexture(int width, int height)
 		{
-			var tex = new Texture(_device, width, height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
-			var tw = new TextureWrapper { Texture = tex };
-			var ret = new Texture2d(this, tw, width, height);
+			Texture tex = new(_device, width, height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+			TextureWrapper tw = new() { Texture = tex };
+			Texture2d ret = new(this, tw, width, height);
 			return ret;
 		}
 
-		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
-		{
+		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height) =>
 			// only used for OpenGL
-			return null;
-		}
+			null;
 
 		/// <exception cref="InvalidOperationException">GDI+ call returned unexpected data</exception>
 		public unsafe void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
-			var tw = (TextureWrapper)tex.Opaque;
+			TextureWrapper tw = (TextureWrapper)tex.Opaque;
 			var bmpData = bmp.LockBits();
 
 			try
@@ -646,8 +644,8 @@ namespace BizHawk.Bizware.Graphics
 					throw new InvalidOperationException();
 				}
 
-				var srcSpan = new ReadOnlySpan<byte>(bmpData.Scan0.ToPointer(), bmpData.Stride * bmp.Height);
-				var dstSpan = new Span<byte>(dr.DataPointer.ToPointer(), dr.Pitch * bmp.Height);
+				ReadOnlySpan<byte> srcSpan = new(bmpData.Scan0.ToPointer(), bmpData.Stride * bmp.Height);
+				Span<byte> dstSpan = new(dr.DataPointer.ToPointer(), dr.Pitch * bmp.Height);
 				srcSpan.CopyTo(dstSpan);
 			}
 			finally
@@ -668,8 +666,8 @@ namespace BizHawk.Bizware.Graphics
 		public BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
 			// TODO - lazy create and cache resolving target in RT
-			using var target = new Texture(_device, tex.IntWidth, tex.IntHeight, 1, Usage.None, Format.A8R8G8B8, Pool.SystemMemory);
-			var tw = (TextureWrapper)tex.Opaque;
+			using Texture target = new(_device, tex.IntWidth, tex.IntHeight, 1, Usage.None, Format.A8R8G8B8, Pool.SystemMemory);
+			TextureWrapper tw = (TextureWrapper)tex.Opaque;
 
 			_device.GetRenderTargetData(tw.Texture.GetSurfaceLevel(0), target.GetSurfaceLevel(0));
 
@@ -681,8 +679,8 @@ namespace BizHawk.Bizware.Graphics
 				{
 					throw new InvalidOperationException();
 				}
-				
-				var pixels = new int[tex.IntWidth * tex.IntHeight];
+
+				int[] pixels = new int[tex.IntWidth * tex.IntHeight];
 				Marshal.Copy(dr.DataPointer, pixels, 0, tex.IntWidth * tex.IntHeight);
 				return new(tex.IntWidth, tex.IntHeight, pixels);
 			}
@@ -694,19 +692,13 @@ namespace BizHawk.Bizware.Graphics
 
 		public Texture2d LoadTexture(string path)
 		{
-			using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+			using FileStream fs = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 			return LoadTexture(fs);
 		}
 
-		public Matrix4x4 CreateGuiProjectionMatrix(int w, int h)
-		{
-			return CreateGuiProjectionMatrix(new(w, h));
-		}
+		public Matrix4x4 CreateGuiProjectionMatrix(int w, int h) => CreateGuiProjectionMatrix(new(w, h));
 
-		public Matrix4x4 CreateGuiViewMatrix(int w, int h, bool autoFlip)
-		{
-			return CreateGuiViewMatrix(new(w, h), autoFlip);
-		}
+		public Matrix4x4 CreateGuiViewMatrix(int w, int h, bool autoFlip) => CreateGuiViewMatrix(new(w, h), autoFlip);
 
 		public Matrix4x4 CreateGuiProjectionMatrix(Size dims)
 		{
@@ -733,19 +725,13 @@ namespace BizHawk.Bizware.Graphics
 			_device.ScissorRect = new(x, y, x + width, y + height);
 		}
 
-		public void SetViewport(int width, int height)
-		{
-			SetViewport(0, 0, width, height);
-		}
+		public void SetViewport(int width, int height) => SetViewport(0, 0, width, height);
 
-		public void SetViewport(Size size)
-		{
-			SetViewport(size.Width, size.Height);
-		}
+		public void SetViewport(Size size) => SetViewport(size.Width, size.Height);
 
 		public void FreeRenderTarget(RenderTarget rt)
 		{
-			var tw = (TextureWrapper)rt.Texture2d.Opaque;
+			TextureWrapper tw = (TextureWrapper)rt.Texture2d.Opaque;
 			tw.Texture.Dispose();
 			tw.Texture = null;
 			_renderTargets.Remove(rt);
@@ -753,9 +739,9 @@ namespace BizHawk.Bizware.Graphics
 
 		public RenderTarget CreateRenderTarget(int w, int h)
 		{
-			var tw = new TextureWrapper { Texture = CreateRenderTargetTexture(w, h) };
-			var tex = new Texture2d(this, tw, w, h);
-			var rt = new RenderTarget(this, tw, tex);
+			TextureWrapper tw = new() { Texture = CreateRenderTargetTexture(w, h) };
+			Texture2d tex = new(this, tw, w, h);
+			RenderTarget rt = new(this, tw, tex);
 			_renderTargets.Add(rt);
 			return rt;
 		}
@@ -776,7 +762,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			foreach (var rt in _renderTargets)
 			{
-				var tw = (TextureWrapper)rt.Opaque;
+				TextureWrapper tw = (TextureWrapper)rt.Opaque;
 				tw.Texture = CreateRenderTargetTexture(rt.Texture2d.IntWidth, rt.Texture2d.IntHeight);
 			}
 		}
@@ -792,7 +778,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			// dispose doesn't seem necessary for reset here...
-			var tw = (TextureWrapper)rt.Opaque;
+			TextureWrapper tw = (TextureWrapper)rt.Opaque;
 			using var texSurface = tw.Texture.GetSurfaceLevel(0);
 			_device.SetRenderTarget(0, texSurface);
 			_device.DepthStencilSurface = null;
@@ -811,7 +797,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public void Draw(IntPtr data, int count)
 		{
-			var pw = (PipelineWrapper)_currPipeline.Opaque;
+			PipelineWrapper pw = (PipelineWrapper)_currPipeline.Opaque;
 
 			// this is stupid, sharpdx only public exposes DrawUserPrimatives
 			// why is this bad? it takes in an array of T

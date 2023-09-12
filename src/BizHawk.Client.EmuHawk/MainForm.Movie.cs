@@ -15,14 +15,14 @@ namespace BizHawk.Client.EmuHawk
 
 			if (CheatList.AnyActive)
 			{
-				var result = this.ModalMessageBox3(
+				bool? result = this.ModalMessageBox3(
 					caption: "Cheats warning",
 					text: "Continue playback with cheats enabled?\nChoosing \"No\" will disable cheats but not remove them.",
 					icon: EMsgBoxIcon.Question);
 				if (result is null) return false;
 				if (result is false) CheatList.DisableAll();
 			}
-			var oldPreferredCores = new Dictionary<string, string>(Config.PreferredCores);
+			Dictionary<string, string> oldPreferredCores = new(Config.PreferredCores);
 			try
 			{
 				try
@@ -31,14 +31,14 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (MoviePlatformMismatchException ex)
 				{
-					using var ownerForm = new Form { TopMost = true };
+					using Form ownerForm = new() { TopMost = true };
 					MessageBox.Show(ownerForm, ex.Message, "Movie/Platform Mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return false;
 				}
 
 				if (!_isLoadingRom)
 				{
-					var rebootSucceeded = RebootCore();
+					bool rebootSucceeded = RebootCore();
 					if (!rebootSucceeded) return false;
 				}
 
@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (IsSlave && Master.WantsToControlRestartMovie) return Master.RestartMovie();
 			if (!MovieSession.Movie.IsActive()) return false;
-			var success = StartNewMovie(MovieSession.Movie, false);
+			bool success = StartNewMovie(MovieSession.Movie, false);
 			if (success) AddOnScreenMessage("Replaying movie file in read-only mode");
 			return success;
 		}

@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static ToolStripMenuItem ToColumnsMenu(this InputRoll inputRoll, Action changeCallback)
 		{
-			var menu = new ToolStripMenuItem
+			ToolStripMenuItem menu = new()
 			{
 				Name = "GeneratedColumnsSubMenu",
 				Text = "Columns"
@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var column in columns)
 			{
-				var menuItem = new ToolStripMenuItem
+				ToolStripMenuItem menuItem = new()
 				{
 					Name = column.Name,
 					Text = $"{column.Text} ({column.Name})",
@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 
 				menuItem.CheckedChanged += (o, ev) =>
 				{
-					var sender = (ToolStripMenuItem)o;
+					ToolStripMenuItem sender = (ToolStripMenuItem)o;
 					columns.Find(c => c.Name == (string)sender.Tag).Visible = sender.Checked;
 					columns.ColumnsChanged();
 					changeCallback();
@@ -72,14 +72,11 @@ namespace BizHawk.Client.EmuHawk
 			return menu;
 		}
 
-		public static Point ChildPointToScreen(this Control control, Control child)
-		{
-			return control.PointToScreen(new Point(child.Location.X, child.Location.Y));
-		}
+		public static Point ChildPointToScreen(this Control control, Control child) => control.PointToScreen(new Point(child.Location.X, child.Location.Y));
 
 		public static Color Add(this Color color, int val)
 		{
-			var col = color.ToArgb();
+			int col = color.ToArgb();
 			col += val;
 			return Color.FromArgb(col);
 		}
@@ -92,10 +89,10 @@ namespace BizHawk.Client.EmuHawk
 		public static T Clone<T>(this T controlToClone)
 			where T : Control
 		{
-			PropertyInfo[] controlProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			var controlProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-			Type t = controlToClone.GetType();
-			var instance = (T) Activator.CreateInstance(t);
+			var t = controlToClone.GetType();
+			T instance = (T) Activator.CreateInstance(t);
 
 			t.GetProperty("AutoSize")?.SetMethod?.Invoke(instance, new object[] {false});
 
@@ -108,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 						continue;
 					}
 
-					if (propInfo.Name != "AutoSize" && propInfo.Name != "WindowTarget")
+					if (propInfo.Name is not "AutoSize" and not "WindowTarget")
 					{
 						propInfo.SetValue(instance, propInfo.GetValue(controlToClone, null), null);
 					}
@@ -129,10 +126,7 @@ namespace BizHawk.Client.EmuHawk
 		public static IEnumerable<Control> Controls(this Control control)
 			=> control.Controls.Cast<Control>();
 
-		public static IEnumerable<TabPage> TabPages(this TabControl tabControl)
-		{
-			return tabControl.TabPages.Cast<TabPage>();
-		}
+		public static IEnumerable<TabPage> TabPages(this TabControl tabControl) => tabControl.TabPages.Cast<TabPage>();
 
 		public static void ReplaceDropDownItems(this ToolStripDropDownItem menu, params ToolStripItem[] items)
 		{
@@ -154,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 				return "";
 			}
 
-			var sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			// walk over each selected item and subitem within it to generate a string from it
 			foreach (int index in indexes)
@@ -191,8 +185,8 @@ namespace BizHawk.Client.EmuHawk
 			var columnHeader = Win32Imports.SendMessage(listViewControl.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
 			for (int columnNumber = 0, l = listViewControl.Columns.Count; columnNumber < l; columnNumber++)
 			{
-				var columnPtr = new IntPtr(columnNumber);
-				var item = new Win32Imports.HDITEM { mask = Win32Imports.HDITEM.Mask.Format };
+				IntPtr columnPtr = new(columnNumber);
+				Win32Imports.HDITEM item = new() { mask = Win32Imports.HDITEM.Mask.Format };
 				if (Win32Imports.SendMessage(columnHeader, HDM_GETITEM, columnPtr, ref item) == IntPtr.Zero) throw new Win32Exception();
 				if (columnNumber != columnIndex || order == SortOrder.None)
 				{
@@ -212,10 +206,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static bool IsOk(this DialogResult dialogResult)
-		{
-			return dialogResult == DialogResult.OK;
-		}
+		public static bool IsOk(this DialogResult dialogResult) => dialogResult == DialogResult.OK;
 
 		/// <summary>
 		/// Sets the desired effect if data is present, else None
@@ -229,8 +220,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public static Bitmap ToBitMap(this Control control)
 		{
-			var b = new Bitmap(control.Width, control.Height);
-			var rect = new Rectangle(new Point(0, 0), control.Size);
+			Bitmap b = new(control.Width, control.Height);
+			Rectangle rect = new(new Point(0, 0), control.Size);
 			control.DrawToBitmap(b, rect);
 			return b;
 		}
@@ -243,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void SaveAsFile(this Bitmap bitmap, IGameInfo game, string suffix, string systemId, PathEntryCollection paths, IDialogParent parent)
 		{
-			var result = parent.ShowFileSaveDialog(
+			string? result = parent.ShowFileSaveDialog(
 				discardCWDChange: true,
 				filter: FilesystemFilterSet.Screenshots,
 				initDir: paths.ScreenshotAbsolutePathFor(systemId),
@@ -251,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result is null) return;
 			FileInfo file = new(result);
 			string extension = file.Extension.ToUpperInvariant();
-			ImageFormat i = extension switch
+			var i = extension switch
 			{
 				".BMP" => ImageFormat.Bmp,
 				_ => ImageFormat.Png,
@@ -301,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(grid.SelectedObject))
 				{
-					var s = property.Description;
+					string s = property.Description;
 					if (s != null && s.Length > maxLength)
 					{
 						maxLength = s.Length;

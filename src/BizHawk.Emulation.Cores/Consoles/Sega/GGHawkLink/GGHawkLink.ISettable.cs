@@ -6,15 +6,9 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 {
 	public partial class GGHawkLink : IEmulator, IStatable, ISettable<GGHawkLink.GGLinkSettings, GGHawkLink.GGLinkSyncSettings>
 	{
-		public GGLinkSettings GetSettings()
-		{
-			return linkSettings.Clone();
-		}
+		public GGLinkSettings GetSettings() => linkSettings.Clone();
 
-		public GGLinkSyncSettings GetSyncSettings()
-		{
-			return linkSyncSettings.Clone();
-		}
+		public GGLinkSyncSettings GetSyncSettings() => linkSyncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(GGLinkSettings o)
 		{
@@ -29,8 +23,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		private GGLinkSettings linkSettings = new GGLinkSettings();
-		public GGLinkSyncSettings linkSyncSettings = new GGLinkSyncSettings();
+		private GGLinkSettings linkSettings = new();
+		public GGLinkSyncSettings linkSyncSettings = new();
 
 		public class GGLinkSettings
 		{
@@ -46,10 +40,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			[DefaultValue(AudioSrc.Left)]
 			public AudioSrc AudioSet { get; set; }
 
-			public GGLinkSettings Clone()
-			{
-				return (GGLinkSettings)MemberwiseClone();
-			}
+			public GGLinkSettings Clone() => (GGLinkSettings)MemberwiseClone();
 		}
 
 		public class GGLinkSyncSettings
@@ -60,15 +51,9 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			[DefaultValue(true)]
 			public bool Use_SRAM { get; set; }
 
-			public GGLinkSyncSettings Clone()
-			{
-				return (GGLinkSyncSettings)MemberwiseClone();
-			}
+			public GGLinkSyncSettings Clone() => (GGLinkSyncSettings)MemberwiseClone();
 
-			public static bool NeedsReboot(GGLinkSyncSettings x, GGLinkSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(GGLinkSyncSettings x, GGLinkSyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

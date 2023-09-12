@@ -151,10 +151,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Async;
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			throw new NotImplementedException("Sync sound not yet supported");
-		}
+		public void GetSamplesSync(out short[] samples, out int nsamp) => throw new NotImplementedException("Sync sound not yet supported");
 
 		public void GetSamplesAsync(short[] samples)
 		{

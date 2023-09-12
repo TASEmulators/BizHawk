@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 		{
 			if (_cachedSettingsInfo is null)
 			{
-				using var n = new VirtualBoyee(comm);
+				using VirtualBoyee n = new(comm);
 				n.InitForSettingsInfo("vb.wbx");
 				_cachedSettingsInfo = n.SettingsInfo.Clone();
 			}

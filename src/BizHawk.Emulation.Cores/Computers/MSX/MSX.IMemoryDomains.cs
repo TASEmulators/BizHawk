@@ -8,12 +8,12 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 	public partial class MSX
 	{
 		private MemoryDomainList MemoryDomains;
-		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
+		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new();
 		private bool _memoryDomainsInit = false;
 
 		private void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new()
 			{
 				new MemoryDomainDelegate(
 					"System Bus", 
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			if (SaveRAM != null)
 			{
-				var saveRamDomain = new MemoryDomainDelegate("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
+				MemoryDomainDelegate saveRamDomain = new("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
 					addr => SaveRAM[addr],
 					(addr, value) => { SaveRAM[addr] = value; SaveRamModified = true; }, 1);
 				domains.Add(saveRamDomain);
@@ -54,10 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			_memoryDomainsInit = true;
 		}
 
-		private void SyncAllByteArrayDomains()
-		{
-			SyncByteArrayDomain("ROM", RomData);
-		}
+		private void SyncAllByteArrayDomains() => SyncByteArrayDomain("ROM", RomData);
 
 		private void SyncByteArrayDomain(string name, byte[] data)
 		{
@@ -68,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			}
 			else
 			{
-				var m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
+				MemoryDomainByteArray m = new(name, MemoryDomain.Endian.Little, data, true, 1);
 				_byteArrayDomains.Add(name, m);
 			}
 		}

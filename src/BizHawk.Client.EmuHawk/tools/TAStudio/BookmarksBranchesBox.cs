@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		private const string FrameColumnName = "FrameColumn";
 		private const string UserTextColumnName = "TextColumn";
 
-		private readonly ScreenshotForm _screenshot = new ScreenshotForm();
+		private readonly ScreenshotForm _screenshot = new();
 
 		private ITasMovie Movie => Tastudio.CurrentTasMovie;
 		private ITasBranchCollection Branches => Movie.Branches;
@@ -272,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_backupBranch = CreateBranch();
 
-			var currentHashes = Branches.Select(b => b.Uuid.GetHashCode()).ToList();
+			System.Collections.Generic.List<int> currentHashes = Branches.Select(b => b.Uuid.GetHashCode()).ToList();
 			do
 			{
 				_backupBranch.Uuid = Guid.NewGuid();
@@ -286,7 +286,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!BranchView.AnyRowsSelected) return false; // why'd we do all that then
 
-			var success = LoadSelectedBranch();
+			bool success = LoadSelectedBranch();
 			LoadedCallback?.Invoke(BranchView.FirstSelectedRowIndex);
 			return success;
 		}
@@ -325,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var index = BranchView.FirstSelectedRowIndex;
+			int index = BranchView.FirstSelectedRowIndex;
 			string oldText = SelectedBranch.UserText;
 
 			if (EditBranchTextPopUp(index))
@@ -353,9 +353,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var indices = BranchView.SelectedRows.ToList();
-			var branches = Branches.ToList();
-			foreach (var index in indices)
+			System.Collections.Generic.List<int> indices = BranchView.SelectedRows.ToList();
+			System.Collections.Generic.List<TasBranch> branches = Branches.ToList();
+			foreach (int index in indices)
 			{
 				_backupBranch =  branches[index].Clone();
 				Branches.Remove(branches[index]);
@@ -423,10 +423,7 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.RefreshDialog();
 		}
 
-		public void AddBranchExternal()
-		{
-			AddBranchToolStripMenuItem_Click(null, null);
-		}
+		public void AddBranchExternal() => AddBranchToolStripMenuItem_Click(null, null);
 
 		public bool LoadBranchExternal(int slot = -1)
 		{
@@ -477,10 +474,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateBranchToolStripMenuItem_Click(null, null);
 		}
 
-		public void RemoveBranchExternal()
-		{
-			RemoveBranchToolStripMenuItem_Click(null, null);
-		}
+		public void RemoveBranchExternal() => RemoveBranchToolStripMenuItem_Click(null, null);
 
 		public void SelectBranchExternal(int slot)
 		{
@@ -509,7 +503,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var sel = BranchView.FirstSelectedRowIndex;
+			int sel = BranchView.FirstSelectedRowIndex;
 			if (next)
 			{
 				if (Branches[sel + 1] != null)
@@ -550,10 +544,7 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.MainForm.AddOnScreenMessage($"Use {Tastudio.Config!.HotkeyBindings["Add Branch"]} to add branches");
 		}
 
-		public void UpdateValues()
-		{
-			BranchView.RowCount = Branches.Count;
-		}
+		public void UpdateValues() => BranchView.RowCount = Branches.Count;
 
 		public void Restart()
 		{
@@ -571,7 +562,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Branches.Any())
 			{
-				var longestBranchText = Branches
+				string longestBranchText = Branches
 					.OrderBy(b => b.UserText?.Length ?? 0)
 					.Last()
 					.UserText;
@@ -588,7 +579,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			var i = new InputPrompt
+			InputPrompt i = new()
 			{
 				Text = $"Text for branch {index + 1}",
 				TextInputType = InputPrompt.InputType.Text,
@@ -652,10 +643,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void BranchView_MouseLeave(object sender, EventArgs e)
-		{
-			_screenshot.FadeOut();
-		}
+		private void BranchView_MouseLeave(object sender, EventArgs e) => _screenshot.FadeOut();
 
 		private void BranchView_CellDropped(object sender, InputRoll.CellEventArgs e)
 		{
@@ -681,7 +669,7 @@ namespace BizHawk.Client.EmuHawk
 					BranchView.CurrentCell.RowIndex < Branches.Count)
 				{
 					var branch = Branches[BranchView.CurrentCell.RowIndex.Value];
-					Point location = PointToScreen(Location);
+					var location = PointToScreen(Location);
 					int width = branch.OSDFrameBuffer.Width;
 					int height = branch.OSDFrameBuffer.Height;
 					location.Offset(-width, 0);
@@ -708,9 +696,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void BranchView_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			UpdateButtons();
-		}
+		private void BranchView_SelectedIndexChanged(object sender, EventArgs e) => UpdateButtons();
 	}
 }

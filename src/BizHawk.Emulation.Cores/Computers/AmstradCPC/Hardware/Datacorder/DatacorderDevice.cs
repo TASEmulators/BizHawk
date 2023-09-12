@@ -27,10 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Initializes the datacorder device
 		/// </summary>
-		public void Init(CPCBase machine)
-		{
-			_machine = machine;
-		}
+		public void Init(CPCBase machine) => _machine = machine;
 
 		/// <summary>
 		/// Signs whether the tape motor is running
@@ -81,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				if (_dataBlocks.Any())
+				if (DataBlocks.Any())
 				{
 					return _currentDataBlockIndex;
 				}
@@ -91,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			set
 			{
 				if (value == _currentDataBlockIndex) { return; }
-				if (value < _dataBlocks.Count && value >= 0)
+				if (value < DataBlocks.Count && value >= 0)
 				{
 					_currentDataBlockIndex = value;
 					_position = 0;
@@ -103,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// The current position within the current data block
 		/// </summary>
 		private int _position = 0;
-		public int Position => _position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count ? 0 : _position;
+		public int Position => _position >= DataBlocks[_currentDataBlockIndex].DataPeriods.Count ? 0 : _position;
 
 		/// <summary>
 		/// Signs whether the tape is currently playing or not
@@ -111,15 +108,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private bool _tapeIsPlaying = false;
 		public bool TapeIsPlaying => _tapeIsPlaying;
 
-		/// <summary>
-		/// A list of the currently loaded data blocks
-		/// </summary>
-		private List<TapeDataBlock> _dataBlocks = new List<TapeDataBlock>();
-		public List<TapeDataBlock> DataBlocks
-		{
-			get => _dataBlocks;
-			set => _dataBlocks = value;
-		}
+		public List<TapeDataBlock> DataBlocks { get; set; } = new();
 
 		/// <summary>
 		/// Stores the last CPU t-state value
@@ -140,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Signs whether the device should autodetect when the Z80 has entered into
 		/// 'load' mode and auto-play the tape if neccesary
 		/// </summary>
-		private bool _autoPlay;
+		private readonly bool _autoPlay;
 
 		/// <summary>
 		/// Should be fired at the end of every frame
@@ -177,25 +166,25 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_position = 0;
 
 			if (
-				_dataBlocks.Count > 0 &&        // data blocks are present &&
+				DataBlocks.Count > 0 &&        // data blocks are present &&
 				_currentDataBlockIndex >= 0     // the current data block index is 1 or greater
 				)
 			{
-				while (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count)
+				while (_position >= DataBlocks[_currentDataBlockIndex].DataPeriods.Count)
 				{
 					// we are at the end of a data block - move to the next
 					_position = 0;
 					_currentDataBlockIndex++;
 
 					// are we at the end of the tape?
-					if (_currentDataBlockIndex >= _dataBlocks.Count)
+					if (_currentDataBlockIndex >= DataBlocks.Count)
 					{
 						break;
 					}
 				}
 
 				// check for end of tape
-				if (_currentDataBlockIndex >= _dataBlocks.Count)
+				if (_currentDataBlockIndex >= DataBlocks.Count)
 				{
 					// end of tape reached. Rewind to beginning
 					AutoStopTape();
@@ -204,7 +193,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 
 				// update waitEdge with the current position in the current block
-				_waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods[_position];
+				_waitEdge = DataBlocks[_currentDataBlockIndex].DataPeriods[_position];
 
 				// sign that the tape is now playing
 				_tapeIsPlaying = true;
@@ -227,13 +216,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			if (
 				_currentDataBlockIndex >= 0 &&                                              // we are at datablock 1 or above
-				_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count - 1      // the block is still playing back
+				_position >= DataBlocks[_currentDataBlockIndex].DataPeriods.Count - 1      // the block is still playing back
 				)
 			{
 				// move to the next block
 				_currentDataBlockIndex++;
 
-				if (_currentDataBlockIndex >= _dataBlocks.Count)
+				if (_currentDataBlockIndex >= DataBlocks.Count)
 				{
 					_currentDataBlockIndex = -1;
 				}
@@ -244,7 +233,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 				if (
 					_currentDataBlockIndex < 0 &&       // block index is -1
-					_dataBlocks.Count > 0               // number of blocks is greater than 0
+					DataBlocks.Count > 0               // number of blocks is greater than 0
 					)
 				{
 					// move the index on to 0
@@ -273,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public void SkipBlock(bool skipForward)
 		{
-			int blockCount = _dataBlocks.Count;
+			int blockCount = DataBlocks.Count;
 			int targetBlockId = _currentDataBlockIndex;
 
 			if (skipForward)
@@ -301,11 +290,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			var bl = _dataBlocks[targetBlockId];
+			var bl = DataBlocks[targetBlockId];
 
-			StringBuilder sbd = new StringBuilder();
+			StringBuilder sbd = new();
 			sbd.Append('(');
-			sbd.Append((targetBlockId + 1) + " of " + _dataBlocks.Count);
+			sbd.Append((targetBlockId + 1) + " of " + DataBlocks.Count);
 			sbd.Append(") : ");
 			//sbd.Append("ID" + bl.BlockID.ToString("X2") + " - ");
 			sbd.Append(bl.BlockDescription);
@@ -331,7 +320,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public void LoadTape(byte[] tapeData)
 		{
 			// instantiate converters
-			CdtConverter cdtSer = new CdtConverter(this);
+			CdtConverter cdtSer = new(this);
 
 			// CDT
 			if (cdtSer.CheckType(tapeData))
@@ -355,10 +344,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Resets the tape
 		/// </summary>
-		public void Reset()
-		{
-			RTZ();
-		}
+		public void Reset() => RTZ();
 
 		/// <summary>
 		/// Is called every cpu cycle but runs every 50 t-states
@@ -413,7 +399,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				if (_position == 0 && tapeMotor)
 				{
 					// start of block - take care of initial pulse level for PZX
-					switch (_dataBlocks[_currentDataBlockIndex].BlockDescription)
+					switch (DataBlocks[_currentDataBlockIndex].BlockDescription)
 					{
 						case BlockType.PULS:
 							// initial pulse level is always low
@@ -422,19 +408,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							break;
 						case BlockType.DATA:
 							// initial pulse level is stored in block
-							if (currentState != _dataBlocks[_currentDataBlockIndex].InitialPulseLevel)
+							if (currentState != DataBlocks[_currentDataBlockIndex].InitialPulseLevel)
 								FlipTapeState();
 							break;
 						case BlockType.PAUS:
 							// initial pulse level is stored in block
-							if (currentState != _dataBlocks[_currentDataBlockIndex].InitialPulseLevel)
+							if (currentState != DataBlocks[_currentDataBlockIndex].InitialPulseLevel)
 								FlipTapeState();
 							break;
 					}
 
 					// most of these amstrad tapes appear to have a pause block at the start
 					// skip this if it is the first block
-					switch (_dataBlocks[_currentDataBlockIndex].BlockDescription)
+					switch (DataBlocks[_currentDataBlockIndex].BlockDescription)
 					{
 						case BlockType.PAUS:
 						case BlockType.PAUSE_BLOCK:
@@ -450,7 +436,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 								bool okToSkipPause = true;
 								for (int i = _currentDataBlockIndex; i >= 0; i--)
 								{
-									switch (_dataBlocks[i].BlockDescription)
+									switch (DataBlocks[i].BlockDescription)
 									{
 										case BlockType.Archive_Info:
 										case BlockType.BRWS:
@@ -480,11 +466,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					}
 
 					// notify about the current block
-					var bl = _dataBlocks[_currentDataBlockIndex];
+					var bl = DataBlocks[_currentDataBlockIndex];
 
-					StringBuilder sbd = new StringBuilder();
+					StringBuilder sbd = new();
 					sbd.Append('(');
-					sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
+					sbd.Append((_currentDataBlockIndex + 1) + " of " + DataBlocks.Count);
 					sbd.Append(") : ");
 					//sbd.Append("ID" + bl.BlockID.ToString("X2") + " - ");
 					sbd.Append(bl.BlockDescription);
@@ -500,17 +486,17 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				// increment the current period position
 				_position++;
 
-				if (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count)
+				if (_position >= DataBlocks[_currentDataBlockIndex].DataPeriods.Count)
 				{
 					// we have reached the end of the current block
 
-					if (_dataBlocks[_currentDataBlockIndex].DataPeriods.Count == 0)
+					if (DataBlocks[_currentDataBlockIndex].DataPeriods.Count == 0)
 					{
 						// notify about the current block (we are skipping it because its empty)
-						var bl = _dataBlocks[_currentDataBlockIndex];
-						StringBuilder sbd = new StringBuilder();
+						var bl = DataBlocks[_currentDataBlockIndex];
+						StringBuilder sbd = new();
 						sbd.Append('(');
-						sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
+						sbd.Append((_currentDataBlockIndex + 1) + " of " + DataBlocks.Count);
 						sbd.Append(") : ");
 						//sbd.Append("ID" + bl.BlockID.ToString("X2") + " - ");
 						sbd.Append(bl.BlockDescription);
@@ -524,11 +510,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					}
 
 					// skip any empty blocks (and process any command blocks)
-					while (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count)
+					while (_position >= DataBlocks[_currentDataBlockIndex].DataPeriods.Count)
 					{
 						// check for any commands
-						var command = _dataBlocks[_currentDataBlockIndex].Command;
-						var block = _dataBlocks[_currentDataBlockIndex];
+						var command = DataBlocks[_currentDataBlockIndex].Command;
+						var block = DataBlocks[_currentDataBlockIndex];
 						bool shouldStop = false;
 						switch (command)
 						{
@@ -581,14 +567,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						_position = 0;
 						_currentDataBlockIndex++;
 
-						if (_currentDataBlockIndex >= _dataBlocks.Count)
+						if (_currentDataBlockIndex >= DataBlocks.Count)
 						{
 							break;
 						}
 					}
 
 					// check for end of tape
-					if (_currentDataBlockIndex >= _dataBlocks.Count)
+					if (_currentDataBlockIndex >= DataBlocks.Count)
 					{
 						_currentDataBlockIndex = -1;
 						RTZ();
@@ -597,7 +583,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 
 				// update waitEdge with current position within the current block
-				_waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods[_position];
+				_waitEdge = DataBlocks[_currentDataBlockIndex].DataPeriods[_position];
 
 				// flip the current state
 				FlipTapeState();
@@ -613,10 +599,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return currentState;
 		}
 
-		private void FlipTapeState()
-		{
-			currentState = !currentState;
-		}
+		private void FlipTapeState() => currentState = !currentState;
 
 
 		public void AutoStopTape()

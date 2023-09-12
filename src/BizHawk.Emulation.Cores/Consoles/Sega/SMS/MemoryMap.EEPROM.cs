@@ -69,14 +69,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank0 * BankSize) + address };
 				if (address < 0x8000)
 					return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank1 * BankSize) + (address & BankSizeMask) };
-				switch (SaveRamBank)
+				return SaveRamBank switch
 				{
-					case 0: return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank2 * BankSize) + (address & BankSizeMask) };
-					case 1: return new CDLog_MapResults(); // a serial IO port
-					case 2: return new CDLog_MapResults(); // a serial IO port
-					default:
-						return new CDLog_MapResults { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
-				}
+					0 => new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank2 * BankSize) + (address & BankSizeMask) },
+					1 => new CDLog_MapResults(),// a serial IO port
+					2 => new CDLog_MapResults(),// a serial IO port
+					_ => new CDLog_MapResults { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask },
+				};
 			}
 
 			return new CDLog_MapResults { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };

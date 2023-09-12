@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_filenameCallback = name => _nvramFilenames.Add(name);
 			_infoCallback = info =>
 			{
-				var text = info.Replace(". ", "\n").Replace("\n\n", "\n");
+				string text = info.Replace(". ", "\n").Replace("\n\n", "\n");
 				lp.Comm.Notify(text, 4 * Regex.Matches(text, "\n").Count);
 				RomDetails =
 					$"Full Name:    { _gameFullName }\r\n" +
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			// concat all SHA1 hashes together (unprefixed), then hash that
-			var hashes = string.Concat(_romHashes.Values
+			string hashes = string.Concat(_romHashes.Values
 				.Where(static s => s.Contains("SHA:"))
 				.Select(static s => s.Split(' ')
 				.First(static s => s.StartsWithOrdinal("SHA:"))
@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_core.mame_set_log_callback(_logCallback);
 			_core.mame_set_base_time_callback(_baseTimeCallback);
 
-			var gameName = _gameFileName.Split('.')[0];
+			string gameName = _gameFileName.Split('.')[0];
 
 			static byte[] MakeRomData(IRomAsset rom)
 			{
@@ -149,17 +149,17 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				{
 					// if this is deflate, unzip the zip, and rezip it without compression
 					// this is to get around some zlib bug?
-					using var ret = new MemoryStream();
+					using MemoryStream ret = new();
 					ret.Write(rom.FileData, 0, rom.FileData.Length);
-					using (var zip = new ZipArchive(ret, ZipArchiveMode.Update, leaveOpen: true))
+					using (ZipArchive zip = new(ret, ZipArchiveMode.Update, leaveOpen: true))
 					{
-						foreach (var entryName in zip.Entries.Select(e => e.FullName).ToList())
+						foreach (string entryName in zip.Entries.Select(e => e.FullName).ToList())
 						{
 							try // TODO: this is a bad way to detect deflate (although it works I guess)
 							{
 								var oldEntry = zip.GetEntry(entryName)!;
 								using var oldEntryStream = oldEntry.Open(); // if this isn't deflate, this throws InvalidDataException
-								var contents = oldEntryStream.ReadAllBytes();
+								byte[] contents = oldEntryStream.ReadAllBytes();
 								oldEntryStream.Dispose();
 								oldEntry.Delete();
 								var newEntry = zip.CreateEntry(entryName, CompressionLevel.NoCompression);
@@ -192,7 +192,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			// https://docs.mamedev.org/commandline/commandline-index.html
-			var args = new List<string>
+			List<string> args = new()
 			{
 				 "mame"                                 // dummy, internally discarded by index, so has to go first
 				, _gameFileName                         // no dash for rom names
@@ -221,7 +221,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			if (_syncSettings.DriverSettings.TryGetValue(
 				MAMELuaCommand.MakeLookupKey(gameName, LibMAME.BIOS_LUA_CODE),
-				out var value))
+				out string value))
 			{
 				args.AddRange(new[] { "-bios", value });
 			}
@@ -262,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private string MameGetString(string command)
 		{
-			var ptr = _core.mame_lua_get_string(command, out var lengthInBytes);
+			var ptr = _core.mame_lua_get_string(command, out int lengthInBytes);
 
 			if (ptr == IntPtr.Zero)
 			{
@@ -270,7 +270,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				return string.Empty;
 			}
 
-			var ret = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
+			string ret = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
 			_core.mame_lua_free_string(ptr);
 			return ret;
 		}
@@ -283,8 +283,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void CheckVersions()
 		{
-			var mameVersion = MameGetString(MAMELuaCommand.GetVersion);
-			var version = ((PortedCoreAttribute) this.Attributes()).PortedVersion;
+			string mameVersion = MameGetString(MAMELuaCommand.GetVersion);
+			string version = ((PortedCoreAttribute) this.Attributes()).PortedVersion;
 			Debug.Assert(version == mameVersion,
 				"MAME versions desync!\n\n" +
 				$"MAME is { mameVersion }\n" +

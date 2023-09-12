@@ -21,20 +21,11 @@ namespace BizHawk.Client.Common
 			_movieSession = movieSession;
 		}
 
-		public IReadOnlyDictionary<string, object> Get(int? controller = null)
-		{
-			return _inputManager.AutofireStickyXorAdapter.ToDictionary(controller);
-		}
+		public IReadOnlyDictionary<string, object> Get(int? controller = null) => _inputManager.AutofireStickyXorAdapter.ToDictionary(controller);
 
-		public IReadOnlyDictionary<string, object> GetWithMovie(int? controller = null)
-		{
-			return _inputManager.ControllerOutput.ToDictionary(controller);
-		}
+		public IReadOnlyDictionary<string, object> GetWithMovie(int? controller = null) => _inputManager.ControllerOutput.ToDictionary(controller);
 
-		public IReadOnlyDictionary<string, object> GetImmediate(int? controller = null)
-		{
-			return _inputManager.ActiveController.ToDictionary(controller);
-		}
+		public IReadOnlyDictionary<string, object> GetImmediate(int? controller = null) => _inputManager.ActiveController.ToDictionary(controller);
 
 		public void SetFromMnemonicStr(string inputLogEntry)
 		{
@@ -48,17 +39,17 @@ namespace BizHawk.Client.Common
 				LogCallback($"invalid mnemonic string: {inputLogEntry}");
 				return;
 			}
-			foreach (var button in controller.Definition.BoolButtons) _inputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
-			foreach (var axis in controller.Definition.Axes.Keys) _inputManager.ButtonOverrideAdapter.SetAxis(axis, controller.AxisValue(axis));
+			foreach (string button in controller.Definition.BoolButtons) _inputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
+			foreach (string axis in controller.Definition.Axes.Keys) _inputManager.ButtonOverrideAdapter.SetAxis(axis, controller.AxisValue(axis));
 		}
 
 		public void Set(IReadOnlyDictionary<string, bool> buttons, int? controller = null)
 		{
 			// If a controller is specified, we need to iterate over unique button names. If not, we iterate over
 			// ALL button names with P{controller} prefixes
-			foreach (var button in _inputManager.ActiveController.ToBoolButtonNameList(controller))
+			foreach (string button in _inputManager.ActiveController.ToBoolButtonNameList(controller))
 			{
-				Set(button, buttons.TryGetValue(button, out var state) ? state : null, controller);
+				Set(button, buttons.TryGetValue(button, out bool state) ? state : null, controller);
 			}
 		}
 
@@ -66,7 +57,7 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				var buttonToSet = controller == null ? button : $"P{controller} {button}";
+				string buttonToSet = controller == null ? button : $"P{controller} {button}";
 				if (state == null) _inputManager.ButtonOverrideAdapter.UnSet(buttonToSet);
 				else _inputManager.ButtonOverrideAdapter.SetButton(buttonToSet, state.Value);
 				

@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			if (lp.Roms.Count != 2)
 				throw new InvalidOperationException("Wrong number of roms");
 
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 
 			linkSettings = lp.Settings ?? new GBLinkSettings();
@@ -46,11 +46,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				GBHawkControllerDeck.DefaultControllerName,
 				GBHawkControllerDeck.DefaultControllerName);
 
-			var temp_set_L = new GBHawk.GBHawk.GBSettings();
-			var temp_set_R = new GBHawk.GBHawk.GBSettings();
+			GBHawk.GBHawk.GBSettings temp_set_L = new();
+			GBHawk.GBHawk.GBSettings temp_set_R = new();
 
-			var temp_sync_L = new GBHawk.GBHawk.GBSyncSettings();
-			var temp_sync_R = new GBHawk.GBHawk.GBSyncSettings();
+			GBHawk.GBHawk.GBSyncSettings temp_sync_L = new();
+			GBHawk.GBHawk.GBSyncSettings temp_sync_R = new();
 
 			temp_sync_L.ConsoleMode = linkSyncSettings.ConsoleMode_L;
 			temp_sync_R.ConsoleMode = linkSyncSettings.ConsoleMode_R;
@@ -100,10 +100,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			set => _cableconnected = value;
 		}
 
+		#pragma warning disable IDE0051
 		private void ExecFetch(ushort addr)
 		{
 			uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
 			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 		}
+		#pragma warning restore IDE0051
 	}
 }

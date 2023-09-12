@@ -48,14 +48,14 @@ namespace BizHawk.Client.EmuHawk
 
 			Viewer.GetGpuData(_vdcType, view =>
 			{
-				var width = 8 * view.BatWidth;
-				var height = 8 * view.BatHeight;
+				int width = 8 * view.BatWidth;
+				int height = 8 * view.BatHeight;
 				var buf = canvas.Bat.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, canvas.Bat.PixelFormat);
-				var pitch = buf.Stride / 4;
-				var begin = (int*)buf.Scan0.ToPointer();
-				var vram = view.Vram;
-				var patternBuffer = view.BackgroundCache;
-				var palette = view.PaletteCache;
+				int pitch = buf.Stride / 4;
+				int* begin = (int*)buf.Scan0.ToPointer();
+				ushort* vram = view.Vram;
+				byte* patternBuffer = view.BackgroundCache;
+				int* palette = view.PaletteCache;
 
 				int* p = begin;
 				for (int y = 0; y < height; ++y)
@@ -99,26 +99,17 @@ namespace BizHawk.Client.EmuHawk
 			VDC2MenuItem.Checked = _vdcType == 1;
 		}
 
-		private void VDC1MenuItem_Click(object sender, EventArgs e)
-		{
-			_vdcType = 0;
-		}
+		private void VDC1MenuItem_Click(object sender, EventArgs e) => _vdcType = 0;
 
-		private void VDC2MenuItem_Click(object sender, EventArgs e)
-		{
-			_vdcType = 1;
-		}
+		private void VDC2MenuItem_Click(object sender, EventArgs e) => _vdcType = 1;
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void ExitMenuItem_Click(object sender, EventArgs e) => Close();
 
 		private unsafe void Canvas_MouseMove(object sender, MouseEventArgs e)
 		{
 			Viewer.GetGpuData(_vdcType, view =>
 			{
-				var vram = view.Vram;
+				ushort* vram = view.Vram;
 				int xTile = e.X / 8;
 				int yTile = e.Y / 8;
 				int tileNo = vram[(ushort)((yTile * view.BatWidth) + xTile)] & 0x07FF;

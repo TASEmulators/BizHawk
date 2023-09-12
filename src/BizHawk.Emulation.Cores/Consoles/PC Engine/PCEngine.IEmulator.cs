@@ -62,9 +62,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			_isLag = false;
 		}
 
-		public void Dispose()
-		{
-			disc?.Dispose();
-		}
+		public void Dispose() => disc?.Dispose();
 	}
 }

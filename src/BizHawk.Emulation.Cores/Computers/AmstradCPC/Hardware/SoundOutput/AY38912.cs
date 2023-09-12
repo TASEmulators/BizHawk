@@ -1,4 +1,4 @@
-﻿using BizHawk.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using System;
 using System.Collections.Generic;
@@ -328,19 +328,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// End of frame
 		/// </summary>
-		public void EndFrame()
-		{
-			BufferUpdate(_tStatesPerFrame);
-		}
+		public void EndFrame() => BufferUpdate(_tStatesPerFrame);
 
 		/// <summary>
 		/// Updates the audiobuffer based on the current frame t-state
 		/// </summary>
-		public void UpdateSound(int frameCycle)
-		{
-			BufferUpdate(frameCycle);
-		}
+		public void UpdateSound(int frameCycle) => BufferUpdate(frameCycle);
 
+#pragma warning disable IDE0051
 		/// <summary>
 		/// Register indicies
 		/// </summary>
@@ -360,6 +355,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private const int AY_E_SHAPE = 13;
 		private const int AY_PORT_A = 14;
 		private const int AY_PORT_B = 15;
+		#pragma warning restore IDE0051
 
 		/// <summary>
 		/// The register array
@@ -414,7 +410,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The rendering resolution of the chip
 		/// </summary>
-		private double _resolution = 50D * 8D / _chipFrequency;
+		private readonly double _resolution = 50D * 8D / _chipFrequency;
 
 		/// <summary>
 		/// Channel generator state
@@ -504,7 +500,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Panning table list
 		/// </summary>
-		private static readonly List<uint[]> PanTabs = new List<uint[]>
+		private static readonly List<uint[]> PanTabs = new()
 		{
             // MONO
             new uint[] { 50,50, 50,50, 50,50 },
@@ -554,9 +550,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private void UpdateVolume()
 		{
 			int upperFloor = 40000;
-			var inc = (0xFFFF - upperFloor) / 100;
+			int inc = (0xFFFF - upperFloor) / 100;
 
-			var vol = inc * _volume; // ((ulong)0xFFFF * (ulong)_volume / 100UL) - 20000 ;
+			int vol = inc * _volume; // ((ulong)0xFFFF * (ulong)_volume / 100UL) - 20000 ;
 			_volumeTables = new uint[6][];
 
 			// parent array
@@ -653,7 +649,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 						if ((_eState & ~31) != 0)
 						{
-							var mask = (1 << _registers[AY_E_SHAPE]);
+							int mask = (1 << _registers[AY_E_SHAPE]);
 
 							if ((mask & ((1 << 0) | (1 << 1) | (1 << 2) |
 								(1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) |
@@ -681,12 +677,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 
 				// mix the sample
-				var mixA = ((_eMaskA & _eState) | _vA) & ((_bitA | _bit0) & (_bitN | _bit3));
-				var mixB = ((_eMaskB & _eState) | _vB) & ((_bitB | _bit1) & (_bitN | _bit4));
-				var mixC = ((_eMaskC & _eState) | _vC) & ((_bitC | _bit2) & (_bitN | _bit5));
+				int mixA = ((_eMaskA & _eState) | _vA) & ((_bitA | _bit0) & (_bitN | _bit3));
+				int mixB = ((_eMaskB & _eState) | _vB) & ((_bitB | _bit1) & (_bitN | _bit4));
+				int mixC = ((_eMaskC & _eState) | _vC) & ((_bitC | _bit2) & (_bitN | _bit5));
 
-				var l = _volumeTables[0][mixA];
-				var r = _volumeTables[1][mixA];
+				uint l = _volumeTables[0][mixA];
+				uint r = _volumeTables[1][mixA];
 
 				l += _volumeTables[2][mixB];
 				r += _volumeTables[3][mixB];
@@ -712,17 +708,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				throw new InvalidOperationException("Only Sync mode is supported.");
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
-		public void DiscardSamples()
-		{
-			_audioBuffer = new short[_samplesPerFrame * 2];
-			//_blipL.Clear();
-			//_blipR.Clear();
-		}
+		public void DiscardSamples() => _audioBuffer = new short[_samplesPerFrame * 2];//_blipL.Clear();//_blipR.Clear();
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{

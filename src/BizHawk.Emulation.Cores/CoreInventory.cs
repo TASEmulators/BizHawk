@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores
 	/// </summary>
 	public class CoreInventory
 	{
-		private readonly Dictionary<string, List<Core>> _systems = new Dictionary<string, List<Core>>();
+		private readonly Dictionary<string, List<Core>> _systems = new();
 
 		/// <summary>keys are system IDs; values are core/ctor info for all that system's cores</summary>
 		public IReadOnlyDictionary<string, List<Core>> AllCores => _systems;
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores
 			}
 
 			// map parameter names to locations in the constructor
-			private readonly Dictionary<string, int> _paramMap = new Dictionary<string, int>();
+			private readonly Dictionary<string, int> _paramMap = new();
 			// If true, this is a new style constructor that takes a CoreLoadParameters object
 			private readonly bool _useCoreLoadParameters;
 
@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores
 
 			private void Bp(object[] parameters, string name, object value)
 			{
-				if (_paramMap.TryGetValue(name, out var i))
+				if (_paramMap.TryGetValue(name, out int i))
 				{
 					parameters[i] = value;
 				}
@@ -160,10 +160,10 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		public CoreInventory(IEnumerable<IEnumerable<Type>> assys)
 		{
-			var systemsFlat = new Dictionary<Type, Core>();
+			Dictionary<Type, Core> systemsFlat = new();
 			void ProcessConstructor(Type type, CoreConstructorAttribute consAttr, CoreAttribute coreAttr, ConstructorInfo cons)
 			{
-				var core = new Core(type, consAttr, coreAttr, cons);
+				Core core = new(type, consAttr, coreAttr, cons);
 				_systems.GetValueOrPutNew(consAttr.System).Add(core);
 				systemsFlat[type] = core;
 			}
@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores
 				{
 					if (!typ.IsAbstract && typ.GetInterfaces().Contains(typeof(IEmulator)))
 					{
-						var coreAttr = typ.GetCustomAttributes(typeof(CoreAttribute), false);
+						object[] coreAttr = typ.GetCustomAttributes(typeof(CoreAttribute), false);
 						if (coreAttr.Length != 1)
 							throw new InvalidOperationException($"{nameof(IEmulator)} {typ} without {nameof(CoreAttribute)}s!");
 						var cons = typ.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores
 			SystemsFlat = systemsFlat.Values;
 		}
 
-		public static readonly CoreInventory Instance = new CoreInventory(new[] { Emulation.Cores.ReflectionCache.Types });
+		public static readonly CoreInventory Instance = new(new[] { Emulation.Cores.ReflectionCache.Types });
 	}
 
 	public enum CorePriority

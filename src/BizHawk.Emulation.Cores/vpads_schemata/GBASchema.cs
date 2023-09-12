@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores
 		}
 
 		private static SingleAxisSchema Tilt(int x, int y, string direction)
-			=> new SingleAxisSchema(x, y, "Tilt " + direction)
+			=> new(x, y, "Tilt " + direction)
 			{
 				TargetSize = new Size(226, 69),
 				MinValue = short.MinValue,

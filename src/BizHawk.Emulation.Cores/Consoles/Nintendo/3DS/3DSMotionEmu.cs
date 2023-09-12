@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				else
 				{
 					TiltDirection = tiltMove;
-					var tiltMoveNormalized = tiltMove.Length();
+					float tiltMoveNormalized = tiltMove.Length();
 					TiltDirection /= tiltMoveNormalized;
 					TiltAngle = tiltMoveNormalized * SENSITIVITY;
 					TiltAngle = Math.Max(TiltAngle, 0.0f);
@@ -43,8 +43,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				TiltAngle = 0;
 			}
 
-			var tiltQ = Quaternion.CreateFromAxisAngle(new(-TiltDirection.Y, 0.0f, TiltDirection.X), TiltAngle);
-			var conTiltQ = Quaternion.Conjugate(tiltQ);
+			Quaternion tiltQ = Quaternion.CreateFromAxisAngle(new(-TiltDirection.Y, 0.0f, TiltDirection.X), TiltAngle);
+			Quaternion conTiltQ = Quaternion.Conjugate(tiltQ);
 
 			var angularRateQ = (tiltQ - PrevTiltQuaternion) * conTiltQ;
 			var angularRate = new Vector3(angularRateQ.X, angularRateQ.Y, angularRateQ.Z) * 2;

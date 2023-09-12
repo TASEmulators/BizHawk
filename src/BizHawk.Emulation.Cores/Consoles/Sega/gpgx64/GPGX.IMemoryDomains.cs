@@ -15,15 +15,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			using (_elf.EnterExit())
 			{
-				var mm = new List<MemoryDomain>();
-				for (var i = LibGPGX.MIN_MEM_DOMAIN; i <= LibGPGX.MAX_MEM_DOMAIN; i++)
+				List<MemoryDomain> mm = new();
+				for (int i = LibGPGX.MIN_MEM_DOMAIN; i <= LibGPGX.MAX_MEM_DOMAIN; i++)
 				{
 					var area = IntPtr.Zero;
-					var size = 0;
+					int size = 0;
 					var pName = Core.gpgx_get_memdom(i, ref area, ref size);
 					if (area == IntPtr.Zero || pName == IntPtr.Zero || size == 0)
 						continue;
-					var name = Marshal.PtrToStringAnsi(pName)!;
+					string name = Marshal.PtrToStringAnsi(pName)!;
 
 					var endian = name == "Z80 RAM"
 							? MemoryDomain.Endian.Little
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					if (name == "VRAM")
 					{
 						// vram pokes need to go through hook which invalidates cached tiles
-						var p = (byte*)area;
+						byte* p = (byte*)area;
 						mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Big,
 							addr =>
 							{
@@ -51,14 +51,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					{
 						// CRAM in the core is internally a different format than what it is natively
 						// this internal format isn't really useful, so let's convert it back
-						var p = (byte*)area;
+						byte* p = (byte*)area;
 						mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Big,
 							addr =>
 							{
 								if (addr is < 0 or > 0x7F) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 								using (_elf.EnterExit())
 								{
-									var c = *(ushort*)&p![addr & ~1];
+									ushort c = *(ushort*)&p![addr & ~1];
 									c = (ushort)(((c & 0x1C0) << 3) | ((c & 0x038) << 2) | ((c & 0x007) << 1));
 									return (byte)((addr & 1) != 0 ? c & 0xFF : c >> 8);
 								}
@@ -79,16 +79,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						mm.Add(new MemoryDomainIntPtrSwap16Monitor(name, endian, area, size, true, _elf));
 					}
 				}
-				var m68Bus = new MemoryDomainDelegate("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,
+				MemoryDomainDelegate m68Bus = new("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,
 					addr =>
 					{
-						var a = (uint)addr;
+						uint a = (uint)addr;
 						if (a > 0xFFFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 						return Core.gpgx_peek_m68k_bus(a);
 					},
 					(addr, val) =>
 					{
-						var a = (uint)addr;
+						uint a = (uint)addr;
 						if (a > 0xFFFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 						Core.gpgx_write_m68k_bus(a, val);
 					}, 2);
@@ -97,16 +97,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				if (IsMegaCD)
 				{
-					var s68Bus = new MemoryDomainDelegate("S68K BUS", 0x1000000, MemoryDomain.Endian.Big,
+					MemoryDomainDelegate s68Bus = new("S68K BUS", 0x1000000, MemoryDomain.Endian.Big,
 					addr =>
 					{
-						var a = (uint)addr;
+						uint a = (uint)addr;
 						if (a > 0xFFFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 						return Core.gpgx_peek_s68k_bus(a);
 					},
 					(addr, val) =>
 					{
-						var a = (uint)addr;
+						uint a = (uint)addr;
 						if (a > 0xFFFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 						Core.gpgx_write_s68k_bus(a, val);
 					}, 2);

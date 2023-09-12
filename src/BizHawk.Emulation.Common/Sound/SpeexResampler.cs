@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Common
 		private static readonly LibSpeexDSP NativeDSP;
 		static SpeexResampler()
 		{
-			var resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "libspeexdsp.so.1" : "libspeexdsp.dll", hasLimitedLifetime: false);
 			NativeDSP = BizInvoker.GetInvoker<LibSpeexDSP>(resolver, CallingConventionAdapters.Native);
 		}
@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (_input != null)
 			{
-				_input.GetSamplesSync(out var sampin, out int nsampin);
+				_input.GetSamplesSync(out short[] sampin, out int nsampin);
 				EnqueueSamples(sampin, nsampin);
 			}
 
@@ -218,20 +218,14 @@ namespace BizHawk.Emulation.Common
 			_outbuf2pos = 0;
 		}
 
-		public void DiscardSamples()
-		{
-			_outbuf2pos = 0;
-		}
+		public void DiscardSamples() => _outbuf2pos = 0;
 
 		public bool CanProvideAsync => false;
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		/// <exception cref="InvalidOperationException">always</exception>
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new InvalidOperationException("Async mode is not supported.");
 
 		/// <exception cref="NotSupportedException"><paramref name="mode"/> is <see cref="SyncSoundMode.Async"/></exception>
 		public void SetSyncMode(SyncSoundMode mode)

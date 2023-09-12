@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public long TotalExecutedCycles => Math.Max((long)_cycleCount, (long)callbackCycleCount);
 
-		private MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus", "ROM", "VRAM", "SRAM", "WRAM", "OAM", "HRAM" });
+		private MemoryCallbackSystem _memorycallbacks = new(new[] { "System Bus", "ROM", "VRAM", "SRAM", "WRAM", "OAM", "HRAM" });
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 
 		private LibGambatte.MemoryCallback _readcb;
@@ -79,14 +79,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private LibGambatte.MemoryCallback CreateCallback(MemoryCallbackFlags flags, Func<bool> getHasCBOfType, string which = "")
 		{
-			var rawFlags = (uint)flags;
+			uint rawFlags = (uint)flags;
 			return (address, cycleOffset) =>
 			{
 				callbackCycleCount = _cycleCount + cycleOffset;
 				if (getHasCBOfType())
 				{
 					MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "System Bus");
-					var bank = LibGambatte.gambatte_getaddrbank(GambatteState, (ushort)address);
+					int bank = LibGambatte.gambatte_getaddrbank(GambatteState, (ushort)address);
 					if (address < 0x4000u) // usually rom bank 0 for most mbcs, some mbcs might have this at a different rom bank
 					{
 						address += (uint)(bank * 0x4000);

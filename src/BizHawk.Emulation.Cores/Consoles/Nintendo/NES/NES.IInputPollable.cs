@@ -22,6 +22,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		internal bool lagged = true;
 		private bool islag = false;
 
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		private readonly InputCallbackSystem _inputCallbacks = new();
 	}
 }

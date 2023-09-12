@@ -5,8 +5,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class PaletteViewer : Control
 	{
-		private readonly SolidBrush BgPalettesBrush = new SolidBrush(Color.Black);
-		private readonly SolidBrush SpritePalettesBrush = new SolidBrush(Color.Black);
+		private readonly SolidBrush BgPalettesBrush = new(Color.Black);
+		private readonly SolidBrush SpritePalettesBrush = new(Color.Black);
 
 		public class Palette
 		{
@@ -73,8 +73,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ScreenshotToClipboard()
 		{
-			var b = new Bitmap(Width, Height);
-			var rect = new Rectangle(new Point(0, 0), Size);
+			Bitmap b = new(Width, Height);
+			Rectangle rect = new(new Point(0, 0), Size);
 			DrawToBitmap(b, rect);
 
 			using var img = b;

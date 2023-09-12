@@ -19,7 +19,7 @@ namespace BizHawk.Tests.Emulation.Common
 		{
 			static void CustomAssert(string hash)
 				=> Assert.IsTrue(hash.Length == 40 && hash == hash.ToUpperInvariant() && hash.IsHex(), $"incorrectly formatted: {hash}");
-			foreach (var hash in FirmwareDatabase.FirmwareFilesByHash.Keys) CustomAssert(hash);
+			foreach (string? hash in FirmwareDatabase.FirmwareFilesByHash.Keys) CustomAssert(hash);
 			foreach (var fo in FirmwareDatabase.FirmwareOptions) CustomAssert(fo.Hash);
 		}
 	}

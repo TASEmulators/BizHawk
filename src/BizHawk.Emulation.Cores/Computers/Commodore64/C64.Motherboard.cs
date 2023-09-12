@@ -172,10 +172,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Vic.ExecutePhase2();
 		}
 
-		public void Flush()
-		{
-			Sid.Flush(false);
-		}
+		public void Flush() => Sid.Flush(false);
 
 		// -----------------------------------------
 		public void HardReset()

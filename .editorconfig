@@ -12,9 +12,11 @@ csharp_indent_switch_labels = true
 csharp_indent_case_contents = true
 csharp_indent_labels = one_less_than_current
 
+# Globalization rules
+dotnet_code_quality.CA1305.excluded_symbol_names = T:System.Byte|T:System.SByte|T:System.Int16|T:System.UInt16|T:System.Int32|T:System.UInt32|T:System.Int64|T:System.UInt64|T:System.String|T:System.Text.StringBuilder|T:System.Convert
+
 # Style rules
 # Can't be in .globalconfig because dotnet format doesn't respect that https://github.com/dotnet/format/issues/1643
-
 # Remove unnecessary cast
 dotnet_diagnostic.IDE0004.severity = warning
 # Remove unnecessary import
@@ -49,6 +51,8 @@ dotnet_diagnostic.IDE0032.severity = suggestion
 dotnet_diagnostic.IDE0034.severity = suggestion
 # Use pattern matching to avoid is check followed by a cast (without variable)
 dotnet_diagnostic.IDE0038.severity = warning
+# Use a local function instead of an anonymous function
+dotnet_diagnostic.IDE0039.severity = none
 # Use is null check
 dotnet_diagnostic.IDE0041.severity = warning
 # Deconstruct variable declaration
@@ -109,7 +113,7 @@ dotnet_diagnostic.IDE0260.severity = suggestion
 # Use nameof
 dotnet_diagnostic.IDE0280.severity = error
 
-csharp_style_var_when_type_is_apparent = true
+csharp_style_var_when_type_is_apparent = false
 csharp_style_var_elsewhere = true
 
 csharp_style_expression_bodied_methods = when_on_single_line

@@ -93,9 +93,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadWram(int addr)
-		{
-			return (byte)(Mapper57_DipSwitch & 3);
-		}
+		public override byte ReadWram(int addr) => (byte)(Mapper57_DipSwitch & 3);
 	}
 }

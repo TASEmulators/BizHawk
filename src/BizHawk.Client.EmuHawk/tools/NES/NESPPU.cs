@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _scanline;
 
-		private Bitmap _zoomBoxDefaultImage = new Bitmap(64, 64);
+		private Bitmap _zoomBoxDefaultImage = new(64, 64);
 		private bool _forceChange;
 
 		[RequiredService]
@@ -71,10 +71,7 @@ namespace BizHawk.Client.EmuHawk
 			ChrRomViewReload();
 		}
 
-		protected override void UpdateBefore()
-		{
-			_ppu.InstallCallback2(() => Generate(), _scanline);
-		}
+		protected override void UpdateBefore() => _ppu.InstallCallback2(() => Generate(), _scanline);
 
 		public override void Restart()
 		{
@@ -82,10 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			ChrRomViewReload();
 		}
 
-		private byte GetBit(byte[] ppuBus, int address, int bit)
-		{
-			return (byte)((ppuBus[address] >> (7 - bit)) & 1);
-		}
+		private byte GetBit(byte[] ppuBus, int address, int bit) => (byte)((ppuBus[address] >> (7 - bit)) & 1);
 
 		private bool CheckChange(byte[] palRam, byte[] ppuBus)
 		{
@@ -191,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 				_forceChange = false;
 
 				// Pattern Viewer
-				for (var i = 0; i < 16; i++)
+				for (int i = 0; i < 16; i++)
 				{
 					PaletteView.BgPalettesPrev[i].Value = PaletteView.BgPalettes[i].Value;
 					PaletteView.SpritePalettesPrev[i].Value = PaletteView.SpritePalettes[i].Value;
@@ -208,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var bmpData2 = SpriteView.Sprites.LockBits(new Rectangle(new Point(0, 0), SpriteView.Sprites.Size), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-			var frameBuf2 = (int*)bmpData2.Scan0.ToPointer();
+			int* frameBuf2 = (int*)bmpData2.Scan0.ToPointer();
 
 			int ptAdd = _ppu.SPBaseHigh ? 0x1000 : 0;
 			bool is8x16 = _ppu.SPTall;
@@ -301,8 +295,8 @@ namespace BizHawk.Client.EmuHawk
 		private static Bitmap Section(Image srcBitmap, Rectangle section, bool is8x16)
 		{
 			// Create the new bitmap and associated graphics object
-			var bmp = new Bitmap(64, 64);
-			var g = Graphics.FromImage(bmp);
+			Bitmap bmp = new(64, 64);
+			Graphics g = Graphics.FromImage(bmp);
 
 			// Draw the specified section of the source bitmap to the new one
 			g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
@@ -323,40 +317,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void Screenshot(Bitmap b, string suffix)
-		{
-			b.SaveAsFile(Game, suffix, VSystemID.Raw.NES, Config.PathEntries, this);
-		}
+		private void Screenshot(Bitmap b, string suffix) => b.SaveAsFile(Game, suffix, VSystemID.Raw.NES, Config.PathEntries, this);
 
-		private void SavePaletteScreenshotMenuItem_Click(object sender, EventArgs e)
-		{
-			Screenshot(PaletteView.ToBitMap(), "Palettes");
-		}
+		private void SavePaletteScreenshotMenuItem_Click(object sender, EventArgs e) => Screenshot(PaletteView.ToBitMap(), "Palettes");
 
-		private void SavePatternScreenshotMenuItem_Click(object sender, EventArgs e)
-		{
-			Screenshot(PatternView.ToBitMap(), "Patterns");
-		}
+		private void SavePatternScreenshotMenuItem_Click(object sender, EventArgs e) => Screenshot(PatternView.ToBitMap(), "Patterns");
 
-		private void SaveSpriteScreenshotMenuItem_Click(object sender, EventArgs e)
-		{
-			Screenshot(SpriteView.ToBitMap(), "Sprites");
-		}
+		private void SaveSpriteScreenshotMenuItem_Click(object sender, EventArgs e) => Screenshot(SpriteView.ToBitMap(), "Sprites");
 
-		private void CopyPaletteToClipboardMenuItem_Click(object sender, EventArgs e)
-		{
-			PaletteView.ToBitMap().ToClipBoard();
-		}
+		private void CopyPaletteToClipboardMenuItem_Click(object sender, EventArgs e) => PaletteView.ToBitMap().ToClipBoard();
 
-		private void CopyPatternToClipboardMenuItem_Click(object sender, EventArgs e)
-		{
-			PatternView.ToBitMap().ToClipBoard();
-		}
+		private void CopyPatternToClipboardMenuItem_Click(object sender, EventArgs e) => PatternView.ToBitMap().ToClipBoard();
 
-		private void CopySpriteToClipboardMenuItem_Click(object sender, EventArgs e)
-		{
-			SpriteView.ToBitMap().ToClipBoard();
-		}
+		private void CopySpriteToClipboardMenuItem_Click(object sender, EventArgs e) => SpriteView.ToBitMap().ToClipBoard();
 
 		private void Table0PaletteSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -452,30 +425,15 @@ namespace BizHawk.Client.EmuHawk
 			UpdatePaletteSelection();
 		}
 
-		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			cHRROMTileViewerToolStripMenuItem.Checked = ChrRomView;
-		}
+		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e) => cHRROMTileViewerToolStripMenuItem.Checked = ChrRomView;
 
-		private void PaletteRefreshMenuItem_Click(object sender, EventArgs e)
-		{
-			PaletteView.Refresh();
-		}
+		private void PaletteRefreshMenuItem_Click(object sender, EventArgs e) => PaletteView.Refresh();
 
-		private void PatternRefreshMenuItem_Click(object sender, EventArgs e)
-		{
-			PatternView.Refresh();
-		}
+		private void PatternRefreshMenuItem_Click(object sender, EventArgs e) => PatternView.Refresh();
 
-		private void SpriteRefreshMenuItem_Click(object sender, EventArgs e)
-		{
-			SpriteView.Refresh();
-		}
+		private void SpriteRefreshMenuItem_Click(object sender, EventArgs e) => SpriteView.Refresh();
 
-		private void NesPPU_MouseClick(object sender, MouseEventArgs e)
-		{
-			ZoomBox.Image = new Bitmap(64, 64);
-		}
+		private void NesPPU_MouseClick(object sender, MouseEventArgs e) => ZoomBox.Image = new Bitmap(64, 64);
 
 		private void NesPPU_KeyDown(object sender, KeyEventArgs e)
 		{
@@ -522,30 +480,15 @@ namespace BizHawk.Client.EmuHawk
 			toolStripStatusLabel1.Text = "Use CTRL+C to copy the pane under the mouse to the clipboard.";
 		}
 
-		private void PaletteView_MouseClick(object sender, MouseEventArgs e)
-		{
-			HandleDefaultImage();
-		}
+		private void PaletteView_MouseClick(object sender, MouseEventArgs e) => HandleDefaultImage();
 
-		private void SpriteView_MouseClick(object sender, MouseEventArgs e)
-		{
-			HandleDefaultImage();
-		}
+		private void SpriteView_MouseClick(object sender, MouseEventArgs e) => HandleDefaultImage();
 
-		private void SpriteView_MouseEnter(object sender, EventArgs e)
-		{
-			DetailsBox.Text = "Details - Sprites";
-		}
+		private void SpriteView_MouseEnter(object sender, EventArgs e) => DetailsBox.Text = "Details - Sprites";
 
-		private void SpriteView_MouseLeave(object sender, EventArgs e)
-		{
-			ClearDetails();
-		}
-		
-		private void SpriteView_MouseMove(object sender, MouseEventArgs e)
-		{
-			HandleSpriteViewMouseMove(e.Location);
-		}
+		private void SpriteView_MouseLeave(object sender, EventArgs e) => ClearDetails();
+
+		private void SpriteView_MouseMove(object sender, MouseEventArgs e) => HandleSpriteViewMouseMove(e.Location);
 
 		private void HandleSpriteViewMouseMove(Point e)
 		{
@@ -584,21 +527,21 @@ namespace BizHawk.Client.EmuHawk
 			spriteSlotY /= 3;
 
 			//if these were utterly senseless slots (so far out of range) then bail
-			if (spriteSlotX < 0 || spriteSlotX >= 16)
+			if (spriteSlotX is < 0 or >= 16)
 				return;
 
-			if (spriteSlotY < 0 || spriteSlotY >= 4)
+			if (spriteSlotY is < 0 or >= 4)
 				return;
 
 			//find the final sprite number that's being hovered
-			var spriteNumber = spriteSlotY * 16 + spriteSlotX;
+			int spriteNumber = spriteSlotY * 16 + spriteSlotX;
 
 			int x = oam[(spriteNumber * 4) + 3];
 			int y = oam[spriteNumber * 4];
-			var color = oam[(spriteNumber * 4) + 2] & 0x03;
-			var attributes = oam[(spriteNumber * 4) + 2];
+			int color = oam[(spriteNumber * 4) + 2] & 0x03;
+			byte attributes = oam[(spriteNumber * 4) + 2];
 
-			var flags = "Flags: ";
+			string flags = "Flags: ";
 			int h = GetBit(ppuBus, attributes, 6);
 			int v = GetBit(ppuBus, attributes, 7);
 			int priority = GetBit(ppuBus, attributes, 5);
@@ -648,20 +591,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void PaletteView_MouseLeave(object sender, EventArgs e)
-		{
-			ClearDetails();
-		}
+		private void PaletteView_MouseLeave(object sender, EventArgs e) => ClearDetails();
 
-		private void PaletteView_MouseEnter(object sender, EventArgs e)
-		{
-			DetailsBox.Text = "Details - Palettes";
-		}
+		private void PaletteView_MouseEnter(object sender, EventArgs e) => DetailsBox.Text = "Details - Palettes";
 
-		private void PaletteView_MouseMove(object sender, MouseEventArgs e)
-		{
-			HandlePaletteViewMouseMove(e.Location);
-		}
+		private void PaletteView_MouseMove(object sender, MouseEventArgs e) => HandlePaletteViewMouseMove(e.Location);
 
 		private void HandlePaletteViewMouseMove(Point e)
 		{
@@ -681,8 +615,8 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = $"Address: 0x{addr:X4}";
 			int val;
 
-			var bmp = new Bitmap(64, 64);
-			var g = Graphics.FromImage(bmp);
+			Bitmap bmp = new(64, 64);
+			Graphics g = Graphics.FromImage(bmp);
 
 			byte[] palRam = _ppu.GetPalRam();
 
@@ -733,15 +667,9 @@ namespace BizHawk.Client.EmuHawk
 			HandleDefaultImage();
 		}
 
-		private void PatternView_MouseEnter(object sender, EventArgs e)
-		{
-			DetailsBox.Text = "Details - Patterns";
-		}
+		private void PatternView_MouseEnter(object sender, EventArgs e) => DetailsBox.Text = "Details - Patterns";
 
-		private void PatternView_MouseLeave(object sender, EventArgs e)
-		{
-			ClearDetails();
-		}
+		private void PatternView_MouseLeave(object sender, EventArgs e) => ClearDetails();
 
 		private void PatternView_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -766,7 +694,7 @@ namespace BizHawk.Client.EmuHawk
 
 			address += (e.Y / 8) * 256;
 			tile += (e.Y / 8) * 16;
-			var usage = "Usage: ";
+			string usage = "Usage: ";
 
 			if (_ppu.BGBaseHigh == address >= 0x1000) // bghigh
 			{
@@ -804,15 +732,9 @@ namespace BizHawk.Client.EmuHawk
 		private MemoryDomain _chrRom;
 		private readonly byte[] _chrRomCache = new byte[8192];
 
-		private void ChrROMTileViewerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ChrRomView ^= true;
-		}
+		private void ChrROMTileViewerToolStripMenuItem_Click(object sender, EventArgs e) => ChrRomView ^= true;
 
-		private void CalculateFormSize()
-		{
-			Width = ChrRomView ? 861 : 580;
-		}
+		private void CalculateFormSize() => Width = ChrRomView ? 861 : 580;
 
 		private void ChrRomViewReload()
 		{
@@ -844,9 +766,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void NumericUpDownChrRomBank_ValueChanged(object sender, EventArgs e)
-		{
-			ChrRomViewRefresh();
-		}
+		private void NumericUpDownChrRomBank_ValueChanged(object sender, EventArgs e) => ChrRomViewRefresh();
 	}
 }

@@ -8,10 +8,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public sealed partial class PCEngine : ICodeDataLogger
 	{
-		public void SetCDL(ICodeDataLog cdl)
-		{
-			Cpu.CDL = cdl;
-		}
+		public void SetCDL(ICodeDataLog cdl) => Cpu.CDL = cdl;
 
 		public void NewCDL(ICodeDataLog cdl)
 		{
@@ -26,10 +23,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			cdl.SubVer = 0;
 		}
 
-		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
-		{
-			Cpu.DisassembleCDL(s, cdl, _memoryDomains);
-		}
+		public void DisassembleCDL(Stream s, ICodeDataLog cdl) => Cpu.DisassembleCDL(s, cdl, _memoryDomains);
 
 		private static void CDLMappingApplyRange(HuC6280.MemMapping[] mm, string name, int block, int len, int initialoffs = 0)
 		{
@@ -52,7 +46,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			SF2UpdateCDLMappings = true;
 
-			var mm = new HuC6280.MemMapping[256];
+			HuC6280.MemMapping[] mm = new HuC6280.MemMapping[256];
 
 			CDLMappingApplyRange(mm, "ROM", 0x00, Math.Min(RomLength, 1024 * 1024));
 			if (PopulousRAM != null)
@@ -102,7 +96,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				CDLMappingApplyRange(mm, "Battery RAM", 0xf7, BRAM.Length);
 			}
 
-			var ramMirrors = new HuC6280.MemMapping { Name = "Main Memory", Offs = 0 };
+			HuC6280.MemMapping ramMirrors = new() { Name = "Main Memory", Offs = 0 };
 			mm[0xf9] = mm[0xfa] = mm[0xfb] = ramMirrors;
 
 			CDLMappingApplyRange(mm, "Main Memory", 0xf8, Ram.Length);

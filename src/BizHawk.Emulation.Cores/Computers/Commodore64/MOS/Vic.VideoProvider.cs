@@ -7,11 +7,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	{
 		private static readonly int BgColor = Colors.ARGB(0, 0, 0);
 		private int[] _buf;
-		private int _bufHeight;
 		private int _bufLength;
 		private int _bufOffset;
-		private int _bufWidth;
-
 		private const int PixBufferSize = 24;
 		private const int PixBorderBufferSize = 12;
 
@@ -47,14 +44,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public int BackgroundColor => BgColor;
 
-		public int BufferHeight => _bufHeight;
+		public int BufferHeight { get; private set; }
 
-		public int BufferWidth => _bufWidth;
+		public int BufferWidth { get; private set; }
 
-		public int[] GetVideoBuffer()
-		{
-			return _buf;
-		}
+		public int[] GetVideoBuffer() => _buf;
 
 		public int VirtualWidth { get; private set; }
 

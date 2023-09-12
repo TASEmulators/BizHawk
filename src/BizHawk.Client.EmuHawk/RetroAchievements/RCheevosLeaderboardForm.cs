@@ -21,10 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			Show();
 		}
 
-		public void OnFrameAdvance()
-		{
-			scoreBox.Text = _lboard.Score;
-		}
+		public void OnFrameAdvance() => scoreBox.Text = _lboard.Score;
 	}
 }
 

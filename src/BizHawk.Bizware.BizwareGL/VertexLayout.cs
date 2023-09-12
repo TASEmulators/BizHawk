@@ -31,10 +31,7 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
-		public void AddRef()
-		{
-			RefCount++;
-		}
+		public void AddRef() => RefCount++;
 
 		/// <exception cref="InvalidOperationException">already closed (by call to <see cref="Close"/>)</exception>
 		public void DefineVertexAttribute(string name, int index, int components, VertexAttribPointerType attribType, AttribUsage usage, bool normalized, int stride, int offset = 0)
@@ -50,10 +47,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// finishes this VertexLayout and renders it immutable
 		/// </summary>
-		public void Close()
-		{
-			Closed = true;
-		}
+		public void Close() => Closed = true;
 
 		public class LayoutItem
 		{

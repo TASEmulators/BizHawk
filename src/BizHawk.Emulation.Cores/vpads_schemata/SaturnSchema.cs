@@ -12,16 +12,16 @@ namespace BizHawk.Emulation.Cores
 	[Schema(VSystemID.Raw.SAT)]
 	public class SaturnSchema : IVirtualPadSchema
 	{
-		private static readonly AxisSpec AxisRange = new AxisSpec(0.RangeTo(0xffff), 0x8000);
+		private static readonly AxisSpec AxisRange = new(0.RangeTo(0xffff), 0x8000);
 
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
-			var nyma = (NymaCore)core;
+			NymaCore nyma = (NymaCore)core;
 			foreach (var result in nyma.ActualPortData
 				.Where(r => r.Port.ShortName != "builtin"))
 			{
-				var num = int.Parse(result.Port.ShortName.Last().ToString());
-				var device = result.Device.ShortName;
+				int num = int.Parse(result.Port.ShortName.Last().ToString());
+				string device = result.Device.ShortName;
 				var schema = GenerateSchemaForPort(device, num, showMessageBox);
 				if (schema != null)
 				{

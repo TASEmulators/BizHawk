@@ -69,8 +69,8 @@ namespace BizHawk.Client.EmuHawk
 			// Global
 			if (VideoResolutionComboBox.Text != CustomResItemName)
 			{
-				var videoSettings = VideoResolutionComboBox.SelectedItem.ToString();
-				var strArr = videoSettings.Split('x');
+				string videoSettings = VideoResolutionComboBox.SelectedItem.ToString();
+				string[] strArr = videoSettings.Split('x');
 				_s.VideoSizeX = int.Parse(strArr[0].Trim());
 				_s.VideoSizeY = int.Parse(strArr[1].Trim());
 			}
@@ -134,9 +134,9 @@ namespace BizHawk.Client.EmuHawk
 			VideoResolutionXTextBox.Text = _s.VideoSizeX.ToString();
 			VideoResolutionYTextBox.Text = _s.VideoSizeY.ToString();
 
-			var videoSetting = $"{_s.VideoSizeX} x {_s.VideoSizeY}";
+			string videoSetting = $"{_s.VideoSizeX} x {_s.VideoSizeY}";
 
-			var index = VideoResolutionComboBox.Items.IndexOf(videoSetting);
+			int index = VideoResolutionComboBox.Items.IndexOf(videoSetting);
 			if (index >= 0)
 			{
 				VideoResolutionComboBox.SelectedIndex = index;
@@ -170,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
 			string[] strArr;
 			int oldSizeX, oldSizeY;
 
-			var oldResolution = VideoResolutionComboBox.SelectedItem?.ToString() ?? "";
+			string oldResolution = VideoResolutionComboBox.SelectedItem?.ToString() ?? "";
 			if (oldResolution != CustomResItemName)
 			{
 				strArr = oldResolution.Split('x');
@@ -189,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// If the given resolution is in the table, pick it.
 			// Otherwise find a best fit
-			var index = VideoResolutionComboBox.Items.IndexOf(oldResolution);
+			int index = VideoResolutionComboBox.Items.IndexOf(oldResolution);
 			if (index >= 0)
 			{
 				VideoResolutionComboBox.SelectedIndex = index;
@@ -239,8 +239,8 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				HideCustomVideoResolutionControls();
-				var newResolution = VideoResolutionComboBox.SelectedItem.ToString();
-				var strArr = newResolution.Split('x');
+				string newResolution = VideoResolutionComboBox.SelectedItem.ToString();
+				string[] strArr = newResolution.Split('x');
 				VideoResolutionXTextBox.Text = strArr[0].Trim();
 				VideoResolutionYTextBox.Text = strArr[1].Trim();
 			}

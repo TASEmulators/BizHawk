@@ -8,10 +8,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public int VirtualHeight { get; private set; } = 224;
 
-		public int BufferWidth => _videoWidth;
+		public int BufferWidth { get; private set; } = 256;
 
-		public int BufferHeight => _videoHeight;
-
+		public int BufferHeight { get; private set; } = 224;
 		public int BackgroundColor => 0;
 
 		public int[] GetVideoBuffer() => _videoBuffer;
@@ -20,7 +19,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public int VsyncDenominator { get; }
 
 		private int[] _videoBuffer = new int[256 * 224];
-		private int _videoWidth = 256;
-		private int _videoHeight = 224;
 	}
 }

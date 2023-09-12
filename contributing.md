@@ -76,7 +76,9 @@ It's probably a good idea to get the .NET SDK, even if you're not working on a .
 
 For EmuHawk and libraries in the main solution, which do not target .NET 6, we have [this page](https://github.com/TASEmulators/BizHawk/wiki/Available-C%23-and-.NET-features) documenting which features are actually available to use.
 
+### Code Analysis
 
+Visual Studio can detect and show issues and possible optimizations in the IDE before build time. In the Analyze menu pick Run Code Analysis -> On Solution. From there you can open the Error list in the bottom left and highlight issues of different severity level Errors/Warnings/Messages and adjust the scope as small as the open documents and as wide as the entire solution. Developers should target to have no code introduced flagging the Error and Warning levels. It's also good to minimize warnings at the Message severity level either by adopting the suggested fixes or by ignoring irrelevant Messages with `#pragma` directives. Many warnings can be auto-fixed by the `dotnet format` command or by the quick actions menu found on the left next to a line number when hovering a line.
 
 ## blip_buf
 > Audio resampling library.

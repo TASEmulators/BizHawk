@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		static Sameboy()
 		{
-			var resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "libsameboy.so" : "libsameboy.dll", hasLimitedLifetime: false);
 			LibSameboy = BizInvoker.GetInvoker<LibSameboy>(resolver, CallingConventionAdapters.Native);
 		}
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public Sameboy(CoreComm comm, GameInfo game, byte[] gbs, SameboySettings settings, SameboySyncSettings syncSettings)
 			: this(comm, game, null, settings, syncSettings, false)
 		{
-			var gbsInfo = new LibSameboy.GBSInfo
+			LibSameboy.GBSInfo gbsInfo = new()
 			{
 				TrackCount = 0,
 				FirstTrack = 0,
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public Sameboy(CoreLoadParameters<SameboySettings, SameboySyncSettings> lp)
 			: this(lp.Comm, lp.Game, lp.Roms[0].FileData, lp.Settings, lp.SyncSettings, lp.DeterministicEmulationRequested)
 		{
-			var file = lp.Roms[0].FileData;
+			byte[] file = lp.Roms[0].FileData;
 
 			RomDetails = $"{lp.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(file)}\r\n{MD5Checksum.ComputePrefixedHex(file)}\r\n";
 
@@ -202,10 +202,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			_inputCallbacks.Call();
 		}
 
-		private void RumbleCallback(int amplitude)
-		{
-			_controller.SetHapticChannelStrength("Rumble", amplitude);
-		}
+		private void RumbleCallback(int amplitude) => _controller.SetHapticChannelStrength("Rumble", amplitude);
 
 		public bool LinkConnected
 		{

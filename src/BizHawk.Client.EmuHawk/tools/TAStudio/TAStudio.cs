@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsInMenuLoop { get; private set; }
 
-		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
+		private readonly List<TasClipboardEntry> _tasClipboard = new();
 		private const string CursorColumnName = "CursorColumn";
 		private const string FrameColumnName = "FrameColumn";
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
@@ -229,12 +229,12 @@ namespace BizHawk.Client.EmuHawk
 			// Start Scenario 1: A regular movie is active
 			if (MovieSession.Movie.IsActive() && MovieSession.Movie is not ITasMovie)
 			{
-				var changesString = "Would you like to save the current movie before closing it?";
+				string changesString = "Would you like to save the current movie before closing it?";
 				if (MovieSession.Movie.Changes)
 				{
 					changesString = "The current movie has unsaved changes. Would you like to save before closing it?";
 				}
-				var result = DialogController.ShowMessageBox3(
+				bool? result = DialogController.ShowMessageBox3(
 					"TAStudio will create a new project file from the current movie.\n\n" + changesString,
 					"Convert movie",
 					EMsgBoxIcon.Question);
@@ -507,8 +507,8 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				var lg = CurrentTasMovie.LogGeneratorInstance(MovieSession.MovieController);
-				var empty = lg.EmptyEntry;
-				foreach (var row in TasView.SelectedRows)
+				string empty = lg.EmptyEntry;
+				foreach (int row in TasView.SelectedRows)
 				{
 					if (CurrentTasMovie[row].LogEntry != empty)
 					{
@@ -538,7 +538,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_engaged = false;
-			var newMovie = (ITasMovie)MovieSession.Get(file.FullName);
+			ITasMovie newMovie = (ITasMovie)MovieSession.Get(file.FullName);
 			newMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			newMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 
@@ -595,8 +595,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Game.IsNullInstance()) throw new InvalidOperationException("how is TAStudio open with no game loaded? please report this including as much detail as possible");
 
-			var filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
-			var tasMovie = (ITasMovie)MovieSession.Get(filename);
+			string filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
+			ITasMovie tasMovie = (ITasMovie)MovieSession.Get(filename);
 			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 
 
@@ -633,7 +633,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			WantsToControlStopMovie = false;
 			WantsToControlReboot = false;
-			var result = StartNewMovieWrapper(movie);
+			bool result = StartNewMovieWrapper(movie);
 
 			if (!result)
 			{
@@ -683,7 +683,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadFileWithFallback(string path)
 		{
-			var result = LoadFile(new FileInfo(path));
+			bool result = LoadFile(new FileInfo(path));
 			if (!result)
 			{
 				TasView.AllColumns.Clear();
@@ -700,22 +700,16 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var loadZone = new MovieZone(path, MainForm, Emulator, MovieSession, Tools)
+			MovieZone loadZone = new(path, MainForm, Emulator, MovieSession, Tools)
 			{
 				Start = TasView.SelectionStartIndex!.Value,
 			};
 			loadZone.PlaceZone(CurrentTasMovie, Config);
 		}
 
-		private void TastudioPlayMode()
-		{
-			TasPlaybackBox.RecordingMode = false;
-		}
+		private void TastudioPlayMode() => TasPlaybackBox.RecordingMode = false;
 
-		private void TastudioRecordMode()
-		{
-			TasPlaybackBox.RecordingMode = true;
-		}
+		private void TastudioRecordMode() => TasPlaybackBox.RecordingMode = true;
 
 		private void TastudioStopMovie()
 		{
@@ -786,7 +780,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.DoWithTempMute(() =>
 			{
 				ClearLeftMouseStates();
-				var filename = CurrentTasMovie.Filename;
+				string filename = CurrentTasMovie.Filename;
 				if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
 				{
 					filename = SuggestedTasProjName();
@@ -907,10 +901,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Get a savestate prior to the previous frame so code following the call can frame advance and have a framebuffer.
 		/// If frame is 0, return the initial state.
 		/// </summary>
-		private KeyValuePair<int,Stream> GetPriorStateForFramebuffer(int frame)
-		{
-			return CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame > 0 ? frame - 1 : 0);
-		}
+		private KeyValuePair<int, Stream> GetPriorStateForFramebuffer(int frame) => CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame > 0 ? frame - 1 : 0);
 
 		private void StartAtNearestFrameAndEmulate(int frame, bool fromLua, bool fromRewinding)
 		{
@@ -993,16 +984,13 @@ namespace BizHawk.Client.EmuHawk
 			Tools.UpdateToolsAfter();
 		}
 
-		public void TogglePause()
-		{
-			MainForm.TogglePause();
-		}
+		public void TogglePause() => MainForm.TogglePause();
 
 		private void SetSplicer()
 		{
 			// TODO: columns selected?
-			var selectedRowCount = TasView.SelectedRows.Count();
-			var temp = $"Selected: {selectedRowCount} {(selectedRowCount == 1 ? "frame" : "frames")}, States: {CurrentTasMovie.TasStateManager.Count}";
+			int selectedRowCount = TasView.SelectedRows.Count();
+			string temp = $"Selected: {selectedRowCount} {(selectedRowCount == 1 ? "frame" : "frames")}, States: {CurrentTasMovie.TasStateManager.Count}";
 			if (_tasClipboard.Any()) temp += $", Clipboard: {_tasClipboard.Count} {(_tasClipboard.Count == 1 ? "frame" : "frames")}";
 			SplicerStatusLabel.Text = temp;
 		}
@@ -1035,7 +1023,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (insertionFrame <= CurrentTasMovie.InputLogLength)
 			{
-				var needsToRollback = TasView.SelectionStartIndex < Emulator.Frame;
+				bool needsToRollback = TasView.SelectionStartIndex < Emulator.Frame;
 
 				CurrentTasMovie.InsertEmptyFrame(insertionFrame, numberOfFrames);
 
@@ -1059,7 +1047,7 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.RemoveFrames(framesToRemove);
 				SetSplicer();
 
-				var needsToRollback = beginningFrame < Emulator.Frame;
+				bool needsToRollback = beginningFrame < Emulator.Frame;
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(beginningFrame);
@@ -1076,7 +1064,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (beginningFrame < CurrentTasMovie.InputLogLength)
 			{
-				var needsToRollback = TasView.SelectionStartIndex < Emulator.Frame;
+				bool needsToRollback = TasView.SelectionStartIndex < Emulator.Frame;
 				int last = Math.Min(beginningFrame + numberOfFrames, CurrentTasMovie.InputLogLength);
 				for (int i = beginningFrame; i < last; i++)
 				{
@@ -1122,30 +1110,23 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// This method is called every time the Changes property is toggled on a <see cref="TasMovie"/> instance.
 		/// </summary>
-		private void TasMovie_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			UpdateWindowTitle();
-		}
+		private void TasMovie_OnPropertyChanged(object sender, PropertyChangedEventArgs e) => UpdateWindowTitle();
 
 		private void TAStudio_DragDrop(object sender, DragEventArgs e)
 		{
 			// TODO: Maybe this should call Mainform's DragDrop method,
 			// since that can file types that are not movies,
 			// and it can process multiple files sequentially
-			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			LoadMovieFile(filePaths[0]);
 		}
 
-		private void TAStudio_MouseLeave(object sender, EventArgs e)
-		{
-			DoTriggeredAutoRestoreIfNeeded();
-		}
+		private void TAStudio_MouseLeave(object sender, EventArgs e) => DoTriggeredAutoRestoreIfNeeded();
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
-			if (keyData == Keys.Tab
-				|| keyData == (Keys.Shift | Keys.Tab)
-				|| keyData == Keys.Space)
+			if (keyData is Keys.Tab
+				or (Keys.Shift | Keys.Tab) or Keys.Space)
 			{
 				return true;
 			}
@@ -1193,15 +1174,9 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		private void MainVerticalSplit_SplitterMoved(object sender, SplitterEventArgs e)
-		{
-			Settings.MainVerticalSplitDistance = MainVertialSplit.SplitterDistance;
-		}
+		private void MainVerticalSplit_SplitterMoved(object sender, SplitterEventArgs e) => Settings.MainVerticalSplitDistance = MainVertialSplit.SplitterDistance;
 
-		private void BranchesMarkersSplit_SplitterMoved(object sender, SplitterEventArgs e)
-		{
-			Settings.BranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;
-		}
+		private void BranchesMarkersSplit_SplitterMoved(object sender, SplitterEventArgs e) => Settings.BranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;
 
 		private void TasView_CellDropped(object sender, InputRoll.CellEventArgs e)
 		{
@@ -1209,32 +1184,23 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var currentMarker = CurrentTasMovie.Markers.Single(m => m.Frame == e.OldCell.RowIndex.Value);
 				int newFrame = e.NewCell.RowIndex.Value;
-				var newMarker = new TasMovieMarker(newFrame, currentMarker.Message);
+				TasMovieMarker newMarker = new(newFrame, currentMarker.Message);
 				CurrentTasMovie.Markers.Remove(currentMarker);
 				CurrentTasMovie.Markers.Add(newMarker);
 				RefreshDialog();
 			}
 		}
 
-		private void TASMenu_MenuActivate(object sender, EventArgs e)
-		{
-			IsInMenuLoop = true;
-		}
+		private void TASMenu_MenuActivate(object sender, EventArgs e) => IsInMenuLoop = true;
 
-		private void TASMenu_MenuDeactivate(object sender, EventArgs e)
-		{
-			IsInMenuLoop = false;
-		}
+		private void TASMenu_MenuDeactivate(object sender, EventArgs e) => IsInMenuLoop = false;
 
 		// Stupid designer
-		protected void DragEnterWrapper(object sender, DragEventArgs e)
-		{
-			GenericDragEnter(sender, e);
-		}
+		protected void DragEnterWrapper(object sender, DragEventArgs e) => GenericDragEnter(sender, e);
 
 		private void SetFontMenuItem_Click(object sender, EventArgs e)
 		{
-			using var fontDialog = new FontDialog
+			using FontDialog fontDialog = new()
 			{
 				ShowColor = false,
 				Font = TasView.Font

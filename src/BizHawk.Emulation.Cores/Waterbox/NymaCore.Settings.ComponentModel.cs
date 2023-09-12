@@ -26,10 +26,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				return null; //?
 		}
 
-		public override bool IsSupportedType(Type type)
-		{
-			return type == typeof(NymaSyncSettings) || type == typeof(NymaSettings);
-		}
+		public override bool IsSupportedType(Type type) => type == typeof(NymaSyncSettings) || type == typeof(NymaSettings);
 	}
 
 	public class SyncSettingsCustomTypeDescriptor : CustomTypeDescriptor
@@ -119,21 +116,18 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public override object GetValue(object component)
 		{
-			var ss = (INymaDictionarySettings)component;
-			if (!ss.MednafenValues.TryGetValue(Setting.SettingsKey, out var val))
+			INymaDictionarySettings ss = (INymaDictionarySettings)component;
+			if (!ss.MednafenValues.TryGetValue(Setting.SettingsKey, out string val))
 				val = Setting.DefaultValue;
-			var ret = ConvertFromString(val);
+			object ret = ConvertFromString(val);
 			return ret;
 		}
 
-		public override void ResetValue(object component)
-		{
-			((INymaDictionarySettings)component).MednafenValues.Remove(Setting.SettingsKey);
-		}
+		public override void ResetValue(object component) => ((INymaDictionarySettings)component).MednafenValues.Remove(Setting.SettingsKey);
 
 		public override void SetValue(object component, object value)
 		{
-			var s = ConvertToString(value);
+			string s = ConvertToString(value);
 			if (s == null || s == Setting.DefaultValue)
 			{
 				ResetValue(component);
@@ -142,30 +136,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			((INymaDictionarySettings)component).MednafenValues[Setting.SettingsKey] = s;
 		}
 
-		public override bool ShouldSerializeValue(object component)
-		{
-			return ((INymaDictionarySettings)component).MednafenValues.ContainsKey(Setting.SettingsKey);
-		}
+		public override bool ShouldSerializeValue(object component) => ((INymaDictionarySettings)component).MednafenValues.ContainsKey(Setting.SettingsKey);
 
 		public static MednaPropertyDescriptor Create(SettingT s, bool isSyncSetting)
 		{
-			switch (s.Type)
+			return s.Type switch
 			{
-				case SettingType.Int:
-					return new MednaLongDescriptor(s, isSyncSetting);
-				case SettingType.Uint:
-					return new MednaUlongDescriptor(s, isSyncSetting);
-				case SettingType.Bool:
-					return new MednaBoolDescriptor(s, isSyncSetting);
-				case SettingType.Float:
-					return new MednaDoubleDescriptor(s, isSyncSetting);
-				case SettingType.String:
-					return new MednaStringDescriptor(s, isSyncSetting);
-				case SettingType.Enum:
-					return new MednaEnumDescriptor(s, isSyncSetting);
-				default:
-					throw new NotImplementedException($"Unexpected SettingType {s.Type}");
-			}
+				SettingType.Int => new MednaLongDescriptor(s, isSyncSetting),
+				SettingType.Uint => new MednaUlongDescriptor(s, isSyncSetting),
+				SettingType.Bool => new MednaBoolDescriptor(s, isSyncSetting),
+				SettingType.Float => new MednaDoubleDescriptor(s, isSyncSetting),
+				SettingType.String => new MednaStringDescriptor(s, isSyncSetting),
+				SettingType.Enum => new MednaEnumDescriptor(s, isSyncSetting),
+				_ => throw new NotImplementedException($"Unexpected SettingType {s.Type}"),
+			};
 		}
 	}
 
@@ -173,14 +157,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	{
 		public MednaEnumDescriptor(SettingT s, bool isSyncSetting) : base(s, isSyncSetting) {}
 		public override Type PropertyType => typeof(string);
-		protected override object ConvertFromString(string s)
-		{
-			return s;
-		}
-		protected override string ConvertToString(object o)
-		{
-			return (string)o;
-		}
+		protected override object ConvertFromString(string s) => s;
+		protected override string ConvertToString(object o) => (string)o;
 		public override TypeConverter Converter => new MyTypeConverter { Setting = Setting };
 
 		private class MyTypeConverter : TypeConverter
@@ -211,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					.Name;
 			}
 
-			public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) => new StandardValuesCollection(
+			public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) => new(
 				ValidSettingEnums.Select(e => e.Value).ToList()
 			);
 
@@ -224,27 +202,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	{
 		public MednaStringDescriptor(SettingT s, bool isSyncSetting) : base(s, isSyncSetting) {}
 		public override Type PropertyType => typeof(string);
-		protected override object ConvertFromString(string s)
-		{
-			return s;
-		}
-		protected override string ConvertToString(object o)
-		{
-			return (string)o;
-		}
+		protected override object ConvertFromString(string s) => s;
+		protected override string ConvertToString(object o) => (string)o;
 	}
 	public class MednaBoolDescriptor : MednaPropertyDescriptor
 	{
 		public MednaBoolDescriptor(SettingT s, bool isSyncSetting) : base(s, isSyncSetting) {}
 		public override Type PropertyType => typeof(bool);
-		protected override object ConvertFromString(string s)
-		{
-			return int.Parse(s) != 0;
-		}
-		protected override string ConvertToString(object o)
-		{
-			return (bool)o ? "1" : "0";
-		}
+		protected override object ConvertFromString(string s) => int.Parse(s) != 0;
+		protected override string ConvertToString(object o) => (bool)o ? "1" : "0";
 	}
 	public class MednaLongDescriptor : MednaPropertyDescriptor
 	{
@@ -252,15 +218,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public override Type PropertyType => typeof(long);
 		protected override object ConvertFromString(string s)
 		{
-			var ret = long.Parse(s);
+			long ret = long.Parse(s);
 			if (Setting.Min != null && ret < long.Parse(Setting.Min) || Setting.Max != null && ret > long.Parse(Setting.Max))
 				ret = long.Parse(Setting.DefaultValue);
 			return ret;
 		}
-		protected override string ConvertToString(object o)
-		{
-			return o.ToString();
-		}
+		protected override string ConvertToString(object o) => o.ToString();
 	}
 	public class MednaUlongDescriptor : MednaPropertyDescriptor
 	{
@@ -268,15 +231,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public override Type PropertyType => typeof(ulong);
 		protected override object ConvertFromString(string s)
 		{
-			var ret = Parse(s);
+			ulong ret = Parse(s);
 			if (Setting.Min != null && ret < Parse(Setting.Min) || Setting.Max != null && ret > Parse(Setting.Max))
 				ret = Parse(Setting.DefaultValue);
 			return ret;
 		}
-		protected override string ConvertToString(object o)
-		{
-			return o.ToString();
-		}
+		protected override string ConvertToString(object o) => o.ToString();
 		private static ulong Parse(string s)
 		{
 			if (s.StartsWith("0x", StringComparison.Ordinal))
@@ -295,15 +255,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public override Type PropertyType => typeof(double);
 		protected override object ConvertFromString(string s)
 		{
-			var ret = double.Parse(s, NumberFormatInfo.InvariantInfo);
+			double ret = double.Parse(s, NumberFormatInfo.InvariantInfo);
 			if (Setting.Min != null && ret < double.Parse(Setting.Min, NumberFormatInfo.InvariantInfo) || Setting.Max != null && ret > double.Parse(Setting.Max, NumberFormatInfo.InvariantInfo))
 				ret = double.Parse(Setting.DefaultValue, NumberFormatInfo.InvariantInfo);
 			return ret;
 		}
-		protected override string ConvertToString(object o)
-		{
-			return o.ToString();
-		}
+		protected override string ConvertToString(object o) => o.ToString();
 	}
 
 	public class PortPropertyDescriptor : PropertyDescriptor
@@ -329,29 +286,23 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public override object GetValue(object component)
 		{
-			var ss = (NymaSyncSettings)component;
-			if (!ss.PortDevices.TryGetValue(PortIndex, out var val))
+			NymaSyncSettings ss = (NymaSyncSettings)component;
+			if (!ss.PortDevices.TryGetValue(PortIndex, out string val))
 				val = Port.DefaultSettingsValue;
 			return val;
 		}
 
-		public override void ResetValue(object component)
-		{
-			((NymaSyncSettings)component).PortDevices.Remove(PortIndex);
-		}
+		public override void ResetValue(object component) => ((NymaSyncSettings)component).PortDevices.Remove(PortIndex);
 
 		public override void SetValue(object component, object value)
 		{
-			var str = (string) value;
+			string str = (string) value;
 			if (str == Port.DefaultSettingsValue) ResetValue(component);
 			else if (Port.AllowedDevices.Exists(d => d.SettingValue == str)) ((NymaSyncSettings) component).PortDevices[PortIndex] = str;
 			// else does not validate
 		}
 
-		public override bool ShouldSerializeValue(object component)
-		{
-			return ((NymaSyncSettings)component).PortDevices.ContainsKey(PortIndex);
-		}
+		public override bool ShouldSerializeValue(object component) => ((NymaSyncSettings)component).PortDevices.ContainsKey(PortIndex);
 
 		public override TypeConverter Converter => new MyTypeConverter { Port = Port };
 
@@ -379,7 +330,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					.Name;
 			}
 
-			public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) => new StandardValuesCollection(
+			public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) => new(
 				Port.AllowedDevices.Select(d => d.SettingValue).ToList()
 			);
 
@@ -408,15 +359,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public override Type PropertyType => typeof(bool);
 		public override bool CanResetValue(object component) => true;
 
-		public override object GetValue(object component)
-		{
-			return !((NymaSettings)component).DisabledLayers.Contains(LayerName);
-		}
+		public override object GetValue(object component) => !((NymaSettings)component).DisabledLayers.Contains(LayerName);
 
-		public override void ResetValue(object component)
-		{
-			((NymaSettings)component).DisabledLayers.Remove(LayerName);
-		}
+		public override void ResetValue(object component) => ((NymaSettings)component).DisabledLayers.Remove(LayerName);
 
 		public override void SetValue(object component, object value)
 		{
@@ -426,9 +371,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				((NymaSettings)component).DisabledLayers.Add(LayerName);
 		}
 
-		public override bool ShouldSerializeValue(object component)
-		{
-			return ((NymaSettings)component).DisabledLayers.Contains(LayerName);
-		}
+		public override bool ShouldSerializeValue(object component) => ((NymaSettings)component).DisabledLayers.Contains(LayerName);
 	}
 }

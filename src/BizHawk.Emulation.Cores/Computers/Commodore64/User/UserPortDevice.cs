@@ -16,30 +16,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.User
 			// note: this will not disconnect any attached media
 		}
 
-		public virtual bool ReadAtn()
-		{
-			return true;
-		}
+		public virtual bool ReadAtn() => true;
 
-		public virtual int ReadData()
-		{
-			return 0xFF;
-		}
+		public virtual int ReadData() => 0xFF;
 
-		public virtual bool ReadFlag2()
-		{
-			return true;
-		}
+		public virtual bool ReadFlag2() => true;
 
-		public virtual bool ReadPa2()	
-		{
-			return true;
-		}
+		public virtual bool ReadPa2() => true;
 
-		public virtual bool ReadReset()
-		{
-			return true;
-		}
+		public virtual bool ReadReset() => true;
 
 		public abstract void SyncState(Serializer ser);
 	}

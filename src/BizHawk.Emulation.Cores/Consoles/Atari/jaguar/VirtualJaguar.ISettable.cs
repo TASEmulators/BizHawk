@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		public PutSettingsDirtyBits PutSyncSettings(VirtualJaguarSyncSettings o)
 		{
-			var ret = VirtualJaguarSyncSettings.NeedsReboot(_syncSettings, o);
+			bool ret = VirtualJaguarSyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}

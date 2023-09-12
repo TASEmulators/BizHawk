@@ -7,25 +7,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public GBHawk Core { get; set; }
 
-		public virtual byte ReadMemoryLow(ushort addr)
-		{
-			return 0;
-		}
+		public virtual byte ReadMemoryLow(ushort addr) => 0;
 
-		public virtual byte ReadMemoryHigh(ushort addr)
-		{
-			return 0;
-		}
+		public virtual byte ReadMemoryHigh(ushort addr) => 0;
 
-		public virtual byte PeekMemoryLow(ushort addr)
-		{
-			return 0;
-		}
+		public virtual byte PeekMemoryLow(ushort addr) => 0;
 
-		public virtual byte PeekMemoryHigh(ushort addr)
-		{
-			return 0;
-		}
+		public virtual byte PeekMemoryHigh(ushort addr) => 0;
 
 		public virtual void WriteMemory(ushort addr, byte value)
 		{
@@ -59,14 +47,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 		}
 
-		protected void SetCDLROM(LR35902.eCDLogMemFlags flags, int cdladdr)
-		{
-			Core.SetCDL(flags, "ROM", cdladdr);
-		}
+		protected void SetCDLROM(LR35902.eCDLogMemFlags flags, int cdladdr) => Core.SetCDL(flags, "ROM", cdladdr);
 
-		protected void SetCDLRAM(LR35902.eCDLogMemFlags flags, int cdladdr)
-		{
-			Core.SetCDL(flags, "CartRAM", cdladdr);
-		}
+		protected void SetCDLRAM(LR35902.eCDLogMemFlags flags, int cdladdr) => Core.SetCDL(flags, "CartRAM", cdladdr);
 	}
 }

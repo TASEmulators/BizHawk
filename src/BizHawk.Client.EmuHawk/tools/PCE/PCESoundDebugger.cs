@@ -99,15 +99,15 @@ namespace BizHawk.Client.EmuHawk
 				short[] waveform = (short[])ch.Wave.Clone();
 
 				// hash it
-				var ms = new MemoryStream(_waveformTemp);
-				var bw = new BinaryWriter(ms);
-				foreach (var s in waveform)
+				MemoryStream ms = new(_waveformTemp);
+				BinaryWriter bw = new(ms);
+				foreach (short s in waveform)
 				{
 					bw.Write(s);
 				}
 
 				bw.Flush();
-				var md5 = MD5Checksum.ComputeDigestHex(_waveformTemp);
+				string md5 = MD5Checksum.ComputeDigestHex(_waveformTemp);
 
 				if (!_psgEntryTable.TryGetValue(md5, out var entry))
 				{
@@ -164,8 +164,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private readonly PsgEntry[] _lastSamples = new PsgEntry[8];
-		private readonly List<PsgEntry> _psgEntries = new List<PsgEntry>();
-		private readonly Dictionary<string, PsgEntry> _psgEntryTable = new Dictionary<string, PsgEntry>();
+		private readonly List<PsgEntry> _psgEntries = new();
+		private readonly Dictionary<string, PsgEntry> _psgEntryTable = new();
 
 		// 32*16 samples, 16bit, mono, 8khz (but we'll change the sample rate)
 		private static readonly byte[] EmptyWav = {
@@ -178,14 +178,14 @@ namespace BizHawk.Client.EmuHawk
 		private void BtnExport_Click(object sender, EventArgs e)
 		{
 			string tmpFilename = $"{Path.GetTempFileName()}.zip";
-			using (var stream = new FileStream(tmpFilename, FileMode.Create, FileAccess.Write, FileShare.Read))
+			using (FileStream stream = new(tmpFilename, FileMode.Create, FileAccess.Write, FileShare.Read))
 			{
-				using var zip = new ZipArchive(stream, ZipArchiveMode.Create);
+				using ZipArchive zip = new(stream, ZipArchiveMode.Create);
 
 				foreach (var entry in _psgEntries)
 				{
-					var ms = new MemoryStream();
-					var bw = new BinaryWriter(ms);
+					MemoryStream ms = new();
+					BinaryWriter bw = new(ms);
 					bw.Write(EmptyWav, 0, EmptyWav.Length);
 					ms.Position = 0x18; // samplerate and avgbytespersecond
 					bw.Write(20000);
@@ -201,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					bw.Flush();
-					var buf = ms.GetBuffer();
+					byte[] buf = ms.GetBuffer();
 
 					var ze = zip.CreateEntry($"{entry.Name}.wav", CompressionLevel.Fastest);
 					using var zipstream = ze.Open();
@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 			lvPsgWaveforms.Items.Clear();
 			foreach (var entry in _psgEntries)
 			{
-				var lvi = new ListViewItem(entry.Name);
+				ListViewItem lvi = new(entry.Name);
 				lvi.SubItems.Add(entry.HitCount.ToString());
 				lvPsgWaveforms.Items.Add(lvi);
 			}

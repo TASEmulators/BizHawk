@@ -43,8 +43,8 @@ namespace BizHawk.Client.EmuHawk
 				PolarToRectHelper = (r, θ) =>
 				{
 					var (x, y) = PolarRectConversion.PolarToRectLookup((ushort) r, (ushort) θ);
-					var x1 = (RangeX.IsReversed ? RangeX.Neutral - x : RangeX.Neutral + x).ConstrainWithin(RangeX.Range);
-					var y1 = (RangeY.IsReversed ? RangeY.Neutral - y : RangeY.Neutral + y).ConstrainWithin(RangeY.Range);
+					int x1 = (RangeX.IsReversed ? RangeX.Neutral - x : RangeX.Neutral + x).ConstrainWithin(RangeX.Range);
+					int y1 = (RangeY.IsReversed ? RangeY.Neutral - y : RangeY.Neutral + y).ConstrainWithin(RangeY.Range);
 					return ((short) x1, (short) y1);
 				};
 				RectToPolarHelper = (x, y) => PolarRectConversion.RectToPolarLookup(
@@ -59,17 +59,17 @@ namespace BizHawk.Client.EmuHawk
 				const double RAD_TO_DEG_FACTOR = 180 / Math.PI;
 				PolarToRectHelper = (r, θ) =>
 				{
-					var x = (short) (r * Math.Cos(θ * DEG_TO_RAD_FACTOR));
-					var y = (short) (r * Math.Sin(θ * DEG_TO_RAD_FACTOR));
-					var x1 = (RangeX.IsReversed ? RangeX.Neutral - x : RangeX.Neutral + x).ConstrainWithin(RangeX.Range);
-					var y1 = (RangeY.IsReversed ? RangeY.Neutral - y : RangeY.Neutral + y).ConstrainWithin(RangeY.Range);
+					short x = (short) (r * Math.Cos(θ * DEG_TO_RAD_FACTOR));
+					short y = (short) (r * Math.Sin(θ * DEG_TO_RAD_FACTOR));
+					int x1 = (RangeX.IsReversed ? RangeX.Neutral - x : RangeX.Neutral + x).ConstrainWithin(RangeX.Range);
+					int y1 = (RangeY.IsReversed ? RangeY.Neutral - y : RangeY.Neutral + y).ConstrainWithin(RangeY.Range);
 					return ((short) x1, (short) y1);
 				};
 				RectToPolarHelper = (x, y) =>
 				{
 					double x1 = RangeX.IsReversed ? RangeX.Neutral - x : x - RangeX.Neutral;
 					double y1 = RangeY.IsReversed ? RangeY.Neutral - y : y - RangeY.Neutral;
-					var θ = Math.Atan2(y1, x1) * RAD_TO_DEG_FACTOR;
+					double θ = Math.Atan2(y1, x1) * RAD_TO_DEG_FACTOR;
 					return ((uint) Math.Sqrt(x1 * x1 + y1 * y1), (uint) (θ < 0 ? 360.0 + θ : θ));
 				};
 			}
@@ -196,8 +196,8 @@ namespace BizHawk.Client.EmuHawk
 			if (_updatingFromAnalog || _updatingFromPolar) return;
 			_updatingFromXY = true;
 
-			var x = (int) ManualX.Value;
-			var y = (int) ManualY.Value;
+			int x = (int) ManualX.Value;
+			int y = (int) ManualY.Value;
 			var (r, θ) = RectToPolarHelper(x, y);
 			SetAnalog(x, y);
 			SetPolar(r, θ);
@@ -248,8 +248,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (AnalogStick.HasValue)
 			{
-				var x = AnalogStick.X;
-				var y = AnalogStick.Y;
+				int x = AnalogStick.X;
+				int y = AnalogStick.Y;
 				var (r, θ) = RectToPolarHelper(x, y);
 				SetPolar(r, θ);
 				SetXY(x, y);

@@ -10,15 +10,13 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public BmpView BmpView => bmpView1;
+		public BmpView BmpView { get; private set; }
 
 		public override string ToString() => Text;
 
-		private void MobileDetailView_SizeChanged(object sender, EventArgs e)
-		{
+		private void MobileDetailView_SizeChanged(object sender, EventArgs e) =>
 			// bmp view is always square
 			tableLayoutPanel1.RowStyles[0].Height = ClientSize.Width;
-		}
 
 		private void listView1_SizeChanged(object sender, EventArgs e)
 		{

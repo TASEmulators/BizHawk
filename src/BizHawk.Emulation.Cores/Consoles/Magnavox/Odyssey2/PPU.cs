@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
@@ -125,15 +125,15 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				ret = AudioReadReg(addr);
 			}
-			else if ((addr >= 0xC0) && (addr <= 0xC8))
+			else if (addr is >= 0xC0 and <= 0xC8)
 			{
 				ret = Grid_H[addr - 0xC0];
 			}
-			else if ((addr >= 0xD0) && (addr <= 0xD8))
+			else if (addr is >= 0xD0 and <= 0xD8)
 			{
 				ret = Grid_H[addr - 0xD0 + 9];
 			}
-			else if ((addr >= 0xE0) && (addr <= 0xE9))
+			else if (addr is >= 0xE0 and <= 0xE9)
 			{
 				ret = Grid_V[addr - 0xE0];
 			}
@@ -175,9 +175,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				else { ret = (byte)(cycle); }
 			}
 			else if (addr <= 0xAA) { ret = AudioReadReg(addr); }
-			else if ((addr >= 0xC0) && (addr <= 0xC8)) { ret = Grid_H[addr - 0xC0]; }
-			else if ((addr >= 0xD0) && (addr <= 0xD8)) { ret = Grid_H[addr - 0xD0 + 9]; }
-			else if ((addr >= 0xE0) && (addr <= 0xE9)) { ret = Grid_V[addr - 0xE0]; }
+			else if (addr is >= 0xC0 and <= 0xC8) { ret = Grid_H[addr - 0xC0]; }
+			else if (addr is >= 0xD0 and <= 0xD8) { ret = Grid_H[addr - 0xD0 + 9]; }
+			else if (addr is >= 0xE0 and <= 0xE9) { ret = Grid_V[addr - 0xE0]; }
 
 			return ret;
 		}
@@ -271,25 +271,22 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				AudioWriteReg(addr, value);
 			}
-			else if ((addr >= 0xC0) && (addr <= 0xC8))
+			else if (addr is >= 0xC0 and <= 0xC8)
 			{
 				if (!VDC_ctrl.Bit(3)) { Grid_H[addr - 0xC0] = value; } else { Console.WriteLine("blocked"); }
 			}
-			else if ((addr >= 0xD0) && (addr <= 0xD8))
+			else if (addr is >= 0xD0 and <= 0xD8)
 			{
 				if (!VDC_ctrl.Bit(3)) { Grid_H[addr - 0xD0 + 9] = value; } else { Console.WriteLine("blocked"); }
 			}
-			else if ((addr >= 0xE0) && (addr <= 0xE9))
+			else if (addr is >= 0xE0 and <= 0xE9)
 			{
 				if (!VDC_ctrl.Bit(3)) { Grid_V[addr - 0xE0] = value; } else { Console.WriteLine("blocked"); }
 			}
 			//Console.WriteLine(addr + " " + value + " " + LY + " " + Core.cpu.TotalExecutedCycles);
 		}
 
-		public byte ReadRegVPP(int addr)
-		{
-			return 0;
-		}
+		public byte ReadRegVPP(int addr) => 0;
 
 		public void WriteRegVPP(int addr, byte value)
 		{
@@ -481,7 +478,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			if (VDC_ctrl.Bit(6) && ((LY - GRID_OFST) >= 0) && (((LY - GRID_OFST) % GRID_OFST) < 3) && VDC_ctrl.Bit(3))
 			{
 
-				if (((cycle % 16) == 8) || ((cycle % 16) == 9))
+				if (cycle % 16 is 8 or 9)
 				{
 					int k = (int)Math.Floor(cycle / 16.0);
 					int j = (int)Math.Floor((LY - GRID_OFST) / 24.0);
@@ -1329,7 +1326,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			AudioSyncState(ser);
 		}
 
-		private BlipBuffer _blip_C = new BlipBuffer(15000);
+		private BlipBuffer _blip_C = new(15000);
 
 		public byte sample;
 
@@ -1502,10 +1499,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			master_audio_clock = 0;
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
 		public void DiscardSamples()
 		{
@@ -1513,10 +1507,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			master_audio_clock = 0;
 		}
 
+		#pragma warning disable IDE0051
 		private void GetSamples(short[] samples)
 		{
 
 		}
+		#pragma warning restore IDE0051
 
 		public void DisposeSound()
 		{

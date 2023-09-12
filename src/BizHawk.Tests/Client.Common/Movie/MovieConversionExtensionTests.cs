@@ -14,7 +14,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[DataRow("C:\\Temp\\TestMovie.tasproj", "C:\\Temp\\TestMovie.tasproj")]
 		public void ConvertFileNameToTasMovie(string original, string expected)
 		{
-			var actual = MovieConversionExtensions.ConvertFileNameToTasMovie(original);
+			string actual = MovieConversionExtensions.ConvertFileNameToTasMovie(original);
 			Assert.AreEqual(expected, actual);
 		}
 	}

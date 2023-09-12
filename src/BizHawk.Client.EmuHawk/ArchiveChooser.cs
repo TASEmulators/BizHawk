@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class ArchiveChooser : Form
 	{
 		private readonly IList<ListViewItem> _archiveItems = new List<ListViewItem>();
-		private readonly ToolTip _errorBalloon = new ToolTip();
+		private readonly ToolTip _errorBalloon = new();
 
 		private static bool _useRegEx;
 		private static bool _matchWhileTyping = true;
@@ -30,11 +30,11 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < items.Count; i++)
 			{
 				var item = items[i];
-				var lvi = new ListViewItem { Tag = i };
+				ListViewItem lvi = new() { Tag = i };
 				lvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				lvi.Text = item.Name;
 				long size = item.Size;
-				var extension = Path.GetExtension(item.Name);
+				string extension = Path.GetExtension(item.Name);
 				if (extension != null && size % 1024 == 16 && extension.ToUpperInvariant() == ".NES")
 					size -= 16;
 				lvi.SubItems[1].Text = Util.FormatFileSize(size);
@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				lvMembers.Items.Clear();
-				foreach (ListViewItem i in _archiveItems.OrderBy(x => x.Name))
+				foreach (var i in _archiveItems.OrderBy(x => x.Name))
 				{
 					lvMembers.Items.Add(i);
 				}
@@ -77,10 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void btnCancel_Click(object sender, EventArgs e)
-		{
-			DialogResult = DialogResult.Cancel;
-		}
+		private void btnCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
 		private void lvMembers_ItemActivate(object sender, EventArgs e)
 		{
@@ -94,20 +91,11 @@ namespace BizHawk.Client.EmuHawk
 			tbFilter.Select();
 		}
 
-		private void btnSearch_Click(object sender, EventArgs e)
-		{
-			StartMatching(tbSearch, DoSearch);
-		}
+		private void btnSearch_Click(object sender, EventArgs e) => StartMatching(tbSearch, DoSearch);
 
-		private void cbInstantFilter_CheckedChanged(object sender, EventArgs e)
-		{
-			_matchWhileTyping = cbInstantFilter.Checked;
-		}
+		private void cbInstantFilter_CheckedChanged(object sender, EventArgs e) => _matchWhileTyping = cbInstantFilter.Checked;
 
-		private void radRegEx_CheckedChanged(object sender, EventArgs e)
-		{
-			_useRegEx = radRegEx.Checked;
-		}
+		private void radRegEx_CheckedChanged(object sender, EventArgs e) => _useRegEx = radRegEx.Checked;
 
 		private void tbFilter_TextChanged(object sender, EventArgs e)
 		{
@@ -117,10 +105,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void btnFilter_Click(object sender, EventArgs e)
-		{
-			StartMatching(tbFilter, DoFilter);
-		}
+		private void btnFilter_Click(object sender, EventArgs e) => StartMatching(tbFilter, DoFilter);
 
 		private void StartMatching(TextBox tb, Action<IMatcher> func)
 		{
@@ -182,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				lvMembers.Items.Clear();
-				foreach (ListViewItem item in _archiveItems)
+				foreach (var item in _archiveItems)
 				{
 					if (searchMatcher.Matches(item))
 					{
@@ -222,10 +207,7 @@ namespace BizHawk.Client.EmuHawk
 		private class RegExMatcher : IMatcher
 		{
 			public Regex Matcher { get; set; }
-			public bool Matches(ListViewItem value)
-			{
-				return Matcher.IsMatch(value.Text);
-			}
+			public bool Matches(ListViewItem value) => Matcher.IsMatch(value.Text);
 		}
 
 		private IMatcher CreateMatcher(string searchKey)

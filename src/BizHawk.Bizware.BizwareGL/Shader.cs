@@ -32,10 +32,7 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
-		public void AddRef()
-		{
-			RefCount++;
-		}
+		public void AddRef() => RefCount++;
 
 	}
 }

@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 			_dropdownMenu.PreviewKeyDown += DropdownMenu_PreviewKeyDown;
 			foreach (var spec in InputWidget.SpecialBindings)
 			{
-				var tsi = new ToolStripMenuItem(spec.BindingName) { ToolTipText = spec.TooltipText };
+				ToolStripMenuItem tsi = new(spec.BindingName) { ToolTipText = spec.TooltipText };
 				_dropdownMenu.Items.Add(tsi);
 			}
 		
@@ -64,10 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void TabNext()
-		{
-			Parent.SelectNextControl(btnSpecial, true, true, true, true);
-		}
+		public void TabNext() => Parent.SelectNextControl(btnSpecial, true, true, true, true);
 
 		private readonly ContextMenuStrip _dropdownMenu;
 
@@ -75,19 +72,13 @@ namespace BizHawk.Client.EmuHawk
 		public string WidgetName { get => widget.WidgetName; set => widget.WidgetName = value; }
 		public string Bindings { get => widget.Bindings; set => widget.Bindings = value; }
 
-		public void Clear()
-		{
-			widget.ClearAll();
-		}
+		public void Clear() => widget.ClearAll();
 
-		private void BtnSpecial_Click(object sender, EventArgs e)
-		{
-			_dropdownMenu.Show(MousePosition);
-		}
+		private void BtnSpecial_Click(object sender, EventArgs e) => _dropdownMenu.Show(MousePosition);
 
 		private void DropdownMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
-			var mods = 0U;
+			uint mods = 0U;
 
 			if ((ModifierKeys & Keys.Shift) != 0)
 			{

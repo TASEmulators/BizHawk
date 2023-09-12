@@ -47,15 +47,12 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Retrieves the pointer to a managed array
 		/// </summary>
-		public IntPtr GetPin(string key)
-		{
-			return _pins[key].AddrOfPinnedObject();
-		}
+		public IntPtr GetPin(string key) => _pins[key].AddrOfPinnedObject();
 
 		/// <summary>
 		/// Pinned managed arrays
 		/// </summary>
-		private readonly Dictionary<string, GCHandle> _pins = new Dictionary<string, GCHandle>();
+		private readonly Dictionary<string, GCHandle> _pins = new();
 
 		/// <summary>
 		/// Whether the CDL is tracking a block with the given name
@@ -92,7 +89,7 @@ namespace BizHawk.Emulation.Common
 
 			foreach (var (scope, data) in this)
 			{
-				if (!other.TryGetValue(scope, out var oval) || oval.Length != data.Length) return false;
+				if (!other.TryGetValue(scope, out byte[]? oval) || oval.Length != data.Length) return false;
 			}
 			// don't need to check keys present in other but not in this -- `Count` would differ
 
@@ -112,7 +109,7 @@ namespace BizHawk.Emulation.Common
 
 			foreach (var (scope, fromData) in other)
 			{
-				var toData = this[scope];
+				byte[] toData = this[scope];
 
 				if (fromData.Length != toData.Length)
 				{
@@ -134,15 +131,12 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void Save(Stream s)
-		{
-			SaveInternal(s, true);
-		}
-		
+		public void Save(Stream s) => SaveInternal(s, true);
+
 		private Dictionary<string, long> SaveInternal(Stream s, bool forReal)
 		{
-			var ret = new Dictionary<string, long>();
-			var w = new BinaryWriter(s);
+			Dictionary<string, long> ret = new();
+			BinaryWriter w = new(s);
 			w.Write("BIZHAWK-CDL-2");
 			w.Write(SubType!.PadRight(15));
 			w.Write(Count);
@@ -172,15 +166,12 @@ namespace BizHawk.Emulation.Common
 			return ret;
 		}
 
-		public Dictionary<string, long> GetBlockMap()
-		{
-			return SaveInternal(new MemoryStream(), false);
-		}
+		public Dictionary<string, long> GetBlockMap() => SaveInternal(new MemoryStream(), false);
 
 		/// <exception cref="InvalidOperationException">contents of <paramref name="s"/> do not begin with valid file header</exception>
 		public void Load(Stream s)
 		{
-			var br = new BinaryReader(s);
+			BinaryReader br = new(s);
 			string id = br.ReadString();
 			SubType = id switch
 			{

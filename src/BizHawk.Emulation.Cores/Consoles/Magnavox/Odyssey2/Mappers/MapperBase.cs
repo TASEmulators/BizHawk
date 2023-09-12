@@ -35,14 +35,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		{
 		}
 
-		protected void SetCDLROM(I8048.eCDLogMemFlags flags, int cdladdr)
-		{
-			Core.SetCDL(flags, "ROM", cdladdr);
-		}
+		protected void SetCDLROM(I8048.eCDLogMemFlags flags, int cdladdr) => Core.SetCDL(flags, "ROM", cdladdr);
 
-		protected void SetCDLRAM(I8048.eCDLogMemFlags flags, int cdladdr)
-		{
-			Core.SetCDL(flags, "CartRAM", cdladdr);
-		}
+		protected void SetCDLRAM(I8048.eCDLogMemFlags flags, int cdladdr) => Core.SetCDL(flags, "CartRAM", cdladdr);
 	}
 }

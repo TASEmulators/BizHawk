@@ -42,9 +42,9 @@ namespace BizHawk.Client.EmuHawk
 			var rewinder = _getRewinder();
 			if (rewinder?.Active == true)
 			{
-				var fullnessRatio = rewinder.FullnessRatio;
+				float fullnessRatio = rewinder.FullnessRatio;
 				FullnessLabel.Text = $"{fullnessRatio:P2}";
-				var stateCount = rewinder.Count;
+				int stateCount = rewinder.Count;
 				RewindFramesUsedLabel.Text = stateCount.ToString();
 				_avgStateSize = stateCount is 0 ? 0UL : (ulong) Math.Round(rewinder.Size * fullnessRatio / stateCount);
 			}
@@ -100,10 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			return $"{num:0.00} KB";
 		}
 
-		private void Cancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void Cancel_Click(object sender, EventArgs e) => Close();
 
 		private bool TriggerRewindSettingsReload { get; set; }
 
@@ -152,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 			double estFrames = 0.0;
 			if (_avgStateSize is not 0UL)
 			{
-				var bufferSize = 1L << (int) BufferSizeUpDown.Value;
+				long bufferSize = 1L << (int) BufferSizeUpDown.Value;
 				labelEx1.Text = bufferSize.ToString();
 				bufferSize *= 1024 * 1024;
 				estFrames = bufferSize / (double) _avgStateSize;
@@ -161,30 +158,16 @@ namespace BizHawk.Client.EmuHawk
 			EstTimeLabel.Text = $"{estFrames / _framerate / 60.0:n} minutes";
 		}
 
-		private void BufferSizeUpDown_ValueChanged(object sender, EventArgs e)
-		{
-			CalculateEstimates();
-		}
+		private void BufferSizeUpDown_ValueChanged(object sender, EventArgs e) => CalculateEstimates();
 
-		private void UseCompression_CheckedChanged(object sender, EventArgs e)
-		{
-			CalculateEstimates();
-		}
+		private void UseCompression_CheckedChanged(object sender, EventArgs e) => CalculateEstimates();
 
-		private void NudCompression_ValueChanged(object sender, EventArgs e)
-		{
-			trackBarCompression.Value = (int)((NumericUpDown)sender).Value;
-		}
+		private void NudCompression_ValueChanged(object sender, EventArgs e) => trackBarCompression.Value = (int)((NumericUpDown)sender).Value;
 
-		private void TrackBarCompression_ValueChanged(object sender, EventArgs e)
-		{
+		private void TrackBarCompression_ValueChanged(object sender, EventArgs e) =>
 			// TODO - make a UserControl which is TrackBar and NUD combined
 			nudCompression.Value = ((TrackBar)sender).Value;
-		}
 
-		private void BtnResetCompression_Click(object sender, EventArgs e)
-		{
-			nudCompression.Value = SaveStateConfig.DefaultCompressionLevelNormal;
-		}
+		private void BtnResetCompression_Click(object sender, EventArgs e) => nudCompression.Value = SaveStateConfig.DefaultCompressionLevelNormal;
 	}
 }

@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		public Action DebuggerStep;
 		public readonly Chip23128 DriveRom;
 
-		private struct CpuLink : IMOS6502XLink
+		private readonly struct CpuLink : IMOS6502XLink
 		{
 			private readonly Drive1541 _drive;
 
@@ -42,15 +42,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 				_drive = drive;
 			}
 
-			public byte DummyReadMemory(ushort address) => unchecked((byte)_drive.Read(address));
+			public readonly byte DummyReadMemory(ushort address) => unchecked((byte)_drive.Read(address));
 
-			public void OnExecFetch(ushort address) { }
+			public readonly void OnExecFetch(ushort address) { }
 
-			public byte PeekMemory(ushort address) => unchecked((byte)_drive.Peek(address));
+			public readonly byte PeekMemory(ushort address) => unchecked((byte)_drive.Peek(address));
 
-			public byte ReadMemory(ushort address) => unchecked((byte)_drive.Read(address));
+			public readonly byte ReadMemory(ushort address) => unchecked((byte)_drive.Read(address));
 
-			public void WriteMemory(ushort address, byte value) => _drive.Write(address, value);
+			public readonly void WriteMemory(ushort address, byte value) => _drive.Write(address, value);
 		}
 
 		public Drive1541(int clockNum, int clockDen, Func<int> getCurrentDiskNumber)
@@ -133,10 +133,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 				SaveDeltas();
 			}
 
-			for (var i = 0; i < _usedDiskTracks.Length; i++)
+			for (int i = 0; i < _usedDiskTracks.Length; i++)
 			{
 				ser.Sync($"_usedDiskTracks{i}", ref _usedDiskTracks[i], useNull: false);
-				for (var j = 0; j < 84; j++)
+				for (int j = 0; j < 84; j++)
 				{
 					ser.Sync($"DiskDeltas{i},{j}", ref _diskDeltas[i, j], useNull: true);
 				}
@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			Via0.HardReset();
 			Via1.HardReset();
 			_trackNumber = 34;
-			for (var i = 0; i < _ram.Length; i++)
+			for (int i = 0; i < _ram.Length; i++)
 			{
 				_ram[i] = 0x00;
 			}
@@ -272,7 +272,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		{
 			_usedDiskTracks = new bool[diskCount][];
 			_diskDeltas = new byte[diskCount, 84][];
-			for (var i = 0; i < diskCount; i++)
+			for (int i = 0; i < diskCount; i++)
 			{
 				_usedDiskTracks[i] = new bool[84];
 			}
@@ -284,13 +284,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		{
 			SaveDeltas(); // update the current deltas
 
-			using var ms = new MemoryStream();
-			using var bw = new BinaryWriter(ms);
+			using MemoryStream ms = new();
+			using BinaryWriter bw = new(ms);
 			bw.Write(_usedDiskTracks.Length);
-			for (var i = 0; i < _usedDiskTracks.Length; i++)
+			for (int i = 0; i < _usedDiskTracks.Length; i++)
 			{
 				bw.WriteByteBuffer(_usedDiskTracks[i].ToUByteBuffer());
-				for (var j = 0; j < 84; j++)
+				for (int j = 0; j < 84; j++)
 				{
 					bw.WriteByteBuffer(_diskDeltas[i, j]);
 				}
@@ -301,10 +301,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
 		public void StoreSaveRam(byte[] data)
 		{
-			using var ms = new MemoryStream(data, false);
-			using var br = new BinaryReader(ms);
+			using MemoryStream ms = new(data, false);
+			using BinaryReader br = new(ms);
 
-			var ndisks = br.ReadInt32();
+			int ndisks = br.ReadInt32();
 			if (ndisks != _usedDiskTracks.Length)
 			{
 				throw new InvalidOperationException("Disk count mismatch!");
@@ -312,10 +312,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
 			ResetDeltas();
 
-			for (var i = 0; i < _usedDiskTracks.Length; i++)
+			for (int i = 0; i < _usedDiskTracks.Length; i++)
 			{
 				_usedDiskTracks[i] = br.ReadByteBuffer(returnNull: false)!.ToBoolBuffer();
-				for (var j = 0; j < 84; j++)
+				for (int j = 0; j < 84; j++)
 				{
 					_diskDeltas[i, j] = br.ReadByteBuffer(returnNull: true);
 				}

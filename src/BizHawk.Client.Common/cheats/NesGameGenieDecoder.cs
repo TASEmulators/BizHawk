@@ -5,7 +5,7 @@ namespace BizHawk.Client.Common.cheats
 {
 	public static class NesGameGenieDecoder
 	{
-		private static readonly Dictionary<char, int> GameGenieTable = new Dictionary<char, int>
+		private static readonly Dictionary<char, int> GameGenieTable = new()
 		{
 			['A'] =  0,  // 0000
 			['P'] =  1,  // 0001
@@ -32,12 +32,12 @@ namespace BizHawk.Client.Common.cheats
 				throw new ArgumentNullException(nameof(code));
 			}
 
-			if (code.Length != 6 && code.Length != 8)
+			if (code.Length is not 6 and not 8)
 			{
 				return new InvalidCheatCode("Game Genie codes need to be six or eight characters in length.");
 			}
 
-			var result = new DecodeResult { Size = WatchSize.Byte };
+			DecodeResult result = new() { Size = WatchSize.Byte };
 			// char 3 bit 3 denotes the code length.
 			if (code.Length == 6)
 			{
@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common.cheats
 				result.Value = 0;
 				result.Address = 0x8000;
 
-				_ = GameGenieTable.TryGetValue(code[0], out var x);
+				_ = GameGenieTable.TryGetValue(code[0], out int x);
 				result.Value |= x & 0x07;
 				result.Value |= (x & 0x08) << 4;
 
@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common.cheats
 				result.Address = 0x8000;
 				result.Compare = 0;
 
-				_ = GameGenieTable.TryGetValue(code[0], out var x);
+				_ = GameGenieTable.TryGetValue(code[0], out int x);
 				result.Value |= x & 0x07;
 				result.Value |= (x & 0x08) << 4;
 

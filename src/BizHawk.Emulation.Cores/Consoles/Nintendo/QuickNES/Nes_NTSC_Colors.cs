@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			float g = to_float * inp[1];
 			float b = to_float * inp[2];
 
-			RGB_TO_YIQ(r, g, b, out float y, out var i, out var q);
+			RGB_TO_YIQ(r, g, b, out float y, out float i, out float q);
 
 			if (tint > 0 && color < 0x0d)
 			{
@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					int tint_color = tints[tint];
 					float sat = hi * (0.5f - atten_mul * 0.5f) + atten_sub * 0.5f;
 					y -= sat * 0.5f;
-					if (tint >= 3 && tint != 4)
+					if (tint is >= 3 and not 4)
 					{
 						/* combined tint bits */
 						sat *= 0.6f;

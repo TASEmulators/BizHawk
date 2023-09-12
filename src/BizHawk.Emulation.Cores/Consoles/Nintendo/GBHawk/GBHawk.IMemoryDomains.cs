@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new()
 			{
 				new MemoryDomainDelegate(
 					"WRAM",
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (cart_RAM != null)
 			{
-				var CartRam = new MemoryDomainDelegate(
+				MemoryDomainDelegate CartRam = new(
 					"CartRAM",
 					cart_RAM.Length,
 					MemoryDomain.Endian.Little,

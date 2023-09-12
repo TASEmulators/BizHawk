@@ -110,15 +110,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			mapper.SyncState(ser);
 		}
 
-		public int Get_CHRBank_1K(int addr)
-		{
-			return mapper.Get_CHRBank_1K(addr);
-		}
+		public int Get_CHRBank_1K(int addr) => mapper.Get_CHRBank_1K(addr);
 
-		public int Get_PRGBank_8K(int addr)
-		{
-			return mapper.Get_PRGBank_8K(addr);
-		}
+		public int Get_PRGBank_8K(int addr) => mapper.Get_PRGBank_8K(addr);
 
 		protected int MapCHR(int addr)
 		{
@@ -183,10 +177,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				base.WritePpu(addr, value);
 		}
 
-		public override void WritePrg(int addr, byte value)
-		{
-			mapper.WritePRG(addr, value);
-		}
+		public override void WritePrg(int addr, byte value) => mapper.WritePRG(addr, value);
 
 		public override byte ReadPrg(int addr)
 		{

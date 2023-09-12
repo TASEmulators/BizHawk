@@ -135,25 +135,19 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					Stream next = _fileChain.Current;
+					var next = _fileChain.Current;
 					CloseCurrent();
 					OpenCurrent(next);
 				}
 			}
 		}
 
-		public void Dispose()
-		{
-			Close();
-		}
+		public void Dispose() => Close();
 
 		/// <summary>
 		/// finishes writing
 		/// </summary>
-		public void Close()
-		{
-			CloseCurrent();
-		}
+		public void Close() => CloseCurrent();
 
 		/// <summary>
 		/// checks sampling rate, number of channels for validity
@@ -229,11 +223,9 @@ namespace BizHawk.Client.EmuHawk
 			public void Dispose() { }
 		}
 
-		public IDisposable AcquireVideoCodecToken(Config config)
-		{
+		public IDisposable AcquireVideoCodecToken(Config config) =>
 			// don't care
-			return new WavWriterVToken();
-		}
+			new WavWriterVToken();
 
 		/// <exception cref="ArgumentException"><paramref name="bits"/> is not <c>16</c></exception>
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
@@ -248,10 +240,7 @@ namespace BizHawk.Client.EmuHawk
 			// not implemented
 		}
 
-		public void Dispose()
-		{
-			_wavWriter?.Dispose();
-		}
+		public void Dispose() => _wavWriter?.Dispose();
 
 		private WavWriter _wavWriter;
 		private int _sampleRate;
@@ -272,10 +261,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void OpenFile(string baseName)
-		{
-			_wavWriter = new WavWriter(CreateStreamIterator(baseName), _sampleRate, _channels);
-		}
+		public void OpenFile(string baseName) => _wavWriter = new WavWriter(CreateStreamIterator(baseName), _sampleRate, _channels);
 
 		public void CloseFile()
 		{
@@ -284,10 +270,7 @@ namespace BizHawk.Client.EmuHawk
 			_wavWriter = null;
 		}
 
-		public void AddSamples(short[] samples)
-		{
-			_wavWriter.WriteSamples(samples);
-		}
+		public void AddSamples(short[] samples) => _wavWriter.WriteSamples(samples);
 
 		public string DesiredExtension() => "wav";
 

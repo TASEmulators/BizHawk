@@ -20,24 +20,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			Rom_Tsuri
 		}
 
-		public SnesSettings GetSettings()
-		{
-			return _settings with {};
-		}
+		public SnesSettings GetSettings() => _settings with { };
 
 		SNES.IBSNESForGfxDebugger.SettingsObj SNES.IBSNESForGfxDebugger.GetSettings()
 			=> GetSettings();
 
-		public SnesSyncSettings GetSyncSettings()
-		{
-			return _syncSettings with {};
-		}
+		public SnesSyncSettings GetSyncSettings() => _syncSettings with { };
 
 		public PutSettingsDirtyBits PutSettings(SnesSettings o)
 		{
 			if (o != _settings)
 			{
-				var enables = new BsnesApi.LayerEnables
+				BsnesApi.LayerEnables enables = new()
 				{
 					BG1_Prio0 = o.ShowBG1_0,
 					BG1_Prio1 = o.ShowBG1_1,

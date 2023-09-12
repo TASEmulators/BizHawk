@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		{
 			IsHardcodedResolve = true;
 			fisBaseDir = new MyFileInfo[hardcodes.Count];
-			var i = 0;
+			int i = 0;
 			foreach (var kvp in hardcodes)
 			{
 				fisBaseDir[i++] = new() { FullName = kvp.Key, FileInfo = new(kvp.Value) };
@@ -55,8 +55,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		private MyFileInfo[] MyFileInfosFromFileInfos(FileInfo[] fis)
 		{
-			var myfis = new MyFileInfo[fis.Length];
-			for (var i = 0; i < fis.Length; i++)
+			MyFileInfo[] myfis = new MyFileInfo[fis.Length];
+			for (int i = 0; i < fis.Length; i++)
 			{
 				myfis[i].FileInfo = fis[i];
 				myfis[i].FullName = fis[i].FullName;
@@ -89,10 +89,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				fileInfos = fisBaseDir;
 			}
 
-			var results = new List<FileInfo>();
+			List<FileInfo> results = new();
 			foreach (var fi in fileInfos)
 			{
-				var ext = Path.GetExtension(fi.FullName).ToLowerInvariant();
+				string ext = Path.GetExtension(fi.FullName).ToLowerInvariant();
 
 				//some choices are always bad: (we're looking for things like .bin and .wav)
 				//it's a little unclear whether we should go for a whitelist or a blacklist here.
@@ -106,9 +106,9 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				if (ext is ".7z" or ".rar" or ".zip" or ".bz2" or ".gz")
 					continue;
 
-				var fragment = Path.GetFileNameWithoutExtension(fi.FullName);
+				string fragment = Path.GetFileNameWithoutExtension(fi.FullName);
 				//match files with differing extensions
-				var cmp = string.Compare(fragment, targetFragment, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+				int cmp = string.Compare(fragment, targetFragment, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
 				if (cmp != 0)
 					//match files with another extension added on (likely to be mygame.bin.ecm)
 					cmp = string.Compare(fragment, targetFile, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);

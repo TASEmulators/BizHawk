@@ -11,15 +11,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public partial class GPGX : ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>
 	{
-		public GPGXSettings GetSettings()
-		{
-			return _settings.Clone();
-		}
+		public GPGXSettings GetSettings() => _settings.Clone();
 
-		public GPGXSyncSettings GetSyncSettings()
-		{
-			return _syncSettings.Clone();
-		}
+		public GPGXSyncSettings GetSyncSettings() => _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(GPGXSettings o)
 		{
@@ -39,15 +33,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private class UintToHexConverter : TypeConverter
 		{
-			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-			{
-				return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
-			}
+			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) => sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
 
-			public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
-			{
-				return destinationType == typeof(string) || base.CanConvertTo(context, destinationType);
-			}
+			public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) => destinationType == typeof(string) || base.CanConvertTo(context, destinationType);
 
 			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
 			{
@@ -77,15 +65,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private class UshortToHexConverter : TypeConverter
 		{
-			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-			{
-				return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
-			}
+			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) => sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
 
-			public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
-			{
-				return destinationType == typeof(string) || base.CanConvertTo(context, destinationType);
-			}
+			public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) => destinationType == typeof(string) || base.CanConvertTo(context, destinationType);
 
 			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
 			{
@@ -215,10 +197,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public GPGXSettings Clone()
-			{
-				return (GPGXSettings)MemberwiseClone();
-			}
+			public GPGXSettings Clone() => (GPGXSettings)MemberwiseClone();
 
 			public LibGPGX.DrawMask GetDrawMask()
 			{
@@ -231,12 +210,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				return ret;
 			}
 
-			public static bool NeedsReboot(GPGXSettings x, GPGXSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(GPGXSettings x, GPGXSettings y) => !DeepEquality.DeepEquals(x, y);
 
-			
+
 		}
 
 		public class GPGXSyncSettings
@@ -326,15 +302,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public GPGXSyncSettings Clone()
-			{
-				return (GPGXSyncSettings)MemberwiseClone();
-			}
+			public GPGXSyncSettings Clone() => (GPGXSyncSettings)MemberwiseClone();
 
-			public static bool NeedsReboot(GPGXSyncSettings x, GPGXSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(GPGXSyncSettings x, GPGXSyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

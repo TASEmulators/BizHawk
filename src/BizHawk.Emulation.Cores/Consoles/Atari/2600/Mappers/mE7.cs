@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				_ram[addr & 0x3FF] = value;
 			}
-			else if (addr >= 0x1800 && addr < 0x1900)
+			else if (addr is >= 0x1800 and < 0x1900)
 			{
 				_ram[RamBank1Offset + (addr & 0xFF) + (_ramBank1Toggle * 0x100)] = value;
 			}

@@ -96,12 +96,12 @@ namespace BizHawk.Client.Common
 				return null;
 			}
 
-			if (long.TryParse(parts[0], NumberStyles.HexNumber, CultureInfo.CurrentCulture, out var address))
+			if (long.TryParse(parts[0], NumberStyles.HexNumber, CultureInfo.CurrentCulture, out long address))
 			{
-				WatchSize size = SizeFromChar(parts[1][0]);
-				WatchDisplayType type = DisplayTypeFromChar(parts[2][0]);
+				var size = SizeFromChar(parts[1][0]);
+				var type = DisplayTypeFromChar(parts[2][0]);
 				bool bigEndian = parts[3] != "0";
-				MemoryDomain domain = domains[parts[4]];
+				var domain = domains[parts[4]];
 				string notes = parts[5].Trim('\r', '\n');
 
 				return GenerateWatch(
@@ -313,10 +313,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Sets the number of changes to 0
 		/// </summary>
-		public void ClearChangeCount()
-		{
-			ChangeCount = 0;
-		}
+		public void ClearChangeCount() => ChangeCount = 0;
 
 		/// <summary>
 		/// Determines if this <see cref="Watch"/> is equals to another
@@ -399,29 +396,20 @@ namespace BizHawk.Client.Common
 		/// Hash the current watch and gets a unique value
 		/// </summary>
 		/// <returns><see cref="int"/> that can serves as a unique representation of current Watch</returns>
-		public override int GetHashCode()
-		{
-			return Domain.GetHashCode() + (int)Address;
-		}
+		public override int GetHashCode() => Domain.GetHashCode() + (int)Address;
 
 		/// <summary>
 		/// Determines if the specified <see cref="WatchDisplayType"/> can be
 		/// used for the current <see cref="Watch"/>
 		/// </summary>
 		/// <param name="type"><see cref="WatchDisplayType"/> you want to check</param>
-		public bool IsDisplayTypeAvailable(WatchDisplayType type)
-		{
-			return AvailableTypes().Any(d => d == type);
-		}
+		public bool IsDisplayTypeAvailable(WatchDisplayType type) => AvailableTypes().Any(d => d == type);
 
 		/// <summary>
 		/// Transforms the current instance into a string
 		/// </summary>
 		/// <returns>A <see cref="string"/> representation of the current <see cref="Watch"/></returns>
-		public override string ToString()
-		{
-			return $"{(Domain == null && Address == 0 ? "0" : Address.ToHexString((Domain?.Size ?? 0xFF - 1).NumHexDigits()))}\t{SizeAsChar}\t{TypeAsChar}\t{Convert.ToInt32(BigEndian)}\t{Domain?.Name}\t{Notes.Trim('\r', '\n')}";
-		}
+		public override string ToString() => $"{(Domain == null && Address == 0 ? "0" : Address.ToHexString((Domain?.Size ?? 0xFF - 1).NumHexDigits()))}\t{SizeAsChar}\t{TypeAsChar}\t{Convert.ToInt32(BigEndian)}\t{Domain?.Name}\t{Notes.Trim('\r', '\n')}";
 
 		/// <summary>
 		/// Transform the current instance into a displayable (short representation) string

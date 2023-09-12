@@ -111,9 +111,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		// the sound ram can be uesd for arbitrary load\store of data,
 		// and can be batteryed, and some games actually did this
-		public byte[] GetSaveRam()
-		{
-			return ram;
-		}
+		public byte[] GetSaveRam() => ram;
 	}
 }

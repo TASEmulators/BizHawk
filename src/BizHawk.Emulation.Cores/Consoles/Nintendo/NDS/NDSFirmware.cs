@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	{
 		public static bool MaybeWarnIfBadFw(byte[] fw, CoreComm comm)
 		{
-			if (fw.Length != 0x20000 && fw.Length != 0x40000 && fw.Length != 0x80000)
+			if (fw.Length is not 0x20000 and not 0x40000 and not 0x80000)
 			{
 				comm.ShowMessage("Bad firmware length detected! Firmware might not work!");
 				return false;
@@ -21,8 +21,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				comm.ShowMessage("Hacked firmware detected! Firmware might not work!");
 				return false;
 			}
-			var fwMask = fw.Length - 1;
-			var badCrc16s = string.Empty;
+			int fwMask = fw.Length - 1;
+			string badCrc16s = string.Empty;
 			if (!VerifyCrc16(fw, 0x2C, (fw[0x2C + 1] << 8) | fw[0x2C], 0x0000, 0x2A))
 			{
 				badCrc16s += " Wifi ";
@@ -58,12 +58,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public static void SanitizeFw(byte[] fw)
 		{
-			var fwMask = fw.Length - 1;
-			var apstart = new int[3] { 0x07FA00 & fwMask, 0x07FB00 & fwMask, 0x07FC00 & fwMask };
+			int fwMask = fw.Length - 1;
+			int[] apstart = new int[3] { 0x07FA00 & fwMask, 0x07FB00 & fwMask, 0x07FC00 & fwMask };
 
-			for (var i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 			{
-				for (var j = 0; j < 0x100; j++)
+				for (int j = 0; j < 0x100; j++)
 				{
 					fw[apstart[i] + j] = 0;
 				}
@@ -78,21 +78,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			// F8 98 C1 E6 CC 5D 92 E1 85 8C 96
 			// different mac address
 			// 18 90 15 E9 7C 1D F1 E1 85 74 02
-			var macdependentbytes = new byte[11] { 0xF8, 0x98, 0xC1, 0xE6, 0xCC, 0x9D, 0xBE, 0xE1, 0x85, 0x71, 0x5F };
+			byte[] macdependentbytes = new byte[11] { 0xF8, 0x98, 0xC1, 0xE6, 0xCC, 0x9D, 0xBE, 0xE1, 0x85, 0x71, 0x5F };
 
-			var apoffset = 0xF5;
+			int apoffset = 0xF5;
 
-			for (var i = 0; i < 2; i++)
+			for (int i = 0; i < 2; i++)
 			{
-				for (var j = 0; j < 11; j++)
+				for (int j = 0; j < 11; j++)
 				{
 					fw[apstart[i] + apoffset + j] = macdependentbytes[j];
 				}
 			}
 
-			var ffoffset = 0xE7;
+			int ffoffset = 0xE7;
 
-			for (var i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				fw[apstart[i] + ffoffset] = 0xFF;
 			}
@@ -101,9 +101,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			fw[apstart[2] + 0xFE] = 0x0A;
 			fw[apstart[2] + 0xFF] = 0xF0;
 
-			var usersettings = new int[2] { 0x7FE00 & fwMask, 0x7FF00 & fwMask };
+			int[] usersettings = new int[2] { 0x7FE00 & fwMask, 0x7FF00 & fwMask };
 
-			for (var i = 0; i < 2; i++)
+			for (int i = 0; i < 2; i++)
 			{
 				unsafe
 				{
@@ -134,13 +134,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private static unsafe ushort Crc16(byte* data, int len, int seed)
 		{
-			var poly = new ushort[8] { 0xC0C1, 0xC181, 0xC301, 0xC601, 0xCC01, 0xD801, 0xF001, 0xA001 };
+			ushort[] poly = new ushort[8] { 0xC0C1, 0xC181, 0xC301, 0xC601, 0xCC01, 0xD801, 0xF001, 0xA001 };
 
-			for (var i = 0; i < len; i++)
+			for (int i = 0; i < len; i++)
 			{
 				seed ^= data[i];
 
-				for (var j = 0; j < 8; j++)
+				for (int j = 0; j < 8; j++)
 				{
 					if ((seed & 0x1) != 0)
 					{
@@ -159,10 +159,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private static unsafe bool VerifyCrc16(byte[] fw, int startaddr, int len, int seed, int crcaddr)
 		{
-			var storedCrc16 = (ushort)((fw[crcaddr + 1] << 8) | fw[crcaddr]);
+			ushort storedCrc16 = (ushort)((fw[crcaddr + 1] << 8) | fw[crcaddr]);
 			fixed (byte* start = &fw[startaddr])
 			{
-				var actualCrc16 = Crc16(start, len, seed);
+				ushort actualCrc16 = Crc16(start, len, seed);
 				return storedCrc16 == actualCrc16;
 			}
 		}
@@ -182,16 +182,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private static bool CheckDecryptedCodeChecksum(byte[] fw, CoreComm comm)
 		{
-			if (!GetDecryptedFirmware(fw, fw.Length, out var decryptedfw, out var decrypedfwlen))
+			if (!GetDecryptedFirmware(fw, fw.Length, out var decryptedfw, out int decrypedfwlen))
 			{
 				comm.ShowMessage("Firmware could not be decryped for verification! This firmware might be not work!");
 				return false;
 			}
 
-			var DecryptedFirmware = new byte[decrypedfwlen];
+			byte[] DecryptedFirmware = new byte[decrypedfwlen];
 			Marshal.Copy(decryptedfw, DecryptedFirmware, 0, decrypedfwlen);
 			FreeDecryptedFirmware(decryptedfw);
-			var hash = SHA1Checksum.ComputeDigestHex(DecryptedFirmware);
+			string hash = SHA1Checksum.ComputeDigestHex(DecryptedFirmware);
 			if (hash != goodhashes[0] && hash != goodhashes[1] && hash != goodhashes[2])
 			{
 				comm.ShowMessage("Potentially bad firmware dump! Decrypted hash " + hash + " does not match known good dumps.");

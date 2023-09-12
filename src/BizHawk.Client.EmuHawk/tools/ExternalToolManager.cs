@@ -35,13 +35,13 @@ namespace BizHawk.Client.EmuHawk
 				_asmChecksum = asmChecksum;
 				_entryPointTypeName = entryPointTypeName;
 				_extToolMan = extToolMan;
-				_skipExtToolWarning = _extToolMan._config.TrustedExtTools.TryGetValue(asmFilename, out var s) && s == _asmChecksum;
+				_skipExtToolWarning = _extToolMan._config.TrustedExtTools.TryGetValue(asmFilename, out string s) && s == _asmChecksum;
 				AsmFilename = asmFilename;
 			}
 
 			public void TryLoad()
 			{
-				var success = _extToolMan._loadCallback(
+				bool success = _extToolMan._loadCallback(
 					/*toolPath:*/ AsmFilename,
 					/*customFormTypeName:*/ _entryPointTypeName,
 					/*skipExtToolWarning:*/ _skipExtToolWarning);
@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private FileSystemWatcher DirectoryMonitor;
 
-		private readonly List<ToolStripMenuItem> MenuItems = new List<ToolStripMenuItem>();
+		private readonly List<ToolStripMenuItem> MenuItems = new();
 
 		internal readonly IList<string> PossibleExtToolTypeNames = new List<string>();
 
@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 				DirectoryMonitor.Created -= DirectoryMonitor_Created;
 				DirectoryMonitor.Dispose();
 			}
-			var path = _config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path;
+			string path = _config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path;
 			if (Directory.Exists(path))
 			{
 				DirectoryMonitor = new FileSystemWatcher(path, "*.dll")
@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 		private ToolStripMenuItem GenerateToolTipFromFileName(string fileName)
 		{
 			if (fileName == null) throw new Exception();
-			var item = new ToolStripMenuItem(Path.GetFileName(fileName))
+			ToolStripMenuItem item = new(Path.GetFileName(fileName))
 			{
 				Enabled = false,
 				Image = Properties.Resources.ExclamationRed,
@@ -119,20 +119,18 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				if (!OSTailoredCode.IsUnixHost) MotWHack.RemoveMOTW(fileName);
-				var asmBytes = File.ReadAllBytes(fileName);
-				var externalToolFile = Assembly.Load(asmBytes);
+				byte[] asmBytes = File.ReadAllBytes(fileName);
+				Assembly externalToolFile = Assembly.Load(asmBytes);
 				var entryPoint = externalToolFile.GetTypes()
-					.SingleOrDefault(t => typeof(IExternalToolForm).IsAssignableFrom(t) && t.GetCustomAttributes().OfType<ExternalToolAttribute>().Any());
-				if (entryPoint == null) throw new ExternalToolAttribute.MissingException();
-
-				var allAttrs = entryPoint.GetCustomAttributes().ToList();
-				var applicabilityAttrs = allAttrs.OfType<ExternalToolApplicabilityAttributeBase>().ToList();
+					.SingleOrDefault(t => typeof(IExternalToolForm).IsAssignableFrom(t) && t.GetCustomAttributes().OfType<ExternalToolAttribute>().Any()) ?? throw new ExternalToolAttribute.MissingException();
+				List<Attribute> allAttrs = entryPoint.GetCustomAttributes().ToList();
+				List<ExternalToolApplicabilityAttributeBase> applicabilityAttrs = allAttrs.OfType<ExternalToolApplicabilityAttributeBase>().ToList();
 				if (applicabilityAttrs.Count > 1) throw new ExternalToolApplicabilityAttributeBase.DuplicateException();
 
 				var toolAttribute = allAttrs.OfType<ExternalToolAttribute>().First();
 				if (toolAttribute.LoadAssemblyFiles != null)
 				{
-					foreach (var depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"{_config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path}/{depFilename}");
+					foreach (string depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"{_config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path}/{depFilename}");
 				}
 
 				item.Image = null; // no errors, remove error icon
@@ -199,10 +197,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="sender">Object that raised the event</param>
 		/// <param name="e">Event arguments</param>
-		private void DirectoryMonitor_Created(object sender, FileSystemEventArgs e)
-		{
-			MenuItems.Add(GenerateToolTipFromFileName(e.FullPath));
-		}
+		private void DirectoryMonitor_Created(object sender, FileSystemEventArgs e) => MenuItems.Add(GenerateToolTipFromFileName(e.FullPath));
 
 		public IReadOnlyCollection<ToolStripItem> ToolStripItems
 			=> MenuItems;

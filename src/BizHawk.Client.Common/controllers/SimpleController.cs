@@ -48,10 +48,7 @@ namespace BizHawk.Client.Common
 
 		public IReadOnlyDictionary<string, bool> BoolButtons() => Buttons;
 
-		public void AcceptNewAxis(string axisId, int value)
-		{
-			Axes[axisId] = value;
-		}
+		public void AcceptNewAxis(string axisId, int value) => Axes[axisId] = value;
 
 		public void AcceptNewAxes(IEnumerable<(string AxisID, int Value)> newValues)
 		{

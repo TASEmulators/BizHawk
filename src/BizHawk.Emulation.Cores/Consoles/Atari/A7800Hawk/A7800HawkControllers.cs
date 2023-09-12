@@ -54,20 +54,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return result;
 		}
 
-		public byte ReadFire(IController c)
-		{
-			return 0x80;
-		}
+		public byte ReadFire(IController c) => 0x80;
 
-		public byte ReadFire2x(IController c)
-		{
-			return 0;
-		}
+		public byte ReadFire2x(IController c) => 0;
 
-		public bool Is_2_button(IController c)
-		{
-			return false;
-		}
+		public bool Is_2_button(IController c) => false;
 
 		public bool Is_LightGun(IController c, out float x, out float y)
 		{
@@ -136,15 +127,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return result;
 		}
 
-		public byte ReadFire2x(IController c)
-		{
-			return 0; // only applicable for 2 button mode
-		}
+		public byte ReadFire2x(IController c) => 0; // only applicable for 2 button mode
 
-		public bool Is_2_button(IController c)
-		{
-			return false;
-		}
+		public bool Is_2_button(IController c) => false;
 
 		public bool Is_LightGun(IController c, out float x, out float y)
 		{
@@ -165,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			"Up", "Down", "Left", "Right", "Button"
 		};
 
-		private static byte[] HandControllerButtons =
+		private static readonly byte[] HandControllerButtons =
 		{
 			0x0, // UP
 			0x0, // Down
@@ -233,10 +218,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return result;
 		}
 
-		public bool Is_2_button(IController c)
-		{
-			return true;
-		}
+		public bool Is_2_button(IController c) => true;
 
 		public bool Is_LightGun(IController c, out float x, out float y)
 		{
@@ -257,7 +239,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			"Up", "Down", "Left", "Right", "Trigger", "Trigger 2"
 		};
 
-		private static byte[] HandControllerButtons =
+		private static readonly byte[] HandControllerButtons =
 		{
 			0x0, // UP
 			0x0, // Down
@@ -297,20 +279,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return result;
 		}
 
-		public byte ReadFire(IController c)
-		{
-			return 0x80;
-		}
+		public byte ReadFire(IController c) => 0x80;
 
-		public byte ReadFire2x(IController c)
-		{
-			return 0; // only applicable for 2 button mode
-		}
+		public byte ReadFire2x(IController c) => 0; // only applicable for 2 button mode
 
-		public bool Is_2_button(IController c)
-		{
-			return false;
-		}
+		public bool Is_2_button(IController c) => false;
 
 		public bool Is_LightGun(IController c, out float x, out float y)
 		{

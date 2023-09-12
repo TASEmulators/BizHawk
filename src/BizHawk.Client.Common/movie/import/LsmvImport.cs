@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -28,7 +27,7 @@ namespace BizHawk.Client.Common.movie.import
 			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.SubBsnes115;
 
 			// .LSMV movies are .zip files containing data files.
-			using var fs = new FileStream(SourceFile.FullName, FileMode.Open, FileAccess.Read);
+			using FileStream fs = new(SourceFile.FullName, FileMode.Open, FileAccess.Read);
 			{
 				byte[] data = new byte[4];
 				fs.Read(data, 0, 4);
@@ -40,9 +39,9 @@ namespace BizHawk.Client.Common.movie.import
 				fs.Position = 0;
 			}
 
-			using var zip = new ZipArchive(fs, ZipArchiveMode.Read, true);
+			using ZipArchive zip = new(fs, ZipArchiveMode.Read, true);
 
-			var ss = new BsnesCore.SnesSyncSettings();
+			BsnesCore.SnesSyncSettings ss = new();
 
 			string platform = VSystemID.Raw.SNES;
 
@@ -92,7 +91,7 @@ namespace BizHawk.Client.Common.movie.import
 					string authors = Encoding.UTF8.GetString(stream.ReadAllBytes());
 					string authorList = "";
 					string authorLast = "";
-					using (var reader = new StringReader(authors))
+					using (StringReader reader = new(authors))
 					{
 						// Each author is on a different line.
 						while (reader.ReadLine() is string line)
@@ -156,7 +155,7 @@ namespace BizHawk.Client.Common.movie.import
 							break;
 					}
 
-					bool pal = gametype == "snes_pal" || gametype == "sgb_pal";
+					bool pal = gametype is "snes_pal" or "sgb_pal";
 					Result.Movie.HeaderEntries[HeaderKeys.Pal] = pal.ToString();
 				}
 				else if (item.FullName == "input")
@@ -167,7 +166,7 @@ namespace BizHawk.Client.Common.movie.import
 					// Insert an empty frame in lsmv snes movies
 					// see https://github.com/TASEmulators/BizHawk/issues/721
 					Result.Movie.AppendFrame(EmptyLmsvFrame());
-					using (var reader = new StringReader(input))
+					using (StringReader reader = new(input))
 					{
 						while(reader.ReadLine() is string line)
 						{
@@ -229,15 +228,13 @@ namespace BizHawk.Client.Common.movie.import
 				{
 					using var stream = item.Open();
 					string subtitles = Encoding.UTF8.GetString(stream.ReadAllBytes());
-					using (var reader = new StringReader(subtitles))
+					using StringReader reader = new(subtitles);
+					while (reader.ReadLine() is string line)
 					{
-						while (reader.ReadLine() is string line)
+						string subtitle = ImportTextSubtitle(line);
+						if (!string.IsNullOrEmpty(subtitle))
 						{
-							var subtitle = ImportTextSubtitle(line);
-							if (!string.IsNullOrEmpty(subtitle))
-							{
-								Result.Movie.Subtitles.AddFromString(subtitle);
-							}
+							Result.Movie.Subtitles.AddFromString(subtitle);
 						}
 					}
 				}
@@ -269,7 +266,7 @@ namespace BizHawk.Client.Common.movie.import
 		{
 			SimpleController emptyController = new(_controllers.Definition);
 
-			foreach (var button in emptyController.Definition.BoolButtons)
+			foreach (string button in emptyController.Definition.BoolButtons)
 			{
 				emptyController[button] = false;
 			}
@@ -318,7 +315,7 @@ namespace BizHawk.Client.Common.movie.import
 			{
 				if (player > _playerCount) break;
 
-				IReadOnlyList<string> buttons = controllers.Definition.ControlsOrdered[player];
+				var buttons = controllers.Definition.ControlsOrdered[player];
 				if (buttons[0].EndsWithOrdinal("Up")) // hack to identify gamepad / multitap which have a different button order in bizhawk compared to lsnes
 				{
 					buttons = new[] { "B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R" }

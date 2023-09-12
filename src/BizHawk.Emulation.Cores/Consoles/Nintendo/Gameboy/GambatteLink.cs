@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[CoreConstructor(VSystemID.Raw.GBL)]
 		public GambatteLink(CoreLoadParameters<GambatteLinkSettings, GambatteLinkSyncSettings> lp)
 		{
-			if (lp.Roms.Count < MIN_PLAYERS || lp.Roms.Count > MAX_PLAYERS)
+			if (lp.Roms.Count is < MIN_PLAYERS or > MAX_PLAYERS)
 				throw new InvalidOperationException("Wrong number of roms");
 
 			_numCores = lp.Roms.Count;
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			RomDetails = "";
 
-			var scopes = new string[_numCores * 7];
+			string[] scopes = new string[_numCores * 7];
 			for (int i = 0; i < _numCores; i++)
 			{
 				scopes[i * 7 + 0] = $"P{i + 1} System Bus";

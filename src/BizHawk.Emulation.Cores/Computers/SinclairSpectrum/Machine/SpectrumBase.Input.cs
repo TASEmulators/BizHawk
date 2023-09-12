@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			lock (this)
 			{
 				// parse single keyboard matrix keys
-				for (var i = 0; i < KeyboardDevice.KeyboardMatrix.Length; i++)
+				for (int i = 0; i < KeyboardDevice.KeyboardMatrix.Length; i++)
 				{
 					string key = KeyboardDevice.KeyboardMatrix[i];
 					bool prevState = KeyboardDevice.GetKeyStatus(key);
@@ -281,7 +281,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		protected void InitJoysticks(List<JoystickType> joys)
 		{
-			var jCollection = new List<IJoystick>();
+			List<IJoystick> jCollection = new();
 
 			for (int i = 0; i < joys.Count; i++)
 			{
@@ -301,30 +301,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public IJoystick InstantiateJoystick(JoystickType type, int playerNumber)
 		{
-			switch (type)
+			return type switch
 			{
-				case JoystickType.Kempston:
-					return new KempstonJoystick(this, playerNumber);
-				case JoystickType.Cursor:
-					return new CursorJoystick(this, playerNumber);
-				case JoystickType.SinclairLEFT:
-					return new SinclairJoystick1(this, playerNumber);
-				case JoystickType.SinclairRIGHT:
-					return new SinclairJoystick2(this, playerNumber);
-				case JoystickType.NULL:
-					return new NullJoystick(this, playerNumber);
-			}
-
-			return null;
+				JoystickType.Kempston => new KempstonJoystick(this, playerNumber),
+				JoystickType.Cursor => new CursorJoystick(this, playerNumber),
+				JoystickType.SinclairLEFT => new SinclairJoystick1(this, playerNumber),
+				JoystickType.SinclairRIGHT => new SinclairJoystick2(this, playerNumber),
+				JoystickType.NULL => new NullJoystick(this, playerNumber),
+				_ => null,
+			};
 		}
 
 		/// <summary>
 		/// Returns a IJoystick object depending on the type (or null if not found)
 		/// </summary>
-		protected IJoystick LocateUniqueJoystick(JoystickType type)
-		{
-			return JoystickCollection.FirstOrDefault(a => a.JoyType == type);
-		}
+		protected IJoystick LocateUniqueJoystick(JoystickType type) => JoystickCollection.FirstOrDefault(a => a.JoyType == type);
 
 		/// <summary>
 		/// Signs whether input read has been requested

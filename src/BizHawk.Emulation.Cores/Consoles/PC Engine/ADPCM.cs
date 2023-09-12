@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	{
 		private readonly ScsiCDBus _scsi;
 		private readonly PCEngine _pce;
-		private readonly VecnaSynchronizer _synchronizer = new VecnaSynchronizer();
+		private readonly VecnaSynchronizer _synchronizer = new();
 
 		// ***************************************************************************
 
@@ -306,15 +306,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			_synchronizer.OutputSamples(samples, samples.Length / 2);
-		}
+		public void GetSamplesAsync(short[] samples) => _synchronizer.OutputSamples(samples, samples.Length / 2);
 
-		public void DiscardSamples()
-		{
-			_synchronizer.Clear();
-		}
+		public void DiscardSamples() => _synchronizer.Clear();
 
 		public int MaxVolume { get; set; }
 		public bool CanProvideAsync => true;
@@ -329,10 +323,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Async;
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			throw new NotImplementedException("Sync sound not yet supported");
-		}
+		public void GetSamplesSync(out short[] samples, out int nsamp) => throw new NotImplementedException("Sync sound not yet supported");
 
 		// ***************************************************************************
 

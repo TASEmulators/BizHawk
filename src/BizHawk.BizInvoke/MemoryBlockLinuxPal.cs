@@ -20,7 +20,7 @@ namespace BizHawk.BizInvoke
 		/// </exception>
 		public MemoryBlockLinuxPal(ulong size)
 		{
-			var ptr = (ulong)mmap(IntPtr.Zero, Z.UU(size), MemoryProtection.None, 0x22 /* MAP_PRIVATE | MAP_ANON */, -1, IntPtr.Zero);
+			ulong ptr = (ulong)mmap(IntPtr.Zero, Z.UU(size), MemoryProtection.None, 0x22 /* MAP_PRIVATE | MAP_ANON */, -1, IntPtr.Zero);
 			if (ptr == ulong.MaxValue)
 				throw new InvalidOperationException($"{nameof(mmap)}() failed with error {Marshal.GetLastWin32Error()}");
 			_size = size;
@@ -43,24 +43,19 @@ namespace BizHawk.BizInvoke
 
 		private static MemoryProtection ToMemoryProtection(Protection prot)
 		{
-			switch (prot)
+			return prot switch
 			{
-				case Protection.None:
-					return MemoryProtection.None;
-				case Protection.R:
-					return MemoryProtection.Read;
-				case Protection.RW:
-					return MemoryProtection.Read | MemoryProtection.Write;
-				case Protection.RX:
-					return MemoryProtection.Read | MemoryProtection.Execute;
-				default:
-					throw new ArgumentOutOfRangeException(nameof(prot));
-			}
+				Protection.None => MemoryProtection.None,
+				Protection.R => MemoryProtection.Read,
+				Protection.RW => MemoryProtection.Read | MemoryProtection.Write,
+				Protection.RX => MemoryProtection.Read | MemoryProtection.Execute,
+				_ => throw new ArgumentOutOfRangeException(nameof(prot)),
+			};
 		}
 
 		public void Protect(ulong start, ulong size, Protection prot)
 		{
-			var errorCode = mprotect(
+			int errorCode = mprotect(
 				Z.US(start),
 				Z.UU(size),
 				ToMemoryProtection(prot)

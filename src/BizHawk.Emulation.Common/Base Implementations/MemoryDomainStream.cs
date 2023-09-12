@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Common
 			if (count == 0)
 				return 0;
 			// TODO: Memory domain doesn't have the overload we need :(
-			var poop = new byte[count];
+			byte[] poop = new byte[count];
 			// TODO: Range has the wrong end value
 			_d.BulkPeekByte(Position.RangeToExclusive(Position + count), poop);
 			Array.Copy(poop, 0, buffer, offset, count);
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (offset < 0 || offset + count > buffer.Length)
 				throw new ArgumentException("start or end not within bounds of buffer", nameof(offset));
-			for (var i = offset; i < offset + count; i++)
+			for (int i = offset; i < offset + count; i++)
 				_d.PokeByte(Position++, buffer[i]);
 		}
 
@@ -95,9 +95,6 @@ namespace BizHawk.Emulation.Common
 			return Position;
 		}
 
-		public override void SetLength(long value)
-		{
-			throw new NotSupportedException("Stream cannot be resized");
-		}
+		public override void SetLength(long value) => throw new NotSupportedException("Stream cannot be resized");
 	}
 }

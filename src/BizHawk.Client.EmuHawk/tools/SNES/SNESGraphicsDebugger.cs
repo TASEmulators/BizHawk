@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public unsafe partial class SNESGraphicsDebugger : ToolFormBase, IToolFormAutoConfig
 	{
-		private readonly List<DisplayTypeItem> displayTypeItems = new List<DisplayTypeItem>();
+		private readonly List<DisplayTypeItem> displayTypeItems = new();
 
 		[RequiredService]
 		private IBSNESForGfxDebugger Emulator { get; set; }
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			comboDisplayType.DataSource = displayTypeItems;
 			comboDisplayType.SelectedIndex = 2;
 
-			var paletteTypeItems = new List<PaletteTypeItem>
+			List<PaletteTypeItem> paletteTypeItems = new()
 			{
 				// must be in same order as enum
 				new PaletteTypeItem("BizHawk", SnesColors.ColorType.BizHawk),
@@ -115,10 +115,7 @@ namespace BizHawk.Client.EmuHawk
 			gd = null;
 		}
 
-		private string FormatBpp(int bpp)
-		{
-			return bpp == 0 ? "---" : bpp.ToString();
-		}
+		private string FormatBpp(int bpp) => bpp == 0 ? "---" : bpp.ToString();
 
 		private string FormatVramAddress(int address)
 		{
@@ -344,13 +341,13 @@ namespace BizHawk.Client.EmuHawk
 			int* pixelptr = null;
 			int stride = 0;
 
-			Action<int, int> allocate = (w, h) =>
+			void allocate(int w, int h)
 			{
 				bmp = new Bitmap(w, h);
 				bmpdata = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 				pixelptr = (int*)bmpdata.Scan0.ToPointer();
 				stride = bmpdata.Stride;
-			};
+			}
 
 			var selection = CurrDisplaySelection;
 			if (selection == eDisplayType.OBJ)
@@ -379,7 +376,7 @@ namespace BizHawk.Client.EmuHawk
 					gd.RenderSpriteToScreen(pixelptr, stride / 4, oam.X, oam.Y, si, i, oam, 256, 224, spriteMap);
 				}
 			}
-			if (selection == eDisplayType.OBJTiles0 || selection == eDisplayType.OBJTiles1)
+			if (selection is eDisplayType.OBJTiles0 or eDisplayType.OBJTiles1)
 			{
 				allocate(128, 256);
 				int startTile;
@@ -485,24 +482,24 @@ namespace BizHawk.Client.EmuHawk
 			BG1Screen = 101, BG2Screen = 102, BG3Screen = 103, BG4Screen = 104
 		}
 
-		private static bool IsDisplayTypeBG(eDisplayType type) { return type == eDisplayType.BG1 || type == eDisplayType.BG2 || type == eDisplayType.BG3 || type == eDisplayType.BG4; }
-		private static bool IsDisplayTypeOBJ(eDisplayType type) { return type == eDisplayType.OBJTiles0 || type == eDisplayType.OBJTiles1; }
+		private static bool IsDisplayTypeBG(eDisplayType type) => type is eDisplayType.BG1 or eDisplayType.BG2 or eDisplayType.BG3 or eDisplayType.BG4;
+		private static bool IsDisplayTypeOBJ(eDisplayType type) => type is eDisplayType.OBJTiles0 or eDisplayType.OBJTiles1;
 		private static int DisplayTypeBGNum(eDisplayType type) { if(IsDisplayTypeBG(type)) return (int)type; else return -1; }
 
 		private static SNESGraphicsDecoder.BGMode BGModeForDisplayType(eDisplayType type)
 		{
-			switch (type)
+			return type switch
 			{
-				case eDisplayType.Tiles2bpp: return SNESGraphicsDecoder.BGMode.Text;
-				case eDisplayType.Tiles4bpp: return SNESGraphicsDecoder.BGMode.Text;
-				case eDisplayType.Tiles8bpp: return SNESGraphicsDecoder.BGMode.Text;
-				case eDisplayType.TilesMode7: return SNESGraphicsDecoder.BGMode.Mode7;
-				case eDisplayType.TilesMode7Ext: return SNESGraphicsDecoder.BGMode.Mode7Ext;
-				case eDisplayType.TilesMode7DC: return SNESGraphicsDecoder.BGMode.Mode7DC;
-				case eDisplayType.OBJTiles0: return SNESGraphicsDecoder.BGMode.OBJ;
-				case eDisplayType.OBJTiles1: return SNESGraphicsDecoder.BGMode.OBJ;
-				default: throw new InvalidOperationException();
-			}
+				eDisplayType.Tiles2bpp => SNESGraphicsDecoder.BGMode.Text,
+				eDisplayType.Tiles4bpp => SNESGraphicsDecoder.BGMode.Text,
+				eDisplayType.Tiles8bpp => SNESGraphicsDecoder.BGMode.Text,
+				eDisplayType.TilesMode7 => SNESGraphicsDecoder.BGMode.Mode7,
+				eDisplayType.TilesMode7Ext => SNESGraphicsDecoder.BGMode.Mode7Ext,
+				eDisplayType.TilesMode7DC => SNESGraphicsDecoder.BGMode.Mode7DC,
+				eDisplayType.OBJTiles0 => SNESGraphicsDecoder.BGMode.OBJ,
+				eDisplayType.OBJTiles1 => SNESGraphicsDecoder.BGMode.OBJ,
+				_ => throw new InvalidOperationException(),
+			};
 		}
 
 		private class DisplayTypeItem
@@ -592,7 +589,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Rectangle GetPaletteRegion(int start, int num)
 		{
-			var ret = new Rectangle
+			Rectangle ret = new()
 			{
 				X = start % 16,
 				Y = start / 16,
@@ -620,8 +617,8 @@ namespace BizHawk.Client.EmuHawk
 			int width = cellTotalSize * region.Width;
 			int height = cellTotalSize * region.Height;
 
-			var rect = new Rectangle(x, y, width, height);
-			using var pen = new Pen(color);
+			Rectangle rect = new(x, y, width, height);
+			using Pen pen = new(color);
 			g.DrawRectangle(pen, rect);
 		}
 
@@ -638,7 +635,7 @@ namespace BizHawk.Client.EmuHawk
 			if (selection == eDisplayType.OBJTiles0) bpp = 4;
 			if (selection == eDisplayType.OBJTiles1) bpp = 4;
 
-			var ret = new SNESGraphicsDecoder.PaletteSelection();
+			SNESGraphicsDecoder.PaletteSelection ret = new();
 			if(bpp == 0) return ret;
 
 			//mode7 ext is fixed to use the top 128 colors
@@ -664,8 +661,8 @@ namespace BizHawk.Client.EmuHawk
 
 			int pixsize = paletteCellSize * 16 + paletteCellSpacing * 17;
 			int cellTotalSize = (paletteCellSize + paletteCellSpacing);
-			var bmp = new Bitmap(pixsize, pixsize, PixelFormat.Format32bppArgb);
-			using (var g = Graphics.FromImage(bmp))
+			Bitmap bmp = new(pixsize, pixsize, PixelFormat.Format32bppArgb);
+			using (Graphics g = Graphics.FromImage(bmp))
 			{
 				for (int y = 0; y < 16; y++)
 				{
@@ -673,7 +670,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						int rgb555 = lastPalette[y * 16 + x];
 						int color = gd.Colorize(rgb555);
-						using var brush = new SolidBrush(Color.FromArgb(color));
+						using SolidBrush brush = new(Color.FromArgb(color));
 						g.FillRectangle(brush, new Rectangle(paletteCellSpacing + x * cellTotalSize, paletteCellSpacing + y * cellTotalSize, paletteCellSize, paletteCellSize));
 					}
 				}
@@ -691,7 +688,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				if (IsDisplayTypeOBJ(CurrDisplaySelection))
 				{
-					var ps = new SNESGraphicsDecoder.PaletteSelection(128, 128);
+					SNESGraphicsDecoder.PaletteSelection ps = new(128, 128);
 					region = GetPaletteRegion(ps);
 					DrawPaletteRegion(g, Color.FromArgb(192, 128, 255, 255), region);
 				}
@@ -820,10 +817,7 @@ namespace BizHawk.Client.EmuHawk
 			InternalUpdateValues();
 		}
 
-		private void SyncColorSelection()
-		{
-			currPaletteSelection = GetPaletteSelectionForTileDisplay(selectedColorNum);
-		}
+		private void SyncColorSelection() => currPaletteSelection = GetPaletteSelectionForTileDisplay(selectedColorNum);
 
 		private void pnDetailsPaletteColor_DoubleClick(object sender, EventArgs e)
 		{
@@ -833,20 +827,11 @@ namespace BizHawk.Client.EmuHawk
 			//cd.ShowDialog(this);
 		}
 
-		private void SyncViewerSize()
-		{
-			viewer.Size = check2x.Checked ? new Size(1024, 1024) : new Size(512, 512);
-		}
+		private void SyncViewerSize() => viewer.Size = check2x.Checked ? new Size(1024, 1024) : new Size(512, 512);
 
-		private void checkScanlineControl_CheckedChanged(object sender, EventArgs e)
-		{
-			SyncCore();
-		}
+		private void checkScanlineControl_CheckedChanged(object sender, EventArgs e) => SyncCore();
 
-		private void check2x_CheckedChanged(object sender, EventArgs e)
-		{
-			SyncViewerSize();
-		}
+		private void check2x_CheckedChanged(object sender, EventArgs e) => SyncViewerSize();
 
 		private bool viewerPan;
 		private Point panStartLocation;
@@ -873,7 +858,7 @@ namespace BizHawk.Client.EmuHawk
 			var tp = tabctrlDetails.SelectedTab;
 
 			//clone the currently selected tab page into the destination
-			var oldControls = new ArrayList(pnGroupFreeze.Controls);
+			ArrayList oldControls = new(pnGroupFreeze.Controls);
 			pnGroupFreeze.Controls.Clear();
 			foreach (Control control in tp.Controls) pnGroupFreeze.Controls.Add(control.Clone());
 			foreach (Control control in oldControls) control.Dispose();
@@ -954,7 +939,7 @@ namespace BizHawk.Client.EmuHawk
 				int tileSize = si.BG[bgs.bgnum].TileSize;
 				int pixels = tileSize * tileSize;
 
-				var bmp = new Bitmap(tileSize, tileSize, PixelFormat.Format32bppArgb);
+				Bitmap bmp = new(tileSize, tileSize, PixelFormat.Format32bppArgb);
 				var bmpData = bmp.LockBits(new Rectangle(0, 0, tileSize, tileSize), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 				if (viewBgMode == SNESGraphicsDecoder.BGMode.Mode7)
@@ -978,7 +963,7 @@ namespace BizHawk.Client.EmuHawk
 				//view a tileset tile
 				int bpp = currTileDataState.Bpp;
 
-				var bmp = new Bitmap(8, 8, PixelFormat.Format32bppArgb);
+				Bitmap bmp = new(8, 8, PixelFormat.Format32bppArgb);
 				var bmpdata = bmp.LockBits(new Rectangle(0, 0, 8, 8), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 				if (currTileDataState.Type == eDisplayType.TilesMode7)
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, false, 1, currTileDataState.Tile, 1);
@@ -986,7 +971,7 @@ namespace BizHawk.Client.EmuHawk
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, true, false, 1, currTileDataState.Tile, 1);
 				else if (currTileDataState.Type == eDisplayType.TilesMode7DC)
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, true, 1, currTileDataState.Tile, 1);
-				else if (currTileDataState.Type == eDisplayType.OBJTiles0 || currTileDataState.Type == eDisplayType.OBJTiles1)
+				else if (currTileDataState.Type is eDisplayType.OBJTiles0 or eDisplayType.OBJTiles1)
 				{
 					//render an obj tile
 					int tile = currTileDataState.Address / 32;
@@ -1002,7 +987,7 @@ namespace BizHawk.Client.EmuHawk
 				var bounds = si.ObjSizeBoundsSquare;
 				int width = bounds.Width;
 				int height = bounds.Height;
-				var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+				Bitmap bmp = new(width, height, PixelFormat.Format32bppArgb);
 				var bmpData = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 				gd.RenderSpriteToScreen((int*)bmpData.Scan0, bmpData.Stride / 4, 0, 0, si, currObjDataState.Number);
 				bmp.UnlockBits(bmpData);
@@ -1010,7 +995,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var bmp = new Bitmap(8, 8, PixelFormat.Format32bppArgb);
+				Bitmap bmp = new(8, 8, PixelFormat.Format32bppArgb);
 				viewerTile.SetBitmap(bmp);
 			}
 		}
@@ -1033,7 +1018,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			currTileDataState.Address = (bpp == 7 ? 8 : bpp) * 8 * currTileDataState.Tile;
 			currTileDataState.Palette = currPaletteSelection.start;
-			if (CurrDisplaySelection == eDisplayType.OBJTiles0 || CurrDisplaySelection == eDisplayType.OBJTiles1)
+			if (CurrDisplaySelection is eDisplayType.OBJTiles0 or eDisplayType.OBJTiles1)
 			{
 				if (tileNum < 256)
 					currTileDataState.Address += si.OBJTable0Addr;
@@ -1213,7 +1198,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void pnBackdropColor_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			var cd = new ColorDialog
+			ColorDialog cd = new()
 			{
 				Color = pnBackdropColor.BackColor
 			};
@@ -1231,7 +1216,7 @@ namespace BizHawk.Client.EmuHawk
 			if (keyData == (Keys.C | Keys.Control))
 			{
 				// find the control under the mouse
-				Point m = Cursor.Position;
+				var m = Cursor.Position;
 				Control top = this;
 				Control found = null;
 				do
@@ -1276,7 +1261,7 @@ namespace BizHawk.Client.EmuHawk
 		private void comboPalette_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (suppression) return;
-			var pal = (SnesColors.ColorType)comboPalette.SelectedValue;
+			SnesColors.ColorType pal = (SnesColors.ColorType)comboPalette.SelectedValue;
 			Console.WriteLine("set {0}", pal);
 			try
 			{
@@ -1354,7 +1339,7 @@ namespace BizHawk.Client.EmuHawk
 		private void lblEnPrio0_Click(object sender, EventArgs e)
 		{
 			bool all = checkEN0_OBJ.Checked && checkEN0_BG1.Checked && checkEN0_BG2.Checked && checkEN0_BG3.Checked && checkEN0_BG4.Checked;
-			var newVal = !all;
+			bool newVal = !all;
 			checkEN0_OBJ.Checked = checkEN0_BG1.Checked = checkEN0_BG2.Checked = checkEN0_BG3.Checked = checkEN0_BG4.Checked = newVal;
 
 		}
@@ -1362,20 +1347,14 @@ namespace BizHawk.Client.EmuHawk
 		private void lblEnPrio1_Click(object sender, EventArgs e)
 		{
 			bool all = checkEN1_OBJ.Checked && checkEN1_BG1.Checked && checkEN1_BG2.Checked && checkEN1_BG3.Checked && checkEN1_BG4.Checked;
-			var newVal = !all;
+			bool newVal = !all;
 			checkEN1_OBJ.Checked = checkEN1_BG1.Checked = checkEN1_BG2.Checked = checkEN1_BG3.Checked = checkEN1_BG4.Checked = newVal;
 
 		}
 
-		private void lblEnPrio2_Click(object sender, EventArgs e)
-		{
-			checkEN2_OBJ.Checked ^= true;
-		}
+		private void lblEnPrio2_Click(object sender, EventArgs e) => checkEN2_OBJ.Checked ^= true;
 
-		private void lblEnPrio3_Click(object sender, EventArgs e)
-		{
-			checkEN3_OBJ.Checked ^= true;
-		}
+		private void lblEnPrio3_Click(object sender, EventArgs e) => checkEN3_OBJ.Checked ^= true;
 
 	} //class SNESGraphicsDebugger
 } //namespace BizHawk.Client.EmuHawk

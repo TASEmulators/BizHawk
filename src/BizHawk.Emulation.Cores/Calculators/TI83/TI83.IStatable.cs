@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 		{
 			if (ser.IsWriter)
 			{
-				var ms = new MemoryStream();
+				MemoryStream ms = new();
 				ms.Close();
 				ms.ToArray();
 			}

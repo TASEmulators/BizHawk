@@ -34,6 +34,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 		// TODO: refactor MC6800's disassembler to be a static call
-		private readonly MC68000 _disassemblerInstance = new MC68000();
+		private readonly MC68000 _disassemblerInstance = new();
 	}
 }

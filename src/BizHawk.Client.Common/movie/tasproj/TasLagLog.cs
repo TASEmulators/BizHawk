@@ -7,14 +7,14 @@ namespace BizHawk.Client.Common
 {
 	public class TasLagLog
 	{
-		private Dictionary<int, bool> _lagLog = new Dictionary<int, bool>();
-		private Dictionary<int, bool> _wasLag = new Dictionary<int, bool>();
+		private Dictionary<int, bool> _lagLog = new();
+		private Dictionary<int, bool> _wasLag = new();
 
 		public bool? this[int frame]
 		{
 			get
 			{
-				var result = _lagLog.TryGetValue(frame, out var lag);
+				bool result = _lagLog.TryGetValue(frame, out bool lag);
 				return result ? lag : null;
 			}
 
@@ -38,8 +38,8 @@ namespace BizHawk.Client.Common
 
 		public bool RemoveFrom(int frame)
 		{
-			var frames = _lagLog.Keys.Where(k => k > frame).ToList();
-			foreach (var f in frames)
+			List<int> frames = _lagLog.Keys.Where(k => k > frame).ToList();
+			foreach (int f in frames)
 			{
 				RemoveLagEntry(f);
 			}
@@ -47,10 +47,7 @@ namespace BizHawk.Client.Common
 			return frames.Any();
 		}
 
-		public void RemoveHistoryAt(int frame)
-		{
-			_wasLag.Remove(frame);
-		}
+		public void RemoveHistoryAt(int frame) => _wasLag.Remove(frame);
 
 		public void InsertHistoryAt(int frame, bool isLag)
 		{
@@ -72,7 +69,7 @@ namespace BizHawk.Client.Common
 
 		public bool? History(int frame)
 		{
-			var result = _wasLag.TryGetValue(frame, out var wasLag);
+			bool result = _wasLag.TryGetValue(frame, out bool wasLag);
 			if (result)
 			{
 				return wasLag;
@@ -98,7 +95,7 @@ namespace BizHawk.Client.Common
 
 		private void RemoveLagEntry(int frame)
 		{
-			var result = _lagLog.TryGetValue(frame, out var lag);
+			bool result = _lagLog.TryGetValue(frame, out bool lag);
 			if (result)
 			{
 				_wasLag[frame] = lag;

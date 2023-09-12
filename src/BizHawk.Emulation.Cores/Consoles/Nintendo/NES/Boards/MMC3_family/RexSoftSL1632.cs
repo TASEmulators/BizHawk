@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				}
 			}
-			else if (addr >= 0x3000 && addr <= 0x6003)
+			else if (addr is >= 0x3000 and <= 0x6003)
 			{
 				int offset = addr << 2 & 0x4;
 				addr = ((((addr & 0x2) | addr >> 10) >> 1) + 2) & 0x7;

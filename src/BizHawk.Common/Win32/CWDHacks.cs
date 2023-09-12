@@ -27,8 +27,8 @@ namespace BizHawk.Common
 		{
 			uint result;
 			fixed (byte* pBuf = &BUFFER[0]) result = GetCurrentDirectoryW(BUFFER_LEN, pBuf);
-			if (result <= BUFFER_LEN && result is not 0U) return Encoding.Unicode.GetString(BUFFER, 0, (int) (2U * result));
-			var buf = new byte[result];
+			if (result is <= BUFFER_LEN and not 0U) return Encoding.Unicode.GetString(BUFFER, 0, (int) (2U * result));
+			byte[] buf = new byte[result];
 			uint result1;
 			fixed (byte* pBuf = &buf[0]) result1 = GetCurrentDirectoryW(BUFFER_LEN, pBuf);
 			if (result1 == result) return Encoding.Unicode.GetString(buf, 0, (int) (2U * result));

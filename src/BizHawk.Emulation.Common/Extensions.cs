@@ -68,26 +68,14 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.ZXSpectrum] = "ZX Spectrum",
 		};
 
-		public static CoreAttribute Attributes(this IEmulator core)
-		{
-			return (CoreAttribute)Attribute.GetCustomAttribute(core.GetType(), typeof(CoreAttribute));
-		}
+		public static CoreAttribute Attributes(this IEmulator core) => (CoreAttribute)Attribute.GetCustomAttribute(core.GetType(), typeof(CoreAttribute));
 
 		// todo: most of the special cases involving the NullEmulator should probably go away
-		public static bool IsNull(this IEmulator core)
-		{
-			return core == null || core is NullEmulator;
-		}
+		public static bool IsNull(this IEmulator core) => core is null or NullEmulator;
 
-		public static bool HasVideoProvider(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<IVideoProvider>();
-		}
+		public static bool HasVideoProvider(this IEmulator core) => core != null && core.ServiceProvider.HasService<IVideoProvider>();
 
-		public static IVideoProvider AsVideoProvider(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<IVideoProvider>();
-		}
+		public static IVideoProvider AsVideoProvider(this IEmulator core) => core.ServiceProvider.GetService<IVideoProvider>();
 
 		/// <summary>
 		/// Returns the core's VideoProvider, or a suitable dummy provider
@@ -98,17 +86,11 @@ namespace BizHawk.Emulation.Common
 				?? NullVideo.Instance;
 		}
 
-		public static bool HasSoundProvider(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<ISoundProvider>();
-		}
+		public static bool HasSoundProvider(this IEmulator core) => core != null && core.ServiceProvider.HasService<ISoundProvider>();
 
-		public static ISoundProvider AsSoundProvider(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<ISoundProvider>();
-		}
+		public static ISoundProvider AsSoundProvider(this IEmulator core) => core.ServiceProvider.GetService<ISoundProvider>();
 
-		private static readonly ConditionalWeakTable<IEmulator, ISoundProvider> CachedNullSoundProviders = new ConditionalWeakTable<IEmulator, ISoundProvider>();
+		private static readonly ConditionalWeakTable<IEmulator, ISoundProvider> CachedNullSoundProviders = new();
 
 		/// <summary>
 		/// returns the core's SoundProvider, or a suitable dummy provider
@@ -119,45 +101,21 @@ namespace BizHawk.Emulation.Common
 				?? CachedNullSoundProviders.GetValue(core, e => new NullSound(core.VsyncNumerator(), core.VsyncDenominator()));
 		}
 
-		public static bool HasMemoryDomains(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<IMemoryDomains>();
-		}
+		public static bool HasMemoryDomains(this IEmulator core) => core != null && core.ServiceProvider.HasService<IMemoryDomains>();
 
-		public static IMemoryDomains AsMemoryDomains(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<IMemoryDomains>();
-		}
+		public static IMemoryDomains AsMemoryDomains(this IEmulator core) => core.ServiceProvider.GetService<IMemoryDomains>();
 
-		public static bool HasSaveRam(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<ISaveRam>();
-		}
+		public static bool HasSaveRam(this IEmulator core) => core != null && core.ServiceProvider.HasService<ISaveRam>();
 
-		public static ISaveRam AsSaveRam(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<ISaveRam>();
-		}
+		public static ISaveRam AsSaveRam(this IEmulator core) => core.ServiceProvider.GetService<ISaveRam>();
 
-		public static bool HasSavestates(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<IStatable>();
-		}
+		public static bool HasSavestates(this IEmulator core) => core != null && core.ServiceProvider.HasService<IStatable>();
 
-		public static IStatable AsStatable(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<IStatable>();
-		}
+		public static IStatable AsStatable(this IEmulator core) => core.ServiceProvider.GetService<IStatable>();
 
-		public static bool CanPollInput(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<IInputPollable>();
-		}
+		public static bool CanPollInput(this IEmulator core) => core != null && core.ServiceProvider.HasService<IInputPollable>();
 
-		public static IInputPollable AsInputPollable(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<IInputPollable>();
-		}
+		public static IInputPollable AsInputPollable(this IEmulator core) => core.ServiceProvider.GetService<IInputPollable>();
 
 		public static bool InputCallbacksAvailable(this IEmulator core)
 		{
@@ -179,35 +137,17 @@ namespace BizHawk.Emulation.Common
 			return false;
 		}
 
-		public static bool HasDriveLight(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<IDriveLight>();
-		}
+		public static bool HasDriveLight(this IEmulator core) => core != null && core.ServiceProvider.HasService<IDriveLight>();
 
-		public static IDriveLight AsDriveLight(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<IDriveLight>();
-		}
+		public static IDriveLight AsDriveLight(this IEmulator core) => core.ServiceProvider.GetService<IDriveLight>();
 
-		public static bool CanDebug(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<IDebuggable>();
-		}
+		public static bool CanDebug(this IEmulator core) => core != null && core.ServiceProvider.HasService<IDebuggable>();
 
-		public static IDebuggable AsDebuggable(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<IDebuggable>();
-		}
+		public static IDebuggable AsDebuggable(this IEmulator core) => core.ServiceProvider.GetService<IDebuggable>();
 
-		public static bool CpuTraceAvailable(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<ITraceable>();
-		}
+		public static bool CpuTraceAvailable(this IEmulator core) => core != null && core.ServiceProvider.HasService<ITraceable>();
 
-		public static ITraceable AsTracer(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<ITraceable>();
-		}
+		public static ITraceable AsTracer(this IEmulator core) => core.ServiceProvider.GetService<ITraceable>();
 
 		public static bool MemoryCallbacksAvailable(this IEmulator core)
 		{
@@ -247,65 +187,29 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public static bool CanDisassemble(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<IDisassemblable>();
-		}
+		public static bool CanDisassemble(this IEmulator core) => core != null && core.ServiceProvider.HasService<IDisassemblable>();
 
-		public static IDisassemblable AsDisassembler(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<IDisassemblable>();
-		}
+		public static IDisassemblable AsDisassembler(this IEmulator core) => core.ServiceProvider.GetService<IDisassemblable>();
 
-		public static bool HasRegions(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<IRegionable>();
-		}
+		public static bool HasRegions(this IEmulator core) => core != null && core.ServiceProvider.HasService<IRegionable>();
 
-		public static IRegionable AsRegionable(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<IRegionable>();
-		}
+		public static IRegionable AsRegionable(this IEmulator core) => core.ServiceProvider.GetService<IRegionable>();
 
-		public static bool CanCDLog(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<ICodeDataLogger>();
-		}
+		public static bool CanCDLog(this IEmulator core) => core != null && core.ServiceProvider.HasService<ICodeDataLogger>();
 
-		public static ICodeDataLogger AsCodeDataLogger(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<ICodeDataLogger>();
-		}
+		public static ICodeDataLogger AsCodeDataLogger(this IEmulator core) => core.ServiceProvider.GetService<ICodeDataLogger>();
 
-		public static ILinkable AsLinkable(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<ILinkable>();
-		}
+		public static ILinkable AsLinkable(this IEmulator core) => core.ServiceProvider.GetService<ILinkable>();
 
-		public static bool UsesLinkCable(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<ILinkable>();
-		}
+		public static bool UsesLinkCable(this IEmulator core) => core != null && core.ServiceProvider.HasService<ILinkable>();
 
-		public static bool CanGenerateGameDBEntries(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<ICreateGameDBEntries>();
-		}
+		public static bool CanGenerateGameDBEntries(this IEmulator core) => core != null && core.ServiceProvider.HasService<ICreateGameDBEntries>();
 
-		public static ICreateGameDBEntries AsGameDBEntryGenerator(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<ICreateGameDBEntries>();
-		}
+		public static ICreateGameDBEntries AsGameDBEntryGenerator(this IEmulator core) => core.ServiceProvider.GetService<ICreateGameDBEntries>();
 
-		public static bool HasBoardInfo(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<IBoardInfo>();
-		}
+		public static bool HasBoardInfo(this IEmulator core) => core != null && core.ServiceProvider.HasService<IBoardInfo>();
 
-		public static IBoardInfo AsBoardInfo(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<IBoardInfo>();
-		}
+		public static IBoardInfo AsBoardInfo(this IEmulator core) => core.ServiceProvider.GetService<IBoardInfo>();
 
 		public static (int X, int Y) ScreenLogicalOffsets(this IEmulator core)
 		{
@@ -348,15 +252,9 @@ namespace BizHawk.Emulation.Common
 			return 1;
 		}
 
-		public static double VsyncRate(this IEmulator core)
-		{
-			return core.VsyncNumerator() / (double)core.VsyncDenominator();
-		}
+		public static double VsyncRate(this IEmulator core) => core.VsyncNumerator() / (double)core.VsyncDenominator();
 
-		public static bool IsImplemented(this MethodInfo info)
-		{
-			return !info.GetCustomAttributes(false).Any(a => a is FeatureNotImplementedAttribute);
-		}
+		public static bool IsImplemented(this MethodInfo info) => !info.GetCustomAttributes(false).Any(a => a is FeatureNotImplementedAttribute);
 
 		/// <summary>
 		/// Gets a list of boolean button names. If a controller number is specified, only returns button names
@@ -368,27 +266,21 @@ namespace BizHawk.Emulation.Common
 		///   - ToBoolButtonNameList(controller, 2) -> [A, B]
 		///   - ToBoolButtonNameList(controller, null) -> [P1 A, P1 B, P2 A, P2 B]
 		/// </summary>
-		public static List<string> ToBoolButtonNameList(this IController controller, int? controllerNum = null)
-		{
-			return ToControlNameList(controller.Definition.BoolButtons, controllerNum);
-		}
+		public static List<string> ToBoolButtonNameList(this IController controller, int? controllerNum = null) => ToControlNameList(controller.Definition.BoolButtons, controllerNum);
 
 		/// <summary>
 		/// See ToBoolButtonNameList(). Works the same except with axes
 		/// </summary>
-		public static List<string> ToAxisControlNameList(this IController controller, int? controllerNum = null)
-		{
-			return ToControlNameList(controller.Definition.Axes.Keys, controllerNum);
-		}
+		public static List<string> ToAxisControlNameList(this IController controller, int? controllerNum = null) => ToControlNameList(controller.Definition.Axes.Keys, controllerNum);
 
 		private static List<string> ToControlNameList(IEnumerable<string> buttonList, int? controllerNum = null)
 		{
-			var buttons = new List<string>();
-			foreach (var button in buttonList)
+			List<string> buttons = new();
+			foreach (string button in buttonList)
 			{
 				if (controllerNum != null && button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
 				{
-					var sub = button.Substring(3);
+					string sub = button.Substring(3);
 					buttons.Add(sub);
 				}
 				else if (controllerNum == null)
@@ -401,23 +293,23 @@ namespace BizHawk.Emulation.Common
 
 		public static IReadOnlyDictionary<string, object> ToDictionary(this IController controller, int? controllerNum = null)
 		{
-			var dict = new Dictionary<string, object>();
+			Dictionary<string, object> dict = new();
 			if (controllerNum == null)
 			{
-				foreach (var buttonName in controller.Definition.BoolButtons) dict[buttonName] = controller.IsPressed(buttonName);
-				foreach (var axisName in controller.Definition.Axes.Keys) dict[axisName] = controller.AxisValue(axisName);
+				foreach (string buttonName in controller.Definition.BoolButtons) dict[buttonName] = controller.IsPressed(buttonName);
+				foreach (string axisName in controller.Definition.Axes.Keys) dict[axisName] = controller.AxisValue(axisName);
 				return dict;
 			}
-			var prefix = $"P{controllerNum} ";
-			foreach (var buttonName in controller.Definition.BoolButtons)
+			string prefix = $"P{controllerNum} ";
+			foreach (string buttonName in controller.Definition.BoolButtons)
 			{
-				var s = buttonName.RemovePrefix(prefix);
+				string s = buttonName.RemovePrefix(prefix);
 				if (ReferenceEquals(s, buttonName)) continue; // did not start with prefix
 				dict[s] = controller.IsPressed(buttonName);
 			}
-			foreach (var axisName in controller.Definition.Axes.Keys)
+			foreach (string axisName in controller.Definition.Axes.Keys)
 			{
-				var s = axisName.RemovePrefix(prefix);
+				string s = axisName.RemovePrefix(prefix);
 				if (ReferenceEquals(s, axisName)) continue; // did not start with prefix
 				dict[s] = controller.AxisValue(axisName);
 			}
@@ -452,7 +344,7 @@ namespace BizHawk.Emulation.Common
 		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
 		public static ControllerDefinition AddXYPair(this ControllerDefinition def, string nameFormat, AxisPairOrientation pDir, Range<int> rangeX, int neutralX, Range<int> rangeY, int neutralY, AxisConstraint constraint = null)
 		{
-			var yAxisName = string.Format(nameFormat, "Y");
+			string yAxisName = string.Format(nameFormat, "Y");
 			var finalConstraint = constraint ?? new NoOpAxisConstraint(yAxisName);
 			return def.AddAxis(string.Format(nameFormat, "X"), rangeX, neutralX, ((byte) pDir & 2) != 0, finalConstraint)
 				.AddAxis(yAxisName, rangeY, neutralY, ((byte) pDir & 1) != 0);
@@ -478,10 +370,10 @@ namespace BizHawk.Emulation.Common
 				.AddAxis(string.Format(nameFormat, "Y"), rangeAll, neutralAll)
 				.AddAxis(string.Format(nameFormat, "Z"), rangeAll, neutralAll);
 
-		public static AxisSpec With(this in AxisSpec spec, Range<int> range, int neutral) => new AxisSpec(range, neutral, spec.IsReversed, spec.Constraint);
+		public static AxisSpec With(this in AxisSpec spec, Range<int> range, int neutral) => new(range, neutral, spec.IsReversed, spec.Constraint);
 
 		public static string SystemIDToDisplayName(string sysID)
-			=> SystemIDDisplayNames.TryGetValue(sysID, out var dispName) ? dispName : string.Empty;
+			=> SystemIDDisplayNames.TryGetValue(sysID, out string dispName) ? dispName : string.Empty;
 
 		public static bool IsEnabled(this ITraceable core) => core.Sink is not null;
 

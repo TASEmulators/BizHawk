@@ -14,19 +14,19 @@ namespace BizHawk.Common
 	{
 		public Serializer() { }
 
-		public bool IsReader => _isReader;
+		public bool IsReader { get; private set; }
 
 		public bool IsWriter => !IsReader;
 
-		public bool IsText => _isText;
+		public bool IsText { get; private set; }
 
-		public BinaryReader BinaryReader => _br;
+		public BinaryReader BinaryReader { get; private set; }
 
-		public BinaryWriter BinaryWriter => _bw;
+		public BinaryWriter BinaryWriter { get; private set; }
 
-		public TextReader TextReader => _tr;
+		public TextReader TextReader { get; private set; }
 
-		public TextWriter TextWriter => _tw;
+		public TextWriter TextWriter { get; private set; }
 
 		public Serializer(BinaryWriter bw)
 		{
@@ -48,50 +48,38 @@ namespace BizHawk.Common
 			StartRead(tr);
 		}
 
-		public static Serializer CreateBinaryWriter(BinaryWriter bw)
-		{
-			return new Serializer(bw);
-		}
+		public static Serializer CreateBinaryWriter(BinaryWriter bw) => new(bw);
 
-		public static Serializer CreateBinaryReader(BinaryReader br)
-		{
-			return new Serializer(br);
-		}
+		public static Serializer CreateBinaryReader(BinaryReader br) => new(br);
 
-		public static Serializer CreateTextWriter(TextWriter tw)
-		{
-			return new Serializer(tw);
-		}
+		public static Serializer CreateTextWriter(TextWriter tw) => new(tw);
 
-		public static Serializer CreateTextReader(TextReader tr)
-		{
-			return new Serializer(tr);
-		}
+		public static Serializer CreateTextReader(TextReader tr) => new(tr);
 
 		public void StartWrite(BinaryWriter bw)
 		{
-			_bw = bw;
-			_isReader = false;
+			BinaryWriter = bw;
+			IsReader = false;
 		}
 
 		public void StartRead(BinaryReader br)
 		{
-			_br = br;
-			_isReader = true;
+			BinaryReader = br;
+			IsReader = true;
 		}
 
 		public void StartWrite(TextWriter tw)
 		{
-			_tw = tw;
-			_isReader = false;
-			_isText = true;
+			TextWriter = tw;
+			IsReader = false;
+			IsText = true;
 		}
 
 		public void StartRead(TextReader tr)
 		{
-			_tr = tr;
-			_isReader = true;
-			_isText = true;
+			TextReader = tr;
+			IsReader = true;
+			IsText = true;
 			BeginTextBlock();
 		}
 
@@ -102,7 +90,7 @@ namespace BizHawk.Common
 			{
 				if (IsWriter)
 				{
-					_tw.WriteLine("[{0}]", name);
+					TextWriter.WriteLine("[{0}]", name);
 				}
 				else
 				{
@@ -114,12 +102,12 @@ namespace BizHawk.Common
 
 		public void EndSection()
 		{
-			var name = _sections.Pop();
+			string name = _sections.Pop();
 			if (IsText)
 			{
 				if (IsWriter)
 				{
-					_tw.WriteLine("[/{0}]", name);
+					TextWriter.WriteLine("[/{0}]", name);
 				}
 				else
 				{
@@ -136,17 +124,17 @@ namespace BizHawk.Common
 				throw new InvalidOperationException();
 			}
 			
-			if (_isText)
+			if (IsText)
 			{
 				SyncEnumText(name, ref val);
 			}
 			else if (IsReader)
 			{
-				val = (T)Enum.ToObject(typeof(T), _br.ReadInt32());
+				val = (T)Enum.ToObject(typeof(T), BinaryReader.ReadInt32());
 			}
 			else
 			{
-				_bw.Write(Convert.ToInt32(val));
+				BinaryWriter.Write(Convert.ToInt32(val));
 			}
 		}
 
@@ -161,7 +149,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				_tw.WriteLine("{0} {1}", name, val);
+				TextWriter.WriteLine("{0} {1}", name, val);
 			}
 		}
 
@@ -173,11 +161,11 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(useNull);
+				val = BinaryReader.ReadByteBuffer(useNull);
 			}
 			else
 			{
-				_bw.WriteByteBuffer(val);
+				BinaryWriter.WriteByteBuffer(val);
 			}
 		}
 
@@ -197,8 +185,8 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? Array.Empty<byte>();
-				_tw.WriteLine("{0} {1}", name, temp.BytesToHexString());
+				byte[] temp = val ?? Array.Empty<byte>();
+				TextWriter.WriteLine("{0} {1}", name, temp.BytesToHexString());
 			}
 		}
 
@@ -210,7 +198,7 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(false).ToBoolBuffer();
+				val = BinaryReader.ReadByteBuffer(false).ToBoolBuffer();
 				if (val == null && !useNull)
 				{
 					val = Array.Empty<bool>();
@@ -218,7 +206,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				_bw.WriteByteBuffer(val.ToUByteBuffer());
+				BinaryWriter.WriteByteBuffer(val.ToUByteBuffer());
 			}
 		}
 
@@ -228,7 +216,7 @@ namespace BizHawk.Common
 			{
 				if (Present(name))
 				{
-					var bytes = Item(name).HexStringToBytes();
+					byte[] bytes = Item(name).HexStringToBytes();
 					val = bytes.ToBoolBuffer();
 				}
 
@@ -239,8 +227,8 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? Array.Empty<bool>();
-				_tw.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
+				bool[] temp = val ?? Array.Empty<bool>();
+				TextWriter.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
 			}
 		}
 		public void Sync(string name, ref short[] val, bool useNull)
@@ -251,7 +239,7 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(false).ToShortBuffer();
+				val = BinaryReader.ReadByteBuffer(false).ToShortBuffer();
 				if (val == null && !useNull)
 				{
 					val = Array.Empty<short>();
@@ -259,7 +247,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				_bw.WriteByteBuffer(val.ToUByteBuffer());
+				BinaryWriter.WriteByteBuffer(val.ToUByteBuffer());
 			}
 		}
 
@@ -271,7 +259,7 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(false).ToUShortBuffer();
+				val = BinaryReader.ReadByteBuffer(false).ToUShortBuffer();
 				if (val == null && !useNull)
 				{
 					val = Array.Empty<ushort>();
@@ -279,7 +267,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				_bw.WriteByteBuffer(val.ToUByteBuffer());
+				BinaryWriter.WriteByteBuffer(val.ToUByteBuffer());
 			}
 		}
 
@@ -289,7 +277,7 @@ namespace BizHawk.Common
 			{
 				if (Present(name))
 				{
-					var bytes = Item(name).HexStringToBytes();
+					byte[] bytes = Item(name).HexStringToBytes();
 					val = bytes.ToShortBuffer();
 				}
 
@@ -300,8 +288,8 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? Array.Empty<short>();
-				_tw.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
+				short[] temp = val ?? Array.Empty<short>();
+				TextWriter.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
 			}
 		}
 
@@ -311,7 +299,7 @@ namespace BizHawk.Common
 			{
 				if (Present(name))
 				{
-					var bytes = Item(name).HexStringToBytes();
+					byte[] bytes = Item(name).HexStringToBytes();
 					val = bytes.ToUShortBuffer();
 				}
 
@@ -322,8 +310,8 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? Array.Empty<ushort>();
-				_tw.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
+				ushort[] temp = val ?? Array.Empty<ushort>();
+				TextWriter.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
 			}
 		}
 
@@ -335,7 +323,7 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(false).ToIntBuffer();
+				val = BinaryReader.ReadByteBuffer(false).ToIntBuffer();
 				if (val == null && !useNull)
 				{
 					val = Array.Empty<int>();
@@ -343,7 +331,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				_bw.WriteByteBuffer(val.ToUByteBuffer());
+				BinaryWriter.WriteByteBuffer(val.ToUByteBuffer());
 			}
 		}
 
@@ -353,7 +341,7 @@ namespace BizHawk.Common
 			{
 				if (Present(name))
 				{
-					var bytes = Item(name).HexStringToBytes();
+					byte[] bytes = Item(name).HexStringToBytes();
 					val = bytes.ToIntBuffer();
 				}
 
@@ -364,8 +352,8 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? Array.Empty<int>();
-				_tw.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
+				int[] temp = val ?? Array.Empty<int>();
+				TextWriter.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
 			}
 		}
 
@@ -377,7 +365,7 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(false).ToUIntBuffer();
+				val = BinaryReader.ReadByteBuffer(false).ToUIntBuffer();
 				if (val == null && !useNull)
 				{
 					val = Array.Empty<uint>();
@@ -385,7 +373,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				_bw.WriteByteBuffer(val.ToUByteBuffer());
+				BinaryWriter.WriteByteBuffer(val.ToUByteBuffer());
 			}
 		}
 
@@ -395,7 +383,7 @@ namespace BizHawk.Common
 			{
 				if (Present(name))
 				{
-					var bytes = Item(name).HexStringToBytes();
+					byte[] bytes = Item(name).HexStringToBytes();
 					val = bytes.ToUIntBuffer();
 				}
 
@@ -406,8 +394,8 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? Array.Empty<uint>();
-				_tw.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
+				uint[] temp = val ?? Array.Empty<uint>();
+				TextWriter.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
 			}
 		}
 
@@ -419,7 +407,7 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(false).ToFloatBuffer();
+				val = BinaryReader.ReadByteBuffer(false).ToFloatBuffer();
 				if (val == null && !useNull)
 				{
 					val = Array.Empty<float>();
@@ -427,7 +415,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				_bw.WriteByteBuffer(val.ToUByteBuffer());
+				BinaryWriter.WriteByteBuffer(val.ToUByteBuffer());
 			}
 		}
 
@@ -437,7 +425,7 @@ namespace BizHawk.Common
 			{
 				if (Present(name))
 				{
-					var bytes = Item(name).HexStringToBytes();
+					byte[] bytes = Item(name).HexStringToBytes();
 					val = bytes.ToFloatBuffer();
 				}
 
@@ -448,8 +436,8 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? Array.Empty<float>();
-				_tw.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
+				float[] temp = val ?? Array.Empty<float>();
+				TextWriter.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
 			}
 		}
 
@@ -461,7 +449,7 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(false).ToDoubleBuffer();
+				val = BinaryReader.ReadByteBuffer(false).ToDoubleBuffer();
 				if (val == null && !useNull)
 				{
 					val = Array.Empty<double>();
@@ -469,7 +457,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				_bw.WriteByteBuffer(val.ToUByteBuffer());
+				BinaryWriter.WriteByteBuffer(val.ToUByteBuffer());
 			}
 		}
 
@@ -479,7 +467,7 @@ namespace BizHawk.Common
 			{
 				if (Present(name))
 				{
-					var bytes = Item(name).HexStringToBytes();
+					byte[] bytes = Item(name).HexStringToBytes();
 					val = bytes.ToDoubleBuffer();
 				}
 
@@ -490,8 +478,8 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? Array.Empty<double>();
-				_tw.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
+				double[] temp = val ?? Array.Empty<double>();
+				TextWriter.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
 			}
 		}
 
@@ -705,17 +693,17 @@ namespace BizHawk.Common
 			// TODO - this could be made more efficient perhaps just by writing values right out of the string..
 			if (IsReader)
 			{
-				var buf = new char[length];
-				if (_isText)
+				char[] buf = new char[length];
+				if (IsText)
 				{
-					_tr.Read(buf, 0, length);
+					TextReader.Read(buf, 0, length);
 				}
 				else
 				{
-					_br.Read(buf, 0, length);
+					BinaryReader.Read(buf, 0, length);
 				}
 
-				var len = 0;
+				int len = 0;
 				for (; len < length; len++)
 				{
 					if (buf[len] == 0)
@@ -733,17 +721,17 @@ namespace BizHawk.Common
 					throw new InvalidOperationException($"{nameof(SyncFixedString)} too long");
 				}
 
-				var buf = val.ToCharArray();
-				var remainder = new char[length - buf.Length];
+				char[] buf = val.ToCharArray();
+				char[] remainder = new char[length - buf.Length];
 				if (IsText)
 				{
-					_tw.Write(buf);
-					_tw.Write(remainder);
+					TextWriter.Write(buf);
+					TextWriter.Write(remainder);
 				}
 				else
 				{
-					_bw.Write(buf);
-					_bw.Write(remainder);
+					BinaryWriter.Write(buf);
+					BinaryWriter.Write(remainder);
 				}
 			}
 		}
@@ -753,27 +741,20 @@ namespace BizHawk.Common
 		{
 			if (IsReader)
 			{
-				var delta = Array.Empty<byte>();
+				byte[] delta = Array.Empty<byte>();
 				Sync(name, ref delta, useNull: false);
 				DeltaSerializer.ApplyDelta<T>(original, current, delta);
 			}
 			else
 			{
-				var delta = DeltaSerializer.GetDelta<T>(original, current).ToArray(); // TODO: don't create array here (need .net update to write span to binary writer)
+				byte[] delta = DeltaSerializer.GetDelta<T>(original, current).ToArray(); // TODO: don't create array here (need .net update to write span to binary writer)
 				Sync(name, ref delta, useNull: false);
 			}
 		}
 
-		private BinaryReader _br;
-		private BinaryWriter _bw;
-		private TextReader _tr;
-		private TextWriter _tw;
-
-		private bool _isText;
-		private bool _isReader;
-		private readonly Stack<string> _sections = new Stack<string>();
+		private readonly Stack<string> _sections = new();
 		private Section _readerSection, _currSection;
-		private readonly Stack<Section> _sectionStack = new Stack<Section>();
+		private readonly Stack<Section> _sectionStack = new();
 
 		private void BeginTextBlock()
 		{
@@ -783,22 +764,22 @@ namespace BizHawk.Common
 			}
 
 			_readerSection = new Section();
-			var ss = new Stack<Section>();
+			Stack<Section> ss = new();
 			ss.Push(_readerSection);
 			var curs = _readerSection;
 
-			var rxEnd = new System.Text.RegularExpressions.Regex(@"\[/(.*?)\]", System.Text.RegularExpressions.RegexOptions.Compiled);
-			var rxBegin = new System.Text.RegularExpressions.Regex(@"\[(.*?)\]", System.Text.RegularExpressions.RegexOptions.Compiled);
+			System.Text.RegularExpressions.Regex rxEnd = new(@"\[/(.*?)\]", System.Text.RegularExpressions.RegexOptions.Compiled);
+			System.Text.RegularExpressions.Regex rxBegin = new(@"\[(.*?)\]", System.Text.RegularExpressions.RegexOptions.Compiled);
 
 			// read the entire file into a data structure for flexi-parsing
 			string str;
-			while ((str = _tr.ReadLine()) != null)
+			while ((str = TextReader.ReadLine()) != null)
 			{
 				var end = rxEnd.Match(str);
 				var begin = rxBegin.Match(str);
 				if (end.Success)
 				{
-					var name = end.Groups[1].Value;
+					string name = end.Groups[1].Value;
 					if (name != curs.Name)
 					{
 						throw new InvalidOperationException("Mis-formed savestate blob");
@@ -815,9 +796,9 @@ namespace BizHawk.Common
 				}
 				else if (begin.Success)
 				{
-					var name = begin.Groups[1].Value;
+					string name = begin.Groups[1].Value;
 					ss.Push(curs);
-					var news = new Section { Name = name };
+					Section news = new() { Name = name };
 					curs.Add(name, news);
 					curs = news;
 				}
@@ -829,8 +810,8 @@ namespace BizHawk.Common
 						continue;
 					}
 
-					var parts = str.Split(' ');
-					var key = parts[0];
+					string[] parts = str.Split(' ');
+					string key = parts[0];
 
 					// UGLY: adds whole string instead of splitting the key. later, split the key, and have the individual Sync methods give up that responsibility
 					curs.Items.Add(key, parts[1]);
@@ -840,15 +821,9 @@ namespace BizHawk.Common
 			_currSection = _readerSection;
 		}
 
-		private string Item(string key)
-		{
-			return _currSection.Items[key];
-		}
+		private string Item(string key) => _currSection.Items[key];
 
-		private bool Present(string key)
-		{
-			return _currSection.Items.ContainsKey(key);
-		}
+		private bool Present(string key) => _currSection.Items.ContainsKey(key);
 
 		private void SyncBuffer(string name, int elemsize, int len, void* ptr)
 		{
@@ -862,7 +837,7 @@ namespace BizHawk.Common
 			else
 			{
 				int todo = len * elemsize;
-				var temp = new byte[todo];
+				byte[] temp = new byte[todo];
 				System.Runtime.InteropServices.Marshal.Copy(new IntPtr(ptr), temp, 0, todo);
 				Sync(name, ref temp, false);
 			}
@@ -1000,15 +975,9 @@ namespace BizHawk.Common
 			}
 		}
 
-		private void Read(ref Bit val)
-		{
-			val = _br.ReadBit();
-		}
+		private void Read(ref Bit val) => val = BinaryReader.ReadBit();
 
-		private void Write(ref Bit val)
-		{
-			_bw.WriteBit(val);
-		}
+		private void Write(ref Bit val) => BinaryWriter.WriteBit(val);
 
 		private void ReadText(string name, ref Bit val)
 		{
@@ -1018,20 +987,11 @@ namespace BizHawk.Common
 			}
 		}
 
-		private void WriteText(string name, ref Bit val)
-		{
-			_tw.WriteLine("{0} {1}", name, (int)val);
-		}
+		private void WriteText(string name, ref Bit val) => TextWriter.WriteLine("{0} {1}", name, (int)val);
 
-		private void Read(ref byte val)
-		{
-			val = _br.ReadByte();
-		}
+		private void Read(ref byte val) => val = BinaryReader.ReadByte();
 
-		private void Write(ref byte val)
-		{
-			_bw.Write(val);
-		}
+		private void Write(ref byte val) => BinaryWriter.Write(val);
 
 		private void ReadText(string name, ref byte val)
 		{
@@ -1040,20 +1000,11 @@ namespace BizHawk.Common
 				val = byte.Parse(Item(name).Replace("0x", ""), NumberStyles.HexNumber);
 			}
 		}
-		private void WriteText(string name, ref byte val)
-		{
-			_tw.WriteLine("{0} 0x{1:X2}", name, val);
-		}
+		private void WriteText(string name, ref byte val) => TextWriter.WriteLine("{0} 0x{1:X2}", name, val);
 
-		private void Read(ref ushort val)
-		{
-			val = _br.ReadUInt16();
-		}
+		private void Read(ref ushort val) => val = BinaryReader.ReadUInt16();
 
-		private void Write(ref ushort val)
-		{
-			_bw.Write(val);
-		}
+		private void Write(ref ushort val) => BinaryWriter.Write(val);
 
 		private void ReadText(string name, ref ushort val)
 		{
@@ -1063,20 +1014,14 @@ namespace BizHawk.Common
 			}
 		}
 
-		private void WriteText(string name, ref ushort val)
-		{
-			_tw.WriteLine("{0} 0x{1:X4}", name, val);
-		}
+		private void WriteText(string name, ref ushort val) => TextWriter.WriteLine("{0} 0x{1:X4}", name, val);
 
 		private void Read(ref uint val)
 		{
-			{ val = _br.ReadUInt32(); }
+			{ val = BinaryReader.ReadUInt32(); }
 		}
 
-		private void Write(ref uint val)
-		{
-			_bw.Write(val);
-		}
+		private void Write(ref uint val) => BinaryWriter.Write(val);
 
 		private void ReadText(string name, ref uint val)
 		{
@@ -1086,20 +1031,11 @@ namespace BizHawk.Common
 			}
 		}
 
-		private void WriteText(string name, ref uint val)
-		{
-			_tw.WriteLine("{0} 0x{1:X8}", name, val);
-		}
+		private void WriteText(string name, ref uint val) => TextWriter.WriteLine("{0} 0x{1:X8}", name, val);
 
-		private void Read(ref sbyte val)
-		{
-			val = _br.ReadSByte();
-		}
+		private void Read(ref sbyte val) => val = BinaryReader.ReadSByte();
 
-		private void Write(ref sbyte val)
-		{
-			_bw.Write(val);
-		}
+		private void Write(ref sbyte val) => BinaryWriter.Write(val);
 
 		private void ReadText(string name, ref sbyte val)
 		{
@@ -1109,20 +1045,11 @@ namespace BizHawk.Common
 			}
 		}
 
-		private void WriteText(string name, ref sbyte val)
-		{
-			_tw.WriteLine("{0} 0x{1:X2}", name, val);
-		}
+		private void WriteText(string name, ref sbyte val) => TextWriter.WriteLine("{0} 0x{1:X2}", name, val);
 
-		private void Read(ref short val)
-		{
-			val = _br.ReadInt16();
-		}
+		private void Read(ref short val) => val = BinaryReader.ReadInt16();
 
-		private void Write(ref short val)
-		{
-			_bw.Write(val);
-		}
+		private void Write(ref short val) => BinaryWriter.Write(val);
 
 		private void ReadText(string name, ref short val)
 		{
@@ -1132,20 +1059,11 @@ namespace BizHawk.Common
 			}
 		}
 
-		private void WriteText(string name, ref short val)
-		{
-			_tw.WriteLine("{0} 0x{1:X4}", name, val);
-		}
+		private void WriteText(string name, ref short val) => TextWriter.WriteLine("{0} 0x{1:X4}", name, val);
 
-		private void Read(ref int val)
-		{
-			val = _br.ReadInt32();
-		}
+		private void Read(ref int val) => val = BinaryReader.ReadInt32();
 
-		private void Write(ref int val)
-		{
-			_bw.Write(val);
-		}
+		private void Write(ref int val) => BinaryWriter.Write(val);
 
 		private void ReadText(string name, ref int val)
 		{
@@ -1155,30 +1073,15 @@ namespace BizHawk.Common
 			}
 		}
 
-		private void WriteText(string name, ref int val)
-		{
-			_tw.WriteLine("{0} 0x{1:X8}", name, val);
-		}
+		private void WriteText(string name, ref int val) => TextWriter.WriteLine("{0} 0x{1:X8}", name, val);
 
-		private void Read(ref long val)
-		{
-			val = _br.ReadInt64();
-		}
+		private void Read(ref long val) => val = BinaryReader.ReadInt64();
 
-		private void Write(ref long val)
-		{
-			_bw.Write(val);
-		}
+		private void Write(ref long val) => BinaryWriter.Write(val);
 
-		private void Read(ref ulong val)
-		{
-			val = _br.ReadUInt64();
-		}
+		private void Read(ref ulong val) => val = BinaryReader.ReadUInt64();
 
-		private void Write(ref ulong val)
-		{
-			_bw.Write(val);
-		}
+		private void Write(ref ulong val) => BinaryWriter.Write(val);
 
 		private void ReadText(string name, ref long val)
 		{
@@ -1188,10 +1091,7 @@ namespace BizHawk.Common
 			}
 		}
 
-		private void WriteText(string name, ref long val)
-		{
-			_tw.WriteLine("{0} 0x{1:X16}", name, val);
-		}
+		private void WriteText(string name, ref long val) => TextWriter.WriteLine("{0} 0x{1:X16}", name, val);
 
 		private void ReadText(string name, ref ulong val)
 		{
@@ -1201,30 +1101,15 @@ namespace BizHawk.Common
 			}
 		}
 
-		private void WriteText(string name, ref ulong val)
-		{
-			_tw.WriteLine("{0} 0x{1:X16}", name, val);
-		}
+		private void WriteText(string name, ref ulong val) => TextWriter.WriteLine("{0} 0x{1:X16}", name, val);
 
-		private void Read(ref float val)
-		{
-			val = _br.ReadSingle();
-		}
+		private void Read(ref float val) => val = BinaryReader.ReadSingle();
 
-		private void Write(ref float val)
-		{
-			_bw.Write(val);
-		}
+		private void Write(ref float val) => BinaryWriter.Write(val);
 
-		private void Read(ref double val)
-		{
-			val = _br.ReadDouble();
-		}
+		private void Read(ref double val) => val = BinaryReader.ReadDouble();
 
-		private void Write(ref double val)
-		{
-			_bw.Write(val);
-		}
+		private void Write(ref double val) => BinaryWriter.Write(val);
 
 		private void ReadText(string name, ref float val)
 		{
@@ -1234,10 +1119,7 @@ namespace BizHawk.Common
 			}
 		}
 
-		private void WriteText(string name, ref float val)
-		{
-			_tw.WriteLine("{0} {1}", name, val);
-		}
+		private void WriteText(string name, ref float val) => TextWriter.WriteLine("{0} {1}", name, val);
 
 		private void ReadText(string name, ref double val)
 		{
@@ -1247,20 +1129,11 @@ namespace BizHawk.Common
 			}
 		}
 
-		private void WriteText(string name, ref double val)
-		{
-			_tw.WriteLine("{0} {1}", name, val);
-		}
+		private void WriteText(string name, ref double val) => TextWriter.WriteLine("{0} {1}", name, val);
 
-		private void Read(ref bool val)
-		{
-			val = _br.ReadBoolean();
-		}
+		private void Read(ref bool val) => val = BinaryReader.ReadBoolean();
 
-		private void Write(ref bool val)
-		{
-			_bw.Write(val);
-		}
+		private void Write(ref bool val) => BinaryWriter.Write(val);
 
 		private void ReadText(string name, ref bool val)
 		{
@@ -1269,15 +1142,12 @@ namespace BizHawk.Common
 				val = bool.Parse(Item(name));
 			}
 		}
-		private void WriteText(string name, ref bool val)
-		{
-			_tw.WriteLine("{0} {1}", name, val);
-		}
+		private void WriteText(string name, ref bool val) => TextWriter.WriteLine("{0} {1}", name, val);
 
 		private sealed class Section : Dictionary<string, Section>
 		{
 			public string Name = "";
-			public readonly Dictionary<string, string> Items = new Dictionary<string, string>();
+			public readonly Dictionary<string, string> Items = new();
 		}
 	}
 }

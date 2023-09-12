@@ -75,8 +75,8 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public static void PopulateFromBuffer(this IVideoProvider videoProvider, int[] frameBuffer)
 		{
-			var b1 = frameBuffer;
-			var b2 = videoProvider.GetVideoBuffer();
+			int[] b1 = frameBuffer;
+			int[] b2 = videoProvider.GetVideoBuffer();
 			int len = Math.Min(b1.Length, b2.Length);
 			for (int i = 0; i < len; i++)
 			{

@@ -30,15 +30,9 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		private void ListBox1_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Set(DragDropEffects.Link);
-		}
+		private void ListBox1_DragEnter(object sender, DragEventArgs e) => e.Set(DragDropEffects.Link);
 
-		private void SetCount()
-		{
-			label2.Text = $"Number of files: {listBox1.Items.Count}";
-		}
+		private void SetCount() => label2.Text = $"Number of files: {listBox1.Items.Count}";
 
 		private void ListBox1_DragDrop(object sender, DragEventArgs e)
 		{
@@ -72,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					label3.Text = "Status: Running...";
 					int numFrames = (int)numericUpDownFrames.Value;
-					var files = new List<string>(listBox1.Items.Count);
+					List<string> files = new(listBox1.Items.Count);
 					foreach (string s in listBox1.Items)
 					{
 						files.Add(s);
@@ -94,8 +88,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var pp = (Tuple<int, List<string>>)o;
-				BatchRunner br = new BatchRunner(_config, _createCoreComm(), pp.Item2, pp.Item1);
+				Tuple<int, List<string>> pp = (Tuple<int, List<string>>)o;
+				BatchRunner br = new(_config, _createCoreComm(), pp.Item2, pp.Item1);
 				br.OnProgress += BrOnProgress;
 				var results = br.Run();
 				this.Invoke(() => { label3.Text = "Status: Finished!"; _mostRecentResults = results; });
@@ -130,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 				DialogController.ShowMessageBox("No results to save!");
 				return;
 			}
-			var result = this.ShowFileSaveDialog(initDir: _config.PathEntries.ToolsAbsolutePath());
+			string result = this.ShowFileSaveDialog(initDir: _config.PathEntries.ToolsAbsolutePath());
 			if (result is null) return;
 			using TextWriter tw = new StreamWriter(result);
 			foreach (var r in _mostRecentResults)

@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores
 
 		private static PadSchema Keyboard()
 		{
-			var bls = new List<ButtonLayout>
+			List<ButtonLayout> bls = new()
 			{
 				new ButtonLayout { Name = "Key True Video", DisName = "TV", Row = 0, WidthFactor = 1 },
 				new ButtonLayout { Name = "Key Inv Video", DisName = "IV", Row = 0, WidthFactor = 1 },
@@ -112,13 +112,13 @@ namespace BizHawk.Emulation.Cores
 				new ButtonLayout { Name = "Key Symbol Shift", DisName = "SS", Row = 4, WidthFactor = 1 }
 			};
 
-			var ps = new PadSchema
+			PadSchema ps = new()
 			{
 				DisplayName = "Keyboard",
 				Size = new Size(500, 170)
 			};
 
-			var btns = new List<ButtonSchema>();
+			List<ButtonSchema> btns = new();
 
 			int rowHeight = 29; //24
 			int stdButtonWidth = 29; //24
@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores
 
 				if (b.IsActive)
 				{
-					var btn = new ButtonSchema(xPos, yPos, b.Name)
+					ButtonSchema btn = new(xPos, yPos, b.Name)
 					{
 						DisplayName = disp
 					};
@@ -167,6 +167,7 @@ namespace BizHawk.Emulation.Cores
 			return ps;
 		}
 
+		#pragma warning disable IDE0051
 		private static PadSchema TapeDevice()
 		{
 			return new PadSchema
@@ -189,5 +190,6 @@ namespace BizHawk.Emulation.Cores
 				}
 			};
 		}
+		#pragma warning restore IDE0051
 	}
 }

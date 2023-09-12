@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -23,7 +23,7 @@ namespace BizHawk.BizInvoke
 
 		static BizExvoker()
 		{
-			var aname = new AssemblyName("BizExvokeProxyAssembly");
+			AssemblyName aname = new("BizExvokeProxyAssembly");
 			ImplAssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
 			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizExvokerModule");
 		}
@@ -65,10 +65,10 @@ namespace BizHawk.BizInvoke
 
 				var typeBuilder = ImplModuleBuilder.DefineType($"Bizhawk.BizExvokeHolder{type.Name}", TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed);
 
-				foreach (var a in methods)
+				foreach (var (Info, Attr) in methods)
 				{
-					var delegateType = BizInvokeUtilities.CreateDelegateType(a.Info, a.Attr!.CallingConvention, typeBuilder, out _).CreateType()!;
-					DelegateTypes.Add(new StoredDelegateInfo(a.Info, delegateType, a.Attr.EntryPoint ?? a.Info.Name));
+					var delegateType = BizInvokeUtilities.CreateDelegateType(Info, Attr!.CallingConvention, typeBuilder, out _).CreateType()!;
+					DelegateTypes.Add(new StoredDelegateInfo(Info, delegateType, Attr.EntryPoint ?? Info.Name));
 				}
 				StorageType = typeBuilder.CreateType()!;
 				OriginalType = type;
@@ -77,15 +77,15 @@ namespace BizHawk.BizInvoke
 
 		private class ExvokerImpl : IImportResolver
 		{
-			private readonly Dictionary<string, IntPtr> EntryPoints = new Dictionary<string, IntPtr>();
+			private readonly Dictionary<string, IntPtr> EntryPoints = new();
 
-			private readonly List<Delegate> Delegates = new List<Delegate>();
+			private readonly List<Delegate> Delegates = new();
 			
 			public ExvokerImpl(object o, DelegateStorage d, ICallingConventionAdapter a)
 			{
 				foreach (var sdt in d.DelegateTypes)
 				{
-					var del = Delegate.CreateDelegate(sdt.DelegateType, o, sdt.Method);
+					Delegate del = Delegate.CreateDelegate(sdt.DelegateType, o, sdt.Method);
 					Delegates.Add(del); // prevent garbage collection of the delegate, which would invalidate the pointer
 					EntryPoints.Add(sdt.EntryPointName, a.GetFunctionPointerForDelegate(del));
 				}
@@ -96,7 +96,7 @@ namespace BizHawk.BizInvoke
 			public IntPtr GetProcAddrOrThrow(string entryPoint) => EntryPoints.TryGetValue(entryPoint, out var ret) ? ret : throw new InvalidOperationException($"could not find {entryPoint} in exports");
 		}
 
-		private static readonly Dictionary<Type, DelegateStorage> Impls = new Dictionary<Type, DelegateStorage>();
+		private static readonly Dictionary<Type, DelegateStorage> Impls = new();
 
 
 		public static IImportResolver GetExvoker(object o, ICallingConventionAdapter a)

@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			uint* regs = stackalloc uint[18 + 32 + 32 + 32 + 32 + 2];
 			_core.GetRegisters((IntPtr)regs);
 
-			var ret = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> ret = new();
 			// M68K data regs
 			for (int i = 0; i < 8; i++)
 			{
@@ -47,13 +47,13 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			register = register.ToUpperInvariant();
 			if (register.StartsWithOrdinal("M68K "))
 			{
-				var reg = Enum.Parse(typeof(LibVirtualJaguar.M68KRegisters), register.Remove(0, 5));
+				object reg = Enum.Parse(typeof(LibVirtualJaguar.M68KRegisters), register.Remove(0, 5));
 				_core.SetRegister((int)reg, value);
 			}
 			else if (register.StartsWithOrdinal("GPU ") || register.StartsWithOrdinal("DSP "))
 			{
 				bool gpu = register.StartsWithOrdinal("GPU ");
-				var regName = register.Remove(0, 4);
+				string regName = register.Remove(0, 4);
 
 				if (regName == "PC")
 				{
@@ -61,8 +61,8 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				}
 				else if (regName.StartsWith('R'))
 				{
-					var offset = gpu ? 18 : 82;
-					var reg = int.Parse(regName.Remove(0, 1));
+					int offset = gpu ? 18 : 82;
+					int reg = int.Parse(regName.Remove(0, 1));
 					if (reg > 63)
 					{
 						throw new ArgumentException("Invalid register", nameof(register));
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		{
 			LibVirtualJaguar.MemoryCallback CreateCallback(MemoryCallbackFlags flags, Func<bool> getHasCBOfType)
 			{
-				var rawFlags = (uint)flags;
+				uint rawFlags = (uint)flags;
 				return address =>
 				{
 					if (getHasCBOfType())

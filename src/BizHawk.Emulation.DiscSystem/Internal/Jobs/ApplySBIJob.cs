@@ -13,17 +13,17 @@ namespace BizHawk.Emulation.DiscSystem
 			//save this, it's small, and we'll want it for disc processing a/b checks
 			disc.Memos["sbi"] = sbi;
 
-			var dsr = new DiscSectorReader(disc);
+			DiscSectorReader dsr = new(disc);
 
-			var n = sbi.ABAs.Count;
-			var b = 0;
-			for (var i = 0; i < n; i++)
+			int n = sbi.ABAs.Count;
+			int b = 0;
+			for (int i = 0; i < n; i++)
 			{
-				var lba = sbi.ABAs[i] - 150;
+				int lba = sbi.ABAs[i] - 150;
 
 				//create a synthesizer which can return the patched data
-				var ss_patchq = new SS_PatchQ { Original = disc._Sectors[lba + 150] };
-				var subQbuf = ss_patchq.Buffer_SubQ;
+				SS_PatchQ ss_patchq = new() { Original = disc._Sectors[lba + 150] };
+				byte[] subQbuf = ss_patchq.Buffer_SubQ;
 
 				//read the old subcode
 				dsr.ReadLBA_SubQ(lba, subQbuf, 0);
@@ -32,9 +32,9 @@ namespace BizHawk.Emulation.DiscSystem
 				disc._Sectors[lba + 150] = ss_patchq;
 
 				//apply SBI patch
-				for (var j = 0; j < 12; j++)
+				for (int j = 0; j < 12; j++)
 				{
-					var patch = sbi.subq[b++];
+					short patch = sbi.subq[b++];
 					if (patch == -1) continue;
 					subQbuf[j] = (byte)patch;
 				}

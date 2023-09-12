@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	public class DiscSectorReader
 	{
-		public DiscSectorReaderPolicy Policy = new DiscSectorReaderPolicy();
+		public DiscSectorReaderPolicy Policy = new();
 
 		private readonly Disc disc;
 
@@ -299,6 +299,6 @@ namespace BizHawk.Emulation.DiscSystem
 		//lets not try to these as a sector cache. it gets too complicated. its just a temporary variable.
 		private readonly byte[] buf2442 = new byte[2448];
 		private readonly byte[] buf12 = new byte[12];
-		private readonly SectorSynthJob job = new SectorSynthJob();
+		private readonly SectorSynthJob job = new();
 	}
 }

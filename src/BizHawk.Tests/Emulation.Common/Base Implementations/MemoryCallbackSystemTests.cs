@@ -63,7 +63,7 @@ namespace BizHawk.Tests.Emulation.Common
 			MemoryCallback writeCallback = new(ScopeA, MemoryCallbackType.Write, "Callback 2", _testCallbacks.Callback2, null, null);
 			MemoryCallback execCallback = new(ScopeA, MemoryCallbackType.Execute, "Callback 3", _testCallbacks.Callback3, null, null);
 
-			var activeChangedInvoked = false;
+			bool activeChangedInvoked = false;
 			_memoryCallbackSystem.ActiveChanged += () => activeChangedInvoked = true;
 
 			Assert.IsFalse(_memoryCallbackSystem.HasReads);
@@ -202,13 +202,13 @@ namespace BizHawk.Tests.Emulation.Common
 			MemoryCallback callback2 = new(ScopeA, MemoryCallbackType.Read, "Callback 2", _testCallbacks.Callback2, null, null);
 			MemoryCallback callback3 = new(ScopeA, MemoryCallbackType.Read, "Callback 3", _testCallbacks.Callback3, null, null);
 
-			var callback1invoked = false;
-			MemoryCallbackDelegate callback = (_, _, _) =>
+			bool callback1invoked = false;
+			void callback(uint _1, uint _2, uint _3)
 			{
 				callback1invoked = true;
 				_memoryCallbackSystem.Add(callback2);
 				_memoryCallbackSystem.Add(callback3);
-			};
+			}
 
 			MemoryCallback callback1 = new(ScopeA, MemoryCallbackType.Read, "Callback 1", callback, null, null);
 
@@ -227,12 +227,12 @@ namespace BizHawk.Tests.Emulation.Common
 		{
 			MemoryCallback callback1 = new(ScopeA, MemoryCallbackType.Read, "Callback 1", _testCallbacks.Callback1, null, null);
 
-			var callback2invoked = false;
-			MemoryCallbackDelegate callback = (_, _, _) =>
+			bool callback2invoked = false;
+			void callback(uint _1, uint _2, uint _3)
 			{
 				callback2invoked = true;
 				_memoryCallbackSystem.Remove(callback1.Callback);
-			};
+			}
 
 			MemoryCallback callback2 = new(ScopeA, MemoryCallbackType.Read, "Callback 2", callback, null, null);
 			MemoryCallback callback3 = new(ScopeA, MemoryCallbackType.Read, "Callback 3", _testCallbacks.Callback3, null, null);
@@ -258,12 +258,12 @@ namespace BizHawk.Tests.Emulation.Common
 			MemoryCallback callback1 = new(ScopeA, MemoryCallbackType.Read, "Callback 1", _testCallbacks.Callback1, null, null);
 
 			MemoryCallback? callback2 = null;
-			var callback2invoked = false;
-			MemoryCallbackDelegate callback = (_, _, _) =>
+			bool callback2invoked = false;
+			void callback(uint _1, uint _2, uint _3)
 			{
 				callback2invoked = true;
 				_memoryCallbackSystem.Remove(callback2!.Callback);
-			};
+			}
 
 			callback2 = new(ScopeA, MemoryCallbackType.Read, "Callback 2", callback, null, null);
 			MemoryCallback callback3 = new(ScopeA, MemoryCallbackType.Read, "Callback 3", _testCallbacks.Callback3, null, null);

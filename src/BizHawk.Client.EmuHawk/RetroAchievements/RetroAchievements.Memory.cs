@@ -33,10 +33,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			public void Exit()
-			{
-				_memSema.Release();
-			}
+			public void Exit() => _memSema.Release();
 
 			public void Dispose()
 			{
@@ -146,12 +143,12 @@ namespace BizHawk.Client.EmuHawk
 
 				using (MemGuard.EnterExit())
 				{
-					var end = Math.Min(addr + bytes, _domainAddrStart + BankSize);
-					var length = end - addr;
+					int end = Math.Min(addr + bytes, _domainAddrStart + BankSize);
+					int length = end - addr;
 
 					if (_addressMangler == 0)
 					{
-						var ret = new byte[length];
+						byte[] ret = new byte[length];
 						_domain.BulkPeekByte(((long)addr).RangeToExclusive(end), ret);
 						Marshal.Copy(ret, 0, buffer, length);
 					}
@@ -159,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						unsafe
 						{
-							for (var i = addr; i < end; i++)
+							for (int i = addr; i < end; i++)
 							{
 								((byte*)buffer)![i - addr] = _domain.PeekByte(i ^ _addressMangler);
 							}
@@ -235,12 +232,12 @@ namespace BizHawk.Client.EmuHawk
 
 				using (MemGuard.EnterExit())
 				{
-					var end = Math.Min(addr + bytes, BankSize);
-					var length = end - addr;
+					int end = Math.Min(addr + bytes, BankSize);
+					int length = end - addr;
 
 					unsafe
 					{
-						for (var i = addr; i < end; i++)
+						for (int i = addr; i < end; i++)
 						{
 							if ((i & 2) != 0)
 							{
@@ -320,8 +317,8 @@ namespace BizHawk.Client.EmuHawk
 				using (MemGuard.EnterExit())
 				{
 					var regs = _debuggable.GetCpuFlagsAndRegisters();
-					var end = Math.Min(addr + bytes, BankSize);
-					for (var i = addr; i < end; i++)
+					int end = Math.Min(addr + bytes, BankSize);
+					for (int i = addr; i < end; i++)
 					{
 						byte val;
 						if (i < 0x40)
@@ -380,7 +377,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected static IReadOnlyList<MemFunctions> CreateMemoryBanks(ConsoleID consoleId, IMemoryDomains domains, IDebuggable debuggable)
 		{
-			var mfs = new List<MemFunctions>();
+			List<MemFunctions> mfs = new();
 
 			void TryAddDomain(string domain, int? size = null, int addressMangler = 0)
 			{

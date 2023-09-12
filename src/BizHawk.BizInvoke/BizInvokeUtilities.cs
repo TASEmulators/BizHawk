@@ -47,7 +47,7 @@ namespace BizHawk.BizInvoke
 			for (int i = 0; i < paramInfos.Length; i++)
 			{
 				var p = delegateInvoke.DefineParameter(i + 1, ParameterAttributes.None, paramInfos[i].Name);
-				foreach (var a in paramInfos[i].GetCustomAttributes(false))
+				foreach (object? a in paramInfos[i].GetCustomAttributes(false))
 				{
 					p.SetCustomAttribute(GetAttributeBuilder(a));
 				}
@@ -55,7 +55,7 @@ namespace BizHawk.BizInvoke
 
 			{
 				var p = delegateInvoke.DefineParameter(0, ParameterAttributes.Retval, method.ReturnParameter!.Name);
-				foreach (var a in method.ReturnParameter.GetCustomAttributes(false))
+				foreach (object? a in method.ReturnParameter.GetCustomAttributes(false))
 				{
 					p.SetCustomAttribute(GetAttributeBuilder(a));
 				}
@@ -64,7 +64,7 @@ namespace BizHawk.BizInvoke
 			delegateInvoke.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
 
 			// add the [UnmanagedFunctionPointer] to the delegate so interop will know how to call it
-			var attr = new CustomAttributeBuilder(
+			CustomAttributeBuilder attr = new(
 				typeof(UnmanagedFunctionPointerAttribute).GetConstructor(new[] { typeof(CallingConvention) })!,
 				new object[] { nativeCall });
 			delegateType.SetCustomAttribute(attr);

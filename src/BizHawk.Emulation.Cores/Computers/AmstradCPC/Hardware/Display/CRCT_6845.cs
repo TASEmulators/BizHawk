@@ -1,4 +1,4 @@
-﻿using BizHawk.Common;
+using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
@@ -18,15 +18,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private CallBack HSYNC_Callbacks;
 		private CallBack VSYNC_Callbacks;
 
-		public void AttachVSYNCCallback(CallBack vCall)
-		{
-			VSYNC_Callbacks += vCall;
-		}
+		public void AttachVSYNCCallback(CallBack vCall) => VSYNC_Callbacks += vCall;
 
-		public void AttachHSYNCCallback(CallBack hCall)
-		{
-			HSYNC_Callbacks += hCall;
-		}
+		public void AttachHSYNCCallback(CallBack hCall) => HSYNC_Callbacks += hCall;
 
 		public CRCT_6845(CRCTType chipType, CPCBase machine)
 		{
@@ -35,8 +29,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			Reset();
 		}
 
+		#pragma warning disable IDE0051
 		private const int WRITE = 0;
 		private const int READ = 1;
+		#pragma warning restore IDE0051
 
 		/// <summary>
 		/// Denotes that HSYNC is active
@@ -469,12 +465,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				{
 					DISPTMG = true;
 
-					var line = VCC;
-					var row = VLC;
-					var addrX = (LatchedRAMOffset * 2) + ((VCC * LatchedScreenWidthBytes) & 0x7ff) + ByteCounter;
+					int line = VCC;
+					int row = VLC;
+					int addrX = (LatchedRAMOffset * 2) + ((VCC * LatchedScreenWidthBytes) & 0x7ff) + ByteCounter;
 					// remove artifacts caused by certain hardware scrolling addresses
 					addrX &= 0x7ff;
-					var addrY = LatchedRAMStartAddress + (2048 * VLC);
+					int addrY = LatchedRAMStartAddress + (2048 * VLC);
 
 					//var addr = VideoPageBase + (line * (0x50)) + (row * 0x800) + (ByteCounter);
 					CurrentByteAddress = (ushort)(addrX + addrY);
@@ -538,12 +534,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				DISPTMG = true;
 
-				var line = VCC;
-				var row = VLC;
-				var addrX = (LatchedRAMOffset * 2) + ((VCC * LatchedScreenWidthBytes) & 0x7ff) + ByteCounter;
+				int line = VCC;
+				int row = VLC;
+				int addrX = (LatchedRAMOffset * 2) + ((VCC * LatchedScreenWidthBytes) & 0x7ff) + ByteCounter;
 				// remove artifacts caused by certain hardware scrolling addresses
 				addrX &= 0x7ff;
-				var addrY = LatchedRAMStartAddress + (2048 * VLC);
+				int addrY = LatchedRAMStartAddress + (2048 * VLC);
 
 				//var addr = VideoPageBase + (line * (0x50)) + (row * 0x800) + (ByteCounter);
 				CurrentByteAddress = (ushort)(addrX + addrY);
@@ -773,10 +769,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Selects a register
 		/// </summary>
-		private void RegisterSelect(int data)
-		{
-			SelectedRegister = data & 0x1F;
-		}
+		private void RegisterSelect(int data) => SelectedRegister = data & 0x1F;
 
 		/*
                 RegIdx    Register Name                 Type
@@ -811,7 +804,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private void WriteRegister(int data)
 		{
 			// 16 and 17 are read only registers on all types
-			if (SelectedRegister == 16 || SelectedRegister == 17)
+			if (SelectedRegister is 16 or 17)
 				return;
 
 			// non existing registers
@@ -837,7 +830,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			if (SelectedRegister == 1)
 			{
-				var d = data;
+				int d = data;
 			}
 
 			Regs[SelectedRegister] = (byte)(data & CPCMask[SelectedRegister]);
@@ -892,7 +885,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 				default:
 					// registers 18-31 read as 0, on type 0 and 2. registers 18-30 read as 0 on type1, register 31 reads as 0x0ff.
-					if (SelectedRegister >= 18 && SelectedRegister <= 30)
+					if (SelectedRegister is >= 18 and <= 30)
 					{
 						switch ((int)ChipType)
 						{
@@ -1042,7 +1035,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			if (portUpper.Bit(6))
 				return accessed;
 
-			var func = portUpper & 3;
+			int func = portUpper & 3;
 
 			switch (func)
 			{

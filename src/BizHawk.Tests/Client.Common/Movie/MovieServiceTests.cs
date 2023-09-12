@@ -16,7 +16,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[DataRow("BizHawk v2.0 Tasproj v1.1", TasMovie.CurrentVersion)]
 		public void ParseTasMovieVersion(string movieVersion, double expected)
 		{
-			var actual = MovieService.ParseTasMovieVersion(movieVersion);
+			double actual = MovieService.ParseTasMovieVersion(movieVersion);
 			Assert.AreEqual(expected, actual);
 		}
 	}

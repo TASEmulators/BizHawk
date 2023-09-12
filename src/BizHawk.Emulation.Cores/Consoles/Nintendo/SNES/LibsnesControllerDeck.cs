@@ -23,28 +23,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private static ILibsnesController Factory(ControllerType t, LibsnesCore.SnesSyncSettings ss)
 		{
-			switch (t)
+			return t switch
 			{
-				case ControllerType.Unplugged:
-					return new SnesUnpluggedController();
-				case ControllerType.Gamepad:
-					return new SnesController();
-				case ControllerType.Multitap:
-					return new SnesMultitapController();
-				case ControllerType.Payload:
-					return new SnesPayloadController();
-				case ControllerType.Mouse:
-					return new SnesMouseController
-					{
-						LimitAnalogChangeSensitivity = ss.LimitAnalogChangeSensitivity
-					};
-				case ControllerType.SuperScope:
-					return new SnesSuperScopeController();
-				case ControllerType.Justifier:
-					return new SnesJustifierController();
-				default:
-					throw new InvalidOperationException();
-			}
+				ControllerType.Unplugged => new SnesUnpluggedController(),
+				ControllerType.Gamepad => new SnesController(),
+				ControllerType.Multitap => new SnesMultitapController(),
+				ControllerType.Payload => new SnesPayloadController(),
+				ControllerType.Mouse => new SnesMouseController
+				{
+					LimitAnalogChangeSensitivity = ss.LimitAnalogChangeSensitivity
+				},
+				ControllerType.SuperScope => new SnesSuperScopeController(),
+				ControllerType.Justifier => new SnesJustifierController(),
+				_ => throw new InvalidOperationException(),
+			};
 		}
 
 		private readonly ILibsnesController[] _ports;
@@ -81,10 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		public short CoreInputState(IController controller, int port, int device, int index, int id)
-		{
-			return _ports[port].GetState(_mergers[port].UnMerge(controller), index, id);
-		}
+		public short CoreInputState(IController controller, int port, int device, int index, int id) => _ports[port].GetState(_mergers[port].UnMerge(controller), index, id);
 	}
 
 	internal static class SNESControllerDefExtensions
@@ -142,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private static int ButtonOrder(string btn)
 		{
-			var order = new Dictionary<string, int>
+			Dictionary<string, int> order = new()
 			{
 				["0Up"] = 0,
 				["0Down"] = 1,
@@ -204,7 +193,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private static int ButtonOrder(string btn)
 		{
-			var order = new Dictionary<string, int>
+			Dictionary<string, int> order = new()
 			{
 				["Up"] = 0,
 				["Down"] = 1,
@@ -264,10 +253,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public ControllerDefinition Definition { get; } = _definition;
 
-		public short GetState(IController controller, int index, int id)
-		{
-			return (short)(controller.IsPressed("0B" + (index << 4 & 16 | id)) ? 1 : 0);
-		}
+		public short GetState(IController controller, int index, int id) => (short)(controller.IsPressed("0B" + (index << 4 & 16 | id)) ? 1 : 0);
 	}
 
 	public class SnesUnpluggedController : ILibsnesController
@@ -278,10 +264,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public ControllerDefinition Definition { get; } = _definition;
 
-		public short GetState(IController controller, int index, int id)
-		{
-			return 0;
-		}
+		public short GetState(IController controller, int index, int id) => 0;
 	}
 
 	public class SnesMouseController : ILibsnesController
@@ -303,7 +286,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				default:
 					return 0;
 				case 0:
-					var x = controller.AxisValue("0Mouse X");
+					int x = controller.AxisValue("0Mouse X");
 					if (LimitAnalogChangeSensitivity)
 					{
 						x = x.Clamp(-10, 10);
@@ -311,7 +294,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 					return (short)x;
 				case 1:
-					var y = controller.AxisValue("0Mouse Y");
+					int y = controller.AxisValue("0Mouse Y");
 					if (LimitAnalogChangeSensitivity)
 					{
 						y = y.Clamp(-10, 10);

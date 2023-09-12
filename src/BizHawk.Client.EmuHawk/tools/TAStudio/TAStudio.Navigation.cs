@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator.Frame > 0)
 			{
 				var prevMarker = CurrentTasMovie.Markers.Previous(Emulator.Frame);
-				var prev = prevMarker?.Frame ?? 0;
+				int prev = prevMarker?.Frame ?? 0;
 				GoToFrame(prev);
 			}
 		}
@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 		public void GoToNextMarker()
 		{
 			var nextMarker = CurrentTasMovie.Markers.Next(Emulator.Frame);
-			var next = nextMarker?.Frame ?? CurrentTasMovie.InputLogLength - 1;
+			int next = nextMarker?.Frame ?? CurrentTasMovie.InputLogLength - 1;
 			GoToFrame(next);
 		}
 

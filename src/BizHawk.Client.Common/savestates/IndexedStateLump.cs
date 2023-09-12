@@ -14,10 +14,7 @@
 			Calc();
 		}
 
-		private void Calc()
-		{
-			Name = _root.Name + _idx;
-		}
+		private void Calc() => Name = _root.Name + _idx;
 
 		public void Increment()
 		{

@@ -24,10 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// POKEs a memory bus address
 		/// </summary>
-		public void PokeMemory(ushort addr, byte value)
-		{
-			_machine.WriteBus(addr, value);
-		}
+		public void PokeMemory(ushort addr, byte value) => _machine.WriteBus(addr, value);
 
 		/// <summary>
 		/// Called by MainForm so that the core label can display a more detailed tooltip about the emulated spectrum model
@@ -67,17 +64,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Called by MainForm - dumps a close approximation of the Spectaculator SZX snapshot format
 		/// DEV use only - this is nowhere near accurate
 		/// </summary>
-		public byte[] GetSZXSnapshot()
-		{
-			return SZX.ExportSZX(_machine);
-		}
+		public byte[] GetSZXSnapshot() => SZX.ExportSZX(_machine);
 
 		/// <summary>
 		/// Utility method to get MemberName from an object
 		/// </summary>
-		public static string GetMemberName<T, TValue>(Expression<Func<T, TValue>> memberAccess)
-		{
-			return ((MemberExpression)memberAccess.Body).Member.Name;
-		}
+		public static string GetMemberName<T, TValue>(Expression<Func<T, TValue>> memberAccess) => ((MemberExpression)memberAccess.Body).Member.Name;
 	}
 }

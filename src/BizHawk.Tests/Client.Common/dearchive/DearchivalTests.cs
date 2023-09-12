@@ -35,7 +35,7 @@ namespace BizHawk.Tests.Client.Common.Dearchive
 		public void TestSharpCompress()
 		{
 			var sc = SharpCompressDearchivalMethod.Instance;
-			foreach (var filename in TestCases.Where(testCase => testCase.HasSharpCompressSupport)
+			foreach (string? filename in TestCases.Where(testCase => testCase.HasSharpCompressSupport)
 				.Select(testCase => testCase.Filename))
 			{
 				var archive = EmbeddedData.GetStream(EMBED_GROUP, filename);

@@ -9,51 +9,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// ROM Contents
 		/// </summary>
-		public byte[] RomBytes
-		{
-			get => _romBytes;
-			set => _romBytes = value;
-		}
+		public byte[] RomBytes { get; set; }
 
 		/// <summary>
 		/// Useful ROM addresses that are needed during tape operations
 		/// </summary>
-		public ushort SaveBytesRoutineAddress
-		{
-			get => _saveBytesRoutineAddress;
-			set => _saveBytesRoutineAddress = value;
-		}
-		public ushort LoadBytesRoutineAddress
-		{
-			get => _loadBytesRoutineAddress;
-			set => _loadBytesRoutineAddress = value;
-		}
-		public ushort SaveBytesResumeAddress
-		{
-			get => _saveBytesResumeAddress;
-			set => _saveBytesResumeAddress = value;
-		}
-		public ushort LoadBytesResumeAddress
-		{
-			get => _loadBytesResumeAddress;
-			set => _loadBytesResumeAddress = value;
-		}
-		public ushort LoadBytesInvalidHeaderAddress
-		{
-			get => _loadBytesInvalidHeaderAddress;
-			set => _loadBytesInvalidHeaderAddress = value;
-		}
-
-		private byte[] _romBytes;
-		private ushort _saveBytesRoutineAddress;
-		private ushort _loadBytesRoutineAddress;
-		private ushort _saveBytesResumeAddress;
-		private ushort _loadBytesResumeAddress;
-		private ushort _loadBytesInvalidHeaderAddress;
+		public ushort SaveBytesRoutineAddress { get; set; }
+		public ushort LoadBytesRoutineAddress { get; set; }
+		public ushort SaveBytesResumeAddress { get; set; }
+		public ushort LoadBytesResumeAddress { get; set; }
+		public ushort LoadBytesInvalidHeaderAddress { get; set; }
 
 		public static RomData InitROM(MachineType machineType, byte[] rom)
 		{
-			RomData RD = new RomData { RomBytes = new byte[rom.Length] };
+			RomData RD = new() { RomBytes = new byte[rom.Length] };
 			RD.RomBytes = rom;
 
 			switch (machineType)

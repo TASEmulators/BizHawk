@@ -44,10 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(prg), ref prg);
 		}
 
-		public override void WriteExp(int addr, byte value)
-		{
-			WriteWram(addr, value);
-		}
+		public override void WriteExp(int addr, byte value) => WriteWram(addr, value);
 
 	}
 }

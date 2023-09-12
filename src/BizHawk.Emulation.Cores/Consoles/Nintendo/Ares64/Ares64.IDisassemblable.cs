@@ -25,8 +25,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			// FIXME: the PC register is actually 64-bits (although in practice it will only ever be 32-bits)
 			_core.GetDisassembly(addr, m.PeekUint(addr, true), _disasmbuf);
 			length = 4;
-			var ret = Encoding.UTF8.GetString(_disasmbuf);
-			var z = ret.IndexOf('\0');
+			string ret = Encoding.UTF8.GetString(_disasmbuf);
+			int z = ret.IndexOf('\0');
 			if (z > -1)
 			{
 				ret = ret.Substring(0, z); // remove garbage past null terminator

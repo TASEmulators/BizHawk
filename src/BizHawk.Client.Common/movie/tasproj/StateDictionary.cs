@@ -51,15 +51,9 @@ namespace BizHawk.Client.Common
 
 		public bool IsReadOnly => false;
 
-		public void Add(int key, byte[] value)
-		{
-			this[key] = value;
-		}
+		public void Add(int key, byte[] value) => this[key] = value;
 
-		public void Add(KeyValuePair<int, byte[]> item)
-		{
-			this[item.Key] = item.Value;
-		}
+		public void Add(KeyValuePair<int, byte[]> item) => this[item.Key] = item.Value;
 
 		public void Clear()
 		{
@@ -69,20 +63,11 @@ namespace BizHawk.Client.Common
 			_streams.Clear();
 		}
 
-		public bool Contains(KeyValuePair<int, byte[]> item)
-		{
-			throw new NotImplementedException();
-		}
+		public bool Contains(KeyValuePair<int, byte[]> item) => throw new NotImplementedException();
 
-		public bool ContainsKey(int key)
-		{
-			return _streams.ContainsKey(key);
-		}
+		public bool ContainsKey(int key) => _streams.ContainsKey(key);
 
-		public void CopyTo(KeyValuePair<int, byte[]>[] array, int arrayIndex)
-		{
-			throw new NotImplementedException();
-		}
+		public void CopyTo(KeyValuePair<int, byte[]>[] array, int arrayIndex) => throw new NotImplementedException();
 
 		public IEnumerator<KeyValuePair<int, byte[]>> GetEnumerator()
 		{
@@ -101,10 +86,7 @@ namespace BizHawk.Client.Common
 				return false;
 		}
 
-		public bool Remove(KeyValuePair<int, byte[]> item)
-		{
-			throw new NotImplementedException();
-		}
+		public bool Remove(KeyValuePair<int, byte[]> item) => throw new NotImplementedException();
 
 		public bool TryGetValue(int key, out byte[] value)
 		{
@@ -122,9 +104,6 @@ namespace BizHawk.Client.Common
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		public void Dispose()
-		{
-			Clear();
-		}
+		public void Dispose() => Clear();
 	}
 }

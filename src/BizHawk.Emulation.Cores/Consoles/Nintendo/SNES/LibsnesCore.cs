@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			LibsnesCore.SnesSettings settings, LibsnesCore.SnesSyncSettings syncSettings)
 		{
 			_baseRomPath = baseRomPath;
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 
 			const string TRACE_HEADER = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, DB, flags (NVMXDIZC), V, H)";
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// strip header
 			if ((romData?.Length & 0x7FFF) == 512)
 			{
-				var newData = new byte[romData.Length - 512];
+				byte[] newData = new byte[romData.Length - 512];
 				Array.Copy(romData, 512, newData, 0, newData.Length);
 				romData = newData;
 			}
@@ -217,7 +217,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private IController _controller;
 		private readonly LoadParams _currLoadParams;
-		private int _timeFrameCounter;
 		private bool _disposed;
 
 		public bool IsSGB { get; }
@@ -254,10 +253,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				_core = core;
 			}
 
-			protected override void OnHooksChanged()
-			{
-				_core.OnScanlineHooksChanged();
-			}
+			protected override void OnHooksChanged() => _core.OnScanlineHooksChanged();
 		}
 
 		private void OnScanlineHooksChanged()
@@ -270,10 +266,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Api.QUERY_set_scanlineStart(ScanlineHookManager.HookCount == 0 ? null : _scanlineStartCb);
 		}
 
-		private void snes_scanlineStart(int line)
-		{
-			ScanlineHookManager.HandleScanline(line);
-		}
+		private void snes_scanlineStart(int line) => ScanlineHookManager.HandleScanline(line);
 
 		private string snes_path_request(int slot, string hint)
 		{
@@ -333,7 +326,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 
 			string ret;
-			var data = CoreComm.CoreFileProvider.GetFirmware(new("SNES", firmwareId), "Game may function incorrectly without the requested firmware.");
+			byte[] data = CoreComm.CoreFileProvider.GetFirmware(new("SNES", firmwareId), "Game may function incorrectly without the requested firmware.");
 			if (data != null)
 			{
 				ret = hint;
@@ -357,7 +350,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			if (which == (uint)LibsnesApi.eTRACE.CPU)
 			{
-				var split = msg.Split(new[] { splitStr }, 2, StringSplitOptions.None);
+				string[] split = msg.Split(new[] { splitStr }, 2, StringSplitOptions.None);
 				_tracer.Put(new(disassembly: split[0].PadRight(34), registerInfo: splitStr + split[1]));
 			}
 			else if (which == (uint)LibsnesApi.eTRACE.SMP)
@@ -468,10 +461,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// <param name="index">meaningless for most controllers.  for multitap, 0-3 for which multitap controller</param>
 		/// <param name="id">button ID enum; in the case of a regular controller, this corresponds to shift register position</param>
 		/// <returns>for regular controllers, one bit D0 of button status.  for other controls, varying ranges depending on id</returns>
-		private short snes_input_state(int port, int device, int index, int id)
-		{
-			return _controllerDeck.CoreInputState(_controller, port, device, index, id);
-		}
+		private short snes_input_state(int port, int device, int index, int id) => _controllerDeck.CoreInputState(_controller, port, device, index, id);
 
 		private void snes_input_poll()
 		{
@@ -496,15 +486,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			bool doubleSize = _settings.AlwaysDoubleSize;
 			bool lineDouble = doubleSize, dotDouble = doubleSize;
 
-			_videoWidth = width;
-			_videoHeight = height;
+			BufferWidth = width;
+			BufferHeight = height;
 
 			int yskip = 1, xskip = 1;
 
 			// if we are in high-res mode, we get double width. so, lets double the height here to keep it square.
 			if (width == 512)
 			{
-				_videoHeight *= 2;
+				BufferHeight *= 2;
 				yskip = 2;
 
 				lineDouble = true;
@@ -514,14 +504,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 			else if (lineDouble)
 			{
-				_videoHeight *= 2;
+				BufferHeight *= 2;
 				yskip = 2;
 			}
 
 			int srcPitch = 1024;
 			int srcStart = 0;
 
-			bool interlaced = height == 478 || height == 448;
+			bool interlaced = height is 478 or 448;
 			if (interlaced)
 			{
 				// from bsnes in interlaced mode we have each field side by side
@@ -533,22 +523,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				lineDouble = false;
 				srcPitch = 512;
 				yskip = 1;
-				_videoHeight = height;
+				BufferHeight = height;
 			}
 
 			if (dotDouble)
 			{
-				_videoWidth *= 2;
+				BufferWidth *= 2;
 				xskip = 2;
 			}
 
 			if (_settings.CropSGBFrame && IsSGB)
 			{
-				_videoWidth = 160;
-				_videoHeight = 144;
+				BufferWidth = 160;
+				BufferHeight = 144;
 			}
 
-			int size = _videoWidth * _videoHeight;
+			int size = BufferWidth * BufferHeight;
 			if (_videoBuffer.Length != size)
 			{
 				_videoBuffer = new int[size];
@@ -582,13 +572,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						break;
 					}
 
-					int bonus = (i * _videoWidth) + xbonus;
+					int bonus = (i * BufferWidth) + xbonus;
 					for (int y = 0; y < height; y++)
 					{
 						for (int x = 0; x < width; x++)
 						{
 							int si = (y * srcPitch) + x + srcStart;
-							int di = y * _videoWidth * yskip + x * xskip + bonus;
+							int di = y * BufferWidth * yskip + x * xskip + bonus;
 							int rgb = data[si];
 							_videoBuffer[di] = rgb;
 						}

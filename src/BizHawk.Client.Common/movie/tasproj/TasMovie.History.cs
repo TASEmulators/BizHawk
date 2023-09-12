@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 			_movie = movie;
 		}
 
-		private readonly List<List<IMovieAction>> _history = new List<List<IMovieAction>>();
+		private readonly List<List<IMovieAction>> _history = new();
 		private readonly ITasMovie _movie;
 
 		private int _maxSteps = 100;
@@ -190,7 +190,7 @@ namespace BizHawk.Client.Common
 				return _movie.InputLogLength;
 			}
 
-			List<IMovieAction> batch = _history[UndoIndex];
+			var batch = _history[UndoIndex];
 			for (int i = batch.Count - 1; i >= 0; i--)
 			{
 				batch[i].Undo(_movie);
@@ -214,8 +214,8 @@ namespace BizHawk.Client.Common
 			}
 
 			UndoIndex++;
-			List<IMovieAction> batch = _history[UndoIndex];
-			foreach (IMovieAction b in batch)
+			var batch = _history[UndoIndex];
+			foreach (var b in batch)
 			{
 				b.Redo(_movie);
 			}

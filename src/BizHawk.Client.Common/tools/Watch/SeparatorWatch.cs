@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the separator instance
 		/// </summary>
-		public static SeparatorWatch Instance => new SeparatorWatch();
+		public static SeparatorWatch Instance => new();
 
 		public static SeparatorWatch NewSeparatorWatch(string description)
 		{
@@ -74,10 +74,7 @@ namespace BizHawk.Client.Common
 		/// Transforms the current instance into a string
 		/// </summary>
 		/// <returns>A <see cref="string"/> representation of the current <see cref="Watch"/></returns>
-		public override string ToString()
-		{
-			return $"0\tS\t_\t1\t\t{Notes.Trim('\r', '\n')}";
-		}
+		public override string ToString() => $"0\tS\t_\t1\t\t{Notes.Trim('\r', '\n')}";
 
 		/// <summary>
 		/// Ignore that stuff

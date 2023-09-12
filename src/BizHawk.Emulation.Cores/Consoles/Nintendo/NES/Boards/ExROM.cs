@@ -44,10 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int last_nt_read;
 		private bool irq_audio;
 
-		public MemoryDomain GetExRAM()
-		{
-			return new MemoryDomainByteArray("ExRAM", MemoryDomain.Endian.Little, EXRAM, true, 1);
-		}
+		public MemoryDomain GetExRAM() => new MemoryDomainByteArray("ExRAM", MemoryDomain.Endian.Little, EXRAM, true, 1);
 
 		/// <summary>
 		/// use with caution
@@ -430,7 +427,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			byte ret;
 			int offs = addr & 0x1fff;
-			int bank = PRGGetBank(addr, out var ram);
+			int bank = PRGGetBank(addr, out bool ram);
 
 			if (ram)
 				ret = ReadWRAMActual(bank, offs);
@@ -454,7 +451,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			byte ret;
 			int offs = addr & 0x1fff;
-			int bank = PRGGetBank(addr, out var ram);
+			int bank = PRGGetBank(addr, out bool ram);
 
 			if (ram)
 				ret = ReadWRAMActual(bank, offs);
@@ -467,7 +464,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePrg(int addr, byte value)
 		{
-			int bank = PRGGetBank(addr, out var ram);
+			int bank = PRGGetBank(addr, out bool ram);
 			if (ram)
 				WriteWRAMActual(bank, addr & 0x1fff, value);
 		}
@@ -475,7 +472,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WriteExp(int addr, byte value)
 		{
 			//NES.LogLine("MMC5 WriteEXP: ${0:x4} = ${1:x2}", addr, value);
-			if (addr >= 0x1000 && addr <= 0x1015)
+			if (addr is >= 0x1000 and <= 0x1015)
 			{
 				audio.WriteExp(addr + 0x4000, value);
 				return;
@@ -662,10 +659,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret;
 		}
 
-		private void SyncIRQ()
-		{
-			IrqSignal = (irq_pending && irq_enabled) || irq_audio;
-		}
+		private void SyncIRQ() => IrqSignal = (irq_pending && irq_enabled) || irq_audio;
 
 		public override void ClockPpu()
 		{
@@ -704,10 +698,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		}
 
-		public override void ClockCpu()
-		{
-			audio.Clock();
-		}
+		public override void ClockCpu() => audio.Clock();
 
 		private void SetBank(int[] target, int offset, int size, int value)
 		{

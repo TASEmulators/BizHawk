@@ -21,9 +21,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
 		string IDisassemblable.PCRegisterName => "PC";
 
-		string IDisassemblable.Disassemble(MemoryDomain m, uint addr, out int length)
-		{
-			return Components.M6502.MOS6502X.Disassemble((ushort)addr, out length, CpuPeek);
-		}
+		string IDisassemblable.Disassemble(MemoryDomain m, uint addr, out int length) => Components.M6502.MOS6502X.Disassemble((ushort)addr, out length, CpuPeek);
 	}
 }

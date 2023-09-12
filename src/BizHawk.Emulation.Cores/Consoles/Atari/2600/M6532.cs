@@ -31,13 +31,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return _core.Ram[(ushort)(addr & 0x007f)]; 
 			}
 
-			var registerAddr = (ushort)(addr & 0x0007);
+			ushort registerAddr = (ushort)(addr & 0x0007);
 			if (registerAddr == 0x00)
 			{
 				// Read Output reg A
 				// Combine readings from player 1 and player 2
 				// actually depends on setting in SWCHCNTA (aka DDRa)
-				var temp = (byte)(_core.ReadControls1(peek) & 0xF0 | ((_core.ReadControls2(peek) >> 4) & 0x0F));
+				byte temp = (byte)(_core.ReadControls1(peek) & 0xF0 | ((_core.ReadControls2(peek) >> 4) & 0x0F));
 				temp = (byte)(temp & ~_ddRa);
 				temp = (byte)(temp + (_outputA & _ddRa));
 				return temp;
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (registerAddr == 0x02)
 			{
 				// Read Output reg B
-				var temp = _core.ReadConsoleSwitches(peek);
+				byte temp = _core.ReadConsoleSwitches(peek);
 				temp = (byte)(temp & ~_ddRb);
 				return temp;
 			}
@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					Timer.Overflowed = false;
 
-					var registerAddr = (ushort)(addr & 0x0007);
+					ushort registerAddr = (ushort)(addr & 0x0007);
 
 					// Bit 0x0080 contains interrupt enable/disable
 					Timer.InterruptEnabled = (addr & 0x0080) != 0;
@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// these are register writes
 				else if ((addr & 0x0004) == 0)
 				{
-					var registerAddr = (ushort)(addr & 0x0007);
+					ushort registerAddr = (ushort)(addr & 0x0007);
 
 					if (registerAddr == 0x00)
 					{

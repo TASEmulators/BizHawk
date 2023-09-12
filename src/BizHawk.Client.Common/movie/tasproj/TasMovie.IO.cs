@@ -21,14 +21,14 @@ namespace BizHawk.Client.Common
 
 		private void AddTasProjLumps(ZipStateSaver bs, bool isBackup = false)
 		{
-			var settings = JsonConvert.SerializeObject(TasStateManager.Settings);
+			string settings = JsonConvert.SerializeObject(TasStateManager.Settings);
 			bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(settings));
 			bs.PutLump(BinaryStateLump.LagLog, tw => LagLog.Save(tw));
 			bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
 			if (ClientSettingsForSave != null)
 			{
-				var clientSettingsJson = ClientSettingsForSave();
+				string clientSettingsJson = ClientSettingsForSave();
 				bs.PutLump(BinaryStateLump.ClientSettings, (TextWriter tw) => tw.Write(clientSettingsJson));
 			}
 
@@ -121,7 +121,7 @@ namespace BizHawk.Client.Common
 				VerificationLog.Clear();
 				while (true)
 				{
-					var line = tr.ReadLine();
+					string line = tr.ReadLine();
 					if (string.IsNullOrEmpty(line))
 					{
 						break;
@@ -138,7 +138,7 @@ namespace BizHawk.Client.Common
 
 			bl.GetLump(BinaryStateLump.Session, abort: false, tr =>
 			{
-				var json = tr.ReadToEnd();
+				string json = tr.ReadToEnd();
 				try
 				{
 					TasSession = JsonConvert.DeserializeObject<TasSession>(json);
@@ -149,10 +149,10 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			ZwinderStateManagerSettings settings = new ZwinderStateManagerSettings();
+			ZwinderStateManagerSettings settings = new();
 			bl.GetLump(BinaryStateLump.StateHistorySettings, abort: false, tr =>
 			{
-				var json = tr.ReadToEnd();
+				string json = tr.ReadToEnd();
 				try
 				{
 					settings = JsonConvert.DeserializeObject<ZwinderStateManagerSettings>(json);

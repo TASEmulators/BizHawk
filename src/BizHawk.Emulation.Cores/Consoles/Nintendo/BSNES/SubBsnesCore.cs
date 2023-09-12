@@ -94,15 +94,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public bool DeterministicEmulation => _bsnesCore.DeterministicEmulation;
 
-		public void ResetCounters()
-		{
-			_bsnesCore.ResetCounters();
-		}
+		public void ResetCounters() => _bsnesCore.ResetCounters();
 
-		public void Dispose()
-		{
-			_bsnesCore.Dispose();
-		}
+		public void Dispose() => _bsnesCore.Dispose();
 
 		public long CycleCount => _bsnesCore.Api.core.snes_get_executed_cycles();
 

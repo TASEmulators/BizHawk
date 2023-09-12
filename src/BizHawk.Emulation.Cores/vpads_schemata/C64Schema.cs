@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores
 		}
 
 		private static ButtonSchema Key(int x, int y, string name, string displayName = null)
-			=> new ButtonSchema(x, y, "Key " + name)
+			=> new(x, y, "Key " + name)
 			{
 				DisplayName = displayName ?? name
 			};

@@ -35,9 +35,9 @@ namespace BizHawk.Emulation.Common
 			}
 			else
 			{
-				var iBase = Offset;
-				var iPatch = 0;
-				var l = Contents.Length;
+				int iBase = Offset;
+				int iPatch = 0;
+				int l = Contents.Length;
 				while (iPatch < l) @base[iBase++] ^= Contents[iPatch++];
 			}
 			return @base;

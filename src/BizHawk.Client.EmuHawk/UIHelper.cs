@@ -18,29 +18,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public static SizeF AutoScaleFactor { get; } = new SizeF(AutoScaleFactorX, AutoScaleFactorY);
 
-		public static int ScaleX(int size)
-		{
-			return (int)Math.Round(size * AutoScaleFactorX);
-		}
+		public static int ScaleX(int size) => (int)Math.Round(size * AutoScaleFactorX);
 
-		public static int ScaleY(int size)
-		{
-			return (int)Math.Round(size * AutoScaleFactorY);
-		}
+		public static int ScaleY(int size) => (int)Math.Round(size * AutoScaleFactorY);
 
-		public static Point Scale(Point p)
-		{
-			return new Point(ScaleX(p.X), ScaleY(p.Y));
-		}
+		public static Point Scale(Point p) => new(ScaleX(p.X), ScaleY(p.Y));
 
-		public static Size Scale(Size s)
-		{
-			return new Size(ScaleX(s.Width), ScaleY(s.Height));
-		}
+		public static Size Scale(Size s) => new(ScaleX(s.Width), ScaleY(s.Height));
 
 		private static SizeF GetCurrentAutoScaleSize(AutoScaleMode autoScaleMode)
 		{
-			using var form = new Form { AutoScaleMode = autoScaleMode };
+			using Form form = new() { AutoScaleMode = autoScaleMode };
 			return form.CurrentAutoScaleDimensions;
 		}
 

@@ -29,10 +29,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			sync_psg_state();
 		}
 
-		public short Sample()
-		{
-			return current_sample;
-		}
+		public short Sample() => current_sample;
 
 		private static readonly int[] VolumeTable =
 		{
@@ -84,10 +81,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.EndSection();
 		}
 
-		public byte ReadReg()
-		{
-			return Register[port_sel];
-		}
+		public byte ReadReg() => Register[port_sel];
 
 		private void sync_psg_state()
 		{
@@ -130,7 +124,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				noise_per = 0x20;
 			}
 
-			var shape_select = Register[13] & 0xF;
+			int shape_select = Register[13] & 0xF;
 
 			if (shape_select < 4)
 				env_shape = 0;
@@ -161,7 +155,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			{
 				env_clock = env_per;
 
-				if (env_shape == 0 || env_shape == 2 || env_shape == 3 || env_shape == 4 || env_shape == 5)
+				if (env_shape is 0 or 2 or 3 or 4 or 5)
 				{
 					env_E = 15;
 					E_up_down = -1;
@@ -209,21 +203,21 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 						env_E += E_up_down;
 
-						if (env_E == 16 || env_E == -1)
+						if (env_E is 16 or (-1))
 						{
 
 							// we just completed a period of the envelope, determine what to do now based on the envelope shape
-							if (env_shape == 0 || env_shape == 1 || env_shape == 3 || env_shape == 9)
+							if (env_shape is 0 or 1 or 3 or 9)
 							{
 								E_up_down = 0;
 								env_E = 0;
 							}
-							else if (env_shape == 5 || env_shape == 7)
+							else if (env_shape is 5 or 7)
 							{
 								E_up_down = 0;
 								env_E = 15;
 							}
-							else if (env_shape == 4 || env_shape == 8)
+							else if (env_shape is 4 or 8)
 							{
 								if (env_E == 16)
 								{

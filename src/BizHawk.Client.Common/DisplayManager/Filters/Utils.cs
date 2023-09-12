@@ -16,20 +16,11 @@ namespace BizHawk.Client.Common.Filters
 
 		public Texture2d Texture { get; set; }
 
-		public override void Run()
-		{
-			YieldOutput(Texture);
-		}
+		public override void Run() => YieldOutput(Texture);
 
-		public override void Initialize()
-		{
-			DeclareOutput(new SurfaceState(new(_size), SurfaceDisposition.Texture));
-		}
+		public override void Initialize() => DeclareOutput(new SurfaceState(new(_size), SurfaceDisposition.Texture));
 
-		public override void SetInputFormat(string channel, SurfaceState format)
-		{
-			DeclareOutput(SurfaceDisposition.Texture);
-		}
+		public override void SetInputFormat(string channel, SurfaceState format) => DeclareOutput(SurfaceDisposition.Texture);
 	}
 
 	/// <summary>
@@ -37,15 +28,9 @@ namespace BizHawk.Client.Common.Filters
 	/// </summary>
 	public class Render : BaseFilter
 	{
-		public override void Initialize()
-		{
-			DeclareInput(SurfaceDisposition.Texture);
-		}
+		public override void Initialize() => DeclareInput(SurfaceDisposition.Texture);
 
-		public override void SetInputFormat(string channel, SurfaceState state)
-		{
-			DeclareOutput(new SurfaceState(state.SurfaceFormat, SurfaceDisposition.RenderTarget));
-		}
+		public override void SetInputFormat(string channel, SurfaceState state) => DeclareOutput(new SurfaceState(state.SurfaceFormat, SurfaceDisposition.RenderTarget));
 
 		public override void Run()
 		{
@@ -59,19 +44,10 @@ namespace BizHawk.Client.Common.Filters
 
 	public class Resolve : BaseFilter
 	{
-		public override void Initialize()
-		{
-			DeclareInput(SurfaceDisposition.RenderTarget);
-		}
+		public override void Initialize() => DeclareInput(SurfaceDisposition.RenderTarget);
 
-		public override void SetInputFormat(string channel, SurfaceState state)
-		{
-			DeclareOutput(new SurfaceState(state.SurfaceFormat, SurfaceDisposition.Texture));
-		}
+		public override void SetInputFormat(string channel, SurfaceState state) => DeclareOutput(new SurfaceState(state.SurfaceFormat, SurfaceDisposition.Texture));
 
-		public override void Run()
-		{
-			YieldOutput(FilterProgram.CurrRenderTarget.Texture2d);
-		}
+		public override void Run() => YieldOutput(FilterProgram.CurrRenderTarget.Texture2d);
 	}
 }

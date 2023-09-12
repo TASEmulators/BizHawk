@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int? AddMovieToList(string filename, bool force)
 		{
-			using var file = new HawkFile(filename);
+			using HawkFile file = new(filename);
 			if (!file.Exists)
 			{
 				return null;
@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int? IsDuplicateOf(string filename)
 		{
-			for (var i = 0; i < _movieList.Count; i++)
+			for (int i = 0; i < _movieList.Count; i++)
 			{
 				if (_movieList[i].Filename == filename)
 				{
@@ -189,10 +189,10 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var indices = new List<int>();
+			List<int> indices = new();
 
 			// Pull out matching names
-			for (var i = 0; i < _movieList.Count; i++)
+			for (int i = 0; i < _movieList.Count; i++)
 			{
 				if (_game.FilesystemSafeName() == _movieList[i].GameName)
 				{
@@ -213,10 +213,10 @@ namespace BizHawk.Client.EmuHawk
 
 			// Prefer tas files
 			// but `_movieList` should only contain `.bk2` and `.tasproj` so... isn't that all of them? or, it is now I've fixed the case-sensitivity bug --yoshi
-			var tas = new List<int>();
-			for (var i = 0; i < indices.Count; i++)
+			List<int> tas = new();
+			for (int i = 0; i < indices.Count; i++)
 			{
-				foreach (var ext in MovieService.MovieExtensions)
+				foreach (string ext in MovieService.MovieExtensions)
 				{
 					if ($".{ext}".Equals(Path.GetExtension(_movieList[indices[i]].Filename), StringComparison.OrdinalIgnoreCase))
 					{
@@ -255,12 +255,12 @@ namespace BizHawk.Client.EmuHawk
 			MovieView.VirtualListSize = 0;
 			MovieView.Update();
 
-			var directory = _config.PathEntries.MovieAbsolutePath();
+			string directory = _config.PathEntries.MovieAbsolutePath();
 			Directory.CreateDirectory(directory);
-			var dpTodo = new Queue<string>();
-			var fpTodo = new List<string>();
+			Queue<string> dpTodo = new();
+			List<string> fpTodo = new();
 			dpTodo.Enqueue(directory);
-			var ordinals = new Dictionary<string, int>();
+			Dictionary<string, int> ordinals = new();
 
 			while (dpTodo.Count > 0)
 			{
@@ -269,14 +269,14 @@ namespace BizHawk.Client.EmuHawk
 				// enqueue subdirectories if appropriate
 				if (_config.PlayMovieIncludeSubDir)
 				{
-					foreach (var subDir in Directory.GetDirectories(dp))
+					foreach (string subDir in Directory.GetDirectories(dp))
 					{
 						dpTodo.Enqueue(subDir);
 					}
 				}
 
 				// add movies
-				foreach (var extension in MovieService.MovieExtensions)
+				foreach (string extension in MovieService.MovieExtensions)
 				{
 					fpTodo.AddRange(Directory.GetFiles(dp, $"*.{extension}"));
 				}
@@ -285,7 +285,7 @@ namespace BizHawk.Client.EmuHawk
 			// in parallel, scan each movie
 			Parallel.For(0, fpTodo.Count, i =>
 			{
-				var file = fpTodo[i];
+				string file = fpTodo[i];
 				lock (ordinals)
 				{
 					ordinals[file] = i;
@@ -306,16 +306,13 @@ namespace BizHawk.Client.EmuHawk
 			UpdateList();
 		}
 
-		private void MovieView_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Set(DragDropEffects.Copy);
-		}
+		private void MovieView_DragEnter(object sender, DragEventArgs e) => e.Set(DragDropEffects.Copy);
 
 		private void MovieView_DragDrop(object sender, DragEventArgs e)
 		{
-			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-			foreach (var path in filePaths.Where(path => MovieService.MovieExtensions.Contains(Path.GetExtension(path)?.Replace(".", ""))))
+			foreach (string path in filePaths.Where(path => MovieService.MovieExtensions.Contains(Path.GetExtension(path)?.Replace(".", ""))))
 			{
 				AddMovieToList(path, force: true);
 			}
@@ -330,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 				var indexes = MovieView.SelectedIndices;
 				if (indexes.Count > 0)
 				{
-					var copyStr = new StringBuilder();
+					StringBuilder copyStr = new();
 					foreach (int index in indexes)
 					{
 						copyStr
@@ -363,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MovieView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
-			var columnName = MovieView.Columns[e.Column].Text;
+			string columnName = MovieView.Columns[e.Column].Text;
 			_movieList = ColumnSorts.AppliedTo(_movieList, columnName);
 			if (_sortedCol == columnName && _sortReverse)
 			{
@@ -389,12 +386,12 @@ namespace BizHawk.Client.EmuHawk
 
 			OK.Enabled = true;
 
-			var firstIndex = MovieView.SelectedIndices[0];
+			int firstIndex = MovieView.SelectedIndices[0];
 			MovieView.EnsureVisible(firstIndex);
 
 			foreach (var (k, v) in _movieList[firstIndex].HeaderEntries)
 			{
-				var item = new ListViewItem(k);
+				ListViewItem item = new(k);
 				item.SubItems.Add(v);
 				item.ToolTipText = v;
 				switch (k)
@@ -430,8 +427,8 @@ namespace BizHawk.Client.EmuHawk
 					default:
 						if (k.Contains("_Firmware_"))
 						{
-							var split = k.Split(new[] { "_Firmware_" }, StringSplitOptions.None);
-							var actualHash = _canProvideFirmware(new(split[0], split[1]), v);
+							string[] split = k.Split(new[] { "_Firmware_" }, StringSplitOptions.None);
+							string actualHash = _canProvideFirmware(new(split[0], split[1]), v);
 							if (actualHash != v)
 							{
 								item.BackColor = Color.Yellow;
@@ -444,11 +441,11 @@ namespace BizHawk.Client.EmuHawk
 				DetailsView.Items.Add(item);
 			}
 
-			var fpsItem = new ListViewItem("Fps");
+			ListViewItem fpsItem = new("Fps");
 			fpsItem.SubItems.Add($"{_movieList[firstIndex].FrameRate:0.#######}");
 			DetailsView.Items.Add(fpsItem);
 
-			var framesItem = new ListViewItem("Frames");
+			ListViewItem framesItem = new("Frames");
 			framesItem.SubItems.Add(_movieList[firstIndex].FrameCount.ToString());
 			DetailsView.Items.Add(framesItem);
 			CommentsBtn.Enabled = _movieList[firstIndex].Comments.Any();
@@ -466,8 +463,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DetailsView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
-			var detailsList = new List<MovieDetails>();
-			for (var i = 0; i < DetailsView.Items.Count; i++)
+			List<MovieDetails> detailsList = new();
+			for (int i = 0; i < DetailsView.Items.Count; i++)
 			{
 				detailsList.Add(new MovieDetails
 				{
@@ -477,7 +474,7 @@ namespace BizHawk.Client.EmuHawk
 				});
 			}
 
-			var columnName = DetailsView.Columns[e.Column].Text;
+			string columnName = DetailsView.Columns[e.Column].Text;
 			if (_sortedDetailsCol != columnName)
 			{
 				_sortDetailsReverse = false;
@@ -499,7 +496,7 @@ namespace BizHawk.Client.EmuHawk
 			DetailsView.Items.Clear();
 			foreach (var detail in detailsList)
 			{
-				var item = new ListViewItem { Text = detail.Keys, BackColor = detail.BackgroundColor };
+				ListViewItem item = new() { Text = detail.Keys, BackColor = detail.BackgroundColor };
 				item.SubItems.Add(detail.Values);
 				DetailsView.Items.Add(item);
 			}
@@ -517,7 +514,7 @@ namespace BizHawk.Client.EmuHawk
 				var movie = _movieSession.Get(_movieList[MovieView.SelectedIndices[0]].Filename);
 				movie.Load();
 				// TODO movie should be disposed if movie is ITasMovie
-				var form = new EditCommentsForm(movie, _movieSession.ReadOnly);
+				EditCommentsForm form = new(movie, _movieSession.ReadOnly);
 				form.Show();
 			}
 		}
@@ -538,7 +535,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseMovies_Click(object sender, EventArgs e)
 		{
-			var result = this.ShowFileOpenDialog(
+			string result = this.ShowFileOpenDialog(
 				filter: MoviesFSFilterSet,
 				initDir: _config.PathEntries.MovieAbsolutePath());
 			if (result is null) return;
@@ -598,10 +595,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void Cancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void Cancel_Click(object sender, EventArgs e) => Close();
 
 		private bool _programmaticallyChangingStopFrameCheckbox;
 		private bool _suppressCheckedChanged;

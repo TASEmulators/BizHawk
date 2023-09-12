@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Common
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			var ret = new List<KeyValuePair<string, RegisterValue>>();
+			List<KeyValuePair<string, RegisterValue>> ret = new();
 
 			for (int i = 0; i < _numCores; i++)
 			{

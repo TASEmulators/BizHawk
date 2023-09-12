@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 				}
 
-				if ((RAM_bank >= 8) && (RAM_bank <= 0xC))
+				if (RAM_bank is >= 8 and <= 0xC)
 				{
 					//Console.WriteLine("reg: " + (RAM_bank - 8) + " value: " + RTC_regs_latch[RAM_bank - 8] + " cpu: " + Core.cpu.TotalExecutedCycles);
 					return RTC_regs_latch[RAM_bank - 8];
@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 					}
 
-					if ((RAM_bank >= 8) && (RAM_bank <= 0xC))
+					if (RAM_bank is >= 8 and <= 0xC)
 					{
 						return;
 					}
@@ -135,10 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte PeekMemoryLow(ushort addr)
-		{
-			return ReadMemoryLow(addr);
-		}
+		public override byte PeekMemoryLow(ushort addr) => ReadMemoryLow(addr);
 
 		public override byte PeekMemoryHigh(ushort addr)
 		{
@@ -155,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 			}
 
-			if ((RAM_bank >= 8) && (RAM_bank <= 0xC))
+			if (RAM_bank is >= 8 and <= 0xC)
 			{
 				//Console.WriteLine("reg: " + (RAM_bank - 8) + " value: " + RTC_regs_latch[RAM_bank - 8] + " cpu: " + Core.cpu.TotalExecutedCycles);
 				return RTC_regs_latch[RAM_bank - 8];
@@ -212,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000] = value;
 						}
 					}
-					else if ((RAM_bank >= 8) && (RAM_bank <= 0xC))
+					else if (RAM_bank is >= 8 and <= 0xC)
 					{
 						// not all bits are writable
 						switch (RAM_bank - 8)
@@ -234,10 +231,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMemory(addr, value);
-		}
+		public override void PokeMemory(ushort addr, byte value) => WriteMemory(addr, value);
 
 		public override void RTC_Get(int value, int index)
 		{

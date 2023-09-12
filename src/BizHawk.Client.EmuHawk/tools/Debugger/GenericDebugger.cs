@@ -186,15 +186,9 @@ namespace BizHawk.Client.EmuHawk
 			toolTip1.SetToolTip(BreakpointsGroupBox, "");
 		}
 
-		private void OnCpuDropDownIndexChanged(object sender, EventArgs e)
-		{
-			Disassembler.Cpu = ((ComboBox) sender).SelectedItem.ToString();
-		}
+		private void OnCpuDropDownIndexChanged(object sender, EventArgs e) => Disassembler.Cpu = ((ComboBox)sender).SelectedItem.ToString();
 
-		private void RunBtn_Click(object sender, EventArgs e)
-		{
-			MainForm.UnpauseEmulator();
-		}
+		private void RunBtn_Click(object sender, EventArgs e) => MainForm.UnpauseEmulator();
 
 		private void StepIntoMenuItem_Click(object sender, EventArgs e)
 		{
@@ -271,16 +265,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DisableCancelSeekBtn()
-		{
-			CancelSeekBtn.Enabled = false;
-		}
+		public void DisableCancelSeekBtn() => CancelSeekBtn.Enabled = false;
 
 		private void SeekToBtn_Click(object sender, EventArgs e)
 		{
 			CancelSeekBtn.Enabled = true;
-			var pcVal = (uint)(SeekToBox.ToRawInt() ?? 0);
-			var pcBitSize = PCRegister.BitSize;
+			uint pcVal = (uint)(SeekToBox.ToRawInt() ?? 0);
+			byte pcBitSize = PCRegister.BitSize;
 
 			BreakPointControl1.RemoveCurrentSeek();
 			BreakPointControl1.AddSeekBreakpoint(pcVal, pcBitSize);
@@ -300,14 +291,8 @@ namespace BizHawk.Client.EmuHawk
 			DisassemblerView.Refresh();
 		}
 
-		private void RefreshMenuItem_Click(object sender, EventArgs e)
-		{
-			FullUpdate();
-		}
+		private void RefreshMenuItem_Click(object sender, EventArgs e) => FullUpdate();
 
-		public void AddBreakpoint(uint address, uint mask, MemoryCallbackType type)
-		{
-			this.BreakPointControl1.AddBreakpoint(address, mask, type);
-		}
+		public void AddBreakpoint(uint address, uint mask, MemoryCallbackType type) => this.BreakPointControl1.AddBreakpoint(address, mask, type);
 	}
 }

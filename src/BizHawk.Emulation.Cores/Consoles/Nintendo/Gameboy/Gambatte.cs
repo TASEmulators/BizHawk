@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[CoreConstructor(VSystemID.Raw.SGB)]
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, GambatteSettings settings, GambatteSyncSettings syncSettings, bool deterministic)
 		{
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ser.Register<IDisassemblable>(_disassembler);
 			ServiceProvider = ser;
 			const string TRACE_HEADER = "LR35902: PC, opcode, registers (A, F, B, C, D, E, H, L, LY, SP, CY)";
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				_syncSettings = syncSettings ?? new GambatteSyncSettings();
 
-				LibGambatte.LoadFlags flags = LibGambatte.LoadFlags.READONLY_SAV;
+				var flags = LibGambatte.LoadFlags.READONLY_SAV;
 
 				switch (_syncSettings.ConsoleMode)
 				{
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							: _syncSettings.ConsoleMode is GambatteSyncSettings.ConsoleModeType.GBA
 								? "AGB"
 								: "World");
-					var bios = comm.CoreFileProvider.GetFirmwareOrThrow(fwid, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS."); // https://github.com/TASEmulators/BizHawk/issues/2832 tho
+					byte[] bios = comm.CoreFileProvider.GetFirmwareOrThrow(fwid, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS."); // https://github.com/TASEmulators/BizHawk/issues/2832 tho
 					if (LibGambatte.gambatte_loadbiosbuf(GambatteState, bios, (uint)bios.Length) != 0)
 					{
 						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbiosbuf)}() returned non-zero (bios error)");
@@ -271,7 +271,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public static ControllerDefinition CreateControllerDefinition(bool sgb, bool sub, bool tilt, bool rumble, bool remote)
 		{
-			var ret = new ControllerDefinition((sub ? "Subframe " : "") + "Gameboy Controller" + (tilt ? " + Tilt" : ""));
+			ControllerDefinition ret = new((sub ? "Subframe " : "") + "Gameboy Controller" + (tilt ? " + Tilt" : ""));
 			if (sub)
 			{
 				ret.AddAxis("Input Length", 0.RangeTo(35112), 35112);
@@ -348,7 +348,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public bool IsCGBDMGMode
 			=> LibGambatte.gambatte_iscgbdmg(GambatteState);
 
-		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		private InputCallbackSystem _inputCallbacks = new();
 
 		// low priority TODO: due to certain aspects of the core implementation,
 		// we don't smartly use the ActiveChanged event here.
@@ -357,10 +357,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <summary>
 		/// for use in dual core
 		/// </summary>
-		public void ConnectInputCallbackSystem(InputCallbackSystem ics)
-		{
-			_inputCallbacks = ics;
-		}
+		public void ConnectInputCallbackSystem(InputCallbackSystem ics) => _inputCallbacks = ics;
 
 		// needs to match the reverse order of Libgambatte's button enum
 		private static readonly IReadOnlyList<string> GB_BUTTON_ORDER_IN_BITMASK = new[] { "Down", "Up", "Left", "Right", "Start", "Select", "B", "A" };
@@ -378,7 +375,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			uint b = 0;
 			if (IsSgb)
 			{
-				for (var i = 0; i < 32; i++)
+				for (int i = 0; i < 32; i++)
 				{
 					b <<= 1;
 					if (controller.IsPressed(SGB_BUTTON_ORDER_IN_BITMASK[i])) b |= 1;
@@ -386,7 +383,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 			else
 			{
-				for (var i = 0; i < 8; i++)
+				for (int i = 0; i < 8; i++)
 				{
 					b <<= 1;
 					if (controller.IsPressed(GB_BUTTON_ORDER_IN_BITMASK[i])) b |= 1;
@@ -622,7 +619,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					callback(LibGambatte.gambatte_cpuread(GambatteState, 0xFF40));
 				}
 			}
-			else if (line >= 0 && line <= 153)
+			else if (line is >= 0 and <= 153)
 			{
 				scanlinecb = () => callback(LibGambatte.gambatte_cpuread(GambatteState, 0xFF40));
 				LibGambatte.gambatte_setscanlinecallback(GambatteState, scanlinecb, line);

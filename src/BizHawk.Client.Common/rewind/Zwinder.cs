@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!Active || Count == 0)
 				return false;
-			var index = Count - 1;
+			int index = Count - 1;
 			var state = _buffer.GetState(index);
 			if (state.Frame == frameToAvoid)
 			{
@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common
 				{
 					state = _buffer.GetState(index - 1);
 				}
-				using var br = new BinaryReader(state.GetReadStream());
+				using BinaryReader br = new(state.GetReadStream());
 				_stateSource.LoadStateBinary(br);
 				_buffer.InvalidateEnd(index);
 			}
@@ -80,30 +80,18 @@ namespace BizHawk.Client.Common
 			{
 				// The emulator will frame advance without giving us a chance to
 				// re-capture this frame, so we shouldn't invalidate this state just yet.
-				using var br = new BinaryReader(state.GetReadStream());
+				using BinaryReader br = new(state.GetReadStream());
 				_stateSource.LoadStateBinary(br);
 			}
 			return true;
 		}
 
-		public void Suspend()
-		{
-			Active = false;
-		}
+		public void Suspend() => Active = false;
 
-		public void Resume()
-		{
-			Active = true;
-		}
+		public void Resume() => Active = true;
 
-		public void Dispose()
-		{
-			_buffer.Dispose();
-		}
+		public void Dispose() => _buffer.Dispose();
 
-		public void Clear()
-		{
-			_buffer.InvalidateEnd(0);
-		}
+		public void Clear() => _buffer.InvalidateEnd(0);
 	}
 }

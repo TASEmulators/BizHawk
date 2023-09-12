@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			var regs = new Dictionary<string, int>
+			Dictionary<string, int> regs = new()
 			{
 				["A"] = _machine.Cpu.RA,
 				["X"] = _machine.Cpu.RX,
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				["Flag T"] = _machine.Cpu.FlagT ? 1 : 0
 			};
 
-			var dic = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> dic = new();
 
 			foreach (var reg in regs)
 			{
@@ -92,15 +92,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public bool CanStep(StepType type)
 		{
-			switch (type)
+			return type switch
 			{
-				case StepType.Into:
-				case StepType.Over:
-				case StepType.Out:
-					return true;
-				default:
-					return false;
-			}
+				StepType.Into or StepType.Over or StepType.Out => true,
+				_ => false,
+			};
 		}
 
 		public void Step(StepType type) 
@@ -123,18 +119,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private RegisterValue GetRegisterValue(KeyValuePair<string, int> reg)
 		{
-			switch (reg.Key)
+			return reg.Key switch
 			{
-				case "A":
-				case "X":
-				case "Y":
-				case "S":
-					return (byte)reg.Value;
-				case "PC":
-					return (ushort)reg.Value;
-				default:
-					return reg.Value;
-			}
+				"A" or "X" or "Y" or "S" => (RegisterValue)(byte)reg.Value,
+				"PC" => (RegisterValue)(ushort)reg.Value,
+				_ => (RegisterValue)reg.Value,
+			};
 		}
 
 		private void StepInto()
@@ -148,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				_machine.Cpu.TraceCallback = null;
 			}
 
-			var machineInVblank = _machine.Video.IsVBlank;
+			bool machineInVblank = _machine.Video.IsVBlank;
 
 
 			_machine.Events.HandleEvents(_machine.Cpu.Execute());
@@ -168,11 +158,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void StepOver()
 		{
-			var instruction = _machine.Memory.Read(_machine.Cpu.RPC);
+			int instruction = _machine.Memory.Read(_machine.Cpu.RPC);
 
 			if (instruction == Jsr)
 			{
-				var destination = _machine.Cpu.RPC + JsrSize;
+				int destination = _machine.Cpu.RPC + JsrSize;
 				while (_machine.Cpu.RPC != destination)
 				{
 					StepInto();
@@ -186,11 +176,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void StepOut()
 		{
-			var instr = _machine.Memory.Read(_machine.Cpu.RPC);
+			int instr = _machine.Memory.Read(_machine.Cpu.RPC);
 
 			_jsrCount = instr == Jsr ? 1 : 0;
 
-			var bailOutFrame = Frame + 1;
+			int bailOutFrame = Frame + 1;
 
 			while (true)
 			{

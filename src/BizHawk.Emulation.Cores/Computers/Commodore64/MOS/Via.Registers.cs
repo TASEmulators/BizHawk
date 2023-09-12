@@ -2,15 +2,9 @@
 {
 	public sealed partial class Via
 	{
-		public int Peek(int addr)
-		{
-			return ReadRegister(addr & 0xF);
-		}
+		public int Peek(int addr) => ReadRegister(addr & 0xF);
 
-		public void Poke(int addr, int val)
-		{
-			WriteRegister(addr & 0xF, val);
-		}
+		public void Poke(int addr, int val) => WriteRegister(addr & 0xF, val);
 
 		public int Read(int addr)
 		{
@@ -18,13 +12,13 @@
 			switch (addr)
 			{
 				case 0x0:
-					if (_pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+					if (_pcrCb2Control is not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE and not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
 						_ifr &= 0xE7;
 					if (_acrPbLatchEnable)
 						return _pbLatch;
 					break;
 				case 0x1:
-					if (_pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+					if (_pcrCa2Control is not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE and not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
 						_ifr &= 0xFC;
 					if (_acrPaLatchEnable)
 						return _paLatch;
@@ -52,42 +46,25 @@
 
 		private int ReadRegister(int addr)
 		{
-			switch (addr)
+			return addr switch
 			{
-				case 0x0:
-					return _port.ReadPrb(_prb, _ddrb);
-				case 0x1:
-				case 0xF:
-					return _port.ReadExternalPra();
-				case 0x2:
-					return _ddrb;
-				case 0x3:
-					return _ddra;
-				case 0x4:
-					return _t1C & 0xFF;
-				case 0x5:
-					return (_t1C >> 8) & 0xFF;
-				case 0x6:
-					return _t1L & 0xFF;
-				case 0x7:
-					return (_t1L >> 8) & 0xFF;
-				case 0x8:
-					return _t2C & 0xFF;
-				case 0x9:
-					return (_t2C >> 8) & 0xFF;
-				case 0xA:
-					return _sr;
-				case 0xB:
-					return _acr;
-				case 0xC:
-					return _pcr;
-				case 0xD:
-					return _ifr;
-				case 0xE:
-					return _ier | 0x80;
-			}
-
-			return 0xFF;
+				0x0 => _port.ReadPrb(_prb, _ddrb),
+				0x1 or 0xF => _port.ReadExternalPra(),
+				0x2 => _ddrb,
+				0x3 => _ddra,
+				0x4 => _t1C & 0xFF,
+				0x5 => (_t1C >> 8) & 0xFF,
+				0x6 => _t1L & 0xFF,
+				0x7 => (_t1L >> 8) & 0xFF,
+				0x8 => _t2C & 0xFF,
+				0x9 => (_t2C >> 8) & 0xFF,
+				0xA => _sr,
+				0xB => _acr,
+				0xC => _pcr,
+				0xD => _ifr,
+				0xE => _ier | 0x80,
+				_ => 0xFF,
+			};
 		}
 
 		public void Write(int addr, int val)
@@ -96,14 +73,14 @@
 			switch (addr)
 			{
 				case 0x0:
-					if (_pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+					if (_pcrCb2Control is not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE and not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
 						_ifr &= 0xE7;
 					if (_pcrCb2Control == PCR_CONTROL_PULSE_OUTPUT)
 						_handshakeCb2NextClock = true;
 					WriteRegister(addr, val);
 					break;
 				case 0x1:
-					if (_pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+					if (_pcrCa2Control is not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE and not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
 						_ifr &= 0xFC;
 					if (_pcrCa2Control == PCR_CONTROL_PULSE_OUTPUT)
 						_handshakeCa2NextClock = true;

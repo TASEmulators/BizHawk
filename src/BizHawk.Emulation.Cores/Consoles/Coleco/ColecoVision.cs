@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ColecoSettings settings,
 			ColecoSyncSettings syncSettings)
 		{
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 			_syncSettings = syncSettings ?? new ColecoSyncSettings();
 			bool skipBios = _syncSettings.SkipBiosIntro;
@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			port &= 0xFF;
 
-			if (port >= 0xA0 && port < 0xC0)
+			if (port is >= 0xA0 and < 0xC0)
 			{
 				if ((port & 1) == 0)
 				{
@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			port &= 0xFF;
 
-			if (port >= 0xA0 && port <= 0xBF)
+			if (port is >= 0xA0 and <= 0xBF)
 			{
 				if ((port & 1) == 0)
 				{
@@ -180,13 +180,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				return;
 			}
 
-			if (port >= 0x80 && port <= 0x9F)
+			if (port is >= 0x80 and <= 0x9F)
 			{
 				_inputPortSelection = InputPortMode.Right;
 				return;
 			}
 
-			if (port >= 0xC0 && port <= 0xDF)
+			if (port is >= 0xC0 and <= 0xDF)
 			{
 				_inputPortSelection = InputPortMode.Left;
 				return;
@@ -343,14 +343,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			if (!enable_SGM_high)
 			{
-				if (addr >= 0x6000 && addr < 0x8000)
+				if (addr is >= 0x6000 and < 0x8000)
 				{
 					_ram[addr & 1023] = value;
 				}
 			}
 			else
 			{
-				if (addr >= 0x2000 && addr < 0x8000)
+				if (addr is >= 0x2000 and < 0x8000)
 				{
 					SGM_high_RAM[addr - 0x2000] = value;
 				}

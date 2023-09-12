@@ -19,14 +19,14 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button)
 		{
-			var source = Source.IsPressed(button);
+			bool source = Source.IsPressed(button);
 			source ^= CurrentStickies.Contains(button);
 			return source;
 		}
 
 		public int AxisValue(string name)
 		{
-			var val = _axisSet[name];
+			int? val = _axisSet[name];
 
 			if (val.HasValue)
 			{
@@ -47,11 +47,11 @@ namespace BizHawk.Client.Common
 
 		public IController Source { get; set; }
 
-		private List<string> _justPressed = new List<string>();
+		private List<string> _justPressed = new();
 
 		// if SetAxis() is called (typically virtual pads), then that axis will entirely override the Source input
 		// otherwise, the source is passed thru.
-		private readonly WorkingDictionary<string, int?> _axisSet = new WorkingDictionary<string, int?>();
+		private readonly WorkingDictionary<string, int?> _axisSet = new();
 
 		public void SetAxis(string name, int? value)
 		{
@@ -97,7 +97,7 @@ namespace BizHawk.Client.Common
 
 		public void MassToggleStickyState(List<string> buttons)
 		{
-			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
+			foreach (string button in buttons.Where(button => !_justPressed.Contains(button)))
 			{
 				if (CurrentStickies.Contains(button))
 				{
@@ -121,7 +121,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button)
 		{
-			var source = Source.IsPressed(button);
+			bool source = Source.IsPressed(button);
 			bool patternValue = false;
 			if (_boolPatterns.TryGetValue(button, out var pattern))
 			{
@@ -154,8 +154,8 @@ namespace BizHawk.Client.Common
 			_off = off < 0 ? 0 : off;
 		}
 
-		private readonly WorkingDictionary<string, AutoPatternBool> _boolPatterns = new WorkingDictionary<string, AutoPatternBool>();
-		private readonly WorkingDictionary<string, AutoPatternAxis> _axisPatterns = new WorkingDictionary<string, AutoPatternAxis>();
+		private readonly WorkingDictionary<string, AutoPatternBool> _boolPatterns = new();
+		private readonly WorkingDictionary<string, AutoPatternAxis> _axisPatterns = new();
 
 		public AutoFireStickyXorAdapter()
 		{
@@ -191,12 +191,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool IsSticky(string button)
-		{
-			return _boolPatterns.ContainsKey(button) || _axisPatterns.ContainsKey(button);
-		}
+		public bool IsSticky(string button) => _boolPatterns.ContainsKey(button) || _axisPatterns.ContainsKey(button);
 
-		public HashSet<string> CurrentStickies => new HashSet<string>(_boolPatterns.Keys);
+		public HashSet<string> CurrentStickies => new(_boolPatterns.Keys);
 
 		public void ClearStickies()
 		{
@@ -217,11 +214,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private List<string> _justPressed = new List<string>();
+		private List<string> _justPressed = new();
 
 		public void MassToggleStickyState(List<string> buttons)
 		{
-			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
+			foreach (string button in buttons.Where(button => !_justPressed.Contains(button)))
 			{
 				SetSticky(button, !_boolPatterns.ContainsKey(button));
 			}

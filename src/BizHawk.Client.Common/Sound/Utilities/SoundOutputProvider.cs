@@ -32,20 +32,20 @@ namespace BizHawk.Client.Common
 
 		private readonly Func<double> _getCoreVsyncRateCallback;
 
-		private readonly Queue<short> _buffer = new Queue<short>();
+		private readonly Queue<short> _buffer = new();
 		private readonly bool _standaloneMode;
 		private readonly int _targetExtraSamples;
 		private int _maxSamplesDeficit;
 
-		private readonly Queue<int> _extraCountHistory = new Queue<int>();
-		private readonly Queue<int> _outputCountHistory = new Queue<int>();
-		private readonly Queue<bool> _hardCorrectionHistory = new Queue<bool>();
+		private readonly Queue<int> _extraCountHistory = new();
+		private readonly Queue<int> _outputCountHistory = new();
+		private readonly Queue<bool> _hardCorrectionHistory = new();
 
 		private int _baseConsecutiveEmptyFrames;
-		private readonly Queue<bool> _baseEmptyFrameCorrectionHistory = new Queue<bool>();
+		private readonly Queue<bool> _baseEmptyFrameCorrectionHistory = new();
 
 		private double _lastAdvertisedSamplesPerFrame;
-		private readonly Queue<int> _baseSamplesPerFrame = new Queue<int>();
+		private readonly Queue<int> _baseSamplesPerFrame = new();
 
 		private short[] _outputBuffer = Array.Empty<short>();
 
@@ -210,7 +210,7 @@ namespace BizHawk.Client.Common
 			{
 				throw new InvalidOperationException("Base sound provider must be in sync mode.");
 			}
-			BaseSoundProvider.GetSamplesSync(out var samples, out var count);
+			BaseSoundProvider.GetSamplesSync(out short[] samples, out int count);
 
 			bool correctedEmptyFrame = false;
 			if (count == 0)

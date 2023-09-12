@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
-			foreach (var val in A7800HawkControllerDeck.ControllerCtors.Keys)
+			foreach (string val in A7800HawkControllerDeck.ControllerCtors.Keys)
 			{
 				Port1ComboBox.Items.Add(val);
 				Port2ComboBox.Items.Add(val);

@@ -25,15 +25,15 @@ namespace BizHawk.Client.Common
 
 		private readonly DisplayManagerBase _displayManager;
 
-		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
+		private readonly Dictionary<string, Image> _imageCache = new();
 
-		private readonly Bitmap _nullGraphicsBitmap = new Bitmap(1, 1);
+		private readonly Bitmap _nullGraphicsBitmap = new(1, 1);
 
-		private readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
+		private readonly Dictionary<Color, Pen> _pens = new();
 
-		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
+		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new();
 
-		private ImageAttributes _attributes = new ImageAttributes();
+		private ImageAttributes _attributes = new();
 
 		private CompositingMode _compositingMode = CompositingMode.SourceOver;
 
@@ -478,8 +478,8 @@ namespace BizHawk.Client.Common
 		public void DrawRectangle(int x, int y, int width, int height, Color? line = null, Color? background = null, DisplaySurfaceID? surfaceID = null)
 		{
 			using var g = GetGraphics(surfaceID);
-			var w = Math.Max(width, 0.1F);
-			var h = Math.Max(height, 0.1F);
+			float w = Math.Max(width, 0.1F);
+			float h = Math.Max(height, 0.1F);
 			g.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, w, h);
 			var bg = background ?? _defaultBackground;
 			if (bg != null) g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, Math.Max(w - 1, 0), Math.Max(h - 1, 0));
@@ -504,8 +504,8 @@ namespace BizHawk.Client.Common
 
 				// The text isn't written out using GenericTypographic, so measuring it using GenericTypographic seemed to make it worse.
 				// And writing it out with GenericTypographic just made it uglier. :p
-				var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
-				var sizeOfText = g.MeasureString(message, font, 0, new StringFormat(StringFormat.GenericDefault)).ToSize();
+				Font font = new(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
+				Size sizeOfText = g.MeasureString(message, font, 0, new StringFormat(StringFormat.GenericDefault)).ToSize();
 
 				switch (horizalign?.ToLowerInvariant())
 				{
@@ -539,7 +539,7 @@ namespace BizHawk.Client.Common
 				if (bg != null)
 				{
 					var brush = GetBrush(bg.Value);
-					for (var xd = -1; xd <= 1; xd++) for (var yd = -1; yd <= 1; yd++)
+					for (int xd = -1; xd <= 1; xd++) for (int yd = -1; yd <= 1; yd++)
 					{
 						g.DrawString(message, font, brush, x + xd, y + yd);
 					}
@@ -595,8 +595,8 @@ namespace BizHawk.Client.Common
 						break;
 				}
 				using var g = GetGraphics(surfaceID);
-				var font = new Font(_displayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
-				var sizeOfText = g.MeasureString(message, font, width: 0, PixelTextFormat).ToSize();
+				Font font = new(_displayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
+				Size sizeOfText = g.MeasureString(message, font, width: 0, PixelTextFormat).ToSize();
 				if (backcolor.HasValue) g.FillRectangle(GetBrush(backcolor.Value), new Rectangle(new Point(x, y), sizeOfText + new Size(1, 0)));
 				g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
 				g.DrawString(message, font, GetBrush(forecolor ?? _defaultForeground), x + 1, y, PixelTextFormat);
@@ -632,7 +632,7 @@ namespace BizHawk.Client.Common
 				y -= oy;
 			}
 
-			var pos = new MessagePosition{ X = x, Y = y, Anchor = (MessagePosition.AnchorType)a };
+			MessagePosition pos = new() { X = x, Y = y, Anchor = (MessagePosition.AnchorType)a };
 			_displayManager.OSD.AddGuiText(message,  pos, Color.Black, forecolor ?? Color.White);
 		}
 

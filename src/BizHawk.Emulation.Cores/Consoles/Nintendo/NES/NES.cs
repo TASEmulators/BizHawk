@@ -16,14 +16,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		[CoreConstructor(VSystemID.Raw.NES)]
 		public NES(CoreComm comm, GameInfo game, byte[] rom, NESSettings settings, NESSyncSettings syncSettings, bool subframe = false)
 		{
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 
-			var fdsBios = comm.CoreFileProvider.GetFirmware(new("NES", "Bios_FDS"));
+			byte[] fdsBios = comm.CoreFileProvider.GetFirmware(new("NES", "Bios_FDS"));
 			if (fdsBios != null && fdsBios.Length == 40976)
 			{
 				comm.ShowMessage("Your FDS BIOS is a bad dump.  BizHawk will attempt to use it, but no guarantees!  You should find a new one.");
-				var tmp = new byte[8192];
+				byte[] tmp = new byte[8192];
 				Buffer.BlockCopy(fdsBios, 16 + 8192 * 3, tmp, 0, 8192);
 				fdsBios = tmp;
 			}
@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool IsFDS => Board is FDS;
 
-		public DisplayType Region => _display_type;
+		public DisplayType Region { get; private set; } = DisplayType.NTSC;
 
 		int IVideoLogicalOffsets.ScreenX => Settings.ClipLeftAndRight
 			? 8
@@ -143,10 +143,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			private readonly int[] pixels = new int[256 * 240];
-			public int[] GetVideoBuffer()
-			{
-				return pixels;
-			}
+			public int[] GetVideoBuffer() => pixels;
 
 			public void FillFrameBuffer()
 			{
@@ -282,7 +279,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public string SystemId => VSystemID.Raw.NES;
 
-		public string GameName => game_name;
+		public string GameName { get; private set; } = "";
 
 		private StringWriter LoadReport;
 
@@ -292,7 +289,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			LoadReport.WriteLine(format, arg);
 		}
 
-		private void LoadWriteLine(object arg) { LoadWriteLine("{0}", arg); }
+		private void LoadWriteLine(object arg) => LoadWriteLine("{0}", arg);
 
 		private class MyWriter : StringWriter
 		{
@@ -325,11 +322,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			CartInfo choice = null;
 			CartInfo iNesHeaderInfo = null;
 			CartInfo iNesHeaderInfoV2 = null;
-			List<string> hash_sha1_several = new List<string>();
+			List<string> hash_sha1_several = new();
 			string hash_sha1 = null, hash_md5 = null;
 			Unif unif = null;
 
-			Dictionary<string, string> InitialMapperRegisterValues = new Dictionary<string, string>(SyncSettings.BoardProperties);
+			Dictionary<string, string> InitialMapperRegisterValues = new(SyncSettings.BoardProperties);
 
 			origin = EDetectionOrigin.None;
 
@@ -348,11 +345,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				origin = EDetectionOrigin.NSF;
 				LoadWriteLine("Loading as NSF");
-				var nsf = new NSFFormat();
+				NSFFormat nsf = new();
 				nsf.WrapByteArray(file);
 				
 				cart = new CartInfo();
-				var nsfboard = new NSFBoard();
+				NSFBoard nsfboard = new();
 				nsfboard.Create(this);
 				nsfboard.Rom = rom;
 				nsfboard.InitNSF( nsf);
@@ -364,7 +361,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				AutoMapperProps.Populate(Board, SyncSettings);
 
 				Console.WriteLine("Using NTSC display type for NSF for now");
-				_display_type = DisplayType.NTSC;
+				Region = DisplayType.NTSC;
 
 				HardReset();
 
@@ -382,8 +379,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (fdsbios == null)
 					throw new MissingFirmwareException("Missing FDS Bios");
 				cart = new CartInfo();
-				var fdsboard = new FDS();
-				fdsboard.biosrom = fdsbios;
+				FDS fdsboard = new()
+				{
+					biosrom = fdsbios
+				};
 				fdsboard.SetDiskImage(rom);
 				fdsboard.Create(this);
 				// at the moment, FDS doesn't use the IRVs, but it could at some point in the future
@@ -402,7 +401,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				AutoMapperProps.Populate(Board, SyncSettings);
 
 				Console.WriteLine("Using NTSC display type for FDS disk image");
-				_display_type = DisplayType.NTSC;
+				Region = DisplayType.NTSC;
 
 				HardReset();
 
@@ -466,7 +465,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						//8KB prg can't be stored in iNES format, which counts 16KB prg banks.
 						//so a correct hash will include only 8KB.
 						LoadWriteLine("Since this rom has a 16 KB PRG, we'll hash it as 8KB too for bootgod's DB:");
-						var msTemp = new MemoryStream();
+						MemoryStream msTemp = new();
 						msTemp.Write(file, 16, 8 * 1024); //add prg
 						if (file.Length >= (16 * 1024 + iNesHeaderInfo.ChrSize * 1024 + 16))
 						{
@@ -486,8 +485,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							Console.WriteLine("WARNING: 16kb PRG iNES header but unable to parse");
 						}
 						msTemp.Flush();
-						var bytes = msTemp.ToArray();
-						var hash = SHA1Checksum.ComputePrefixedHex(bytes);
+						byte[] bytes = msTemp.ToArray();
+						string hash = SHA1Checksum.ComputePrefixedHex(bytes);
 						LoadWriteLine("  PRG (8KB) + CHR hash: {0}", hash);
 						hash_sha1_several.Add(hash);
 						hash = MD5Checksum.ComputePrefixedHex(bytes);
@@ -499,8 +498,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (USE_DATABASE)
 			{
 				if (hash_md5 != null) choice = IdentifyFromGameDB(hash_md5);
-				if (choice == null)
-					choice = IdentifyFromGameDB(hash_sha1);
+				choice ??= IdentifyFromGameDB(hash_sha1);
 				if (choice == null)
 					LoadWriteLine("Could not locate game in bizhawk gamedb");
 				else
@@ -595,7 +593,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			game_name = choice.Name;
+			GameName = choice.Name;
 
 			//find a INESBoard to handle this
 			if (choice != null)
@@ -610,7 +608,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			LoadWriteLine("Final game detection results:");
 			LoadWriteLine(choice);
-			LoadWriteLine("\"" + game_name + "\"");
+			LoadWriteLine("\"" + GameName + "\"");
 			LoadWriteLine("Implemented by: class " + boardType.Name);
 			if (choice.Bad)
 			{
@@ -657,7 +655,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//create the board's rom and vrom
 			if (iNesHeaderInfo != null)
 			{
-				using var ms = new MemoryStream(file, false);
+				using MemoryStream ms = new(file, false);
 				ms.Seek(16, SeekOrigin.Begin); // ines header
 				//pluck the necessary bytes out of the file
 				if (iNesHeaderInfo.TrainerSize != 0)
@@ -688,7 +686,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else
 			{
 				// we should only get here for boards with no header
-				var ms = new MemoryStream(file, false);
+				MemoryStream ms = new(file, false);
 				ms.Seek(0, SeekOrigin.Begin);
 
 				Board.Rom = new byte[choice.PrgSize * 1024];
@@ -720,8 +718,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			// set up display type
 
-			NESSyncSettings.Region fromrom = DetectRegion(cart.System);
-			NESSyncSettings.Region fromsettings = SyncSettings.RegionOverride;
+			var fromrom = DetectRegion(cart.System);
+			var fromsettings = SyncSettings.RegionOverride;
 
 			if (fromsettings != NESSyncSettings.Region.Default)
 			{
@@ -729,14 +727,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				fromrom = fromsettings;
 			}
 
-			_display_type = fromrom switch
+			Region = fromrom switch
 			{
 				NESSyncSettings.Region.Dendy => DisplayType.Dendy,
 				NESSyncSettings.Region.NTSC => DisplayType.NTSC,
 				NESSyncSettings.Region.PAL => DisplayType.PAL,
 				_ => DisplayType.NTSC
 			};
-			Console.WriteLine("Using NES system region of {0}", _display_type);
+			Console.WriteLine("Using NES system region of {0}", Region);
 
 			HardReset();
 

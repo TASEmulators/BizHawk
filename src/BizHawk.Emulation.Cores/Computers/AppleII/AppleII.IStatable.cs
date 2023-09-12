@@ -9,30 +9,18 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	{
 		public bool AvoidRewind => false;
 
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(new AppleSerializer(writer));
-		}
+		public void SaveStateText(TextWriter writer) => SyncState(new AppleSerializer(writer));
 
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(new AppleSerializer(reader));
-		}
+		public void LoadStateText(TextReader reader) => SyncState(new AppleSerializer(reader));
 
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			SyncState(new AppleSerializer(writer));
-		}
+		public void SaveStateBinary(BinaryWriter writer) => SyncState(new AppleSerializer(writer));
 
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			SyncState(new AppleSerializer(reader));
-		}
+		public void LoadStateBinary(BinaryReader reader) => SyncState(new AppleSerializer(reader));
 
 		private void SyncState(AppleSerializer ser)
 		{
 			int version = 2;
-			var oldCurrentDisk = CurrentDisk;
+			int oldCurrentDisk = CurrentDisk;
 			ser.BeginSection(nameof(AppleII));
 			ser.Sync(nameof(version), ref version);
 			ser.Sync("Frame", ref _frame);
@@ -80,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			ser.EndSection();
 
 			ser.BeginSection("InactiveDisks");
-			for (var i = 0; i < DiskCount; i++)
+			for (int i = 0; i < DiskCount; i++)
 			{
 				// the current disk is handled in DiskIIController
 				if (i != CurrentDisk)

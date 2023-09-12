@@ -56,10 +56,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			0x6E17, 0x7E36, 0x4E55, 0x5E74, 0x2E93, 0x3EB2, 0x0ED1, 0x1EF0
 		};
 
-		private ushort UpdateCRC16(ushort crc, byte data)
-		{
-			return (ushort)((crc << 8) ^ CRC16_table[(crc >> 8) ^ data]);
-		}
+		private ushort UpdateCRC16(ushort crc, byte data) => (ushort)((crc << 8) ^ CRC16_table[(crc >> 8) ^ data]);
 
 		public int Parse(byte[] Rom)
 		{

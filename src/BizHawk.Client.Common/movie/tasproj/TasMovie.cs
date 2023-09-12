@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				var ms = new MemoryStream();
+				MemoryStream ms = new();
 				if (StartsFromSaveRam && emulator.HasSaveRam())
 				{
 					emulator.AsSaveRam().StoreSaveRam(SaveRam!);
@@ -63,13 +63,13 @@ namespace BizHawk.Client.Common
 
 			base.Attach(emulator);
 
-			foreach (var button in emulator.ControllerDefinition.BoolButtons)
+			foreach (string button in emulator.ControllerDefinition.BoolButtons)
 			{
 				_mnemonicCache[button] = Bk2MnemonicLookup.Lookup(button, emulator.SystemId);
 			}
 		}
 
-		private readonly Dictionary<string, char> _mnemonicCache = new Dictionary<string, char>();
+		private readonly Dictionary<string, char> _mnemonicCache = new();
 
 		public override bool StartsFromSavestate
 		{
@@ -101,8 +101,8 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var lagIndex = index + 1;
-				var lagged = LagLog[lagIndex];
+				int lagIndex = index + 1;
+				bool? lagged = LagLog[lagIndex];
 				if (lagged == null)
 				{
 					if (IsAttached() && Emulator.Frame == lagIndex)
@@ -133,8 +133,8 @@ namespace BizHawk.Client.Common
 		// Removes lag log and greenzone after this frame
 		private void InvalidateAfter(int frame)
 		{
-			var anyLagInvalidated = LagLog.RemoveFrom(frame);
-			var anyStateInvalidated = TasStateManager.InvalidateAfter(frame);
+			bool anyLagInvalidated = LagLog.RemoveFrom(frame);
+			bool anyStateInvalidated = TasStateManager.InvalidateAfter(frame);
 			GreenzoneInvalidated(frame + 1);
 			if (anyLagInvalidated || anyStateInvalidated)
 			{
@@ -214,7 +214,7 @@ namespace BizHawk.Client.Common
 			errorMessage = "";
 			int? stateFrame = null;
 
-			var newLog = new List<string>();
+			List<string> newLog = new();
 			int? timelineBranchFrame = null;
 
 			// We are in record mode so replace the movie log with the one from the savestate
@@ -240,7 +240,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWithOrdinal("Frame "))
 				{
-					var split = line.Split(' ');
+					string[] split = line.Split(' ');
 					try
 					{
 						stateFrame = int.Parse(split[1]);
@@ -265,7 +265,7 @@ namespace BizHawk.Client.Common
 				errorMessage = "Savestate Frame number failed to parse";
 			}
 
-			var stateFrameValue = stateFrame ?? 0;
+			int stateFrameValue = stateFrame ?? 0;
 
 			if (stateFrameValue > 0 && stateFrameValue < Log.Count)
 			{
@@ -333,16 +333,11 @@ namespace BizHawk.Client.Common
 		}
 
 		// This event is Raised only when Changes is TOGGLED.
-		private void OnPropertyChanged(string propertyName)
-		{
+		private void OnPropertyChanged(string propertyName) =>
 			// Raising the event when FirstName or LastName property value changed
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
 
-		private void Markers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-		{
-			Changes = true;
-		}
+		private void Markers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => Changes = true;
 
 		public void ClearChanges() => Changes = false;
 		public void FlagChanges() => Changes = true;

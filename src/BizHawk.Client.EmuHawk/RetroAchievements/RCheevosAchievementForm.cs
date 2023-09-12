@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public int OrderByKey()
 		{
-			var ret = 0;
+			int ret = 0;
 			ret += hcUnlockedCheckBox.Checked ? 3 : 0;
 			ret += scUnlockedCheckBox.Checked ? 2 : 0;
 			ret += primedCheckBox.Checked ? 1 : 0;
@@ -44,8 +44,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static Bitmap UpscaleBadge(Bitmap src)
 		{
-			var ret = new Bitmap(120, 120);
-			using var g = Graphics.FromImage(ret);
+			Bitmap ret = new(120, 120);
+			using Graphics g = Graphics.FromImage(ret);
 			g.InterpolationMode = InterpolationMode.NearestNeighbor;
 			g.PixelOffsetMode = PixelOffsetMode.Half;
 			g.DrawImage(src, 0, 0, 120, 120);

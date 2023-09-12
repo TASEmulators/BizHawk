@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			const MemoryDomain.Endian le = MemoryDomain.Endian.Little;
 
-			var mm = new List<MemoryDomain>
+			List<MemoryDomain> mm = new()
 			{
 				(_iwram = new MemoryDomainIntPtr("IWRAM", le, IntPtr.Zero, 32 * 1024, true, 4)),
 				(_ewram = new MemoryDomainIntPtr("EWRAM", le, IntPtr.Zero, 256 * 1024, true, 4)),
@@ -41,13 +41,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				new MemoryDomainDelegate("System Bus", 0x10000000, le,
 				addr =>
 				{
-					var a = (uint)addr;
+					uint a = (uint)addr;
 					if (a >= 0x10000000) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 					return LibmGBA.BizReadBus(Core, a);
 				},
 				(addr, val) =>
 				{
-					var a = (uint)addr;
+					uint a = (uint)addr;
 					if (a >= 0x10000000) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 					LibmGBA.BizWriteBus(Core, a, val);
 				}, 4)
@@ -106,14 +106,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			};
 		}
 
-		private unsafe byte PeekWRAM(IntPtr xwram, long addr)
-		{
-			return ((byte*)xwram)[addr];
-		}
+		private unsafe byte PeekWRAM(IntPtr xwram, long addr) => ((byte*)xwram)[addr];
 
-		private unsafe void PokeWRAM(IntPtr xwram, long addr, byte value)
-		{
-			((byte*)xwram)[addr] = value;
-		}
+		private unsafe void PokeWRAM(IntPtr xwram, long addr, byte value) => ((byte*)xwram)[addr] = value;
 	}
 }

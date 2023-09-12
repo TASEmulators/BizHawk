@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common.cheats
 	/// </summary>
 	public static class GbGgGameGenieDecoder
 	{
-		private static readonly Dictionary<char, int> _gbGgGameGenieTable = new Dictionary<char, int>
+		private static readonly Dictionary<char, int> _gbGgGameGenieTable = new()
 		{
 			['0'] = 0,
 			['1'] = 1,
@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common.cheats
 			// Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
 			// maps to|      Value    |A|B|C|D|E|F|G|H|I|J|K|L|XOR 0xF|a|b|c|c|NotUsed|e|f|g|h|
 			// proper |      Value    |XOR 0xF|A|B|C|D|E|F|G|H|I|J|K|L|g|h|a|b|Nothing|c|d|e|f|
-			var result = new DecodeResult { Size = WatchSize.Byte };
+			DecodeResult result = new() { Size = WatchSize.Byte };
 
 			int x;
 
@@ -95,7 +95,7 @@ namespace BizHawk.Client.Common.cheats
 			if (_code.Length > 8)
 			{
 				_ = _gbGgGameGenieTable.TryGetValue(_code[6], out x);
-				var comp = x << 2;
+				int comp = x << 2;
 
 				// 8th character ignored
 				_ = _gbGgGameGenieTable.TryGetValue(_code[8], out x);

@@ -21,10 +21,7 @@ namespace BizHawk.Client.Common
 			_zstd = new();
 		}
 
-		public void Dispose()
-		{
-			Dispose(true);
-		}
+		public void Dispose() => Dispose(true);
 
 		protected virtual void Dispose(bool disposing)
 		{
@@ -48,7 +45,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				var sr = new StreamReader(s);
+				StreamReader sr = new(s);
 				_ver = new Version(1, 0, int.Parse(sr.ReadLine()));
 			}
 
@@ -74,9 +71,9 @@ namespace BizHawk.Client.Common
 		private static readonly byte[] Zipheader = { 0x50, 0x4b, 0x03, 0x04 };
 		public static ZipStateLoader LoadAndDetect(string filename, bool isMovieLoad = false)
 		{
-			var ret = new ZipStateLoader();
+			ZipStateLoader ret = new();
 
-			using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+			using (FileStream fs = new(filename, FileMode.Open, FileAccess.Read))
 			{
 				byte[] data = new byte[4];
 				fs.Read(data, 0, 4);

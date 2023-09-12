@@ -7,9 +7,9 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 	{
 		private Graphics _graphics;
 
-		private readonly Pen _currentPen = new Pen(Color.Black);
-		private readonly SolidBrush _currentBrush = new SolidBrush(Color.Black);
-		private readonly SolidBrush _currentStringBrush = new SolidBrush(Color.Black);
+		private readonly Pen _currentPen = new(Color.Black);
+		private readonly SolidBrush _currentBrush = new(Color.Black);
+		private readonly SolidBrush _currentStringBrush = new(Color.Black);
 		private Font _currentFont;
 		private bool _rotateString;
 
@@ -35,15 +35,9 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_currentStringBrush.Dispose();
 		}
 
-		public void DrawBitmap(Bitmap bitmap, Point point)
-		{
-			_graphics.DrawImage(bitmap, point);
-		}
+		public void DrawBitmap(Bitmap bitmap, Point point) => _graphics.DrawImage(bitmap, point);
 
-		public void DrawRectangle(Rectangle rect)
-		{
-			_graphics.DrawRectangle(_currentPen, rect);
-		}
+		public void DrawRectangle(Rectangle rect) => _graphics.DrawRectangle(_currentPen, rect);
 
 		public void DrawString(string str, Rectangle rect)
 		{
@@ -60,15 +54,9 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			}
 		}
 
-		public void FillRectangle(Rectangle rect)
-		{
-			_graphics.FillRectangle(_currentBrush, rect);
-		}
+		public void FillRectangle(Rectangle rect) => _graphics.FillRectangle(_currentBrush, rect);
 
-		public void Line(int x1, int y1, int x2, int y2)
-		{
-			_graphics.DrawLine(_currentPen, x1, y1, x2, y2);
-		}
+		public void Line(int x1, int y1, int x2, int y2) => _graphics.DrawLine(_currentPen, x1, y1, x2, y2);
 
 		public IDisposable LockGraphics(Graphics g)
 		{
@@ -76,10 +64,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			return new GdiPlusGraphicsLock();
 		}
 
-		public SizeF MeasureString(string str, Font font)
-		{
-			return _graphics.MeasureString(str, font);
-		}
+		public SizeF MeasureString(string str, Font font) => _graphics.MeasureString(str, font);
 
 		public void PrepDrawString(Font font, Color color, bool rotate = false)
 		{
@@ -88,14 +73,8 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_rotateString = rotate;
 		}
 
-		public void SetBrush(Color color)
-		{
-			_currentBrush.Color = color;
-		}
+		public void SetBrush(Color color) => _currentBrush.Color = color;
 
-		public void SetSolidPen(Color color)
-		{
-			_currentPen.Color = color;
-		}
+		public void SetSolidPen(Color color) => _currentPen.Color = color;
 	}
 }

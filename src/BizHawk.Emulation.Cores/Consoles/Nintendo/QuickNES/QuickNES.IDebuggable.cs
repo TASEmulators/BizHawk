@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			int[] regs = new int[6];
-			var ret = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> ret = new();
 			QN.qn_get_cpuregs(Context, regs);
 			ret["A"] = (byte)regs[0];
 			ret["X"] = (byte)regs[1];
@@ -22,15 +22,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		}
 
 		[FeatureNotImplemented]
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
+		public void SetCpuRegister(string register, int value) => throw new NotImplementedException();
 
-		public bool CanStep(StepType type) { return false; }
+		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
+		public void Step(StepType type) => throw new NotImplementedException();
 
 		public IMemoryCallbackSystem MemoryCallbacks
 		{

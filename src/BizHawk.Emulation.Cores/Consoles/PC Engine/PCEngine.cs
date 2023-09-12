@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using BizHawk.Common;
@@ -85,16 +85,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 			else if (lp.Discs.Count == 0 && lp.Roms.Count == 1)
 			{
-				switch (SystemId = lp.Game.System)
+				Type = (SystemId = lp.Game.System) switch
 				{
-					default:
-					case VSystemID.Raw.PCE:
-						Type = NecSystemType.TurboGrafx;
-						break;
-					case VSystemID.Raw.SGX:
-						Type = NecSystemType.SuperGrafx;
-						break;
-				}
+					VSystemID.Raw.PCE => NecSystemType.TurboGrafx,
+					_ => NecSystemType.SuperGrafx,
+				};
 
 				Settings = lp.Settings ?? new PCESettings();
 				_syncSettings = lp.SyncSettings ?? new PCESyncSettings();
@@ -208,7 +203,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				// 384k roms require special loading code. Why ;_;
 				// In memory, 384k roms look like [1st 256k][Then full 384k]
 				RomData = new byte[0xA0000];
-				var origRom = rom;
+				byte[] origRom = rom;
 				for (int i = 0; i < 0x40000; i++)
 					RomData[i] = origRom[i];
 				for (int i = 0; i < 0x60000; i++)
@@ -316,7 +311,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Cpu.ResetPC();
 
 			Tracer = new TraceBuffer(Cpu.TraceHeader);
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IDisassemblable>(Cpu);
@@ -330,14 +325,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private static Dictionary<string, int> SizesFromHuMap(IEnumerable<HuC6280.MemMapping> mm)
 		{
-			Dictionary<string, int> sizes = new Dictionary<string, int>();
+			Dictionary<string, int> sizes = new();
 			foreach (var m in mm)
 			{
-				if (!sizes.TryGetValue(m.Name, out var size) || size <= m.MaxOffs) sizes[m.Name] = m.MaxOffs;
+				if (!sizes.TryGetValue(m.Name, out int size) || size <= m.MaxOffs) sizes[m.Name] = m.MaxOffs;
 			}
 
-			var keys = new List<string>(sizes.Keys);
-			foreach (var key in keys)
+			List<string> keys = new(sizes.Keys);
+			foreach (string key in keys)
 			{
 				// becase we were looking at offsets, and each bank is 8192 big, we need to add that size
 				sizes[key] += 8192;

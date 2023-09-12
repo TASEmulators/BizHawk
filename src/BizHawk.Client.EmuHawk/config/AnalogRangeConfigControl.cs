@@ -12,10 +12,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		private void AnalogRangeConfigControl_Load(object sender, EventArgs e)
-		{
-			AnalogRange.ChangeCallback = AnalogControlChanged;
-		}
+		private void AnalogRangeConfigControl_Load(object sender, EventArgs e) => AnalogRange.ChangeCallback = AnalogControlChanged;
 
 		private void XNumeric_ValueChanged(object sender, EventArgs e)
 		{

@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return result;
 		}
 
-		public bool PinStateGet(IController c) { return false; }
+		public bool PinStateGet(IController c) => false;
 
 		public void PinStateSet(IController c, bool val) { }
 
@@ -175,7 +175,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return result;
 		}
 
-		public bool PinStateGet(IController c) { return false; }
+		public bool PinStateGet(IController c) => false;
 
 		public void PinStateSet(IController c, bool val) { }
 
@@ -307,9 +307,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return result;
 		}
 
-		public bool PinStateGet(IController c) { return pin; }
+		public bool PinStateGet(IController c) => pin;
 
-		public void PinStateSet(IController c, bool val) { pin = val;}
+		public void PinStateSet(IController c, bool val) => pin = val;
 
 		public void CounterSet(IController c, int val) { }
 
@@ -320,10 +320,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			"Left", "Right", "B1"
 		};
 
-		public void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(pin), ref pin);
-		}
+		public void SyncState(Serializer ser) => ser.Sync(nameof(pin), ref pin);
 	}
 
 	[DisplayName("SMS Sports Pad Controller")]
@@ -594,13 +591,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return result;
 		}
 
-		public bool PinStateGet(IController c) { return pin; }
+		public bool PinStateGet(IController c) => pin;
 
-		public void PinStateSet(IController c, bool val) { pin = val; }
+		public void PinStateSet(IController c, bool val) => pin = val;
 
-		public void CounterSet(IController c, int val) { ControllerCounter = val; }
+		public void CounterSet(IController c, int val) => ControllerCounter = val;
 
-		public void RegionSet(IController c, bool val) { is_JPN = val; }
+		public void RegionSet(IController c, bool val) => is_JPN = val;
 
 		private static readonly string[] BaseDefinition =
 		{
@@ -663,7 +660,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return result;
 		}
 
-		public bool PinStateGet(IController c) { return false; }
+		public bool PinStateGet(IController c) => false;
 
 		public void PinStateSet(IController c, bool val) { }
 

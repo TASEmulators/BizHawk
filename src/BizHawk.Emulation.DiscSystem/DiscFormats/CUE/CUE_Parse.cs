@@ -44,12 +44,12 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				str = line;
 			}
 
-			public string ReadPath() { return ReadToken(Mode.Quotable); }
-			public string ReadToken() { return ReadToken(Mode.Normal); }
+			public string ReadPath() => ReadToken(Mode.Quotable);
+			public string ReadToken() => ReadToken(Mode.Normal);
 			public string ReadLine()
 			{
-				var len = str.Length;
-				var ret = str.Substring(index, len - index);
+				int len = str.Length;
+				string ret = str.Substring(index, len - index);
 				index = len;
 				EOF = true;
 				return ret;
@@ -64,16 +64,16 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			{
 				if (EOF) return null;
 
-				var isPath = mode == Mode.Quotable;
+				bool isPath = mode == Mode.Quotable;
 
-				var startIndex = index;
-				var inToken = false;
-				var inQuote = false;
+				int startIndex = index;
+				bool inToken = false;
+				bool inQuote = false;
 				for (; ; )
 				{
-					var done = false;
-					var c = str[index];
-					var isWhiteSpace = c is ' ' or '\t';
+					bool done = false;
+					char c = str[index];
+					bool isWhiteSpace = c is ' ' or '\t';
 
 					if (isWhiteSpace)
 					{
@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					}
 					else
 					{
-						var startedQuote = false;
+						bool startedQuote = false;
 						if (!inToken)
 						{
 							startIndex = index;
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					if (done) break;
 				}
 
-				var ret = str.Substring(startIndex, index - startIndex);
+				string ret = str.Substring(startIndex, index - startIndex);
 
 				if (mode == Mode.Quotable)
 					ret = ret.Trim('"');
@@ -139,21 +139,21 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			while (true)
 			{
 				CurrentLine++;
-				var line = tr.ReadLine()?.Trim();
+				string line = tr.ReadLine()?.Trim();
 				if (line is null) break;
 				if (line == string.Empty) continue;
-				var clp = new CueLineParser(line);
+				CueLineParser clp = new(line);
 
-				var key = clp.ReadToken().ToUpperInvariant();
+				string key = clp.ReadToken().ToUpperInvariant();
 				
 				//remove nonsense at beginning
 				if (!IN_Strict)
 				{
 					while (key.Length > 0)
 					{
-						var c = key[0];
+						char c = key[0];
 						if(c == ';') break;
-						if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) break;
+						if (c is >= 'a' and <= 'z' or >= 'A' and <= 'Z') break;
 						key = key.Substring(1);
 					}
 				}
@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 					case "FILE":
 						{
-							var path = clp.ReadPath();
+							string path = clp.ReadPath();
 							CueFileType ft;
 							if (clp.EOF)
 							{
@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							}
 							else
 							{
-								var strType = clp.ReadToken().ToUpperInvariant();
+								string strType = clp.ReadToken().ToUpperInvariant();
 								switch (strType)
 								{
 									default:
@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							CueTrackFlags flags = default;
 							while (!clp.EOF)
 							{
-								var flag = clp.ReadToken().ToUpperInvariant();
+								string flag = clp.ReadToken().ToUpperInvariant();
 								switch (flag)
 								{
 									case "DATA":
@@ -245,14 +245,14 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								Error("Incomplete INDEX command");
 								break;
 							}
-							var strindexnum = clp.ReadToken();
-							if (!int.TryParse(strindexnum, out var indexnum) || indexnum < 0 || indexnum > 99)
+							string strindexnum = clp.ReadToken();
+							if (!int.TryParse(strindexnum, out int indexnum) || indexnum < 0 || indexnum > 99)
 							{
 								Error($"Invalid INDEX number: {strindexnum}");
 								break;
 							}
-							var str_timestamp = clp.ReadToken();
-							var ts = new Timestamp(str_timestamp);
+							string str_timestamp = clp.ReadToken();
+							Timestamp ts = new(str_timestamp);
 							if (!ts.Valid && !IN_Strict)
 							{
 								//try cleaning it up
@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							Warn("Ignoring empty ISRC command");
 						else
 						{
-							var isrc = clp.ReadToken();
+							string isrc = clp.ReadToken();
 							if (isrc.Length != 12)
 								Warn($"Invalid ISRC code ignored: {isrc}");
 							else
@@ -293,8 +293,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					case "POSTGAP":
 					case "PREGAP":
 						{
-							var str_msf = clp.ReadToken();
-							var msf = new Timestamp(str_msf);
+							string str_msf = clp.ReadToken();
+							Timestamp msf = new(str_msf);
 							if (!msf.Valid)
 								Error($"Ignoring {{0}} with invalid length MSF: {str_msf}", key);
 							else
@@ -309,11 +309,11 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 					case "REM":
 						{
-							var comment = clp.ReadLine();
+							string comment = clp.ReadLine();
 							// cues don't support multiple sessions themselves, but it is common for rips to put SESSION # in REM fields
 							// so, if we have such a REM, we'll check if the comment starts with SESSION, and interpret that as a session "command"
-							var trimmed = comment.Trim();
-							if (trimmed.StartsWith("SESSION ", StringComparison.OrdinalIgnoreCase) && int.TryParse(trimmed.Substring(8), out var number) && number > 0)
+							string trimmed = comment.Trim();
+							if (trimmed.StartsWith("SESSION ", StringComparison.OrdinalIgnoreCase) && int.TryParse(trimmed.Substring(8), out int number) && number > 0)
 							{
 								OUT_CueFile.Commands.Add(new CUE_File.Command.SESSION(number));
 								break;
@@ -340,8 +340,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								break;
 							}
 
-							var str_tracknum = clp.ReadToken();
-							if (!int.TryParse(str_tracknum, out var tracknum) || tracknum is < 1 or > 99)
+							string str_tracknum = clp.ReadToken();
+							if (!int.TryParse(str_tracknum, out int tracknum) || tracknum is < 1 or > 99)
 							{
 								Error($"Invalid TRACK number: {str_tracknum}");
 								break;
@@ -350,7 +350,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							// TODO - check sequentiality? maybe as a warning
 
 							CueTrackType tt;
-							var str_trackType = clp.ReadToken();
+							string str_trackType = clp.ReadToken();
 							switch (str_trackType.ToUpperInvariant())
 							{
 								default:
@@ -374,7 +374,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				if (!clp.EOF)
 				{
-					var remainder = clp.ReadLine();
+					string remainder = clp.ReadLine();
 					if (remainder.TrimStart().StartsWith(';'))
 					{
 						//add a comment

@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 				if (instance != null) _lua.NewTable(name);
 				foreach (var method in type.GetMethods())
 				{
-					var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
+					object[] foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
 					if (foundAttrs.Length == 0) continue;
 					if (instance != null) _lua.RegisterFunction($"{name}.{((LuaMethodAttribute)foundAttrs[0]).Name}", instance, method);
 					LibraryFunction libFunc = new(
@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild
 					|| lib.GetCustomAttribute<LuaLibraryAttribute>(inherit: false)?.Released is not false)
 				{
-					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, this, _apiContainer, (Action<string>)LogToLuaConsole);
+					LuaLibraryBase instance = (LuaLibraryBase)Activator.CreateInstance(lib, this, _apiContainer, (Action<string>)LogToLuaConsole);
 					if (!ServiceInjector.UpdateServices(serviceProvider, instance, mayCache: true)) throw new Exception("Lua lib has required service(s) that can't be fulfilled");
 
 					// TODO: make EmuHawk libraries have a base class with common properties such as this
@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 						// emu lib may be null now, depending on order of ReflectionCache.Types, but definitely won't be null when this is called
 						guiLib.CreateLuaCanvasCallback = (width, height, x, y) =>
 						{
-							var canvas = new LuaCanvas(EmulationLuaLibrary, width, height, x, y, _th, LogToLuaConsole);
+							LuaCanvas canvas = new(EmulationLuaLibrary, width, height, x, y, _th, LogToLuaConsole);
 							canvas.Show();
 							return _th.ObjectToTable(canvas);
 						};
@@ -104,8 +104,8 @@ namespace BizHawk.Client.EmuHawk
 
 			_lua.RegisterFunction("print", this, typeof(LuaLibraries).GetMethod(nameof(Print)));
 
-			var packageTable = (LuaTable) _lua["package"];
-			var luaPath = PathEntries.LuaAbsolutePath();
+			LuaTable packageTable = (LuaTable) _lua["package"];
+			string luaPath = PathEntries.LuaAbsolutePath();
 			if (OSTailoredCode.IsUnixHost)
 			{
 				// add %exe%/Lua to library resolution pathset (LUA_PATH)
@@ -160,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly IDictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
 
-		private EventWaitHandle LuaWait;
+		private readonly EventWaitHandle LuaWait;
 
 		public PathEntryCollection PathEntries { get; private set; }
 
@@ -298,7 +298,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaFile luaFile,
 			string name = null)
 		{
-			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile,
+			NamedLuaFunction nlf = new(function, theEvent, logCallback, luaFile,
 				() => { _lua.NewThread(out var thread); return thread; }, name);
 			RegisteredFunctions.Add(nlf);
 			return nlf;
@@ -306,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate)
 		{
-			var nlf = (NamedLuaFunction)RegisteredFunctions.FirstOrDefault(predicate);
+			NamedLuaFunction nlf = (NamedLuaFunction)RegisteredFunctions.FirstOrDefault(predicate);
 			if (nlf == null) return false;
 			RegisteredFunctions.Remove(nlf, _mainForm.Emulator);
 			return true;
@@ -314,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public LuaThread SpawnCoroutine(string file)
 		{
-			var content = File.ReadAllText(file);
+			string content = File.ReadAllText(file);
 			var main = _lua.LoadString(content, "main");
 			_lua.NewThread(main, out var ret);
 			return ret;
@@ -354,10 +354,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static void Print(params object[] outputs)
-		{
-			_logToLuaConsoleCallback(outputs);
-		}
+		public static void Print(params object[] outputs) => _logToLuaConsoleCallback(outputs);
 
 		private void FrameAdvance()
 		{
@@ -365,9 +362,6 @@ namespace BizHawk.Client.EmuHawk
 			_currThread.Yield();
 		}
 
-		private void EmuYield()
-		{
-			_currThread.Yield();
-		}
+		private void EmuYield() => _currThread.Yield();
 	}
 }

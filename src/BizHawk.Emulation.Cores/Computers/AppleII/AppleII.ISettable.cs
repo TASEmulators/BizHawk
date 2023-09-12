@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
 		{
-			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
+			bool ret = SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}

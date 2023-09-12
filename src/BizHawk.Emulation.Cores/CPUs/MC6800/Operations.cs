@@ -79,10 +79,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 			Regs[src] = ans;
 		}
 
-		public void TR_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = Regs[src];
-		}
+		public void TR_Func(ushort dest, ushort src) => Regs[dest] = Regs[src];
 
 		public void LD_8_Func(ushort dest, ushort src)
 		{
@@ -315,15 +312,9 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 			FlagN = (Regs[src] & 0xFF) > 127;
 		}
 
-		public void INC16_Func(ushort src)
-		{
-			Regs[src] += 1;
-		}
+		public void INC16_Func(ushort src) => Regs[src] += 1;
 
-		public void DEC16_Func(ushort src)
-		{
-			Regs[src] -= 1;
-		}
+		public void DEC16_Func(ushort src) => Regs[src] -= 1;
 
 		public void ADC8_Func(ushort dest, ushort src)
 		{

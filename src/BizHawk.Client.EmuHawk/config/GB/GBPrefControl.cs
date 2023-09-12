@@ -58,34 +58,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ButtonGbPalette_Click(object sender, EventArgs e)
-		{
-			ColorChooserForm.DoColorChooserFormDialog(DialogParent, _config, _game, _s);
-		}
+		private void ButtonGbPalette_Click(object sender, EventArgs e) => ColorChooserForm.DoColorChooserFormDialog(DialogParent, _config, _game, _s);
 
-		private void ButtonGbcPalette_Click(object sender, EventArgs e)
-		{
-			CGBColorChooserForm.DoCGBColorChooserFormDialog(DialogParent, _s);
-		}
+		private void ButtonGbcPalette_Click(object sender, EventArgs e) => CGBColorChooserForm.DoCGBColorChooserFormDialog(DialogParent, _s);
 
-		private void PropertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
-		{
-			SyncSettingsChanged = true;
-		}
+		private void PropertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e) => SyncSettingsChanged = true;
 
-		private void CheckBoxMuted_CheckedChanged(object sender, EventArgs e)
-		{
-			_s.Muted = ((CheckBox)sender).Checked;
-		}
-		
-		private void CbRgbdsSyntax_CheckedChanged(object sender, EventArgs e)
-		{
-			_s.RgbdsSyntax = ((CheckBox)sender).Checked;
-		}
+		private void CheckBoxMuted_CheckedChanged(object sender, EventArgs e) => _s.Muted = ((CheckBox)sender).Checked;
 
-		private void CbShowBorder_CheckedChanged(object sender, EventArgs e)
-		{
-			_s.ShowBorder = ((CheckBox)sender).Checked;
-		}
+		private void CbRgbdsSyntax_CheckedChanged(object sender, EventArgs e) => _s.RgbdsSyntax = ((CheckBox)sender).Checked;
+
+		private void CbShowBorder_CheckedChanged(object sender, EventArgs e) => _s.ShowBorder = ((CheckBox)sender).Checked;
 	}
 }

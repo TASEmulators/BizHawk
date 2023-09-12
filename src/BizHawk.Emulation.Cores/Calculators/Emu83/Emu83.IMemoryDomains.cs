@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 
 		private void CreateMemoryDomain(LibEmu83.MemoryArea_t which, string name)
 		{
-			IntPtr data = IntPtr.Zero;
+			var data = IntPtr.Zero;
 			int length = 0;
 
 			if (!LibEmu83.TI83_GetMemoryArea(Context, which, ref data, ref length))

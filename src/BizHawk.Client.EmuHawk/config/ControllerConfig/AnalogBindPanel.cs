@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			int y = 4;
 			foreach (string buttonName in buttonList)
 			{
-				var ctrl = new AnalogBindControl(buttonName, _realConfigObject[buttonName])
+				AnalogBindControl ctrl = new(buttonName, _realConfigObject[buttonName])
 				{
 					Location = new Point(x, y)
 				};
@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			var saveTo = saveConfigObject ?? _realConfigObject;
 			foreach (Control c in Controls)
 			{
-				var abc = (AnalogBindControl)c;
+				AnalogBindControl abc = (AnalogBindControl)c;
 				saveTo[abc.ButtonName] = abc.Bind;
 			}
 		}

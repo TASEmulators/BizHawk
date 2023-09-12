@@ -63,20 +63,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			using (_exe.EnterExit())
 			{
-				var areas = new LibWaterboxCore.MemoryArea[256];
+				LibWaterboxCore.MemoryArea[] areas = new LibWaterboxCore.MemoryArea[256];
 				_core.GetMemoryAreas(areas);
 				_memoryAreas = areas.Where(a => a.Data != IntPtr.Zero && a.Size != 0)
 					.ToArray();
 
-				var memoryDomains = _memoryAreas.Select(a => WaterboxMemoryDomain.Create(a, _exe)).ToList();
+				List<WaterboxMemoryDomain> memoryDomains = _memoryAreas.Select(a => WaterboxMemoryDomain.Create(a, _exe)).ToList();
 				var primaryDomain = memoryDomains.Single(static md => md.Definition.Flags.HasFlag(LibWaterboxCore.MemoryDomainFlags.Primary));
 
-				var mdl = new MemoryDomainList(
+				MemoryDomainList mdl = new(
 					memoryDomains.Cast<MemoryDomain>()
 						.Concat(new[] { _exe.GetPagesDomain() })
 						.ToList()
-				);
-				mdl.MainMemory = primaryDomain;
+				)
+				{
+					MainMemory = primaryDomain
+				};
 				_serviceProvider.Register<IMemoryDomains>(mdl);
 
 				_saveramAreas = memoryDomains
@@ -88,14 +90,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		private static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0);
+		private static readonly DateTime Epoch = new(1970, 1, 1, 0, 0, 0);
 		private long _clockTime;
 		private int _clockRemainder;
 
-		protected void InitializeRtc(DateTime start)
-		{
-			_clockTime = (long)(start - Epoch).TotalSeconds;
-		}
+		protected void InitializeRtc(DateTime start) => _clockTime = (long)(start - Epoch).TotalSeconds;
 
 		protected long GetRtcTime(bool realTime)
 		{
@@ -123,14 +122,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				if (_saveramSize == 0)
 					return false;
-				var buff = new byte[4096];
+				byte[] buff = new byte[4096];
 				using (_exe.EnterExit())
 				{
 					fixed(byte* bp = buff)
 					{
 						foreach (var area in _saveramAreas)
 						{
-							var stream = new MemoryDomainStream(area);
+							MemoryDomainStream stream = new(area);
 							int cmp = (area.Definition.Flags & LibWaterboxCore.MemoryDomainFlags.OneFilled) != 0 ? -1 : 0;
 							while (true)
 							{
@@ -159,8 +158,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				return null;
 			using (_exe.EnterExit())
 			{
-				var ret = new byte[_saveramSize];
-				var dest = new MemoryStream(ret, true);
+				byte[] ret = new byte[_saveramSize];
+				MemoryStream dest = new(ret, true);
 				foreach (var area in _saveramAreas)
 				{
 					new MemoryDomainStream(area).CopyTo(dest);
@@ -177,7 +176,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					throw new InvalidOperationException("Saveram size mismatch");
 				using (_exe.EnterExit())
 				{
-					var source = new MemoryStream(data, false);
+					MemoryStream source = new(data, false);
 					foreach (var area in _saveramAreas)
 					{
 						WaterboxUtils.CopySome(source, new MemoryDomainStream(area), area.Size);
@@ -338,10 +337,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			nsamp = _numSamples;
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new InvalidOperationException("Async mode is not supported.");
 
 		public void DiscardSamples()
 		{
@@ -352,10 +348,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public bool CanProvideAsync => false;
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
-		public virtual int[] GetVideoBuffer()
-		{
-			return _videoBuffer;
-		}
+		public virtual int[] GetVideoBuffer() => _videoBuffer;
 
 		protected int[] _videoBuffer;
 		public virtual int VirtualWidth => BufferWidth;

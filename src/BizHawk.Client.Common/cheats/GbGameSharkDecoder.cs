@@ -22,20 +22,20 @@ namespace BizHawk.Client.Common.cheats
 				return new InvalidCheatCode("GameShark codes must be 8 characters with no dashes.");
 			}
 
-			var test = code.Substring(0, 2);
-			if (test != "00" && test != "01")
+			string test = code.Substring(0, 2);
+			if (test is not "00" and not "01")
 			{
 				return new InvalidCheatCode("All GameShark Codes for GameBoy need to start with 00 or 01");
 			}
 
-			var result = new DecodeResult { Size = WatchSize.Byte };
+			DecodeResult result = new() { Size = WatchSize.Byte };
 
 			code = code.Remove(0, 2);
 
-			var valueStr = code.Remove(2, 4);
+			string valueStr = code.Remove(2, 4);
 			code = code.Remove(0, 2);
 
-			var addrStr = code.Remove(0, 2);
+			string addrStr = code.Remove(0, 2);
 			addrStr += code.Remove(2, 2);
 
 			result.Value = int.Parse(valueStr, NumberStyles.HexNumber);

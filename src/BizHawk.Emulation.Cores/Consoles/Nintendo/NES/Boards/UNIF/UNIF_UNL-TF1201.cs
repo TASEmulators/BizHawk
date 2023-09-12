@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			addr += 0x8000;
 			addr = (addr & 0xF003) | ((addr & 0xC) >> 2);
-			if ((addr >= 0xB000) && (addr <= 0xE003))
+			if (addr is >= 0xB000 and <= 0xE003)
 			{
 				int ind = (((addr >> 11) - 6) | (addr & 1)) & 7;
 				int sar = ((addr & 2) << 1);

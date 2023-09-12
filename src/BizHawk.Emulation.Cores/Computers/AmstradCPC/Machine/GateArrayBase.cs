@@ -1,4 +1,4 @@
-﻿using BizHawk.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
 using System;
@@ -19,7 +19,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private readonly CPCBase _machine;
 		private Z80A CPU => _machine.CPU;
 		private CRCT_6845 CRCT => _machine.CRCT;
+		#pragma warning disable IDE0051
 		private IPSG PSG => _machine.AYDevice;
+		#pragma warning restore IDE0051
 
 		/// <summary>
 		/// CRTC Register constants
@@ -269,17 +271,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			byte[] b = new byte[1];
 			bi.CopyTo(b, 0);
-			var colour = b[0] & 0x1f;
+			int colour = b[0] & 0x1f;
 			PenColours[CurrentPen] = colour;
 		}
 
 		/// <summary>
 		/// Returns the actual ARGB pen colour value
 		/// </summary>
-		public virtual int GetPenColour(int idx)
-		{
-			return CPCHardwarePalette[PenColours[idx]];
-		}
+		public virtual int GetPenColour(int idx) => CPCHardwarePalette[PenColours[idx]];
 
 		/// <summary>
 		/// Screen mode and ROM config
@@ -290,7 +289,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			bi.CopyTo(b, 0);
 
 			// screen mode
-			var mode = b[0] & 0x03;
+			int mode = b[0] & 0x03;
 			ScreenMode = mode;
 
 			// ROM
@@ -331,10 +330,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return;
 		}
 
-		public void InterruptACK()
-		{
-			INTScanlineCnt &= 0x01f;
-		}
+		public void InterruptACK() => INTScanlineCnt &= 0x01f;
 
 
 		public void Reset()
@@ -350,19 +346,17 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Device responds to an IN instruction
 		/// </summary>
-		public bool ReadPort(ushort port, ref int result)
-		{
+		public bool ReadPort(ushort port, ref int result) =>
 			// gate array is OUT only
-			return false;
-		}
+			false;
 
 		/// <summary>
 		/// Device responds to an OUT instruction
 		/// </summary>
 		public bool WritePort(ushort port, int result)
 		{
-			BitArray portBits = new BitArray(BitConverter.GetBytes(port));
-			BitArray dataBits = new BitArray(BitConverter.GetBytes((byte)result));
+			BitArray portBits = new(BitConverter.GetBytes(port));
+			BitArray dataBits = new(BitConverter.GetBytes((byte)result));
 
 			// The gate array responds to port 0x7F
 			bool accessed = !portBits[15];
@@ -402,36 +396,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public int[] ScreenBuffer;
 
-		private int _virtualWidth;
-		private int _virtualHeight;
-		private int _bufferWidth;
-		private int _bufferHeight;
-
 		public int BackgroundColor => CPCHardwarePalette[16];
 
-		public int VirtualWidth
-		{
-			get => _virtualWidth;
-			set => _virtualWidth = value;
-		}
+		public int VirtualWidth { get; set; }
 
-		public int VirtualHeight
-		{
-			get => _virtualHeight;
-			set => _virtualHeight = value;
-		}
+		public int VirtualHeight { get; set; }
 
-		public int BufferWidth
-		{
-			get => _bufferWidth;
-			set => _bufferWidth = value;
-		}
+		public int BufferWidth { get; set; }
 
-		public int BufferHeight
-		{
-			get => _bufferHeight;
-			set => _bufferHeight = value;
-		}
+		public int BufferHeight { get; set; }
 
 		public int VsyncNumerator
 		{

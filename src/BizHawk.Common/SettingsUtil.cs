@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Reflection.Emit;
 using System.Collections.Concurrent;
 using System.ComponentModel;
@@ -38,7 +37,7 @@ namespace BizHawk.Common
 			f.SetDefaultValues(obj, f.DefaultValues);
 		}
 
-		private static readonly Dictionary<Type, OpCode> IntTypes = new Dictionary<Type,OpCode>
+		private static readonly Dictionary<Type, OpCode> IntTypes = new()
 		{
 			{ typeof(byte), OpCodes.Conv_U1 },
 			{ typeof(sbyte), OpCodes.Conv_I1 },
@@ -54,9 +53,9 @@ namespace BizHawk.Common
 
 		private static DefaultValueSetter CreateSetter(Type t)
 		{
-			var dyn = new DynamicMethod($"SetDefaultValues_{t.Name}", null, new[] { typeof(object), typeof(object[]) }, false);
+			DynamicMethod dyn = new($"SetDefaultValues_{t.Name}", null, new[] { typeof(object), typeof(object[]) }, false);
 			var il = dyn.GetILGenerator();
-			List<object> DefaultValues = new List<object>();
+			List<object> DefaultValues = new();
 
 			il.Emit(OpCodes.Ldarg_0); // arg0: object to set properties of
 			il.Emit(OpCodes.Castclass, t); // cast to appropriate type
@@ -65,14 +64,14 @@ namespace BizHawk.Common
 			{
 				if (!prop.CanWrite)
 					continue;
-				MethodInfo method = prop.GetSetMethod(true);
+				var method = prop.GetSetMethod(true);
 				foreach (object attr in prop.GetCustomAttributes(true))
 				{
 					if (attr is DefaultValueAttribute dvAttr)
 					{
-						var value = dvAttr.Value;
-						Type desiredType = method.GetParameters()[0].ParameterType;
-						Type sourceType = value.GetType();
+						object value = dvAttr.Value;
+						var desiredType = method.GetParameters()[0].ParameterType;
+						var sourceType = value.GetType();
 
 						int idx = DefaultValues.Count;
 						DefaultValues.Add(value);

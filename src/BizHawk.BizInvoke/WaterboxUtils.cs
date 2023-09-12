@@ -10,7 +10,7 @@ namespace BizHawk.BizInvoke
 		/// </summary>
 		public static void CopySome(Stream src, Stream dst, long len)
 		{
-			var buff = new byte[65536];
+			byte[] buff = new byte[65536];
 			while (len > 0)
 			{
 				int r = src.Read(buff, 0, (int)Math.Min(len, 65536));
@@ -31,10 +31,7 @@ namespace BizHawk.BizInvoke
 			}
 		}
 
-		public static long Timestamp()
-		{
-			return DateTime.UtcNow.Ticks;
-		}
+		public static long Timestamp() => DateTime.UtcNow.Ticks;
 
 		/// <summary>
 		/// system page size
@@ -62,34 +59,22 @@ namespace BizHawk.BizInvoke
 		/// <summary>
 		/// true if addr is aligned
 		/// </summary>
-		public static bool Aligned(ulong addr)
-		{
-			return (addr & PageMask) == 0;
-		}
+		public static bool Aligned(ulong addr) => (addr & PageMask) == 0;
 
 		/// <summary>
 		/// align address down to previous page boundary
 		/// </summary>
-		public static ulong AlignDown(ulong addr)
-		{
-			return addr & ~PageMask;
-		}
+		public static ulong AlignDown(ulong addr) => addr & ~PageMask;
 
 		/// <summary>
 		/// align address up to next page boundary
 		/// </summary>
-		public static ulong AlignUp(ulong addr)
-		{
-			return ((addr - 1) | PageMask) + 1;
-		}
+		public static ulong AlignUp(ulong addr) => ((addr - 1) | PageMask) + 1;
 
 		/// <summary>
 		/// return the minimum number of pages needed to hold size
 		/// </summary>
-		public static int PagesNeeded(ulong size)
-		{
-			return (int)((size + PageMask) >> PageShift);
-		}
+		public static int PagesNeeded(ulong size) => (int)((size + PageMask) >> PageShift);
 	}
 
 	// C# is annoying:  arithmetic operators for native ints are not exposed.

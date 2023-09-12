@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			if (DiskHeader.NumberOfSides > 1)
 			{
-				StringBuilder sbm = new StringBuilder();
+				StringBuilder sbm = new();
 				sbm.AppendLine();
 				sbm.AppendLine();
 				sbm.AppendLine("The detected disk image contains multiple sides.");
@@ -74,10 +74,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 
 				int p = pos;
-				DiskTracks[i] = new Track();
-
-				// track info block
-				DiskTracks[i].TrackIdent = Encoding.ASCII.GetString(data, p, 12);
+				DiskTracks[i] = new Track
+				{
+					// track info block
+					TrackIdent = Encoding.ASCII.GetString(data, p, 12)
+				};
 				p += 16;
 				DiskTracks[i].TrackNumber = data[p++];
 				DiskTracks[i].SideNumber = data[p++];
@@ -193,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			while (tCount < data[0x30] * data[0x31])
 			{
 				// which side is this?
-				var side = data[mPos + 0x11];
+				byte side = data[mPos + 0x11];
 				if (side == 0)
 				{
 					// side 1

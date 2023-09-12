@@ -9,9 +9,9 @@ namespace BizHawk.Client.EmuHawk
 	public partial class VirtualPadTargetScreen : UserControl, IVirtualPadControl
 	{
 		private readonly StickyXorAdapter _stickyXorAdapter;
-		private readonly Pen BlackPen = new Pen(Brushes.Black, 2);
-		private readonly Pen GrayPen = new Pen(Brushes.Gray, 2);
-		private readonly Pen RedPen = new Pen(Brushes.Red, 2);
+		private readonly Pen BlackPen = new(Brushes.Black, 2);
+		private readonly Pen GrayPen = new(Brushes.Gray, 2);
+		private readonly Pen RedPen = new(Brushes.Red, 2);
 
 		private bool _isProgrammicallyChangingNumerics;
 		private bool _isDragging;
@@ -51,10 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			YNumeric.Maximum = TargetPanel.Height - 1;
 		}
 
-		public void UpdateValues()
-		{
-			TargetPanel.Refresh();
-		}
+		public void UpdateValues() => TargetPanel.Refresh();
 
 		public void Clear()
 		{
@@ -68,13 +65,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Set(IController controller)
 		{
-			var newX = controller.AxisValue(XName) / MultiplierX;
-			var newY = controller.AxisValue(YName) / MultiplierY;
+			float newX = controller.AxisValue(XName) / MultiplierX;
+			float newY = controller.AxisValue(YName) / MultiplierY;
 
-			var oldX = X / MultiplierX;
-			var oldY = Y / MultiplierY;
+			float oldX = X / MultiplierX;
+			float oldY = Y / MultiplierY;
 
-			var changed = newX != oldX && newY != oldY;
+			bool changed = newX != oldX && newY != oldY;
 
 			XNumeric.Value = (int)newX;
 			YNumeric.Value = (int)newY;
@@ -117,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// Size of the extra controls to the right / bottom of the target panel at 96 DPI
-		private Size PaddingSize => new Size(0, 30);
+		private Size PaddingSize => new(0, 30);
 
 		public Size TargetSize
 		{
@@ -255,25 +252,13 @@ namespace BizHawk.Client.EmuHawk
 				new Rectangle(X - 2, Y - 2, 4, 4));
 		}
 
-		private void XNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			UpdatePanelFromNumeric();
-		}
+		private void XNumeric_ValueChanged(object sender, EventArgs e) => UpdatePanelFromNumeric();
 
-		private void XNumeric_KeyUp(object sender, KeyEventArgs e)
-		{
-			UpdatePanelFromNumeric();
-		}
+		private void XNumeric_KeyUp(object sender, KeyEventArgs e) => UpdatePanelFromNumeric();
 
-		private void YNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			UpdatePanelFromNumeric();
-		}
+		private void YNumeric_ValueChanged(object sender, EventArgs e) => UpdatePanelFromNumeric();
 
-		private void YNumeric_KeyUp(object sender, KeyEventArgs e)
-		{
-			UpdatePanelFromNumeric();
-		}
+		private void YNumeric_KeyUp(object sender, KeyEventArgs e) => UpdatePanelFromNumeric();
 
 		private void TargetPanel_MouseDown(object sender, MouseEventArgs e)
 		{

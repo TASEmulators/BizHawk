@@ -16,15 +16,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 		{
 		}
 
-		public virtual bool ReadDataInputBuffer()
-		{
-			return true;
-		}
+		public virtual bool ReadDataInputBuffer() => true;
 
-		public virtual bool ReadSenseBuffer()
-		{
-			return true;
-		}
+		public virtual bool ReadSenseBuffer() => true;
 
 		public abstract void SyncState(Serializer ser);
 

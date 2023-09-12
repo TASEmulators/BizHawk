@@ -27,22 +27,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePrg(int addr, byte value)
 		{
-			if (addr < 0xFFF
-				|| addr >= 0x7000) // hack ported from FCEUX to support Bubble Bobble (FDS Conversion, Kaiser Hacked) (Unl) [p1][!]
+			if (addr is < 0xFFF
+				or >= 0x7000) // hack ported from FCEUX to support Bubble Bobble (FDS Conversion, Kaiser Hacked) (Unl) [p1][!]
 			{
 				prg = value & 15;
 			}
 		}
 
-		public override byte ReadPrg(int addr)
-		{
-			return Rom[addr | 0x18000];
-		}
+		public override byte ReadPrg(int addr) => Rom[addr | 0x18000];
 
-		public override byte ReadWram(int addr)
-		{
-			return Rom[addr | prg << 13];
-		}
+		public override byte ReadWram(int addr) => Rom[addr | prg << 13];
 
 		public override void SyncState(Serializer ser)
 		{

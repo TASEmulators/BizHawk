@@ -29,14 +29,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			DiscardSamples();
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new InvalidOperationException("Async mode is not supported.");
 
-		public void DiscardSamples()
-		{
-			_nsamp = 0;
-		}
+		public void DiscardSamples() => _nsamp = 0;
 	}
 }

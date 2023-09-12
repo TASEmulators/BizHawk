@@ -10,10 +10,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool WantsToControlSavestates => !NamedStatePending;
 
-		public void SaveState()
-		{
-			BookMarkControl.UpdateBranchExternal();
-		}
+		public void SaveState() => BookMarkControl.UpdateBranchExternal();
 
 		public bool LoadState()
 			=> BookMarkControl.LoadBranchExternal();
@@ -116,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!AskSaveChanges()) return false;
 			WantsToControlStopMovie = false;
-			var success = StartNewMovieWrapper(CurrentTasMovie);
+			bool success = StartNewMovieWrapper(CurrentTasMovie);
 			WantsToControlStopMovie = true;
 			RefreshDialog();
 			return success;

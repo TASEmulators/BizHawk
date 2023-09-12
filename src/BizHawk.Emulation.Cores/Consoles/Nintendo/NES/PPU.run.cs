@@ -320,7 +320,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 									spr_true_count++;
 									soam_m_index++;
 								}
-								else if (spr_true_count > 0 && spr_true_count < 4)
+								else if (spr_true_count is > 0 and < 4)
 								{
 									soam[soam_index * 4 + soam_m_index] = read_value;
 
@@ -359,7 +359,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 									spr_true_count++;
 									soam_m_index++;
 								}
-								else if (spr_true_count > 0 && spr_true_count < 4)
+								else if (spr_true_count is > 0 and < 4)
 								{
 									soam_m_index++;
 
@@ -907,7 +907,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								}
 
 								int temp_x = t_oam[s].oam_x;
-								if ((ppur.status.sl != 0) && (ppur.status.sl != 240))
+								if (ppur.status.sl is not 0 and not 240)
 								{
 									for (int i = 0; (temp_x + i) < 256 && i < 8; i++)
 									{

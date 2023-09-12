@@ -58,10 +58,7 @@ namespace BizHawk.Bizware.Audio
 
 		public int MaxSamplesDeficit { get; private set; }
 
-		public void ApplyVolumeSettings(double volume)
-		{
-			_al.SetSourceProperty(_sourceID, SourceFloat.Gain, (float)volume);
-		}
+		public void ApplyVolumeSettings(double volume) => _al.SetSourceProperty(_sourceID, SourceFloat.Gain, (float)volume);
 
 		public void StartSound()
 		{
@@ -87,18 +84,18 @@ namespace BizHawk.Bizware.Audio
 
 		public int CalculateSamplesNeeded()
 		{
-			var currentSamplesPlayed = GetSource(GetSourceInteger.SampleOffset);
+			int currentSamplesPlayed = GetSource(GetSourceInteger.SampleOffset);
 			var sourceState = GetSourceState();
-			var isInitializing = sourceState == SourceState.Initial;
-			var detectedUnderrun = sourceState == SourceState.Stopped;
+			bool isInitializing = sourceState == SourceState.Initial;
+			bool detectedUnderrun = sourceState == SourceState.Stopped;
 			if (detectedUnderrun)
 			{
 				// SampleOffset should reset to 0 when stopped; update the queued sample count to match
 				UnqueueProcessedBuffers();
 				currentSamplesPlayed = 0;
 			}
-			var samplesAwaitingPlayback = _currentSamplesQueued - currentSamplesPlayed;
-			var samplesNeeded = Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
+			int samplesAwaitingPlayback = _currentSamplesQueued - currentSamplesPlayed;
+			int samplesNeeded = Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
 			if (isInitializing || detectedUnderrun)
 			{
 				_sound.HandleInitializationOrUnderrun(detectedUnderrun, ref samplesNeeded);
@@ -110,7 +107,7 @@ namespace BizHawk.Bizware.Audio
 		{
 			if (sampleCount == 0) return;
 			UnqueueProcessedBuffers();
-			var byteCount = sampleCount * _sound.BlockAlign;
+			int byteCount = sampleCount * _sound.BlockAlign;
 			if (sampleOffset != 0)
 			{
 				AllocateTempSampleBuffer(sampleCount);
@@ -123,7 +120,7 @@ namespace BizHawk.Bizware.Audio
 			{
 				_al.BufferData(buffer.BufferID, BufferFormat.Stereo16, sptr, byteCount, _sound.SampleRate);
 			}
-			var bid = buffer.BufferID;
+			uint bid = buffer.BufferID;
 			_al.SourceQueueBuffers(_sourceID, 1, &bid);
 			_currentSamplesQueued += sampleCount;
 			if (GetSourceState() != SourceState.Playing)
@@ -134,10 +131,10 @@ namespace BizHawk.Bizware.Audio
 
 		private unsafe void UnqueueProcessedBuffers()
 		{
-			var releaseCount = GetSource(GetSourceInteger.BuffersProcessed);
-			var bids = stackalloc uint[releaseCount];
+			int releaseCount = GetSource(GetSourceInteger.BuffersProcessed);
+			uint* bids = stackalloc uint[releaseCount];
 			_al.SourceUnqueueBuffers(_sourceID, releaseCount, bids);
-			for (var i = 0; i < releaseCount; i++)
+			for (int i = 0; i < releaseCount; i++)
 			{
 				var releasedBuffer = _bufferPool.ReleaseOne();
 				_currentSamplesQueued -= releasedBuffer.Length / _sound.BlockAlign;
@@ -146,7 +143,7 @@ namespace BizHawk.Bizware.Audio
 
 		private int GetSource(GetSourceInteger param)
 		{
-			_al.GetSourceProperty(_sourceID, param, out var value);
+			_al.GetSourceProperty(_sourceID, param, out int value);
 			return value;
 		}
 
@@ -155,7 +152,7 @@ namespace BizHawk.Bizware.Audio
 
 		private void AllocateTempSampleBuffer(int sampleCount)
 		{
-			var length = sampleCount * _sound.ChannelCount;
+			int length = sampleCount * _sound.ChannelCount;
 			if (_tempSampleBuffer == null || _tempSampleBuffer.Length < length)
 			{
 				_tempSampleBuffer = new short[length];

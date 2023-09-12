@@ -58,55 +58,25 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Definition.MakeImmutable();
 		}
 
-		public byte ReadPort1_c1(IController c)
-		{
-			return Port1.Read_p1_c1(c);
-		}
+		public byte ReadPort1_c1(IController c) => Port1.Read_p1_c1(c);
 
-		public byte ReadPort1_c2(IController c)
-		{
-			return Port2.Read_p1_c2(c);
-		}
+		public byte ReadPort1_c2(IController c) => Port2.Read_p1_c2(c);
 
-		public byte ReadPort2_c1(IController c)
-		{
-			return Port1.Read_p2_c1(c);
-		}
+		public byte ReadPort2_c1(IController c) => Port1.Read_p2_c1(c);
 
-		public byte ReadPort2_c2(IController c)
-		{
-			return Port2.Read_p2_c2(c);
-		}
+		public byte ReadPort2_c2(IController c) => Port2.Read_p2_c2(c);
 
-		public bool GetPin_c1(IController c)
-		{
-			return Port1.PinStateGet(c);
-		}
+		public bool GetPin_c1(IController c) => Port1.PinStateGet(c);
 
-		public bool GetPin_c2(IController c)
-		{
-			return Port2.PinStateGet(c);
-		}
+		public bool GetPin_c2(IController c) => Port2.PinStateGet(c);
 
-		public void SetPin_c1(IController c, bool val)
-		{
-			Port1.PinStateSet(c, val);
-		}
+		public void SetPin_c1(IController c, bool val) => Port1.PinStateSet(c, val);
 
-		public void SetPin_c2(IController c, bool val)
-		{
-			Port2.PinStateSet(c, val);
-		}
+		public void SetPin_c2(IController c, bool val) => Port2.PinStateSet(c, val);
 
-		public void SetCounter_c1(IController c, int val)
-		{
-			Port1.CounterSet(c, val);
-		}
+		public void SetCounter_c1(IController c, int val) => Port1.CounterSet(c, val);
 
-		public void SetCounter_c2(IController c, int val)
-		{
-			Port2.CounterSet(c, val);
-		}
+		public void SetCounter_c2(IController c, int val) => Port2.CounterSet(c, val);
 
 		public void SetRegion(IController c, bool val)
 		{

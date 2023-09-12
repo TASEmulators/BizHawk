@@ -757,9 +757,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				// Devices with DC0 and DC1 registers must switch registers. Devices without a DC1 register perform no operation
 				// CYCLE LENGTH: S
 				case ROMC_1D:
-					ushort temp = RegDC0;
-					RegDC0 = RegDC1;
-					RegDC1 = temp;
+					(RegDC1, RegDC0) = (RegDC0, RegDC1);
 					break;
 
 				// The device whose address space includes the contents of PC0 must place the low order byte of PC0 onto the data bus

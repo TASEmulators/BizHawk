@@ -23,59 +23,35 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("if ( snes.getlayer_bg_1( ) ) then\r\n\tconsole.log( \"Returns whether the bg 1 layer is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bg_1", "Returns whether the bg 1 layer is displayed")]
-		public bool GetLayerBg1()
-		{
-			return Settings.ShowBG1_1;
-		}
+		public bool GetLayerBg1() => Settings.ShowBG1_1;
 
 		[LuaMethodExample("if ( snes.getlayer_bg_2( ) ) then\r\n\tconsole.log( \"Returns whether the bg 2 layer is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bg_2", "Returns whether the bg 2 layer is displayed")]
-		public bool GetLayerBg2()
-		{
-			return Settings.ShowBG2_1;
-		}
+		public bool GetLayerBg2() => Settings.ShowBG2_1;
 
 		[LuaMethodExample("if ( snes.getlayer_bg_3( ) ) then\r\n\tconsole.log( \"Returns whether the bg 3 layer is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bg_3", "Returns whether the bg 3 layer is displayed")]
-		public bool GetLayerBg3()
-		{
-			return Settings.ShowBG3_1;
-		}
+		public bool GetLayerBg3() => Settings.ShowBG3_1;
 
 		[LuaMethodExample("if ( snes.getlayer_bg_4( ) ) then\r\n\tconsole.log( \"Returns whether the bg 4 layer is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bg_4", "Returns whether the bg 4 layer is displayed")]
-		public bool GetLayerBg4()
-		{
-			return Settings.ShowBG4_1;
-		}
+		public bool GetLayerBg4() => Settings.ShowBG4_1;
 
 		[LuaMethodExample("if ( snes.getlayer_obj_1( ) ) then\r\n\tconsole.log( \"Returns whether the obj 1 layer is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_obj_1", "Returns whether the obj 1 layer is displayed")]
-		public bool GetLayerObj1()
-		{
-			return Settings.ShowOBJ_0;
-		}
+		public bool GetLayerObj1() => Settings.ShowOBJ_0;
 
 		[LuaMethodExample("if ( snes.getlayer_obj_2( ) ) then\r\n\tconsole.log( \"Returns whether the obj 2 layer is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_obj_2", "Returns whether the obj 2 layer is displayed")]
-		public bool GetLayerObj2()
-		{
-			return Settings.ShowOBJ_1;
-		}
+		public bool GetLayerObj2() => Settings.ShowOBJ_1;
 
 		[LuaMethodExample("if ( snes.getlayer_obj_3( ) ) then\r\n\tconsole.log( \"Returns whether the obj 3 layer is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_obj_3", "Returns whether the obj 3 layer is displayed")]
-		public bool GetLayerObj3()
-		{
-			return Settings.ShowOBJ_2;
-		}
+		public bool GetLayerObj3() => Settings.ShowOBJ_2;
 
 		[LuaMethodExample("if ( snes.getlayer_obj_4( ) ) then\r\n\tconsole.log( \"Returns whether the obj 4 layer is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_obj_4", "Returns whether the obj 4 layer is displayed")]
-		public bool GetLayerObj4()
-		{
-			return Settings.ShowOBJ_3;
-		}
+		public bool GetLayerObj4() => Settings.ShowOBJ_3;
 
 		[LuaMethodExample("snes.setlayer_bg_1( true );")]
 		[LuaMethod("setlayer_bg_1", "Sets whether the bg 1 layer is displayed")]

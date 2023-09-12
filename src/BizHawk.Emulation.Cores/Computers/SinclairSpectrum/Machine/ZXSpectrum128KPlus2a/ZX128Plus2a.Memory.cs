@@ -349,7 +349,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public override byte ReadMemory(ushort addr)
         {
-            var data = ReadBus(addr);
+			byte data = ReadBus(addr);
             if (CPUMon.NextMemReadContended)
             {
                 LastContendedReadByte = data;
@@ -364,7 +364,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public override ZXSpectrum.CDLResult ReadCDL(ushort addr)
         {
-            var result = new ZXSpectrum.CDLResult();
+			ZXSpectrum.CDLResult result = new();
 
             int divisor = addr / 0x4000;
             result.Address = addr % 0x4000;
@@ -501,14 +501,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             return result;
         }
 
-        /// <summary>
-        /// Writes a byte of data to a specified memory address
-        /// (with memory contention if appropriate)
-        /// </summary>
-        public override void WriteMemory(ushort addr, byte value)
-        {
-            // update ULA screen buffer if necessary BEFORE T1 write
-            /*
+		/// <summary>
+		/// Writes a byte of data to a specified memory address
+		/// (with memory contention if appropriate)
+		/// </summary>
+		public override void WriteMemory(ushort addr, byte value) =>
+			// update ULA screen buffer if necessary BEFORE T1 write
+			/*
             if (!SpecialPagingMode)
             {
                 if (((addr & 49152) == 16384 || ((addr & 0xc000) == 0xc000) && (RAMPaged == 5 || RAMPaged == 7)) && _render)
@@ -530,15 +529,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
             }
             */
-            WriteBus(addr, value);
-        }
+			WriteBus(addr, value);
 
-        /// <summary>
-        /// Checks whether supplied address is in a potentially contended bank
-        /// </summary>
-        public override bool IsContended(ushort addr)
+		/// <summary>
+		/// Checks whether supplied address is in a potentially contended bank
+		/// </summary>
+		public override bool IsContended(ushort addr)
         {
-            var a = addr & 0xc000;
+			int a = addr & 0xc000;
 
             if (a == 0x4000)
             {
@@ -567,17 +565,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public override bool ContendedBankPaged()
         {
-            switch (RAMPaged)
-            {
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                    return true;
-            }
-
-            return false;
-        }
+			return RAMPaged switch
+			{
+				4 or 5 or 6 or 7 => true,
+				_ => false,
+			};
+		}
 
         /// <summary>
         /// ULA reads the memory at the specified address
@@ -586,7 +579,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public override byte FetchScreenMemory(ushort addr)
         {
-            byte value = new byte();
+            byte value = new();
 
             if (SHADOWPaged && !PagingDisabled)
             {

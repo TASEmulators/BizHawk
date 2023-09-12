@@ -34,10 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void StartGameSession()
-		{
-			PushRequest(new StartGameSessionRequest(Username, ApiToken, _gameData.GameID));
-		}
+		private void StartGameSession() => PushRequest(new StartGameSessionRequest(Username, ApiToken, _gameData.GameID));
 
 		private sealed class PingRequest : RCheevoHttpRequest
 		{
@@ -65,10 +62,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SendPing()
-		{
-			PushRequest(new PingRequest(Username, ApiToken, _gameData.GameID, CurrentRichPresence));
-		}
+		private void SendPing() => PushRequest(new PingRequest(Username, ApiToken, _gameData.GameID, CurrentRichPresence));
 
 		private readonly byte[] _richPresenceBuffer = new byte[1024];
 
@@ -79,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (RichPresenceActive)
 			{
-				var len = _lib.rc_runtime_get_richpresence(_runtime, _richPresenceBuffer, _richPresenceBuffer.Length, _peekcb, IntPtr.Zero, IntPtr.Zero);
+				int len = _lib.rc_runtime_get_richpresence(_runtime, _richPresenceBuffer, _richPresenceBuffer.Length, _peekcb, IntPtr.Zero, IntPtr.Zero);
 				CurrentRichPresence = Encoding.UTF8.GetString(_richPresenceBuffer, 0, len);
 			}
 			else

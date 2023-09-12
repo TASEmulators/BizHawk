@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		private static int[] CreateVideoBuffer()
 		{
-			var b = new int[256 * 224];
+			int[] b = new int[256 * 224];
 			for (int i = 0; i < (256 * 224); i++)
 			{
 				b[i] = -1;
@@ -16,10 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			return b;
 		}
 
-		public int[] GetVideoBuffer()
-		{
-			return VideoBuffer;
-		}
+		public int[] GetVideoBuffer() => VideoBuffer;
 
 		public int VirtualWidth => _settings.ShowBorder ? 256 : 160;
 

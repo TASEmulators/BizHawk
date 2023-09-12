@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				// parse single keyboard matrix keys.
 				// J1 and J2 are scanned as part of the keyboard
-				for (var i = 0; i < KeyboardDevice.KeyboardMatrix.Length; i++)
+				for (int i = 0; i < KeyboardDevice.KeyboardMatrix.Length; i++)
 				{
 					string key = KeyboardDevice.KeyboardMatrix[i];
 					bool prevState = KeyboardDevice.GetKeyStatus(key);

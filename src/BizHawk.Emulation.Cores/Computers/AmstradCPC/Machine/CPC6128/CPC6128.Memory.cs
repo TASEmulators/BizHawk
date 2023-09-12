@@ -25,15 +25,11 @@
 					}
 					else
 					{
-						switch (RAMConfig)
+						result = RAMConfig switch
 						{
-							case 2:
-								result = RAM4[addr % 0x4000];
-								break;
-							default:
-								result = RAM0[addr % 0x4000];
-								break;
-						}
+							2 => RAM4[addr % 0x4000],
+							_ => RAM0[addr % 0x4000],
+						};
 					}
 					break;
 
@@ -67,45 +63,30 @@
 
 				// RAM 0x8000
 				case 2:
-					switch (RAMConfig)
+					result = RAMConfig switch
 					{
-						case 2:
-							result = RAM6[addr % 0x4000];
-							break;
-						default:
-							result = RAM2[addr % 0x4000];
-							break;
-					}
+						2 => RAM6[addr % 0x4000],
+						_ => RAM2[addr % 0x4000],
+					};
 					break;
 
 				// RAM 0xc000
 				case 3:
 					if (UpperROMPaged)
 					{
-						switch (UpperROMPosition)
+						result = UpperROMPosition switch
 						{
-							case 7:
-								result = ROM7[addr % 0x4000];
-								break;
-							case 0:
-							default:
-								result = ROM0[addr % 0x4000];
-								break;
-						}
+							7 => ROM7[addr % 0x4000],
+							_ => ROM0[addr % 0x4000],
+						};
 					}
 					else
 					{
-						switch (RAMConfig)
+						result = RAMConfig switch
 						{
-							case 1:
-							case 2:
-							case 3:
-								result = RAM7[addr % 0x4000];
-								break;
-							default:
-								result = RAM3[addr % 0x4000];
-								break;
-						}
+							1 or 2 or 3 => RAM7[addr % 0x4000],
+							_ => RAM3[addr % 0x4000],
+						};
 					}
 					break;
 				default:
@@ -203,7 +184,7 @@
 		/// </summary>
 		public override byte ReadMemory(ushort addr)
 		{
-			var data = ReadBus(addr);
+			byte data = ReadBus(addr);
 			return data;
 		}
 
@@ -211,10 +192,7 @@
 		/// Writes a byte of data to a specified memory address
 		/// (with memory contention if appropriate)
 		/// </summary>
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteBus(addr, value);
-		}
+		public override void WriteMemory(ushort addr, byte value) => WriteBus(addr, value);
 
 
 		/// <summary>

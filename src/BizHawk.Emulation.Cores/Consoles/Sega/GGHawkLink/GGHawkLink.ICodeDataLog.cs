@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 		{
 			if (L.MapMemory != null)
 			{
-				SMS.CDLog_MapResults results = L.MapMemory(address, false);
+				var results = L.MapMemory(address, false);
 				switch (results.Type)
 				{
 					case SMS.CDLog_AddrType.None: break;

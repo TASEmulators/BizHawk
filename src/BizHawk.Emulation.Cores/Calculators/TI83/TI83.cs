@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 		[CoreConstructor(VSystemID.Raw.TI83)]
 		public TI83(CoreLoadParameters<TI83CommonSettings, object> lp)
 		{
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 			PutSettings(lp.Settings ?? new TI83CommonSettings());
 
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 
 		private readonly TraceBuffer _tracer;
 
-		private readonly Z80A _cpu = new Z80A();
+		private readonly Z80A _cpu = new();
 		private readonly byte[] _rom;
 
 		// configuration
@@ -441,7 +441,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 			{
 				_displayMode = value;
 			}
-			else if (value >= 4 && value <= 7)
+			else if (value is >= 4 and <= 7)
 			{
 				_displayMove = value - 4;
 			}
@@ -471,17 +471,13 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 			}
 		}
 
-		private void IRQCallback()
-		{
+		private void IRQCallback() =>
 			//Console.WriteLine("IRQ with vec {0} and cpu.InterruptMode {1}", _cpu.Regs[_cpu.I], _cpu.InterruptMode);
 			_cpu.FlagI = false;
-		}
 
-		private void NMICallback()
-		{
+		private void NMICallback() =>
 			//Console.WriteLine("NMI");
 			_cpu.NonMaskableInterrupt = false;
-		}
 
 		private void HardReset()
 		{

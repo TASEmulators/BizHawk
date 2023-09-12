@@ -35,13 +35,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			int pos = 0;
 
-			List<IPFBlock> blocks = new List<IPFBlock>();
+			List<IPFBlock> blocks = new();
 
 			while (pos < data.Length)
 			{
 				try
 				{
-					var block = IPFBlock.ParseNextBlock(ref pos, this, data, blocks);
+					IPFBlock block = IPFBlock.ParseNextBlock(ref pos, this, data, blocks);
 
 					if (block == null)
 					{
@@ -58,13 +58,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 				catch (Exception ex)
 				{
-					var e = ex.ToString();
+					string e = ex.ToString();
 				}
 			}
 
 			// now process the blocks
 			var infoBlock = blocks.Find(static a => a.RecordType == RecordHeaderType.INFO);
-			var IMGEblocks = blocks.Where(a => a.RecordType == RecordHeaderType.IMGE).ToList();
+			List<IPFBlock> IMGEblocks = blocks.Where(a => a.RecordType == RecordHeaderType.IMGE).ToList();
 			var DATAblocks = blocks.Where(a => a.RecordType == RecordHeaderType.DATA);
 
 			DiskHeader.NumberOfTracks = (byte)(IMGEblocks.Count);
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				DiskTracks[t] = new Track();
 				var trk = DiskTracks[t];
 
-				var blockCount = img.IMGEblockCount;
+				int blockCount = img.IMGEblockCount;
 				var dataBlock = DATAblocks.FirstOrDefault(a => a.DATAdataKey == img.IMGEdataKey);
 
 				trk.SideNumber = (byte)img.IMGEside;
@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				int p = 0;
 				for (int d = 0; d < blockCount; d++)
 				{
-					var extraDataAreaStart = 32 * blockCount;
+					int extraDataAreaStart = 32 * blockCount;
 					trk.Sectors[d] = new Sector();
 					var sector = trk.Sectors[d];
 
@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					// data stream elements
 					if (dataBits != 0)
 					{
-						var dsLocation = dataOffset;
+						int dsLocation = dataOffset;
 
 						for (; ; )
 						{
@@ -156,11 +156,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 								break;
 							}
 
-							var sampleSize = ((dataHead & 0xE0) >> 5);
-							var dataType = dataHead & 0x1F;
+							int sampleSize = ((dataHead & 0xE0) >> 5);
+							int dataType = dataHead & 0x1F;
 							byte[] dSize = new byte[sampleSize];
 							Array.Copy(dataBlock.DATAextraDataRaw, dsLocation, dSize, 0, sampleSize);
-							var dataSize = MediaConverter.GetBEInt32FromByteArray(dSize);
+							int dataSize = MediaConverter.GetBEInt32FromByteArray(dSize);
 							dsLocation += dSize.Length;
 							int dataLen;
 							byte[] dataStream = new byte[0];
@@ -292,8 +292,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			public static IPFBlock ParseNextBlock(ref int startPos, FloppyDisk disk, byte[] data, List<IPFBlock> blockCollection)
 			{
-				IPFBlock ipf = new IPFBlock();
-				ipf.StartPos = startPos;
+				IPFBlock ipf = new()
+				{
+					StartPos = startPos
+				};
 
 				if (startPos >= data.Length)
 				{

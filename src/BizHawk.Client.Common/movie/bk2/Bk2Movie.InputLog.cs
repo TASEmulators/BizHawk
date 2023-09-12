@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 				writer.WriteLine($"LogKey:{LogKey}");
 			}
 
-			foreach (var record in Log)
+			foreach (string record in Log)
 			{
 				writer.WriteLine(record);
 			}
@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWithOrdinal("Frame "))
 				{
-					var strs = line.Split(' ');
+					string[] strs = line.Split(' ');
 					try
 					{
 						stateFrame = int.Parse(strs[1]);
@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common
 				errorMessage = "Savestate Frame number failed to parse";
 			}
 
-			var stateFramei = stateFrame ?? 0;
+			int stateFramei = stateFrame ?? 0;
 
 			if (stateFramei.StrictlyBoundedBy(0.RangeTo(Log.Count)))
 			{
@@ -113,8 +113,8 @@ namespace BizHawk.Client.Common
 		{
 			// This function will compare the movie data to the savestate movie data to see if they match
 			errorMessage = "";
-			var newLog = new List<string>();
-			var stateFrame = 0;
+			List<string> newLog = new();
+			int stateFrame = 0;
 			string line;
 			while ((line = reader.ReadLine()) != null)
 			{
@@ -124,7 +124,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWithOrdinal("Frame "))
 				{
-					var strs = line.Split(' ');
+					string[] strs = line.Split(' ');
 					try
 					{
 						stateFrame = int.Parse(strs[1]);
@@ -154,7 +154,7 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			for (var i = 0; i < stateFrame; i++)
+			for (int i = 0; i < stateFrame; i++)
 			{
 				if (Log[i] != newLog[i])
 				{
@@ -166,7 +166,7 @@ namespace BizHawk.Client.Common
 
 			if (stateFrame > newLog.Count) // stateFrame is greater than state input log, so movie finished mode
 			{
-				if (Mode == MovieMode.Play || Mode == MovieMode.Finished)
+				if (Mode is MovieMode.Play or MovieMode.Finished)
 				{
 					Mode = MovieMode.Finished;
 					return true;

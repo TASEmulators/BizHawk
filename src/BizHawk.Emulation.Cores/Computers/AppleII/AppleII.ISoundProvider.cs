@@ -7,15 +7,9 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	{
 		public bool CanProvideAsync => false;
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			_machine.Memory.Speaker.GetSamples(out samples, out nsamp);
-		}
+		public void GetSamplesSync(out short[] samples, out int nsamp) => _machine.Memory.Speaker.GetSamples(out samples, out nsamp);
 
-		public void DiscardSamples()
-		{
-			_machine.Memory.Speaker.Clear();
-		}
+		public void DiscardSamples() => _machine.Memory.Speaker.Clear();
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
@@ -27,9 +21,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new InvalidOperationException("Async mode is not supported.");
 	}
 }

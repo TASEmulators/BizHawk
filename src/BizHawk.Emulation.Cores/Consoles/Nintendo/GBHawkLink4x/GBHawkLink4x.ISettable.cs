@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		private GBLink4xSettings Link4xSettings = new GBLink4xSettings();
-		public GBLink4xSyncSettings Link4xSyncSettings = new GBLink4xSyncSettings();
+		private GBLink4xSettings Link4xSettings = new();
+		public GBLink4xSyncSettings Link4xSyncSettings = new();
 
 		public class GBLink4xSettings
 		{
@@ -203,10 +203,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			public GBLink4xSyncSettings Clone() => (GBLink4xSyncSettings)MemberwiseClone();
 
 			public GBLink4xSyncSettings() => SettingsUtil.SetDefaultValues(this);
-			public static bool NeedsReboot(GBLink4xSyncSettings x, GBLink4xSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(GBLink4xSyncSettings x, GBLink4xSyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

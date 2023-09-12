@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			if (lp.Roms.Count != 4)
 				throw new InvalidOperationException("Wrong number of roms");
 
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 
 			Link4xSettings = lp.Settings ?? new GBLink4xSettings();
 			Link4xSyncSettings = lp.SyncSettings ?? new GBLink4xSyncSettings();
@@ -68,15 +68,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				GBHawkControllerDeck.DefaultControllerName,
 				GBHawkControllerDeck.DefaultControllerName);
 
-			var tempSetA = new GBHawk.GBHawk.GBSettings();
-			var tempSetB = new GBHawk.GBHawk.GBSettings();
-			var tempSetC = new GBHawk.GBHawk.GBSettings();
-			var tempSetD = new GBHawk.GBHawk.GBSettings();
+			GBHawk.GBHawk.GBSettings tempSetA = new();
+			GBHawk.GBHawk.GBSettings tempSetB = new();
+			GBHawk.GBHawk.GBSettings tempSetC = new();
+			GBHawk.GBHawk.GBSettings tempSetD = new();
 
-			var tempSyncA = new GBHawk.GBHawk.GBSyncSettings();
-			var tempSyncB = new GBHawk.GBHawk.GBSyncSettings();
-			var tempSyncC = new GBHawk.GBHawk.GBSyncSettings();
-			var tempSyncD = new GBHawk.GBHawk.GBSyncSettings();
+			GBHawk.GBHawk.GBSyncSettings tempSyncA = new();
+			GBHawk.GBHawk.GBSyncSettings tempSyncB = new();
+			GBHawk.GBHawk.GBSyncSettings tempSyncC = new();
+			GBHawk.GBHawk.GBSyncSettings tempSyncD = new();
 
 			tempSyncA.ConsoleMode = Link4xSyncSettings.ConsoleMode_A;
 			tempSyncB.ConsoleMode = Link4xSyncSettings.ConsoleMode_B;

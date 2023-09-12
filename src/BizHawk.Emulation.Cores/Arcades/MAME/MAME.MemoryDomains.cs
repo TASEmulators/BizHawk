@@ -59,13 +59,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void InitMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>();
+			List<MemoryDomain> domains = new();
 
-			var systemBusAddressShift = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceAddressShift);
-			var dataWidth = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceDataWidth) >> 3; // mame returns in bits
-			var size = _core.mame_lua_get_long(MAMELuaCommand.GetSpaceAddressMask) + dataWidth;
-			var endianString = MameGetString(MAMELuaCommand.GetSpaceEndianness);
-			var deviceName = MameGetString(MAMELuaCommand.GetMainCPUName);
+			int systemBusAddressShift = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceAddressShift);
+			int dataWidth = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceDataWidth) >> 3; // mame returns in bits
+			long size = _core.mame_lua_get_long(MAMELuaCommand.GetSpaceAddressMask) + dataWidth;
+			string endianString = MameGetString(MAMELuaCommand.GetSpaceEndianness);
+			string deviceName = MameGetString(MAMELuaCommand.GetMainCPUName);
 			//var addrSize = (size * 2).ToString();
 
 			var endian = MemoryDomain.Endian.Unknown;
@@ -79,18 +79,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				endian = MemoryDomain.Endian.Big;
 			}
 
-			var mapCount = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceMapCount);
+			int mapCount = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceMapCount);
 
-			for (var i = 1; i <= mapCount; i++)
+			for (int i = 1; i <= mapCount; i++)
 			{
-				var read = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].read.handlertype");
-				var write = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].write.handlertype");
+				string read = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].read.handlertype");
+				string write = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].write.handlertype");
 
 				if (read == "ram" && write == "ram" || read == "rom")
 				{
-					var firstOffset = _core.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].address_start");
-					var lastOffset = _core.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].address_end");
-					var name = $"{ deviceName } : { read } : 0x{ firstOffset:X}-0x{ lastOffset:X}";
+					int firstOffset = _core.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].address_start");
+					int lastOffset = _core.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].address_end");
+					string name = $"{ deviceName } : { read } : 0x{ firstOffset:X}-0x{ lastOffset:X}";
 
 					domains.Add(new MAMEMemoryDomain(name, lastOffset - firstOffset + 1, endian,
 						dataWidth, read != "rom", _core, _exe, firstOffset, systemBusAddressShift, size));

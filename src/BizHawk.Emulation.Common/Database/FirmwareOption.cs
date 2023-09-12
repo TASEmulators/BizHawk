@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Common
 
 		public readonly FirmwareID ID;
 
-		public bool IsAcceptableOrIdeal => Status == FirmwareOptionStatus.Ideal || Status == FirmwareOptionStatus.Acceptable;
+		public bool IsAcceptableOrIdeal => Status is FirmwareOptionStatus.Ideal or FirmwareOptionStatus.Acceptable;
 
 		public readonly long Size;
 

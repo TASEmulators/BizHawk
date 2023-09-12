@@ -31,10 +31,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("aux_ram", ref _ram, false);
 		}
 
-		public override void HardReset()
-		{
-			_ram = new byte[1024];
-		}
+		public override void HardReset() => _ram = new byte[1024];
 
 		public override byte ReadMemory(ushort addr)
 		{
@@ -48,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return _ram[(addr & 0x3FF)];
 			}
 			
-			if (addr >= 0x1800 && addr < 0x2000)
+			if (addr is >= 0x1800 and < 0x2000)
 			{
 				return Core.Rom[addr & 0x7FF];
 			}
@@ -70,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				base.WriteMemory(addr, value);
 			}
-			else if (addr >= 0x1400 && addr < 0x1800)
+			else if (addr is >= 0x1400 and < 0x1800)
 			{
 				_ram[addr & 0x3FF] = value;
 			}

@@ -29,9 +29,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, ISettingsAdapter settable)
 		{
-			var s = (BsnesCore.SnesSettings) settable.GetSettings();
-			var ss = (BsnesCore.SnesSyncSettings) settable.GetSyncSettings();
-			using var dlg = new BSNESOptions(s, ss)
+			BsnesCore.SnesSettings s = (BsnesCore.SnesSettings) settable.GetSettings();
+			BsnesCore.SnesSyncSettings ss = (BsnesCore.SnesSyncSettings) settable.GetSyncSettings();
+			using BSNESOptions dlg = new(s, ss)
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
 				CropSGBFrame = s.CropSGBFrame,
@@ -201,9 +201,6 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void FastPPU_CheckedChanged(object sender, EventArgs e)
-		{
-			cbDoubleSize.Enabled = cbNoPPUSpriteLimit.Enabled = cbFastPPU.Checked;
-		}
+		private void FastPPU_CheckedChanged(object sender, EventArgs e) => cbDoubleSize.Enabled = cbNoPPUSpriteLimit.Enabled = cbFastPPU.Checked;
 	}
 }

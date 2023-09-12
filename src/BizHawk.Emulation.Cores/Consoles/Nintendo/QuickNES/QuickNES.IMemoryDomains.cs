@@ -10,13 +10,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 	{
 		private void InitMemoryDomains()
 		{
-			List<MemoryDomain> mm = new List<MemoryDomain>();
+			List<MemoryDomain> mm = new();
 			for (int i = 0; ; i++)
 			{
-				IntPtr data = IntPtr.Zero;
+				var data = IntPtr.Zero;
 				int size = 0;
 				bool writable = false;
-				IntPtr name = IntPtr.Zero;
+				var name = IntPtr.Zero;
 
 				if (!QN.qn_get_memory_area(Context, i, ref data, ref size, ref writable, ref name))
 					break;

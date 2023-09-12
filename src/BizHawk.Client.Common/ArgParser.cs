@@ -48,19 +48,19 @@ namespace BizHawk.Client.Common
 			List<(string Key, string Value)>? userdataUnparsedPairs = null;
 			string? cmdRom = null;
 
-			for (var i = 0; i < args.Length; i++)
+			for (int i = 0; i < args.Length; i++)
 			{
-				var arg = args[i];
+				string arg = args[i];
 
 				if (arg == ">")
 				{
 					// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
-					var stdout = args[++i];
+					string stdout = args[++i];
 					Console.SetOut(new StreamWriter(stdout));
 					continue;
 				}
 
-				var argDowncased = arg.ToLowerInvariant();
+				string argDowncased = arg.ToLowerInvariant();
 				if (argDowncased.StartsWithOrdinal("--load-slot="))
 				{
 					cmdLoadSlot = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
@@ -104,7 +104,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (argDowncased.StartsWithOrdinal("--dump-length="))
 				{
-					var len = int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out var i1) ? i1 : default;
+					int len = int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out int i1) ? i1 : default;
 					autoDumpLength = len;
 				}
 				else if (argDowncased.StartsWithOrdinal("--dump-close"))
@@ -131,7 +131,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (argDowncased.StartsWithOrdinal("--socket_port="))
 				{
-					var port = int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out var i1) ? i1 : default;
+					int port = int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out int i1) ? i1 : default;
 					if (port > 0) socketPort = port;
 				}
 				else if (argDowncased.StartsWithOrdinal("--socket_ip="))
@@ -168,9 +168,9 @@ namespace BizHawk.Client.Common
 				else if (argDowncased.StartsWithOrdinal("--userdata="))
 				{
 					userdataUnparsedPairs = new();
-					foreach (var s in arg.Substring(11).Split(';'))
+					foreach (string? s in arg.Substring(11).Split(';'))
 					{
-						var iColon = s.IndexOf(':');
+						int iColon = s.IndexOf(':');
 						if (iColon is -1) throw new ArgParserException("malformed userdata (';' without ':')");
 						userdataUnparsedPairs.Add((s.Substring(startIndex: 0, length: iColon), s.Substring(iColon + 1)));
 					}

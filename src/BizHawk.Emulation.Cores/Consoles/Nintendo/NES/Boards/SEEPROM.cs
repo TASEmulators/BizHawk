@@ -233,7 +233,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return !PullDown;
 		}
 
-		public byte[] GetSaveRAM() { return rom; }
+		public byte[] GetSaveRAM() => rom;
 
 		/// <param name="Big">256 byte instead of 128 byte</param>
 		public SEEPROM(bool Big)

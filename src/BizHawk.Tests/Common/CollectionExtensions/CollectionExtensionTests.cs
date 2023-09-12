@@ -67,8 +67,8 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 		[TestMethod]
 		public void TestConcatArray()
 		{
-			var a123 = new[] { 1, 2, 3 };
-			var a456 = new[] { 4, 5, 6 };
+			int[] a123 = new[] { 1, 2, 3 };
+			int[] a456 = new[] { 4, 5, 6 };
 			Assert.IsTrue(a123.ConcatArray(a456).SequenceEqual(new[] { 1, 2, 3, 4, 5, 6 }));
 			Assert.AreSame(a123, a123.ConcatArray(Array.Empty<int>()));
 			Assert.AreSame(a456, Array.Empty<int>().ConcatArray(a456));
@@ -78,7 +78,7 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 		[TestMethod]
 		public void TestRemoveAll()
 		{
-			static bool Predicate(int i) => 2 <= i && i <= 3;
+			static bool Predicate(int i) => i is >= 2 and <= 3;
 
 			List<int> a = new(new[] { 1, 2, 3, 4 });
 			CE.RemoveAll(a, Predicate);

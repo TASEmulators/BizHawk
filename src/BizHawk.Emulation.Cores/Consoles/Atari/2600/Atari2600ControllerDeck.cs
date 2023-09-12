@@ -32,25 +32,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Definition.MakeImmutable();
 		}
 
-		public byte ReadPort1(IController c)
-		{
-			return Port1.Read(c);
-		}
+		public byte ReadPort1(IController c) => Port1.Read(c);
 
-		public byte ReadPort2(IController c)
-		{
-			return Port2.Read(c);
-		}
+		public byte ReadPort2(IController c) => Port2.Read(c);
 
-		public int ReadPot1(IController c, int pot)
-		{
-			return Port1.Read_Pot(c, pot);
-		}
+		public int ReadPot1(IController c, int pot) => Port1.Read_Pot(c, pot);
 
-		public int ReadPot2(IController c, int pot)
-		{
-			return Port2.Read_Pot(c, pot);
-		}
+		public int ReadPot2(IController c, int pot) => Port2.Read_Pot(c, pot);
 
 		public ControllerDefinition Definition { get; }
 

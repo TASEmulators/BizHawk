@@ -59,9 +59,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_isLag = false;
 		}
 
-		public void Dispose()
-		{
-			_machine = null;
-		}
+		public void Dispose() => _machine = null;
 	}
 }

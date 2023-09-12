@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 			private static int ButtonOrder(string btn)
 			{
-				var order = new Dictionary<string, int>
+				Dictionary<string, int> order = new()
 				{
 					["0Up"] = 0, ["0Down"] = 1, ["0Left"] = 2, ["0Right"] = 3, ["0Select"] = 4, ["0Start"] = 5, ["0Y"] = 6, ["0B"] = 7, ["0X"] = 8, ["0A"] = 9
 					, ["0L"] = 10, ["0R"] = 11
@@ -121,9 +121,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 			public void ApplyState(IController controller, short[] input, int offset)
 			{
-				foreach (var s in Definition.Axes.Keys)
+				foreach (string s in Definition.Axes.Keys)
 					input[offset++] = (short)controller.AxisValue(s);
-				foreach (var s in Definition.BoolButtons)
+				foreach (string s in Definition.BoolButtons)
 					input[offset++] = (short)(controller.IsPressed(s) ? 1 : 0);
 			}
 		}

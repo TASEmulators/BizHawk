@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 	{
 		public ISoundProvider BaseSoundProvider { get; set; }
 
-		private readonly Queue<short> buffer = new Queue<short>(MaxExcessSamples);
+		private readonly Queue<short> buffer = new(MaxExcessSamples);
 
 		private int SamplesInOneFrame = 1470;
 		private readonly int TargetExtraSamples = 882;
@@ -43,12 +43,9 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// recalculates some internal parameters based on the IEmulator's framerate
 		/// </summary>
-		public void RecalculateMagic(double framerate)
-		{
+		public void RecalculateMagic(double framerate) =>
 			// ceiling instead of floor here is very important (magic)
-			SamplesInOneFrame = 2 * (int)Math.Ceiling((44100.0 / framerate));
-			//TargetExtraSamples = ;// complete guess
-		}
+			SamplesInOneFrame = 2 * (int)Math.Ceiling((44100.0 / framerate));//TargetExtraSamples = ;// complete guess
 
 		public void DiscardSamples()
 		{
@@ -67,7 +64,7 @@ namespace BizHawk.Client.Common
 			if (samplesToGenerate + buffer.Count < samples.Length)
 				samplesToGenerate = samples.Length - buffer.Count;
 
-			var mySamples = new short[samplesToGenerate];
+			short[] mySamples = new short[samplesToGenerate];
 
 			if (BaseSoundProvider.SyncMode != SyncSoundMode.Async)
 			{
@@ -100,9 +97,6 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <exception cref="InvalidOperationException">always</exception>
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			throw new InvalidOperationException("Sync mode is not supported.");
-		}
+		public void GetSamplesSync(out short[] samples, out int nsamp) => throw new InvalidOperationException("Sync mode is not supported.");
 	}
 }

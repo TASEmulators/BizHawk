@@ -21,20 +21,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		{
 		}
 
-		public virtual bool ReadDeviceClk()
-		{
-			return true;
-		}
+		public virtual bool ReadDeviceClk() => true;
 
-		public virtual bool ReadDeviceData()
-		{
-			return true;
-		}
+		public virtual bool ReadDeviceData() => true;
 
-		public virtual bool ReadDeviceLight()
-		{
-			return false;
-		}
+		public virtual bool ReadDeviceLight() => false;
 
 		public abstract void SyncState(Serializer ser);
 	}

@@ -22,10 +22,10 @@
 
 		public override byte ReadBus(ushort addr)
 		{
-			var result = 0xFF;
-			var off = addr - 0x800;
+			int result = 0xFF;
+			int off = addr - 0x800;
 
-			if (addr >= 0x2800 && addr < 0x3000)
+			if (addr is >= 0x2800 and < 0x3000)
 			{
 				// 2KB RAM
 				result = RAM[addr - 0x2800];
@@ -42,7 +42,7 @@
 		public override void WriteBus(ushort addr, byte value)
 		{
 			// 2KB writeable memory at 0x2800;
-			if (addr >= 0x2800 && addr < 0x3000)
+			if (addr is >= 0x2800 and < 0x3000)
 			{
 				RAM[addr - 0x2800] = value;
 			}
@@ -57,10 +57,7 @@
 			}
 		}
 
-		public override byte ReadPort(ushort addr)
-		{
-			return 0xFF;
-		}
+		public override byte ReadPort(ushort addr) => 0xFF;
 
 		public override void WritePort(ushort addr, byte data)
 		{

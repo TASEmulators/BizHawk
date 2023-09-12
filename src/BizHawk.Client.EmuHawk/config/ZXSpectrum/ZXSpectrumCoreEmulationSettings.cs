@@ -23,8 +23,8 @@ namespace BizHawk.Client.EmuHawk
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
 			// machine selection
-			var machineTypes = Enum.GetNames(typeof(MachineType));
-			foreach (var val in machineTypes)
+			string[] machineTypes = Enum.GetNames(typeof(MachineType));
+			foreach (string val in machineTypes)
 			{
 				MachineSelectionComboBox.Items.Add(val);
 			}
@@ -32,8 +32,8 @@ namespace BizHawk.Client.EmuHawk
 			UpdateMachineNotes((MachineType)Enum.Parse(typeof(MachineType), MachineSelectionComboBox.SelectedItem.ToString()));
 
 			// border selection
-			var borderTypes = Enum.GetNames(typeof(ZXSpectrum.BorderType));
-			foreach (var val in borderTypes)
+			string[] borderTypes = Enum.GetNames(typeof(ZXSpectrum.BorderType));
+			foreach (string val in borderTypes)
 			{
 				borderTypecomboBox1.Items.Add(val);
 			}
@@ -76,18 +76,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MachineSelectionComboBox_SelectionChangeCommitted(object sender, EventArgs e)
 		{
-			var cb = (ComboBox)sender;
+			ComboBox cb = (ComboBox)sender;
 			UpdateMachineNotes((MachineType)Enum.Parse(typeof(MachineType), cb.SelectedItem.ToString()));
 		}
 
-		private void UpdateMachineNotes(MachineType type)
-		{
-			textBoxCoreDetails.Text = ZXMachineMetaData.GetMetaString(type);
-		}
+		private void UpdateMachineNotes(MachineType type) => textBoxCoreDetails.Text = ZXMachineMetaData.GetMetaString(type);
 
 		private void BorderTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			var cb = (ComboBox)sender;
+			ComboBox cb = (ComboBox)sender;
 			UpdateBorderNotes((ZXSpectrum.BorderType)Enum.Parse(typeof(ZXSpectrum.BorderType), cb.SelectedItem.ToString()));
 		}
 

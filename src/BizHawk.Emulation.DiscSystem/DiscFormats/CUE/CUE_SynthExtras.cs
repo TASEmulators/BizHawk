@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	{
 		public override void Synth(SectorSynthJob job)
 		{
-			var ecm = (job.Parts & ESectorSynthPart.ECMAny) != 0;
+			bool ecm = (job.Parts & ESectorSynthPart.ECMAny) != 0;
 			if (ecm)
 			{
 				// ecm needs these parts for synth

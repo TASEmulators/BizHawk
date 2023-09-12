@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 			"Ex: select * from rewards")]
 		public object ReadCommand(string query = "")
 		{
-			var result = APIs.SQLite.ReadCommand(query);
+			object result = APIs.SQLite.ReadCommand(query);
 			return result switch
 			{
 				Dictionary<string, object> dict => _th.DictToTable(dict),

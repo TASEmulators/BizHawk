@@ -17,8 +17,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				Core.gpgx_reset(true);
 			if (_cds != null)
 			{
-				var prev = controller.IsPressed("Previous Disk");
-				var next = controller.IsPressed("Next Disk");
+				bool prev = controller.IsPressed("Previous Disk");
+				bool next = controller.IsPressed("Next Disk");
 				int newDisk = _discIndex;
 				if (prev && !_prevDiskPressed)
 					newDisk--;
@@ -45,8 +45,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			// if (!Core.gpgx_get_control(input, inputsize))
 			//	throw new Exception("gpgx_get_control() failed!");
 
-			ControlConverter.ScreenWidth = _vwidth;
-			ControlConverter.ScreenHeight = _vheight;
+			ControlConverter.ScreenWidth = BufferWidth;
+			ControlConverter.ScreenHeight = BufferHeight;
 			ControlConverter.Convert(controller, input);
 
 			if (!Core.gpgx_put_control(input, inputsize))

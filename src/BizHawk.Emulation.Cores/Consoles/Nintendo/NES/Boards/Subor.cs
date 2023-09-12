@@ -30,10 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(is167), ref is167);
 		}
 
-		public override void WritePrg(int addr, byte value)
-		{
-			regs[(addr >> 13) & 0x03] = value;
-		}
+		public override void WritePrg(int addr, byte value) => regs[(addr >> 13) & 0x03] = value;
 
 		public override byte ReadPrg(int addr)
 		{

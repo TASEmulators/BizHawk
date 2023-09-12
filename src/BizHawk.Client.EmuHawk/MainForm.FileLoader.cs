@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Tools.IsAvailable<CDL>())
 			{
-				CDL cdl = Tools.Load<CDL>();
+				var cdl = Tools.Load<CDL>();
 				cdl.LoadFile(filename);
 			}
 		}
@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool LoadRom(string filename, string archive = null)
 		{
-			var args = new LoadRomArgs
+			LoadRomArgs args = new()
 			{
 				OpenAdvanced = new OpenAdvanced_OpenRom {Path = filename}
 			};
@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (string file in fileList)
 			{
-				var ext = Path.GetExtension(file)?.ToUpperInvariant() ?? "";
+				string ext = Path.GetExtension(file)?.ToUpperInvariant() ?? "";
 				FileInformation fileInformation = new(file.SplitPathToDirAndFile(), archive);
 
 				switch (ext)
@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 			 *	  Make that order easy to change in the code, heavily suggesting ROM and playback as first and last respectively.
 			 */
 
-			Dictionary<LoadOrdering, List<FileInformation>> sortedFiles = new Dictionary<LoadOrdering, List<FileInformation>>();
+			Dictionary<LoadOrdering, List<FileInformation>> sortedFiles = new();
 
 			// Initialize the dictionary's lists.
 			foreach (LoadOrdering value in Enum.GetValues(typeof(LoadOrdering)))

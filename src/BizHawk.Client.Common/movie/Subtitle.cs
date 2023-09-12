@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 
 		public override string ToString()
 		{
-			var sb = new StringBuilder("subtitle ");
+			StringBuilder sb = new("subtitle ");
 			sb
 				.Append(Frame).Append(' ')
 				.Append(X).Append(' ')
@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 
 		public string ToSubRip(int index, double fps, bool addColorTag)
 		{
-			var sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			sb.Append(index);
 			sb.Append("\r\n");
@@ -59,9 +59,9 @@ namespace BizHawk.Client.Common
 			int startTime = (int)(start * 1000 / fps);
 			int endTime = (int)(end * 1000 / fps);
 
-			var startString = $"{startTime / 3600000:d2}:{(startTime / 60000) % 60:d2}:{(startTime / 1000) % 60:d2},{startTime % 1000:d3}";
+			string startString = $"{startTime / 3600000:d2}:{(startTime / 60000) % 60:d2}:{(startTime / 1000) % 60:d2},{startTime % 1000:d3}";
 
-			var endString = $"{endTime / 3600000:d2}:{(endTime / 60000) % 60:d2}:{(endTime / 1000) % 60:d2},{endTime % 1000:d3}";
+			string endString = $"{endTime / 3600000:d2}:{(endTime / 60000) % 60:d2}:{(endTime / 1000) % 60:d2},{endTime % 1000:d3}";
 
 			sb.Append(startString);
 			sb.Append(" --> ");

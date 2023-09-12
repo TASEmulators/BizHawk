@@ -52,8 +52,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			NSFData = data;
 
-			var ms = new MemoryStream(data);
-			var br = new BinaryReader(ms);
+			MemoryStream ms = new(data);
+			BinaryReader br = new(ms);
 			br.BaseStream.Position += 5;
 			
 			Version = br.ReadByte();

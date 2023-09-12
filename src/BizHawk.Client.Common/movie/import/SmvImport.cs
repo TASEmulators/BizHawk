@@ -19,10 +19,10 @@ namespace BizHawk.Client.Common.movie.import
 			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Snes9X;
 
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
-			using var r = new BinaryReader(fs);
+			using BinaryReader r = new(fs);
 
 			// 000 4-byte signature: 53 4D 56 1A "SMV\x1A"
-			string signature = new string(r.ReadChars(4));
+			string signature = new(r.ReadChars(4));
 			if (signature != "SMV\x1A")
 			{
 				Result.Errors.Add("This is not a valid .SMV file.");
@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			// 004 4-byte little-endian unsigned int: version number
 			uint versionNumber = r.ReadUInt32();
-			var version = versionNumber switch
+			string version = versionNumber switch
 			{
 				1 => "1.43",
 				4 => "1.51",
@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			int highestControllerIndex = 1 + Array.LastIndexOf(controllersUsed, true);
-			var ss = new Snes9x.SyncSettings();
+			Snes9x.SyncSettings ss = new();
 
 			switch (highestControllerIndex)
 			{
@@ -190,7 +190,7 @@ namespace BizHawk.Client.Common.movie.import
 				Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 			}
 
-			var _controllers = new Snes9xControllers(ss);
+			Snes9xControllers _controllers = new(ss);
 			Result.Movie.LogKey = new Bk2LogEntryGenerator("SNES", new Bk2Controller(_controllers.ControllerDefinition)).GenerateLogKey();
 			SimpleController controllers = new(_controllers.ControllerDefinition);
 
@@ -261,7 +261,7 @@ namespace BizHawk.Client.Common.movie.import
 				{
 					for (int i = 0; i < 2; i++)
 					{
-						var peripheral = "";
+						string peripheral = "";
 						switch (controllerTypes[i])
 						{
 							case 0: // NONE

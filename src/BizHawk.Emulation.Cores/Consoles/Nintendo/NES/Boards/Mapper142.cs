@@ -40,10 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(_irqCount), ref _irqCount);
 		}
 
-		public override byte ReadWram(int addr)
-		{
-			return Rom[(_reg[4] << 13) + (addr & 0x1FFF)];
-		}
+		public override byte ReadWram(int addr) => Rom[(_reg[4] << 13) + (addr & 0x1FFF)];
 
 		public override byte ReadPrg(int addr)
 		{
@@ -55,20 +52,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[(_lastBank << 13) + (addr & 0x1FFF)];
 		}
 
-		public override void WriteExp(int addr, byte value)
-		{
-			Write(addr + 0x4000, value);
-		}
+		public override void WriteExp(int addr, byte value) => Write(addr + 0x4000, value);
 
-		public override void WriteWram(int addr, byte value)
-		{
-			Write(addr + 0x6000, value);
-		}
+		public override void WriteWram(int addr, byte value) => Write(addr + 0x6000, value);
 
-		public override void WritePrg(int addr, byte value)
-		{
-			Write(addr + 0x8000, value);
-		}
+		public override void WritePrg(int addr, byte value) => Write(addr + 0x8000, value);
 
 		private void IRQHook(int a)
 		{
@@ -85,10 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void ClockPpu()
-		{
-			IRQHook(1);
-		}
+		public override void ClockPpu() => IRQHook(1);
 
 		private void Write(int addr, byte value)
 		{

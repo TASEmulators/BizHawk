@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 		{
 			LibEmu83.MemoryCallback CreateCallback(MemoryCallbackFlags flags, Func<bool> getHasCBOfType)
 			{
-				var rawFlags = (uint)flags;
+				uint rawFlags = (uint)flags;
 				return (address, cycleCount) =>
 				{
 					_callbackCycleCount = cycleCount;

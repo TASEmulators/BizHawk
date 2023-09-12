@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("getluafunctionslist", "returns a list of implemented functions")]
 		public string GetLuaFunctionsList()
 		{
-			var list = new StringBuilder();
+			StringBuilder list = new();
 			foreach (var function in _luaLibsImpl.Docs)
 			{
 				list.AppendLine(function.Name);
@@ -43,24 +43,15 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("console.log( \"New log.\" );")]
 		[LuaMethod("log", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
-		public void Log(params object[] outputs)
-		{
-			LogWithSeparator("\t", "\n", outputs);
-		}
+		public void Log(params object[] outputs) => LogWithSeparator("\t", "\n", outputs);
 
 		[LuaMethodExample("console.writeline( \"New log line.\" );")]
 		[LuaMethod("writeline", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
-		public void WriteLine(params object[] outputs)
-		{
-			LogWithSeparator("\n", "\n", outputs);
-		}
+		public void WriteLine(params object[] outputs) => LogWithSeparator("\n", "\n", outputs);
 
 		[LuaMethodExample("console.write( \"New log message.\" );")]
 		[LuaMethod("write", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
-		public void Write(params object[] outputs)
-		{
-			LogWithSeparator("", "", outputs);
-		}
+		public void Write(params object[] outputs) => LogWithSeparator("", "", outputs);
 
 		// Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable
 		private void LogWithSeparator(string separator, string terminator, params object[] outputs)
@@ -74,9 +65,9 @@ namespace BizHawk.Client.EmuHawk
 					throw new ArgumentException(message: "each value must be paired with one key, they differ in number", paramName: nameof(lti));
 				}
 
-				var values = new object[keyObjs.Count];
-				var kvpIndex = 0;
-				foreach (var valueObj in valueObjs)
+				object[] values = new object[keyObjs.Count];
+				int kvpIndex = 0;
+				foreach (object valueObj in valueObjs)
 				{
 					values[kvpIndex++] = valueObj;
 				}
@@ -91,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			void SerializeAndWrite(object output)
 				=> sb.Append(output switch

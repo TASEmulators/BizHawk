@@ -44,8 +44,8 @@ namespace BizHawk.Client.EmuHawk
 		private long _frames;
 		private int _targetFrame;
 		private bool _oldCountingSetting;
-		private BotAttempt _currentBotAttempt;
-		private BotAttempt _bestBotAttempt;
+		private readonly BotAttempt _currentBotAttempt;
+		private readonly BotAttempt _bestBotAttempt;
 		private readonly BotAttempt _comparisonBotAttempt;
 		private bool _replayMode;
 		private int _startFrame;
@@ -252,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				var item = StartFromSlotBox.Items
+				object item = StartFromSlotBox.Items
 					.OfType<object>()
 					.FirstOrDefault(o => o.ToString() == value);
 
@@ -295,10 +295,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			SaveMenuItem.Enabled = !string.IsNullOrWhiteSpace(CurrentFileName);
-		}
+		private void FileSubMenu_DropDownOpened(object sender, EventArgs e) => SaveMenuItem.Enabled = !string.IsNullOrWhiteSpace(CurrentFileName);
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 			=> RecentSubMenu.ReplaceDropDownItems(Settings.RecentBotFiles.RecentMenu(this, LoadFileFromRecent, "Bot Parameters"));
@@ -359,7 +356,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var fileName = CurrentFileName;
+			string fileName = CurrentFileName;
 			if (string.IsNullOrWhiteSpace(fileName))
 			{
 				fileName = Game.FilesystemSafeName();
@@ -387,10 +384,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MemoryDomainsMenuItem_DropDownOpened(object sender, EventArgs e)
 			=> MemoryDomainsMenuItem.ReplaceDropDownItems(MemoryDomains.MenuItems(SetMemoryDomain, _currentDomain.Name).ToArray());
 
-		private void BigEndianMenuItem_Click(object sender, EventArgs e)
-		{
-			_bigEndian ^= true;
-		}
+		private void BigEndianMenuItem_Click(object sender, EventArgs e) => _bigEndian ^= true;
 
 		private void DataSizeMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
@@ -399,35 +393,17 @@ namespace BizHawk.Client.EmuHawk
 			_4ByteMenuItem.Checked = _dataSize == 4;
 		}
 
-		private void OneByteMenuItem_Click(object sender, EventArgs e)
-		{
-			_dataSize = 1;
-		}
+		private void OneByteMenuItem_Click(object sender, EventArgs e) => _dataSize = 1;
 
-		private void TwoByteMenuItem_Click(object sender, EventArgs e)
-		{
-			_dataSize = 2;
-		}
+		private void TwoByteMenuItem_Click(object sender, EventArgs e) => _dataSize = 2;
 
-		private void FourByteMenuItem_Click(object sender, EventArgs e)
-		{
-			_dataSize = 4;
-		}
+		private void FourByteMenuItem_Click(object sender, EventArgs e) => _dataSize = 4;
 
-		private void TurboWhileBottingMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.TurboWhenBotting ^= true;
-		}
+		private void TurboWhileBottingMenuItem_Click(object sender, EventArgs e) => Settings.TurboWhenBotting ^= true;
 
-		private void RunBtn_Click(object sender, EventArgs e)
-		{
-			StartBot();
-		}
+		private void RunBtn_Click(object sender, EventArgs e) => StartBot();
 
-		private void StopBtn_Click(object sender, EventArgs e)
-		{
-			StopBot();
-		}
+		private void StopBtn_Click(object sender, EventArgs e) => StopBot();
 
 		private void ClearBestButton_Click(object sender, EventArgs e)
 		{
@@ -445,10 +421,10 @@ namespace BizHawk.Client.EmuHawk
 			_doNotUpdateValues = true;
 
 			// here we need to apply the initial frame's input from the best attempt
-			var logEntry = _bestBotAttempt.Log[0];
+			string logEntry = _bestBotAttempt.Log[0];
 			var controller = MovieSession.GenerateMovieController();
 			controller.SetFromMnemonic(logEntry);
-			foreach (var button in controller.Definition.BoolButtons)
+			foreach (string button in controller.Definition.BoolButtons)
 			{
 				// TODO: make an input adapter specifically for the bot?
 				InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
@@ -466,10 +442,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.UnpauseEmulator();
 		}
 
-		private void FrameLengthNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			AssessRunButtonStatus();
-		}
+		private void FrameLengthNumeric_ValueChanged(object sender, EventArgs e) => AssessRunButtonStatus();
 
 		private void ClearStatsContextMenuItem_Click(object sender, EventArgs e)
 		{
@@ -566,7 +539,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadFileFromRecent(string path)
 		{
-			var result = LoadBotFile(path);
+			bool result = LoadBotFile(path);
 			if (!result && !File.Exists(path))
 			{
 				Settings.RecentBotFiles.HandleLoadError(MainForm, path);
@@ -593,12 +566,12 @@ namespace BizHawk.Client.EmuHawk
 				// else grandfathered (made with old version, sysID unknowable), user has been warned
 			}
 			// if something else is off, though, let the user decide
-			var hawkVersionMatches = VersionInfo.DeveloperBuild || botData.HawkVersion == VersionInfo.GetEmuVersion();
-			var coreNameMatches = botData.CoreName == Emulator.Attributes().CoreName;
-			var gameNameMatches = botData.GameName == Game.Name;
+			bool hawkVersionMatches = VersionInfo.DeveloperBuild || botData.HawkVersion == VersionInfo.GetEmuVersion();
+			bool coreNameMatches = botData.CoreName == Emulator.Attributes().CoreName;
+			bool gameNameMatches = botData.GameName == Game.Name;
 			if (!(hawkVersionMatches && coreNameMatches && gameNameMatches))
 			{
-				var s = hawkVersionMatches
+				string s = hawkVersionMatches
 					? coreNameMatches
 						? string.Empty
 						: $" with a different core ({botData.CoreName ?? "unknown"})"
@@ -646,7 +619,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_bestBotAttempt.is_Reset = false;
 
-			var probabilityControls = ControlProbabilityPanel.Controls
+			List<BotControlsRow> probabilityControls = ControlProbabilityPanel.Controls
 					.OfType<BotControlsRow>()
 					.ToList();
 
@@ -731,7 +704,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveBotFile(string path)
 		{
-			var data = new BotData
+			BotData data = new()
 			{
 				Best = _bestBotAttempt,
 				ControlProbabilities = ControlProbabilities,
@@ -764,7 +737,7 @@ namespace BizHawk.Client.EmuHawk
 				GameName = Game.Name,
 			};
 
-			var json = ConfigService.SaveWithType(data);
+			string json = ConfigService.SaveWithType(data);
 
 			File.WriteAllText(path, json);
 			CurrentFileName = path;
@@ -772,12 +745,10 @@ namespace BizHawk.Client.EmuHawk
 			MessageLabel.Text = $"{Path.GetFileName(CurrentFileName)} saved";
 		}
 
-		public bool HasFrameAdvanced()
-		{
+		public bool HasFrameAdvanced() =>
 			// If the emulator frame is different from the last time it tried calling
 			// the function then we can continue, otherwise we need to stop.
-			return _lastFrameAdvanced != Emulator.Frame;
-		}
+			_lastFrameAdvanced != Emulator.Frame;
 		private void SetupControlsAndProperties()
 		{
 			MaximizeAddressBox.SetHexProperties(_currentDomain.Size);
@@ -795,9 +766,9 @@ namespace BizHawk.Client.EmuHawk
 
 			ControlProbabilityPanel.SuspendLayout();
 			ControlProbabilityPanel.Controls.Clear();
-			foreach (var button in Emulator.ControllerDefinition.BoolButtons)
+			foreach (string button in Emulator.ControllerDefinition.BoolButtons)
 			{
-				var control = new BotControlsRow
+				BotControlsRow control = new()
 				{
 					ButtonName = button,
 					Probability = 0.0,
@@ -836,8 +807,8 @@ namespace BizHawk.Client.EmuHawk
 		private int GetRamValue(ulong? address)
 		{
 			if (address is null) return 0;
-			var addr = checked((long) address); //TODO MemoryDomain needs converting one day
-			var val = _dataSize switch
+			long addr = checked((long) address); //TODO MemoryDomain needs converting one day
+			int val = _dataSize switch
 			{
 				1 => _currentDomain.PeekByte(addr),
 				2 => _currentDomain.PeekUshort(addr, _bigEndian),
@@ -866,10 +837,10 @@ namespace BizHawk.Client.EmuHawk
 
 				if (index < _bestBotAttempt.Log.Count)
 				{
-					var logEntry = _bestBotAttempt.Log[index];
+					string logEntry = _bestBotAttempt.Log[index];
 					var controller = MovieSession.GenerateMovieController();
 					controller.SetFromMnemonic(logEntry);
-					foreach (var button in controller.Definition.BoolButtons)
+					foreach (string button in controller.Definition.BoolButtons)
 					{
 						// TODO: make an input adapter specifically for the bot?
 						InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
@@ -969,8 +940,8 @@ namespace BizHawk.Client.EmuHawk
 				BestTieBreak2Box.Text = _bestBotAttempt.TieBreak2.ToString();
 				BestTieBreak3Box.Text = _bestBotAttempt.TieBreak3.ToString();
 
-				var sb = new StringBuilder();
-				foreach (var logEntry in _bestBotAttempt.Log)
+				StringBuilder sb = new();
+				foreach (string logEntry in _bestBotAttempt.Log)
 				{
 					sb.AppendLine(logEntry);
 				}
@@ -994,9 +965,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PressButtons(bool clear_log)
 		{
-			var rand = new Random((int)DateTime.Now.Ticks);
+			Random rand = new((int)DateTime.Now.Ticks);
 
-			foreach (var button in Emulator.ControllerDefinition.BoolButtons)
+			foreach (string button in Emulator.ControllerDefinition.BoolButtons)
 			{
 				double probability = _cachedControlProbabilities[button];
 				bool pressed = !(rand.Next(100) < probability);
@@ -1011,7 +982,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartBot()
 		{
-			var message = CanStart();
+			string message = CanStart();
 			if (!string.IsNullOrWhiteSpace(message))
 			{
 				DialogController.ShowMessageBox(message);
@@ -1124,15 +1095,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SetMaxSpeed()
-		{
-			MainForm.Unthrottle();
-		}
+		private void SetMaxSpeed() => MainForm.Unthrottle();
 
-		private void SetNormalSpeed()
-		{
-			MainForm.Throttle();
-		}
+		private void SetNormalSpeed() => MainForm.Throttle();
 
 		private void AssessRunButtonStatus()
 		{
@@ -1290,24 +1255,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// Copy to Clipboard
-		private void BtnCopyBestInput_Click(object sender, EventArgs e)
-		{
-			Clipboard.SetText(BestAttemptLogLabel.Text);
-		}
+		private void BtnCopyBestInput_Click(object sender, EventArgs e) => Clipboard.SetText(BestAttemptLogLabel.Text);
 
-		private void HelpToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Process.Start("https://tasvideos.org/Bizhawk/BasicBot");
-		}
+		private void HelpToolStripMenuItem_Click(object sender, EventArgs e) => Process.Start("https://tasvideos.org/Bizhawk/BasicBot");
 
-		private void InvisibleEmulationCheckBox_CheckedChanged(object sender, EventArgs e)
-		{
-			Settings.InvisibleEmulation ^= true;
-		}
+		private void InvisibleEmulationCheckBox_CheckedChanged(object sender, EventArgs e) => Settings.InvisibleEmulation ^= true;
 
-		private void MaximizeAddressBox_TextChanged(object sender, EventArgs e)
-		{
-			AssessRunButtonStatus();
-		}
+		private void MaximizeAddressBox_TextChanged(object sender, EventArgs e) => AssessRunButtonStatus();
 	}
 }

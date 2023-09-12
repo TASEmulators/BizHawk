@@ -39,8 +39,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int w = pictureBox1.Size.Width;
 			int h = pictureBox1.Size.Height;
-			var bmp = new Bitmap(w, h);
-			var pal = _settings.Palette;
+			Bitmap bmp = new(w, h);
+			byte[] pal = _settings.Palette;
 
 			for (int j = 0; j < h; j++)
 			{
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonPal_Click(object sender, EventArgs e)
 		{
-			var result = this.ShowFileOpenDialog(
+			string result = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				filter: FilesystemFilterSet.Palettes,
 				initDir: _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.NES));
@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (palette.Exists)
 			{
-				var data = Emulation.Cores.Nintendo.NES.Palettes.Load_FCEUX_Palette(palette.ReadAllBytes());
+				byte[,] data = Emulation.Cores.Nintendo.NES.Palettes.Load_FCEUX_Palette(palette.ReadAllBytes());
 				_settings.SetNesHawkPalette(data);
 				SetPaletteImage();
 			}

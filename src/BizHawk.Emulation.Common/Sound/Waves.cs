@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Common
 			PeriodicWave16 = new short[] { 32767, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 			NoiseWave = new short[0x1000];
-			var rnd = new System.Random(unchecked((int)0xDEADBEEF));
+			System.Random rnd = new(unchecked((int)0xDEADBEEF));
 			for (int i = 0; i < NoiseWave.Length; i++)
 			{
 				int r = rnd.Next();

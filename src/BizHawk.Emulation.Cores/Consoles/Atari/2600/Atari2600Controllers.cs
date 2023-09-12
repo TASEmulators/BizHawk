@@ -40,15 +40,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Definition = new("(Atari 2600 Basic Controller fragment)");
 		}
 
-		public byte Read(IController c)
-		{
-			return 0xFF;
-		}
+		public byte Read(IController c) => 0xFF;
 
-		public int Read_Pot(IController c, int pot)
-		{
-			return -1; // indicates not applicable
-		}
+		public int Read_Pot(IController c, int pot) => -1; // indicates not applicable
 
 		public ControllerDefinition Definition { get; }
 
@@ -95,10 +89,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return result;
 		}
 
-		public int Read_Pot(IController c, int pot)
-		{
-			return -1; // indicates not applicable
-		}
+		public int Read_Pot(IController c, int pot) => -1; // indicates not applicable
 
 		private static readonly string[] BaseDefinition =
 		{
@@ -294,10 +285,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return result;
 		}
 
-		public int Read_Pot(IController c, int pot)
-		{
-			return -1;  // indicates not applicable
-		}
+		public int Read_Pot(IController c, int pot) => -1;  // indicates not applicable
 
 		private static float CalcDirection(float x, float y)
 		{
@@ -360,10 +348,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return result;
 		}
 
-		public int Read_Pot(IController c, int pot)
-		{
-			return -2; // indicates keyboard
-		}
+		public int Read_Pot(IController c, int pot) => -2; // indicates keyboard
 
 		private static readonly string[] BaseDefinition =
 		{

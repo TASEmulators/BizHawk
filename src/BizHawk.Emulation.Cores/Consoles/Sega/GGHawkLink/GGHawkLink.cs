@@ -27,17 +27,17 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			if (lp.Roms.Count != 2)
 				throw new InvalidOperationException("Wrong number of roms");
 
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 
 			linkSettings = lp.Settings ?? new GGLinkSettings();
 			linkSyncSettings = lp.SyncSettings ?? new GGLinkSyncSettings();
 			_controllerDeck = new GGHawkLinkControllerDeck(GGHawkLinkControllerDeck.DefaultControllerName, GGHawkLinkControllerDeck.DefaultControllerName);
 
-			var temp_set_L = new SMS.SmsSettings();
-			var temp_set_R = new SMS.SmsSettings();
+			SMS.SmsSettings temp_set_L = new();
+			SMS.SmsSettings temp_set_R = new();
 
-			var temp_sync_L = new SMS.SmsSyncSettings();
-			var temp_sync_R = new SMS.SmsSyncSettings();
+			SMS.SmsSyncSettings temp_sync_L = new();
+			SMS.SmsSyncSettings temp_sync_R = new();
 
 			L = new SMS(lp.Comm, lp.Roms[0].Game, lp.Roms[0].RomData, temp_set_L, temp_sync_L);
 			R = new SMS(lp.Comm, lp.Roms[1].Game, lp.Roms[1].RomData, temp_set_R, temp_sync_R);
@@ -81,10 +81,12 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			set => _cableconnected = value;
 		}
 
+		#pragma warning disable IDE0051
 		private void ExecFetch(ushort addr)
 		{
 			uint flags = (uint)MemoryCallbackFlags.AccessExecute;
 			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 		}
+		#pragma warning restore IDE0051
 	}
 }

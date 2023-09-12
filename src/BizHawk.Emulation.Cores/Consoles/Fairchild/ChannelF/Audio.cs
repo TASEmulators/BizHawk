@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
@@ -17,13 +17,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private int tone = 0;
 
 		private readonly double[] tone_freqs = { 0, 1000, 500, 120 };
-#pragma warning disable CS0414
+#pragma warning disable CS0414,IDE0051
 		private double amplitude = 0;
-		private double decay = 0.998;
+		private readonly double decay = 0.998;
 		private double time = 0;
-		private double cycles = 0;
+		private readonly double cycles = 0;
 		private int samplePos = 0;
-#pragma warning restore CS0414
+#pragma warning restore CS0414,IDE0051
 		private int lastCycle = 0;
 
 		private BlipBuffer _blip;
@@ -75,10 +75,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				throw new InvalidOperationException("Only Sync mode is supported.");
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
 		public void DiscardSamples()
 		{

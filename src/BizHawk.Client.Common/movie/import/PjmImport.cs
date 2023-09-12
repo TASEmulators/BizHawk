@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.PSX;
 
 			using var fs = SourceFile.OpenRead();
-			using var br = new BinaryReader(fs);
+			using BinaryReader br = new(fs);
 			var info = ParseHeader(Result.Movie, "PJM ", br);
 
 			fs.Seek(info.ControllerDataOffset, SeekOrigin.Begin);
@@ -31,9 +31,9 @@ namespace BizHawk.Client.Common
 
 		protected MiscHeaderInfo ParseHeader(IMovie movie, string expectedMagic, BinaryReader br)
 		{
-			var info = new MiscHeaderInfo();
+			MiscHeaderInfo info = new();
 
-			string magic = new string(br.ReadChars(4));
+			string magic = new(br.ReadChars(4));
 			if (magic != expectedMagic)
 			{
 				Result.Errors.Add($"Not a {expectedMagic}file: invalid magic number in file header.");
@@ -125,7 +125,7 @@ namespace BizHawk.Client.Common
 					return info;
 			}
 
-			var syncSettings = new Octoshock.SyncSettings
+			Octoshock.SyncSettings syncSettings = new()
 			{
 				FIOConfig =
 				{
@@ -172,7 +172,7 @@ namespace BizHawk.Client.Common
 
 		protected void ParseBinaryInputLog(BinaryReader br, IMovie movie, MiscHeaderInfo info)
 		{
-			var settings = new Octoshock.SyncSettings();
+			Octoshock.SyncSettings settings = new();
 			settings.FIOConfig.Devices8 = new[]
 			{
 				info.Player1Type,
@@ -282,7 +282,7 @@ namespace BizHawk.Client.Common
 
 		protected void ParseTextInputLog(BinaryReader br, IMovie movie, MiscHeaderInfo info)
 		{
-			Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
+			Octoshock.SyncSettings settings = new();
 			settings.FIOConfig.Devices8 = new[]
 			{
 				info.Player1Type,
@@ -307,7 +307,7 @@ namespace BizHawk.Client.Common
 
 			for (int frame = 0; frame < info.FrameCount; ++frame)
 			{
-				var mnemonicStr = new string(br.ReadChars(strCount));
+				string mnemonicStr = new(br.ReadChars(strCount));
 
 				// Junk whitespace at the end of a file
 				if (string.IsNullOrWhiteSpace(mnemonicStr))
@@ -321,10 +321,10 @@ namespace BizHawk.Client.Common
 					Result.Errors.Add("Unable to parse text input, unknown configuration");
 				}
 
-				var split = mnemonicStr.Replace("\r\n", "").Split('|');
-				var player1Str = split[0];
-				var player2Str = split[1];
-				var controlStr = split[2];
+				string[] split = mnemonicStr.Replace("\r\n", "").Split('|');
+				string player1Str = split[0];
+				string player2Str = split[1];
+				string controlStr = split[2];
 				if (info.Player1Type != OctoshockDll.ePeripheralType.None)
 				{
 					// As L3 and R3 don't exist on a standard gamepad, handle them separately later.  Unfortunately

@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			bool diskDriveEnabled = _board.DiskDrive != null;
 			bool tapeDriveEnabled = _board.TapeDrive != null;
 
-			var domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new()
 			{
 				C64MemoryDomainFactory.Create("System Bus", 0x10000, a => _board.Cpu.Peek(a), (a, v) => _board.Cpu.Poke(a, v)),
 				C64MemoryDomainFactory.Create("RAM", 0x10000, a => _board.Ram.Peek(a), (a, v) => _board.Ram.Poke(a, v)),
@@ -48,10 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private static class C64MemoryDomainFactory
 		{
-			public static MemoryDomain Create(string name, int size, Func<int, int> peekByte, Action<int, int> pokeByte)
-			{
-				return new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Little, addr => unchecked((byte)peekByte((int)addr)), (addr, val) => pokeByte(unchecked((int)addr), val), 1);
-			}
+			public static MemoryDomain Create(string name, int size, Func<int, int> peekByte, Action<int, int> pokeByte) => new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Little, addr => unchecked((byte)peekByte((int)addr)), (addr, val) => pokeByte(unchecked((int)addr), val), 1);
 		}
 	}
 }

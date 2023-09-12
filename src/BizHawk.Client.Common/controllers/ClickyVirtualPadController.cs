@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class ClickyVirtualPadController : IController
 	{
-		private readonly HashSet<string> _pressed = new HashSet<string>();
+		private readonly HashSet<string> _pressed = new();
 
 		public ControllerDefinition Definition { get; set; }
 

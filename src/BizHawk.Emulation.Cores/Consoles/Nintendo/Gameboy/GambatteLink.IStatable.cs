@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			get
 			{
-				var ret = false;
-				for (var i = 0; i < _numCores; i++)
+				bool ret = false;
+				for (int i = 0; i < _numCores; i++)
 				{
 					ret |= _linkedCores[i].AvoidRewind;
 				}
@@ -23,14 +23,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
-		public void SaveStateText(TextWriter writer)
-		{
-			ser.Serialize(writer, new GBLSerialized(this));
-		}
+		public void SaveStateText(TextWriter writer) => ser.Serialize(writer, new GBLSerialized(this));
 
 		public void LoadStateText(TextReader reader)
 		{
-			var s = (GBLSerialized)ser.Deserialize(reader, typeof(GBLSerialized));
+			GBLSerialized s = (GBLSerialized)ser.Deserialize(reader, typeof(GBLSerialized));
 			if (s.NumCores != _numCores)
 			{
 				throw new InvalidOperationException("Core number mismatch!");
@@ -98,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_linkSpaceSignal = reader.ReadBoolean();
 		}
 
-		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
+		private readonly JsonSerializer ser = new() { Formatting = Formatting.Indented };
 
 		private class GBLSerialized
 		{

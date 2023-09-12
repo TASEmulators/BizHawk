@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static void ClearApis(object target)
 		{
-			Type targetType = target.GetType();
+			var targetType = target.GetType();
 			object[] tmp = new object[1];
 			foreach (var mi in targetType.GetProperties(ReflectionExtensions.DI_TARGET_PROPS)
 				.Where(static pi => pi.PropertyType == typeof(ApiContainer))
@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 		/// <returns>false if update failed</returns>
 		public static bool UpdateApis(IExternalApiProvider source, object target)
 		{
-			Type targetType = target.GetType();
+			var targetType = target.GetType();
 			object[] tmp = new object[1];
 
 			foreach (var mi in targetType.GetProperties(ReflectionExtensions.DI_TARGET_PROPS)

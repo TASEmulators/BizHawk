@@ -84,15 +84,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void ClockPpu()
-		{
-			mmc3.ClockPPU();
-		}
+		public override void ClockPpu() => mmc3.ClockPPU();
 
-		public override void AddressPpu(int addr)
-		{
-			mmc3.AddressPPU(addr);
-		}
+		public override void AddressPpu(int addr) => mmc3.AddressPPU(addr);
 
 		public override byte ReadPpu(int addr)
 		{

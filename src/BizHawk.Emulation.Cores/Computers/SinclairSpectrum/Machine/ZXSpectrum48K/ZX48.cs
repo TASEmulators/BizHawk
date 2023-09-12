@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			base.HardReset();
 
-			Random rn = new Random();
+			Random rn = new();
 			for (int d = 0; d < 6912; d++)
 			{
 				RAM0[d] = (byte)rn.Next(255);

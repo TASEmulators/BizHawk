@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			var n = o.Clone();
 			n.Normalize(SettingsInfo);
 			var ret = NymaSettings.Reboot(_settings, n, SettingsInfo);
-			var notifies = NymaSettings.ChangedKeys(_settings, n, SettingsInfo).ToList();
+			List<string> notifies = NymaSettings.ChangedKeys(_settings, n, SettingsInfo).ToList();
 
 			_settings = n;
 			if (SettingsInfo.LayerNames.Count > 0)
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				_nyma.SetLayers(layers);
 			}
-			foreach (var key in notifies)
+			foreach (string key in notifies)
 			{
 				_nyma.NotifySettingChanged(key);
 			}
@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// </summary>
 			public void Normalize(NymaSettingsInfo info)
 			{
-				var toRemove = new List<string>();
+				List<string> toRemove = new();
 				foreach (var kvp in MednafenValues)
 				{
 					if (!info.AllSettingsByKey.ContainsKey(kvp.Key))
@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							toRemove.Add(kvp.Key);
 					}
 				}
-				foreach (var key in toRemove)
+				foreach (string key in toRemove)
 				{
 					MednafenValues.Remove(key);
 				}
@@ -113,8 +113,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var possible = info.AllOverrides.Where(kvp => kvp.Value.NonSync && kvp.Value.NoRestart).Select(kvp => kvp.Key);
 				return possible.Where(key =>
 				{
-					_ = x.MednafenValues.TryGetValue(key, out var xx);
-					_ = y.MednafenValues.TryGetValue(key, out var yy);
+					_ = x.MednafenValues.TryGetValue(key, out string xx);
+					_ = y.MednafenValues.TryGetValue(key, out string yy);
 					return xx != yy;
 				});
 			}
@@ -122,10 +122,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public static PutSettingsDirtyBits Reboot(NymaSettings x, NymaSettings y, NymaSettingsInfo info)
 			{
 				var restarters = info.AllOverrides.Where(kvp => kvp.Value.NonSync && !kvp.Value.NoRestart).Select(kvp => kvp.Key);
-				foreach (var key in restarters)
+				foreach (string key in restarters)
 				{
-					_ = x.MednafenValues.TryGetValue(key, out var xx);
-					_ = y.MednafenValues.TryGetValue(key, out var yy);
+					_ = x.MednafenValues.TryGetValue(key, out string xx);
+					_ = y.MednafenValues.TryGetValue(key, out string yy);
 					if (xx != yy)
 						return PutSettingsDirtyBits.RebootCore;
 				}
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// </summary>
 			public void Normalize(NymaSettingsInfo info)
 			{
-				var toRemove = new List<string>();
+				List<string> toRemove = new();
 				foreach (var kvp in MednafenValues)
 				{
 					if (!info.AllSettingsByKey.ContainsKey(kvp.Key))
@@ -165,17 +165,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							toRemove.Add(kvp.Key);
 					}
 				}
-				foreach (var key in toRemove)
+				foreach (string key in toRemove)
 				{
 					MednafenValues.Remove(key);
 				}
-				var toRemovePort = new List<int>();
+				List<int> toRemovePort = new();
 				foreach (var kvp in PortDevices)
 				{
 					if (info.Ports.Count <= kvp.Key || info.Ports[kvp.Key].DefaultSettingsValue == kvp.Value)
 						toRemovePort.Add(kvp.Key);
 				}
-				foreach (var key in toRemovePort)
+				foreach (int key in toRemovePort)
 				{
 					PortDevices.Remove(key);
 				}
@@ -184,10 +184,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public static PutSettingsDirtyBits Reboot(NymaSyncSettings x, NymaSyncSettings y, NymaSettingsInfo info)
 			{
 				var restarters = info.AllOverrides.Where(kvp => !kvp.Value.NonSync && !kvp.Value.NoRestart).Select(kvp => kvp.Key);
-				foreach (var key in restarters)
+				foreach (string key in restarters)
 				{
-					_ = x.MednafenValues.TryGetValue(key, out var xx);
-					_ = y.MednafenValues.TryGetValue(key, out var yy);
+					_ = x.MednafenValues.TryGetValue(key, out string xx);
+					_ = y.MednafenValues.TryGetValue(key, out string yy);
 					if (xx != yy)
 						return PutSettingsDirtyBits.RebootCore;
 				}
@@ -208,18 +208,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var dict = ovr.NonSync ? _settings.MednafenValues : _syncSettingsActual.MednafenValues;
 				_ = dict.TryGetValue(name, out val);
 			}
-			if (val == null)
-			{
-				// get default
-				val = ovr.Default ?? SettingsInfo.AllSettingsByKey[name].DefaultValue;
-			}
+			// get default
+			val ??= ovr.Default ?? SettingsInfo.AllSettingsByKey[name].DefaultValue;
 			return val;
 		}
 
 		private void SettingsQuery(string name, IntPtr dest)
 		{
-			var val = SettingsQuery(name);
-			var bytes = Encoding.UTF8.GetBytes(val);
+			string val = SettingsQuery(name);
+			byte[] bytes = Encoding.UTF8.GetBytes(val);
 			if (bytes.Length > 255)
 				throw new InvalidOperationException($"Value {val} for setting {name} was too long");
 			WaterboxUtils.ZeroMemory(dest, 256);
@@ -278,7 +275,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 		private void InitAllSettingsInfo(List<NPortInfoT> allPorts)
 		{
-			var s = new NymaSettingsInfo();
+			NymaSettingsInfo s = new();
 
 			foreach (var kvp in ExtraOverrides.Concat(SettingOverrides))
 			{

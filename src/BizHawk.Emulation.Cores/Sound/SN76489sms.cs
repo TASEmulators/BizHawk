@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Components
 		public int current_sample_L;
 		public int current_sample_R;
 
-		int aud_scale = 21;
+		readonly int aud_scale = 21;
 
 		public SN76489sms()
 		{
@@ -111,11 +111,9 @@ namespace BizHawk.Emulation.Cores.Components
 			ser.EndSection();
 		}
 
-		public byte ReadReg()
-		{
+		public byte ReadReg() =>
 			// not used, reading not allowed, just return 0xFF
-			return 0xFF;
-		}
+			0xFF;
 
 		public void WriteReg(byte value)
 		{

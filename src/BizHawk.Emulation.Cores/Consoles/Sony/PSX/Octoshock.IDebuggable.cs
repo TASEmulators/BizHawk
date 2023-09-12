@@ -9,8 +9,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		// TODO: don't cast to int, and are any of these not 32 bit?
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			Dictionary<string, RegisterValue> ret = new Dictionary<string, RegisterValue>();
-			var regs = new OctoshockDll.ShockRegisters_CPU();
+			Dictionary<string, RegisterValue> ret = new();
+			OctoshockDll.ShockRegisters_CPU regs = new();
 
 			OctoshockDll.shock_GetRegisters_CPU(psx, ref regs);
 
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return ret;
 		}
 
-		private static readonly Dictionary<string, int> CpuRegisterIndices = new Dictionary<string, int>() {
+		private static readonly Dictionary<string, int> CpuRegisterIndices = new() {
 			{ "r1",   1 }, { "r2",   2 }, { "r3",   3 }, { "r4",   4 }, { "r5",   5 }, { "r6",   6 }, { "r7",   7 },
 			{ "r8",   8 }, { "r9",   9 }, { "r10", 10 }, { "r11", 11 }, { "r12", 12 }, { "r13", 13 }, { "r14", 14 }, { "r15", 15 },
 			{ "r16", 16 }, { "r17", 17 }, { "r18", 18 }, { "r19", 19 }, { "r20", 20 }, { "r21", 21 }, { "r22", 22 }, { "r23", 23 },
@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_SetRegister_CPU(psx, index, (uint)value);
 		}
 
-		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" }); // Note: there is no system bus memory domain, but there's also no hard rule that the memory callback system domains have to correspond to actual domains in MemoryDomains, that could be good, or bad, but something to be careful about
+		private readonly MemoryCallbackSystem _memoryCallbacks = new(new[] { "System Bus" }); // Note: there is no system bus memory domain, but there's also no hard rule that the memory callback system domains have to correspond to actual domains in MemoryDomains, that could be good, or bad, but something to be careful about
 		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 
 		public bool CanStep(StepType type) => false;
@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		private void RefreshMemCallbacks()
 		{
-			OctoshockDll.eShockMemCb mask = OctoshockDll.eShockMemCb.None;
+			var mask = OctoshockDll.eShockMemCb.None;
 			if (MemoryCallbacks.HasReads) mask |= OctoshockDll.eShockMemCb.Read;
 			if (MemoryCallbacks.HasWrites) mask |= OctoshockDll.eShockMemCb.Write;
 			if (MemoryCallbacks.HasExecutes) mask |= OctoshockDll.eShockMemCb.Execute;
@@ -126,9 +126,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		private void SetMemoryDomains()
 		{
-			var mmd = new List<MemoryDomain>();
+			List<MemoryDomain> mmd = new();
 
-			OctoshockDll.shock_GetMemData(psx, out var ptr, out var size, OctoshockDll.eMemType.MainRAM);
+			OctoshockDll.shock_GetMemData(psx, out var ptr, out int size, OctoshockDll.eMemType.MainRAM);
 			mmd.Add(new MemoryDomainIntPtr("MainRAM", MemoryDomain.Endian.Little, ptr, size, true, 4));
 
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.GPURAM);

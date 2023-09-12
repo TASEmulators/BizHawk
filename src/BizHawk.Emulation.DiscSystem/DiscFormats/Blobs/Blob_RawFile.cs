@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			const int buffersize = 2352 * 75 * 2;
 			fs ??= new(new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read), buffersize);
-			var target = byte_pos + Offset;
+			long target = byte_pos + Offset;
 			if (fs.Position != target)
 				fs.Position = target;
 			return fs.Read(buffer, offset, count);

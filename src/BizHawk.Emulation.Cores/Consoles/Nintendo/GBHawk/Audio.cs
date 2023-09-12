@@ -12,8 +12,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public GBHawk Core { get; set; }
 
-		private BlipBuffer _blip_L = new BlipBuffer(15000);
-		private BlipBuffer _blip_R = new BlipBuffer(15000);
+		private BlipBuffer _blip_L = new(15000);
+		private BlipBuffer _blip_R = new(15000);
 
 		public static readonly bool[] DUTY_CYCLES = { false, false, false, false, false, false, false, true,
 													 true, false, false, false, false, false, false, true,
@@ -772,7 +772,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 
 				// clock the sweep
-				if ((sequencer_swp == 0) || (sequencer_swp == 4))
+				if (sequencer_swp is 0 or 4)
 				{
 					SQ1_intl_swp_cnt--;
 					if ((SQ1_intl_swp_cnt == 0) && SQ1_swp_enable)
@@ -1222,10 +1222,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			master_audio_clock = 0;
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
 		public void DiscardSamples()
 		{
@@ -1234,10 +1231,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			master_audio_clock = 0;
 		}
 
+		#pragma warning disable IDE0051
 		private void GetSamples(short[] samples)
 		{
 
 		}
+		#pragma warning restore IDE0051
 
 		public void DisposeSound()
 		{

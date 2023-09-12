@@ -91,9 +91,9 @@ namespace BizHawk.Emulation.DiscSystem
 		/// Retrieves the initial set of timestamps (min,sec,frac) as a convenient Timestamp
 		/// </summary>
 		public int Timestamp {
-			get => MSF.ToInt(min.DecimalValue, sec.DecimalValue, frame.DecimalValue);
+			readonly get => MSF.ToInt(min.DecimalValue, sec.DecimalValue, frame.DecimalValue);
 			set {
-				var ts = new Timestamp(value);
+				Timestamp ts = new(value);
 				min.DecimalValue = ts.MIN; sec.DecimalValue = ts.SEC; frame.DecimalValue = ts.FRAC;
 			}
 		}
@@ -103,9 +103,9 @@ namespace BizHawk.Emulation.DiscSystem
 		/// TODO - rename everything AP here, it's nonsense. (the P is)
 		/// </summary>
 		public int AP_Timestamp {
-			get => MSF.ToInt(ap_min.DecimalValue, ap_sec.DecimalValue, ap_frame.DecimalValue);
+			readonly get => MSF.ToInt(ap_min.DecimalValue, ap_sec.DecimalValue, ap_frame.DecimalValue);
 			set {
-				var ts = new Timestamp(value);
+				Timestamp ts = new(value);
 				ap_min.DecimalValue = ts.MIN; ap_sec.DecimalValue = ts.SEC; ap_frame.DecimalValue = ts.FRAC;
 			}
 		}
@@ -113,28 +113,22 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// sets the status byte from the provided adr/qmode and control values
 		/// </summary>
-		public void SetStatus(byte adr_or_qmode, EControlQ control)
-		{
-			q_status = ComputeStatus(adr_or_qmode, control);
-		}
+		public void SetStatus(byte adr_or_qmode, EControlQ control) => q_status = ComputeStatus(adr_or_qmode, control);
 
 		/// <summary>
 		/// computes a status byte from the provided adr/qmode and control values
 		/// </summary>
-		public static byte ComputeStatus(int adr_or_qmode, EControlQ control)
-		{
-			return (byte)(adr_or_qmode | (((int)control) << 4));
-		}
+		public static byte ComputeStatus(int adr_or_qmode, EControlQ control) => (byte)(adr_or_qmode | (((int)control) << 4));
 
 		/// <summary>
 		/// Retrives the ADR field of the q_status member (low 4 bits)
 		/// </summary>
-		public int ADR => q_status & 0xF;
+		public readonly int ADR => q_status & 0xF;
 
 		/// <summary>
 		/// Retrieves the CONTROL field of the q_status member (high 4 bits)
 		/// </summary>
-		public EControlQ CONTROL => (EControlQ)((q_status >> 4) & 0xF);
+		public readonly EControlQ CONTROL => (EControlQ)((q_status >> 4) & 0xF);
 	}
 	
 }

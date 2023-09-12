@@ -29,7 +29,7 @@ namespace BizHawk.Client.Common
 			_movieSession.UserBag[name] = value;
 		}
 
-		public object Get(string key) => _movieSession.UserBag.TryGetValue(key, out var value) ? value : null;
+		public object Get(string key) => _movieSession.UserBag.TryGetValue(key, out object value) ? value : null;
 
 		public void Clear() => _movieSession.UserBag.Clear();
 

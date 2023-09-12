@@ -73,10 +73,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					DriveLightEnabled = true;
 				}
 
-				LibGPGX.INPUT_SYSTEM system_a = SystemForSystem(_syncSettings.ControlTypeLeft);
-				LibGPGX.INPUT_SYSTEM system_b = SystemForSystem(_syncSettings.ControlTypeRight);
+				var system_a = SystemForSystem(_syncSettings.ControlTypeLeft);
+				var system_b = SystemForSystem(_syncSettings.ControlTypeRight);
 
-				var initResult = Core.gpgx_init(romextension, LoadCallback, _syncSettings.GetNativeSettings(lp.Game));
+				bool initResult = Core.gpgx_init(romextension, LoadCallback, _syncSettings.GetNativeSettings(lp.Game));
 
 				if (!initResult)
 					throw new Exception($"{nameof(Core.gpgx_init)}() failed");
@@ -121,24 +121,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private static LibGPGX.INPUT_SYSTEM SystemForSystem(ControlType c)
 		{
-			switch (c)
+			return c switch
 			{
-				default:
-				case ControlType.None:
-					return LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
-				case ControlType.Normal:
-					return LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD;
-				case ControlType.Xea1p:
-					return LibGPGX.INPUT_SYSTEM.SYSTEM_XE_A1P;
-				case ControlType.Activator:
-					return LibGPGX.INPUT_SYSTEM.SYSTEM_ACTIVATOR;
-				case ControlType.Teamplayer:
-					return LibGPGX.INPUT_SYSTEM.SYSTEM_TEAMPLAYER;
-				case ControlType.Wayplay:
-					return LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY;
-				case ControlType.Mouse:
-					return LibGPGX.INPUT_SYSTEM.SYSTEM_MOUSE;
-			}
+				ControlType.Normal => LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD,
+				ControlType.Xea1p => LibGPGX.INPUT_SYSTEM.SYSTEM_XE_A1P,
+				ControlType.Activator => LibGPGX.INPUT_SYSTEM.SYSTEM_ACTIVATOR,
+				ControlType.Teamplayer => LibGPGX.INPUT_SYSTEM.SYSTEM_TEAMPLAYER,
+				ControlType.Wayplay => LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY,
+				ControlType.Mouse => LibGPGX.INPUT_SYSTEM.SYSTEM_MOUSE,
+				_ => LibGPGX.INPUT_SYSTEM.SYSTEM_NONE,
+			};
 		}
 
 		private readonly LibGPGX Core;
@@ -154,9 +146,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private bool _disposed = false;
 
-		private LibGPGX.load_archive_cb LoadCallback;
+		private readonly LibGPGX.load_archive_cb LoadCallback;
 
-		private readonly LibGPGX.InputData input = new LibGPGX.InputData();
+		private readonly LibGPGX.InputData input = new();
 
 		public enum ControlType
 		{
@@ -196,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 				srcdata = _romfile;
 			}
-			else if (filename == "PRIMARY_CD" || filename == "SECONDARY_CD")
+			else if (filename is "PRIMARY_CD" or "SECONDARY_CD")
 			{
 				if (filename == "PRIMARY_CD" && _romfile != null)
 				{
@@ -304,7 +296,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public static LibGPGX.CDData GetCDDataStruct(Disc cd)
 		{
-			var ret = new LibGPGX.CDData();
+			LibGPGX.CDData ret = new();
 
 			var ses = cd.Session1;
 			int ntrack = ses.InformationTrackCount;
@@ -363,10 +355,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ControllerDefinition = ControlConverter.ControllerDef;
 		}
 
-		public LibGPGX.INPUT_DEVICE[] GetDevices()
-		{
-			return (LibGPGX.INPUT_DEVICE[])input.dev.Clone();
-		}
+		public LibGPGX.INPUT_DEVICE[] GetDevices() => (LibGPGX.INPUT_DEVICE[])input.dev.Clone();
 
 		public bool IsMegaCD => _cds != null;
 
@@ -393,20 +382,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public LibGPGX.VDPNameTable NTW;
 
 
-			public void Enter()
-			{
-				_m.Enter();
-			}
+			public void Enter() => _m.Enter();
 
-			public void Exit()
-			{
-				_m.Exit();
-			}
+			public void Exit() => _m.Exit();
 		}
 
 		public VDPView UpdateVDPViewContext()
 		{
-			var v = new LibGPGX.VDPView();
+			LibGPGX.VDPView v = new();
 			Core.gpgx_get_vdp_view(v);
 			Core.gpgx_flush_vram(); // fully regenerate internal caches as needed
 			return new VDPView(v, _elf);

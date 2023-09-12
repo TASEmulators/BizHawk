@@ -82,15 +82,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WriteWram(int addr, byte value)
-		{
-			WriteReg(addr + 0x6000, value);
-		}
+		public override void WriteWram(int addr, byte value) => WriteReg(addr + 0x6000, value);
 
-		public override void WritePrg(int addr, byte value)
-		{
-			WriteReg(addr + 0x8000, value);
-		}
+		public override void WritePrg(int addr, byte value) => WriteReg(addr + 0x8000, value);
 
 		private void WriteReg(int addr, byte value)
 		{
@@ -98,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				prg[3] = (byte)(addr & 0x3F);
 			}
-			else if ((addr & 0xF80C) >= 0xB000 && (addr & 0xF80C) <= 0xE00C)
+			else if ((addr & 0xF80C) is >= 0xB000 and <= 0xE00C)
 			{
 				int index = (((addr >> 11) - 6) | (addr >> 3)) & 7;
 				chr[index] = (byte)((chr[index] & (0xF0 >> (addr & 4))) | ((value & 0x0F) << (addr & 4)));
@@ -143,10 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadWram(int addr)
-		{
-			return Rom[(((prg[3] & prg_bank_mask_8k)) << 13) + (addr & 0x1FFF)];
-		}
+		public override byte ReadWram(int addr) => Rom[(((prg[3] & prg_bank_mask_8k)) << 13) + (addr & 0x1FFF)];
 
 		public override byte ReadPrg(int addr)
 		{

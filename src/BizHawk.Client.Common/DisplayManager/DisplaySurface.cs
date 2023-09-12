@@ -21,15 +21,9 @@ namespace BizHawk.Client.Common
 			_bmp.UnlockBits(bmpData);
 		}
 
-		public Bitmap PeekBitmap()
-		{
-			return _bmp;
-		}
+		public Bitmap PeekBitmap() => _bmp;
 
-		public Graphics GetGraphics()
-		{
-			return Graphics.FromImage(_bmp);
-		}
+		public Graphics GetGraphics() => Graphics.FromImage(_bmp);
 
 		public DisplaySurface(int width, int height)
 		{

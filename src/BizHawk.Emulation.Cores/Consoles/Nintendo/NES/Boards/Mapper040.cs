@@ -23,11 +23,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadWram(int addr)
-		{
+		public override byte ReadWram(int addr) =>
 			// bank 6 fixed
-			return Rom[addr + 0xc000];
-		}
+			Rom[addr + 0xc000];
 		public override byte ReadPrg(int addr)
 		{
 			if ((addr & 0x6000) == 0x4000)

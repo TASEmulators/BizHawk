@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var possibleFilters = A7800Hawk.ValidFilterTypes.Select(t => t.Key);
 
-			foreach (var val in possibleFilters)
+			foreach (string val in possibleFilters)
 			{
 				Port1ComboBox.Items.Add(val);
 			}

@@ -20,10 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int Frames => NumFramesBox.ToRawInt() ?? 0;
 
-		private void FramesPrompt_Load(object sender, EventArgs e)
-		{
-			NumFramesBox.Select();
-		}
+		private void FramesPrompt_Load(object sender, EventArgs e) => NumFramesBox.Select();
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{

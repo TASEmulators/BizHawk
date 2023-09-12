@@ -198,37 +198,23 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public int Peek(int addr)
 		{
-			switch (Bank(addr, true))
+			return Bank(addr, true) switch
 			{
-				case PlaBank.BasicRom:
-					return PeekBasicRom(addr);
-				case PlaBank.CartridgeHi:
-					return PeekCartridgeHi(addr);
-				case PlaBank.CartridgeLo:
-					return PeekCartridgeLo(addr);
-				case PlaBank.CharRom:
-					return PeekCharRom(addr);
-				case PlaBank.Cia0:
-					return PeekCia0(addr);
-				case PlaBank.Cia1:
-					return PeekCia1(addr);
-				case PlaBank.ColorRam:
-					return PeekColorRam(addr);
-				case PlaBank.Expansion0:
-					return PeekExpansionLo(addr);
-				case PlaBank.Expansion1:
-					return PeekExpansionHi(addr);
-				case PlaBank.KernalRom:
-					return PeekKernalRom(addr);
-				case PlaBank.Ram:
-					return PeekMemory(addr);
-				case PlaBank.Sid:
-					return PeekSid(addr);
-				case PlaBank.Vic:
-					return PeekVic(addr);
-			}
-
-			return 0xFF;
+				PlaBank.BasicRom => PeekBasicRom(addr),
+				PlaBank.CartridgeHi => PeekCartridgeHi(addr),
+				PlaBank.CartridgeLo => PeekCartridgeLo(addr),
+				PlaBank.CharRom => PeekCharRom(addr),
+				PlaBank.Cia0 => PeekCia0(addr),
+				PlaBank.Cia1 => PeekCia1(addr),
+				PlaBank.ColorRam => PeekColorRam(addr),
+				PlaBank.Expansion0 => PeekExpansionLo(addr),
+				PlaBank.Expansion1 => PeekExpansionHi(addr),
+				PlaBank.KernalRom => PeekKernalRom(addr),
+				PlaBank.Ram => PeekMemory(addr),
+				PlaBank.Sid => PeekSid(addr),
+				PlaBank.Vic => PeekVic(addr),
+				_ => 0xFF,
+			};
 		}
 
 		public void Poke(int addr, int val)
@@ -270,37 +256,23 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public int Read(int addr)
 		{
-			switch (Bank(addr, true))
+			return Bank(addr, true) switch
 			{
-				case PlaBank.BasicRom:
-					return ReadBasicRom(addr);
-				case PlaBank.CartridgeHi:
-					return ReadCartridgeHi(addr);
-				case PlaBank.CartridgeLo:
-					return ReadCartridgeLo(addr);
-				case PlaBank.CharRom:
-					return ReadCharRom(addr);
-				case PlaBank.Cia0:
-					return ReadCia0(addr);
-				case PlaBank.Cia1:
-					return ReadCia1(addr);
-				case PlaBank.ColorRam:
-					return ReadColorRam(addr);
-				case PlaBank.Expansion0:
-					return ReadExpansionLo(addr);
-				case PlaBank.Expansion1:
-					return ReadExpansionHi(addr);
-				case PlaBank.KernalRom:
-					return ReadKernalRom(addr);
-				case PlaBank.Ram:
-					return ReadMemory(addr);
-				case PlaBank.Sid:
-					return ReadSid(addr);
-				case PlaBank.Vic:
-					return ReadVic(addr);
-			}
-
-			return 0xFF;
+				PlaBank.BasicRom => ReadBasicRom(addr),
+				PlaBank.CartridgeHi => ReadCartridgeHi(addr),
+				PlaBank.CartridgeLo => ReadCartridgeLo(addr),
+				PlaBank.CharRom => ReadCharRom(addr),
+				PlaBank.Cia0 => ReadCia0(addr),
+				PlaBank.Cia1 => ReadCia1(addr),
+				PlaBank.ColorRam => ReadColorRam(addr),
+				PlaBank.Expansion0 => ReadExpansionLo(addr),
+				PlaBank.Expansion1 => ReadExpansionHi(addr),
+				PlaBank.KernalRom => ReadKernalRom(addr),
+				PlaBank.Ram => ReadMemory(addr),
+				PlaBank.Sid => ReadSid(addr),
+				PlaBank.Vic => ReadVic(addr),
+				_ => 0xFF,
+			};
 		}
 
 		public void SyncState(Serializer ser)

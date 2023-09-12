@@ -9,12 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// ROM Contents
 		/// </summary>
-		public byte[] RomBytes
-		{
-			get => _romBytes;
-			set => _romBytes = value;
-		}
-		private byte[] _romBytes;
+		public byte[] RomBytes { get; set; }
 
 		public enum ROMChipType
 		{
@@ -37,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public static RomData InitROM(MachineType machineType, byte[] rom, ROMChipType type, int romPosition = 0)
 		{
-			RomData RD = new RomData { RomBytes = new byte[rom.Length] };
+			RomData RD = new() { RomBytes = new byte[rom.Length] };
 			RD.RomBytes = rom;
 			RD.ROMType = type;
 

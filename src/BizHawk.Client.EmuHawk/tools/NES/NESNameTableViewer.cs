@@ -46,20 +46,11 @@ namespace BizHawk.Client.EmuHawk
 			Icon = ToolIcon;
 		}
 
-		private void NESNameTableViewer_Load(object sender, EventArgs e)
-		{
-			Generate(true);
-		}
+		private void NESNameTableViewer_Load(object sender, EventArgs e) => Generate(true);
 
-		public override void Restart()
-		{
-			Generate(true);
-		}
+		public override void Restart() => Generate(true);
 
-		protected override void UpdateBefore()
-		{
-			_ppu.InstallCallback1(() => Generate(), _scanline);
-		}
+		protected override void UpdateBefore() => _ppu.InstallCallback1(() => Generate(), _scanline);
 
 		protected override void GeneralUpdate() => UpdateBefore();
 
@@ -173,13 +164,13 @@ namespace BizHawk.Client.EmuHawk
 				ImageLockMode.WriteOnly,
 				PixelFormat.Format32bppArgb);
 
-			var dPtr = (int*)bmpData.Scan0.ToPointer();
-			var pitch = bmpData.Stride / 4;
+			int* dPtr = (int*)bmpData.Scan0.ToPointer();
+			int pitch = bmpData.Stride / 4;
 
 			// Buffer all the data from the ppu, because it will be read multiple times and that is slow
-			var ppuBuffer = _ppu.GetPPUBus();
+			byte[] ppuBuffer = _ppu.GetPPUBus();
 
-			var palRam = _ppu.GetPalRam();
+			byte[] palRam = _ppu.GetPalRam();
 
 			if (_ppu.ExActive)
 			{
@@ -202,10 +193,7 @@ namespace BizHawk.Client.EmuHawk
 				.SaveAsFile(Game, "Nametables", VSystemID.Raw.NES, Config.PathEntries, this);
 		}
 
-		private void ScreenshotToClipboardMenuItem_Click(object sender, EventArgs e)
-		{
-			NameTableView.ToBitMap().ToClipBoard();
-		}
+		private void ScreenshotToClipboardMenuItem_Click(object sender, EventArgs e) => NameTableView.ToBitMap().ToClipBoard();
 
 		private void RefreshImageContextMenuItem_Click(object sender, EventArgs e)
 		{

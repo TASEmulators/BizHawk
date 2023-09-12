@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// Name, AnalogTrackBar, DisplayNameLabel, and ValueLabel are now assigned
 			Name = name;
-			var trackbarWidth = Size.Width - 15;
+			int trackbarWidth = Size.Width - 15;
 			int trackbarHeight;
 			if ((AnalogTrackBar.Orientation = orientation) == Orientation.Vertical)
 			{
@@ -58,8 +58,8 @@ namespace BizHawk.Client.EmuHawk
 
 			// try to base it on the width, lets make a tick every 10 pixels at the minimum
 			// yo none of this makes any sense --yoshi
-			var range = maxValue - minValue + 1;
-			var canDoTicks = Math.Min(Math.Max(2, trackbarWidth / 10), range);
+			int range = maxValue - minValue + 1;
+			int canDoTicks = Math.Min(Math.Max(2, trackbarWidth / 10), range);
 			AnalogTrackBar.TickFrequency = range / Math.Max(1, canDoTicks);
 
 			DisplayNameLabel.Text = displayName ?? string.Empty;
@@ -82,8 +82,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Set(IController controller)
 		{
-			var newVal = controller.AxisValue(Name);
-			var changed = AnalogTrackBar.Value != newVal;
+			int newVal = controller.AxisValue(Name);
+			bool changed = AnalogTrackBar.Value != newVal;
 			if (changed)
 			{
 				CurrentValue = newVal;

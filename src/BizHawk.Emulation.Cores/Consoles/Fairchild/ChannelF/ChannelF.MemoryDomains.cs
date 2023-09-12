@@ -8,12 +8,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	public partial class ChannelF
 	{
 		internal IMemoryDomains memoryDomains;
-		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
+		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new();
 		private bool _memoryDomainsInit = false;
 
 		private void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new()
 			{
 				new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Big,
 					(addr) =>
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			}
 			else
 			{
-				var m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Big, data, false, 1);
+				MemoryDomainByteArray m = new(name, MemoryDomain.Endian.Big, data, false, 1);
 				_byteArrayDomains.Add(name, m);
 			}
 #pragma warning restore MEN014

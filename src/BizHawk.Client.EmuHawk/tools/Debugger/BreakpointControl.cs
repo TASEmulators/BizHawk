@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		public GenericDebugger ParentDebugger { get; set; }
 		public IMemoryDomains MemoryDomains { get; set; }
 
-		private readonly BreakpointList _breakpoints = new BreakpointList();
+		private readonly BreakpointList _breakpoints = new();
 
 		public IDialogController DialogController => MainForm;
 
@@ -36,10 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			_breakpoints.Callback = BreakpointCallback;
 		}
 
-		private void BreakpointControl_Load(object sender, EventArgs e)
-		{
-			UpdateStatsLabel();
-		}
+		private void BreakpointControl_Load(object sender, EventArgs e) => UpdateStatsLabel();
 
 		private void BreakPointView_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)
 		{
@@ -161,7 +158,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddSeekBreakpoint(uint pcVal, int pcBitSize)
 		{
-			var name = SeekName + pcVal.ToHexString(pcBitSize / 4);
+			string name = SeekName + pcVal.ToHexString(pcBitSize / 4);
 			_breakpoints.Add(new Breakpoint(name, true, Core, MemoryDomains.SystemBus.Name, SeekCallback, pcVal, 0xFFFFFFFF, MemoryCallbackType.Execute));
 		}
 
@@ -186,7 +183,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (EditableItems.Any())
 			{
-				var items = EditableItems.ToList();
+				List<Breakpoint> items = EditableItems.ToList();
 				if (items.Any())
 				{
 					foreach (var item in items)
@@ -203,21 +200,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateBreakpointRemoveButton()
 		{
-			var editableCount = EditableItems.Count();
+			int editableCount = EditableItems.Count();
 			ToggleButton.Enabled = RemoveBreakpointButton.Enabled = editableCount > 0;
 			DuplicateBreakpointButton.Enabled = EditBreakpointButton.Enabled = editableCount == 1;
 		}
 
-		private void BreakpointView_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			UpdateBreakpointRemoveButton();
-		}
+		private void BreakpointView_SelectedIndexChanged(object sender, EventArgs e) => UpdateBreakpointRemoveButton();
 
 		private void BreakpointView_ItemActivate(object sender, EventArgs e)
 		{
 			if (EditableItems.Any())
 			{
-				var items = EditableItems.ToList();
+				List<Breakpoint> items = EditableItems.ToList();
 				if (items.Any())
 				{
 					foreach (var item in items)
@@ -240,10 +234,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void UpdateStatsLabel()
-		{
-			BreakpointStatsLabel.Text = $"{_breakpoints.Count} Total / {_breakpoints.Count(b => b.Active)} Active";
-		}
+		private void UpdateStatsLabel() => BreakpointStatsLabel.Text = $"{_breakpoints.Count} Total / {_breakpoints.Count(b => b.Active)} Active";
 
 		private void ToggleButton_Click(object sender, EventArgs e)
 		{
@@ -299,9 +290,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private AddBreakpointDialog CreateAddBreakpointDialog(BreakpointOperation op, MemoryCallbackType? type = null, uint? address = null, uint? mask = null)
 		{
-			var operation = (AddBreakpointDialog.BreakpointOperation)op;
+			AddBreakpointDialog.BreakpointOperation operation = (AddBreakpointDialog.BreakpointOperation)op;
 
-			var b = new AddBreakpointDialog(operation)
+			AddBreakpointDialog b = new(operation)
 			{
 				MaxAddressSize = MemoryDomains.SystemBus.Size - 1
 			};

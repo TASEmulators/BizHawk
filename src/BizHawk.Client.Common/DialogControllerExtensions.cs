@@ -188,7 +188,7 @@ namespace BizHawk.Client.Common
 			string? initFileName = null,
 			bool maySelectMultiple = false)
 		{
-			var filterIndex = 1; // you'd think the default would be 0, but it's not
+			int filterIndex = 1; // you'd think the default would be 0, but it's not
 			return dialogParent.DialogController.ShowFileMultiOpenDialog(
 				dialogParent: dialogParent,
 				discardCWDChange: discardCWDChange,

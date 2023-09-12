@@ -87,11 +87,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				flash_state = 0;
 				flash_mode = flashmode.fm_default;
-				if (flash_rom == null)
-				{
-					// extra space is used to hold information about what sectors have been flashed
-					flash_rom = new byte[Cart.PrgSize * 1024 + Cart.PrgSize];
-				}
+				// extra space is used to hold information about what sectors have been flashed
+				flash_rom ??= new byte[Cart.PrgSize * 1024 + Cart.PrgSize];
 			}
 			SetMirrorType(CalculateMirrorType(Cart.PadH, Cart.PadV));
 			AssertChr(0);
@@ -192,24 +189,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (flash_mode == flashmode.fm_id)
 				{
-					switch (addr & 0x1FF)
+					return (addr & 0x1FF) switch
 					{
-						case 0:
-							return 0xBF;
-						case 1:
-							switch (Cart.PrgSize)
-							{
-								case 128:
-									return 0xB5;
-								case 256:
-									return 0xB6;
-								case 512:
-									return 0xB7;
-							}
-							return 0xFF;    //Shouldn't ever reach here, as the size was asserted earlier.
-						default:
-							return 0xFF;    //Other unknown data is returned from addresses 2-511, in software ID mode, mostly 0xFF.
-					}
+						0 => 0xBF,
+						1 => Cart.PrgSize switch
+						{
+							128 => 0xB5,
+							256 => 0xB6,
+							512 => 0xB7,
+							_ => 0xFF,//Shouldn't ever reach here, as the size was asserted earlier.
+						},
+						_ => 0xFF,//Other unknown data is returned from addresses 2-511, in software ID mode, mostly 0xFF.
+					};
 				}
 				if (get_flash_write_count(addr) > 0)
 					return flash_rom[Cart.PrgSize + (bank << 14 | addr & 0x3fff)];

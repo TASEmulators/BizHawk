@@ -60,18 +60,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Returns an int32 from a byte array based on offset
 		/// </summary>
-		public static int GetInt32(byte[] buf, int offsetIndex)
-		{
-			return buf[offsetIndex] | buf[offsetIndex + 1] << 8 | buf[offsetIndex + 2] << 16 | buf[offsetIndex + 3] << 24;
-		}
+		public static int GetInt32(byte[] buf, int offsetIndex) => buf[offsetIndex] | buf[offsetIndex + 1] << 8 | buf[offsetIndex + 2] << 16 | buf[offsetIndex + 3] << 24;
 
 		/// <summary>
 		/// Returns an uint16 from a byte array based on offset
 		/// </summary>
-		public static ushort GetWordValue(byte[] buf, int offsetIndex)
-		{
-			return (ushort)(buf[offsetIndex] | buf[offsetIndex + 1] << 8);
-		}
+		public static ushort GetWordValue(byte[] buf, int offsetIndex) => (ushort)(buf[offsetIndex] | buf[offsetIndex + 1] << 8);
 
 		/// <summary>
 		/// Updates a byte array with a uint16 value based on offset
@@ -88,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public static int TranslatePause(int pauseInMS)
 		{
 			// t-states per millisecond
-			var tspms = (69888 * 50) / 1000;
+			int tspms = (69888 * 50) / 1000;
 			// get value
 			int res = pauseInMS * tspms;
 
@@ -100,12 +94,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public static void DecompressZRLE(byte[] sourceBuffer, ref byte[] destBuffer)
 		{
-			MemoryStream stream = new MemoryStream();
+			MemoryStream stream = new();
 			stream.Write(sourceBuffer, 0, sourceBuffer.Length);
 			stream.Position = 0;
 			stream.ReadByte();
 			stream.ReadByte();
-			DeflateStream ds = new DeflateStream(stream, CompressionMode.Decompress, false);
+			DeflateStream ds = new(stream, CompressionMode.Decompress, false);
 			ds.Read(destBuffer, 0, destBuffer.Length);
 		}
 	}

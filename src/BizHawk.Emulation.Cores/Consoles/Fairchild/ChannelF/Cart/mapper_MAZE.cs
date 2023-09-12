@@ -20,7 +20,7 @@
 
 		public override byte ReadBus(ushort addr)
 		{
-			var off = addr - 0x800;
+			int off = addr - 0x800;
 			return ROM[off];
 		}
 
@@ -31,13 +31,13 @@
 
 		public override byte ReadPort(ushort addr)
 		{
-			var index = addr - 0x24;
+			int index = addr - 0x24;
 			return SRAM2102_Read(index);
 		}
 
 		public override void WritePort(ushort addr, byte data)
 		{
-			var index = addr - 0x24;
+			int index = addr - 0x24;
 			SRAM2102_Write(index, data);			
 		}
 	}

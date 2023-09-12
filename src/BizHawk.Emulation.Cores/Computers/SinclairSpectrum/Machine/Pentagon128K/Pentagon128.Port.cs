@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // ports 0x3ffd & 0x7ffd
             // traditionally thought to be write-only
-            if (port == 0x3ffd || port == 0x7ffd)
+            if (port is 0x3ffd or 0x7ffd)
             {
                 // https://faqwiki.zxnet.co.uk/wiki/ZX_Spectrum_128
                 // HAL bugs
@@ -80,9 +80,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public override void WritePort(ushort port, byte value)
         {
             // get a BitArray of the port
-            BitArray portBits = new BitArray(BitConverter.GetBytes(port));
+            BitArray portBits = new(BitConverter.GetBytes(port));
             // get a BitArray of the value byte
-            BitArray bits = new BitArray(new byte[] { value });
+            BitArray bits = new(new byte[] { value });
 
             // handle AY port writes
             AYDevice.WritePort(port, value);
@@ -97,8 +97,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // if paging is disabled then all writes to this port are ignored until the next reboot
                 if (!PagingDisabled)
                 {
-                    // Bits 0, 1, 2 select the RAM page
-                    var rp = value & 0x07;
+					// Bits 0, 1, 2 select the RAM page
+					int rp = value & 0x07;
                     if (RAMPaged != rp && rp < 8)
                         RAMPaged = rp;
 

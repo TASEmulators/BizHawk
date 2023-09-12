@@ -4,18 +4,20 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	public static class DiscUtils
 	{
+		#pragma warning disable IDE0051
 		private static byte IntToBCD(int n)
 		{
-			var tens = Math.DivRem(n, 10, out var ones);
+			int tens = Math.DivRem(n, 10, out int ones);
 			return (byte)((tens << 4) | ones);
 		}
+		#pragma warning restore IDE0051
 
 		/// <summary>
 		/// converts the given int to a BCD value
 		/// </summary>
 		public static int BCD_Byte(this int val)
 		{
-			var ret = (byte)(val % 10);
+			byte ret = (byte)(val % 10);
 			ret += (byte)(16 * (val / 10));
 			return ret;
 		}
@@ -32,9 +34,6 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		// converts MSF to LBA offset
-		public static int Convert_AMSF_To_LBA(byte m, byte s, byte f)
-		{
-			return f + (s * 75) + (m * 75 * 60) - 150;
-		}
+		public static int Convert_AMSF_To_LBA(byte m, byte s, byte f) => f + (s * 75) + (m * 75 * 60) - 150;
 	}
 }

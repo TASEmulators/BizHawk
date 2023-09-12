@@ -14,16 +14,16 @@ namespace BizHawk.Emulation.Cores
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
-			var nyma = (NymaCore) core;
+			NymaCore nyma = (NymaCore) core;
 			return NymaSchemas(nyma, showMessageBox);
 		}
 
 		private static IEnumerable<PadSchema> NymaSchemas(NymaCore nyma, Action<string> showMessageBox)
 		{
-			foreach (NymaCore.PortResult result in nyma.ActualPortData)
+			foreach (var result in nyma.ActualPortData)
 			{
-				var num = int.Parse(result.Port.ShortName.Last().ToString());
-				var device = result.Device.ShortName;
+				int num = int.Parse(result.Port.ShortName.Last().ToString());
+				string device = result.Device.ShortName;
 				if (device == "gamepad")
 				{
 					yield return StandardController(num);
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores
 
 		private static PadSchema Mouse(int controller)
 		{
-			var range = new AxisSpec((-127).RangeTo(127), 0);
+			AxisSpec range = new((-127).RangeTo(127), 0);
 			return new PadSchema
 			{
 				Size = new Size(345, 225),

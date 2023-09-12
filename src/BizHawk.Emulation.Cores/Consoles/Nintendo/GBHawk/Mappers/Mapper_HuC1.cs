@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override byte ReadMemoryHigh(ushort addr)
 		{
-			if ((addr >= 0xA000) && (addr < 0xC000))
+			if (addr is >= 0xA000 and < 0xC000)
 			{
 				if (RAM_enable)
 				{
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				SetCDLROM(flags, (addr - 0x4000) + ROM_bank * 0x4000);
 			}
-			else if ((addr >= 0xA000) && (addr < 0xC000))
+			else if (addr is >= 0xA000 and < 0xC000)
 			{
 				if (RAM_enable)
 				{
@@ -119,10 +119,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte PeekMemoryLow(ushort addr)
-		{
-			return ReadMemoryLow(addr);
-		}
+		public override byte PeekMemoryLow(ushort addr) => ReadMemoryLow(addr);
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
@@ -173,10 +170,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMemory(addr, value);
-		}
+		public override void PokeMemory(ushort addr, byte value) => WriteMemory(addr, value);
 
 		public override void SyncState(Serializer ser)
 		{

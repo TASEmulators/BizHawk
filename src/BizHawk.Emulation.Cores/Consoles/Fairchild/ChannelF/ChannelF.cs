@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		[CoreConstructor(VSystemID.Raw.ChannelF)]
 		public ChannelF(CoreLoadParameters<ChannelFSettings, ChannelFSyncSettings> lp)
 		{
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 			CoreComm = lp.Comm;
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
@@ -28,8 +28,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			ControllerDefinition = ChannelFControllerDefinition;
 
-			var bios01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
-			var bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
+			byte[] bios01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
+			byte[] bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
 			//var bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl90025"));
 
 			Cartridge = VesCartBase.Configure(_gameInfo[0], _files[0]);

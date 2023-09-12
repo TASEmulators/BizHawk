@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 	{
 		public void DisassembleCDL(Stream s, ICodeDataLog cdl, IMemoryDomains mem)
 		{
-			var w = new StreamWriter(s);
+			StreamWriter w = new(s);
 			w.WriteLine("; Bizhawk CDL Disassembly");
 			w.WriteLine();
 			foreach (var kvp in cdl)
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			public string Name;
 			public int Offs;
 			public int VOffs; // if non-zero, specifies a larger potential offset
-			public int MaxOffs => Math.Max(Offs, VOffs);
+			public readonly int MaxOffs => Math.Max(Offs, VOffs);
 		}
 
 		public MemMapping[] Mappings; // = new MemMapping[256];

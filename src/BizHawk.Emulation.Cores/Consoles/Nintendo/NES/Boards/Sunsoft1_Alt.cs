@@ -25,10 +25,7 @@
 			return true;
 		}
 
-		public override void WriteWram(int addr, byte value)
-		{
-			prg = value & 7;
-		}
+		public override void WriteWram(int addr, byte value) => prg = value & 7;
 
 		public override byte ReadPrg(int addr)
 		{

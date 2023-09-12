@@ -529,10 +529,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// scanline callback
 					if ((LY + LY_inc) == Core._scanlineCallbackLine)
 					{
-						if (Core._scanlineCallback != null)
-						{
-							Core._scanlineCallback(LCDC);
-						}						
+						Core._scanlineCallback?.Invoke(LCDC);
 					}
 
 					cycle = 0;
@@ -616,7 +613,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (!STAT.Bit(5)) { VBL_INT = false; }
 						}
 
-						if ((cycle >= 2) && (cycle < 4))
+						if (cycle is >= 2 and < 4)
 						{
 							// there is an edge case where a VBL INT is triggered if STAT bit 5 is set
 							if (STAT.Bit(5)) { VBL_INT = true; }

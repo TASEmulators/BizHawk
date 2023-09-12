@@ -31,13 +31,13 @@ namespace BizHawk.Client.Common
 
 		public string Generate()
 		{
-			var sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			foreach (var (button, range, mnemonicChar) in _cachedInputSpecs)
 			{
 				if (range is not null)
 				{
-					var val = _source.AxisValue(button);
+					int val = _source.AxisValue(button);
 
 					if (val == range.Value.Neutral)
 					{

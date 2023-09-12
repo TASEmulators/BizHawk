@@ -44,8 +44,8 @@ namespace BizHawk.Emulation.Cores
 
 		private static PadSchema Mouse()
 		{
-			var posRange = new AxisSpec((-128).RangeTo(127), 0);
-			var scrollRange = new AxisSpec((-32).RangeTo(31), 0);
+			AxisSpec posRange = new((-128).RangeTo(127), 0);
+			AxisSpec scrollRange = new((-32).RangeTo(31), 0);
 			return new PadSchema
 			{
 				Size = new Size(375, 395),

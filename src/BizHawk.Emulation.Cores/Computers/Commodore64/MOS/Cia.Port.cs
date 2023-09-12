@@ -15,15 +15,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		private sealed class DisconnectedPort : IPort
 		{
-			public int ReadPra(int pra, int ddra, int prb, int ddrb)
-			{
-				return (pra | ~ddra) & 0xFF;
-			}
+			public int ReadPra(int pra, int ddra, int prb, int ddrb) => (pra | ~ddra) & 0xFF;
 
-			public int ReadPrb(int pra, int ddra, int prb, int ddrb)
-			{
-				return (prb | ~ddrb) & 0xFF;
-			}
+			public int ReadPrb(int pra, int ddra, int prb, int ddrb) => (prb | ~ddrb) & 0xFF;
 		}
 
 		private sealed class JoystickKeyboardPort : IPort
@@ -41,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			private int GetJoystick1()
 			{
-				var joyData = _readJoyData();
+				bool[] joyData = _readJoyData();
 				return 0xE0 |
 					   (joyData[0] ? 0x00 : 0x01) |
 					   (joyData[1] ? 0x00 : 0x02) |
@@ -52,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			private int GetJoystick2()
 			{
-				var joyData = _readJoyData();
+				bool[] joyData = _readJoyData();
 				return 0xE0 |
 					   (joyData[5] ? 0x00 : 0x01) |
 					   (joyData[6] ? 0x00 : 0x02) |
@@ -63,14 +57,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			private int GetKeyboardRows(int activeColumns)
 			{
-				var keyData = _readKeyData();
-				var result = 0xFF;
-				for (var r = 0; r < 8; r++)
+				bool[] keyData = _readKeyData();
+				int result = 0xFF;
+				for (int r = 0; r < 8; r++)
 				{
 					if ((activeColumns & 0x1) == 0)
 					{
-						var i = r << 3;
-						for (var c = 0; c < 8; c++)
+						int i = r << 3;
+						for (int c = 0; c < 8; c++)
 						{
 							if (keyData[i++])
 							{
@@ -87,14 +81,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			private int GetKeyboardColumns(int activeRows)
 			{
-				var keyData = _readKeyData();
-				var result = 0xFF;
-				for (var c = 0; c < 8; c++)
+				bool[] keyData = _readKeyData();
+				int result = 0xFF;
+				for (int c = 0; c < 8; c++)
 				{
 					if ((activeRows & 0x1) == 0)
 					{
-						var i = c;
-						for (var r = 0; r < 8; r++)
+						int i = c;
+						for (int r = 0; r < 8; r++)
 						{
 							if (keyData[i])
 							{
@@ -139,15 +133,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_readUserPort = readUserPort;
 			}
 
-			public int ReadPra(int pra, int ddra, int prb, int ddrb)
-			{
-				return (pra & ddra) | (~ddra & _readIec());
-			}
+			public int ReadPra(int pra, int ddra, int prb, int ddrb) => (pra & ddra) | (~ddra & _readIec());
 
-			public int ReadPrb(int pra, int ddra, int prb, int ddrb)
-			{
-				return (prb | ~ddrb) | (~ddrb & _readUserPort());
-			}
+			public int ReadPrb(int pra, int ddra, int prb, int ddrb) => (prb | ~ddrb) | (~ddrb & _readUserPort());
 		}
 	}
 }

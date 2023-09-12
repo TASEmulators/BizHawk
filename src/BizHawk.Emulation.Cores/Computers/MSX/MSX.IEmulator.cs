@@ -1,4 +1,4 @@
-﻿using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common;
 using System;
 
 namespace BizHawk.Emulation.Cores.Computers.MSX
@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => current_controller;
+		public ControllerDefinition ControllerDefinition { get; } = null;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			if (_controller.IsPressed("P2 B1")) ctrl2_byte -= 0x10;
 			if (_controller.IsPressed("P2 B2")) ctrl2_byte -= 0x20;
 
-			if (current_controller == MSXControllerKB) { kb_rows_check(controller); }		
+			if (ControllerDefinition == MSXControllerKB) { kb_rows_check(controller); }		
 			
 			if (Tracer.IsEnabled())
 			{
@@ -174,12 +174,14 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			}
 		}
 
-		public BlipBuffer blip = new BlipBuffer(4500);
+		public BlipBuffer blip = new(4500);
 
 		public int[] Aud = new int [9000];
 		public uint num_samp;
 
+		#pragma warning disable IDE0051
 		private const int blipbuffsize = 4500;
+		#pragma warning restore IDE0051
 
 		public bool CanProvideAsync => false;
 
@@ -191,10 +193,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			}
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async not supported");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async not supported");
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
@@ -220,19 +219,13 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			}
 		}
 
-		public void DiscardSamples()
-		{
-			blip.Clear();
-		}
+		public void DiscardSamples() => blip.Clear();
 
 		public int _frameHz = 60;
 
 		public int[] _vidbuffer = new int[192 * 256];
 
-		public int[] GetVideoBuffer()
-		{
-			return _vidbuffer;
-		}
+		public int[] GetVideoBuffer() => _vidbuffer;
 
 		public int VirtualWidth => 256;
 		public int VirtualHeight => 192;

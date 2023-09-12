@@ -161,9 +161,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
-		private void SyncIRQ()
-		{
-			SyncIRQ(irq_pending);
-		}
+		private void SyncIRQ() => SyncIRQ(irq_pending);
 	}
 }

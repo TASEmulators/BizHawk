@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditSubtitlesForm_Load(object sender, EventArgs e)
 		{
-			var subs = new SubtitleList();
+			SubtitleList subs = new();
 			subs.AddRange(_selectedMovie.Subtitles);
 
 			for (int x = 0; x < subs.Count; x++)
@@ -67,21 +67,18 @@ namespace BizHawk.Client.EmuHawk
 
 			if (SubGrid.Rows.Count > 8)
 			{
-				var x = Height + ((SubGrid.Rows.Count - 8) * 21);
+				int x = Height + ((SubGrid.Rows.Count - 8) * 21);
 				Height = x < 600 ? x : 600;
 			}
 		}
 
-		private void Cancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void Cancel_Click(object sender, EventArgs e) => Close();
 
 		private void ShowError(int row, int column)
 		{
 			var c = SubGrid.Rows[row].Cells[column];
-			var error = $"Unable to parse value: {c.Value}";
-			var caption = $"Parse Error Row {row} Column {column}";
+			string error = $"Unable to parse value: {c.Value}";
+			string caption = $"Parse Error Row {row} Column {column}";
 			DialogController.ShowMessageBox(error, caption, EMsgBoxIcon.Error);
 		}
 
@@ -92,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 				_selectedMovie.Subtitles.Clear();
 				for (int i = 0; i < SubGrid.Rows.Count - 1; i++)
 				{
-					var sub = new Subtitle();
+					Subtitle sub = new();
 					
 					var c = SubGrid.Rows[i].Cells[0];
 					try { sub.Frame = int.Parse(c.Value.ToString()); }
@@ -148,8 +145,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return new Subtitle();
 			}
-			
-			var sub = new Subtitle();
+
+			Subtitle sub = new();
 
 			if (int.TryParse(SubGrid.Rows[index].Cells[0].Value.ToString(), out int frame))
 			{
@@ -195,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			using var s = new SubtitleMaker { Sub = GetRow(c[0].Index) };
+			using SubtitleMaker s = new() { Sub = GetRow(c[0].Index) };
 			if (s.ShowDialog().IsOk())
 			{
 				ChangeRow(s.Sub, SubGrid.SelectedRows[0].Index);
@@ -205,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Export_Click(object sender, EventArgs e)
 		{
 			// Get file to save as
-			var fileName = this.ShowFileSaveDialog(
+			string fileName = this.ShowFileSaveDialog(
 				filter: SubRipFilesFSFilterSet,
 				initDir: _pathEntries.MovieAbsolutePath());
 			if (fileName is null) return;
@@ -224,7 +221,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Create string and write to file
-			var str = _selectedMovie.Subtitles.ToSubRip(fps);
+			string str = _selectedMovie.Subtitles.ToSubRip(fps);
 			File.WriteAllText(fileName, str);
 
 			// Display success
@@ -240,29 +237,23 @@ namespace BizHawk.Client.EmuHawk
 			e.Row.Cells["DispColor"].Value  = "FFFFFFFF";
 		}
 
-		private void ConcatMultilines_CheckedChanged(object sender, EventArgs e)
-		{
-			_selectedMovie.Subtitles.ConcatMultilines = ConcatMultilines.Checked;
-		}
+		private void ConcatMultilines_CheckedChanged(object sender, EventArgs e) => _selectedMovie.Subtitles.ConcatMultilines = ConcatMultilines.Checked;
 
-		private void AddColorTag_CheckedChanged(object sender, EventArgs e)
-		{
-			_selectedMovie.Subtitles.AddColorTag = AddColorTag.Checked;
-		}
+		private void AddColorTag_CheckedChanged(object sender, EventArgs e) => _selectedMovie.Subtitles.AddColorTag = AddColorTag.Checked;
 
 		private void SubGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
 		{
 			if (!_readOnly && e.ColumnIndex == 4)
 			{
 				var color = Color.White;
-				var val = SubGrid[e.ColumnIndex, e.RowIndex].Value;
+				object val = SubGrid[e.ColumnIndex, e.RowIndex].Value;
 				if (val != null)
 				{
-					var hex = int.Parse(val.ToString(), NumberStyles.HexNumber);
+					int hex = int.Parse(val.ToString(), NumberStyles.HexNumber);
 					color = Color.FromArgb(hex);
 				}
 
-				using var picker = new ColorDialog { AllowFullOpen = true, AnyColor = true, Color = color };
+				using ColorDialog picker = new() { AllowFullOpen = true, AnyColor = true, Color = color };
 				if (picker.ShowDialog().IsOk())
 				{
 					SubGrid[e.ColumnIndex, e.RowIndex].Value = picker.Color.ToArgb().ToHexString(8);

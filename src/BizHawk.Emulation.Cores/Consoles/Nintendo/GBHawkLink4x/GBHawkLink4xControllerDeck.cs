@@ -38,25 +38,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			}.MakeImmutable();
 		}
 
-		public byte ReadPort1(IController c)
-		{
-			return Port1.Read(c);
-		}
+		public byte ReadPort1(IController c) => Port1.Read(c);
 
-		public byte ReadPort2(IController c)
-		{
-			return Port2.Read(c);
-		}
+		public byte ReadPort2(IController c) => Port2.Read(c);
 
-		public byte ReadPort3(IController c)
-		{
-			return Port3.Read(c);
-		}
+		public byte ReadPort3(IController c) => Port3.Read(c);
 
-		public byte ReadPort4(IController c)
-		{
-			return Port4.Read(c);
-		}
+		public byte ReadPort4(IController c) => Port4.Read(c);
 
 		public ControllerDefinition Definition { get; }
 

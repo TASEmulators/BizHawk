@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getluafunctionslist", "returns a list of implemented functions")]
 		public static string GetLuaFunctionsList()
 		{
-			var list = new StringBuilder();
+			StringBuilder list = new();
 			foreach (var function in typeof(CommLuaLibrary).GetMethods())
 			{
 				list.AppendLine(function.ToString());
@@ -73,10 +73,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethod("socketServerSuccessful", "returns the status of the last Socket server action")]
-		public bool SocketServerSuccessful()
-		{
-			return CheckSocketServer() && APIs.Comm.Sockets.Successful;
-		}
+		public bool SocketServerSuccessful() => CheckSocketServer() && APIs.Comm.Sockets.Successful;
 
 		[LuaMethod("socketServerSetTimeout", "sets the timeout in milliseconds for receiving messages")]
 		public void SocketServerSetTimeout(int timeout)
@@ -100,16 +97,10 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethod("socketServerGetIp", "returns the IP address of the Lua socket server")]
-		public string SocketServerGetIp()
-		{
-			return APIs.Comm.Sockets?.IP;
-		}
+		public string SocketServerGetIp() => APIs.Comm.Sockets?.IP;
 
 		[LuaMethod("socketServerGetPort", "returns the port of the Lua socket server")]
-		public int? SocketServerGetPort()
-		{
-			return APIs.Comm.Sockets?.Port;
-		}
+		public int? SocketServerGetPort() => APIs.Comm.Sockets?.Port;
 
 		[LuaMethod("socketServerGetInfo", "returns the IP and port of the Lua socket server")]
 		public string SocketServerGetInfo()

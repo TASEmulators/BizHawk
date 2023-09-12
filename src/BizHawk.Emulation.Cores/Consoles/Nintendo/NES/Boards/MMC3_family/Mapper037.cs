@@ -39,14 +39,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			mmc3.Sync(); // unneeded?
 		}
 
-		protected override int Get_CHRBank_1K(int addr)
-		{
-			return base.Get_CHRBank_1K(addr) | (exreg << 5 & 0x80);
-		}
+		protected override int Get_CHRBank_1K(int addr) => base.Get_CHRBank_1K(addr) | (exreg << 5 & 0x80);
 
-		protected override int Get_PRGBank_8K(int addr)
-		{
-			return (exreg << 2 & 0x10) | ((exreg & 3) == 3 ? 8 : 0) | (base.Get_PRGBank_8K(addr) & (exreg << 1 | 7));
-		}
+		protected override int Get_PRGBank_8K(int addr) => (exreg << 2 & 0x10) | ((exreg & 3) == 3 ? 8 : 0) | (base.Get_PRGBank_8K(addr) & (exreg << 1 | 7));
 	}
 }

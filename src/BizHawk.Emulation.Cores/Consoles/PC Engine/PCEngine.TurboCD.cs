@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					break;
 
 				default:
-					if (addr >= 0x1FFA00 && addr < 0x1FFA40)
+					if (addr is >= 0x1FFA00 and < 0x1FFA40)
 						WriteArcadeCard(addr & 0x1FFF, value);
 					else
 						Log.Error("CD", "unknown write to {0:X4}:{1:X2} pc={2:X4}", addr, value, Cpu.PC);
@@ -300,7 +300,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				case 0x1AFF: return ArcadeCard ? (byte)0x51 : (byte)0xFF;
 
 				default:
-					if (addr >= 0x1FFA00 && addr < 0x1FFA40)
+					if (addr is >= 0x1FFA00 and < 0x1FFA40)
 						return ReadArcadeCard(addr & 0x1FFF);
 					else
 						Log.Error("CD", "unknown read to {0:X4}", addr);

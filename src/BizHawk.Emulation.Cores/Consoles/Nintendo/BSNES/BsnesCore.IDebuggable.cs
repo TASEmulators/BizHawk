@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			CpuRegisters registers = default;
 			Api.core.snes_get_cpu_registers(ref registers);
 
-			var flags = (RegisterFlags) registers.p;
+			RegisterFlags flags = (RegisterFlags) registers.p;
 
 			bool fc = (flags & RegisterFlags.C) != 0;
 			bool fz = (flags & RegisterFlags.Z) != 0;
@@ -50,24 +50,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			};
 		}
 
-		public void SetCpuRegister(string register, int value)
-		{
-			Api.core.snes_set_cpu_register(register, (uint) value);
-		}
+		public void SetCpuRegister(string register, int value) => Api.core.snes_set_cpu_register(register, (uint)value);
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(null);
 
 		public bool CanStep(StepType type)
 		{
-			switch (type)
+			return type switch
 			{
-				case StepType.Into:
-				case StepType.Over:
-				case StepType.Out:
-					return true;
-				default:
-					return false;
-			}
+				StepType.Into or StepType.Over or StepType.Out => true,
+				_ => false,
+			};
 		}
 
 		public void Step(StepType type)

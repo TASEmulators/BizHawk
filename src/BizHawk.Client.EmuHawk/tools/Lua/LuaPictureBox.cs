@@ -13,10 +13,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class LuaPictureBox : PictureBox
 	{
-		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
+		private readonly Dictionary<string, Image> _imageCache = new();
 
-		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
-		private readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
+		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new();
+		private readonly Dictionary<Color, Pen> _pens = new();
 
 		internal NLuaTableHelper TableHelper { get; set; }
 
@@ -44,30 +44,21 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear([LuaColorParam] object color)
 		{
-			var boxBackground = Graphics.FromImage(Image);
+			Graphics boxBackground = Graphics.FromImage(Image);
 			boxBackground.Clear(TableHelper.ParseColor(color));
 		}
 
-		public void SetDefaultForegroundColor([LuaColorParam] object color)
-		{
-			_defaultForeground = TableHelper.ParseColor(color);
-		}
+		public void SetDefaultForegroundColor([LuaColorParam] object color) => _defaultForeground = TableHelper.ParseColor(color);
 
-		public void SetDefaultBackgroundColor([LuaColorParam] object color)
-		{
-			_defaultBackground = TableHelper.ParseColor(color);
-		}
+		public void SetDefaultBackgroundColor([LuaColorParam] object color) => _defaultBackground = TableHelper.ParseColor(color);
 
-		public void SetDefaultTextBackground([LuaColorParam] object color)
-		{
-			_defaultTextBackground = TableHelper.ParseColor(color);
-		}
+		public void SetDefaultTextBackground([LuaColorParam] object color) => _defaultTextBackground = TableHelper.ParseColor(color);
 
 		public void DrawBezier(LuaTable points, [LuaColorParam] object color)
 		{
-			var pointsArr = new Point[4];
+			Point[] pointsArr = new Point[4];
 
-			var i = 0;
+			int i = 0;
 			foreach (var point in TableHelper.EnumerateValues<LuaTable>(points)
 				.Select(table => TableHelper.EnumerateValues<long>(table).ToList()))
 			{
@@ -79,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var boxBackground = Graphics.FromImage(Image);
+			Graphics boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawBezier(GetPen(TableHelper.ParseColor(color)), pointsArr[0], pointsArr[1], pointsArr[2], pointsArr[3]);
 		}
 
@@ -105,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 				y -= y2;
 			}
 
-			var boxBackground = Graphics.FromImage(Image);
+			Graphics boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawRectangle(GetPen(TableHelper.SafeParseColor(line) ?? _defaultForeground), x, y, x2, y2);
 
 			var bg = TableHelper.SafeParseColor(background) ?? _defaultBackground;
@@ -119,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 		public void DrawEllipse(int x, int y, int width, int height, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
 		{
 			var bg = TableHelper.SafeParseColor(background) ?? _defaultBackground;
-			var boxBackground = Graphics.FromImage(Image);
+			Graphics boxBackground = Graphics.FromImage(Image);
 			if (bg.HasValue)
 			{
 				var brush = GetBrush(bg.Value);
@@ -142,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 				icon = new Icon(path);
 			}
 
-			var boxBackground = Graphics.FromImage(Image);
+			Graphics boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawIcon(icon, x, y);
 		}
 
@@ -157,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var boxBackground = Graphics.FromImage(Image);
+			Graphics boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawImage(img, x, y, width ?? img.Width, height ?? img.Height);
 		}
 
@@ -174,15 +165,15 @@ namespace BizHawk.Client.EmuHawk
 		public void DrawImageRegion(string path, int sourceX, int sourceY, int sourceWidth, int sourceHeight, int destX, int destY, int? destWidth = null, int? destHeight = null)
 		{
 			var img = _imageCache.GetValueOrPut(path, Image.FromFile);
-			var destRect = new Rectangle(destX, destY, destWidth ?? sourceWidth, destHeight ?? sourceHeight);
+			Rectangle destRect = new(destX, destY, destWidth ?? sourceWidth, destHeight ?? sourceHeight);
 
-			var boxBackground = Graphics.FromImage(Image);
+			Graphics boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawImage(img, destRect, sourceX, sourceY, sourceWidth, sourceHeight, GraphicsUnit.Pixel);
 		}
 
 		public void DrawLine(int x1, int y1, int x2, int y2, [LuaColorParam] object color = null)
 		{
-			var boxBackground = Graphics.FromImage(Image);
+			Graphics boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawLine(GetPen(TableHelper.SafeParseColor(color) ?? _defaultForeground), x1, y1, x2, y2);
 		}
 
@@ -195,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DrawArc(int x, int y, int width, int height, int startAngle, int sweepAngle, [LuaColorParam] object line = null)
 		{
-			var boxBackground = Graphics.FromImage(Image);
+			Graphics boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawArc(GetPen(TableHelper.SafeParseColor(line) ?? _defaultForeground), x, y, width, height, startAngle, sweepAngle);
 		}
 
@@ -210,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 			[LuaColorParam] object background = null)
 		{
 			var bg = TableHelper.SafeParseColor(background) ?? _defaultBackground;
-			var boxBackground = Graphics.FromImage(Image);
+			Graphics boxBackground = Graphics.FromImage(Image);
 			if (bg.HasValue)
 			{
 				var brush = GetBrush(bg.Value);
@@ -223,23 +214,23 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DrawPixel(int x, int y, [LuaColorParam] object color = null)
 		{
-			var boxBackground = Graphics.FromImage(Image);
+			Graphics boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawLine(GetPen(TableHelper.SafeParseColor(color) ?? _defaultForeground), x, y, x + 0.1F, y);
 		}
 
 		public void DrawPolygon(LuaTable points, int? x = null, int? y = null, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
 		{
-			var pointsList = TableHelper.EnumerateValues<LuaTable>(points)
+			List<List<long>> pointsList = TableHelper.EnumerateValues<LuaTable>(points)
 				.Select(table => TableHelper.EnumerateValues<long>(table).ToList()).ToList();
-			var pointsArr = new Point[pointsList.Count];
-			var i = 0;
+			Point[] pointsArr = new Point[pointsList.Count];
+			int i = 0;
 			foreach (var point in pointsList)
 			{
 				pointsArr[i] = new Point((int) point[0] + x ?? 0, (int) point[1] + y ?? 0);
 				i++;
 			}
 
-			var boxBackground = Graphics.FromImage(Image);
+			Graphics boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawPolygon(GetPen(TableHelper.SafeParseColor(line) ?? _defaultForeground), pointsArr);
 			var bg = TableHelper.SafeParseColor(background) ?? _defaultBackground;
 			if (bg.HasValue)
@@ -252,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 		public void DrawRectangle(int x, int y, int width, int height, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
 		{
 			var bg = TableHelper.SafeParseColor(background) ?? _defaultBackground;
-			var boxBackground = Graphics.FromImage(Image);
+			Graphics boxBackground = Graphics.FromImage(Image);
 			if (bg.HasValue)
 			{
 				boxBackground.FillRectangle(GetBrush(bg.Value), x, y, width, height);
@@ -303,9 +294,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var f = new StringFormat(StringFormat.GenericDefault);
-			var font = new Font(family, fontSize ?? 12, fStyle, GraphicsUnit.Pixel);
-			var boxBackground = Graphics.FromImage(Image);
+			StringFormat f = new(StringFormat.GenericDefault);
+			Font font = new(family, fontSize ?? 12, fStyle, GraphicsUnit.Pixel);
+			Graphics boxBackground = Graphics.FromImage(Image);
 
 			Size sizeOfText = boxBackground.MeasureString(message, font, 0, f).ToSize();
 
@@ -342,7 +333,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 				}
 			}
-			Rectangle rect = new Rectangle(new Point(x, y), sizeOfText);
+			Rectangle rect = new(new Point(x, y), sizeOfText);
 			boxBackground = Graphics.FromImage(Image);
 			boxBackground.FillRectangle(GetBrush(TableHelper.SafeParseColor(backColor) ?? _defaultTextBackground.Value), rect);
 			boxBackground = Graphics.FromImage(Image);

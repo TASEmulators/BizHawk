@@ -92,15 +92,15 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					case 5: PendingCycles -= 12; break;
 					case 6: PendingCycles -= 14; break;
 					case 7:
-						switch (srcReg)
+						PendingCycles -= srcReg switch
 						{
-							case 0: PendingCycles -= 12; break;
-							case 1: PendingCycles -= 16; break;
-							case 2: PendingCycles -= 12; break;
-							case 3: PendingCycles -= 14; break;
-							case 4: PendingCycles -= 8; break;
-							default: throw new InvalidOperationException();
-						}
+							0 => 12,
+							1 => 16,
+							2 => 12,
+							3 => 14,
+							4 => 8,
+							_ => throw new InvalidOperationException(),
+						};
 						break;
 				}
 			}
@@ -117,15 +117,15 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					case 5: PendingCycles -= 16; break;
 					case 6: PendingCycles -= 18; break;
 					case 7:
-						switch (srcReg)
+						PendingCycles -= srcReg switch
 						{
-							case 0: PendingCycles -= 16; break;
-							case 1: PendingCycles -= 20; break;
-							case 2: PendingCycles -= 16; break;
-							case 3: PendingCycles -= 18; break;
-							case 4: PendingCycles -= 12; break;
-							default: throw new InvalidOperationException();
-						}
+							0 => 16,
+							1 => 20,
+							2 => 16,
+							3 => 18,
+							4 => 12,
+							_ => throw new InvalidOperationException(),
+						};
 						break;
 				}
 			}
@@ -389,7 +389,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private static string DisassembleRegisterList0(uint registers)
 		{
-			var str = new StringBuilder();
+			StringBuilder str = new();
 			int count = 0;
 			bool snip = false;
 			for (int i = 0; i < 8; i++)
@@ -444,7 +444,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private static string DisassembleRegisterList1(uint registers)
 		{
-			var str = new StringBuilder();
+			StringBuilder str = new();
 			int count = 0;
 			bool snip = false;
 			for (int i = 0; i < 8; i++)

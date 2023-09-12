@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 		private readonly IDialogParent _dialogParent;
 
 		private readonly ICheatConfig _config;
-		private List<Cheat> _cheatList = new List<Cheat>();
+		private List<Cheat> _cheatList = new();
 		private string _defaultFileName = "";
 		private bool _changes;
 
@@ -75,17 +75,14 @@ namespace BizHawk.Client.Common
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		public void Pulse()
-		{
-			_cheatList.ForEach(cheat => cheat.Pulse());
-		}
+		public void Pulse() => _cheatList.ForEach(cheat => cheat.Pulse());
 
 		/// <summary>
 		/// Looks for a .cht file that matches the ROM loaded based on the default filename for a given ROM
 		/// </summary>
 		public bool AttemptToLoadCheatFile(IMemoryDomains domains)
 		{
-			var file = new FileInfo(_defaultFileName);
+			FileInfo file = new(_defaultFileName);
 			return file.Exists && Load(domains, file.FullName, false);
 		}
 
@@ -133,7 +130,7 @@ namespace BizHawk.Client.Common
 
 		public void AddRange(IEnumerable<Cheat> cheats)
 		{
-			var toAdd = cheats.Where(c => !_cheatList.Contains(c)).ToList();
+			List<Cheat> toAdd = cheats.Where(c => !_cheatList.Contains(c)).ToList();
 			if (toAdd.Count is 0) return;
 			const int WARN_WHEN_ADDING_MORE_THAN = 200;
 			if (toAdd.Count > WARN_WHEN_ADDING_MORE_THAN && !_dialogParent.ModalMessageBox2($"Adding {toAdd.Count} freezes/cheats at once is probably a bad idea. Do it anyway?")) return;
@@ -172,7 +169,7 @@ namespace BizHawk.Client.Common
 
 		public bool Remove(Cheat cheat)
 		{
-			var result = _cheatList.Remove(cheat);
+			bool result = _cheatList.Remove(cheat);
 			if (result)
 			{
 				Changes = true;
@@ -185,10 +182,7 @@ namespace BizHawk.Client.Common
 		public bool Contains(Cheat cheat)
 			=> _cheatList.Exists(c => c == cheat);
 
-		public void CopyTo(Cheat[] array, int arrayIndex)
-		{
-			_cheatList.CopyTo(array, arrayIndex);
-		}
+		public void CopyTo(Cheat[] array, int arrayIndex) => _cheatList.CopyTo(array, arrayIndex);
 
 		public void RemoveRange(IEnumerable<Cheat> cheats)
 		{
@@ -262,13 +256,13 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				var file = new FileInfo(path);
+				FileInfo file = new(path);
 				if (file.Directory != null && !file.Directory.Exists)
 				{
 					file.Directory.Create();
 				}
 
-				var sb = new StringBuilder();
+				StringBuilder sb = new();
 
 				foreach (var cheat in _cheatList)
 				{
@@ -315,7 +309,7 @@ namespace BizHawk.Client.Common
 
 		public bool Load(IMemoryDomains domains, string path, bool append)
 		{
-			var file = new FileInfo(path);
+			FileInfo file = new(path);
 			if (file.Exists == false)
 			{
 				return false;
@@ -347,7 +341,7 @@ namespace BizHawk.Client.Common
 						int? compare;
 						var size = WatchSize.Byte;
 						var type = WatchDisplayType.Hex;
-						var bigEndian = false;
+						bool bigEndian = false;
 						var comparisonType = Cheat.CompareType.None;
 
 						if (s.Length < 6)
@@ -355,9 +349,9 @@ namespace BizHawk.Client.Common
 							continue;
 						}
 
-						var vals = s.Split('\t');
-						var address = int.Parse(vals[0], NumberStyles.HexNumber);
-						var value = int.Parse(vals[1], NumberStyles.HexNumber);
+						string[] vals = s.Split('\t');
+						int address = int.Parse(vals[0], NumberStyles.HexNumber);
+						int value = int.Parse(vals[1], NumberStyles.HexNumber);
 
 						if (vals[2] == "N")
 						{
@@ -369,8 +363,8 @@ namespace BizHawk.Client.Common
 						}
 
 						var domain = domains[vals[3]];
-						var enabled = vals[4] == "1";
-						var name = vals[5];
+						bool enabled = vals[4] == "1";
+						string name = vals[5];
 
 						// For backwards compatibility, don't assume these values exist
 						if (vals.Length > 6)
@@ -389,7 +383,7 @@ namespace BizHawk.Client.Common
 							}
 						}
 
-						var watch = Watch.GenerateWatch(
+						Watch watch = Watch.GenerateWatch(
 							domain,
 							address,
 							size,
@@ -412,7 +406,7 @@ namespace BizHawk.Client.Common
 		}
 
 		private static readonly RigidMultiPredicateSort<Cheat> ColumnSorts
-			= new RigidMultiPredicateSort<Cheat>(new Dictionary<string, Func<Cheat, IComparable>>
+			= new(new Dictionary<string, Func<Cheat, IComparable>>
 			{
 				[NameColumn] = c => c.Name,
 				[AddressColumn] = c => c.Address ?? 0L,
@@ -428,10 +422,7 @@ namespace BizHawk.Client.Common
 
 		public void Sort(string column, bool reverse) => _cheatList = ColumnSorts.AppliedTo(_cheatList, column, firstIsDesc: reverse);
 
-		public void SetDefaultFileName(string defaultFileName)
-		{
-			_defaultFileName = defaultFileName;
-		}
+		public void SetDefaultFileName(string defaultFileName) => _defaultFileName = defaultFileName;
 
 		private void CheatChanged(object sender)
 		{

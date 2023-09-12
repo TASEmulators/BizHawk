@@ -73,10 +73,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	{
 		public string FullPath;
 		public CompiledCueFileType Type;
-		public override string ToString()
-		{
-			return $"{Type}: {Path.GetFileName(FullPath)}";
-		}
+		public override string ToString() => $"{Type}: {Path.GetFileName(FullPath)}";
 	}
 
 	internal class CompiledSessionInfo
@@ -113,7 +110,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		{
 			var idx = Indexes.FirstOrNull(static cci => cci.Number is 1);
 			if (idx is null) return $"T#{Number:D2} NO INDEX 1";
-			var indexlist = string.Join("|", Indexes);
+			string indexlist = string.Join("|", Indexes);
 			return $"T#{Number:D2} {BlobIndex}:{idx.Value.FileMSF} ({indexlist})";
 		}
 	}
@@ -225,11 +222,11 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				return;
 			}
 
-			var choice = options[0];
+			string choice = options[0];
 			if (options.Count > 1)
 				Warn($"Multiple options resolving referenced cue file; choosing: {Path.GetFileName(choice)}");
 
-			var cfi = new CompiledCueFile();
+			CompiledCueFile cfi = new();
 			curr_file = cfi;
 			OUT_CompiledCueFiles.Add(cfi);
 
@@ -238,7 +235,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			//determine the CueFileInfo's type, based on extension and extra checking
 			//TODO - once we reorganize the file ID stuff, do legit checks here (this is completely redundant with the fileID system
 			//TODO - decode vs stream vs unpossible policies in input policies object (including ffmpeg availability-checking callback (results can be cached))
-			var blobPathExt = Path.GetExtension(choice).ToUpperInvariant();
+			string blobPathExt = Path.GetExtension(choice).ToUpperInvariant();
 			switch (blobPathExt)
 			{
 				case ".BIN" or ".IMG" or ".RAW":
@@ -251,7 +248,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					//TODO - fix exception-throwing inside
 					//TODO - verify stream-disposing semantics
 					var fs = File.OpenRead(choice);
-					using var blob = new Blob_WaveFile();
+					using Blob_WaveFile blob = new();
 					try
 					{
 						blob.Load(fs);
@@ -308,7 +305,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			//we could check the format of the wav file here, though
 
 			//score the cost of loading the file
-			var needsCodec = false;
+			bool needsCodec = false;
 			OUT_LoadTime = 0;
 			foreach (var cfi in OUT_CompiledCueFiles.Where(cfi => cfi is not null))
 			{
@@ -387,10 +384,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			UpdateDiscInfo(trackCommand);
 		}
 
-		private void AddIndex(CUE_File.Command.INDEX indexCommand)
-		{
-			curr_track.Indexes.Add(new(indexCommand.Number, indexCommand.Timestamp));
-		}
+		private void AddIndex(CUE_File.Command.INDEX indexCommand) => curr_track.Indexes.Add(new(indexCommand.Number, indexCommand.Timestamp));
 
 		public override void Run()
 		{
@@ -401,7 +395,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 			//add a track 0, for addressing convenience.
 			//note: for future work, track 0 may need emulation (accessible by very negative LBA--the TOC is stored there)
-			var track0 = new CompiledCueTrack
+			CompiledCueTrack track0 = new()
 			{
 				Number = 0,
 			};

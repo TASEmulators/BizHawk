@@ -49,7 +49,7 @@ namespace BizHawk.Bizware.BizwareGL
 				Owner = owner;
 			}
 
-			private Pipeline Owner;
+			private readonly Pipeline Owner;
 			public new PipelineUniform this[string key]
 			{
 #if true
@@ -80,9 +80,6 @@ namespace BizHawk.Bizware.BizwareGL
 		public bool Available { get; }
 		public string Errors { get; set; }
 
-		public void Dispose()
-		{
-			Owner.FreePipeline(this);
-		}
+		public void Dispose() => Owner.FreePipeline(this);
 	}
 }

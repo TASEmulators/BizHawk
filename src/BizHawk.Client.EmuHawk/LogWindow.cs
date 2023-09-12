@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// TODO: only show add to game db when this is a Rom details dialog
 		// Let user decide what type (instead of always adding it as a good dump)
-		private readonly List<string> _lines = new List<string>();
+		private readonly List<string> _lines = new();
 		private LogWriter _logWriter;
 
 		[RequiredService]
@@ -65,10 +65,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ShowReport(string title, string report)
 		{
-			var ss = report.Split('\n');
+			string[] ss = report.Split('\n');
 			
 			lock (_lines)
-				foreach (var s in ss)
+				foreach (string s in ss)
 				{
 					_lines.Add(s.TrimEnd('\r'));
 				}
@@ -81,8 +81,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void append(string str, bool invoked)
 		{
-			var ss = str.Split('\n');
-			foreach (var s in ss)
+			string[] ss = str.Split('\n');
+			foreach (string s in ss)
 			{
 				if (!string.IsNullOrWhiteSpace(s))
 				{
@@ -107,10 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			virtualListView1.EnsureVisible(_lines.Count - 1);
 		}
 
-		private void appendInvoked(string str)
-		{
-			append(str, true);
-		}
+		private void appendInvoked(string str) => append(str, true);
 
 		private void BtnClear_Click(object sender, EventArgs e)
 		{
@@ -122,25 +119,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void BtnClose_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void BtnClose_Click(object sender, EventArgs e) => Close();
 
-		private void LogWindow_Load(object sender, EventArgs e)
-		{
-			HideShowGameDbButton();
-		}
+		private void LogWindow_Load(object sender, EventArgs e) => HideShowGameDbButton();
 
-		private void ListView_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)
-		{
-			e.Item = new ListViewItem(_lines[e.ItemIndex]);
-		}
+		private void ListView_QueryItemText(object sender, RetrieveVirtualItemEventArgs e) => e.Item = new ListViewItem(_lines[e.ItemIndex]);
 
-		private void ListView_ClientSizeChanged(object sender, EventArgs e)
-		{
-			virtualListView1.Columns[0].Width = virtualListView1.ClientSize.Width;
-		}
+		private void ListView_ClientSizeChanged(object sender, EventArgs e) => virtualListView1.Columns[0].Width = virtualListView1.ClientSize.Width;
 
 		private void ListView_KeyDown(object sender, KeyEventArgs e)
 		{
@@ -178,9 +163,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonCopyAll_Click(object sender, EventArgs e)
 		{
-			var sb = new StringBuilder();
+			StringBuilder sb = new();
 			lock(_lines)
-				foreach (var s in _lines)
+				foreach (string s in _lines)
 					sb.AppendLine(s);
 			if (sb.Length > 0)
 				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
@@ -194,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddToGameDbBtn_Click(object sender, EventArgs e)
 		{
-			using var picker = new RomStatusPicker();
+			using RomStatusPicker picker = new();
 			var result = picker.ShowDialog();
 			if (result.IsOk())
 			{
@@ -208,10 +193,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private class LogWriter : TextWriter
 		{
-			public override void Write(char[] buffer, int offset, int count)
-			{
-				Emit(new string(buffer, offset, count));
-			}
+			public override void Write(char[] buffer, int offset, int count) => Emit(new string(buffer, offset, count));
 
 			public override Encoding Encoding => Encoding.Unicode;
 

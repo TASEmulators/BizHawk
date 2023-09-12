@@ -8,12 +8,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	public partial class Atari2600
 	{
 		internal IMemoryDomains MemoryDomains;
-		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
+		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new();
 		private bool _memoryDomainsInit;
 
 		private void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new()
 			{
 				new MemoryDomainDelegate(
 					"TIA",
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else
 			{
-				var m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
+				MemoryDomainByteArray m = new(name, MemoryDomain.Endian.Little, data, true, 1);
 				_byteArrayDomains.Add(name, m);
 			}
 		}

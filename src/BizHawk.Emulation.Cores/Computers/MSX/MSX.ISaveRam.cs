@@ -6,10 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 {
 	public partial class MSX : ISaveRam
 	{
-		public byte[] CloneSaveRam()
-		{
-			return (byte[]) SaveRAM?.Clone();
-		}
+		public byte[] CloneSaveRam() => (byte[])SaveRAM?.Clone();
 
 		public void StoreSaveRam(byte[] data)
 		{

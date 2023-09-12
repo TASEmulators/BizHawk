@@ -35,10 +35,7 @@ namespace BizHawk.Client.Common
 			if (collection != null) AddRange(collection); // doesn't actually trigger callback as the superclass' Add is called; if this class is rewritten without `new` methods, something clever will need to be done, like a bool field _initialised
 		}
 
-		public void StopAllScripts()
-		{
-			ForEach(lf => lf.State = LuaFile.RunState.Disabled);
-		}
+		public void StopAllScripts() => ForEach(lf => lf.State = LuaFile.RunState.Disabled);
 
 		public new void Clear()
 		{
@@ -68,7 +65,7 @@ namespace BizHawk.Client.Common
 
 		public bool Load(string path, bool disableOnLoad)
 		{
-			var file = new FileInfo(path);
+			FileInfo file = new(path);
 			if (!file.Exists)
 			{
 				return false;
@@ -85,10 +82,10 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					var scriptPath = line.Substring(2, line.Length - 2);
+					string scriptPath = line.Substring(2, line.Length - 2);
 					if (!Path.IsPathRooted(scriptPath))
 					{
-						var directory = Path.GetDirectoryName(path);
+						string directory = Path.GetDirectoryName(path);
 						scriptPath = Path.GetFullPath(Path.Combine(directory ?? "", scriptPath));
 					}
 
@@ -107,9 +104,9 @@ namespace BizHawk.Client.Common
 
 		public void Save(string path)
 		{
-			using var sw = new StreamWriter(path);
-			var sb = new StringBuilder();
-			var saveDirectory = Path.GetDirectoryName(Path.GetFullPath(path));
+			using StreamWriter sw = new(path);
+			StringBuilder sb = new();
+			string saveDirectory = Path.GetDirectoryName(Path.GetFullPath(path));
 			foreach (var file in this)
 			{
 				if (file.IsSeparator)

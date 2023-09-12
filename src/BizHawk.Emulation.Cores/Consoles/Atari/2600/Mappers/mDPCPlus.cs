@@ -67,10 +67,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_fractionalClocks = 0;
 		}
 
-		public override void ClockCpu()
-		{
-			_elapsedCycles++;
-		}
+		public override void ClockCpu() => _elapsedCycles++;
 
 		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
 
@@ -87,10 +84,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Address(addr);
 			ClockRandomNumberGenerator();
 
-			if (addr >= 0x1040 && addr < 0x1080)
+			if (addr is >= 0x1040 and < 0x1080)
 			{
-				var index = addr & 0x07;
-				var function = (addr >> 3) & 0x07;
+				int index = addr & 0x07;
+				int function = (addr >> 3) & 0x07;
 
 				switch (function)
 				{
@@ -167,8 +164,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				byte result;
 
 				// Get the index of the data fetcher that's being accessed
-				var index = addr & 0x07;
-				var function = (addr >> 3) & 0x07;
+				int index = addr & 0x07;
+				int function = (addr >> 3) & 0x07;
 
 				// Update flag register for selected data fetcher
 				if ((_counters[index] & 0x00ff) == _tops[index])
@@ -189,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						}
 						else // No, it's a music read
 						{
-							var musicAmplitudes = new byte[] {
+							byte[] musicAmplitudes = new byte[] {
 							  0x00, 0x04, 0x05, 0x09, 0x06, 0x0a, 0x0b, 0x0f
 							};
 
@@ -281,7 +278,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			// Using bits 7, 5, 4, & 3 of the shift register compute the input
 			// bit for the shift register
-			var bit = _randomInputBits[((_currentRandomVal >> 3) & 0x07) |
+			byte bit = _randomInputBits[((_currentRandomVal >> 3) & 0x07) |
 				(((_currentRandomVal & 0x80) > 0) ? 0x08 : 0x00)];
 
 			// Update the shift register 
@@ -291,12 +288,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private void UpdateMusicModeDataFetchers()
 		{
 			// Calculate the number of cycles since the last update
-			var cycles = _elapsedCycles;
+			int cycles = _elapsedCycles;
 			_elapsedCycles = 0;
 
 			// Calculate the number of DPC OSC clocks since the last update
-			var clocks = ((20000.0 * cycles) / 1193191.66666667) + _fractionalClocks;
-			var wholeClocks = (int)clocks;
+			double clocks = ((20000.0 * cycles) / 1193191.66666667) + _fractionalClocks;
+			int wholeClocks = (int)clocks;
 			_fractionalClocks = (float)(clocks - wholeClocks);
 
 			if (wholeClocks <= 0)
@@ -305,13 +302,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			// Let's update counters and flags of the music mode data fetchers
-			for (var x = 5; x <= 7; ++x)
+			for (int x = 5; x <= 7; ++x)
 			{
 				// Update only if the data fetcher is in music mode
 				if (_musicModes[x - 5])
 				{
-					var top = _tops[x] + 1;
-					var newLow = _counters[x] & 0x00ff;
+					int top = _tops[x] + 1;
+					int newLow = _counters[x] & 0x00ff;
 
 					if (_tops[x] != 0)
 					{

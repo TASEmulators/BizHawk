@@ -25,8 +25,8 @@ namespace BizHawk.Common
 
 		static DynamicLibraryImportResolver()
 		{
-			var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)?.Replace("file:", "") ?? string.Empty;
-			var sysLibDir = Environment.GetEnvironmentVariable("BIZHAWK_INT_SYSLIB_PATH") ?? "/usr/lib";
+			string currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)?.Replace("file:", "") ?? string.Empty;
+			string sysLibDir = Environment.GetEnvironmentVariable("BIZHAWK_INT_SYSLIB_PATH") ?? "/usr/lib";
 			UnixSearchPaths = new[]
 			{
 				$"{currDir}/", $"{currDir}/dll/",
@@ -39,7 +39,7 @@ namespace BizHawk.Common
 			: UnixSearchPaths.Select(dir => dir + orig)
 				.FirstOrDefault(s =>
 				{
-					var fi = new FileInfo(s);
+					FileInfo fi = new(s);
 					return fi.Exists && (fi.Attributes & FileAttributes.Directory) != FileAttributes.Directory;
 				})
 				?? orig; // don't MakeAbsolute, just pass through and hope something lower-level magically makes it work
@@ -107,19 +107,19 @@ namespace BizHawk.Common
 		public InstanceDll(string dllPath)
 		{
 			// copy the dll to a temp directory
-			var path = TempFileManager.GetTempFilename(Path.GetFileNameWithoutExtension(dllPath), ".dll", false);
+			string path = TempFileManager.GetTempFilename(Path.GetFileNameWithoutExtension(dllPath), ".dll", false);
 			File.Copy(dllPath, path, true);
 			// try to locate dlls in the current directory (for libretro cores)
 			// this isn't foolproof but it's a little better than nothing
 			// setting PWD temporarily doesn't work. that'd be ideal since it supposedly gets searched early on,
 			// but i guess not with SetDllDirectory in effect
-			var envpath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process);
+			string envpath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process);
 			try
 			{
-				var envpath_new = $"{Path.GetDirectoryName(path)};{envpath}";
+				string envpath_new = $"{Path.GetDirectoryName(path)};{envpath}";
 				Environment.SetEnvironmentVariable("PATH", envpath_new, EnvironmentVariableTarget.Process);
 				HModule = OSTailoredCode.LinkedLibManager.LoadOrThrow(path); // consider using LoadLibraryEx instead of shenanigans?
-				var newfname = TempFileManager.RenameTempFilenameForDelete(path);
+				string newfname = TempFileManager.RenameTempFilenameForDelete(path);
 				File.Move(path, newfname);
 			}
 			catch
@@ -153,7 +153,7 @@ namespace BizHawk.Common
 
 		public IntPtr GetProcAddrOrZero(string entryPoint)
 		{
-			for (var i = _resolvers.Count - 1; i != 0; i--)
+			for (int i = _resolvers.Count - 1; i != 0; i--)
 			{
 				var ret = _resolvers[i].GetProcAddrOrZero(entryPoint);
 				if (ret != IntPtr.Zero) return ret;

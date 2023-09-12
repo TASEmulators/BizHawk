@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common
 				eventHandled = false;
 				return;
 			}
-			var e = new BeforeQuickLoadEventArgs(quickSaveSlotName);
+			BeforeQuickLoadEventArgs e = new(quickSaveSlotName);
 			BeforeQuickLoad(sender, e);
 			eventHandled = e.Handled;
 		}
@@ -126,15 +126,12 @@ namespace BizHawk.Client.Common
 				eventHandled = false;
 				return;
 			}
-			var e = new BeforeQuickSaveEventArgs(quickSaveSlotName);
+			BeforeQuickSaveEventArgs e = new(quickSaveSlotName);
 			BeforeQuickSave(sender, e);
 			eventHandled = e.Handled;
 		}
 
-		public void OnRomLoaded()
-		{
-			RomLoaded?.Invoke(null, EventArgs.Empty);
-		}
+		public void OnRomLoaded() => RomLoaded?.Invoke(null, EventArgs.Empty);
 
 		public void OnStateLoaded(object sender, string stateName) => StateLoaded?.Invoke(sender, new StateLoadedEventArgs(stateName));
 
@@ -167,7 +164,7 @@ namespace BizHawk.Client.Common
 
 		public void SeekFrame(int frame)
 		{
-			var wasPaused = _mainForm.EmulatorPaused;
+			bool wasPaused = _mainForm.EmulatorPaused;
 			while (Emulator.Frame != frame) _mainForm.SeekFrameAdvance();
 			if (!wasPaused) _mainForm.UnpauseEmulator();
 		}
@@ -195,7 +192,7 @@ namespace BizHawk.Client.Common
 
 		public void SetWindowSize(int size)
 		{
-			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
+			if (size is 1 or 2 or 3 or 4 or 5 or 10)
 			{
 				_config.TargetZoomFactors[Emulator.SystemId] = size;
 				_mainForm.FrameBufferResized();

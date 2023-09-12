@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public override byte ReadMemory(ushort addr)
 		{
-			if (addr >= 0x1000 && addr < 0x1800)
+			if (addr is >= 0x1000 and < 0x1800)
 			{
 				//could be hsbios RAM here
 				if (Core._hsbios != null)
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				return Core._bios[addr - (0x10000 - Core._bios.Length)];
 			}
 
-			if (addr >= 0x4000 && addr <0x5000)
+			if (addr is >= 0x4000 and < 0x5000)
 			{
 				int tempRet1 = ((addr >> 8) & 0xE) >> 1;
 				int tempRet2 = addr & 0xFF;
@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
-			if (addr >= 0x1000 && addr < 0x1800)
+			if (addr is >= 0x1000 and < 0x1800)
 			{
 				//could be hsbios RAM here
 				if (Core._hsbios != null)
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 			else
 			{
-				if (addr >= 0x4000 && addr < 0x5000)
+				if (addr is >= 0x4000 and < 0x5000)
 				{
 					int tempRet1 = ((addr >> 8) & 0xE) >> 1;
 					int tempRet2 = addr & 0xFF;
@@ -90,9 +90,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 		}
 
-		public override void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(RAM), ref RAM, false);
-		}
+		public override void SyncState(Serializer ser) => ser.Sync(nameof(RAM), ref RAM, false);
 	}
 }

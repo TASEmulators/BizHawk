@@ -158,9 +158,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(chr_enabled), ref chr_enabled);
 		}
 
-		public override byte ReadPrg(int addr)
-		{
-			return Rom[addr & prg_byte_mask];
-		}
+		public override byte ReadPrg(int addr) => Rom[addr & prg_byte_mask];
 	}
 }

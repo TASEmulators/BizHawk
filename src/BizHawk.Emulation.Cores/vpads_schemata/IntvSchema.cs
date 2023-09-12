@@ -18,8 +18,8 @@ namespace BizHawk.Emulation.Cores
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			var intvSyncSettings = ((Intellivision.Intellivision) core).GetSyncSettings().Clone();
-			var port1 = intvSyncSettings.Port1;
-			var port2 = intvSyncSettings.Port2;
+			string port1 = intvSyncSettings.Port1;
+			string port2 = intvSyncSettings.Port2;
 
 			if (port1 == StandardControllerName)
 			{

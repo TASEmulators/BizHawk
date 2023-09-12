@@ -46,9 +46,6 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void CancelBtn_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void CancelBtn_Click(object sender, EventArgs e) => Close();
 	}
 }

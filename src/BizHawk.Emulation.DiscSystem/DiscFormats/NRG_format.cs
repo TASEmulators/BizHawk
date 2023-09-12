@@ -361,11 +361,11 @@ namespace BizHawk.Emulation.DiscSystem
 				throw new NRGParseException("Malformed NRG format: 0 sized CUE chunk!");
 			}
 
-			var v2 = chunkID == "CUEX";
-			var ret = new NRGCue { ChunkID = chunkID, ChunkSize = chunkSize };
-			for (var i = 0; i < chunkSize; i += 8)
+			bool v2 = chunkID == "CUEX";
+			NRGCue ret = new() { ChunkID = chunkID, ChunkSize = chunkSize };
+			for (int i = 0; i < chunkSize; i += 8)
 			{
-				var trackIndex = new NRGTrackIndex
+				NRGTrackIndex trackIndex = new()
 				{
 					ADRControl = chunkData[i + 0],
 					Track = BCD2.FromBCD(chunkData[i + 1]),
@@ -397,7 +397,7 @@ namespace BizHawk.Emulation.DiscSystem
 				throw new NRGParseException("Malformed NRG format: DAO chunk is less than 22 bytes!");
 			}
 
-			var ret = new NRGDAOTrackInfo
+			NRGDAOTrackInfo ret = new()
 			{
 				ChunkID = chunkID,
 				ChunkSize = chunkSize,
@@ -412,8 +412,8 @@ namespace BizHawk.Emulation.DiscSystem
 				LastTrack = chunkData[21],
 			};
 
-			var v2 = chunkID == "DAOX";
-			var ntracks = ret.LastTrack - ret.FirstTrack + 1;
+			bool v2 = chunkID == "DAOX";
+			int ntracks = ret.LastTrack - ret.FirstTrack + 1;
 
 			if (ntracks <= 0 ||
 				ret.FirstTrack is < 0 or > 99 ||
@@ -428,9 +428,9 @@ namespace BizHawk.Emulation.DiscSystem
 				throw new NRGParseException("Malformed NRG format: DAO chunk size does not match number of tracks!");
 			}
 
-			for (var i = 22; i < chunkSize; i += v2 ? 42 : 30)
+			for (int i = 22; i < chunkSize; i += v2 ? 42 : 30)
 			{
-				var track = new NRGDAOTrack
+				NRGDAOTrack track = new()
 				{
 					Isrc = Encoding.ASCII.GetString(chunkData.Slice(i, 12)).TrimEnd('\0'),
 					SectorSize = BinaryPrimitives.ReadUInt16BigEndian(chunkData.Slice(i + 12, sizeof(ushort))),
@@ -469,7 +469,7 @@ namespace BizHawk.Emulation.DiscSystem
 			// ETNF is always a multiple of 20
 			// ETN2 is always a multiple of 32
 
-			var trackSize = chunkID switch
+			int trackSize = chunkID switch
 			{
 				"TINF" => 12,
 				"ETNF" => 20,
@@ -482,15 +482,15 @@ namespace BizHawk.Emulation.DiscSystem
 				throw new NRGParseException($"Malformed NRG format: {chunkID} chunk was not a multiple of {trackSize}!");
 			}
 
-			var ret = new NRGTAOTrackInfo
+			NRGTAOTrackInfo ret = new()
 			{
 				ChunkID = chunkID,
 				ChunkSize = chunkSize,
 			};
 
-			for (var i = 0; i < chunkSize; i += trackSize)
+			for (int i = 0; i < chunkSize; i += trackSize)
 			{
-				var track = new NRGTAOTrack();
+				NRGTAOTrack track = new();
 
 				if (chunkID == "ETN2")
 				{
@@ -586,13 +586,13 @@ namespace BizHawk.Emulation.DiscSystem
 
 			// might be legal to have a 0 sized CDTX chunk?
 
-			var ret = new NRGCdText
+			NRGCdText ret = new()
 			{
 				ChunkID = chunkID,
 				ChunkSize = chunkSize,
 			};
 
-			for (var i = 0; i < chunkSize; i += 18)
+			for (int i = 0; i < chunkSize; i += 18)
 			{
 				ret.CdTextPacks.Add(chunkData.Slice(i, 18).ToArray());
 			}
@@ -626,15 +626,15 @@ namespace BizHawk.Emulation.DiscSystem
 				throw new NRGParseException("Malformed NRG format: Missing null terminator in AFNM chunk!");
 			}
 
-			var ret = new NRGFilenames
+			NRGFilenames ret = new()
 			{
 				ChunkID = chunkID,
 				ChunkSize = chunkSize,
 			};
 
-			for (var i = 0; i < chunkSize;)
+			for (int i = 0; i < chunkSize;)
 			{
-				var j = 0;
+				int j = 0;
 				while (chunkData[i + j] != 0)
 				{
 					j++;
@@ -683,8 +683,8 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <exception cref="NRGParseException">malformed nrg format</exception>
 		public static NRGFile ParseFrom(Stream stream)
 		{
-			var nrgf = new NRGFile();
-			using var br = new BinaryReader(stream);
+			NRGFile nrgf = new();
+			using BinaryReader br = new(stream);
 
 			try
 			{
@@ -740,8 +740,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 				while (nrgf.End is null)
 				{
-					var chunkID = br.ReadStringFixedUtf8(4);
-					var chunkSize = br.ReadInt32();
+					string chunkID = br.ReadStringFixedUtf8(4);
+					int chunkSize = br.ReadInt32();
 					if (BitConverter.IsLittleEndian)
 					{
 						chunkSize = BinaryPrimitives.ReverseEndianness(chunkSize);
@@ -754,7 +754,7 @@ namespace BizHawk.Emulation.DiscSystem
 						throw new NRGParseException("Malformed NRG format: Chunk size was negative!");
 					}
 
-					var chunkData = br.ReadBytes(chunkSize);
+					byte[] chunkData = br.ReadBytes(chunkSize);
 
 					if (chunkData.Length != chunkSize)
 					{
@@ -840,7 +840,7 @@ namespace BizHawk.Emulation.DiscSystem
 				// sanity checks
 
 				// SessionInfos will be empty if there is only 1 session
-				var nsessions = Math.Max(nrgf.SessionInfos.Count, 1);
+				int nsessions = Math.Max(nrgf.SessionInfos.Count, 1);
 
 				if (nrgf.Cues.Count != nsessions)
 				{
@@ -894,7 +894,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static LoadResults LoadNRGPath(string path)
 		{
-			var ret = new LoadResults
+			LoadResults ret = new()
 			{
 				NrgPath = path
 			};
@@ -903,7 +903,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (!File.Exists(path)) throw new NRGParseException("Malformed NRG format: nonexistent NRG file!");
 
 				NRGFile nrgf;
-				using (var infNRG = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+				using (FileStream infNRG = new(path, FileMode.Open, FileAccess.Read, FileShare.Read))
 					nrgf = ParseFrom(infNRG);
 
 				ret.ParsedNRGFile = nrgf;
@@ -924,19 +924,19 @@ namespace BizHawk.Emulation.DiscSystem
 			if (!loadResults.Valid)
 				throw loadResults.FailureException;
 
-			var disc = new Disc();
+			Disc disc = new();
 			var nrgf = loadResults.ParsedNRGFile;
 
 			IBlob nrgBlob = new Blob_RawFile { PhysicalPath = nrgPath };
 			disc.DisposableResources.Add(nrgBlob);
 
 			// SessionInfos will be empty if there is only 1 session
-			var nsessions = Math.Max(nrgf.SessionInfos.Count, 1);
-			var dao = nrgf.DAOTrackInfos.Count > 0; // tao otherwise
+			int nsessions = Math.Max(nrgf.SessionInfos.Count, 1);
+			bool dao = nrgf.DAOTrackInfos.Count > 0; // tao otherwise
 
-			for (var i = 0; i < nsessions; i++)
+			for (int i = 0; i < nsessions; i++)
 			{
-				var session = new DiscSession { Number = i + 1 };
+				DiscSession session = new() { Number = i + 1 };
 
 				int startTrack, endTrack;
 				SessionFormat sessionFormat;
@@ -953,7 +953,7 @@ namespace BizHawk.Emulation.DiscSystem
 					sessionFormat = (SessionFormat)nrgf.TOCTs[i].DiskType;
 				}
 
-				var TOCMiscInfo = new Synthesize_A0A1A2_Job(
+				Synthesize_A0A1A2_Job TOCMiscInfo = new(
 					firstRecordedTrackNumber: startTrack,
 					lastRecordedTrackNumber: endTrack,
 					sessionFormat: sessionFormat,
@@ -964,7 +964,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					if (trackIndex.Track.BCDValue is not (0 or 0xAA) && trackIndex.Index.BCDValue == 1)
 					{
-						var q = default(SubchannelQ);
+						SubchannelQ q = default;
 						q.q_status = trackIndex.ADRControl;
 						q.q_tno = BCD2.FromBCD(0);
 						q.q_index = trackIndex.Track;
@@ -977,9 +977,9 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 
 				// leadin track
-				var leadinSize = i == 0 ? 0 : 4500;
-				var isData = (session.RawTOCEntries.First(t => t.QData.q_index.DecimalValue == startTrack).QData.ADR & 4) != 0;
-				for (var j = 0; j < leadinSize; j++)
+				int leadinSize = i == 0 ? 0 : 4500;
+				bool isData = (session.RawTOCEntries.First(t => t.QData.q_index.DecimalValue == startTrack).QData.ADR & 4) != 0;
+				for (int j = 0; j < leadinSize; j++)
 				{
 					// this is most certainly wrong
 					// nothing relies on the exact contents for now (only multisession core is VirtualJaguar which doesn't touch leadin)
@@ -1018,16 +1018,16 @@ namespace BizHawk.Emulation.DiscSystem
 				if (dao)
 				{
 					var tracks = nrgf.DAOTrackInfos[i].Tracks;
-					for (var j = 0; j < tracks.Count; j++)
+					for (int j = 0; j < tracks.Count; j++)
 					{
 						var track = nrgf.DAOTrackInfos[i].Tracks[j];
-						var relMSF = -(track.TrackStartFileOffset - track.PregapFileOffset) / track.SectorSize;
-						var trackNumBcd = BCD2.FromDecimal(startTrack + j);
+						long relMSF = -(track.TrackStartFileOffset - track.PregapFileOffset) / track.SectorSize;
+						BCD2 trackNumBcd = BCD2.FromDecimal(startTrack + j);
 						var cueIndexes = nrgf.Cues[i].TrackIndices.Where(t => t.Track == trackNumBcd).ToArray();
 	
 						// do the pregap
 						var pregapCueIndex = cueIndexes[0];
-						for (var k = track.PregapFileOffset; k < track.TrackStartFileOffset; k += track.SectorSize)
+						for (long k = track.PregapFileOffset; k < track.TrackStartFileOffset; k += track.SectorSize)
 						{
 							var synth = CreateSynth(track.Mode);
 							synth.Blob = nrgBlob;
@@ -1048,8 +1048,8 @@ namespace BizHawk.Emulation.DiscSystem
 						}
 
 						// actual data
-						var curIndex = 1;
-						for (var k = track.TrackStartFileOffset; k < track.TrackEndFileOffset; k += track.SectorSize)
+						int curIndex = 1;
+						for (long k = track.TrackStartFileOffset; k < track.TrackEndFileOffset; k += track.SectorSize)
 						{
 							if (curIndex + 1 != cueIndexes.Length && disc._Sectors.Count == cueIndexes[curIndex + 1].LBA + 150)
 							{
@@ -1081,8 +1081,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 				// leadout track
 				// first leadout is 6750 sectors, later ones are 2250 sectors
-				var leadoutSize = i == 0 ? 6750 : 2250;
-				for (var j = 0; j < leadoutSize; j++)
+				int leadoutSize = i == 0 ? 6750 : 2250;
+				for (int j = 0; j < leadoutSize; j++)
 				{
 					disc._Sectors.Add(new SS_Leadout
 					{

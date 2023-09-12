@@ -61,43 +61,43 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				return RAM_6532[addr & 0x7F];
 			}
 			
-			if ((addr >= 0x1800) && (addr < 0x2800))
+			if (addr is >= 0x1800 and < 0x2800)
 			{
 				return RAM[addr -0x1800];
 			}
 			
-			if ((addr >= 0x40) && (addr < 0x100))
+			if (addr is >= 0x40 and < 0x100)
 			{
 				// RAM block 0
 				return RAM[addr - 0x40 + 0x840];
 			}
 			
-			if ((addr >= 0x140) && (addr < 0x200))
+			if (addr is >= 0x140 and < 0x200)
 			{
 				// RAM block 1
 				return RAM[addr - 0x140 + 0x940];
 			}
 
-			if ((addr >= 0x2800) && (addr < 0x3000))
+			if (addr is >= 0x2800 and < 0x3000)
 			{
 				// this mirror evidently does not exist on hardware despite being in the documentation
 				// must return 0 or Summer Games will deadlock at event start screen
 				return 0x0;// RAM[(addr & 0x7FF) + 0x800];
 			}
 
-			if ((addr >= 0x3000) && (addr < 0x4000))
+			if (addr is >= 0x3000 and < 0x4000)
 			{
 				// could be either RAM mirror or ROM
 				return mapper.ReadMemory(addr);
 			}
 
-			if ((addr >= 0x400) && (addr < 0x480))
+			if (addr is >= 0x400 and < 0x480)
 			{
 				// cartridge space available
 				return mapper.ReadMemory(addr);
 			}
 
-			if ((addr >= 0x500) && (addr < 0x1800))
+			if (addr is >= 0x500 and < 0x1800)
 			{
 				// cartridge space available
 				return mapper.ReadMemory(addr);
@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if ((A7800_control_register & 0x2) > 0)
 				{
 					// register 8 is read only and controlled by Maria
-					var temp = addr & 0x1F;
+					int temp = addr & 0x1F;
 
 					if (temp != 8)
 						Maria_regs[temp] = value;
@@ -163,36 +163,36 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				slow_access = true;
 				RAM_6532[addr & 0x7F] = value;
 			}
-			else if ((addr >= 0x1800) && (addr < 0x2800))
+			else if (addr is >= 0x1800 and < 0x2800)
 			{
 				RAM[addr - 0x1800] = value;
 			}
-			else if ((addr >= 0x40) && (addr < 0x100))
+			else if (addr is >= 0x40 and < 0x100)
 			{
 				// RAM block 0
 				RAM[addr - 0x40 + 0x840] = value;
 			}
-			else if ((addr >= 0x140) && (addr < 0x200))
+			else if (addr is >= 0x140 and < 0x200)
 			{
 				// RAM block 1
 				RAM[addr - 0x140 + 0x940] = value;
 			}
-			else if ((addr >= 0x2800) && (addr < 0x3000))
+			else if (addr is >= 0x2800 and < 0x3000)
 			{
 				// this mirror evidently does not exist on hardware despite being in the documentation
 				//RAM[(addr & 0x7FF) + 0x800] = value;
 			}
-			else if ((addr >= 0x3000) && (addr < 0x4000))
+			else if (addr is >= 0x3000 and < 0x4000)
 			{
 				// could be either RAM mirror or ROM
 				mapper.WriteMemory(addr, value);
 			}
-			else if ((addr >= 0x400) && (addr < 0x480))
+			else if (addr is >= 0x400 and < 0x480)
 			{
 				// cartridge space available
 				mapper.WriteMemory(addr, value);
 			}
-			else if ((addr >= 0x500) && (addr < 0x1800))
+			else if (addr is >= 0x500 and < 0x1800)
 			{
 				// cartridge space available
 				mapper.WriteMemory(addr, value);

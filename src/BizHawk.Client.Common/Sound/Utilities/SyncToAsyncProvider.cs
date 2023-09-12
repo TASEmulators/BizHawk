@@ -16,10 +16,7 @@ namespace BizHawk.Client.Common
 			};
 		}
 
-		public void DiscardSamples()
-		{
-			_outputProvider.DiscardSamples();
-		}
+		public void DiscardSamples() => _outputProvider.DiscardSamples();
 
 		public bool CanProvideAsync => true;
 
@@ -35,14 +32,8 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <exception cref="InvalidOperationException">always</exception>
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			throw new InvalidOperationException("Sync mode is not supported.");
-		}
+		public void GetSamplesSync(out short[] samples, out int nsamp) => throw new InvalidOperationException("Sync mode is not supported.");
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			_outputProvider.GetSamples(samples);
-		}
+		public void GetSamplesAsync(short[] samples) => _outputProvider.GetSamples(samples);
 	}
 }

@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							Run5_L();
 							break;
 						case 0x02:
-							if ((sr5_L == 31) || (sr5_L == 16))
+							if (sr5_L is 31 or 16)
 							{
 								on_L = Run4_L();
 							}
@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							Run5_R();
 							break;
 						case 0x02:
-							if ((sr5_R == 31) || (sr5_R == 16))
+							if (sr5_R is 31 or 16)
 							{
 								on_R = Run4_R();
 							}

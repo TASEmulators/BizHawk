@@ -528,7 +528,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					I_skip = true;
 					
 					// for prefetched case, the PC stays on the BUS one cycle longer
-					if ((src_t == IXCBpre) || (src_t == IYCBpre)) { BUSRQ[0] = PCh; }
+					if (src_t is IXCBpre or IYCBpre) { BUSRQ[0] = PCh; }
 
 					break;
 				case ASGN:
@@ -868,7 +868,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			}
 
 			return new(
-				disassembly: $"{RegPC:X4}: {byte_code.PadRight(12)} {disasm.PadRight(26)}",
+				disassembly: $"{RegPC:X4}: {byte_code,-12} {disasm,-26}",
 				registerInfo: string.Join(" ",
 					$"AF:{(Regs[A] << 8) + Regs[F]:X4}",
 					$"BC:{(Regs[B] << 8) + Regs[C]:X4}",

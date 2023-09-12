@@ -36,14 +36,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.WriteWram(addr, value);
 		}
 
-		protected override int Get_PRGBank_8K(int addr)
-		{
-			return (base.Get_PRGBank_8K(addr) &0x1F) | ((reg & 0x2) << 4);
-		}
+		protected override int Get_PRGBank_8K(int addr) => (base.Get_PRGBank_8K(addr) & 0x1F) | ((reg & 0x2) << 4);
 
-		protected override int Get_CHRBank_1K(int addr)
-		{
-			return base.Get_CHRBank_1K(addr) | (reg <<3 & 0x100);
-		}
+		protected override int Get_CHRBank_1K(int addr) => base.Get_CHRBank_1K(addr) | (reg << 3 & 0x100);
 	}
 }

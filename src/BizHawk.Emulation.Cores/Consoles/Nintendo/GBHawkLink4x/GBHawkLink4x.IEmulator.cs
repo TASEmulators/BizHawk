@@ -1020,10 +1020,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public int[] _vidbuffer = new int[160 * 2 * 144 * 2];
 
-		public int[] GetVideoBuffer()
-		{
-			return _vidbuffer;		
-		}
+		public int[] GetVideoBuffer() => _vidbuffer;
 
 		public void FillVideoBuffer()
 		{
@@ -1067,10 +1064,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			A.audio.GetSamplesSync(out var temp_samp_A, out var nsamp_A);
-			B.audio.GetSamplesSync(out var temp_samp_B, out var nsamp_B);
-			C.audio.GetSamplesSync(out var temp_samp_C, out var nsamp_C);
-			D.audio.GetSamplesSync(out var temp_samp_D, out var nsamp_D);
+			A.audio.GetSamplesSync(out short[] temp_samp_A, out int nsamp_A);
+			B.audio.GetSamplesSync(out short[] temp_samp_B, out int nsamp_B);
+			C.audio.GetSamplesSync(out short[] temp_samp_C, out int nsamp_C);
+			D.audio.GetSamplesSync(out short[] temp_samp_D, out int nsamp_D);
 
 			if (Link4xSettings.AudioSet == GBLink4xSettings.AudioSrc.A)
 			{
@@ -1099,10 +1096,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			}
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
 		public void DiscardSamples()
 		{
@@ -1112,10 +1106,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			D.audio.DiscardSamples();
 		}
 
+		#pragma warning disable IDE0051
 		private void GetSamples(short[] samples)
 		{
 
 		}
+		#pragma warning restore IDE0051
 
 		public void DisposeSound()
 		{

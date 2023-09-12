@@ -417,10 +417,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Category("Per-Game Hacks")]
 			public int EnableHacksForGame { get; set; }
 
-			public N64RicePluginSettings Clone()
-			{
-				return (N64RicePluginSettings)MemberwiseClone();
-			}
+			public N64RicePluginSettings Clone() => (N64RicePluginSettings)MemberwiseClone();
 
 			public void FillPerGameHacks(GameInfo game)
 			{
@@ -456,10 +453,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				}
 			}
 
-			public PluginType GetPluginType()
-			{
-				return PluginType.Rice;
-			}
+			public PluginType GetPluginType() => PluginType.Rice;
 		}
 	}
 }

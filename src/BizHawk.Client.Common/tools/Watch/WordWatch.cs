@@ -57,10 +57,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Reset the previous value; set it to the current one
 		/// </summary>
-		public override void ResetPrevious()
-		{
-			_previous = GetWord();
-		}
+		public override void ResetPrevious() => _previous = GetWord();
 
 		/// <summary>
 		/// Try to sets the value into the <see cref="MemoryDomain"/>
@@ -101,7 +98,7 @@ namespace BizHawk.Client.Common
 				case PreviousType.Original:
 					return;
 				case PreviousType.LastChange:
-					var temp = _value;
+					ushort temp = _value;
 					_value = GetWord();
 
 					if (_value != temp)

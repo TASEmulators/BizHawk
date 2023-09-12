@@ -31,11 +31,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadExp(int addr)
-		{
+		public override byte ReadExp(int addr) =>
 			//some kind of magic number..
-			return 0x50;
-		}
+			0x50;
 
 		public override void WritePrg(int addr, byte value)
 		{

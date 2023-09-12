@@ -127,10 +127,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int total_counter;
 		public uint[] color_palette = new uint[4];
 
-		public virtual byte ReadReg(int addr)
-		{
-			return 0;
-		}
+		public virtual byte ReadReg(int addr) => 0;
 
 		public virtual void WriteReg(int addr, byte value)
 		{

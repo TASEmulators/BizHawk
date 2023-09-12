@@ -15,10 +15,7 @@ namespace BizHawk.Emulation.Cores.Components.x86
 
 	public partial class x86<TCpu> where TCpu : struct, x86CpuType
 	{
-		private ushort ReadWord(int addr)
-		{
-			return (ushort)(ReadMemory(addr++) + (ReadMemory(addr) << 8));
-		}
+		private ushort ReadWord(int addr) => (ushort)(ReadMemory(addr++) + (ReadMemory(addr) << 8));
 
 		private string DisassembleRM8(ref int addr)
 		{
@@ -26,20 +23,18 @@ namespace BizHawk.Emulation.Cores.Components.x86
 			int mod = (ModRM >> 6) & 3;
 			int r = (ModRM >> 3) & 7;
 			int m = ModRM & 7;
-
-			string reg;
-			switch (r)
+			string reg = r switch
 			{
-				case 0: reg = "AL"; break;
-				case 1: reg = "CL"; break;
-				case 2: reg = "DL"; break;
-				case 3: reg = "BL"; break;
-				case 4: reg = "AH"; break;
-				case 5: reg = "CH"; break;
-				case 6: reg = "DH"; break;
-				case 7: reg = "BH"; break;
-				default: reg = "UNKNOWN"; break;
-			}
+				0 => "AL",
+				1 => "CL",
+				2 => "DL",
+				3 => "BL",
+				4 => "AH",
+				5 => "CH",
+				6 => "DH",
+				7 => "BH",
+				_ => "UNKNOWN",
+			};
 			return reg + ", " + DisassembleMod(ref addr, mod, m, 1);
 		}
 
@@ -106,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Components.x86
 
 		public DisassemblyInfo Disassemble(int addr)
 		{
-			var info = new DisassemblyInfo { Addr = addr };
+			DisassemblyInfo info = new() { Addr = addr };
 			byte op1 = ReadMemory(addr++);
 			switch (op1)
 			{
@@ -185,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Components.x86
 			}
 
 			info.Length = addr - info.Addr;
-			var sb = new StringBuilder();
+			StringBuilder sb = new();
 			for (int p = info.Addr; p < info.Addr + info.Length; p++)
 				sb.AppendFormat("{0:X2}", ReadMemory(p));
 			info.RawBytes = sb.ToString();

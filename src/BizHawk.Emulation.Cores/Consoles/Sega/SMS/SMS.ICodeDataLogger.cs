@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			if (MapMemory != null)
 			{
-				CDLog_MapResults results = MapMemory(address, false);
+				var results = MapMemory(address, false);
 				switch (results.Type)
 				{
 					case CDLog_AddrType.None: break;

@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 
 		static Emu83()
 		{
-			var resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "libemu83.so" : "libemu83.dll", hasLimitedLifetime: false);
 			LibEmu83 = BizInvoker.GetInvoker<LibEmu83>(resolver, CallingConventionAdapters.Native);
 		}
@@ -34,14 +34,14 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 			{
 				_serviceProvider = new BasicServiceProvider(this);
 				PutSettings(lp.Settings ?? new TI83CommonSettings());
-				var rom = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("TI83", "Rom"));
+				byte[] rom = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("TI83", "Rom"));
 				Context = LibEmu83.TI83_CreateContext(rom, rom.Length);
 				if (Context == IntPtr.Zero)
 				{
 					throw new Exception("Core returned null! Bad ROM?");
 				}
-				var linkFiles = lp.Roms.Select(r => r.RomData).ToList();
-				foreach (var linkFile in linkFiles)
+				System.Collections.Generic.List<byte[]> linkFiles = lp.Roms.Select(r => r.RomData).ToList();
+				foreach (byte[] linkFile in linkFiles)
 				{
 					if (!LibEmu83.TI83_LoadLinkFile(Context, linkFile, linkFile.Length))
 					{

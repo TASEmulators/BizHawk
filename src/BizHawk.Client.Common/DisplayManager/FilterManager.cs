@@ -71,10 +71,7 @@ namespace BizHawk.Client.Common.FilterManager
 
 		public RenderTarget CurrRenderTarget;
 
-		public RenderTarget GetTempTarget(int width, int height)
-		{
-			return RenderTargetProvider.Get(new(width, height));
-		}
+		public RenderTarget GetTempTarget(int width, int height) => RenderTargetProvider.Get(new(width, height));
 
 		public void AddFilter(BaseFilter filter, string name = "")
 		{
@@ -87,7 +84,7 @@ namespace BizHawk.Client.Common.FilterManager
 		/// </summary>
 		public Vector2 UntransformPoint(string channel, Vector2 point)
 		{
-			for (var i = Filters.Count - 1; i >= 0; i--)
+			for (int i = Filters.Count - 1; i >= 0; i--)
 			{
 				var filter = Filters[i];
 				point = filter.UntransformPoint(channel, point);
@@ -160,16 +157,16 @@ namespace BizHawk.Client.Common.FilterManager
 
 			// propagate output size backwards through filter chain to allow a 'flex' filter to determine its output based on the desired output needs
 			presize = outsize;
-			for (var i = Filters.Count - 1; i >= 0; i--)
+			for (int i = Filters.Count - 1; i >= 0; i--)
 			{
 				var filter = Filters[i];
 				presize = filter.PresizeOutput(channel, presize);
 			}
 
-			var obtainedFirstOutput = false;
-			var currState = new SurfaceState(null);
+			bool obtainedFirstOutput = false;
+			SurfaceState currState = new(null);
 
-			for (var i = 0; i < Filters.Count; i++)
+			for (int i = 0; i < Filters.Count; i++)
 			{
 				var f = Filters[i];
 
@@ -196,7 +193,7 @@ namespace BizHawk.Client.Common.FilterManager
 						// (if so, insert a render filter)
 						case SurfaceDisposition.RenderTarget when currState.SurfaceDisposition == SurfaceDisposition.Texture:
 						{
-							var renderer = new Render();
+							Render renderer = new();
 							Filters.Insert(i, renderer);
 							Compile(channel, inSize, outsize, finalTarget);
 							return;
@@ -205,7 +202,7 @@ namespace BizHawk.Client.Common.FilterManager
 						// (if so, the current render target gets resolved, and made no longer current
 						case SurfaceDisposition.Texture when currState.SurfaceDisposition == SurfaceDisposition.RenderTarget:
 						{
-							var resolver = new Resolve();
+							Resolve resolver = new();
 							Filters.Insert(i, resolver);
 							Compile(channel, inSize, outsize, finalTarget);
 							return;
@@ -233,7 +230,7 @@ namespace BizHawk.Client.Common.FilterManager
 							iosi.SurfaceDisposition = currState.SurfaceDisposition;
 						}
 
-						var newTarget = false;
+						bool newTarget = false;
 						if (iosi.SurfaceFormat.Size != currState.SurfaceFormat.Size)
 						{
 							newTarget = true;
@@ -267,7 +264,7 @@ namespace BizHawk.Client.Common.FilterManager
 			// if the current output disposition is a texture, we need to render it
 			if (currState.SurfaceDisposition == SurfaceDisposition.Texture)
 			{
-				var renderer = new Render();
+				Render renderer = new();
 				Filters.Insert(Filters.Count, renderer);
 				Compile(channel, inSize, outsize, finalTarget);
 				return;
@@ -276,12 +273,12 @@ namespace BizHawk.Client.Common.FilterManager
 			// patch the program so that the final RenderTarget set operation is the framebuffer instead
 			if (finalTarget)
 			{
-				for (var i = Program.Count - 1; i >= 0; i--)
+				for (int i = Program.Count - 1; i >= 0; i--)
 				{
 					var ps = Program[i];
 					if (ps.Type == ProgramStepType.NewTarget)
 					{
-						var size = (Size)ps.Args;
+						Size size = (Size)ps.Args;
 						Debug.Assert(size == outsize);
 						Program[i] = new(ProgramStepType.FinalTarget, size, ps.Comment);
 						break;

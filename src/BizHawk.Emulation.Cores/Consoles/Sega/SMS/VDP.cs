@@ -32,13 +32,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private int lineIntLinesRemaining;
 
 		private readonly SMS Sms;
-		private readonly VdpMode mode;
 		public DisplayType DisplayType = DisplayType.NTSC;
 		private readonly Z80A Cpu;
 
 		public bool SpriteLimit;
 		public int IPeriod = 228;
-		public VdpMode VdpMode => mode;
+		public VdpMode VdpMode { get; }
 
 		public int FrameHeight = 192;
 		public int ScanLine;
@@ -75,11 +74,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		// older versions fo the SMS VDP have a masking bit in register two that effects mirroring.
 		// This is needed for Ys (JPN) in the status bar
 		private int NameTableMaskBit;
-		private bool JPN_Compat =false;
+		private readonly bool JPN_Compat =false;
 
 		// For SMS, the last 8 x-tiles are fixed if vertscroll (reg[0].bit(7)) is set, but on GG it must be
 		// only the last 7 or Fray displays incorrectly
-		private int lock_tile_start;
+		private readonly int lock_tile_start;
 
 		// preprocessed state assist stuff.
 		public int[] Palette = new int[32];
@@ -95,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			Sms = sms;
 			Cpu = cpu;
-			this.mode = mode;
+			this.VdpMode = mode;
 			if (mode == VdpMode.SMS) CRAM = new byte[32];
 			if (mode == VdpMode.GameGear) CRAM = new byte[64];
 			DisplayType = displayType;
@@ -145,10 +144,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		public byte ReadHLineCounter()
-		{
-			return HCounter;
-		}
+		public byte ReadHLineCounter() => HCounter;
 
 		public void WriteVdpControl(byte value)
 		{
@@ -205,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public void UpdatePrecomputedPalette()
 		{
-			if (mode == VdpMode.SMS)
+			if (VdpMode == VdpMode.SMS)
 			{
 				for (int i = 0; i < 32; i++)
 				{
@@ -443,13 +439,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public int[] GetVideoBuffer()
 		{
-			if (mode == VdpMode.SMS && Sms.Settings.DisplayOverscan)
+			if (VdpMode == VdpMode.SMS && Sms.Settings.DisplayOverscan)
 			{
 				if (OverscanFrameBuffer == null)
 					ProcessOverscan();
 				return OverscanFrameBuffer;
 			}
-			if (mode == VdpMode.SMS || Sms.Settings.ShowClippedRegions)
+			if (VdpMode == VdpMode.SMS || Sms.Settings.ShowClippedRegions)
 				return FrameBuffer;
 			return GameGearFrameBuffer;
 		}
@@ -458,9 +454,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{ 
 			get
 			{
-				if (mode == VdpMode.SMS && Sms.Settings.DisplayOverscan)
+				if (VdpMode == VdpMode.SMS && Sms.Settings.DisplayOverscan)
 					return OverscanFrameWidth;
-				if (mode == VdpMode.SMS)
+				if (VdpMode == VdpMode.SMS)
 					return 293;
 				if (Sms.Settings.ShowClippedRegions)
 					return 256;
@@ -473,9 +469,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			get
 			{
-				if (mode == VdpMode.SMS && Sms.Settings.DisplayOverscan)
+				if (VdpMode == VdpMode.SMS && Sms.Settings.DisplayOverscan)
 					return OverscanFrameWidth;
-				if (mode == VdpMode.SMS || Sms.Settings.ShowClippedRegions)
+				if (VdpMode == VdpMode.SMS || Sms.Settings.ShowClippedRegions)
 					return 256;
 				return 160; // GameGear
 			}
@@ -485,9 +481,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			get
 			{
-				if (mode == VdpMode.SMS && Sms.Settings.DisplayOverscan)
+				if (VdpMode == VdpMode.SMS && Sms.Settings.DisplayOverscan)
 					return OverscanFrameHeight;
-				if (mode == VdpMode.SMS || Sms.Settings.ShowClippedRegions)
+				if (VdpMode == VdpMode.SMS || Sms.Settings.ShowClippedRegions)
 					return FrameHeight;
 				return 144; // GameGear
 			}

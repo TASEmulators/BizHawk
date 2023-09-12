@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	{
 		public override void Synth(SectorSynthJob job)
 		{
-			var ecm = (job.Parts & ESectorSynthPart.ECMAny) != 0;
+			bool ecm = (job.Parts & ESectorSynthPart.ECMAny) != 0;
 			if (ecm)
 			{
 				// ecm needs these parts for synth
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			Array.Clear(job.DestBuffer2448, job.DestOffset, 2352);
 
 			byte mode = 255;
-			var form = -1;
+			int form = -1;
 			switch (TrackType)
 			{
 				case CueTrackType.Audio:

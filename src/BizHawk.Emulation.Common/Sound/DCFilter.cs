@@ -46,10 +46,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="samples">sample buffer to modify</param>
 		/// <param name="length">number of samples (not pairs).  stereo</param>
-		public void PushThroughSamples(short[] samples, int length)
-		{
-			PushThroughSamples(samples, samples, length);
-		}
+		public void PushThroughSamples(short[] samples, int length) => PushThroughSamples(samples, samples, length);
 
 		private void PushThroughSamples(short[] samplesIn, short[] samplesOut, int length)
 		{
@@ -102,14 +99,11 @@ namespace BizHawk.Emulation.Common
 			PushThroughSamples(samples, samples.Length);
 		}
 
-		public void DiscardSamples()
-		{
-			_soundProvider.DiscardSamples();
-		}
+		public void DiscardSamples() => _soundProvider.DiscardSamples();
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			_soundProvider.GetSamplesSync(out var sampIn, out var nsampIn);
+			_soundProvider.GetSamplesSync(out short[] sampIn, out int nsampIn);
 
 			short[] ret = new short[nsampIn * 2];
 			PushThroughSamples(sampIn, ret, nsampIn * 2);
@@ -121,9 +115,6 @@ namespace BizHawk.Emulation.Common
 
 		public bool CanProvideAsync => _soundProvider.CanProvideAsync;
 
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			_soundProvider.SetSyncMode(mode);
-		}
+		public void SetSyncMode(SyncSoundMode mode) => _soundProvider.SetSyncMode(mode);
 	}
 }

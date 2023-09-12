@@ -79,10 +79,10 @@ namespace BizHawk.Client.Common
 			{
 				if (DisassemblableCore != null)
 				{
-					var disasm = DisassemblableCore.Disassemble(
+					string disasm = DisassemblableCore.Disassemble(
 						string.IsNullOrEmpty(name) ? MemoryDomains!.SystemBus : MemoryDomains![name!]!,
 						pc,
-						out var l
+						out int l
 					);
 					return (disasm, l);
 				}
@@ -113,7 +113,7 @@ namespace BizHawk.Client.Common
 			{
 				if (DebuggableCore != null)
 				{
-					var table = new Dictionary<string, ulong>();
+					Dictionary<string, ulong> table = new();
 					foreach (var (name, rv) in DebuggableCore.GetCpuFlagsAndRegisters()) table[name] = rv.Value;
 					return table;
 				}
@@ -290,7 +290,7 @@ namespace BizHawk.Client.Common
 			{
 				var s = quicknes.GetSettings();
 				// this core doesn't support disabling BG
-				var showSp = GetSetting(args, 0);
+				bool showSp = GetSetting(args, 0);
 				if (showSp && s.NumSprites == 0) s.NumSprites = 8;
 				else if (!showSp && s.NumSprites > 0) s.NumSprites = 0;
 				quicknes.PutSettings(s);

@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Via
 	{
+		#pragma warning disable IDE0051
 		private const int PCR_INT_CONTROL_NEGATIVE_EDGE = 0x00;
 		private const int PCR_INT_CONTROL_POSITIVE_EDGE = 0x01;
 		private const int PCR_CONTROL_INPUT_NEGATIVE_ACTIVE_EDGE = 0x00;
@@ -30,6 +31,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private const int ACR_T1_CONTROL_INTERRUPT_ON_LOAD_AND_ONESHOT_PB7 = 0x80;
 		private const int ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS_AND_OUTPUT_ON_PB7 = 0xC0;
 		private const int ACR_T1_CONTROL_INTERRUPT_ON_LOAD_AND_PULSE_PB7 = 0x80;
+		#pragma warning restore IDE0051
 
 		private int _pra;
 		private int _ddra;
@@ -153,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void ExecutePhase()
 		{
-			var shiftIn = false;
+			bool shiftIn = false;
 
 			// TODO: use this or delete
 			////var shiftOut = false;

@@ -18,10 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		private void SetDefaultDebuggable()
-		{
-			_selectedDebuggable = GetAvailableDebuggables().First();
-		}
+		private void SetDefaultDebuggable() => _selectedDebuggable = GetAvailableDebuggables().First();
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

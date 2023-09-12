@@ -291,8 +291,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					SetBank(chr_banks, 0, 8, ((chr_regs[0] & mask) | block) << 3);
 					break;
 				case 1:
-					var reg_0 = mapper_090 ? chr_regs[0] : chr_regs[chr_latches[0]];
-					var reg_1 = mapper_090 ? chr_regs[4] : chr_regs[chr_latches[1]];
+					int reg_0 = mapper_090 ? chr_regs[0] : chr_regs[chr_latches[0]];
+					int reg_1 = mapper_090 ? chr_regs[4] : chr_regs[chr_latches[1]];
 
 					SetBank(chr_banks, 0, 4, ((reg_0 & mask) | block) << 2);
 					SetBank(chr_banks, 4, 4, ((reg_1 & mask) | block) << 2);
@@ -321,7 +321,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (nt_advanced_control)
 			{
 				int[] m = new int[4];
-				for (var i = 0; i < 4; i++)
+				for (int i = 0; i < 4; i++)
 				{
 					m[i] = nt_regs[i] & 0x01;
 				}
@@ -503,10 +503,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[bank << 13 | offset];
 		}
 
-		public override byte ReadWram(int addr)
-		{
-			return sram_prg ? Rom[ram_bank << 13 | addr & 0x1FFF] : base.ReadWram(addr);
-		}
+		public override byte ReadWram(int addr) => sram_prg ? Rom[ram_bank << 13 | addr & 0x1FFF] : base.ReadWram(addr);
 
 		public override byte ReadExp(int addr)
 		{
@@ -596,10 +593,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
-		public void SyncIRQ()
-		{
-			SyncIRQ(irq_pending);
-		}
+		public void SyncIRQ() => SyncIRQ(irq_pending);
 
 		public override void AddressPpu(int addr)
 		{

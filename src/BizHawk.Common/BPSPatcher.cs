@@ -24,7 +24,7 @@ namespace BizHawk.Common
 				ulong num = 0, mul = 1;
 				while (true)
 				{
-					var x = data[i++];
+					byte x = data[i++];
 					num += (x & 0b0111_1111UL) * mul;
 					if ((x & 0b1000_0000UL) is not 0UL) break;
 					mul <<= 7;
@@ -52,10 +52,10 @@ namespace BizHawk.Common
 			public BPSPayload(ReadOnlySpan<byte> dataWithHeader)
 			{
 				_isValid = true;
-				var i = 4;
+				int i = 4;
 				_sourceSize = DecodeVarInt(dataWithHeader, ref i);
 				TargetSize = DecodeVarInt(dataWithHeader, ref i);
-				var metadataSize = DecodeVarInt(dataWithHeader, ref i);
+				int metadataSize = DecodeVarInt(dataWithHeader, ref i);
 				if (metadataSize is not 0)
 				{
 					Console.WriteLine($"ignoring {metadataSize} bytes of .bps metadata");
@@ -73,15 +73,15 @@ namespace BizHawk.Common
 				if (!_isValid) throw new InvalidOperationException(ERR_MSG_UNINIT);
 				if (target.Length != TargetSize) throw new ArgumentException(message: $"target buffer too {(target.Length < TargetSize ? "small" : "large")}", paramName: nameof(target));
 				if (baseRom.Length != _sourceSize) throw new ArgumentException(message: $"target buffer too {(baseRom.Length < _sourceSize ? "small" : "large")}", paramName: nameof(baseRom));
-				var checksumsMatch = CheckCRC(data: baseRom, reversedChecksum: _sourceChecksum);
-				var outputOffset = 0;
-				var sourceRelOffset = 0;
-				var targetRelOffset = 0;
-				var i = 0;
+				bool checksumsMatch = CheckCRC(data: baseRom, reversedChecksum: _sourceChecksum);
+				int outputOffset = 0;
+				int sourceRelOffset = 0;
+				int targetRelOffset = 0;
+				int i = 0;
 				while (i < _data.Length)
 				{
-					var actionAndLength = DecodeVarInt(_data, ref i);
-					var length = (actionAndLength >> 2) + 1;
+					int actionAndLength = DecodeVarInt(_data, ref i);
+					int length = (actionAndLength >> 2) + 1;
 					switch (actionAndLength & 0b11)
 					{
 						case 0b00: // SourceRead
@@ -95,13 +95,13 @@ namespace BizHawk.Common
 							while (length-- is not 0) target[outputOffset++] = _data[i++];
 							break;
 						case 0b10: // SourceCopy
-							var offset = DecodeVarInt(_data, ref i);
+							int offset = DecodeVarInt(_data, ref i);
 							if ((offset & 1) is 0) sourceRelOffset += offset >> 1;
 							else sourceRelOffset -= offset >> 1;
 							while (length-- is not 0) target[outputOffset++] = baseRom[sourceRelOffset++];
 							break;
 						case 0b11: // TargetCopy
-							var offset1 = DecodeVarInt(_data, ref i);
+							int offset1 = DecodeVarInt(_data, ref i);
 							if ((offset1 & 1) is 0) targetRelOffset += offset1 >> 1;
 							else targetRelOffset -= offset1 >> 1;
 							while (length-- is not 0) target[outputOffset++] = target[targetRelOffset++];
@@ -141,14 +141,14 @@ namespace BizHawk.Common
 				List<(int PatchOffset, int TargetOffset, int Size, bool IsRLE)> records = new();
 				try
 				{
-					var i = 0;
+					int i = 0;
 					while (i != data.Length)
 					{
-						var targetOffset = (data[i++] * 0x10000) | (data[i++] * 0x100) | data[i++];
-						var size = (data[i++] * 0x100) | data[i++];
+						int targetOffset = (data[i++] * 0x10000) | (data[i++] * 0x100) | data[i++];
+						int size = (data[i++] * 0x100) | data[i++];
 						if (size is 0)
 						{
-							var rleSize = (data[i++] * 0x100) | data[i++];
+							int rleSize = (data[i++] * 0x100) | data[i++];
 							Debug.Assert(rleSize is not 0);
 							records.Add((i, targetOffset, rleSize, true));
 							i++;
@@ -192,12 +192,12 @@ namespace BizHawk.Common
 				{
 					if (isRLE)
 					{
-						var value = _data[patchOffset];
+						byte value = _data[patchOffset];
 						for (int j = targetOffset, endExclusive = j + size; j < endExclusive; j++) rom[j] = value;
 					}
 					else
 					{
-						for (var j = 0; j < size; j++) rom[targetOffset + j] = _data[patchOffset + j];
+						for (int j = 0; j < size; j++) rom[targetOffset + j] = _data[patchOffset + j];
 					}
 				}
 			}
@@ -232,7 +232,7 @@ namespace BizHawk.Common
 		/// <remarks>always allocates a new array</remarks>
 		public static byte[] Patch(ReadOnlySpan<byte> baseRom, BPSPayload patch, out bool checksumsMatch)
 		{
-			var target = new byte[patch.TargetSize];
+			byte[] target = new byte[patch.TargetSize];
 			checksumsMatch = patch.DoPatch(baseRom: baseRom, target: target);
 			return target;
 		}
@@ -240,9 +240,9 @@ namespace BizHawk.Common
 		/// <remarks>may patch in place, returning <paramref name="baseRom"/>, or allocate a new array</remarks>
 		public static byte[] Patch(byte[] baseRom, IPSPayload patch)
 		{
-			var rom = baseRom;
-			var last = patch.Records[patch.Records.Count - 1];
-			var reqSize = last.TargetOffset + last.Size;
+			byte[] rom = baseRom;
+			var (PatchOffset, TargetOffset, Size, IsRLE) = patch.Records[patch.Records.Count - 1];
+			int reqSize = TargetOffset + Size;
 			if (baseRom.Length < reqSize)
 			{
 				rom = new byte[reqSize];
@@ -257,8 +257,8 @@ namespace BizHawk.Common
 		public static bool TryPatchInPlace(Span<byte> rom, IPSPayload patch)
 		{
 			IPSPayload.CheckRomSize(rom);
-			var last = patch.Records[patch.Records.Count - 1];
-			if (rom.Length < last.TargetOffset + last.Size) return false;
+			var (PatchOffset, TargetOffset, Size, IsRLE) = patch.Records[patch.Records.Count - 1];
+			if (rom.Length < TargetOffset + Size) return false;
 			patch.DoPatch(rom);
 			return true;
 		}

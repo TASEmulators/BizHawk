@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			string romDetails;
 			if (lp.Discs.Count > 0)
 			{
-				string DiscHashWarningText(GameInfo game, string discHash)
+				static string DiscHashWarningText(GameInfo game, string discHash)
 				{
 					if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
 					{
@@ -63,10 +63,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					}
 				}
 
-				var sw = new StringWriter();
+				StringWriter sw = new();
 				foreach (var d in lp.Discs)
 				{
-					var discHash = new DiscHasher(d.DiscData).Calculate_PSX_BizIDHash();
+					string discHash = new DiscHasher(d.DiscData).Calculate_PSX_BizIDHash();
 					sw.WriteLine(Path.GetFileName(d.DiscName));
 					sw.WriteLine(DiscHashWarningText(Database.CheckDatabase(discHash), discHash));
 					sw.WriteLine("-------------------------");
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 				foreach (var disc in discs)
 				{
-					var discInterface = new DiscInterface(disc,
+					DiscInterface discInterface = new(disc,
 						di =>
 						{
 							//if current disc this delegate disc, activity is happening
@@ -182,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 
 			//TODO - known bad firmwares are a no-go. we should refuse to boot them. (that's the mednafen policy)
-			var firmware = comm.CoreFileProvider.GetFirmwareOrThrow(new("PSX", firmwareRegion), $"A PSX `{firmwareRegion}` region bios file is required");
+			byte[] firmware = comm.CoreFileProvider.GetFirmwareOrThrow(new("PSX", firmwareRegion), $"A PSX `{firmwareRegion}` region bios file is required");
 
 			//create the instance
 			fixed (byte* pFirmware = firmware)
@@ -268,7 +268,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			else
 				OctoshockDll.shock_Peripheral_Connect(psx, 0x02, fioCfg.Devices8[4]);
 
-			var memcardTransaction = new OctoshockDll.ShockMemcardTransaction()
+			OctoshockDll.ShockMemcardTransaction memcardTransaction = new()
 			{
 				transaction = OctoshockDll.eShockMemcardTransaction.Connect
 			};
@@ -308,7 +308,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 							"P" + pnum + " A",
 					});
 
-					foreach (var axisName in new[] { $"P{pnum} Twist", $"P{pnum} 1", $"P{pnum} 2", $"P{pnum} L" })
+					foreach (string axisName in new[] { $"P{pnum} Twist", $"P{pnum} 1", $"P{pnum} 2", $"P{pnum} L" })
 					{
 						definition.AddAxis(axisName, 0.RangeTo(255), 128);
 					}
@@ -334,7 +334,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						});
 
 
-					if (type == OctoshockDll.ePeripheralType.DualShock || type == OctoshockDll.ePeripheralType.DualAnalog)
+					if (type is OctoshockDll.ePeripheralType.DualShock or OctoshockDll.ePeripheralType.DualAnalog)
 					{
 						definition.BoolButtons.Add("P" + pnum + " L3");
 						definition.BoolButtons.Add("P" + pnum + " R3");
@@ -357,13 +357,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return definition.MakeImmutable();
 		}
 
-		private void SetControllerButtons()
-		{
-			ControllerDefinition = CreateControllerDefinition(_SyncSettings);
-		}
+		private void SetControllerButtons() => ControllerDefinition = CreateControllerDefinition(_SyncSettings);
 
 		private int[] frameBuffer = new int[0];
-		private Random rand = new Random();
+		private readonly Random rand = new();
 
 		//we can only have one active core at a time, due to the lib being so static.
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
@@ -405,8 +402,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				OctoshockDll.shock_CreateDisc(out OctoshockHandle, IntPtr.Zero, disc.Session1.LeadoutLBA, cbReadTOC, cbReadLBA, true);
 			}
 
-			private OctoshockDll.ShockDisc_ReadTOC cbReadTOC;
-			private OctoshockDll.ShockDisc_ReadLBA cbReadLBA;
+			private readonly OctoshockDll.ShockDisc_ReadTOC cbReadTOC;
+			private readonly OctoshockDll.ShockDisc_ReadLBA cbReadLBA;
 			private readonly Action<DiscInterface> cbActivity;
 
 			public readonly Disc Disc;
@@ -452,7 +449,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				cbActivity(this);
 
 				//todo - cache reader
-				var dsr = new DiscSectorReader(Disc);
+				DiscSectorReader dsr = new(Disc);
 				int readed = dsr.ReadLBA_2448(lba, SectorBuffer, 0);
 				if (readed == 2448)
 				{
@@ -465,7 +462,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		public List<Disc> Discs;
-		private readonly List<DiscInterface> discInterfaces = new List<DiscInterface>();
+		private readonly List<DiscInterface> discInterfaces = new();
 		private DiscInterface currentDiscInterface;
 
 		public DisplayType Region => SystemVidStandard == OctoshockDll.eVidStandard.PAL ? DisplayType.PAL : DisplayType.NTSC;
@@ -499,7 +496,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public string CalculateDiscHashes()
 		{
-			var sb = new StringBuilder();
+			StringBuilder sb = new();
 			try
 			{
 				foreach (var disc in Discs)
@@ -584,7 +581,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						if (_controller.IsPressed(pstring + "Square")) buttons |= 32768;
 
 						byte left_x = 0, left_y = 0, right_x = 0, right_y = 0;
-						if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualShock || fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualAnalog)
+						if (fioCfg.Devices8[slot] is OctoshockDll.ePeripheralType.DualShock or OctoshockDll.ePeripheralType.DualAnalog)
 						{
 							if (_controller.IsPressed(pstring + "L3")) buttons |= 2;
 							if (_controller.IsPressed(pstring + "R3")) buttons |= 4;
@@ -613,7 +610,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		/// </summary>
 		public static ResolutionInfo CalculateResolution(OctoshockDll.eVidStandard standard, Settings settings, int w, int h)
 		{
-			ResolutionInfo ret = new ResolutionInfo();
+			ResolutionInfo ret = new();
 
 			//some of this logic is duplicated in the c++ side, be sure to check there
 			//TODO - scanline control + framebuffer mode is majorly broken
@@ -812,7 +809,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			OctoshockDll.shock_SetLEC(psx, _SyncSettings.EnableLEC);
 
-			var ropts = new OctoshockDll.ShockRenderOptions()
+			OctoshockDll.ShockRenderOptions ropts = new()
 			{
 				scanline_start = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? _Settings.ScanlineStart_NTSC : _Settings.ScanlineStart_PAL,
 				scanline_end = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? _Settings.ScanlineEnd_NTSC : _Settings.ScanlineEnd_PAL,
@@ -860,7 +857,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				return true;
 			}
 
-			OctoshockDll.ShockFramebufferInfo fb = new OctoshockDll.ShockFramebufferInfo();
+			OctoshockDll.ShockFramebufferInfo fb = new();
 
 			//run this once to get current logical size
 			OctoshockDll.shock_GetFramebuffer(psx, ref fb);
@@ -941,10 +938,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			nsamp = sbuffcontains;
 		}
 
-		public void DiscardSamples()
-		{
-			sbuffcontains = 0;
-		}
+		public void DiscardSamples() => sbuffcontains = 0;
 
 		public bool CanProvideAsync => false;
 
@@ -958,25 +952,24 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new InvalidOperationException("Async mode is not supported.");
 
 		public byte[] CloneSaveRam()
 		{
 			var cfg = _SyncSettings.FIOConfig.ToLogical();
 			int nMemcards = cfg.NumMemcards;
-			var buf = new byte[128 * 1024 * nMemcards];
+			byte[] buf = new byte[128 * 1024 * nMemcards];
 			for (int i = 0, idx = 0, addr=0x01; i < 2; i++, addr<<=1)
 			{
 				if (cfg.Memcards[i])
 				{
 					fixed (byte* pbuf = buf)
 					{
-						var transaction = new OctoshockDll.ShockMemcardTransaction();
-						transaction.buffer128k = pbuf + idx * 128 * 1024;
-						transaction.transaction = OctoshockDll.eShockMemcardTransaction.Read;
+						OctoshockDll.ShockMemcardTransaction transaction = new()
+						{
+							buffer128k = pbuf + idx * 128 * 1024,
+							transaction = OctoshockDll.eShockMemcardTransaction.Read
+						};
 						OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction);
 						idx++;
 					}
@@ -994,9 +987,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				{
 					fixed (byte* pbuf = data)
 					{
-						var transaction = new OctoshockDll.ShockMemcardTransaction();
-						transaction.buffer128k = pbuf + idx * 128 * 1024;
-						transaction.transaction = OctoshockDll.eShockMemcardTransaction.Write;
+						OctoshockDll.ShockMemcardTransaction transaction = new()
+						{
+							buffer128k = pbuf + idx * 128 * 1024,
+							transaction = OctoshockDll.eShockMemcardTransaction.Write
+						};
 						OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction);
 						idx++;
 					}
@@ -1013,8 +1008,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				{
 					if (cfg.Memcards[i])
 					{
-						var transaction = new OctoshockDll.ShockMemcardTransaction();
-						transaction.transaction = OctoshockDll.eShockMemcardTransaction.CheckDirty;
+						OctoshockDll.ShockMemcardTransaction transaction = new()
+						{
+							transaction = OctoshockDll.eShockMemcardTransaction.CheckDirty
+						};
 						OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction);
 						if (OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction) == OctoshockDll.SHOCK_TRUE)
 							return true;
@@ -1032,8 +1029,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		private void StudySaveBufferSize()
 		{
-			var transaction = new OctoshockDll.ShockStateTransaction();
-			transaction.transaction = OctoshockDll.eShockStateTransaction.BinarySize;
+			OctoshockDll.ShockStateTransaction transaction = new()
+			{
+				transaction = OctoshockDll.eShockStateTransaction.BinarySize
+			};
 			int size = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 			savebuff = new byte[size];
 		}
@@ -1044,7 +1043,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			fixed (byte* psavebuff = savebuff)
 			{
-				var transaction = new OctoshockDll.ShockStateTransaction()
+				OctoshockDll.ShockStateTransaction transaction = new()
 				{
 					transaction = OctoshockDll.eShockStateTransaction.BinarySave,
 					buffer = psavebuff,
@@ -1070,7 +1069,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			fixed (byte* psavebuff = savebuff)
 			{
-				var transaction = new OctoshockDll.ShockStateTransaction()
+				OctoshockDll.ShockStateTransaction transaction = new()
 				{
 					transaction = OctoshockDll.eShockStateTransaction.BinaryLoad,
 					buffer = psavebuff,
@@ -1095,7 +1094,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-		private Settings _Settings = new Settings();
+		private Settings _Settings = new();
 		private SyncSettings _SyncSettings;
 
 		public enum eResolutionMode
@@ -1106,17 +1105,14 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public class SyncSettings
 		{
-			public SyncSettings Clone()
-			{
-				return JsonConvert.DeserializeObject<SyncSettings>(JsonConvert.SerializeObject(this));
-			}
+			public SyncSettings Clone() => JsonConvert.DeserializeObject<SyncSettings>(JsonConvert.SerializeObject(this));
 
 			public bool EnableLEC;
 
 			public SyncSettings()
 			{
 				//initialize with single controller and memcard
-				var user = new OctoshockFIOConfigUser();
+				OctoshockFIOConfigUser user = new();
 				user.Memcards[0] = true;
 				user.Memcards[1] = false;
 				user.Multitaps[0] = user.Multitaps[0] = false;
@@ -1186,15 +1182,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				//make sure theyre not in the wrong order
 				if (ScanlineEnd_NTSC < ScanlineStart_NTSC)
 				{
-					int temp = ScanlineEnd_NTSC;
-					ScanlineEnd_NTSC = ScanlineStart_NTSC;
-					ScanlineStart_NTSC = temp;
+					(ScanlineStart_NTSC, ScanlineEnd_NTSC) = (ScanlineEnd_NTSC, ScanlineStart_NTSC);
 				}
 				if (ScanlineEnd_PAL < ScanlineStart_PAL)
 				{
-					int temp = ScanlineEnd_PAL;
-					ScanlineEnd_PAL = ScanlineStart_PAL;
-					ScanlineStart_PAL = temp;
+					(ScanlineStart_PAL, ScanlineEnd_PAL) = (ScanlineEnd_PAL, ScanlineStart_PAL);
 				}
 			}
 
@@ -1203,21 +1195,12 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public Settings Clone()
-			{
-				return (Settings)MemberwiseClone();
-			}
+			public Settings Clone() => (Settings)MemberwiseClone();
 		}
 
-		public Settings GetSettings()
-		{
-			return _Settings.Clone();
-		}
+		public Settings GetSettings() => _Settings.Clone();
 
-		public SyncSettings GetSyncSettings()
-		{
-			return _SyncSettings.Clone();
-		}
+		public SyncSettings GetSyncSettings() => _SyncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(Settings o)
 		{

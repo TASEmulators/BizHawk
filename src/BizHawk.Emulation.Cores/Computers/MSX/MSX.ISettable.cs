@@ -6,15 +6,9 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 {
 	public partial class MSX : ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>
 	{
-		public MSXSettings GetSettings()
-		{
-			return Settings.Clone();
-		}
+		public MSXSettings GetSettings() => Settings.Clone();
 
-		public MSXSyncSettings GetSyncSettings()
-		{
-			return SyncSettings.Clone();
-		}
+		public MSXSyncSettings GetSyncSettings() => SyncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(MSXSettings o)
 		{
@@ -46,20 +40,14 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			[DefaultValue(true)]
 			public bool DispOBJ { get; set; }
 
-			public MSXSettings Clone()
-			{
-				return (MSXSettings)MemberwiseClone();
-			}
+			public MSXSettings Clone() => (MSXSettings)MemberwiseClone();
 
 			public MSXSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public static bool RebootNeeded(MSXSettings x, MSXSettings y)
-			{
-				return false;
-			}
+			public static bool RebootNeeded(MSXSettings x, MSXSettings y) => false;
 		}
 
 		public class MSXSyncSettings
@@ -87,20 +75,14 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			public RegionType Region_Setting { get; set; }
 
 
-			public MSXSyncSettings Clone()
-			{
-				return (MSXSyncSettings)MemberwiseClone();
-			}
+			public MSXSyncSettings Clone() => (MSXSyncSettings)MemberwiseClone();
 
 			public MSXSyncSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public static bool RebootNeeded(MSXSyncSettings x, MSXSyncSettings y)
-			{
-				return true;
-			}
+			public static bool RebootNeeded(MSXSyncSettings x, MSXSyncSettings y) => true;
 		}
 	}
 }

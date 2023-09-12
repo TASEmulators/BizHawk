@@ -10,9 +10,6 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		private void Ok_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void Ok_Click(object sender, EventArgs e) => Close();
 	}
 }

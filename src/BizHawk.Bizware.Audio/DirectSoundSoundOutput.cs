@@ -44,10 +44,7 @@ namespace BizHawk.Bizware.Audio
 			_disposed = true;
 		}
 
-		public static IEnumerable<string> GetDeviceNames()
-		{
-			return DirectSound.GetDevices().Select(d => d.Description);
-		}
+		public static IEnumerable<string> GetDeviceNames() => DirectSound.GetDevices().Select(d => d.Description);
 
 		private int BufferSizeSamples { get; set; }
 
@@ -65,7 +62,7 @@ namespace BizHawk.Bizware.Audio
 			_filledBufferSizeBytes = 0;
 			_lastWriteTime = 0;
 			_lastWriteCursor = 0;
-			var attempts = _retryCounter;
+			int attempts = _retryCounter;
 			while (!IsPlaying && attempts > 0)
 			{
 				attempts--;
@@ -73,7 +70,7 @@ namespace BizHawk.Bizware.Audio
 				{
 					if (_deviceBuffer == null)
 					{
-						var format = WaveFormat.CreateCustomFormat(
+						WaveFormat format = WaveFormat.CreateCustomFormat(
 							tag: WaveFormatEncoding.Pcm,
 							sampleRate: _sound.SampleRate, 
 							channels: _sound.ChannelCount, 
@@ -81,7 +78,7 @@ namespace BizHawk.Bizware.Audio
 							blockAlign: _sound.BlockAlign,
 							bitsPerSample: _sound.BytesPerSample * 8);
 
-						var desc = new SoundBufferDescription
+						SoundBufferDescription desc = new()
 						{
 							Format = format,
 							Flags =
@@ -143,7 +140,7 @@ namespace BizHawk.Bizware.Audio
 			// severe glitches. At least on my Windows 8 machines, the distance between the
 			// play and write cursors can be up to 30 milliseconds, so that would be the
 			// absolute minimum we could use here.
-			var minBufferFullnessMs = Math.Min(35 + (_sound.ConfigBufferSizeMs - 60) / 2, 65);
+			int minBufferFullnessMs = Math.Min(35 + (_sound.ConfigBufferSizeMs - 60) / 2, 65);
 			MaxSamplesDeficit = BufferSizeSamples - _sound.MillisecondsToSamples(minBufferFullnessMs);
 
 			StartPlaying();
@@ -169,20 +166,20 @@ namespace BizHawk.Bizware.Audio
 
 		public int CalculateSamplesNeeded()
 		{
-			var samplesNeeded = 0;
+			int samplesNeeded = 0;
 			if (IsPlaying)
 			{
 				try
 				{
-					var currentWriteTime = Stopwatch.GetTimestamp();
-					_deviceBuffer.GetCurrentPosition(out var playCursor, out var writeCursor);
-					var isInitializing = _actualWriteOffsetBytes == -1;
-					var detectedUnderrun = false;
+					long currentWriteTime = Stopwatch.GetTimestamp();
+					_deviceBuffer.GetCurrentPosition(out int playCursor, out int writeCursor);
+					bool isInitializing = _actualWriteOffsetBytes == -1;
+					bool detectedUnderrun = false;
 					if (!isInitializing)
 					{
-						var elapsedSeconds = (currentWriteTime - _lastWriteTime) / (double)Stopwatch.Frequency;
-						var bufferSizeSeconds = (double) BufferSizeSamples / _sound.SampleRate;
-						var cursorDelta = CircularDistance(_lastWriteCursor, writeCursor, BufferSizeBytes);
+						double elapsedSeconds = (currentWriteTime - _lastWriteTime) / (double)Stopwatch.Frequency;
+						double bufferSizeSeconds = (double) BufferSizeSamples / _sound.SampleRate;
+						int cursorDelta = CircularDistance(_lastWriteCursor, writeCursor, BufferSizeBytes);
 						cursorDelta += BufferSizeBytes * (int) Math.Round((elapsedSeconds - (cursorDelta / (double) (_sound.SampleRate * _sound.BlockAlign))) / bufferSizeSeconds);
 						_filledBufferSizeBytes -= cursorDelta;
 						detectedUnderrun = _filledBufferSizeBytes < 0;
@@ -208,10 +205,7 @@ namespace BizHawk.Bizware.Audio
 			return samplesNeeded;
 		}
 
-		private static int CircularDistance(int start, int end, int size)
-		{
-			return (end - start + size) % size;
-		}
+		private static int CircularDistance(int start, int end, int size) => (end - start + size) % size;
 
 		public void WriteSamples(short[] samples, int sampleOffset, int sampleCount)
 		{

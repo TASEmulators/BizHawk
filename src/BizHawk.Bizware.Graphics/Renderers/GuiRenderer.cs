@@ -66,7 +66,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			Flush(); //don't really need to flush with current implementation. we might as well roll modulate color into it too.
 			if (colors.Length != 4) throw new ArgumentException("array must be size 4", nameof(colors));
-			for (var i = 0; i < 4; i++)
+			for (int i = 0; i < 4; i++)
 			{
 				CornerColors[i] = colors[i];
 			}
@@ -92,15 +92,9 @@ namespace BizHawk.Bizware.Graphics
 			// save the modulate color? user beware, I guess, for now.
 		}
 
-		public void SetDefaultPipeline()
-		{
-			SetPipeline(DefaultPipeline);
-		}
+		public void SetDefaultPipeline() => SetPipeline(DefaultPipeline);
 
-		public void SetModulateColorWhite()
-		{
-			SetModulateColor(Color.White);
-		}
+		public void SetModulateColorWhite() => SetModulateColor(Color.White);
 
 		public void SetModulateColor(Color color)
 		{
@@ -140,10 +134,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public void Begin(Size size)
-		{
-			Begin(size.Width, size.Height);
-		}
+		public void Begin(Size size) => Begin(size.Width, size.Height);
 
 		public void Begin(int width, int height)
 		{
@@ -201,54 +192,27 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 
-		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
-		{
-			DrawSubrectInternal(tex, x, y, w, h, u0, v0, u1, v1);
-		}
+		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1) => DrawSubrectInternal(tex, x, y, w, h, u0, v0, u1, v1);
 
-		public void Draw(Art art)
-		{
-			DrawInternal(art, 0, 0, art.Width, art.Height, false, false);
-		}
+		public void Draw(Art art) => DrawInternal(art, 0, 0, art.Width, art.Height, false, false);
 
-		public void Draw(Art art, float x, float y)
-		{
-			DrawInternal(art, x, y, art.Width, art.Height, false, false);
-		}
+		public void Draw(Art art, float x, float y) => DrawInternal(art, x, y, art.Width, art.Height, false, false);
 
-		public void Draw(Art art, float x, float y, float width, float height)
-		{
-			DrawInternal(art, x, y, width, height, false, false);
-		}
+		public void Draw(Art art, float x, float y, float width, float height) => DrawInternal(art, x, y, width, height, false, false);
 
-		public void Draw(Art art, Vector2 pos)
-		{
-			DrawInternal(art, pos.X, pos.Y, art.Width, art.Height, false, false);
-		}
+		public void Draw(Art art, Vector2 pos) => DrawInternal(art, pos.X, pos.Y, art.Width, art.Height, false, false);
 
-		public void Draw(Texture2d tex)
-		{
-			DrawInternal(tex, 0, 0, tex.Width, tex.Height);
-		}
+		public void Draw(Texture2d tex) => DrawInternal(tex, 0, 0, tex.Width, tex.Height);
 
-		public void Draw(Texture2d tex, float x, float y)
-		{
-			DrawInternal(tex, x, y, tex.Width, tex.Height);
-		}
+		public void Draw(Texture2d tex, float x, float y) => DrawInternal(tex, x, y, tex.Width, tex.Height);
 
-		public void DrawFlipped(Art art, bool xflip, bool yflip)
-		{
-			DrawInternal(art, 0, 0, art.Width, art.Height, xflip, yflip);
-		}
+		public void DrawFlipped(Art art, bool xflip, bool yflip) => DrawInternal(art, 0, 0, art.Width, art.Height, xflip, yflip);
 
-		public void Draw(Texture2d art, float x, float y, float width, float height)
-		{
-			DrawInternal(art, x, y, width, height);
-		}
+		public void Draw(Texture2d art, float x, float y, float width, float height) => DrawInternal(art, x, y, width, height);
 
 		private void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
-			var art = new Art((ArtManager)null)
+			Art art = new((ArtManager)null)
 			{
 				Width = w,
 				Height = h
@@ -287,7 +251,7 @@ namespace BizHawk.Bizware.Graphics
 				v1 = art.v1;
 			}
 
-			var data = stackalloc float[32]
+			float* data = stackalloc float[32]
 			{
 				x, y, u0, v0,
 				CornerColors[0].X, CornerColors[0].Y, CornerColors[0].Z, CornerColors[0].W,
@@ -326,7 +290,7 @@ namespace BizHawk.Bizware.Graphics
 
 		private unsafe void EmitRectangleInternal(float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-			var pData = stackalloc float[32];
+			float* pData = stackalloc float[32];
 			pData[0] = x;
 			pData[1] = y;
 			pData[2] = u0;

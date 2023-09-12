@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 		{
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
-			using var bs = new ZipStateSaver(filename, config.CompressionLevelNormal);
+			using ZipStateSaver bs = new(filename, config.CompressionLevelNormal);
 
 			using (new SimpleTime("Save Core"))
 			{
@@ -61,7 +61,7 @@ namespace BizHawk.Client.Common
 
 			if (config.SaveScreenshot && _videoProvider != null)
 			{
-				var buff = _videoProvider.GetVideoBuffer();
+				int[] buff = _videoProvider.GetVideoBuffer();
 				if (buff.Length == 1)
 				{
 					// is a hacky opengl texture ID. can't handle this now!
@@ -105,7 +105,7 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.UserData,
 					tw =>
 					{
-						var data = ConfigService.SaveWithType(_userBag);
+						string data = ConfigService.SaveWithType(_userBag);
 						tw.WriteLine(data);
 					});
 			}
@@ -119,16 +119,16 @@ namespace BizHawk.Client.Common
 		public bool Load(string path, IDialogParent dialogParent)
 		{
 			// try to detect binary first
-			using var bl = ZipStateLoader.LoadAndDetect(path);
+			using ZipStateLoader bl = ZipStateLoader.LoadAndDetect(path);
 			if (bl is null) return false;
-			var succeed = false;
+			bool succeed = false;
 
 			if (!VersionInfo.DeveloperBuild)
 			{
 				bl.GetLump(BinaryStateLump.BizVersion, true, tr => succeed = tr.ReadLine() == VersionInfo.GetEmuVersion());
 				if (!succeed)
 				{
-					var result = dialogParent.ModalMessageBox2(
+					bool result = dialogParent.ModalMessageBox2(
 						"This savestate was made with a different version, so it's unlikely to work.\nChoose OK to try loading it anyway.",
 						"Savestate version mismatch",
 						EMsgBoxIcon.Question,
@@ -182,7 +182,7 @@ namespace BizHawk.Client.Common
 
 			if (!string.IsNullOrWhiteSpace(userData))
 			{
-				var bag = (Dictionary<string, object>)ConfigService.LoadWithType(userData);
+				Dictionary<string, object> bag = (Dictionary<string, object>)ConfigService.LoadWithType(userData);
 				_userBag.Clear();
 				foreach (var (k, v) in bag) _userBag.Add(k, v);
 			}
@@ -206,7 +206,7 @@ namespace BizHawk.Client.Common
 			}
 			catch
 			{
-				var buff = videoProvider.GetVideoBuffer();
+				int[] buff = videoProvider.GetVideoBuffer();
 				try
 				{
 					for (int i = 0; i < buff.Length; i++)

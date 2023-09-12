@@ -7,20 +7,11 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	/// </summary>
 	public sealed partial class F3850
 	{
-		public void Read_Func(byte dest, byte src_l, byte src_h)
-		{
-			Regs[dest] = ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
-		}
+		public void Read_Func(byte dest, byte src_l, byte src_h) => Regs[dest] = ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 
-		public void Write_Func(byte dest_l, byte dest_h, byte src)
-		{
-			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), Regs[src]);
-		}
+		public void Write_Func(byte dest_l, byte dest_h, byte src) => WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), Regs[src]);
 
-		public void IN_Func(byte dest, byte src)
-		{
-			Regs[dest] = ReadHardware(Regs[src]);
-		}
+		public void IN_Func(byte dest, byte src) => Regs[dest] = ReadHardware(Regs[src]);
 
 		/// <summary>
 		/// Helper method moving from IO pins to accumulator
@@ -48,12 +39,10 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// </summary>
 		/// <param name="dest"></param>
 		/// <param name="src"></param>
-		public void OUT_Func(byte dest, byte src)
-		{
+		public void OUT_Func(byte dest, byte src) =>
 			// data is complemented between accumulator and I/O pins (because PINs are active-low)
 			// however for ease here we will make them active-high
 			WriteHardware(Regs[dest], Regs[src]);
-		}
 
 		public void ClearFlags_Func()
 		{
@@ -173,9 +162,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			// STEP 1: Binary add H'66' to the augend. (this should happen before this function is called)
 			// STEP 2: Binary add the addend to the sum from Step 1. Record the status of the carry (C) and intermediate carry (IC). 
 
-			var augend = Regs[dest];
-			var addend = Regs[src];
-			var working = (byte)(augend + addend);
+			byte augend = Regs[dest];
+			byte addend = Regs[src];
+			byte working = (byte)(augend + addend);
 
 			bool highCarry;
 			bool lowCarry;
@@ -183,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			highCarry = ((augend + addend) & 0xFF0) > 0xF0;
 			lowCarry = (augend & 0x0F) + (addend & 0x0F) > 0x0F;
 
-			var res = augend + addend;
+			int res = augend + addend;
 			FlagC = res.Bit(8);
 			FlagO = (Regs[dest].Bit(7) == Regs[src].Bit(7)) && (Regs[dest].Bit(7) != res.Bit(7));
 			FlagS = !working.Bit(7);
@@ -227,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		public void CI_Func()
 		{
 			//var twosComp = (byte)((Regs[A] ^ 0xFF) + 1);
-			var twosComp = (byte)(~Regs[A]);
+			byte twosComp = (byte)(~Regs[A]);
 			Regs[ALU0] = twosComp;
 			Regs[ALU1] = Regs[DB];
 			ADD_Func(ALU0, ALU1, ONE);

@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		static Citra()
 		{
-			var resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "libcitra-headless.so" : "citra-headless.dll", hasLimitedLifetime: false);
 			_core = BizInvoker.GetInvoker<LibCitra>(resolver, CallingConventionAdapters.Native);
 		}
@@ -67,8 +67,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			_supportsOpenGL43 = _openGLProvider.SupportsGLVersion(4, 3);
 			if (!_supportsOpenGL43/* && _syncSettings.GraphicsApi == CitraSyncSettings.EGraphicsApi.OpenGL*/)
 			{
+				lp.Comm.Notify("OpenGL 4.3 is not supported on this machine, falling back to software renderer", null);
 				throw new("OpenGL 4.3 is required, but it is not supported on this machine");
-//				lp.Comm.Notify("OpenGL 4.3 is not supported on this machine, falling back to software renderer", null);
 			}
 
 			_glCallbackInterface.RequestGLContext = RequestGLContextCallback;
@@ -94,30 +94,30 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 			_serviceProvider.Register<IVideoProvider>(_citraVideoProvider);
 
-			var sysDataDir = Path.Combine(_userPath, "sysdata");
+			string sysDataDir = Path.Combine(_userPath, "sysdata");
 			if (!Directory.Exists(sysDataDir))
 			{
 				Directory.CreateDirectory(sysDataDir);
 			}
 
-			var aesKeys = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "aes_keys"));
+			byte[] aesKeys = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "aes_keys"));
 			if (aesKeys is not null)
 			{
 				File.WriteAllBytes(Path.Combine(sysDataDir, "aes_keys.txt"), aesKeys);
 			}
 
-			var seeddb = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "seeddb"));
+			byte[] seeddb = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "seeddb"));
 			if (seeddb is not null)
 			{
 				File.WriteAllBytes(Path.Combine(sysDataDir, "seeddb.bin"), seeddb);
 			}
 
-			var romPath = lp.Roms[0].RomPath;
+			string romPath = lp.Roms[0].RomPath;
 			if (lp.Roms[0].Extension.ToLowerInvariant() == ".cia")
 			{
-				var message = new byte[1024];
-				var res = _core.Citra_InstallCIA(_context, romPath, message, message.Length);
-				var outMsg = Encoding.UTF8.GetString(message).TrimEnd();
+				byte[] message = new byte[1024];
+				bool res = _core.Citra_InstallCIA(_context, romPath, message, message.Length);
+				string outMsg = Encoding.UTF8.GetString(message).TrimEnd();
 				if (res)
 				{
 					romPath = outMsg;
@@ -132,8 +132,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			// user could have other CIAs after the first ROM (e.g. DLCs, updates)
 			// they need to installed at once in the case of recording
 			// as the temp folder is cleaned for each session
-			var dummyBuffer = new byte[1];
-			for (var i = 1; i < lp.Roms.Count; i++)
+			byte[] dummyBuffer = new byte[1];
+			for (int i = 1; i < lp.Roms.Count; i++)
 			{
 				// doesn't make sense if not a CIA
 				if (lp.Roms[i].Extension.ToLowerInvariant() != ".cia")
@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				_core.Citra_InstallCIA(_context, lp.Roms[i].RomPath, dummyBuffer, dummyBuffer.Length);
 			}
 
-			var errorMessage = new byte[1024];
+			byte[] errorMessage = new byte[1024];
 			if (!_core.Citra_LoadROM(_context, romPath, errorMessage, errorMessage.Length))
 			{
 				Dispose();
@@ -161,15 +161,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		private IntPtr RequestGLContextCallback()
 		{
-			var context = _openGLProvider.RequestGLContext(4, 3, true, false);
+			object context = _openGLProvider.RequestGLContext(4, 3, true, false);
 			_glContexts.Add(context);
-			var handle = GCHandle.Alloc(context, GCHandleType.Weak);
+			GCHandle handle = GCHandle.Alloc(context, GCHandleType.Weak);
 			return GCHandle.ToIntPtr(handle);
 		}
 
 		private void ReleaseGLContextCallback(IntPtr context)
 		{
-			var handle = GCHandle.FromIntPtr(context);
+			GCHandle handle = GCHandle.FromIntPtr(context);
 			_openGLProvider.ReleaseGLContext(handle.Target);
 			_glContexts.Remove(handle.Target);
 			handle.Free();
@@ -177,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		private void ActivateGLContextCallback(IntPtr context)
 		{
-			var handle = GCHandle.FromIntPtr(context);
+			GCHandle handle = GCHandle.FromIntPtr(context);
 			_openGLProvider.ActivateGLContext(handle.Target);
 		}
 

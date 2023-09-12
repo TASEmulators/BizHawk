@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private readonly bool validate = true;
 
-		private readonly Bag<string, CartInfo> _sha1Table = new Bag<string, CartInfo>();
+		private readonly Bag<string, CartInfo> _sha1Table = new();
 
 		private static BootGodDb instance;
 
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (acquire != null) throw new InvalidOperationException("Bootgod DB multiply initialized");
 			acquire = new EventWaitHandle(false, EventResetMode.ManualReset);
 
-			var stopwatch = Stopwatch.StartNew();
+			Stopwatch stopwatch = Stopwatch.StartNew();
 			ThreadPool.QueueUserWorkItem(_ =>
 			{
 				instance = new BootGodDb(basePath);
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			// in anticipation of any slowness annoying people, and just for shits and giggles, i made a super fast parser
 			int state=0;
-			var xmlReader = XmlReader.Create(stream);
+			XmlReader xmlReader = XmlReader.Create(stream);
 			CartInfo currCart = null;
 			string currName = null;
 			while (xmlReader.Read())
@@ -134,10 +134,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					case 1:
 						if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "cartridge")
 						{
-							currCart = new CartInfo();
-							currCart.System = xmlReader.GetAttribute("system");
-							currCart.Sha1 = $"SHA1:{xmlReader.GetAttribute("sha1")}";
-							currCart.Name = currName;
+							currCart = new CartInfo
+							{
+								System = xmlReader.GetAttribute("system"),
+								Sha1 = $"SHA1:{xmlReader.GetAttribute("sha1")}",
+								Name = currName
+							};
 							state = 2;
 						}
 						if (xmlReader.NodeType == XmlNodeType.EndElement && xmlReader.Name == "game")

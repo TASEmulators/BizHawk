@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 				_axes[k] = v.Neutral;
 				_axisRanges[k] = v;
 			}
-			foreach (var channel in Definition.HapticsChannels) _haptics[channel] = 0;
+			foreach (string channel in Definition.HapticsChannels) _haptics[channel] = 0;
 		}
 
 		public ControllerDefinition Definition { get; }
@@ -33,13 +33,13 @@ namespace BizHawk.Client.Common
 
 		public void SetHapticChannelStrength(string name, int strength) => _haptics[name] = strength;
 
-		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
-		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, int> _axes = new WorkingDictionary<string, int>();
+		private readonly WorkingDictionary<string, List<string>> _bindings = new();
+		private readonly WorkingDictionary<string, bool> _buttons = new();
+		private readonly WorkingDictionary<string, int> _axes = new();
 		private readonly Dictionary<string, AxisSpec> _axisRanges = new WorkingDictionary<string, AxisSpec>();
-		private readonly Dictionary<string, AnalogBind> _axisBindings = new Dictionary<string, AnalogBind>();
+		private readonly Dictionary<string, AnalogBind> _axisBindings = new();
 		private readonly Dictionary<string, int> _haptics = new WorkingDictionary<string, int>();
-		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new Dictionary<string, FeedbackBind>();
+		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new();
 
 		public bool this[string button] => IsPressed(button);
 
@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 			foreach (var (k, v) in _bindings)
 			{
 				_buttons[k] = false;
-				foreach (var button in v)
+				foreach (string button in v)
 				{
 					if (finalHostController.IsPressed(button))
 					{
@@ -76,10 +76,10 @@ namespace BizHawk.Client.Common
 			foreach (var (k, v) in _axisBindings)
 			{
 				// values from finalHostController are ints in -10000..10000 (or 0..10000), so scale to -1..1, using floats to keep fractional part
-				var value = finalHostController.AxisValue(v.Value) / 10000.0f;
+				float value = finalHostController.AxisValue(v.Value) / 10000.0f;
 
 				// apply deadzone (and scale diminished range back up to -1..1)
-				var deadzone = v.Deadzone;
+				float deadzone = v.Deadzone;
 				if (value < -deadzone) value += deadzone;
 				else if (value < deadzone) value = 0.0f;
 				else value -= deadzone;
@@ -104,9 +104,9 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var (k, v) in _feedbackBindings)
 			{
-				if (_haptics.TryGetValue(k, out var strength))
+				if (_haptics.TryGetValue(k, out int strength))
 				{
-					foreach (var hostChannel in v.Channels!.Split('+'))
+					foreach (string hostChannel in v.Channels!.Split('+'))
 					{
 						finalHostController.SetHapticChannelStrength(v.GamepadPrefix + hostChannel, (int) ((double) strength * v.Prescale));
 					}
@@ -126,7 +126,7 @@ namespace BizHawk.Client.Common
 			// foreach (string button in type.BoolButtons)
 			if (controller.Definition != null)
 			{
-				foreach (var button in controller.Definition.BoolButtons)
+				foreach (string button in controller.Definition.BoolButtons)
 				{
 					if (controller.IsPressed(button))
 					{
@@ -138,17 +138,17 @@ namespace BizHawk.Client.Common
 
 		public void Overrides(OverrideAdapter controller)
 		{
-			foreach (var button in controller.Overrides)
+			foreach (string button in controller.Overrides)
 			{
 				_buttons[button] = controller.IsPressed(button);
 			}
 
-			foreach (var button in controller.AxisOverrides)
+			foreach (string button in controller.AxisOverrides)
 			{
 				_axes[button] = controller.AxisValue(button);
 			}
 
-			foreach (var button in controller.InversedButtons)
+			foreach (string button in controller.InversedButtons)
 			{
 				_buttons[button] ^= true;
 			}
@@ -161,17 +161,14 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			var controlBindings = controlString.Split(',');
-			foreach (var control in controlBindings)
+			string[] controlBindings = controlString.Split(',');
+			foreach (string control in controlBindings)
 			{
 				_bindings[button].Add(control.Trim());
 			}
 		}
 
-		public void BindAxis(string button, AnalogBind bind)
-		{
-			_axisBindings[button] = bind;
-		}
+		public void BindAxis(string button, AnalogBind bind) => _axisBindings[button] = bind;
 
 		public void BindFeedbackChannel(string channel, FeedbackBind binding) => _feedbackBindings[channel] = binding;
 

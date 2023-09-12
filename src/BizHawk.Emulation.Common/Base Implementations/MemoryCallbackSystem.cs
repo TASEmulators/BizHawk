@@ -116,20 +116,11 @@ namespace BizHawk.Emulation.Common
 
 		public bool HasExecutes { get; private set; }
 
-		public bool HasReadsForScope(string scope)
-		{
-			return _reads.Any(e => e.Scope == scope);
-		}
+		public bool HasReadsForScope(string scope) => _reads.Any(e => e.Scope == scope);
 
-		public bool HasWritesForScope(string scope)
-		{
-			return _writes.Any(e => e.Scope == scope);
-		}
+		public bool HasWritesForScope(string scope) => _writes.Any(e => e.Scope == scope);
 
-		public bool HasExecutesForScope(string scope)
-		{
-			return _execs.Any(e => e.Scope == scope);
-		}
+		public bool HasExecutesForScope(string scope) => _execs.Any(e => e.Scope == scope);
 
 		private bool UpdateHasVariables()
 		{
@@ -203,20 +194,11 @@ namespace BizHawk.Emulation.Common
 		public delegate void CallbackRemovedEventHandler(IMemoryCallback callback);
 		public event CallbackRemovedEventHandler CallbackRemoved;
 
-		private void Changes()
-		{
-			ActiveChanged?.Invoke();
-		}
+		private void Changes() => ActiveChanged?.Invoke();
 
-		private void OnCallbackAdded(object sender, IMemoryCallback callback)
-		{
-			CallbackAdded?.Invoke(callback);
-		}
+		private void OnCallbackAdded(object sender, IMemoryCallback callback) => CallbackAdded?.Invoke(callback);
 
-		private void OnCallbackRemoved(object sender, IMemoryCallback callback)
-		{
-			CallbackRemoved?.Invoke(callback);
-		}
+		private void OnCallbackRemoved(object sender, IMemoryCallback callback) => CallbackRemoved?.Invoke(callback);
 
 		public IEnumerator<IMemoryCallback> GetEnumerator()
 		{
@@ -375,15 +357,9 @@ namespace BizHawk.Emulation.Common
 			_modifyInProgress = true;
 		}
 
-		private void EndModify()
-		{
-			_modifyInProgress = false;
-		}
+		private void EndModify() => _modifyInProgress = false;
 
-		private void BeginCopyOnWrite()
-		{
-			_copyOnWriteRequired++;
-		}
+		private void BeginCopyOnWrite() => _copyOnWriteRequired++;
 
 		private void EndCopyOnWrite()
 		{
@@ -424,8 +400,8 @@ namespace BizHawk.Emulation.Common
 			}
 
 			public readonly IMemoryCallback Current => _items[_position];
-			
-			object IEnumerator.Current => Current;
+
+			readonly object IEnumerator.Current => Current;
 
 			public bool MoveNext() => ++_position < _items.Count;
 

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Handle to native audio plugin
 		/// </summary>
-		private IntPtr AudDll;
+		private readonly IntPtr AudDll;
 
 		/// <summary>
 		/// Gets the size of the mupen64plus audio buffer
@@ -57,27 +57,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Returns currently used sampling rate
 		/// </summary>
-		public uint GetSamplingRate()
-		{
-			return (uint)dllGetAudioRate();
-		}
+		public uint GetSamplingRate() => (uint)dllGetAudioRate();
 
 		/// <summary>
 		/// Returns size of bytes currently in the audio buffer
 		/// </summary>
-		public int GetAudioBufferSize()
-		{
-			return dllGetBufferSize();
-		}
+		public int GetAudioBufferSize() => dllGetBufferSize();
 
 		/// <summary>
 		/// Returns bytes currently in the audiobuffer
 		/// Afterwards audio buffer is cleared
 		/// buffer.Length must be greater than GetAudioBufferSize()
 		/// </summary>
-		public void GetAudioBuffer(short[] buffer)
-		{
-			dllReadAudioBuffer(buffer);
-		}
+		public void GetAudioBuffer(short[] buffer) => dllReadAudioBuffer(buffer);
 	}
 }

@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 
 		static RCheevos()
 		{
-			var resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "librcheevos.so" : "librcheevos.dll", hasLimitedLifetime: false);
 			_lib = BizInvoker.GetInvoker<LibRCheevos>(resolver, CallingConventionAdapters.Native);
 
@@ -58,11 +58,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			raDropDownItems.Clear();
 
-			var shutDownRAItem = new ToolStripMenuItem("Shutdown RetroAchievements");
+			ToolStripMenuItem shutDownRAItem = new("Shutdown RetroAchievements");
 			shutDownRAItem.Click += (_, _) => _shutdownRACallback();
 			raDropDownItems.Add(shutDownRAItem);
 
-			var autoStartRAItem = new ToolStripMenuItem("Autostart RetroAchievements")
+			ToolStripMenuItem autoStartRAItem = new("Autostart RetroAchievements")
 			{
 				Checked = _getConfig().RAAutostart,
 				CheckOnClick = true,
@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			autoStartRAItem.CheckedChanged += (_, _) => _getConfig().RAAutostart ^= true;
 			raDropDownItems.Add(autoStartRAItem);
 
-			var loginItem = new ToolStripMenuItem("Login")
+			ToolStripMenuItem loginItem = new("Login")
 			{
 				Visible = !LoggedIn
 			};
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			raDropDownItems.Add(loginItem);
 
-			var logoutItem = new ToolStripMenuItem("Logout")
+			ToolStripMenuItem logoutItem = new("Logout")
 			{
 				Visible = LoggedIn
 			};
@@ -97,10 +97,10 @@ namespace BizHawk.Client.EmuHawk
 			LoginStatusChanged += () => loginItem.Visible = !LoggedIn;
 			LoginStatusChanged += () => logoutItem.Visible = LoggedIn;
 
-			var tss = new ToolStripSeparator();
+			ToolStripSeparator tss = new();
 			raDropDownItems.Add(tss);
 
-			var enableCheevosItem = new ToolStripMenuItem("Enable Achievements")
+			ToolStripMenuItem enableCheevosItem = new("Enable Achievements")
 			{
 				Checked = CheevosActive,
 				CheckOnClick = true
@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			enableCheevosItem.CheckedChanged += (_, _) => CheevosActive ^= true;
 			raDropDownItems.Add(enableCheevosItem);
 
-			var enableLboardsItem = new ToolStripMenuItem("Enable Leaderboards")
+			ToolStripMenuItem enableLboardsItem = new("Enable Leaderboards")
 			{
 				Checked = LBoardsActive,
 				CheckOnClick = true,
@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 			enableLboardsItem.CheckedChanged += (_, _) => LBoardsActive ^= true;
 			raDropDownItems.Add(enableLboardsItem);
 
-			var enableRichPresenceItem = new ToolStripMenuItem("Enable Rich Presence")
+			ToolStripMenuItem enableRichPresenceItem = new("Enable Rich Presence")
 			{
 				Checked = RichPresenceActive,
 				CheckOnClick = true
@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			enableRichPresenceItem.CheckedChanged += (_, _) => RichPresenceActive ^= true;
 			raDropDownItems.Add(enableRichPresenceItem);
 
-			var enableHardcoreItem = new ToolStripMenuItem("Enable Hardcore Mode")
+			ToolStripMenuItem enableHardcoreItem = new("Enable Hardcore Mode")
 			{
 				Checked = HardcoreMode,
 				CheckOnClick = true
@@ -149,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_hardcoreModeMenuItem = enableHardcoreItem;
 
-			var enableSoundEffectsItem = new ToolStripMenuItem("Enable Sound Effects")
+			ToolStripMenuItem enableSoundEffectsItem = new("Enable Sound Effects")
 			{
 				Checked = EnableSoundEffects,
 				CheckOnClick = true
@@ -157,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 			enableSoundEffectsItem.CheckedChanged += (_, _) => EnableSoundEffects ^= true;
 			raDropDownItems.Add(enableSoundEffectsItem);
 
-			var enableUnofficialCheevosItem = new ToolStripMenuItem("Test Unofficial Achievements")
+			ToolStripMenuItem enableUnofficialCheevosItem = new("Test Unofficial Achievements")
 			{
 				Checked = AllowUnofficialCheevos,
 				CheckOnClick = true
@@ -168,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			tss = new ToolStripSeparator();
 			raDropDownItems.Add(tss);
 
-			var viewGameInfoItem = new ToolStripMenuItem("View Game Info");
+			ToolStripMenuItem viewGameInfoItem = new("View Game Info");
 			viewGameInfoItem.Click += (_, _) =>
 			{
 				_gameInfoForm.OnFrameAdvance(_gameData.GameBadge, _gameData.TotalCheevoPoints(HardcoreMode),
@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			raDropDownItems.Add(viewGameInfoItem);
 
-			var viewCheevoListItem = new ToolStripMenuItem("View Achievement List");
+			ToolStripMenuItem viewCheevoListItem = new("View Achievement List");
 			viewCheevoListItem.Click += (_, _) =>
 			{
 				_cheevoListForm.OnFrameAdvance(HardcoreMode, true);
@@ -263,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 			var size = _lib.rc_runtime_progress_size(_runtime, IntPtr.Zero);
 			if (size > 0)
 			{
-				var buffer = new byte[(int)size];
+				byte[] buffer = new byte[(int)size];
 				_lib.rc_runtime_serialize_progress(buffer, _runtime, IntPtr.Zero);
 				using var file = File.OpenWrite(path + ".rap");
 				file.Write(buffer, 0, buffer.Length);
@@ -289,7 +289,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!File.Exists(path + ".rap")) return;
 
 			using var file = File.OpenRead(path + ".rap");
-			var buffer = file.ReadAllBytes();
+			byte[] buffer = file.ReadAllBytes();
 			_lib.rc_runtime_deserialize_progress(_runtime, buffer, IntPtr.Zero);
 		}
 		
@@ -356,12 +356,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_memFunctions = CreateMemoryBanks(_consoleId, Domains, Emu.CanDebug() ? Emu.AsDebuggable() : null);
 
-				var addr = 0;
+				int addr = 0;
 				foreach (var memFunctions in _memFunctions)
 				{
 					if (memFunctions.ReadFunc is not null)
 					{
-						for (var i = 0; i < memFunctions.BankSize; i++)
+						for (int i = 0; i < memFunctions.BankSize; i++)
 						{
 							_readMap.Add(addr + i, (memFunctions.ReadFunc, addr));
 						}
@@ -381,7 +381,7 @@ namespace BizHawk.Client.EmuHawk
 
 				AllGamesVerified = !ids.Contains(0);
 
-				var gameId = ids.Count > 0 ? ids[0] : 0;
+				int gameId = ids.Count > 0 ? ids[0] : 0;
 				_gameData = new();
 
 				if (gameId != 0)
@@ -415,6 +415,7 @@ namespace BizHawk.Client.EmuHawk
 			// validate addresses now that we have cheevos init
 			// ReSharper disable once ConvertToLocalFunction
 			LibRCheevos.rc_runtime_validate_address_t peekcb = address => _readMap.ContainsKey(address);
+
 			_lib.rc_runtime_validate_addresses(_runtime, _eventcb, peekcb);
 
 			_gameInfoForm.Restart(_gameData.Title, _gameData.TotalCheevoPoints(HardcoreMode), CurrentRichPresence ?? "N/A");
@@ -449,7 +450,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private unsafe void EventHandlerCallback(IntPtr runtime_event)
 		{
-			var evt = (LibRCheevos.rc_runtime_event_t*)runtime_event;
+			LibRCheevos.rc_runtime_event_t* evt = (LibRCheevos.rc_runtime_event_t*)runtime_event;
 			switch (evt->type)
 			{
 				case LibRCheevos.rc_runtime_event_type_t.RC_RUNTIME_EVENT_ACHIEVEMENT_TRIGGERED:
@@ -462,7 +463,7 @@ namespace BizHawk.Client.EmuHawk
 							_lib.rc_runtime_deactivate_achievement(_runtime, evt->id);
 
 							cheevo.SetUnlocked(HardcoreMode, true);
-							var prefix = HardcoreMode ? "[HARDCORE] " : "";
+							string prefix = HardcoreMode ? "[HARDCORE] " : "";
 							_mainForm.AddOnScreenMessage($"{prefix}Achievement Unlocked!");
 							_mainForm.AddOnScreenMessage(cheevo.Description);
 							if (EnableSoundEffects) _unlockSound.PlayNoExceptions();
@@ -483,7 +484,7 @@ namespace BizHawk.Client.EmuHawk
 						if (cheevo.IsEnabled)
 						{
 							cheevo.IsPrimed = true;
-							var prefix = HardcoreMode ? "[HARDCORE] " : "";
+							string prefix = HardcoreMode ? "[HARDCORE] " : "";
 							_mainForm.AddOnScreenMessage($"{prefix}Achievement Primed!");
 							_mainForm.AddOnScreenMessage(cheevo.Description);
 							if (EnableSoundEffects) _infoSound.PlayNoExceptions();
@@ -589,7 +590,7 @@ namespace BizHawk.Client.EmuHawk
 						if (cheevo.IsEnabled)
 						{
 							cheevo.IsPrimed = false;
-							var prefix = HardcoreMode ? "[HARDCORE] " : "";
+							string prefix = HardcoreMode ? "[HARDCORE] " : "";
 							_mainForm.AddOnScreenMessage($"{prefix}Achievement Unprimed!");
 							_mainForm.AddOnScreenMessage(cheevo.Description);
 							if (EnableSoundEffects) _infoSound.PlayNoExceptions();

@@ -68,10 +68,7 @@ namespace BizHawk.Client.EmuHawk
 			RefreshAllBackdrops();
 		}
 
-		private void Button3_Click(object sender, EventArgs e)
-		{
-			InterpolateColors(0, 3); // todo: interpolate disabled color
-		}
+		private void Button3_Click(object sender, EventArgs e) => InterpolateColors(0, 3); // todo: interpolate disabled color
 
 		private void Panel12_DoubleClick(object sender, EventArgs e)
 		{
@@ -91,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 				return; // i = -1;
 
-			using var dlg = new ColorDialog
+			using ColorDialog dlg = new()
 			{
 				AllowFullOpen = true,
 				AnyColor = true,
@@ -149,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns>null on failure</returns>
 		public static int[] LoadPalFile(TextReader f)
 		{
-			var lines = new Dictionary<string, int>();
+			Dictionary<string, int> lines = new();
 
 			string line;
 			while ((line = f.ReadLine()) != null)
@@ -221,13 +218,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				using var f = new StreamReader(filename);
-				int[] newColors = LoadPalFile(f);
-				if (newColors == null)
-				{
-					throw new Exception();
-				}
-
+				using StreamReader f = new(filename);
+				int[] newColors = LoadPalFile(f) ?? throw new Exception();
 				SetAllColors(newColors);
 			}
 			catch
@@ -243,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				using var f = new StreamWriter(filename);
+				using StreamWriter f = new(filename);
 				int[] saveColors = new int[5];
 				for (int i = 0; i < 5; i++)
 				{
@@ -261,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Button6_Click(object sender, EventArgs e)
 		{
-			var result = this.ShowFileOpenDialog(
+			string result = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				filter: FilesystemFilterSet.Palettes,
 				initDir: _config.PathEntries.ScreenshotAbsolutePathFor(VSystemID.Raw.GB));
@@ -272,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
-				var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
 				if (files.Length > 1)
 				{
@@ -283,14 +275,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ColorChooserForm_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Set(DragDropEffects.Move);
-		}
+		private void ColorChooserForm_DragEnter(object sender, DragEventArgs e) => e.Set(DragDropEffects.Move);
 
 		private void Button7_Click(object sender, EventArgs e)
 		{
-			var result = this.ShowFileSaveDialog(
+			string result = this.ShowFileSaveDialog(
 				discardCWDChange: true,
 				filter: FilesystemFilterSet.Palettes,
 				initDir: _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.GB),

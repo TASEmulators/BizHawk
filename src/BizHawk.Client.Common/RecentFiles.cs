@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 	public class RecentFiles : IEnumerable<string>
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private List<string> recentlist;
+		private readonly List<string> recentlist;
 
 		public RecentFiles()
 			: this(8)
@@ -77,9 +77,6 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public void ToggleAutoLoad()
-		{
-			AutoLoad ^= true;
-		}
+		public void ToggleAutoLoad() => AutoLoad ^= true;
 	}
 }

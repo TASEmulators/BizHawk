@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			foreach (LibretroApi.RETRO_MEMORY m in Enum.GetValues(typeof(LibretroApi.RETRO_MEMORY)))
 			{
 				var mem = api.retro_get_memory_data(m);
-				var sz = api.retro_get_memory_size(m);
+				long sz = api.retro_get_memory_size(m);
 				if (mem != IntPtr.Zero && sz > 0)
 				{
 					MemoryDomainIntPtr d = new(_domainNames[m], MemoryDomain.Endian.Unknown, mem, sz, true, 1);

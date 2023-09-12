@@ -262,14 +262,11 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void RefreshState()
-		{
-			lblUserFilterName.Text = Path.GetFileNameWithoutExtension(_pathSelection);
-		}
+		private void RefreshState() => lblUserFilterName.Text = Path.GetFileNameWithoutExtension(_pathSelection);
 
 		private void BtnSelectUserFilter_Click(object sender, EventArgs e)
 		{
-			var result = this.ShowFileOpenDialog(
+			string result = this.ShowFileOpenDialog(
 				filter: CgShaderPresetsFSFilterSet,
 				initDir: string.IsNullOrWhiteSpace(_pathSelection)
 				? string.Empty : Path.GetDirectoryName(_pathSelection)!,
@@ -277,26 +274,26 @@ namespace BizHawk.Client.EmuHawk
 			if (result is null) return;
 
 			rbUser.Checked = true;
-			var choice = Path.GetFullPath(result);
+			string choice = Path.GetFullPath(result);
 				
 			//test the preset
 			using (var stream = File.OpenRead(choice))
 			{
-				var cgp = new RetroShaderPreset(stream);
+				RetroShaderPreset cgp = new(stream);
 
 				// try compiling it
 				bool ok = false;
 				string errors = "";
 				try
 				{
-					var filter = new RetroShaderChain(_gl, cgp, Path.GetDirectoryName(choice));
+					RetroShaderChain filter = new(_gl, cgp, Path.GetDirectoryName(choice));
 					ok = filter.Available;
 					errors = filter.Errors;
 				}
 				catch {}
 				if (!ok)
 				{
-					using var errorForm = new ExceptionBox(errors);
+					using ExceptionBox errorForm = new(errors);
 					this.ShowDialogAsChild(errorForm);
 					return;
 				}
@@ -306,25 +303,13 @@ namespace BizHawk.Client.EmuHawk
 			RefreshState();
 		}
 
-		private void CheckLetterbox_CheckedChanged(object sender, EventArgs e)
-		{
-			RefreshAspectRatioOptions();
-		}
+		private void CheckLetterbox_CheckedChanged(object sender, EventArgs e) => RefreshAspectRatioOptions();
 
-		private void CheckPadInteger_CheckedChanged(object sender, EventArgs e)
-		{
-			RefreshAspectRatioOptions();
-		}
+		private void CheckPadInteger_CheckedChanged(object sender, EventArgs e) => RefreshAspectRatioOptions();
 
-		private void RbUseRaw_CheckedChanged(object sender, EventArgs e)
-		{
-			RefreshAspectRatioOptions();
-		}
+		private void RbUseRaw_CheckedChanged(object sender, EventArgs e) => RefreshAspectRatioOptions();
 
-		private void RbUseSystem_CheckedChanged(object sender, EventArgs e)
-		{
-			RefreshAspectRatioOptions();
-		}
+		private void RbUseSystem_CheckedChanged(object sender, EventArgs e) => RefreshAspectRatioOptions();
 
 		private void RefreshAspectRatioOptions()
 		{
@@ -338,10 +323,7 @@ namespace BizHawk.Client.EmuHawk
 			lblScanlines.Text = $"{_config.TargetScanlineFilterIntensity / 256.0:P2}";
 		}
 
-		private void TrackBarFrameSizeWindowed_ValueChanged(object sender, EventArgs e)
-		{
-			SyncTrackBar();
-		}
+		private void TrackBarFrameSizeWindowed_ValueChanged(object sender, EventArgs e) => SyncTrackBar();
 
 		private void SyncTrackBar()
 		{
@@ -361,15 +343,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			System.Diagnostics.Process.Start("https://tasvideos.org/Bizhawk/DisplayConfig");
-		}
+		private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => System.Diagnostics.Process.Start("https://tasvideos.org/Bizhawk/DisplayConfig");
 
-		private void Label13_Click(object sender, EventArgs e)
-		{
-			cbAlternateVsync.Checked ^= true;
-		}
+		private void Label13_Click(object sender, EventArgs e) => cbAlternateVsync.Checked ^= true;
 
 		private void BtnDefaults_Click(object sender, EventArgs e)
 		{

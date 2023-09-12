@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Export_Click(object sender, EventArgs e)
 		{
 			//acquire target
-			var outPath = this.ShowFileSaveDialog(
+			string outPath = this.ShowFileSaveDialog(
 				filter: RenoiseFilesFSFilterSet,
 				initDir: Config!.PathEntries.ToolsAbsolutePath());
 			if (outPath is null) return;
@@ -118,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// load template
 			XElement templateRoot;
-			using (var zfTemplate = new ZipArchive(new FileStream(templatePath, FileMode.Open, FileAccess.Read), ZipArchiveMode.Read))
+			using (ZipArchive zfTemplate = new(new FileStream(templatePath, FileMode.Open, FileAccess.Read), ZipArchiveMode.Read))
 			{
 				var entry = zfTemplate.Entries.Single(entry => entry.FullName == "Song.xml");
 				using var stream = entry.Open();
@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 			var xPatternPool = xPatterns.Parent;
 			xPatterns.Remove();
 
-			var writer = new StringWriter();
+			StringWriter writer = new();
 			writer.WriteLine("<Patterns>");
 
 
@@ -258,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 
 						var rec = _log[index];
 
-						TriangleState tri = rec.Triangle;
+						var tri = rec.Triangle;
 
 						{
 							bool keyOff = false, keyOn = false;
@@ -314,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 
 						var rec = _log[index];
 
-						NoiseState noise = rec.Noise;
+						var noise = rec.Noise;
 
 						// transform quieted notes to dead notes
 						// blech its buggy, im tired
@@ -388,7 +388,7 @@ namespace BizHawk.Client.EmuHawk
 			writer.WriteLine("</Patterns>");
 			writer.Flush();
 
-			var xNewPatternList = XElement.Parse(writer.ToString());
+			XElement xNewPatternList = XElement.Parse(writer.ToString());
 			xPatternPool.Add(xNewPatternList);
 
 			//write pattern sequence
@@ -411,14 +411,14 @@ namespace BizHawk.Client.EmuHawk
 			File.Delete(outPath);
 			File.Copy(templatePath, outPath);
 
-			using var zfOutput = new ZipArchive(new FileStream(outPath, FileMode.Create, FileAccess.Write), ZipArchiveMode.Create);
+			using ZipArchive zfOutput = new(new FileStream(outPath, FileMode.Create, FileAccess.Write), ZipArchiveMode.Create);
 			using (var stream = zfOutput.CreateEntry("Song.xml").Open())
 			{
 				templateRoot.Save(stream);
 			}
 		}
 
-		private readonly List<ApuState> _log = new List<ApuState>();
+		private readonly List<ApuState> _log = new();
 
 		private void DebugCallback()
 		{
@@ -446,7 +446,7 @@ namespace BizHawk.Client.EmuHawk
 			int noiseNote = FindNearestNote(noiseFreq);
 
 			// create the record
-			var rec = new ApuState
+			ApuState rec = new()
 			{
 				Pulse0 =
 				{
@@ -479,10 +479,7 @@ namespace BizHawk.Client.EmuHawk
 			SyncContents();
 		}
 
-		private void SyncContents()
-		{
-			lblContents.Text = $"{_log.Count} Rows";
-		}
+		private void SyncContents() => lblContents.Text = $"{_log.Count} Rows";
 
 		private void BtnControl_Click(object sender, EventArgs e)
 		{

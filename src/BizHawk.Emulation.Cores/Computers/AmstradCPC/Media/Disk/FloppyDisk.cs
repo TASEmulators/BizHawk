@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Disk information header
 		/// </summary>
-		public Header DiskHeader = new Header();
+		public Header DiskHeader = new();
 
 		/// <summary>
 		/// Track array
@@ -93,12 +93,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// TRUE:   disk parsed
 		/// FALSE:  unable to parse disk
 		/// </returns>
-		public virtual bool ParseDisk(byte[] diskData)
-		{
+		public virtual bool ParseDisk(byte[] diskData) =>
 			// default result
 			// override in inheriting class
-			return false;
-		}
+			false;
 
 		/// <summary>
 		/// Examines the floppydisk data to work out what protection (if any) is present
@@ -114,11 +112,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				Protection = ProtectionType.Speedlock;
 
-				Sector sec = DiskTracks[0].Sectors[1];
+				var sec = DiskTracks[0].Sectors[1];
 				if (!sec.ContainsMultipleWeakSectors)
 				{
 					byte[] origData = sec.SectorData.ToArray();
-					List<byte> data = new List<byte>();
+					List<byte> data = new();
 					for (int m = 0; m < 3; m++)
 					{
 						for (int i = 0; i < 512; i++)
@@ -245,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				return false;
 
 			// sector[1] (SectorID 2) contains the weak sectors
-			Sector sec = DiskTracks[0].Sectors[1];
+			var sec = DiskTracks[0].Sectors[1];
 
 			// check for correct sector 1 lengths
 			if (sec.SectorSize != 2 ||
@@ -288,8 +286,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			try
 			{
-				var data1 = DiskTracks[0].Sectors[0].SectorData;
-				var data2 = DiskTracks[0].Sectors[0].SectorData.Length;
+				byte[] data1 = DiskTracks[0].Sectors[0].SectorData;
+				int data2 = DiskTracks[0].Sectors[0].SectorData.Length;
 			}
 			catch (Exception)
 			{
@@ -329,8 +327,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			try
 			{
-				var data1 = DiskTracks[0].Sectors[2].SectorData;
-				var data2 = DiskTracks[0].Sectors[2].SectorData.Length;
+				byte[] data1 = DiskTracks[0].Sectors[2].SectorData;
+				int data2 = DiskTracks[0].Sectors[2].SectorData.Length;
 			}
 			catch (Exception)
 			{
@@ -365,10 +363,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			try
 			{
-				var data1 = DiskTracks[0].Sectors.Length;
-				var data2 = DiskTracks[0].Sectors[8].ActualDataByteLength;
-				var data3 = DiskTracks[0].Sectors[8].SectorData;
-				var data4 = DiskTracks[0].Sectors[8].SectorData.Length;
+				int data1 = DiskTracks[0].Sectors.Length;
+				int data2 = DiskTracks[0].Sectors[8].ActualDataByteLength;
+				byte[] data3 = DiskTracks[0].Sectors[8].SectorData;
+				int data4 = DiskTracks[0].Sectors[8].SectorData.Length;
 				var data5 = DiskTracks[1].Sectors[0];
 			}
 			catch (Exception)
@@ -505,10 +503,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Returns the track count for the disk
 		/// </summary>
-		public virtual int GetTrackCount()
-		{
-			return DiskHeader.NumberOfTracks * DiskHeader.NumberOfSides;
-		}
+		public virtual int GetTrackCount() => DiskHeader.NumberOfTracks * DiskHeader.NumberOfSides;
 
 		/// <summary>
 		/// Reads the current sector ID info
@@ -534,11 +529,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			var sector = track.Sectors[sectorIndex];
 
-			CHRN chrn = new CHRN();
-
-			chrn.C = sector.TrackNumber;
-			chrn.H = sector.SideNumber;
-			chrn.R = sector.SectorID;
+			CHRN chrn = new()
+			{
+				C = sector.TrackNumber,
+				H = sector.SideNumber,
+				R = sector.SectorID
+			};
 
 			// wrap around for N > 7
 			if (sector.SectorSize > 7)
@@ -598,7 +594,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				get
 				{
-					List<byte> list = new List<byte>();
+					List<byte> list = new();
 
 					foreach (var sec in Sectors)
 					{
@@ -658,7 +654,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						int size = 0x80 << SectorSize;
 						if (size > ActualDataByteLength)
 						{
-							List<byte> l = new List<byte>();
+							List<byte> l = new();
 							l.AddRange(SectorData);
 							for (int i = 0; i < size - ActualDataByteLength; i++)
 							{
@@ -702,7 +698,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 			public CHRN SectorIDInfo =>
-				new CHRN
+				new()
 				{
 					C = TrackNumber,
 					H = SideNumber,

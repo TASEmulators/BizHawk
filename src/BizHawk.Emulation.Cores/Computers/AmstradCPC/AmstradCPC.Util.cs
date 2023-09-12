@@ -24,10 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// POKEs a memory bus address
 		/// </summary>
-		public void PokeMemory(ushort addr, byte value)
-		{
-			_machine.WriteBus(addr, value);
-		}
+		public void PokeMemory(ushort addr, byte value) => _machine.WriteBus(addr, value);
 
 		public string GetMachineType()
 		{
@@ -45,9 +42,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return m;
 		}
 
-		public static string GetMemberName<T, TValue>(Expression<Func<T, TValue>> memberAccess)
-		{
-			return ((MemberExpression)memberAccess.Body).Member.Name;
-		}
+		public static string GetMemberName<T, TValue>(Expression<Func<T, TValue>> memberAccess) => ((MemberExpression)memberAccess.Body).Member.Name;
 	}
 }

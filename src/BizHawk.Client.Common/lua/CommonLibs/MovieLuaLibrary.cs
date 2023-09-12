@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common
 		public bool PlayFromStart(string path = "")
 		{
 			_luaLibsImpl.IsRebootingCore = true;
-			var success = APIs.Movie.PlayFromStart(path);
+			bool success = APIs.Movie.PlayFromStart(path);
 			_luaLibsImpl.IsRebootingCore = false;
 			return success;
 		}

@@ -38,20 +38,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private CoreImpl _core;
 		private bool _disposed;
 		private CommStruct* _comm;
-		private readonly Dictionary<string, IntPtr> _sharedMemoryBlocks = new Dictionary<string, IntPtr>();
+		private readonly Dictionary<string, IntPtr> _sharedMemoryBlocks = new();
 		private bool _sealed = false;
 
-		public void Enter()
-		{
-			_exe.Enter();
-		}
+		public void Enter() => _exe.Enter();
 
-		public void Exit()
-		{
-			_exe.Exit();
-		}
+		public void Exit() => _exe.Exit();
 
-		private readonly List<string> _readonlyFiles = new List<string>();
+		private readonly List<string> _readonlyFiles = new();
 
 		public void AddReadonlyFile(byte[] data, string name)
 		{
@@ -187,12 +181,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private snes_path_request_t pathRequest;
 		private snes_trace_t traceCallback;
 
-		public void QUERY_set_video_refresh(snes_video_refresh_t video_refresh) { this.video_refresh = video_refresh; }
+		public void QUERY_set_video_refresh(snes_video_refresh_t video_refresh) => this.video_refresh = video_refresh;
 		// not used??
-		public void QUERY_set_input_poll(snes_input_poll_t input_poll) { this.input_poll = input_poll; }
-		public void QUERY_set_input_state(snes_input_state_t input_state) { this.input_state = input_state; }
-		public void QUERY_set_input_notify(snes_input_notify_t input_notify) { this.input_notify = input_notify; }
-		public void QUERY_set_path_request(snes_path_request_t pathRequest) { this.pathRequest = pathRequest; }
+		public void QUERY_set_input_poll(snes_input_poll_t input_poll) => this.input_poll = input_poll;
+		public void QUERY_set_input_state(snes_input_state_t input_state) => this.input_state = input_state;
+		public void QUERY_set_input_notify(snes_input_notify_t input_notify) => this.input_notify = input_notify;
+		public void QUERY_set_path_request(snes_path_request_t pathRequest) => this.pathRequest = pathRequest;
 
 		public delegate void snes_video_refresh_t(int* data, int width, int height);
 		public delegate void snes_input_poll_t();
@@ -223,64 +217,52 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			private byte _Obj_Prio0, _Obj_Prio1, _Obj_Prio2, _Obj_Prio3;
 
 			public bool BG1_Prio0
-			{
-				get => _BG1_Prio0 != 0;
+			{ readonly get => _BG1_Prio0 != 0;
 				set => _BG1_Prio0 = (byte)(value ? 1 : 0);
 			}
 			public bool BG1_Prio1
-			{
-				get => _BG1_Prio1 != 0;
+			{ readonly get => _BG1_Prio1 != 0;
 				set => _BG1_Prio1 = (byte)(value ? 1 : 0);
 			}
 			public bool BG2_Prio0
-			{
-				get => _BG2_Prio0 != 0;
+			{ readonly get => _BG2_Prio0 != 0;
 				set => _BG2_Prio0 = (byte)(value ? 1 : 0);
 			}
 			public bool BG2_Prio1
-			{
-				get => _BG2_Prio1 != 0;
+			{ readonly get => _BG2_Prio1 != 0;
 				set => _BG2_Prio1 = (byte)(value ? 1 : 0);
 			}
 			public bool BG3_Prio0
-			{
-				get => _BG3_Prio0 != 0;
+			{ readonly get => _BG3_Prio0 != 0;
 				set => _BG3_Prio0 = (byte)(value ? 1 : 0);
 			}
 			public bool BG3_Prio1
-			{
-				get => _BG3_Prio1 != 0;
+			{ readonly get => _BG3_Prio1 != 0;
 				set => _BG3_Prio1 = (byte)(value ? 1 : 0);
 			}
 			public bool BG4_Prio0
-			{
-				get => _BG4_Prio0 != 0;
+			{ readonly get => _BG4_Prio0 != 0;
 				set => _BG4_Prio0 = (byte)(value ? 1 : 0);
 			}
 			public bool BG4_Prio1
-			{
-				get => _BG4_Prio1 != 0;
+			{ readonly get => _BG4_Prio1 != 0;
 				set => _BG4_Prio1 = (byte)(value ? 1 : 0);
 			}
 
 			public bool Obj_Prio0
-			{
-				get => _Obj_Prio0 != 0;
+			{ readonly get => _Obj_Prio0 != 0;
 				set => _Obj_Prio0 = (byte)(value ? 1 : 0);
 			}
 			public bool Obj_Prio1
-			{
-				get => _Obj_Prio1 != 0;
+			{ readonly get => _Obj_Prio1 != 0;
 				set => _Obj_Prio1 = (byte)(value ? 1 : 0);
 			}
 			public bool Obj_Prio2
-			{
-				get => _Obj_Prio2 != 0;
+			{ readonly get => _Obj_Prio2 != 0;
 				set => _Obj_Prio2 = (byte)(value ? 1 : 0);
 			}
 			public bool Obj_Prio3
-			{
-				get => _Obj_Prio3 != 0;
+			{ readonly get => _Obj_Prio3 != 0;
 				set => _Obj_Prio3 = (byte)(value ? 1 : 0);
 			}
 		}
@@ -353,15 +335,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			[FieldOffset(360)]
 			public SNES_MAPPER mapper;
 
-			[FieldOffset(364)] private uint BLANK0;
+			[FieldOffset(364)] private readonly uint BLANK0;
 
 
 			//utilities
 			//TODO: make internal, wrap on the API instead of the comm
-			public string GetAscii() => _getAscii(str);
-			public bool GetBool() { return value != 0; }
+			public readonly string GetAscii() => _getAscii(str);
+			public readonly bool GetBool() => value != 0;
 
-			private string _getAscii(sbyte* ptr)
+			private readonly string _getAscii(sbyte* ptr)
 			{
 				int len = 0;
 				sbyte* junko = ptr;
@@ -421,7 +403,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_core.DllInit();
 			_exe.Seal();
 			_sealed = true;
-			foreach (var s in _readonlyFiles)
+			foreach (string s in _readonlyFiles)
 			{
 				_exe.RemoveReadonlyFile(s);
 			}
@@ -430,10 +412,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public bool AvoidRewind => false;
 
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			_exe.SaveStateBinary(writer);
-		}
+		public void SaveStateBinary(BinaryWriter writer) => _exe.SaveStateBinary(writer);
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
@@ -441,9 +420,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_core.PostLoadState();
 		}
 
-		public MemoryDomain GetPagesDomain()
-		{
-			return _exe.GetPagesDomain();
-		}
+		public MemoryDomain GetPagesDomain() => _exe.GetPagesDomain();
 	}
 }

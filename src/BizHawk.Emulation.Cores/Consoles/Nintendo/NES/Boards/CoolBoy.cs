@@ -120,9 +120,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(exp), ref exp, false);
 		}
 
-		public override void NesSoftReset()
-		{
-			Array.Clear(exp, 0, 4);
-		}
+		public override void NesSoftReset() => Array.Clear(exp, 0, 4);
 	}
 }

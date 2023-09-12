@@ -45,10 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("expregs", ref exRegs, false);
 		}
 
-		public override byte ReadPrg(int addr)
-		{
-			return Rom[(exRegs[5] << 15) + addr];
-		}
+		public override byte ReadPrg(int addr) => Rom[(exRegs[5] << 15) + addr];
 
 		public override byte ReadExp(int addr)
 		{
@@ -62,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WriteExp(int addr, byte value)
 		{
-			if (addr >= 0x800 && addr < 0x1000) // 0x4800-0x4FFF
+			if (addr is >= 0x800 and < 0x1000) // 0x4800-0x4FFF
 			{
 				WriteReg(addr, value);
 			}
@@ -88,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WriteWram(int addr, byte value)
 		{
-			if (addr >= 0x800 && addr < 0x1000) // 0x6800 - 0x6FFF
+			if (addr is >= 0x800 and < 0x1000) // 0x6800 - 0x6FFF
 			{
 				WriteReg(addr, value);
 			}
@@ -98,9 +95,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		private void WriteReg(int addr, byte value)
-		{
-			exRegs[5] = (byte)((value & 1) | ((value >> 3) & 2));
-		}
+		private void WriteReg(int addr, byte value) => exRegs[5] = (byte)((value & 1) | ((value >> 3) & 2));
 	}
 }

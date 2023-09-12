@@ -9,13 +9,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 	{
 		public static Disk Read(byte[] source)
 		{
-			using var mem = new MemoryStream(source);
-			using var reader = new BinaryReader(mem);
-			var id = new string(reader.ReadChars(8));
-			var trackDatas = new List<byte[]>();
-			var trackLengths = new List<int>();
-			var trackNumbers = new List<int>();
-			var trackDensities = new List<int>();
+			using MemoryStream mem = new(source);
+			using BinaryReader reader = new(mem);
+			string id = new(reader.ReadChars(8));
+			List<byte[]> trackDatas = new();
+			List<int> trackLengths = new();
+			List<int> trackNumbers = new();
+			List<int> trackDensities = new();
 
 			if (id == @"GCR-1541")
 			{
@@ -23,26 +23,26 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				int trackCount = reader.ReadByte();
 				reader.ReadInt16(); // max track size in bytes
 
-				var trackOffsetTable = new int[trackCount];
-				var trackSpeedTable = new int[trackCount];
+				int[] trackOffsetTable = new int[trackCount];
+				int[] trackSpeedTable = new int[trackCount];
 
-				for (var i = 0; i < trackCount; i++)
+				for (int i = 0; i < trackCount; i++)
 				{
 					trackOffsetTable[i] = reader.ReadInt32();
 				}
 
-				for (var i = 0; i < trackCount; i++)
+				for (int i = 0; i < trackCount; i++)
 				{
 					trackSpeedTable[i] = reader.ReadInt32();
 				}
 
-				for (var i = 0; i < trackCount; i++)
+				for (int i = 0; i < trackCount; i++)
 				{
 					if (trackOffsetTable[i] > 0)
 					{
 						mem.Position = trackOffsetTable[i];
 						int trackLength = reader.ReadInt16();
-						var trackData = reader.ReadBytes(trackLength);
+						byte[] trackData = reader.ReadBytes(trackLength);
 
 						trackDatas.Add(trackData);
 						trackLengths.Add(trackLength * 8);
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 					}
 				}
 
-				if (trackSpeedTable.Any(ts => ts > 3 || ts < 0))
+				if (trackSpeedTable.Any(ts => ts is > 3 or < 0))
 				{
 					throw new Exception("Byte-level speeds are not yet supported in the G64 loader.");
 				}
@@ -69,10 +69,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			const int headerLength = 0xC;
 			const byte dataFillerValue = 0xFF;
 
-			var trackMaxLength = (ushort)Math.Max(7928, trackData.Max(d => d.Length));
+			ushort trackMaxLength = (ushort)Math.Max(7928, trackData.Max(d => d.Length));
 
-			using var mem = new MemoryStream();
-			using var writer = new BinaryWriter(mem);
+			using MemoryStream mem = new();
+			using BinaryWriter writer = new(mem);
 
 			// header ID
 			writer.Write("GCR-1541".ToCharArray());
@@ -87,22 +87,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			writer.Write(trackMaxLength);
 
 			// combine track data
-			var offsets = new List<int>();
-			var densities = new List<int>();
-			using (var trackMem = new MemoryStream())
+			List<int> offsets = new();
+			List<int> densities = new();
+			using (MemoryStream trackMem = new())
 			{
-				var trackMemWriter = new BinaryWriter(trackMem);
-				for (var i = 0; i < trackCount; i++)
+				BinaryWriter trackMemWriter = new(trackMem);
+				for (int i = 0; i < trackCount; i++)
 				{
 					if (trackNumbers.Contains(i))
 					{
-						var trackIndex = trackNumbers.IndexOf(i);
+						int trackIndex = trackNumbers.IndexOf(i);
 						offsets.Add((int)trackMem.Length);
 						densities.Add(trackDensities[trackIndex]);
 
-						var data = trackData[trackIndex];
-						var buffer = Enumerable.Repeat(dataFillerValue, trackMaxLength).ToArray();
-						var dataBytes = data.Select(d => unchecked(d)).ToArray();
+						byte[] data = trackData[trackIndex];
+						byte[] buffer = Enumerable.Repeat(dataFillerValue, trackMaxLength).ToArray();
+						byte[] dataBytes = data.Select(d => unchecked(d)).ToArray();
 						Array.Copy(dataBytes, buffer, dataBytes.Length);
 						trackMemWriter.Write((ushort)dataBytes.Length);
 						trackMemWriter.Write(buffer);
@@ -116,13 +116,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				trackMemWriter.Flush();
 
 				// offset table
-				foreach (var offset in offsets.Select(o => o >= 0 ? o + headerLength + trackCount * 8 : 0))
+				foreach (int offset in offsets.Select(o => o >= 0 ? o + headerLength + trackCount * 8 : 0))
 				{
 					writer.Write(offset);
 				}
 
 				// speed zone data
-				foreach (var density in densities)
+				foreach (int density in densities)
 				{
 					writer.Write(density);
 				}

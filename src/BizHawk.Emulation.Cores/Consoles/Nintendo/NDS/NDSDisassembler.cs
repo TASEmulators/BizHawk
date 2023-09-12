@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				NdsSysBus.UseArm9 = int.Parse(Cpu.Substring(5, 1)) == 5;
 			}
 
-			var ret = new byte[80];
+			byte[] ret = new byte[80];
 			var type = Cpu switch
 			{
 				"ARM v5" => LibMelonDS.TraceMask.ARM9_ARM,
@@ -43,14 +43,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (Cpu.Length == 14)
 			{
 				addr &= ~1u;
-				var op = m.PeekByte(addr) | (uint)m.PeekByte(addr + 1) << 8;
+				uint op = m.PeekByte(addr) | (uint)m.PeekByte(addr + 1) << 8;
 				_core.GetDisassembly(type, op, ret);
 				length = 2;
 			}
 			else
 			{
 				addr &= ~3u;
-				var op = m.PeekByte(addr)
+				uint op = m.PeekByte(addr)
 					| (uint)m.PeekByte(addr + 1) << 8
 					| (uint)m.PeekByte(addr + 2) << 16
 					| (uint)m.PeekByte(addr + 3) << 24;

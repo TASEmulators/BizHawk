@@ -10,10 +10,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
-		public void Save()
-		{
-			Write(Filename);
-		}
+		public void Save() => Write(Filename);
 
 		public void SaveBackup()
 		{
@@ -22,7 +19,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			var backupName = Filename;
+			string backupName = Filename;
 			backupName = backupName.Insert(Filename.LastIndexOf(".", StringComparison.Ordinal), $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}");
 			backupName = Path.Combine(Session.BackupDirectory, Path.GetFileName(backupName));
 
@@ -40,7 +37,7 @@ namespace BizHawk.Client.Common
 			Header[HeaderKeys.EmulatorVersion] = VersionInfo.GetEmuVersion();
 			CreateDirectoryIfNotExists(fn);
 
-			using var bs = new ZipStateSaver(fn, Session.Settings.MovieCompressionLevel);
+			using ZipStateSaver bs = new(fn, Session.Settings.MovieCompressionLevel);
 			AddLumps(bs, isBackup);
 
 			if (!isBackup)
@@ -69,17 +66,14 @@ namespace BizHawk.Client.Common
 
 		private static void CreateDirectoryIfNotExists(string fn)
 		{
-			var file = new FileInfo(fn);
+			FileInfo file = new(fn);
 			if (file.Directory != null && !file.Directory.Exists)
 			{
 				Directory.CreateDirectory(file.Directory.ToString());
 			}
 		}
 
-		protected virtual void AddLumps(ZipStateSaver bs, bool isBackup = false)
-		{
-			AddBk2Lumps(bs);
-		}
+		protected virtual void AddLumps(ZipStateSaver bs, bool isBackup = false) => AddBk2Lumps(bs);
 
 		protected void AddBk2Lumps(ZipStateSaver bs)
 		{
@@ -160,7 +154,7 @@ namespace BizHawk.Client.Common
 				bl.GetLump(BinaryStateLump.Framebuffer, false,
 					br =>
 					{
-						var fb = br.ReadAllBytes();
+						byte[] fb = br.ReadAllBytes();
 						SavestateFramebuffer = new int[fb.Length / sizeof(int)];
 						Buffer.BlockCopy(fb, 0, SavestateFramebuffer, 0, fb.Length);
 					});

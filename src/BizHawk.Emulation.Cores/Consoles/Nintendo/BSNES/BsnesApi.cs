@@ -107,15 +107,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private readonly ICallingConventionAdapter _adapter;
 		private bool _disposed;
 
-		public void Enter()
-		{
-			exe.Enter();
-		}
+		public void Enter() => exe.Enter();
 
-		public void Exit()
-		{
-			exe.Exit();
-		}
+		public void Exit() => exe.Exit();
 
 		private readonly List<string> _readonlyFiles = new();
 
@@ -297,8 +291,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public bool AvoidRewind => false;
 
-		public void SaveStateBinary(BinaryWriter writer)
-		{
+		public void SaveStateBinary(BinaryWriter writer) =>
 			// commented code left for debug purposes; created savestates are native bsnes savestates
 			// and therefor compatible across minor core updates
 
@@ -307,7 +300,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			// core.snes_serialize(serializedData, serializedSize);
 			// writer.Write(serializedData);
 			exe.SaveStateBinary(writer);
-		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{

@@ -75,7 +75,7 @@ namespace BizHawk.Tests.Client.Common.Api
 		{
 			void TestCase(IReadOnlyList<byte> expected, Action<IMemoryApi> action, string message)
 			{
-				var memDomainContents = new byte[8];
+				byte[] memDomainContents = new byte[8];
 				action(CreateDummyApi(memDomainContents));
 				AssertAreSequenceEqual(expected, memDomainContents, message);
 			}

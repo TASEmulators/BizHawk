@@ -75,9 +75,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 LastFe = value;
 
             // get a BitArray of the port
-            BitArray portBits = new BitArray(BitConverter.GetBytes(port));
+            BitArray portBits = new(BitConverter.GetBytes(port));
             // get a BitArray of the value byte
-            BitArray bits = new BitArray(new byte[] { value });
+            BitArray bits = new(new byte[] { value });
 
             // Check whether the low bit is reset
             bool lowBitReset = !portBits[0]; // (port & 0x01) == 0;
@@ -91,8 +91,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 if (!PagingDisabled)
                 {
-                    // bits 0, 1, 2 select the RAM page
-                    var rp = value & 0x07;
+					// bits 0, 1, 2 select the RAM page
+					int rp = value & 0x07;
                     if (rp < 8)
                         RAMPaged = rp;
 
@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         // Config 1 = Bit1-1 Bit2-0
                         // Config 2 = Bit1-0 Bit2-1
                         // Config 3 = Bit1-1 Bit2-1
-                        BitArray confHalfNibble = new BitArray(2);
+                        BitArray confHalfNibble = new(2);
                         confHalfNibble[0] = bits[1];
                         confHalfNibble[1] = bits[2];
 
@@ -184,8 +184,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             get
             {
-                // calculate the ROMpage from the high and low bits
-                var rp = ZXSpectrum.GetIntFromBitArray(new BitArray(new bool[] { ROMlow, ROMhigh }));
+				// calculate the ROMpage from the high and low bits
+				int rp = ZXSpectrum.GetIntFromBitArray(new BitArray(new bool[] { ROMlow, ROMhigh }));
 
                 if (rp != 0)
                 {

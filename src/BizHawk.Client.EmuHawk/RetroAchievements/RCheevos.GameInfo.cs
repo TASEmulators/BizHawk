@@ -33,8 +33,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					unsafe
 					{
-						var unlocks = (int*)resp.achievement_ids;
-						for (var i = 0; i < resp.num_achievement_ids; i++)
+						int* unlocks = (int*)resp.achievement_ids;
+						for (int i = 0; i < resp.num_achievement_ids; i++)
 						{
 							if (_cheevos.TryGetValue(unlocks![i], out var cheevo))
 							{
@@ -114,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					var image = new Bitmap(new MemoryStream(serv_resp));
+					Bitmap image = new(new MemoryStream(serv_resp));
 					Image = image;
 				}
 				catch
@@ -162,14 +162,11 @@ namespace BizHawk.Client.EmuHawk
 			public Cheevo GetCheevoById(int i) => _cheevos[i];
 			public LBoard GetLboardById(int i) => _lboards[i];
 
-			public UserUnlocksRequest InitUnlocks(string username, string api_token, bool hardcore)
-			{
-				return new(username, api_token, GameID, hardcore, _cheevos);
-			}
+			public UserUnlocksRequest InitUnlocks(string username, string api_token, bool hardcore) => new(username, api_token, GameID, hardcore, _cheevos);
 
 			public IEnumerable<RCheevoHttpRequest> LoadImages()
 			{
-				var requests = new List<RCheevoHttpRequest>(1 + (_cheevos?.Count ?? 0) * 2);
+				List<RCheevoHttpRequest> requests = new(1 + (_cheevos?.Count ?? 0) * 2);
 
 				_gameBadgeImageRequest = new(ImageName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_GAME);
 				requests.Add(_gameBadgeImageRequest);
@@ -195,18 +192,18 @@ namespace BizHawk.Client.EmuHawk
 				ImageName = resp.ImageName;
 				RichPresenseScript = resp.RichPresenceScript;
 
-				var cheevos = new Dictionary<int, Cheevo>();
-				var cptr = (LibRCheevos.rc_api_achievement_definition_t*)resp.achievements;
-				for (var i = 0; i < resp.num_achievements; i++)
+				Dictionary<int, Cheevo> cheevos = new();
+				LibRCheevos.rc_api_achievement_definition_t* cptr = (LibRCheevos.rc_api_achievement_definition_t*)resp.achievements;
+				for (int i = 0; i < resp.num_achievements; i++)
 				{
 					cheevos.Add(cptr![i].id, new(in cptr[i], allowUnofficialCheevos));
 				}
 
 				_cheevos = cheevos;
 
-				var lboards = new Dictionary<int, LBoard>();
-				var lptr = (LibRCheevos.rc_api_leaderboard_definition_t*)resp.leaderboards;
-				for (var i = 0; i < resp.num_leaderboards; i++)
+				Dictionary<int, LBoard> lboards = new();
+				LibRCheevos.rc_api_leaderboard_definition_t* lptr = (LibRCheevos.rc_api_leaderboard_definition_t*)resp.leaderboards;
+				for (int i = 0; i < resp.num_leaderboards; i++)
 				{
 					lboards.Add(lptr![i].id, new(in lptr[i]));
 				}
@@ -270,7 +267,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int SendHash(string hash)
 		{
-			var resolveHashRequest = new ResolveHashRequest(hash);
+			ResolveHashRequest resolveHashRequest = new(hash);
 			PushRequest(resolveHashRequest);
 			resolveHashRequest.Wait(); // currently, this is done synchronously
 			return resolveHashRequest.GameID;
@@ -284,7 +281,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override int IdentifyRom(byte[] rom)
 		{
-			var hash = new byte[33];
+			byte[] hash = new byte[33];
 			if (_lib.rc_hash_generate_from_buffer(hash, _consoleId, rom, rom.Length))
 			{
 				return IdentifyHash(Encoding.ASCII.GetString(hash, 0, 32));
@@ -317,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private GameData GetGameData(int id)
 		{
-			var gameDataRequest = new GameDataRequest(Username, ApiToken, id, () => AllowUnofficialCheevos);
+			GameDataRequest gameDataRequest = new(Username, ApiToken, id, () => AllowUnofficialCheevos);
 			PushRequest(gameDataRequest);
 			gameDataRequest.Wait();
 			return gameDataRequest.GameData;

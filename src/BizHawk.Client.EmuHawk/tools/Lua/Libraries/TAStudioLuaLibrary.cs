@@ -60,21 +60,15 @@ namespace BizHawk.Client.EmuHawk
 			public string Text { get; set; }
 		}
 
-		private readonly List<PendingChanges> _changeList = new List<PendingChanges>(); //TODO: Initialize it to empty list on a script reload, and have each script have it's own list
+		private readonly List<PendingChanges> _changeList = new(); //TODO: Initialize it to empty list on a script reload, and have each script have it's own list
 
 		[LuaMethodExample("if ( tastudio.engaged( ) ) then\r\n\tconsole.log( \"returns whether or not tastudio is currently engaged ( active )\" );\r\nend;")]
 		[LuaMethod("engaged", "returns whether or not tastudio is currently engaged (active)")]
-		public bool Engaged()
-		{
-			return Tools.Has<TAStudio>(); // TODO: eventually tastudio should have an engaged flag
-		}
+		public bool Engaged() => Tools.Has<TAStudio>(); // TODO: eventually tastudio should have an engaged flag
 
 		[LuaMethodExample("if ( tastudio.getrecording( ) ) then\r\n\tconsole.log( \"returns whether or not TAStudio is in recording mode\" );\r\nend;")]
 		[LuaMethod("getrecording", "returns whether or not TAStudio is in recording mode")]
-		public bool GetRecording()
-		{
-			return Tastudio.TasPlaybackBox.RecordingMode;
-		}
+		public bool GetRecording() => Tastudio.TasPlaybackBox.RecordingMode;
 
 		[LuaMethodExample("tastudio.setrecording( true );")]
 		[LuaMethod("setrecording", "sets the recording mode on/off depending on the parameter")]
@@ -88,10 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("tastudio.togglerecording( );")]
 		[LuaMethod("togglerecording", "toggles tastudio recording mode on/off depending on its current state")]
-		public void SetRecording()
-		{
-			Tastudio.ToggleReadOnly();
-		}
+		public void SetRecording() => Tastudio.ToggleReadOnly();
 
 		[LuaMethodExample("local botasisl = tastudio.islag( 500 );")]
 		[LuaMethod("islag", "Returns whether or not the given frame was a lag frame, null if unknown")]
@@ -363,7 +354,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("setbranchtext", "adds the given message to the existing branch, or to the branch that will be created next if branch index is not specified")]
 		public void SetBranchText(string text, int? index = null)
 		{
-			var text1 = text;
+			string text1 = text;
 			if (index != null)
 			{
 				var branch = Tastudio.CurrentTasMovie.Branches[index.Value];
@@ -405,12 +396,12 @@ namespace BizHawk.Client.EmuHawk
 			var controller = Tastudio.GetBranchInput(branchId, frame);
 			if (controller == null) return table;
 
-			foreach (var button in controller.Definition.BoolButtons)
+			foreach (string button in controller.Definition.BoolButtons)
 			{
 				table[button] = controller.IsPressed(button);
 			}
 
-			foreach (var button in controller.Definition.Axes.Keys)
+			foreach (string button in controller.Definition.Axes.Keys)
 			{
 				table[button] = controller.AxisValue(button);
 			}
@@ -469,7 +460,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				var message1 = message;
+				string message1 = message;
 				var marker = Tastudio.CurrentTasMovie.Markers.Get(frame);
 				if (marker != null)
 				{
@@ -501,7 +492,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Tastudio.QueryItemTextCallback = (index, name) =>
 				{
-					var result = luaf.Call(index, name);
+					object[] result = luaf.Call(index, name);
 					return result?[0]?.ToString();
 				};
 			}
@@ -515,7 +506,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Tastudio.QueryItemIconCallback = (index, name) =>
 				{
-					var result = luaf.Call(index, name);
+					object[] result = luaf.Call(index, name);
 					if (result?[0] != null)
 					{
 						return _iconCache.GetValueOrPutNew1(result[0].ToString()).ToBitmap();

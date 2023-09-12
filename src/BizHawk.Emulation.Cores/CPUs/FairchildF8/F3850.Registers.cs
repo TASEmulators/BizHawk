@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			var res = new Dictionary<string, RegisterValue>
+			Dictionary<string, RegisterValue> res = new()
 			{
 				["A"] = Regs[A],
 				["W"] = Regs[W],
@@ -277,7 +277,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		{
 			if (register.StartsWithOrdinal("SPR"))
 			{
-				var reg = Convert.ToInt32(register.Replace("SPR", ""));
+				int reg = Convert.ToInt32(register.Replace("SPR", ""));
 
 				if (reg > 63)
 				{
@@ -340,7 +340,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		private void ResetRegisters()
 		{
-			for (var i = 0; i < Regs.Length; i++)
+			for (int i = 0; i < Regs.Length; i++)
 			{
 				Regs[i] = 0;
 			}

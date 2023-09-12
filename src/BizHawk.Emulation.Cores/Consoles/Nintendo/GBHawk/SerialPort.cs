@@ -19,15 +19,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte ReadReg(int addr)
 		{
-			switch (addr)
+			return addr switch
 			{
-				case 0xFF01:
-					return serial_data;
-				case 0xFF02:
-					return serial_control;
-			}
-
-			return 0xFF;
+				0xFF01 => serial_data,
+				0xFF02 => serial_control,
+				_ => 0xFF,
+			};
 		}
 
 		public void WriteReg(int addr, byte value)

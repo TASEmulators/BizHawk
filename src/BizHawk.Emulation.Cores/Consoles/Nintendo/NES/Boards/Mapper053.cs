@@ -52,10 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePrg(int addr, byte value)
-		{
-			_reg1 = value;
-		}
+		public override void WritePrg(int addr, byte value) => _reg1 = value;
 
 		public override byte ReadPrg(int addr)
 		{
@@ -131,10 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePrg(int addr, byte value)
-		{
-			_reg1 = value;
-		}
+		public override void WritePrg(int addr, byte value) => _reg1 = value;
 
 		public override byte ReadPrg(int addr)
 		{

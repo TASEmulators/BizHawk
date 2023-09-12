@@ -18,10 +18,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public static bool GetBit(int bitNumber, byte dataByte)
         {
-            if (bitNumber < 0 || bitNumber > 7)
+            if (bitNumber is < 0 or > 7)
                 return false;
 
-            BitArray bi = new BitArray(new byte[] { dataByte });
+            BitArray bi = new(new byte[] { dataByte });
 
             return bi[bitNumber];
         }
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public static void SetBit(int bitNumber, ref byte dataByte)
         {
-            if (bitNumber < 0 || bitNumber > 7)
+            if (bitNumber is < 0 or > 7)
                 return;
 
             int db = dataByte;
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public static void UnSetBit(int bitNumber, ref byte dataByte)
         {
-            if (bitNumber < 0 || bitNumber > 7)
+            if (bitNumber is < 0 or > 7)
                 return;
 
             int db = dataByte;

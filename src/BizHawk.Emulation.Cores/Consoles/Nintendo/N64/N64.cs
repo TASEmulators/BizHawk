@@ -42,37 +42,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_disableExpansionSlot = _syncSettings.DisableExpansionSlot;
 
 			// Override the user's expansion slot setting if it is mentioned in the gamedb (it is mentioned but the game MUST have this setting or else not work
-			if (game.OptionValue("expansionpak") != null && game.OptionValue("expansionpak") == "1")
+			if (game.OptionValue("expansionpak") is not null and "1")
 			{
 				_disableExpansionSlot = false;
 				IsOverridingUserExpansionSlotSetting = true;
 			}
 
 			byte country_code = rom[0x3E];
-			switch (country_code)
+			Region = country_code switch
 			{
 				// PAL codes
-				case 0x44:
-				case 0x46:
-				case 0x49:
-				case 0x50:
-				case 0x53:
-				case 0x55:
-				case 0x58:
-				case 0x59:
-					_display_type = DisplayType.PAL;
-					break;
-
+				0x44 or 0x46 or 0x49 or 0x50 or 0x53 or 0x55 or 0x58 or 0x59 => DisplayType.PAL,
 				// NTSC codes
-				case 0x37:
-				case 0x41:
-				case 0x45:
-				case 0x4a:
-				default: // Fallback for unknown codes
-					_display_type = DisplayType.NTSC;
-					break;
-			}
-
+				_ => DisplayType.NTSC,
+			};
 			StartThreadLoop();
 
 			var videosettings = _syncSettings.GetVPS(game, _settings.VideoSizeX, _settings.VideoSizeY);
@@ -147,8 +130,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private readonly N64VideoProvider _videoProvider;
 		private readonly N64Audio _audioProvider;
 
-		private readonly EventWaitHandle _pendingThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
-		private readonly EventWaitHandle _completeThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
+		private readonly EventWaitHandle _pendingThreadEvent = new(false, EventResetMode.AutoReset);
+		private readonly EventWaitHandle _completeThreadEvent = new(false, EventResetMode.AutoReset);
 
 		private mupen64plusApi api; // mupen64plus DLL Api
 
@@ -156,9 +139,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private N64Settings _settings;
 
 		private bool _pendingThreadTerminate;
-
-		private readonly DisplayType _display_type = DisplayType.NTSC;
-
 		private Action _pendingThreadAction;
 
 		private readonly bool _disableExpansionSlot = true;
@@ -208,14 +188,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private void StartThreadLoop()
 		{
-			var thread = new Thread(ThreadLoop) { IsBackground = true };
+			Thread thread = new(ThreadLoop) { IsBackground = true };
 			thread.Start(); // will this solve the hanging process problem?
 		}
 
-		private void EndThreadLoop()
-		{
-			RunThreadAction(() => { _pendingThreadTerminate = true; });
-		}
+		private void EndThreadLoop() => RunThreadAction(() => { _pendingThreadTerminate = true; });
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
@@ -253,7 +230,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public string SystemId => VSystemID.Raw.N64;
 
-		public DisplayType Region => _display_type;
+		public DisplayType Region { get; } = DisplayType.NTSC;
 
 		public ControllerDefinition ControllerDefinition { get; private set; } = new("Nintendo 64 Controller");
 

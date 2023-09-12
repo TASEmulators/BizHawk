@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 	[PortedCore(CoreNames.Uzem, "David Etherton")]
 	public class Uzem : WaterboxCore
 	{
-		private LibUzem _uze;
+		private readonly LibUzem _uze;
 		private readonly bool _mouseEnabled;
 
 		[CoreConstructor(VSystemID.Raw.UZE)]
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 			int ret = unchecked((int)0xffff0000);
 			int val = 1;
 			int idx = 0;
-			foreach (var s in PadBits)
+			foreach (string s in PadBits)
 			{
 				if (c.IsPressed("P" + p + " " + PadBits[idx++]))
 					ret |= val;
@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			var ret = new LibUzem.FrameInfo();
+			LibUzem.FrameInfo ret = new();
 			if (_mouseEnabled)
 			{
 				ret.ButtonsP1 = EncodeDelta(controller.AxisValue("P1 Mouse X")) << 24

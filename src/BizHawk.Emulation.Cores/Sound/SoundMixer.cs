@@ -32,10 +32,7 @@ namespace BizHawk.Emulation.Cores.Components
 			_spf = spf;
 		}
 
-		public void DisableSource(IMixedSoundProvider source)
-		{
-			_soundProviders.Remove(source);
-		}
+		public void DisableSource(IMixedSoundProvider source) => _soundProviders.Remove(source);
 
 		public void DiscardSamples()
 		{

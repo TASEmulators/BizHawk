@@ -23,25 +23,19 @@ namespace BizHawk.Emulation.Common
 
 		public class Node
 		{
-			public readonly Dictionary<string, byte[]> Data = new Dictionary<string, byte[]>();
-			public readonly Dictionary<string, Node> Objects = new Dictionary<string, Node>();
+			public readonly Dictionary<string, byte[]> Data = new();
+			public readonly Dictionary<string, Node> Objects = new();
 
 			// methods named "ShouldSerialize*" are detected and dynamically invoked by JSON.NET
 			// if they return false during serialization, the field/prop is omitted from the created json
 			// ReSharper disable once UnusedMember.Global
-			public bool ShouldSerializeData()
-			{
-				return Data.Count > 0;
-			}
+			public bool ShouldSerializeData() => Data.Count > 0;
 
 			// ReSharper disable once UnusedMember.Global
-			public bool ShouldSerializeObjects()
-			{
-				return Objects.Count > 0;
-			}
+			public bool ShouldSerializeObjects() => Objects.Count > 0;
 		}
 
-		public readonly Node Root = new Node();
+		public readonly Node Root = new();
 
 		[JsonIgnore]
 		private Stack<Node> Nodes;
@@ -76,28 +70,26 @@ namespace BizHawk.Emulation.Common
 
 		public void EnterSectionSave(string name)
 		{
-			Node next = new Node();
+			Node next = new();
 			Current.Objects.Add(name, next);
 			Nodes.Push(next);
 		}
 
 		public void EnterSectionLoad(string name)
 		{
-			Node next = Current.Objects[name];
+			var next = Current.Objects[name];
 			Nodes.Push(next);
 		}
 
-		public void EnterSection(string name)
-		{
+		public void EnterSection(string name) =>
 			// works for either save or load, but as a consequence cannot report intelligent
 			// errors about section name mismatches
 			Nodes.Push(Current.Objects.GetValueOrPutNew(name));
-		}
 
 		/// <exception cref="InvalidOperationException"><paramref name="name"/> doesn't match the section being closed</exception>
 		public void ExitSection(string name)
 		{
-			Node last = Nodes.Pop();
+			var last = Nodes.Pop();
 			if (Current.Objects[name] != last)
 			{
 				throw new InvalidOperationException();

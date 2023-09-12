@@ -104,44 +104,23 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void SetRates(double clockRate, double sampleRate)
-		{
-			BlipBufDll.blip_set_rates(_context, clockRate, sampleRate);
-		}
+		public void SetRates(double clockRate, double sampleRate) => BlipBufDll.blip_set_rates(_context, clockRate, sampleRate);
 
 		public const int MaxRatio = BlipBufDll.BlipMaxRatio;
 
-		public void Clear()
-		{
-			BlipBufDll.blip_clear(_context);
-		}
+		public void Clear() => BlipBufDll.blip_clear(_context);
 
-		public void AddDelta(uint clockTime, int delta)
-		{
-			BlipBufDll.blip_add_delta(_context, clockTime, delta);
-		}
+		public void AddDelta(uint clockTime, int delta) => BlipBufDll.blip_add_delta(_context, clockTime, delta);
 
-		public void AddDeltaFast(uint clockTime, int delta)
-		{
-			BlipBufDll.blip_add_delta_fast(_context, clockTime, delta);
-		}
+		public void AddDeltaFast(uint clockTime, int delta) => BlipBufDll.blip_add_delta_fast(_context, clockTime, delta);
 
-		public int ClocksNeeded(int sampleCount)
-		{
-			return BlipBufDll.blip_clocks_needed(_context, sampleCount);
-		}
+		public int ClocksNeeded(int sampleCount) => BlipBufDll.blip_clocks_needed(_context, sampleCount);
 
 		public const int MaxFrame = BlipBufDll.BlipMaxFrame;
 
-		public void EndFrame(uint clockDuration)
-		{
-			BlipBufDll.blip_end_frame(_context, clockDuration);
-		}
+		public void EndFrame(uint clockDuration) => BlipBufDll.blip_end_frame(_context, clockDuration);
 
-		public int SamplesAvailable()
-		{
-			return BlipBufDll.blip_samples_avail(_context);
-		}
+		public int SamplesAvailable() => BlipBufDll.blip_samples_avail(_context);
 
 		/// <exception cref="ArgumentException"><paramref name="output"/> can't hold <paramref name="count"/> samples (or twice that if <paramref name="stereo"/> is <see langword="true"/>)</exception>
 		public int ReadSamples(short[] output, int count, bool stereo)

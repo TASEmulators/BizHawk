@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				return null;
 			}
 
-			var ret = new byte[len];
+			byte[] ret = new byte[len];
 			Array.Copy(_saveScratch, ret, len);
 			return ret;
 		}
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private static byte[] LegacyFix(byte[] saveram)
 		{
 			// at one point vbanext-hawk had a special saveram format which we want to load.
-			var br = new BinaryReader(new MemoryStream(saveram, false));
+			BinaryReader br = new(new MemoryStream(saveram, false));
 			br.ReadBytes(8); // header;
 			int flashSize = br.ReadInt32();
 			int eepromsize = br.ReadInt32();

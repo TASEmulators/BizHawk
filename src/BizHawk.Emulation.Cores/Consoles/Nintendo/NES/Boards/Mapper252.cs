@@ -62,17 +62,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePrg(int addr, byte value)
-		{
-			WriteReg((addr + 0x8000), value);
-		}
+		public override void WritePrg(int addr, byte value) => WriteReg((addr + 0x8000), value);
 
 		public void WriteReg(int addr, byte value)
 		{
-			if (addr >= 0xB000 && addr < 0xF000)
+			if (addr is >= 0xB000 and < 0xF000)
 			{
-				var ind = ((((addr & 8) | (addr >> 8)) >> 3) + 2) & 7;
-				var sar = addr & 4;
+				int ind = ((((addr & 8) | (addr >> 8)) >> 3) + 2) & 7;
+				int sar = addr & 4;
 				creg[ind] = (byte)((creg[ind] & (0xF0 >> sar)) | ((value & 0x0F) << sar));
 			}
 			else
@@ -133,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int x = (addr >> 10) & 7;
 
 				int bank;
-				if (creg[x] == 6 || creg[x] == 7)
+				if (creg[x] is 6 or 7)
 				{
 					bank = creg[x] & 1;
 					return Vram[(bank << 10) + (addr & 0x3FF)];

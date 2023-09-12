@@ -6,18 +6,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	public partial class ChannelF : ISettable<ChannelF.ChannelFSettings, ChannelF.ChannelFSyncSettings>
 	{
-		internal ChannelFSettings Settings = new ChannelFSettings();
-		internal ChannelFSyncSettings SyncSettings = new ChannelFSyncSettings();
+		internal ChannelFSettings Settings = new();
+		internal ChannelFSyncSettings SyncSettings = new();
 
-		public ChannelFSettings GetSettings()
-		{
-			return Settings.Clone();
-		}
+		public ChannelFSettings GetSettings() => Settings.Clone();
 
-		public ChannelFSyncSettings GetSyncSettings()
-		{
-			return SyncSettings.Clone();
-		}
+		public ChannelFSyncSettings GetSyncSettings() => SyncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(ChannelFSettings o)
 		{
@@ -39,10 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			[DefaultValue(0)]
 			public int BackgroundColor { get; set; }
 
-			public ChannelFSettings Clone()
-			{
-				return (ChannelFSettings)MemberwiseClone();
-			}
+			public ChannelFSettings Clone() => (ChannelFSettings)MemberwiseClone();
 
 			public ChannelFSettings()
 			{
@@ -61,20 +52,14 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			[DefaultValue(RegionType.NTSC)]
 			public RegionType Region { get; set; }
 
-			public ChannelFSyncSettings Clone()
-			{
-				return (ChannelFSyncSettings) MemberwiseClone();
-			}
+			public ChannelFSyncSettings Clone() => (ChannelFSyncSettings)MemberwiseClone();
 
 			public ChannelFSyncSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public static bool NeedsReboot(ChannelFSyncSettings x, ChannelFSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(ChannelFSyncSettings x, ChannelFSyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 
 		public enum RegionType

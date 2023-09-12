@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 	{
 		public byte[] CloneSaveRam()
 		{
-			if (!LibLynx.GetSaveRamPtr(Core, out var size, out var data))
+			if (!LibLynx.GetSaveRamPtr(Core, out int size, out var data))
 			{
 				return null;
 			}
@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public void StoreSaveRam(byte[] srcData)
 		{
-			if (!LibLynx.GetSaveRamPtr(Core, out var size, out var data))
+			if (!LibLynx.GetSaveRamPtr(Core, out int size, out var data))
 			{
 				throw new InvalidOperationException();
 			}
@@ -31,6 +31,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			Marshal.Copy(srcData, 0, data, size);
 		}
 
-		public bool SaveRamModified => LibLynx.GetSaveRamPtr(Core, out int unused, out IntPtr unused2);
+		public bool SaveRamModified => LibLynx.GetSaveRamPtr(Core, out int unused, out var unused2);
 	}
 }

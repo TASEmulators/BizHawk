@@ -65,9 +65,9 @@ namespace BizHawk.BizInvoke
 
 			// Note: asking for prot.none on memory that was not previously committed, commits it
 
-			var computedStart = WaterboxUtils.AlignDown(start);
-			var computedEnd = WaterboxUtils.AlignUp(start + length);
-			var computedLength = computedEnd - computedStart;
+			ulong computedStart = WaterboxUtils.AlignDown(start);
+			ulong computedEnd = WaterboxUtils.AlignUp(start + length);
+			ulong computedLength = computedEnd - computedStart;
 
 			_pal.Protect(computedStart, computedLength, prot);
 		}

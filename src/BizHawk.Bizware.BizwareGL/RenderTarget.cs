@@ -11,28 +11,16 @@ namespace BizHawk.Bizware.BizwareGL
 			Texture2d = tex;
 		}
 
-		public override string ToString()
-		{
-			return $"GL RT: {Texture2d.Width}x{Texture2d.Height}";
-		}
+		public override string ToString() => $"GL RT: {Texture2d.Width}x{Texture2d.Height}";
 
 		public object Opaque { get; }
 		public IGL Owner { get; }
 		public Texture2d Texture2d { get; }
 
-		public void Unbind()
-		{
-			Owner.BindRenderTarget(null);
-		}
+		public void Unbind() => Owner.BindRenderTarget(null);
 
-		public void Bind()
-		{
-			Owner.BindRenderTarget(this);
-		}
+		public void Bind() => Owner.BindRenderTarget(this);
 
-		public void Dispose()
-		{
-			Owner.FreeRenderTarget(this);
-		}
+		public void Dispose() => Owner.FreeRenderTarget(this);
 	}
 }

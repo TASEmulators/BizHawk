@@ -27,10 +27,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public event EventHandler NameChanged;
 
-		private void HandleLabelTextChanged(object sender, EventArgs e)
-		{
-			OnNameChanged(EventArgs.Empty);
-		}
+		private void HandleLabelTextChanged(object sender, EventArgs e) => OnNameChanged(EventArgs.Empty);
 
 		public MultiDiskFileSelector(IDialogController dialogController, PathEntryCollection pathEntries,
 			Func<string> getLoadedRomNameCallback, Func<string> getSystemNameCallback)
@@ -43,10 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			PathBox.TextChanged += HandleLabelTextChanged;
 		}
 
-		protected virtual void OnNameChanged(EventArgs e)
-		{
-			NameChanged?.Invoke(this, e);
-		}
+		protected virtual void OnNameChanged(EventArgs e) => NameChanged?.Invoke(this, e);
 
 		private void PathBox_DragEnter(object sender, DragEventArgs e)
 		{
@@ -65,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
-				var ff = (string[])e.Data.GetData(DataFormats.FileDrop);
+				string[] ff = (string[])e.Data.GetData(DataFormats.FileDrop);
 				if (ff.Length == 1)
 				{
 					PathBox.Text = ff[0];
@@ -75,8 +69,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseButton_Click(object sender, EventArgs e)
 		{
-			var systemName = _getSystemNameCallback();
-			var hawkPath = this.ShowFileOpenDialog(
+			string systemName = _getSystemNameCallback();
+			string hawkPath = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				filter: RomLoader.RomFilter,
 				initDir: _pathEntries.UseRecentForRoms ? string.Empty : _pathEntries.RomAbsolutePath(systemName));
@@ -84,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				FileInfo file = new(hawkPath);
-				var path = EmuHawkUtil.ResolveShortcut(file.FullName);
+				string path = EmuHawkUtil.ResolveShortcut(file.FullName);
 
 				using HawkFile hf = new(path, allowArchives: !MAMEMachineDB.IsMAMEMachine(hawkPath));
 				if (!hf.IsArchive)
@@ -116,27 +110,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void UseCurrentRomButton_Click(object sender, EventArgs e)
-		{
-			PathBox.Text = _getLoadedRomNameCallback();
-		}
+		private void UseCurrentRomButton_Click(object sender, EventArgs e) => PathBox.Text = _getLoadedRomNameCallback();
 
-		private void DualGBFileSelector_Load(object sender, EventArgs e)
-		{
-			UpdateValues();
-		}
+		private void DualGBFileSelector_Load(object sender, EventArgs e) => UpdateValues();
 
 		public void UpdateValues()
 		{
-			var loadedRomName = _getLoadedRomNameCallback();
+			string loadedRomName = _getLoadedRomNameCallback();
 			UseCurrentRomButton.Enabled =
 				!string.IsNullOrEmpty(loadedRomName)
 				&& !loadedRomName.Contains(".xml"); // Can't already be an xml
 		}
 
-		private void PathBox_TextChanged(object sender, EventArgs e)
-		{
-			OnNameChanged(e);
-		}
+		private void PathBox_TextChanged(object sender, EventArgs e) => OnNameChanged(e);
 	}
 }

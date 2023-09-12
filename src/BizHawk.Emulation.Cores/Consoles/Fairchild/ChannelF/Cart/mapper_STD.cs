@@ -21,7 +21,7 @@
 
 		public override byte ReadBus(ushort addr)
 		{
-			var off = addr - 0x800;
+			int off = addr - 0x800;
 			if (off < ROM.Length)
 				return ROM[off];
 			else
@@ -33,10 +33,7 @@
 			// no writeable memory
 		}
 
-		public override byte ReadPort(ushort addr)
-		{
-			return 0xFF;
-		}
+		public override byte ReadPort(ushort addr) => 0xFF;
 
 		public override void WritePort(ushort addr, byte data)
 		{

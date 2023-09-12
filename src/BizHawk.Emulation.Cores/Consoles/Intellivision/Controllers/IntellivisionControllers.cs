@@ -30,10 +30,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			Definition = new("(Intellivision Controller fragment)");
 		}
 
-		public byte Read(IController c)
-		{
-			return 0;
-		}
+		public byte Read(IController c) => 0;
 
 		public ControllerDefinition Definition { get; }
 

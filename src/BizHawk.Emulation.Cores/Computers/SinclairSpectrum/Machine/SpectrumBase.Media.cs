@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             diskImages = new List<byte[]>();
 
             int cnt = 0;
-            foreach (var m in mediaImages)
+            foreach (byte[] m in mediaImages)
             {
                 switch (IdentifyMedia(m))
                 {
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     case SpectrumMediaType.DiskDoubleSided:
                         // this is a bit tricky. we will attempt to parse the double sided disk image byte array,
                         // then output two separate image byte arrays
-                        List<byte[]> working = new List<byte[]>();
+                        List<byte[]> working = new();
                         foreach (DiskType type in Enum.GetValues(typeof(DiskType)))
                         {
                             bool found = false;
@@ -171,12 +171,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 // add side 2
                                 diskImages.Add(working[1]);
 
-                                Common.GameInfo one = new Common.GameInfo();
-                                Common.GameInfo two = new Common.GameInfo();
+                                Common.GameInfo one = new();
+                                Common.GameInfo two = new();
                                 var gi = Spectrum._gameInfo[cnt];
                                 for (int i = 0; i < 2; i++)
                                 {
-                                    Common.GameInfo work = new Common.GameInfo();
+                                    Common.GameInfo work = new();
                                     if (i == 0)
                                     {
                                         work = one;
@@ -215,18 +215,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 LoadDiskMedia();
         }
 
-        /// <summary>
-        /// Attempts to load a tape into the tape device based on tapeMediaIndex
-        /// </summary>
-        protected void LoadTapeMedia()
-        {
-            TapeDevice.LoadTape(tapeImages[tapeMediaIndex]);
-        }
+		/// <summary>
+		/// Attempts to load a tape into the tape device based on tapeMediaIndex
+		/// </summary>
+		protected void LoadTapeMedia() => TapeDevice.LoadTape(tapeImages[tapeMediaIndex]);
 
-        /// <summary>
-        /// Attempts to load a disk into the disk device based on diskMediaIndex
-        /// </summary>
-        protected void LoadDiskMedia()
+		/// <summary>
+		/// Attempts to load a disk into the disk device based on diskMediaIndex
+		/// </summary>
+		protected void LoadDiskMedia()
         {
             if (this is not ZX128Plus3)
             {
@@ -248,9 +245,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// disk checking first
 			if (hdr.Contains("EXTENDED CPC DSK", StringComparison.OrdinalIgnoreCase) || hdr.Contains("MV - CPC", StringComparison.OrdinalIgnoreCase))
             {
-                // spectrum .dsk disk file
-                // check for number of sides
-                var sides = data[0x31];
+				// spectrum .dsk disk file
+				// check for number of sides
+				byte sides = data[0x31];
                 if (sides == 1)
                     return SpectrumMediaType.Disk;
                 else

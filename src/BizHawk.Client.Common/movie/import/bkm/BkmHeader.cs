@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 
 		public string SavestateBinaryBase64Blob
 		{
-			get => TryGetValue(HeaderKeys.SavestateBinaryBase64Blob, out var s) ? s : null;
+			get => TryGetValue(HeaderKeys.SavestateBinaryBase64Blob, out string s) ? s : null;
 			set
 			{
 				if (value == null)
@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 
 		public new string this[string key]
 		{
-			get => TryGetValue(key, out var s) ? s : string.Empty;
+			get => TryGetValue(key, out string s) ? s : string.Empty;
 			set => base[key] = value;
 		}
 
@@ -50,7 +50,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!string.IsNullOrWhiteSpace(line))
 			{
-				var splitLine = line.Split(new[] { ' ' }, 2);
+				string[] splitLine = line.Split(new[] { ' ' }, 2);
 
 				if (HeaderKeys.Contains(splitLine[0]) && !ContainsKey(splitLine[0]))
 				{

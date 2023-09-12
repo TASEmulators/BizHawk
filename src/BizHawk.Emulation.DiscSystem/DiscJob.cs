@@ -12,12 +12,12 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		internal int CurrentLine = -1;
 
-		internal StringWriter swLog = new StringWriter();
-		internal void Warn(string format, params object[] args) { Log("WARN ", format, args); }
+		internal StringWriter swLog = new();
+		internal void Warn(string format, params object[] args) => Log("WARN ", format, args);
 		internal void Error(string format, params object[] args) { OUT_ErrorLevel = true; Log("ERROR", format, args); }
 		internal void Log(string level, string format, params object[] args)
 		{
-			var msg = string.Format(format, args);
+			string msg = string.Format(format, args);
 			if (CurrentLine == -1)
 				swLog.WriteLine("{0}: {1}", level, msg);
 			else

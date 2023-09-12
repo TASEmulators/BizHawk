@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (!CheckMessageSettings(category))
 				return;
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			switch (category)
 			{
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void OSD_FireInputMessage(string input)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			sb.Append(input);
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Input);
 		}
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void OSD_DiskInit()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			if (_machine.diskImages != null && _machine.UPDDiskDevice != null)
 			{
 				sb.Append("Disk Media Imported (count: " + _machine.diskImages.Count + ")");
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void OSD_DiskInserted()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			if (_machine.UPDDiskDevice == null)
 			{
@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void OSD_ShowDiskStatus()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			if (_machine.UPDDiskDevice == null)
 			{
@@ -148,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (_tapeInfo.Count == 0)
 				return;
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			sb.Append("Tape Media Imported (count: " + _tapeInfo.Count + ")");
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Emulator);
 		}
@@ -161,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (_tapeInfo.Count == 0)
 				return;
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			sb.Append("PLAYING (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
 
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
@@ -175,7 +175,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (_tapeInfo.Count == 0)
 				return;
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			sb.Append("STOPPED (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
 
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
@@ -189,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (_tapeInfo.Count == 0)
 				return;
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			sb.Append("REWOUND (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
 
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
@@ -203,7 +203,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (_tapeInfo.Count == 0)
 				return;
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			sb.Append("TAPE INSERTED (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
 
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void OSD_TapeStoppedAuto()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			if (_tapeInfo.Count == 0)
 			{
@@ -235,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void OSD_TapePlayingAuto()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			if (_tapeInfo.Count == 0)
 			{
@@ -255,7 +255,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void OSD_TapePlayingBlockInfo(string blockinfo)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			if (_tapeInfo.Count == 0)
 			{
@@ -275,7 +275,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void OSD_TapePlayingSkipBlockInfo(string blockinfo)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			if (_tapeInfo.Count == 0)
 			{
@@ -295,7 +295,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void OSD_TapeEndDetected(string blockinfo)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			if (_tapeInfo.Count == 0)
 			{
@@ -315,7 +315,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void OSD_TapeNextBlock(string blockinfo)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			if (_tapeInfo.Count == 0)
 			{
@@ -335,7 +335,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void OSD_TapePrevBlock(string blockinfo)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			if (_tapeInfo.Count == 0)
 			{
@@ -355,7 +355,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void OSD_ShowTapeStatus()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			if (_tapeInfo.Count == 0)
 			{
@@ -399,7 +399,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			// get position within the tape itself
 			sb.Append("Tape Pos: ");
-			var ind = _machine.TapeDevice.CurrentDataBlockIndex;
+			int ind = _machine.TapeDevice.CurrentDataBlockIndex;
 			int cnt = 0;
 			for (int i = 0; i < ind; i++)
 			{
@@ -425,26 +425,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public bool CheckMessageSettings(MessageCategory category)
 		{
-			switch (Settings.OSDMessageVerbosity)
+			return Settings.OSDMessageVerbosity switch
 			{
-				case OSDVerbosity.Full:
-					return true;
-				case OSDVerbosity.None:
-					return false;
-				case OSDVerbosity.Medium:
-					switch (category)
-					{
-						case MessageCategory.Disk:
-						case MessageCategory.Emulator:
-						case MessageCategory.Tape:
-						case MessageCategory.Misc:
-							return true;
-						default:
-							return false;
-					}
-				default:
-					return true;
-			}
+				OSDVerbosity.Full => true,
+				OSDVerbosity.None => false,
+				OSDVerbosity.Medium => category switch
+				{
+					MessageCategory.Disk or MessageCategory.Emulator or MessageCategory.Tape or MessageCategory.Misc => true,
+					_ => false,
+				},
+				_ => true,
+			};
 		}
 
 		/// <summary>

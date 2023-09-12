@@ -89,10 +89,10 @@ namespace BizHawk.Client.Common
 		public bool UseWindowSize => SaveWindowPosition && Width.HasValue && Height.HasValue;
 
 		[JsonIgnore]
-		public Point WindowPosition => new Point(Wndx ?? 0, Wndy ?? 0);
+		public Point WindowPosition => new(Wndx ?? 0, Wndy ?? 0);
 
 		[JsonIgnore]
-		public Size WindowSize => new Size(Width ?? 0, Height ?? 0);
+		public Size WindowSize => new(Width ?? 0, Height ?? 0);
 
 		public class ColumnList : List<Column>
 		{

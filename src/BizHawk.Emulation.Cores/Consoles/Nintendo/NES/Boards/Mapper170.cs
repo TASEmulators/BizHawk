@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WriteWram(int addr, byte value)
 		{
-			if (addr == 0x502 || addr == 0x1000)
+			if (addr is 0x502 or 0x1000)
 			{
 				reg = (byte)(value << 1 & 0x80);
 			}
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadWram(int addr)
 		{
-			if (addr == 0x1001 || addr == 0x1777)
+			if (addr is 0x1001 or 0x1777)
 			{
 				return (byte)(reg | NES.DB & 0x7F);
 			}

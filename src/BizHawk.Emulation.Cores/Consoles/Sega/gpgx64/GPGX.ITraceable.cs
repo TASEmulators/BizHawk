@@ -20,23 +20,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				var regs = DebuggableCore.GetCpuFlagsAndRegisters();
 				uint pc = (uint)regs["M68K PC"].Value;
-				var disasm = Disassembler.Disassemble(MemoryDomains.SystemBus, pc & 0xFFFFFF, out _);
+				string disasm = Disassembler.Disassemble(MemoryDomains.SystemBus, pc & 0xFFFFFF, out _);
 
-				var sb = new StringBuilder();
+				StringBuilder sb = new();
 
 				foreach (var r in regs)
 				{
 					if (r.Key.StartsWithOrdinal("M68K")) // drop Z80 regs until it has its own debugger/tracer
 					{
-						if (r.Key != "M68K SP" && r.Key != "M68K ISP" && // copies of a7
-							r.Key != "M68K PC" && // already present in every line start
-							r.Key != "M68K IR") // copy of last opcode, already shown in raw bytes
+						if (r.Key is not "M68K SP" and not "M68K ISP" and // copies of a7
+							not "M68K PC" and // already present in every line start
+							not "M68K IR") // copy of last opcode, already shown in raw bytes
 						{
 							sb.Append($"{r.Key.Replace("M68K", "").Trim()}:{r.Value.Value.ToHexString(r.Value.BitSize / 4)} ");
 						}
 					}
 				}
-				var sr = regs["M68K SR"].Value;
+				ulong sr = regs["M68K SR"].Value;
 				sb.Append(string.Concat(
 					(sr & 16) > 0 ? "X" : "x",
 					(sr &  8) > 0 ? "N" : "n",

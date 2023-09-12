@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 				case InputType.Text:
 					break;
 				case InputType.Hex:
-					if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
+					if (e.KeyChar is '\b' or (char)22 or (char)1 or (char)3)
 					{
 						return;
 					}
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case InputType.Signed:
-					if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
+					if (e.KeyChar is '\b' or (char)22 or (char)1 or (char)3)
 					{
 						return;
 					}
@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case InputType.Unsigned:
-					if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
+					if (e.KeyChar is '\b' or (char)22 or (char)1 or (char)3)
 					{
 						return;
 					}

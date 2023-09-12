@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			var stateLen = _core.Citra_StartSaveState(_context);
+			int stateLen = _core.Citra_StartSaveState(_context);
 			writer.Write(stateLen);
 
 			if (stateLen > _stateBuf.Length)
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			var stateLen = reader.ReadInt32();
+			int stateLen = reader.ReadInt32();
 
 			if (stateLen > _stateBuf.Length)
 			{

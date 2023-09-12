@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
@@ -13,7 +13,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	{
 		private readonly CPCBase _machine;
 		private CRCT_6845 CRTC => _machine.CRCT;
+		#pragma warning disable IDE0051
 		private AmstradGateArray GateArray => _machine.GateArray;
+		#pragma warning restore IDE0051
 		private IPSG PSG => _machine.AYDevice;
 		private DatacorderDevice Tape => _machine.TapeDevice;
 		private IKeyboard Keyboard => _machine.KeyboardDevice;
@@ -83,12 +85,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Writes to Port B
 		/// </summary>
-		private void OUTPortB(int data)
-		{
+		private void OUTPortB(int data) =>
 			// PortB is read only
 			// just latch the data
 			Regs[PORT_B] = (byte)data;
-		}
 
 		/// <summary>
 		/// Writes to Port C
@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				bool isSet = data.Bit(0);
 
 				// get the bit in PortC that we wish to change
-				var bit = (data >> 1) & 7;
+				int bit = (data >> 1) & 7;
 
 				// modify this bit
 				if (isSet)
@@ -202,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				// build the PortB output
 				// start with every bit reset
-				BitArray rBits = new BitArray(8);
+				BitArray rBits = new(8);
 
 				// Bit0 - Vertical Sync ("1"=VSYNC active, "0"=VSYNC inactive)
 				if (CRTC.VSYNC)
@@ -253,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				val &= 0x0f;
 
 				// isolate control bits
-				var v = Regs[PORT_C] & 0xc0;
+				int v = Regs[PORT_C] & 0xc0;
 
 				if (v == 0xc0)
 				{
@@ -309,7 +309,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			//if (portUpper.Bit(3))
 			//return false;
 
-			var PPIFunc = (port & 0x0300) >> 8; // portUpper & 3;
+			int PPIFunc = (port & 0x0300) >> 8; // portUpper & 3;
 
 			switch (PPIFunc)
 			{
@@ -353,7 +353,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			if (portUpper.Bit(3))
 				return false;
 
-			var PPIFunc = portUpper & 3;
+			int PPIFunc = portUpper & 3;
 
 			switch (PPIFunc)
 			{

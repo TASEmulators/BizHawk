@@ -11,15 +11,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	public partial class QuickNES : ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>
 	{
-		public QuickNESSettings GetSettings()
-		{
-			return _settings.Clone();
-		}
+		public QuickNESSettings GetSettings() => _settings.Clone();
 
-		public QuickNESSyncSettings GetSyncSettings()
-		{
-			return _syncSettingsNext.Clone();
-		}
+		public QuickNESSyncSettings GetSyncSettings() => _syncSettingsNext.Clone();
 
 		public PutSettingsDirtyBits PutSettings(QuickNESSettings o)
 		{
@@ -92,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 			public QuickNESSettings Clone()
 			{
-				var ret = (QuickNESSettings)MemberwiseClone();
+				QuickNESSettings ret = (QuickNESSettings)MemberwiseClone();
 				ret._Palette = (byte[])_Palette.Clone();
 				return ret;
 			}
@@ -138,16 +132,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 			private static byte[] GetDefaultColors()
 			{
-				IntPtr src = QN.qn_get_default_colors();
+				var src = QN.qn_get_default_colors();
 				byte[] ret = new byte[1536];
 				Marshal.Copy(src, ret, 0, 1536);
 				return ret;
 			}
 
-			public void SetDefaultColors()
-			{
-				_Palette = GetDefaultColors();
-			}
+			public void SetDefaultColors() => _Palette = GetDefaultColors();
 		}
 
 		public class QuickNESSyncSettings
@@ -167,17 +158,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public QuickNESSyncSettings Clone()
-			{
-				return (QuickNESSyncSettings)MemberwiseClone();
-			}
+			public QuickNESSyncSettings Clone() => (QuickNESSyncSettings)MemberwiseClone();
 
-			public static bool NeedsReboot(QuickNESSyncSettings x, QuickNESSyncSettings y)
-			{
+			public static bool NeedsReboot(QuickNESSyncSettings x, QuickNESSyncSettings y) =>
 				// the core can handle dynamic plugging and unplugging, but that changes
 				// the ControllerDefinition, and we're not ready for that
-				return !DeepEquality.DeepEquals(x, y);
-			}
+				!DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

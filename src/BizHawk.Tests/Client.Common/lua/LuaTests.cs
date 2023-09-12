@@ -231,7 +231,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 		{
 			foreach (var mi in typeof(LuaTests).GetMethods())
 			{
-				var lma = (LuaMethodAttribute?)Attribute.GetCustomAttribute(mi, typeof(LuaMethodAttribute));
+				LuaMethodAttribute? lma = (LuaMethodAttribute?)Attribute.GetCustomAttribute(mi, typeof(LuaMethodAttribute));
 				if (lma is not null)
 				{
 					LuaInstance.RegisterFunction(lma.Name, mi);
@@ -240,15 +240,12 @@ namespace BizHawk.Tests.Client.Common.Lua
 		}
 
 		[TestMethod]
-		public void Lua_Return_Nil()
-		{
-			Assert.IsTrue(LuaInstance.DoString("return nil")[0] is null);
-		}
+		public void Lua_Return_Nil() => Assert.IsTrue(LuaInstance.DoString("return nil")[0] is null);
 
 		[TestMethod]
 		public void Lua_MultiReturn_Nil()
 		{
-			var ret = LuaInstance.DoString("return nil, nil");
+			object[] ret = LuaInstance.DoString("return nil, nil");
 			Assert.IsTrue(ret.Length == 2);
 			Assert.IsTrue(ret[0] is null);
 			Assert.IsTrue(ret[1] is null);
@@ -264,37 +261,31 @@ namespace BizHawk.Tests.Client.Common.Lua
 		[TestMethod]
 		public void Lua_MultiReturn_Boolean()
 		{
-			var ret = LuaInstance.DoString("return true, false");
+			object[] ret = LuaInstance.DoString("return true, false");
 			Assert.IsTrue(ret.Length == 2);
 			Assert.IsTrue((bool)ret[0]);
 			Assert.IsFalse((bool)ret[1]);
 		}
 
 		[TestMethod]
-		public void Lua_Return_Number()
-		{
-			Assert.IsTrue((double)LuaInstance.DoString("return 0.0")[0] == 0.0);
-		}
+		public void Lua_Return_Number() => Assert.IsTrue((double)LuaInstance.DoString("return 0.0")[0] == 0.0);
 
 		[TestMethod]
 		public void Lua_MultiReturn_Number()
 		{
-			var ret = LuaInstance.DoString("return 0.0, 0.1");
+			object[] ret = LuaInstance.DoString("return 0.0, 0.1");
 			Assert.IsTrue(ret.Length == 2);
 			Assert.IsTrue((double)ret[0] == 0.0);
 			Assert.IsTrue((double)ret[1] == 0.1);
 		}
 
 		[TestMethod]
-		public void Lua_Return_String()
-		{
-			Assert.IsTrue((string)LuaInstance.DoString("return \"foo\"")[0] == "foo");
-		}
+		public void Lua_Return_String() => Assert.IsTrue((string)LuaInstance.DoString("return \"foo\"")[0] == "foo");
 
 		[TestMethod]
 		public void Lua_MultiReturn_String()
 		{
-			var ret = LuaInstance.DoString("return \"foo\", \"bar\"");
+			object[] ret = LuaInstance.DoString("return \"foo\", \"bar\"");
 			Assert.IsTrue(ret.Length == 2);
 			Assert.IsTrue((string)ret[0] == "foo");
 			Assert.IsTrue((string)ret[1] == "bar");
@@ -303,21 +294,21 @@ namespace BizHawk.Tests.Client.Common.Lua
 		[TestMethod]
 		public void Lua_Return_String_Utf8()
 		{
-			var ret = (string)LuaInstance.DoString("return \"こんにちは\"")[0];
+			string ret = (string)LuaInstance.DoString("return \"こんにちは\"")[0];
 			Assert.IsTrue(ret == "こんにちは");
 		}
 
 		[TestMethod]
 		public void Lua_Return_Function()
 		{
-			var ret = (NLua.LuaFunction)LuaInstance.DoString("return function() return 0.123 end")[0];
+			NLua.LuaFunction ret = (NLua.LuaFunction)LuaInstance.DoString("return function() return 0.123 end")[0];
 			Assert.IsTrue((double)ret.Call()[0] == 0.123);
 		}
 
 		[TestMethod]
 		public void Lua_MultiReturn_Function()
 		{
-			var ret = LuaInstance.DoString("return function() return 0.123 end, function() return 0.321 end");
+			object[] ret = LuaInstance.DoString("return function() return 0.123 end, function() return 0.321 end");
 			Assert.IsTrue((double)((NLua.LuaFunction)ret[0]).Call()[0] == 0.123);
 			Assert.IsTrue((double)((NLua.LuaFunction)ret[1]).Call()[0] == 0.321);
 		}
@@ -325,7 +316,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 		[TestMethod]
 		public void Lua_Return_Table_Array_Style()
 		{
-			var ret = (NLua.LuaTable)LuaInstance.DoString("return {0.0,1.0,2.0}")[0];
+			NLua.LuaTable ret = (NLua.LuaTable)LuaInstance.DoString("return {0.0,1.0,2.0}")[0];
 			Assert.IsTrue((double)ret[1.0] == 0.0);
 			Assert.IsTrue((double)ret[2.0] == 1.0);
 			Assert.IsTrue((double)ret[3.0] == 2.0);
@@ -334,8 +325,8 @@ namespace BizHawk.Tests.Client.Common.Lua
 		[TestMethod]
 		public void Lua_MultiReturn_Table_Array_Style()
 		{
-			var ret = LuaInstance.DoString("return {0.0,1.0,2.0}, {2.0,1.0,0.0}");
-			var table = (NLua.LuaTable)ret[0];
+			object[] ret = LuaInstance.DoString("return {0.0,1.0,2.0}, {2.0,1.0,0.0}");
+			NLua.LuaTable table = (NLua.LuaTable)ret[0];
 			Assert.IsTrue((double)table[1.0] == 0.0);
 			Assert.IsTrue((double)table[2.0] == 1.0);
 			Assert.IsTrue((double)table[3.0] == 2.0);
@@ -348,7 +339,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 		[TestMethod]
 		public void Lua_Return_Table_Dict_Style()
 		{
-			var ret = (NLua.LuaTable)LuaInstance.DoString("return {[\"foo\"]=0.0,[\"bar\"]=1.0}")[0];
+			NLua.LuaTable ret = (NLua.LuaTable)LuaInstance.DoString("return {[\"foo\"]=0.0,[\"bar\"]=1.0}")[0];
 			Assert.IsTrue((double)ret["foo"] == 0.0);
 			Assert.IsTrue((double)ret["bar"] == 1.0);
 		}
@@ -356,8 +347,8 @@ namespace BizHawk.Tests.Client.Common.Lua
 		[TestMethod]
 		public void Lua_MultiReturn_Table_Dict_Style()
 		{
-			var ret = LuaInstance.DoString("return {[\"foo\"]=0.0,[\"bar\"]=1.0}, {[\"bar\"]=0.0,[\"foo\"]=1.0}");
-			var table = (NLua.LuaTable)ret[0];
+			object[] ret = LuaInstance.DoString("return {[\"foo\"]=0.0,[\"bar\"]=1.0}, {[\"bar\"]=0.0,[\"foo\"]=1.0}");
+			NLua.LuaTable table = (NLua.LuaTable)ret[0];
 			Assert.IsTrue((double)table["foo"] == 0.0);
 			Assert.IsTrue((double)table["bar"] == 1.0);
 			table = (NLua.LuaTable)ret[1];

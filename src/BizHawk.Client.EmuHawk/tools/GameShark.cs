@@ -40,18 +40,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Go_Click(object sender, EventArgs e)
 		{
-			foreach (var l in txtCheat.Lines)
+			foreach (string l in txtCheat.Lines)
 			{
 				try
 				{
-					var code = l.ToUpperInvariant().Trim();
-					var decoder = new GameSharkDecoder(MemoryDomains, Emulator.SystemId);
+					string code = l.ToUpperInvariant().Trim();
+					GameSharkDecoder decoder = new(MemoryDomains, Emulator.SystemId);
 					var result = decoder.Decode(code);
 					var domain = decoder.CheatDomain();
 
 					if (result.IsValid(out var valid))
 					{
-						var description = !string.IsNullOrWhiteSpace(txtDescription.Text)
+						string description = !string.IsNullOrWhiteSpace(txtDescription.Text)
 							? txtDescription.Text
 							: code;
 						MainForm.CheatList.Add(valid.ToCheat(domain, description));
@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BtnClear_Click(object sender, EventArgs e)
 		{
 			// Clear old Inputs
-			var result = DialogController.ShowMessageBox2("Are you sure you want to clear this form?", "Clear Form", EMsgBoxIcon.Question);
+			bool result = DialogController.ShowMessageBox2("Are you sure you want to clear this form?", "Clear Form", EMsgBoxIcon.Question);
 			if (result)
 			{
 				txtDescription.Clear();

@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 				.Any(e => string.Equals(extension, e.Extension, StringComparison.OrdinalIgnoreCase));
 		}
 
-		public static readonly FilesystemFilterSet AvailableImporters = new FilesystemFilterSet(
+		public static readonly FilesystemFilterSet AvailableImporters = new(
 			Importers.Values.OrderBy(attr => attr.Emulator)
 				.Select(attr => new FilesystemFilter(attr.Emulator, new[] { attr.Extension.Substring(1) })) // substring removes initial '.'
 				.ToArray())
@@ -53,9 +53,6 @@ namespace BizHawk.Client.Common
 				: ImportResult.Error($"No importer found for file type {ext}");
 		}
 
-		private static Type ImporterForExtension(string ext)
-		{
-			return Importers.First(i => string.Equals(i.Value.Extension, ext, StringComparison.OrdinalIgnoreCase)).Key;
-		}
+		private static Type ImporterForExtension(string ext) => Importers.First(i => string.Equals(i.Value.Extension, ext, StringComparison.OrdinalIgnoreCase)).Key;
 	}
 }

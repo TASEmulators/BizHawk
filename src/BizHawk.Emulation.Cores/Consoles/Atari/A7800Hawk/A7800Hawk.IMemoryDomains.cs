@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new()
 			{
 				new MemoryDomainDelegate(
 					"Main RAM",

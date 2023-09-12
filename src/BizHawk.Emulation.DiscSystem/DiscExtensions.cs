@@ -4,19 +4,13 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	public static class DiscExtensions
 	{
-		public static Disc CreateAnyType(string path, Action<string> errorCallback)
-		{
-			return CreateImpl(null, path, errorCallback);
-		}
-		public static Disc Create(this DiscType type, string path, Action<string> errorCallback)
-		{
-			return CreateImpl(type, path, errorCallback);
-		}
+		public static Disc CreateAnyType(string path, Action<string> errorCallback) => CreateImpl(null, path, errorCallback);
+		public static Disc Create(this DiscType type, string path, Action<string> errorCallback) => CreateImpl(type, path, errorCallback);
 
 		private static Disc CreateImpl(DiscType? type, string path, Action<string> errorCallback)
 		{
 			//--- load the disc in a context which will let us abort if it's going to take too long
-			var discMountJob = new DiscMountJob(fromPath: path, slowLoadAbortThreshold: 8);
+			DiscMountJob discMountJob = new(fromPath: path, slowLoadAbortThreshold: 8);
 			discMountJob.Run();
 			
 			if (discMountJob.OUT_SlowLoadAborted)

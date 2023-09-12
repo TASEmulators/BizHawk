@@ -21,12 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			public int NSamp { get; set; }
 		}
 
-		private bool _stereo = true;
-		public bool Stereo
-		{
-			get => _stereo;
-			set => _stereo = value;
-		}
+		public bool Stereo { get; set; } = true;
 
 		private readonly List<Provider> SoundProviders;
 
@@ -114,10 +109,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				throw new InvalidOperationException("Only Sync mode is supported.");
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
 		public void DiscardSamples()
 		{
@@ -135,14 +127,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// get samples from all the providers
 			foreach (var sp in SoundProviders)
 			{
-				sp.SoundProvider.GetSamplesSync(out var samp, out var sampCount);
+				sp.SoundProvider.GetSamplesSync(out short[] samp, out int sampCount);
 				sp.NSamp = sampCount;
 				sp.Buffer = samp;
 			}
 
 			// are all the sample lengths the same?
-			var firstEntry = SoundProviders[0].NSamp;
-			var sameCount = SoundProviders.TrueForAll(s => s.NSamp == firstEntry);
+			int firstEntry = SoundProviders[0].NSamp;
+			bool sameCount = SoundProviders.TrueForAll(s => s.NSamp == firstEntry);
 
 			if (!sameCount)
 			{

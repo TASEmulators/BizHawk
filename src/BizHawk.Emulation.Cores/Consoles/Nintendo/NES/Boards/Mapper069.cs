@@ -194,10 +194,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		private void SyncIrq()
-		{
-			IrqSignal = irq_asserted;
-		}
+		private void SyncIrq() => IrqSignal = irq_asserted;
 
 		public override void ClockCpu()
 		{

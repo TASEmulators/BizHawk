@@ -79,10 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetIRQ();
 		}
 
-		public void SetDriveLightCallback(Action<bool> callback)
-		{
-			diskdrive.DriveLightCallback = callback;
-		}
+		public void SetDriveLightCallback(Action<bool> callback) => diskdrive.DriveLightCallback = callback;
 
 		/// <summary>
 		/// should only be called once, before emulation begins
@@ -94,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				int nsides = diskimage.Length / 65500;
 
-				MemoryStream ms = new MemoryStream();
+				MemoryStream ms = new();
 				ms.Write(Encoding.ASCII.GetBytes("FDS\x1A"), 0, 4);
 				ms.WriteByte((byte)nsides);
 				byte[] nulls = new byte[11];
@@ -167,8 +164,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// update diff for currently loaded disk first!
 			if (currentside != null)
 				diskdiffs[(int)currentside] = diskdrive.MakeDiff();
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
+			MemoryStream ms = new();
+			BinaryWriter bw = new(ms);
 			bw.Write(Encoding.ASCII.GetBytes("FDSS"));
 			bw.Write(NumSides);
 			for (int i = 0; i < NumSides; i++)
@@ -193,8 +190,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// but in fact, StoreSaveRam() is only called once right at startup, so this is no big deal
 			//if (currentside != null)
 			//	throw new Exception("FDS Saveram: Can't load when a disk is active!");
-			MemoryStream ms = new MemoryStream(data, false);
-			BinaryReader br = new BinaryReader(ms);
+			MemoryStream ms = new(data, false);
+			BinaryReader br = new(ms);
 			byte[] cmp = Encoding.ASCII.GetBytes("FDSS");
 			byte[] tmp = br.ReadBytes(cmp.Length);
 			if (!cmp.SequenceEqual(tmp))
@@ -217,15 +214,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte[] SaveRam => throw new Exception("FDS Saveram: Must access with method api!");
 
 
-		public MemoryDomain GetDiskPeeker()
-		{
-			return new MemoryDomainDelegate("FDS Side", diskdrive.NumBytes, MemoryDomain.Endian.Little, diskdrive.PeekData, null, 1);
-		}
+		public MemoryDomain GetDiskPeeker() => new MemoryDomainDelegate("FDS Side", diskdrive.NumBytes, MemoryDomain.Endian.Little, diskdrive.PeekData, null, 1);
 
-		private void SetIRQ()
-		{
-			IrqSignal = _diskirq || _timerirq;
-		}
+		private void SetIRQ() => IrqSignal = _diskirq || _timerirq;
 
 		private bool diskirq
 		{
@@ -406,15 +397,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			diskirq = diskdrive.irq;
 		}
 
-		public override byte ReadWram(int addr)
-		{
-			return Wram[addr & 0x1fff];
-		}
+		public override byte ReadWram(int addr) => Wram[addr & 0x1fff];
 
-		public override void WriteWram(int addr, byte value)
-		{
-			Wram[addr & 0x1fff] = value;
-		}
+		public override void WriteWram(int addr, byte value) => Wram[addr & 0x1fff] = value;
 
 		public override byte ReadPrg(int addr)
 		{

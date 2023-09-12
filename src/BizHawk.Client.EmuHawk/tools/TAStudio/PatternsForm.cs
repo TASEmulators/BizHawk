@@ -11,8 +11,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly TAStudio _tastudio;
 
-		private readonly List<int> _counts = new List<int>();
-		private readonly List<string> _values = new List<string>();
+		private readonly List<int> _counts = new();
+		private readonly List<string> _values = new();
 		private int _loopAt;
 		private bool _updating;
 
@@ -26,12 +26,12 @@ namespace BizHawk.Client.EmuHawk
 			_tastudio = owner;
 
 
-			foreach (var button in _tastudio.MovieSession.MovieController.Definition.BoolButtons)
+			foreach (string button in _tastudio.MovieSession.MovieController.Definition.BoolButtons)
 			{
 				ButtonBox.Items.Add(button);
 			}
 
-			foreach (var button in _tastudio.MovieSession.MovieController.Definition.Axes.Keys)
+			foreach (string button in _tastudio.MovieSession.MovieController.Definition.Axes.Keys)
 			{
 				ButtonBox.Items.Add(button);
 			}
@@ -40,10 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			ButtonBox.Items.Add("Default float Auto-Fire");
 		}
 
-		private void PatternsForm_Load(object sender, EventArgs e)
-		{
-			ButtonBox.SelectedIndex = 0;
-		}
+		private void PatternsForm_Load(object sender, EventArgs e) => ButtonBox.SelectedIndex = 0;
 
 		private void ButtonBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -99,10 +96,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateDisplay();
 		}
 
-		private void LagBox_CheckedChanged(object sender, EventArgs e)
-		{
-			UpdatePattern();
-		}
+		private void LagBox_CheckedChanged(object sender, EventArgs e) => UpdatePattern();
 
 		private void ValueNum_ValueChanged(object sender, EventArgs e)
 		{
@@ -241,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (index != -1)
 			{
-				var p = new List<bool>();
+				List<bool> p = new();
 				for (int i = 0; i < _counts.Count; i++)
 				{
 					for (int c = 0; c < _counts[i]; c++)
@@ -263,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 					index = _tastudio.MovieSession.MovieController.Definition.Axes.IndexOf(SelectedButton);
 				}
 
-				var p = new List<int>();
+				List<int> p = new();
 				for (int i = 0; i < _counts.Count; i++)
 				{
 					for (int c = 0; c < _counts[i]; c++)
@@ -275,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 				_tastudio.AxisPatterns[index] = new AutoPatternAxis(p.ToArray(), LagBox.Checked, 0, _loopAt);
 			}
 
-			if ((SelectedButton != "Default float Auto-Fire") && (SelectedButton != "Default bool Auto-Fire"))
+			if (SelectedButton is not "Default float Auto-Fire" and not "Default bool Auto-Fire")
 			{
 				_tastudio.UpdateAutoFire(SelectedButton, null);
 			}
@@ -325,8 +319,8 @@ namespace BizHawk.Client.EmuHawk
 					index = _tastudio.MovieSession.MovieController.Definition.Axes.IndexOf(SelectedButton);
 				}
 
-				var p = _tastudio.AxisPatterns[index].Pattern;
-				var lastValue = p[0];
+				int[] p = _tastudio.AxisPatterns[index].Pattern;
+				int lastValue = p[0];
 				_counts.Clear();
 				_values.Clear();
 				_counts.Add(1);

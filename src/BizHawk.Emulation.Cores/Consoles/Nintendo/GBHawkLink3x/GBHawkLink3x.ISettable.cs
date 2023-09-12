@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		private GBLink3xSettings Link3xSettings = new GBLink3xSettings();
-		private GBLink3xSyncSettings Link3xSyncSettings = new GBLink3xSyncSettings();
+		private GBLink3xSettings Link3xSettings = new();
+		private GBLink3xSyncSettings Link3xSyncSettings = new();
 
 		public class GBLink3xSettings
 		{
@@ -169,10 +169,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 			public GBLink3xSyncSettings() => SettingsUtil.SetDefaultValues(this);
 
-			public static bool NeedsReboot(GBLink3xSyncSettings x, GBLink3xSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(GBLink3xSyncSettings x, GBLink3xSyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

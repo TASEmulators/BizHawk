@@ -556,15 +556,13 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int size = (extension >> 11) & 0x1;
 			int scale = (extension >> 9) & 0x3;
 			sbyte displacement = (sbyte)extension;
-
-			int indexReg;
-			switch (scale)
+			int indexReg = scale switch
 			{
-				case 0: indexReg = 1; break;
-				case 1: indexReg = 2; break;
-				case 2: indexReg = 4; break;
-				default: indexReg = 8; break;
-			}
+				0 => 1,
+				1 => 2,
+				2 => 4,
+				_ => 8,
+			};
 			if (da == 0)
 				indexReg *= size == 0 ? D[reg].s16 : D[reg].s32;
 			else
@@ -584,15 +582,13 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int size = (extension >> 11) & 0x1;
 			int scale = (extension >> 9) & 0x3;
 			sbyte displacement = (sbyte)extension;
-
-			int indexReg;
-			switch (scale)
+			int indexReg = scale switch
 			{
-				case 0: indexReg = 1; break;
-				case 1: indexReg = 2; break;
-				case 2: indexReg = 4; break;
-				default: indexReg = 8; break;
-			}
+				0 => 1,
+				1 => 2,
+				2 => 4,
+				_ => 8,
+			};
 			if (da == 0)
 				indexReg *= size == 0 ? D[reg].s16 : D[reg].s32;
 			else
@@ -608,16 +604,13 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int size = (extension >> 11) & 0x1;
 			int scale = (extension >> 9) & 0x3;
 			sbyte displacement = (sbyte)extension;
-
-			string scaleFactor;
-			switch (scale)
+			string scaleFactor = scale switch
 			{
-				case 0: scaleFactor = ""; break;
-				case 1: scaleFactor = "2"; break;
-				case 2: scaleFactor = "4"; break;
-				default: scaleFactor = "8"; break;
-			}
-
+				0 => "",
+				1 => "2",
+				2 => "4",
+				_ => "8",
+			};
 			string offsetRegister = (d_a == 0) ? "D" : "A";
 			string sizeStr = size == 0 ? ".w" : ".l";
 			string displacementStr = displacement == 0 ? "" : ("," + displacement);

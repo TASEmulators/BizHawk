@@ -1,4 +1,4 @@
-﻿using BizHawk.Common;
+using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
@@ -19,10 +19,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private readonly CPCBase _machine;
 		private Z80A CPU => _machine.CPU;
 		private CRCT_6845 CRCT => _machine.CRCT;
+		#pragma warning disable IDE0051
 		//private CRTDevice CRT => _machine.CRT;
 		private IPSG PSG => _machine.AYDevice;
 		private NECUPD765 FDC => _machine.UPDDiskDevice;
 		private DatacorderDevice DATACORDER => _machine.TapeDevice;
+		#pragma warning disable IDE0051
 		private ushort BUSRQ => CPU.MEMRQ[CPU.bus_pntr];
 		public const ushort PCh = 1;
 
@@ -233,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				_RMR = value;
 				//ScreenMode = _RMR & 0x03;
-				var sm = _RMR & 0x03;
+				int sm = _RMR & 0x03;
 				if (sm != 1)
 				{
 
@@ -338,6 +340,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// 16-bit address - read from the CRCT
 		/// </summary>
 		private short _MA;
+		#pragma warning disable IDE0051
 		private short MA
 		{
 			get
@@ -346,6 +349,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				return _MA;
 			}
 		}
+		#pragma warning restore IDE0051
 
 		/// <summary>
 		/// Set when the HSYNC signal is detected from the CRCT
@@ -527,6 +531,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
+		#pragma warning disable IDE0051
 		/// <summary>
 		/// The CRCT builds the picture in a strange way, so that the top left of the display area is the first pixel from
 		/// video RAM. The borders come either side of the HSYNC and VSYNCs later on:
@@ -573,6 +578,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				IsNewFrame = false;
 			}
 		}
+		#pragma warning restore IDE0051
 
 		/// <summary>
 		/// Handles interrupt generation
@@ -684,7 +690,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// List of screen lines as they are built up
 		/// </summary>
-		private readonly List<CharacterLine> ScreenLines = new List<CharacterLine>();
+		private readonly List<CharacterLine> ScreenLines = new();
 
 		/// <summary>
 		/// Pixel value lookups for every scanline byte value
@@ -751,13 +757,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private void CalculateNextScreenMemory()
 		{
-			var verCharCount = CRCT.VCC;
-			var verRasCount = CRCT.VLC;
+			int verCharCount = CRCT.VCC;
+			int verRasCount = CRCT.VLC;
 
-			var screenWidthByteCount = CRCT.DisplayWidth * 2;
+			int screenWidthByteCount = CRCT.DisplayWidth * 2;
 			NextVidRamLine = new ushort[screenWidthByteCount * 2];
-			var screenHeightCharCount = CRCT.DisplayHeightInChars;
-			var screenAddress = CRCT.MA;
+			int screenHeightCharCount = CRCT.DisplayHeightInChars;
+			short screenAddress = CRCT.MA;
 
 			int baseAddress = ((screenAddress << 2) & 0xf000);
 			int offset = (screenAddress * 2) & 0x7ff;
@@ -783,14 +789,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			int cRas = CRCT.VLC;
 
 			int screenByteWidth = CRCT.DisplayWidth * 2;
-			var screenHeightCharCount = CRCT.DisplayHeightInChars;
+			int screenHeightCharCount = CRCT.DisplayHeightInChars;
 			//CalculateNextScreenMemory();
-			var crctAddr = CRCT.DStartHigh << 8;
+			int crctAddr = CRCT.DStartHigh << 8;
 			crctAddr |= CRCT.DStartLow;
-			var baseAddr = ((crctAddr << 2) & (0xF000)); //CRCT.VideoPageBase;//
-			var baseOffset = (crctAddr * 2) & 0x7FF; //CRCT.VideoRAMOffset * 2; //
-			var xA = baseOffset + ((cRow * screenByteWidth) & 0x7ff);
-			var yA = baseAddr + (cRas * 2048);
+			int baseAddr = ((crctAddr << 2) & (0xF000)); //CRCT.VideoPageBase;//
+			int baseOffset = (crctAddr * 2) & 0x7FF; //CRCT.VideoRAMOffset * 2; //
+			int xA = baseOffset + ((cRow * screenByteWidth) & 0x7ff);
+			int yA = baseAddr + (cRas * 2048);
 
 			// border and display
 			int pix = 0;
@@ -896,11 +902,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Called when the Z80 acknowledges an interrupt
 		/// </summary>
-		public void IORQA()
-		{
+		public void IORQA() =>
 			// bit 5 of the interrupt counter is reset
 			InterruptCounter &= ~(1 << 5);
-		}
 
 		private int slCounter = 0;
 		private int slBackup = 0;
@@ -941,36 +945,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public int[] ScreenBuffer;
 
-		private int _virtualWidth;
-		private int _virtualHeight;
-		private int _bufferWidth;
-		private int _bufferHeight;
-
 		public int BackgroundColor => CPCHardwarePalette[0];
 
-		public int VirtualWidth
-		{
-			get => _virtualWidth;
-			set => _virtualWidth = value;
-		}
+		public int VirtualWidth { get; set; }
 
-		public int VirtualHeight
-		{
-			get => _virtualHeight;
-			set => _virtualHeight = value;
-		}
+		public int VirtualHeight { get; set; }
 
-		public int BufferWidth
-		{
-			get => _bufferWidth;
-			set => _bufferWidth = value;
-		}
+		public int BufferWidth { get; set; }
 
-		public int BufferHeight
-		{
-			get => _bufferHeight;
-			set => _bufferHeight = value;
-		}
+		public int BufferHeight { get; set; }
 
 		public int SysBufferWidth;
 		public int SysBufferHeight;
@@ -992,27 +975,27 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			int lCount = 0;
 			foreach (var l in lines)
 			{
-				var lCop = l.Pixels.ToList();
-				var len = l.Pixels.Count;
+				List<int> lCop = l.Pixels.ToList();
+				int len = l.Pixels.Count;
 				if (l.Phases.Contains(Phase.VSYNC) && l.Phases.Contains(Phase.BORDER))
 					continue;
 
 				if (len < 320)
 					continue;
 
-				var pad = BufferWidth - len;
+				int pad = BufferWidth - len;
 				if (pad < 0)
 				{
 					// trim the left and right
-					var padPos = pad * -1;
-					var excessL = padPos / 2;
-					var excessR = excessL + (padPos % 2);
-					for (var i = 0; i < excessL; i++) lCop.RemoveAt(0);
-					for (var i = 0; i < excessL; i++) lCop.RemoveAt(lCop.Count - 1); //TODO should be using excessR?
+					int padPos = pad * -1;
+					int excessL = padPos / 2;
+					int excessR = excessL + (padPos % 2);
+					for (int i = 0; i < excessL; i++) lCop.RemoveAt(0);
+					for (int i = 0; i < excessL; i++) lCop.RemoveAt(lCop.Count - 1); //TODO should be using excessR?
 				}
 
-				var lPad = pad / 2;
-				var rPad = lPad + (pad % 2);
+				int lPad = pad / 2;
+				int rPad = lPad + (pad % 2);
 
 				for (int i = 0; i < 2; i++)
 				{
@@ -1122,30 +1105,22 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		protected int[] croppedBuffer;
 
-		private AmstradCPC.BorderType _borderType;
-
-		public AmstradCPC.BorderType borderType
-		{
-			get => _borderType;
-			set => _borderType = value;
-		}
+		public AmstradCPC.BorderType borderType { get; set; }
 
 		/// <summary>
 		/// Device responds to an IN instruction
 		/// </summary>
-		public bool ReadPort(ushort port, ref int result)
-		{
+		public bool ReadPort(ushort port, ref int result) =>
 			// gate array is OUT only
-			return false;
-		}
+			false;
 
 		/// <summary>
 		/// Device responds to an OUT instruction
 		/// </summary>
 		public bool WritePort(ushort port, int result)
 		{
-			BitArray portBits = new BitArray(BitConverter.GetBytes(port));
-			BitArray dataBits = new BitArray(BitConverter.GetBytes((byte)result));
+			BitArray portBits = new(BitConverter.GetBytes(port));
+			BitArray dataBits = new(BitConverter.GetBytes((byte)result));
 			byte portUpper = (byte)(port >> 8);
 			byte portLower = (byte)(port & 0xff);
 
@@ -1234,16 +1209,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			//}
 
 			public int ScreenMode = 1;
-			public List<Phase> Phases = new List<Phase>();
-			public List<int> Pixels = new List<int>();
+			public List<Phase> Phases = new();
+			public List<int> Pixels = new();
 
 			/// <summary>
 			/// Adds a new horizontal character to the list
 			/// </summary>
-			public void AddCharacter(Phase phase)
-			{
-				Phases.Add(phase);
-			}
+			public void AddCharacter(Phase phase) => Phases.Add(phase);
 
 			public int PhaseCount => Phases.Count;
 

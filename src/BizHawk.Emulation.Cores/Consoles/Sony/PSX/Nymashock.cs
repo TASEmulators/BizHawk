@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			if (_cachedSettingsInfo is null)
 			{
-				using var n = new Nymashock(comm);
+				using Nymashock n = new(comm);
 				n.InitForSettingsInfo("shock.wbx");
 				_cachedSettingsInfo = n.SettingsInfo.Clone();
 			}
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			if (lp.Roms.Count > 0)
 				throw new InvalidOperationException("To load a PSX game, please load the CUE file and not the BIN file.");
-			var firmwares = new Dictionary<string, FirmwareID>
+			Dictionary<string, FirmwareID> firmwares = new()
 			{
 				{ "FIRMWARE:$J", new("PSX", "J") },
 				{ "FIRMWARE:$U", new("PSX", "U") },

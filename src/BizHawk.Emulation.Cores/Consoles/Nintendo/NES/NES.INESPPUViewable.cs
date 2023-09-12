@@ -56,24 +56,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public MemoryDomain GetCHRROM() => _memoryDomains["CHR VROM"];
 
 
-		public void InstallCallback1(Action cb, int sl)
-		{
-			ppu.NTViewCallback = new PPU.DebugCallback { Callback = cb, Scanline = sl };
-		}
+		public void InstallCallback1(Action cb, int sl) => ppu.NTViewCallback = new PPU.DebugCallback { Callback = cb, Scanline = sl };
 
-		public void InstallCallback2(Action cb, int sl)
-		{
-			ppu.PPUViewCallback = new PPU.DebugCallback { Callback = cb, Scanline = sl };
-		}
+		public void InstallCallback2(Action cb, int sl) => ppu.PPUViewCallback = new PPU.DebugCallback { Callback = cb, Scanline = sl };
 
-		public void RemoveCallback1()
-		{
-			ppu.NTViewCallback = null;
-		}
+		public void RemoveCallback1() => ppu.NTViewCallback = null;
 
-		public void RemoveCallback2()
-		{
-			ppu.PPUViewCallback = null;
-		}
+		public void RemoveCallback2() => ppu.PPUViewCallback = null;
 	}
 }

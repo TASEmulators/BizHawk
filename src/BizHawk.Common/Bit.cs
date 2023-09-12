@@ -60,10 +60,7 @@ namespace BizHawk.Common
 			return rhs._val != 0;
 		}
 
-		public override string ToString()
-		{
-			return _val.ToString();
-		}
+		public override string ToString() => _val.ToString();
 
 		public static bool operator ==(Bit lhs, Bit rhs)
 		{
@@ -75,14 +72,8 @@ namespace BizHawk.Common
 			return lhs._val != rhs._val;
 		}
 
-		public override int GetHashCode()
-		{
-			return _val.GetHashCode();
-		}
+		public override int GetHashCode() => _val.GetHashCode();
 
-		public override bool Equals(object? obj)
-		{
-			return obj is Bit b && this == b;
-		}
+		public override bool Equals(object? obj) => obj is Bit b && this == b;
 	}
 }

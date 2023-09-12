@@ -2,20 +2,11 @@
 {
 	public sealed partial class Cia
 	{
-		public int Peek(int addr)
-		{
-			return ReadRegister(addr & 0xF);
-		}
+		public int Peek(int addr) => ReadRegister(addr & 0xF);
 
-		public bool ReadIrq()
-		{
-			return (_icr & 0x80) == 0;
-		}
+		public bool ReadIrq() => (_icr & 0x80) == 0;
 
-		public int ReadPortA()
-		{
-			return (_pra | ~_ddra) & 0xFF;
-		}
+		public int ReadPortA() => (_pra | ~_ddra) & 0xFF;
 
 		public int Read(int addr)
 		{
@@ -33,7 +24,7 @@
 					_todLatch = true;
 					return _latchHr;
 				case 0xD:
-					var icrTemp = _icr;
+					int icrTemp = _icr;
 					_icr = 0;
 					return icrTemp;
 			}
@@ -43,49 +34,29 @@
 
 		private int ReadRegister(int addr)
 		{
-			switch (addr)
+			return addr switch
 			{
-				case 0x0:
-					return _port.ReadPra(_pra, _ddra, _prb, _ddrb);
-				case 0x1:
-					return _port.ReadPrb(_pra, _ddra, _prb, _ddrb);
-				case 0x2:
-					return _ddra;
-				case 0x3:
-					return _ddrb;
-				case 0x4:
-					return _ta & 0xFF;
-				case 0x5:
-					return (_ta >> 8) & 0xFF;
-				case 0x6:
-					return _tb & 0xFF;
-				case 0x7:
-					return (_tb >> 8) & 0xFF;
-				case 0x8:
-					return _tod10Ths;
-				case 0x9:
-					return _todSec;
-				case 0xA:
-					return _todMin;
-				case 0xB:
-					return _todHr;
-				case 0xC:
-					return _sdr;
-				case 0xD:
-					return _icr;
-				case 0xE:
-					return _cra;
-				case 0xF:
-					return _crb;
-			}
-
-			return 0;
+				0x0 => _port.ReadPra(_pra, _ddra, _prb, _ddrb),
+				0x1 => _port.ReadPrb(_pra, _ddra, _prb, _ddrb),
+				0x2 => _ddra,
+				0x3 => _ddrb,
+				0x4 => _ta & 0xFF,
+				0x5 => (_ta >> 8) & 0xFF,
+				0x6 => _tb & 0xFF,
+				0x7 => (_tb >> 8) & 0xFF,
+				0x8 => _tod10Ths,
+				0x9 => _todSec,
+				0xA => _todMin,
+				0xB => _todHr,
+				0xC => _sdr,
+				0xD => _icr,
+				0xE => _cra,
+				0xF => _crb,
+				_ => 0,
+			};
 		}
 
-		public void Poke(int addr, int val)
-		{
-			WriteRegister(addr, val);
-		}
+		public void Poke(int addr, int val) => WriteRegister(addr, val);
 
 		public void Write(int addr, int val)
 		{
@@ -171,7 +142,7 @@
 					}
 					break;
 				case 0xE:
-					var oldCra = _cra;
+					int oldCra = _cra;
 					WriteRegister(addr, val);
 
 					// Toggle output begins high when timer starts.
@@ -181,7 +152,7 @@
 					}
 					break;
 				case 0xF:
-					var oldCrb = _crb;
+					int oldCrb = _crb;
 					WriteRegister(addr, val);
 
 					// Toggle output begins high when timer starts.

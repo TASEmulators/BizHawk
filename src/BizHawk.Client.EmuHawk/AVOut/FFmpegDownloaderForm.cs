@@ -28,46 +28,41 @@ namespace BizHawk.Client.EmuHawk
 		private bool succeeded = false;
 		private bool failed = false;
 
-		private void ThreadProc()
-		{
-			Download();
-		}
+		private void ThreadProc() => Download();
 
 		private void Download()
 		{
 			//the temp file is owned by this thread
-			var fn = TempFileManager.GetTempFilename("ffmpeg_download", ".7z", false);
+			string fn = TempFileManager.GetTempFilename("ffmpeg_download", ".7z", false);
 
 			try
 			{
-				using (var evt = new ManualResetEvent(false))
+				using (ManualResetEvent evt = new(false))
 				{
-					using (var client = new System.Net.WebClient())
+					using System.Net.WebClient client = new();
+					System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+					client.DownloadFileAsync(new Uri(FFmpegService.Url), fn);
+					client.DownloadProgressChanged += (object sender, System.Net.DownloadProgressChangedEventArgs e) =>
 					{
-						System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-						client.DownloadFileAsync(new Uri(FFmpegService.Url), fn);
-						client.DownloadProgressChanged += (object sender, System.Net.DownloadProgressChangedEventArgs e) =>
-						{
-							pct = e.ProgressPercentage;
-						};
-						client.DownloadFileCompleted += (object sender, System.ComponentModel.AsyncCompletedEventArgs e) =>
-						{
-							//we don't really need a status. we'll just try to unzip it when it's done
-							evt.Set();
-						};
+						pct = e.ProgressPercentage;
+					};
+					client.DownloadFileCompleted += (object sender, System.ComponentModel.AsyncCompletedEventArgs e) =>
+					{
+						//we don't really need a status. we'll just try to unzip it when it's done
+						evt.Set();
+					};
 
-						for (; ; )
-						{
-							if (evt.WaitOne(10))
-								break;
+					for (; ; )
+					{
+						if (evt.WaitOne(10))
+							break;
 
-							//if the gui thread ordered an exit, cancel the download and wait for it to acknowledge
-							if (exiting)
-							{
-								client.CancelAsync();
-								evt.WaitOne();
-								break;
-							}
+						//if the gui thread ordered an exit, cancel the download and wait for it to acknowledge
+						if (exiting)
+						{
+							client.CancelAsync();
+							evt.WaitOne();
+							break;
 						}
 					}
 				}
@@ -79,24 +74,22 @@ namespace BizHawk.Client.EmuHawk
 					return;
 
 				//try acquiring file
-				using (var hf = new HawkFile(fn))
+				using (HawkFile hf = new(fn))
 				{
-					using (var exe = OSTailoredCode.IsUnixHost ? hf.BindArchiveMember("ffmpeg") : hf.BindFirstOf(".exe"))
+					using var exe = OSTailoredCode.IsUnixHost ? hf.BindArchiveMember("ffmpeg") : hf.BindFirstOf(".exe");
+					byte[] data = exe!.ReadAllBytes();
+
+					//last chance. exiting, don't dump the new ffmpeg file
+					if (exiting)
+						return;
+
+					DirectoryInfo parentDir = new(Path.GetDirectoryName(FFmpegService.FFmpegPath)!);
+					if (!parentDir.Exists) parentDir.Create();
+					File.WriteAllBytes(FFmpegService.FFmpegPath, data);
+					if (OSTailoredCode.IsUnixHost)
 					{
-						var data = exe!.ReadAllBytes();
-
-						//last chance. exiting, don't dump the new ffmpeg file
-						if (exiting)
-							return;
-
-						DirectoryInfo parentDir = new(Path.GetDirectoryName(FFmpegService.FFmpegPath)!);
-						if (!parentDir.Exists) parentDir.Create();
-						File.WriteAllBytes(FFmpegService.FFmpegPath, data);
-						if (OSTailoredCode.IsUnixHost)
-						{
-							OSTailoredCode.ConstructSubshell("chmod", $"+x {FFmpegService.FFmpegPath}", checkStdout: false).Start();
-							Thread.Sleep(50); // Linux I/O flush idk
-						}
+						OSTailoredCode.ConstructSubshell("chmod", $"+x {FFmpegService.FFmpegPath}", checkStdout: false).Start();
+						Thread.Sleep(50); // Linux I/O flush idk
 					}
 				}
 
@@ -124,21 +117,16 @@ namespace BizHawk.Client.EmuHawk
 			failed = false;
 			succeeded = false;
 			pct = 0;
-			var t = new Thread(ThreadProc);
+			Thread t = new(ThreadProc);
 			t.Start();
 		}
 
-		private void btnCancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void btnCancel_Click(object sender, EventArgs e) => Close();
 
-		protected override void OnClosed(EventArgs e)
-		{
+		protected override void OnClosed(EventArgs e) =>
 			//inform the worker thread that it needs to try terminating without doing anything else
 			//(it will linger on in background for a bit til it can service this)
 			exiting = true;
-		}
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
@@ -155,10 +143,7 @@ namespace BizHawk.Client.EmuHawk
 			progressBar1.Value = pct;
 		}
 
-		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			System.Diagnostics.Process.Start(FFmpegService.Url);
-		}
+		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => System.Diagnostics.Process.Start(FFmpegService.Url);
 	}
 }
 

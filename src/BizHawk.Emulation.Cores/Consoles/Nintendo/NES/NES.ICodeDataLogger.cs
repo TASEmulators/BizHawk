@@ -6,10 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed partial class NES : ICodeDataLogger
 	{
-		public void SetCDL(ICodeDataLog cdl)
-		{
-			CDL = cdl;
-		}
+		public void SetCDL(ICodeDataLog cdl) => CDL = cdl;
 
 		public void NewCDL(ICodeDataLog cdl)
 		{
@@ -60,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private void RunCDL(ushort address, CDLog_Flags flags)
 		{
 			
-			CDLog_MapResults results = Board.MapMemory(address, false);
+			var results = Board.MapMemory(address, false);
 			switch (results.Type)
 			{
 				case CDLog_AddrType.None: break;

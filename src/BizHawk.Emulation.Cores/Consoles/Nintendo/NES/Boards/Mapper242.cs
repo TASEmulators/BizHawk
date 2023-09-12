@@ -35,10 +35,7 @@ mirroring - both
 			return true;
 		}
 
-		public override byte ReadPrg(int addr)
-		{
-			return Rom[addr + (prg * 0x8000)];
-		}
+		public override byte ReadPrg(int addr) => Rom[addr + (prg * 0x8000)];
 
 		public override void WritePrg(int addr, byte value)
 		{

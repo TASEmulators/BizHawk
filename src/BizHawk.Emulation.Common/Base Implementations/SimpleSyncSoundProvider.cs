@@ -47,14 +47,8 @@ namespace BizHawk.Emulation.Common.Base_Implementations
 		}
 
 		/// <exception cref="NotImplementedException">always</exception>
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotImplementedException();
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotImplementedException();
 
-		public void DiscardSamples()
-		{
-			_nsamp = 0;
-		}
+		public void DiscardSamples() => _nsamp = 0;
 	}
 }

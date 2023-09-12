@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePrg(int addr, byte value)
 		{
-			if ((addr >= 0x4000) && (addr < 0x6000))
+			if (addr is >= 0x4000 and < 0x6000)
 				Wram[addr - 0x4000] = value;
 			else
 				base.WritePrg(addr, value);
@@ -64,9 +64,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[(bank << 13) + (addr & 0x1FFF)];
 		}
 
-		public override byte ReadWram(int addr)
-		{
-			return Rom[((reg & prg_bank_mask_8k) << 13) + addr];
-		}
+		public override byte ReadWram(int addr) => Rom[((reg & prg_bank_mask_8k) << 13) + addr];
 	}
 }

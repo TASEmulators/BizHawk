@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			string[] keys = key.Split('|');
 			ControllerDefinition d = new(_emulator.ControllerDefinition.Name);
-			foreach (var k in keys)
+			foreach (string k in keys)
 			{
 				if (_emulator.ControllerDefinition.BoolButtons.Contains(k))
 				{
@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 			// Get a IController that only contains buttons in key.
 			string[] keys = _inputKey.Split('|');
 			ControllerDefinition d = new(_emulator.ControllerDefinition.Name);
-			foreach (var key in keys)
+			foreach (string key in keys)
 			{
 				if (_emulator.ControllerDefinition.BoolButtons.Contains(key))
 				{
@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 			key = key[..^1];
 			string[] emuKeys = key.Split('|');
 			string[] macroKeys = _inputKey.Split('|');
-			foreach (var macro in macroKeys)
+			foreach (string macro in macroKeys)
 			{
 				if (!emuKeys.Contains(macro))
 				{
@@ -289,7 +289,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (string name in latching.Definition.Axes.Keys)
 			{
-				var axisValue = source.AxisValue(name);
+				int axisValue = source.AxisValue(name);
 				if (axisValue == source.Definition.Axes[name].Neutral)
 				{
 					latching.SetAxis(name, axisValue);

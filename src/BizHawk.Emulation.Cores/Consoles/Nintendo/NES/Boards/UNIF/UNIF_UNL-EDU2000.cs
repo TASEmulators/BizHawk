@@ -28,14 +28,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("reg", ref _reg);
 		}
 
-		public override void WritePrg(int addr, byte value)
-		{
-			_reg = value;
-		}
+		public override void WritePrg(int addr, byte value) => _reg = value;
 
-		public override byte ReadPrg(int addr)
-		{
-			return Rom[((_reg & _prgMask32) * 0x8000) + (addr & 0x7FFF)];
-		}
+		public override byte ReadPrg(int addr) => Rom[((_reg & _prgMask32) * 0x8000) + (addr & 0x7FFF)];
 	}
 }

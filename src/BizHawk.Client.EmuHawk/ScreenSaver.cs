@@ -45,10 +45,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static int ctr;
 
-		public static void ResetTimerImmediate()
-		{
-			_screenBlankTimer.Duration = _screenBlankTimer.Duration;
-		}
+		public static void ResetTimerImmediate() => _screenBlankTimer.Duration = _screenBlankTimer.Duration;
 
 		public static void ResetTimerPeriodically()
 		{

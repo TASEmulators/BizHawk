@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class SaveController : IController
 	{
-		private readonly WorkingDictionary<string, int> _buttons = new WorkingDictionary<string, int>();
+		private readonly WorkingDictionary<string, int> _buttons = new();
 
 		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Common
 		public void Serialize(BinaryWriter b)
 		{
 			b.Write(_buttons.Keys.Count);
-			foreach (var k in _buttons.Keys)
+			foreach (string k in _buttons.Keys)
 			{
 				b.Write(k);
 				b.Write(_buttons[k]);
@@ -64,12 +64,12 @@ namespace BizHawk.Emulation.Common
 		{
 			Definition = source.Definition;
 			_buttons.Clear();
-			foreach (var k in Definition.BoolButtons)
+			foreach (string k in Definition.BoolButtons)
 			{
 				_buttons.Add(k, source.IsPressed(k) ? 1 : 0);
 			}
 
-			foreach (var k in Definition.Axes.Keys)
+			foreach (string k in Definition.Axes.Keys)
 			{
 				if (_buttons.ContainsKey(k))
 				{
@@ -80,25 +80,13 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void Clear()
-		{
-			_buttons.Clear();
-		}
+		public void Clear() => _buttons.Clear();
 
-		public void Set(string button)
-		{
-			_buttons[button] = 1;
-		}
+		public void Set(string button) => _buttons[button] = 1;
 
-		public bool IsPressed(string button)
-		{
-			return _buttons[button] != 0;
-		}
+		public bool IsPressed(string button) => _buttons[button] != 0;
 
-		public int AxisValue(string name)
-		{
-			return _buttons[name];
-		}
+		public int AxisValue(string name) => _buttons[name];
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
 

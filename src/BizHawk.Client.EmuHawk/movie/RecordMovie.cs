@@ -183,7 +183,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string MakePath()
 		{
-			var path = RecordBox.Text;
+			string path = RecordBox.Text;
 
 			if (!string.IsNullOrWhiteSpace(path))
 			{
@@ -209,13 +209,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
-			var path = MakePath();
+			string path = MakePath();
 			if (!string.IsNullOrWhiteSpace(path))
 			{
-				var test = new FileInfo(path);
+				FileInfo test = new(path);
 				if (test.Exists)
 				{
-					var result = DialogController.ShowMessageBox2($"{path} already exists, overwrite?", "Confirm overwrite", EMsgBoxIcon.Warning, useOKCancel: true);
+					bool result = DialogController.ShowMessageBox2($"{path} already exists, overwrite?", "Confirm overwrite", EMsgBoxIcon.Warning, useOKCancel: true);
 					if (!result)
 					{
 						return;
@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var movieToRecord = _movieSession.Get(path);
 
-				var fileInfo = new FileInfo(path);
+				FileInfo fileInfo = new(path);
 				if (!fileInfo.Exists)
 				{
 					Directory.CreateDirectory(fileInfo.DirectoryName);
@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						using var sw = new StringWriter();
+						using StringWriter sw = new();
 						core.SaveStateText(sw);
 						movieToRecord.TextSavestate = sw.ToString();
 					}
@@ -284,10 +284,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void Cancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void Cancel_Click(object sender, EventArgs e) => Close();
 
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
@@ -301,7 +298,7 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception movieDirException)
 			{
 				if (movieDirException is IOException
-					|| movieDirException is UnauthorizedAccessException)
+					or UnauthorizedAccessException)
 				{
 					//TO DO : Pass error to user?
 				}
@@ -309,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			
 			var filterset = _movieSession.Movie.GetFSFilterSet();
-			var result = this.ShowFileSaveDialog(
+			string result = this.ShowFileSaveDialog(
 				fileExt: $".{filterset.Filters[0].Extensions.First()}",
 				filter: filterset,
 				initDir: movieFolderPath,
@@ -329,14 +326,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void RecordBox_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Set(DragDropEffects.Copy);
-		}
+		private void RecordBox_DragEnter(object sender, DragEventArgs e) => e.Set(DragDropEffects.Copy);
 
 		private void RecordBox_DragDrop(object sender, DragEventArgs e)
 		{
-			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			RecordBox.Text = filePaths[0];
 		}
 	}

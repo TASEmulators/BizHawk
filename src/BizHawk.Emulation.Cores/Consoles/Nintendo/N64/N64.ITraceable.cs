@@ -14,13 +14,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			var regs = GetCpuFlagsAndRegisters();
 			uint pc = (uint)regs["PC"].Value;
-			var disasm = Disassemble(MemoryDomains.SystemBus, pc, out int length);
+			string disasm = Disassemble(MemoryDomains.SystemBus, pc, out int length);
 
-			var sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			for (int i = 1; i < 32; i++) // r0 is always zero
 			{
-				var val = (regs[GPRnames[i] + "_hi"].Value << 32) | regs[GPRnames[i] + "_lo"].Value;
+				ulong val = (regs[GPRnames[i] + "_hi"].Value << 32) | regs[GPRnames[i] + "_lo"].Value;
 				string name = GPRnames[i];
 				sb.Append($"{name}:{val:X16} ");
 			}
@@ -33,13 +33,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			for (int i = 0; i < 32; i++) // r0 is always zero
 			{
-				var val = (regs["CP1 FGR REG" + i + "_hi"].Value << 32) | regs["CP1 FGR REG" + i + "_lo"].Value;
+				ulong val = (regs["CP1 FGR REG" + i + "_hi"].Value << 32) | regs["CP1 FGR REG" + i + "_lo"].Value;
 				sb.Append($"f{i}:{val:X16} ");
 			}
 
 			// drop MMU co-processor regs for now
 
-			Tracer.Put(new(disassembly: $"{pc:X}:  {disasm.PadRight(32)}", registerInfo: sb.ToString().Trim()));
+			Tracer.Put(new(disassembly: $"{pc:X}:  {disasm,-32}", registerInfo: sb.ToString().Trim()));
 		}
 
 		private const string TraceHeader = "r3400: PC, mnemonic, operands, registers (GPRs, Load/Link Bit, MultHI, MultLO, Implementation/Revision, Control/Status, FGRs)";

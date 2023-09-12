@@ -130,10 +130,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Patch_Vectors = true;
 		}
 
-		public override void NesSoftReset()
-		{
-			ReplayInit();
-		}
+		public override void NesSoftReset() => ReplayInit();
 
 		public override void WriteExp(int addr, byte value)
 		{
@@ -199,8 +196,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							//NES.WriteMemory(0x4017, 0x40);
 
 							//important to NSF standard for ram to be cleared, otherwise replayers are confused on account of not initializing memory themselves
-							var ram = NES.ram;
-							var wram = this.Wram;
+							byte[] ram = NES.ram;
+							byte[] wram = this.Wram;
 							int wram_size = wram.Length;
 							for (int i = 0; i < 0x800; i++)
 								ram[i] = 0;
@@ -349,10 +346,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPpu(int addr)
-		{
-			return 0;
-		}
+		public override byte ReadPpu(int addr) => 0;
 
 		public override byte ReadPrg(int addr)
 		{

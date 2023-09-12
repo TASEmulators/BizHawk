@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly IGameInfo _game;
 
 #if AVI_SUPPORT
-		private readonly List<FrameInfo> _mFrameInfos = new List<FrameInfo>();
+		private readonly List<FrameInfo> _mFrameInfos = new();
 
 		private string _mFramesDirectory;
 
@@ -37,18 +37,18 @@ namespace BizHawk.Client.EmuHawk
 #if AVI_SUPPORT
 		public void Run()
 		{
-			var result = this.ShowFileOpenDialog(
+			string result = this.ShowFileOpenDialog(
 				initDir: _config.PathEntries.AvAbsolutePath(),
 				initFileName: $"{_game.FilesystemSafeName()}.syncless.txt");
 			if (result is null) return;
 
 			_mSynclessConfigFile = result;
-			
+
 			//---- this is pretty crappy:
-			var lines = File.ReadAllLines(_mSynclessConfigFile);
+			string[] lines = File.ReadAllLines(_mSynclessConfigFile);
 
 			string framesDir = "";
-			foreach (var line in lines)
+			foreach (string line in lines)
 			{
 				int idx = line.IndexOf('=');
 				string key = line[..idx];
@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			int frame = 1; // hacky! skip frame 0, because we have a problem with dumping that frame somehow
 			for (;;)
 			{
-				GetPaths(frame, out var png, out var wav);
+				GetPaths(frame, out string png, out string wav);
 				if (!File.Exists(png) || !File.Exists(wav))
 				{
 					break;
@@ -108,19 +108,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			int width, height;
-			using(var bmp = new Bitmap(_mFrameInfos[0].PngPath))
+			using(Bitmap bmp = new(_mFrameInfos[0].PngPath))
 			{
 				width = bmp.Width;
 				height = bmp.Height;
 			}
 
-			var initFileName = Path.ChangeExtension(_mSynclessConfigFile, ".avi");
-			var result = this.ShowFileSaveDialog(
+			string initFileName = Path.ChangeExtension(_mSynclessConfigFile, ".avi");
+			string result = this.ShowFileSaveDialog(
 				initDir: Path.GetDirectoryName(initFileName)!,
 				initFileName: initFileName);
 			if (result is null) return;
 
-			using var avw = new AviWriter(this);
+			using AviWriter avw = new(this);
 			avw.SetAudioParameters(44100, 2, 16); // hacky
 			avw.SetMovieParameters(60, 1); // hacky
 			avw.SetVideoParameters(width, height);
@@ -129,17 +129,17 @@ namespace BizHawk.Client.EmuHawk
 			avw.OpenFile(result);
 			foreach (var fi in _mFrameInfos)
 			{
-				using (var bb = new BitmapBuffer(fi.PngPath, new BitmapLoadOptions()))
+				using (BitmapBuffer bb = new(fi.PngPath, new BitmapLoadOptions()))
 				{
-					var bbvp = new BitmapBufferVideoProvider(bb);
+					BitmapBufferVideoProvider bbvp = new(bb);
 					avw.AddFrame(bbvp);
 				}
 
 				// offset = 44 dec
-				var wavBytes = File.ReadAllBytes(fi.WavPath);
-				var ms = new MemoryStream(wavBytes) { Position = 44 };
-				var br = new BinaryReader(ms);
-				var sampleData = new List<short>();
+				byte[] wavBytes = File.ReadAllBytes(fi.WavPath);
+				MemoryStream ms = new(wavBytes) { Position = 44 };
+				BinaryReader br = new(ms);
+				List<short> sampleData = new();
 				while (br.BaseStream.Position != br.BaseStream.Length)
 				{
 					sampleData.Add(br.ReadInt16());

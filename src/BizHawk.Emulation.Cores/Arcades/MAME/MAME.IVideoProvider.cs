@@ -44,11 +44,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void UpdateVideo()
 		{
-			_core.mame_video_get_dimensions(out var width, out var height);
+			_core.mame_video_get_dimensions(out int width, out int height);
 
 			BufferWidth = width;
 			BufferHeight = height;
-			var numPixels = width * height;
+			int numPixels = width * height;
 
 			if (_frameBuffer.Length < numPixels)
 			{

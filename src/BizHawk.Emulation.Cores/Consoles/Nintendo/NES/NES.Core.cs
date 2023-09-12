@@ -36,7 +36,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public APU apu;
 		public byte[] ram;
 		public byte[] CIRAM; //AKA nametables
-		private string game_name = ""; //friendly name exposed to user and used as filename base
 		internal CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
 		internal INesBoard Board; //the board hardware that is currently driving things
 		private EDetectionOrigin origin = EDetectionOrigin.None;
@@ -78,10 +77,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private readonly NESControlSettings ControllerSettings; // this is stored internally so that a new change of settings won't replace
 		private IControllerDeck ControllerDeck;
 		private byte latched4016;
-
-		private DisplayType _display_type = DisplayType.NTSC;
-
-		private BlipBuffer blip = new BlipBuffer(4096);
+		private BlipBuffer blip = new(4096);
 		private const int blipbuffsize = 4096;
 
 		public int old_s = 0;
@@ -131,10 +127,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async not supported");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async not supported");
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
@@ -184,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// if (magicSoundProvider != null) magicSoundProvider.Dispose();
 
 			// set up region
-			switch (_display_type)
+			switch (Region)
 			{
 				case DisplayType.PAL:
 					apu = new APU(this, apu, true);
@@ -193,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					VsyncNum = cpuclockrate * 2;
 					VsyncDen = 66495;
 					cpu_sequence = cpu_sequence_PAL;
-					_display_type = DisplayType.PAL;
+					Region = DisplayType.PAL;
 					ClockRate = 5320342.5;
 					break;
 				case DisplayType.NTSC:
@@ -213,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					VsyncNum = cpuclockrate;
 					VsyncDen = 35464;
 					cpu_sequence = cpu_sequence_NTSC;
-					_display_type = DisplayType.Dendy;
+					Region = DisplayType.Dendy;
 					ClockRate = 5320342.5;
 					break;
 				default:
@@ -256,7 +249,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// some boards cannot have specific values in RAM upon initialization
 			// Let's hard code those cases here
 			// these will be defined through the gameDB exclusively for now.
-			var hash = cart.GameInfo?.Hash; // SHA1 or MD5 (see NES.IdentifyFromGameDB)
+			string hash = cart.GameInfo?.Hash; // SHA1 or MD5 (see NES.IdentifyFromGameDB)
 			if (hash is null)
 			{
 				// short-circuit
@@ -270,7 +263,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ram[0xEC] = 0;
 				ram[0xED] = 0;
 			}
-			else if (hash == RomChecksums.SilvaSaga || hash == RomChecksums.Fam_Jump_II)
+			else if (hash is RomChecksums.SilvaSaga or RomChecksums.Fam_Jump_II)
 			{
 				for (int i = 0; i < Board.Wram.Length; i++)
 				{
@@ -319,7 +312,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (Board is FDS)
 			{
-				var b = Board as FDS;
+				FDS b = Board as FDS;
 				if (controller.IsPressed("FDS Eject"))
 					b.Eject();
 				for (int i = 0; i < b.NumSides; i++)
@@ -841,8 +834,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private void write_joyport(byte value)
 		{
 			//Console.WriteLine("cont " + value + " frame " + Frame);
-			
-			var si = new StrobeInfo(latched4016, value);
+
+			StrobeInfo si = new(latched4016, value);
 			ControllerDeck.Strobe(si, _controller);
 			latched4016 = value;
 			new_strobe = (value & 1) > 0;
@@ -873,11 +866,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret;
 		}
 
-		private byte peek_joyport(int addr)
-		{
+		private byte peek_joyport(int addr) =>
 			// at the moment, the new system doesn't support peeks
-			return 0;
-		}
+			0;
 
 		/// <summary>
 		/// Sets the provided palette as current.
@@ -918,12 +909,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// looks up an internal NES pixel value to an rgb int (applying the core's current palette and assuming no deemph)
 		/// </summary>
-		public int LookupColor(int pixel)
-		{
-			return palette_compiled[pixel];
-		}
+		public int LookupColor(int pixel) => palette_compiled[pixel];
 
-		public byte DummyReadMemory(ushort addr) { return 0; }
+		public byte DummyReadMemory(ushort addr) => 0;
 
 		public void ApplySystemBusPoke(int addr, byte value)
 		{
@@ -1043,7 +1031,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// this means that OAM DMA can actually access memory that the cpu cannot
 				if (oam_dma_exec)
 				{
-					if ((cpu.PC >= 0x4000) && (cpu.PC < 0x4020))
+					if (cpu.PC is >= 0x4000 and < 0x4020)
 					{
 						ret = ReadReg(addr);
 					}

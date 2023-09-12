@@ -99,15 +99,15 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public string SystemId => VSystemID.Raw.WSWAN;
 		public bool DeterministicEmulation { get; }
 
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		private readonly InputCallbackSystem _inputCallbacks = new();
 		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
-		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" }); // This isn't an actual memory domain in this core (yet), but there's nothing that enforces that it has to be
+		private readonly MemoryCallbackSystem _memorycallbacks = new(new[] { "System Bus" }); // This isn't an actual memory domain in this core (yet), but there's nothing that enforces that it has to be
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			var ret = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> ret = new();
 			for (int i = (int)BizSwan.NecRegsMin; i <= (int)BizSwan.NecRegsMax; i++)
 			{
 				BizSwan.NecRegs en = (BizSwan.NecRegs)i;
@@ -118,10 +118,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		}
 
 		[FeatureNotImplemented]
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
+		public void SetCpuRegister(string register, int value) => throw new NotImplementedException();
 
 		public bool CanStep(StepType type) => false;
 
@@ -163,10 +160,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			}
 		}
 
-		private void ButtonCallback()
-		{
-			InputCallbacks.Call();
-		}
+		private void ButtonCallback() => InputCallbacks.Call();
 
 		private void InitDebugCallbacks()
 		{
@@ -178,10 +172,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			_memorycallbacks.ActiveChanged += SetMemoryCallbacks;
 		}
 
-		private void SetInputCallback()
-		{
-			BizSwan.bizswan_setbuttoncallback(Core, InputCallbacks.Any() ? ButtonCallbackD : null);
-		}
+		private void SetInputCallback() => BizSwan.bizswan_setbuttoncallback(Core, InputCallbacks.Any() ? ButtonCallbackD : null);
 
 		private void SetMemoryCallbacks()
 		{

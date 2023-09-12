@@ -57,22 +57,19 @@ namespace BizHawk.BizInvoke
 			if (!_readable)
 				throw new IOException();
 			EnsureNotDisposed();
-			var count = (int)Math.Min(buffer.Length, _length - _pos);
+			int count = (int)Math.Min(buffer.Length, _length - _pos);
 			new ReadOnlySpan<byte>(CurrentPointer(), count).CopyTo(buffer);
 			_pos += count;
 			return count;
 		}
 
-		public override int Read(byte[] buffer, int offset, int count)
-		{
-			return Read(new Span<byte>(buffer, offset, count));
-		}
+		public override int Read(byte[] buffer, int offset, int count) => Read(new Span<byte>(buffer, offset, count));
 
 		public override int ReadByte()
 		{
 			if (_pos < _length)
 			{
-				var ret = *CurrentPointer();
+				byte ret = *CurrentPointer();
 				_pos++;
 				return ret;
 			}
@@ -84,28 +81,17 @@ namespace BizHawk.BizInvoke
 
 		public override long Seek(long offset, SeekOrigin origin)
 		{
-			long newpos;
-			switch (origin)
+			long newpos = origin switch
 			{
-				default:
-				case SeekOrigin.Begin:
-					newpos = offset;
-					break;
-				case SeekOrigin.Current:
-					newpos = _pos + offset;
-					break;
-				case SeekOrigin.End:
-					newpos = _length + offset;
-					break;
-			}
+				SeekOrigin.Current => _pos + offset,
+				SeekOrigin.End => _length + offset,
+				_ => offset,
+			};
 			Position = newpos;
 			return newpos;
 		}
 
-		public override void SetLength(long value)
-		{
-			throw new IOException();
-		}
+		public override void SetLength(long value) => throw new IOException();
 
 		public void Write(ReadOnlySpan<byte> buffer)
 		{
@@ -118,10 +104,7 @@ namespace BizHawk.BizInvoke
 			_pos += buffer.Length;
 		}
 
-		public override void Write(byte[] buffer, int offset, int count)
-		{
-			Write(new ReadOnlySpan<byte>(buffer, offset, count));
-		}
+		public override void Write(byte[] buffer, int offset, int count) => Write(new ReadOnlySpan<byte>(buffer, offset, count));
 
 		public override void WriteByte(byte value)
 		{

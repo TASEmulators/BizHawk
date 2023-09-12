@@ -241,7 +241,7 @@ namespace BizHawk.Common
 
 		private Win32ShellContextMenu(string path)
 		{
-			var uri = new Uri(path);
+			Uri uri = new(path);
 
 			// this should be the only scheme used in practice
 			if (uri.Scheme != "file")
@@ -251,13 +251,13 @@ namespace BizHawk.Common
 
 			var shellItem = SHCreateItemFromParsingName(uri.LocalPath, IntPtr.Zero, typeof(IShellItem).GUID);
 
-			var pidls = new IntPtr[1];
+			IntPtr[] pidls = new IntPtr[1];
 			pidls[0] = ILFindLastID(SHGetIDListFromObject(shellItem));
 			shellItem.GetParent(out var parent);
 
 			var result = parent.BindToHandler(IntPtr.Zero, SFObject, typeof(IShellFolder).GUID);
 
-			var shellFolder = (IShellFolder)Marshal.GetObjectForIUnknown(result);
+			IShellFolder shellFolder = (IShellFolder)Marshal.GetObjectForIUnknown(result);
 			shellFolder.GetUIObjectOf(IntPtr.Zero, 1, pidls, typeof(IContextMenu).GUID, 0, out result);
 
 			ComInterface = (IContextMenu)Marshal.GetObjectForIUnknown(result);
@@ -295,11 +295,11 @@ namespace BizHawk.Common
 
 		public static void ShowContextMenu(string path, IntPtr parentWindow, int x, int y)
 		{
-			var ctxMenu = new Win32ShellContextMenu(path);
-			using var menu = new TempMenu();
+			Win32ShellContextMenu ctxMenu = new(path);
+			using TempMenu menu = new();
 			const int CmdFirst = 0x8000;
 			ctxMenu.ComInterface.QueryContextMenu(menu.Handle, 0, CmdFirst, int.MaxValue, CMF.EXPLORE);
-			var command = TrackPopupMenuEx(menu.Handle, TPM.TPM_RETURNCMD, x, y, parentWindow, IntPtr.Zero);
+			int command = TrackPopupMenuEx(menu.Handle, TPM.TPM_RETURNCMD, x, y, parentWindow, IntPtr.Zero);
 			if (command > 0)
 			{
 				const int SW_SHOWNORMAL = 1;

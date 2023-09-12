@@ -39,10 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return reg;
 		}
 
-		public override byte ReadWram(int addr)
-		{
-			return reg;
-		}
+		public override byte ReadWram(int addr) => reg;
 
 		public override void WriteExp(int addr, byte value)
 		{
@@ -54,9 +51,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			reg = (byte)lut[value & 3];
 		}
 
-		public override void WriteWram(int addr, byte value)
-		{
-			reg = (byte)lut[value & 3];
-		}
+		public override void WriteWram(int addr, byte value) => reg = (byte)lut[value & 3];
 	}
 }

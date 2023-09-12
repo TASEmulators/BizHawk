@@ -24,15 +24,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			samples = SampleBuffer;
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new InvalidOperationException("Async mode is not supported.");
 
-		public void DiscardSamples()
-		{
-			_sampleBufferContains = 0;
-		}
+		public void DiscardSamples() => _sampleBufferContains = 0;
 
 		// i tried using the left and right buffers and then mixing them together... it was kind of a mess of code, and slow
 		private readonly BlipBuffer[] _linkedBlips;

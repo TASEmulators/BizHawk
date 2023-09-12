@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common.movie.import
 
 		protected override void RunImport()
 		{
-			var ss = new PCEngine.PCESyncSettings
+			PCEngine.PCESyncSettings ss = new()
 			{
 				Port1 = PceControllerType.Unplugged,
 				Port2 = PceControllerType.Unplugged,
@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (line.StartsWith("ports", StringComparison.OrdinalIgnoreCase))
 				{
-					var portNumStr = ParseHeader(line, "ports");
+					string portNumStr = ParseHeader(line, "ports");
 					if (int.TryParse(portNumStr, out int ports))
 					{
 						// Ugh
@@ -145,7 +145,7 @@ namespace BizHawk.Client.Common.movie.import
 		// Import a frame from a text-based format.
 		private void ImportTextFrame(string line)
 		{
-			var buttons = new[] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
+			string[] buttons = new[] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
 
 			SimpleController controllers = new(_deck.Definition);
 

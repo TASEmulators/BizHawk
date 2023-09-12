@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public NameTableViewer()
 		{
-			var pSize = new Size(512, 480);
+			Size pSize = new(512, 480);
 			Nametables = new Bitmap(pSize.Width, pSize.Height);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
@@ -64,8 +64,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ScreenshotToClipboard()
 		{
-			using var b = new Bitmap(Width, Height);
-			var rect = new Rectangle(new Point(0, 0), Size);
+			using Bitmap b = new(Width, Height);
+			Rectangle rect = new(new Point(0, 0), Size);
 			DrawToBitmap(b, rect);
 			Clipboard.SetImage(b);
 		}

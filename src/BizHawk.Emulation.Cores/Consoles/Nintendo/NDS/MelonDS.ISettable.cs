@@ -322,14 +322,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public PutSettingsDirtyBits PutSettings(NDSSettings o)
 		{
-			var ret = NDSSettings.NeedsScreenResize(_settings, o);
+			bool ret = NDSSettings.NeedsScreenResize(_settings, o);
 			_settings = o;
 			return ret ? PutSettingsDirtyBits.ScreenLayoutChanged : PutSettingsDirtyBits.None;
 		}
 
 		public PutSettingsDirtyBits PutSyncSettings(NDSSyncSettings o)
 		{
-			var ret = NDSSyncSettings.NeedsReboot(_syncSettings, o);
+			bool ret = NDSSyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}

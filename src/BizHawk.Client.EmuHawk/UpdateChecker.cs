@@ -58,10 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			&& VersionInfo.VersionStrToInt(VersionInfo.MainVersion) != 0U // Avoid notifying if current version string is invalid
 			&& VersionInfo.VersionStrToInt(LatestVersion) > VersionInfo.VersionStrToInt(VersionInfo.MainVersion);
 
-		public static void IgnoreNewVersion()
-		{
-			IgnoreVersion = LatestVersion;
-		}
+		public static void IgnoreNewVersion() => IgnoreVersion = LatestVersion;
 
 		public static void ResetHistory()
 		{
@@ -90,23 +87,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string DownloadURLAsString(string url)
 		{
-			var request = (HttpWebRequest)WebRequest.Create(url);
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
 			request.UserAgent = "BizHawk";
 			request.KeepAlive = false;
-			using var response = (HttpWebResponse)request.GetResponse();
-			using var responseStream = new StreamReader(response.GetResponseStream());
+			using HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+			using StreamReader responseStream = new(response.GetResponseStream());
 			return responseStream.ReadToEnd();
 		}
 
-		private static string ValidateVersionNumberString(string versionNumber)
-		{
-			return versionNumber != null && VersionInfo.VersionStrToInt(versionNumber) != 0U ? versionNumber : "";
-		}
+		private static string ValidateVersionNumberString(string versionNumber) => versionNumber != null && VersionInfo.VersionStrToInt(versionNumber) != 0U ? versionNumber : "";
 
-		private static void OnCheckComplete()
-		{
-			CheckComplete?.Invoke(null, EventArgs.Empty);
-		}
+		private static void OnCheckComplete() => CheckComplete?.Invoke(null, EventArgs.Empty);
 
 		public static event EventHandler CheckComplete;
 	}

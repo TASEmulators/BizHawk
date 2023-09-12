@@ -22,10 +22,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("bank_4k", ref _bank4K);
 		}
 
-		public override void HardReset()
-		{
-			_bank4K = 0;
-		}
+		public override void HardReset() => _bank4K = 0;
 
 		public override byte ReadMemory(ushort addr)
 			=> ReadMem(addr, false);
@@ -69,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private void Address(ushort addr)
 		{
-			var temp = addr & (0x17FF + (Core.Rom.Length >> 12));
+			int temp = addr & (0x17FF + (Core.Rom.Length >> 12));
 			if ((temp & 0x1800) == 0x800)
 			{
 				_bank4K = temp & MyStartBank;

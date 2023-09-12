@@ -86,10 +86,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			Regs[src] = ans;
 		}
 
-		public void TR_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = Regs[src];
-		}
+		public void TR_Func(ushort dest, ushort src) => Regs[dest] = Regs[src];
 
 		public void LD_8_Func(ushort dest, ushort src)
 		{
@@ -133,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		{
 			Regs[dest] = Regs[src];
 
-			if (dest == X || dest == Y)
+			if (dest is X or Y)
 			{
 				FlagZ = Regs[dest] == 0;
 			}
@@ -158,10 +155,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 
 		// source is considered a 16 bit signed value, used for long relative branch
 		// no flags used
-		public void ADD16BR_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = (ushort)(Regs[dest] + (short)Regs[src]);
-		}
+		public void ADD16BR_Func(ushort dest, ushort src) => Regs[dest] = (ushort)(Regs[dest] + (short)Regs[src]);
 
 		public void ADD8BR_Func(ushort dest, ushort src)
 		{
@@ -381,15 +375,9 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = (Regs[src] & 0xFF) > 127;
 		}
 
-		public void INC16_Func(ushort src)
-		{
-			Regs[src] += 1;
-		}
+		public void INC16_Func(ushort src) => Regs[src] += 1;
 
-		public void DEC16_Func(ushort src)
-		{
-			Regs[src] -= 1;
-		}
+		public void DEC16_Func(ushort src) => Regs[src] -= 1;
 
 		public void ADC8_Func(ushort dest, ushort src)
 		{
@@ -557,18 +545,18 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 					case 7: src = 0xFF; break;
 				}
 
-				switch ((Regs[sel] >> 4) & 0xF)
+				dest = ((Regs[sel] >> 4) & 0xF) switch
 				{
-					case 0: dest = Dr; break;
-					case 1: dest = X; break;
-					case 2: dest = Y; break;
-					case 3: dest = US; break;
-					case 4: dest = SP; break;
-					case 5: dest = PC; break;
-					case 6: dest = 0xFF; break;
-					case 7: dest = 0xFF; break;
-					default: dest = 0xFF; break;
-				}
+					0 => Dr,
+					1 => X,
+					2 => Y,
+					3 => US,
+					4 => SP,
+					5 => PC,
+					6 => 0xFF,
+					7 => 0xFF,
+					_ => 0xFF,
+				};
 			}
 			else
 			{
@@ -584,18 +572,18 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 					case 15: src = 0xFF; break;
 				}
 
-				switch ((Regs[sel] >> 4) & 0xF)
+				dest = ((Regs[sel] >> 4) & 0xF) switch
 				{
-					case 8: dest = A; break;
-					case 9: dest = B; break;
-					case 10: dest = CC; break;
-					case 11: dest = DP; break;
-					case 12: dest = 0xFF; break;
-					case 13: dest = 0xFF; break;
-					case 14: dest = 0xFF; break;
-					case 15: dest = 0xFF; break;
-					default: dest = 0xFF; break;
-				}
+					8 => A,
+					9 => B,
+					10 => CC,
+					11 => DP,
+					12 => 0xFF,
+					13 => 0xFF,
+					14 => 0xFF,
+					15 => 0xFF,
+					_ => 0xFF,
+				};
 			}
 
 			if ((src != 0xFF) && (dest != 0xFF))
@@ -640,18 +628,18 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 					case 7: dest = 0xFF; break;
 				}
 
-				switch ((Regs[sel] >> 4) & 0xF)
+				src = ((Regs[sel] >> 4) & 0xF) switch
 				{
-					case 0: src = Dr; break;
-					case 1: src = X; break;
-					case 2: src = Y; break;
-					case 3: src = US; break;
-					case 4: src = SP; break;
-					case 5: src = PC; break;
-					case 6: src = 0xFF; break;
-					case 7: src = 0xFF; break;
-					default: src = 0xFF; break;
-				}
+					0 => Dr,
+					1 => X,
+					2 => Y,
+					3 => US,
+					4 => SP,
+					5 => PC,
+					6 => 0xFF,
+					7 => 0xFF,
+					_ => 0xFF,
+				};
 			}
 			else
 			{
@@ -667,18 +655,18 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 					case 15: dest = 0xFF; break;
 				}
 
-				switch ((Regs[sel] >> 4) & 0xF)
+				src = ((Regs[sel] >> 4) & 0xF) switch
 				{
-					case 8: src = A; break;
-					case 9: src = B; break;
-					case 10: src = CC; break;
-					case 11: src = DP; break;
-					case 12: src = 0xFF; break;
-					case 13: src = 0xFF; break;
-					case 14: src = 0xFF; break;
-					case 15: src = 0xFF; break;
-					default: src = 0xFF; break;
-				}
+					8 => A,
+					9 => B,
+					10 => CC,
+					11 => DP,
+					12 => 0xFF,
+					13 => 0xFF,
+					14 => 0xFF,
+					15 => 0xFF,
+					_ => 0xFF,
+				};
 			}
 
 			if ((src != 0xFF) && (dest != 0xFF))

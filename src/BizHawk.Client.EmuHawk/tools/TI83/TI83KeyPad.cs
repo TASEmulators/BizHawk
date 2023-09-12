@@ -42,10 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void KeyClick(string name)
-		{
-			InputManager.ClickyVirtualPadController.Click(name);
-		}
+		private void KeyClick(string name) => InputManager.ClickyVirtualPadController.Click(name);
 
 		private void SetToolTips()
 		{
@@ -103,15 +100,9 @@ namespace BizHawk.Client.EmuHawk
 			KeyPadToolTips.SetToolTip(SinButton, mappings["SIN"]);
 		}
 
-		private void StopToolTips()
-		{
-			KeyPadToolTips.RemoveAll();
-		}
+		private void StopToolTips() => KeyPadToolTips.RemoveAll();
 
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			ShowHotkeysMenuItem.Checked = TI83ToolTips;
-		}
+		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e) => ShowHotkeysMenuItem.Checked = TI83ToolTips;
 
 		private void ShowHotkeysMenuItem_Click(object sender, EventArgs e)
 		{

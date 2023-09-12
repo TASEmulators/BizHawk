@@ -20,7 +20,7 @@ namespace BizHawk.Common
 		}
 
 		// -------------- Logging Domain Configuration --------------
-		private static readonly List<string> EnabledLogDomains = new List<string>();
+		private static readonly List<string> EnabledLogDomains = new();
 
 		public static void EnableDomain(string domain)
 		{
@@ -52,10 +52,7 @@ namespace BizHawk.Common
 			}
 		}
 
-		public static void Error(string domain, string msg, params object[] vals)
-		{
-			LogAction(string.Format(msg, vals));
-		}
+		public static void Error(string domain, string msg, params object[] vals) => LogAction(string.Format(msg, vals));
 
 		// -------------- Default Logger Action --------------
 		private static readonly bool LogToConsole = false;

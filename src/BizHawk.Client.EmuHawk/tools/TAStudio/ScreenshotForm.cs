@@ -16,8 +16,8 @@ namespace BizHawk.Client.EmuHawk
 		private const int Interval = 40;
 		private const double AlphaStep = 0.125;
 
-		private readonly Timer _showTimer = new Timer();
-		private readonly Timer _hideTimer = new Timer();
+		private readonly Timer _showTimer = new();
+		private readonly Timer _hideTimer = new();
 
 		private TasBranch _branch;
 		private int _drawingHeight;
@@ -29,8 +29,8 @@ namespace BizHawk.Client.EmuHawk
 		public ScreenshotForm()
 		{
 			InitializeComponent();
-			
-			var fontSize = 10;
+
+			int fontSize = 10;
 			var fontStyle = FontStyle.Regular;
 			Font = new Font(FontFamily.GenericMonospace, fontSize, fontStyle);
 			_drawingHeight = 0;
@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				CreateParams createParams = base.CreateParams;
+				var createParams = base.CreateParams;
 				createParams.ExStyle |= WS_EX_TOPMOST;
 				return createParams;
 			}

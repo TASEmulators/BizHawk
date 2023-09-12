@@ -67,14 +67,14 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				var cfgVersion = VersionInfo.VersionStrToInt(cfgVersionStr);
+				uint cfgVersion = VersionInfo.VersionStrToInt(cfgVersionStr);
 				if (cfgVersion < 0x02050000U)
 				{
 					fmt = MSGFMT_PRE_2_5;
 				}
 				else
 				{
-					var thisVersion = VersionInfo.VersionStrToInt(VersionInfo.MainVersion);
+					uint thisVersion = VersionInfo.VersionStrToInt(VersionInfo.MainVersion);
 					fmt = cfgVersion < thisVersion ? MSGFMT_OLDER : MSGFMT_NEWER;
 				}
 			}
@@ -85,15 +85,15 @@ namespace BizHawk.Client.Common
 		/// <exception cref="InvalidOperationException">internal error</exception>
 		public static T Load<T>(string filepath) where T : new()
 		{
-			T config = default(T);
+			T config = default;
 
 			try
 			{
-				var file = new FileInfo(filepath);
+				FileInfo file = new(filepath);
 				if (file.Exists)
 				{
 					using var reader = file.OpenText();
-					var r = new JsonTextReader(reader);
+					JsonTextReader r = new(reader);
 					config = (T)Serializer.Deserialize(r, typeof(T));
 				}
 			}
@@ -107,11 +107,11 @@ namespace BizHawk.Client.Common
 
 		public static void Save(string filepath, object config)
 		{
-			var file = new FileInfo(filepath);
+			FileInfo file = new(filepath);
 			try
 			{
 				using var writer = file.CreateText();
-				var w = new JsonTextWriter(writer) { Formatting = Formatting.Indented };
+				JsonTextWriter w = new(writer) { Formatting = Formatting.Indented };
 				Serializer.Serialize(w, config);
 			}
 			catch
@@ -128,9 +128,9 @@ namespace BizHawk.Client.Common
 
 		public static object LoadWithType(string serialized)
 		{
-			using var tr = new StringReader(serialized);
-			using var jr = new JsonTextReader(tr);
-			var tne = (TypeNameEncapsulator)Serializer.Deserialize(jr, typeof(TypeNameEncapsulator));
+			using StringReader tr = new(serialized);
+			using JsonTextReader jr = new(tr);
+			TypeNameEncapsulator tne = (TypeNameEncapsulator)Serializer.Deserialize(jr, typeof(TypeNameEncapsulator));
 
 			// in the case of trying to deserialize nothing, tne will be nothing
 			// we want to return nothing
@@ -139,9 +139,9 @@ namespace BizHawk.Client.Common
 
 		public static string SaveWithType(object o)
 		{
-			using var sw = new StringWriter();
-			using var jw = new JsonTextWriter(sw) { Formatting = Formatting.None };
-			var tne = new TypeNameEncapsulator { o = o };
+			using StringWriter sw = new();
+			using JsonTextWriter jw = new(sw) { Formatting = Formatting.None };
+			TypeNameEncapsulator tne = new() { o = o };
 			Serializer.Serialize(jw, tne, typeof(TypeNameEncapsulator));
 			sw.Flush();
 			return sw.ToString();

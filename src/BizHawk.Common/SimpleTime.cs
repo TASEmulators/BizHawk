@@ -8,7 +8,7 @@ namespace BizHawk.Common
 	{
 		private readonly Action<long> _callback;
 
-		private readonly Stopwatch _stopwatch = new Stopwatch();
+		private readonly Stopwatch _stopwatch = new();
 
 		public SimpleTime(Action<long> callback)
 		{

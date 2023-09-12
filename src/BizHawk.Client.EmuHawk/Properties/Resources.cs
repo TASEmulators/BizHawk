@@ -7,44 +7,44 @@ namespace BizHawk.Client.EmuHawk.Properties
 	internal static class Resources
 	{
 		/// <param name="filename">Dir separator is '<c>.</c>'. Filename is relative to <c>&lt;NS>/images</c> and omits <c>.png</c> extension.</param>
-		private static Bitmap ReadEmbeddedBitmap(string filename) => new Bitmap(EmuHawk.ReflectionCache.EmbeddedResourceStream($"images.{filename}.png"));
+		private static Bitmap ReadEmbeddedBitmap(string filename) => new(EmuHawk.ReflectionCache.EmbeddedResourceStream($"images.{filename}.png"));
 
 		/// <param name="filename">Dir separator is '<c>.</c>'. Filename is relative to <c>&lt;NS>/images</c> and omits <c>.ico</c> extension.</param>
-		private static Icon ReadEmbeddedIcon(string filename) => new Icon(EmuHawk.ReflectionCache.EmbeddedResourceStream($"images.{filename}.ico"));
+		private static Icon ReadEmbeddedIcon(string filename) => new(EmuHawk.ReflectionCache.EmbeddedResourceStream($"images.{filename}.ico"));
 
 		/// <param name="filename">Dir separator is '<c>.</c>'. Filename is relative to <c>&lt;NS>/images</c> and omits <c>.ico</c> extension.</param>
-		private static Bitmap ReadEmbeddedIconAsBitmap(string filename) => new Bitmap(EmuHawk.ReflectionCache.EmbeddedResourceStream($"images.{filename}.ico"));
+		private static Bitmap ReadEmbeddedIconAsBitmap(string filename) => new(EmuHawk.ReflectionCache.EmbeddedResourceStream($"images.{filename}.ico"));
 
-		internal static readonly Lazy<Bitmap> A78Joystick = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.A78Joystick"));
-		internal static readonly Lazy<Bitmap> AppleIIKeyboard = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.AppleIIKeyboard"));
-		internal static readonly Lazy<Bitmap> ArcadeController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.ArcadeController"));
-		internal static readonly Lazy<Bitmap> C64Joystick = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.C64Joystick"));
-		internal static readonly Lazy<Bitmap> C64Keyboard = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.C64Keyboard"));
-		internal static readonly Lazy<Bitmap> ColecoVisionController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.colecovisioncontroller"));
-		internal static readonly Lazy<Bitmap> DSController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.DSController"));
-		internal static readonly Lazy<Bitmap> GbaController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.GBA_Controller"));
-		internal static readonly Lazy<Bitmap> GbController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.GBController"));
-		internal static readonly Lazy<Bitmap> GenesisController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.GENController"));
-		internal static readonly Lazy<Bitmap> IntVController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.IntVController"));
-		internal static readonly Lazy<Bitmap> Lynx = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.Lynx"));
-		internal static readonly Lazy<Bitmap> N64 = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.N64"));
-		internal static readonly Lazy<Bitmap> NesController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.NES_Controller"));
-		internal static readonly Lazy<Bitmap> NgpController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.NGPController"));
-		internal static readonly Lazy<Bitmap> PceController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.PCEngineController"));
-		internal static readonly Lazy<Bitmap> PsxDualShockController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.psx_dualshock"));
-		internal static readonly Lazy<Bitmap> SaturnController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.SaturnController"));
-		internal static readonly Lazy<Bitmap> SmsController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.SMSController"));
-		internal static readonly Lazy<Bitmap> SnesController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.SNES_Controller"));
-		internal static readonly Lazy<Bitmap> TI83Controller = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.TI83_Controller"));
-		internal static readonly Lazy<Bitmap> VBoyController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.VBoyController"));
-		internal static readonly Lazy<Bitmap> WonderSwanColor = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.WonderSwanColor"));
-		internal static readonly Lazy<Bitmap> ZXSpectrumKeyboards = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.ZXSpectrumKeyboards"));
+		internal static readonly Lazy<Bitmap> A78Joystick = new(() => ReadEmbeddedBitmap("ControllerImages.A78Joystick"));
+		internal static readonly Lazy<Bitmap> AppleIIKeyboard = new(() => ReadEmbeddedBitmap("ControllerImages.AppleIIKeyboard"));
+		internal static readonly Lazy<Bitmap> ArcadeController = new(() => ReadEmbeddedBitmap("ControllerImages.ArcadeController"));
+		internal static readonly Lazy<Bitmap> C64Joystick = new(() => ReadEmbeddedBitmap("ControllerImages.C64Joystick"));
+		internal static readonly Lazy<Bitmap> C64Keyboard = new(() => ReadEmbeddedBitmap("ControllerImages.C64Keyboard"));
+		internal static readonly Lazy<Bitmap> ColecoVisionController = new(() => ReadEmbeddedBitmap("ControllerImages.colecovisioncontroller"));
+		internal static readonly Lazy<Bitmap> DSController = new(() => ReadEmbeddedBitmap("ControllerImages.DSController"));
+		internal static readonly Lazy<Bitmap> GbaController = new(() => ReadEmbeddedBitmap("ControllerImages.GBA_Controller"));
+		internal static readonly Lazy<Bitmap> GbController = new(() => ReadEmbeddedBitmap("ControllerImages.GBController"));
+		internal static readonly Lazy<Bitmap> GenesisController = new(() => ReadEmbeddedBitmap("ControllerImages.GENController"));
+		internal static readonly Lazy<Bitmap> IntVController = new(() => ReadEmbeddedBitmap("ControllerImages.IntVController"));
+		internal static readonly Lazy<Bitmap> Lynx = new(() => ReadEmbeddedBitmap("ControllerImages.Lynx"));
+		internal static readonly Lazy<Bitmap> N64 = new(() => ReadEmbeddedBitmap("ControllerImages.N64"));
+		internal static readonly Lazy<Bitmap> NesController = new(() => ReadEmbeddedBitmap("ControllerImages.NES_Controller"));
+		internal static readonly Lazy<Bitmap> NgpController = new(() => ReadEmbeddedBitmap("ControllerImages.NGPController"));
+		internal static readonly Lazy<Bitmap> PceController = new(() => ReadEmbeddedBitmap("ControllerImages.PCEngineController"));
+		internal static readonly Lazy<Bitmap> PsxDualShockController = new(() => ReadEmbeddedBitmap("ControllerImages.psx_dualshock"));
+		internal static readonly Lazy<Bitmap> SaturnController = new(() => ReadEmbeddedBitmap("ControllerImages.SaturnController"));
+		internal static readonly Lazy<Bitmap> SmsController = new(() => ReadEmbeddedBitmap("ControllerImages.SMSController"));
+		internal static readonly Lazy<Bitmap> SnesController = new(() => ReadEmbeddedBitmap("ControllerImages.SNES_Controller"));
+		internal static readonly Lazy<Bitmap> TI83Controller = new(() => ReadEmbeddedBitmap("ControllerImages.TI83_Controller"));
+		internal static readonly Lazy<Bitmap> VBoyController = new(() => ReadEmbeddedBitmap("ControllerImages.VBoyController"));
+		internal static readonly Lazy<Bitmap> WonderSwanColor = new(() => ReadEmbeddedBitmap("ControllerImages.WonderSwanColor"));
+		internal static readonly Lazy<Bitmap> ZXSpectrumKeyboards = new(() => ReadEmbeddedBitmap("ControllerImages.ZXSpectrumKeyboards"));
 
 		internal static readonly Bitmap Add = ReadEmbeddedBitmap("add");
 		internal static readonly Bitmap AddEdit = ReadEmbeddedBitmap("AddEdit");
 		internal static readonly Bitmap AddWatch = ReadEmbeddedIconAsBitmap("addWatch");
 		internal static readonly Bitmap ArrowBlackDown = ReadEmbeddedBitmap("arrow_black_down");
-		internal static readonly Lazy<Bitmap> AtariController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("atari_controller"));
+		internal static readonly Lazy<Bitmap> AtariController = new(() => ReadEmbeddedBitmap("atari_controller"));
 		internal static readonly Bitmap Audio = ReadEmbeddedBitmap("AudioHS");
 		internal static readonly Bitmap AutoSearch = ReadEmbeddedBitmap("AutoSearch");
 		internal static readonly Bitmap Avi = ReadEmbeddedBitmap("AVI");
@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Icon BasicBot = ReadEmbeddedIcon("basicbot");
 		internal static readonly Bitmap BasicBotBit = ReadEmbeddedBitmap("basicbotbit");
 		internal static readonly Bitmap Blank = ReadEmbeddedBitmap("Blank");
-		internal static readonly Cursor BlankCursor = new Cursor(EmuHawk.ReflectionCache.EmbeddedResourceStream("images.BlankCursor.cur"));
+		internal static readonly Cursor BlankCursor = new(EmuHawk.ReflectionCache.EmbeddedResourceStream("images.BlankCursor.cur"));
 		internal static readonly Bitmap BlueDown = ReadEmbeddedBitmap("BlueDown");
 		internal static readonly Bitmap BlueUp = ReadEmbeddedBitmap("BlueUp");
 		internal static readonly Bitmap Both = ReadEmbeddedBitmap("Both");
@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Icon GambatteIcon = ReadEmbeddedIcon("gambatte");
 		internal static readonly Icon GameControllerIcon = ReadEmbeddedIcon("GameController");
 		internal static readonly Bitmap GameController = ReadEmbeddedBitmap("GameController");
-		internal static readonly Lazy<Icon> GbaIcon = new Lazy<Icon>(() => ReadEmbeddedIcon("Gameboy Advance (black) icon"));
+		internal static readonly Lazy<Icon> GbaIcon = new(() => ReadEmbeddedIcon("Gameboy Advance (black) icon"));
 		internal static readonly Bitmap GenPlus = ReadEmbeddedBitmap("genplus");
 		internal static readonly Bitmap GreenCheck = ReadEmbeddedBitmap("GreenCheck");
 		internal static readonly Bitmap Hack = ReadEmbeddedBitmap("Hack");

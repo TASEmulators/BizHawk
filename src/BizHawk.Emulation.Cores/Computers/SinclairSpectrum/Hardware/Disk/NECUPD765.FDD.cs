@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			for (int i = 0; i < 4; i++)
 			{
-				DriveState ds = new DriveState(i, this);
+				DriveState ds = new(i, this);
 				DriveStates[i] = ds;
 			}
 		}
@@ -141,19 +141,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Parses a new disk image and loads it into this floppy drive
 		/// </summary>
-		public void FDD_LoadDisk(byte[] diskData)
-		{
+		public void FDD_LoadDisk(byte[] diskData) =>
 			// we are only going to load into the first drive
 			DriveStates[0].FDD_LoadDisk(diskData);
-		}
 
 		/// <summary>
 		/// Ejects the current disk
 		/// </summary>
-		public void FDD_EjectDisk()
-		{
-			DriveStates[0].FDD_EjectDisk();
-		}
+		public void FDD_EjectDisk() => DriveStates[0].FDD_EjectDisk();
 
 		/// <summary>
 		/// Signs whether the current active drive has a disk inserted
@@ -783,11 +778,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			/// <summary>
 			/// Ejects the current disk
 			/// </summary>
-			public void FDD_EjectDisk()
-			{
-				Disk = null;
-				//FLAG_READY = false;
-			}
+			public void FDD_EjectDisk() => Disk = null;//FLAG_READY = false;
 
 			/// <summary>
 			/// Signs whether the current active drive has a disk inserted

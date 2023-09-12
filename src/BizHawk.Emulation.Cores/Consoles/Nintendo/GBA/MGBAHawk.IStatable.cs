@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			if (!LibmGBA.BizStartGetState(Core, out var p, out var size))
+			if (!LibmGBA.BizStartGetState(Core, out var p, out int size))
 			{
 				throw new InvalidOperationException("Core failed to save!");
 			}

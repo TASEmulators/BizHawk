@@ -29,20 +29,11 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	public struct BCD2 : IEquatable<BCD2>
 	{
-		public bool Equals(BCD2 other)
-		{
-			return BCDValue == other.BCDValue;
-		}
+		public readonly bool Equals(BCD2 other) => BCDValue == other.BCDValue;
 
-		public override bool Equals(object obj)
-		{
-			return obj is BCD2 other && Equals(other);
-		}
+		public override readonly bool Equals(object obj) => obj is BCD2 other && Equals(other);
 
-		public override int GetHashCode()
-		{
-			return BCDValue.GetHashCode();
-		}
+		public override int GetHashCode() => BCDValue.GetHashCode();
 
 		/// <summary>
 		/// The raw BCD value. you can't do math on this number! but you may be asked to supply it to a game program.
@@ -54,8 +45,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// The derived decimal value. you can do math on this! the largest number it can logically contain is 99.
 		/// </summary>
 		public int DecimalValue
-		{
-			get => (BCDValue & 0xF) + ((BCDValue >> 4) & 0xF) * 10;
+		{ readonly get => (BCDValue & 0xF) + ((BCDValue >> 4) & 0xF) * 10;
 			set => BCDValue = IntToBCD(value);
 		}
 
@@ -70,13 +60,13 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static int BCDToInt(byte n)
 		{
-			var bcd = new BCD2 { BCDValue = n };
+			BCD2 bcd = new() { BCDValue = n };
 			return bcd.DecimalValue;
 		}
 
 		public static byte IntToBCD(int n)
 		{
-			var tens = Math.DivRem(n, 10, out var ones);
+			int tens = Math.DivRem(n, 10, out int ones);
 			return (byte)((tens << 4) | ones);
 		}
 
@@ -106,10 +96,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Checks if the string is a legit MSF. It's strict.
 		/// </summary>
-		public static bool IsMatch(string str)
-		{
-			return new Timestamp(str).Valid;
-		}
+		public static bool IsMatch(string str) => new Timestamp(str).Valid;
 
 		public readonly byte MIN;
 
@@ -131,14 +118,14 @@ namespace BizHawk.Emulation.DiscSystem
 
 			Valid = false;
 			if (str.Length != 8) return;
-			if (str[0] < '0' || str[0] > '9') return;
-			if (str[1] < '0' || str[1] > '9') return;
+			if (str[0] is < '0' or > '9') return;
+			if (str[1] is < '0' or > '9') return;
 			if (str[2] != ':') return;
-			if (str[3] < '0' || str[3] > '9') return;
-			if (str[4] < '0' || str[4] > '9') return;
+			if (str[3] is < '0' or > '9') return;
+			if (str[4] is < '0' or > '9') return;
 			if (str[5] != ':') return;
-			if (str[6] < '0' || str[6] > '9') return;
-			if (str[7] < '0' || str[7] > '9') return;
+			if (str[6] is < '0' or > '9') return;
+			if (str[7] is < '0' or > '9') return;
 			Valid = true;
 
 			MIN = (byte)((str[0] - '0') * 10 + (str[1] - '0'));

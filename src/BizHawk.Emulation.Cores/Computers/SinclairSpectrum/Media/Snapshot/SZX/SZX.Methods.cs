@@ -1,4 +1,4 @@
-﻿using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Components.Z80A;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -14,7 +14,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	{
 		private readonly SpectrumBase _machine;
 
+		#pragma warning disable IDE0051
 		private Z80A _cpu => _machine.CPU;
+		#pragma warning restore IDE0051
 
 		private SZX(SpectrumBase machine)
 		{
@@ -26,21 +28,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public static byte[] ExportSZX(SpectrumBase machine)
 		{
-			var s = new SZX(machine);
+			SZX s = new(machine);
 
 			byte[] result = null;
 
-			using (var ms = new MemoryStream())
+			using (MemoryStream ms = new())
 			{
-				using (var r = new BinaryWriter(ms))
+				using (BinaryWriter r = new(ms))
 				{
 					// temp buffer
 					byte[] buff;
 					// working block
-					ZXSTBLOCK block = new ZXSTBLOCK();
+					ZXSTBLOCK block = new();
 
 					// header
-					ZXSTHEADER header = new ZXSTHEADER
+					ZXSTHEADER header = new()
 					{
 						dwMagic = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("ZXST"), 0),
 						chMajorVersion = 1,
@@ -106,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 
 					// ZXSTAYBLOCK
-					if (s._machine.Spectrum.MachineType != MachineType.ZXSpectrum16 && s._machine.Spectrum.MachineType != MachineType.ZXSpectrum48)
+					if (s._machine.Spectrum.MachineType is not MachineType.ZXSpectrum16 and not MachineType.ZXSpectrum48)
 					{
 						var gStruct = s.GetZXSTAYBLOCK();
 						block.dwId = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("AY\0\0"), 0);
@@ -161,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						case MachineType.ZXSpectrum128Plus2:
 						case MachineType.ZXSpectrum128Plus2a:
 						case MachineType.ZXSpectrum128Plus3:
-							List<byte[]> rams = new List<byte[]>
+							List<byte[]> rams = new()
 							{
 								s._machine.RAM0, s._machine.RAM1, s._machine.RAM2, s._machine.RAM3,
 								s._machine.RAM4, s._machine.RAM5, s._machine.RAM6, s._machine.RAM7
@@ -231,17 +233,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTRAMPAGE GetZXSTRAMPAGE(byte page, byte[] RAM)
 		{
-			var s = new ZXSTRAMPAGE();
-			s.wFlags = 0; // uncompressed only at the moment
-			s.chPageNo = page;
-			s.ramPage = RAM;
+			ZXSTRAMPAGE s = new()
+			{
+				wFlags = 0, // uncompressed only at the moment
+				chPageNo = page,
+				ramPage = RAM
+			};
 			return s;
 		}
 
 		private ZXSTCREATOR GetZXSTCREATOR()
 		{
-			var s = new ZXSTCREATOR();
-			var str = "BIZHAWK EMULATOR".ToCharArray();
+			ZXSTCREATOR s = new();
+			char[] str = "BIZHAWK EMULATOR".ToCharArray();
 			s.szCreator = new char[32];
 			for (int i = 0; i < str.Length; i++)
 				s.szCreator[i] = str[i];
@@ -253,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTZ80REGS GetZXSTZ80REGS()
 		{
-			var s = new ZXSTZ80REGS
+			ZXSTZ80REGS s = new()
 			{
 				AF = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["AF"].Value,
 				BC = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["BC"].Value,
@@ -291,9 +295,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTSPECREGS GetZXSTSPECREGS()
 		{
-			var s = new ZXSTSPECREGS();
-			s.chBorder = _machine.ULADevice.BorderColor > 7 ? (byte)0 : (byte)_machine.ULADevice.BorderColor;
-			s.chFe = _machine.LastFe;
+			ZXSTSPECREGS s = new()
+			{
+				chBorder = _machine.ULADevice.BorderColor > 7 ? (byte)0 : (byte)_machine.ULADevice.BorderColor,
+				chFe = _machine.LastFe
+			};
 			byte x7ffd = (byte)_machine.RAMPaged;
 			byte x1ffd = 0;
 			switch (_machine.Spectrum.MachineType)
@@ -357,16 +363,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTKEYBOARD GetZXSTKEYBOARD()
 		{
-			var s = new ZXSTKEYBOARD();
-			s.dwFlags = 0; //no issue 2 emulation
+			ZXSTKEYBOARD s = new()
+			{
+				dwFlags = 0 //no issue 2 emulation
+			};
 			s.chKeyboardJoystick |= (byte)JoystickTypes.ZXSTKJT_NONE;
 			return s;
 		}
 
 		private ZXSTJOYSTICK GetZXSTJOYSTICK()
 		{
-			var s = new ZXSTJOYSTICK();
-			s.dwFlags = 0; //depreciated
+			ZXSTJOYSTICK s = new()
+			{
+				dwFlags = 0 //depreciated
+			};
 			s.chTypePlayer1 |= (byte)JoystickTypes.ZXSTKJT_KEMPSTON;
 			s.chTypePlayer2 |= (byte)JoystickTypes.ZXSTKJT_SINCLAIR1;
 			return s;
@@ -374,10 +384,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTAYBLOCK GetZXSTAYBLOCK()
 		{
-			var s = new ZXSTAYBLOCK();
-			s.cFlags = 0; // no external units
-			s.chCurrentRegister = (byte)_machine.AYDevice.SelectedRegister;
-			var regs = _machine.AYDevice.ExportRegisters();
+			ZXSTAYBLOCK s = new()
+			{
+				cFlags = 0, // no external units
+				chCurrentRegister = (byte)_machine.AYDevice.SelectedRegister
+			};
+			int[] regs = _machine.AYDevice.ExportRegisters();
 			s.chAyRegs = new byte[16];
 			for (int i = 0; i < 16; i++)
 			{
@@ -386,9 +398,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return s;
 		}
 
+		#pragma warning disable IDE0051
 		private ZXSTTAPE GetZXSTTAPE()
 		{
-			var s = new ZXSTTAPE();
+			ZXSTTAPE s = new();
 			s.wFlags |= (int)CassetteRecorderState.ZXSTTP_EMBEDDED;
 			s.wCurrentBlockNo = (ushort)_machine.TapeDevice.CurrentDataBlockIndex;
 			s.dwCompressedSize = _machine.tapeImages[_machine.TapeDevice.CurrentDataBlockIndex].Length;
@@ -404,19 +417,24 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTPLUS3 GetZXSTPLUS3()
 		{
-			var s = new ZXSTPLUS3();
-			s.chNumDrives = 1;
-			s.fMotorOn = _machine.UPDDiskDevice.FDD_FLAG_MOTOR ? (byte)1 : (byte)0;
+			ZXSTPLUS3 s = new()
+			{
+				chNumDrives = 1,
+				fMotorOn = _machine.UPDDiskDevice.FDD_FLAG_MOTOR ? (byte)1 : (byte)0
+			};
 			return s;
 		}
 
 		private ZXSTDSKFILE GetZXSTDSKFILE()
 		{
-			var s = new ZXSTDSKFILE();
-			s.wFlags = 0;
-			s.chDriveNum = 0;
-			s.dwUncompressedSize = 0;
+			ZXSTDSKFILE s = new()
+			{
+				wFlags = 0,
+				chDriveNum = 0,
+				dwUncompressedSize = 0
+			};
 			return s;
 		}
+		#pragma warning restore IDE0051
 	}
 }

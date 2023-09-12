@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common.Movie.Import
 			movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.PSX;
 
 			using var fs = SourceFile.OpenRead();
-			using var br = new BinaryReader(fs);
+			using BinaryReader br = new(fs);
 			var info = ParseHeader(movie, "PXM ", br);
 
 			fs.Seek(info.ControllerDataOffset, SeekOrigin.Begin);

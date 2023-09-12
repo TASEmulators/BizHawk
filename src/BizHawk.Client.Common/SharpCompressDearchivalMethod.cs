@@ -40,10 +40,10 @@ namespace BizHawk.Client.Common
 
 			// looking for magic bytes
 			fs.Seek(0x101, SeekOrigin.Begin);
-			var buffer = new byte[8];
+			byte[] buffer = new byte[8];
 			fs.Read(buffer, 0, 8);
-			var s = buffer.BytesToHexString();
-			if (s == "7573746172003030" || s == "7573746172202000") return true; // "ustar\000" (libarchive's bsdtar) or "ustar  \0" (GNU Tar)
+			string s = buffer.BytesToHexString();
+			if (s is "7573746172003030" or "7573746172202000") return true; // "ustar\000" (libarchive's bsdtar) or "ustar  \0" (GNU Tar)
 
 			Console.WriteLine($"SharpCompress identified file as original .tar format, probably a false positive, ignoring. Filename: {fileName}");
 			return false;
@@ -67,13 +67,13 @@ namespace BizHawk.Client.Common
 
 			if (fileStream.Length < 512) return false;
 			// looking for magic bytes
-			var seekPos = fileStream.Position;
+			long seekPos = fileStream.Position;
 			fileStream.Seek(0x101, SeekOrigin.Begin);
-			var buffer = new byte[8];
+			byte[] buffer = new byte[8];
 			fileStream.Read(buffer, 0, 8);
 			fileStream.Seek(seekPos, SeekOrigin.Begin);
-			var s = buffer.BytesToHexString();
-			if (s == "7573746172003030" || s == "7573746172202000") return true; // "ustar\000" (libarchive's bsdtar) or "ustar  \0" (GNU Tar)
+			string s = buffer.BytesToHexString();
+			if (s is "7573746172003030" or "7573746172202000") return true; // "ustar\000" (libarchive's bsdtar) or "ustar  \0" (GNU Tar)
 
 			Console.WriteLine($"SharpCompress identified file in stream as original .tar format, probably a false positive, ignoring. Filename hint: {filenameHint}");
 			return false;

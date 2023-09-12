@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			if (format.IndexOf("+d", StringComparison.Ordinal) != -1) format = format.Replace("+d", "d");
 			if (format.IndexOf("d", StringComparison.Ordinal) != -1)
 			{
-				var b = unchecked((sbyte)read(addr++));
+				sbyte b = unchecked((sbyte)read(addr++));
 				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{(b < 0 ? -b : b):X2}h");
 			}
 

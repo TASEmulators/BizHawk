@@ -21,10 +21,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			base.SyncState(ser);
 		}
 
-		public override void HardReset()
-		{
-			IncrementGame();
-		}
+		public override void HardReset() => IncrementGame();
 
 		public override byte ReadMemory(ushort addr)
 		{

@@ -7,11 +7,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	partial class NES
 	{
-		private static readonly List<Type> INESBoardImplementors = new List<Type>();
+		private static readonly List<Type> INESBoardImplementors = new();
 
 		private static INesBoard CreateBoardInstance(Type boardType)
 		{
-			var board = (INesBoard)Activator.CreateInstance(boardType);
+			INesBoard board = (INesBoard)Activator.CreateInstance(boardType);
 			lock (INESBoardImplementors)
 			{
 				//put the one we chose at the top of the list, for quicker access in the future
@@ -32,16 +32,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// FDS and NSF have a unique activation setup
 			if (Board is FDS)
 			{
-				var newfds = new FDS();
-				var oldfds = Board as FDS;
+				FDS newfds = new();
+				FDS oldfds = Board as FDS;
 				newfds.biosrom = oldfds.biosrom;
 				newfds.SetDiskImage(oldfds.GetDiskImage());
 				newboard = newfds;
 			}
 			else if (Board is NSFBoard)
 			{
-				var newnsf = new NSFBoard();
-				var oldnsf = Board as NSFBoard;
+				NSFBoard newnsf = new();
+				NSFBoard oldnsf = Board as NSFBoard;
 				newnsf.InitNSF(oldnsf.nsf);
 				newboard = newnsf;
 			}
@@ -65,8 +65,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// the old board's sram must be restored
 			if (newboard is FDS)
 			{
-				var newfds = newboard as FDS;
-				var oldfds = Board as FDS;
+				FDS newfds = newboard as FDS;
+				FDS oldfds = Board as FDS;
 				newfds.StoreSaveRam(oldfds.ReadSaveRam());
 			}
 			else if (Board.SaveRam != null)
@@ -81,18 +81,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		static NES()
 		{
-			var highPriority = new List<Type>();
-			var normalPriority = new List<Type>();
+			List<Type> highPriority = new();
+			List<Type> normalPriority = new();
 
 			//scan types in this assembly to find ones that implement boards to add them to the list
 			foreach (var type in Emulation.Cores.ReflectionCache.Types)
 			{
-				var attrs = type.GetCustomAttributes(typeof(NesBoardImplAttribute), true);
+				object[] attrs = type.GetCustomAttributes(typeof(NesBoardImplAttribute), true);
 				if (attrs.Length == 0) continue;
 				if (type.IsAbstract) continue;
-				var cancelAttrs = type.GetCustomAttributes(typeof(NesBoardImplCancelAttribute), true);
+				object[] cancelAttrs = type.GetCustomAttributes(typeof(NesBoardImplCancelAttribute), true);
 				if (cancelAttrs.Length != 0) continue;
-				var priorityAttrs = type.GetCustomAttributes(typeof(NesBoardImplPriorityAttribute), true);
+				object[] priorityAttrs = type.GetCustomAttributes(typeof(NesBoardImplPriorityAttribute), true);
 				if (priorityAttrs.Length != 0)
 					highPriority.Add(type);
 				else normalPriority.Add(type);
@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		private static Type FindBoard(CartInfo cart, EDetectionOrigin origin, Dictionary<string, string> properties)
 		{
-			NES nes = new NES { cart = cart };
+			NES nes = new() { cart = cart };
 			Type ret = null;
 			lock(INESBoardImplementors)
 				foreach (var type in INESBoardImplementors)
@@ -140,9 +140,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		private CartInfo IdentifyFromBootGodDB(IEnumerable<string> hash_sha1)
 		{
-			foreach (var hash in hash_sha1)
+			foreach (string hash in hash_sha1)
 			{
-				List<CartInfo> choices = BootGodDb.Identify(hash);
+				var choices = BootGodDb.Identify(hash);
 				//pick the first board for this hash arbitrarily. it probably doesn't make a difference
 				if (choices.Count != 0)
 					return choices[0];
@@ -158,23 +158,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var gi = Database.CheckDatabase(hash);
 			if (gi == null) return null;
 
-			CartInfo cart = new CartInfo();
+			CartInfo cart = new();
 
 			//try generating a bootgod cart descriptor from the game database
 			var dict = gi.GetOptions();
 			cart.GameInfo = gi;
-			if (!dict.TryGetValue("board", out var board)) throw new Exception("NES gamedb entries must have a board identifier!");
+			if (!dict.TryGetValue("board", out string board)) throw new Exception("NES gamedb entries must have a board identifier!");
 			cart.BoardType = board;
-			if (dict.TryGetValue("system", out var system)) cart.System = system;
+			if (dict.TryGetValue("system", out string system)) cart.System = system;
 
-			cart.PrgSize = dict.TryGetValue("PRG", out var prgSizeStr) ? short.Parse(prgSizeStr) : -1;
-			cart.ChrSize = dict.TryGetValue("CHR", out var chrSizeStr) ? short.Parse(chrSizeStr) : -1;
-			cart.VramSize = dict.TryGetValue("VRAM", out var vramSizeStr) ? short.Parse(vramSizeStr) : -1;
-			cart.WramSize = dict.TryGetValue("WRAM", out var wramSizeStr) ? short.Parse(wramSizeStr) : -1;
+			cart.PrgSize = dict.TryGetValue("PRG", out string prgSizeStr) ? short.Parse(prgSizeStr) : -1;
+			cart.ChrSize = dict.TryGetValue("CHR", out string chrSizeStr) ? short.Parse(chrSizeStr) : -1;
+			cart.VramSize = dict.TryGetValue("VRAM", out string vramSizeStr) ? short.Parse(vramSizeStr) : -1;
+			cart.WramSize = dict.TryGetValue("WRAM", out string wramSizeStr) ? short.Parse(wramSizeStr) : -1;
 
-			if (dict.TryGetValue("PAD_H", out var padHStr)) cart.PadH = byte.Parse(padHStr);
-			if (dict.TryGetValue("PAD_V", out var padVStr)) cart.PadV = byte.Parse(padVStr);
-			if (dict.TryGetValue("MIR", out var mirStr))
+			if (dict.TryGetValue("PAD_H", out string padHStr)) cart.PadH = byte.Parse(padHStr);
+			if (dict.TryGetValue("PAD_V", out string padVStr)) cart.PadV = byte.Parse(padVStr);
+			if (dict.TryGetValue("MIR", out string mirStr))
 			{
 				if (mirStr == "H")
 				{
@@ -187,11 +187,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			if (dict.ContainsKey("BAD")) cart.Bad = true;
-			if (dict.TryGetValue("MMC3", out var mmc3)) cart.Chips.Add(mmc3);
-			if (dict.TryGetValue("PCB", out var pcb)) cart.Pcb = pcb;
-			if (dict.TryGetValue("BATT", out var batteryStr)) cart.WramBattery = bool.Parse(batteryStr);
-			if (dict.TryGetValue("palette", out var palette)) cart.Palette = palette;
-			if (dict.TryGetValue("vs_security", out var vsSecurityStr)) cart.VsSecurity = byte.Parse(vsSecurityStr);
+			if (dict.TryGetValue("MMC3", out string mmc3)) cart.Chips.Add(mmc3);
+			if (dict.TryGetValue("PCB", out string pcb)) cart.Pcb = pcb;
+			if (dict.TryGetValue("BATT", out string batteryStr)) cart.WramBattery = bool.Parse(batteryStr);
+			if (dict.TryGetValue("palette", out string palette)) cart.Palette = palette;
+			if (dict.TryGetValue("vs_security", out string vsSecurityStr)) cart.VsSecurity = byte.Parse(vsSecurityStr);
 
 			return cart;
 		}

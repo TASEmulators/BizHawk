@@ -108,8 +108,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				return;
 			}
 
-			var start = (ulong)addresses.Start;
-			var count = addresses.Count();
+			ulong start = (ulong)addresses.Start;
+			ulong count = addresses.Count();
 
 			if (start < (ulong)Size && (start + count) <= (ulong)Size)
 			{
@@ -198,8 +198,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				return;
 			}
 
-			var start = (ulong)addresses.Start;
-			var count = addresses.Count();
+			ulong start = (ulong)addresses.Start;
+			ulong count = addresses.Count();
 
 			if (start < (ulong)Size && (start + count) <= (ulong)Size)
 			{

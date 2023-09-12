@@ -28,10 +28,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			LowSpeed = true;
 		}
 
-		public void ResetPC()
-		{
-			PC = ReadWord(ResetVector);
-		}
+		public void ResetPC() => PC = ReadWord(ResetVector);
 
 		// ==== CPU State ====
 
@@ -214,10 +211,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			IRQNextControlByte = value;
 		}
 
-		public void WriteIrqStatus()
-		{
-			TimerAssert = false;
-		}
+		public void WriteIrqStatus() => TimerAssert = false;
 
 		public byte ReadIrqStatus()
 		{

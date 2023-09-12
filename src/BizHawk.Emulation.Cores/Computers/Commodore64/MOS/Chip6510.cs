@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _nmiDelay;
 		public C64 c64;
 
-		private struct CpuLink : IMOS6502XLink
+		private readonly struct CpuLink : IMOS6502XLink
 		{
 			private readonly Chip6510 _chip;
 
@@ -25,15 +25,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_chip = chip;
 			}
 
-			public byte DummyReadMemory(ushort address) => unchecked((byte)_chip.Read(address));
+			public readonly byte DummyReadMemory(ushort address) => unchecked((byte)_chip.Read(address));
 
-			public void OnExecFetch(ushort address) => _chip.c64.ExecFetch(address);
+			public readonly void OnExecFetch(ushort address) => _chip.c64.ExecFetch(address);
 
-			public byte PeekMemory(ushort address) => unchecked((byte)_chip.Peek(address));
+			public readonly byte PeekMemory(ushort address) => unchecked((byte)_chip.Peek(address));
 
-			public byte ReadMemory(ushort address) => unchecked((byte)_chip.Read(address));
+			public readonly byte ReadMemory(ushort address) => unchecked((byte)_chip.Read(address));
 
-			public void WriteMemory(ushort address, byte value) => _chip.Write(address, value);
+			public readonly void WriteMemory(ushort address, byte value) => _chip.Write(address, value);
 		}
 
 		public Func<int, int> PeekMemory;
@@ -98,15 +98,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public int Peek(int addr)
 		{
-			switch (addr)
+			return addr switch
 			{
-				case 0x0000:
-					return _port.Direction;
-				case 0x0001:
-					return PortData;
-				default:
-					return PeekMemory(addr);
-			}
+				0x0000 => _port.Direction,
+				0x0001 => PortData,
+				_ => PeekMemory(addr),
+			};
 		}
 
 		public void Poke(int addr, int val)

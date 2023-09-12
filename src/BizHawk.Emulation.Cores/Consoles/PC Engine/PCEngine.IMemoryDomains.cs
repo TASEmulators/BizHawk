@@ -7,16 +7,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public sealed partial class PCEngine
 	{
-		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
-		private readonly Dictionary<string, MemoryDomainUshortArray> _ushortArrayDomains = new Dictionary<string, MemoryDomainUshortArray>();
+		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new();
+		private readonly Dictionary<string, MemoryDomainUshortArray> _ushortArrayDomains = new();
 		private bool _memoryDomainsInit;
 		private MemoryDomainList _memoryDomains;
 
 		private void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>();
+			List<MemoryDomain> domains = new();
 
-			var systemBusDomain = new MemoryDomainDelegate("System Bus (21 bit)", 0x200000, MemoryDomain.Endian.Little,
+			MemoryDomainDelegate systemBusDomain = new("System Bus (21 bit)", 0x200000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					if (addr is < 0 or > 0x1FFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				wordSize: 2);
 			domains.Add(systemBusDomain);
 
-			var cpuBusDomain = new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
+			MemoryDomainDelegate cpuBusDomain = new("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
@@ -49,9 +49,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			domains.AddRange(_byteArrayDomains.Values);
 			domains.AddRange(_ushortArrayDomains.Values);
 
-			_memoryDomains = new MemoryDomainList(domains);
-			_memoryDomains.SystemBus = cpuBusDomain;
-			_memoryDomains.MainMemory = _byteArrayDomains["Main Memory"];
+			_memoryDomains = new MemoryDomainList(domains)
+			{
+				SystemBus = cpuBusDomain,
+				MainMemory = _byteArrayDomains["Main Memory"]
+			};
 
 			((BasicServiceProvider) ServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 			_memoryDomainsInit = true;
@@ -99,7 +101,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 			else
 			{
-				var m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
+				MemoryDomainByteArray m = new(name, MemoryDomain.Endian.Little, data, true, 1);
 				_byteArrayDomains.Add(name, m);
 			}
 		}
@@ -113,7 +115,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 			else
 			{
-				var m = new MemoryDomainUshortArray(name, MemoryDomain.Endian.Big, data, true);
+				MemoryDomainUshortArray m = new(name, MemoryDomain.Endian.Big, data, true);
 				_ushortArrayDomains.Add(name, m);
 			}
 		}

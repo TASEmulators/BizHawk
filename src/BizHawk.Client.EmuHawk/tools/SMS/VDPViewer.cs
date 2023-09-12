@@ -159,10 +159,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public override void Restart()
-		{
-			GeneralUpdate();
-		}
+		public override void Restart() => GeneralUpdate();
 
 		private void BmpViewPalette_MouseClick(object sender, MouseEventArgs e)
 		{
@@ -182,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
 				// find the control under the mouse
-				Point m = Cursor.Position;
+				var m = Cursor.Position;
 				Control top = this;
 				Control found;
 				do
@@ -198,24 +195,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveAsFile(Bitmap bmp, string suffix)
-		{
-			bmp.SaveAsFile(Game, suffix, Emulator.SystemId, Config.PathEntries, this);
-		}
+		private void SaveAsFile(Bitmap bmp, string suffix) => bmp.SaveAsFile(Game, suffix, Emulator.SystemId, Config.PathEntries, this);
 
-		private void SaveTilesScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveAsFile(bmpViewTiles.Bmp, "Tiles");
-		}
+		private void SaveTilesScreenshotToolStripMenuItem_Click(object sender, EventArgs e) => SaveAsFile(bmpViewTiles.Bmp, "Tiles");
 
-		private void SavePalettesScreenshotMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveAsFile(bmpViewPalette.Bmp, "Palette");
-		}
+		private void SavePalettesScreenshotMenuItem_Click(object sender, EventArgs e) => SaveAsFile(bmpViewPalette.Bmp, "Palette");
 
-		private void SaveBgScreenshotMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveAsFile(bmpViewBG.Bmp, "BG");
-		}
+		private void SaveBgScreenshotMenuItem_Click(object sender, EventArgs e) => SaveAsFile(bmpViewBG.Bmp, "BG");
 	}
 }

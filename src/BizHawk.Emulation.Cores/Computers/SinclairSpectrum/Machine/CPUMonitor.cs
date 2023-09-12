@@ -25,14 +25,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			get
 			{
-				switch (machineType)
+				return machineType switch
 				{
-					case MachineType.ZXSpectrum128Plus2a:
-					case MachineType.ZXSpectrum128Plus3:
-						return _cpu.MEMRQ[_cpu.bus_pntr];
-					default:
-						return _cpu.BUSRQ[_cpu.mem_pntr];
-				}
+					MachineType.ZXSpectrum128Plus2a or MachineType.ZXSpectrum128Plus3 => _cpu.MEMRQ[_cpu.bus_pntr],
+					_ => _cpu.BUSRQ[_cpu.mem_pntr],
+				};
 			}
 		}
 
@@ -69,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					// is the memory address of the BUSRQ potentially contended?
 					if (_machine.IsContended(AscertainBUSRQAddress()))
 					{
-						var cont = _machine.ULADevice.GetContentionValue((int)_machine.CurrentFrameCycle);
+						int cont = _machine.ULADevice.GetContentionValue((int)_machine.CurrentFrameCycle);
 						if (cont > 0)
 						{
 							_cpu.TotalExecutedCycles += cont;

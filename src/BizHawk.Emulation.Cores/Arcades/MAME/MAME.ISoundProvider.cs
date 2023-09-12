@@ -21,10 +21,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		private void UpdateSound()
-		{
-			_nsamps = _core.mame_sound_get_samples(_sampleBuffer);
-		}
+		private void UpdateSound() => _nsamps = _core.mame_sound_get_samples(_sampleBuffer);
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
@@ -32,14 +29,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			nsamp = _nsamps;
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new InvalidOperationException("Async mode is not supported.");
 
-		public void DiscardSamples()
-		{
-			_nsamps = 0;
-		}
+		public void DiscardSamples() => _nsamps = 0;
 	}
 }

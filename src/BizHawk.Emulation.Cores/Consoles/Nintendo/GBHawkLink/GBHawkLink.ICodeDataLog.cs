@@ -67,11 +67,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 						return;
 					}
 				}
-				else if ((addr >= 0xE000) && (addr < 0xF000))
+				else if (addr is >= 0xE000 and < 0xF000)
 				{
 					SetCDL(flags, "WRAM", addr - 0xE000);
 				}
-				else if ((addr >= 0xF000) && (addr < 0xFE00))
+				else if (addr is >= 0xF000 and < 0xFE00)
 				{
 					SetCDL(flags, "WRAM", (L.RAM_Bank * 0x1000) + (addr - 0xF000));
 				}
@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				{
 					return;
 				}
-				else if ((addr >= 0xFF00) && (addr < 0xFF80)) // The game GOAL! Requires Hardware Regs to be accessible
+				else if (addr is >= 0xFF00 and < 0xFF80) // The game GOAL! Requires Hardware Regs to be accessible
 				{
 					return;
 				}

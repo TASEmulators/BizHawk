@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			RomData = new byte[rom.RomData.Length];
 
 			// look up game in db before transforming ROM
-			var hash_md5 = MD5Checksum.ComputePrefixedHex(rom.RomData);
+			string hash_md5 = MD5Checksum.ComputePrefixedHex(rom.RomData);
 			var gi = Database.CheckDatabase(hash_md5);
 			var dict = gi?.GetOptions();
 
@@ -149,18 +149,18 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			Disasm_Length = LibMSX.MSX_getdisasmlength(MSX_Pntr);
 			Reg_String_Length = LibMSX.MSX_getregstringlength(MSX_Pntr);
 
-			var newHeader = new StringBuilder(Header_Length);
+			StringBuilder newHeader = new(Header_Length);
 			LibMSX.MSX_getheader(MSX_Pntr, newHeader, Header_Length);
 
 			Console.WriteLine(Header_Length + " " + Disasm_Length + " " + Reg_String_Length);
 
 			Tracer = new TraceBuffer(newHeader.ToString());
 
-			var serviceProvider = ServiceProvider as BasicServiceProvider;
+			BasicServiceProvider serviceProvider = ServiceProvider as BasicServiceProvider;
 			serviceProvider.Register<ITraceable>(Tracer);
 			serviceProvider.Register<IStatable>(new StateSerializer(SyncState));
 
-			current_controller = SyncSettings.Contr_Setting == MSXSyncSettings.ContrType.Keyboard ? MSXControllerKB : MSXControllerJS;
+			ControllerDefinition = SyncSettings.Contr_Setting == MSXSyncSettings.ContrType.Keyboard ? MSXControllerKB : MSXControllerJS;
 		}
 
 		public void HardReset()
@@ -182,9 +182,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		// Machine resources
 		private IController _controller = NullController.Instance;
-
-		private readonly ControllerDefinition current_controller = null;
-
 		private int _frame = 0;
 
 		public DisplayType Region => DisplayType.NTSC;
@@ -194,14 +191,14 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		private LibMSX.TraceCallback tracecb;
 
 		// these will be constant values assigned during core construction
-		private int Header_Length;
+		private readonly int Header_Length;
 		private readonly int Disasm_Length;
 		private readonly int Reg_String_Length;
 
 		private void MakeTrace(int t)
 		{
-			StringBuilder new_d = new StringBuilder(Disasm_Length);
-			StringBuilder new_r = new StringBuilder(Reg_String_Length);
+			StringBuilder new_d = new(Disasm_Length);
+			StringBuilder new_r = new(Reg_String_Length);
 
 			LibMSX.MSX_getdisassembly(MSX_Pntr, new_d, t, Disasm_Length);
 			LibMSX.MSX_getregisterstate(MSX_Pntr, new_r, t, Reg_String_Length);
@@ -209,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			Tracer.Put(new(disassembly: new_d.ToString().PadRight(36), registerInfo: new_r.ToString()));
 		}
 
-		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
+		private readonly MemoryCallbackSystem _memorycallbacks = new(new[] { "System Bus" });
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 	}
 }

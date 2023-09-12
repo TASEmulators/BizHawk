@@ -16,10 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	[NesBoardImpl]
 	internal abstract class NesBoardBase : INesBoard
 	{
-		public virtual void Create(NES nes)
-		{
-			NES = nes;
-		}
+		public virtual void Create(NES nes) => NES = nes;
 
 		public virtual void NesSoftReset()
 		{
@@ -40,8 +37,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public virtual NES.CDLog_MapResults MapMemory(ushort addr, bool write)
 		{
-			NES.CDLog_MapResults ret = new NES.CDLog_MapResults();
-			ret.Type = NES.CDLog_AddrType.None;
+			NES.CDLog_MapResults ret = new()
+			{
+				Type = NES.CDLog_AddrType.None
+			};
 
 			if (addr < 0x2000)
 			{
@@ -61,10 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncStateFlag = true;
 		}
 
-		public virtual void SyncIRQ(bool flag)
-		{
-			IrqSignal = flag;
-		}
+		public virtual void SyncIRQ(bool flag) => IrqSignal = flag;
 
 		private bool _irqSignal;
 		public bool IrqSignal
@@ -118,10 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return EMirrorType.OneScreenB;
 		}
 
-		protected void SetMirrorType(int pad_h, int pad_v)
-		{
-			SetMirrorType(CalculateMirrorType(pad_h, pad_v));
-		}
+		protected void SetMirrorType(int pad_h, int pad_v) => SetMirrorType(CalculateMirrorType(pad_h, pad_v));
 
 		public void SetMirrorType(EMirrorType mirrorType)
 		{
@@ -167,39 +160,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		private int _wramMask;
-		public virtual void PostConfigure()
-		{
-			_wramMask = (Cart.WramSize * 1024) - 1;
-		}
+		public virtual void PostConfigure() => _wramMask = (Cart.WramSize * 1024) - 1;
 
-		public virtual byte ReadWram(int addr)
-		{
-			return _wram?[addr & _wramMask] ?? NES.DB;
-		}
+		public virtual byte ReadWram(int addr) => _wram?[addr & _wramMask] ?? NES.DB;
 
 		public virtual void WriteExp(int addr, byte value)
 		{
 		}
 
-		public virtual byte ReadExp(int addr)
-		{ 
-			return NES.DB;
-		}
+		public virtual byte ReadExp(int addr) => NES.DB;
 
-		public virtual byte ReadReg2xxx(int addr)
-		{
-			return NES.ppu.ReadReg(addr & 7);
-		}
+		public virtual byte ReadReg2xxx(int addr) => NES.ppu.ReadReg(addr & 7);
 
-		public virtual byte PeekReg2xxx(int addr)
-		{
-			return NES.ppu.PeekReg(addr & 7);
-		}
+		public virtual byte PeekReg2xxx(int addr) => NES.ppu.PeekReg(addr & 7);
 
-		public virtual void WriteReg2xxx(int addr, byte value)
-		{
-			NES.ppu.WriteReg(addr, value);
-		}
+		public virtual void WriteReg2xxx(int addr, byte value) => NES.ppu.WriteReg(addr, value);
 
 		public virtual void WritePpu(int addr, byte value)
 		{
@@ -222,10 +197,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public virtual byte PeekPPU(int addr) => ReadPpu(addr);
 
-		protected virtual byte ReadPPUChr(int addr)
-		{
-			return Vrom?[addr] ?? Vram[addr];
-		}
+		protected virtual byte ReadPPUChr(int addr) => Vrom?[addr] ?? Vram[addr];
 
 		public virtual byte ReadPpu(int addr)
 		{

@@ -67,10 +67,7 @@
 		/// <summary>
 		///  Pushes a value onto the data bus that should be valid as long as the interrupt is true
 		/// </summary>
-		public virtual byte PushBus()
-		{
-			return 0xFF;
-		}
+		public virtual byte PushBus() => 0xFF;
 
 		/// <summary>
 		/// Simulates writing to the bus

@@ -193,8 +193,8 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <exception cref="CDIParseException">malformed cdi format</exception>
 		public static CDIFile ParseFrom(Stream stream)
 		{
-			var cdif = new CDIFile();
-			using var br = new BinaryReader(stream);
+			CDIFile cdif = new();
+			using BinaryReader br = new(stream);
 
 			try
 			{
@@ -213,7 +213,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					stream.Seek(15, SeekOrigin.Current); // unknown bytes
 					header.NumTracks = br.ReadByte();
-					var pathLen = br.ReadByte();
+					byte pathLen = br.ReadByte();
 					header.Path = br.ReadStringFixedUtf8(pathLen);
 					stream.Seek(29, SeekOrigin.Current); // unknown bytes
 					header.MediumType = br.ReadUInt16();
@@ -228,9 +228,9 @@ namespace BizHawk.Emulation.DiscSystem
 					}
 				}
 
-				for (var i = 0; i <= cdif.NumSessions; i++)
+				for (int i = 0; i <= cdif.NumSessions; i++)
 				{
-					var session = new CDISession();
+					CDISession session = new();
 					stream.Seek(1, SeekOrigin.Current); // unknown byte
 					session.NumTracks = br.ReadByte();
 					stream.Seek(13, SeekOrigin.Current); // unknown bytes
@@ -247,28 +247,28 @@ namespace BizHawk.Emulation.DiscSystem
 						throw new CDIParseException("Malformed CDI format: More than 99 tracks on disc!");
 					}
 
-					for (var j = 0; j < session.NumTracks; j++)
+					for (int j = 0; j < session.NumTracks; j++)
 					{
-						var track = new CDITrack();
+						CDITrack track = new();
 						ParseTrackHeader(track);
 
-						var indexes = br.ReadUInt16();
+						ushort indexes = br.ReadUInt16();
 						if (indexes < 2) // We should have at least 2 indexes (one pre-gap, and one "real" one)
 						{
 							throw new CDIParseException("Malformed CDI format: Less than 2 indexes in track!");
 						}
-						for (var k = 0; k < indexes; k++)
+						for (int k = 0; k < indexes; k++)
 						{
 							track.IndexSectorCounts.Add(br.ReadUInt32());
 						}
 
-						var numCdTextBlocks = br.ReadUInt32();
-						for (var k = 0; k < numCdTextBlocks; k++)
+						uint numCdTextBlocks = br.ReadUInt32();
+						for (int k = 0; k < numCdTextBlocks; k++)
 						{
-							var cdTextBlock = new CDICDText();
-							for (var l = 0; l < 18; l++)
+							CDICDText cdTextBlock = new();
+							for (int l = 0; l < 18; l++)
 							{
-								var cdTextLen = br.ReadByte();
+								byte cdTextLen = br.ReadByte();
 								if (cdTextLen > 0)
 								{
 									cdTextBlock.CdTexts.Add(br.ReadStringFixedUtf8(cdTextLen));
@@ -314,7 +314,7 @@ namespace BizHawk.Emulation.DiscSystem
 						}
 
 						stream.Seek(1, SeekOrigin.Current); // unknown byte
-						var redundantTrackLen = br.ReadUInt32();
+						uint redundantTrackLen = br.ReadUInt32();
 						if (track.TrackLength != redundantTrackLen)
 						{
 							throw new CDIParseException("Malformed CDI format: Track length mismatch!");
@@ -339,7 +339,7 @@ namespace BizHawk.Emulation.DiscSystem
 						}
 
 						stream.Seek(5, SeekOrigin.Current); // unknown bytes
-						var notLastTrackInSession = br.ReadByte();
+						byte notLastTrackInSession = br.ReadByte();
 						switch (notLastTrackInSession)
 						{
 							case 0 when j != session.NumTracks - 1:
@@ -367,7 +367,7 @@ namespace BizHawk.Emulation.DiscSystem
 					//Seems the blob doesn't include leadin and leadout directly anyways
 				}
 
-				var volumeIdLen = br.ReadByte();
+				byte volumeIdLen = br.ReadByte();
 				cdif.DiscInfo.VolumeId = br.ReadStringFixedUtf8(volumeIdLen);
 				stream.Seek(9, SeekOrigin.Current); // unknown bytes
 
@@ -378,7 +378,7 @@ namespace BizHawk.Emulation.DiscSystem
 					cdif.DiscInfo.Ean13Code = string.Empty;
 				}
 
-				var cdTextLengh = br.ReadUInt32();
+				uint cdTextLengh = br.ReadUInt32();
 				if (cdTextLengh > int.MaxValue)
 				{
 					// suppose technically this might not be considered too large purely going off the format
@@ -418,7 +418,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static LoadResults LoadCDIPath(string path)
 		{
-			var ret = new LoadResults
+			LoadResults ret = new()
 			{
 				CdiPath = path
 			};
@@ -427,7 +427,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (!File.Exists(path)) throw new CDIParseException("Malformed CDI format: nonexistent CDI file!");
 
 				CDIFile cdif;
-				using (var infCDI = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+				using (FileStream infCDI = new(path, FileMode.Open, FileAccess.Read, FileShare.Read))
 					cdif = ParseFrom(infCDI);
 
 				ret.ParsedCDIFile = cdif;
@@ -448,22 +448,22 @@ namespace BizHawk.Emulation.DiscSystem
 			if (!loadResults.Valid)
 				throw loadResults.FailureException;
 
-			var disc = new Disc();
+			Disc disc = new();
 			var cdif = loadResults.ParsedCDIFile;
 
 			IBlob cdiBlob = new Blob_RawFile { PhysicalPath = cdiPath };
 			disc.DisposableResources.Add(cdiBlob);
 
-			var trackOffset = 0;
-			var blobOffset = 0;
-			for (var i = 0; i < cdif.NumSessions; i++)
+			int trackOffset = 0;
+			int blobOffset = 0;
+			for (int i = 0; i < cdif.NumSessions; i++)
 			{
-				var session = new DiscSession { Number = i + 1 };
+				DiscSession session = new() { Number = i + 1 };
 
 				// leadin track
 				// we create this only for session 2+, not session 1
-				var leadinSize = i == 0 ? 0 : 4500;
-				for (var j = 0; j < leadinSize; j++)
+				int leadinSize = i == 0 ? 0 : 4500;
+				for (int j = 0; j < leadinSize; j++)
 				{
 					// this is most certainly wrong
 					// nothing relies on the exact contents for now (only multisession core is VirtualJaguar which doesn't touch leadin)
@@ -486,13 +486,13 @@ namespace BizHawk.Emulation.DiscSystem
 					});
 				}
 
-				for (var j = 0; j < cdif.Sessions[i].NumTracks; j++)
+				for (int j = 0; j < cdif.Sessions[i].NumTracks; j++)
 				{
 					var track = cdif.Tracks[trackOffset + j];
 
 					RawTOCEntry EmitRawTOCEntry()
 					{
-						var q = default(SubchannelQ);
+						SubchannelQ q = default;
 						//absent some kind of policy for how to set it, this is a safe assumption
 						const byte kADR = 1;
 						q.SetStatus(kADR, (EControlQ)track.Control);
@@ -505,7 +505,7 @@ namespace BizHawk.Emulation.DiscSystem
 						return new() { QData = q };
 					}
 
-					var sectorSize = track.ReadMode switch
+					int sectorSize = track.ReadMode switch
 					{
 						0 => 2048,
 						1 => 2336,
@@ -514,10 +514,10 @@ namespace BizHawk.Emulation.DiscSystem
 						4 => 2448,
 						_ => throw new InvalidOperationException()
 					};
-					var curIndex = 0;
-					var relMSF = -track.IndexSectorCounts[0];
-					var indexSectorOffset = 0U;
-					for (var k = 0; k < track.TrackLength; k++)
+					int curIndex = 0;
+					long relMSF = -track.IndexSectorCounts[0];
+					uint indexSectorOffset = 0U;
+					for (int k = 0; k < track.TrackLength; k++)
 					{
 						if (track.IndexSectorCounts[curIndex] == k - indexSectorOffset)
 						{
@@ -565,8 +565,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 				// leadout track
 				// first leadout is 6750 sectors, later ones are 2250 sectors
-				var leadoutSize = i == 0 ? 6750 : 2250;
-				for (var j = 0; j < leadoutSize; j++)
+				int leadoutSize = i == 0 ? 6750 : 2250;
+				for (int j = 0; j < leadoutSize; j++)
 				{
 					disc._Sectors.Add(new SS_Leadout
 					{
@@ -575,7 +575,7 @@ namespace BizHawk.Emulation.DiscSystem
 					});
 				}
 
-				var TOCMiscInfo = new Synthesize_A0A1A2_Job(
+				Synthesize_A0A1A2_Job TOCMiscInfo = new(
 					firstRecordedTrackNumber: trackOffset + 1,
 					lastRecordedTrackNumber: trackOffset + cdif.Sessions[i].NumTracks,
 					sessionFormat: (SessionFormat)(cdif.Tracks[trackOffset + cdif.Sessions[i].NumTracks - 1].SessionType * 0x10),

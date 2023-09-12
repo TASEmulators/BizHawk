@@ -55,15 +55,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else return base.ReadExp(addr);
 		}
 
-		public override byte ReadWram(int addr)
-		{
-			return Rom[addr + (prg_count - 2) * 0x1000];
-		}
+		public override byte ReadWram(int addr) => Rom[addr + (prg_count - 2) * 0x1000];
 
-		public override byte ReadPrg(int addr)
-		{
-			return Rom[(addr + prg * 01000)];
-		}
+		public override byte ReadPrg(int addr) => Rom[(addr + prg * 01000)];
 
 		public override void ClockCpu()
 		{

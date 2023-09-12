@@ -27,14 +27,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PerformListCopy()
 		{
-			var str = lvOptions.CopyItemsAsText();
+			string str = lvOptions.CopyItemsAsText();
 			if (str.Length > 0) Clipboard.SetDataObject(str);
 		}
 
-		private void TsmiOptionsCopy_Click(object sender, EventArgs e)
-		{
-			PerformListCopy();
-		}
+		private void TsmiOptionsCopy_Click(object sender, EventArgs e) => PerformListCopy();
 
 		private void LvOptions_MouseClick(object sender, MouseEventArgs e)
 		{

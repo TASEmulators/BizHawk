@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public void SaveStateText(TextWriter writer)
 		{
-			var s = new TextState<TextStateData>();
+			TextState<TextStateData> s = new();
 			s.Prepare();
 			var ff = s.GetFunctionPointersSave();
 			LibLynx.TxtStateSave(Core, ref ff);
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public void LoadStateText(TextReader reader)
 		{
-			var s = (TextState<TextStateData>)_ser.Deserialize(reader, typeof(TextState<TextStateData>));
+			TextState<TextStateData> s = (TextState<TextStateData>)_ser.Deserialize(reader, typeof(TextState<TextStateData>));
 			s.Prepare();
 			var ff = s.GetFunctionPointersLoad();
 			LibLynx.TxtStateLoad(Core, ref ff);
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			Frame = reader.ReadInt32();
 		}
 
-		private readonly JsonSerializer _ser = new JsonSerializer { Formatting = Formatting.Indented };
+		private readonly JsonSerializer _ser = new() { Formatting = Formatting.Indented };
 		private readonly byte[] _saveBuff;
 
 		private class TextStateData

@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_datacorder.DataBlocks.Clear();
 
 			// convert bytearray to memory stream
-			MemoryStream stream = new MemoryStream(data);
+			MemoryStream stream = new(data);
 
 			// the first 2 bytes of the TAP file designate the length of the first data block
 			// this (I think) should always be 17 bytes (as this is the tape header)            
@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				stream.Read(blockdata, 0, blockSize);
 
 				// create and populate a new tapedatablock object
-				TapeDataBlock tdb = new TapeDataBlock();
+				TapeDataBlock tdb = new();
 
 				// ascertain the block description
 				string description = string.Empty;
@@ -176,10 +176,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				{
 					string fileName = Encoding.ASCII.GetString(blockdata.Skip(2).Take(10).ToArray()).Trim();
 					string type = "Unknown Type";
-					StringBuilder sb = new StringBuilder();
+					StringBuilder sb = new();
 
-					var param1 = GetWordValue(blockdata, 12);
-					var param2 = GetWordValue(blockdata, 14);
+					ushort param1 = GetWordValue(blockdata, 12);
+					ushort param2 = GetWordValue(blockdata, 14);
 
 					// header block - examine first byte of header
 					if (blockdata[1] == 0)
@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				else
 				{
 					// some other type (turbo data etc..)
-					description = $"#{blockdata[0].ToString("X2")} block, {blockSize} bytes";
+					description = $"#{blockdata[0]:X2} block, {blockSize} bytes";
 					//description += (crc != 0) ? $", crc bad (#{crcFile:X2}!=#{crcValue:X2})" : ", crc ok";
 					tdb.AddMetaData(BlockDescriptorTitle.Undefined, description);
 				}
@@ -279,8 +279,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// create a list to hold the data periods
-				List<int> dataPeriods = new List<int>();
-				List<bool> dataLevels = new List<bool>();
+				List<int> dataPeriods = new();
+				List<bool> dataLevels = new();
 
 				bool currLevel = false;
 

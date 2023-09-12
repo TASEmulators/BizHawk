@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public byte[] CloneSaveRam()
 		{
 			int size = 0;
-			IntPtr area = Core.gpgx_get_sram(ref size);
+			var area = Core.gpgx_get_sram(ref size);
 			if (size == 0 || area == IntPtr.Zero)
 				return null;
 
@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			get
 			{
 				int size = 0;
-				IntPtr area = Core.gpgx_get_sram(ref size);
+				var area = Core.gpgx_get_sram(ref size);
 				return size > 0 && area != IntPtr.Zero;
 			}
 		}

@@ -94,16 +94,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte ReadExp(int addr)
 		{
 			addr &= 0xF800;
-			switch (addr)
+			return addr switch
 			{
-				case 0x0800:
-					return audio.ReadData();
-				case 0x1000:
-					return (byte)(irq_counter & 0xFF);
-				case 0x1800:
-					return (byte)((irq_counter >> 8) | (irq_enabled ? 0x8000 : 0));
-			}
-			return base.ReadExp(addr);
+				0x0800 => audio.ReadData(),
+				0x1000 => (byte)(irq_counter & 0xFF),
+				0x1800 => (byte)((irq_counter >> 8) | (irq_enabled ? 0x8000 : 0)),
+				_ => base.ReadExp(addr),
+			};
 		}
 
 		public override void WriteExp(int addr, byte value)
@@ -218,10 +215,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		private void SyncIRQ()
-		{
-			IrqSignal = (irq_pending && irq_enabled);
-		}
+		private void SyncIRQ() => IrqSignal = (irq_pending && irq_enabled);
 
 		private void TriggerIRQ()
 		{

@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 	{
 		public static float ToFloat(this long val)
 		{
-			var bytes = BitConverter.GetBytes((int)val);
+			byte[] bytes = BitConverter.GetBytes((int)val);
 			return BitConverter.ToSingle(bytes, 0);
 		}
 

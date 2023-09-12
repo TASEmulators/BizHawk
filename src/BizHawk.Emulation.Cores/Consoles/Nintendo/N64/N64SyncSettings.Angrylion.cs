@@ -18,19 +18,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Category("Video")]
 			public bool BobDeinterlacer { get; set; }
 
-			public N64AngrylionPluginSettings Clone()
-			{
-				return (N64AngrylionPluginSettings)MemberwiseClone();
-			}
+			public N64AngrylionPluginSettings Clone() => (N64AngrylionPluginSettings)MemberwiseClone();
 
 			public void FillPerGameHacks(GameInfo game)
 			{
 			}
 
-			public PluginType GetPluginType()
-			{
-				return PluginType.Angrylion;
-			}
+			public PluginType GetPluginType() => PluginType.Angrylion;
 		}
 	}
 }

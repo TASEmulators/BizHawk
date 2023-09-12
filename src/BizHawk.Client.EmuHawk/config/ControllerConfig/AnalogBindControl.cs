@@ -75,10 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			labelDeadzone.Text = $"Deadzone: {_bind.Deadzone:P0}";
 		}
 
-		private void ButtonFlip_Click(object sender, EventArgs e)
-		{
-			trackBarSensitivity.Value *= -1;
-		}
+		private void ButtonFlip_Click(object sender, EventArgs e) => trackBarSensitivity.Value *= -1;
 
 		public void Unbind_Click(object sender, EventArgs e)
 		{

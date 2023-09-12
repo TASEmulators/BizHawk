@@ -105,15 +105,15 @@ namespace BizHawk.Client.Common
 			{
 				RomData = FileData;
 			}
-			else if (file.Extension == ".dsk" || file.Extension == ".tap" || file.Extension == ".tzx" ||
-				file.Extension == ".pzx" || file.Extension == ".csw" || file.Extension == ".wav" || file.Extension == ".cdt")
+			else if (file.Extension is ".dsk" or ".tap" or ".tzx" or
+				".pzx" or ".csw" or ".wav" or ".cdt")
 			{
 				// these are not roms. unfortunately if treated as such there are certain edge-cases
 				// where a header offset is detected. This should mitigate this issue until a cleaner solution is found
 				// (-Asnivor)
 				RomData = FileData;
 			}
-			else if (SHA1_check == Flappy_Bird_INTV || SHA1_check == Minehunter_INTV)
+			else if (SHA1_check is Flappy_Bird_INTV or Minehunter_INTV)
 			{
 				// several INTV games have sizes that are multiples of 512 bytes
 				Console.WriteLine("False positive detected in Header Check, using entire file.");
@@ -147,19 +147,19 @@ namespace BizHawk.Client.Common
 			CheckForPatchOptions();
 
 			if (patch is null) return;
-			using var patchFile = new HawkFile(patch);
+			using HawkFile patchFile = new(patch);
 			patchFile.BindFirstOf(".ips");
 			if (!patchFile.IsBound) patchFile.BindFirstOf(".bps");
 			if (!patchFile.IsBound) return;
-			var patchBytes = patchFile.GetStream().ReadAllBytes();
+			byte[] patchBytes = patchFile.GetStream().ReadAllBytes();
 			if (BPSPatcher.IsIPSFile(patchBytes))
 			{
 				RomData = BPSPatcher.Patch(RomData, new BPSPatcher.IPSPayload(patchBytes));
 			}
 			else if (BPSPatcher.IsBPSFile(patchBytes, out var patchStruct))
 			{
-				var ignoreBaseChecksum = true; //TODO check base checksum and ask user before continuing
-				RomData = BPSPatcher.Patch(StripSNESDumpHeader(RomData), patchStruct, out var checksumsMatch);
+				bool ignoreBaseChecksum = true; //TODO check base checksum and ask user before continuing
+				RomData = BPSPatcher.Patch(StripSNESDumpHeader(RomData), patchStruct, out bool checksumsMatch);
 				if (!checksumsMatch && !ignoreBaseChecksum) throw new Exception("BPS patch didn't produce the expected output");
 			}
 			else
@@ -183,7 +183,7 @@ namespace BizHawk.Client.Common
 			}
 
 			int pages = size / 0x4000;
-			var output = new byte[size];
+			byte[] output = new byte[size];
 
 			for (int page = 0; page < pages; page++)
 			{
@@ -203,10 +203,10 @@ namespace BizHawk.Client.Common
 			{
 				if (GameInfo["PatchBytes"])
 				{
-					var args = GameInfo.OptionValue("PatchBytes");
-					foreach (var val in args.Split(','))
+					string args = GameInfo.OptionValue("PatchBytes");
+					foreach (string val in args.Split(','))
 					{
-						var split = val.Split(':');
+						string[] split = val.Split(':');
 						int offset = int.Parse(split[0], NumberStyles.HexNumber);
 						byte value = byte.Parse(split[1], NumberStyles.HexNumber);
 						RomData[offset] = value;

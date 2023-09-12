@@ -28,15 +28,9 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			}.MakeImmutable();
 		}
 
-		public byte ReadPort1(IController c)
-		{
-			return Port1.Read(c);
-		}
+		public byte ReadPort1(IController c) => Port1.Read(c);
 
-		public byte ReadPort2(IController c)
-		{
-			return Port2.Read(c);
-		}
+		public byte ReadPort2(IController c) => Port2.Read(c);
 
 		public ControllerDefinition Definition { get; }
 

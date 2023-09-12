@@ -30,10 +30,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UsesVideo => true;
 
-		public void OpenFile(string baseName)
-		{
-			_baseName = baseName;
-		}
+		public void OpenFile(string baseName) => _baseName = baseName;
 
 		public void CloseFile()
 		{
@@ -47,8 +44,8 @@ namespace BizHawk.Client.EmuHawk
 		public void AddFrame(IVideoProvider source)
 		{
 			var (dir, fileNoExt, ext) = _baseName.SplitPathToDirFileAndExt();
-			var name = Path.Combine(dir!, $"{fileNoExt}_{_frame}{ext}");
-			BitmapBuffer bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
+			string name = Path.Combine(dir!, $"{fileNoExt}_{_frame}{ext}");
+			BitmapBuffer bb = new(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
 			using var bmp = bb.ToSysdrawingBitmap();
 			if (ext.ToUpperInvariant() == ".PNG")
 			{
@@ -73,10 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IDisposable AcquireVideoCodecToken(Config config)
-		{
-			return new CodecToken();
-		}
+		public IDisposable AcquireVideoCodecToken(Config config) => new CodecToken();
 
 		public void SetMovieParameters(int fpsNum, int fpsDen)
 		{

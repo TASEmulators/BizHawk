@@ -29,8 +29,8 @@ namespace BizHawk.Emulation.Cores
 			// Only standard controller is supported on the left port
 			yield return StandardController(1);
 
-			Snes9x.SyncSettings syncSettings = core.GetSyncSettings();
-			LibSnes9x.RightPortDevice rightPort = syncSettings.RightPort;
+			var syncSettings = core.GetSyncSettings();
+			var rightPort = syncSettings.RightPort;
 
 			switch (rightPort)
 			{
@@ -175,10 +175,10 @@ namespace BizHawk.Emulation.Cores
 
 		private static IEnumerable<PadSchema> GetFaustSchemas(NymaCore nyma, Action<string> showMessageBox)
 		{
-			foreach (NymaCore.PortResult result in nyma.ActualPortData)
+			foreach (var result in nyma.ActualPortData)
 			{
-				var num = int.Parse(result.Port.ShortName.Last().ToString());
-				var device = result.Device.ShortName;
+				int num = int.Parse(result.Port.ShortName.Last().ToString());
+				string device = result.Device.ShortName;
 				if (device == "gamepad")
 				{
 					yield return StandardController(num);
@@ -217,8 +217,8 @@ namespace BizHawk.Emulation.Cores
 
 		private static PadSchema ExtendedStandardController(int controller)
 		{
-			PadSchema standardController = StandardController(controller);
-			var newButtons = standardController.Buttons.ToList();
+			var standardController = StandardController(controller);
+			List<PadSchemaControl> newButtons = standardController.Buttons.ToList();
 			newButtons.AddRange(new[]
 			{
 				new ButtonSchema(60, 65, controller, "Extra1", "1"),

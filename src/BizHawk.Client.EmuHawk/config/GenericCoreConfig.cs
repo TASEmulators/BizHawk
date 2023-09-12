@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 		public static void DoDialog(IEmulator emulator, IDialogParent owner, bool isMovieActive)
 		{
 			var settable = ((MainForm) owner).GetSettingsAdapterForLoadedCoreUntyped(); //HACK
-			var title = $"{emulator.Attributes().CoreName} Settings";
+			string title = $"{emulator.Attributes().CoreName} Settings";
 			_ = emulator switch
 			{
 				MAME mame => DoMAMEDialog(owner, settable, mame.CurrentDriverSettings, isMovieActive: isMovieActive),
@@ -147,10 +147,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void PropertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
-		{
-			_syncSettingsChanged = true;
-		}
+		private void PropertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e) => _syncSettingsChanged = true;
 
 		private void DefaultsBtn_Click(object sender, EventArgs e)
 		{
@@ -170,9 +167,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
-		{
-			_settingsChanged = true;
-		}
+		private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e) => _settingsChanged = true;
 	}
 }

@@ -12,14 +12,11 @@ namespace BizHawk.Common
 	/// </summary>
 	public class ConstrainedIntConverter : TypeConverter
 	{
-		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-		{
-			return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
-		}
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) => sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
 
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
-			var range = (RangeAttribute)context.Instance
+			RangeAttribute range = (RangeAttribute)context.Instance
 				.GetType()
 				.GetProperty(context.PropertyDescriptor!.Name)!
 				.GetCustomAttributes()
@@ -32,7 +29,7 @@ namespace BizHawk.Common
 				throw new FormatException($"{context.PropertyDescriptor.Name} can not be null");
 			}
 
-			if (int.TryParse(value.ToString(), out var intVal))
+			if (int.TryParse(value.ToString(), out int intVal))
 			{
 				return intVal;
 			}
@@ -49,7 +46,7 @@ namespace BizHawk.Common
 
 			if (destinationType == typeof(string))
 			{
-				var num = Convert.ToInt32(value);
+				int num = Convert.ToInt32(value);
 				return num.ToString();
 			}
 

@@ -13,7 +13,7 @@ namespace BizHawk.Common
 	[Serializable]
 	public class Bag<TKey, TValue> : IEnumerable<TValue> where TKey : notnull
 	{
-		private readonly WorkingDictionary<TKey, List<TValue>> dictionary = new WorkingDictionary<TKey, List<TValue>>();
+		private readonly WorkingDictionary<TKey, List<TValue>> dictionary = new();
 
 		public IList<TKey> Keys => dictionary.Keys.ToList();
 
@@ -59,7 +59,7 @@ namespace BizHawk.Common
 
 		public virtual void Add(T item)
 		{
-			var i = _list.BinarySearch(item);
+			int i = _list.BinarySearch(item);
 			_list.Insert(i < 0 ? ~i : i, item);
 		}
 
@@ -75,14 +75,14 @@ namespace BizHawk.Common
 
 		public virtual int IndexOf(T item)
 		{
-			var i = _list.BinarySearch(item);
+			int i = _list.BinarySearch(item);
 			return i < 0 ? -1 : i;
 		}
 
 		public virtual bool Remove(T item)
 		{
 #if true
-			var i = _list.BinarySearch(item);
+			int i = _list.BinarySearch(item);
 			if (i < 0) return false;
 			_list.RemoveAt(i);
 			return true;
@@ -99,7 +99,7 @@ namespace BizHawk.Common
 		/// <summary>Remove all items after the specific item (but not the given item).</summary>
 		public virtual void RemoveAfter(T item)
 		{
-			var startIndex = _list.BinarySearch(item);
+			int startIndex = _list.BinarySearch(item);
 			if (startIndex < 0)
 			{
 				// If BinarySearch doesn't find the item,

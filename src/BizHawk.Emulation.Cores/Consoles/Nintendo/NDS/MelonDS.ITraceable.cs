@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private unsafe void MakeTrace(LibMelonDS.TraceMask type, uint opcode, IntPtr r, IntPtr disasm, uint cyclesOff)
 		{
-			var cpu = type switch
+			string cpu = type switch
 			{
 				LibMelonDS.TraceMask.ARM7_THUMB => "ARM7 (Thumb)",
 				LibMelonDS.TraceMask.ARM7_ARM => "ARM7",
@@ -21,10 +21,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_ => throw new InvalidOperationException("Invalid CPU Mode???"),
 			};
 
-			var regs = (uint*)r;
+			uint* regs = (uint*)r;
 
-			var isthumb = type is LibMelonDS.TraceMask.ARM7_THUMB or LibMelonDS.TraceMask.ARM9_THUMB;
-			var opaddr = regs![15] - (isthumb ? 4u : 8u); // handle prefetch
+			bool isthumb = type is LibMelonDS.TraceMask.ARM7_THUMB or LibMelonDS.TraceMask.ARM9_THUMB;
+			uint opaddr = regs![15] - (isthumb ? 4u : 8u); // handle prefetch
 
 			Tracer.Put(new(
 				disassembly: $"{opaddr:x8}:  {opcode:x8} ".PadRight(12) + Marshal.PtrToStringAnsi(disasm)!.PadRight(36),

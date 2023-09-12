@@ -25,15 +25,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			nsamp = _spf;
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
-		public void DiscardSamples()
-		{
-			AudioClocks = 0;
-		}
+		public void DiscardSamples() => AudioClocks = 0;
 
 		private readonly int _spf;
 
@@ -43,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			if (AudioClocks > 0)
 			{
-				var samples31Khz = new short[AudioClocks]; // mono
+				short[] samples31Khz = new short[AudioClocks]; // mono
 
 				for (int i = 0; i < AudioClocks; i++)
 				{
@@ -52,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 
 				// convert from 31khz to 44khz
-				for (var i = 0; i < samples.Length / 2; i++)
+				for (int i = 0; i < samples.Length / 2; i++)
 				{
 					samples[i * 2] = samples31Khz[(int)((samples31Khz.Length / (double)(samples.Length / 2)) * i)];
 					samples[(i * 2) + 1] = samples[i * 2];

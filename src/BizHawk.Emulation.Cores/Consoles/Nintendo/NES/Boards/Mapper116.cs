@@ -28,10 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				this.master = master;
 			}
 
-			public override void SyncIRQ(bool flag)
-			{
-				master.SyncIRQ(flag);
-			}
+			public override void SyncIRQ(bool flag) => master.SyncIRQ(flag);
 
 			private readonly Mapper116 master;
 
@@ -139,10 +136,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 		}
 
-		private void mmc1_reset()
-		{
-			mmc1.mmc1.StandardReset();
-		}
+		private void mmc1_reset() => mmc1.mmc1.StandardReset();
 
 		private void WriteModeControl(int addr, byte value)
 		{
@@ -167,10 +161,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (mode == 3) Console.WriteLine("(mmc1)");
 		}
 
-		public override void WriteExp(int addr, byte value)
-		{
-			WriteModeControl(addr + 0x4000, value);
-		}
+		public override void WriteExp(int addr, byte value) => WriteModeControl(addr + 0x4000, value);
 
 		public override void WritePpu(int addr, byte value)
 		{
@@ -185,15 +176,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPpu(int addr)
 		{
-			switch (mode)
+			return mode switch
 			{
-				case 0: return vrc2.ReadPpu(addr);
-				case 1: return mmc3.ReadPpu(addr);
-				case 2:
-				case 3: return mmc1.ReadPpu(addr);
-
-			}
-			return 0;
+				0 => vrc2.ReadPpu(addr),
+				1 => mmc3.ReadPpu(addr),
+				2 or 3 => mmc1.ReadPpu(addr),
+				_ => 0,
+			};
 		}
 
 		public override void WritePrg(int addr, byte value)
@@ -216,20 +205,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPrg(int addr)
 		{
-			switch (mode)
+			return mode switch
 			{
-				case 0: return vrc2.ReadPrg(addr);
-				case 1: return mmc3.ReadPrg(addr);
-				case 2:
-				case 3: return mmc1.ReadPrg(addr);
-			}
-			return 0;
+				0 => vrc2.ReadPrg(addr),
+				1 => mmc3.ReadPrg(addr),
+				2 or 3 => mmc1.ReadPrg(addr),
+				_ => 0,
+			};
 		}
 
-		public override void AddressPpu(int addr)
-		{
-			mmc3.AddressPpu(addr);
-		}
+		public override void AddressPpu(int addr) => mmc3.AddressPpu(addr);
 
 		public override void ClockPpu()
 		{

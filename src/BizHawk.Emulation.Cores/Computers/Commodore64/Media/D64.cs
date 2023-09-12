@@ -89,10 +89,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 		private static byte Checksum(byte[] source)
 		{
-			var count = source.Length;
+			int count = source.Length;
 			byte result = 0;
 
-			for (var i = 0; i < count; i++)
+			for (int i = 0; i < count; i++)
 			{
 				result ^= source[i];
 			}
@@ -102,8 +102,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 		private static byte[] ConvertSectorToGcr(byte[] source, byte sectorNo, byte trackNo, byte formatA, byte formatB, int gapLength, ErrorType errorType, out int bitsWritten)
 		{
-			using var mem = new MemoryStream();
-			using var writer = new BinaryWriter(mem);
+			using MemoryStream mem = new();
+			using BinaryWriter writer = new(mem);
 
 			if (errorType == ErrorType.IdMismatch)
 			{
@@ -111,11 +111,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				formatB ^= 0xFF;
 			}
 
-			var headerChecksum = (byte)(sectorNo ^ trackNo ^ formatA ^ formatB ^ (errorType == ErrorType.HeaderChecksumError ? 0xFF : 0x00));
+			byte headerChecksum = (byte)(sectorNo ^ trackNo ^ formatA ^ formatB ^ (errorType == ErrorType.HeaderChecksumError ? 0xFF : 0x00));
 
 			// assemble written data for GCR encoding
-			var writtenData = new byte[260];
-			var syncBytes40 = Enumerable.Repeat((byte) (errorType == ErrorType.NoSyncSequence ? 0x00 : 0xFF), 5).ToArray();
+			byte[] writtenData = new byte[260];
+			byte[] syncBytes40 = Enumerable.Repeat((byte) (errorType == ErrorType.NoSyncSequence ? 0x00 : 0xFF), 5).ToArray();
 
 			Array.Copy(source, 0, writtenData, 1, 256);
 			writtenData[0] = (byte)(errorType == ErrorType.HeaderNotFound ? 0x00 : 0x07);
@@ -139,13 +139,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		private static byte[] EncodeGcr(byte[] source)
 		{
 			// 4 bytes -> 5 GCR encoded bytes
-			var gcr = new int[8];
-			var data = new byte[4];
-			var count = source.Length;
-			using var mem = new MemoryStream();
-			var writer = new BinaryWriter(mem);
+			int[] gcr = new int[8];
+			byte[] data = new byte[4];
+			int count = source.Length;
+			using MemoryStream mem = new();
+			BinaryWriter writer = new(mem);
 
-			for (var i = 0; i < count; i += 4)
+			for (int i = 0; i < count; i += 4)
 			{
 				Array.Copy(source, i, data, 0, 4);
 				gcr[0] = GcrEncodeTable[data[0] >> 4];
@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				// -------- -------- -------- -------- --------
 				// 00000111 11222223 33334444 45555566 66677777
 
-				var outputValue = (gcr[0] << 3) | (gcr[1] >> 2);
+				int outputValue = (gcr[0] << 3) | (gcr[1] >> 2);
 				writer.Write((byte)(outputValue & 0xFF));
 				outputValue = (gcr[1] << 6) | (gcr[2] << 1) | (gcr[3] >> 4);
 				writer.Write((byte)(outputValue & 0xFF));
@@ -177,15 +177,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 		public static Disk Read(byte[] source)
 		{
-			var formatB = source[D64_DISK_ID_OFFSET + 0x00];
-			var formatA = source[D64_DISK_ID_OFFSET + 0x01];
+			byte formatB = source[D64_DISK_ID_OFFSET + 0x00];
+			byte formatA = source[D64_DISK_ID_OFFSET + 0x01];
 
-			using var mem = new MemoryStream(source);
-			var reader = new BinaryReader(mem);
-			var trackDatas = new List<byte[]>();
-			var trackLengths = new List<int>();
-			var trackNumbers = new List<int>();
-			var trackDensities = new List<int>();
+			using MemoryStream mem = new(source);
+			BinaryReader reader = new(mem);
+			List<byte[]> trackDatas = new();
+			List<int> trackLengths = new();
+			List<int> trackNumbers = new();
+			List<int> trackDensities = new();
 			var errorType = ErrorType.NoError;
 			int trackCount;
 			int errorOffset = -1;
@@ -210,24 +210,24 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 					throw new Exception("Not able to identify capacity of the D64 file.");
 			}
 
-			for (var i = 0; i < trackCount; i++)
+			for (int i = 0; i < trackCount; i++)
 			{
 				if (errorOffset >= 0)
 				{
 					errorType = (ErrorType) source[errorOffset];
 					errorOffset++;
 				}
-				var sectors = SectorsPerTrack[i];
-				var trackLengthBits = 0;
-				using var trackMem = new MemoryStream();
-				for (var j = 0; j < sectors; j++)
+				int sectors = SectorsPerTrack[i];
+				int trackLengthBits = 0;
+				using MemoryStream trackMem = new();
+				for (int j = 0; j < sectors; j++)
 				{
-					var sectorData = reader.ReadBytes(256);
-					var diskData = ConvertSectorToGcr(sectorData, (byte)j, (byte)(i + 1), formatA, formatB, StandardSectorGapLength[DensityTable[i]], errorType, out var bitsWritten);
+					byte[] sectorData = reader.ReadBytes(256);
+					byte[] diskData = ConvertSectorToGcr(sectorData, (byte)j, (byte)(i + 1), formatA, formatB, StandardSectorGapLength[DensityTable[i]], errorType, out int bitsWritten);
 					trackMem.Write(diskData, 0, diskData.Length);
 					trackLengthBits += bitsWritten;
 				}
-				var density = DensityTable[i];
+				int density = DensityTable[i];
 
 				// we pad the tracks with extra gap bytes to meet MNIB standards
 				while (trackMem.Length < StandardTrackLengthBytes[density])

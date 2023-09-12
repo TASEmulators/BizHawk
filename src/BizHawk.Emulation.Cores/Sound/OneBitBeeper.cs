@@ -39,18 +39,12 @@ namespace BizHawk.Emulation.Cores.Sound
 		/// <summary>
 		/// Option to clock the beeper every CPU clock
 		/// </summary>
-		public void Clock(int clocksToAdd = 1)
-		{
-			clockCounter += clocksToAdd;
-		}
+		public void Clock(int clocksToAdd = 1) => clockCounter += clocksToAdd;
 
 		/// <summary>
 		/// Option to directly set the current clock position within the frame
 		/// </summary>
-		public void SetClock(int currentFrameClock)
-		{
-			clockCounter = currentFrameClock;
-		}
+		public void SetClock(int currentFrameClock) => clockCounter = currentFrameClock;
 
 		private bool lastPulse;
 
@@ -90,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Sound
 			get => VolumeConverterOut(_volume);
 			set
 			{
-				var newVol = VolumeConverterIn(value);
+				int newVol = VolumeConverterIn(value);
 				if (newVol != _volume)
 					_blip.Clear();
 				_volume = VolumeConverterIn(value);
@@ -139,15 +133,9 @@ namespace BizHawk.Emulation.Cores.Sound
 				throw new InvalidOperationException("Only Sync mode is supported.");
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
-		public void DiscardSamples()
-		{
-			_blip.Clear();
-		}
+		public void DiscardSamples() => _blip.Clear();
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{

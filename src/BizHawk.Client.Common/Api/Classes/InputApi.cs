@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 
 		public Dictionary<string, bool> Get()
 		{
-			var buttons = new Dictionary<string, bool>();
+			Dictionary<string, bool> buttons = new();
 			foreach (var (button, _) in _inputManager.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value)) buttons[button] = true;
 			return buttons;
 		}

@@ -13,10 +13,7 @@ namespace BizHawk.Client.Common
 			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0.0";
 		}
 
-		public virtual void Attach(IEmulator emulator)
-		{
-			Emulator = emulator;
-		}
+		public virtual void Attach(IEmulator emulator) => Emulator = emulator;
 
 		protected bool IsAttached() => Emulator != null;
 
@@ -52,7 +49,7 @@ namespace BizHawk.Client.Common
 		public void CopyLog(IEnumerable<string> log)
 		{
 			Log.Clear();
-			foreach (var entry in log)
+			foreach (string entry in log)
 			{
 				Log.Add(entry);
 			}

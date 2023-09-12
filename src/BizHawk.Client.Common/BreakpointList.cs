@@ -9,10 +9,7 @@ namespace BizHawk.Client.Common
 	{
 		public MemoryCallbackDelegate Callback { get; set; }
 
-		public void Add(IDebuggable core, string scope, uint address, uint mask, MemoryCallbackType type)
-		{
-			Add(new Breakpoint(core, scope, Callback, address, mask, type));
-		}
+		public void Add(IDebuggable core, string scope, uint address, uint mask, MemoryCallbackType type) => Add(new Breakpoint(core, scope, Callback, address, mask, type));
 
 		public new void Clear()
 		{
@@ -50,7 +47,7 @@ namespace BizHawk.Client.Common
 
 		public new int RemoveAll(Predicate<Breakpoint> match)
 		{
-			var removeCount = 0;
+			int removeCount = 0;
 			foreach (var breakpoint in this)
 			{
 				if (match(breakpoint))
@@ -157,15 +154,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private void AddCallback()
-		{
-			_core.MemoryCallbacks.Add(new MemoryCallback(Scope, Type, Name, DoCallback, Address, AddressMask));
-		}
+		private void AddCallback() => _core.MemoryCallbacks.Add(new MemoryCallback(Scope, Type, Name, DoCallback, Address, AddressMask));
 
-		private void RemoveCallback()
-		{
-			_core.MemoryCallbacks.Remove(DoCallback);
-		}
+		private void RemoveCallback() => _core.MemoryCallbacks.Remove(DoCallback);
 
 		private void DoCallback(uint address, uint value, uint flags)
 			=> Callback(address, value, flags);

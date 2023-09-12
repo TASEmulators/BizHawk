@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Common
 
 		private static List<MemoryDomain> LinkMemoryDomains(IEmulator[] linkedCores, int numCores)
 		{
-			var mm = new List<MemoryDomain>();
+			List<MemoryDomain> mm = new();
 
 			for (int i = 0; i < numCores; i++)
 			{

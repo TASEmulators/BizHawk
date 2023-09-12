@@ -168,12 +168,12 @@ namespace BizHawk.Client.EmuHawk
 				_ffmpeg.CancelErrorRead();
 			}
 
-			var s = new StringBuilder();
+			StringBuilder s = new();
 			s.Append(_commandline);
 			s.Append('\n');
 			while (_stderr.Count > 0)
 			{
-				var foo = _stderr.Dequeue();
+				string foo = _stderr.Dequeue();
 				s.Append(foo);
 			}
 
@@ -193,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 				throw new Exception($"unexpected ffmpeg death:\n{FfmpegGetError()}");
 			}
 
-			var video = source.GetVideoBuffer();
+			int[] video = source.GetVideoBuffer();
 			try
 			{
 				_muxer.WriteVideoFrame(video);
@@ -212,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!FFmpegService.QueryServiceAvailable())
 			{
-				using var form = new FFmpegDownloaderForm();
+				using FFmpegDownloaderForm form = new();
 				_dialogParent.ShowDialogWithTempMute(form);
 				if (!FFmpegService.QueryServiceAvailable()) return null;
 			}
@@ -311,16 +311,11 @@ namespace BizHawk.Client.EmuHawk
 			this._channels = channels;
 		}
 
-		public string DesiredExtension()
-		{
+		public string DesiredExtension() =>
 			// this needs to interface with the codec token
-			return _token.Extension;
-		}
+			_token.Extension;
 
-		public void SetDefaultVideoCodecToken(Config config)
-		{
-			_token = FFmpegWriterForm.FormatPreset.GetDefaultPreset(config);
-		}
+		public void SetDefaultVideoCodecToken(Config config) => _token = FFmpegWriterForm.FormatPreset.GetDefaultPreset(config);
 
 		public bool UsesAudio => true;
 

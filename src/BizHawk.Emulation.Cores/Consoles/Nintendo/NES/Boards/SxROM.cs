@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	internal sealed class MMC1
 	{
-		public MMC1_SerialController scnt = new MMC1_SerialController();
+		public MMC1_SerialController scnt = new();
 
 		public MMC1()
 		{
@@ -105,10 +105,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public Action Reset;
 			public Action<int, int> WriteRegister;
 
-			public void ResetShift()
-			{
-				shift_count = shift_val = 0;
-			}
+			public void ResetShift() => shift_count = shift_val = 0;
 
 			public void Write(int addr, byte value)
 			{
@@ -225,15 +222,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public int Get_PRGBank(int addr)
-		{
-			return prg_banks_16k[addr >> 14];
-		}
+		public int Get_PRGBank(int addr) => prg_banks_16k[addr >> 14];
 
-		public int Get_CHRBank_4K(int addr)
-		{
-			return chr_banks_4k[addr >> 12];
-		}
+		public int Get_CHRBank_4K(int addr) => chr_banks_4k[addr >> 12];
 	}
 
 	[NesBoardImplPriority]
@@ -570,15 +561,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return (wram_bank_8k << 13) | ofs;
 		}
 
-		public override void WriteWram(int addr, byte value)
-		{
-			base.WriteWram(Map_WRAM(addr), value);
-		}
+		public override void WriteWram(int addr, byte value) => base.WriteWram(Map_WRAM(addr), value);
 
-		public override byte ReadWram(int addr)
-		{
-			return base.ReadWram(Map_WRAM(addr));
-		}
+		public override byte ReadWram(int addr) => base.ReadWram(Map_WRAM(addr));
 	}
 
 	internal class SXROM : SuROM
@@ -615,15 +600,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return (wram_bank_8k << 13) | ofs;
 		}
 
-		public override void WriteWram(int addr, byte value)
-		{
-			base.WriteWram(Map_WRAM(addr), value);
-		}
+		public override void WriteWram(int addr, byte value) => base.WriteWram(Map_WRAM(addr), value);
 
-		public override byte ReadWram(int addr)
-		{
-			return base.ReadWram(Map_WRAM(addr));
-		}
+		public override byte ReadWram(int addr) => base.ReadWram(Map_WRAM(addr));
 	}
 
 	internal class SuROM : SxROM

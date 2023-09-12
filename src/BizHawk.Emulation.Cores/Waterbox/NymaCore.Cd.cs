@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	abstract partial class NymaCore : IDriveLight
 	{
 		// this code was mostly copied from Saturnus, which it will replace soon(R)
-		private static readonly DiscSectorReaderPolicy _diskPolicy = new DiscSectorReaderPolicy
+		private static readonly DiscSectorReaderPolicy _diskPolicy = new()
 		{
 			DeinterleavedSubcode = false
 		};
@@ -34,13 +34,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private void CDTOCCallback(int disk, IntPtr dest)
 		{
-			var toc = new LibNymaCore.TOC { Tracks = new LibNymaCore.TOC.Track[101] };
+			LibNymaCore.TOC toc = new() { Tracks = new LibNymaCore.TOC.Track[101] };
 			SetupTOC(toc, _disks[disk].TOC);
 			Marshal.StructureToPtr(toc, dest, false);
 		}
 		private void CDSectorCallback(int disk, int lba, IntPtr dest)
 		{
-			var buff = new byte[2448];
+			byte[] buff = new byte[2448];
 			_diskReaders[disk].ReadLBA_2448(lba, buff, 0);
 			Marshal.Copy(buff, 0, dest, 2448);
 			DriveLightOn = true;

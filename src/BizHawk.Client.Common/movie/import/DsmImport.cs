@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 		{
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.NDS;
 
-			var syncSettings = new NDS.NDSSyncSettings();
+			NDS.NDSSyncSettings syncSettings = new();
 
 			using var sr = SourceFile.OpenText();
 			string line;
@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWithOrdinal("rerecordCount"))
 				{
-					Result.Movie.Rerecords = (ulong) (int.TryParse(ParseHeader(line, "rerecordCount"), out var rerecordCount) ? rerecordCount : default);
+					Result.Movie.Rerecords = (ulong) (int.TryParse(ParseHeader(line, "rerecordCount"), out int rerecordCount) ? rerecordCount : default);
 				}
 				else if (line.StartsWithOrdinal("firmNickname"))
 				{
@@ -108,7 +108,7 @@ namespace BizHawk.Client.Common
 			
 			if (sections.Length > 1)
 			{
-				var mnemonics = sections[1].Take(_buttons.Length).ToList();
+				System.Collections.Generic.List<char> mnemonics = sections[1].Take(_buttons.Length).ToList();
 
 				controller["Right"] = mnemonics[0] != '.';
 				controller["Left"] = mnemonics[1] != '.';
@@ -125,8 +125,8 @@ namespace BizHawk.Client.Common
 
 				controller["Touch"] = sections[1].Substring(21, 1) != "0";
 
-				var touchX = int.Parse(sections[1].Substring(13, 3));
-				var touchY = int.Parse(sections[1].Substring(17, 3));
+				int touchX = int.Parse(sections[1].Substring(13, 3));
+				int touchY = int.Parse(sections[1].Substring(17, 3));
 
 				controller.AcceptNewAxes(new[]
 				{

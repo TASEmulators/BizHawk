@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WriteExp(int addr, byte value)
 		{
-			if (addr >= 0x1100 && addr <= 0x1103)
+			if (addr is >= 0x1100 and <= 0x1103)
 				_low[addr & 0x3] = value;
 			else
 				base.WriteExp(addr, value);
@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr == 0x1000)
 				return (byte)((NES.DB & 0xFC) | 0);
-			else if (addr >= 0x1100 && addr <= 0x1103)
+			else if (addr is >= 0x1100 and <= 0x1103)
 				return _low[addr & 0x3];
 			else
 				return base.ReadExp(addr);
@@ -368,7 +368,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WriteExp(int addr, byte value)
 		{
-			if (addr >= 0x1100 && addr <= 0x1103)
+			if (addr is >= 0x1100 and <= 0x1103)
 				_low[addr & 0x3] = value;
 			else
 				base.WriteExp(addr, value);
@@ -378,7 +378,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr == 0x1000)
 				return (byte)((NES.DB & 0xFC) | 0);
-			else if (addr >= 0x1100 && addr <= 0x1103)
+			else if (addr is >= 0x1100 and <= 0x1103)
 				return _low[addr & 0x3];
 			else
 				return base.ReadExp(addr);
@@ -401,7 +401,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case "MAPPER083":
 					// We need one of the Cony boards to throw an error on an unexpected cart size, so we picked this one
-					if (Cart.PrgSize != 128 && Cart.PrgSize != 256 && Cart.PrgSize != 1024)
+					if (Cart.PrgSize is not 128 and not 256 and not 1024)
 					{
 						throw new InvalidOperationException("Unexpected prg size of " + Cart.PrgSize + " for Mapper 83");
 					}
@@ -436,7 +436,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				prg_regs[0] = (byte)(value & prg_bank_mask_16k);
 			}
 
-			else if (addr >= 0x310 && addr < 0x318)
+			else if (addr is >= 0x310 and < 0x318)
 			{
 				chr_regs[addr & 0x7] = value;
 			}

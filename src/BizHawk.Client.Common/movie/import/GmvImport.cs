@@ -14,10 +14,10 @@ namespace BizHawk.Client.Common.movie.import
 		protected override void RunImport()
 		{
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
-			using var r = new BinaryReader(fs);
+			using BinaryReader r = new(fs);
 			
 			// 000 16-byte signature and format version: "Gens Movie TEST9"
-			string signature = new string(r.ReadChars(15));
+			string signature = new(r.ReadChars(15));
 			if (signature != "Gens Movie TEST")
 			{
 				Result.Errors.Add("This is not a valid .GMV file.");
@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common.movie.import
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.GEN;
 
 			// 00F ASCII-encoded GMV file format version. The most recent is 'A'. (?)
-			string version = new string(r.ReadChars(1));
+			string version = new(r.ReadChars(1));
 			Result.Movie.Comments.Add($"{MovieOrigin} .GMV version {version}");
 			Result.Movie.Comments.Add($"{EmulationOrigin} Gens");
 
@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common.movie.import
 			// bit 5: if "1", movie is 3-player movie; if "0", movie is 2-player movie
 			bool threePlayers = ((flags >> 5) & 0x1) != 0;
 
-			LibGPGX.InputData input = new LibGPGX.InputData();
+			LibGPGX.InputData input = new();
 			input.dev[0] = player1Config == '6'
 				? LibGPGX.INPUT_DEVICE.DEVICE_PAD6B
 				: LibGPGX.INPUT_DEVICE.DEVICE_PAD3B;
@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common.movie.import
 				? LibGPGX.INPUT_DEVICE.DEVICE_PAD6B
 				: LibGPGX.INPUT_DEVICE.DEVICE_PAD3B;
 
-			var ss = new GPGX.GPGXSyncSettings
+			GPGX.GPGXSyncSettings ss = new()
 			{
 				UseSixButton = player1Config == '6' || player2Config == '6',
 				ControlTypeLeft = GPGX.ControlType.Normal,
@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common.movie.import
 					: LibGPGX.INPUT_DEVICE.DEVICE_PAD3B;
 			}
 
-			var controlConverter = new GPGXControlConverter(input, false);
+			GPGXControlConverter controlConverter = new(input, false);
 			
 			SimpleController controller = new(controlConverter.ControllerDef);
 

@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public void SetScore(int val)
 			{
-				var len = _lib.rc_runtime_format_lboard_value(_scoreFormatBuffer, _scoreFormatBuffer.Length, val, Format);
+				int len = _lib.rc_runtime_format_lboard_value(_scoreFormatBuffer, _scoreFormatBuffer.Length, val, Format);
 				Score = Encoding.ASCII.GetString(_scoreFormatBuffer, 0, len);
 			}
 

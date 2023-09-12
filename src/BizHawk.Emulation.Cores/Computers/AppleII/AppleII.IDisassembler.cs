@@ -22,9 +22,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			get { yield return "6502"; }
 		}
 
-		public string Disassemble(MemoryDomain m, uint addr, out int length)
-		{
-			return MOS6502X.Disassemble((ushort)addr, out length, a => m.PeekByte(a));
-		}
+		public string Disassemble(MemoryDomain m, uint addr, out int length) => MOS6502X.Disassemble((ushort)addr, out length, a => m.PeekByte(a));
 	}
 }

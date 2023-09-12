@@ -28,7 +28,7 @@
 
 		private void WriteMemorySG_EX_A(ushort address, byte value)
 		{
-			if (address < 0x4000 && address >= 0x2000)
+			if (address is < 0x4000 and >= 0x2000)
 				ExtRam[address & ExtRamMask] = value;
 			else if (address >= 0xC000)
 				SystemRam[address & 0x3FF] = value;

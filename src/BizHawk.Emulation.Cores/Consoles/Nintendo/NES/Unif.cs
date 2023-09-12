@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void TryAdd(Stream s, string key)
 		{
-			if (!Chunks.TryGetValue(key, out var data))
+			if (!Chunks.TryGetValue(key, out byte[] data))
 			{
 				return;
 			}
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public Unif(Stream s)
 		{
-			var br = new BinaryReader(s, Encoding.ASCII);
+			BinaryReader br = new(s, Encoding.ASCII);
 
 			if (!Encoding.ASCII.GetBytes("UNIF")
 				.SequenceEqual(br.ReadBytes(4)))
@@ -51,8 +51,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Chunks.Add(chunkId, chunkData);
 			}
 
-			var prgs = new MemoryStream();
-			var chrs = new MemoryStream();
+			MemoryStream prgs = new();
+			MemoryStream chrs = new();
 			for (int i = 0; i < 16; i++)
 			{
 				TryAdd(prgs, $"PRG{i:X1}");
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Cart.PrgSize = (short)(Prg.Length / 1024);
 			Cart.ChrSize = (short)(Chr.Length / 1024);
 
-			if (Chunks.TryGetValue("MIRR", out var tmp))
+			if (Chunks.TryGetValue("MIRR", out byte[] tmp))
 			{
 				switch (tmp[0])
 				{

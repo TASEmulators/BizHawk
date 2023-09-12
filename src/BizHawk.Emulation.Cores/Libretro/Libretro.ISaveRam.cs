@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			if (_saveramSize > 0)
 			{
-				var buf = new byte[_saveramSize];
+				byte[] buf = new byte[_saveramSize];
 				int index = 0;
 				foreach (var m in _saveramAreas)
 				{

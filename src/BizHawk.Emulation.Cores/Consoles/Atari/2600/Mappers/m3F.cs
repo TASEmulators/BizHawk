@@ -34,10 +34,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("lowbank_2k", ref _lowBank2K);
 		}
 
-		public override void HardReset()
-		{
-			_lowBank2K = 0;
-		}
+		public override void HardReset() => _lowBank2K = 0;
 
 		public override byte ReadMemory(ushort addr)
 		{

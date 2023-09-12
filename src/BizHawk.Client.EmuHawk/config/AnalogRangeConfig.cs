@@ -57,8 +57,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				var centerX = Size.Width / 2;
-				var centerY = Size.Height / 2;
+				int centerX = Size.Width / 2;
+				int centerY = Size.Height / 2;
 
 				return new Point(centerX - ScaledX, centerY - ScaledY);
 			}
@@ -142,11 +142,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_isDragging)
 			{
-				var centerX = Size.Width / 2;
-				var centerY = Size.Height / 2;
+				int centerX = Size.Width / 2;
+				int centerY = Size.Height / 2;
 
-				var offsetX = Math.Abs(centerX - x) * ScaleFactor;
-				var offsetY = Math.Abs(centerY - y) * ScaleFactor;
+				int offsetX = Math.Abs(centerX - x) * ScaleFactor;
+				int offsetY = Math.Abs(centerY - y) * ScaleFactor;
 
 				MaxX = Math.Min(offsetX, sbyte.MaxValue);
 				MaxY = Math.Min(offsetY, sbyte.MaxValue);
@@ -161,9 +161,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public Action ChangeCallback { get; set; }
 
-		private void Changed()
-		{
-			ChangeCallback?.Invoke();
-		}
+		private void Changed() => ChangeCallback?.Invoke();
 	}
 }

@@ -123,10 +123,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte PeekMemoryLow(ushort addr)
-		{
-			return ReadMemoryLow(addr);
-		}
+		public override byte PeekMemoryLow(ushort addr) => ReadMemoryLow(addr);
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
@@ -161,10 +158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMemory(addr, value);
-		}
+		public override void PokeMemory(ushort addr, byte value) => WriteMemory(addr, value);
 
 		public override void SyncState(Serializer ser)
 		{
@@ -426,11 +420,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 5:
-						if ((instr_clocks >= 0) && (instr_clocks <= 7))
+						if (instr_clocks is >= 0 and <= 7)
 						{
 							DO = ((Core.cart_RAM[EE_addr * 2 + 1] >> (7 - instr_clocks)) & 1) == 1;
 						}
-						else if ((instr_clocks >= 8) && (instr_clocks <= 15))
+						else if (instr_clocks is >= 8 and <= 15)
 						{
 							DO = ((Core.cart_RAM[EE_addr * 2] >> (15 - instr_clocks)) & 1) == 1;
 						}

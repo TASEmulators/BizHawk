@@ -12,10 +12,7 @@ namespace BizHawk.Client.EmuHawk
 		private NES.NESSettings _oldSettings;
 		private NES.NESSettings _settings;
 
-		public override void Restart()
-		{
-			NESSoundConfig_Load(null, null);
-		}
+		public override void Restart() => NESSoundConfig_Load(null, null);
 
 		protected override string WindowTitleStatic => "NES Sound Channels";
 
@@ -24,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 
 			// get baseline maxes from a default config object
-			var d = new NES.NESSettings();
+			NES.NESSettings d = new();
 			trackBar1.Minimum = d.APU_vol;
 		}
 
@@ -36,10 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			trackBar1.Value = _settings.APU_vol;
 		}
 
-		private void Ok_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void Ok_Click(object sender, EventArgs e) => Close();
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{

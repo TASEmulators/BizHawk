@@ -90,6 +90,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 			IRQS = 3;
 		}
 
+		#pragma warning disable IDE0051
 		private void INDEX_OP_LDD()
 		{
 			PopulateCURINSTR(IDLE,
@@ -107,6 +108,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 
 			IRQS = 3;
 		}
+		#pragma warning restore IDE0051
 
 		private void INDEX_OP_EX4(ushort oper)
 		{
@@ -134,6 +136,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 			IRQS = 4;
 		}
 
+		#pragma warning disable IDE0051
 		private void INDEX_OP_EX6D(ushort oper)
 		{
 			PopulateCURINSTR(IDLE,
@@ -143,6 +146,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 
 			IRQS = 4;
 		}
+		#pragma warning restore IDE0051
 
 		private void INDEX_CMP_EX6(ushort oper)
 		{

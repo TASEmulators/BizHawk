@@ -76,8 +76,8 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				var pointsArr = new Point[4];
-				var i = 0;
+				Point[] pointsArr = new Point[4];
+				int i = 0;
 				foreach (var point in _th.EnumerateValues<LuaTable>(points)
 					.Select(table => _th.EnumerateValues<long>(table).ToList()))
 				{
@@ -217,12 +217,12 @@ namespace BizHawk.Client.Common
 			[LuaColorParam] object background = null,
 			string surfaceName = null)
 		{
-			var pointsList = _th.EnumerateValues<LuaTable>(points)
+			System.Collections.Generic.List<System.Collections.Generic.List<long>> pointsList = _th.EnumerateValues<LuaTable>(points)
 				.Select(table => _th.EnumerateValues<long>(table).ToList()).ToList();
 			try
 			{
-				var pointsArr = new Point[pointsList.Count];
-				var i = 0;
+				Point[] pointsArr = new Point[pointsList.Count];
+				int i = 0;
 				foreach (var point in pointsList)
 				{
 					pointsArr[i] = new Point((int) point[0] + (offsetX ?? 0), (int) point[1] + (offsetY ?? 0));

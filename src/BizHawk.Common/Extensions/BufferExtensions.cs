@@ -55,8 +55,8 @@ namespace BizHawk.Common.BufferExtensions
 		/// </summary>
 		public static string BytesToHexString(this byte[] bytes)
 		{
-			var sb = new StringBuilder();
-			foreach (var b in bytes)
+			StringBuilder sb = new();
+			foreach (byte b in bytes)
 			{
 				sb.AppendFormat("{0:X2}", b);
 			}
@@ -66,7 +66,7 @@ namespace BizHawk.Common.BufferExtensions
 
 		public static bool FindBytes(this byte[] array, byte[] pattern)
 		{
-			var fidx = 0;
+			int fidx = 0;
 			int result = Array.FindIndex(array, 0, array.Length, (byte b) =>
 			{
 				fidx = b == pattern[fidx] ? fidx + 1 : 0;

@@ -30,10 +30,7 @@ namespace BizHawk.Client.Common
 			_activeTask?.Wait();
 			_activeTask = null;
 		}
-		private void Work(Action work)
-		{
-			_activeTask = Task.Run(work);
-		}
+		private void Work(Action work) => _activeTask = Task.Run(work);
 
 		public ZeldaWinder(IStatable stateSource, IRewindSettings settings)
 		{
@@ -66,15 +63,9 @@ namespace BizHawk.Client.Common
 			private set { Sync(); _active = value; }
 		}
 
-		public void Suspend()
-		{
-			Active = false;
-		}
+		public void Suspend() => Active = false;
 
-		public void Resume()
-		{
-			Active = true;
-		}
+		public void Resume() => Active = true;
 
 		public void Dispose()
 		{
@@ -97,7 +88,7 @@ namespace BizHawk.Client.Common
 				return;
 			if (_masterFrame == -1)
 			{
-				var sss = new SaveStateStream(this);
+				SaveStateStream sss = new(this);
 				_stateSource.SaveStateBinary(new BinaryWriter(sss));
 				(_master, _scratch) = (_scratch, _master);
 				_masterLength = (int)sss.Position;
@@ -109,7 +100,7 @@ namespace BizHawk.Client.Common
 				return;
 
 			{
-				var sss = new SaveStateStream(this);
+				SaveStateStream sss = new(this);
 				_stateSource.SaveStateBinary(new BinaryWriter(sss));
 
 				Work(() =>
@@ -119,13 +110,13 @@ namespace BizHawk.Client.Common
 						var zeldas = SpanStream.GetOrBuild(underlyingStream_);
 						if (_master.Length < _scratch.Length)
 						{
-							var replacement = new byte[_scratch.Length];
+							byte[] replacement = new byte[_scratch.Length];
 							Array.Copy(_master, replacement, _master.Length);
 							_master = replacement;
 						}
 
-						var lengthHolder = _masterLength;
-						var lengthHolderSpan = new ReadOnlySpan<byte>(&lengthHolder, 4);
+						int lengthHolder = _masterLength;
+						ReadOnlySpan<byte> lengthHolderSpan = new(&lengthHolder, 4);
 
 						zeldas.Write(lengthHolderSpan);
 
@@ -200,8 +191,8 @@ namespace BizHawk.Client.Common
 
 		private unsafe void RefillMaster(ZwinderBuffer.StateInformation state)
 		{
-			var lengthHolder = 0;
-			var lengthHolderSpan = new Span<byte>(&lengthHolder, 4);
+			int lengthHolder = 0;
+			Span<byte> lengthHolderSpan = new(&lengthHolder, 4);
 			using var rs = state.GetReadStream();
 			var zeldas = SpanStream.GetOrBuild(rs);
 			zeldas.Read(lengthHolderSpan);
@@ -235,7 +226,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_count > 1)
 				{
-					var index = _buffer.Count - 1;
+					int index = _buffer.Count - 1;
 					RefillMaster(_buffer.GetState(index));
 					_buffer.InvalidateEnd(index);
 					_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
@@ -262,7 +253,7 @@ namespace BizHawk.Client.Common
 			{
 				_owner = owner;
 			}
-			private ZeldaWinder _owner;
+			private readonly ZeldaWinder _owner;
 			private byte[] _dest
 			{
 				get => _owner._scratch;
@@ -278,29 +269,26 @@ namespace BizHawk.Client.Common
 			public override int Read(byte[] buffer, int offset, int count) => throw new IOException();
 			public override long Seek(long offset, SeekOrigin origin) => throw new IOException();
 			public override void SetLength(long value) => throw new IOException();
-			public override void Write(byte[] buffer, int offset, int count)
-			{
-				Write(new ReadOnlySpan<byte>(buffer, offset, count));
-			}
+			public override void Write(byte[] buffer, int offset, int count) => Write(new ReadOnlySpan<byte>(buffer, offset, count));
 			private void MaybeResize(int requestedSize)
 			{
 				if (requestedSize > _dest.Length)
 				{
-					var replacement = new byte[(Math.Max(_dest.Length * 2, requestedSize) + 3) & ~3];
+					byte[] replacement = new byte[(Math.Max(_dest.Length * 2, requestedSize) + 3) & ~3];
 					Array.Copy(_dest, replacement, _dest.Length);
 					_dest = replacement;
 				}
 			}
 			public void Write(ReadOnlySpan<byte> buffer)
 			{
-				var requestedSize = _position + buffer.Length;
+				int requestedSize = _position + buffer.Length;
 				MaybeResize(requestedSize);
 				buffer.CopyTo(new Span<byte>(_dest, _position, buffer.Length));
 				_position = requestedSize;
 			}
 			public override void WriteByte(byte value)
 			{
-				var requestedSize = _position + 1;
+				int requestedSize = _position + 1;
 				MaybeResize(requestedSize);
 				_dest[_position] = value;
 				_position = requestedSize;

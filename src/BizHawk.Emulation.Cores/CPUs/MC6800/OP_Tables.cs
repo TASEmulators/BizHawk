@@ -36,6 +36,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 			IRQS = 3;
 		}
 
+		#pragma warning disable IDE0051
 		private void DIRECT_MEM(ushort oper)
 		{
 			PopulateCURINSTR(RD_INC, ALU, PC,
@@ -46,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 
 			IRQS = 5;
 		}
+		#pragma warning restore IDE0051
 
 		private void DIRECT_ST_4(ushort dest)
 		{

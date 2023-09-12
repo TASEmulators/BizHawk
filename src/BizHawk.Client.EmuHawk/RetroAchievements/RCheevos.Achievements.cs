@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetCheevoProgress(int id)
 		{
-			var len = _lib.rc_runtime_format_achievement_measured(_runtime, id, _cheevoFormatBuffer, _cheevoFormatBuffer.Length);
+			int len = _lib.rc_runtime_format_achievement_measured(_runtime, id, _cheevoFormatBuffer, _cheevoFormatBuffer.Length);
 			return Encoding.ASCII.GetString(_cheevoFormatBuffer, 0, len);
 		}
 

@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
 			var vecSyncSettings = ((VectrexHawk)core).GetSyncSettings().Clone();
-			var port1 = vecSyncSettings.Port1;
-			var port2 = vecSyncSettings.Port2;
+			string port1 = vecSyncSettings.Port1;
+			string port2 = vecSyncSettings.Port2;
 
 			switch (port1)
 			{
@@ -79,10 +79,7 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private static ButtonSchema Button(int x, int y, int controller, int button)
-		{
-			return new ButtonSchema(x, y, controller, $"Button {button}", button.ToString());
-		}
+		private static ButtonSchema Button(int x, int y, int controller, int button) => new(x, y, controller, $"Button {button}", button.ToString());
 
 		private static PadSchema ConsoleButtons()
 		{

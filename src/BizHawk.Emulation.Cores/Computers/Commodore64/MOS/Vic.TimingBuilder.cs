@@ -28,10 +28,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		// pre-display operations happen, and Cycle55 is the X-raster position where post-display operations happen.
 		public static int[] TimingBuilder_Act(int[] timing, int cycle14, int sprite0Ba, int sprDisp)
 		{
-			var result = new List<int>();
+			List<int> result = new();
 
-			var length = timing.Length;
-			for (var i = 0; i < length; i++)
+			int length = timing.Length;
+			for (int i = 0; i < length; i++)
 			{
 				while (i < result.Count)
 					i++;
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				else
 					result.Add(0);
 			}
-			for (var i = 0; i < length; i++)
+			for (int i = 0; i < length; i++)
 			{
 				// pipeline raster X delay
 				if (timing[(i + 1) % length] == timing[i])
@@ -75,11 +75,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public static int[] TimingBuilder_BA(int[] fetch)
 		{
 			const int baRestart = 7;
-			var start = 0;
-			var length = fetch.Length;
-			var result = new int[length];
-			var spriteBa = new int[8];
-			var charBa = 0;
+			int start = 0;
+			int length = fetch.Length;
+			int[] result = new int[length];
+			int[] spriteBa = new int[8];
+			int charBa = 0;
 
 			while (true)
 			{
@@ -97,18 +97,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			if (start < 0)
 				start += length;
-			var offset = start;
+			int offset = start;
 
 			while (true)
 			{
-				var ba = BaTypeNone;
+				int ba = BaTypeNone;
 
 				if (fetch[offset] == FetchTypeColor)
 					charBa = baRestart;
 				else if ((fetch[offset] & 0xFF00) == FetchTypeSprite)
 					spriteBa[fetch[offset] & 0x007] = baRestart;
 
-				for (var i = 0; i < 8; i++)
+				for (int i = 0; i < 8; i++)
 				{
 					if (spriteBa[i] > 0)
 					{
@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					break;
 			}
 
-			for (var i = 0; i < length; i += 2)
+			for (int i = 0; i < length; i += 2)
 			{
 				result[i] = result[i + 1];
 			}
@@ -146,16 +146,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		// This builds a table of the fetch operations to take on each half-cycle.
 		public static int[] TimingBuilder_Fetch(int[] timing, int sprite)
 		{
-			var length = timing.Length;
-			var result = new int[length];
-			var index = -1;
-			var refreshCounter = 0;
-			var spriteActive = false;
-			var spriteIndex = 0;
-			var spritePhase = 0;
-			var charCounter = 0;
+			int length = timing.Length;
+			int[] result = new int[length];
+			int index = -1;
+			int refreshCounter = 0;
+			bool spriteActive = false;
+			int spriteIndex = 0;
+			int spritePhase = 0;
+			int charCounter = 0;
 
-			for (var i = 0; i < length; i++)
+			for (int i = 0; i < length; i++)
 			{
 				result[i++] = FetchTypeIdle;
 				result[i] = FetchTypeNone;
@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				index++;
 				if (index >= length)
 					index -= length;
-				var offset = timing[index];
+				int offset = timing[index];
 
 				if (charCounter > 0)
 				{
@@ -217,8 +217,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				return lines;
 			}
 
-			var offset = vblankEnd;
-			var result = 0;
+			int offset = vblankEnd;
+			int result = 0;
 			while (true)
 			{
 				if (offset >= lines)
@@ -238,9 +238,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				return timing.Count * 4;
 			}
 
-			var length = timing.Count;
-			var result = 0;
-			var offset = 0;
+			int length = timing.Count;
+			int result = 0;
+			int offset = 0;
 
 			while (timing[offset] != hblankEnd) { offset = (offset + 1) % length; }
 			while (timing[offset] != hblankStart) { offset = (offset + 1) % length; result++; }
@@ -254,13 +254,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		// (specifically on an NTSC 6567R8) and DelayAmount is the number of positions to lag.
 		public static int[] TimingBuilder_XRaster(int start, int width, int count, int delayOffset, int delayAmount)
 		{
-			var result = new List<int>();
-			var rasterX = start;
-			var delayed = false;
+			List<int> result = new();
+			int rasterX = start;
+			bool delayed = false;
 			count >>= 2;
 			delayAmount >>= 2;
 
-			for (var i = 0; i < count; i++)
+			for (int i = 0; i < count; i++)
 			{
 				result.Add(rasterX);
 

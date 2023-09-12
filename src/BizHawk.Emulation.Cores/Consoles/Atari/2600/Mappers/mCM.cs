@@ -304,11 +304,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// these are register writes
 				else if ((addr & 0x0004) == 0)
 				{
-					var registerAddr = (ushort)(addr & 0x0007);
+					ushort registerAddr = (ushort)(addr & 0x0007);
 
 					if (registerAddr == 0x00)
 					{
-						if (addr != 640 && addr >= 0x280) // register addresses are only above 0x280
+						if (addr is not 640 and >= 0x280) // register addresses are only above 0x280
 						{
 							// Write Output reg A
 							////isPortA = true;
@@ -320,8 +320,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (addr == 0x280 && !poke) // Stella uses only 280
 				////if (isPortA && !poke)
 			{
-				var bit5 = value.Bit(5);
-				var bit4 = value.Bit(4);
+				bool bit5 = value.Bit(5);
+				bool bit4 = value.Bit(4);
 				
 				// D5 RAM direction. (high = write, low = read)
 				// 0 -> enable RAM writing (if D4 = 1)

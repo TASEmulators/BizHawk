@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		static MGBAHawk()
 		{
-			var resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new(
 				OSTailoredCode.IsUnixHost ? "libmgba.dll.so" : "mgba.dll", hasLimitedLifetime: false);
 			LibmGBA = BizInvoker.GetInvoker<LibmGBA>(resolver, CallingConventionAdapters.Native);
 		}
@@ -27,12 +27,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_syncSettings = lp.SyncSettings ?? new();
 			_settings = lp.Settings ?? new();
 
-			var bios = lp.Comm.CoreFileProvider.GetFirmware(new("GBA", "Bios"));
+			byte[] bios = lp.Comm.CoreFileProvider.GetFirmware(new("GBA", "Bios"));
 			if (bios is { Length: not 0x4000 }) throw new InvalidOperationException("BIOS must be exactly 16384 bytes!");
 			if (lp.DeterministicEmulationRequested && bios is null) throw new MissingFirmwareException("A BIOS is required for deterministic recordings!");
 			DeterministicEmulation = lp.DeterministicEmulationRequested
 				|| (bios is not null && !_syncSettings.RTCUseRealTime); // in this case, the core is deterministic even though it wasn't asked to be
-			var rom = lp.Roms[0].FileData;
+			byte[] rom = lp.Roms[0].FileData;
 			var overrides = GetOverrideInfo(_syncSettings);
 
 			Core = LibmGBA.BizCreate(
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			try
 			{
 				CreateMemoryDomains(rom.Length);
-				var ser = new BasicServiceProvider(this);
+				BasicServiceProvider ser = new(this);
 				ser.Register<IDisassemblable>(new ArmV4Disassembler());
 				ser.Register<IMemoryDomains>(_memoryDomains);
 
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		private static LibmGBA.OverrideInfo GetOverrideInfo(SyncSettings syncSettings)
 		{
-			var ret = new LibmGBA.OverrideInfo
+			LibmGBA.OverrideInfo ret = new()
 			{
 				Savetype = syncSettings.OverrideSaveType,
 				Hardware = LibmGBA.Hardware.None,

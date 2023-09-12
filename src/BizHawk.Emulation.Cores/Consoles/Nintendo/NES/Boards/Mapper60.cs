@@ -118,10 +118,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.NesSoftReset();
 		}
 
-		public override byte ReadPrg(int addr)
-		{
-			return Rom[(resetSwitch << 14) + (addr & 0x3FFF)];
-		}
+		public override byte ReadPrg(int addr) => Rom[(resetSwitch << 14) + (addr & 0x3FFF)];
 
 		public override byte ReadPpu(int addr)
 		{

@@ -25,15 +25,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public Mapper0013(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)
 		{
-			var count = newAddresses.Count;
+			int count = newAddresses.Count;
 
 			pinGame = true;
 			pinExRom = false;
 			_romEnable = true;
 
 			// build dummy bank
-			var dummyBank = new int[0x2000];
-			for (var i = 0; i < 0x2000; i++)
+			int[] dummyBank = new int[0x2000];
+			for (int i = 0; i < 0x2000; i++)
 			{
 				dummyBank[i] = 0xFF; // todo: determine if this is correct
 			}
@@ -57,13 +57,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 
 			// for safety, initialize all banks to dummy
-			for (var i = 0; i < _banks.Length; i++)
+			for (int i = 0; i < _banks.Length; i++)
 			{
 				_banks[i] = dummyBank;
 			}
 
 			// now load in the banks
-			for (var i = 0; i < count; i++)
+			for (int i = 0; i < count; i++)
 			{
 				if (newAddresses[i] == 0x8000)
 				{
@@ -93,10 +93,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			UpdateState();
 		}
 
-		public override int Peek8000(int addr)
-		{
-			return _currentBank[addr];
-		}
+		public override int Peek8000(int addr) => _currentBank[addr];
 
 		public override void PokeDE00(int addr, int val)
 		{
@@ -106,10 +103,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		public override int Read8000(int addr)
-		{
-			return _currentBank[addr];
-		}
+		public override int Read8000(int addr) => _currentBank[addr];
 
 		private void UpdateState()
 		{

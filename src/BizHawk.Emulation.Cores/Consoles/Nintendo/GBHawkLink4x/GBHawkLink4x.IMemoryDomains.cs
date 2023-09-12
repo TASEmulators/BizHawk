@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new()
 			{
 				new MemoryDomainDelegate(
 					"Main RAM A",
@@ -156,25 +156,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 			if (A.cart_RAM != null)
 			{
-				var cartRamA = new MemoryDomainByteArray("Cart RAM L", MemoryDomain.Endian.Little, A.cart_RAM, true, 1);
+				MemoryDomainByteArray cartRamA = new("Cart RAM L", MemoryDomain.Endian.Little, A.cart_RAM, true, 1);
 				domains.Add(cartRamA);
 			}
 
 			if (B.cart_RAM != null)
 			{
-				var cartRamB = new MemoryDomainByteArray("Cart RAM B", MemoryDomain.Endian.Little, B.cart_RAM, true, 1);
+				MemoryDomainByteArray cartRamB = new("Cart RAM B", MemoryDomain.Endian.Little, B.cart_RAM, true, 1);
 				domains.Add(cartRamB);
 			}
 
 			if (C.cart_RAM != null)
 			{
-				var cartRamC = new MemoryDomainByteArray("Cart RAM C", MemoryDomain.Endian.Little, C.cart_RAM, true, 1);
+				MemoryDomainByteArray cartRamC = new("Cart RAM C", MemoryDomain.Endian.Little, C.cart_RAM, true, 1);
 				domains.Add(cartRamC);
 			}
 
 			if (D.cart_RAM != null)
 			{
-				var cartRamD = new MemoryDomainByteArray("Cart RAM D", MemoryDomain.Endian.Little, D.cart_RAM, true, 1);
+				MemoryDomainByteArray cartRamD = new("Cart RAM D", MemoryDomain.Endian.Little, D.cart_RAM, true, 1);
 				domains.Add(cartRamD);
 			}
 

@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void LoadStateText(TextReader reader)
 		{
-			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
+			TextState<TextStateData> s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
 			LoadState(s);
 			reader.ReadToEnd();
 		}
@@ -88,16 +88,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private byte[] _stateBuf;
 
-		private void NewSaveCoreSetBuff()
-		{
+		private void NewSaveCoreSetBuff() =>
 #if USE_UPSTREAM_STATES
 			_stateBuf = new byte[LibGambatte.gambatte_savestate(GambatteState, null, 160, null)];
 #else
 			_stateBuf = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
 #endif
-		}
 
-		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
+
+		private readonly JsonSerializer ser = new() { Formatting = Formatting.Indented };
 
 		// other data in the text state besides core
 		internal class TextStateData
@@ -113,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		internal TextState<TextStateData> SaveState()
 		{
-			var s = new TextState<TextStateData>();
+			TextState<TextStateData> s = new();
 			s.Prepare();
 			var ff = s.GetFunctionPointersSave();
 			LibGambatte.gambatte_newstatesave_ex(GambatteState, ref ff);

@@ -29,15 +29,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WriteWram(int addr, byte value)
-		{
-			reg = value;
-		}
+		public override void WriteWram(int addr, byte value) => reg = value;
 
-		public override void WritePrg(int addr, byte value)
-		{
-			SetMirrorType(value.Bit(0) ? EMirrorType.Horizontal : EMirrorType.Vertical);
-		}
+		public override void WritePrg(int addr, byte value) => SetMirrorType(value.Bit(0) ? EMirrorType.Horizontal : EMirrorType.Vertical);
 
 		public override byte ReadPrg(int addr)
 		{

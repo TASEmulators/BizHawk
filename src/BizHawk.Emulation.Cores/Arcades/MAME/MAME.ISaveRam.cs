@@ -12,10 +12,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private readonly List<string> _nvramFilenames = new();
 		private const string NVRAM_MAGIC = "MAMEHAWK_NVRAM";
 
-		private void GetNVRAMFilenames()
-		{
-			_core.mame_nvram_get_filenames(_filenameCallback);
-		}
+		private void GetNVRAMFilenames() => _core.mame_nvram_get_filenames(_filenameCallback);
 
 		public bool SaveRamModified => _nvramFilenames.Count > 0;
 
@@ -33,15 +30,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			_core.mame_nvram_save();
 
-			using var ms = new MemoryStream();
-			using var writer = new BinaryWriter(ms);
+			using MemoryStream ms = new();
+			using BinaryWriter writer = new(ms);
 
 			writer.Write(NVRAM_MAGIC);
 			writer.Write(_nvramFilenames.Count);
 
-			for (var i = 0; i < _nvramFilenames.Count; i++)
+			for (int i = 0; i < _nvramFilenames.Count; i++)
 			{
-				var res = _exe.RemoveTransientFile(_nvramFilenames[i]);
+				byte[] res = _exe.RemoveTransientFile(_nvramFilenames[i]);
 				writer.Write(_nvramFilenames[i]);
 				writer.Write(res.Length);
 				writer.Write(res);
@@ -57,24 +54,24 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				return;
 			}
 
-			using var ms = new MemoryStream(data, false);
-			using var reader = new BinaryReader(ms);
+			using MemoryStream ms = new(data, false);
+			using BinaryReader reader = new(ms);
 
 			if (reader.ReadString() != NVRAM_MAGIC)
 			{
 				throw new InvalidOperationException("Bad NVRAM magic!");
 			}
 
-			var cnt = reader.ReadInt32();
+			int cnt = reader.ReadInt32();
 			if (cnt != _nvramFilenames.Count)
 			{
 				throw new InvalidOperationException($"Wrong NVRAM file count! (got {cnt}, expected {_nvramFilenames.Count})");
 			}
 
-			var nvramFilesToClose = new List<string>();
+			List<string> nvramFilesToClose = new();
 			void RemoveFiles()
 			{
-				foreach (var nvramFileToClose in nvramFilesToClose)
+				foreach (string nvramFileToClose in nvramFilesToClose)
 				{
 					_exe.RemoveReadonlyFile(nvramFileToClose);
 				}
@@ -82,16 +79,16 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			try
 			{
-				for (var i = 0; i < cnt; i++)
+				for (int i = 0; i < cnt; i++)
 				{
-					var name = reader.ReadString();
+					string name = reader.ReadString();
 					if (name != _nvramFilenames[i])
 					{
 						throw new InvalidOperationException($"Wrong NVRAM filename! (got {name}, expected {_nvramFilenames[i]})");
 					}
 
-					var len = reader.ReadInt32();
-					var buf = reader.ReadBytes(len);
+					int len = reader.ReadInt32();
+					byte[] buf = reader.ReadBytes(len);
 
 					if (len != buf.Length)
 					{

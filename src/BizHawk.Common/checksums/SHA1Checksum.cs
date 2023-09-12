@@ -40,11 +40,11 @@ namespace BizHawk.Common
 		private static unsafe byte[] UnmanagedImpl(byte[] buffer)
 		{
 			// Set SHA1 start state
-			var state = stackalloc uint[] { 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0 };
+			uint* state = stackalloc uint[] { 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0 };
 			// This will use dedicated SHA instructions, which perform 4x faster than a generic implementation
 			LibBizHash.BizCalcSha1((IntPtr) state, buffer, buffer.Length);
 			// The copy seems wasteful, but pinning the state down actually has a bigger performance impact
-			var ret = new byte[20];
+			byte[] ret = new byte[20];
 			Marshal.Copy((IntPtr) state, ret, 0, 20);
 			return ret;
 		}
@@ -72,7 +72,7 @@ namespace BizHawk.Common
 		public static byte[] ComputeConcat(byte[] dataA, byte[] dataB)
 		{
 			if (LibBizHash.BizSupportsShaInstructions()) return UnmanagedImpl(dataA.ConcatArray(dataB));
-			using var impl = IncrementalHash.CreateHash(HashAlgorithmName.SHA1);
+			using IncrementalHash impl = IncrementalHash.CreateHash(HashAlgorithmName.SHA1);
 			impl.AppendData(dataA);
 			impl.AppendData(dataB);
 			return impl.GetHashAndReset();

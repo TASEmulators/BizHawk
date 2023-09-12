@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 
 		public PutSettingsDirtyBits PutSyncSettings(TIC80SyncSettings o)
 		{
-			var ret = TIC80SyncSettings.NeedsReboot(_syncSettings, o);
+			bool ret = TIC80SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}

@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 			_nesStatable = _nesCore.ServiceProvider.GetService<IStatable>();
 
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 
 			ser.Register(_nesCore.ServiceProvider.GetService<IVideoProvider>());

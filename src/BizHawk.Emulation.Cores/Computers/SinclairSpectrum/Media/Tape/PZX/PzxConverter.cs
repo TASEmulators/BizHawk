@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_position = 0;
 
 			// parse all blocks out into seperate byte arrays first
-			List<byte[]> bDatas = new List<byte[]>();
+			List<byte[]> bDatas = new();
 
 			while (_position < data.Length)
 			{
@@ -125,13 +125,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			// process the blocks
-			foreach (var b in bDatas)
+			foreach (byte[] b in bDatas)
 			{
 				int pos = 8;
 				string blockId = Encoding.ASCII.GetString(b, 0, 4);
 				int blockSize = GetInt32(b, 4);
 
-				TapeDataBlock t = new TapeDataBlock();
+				TapeDataBlock t = new();
 
 				switch (blockId)
 				{
@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						t.InitialPulseLevel = false;
 						bool pLevel = !t.InitialPulseLevel;
 
-						List<ushort[]> pulses = new List<ushort[]>();
+						List<ushort[]> pulses = new();
 
 						while (pos < blockSize + 8)
 						{
@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						t.BlockDescription = BlockType.PULS;
 						t.PauseInMS = 0;
 
-						foreach (var x in pulses)
+						foreach (ushort[] x in pulses)
 						{
 							for (int i = 0; i < x[0]; i++)
 							{
@@ -228,9 +228,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						t.DataPeriods = new List<int>();
 						t.DataLevels = new List<bool>();
 
-						List<ushort> s0 = new List<ushort>();
-						List<ushort> s1 = new List<ushort>();
-						List<byte> dData = new List<byte>();
+						List<ushort> s0 = new();
+						List<ushort> s1 = new();
+						List<byte> dData = new();
 
 						uint initPulseLevel = 1;
 						int dCount = 1;
@@ -250,36 +250,36 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							tail = GetWordValue(b, pos);
 							pos += 2;
 
-							var p0 = b[pos++];
-							var p1 = b[pos++];
+							byte p0 = b[pos++];
+							byte p1 = b[pos++];
 
 							for (int i = 0; i < p1; i++)
 							{
-								var s = GetWordValue(b, pos);
+								ushort s = GetWordValue(b, pos);
 								pos += 2;
 								s0.Add(s);
 							}
 
 							for (int i = 0; i < p1; i++)
 							{
-								var s = GetWordValue(b, pos);
+								ushort s = GetWordValue(b, pos);
 								pos += 2;
 								s1.Add(s);
 							}
 
 							for (int i = 0; i < Math.Ceiling((decimal)dCount / 8); i++)
 							{
-								var buff = b[pos++];
+								byte buff = b[pos++];
 								dData.Add(buff);
 							}
 
-							foreach (var by in dData)
+							foreach (byte by in dData)
 							{
 								for (int i = 7; i >= 0; i--)
 								{
 									if (by.Bit(i))
 									{
-										foreach (var pu in s1)
+										foreach (ushort pu in s1)
 										{
 											t.DataPeriods.Add(pu);
 											bLevel = !bLevel;
@@ -289,7 +289,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 									}
 									else
 									{
-										foreach (var pu in s0)
+										foreach (ushort pu in s0)
 										{
 											t.DataPeriods.Add(pu);
 											bLevel = !bLevel;
@@ -334,7 +334,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						int iniPulseLevel = 1;
 						int pCount = 0;
 
-						var d = GetInt32(b, pos);
+						int d = GetInt32(b, pos);
 						iniPulseLevel = ((d & 0x80000000) == 0 ? 0 : 1);
 						t.InitialPulseLevel = iniPulseLevel == 1;
 						bool paLevel = !t.InitialPulseLevel;
@@ -390,7 +390,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						t.BlockID = GetInt32(b, 0);
 						t.DataPeriods = new List<int>();
 
-						var flags = GetWordValue(b, pos);
+						ushort flags = GetWordValue(b, pos);
 						if (flags == 1)
 						{
 							t.BlockDescription = BlockType.Stop_the_Tape_48K;

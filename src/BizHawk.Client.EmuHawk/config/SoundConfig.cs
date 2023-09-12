@@ -79,17 +79,14 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult = DialogResult.OK;
 		}
 
-		private void Cancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void Cancel_Click(object sender, EventArgs e) => Close();
 
 		private void PopulateDeviceList()
 		{
 			listBoxSoundDevices.Items.Clear();
 			listBoxSoundDevices.Items.Add("<default>");
 			listBoxSoundDevices.SelectedIndex = 0;
-			foreach (var name in _getDeviceNamesCallback(GetSelectedOutputMethod()))
+			foreach (string name in _getDeviceNamesCallback(GetSelectedOutputMethod()))
 			{
 				listBoxSoundDevices.Items.Add(name);
 				if (name == _config.SoundDevice)
@@ -109,15 +106,9 @@ namespace BizHawk.Client.EmuHawk
 			PopulateDeviceList();
 		}
 
-		private void TrackBar1_Scroll(object sender, EventArgs e)
-		{
-			nudNormal.Value = tbNormal.Value;
-		}
+		private void TrackBar1_Scroll(object sender, EventArgs e) => nudNormal.Value = tbNormal.Value;
 
-		private void TbRwff_Scroll(object sender, EventArgs e)
-		{
-			nudRWFF.Value = tbRWFF.Value;
-		}
+		private void TbRwff_Scroll(object sender, EventArgs e) => nudRWFF.Value = tbRWFF.Value;
 
 		private void SoundVolNumeric_ValueChanged(object sender, EventArgs e)
 		{
@@ -136,14 +127,8 @@ namespace BizHawk.Client.EmuHawk
 			grpSoundVol.Enabled = cbEnableMaster.Checked;
 		}
 
-		private void UpdateSoundDialog(object sender, EventArgs e)
-		{
-			UpdateSoundDialog();
-		}
+		private void UpdateSoundDialog(object sender, EventArgs e) => UpdateSoundDialog();
 
-		private void nudRWFF_ValueChanged(object sender, EventArgs e)
-		{
-			tbRWFF.Value = (int)nudRWFF.Value;
-		}
+		private void nudRWFF_ValueChanged(object sender, EventArgs e) => tbRWFF.Value = (int)nudRWFF.Value;
 	}
 }

@@ -10,18 +10,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>();
-			var RAM = new MemoryDomainByteArray("RAM", MemoryDomain.Endian.Little, ram, true, 1);
+			List<MemoryDomain> domains = new();
+			MemoryDomainByteArray RAM = new("RAM", MemoryDomain.Endian.Little, ram, true, 1);
 
 			// System bus gets it's own class in order to send compare values to cheats
-			var SystemBus = new MemoryDomainDelegateSysBusNES("System Bus", 0x10000, MemoryDomain.Endian.Little,
+			MemoryDomainDelegateSysBusNES SystemBus = new("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				addr => PeekMemory((ushort)addr), (addr, value) => ApplySystemBusPoke((int)addr, value), 1,
 				(addr, value, compare, comparetype) => ApplyCompareCheat(addr, value, compare, comparetype));
 
-			var PPUBus = new MemoryDomainDelegate("PPU Bus", 0x4000, MemoryDomain.Endian.Little,
+			MemoryDomainDelegate PPUBus = new("PPU Bus", 0x4000, MemoryDomain.Endian.Little,
 				addr => ppu.ppubus_peek((int)addr), (addr, value) => ppu.ppubus_write((int)addr, value), 1);
-			var CIRAMdomain = new MemoryDomainByteArray("CIRAM (nametables)", MemoryDomain.Endian.Little, CIRAM, true, 1);
-			var OAMdoman = new MemoryDomainByteArray("OAM", MemoryDomain.Endian.Unknown, ppu.OAM, true, 1);
+			MemoryDomainByteArray CIRAMdomain = new("CIRAM (nametables)", MemoryDomain.Endian.Little, CIRAM, true, 1);
+			MemoryDomainByteArray OAMdoman = new("OAM", MemoryDomain.Endian.Unknown, ppu.OAM, true, 1);
 
 			domains.Add(RAM);
 			domains.Add(SystemBus);
@@ -31,31 +31,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (Board is not FDS && Board.SaveRam != null)
 			{
-				var BatteryRam = new MemoryDomainByteArray("Battery RAM", MemoryDomain.Endian.Little, Board.SaveRam, true, 1);
+				MemoryDomainByteArray BatteryRam = new("Battery RAM", MemoryDomain.Endian.Little, Board.SaveRam, true, 1);
 				domains.Add(BatteryRam);
 			}
 
 			if (Board.Rom != null)
 			{
-				var PRGROM = new MemoryDomainByteArray("PRG ROM", MemoryDomain.Endian.Little, Board.Rom, true, 1);
+				MemoryDomainByteArray PRGROM = new("PRG ROM", MemoryDomain.Endian.Little, Board.Rom, true, 1);
 				domains.Add(PRGROM);
 			}
 
 			if (Board.Vrom != null)
 			{
-				var CHRROM = new MemoryDomainByteArray("CHR VROM", MemoryDomain.Endian.Little, Board.Vrom, true, 1);
+				MemoryDomainByteArray CHRROM = new("CHR VROM", MemoryDomain.Endian.Little, Board.Vrom, true, 1);
 				domains.Add(CHRROM);
 			}
 
 			if (Board.Vram != null)
 			{
-				var VRAM = new MemoryDomainByteArray("VRAM", MemoryDomain.Endian.Little, Board.Vram, true, 1);
+				MemoryDomainByteArray VRAM = new("VRAM", MemoryDomain.Endian.Little, Board.Vram, true, 1);
 				domains.Add(VRAM);
 			}
 
 			if (Board.Wram != null)
 			{
-				var WRAM = new MemoryDomainByteArray("WRAM", MemoryDomain.Endian.Little, Board.Wram, true, 1);
+				MemoryDomainByteArray WRAM = new("WRAM", MemoryDomain.Endian.Little, Board.Wram, true, 1);
 				domains.Add(WRAM);
 			}
 
@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				var src = new MemoryDomainList(domains);
+				MemoryDomainList src = new(domains);
 				_memoryDomains.MergeList(src);
 			}
 		}

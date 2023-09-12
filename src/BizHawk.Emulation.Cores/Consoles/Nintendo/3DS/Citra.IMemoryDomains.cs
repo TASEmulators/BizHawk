@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		private void InitMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>()
+			List<MemoryDomain> domains = new()
 			{
 				(_fcram = new("FCRAM", MemoryDomain.Endian.Little, IntPtr.Zero, 0, true, 4)),
 				(_vram = new("VRAM", MemoryDomain.Endian.Little, IntPtr.Zero, 0, true, 4)),
@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		{
 			void WireDomain(LibCitra.MemoryRegion region, MemoryDomainIntPtr domain)
 			{
-				_core.Citra_GetMemoryRegion(_context, region, out var ptr, out var size);
+				_core.Citra_GetMemoryRegion(_context, region, out var ptr, out int size);
 				domain.Data = ptr;
 				domain.SetSize(size);
 			}

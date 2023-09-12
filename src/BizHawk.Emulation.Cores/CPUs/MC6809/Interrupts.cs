@@ -82,9 +82,6 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		public Action FIRQCallback = () => {};
 		public Action NMICallback = () => {};
 
-		private void ResetInterrupts()
-		{
-			IN_SYNC = false;
-		}
+		private void ResetInterrupts() => IN_SYNC = false;
 	}
 }

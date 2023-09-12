@@ -19,22 +19,22 @@
 
 		private void RunMednaDisc()
 		{
-			var disc = new Disc();
+			Disc disc = new();
 			OUT_Disc = disc;
 
 			//create a MednaDisc and give it to the disc for ownership
-			var md = new MednaDisc(IN_FromPath);
+			MednaDisc md = new(IN_FromPath);
 			disc.DisposableResources.Add(md);
 
 			//"length of disc" for BizHawk's purposes (NOT a robust concept!) is determined by beginning of leadout track
 			var m_leadoutTrack = md.TOCTracks[100];
-			var nSectors = (int)m_leadoutTrack.lba;
+			int nSectors = (int)m_leadoutTrack.lba;
 
 			//make synth param memos
 			disc.SynthParams.MednaDisc = md;
 
 			//this is the sole sector synthesizer we'll need
-			var synth = new SS_MednaDisc();
+			SS_MednaDisc synth = new();
 			OUT_Disc.SynthProvider = new SimpleSectorSynthProvider { SS = synth };
 
 			//ADR (q-Mode) is necessarily 0x01 for a RawTOCEntry
@@ -50,7 +50,7 @@
 			//entry[0] is placeholder junk, not to be used
 			//entry[100] is the leadout track (A0)
 			//A1 and A2 are in the form of FirstRecordedTrackNumber and LastRecordedTrackNumber
-			for (var i = 1; i < 101; i++)
+			for (int i = 1; i < 101; i++)
 			{
 				var m_te = md.TOCTracks[i];
 
@@ -58,9 +58,9 @@
 				if (!m_te.Valid)
 					continue;
 
-				var m_ts = new Timestamp((int)m_te.lba + 150); //these are supposed to be absolute timestamps
+				Timestamp m_ts = new((int)m_te.lba + 150); //these are supposed to be absolute timestamps
 
-				var q = new SubchannelQ
+				SubchannelQ q = new()
 				{
 					q_status = SubchannelQ.ComputeStatus(kADR, (EControlQ) m_te.control),
 					q_tno = BCD2.FromDecimal(0), //unknown with mednadisc
@@ -85,7 +85,7 @@
 			}
 
 			// synth A0 and A1 entries (indicating first and last recorded tracks and also session type)
-			var qA0 = new SubchannelQ
+			SubchannelQ qA0 = new()
 			{
 				q_status = SubchannelQ.ComputeStatus(kADR, kUnknownControl),
 				q_tno = BCD2.FromDecimal(0), //unknown with mednadisc
@@ -100,7 +100,7 @@
 				q_crc = 0, //meaningless
 			};
 			disc.Session1.RawTOCEntries.Add(new() { QData = qA0 });
-			var qA1 = new SubchannelQ
+			SubchannelQ qA1 = new()
 			{
 				q_status = SubchannelQ.ComputeStatus(kADR, kUnknownControl),
 				q_tno = BCD2.FromDecimal(0), //unknown with mednadisc

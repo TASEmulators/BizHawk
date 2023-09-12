@@ -766,10 +766,7 @@
 		/// <summary>
 		/// Illegal Opcode - just do a short cycle NOP
 		/// </summary>
-		private void ILLEGAL()
-		{
-			NOP();
-		}
+		private void ILLEGAL() => NOP();
 
 		/// <summary>
 		/// IN - INPUT LONG ADDRESS

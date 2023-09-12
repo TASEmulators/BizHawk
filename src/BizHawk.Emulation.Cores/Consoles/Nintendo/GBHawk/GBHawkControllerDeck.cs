@@ -32,10 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			Definition.MakeImmutable();
 		}
 
-		public byte ReadPort1(IController c)
-		{
-			return Port1.Read(c);
-		}
+		public byte ReadPort1(IController c) => Port1.Read(c);
 
 		public (ushort X, ushort Y) ReadAcc1(IController c)
 			=> Port1.ReadAcc(c);

@@ -11,20 +11,20 @@ namespace BizHawk.Client.Common
 
 		private readonly Action<string> LogCallback;
 
-		private readonly Dictionary<Guid, byte[]> _memorySavestates = new Dictionary<Guid, byte[]>();
+		private readonly Dictionary<Guid, byte[]> _memorySavestates = new();
 
 		public MemorySaveStateApi(Action<string> logCallback) => LogCallback = logCallback;
 
 		public string SaveCoreStateToMemory()
 		{
-			var guid = Guid.NewGuid();
+			Guid guid = Guid.NewGuid();
 			_memorySavestates.Add(guid, StatableCore.CloneSavestate());
 			return guid.ToString();
 		}
 
 		public void LoadCoreStateFromMemory(string identifier)
 		{
-			var guid = new Guid(identifier);
+			Guid guid = new(identifier);
 			try
 			{
 				StatableCore.LoadStateBinary(_memorySavestates[guid]);

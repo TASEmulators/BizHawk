@@ -8,14 +8,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public class NullJoystick : IJoystick
 	{
-		private int _joyLine;
-		private SpectrumBase _machine;
+		private readonly SpectrumBase _machine;
 
 		public NullJoystick(SpectrumBase machine, int playerNumber)
 		{
 			_machine = machine;
-			_joyLine = 0;
-			_playerNumber = playerNumber;
+			JoyLine = 0;
+			PlayerNumber = playerNumber;
 
 			ButtonCollection = new List<string>
 			{
@@ -26,24 +25,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public JoystickType JoyType => JoystickType.NULL;
 
 		public string[] ButtonCollection { get; set; }
-
-		private int _playerNumber;
-		public int PlayerNumber
-		{
-			get => _playerNumber;
-			set => _playerNumber = value;
-		}
+		public int PlayerNumber { get; set; }
 
 		/// <summary>
 		/// Sets the joystick line based on key pressed
 		/// </summary>
 		public void SetJoyInput(string key, bool isPressed)
 		{
-			var pos = GetBitPos(key);
+			int pos = GetBitPos(key);
 			if (isPressed)
-				_joyLine |= (1 << pos);
+				JoyLine |= (1 << pos);
 			else
-				_joyLine &= ~(1 << pos);
+				JoyLine &= ~(1 << pos);
 		}
 
 		/// <summary>
@@ -51,19 +44,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public bool GetJoyInput(string key)
 		{
-			var pos = GetBitPos(key);
-			return (_joyLine & (1 << pos)) != 0;
+			int pos = GetBitPos(key);
+			return (JoyLine & (1 << pos)) != 0;
 		}
 
 		/// <summary>
 		/// Active bits high
 		/// 0 0 0 F U D L R
 		/// </summary>
-		public int JoyLine
-		{
-			get => _joyLine;
-			set => _joyLine = value;
-		}
+		public int JoyLine { get; set; }
 
 		/// <summary>
 		/// Gets the bit position of a particular joystick binding from the matrix

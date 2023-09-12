@@ -55,24 +55,24 @@ namespace BizHawk.Client.Common
 
 		public static readonly IReadOnlyCollection<string> DiscExtensions = new[] { "cue", "ccd", "cdi", "iso", "mds", "m3u", "nrg" };
 
-		public static readonly FilesystemFilter Archives = new FilesystemFilter("Archives", ArchiveExtensions);
+		public static readonly FilesystemFilter Archives = new("Archives", ArchiveExtensions);
 
-		public static readonly FilesystemFilter BizHawkMovies = new FilesystemFilter("Movie Files", new[] { MovieService.StandardMovieExtension });
+		public static readonly FilesystemFilter BizHawkMovies = new("Movie Files", new[] { MovieService.StandardMovieExtension });
 
-		public static readonly FilesystemFilter EmuHawkSaveStates = new FilesystemFilter("Save States", new[] { "State" });
+		public static readonly FilesystemFilter EmuHawkSaveStates = new("Save States", new[] { "State" });
 
-		public static readonly FilesystemFilter LuaScripts = new FilesystemFilter("Lua Scripts", new[] { "lua" });
+		public static readonly FilesystemFilter LuaScripts = new("Lua Scripts", new[] { "lua" });
 
-		public static readonly FilesystemFilter PNGs = new FilesystemFilter("PNG Files", new[] { "png" });
+		public static readonly FilesystemFilter PNGs = new("PNG Files", new[] { "png" });
 
-		public static readonly FilesystemFilter TAStudioProjects = new FilesystemFilter("TAS Project Files", new[] { MovieService.TasMovieExtension });
+		public static readonly FilesystemFilter TAStudioProjects = new("TAS Project Files", new[] { MovieService.TasMovieExtension });
 
-		public static readonly FilesystemFilter TextFiles = new FilesystemFilter("Text Files", new[] { "txt" });
+		public static readonly FilesystemFilter TextFiles = new("Text Files", new[] { "txt" });
 
 		/// <remarks>return value is a valid <c>Filter</c> for <c>Save-</c>/<c>OpenFileDialog</c></remarks>
 		public static string SerializeEntry(string desc, IReadOnlyCollection<string> exts)
 		{
-			var joinedLower = string.Join(";", exts.Select(static ext => $"*.{ext}"));
+			string joinedLower = string.Join(";", exts.Select(static ext => $"*.{ext}"));
 			return OSTailoredCode.IsUnixHost
 				? $"{desc} ({joinedLower})|{string.Join(";", exts.Select(static ext => $"*.{ext};*.{ext.ToUpperInvariant()}"))}"
 				: $"{desc} ({joinedLower})|{joinedLower}";

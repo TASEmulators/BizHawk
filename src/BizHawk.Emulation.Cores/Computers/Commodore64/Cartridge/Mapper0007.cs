@@ -20,9 +20,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			_disabled = false;
 
 			// load data into the banks from the list
-			for (var j = 0; j < 16; j++)
+			for (int j = 0; j < 16; j++)
 			{
-				for (var i = 0; i < 0x2000; i++)
+				for (int i = 0; i < 0x2000; i++)
 				{
 					_banks[j, i] = newData[j][i];
 				}

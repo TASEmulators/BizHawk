@@ -36,14 +36,14 @@ namespace BizHawk.Client.Common.Filters
 		// do maths on the viewport and the native resolution and the user settings to get a display rectangle
 		public LetterboxingLogic(bool maintainAspect, bool maintainInteger, int targetWidth, int targetHeight, int sourceWidth, int sourceHeight, Size textureSize, Size virtualSize)
 		{
-			var textureWidth = textureSize.Width;
-			var textureHeight = textureSize.Height;
-			var virtualWidth = virtualSize.Width;
-			var virtualHeight = virtualSize.Height;
+			int textureWidth = textureSize.Width;
+			int textureHeight = textureSize.Height;
+			int virtualWidth = virtualSize.Width;
+			int virtualHeight = virtualSize.Height;
 
 			// zero 02-jun-2014 - we passed these in, but ignored them. kind of weird..
-			var oldSourceWidth = sourceWidth;
-			var oldSourceHeight = sourceHeight;
+			int oldSourceWidth = sourceWidth;
+			int oldSourceHeight = sourceHeight;
 			sourceWidth = virtualWidth;
 			sourceHeight = virtualHeight;
 
@@ -53,8 +53,8 @@ namespace BizHawk.Client.Common.Filters
 				maintainInteger = false;
 			}
 
-			var widthScale = (float)targetWidth / sourceWidth;
-			var heightScale = (float)targetHeight / sourceHeight;
+			float widthScale = (float)targetWidth / sourceWidth;
+			float heightScale = (float)targetHeight / sourceHeight;
 
 			if (maintainAspect
 				// zero 20-jul-2014 - hacks upon hacks, this function needs rewriting
@@ -71,8 +71,8 @@ namespace BizHawk.Client.Common.Filters
 				// apply the zooming algorithm (pasted and reworked, for now)
 				// ALERT COPYPASTE LAUNDROMAT
 
-				var AR = new Vector2(virtualWidth / (float) textureWidth, virtualHeight / (float) textureHeight);
-				var targetPar = AR.X / AR.Y;
+				Vector2 AR = new(virtualWidth / (float) textureWidth, virtualHeight / (float) textureHeight);
+				float targetPar = AR.X / AR.Y;
 				var PS = Vector2.One; // this would malfunction for AR <= 0.5 or AR >= 2.0
 
 				Span<Vector2> trials = stackalloc Vector2[3];
@@ -84,21 +84,21 @@ namespace BizHawk.Client.Common.Filters
 					trials[1] = PS + Vector2.UnitY;
 					trials[2] = PS + Vector2.One;
 
-					var bestIndex = -1;
-					var bestValue = 1000.0f;
-					for (var t = 0; t < trials.Length; t++)
+					int bestIndex = -1;
+					float bestValue = 1000.0f;
+					for (int t = 0; t < trials.Length; t++)
 					{
 						var vTrial = trials[t];
 						trialsLimited[t] = false;
 
 						//check whether this is going to exceed our allotted area
-						var testVw = (int)(vTrial.X * textureWidth);
-						var testVh = (int)(vTrial.Y * textureHeight);
+						int testVw = (int)(vTrial.X * textureWidth);
+						int testVh = (int)(vTrial.Y * textureHeight);
 						if (testVw > targetWidth) trialsLimited[t] = true;
 						if (testVh > targetHeight) trialsLimited[t] = true;
 
 						// I.
-						var testAr = vTrial.X / vTrial.Y;
+						float testAr = vTrial.X / vTrial.Y;
 
 						// II.
 						// var calc = Vector2.Multiply(trials[t], VS);
@@ -106,7 +106,7 @@ namespace BizHawk.Client.Common.Filters
 
 						// not clear which approach is superior
 
-						var deviationLinear = Math.Abs(testAr - targetPar);
+						float deviationLinear = Math.Abs(testAr - targetPar);
 						if (deviationLinear < bestValue)
 						{
 							bestIndex = t;
@@ -202,11 +202,9 @@ namespace BizHawk.Client.Common.Filters
 			_nds = nds;
 		}
 
-		public override void Initialize()
-		{
+		public override void Initialize() =>
 			//we're going to be blitting the source as pieces to a new render target, so we need our input to be a texture
 			DeclareInput(SurfaceDisposition.Texture);
-		}
 
 		private void CrunchNumbers()
 		{
@@ -238,7 +236,7 @@ namespace BizHawk.Client.Common.Filters
 			// this doesn't make any sense, it's likely to be too much for a monitor to gracefully handle too
 			if (settings.ScreenLayout != NDS.ScreenLayoutKind.Horizontal)
 			{
-				var rot = settings.ScreenRotation switch
+				int rot = settings.ScreenRotation switch
 				{
 					NDS.ScreenRotationKind.Rotate90 => 90,
 					NDS.ScreenRotationKind.Rotate180 => 180,
@@ -256,14 +254,14 @@ namespace BizHawk.Client.Common.Filters
 			matBot = bot.Top;
 
 			// apply transforms from standard input screen positions to output screen positions
-			var top_TL = Vector2.Transform(new(0, 0), matTop);
-			var top_TR = Vector2.Transform(new(256, 0), matTop);
-			var top_BL = Vector2.Transform(new(0, 192), matTop);
-			var top_BR = Vector2.Transform(new(256, 192), matTop);
-			var bot_TL = Vector2.Transform(new(0, 0), matBot);
-			var bot_TR = Vector2.Transform(new(256, 0), matBot);
-			var bot_BL = Vector2.Transform(new(0, 192), matBot);
-			var bot_BR = Vector2.Transform(new(256, 192), matBot);
+			Vector2 top_TL = Vector2.Transform(new(0, 0), matTop);
+			Vector2 top_TR = Vector2.Transform(new(256, 0), matTop);
+			Vector2 top_BL = Vector2.Transform(new(0, 192), matTop);
+			Vector2 top_BR = Vector2.Transform(new(256, 192), matTop);
+			Vector2 bot_TL = Vector2.Transform(new(0, 0), matBot);
+			Vector2 bot_TR = Vector2.Transform(new(256, 0), matBot);
+			Vector2 bot_BL = Vector2.Transform(new(0, 192), matBot);
+			Vector2 bot_BR = Vector2.Transform(new(256, 192), matBot);
 
 			// in case of math errors in the transforms, we'll round this stuff.. although...
 			// we're gonna use matrix transforms for drawing later, so it isn't extremely helpful
@@ -315,7 +313,7 @@ namespace BizHawk.Client.Common.Filters
 				fixed (Matrix4x4* matTopP = &matTop, matBotP = &matBot)
 				{
 					float* matTopF = (float*)matTopP, matBotF = (float*)matBotP;
-					for (var i = 0; i < 4 * 4; i++)
+					for (int i = 0; i < 4 * 4; i++)
 					{
 						if (Math.Abs(matTopF[i]) < 0.0000001f)
 						{
@@ -351,14 +349,14 @@ namespace BizHawk.Client.Common.Filters
 		public override void SetInputFormat(string channel, SurfaceState state)
 		{
 			CrunchNumbers();
-			var ss = new SurfaceState(new(outputSize), SurfaceDisposition.RenderTarget);
+			SurfaceState ss = new(new(outputSize), SurfaceDisposition.RenderTarget);
 			DeclareOutput(ss, channel);
 		}
 
 		public override Vector2 UntransformPoint(string channel, Vector2 point)
 		{
 			var settings = _nds.GetSettings();
-			var invert = settings.ScreenInvert
+			bool invert = settings.ScreenInvert
 				&& settings.ScreenLayout != NDS.ScreenLayoutKind.Top
 				&& settings.ScreenLayout != NDS.ScreenLayoutKind.Bottom;
 
@@ -380,10 +378,7 @@ namespace BizHawk.Client.Common.Filters
 			return point;
 		}
 
-		public override Vector2 TransformPoint(string channel, Vector2 point)
-		{
-			return Vector2.Transform(point, matTop);
-		}
+		public override Vector2 TransformPoint(string channel, Vector2 point) => Vector2.Transform(point, matTop);
 
 		public override void Run()
 		{
@@ -406,8 +401,8 @@ namespace BizHawk.Client.Common.Filters
 			InputTexture.SetFilterNearest();
 
 			//draw screens
-			var renderTop = false;
-			var renderBottom = false;
+			bool renderTop = false;
+			bool renderBottom = false;
 			var settings = _nds.GetSettings();
 			switch (settings.ScreenLayout)
 			{
@@ -425,7 +420,7 @@ namespace BizHawk.Client.Common.Filters
 					throw new InvalidOperationException();
 			}
 
-			var invert = settings.ScreenInvert && renderTop && renderBottom;
+			bool invert = settings.ScreenInvert && renderTop && renderBottom;
 
 			if (renderTop)
 			{
@@ -466,9 +461,9 @@ namespace BizHawk.Client.Common.Filters
 			if (_citra.TouchScreenEnabled)
 			{
 				var rect = _citra.TouchScreenRectangle;
-				var rotated = _citra.TouchScreenRotated;
-				var bufferWidth = (float)_citra.AsVideoProvider().BufferWidth;
-				var bufferHeight = (float)_citra.AsVideoProvider().BufferHeight;
+				bool rotated = _citra.TouchScreenRotated;
+				float bufferWidth = _citra.AsVideoProvider().BufferWidth;
+				float bufferHeight = _citra.AsVideoProvider().BufferHeight;
 
 				// reset the point's origin to the top left of the screen
 				point.X -= rect.X;
@@ -498,7 +493,7 @@ namespace BizHawk.Client.Common.Filters
 			if (_citra.TouchScreenEnabled)
 			{
 				var rect = _citra.TouchScreenRectangle;
-				var rotated = _citra.TouchScreenRotated;
+				bool rotated = _citra.TouchScreenRotated;
 
 				if (rotated)
 				{
@@ -588,7 +583,7 @@ namespace BizHawk.Client.Common.Filters
 
 		public override void SetInputFormat(string channel, SurfaceState state)
 		{
-			var need = state.SurfaceFormat.Size != OutputSize || FilterOption != eFilterOption.None;
+			bool need = state.SurfaceFormat.Size != OutputSize || FilterOption != eFilterOption.None;
 			if (!need)
 			{
 				Nop = true;
@@ -611,8 +606,8 @@ namespace BizHawk.Client.Common.Filters
 			}
 			else
 			{
-				var ow = OutputSize.Width;
-				var oh = OutputSize.Height;
+				int ow = OutputSize.Width;
+				int oh = OutputSize.Height;
 				ow -= Padding.Left + Padding.Right;
 				oh -= Padding.Top + Padding.Bottom;
 				LL = new(Config_FixAspectRatio, Config_FixScaleInteger, ow, oh, InputSize.Width, InputSize.Height, TextureSize, VirtualTextureSize);
@@ -690,17 +685,14 @@ namespace BizHawk.Client.Common.Filters
 	{
 		public int Scale;
 
-		public override void Initialize()
-		{
-			DeclareInput(SurfaceDisposition.Texture);
-		}
+		public override void Initialize() => DeclareInput(SurfaceDisposition.Texture);
 
 		public override void SetInputFormat(string channel, SurfaceState state)
 		{
 			var outputSize = state.SurfaceFormat.Size;
 			outputSize.Width *= Scale;
 			outputSize.Height *= Scale;
-			var ss = new SurfaceState(new(outputSize), SurfaceDisposition.RenderTarget);
+			SurfaceState ss = new(new(outputSize), SurfaceDisposition.RenderTarget);
 			DeclareOutput(ss, channel);
 		}
 
@@ -720,10 +712,7 @@ namespace BizHawk.Client.Common.Filters
 		private Size OutputSize;
 		private int XIS, YIS;
 
-		public override void Initialize()
-		{
-			DeclareInput(SurfaceDisposition.Texture);
-		}
+		public override void Initialize() => DeclareInput(SurfaceDisposition.Texture);
 
 		public override void SetInputFormat(string channel, SurfaceState state)
 		{
@@ -755,10 +744,7 @@ namespace BizHawk.Client.Common.Filters
 			return base.PresizeOutput(channel, size);
 		}
 
-		public override Size PresizeInput(string channel, Size inSize)
-		{
-			return inSize;
-		}
+		public override Size PresizeInput(string channel, Size inSize) => inSize;
 
 		public override void Run()
 		{
@@ -773,22 +759,13 @@ namespace BizHawk.Client.Common.Filters
 	/// <remarks>More accurately, ApiHawkLayer, since the <c>gui</c> Lua library is delegated.</remarks>
 	public class LuaLayer : BaseFilter
 	{
-		public override void Initialize()
-		{
-			DeclareInput(SurfaceDisposition.RenderTarget);
-		}
+		public override void Initialize() => DeclareInput(SurfaceDisposition.RenderTarget);
 
-		public override void SetInputFormat(string channel, SurfaceState state)
-		{
-			DeclareOutput(state);
-		}
+		public override void SetInputFormat(string channel, SurfaceState state) => DeclareOutput(state);
 
 		private Texture2d _texture;
 
-		public void SetTexture(Texture2d tex)
-		{
-			_texture = tex;
-		}
+		public void SetTexture(Texture2d tex) => _texture = tex;
 
 		public override void Run()
 		{
@@ -816,15 +793,9 @@ namespace BizHawk.Client.Common.Filters
 			_font = font;
 		}
 
-		public override void Initialize()
-		{
-			DeclareInput(SurfaceDisposition.RenderTarget);
-		}
+		public override void Initialize() => DeclareInput(SurfaceDisposition.RenderTarget);
 
-		public override void SetInputFormat(string channel, SurfaceState state)
-		{
-			DeclareOutput(state);
-		}
+		public override void SetInputFormat(string channel, SurfaceState state) => DeclareOutput(state);
 
 		public override void Run()
 		{
@@ -836,7 +807,7 @@ namespace BizHawk.Client.Common.Filters
 			var size = FindInput().SurfaceFormat.Size;
 			
 			FilterProgram.GuiRenderer.Begin(size.Width, size.Height);
-			var blitter = new OSDBlitter(_font, FilterProgram.GuiRenderer, new(0, 0, size.Width, size.Height));
+			OSDBlitter blitter = new(_font, FilterProgram.GuiRenderer, new(0, 0, size.Width, size.Height));
 			FilterProgram.GuiRenderer.EnableBlending();
 			_manager.DrawScreenInfo(blitter);
 			_manager.DrawMessages(blitter);

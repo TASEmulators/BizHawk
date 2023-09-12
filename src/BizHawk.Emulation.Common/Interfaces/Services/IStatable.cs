@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Common
 				textCore.SaveStateText(writer);
 			}
 
-			var temp = core.CloneSavestate();
+			byte[] temp = core.CloneSavestate();
 			temp.SaveAsHexFast(writer);
 		}
 
@@ -53,26 +53,23 @@ namespace BizHawk.Emulation.Common
 			string hex = reader.ReadLine();
 			if (hex != null)
 			{
-				var state = new byte[hex.Length / 2];
+				byte[] state = new byte[hex.Length / 2];
 				state.ReadFromHexFast(hex);
-				using var ms = new MemoryStream(state);
-				using var br = new BinaryReader(ms);
+				using MemoryStream ms = new(state);
+				using BinaryReader br = new(ms);
 				core.LoadStateBinary(br);
 			}
 		}
 
-		public static void LoadStateText(this IStatable core, string textState)
-		{
-			core.LoadStateText(new StringReader(textState));
-		}
+		public static void LoadStateText(this IStatable core, string textState) => core.LoadStateText(new StringReader(textState));
 
 		/// <summary>
 		/// Loads a state directly from a byte array
 		/// </summary>
 		public static void LoadStateBinary(this IStatable core, byte[] state)
 		{
-			using var ms = new MemoryStream(state, false);
-			using var br = new BinaryReader(ms);
+			using MemoryStream ms = new(state, false);
+			using BinaryReader br = new(ms);
 			core.LoadStateBinary(br);
 		}
 
@@ -82,11 +79,11 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public static byte[] CloneSavestate(this IStatable core)
 		{
-			using var ms = new MemoryStream();
-			using var bw = new BinaryWriter(ms);
+			using MemoryStream ms = new();
+			using BinaryWriter bw = new(ms);
 			core.SaveStateBinary(bw);
 			bw.Flush();
-			var stateBuffer = ms.ToArray();
+			byte[] stateBuffer = ms.ToArray();
 			bw.Close();
 			return stateBuffer;
 		}

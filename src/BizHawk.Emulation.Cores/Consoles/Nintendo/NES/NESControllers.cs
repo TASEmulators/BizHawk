@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// <summary>
 	/// stores information about the strobe lines controlled by $4016
 	/// </summary>
-	public struct StrobeInfo
+	public readonly struct StrobeInfo
 	{
 		/// <summary>
 		/// the current value of $4016.0; strobes regular controller ports
@@ -171,15 +171,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			_right.Strobe(s, _rightU.UnMerge(c));
 		}
 
-		public byte ReadA(IController c)
-		{
-			return (byte)(_left.Read(_leftU.UnMerge(c)) & 0x19);
-		}
+		public byte ReadA(IController c) => (byte)(_left.Read(_leftU.UnMerge(c)) & 0x19);
 
-		public byte ReadB(IController c)
-		{
-			return (byte)(_right.Read(_rightU.UnMerge(c)) & 0x19);
-		}
+		public byte ReadB(IController c) => (byte)(_right.Read(_rightU.UnMerge(c)) & 0x19);
 
 		public void SyncState(Serializer ser)
 		{
@@ -200,10 +194,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 		}
 
-		public byte Read(IController c)
-		{
-			return 0;
-		}
+		public byte Read(IController c) => 0;
 
 		public void SyncState(Serializer ser)
 		{
@@ -238,7 +229,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 
-		private readonly Dictionary<string, int> _buttonOrdinals = new Dictionary<string, int>
+		private readonly Dictionary<string, int> _buttonOrdinals = new()
 		{
 			{ "0Up", 1 },
 			{ "0Down", 2 },
@@ -269,10 +260,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// 1. when OUT0 goes low, to get the last set
 		// 2. when even reading with OUT0 high, since new data for controller is always loading
 
-		private void Latch(IController c)
-		{
-			_latchedValue = SerialUtil.Latch(_famicomP2Hack ? FamicomP2Buttons : Buttons, c);
-		}
+		private void Latch(IController c) => _latchedValue = SerialUtil.Latch(_famicomP2Hack ? FamicomP2Buttons : Buttons, c);
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
@@ -320,10 +308,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// 1. when OUT0 goes low, to get the last set
 		// 2. when even reading with OUT0 high, since new data for controller is always loading
 
-		private void Latch(IController c)
-		{
-			_latchedValue = SerialUtil.Latch(Buttons, c);
-		}
+		private void Latch(IController c) => _latchedValue = SerialUtil.Latch(Buttons, c);
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
@@ -539,15 +524,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		// famicom expansion hookups
-		public byte ReadA(IController c)
-		{
-			return 0;
-		}
+		public byte ReadA(IController c) => 0;
 
-		public byte ReadB(IController c)
-		{
-			return Read(c);
-		}
+		public byte ReadB(IController c) => Read(c);
 	}
 
 	public class VSZapper : INesPort, IZapper
@@ -602,15 +581,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		// famicom expansion hookups
-		public byte ReadA(IController c)
-		{
-			return 0;
-		}
+		public byte ReadA(IController c) => 0;
 
-		public byte ReadB(IController c)
-		{
-			return Read(c);
-		}
+		public byte ReadB(IController c) => Read(c);
 	}
 
 	public class FamicomDeck : IControllerDeck
@@ -707,10 +680,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public byte ReadA(IController c)
-		{
-			return c.IsPressed("0Fire") ? (byte)0x02 : (byte)0x00;
-		}
+		public byte ReadA(IController c) => c.IsPressed("0Fire") ? (byte)0x02 : (byte)0x00;
 
 		public byte ReadB(IController c)
 		{
@@ -841,10 +811,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				_row = 0;
 		}
 
-		public byte ReadA(IController c)
-		{
-			return 0;
-		}
+		public byte ReadA(IController c) => 0;
 
 		public byte ReadB(IController c)
 		{
@@ -970,10 +937,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				_shiftidx++;
 		}
 
-		public byte ReadA(IController c)
-		{
-			return 0;
-		}
+		public byte ReadA(IController c) => 0;
 
 		public byte ReadB(IController c)
 		{
@@ -1005,15 +969,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 		}
 
-		public byte ReadA(IController c)
-		{
-			return 0;
-		}
+		public byte ReadA(IController c) => 0;
 
-		public byte ReadB(IController c)
-		{
-			return 0;
-		}
+		public byte ReadB(IController c) => 0;
 
 		public void SyncState(Serializer ser)
 		{
@@ -1057,14 +1015,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			NesPortDevices = Implementors<INesPort>();
 		}
 
-		public static IList<string> GetFamicomExpansionValues()
-		{
-			return new List<string>(FamicomExpansions.Keys).AsReadOnly();
-		}
-		public static IList<string> GetNesPortValues()
-		{
-			return new List<string>(NesPortDevices.Keys).AsReadOnly();
-		}
+		public static IList<string> GetFamicomExpansionValues() => new List<string>(FamicomExpansions.Keys).AsReadOnly();
+		public static IList<string> GetNesPortValues() => new List<string>(NesPortDevices.Keys).AsReadOnly();
 
 		[JsonIgnore]
 		private bool _Famicom;
@@ -1121,15 +1073,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			NesRightPort = nameof(UnpluggedNES);
 		}
 
-		public static bool NeedsReboot(NESControlSettings x, NESControlSettings y)
-		{
-			return !DeepEquality.DeepEquals(x, y);
-		}
+		public static bool NeedsReboot(NESControlSettings x, NESControlSettings y) => !DeepEquality.DeepEquals(x, y);
 
-		public NESControlSettings Clone()
-		{
-			return (NESControlSettings)MemberwiseClone();
-		}
+		public NESControlSettings Clone() => (NESControlSettings)MemberwiseClone();
 
 		public IControllerDeck Instantiate(LightgunDelegate ppuCallback)
 		{

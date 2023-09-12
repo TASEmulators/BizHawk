@@ -28,7 +28,7 @@
 
 		private void WriteMemoryExt(ushort address, byte value)
 		{
-			if (address < 0xC000 && address >= 0x8000)
+			if (address is < 0xC000 and >= 0x8000)
 				ExtRam[address & ExtRamMask] = value;
 			else if (address >= 0xC000)
 				SystemRam[address & RamSizeMask] = value;

@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Common
 	// TODO: This should build itself from the Cores assembly, we don't want to maintain this
 	public class SystemLookup
 	{
-		private readonly List<SystemInfo> _systems = new List<SystemInfo>
+		private readonly List<SystemInfo> _systems = new()
 		{
 			new(VSystemID.Raw.A26, "Atari 2600"),
 			new(VSystemID.Raw.A78, "Atari 7800"),

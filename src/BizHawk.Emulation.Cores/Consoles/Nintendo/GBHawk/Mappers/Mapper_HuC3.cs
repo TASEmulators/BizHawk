@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override byte ReadMemoryHigh(ushort addr)
 		{
-			if ((control >= 0xB) && (control < 0xE))
+			if (control is >= 0xB and < 0xE)
 			{
 				if (control == 0xD)
 				{
@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				SetCDLROM(flags, (addr - 0x4000) + ROM_bank * 0x4000);
 			}
-			else if ((addr >= 0xA000) && (addr < 0xC000))
+			else if (addr is >= 0xA000 and < 0xC000)
 			{
 				if (RAM_enable)
 				{
@@ -125,10 +125,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte PeekMemoryLow(ushort addr)
-		{
-			return ReadMemoryLow(addr);
-		}
+		public override byte PeekMemoryLow(ushort addr) => ReadMemoryLow(addr);
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
@@ -155,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else
 			{
-				if ((control < 0xB) || (control > 0xE))
+				if (control is < 0xB or > 0xE)
 				{
 					if (!RAM_enable)
 					{
@@ -247,10 +244,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override void RTC_Get(int value, int index)
-		{
-			time |= (uint)((value & 0xFF) << index);
-		}
+		public override void RTC_Get(int value, int index) => time |= (uint)((value & 0xFF) << index);
 
 		public override void Mapper_Tick()
 		{

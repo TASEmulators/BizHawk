@@ -98,10 +98,12 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private void Assign(string instr, Action exec, string root, params string[] bitfield)
 		{
-			List<string> opList = new List<string>();
-			opList.Add(root);
+			List<string> opList = new()
+			{
+				root
+			};
 
-			foreach (var component in bitfield)
+			foreach (string component in bitfield)
 			{
 				if (component.IsBinary()) AppendConstant(opList, component);
 				else if (component == "Size1") opList = AppendPermutations(opList, Size1);
@@ -118,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				else if (component == "Data8") opList = AppendData(opList, 8);
 			}
 
-			foreach (var opcode in opList)
+			foreach (string opcode in opList)
 			{
 				int opc = Convert.ToInt32(opcode, 2);
 				if (Opcodes[opc] != null && !instr.In("movea", "andi2sr", "eori2sr", "ori2sr", "ext", "dbcc", "swap", "cmpm"))
@@ -135,10 +137,10 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private List<string> AppendPermutations(List<string> ops, string[] permutations)
 		{
-			List<string> output = new List<string>();
+			List<string> output = new();
 
-			foreach (var input in ops)
-				foreach (var perm in permutations)
+			foreach (string input in ops)
+				foreach (string perm in permutations)
 					output.Add(input + perm);
 
 			return output;
@@ -146,9 +148,9 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private List<string> AppendData(List<string> ops, int bits)
 		{
-			List<string> output = new List<string>();
+			List<string> output = new();
 
-			foreach (var input in ops)
+			foreach (string input in ops)
 				for (int i = 0; i < BinaryExp(bits); i++)
 					output.Add(input + Convert.ToString(i, 2).PadLeft(bits, '0'));
 

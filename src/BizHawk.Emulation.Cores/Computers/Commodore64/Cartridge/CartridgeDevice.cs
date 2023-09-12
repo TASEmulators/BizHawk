@@ -13,24 +13,24 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public static CartridgeDevice Load(byte[] crtFile)
 		{
-			using var mem = new MemoryStream(crtFile);
-			var reader = new BinaryReader(mem);
+			using MemoryStream mem = new(crtFile);
+			BinaryReader reader = new(mem);
 
 			if (new string(reader.ReadChars(16)) != "C64 CARTRIDGE   ")
 			{
 				return null;
 			}
 
-			var chipAddress = new List<int>();
-			var chipBank = new List<int>();
-			var chipData = new List<int[]>();
-			var chipType = new List<int>();
+			List<int> chipAddress = new();
+			List<int> chipBank = new();
+			List<int[]> chipData = new();
+			List<int> chipType = new();
 
-			var headerLength = ReadCRTInt(reader);
-			var version = ReadCRTShort(reader);
-			var mapper = ReadCRTShort(reader);
-			var exrom = reader.ReadByte() != 0;
-			var game = reader.ReadByte() != 0;
+			int headerLength = ReadCRTInt(reader);
+			int version = ReadCRTShort(reader);
+			int mapper = ReadCRTShort(reader);
+			bool exrom = reader.ReadByte() != 0;
+			bool game = reader.ReadByte() != 0;
 
 			// reserved
 			reader.ReadBytes(6);
@@ -52,11 +52,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 					break;
 				}
 
-				var chipLength = ReadCRTInt(reader);
+				int chipLength = ReadCRTInt(reader);
 				chipType.Add(ReadCRTShort(reader));
 				chipBank.Add(ReadCRTShort(reader));
 				chipAddress.Add(ReadCRTShort(reader));
-				var chipDataLength = ReadCRTShort(reader);
+				int chipDataLength = ReadCRTShort(reader);
 				chipData.Add(reader.ReadBytes(chipDataLength).Select(x => (int)x).ToArray());
 				chipLength -= chipDataLength + 0x10;
 				if (chipLength > 0)
@@ -70,51 +70,36 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 				return null;
 			}
 
-			CartridgeDevice result;
-			switch (mapper)
+			CartridgeDevice result = mapper switch
 			{
-				case 0x0000:    // Standard Cartridge
-					result = new Mapper0000(chipAddress, chipData, game, exrom);
-					break;
-				case 0x0001:    // Action Replay (4.2 and up)
-					result = new Mapper0001(chipAddress, chipBank, chipData);
-					break;
-				case 0x0005:    // Ocean
-					result = new Mapper0005(chipAddress, chipBank, chipData);
-					break;
-				case 0x0007:    // Fun Play
-					result = new Mapper0007(chipData, game, exrom);
-					break;
-				case 0x0008:    // SuperGame
-					result = new Mapper0008(chipData);
-					break;
-				case 0x000A:    // Epyx FastLoad
-					result = new Mapper000A(chipData);
-					break;
-				case 0x000B:    // Westermann Learning
-					result = new Mapper000B(chipAddress, chipData);
-					break;
-				case 0x000F:    // C64 Game System / System 3
-					result = new Mapper000F(chipAddress, chipBank, chipData);
-					break;
-				case 0x0011:    // Dinamic
-					result = new Mapper0011(chipAddress, chipBank, chipData);
-					break;
-				case 0x0012:    // Zaxxon / Super Zaxxon
-					result = new Mapper0012(chipAddress, chipBank, chipData);
-					break;
-				case 0x0013:    // Domark
-					result = new Mapper0013(chipAddress, chipBank, chipData);
-					break;
-				case 0x0020:    // EasyFlash
-					result = new Mapper0020(chipAddress, chipBank, chipData);
-					break;
-				case 0x002B:    // Prophet 64
-					result = new Mapper002B(chipAddress, chipBank, chipData);
-					break;
-				default:
-					throw new Exception("This cartridge file uses an unrecognized mapper: " + mapper);
-			}
+				// Standard Cartridge
+				0x0000 => new Mapper0000(chipAddress, chipData, game, exrom),
+				// Action Replay (4.2 and up)
+				0x0001 => new Mapper0001(chipAddress, chipBank, chipData),
+				// Ocean
+				0x0005 => new Mapper0005(chipAddress, chipBank, chipData),
+				// Fun Play
+				0x0007 => new Mapper0007(chipData, game, exrom),
+				// SuperGame
+				0x0008 => new Mapper0008(chipData),
+				// Epyx FastLoad
+				0x000A => new Mapper000A(chipData),
+				// Westermann Learning
+				0x000B => new Mapper000B(chipAddress, chipData),
+				// C64 Game System / System 3
+				0x000F => new Mapper000F(chipAddress, chipBank, chipData),
+				// Dinamic
+				0x0011 => new Mapper0011(chipAddress, chipBank, chipData),
+				// Zaxxon / Super Zaxxon
+				0x0012 => new Mapper0012(chipAddress, chipBank, chipData),
+				// Domark
+				0x0013 => new Mapper0013(chipAddress, chipBank, chipData),
+				// EasyFlash
+				0x0020 => new Mapper0020(chipAddress, chipBank, chipData),
+				// Prophet 64
+				0x002B => new Mapper002B(chipAddress, chipBank, chipData),
+				_ => throw new Exception("This cartridge file uses an unrecognized mapper: " + mapper),
+			};
 			result.HardReset();
 
 			return result;
@@ -165,25 +150,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public bool NMI => pinNMI;
 
-		public virtual int Peek8000(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int Peek8000(int addr) => ReadOpenBus();
 
-		public virtual int PeekA000(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int PeekA000(int addr) => ReadOpenBus();
 
-		public virtual int PeekDE00(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int PeekDE00(int addr) => ReadOpenBus();
 
-		public virtual int PeekDF00(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int PeekDF00(int addr) => ReadOpenBus();
 
 		public virtual void Poke8000(int addr, int val)
 		{
@@ -201,25 +174,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 		}
 
-		public virtual int Read8000(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int Read8000(int addr) => ReadOpenBus();
 
-		public virtual int ReadA000(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int ReadA000(int addr) => ReadOpenBus();
 
-		public virtual int ReadDE00(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int ReadDE00(int addr) => ReadOpenBus();
 
-		public virtual int ReadDF00(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int ReadDF00(int addr) => ReadOpenBus();
 
 		public bool Reset => pinReset;
 

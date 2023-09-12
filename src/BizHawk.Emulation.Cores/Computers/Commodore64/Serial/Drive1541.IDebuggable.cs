@@ -53,15 +53,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
 		bool IDebuggable.CanStep(StepType type)
 		{
-			switch (type)
+			return type switch
 			{
-				case StepType.Into:
-				case StepType.Over:
-				case StepType.Out:
-					return DebuggerStep != null;
-				default:
-					return false;
-			}
+				StepType.Into or StepType.Over or StepType.Out => DebuggerStep != null,
+				_ => false,
+			};
 		}
 
 		void IDebuggable.Step(StepType type)
@@ -97,11 +93,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
 		private void StepOver()
 		{
-			var instruction = CpuPeek(_cpu.PC);
+			byte instruction = CpuPeek(_cpu.PC);
 
 			if (instruction == Jsr)
 			{
-				var destination = _cpu.PC + JsrSize;
+				int destination = _cpu.PC + JsrSize;
 				while (_cpu.PC != destination)
 				{
 					StepInto();
@@ -115,8 +111,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
 		private void StepOut()
 		{
-			var instructionsBeforeBailout = 1000000;
-			var instr = CpuPeek(_cpu.PC);
+			int instructionsBeforeBailout = 1000000;
+			byte instr = CpuPeek(_cpu.PC);
 			_jsrCount = instr == Jsr ? 1 : 0;
 
 			while (--instructionsBeforeBailout > 0)
@@ -133,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 					_jsrCount = 0;
 					break;
 				}
-				else if (instr == Rts || instr == Rti)
+				else if (instr is Rts or Rti)
 				{
 					_jsrCount--;
 				}

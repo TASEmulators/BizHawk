@@ -11,15 +11,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	public partial class Atari2600 : ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
-		public A2600Settings GetSettings()
-		{
-			return Settings.Clone();
-		}
+		public A2600Settings GetSettings() => Settings.Clone();
 
-		public A2600SyncSettings GetSyncSettings()
-		{
-			return SyncSettings.Clone();
-		}
+		public A2600SyncSettings GetSyncSettings() => SyncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(A2600Settings o)
 		{
@@ -136,10 +130,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			[DefaultValue(typeof(Color), "Black")]
 			public Color BackgroundColor { get; set; }
 
-			public A2600Settings Clone()
-			{
-				return (A2600Settings)MemberwiseClone();
-			}
+			public A2600Settings Clone() => (A2600Settings)MemberwiseClone();
 
 			public A2600Settings()
 			{
@@ -181,20 +172,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			[DefaultValue(false)]
 			public bool FastScBios { get; set; }
 
-			public A2600SyncSettings Clone()
-			{
-				return (A2600SyncSettings)MemberwiseClone();
-			}
+			public A2600SyncSettings Clone() => (A2600SyncSettings)MemberwiseClone();
 
 			public A2600SyncSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public static bool NeedsReboot(A2600SyncSettings x, A2600SyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(A2600SyncSettings x, A2600SyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

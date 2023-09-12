@@ -43,12 +43,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int chr_right_upper = regs[2] << 1;
 			int chr_right_lower = regs[3] << 1;
 
-			for (var i = 0; i < 4; i++)
+			for (int i = 0; i < 4; i++)
 			{
 				chr_regs_1k_512[i] = chr_left | i;
 			}
 
-			for (var i = 0; i < 2; i++)
+			for (int i = 0; i < 2; i++)
 			{
 				chr_regs_1k_512[4 | i] = chr_right_upper | i;
 				chr_regs_1k_512[6 | i] = chr_right_lower | i;

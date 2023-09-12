@@ -26,8 +26,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	{
 		private int _bankOffset = 63 << 13;
 
-		private int[] _banksA = new int[64 << 13]; // 8000
-		private int[] _banksB = new int[64 << 13]; // A000
+		private readonly int[] _banksA = new int[64 << 13]; // 8000
+		private readonly int[] _banksB = new int[64 << 13]; // A000
 
 		private readonly int[] _originalMediaA; // 8000
 		private readonly int[] _originalMediaB; // A000
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		public Mapper0020(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)
 		{
 			DriveLightEnabled = true;
-			var count = newAddresses.Count;
+			int count = newAddresses.Count;
 
 			// force ultimax mode (the cart SHOULD set this
 			// otherwise on load, according to the docs)
@@ -56,14 +56,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			pinExRom = true;
 
 			// for safety, initialize all banks to dummy
-			for (var i = 0; i < 64 * 0x2000; i++)
+			for (int i = 0; i < 64 * 0x2000; i++)
 			{
 				_banksA[i] = 0xFF;
 				_banksB[i] = 0xFF;
 			}
 
 			// load in all banks
-			for (var i = 0; i < count; i++)
+			for (int i = 0; i < count; i++)
 			{
 				switch (newAddresses[i])
 				{
@@ -105,10 +105,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			DriveLightOn = _boardLed;
 		}
 
-		private void BankSet(int index)
-		{
-			_bankOffset = (index & 0x3F) << 13;
-		}
+		private void BankSet(int index) => _bankOffset = (index & 0x3F) << 13;
 
 		public override int Peek8000(int addr)
 		{
@@ -156,15 +153,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			_ram[addr] = val & 0xFF;
 		}
 
-		public override int Read8000(int addr)
-		{
-			return ReadInternal(addr & 0x1FFF, _banksA);
-		}
+		public override int Read8000(int addr) => ReadInternal(addr & 0x1FFF, _banksA);
 
-		public override int ReadA000(int addr)
-		{
-			return ReadInternal(addr & 0x1FFF, _banksB);
-		}
+		public override int ReadA000(int addr) => ReadInternal(addr & 0x1FFF, _banksB);
 
 		public override int ReadDF00(int addr)
 		{
@@ -217,15 +208,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			DriveLightOn = _boardLed;
 		}
 
-		public override void Write8000(int addr, int val)
-		{
-			WriteInternal(addr, val);
-		}
+		public override void Write8000(int addr, int val) => WriteInternal(addr, val);
 
-		public override void WriteA000(int addr, int val)
-		{
-			WriteInternal(addr | 0x2000, val);
-		}
+		public override void WriteA000(int addr, int val) => WriteInternal(addr | 0x2000, val);
 
 		private void WriteInternal(int addr, int val)
 		{
@@ -240,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 				_commandLatch55 = false;
 				_commandLatchAa = false;
 			}
-			else if (_internalRomState != 0x00 && _internalRomState != 0xF0)
+			else if (_internalRomState is not 0x00 and not 0xF0)
 			{
 				switch (_internalRomState)
 				{
@@ -305,9 +290,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		public override void WriteDF00(int addr, int val)
-		{
-			_ram[addr] = val & 0xFF;
-		}
+		public override void WriteDF00(int addr, int val) => _ram[addr] = val & 0xFF;
 	}
 }

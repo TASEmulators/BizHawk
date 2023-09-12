@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		private readonly InputCallbackSystem _inputCallbacks = new();
 		private int _lagCount;
 		private bool _lagged = true;
 		private bool _isLag = false;

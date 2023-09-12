@@ -39,24 +39,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else // nametables
 			{
 				banknum &= 3;
-				switch (b003 & 7)
+				bank = (b003 & 7) switch
 				{
-					case 0:
-					case 6:
-					case 7: // H-mirror, 6677
-						bank = (byte)(banknum >> 1 | 6);
-						break;
-					case 2:
-					case 3:
-					case 4: // V-mirror, 6767
-						bank = (byte)(banknum | 6);
-						break;
-					case 1:
-					case 5: // 4 screen, 4567
-					default:
-						bank = (byte)(banknum | 4);
-						break;
-				}
+					0 or 6 or 7 => (byte)(banknum >> 1 | 6),
+					2 or 3 or 4 => (byte)(banknum | 6),
+					_ => (byte)(banknum | 4),
+				};
 				switch (b003)
 				{
 					case 0:
@@ -155,10 +143,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_banks_8k[3] = 0xFF;
 		}
 
-		private void SyncIRQ()
-		{
-			IrqSignal = (irq_pending && irq_enabled);
-		}
+		private void SyncIRQ() => IrqSignal = (irq_pending && irq_enabled);
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

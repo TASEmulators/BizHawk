@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// </summary>
 		public byte ReadPort(ushort addr)
 		{
-			var result = 0xFF;
+			int result = 0xFF;
 
 			switch (addr)
 			{
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					// b3:	START
 					// RESET button is connected directly to the RST pin on the CPU (this is handled here in the PollInput() method)					
 					result = (~DataConsole & 0x0F) | OutputLatch[addr];
-					_isLag = false;
+					IsLagFrame = false;
 					break;
 
 				case 1:
@@ -51,9 +51,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					// b3:	FORWARD
 					// b4:	CCW
 					// b5:	CW
-					var v1 = LS368Enable ? DataRight : DataRight | 0xC0;
+					int v1 = LS368Enable ? DataRight : DataRight | 0xC0;
 					result = (~v1) | OutputLatch[addr];
-					_isLag = false;
+					IsLagFrame = false;
 					break;
 
 				case 4:
@@ -68,10 +68,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					// b5:	CW
 					// b6:	PULL
 					// b7:	PUSH
-					var v2 = LS368Enable ? DataLeft : 0xFF;
+					int v2 = LS368Enable ? DataLeft : 0xFF;
 					result = (~v2) | OutputLatch[addr];
 					if (LS368Enable)
-						_isLag = false;
+						IsLagFrame = false;
 					break;
 
 				case 5:
@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				case 5:
 					OutputLatch[addr] = value;					
 					latch_y = (value | 0xC0) ^ 0xFF;
-					var audio = ((value ^ 0xFF) >> 6) & 0x03;
+					int audio = ((value ^ 0xFF) >> 6) & 0x03;
 					if (audio != tone)
 					{
 						tone = audio;

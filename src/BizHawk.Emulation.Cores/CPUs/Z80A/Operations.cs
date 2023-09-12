@@ -102,10 +102,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			INC16_Func(src_l, src_h);
 		}
 
-		public void TR_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = Regs[src];
-		}
+		public void TR_Func(ushort dest, ushort src) => Regs[dest] = Regs[src];
 
 		public void TR16_Func(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
 		{
@@ -202,20 +199,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			Flag3 = Regs[W].Bit(3);
 		}
 
-		public void SET_Func(ushort bit, ushort src)
-		{
-			Regs[src] |= (ushort)(1 << bit);
-		}
+		public void SET_Func(ushort bit, ushort src) => Regs[src] |= (ushort)(1 << bit);
 
-		public void RES_Func(ushort bit, ushort src)
-		{
-			Regs[src] &= (ushort)(0xFF - (1 << bit));
-		}
+		public void RES_Func(ushort bit, ushort src) => Regs[src] &= (ushort)(0xFF - (1 << bit));
 
-		public void ASGN_Func(ushort src, ushort val)
-		{
-			Regs[src] = val;
-		}
+		public void ASGN_Func(ushort src, ushort val) => Regs[src] = val;
 
 		public void SLL_Func(ushort src)
 		{
@@ -650,13 +638,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		public void EXCH_16_Func(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
 		{
-			ushort temp = Regs[dest_l];
-			Regs[dest_l] = Regs[src_l];
-			Regs[src_l] = temp;
-
-			temp = Regs[dest_h];
-			Regs[dest_h] = Regs[src_h];
-			Regs[src_h] = temp;
+			(Regs[src_l], Regs[dest_l]) = (Regs[dest_l], Regs[src_l]);
+			(Regs[src_h], Regs[dest_h]) = (Regs[dest_h], Regs[src_h]);
 		}
 
 		public void SBC_16_Func(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
@@ -806,9 +789,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			}
 		}
 
-		public void FTCH_DB_Func()
-		{
-			Regs[DB] = FetchDB();
-		}
+		public void FTCH_DB_Func() => Regs[DB] = FetchDB();
 	}
 }

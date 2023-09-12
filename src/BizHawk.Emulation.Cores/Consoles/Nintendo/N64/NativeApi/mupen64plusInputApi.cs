@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
 	internal class mupen64plusInputApi
 	{
-		private IntPtr InpDll;
+		private readonly IntPtr InpDll;
 
 		/// <summary>
 		/// Sets a callback to use when the mupen core wants controller buttons
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate mupen64plusApi.m64p_error SetRumbleCallback(RumbleCallback ParamPtr);
 
-		private SetRumbleCallback InpSetRumbleCallback;
+		private readonly SetRumbleCallback InpSetRumbleCallback;
 
 		/// <summary>
 		/// This will be called every time the N64 changes
@@ -77,14 +77,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			_ = InpSetRumbleCallback(m64pRumbleCallback = rumbleCallback);
 		}
 
-		public void SetM64PControllerPakType(int controller, N64SyncSettings.N64ControllerSettings.N64ControllerPakType type)
-		{
-			InpSetControllerPakType(controller, (int)type);
-		}
+		public void SetM64PControllerPakType(int controller, N64SyncSettings.N64ControllerSettings.N64ControllerPakType type) => InpSetControllerPakType(controller, (int)type);
 
-		public void SetM64PControllerConnected(int controller, bool connected)
-		{
-			InpSetControllerConnected(controller, connected?1:0);
-		}
+		public void SetM64PControllerConnected(int controller, bool connected) => InpSetControllerConnected(controller, connected ? 1 : 0);
 	}
 }

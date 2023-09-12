@@ -10,21 +10,18 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	{
 		private byte[][] _diskDeltas;
 
-		private void InitSaveRam()
-		{
-			_diskDeltas = new byte[DiskCount][];
-		}
+		private void InitSaveRam() => _diskDeltas = new byte[DiskCount][];
 
 		public bool SaveRamModified => true;
 
 		public byte[] CloneSaveRam()
 		{
-			using var ms = new MemoryStream();
-			using var bw = new BinaryWriter(ms);
+			using MemoryStream ms = new();
+			using BinaryWriter bw = new(ms);
 
 			SaveDelta();
 			bw.Write(DiskCount);
-			for (var i = 0; i < DiskCount; i++)
+			for (int i = 0; i < DiskCount; i++)
 			{
 				bw.WriteByteBuffer(_diskDeltas[i]);
 			}
@@ -34,17 +31,17 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public void StoreSaveRam(byte[] data)
 		{
-			using var ms = new MemoryStream(data, false);
-			using var br = new BinaryReader(ms);
+			using MemoryStream ms = new(data, false);
+			using BinaryReader br = new(ms);
 
-			var ndisks = br.ReadInt32();
+			int ndisks = br.ReadInt32();
 
 			if (ndisks != DiskCount)
 			{
 				throw new InvalidOperationException("Disk count mismatch!");
 			}
 
-			for (var i = 0; i < DiskCount; i++)
+			for (int i = 0; i < DiskCount; i++)
 			{
 				_diskDeltas[i] = br.ReadByteBuffer(returnNull: true);
 			}

@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _disposed;
 		private readonly ISoundOutput _outputDevice;
 		private readonly SoundOutputProvider _outputProvider; // Buffer for Sync sources
-		private readonly BufferedAsync _bufferedAsync = new BufferedAsync(); // Buffer for Async sources
+		private readonly BufferedAsync _bufferedAsync = new(); // Buffer for Async sources
 		private IBufferedSoundProvider _bufferedProvider; // One of the preceding buffers, or null if no source is set
 
 		public Config Config;

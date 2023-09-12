@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 {
 	internal class BkmMovie
 	{
-		private readonly List<string> _log = new List<string>();
+		private readonly List<string> _log = new();
 		public BkmHeader Header { get; } = new BkmHeader();
 		public string Filename { get; set; } = "";
 		public bool Loaded { get; private set; }
@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < InputLogLength && frame >= 0)
 			{
-				var adapter = new BkmControllerAdapter(definition, sytemId);
+				BkmControllerAdapter adapter = new(definition, sytemId);
 				adapter.SetControllersAsMnemonic(_log[frame]);
 				return adapter;
 			}
@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 
 		public bool Load()
 		{
-			var file = new FileInfo(Filename);
+			FileInfo file = new(Filename);
 
 			if (file.Exists == false)
 			{

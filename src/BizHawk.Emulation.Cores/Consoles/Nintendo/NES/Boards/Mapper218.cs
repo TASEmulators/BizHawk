@@ -62,15 +62,9 @@
 			return addr;
 		}
 
-		public override byte ReadPpu(int addr)
-		{
-			return NES.CIRAM[TransformPPU(addr)];
-		}
+		public override byte ReadPpu(int addr) => NES.CIRAM[TransformPPU(addr)];
 
-		public override void WritePpu(int addr, byte value)
-		{
-			NES.CIRAM[TransformPPU(addr)] = value;
-		}
+		public override void WritePpu(int addr, byte value) => NES.CIRAM[TransformPPU(addr)] = value;
 
 		public override byte ReadPrg(int addr)
 		{

@@ -77,10 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTitle();
 		}
 
-		private void SetTitle()
-		{
-			Text = $"RAM Poke - {_watchList[0].Domain.Name}";
-		}
+		private void SetTitle() => Text = $"RAM Poke - {_watchList[0].Domain.Name}";
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
@@ -90,10 +87,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
-			var success = true;
+			bool success = true;
 			foreach (var watch in _watchList)
 			{
-				var result = watch.Poke(ValueBox.Text);
+				bool result = watch.Poke(ValueBox.Text);
 				if (result)
 				{
 					var cheat = _cheats.FirstOrDefault(c => c.Address == watch.Address && c.Domain == watch.Domain);

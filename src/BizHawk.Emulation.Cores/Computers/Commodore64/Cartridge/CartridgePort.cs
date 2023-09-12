@@ -21,60 +21,30 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		// ------------------------------------------
 
-		public int PeekHiExp(int addr)
-		{
-			return _connected ? _cartridgeDevice.PeekDF00(addr & 0x00FF) : 0xFF;
-		}
+		public int PeekHiExp(int addr) => _connected ? _cartridgeDevice.PeekDF00(addr & 0x00FF) : 0xFF;
 
-		public int PeekHiRom(int addr)
-		{
-			return _connected ? _cartridgeDevice.PeekA000(addr & 0x1FFF) : 0xFF;
-		}
+		public int PeekHiRom(int addr) => _connected ? _cartridgeDevice.PeekA000(addr & 0x1FFF) : 0xFF;
 
-		public int PeekLoExp(int addr)
-		{
-			return _connected ? _cartridgeDevice.PeekDE00(addr & 0x00FF) : 0xFF;
-		}
+		public int PeekLoExp(int addr) => _connected ? _cartridgeDevice.PeekDE00(addr & 0x00FF) : 0xFF;
 
-		public int PeekLoRom(int addr)
-		{
-			return _connected ? _cartridgeDevice.Peek8000(addr & 0x1FFF) : 0xFF;
-		}
+		public int PeekLoRom(int addr) => _connected ? _cartridgeDevice.Peek8000(addr & 0x1FFF) : 0xFF;
 
 		public void PokeHiExp(int addr, int val) { if (_connected) { _cartridgeDevice.PokeDF00(addr & 0x00FF, val); } }
 		public void PokeHiRom(int addr, int val) { if (_connected) { _cartridgeDevice.PokeA000(addr & 0x1FFF, val); } }
 		public void PokeLoExp(int addr, int val) { if (_connected) { _cartridgeDevice.PokeDE00(addr & 0x00FF, val); } }
 		public void PokeLoRom(int addr, int val) { if (_connected) { _cartridgeDevice.Poke8000(addr & 0x1FFF, val); } }
 
-		public bool ReadExRom()
-		{
-			return !_connected || _cartridgeDevice.ExRom;
-		}
+		public bool ReadExRom() => !_connected || _cartridgeDevice.ExRom;
 
-		public bool ReadGame()
-		{
-			return !_connected || _cartridgeDevice.Game;
-		}
+		public bool ReadGame() => !_connected || _cartridgeDevice.Game;
 
-		public int ReadHiExp(int addr)
-		{
-			return _connected ? _cartridgeDevice.ReadDF00(addr & 0x00FF) : 0xFF;
-		}
+		public int ReadHiExp(int addr) => _connected ? _cartridgeDevice.ReadDF00(addr & 0x00FF) : 0xFF;
 
-		public int ReadHiRom(int addr)
-		{
-			return _connected ? _cartridgeDevice.ReadA000(addr & 0x1FFF) : 0xFF;
-		}
+		public int ReadHiRom(int addr) => _connected ? _cartridgeDevice.ReadA000(addr & 0x1FFF) : 0xFF;
 
-		public int ReadLoExp(int addr)
-		{
-			return _connected ? _cartridgeDevice.ReadDE00(addr & 0x00FF) : 0xFF;
-		}
+		public int ReadLoExp(int addr) => _connected ? _cartridgeDevice.ReadDE00(addr & 0x00FF) : 0xFF;
 
-		public int ReadLoRom(int addr)
-		{
-			return _connected ? _cartridgeDevice.Read8000(addr & 0x1FFF) : 0xFF;
-		}
+		public int ReadLoRom(int addr) => _connected ? _cartridgeDevice.Read8000(addr & 0x1FFF) : 0xFF;
 
 		public void WriteHiExp(int addr, int val) { if (_connected) { _cartridgeDevice.WriteDF00(addr & 0x00FF, val); } }
 		public void WriteHiRom(int addr, int val) { if (_connected) { _cartridgeDevice.WriteA000(addr & 0x1FFF, val); } }
@@ -115,15 +85,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public bool IsConnected => _connected;
 
-		public bool ReadIrq()
-		{
-			return !_connected || _cartridgeDevice.IRQ;
-		}
+		public bool ReadIrq() => !_connected || _cartridgeDevice.IRQ;
 
-		public bool ReadNmi()
-		{
-			return !_connected || _cartridgeDevice.NMI;
-		}
+		public bool ReadNmi() => !_connected || _cartridgeDevice.NMI;
 
 		public void SyncState(Serializer ser)
 		{

@@ -50,8 +50,8 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
-			var rom = lp.Roms[0].FileData;
-			var inputsActive = new bool[6]
+			byte[] rom = lp.Roms[0].FileData;
+			bool[] inputsActive = new bool[6]
 			{
 				_syncSettings.Gamepad1,
 				_syncSettings.Gamepad2,
@@ -83,11 +83,11 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 		private static IReadOnlyCollection<KeyValuePair<string, LibTIC80.TIC80Keys>> MakeKeyMap()
 		{
 			var enumValues = Enum.GetValues(typeof(LibTIC80.TIC80Keys));
-			var ret = new KeyValuePair<string, LibTIC80.TIC80Keys>[enumValues.Length - 1];
+			KeyValuePair<string, LibTIC80.TIC80Keys>[] ret = new KeyValuePair<string, LibTIC80.TIC80Keys>[enumValues.Length - 1];
 			for (int i = 0; i < ret.Length; i++)
 			{
-				var val = enumValues.GetValue(i + 1);
-				var name = Enum.GetName(typeof(LibTIC80.TIC80Keys), val).TrimStart('_').Replace('_', ' ');
+				object val = enumValues.GetValue(i + 1);
+				string name = Enum.GetName(typeof(LibTIC80.TIC80Keys), val).TrimStart('_').Replace('_', ' ');
 				ret[i] = new(name, (LibTIC80.TIC80Keys)val);
 			}
 
@@ -96,13 +96,13 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 
 		private static ControllerDefinition CreateControllerDefinition(bool[] inputsActive)
 		{
-			var ret = new ControllerDefinition("TIC-80 Controller");
+			ControllerDefinition ret = new("TIC-80 Controller");
 
 			for (int i = 0; i < 4; i++)
 			{
 				if (inputsActive[i])
 				{
-					foreach (var b in Enum.GetValues(typeof(LibTIC80.TIC80Gamepad)))
+					foreach (object b in Enum.GetValues(typeof(LibTIC80.TIC80Gamepad)))
 					{
 						ret.BoolButtons.Add($"P{i + 1} {Enum.GetName(typeof(LibTIC80.TIC80Gamepad), b)}");
 					}
@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 				ret.AddXYPair("Mouse Scroll {0}", AxisPairOrientation.RightAndUp, (-32).RangeTo(31), 0);
 				ret.BoolButtons.Add("Mouse Relative Toggle");
 
-				foreach (var n in ret.BoolButtons)
+				foreach (string n in ret.BoolButtons)
 				{
 					if (n.StartsWithOrdinal("Mouse"))
 					{
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 					}
 				}
 
-				foreach (var n in ret.Axes.Keys)
+				foreach (string n in ret.Axes.Keys)
 				{
 					if (n.StartsWithOrdinal("Mouse"))
 					{
@@ -137,9 +137,9 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 
 			if (inputsActive[5])
 			{
-				foreach (var k in Enum.GetValues(typeof(LibTIC80.TIC80Keys)))
+				foreach (object k in Enum.GetValues(typeof(LibTIC80.TIC80Keys)))
 				{
-					var name = Enum.GetName(typeof(LibTIC80.TIC80Keys), k).TrimStart('_').Replace('_', ' ');
+					string name = Enum.GetName(typeof(LibTIC80.TIC80Keys), k).TrimStart('_').Replace('_', ' ');
 					if (name is "Unknown") continue;
 					ret.BoolButtons.Add(name);
 					ret.CategoryLabels[name] = "Keyboard";
@@ -153,11 +153,11 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 
 		private static void GetGamepads(IController controller, ref LibTIC80.TIC80Inputs inputs)
 		{
-			var gamepads = new LibTIC80.TIC80Gamepad[4];
+			LibTIC80.TIC80Gamepad[] gamepads = new LibTIC80.TIC80Gamepad[4];
 			for (int i = 0; i < 4; i++)
 			{
 				gamepads[i] = 0;
-				foreach (var b in Enum.GetValues(typeof(LibTIC80.TIC80Gamepad)))
+				foreach (object b in Enum.GetValues(typeof(LibTIC80.TIC80Gamepad)))
 				{
 					if (controller.IsPressed($"P{i + 1} {Enum.GetName(typeof(LibTIC80.TIC80Gamepad), b)}"))
 					{
@@ -187,9 +187,9 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 			{
 				ret |= 0x2000;
 			}
-			var x = (ushort)((sbyte)controller.AxisValue("Mouse Scroll X") + 32);
+			ushort x = (ushort)((sbyte)controller.AxisValue("Mouse Scroll X") + 32);
 			ret |= (ushort)(x << 7);
-			var y = (ushort)((sbyte)controller.AxisValue("Mouse Scroll Y") + 32);
+			ushort y = (ushort)((sbyte)controller.AxisValue("Mouse Scroll Y") + 32);
 			ret |= (ushort)(y << 1);
 			if (controller.IsPressed("Mouse Relative Toggle"))
 			{
@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 
 		private static void GetKeys(IController controller, ref LibTIC80.TIC80Inputs inputs)
 		{
-			var keys = new LibTIC80.TIC80Keys[4];
+			LibTIC80.TIC80Keys[] keys = new LibTIC80.TIC80Keys[4];
 			int i = 0;
 			foreach (var kvp in KeyMap)
 			{
@@ -222,7 +222,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			var inputs = new LibTIC80.TIC80Inputs
+			LibTIC80.TIC80Inputs inputs = new()
 			{
 				MouseX = (sbyte)controller.AxisValue("Mouse Position X"),
 				MouseY = (sbyte)controller.AxisValue("Mouse Position Y"),

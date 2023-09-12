@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				var mirroring = ((addr & 0x20) >> 5) ^ 1;
+				int mirroring = ((addr & 0x20) >> 5) ^ 1;
 				SetMirrorType(mirroring > 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
 
 				if (isLargeBanks)

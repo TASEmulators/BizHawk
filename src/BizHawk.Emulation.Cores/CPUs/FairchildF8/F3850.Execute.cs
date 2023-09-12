@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		private string debug = "";
 		private void UpdateDebug()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			for (int i = 0; i < 255; i++)
 			{
 				if (dLog[i] > 0)

@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 		{
 			if (temp)
 			{
-				var tempUserPath = Path.Combine(Path.GetTempPath(), $"biz-temp{sysID}user");
+				string tempUserPath = Path.Combine(Path.GetTempPath(), $"biz-temp{sysID}user");
 				if (Directory.Exists(tempUserPath))
 				{
 					Directory.Delete(tempUserPath, true);
@@ -54,7 +54,7 @@ namespace BizHawk.Client.Common
 
 		private (byte[] FW, string Path)? GetFirmwareWithPath(FirmwareID id)
 		{
-			var path = _firmwareManager.Request(_pathEntries, _firmwareUserSpecifications, id);
+			string? path = _firmwareManager.Request(_pathEntries, _firmwareUserSpecifications, id);
 			try
 			{
 				if (path is not null && File.Exists(path)) return (File.ReadAllBytes(path), path);

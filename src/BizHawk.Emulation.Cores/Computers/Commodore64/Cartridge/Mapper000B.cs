@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 			validCartridge = false;
 
-			for (var i = 0; i < 0x4000; i++)
+			for (int i = 0; i < 0x4000; i++)
 			{
 				_rom[i] = 0xFF;
 			}
@@ -38,25 +38,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			// Nothing to save
 		}
 
-		public override int Peek8000(int addr)
-		{
-			return _rom[addr];
-		}
+		public override int Peek8000(int addr) => _rom[addr];
 
-		public override int PeekA000(int addr)
-		{
-			return _rom[addr | 0x2000];
-		}
+		public override int PeekA000(int addr) => _rom[addr | 0x2000];
 
-		public override int Read8000(int addr)
-		{
-			return _rom[addr];
-		}
+		public override int Read8000(int addr) => _rom[addr];
 
-		public override int ReadA000(int addr)
-		{
-			return _rom[addr | 0x2000];
-		}
+		public override int ReadA000(int addr) => _rom[addr | 0x2000];
 
 		public override int ReadDF00(int addr)
 		{

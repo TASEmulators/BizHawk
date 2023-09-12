@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common.cheats
 		// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
 		// Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
 		// This only applies to the SNES
-		private static readonly Dictionary<char, int> SNESGameGenieTable = new Dictionary<char, int>
+		private static readonly Dictionary<char, int> SNESGameGenieTable = new()
 		{
 			['D'] = 0,  // 0000
 			['F'] = 1,  // 0001
@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common.cheats
 			// Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
 			// maps to|     Value     |i|j|k|l|q|r|s|t|o|p|a|b|c|d|u|v|w|x|e|f|g|h|m|n|
 			// order  |     Value     |a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|
-			var result = new DecodeResult { Size = WatchSize.Byte };
+			DecodeResult result = new() { Size = WatchSize.Byte };
 
 			int x;
 

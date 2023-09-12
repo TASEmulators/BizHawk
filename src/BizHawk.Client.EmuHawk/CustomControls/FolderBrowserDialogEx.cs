@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var buffer = Marshal.AllocHGlobal(Win32Imports.MAX_PATH);
-				var bi = new Win32Imports.BROWSEINFO
+				Win32Imports.BROWSEINFO bi = new()
 				{
 					hwndOwner = hWndOwner,
 					pidlRoot = pidlRoot,
@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 				pidlRet = Win32Imports.SHBrowseForFolder(ref bi);
 				Marshal.FreeHGlobal(buffer);
 				if (pidlRet == IntPtr.Zero) return DialogResult.Cancel; // user clicked Cancel
-				var sb = new StringBuilder(Win32Imports.MAX_PATH);
+				StringBuilder sb = new(Win32Imports.MAX_PATH);
 				if (Win32Imports.SHGetPathFromIDList(pidlRet, sb) == 0) return DialogResult.Cancel;
 				SelectedPath = sb.ToString();
 			}

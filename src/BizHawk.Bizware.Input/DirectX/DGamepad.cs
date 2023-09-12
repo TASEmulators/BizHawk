@@ -49,7 +49,7 @@ namespace BizHawk.Bizware.Input
 					}
 #else
 					// hack due to the above problems
-					var dict = (Dictionary<string, ObjectDataFormat>)typeof(IDirectInputDevice8)
+					Dictionary<string, ObjectDataFormat> dict = (Dictionary<string, ObjectDataFormat>)typeof(IDirectInputDevice8)
 						.GetField("_mapNameToObjectFormat", BindingFlags.Instance | BindingFlags.NonPublic)!
 						.GetValue(joystick);
 
@@ -60,7 +60,7 @@ namespace BizHawk.Bizware.Input
 #endif
 					joystick.Acquire();
 
-					var p = new DGamepad(joystick, Devices.Count);
+					DGamepad p = new(joystick, Devices.Count);
 					Devices.Add(p);
 				}
 			}
@@ -151,30 +151,18 @@ namespace BizHawk.Bizware.Input
 
 		private static readonly ImmutableArray<PropertyInfo> _axesPropertyInfos = typeof(JoystickState).GetProperties().Where(pi => pi.PropertyType == typeof(int)).ToImmutableArray();
 
-		public IEnumerable<(string AxisID, float Value)> GetAxes()
-		{
-			return _axesPropertyInfos.Select(pi => (pi.Name, 10.0f * (int)pi.GetValue(_state)));
-		}
+		public IEnumerable<(string AxisID, float Value)> GetAxes() => _axesPropertyInfos.Select(pi => (pi.Name, 10.0f * (int)pi.GetValue(_state)));
 
 		/// <summary>FOR DEBUGGING ONLY</summary>
-		public JoystickState GetInternalState()
-		{
-			return _state;
-		}
+		public JoystickState GetInternalState() => _state;
 
 		public int PlayerNumber { get; }
 
 		public readonly string InputNamePrefix;
 
-		public string ButtonName(int index)
-		{
-			return _names[index];
-		}
+		public string ButtonName(int index) => _names[index];
 
-		public bool Pressed(int index)
-		{
-			return _actions[index]();
-		}
+		public bool Pressed(int index) => _actions[index]();
 
 		public int NumButtons { get; private set; }
 
@@ -248,17 +236,17 @@ namespace BizHawk.Bizware.Input
 
 			// i don't know what the "Slider"s do, so they're omitted for the moment
 
-			for (var i = 0; i < _state.Buttons.Length; i++)
+			for (int i = 0; i < _state.Buttons.Length; i++)
 			{
-				var j = i;
+				int j = i;
 				AddItem($"B{i + 1}", () => _state.Buttons[j]);
 			}
 
-			for (var i = 0; i < _state.PointOfViewControllers.Length; i++)
+			for (int i = 0; i < _state.PointOfViewControllers.Length; i++)
 			{
-				var j = i;
+				int j = i;
 				AddItem($"POV{i + 1}U", () => {
-					var t = _state.PointOfViewControllers[j];
+					int t = _state.PointOfViewControllers[j];
 					return 0.RangeTo(4500).Contains(t) || 31500.RangeToExclusive(36000).Contains(t);
 				});
 				AddItem($"POV{i + 1}D", () => 13500.RangeTo(22500).Contains(_state.PointOfViewControllers[j]));
@@ -273,7 +261,7 @@ namespace BizHawk.Bizware.Input
 			// my first clue that it doesn't work is that LEFT  and RIGHT _AREN'T USED_
 			// I should just look for C++ examples instead of trying to look for SlimDX examples
 
-			var parameters = new EffectParameters
+			EffectParameters parameters = new()
 			{
 				Duration = 0x2710,
 				Gain = 0x2710,
@@ -282,7 +270,7 @@ namespace BizHawk.Bizware.Input
 				TriggerRepeatInterval = 0x2710,
 				Flags = EffectFlags.None
 			};
-			parameters.GetAxes(out var temp1, out var temp2);
+			parameters.GetAxes(out int[] temp1, out int[] temp2);
 			parameters.SetAxes(temp1, temp2);
 			var effect = _joystick.CreateEffect(EffectGuid.ConstantForce, parameters);
 			effect.Start(1);

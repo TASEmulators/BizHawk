@@ -32,15 +32,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			CorrectionScaleFactor = 1.0 / (ForwardScaleFactor * ReverseScaleFactor);
 		}
 
-		public void ComputeForward(double[] buff)
-		{
-			Compute(buff, false);
-		}
+		public void ComputeForward(double[] buff) => Compute(buff, false);
 
-		public void ComputeReverse(double[] buff)
-		{
-			Compute(buff, true);
-		}
+		public void ComputeReverse(double[] buff) => Compute(buff, true);
 
 		private void Compute(double[] buff, bool reverse)
 		{

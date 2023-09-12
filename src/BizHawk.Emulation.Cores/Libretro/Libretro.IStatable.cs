@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			var len = checked((int)_api.retro_serialize_size());
+			int len = checked((int)_api.retro_serialize_size());
 			if (len > _stateBuf.Length)
 			{
 				throw new Exception("Core attempted to grow state size. This is not allowed per the libretro API.");
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			var len = reader.ReadInt32();
+			int len = reader.ReadInt32();
 			if (len > _stateBuf.Length)
 			{
 				throw new Exception("State buffer size exceeded the core's maximum state size!");

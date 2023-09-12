@@ -30,10 +30,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// ignored
 		}
-		public IDisposable AcquireVideoCodecToken(Config config)
-		{
-			return new NutWriterToken();
-		}
+		public IDisposable AcquireVideoCodecToken(Config config) => new NutWriterToken();
 
 
 		// avParams
@@ -64,10 +61,7 @@ namespace BizHawk.Client.EmuHawk
 			_current = null;
 		}
 
-		public void CloseFile()
-		{
-			EndSegment();
-		}
+		public void CloseFile() => EndSegment();
 
 		public void AddFrame(IVideoProvider source)
 		{
@@ -79,10 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			_current.WriteVideoFrame(source.GetVideoBuffer());
 		}
 
-		public void AddSamples(short[] samples)
-		{
-			_current.WriteAudioFrame(samples);
-		}
+		public void AddSamples(short[] samples) => _current.WriteAudioFrame(samples);
 
 		public void SetMovieParameters(int fpsNum, int fpsDen)
 		{

@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Common
 		/// </remarks>
 		public readonly ref struct SatellaviewHeader
 		{
+			#pragma warning disable IDE0051
 			private const byte LIMITED_0_PLAYS_LEFT = 0b10000000;
 
 			private const byte LIMITED_1_PLAYS_LEFT = 0b10000100;
@@ -43,6 +44,7 @@ namespace BizHawk.Emulation.Common
 			private const int OFFSET_SPEED = 0x28; // 1 octet
 
 			private const int OFFSET_TITLE = 0x10; // 16 octets
+			#pragma warning restore IDE0051
 
 			internal const byte UNLIMITED_PLAYS_LEFT = 0b00000000;
 
@@ -103,7 +105,7 @@ namespace BizHawk.Emulation.Common
 		private static bool CheckHeaderHeuristics(bool checkHiROM, ReadOnlySpan<byte> rom, IList<string> warnings)
 		{
 			SatellaviewHeader header = new(rom.Slice(start: checkHiROM ? 0xFFB0 : 0x7FB0, length: HEADER_LENGTH));
-			var corruption = 0;
+			int corruption = 0;
 			// "invalid" states were assigned a higher value if the wiki page was less vague
 
 			if (header.Title.Length is 0) corruption++;
@@ -126,14 +128,14 @@ namespace BizHawk.Emulation.Common
 
 			if (header.MagicDRMByte is not 0x33) corruption += 3; // just this would probably have sufficed
 
-			var checksumMatches = header.VerifyChecksum(rom);
+			bool checksumMatches = header.VerifyChecksum(rom);
 			if (!checksumMatches)
 			{
 				corruption++;
 				warnings.Add("mismatch with rom's internal checksum");
 			}
 
-			var detected = corruption <= THRESHOLD;
+			bool detected = corruption <= THRESHOLD;
 			if (detected) Util.DebugWriteLine($"heuristic match for Satellaview game/content ({(checkHiROM ? "HiROM" : "LoROM")}, -{corruption} pts.): {header.ToString()}");
 			else
 			{
@@ -153,7 +155,7 @@ namespace BizHawk.Emulation.Common
 			}
 			List<string> warnings1 = new();
 			//TODO which should we check first?
-			var detected = CheckHeaderHeuristics(checkHiROM: false, rom, warnings1)
+			bool detected = CheckHeaderHeuristics(checkHiROM: false, rom, warnings1)
 				|| CheckHeaderHeuristics(checkHiROM: true, rom, warnings1);
 			warnings = warnings1;
 			return detected;

@@ -26,10 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public void SetFrame(int frame)
-		{
-			_mCurrFrame = frame;
-		}
+		public void SetFrame(int frame) => _mCurrFrame = frame;
 
 		private int _mCurrFrame;
 		private string _mBaseDirectory, _mFramesDirectory;
@@ -40,9 +37,9 @@ namespace BizHawk.Client.EmuHawk
 			_mProjectFile = projFile;
 			var (dir, fileNoExt, _) = projFile.SplitPathToDirFileAndExt();
 			_mBaseDirectory = dir ?? string.Empty;
-			var framesDirFragment = $"{fileNoExt}_frames";
+			string framesDirFragment = $"{fileNoExt}_frames";
 			_mFramesDirectory = Path.Combine(_mBaseDirectory, framesDirFragment);
-			var sb = new StringBuilder();
+			StringBuilder sb = new();
 			sb.AppendLine("version=1");
 			sb.AppendLine($"framesdir={framesDirFragment}");
 			File.WriteAllText(_mProjectFile, sb.ToString());
@@ -54,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddFrame(IVideoProvider source)
 		{
-			using var bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
+			using BitmapBuffer bb = new(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
 			string subPath = GetAndCreatePathForFrameNum(_mCurrFrame);
 			string path = $"{subPath}.png";
 			bb.ToSysdrawingBitmap().Save(path, ImageFormat.Png);
@@ -64,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			string subPath = GetAndCreatePathForFrameNum(_mCurrFrame);
 			string path = $"{subPath}.wav";
-			var wwv = new WavWriterV();
+			WavWriterV wwv = new();
 			wwv.SetAudioParameters(_paramSampleRate, _paramChannels, _paramBits);
 			wwv.OpenFile(path);
 			wwv.AddSamples(samples);
@@ -83,10 +80,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IDisposable AcquireVideoCodecToken(Config config)
-		{
-			return new DummyDisposable();
-		}
+		public IDisposable AcquireVideoCodecToken(Config config) => new DummyDisposable();
 
 		public void SetMovieParameters(int fpsNum, int fpsDen)
 		{
@@ -114,6 +108,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string DesiredExtension() => "syncless.txt";
 
+		#pragma warning disable IDE0051
 		/// <summary>
 		/// splits the string into chunks of length s
 		/// </summary>
@@ -125,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			int numChunks = (s.Length + len - 1) / len;
-			var output = new List<string>(numChunks);
+			List<string> output = new(numChunks);
 			for (int i = 0, j = 0; i < numChunks; i++, j += len)
 			{
 				int todo = len;
@@ -140,6 +135,7 @@ namespace BizHawk.Client.EmuHawk
 
 			return output;
 		}
+		#pragma warning restore IDE0051
 
 		private string GetAndCreatePathForFrameNum(int index)
 		{
@@ -151,15 +147,14 @@ namespace BizHawk.Client.EmuHawk
 			return path;
 		}
 
-		public static string GetPathFragmentForFrameNum(int index)
-		{
+		public static string GetPathFragmentForFrameNum(int index) =>
 #if true
-			return index.ToString();
+			index.ToString();
 #else // not sure of the original purpose here, but the subfolders it makes don't seem to work right, just return frame number for now
 			var chunks = StringChunkSplit(index.ToString(), 2);
 			string subPath = string.Join("/", chunks);
 			return subPath;
 #endif
-		}
+
 	}
 }

@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		private const string systemBusScope = "System Bus";
 
-		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { systemBusScope });
+		private readonly MemoryCallbackSystem _memorycallbacks = new(new[] { systemBusScope });
 
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		{
 			LibSameboy.MemoryCallback CreateCallback(MemoryCallbackFlags flags, Func<bool> getHasCBOfType)
 			{
-				var rawFlags = (uint)flags;
+				uint rawFlags = (uint)flags;
 				return (address) =>
 				{
 					if (getHasCBOfType())

@@ -16,15 +16,9 @@ namespace BizHawk.Client.EmuHawk
 			Icon = Properties.Resources.TAStudioIcon;
 		}
 
-		public void DisableFrame()
-		{
-			FrameNumeric.Enabled = false;
-		}
+		public void DisableFrame() => FrameNumeric.Enabled = false;
 
-		private void Cancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void Cancel_Click(object sender, EventArgs e) => Close();
 
 		private void Ok_Click(object sender, EventArgs e)
 		{

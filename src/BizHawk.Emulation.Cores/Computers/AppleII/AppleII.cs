@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		{
 			static (byte[], string) GetRomAndExt(IRomAsset romAssert)
 			{
-				var ext = romAssert.Extension.ToUpperInvariant();
+				string ext = romAssert.Extension.ToUpperInvariant();
 				return ext switch
 				{
 					".DSK" or ".PO" or ".DO" or ".NIB" => (romAssert.FileData, ext),
@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 					
 			_romSet = lp.Roms.Select(GetRomAndExt).ToList();
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 			ServiceProvider = ser;
 
 			const string TRACE_HEADER = "6502: PC, opcode, register (A, X, Y, P, SP, Cy), flags (NVTBDIZC)";
@@ -119,10 +119,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			LoadDelta(false);
 		}
 
-		private static readonly List<string> RealButtons = new List<string>(Keyboard.GetKeyNames()
+		private static readonly List<string> RealButtons = new(Keyboard.GetKeyNames()
 			.Where(k => k != "Reset"));
 
-		private static readonly List<string> ExtraButtons = new List<string>
+		private static readonly List<string> ExtraButtons = new()
 		{
 			"Previous Disk",
 			"Next Disk",

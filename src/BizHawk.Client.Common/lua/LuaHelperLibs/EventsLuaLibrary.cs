@@ -35,10 +35,7 @@ namespace BizHawk.Client.Common
 		private void LogMemoryExecuteCallbacksNotImplemented(bool isWildcard)
 			=> Log($"{Emulator.Attributes().CoreName} does not implement {(isWildcard ? "wildcard " : string.Empty)}memory execute callbacks");
 
-		private void LogScopeNotAvailable(string scope)
-		{
-			Log($"{scope} is not an available scope for {Emulator.Attributes().CoreName}");
-		}
+		private void LogScopeNotAvailable(string scope) => Log($"{scope} is not an available scope for {Emulator.Attributes().CoreName}");
 
 		[LuaMethod("can_use_callback_params", "Returns whether EmuHawk will pass arguments to callbacks. The current version passes arguments to \"memory\" callbacks (RAM/ROM/bus R/W), so this function will return true for that input. (It returns false for any other input.) This tells you whether it's necessary to enable workarounds/hacks because a script is running in a version without parameter support.")]
 		[LuaMethodExample("local mem_callback = event.can_use_callback_params(\"memory\") and mem_callback or mem_callback_pre_29;")]
@@ -82,10 +79,7 @@ namespace BizHawk.Client.Common
 			return Guid.Empty.ToString();
 		}
 
-		private void LogNotImplemented()
-		{
-			Log($"Error: {Emulator.Attributes().CoreName} does not yet implement input polling callbacks");
-		}
+		private void LogNotImplemented() => Log($"Error: {Emulator.Attributes().CoreName} does not yet implement input polling callbacks");
 
 		[LuaMethodExample("local steveonl = event.onloadstate(\r\n\tfunction()\r\n\tconsole.log( \"Fires after a state is loaded. Receives a lua function name, and registers it to the event immediately following a successful savestate event\" );\r\nend\", \"Frame name\" );")]
 		[LuaMethod("onloadstate", "Fires after a state is loaded. Your callback can have 1 parameter, which will be the name of the loaded state.")]
@@ -99,11 +93,9 @@ namespace BizHawk.Client.Common
 			LuaFunction luaf,
 			uint address,
 			string name = null,
-			string scope = null)
-		{
-//			Log("Deprecated function event.onmemoryexecute() used, replace the call with event.on_bus_exec().");
-			return OnBusExec(luaf, address, name: name, scope: scope);
-		}
+			string scope = null) =>
+			//			Log("Deprecated function event.onmemoryexecute() used, replace the call with event.on_bus_exec().");
+			OnBusExec(luaf, address, name: name, scope: scope);
 
 		[LuaMethodExample("local exec_cb_id = event.on_bus_exec(\r\n\tfunction(addr, val, flags)\r\n\t\tconsole.log( \"Fires immediately before the given address is executed by the core. {{val}} is the value to be executed (or {{0}} always, if this feature is only partially implemented).\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
 		[LuaMethod("on_bus_exec", "Fires immediately before the given address is executed by the core. Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value to be executed (or {{0}} always, if this feature is only partially implemented).")]
@@ -145,11 +137,9 @@ namespace BizHawk.Client.Common
 		public string OnMemoryExecuteAny(
 			LuaFunction luaf,
 			string name = null,
-			string scope = null)
-		{
-//			Log("Deprecated function event.onmemoryexecuteany(...) used, replace the call with event.on_bus_exec_any(...).");
-			return OnBusExecAny(luaf, name: name, scope: scope);
-		}
+			string scope = null) =>
+			//			Log("Deprecated function event.onmemoryexecuteany(...) used, replace the call with event.on_bus_exec_any(...).");
+			OnBusExecAny(luaf, name: name, scope: scope);
 
 		[LuaMethodExample("local exec_cb_id = event.on_bus_exec_any(\r\n\tfunction(addr, val, flags)\r\n\t\tconsole.log( \"Fires immediately before every instruction executed (in the specified scope) by the core (CPU-intensive). {{val}} is the value to be executed (or {{0}} always, if this feature is only partially implemented).\" );\r\n\tend\r\n\t, \"Frame name\", \"System Bus\" );")]
 		[LuaMethod("on_bus_exec_any", "Fires immediately before every instruction executed (in the specified scope) by the core (CPU-intensive). Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value to be executed (or {{0}} always, if this feature is only partially implemented).")]
@@ -196,11 +186,9 @@ namespace BizHawk.Client.Common
 			LuaFunction luaf,
 			uint? address = null,
 			string name = null,
-			string scope = null)
-		{
-//			Log("Deprecated function event.onmemoryread(...) used, replace the call with event.on_bus_read(...).");
-			return OnBusRead(luaf, address, name: name, scope: scope);
-		}
+			string scope = null) =>
+			//			Log("Deprecated function event.onmemoryread(...) used, replace the call with event.on_bus_read(...).");
+			OnBusRead(luaf, address, name: name, scope: scope);
 
 		[LuaMethodExample("local exec_cb_id = event.on_bus_read(\r\n\tfunction(addr, val, flags)\r\n\t\tconsole.log( \"Fires immediately before the given address is read by the core. {{val}} is the value read. If no address is given, it will fire on every memory read.\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
 		[LuaMethod("on_bus_read", "Fires immediately before the given address is read by the core. Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value read. If no address is given, it will fire on every memory read.")]
@@ -242,11 +230,9 @@ namespace BizHawk.Client.Common
 			LuaFunction luaf,
 			uint? address = null,
 			string name = null,
-			string scope = null)
-		{
-//			Log("Deprecated function event.onmemorywrite(...) used, replace the call with event.on_bus_write(...).");
-			return OnBusWrite(luaf, address, name: name, scope: scope);
-		}
+			string scope = null) =>
+			//			Log("Deprecated function event.onmemorywrite(...) used, replace the call with event.on_bus_write(...).");
+			OnBusWrite(luaf, address, name: name, scope: scope);
 
 		[LuaMethodExample("local exec_cb_id = event.on_bus_write(\r\n\tfunction(addr, val, flags)\r\n\t\tconsole.log( \"Fires immediately before the given address is written by the core. {{val}} is the value to be written (or {{0}} always, if this feature is only partially implemented). If no address is given, it will fire on every memory write.\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
 		[LuaMethod("on_bus_write", "Fires immediately before the given address is written by the core. Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value to be written (or {{0}} always, if this feature is only partially implemented). If no address is given, it will fire on every memory write.")]
@@ -336,9 +322,6 @@ namespace BizHawk.Client.Common
 			return scope;
 		}
 
-		private bool HasScope(string scope)
-		{
-			return string.IsNullOrWhiteSpace(scope) || DebuggableCore.MemoryCallbacks.AvailableScopes.Contains(scope);
-		}
+		private bool HasScope(string scope) => string.IsNullOrWhiteSpace(scope) || DebuggableCore.MemoryCallbacks.AvailableScopes.Contains(scope);
 	}
 }

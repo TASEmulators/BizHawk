@@ -22,10 +22,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 			_bankMain = new int[0x2000];
 			_bankHigh = new int[2][];
-			var dummyBank = new int[0x2000];
+			int[] dummyBank = new int[0x2000];
 
 			// create dummy bank just in case
-			for (var i = 0; i < 0x2000; i++)
+			for (int i = 0; i < 0x2000; i++)
 			{
 				dummyBank[i] = 0xFF;
 			}
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			_bankHigh[1] = dummyBank;
 
 			// load in the banks
-			for (var i = 0; i < newAddresses.Count; i++)
+			for (int i = 0; i < newAddresses.Count; i++)
 			{
 				if (newAddresses[i] == 0x8000)
 				{
@@ -63,15 +63,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		public override int Peek8000(int addr)
-		{
-			return _bankMain[addr];
-		}
+		public override int Peek8000(int addr) => _bankMain[addr];
 
-		public override int PeekA000(int addr)
-		{
-			return _bankHighSelected[addr];
-		}
+		public override int PeekA000(int addr) => _bankHighSelected[addr];
 
 		public override int Read8000(int addr)
 		{
@@ -80,9 +74,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			return _bankMain[addr];
 		}
 
-		public override int ReadA000(int addr)
-		{
-			return _bankHighSelected[addr];
-		}
+		public override int ReadA000(int addr) => _bankHighSelected[addr];
 	}
 }

@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		[CoreConstructor(VSystemID.Raw.O2)]
 		public O2Hawk(CoreComm comm, GameInfo game, byte[] rom, O2Settings settings, O2SyncSettings syncSettings)
 		{
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new(this);
 
 			cpu = new I8048
 			{
@@ -138,10 +138,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			WritePort(2, 0xFF);
 		}
 
-		public void SoftReset()
-		{
-			cpu.Reset();
-		}
+		public void SoftReset() => cpu.Reset();
 
 		public string BoardName => mapper.GetType().Name;
 

@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_possibleControllers = Enum.GetNames(typeof(JoystickType));
 
-			foreach (var val in _possibleControllers)
+			foreach (string val in _possibleControllers)
 			{
 				Port1ComboBox.Items.Add(val);
 				Port2ComboBox.Items.Add(val);
@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 				bool selectionValid = true;
 
-				var j1 = Port1ComboBox.SelectedItem.ToString();
+				string j1 = Port1ComboBox.SelectedItem.ToString();
 				if (j1 != _possibleControllers[0])
 				{
 					if (j1 == Port2ComboBox.SelectedItem.ToString())
@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				var j2 = Port2ComboBox.SelectedItem.ToString();
+				string j2 = Port2ComboBox.SelectedItem.ToString();
 				if (j2 != _possibleControllers[0])
 				{
 					if (j2 == Port1ComboBox.SelectedItem.ToString())
@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				var j3 = Port3ComboBox.SelectedItem.ToString();
+				string j3 = Port3ComboBox.SelectedItem.ToString();
 				if (j3 != _possibleControllers[0])
 				{
 					if (j3 == Port1ComboBox.SelectedItem.ToString())

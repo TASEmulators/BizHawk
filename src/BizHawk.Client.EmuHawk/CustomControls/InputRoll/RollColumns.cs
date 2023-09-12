@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public new void InsertRange(int index, IEnumerable<RollColumn> collection)
 		{
-			var items = collection.ToList();
+			List<RollColumn> items = collection.ToList();
 			foreach (var column in items)
 			{
 				if (this.Any(c => c.Name == column.Name))
@@ -77,14 +77,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public new bool Remove(RollColumn column)
 		{
-			var result = base.Remove(column);
+			bool result = base.Remove(column);
 			ColumnsChanged();
 			return result;
 		}
 
 		public new int RemoveAll(Predicate<RollColumn> match)
 		{
-			var result = base.RemoveAll(match);
+			int result = base.RemoveAll(match);
 			ColumnsChanged();
 			return result;
 		}

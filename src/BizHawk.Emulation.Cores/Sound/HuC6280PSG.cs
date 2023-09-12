@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Components
 		public byte VoiceLatch;
 		private byte WaveTableWriteOffset;
 
-		private readonly Queue<QueuedCommand> commands = new Queue<QueuedCommand>(256);
+		private readonly Queue<QueuedCommand> commands = new(256);
 		private long frameStartTime, frameStopTime;
 
 		private const int SampleRate = 44100;
@@ -69,15 +69,9 @@ namespace BizHawk.Emulation.Cores.Components
 			frameStartTime = cycles;
 		}
 
-		internal void EndFrame(long cycles)
-		{
-			frameStopTime = cycles;
-		}
+		internal void EndFrame(long cycles) => frameStopTime = cycles;
 
-		internal void WritePSG(byte register, byte value, long cycles)
-		{
-			commands.Enqueue(new QueuedCommand { Register = register, Value = value, Time = cycles - frameStartTime });
-		}
+		internal void WritePSG(byte register, byte value, long cycles) => commands.Enqueue(new QueuedCommand { Register = register, Value = value, Time = cycles - frameStartTime });
 
 		private void WritePSGImmediate(int register, byte value)
 		{

@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaSandbox.Sandbox(_ownerFile?.Thread, () =>
 			{
 				Environment.CurrentDirectory = _currentDirectory;
-				foreach (LuaEvent luaEvent in ControlEvents)
+				foreach (var luaEvent in ControlEvents)
 				{
 					if (luaEvent.Control == handle)
 					{

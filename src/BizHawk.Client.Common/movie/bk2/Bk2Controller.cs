@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!string.IsNullOrEmpty(key))
 			{
-				var groups = key.Split(new[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
+				string[] groups = key.Split(new[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
 
 				_type.ControlsFromLog = groups
 					.Select(group => group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList())
@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common
 		public Bk2Controller(ControllerDefinition definition)
 		{
 			_type = new Bk2ControllerDefinition(definition);
-			foreach ((string axisName, AxisSpec range) in definition.Axes)
+			foreach ((string axisName, var range) in definition.Axes)
 			{
 				_myAxisControls[axisName] = range.Neutral;
 			}
@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 				_myBoolButtons[button] = source.IsPressed(button);
 			}
 
-			foreach (var name in Definition.Axes.Keys)
+			foreach (string name in Definition.Axes.Keys)
 			{
 				_myAxisControls[name] = source.AxisValue(name);
 			}
@@ -73,7 +73,7 @@ namespace BizHawk.Client.Common
 
 		public void SetFromSticky(IStickyAdapter controller)
 		{
-			foreach (var button in Definition.BoolButtons)
+			foreach (string button in Definition.BoolButtons)
 			{
 				_myBoolButtons[button] = controller.IsSticky(button);
 			}
@@ -86,8 +86,8 @@ namespace BizHawk.Client.Common
 		{
 			if (!string.IsNullOrWhiteSpace(mnemonic))
 			{
-				var trimmed = mnemonic.Replace("|", "");
-				var iterator = 0;
+				string trimmed = mnemonic.Replace("|", "");
+				int iterator = 0;
 
 				foreach (var key in ControlsOrdered)
 				{
@@ -98,9 +98,9 @@ namespace BizHawk.Client.Common
 					}
 					else if (key.IsAxis)
 					{
-						var commaIndex = trimmed.Substring(iterator).IndexOf(',');
-						var temp = trimmed.Substring(iterator, commaIndex);
-						var val = int.Parse(temp.Trim());
+						int commaIndex = trimmed.Substring(iterator).IndexOf(',');
+						string temp = trimmed.Substring(iterator, commaIndex);
+						int val = int.Parse(temp.Trim());
 						_myAxisControls[key.Name] = val;
 
 						iterator += commaIndex + 1;
@@ -109,15 +109,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void SetBool(string buttonName, bool value)
-		{
-			_myBoolButtons[buttonName] = value;
-		}
+		public void SetBool(string buttonName, bool value) => _myBoolButtons[buttonName] = value;
 
-		public void SetAxis(string buttonName, int value)
-		{
-			_myAxisControls[buttonName] = value;
-		}
+		public void SetAxis(string buttonName, int value) => _myAxisControls[buttonName] = value;
 
 		private class ControlMap
 		{

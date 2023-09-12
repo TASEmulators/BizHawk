@@ -9,14 +9,12 @@ namespace BizHawk.Common
 		public static void MutatingByteSwap16(Span<byte> a)
 		{
 #if true //TODO benchmark (both methods work correctly); also there is another method involving shifting the (output copy of the) array over by 1 byte then manually writing every second byte
-			var l = a.Length;
+			int l = a.Length;
 			Debug.Assert(l % 2 == 0);
-			fixed (byte* p = &a[0]) for (var i = 0; i < l; i += 2)
+			fixed (byte* p = &a[0]) for (int i = 0; i < l; i += 2)
 			{
-				var b = p[i];
-				p[i] = p[i + 1];
-				p[i + 1] = b;
-			}
+					(p[i + 1], p[i]) = (p[i], p[i + 1]);
+				}
 #else
 			Debug.Assert(a.Length % 2 == 0);
 			var shorts = MemoryMarshal.Cast<byte, ushort>(a);
@@ -28,17 +26,13 @@ namespace BizHawk.Common
 		public static void MutatingByteSwap32(Span<byte> a)
 		{
 #if true //TODO benchmark (both methods work correctly)
-			var l = a.Length;
+			int l = a.Length;
 			Debug.Assert(l % 4 == 0);
-			fixed (byte* p = &a[0]) for (var i = 0; i < l; i += 4)
+			fixed (byte* p = &a[0]) for (int i = 0; i < l; i += 4)
 			{
-				var b = p[i];
-				p[i] = p[i + 3];
-				p[i + 3] = b;
-				b = p[i + 1];
-				p[i + 1] = p[i + 2];
-				p[i + 2] = b;
-			}
+					(p[i + 3], p[i]) = (p[i], p[i + 3]);
+					(p[i + 2], p[i + 1]) = (p[i + 1], p[i + 2]);
+				}
 #else
 			Debug.Assert(a.Length % 4 == 0);
 			var ints = MemoryMarshal.Cast<byte, uint>(a);

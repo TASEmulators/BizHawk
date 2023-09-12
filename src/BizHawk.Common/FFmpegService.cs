@@ -28,17 +28,14 @@ namespace BizHawk.Common
 			public bool IsAudio;
 		}
 
-		private static string[] Escape(IEnumerable<string> args)
-		{
-			return args.Select(s => s.Contains(" ") ? $"\"{s}\"" : s).ToArray();
-		}
+		private static string[] Escape(IEnumerable<string> args) => args.Select(s => s.Contains(" ") ? $"\"{s}\"" : s).ToArray();
 
 		//note: accepts . or : in the stream stream/substream separator in the stream ID format, since that changed at some point in FFMPEG history
 		//if someone has a better idea how to make the determination of whether an audio stream is available, I'm all ears
-		private static readonly Regex rxHasAudio = new Regex(@"Stream \#(\d*(\.|\:)\d*)\: Audio", RegexOptions.Compiled);
+		private static readonly Regex rxHasAudio = new(@"Stream \#(\d*(\.|\:)\d*)\: Audio", RegexOptions.Compiled);
 		public static AudioQueryResult QueryAudio(string path)
 		{
-			var ret = new AudioQueryResult();
+			AudioQueryResult ret = new();
 			string stdout = Run("-i", path).Text;
 			ret.IsAudio = rxHasAudio.Matches(stdout).Count > 0;
 			return ret;
@@ -68,14 +65,14 @@ namespace BizHawk.Common
 		public static RunResults Run(params string[] args)
 		{
 			args = Escape(args);
-			StringBuilder sbCmdline = new StringBuilder();
+			StringBuilder sbCmdline = new();
 			for (int i = 0; i < args.Length; i++)
 			{
 				sbCmdline.Append(args[i]);
 				if (i != args.Length - 1) sbCmdline.Append(' ');
 			}
 
-			ProcessStartInfo oInfo = new ProcessStartInfo(FFmpegPath, sbCmdline.ToString())
+			ProcessStartInfo oInfo = new(FFmpegPath, sbCmdline.ToString())
 			{
 				UseShellExecute = false,
 				CreateNoWindow = true,
@@ -83,13 +80,15 @@ namespace BizHawk.Common
 				RedirectStandardError = true
 			};
 
-			Process proc = new Process();
-			proc.StartInfo = oInfo;
-			Mutex m = new Mutex();
+			Process proc = new()
+			{
+				StartInfo = oInfo
+			};
+			Mutex m = new();
 
-			var outputBuilder = new StringBuilder();
-			var outputCloseEvent = new TaskCompletionSource<bool>();
-			var errorCloseEvent = new TaskCompletionSource<bool>();
+			StringBuilder outputBuilder = new();
+			TaskCompletionSource<bool> outputCloseEvent = new();
+			TaskCompletionSource<bool> errorCloseEvent = new();
 
 			proc.OutputDataReceived += (s, e) =>
 			{

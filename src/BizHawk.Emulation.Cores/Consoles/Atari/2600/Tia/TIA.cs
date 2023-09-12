@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			SetSecam(secam);
 			CalcFrameRate();
 
-			_spf = _vsyncNum / (double)_vsyncDen > 55.0 ? 735 : 882;
+			_spf = VsyncNumerator / (double)VsyncDenominator > 55.0 ? 735 : 882;
 		}
 
 		// indicates to the core where a new frame is starting
@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private HMoveData _hmove;
 		private BallData _ball;
 
-		private readonly Audio AUD =new Audio();
+		private readonly Audio AUD =new();
 
 		// current audio register state used to sample correct positions in the scanline (clrclk 0 and 114)
 		public readonly short[] LocalAudioCycles = new short[2000];
@@ -166,14 +166,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			int clockrate = _pal ? 3546895 : 3579545;
 			int clocksperframe = 228 * NominalNumScanlines;
 			int gcd = (int)BigInteger.GreatestCommonDivisor(clockrate, clocksperframe);
-			_vsyncNum = clockrate / gcd;
-			_vsyncDen = clocksperframe / gcd;
+			VsyncNumerator = clockrate / gcd;
+			VsyncDenominator = clocksperframe / gcd;
 		}
 
-		public void SetSecam(bool secam)
-		{
-			_palette = _pal ? secam ? SecamPalette : PALPalette : NTSCPalette;
-		}
+		public void SetSecam(bool secam) => _palette = _pal ? secam ? SecamPalette : PALPalette : NTSCPalette;
 
 		public int CurrentScanLine => _currentScanLine;
 
@@ -471,7 +468,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			// Assume we're on the left side of the screen for now
-			var rightSide = false;
+			bool rightSide = false;
 
 			// ---- Things that happen only in the drawing section ----
 			// TODO: Remove this magic number (17). It depends on the HMOVE
@@ -612,7 +609,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if (y < MaxScreenHeight)
 				{
 					int x = _hsyncCnt - 68;
-					if (x < 0 || x > 159) // this can't happen, right?
+					if (x is < 0 or > 159) // this can't happen, right?
 					{
 						throw new Exception(); // TODO
 					}
@@ -639,7 +636,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if (y < MaxScreenHeight)
 				{
 					int x = _hsyncCnt - 68;
-					if (x < 0 || x > 159) // this can't happen, right?
+					if (x is < 0 or > 159) // this can't happen, right?
 					{
 						throw new Exception(); // TODO
 					}
@@ -881,7 +878,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			// do the audio sampling
-			if (_hsyncCnt == 36 || _hsyncCnt == 148)
+			if (_hsyncCnt is 36 or 148)
 			{
 				if (AudioClocks < 2000)
 				{
@@ -933,7 +930,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public byte ReadMemory(ushort addr, bool peek)
 		{
-			var maskedAddr = (ushort)(addr & 0x000F);
+			ushort maskedAddr = (ushort)(addr & 0x000F);
 			byte coll = 0;
 			int mask = 0xFF;
 
@@ -1199,7 +1196,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public void WriteMemory(ushort addr, byte value, bool poke)
 		{
-			var maskedAddr = (ushort)(addr & 0x3f);
+			ushort maskedAddr = (ushort)(addr & 0x3f);
 			if (!poke)
 			{
 				BusState = value;

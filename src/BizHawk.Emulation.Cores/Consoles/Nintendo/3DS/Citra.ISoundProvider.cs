@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		private void ProcessSound()
 		{
-			_core.Citra_GetAudio(_context, out var buffer, out var frames);
+			_core.Citra_GetAudio(_context, out var buffer, out int frames);
 			if (frames > _sampleBuf.Length)
 			{
 				_sampleBuf = new short[frames];
@@ -26,15 +26,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
-		public void DiscardSamples()
-		{
-			_nsamps = 0;
-		}
+		public void DiscardSamples() => _nsamps = 0;
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Aync mode is not supported");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Aync mode is not supported");
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{

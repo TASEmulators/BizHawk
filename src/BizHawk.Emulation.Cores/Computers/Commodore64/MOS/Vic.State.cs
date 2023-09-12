@@ -138,13 +138,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_yScroll = 0;
 
 			// reset sprites
-			for (var i = 0; i < 8; i++)
+			for (int i = 0; i < 8; i++)
 			{
 				_sprites[i].HardReset();
 			}
 
 			// clear C buffer
-			for (var i = 0; i < 40; i++)
+			for (int i = 0; i < 40; i++)
 			{
 				_bufferC[i] = 0;
 			}

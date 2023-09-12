@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			set
 			{
 				// bits 0-3 contain the line
-				var line = value & 0x0f;
+				int line = value & 0x0f;
 
 				if (line > 0)
 				{
@@ -37,20 +37,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			get => _keyStatus;
 			set => _keyStatus = value;
 		}
-
-		private string[] _keyboardMatrix;
-		public string[] KeyboardMatrix
-		{
-			get => _keyboardMatrix;
-			set => _keyboardMatrix = value;
-		}
-
-		private string[] _nonMatrixKeys;
-		public string[] NonMatrixKeys
-		{
-			get => _nonMatrixKeys;
-			set => _nonMatrixKeys = value;
-		}
+		public string[] KeyboardMatrix { get; set; }
+		public string[] NonMatrixKeys { get; set; }
 
 		public StandardKeyboard(CPCBase machine)
 		{
@@ -88,9 +76,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			KeyStatus = new bool[8 * 10];
 
 			// nonmatrix keys (anything that hasnt already been taken)
-			var nonMatrix = new List<string>();
+			List<string> nonMatrix = new();
 
-			foreach (var key in _machine.CPC.AmstradCPCControllerDefinition.BoolButtons)
+			foreach (string key in _machine.CPC.AmstradCPCControllerDefinition.BoolButtons)
 			{
 				if (!KeyboardMatrix.Any(s => s == key))
 					nonMatrix.Add(key);
@@ -104,10 +92,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public byte ReadCurrentLine()
 		{
-			var lin = _currentLine; // - 0x40;
-			var pos = lin * 8;
-			var l = KeyStatus.Skip(pos).Take(8).ToArray();
-			BitArray bi = new BitArray(l);
+			int lin = _currentLine; // - 0x40;
+			int pos = lin * 8;
+			bool[] l = KeyStatus.Skip(pos).Take(8).ToArray();
+			BitArray bi = new(l);
 			byte[] bytes = new byte[1];
 			bi.CopyTo(bytes, 0);
 			byte inv = (byte)(~bytes[0]);

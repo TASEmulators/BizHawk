@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -25,7 +25,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private bool EnableLargeSprites => (Registers[1] & 2) > 0;
 		public bool EnableInterrupts => (Registers[1] & 32) > 0;
 		private bool DisplayOn => (Registers[1] & 64) > 0;
+		#pragma warning disable IDE0051
 		private bool Mode16k => (Registers[1] & 128) > 0;
+		#pragma warning restore IDE0051
 
 		public bool InterruptPending
 		{

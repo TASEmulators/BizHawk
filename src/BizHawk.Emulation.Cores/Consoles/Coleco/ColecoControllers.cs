@@ -32,10 +32,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			Definition = new("(ColecoVision Basic Controller fragment)");
 		}
 
-		public byte Read(IController c, bool leftMode, bool updateWheel, float wheelAngle)
-		{
-			return 0x7F; // needs checking
-		}
+		public byte Read(IController c, bool leftMode, bool updateWheel, float wheelAngle) => 0x7F; // needs checking
 
 		public ControllerDefinition Definition { get; }
 
@@ -145,7 +142,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				float x = c.AxisValue(Definition.Axes[0]);
 				float y = c.AxisValue(Definition.Axes[1]);
 
-				var angle = updateWheel ? wheelAngle : CalcDirection(x, y);
+				float angle = updateWheel ? wheelAngle : CalcDirection(x, y);
 				
 				byte temp2 = 0;
 
@@ -247,7 +244,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				float x = c.AxisValue(Definition.Axes[0]);
 				float y = c.AxisValue(Definition.Axes[1]);
 
-				var angle = updateWheel ? wheelAngle : CalcDirection(x, y);
+				float angle = updateWheel ? wheelAngle : CalcDirection(x, y);
 
 				byte temp2 = 0;
 

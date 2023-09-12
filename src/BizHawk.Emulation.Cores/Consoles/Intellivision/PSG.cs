@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed class PSG : ISoundProvider
 	{
-		private readonly BlipBuffer _blip = new BlipBuffer(4096);
+		private readonly BlipBuffer _blip = new(4096);
 		private short[] _sampleBuffer = new short[0];
 
 
@@ -40,10 +40,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			_sampleClock = 0;
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
 		public bool CanProvideAsync => false;
 
@@ -78,10 +75,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			samples = _sampleBuffer;
 		}
 
-		public void GetSamples(short[] samples)
-		{
-			throw new Exception();
-		}
+		public void GetSamples(short[] samples) => throw new Exception();
 
 		private static readonly int[] VolumeTable =
 		{
@@ -144,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public ushort? ReadPSG(ushort addr, bool peek)
 		{
-			if (addr >= 0x01F0 && addr <= 0x01FF)
+			if (addr is >= 0x01F0 and <= 0x01FF)
 			{
 				return Register[addr - 0x01F0];
 			}
@@ -193,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				noise_per = 0x20;
 			}
 
-			var shape_select = Register[10] & 0xF;
+			int shape_select = Register[10] & 0xF;
 
 			if (shape_select < 4)
 				env_shape = 0;
@@ -214,19 +208,19 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public bool WritePSG(ushort addr, ushort value, bool poke)
 		{
-			if (addr >= 0x01F0 && addr <= 0x01FF)
+			if (addr is >= 0x01F0 and <= 0x01FF)
 			{
-				var reg = addr - 0x01F0;
+				int reg = addr - 0x01F0;
 
 				value &= 0xFF;
 
-				if (reg == 4 || reg == 5 || reg == 6 || reg == 10)
+				if (reg is 4 or 5 or 6 or 10)
 					value &= 0xF;
 
 				if (reg == 9)
 					value &= 0x1F;
 
-				if (reg == 11 || reg == 12 || reg == 13)
+				if (reg is 11 or 12 or 13)
 					value &= 0x3F;
 
 				Register[addr - 0x01F0] = value;
@@ -237,7 +231,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				{
 					env_clock = env_per;
 
-					if (env_shape == 0 || env_shape == 2 || env_shape == 3 || env_shape == 4 || env_shape == 5)
+					if (env_shape is 0 or 2 or 3 or 4 or 5)
 					{
 						env_E = 15;
 						E_up_down = -1;
@@ -292,21 +286,21 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 						env_E += E_up_down;
 
-						if (env_E == 16 || env_E == -1)
+						if (env_E is 16 or (-1))
 						{
 
 							// we just completed a period of the envelope, determine what to do now based on the envelope shape
-							if (env_shape == 0 || env_shape == 1 || env_shape == 3 || env_shape == 9)
+							if (env_shape is 0 or 1 or 3 or 9)
 							{
 								E_up_down = 0;
 								env_E = 0;
 							}
-							else if (env_shape == 5 || env_shape == 7)
+							else if (env_shape is 5 or 7)
 							{
 								E_up_down = 0;
 								env_E = 15;
 							}
-							else if (env_shape == 4 || env_shape == 8)
+							else if (env_shape is 4 or 8)
 							{
 								if (env_E == 16)
 								{

@@ -26,23 +26,20 @@ namespace BizHawk.Client.Common
 			ResetList();
 		}
 
-		private void ResetList()
-		{
-			_currentTextures = new List<Texture2d> { null, null };
-		}
+		private void ResetList() => _currentTextures = new List<Texture2d> { null, null };
 
 		private readonly IGL _gl;
 		private List<Texture2d> _currentTextures;
 
 		public Texture2d Get(IDisplaySurface ds)
 		{
-			using var bb = new BitmapBuffer(ds.PeekBitmap(), new BitmapLoadOptions());
+			using BitmapBuffer bb = new(ds.PeekBitmap(), new BitmapLoadOptions());
 			return Get(bb);
 		}
 		public Texture2d Get(BitmapBuffer bb)
 		{
 			//get the current entry
-			Texture2d currentTexture = _currentTextures[0];
+			var currentTexture = _currentTextures[0];
 
 			// TODO - its a bit cruddy here that we don't respect the current texture HasAlpha condition (in fact, there's no such concept)
 			// we might need to deal with that in the future to fix some bugs.

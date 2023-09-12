@@ -38,15 +38,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			if (CDL == null) return;
 			if (!CDL.Active) return;
-			string key;
-			switch (addrtype)
+			string key = addrtype switch
 			{
-				case LibGPGX.CDLog_AddrType.MDCART: key = "MD CART"; break;
-				case LibGPGX.CDLog_AddrType.RAM68k: key = "68K RAM"; break;
-				case LibGPGX.CDLog_AddrType.RAMZ80: key = "Z80 RAM"; break;
-				case LibGPGX.CDLog_AddrType.SRAM: key = "SRAM"; break;
-				default: throw new InvalidOperationException("Lagrangian earwax incident");
-			}
+				LibGPGX.CDLog_AddrType.MDCART => "MD CART",
+				LibGPGX.CDLog_AddrType.RAM68k => "68K RAM",
+				LibGPGX.CDLog_AddrType.RAMZ80 => "Z80 RAM",
+				LibGPGX.CDLog_AddrType.SRAM => "SRAM",
+				_ => throw new InvalidOperationException("Lagrangian earwax incident"),
+			};
 			CDL[key][addr] |= (byte)flags;
 		}
 	}

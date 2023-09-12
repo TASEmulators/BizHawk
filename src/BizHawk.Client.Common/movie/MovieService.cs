@@ -16,14 +16,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static IEnumerable<string> MovieExtensions => new[] { Bk2Movie.Extension, TasMovie.Extension };
 
-		public static bool IsValidMovieExtension(string ext)
-		{
-			return MovieExtensions.Contains(ext.Replace(".", ""), StringComparer.OrdinalIgnoreCase);
-		}
+		public static bool IsValidMovieExtension(string ext) => MovieExtensions.Contains(ext.Replace(".", ""), StringComparer.OrdinalIgnoreCase);
 
 		public static bool IsCurrentTasVersion(string movieVersion)
 		{
-			var actual = ParseTasMovieVersion(movieVersion);
+			double actual = ParseTasMovieVersion(movieVersion);
 			return actual.HawkFloatEquality(TasMovie.CurrentVersion);
 		}
 
@@ -34,7 +31,7 @@ namespace BizHawk.Client.Common
 				return 1.0F;
 			}
 
-			var split = movieVersion
+			string[] split = movieVersion
 				.ToLowerInvariant()
 				.Split(new[] {"tasproj"}, StringSplitOptions.RemoveEmptyEntries);
 
@@ -43,17 +40,17 @@ namespace BizHawk.Client.Common
 				return 1.0F;
 			}
 
-			var versionStr = split[1]
+			string versionStr = split[1]
 				.Trim()
 				.Replace("v", "");
 
-			if (double.TryParse(versionStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedWithPeriod))
+			if (double.TryParse(versionStr, NumberStyles.Float, CultureInfo.InvariantCulture, out double parsedWithPeriod))
 			{
 				return parsedWithPeriod;
 			}
 
 			// Accept .tasproj files written from <= 2.5 where the host culture settings used ','
-			if (double.TryParse(versionStr.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedWithComma))
+			if (double.TryParse(versionStr.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out double parsedWithComma))
 			{
 				return parsedWithComma;
 			}

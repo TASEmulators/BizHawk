@@ -37,9 +37,6 @@
 		/// Channel F addressable through the address space)
 		/// </summary>
 		/// <param name="addr"></param>
-		public void WriteBus(ushort addr, byte value)
-		{
-			Cartridge.WriteBus(addr, value);
-		}		
+		public void WriteBus(ushort addr, byte value) => Cartridge.WriteBus(addr, value);
 	}
 }

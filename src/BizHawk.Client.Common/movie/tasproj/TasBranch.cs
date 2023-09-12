@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 {
 	public class TasBranch
 	{
-		internal struct ForSerialization
+		internal readonly struct ForSerialization
 		{
 			public readonly int Frame;
 
@@ -116,7 +116,7 @@ namespace BizHawk.Client.Common
 
 		public new bool Remove(TasBranch item)
 		{
-			var result = base.Remove(item);
+			bool result = base.Remove(item);
 			if (result)
 			{
 				_movie.FlagChanges();
@@ -127,13 +127,13 @@ namespace BizHawk.Client.Common
 
 		public void Save(ZipStateSaver bs)
 		{
-			var nheader = new IndexedStateLump(BinaryStateLump.BranchHeader);
-			var ncore = new IndexedStateLump(BinaryStateLump.BranchCoreData);
-			var ninput = new IndexedStateLump(BinaryStateLump.BranchInputLog);
-			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
-			var ncoreframebuffer = new IndexedStateLump(BinaryStateLump.BranchCoreFrameBuffer);
-			var nmarkers = new IndexedStateLump(BinaryStateLump.BranchMarkers);
-			var nusertext = new IndexedStateLump(BinaryStateLump.BranchUserText);
+			IndexedStateLump nheader = new(BinaryStateLump.BranchHeader);
+			IndexedStateLump ncore = new(BinaryStateLump.BranchCoreData);
+			IndexedStateLump ninput = new(BinaryStateLump.BranchInputLog);
+			IndexedStateLump nframebuffer = new(BinaryStateLump.BranchFrameBuffer);
+			IndexedStateLump ncoreframebuffer = new(BinaryStateLump.BranchCoreFrameBuffer);
+			IndexedStateLump nmarkers = new(BinaryStateLump.BranchMarkers);
+			IndexedStateLump nusertext = new(BinaryStateLump.BranchUserText);
 			foreach (var b in this)
 			{
 				bs.PutLump(nheader, tw => tw.WriteLine(JsonConvert.SerializeObject(b.ForSerial)));
@@ -151,13 +151,13 @@ namespace BizHawk.Client.Common
 
 				bs.PutLump(nframebuffer, s =>
 				{
-					var vp = new BitmapBufferVideoProvider(b.OSDFrameBuffer);
+					BitmapBufferVideoProvider vp = new(b.OSDFrameBuffer);
 					QuickBmpFile.Save(vp, s, b.OSDFrameBuffer.Width, b.OSDFrameBuffer.Height);
 				});
 
 				bs.PutLump(ncoreframebuffer, s =>
 				{
-					var vp = new BitmapBufferVideoProvider(b.CoreFrameBuffer);
+					BitmapBufferVideoProvider vp = new(b.CoreFrameBuffer);
 					QuickBmpFile.Save(vp, s, b.CoreFrameBuffer.Width, b.CoreFrameBuffer.Height);
 				});
 
@@ -177,23 +177,23 @@ namespace BizHawk.Client.Common
 
 		public void Load(ZipStateLoader bl, ITasMovie movie)
 		{
-			var nheader = new IndexedStateLump(BinaryStateLump.BranchHeader);
-			var ncore = new IndexedStateLump(BinaryStateLump.BranchCoreData);
-			var ninput = new IndexedStateLump(BinaryStateLump.BranchInputLog);
-			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
-			var ncoreframebuffer = new IndexedStateLump(BinaryStateLump.BranchCoreFrameBuffer);
-			var nmarkers = new IndexedStateLump(BinaryStateLump.BranchMarkers);
-			var nusertext = new IndexedStateLump(BinaryStateLump.BranchUserText);
+			IndexedStateLump nheader = new(BinaryStateLump.BranchHeader);
+			IndexedStateLump ncore = new(BinaryStateLump.BranchCoreData);
+			IndexedStateLump ninput = new(BinaryStateLump.BranchInputLog);
+			IndexedStateLump nframebuffer = new(BinaryStateLump.BranchFrameBuffer);
+			IndexedStateLump ncoreframebuffer = new(BinaryStateLump.BranchCoreFrameBuffer);
+			IndexedStateLump nmarkers = new(BinaryStateLump.BranchMarkers);
+			IndexedStateLump nusertext = new(BinaryStateLump.BranchUserText);
 
 			Clear();
 
 			while (true)
 			{
-				var b = new TasBranch();
+				TasBranch b = new();
 
 				if (!bl.GetLump(nheader, abort: false, tr =>
 				{
-					var header = (dynamic)JsonConvert.DeserializeObject(tr.ReadLine());
+					dynamic header = JsonConvert.DeserializeObject(tr.ReadLine());
 					b.Frame = (int)header.Frame;
 
 					var timestamp = header.TimeStamp;
