@@ -688,7 +688,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (frame >= CurrentTasMovie.InputLogLength)
 						{
-							CurrentTasMovie.SetAxisState(frame, buttonName, 0);
+							CurrentTasMovie.SetAxisState(frame, buttonName, ControllerType.Axes[buttonName].Neutral);
 							RefreshDialog();
 						}
 
