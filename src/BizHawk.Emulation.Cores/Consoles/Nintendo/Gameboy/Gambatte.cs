@@ -208,21 +208,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				RomDetails += $"Core reported CRC32: {crc:X8}\r\n";
 				RomDetails += $"Core reported Header Checksum Status: {(headerchecksumok != 0 ? "OK" : "BAD")}\r\n";
 
-				if (useBios && headerchecksumok == 0)
+				switch (useBios)
 				{
-					comm.ShowMessage("Core reports the header checksum is bad. This ROM will not boot with the official BIOS.\n" +
-						"Disable BIOS in GB settings to boot this game");
-				}
-
-				if (!_syncSettings.EnableBIOS && IsCGBMode && IsCGBDMGMode) //TODO doesn't IsCGBDMGMode imply IsCGBMode?
-				{
-					// without a bios, we need to set the palette for cgbdmg ourselves
-					var cgbDmgColors = new[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
-					if (file[0x14B] == 0x01 || (file[0x14B] == 0x33 && file[0x144] == '0' && file[0x145] == '1')) // Nintendo licencees get special palettes
+					case true when headerchecksumok == 0:
+						comm.ShowMessage("Core reports the header checksum is bad. This ROM will not boot with the official BIOS.\n" +
+							"Disable BIOS in GB settings to boot this game");
+						break;
+					//TODO doesn't IsCGBDMGMode imply IsCGBMode?
+					case false when IsCGBMode && IsCGBDMGMode:
 					{
-						cgbDmgColors = ColorsFromTitleHash(file);
+						// without a bios, we need to set the palette for cgbdmg ourselves
+						var cgbDmgColors = new[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
+						if (file[0x14B] == 0x01 || (file[0x14B] == 0x33 && file[0x144] == '0' && file[0x145] == '1')) // Nintendo licencees get special palettes
+						{
+							cgbDmgColors = ColorsFromTitleHash(file);
+						}
+						ChangeDMGColors(cgbDmgColors);
+						break;
 					}
-					ChangeDMGColors(cgbDmgColors);
 				}
 
 				LibGambatte.gambatte_settimemode(GambatteState, DeterministicEmulation || !_syncSettings.RealTimeRTC);
