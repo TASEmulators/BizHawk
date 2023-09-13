@@ -5,7 +5,6 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace BizHawk.Emulation.Common
 {

@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		public void IN_Func(byte dest, byte src)
 		{
-			Regs[dest] = ReadHardware((byte)(Regs[src]));
+			Regs[dest] = ReadHardware(Regs[src]);
 		}
 
 		/// <summary>

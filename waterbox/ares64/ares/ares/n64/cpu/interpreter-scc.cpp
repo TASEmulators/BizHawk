@@ -347,6 +347,7 @@ auto CPU::TLBWI() -> void {
     if(!scc.status.enable.coprocessor0) return exception.coprocessor0();
   }
   if(scc.index.tlbEntry >= TLB::Entries) return;
+  devirtualizeCache = {};
   tlb.entry[scc.index.tlbEntry] = scc.tlb;
   tlb.entry[scc.index.tlbEntry].synchronize();
   debugger.tlbWrite(scc.index.tlbEntry);
@@ -358,6 +359,7 @@ auto CPU::TLBWR() -> void {
   }
   u8 index = getControlRandom();
   if(index >= TLB::Entries) return;
+  devirtualizeCache = {};
   tlb.entry[index] = scc.tlb;
   tlb.entry[index].synchronize();
   debugger.tlbWrite(index);

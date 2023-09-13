@@ -43,7 +43,7 @@
 			this.EnableContextMenuCheckbox = new System.Windows.Forms.CheckBox();
 			this.PauseWhenMenuActivatedCheckbox = new System.Windows.Forms.CheckBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.rbInputMethodOpenTK = new System.Windows.Forms.RadioButton();
+			this.rbInputMethodSDL2 = new System.Windows.Forms.RadioButton();
 			this.rbInputMethodDirectInput = new System.Windows.Forms.RadioButton();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.StartPausedCheckbox = new System.Windows.Forms.CheckBox();
@@ -165,7 +165,7 @@
 			// 
 			this.label2.Location = new System.Drawing.Point(26, 112);
 			this.label2.Name = "label2";
-			this.label2.Text = "When this is set, the client will receive user input even when focus is lost";
+			this.label2.Text = "\"Eavesdrops\" on keyboard and gamepad input while other programs are focused.";
 			// 
 			// AcceptBackgroundInputCheckbox
 			// 
@@ -227,7 +227,7 @@
 			// 
 			// groupBox3
 			// 
-			this.groupBox3.Controls.Add(this.rbInputMethodOpenTK);
+			this.groupBox3.Controls.Add(this.rbInputMethodSDL2);
 			this.groupBox3.Controls.Add(this.rbInputMethodDirectInput);
 			this.groupBox3.Location = new System.Drawing.Point(6, 151);
 			this.groupBox3.Name = "groupBox3";
@@ -236,16 +236,16 @@
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Input Method (requires restart)";
 			// 
-			// rbInputMethodOpenTK
+			// rbInputMethodSDL2
 			// 
-			this.rbInputMethodOpenTK.AutoSize = true;
-			this.rbInputMethodOpenTK.Location = new System.Drawing.Point(136, 19);
-			this.rbInputMethodOpenTK.Name = "rbInputMethodOpenTK";
-			this.rbInputMethodOpenTK.Size = new System.Drawing.Size(65, 17);
-			this.rbInputMethodOpenTK.TabIndex = 1;
-			this.rbInputMethodOpenTK.TabStop = true;
-			this.rbInputMethodOpenTK.Text = "OpenTK";
-			this.rbInputMethodOpenTK.UseVisualStyleBackColor = true;
+			this.rbInputMethodSDL2.AutoSize = true;
+			this.rbInputMethodSDL2.Location = new System.Drawing.Point(136, 19);
+			this.rbInputMethodSDL2.Name = "rbInputMethodSDL2";
+			this.rbInputMethodSDL2.Size = new System.Drawing.Size(65, 17);
+			this.rbInputMethodSDL2.TabIndex = 1;
+			this.rbInputMethodSDL2.TabStop = true;
+			this.rbInputMethodSDL2.Text = "SDL2";
+			this.rbInputMethodSDL2.UseVisualStyleBackColor = true;
 			// 
 			// rbInputMethodDirectInput
 			// 
@@ -595,7 +595,7 @@
 		private System.Windows.Forms.CheckBox EnableContextMenuCheckbox;
 		private System.Windows.Forms.CheckBox PauseWhenMenuActivatedCheckbox;
 		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.RadioButton rbInputMethodOpenTK;
+		private System.Windows.Forms.RadioButton rbInputMethodSDL2;
 		private System.Windows.Forms.RadioButton rbInputMethodDirectInput;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.CheckBox StartPausedCheckbox;

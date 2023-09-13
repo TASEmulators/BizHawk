@@ -29,8 +29,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 			var ser = new BasicServiceProvider(this);
 
-			linkSettings = (GGLinkSettings)lp.Settings ?? new GGLinkSettings();
-			linkSyncSettings = (GGLinkSyncSettings)lp.SyncSettings ?? new GGLinkSyncSettings();
+			linkSettings = lp.Settings ?? new GGLinkSettings();
+			linkSyncSettings = lp.SyncSettings ?? new GGLinkSyncSettings();
 			_controllerDeck = new GGHawkLinkControllerDeck(GGHawkLinkControllerDeck.DefaultControllerName, GGHawkLinkControllerDeck.DefaultControllerName);
 
 			var temp_set_L = new SMS.SmsSettings();

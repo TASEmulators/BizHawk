@@ -31,12 +31,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// restore user settings to devices
 			if (_machine != null && _machine.AYDevice != null)
 			{
-				((AY38912)_machine.AYDevice as AY38912).PanningConfiguration = o.AYPanConfig;
+				((AY38912)_machine.AYDevice).PanningConfiguration = o.AYPanConfig;
 				_machine.AYDevice.Volume = o.AYVolume;
 			}
 			if (_machine != null && _machine.TapeBuzzer != null)
 			{
-				((Beeper)_machine.TapeBuzzer as Beeper).Volume = o.TapeVolume;
+				((Beeper)_machine.TapeBuzzer).Volume = o.TapeVolume;
 			}
 
 

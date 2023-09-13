@@ -9,8 +9,8 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -227,7 +227,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Start Scenario 1: A regular movie is active
-			if (MovieSession.Movie.IsActive() && !(MovieSession.Movie is ITasMovie))
+			if (MovieSession.Movie.IsActive() && MovieSession.Movie is not ITasMovie)
 			{
 				var changesString = "Would you like to save the current movie before closing it?";
 				if (MovieSession.Movie.Changes)
@@ -383,29 +383,29 @@ namespace BizHawk.Client.EmuHawk
 					|| c.Name == "Light Sensor"
 					|| c.Name == "Disc Select"
 					|| c.Name == "Disk Index"
-					|| c.Name.StartsWith("Tilt")
-					|| c.Name.StartsWith("Key ")
-					|| c.Name.StartsWith("Open")
-					|| c.Name.StartsWith("Close")
-					|| c.Name.EndsWith("Tape")
-					|| c.Name.EndsWith("Disk")
-					|| c.Name.EndsWith("Block")
-					|| c.Name.EndsWith("Status"));
+					|| c.Name.StartsWithOrdinal("Tilt")
+					|| c.Name.StartsWithOrdinal("Key ")
+					|| c.Name.StartsWithOrdinal("Open")
+					|| c.Name.StartsWithOrdinal("Close")
+					|| c.Name.EndsWithOrdinal("Tape")
+					|| c.Name.EndsWithOrdinal("Disk")
+					|| c.Name.EndsWithOrdinal("Block")
+					|| c.Name.EndsWithOrdinal("Status"));
 
 			if (Emulator.SystemId is VSystemID.Raw.N64)
 			{
 				foreach (var c in TasView.AllColumns
-					.Where(static c => c.Name.EndsWith(" C Up") || c.Name.EndsWith(" C Down")
-						|| c.Name.EndsWith(" C Left") || c.Name.EndsWith(" C Right")))
+					.Where(static c => c.Name.EndsWithOrdinal(" C Up") || c.Name.EndsWithOrdinal(" C Down")
+						|| c.Name.EndsWithOrdinal(" C Left") || c.Name.EndsWithOrdinal(" C Right")))
 				{
 					c.Text = $"c{c.Text.ToUpperInvariant()}"; // prepend 'c' to differentiate from L/R buttons -- only affects table header
 				}
 				var fakeAnalogControls = TasView.AllColumns
 					.Where(c =>
-						c.Name.EndsWith("A Up")
-						|| c.Name.EndsWith("A Down")
-						|| c.Name.EndsWith("A Left")
-						|| c.Name.EndsWith("A Right"));
+						c.Name.EndsWithOrdinal("A Up")
+						|| c.Name.EndsWithOrdinal("A Down")
+						|| c.Name.EndsWithOrdinal("A Left")
+						|| c.Name.EndsWithOrdinal("A Right"));
 
 				columnsToHide = columnsToHide.Concat(fakeAnalogControls);
 			}
@@ -450,8 +450,8 @@ namespace BizHawk.Client.EmuHawk
 				BoolPatterns[i] = new AutoPatternBool(1, 1);
 			}
 
-			BoolPatterns[BoolPatterns.Length - 2] = new AutoPatternBool(1, 0);
-			BoolPatterns[BoolPatterns.Length - 1] = new AutoPatternBool(
+			BoolPatterns[^2] = new AutoPatternBool(1, 0);
+			BoolPatterns[^1] = new AutoPatternBool(
 				Config.AutofireOn, Config.AutofireOff);
 
 			for (int i = fStart; i < AxisPatterns.Length - 2; i++)
@@ -459,8 +459,8 @@ namespace BizHawk.Client.EmuHawk
 				AxisPatterns[i] = new AutoPatternAxis(new[] { 1 });
 			}
 
-			AxisPatterns[AxisPatterns.Length - 2] = new AutoPatternAxis(new[] { 1 });
-			AxisPatterns[AxisPatterns.Length - 1] = new AutoPatternAxis(1, Config.AutofireOn, 0, Config.AutofireOff);
+			AxisPatterns[^2] = new AutoPatternAxis(new[] { 1 });
+			AxisPatterns[^1] = new AutoPatternAxis(1, Config.AutofireOn, 0, Config.AutofireOff);
 
 			SetUpToolStripColumns();
 		}

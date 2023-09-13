@@ -389,7 +389,7 @@ namespace BizHawk.Client.Common
 							return (int)CorePriority.UserPreference;
 						}
 
-						if (string.Equals(c.Name, dbForcedCoreName, StringComparison.InvariantCultureIgnoreCase))
+						if (string.Equals(c.Name, dbForcedCoreName, StringComparison.OrdinalIgnoreCase))
 						{
 							return (int)CorePriority.GameDbPreference;
 						}
@@ -579,13 +579,13 @@ namespace BizHawk.Client.Common
 							RomData = kvp.Value,
 							FileData = kvp.Value, // TODO: Hope no one needed anything special here
 							Extension = Path.GetExtension(kvp.Key),
-							RomPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path.SubstringBefore('|')), kvp.Key)),
+							RomPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path.SubstringBefore('|'))!, kvp.Key!)),
 							Game = Database.GetGameInfo(kvp.Value, Path.GetFileName(kvp.Key))
 						})
 						.ToList(),
 					Discs = xmlGame.AssetFullPaths
 						.Where(p => Disc.IsValidExtension(Path.GetExtension(p)))
-						.Select(path => (p: path, d: DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError))))
+						.Select(discPath => (p: discPath, d: DiscExtensions.CreateAnyType(discPath, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError))))
 						.Where(a => a.d != null)
 						.Select(a => (IDiscAsset)new DiscAsset
 						{
@@ -883,6 +883,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> MSX = new[] { "cas", "dsk", "mx1", "rom" };
 
+			public static readonly IReadOnlyCollection<string> N3DS = new[] { "3ds", "3dsx", "axf", "cci", "cxi", "app", "elf", "cia" };
+
 			public static readonly IReadOnlyCollection<string> N64 = new[] { "z64", "v64", "n64" };
 
 			public static readonly IReadOnlyCollection<string> N64DD = new[] { "ndd" };
@@ -961,6 +963,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Nintendo 64 Disk Drive", RomFileExtensions.N64DD),
 			new FilesystemFilter("Gameboy", RomFileExtensions.GB.Concat(new[] { "gbs" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Gameboy Advance", RomFileExtensions.GBA, addArchiveExts: true),
+			new FilesystemFilter("Nintendo 3DS", RomFileExtensions.N3DS),
 			new FilesystemFilter("Nintendo DS", RomFileExtensions.NDS),
 			new FilesystemFilter("Master System", RomFileExtensions.SMS, addArchiveExts: true),
 			new FilesystemFilter("PC Engine", RomFileExtensions.PCE.Concat(FilesystemFilter.DiscExtensions).ToList(), addArchiveExts: true),

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 
@@ -62,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 
 			rbOpenGL.Checked = _config.DispMethod == EDispMethod.OpenGL;
 			rbGDIPlus.Checked = _config.DispMethod == EDispMethod.GdiPlus;
-			rbD3D9.Checked = _config.DispMethod == EDispMethod.SlimDX9;
+			rbD3D9.Checked = _config.DispMethod == EDispMethod.D3D9;
 
 			cbStatusBarWindowed.Checked = _config.DispChromeStatusBarWindowed;
 			cbCaptionWindowed.Checked = _config.DispChromeCaptionWindowed;
@@ -98,9 +99,9 @@ namespace BizHawk.Client.EmuHawk
 			if (_config.DispCustomUserARHeight != -1)
 				txtCustomARHeight.Text = _config.DispCustomUserARHeight.ToString();
 			if (_config.DispCustomUserArx != -1)
-				txtCustomARX.Text = _config.DispCustomUserArx.ToString();
+				txtCustomARX.Text = _config.DispCustomUserArx.ToString(NumberFormatInfo.InvariantInfo);
 			if (_config.DispCustomUserAry != -1)
-				txtCustomARY.Text = _config.DispCustomUserAry.ToString();
+				txtCustomARY.Text = _config.DispCustomUserAry.ToString(NumberFormatInfo.InvariantInfo);
 
 			txtCropLeft.Text = _config.DispCropLeft.ToString();
 			txtCropTop.Text = _config.DispCropTop.ToString();
@@ -228,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 			if(rbGDIPlus.Checked)
 				_config.DispMethod = EDispMethod.GdiPlus;
 			if(rbD3D9.Checked)
-				_config.DispMethod = EDispMethod.SlimDX9;
+				_config.DispMethod = EDispMethod.D3D9;
 
 			if (int.TryParse(txtCropLeft.Text, out int dispCropLeft))
 			{

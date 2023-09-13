@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -40,6 +39,7 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.Libretro] = "Libretro",
 			[VSystemID.Raw.Lynx] = "Lynx",
 			[VSystemID.Raw.MSX] = "MSX",
+			[VSystemID.Raw.N3DS] = "3DS",
 			[VSystemID.Raw.N64] = "Nintendo 64",
 			[VSystemID.Raw.NDS] = "NDS",
 			[VSystemID.Raw.NES] = "NES",

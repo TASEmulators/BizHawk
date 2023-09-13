@@ -15,6 +15,7 @@ namespace BizHawk.Bizware.BizwareGL
 				Height = height;
 				Item = item;
 			}
+
 			public int X, Y;
 			public int Width, Height;
 			public int TexIndex;
@@ -31,14 +32,14 @@ namespace BizHawk.Bizware.BizwareGL
 			public readonly List<RectangleBinPack.Node> nodes = new List<RectangleBinPack.Node>();
 		}
 
-		public static int MaxSizeBits = 16;
+		public const int MaxSizeBits = 16;
 
 		/// <summary>
 		/// packs the supplied RectItems into an atlas. Modifies the RectItems with x/y values of location in new atlas.
 		/// </summary>
-		public static IReadOnlyList<(Size Size, List<RectItem> Items)> PackAtlas(IReadOnlyCollection<RectItem> items)
+		public static IReadOnlyList<(Size Size, List<RectItem> Items)> PackAtlas(IEnumerable<RectItem> items)
 		{
-			static void AddAtlas(ICollection<(Size, List<RectItem>)> atlases, IReadOnlyCollection<RectItem> initItems)
+			static void AddAtlas(ICollection<(Size, List<RectItem>)> atlases, IEnumerable<RectItem> initItems)
 			{
 				List<RectItem> currentItems = new(initItems);
 				List<RectItem> remainItems = new();
@@ -50,13 +51,13 @@ namespace BizHawk.Bizware.BizwareGL
 					// we run this every time we make an atlas, in case we want to variably control the maximum texture output size.
 					// ALSO - we accumulate data in there, so we need to refresh it each time. ... lame.
 					var todoSizes = new List<TryFitParam>();
-					for (int i = 3; i <= MaxSizeBits; i++)
+					for (var i = 3; i <= MaxSizeBits; i++)
 					{
-						for (int j = 3; j <= MaxSizeBits; j++)
+						for (var j = 3; j <= MaxSizeBits; j++)
 						{
-							int w = 1 << i;
-							int h = 1 << j;
-							TryFitParam tfp = new TryFitParam(w, h);
+							var w = 1 << i;
+							var h = 1 << j;
+							var tfp = new TryFitParam(w, h);
 							todoSizes.Add(tfp);
 						}
 					}
@@ -68,9 +69,10 @@ namespace BizHawk.Bizware.BizwareGL
 						rbp.Init(16384, 16384);
 						param.rbp.Init(param.w, param.h);
 
+						// ReSharper disable once AccessToModifiedClosure
 						foreach (var ri in currentItems)
 						{
-							RectangleBinPack.Node node = param.rbp.Insert(ri.Width, ri.Height);
+							var node = param.rbp.Insert(ri.Width, ri.Height);
 							if (node == null)
 							{
 								param.ok = false;
@@ -83,35 +85,50 @@ namespace BizHawk.Bizware.BizwareGL
 						}
 					});
 
-					//find the best fit among the potential sizes that worked
+					// find the best fit among the potential sizes that worked
 					var best = long.MaxValue;
 					tfpFinal = todoSizes[0];
 					foreach (var tfp in todoSizes)
 					{
-						if (!tfp.ok) continue;
+						if (!tfp.ok)
+						{
+							continue;
+						}
+
 						var area = tfp.w * (long) tfp.h;
-						if (area > best) continue; // larger than best, not interested
+						if (area > best)
+						{
+							continue; // larger than best, not interested
+						}
+
 						if (area == best) // same area, compare perimeter as tie-breaker (to create squares, which are nicer to look at)
 						{
-							if (tfp.w + tfp.h >= tfpFinal.w + tfpFinal.h) continue;
+							if (tfp.w + tfp.h >= tfpFinal.w + tfpFinal.h)
+							{
+								continue;
+							}
 						}
+
 						best = area;
 						tfpFinal = tfp;
 					}
 
 					//did we find any fit?
-					if (best < long.MaxValue) break;
+					if (best < long.MaxValue)
+					{
+						break;
+					}
+
 					//nope - move an item to the remaining list and try again
 					remainItems.Add(currentItems[currentItems.Count - 1]);
 					currentItems.RemoveAt(currentItems.Count - 1);
 				}
 
 				//we found a fit. setup this atlas in the result and drop the items into it
-				atlases.Add((new Size(tfpFinal.w, tfpFinal.h), new List<RectItem>(currentItems)));
+				atlases.Add((new(tfpFinal.w, tfpFinal.h), new(currentItems)));
 				foreach (var item in currentItems)
 				{
-					object o = item.Item;
-					var node = tfpFinal.nodes.Find((x) => x.ri == item);
+					var node = tfpFinal.nodes.Find(x => x.ri == item);
 					item.X = node.x;
 					item.Y = node.y;
 					item.TexIndex = atlases.Count - 1;
@@ -157,7 +174,7 @@ namespace BizHawk.Bizware.BizwareGL
 			{
 				binWidth = width;
 				binHeight = height;
-				root = new Node();
+				root = new();
 				root.left = root.right = null;
 				root.x = root.y = 0;
 				root.width = width;
@@ -176,8 +193,8 @@ namespace BizHawk.Bizware.BizwareGL
 			/// <summary>Computes the ratio of used surface area.</summary>
 			private float Occupancy()
 			{
-				int totalSurfaceArea = binWidth * binHeight;
-				int usedSurfaceArea = UsedSurfaceArea(root);
+				var totalSurfaceArea = binWidth * binHeight;
+				var usedSurfaceArea = UsedSurfaceArea(root);
 
 				return (float)usedSurfaceArea / totalSurfaceArea;
 			}
@@ -189,11 +206,11 @@ namespace BizHawk.Bizware.BizwareGL
 			private int binHeight;
 
 			/// <returns>The surface area used by the subtree rooted at node.</returns>
-			private int UsedSurfaceArea(Node node)
+			private static int UsedSurfaceArea(Node node)
 			{
 				if (node.left != null || node.right != null)
 				{
-					int usedSurfaceArea = node.width * node.height;
+					var usedSurfaceArea = node.width * node.height;
 					if (node.left != null)
 						usedSurfaceArea += UsedSurfaceArea(node.left);
 					if (node.right != null)
@@ -208,7 +225,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 
 			/// <summary>Inserts a new rectangle in the subtree rooted at the given node.</summary>
-			private Node Insert(Node node, int width, int height)
+			private static Node Insert(Node node, int width, int height)
 			{
 
 				// If this node is an internal node, try both leaves for possible space.
@@ -217,13 +234,13 @@ namespace BizHawk.Bizware.BizwareGL
 				{
 					if (node.left != null)
 					{
-						Node newNode = Insert(node.left, width, height);
+						var newNode = Insert(node.left, width, height);
 						if (newNode != null)
 							return newNode;
 					}
 					if (node.right != null)
 					{
-						Node newNode = Insert(node.right, width, height);
+						var newNode = Insert(node.right, width, height);
 						if (newNode != null)
 							return newNode;
 					}
@@ -236,10 +253,10 @@ namespace BizHawk.Bizware.BizwareGL
 
 				// The new cell will fit, split the remaining space along the shorter axis,
 				// that is probably more optimal.
-				int w = node.width - width;
-				int h = node.height - height;
-				node.left = new Node();
-				node.right = new Node();
+				var w = node.width - width;
+				var h = node.height - height;
+				node.left = new();
+				node.right = new();
 				if (w <= h) // Split the remaining space in horizontal direction.
 				{
 					node.left.x = node.x + width;

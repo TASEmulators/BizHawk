@@ -8,21 +8,21 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 	{
 		// registers
 
-		public static ushort PCl = 0;
-		public static ushort PCh = 1;
-		public static ushort SPl = 2;
-		public static ushort SPh = 3;
-		public static ushort A = 4;
-		public static ushort F = 5;
-		public static ushort B = 6;
-		public static ushort C = 7;
-		public static ushort D = 8;
-		public static ushort E = 9;
-		public static ushort H = 10;
-		public static ushort L = 11;
-		public static ushort W = 12;
-		public static ushort Z = 13;
-		public static ushort Aim = 14; // use this indicator for RLCA etc., since the Z flag is reset on those
+		public const ushort PCl = 0;
+		public const ushort PCh = 1;
+		public const ushort SPl = 2;
+		public const ushort SPh = 3;
+		public const ushort A = 4;
+		public const ushort F = 5;
+		public const ushort B = 6;
+		public const ushort C = 7;
+		public const ushort D = 8;
+		public const ushort E = 9;
+		public const ushort H = 10;
+		public const ushort L = 11;
+		public const ushort W = 12;
+		public const ushort Z = 13;
+		public const ushort Aim = 14; // use this indicator for RLCA etc., since the Z flag is reset on those
 
 		public ushort[] Regs = new ushort[14];
 

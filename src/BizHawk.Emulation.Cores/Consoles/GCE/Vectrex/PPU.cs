@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public int skip;
 		public uint bright_int_1, bright_int_2, bright_int_3;
 
-		public static uint br = 0xFFFFFFFF;
+		public const uint br = 0xFFFFFFFF;
 
 		// lines to draw in a frame and vairables to go to new line
 		public double[] draw_lines = new double[1024 * 4 * 4];
@@ -40,8 +40,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			{
 				if (skip == 0)
 				{
-					x_pos = x_pos + (x_vel - 128.0) / 256.0 * (vec_scale + 2);
-					y_pos = y_pos - (y_vel - 128.0) / 256.0 * (vec_scale + 2);
+					x_pos += (x_vel - 128.0) / 256.0 * (vec_scale + 2);
+					y_pos -= (y_vel - 128.0) / 256.0 * (vec_scale + 2);
 				}
 				else
 				{
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			for (int i = 0; i < line_pointer; i++)
 			{
-				if (line_vis[i] == true)
+				if (line_vis[i])
 				{
 					start_x = draw_lines[i * 4];
 					start_y = draw_lines[i * 4 + 1];
@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			for (int i = 0; i < line_pointer_old_screen; i++)
 			{
-				if (line_vis_old_screen[i] == true)
+				if (line_vis_old_screen[i])
 				{
 					start_x = draw_lines_old_screen[i * 4];
 					start_y = draw_lines_old_screen[i * 4 + 1];

@@ -114,6 +114,24 @@
 			"L": "W, J1 B5, X1 LeftShoulder",
 			"R": "E, J1 B6, X1 RightShoulder"
 		},
+		"3DS Controller": {
+			"A": "X, J1 B3, X1 B",
+			"B": "Z, J1 B2, X1 A",
+			"X": "S, J1 B4, X1 Y",
+			"Y": "A, J1 B1, X1 X",
+			"Up": "Up, J1 POV1U, X1 DpadUp",
+			"Down": "Down, J1 POV1D, X1 DpadDown",
+			"Left": "Left, J1 POV1L, X1 DpadLeft",
+			"Right": "Right, J1 POV1R, X1 DpadRight",
+			"L": "Q, J1 B5, X1 LeftShoulder",
+			"R": "W, J1 B6, X1 RightShoulder",
+			"ZL": "E, J1 B7, X1 LeftTrigger",
+			"ZR": "R, J1 B8, X1 RightTrigger",
+			"Select": "Space, J1 B9, X1 Back",
+			"Start": "Enter, J1 B10, X1 Start",
+			"Touch": "WMouse L",
+			"Tilt": "WMouse R",
+		},
 		"NDS Controller": {
 			"A": "X, J1 B3, X1 B",
 			"B": "Z, J1 B2, X1 A",
@@ -741,6 +759,48 @@
 				"Deadzone": 0.0
 			},
 			"Touch Y": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			}
+		},
+		"3DS Controller": {
+			"Circle Pad X": {
+				"Value": "X1 LeftThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"Circle Pad Y": {
+				"Value": "X1 LeftThumbY Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"C-Stick X": {
+				"Value": "X1 RightThumbX Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"C-Stick Y": {
+				"Value": "X1 RightThumbY Axis",
+				"Mult": 1.0,
+				"Deadzone": 0.1
+			},
+			"Touch X": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"Touch Y": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"Tilt X": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"Tilt Y": {
 				"Value": "WMouse Y",
 				"Mult": 1.0,
 				"Deadzone": 0.0

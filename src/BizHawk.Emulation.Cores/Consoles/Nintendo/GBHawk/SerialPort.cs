@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (((value & 2) > 0) && Core.GBC_compat)
 							{
 								clk_rate = 16;
-								serial_clock = 16 - (int)(Core.timer.divider_reg % 8) - 1;
+								serial_clock = 16 - Core.timer.divider_reg % 8 - 1;
 
 								// if the clock rate is changing and it's on a GBA/C, the parity of (cpu.totalexecutedcycles & 512) effects the first bit
 								// Not sure exactly how yet
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							else
 							{
 								clk_rate = 512;
-								serial_clock = 512 - (int)(Core.timer.divider_reg % 256) - 1;
+								serial_clock = 512 - Core.timer.divider_reg % 256 - 1;
 
 								// there seems to be some clock inverting happening on some transfers
 								// not sure of the exact nature of it, here is one method that gives correct result on one test rom but not others

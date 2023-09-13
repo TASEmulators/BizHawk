@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using System.Threading;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -40,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int ParseSize(string str)
 		{
 			int temp = 0;
-			if(validate) if (!str.EndsWith("k")) throw new Exception();
+			if(validate) if (!str.EndsWithOrdinal("k")) throw new Exception();
 			int len = str.Length - 1;
 			for (int i = 0; i < len; i++)
 			{

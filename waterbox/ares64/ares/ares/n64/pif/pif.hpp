@@ -35,7 +35,6 @@ struct PIF : Thread, Memory::SI<PIF> {
   } intram;
 
   //pif.cpp
-  auto step(u32 clocks) -> void;
   auto load(Node::Object) -> void;
   auto unload() -> void;
   auto main() -> void;

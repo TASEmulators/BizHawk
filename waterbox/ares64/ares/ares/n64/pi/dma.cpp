@@ -52,3 +52,50 @@ auto PI::dmaFinished() -> void {
   io.interrupt = 1;
   mi.raise(MI::IRQ::PI);
 }
+
+auto PI::dmaDuration(bool read) -> u32 {
+  auto len = read ? io.readLength : io.writeLength;
+  len = (len | 1) + 1;
+
+  BSD bsd;
+  switch (io.pbusAddress.bit(24,31)) {
+    case 0x05:               bsd = bsd2; break; 
+    case range8(0x08, 0x0F): bsd = bsd2; break;
+    default:                 bsd = bsd1; break;
+  }
+
+  auto pageShift = bsd.pageSize + 2;
+  auto pageSize = 1 << pageShift;
+  auto pageMask = pageSize - 1;
+  auto pbusFirst = io.pbusAddress;
+  auto pbusLast  = io.pbusAddress + len - 2;
+
+  auto pbusFirstPage = pbusFirst >> pageShift;
+  auto pbusLastPage  = pbusLast  >> pageShift;
+  auto pbusPages = pbusLastPage - pbusFirstPage + 1;
+  auto numBuffers = 0;
+  auto partialBytes = 0;
+
+  if (pbusFirstPage == pbusLastPage) {
+    if (len == 128) numBuffers = 1;
+    else partialBytes = len;
+  } else {
+    bool fullFirst = (pbusFirst & pageMask) == 0;
+    bool fullLast  = ((pbusLast + 2) & pageMask) == 0;
+
+    if (fullFirst) numBuffers++;
+    else           partialBytes += pageSize - (pbusFirst & pageMask);
+    if (fullLast)  numBuffers++;
+    else           partialBytes += (pbusLast & pageMask) + 2;
+
+    if (pbusFirstPage + 1 < pbusLastPage)
+      numBuffers += (pbusPages - 2) * pageSize / 128;
+  }
+
+  u32 cycles = 0;
+  cycles += (14 + bsd.latency + 1) * pbusPages;
+  cycles += (bsd.pulseWidth + 1 + bsd.releaseDuration + 1) * len / 2;
+  cycles += numBuffers * 28;
+  cycles += partialBytes * 1;
+  return cycles * 3;
+}

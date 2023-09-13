@@ -4,8 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.Client.EmuHawk
 {
 	// this is a little messy right now because of remnants of the old config system

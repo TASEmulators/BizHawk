@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.DiscSystem
 						ext = true;
 						continue;
 					}
-					if (line.StartsWith("#EXTINF:"))
+					if (line.StartsWithOrdinal("#EXTINF:"))
 					{
 						//TODO - maybe we shouldn't be so harsh. should probably add parse options.
 						if (!ext) continue;
@@ -93,5 +93,3 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 	}
 }
-
-

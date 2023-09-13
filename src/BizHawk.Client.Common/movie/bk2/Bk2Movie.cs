@@ -92,10 +92,10 @@ namespace BizHawk.Client.Common
 
 		public IMovieController GetInputState(int frame)
 		{
-			if (frame < FrameCount && frame >= 0)
+			if (frame < FrameCount && frame >= -1)
 			{
 				_adapter ??= new Bk2Controller(LogKey, Session.MovieController.Definition);
-				_adapter.SetFromMnemonic(Log[frame]);
+				_adapter.SetFromMnemonic(frame >= 0 ? Log[frame] : Session.Movie.LogGeneratorInstance(Session.MovieController).EmptyEntry);
 				return _adapter;
 			}
 

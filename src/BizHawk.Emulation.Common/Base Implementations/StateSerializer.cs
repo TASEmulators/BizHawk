@@ -28,6 +28,8 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public Action LoadStateCallback { get; set; }
 
+		public bool AvoidRewind => false;
+
 		public void SaveStateText(TextWriter writer)
 		{
 			_syncState(Serializer.CreateTextWriter(writer));

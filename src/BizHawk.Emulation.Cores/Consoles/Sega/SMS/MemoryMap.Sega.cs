@@ -152,7 +152,7 @@
 				{
 					if (BiosMapped)
 					{
-						Bios_bank = (byte)value;
+						Bios_bank = value;
 					}
 					else
 					{

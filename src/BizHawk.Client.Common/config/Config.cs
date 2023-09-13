@@ -214,7 +214,7 @@ namespace BizHawk.Client.Common
 
 		public int DispPrescale { get; set; } = 1;
 
-		public EDispMethod DispMethod { get; set; } = HostCapabilityDetector.HasDirectX ? EDispMethod.SlimDX9 : EDispMethod.OpenGL;
+		public EDispMethod DispMethod { get; set; } = HostCapabilityDetector.HasDirectX && !OSTailoredCode.IsWine ? EDispMethod.D3D9 : EDispMethod.OpenGL;
 
 		public int DispChromeFrameWindowed { get; set; } = 2;
 		public bool DispChromeStatusBarWindowed { get; set; } = true;
@@ -342,7 +342,7 @@ namespace BizHawk.Client.Common
 		// ReSharper disable once UnusedMember.Global
 		public string LastWrittenFromDetailed { get; set; } = VersionInfo.GetEmuVersion();
 
-		public EHostInputMethod HostInputMethod { get; set; } = HostCapabilityDetector.HasDirectX ? EHostInputMethod.DirectInput : EHostInputMethod.OpenTK;
+		public EHostInputMethod HostInputMethod { get; set; } = HostCapabilityDetector.HasDirectX ? EHostInputMethod.DirectInput : EHostInputMethod.SDL2;
 
 		public bool UseStaticWindowTitles { get; set; }
 

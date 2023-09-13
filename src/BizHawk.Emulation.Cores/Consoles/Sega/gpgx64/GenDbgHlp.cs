@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
@@ -167,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				string[] ss = s.Split(',');
 				if (ss.Length != 4)
 					throw new Exception();
-				if (!ss[1].StartsWith("0x"))
+				if (!ss[1].StartsWithOrdinal("0x"))
 					throw new Exception();
 				Symbol ret = new Symbol
 				{

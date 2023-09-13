@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 
@@ -17,8 +18,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			ref ControllerThunk thunk,
 			int thunkWriteOffset)
 		{
-			if (name.EndsWith(" Left Stick Up / Down") || name.EndsWith(" Left Stick Left / Right")
-				|| name.EndsWith(" Right Stick Up / Down") || name.EndsWith(" Right Stick Left / Right"))
+			if (name.EndsWithOrdinal(" Left Stick Up / Down") || name.EndsWithOrdinal(" Left Stick Left / Right")
+				|| name.EndsWithOrdinal(" Right Stick Up / Down") || name.EndsWithOrdinal(" Right Stick Left / Right"))
 			{
 				ret.AddAxis(name, 0.RangeTo(0xFF), 0x80, isReversed);
 				thunk = (c, b) =>

@@ -896,7 +896,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					int r = pal[c, 0];
 					int g = pal[c, 1];
 					int b = pal[c, 2];
-					palette_compiled[c] = (int)unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
+					palette_compiled[c] = unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
 				}
 			}
 			else
@@ -910,7 +910,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					int g = pal[c, 1];
 					int b = pal[c, 2];
 					Palettes.ApplyDeemphasis(ref r, ref g, ref b, d);
-					palette_compiled[i] = (int)unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
+					palette_compiled[i] = unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
 				}
 			}
 		}
@@ -1017,7 +1017,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							{ 
 								ret = cheat_value[i]; 
 							}
-							else if ((cheat_compare_type[i] == 1) && ((int)ret == cheat_compare_val[i]))
+							else if ((cheat_compare_type[i] == 1) && (ret == cheat_compare_val[i]))
 							{
 								ret = cheat_value[i];
 							}					

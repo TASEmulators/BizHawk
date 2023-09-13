@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
@@ -12,37 +13,36 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				return C64Format.Unknown;
 			}
 
-			using (var mem = new MemoryStream(data))
+			using (var reader = new BinaryReader(new MemoryStream(data)))
 			{
-				var reader = new BinaryReader(mem);
 				var header = Encoding.GetEncoding(437).GetString(reader.ReadBytes(0x10));
 
-				if (header.StartsWith("C64 CARTRIDGE   "))
+				if (header.StartsWithOrdinal("C64 CARTRIDGE   "))
 				{
 					return C64Format.CRT;
 				}
 
-				if (header.StartsWith("GCR-1541"))
+				if (header.StartsWithOrdinal("GCR-1541"))
 				{
 					return C64Format.G64;
 				}
 
-				if (header.StartsWith("C64S tape image ") || header.StartsWith("C64 tape image f"))
+				if (header.StartsWithOrdinal("C64S tape image ") || header.StartsWithOrdinal("C64 tape image f"))
 				{
 					return C64Format.T64;
 				}
 
-				if (header.StartsWith("C64-TAPE-RAW"))
+				if (header.StartsWithOrdinal("C64-TAPE-RAW"))
 				{
 					return C64Format.TAP;
 				}
 
-				if (header.StartsWith("C64File"))
+				if (header.StartsWithOrdinal("C64File"))
 				{
 					return C64Format.P00; // poo :)
 				}
 
-				if (header.StartsWith("P64-1541"))
+				if (header.StartsWithOrdinal("P64-1541"))
 				{
 					return C64Format.P64;
 				}

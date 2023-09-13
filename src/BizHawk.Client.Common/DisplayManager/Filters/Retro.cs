@@ -4,9 +4,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Numerics;
+using System.Text.RegularExpressions;
+
 using BizHawk.Client.Common.FilterManager;
 
 using BizHawk.Bizware.BizwareGL;
@@ -17,48 +20,62 @@ namespace BizHawk.Client.Common.Filters
 {
 	public class RetroShaderChain : IDisposable
 	{
-		private static readonly Regex RxInclude = new Regex(@"^(\s)?\#include(\s)+(""|<)(.*)?(""|>)", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+		private static readonly Regex RxInclude = new(@"^(\s)?\#include(\s)+(""|<)(.*)?(""|>)", RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
 		private static string ResolveIncludes(string content, string baseDirectory)
 		{
-			for (; ; )
+			while (true)
 			{
 				var match = RxInclude.Match(content);
-				if(match.Value == "") break;
-				string fname = match.Groups[4].Value;
+				if (match.Value == string.Empty)
+				{
+					return content;
+				}
+
+				var fname = match.Groups[4].Value;
 				fname = Path.Combine(baseDirectory,fname);
-				string includedContent = ResolveIncludes(File.ReadAllText(fname),Path.GetDirectoryName(fname));
+				var includedContent = ResolveIncludes(File.ReadAllText(fname),Path.GetDirectoryName(fname));
 				content = content.Substring(0, match.Index) + includedContent + content.Substring(match.Index + match.Length);
 			}
-			return content;
 		}
 
 		public RetroShaderChain(IGL owner, RetroShaderPreset preset, string baseDirectory, bool debug = false)
 		{
 			Owner = owner;
-			Preset = preset;
 			Passes = preset.Passes.ToArray();
-			Errors = "";
+			Errors = string.Empty;
 
-			//load up the shaders
+			if (owner.API is not ("OPENGL" or "D3D9"))
+			{
+				Errors = $"Unsupported API {owner.API}";
+				return;
+			}
+
+			// load up the shaders
 			var shaders = new RetroShader[preset.Passes.Count];
 			for (var i = 0; i < preset.Passes.Count; i++)
 			{
-				//acquire content. we look for it in any reasonable filename so that one preset can bind to multiple shaders
+				// acquire content. we look for it in any reasonable filename so that one preset can bind to multiple shaders
 				string content;
 				var path = Path.Combine(baseDirectory, preset.Passes[i].ShaderPath);
 				if (!File.Exists(path))
 				{
 					if (!Path.HasExtension(path))
+					{
 						path += ".cg";
+					}
+
 					if (!File.Exists(path))
 					{
-						if (owner.API == "OPENGL")
-							path = Path.ChangeExtension(path, ".glsl");
-						else
-							path = Path.ChangeExtension(path, ".hlsl");
+						path = owner.API switch
+						{
+							"OPENGL" => Path.ChangeExtension(path, ".glsl"),
+							"D3D9" => Path.ChangeExtension(path, ".hlsl"),
+							_ => throw new InvalidOperationException(),
+						};
 					}
 				}
+
 				try
 				{
 					content = ResolveIncludes(File.ReadAllText(path), Path.GetDirectoryName(path));
@@ -68,16 +85,17 @@ namespace BizHawk.Client.Common.Filters
 					Errors += $"caught {nameof(DirectoryNotFoundException)}: {e.Message}\n";
 					return;
 				}
+
 				catch (FileNotFoundException e)
 				{
 					Errors += $"could not read file {e.FileName}\n";
 					return;
 				}
 
-				var shader = shaders[i] = new RetroShader(Owner, content, debug);
+				var shader = shaders[i] = new(Owner, content, debug);
 				if (!shader.Available)
 				{
-					Errors += $"-------------------\r\nPass {i}:\r\n{(shader.Errors??"").Replace("\n","\r\n")}\n";
+					Errors += $"-------------------\r\nPass {i}:\r\n{(shader.Errors ?? string.Empty).Replace("\n","\r\n")}\n";
 					return;
 				}
 			}
@@ -105,7 +123,6 @@ namespace BizHawk.Client.Common.Filters
 		public readonly bool Available;
 		public readonly string Errors;
 		public readonly IGL Owner;
-		public readonly RetroShaderPreset Preset;
 		public readonly IReadOnlyList<RetroShader> Shaders = Array.Empty<RetroShader>();
 		public readonly RetroShaderPreset.ShaderPass[] Passes;
 
@@ -122,55 +139,69 @@ namespace BizHawk.Client.Common.Filters
 			var content = new StreamReader(stream).ReadToEnd();
 			var dict = new Dictionary<string, string>();
 
-			//parse the key-value-pair format of the file
+			// parse the key-value-pair format of the file
 			content = content.Replace("\r", "");
 			foreach (var splitLine in content.Split('\n'))
 			{
 				var line = splitLine.Trim();
-				if (line.Length is 0) continue;
-				if (line.StartsWith('#')) continue; // comments
-				int eq = line.IndexOf('=');
+				if (line.Length is 0)
+				{
+					continue;
+				}
+
+				if (line.StartsWith('#'))
+				{
+					continue; // comments
+				}
+
+				var eq = line.IndexOf('=');
 				var key = line.Substring(0, eq).Trim();
 				var value = line.Substring(eq + 1).Trim();
-				int quote = value.IndexOf('\"');
+				var quote = value.IndexOf('\"');
 				if (quote != -1)
+				{
 					value = value.Substring(quote + 1, value.IndexOf('\"', quote + 1) - (quote + 1));
+				}
 				else
 				{
-					//remove comments from end of value. exclusive from above condition, since comments after quoted strings would be snipped by the quoted string extraction
-					int hash = value.IndexOf('#');
+					// remove comments from end of value. exclusive from above condition, since comments after quoted strings would be snipped by the quoted string extraction
+					var hash = value.IndexOf('#');
 					if (hash != -1)
+					{
 						value = value.Substring(0, hash);
+					}
+
 					value = value.Trim();
 				}
-				dict[key.ToLower()] = value;
+				dict[key.ToLowerInvariant()] = value;
 			}
 
 			// process the keys
-			int nShaders = FetchInt(dict, "shaders", 0);
-			for (int i = 0; i < nShaders; i++)
+			var nShaders = FetchInt(dict, "shaders", 0);
+			for (var i = 0; i < nShaders; i++)
 			{
 				var sp = new ShaderPass { Index = i };
 				Passes.Add(sp);
 
-				sp.InputFilterLinear = FetchBool(dict, $"filter_linear{i}", false); //Should this value not be defined, the filtering option is implementation defined.
+				sp.InputFilterLinear = FetchBool(dict, $"filter_linear{i}", false); // Should this value not be defined, the filtering option is implementation defined.
 				sp.OutputFloat = FetchBool(dict, $"float_framebuffer{i}", false);
 				sp.FrameCountMod = FetchInt(dict, $"frame_count_mod{i}", 1);
-				sp.ShaderPath = FetchString(dict, $"shader{i}", "?"); //todo - change extension to .cg for better compatibility? just change .cg to .glsl transparently at last second?
+				sp.ShaderPath = FetchString(dict, $"shader{i}", "?"); // todo - change extension to .cg for better compatibility? just change .cg to .glsl transparently at last second?
 
 				// If no scale type is assumed, it is assumed that it is set to "source" with scaleN set to 1.0.
 				// It is possible to set scale_type_xN and scale_type_yN to specialize the scaling type in either direction. scale_typeN however overrides both of these.
 				sp.ScaleTypeX = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type_x{i}", "Source"), true);
 				sp.ScaleTypeY = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type_y{i}", "Source"), true);
-				ScaleType st = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type{i}", "NotSet"), true);
+				var st = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type{i}", "NotSet"), true);
 				if (st != ScaleType.NotSet)
+				{
 					sp.ScaleTypeX = sp.ScaleTypeY = st;
+				}
 
 				// scaleN controls both scaling type in horizontal and vertical directions. If scaleN is defined, scale_xN and scale_yN have no effect.
 				sp.Scale.X = FetchFloat(dict, $"scale_x{i}", 1);
 				sp.Scale.Y = FetchFloat(dict, $"scale_y{i}", 1);
-				float scale = FetchFloat(dict, $"scale{i}", -999);
-				if (scale != -999)
+				if (dict.ContainsValue($"scale{i}"))
 				{
 					sp.Scale.X = sp.Scale.Y = FetchFloat(dict, $"scale{i}", 1);
 				}
@@ -179,8 +210,7 @@ namespace BizHawk.Client.Common.Filters
 			}
 		}
 
-		public List<ShaderPass> Passes { get; set; } = new List<ShaderPass>();
-
+		public List<ShaderPass> Passes { get; set; } = new();
 
 		public enum ScaleType
 		{
@@ -211,22 +241,31 @@ namespace BizHawk.Client.Common.Filters
 
 		private static float FetchFloat(IDictionary<string, string> dict, string key, float @default)
 		{
-			return dict.TryGetValue(key, out var str) ? float.Parse(str) : @default;
+			return dict.TryGetValue(key, out var str) ? float.Parse(str, NumberFormatInfo.InvariantInfo) : @default;
 		}
 
-		private bool FetchBool(IDictionary<string, string> dict, string key, bool @default)
+		private static bool FetchBool(IDictionary<string, string> dict, string key, bool @default)
 		{
 			return dict.TryGetValue(key, out var str) ? ParseBool(str) : @default;
 		}
 
-		private bool ParseBool(string value)
+		private static bool ParseBool(string value)
 		{
-			if (value == "1") return true;
-			if (value == "0") return false;
-			value = value.ToLower();
-			if (value == "true") return true;
-			if (value == "false") return false;
-			throw new InvalidOperationException("Unparsable bool in CGP file content");
+			switch (value)
+			{
+				case "1":
+					return true;
+				case "0":
+					return false;
+			}
+
+			value = value.ToLowerInvariant();
+			return value switch
+			{
+				"true" => true,
+				"false" => false,
+				_ => throw new InvalidOperationException("Unparsable bool in CGP file content")
+			};
 		}
 	}
 
@@ -253,17 +292,23 @@ namespace BizHawk.Client.Common.Filters
 
 		public override void SetInputFormat(string channel, SurfaceState state)
 		{
-			Size inSize = state.SurfaceFormat.Size;
-			if (_sp.ScaleTypeX == RetroShaderPreset.ScaleType.Absolute) _outputSize.Width = (int)_sp.Scale.X;
-			if (_sp.ScaleTypeY == RetroShaderPreset.ScaleType.Absolute) _outputSize.Height = (int)_sp.Scale.Y;
-			if (_sp.ScaleTypeX == RetroShaderPreset.ScaleType.Source) _outputSize.Width = (int)(inSize.Width * _sp.Scale.X);
-			if (_sp.ScaleTypeY == RetroShaderPreset.ScaleType.Source) _outputSize.Height = (int)(inSize.Height * _sp.Scale.Y);
+			var inSize = state.SurfaceFormat.Size;
 
-			DeclareOutput(new SurfaceState
+			_outputSize.Width = _sp.ScaleTypeX switch
 			{
-				SurfaceFormat = new SurfaceFormat(_outputSize),
-				SurfaceDisposition = SurfaceDisposition.RenderTarget
-			});
+				RetroShaderPreset.ScaleType.Absolute => (int)_sp.Scale.X,
+				RetroShaderPreset.ScaleType.Source => (int)(inSize.Width * _sp.Scale.X),
+				_ => _outputSize.Width
+			};
+
+			_outputSize.Height = _sp.ScaleTypeY switch
+			{
+				RetroShaderPreset.ScaleType.Absolute => (int)_sp.Scale.Y,
+				RetroShaderPreset.ScaleType.Source => (int)(inSize.Height * _sp.Scale.Y),
+				_ => _outputSize.Height
+			};
+
+			DeclareOutput(new SurfaceState(new(_outputSize), SurfaceDisposition.RenderTarget));
 		}
 
 		public override Size PresizeOutput(string channel, Size size)
@@ -274,11 +319,22 @@ namespace BizHawk.Client.Common.Filters
 
 		public override Size PresizeInput(string channel, Size inSize)
 		{
-			Size outsize = inSize;
-			if (_sp.ScaleTypeX == RetroShaderPreset.ScaleType.Absolute) outsize.Width = (int)_sp.Scale.X;
-			if (_sp.ScaleTypeY == RetroShaderPreset.ScaleType.Absolute) outsize.Height = (int)_sp.Scale.Y;
-			if (_sp.ScaleTypeX == RetroShaderPreset.ScaleType.Source) outsize.Width = (int)(inSize.Width * _sp.Scale.X);
-			if (_sp.ScaleTypeY == RetroShaderPreset.ScaleType.Source) outsize.Height = (int)(inSize.Height * _sp.Scale.Y);
+			var outsize = inSize;
+
+			outsize.Width = _sp.ScaleTypeX switch
+			{
+				RetroShaderPreset.ScaleType.Absolute => (int)_sp.Scale.X,
+				RetroShaderPreset.ScaleType.Source => (int)(inSize.Width * _sp.Scale.X),
+				_ => outsize.Width
+			};
+
+			outsize.Height = _sp.ScaleTypeY switch
+			{
+				RetroShaderPreset.ScaleType.Absolute => (int)_sp.Scale.Y,
+				RetroShaderPreset.ScaleType.Source => (int)(inSize.Height * _sp.Scale.Y),
+				_ => outsize.Height
+			};
+
 			return outsize;
 		}
 
@@ -288,7 +344,7 @@ namespace BizHawk.Client.Common.Filters
 			shader.Bind();
 
 			// apply all parameters to this shader.. even if it was meant for other shaders. kind of lame.
-			if(Parameters != null)
+			if (Parameters != null)
 			{
 				foreach (var (k, v) in Parameters)
 				{

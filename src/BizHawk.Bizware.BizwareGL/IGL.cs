@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Drawing;
+using System.Numerics;
 
 namespace BizHawk.Bizware.BizwareGL
 {
@@ -18,14 +19,9 @@ namespace BizHawk.Bizware.BizwareGL
 		EDispMethod DispMethodEnum { get; }
 
 		/// <summary>
-		/// Clears the specified buffer parts
+		/// Clears the color buffer with the specified color
 		/// </summary>
-		void Clear(ClearBufferMask mask);
-
-		/// <summary>
-		/// Sets the current clear color
-		/// </summary>
-		void SetClearColor(Color color);
+		void ClearColor(Color color);
 
 		/// <summary>
 		/// compile a fragment shader. This is the simplified method. A more complex method may be added later which will accept multiple sources and preprocessor definitions independently
@@ -55,12 +51,12 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Sets a uniform value
 		/// </summary>
-		void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose);
+		void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4x4 mat, bool transpose);
 
 		/// <summary>
 		/// Sets a uniform value
 		/// </summary>
-		void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose);
+		void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4x4 mat, bool transpose);
 
 		/// <summary>
 		/// sets a uniform value
@@ -88,11 +84,6 @@ namespace BizHawk.Bizware.BizwareGL
 		void SetPipelineUniform(PipelineUniform uniform, bool value);
 
 		/// <summary>
-		/// Binds array data for use with the currently-bound pipeline's VertexLayout
-		/// </summary>
-		void BindArrayData(IntPtr pData);
-
-		/// <summary>
 		/// Begins a rendering scene; use before doing any draw calls, as per normal
 		/// </summary>
 		void BeginScene();
@@ -103,10 +94,12 @@ namespace BizHawk.Bizware.BizwareGL
 		void EndScene();
 
 		/// <summary>
-		/// Draws based on the currently set pipeline, VertexLayout and ArrayData.
-		/// Count is the VERT COUNT not the primitive count
+		/// Draws based on the currently set pipeline
+		/// data contains vertexes based on the pipeline's VertexLayout
+		/// count is the vertex count
+		/// Vertexes must form triangle strips
 		/// </summary>
-		void DrawArrays(PrimitiveType mode, int first, int count);
+		void Draw(IntPtr data, int count);
 
 		/// <summary>
 		/// resolves the texture into a new BitmapBuffer
@@ -123,33 +116,14 @@ namespace BizHawk.Bizware.BizwareGL
 		VertexLayout CreateVertexLayout();
 
 		/// <summary>
-		/// Creates a blending state object
+		/// Enables normal (non-premultiplied) alpha blending.
 		/// </summary>
-		IBlendState CreateBlendState(BlendingFactorSrc colorSource, BlendEquationMode colorEquation, BlendingFactorDest colorDest,
-			BlendingFactorSrc alphaSource, BlendEquationMode alphaEquation, BlendingFactorDest alphaDest);
+		void EnableBlending();
 
 		/// <summary>
-		/// retrieves a blend state for opaque rendering
-		/// Alpha values are copied from the source fragment.
+		/// Disables blending (alpha values are copied from the source fragment)
 		/// </summary>
-		IBlendState BlendNoneCopy { get; }
-
-		/// <summary>
-		/// retrieves a blend state for opaque rendering
-		/// Alpha values are written as opaque
-		/// </summary>
-		IBlendState BlendNoneOpaque { get; }
-
-		/// <summary>
-		/// retrieves a blend state for normal (non-premultiplied) alpha blending.
-		/// Alpha values are copied from the source fragment.
-		/// </summary>
-		IBlendState BlendNormal { get; }
-
-		/// <summary>
-		/// Sets the current blending state object
-		/// </summary>
-		void SetBlendState(IBlendState rsBlend);
+		void DisableBlending();
 
 		/// <summary>
 		/// Creates a texture with the specified dimensions
@@ -159,7 +133,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		/// <summary>
 		/// In case you already have the texture ID (from an opengl emulator gpu core) you can get a Texture2d with it this way.
-		/// Otherwise, if this isn't an OpenGL frontend implementation, I guess... try reading the texturedata out of it and making a new texture?
+		/// Otherwise, if this isn't an OpenGL frontend implementation, the core is expected to readback the texture for GetVideoBuffer()
 		/// </summary>
 		Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height);
 
@@ -219,24 +193,24 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// generates a proper 2d othographic projection for the given destination size, suitable for use in a GUI
 		/// </summary>
-		Matrix4 CreateGuiProjectionMatrix(int w, int h);
+		Matrix4x4 CreateGuiProjectionMatrix(int w, int h);
 
 		/// <summary>
 		/// generates a proper 2d othographic projection for the given destination size, suitable for use in a GUI
 		/// </summary>
-		Matrix4 CreateGuiProjectionMatrix(Size dims);
+		Matrix4x4 CreateGuiProjectionMatrix(Size dims);
 
 		/// <summary>
 		/// generates a proper view transform for a standard 2d ortho projection, including half-pixel jitter if necessary and
 		/// re-establishing of a normal 2d graphics top-left origin. suitable for use in a GUI
 		/// </summary>
-		Matrix4 CreateGuiViewMatrix(int w, int h, bool autoflip = true);
+		Matrix4x4 CreateGuiViewMatrix(int w, int h, bool autoflip = true);
 
 		/// <summary>
 		/// generates a proper view transform for a standard 2d ortho projection, including half-pixel jitter if necessary and
 		/// re-establishing of a normal 2d graphics top-left origin. suitable for use in a GUI
 		/// </summary>
-		Matrix4 CreateGuiViewMatrix(Size dims, bool autoflip = true);
+		Matrix4x4 CreateGuiViewMatrix(Size dims, bool autoflip = true);
 
 		/// <summary>
 		/// Creates a render target. Only includes a color buffer. Pixel format control TBD
@@ -249,17 +223,17 @@ namespace BizHawk.Bizware.BizwareGL
 		void BindRenderTarget(RenderTarget rt);
 
 		/// <summary>
-		/// returns a string representing the API employed by this context
+		/// Returns a string representing the API employed by this context
 		/// </summary>
 		string API { get; }
 
 		/// <summary>
-		/// frees the provided render target. Same as disposing the resource.
+		/// Frees the provided render target. Same as disposing the resource.
 		/// </summary>
 		void FreeRenderTarget(RenderTarget rt);
 
 		/// <summary>
-		/// frees the provided texture. Same as disposing the resource.
+		/// Frees the provided texture. Same as disposing the resource.
 		/// </summary>
 		void FreeTexture(Texture2d tex);
 
@@ -269,10 +243,13 @@ namespace BizHawk.Bizware.BizwareGL
 		void FreePipeline(Pipeline pipeline);
 
 		/// <summary>
-		/// Frees the provided texture. For internal use only.
+		/// Frees the provided shader. For internal use only.
 		/// </summary>
 		void Internal_FreeShader(Shader shader);
 
-		IGraphicsControl Internal_CreateGraphicsControl();
+		/// <summary>
+		/// Frees the provided vertex layout. For internal use only.
+		/// </summary>
+		void Internal_FreeVertexLayout(VertexLayout vertexLayout);
 	}
 }

@@ -2,6 +2,7 @@
 using BizHawk.Common;
 using System;
 using System.Collections.Generic;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -27,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
 
-			if (!ident.ToUpper().Contains("EXTENDED CPC DSK"))
+			if (!ident.Contains("EXTENDED CPC DSK", StringComparison.OrdinalIgnoreCase))
 			{
 				// incorrect format
 				return false;
@@ -163,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
-			if (!ident.ToUpper().Contains("EXTENDED CPC DSK"))
+			if (!ident.Contains("EXTENDED CPC DSK", StringComparison.OrdinalIgnoreCase))
 			{
 				// incorrect format
 				return false;

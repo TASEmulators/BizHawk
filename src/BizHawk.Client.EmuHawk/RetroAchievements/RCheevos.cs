@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RCheevos : RetroAchievements
 	{
-		private static readonly LibRCheevos _lib;
+		internal static readonly LibRCheevos _lib;
 
 		static RCheevos()
 		{

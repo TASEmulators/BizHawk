@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -107,14 +108,14 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				var fragment = Path.GetFileNameWithoutExtension(fi.FullName);
 				//match files with differing extensions
-				var cmp = string.Compare(fragment, targetFragment, !caseSensitive);
+				var cmp = string.Compare(fragment, targetFragment, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
 				if (cmp != 0)
 					//match files with another extension added on (likely to be mygame.bin.ecm)
-					cmp = string.Compare(fragment, targetFile, !caseSensitive);
+					cmp = string.Compare(fragment, targetFile, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
 				if (cmp == 0)
 				{
 					//take care to add an exact match at the beginning
-					if (fi.FullName.ToLowerInvariant() == Path.Combine(baseDir, path).ToLowerInvariant())
+					if (string.Equals(fi.FullName, Path.Combine(baseDir, path), StringComparison.OrdinalIgnoreCase))
 						results.Insert(0, fi.FileInfo);
 					else
 						results.Add(fi.FileInfo);

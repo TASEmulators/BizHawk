@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -26,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
 
-			if (!ident.ToUpper().Contains("CAPS"))
+			if (!ident.Contains("CAPS", StringComparison.OrdinalIgnoreCase))
 			{
 				// incorrect format
 				return false;

@@ -423,7 +423,7 @@ namespace BizHawk.Emulation.Common
 			// If filename is all-caps, then attempt to proper-case the title.
 			if (!string.IsNullOrWhiteSpace(game.Name) && game.Name == game.Name.ToUpperInvariant())
 			{
-				game.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(game.Name.ToLower());
+				game.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(game.Name.ToLowerInvariant());
 			}
 
 			return game;

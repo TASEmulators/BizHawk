@@ -1,5 +1,6 @@
-﻿using System.IO;
-
+﻿using System.Globalization;
+using System.IO;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;
 
@@ -315,7 +316,7 @@ namespace BizHawk.Client.Common
 				}
 
 				// Gross, if not CR LF, this will fail, but will the PSXjin?
-				if (!mnemonicStr.EndsWith("|\r\n"))
+				if (!mnemonicStr.EndsWithOrdinal("|\r\n"))
 				{
 					Result.Errors.Add("Unable to parse text input, unknown configuration");
 				}
@@ -350,10 +351,10 @@ namespace BizHawk.Client.Common
 						string rightXRaw = player1Str.Substring(24, 4);
 						string rightYRaw = player1Str.Substring(28, 4);
 
-						var leftX = ("P1 LStick X", (int) float.Parse(leftXRaw));
-						var leftY = ("P1 LStick Y", (int) float.Parse(leftYRaw));
-						var rightX = ("P1 RStick X", (int) float.Parse(rightXRaw));
-						var rightY = ("P1 RStick Y", (int) float.Parse(rightYRaw));
+						var leftX = ("P1 LStick X", (int) float.Parse(leftXRaw, NumberFormatInfo.InvariantInfo));
+						var leftY = ("P1 LStick Y", (int) float.Parse(leftYRaw, NumberFormatInfo.InvariantInfo));
+						var rightX = ("P1 RStick X", (int) float.Parse(rightXRaw, NumberFormatInfo.InvariantInfo));
+						var rightY = ("P1 RStick Y", (int) float.Parse(rightYRaw, NumberFormatInfo.InvariantInfo));
 
 						controllers.AcceptNewAxes(new[] { leftX, leftY, rightX, rightY });
 					}
@@ -385,10 +386,10 @@ namespace BizHawk.Client.Common
 						string rightXRaw = player2Str.Substring(24, 4);
 						string rightYRaw = player2Str.Substring(28, 4);
 
-						var leftX = ("P2 LStick X", (int) float.Parse(leftXRaw));
-						var leftY = ("P2 LStick Y", (int) float.Parse(leftYRaw));
-						var rightX = ("P2 RStick X", (int) float.Parse(rightXRaw));
-						var rightY = ("P2 RStick Y", (int) float.Parse(rightYRaw));
+						var leftX = ("P2 LStick X", (int) float.Parse(leftXRaw, NumberFormatInfo.InvariantInfo));
+						var leftY = ("P2 LStick Y", (int) float.Parse(leftYRaw, NumberFormatInfo.InvariantInfo));
+						var rightX = ("P2 RStick X", (int) float.Parse(rightXRaw, NumberFormatInfo.InvariantInfo));
+						var rightY = ("P2 RStick Y", (int) float.Parse(rightYRaw, NumberFormatInfo.InvariantInfo));
 
 						controllers.AcceptNewAxes(new[] { leftX, leftY, rightX, rightY });
 					}

@@ -417,7 +417,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="crc">core reported crc32</param>
 		/// <param name="headerchecksumok">core reported header checksum status</param>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_pakinfo(IntPtr core, byte[] mbc, ref uint rambanks, ref uint rombanks, ref uint crc, ref uint headerchecksumok);
+		public static extern void gambatte_pakinfo(IntPtr core, byte[] mbc, out uint rambanks, out uint rombanks, out uint crc, out uint headerchecksumok);
 
 		/// <summary>
 		/// memory areas that gambatte_getmemoryarea() can return

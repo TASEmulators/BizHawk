@@ -1,11 +1,11 @@
-inline auto PI::readWord(u32 address, u32& cycles) -> u32 {
+inline auto PI::readWord(u32 address, Thread& thread) -> u32 {
   if(address <= 0x046f'ffff) return ioRead(address);
 
   if (unlikely(io.ioBusy)) {
-    cycles += writeForceFinish();
+    thread.step(writeForceFinish() * 2);
     return io.busLatch;
   }
-  cycles += 250;
+  thread.step(250 * 2);
   return busRead<Word>(address);
 }
 
@@ -51,7 +51,7 @@ inline auto PI::busRead(u32 address) -> u32 {
   return unmapped; //accesses here actually lock out the RCP
 }
 
-inline auto PI::writeWord(u32 address, u32 data, u32& cycles) -> void {
+inline auto PI::writeWord(u32 address, u32 data, Thread& thread) -> void {
   if(address <= 0x046f'ffff) return ioWrite(address, data);
 
   if(io.ioBusy) return;

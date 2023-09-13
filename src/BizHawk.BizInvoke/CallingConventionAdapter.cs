@@ -167,7 +167,7 @@ namespace BizHawk.BizInvoke
 			{
 				WaterboxWrapper = OSTailoredCode.IsUnixHost
 					? new NativeConvention()
-					: (ICallingConventionAdapter)new MsHostSysVGuest();
+					: new MsHostSysVGuest();
 			}
 
 			private readonly Dictionary<Delegate, int>? _slots;
@@ -247,7 +247,7 @@ namespace BizHawk.BizInvoke
 			public MsHostSysVGuest()
 			{
 				const int size = 4 * 1024 * 1024;
-				_memory = new((ulong)size);
+				_memory = new(size);
 				_refs = new WeakReference[size / BlockSize];
 			}
 

@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return ret;
 		}
 
-		public static Size[,] ObjSizes =
+		public static readonly Size[,] ObjSizes =
 		{
 			{ new(8,8), new(16,16) },
 			{ new(8,8), new(32,32) },

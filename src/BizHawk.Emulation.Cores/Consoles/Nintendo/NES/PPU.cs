@@ -187,9 +187,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return nes.Board.PeekPPU(addr);
 		}
 
-		public static int PPU_PHASE_VBL = 0;
-		public static int PPU_PHASE_BG = 1;
-		public static int PPU_PHASE_OBJ = 2;
+		public const int PPU_PHASE_VBL = 0;
+		public const int PPU_PHASE_BG = 1;
+		public const int PPU_PHASE_OBJ = 2;
 
 		public int ppuphase;
 

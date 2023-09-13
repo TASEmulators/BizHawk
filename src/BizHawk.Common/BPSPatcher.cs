@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Common

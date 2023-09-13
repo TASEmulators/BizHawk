@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 				{
-					bank_1k = bank_1k | (exRegs[2] << 3);
+					bank_1k |= (exRegs[2] << 3);
 					return Vrom[(bank_1k << 10) + (addr & 0x3FF)];
 				}
 			}

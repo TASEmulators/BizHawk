@@ -584,21 +584,21 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			instr_table[256 * 60 * 2 + 60 * 2 + 1] = IDLE;
 			instr_table[256 * 60 * 2 + 60 * 2 + 2] = IDLE;
 			instr_table[256 * 60 * 2 + 60 * 2 + 3] = HALT;
-			instr_table[256 * 60 * 2 + 60 * 2 + 4] = (ushort)0;
+			instr_table[256 * 60 * 2 + 60 * 2 + 4] = 0;
 
 			// GBC Halt loop
 			instr_table[256 * 60 * 2 + 60 * 3] = IDLE;
 			instr_table[256 * 60 * 2 + 60 * 3 + 1] = IDLE;
 			instr_table[256 * 60 * 2 + 60 * 3 + 2] = HALT_CHK;
 			instr_table[256 * 60 * 2 + 60 * 3 + 3] = HALT;
-			instr_table[256 * 60 * 2 + 60 * 3 + 4] = (ushort)0;
+			instr_table[256 * 60 * 2 + 60 * 3 + 4] = 0;
 
 			// spec Halt loop
 			instr_table[256 * 60 * 2 + 60 * 4] = HALT_CHK;
 			instr_table[256 * 60 * 2 + 60 * 4 + 1] = IDLE;
 			instr_table[256 * 60 * 2 + 60 * 4 + 2] = IDLE;
 			instr_table[256 * 60 * 2 + 60 * 4 + 3] = HALT;
-			instr_table[256 * 60 * 2 + 60 * 4 + 4] = (ushort)0;
+			instr_table[256 * 60 * 2 + 60 * 4 + 4] = 0;
 
 			// Stop loop
 			instr_table[256 * 60 * 2 + 60 * 5] = IDLE;

@@ -142,7 +142,7 @@ namespace BizHawk.Common
 					}
 					for (int i = 0, l = scanResults.Count; i < l; i++)
 					{
-						if (string.Equals(scanResults[i].Name, autobind, StringComparison.InvariantCultureIgnoreCase))
+						if (string.Equals(scanResults[i].Name, autobind, StringComparison.OrdinalIgnoreCase))
 						{
 							BindArchiveMember(i);
 							return;
@@ -285,7 +285,7 @@ namespace BizHawk.Common
 		}
 
 		/// <summary>Set this with an instance which can construct archive handlers as necessary for archive handling.</summary>
-		public static IFileDearchivalMethod<IHawkArchiveFile>? DearchivalMethod;
+		public static IFileDearchivalMethod<IHawkArchiveFile>? DearchivalMethod { get; set; }
 
 		[return: HawkFilePath]
 		private static string MakeCanonicalName(string root, string? member) => member == null ? root : $"{root}|{member}";
@@ -297,7 +297,7 @@ namespace BizHawk.Common
 #if DEBUG
 			if (path.IndexOf('|') != i) Console.WriteLine($"{nameof(HawkFile)} path contains multiple '|'");
 #endif
-			return i == -1 ? ((string, string)?) null : (path.Substring(0, i), path.Substring(i + 1));
+			return i == -1 ? null : (path.Substring(0, i), path.Substring(i + 1));
 		}
 	}
 }

@@ -644,7 +644,7 @@ namespace BizHawk.Client.EmuHawk
 					IntPtr* pStream = &stream;
 					AVIWriterImports.AVICOMPRESSOPTIONS* popts = _popts;
 					AVIWriterImports.AVICOMPRESSOPTIONS** ppopts = &popts;
-					return AVIWriterImports.AVISaveOptions(owner, 0, 1, (void*)pStream, (void*)ppopts);
+					return AVIWriterImports.AVISaveOptions(owner, 0, 1, pStream, ppopts);
 				}
 			}
 
@@ -654,10 +654,10 @@ namespace BizHawk.Client.EmuHawk
 			public void OpenFile(string destPath, Parameters parameters, CodecToken videoCodecToken)
 			{
 				static int mmioFOURCC(string str) => (
-					((int)(byte)(str[0]))
-					| ((int)(byte)(str[1]) << 8)
-					| ((int)(byte)(str[2]) << 16)
-					| ((int)(byte)(str[3]) << 24)
+					(byte)(str[0])
+					| ((byte)(str[1]) << 8)
+					| ((byte)(str[2]) << 16)
+					| ((byte)(str[3]) << 24)
 				);
 
 				this._parameters = parameters;

@@ -996,7 +996,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							read_case_prev = 0;
 							
 							// calculate the row number of the tiles to be fetched
-							y_tile = (((int)scroll_y + LY) >> 3) % 32;
+							y_tile = ((scroll_y + LY) >> 3) % 32;
 							x_tile = scroll_x >> 3;
 
 							temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
@@ -1760,7 +1760,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			uint retG = ((G * 3 + B) << 1) & 0xFF;
 			uint retB = ((R * 3 + G * 2 + B * 11) >> 1) & 0xFF;
 
-			BG_palette[BG_bytes_index >> 1] = (uint)(0xFF000000 | (retR << 16) | (retG << 8) | retB);
+			BG_palette[BG_bytes_index >> 1] = 0xFF000000 | (retR << 16) | (retG << 8) | retB;
 		}
 
 		public void color_compute_OBJ()
@@ -1786,7 +1786,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			uint retG = ((G * 3 + B) << 1) & 0xFF;
 			uint retB = ((R * 3 + G * 2 + B * 11) >> 1) & 0xFF;
 
-			OBJ_palette[OBJ_bytes_index >> 1] = (uint)(0xFF000000 | (retR << 16) | (retG << 8) | retB);
+			OBJ_palette[OBJ_bytes_index >> 1] = 0xFF000000 | (retR << 16) | (retG << 8) | retB;
 		}
 
 		public override void SyncState(Serializer ser)

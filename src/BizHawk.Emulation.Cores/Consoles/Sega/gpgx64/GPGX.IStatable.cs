@@ -5,6 +5,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public partial class GPGX : IStatable
 	{
+		public bool AvoidRewind => false;
+
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			_elf.LoadStateBinary(reader);

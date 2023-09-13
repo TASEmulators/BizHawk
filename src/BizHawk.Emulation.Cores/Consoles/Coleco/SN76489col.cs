@@ -160,14 +160,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 						if (noise_type)
 						{
 							int bit = (noise & 1) ^ ((noise >> 1) & 1);
-							noise = noise >> 1;
+							noise >>= 1;
 							noise |= bit << 14;
 							
 						}
 						else
 						{
 							int bit = noise & 1;
-							noise = noise >> 1;
+							noise >>= 1;
 							noise |= bit << 14;
 						}
 

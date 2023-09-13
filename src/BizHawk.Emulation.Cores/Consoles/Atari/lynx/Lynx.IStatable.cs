@@ -8,6 +8,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
 	public partial class Lynx : ITextStatable
 	{
+		public bool AvoidRewind => false;
+
 		public void SaveStateText(TextWriter writer)
 		{
 			var s = new TextState<TextStateData>();

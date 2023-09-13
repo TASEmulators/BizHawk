@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 								if (term == ';' || term == '\0')
 								{
 									var fn = Encoding.ASCII.GetString(buf2048, index + 33, filename.Length);
-									if (filename == fn)
+									if (filename.Equals(fn, StringComparison.OrdinalIgnoreCase))
 									{
 										filesize = (buf2048[index + 13] << 24) | (buf2048[index + 12] << 16) | (buf2048[index + 11] << 8) | buf2048[index + 10];
 										return (buf2048[index + 4] << 16) | (buf2048[index + 3] << 8) | buf2048[index + 2];
@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 							exePath = Encoding.ASCII.GetString(buf2048);
 
 							// "BOOT = cdrom:" precedes the path
-							var index = exePath.IndexOf("BOOT = cdrom:");
+							var index = exePath.IndexOf("BOOT = cdrom:", StringComparison.Ordinal);
 							if (index < -1) break;
 							exePath = exePath.Remove(0, index + 13);
 
@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 							// end of the path has ;
 							var end = exePath.IndexOf(';');
 							if (end < 0) break;
-							exePath = exePath.Substring(index, end - index);
+							exePath = exePath[index..end];
 						}
 
 						buffer.AddRange(Encoding.ASCII.GetBytes(exePath));
@@ -284,6 +284,14 @@ namespace BizHawk.Client.EmuHawk
 			return IdentifyHash(hash);
 		}
 
+		private int Hash3DS(string path)
+		{
+			// 3DS is too big to hash as a byte array...
+			var hash = new byte[33];
+			return RCheevos._lib.rc_hash_generate_from_file(hash, ConsoleID.Nintendo3DS, path)
+				? IdentifyHash(Encoding.ASCII.GetString(hash, 0, 32)) : 0;
+		}
+
 		protected IReadOnlyList<int> GetRAGameIds(IOpenAdvanced ioa, ConsoleID consoleID)
 		{
 			var ret = new List<int>();
@@ -303,12 +311,18 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else if (ext == ".xml")
 						{
-							var xml = XmlGame.Create(new HawkFile(ioa.SimplePath));
+							var xml = XmlGame.Create(new(ioa.SimplePath));
 							foreach (var kvp in xml.Assets)
 							{
 								if (consoleID is ConsoleID.Arcade)
 								{
 									ret.Add(HashArcade(kvp.Key));
+									break;
+								}
+
+								if (consoleID is ConsoleID.Nintendo3DS)
+								{
+									ret.Add(Hash3DS(kvp.Key));
 									break;
 								}
 
@@ -322,6 +336,12 @@ namespace BizHawk.Client.EmuHawk
 							if (consoleID is ConsoleID.Arcade)
 							{
 								ret.Add(HashArcade(ioa.SimplePath));
+								break;
+							}
+
+							if (consoleID is ConsoleID.Nintendo3DS)
+							{
+								ret.Add(Hash3DS(ioa.SimplePath));
 								break;
 							}
 

@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 
 		public int Length() => _movieSession.Movie.FrameCount;
 
-		public string Mode() => (_movieSession.Movie?.Mode ?? MovieMode.Inactive).ToString().ToUpper();
+		public string Mode() => (_movieSession.Movie?.Mode ?? MovieMode.Inactive).ToString().ToUpperInvariant();
 
 		public bool PlayFromStart(string path = "")
 		{

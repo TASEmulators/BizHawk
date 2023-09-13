@@ -10,6 +10,7 @@ namespace BizHawk.Common
 	public static class Win32Imports
 	{
 		public const int MAX_PATH = 260;
+		public const uint PM_REMOVE = 0x0001U;
 
 		public delegate int BFFCALLBACK(IntPtr hwnd, uint uMsg, IntPtr lParam, IntPtr lpData);
 
@@ -85,6 +86,18 @@ namespace BizHawk.Common
 			}
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public struct MSG
+		{
+			public IntPtr hwnd;
+			public uint message;
+			public IntPtr wParam;
+			public IntPtr lParam;
+			public uint time;
+			public int x;
+			public int y;
+		}
+
 		[Guid("00000002-0000-0000-C000-000000000046")]
 		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 		public interface IMalloc
@@ -102,6 +115,12 @@ namespace BizHawk.Common
 
 		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
 		public static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)] string lpFileName);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr DispatchMessage([In] ref MSG lpMsg);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr hWndChildAfter, string className, string windowTitle);
 
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetActiveWindow();
@@ -135,6 +154,10 @@ namespace BizHawk.Common
 		public static extern bool PathRelativePathTo([Out] StringBuilder pszPath, [In] string pszFrom, [In] FileAttributes dwAttrFrom, [In] string pszTo, [In] FileAttributes dwAttrTo);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool PeekMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, ref HDITEM lParam);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -157,5 +180,9 @@ namespace BizHawk.Common
 
 		[DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
 		public static extern uint timeBeginPeriod(uint uMilliseconds);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool TranslateMessage([In] ref MSG lpMsg);
 	}
 }

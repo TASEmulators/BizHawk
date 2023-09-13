@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 if (LocateUniqueJoystick(JoystickType.Kempston) != null)
 				{
 					InputRead = true;
-					return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston) as KempstonJoystick).JoyLine;
+					return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston)).JoyLine;
 				}
 
                 // not a lag frame

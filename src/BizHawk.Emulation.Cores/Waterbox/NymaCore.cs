@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -166,10 +167,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				if (_disks != null)
 					_nyma.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
 				PutSettings(_settings);
-				DateTime RtcStart = DateTime.Parse("2010-01-01");
+				DateTime RtcStart = DateTime.Parse("2010-01-01", DateTimeFormatInfo.InvariantInfo);
 				try
 				{
-					RtcStart = DateTime.Parse(SettingsQuery("nyma.rtcinitialtime"));
+					RtcStart = DateTime.Parse(SettingsQuery("nyma.rtcinitialtime"), DateTimeFormatInfo.InvariantInfo);
 				}
 				catch
 				{
@@ -333,5 +334,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private IntPtr _frameThreadPtr;
 		private Action _frameThreadStart;
+
+		public override void Dispose()
+		{
+			if (_disks != null)
+			{
+				foreach (var disk in _disks)
+				{
+					disk.Dispose();
+				}
+			}
+			base.Dispose();
+		}
 	}
 }

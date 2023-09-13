@@ -36,8 +36,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				SaveType = 1;
 			}
 
-			_syncSettings = (N64SyncSettings)syncSettings ?? new N64SyncSettings();
-			_settings = (N64Settings)settings ?? new N64Settings();
+			_syncSettings = syncSettings ?? new N64SyncSettings();
+			_settings = settings ?? new N64Settings();
 
 			_disableExpansionSlot = _syncSettings.DisableExpansionSlot;
 

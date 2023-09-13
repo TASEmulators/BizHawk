@@ -1,7 +1,6 @@
 ﻿using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using System;
-using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -382,7 +381,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			if (is_GBC)
 			{
-				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)(frame_buffer[j] | (0x30303 << (clear_counter * 2))); }
+				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = frame_buffer[j] | (0x30303 << (clear_counter * 2)); }
 
 				clear_counter++;
 				if (clear_counter == 4)

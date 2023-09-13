@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -26,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 4);
 
-			if (!ident.StartsWith("UDI!") && !ident.StartsWith("udi!"))
+			if (!ident.StartsWithOrdinal("UDI!") && !ident.StartsWithOrdinal("udi!"))
 			{
 				// incorrect format
 				return false;
@@ -83,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 4);
 
-			if (!ident.StartsWith("UDI!") && !ident.StartsWith("udi!"))
+			if (!ident.StartsWithOrdinal("UDI!") && !ident.StartsWithOrdinal("udi!"))
 			{
 				// incorrect format
 				return false;

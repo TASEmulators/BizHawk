@@ -45,20 +45,20 @@ namespace BizHawk.Client.Common.movie.import
 				{
 					ImportTextFrame(line);
 				}
-				else if (line.ToLower().StartsWith("emuversion"))
+				else if (line.StartsWith("emuversion", StringComparison.OrdinalIgnoreCase))
 				{
 					Result.Movie.Comments.Add($"{EmulationOrigin} Yabause version {ParseHeader(line, "emuVersion")}");
 				}
-				else if (line.ToLower().StartsWith("version"))
+				else if (line.StartsWith("version", StringComparison.OrdinalIgnoreCase))
 				{
 					string version = ParseHeader(line, "version");
 					Result.Movie.Comments.Add($"{MovieOrigin} .ymv version {version}");
 				}
-				else if (line.ToLower().StartsWith("cdGameName"))
+				else if (line.StartsWith("cdGameName", StringComparison.OrdinalIgnoreCase))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "romFilename");
 				}
-				else if (line.ToLower().StartsWith("rerecordcount"))
+				else if (line.StartsWith("rerecordcount", StringComparison.OrdinalIgnoreCase))
 				{
 					int rerecordCount;
 
@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common.movie.import
 
 					Result.Movie.Rerecords = (ulong)rerecordCount;
 				}
-				else if (line.ToLower().StartsWith("startsfromsavestate"))
+				else if (line.StartsWith("startsfromsavestate", StringComparison.OrdinalIgnoreCase))
 				{
 					// If this movie starts from a savestate, we can't support it.
 					if (ParseHeader(line, "StartsFromSavestate") == "1")
@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common.movie.import
 						Result.Errors.Add("Movies that begin with a savestate are not supported.");
 					}
 				}
-				else if (line.ToLower().StartsWith("ispal"))
+				else if (line.StartsWith("ispal", StringComparison.OrdinalIgnoreCase))
 				{
 					bool pal = ParseHeader(line, "isPal") == "1";
 					Result.Movie.HeaderEntries[HeaderKeys.Pal] = pal.ToString();

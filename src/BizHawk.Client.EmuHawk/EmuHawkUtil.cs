@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>http://stackoverflow.com/questions/139010/how-to-resolve-a-lnk-in-c-sharp</remarks>
 		public static string ResolveShortcut(string filename)
 		{
-			if (filename.Contains("|") || OSTailoredCode.IsUnixHost || !".lnk".Equals(Path.GetExtension(filename), StringComparison.InvariantCultureIgnoreCase)) return filename; // archive internal files are never shortcuts (and choke when analyzing any further)
+			if (filename.Contains("|") || OSTailoredCode.IsUnixHost || !".lnk".Equals(Path.GetExtension(filename), StringComparison.OrdinalIgnoreCase)) return filename; // archive internal files are never shortcuts (and choke when analyzing any further)
 			var link = new ShellLinkImports.ShellLink();
 			const uint STGM_READ = 0;
 			((ShellLinkImports.IPersistFile) link).Load(filename, STGM_READ);

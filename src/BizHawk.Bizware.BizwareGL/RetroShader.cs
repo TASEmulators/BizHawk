@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Numerics;
 
 namespace BizHawk.Bizware.BizwareGL
 {
@@ -20,9 +21,8 @@ namespace BizHawk.Bizware.BizwareGL
 			VertexLayout.DefineVertexAttribute("tex", 2, 2, VertexAttribPointerType.Float, AttribUsage.Texcoord0, false, 40, 32);
 			VertexLayout.Close();
 
-			string defines = "";
-			string vsSource = $"#define VERTEX\r\n{defines}{source}";
-			string psSource = $"#define FRAGMENT\r\n{defines}{source}";
+			var vsSource = $"#define VERTEX\r\n{source}";
+			var psSource = $"#define FRAGMENT\r\n{source}";
 			var vs = owner.CreateVertexShader(vsSource, "main_vertex", debug);
 			var ps = owner.CreateFragmentShader(psSource, "main_fragment", debug);
 			Pipeline = Owner.CreatePipeline(VertexLayout, vs, ps, debug, "retro");
@@ -39,7 +39,7 @@ namespace BizHawk.Bizware.BizwareGL
 			sampler0 = Pipeline.TryGetUniform("s_p");
 			if (sampler0 == null)
 			{
-				//sampler wasn't named correctly. this can happen on some retroarch shaders
+				// sampler wasn't named correctly. this can happen on some retroarch shaders
 				foreach (var u in Pipeline.GetUniforms())
 				{
 					if (u.Sole.IsSampler && u.Sole.SamplerIndex == 0)
@@ -50,11 +50,8 @@ namespace BizHawk.Bizware.BizwareGL
 				}
 			}
 
-			//if a sampler isn't available, we can't do much, although this does interfere with debugging (shaders just returning colors will malfunction)
-			if (sampler0 == null)
-				return;
-
-			Available = true;
+			// if a sampler isn't available, we can't do much, although this does interfere with debugging (shaders just returning colors will malfunction)
+			Available = sampler0 != null;
 		}
 
 		public bool Available { get; }
@@ -65,20 +62,18 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Dispose()
 		{
 			Pipeline.Dispose();
+			VertexLayout.Release();
 		}
 
 		public void Bind()
 		{
-			//lame...
+			// lame...
 			Owner.BindPipeline(Pipeline);
 		}
 
 		public unsafe void Run(Texture2d tex, Size InputSize, Size OutputSize, bool flip)
 		{
-			flip = false;
-			//test
-
-			//ack! make sure to set the pipeline before setting uniforms
+			// ack! make sure to set the pipeline before setting uniforms
 			Bind();
 
 			Pipeline["IN.video_size"].Set(new Vector2(InputSize.Width, InputSize.Height));
@@ -87,10 +82,9 @@ namespace BizHawk.Bizware.BizwareGL
 			Pipeline["IN.frame_count"].Set(1); //todo
 			Pipeline["IN.frame_direction"].Set(1); //todo
 
-
 			var Projection = Owner.CreateGuiProjectionMatrix(OutputSize);
 			var Modelview = Owner.CreateGuiViewMatrix(OutputSize);
-			var mat = Matrix4.Transpose(Modelview * Projection);
+			var mat = Matrix4x4.Transpose(Modelview * Projection);
 			Pipeline["modelViewProj"].Set(mat, true);
 
 			Owner.SetTextureWrapMode(tex, true);
@@ -98,16 +92,26 @@ namespace BizHawk.Bizware.BizwareGL
 			sampler0.Set(tex);
 			Owner.SetViewport(OutputSize);
 
-			float time = DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000;
+			var time = DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000;
 			Pipeline["Time"].Set(time);
 
-			int w = OutputSize.Width;
-			int h = OutputSize.Height;
-			float v0,v1;
-			if (flip) { v0 = 1; v1 = 0; }
-			else { v0 = 0; v1 = 1; }
-			float* pData = stackalloc float[10*4];
-			int i=0;
+			var w = OutputSize.Width;
+			var h = OutputSize.Height;
+
+			float v0, v1;
+			if (flip)
+			{
+				v0 = 1;
+				v1 = 0;
+			}
+			else
+			{
+				v0 = 0;
+				v1 = 1;
+			}
+
+			var pData = stackalloc float[10 * 4];
+			var i = 0;
 			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 1; //topleft vert
 			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; //useless color
 			pData[i++] = 0; pData[i++] = v0;
@@ -119,17 +123,15 @@ namespace BizHawk.Bizware.BizwareGL
 			pData[i++] = 0; pData[i++] = v1;
 			pData[i++] = w; pData[i++] = h; pData[i++] = 0; pData[i++] = 1; //bottomright vert
 			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; //useless color
-			pData[i++] = 1; pData[i++] = v1;
+			pData[i++] = 1; pData[i] = v1;
 
-			Owner.SetBlendState(Owner.BlendNoneCopy);
-			Owner.BindArrayData(new(pData));
-			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+			Owner.DisableBlending();
+			Owner.Draw(new(pData), 4);
 		}
-
 
 		public IGL Owner { get; }
 
 		private readonly VertexLayout VertexLayout;
-		public Pipeline Pipeline;
+		public readonly Pipeline Pipeline;
 	}
 }

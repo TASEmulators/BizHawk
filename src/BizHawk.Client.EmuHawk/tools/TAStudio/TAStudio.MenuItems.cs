@@ -99,12 +99,12 @@ namespace BizHawk.Client.EmuHawk
 		public bool LoadMovieFile(string filename, bool askToSave = true)
 		{
 			if (askToSave && !AskSaveChanges()) return false;
-			if (filename.EndsWith(MovieService.TasMovieExtension))
+			if (filename.EndsWithOrdinal(MovieService.TasMovieExtension))
 			{
 				LoadFileWithFallback(filename);
 				return true; //TODO should this return false if it fell back to a new project?
 			}
-			if (filename.EndsWith(MovieService.StandardMovieExtension))
+			if (filename.EndsWithOrdinal(MovieService.StandardMovieExtension))
 			{
 				if (!DialogController.ShowMessageBox2(
 					caption: "Convert movie",
@@ -469,7 +469,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							_tasClipboard.Clear();
 							int linesToPaste = lines.Length;
-							if (lines[lines.Length - 1] == "") linesToPaste--;
+							if (lines[^1] == "") linesToPaste--;
 							for (int i = 0; i < linesToPaste; i++)
 							{
 								var line = ControllerFromMnemonicStr(lines[i]);
@@ -511,7 +511,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							_tasClipboard.Clear();
 							int linesToPaste = lines.Length;
-							if (lines[lines.Length - 1] == "") linesToPaste--;
+							if (lines[^1] == "") linesToPaste--;
 							for (int i = 0; i < linesToPaste; i++)
 							{
 								var line = ControllerFromMnemonicStr(lines[i]);
@@ -1209,7 +1209,7 @@ namespace BizHawk.Client.EmuHawk
 			int workingHeight = Screen.FromControl(this).WorkingArea.Height;
 			int rowHeight = ColumnsSubMenu.Height + 4;
 			int maxRows = workingHeight / rowHeight;
-			int keyCount = columns.Count(c => c.Name.StartsWith("Key "));
+			int keyCount = columns.Count(c => c.Name.StartsWithOrdinal("Key "));
 			int keysMenusCount = (int)Math.Ceiling((double)keyCount / maxRows);
 
 			var keysMenus = new ToolStripMenuItem[keysMenusCount];
@@ -1248,7 +1248,7 @@ namespace BizHawk.Client.EmuHawk
 					((ToolStripMenuItem)sender.OwnerItem).ShowDropDown();
 				};
 
-				if (column.Name.StartsWith("Key "))
+				if (column.Name.StartsWithOrdinal("Key "))
 				{
 					keysMenus
 						.First(m => m.DropDownItems.Count < maxRows)

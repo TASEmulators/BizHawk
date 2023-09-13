@@ -20,7 +20,7 @@ namespace BizHawk.Common.StringExtensions
 		/// <see langword="true"/> if <paramref name="str"/> appears in <paramref name="options"/> (case-insensitive)
 		/// </returns>
 		public static bool In(this string str, params string[] options) =>
-			options.Any(opt => string.Equals(opt, str, StringComparison.InvariantCultureIgnoreCase));
+			options.Any(opt => string.Equals(opt, str, StringComparison.OrdinalIgnoreCase));
 
 		/// <returns>
 		/// <paramref name="str"/> with the first char removed, or
@@ -88,7 +88,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </returns>
 		public static string SubstringAfter(this string str, string delimiter, string notFoundValue)
 		{
-			var index = str.IndexOf(delimiter);
+			var index = str.IndexOf(delimiter, StringComparison.Ordinal);
 			return index < 0 ? notFoundValue : str.Substring(index + delimiter.Length, str.Length - index - delimiter.Length);
 		}
 
@@ -147,7 +147,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </returns>
 		public static string? SubstringBeforeOrNull(this string str, string delimiter)
 		{
-			var index = str.IndexOf(delimiter);
+			var index = str.IndexOf(delimiter, StringComparison.Ordinal);
 			return index < 0 ? null : str.Substring(0, index);
 		}
 
@@ -165,5 +165,9 @@ namespace BizHawk.Common.StringExtensions
 		/// <remarks><c>"abc,def,ghi".TransformFields(',', s => s.Reverse()) == "cba,fed,ihg"</c></remarks>
 		public static string TransformFields(this string str, char delimiter, Func<string, string> transform)
 			=> string.Join(delimiter.ToString(), str.Split(delimiter).Select(transform));
+
+		public static bool StartsWithOrdinal(this string str, string value) => str.StartsWith(value, StringComparison.Ordinal);
+
+		public static bool EndsWithOrdinal(this string str, string value) => str.EndsWith(value, StringComparison.Ordinal);
 	}
 }

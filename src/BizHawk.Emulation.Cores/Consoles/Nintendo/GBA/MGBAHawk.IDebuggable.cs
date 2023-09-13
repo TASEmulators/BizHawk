@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void SetCpuRegister(string register, int value)
 		{
-			int index = register?.ToUpper() switch
+			int index = register?.ToUpperInvariant() switch
 			{
 				"R0" => 0,
 				"R1" => 1,

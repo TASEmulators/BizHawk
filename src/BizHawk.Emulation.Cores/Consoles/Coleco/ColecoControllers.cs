@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				byte temp2 = 0;
 
 				int temp1 = (int)Math.Floor(angle / 1.25);
-				temp1 = temp1 % 4;
+				temp1 %= 4;
 
 				if (temp1 == 0)
 				{
@@ -252,7 +252,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				byte temp2 = 0;
 
 				int temp1 = (int)Math.Floor(angle / 1.25);
-				temp1 = temp1 % 4;
+				temp1 %= 4;
 
 				if (temp1 == 0)
 				{

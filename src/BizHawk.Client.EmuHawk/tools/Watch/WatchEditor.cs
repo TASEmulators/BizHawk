@@ -86,6 +86,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						NotesBox.Text = Watches[0].Notes;
+						NotesBox.Select();
 						AddressBox.SetFromLong(Watches[0].Address);
 					}
 

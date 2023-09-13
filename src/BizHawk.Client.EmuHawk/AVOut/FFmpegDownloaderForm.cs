@@ -105,9 +105,10 @@ namespace BizHawk.Client.EmuHawk
 
 				succeeded = true;
 			}
-			catch
+			catch (Exception e)
 			{
 				failed = true;
+				Util.DebugWriteLine($"FFmpeg download failed with:\n{e}");
 			}
 			finally
 			{

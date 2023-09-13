@@ -14,6 +14,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -308,7 +309,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnLuaFileChanged(LuaFile item)
 		{
-			if (item.Enabled && LuaImp.ScriptList.Contains(item) == true)
+			if (item.Enabled && LuaImp.ScriptList.Contains(item))
 			{
 				RefreshLuaScript(item);
 			}
@@ -379,7 +380,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			while (LuaImp.ScriptList.Count > 0)
 			{
-				RemoveLuaFile(LuaImp.ScriptList[LuaImp.ScriptList.Count - 1]);
+				RemoveLuaFile(LuaImp.ScriptList[^1]);
 			}
 		}
 
@@ -446,7 +447,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string DressUpRelative(string path)
 		{
-			return path.StartsWith(".\\") ? path.Replace(".\\", "") : path;
+			return path.StartsWithOrdinal(".\\") ? path.Replace(".\\", "") : path;
 		}
 
 		private void UpdateNumberOfScripts()
@@ -484,21 +485,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_messageCount++;
-
-			if (_messageCount <= MaxCount)
+			if (_messageCount > MaxCount) return;
+			if (_messageCount == MaxCount) message += "\nFlood warning! Message cap reached, suppressing output.\n";
+			OutputBox.Invoke(() =>
 			{
-				if (_messageCount == MaxCount)
-				{
-					message = "Message Cap reached, supressing output.\n";
-				}
-
-				OutputBox.Invoke(() =>
-				{
-					OutputBox.Text += message;
-					OutputBox.SelectionStart = OutputBox.Text.Length;
-					OutputBox.ScrollToCaret();
-				});
-			}
+				OutputBox.Text += message;
+				OutputBox.SelectionStart = OutputBox.Text.Length;
+				OutputBox.ScrollToCaret();
+			});
 			
 		}
 
@@ -1042,7 +1036,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var indices = LuaListView.SelectedRows.ToList();
 			if (indices.Count == 0
-				|| indices[indices.Count - 1] == LuaImp.ScriptList.Count - 1) // at end already
+				|| indices[^1] == LuaImp.ScriptList.Count - 1) // at end already
 			{
 				return;
 			}
@@ -1274,12 +1268,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var path in filePaths)
 				{
-					if (Path.GetExtension(path)?.ToLower() == ".lua" || Path.GetExtension(path)?.ToLower() == ".txt")
+					if (Path.GetExtension(path)?.ToLowerInvariant() == ".lua" || Path.GetExtension(path)?.ToLowerInvariant() == ".txt")
 					{
 						LoadLuaFile(path);
 						UpdateDialog();
 					}
-					else if (Path.GetExtension(path)?.ToLower() == ".luases")
+					else if (Path.GetExtension(path)?.ToLowerInvariant() == ".luases")
 					{
 						LoadLuaSession(path);
 						return;
@@ -1336,7 +1330,7 @@ namespace BizHawk.Client.EmuHawk
 				var split = words[0].Split(Path.DirectorySeparatorChar);
 
 				luaListTemp.Add(LuaImp.ScriptList[i]);
-				luaListTemp[i].Name = split[split.Length - 1];
+				luaListTemp[i].Name = split[^1];
 			}
 
 			// Script, Path

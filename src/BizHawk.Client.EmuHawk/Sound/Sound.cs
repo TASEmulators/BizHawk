@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-using BizHawk.Bizware.DirectX;
-using BizHawk.Bizware.OpenTK3;
+using BizHawk.Bizware.Audio;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common;
@@ -44,15 +43,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// if DirectSound or XAudio is chosen, use OpenAL, otherwise comply with the user's choice
 				_outputDevice = config.SoundOutputMethod == ESoundOutputMethod.Dummy
-					? (ISoundOutput) new DummySoundOutput(this)
+					? new DummySoundOutput(this)
 					: new OpenALSoundOutput(this, config.SoundDevice);
 			}
 			else
 			{
 				_outputDevice = config.SoundOutputMethod switch
 				{
-					ESoundOutputMethod.DirectSound => IndirectX.CreateDSSoundOutput(this, mainWindowHandle, config.SoundDevice),
-					ESoundOutputMethod.XAudio2 => IndirectX.CreateXAudio2SoundOutput(this, config.SoundDevice),
+					ESoundOutputMethod.DirectSound => new DirectSoundSoundOutput(this, mainWindowHandle, config.SoundDevice),
+					ESoundOutputMethod.XAudio2 => new XAudio2SoundOutput(this, config.SoundDevice),
 					ESoundOutputMethod.OpenAL => new OpenALSoundOutput(this, config.SoundDevice),
 					_ => new DummySoundOutput(this)
 				};

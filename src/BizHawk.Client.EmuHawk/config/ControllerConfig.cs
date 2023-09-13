@@ -114,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 			// check to make sure that the settings object has all of the appropriate bool buttons
 			foreach (var button in controllerButtons)
 			{
-				if (!settings.Keys.Contains(button))
+				if (!settings.ContainsKey(button))
 				{
 					settings[button] = defaultValue;
 				}

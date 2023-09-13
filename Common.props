@@ -1,6 +1,12 @@
 <Project>
 	<PropertyGroup>
-		<AnalysisLevel>5</AnalysisLevel>
+		<AnalysisLevel>6</AnalysisLevel>
+		<AnalysisModeGlobalization>Recommended</AnalysisModeGlobalization>
+		<AnalysisModeMaintainability>Recommended</AnalysisModeMaintainability>
+		<AnalysisModeReliability>Recommended</AnalysisModeReliability>
+		<AnalysisModePerformance>Recommended</AnalysisModePerformance>
+		<AnalysisModeUsage>Recommended</AnalysisModeUsage>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 		<CodeAnalysisRuleSet>$(MSBuildProjectDirectory)/../../Common.ruleset</CodeAnalysisRuleSet>
 		<ContinuousIntegrationBuild Condition=" '$(GITLAB_CI)' != '' Or '$(APPVEYOR)' != '' ">true</ContinuousIntegrationBuild>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
@@ -12,7 +18,6 @@
 		<Nullable>enable</Nullable>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
-		<RunCodeAnalysis>false</RunCodeAnalysis>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 		<DebugSymbols>true</DebugSymbols>

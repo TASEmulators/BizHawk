@@ -4,10 +4,10 @@ namespace BizHawk.Emulation.Common
 {
 	public static class Waves
 	{
-		public static short[] SquareWave;
-		public static short[] ImperfectSquareWave;
-		public static short[] NoiseWave;
-		public static short[] PeriodicWave16;
+		public static short[] SquareWave { get; private set;  }
+		public static short[] ImperfectSquareWave { get; private set; }
+		public static short[] NoiseWave { get; private set; }
+		public static short[] PeriodicWave16 { get; private set; }
 
 		public static void InitWaves()
 		{

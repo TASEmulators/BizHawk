@@ -10,9 +10,9 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public class Pipeline : IDisposable
 	{
-		public string Memo;
+		public readonly string Memo;
 
-		public Pipeline(IGL owner, object opaque, bool available, VertexLayout vertexLayout, IEnumerable<UniformInfo> uniforms, string memo)
+		public Pipeline(IGL owner, object opaque, bool available, VertexLayout vertexLayout, IReadOnlyList<UniformInfo> uniforms, string memo)
 		{
 			Memo = memo;
 			Owner = owner;
@@ -20,14 +20,16 @@ namespace BizHawk.Bizware.BizwareGL
 			VertexLayout = vertexLayout;
 			Available = available;
 
-			//create the uniforms from the info list we got
-			if(!Available)
+			// create the uniforms from the info list we got
+			if (!Available)
+			{
 				return;
+			}
 
-			UniformsDictionary = new SpecialWorkingDictionary(this);
+			UniformsDictionary = new(this);
 			foreach (var ui in uniforms)
 			{
-				UniformsDictionary[ui.Name] = new PipelineUniform(this);
+				UniformsDictionary[ui.Name] = new(this);
 			}
 
 			foreach (var ui in uniforms)
@@ -40,9 +42,9 @@ namespace BizHawk.Bizware.BizwareGL
 		/// Allows us to create PipelineUniforms on the fly, in case a non-existing one has been requested.
 		/// Shader compilers will optimize out unused uniforms, and we wont have a record of it in the uniforms population loop
 		/// </summary>
-		private class SpecialWorkingDictionary : Dictionary<string, PipelineUniform>
+		private class UniformWorkingDictionary : Dictionary<string, PipelineUniform>
 		{
-			public SpecialWorkingDictionary(Pipeline owner)
+			public UniformWorkingDictionary(Pipeline owner)
 			{
 				Owner = owner;
 			}
@@ -59,7 +61,7 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
-		private readonly SpecialWorkingDictionary UniformsDictionary;
+		private readonly UniformWorkingDictionary UniformsDictionary;
 		private IDictionary<string, PipelineUniform> Uniforms => UniformsDictionary;
 
 		public IEnumerable<PipelineUniform> GetUniforms() => Uniforms.Values;

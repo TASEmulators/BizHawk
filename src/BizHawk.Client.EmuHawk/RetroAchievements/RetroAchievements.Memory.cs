@@ -363,6 +363,7 @@ namespace BizHawk.Client.EmuHawk
 			ConsoleID.PlayStation, ConsoleID.Lynx, ConsoleID.Lynx, ConsoleID.NeoGeoPocket,
 			ConsoleID.Jaguar, ConsoleID.JaguarCD, ConsoleID.DS, ConsoleID.DSi,
 			ConsoleID.AppleII, ConsoleID.Vectrex, ConsoleID.Tic80, ConsoleID.PCEngine,
+			ConsoleID.Uzebox, ConsoleID.Nintendo3DS,
 		};
 
 		// these consoles will use part of the system bus at an offset
@@ -371,7 +372,6 @@ namespace BizHawk.Client.EmuHawk
 			[ConsoleID.MasterSystem] = new[] { (0xC000, 0x2000) },
 			[ConsoleID.GameGear] = new[] { (0xC000, 0x2000) },
 			[ConsoleID.Colecovision] = new[] { (0x6000, 0x400) },
-			[ConsoleID.GBA] = new[] { (0x3000000, 0x8000), (0x2000000, 0x40000) },
 			[ConsoleID.SG1000] = new[] { (0xC000, 0x2000), (0x2000, 0x2000), (0x8000, 0x2000) },
 		};
 
@@ -385,14 +385,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (domains.Has(domain))
 				{
-					if (size.HasValue && domains[domain].Size < size.Value)
+					if (size.HasValue && domains[domain]!.Size < size.Value)
 					{
 						mfs.Add(new(domains[domain], 0, domains[domain].Size, addressMangler));
 						mfs.Add(new NullMemFunctions(size.Value - domains[domain].Size));
 					}
 					else
 					{
-						mfs.Add(new(domains[domain], 0, size ?? domains[domain].Size, addressMangler));
+						mfs.Add(new(domains[domain], 0, size ?? domains[domain]!.Size, addressMangler));
 					}
 				}
 				else if (size.HasValue)
@@ -486,6 +486,11 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 						break;
+					case ConsoleID.GBA:
+						mfs.Add(new(domains["IWRAM"], 0, domains["IWRAM"].Size));
+						mfs.Add(new(domains["EWRAM"], 0, domains["EWRAM"].Size));
+						mfs.Add(new(domains["SRAM"], 0, domains["SRAM"].Size));
+						break;
 					case ConsoleID.SegaCD:
 						mfs.Add(new(domains["68K RAM"], 0, domains["68K RAM"].Size, 1));
 						mfs.Add(new(domains["CD PRG RAM"], 0, domains["CD PRG RAM"].Size, 1));
@@ -549,6 +554,10 @@ namespace BizHawk.Client.EmuHawk
 					case ConsoleID.Arcade:
 						mfs.AddRange(domains.Where(domain => domain.Name.Contains("ram"))
 							.Select(domain => new MemFunctions(domain, 0, domain.Size)));
+						break;
+					case ConsoleID.TI83:
+						TryAddDomain("RAM"); // Emu83
+						TryAddDomain("Main RAM"); // TI83Hawk
 						break;
 					case ConsoleID.UnknownConsoleID:
 					case ConsoleID.ZXSpectrum: // this doesn't actually have anything standardized, so...

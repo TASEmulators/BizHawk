@@ -5,6 +5,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public partial class LibsnesCore : IStatable
 	{
+		public bool AvoidRewind => false;
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			Api.SaveStateBinary(writer);

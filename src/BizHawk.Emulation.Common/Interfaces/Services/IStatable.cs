@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public interface IStatable : IEmulatorService
 	{
+		bool AvoidRewind { get; }
 		void SaveStateBinary(BinaryWriter writer);
 		void LoadStateBinary(BinaryReader reader);
 	}

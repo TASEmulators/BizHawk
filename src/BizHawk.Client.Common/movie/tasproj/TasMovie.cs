@@ -18,10 +18,10 @@ namespace BizHawk.Client.Common
 		public const double CurrentVersion = 1.1;
 
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
-		internal TasMovie(IMovieSession session, string path, IQuickBmpFile quickBmpFile)
+		internal TasMovie(IMovieSession session, string path)
 			: base(session, path)
 		{
-			Branches = new TasBranchCollection(this, quickBmpFile);
+			Branches = new TasBranchCollection(this);
 			ChangeLog = new TasMovieChangeLog(this);
 			Header[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{CurrentVersion.ToString(CultureInfo.InvariantCulture)}";
 			Markers = new TasMovieMarkerList(this);
@@ -238,7 +238,7 @@ namespace BizHawk.Client.Common
 
 					counter++;
 				}
-				else if (line.StartsWith("Frame "))
+				else if (line.StartsWithOrdinal("Frame "))
 				{
 					var split = line.Split(' ');
 					try
@@ -251,7 +251,7 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 				}
-				else if (line.StartsWith("LogKey:"))
+				else if (line.StartsWithOrdinal("LogKey:"))
 				{
 					LogKey = line.Replace("LogKey:", "");
 				}
@@ -327,7 +327,7 @@ namespace BizHawk.Client.Common
 				if (_changes != value)
 				{
 					_changes = value;
-					OnPropertyChanged("Changes");
+					OnPropertyChanged(nameof(Changes));
 				}
 			}
 		}

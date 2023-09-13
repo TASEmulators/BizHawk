@@ -1,8 +1,4 @@
-﻿
-using BizHawk.Common;
-using System;
-
-namespace BizHawk.Emulation.Cores.Consoles.ChannelF
+﻿namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	/// <summary>
 	/// Standard ChannelF Cartridge

@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 				? $"{RomGame.RomData.Length / 1024 / 1024:n0}mb"
 				: $"{RomGame.RomData.Length / 1024:n0}kb";
 
-			ExtensionLabel.Text = RomGame.Extension.ToLower();
+			ExtensionLabel.Text = RomGame.Extension.ToLowerInvariant();
 			HashBox.Text = RomGame.GameInfo.Hash;
 			int count = 0;
 			int spacing = 25;
@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (AlwaysCheckbox.Checked)
 			{
-				_config.PreferredPlatformsForExtensions[RomGame.Extension.ToLower()] = PlatformChoice;
+				_config.PreferredPlatformsForExtensions[RomGame.Extension.ToLowerInvariant()] = PlatformChoice;
 			}
 
 			Close();

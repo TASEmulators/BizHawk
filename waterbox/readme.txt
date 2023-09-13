@@ -60,7 +60,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	cd nyma && ./build-and-install-zlib.sh
 
 6. You are now ready to start building cores. Each supports `make` and `make install`, as well as `make debug` and `make install-debug` for local development.  From the root directory, the following should all be valid:
-	cd ares64 && make install
+	cd ares64 && ./make-both.sh
 	cd bsnescore && make install
 	cd gpgx && make install
 	cd libsnes && make install

@@ -1,8 +1,5 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-
-using Newtonsoft.Json;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;

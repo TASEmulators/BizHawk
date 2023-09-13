@@ -78,37 +78,37 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The total frame width (in characters)
 		/// </summary>
-		public int FrameWidth => (int)Regs[HOR_TOTAL] + 1;
+		public int FrameWidth => Regs[HOR_TOTAL] + 1;
 
 		/// <summary>
 		/// The total frame height (in scanlines)
 		/// </summary>
-		public int FrameHeight => ((int)Regs[VER_TOTAL] + 1) * ((int)Regs[MAX_RASTER_ADDR] + 1);
+		public int FrameHeight => (Regs[VER_TOTAL] + 1) * (Regs[MAX_RASTER_ADDR] + 1);
 
 		/// <summary>
 		/// The total frame height (in scanlines)
 		/// </summary>
-		public int FrameHeightInChars => ((int)Regs[VER_TOTAL] + 1);
+		public int FrameHeightInChars => (Regs[VER_TOTAL] + 1);
 
 		/// <summary>
 		/// The width of the display area (in characters)
 		/// </summary>
-		public int DisplayWidth => (int)Regs[HOR_DISPLAYED];
+		public int DisplayWidth => Regs[HOR_DISPLAYED];
 
 		/// <summary>
 		/// The width of the display area (in scanlines)
 		/// </summary>
-		public int DisplayHeight => (int)Regs[VER_DISPLAYED] * ((int)Regs[MAX_RASTER_ADDR] + 1);
+		public int DisplayHeight => Regs[VER_DISPLAYED] * (Regs[MAX_RASTER_ADDR] + 1);
 
 		/// <summary>
 		/// The width of the display area (in scanlines)
 		/// </summary>
-		public int DisplayHeightInChars => (int)Regs[VER_DISPLAYED];
+		public int DisplayHeightInChars => Regs[VER_DISPLAYED];
 
 		/// <summary>
 		/// The character at which to start HSYNC
 		/// </summary>
-		public int HorizontalSyncPos => (int)Regs[HOR_SYNC_POS];
+		public int HorizontalSyncPos => Regs[HOR_SYNC_POS];
 
 		/// <summary>
 		/// Width (in characters) of the HSYNC
@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The vertical scanline at which to start VSYNC
 		/// </summary>
-		public int VerticalSyncPos => (int)Regs[VER_SYNC_POS] * ((int)Regs[MAX_RASTER_ADDR] + 1);
+		public int VerticalSyncPos => Regs[VER_SYNC_POS] * (Regs[MAX_RASTER_ADDR] + 1);
 
 		/// <summary>
 		/// Height (in scanlines) of the VSYNC
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The number of scanlines in one character (MAXRASTER)
 		/// </summary>
-		public int ScanlinesPerCharacter => (int)Regs[MAX_RASTER_ADDR] + 1;
+		public int ScanlinesPerCharacter => Regs[MAX_RASTER_ADDR] + 1;
 
 		/// <summary>
 		/// Returns the starting video page address as specified within R12
@@ -868,7 +868,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				case 9:
 				case 10:
 				case 11:
-					if ((int)ChipType == 0 || (int)ChipType == 1)
+					if (ChipType is CRCTType.HD6845S or CRCTType.UM6845 or CRCTType.UM6845R)
 					{
 						addressed = true;
 						data = 0;
@@ -877,9 +877,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				case 12:
 				case 13:
 					addressed = true;
-					if ((int)ChipType == 0)
+					if (ChipType is CRCTType.HD6845S or CRCTType.UM6845)
 						data = Regs[SelectedRegister];
-					else if ((int)ChipType == 1)
+					else if (ChipType is CRCTType.UM6845R)
 						data = 0;
 					break;
 				case 14:
@@ -906,12 +906,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					}
 					else if (SelectedRegister == 31)
 					{
-						if ((int)ChipType == 1)
+						if (ChipType == CRCTType.UM6845R)
 						{
 							addressed = true;
 							data = 0x0ff;
 						}
-						else if ((int)ChipType == 0 || (int)ChipType == 2)
+						else if (ChipType is CRCTType.HD6845S or CRCTType.UM6845 or CRCTType.MC6845)
 						{
 							addressed = true;
 							data = 0;

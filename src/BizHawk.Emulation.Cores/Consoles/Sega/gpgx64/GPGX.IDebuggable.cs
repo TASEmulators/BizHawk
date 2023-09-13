@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
@@ -23,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					// el hacko
 					string name = Marshal.PtrToStringAnsi(regs[i].Name);
 					byte size = 32;
-					if (name.Contains("68K SR") || name.StartsWith("Z80"))
+					if (name.Contains("68K SR") || name.StartsWithOrdinal("Z80"))
 						size = 16;
 
 					ret[name] = new RegisterValue((ulong)regs[i].Value, size);

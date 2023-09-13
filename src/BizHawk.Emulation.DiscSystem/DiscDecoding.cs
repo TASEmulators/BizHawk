@@ -36,14 +36,14 @@ namespace BizHawk.Emulation.DiscSystem
 			//first, look for the file type we actually asked for
 			foreach (var fi in fis)
 			{
-				if (fi.FullName.ToUpper() == audioPath.ToUpper())
+				if (string.Equals(fi.FullName, audioPath, StringComparison.OrdinalIgnoreCase))
 					if (CheckForAudio(fi.FullName))
 						return fi.FullName;
 			}
 			//then look for any other type
 			foreach (var fi in fis)
 			{
-				if (Path.GetFileNameWithoutExtension(fi.FullName).ToUpper() == basePath.ToUpper())
+				if (string.Equals(Path.GetFileNameWithoutExtension(fi.FullName), basePath, StringComparison.OrdinalIgnoreCase))
 				{
 					if (CheckForAudio(fi.FullName))
 					{

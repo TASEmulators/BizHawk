@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 
@@ -119,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 
 				foreach (var n in ret.BoolButtons)
 				{
-					if (n.StartsWith("Mouse"))
+					if (n.StartsWithOrdinal("Mouse"))
 					{
 						ret.CategoryLabels[n] = "Mouse";
 					}
@@ -127,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 
 				foreach (var n in ret.Axes.Keys)
 				{
-					if (n.StartsWith("Mouse"))
+					if (n.StartsWithOrdinal("Mouse"))
 					{
 						ret.CategoryLabels[n] = "Mouse";
 					}

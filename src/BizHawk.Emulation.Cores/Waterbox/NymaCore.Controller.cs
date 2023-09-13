@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using NymaTypes;
 
@@ -165,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								switchPreviousFrame.Add(0);
 
 								var names = data.Positions.Select(p => $"{name}: Set {p.Name}").ToArray();
-								if (!input.Name.StartsWith("AF ") && !input.Name.EndsWith(" AF") && !input.Name.StartsWith("Autofire ")) // hack: don't support some devices
+								if (!input.Name.StartsWithOrdinal("AF ") && !input.Name.EndsWithOrdinal(" AF") && !input.Name.StartsWithOrdinal("Autofire ")) // hack: don't support some devices
 								{
 									foreach (var n in names)
 									{
@@ -327,6 +328,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 
 			private const ulong MAGIC = 9569546739673486731;
+
+			public bool AvoidRewind => false;
 
 			public void SaveStateBinary(BinaryWriter writer)
 			{

@@ -20,7 +20,10 @@
 		<Reference Include="NLua, Version=1.4.1.0, Culture=neutral, PublicKeyToken=null, processorArchitecture=MSIL" SpecificVersion="false" HintPath="$(ProjectDir)../../References/NLua.dll" Private="true" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.DirectX/BizHawk.Bizware.DirectX.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Audio/BizHawk.Bizware.Audio.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Input/BizHawk.Bizware.Input.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics.Controls/BizHawk.Bizware.Graphics.Controls.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.WinForms.Controls/BizHawk.WinForms.Controls.csproj" />
 		<Compile Remove="Properties/Settings.Designer.cs" />
 		<Content Include="images/logo.ico" />
@@ -258,9 +261,7 @@
 		<Compile Update="CustomControls/RepeatButton.cs" SubType="Component" />
 		<Compile Update="CustomControls/TransparentTrackbar.cs" SubType="Component" />
 		<Compile Update="CustomControls/ViewportPanel.cs" SubType="Component" />
-		<Compile Update="GraphicsImplementations/GLControlWrapper_GdiPlus.cs" SubType="Component" />
 		<Compile Update="GraphicsImplementations/GLControlWrapper_SlimDX9.cs" SubType="Component" />
-		<Compile Update="GraphicsImplementations/GraphicsControl.cs" SubType="UserControl" />
 		<Compile Update="GraphicsImplementations/GraphicsControl_TK.cs" SubType="UserControl" />
 		<Compile Update="GraphicsImplementations/RetainedGraphicsControl.cs" SubType="UserControl" />
 		<Compile Update="LogWindow.cs" SubType="Form" />

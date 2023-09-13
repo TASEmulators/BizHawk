@@ -1,10 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 namespace BizHawk.Client.Common.movie.import
 {
@@ -13,11 +14,9 @@ namespace BizHawk.Client.Common.movie.import
 	[ImporterFor("Snes9x", ".smv")]
 	internal class SmvImport : MovieImporter
 	{
-		private LibsnesControllerDeck _deck;
-
 		protected override void RunImport()
 		{
-			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Bsnes; //TODO set to Snes9x instead? or give the user the choice?
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Snes9X;
 
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
 			using var r = new BinaryReader(fs);
@@ -74,32 +73,23 @@ namespace BizHawk.Client.Common.movie.import
 				controllersUsed[controller - 1] = ((controllerFlags >> (controller - 1)) & 0x1) != 0;
 			}
 
-			var controllerCount = controllersUsed.Count(c => c);
+			int highestControllerIndex = 1 + Array.LastIndexOf(controllersUsed, true);
+			var ss = new Snes9x.SyncSettings();
 
-			var ss = new LibsnesCore.SnesSyncSettings
+			switch (highestControllerIndex)
 			{
-				LeftPort = LibsnesControllerDeck.ControllerType.Gamepad,
-				RightPort = LibsnesControllerDeck.ControllerType.Gamepad
-			};
-
-			if (controllerCount == 1)
-			{
-				ss.RightPort = LibsnesControllerDeck.ControllerType.Unplugged;
+				case 1:
+					ss.RightPort = LibSnes9x.RightPortDevice.None;
+					break;
+				case 3:
+				case 4:
+					ss.LeftPort = LibSnes9x.LeftPortDevice.Multitap;
+					ss.RightPort = LibSnes9x.RightPortDevice.None;
+					break;
+				case 5:
+					ss.LeftPort = LibSnes9x.LeftPortDevice.Multitap;
+					break;
 			}
-			else if (controllerCount > 2)
-			{
-				// More than 2 controllers means a multi-tap on the first port
-				// Snes9x only supported up to 5 controllers, so right port would never be multitap
-				ss.LeftPort = LibsnesControllerDeck.ControllerType.Multitap;
-
-				// Unless there are exactly 5, right port is unplugged, as the multitap will handle 4 controllers
-				if (controllerCount < 5)
-				{
-					ss.RightPort = LibsnesControllerDeck.ControllerType.Unplugged;
-				}
-			}
-
-			_deck = new LibsnesControllerDeck(ss);
 
 			// 015 1-byte flags "movie options"
 			byte movieFlags = r.ReadByte();
@@ -193,14 +183,16 @@ namespace BizHawk.Client.Common.movie.import
 				// 000 3 bytes of zero padding: 00 00 00 003 4-byte integer: CRC32 of the ROM 007 23-byte ascii string
 				r.ReadBytes(3);
 				int crc32 = r.ReadInt32();
-				Result.Movie.HeaderEntries["CRC32"] = crc32.ToString();
+				Result.Movie.HeaderEntries[HeaderKeys.Crc32] = crc32.ToString("X08");
 
 				// the game name copied from the ROM, truncated to 23 bytes (the game name in the ROM is 21 bytes)
 				string gameName = NullTerminated(Encoding.UTF8.GetString(r.ReadBytes(23)));
 				Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 			}
 
-			SimpleController controllers = new(_deck.Definition);
+			var _controllers = new Snes9xControllers(ss);
+			Result.Movie.LogKey = new Bk2LogEntryGenerator("SNES", new Bk2Controller(_controllers.ControllerDefinition)).GenerateLogKey();
+			SimpleController controllers = new(_controllers.ControllerDefinition);
 
 			r.BaseStream.Position = firstFrameOffset;
 			/*
@@ -252,15 +244,25 @@ namespace BizHawk.Client.Common.movie.import
 						controllers["Reset"] = false;
 					}
 
-					/*
-					 While the meaning of controller data (for 1.51 and up) for a single standard SNES controller pad
-					 remains the same, each frame of controller data can contain additional bytes if input for peripherals
-					 is being recorded.
-					*/
-					if (version != "1.43" && player <= controllerTypes.Length)
+					ushort controllerState = (ushort)(((controllerState1 << 4) & 0x0F00) | controllerState2);
+					for (int button = 0; button < buttons.Length; button++)
+					{
+						controllers[$"P{player} {buttons[button]}"] =
+							((controllerState >> button) & 0x1) != 0;
+					}
+				}
+
+				/*
+				 While the meaning of controller data (for 1.51 and up) for a single standard SNES controller pad
+				 remains the same, each frame of controller data can contain additional bytes if input for peripherals
+				 is being recorded.
+				*/
+				if (version != "1.43")
+				{
+					for (int i = 0; i < 2; i++)
 					{
 						var peripheral = "";
-						switch (controllerTypes[player - 1])
+						switch (controllerTypes[i])
 						{
 							case 0: // NONE
 								continue;
@@ -292,13 +294,6 @@ namespace BizHawk.Client.Common.movie.import
 							Result.Warnings.Add($"Unable to import {peripheral}. Not supported yet");
 						}
 					}
-
-					ushort controllerState = (ushort)(((controllerState1 << 4) & 0x0F00) | controllerState2);
-					for (int button = 0; button < buttons.Length; button++)
-					{
-						controllers[$"P{player} {buttons[button]}"] =
-							((controllerState >> button) & 0x1) != 0;
-					}
 				}
 
 				// The controller data contains <number_of_frames + 1> frames.
@@ -311,7 +306,6 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
-			MaybeSetCorePreference(VSystemID.Raw.SNES, CoreNames.Bsnes, fileExt: ".smv");
 		}
 	}
 }

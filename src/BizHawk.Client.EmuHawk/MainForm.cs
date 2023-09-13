@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -167,6 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Config.FirstBoot)
 			{
 				ProfileFirstBootLabel.Visible = true;
+				AddOnScreenMessage("Click the blue silhouette below for onboarding");
 			}
 
 			HandleToggleLightAndLink();
@@ -226,7 +228,8 @@ namespace BizHawk.Client.EmuHawk
 				message => this.ModalMessageBox(message, "Warning", EMsgBoxIcon.Warning),
 				AddOnScreenMessage,
 				cfp,
-				prefs);
+				prefs,
+				new OpenGLProvider());
 		}
 
 		private void SetImages()
@@ -406,7 +409,6 @@ namespace BizHawk.Client.EmuHawk
 				Config.Movies,
 				Config.PathEntries.MovieBackupsAbsolutePath(),
 				this,
-				QuickBmpFile,
 				PauseEmulator,
 				SetMainformMovieInfo);
 
@@ -445,17 +447,15 @@ namespace BizHawk.Client.EmuHawk
 
 			// TODO GL - a lot of disorganized wiring-up here
 			// installed separately on Unix (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
-			_presentationPanel = new PresentationPanel(
+			_presentationPanel = new(
 				Config,
 				GL,
 				ToggleFullscreen,
 				MainForm_MouseClick,
 				MainForm_MouseMove,
-				MainForm_MouseWheel)
-			{
-				GraphicsControl = { MainWindow = true }
-			};
-			DisplayManager = new DisplayManager(Config, Emulator, InputManager, MovieSession, GL, _presentationPanel, () => DisableSecondaryThrottling);
+				MainForm_MouseWheel);
+
+			DisplayManager = new(Config, Emulator, InputManager, MovieSession, GL, _presentationPanel, () => DisableSecondaryThrottling);
 			Controls.Add(_presentationPanel);
 			Controls.SetChildIndex(_presentationPanel, 0);
 
@@ -1063,7 +1063,7 @@ namespace BizHawk.Client.EmuHawk
 		public void CreateRewinder()
 		{
 			Rewinder?.Dispose();
-			Rewinder = Emulator.HasSavestates() && Config.Rewind.Enabled
+			Rewinder = Emulator.HasSavestates() && Config.Rewind.Enabled && (!Emulator.AsStatable().AvoidRewind || Config.Rewind.AllowSlowStates)
 				? Config.Rewind.UseDelta
 					? new ZeldaWinder(Emulator.AsStatable(), Config.Rewind)
 					: new Zwinder(Emulator.AsStatable(), Config.Rewind)
@@ -1111,7 +1111,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (ie.LogicalButton.Button.Length == 1)
 						{
-							var c = ie.LogicalButton.Button.ToLower()[0];
+							var c = ie.LogicalButton.Button.ToLowerInvariant()[0];
 							if ((c >= 'a' && c <= 'z') || c == ' ')
 							{
 								SendAltKeyChar(c);
@@ -1209,7 +1209,7 @@ namespace BizHawk.Client.EmuHawk
 			//NOTE: these must go together, because in the case of screen rotation, X and Y are transformed together
 			if(mouseX != null && mouseY != null)
 			{
-				var p = DisplayManager.UntransformPoint(new Point((int) mouseX.Value.Value, (int) mouseY.Value.Value));
+				var p = DisplayManager.UntransformPoint(new Point(mouseX.Value.Value, mouseY.Value.Value));
 				float x = p.X / (float)_currentVideoProvider.BufferWidth;
 				float y = p.Y / (float)_currentVideoProvider.BufferHeight;
 				finalHostController.AcceptNewAxis("WMouse X", (int) ((x * 20000) - 10000));
@@ -1310,7 +1310,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var bb = Config.ScreenshotCaptureOsd ? CaptureOSD() : MakeScreenshotImage())
 			{
 				using var img = bb.ToSysdrawingBitmap();
-				if (Path.GetExtension(path).ToUpper() == ".JPG")
+				if (Path.GetExtension(path).ToUpperInvariant() == ".JPG")
 				{
 					img.Save(fi.FullName, ImageFormat.Jpeg);
 				}
@@ -2450,7 +2450,8 @@ namespace BizHawk.Client.EmuHawk
 				BindingFlags.NonPublic | BindingFlags.InvokeMethod | BindingFlags.Instance,
 				null,
 				MainformMenu,
-				new object/*?*/[] { c });
+				new object/*?*/[] { c },
+				CultureInfo.InvariantCulture);
 
 		public static readonly FilesystemFilterSet ConfigFileFSFilterSet = new(new FilesystemFilter("Config File", new[] { "ini" }))
 		{
@@ -3810,8 +3811,6 @@ namespace BizHawk.Client.EmuHawk
 
 				IOpenAdvanced ioa = args.OpenAdvanced;
 				var oaOpenrom = ioa as OpenAdvanced_OpenRom;
-				var oaMame = ioa as OpenAdvanced_MAME;
-				var oaRetro = ioa as OpenAdvanced_Libretro;
 				var ioaRetro = ioa as IOpenAdvancedLibretro;
 
 				// we need to inform LoadRom which Libretro core to use...
@@ -3837,6 +3836,8 @@ namespace BizHawk.Client.EmuHawk
 					//path = ioa_openrom.Path;
 				}
 
+				DisplayManager.ActivateOpenGLContext(); // required in case the core wants to create a shared OpenGL context
+
 				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
 
 				if (result) Game = loader.Game;
@@ -3844,7 +3845,7 @@ namespace BizHawk.Client.EmuHawk
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)
 				// i'm not sure this needs to be more abstractly engineered yet until we have more OpenAdvanced examples
-				if (oaRetro != null)
+				if (ioa is OpenAdvanced_Libretro oaRetro)
 				{
 					oaRetro.token.Path = loader.CanonicalFullPath;
 				}
@@ -3854,7 +3855,7 @@ namespace BizHawk.Client.EmuHawk
 					oaOpenrom.Path = loader.CanonicalFullPath;
 				}
 
-				if (oaMame != null)
+				if (ioa is OpenAdvanced_MAME oaMame)
 				{
 					oaMame.Path = loader.CanonicalFullPath;
 				}
@@ -3869,7 +3870,7 @@ namespace BizHawk.Client.EmuHawk
 					InputManager.SyncControls(Emulator, MovieSession, Config);
 					_multiDiskMode = false;
 
-					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && !(Emulator is LibsnesCore))
+					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && Emulator is not LibsnesCore)
 					{
 						// this is a multi-disk bundler file
 						// determine the xml assets and create RomStatusDetails for all of them
@@ -4150,7 +4151,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProcessMovieImport(string fn, bool start)
 		{
-			var result = MovieImport.ImportFile(this, MovieSession, Emulator, fn, Config);
+			var result = MovieImport.ImportFile(this, MovieSession, fn, Config);
 
 			if (result.Errors.Any())
 			{
@@ -4234,7 +4235,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!Emulator.HasSavestates()) return false;
 			if (IsSavestateSlave) return Master.LoadState();
 
-			if (!new SavestateFile(Emulator, MovieSession, QuickBmpFile, MovieSession.UserBag).Load(path, this))
+			if (!new SavestateFile(Emulator, MovieSession, MovieSession.UserBag).Load(path, this))
 			{
 				AddOnScreenMessage("Loadstate error!");
 				return false;
@@ -4304,7 +4305,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				new SavestateFile(Emulator, MovieSession, QuickBmpFile, MovieSession.UserBag).Create(path, Config.Savestates);
+				new SavestateFile(Emulator, MovieSession, MovieSession.UserBag).Create(path, Config.Savestates);
 
 				EmuClient.OnStateSaved(this, userFriendlyStateName);
 				RA?.OnSaveState(path);
@@ -4849,8 +4850,6 @@ namespace BizHawk.Client.EmuHawk
 			//BANZAIIIIIIIIIIIIIIIIIIIIIIIIIII
 			_ = LoadRom(args[0]);
 		}
-
-		public IQuickBmpFile QuickBmpFile { get; } = EmuHawk.QuickBmpFile.INSTANCE;
 
 		private IRetroAchievements RA { get; set; }
 

@@ -34,7 +34,7 @@ namespace BizHawk.Common
 		{
 			var (dir, filename) = path.SplitPathToDirAndFile();
 			_ = dir ?? throw new InvalidOperationException();
-			if (!filename.StartsWith("biz-"))
+			if (!filename.StartsWith("biz-", StringComparison.Ordinal))
 			{
 				throw new InvalidOperationException();
 			}

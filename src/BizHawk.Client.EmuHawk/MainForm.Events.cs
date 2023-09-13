@@ -6,8 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Bizware.DirectX;
-using BizHawk.Bizware.OpenTK3;
+using BizHawk.Bizware.Audio;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -35,6 +34,7 @@ using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Faust;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.VB;
@@ -914,8 +914,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			static IEnumerable<string> GetDeviceNamesCallback(ESoundOutputMethod outputMethod) => outputMethod switch
 			{
-				ESoundOutputMethod.DirectSound => IndirectX.GetDSSinkNames(),
-				ESoundOutputMethod.XAudio2 => IndirectX.GetXAudio2SinkNames(),
+				ESoundOutputMethod.DirectSound => DirectSoundSoundOutput.GetDeviceNames(),
+				ESoundOutputMethod.XAudio2 => XAudio2SoundOutput.GetDeviceNames(),
 				ESoundOutputMethod.OpenAL => OpenALSoundOutput.GetDeviceNames(),
 				_ => Enumerable.Empty<string>()
 			};
@@ -2744,6 +2744,9 @@ namespace BizHawk.Client.EmuHawk
 
 			// ChannelFHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.ChannelFHawk, CreateGenericCoreConfigItem<ChannelF>(CoreNames.ChannelFHawk)));
+
+			// Citra
+			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Citra, CreateGenericCoreConfigItem<Citra>(CoreNames.Citra)));
 
 			// ColecoHawk
 			var colecoHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenColecoHawkGamepadSettingsDialog(GetSettingsAdapterFor<ColecoVision>()));

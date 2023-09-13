@@ -114,6 +114,8 @@ namespace BizHawk.Emulation.Common
 					_ctx.InUse = false;
 					_disposed = true;
 				}
+
+				base.Dispose(disposing);
 			}
 
 			public override bool CanRead
@@ -286,6 +288,8 @@ namespace BizHawk.Emulation.Common
 					_ctx.InUse = false;
 					_disposed = true;
 				}
+
+				base.Dispose(disposing);
 			}
 
 			public override bool CanRead

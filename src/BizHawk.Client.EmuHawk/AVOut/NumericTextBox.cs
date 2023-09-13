@@ -23,15 +23,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// Digits are OK
 			}
-			else if (keyInput.Equals(decimalSeparator) && AllowDecimal)
+			else if (keyInput.Equals(decimalSeparator, System.StringComparison.Ordinal) && AllowDecimal)
 			{
 				// Decimal separator is OK
 			}
-			else if (keyInput.Equals(negativeSign) && AllowNegative)
+			else if (keyInput.Equals(negativeSign, System.StringComparison.Ordinal) && AllowNegative)
 			{
 				// Negative is OK
 			}
-			else if (keyInput.Equals(groupSeparator))
+			else if (keyInput.Equals(groupSeparator, System.StringComparison.Ordinal))
 			{
 				// group separator is ok
 			}

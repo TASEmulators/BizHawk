@@ -2,7 +2,6 @@
 
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using System;
 using System.Runtime.CompilerServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
@@ -660,7 +659,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (reg_2000.obj_size_16)
 						{
 							int bank = (patternNumber & 1) << 12;
-							patternNumber = patternNumber & ~1;
+							patternNumber &= ~1;
 							patternNumber |= (line >> 3) & 1;
 							patternAddress = (patternNumber << 4) | bank;
 						}
@@ -869,7 +868,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								if (reg_2000.obj_size_16)
 								{
 									int bank = (patternNumber & 1) << 12;
-									patternNumber = patternNumber & ~1;
+									patternNumber &= ~1;
 									patternNumber |= (line >> 3) & 1;
 									patternAddress = (patternNumber << 4) | bank;
 								}

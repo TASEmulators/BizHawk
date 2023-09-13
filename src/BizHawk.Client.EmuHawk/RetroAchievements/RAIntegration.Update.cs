@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -46,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static bool DownloadDll(string url)
 		{
-			if (url.StartsWith("http:"))
+			if (url.StartsWithOrdinal("http:"))
 			{
 				// force https
 				url = url.Replace("http:", "https:");

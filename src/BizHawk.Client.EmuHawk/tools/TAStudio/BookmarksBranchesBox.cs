@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -152,6 +151,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		// used to capture a reserved state immediately on branch creation
+		// while also not doing a double state
+		private class BufferedStatable : IStatable
+		{
+			private readonly byte[] _bufferedState;
+
+			public BufferedStatable(byte[] state)
+				=> _bufferedState = state;
+
+			public bool AvoidRewind => true;
+
+			public void SaveStateBinary(BinaryWriter writer)
+				=> writer.Write(_bufferedState);
+
+			public void LoadStateBinary(BinaryReader reader)
+				=> throw new NotImplementedException();
+		}
+
 		/// <summary>
 		/// Add a new branch.
 		/// </summary>
@@ -163,6 +180,7 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.RowCount = Branches.Count;
 			Branches.Current = Branches.Count - 1;
 			Movie.TasSession.UpdateValues(Tastudio.Emulator.Frame, Branches.Current);
+			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, new BufferedStatable(branch.CoreData));
 			BranchView.ScrollToIndex(Branches.Current);
 			BranchView.DeselectAll();
 			Select(Branches.Current, true);
@@ -176,14 +194,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private TasBranch CreateBranch()
 		{
-			return new TasBranch
+			return new()
 			{
 				Frame = Tastudio.Emulator.Frame,
-				CoreData = Tastudio.StatableEmulator.CloneSavestate(),
+				CoreData = Tastudio.Emulator.AsStatable().CloneSavestate(),
 				InputLog = Movie.GetLogEntries().Clone(),
 				CoreFrameBuffer = MainForm.MakeScreenshotImage(),
 				OSDFrameBuffer = MainForm.CaptureOSD(),
-				ChangeLog = new TasMovieChangeLog(Movie),
+				ChangeLog = new(Movie),
 				TimeStamp = DateTime.Now,
 				Markers = Movie.Markers.DeepClone(),
 				UserText = Movie.Branches.NewBranchText
@@ -199,9 +217,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Movie.LoadBranch(branch);
-			Tastudio.LoadState(new KeyValuePair<int, Stream>(branch.Frame, new MemoryStream(branch.CoreData, false)));
+			Tastudio.LoadState(new(branch.Frame, new MemoryStream(branch.CoreData, false)));
+			// set the controller state to the previous frame for input display purposes
+			int previousFrame = Movie.Emulator.Frame - 1;
+			Tastudio.MovieSession.MovieController.SetFrom(Movie.GetInputState(previousFrame));
+
 			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, Tastudio.Emulator.AsStatable());
-			Tastudio.MainForm.QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), Tastudio.VideoProvider);
+			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), Tastudio.VideoProvider);
 
 			if (Tastudio.Settings.OldControlSchemeForBranches && Tastudio.TasPlaybackBox.RecordingMode)
 				Movie.Truncate(branch.Frame);
@@ -288,7 +310,9 @@ namespace BizHawk.Client.EmuHawk
 			_branchUndo = BranchUndo.Update;
 
 			BranchView.ScrollToIndex(Branches.Current);
-			Branches.Replace(SelectedBranch, CreateBranch());
+			var branch = CreateBranch();
+			Branches.Replace(SelectedBranch, branch);
+			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, new BufferedStatable(branch.CoreData));
 			Tastudio.RefreshDialog();
 			SavedCallback?.Invoke(Branches.Current);
 			Tastudio.MainForm.AddOnScreenMessage($"Saved branch {Branches.Current + 1}");

@@ -342,6 +342,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
+		public bool AvoidRewind => false;
+
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			using var writer = new ReadWriteWrapper(bw.BaseStream, false);

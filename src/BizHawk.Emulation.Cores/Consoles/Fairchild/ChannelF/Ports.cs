@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				default:
 					// possible write to cartridge hardware
-					Cartridge.WritePort(addr, (byte)(value));
+					Cartridge.WritePort(addr, value);
 					break;
 			}
 		}		

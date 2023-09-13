@@ -250,7 +250,7 @@ namespace BizHawk.Client.EmuHawk
 				initFileName: $"{game.FilesystemSafeName()}-{suffix}");
 			if (result is null) return;
 			FileInfo file = new(result);
-			string extension = file.Extension.ToUpper();
+			string extension = file.Extension.ToUpperInvariant();
 			ImageFormat i = extension switch
 			{
 				".BMP" => ImageFormat.Bmp,

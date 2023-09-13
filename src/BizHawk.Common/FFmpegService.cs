@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Threading.Tasks;
+using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Common
 {
@@ -18,7 +19,7 @@ namespace BizHawk.Common
 
 		private const string VERSION = "ffmpeg version 4.4.1";
 
-		public static string FFmpegPath = string.Empty; // always updated in DiscoHawk.Program/EmuHawk.Program
+		public static string FFmpegPath => Path.Combine(PathUtils.DataDirectoryPath, "dll", OSTailoredCode.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
 
 		public static readonly string Url = OSTailoredCode.IsUnixHost ? BIN_HOST_URI_LINUX_X64 : BIN_HOST_URI_WIN_X64;
 

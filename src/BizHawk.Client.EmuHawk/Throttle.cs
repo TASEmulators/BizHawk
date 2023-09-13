@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 				framesToSkip = 0;
 
 				//keep from burning CPU
-				Thread.Sleep(10);
+				Thread.Sleep(15);
 				return;
 			}
 
@@ -139,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly Func<uint, uint> TimeBeginPeriod = OSTailoredCode.IsUnixHost
 			? u => u
-			: (Func<uint, uint>) Win32Imports.timeBeginPeriod;
+			: Win32Imports.timeBeginPeriod;
 
 		private static readonly int tmethod;
 		private static readonly ulong afsfreq;

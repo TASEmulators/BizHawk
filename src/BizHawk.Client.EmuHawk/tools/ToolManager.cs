@@ -85,10 +85,10 @@ namespace BizHawk.Client.EmuHawk
 		// If the form inherits ToolFormBase, it will set base properties such as Tools, Config, etc
 		private void SetBaseProperties(IToolForm form)
 		{
-			if (!(form is FormBase f)) return;
+			if (form is not FormBase f) return;
 
 			f.Config = _config;
-			if (!(form is ToolFormBase tool)) return;
+			if (form is not ToolFormBase tool) return;
 			tool.SetToolFormBaseProps(_displayManager, _inputManager, _owner, _movieSession, this, _game);
 		}
 
@@ -121,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 				_tools.Remove(existingTool);
 			}
 
-			if (!(CreateInstance<T>(toolPath) is T newTool)) return null;
+			if (CreateInstance<T>(toolPath) is not T newTool) return null;
 
 			if (newTool is Form form) form.Owner = _owner;
 			if (!ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool)) return null; //TODO pass `true` for `mayCache` when from EmuHawk assembly
@@ -402,7 +402,7 @@ namespace BizHawk.Client.EmuHawk
 						var converter = TypeDescriptor.GetConverter(prop.PropertyType);
 						val = converter.ConvertFromString(null, CultureInfo.InvariantCulture, str);
 					}
-					else if (!(val is bool) && prop.PropertyType.IsPrimitive)
+					else if (val is not bool && prop.PropertyType.IsPrimitive)
 					{
 						// numeric constants are similarly hosed
 						val = Convert.ChangeType(val, prop.PropertyType, CultureInfo.InvariantCulture);

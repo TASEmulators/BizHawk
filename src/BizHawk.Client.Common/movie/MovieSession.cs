@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -17,20 +18,16 @@ namespace BizHawk.Client.Common
 
 		private IMovie _queuedMovie;
 
-		private readonly IQuickBmpFile _quickBmpFile;
-
 		public MovieSession(
 			IMovieConfig settings,
 			string backDirectory,
 			IDialogParent dialogParent,
-			IQuickBmpFile quickBmpFile,
 			Action pauseCallback,
 			Action modeChangedCallback)
 		{
 			Settings = settings;
 			BackupDirectory = backDirectory;
 			_dialogParent = dialogParent;
-			_quickBmpFile = quickBmpFile;
 			_pauseCallback = pauseCallback
 				?? throw new ArgumentNullException(paramName: nameof(pauseCallback));
 			_modeChangedCallback = modeChangedCallback
@@ -157,7 +154,9 @@ namespace BizHawk.Client.Common
 				}
 				else if (Movie.IsPlayingOrFinished())
 				{
-					LatchInputToLog();
+					// set the controller state to the previous frame for input display purposes
+					int previousFrame = Movie.Emulator.Frame - 1;
+					Movie.Session.MovieController.SetFrom(Movie.GetInputState(previousFrame));
 				}
 				else if (Movie.IsFinished())
 				{
@@ -311,9 +310,9 @@ namespace BizHawk.Client.Common
 		public IMovie Get(string path)
 		{
 			// TODO: change IMovies to take HawkFiles only and not path
-			if (Path.GetExtension(path)?.EndsWith("tasproj") ?? false)
+			if (Path.GetExtension(path)?.EndsWithOrdinal("tasproj") ?? false)
 			{
-				return new TasMovie(this, path, _quickBmpFile);
+				return new TasMovie(this, path);
 			}
 
 			return new Bk2Movie(this, path);

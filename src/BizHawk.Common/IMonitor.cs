@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BizHawk.Common
+﻿namespace BizHawk.Common
 {
 	public interface IMonitor
 	{

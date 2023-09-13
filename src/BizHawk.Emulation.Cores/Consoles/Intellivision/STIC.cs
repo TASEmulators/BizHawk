@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 			else if (reg < 0x28)
 			{
-				value = (ushort)(0x3FFF);
+				value = 0x3FFF;
 			}
 			else if (reg < 0x2D)
 			{
@@ -148,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 			else if (reg < 0x30)
 			{
-				value = (ushort)(0x3FFF);
+				value = 0x3FFF;
 			}
 			else if (reg < 0x33)
 			{
@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 			else if (reg < 0x40)
 			{
-				value = (ushort)(0x3FFF);
+				value = 0x3FFF;
 			}
 			Register[reg] = value;
 

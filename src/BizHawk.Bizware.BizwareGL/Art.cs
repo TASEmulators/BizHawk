@@ -5,7 +5,7 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public class Art
 	{
-		//bleh, didnt mean to have this here, but I need it now
+		// bleh, didnt mean to have this here, but I need it now
 		public Art(Texture2d tex)
 		{
 			BaseTexture = tex;

@@ -281,7 +281,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			long found = -1;
 
-			var search = value.Replace(" ", "").ToUpper();
+			var search = value.Replace(" ", "").ToUpperInvariant();
 			if (string.IsNullOrEmpty(search))
 			{
 				return;
@@ -341,7 +341,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			long found = -1;
 
-			var search = value.Replace(" ", "").ToUpper();
+			var search = value.Replace(" ", "").ToUpperInvariant();
 			if (string.IsNullOrEmpty(search))
 			{
 				return;
@@ -1374,7 +1374,7 @@ namespace BizHawk.Client.EmuHawk
 			// and add HighlightedAddress if present
 			if (_highlightedAddress.HasValue)
 			{
-				addresses[addresses.Length - 1] = _highlightedAddress.Value;
+				addresses[^1] = _highlightedAddress.Value;
 			}
 
 			// these need to be sorted. it's not just for HighlightedAddress, _secondaryHighlightedAddresses can even be jumbled
@@ -2224,12 +2224,12 @@ namespace BizHawk.Client.EmuHawk
 					{
 						ushort hi = _domain.PeekUshort(((addr+(i<<3)+(j<<1)     )^0x0), bigEndian);
 						ushort lo = _domain.PeekUshort(((addr+(i<<3)+(j<<1) + 32)^0x0), bigEndian);
-						matVals[i,j] = (int)(((hi << 16) | lo)) / 65536.0f;
+						matVals[i,j] = ((hi << 16) | lo) / 65536.0f;
 					}
 			}
 
 #if false // if needed
-			DialogController.ShowMessageBox(new SlimDX.Matrix {
+			DialogController.ShowMessageBox(new System.Numerics.Matrix4x4() {
 				M11 = matVals[0, 0], M12 = matVals[0, 1], M13 = matVals[0, 2], M14 = matVals[0, 3],
 				M21 = matVals[1, 0], M22 = matVals[1, 1], M23 = matVals[1, 2], M24 = matVals[1, 3],
 				M31 = matVals[2, 0], M32 = matVals[2, 1], M33 = matVals[2, 2], M34 = matVals[2, 3],

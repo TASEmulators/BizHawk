@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -78,7 +79,7 @@ namespace BizHawk.Client.Common
 			string line;
 			while ((line = sr.ReadLine()) != null)
 			{
-				if (line.StartsWith("---"))
+				if (line.StartsWithOrdinal("---"))
 				{
 					Add(LuaFile.SeparatorInstance);
 				}

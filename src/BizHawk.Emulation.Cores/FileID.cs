@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Cores
 			string ext = p.Extension;
 			if(ext != null)
 			{
-				ext = ext.TrimStart('.').ToUpper();
+				ext = ext.TrimStart('.').ToUpperInvariant();
 				job.Extension = ext;
 			}
 

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using System.Numerics;
 
 namespace BizHawk.Bizware.BizwareGL
 {
@@ -9,7 +11,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		void Begin();
 
-		void Begin(System.Drawing.Size size);
+		void Begin(Size size);
 
 		/// <summary>
 		/// begin rendering, initializing viewport and projections to the given dimensions
@@ -51,7 +53,6 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		void Draw(Texture2d tex, float x, float y);
 
-
 		/// <summary>
 		/// draws the specified Art resource with the given flip flags
 		/// </summary>
@@ -74,11 +75,18 @@ namespace BizHawk.Bizware.BizwareGL
 		void Flush();
 
 		bool IsActive { get; }
+
 		MatrixStack Modelview { get; set; }
+
 		IGL Owner { get; }
+
 		MatrixStack Projection { get; set; }
+
 		void RectFill(float x, float y, float w, float h);
-		void SetBlendState(IBlendState rsBlend);
+
+		void EnableBlending();
+
+		void DisableBlending();
 
 		/// <summary>
 		/// Sets the specified corner color (for the gradient effect)
@@ -96,7 +104,9 @@ namespace BizHawk.Bizware.BizwareGL
 		/// Restores the pipeline to the default
 		/// </summary>
 		void SetDefaultPipeline();
-		void SetModulateColor(System.Drawing.Color color);
+
+		void SetModulateColor(Color color);
+
 		void SetModulateColorWhite();
 
 		/// <summary>

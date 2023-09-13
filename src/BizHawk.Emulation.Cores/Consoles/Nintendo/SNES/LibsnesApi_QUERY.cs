@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				_comm->id = (uint)id;
 				_comm->addr = addr;
-				_comm->value = (byte)val;
+				_comm->value = val;
 				_core.Message(eMessage.eMessage_QUERY_poke);
 			}
 		}

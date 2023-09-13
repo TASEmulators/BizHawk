@@ -18,14 +18,11 @@ namespace BizHawk.Client.Common
 		private readonly IVideoProvider _videoProvider;
 		private readonly IMovieSession _movieSession;
 
-		private readonly IQuickBmpFile _quickBmpFile;
-
 		private readonly IDictionary<string, object> _userBag;
 
 		public SavestateFile(
 			IEmulator emulator,
 			IMovieSession movieSession,
-			IQuickBmpFile quickBmpFile,
 			IDictionary<string, object> userBag)
 		{
 			if (!emulator.HasSavestates())
@@ -41,7 +38,6 @@ namespace BizHawk.Client.Common
 			}
 
 			_movieSession = movieSession;
-			_quickBmpFile = quickBmpFile;
 			_userBag = userBag;
 		}
 
@@ -88,7 +84,7 @@ namespace BizHawk.Client.Common
 
 					using (new SimpleTime("Save Framebuffer"))
 					{
-						bs.PutLump(BinaryStateLump.Framebuffer, s => _quickBmpFile.Save(_videoProvider, s, outWidth, outHeight));
+						bs.PutLump(BinaryStateLump.Framebuffer, s => QuickBmpFile.Save(_videoProvider, s, outWidth, outHeight));
 					}
 				}
 			}
@@ -168,7 +164,7 @@ namespace BizHawk.Client.Common
 
 			if (_videoProvider != null)
 			{
-				bl.GetLump(BinaryStateLump.Framebuffer, false, br => PopulateFramebuffer(br, _videoProvider, _quickBmpFile));
+				bl.GetLump(BinaryStateLump.Framebuffer, false, br => PopulateFramebuffer(br, _videoProvider));
 			}
 
 			string userData = "";
@@ -199,13 +195,13 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		private static void PopulateFramebuffer(BinaryReader br, IVideoProvider videoProvider, IQuickBmpFile quickBmpFile)
+		private static void PopulateFramebuffer(BinaryReader br, IVideoProvider videoProvider)
 		{
 			try
 			{
 				using (new SimpleTime("Load Framebuffer"))
 				{
-					quickBmpFile.Load(videoProvider, br.BaseStream);
+					QuickBmpFile.Load(videoProvider, br.BaseStream);
 				}
 			}
 			catch

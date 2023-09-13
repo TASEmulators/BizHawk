@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common.movie.import
 			uint rerecordCount = r.ReadUInt32();
 			Result.Movie.Rerecords = rerecordCount;
 
-			
+
 			// 0010: 4-byte little endian flag: begin from reset?
 			uint reset = r.ReadUInt32();
 			if (reset == 0)
@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			// 00e4-00f3: binary: rom MD5 digest
 			byte[] md5 = r.ReadBytes(16);
-			Result.Movie.HeaderEntries[Md5] = md5.BytesToHexString().ToLower();
+			Result.Movie.HeaderEntries[HeaderKeys.Md5] = md5.BytesToHexString().ToLowerInvariant();
 
 			var ss = new SMS.SmsSyncSettings();
 			var cd = new SMSControllerDeck(ss.Port1, ss.Port2, isGameGear, ss.UseKeyboard);

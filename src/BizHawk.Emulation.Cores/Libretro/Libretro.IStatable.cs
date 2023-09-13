@@ -21,6 +21,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 			_stateBuf = new byte[maxSize];
 		}
 
+		public bool AvoidRewind => false;
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			var len = checked((int)_api.retro_serialize_size());

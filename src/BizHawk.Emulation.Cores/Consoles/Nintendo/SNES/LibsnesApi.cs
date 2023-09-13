@@ -364,10 +364,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			private string _getAscii(sbyte* ptr)
 			{
 				int len = 0;
-				sbyte* junko = (sbyte*)ptr;
+				sbyte* junko = ptr;
 				while (junko[len] != 0) len++;
 
-				return new string((sbyte*)str, 0, len, System.Text.Encoding.ASCII);
+				return new string(str, 0, len, System.Text.Encoding.ASCII);
 			}
 		}
 
@@ -427,6 +427,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 			_readonlyFiles.Clear();
 		}
+
+		public bool AvoidRewind => false;
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{

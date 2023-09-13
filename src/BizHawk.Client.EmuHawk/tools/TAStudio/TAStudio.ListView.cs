@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Collections.Generic;
-
+using System.Globalization;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
@@ -356,7 +356,7 @@ namespace BizHawk.Client.EmuHawk
 						if (column.Type == ColumnType.Axis)
 						{
 							// feos: this could be cached, but I don't notice any slowdown this way either
-							if (text == ((float) ControllerType.Axes[columnName].Neutral).ToString())
+							if (text == ((float) ControllerType.Axes[columnName].Neutral).ToString(NumberFormatInfo.InvariantInfo))
 							{
 								text = "";
 							}
@@ -688,7 +688,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (frame >= CurrentTasMovie.InputLogLength)
 						{
-							CurrentTasMovie.SetAxisState(frame, buttonName, 0);
+							CurrentTasMovie.SetAxisState(frame, buttonName, ControllerType.Axes[buttonName].Neutral);
 							RefreshDialog();
 						}
 
@@ -1297,12 +1297,12 @@ namespace BizHawk.Client.EmuHawk
 			if (e.KeyCode == Keys.Right)
 			{
 				value = rMax;
-				_axisTypedValue = value.ToString();
+				_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 			}
 			else if (e.KeyCode == Keys.Left)
 			{
 				value = rMin;
-				_axisTypedValue = value.ToString();
+				_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 			}
 			else if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
 			{
@@ -1325,17 +1325,17 @@ namespace BizHawk.Client.EmuHawk
 			else if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
 			{
 				_axisTypedValue = _axisTypedValue.StartsWith('-')
-					? _axisTypedValue.Substring(1)
+					? _axisTypedValue[1..]
 					: $"-{_axisTypedValue}";
 			}
 			else if (e.KeyCode == Keys.Back)
 			{
 				if (_axisTypedValue == "") // Very first key press is backspace?
 				{
-					_axisTypedValue = value.ToString();
+					_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 				}
 
-				_axisTypedValue = _axisTypedValue.Substring(0, _axisTypedValue.Length - 1);
+				_axisTypedValue = _axisTypedValue[..^1];
 				if (_axisTypedValue == "" || _axisTypedValue == "-")
 				{
 					value = 0f;
@@ -1384,7 +1384,7 @@ namespace BizHawk.Client.EmuHawk
 				value += changeBy;
 				if (changeBy != 0)
 				{
-					_axisTypedValue = value.ToString();
+					_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 				}
 			}
 
@@ -1398,13 +1398,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (prevTyped != "")
 					{
-						value = 0f;
+						value = ControllerType.Axes[_axisEditColumn].Neutral;
 						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, (int) value);
 					}
 				}
 				else
 				{
-					if (float.TryParse(_axisTypedValue, out value)) // String "-" can't be parsed.
+					if (float.TryParse(_axisTypedValue, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out value)) // String "-" can't be parsed.
 					{
 						if (value > rMax)
 						{
@@ -1415,7 +1415,7 @@ namespace BizHawk.Client.EmuHawk
 							value = rMin;
 						}
 
-						_axisTypedValue = value.ToString();
+						_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, (int) value);
 					}
 				}

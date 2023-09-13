@@ -20,6 +20,12 @@
 		/// </summary>
 		string GetRetroSystemPath(IGameInfo game);
 
+		/// <summary>
+		/// produces a 'user' path for a given system id
+		/// can produce an empty temp folder, suitable for movies
+		/// </summary>
+		string GetUserPath(string sysID, bool temp);
+
 		/// <param name="msg">warning message to show on failure</param>
 		/// <returns><see langword="null"/> iff failed</returns>
 		byte[]? GetFirmware(FirmwareID id, string? msg = null);

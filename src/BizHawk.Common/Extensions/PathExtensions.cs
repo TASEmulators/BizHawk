@@ -14,14 +14,14 @@ namespace BizHawk.Common.PathExtensions
 		public static bool IsSubfolderOf(this string? childPath, string? parentPath)
 		{
 			if (childPath == null || parentPath == null) return false;
-			if (childPath == parentPath || childPath.StartsWith($"{parentPath}{Path.DirectorySeparatorChar}")) return true;
+			if (childPath == parentPath || childPath.StartsWithOrdinal($"{parentPath}{Path.DirectorySeparatorChar}")) return true;
 
 			if (OSTailoredCode.IsUnixHost)
 			{
 #if true
 				var c = OSTailoredCode.SimpleSubshell("realpath", $"-Lm \"{childPath}\"", $"invalid path {childPath} or missing realpath binary");
 				var p = OSTailoredCode.SimpleSubshell("realpath", $"-Lm \"{parentPath}\"", $"invalid path {parentPath} or missing realpath binary");
-				return c == p || c.StartsWith($"{p}/");
+				return c == p || c.StartsWithOrdinal($"{p}/");
 #else // written for Unix port but may be useful for Windows when moving to .NET Core
 				var parentUriPath = new Uri(parentPath.TrimEnd('.')).AbsolutePath.TrimEnd('/');
 				try
@@ -72,7 +72,7 @@ namespace BizHawk.Common.PathExtensions
 			if (OSTailoredCode.IsUnixHost)
 			{
 				var realpathOutput = OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{fromPath}\" \"{toPath}\"", $"invalid path {toPath}, invalid path {fromPath}, or missing realpath binary");
-				return !realpathOutput.StartsWith("../") && realpathOutput != "." && realpathOutput != ".." ? $"./{realpathOutput}" : realpathOutput;
+				return !realpathOutput.StartsWithOrdinal("../") && realpathOutput != "." && realpathOutput != ".." ? $"./{realpathOutput}" : realpathOutput;
 			}
 
 			//TODO merge this with the Windows implementation in MakeRelativeTo
@@ -126,7 +126,7 @@ namespace BizHawk.Common.PathExtensions
 			if (!OSTailoredCode.IsUnixHost) return absolutePath.Replace(basePath, ".").RemoveSuffix(Path.DirectorySeparatorChar);
 #if true // Unix implementation using realpath
 			var realpathOutput = OSTailoredCode.SimpleSubshell("realpath", $"--relative-base=\"{basePath}\" \"{absolutePath}\"", $"invalid path {absolutePath}, invalid path {basePath}, or missing realpath binary");
-			return !realpathOutput.StartsWith("../") && realpathOutput != "." && realpathOutput != ".." ? $"./{realpathOutput}" : realpathOutput;
+			return !realpathOutput.StartsWithOrdinal("../") && realpathOutput != "." && realpathOutput != ".." ? $"./{realpathOutput}" : realpathOutput;
 #else // for some reason there were two Unix implementations in the codebase before me? --yoshi
 			// alt. #1
 			if (!IsSubfolder(basePath, absolutePath)) return OSTailoredCode.IsUnixHost && basePath.TrimEnd('.') == $"{absolutePath}/" ? "." : absolutePath;

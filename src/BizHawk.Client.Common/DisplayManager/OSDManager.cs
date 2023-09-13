@@ -3,8 +3,6 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Collections.Generic;
-
-using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -34,19 +32,13 @@ namespace BizHawk.Client.Common
 		}
 
 		public string Fps { get; set; }
-		public StringRenderer MessageFont;
-
-		public void Begin(IBlitter blitter)
-		{
-			MessageFont = blitter.GetFontType(nameof(MessageFont));
-		}
 
 		public Color FixedMessagesColor => Color.FromArgb(_config.MessagesColor);
 		public Color FixedAlertMessageColor => Color.FromArgb(_config.AlertMessageColor);
 
 		private PointF GetCoordinates(IBlitter g, MessagePosition position, string message)
 		{
-			var size = g.MeasureString(message, MessageFont);
+			var size = g.MeasureString(message);
 			float x = position.Anchor.IsLeft()
 				? position.X
 				: g.ClipBounds.Width - position.X - size.Width;
@@ -132,7 +124,7 @@ namespace BizHawk.Client.Common
 		{
 			var point = GetCoordinates(g, _config.Messages, message.Message);
 			var y = point.Y + yOffset; // TODO: clean me up
-			g.DrawString(message.Message, MessageFont, FixedMessagesColor, point.X, y);
+			g.DrawString(message.Message, FixedMessagesColor, point.X, y);
 		}
 
 		public void DrawMessages(IBlitter g)
@@ -173,7 +165,7 @@ namespace BizHawk.Client.Common
 				{
 					var point = GetCoordinates(g, text.Position, text.Message);
 					if (point.Y >= g.ClipBounds.Height) continue; // simple optimisation; don't bother drawing off-screen
-					g.DrawString(text.Message, MessageFont, text.ForeColor, point.X, point.Y);
+					g.DrawString(text.Message, text.ForeColor, point.X, point.Y);
 				}
 				catch (Exception)
 				{
@@ -245,7 +237,7 @@ namespace BizHawk.Client.Common
 
 		private void DrawOsdMessage(IBlitter g, string message, Color color, float x, float y)
 		{
-			g.DrawString(message, MessageFont, color, x, y);
+			g.DrawString(message, color, x, y);
 		}
 
 		/// <summary>
@@ -275,7 +267,7 @@ namespace BizHawk.Client.Common
 					var input = InputStrMovie();
 					var point = GetCoordinates(g, _config.InputDisplay, input);
 					Color c = Color.FromArgb(_config.MovieInput);
-					g.DrawString(input, MessageFont, c, point.X, point.Y);
+					g.DrawString(input, c, point.X, point.Y);
 				}
 
 				if (!moviePlaying) // TODO: message config -- allow setting of "mixed", and "auto"
@@ -294,14 +286,14 @@ namespace BizHawk.Client.Common
 					// first display previous frame's input.
 					// note: that's only available in case we're working on a movie
 					var previousStr = InputPrevious();
-					g.DrawString(previousStr, MessageFont, previousColor, point.X, point.Y);
+					g.DrawString(previousStr, previousColor, point.X, point.Y);
 
 					// next, draw the immediate input.
 					// that is, whatever is being held down interactively right this moment even if the game is paused
 					// this includes things held down due to autohold or autofire
 					// I know, this is all really confusing
 					var immediate = InputStrImmediate();
-					g.DrawString(immediate, MessageFont, immediateColor, point.X, point.Y);
+					g.DrawString(immediate, immediateColor, point.X, point.Y);
 
 					// next draw anything that's pressed because it's sticky.
 					// this applies to autofire and autohold both. somehow. I don't understand it.
@@ -310,11 +302,11 @@ namespace BizHawk.Client.Common
 					// so we make an AND adapter and combine it using immediate & sticky
 					// (adapter creation moved to InputManager)
 					var autoString = MakeStringFor(_inputManager.WeirdStickyControllerForInputDisplay, cache: true);
-					g.DrawString(autoString, MessageFont, autoColor, point.X, point.Y);
+					g.DrawString(autoString, autoColor, point.X, point.Y);
 
 					//recolor everything that's changed from the previous input
 					var immediateOverlay = MakeIntersectImmediatePrevious();
-					g.DrawString(immediateOverlay, MessageFont, changedColor, point.X, point.Y);
+					g.DrawString(immediateOverlay, changedColor, point.X, point.Y);
 				}
 			}
 
@@ -357,7 +349,7 @@ namespace BizHawk.Client.Common
 
 				var message = sb.ToString();
 				var point = GetCoordinates(g, _config.Autohold, message);
-				g.DrawString(message, MessageFont, Color.White, point.X, point.Y);
+				g.DrawString(message, Color.White, point.X, point.Y);
 			}
 
 			if (_movieSession.Movie.IsActive() && _config.DisplaySubtitles)

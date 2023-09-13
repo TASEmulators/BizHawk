@@ -67,8 +67,7 @@ namespace BizHawk.BizInvoke
 
 				foreach (var a in methods)
 				{
-					MethodBuilder unused;
-					var delegateType = BizInvokeUtilities.CreateDelegateType(a.Info, a.Attr!.CallingConvention, typeBuilder, out unused).CreateType()!;
+					var delegateType = BizInvokeUtilities.CreateDelegateType(a.Info, a.Attr!.CallingConvention, typeBuilder, out _).CreateType()!;
 					DelegateTypes.Add(new StoredDelegateInfo(a.Info, delegateType, a.Attr.EntryPoint ?? a.Info.Name));
 				}
 				StorageType = typeBuilder.CreateType()!;

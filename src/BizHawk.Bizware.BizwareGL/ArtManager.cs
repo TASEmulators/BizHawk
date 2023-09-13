@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BizHawk.Bizware.BizwareGL
 {
@@ -18,7 +19,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void Dispose()
 		{
-			//todo
+			// todo
 		}
 
 		/// <summary>
@@ -27,7 +28,11 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Open()
 		{
 			AssertIsOpen(false);
-			if (IsClosedForever) throw new InvalidOperationException($"{nameof(ArtManager)} instance has been closed forever!");
+			if (IsClosedForever)
+			{
+				throw new InvalidOperationException($"{nameof(ArtManager)} instance has been closed forever!");
+			}
+
 			IsOpened = true;
 		}
 
@@ -52,7 +57,7 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			AssertIsOpen(true);
 
-			Art a = new Art(this);
+			var a = new Art(this);
 			ArtLooseTextureAssociation.Add((a, tex));
 			ManagedArts.Add(a);
 
@@ -72,16 +77,16 @@ namespace BizHawk.Bizware.BizwareGL
 
 			// first, cleanup old stuff
 			foreach (var tex in ManagedTextures)
+			{
 				tex.Dispose();
+			}
 			ManagedTextures.Clear();
 
 			// prepare input for atlas process and perform atlas
 			// add 2 extra pixels for padding on all sides
-			var atlasItems = new List<TexAtlas.RectItem>();
-			foreach (var kvp in ArtLooseTextureAssociation)
-			{
-				atlasItems.Add(new TexAtlas.RectItem(kvp.Bitmap.Width + 2, kvp.Bitmap.Height + 2, kvp));
-			}
+			var atlasItems = ArtLooseTextureAssociation
+				.Select(kvp => new TexAtlas.RectItem(kvp.Bitmap.Width + 2, kvp.Bitmap.Height + 2, kvp))
+				.ToList();
 			var results = TexAtlas.PackAtlas(atlasItems);
 
 			// this isn't supported yet:
@@ -89,27 +94,28 @@ namespace BizHawk.Bizware.BizwareGL
 				throw new InvalidOperationException("Art files too big for atlas");
 
 			// prepare the output buffer
-			BitmapBuffer bmpResult = new BitmapBuffer(results[0].Size);
+			var bmpResult = new BitmapBuffer(results[0].Size);
 
 			//for each item, copy it into the output buffer and set the tex parameters on them
-			for (int i = 0; i < atlasItems.Count; i++)
+			for (var i = 0; i < atlasItems.Count; i++)
 			{
 				var item = results[0].Items[i];
 				var (art, bitmap) = ((Art, BitmapBuffer)) item.Item;
-				int w = bitmap.Width;
-				int h = bitmap.Height;
-				int dx = item.X + 1;
-				int dy = item.Y + 1;
-				for (int y = 0; y < h; y++)
-					for (int x = 0; x < w; x++)
+				var w = bitmap.Width;
+				var h = bitmap.Height;
+				var dx = item.X + 1;
+				var dy = item.Y + 1;
+				for (var y = 0; y < h; y++)
+				{
+					for (var x = 0; x < w; x++)
 					{
-						int pixel = bitmap.GetPixel(x, y);
+						var pixel = bitmap.GetPixel(x, y);
 						bmpResult.SetPixel(x+dx,y+dy,pixel);
 					}
+				}
 
-				var myDestBitmap = bmpResult;
-				float myDestWidth = (float)myDestBitmap.Width;
-				float myDestHeight = (float)myDestBitmap.Height;
+				var myDestWidth = (float)bmpResult.Width;
+				var myDestHeight = (float)bmpResult.Height;
 
 				art.u0 = dx / myDestWidth;
 				art.v0 = dy / myDestHeight;
@@ -138,7 +144,13 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Throws an exception if the instance is not open
 		/// </summary>
-		private void AssertIsOpen(bool state) { if (IsOpened != state) throw new InvalidOperationException($"{nameof(ArtManager)} instance is not open!"); }
+		private void AssertIsOpen(bool state)
+		{
+			if (IsOpened != state)
+			{
+				throw new InvalidOperationException($"{nameof(ArtManager)} instance is not open!");
+			}
+		}
 
 		public IGL Owner { get; }
 
@@ -153,11 +165,11 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Physical texture resources, which exist after this ArtManager has been closed
 		/// </summary>
-		private readonly List<Texture2d> ManagedTextures = new List<Texture2d>();
+		private readonly List<Texture2d> ManagedTextures = new();
 
 		/// <summary>
 		/// All the Arts managed by this instance
 		/// </summary>
-		private readonly List<Art> ManagedArts = new List<Art>();
+		private readonly List<Art> ManagedArts = new();
 	}
 }

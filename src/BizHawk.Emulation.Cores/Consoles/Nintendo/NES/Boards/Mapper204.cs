@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			_reg1 = addr & 0x6;
 			_reg2 = _reg1 + ((_reg1 == 0x6) ? 0 : (addr & 1));
-			_reg1 = _reg1 + ((_reg1 == 0x6) ? 1 : (addr & 1));
+			_reg1 += ((_reg1 == 0x6) ? 1 : (addr & 1));
 
 			SetMirrorType(addr.Bit(0) ? EMirrorType.Vertical : EMirrorType.Horizontal);
 		}

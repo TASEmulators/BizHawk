@@ -143,7 +143,7 @@ namespace BizHawk.Client.Common
 					nhs.DispBackground = show;
 					Settings = nhs;
 					break;
-				case QuickNES.QuickNESSettings _:
+				case QuickNES.QuickNESSettings:
 					return;
 				default:
 					throw new InvalidOperationException();
@@ -209,7 +209,7 @@ namespace BizHawk.Client.Common
 
 					Settings = nhs;
 					break;
-				case QuickNES.QuickNESSettings _:
+				case QuickNES.QuickNESSettings:
 					return;
 				default:
 					throw new InvalidOperationException();
