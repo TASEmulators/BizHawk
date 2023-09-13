@@ -258,19 +258,19 @@ namespace BizHawk.Client.Common
 
 		[LuaMethod("ws_open", "Opens a websocket and returns the id so that it can be retrieved later. If an id is provided, reconnects to the ")]
 		[LuaMethodExample("local ws_id = comm.ws_open(\"wss://echo.websocket.org\");")]
-		public string WebSocketOpen(string uri, string guid = null, int bufferSize = 1024)
+		public string WebSocketOpen(string uri, string guid = null, int bufferSize = 1024, int maxMessages = 20)
 		{
 			var wsServer = APIs.Comm.WebSockets;
 			var localGuid = guid == null ? new Guid() : Guid.Parse(guid);
 			if (wsServer == null)
 			{
-				Log("WebSocket server is somehow not available");
+				Log("WebSocket server is not available");
 				return null;
 			}
 			if (guid == null)
-				_websockets[localGuid] = wsServer.Open(new Uri(uri),bufferSize);
+				_websockets[localGuid] = wsServer.Open(new Uri(uri),bufferSize, maxMessages);
 			else
-				_websockets[localGuid].Connect(bufferSize);
+				_websockets[localGuid].Connect(bufferSize, maxMessages);
 			return localGuid.ToString();
 		}
 

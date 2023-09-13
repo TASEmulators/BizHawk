@@ -12,7 +12,6 @@ namespace BizHawk.Client.Common
 	public class ClientWebSocketWrapper
 	{
 		private ClientWebSocket? _w;
-		//private Task _receiveTask;
 		
 		private List<string> _receivedMessages;
 
@@ -21,17 +20,15 @@ namespace BizHawk.Client.Common
 		/// <summary>calls <see cref="ClientWebSocket.State"/> getter (unless closed/disposed, then <see cref="WebSocketState.Closed"/> is always returned)</summary>
 		public WebSocketState State => _w?.State ?? WebSocketState.Closed;
 
-		public ClientWebSocketWrapper(Uri uri, int bufferSize)
+		public ClientWebSocketWrapper(Uri uri, int bufferSize, int maxMessages)
 		{
 			_uri = uri;
 			_w = new ClientWebSocket();
 			_receivedMessages = new List<string>();
 			try{
-				Connect(bufferSize).Wait();
+				Connect(bufferSize, maxMessages).Wait();
 			}
-			catch(Exception ex)
-			{
-			}
+			catch(Exception ex){}
 		}
 
 		/// <summary>calls <see cref="ClientWebSocket.CloseAsync"/></summary>
@@ -46,23 +43,25 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>calls <see cref="ClientWebSocket.ReceiveAsync"/></summary>
-		public async Task Receive(int bufferSize){
+		public async Task Receive(int bufferSize, int maxMessages){
 			var buffer = new ArraySegment<byte>(new byte[bufferSize]);
 			while (_w != null && _w.State == WebSocketState.Open)
 			{
 				WebSocketReceiveResult result;
 				result = await _w.ReceiveAsync(buffer, CancellationToken.None);
-				_receivedMessages.Add(Encoding.UTF8.GetString(buffer.Array,0,result.Count));
+				if (maxMessages == 0 || _receivedMessages.length < maxMessages)
+					_receivedMessages.Add(Encoding.UTF8.GetString(buffer.Array,0,result.Count));
 			}
 		}
 
-		public async Task Connect(int bufferSize){
+		public async Task Connect(int bufferSize, int maxMessages){
 			if (_w == null){
 				_w = new ClientWebSocket();
 			}
+			Console.WriteLine(_w.State);
 			if(_w != null && _w.State != WebSocketState.Open){
 				_w.ConnectAsync(_uri, CancellationToken.None).Wait();
-				Receive(bufferSize);
+				Receive(bufferSize, maxMessages);
 			}
 		}
 
