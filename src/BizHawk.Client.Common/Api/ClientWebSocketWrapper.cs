@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 			{
 				WebSocketReceiveResult result;
 				result = await _w.ReceiveAsync(buffer, CancellationToken.None);
-				if (maxMessages == 0 || _receivedMessages.length < maxMessages)
+				if (maxMessages == 0 || _receivedMessages.Count < maxMessages)
 					_receivedMessages.Add(Encoding.UTF8.GetString(buffer.Array,0,result.Count));
 			}
 		}
@@ -58,7 +58,6 @@ namespace BizHawk.Client.Common
 			if (_w == null){
 				_w = new ClientWebSocket();
 			}
-			Console.WriteLine(_w.State);
 			if(_w != null && _w.State != WebSocketState.Open){
 				_w.ConnectAsync(_uri, CancellationToken.None).Wait();
 				Receive(bufferSize, maxMessages);
