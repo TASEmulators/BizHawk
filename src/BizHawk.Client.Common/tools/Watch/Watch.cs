@@ -540,7 +540,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets a value that defined if the current <see cref="Watch"/> is actually a <see cref="SeparatorWatch"/>
 		/// </summary>
-		public bool IsSeparator => this is SeparatorWatch;
+		public bool IsSeparator
+#if true // haven't profiled it but this must be faster --yoshi
+			=> Size is WatchSize.Separator;
+#else
+			=> this is SeparatorWatch;
+#endif
 
 		/// <summary>
 		/// Gets or sets notes for current <see cref="Watch"/>

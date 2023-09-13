@@ -12,7 +12,9 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -85,6 +87,44 @@ namespace BizHawk.Client.EmuHawk
 			MoveTopMenuItem.Image = Resources.MoveTop;
 			MoveBottomMenuItem.Image = Resources.MoveBottom;
 			Icon = ToolIcon;
+
+			ToolStripMenuItemEx deduperMenuItem = new() { Text = "Purge Duplicate Watches" };
+			deduperMenuItem.Click += (_, _) =>
+			{
+				if (!this.ModalMessageBox2(
+					caption: "Purge duplicates?",
+					text: "This will go through each watch starting from the top,\n"
+						+ "removing it if its (domain & addr & size) has been seen before.\n"
+						+ "Neither the endianness nor display type are considered.\n"
+						+ "Overlapping watches also aren't considered.",
+					useOKCancel: true))
+				{
+					return;
+				}
+				var seen = new SortedList<(string Domain, long Addr)>[] { null, new(), new(), null, new() };
+				//TODO check if it's faster to build up a toRemove list and then batch Remove (by ref) at end
+				var i = 0;
+				Watch w;
+				while (i < _watches.Count)
+				{
+					w = _watches[i];
+					if (w.IsSeparator)
+					{
+						i++;
+						continue;
+					}
+					var l = seen[(int) w.Size];
+					var tuple = (w.Domain.Name, w.Address);
+					if (l.Contains(tuple))
+					{
+						_watches.RemoveAt(i);
+						continue;
+					}
+					l.Add(tuple);
+					i++;
+				}
+			};
+			WatchesSubMenu.DropDownItems.Insert(11, deduperMenuItem);
 
 			Settings = new RamWatchSettings();
 
@@ -411,7 +451,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (duplicate)
 					{
-						_watches.AddRange(we.Watches);
+						_watches.InsertRange(WatchListView.SelectionEndIndex!.Value + 1, we.Watches); //TODO should be able to reduce the number of enumerations of selected rows if necessary --yoshi
 						WatchListView.RowCount = _watches.Count;
 						UpdateWatchCount();
 					}

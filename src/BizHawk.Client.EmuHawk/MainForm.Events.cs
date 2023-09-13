@@ -1581,6 +1581,9 @@ namespace BizHawk.Client.EmuHawk
 		private DialogResult OpenSameBoySettingsDialog()
 			=> OpenGenericCoreConfigFor<Sameboy>(CoreNames.Sameboy + " Settings");
 
+		private DialogResult OpenSubGBHawkSettingsDialog()
+			=> OpenGenericCoreConfigFor<SubGBHawk>(CoreNames.SubGbHawk + " Settings");
+
 		private void GbCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			_ = Emulator switch
@@ -1588,6 +1591,7 @@ namespace BizHawk.Client.EmuHawk
 				Gameboy => OpenGambatteSettingsDialog(GetSettingsAdapterForLoadedCore<Gameboy>()),
 				GBHawk => OpenGBHawkSettingsDialog(),
 				Sameboy => OpenSameBoySettingsDialog(),
+				SubGBHawk => OpenSubGBHawkSettingsDialog(),
 				_ => DialogResult.None
 			};
 		}
@@ -2941,7 +2945,7 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Snes9X, CreateGenericCoreConfigItem<Snes9x>(CoreNames.Snes9X)));
 
 			// SubGBHawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.SubGbHawk, CreateGenericCoreConfigItem<SubGBHawk>(CoreNames.SubGbHawk)));
+			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.SubGbHawk, CreateSettingsItem("Settings...", (_, _) => OpenSubGBHawkSettingsDialog())));
 
 			// SubNESHawk
 			var subNESHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterFor<SubNESHawk>()));
