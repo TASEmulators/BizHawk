@@ -169,8 +169,6 @@ namespace BizHawk.Client.Common
 
 		public void CallSaveStateEvent(string name)
 		{
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
-
 			try
 			{
 				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_SAVESTATE).ToList())
@@ -186,7 +184,7 @@ namespace BizHawk.Client.Common
 
 		public void CallLoadStateEvent(string name)
 		{
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
+			GuiAPI.BeginFrame();
 
 			try
 			{
@@ -199,13 +197,15 @@ namespace BizHawk.Client.Common
 			{
 				LogToLuaConsole($"error running function attached by lua function event.onloadstate\nError message: {e.Message}");
 			}
+
+			GuiAPI.EndFrame();
 		}
 
 		public void CallFrameBeforeEvent()
 		{
 			if (IsUpdateSupressed) return;
 
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
+			GuiAPI.BeginFrame();
 
 			try
 			{
@@ -224,8 +224,6 @@ namespace BizHawk.Client.Common
 		{
 			if (IsUpdateSupressed) return;
 
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
-
 			try
 			{
 				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_POSTFRAME).ToList())
@@ -237,12 +235,12 @@ namespace BizHawk.Client.Common
 			{
 				LogToLuaConsole($"error running function attached by lua function event.onframeend\nError message: {e.Message}");
 			}
+
+			GuiAPI.EndFrame();
 		}
 
 		public void CallExitEvent(LuaFile lf)
 		{
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
-
 			foreach (var exitCallback in RegisteredFunctions
 				.Where(l => l.Event == NamedLuaFunction.EVENT_TYPE_ENGINESTOP
 					&& (l.LuaFile.Path == lf.Path || ReferenceEquals(l.LuaFile.Thread, lf.Thread)))
@@ -312,7 +310,6 @@ namespace BizHawk.Client.Common
 		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
 		{
 			_currThread = lf.Thread;
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
 
 			try
 			{

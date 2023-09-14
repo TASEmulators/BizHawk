@@ -53,14 +53,19 @@ namespace BizHawk.Client.Common
 
 		private DisplaySurfaceID? _usingSurfaceID = null;
 
-		public bool EnableLuaAutolockHack = false;
-
 		public bool HasGUISurface => _GUISurface != null;
+
+		private bool _frameStarted = false;
 
 		public GuiApi(Action<string> logCallback, DisplayManagerBase displayManager)
 		{
 			LogCallback = logCallback;
 			_displayManager = displayManager;
+
+			// These will set the drawing surfaces and display them.
+			// This allows drawing and seeing results without any actual frames occurring.
+			BeginFrame();
+			EndFrame();
 		}
 
 		private SolidBrush GetBrush(Color color)
@@ -85,68 +90,19 @@ namespace BizHawk.Client.Common
 		private IDisplaySurface GetRelevantSurface(DisplaySurfaceID? surfaceID)
 		{
 			var nnID = surfaceID ?? _usingSurfaceID ?? throw new Exception();
-			void ThisIsTheLuaAutolockHack()
-			{
-				try
-				{
-					UnlockSurface(nnID);
-					LockSurface(nnID);
-				}
-				catch (InvalidOperationException ex)
-				{
-					LogCallback(ex.ToString());
-				}
-			}
 			switch (nnID)
 			{
 				case DisplaySurfaceID.EmuCore:
-					if (_GUISurface == null && EnableLuaAutolockHack) ThisIsTheLuaAutolockHack();
 					return _GUISurface;
 				case DisplaySurfaceID.Client:
-					if (_clientSurface == null && EnableLuaAutolockHack) ThisIsTheLuaAutolockHack();
 					return _clientSurface;
 				default:
 					throw new Exception();
 			}
 		}
 
-		private void LockSurface(DisplaySurfaceID surfaceID)
-		{
-			switch (surfaceID)
-			{
-				case DisplaySurfaceID.EmuCore:
-					if (_GUISurface != null) throw new InvalidOperationException("attempt to lock surface without unlocking previous");
-					_GUISurface = _displayManager.LockApiHawkSurface(surfaceID, clear: true);
-					break;
-				case DisplaySurfaceID.Client:
-					if (_clientSurface != null) throw new InvalidOperationException("attempt to lock surface without unlocking previous");
-					_clientSurface = _displayManager.LockApiHawkSurface(surfaceID, clear: true);
-					break;
-				default:
-					throw new ArgumentException(message: "not a valid enum member", paramName: nameof(surfaceID));
-			}
-		}
-
-		private void UnlockSurface(DisplaySurfaceID surfaceID)
-		{
-			switch (surfaceID)
-			{
-				case DisplaySurfaceID.EmuCore:
-					if (_GUISurface != null) _displayManager.UnlockApiHawkSurface(_GUISurface);
-					_GUISurface = null;
-					break;
-				case DisplaySurfaceID.Client:
-					if (_clientSurface != null) _displayManager.UnlockApiHawkSurface(_clientSurface);
-					_clientSurface = null;
-					break;
-				default:
-					throw new ArgumentException(message: "not a valid enum member", paramName: nameof(surfaceID));
-			}
-		}
-
 		public void WithSurface(DisplaySurfaceID surfaceID, Action drawingCallsFunc)
 		{
-			LockSurface(surfaceID);
 			_usingSurfaceID = surfaceID;
 			try
 			{
@@ -155,26 +111,35 @@ namespace BizHawk.Client.Common
 			finally
 			{
 				_usingSurfaceID = null;
-				UnlockSurface(surfaceID);
 			}
 		}
 
-		public readonly ref struct LuaAutoUnlockHack
+		/// <summary>
+		/// Starts drawing on new surfaces and clears them, but does not display the new surfaces.
+		/// Use this with EndFrame for double-buffered display (avoid flickering during drawing operations)
+		/// </summary>
+		public void BeginFrame()
 		{
-			private readonly GuiApi _guiApi;
-
-			internal LuaAutoUnlockHack(GuiApi guiApi)
-				=> _guiApi = guiApi;
-
-			public void Dispose()
+			// I think the "Lock" stuff is mis-named. All it actually does it track what's been "locked" and use that as the current surface. (and disallow re-locking or re-unlocking)
+			// Anyway, calling LockSurface will return a cleared surface we can draw on without displaying it. --SuuperW
+			_GUISurface = _displayManager.LockApiHawkSurface(DisplaySurfaceID.EmuCore, true);
+			_clientSurface = _displayManager.LockApiHawkSurface(DisplaySurfaceID.Client, true);
+			_frameStarted = true;
+		}
+		/// <summary>
+		/// Displays the current drawing surfaces.
+		/// More drawing can still happen on these surfaces until BeginFrame is called.
+		/// </summary>
+		public void EndFrame()
+		{
+			if (_frameStarted)
 			{
-				_guiApi.UnlockSurface(DisplaySurfaceID.EmuCore);
-				_guiApi.UnlockSurface(DisplaySurfaceID.Client);
+				_displayManager.UnlockApiHawkSurface(_GUISurface);
+				_displayManager.UnlockApiHawkSurface(_clientSurface);
+				_frameStarted = false;
 			}
 		}
 
-		public LuaAutoUnlockHack ThisIsTheLuaAutoUnlockHack()
-			=> new(this);
 
 		public void DrawNew(string name, bool clear)
 		{
@@ -638,8 +603,7 @@ namespace BizHawk.Client.Common
 
 		public void Dispose()
 		{
-			UnlockSurface(DisplaySurfaceID.EmuCore);
-			UnlockSurface(DisplaySurfaceID.Client);
+			EndFrame();
 			foreach (var brush in _solidBrushes.Values) brush.Dispose();
 			foreach (var brush in _pens.Values) brush.Dispose();
 		}

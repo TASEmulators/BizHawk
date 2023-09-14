@@ -71,7 +71,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			var buffer = displayManager.RenderOffscreenLua(vp);
 
 			Assert.AreEqual(buffer.GetPixel(2, 2), Color.Red.ToArgb());
-			Assert.AreEqual(buffer.GetPixel(2, 4), 0xff00ff00);
+			Assert.AreEqual((uint)buffer.GetPixel(2, 4), 0xff00ff00);
 		}
 
 	}
