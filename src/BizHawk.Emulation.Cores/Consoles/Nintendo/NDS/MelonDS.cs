@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private readonly LibMelonDS.LogCallback _logCallback;
 
 		private static void LogCallback(LibMelonDS.LogLevel level, string message)
-			=> Console.WriteLine($"[{level}] {message}");
+			=> Console.Write($"[{level}] {message}");
 
 		[CoreConstructor(VSystemID.Raw.NDS)]
 		public NDS(CoreLoadParameters<NDSSettings, NDSSyncSettings> lp)
