@@ -47,6 +47,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_coreFiles.Add(path, file);
 		}
 
+		private void AddCoreFile(string path, byte[] file)
+		{
+			if (file.Length == 0)
+			{
+				throw new InvalidOperationException($"Tried to add 0-sized core file to {path}");
+			}
+
+			_coreFiles.Add(path, file);
+		}
+
 		private readonly LibMelonDS.LogCallback _logCallback;
 
 		private static void LogCallback(LibMelonDS.LogLevel level, string message)
@@ -107,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				SealedHeapSizeKB = 4,
 				InvisibleHeapSizeKB = 4 * 1024,
 				PlainHeapSizeKB = 4,
-				MmapHeapSizeKB = 1024 * 1024,
+				MmapHeapSizeKB = 1152 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[]
@@ -148,15 +158,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			if (IsDSiWare)
 			{
-				_coreFiles.Add("tmd.rom", GetTMDData(DSiTitleId.Full));
-				_coreFiles.Add("dsiware.rom", roms[0]);
+				AddCoreFile("tmd.rom", GetTMDData(DSiTitleId.Full));
+				AddCoreFile("dsiware.rom", roms[0]);
 			}
 			else
 			{
-				_coreFiles.Add("nds.rom", roms[0]);
+				AddCoreFile("nds.rom", roms[0]);
 				if (gbacartpresent)
 				{
-					_coreFiles.Add("gba.rom", roms[1]);
+					AddCoreFile("gba.rom", roms[1]);
 				}
 			}
 
