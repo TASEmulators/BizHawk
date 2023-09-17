@@ -23,7 +23,7 @@ void SetFileCallbacks(FileCallbackInterface& fileCallbackInterface)
 struct FileHandle
 {
 public:
-	FileHandle(u8* data_, size_t size_, FileMode mode_)
+	FileHandle(std::shared_ptr<u8[]> data_, size_t size_, FileMode mode_)
 		: data(data_)
 		, pos(0)
 		, size(size_)
@@ -97,7 +97,7 @@ public:
 		}
 
 		count = std::min(count, (u64)(size - pos));
-		memcpy(data_, data, count);
+		memcpy(data_, &data[pos], count);
 		pos += count;
 		return count;
 	}
@@ -110,7 +110,7 @@ public:
 		}
 
 		count = std::min(count, (u64)(size - pos));
-		memcpy(data, data_, count);
+		memcpy(&data[pos], data_, count);
 		pos += count;
 		return count;
 	}
@@ -121,7 +121,7 @@ public:
 	}
 
 private:
-	u8* data;
+	std::shared_ptr<u8[]> data;
 	size_t pos, size;
 	FileMode mode;
 
@@ -136,7 +136,7 @@ private:
 	}
 };
 
-static std::unordered_map<std::string, std::pair<std::unique_ptr<u8[]>, size_t>> FileBufferCache;
+static std::unordered_map<std::string, std::pair<std::shared_ptr<u8[]>, size_t>> FileBufferCache;
 
 // TODO - I don't like this approach with NAND
 // Perhaps instead it would be better to use FileFlush to write to disk
@@ -172,7 +172,7 @@ FileHandle* OpenFile(const std::string& path, FileMode mode)
 
 	if (auto cache = FileBufferCache.find(path); cache != FileBufferCache.end())
 	{
-		return new FileHandle(cache->second.first.get(), cache->second.second, mode);
+		return new FileHandle(cache->second.first, cache->second.second, mode);
 	}
 
 	size_t size = FileCallbacks.GetLength(path.c_str());
@@ -181,12 +181,10 @@ FileHandle* OpenFile(const std::string& path, FileMode mode)
 		return nullptr;
 	}
 
-	auto data = std::make_unique<u8[]>(size);
+	std::shared_ptr<u8[]> data(new u8[size]);
 	FileCallbacks.GetData(path.c_str(), data.get());
-
-	auto ret = new FileHandle(data.get(), size, mode);
-	FileBufferCache.emplace(path, std::make_pair(std::move(data), size));
-	return ret;
+	FileBufferCache.emplace(path, std::make_pair(data, size));
+	return new FileHandle(data, size, mode);
 }
 
 FileHandle* OpenLocalFile(const std::string& path, FileMode mode)
