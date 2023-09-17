@@ -4,8 +4,12 @@ using BizHawk.Emulation.Common;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-
+using System.Runtime.InteropServices;
+using System.Text;
+using BizHawk.Common.CollectionExtensions;
 using Newtonsoft.Json;
+
+// ReSharper disable SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
@@ -13,6 +17,87 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	{
 		private NDSSettings _settings;
 		private NDSSyncSettings _syncSettings;
+
+		private readonly NDSSyncSettings _activeSyncSettings;
+		private readonly LibMelonDS.ConfigCallbackInterface _configCallbackInterface;
+
+		private bool GetBooleanSettingCallback(LibMelonDS.ConfigEntry configEntry) => configEntry switch
+		{
+			LibMelonDS.ConfigEntry.ExternalBIOSEnable => _activeSyncSettings.UseRealBIOS,
+			LibMelonDS.ConfigEntry.DLDI_Enable => false, // TODO
+			LibMelonDS.ConfigEntry.DLDI_ReadOnly => false, // TODO
+			LibMelonDS.ConfigEntry.DLDI_FolderSync => false, // TODO
+			LibMelonDS.ConfigEntry.DSiSD_Enable => false, // TODO
+			LibMelonDS.ConfigEntry.DSiSD_ReadOnly => false, // TODO
+			LibMelonDS.ConfigEntry.DSiSD_FolderSync => false, // TODO
+			LibMelonDS.ConfigEntry.Firm_OverrideSettings => _activeSyncSettings.FirmwareOverride,
+			LibMelonDS.ConfigEntry.DSi_FullBIOSBoot => false, // TODO
+			LibMelonDS.ConfigEntry.UseRealTime => false, // RTC callback overrides this anyways, really this is so gmtime_r is used over localtime_r
+			LibMelonDS.ConfigEntry.FixedBootTime => true, // this just means use TimeAtBoot (which we always want at Unix epoch)
+			_ => throw new InvalidOperationException()
+		};
+
+		private int GetIntegerSettingCallback(LibMelonDS.ConfigEntry configEntry) => configEntry switch
+		{
+			LibMelonDS.ConfigEntry.DLDI_ImageSize => 0, // TODO
+			LibMelonDS.ConfigEntry.DSiSD_ImageSize => 0, // TODO
+			LibMelonDS.ConfigEntry.Firm_Language => (int)_activeSyncSettings.FirmwareLanguage,
+			LibMelonDS.ConfigEntry.Firm_BirthdayMonth => (int)_activeSyncSettings.FirmwareBirthdayMonth,
+			LibMelonDS.ConfigEntry.Firm_BirthdayDay => _activeSyncSettings.FirmwareBirthdayDay,
+			LibMelonDS.ConfigEntry.Firm_Color => (int)_activeSyncSettings.FirmwareFavouriteColour,
+			LibMelonDS.ConfigEntry.AudioBitDepth => (int)_settings.AudioBitDepth,
+			LibMelonDS.ConfigEntry.TimeAtBoot => 0,
+			_ => throw new InvalidOperationException()
+		};
+
+		private void GetStringSettingCallback(LibMelonDS.ConfigEntry configEntry, IntPtr buffer, int bufferSize)
+		{
+			var ret = configEntry switch
+			{
+				LibMelonDS.ConfigEntry.BIOS9Path => _configEntryToPath.GetValueOrDefault(configEntry),
+				LibMelonDS.ConfigEntry.BIOS7Path => _configEntryToPath.GetValueOrDefault(configEntry),
+				LibMelonDS.ConfigEntry.FirmwarePath => _configEntryToPath.GetValueOrDefault(configEntry),
+				LibMelonDS.ConfigEntry.DSi_BIOS9Path => _configEntryToPath.GetValueOrDefault(configEntry),
+				LibMelonDS.ConfigEntry.DSi_BIOS7Path => _configEntryToPath.GetValueOrDefault(configEntry),
+				LibMelonDS.ConfigEntry.DSi_FirmwarePath => _configEntryToPath.GetValueOrDefault(configEntry),
+				LibMelonDS.ConfigEntry.DSi_NANDPath => _configEntryToPath.GetValueOrDefault(configEntry),
+				LibMelonDS.ConfigEntry.DLDI_ImagePath => "dldi.bin",
+				LibMelonDS.ConfigEntry.DLDI_FolderPath => "dldi",
+				LibMelonDS.ConfigEntry.DSiSD_ImagePath => "sd.bin",
+				LibMelonDS.ConfigEntry.DSiSD_FolderPath => "sd",
+				LibMelonDS.ConfigEntry.Firm_Username => _activeSyncSettings.FirmwareUsername,
+				LibMelonDS.ConfigEntry.Firm_Message => _activeSyncSettings.FirmwareMessage,
+				LibMelonDS.ConfigEntry.WifiSettingsPath => "wfcsettings.bin",
+				_ => throw new InvalidOperationException()
+			};
+
+			if (string.IsNullOrEmpty(ret))
+			{
+				Marshal.WriteByte(buffer, 0, 0);
+				return;
+			}
+
+			var bytes = Encoding.UTF8.GetBytes(ret);
+			var numToCopy = Math.Min(bytes.Length, bufferSize - 1);
+			Marshal.Copy(bytes, 0, buffer, numToCopy);
+			Marshal.WriteByte(buffer, numToCopy, 0);
+		}
+
+		private void GetArraySettingCallback(LibMelonDS.ConfigEntry configEntry, IntPtr buffer)
+		{
+			if (configEntry != LibMelonDS.ConfigEntry.Firm_MAC)
+			{
+				throw new InvalidOperationException();
+			}
+
+			// TODO make MAC configurable
+			Marshal.WriteByte(buffer, 0, 0x00);
+			Marshal.WriteByte(buffer, 1, 0x09);
+			Marshal.WriteByte(buffer, 2, 0xBF);
+			Marshal.WriteByte(buffer, 3, 0x0E);
+			Marshal.WriteByte(buffer, 4, 0x49);
+			Marshal.WriteByte(buffer, 5, 0x16);
+		}
 
 		public enum ScreenLayoutKind
 		{
@@ -59,17 +144,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				set => _screengap = Math.Max(0, Math.Min(128, value));
 			}
 
-			public enum AudioBitrateType : int
+			public enum AudioBitDepthType : int
 			{
 				Auto,
 				Ten,
 				Sixteen,
 			}
 
-			[DisplayName("Audio Bitrate")]
-			[Description("Auto will set the audio bitrate most accurate to the console (10 for DS, 16 for DSi).")]
-			[DefaultValue(AudioBitrateType.Auto)]
-			public AudioBitrateType AudioBitrate { get; set; }
+			[DisplayName("Audio Bit Depth")]
+			[Description("Auto will set the audio bit depth most accurate to the console (10 for DS, 16 for DSi).")]
+			[DefaultValue(AudioBitDepthType.Auto)]
+			public AudioBitDepthType AudioBitDepth { get; set; }
 
 			[DisplayName("Alt Lag")]
 			[Description("If true, touch screen polling and ARM7 key polling will be considered for lag frames. Otherwise, only ARM9 key polling will be considered.")]
@@ -129,8 +214,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public class NDSSyncSettings
 		{
+			public enum ThreeDeeRendererType : int
+			{
+				Software,
+				//OpenGL_Classic,
+				//OpenGL_Compute,
+			}
+
+			[DisplayName("3D Renderer")]
+			[Description("Renderer used for 3D. OpenGL Classic requires at least OpenGL 3.2, OpenGL Compute requires at least OpenGL 4.3. Forced to Software when recording a movie.")]
+			[DefaultValue(ThreeDeeRendererType.Software)]
+			public ThreeDeeRendererType ThreeDeeRenderer { get; set; }
+
 			[DisplayName("Threaded 3D Rendering")]
-			[Description("Offloads 3D rendering to a separate thread")]
+			[Description("Offloads 3D rendering to a separate thread. Only used for the software 3D renderer.")]
 			[DefaultValue(true)]
 			public bool ThreadedRendering { get; set; }
 

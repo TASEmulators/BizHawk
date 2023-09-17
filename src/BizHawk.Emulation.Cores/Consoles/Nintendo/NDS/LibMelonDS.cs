@@ -41,50 +41,155 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public bool ConsiderAltLag;
 		}
 
-		[Flags]
-		public enum LoadFlags : uint
+		[StructLayout(LayoutKind.Sequential)]
+		public struct RenderSettings
 		{
-			NONE = 0x00,
-			USE_REAL_BIOS = 0x01,
-			SKIP_FIRMWARE = 0x02,
-			GBA_CART_PRESENT = 0x04,
-			CLEAR_NAND = 0x08,
-			FIRMWARE_OVERRIDE = 0x10,
-			IS_DSI = 0x20,
-			LOAD_DSIWARE = 0x40,
-			THREADED_RENDERING = 0x80,
+			[MarshalAs(UnmanagedType.U1)]
+			public bool SoftThreaded;
+			public int GLScaleFactor;
+			[MarshalAs(UnmanagedType.U1)]
+			public bool GLBetterPolygons;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct LoadData
+		public struct InitConfig
 		{
-			public IntPtr DsRomData;
-			public int DsRomLength;
-			public IntPtr GbaRomData;
-			public int GbaRomLength;
-			public IntPtr GbaRamData;
-			public int GbaRamLength;
-			public IntPtr NandData;
-			public int NandLength;
-			public IntPtr TmdData;
-			public NDS.NDSSettings.AudioBitrateType AudioBitrate;
+			[MarshalAs(UnmanagedType.U1)]
+			public bool SkipFW;
+			[MarshalAs(UnmanagedType.U1)]
+			public bool HasGBACart;
+			[MarshalAs(UnmanagedType.U1)]
+			public bool DSi;
+			[MarshalAs(UnmanagedType.U1)]
+			public bool ClearNAND;
+			[MarshalAs(UnmanagedType.U1)]
+			public bool LoadDSiWare;
+			public NDS.NDSSyncSettings.ThreeDeeRendererType ThreeDeeRenderer;
+			public RenderSettings RenderSettings;
 		}
+
+		public enum ConfigEntry
+		{
+			ExternalBIOSEnable,
+
+			BIOS9Path,
+			BIOS7Path,
+			FirmwarePath,
+
+			DSi_BIOS9Path,
+			DSi_BIOS7Path,
+			DSi_FirmwarePath,
+			DSi_NANDPath,
+
+			DLDI_Enable,
+			DLDI_ImagePath,
+			DLDI_ImageSize,
+			DLDI_ReadOnly,
+			DLDI_FolderSync,
+			DLDI_FolderPath,
+
+			DSiSD_Enable,
+			DSiSD_ImagePath,
+			DSiSD_ImageSize,
+			DSiSD_ReadOnly,
+			DSiSD_FolderSync,
+			DSiSD_FolderPath,
+
+			Firm_OverrideSettings,
+			Firm_Username,
+			Firm_Language,
+			Firm_BirthdayMonth,
+			Firm_BirthdayDay,
+			Firm_Color,
+			Firm_Message,
+			Firm_MAC,
+
+			WifiSettingsPath,
+
+			AudioBitDepth,
+
+			DSi_FullBIOSBoot,
+
+			// BizHawk-melonDS specific
+			UseRealTime,
+			FixedBootTime,
+			TimeAtBoot,
+		}
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate bool GetBooleanSettingCallback(ConfigEntry configEntry);
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate int GetIntegerSettingCallback(ConfigEntry configEntry);
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void GetStringSettingCallback(ConfigEntry configEntry, IntPtr buffer, int bufferSize);
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void GetArraySettingCallback(ConfigEntry configEntry, IntPtr buffer);
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct FirmwareSettings
+		public struct ConfigCallbackInterface
 		{
-			public IntPtr FirmwareUsername; // max 10 length (then terminator)
-			public int FirmwareUsernameLength;
-			public NDS.NDSSyncSettings.Language FirmwareLanguage;
-			public NDS.NDSSyncSettings.Month FirmwareBirthdayMonth;
-			public int FirmwareBirthdayDay;
-			public NDS.NDSSyncSettings.Color FirmwareFavouriteColour;
-			public IntPtr FirmwareMessage; // max 26 length (then terminator)
-			public int FirmwareMessageLength;
+			public GetBooleanSettingCallback GetBoolean;
+			public GetIntegerSettingCallback GetInteger;
+			public GetStringSettingCallback GetString;
+			public GetArraySettingCallback GetArray;
 		}
 
-		[BizImport(CC)]
-		public abstract bool Init(LoadFlags loadFlags, ref LoadData loadData, ref FirmwareSettings fwSettings);
+		[UnmanagedFunctionPointer(CC)]
+		public delegate int GetFileLengthCallback(string path);
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void GetFileDataCallback(string path, IntPtr buffer);
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct FileCallbackInterface
+		{
+			public GetFileLengthCallback GetLength;
+			public GetFileDataCallback GetData;
+		}
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate IntPtr RequestGLContextCallback();
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void ReleaseGLContextCallback(IntPtr context);
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void ActivateGLContextCallback(IntPtr context);
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate IntPtr GetGLProcAddressCallback(string proc);
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct GLCallbackInterface
+		{
+			public RequestGLContextCallback RequestGLContext;
+			public ReleaseGLContextCallback ReleaseGLContext;
+			public ActivateGLContextCallback ActivateGLContext;
+			public GetGLProcAddressCallback GetGLProcAddress;
+			public bool IsWinApi;
+		}
+
+		public enum LogLevel : int
+		{
+			Debug,
+			Info,
+			Warn,
+			Error,
+		}
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void LogCallback(LogLevel level, string message);
+
+		[BizImport(CC, Compatibility = true)]
+		public abstract IntPtr Init(
+			ref InitConfig loadData,
+			ref ConfigCallbackInterface configCallbackInterface,
+			ref FileCallbackInterface fileCallbackInterface,
+			//ref GLCallbackInterface glCallbackInterface, // TODO
+			LogCallback logCallback);
 
 		[BizImport(CC)]
 		public abstract void PutSaveRam(byte[] data, uint len);
@@ -155,8 +260,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract void GetNANDData(byte[] buf);
-
-		[BizImport(CC)]
-		public abstract void ResetCaches();
 	}
 }

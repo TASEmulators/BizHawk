@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 using BizHawk.BizInvoke;
@@ -23,6 +23,35 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private readonly LibMelonDS _core;
 		private readonly NDSDisassembler _disassembler;
 
+		private readonly Dictionary<string, byte[]> _coreFiles = new();
+		private readonly Dictionary<LibMelonDS.ConfigEntry, string> _configEntryToPath = new();
+		private readonly LibMelonDS.FileCallbackInterface _fileCallbackInterface;
+
+		private int GetFileLengthCallback(string path)
+			=> _coreFiles.TryGetValue(path, out var file) ? file.Length : 0;
+
+		private void GetFileDataCallback(string path, IntPtr buffer)
+		{
+			var file = _coreFiles[path];
+			Marshal.Copy(file, 0, buffer, file.Length);
+		}
+
+		private void AddCoreFile(LibMelonDS.ConfigEntry configEntry, string path, byte[] file)
+		{
+			if (file.Length == 0)
+			{
+				throw new InvalidOperationException($"Tried to add 0-sized core file to {path}");
+			}
+
+			_configEntryToPath.Add(configEntry, path);
+			_coreFiles.Add(path, file);
+		}
+
+		private readonly LibMelonDS.LogCallback _logCallback;
+
+		private static void LogCallback(LibMelonDS.LogLevel level, string message)
+			=> Console.WriteLine($"[{level}] {message}");
+
 		[CoreConstructor(VSystemID.Raw.NDS)]
 		public NDS(CoreLoadParameters<NDSSettings, NDSSyncSettings> lp)
 			: base(lp.Comm, new()
@@ -40,24 +69,36 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_syncSettings = lp.SyncSettings ?? new();
 			_settings = lp.Settings ?? new();
 
-			IsDSi = _syncSettings.UseDSi;
+			_activeSyncSettings = _syncSettings.Clone();
+
+			IsDSi = _activeSyncSettings.UseDSi;
 
 			var roms = lp.Roms.Select(r => r.RomData).ToList();
 			
 			DSiTitleId = GetDSiTitleId(roms[0]);
 			IsDSi |= IsDSiWare;
 
-			if (roms.Count > (IsDSi ? 1 : 3))
+			if (roms.Count > (IsDSi ? 1 : 2))
 			{
 				throw new InvalidOperationException("Wrong number of ROMs!");
 			}
 
-			var gbacartpresent = roms.Count > 1;
-			var gbasrampresent = roms.Count == 3;
+			var gbacartpresent = roms.Count == 2;
 
 			InitMemoryCallbacks();
+
 			_tracecb = MakeTrace;
 			_threadstartcb = ThreadStartCallback;
+
+			_configCallbackInterface.GetBoolean = GetBooleanSettingCallback;
+			_configCallbackInterface.GetInteger = GetIntegerSettingCallback;
+			_configCallbackInterface.GetString = GetStringSettingCallback;
+			_configCallbackInterface.GetArray = GetArraySettingCallback;
+
+			_fileCallbackInterface.GetLength = GetFileLengthCallback;
+			_fileCallbackInterface.GetData = GetFileDataCallback;
+
+			_logCallback = LogCallback;
 
 			_core = PreInit<LibMelonDS>(new()
 			{
@@ -69,143 +110,105 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				MmapHeapSizeKB = 1024 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { _readcb, _writecb, _execcb, _tracecb, _threadstartcb });
-
-			var bios7 = IsDSi || _syncSettings.UseRealBIOS
-				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"))
-				: null;
-
-			var bios9 = IsDSi || _syncSettings.UseRealBIOS
-				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9"))
-				: null;
-
-			var bios7i = IsDSi
-				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7i"))
-				: null;
-
-			var bios9i = IsDSi
-				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9i"))
-				: null;
-
-			var nand = IsDSi
-				? DecideNAND(CoreComm.CoreFileProvider, (DSiTitleId.Upper & ~0xFF) == 0x00030000, roms[0][0x1B0])
-				: null;
-
-			var fw = IsDSi
-				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "firmwarei"))
-				: CoreComm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
-
-			var tmd = IsDSiWare
-				? GetTMDData(DSiTitleId.Full)
-				: null;
-
-			var skipfw = _syncSettings.SkipFirmware || !_syncSettings.UseRealBIOS || fw == null;
-
-			var loadFlags = LibMelonDS.LoadFlags.NONE;
-
-			if (_syncSettings.UseRealBIOS || IsDSi)
-				loadFlags |= LibMelonDS.LoadFlags.USE_REAL_BIOS;
-			if (skipfw && !IsDSi)
-				loadFlags |= LibMelonDS.LoadFlags.SKIP_FIRMWARE;
-			if (gbacartpresent)
-				loadFlags |= LibMelonDS.LoadFlags.GBA_CART_PRESENT;
-			if (IsDSi && (_syncSettings.ClearNAND || lp.DeterministicEmulationRequested))
-				loadFlags |= LibMelonDS.LoadFlags.CLEAR_NAND; // TODO: need a way to send through multiple DSiWare titles at once for this approach
-			if (fw is null || _syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
-				loadFlags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
-			if (IsDSi)
-				loadFlags |= LibMelonDS.LoadFlags.IS_DSI;
-			if (IsDSiWare)
-				loadFlags |= LibMelonDS.LoadFlags.LOAD_DSIWARE;
-			if (_syncSettings.ThreadedRendering)
-				loadFlags |= LibMelonDS.LoadFlags.THREADED_RENDERING;
-
-			var fwSettings = new LibMelonDS.FirmwareSettings();
-			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
-			fwSettings.FirmwareUsernameLength = name.Length;
-			fwSettings.FirmwareLanguage = _syncSettings.FirmwareLanguage;
-			if (!IsDSi && _syncSettings.FirmwareStartUp == NDSSyncSettings.StartUp.AutoBoot) fwSettings.FirmwareLanguage |= (NDSSyncSettings.Language)0x40;
-			fwSettings.FirmwareBirthdayMonth = _syncSettings.FirmwareBirthdayMonth;
-			fwSettings.FirmwareBirthdayDay = _syncSettings.FirmwareBirthdayDay;
-			fwSettings.FirmwareFavouriteColour = _syncSettings.FirmwareFavouriteColour;
-			var message = _syncSettings.FirmwareMessage.Length != 0 ? Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage) : new byte[1];
-			fwSettings.FirmwareMessageLength = message.Length;
-
-			var loadData = new LibMelonDS.LoadData
+			}, new Delegate[]
 			{
-				DsRomLength = roms[0].Length,
-				GbaRomLength = gbacartpresent ? roms[1].Length : 0,
-				GbaRamLength = gbasrampresent ? roms[2].Length : 0,
-				NandLength = nand?.Length ?? 0,
-				AudioBitrate = _settings.AudioBitrate,
-			};
-			if (_syncSettings.UseRealBIOS || IsDSi)
+				_readcb, _writecb, _execcb, _tracecb, _threadstartcb,
+				_configCallbackInterface.GetBoolean, _configCallbackInterface.GetArray,
+				_configCallbackInterface.GetString, _configCallbackInterface.GetArray,
+				_fileCallbackInterface.GetLength, _fileCallbackInterface.GetData,
+				_logCallback
+			});
+
+			_activeSyncSettings.UseRealBIOS |= IsDSi;
+
+			if (_activeSyncSettings.UseRealBIOS)
 			{
-				_exe.AddReadonlyFile(bios7, "bios7.rom");
-				_exe.AddReadonlyFile(bios9, "bios9.rom");
+				AddCoreFile(LibMelonDS.ConfigEntry.BIOS7Path, "bios7.bin",
+					CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7")));
+				AddCoreFile(LibMelonDS.ConfigEntry.BIOS9Path, "bios9.bin",
+					CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9")));
 			}
+
 			if (IsDSi)
 			{
-				_exe.AddReadonlyFile(bios7i, "bios7i.rom");
-				_exe.AddReadonlyFile(bios9i, "bios9i.rom");
-				if (IsDSiWare)
+				AddCoreFile(LibMelonDS.ConfigEntry.DSi_BIOS7Path, "bios7i.bin",
+					CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7i")));
+				AddCoreFile(LibMelonDS.ConfigEntry.DSi_BIOS9Path, "bios9i.bin",
+					CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9i")));
+				AddCoreFile(LibMelonDS.ConfigEntry.DSi_FirmwarePath, "firmwarei.bin",
+					CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "firmwarei")));
+				AddCoreFile(LibMelonDS.ConfigEntry.DSi_NANDPath, "nand.bin",
+					DecideNAND(CoreComm.CoreFileProvider, (DSiTitleId.Upper & ~0xFF) == 0x00030000, roms[0][0x1B0]));
+			}
+			else if (_activeSyncSettings.UseRealBIOS)
+			{
+				AddCoreFile(LibMelonDS.ConfigEntry.FirmwarePath, "firmware.bin",
+					CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "firmware")));
+			}
+
+			if (IsDSiWare)
+			{
+				_coreFiles.Add("tmd.rom", GetTMDData(DSiTitleId.Full));
+				_coreFiles.Add("dsiware.rom", roms[0]);
+			}
+			else
+			{
+				_coreFiles.Add("nds.rom", roms[0]);
+				if (gbacartpresent)
 				{
-					_exe.AddReadonlyFile(roms[0], "dsiware.rom");
+					_coreFiles.Add("gba.rom", roms[1]);
 				}
 			}
-			if (fw != null)
+
+			LibMelonDS.InitConfig initConfig;
+			initConfig.SkipFW = _activeSyncSettings.SkipFirmware;
+			initConfig.HasGBACart = gbacartpresent;
+			initConfig.DSi = IsDSi;
+			initConfig.ClearNAND = _activeSyncSettings.ClearNAND || lp.DeterministicEmulationRequested;
+			initConfig.LoadDSiWare = IsDSiWare;
+			initConfig.ThreeDeeRenderer = _activeSyncSettings.ThreeDeeRenderer;
+			initConfig.RenderSettings.SoftThreaded = _activeSyncSettings.ThreadedRendering;
+			initConfig.RenderSettings.GLScaleFactor = 1; // TODO
+			initConfig.RenderSettings.GLBetterPolygons = false; // TODO
+
+			_activeSyncSettings.FirmwareOverride |= !_activeSyncSettings.UseRealBIOS || lp.DeterministicEmulationRequested;
+
+			// ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
+			if (!IsDSi && _syncSettings.FirmwareStartUp == NDSSyncSettings.StartUp.AutoBoot)
 			{
+				_activeSyncSettings.FirmwareLanguage |= (NDSSyncSettings.Language)0x40;
+			}
+
+			if (_activeSyncSettings.UseRealBIOS)
+			{
+				var fw = _coreFiles[_configEntryToPath[IsDSi ? LibMelonDS.ConfigEntry.DSi_FirmwarePath : LibMelonDS.ConfigEntry.FirmwarePath]];
 				if (IsDSi || NDSFirmware.MaybeWarnIfBadFw(fw, CoreComm)) // fw checks dont work on dsi firmware, don't bother
 				{
-					if (_syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
+					if (_activeSyncSettings.FirmwareOverride)
 					{
 						NDSFirmware.SanitizeFw(fw);
 					}
 				}
-				_exe.AddReadonlyFile(fw, IsDSi ? "firmwarei.bin" : "firmware.bin");
 			}
 
-			unsafe
+			var error = _core.Init(ref initConfig, ref _configCallbackInterface, ref _fileCallbackInterface, _logCallback);
+			if (error != IntPtr.Zero)
 			{
-				fixed (byte*
-					dsRomPtr = roms[0],
-					gbaRomPtr = gbacartpresent ? roms[1] : null,
-					gbaRamPtr = gbasrampresent ? roms[2] : null,
-					nandPtr = nand,
-					tmdPtr = tmd,
-					namePtr = name,
-					messagePtr = message)
+				using (_exe.EnterExit())
 				{
-					loadData.DsRomData = (IntPtr)dsRomPtr;
-					loadData.GbaRomData = (IntPtr)gbaRomPtr;
-					loadData.GbaRamData = (IntPtr)gbaRamPtr;
-					loadData.NandData = (IntPtr)nandPtr;
-					loadData.TmdData = (IntPtr)tmdPtr;
-					fwSettings.FirmwareUsername = (IntPtr)namePtr;
-					fwSettings.FirmwareMessage = (IntPtr)messagePtr;
-					if (!_core.Init(loadFlags, ref loadData, ref fwSettings))
-					{
-						throw new InvalidOperationException("Init returned false!");
-					}
+					throw new InvalidOperationException(Marshal.PtrToStringAnsi(error));
 				}
 			}
 
-			if (fw != null)
-			{
-				_exe.RemoveReadonlyFile(IsDSi ? "firmwarei.bin" : "firmware.bin");
-			}
-
-			if (IsDSi && IsDSiWare)
-			{
-				_exe.RemoveReadonlyFile("dsiware.rom");
-			}
+			// the semantics of firmware override mean that sync settings will override firmware on a hard reset, which we don't want here
+			_activeSyncSettings.FirmwareOverride = false;
 
 			PostInit();
 
 			((MemoryDomainList)this.AsMemoryDomains()).SystemBus = new NDSSystemBus(this.AsMemoryDomains()["ARM9 System Bus"], this.AsMemoryDomains()["ARM7 System Bus"]);
 
-			DeterministicEmulation = lp.DeterministicEmulationRequested || (!_syncSettings.UseRealTime);
-			InitializeRtc(_syncSettings.InitialTime);
+			DeterministicEmulation = lp.DeterministicEmulationRequested || !_activeSyncSettings.UseRealTime;
+			InitializeRtc(_activeSyncSettings.InitialTime);
 
 			_frameThreadPtr = _core.GetFrameThreadProc();
 			if (_frameThreadPtr != IntPtr.Zero)
@@ -213,7 +216,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				Console.WriteLine($"Setting up waterbox thread for 0x{(ulong)_frameThreadPtr:X16}");
 				_frameThread = new(FrameThreadProc) { IsBackground = true };
 				_frameThread.Start();
-				_frameThreadAction = CallingConventionAdapters.GetWaterboxUnsafeUnwrapped().GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
+				_frameThreadAction = CallingConventionAdapters
+					.GetWaterboxUnsafeUnwrapped()
+					.GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
 				_core.SetThreadStartCallback(_threadstartcb);
 			}
 
@@ -410,7 +415,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
-			_core.ResetCaches();
 			SetMemoryCallbacks();
 			_core.SetThreadStartCallback(_threadstartcb);
 			if (_frameThreadPtr != _core.GetFrameThreadProc())
