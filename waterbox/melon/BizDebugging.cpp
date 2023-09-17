@@ -38,6 +38,23 @@ ECL_EXPORT void SetTraceCallback(void (*callback)(TraceMask_t mask, u32 opcode, 
 	TraceMask = callback ? mask : TRACE_NONE;
 }
 
+ECL_EXPORT void GetDisassembly(TraceMask_t type, u32 opcode, char* ret)
+{
+	static char disasm[DTHUMB_STRING_LENGTH];
+
+	memset(disasm, 0, sizeof disasm);
+	switch (type)
+	{
+		case TRACE_ARM7_THUMB: Disassemble_thumb(opcode, disasm, ARMv4T); break;
+		case TRACE_ARM7_ARM: Disassemble_arm(opcode, disasm, ARMv4T); break;
+		case TRACE_ARM9_THUMB: Disassemble_thumb(opcode, disasm, ARMv5TE); break;
+		case TRACE_ARM9_ARM: Disassemble_arm(opcode, disasm, ARMv5TE); break;
+		default: __builtin_unreachable();
+	}
+
+	memcpy(ret, disasm, DTHUMB_STRING_LENGTH);
+}
+
 void TraceTrampoline(TraceMask_t type, u32* regs, u32 opcode)
 {
 	static char disasm[DTHUMB_STRING_LENGTH];
