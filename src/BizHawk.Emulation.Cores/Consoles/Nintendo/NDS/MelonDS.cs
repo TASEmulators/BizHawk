@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}, new Delegate[]
 			{
 				_readcb, _writecb, _execcb, _tracecb, _threadstartcb,
-				_configCallbackInterface.GetBoolean, _configCallbackInterface.GetArray,
+				_configCallbackInterface.GetBoolean, _configCallbackInterface.GetInteger,
 				_configCallbackInterface.GetString, _configCallbackInterface.GetArray,
 				_fileCallbackInterface.GetLength, _fileCallbackInterface.GetData,
 				_logCallback
@@ -191,7 +191,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				}
 			}
 
-			var error = _core.Init(ref initConfig, ref _configCallbackInterface, ref _fileCallbackInterface, _logCallback);
+			var error = _core.Init(
+				ref initConfig,
+				_configCallbackInterface.AllCallbacksInArray(_adapter),
+				_fileCallbackInterface.AllCallbacksInArray(_adapter),
+				_logCallback);
 			if (error != IntPtr.Zero)
 			{
 				using (_exe.EnterExit())

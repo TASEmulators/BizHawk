@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
@@ -44,25 +45,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[StructLayout(LayoutKind.Sequential)]
 		public struct RenderSettings
 		{
-			[MarshalAs(UnmanagedType.U1)]
 			public bool SoftThreaded;
 			public int GLScaleFactor;
-			[MarshalAs(UnmanagedType.U1)]
 			public bool GLBetterPolygons;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct InitConfig
 		{
-			[MarshalAs(UnmanagedType.U1)]
 			public bool SkipFW;
-			[MarshalAs(UnmanagedType.U1)]
 			public bool HasGBACart;
-			[MarshalAs(UnmanagedType.U1)]
 			public bool DSi;
-			[MarshalAs(UnmanagedType.U1)]
 			public bool ClearNAND;
-			[MarshalAs(UnmanagedType.U1)]
 			public bool LoadDSiWare;
 			public NDS.NDSSyncSettings.ThreeDeeRendererType ThreeDeeRenderer;
 			public RenderSettings RenderSettings;
@@ -135,6 +129,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public GetIntegerSettingCallback GetInteger;
 			public GetStringSettingCallback GetString;
 			public GetArraySettingCallback GetArray;
+
+			public IntPtr[] AllCallbacksInArray(ICallingConventionAdapter adapter)
+			{
+				return new Delegate[] { GetBoolean, GetInteger, GetString, GetArray }
+					.Select(adapter.GetFunctionPointerForDelegate).ToArray();
+			}
 		}
 
 		[UnmanagedFunctionPointer(CC)]
@@ -148,6 +148,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			public GetFileLengthCallback GetLength;
 			public GetFileDataCallback GetData;
+
+			public IntPtr[] AllCallbacksInArray(ICallingConventionAdapter adapter)
+			{
+				return new Delegate[] { GetLength, GetData }
+					.Select(adapter.GetFunctionPointerForDelegate).ToArray();
+			}
 		}
 
 		[UnmanagedFunctionPointer(CC)]
@@ -169,7 +175,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public ReleaseGLContextCallback ReleaseGLContext;
 			public ActivateGLContextCallback ActivateGLContext;
 			public GetGLProcAddressCallback GetGLProcAddress;
-			public bool IsWinApi;
+
+			public IntPtr[] AllCallbacksInArray(ICallingConventionAdapter adapter)
+			{
+				return new Delegate[] { RequestGLContext, ReleaseGLContext, ActivateGLContext, GetGLProcAddress }
+					.Select(adapter.GetFunctionPointerForDelegate).ToArray();
+			}
 		}
 
 		public enum LogLevel : int
@@ -183,12 +194,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[UnmanagedFunctionPointer(CC)]
 		public delegate void LogCallback(LogLevel level, string message);
 
-		[BizImport(CC, Compatibility = true)]
+		[BizImport(CC)]
 		public abstract IntPtr Init(
 			ref InitConfig loadData,
-			ref ConfigCallbackInterface configCallbackInterface,
-			ref FileCallbackInterface fileCallbackInterface,
-			//ref GLCallbackInterface glCallbackInterface, // TODO
+			/* ref ConfigCallbackInterface */ IntPtr[] configCallbackInterface,
+			/* ref FileCallbackInterface */ IntPtr[] fileCallbackInterface,
+			// /* ref GLCallbackInterface */ IntPtr[] glCallbackInterface, // TODO
 			LogCallback logCallback);
 
 		[BizImport(CC)]
