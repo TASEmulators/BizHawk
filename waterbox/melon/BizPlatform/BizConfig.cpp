@@ -7,9 +7,9 @@ namespace Platform
 
 struct ConfigCallbackInterface
 {
-    bool (*GetBoolean)(ConfigEntry entry);
-    int (*GetInteger)(ConfigEntry entry);
-    void (*GetString)(ConfigEntry entry, char* buffer, int bufferSize);
+	bool (*GetBoolean)(ConfigEntry entry);
+	int (*GetInteger)(ConfigEntry entry);
+	void (*GetString)(ConfigEntry entry, char* buffer, int bufferSize);
 	bool (*GetArray)(ConfigEntry entry, void* buffer);
 };
 

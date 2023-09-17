@@ -1,8 +1,6 @@
 #ifndef BIZFILEMANAGER_H
 #define BIZFILEMANAGER_H
 
-#include "types.h"
-
 namespace FileManager
 {
 

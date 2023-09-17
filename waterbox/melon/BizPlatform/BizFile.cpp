@@ -9,8 +9,8 @@ namespace Platform
 
 struct FileCallbackInterface
 {
-    int (*GetLength)(const char* path);
-    void (*GetData)(const char* path, u8* buffer);
+	int (*GetLength)(const char* path);
+	void (*GetData)(const char* path, u8* buffer);
 };
 
 ECL_INVISIBLE static FileCallbackInterface FileCallbacks;
