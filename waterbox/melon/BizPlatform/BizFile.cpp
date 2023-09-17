@@ -97,7 +97,7 @@ public:
 		}
 
 		count = std::min(count, (u64)(size - pos));
-		memcpy(data_, data.get(), count);
+		memcpy(data_, data, count);
 		pos += count;
 		return count;
 	}
@@ -110,7 +110,7 @@ public:
 		}
 
 		count = std::min(count, (u64)(size - pos));
-		memcpy(data.get(), data_, count);
+		memcpy(data, data_, count);
 		pos += count;
 		return count;
 	}
@@ -121,7 +121,7 @@ public:
 	}
 
 private:
-	std::shared_ptr<u8[]> data;
+	u8* data;
 	size_t pos, size;
 	FileMode mode;
 
