@@ -6,16 +6,6 @@
 namespace Config
 {
 
-#ifdef JIT_ENABLED
-bool JIT_Enable = false;
-int JIT_MaxBlockSize = 32;
-bool JIT_BranchOptimisations = true;
-bool JIT_LiteralOptimisations = true;
-bool JIT_FastMemory = true;
-#endif
-
-bool ExternalBIOSEnable;
-
 std::string BIOS9Path = "bios9.rom";
 std::string BIOS7Path = "bios7.rom";
 std::string FirmwarePath = "firmware.bin";
@@ -38,21 +28,5 @@ int DSiSDSize = 0;
 bool DSiSDReadOnly = true;
 bool DSiSDFolderSync = false;
 std::string DSiSDFolderPath = "";
-
-bool FirmwareOverrideSettings;
-std::string FirmwareUsername;
-int FirmwareLanguage;
-int FirmwareBirthdayMonth;
-int FirmwareBirthdayDay;
-int FirmwareFavouriteColour;
-std::string FirmwareMessage;
-std::string FirmwareMAC;
-bool RandomizeMAC;
-
-int AudioBitrate;
-
-bool FixedBootTime = true;
-bool UseRealTime = false;
-int TimeAtBoot = 0;
 
 }
