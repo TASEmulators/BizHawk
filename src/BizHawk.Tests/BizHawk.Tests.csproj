@@ -16,6 +16,7 @@
 		<PackageReference Include="MSTest.TestFramework" Version="2.2.9" PrivateAssets="all" />
 		<PackageReference Include="JunitXml.TestLogger" Version="3.0.124" PrivateAssets="all" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+		<ProjectReference Include="..\BizHawk.Bizware.Graphics\BizHawk.Bizware.Graphics.csproj" />
 		<Reference Include="NLua, Version=1.4.1.0, Culture=neutral, PublicKeyToken=null, processorArchitecture=MSIL" SpecificVersion="false" HintPath="$(ProjectDir)../../References/NLua.dll" Private="true" />
 		<None Include="$(ProjectDir)../../Assets/dll/lua54.dll" CopyToOutputDirectory="PreserveNewest" />
 		<!-- CHECKME: Does liblua5.4.so from a Linux host get picked up correctly? -->
@@ -24,5 +25,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="data/**/*" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="$(ProjectDir)/Client.Common/lua/LuaScripts/**" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 </Project>
