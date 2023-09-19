@@ -5,19 +5,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public static class ApiManager
 	{
-		private static readonly IReadOnlyList<(Type ImplType, Type InterfaceType, ConstructorInfo Ctor, Type[] CtorTypes)> _apiTypes;
+		private static IReadOnlyList<(Type ImplType, Type InterfaceType, ConstructorInfo Ctor, Type[] CtorTypes)> _apiTypes
+			= Array.Empty<(Type ImplType, Type InterfaceType, ConstructorInfo Ctor, Type[] CtorTypes)>();
 
-		static ApiManager()
+		public static void FindApis(IEnumerable<Type> typesToSearch)
 		{
 			var list = new List<(Type, Type, ConstructorInfo, Type[])>();
-			foreach (var implType in Common.ReflectionCache.Types.Concat(ReflectionCache.Types)
+			foreach (var implType in typesToSearch
 				.Where(t => /*t.IsClass &&*/t.IsSealed)) // small optimisation; api impl. types are all sealed classes
 			{
 				var interfaceType = implType.GetInterfaces().FirstOrDefault(t => typeof(IExternalApi).IsAssignableFrom(t) && t != typeof(IExternalApi));
@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 				var ctor = implType.GetConstructors().Single();
 				list.Add((implType, interfaceType, ctor, ctor.GetParameters().Select(pi => pi.ParameterType).ToArray()));
 			}
-			_apiTypes = list.ToArray();
+			_apiTypes = _apiTypes.Concat(list).ToArray();
 		}
 
 		private static ApiContainer? _container;
@@ -44,6 +44,9 @@ namespace BizHawk.Client.EmuHawk
 			IEmulator emulator,
 			IGameInfo game)
 		{
+			if (_apiTypes.Count == 0)
+				throw new InvalidOperationException("Attempted to use ApiManager before calling ApiManager.FindApis.");
+
 			var avail = new Dictionary<Type, object>
 			{
 				[typeof(Action<string>)] = logCallback,

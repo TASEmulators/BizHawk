@@ -129,6 +129,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			ApiManager.FindApis(Common.ReflectionCache.Types);
+			ApiManager.FindApis(ReflectionCache.Types);
+
 			typeof(Form).GetField(OSTC.IsUnixHost ? "default_icon" : "defaultIcon", BindingFlags.NonPublic | BindingFlags.Static)
 				.SetValue(null, Properties.Resources.Logo);
 
