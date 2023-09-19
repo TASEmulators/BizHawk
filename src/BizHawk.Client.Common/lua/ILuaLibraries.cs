@@ -53,5 +53,9 @@ namespace BizHawk.Client.Common
 		void ExecuteString(string command);
 
 		(bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf);
+
+		void EnableLuaFile(LuaFile item);
+
+		void DisableLuaScript(LuaFile file);
 	}
 }

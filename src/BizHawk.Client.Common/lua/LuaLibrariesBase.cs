@@ -352,5 +352,33 @@ namespace BizHawk.Client.Common
 		{
 			_currThread.Yield();
 		}
+
+		public void DisableLuaScript(LuaFile file)
+		{
+			if (file.IsSeparator) return;
+
+			file.State = LuaFile.RunState.Disabled;
+
+			if (file.Thread is not null)
+			{
+				CallExitEvent(file);
+				RegisteredFunctions.RemoveForFile(file, _mainFormApi.Emulator);
+				file.Stop();
+			}
+		}
+
+		public void EnableLuaFile(LuaFile item)
+		{
+			LuaSandbox.Sandbox(null, () =>
+			{
+				SpawnAndSetFileThread(item.Path, item);
+				LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(item.Path));
+			}, () =>
+			{
+				item.State = LuaFile.RunState.Disabled;
+			});
+
+			// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
+		}
 	}
 }

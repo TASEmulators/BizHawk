@@ -204,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 				// we don't use runningScripts here as the other scripts need to be stopped too
 				foreach (var file in LuaImp.ScriptList)
 				{
-					DisableLuaScript(file);
+					LuaImp.DisableLuaScript(file);
 				}
 			}
 
@@ -368,7 +368,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!item.IsSeparator)
 			{
-				DisableLuaScript(item);
+				LuaImp.DisableLuaScript(item);
 				RemoveFileWatcher(item);
 			}
 			LuaImp.ScriptList.Remove(item);
@@ -899,16 +899,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				LuaSandbox.Sandbox(null, () =>
-				{
-					LuaImp.SpawnAndSetFileThread(item.Path, item);
-					LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(item.Path));
-				}, () =>
-				{
-					item.State = LuaFile.RunState.Disabled;
-				});
-
-				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
+				LuaImp.EnableLuaFile(item);
 			}
 			catch (IOException)
 			{
@@ -1064,7 +1055,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var file in LuaImp.ScriptList)
 			{
-				DisableLuaScript(file);
+				LuaImp.DisableLuaScript(file);
 			}
 			UpdateDialog();
 		}
@@ -1497,22 +1488,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (!file.Enabled && file.Thread is not null)
 			{
-				DisableLuaScript(file);
+				LuaImp.DisableLuaScript(file);
 				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
-			}
-		}
-
-		private void DisableLuaScript(LuaFile file)
-		{
-			if (file.IsSeparator) return;
-
-			file.State = LuaFile.RunState.Disabled;
-
-			if (file.Thread is not null)
-			{
-				LuaImp.CallExitEvent(file);
-				LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator);
-				file.Stop();
 			}
 		}
 
