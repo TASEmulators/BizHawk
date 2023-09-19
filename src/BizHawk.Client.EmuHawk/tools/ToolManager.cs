@@ -17,7 +17,7 @@ using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class ToolManager
+	public class ToolManager : IToolManager
 	{
 		private readonly MainForm _owner;
 		private Config _config;
@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="focus">Define if the tool form has to get the focus or not (Default is true)</param>
 		/// <returns>An instantiated <see cref="IToolForm"/></returns>
 		/// <exception cref="ArgumentException">Raised if <paramref name="toolType"/> can't cast into IToolForm </exception>
-		internal IToolForm Load(Type toolType, bool focus = true)
+		public IToolForm Load(Type toolType, bool focus = true)
 		{
 			if (!typeof(IToolForm).IsAssignableFrom(toolType))
 			{

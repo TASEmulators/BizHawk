@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			IMovieSession movieSession,
-			ToolManager toolManager,
+			IToolManager toolManager,
 			Config config,
 			IEmulator emulator,
 			IGameInfo game)
@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 				[typeof(DisplayManagerBase)] = displayManager,
 				[typeof(InputManager)] = inputManager,
 				[typeof(IMovieSession)] = movieSession,
-				[typeof(ToolManager)] = toolManager,
+				[typeof(IToolManager)] = toolManager,
 				[typeof(Config)] = config,
 				[typeof(IEmulator)] = emulator,
 				[typeof(IGameInfo)] = game,
@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			IMovieSession movieSession,
-			ToolManager toolManager,
+			IToolManager toolManager,
 			Config config,
 			IEmulator emulator,
 			IGameInfo game)
@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			IMovieSession movieSession,
-			ToolManager toolManager,
+			IToolManager toolManager,
 			Config config,
 			IEmulator emulator,
 			IGameInfo game)
