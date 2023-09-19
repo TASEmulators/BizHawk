@@ -11,9 +11,8 @@ using NLua;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Client.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public class LuaLibrariesBase : ILuaLibraries
 	{
@@ -126,8 +125,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly NLuaTableHelper _th;
 
 		protected Action<object[]> _logToLuaConsoleCallback = a => Console.WriteLine("a Lua lib is logging during init and the console lib hasn't been initialised yet");
-
-		private FormsLuaLibrary FormsLibrary => (FormsLuaLibrary)Libraries[typeof(FormsLuaLibrary)];
 
 		public LuaDocumentation Docs { get; } = new LuaDocumentation();
 
@@ -266,7 +263,13 @@ namespace BizHawk.Client.EmuHawk
 
 			RegisteredFunctions.Clear(_mainFormApi.Emulator);
 			ScriptList.Clear();
-			FormsLibrary.DestroyAll();
+
+			foreach (var lib in Libraries.Values)
+			{
+				if (lib is IDisposable disposable)
+					disposable.Dispose();
+			}
+
 			_lua.Dispose();
 			_lua = null;
 		}

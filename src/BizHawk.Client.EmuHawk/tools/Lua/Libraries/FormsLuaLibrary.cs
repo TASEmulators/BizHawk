@@ -13,12 +13,14 @@ using NLua;
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for creating and managing custom dialogs")]
-	public sealed class FormsLuaLibrary : LuaLibraryBase
+	public sealed class FormsLuaLibrary : LuaLibraryBase, IDisposable
 	{
 		private const string ERR_MSG_CONTROL_NOT_LPB = "Drawing functions can only be used on PictureBox components.";
 
 		public FormsLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
+
+		public void Dispose() => DestroyAll();
 
 		public Form MainForm { get; set; }
 
