@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 
 		NLuaTableHelper GetTableHelper();
 
-		void Restart(IEmulatorServiceProvider newServiceProvider, Config config, IEmulator emulator, IGameInfo game);
+		void Restart(Config config, IGameInfo game);
 
 		bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate);
 

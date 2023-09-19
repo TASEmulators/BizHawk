@@ -1034,6 +1034,7 @@ namespace BizHawk.Client.EmuHawk
 		internal readonly ExternalToolManager ExtToolManager;
 
 		public readonly ToolManager Tools;
+		IToolManager IMainFormForApi.Tools => Tools;
 
 		private DisplayManager DisplayManager;
 

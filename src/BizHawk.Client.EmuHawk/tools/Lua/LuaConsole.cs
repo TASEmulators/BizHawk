@@ -195,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 				if (LuaImp.IsRebootingCore)
 				{
 					// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
-					LuaImp.Restart(Emulator.ServiceProvider, Config, Emulator, Game);
+					LuaImp.Restart(Config, Game);
 					return;
 				}
 
@@ -214,12 +214,10 @@ namespace BizHawk.Client.EmuHawk
 			LuaImp = new LuaLibraries(
 				newScripts,
 				registeredFuncList,
-				Emulator.ServiceProvider,
 				(MainForm) MainForm, //HACK
 				DisplayManager,
 				InputManager,
 				Config,
-				Emulator,
 				Game);
 
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => $"{a.Library}.{a.Name}").ToArray());
