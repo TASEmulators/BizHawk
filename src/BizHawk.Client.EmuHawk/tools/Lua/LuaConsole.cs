@@ -228,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LuaSandbox.Sandbox(file.Thread, () =>
 					{
-						LuaImp.SpawnAndSetFileThread(file.Path, file);
+						LuaImp.SpawnAndSetFileThread(file);
 						LuaSandbox.CreateSandbox(file.Thread, Path.GetDirectoryName(file.Path));
 						file.State = LuaFile.RunState.Running;
 					}, () =>

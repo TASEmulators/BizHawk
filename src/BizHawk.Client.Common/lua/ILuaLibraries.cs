@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 
 		bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate);
 
-		void SpawnAndSetFileThread(string pathToLoad, LuaFile lf);
+		void SpawnAndSetFileThread(LuaFile lf);
 
 		void ExecuteString(string command);
 
@@ -57,5 +57,7 @@ namespace BizHawk.Client.Common
 		void EnableLuaFile(LuaFile item);
 
 		void DisableLuaScript(LuaFile file);
+
+		Lua GetCurrentLua();
 	}
 }
