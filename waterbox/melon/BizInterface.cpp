@@ -8,7 +8,10 @@
 #include "BizPlatform/BizConfig.h"
 #include "BizPlatform/BizFile.h"
 #include "BizPlatform/BizLog.h"
+#include "BizPlatform/BizOGL.h"
+
 #include "BizFileManager.h"
+#include "BizGLPresenter.h"
 
 #include <emulibc.h>
 #include <waterboxcore.h>
@@ -23,6 +26,7 @@ struct InitConfig
 	bool DSi;
 	bool ClearNAND;
 	bool LoadDSiWare;
+	bool IsWinApi;
 	int ThreeDeeRenderer;
 	GPU::RenderSettings RenderSettings;
 };
@@ -30,7 +34,8 @@ struct InitConfig
 ECL_EXPORT const char* Init(InitConfig* initConfig,
 	Platform::ConfigCallbackInterface* configCallbackInterface,
 	Platform::FileCallbackInterface* fileCallbackInterface,
-	Platform::LogCallback_t logCallback)
+	Platform::LogCallback_t logCallback,
+	BizOGL::LoadGLProc loadGLProc)
 {
 	Platform::SetConfigCallbacks(*configCallbackInterface);
 	Platform::SetFileCallbacks(*fileCallbackInterface);
@@ -53,6 +58,27 @@ ECL_EXPORT const char* Init(InitConfig* initConfig,
 	if (!NDS::Init())
 	{
 		return "Failed to init core!";
+	}
+
+	switch (initConfig->ThreeDeeRenderer)
+	{
+		case 0:
+			break;
+		case 1:
+			BizOGL::LoadGL(loadGLProc, BizOGL::LoadGLVersion::V3_2, initConfig->IsWinApi);
+			break;
+#if false
+		case 2:
+			BizOGL::LoadGL(loadGLProc, BizOGL::LoadGLVersion::V4_3, initConfig->IsWinApi);
+			break;
+#endif
+		default:
+			return "Unknown 3DRenderer!";
+	}
+
+	if (initConfig->ThreeDeeRenderer)
+	{
+		GLPresenter::Init(initConfig->RenderSettings.GL_ScaleFactor);
 	}
 
 	GPU::InitRenderer(initConfig->ThreeDeeRenderer);
@@ -166,17 +192,22 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 
 	NDS::RunFrame();
 
-	if (auto softRenderer = dynamic_cast<GPU3D::SoftRenderer*>(GPU3D::CurrentRenderer.get()))
+	if (GPU3D::CurrentRenderer->Accelerated)
 	{
-		softRenderer->StopRenderThread();
+		std::tie(f->Width, f->Height) = GLPresenter::Present(false);
 	}
+	else
+	{
+		auto softRenderer = reinterpret_cast<GPU3D::SoftRenderer*>(GPU3D::CurrentRenderer.get());
+		softRenderer->StopRenderThread();
 
-	const u32 SingleScreenSize = 256 * 192;
-	memcpy(f->VideoBuffer, GPU::Framebuffer[GPU::FrontBuffer][0], SingleScreenSize * sizeof (u32));
-	memcpy(f->VideoBuffer + SingleScreenSize, GPU::Framebuffer[GPU::FrontBuffer][1], SingleScreenSize * sizeof (u32));
+		constexpr u32 SingleScreenSize = 256 * 192;
+		memcpy(f->VideoBuffer, GPU::Framebuffer[GPU::FrontBuffer][0], SingleScreenSize * sizeof(u32));
+		memcpy(f->VideoBuffer + SingleScreenSize, GPU::Framebuffer[GPU::FrontBuffer][1], SingleScreenSize * sizeof(u32));
 
-	f->Width = 256;
-	f->Height = 384;
+		f->Width = 256;
+		f->Height = 384;
+	}
 
 	f->Samples = SPU::ReadOutput(f->SoundBuffer);
 	if (f->Samples == 0) // hack

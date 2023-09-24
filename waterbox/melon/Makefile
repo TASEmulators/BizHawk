@@ -1,7 +1,7 @@
 CCFLAGS := -Wno-incompatible-pointer-types-discards-qualifiers -Wno-pointer-sign
 
-CXXFLAGS := -DMELONDS_VERSION="" \
-	-I./melonDS/src -I./melonDS/src/teakra/include \
+CXXFLAGS := -DMELONDS_VERSION="" -DOGLRENDERER_ENABLED \
+	-I. -I./melonDS/src -I./melonDS/src/teakra/include \
 	-Wall -Wextra -Werror=int-to-pointer-cast \
 	-Wfatal-errors -Wno-unused-parameter -Wno-unused-variable \
 	-Wno-unused-but-set-variable -Wno-unused-function \
@@ -49,6 +49,12 @@ CORE_SRCS = \
 	Wifi.cpp \
 	WifiAP.cpp
 
+CORE_GL_SRCS = \
+	GPU_OpenGL.cpp \
+	GPU3D_OpenGL.cpp \
+	OpenGLSupport.cpp \
+	frontend/Util_Video.cpp
+
 TEAKRA_SRCS = \
 	ahbm.cpp \
 	apbp.cpp \
@@ -76,18 +82,21 @@ BIZPLATFORM_SRCS = \
 	BizPlatform/BizConfig.cpp \
 	BizPlatform/BizFile.cpp \
 	BizPlatform/BizLog.cpp \
+	BizPlatform/BizOGL.cpp \
 	BizPlatform/BizPlatformStubs.cpp \
 	BizPlatform/BizSaveManager.cpp \
 	BizPlatform/BizThread.cpp \
 
 SRCS = \
 	$(addprefix melonDS/src/,$(CORE_SRCS)) \
+	$(addprefix melonDS/src/,$(CORE_GL_SRCS)) \
 	$(addprefix melonDS/src/teakra/src/,$(TEAKRA_SRCS)) \
 	$(addprefix melonDS/src/fatfs/,$(FATFS_SRCS)) \
 	$(addprefix melonDS/src/,$(MISC_SRCS)) \
 	$(BIZPLATFORM_SRCS) \
 	BizDebugging.cpp \
 	BizFileManager.cpp \
+	BizGLPresenter.cpp \
 	BizInterface.cpp \
 	dthumb.c
 
