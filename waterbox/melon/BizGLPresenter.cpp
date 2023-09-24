@@ -120,6 +120,7 @@ void Init(u32 scale)
 
 	// TODO: Could we use this instead of all the screen transforming code in the frontend?
 	// see https://github.com/TASEmulators/BizHawk/issues/3772
+	// OK THIS NEEDS TO BE DONE FRONTEND CODE DOESN'T LIKE AN UPSCALED IMAGE
 	Frontend::SetupScreenLayout(Width, Height, Frontend::screenLayout_Natural, Frontend::screenRot_0Deg, Frontend::screenSizing_Even, 0, true, false, 1, 1);
 	int discard[2];
 	Frontend::GetScreenTransforms(TransformMatrix, discard);
@@ -175,9 +176,12 @@ std::pair<u32, u32> Present(bool filter)
 
 	glFlush();
 
+	GLint oldPbo;
+	glGetIntegerv(GL_PIXEL_PACK_BUFFER, &oldPbo);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, PboID);
 	glBufferData(GL_PIXEL_PACK_BUFFER, Width * Height * sizeof(u32), nullptr, GL_STREAM_READ);
 	glReadPixels(0, 0, Width, Height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, static_cast<void*>(0));
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, oldPbo);
 
 	return std::make_pair(Width, Height);
 }
@@ -189,19 +193,16 @@ ECL_EXPORT u32 GetGLTexture()
 
 ECL_EXPORT void ReadFrameBuffer(u32* buffer)
 {
+	GLint oldPbo;
+	glGetIntegerv(GL_PIXEL_PACK_BUFFER, &oldPbo);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, PboID);
 	const auto p = static_cast<const u32*>(glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY));
-	if (p) {
-		// FBOs render upside down, so flip vertically to counteract that
-		buffer += Width * (Height - 1);
-		const int w = Width;
-		const int h = Height;
-		for (int i = 0; i < h; i++) {
-			std::memcpy(&buffer[-i * w], &p[i * w], Width * sizeof(u32));
-		}
-
+	if (p)
+	{
+		memcpy(buffer, p, Width * Height * sizeof(u32));
 		glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 	}
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, oldPbo);
 }
 
 }
