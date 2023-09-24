@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public void SetCpuRegister(string register, int value)
 		{
-			if (register.Length != 7 && register.Length != 8)
+			if (register.Length is not (7 or 8))
 			{
 				throw new InvalidOperationException("Wrong String Length???");
 			}
@@ -50,13 +50,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public long TotalExecutedCycles => CycleCount + _core.GetCallbackCycleOffset();
 
-		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
+		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 
-		private readonly MemoryCallbackSystem _memorycallbacks = new(new[] { "System Bus" });
+		private readonly MemoryCallbackSystem _memoryCallbacks = new(new[] { "System Bus" });
 
-		private LibMelonDS.MemoryCallback _readcb;
-		private LibMelonDS.MemoryCallback _writecb;
-		private LibMelonDS.MemoryCallback _execcb;
+		private LibMelonDS.MemoryCallback _readCallback;
+		private LibMelonDS.MemoryCallback _writeCallback;
+		private LibMelonDS.MemoryCallback _execCallback;
 
 		private void InitMemoryCallbacks()
 		{
@@ -72,18 +72,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				};
 			}
 
-			_readcb = CreateCallback(MemoryCallbackFlags.AccessRead, () => MemoryCallbacks.HasReads);
-			_writecb = CreateCallback(MemoryCallbackFlags.AccessWrite, () => MemoryCallbacks.HasWrites);
-			_execcb = CreateCallback(MemoryCallbackFlags.AccessExecute, () => MemoryCallbacks.HasExecutes);
+			_readCallback = CreateCallback(MemoryCallbackFlags.AccessRead, () => MemoryCallbacks.HasReads);
+			_writeCallback = CreateCallback(MemoryCallbackFlags.AccessWrite, () => MemoryCallbacks.HasWrites);
+			_execCallback = CreateCallback(MemoryCallbackFlags.AccessExecute, () => MemoryCallbacks.HasExecutes);
 
-			_memorycallbacks.ActiveChanged += SetMemoryCallbacks;
+			_memoryCallbacks.ActiveChanged += SetMemoryCallbacks;
 		}
 
 		private void SetMemoryCallbacks()
 		{
-			_core.SetMemoryCallback(0, MemoryCallbacks.HasReads ? _readcb : null);
-			_core.SetMemoryCallback(1, MemoryCallbacks.HasWrites ? _writecb : null);
-			_core.SetMemoryCallback(2, MemoryCallbacks.HasExecutes ? _execcb : null);
+			_core.SetMemoryCallback(0, MemoryCallbacks.HasReads ? _readCallback : null);
+			_core.SetMemoryCallback(1, MemoryCallbacks.HasWrites ? _writeCallback : null);
+			_core.SetMemoryCallback(2, MemoryCallbacks.HasExecutes ? _execCallback : null);
 		}
 	}
 }

@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			Marshal.WriteByte(buffer, numToCopy, 0);
 		}
 
-		private void GetArraySettingCallback(LibMelonDS.ConfigEntry configEntry, IntPtr buffer)
+		private static void GetArraySettingCallback(LibMelonDS.ConfigEntry configEntry, IntPtr buffer)
 		{
 			if (configEntry != LibMelonDS.ConfigEntry.Firm_MAC)
 			{
@@ -195,18 +195,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				return ret;
 			}
 
-			public NDSSettings Clone() => MemberwiseClone() as NDSSettings;
+			public NDSSettings Clone()
+				=> (NDSSettings)MemberwiseClone();
 
 			public static bool NeedsScreenResize(NDSSettings x, NDSSettings y)
 			{
-				bool ret = false;
+				var ret = false;
 				ret |= x.ScreenLayout != y.ScreenLayout;
 				ret |= x.ScreenGap != y.ScreenGap;
 				ret |= x.ScreenRotation != y.ScreenRotation;
 				return ret;
 			}
 
-			public NDSSettings() => SettingsUtil.SetDefaultValues(this);
+			public NDSSettings()
+				=> SettingsUtil.SetDefaultValues(this);
 		}
 
 		private static readonly DateTime minDate = new(2000, 1, 1);
@@ -217,19 +219,40 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public enum ThreeDeeRendererType : int
 			{
 				Software,
-				//OpenGL_Classic,
+				[Display(Name = "OpenGL Classic")]
+				OpenGL_Classic,
+				// [Display(Name = "OpenGL Compute")]
 				//OpenGL_Compute,
 			}
 
 			[DisplayName("3D Renderer")]
-			[Description("Renderer used for 3D. OpenGL Classic requires at least OpenGL 3.2, OpenGL Compute requires at least OpenGL 4.3. Forced to Software when recording a movie.")]
+			// [Description("Renderer used for 3D. OpenGL Classic requires at least OpenGL 3.2, OpenGL Compute requires at least OpenGL 4.3. Forced to Software when recording a movie.")]
+			[Description("Renderer used for 3D. OpenGL Classic requires at least OpenGL 3.2. Forced to Software when recording a movie.")]
 			[DefaultValue(ThreeDeeRendererType.Software)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ThreeDeeRendererType ThreeDeeRenderer { get; set; }
 
-			[DisplayName("Threaded 3D Rendering")]
-			[Description("Offloads 3D rendering to a separate thread. Only used for the software 3D renderer.")]
+			[DisplayName("Threaded Software 3D Rendering")]
+			[Description("Offloads 3D rendering to a separate thread. Only used for the software renderer.")]
 			[DefaultValue(true)]
 			public bool ThreadedRendering { get; set; }
+
+			[JsonIgnore]
+			private int _glScaleFactor;
+
+			[DisplayName("OpenGL Scale Factor")]
+			[Description("Factor at which OpenGL upscales the final image. Not used for the software renderer.")]
+			[DefaultValue(1)]
+			public int GLScaleFactor
+			{
+				get => _glScaleFactor;
+				set => _glScaleFactor = Math.Max(1, Math.Min(16, value));
+			}
+
+			[DisplayName("OpenGL Better Polygons")]
+			[Description("Enhances polygon quality with OpenGL. Not used for the software renderer.")]
+			[DefaultValue(false)]
+			public bool GLBetterPolygons { get; set; }
 
 			[JsonIgnore]
 			private DateTime _initaltime;
@@ -406,16 +429,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				set => _firmwaremessage = value.Substring(0, Math.Min(26, value.Length));
 			}
 
-			public NDSSyncSettings Clone() => MemberwiseClone() as NDSSyncSettings;
+			public NDSSyncSettings Clone()
+				=> (NDSSyncSettings)MemberwiseClone();
 
-			public static bool NeedsReboot(NDSSyncSettings x, NDSSyncSettings y) => !DeepEquality.DeepEquals(x, y);
+			public static bool NeedsReboot(NDSSyncSettings x, NDSSyncSettings y)
+				=> !DeepEquality.DeepEquals(x, y);
 
-			public NDSSyncSettings() => SettingsUtil.SetDefaultValues(this);
+			public NDSSyncSettings()
+				=> SettingsUtil.SetDefaultValues(this);
 		}
 
-		public NDSSettings GetSettings() => _settings.Clone();
+		public NDSSettings GetSettings()
+			=> _settings.Clone();
 
-		public NDSSyncSettings GetSyncSettings() => _syncSettings.Clone();
+		public NDSSyncSettings GetSyncSettings()
+			=> _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(NDSSettings o)
 		{
@@ -433,28 +461,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private static int SanitizeBirthdayDay(int day, NDSSyncSettings.Month fwMonth)
 		{
-			int maxdays;
-			switch (fwMonth)
+			var maxdays = fwMonth switch
 			{
-				case NDSSyncSettings.Month.February:
-					{
-						maxdays = 29;
-						break;
-					}
-				case NDSSyncSettings.Month.April:
-				case NDSSyncSettings.Month.June:
-				case NDSSyncSettings.Month.September:
-				case NDSSyncSettings.Month.November:
-					{
-						maxdays = 30;
-						break;
-					}
-				default:
-					{
-						maxdays = 31;
-						break;
-					}
-			}
+				NDSSyncSettings.Month.February => 29,
+				NDSSyncSettings.Month.April or NDSSyncSettings.Month.June or NDSSyncSettings.Month.September or NDSSyncSettings.Month.November => 30,
+				_ => 31
+			};
 
 			return Math.Max(1, Math.Min(day, maxdays));
 		}

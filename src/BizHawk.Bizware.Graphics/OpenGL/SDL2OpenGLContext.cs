@@ -1,4 +1,11 @@
+// #define DEBUG_OPENGL
+
 using System;
+
+#if DEBUG_OPENGL
+using System.Runtime.InteropServices;
+using Silk.NET.OpenGL.Legacy;
+#endif
 
 using static SDL2.SDL;
 
@@ -42,6 +49,12 @@ namespace BizHawk.Bizware.Graphics
 			SDL_SetHint(SDL_HINT_WINDOWS_ENABLE_MESSAGELOOP, "0");
 		}
 
+#if DEBUG_OPENGL
+		private static readonly DebugProc _debugProc = DebugCallback;
+		private static void DebugCallback(GLEnum source, GLEnum type, int id, GLEnum severity, int length, IntPtr message, IntPtr userParam)
+			=> Console.WriteLine($"{source} {type} {severity}: {Marshal.PtrToStringAnsi(message, length)}");
+#endif
+
 		private IntPtr _sdlWindow;
 		private IntPtr _glContext;
 
@@ -64,6 +77,13 @@ namespace BizHawk.Bizware.Graphics
 				throw new($"Could not set GL Context Flags! SDL Error: {SDL_GetError()}");
 			}
 
+#if DEBUG_OPENGL
+			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_DEBUG_FLAG) != 0)
+			{
+				throw new($"Could not set GL Debug Flag! SDL Error: {SDL_GetError()}");
+			}
+#endif
+
 			var profile = coreProfile
 				? SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE
 				: SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
@@ -78,6 +98,17 @@ namespace BizHawk.Bizware.Graphics
 			{
 				throw new($"Could not create GL Context! SDL Error: {SDL_GetError()}");
 			}
+
+#if DEBUG_OPENGL
+			if (GetGLProcAddress("glDebugMessageCallback") != IntPtr.Zero)
+			{
+				using var gl = GL.GetApi(GetGLProcAddress);
+				unsafe
+				{
+					gl.DebugMessageCallback(_debugProc, null);
+				}
+			}
+#endif
 		}
 
 		public SDL2OpenGLContext(IntPtr nativeWindowhandle, int majorVersion, int minorVersion, bool coreProfile, bool forwardCompatible)

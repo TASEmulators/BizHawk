@@ -62,14 +62,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static void LogCallback(LibMelonDS.LogLevel level, string message)
 			=> Console.Write($"[{level}] {message}");
 
+		private readonly MelonDSGLTextureProvider _glTextureProvider;
+		private readonly IOpenGLProvider _openGLProvider;
+		private readonly object _glContext;
+		private readonly LibMelonDS.GetGLProcAddressCallback _getGLProcAddressCallback;
+
+		private IntPtr GetGLProcAddressCallback(string proc)
+			=> _openGLProvider.GetGLProcAddress(proc);
+
 		[CoreConstructor(VSystemID.Raw.NDS)]
 		public NDS(CoreLoadParameters<NDSSettings, NDSSyncSettings> lp)
 			: base(lp.Comm, new()
 			{
 				DefaultWidth = 256,
 				DefaultHeight = 384,
-				MaxWidth = 256,
-				MaxHeight = 384,
+				MaxWidth = 256 * 16,
+				MaxHeight = 384 * 16,
 				MaxSamples = 1024,
 				DefaultFpsNumerator = 33513982,
 				DefaultFpsDenominator = 560190,
@@ -93,12 +101,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				throw new InvalidOperationException("Wrong number of ROMs!");
 			}
 
-			var gbacartpresent = roms.Count == 2;
-
 			InitMemoryCallbacks();
 
-			_tracecb = MakeTrace;
-			_threadstartcb = ThreadStartCallback;
+			_traceCallback = MakeTrace;
+			_threadStartCallback = ThreadStartCallback;
 
 			_configCallbackInterface.GetBoolean = GetBooleanSettingCallback;
 			_configCallbackInterface.GetInteger = GetIntegerSettingCallback;
@@ -109,6 +115,35 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_fileCallbackInterface.GetData = GetFileDataCallback;
 
 			_logCallback = LogCallback;
+
+			_openGLProvider = CoreComm.OpenGLProvider;
+			_getGLProcAddressCallback = GetGLProcAddressCallback;
+
+			if (lp.DeterministicEmulationRequested)
+			{
+				_activeSyncSettings.ThreeDeeRenderer = NDSSyncSettings.ThreeDeeRendererType.Software;
+			}
+
+			if (_activeSyncSettings.ThreeDeeRenderer != NDSSyncSettings.ThreeDeeRendererType.Software)
+			{
+				// ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+				var (majorGlVersion, minorGlVersion) = _activeSyncSettings.ThreeDeeRenderer switch
+				{
+					NDSSyncSettings.ThreeDeeRendererType.OpenGL_Classic => (3, 2),
+					// NDSSyncSettings.ThreeDeeRendererType.OpenGL_Compute => (4, 3),
+					_ => throw new InvalidOperationException($"Invalid {nameof(NDSSyncSettings.ThreeDeeRenderer)}")
+				};
+
+				if (!_openGLProvider.SupportsGLVersion(majorGlVersion, minorGlVersion))
+				{
+					lp.Comm.Notify($"OpenGL {majorGlVersion}.{minorGlVersion} is not supported on this machine, falling back to software renderer", null);
+					_activeSyncSettings.ThreeDeeRenderer = NDSSyncSettings.ThreeDeeRendererType.Software;
+				}
+				else
+				{
+					_glContext = _openGLProvider.RequestGLContext(majorGlVersion, minorGlVersion, true, false);
+				}
+			}
 
 			_core = PreInit<LibMelonDS>(new()
 			{
@@ -122,11 +157,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[]
 			{
-				_readcb, _writecb, _execcb, _tracecb, _threadstartcb,
+				_readCallback, _writeCallback, _execCallback, _traceCallback, _threadStartCallback,
 				_configCallbackInterface.GetBoolean, _configCallbackInterface.GetInteger,
 				_configCallbackInterface.GetString, _configCallbackInterface.GetArray,
 				_fileCallbackInterface.GetLength, _fileCallbackInterface.GetData,
-				_logCallback
+				_logCallback, _getGLProcAddressCallback
 			});
 
 			_activeSyncSettings.UseRealBIOS |= IsDSi;
@@ -164,22 +199,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			else
 			{
 				AddCoreFile("nds.rom", roms[0]);
-				if (gbacartpresent)
+				if (roms.Count == 2)
 				{
 					AddCoreFile("gba.rom", roms[1]);
 				}
 			}
 
 			LibMelonDS.InitConfig initConfig;
-			initConfig.SkipFW = _activeSyncSettings.SkipFirmware;
-			initConfig.HasGBACart = gbacartpresent;
+			initConfig.SkipFW = _activeSyncSettings.SkipFirmware && !IsDSi;
+			initConfig.HasGBACart = roms.Count == 2;
 			initConfig.DSi = IsDSi;
 			initConfig.ClearNAND = _activeSyncSettings.ClearNAND || lp.DeterministicEmulationRequested;
 			initConfig.LoadDSiWare = IsDSiWare;
+			initConfig.IsWinApi = !OSTailoredCode.IsUnixHost;
 			initConfig.ThreeDeeRenderer = _activeSyncSettings.ThreeDeeRenderer;
 			initConfig.RenderSettings.SoftThreaded = _activeSyncSettings.ThreadedRendering;
-			initConfig.RenderSettings.GLScaleFactor = 1; // TODO
-			initConfig.RenderSettings.GLBetterPolygons = false; // TODO
+			initConfig.RenderSettings.GLScaleFactor = _activeSyncSettings.GLScaleFactor;
+			initConfig.RenderSettings.GLBetterPolygons = _activeSyncSettings.GLBetterPolygons;
 
 			_activeSyncSettings.FirmwareOverride |= !_activeSyncSettings.UseRealBIOS || lp.DeterministicEmulationRequested;
 
@@ -205,7 +241,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				ref initConfig,
 				_configCallbackInterface.AllCallbacksInArray(_adapter),
 				_fileCallbackInterface.AllCallbacksInArray(_adapter),
-				_logCallback);
+				_logCallback,
+				_getGLProcAddressCallback);
 			if (error != IntPtr.Zero)
 			{
 				using (_exe.EnterExit())
@@ -233,7 +270,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_frameThreadAction = CallingConventionAdapters
 					.GetWaterboxUnsafeUnwrapped()
 					.GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
-				_core.SetThreadStartCallback(_threadstartcb);
+				_core.SetThreadStartCallback(_threadStartCallback);
 			}
 
 			_disassembler = new(_core);
@@ -242,6 +279,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			const string TRACE_HEADER = "ARM9+ARM7: Opcode address, opcode, registers (r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, SP, LR, PC, Cy, CpuMode)";
 			Tracer = new TraceBuffer(TRACE_HEADER);
 			_serviceProvider.Register(Tracer);
+
+			if (_glContext != null)
+			{
+				_glTextureProvider = new(this, _core, () => _openGLProvider.ActivateGLContext(_glContext));
+				_serviceProvider.Register<IVideoProvider>(_glTextureProvider);
+			}
 		}
 
 		private static (ulong Full, uint Upper, uint Lower) GetDSiTitleId(IReadOnlyList<byte> file)
@@ -361,7 +404,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			_core.SetTraceCallback(Tracer.IsEnabled() ? _tracecb : null, _settings.GetTraceMask());
+			if (_glContext != null)
+			{
+				_openGLProvider.ActivateGLContext(_glContext);
+			}
+
+			_core.SetTraceCallback(Tracer.IsEnabled() ? _traceCallback : null, _settings.GetTraceMask());
+
 			return new LibMelonDS.FrameInfo
 			{
 				Time = GetRtcTime(!DeterministicEmulation),
@@ -376,7 +425,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private readonly IntPtr _frameThreadPtr;
 		private readonly Action _frameThreadAction;
-		private readonly LibMelonDS.ThreadStartCallback _threadstartcb;
+		private readonly LibMelonDS.ThreadStartCallback _threadStartCallback;
 
 		private readonly Thread _frameThread;
 		private readonly SemaphoreSlim _frameThreadStartEvent = new(0, 1);
@@ -391,6 +440,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_frameThread?.Join();
 			_frameThreadStartEvent.Dispose();
 			_frameThreadEndEvent.Dispose();
+
+			if (_glContext != null)
+			{
+				_openGLProvider.ReleaseGLContext(_glContext);
+			}
+
 			base.Dispose();
 		}
 
@@ -425,12 +480,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_frameThreadEndEvent.Wait();
 				_renderThreadRanThisFrame = false;
 			}
+
+			if (_glTextureProvider != null)
+			{
+				_glTextureProvider.VideoDirty = true;
+			}
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
 			SetMemoryCallbacks();
-			_core.SetThreadStartCallback(_threadstartcb);
+			_core.SetThreadStartCallback(_threadStartCallback);
 			if (_frameThreadPtr != _core.GetFrameThreadProc())
 			{
 				throw new InvalidOperationException("_frameThreadPtr mismatch");

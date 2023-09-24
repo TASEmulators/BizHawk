@@ -12,19 +12,24 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (IsDSiWare)
 			{
 				_core.DSiWareSavsLength(DSiTitleId.Lower, out var publicSavSize, out var privateSavSize, out var bannerSavSize);
-				if (publicSavSize + privateSavSize + bannerSavSize == 0) return null;
+				if (publicSavSize + privateSavSize + bannerSavSize == 0)
+				{
+					return null;
+				}
+
 				_exe.AddTransientFile(Array.Empty<byte>(), "public.sav");
 				_exe.AddTransientFile(Array.Empty<byte>(), "private.sav");
 				_exe.AddTransientFile(Array.Empty<byte>(), "banner.sav");
 				_core.ExportDSiWareSavs(DSiTitleId.Lower);
+
 				var publicSav = _exe.RemoveTransientFile("public.sav");
 				var privateSav = _exe.RemoveTransientFile("private.sav");
 				var bannerSav = _exe.RemoveTransientFile("banner.sav");
-				if (publicSav.Length != publicSavSize || privateSav.Length != privateSavSize ||
-					bannerSav.Length != bannerSavSize)
+				if (publicSav.Length != publicSavSize || privateSav.Length != privateSavSize || bannerSav.Length != bannerSavSize)
 				{
 					throw new InvalidOperationException("Unexpected size difference in DSiWare sav files!");
 				}
+
 				var ret = new byte[publicSavSize + privateSavSize + bannerSavSize];
 				publicSav.AsSpan().CopyTo(ret.AsSpan().Slice(0, publicSavSize));
 				privateSav.AsSpan().CopyTo(ret.AsSpan().Slice(publicSavSize, privateSavSize));

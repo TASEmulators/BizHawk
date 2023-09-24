@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public bool DSi;
 			public bool ClearNAND;
 			public bool LoadDSiWare;
+			public bool IsWinApi;
 			public NDS.NDSSyncSettings.ThreeDeeRendererType ThreeDeeRenderer;
 			public RenderSettings RenderSettings;
 		}
@@ -168,21 +169,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[UnmanagedFunctionPointer(CC)]
 		public delegate IntPtr GetGLProcAddressCallback(string proc);
 
-		[StructLayout(LayoutKind.Sequential)]
-		public struct GLCallbackInterface
-		{
-			public RequestGLContextCallback RequestGLContext;
-			public ReleaseGLContextCallback ReleaseGLContext;
-			public ActivateGLContextCallback ActivateGLContext;
-			public GetGLProcAddressCallback GetGLProcAddress;
-
-			public IntPtr[] AllCallbacksInArray(ICallingConventionAdapter adapter)
-			{
-				return new Delegate[] { RequestGLContext, ReleaseGLContext, ActivateGLContext, GetGLProcAddress }
-					.Select(adapter.GetFunctionPointerForDelegate).ToArray();
-			}
-		}
-
 		public enum LogLevel : int
 		{
 			Debug,
@@ -197,10 +183,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[BizImport(CC)]
 		public abstract IntPtr Init(
 			ref InitConfig loadData,
-			/* ref ConfigCallbackInterface */ IntPtr[] configCallbackInterface,
-			/* ref FileCallbackInterface */ IntPtr[] fileCallbackInterface,
-			// /* ref GLCallbackInterface */ IntPtr[] glCallbackInterface, // TODO
-			LogCallback logCallback);
+			IntPtr[] configCallbackInterface, /* ref ConfigCallbackInterface */
+			IntPtr[] fileCallbackInterface, /* ref FileCallbackInterface */
+			LogCallback logCallback,
+			GetGLProcAddressCallback getGLProcAddressCallback);
 
 		[BizImport(CC)]
 		public abstract void PutSaveRam(byte[] data, uint len);
@@ -271,5 +257,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract void GetNANDData(byte[] buf);
+
+		[BizImport(CC)]
+		public abstract int GetGLTexture();
+
+		[BizImport(CC)]
+		public abstract void ReadFrameBuffer(int[] buffer);
 	}
 }
