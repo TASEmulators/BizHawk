@@ -77,6 +77,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				_core.GetTouchCoords(ref x, ref y);
 			}
+			else
+			{
+				// no GL context, so nothing fancy can be applied
+				y = Math.Max(0, y - 192);
+			}
 
 			return new(x, y);
 		}

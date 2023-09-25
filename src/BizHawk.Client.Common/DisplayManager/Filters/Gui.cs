@@ -191,8 +191,8 @@ namespace BizHawk.Client.Common.Filters
 		{
 			var ret = _nds.GetTouchCoords((int)point.X, (int)point.Y);
 			var vp = _nds.AsVideoProvider();
-			ret.X *= vp.BufferWidth / 255.0f;
-			ret.Y *= vp.BufferHeight / 191.0f;
+			ret.X *= vp.BufferWidth / 256.0f;
+			ret.Y *= vp.BufferHeight / 192.0f;
 			return ret;
 		}
 
