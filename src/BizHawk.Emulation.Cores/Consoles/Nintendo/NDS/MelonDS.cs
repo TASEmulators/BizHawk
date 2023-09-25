@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -64,11 +65,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private readonly MelonDSGLTextureProvider _glTextureProvider;
 		private readonly IOpenGLProvider _openGLProvider;
-		private readonly object _glContext;
 		private readonly LibMelonDS.GetGLProcAddressCallback _getGLProcAddressCallback;
+		private object _glContext;
 
 		private IntPtr GetGLProcAddressCallback(string proc)
 			=> _openGLProvider.GetGLProcAddress(proc);
+
+		public Vector2 GetTouchCoords(int x, int y)
+		{
+			if (_glContext != null)
+			{
+				_core.GetTouchCoords(ref x, ref y);
+			}
+
+			return new(x, y);
+		}
 
 		[CoreConstructor(VSystemID.Raw.NDS)]
 		public NDS(CoreLoadParameters<NDSSettings, NDSSyncSettings> lp)
@@ -77,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				DefaultWidth = 256,
 				DefaultHeight = 384,
 				MaxWidth = 256 * 16,
-				MaxHeight = 384 * 16,
+				MaxHeight = (384 + 128) * 16,
 				MaxSamples = 1024,
 				DefaultFpsNumerator = 33513982,
 				DefaultFpsDenominator = 560190,
@@ -142,6 +153,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				else
 				{
 					_glContext = _openGLProvider.RequestGLContext(majorGlVersion, minorGlVersion, true, false);
+				}
+			}
+
+			if (_activeSyncSettings.ThreeDeeRenderer == NDSSyncSettings.ThreeDeeRendererType.Software)
+			{
+				if (!_openGLProvider.SupportsGLVersion(3, 1))
+				{
+					lp.Comm.Notify("OpenGL 3.1 is not supported on this machine, screen control options will not work.", null);
+				}
+				else
+				{
+					_glContext = _openGLProvider.RequestGLContext(3, 1, true, false);
 				}
 			}
 
@@ -242,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_configCallbackInterface.AllCallbacksInArray(_adapter),
 				_fileCallbackInterface.AllCallbacksInArray(_adapter),
 				_logCallback,
-				_getGLProcAddressCallback);
+				_glContext != null ? _getGLProcAddressCallback : null);
 			if (error != IntPtr.Zero)
 			{
 				using (_exe.EnterExit())
@@ -284,6 +307,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				_glTextureProvider = new(this, _core, () => _openGLProvider.ActivateGLContext(_glContext));
 				_serviceProvider.Register<IVideoProvider>(_glTextureProvider);
+				RefreshScreenSettings(_settings);
 			}
 		}
 
@@ -444,6 +468,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (_glContext != null)
 			{
 				_openGLProvider.ReleaseGLContext(_glContext);
+				_glContext = null;
 			}
 
 			base.Dispose();

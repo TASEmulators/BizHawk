@@ -101,25 +101,33 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public enum ScreenLayoutKind
 		{
+			Natural,
 			Vertical,
 			Horizontal,
+			[Display(Name = "Top Only")]
 			Top,
+			[Display(Name = "Bottom Only")]
 			Bottom,
 		}
 
 		public enum ScreenRotationKind
 		{
+			[Display(Name = "0°")]
 			Rotate0,
+			[Display(Name = "90°")]
 			Rotate90,
+			[Display(Name = "180°")]
 			Rotate180,
+			[Display(Name = "270°")]
 			Rotate270,
 		}
 
 		public class NDSSettings
 		{
 			[DisplayName("Screen Layout")]
-			[Description("Adjusts the layout of the screens")]
-			[DefaultValue(ScreenLayoutKind.Vertical)]
+			[Description("Adjusts the layout of the screens. Natural will change between Vertical and Horizontal depending on Screen Rotation")]
+			[DefaultValue(ScreenLayoutKind.Natural)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ScreenLayoutKind ScreenLayout { get; set; }
 
 			[DisplayName("Invert Screens")]
@@ -130,6 +138,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DisplayName("Rotation")]
 			[Description("Adjusts the orientation of the screens")]
 			[DefaultValue(ScreenRotationKind.Rotate0)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ScreenRotationKind ScreenRotation { get; set; }
 
 			[JsonIgnore]
@@ -147,13 +156,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public enum AudioBitDepthType : int
 			{
 				Auto,
+				[Display(Name = "10")]
 				Ten,
+				[Display(Name = "16")]
 				Sixteen,
 			}
 
 			[DisplayName("Audio Bit Depth")]
 			[Description("Auto will set the audio bit depth most accurate to the console (10 for DS, 16 for DSi).")]
 			[DefaultValue(AudioBitDepthType.Auto)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public AudioBitDepthType AudioBitDepth { get; set; }
 
 			[DisplayName("Alt Lag")]
@@ -445,9 +457,56 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public NDSSyncSettings GetSyncSettings()
 			=> _syncSettings.Clone();
 
+		private void RefreshScreenSettings(NDSSettings settings)
+		{
+			var screenSettings = new LibMelonDS.ScreenSettings
+			{
+				ScreenLayout = settings.ScreenLayout switch
+				{
+					ScreenLayoutKind.Natural => LibMelonDS.ScreenLayout.Natural,
+					ScreenLayoutKind.Vertical => LibMelonDS.ScreenLayout.Vertical,
+					ScreenLayoutKind.Horizontal => LibMelonDS.ScreenLayout.Horizontal,
+					_ => LibMelonDS.ScreenLayout.Natural,
+				},
+				ScreenRotation = settings.ScreenRotation switch
+				{
+					ScreenRotationKind.Rotate0 => LibMelonDS.ScreenRotation.Deg0,
+					ScreenRotationKind.Rotate90 => LibMelonDS.ScreenRotation.Deg90,
+					ScreenRotationKind.Rotate180 => LibMelonDS.ScreenRotation.Deg180,
+					ScreenRotationKind.Rotate270 => LibMelonDS.ScreenRotation.Deg270,
+					_ => LibMelonDS.ScreenRotation.Deg0,
+				},
+				ScreenSizing = settings.ScreenLayout switch
+				{
+					ScreenLayoutKind.Top => LibMelonDS.ScreenSizing.TopOnly,
+					ScreenLayoutKind.Bottom => LibMelonDS.ScreenSizing.BotOnly,
+					_ => LibMelonDS.ScreenSizing.Even,
+				},
+				ScreenGap = Math.Max(0, Math.Min(settings.ScreenGap, 128)),
+				ScreenSwap = settings.ScreenInvert
+			};
+
+			_openGLProvider.ActivateGLContext(_glContext); // SetScreenSettings will re-present the frame, so needs OpenGL context active
+			_core.SetScreenSettings(ref screenSettings, out var w , out var h, out var vw, out var vh);
+
+			BufferWidth = w;
+			BufferHeight = h;
+			_glTextureProvider.VirtualWidth = vw;
+			_glTextureProvider.VirtualHeight = vh;
+			_glTextureProvider.VideoDirty = true;
+		}
+
 		public PutSettingsDirtyBits PutSettings(NDSSettings o)
 		{
 			var ret = NDSSettings.NeedsScreenResize(_settings, o);
+
+			// ScreenInvert changing won't need a screen resize
+			// but it will change the underlying image
+			if (_glContext != null && (ret || _settings.ScreenInvert != o.ScreenInvert))
+			{
+				RefreshScreenSettings(o);
+			}
+
 			_settings = o;
 			return ret ? PutSettingsDirtyBits.ScreenLayoutChanged : PutSettingsDirtyBits.None;
 		}

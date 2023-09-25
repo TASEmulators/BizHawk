@@ -158,15 +158,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		[UnmanagedFunctionPointer(CC)]
-		public delegate IntPtr RequestGLContextCallback();
-
-		[UnmanagedFunctionPointer(CC)]
-		public delegate void ReleaseGLContextCallback(IntPtr context);
-
-		[UnmanagedFunctionPointer(CC)]
-		public delegate void ActivateGLContextCallback(IntPtr context);
-
-		[UnmanagedFunctionPointer(CC)]
 		public delegate IntPtr GetGLProcAddressCallback(string proc);
 
 		public enum LogLevel : int
@@ -263,5 +254,45 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract void ReadFrameBuffer(int[] buffer);
+
+		public enum ScreenLayout : int
+		{
+			Natural,
+			Vertical,
+			Horizontal,
+			// TODO? do we want this?
+			// Hybrid,
+		}
+
+		public enum ScreenRotation : int
+		{
+			Deg0,
+			Deg90,
+			Deg180,
+			Deg270,
+		}
+
+		public enum ScreenSizing : int
+		{
+			Even = 0,
+			TopOnly = 4,
+			BotOnly = 5,
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct ScreenSettings
+		{
+			public ScreenLayout ScreenLayout;
+			public ScreenRotation ScreenRotation;
+			public ScreenSizing ScreenSizing;
+			public int ScreenGap;
+			public bool ScreenSwap;
+		}
+
+		[BizImport(CC)]
+		public abstract void SetScreenSettings(ref ScreenSettings screenSettings, out int width, out int height, out int vwidth, out int vheight);
+
+		[BizImport(CC)]
+		public abstract void GetTouchCoords(ref int x, ref int y);
 	}
 }

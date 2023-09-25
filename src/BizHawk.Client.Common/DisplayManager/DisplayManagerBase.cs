@@ -593,18 +593,6 @@ namespace BizHawk.Client.Common
 					videoProvider.BufferWidth, videoProvider.BufferHeight, out virtualWidth, out virtualHeight);
 			}
 
-			// TODO: it is bad that this is happening outside the filter chain
-			// the filter chain has the ability to add padding...
-			// for now, we have to have some hacks. this could be improved by refactoring the filter setup hacks to be in one place only though
-			// could the PADDING be done as filters too? that would be nice.
-			var fCoreScreenControl = CreateCoreScreenControl();
-			if (fCoreScreenControl != null)
-			{
-				var sz = fCoreScreenControl.PresizeInput("default", new(bufferWidth, bufferHeight));
-				virtualWidth = bufferWidth = sz.Width;
-				virtualHeight = bufferHeight = sz.Height;
-			}
-
 			var padding = CalculateCompleteContentPaddingSum(true, false);
 			virtualWidth += padding.Horizontal;
 			virtualHeight += padding.Vertical;
@@ -768,23 +756,9 @@ namespace BizHawk.Client.Common
 
 			var bufferWidth = videoProvider.BufferWidth;
 			var bufferHeight = videoProvider.BufferHeight;
-			var presenterTextureWidth = bufferWidth;
-			var presenterTextureHeight = bufferHeight;
 
 			var vw = videoProvider.VirtualWidth;
 			var vh = videoProvider.VirtualHeight;
-
-			// TODO: it is bad that this is happening outside the filter chain
-			// the filter chain has the ability to add padding...
-			// for now, we have to have some hacks. this could be improved by refactoring the filter setup hacks to be in one place only though
-			// could the PADDING be done as filters too? that would be nice.
-			var fCoreScreenControl = CreateCoreScreenControl();
-			if(fCoreScreenControl != null)
-			{
-				var sz = fCoreScreenControl.PresizeInput("default", new(bufferWidth, bufferHeight));
-				presenterTextureWidth = vw = sz.Width;
-				presenterTextureHeight = vh = sz.Height;
-			}
 
 			if (GlobalConfig.DispFixAspectRatio)
 			{
@@ -862,7 +836,7 @@ namespace BizHawk.Client.Common
 			if (fPresent != null)
 			{
 				fPresent.VirtualTextureSize = new(vw, vh);
-				fPresent.TextureSize = new(presenterTextureWidth, presenterTextureHeight);
+				fPresent.TextureSize = new(bufferWidth, bufferHeight);
 				fPresent.BackgroundColor = videoProvider.BackgroundColor;
 				fPresent.Config_FixAspectRatio = GlobalConfig.DispFixAspectRatio;
 				fPresent.Config_FixScaleInteger = GlobalConfig.DispFixScaleInteger;

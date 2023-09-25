@@ -9,7 +9,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private readonly IVideoProvider _vp;
 		private readonly LibMelonDS _core;
 		private readonly Action _activateGLContextCallback;
-		private readonly int[] _vbuf = new int[256 * 16 * 384 * 16];
 
 		internal bool VideoDirty;
 
@@ -25,18 +24,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public int[] GetVideoBuffer()
 		{
+			var vb = _vp.GetVideoBuffer();
 			if (VideoDirty)
 			{
 				_activateGLContextCallback();
-				_core.ReadFrameBuffer(_vbuf);
+				_core.ReadFrameBuffer(vb);
 				VideoDirty = false;
 			}
 
-			return _vbuf;
+			return vb;
 		}
 
-		public int VirtualWidth => 256;
-		public int VirtualHeight => 384;
+		public int VirtualWidth { get; internal set; }
+		public int VirtualHeight { get; internal set; }
 		public int BufferWidth => _vp.BufferWidth;
 		public int BufferHeight => _vp.BufferHeight;
 		public int VsyncNumerator => _vp.VsyncNumerator;
