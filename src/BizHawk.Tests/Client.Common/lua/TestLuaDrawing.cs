@@ -58,7 +58,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			BitmapBufferVideoProvider vp = new BitmapBufferVideoProvider(new BitmapBuffer(8, 8));
 			var buffer = displayManager.RenderOffscreenLua(vp);
 
-			Assert.AreEqual(buffer.GetPixel(2, 2), Color.Red.ToArgb());
+			Assert.AreEqual(Color.Red.ToArgb(), buffer.GetPixel(2, 2));
 		}
 
 		[TestMethod]
@@ -70,8 +70,8 @@ namespace BizHawk.Tests.Client.Common.Lua
 			BitmapBufferVideoProvider vp = new BitmapBufferVideoProvider(new BitmapBuffer(8, 8));
 			var buffer = displayManager.RenderOffscreenLua(vp);
 
-			Assert.AreEqual(buffer.GetPixel(2, 2), Color.Red.ToArgb());
-			Assert.AreEqual((uint)buffer.GetPixel(2, 4), 0xff00ff00);
+			Assert.AreEqual(Color.Red.ToArgb(), buffer.GetPixel(2, 2));
+			Assert.AreEqual(0xff00ff00, (uint)buffer.GetPixel(2, 4));
 		}
 
 	}
