@@ -7,7 +7,7 @@ namespace GLPresenter
 {
 
 void Init(u32 scale);
-std::pair<u32, u32> Present(bool filter);
+std::pair<u32, u32> Present();
 
 }
 

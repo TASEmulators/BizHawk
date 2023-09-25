@@ -18,6 +18,7 @@
 
 static bool SkipFW;
 static time_t CurTime;
+static bool GLPresentation;
 
 struct InitConfig
 {
@@ -60,25 +61,31 @@ ECL_EXPORT const char* Init(InitConfig* initConfig,
 		return "Failed to init core!";
 	}
 
-	switch (initConfig->ThreeDeeRenderer)
+	if (loadGLProc)
 	{
-		case 0:
-			break;
-		case 1:
-			BizOGL::LoadGL(loadGLProc, BizOGL::LoadGLVersion::V3_2, initConfig->IsWinApi);
-			break;
-#if false
-		case 2:
-			BizOGL::LoadGL(loadGLProc, BizOGL::LoadGLVersion::V4_3, initConfig->IsWinApi);
-			break;
+		switch (initConfig->ThreeDeeRenderer)
+		{
+			case 0:
+				BizOGL::LoadGL(loadGLProc, BizOGL::LoadGLVersion::V3_1, initConfig->IsWinApi);
+				break;
+			case 1:
+				BizOGL::LoadGL(loadGLProc, BizOGL::LoadGLVersion::V3_2, initConfig->IsWinApi);
+				break;
+#if false // OpenGL Compute Renderer isn't released yet
+			case 2:
+				BizOGL::LoadGL(loadGLProc, BizOGL::LoadGLVersion::V4_3, initConfig->IsWinApi);
+				break;
 #endif
-		default:
-			return "Unknown 3DRenderer!";
-	}
+			default:
+				return "Unknown 3DRenderer!";
+		}
 
-	if (initConfig->ThreeDeeRenderer)
+		GLPresenter::Init(initConfig->ThreeDeeRenderer ? initConfig->RenderSettings.GL_ScaleFactor : 1);
+		GLPresentation = true;
+	}
+	else
 	{
-		GLPresenter::Init(initConfig->RenderSettings.GL_ScaleFactor);
+		GLPresentation = false;
 	}
 
 	GPU::InitRenderer(initConfig->ThreeDeeRenderer);
@@ -192,15 +199,18 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 
 	NDS::RunFrame();
 
-	if (GPU3D::CurrentRenderer->Accelerated)
-	{
-		std::tie(f->Width, f->Height) = GLPresenter::Present(false);
-	}
-	else
+	if (!GPU3D::CurrentRenderer->Accelerated)
 	{
 		auto softRenderer = reinterpret_cast<GPU3D::SoftRenderer*>(GPU3D::CurrentRenderer.get());
 		softRenderer->StopRenderThread();
+	}
 
+	if (GLPresentation)
+	{
+		std::tie(f->Width, f->Height) = GLPresenter::Present();
+	}
+	else
+	{
 		constexpr u32 SingleScreenSize = 256 * 192;
 		memcpy(f->VideoBuffer, GPU::Framebuffer[GPU::FrontBuffer][0], SingleScreenSize * sizeof(u32));
 		memcpy(f->VideoBuffer + SingleScreenSize, GPU::Framebuffer[GPU::FrontBuffer][1], SingleScreenSize * sizeof(u32));
@@ -210,9 +220,9 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	}
 
 	f->Samples = SPU::ReadOutput(f->SoundBuffer);
-	if (f->Samples == 0) // hack
+	if (f->Samples == 0) // hack when core decides to stop outputting audio altogether (lid closed or power off)
 	{
-		memset(f->SoundBuffer, 0, 737 * 2 * sizeof (u16));
+		memset(f->SoundBuffer, 0, 737 * 2 * sizeof(u16));
 		f->Samples = 737;
 	}
 

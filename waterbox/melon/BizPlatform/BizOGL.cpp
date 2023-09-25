@@ -574,7 +574,7 @@ PFNGLWAITSYNCPROC biz_glWaitSync;
 namespace BizOGL
 {
 
-static void LoadGL3_2(LoadGLProc load)
+static void LoadGL3_1(LoadGLProc load)
 {
 	// 1.0
 	biz_glCullFace = (PFNGLCULLFACEPROC)load("glCullFace");
@@ -892,6 +892,12 @@ static void LoadGL3_2(LoadGLProc load)
 	biz_glGetActiveUniformBlockiv = (PFNGLGETACTIVEUNIFORMBLOCKIVPROC)load("glGetActiveUniformBlockiv");
 	biz_glGetActiveUniformBlockName = (PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC)load("glGetActiveUniformBlockName");
 	biz_glUniformBlockBinding = (PFNGLUNIFORMBLOCKBINDINGPROC)load("glUniformBlockBinding");
+}
+
+static void LoadGL3_2(LoadGLProc load)
+{
+	// 1.0 - 3.1
+	LoadGL3_1(load);
 
 	// 3.2
 	biz_glDrawElementsBaseVertex = (PFNGLDRAWELEMENTSBASEVERTEXPROC)load("glDrawElementsBaseVertex");
@@ -1183,6 +1189,9 @@ void LoadGL(LoadGLProc load, LoadGLVersion version, bool isWinApi)
 {
 	switch (version)
 	{
+		case LoadGLVersion::V3_1:
+			LoadGL3_1(load);
+			break;
 		case LoadGLVersion::V3_2:
 			LoadGL3_2(load);
 			break;

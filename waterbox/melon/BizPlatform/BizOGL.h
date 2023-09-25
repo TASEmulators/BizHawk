@@ -20,6 +20,7 @@ using LoadGLProc = void* (*)(const char* proc);
 
 enum class LoadGLVersion
 {
+	V3_1,
 	V3_2,
 	V4_3,
 };
