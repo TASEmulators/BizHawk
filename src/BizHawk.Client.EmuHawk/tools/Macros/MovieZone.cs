@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (key == "")
 			{
-				key = movieSession.MovieController.LogEntryGenerator.GenerateLogKey();
+				key = Bk2LogEntryGenerator.GenerateLogKey(movieSession.MovieController.Definition);
 			}
 
 			key = key.Replace("#", "");
@@ -35,9 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			// Get a IController that only contains buttons in key.
 			InitController(_inputKey);
 
-			var logGenerator = _controller.LogEntryGenerator;
-
-			string movieKey = logGenerator.GenerateLogKey().Replace("#", "");
+			string movieKey = Bk2LogEntryGenerator.GenerateLogKey(_controller.Definition).Replace("#", "");
 			movieKey = movieKey[..^1];
 			if (key == movieKey)
 			{
@@ -51,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 0; i < length; i++)
 				{
 					_controller.SetFrom(movieSession.Movie.GetInputState(i + start));
-					_log[i] = logGenerator.GenerateLogEntry();
+					_log[i] = Bk2LogEntryGenerator.GenerateLogEntry(_controller);
 				}
 			}
 		}
@@ -82,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_controller = _movieSession.GenerateMovieController(d.MakeImmutable(), _emulator.SystemId);
+			_controller = _movieSession.GenerateMovieController(d.MakeImmutable());
 		}
 
 		public string Name { get; set; }
@@ -115,18 +113,16 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var newController = _movieSession.GenerateMovieController(d.MakeImmutable(), _emulator.SystemId);
-			var logGenerator = newController.LogEntryGenerator;
-			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
+			var newController = _movieSession.GenerateMovieController(d.MakeImmutable());
 
 			// Reset all buttons in targetController (it may still have buttons that aren't being set here set true)
-			_targetController.SetFromMnemonic(_targetController.LogEntryGenerator.EmptyEntry);
+			_targetController.SetFromMnemonic(Bk2LogEntryGenerator.EmptyEntry(_targetController));
 			for (int i = 0; i < Length; i++)
 			{
 				_controller.SetFromMnemonic(_log[i]);
 				LatchFromSourceButtons(_targetController, _controller);
 				newController.SetFrom(_targetController);
-				_log[i] = logGenerator.GenerateLogEntry();
+				_log[i] = Bk2LogEntryGenerator.GenerateLogEntry(newController);
 			}
 
 			_controller = newController;
@@ -232,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 			// If the LogKey contains buttons/controls not accepted by the emulator,
 			//	tell the user and display the macro's controller name and player count
 			_inputKey = readText[0];
-			string key = _movieSession.MovieController.LogEntryGenerator.GenerateLogKey();
+			string key = Bk2LogEntryGenerator.GenerateLogKey(_movieSession.MovieController.Definition);
 			key = key.Replace("#", "");
 			key = key[..^1];
 			string[] emuKeys = key.Split('|');

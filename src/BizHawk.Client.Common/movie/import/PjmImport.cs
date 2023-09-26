@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.IO;
-using BizHawk.Client.Common.movie.import;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;
@@ -181,7 +180,8 @@ namespace BizHawk.Client.Common
 				info.Player2Type,
 				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None
 			};
-			SimpleLogEntryController controllers = new(Octoshock.CreateControllerDefinition(settings), Result.Movie.SystemID);
+			SimpleController controllers = new(Octoshock.CreateControllerDefinition(settings));
+			controllers.Definition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
 
 			string[] buttons =
 			{
@@ -291,7 +291,8 @@ namespace BizHawk.Client.Common
 				info.Player2Type,
 				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None
 			};
-			SimpleLogEntryController controllers = new(Octoshock.CreateControllerDefinition(settings), Result.Movie.SystemID);
+			SimpleController controllers = new(Octoshock.CreateControllerDefinition(settings));
+			controllers.Definition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
 
 			string[] buttons =
 			{

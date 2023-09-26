@@ -46,13 +46,13 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void AppendFrame(ILogEntryController source)
+		public void AppendFrame(IController source)
 		{
-			Log.Add(source.LogEntryGenerator.GenerateLogEntry());
+			Log.Add(Bk2LogEntryGenerator.GenerateLogEntry(source));
 			Changes = true;
 		}
 
-		public virtual void RecordFrame(int frame, ILogEntryController source)
+		public virtual void RecordFrame(int frame, IController source)
 		{
 			if (Session.Settings.VBAStyleMovieLoadState)
 			{
@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			SetFrameAt(frame, source.LogEntryGenerator.GenerateLogEntry());
+			SetFrameAt(frame, Bk2LogEntryGenerator.GenerateLogEntry(source));
 
 			Changes = true;
 		}
@@ -80,17 +80,17 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < FrameCount && frame >= -1)
 			{
-				_adapter ??= new Bk2Controller(LogKey, Session.MovieController.Definition, Session.Movie.SystemID);
-				_adapter.SetFromMnemonic(frame >= 0 ? Log[frame] : Session.MovieController.LogEntryGenerator.EmptyEntry);
+				_adapter ??= new Bk2Controller(Session.MovieController.Definition, LogKey);
+				_adapter.SetFromMnemonic(frame >= 0 ? Log[frame] : Bk2LogEntryGenerator.EmptyEntry(_adapter));
 				return _adapter;
 			}
 
 			return null;
 		}
 
-		public virtual void PokeFrame(int frame, ILogEntryController source)
+		public virtual void PokeFrame(int frame, IController source)
 		{
-			SetFrameAt(frame, source.LogEntryGenerator.GenerateLogEntry());
+			SetFrameAt(frame, Bk2LogEntryGenerator.GenerateLogEntry(source));
 			Changes = true;
 		}
 

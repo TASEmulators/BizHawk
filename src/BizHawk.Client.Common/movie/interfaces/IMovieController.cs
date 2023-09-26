@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
-	public interface IMovieController : ILogEntryController
+	public interface IMovieController : IController
 	{
 		/// <summary>
 		/// Latches to the given <see cref="IController" />

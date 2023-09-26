@@ -59,7 +59,6 @@ namespace BizHawk.Client.EmuHawk
 		private int _dataSize;
 
 		private Dictionary<string, double> _cachedControlProbabilities;
-		private Bk2LogEntryGenerator _logGenerator;
 		
 		private bool _previousDisplayMessage;
 		private bool _previousInvisibleEmulation;
@@ -1006,7 +1005,7 @@ namespace BizHawk.Client.EmuHawk
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 
 			if (clear_log) { _currentBotAttempt.Log.Clear(); }
-			_currentBotAttempt.Log.Add(_logGenerator.GenerateLogEntry());
+			_currentBotAttempt.Log.Add(Bk2LogEntryGenerator.GenerateLogEntry(InputManager.ClickyVirtualPadController));
 		}
 
 		private void StartBot()
@@ -1032,7 +1031,6 @@ namespace BizHawk.Client.EmuHawk
 				MovieSession.Movie.IsCountingRerecords = false;
 			}
 
-			_logGenerator = new Bk2LogEntryGenerator(MovieSession.Movie.SystemID, InputManager.ClickyVirtualPadController);
 			_cachedControlProbabilities = ControlProbabilities;
 
 			_doNotUpdateValues = true;

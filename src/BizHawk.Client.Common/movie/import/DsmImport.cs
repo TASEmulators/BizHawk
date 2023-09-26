@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using BizHawk.Client.Common.movie.import;
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
@@ -95,7 +94,8 @@ namespace BizHawk.Client.Common
 
 		private void ImportInputFrame(string line)
 		{
-			SimpleLogEntryController controller = new(DeSmuMEControllerDef, Result.Movie.SystemID);
+			DeSmuMEControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
+			SimpleController controller = new(DeSmuMEControllerDef);
 
 			controller["LidOpen"] = false;
 			controller["LidClose"] = false;

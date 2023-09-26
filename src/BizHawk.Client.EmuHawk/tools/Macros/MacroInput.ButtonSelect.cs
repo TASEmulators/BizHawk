@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -47,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			s.Refresh();
 
 			// Update the selected zone's key
-			string key = MovieSession.MovieController.LogEntryGenerator.GenerateLogKey();
+			string key = Bk2LogEntryGenerator.GenerateLogKey(MovieSession.MovieController.Definition);
 			key = key.Replace("#", "");
 
 			foreach (var box in _buttonBoxes)
