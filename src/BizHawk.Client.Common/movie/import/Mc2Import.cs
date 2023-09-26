@@ -146,7 +146,8 @@ namespace BizHawk.Client.Common.movie.import
 		{
 			var buttons = new[] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
 
-			SimpleLogEntryController controllers = new(_deck.Definition, Result.Movie.SystemID);
+			_deck.Definition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
+			SimpleController controllers = new(_deck.Definition);
 
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');

@@ -7,7 +7,6 @@ using System.ComponentModel;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.Properties;
-using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
@@ -351,29 +350,17 @@ namespace BizHawk.Client.EmuHawk
 				Rotatable = true,
 			});
 
-			var columnNames = MovieSession.MovieController.LogEntryGenerator.Map();
-
-			foreach (var (name, mnemonic0) in columnNames)
+			foreach ((string name, string mnemonic0, int maxLength) in MnemonicMap())
 			{
 				var mnemonic = Emulator.SystemId is VSystemID.Raw.N64 && N64CButtonSuffixes.Any(name.EndsWithOrdinal)
 					? $"c{mnemonic0.ToUpperInvariant()}" // prepend 'c' to differentiate from L/R buttons -- this only affects the column headers
 					: mnemonic0;
-				ColumnType type;
-				int digits;
-				if (ControllerType.Axes.TryGetValue(name, out var range))
-				{
-					type = ColumnType.Axis;
-					digits = Math.Max(mnemonic.Length, range.MaxDigits);
-				}
-				else
-				{
-					type = ColumnType.Boolean;
-					digits = mnemonic.Length;
-				}
+
+				var type = ControllerType.Axes.ContainsKey(name) ? ColumnType.Axis : ColumnType.Boolean;
 
 				TasView.AllColumns.Add(new(
 					name: name,
-					widthUnscaled: (digits * 6) + 14, // magic numbers reused in EditBranchTextPopUp() --feos // not since eb63fa5a9 (before 2.3.3) --yoshi
+					widthUnscaled: (maxLength * 6) + 14, // magic numbers reused in EditBranchTextPopUp() --feos // not since eb63fa5a9 (before 2.3.3) --yoshi
 					type: type,
 					text: mnemonic));
 			}
@@ -495,7 +482,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				var empty = MovieSession.MovieController.LogEntryGenerator.EmptyEntry;
+				var empty = Bk2LogEntryGenerator.EmptyEntry(MovieSession.MovieController);
 				foreach (var row in TasView.SelectedRows)
 				{
 					if (CurrentTasMovie[row].LogEntry != empty)
@@ -1253,6 +1240,28 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DialogController.ShowMessageBox($"Invalid mnemonic string: {inputLogEntry}", "Paste Input failed!");
 				return null;
+			}
+		}
+
+		private IEnumerable<(string Name, string Mnemonic, int MaxLength)> MnemonicMap()
+		{
+			if (MovieSession.MovieController.Definition.MnemonicsCache is null)
+				throw new InvalidOperationException("Can't build mnemonic map with empty mnemonics cache");
+
+			foreach (var playerControls in MovieSession.MovieController.Definition.ControlsOrdered)
+			{
+				foreach ((string name, AxisSpec? axisSpec) in playerControls)
+				{
+					if (axisSpec.HasValue)
+					{
+						string mnemonic = Bk2MnemonicLookup.LookupAxis(name, MovieSession.Movie.SystemID);
+						yield return (name, mnemonic, Math.Max(mnemonic.Length, axisSpec.Value.MaxDigits));
+					}
+					else
+					{
+						yield return (name, MovieSession.MovieController.Definition.MnemonicsCache[name].ToString(), 1);
+					}
+				}
 			}
 		}
 	}

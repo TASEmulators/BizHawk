@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.ComponentModel;
-
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -41,10 +40,10 @@ namespace BizHawk.Client.Common
 		void SetBoolStates(int frame, int count, string buttonName, bool val);
 		void InsertInput(int frame, string inputState);
 		void InsertInput(int frame, IEnumerable<string> inputLog);
-		void InsertInput(int frame, IEnumerable<ILogEntryController> inputStates);
+		void InsertInput(int frame, IEnumerable<IController> inputStates);
 
 		void InsertEmptyFrame(int frame, int count = 1);
-		int CopyOverInput(int frame, IEnumerable<ILogEntryController> inputStates);
+		int CopyOverInput(int frame, IEnumerable<IController> inputStates);
 
 		void RemoveFrame(int frame);
 		void RemoveFrames(ICollection<int> frames);

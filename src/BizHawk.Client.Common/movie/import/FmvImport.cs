@@ -94,10 +94,11 @@ namespace BizHawk.Client.Common.movie.import
 				NesRightPort = controller2 ? nameof(ControllerNES) : nameof(UnpluggedNES)
 			};
 			_deck = controllerSettings.Instantiate((x, y) => true).AddSystemToControllerDef();
+			_deck.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
 			syncSettings.Controls.NesLeftPort = controllerSettings.NesLeftPort;
 			syncSettings.Controls.NesRightPort = controllerSettings.NesRightPort;
 
-			SimpleLogEntryController controllers = new(_deck.ControllerDef, Result.Movie.SystemID);
+			SimpleController controllers = new(_deck.ControllerDef);
 
 			/*
 			 * 01 Right

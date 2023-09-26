@@ -56,14 +56,7 @@ namespace BizHawk.Client.Common
 			}
 
 			base.Attach(emulator);
-
-			foreach (var button in emulator.ControllerDefinition.BoolButtons)
-			{
-				_mnemonicCache[button] = Bk2MnemonicLookup.Lookup(button, emulator.SystemId);
-			}
 		}
-
-		private readonly Dictionary<string, char> _mnemonicCache = new Dictionary<string, char>();
 
 		public override bool StartsFromSavestate
 		{
@@ -146,7 +139,7 @@ namespace BizHawk.Client.Common
 		public void InvalidateEntireGreenzone()
 			=> InvalidateAfter(0);
 
-		private (int Frame, IMovieController Controller) _displayCache = (-1, new Bk2Controller(NullController.Instance.Definition, VSystemID.Raw.NULL));
+		private (int Frame, IMovieController Controller) _displayCache = (-1, new Bk2Controller(NullController.Instance.Definition));
 
 		/// <summary>
 		/// Returns the mnemonic value for boolean buttons, and actual value for axes,
@@ -162,12 +155,14 @@ namespace BizHawk.Client.Common
 			return CreateDisplayValueForButton(_displayCache.Controller, buttonName);
 		}
 
-		private string CreateDisplayValueForButton(IController adapter, string buttonName)
+		private static string CreateDisplayValueForButton(IController adapter, string buttonName)
 		{
+			// those Contains checks could be avoided by passing in the button type
+			// this should be considered if this becomes a significant performance issue
 			if (adapter.Definition.BoolButtons.Contains(buttonName))
 			{
 				return adapter.IsPressed(buttonName)
-					? _mnemonicCache[buttonName].ToString()
+					? adapter.Definition.MnemonicsCache![buttonName].ToString()
 					: "";
 			}
 

@@ -5,10 +5,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	internal class BkmControllerAdapter : ILogEntryController
+	internal class BkmControllerAdapter : IController
 	{
-		public Bk2LogEntryGenerator LogEntryGenerator { get; }
-
 		public BkmControllerAdapter(ControllerDefinition definition, string systemId)
 		{
 			// We do need to map the definition name to the legacy
@@ -34,7 +32,7 @@ namespace BizHawk.Client.Common
 				_ => "Null Controller",
 			};
 			Definition = new(copyFrom: definition, withName: name);
-			LogEntryGenerator = new Bk2LogEntryGenerator(systemId, this);
+			Definition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(systemId));
 		}
 
 		public ControllerDefinition Definition { get; set; }

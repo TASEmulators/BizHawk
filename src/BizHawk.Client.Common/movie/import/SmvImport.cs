@@ -189,7 +189,8 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			ControllerDefinition definition = new Snes9xControllers(ss).ControllerDefinition;
-			SimpleLogEntryController controllers = new(definition, Result.Movie.SystemID);
+			definition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
+			SimpleController controllers = new(definition);
 
 			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(definition);
 

@@ -196,9 +196,9 @@ namespace BizHawk.Client.Common
 				? MakeStringFor(_inputManager.AutofireStickyXorAdapter.Or(_movieSession.Movie.GetInputState(_emulator.Frame - 1)))
 				: InputStrImmediate();
 
-		private string MakeStringFor(IController controller)
+		private static string MakeStringFor(IController controller)
 		{
-			return _inputManager.InputDisplayGenerator.Generate(controller);
+			return Bk2InputDisplayGenerator.Generate(controller);
 		}
 
 		public string MakeIntersectImmediatePrevious()

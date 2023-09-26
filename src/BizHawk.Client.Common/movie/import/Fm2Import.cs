@@ -1,4 +1,3 @@
-using BizHawk.Client.Common.movie.import;
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
@@ -27,6 +26,7 @@ namespace BizHawk.Client.Common
 			};
 
 			_deck = controllerSettings.Instantiate((x, y) => true).AddSystemToControllerDef();
+			_deck.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
 
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
 
@@ -121,6 +121,7 @@ namespace BizHawk.Client.Common
 					{
 						controllerSettings.NesLeftPort = nameof(ControllerNES);
 						_deck = controllerSettings.Instantiate((x, y) => false).AddSystemToControllerDef();
+						_deck.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
 					}
 				}
 				else if (line.StartsWith("port1", StringComparison.OrdinalIgnoreCase))
@@ -129,6 +130,7 @@ namespace BizHawk.Client.Common
 					{
 						controllerSettings.NesRightPort = nameof(ControllerNES);
 						_deck = controllerSettings.Instantiate((x, y) => false).AddSystemToControllerDef();
+						_deck.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
 					}
 				}
 				else if (line.StartsWith("port2", StringComparison.OrdinalIgnoreCase))
@@ -149,6 +151,7 @@ namespace BizHawk.Client.Common
 					}
 
 					_deck = controllerSettings.Instantiate((x, y) => false)/*.AddSystemToControllerDef()*/; //TODO call omitted on purpose? --yoshi
+					_deck.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
 				}
 				else
 				{
@@ -158,6 +161,7 @@ namespace BizHawk.Client.Common
 
 			syncSettings.Controls = controllerSettings;
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
+			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(_deck.ControllerDef);
 		}
 
 		private IControllerDeck _deck;
@@ -165,7 +169,7 @@ namespace BizHawk.Client.Common
 		private readonly string[] _buttons = { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
 		private void ImportInputFrame(string line)
 		{
-			SimpleLogEntryController controllers = new(_deck.ControllerDef, Result.Movie.SystemID);
+			SimpleController controllers = new(_deck.ControllerDef);
 
 			string[] sections = line.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 			controllers["Reset"] = sections[1][0] == '1';

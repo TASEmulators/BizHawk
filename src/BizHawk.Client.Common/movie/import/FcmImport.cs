@@ -37,6 +37,7 @@ namespace BizHawk.Client.Common.movie.import
 				NesRightPort = nameof(ControllerNES)
 			};
 			_deck = controllerSettings.Instantiate((x, y) => true).AddSystemToControllerDef();
+			_deck.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
 
 			// 004 4-byte little-endian unsigned int: version number, must be 2
 			uint version = r.ReadUInt32();
@@ -143,7 +144,7 @@ namespace BizHawk.Client.Common.movie.import
 			// Advance to first byte of input data.
 			r.BaseStream.Position = firstFrameOffset;
 
-			SimpleLogEntryController controllers = new(_deck.ControllerDef, Result.Movie.SystemID);
+			SimpleController controllers = new(_deck.ControllerDef);
 
 			string[] buttons = { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			bool fds = false;

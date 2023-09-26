@@ -146,19 +146,19 @@ namespace BizHawk.Client.Common
 		/// Adds the given input to the movie
 		/// Note: this edits the input log without the normal movie recording logic applied
 		/// </summary>
-		void AppendFrame(ILogEntryController source);
+		void AppendFrame(IController source);
 
 		/// <summary>
 		/// Replaces the input at the given frame with the given input
 		/// Note: this edits the input log without the normal movie recording logic applied
 		/// </summary>
-		void PokeFrame(int frame, ILogEntryController source);
+		void PokeFrame(int frame, IController source);
 
 		/// <summary>
 		/// Records the given input into the given frame,
 		/// This is subject to normal movie recording logic
 		/// </summary>
-		void RecordFrame(int frame, ILogEntryController source);
+		void RecordFrame(int frame, IController source);
 
 		/// <summary>
 		/// Instructs the movie to remove all input from its input log starting with the input at frame.

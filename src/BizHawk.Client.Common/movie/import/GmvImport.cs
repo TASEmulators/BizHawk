@@ -89,8 +89,9 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			GPGXControlConverter controlConverter = new(input, systemId: VSystemID.Raw.GEN, cdButtons: false);
-			
-			SimpleLogEntryController controller = new(controlConverter.ControllerDef, Result.Movie.SystemID);
+
+			controlConverter.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
+			SimpleController controller = new(controlConverter.ControllerDef);
 
 			// Unknown.
 			r.ReadByte();
