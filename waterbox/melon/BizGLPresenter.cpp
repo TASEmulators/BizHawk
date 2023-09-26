@@ -8,6 +8,11 @@
 
 // half of this is taken from melonDS/src/frontend/qt_sdl/main.cpp
 
+namespace Frontend
+{
+	extern void M23_Transform(float* m, float& x, float& y);
+}
+
 namespace GLPresenter
 {
 
@@ -128,9 +133,9 @@ void Init(u32 scale)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, NDS_WIDTH, paddedHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, NDS_WIDTH, paddedHeight, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, nullptr);
 	static u8 zeroData[NDS_WIDTH * 4 * 4]{};
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, NDS_HEIGHT / 2, NDS_WIDTH, 2, GL_RGBA, GL_UNSIGNED_BYTE, zeroData);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, NDS_HEIGHT / 2, NDS_WIDTH, 2, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, zeroData);
 
 	glGenBuffers(1, &OutputPboID);
 
@@ -161,8 +166,8 @@ std::pair<u32, u32> Present()
 	else
 	{
 		glBindTexture(GL_TEXTURE_2D, InputTextureID);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, NDS_WIDTH, NDS_HEIGHT / 2, GL_RGBA, GL_UNSIGNED_BYTE, GPU::Framebuffer[GPU::FrontBuffer][0]);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, NDS_HEIGHT / 2 + 2, NDS_WIDTH, NDS_HEIGHT / 2, GL_RGBA, GL_UNSIGNED_BYTE, GPU::Framebuffer[GPU::FrontBuffer][1]);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, NDS_WIDTH, NDS_HEIGHT / 2, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, GPU::Framebuffer[GPU::FrontBuffer][0]);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, NDS_HEIGHT / 2 + 2, NDS_WIDTH, NDS_HEIGHT / 2, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, GPU::Framebuffer[GPU::FrontBuffer][1]);
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
@@ -177,7 +182,7 @@ std::pair<u32, u32> Present()
 	glFlush();
 
 	GLint oldPbo;
-	glGetIntegerv(GL_PIXEL_PACK_BUFFER, &oldPbo);
+	glGetIntegerv(GL_PIXEL_PACK_BUFFER_BINDING, &oldPbo);
 
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, OutputPboID);
 	glBufferData(GL_PIXEL_PACK_BUFFER, Width * Height * sizeof(u32), nullptr, GL_STREAM_READ);
@@ -196,7 +201,7 @@ ECL_EXPORT u32 GetGLTexture()
 ECL_EXPORT void ReadFrameBuffer(u32* buffer)
 {
 	GLint oldPbo;
-	glGetIntegerv(GL_PIXEL_PACK_BUFFER, &oldPbo);
+	glGetIntegerv(GL_PIXEL_PACK_BUFFER_BINDING, &oldPbo);
 
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, OutputPboID);
 	const auto p = static_cast<const u32*>(glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY));
@@ -232,8 +237,8 @@ static std::pair<u32, u32> GetScreenSize(const ScreenSettings* screenSettings, u
 		|| screenSettings->ScreenRotation == Frontend::screenRot_270Deg;
 	int gap = screenSettings->ScreenGap * scale;
 
-    int w = NDS_WIDTH * scale;
-    int h = (NDS_HEIGHT / 2) * scale;
+	int w = NDS_WIDTH * scale;
+	int h = (NDS_HEIGHT / 2) * scale;
 
 	if (screenSettings->ScreenSizing == Frontend::screenSizing_TopOnly
 		|| screenSettings->ScreenSizing == Frontend::screenSizing_BotOnly)
@@ -278,7 +283,7 @@ ECL_EXPORT void SetScreenSettings(const ScreenSettings* screenSettings, u32* wid
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, nullptr);
 
 		glDeleteFramebuffers(1, &OutputFboID);
 		glGenFramebuffers(1, &OutputFboID);
@@ -300,8 +305,8 @@ ECL_EXPORT void SetScreenSettings(const ScreenSettings* screenSettings, u32* wid
 
 	Present();
 
-	*width = Width;
-	*height = Height;
+	*width = w;
+	*height = h;
 
 	if (GLScale > 1)
 	{
@@ -311,8 +316,8 @@ ECL_EXPORT void SetScreenSettings(const ScreenSettings* screenSettings, u32* wid
 	}
 	else
 	{
-		*vwidth = Width;
-		*vheight = Height;
+		*vwidth = w;
+		*vheight = h;
 	}
 }
 
@@ -323,6 +328,23 @@ ECL_EXPORT void GetTouchCoords(int* x, int* y)
 		*x = 0;
 		*y = 0;
 	}
+}
+
+ECL_EXPORT void GetScreenCoords(float* x, float* y)
+{
+	for (int i = 0; i < NumScreens; i++)
+	{
+		// bottom screen
+		if (ScreenKinds[i] == 1)
+		{
+			Frontend::M23_Transform(&ScreenMatrix[i * 6], *x, *y);
+			return;
+		}
+	}
+
+	// bottom screen not visible
+	*x = 0;
+	*y = 0;
 }
 
 }
