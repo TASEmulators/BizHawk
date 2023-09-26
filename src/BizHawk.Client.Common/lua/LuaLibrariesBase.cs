@@ -351,8 +351,16 @@ namespace BizHawk.Client.Common
 			lf.Thread = SpawnCoroutine(lf);
 		}
 
-		public void ExecuteString(string command)
-			=> _luaWithoutFile.DoString(command);
+		public void ExecuteString(string command, LuaFile lf = null)
+		{
+			Lua lua = _luaWithoutFile;
+			if (lf != null)
+			{
+				if (_activeLuas.TryGetValue(lf, out Lua val))
+					lua = val;
+			}
+			lua.DoString(command);
+		}
 
 		private void CallFunction(NamedLuaFunction func, string name = null)
 		{

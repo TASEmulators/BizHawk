@@ -1374,14 +1374,17 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
+					LuaFile selectedFile = null;
+					if (SelectedFiles.Take(2).Count() == 1)
+						selectedFile = SelectedFiles.First();
 					LuaSandbox.Sandbox(null, () =>
 					{
-						LuaImp.ExecuteString($"console.log({InputBox.Text})");
+						LuaImp.ExecuteString($"console.log({InputBox.Text})", selectedFile);
 					}, () =>
 					{
 						LuaSandbox.Sandbox(null, () =>
 						{
-							LuaImp.ExecuteString(InputBox.Text);
+							LuaImp.ExecuteString(InputBox.Text, selectedFile);
 
 							if (OutputBox.Text == consoleBeforeCall)
 							{
