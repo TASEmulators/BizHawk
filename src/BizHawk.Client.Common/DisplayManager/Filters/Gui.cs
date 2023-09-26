@@ -197,11 +197,7 @@ namespace BizHawk.Client.Common.Filters
 		}
 
 		public override Vector2 TransformPoint(string channel, Vector2 point)
-		{
-			// TODO
-			Console.WriteLine($"TODO ScreenControlNDS TransformPoint {point.X} / {point.Y}");
-			return base.TransformPoint(channel, point);
-		}
+			=> _nds.GetScreenCoords(point.X, point.Y);
 	}
 
 	/// <summary>

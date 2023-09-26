@@ -71,6 +71,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private IntPtr GetGLProcAddressCallback(string proc)
 			=> _openGLProvider.GetGLProcAddress(proc);
 
+		// TODO: Probably can make these into an interface (ITouchScreen with UntransformPoint/TransformPoint methods?)
+		// Which case the hackiness of the current screen controls wouldn't be as bad
 		public Vector2 GetTouchCoords(int x, int y)
 		{
 			if (_glContext != null)
@@ -81,6 +83,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				// no GL context, so nothing fancy can be applied
 				y = Math.Max(0, y - 192);
+			}
+
+			return new(x, y);
+		}
+
+		public Vector2 GetScreenCoords(float x, float y)
+		{
+			if (_glContext != null)
+			{
+				_core.GetScreenCoords(ref x, ref y);
+			}
+			else
+			{
+				// no GL context, so nothing fancy can be applied
+				y = Math.Min(256, y + 192);
 			}
 
 			return new(x, y);

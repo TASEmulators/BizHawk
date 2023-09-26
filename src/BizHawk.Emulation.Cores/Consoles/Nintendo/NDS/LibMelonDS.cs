@@ -294,5 +294,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract void GetTouchCoords(ref int x, ref int y);
+
+		[BizImport(CC)]
+		public abstract void GetScreenCoords(ref float x, ref float y);
 	}
 }
