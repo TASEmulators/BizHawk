@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-
+﻿using System;
+using System.Collections.Generic;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Libretro;
 
-// ReSharper disable StyleCop.SA1509
 namespace BizHawk.Client.Common
 {
-	internal static class Bk2MnemonicLookup
+	public static class Bk2MnemonicLookup
 	{
 		public static char Lookup(string button, string systemId)
 		{
@@ -64,6 +63,8 @@ namespace BizHawk.Client.Common
 
 			return button;
 		}
+
+		public static Func<string, char> MnemonicFunc(string systemId) => buttonName => Lookup(buttonName, systemId);
 
 		private static readonly Dictionary<string, char> BaseMnemonicLookupTable = new Dictionary<string, char>
 		{

@@ -13,8 +13,6 @@ namespace BizHawk.Client.Common
 	// (1)->Input Display
 	public class InputManager
 	{
-		public Bk2InputDisplayGenerator InputDisplayGenerator { get; private set; }
-
 		// the original source controller, bound to the user, sort of the "input" port for the chain, i think
 		public Controller ActiveController { get; private set; }
 
@@ -53,23 +51,18 @@ namespace BizHawk.Client.Common
 
 		public Func<(Point Pos, long Scroll, bool LMB, bool MMB, bool RMB, bool X1MB, bool X2MB)> GetMainFormMouseInfo { get; set; }
 
-		private void SetActiveController(Controller controller, string systemId)
-		{
-			ActiveController = controller;
-			InputDisplayGenerator = new Bk2InputDisplayGenerator(systemId, ActiveController.Definition);
-		}
-
 		public void ResetMainControllers(AutofireController nullAutofireController)
 		{
-			SetActiveController(new Controller(NullController.Instance.Definition), VSystemID.Raw.NULL);
+			ActiveController = new Controller(NullController.Instance.Definition);
 			AutoFireController = nullAutofireController;
 		}
 
 		public void SyncControls(IEmulator emulator, IMovieSession session, Config config)
 		{
 			var def = emulator.ControllerDefinition;
+			def.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(emulator.SystemId));
 
-			SetActiveController(BindToDefinition(def, config.AllTrollers, config.AllTrollersAnalog, config.AllTrollersFeedbacks), emulator.SystemId);
+			ActiveController = BindToDefinition(def, config.AllTrollers, config.AllTrollersAnalog, config.AllTrollersFeedbacks);
 			AutoFireController = BindToDefinitionAF(emulator, config.AllTrollersAutoFire, config.AutofireOn, config.AutofireOff);
 
 			// allow propagating controls that are in the current controller definition but not in the prebaked one
