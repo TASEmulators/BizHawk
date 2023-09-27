@@ -77,6 +77,9 @@ namespace BizHawk.Client.Common
 				Session.PopupMessage("The current .tasproj is not compatible with this version of BizHawk! .tasproj features failed to load.");
 				Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
 			}
+
+			ChangeLog.Clear();
+			Changes = false;
 		}
 		
 		private void LoadTasprojExtras(ZipStateLoader bl)
