@@ -72,9 +72,9 @@ const char* InitNAND(bool clearNand, bool dsiWare)
 			return "Failed to obtain TMD!";
 		}
 
-		if (tmdData->second != sizeof(DSi_TMD::TitleMetadata))
+		if (tmdData->second < sizeof(DSi_TMD::TitleMetadata))
 		{
-			return "TMD is not the correct size!";
+			return "TMD is too small!";
 		}
 
 		DSi_TMD::TitleMetadata tmd;
