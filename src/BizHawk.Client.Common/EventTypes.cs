@@ -98,6 +98,32 @@ namespace BizHawk.Client.Common
 	}
 
 	/// <summary>
+	/// This class holds event data for HardReset event
+	/// </summary>
+	public sealed class HardResetEventArgs : EventArgs
+	{
+		/// <summary>
+		/// Initialize a new instance of <see cref="HardResetEventArgs"/>
+		/// </summary>
+		public HardResetEventArgs()
+		{
+		}
+	}
+
+	/// <summary>
+	/// This class holds event data for SoftReset event
+	/// </summary>
+	public sealed class SoftResetEventArgs : EventArgs
+	{
+		/// <summary>
+		/// Initialize a new instance of <see cref="SoftResetEventArgs"/>
+		/// </summary>
+		public SoftResetEventArgs()
+		{
+		}
+	}
+
+	/// <summary>
 	/// Represent a method that will handle the event raised before a quickload is done
 	/// </summary>
 	/// <param name="sender">Object that raised the event</param>
@@ -124,4 +150,18 @@ namespace BizHawk.Client.Common
 	/// <param name="sender">Object that raised the event</param>
 	/// <param name="e">Event arguments</param>
 	public delegate void StateSavedEventHandler(object sender, StateSavedEventArgs e);
+
+	/// <summary>
+	/// Represent a method that will handle the event raised when a hard reset is performed
+	/// </summary>
+	/// <param name="sender">Object that raised the event</param>
+	/// <param name="e">Event arguments</param>
+	public delegate void HardResetEventHandler(object sender, HardResetEventArgs e);
+
+	/// <summary>
+	/// Represent a method that will handle the event raised when a soft reset is performed
+	/// </summary>
+	/// <param name="sender">Object that raised the event</param>
+	/// <param name="e">Event arguments</param>
+	public delegate void SoftResetEventHandler(object sender, SoftResetEventArgs e);
 }

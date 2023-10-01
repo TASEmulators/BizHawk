@@ -31,6 +31,10 @@ namespace BizHawk.Client.Common
 
 		public event StateSavedEventHandler StateSaved;
 
+		public event HardResetEventHandler HardReset;
+
+		public event SoftResetEventHandler SoftReset;
+
 		public EmuClientApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManagerBase displayManager, Config config, IEmulator emulator, IGameInfo game)
 		{
 			_config = config;
@@ -139,6 +143,10 @@ namespace BizHawk.Client.Common
 		public void OnStateLoaded(object sender, string stateName) => StateLoaded?.Invoke(sender, new StateLoadedEventArgs(stateName));
 
 		public void OnStateSaved(object sender, string stateName) => StateSaved?.Invoke(sender, new StateSavedEventArgs(stateName));
+
+		public void OnHardReset(object sender) => HardReset?.Invoke(sender, new HardResetEventArgs());
+
+		public void OnSoftReset(object sender) => SoftReset?.Invoke(sender, new SoftResetEventArgs());
 
 		public bool OpenRom(string path)
 			=> _mainForm.LoadRom(path, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });

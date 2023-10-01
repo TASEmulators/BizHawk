@@ -2628,6 +2628,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InputManager.ClickyVirtualPadController.Click("Reset");
 				AddOnScreenMessage("Reset button pressed.");
+
+				EmuClient.OnSoftReset(this);
 			}
 		}
 
@@ -2639,6 +2641,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InputManager.ClickyVirtualPadController.Click("Power");
 				AddOnScreenMessage("Power button pressed.");
+
+				EmuClient.OnHardReset(this);
 			}
 		}
 

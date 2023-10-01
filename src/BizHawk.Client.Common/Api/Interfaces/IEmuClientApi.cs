@@ -32,6 +32,16 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		event StateSavedEventHandler StateSaved;
 
+		/// <summary>
+		/// Occurs when a hard reset is initiated
+		/// </summary>
+		event HardResetEventHandler HardReset;
+
+		/// <summary>
+		/// Occurs when a soft reset is initiated
+		/// </summary>
+		event SoftResetEventHandler SoftReset;
+
 		int BorderHeight();
 
 		int BorderWidth();
