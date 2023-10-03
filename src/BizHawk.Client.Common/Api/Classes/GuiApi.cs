@@ -642,6 +642,7 @@ namespace BizHawk.Client.Common
 			UnlockSurface(DisplaySurfaceID.Client);
 			foreach (var brush in _solidBrushes.Values) brush.Dispose();
 			foreach (var brush in _pens.Values) brush.Dispose();
+			ClearImageCache();
 		}
 	}
 }
