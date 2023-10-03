@@ -671,7 +671,9 @@ namespace BizHawk.Bizware.Graphics
 			using var target = new Texture(_device, tex.IntWidth, tex.IntHeight, 1, Usage.None, Format.A8R8G8B8, Pool.SystemMemory);
 			var tw = (TextureWrapper)tex.Opaque;
 
-			_device.GetRenderTargetData(tw.Texture.GetSurfaceLevel(0), target.GetSurfaceLevel(0));
+			using var rtSurf = tw.Texture.GetSurfaceLevel(0);
+			using var dstSurf = target.GetSurfaceLevel(0);
+			_device.GetRenderTargetData(rtSurf, dstSurf);
 
 			try
 			{
@@ -681,7 +683,7 @@ namespace BizHawk.Bizware.Graphics
 				{
 					throw new InvalidOperationException();
 				}
-				
+
 				var pixels = new int[tex.IntWidth * tex.IntHeight];
 				Marshal.Copy(dr.DataPointer, pixels, 0, tex.IntWidth * tex.IntHeight);
 				return new(tex.IntWidth, tex.IntHeight, pixels);
