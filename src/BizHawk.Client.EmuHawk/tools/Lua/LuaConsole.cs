@@ -1482,14 +1482,19 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			file.Toggle();
+			if (file.Paused)
+			{
+				file.State = LuaFile.RunState.Running;
+				return;
+			}
 
-			if (file.Enabled && file.Thread is null)
+			file.Toggle();
+			if (file.Enabled)
 			{
 				LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator); // First remove any existing registered functions for this file
 				EnableLuaFile(file);
 			}
-			else if (!file.Enabled && file.Thread is not null)
+			else if (!file.Enabled)
 			{
 				LuaImp.DisableLuaScript(file);
 				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
