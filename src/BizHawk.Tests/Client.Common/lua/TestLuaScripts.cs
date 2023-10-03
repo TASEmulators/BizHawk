@@ -42,7 +42,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 		{
 			LuaFile luaFile = new LuaFile("", path);
 			luaLibraries.ScriptList.Add(luaFile);
-			luaLibraries.EnableLuaFile(luaFile);
+			luaLibraries.EnableLuaFile(luaFile, false);
 
 			if (autoStart)
 				luaLibraries.ResumeScript(luaFile);

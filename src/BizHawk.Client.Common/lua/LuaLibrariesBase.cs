@@ -331,22 +331,27 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
-		public void SpawnAndSetFileThread(LuaFile lf)
+		public void SpawnAndSetFileThread(LuaFile lf, bool shareGlobals)
 		{ 
-			if (_activeLuas.ContainsKey(lf))
+			if (_activeLuas.TryGetValue(lf, out Lua al) && al != _luaWithoutFile)
 				_activeLuas[lf].Dispose();
 
-			Lua lua = new();
-			UpdatePackageTable(lua);
-			lua.RegisterFunction("print", this, typeof(LuaLibrariesBase).GetMethod(nameof(Print)));
-			// We cannot copy tables from one Lua to another, unfortunately. Directly assigning them doesn't work at all.
-			// Transferring each individual value to new tables mostly works, but not always.
-			// For example event.onframeend would receive bad LuaFunction references.
-			foreach (string name in _tablesForFunctions)
-				lua.NewTable(name);
-			foreach (var item in _functionsToRegister)
-				lua.RegisterFunction(item.Key, item.Value.Lib, item.Value.Func);
-			_activeLuas[lf] = lua;
+			if (shareGlobals)
+				_activeLuas[lf] = _luaWithoutFile;
+			else
+			{
+				Lua lua = new();
+				UpdatePackageTable(lua);
+				lua.RegisterFunction("print", this, typeof(LuaLibrariesBase).GetMethod(nameof(Print)));
+				// We cannot copy tables from one Lua to another, unfortunately. Directly assigning them doesn't work at all.
+				// Transferring each individual value to new tables mostly works, but not always.
+				// For example event.onframeend would receive bad LuaFunction references.
+				foreach (string name in _tablesForFunctions)
+					lua.NewTable(name);
+				foreach (var item in _functionsToRegister)
+					lua.RegisterFunction(item.Key, item.Value.Lib, item.Value.Func);
+				_activeLuas[lf] = lua;
+			}
 
 			lf.Thread = SpawnCoroutine(lf);
 		}
@@ -428,11 +433,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void EnableLuaFile(LuaFile item)
+		public void EnableLuaFile(LuaFile item, bool shareGlobals)
 		{
 			LuaSandbox.Sandbox(null, () =>
 			{
-				SpawnAndSetFileThread(item);
+				SpawnAndSetFileThread(item, shareGlobals);
 				LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(item.Path));
 			}, () =>
 			{
