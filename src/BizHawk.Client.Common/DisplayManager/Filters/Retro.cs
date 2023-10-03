@@ -201,7 +201,7 @@ namespace BizHawk.Client.Common.Filters
 				// scaleN controls both scaling type in horizontal and vertical directions. If scaleN is defined, scale_xN and scale_yN have no effect.
 				sp.Scale.X = FetchFloat(dict, $"scale_x{i}", 1);
 				sp.Scale.Y = FetchFloat(dict, $"scale_y{i}", 1);
-				if (dict.ContainsValue($"scale{i}"))
+				if (dict.ContainsKey($"scale{i}"))
 				{
 					sp.Scale.X = sp.Scale.Y = FetchFloat(dict, $"scale{i}", 1);
 				}
