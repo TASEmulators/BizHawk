@@ -34,6 +34,8 @@ namespace BizHawk.Client.EmuHawk
 			_cdreader = new(OpenTrackCallback, ReadSectorCallback, CloseTrackCallback, FirstTrackSectorCallback);
 			_lib.rc_hash_init_custom_filereader(ref _filereader);
 			_lib.rc_hash_init_custom_cdreader(ref _cdreader);
+
+			_http.DefaultRequestHeaders.UserAgent.ParseAdd($"BizHawk/{VersionInfo.GetEmuVersion()}");
 		}
 
 		private IntPtr _runtime;
