@@ -74,11 +74,10 @@ namespace BizHawk.Client.EmuHawk
 				if (!tsi.Enabled) continue;
 				ToolStripButton tsb = new() {
 					DisplayStyle = ToolStripItemDisplayStyle.Image,
-					Image = tsi.Image ?? IconMissingIcon.Value,
+					Image = tsi.Icon ?? IconMissingIcon.Value,
 					Text = tsi.Text,
 				};
-				var info = (ExternalToolManager.MenuItemInfo) tsi.Tag;
-				tsb.Click += (_, _) => info.TryLoad();
+				tsb.Click += (_, _) => tsi.TryLoad();
 				ToolBoxStrip.Items.Add(tsb);
 			}
 		}

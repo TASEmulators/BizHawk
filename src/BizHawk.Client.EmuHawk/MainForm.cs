@@ -193,7 +193,6 @@ namespace BizHawk.Client.EmuHawk
 			if (requestedExtToolDll != null)
 			{
 				var found = ExtToolManager.ToolStripItems.Where(static item => item.Enabled)
-					.Select(static item => (ExternalToolManager.MenuItemInfo) item.Tag)
 					.FirstOrNull(info => info.AsmFilename == requestedExtToolDll
 						|| Path.GetFileName(info.AsmFilename) == requestedExtToolDll
 						|| Path.GetFileNameWithoutExtension(info.AsmFilename) == requestedExtToolDll);
@@ -4000,7 +3999,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					ExtToolManager.BuildToolStrip();
+					ExtToolManager.BuildToolStripInfo();
 
 					EmuClient.OnRomLoaded();
 					return true;
@@ -4009,7 +4008,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// This shows up if there's a problem
 					Tools.Restart(Config, Emulator, Game);
-					ExtToolManager.BuildToolStrip();
+					ExtToolManager.BuildToolStripInfo();
 					OnRomChanged();
 					return false;
 				}
@@ -4142,7 +4141,7 @@ namespace BizHawk.Client.EmuHawk
 				DisplayManager.UpdateGlobals(Config, Emulator);
 				InputManager.SyncControls(Emulator, MovieSession, Config);
 				Tools.UpdateCheatRelatedTools(null, null);
-				ExtToolManager.BuildToolStrip();
+				ExtToolManager.BuildToolStripInfo();
 				PauseOnFrame = null;
 				CurrentlyOpenRom = null;
 				CurrentlyOpenRomArgs = null;

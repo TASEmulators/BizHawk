@@ -1182,7 +1182,14 @@ namespace BizHawk.Client.EmuHawk
 		private void ExternalToolMenuItem_DropDownOpening(object sender, EventArgs e)
 		{
 			ExternalToolMenuItem.DropDownItems.Clear();
-			ExternalToolMenuItem.DropDownItems.AddRange(ExtToolManager.ToolStripItems.ToArray());
+			ExternalToolMenuItem.DropDownItems.AddRange(ExtToolManager.ToolStripItems.Select(static (info) =>
+			{
+				return new ToolStripMenuItem(info.Text, info.Icon, (_, _) => info.TryLoad())
+				{
+					ToolTipText = info.ToolTip,
+					Enabled = info.Enabled,
+				};
+			}).ToArray());
 			if (ExternalToolMenuItem.DropDownItems.Count == 0)
 			{
 				ExternalToolMenuItem.DropDownItems.Add("None");

@@ -53,6 +53,8 @@ namespace BizHawk.Client.EmuHawk
 			IMovieSession movieSession,
 			IGameInfo game)
 		{
+			
+
 			_owner = owner;
 			_config = config;
 			_displayManager = displayManager;
