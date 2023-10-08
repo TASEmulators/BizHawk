@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected ToolManager Tools { get; private set; }
 
-		protected DisplayManager DisplayManager { get; private set; }
+		protected DisplayManagerBase DisplayManager { get; private set; }
 
 		protected InputManager InputManager { get; private set; }
 
@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		public virtual void Restart() {}
 
 		public void SetToolFormBaseProps(
-			DisplayManager displayManager,
+			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			IMainFormForTools mainForm,
 			IMovieSession movieSession,

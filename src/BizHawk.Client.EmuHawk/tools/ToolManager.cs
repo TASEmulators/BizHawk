@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly MainForm _owner;
 		private Config _config;
-		private readonly DisplayManager _displayManager;
+		private readonly DisplayManagerBase _displayManager;
 		private readonly ExternalToolManager _extToolManager;
 		private readonly InputManager _inputManager;
 		private IExternalApiProvider _apiProvider;
@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 		public ToolManager(
 			MainForm owner,
 			Config config,
-			DisplayManager displayManager,
+			DisplayManagerBase displayManager,
 			ExternalToolManager extToolManager,
 			InputManager inputManager,
 			IEmulator emulator,
