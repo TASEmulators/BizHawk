@@ -55,8 +55,6 @@ namespace BizHawk.Client.Common
 
 		public bool HasGUISurface => _GUISurface != null;
 
-		private bool _frameStarted = false;
-
 		public GuiApi(Action<string> logCallback, DisplayManagerBase displayManager)
 		{
 			LogCallback = logCallback;
@@ -103,7 +101,9 @@ namespace BizHawk.Client.Common
 
 		public void WithSurface(DisplaySurfaceID surfaceID, Action drawingCallsFunc)
 		{
+			BeginFrame();
 			_usingSurfaceID = surfaceID;
+
 			try
 			{
 				drawingCallsFunc();
@@ -111,52 +111,60 @@ namespace BizHawk.Client.Common
 			finally
 			{
 				_usingSurfaceID = null;
+				EndFrame();
 			}
+		}
+
+		private IDisplaySurface LockSurface(DisplaySurfaceID surface)
+		{
+			// I think the "Lock" stuff is mis-named. All it actually does it track what's been "locked" and use that as the current surface. (and disallow re-locking or re-unlocking)
+			// Anyway, calling LockSurface will return a cleared surface we can draw on without displaying it. --SuuperW
+
+			// There might be multiple API users at once and therefore multiple GuiApi instances.
+			// In that case, we don't want to get a new surface. We want the current one.
+			var locked = _displayManager.PeekApiHawkLockedSurface(surface);
+			if (locked != null)
+			{
+				// Someone else has locked surfaces. Use those.
+				return locked;
+			}
+
+			IDisplaySurface current = surface == DisplaySurfaceID.EmuCore ? _GUISurface : _clientSurface;
+			if (current != _displayManager.GetCurrentSurface(surface))
+				return _displayManager.GetCurrentSurface(surface);
+			else
+				return _displayManager.LockApiHawkSurface(surface, true);
+		}
+		private void UnlockSurface(DisplaySurfaceID surface)
+		{
+			IDisplaySurface current = surface == DisplaySurfaceID.EmuCore ? _GUISurface : _clientSurface;
+			if (current != null && _displayManager.PeekApiHawkLockedSurface(surface) == current)
+				_displayManager.UnlockApiHawkSurface(current);
 		}
 
 		/// <summary>
 		/// Starts drawing on new surfaces and clears them, but does not display the new surfaces.
 		/// Use this with EndFrame for double-buffered display (avoid flickering during drawing operations)
+		/// This method is safe to call multiple times.
+		/// 
+		/// This is how the LuaConsole can manage drawing in a way that supports having multiple scripts. (WithSurface does not support that)
+		/// This method and WithSurface will probably be replaced with an event-based method at some point.
 		/// </summary>
 		public void BeginFrame()
 		{
-			// I think the "Lock" stuff is mis-named. All it actually does it track what's been "locked" and use that as the current surface. (and disallow re-locking or re-unlocking)
-			// Anyway, calling LockSurface will return a cleared surface we can draw on without displaying it. --SuuperW
-			_GUISurface = _displayManager.LockApiHawkSurface(DisplaySurfaceID.EmuCore, true);
-			_clientSurface = _displayManager.LockApiHawkSurface(DisplaySurfaceID.Client, true);
-			_frameStarted = true;
+			_GUISurface = LockSurface(DisplaySurfaceID.EmuCore);
+			_clientSurface = LockSurface(DisplaySurfaceID.Client);
 		}
 		/// <summary>
 		/// Displays the current drawing surfaces.
 		/// More drawing can still happen on these surfaces until BeginFrame is called.
+		/// This method is safe to call multiple times.
 		/// </summary>
 		public void EndFrame()
 		{
-			if (_frameStarted)
-			{
-				_displayManager.UnlockApiHawkSurface(_GUISurface);
-				_displayManager.UnlockApiHawkSurface(_clientSurface);
-				_frameStarted = false;
-			}
+			UnlockSurface(DisplaySurfaceID.EmuCore);
+			UnlockSurface(DisplaySurfaceID.Client);
 		}
-
-
-		public void DrawNew(string name, bool clear)
-		{
-			switch (name)
-			{
-				case null:
-				case "emu":
-					LogCallback("the `DrawNew(\"emu\")` function has been deprecated");
-					return;
-				case "native":
-					throw new InvalidOperationException("the ability to draw in the margins with `DrawNew(\"native\")` has been removed");
-				default:
-					throw new InvalidOperationException("invalid surface name");
-			}
-		}
-
-		public void DrawFinish() => LogCallback("the `DrawFinish()` function has been deprecated");
 
 		public void SetPadding(int all) => _padding = (all, all, all, all);
 

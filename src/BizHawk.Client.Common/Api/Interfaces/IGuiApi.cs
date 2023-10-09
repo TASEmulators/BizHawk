@@ -10,13 +10,12 @@ namespace BizHawk.Client.Common
 		ImageAttributes GetAttributes();
 		void SetAttributes(ImageAttributes a);
 
+		/// <summary>
+		/// This is the intended way for external tools to draw. All drawing calls (per surfaceID) should be done in a single call to WithSurface.
+		/// Each call will clear the given surface before calling the drawingCallsFunc.
+		/// This method will probably be replaced with an event-based method at some point.
+		/// </summary>
 		void WithSurface(DisplaySurfaceID surfaceID, Action drawingCallsFunc);
-
-		[Obsolete]
-		void DrawNew(string name, bool clear = true);
-
-		[Obsolete]
-		void DrawFinish();
 
 		[Obsolete]
 		bool HasGUISurface { get; }

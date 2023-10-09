@@ -14,9 +14,25 @@ namespace BizHawk.Tests.Client.Common.Lua
 	{
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 		// null values are initialized in the setup method
-		private ILuaLibraries luaLibraries = null;
+		internal ILuaLibraries luaLibraries = null;
 		private DisplayManagerBase displayManager = null;
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+		public TestLuaDrawing() { }
+
+		internal TestLuaDrawing(IMainFormForApi mainForm, Config config, DisplayManagerBase displayManager)
+		{
+			this.displayManager = displayManager;
+
+			IGameInfo gameInfo = new GameInfo();
+			luaLibraries = new TestLuaLibraries(
+				mainForm,
+				displayManager,
+				config,
+				gameInfo
+			);
+			luaLibraries.Restart(config, gameInfo);
+		}
 
 		private const string pathToTestLuaScripts = "Client.Common/lua/LuaScripts";
 

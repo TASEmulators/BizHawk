@@ -3,7 +3,6 @@
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BizHawk.Tests.Client.Common.Api
@@ -79,5 +78,20 @@ namespace BizHawk.Tests.Client.Common.Api
 			buffer = displayManager.RenderOffscreenLua(vp);
 			Assert.AreEqual(buffer.GetPixel(2, 2), Color.Red.ToArgb());
 		}
+
+		[TestMethod]
+		public void TestWithSurfaceClearsSurface()
+		{
+			BitmapBufferVideoProvider vp = new BitmapBufferVideoProvider(new BitmapBuffer(8, 8));
+
+			guiApi.WithSurface(DisplaySurfaceID.Client, () => guiApi.DrawPixel(2, 2, Color.Blue));
+			var buffer = displayManager.RenderOffscreenLua(vp);
+			Assert.AreEqual(Color.Blue.ToArgb(), buffer.GetPixel(2, 2));
+
+			guiApi.WithSurface(DisplaySurfaceID.Client, () => { });
+			buffer = displayManager.RenderOffscreenLua(vp);
+			Assert.AreEqual(Color.Black.ToArgb(), buffer.GetPixel(2, 2));
+		}
+
 	}
 }

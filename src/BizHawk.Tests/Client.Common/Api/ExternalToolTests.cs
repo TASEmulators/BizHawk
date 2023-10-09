@@ -1,10 +1,15 @@
-﻿using System.IO;
+﻿using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+
+using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Tests.Client.Common.Lua;
 using BizHawk.Tests.Implementations;
 using BizHawk.Tests.Mocks;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BizHawk.Tests.Client.Common.Api
@@ -70,6 +75,45 @@ namespace BizHawk.Tests.Client.Common.Api
 
 			TestExternalAPI externalApi = LoadExternalTool(toolManager);
 			Assert.AreEqual(mainFormApi.Emulator.AsVideoProviderOrDefault().BufferHeight, externalApi.APIs.EmuClient.BufferHeight());
+		}
+
+		[TestMethod]
+		public void TestExternalToolCanDraw()
+		{
+			IMainFormForApi mainFormApi = new MockMainFormForApi(new NullEmulator());
+			DisplayManagerBase displayManager = new TestDisplayManager(mainFormApi.Emulator);
+			TestToolManager toolManager = new TestToolManager(mainFormApi, config, displayManager);
+
+			TestExternalAPI externalApi = LoadExternalTool(toolManager);
+			IGuiApi guiApi = externalApi.APIs.Gui;
+
+			guiApi.DrawPixel(2, 2, Color.Blue, DisplaySurfaceID.Client);
+			BitmapBufferVideoProvider vp = new BitmapBufferVideoProvider(new BitmapBuffer(8, 8));
+			var buffer = displayManager.RenderOffscreenLua(vp);
+			Assert.AreEqual(buffer.GetPixel(2, 2), Color.Blue.ToArgb());
+		}
+
+		[TestMethod]
+		public void TestExternalToolCanDrawWhileLuaIsRunning()
+		{
+			IMainFormForApi mainFormApi = new MockMainFormForApi(new NullEmulator());
+			DisplayManagerBase displayManager = new TestDisplayManager(mainFormApi.Emulator);
+			TestToolManager toolManager = new TestToolManager(mainFormApi, config, displayManager);
+
+			TestExternalAPI externalApi = LoadExternalTool(toolManager);
+			IGuiApi guiApi = externalApi.APIs.Gui;
+			TestLuaDrawing luaTester = new TestLuaDrawing(mainFormApi, config, displayManager); // not the default constructor; we need to share a DisplayManager at least
+
+			// trigger some frames with both to ensure we can cycle through buffers
+			guiApi.WithSurface(DisplaySurfaceID.Client, () => { });
+			luaTester.luaLibraries.CallFrameBeforeEvent();
+			luaTester.luaLibraries.CallFrameAfterEvent();
+
+			// draw
+			guiApi.DrawPixel(2, 2, Color.Blue, DisplaySurfaceID.Client);
+			BitmapBufferVideoProvider vp = new BitmapBufferVideoProvider(new BitmapBuffer(8, 8));
+			var buffer = displayManager.RenderOffscreenLua(vp);
+			Assert.AreEqual(Color.Blue.ToArgb(), buffer.GetPixel(2, 2));
 		}
 	}
 }
