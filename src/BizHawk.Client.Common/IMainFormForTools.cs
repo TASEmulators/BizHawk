@@ -109,5 +109,7 @@ namespace BizHawk.Client.Common
 
 		/// <remarks>only referenced from TAStudio</remarks>
 		void UpdateWindowTitle();
+
+		public EmuClientApi EmuClient { get; set; }
 	}
 }

@@ -6,10 +6,10 @@ namespace BizHawk.Tests.Implementations
 	public class TestExternalAPI : IExternalToolForm
 	{
 		public ApiContainer? _maybeAPIContainer { get; set; }
-		private ApiContainer APIs
+		internal ApiContainer APIs
 			=> _maybeAPIContainer!;
 
-		private int frameCount = 0;
+		internal int frameCount = 0;
 
 		public bool IsActive => true;
 
