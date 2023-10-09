@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 					Image = tsi.Icon ?? IconMissingIcon.Value,
 					Text = tsi.Text,
 				};
-				tsb.Click += (_, _) => tsi.TryLoad();
+				tsb.Click += (_, _) => Tools.LoadExternalToolForm(tsi);
 				ToolBoxStrip.Items.Add(tsb);
 			}
 		}

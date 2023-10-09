@@ -15,7 +15,7 @@ namespace BizHawk.Tests.Implementations
 				  mainFormApi,
 				  config,
 				  displayManager,
-				  new ExternalToolManager(config, () => ("", ""), (p1, p2, p3) => false),
+				  new ExternalToolManager(config, () => ("", "")),
 				  null,
 				  mainFormApi.Emulator,
 				  mainFormApi.MovieSession,
@@ -29,7 +29,7 @@ namespace BizHawk.Tests.Implementations
 			.ToList();
 		protected override bool CaptureIconAndName(object tool, Type toolType, ref Image? icon, ref string name)
 		{
-			ExternalToolAttribute? eta = toolType.GetCustomAttribute<ExternalToolAttribute>();
+			ExternalToolAttribute? eta = tool.GetType().GetCustomAttribute<ExternalToolAttribute>();
 			if (eta == null)
 				throw new NotImplementedException(); // not an external tool
 
@@ -41,6 +41,11 @@ namespace BizHawk.Tests.Implementations
 		protected override void SetFormParent(IToolForm form) { }
 		protected override void SetBaseProperties(IToolForm form) { }
 
+		protected override IExternalToolForm CreateInstanceFrom(string dllPath, string toolTypeName)
+		{
+			return (Activator.CreateInstanceFrom(dllPath, toolTypeName)!.Unwrap() as IExternalToolForm)!;
+		}
+
 		public override IEnumerable<Type> AvailableTools => throw new NotImplementedException();
 
 		public override (Image Icon, string Name) GetIconAndNameFor(Type toolType) => throw new NotImplementedException();
@@ -49,7 +54,6 @@ namespace BizHawk.Tests.Implementations
 		public override void UpdateCheatRelatedTools(object sender, CheatCollection.CheatListEventArgs e) => throw new NotImplementedException();
 		protected override void AttachSettingHooks(IToolFormAutoConfig tool, ToolDialogSettings settings) => throw new NotImplementedException();
 
-		protected override IExternalToolForm CreateInstanceFrom(string dllPath, string toolTypeName) => throw new NotImplementedException();
 		protected override void MaybeClearCheats() => throw new NotImplementedException();
 		protected override void SetFormClosingEvent(IToolForm form, Action action) => throw new NotImplementedException();
 	}

@@ -11,6 +11,8 @@ namespace BizHawk.Tests.Mocks
 	{
 		public EmuClientApi? EmuClient { get ; set; }
 
+		public bool ShowMessageBox2(IDialogParent? owner, string text, string? caption = null, EMsgBoxIcon? icon = null, bool useOKCancel = false) => true;
+
 		public CheatCollection CheatList => throw new NotImplementedException();
 
 		public string CurrentlyOpenRom => throw new NotImplementedException();
@@ -55,7 +57,6 @@ namespace BizHawk.Tests.Mocks
 		public IReadOnlyList<string>? ShowFileMultiOpenDialog(IDialogParent dialogParent, string? filterStr, ref int filterIndex, string initDir, bool discardCWDChange = false, string? initFileName = null, bool maySelectMultiple = false, string? windowTitle = null) => throw new NotImplementedException();
 		public string? ShowFileSaveDialog(IDialogParent dialogParent, bool discardCWDChange, string? fileExt, string? filterStr, string initDir, string? initFileName, bool muteOverwriteWarning) => throw new NotImplementedException();
 		public void ShowMessageBox(IDialogParent? owner, string text, string? caption = null, EMsgBoxIcon? icon = null) => throw new NotImplementedException();
-		public bool ShowMessageBox2(IDialogParent? owner, string text, string? caption = null, EMsgBoxIcon? icon = null, bool useOKCancel = false) => throw new NotImplementedException();
 		public bool? ShowMessageBox3(IDialogParent? owner, string text, string? caption = null, EMsgBoxIcon? icon = null) => throw new NotImplementedException();
 		public bool StartNewMovie(IMovie movie, bool record) => throw new NotImplementedException();
 		public void StartSound() => throw new NotImplementedException();

@@ -27,6 +27,8 @@ namespace BizHawk.Client.Common
 		protected readonly IMovieSession _movieSession;
 		protected IGameInfo _game;
 
+		public IReadOnlyCollection<ExternalToolManager.MenuItemInfo> ExternalToolInfos => _extToolManager.ToolStripItems;
+
 		// TODO: merge ToolHelper code where logical
 		// For instance, add an IToolForm property called UsesCheats, so that a UpdateCheatRelatedTools() method can update all tools of this type
 		// Also a UsesRam, and similar method
@@ -140,9 +142,9 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>Loads the external tool's entry form.</summary>
-		public IExternalToolForm LoadExternalToolForm(string toolPath, string customFormTypeName, bool focus = true, bool skipExtToolWarning = false)
+		public IExternalToolForm LoadExternalToolForm(ExternalToolManager.MenuItemInfo info, bool focus = true)
 		{
-			var existingTool = _tools.OfType<IExternalToolForm>().FirstOrDefault(t => t.GetType().Assembly.Location == toolPath);
+			var existingTool = _tools.OfType<IExternalToolForm>().FirstOrDefault(t => t.GetType().Assembly.Location == info.AsmFilename);
 			if (existingTool != null)
 			{
 				if (existingTool.IsActive)
@@ -158,7 +160,8 @@ namespace BizHawk.Client.Common
 				_tools.Remove(existingTool);
 			}
 
-			var newTool = (IExternalToolForm)CreateInstance(typeof(IExternalToolForm), toolPath, customFormTypeName, skipExtToolWarning: skipExtToolWarning);
+			bool skipWarning = _config.TrustedExtTools.TryGetValue(info.AsmFilename, out var s) && s == info.AsmChecksum;
+			var newTool = (IExternalToolForm)CreateInstance(typeof(IExternalToolForm), info.AsmFilename, info.EntryPointTypeName, skipExtToolWarning: skipWarning);
 			if (newTool == null) return null;
 			SetFormParent(newTool);
 			if (!(ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool) && ApiInjector.UpdateApis(ApiProvider, newTool))) return null;
@@ -166,13 +169,15 @@ namespace BizHawk.Client.Common
 			// auto settings
 			if (newTool is IToolFormAutoConfig autoConfigTool)
 			{
-				AttachSettingHooks(autoConfigTool, _config.CommonToolSettings.GetValueOrPutNew(customFormTypeName));
+				AttachSettingHooks(autoConfigTool, _config.CommonToolSettings.GetValueOrPutNew(info.EntryPointTypeName));
 			}
 			// custom settings
 			if (HasCustomConfig(newTool))
 			{
-				InstallCustomConfig(newTool, _config.CustomToolSettings.GetValueOrPutNew(customFormTypeName));
+				InstallCustomConfig(newTool, _config.CustomToolSettings.GetValueOrPutNew(info.EntryPointTypeName));
 			}
+
+			_config.TrustedExtTools[info.AsmFilename] = info.AsmChecksum;
 
 			newTool.Restart();
 			newTool.Show();
@@ -467,7 +472,6 @@ namespace BizHawk.Client.Common
 
 				try
 				{
-					//tool = Activator.CreateInstanceFrom(dllPath, toolTypeName ?? "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IExternalToolForm;
 					tool = CreateInstanceFrom(dllPath, toolTypeName);
 					if (tool == null)
 					{

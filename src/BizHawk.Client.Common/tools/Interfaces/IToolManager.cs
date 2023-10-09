@@ -8,6 +8,8 @@ namespace BizHawk.Client.Common
 {
 	public interface IToolManager
 	{
+		IReadOnlyCollection<ExternalToolManager.MenuItemInfo> ExternalToolInfos { get; }
+
 		/// <summary>
 		/// Loads the tool dialog T (T must implements <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
 		/// This method should be used only if you can't use the generic one
@@ -29,7 +31,7 @@ namespace BizHawk.Client.Common
 			where T : class, IToolForm;
 
 		/// <summary>Loads the external tool's entry form.</summary>
-		IExternalToolForm LoadExternalToolForm(string toolPath, string customFormTypeName, bool focus = true, bool skipExtToolWarning = false);
+		IExternalToolForm LoadExternalToolForm(ExternalToolManager.MenuItemInfo info, bool focus = true);
 
 		void AutoLoad();
 

@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 					.FirstOrNull(info => info.AsmFilename == requestedExtToolDll
 						|| Path.GetFileName(info.AsmFilename) == requestedExtToolDll
 						|| Path.GetFileNameWithoutExtension(info.AsmFilename) == requestedExtToolDll);
-				if (found is not null) found.Value.TryLoad();
+				if (found is not null) Tools.LoadExternalToolForm(found.Value);
 				else Console.WriteLine($"requested ext. tool dll {requestedExtToolDll} could not be loaded");
 			}
 
@@ -473,11 +473,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ExtToolManager = new(
 				Config,
-				() => (Emulator.SystemId, Game.Hash),
-				(toolPath, customFormTypeName, skipExtToolWarning) => Tools!.LoadExternalToolForm(
-					toolPath: toolPath,
-					customFormTypeName: customFormTypeName,
-					skipExtToolWarning: skipExtToolWarning) is not null);
+				() => (Emulator.SystemId, Game.Hash));
 			Tools = new ToolManager(this, Config, DisplayManager, ExtToolManager, InputManager, Emulator, MovieSession, Game);
 
 			// TODO GL - move these event handlers somewhere less obnoxious line in the On* overrides

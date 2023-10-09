@@ -14,13 +14,9 @@ namespace BizHawk.Client.Common
 	{
 		public struct MenuItemInfo
 		{
-			private readonly string _asmChecksum = "";
+			public readonly string AsmChecksum = "";
 
-			private readonly string _entryPointTypeName = "";
-
-			private readonly ExternalToolManager _extToolMan;
-
-			private bool _skipExtToolWarning = false;
+			public readonly string EntryPointTypeName = "";
 
 			public readonly string AsmFilename = "";
 
@@ -33,7 +29,6 @@ namespace BizHawk.Client.Common
 			public readonly bool Enabled = false;
 
 			public MenuItemInfo(
-				ExternalToolManager extToolMan,
 				string asmChecksum,
 				string asmFilename,
 				string entryPointTypeName,
@@ -42,10 +37,8 @@ namespace BizHawk.Client.Common
 				string toolTip,
 				bool enabled)
 			{
-				_asmChecksum = asmChecksum;
-				_entryPointTypeName = entryPointTypeName;
-				_extToolMan = extToolMan;
-				_skipExtToolWarning = _extToolMan._config.TrustedExtTools.TryGetValue(asmFilename, out var s) && s == _asmChecksum;
+				AsmChecksum = asmChecksum;
+				EntryPointTypeName = entryPointTypeName;
 				AsmFilename = asmFilename;
 				Text = text;
 				Icon = icon;
@@ -53,30 +46,16 @@ namespace BizHawk.Client.Common
 				Enabled = enabled;
 			}
 
-			public MenuItemInfo(ExternalToolManager extToolMan, string text, string toolTip)
+			public MenuItemInfo(string text, string toolTip)
 			{
-				_extToolMan = extToolMan;
 				Text = text;
 				ToolTip = toolTip;
-			}
-
-			public void TryLoad()
-			{
-				var success = _extToolMan._loadCallback(
-					/*toolPath:*/ AsmFilename,
-					/*customFormTypeName:*/ _entryPointTypeName,
-					/*skipExtToolWarning:*/ _skipExtToolWarning);
-				if (!success || _skipExtToolWarning) return;
-				_skipExtToolWarning = true;
-				_extToolMan._config.TrustedExtTools[AsmFilename] = _asmChecksum;
 			}
 		}
 
 		private Config _config;
 
 		private readonly Func<(string SysID, string Hash)> _getLoadedRomInfoCallback;
-
-		private readonly Func<string, string, bool, bool> _loadCallback;
 
 		private FileSystemWatcher DirectoryMonitor;
 
@@ -86,11 +65,9 @@ namespace BizHawk.Client.Common
 
 		public ExternalToolManager(
 			Config config,
-			Func<(string SysID, string Hash)> getLoadedRomInfoCallback,
-			Func<string, string, bool, bool> loadCallback)
+			Func<(string SysID, string Hash)> getLoadedRomInfoCallback)
 		{
 			_getLoadedRomInfoCallback = getLoadedRomInfoCallback;
-			_loadCallback = loadCallback;
 			Restart(config);
 		}
 
@@ -179,7 +156,6 @@ namespace BizHawk.Client.Common
 					toolTip = toolAttribute.Description;
 
 				return new MenuItemInfo(
-					this,
 					asmChecksum: SHA1Checksum.ComputePrefixedHex(asmBytes),
 					asmFilename: fileName,
 					entryPointTypeName: entryPoint.FullName,
@@ -205,7 +181,7 @@ namespace BizHawk.Client.Common
 					ReflectionTypeLoadException => "Something went wrong while trying to load the assembly.",
 					_ => $"An exception of type {e.GetType().FullName} was thrown while trying to load the assembly and look for an IExternalToolForm:\n{e.Message}"
 				};
-				return new MenuItemInfo(this, text, toolTip);
+				return new MenuItemInfo(text, toolTip);
 			}
 		}
 

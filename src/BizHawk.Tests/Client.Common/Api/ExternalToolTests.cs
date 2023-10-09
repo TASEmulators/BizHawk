@@ -31,10 +31,16 @@ namespace BizHawk.Tests.Client.Common.Api
 				)!.Path = "./extTools";
 		}
 
+		private TestExternalAPI LoadExternalTool(ToolManagerBase toolManager)
+		{
+			var info = toolManager.ExternalToolInfos.First(static (i) => i.Text == "TEST");
+			return (toolManager.LoadExternalToolForm(info) as TestExternalAPI)!;
+		}
+
 		[TestMethod]
 		public void TestExternalToolIsFound()
 		{
-			ExternalToolManager manager = new ExternalToolManager(config, () => ("", ""), (p1, p2, p3) => true);
+			ExternalToolManager manager = new ExternalToolManager(config, () => ("", ""));
 
 			Assert.IsTrue(manager.ToolStripItems.Count != 0);
 			var item = manager.ToolStripItems.First(static (info) => info.Text == "TEST");
@@ -48,11 +54,22 @@ namespace BizHawk.Tests.Client.Common.Api
 			DisplayManagerBase displayManager = new TestDisplayManager(mainFormApi.Emulator);
 			TestToolManager toolManager = new TestToolManager(mainFormApi, config, displayManager);
 
-			TestExternalAPI externalApi = toolManager.Load<TestExternalAPI>();
+			TestExternalAPI externalApi = LoadExternalTool(toolManager);
 			Assert.AreEqual(0, externalApi.frameCount);
 			toolManager.UpdateToolsBefore();
 			toolManager.UpdateToolsAfter();
 			Assert.AreEqual(1, externalApi.frameCount);
+		}
+
+		[TestMethod]
+		public void TestExternalToolCanUseApi()
+		{
+			IMainFormForApi mainFormApi = new MockMainFormForApi(new NullEmulator());
+			DisplayManagerBase displayManager = new TestDisplayManager(mainFormApi.Emulator);
+			TestToolManager toolManager = new TestToolManager(mainFormApi, config, displayManager);
+
+			TestExternalAPI externalApi = LoadExternalTool(toolManager);
+			Assert.AreEqual(mainFormApi.Emulator.AsVideoProviderOrDefault().BufferHeight, externalApi.APIs.EmuClient.BufferHeight());
 		}
 	}
 }
