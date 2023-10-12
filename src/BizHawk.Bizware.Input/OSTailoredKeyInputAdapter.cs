@@ -33,7 +33,7 @@ namespace BizHawk.Bizware.Input
 					//break;
 					throw new NotSupportedException("TODO QUARTZ");
 				case OSTailoredCode.DistinctOS.Windows:
-					DKeyInput.Cleanup();
+					RAWKeyInput.Deinitialize();
 					break;
 				default:
 					throw new InvalidOperationException();
@@ -54,10 +54,7 @@ namespace BizHawk.Bizware.Input
 					//break;
 					throw new NotSupportedException("TODO QUARTZ");
 				case OSTailoredCode.DistinctOS.Windows:
-					// TODO: Consider if we want to use RAWINPUT API for keyboards instead
-					// Would remove DInput depenency on Windows (DInput gamepads could be considered optional in this sense)
-					// (also, this would be needed for keyboard support with UWP, which doesn't support DInput)
-					DKeyInput.Initialize(mainFormHandle);
+					RAWKeyInput.Initialize();
 					break;
 				default:
 					throw new InvalidOperationException();
@@ -80,7 +77,7 @@ namespace BizHawk.Bizware.Input
 			{
 				OSTailoredCode.DistinctOS.Linux => X11KeyInput.Update(),
 				OSTailoredCode.DistinctOS.macOS => throw new NotSupportedException("TODO QUARTZ"),
-				OSTailoredCode.DistinctOS.Windows => DKeyInput.Update(_config ?? throw new(nameof(ProcessHostKeyboards) + " called before the global config was passed")),
+				OSTailoredCode.DistinctOS.Windows => RAWKeyInput.Update(_config ?? throw new(nameof(ProcessHostKeyboards) + " called before the global config was passed")),
 				_ => throw new InvalidOperationException()
 			};
 

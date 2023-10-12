@@ -11,6 +11,7 @@ namespace BizHawk.Common
 	{
 		public const int MAX_PATH = 260;
 		public const uint PM_REMOVE = 0x0001U;
+		public static readonly IntPtr HWND_MESSAGE = new(-3);
 
 		public delegate int BFFCALLBACK(IntPtr hwnd, uint uMsg, IntPtr lParam, IntPtr lpData);
 
@@ -98,6 +99,144 @@ namespace BizHawk.Common
 			public int y;
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public struct RAWINPUTDEVICE
+		{
+			public HidUsagePage usUsagePage;
+			public HidUsageId usUsage;
+			public RIDEV dwFlags;
+			public IntPtr hwndTarget;
+
+			public enum HidUsagePage : ushort
+			{
+				GENERIC = 1,
+				GAME = 5,
+				LED = 8,
+				BUTTON = 9,
+			}
+
+			public enum HidUsageId : ushort
+			{
+				GENERIC_POINTER = 1,
+				GENERIC_MOUSE = 2,
+				GENERIC_JOYSTICK = 4,
+				GENERIC_GAMEPAD = 5,
+				GENERIC_KEYBOARD = 6,
+				GENERIC_KEYPAD = 7,
+				GENERIC_MULTI_AXIS_CONTROLLER = 8,
+			}
+
+			[Flags]
+			public enum RIDEV : int
+			{
+				REMOVE = 0x00000001,
+				EXCLUDE = 0x00000010,
+				PAGEONLY = 0x00000020,
+				NOLEGACY = PAGEONLY | EXCLUDE,
+				INPUTSINK = 0x00000100,
+				CAPTUREMOUSE = 0x00000200,
+				NOHOTKEYS = CAPTUREMOUSE,
+				APPKEYS = 0x00000400,
+				EXINPUTSINK = 0x00001000,
+				DEVNOTIFY = 0x00002000,
+			}
+		}
+
+		public enum RID : uint
+		{
+			HEADER = 0x10000005,
+			INPUT = 0x10000003,
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct RAWINPUTHEADER
+		{
+			public RIM_TYPE dwType;
+			public uint dwSize;
+			public IntPtr hDevice;
+			public IntPtr wParam;
+
+			public enum RIM_TYPE : uint
+			{
+				MOUSE = 0,
+				KEYBOARD = 1,
+				HID = 2,
+			}
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct RAWMOUSE
+		{
+			public ushort usFlags;
+			public uint ulButtons;
+			public uint ulRawButtons;
+			public int lLastX;
+			public int lLastY;
+			public uint ulExtraInformation;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct RAWKEYBOARD
+		{
+			public ushort MakeCode;
+			public RIM_KEY Flags;
+			public ushort Reserved;
+			public ushort VKey;
+			public uint Message;
+			public uint ExtraInformation;
+
+			public enum RIM_KEY : ushort
+			{
+				MAKE = 0,
+				BREAK = 1,
+				E0 = 2,
+				E1 = 3,
+			}
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct RAWHID
+		{
+			public uint dwSizeHid;
+			public uint dwCount;
+			public byte bRawData;
+		}
+
+		[StructLayout(LayoutKind.Explicit)]
+		public struct RAWINPUTDATA
+		{
+			[FieldOffset(0)]
+			public RAWMOUSE mouse;
+			[FieldOffset(0)]
+			public RAWKEYBOARD keyboard;
+			[FieldOffset(0)]
+			public RAWHID hid;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct RAWINPUT
+		{
+			public RAWINPUTHEADER header;
+			public RAWINPUTDATA data;
+		}
+
+		public delegate IntPtr WNDPROC(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
+
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+		public struct WNDCLASS
+		{
+			public uint style;
+			public WNDPROC lpfnWndProc;
+			public int cbClsExtra;
+			public int cbWndExtra;
+			public IntPtr hInstance;
+			public IntPtr hIcon;
+			public IntPtr hCursor;
+			public IntPtr hbrBackground;
+			public string lpszMenuName;
+			public string lpszClassName;
+		}
+
 		[Guid("00000002-0000-0000-C000-000000000046")]
 		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 		public interface IMalloc
@@ -113,8 +252,22 @@ namespace BizHawk.Common
 		[DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern uint _control87(uint @new, uint mask);
 
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr CreateWindowEx(int dwExStyle, IntPtr lpClassName, string lpWindowName,
+			int dwStyle, int X, int Y, int nWidth, int nHeight, IntPtr hWndParent, IntPtr hMenu, IntPtr hInstance, IntPtr lpParam);
+
 		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
 		public static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)] string lpFileName);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern unsafe IntPtr DefRawInputProc(RAWINPUT* paRawInput, int nInput, int cbSizeHeader);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr DefWindowProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
+
+		[DllImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool DestroyWindow(IntPtr hWnd);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern IntPtr DispatchMessage([In] ref MSG lpMsg);
@@ -125,11 +278,20 @@ namespace BizHawk.Common
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetActiveWindow();
 
+		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr GetModuleHandle(string lpModuleName);
+
 		[DllImport("kernel32", SetLastError = true, EntryPoint = "GetProcAddress")]
 		public static extern IntPtr GetProcAddressOrdinal(IntPtr hModule, IntPtr procName);
 
 		[DllImport("kernel32.dll", SetLastError = true)]
 		public static extern IntPtr GetProcessHeap();
+
+		[DllImport("user32.dll")]
+		public static extern int GetRawInputData(IntPtr hRawInput, RID uiCommand, IntPtr pData, out int bSize, int cbSizeHeader);
+
+		[DllImport("user32.dll")]
+		public static extern unsafe int GetRawInputData(IntPtr hRawInput, RID uiCommand, RAWINPUT* pData, ref int bSize, int cbSizeHeader);
 
 		[DllImport("kernel32.dll", SetLastError = false)]
 		public static extern IntPtr HeapAlloc(IntPtr hHeap, uint dwFlags, int dwBytes);
@@ -156,6 +318,16 @@ namespace BizHawk.Common
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool PeekMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr RegisterClass([In] ref WNDCLASS lpWndClass);
+
+		[DllImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool RegisterRawInputDevices(RAWINPUTDEVICE[] pRawInputDevices, uint uiNumDevices, int cbSize);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, ref HDITEM lParam);
