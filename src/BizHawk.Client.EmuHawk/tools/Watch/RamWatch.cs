@@ -435,6 +435,17 @@ namespace BizHawk.Client.EmuHawk
 			GeneralUpdate();
 		}
 
+		/// <summary>
+		/// Open Edit or Poke window for selected watch depending on user setting
+		/// </summary>
+		private void OpenWatch()
+		{
+			if (Settings.DoubleClickToPoke)
+				PokeAddress();
+			else
+				EditWatch();
+		}
+
 		private void EditWatch(bool duplicate = false)
 		{
 			var indexes = SelectedIndices.ToList();
@@ -1227,7 +1238,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.IsPressed(Keys.Enter))
 			{
-				EditWatch();
+				OpenWatch();
 			}
 		}
 
@@ -1240,10 +1251,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (Settings.DoubleClickToPoke)
-				PokeAddress();
-			else
-				EditWatch();
+			OpenWatch();
 		}
 
 		private void WatchListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
