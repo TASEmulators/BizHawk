@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using BizHawk.Client.Common;
 using BizHawk.Common.CollectionExtensions;
 
@@ -66,6 +66,12 @@ namespace BizHawk.Bizware.Input
 		{
 			lock (_syncObject)
 			{
+				// Can't update without a display connection
+				if (Display == IntPtr.Zero)
+				{
+					return Enumerable.Empty<KeyEvent>();
+				}
+
 				var keys = stackalloc byte[32];
 
 				using (new XLock(Display))
