@@ -180,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public List<RollColumn> Columns { get; set; }
 
-			public bool DoubleClickToPoke { get; set; }
+			public bool DoubleClickToPoke { get; set; } = true;
 		}
 
 		private IEnumerable<int> SelectedIndices => WatchListView.SelectedRows;
