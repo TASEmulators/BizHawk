@@ -511,22 +511,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void PokeAddress()
-		{
-			if (SelectedWatches.Any())
-			{
-				var poke = new RamPoke(DialogController, SelectedWatches, MainForm.CheatList)
-				{
-					InitialLocation = this.ChildPointToScreen(WatchListView)
-				};
-
-				if (this.ShowDialogWithTempMute(poke).IsOk())
-				{
-					GeneralUpdate();
-				}
-			}
-		}
-
 		private string ComputeDisplayType(Watch w)
 		{
 			string s = w.Size == WatchSize.Byte ? "1" : (w.Size == WatchSize.Word ? "2" : "4");
@@ -870,6 +854,22 @@ namespace BizHawk.Client.EmuHawk
 		private void PokeAddressMenuItem_Click(object sender, EventArgs e)
 		{
 			PokeAddress();
+		}
+
+		private void PokeAddress()
+		{
+			if (SelectedWatches.Any())
+			{
+				var poke = new RamPoke(DialogController, SelectedWatches, MainForm.CheatList)
+				{
+					InitialLocation = this.ChildPointToScreen(WatchListView)
+				};
+
+				if (this.ShowDialogWithTempMute(poke).IsOk())
+				{
+					GeneralUpdate();
+				}
+			}
 		}
 
 		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
