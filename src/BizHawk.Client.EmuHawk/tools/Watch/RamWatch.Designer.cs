@@ -668,7 +668,7 @@ namespace BizHawk.Client.EmuHawk
             this.DoubleClickActionSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DoubleClickToEditMenuItem,
             this.DoubleClickToPokeMenuItem});
-            this.DoubleClickActionSubMenu.Text = "Double-Click Action";
+            this.DoubleClickActionSubMenu.Text = "On Double-Clicking a Watch";
             this.DoubleClickActionSubMenu.DropDownOpening += new System.EventHandler(this.DoubleClickActionSubMenu_DropDownOpening);
             // 
             // DoubleClickToEditMenuItem
