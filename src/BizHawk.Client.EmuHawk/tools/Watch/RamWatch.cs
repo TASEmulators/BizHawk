@@ -441,9 +441,13 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenWatch()
 		{
 			if (Settings.DoubleClickToPoke)
+			{
 				PokeAddress();
+			}
 			else
+			{
 				EditWatch();
+			}
 		}
 
 		private void EditWatch(bool duplicate = false)
