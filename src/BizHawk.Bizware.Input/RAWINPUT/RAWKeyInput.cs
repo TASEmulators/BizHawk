@@ -9,6 +9,7 @@ using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 
+using static BizHawk.Common.RawInputImports;
 using static BizHawk.Common.Win32Imports;
 
 using RAWKey = Vortice.DirectInput.Key;
