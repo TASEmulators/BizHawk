@@ -179,6 +179,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			public List<RollColumn> Columns { get; set; }
+
+			public bool DoubleClickToPoke { get; set; } = true;
 		}
 
 		private IEnumerable<int> SelectedIndices => WatchListView.SelectedRows;
@@ -431,6 +433,21 @@ namespace BizHawk.Client.EmuHawk
 			UpdateWatchCount();
 			UpdateStatusBar();
 			GeneralUpdate();
+		}
+
+		/// <summary>
+		/// Open Edit or Poke window for selected watch depending on user setting
+		/// </summary>
+		private void OpenWatch()
+		{
+			if (Settings.DoubleClickToPoke)
+			{
+				PokeAddress();
+			}
+			else
+			{
+				EditWatch();
+			}
 		}
 
 		private void EditWatch(bool duplicate = false)
@@ -836,6 +853,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PokeAddressMenuItem_Click(object sender, EventArgs e)
 		{
+			PokeAddress();
+		}
+
+		private void PokeAddress()
+		{
 			if (SelectedWatches.Any())
 			{
 				var poke = new RamPoke(DialogController, SelectedWatches, MainForm.CheatList)
@@ -1036,6 +1058,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void DoubleClickActionSubMenu_DropDownOpening(object sender, EventArgs e)
+		{
+			DoubleClickToEditMenuItem.Checked = !Settings.DoubleClickToPoke;
+			DoubleClickToPokeMenuItem.Checked = Settings.DoubleClickToPoke;
+		}
+
+		private void DoubleClickToEditMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.DoubleClickToPoke = false;
+		}
+
+		private void DoubleClickToPokeMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.DoubleClickToPoke = true;
+		}
+
 		[RestoreDefaults]
 		private void RestoreDefaultsMenuItem()
 		{
@@ -1204,7 +1242,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.IsPressed(Keys.Enter))
 			{
-				EditWatch();
+				OpenWatch();
 			}
 		}
 
@@ -1217,7 +1255,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			EditWatch();
+			OpenWatch();
 		}
 
 		private void WatchListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)

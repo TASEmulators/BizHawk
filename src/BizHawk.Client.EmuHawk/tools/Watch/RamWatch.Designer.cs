@@ -107,6 +107,9 @@ namespace BizHawk.Client.EmuHawk
             this.OriginalMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.WatchesOnScreenMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.WatchListView = new InputRoll();
+            this.DoubleClickActionSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.DoubleClickToEditMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.DoubleClickToPokeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.ListViewContextMenu.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -600,7 +603,8 @@ namespace BizHawk.Client.EmuHawk
             // 
             this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DefinePreviousValueSubMenu,
-            this.WatchesOnScreenMenuItem});
+            this.WatchesOnScreenMenuItem,
+            this.DoubleClickActionSubMenu});
             this.OptionsSubMenu.Text = "&Settings";
             this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.SettingsSubMenu_DropDownOpened);
             // 
@@ -658,6 +662,24 @@ namespace BizHawk.Client.EmuHawk
             this.WatchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);
             this.WatchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
             this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
+            // 
+            // DoubleClickActionSubMenu
+            // 
+            this.DoubleClickActionSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DoubleClickToEditMenuItem,
+            this.DoubleClickToPokeMenuItem});
+            this.DoubleClickActionSubMenu.Text = "On Double-Clicking a Watch";
+            this.DoubleClickActionSubMenu.DropDownOpening += new System.EventHandler(this.DoubleClickActionSubMenu_DropDownOpening);
+            // 
+            // DoubleClickToEditMenuItem
+            // 
+            this.DoubleClickToEditMenuItem.Text = "Edit Watch";
+            this.DoubleClickToEditMenuItem.Click += new System.EventHandler(this.DoubleClickToEditMenuItem_Click);
+            // 
+            // DoubleClickToPokeMenuItem
+            // 
+            this.DoubleClickToPokeMenuItem.Text = "Poke Address";
+            this.DoubleClickToPokeMenuItem.Click += new System.EventHandler(this.DoubleClickToPokeMenuItem_Click);
             // 
             // RamWatch
             // 
@@ -765,5 +787,8 @@ namespace BizHawk.Client.EmuHawk
         private BizHawk.WinForms.Controls.ToolStripMenuItemEx MoveBottomMenuItem;
         private BizHawk.WinForms.Controls.ToolStripMenuItemEx MoveTopContextMenuItem;
         private BizHawk.WinForms.Controls.ToolStripMenuItemEx MoveBottomContextMenuItem;
+        private ToolStripMenuItemEx DoubleClickActionSubMenu;
+        private ToolStripMenuItemEx DoubleClickToEditMenuItem;
+        private ToolStripMenuItemEx DoubleClickToPokeMenuItem;
     }
 }
