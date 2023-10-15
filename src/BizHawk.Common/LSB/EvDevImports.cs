@@ -618,20 +618,10 @@ namespace BizHawk.Common
 			=> (uint)((IOC_READ << 30) | (size << 16) | (IOC_EV_TYPE << 8) | nr);
 
 		public static uint EVIOCGNAME(long len) => EVIOCG( 0x06, len);
-		public static uint EVIOCGPHYS(long len) => EVIOCG( 0x07, len);
-		public static uint EVIOCGUNIQ(long len) => EVIOCG( 0x08, len);
-		public static uint EVIOCGPROP(long len) => EVIOCG(0x09, len);
 		public static uint EVIOCGBIT(EvDevEventType ev, long len) => EVIOCG(0x20 + (long)ev, len);
-		public static uint EVIOCGABS(int abs) => EVIOCG(0x40 + abs, 24);
 
 		public const uint EVIOCGVERSION = 0x80044501;
 		public const uint EVIOCGID = 0x80084502;
-		public const uint EVIOCGREP = 0x80084503;
-		public const uint EVIOCSREP = 0x40084503;
-		public const uint EVIOCGKEYCODE = 0x80084504;
-		public const uint EVIOCGKEYCODE_V2 = 0x80284504;
-		public const uint EVIOCSKEYCODE = 0x40084504;
-		public const uint EVIOCSKEYCODE_V2 = 0x40284504;
 
 		[DllImport("libc")]
 		public static extern unsafe int ioctl(int fd, UIntPtr request, void* data);
