@@ -13,7 +13,8 @@ namespace BizHawk.Bizware.Input
 	/// Abstract class which only handles keyboard input
 	/// Uses OS specific functionality, as there is no good cross platform way to do this
 	/// (mostly as all the available cross-platform options require a focused window, arg!)
-	/// TODO: Doesn't work for Wayland or macOS yet (maybe Linux should just use evdev here)
+	/// TODO: Doesn't work for Wayland yet (maybe Linux should just use evdev here)
+	/// TODO: Stop using a ton of static classes here, checking CurrentOS constantly is annoying...
 	/// </summary>
 	public abstract class OSTailoredKeyInputAdapter : IHostInputAdapter
 	{
@@ -29,9 +30,8 @@ namespace BizHawk.Bizware.Input
 					X11KeyInput.Deinitialize();
 					break;
 				case OSTailoredCode.DistinctOS.macOS:
-					//QuartzKeyInput.Deinitialize();
-					//break;
-					throw new NotSupportedException("TODO QUARTZ");
+					QuartzKeyInput.Deinitialize();
+					break;
 				case OSTailoredCode.DistinctOS.Windows:
 					RAWKeyInput.Deinitialize();
 					break;
@@ -50,9 +50,8 @@ namespace BizHawk.Bizware.Input
 					X11KeyInput.Initialize();
 					break;
 				case OSTailoredCode.DistinctOS.macOS:
-					//QuartzKeyInput.Initialize();
-					//break;
-					throw new NotSupportedException("TODO QUARTZ");
+					QuartzKeyInput.Initialize();
+					break;
 				case OSTailoredCode.DistinctOS.Windows:
 					RAWKeyInput.Initialize();
 					break;
@@ -76,7 +75,7 @@ namespace BizHawk.Bizware.Input
 			var ret = OSTailoredCode.CurrentOS switch
 			{
 				OSTailoredCode.DistinctOS.Linux => X11KeyInput.Update(),
-				OSTailoredCode.DistinctOS.macOS => throw new NotSupportedException("TODO QUARTZ"),
+				OSTailoredCode.DistinctOS.macOS => QuartzKeyInput.Update(),
 				OSTailoredCode.DistinctOS.Windows => RAWKeyInput.Update(_config ?? throw new(nameof(ProcessHostKeyboards) + " called before the global config was passed")),
 				_ => throw new InvalidOperationException()
 			};
