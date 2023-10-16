@@ -1,5 +1,7 @@
 #nullable enable
 
+// #define USE_EVDEV
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +29,11 @@ namespace BizHawk.Bizware.Input
 			switch (OSTailoredCode.CurrentOS)
 			{
 				case OSTailoredCode.DistinctOS.Linux:
+#if USE_EVDEV
+					EvDevKeyInput.Deinitialize();
+#else
 					X11KeyInput.Deinitialize();
+#endif
 					break;
 				case OSTailoredCode.DistinctOS.macOS:
 					QuartzKeyInput.Deinitialize();
@@ -47,7 +53,11 @@ namespace BizHawk.Bizware.Input
 				case OSTailoredCode.DistinctOS.Linux:
 					// TODO: probably need a libinput option for Wayland
 					// (unless we just want to ditch this and always use evdev here?)
+#if USE_EVDEV
+					EvDevKeyInput.Deinitialize();
+#else
 					X11KeyInput.Initialize();
+#endif
 					break;
 				case OSTailoredCode.DistinctOS.macOS:
 					QuartzKeyInput.Initialize();
@@ -74,7 +84,11 @@ namespace BizHawk.Bizware.Input
 		{
 			var ret = OSTailoredCode.CurrentOS switch
 			{
+#if USE_EVDEV
+				OSTailoredCode.DistinctOS.Linux => EvDevKeyInput.Update(),
+#else
 				OSTailoredCode.DistinctOS.Linux => X11KeyInput.Update(),
+#endif
 				OSTailoredCode.DistinctOS.macOS => QuartzKeyInput.Update(),
 				OSTailoredCode.DistinctOS.Windows => RAWKeyInput.Update(_config ?? throw new(nameof(ProcessHostKeyboards) + " called before the global config was passed")),
 				_ => throw new InvalidOperationException()

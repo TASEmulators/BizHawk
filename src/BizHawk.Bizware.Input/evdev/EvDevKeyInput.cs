@@ -18,16 +18,18 @@ namespace BizHawk.Bizware.Input
 {
 	internal static class EvDevKeyInput
 	{
-		private struct EvDevKeyboard
+		private sealed record EvDevKeyboard(
+			uint DriverVersion,
+			ushort IdBus,
+			ushort IdVendor,
+			ushort IdProduct,
+			ushort IdVersion,
+			string Name,
+			int Fd,
+			string Path) : IDisposable
 		{
-			public uint DriverVersion;
-			public ushort IdBus;
-			public ushort IdVendor;
-			public ushort IdProduct;
-			public ushort IdVersion;
-			public string Name;
-			public int Fd;
-			public string Path;
+			public void Dispose()
+				=> _ = close(Fd);
 
 			public override string ToString()
 			{
@@ -44,7 +46,7 @@ namespace BizHawk.Bizware.Input
 
 		private static readonly object _lockObj = new();
 
-		private static List<int> DecodeBits(Span<byte> bits)
+		private static List<int> DecodeBits(ReadOnlySpan<byte> bits)
 		{
 			var result = new List<int>(bits.Length * 8);
 			for (var i = 0; i < bits.Length; i++)
@@ -135,17 +137,16 @@ namespace BizHawk.Bizware.Input
 				return;
 			}
 
-			var keyboard = new EvDevKeyboard
-			{
-				DriverVersion = version,
-				IdBus = id[0],
-				IdProduct = id[1],
-				IdVendor = id[2],
-				IdVersion = id[3],
-				Name = name,
-				Fd = fd,
-				Path = path,
-			};
+			var keyboard = new EvDevKeyboard(
+				DriverVersion: version,
+				IdBus: id[0],
+				IdProduct: id[1],
+				IdVendor: id[2],
+				IdVersion: id[3],
+				Name: name,
+				Fd: fd,
+				Path: path
+			);
 
 			Console.WriteLine($"Added keyboard {keyboard}");
 			_keyboards.Add(path, keyboard);
@@ -155,8 +156,8 @@ namespace BizHawk.Bizware.Input
 		{
 			if (_keyboards.TryGetValue(path, out var keyboard))
 			{
-				_ = close(keyboard.Fd);
 				Console.WriteLine($"Removed keyboard {keyboard}");
+				keyboard.Dispose();
 				_keyboards.Remove(path);
 			}
 		}
@@ -181,7 +182,7 @@ namespace BizHawk.Bizware.Input
 						MaybeRemoveKeyboard(e.FullPath);
 						break;
 					default:
-						Console.WriteLine($"Unexpected watcher event {e.ChangeType}");
+						Debug.WriteLine($"Unexpected watcher event {e.ChangeType}");
 						break;
 				}
 			}
@@ -228,7 +229,7 @@ namespace BizHawk.Bizware.Input
 
 				foreach (var keyboard in _keyboards.Values)
 				{
-					_ = close(keyboard.Fd);
+					keyboard.Dispose();
 				}
 
 				_keyboards.Clear();
@@ -248,8 +249,7 @@ namespace BizHawk.Bizware.Input
 				var kbEvent = default(EvDevKeyboardEvent);
 				var kbEventSize = (IntPtr)Marshal.SizeOf<EvDevKeyboardEvent>();
 				var kbsToClose = new List<string>();
-				Span<byte> keyChanges = stackalloc byte[(int)EvDevKeyCode.KEY_CNT];
-				keyChanges.Clear();
+				var keyEvents = new List<KeyEvent>();
 
 				foreach (var keyboard in _keyboards.Values)
 				{
@@ -275,6 +275,7 @@ namespace BizHawk.Bizware.Input
 								// ENODEV means the device is gone
 								if (errno == ENODEV)
 								{
+									// can't remove the kbs while iterating them!
 									kbsToClose.Add(keyboard.Path);
 									break;
 								}
@@ -296,24 +297,24 @@ namespace BizHawk.Bizware.Input
 							continue;
 						}
 
-						if (kbEvent.code > EvDevKeyCode.KEY_MAX)
+						if (KeyEnumMap.TryGetValue(kbEvent.code, out var key))
 						{
-							Debug.WriteLine($"Unexpected event code {kbEvent.code}");
-							continue;
-						}
-
-						switch (kbEvent.value)
-						{
-							case EvDevKeyValue.KeyUp:
-								keyChanges[(int)kbEvent.code] = 1;
-								break;
-							case EvDevKeyValue.KeyDown:
-							case EvDevKeyValue.KeyRepeat:
-								keyChanges[(int)kbEvent.code] = 2;
-								break;
-							default:
-								Debug.WriteLine($"Unexpected event value {kbEvent.value}");
-								break;
+							switch (kbEvent.value)
+							{
+								case EvDevKeyValue.KeyUp:
+									keyEvents.Add(new(key, pressed: false));
+									break;
+								case EvDevKeyValue.KeyDown:
+									keyEvents.Add(new(key, pressed: true));
+									break;
+								case EvDevKeyValue.KeyRepeat:
+									// should this be considered a press event?
+									// probably not particularly useful to do so
+									break;
+								default:
+									Debug.WriteLine($"Unexpected event value {kbEvent.value}");
+									break;
+							}
 						}
 					}
 				}
@@ -321,16 +322,6 @@ namespace BizHawk.Bizware.Input
 				foreach (var path in kbsToClose)
 				{
 					MaybeRemoveKeyboard(path);
-				}
-
-				var keyEvents = new List<KeyEvent>();
-				for (var i = 0; i < (int)EvDevKeyCode.KEY_CNT; i++)
-				{
-					if (keyChanges[i] != 0 &&
-						KeyEnumMap.TryGetValue((EvDevKeyCode)i, out var key))
-					{
-						keyEvents.Add(new(key, keyChanges[i] == 1));
-					}
 				}
 
 				return keyEvents;
