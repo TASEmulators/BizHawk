@@ -142,6 +142,10 @@ namespace BizHawk.Common
 
 		[DllImport("user32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool RegisterRawInputDevices(ref RAWINPUTDEVICE pRawInputDevice, uint uiNumDevices, int cbSize);
+
+		[DllImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool RegisterRawInputDevices(RAWINPUTDEVICE[] pRawInputDevices, uint uiNumDevices, int cbSize);
 	}
 }

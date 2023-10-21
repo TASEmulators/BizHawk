@@ -9,49 +9,33 @@ using static BizHawk.Common.QuartzImports;
 
 namespace BizHawk.Bizware.Input
 {
-	internal static class QuartzKeyInput
+	internal sealed class QuartzKeyInput : IKeyInput
 	{
-		private static readonly bool[] LastKeyState = new bool[0x7F];
-		private static readonly object _syncObject = new();
+		private readonly bool[] LastKeyState = new bool[0x7F];
 
-		public static void Initialize()
+		public void Dispose()
 		{
-			lock (_syncObject)
-			{
-				Deinitialize();
-			}
 		}
 
-		public static void Deinitialize()
+		public IEnumerable<KeyEvent> Update(bool handleAltKbLayouts)
 		{
-			lock (_syncObject)
+			var keyEvents = new List<KeyEvent>();
+			for (var keycode = 0; keycode < 0x7F; keycode++)
 			{
-				Array.Clear(LastKeyState, 0, LastKeyState.Length);
-			}
-		}
+				var keystate = CGEventSourceKeyState(
+					CGEventSourceStateID.kCGEventSourceStateHIDSystemState, (CGKeyCode)keycode);
 
-		public static IEnumerable<KeyEvent> Update()
-		{
-			lock (_syncObject)
-			{
-				var eventList = new List<KeyEvent>();
-				for (var keycode = 0; keycode < 0x7F; keycode++)
+				if (LastKeyState[keycode] != keystate)
 				{
-					var keystate = CGEventSourceKeyState(
-						CGEventSourceStateID.kCGEventSourceStateHIDSystemState, (CGKeyCode)keycode);
-
-					if (LastKeyState[keycode] != keystate)
+					if (KeyEnumMap.TryGetValue((CGKeyCode)keycode, out var key))
 					{
-						if (KeyEnumMap.TryGetValue((CGKeyCode)keycode, out var key))
-						{
-							eventList.Add(new(key, pressed: keystate));
-							LastKeyState[keycode] = keystate;
-						}
+						keyEvents.Add(new(key, pressed: keystate));
+						LastKeyState[keycode] = keystate;
 					}
 				}
-
-				return eventList;
 			}
+
+			return keyEvents;
 		}
 
 		private static readonly IReadOnlyDictionary<CGKeyCode, DistinctKey> KeyEnumMap = new Dictionary<CGKeyCode, DistinctKey>

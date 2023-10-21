@@ -82,7 +82,7 @@ namespace BizHawk.Bizware.Input
 			return VKeyToDKeyMap.GetValueOrDefault(virtualKey, DInputKey.Unknown);
 		}
 
-		// DInputKey is just a scancode so it's used with RAWKeyInput
+		// DInputKey is just a scancode so it's used with RawKeyInput
 		/*private*/ internal static readonly IReadOnlyDictionary<DInputKey, DistinctKey> KeyEnumMap = new Dictionary<DInputKey, DistinctKey>
 		{
 			[DInputKey.D0] = DistinctKey.D0,

@@ -12,6 +12,7 @@ namespace BizHawk.Common
 		public const int MAX_PATH = 260;
 		public const uint PM_REMOVE = 0x0001U;
 		public static readonly IntPtr HWND_MESSAGE = new(-3);
+		public const int GWLP_USERDATA = -21;
 
 		public delegate int BFFCALLBACK(IntPtr hwnd, uint uMsg, IntPtr lParam, IntPtr lpData);
 
@@ -163,6 +164,9 @@ namespace BizHawk.Common
 		[DllImport("kernel32.dll", SetLastError = true)]
 		public static extern IntPtr GetProcessHeap();
 
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
+
 		[DllImport("kernel32.dll", SetLastError = false)]
 		public static extern IntPtr HeapAlloc(IntPtr hHeap, uint dwFlags, int dwBytes);
 
@@ -200,6 +204,9 @@ namespace BizHawk.Common
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		public static extern IntPtr SHBrowseForFolder(ref BROWSEINFO bi);

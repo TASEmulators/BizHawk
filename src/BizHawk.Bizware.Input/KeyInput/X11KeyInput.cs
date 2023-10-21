@@ -3,7 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 
 using static BizHawk.Common.XlibImports;
@@ -12,47 +14,46 @@ using static BizHawk.Common.XlibImports;
 
 namespace BizHawk.Bizware.Input
 {
-	internal static class X11KeyInput
+	internal sealed class X11KeyInput : IKeyInput
 	{
-		private static IntPtr Display;
-		private static readonly DistinctKey[] KeyEnumMap = new DistinctKey[256];
-		private static readonly bool[] LastKeyState = new bool[256];
+		private IntPtr Display;
+		private readonly bool[] LastKeyState = new bool[256];
+		private readonly object LockObj = new();
+		private readonly DistinctKey[] KeyEnumMap = new DistinctKey[256];
 
-		private static readonly object _syncObject = new();
-
-		public static void Initialize()
+		public X11KeyInput()
 		{
-			lock (_syncObject)
+			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Linux)
 			{
-				Deinitialize();
+				throw new NotSupportedException("X11 is Linux only");
+			}
 
-				Display = XOpenDisplay(null);
+			Display = XOpenDisplay(null);
 
-				if (Display == IntPtr.Zero)
+			if (Display == IntPtr.Zero)
+			{
+				throw new("Could not open XDisplay");
+			}
+
+			using (new XLock(Display))
+			{
+				// check if we can use XKb
+				int major = 1, minor = 0;
+				var supportsXkb = XkbQueryExtension(Display, out _, out _, out _, ref major, ref minor);
+
+				if (supportsXkb)
 				{
-					throw new("Could not open XDisplay");
+					// we generally want this behavior
+					XkbSetDetectableAutoRepeat(Display, true, out _);
 				}
 
-				using (new XLock(Display))
-				{
-					// check if we can use XKb
-					int major = 1, minor = 0;
-					var supportsXkb = XkbQueryExtension(Display, out _, out _, out _, ref major, ref minor);
-
-					if (supportsXkb)
-					{
-						// we generally want this behavior
-						XkbSetDetectableAutoRepeat(Display, true, out _);
-					}
-
-					CreateKeyMap(supportsXkb);
-				}
+				CreateKeyMap(supportsXkb);
 			}
 		}
 
-		public static void Deinitialize()
+		public void Dispose()
 		{
-			lock (_syncObject)
+			lock (LockObj)
 			{
 				if (Display != IntPtr.Zero)
 				{
@@ -62,9 +63,9 @@ namespace BizHawk.Bizware.Input
 			}
 		}
 
-		public static unsafe IEnumerable<KeyEvent> Update()
+		public unsafe IEnumerable<KeyEvent> Update(bool handleAltKbLayouts)
 		{
-			lock (_syncObject)
+			lock (LockObj)
 			{
 				// Can't update without a display connection
 				if (Display == IntPtr.Zero)
@@ -80,23 +81,26 @@ namespace BizHawk.Bizware.Input
 					_ = XQueryKeymap(Display, keys);
 				}
 
-				var eventList = new List<KeyEvent>();
+				var keyEvents = new List<KeyEvent>();
 				for (var keycode = 0; keycode < 256; keycode++)
 				{
-					var keystate = (keys[keycode >> 3] >> (keycode & 0x07) & 0x01) != 0;
-
-					if (LastKeyState[keycode] != keystate)
+					var key = KeyEnumMap[keycode];
+					if (key != DistinctKey.Unknown)
 					{
-						eventList.Add(new(KeyEnumMap[keycode], pressed: keystate));
-						LastKeyState[keycode] = keystate;
+						var keystate = (keys[keycode >> 3] >> (keycode & 0x07) & 0x01) != 0;
+						if (LastKeyState[keycode] != keystate)
+						{
+							keyEvents.Add(new(key, pressed: keystate));
+							LastKeyState[keycode] = keystate;
+						}
 					}
 				}
 
-				return eventList;
+				return keyEvents;
 			}
 		}
 
-		private static unsafe void CreateKeyMap(bool supportsXkb)
+		private unsafe void CreateKeyMap(bool supportsXkb)
 		{
 			for (var i = 0; i < KeyEnumMap.Length; i++)
 			{

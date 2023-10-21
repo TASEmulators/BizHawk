@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.IO.Pipes;
+using System.Threading;
 
 using BizHawk.Client.Common;
 
@@ -21,8 +21,7 @@ namespace BizHawk.Bizware.Input
 			}
 		}
 
-		private static readonly List<KeyEvent> PendingEventList = new();
-		private static readonly List<KeyEvent> EventList = new();
+		private static readonly List<KeyEvent> PendingKeyEvents = new();
 		private static bool IPCActive;
 
 		private static void IPCThread()
@@ -42,9 +41,9 @@ namespace BizHawk.Bizware.Input
 					{
 						var e = br.ReadUInt32();
 						var pressed = (e & 0x80000000) != 0;
-						lock (PendingEventList)
+						lock (PendingKeyEvents)
 						{
-							PendingEventList.Add(new((DistinctKey)(e & 0x7FFFFFFF), pressed));
+							PendingKeyEvents.Add(new((DistinctKey)(e & 0x7FFFFFFF), pressed));
 						}
 					}
 				}
@@ -59,15 +58,15 @@ namespace BizHawk.Bizware.Input
 
 		public static IEnumerable<KeyEvent> Update()
 		{
-			EventList.Clear();
+			var keyEvents = new List<KeyEvent>();
 
-			lock (PendingEventList)
+			lock (PendingKeyEvents)
 			{
-				EventList.AddRange(PendingEventList);
-				PendingEventList.Clear();
+				keyEvents.AddRange(PendingKeyEvents);
+				PendingKeyEvents.Clear();
 			}
 
-			return EventList;
+			return keyEvents;
 		}
 	}
 }
