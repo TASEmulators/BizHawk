@@ -375,7 +375,9 @@ namespace BizHawk.Client.Common.Filters
 
 			if (InputSize == OutputSize) // any reason we need to check vx and vy?
 			{
-				Nop = true;
+				// Yes, this is not supposed to be Nop, which has different meaning
+				// (yes, this system is a mess, need to clean this up at some point)
+				IsNop = true;
 			}
 		}
 
