@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				SealedHeapSizeKB = 4,
 				InvisibleHeapSizeKB = 4 * 1024,
 				PlainHeapSizeKB = 4,
-				MmapHeapSizeKB = 1152 * 1024,
+				MmapHeapSizeKB = 1920 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[]
