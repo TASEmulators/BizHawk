@@ -64,14 +64,16 @@ namespace BizHawk.Common
 			}
 		}
 
+		private static readonly bool UseUnmanagedImpl = RuntimeInformation.ProcessArchitecture == Architecture.X64 && LibBizHash.BizSupportsShaInstructions();
+
 		public static byte[] Compute(byte[] data)
-			=> LibBizHash.BizSupportsShaInstructions()
+			=> UseUnmanagedImpl
 				? UnmanagedImpl(data)
 				: SHA1Impl.ComputeHash(data);
 
 		public static byte[] ComputeConcat(byte[] dataA, byte[] dataB)
 		{
-			if (LibBizHash.BizSupportsShaInstructions()) return UnmanagedImpl(dataA.ConcatArray(dataB));
+			if (UseUnmanagedImpl) return UnmanagedImpl(dataA.ConcatArray(dataB));
 			using var impl = IncrementalHash.CreateHash(HashAlgorithmName.SHA1);
 			impl.AppendData(dataA);
 			impl.AppendData(dataB);
