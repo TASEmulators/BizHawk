@@ -1,11 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
+
 using Newtonsoft.Json;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System.Runtime.InteropServices;
-using BizHawk.Common.IOExtensions;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
