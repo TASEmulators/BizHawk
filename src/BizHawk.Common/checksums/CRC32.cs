@@ -69,7 +69,7 @@ namespace BizHawk.Common
 		{
 			for (var i = 0; i < len; i++)
 			{
-				current = CRC32Table[(current ^ ((byte*)buffer)[i]) & 0xFF] ^ (current >> 8);
+				current = CRC32Table![(current ^ ((byte*)buffer)[i]) & 0xFF] ^ (current >> 8);
 			}
 
 			return current;
