@@ -3464,7 +3464,7 @@ namespace BizHawk.Client.EmuHawk
 						var result = this.ShowFileSaveDialog(
 							filter: new(new FilesystemFilter(ext, new[] { ext })),
 							initDir: Config.PathEntries.AvAbsolutePath(),
-							initFileName: $"{Game.FilesystemSafeName()}.{ext}");
+							initFileName: $"{(MovieSession.Movie.IsActive() ? Path.GetFileNameWithoutExtension(MovieSession.Movie.Filename) : Game.FilesystemSafeName())}.{ext}");
 						if (result is null)
 						{
 							aw.Dispose();
