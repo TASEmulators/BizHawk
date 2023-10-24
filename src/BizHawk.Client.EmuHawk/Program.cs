@@ -174,6 +174,13 @@ namespace BizHawk.Client.EmuHawk
 
 			StringLogUtil.DefaultToDisk = initialConfig.Movies.MoviesOnDisk;
 
+			// must be done VERY early, before any SDL_Init calls can be done
+			// if this isn't done, SIGINT/SIGTERM get swallowed by SDL
+			if (OSTailoredCode.IsUnixHost)
+			{
+				SDL2.SDL.SDL_SetHint(SDL2.SDL.SDL_HINT_NO_SIGNAL_HANDLERS, "1");
+			}
+
 			var glInitCount = 0;
 
 			IGL TryInitIGL(EDispMethod dispMethod)
