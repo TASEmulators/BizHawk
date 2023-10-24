@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -457,10 +459,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (var movie in MovieView.SelectedIndices.Cast<int>()
-				.Select(index => _movieList[index]))
+			try
 			{
-				System.Diagnostics.Process.Start(movie.Filename);
+				foreach (var movie in MovieView.SelectedIndices.Cast<int>().Select(index => _movieList[index]))
+				{
+					Process.Start(movie.Filename);
+				}
+			}
+			catch (Win32Exception ex) // "Access denied" when cancelling "Open With" dialog on Linux
+			{
+				Console.WriteLine(ex);
+				// and stop trying to open files
 			}
 		}
 
