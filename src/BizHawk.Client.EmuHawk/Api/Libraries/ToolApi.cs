@@ -9,11 +9,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class ToolApi : IToolApi
 	{
-		private readonly ToolManager _toolManager;
+		private readonly IToolManager _toolManager;
 
 		public IEnumerable<Type> AvailableTools => _toolManager.AvailableTools.ToList(); // defensive copy in case ToolManager's implementation changes
 
-		public ToolApi(ToolManager toolManager) => _toolManager = toolManager;
+		public ToolApi(IToolManager toolManager) => _toolManager = toolManager;
 
 		public IToolForm GetTool(string name)
 		{

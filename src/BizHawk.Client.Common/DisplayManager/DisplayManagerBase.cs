@@ -953,6 +953,9 @@ namespace BizHawk.Client.Common
 		public IDisplaySurface PeekApiHawkLockedSurface(DisplaySurfaceID surfaceID)
 			=> _apiHawkIDToSurface.TryGetValue(surfaceID, out var surface) ? surface : null;
 
+		public IDisplaySurface GetCurrentSurface(DisplaySurfaceID surfaceID)
+			=> _apiHawkSurfaceSets[surfaceID].GetCurrent();
+
 		public IDisplaySurface LockApiHawkSurface(DisplaySurfaceID surfaceID, bool clear)
 		{
 			if (_apiHawkIDToSurface.ContainsKey(surfaceID))

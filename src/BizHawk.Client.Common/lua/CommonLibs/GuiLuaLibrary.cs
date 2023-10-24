@@ -20,18 +20,6 @@ namespace BizHawk.Client.Common
 		private DisplaySurfaceID UseOrFallback(string surfaceName)
 			=> DisplaySurfaceIDParser.Parse(surfaceName) ?? _rememberedSurfaceID;
 
-#pragma warning disable CS0612
-		[LuaDeprecatedMethod]
-		[LuaMethod("DrawNew", "Changes drawing target to the specified lua surface name. This may clobber any previous drawing to this surface (pass false if you don't want it to)")]
-		public void DrawNew(string name, bool? clear = true)
-			=> APIs.Gui.DrawNew(name, clear ?? true);
-
-		[LuaDeprecatedMethod]
-		[LuaMethod("DrawFinish", "Finishes drawing to the current lua surface and causes it to get displayed.")]
-		public void DrawFinish()
-			=> APIs.Gui.DrawFinish();
-#pragma warning restore CS0612
-
 		[LuaMethodExample("gui.addmessage( \"Some message\" );")]
 		[LuaMethod("addmessage", "Adds a message to the OSD's message area")]
 		public void AddMessage(string message)

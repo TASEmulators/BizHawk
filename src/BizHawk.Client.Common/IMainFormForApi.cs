@@ -32,6 +32,10 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		bool PauseAvi { get; set; }
 
+		IToolManager Tools { get; }
+
+		IMovieSession MovieSession { get; }
+
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void ClearHolds();
 
