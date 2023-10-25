@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-update_in_pause"                    // ^ including frame-advancing
 				, "-rompath",                       ""  // mame doesn't load roms from full paths, only from dirs to scan
 				, "-joystick_contradictory"             // allow L+R/U+D on digital joystick
-				, "-nvram_directory",               ""  // path to nvram from
+				, "-nvram_directory",               ""  // path to nvram
 				, "-artpath",                       ""  // path to artwork
 				, "-diff_directory",                ""  // path to hdd diffs
 				, "-cfg_directory",                 ""  // path to config
@@ -326,6 +326,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string Step = "emu.step()";
 			public const string Pause = "emu.pause()";
 			public const string Unpause = "emu.unpause()";
+			public const string Reset = "manager.machine:soft_reset()";
 			public const string Exit = "manager.machine:exit()";
 
 			// getters

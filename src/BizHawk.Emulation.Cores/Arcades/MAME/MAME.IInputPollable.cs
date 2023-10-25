@@ -71,6 +71,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				}
 			}
 
+			MAMEController.BoolButtons.Add("Reset");
+
 			_buttonFields = buttonFieldList.ToArray();
 			_analogFields = analogFieldList.ToArray();
 			_fieldPtrs = fieldPtrList.ToArray();
@@ -81,6 +83,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void SendInput(IController controller)
 		{
+			if (controller.IsPressed("Reset"))
+			{
+				_core.mame_lua_execute(MAMELuaCommand.Reset);
+			}
+
 			for (var i = 0; i < _buttonFields.Length; i++)
 			{
 				_fieldInputs[i] = controller.IsPressed(_buttonFields[i]) ? 1 : 0;
