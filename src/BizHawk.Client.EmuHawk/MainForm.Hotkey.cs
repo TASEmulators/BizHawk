@@ -165,6 +165,10 @@ namespace BizHawk.Client.EmuHawk
 					// TODO: account for 1 when implemented
 					Config.DispSpeedupFeatures = Config.DispSpeedupFeatures == 0 ? 2 : 0;
 					break;
+				case "Accept Background Input":
+					Config.AcceptBackgroundInput ^= true;
+					AddOnScreenMessage($"Accept Background Input toggled {(Config.AcceptBackgroundInput ? "On" : "Off")}");
+					break;
 
 				// Save States
 				case "Save State 1":
