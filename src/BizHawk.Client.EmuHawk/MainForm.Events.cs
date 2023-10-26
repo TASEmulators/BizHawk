@@ -1185,7 +1185,7 @@ namespace BizHawk.Client.EmuHawk
 			ExternalToolMenuItem.DropDownItems.AddRange(ExtToolManager.ToolStripItems.ToArray());
 			if (ExternalToolMenuItem.DropDownItems.Count == 0)
 			{
-				ExternalToolMenuItem.DropDownItems.Add("None");
+				ExternalToolMenuItem.DropDownItems.Add(new ToolStripMenuItemEx { Enabled = false, Text = "(none)" });
 			}
 			if (Config.TrustedExtTools.Count is 0) return;
 
