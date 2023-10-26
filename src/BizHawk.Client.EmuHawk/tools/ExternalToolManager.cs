@@ -35,7 +35,11 @@ namespace BizHawk.Client.EmuHawk
 				_asmChecksum = asmChecksum;
 				_entryPointTypeName = entryPointTypeName;
 				_extToolMan = extToolMan;
+#if DEBUG
+				_skipExtToolWarning = true;
+#else
 				_skipExtToolWarning = _extToolMan._config.TrustedExtTools.TryGetValue(asmFilename, out var s) && s == _asmChecksum;
+#endif
 				AsmFilename = asmFilename;
 			}
 
@@ -47,7 +51,9 @@ namespace BizHawk.Client.EmuHawk
 					/*skipExtToolWarning:*/ _skipExtToolWarning);
 				if (!success || _skipExtToolWarning) return;
 				_skipExtToolWarning = true;
+#if !DEBUG
 				_extToolMan._config.TrustedExtTools[AsmFilename] = _asmChecksum;
+#endif
 			}
 		}
 
@@ -119,8 +125,12 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				if (!OSTailoredCode.IsUnixHost) MotWHack.RemoveMOTW(fileName);
+#if DEBUG
+				var externalToolFile = Assembly.LoadFrom(fileName);
+#else
 				var asmBytes = File.ReadAllBytes(fileName);
 				var externalToolFile = Assembly.Load(asmBytes);
+#endif
 				var entryPoint = externalToolFile.GetTypes()
 					.SingleOrDefault(t => typeof(IExternalToolForm).IsAssignableFrom(t) && t.GetCustomAttributes().OfType<ExternalToolAttribute>().Any());
 				if (entryPoint == null) throw new ExternalToolAttribute.MissingException();
@@ -145,7 +155,11 @@ namespace BizHawk.Client.EmuHawk
 				item.Text = toolAttribute.Name;
 				MenuItemInfo menuItemInfo = new(
 					this,
+#if DEBUG
+					asmChecksum: string.Empty,
+#else
 					asmChecksum: SHA1Checksum.ComputePrefixedHex(asmBytes),
+#endif
 					asmFilename: fileName,
 					entryPointTypeName: entryPoint.FullName);
 				item.Tag = menuItemInfo;
