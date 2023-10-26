@@ -58,9 +58,9 @@ public class DefaultSetterGenerator : ISourceGenerator
 					// this single arg is just the value assigned to the default value
 					var arg = ctorArgs.Value[0];
 					// a bit lame, but it'll work
-					// TODO: do we even want to handle arrays? do we even have any arrays in default values???
+					// TODO: do we even want to handle arrays? we don't even have arrays in default values...
 					var converionStr = arg.Kind == TypedConstantKind.Array
-						? $"new {arg.Type} " // new T[]
+						? $"new {arg.Type}[] " // new T[]
 						: ""; // do we need a cast (i.e. (T)) here? probably not?
 					source.Append($@"
 			settings.{prop.Name} = {converionStr}{arg.ToCSharpString()};");
