@@ -1,8 +1,7 @@
 using System;
 using System.IO;
-using BizHawk.Common;
 
-namespace BizHawk.BizInvoke
+namespace BizHawk.Common
 {
 	/// <summary>
 	/// Create a stream that allows read/write over a set of unmanaged memory pointers
@@ -23,21 +22,25 @@ namespace BizHawk.BizInvoke
 		private readonly long _ptr;
 		private readonly bool _readable;
 		private readonly bool _writable;
-		private bool _closed;
 
 		private long _pos;
+		private bool _closed;
 
 		public override bool CanRead => _readable;
 		public override bool CanSeek => true;
 		public override bool CanWrite => _writable;
 		public override long Length => _length;
+
 		public override long Position
 		{
 			get => _pos;
 			set
 			{
 				if (value < 0 || value > _length)
+				{
 					throw new ArgumentOutOfRangeException(paramName: nameof(value), value, message: "index out of range");
+				}
+
 				_pos = value;
 			}
 		}
@@ -45,17 +48,25 @@ namespace BizHawk.BizInvoke
 		private void EnsureNotDisposed()
 		{
 			if (_closed)
+			{
 				throw new ObjectDisposedException(nameof(MemoryViewStream));
+			}
 		}
 
-		public override void Flush() {}
+		public override void Flush()
+		{
+		}
 
-		private byte* CurrentPointer() => (byte*)Z.SS(_ptr + _pos);
+		private byte* CurrentPointer()
+			=> (byte*)Z.SS(_ptr + _pos);
 
 		public int Read(Span<byte> buffer)
 		{
 			if (!_readable)
+			{
 				throw new IOException();
+			}
+
 			EnsureNotDisposed();
 			var count = (int)Math.Min(buffer.Length, _length - _pos);
 			new ReadOnlySpan<byte>(CurrentPointer(), count).CopyTo(buffer);
@@ -64,76 +75,66 @@ namespace BizHawk.BizInvoke
 		}
 
 		public override int Read(byte[] buffer, int offset, int count)
-		{
-			return Read(new Span<byte>(buffer, offset, count));
-		}
+			=> Read(new(buffer, offset, count));
 
 		public override int ReadByte()
 		{
-			if (_pos < _length)
-			{
-				var ret = *CurrentPointer();
-				_pos++;
-				return ret;
-			}
-			else
+			if (_pos >= _length)
 			{
 				return -1;
 			}
+
+			var ret = *CurrentPointer();
+			_pos++;
+			return ret;
 		}
 
 		public override long Seek(long offset, SeekOrigin origin)
 		{
-			long newpos;
-			switch (origin)
+			var newpos = origin switch
 			{
-				default:
-				case SeekOrigin.Begin:
-					newpos = offset;
-					break;
-				case SeekOrigin.Current:
-					newpos = _pos + offset;
-					break;
-				case SeekOrigin.End:
-					newpos = _length + offset;
-					break;
-			}
+				SeekOrigin.Begin => offset,
+				SeekOrigin.Current => _pos + offset,
+				SeekOrigin.End => _length + offset,
+				_ => offset
+			};
+
 			Position = newpos;
 			return newpos;
 		}
 
 		public override void SetLength(long value)
-		{
-			throw new IOException();
-		}
+			=> throw new IOException();
 
 		public void Write(ReadOnlySpan<byte> buffer)
 		{
 			if (!_writable)
+			{
 				throw new IOException();
+			}
+
 			EnsureNotDisposed();
 			if (_pos + buffer.Length > _length)
+			{
 				throw new IOException("End of non-resizable stream");
-			buffer.CopyTo(new Span<byte>(CurrentPointer(), buffer.Length));
+			}
+
+			buffer.CopyTo(new(CurrentPointer(), buffer.Length));
 			_pos += buffer.Length;
 		}
 
 		public override void Write(byte[] buffer, int offset, int count)
-		{
-			Write(new ReadOnlySpan<byte>(buffer, offset, count));
-		}
+			=> Write(new(buffer, offset, count));
 
 		public override void WriteByte(byte value)
 		{
-			if (_pos < _length)
-			{
-				*CurrentPointer() = value;
-				_pos++;
-			}
-			else
+			if (_pos >= _length)
 			{
 				throw new IOException("End of non-resizable stream");
 			}
+
+			*CurrentPointer() = value;
+			_pos++;
 		}
 
 		protected override void Dispose(bool disposing)

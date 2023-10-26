@@ -1,10 +1,11 @@
-﻿using BizHawk.Common;
-using BizHawk.BizInvoke;
-using BizHawk.Emulation.Common;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+
+using BizHawk.Common;
+using BizHawk.BizInvoke;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
@@ -182,7 +183,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					var source = new MemoryStream(data, false);
 					foreach (var area in _saveramAreas)
 					{
-						WaterboxUtils.CopySome(source, new MemoryDomainStream(area), area.Size);
+						MemoryBlockUtils.CopySome(source, new MemoryDomainStream(area), area.Size);
 					}
 				}
 			}

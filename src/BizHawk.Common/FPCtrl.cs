@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace BizHawk.BizInvoke
+namespace BizHawk.Common
 {
 	// .NET is weird and sets the x87 control register to double precision
 	// It does this even on Linux which normally expects it set to extended x87 precision
@@ -17,9 +17,7 @@ namespace BizHawk.BizInvoke
 	// This can extend to issues in games: https://github.com/TASEmulators/BizHawk/issues/3726
 	public static class FPCtrl
 	{
-		private const CallingConvention cc = CallingConvention.Cdecl;
-
-		[UnmanagedFunctionPointer(cc)]
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void FixFPCtrlDelegate();
 
 		private static readonly MemoryBlock? _memory;

@@ -1,56 +1,54 @@
 ﻿using System;
+using System.Buffers;
 using System.IO;
 
-namespace BizHawk.BizInvoke
+namespace BizHawk.Common
 {
-	public static class WaterboxUtils
+	public static class MemoryBlockUtils
 	{
 		/// <summary>
 		/// copy `len` bytes from `src` to `dest`
 		/// </summary>
 		public static void CopySome(Stream src, Stream dst, long len)
 		{
-			var buff = new byte[65536];
-			while (len > 0)
+			const int TEMP_BUFFER_LENGTH = 65536;
+			var tmpBuf = ArrayPool<byte>.Shared.Rent(TEMP_BUFFER_LENGTH);
+			try
 			{
-				int r = src.Read(buff, 0, (int)Math.Min(len, 65536));
-				if (r == 0)
-					throw new InvalidOperationException($"End of source stream was reached with {len} bytes left to copy!");
-				dst.Write(buff, 0, r);
-				len -= r;
-			}
-		}
+				while (len > 0)
+				{
+					var r = src.Read(tmpBuf, 0, (int)Math.Min(len, TEMP_BUFFER_LENGTH));
+					if (r == 0)
+					{
+						throw new InvalidOperationException($"End of source stream was reached with {len} bytes left to copy!");
+					}
 
-		public static unsafe void ZeroMemory(IntPtr mem, long length)
-		{
-			byte* p = (byte*)mem;
-			byte* end = p + length;
-			while (p < end)
+					dst.Write(tmpBuf, 0, r);
+					len -= r;
+				}
+			}
+			finally
 			{
-				*p++ = 0;
+				ArrayPool<byte>.Shared.Return(tmpBuf);
 			}
-		}
-
-		public static long Timestamp()
-		{
-			return DateTime.UtcNow.Ticks;
 		}
 
 		/// <summary>
-		/// system page size
+		/// System page size, currently hardcoded/assumed to be 4096
 		/// </summary>
-		public const int PageSize = 4096;
+		public const int PageSize = 1 << PageShift;
 
 		/// <summary>
 		/// bitshift corresponding to PageSize
 		/// </summary>
 		public const int PageShift = 12;
+
 		/// <summary>
 		/// bitmask corresponding to PageSize
 		/// </summary>
-		public const ulong PageMask = 4095;
+		public const ulong PageMask = PageSize - 1;
 
-		static WaterboxUtils()
+		static MemoryBlockUtils()
 		{
 			if (PageSize != Environment.SystemPageSize)
 			{
@@ -63,33 +61,25 @@ namespace BizHawk.BizInvoke
 		/// true if addr is aligned
 		/// </summary>
 		public static bool Aligned(ulong addr)
-		{
-			return (addr & PageMask) == 0;
-		}
+			=> (addr & PageMask) == 0;
 
 		/// <summary>
 		/// align address down to previous page boundary
 		/// </summary>
 		public static ulong AlignDown(ulong addr)
-		{
-			return addr & ~PageMask;
-		}
+			=> addr & ~PageMask;
 
 		/// <summary>
 		/// align address up to next page boundary
 		/// </summary>
 		public static ulong AlignUp(ulong addr)
-		{
-			return ((addr - 1) | PageMask) + 1;
-		}
+			=> ((addr - 1) | PageMask) + 1;
 
 		/// <summary>
 		/// return the minimum number of pages needed to hold size
 		/// </summary>
 		public static int PagesNeeded(ulong size)
-		{
-			return (int)((size + PageMask) >> PageShift);
-		}
+			=> (int)((size + PageMask) >> PageShift);
 	}
 
 	// C# is annoying:  arithmetic operators for native ints are not exposed.

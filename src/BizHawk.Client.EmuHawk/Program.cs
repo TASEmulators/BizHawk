@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-using BizHawk.BizInvoke;
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.Graphics;
 using BizHawk.Common;

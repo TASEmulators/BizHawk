@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
+
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 
@@ -152,11 +153,8 @@ namespace BizHawk.BizInvoke
 				throw new InvalidOperationException("Type must be public");
 			}
 
-			var baseConstructor = baseType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
-			if (baseConstructor == null)
-			{
-				throw new InvalidOperationException("Base type must have a zero arg constructor");
-			}
+			_ = baseType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null)
+				?? throw new InvalidOperationException("Base type must have a zero arg constructor");
 
 			var baseMethods = baseType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
 				.Select(static m => (Info: m, Attr: m.GetCustomAttributes(true).OfType<BizImportAttribute>().FirstOrDefault()))
@@ -187,13 +185,13 @@ namespace BizHawk.BizInvoke
 
 			var adapterField = type.DefineField("CallingConvention", typeof(ICallingConventionAdapter), FieldAttributes.Public);
 
-			foreach (var mi in baseMethods)
+			foreach (var (info, attr) in baseMethods)
 			{
-				var entryPointName = mi.Attr!.EntryPoint ?? mi.Info.Name;
+				var entryPointName = attr!.EntryPoint ?? info.Name;
 
-				var hook = mi.Attr.Compatibility
-					? ImplementMethodDelegate(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField, nonTrivialAdapter)
-					: ImplementMethodCalli(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField, adapterField);
+				var hook = attr.Compatibility
+					? ImplementMethodDelegate(type, info, attr.CallingConvention, entryPointName, monitorField, nonTrivialAdapter)
+					: ImplementMethodCalli(type, info, attr.CallingConvention, entryPointName, monitorField, adapterField);
 
 				postCreateHooks.Add(hook);
 			}
@@ -262,7 +260,7 @@ namespace BizHawk.BizInvoke
 
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldfld, field);
-			for (int i = 0; i < paramTypes.Length; i++)
+			for (var i = 0; i < paramTypes.Length; i++)
 			{
 				il.Emit(OpCodes.Ldarg, (short)(i + 1));
 			}
@@ -336,9 +334,8 @@ namespace BizHawk.BizInvoke
 		{
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
-			var paramLoadInfos = new List<ParameterLoadInfo>();
 			var returnType = baseMethod.ReturnType;
-			if (returnType != typeof(void) && !returnType.IsPrimitive && !returnType.IsPointer && !returnType.IsEnum)
+			if (returnType != typeof(void) && returnType is { IsPrimitive: false, IsPointer: false, IsEnum: false })
 			{
 				throw new InvalidOperationException("Only primitive return types are supported");
 			}
@@ -368,11 +365,12 @@ namespace BizHawk.BizInvoke
 			}
 
 			// phase 1:  empty eval stack and each parameter load thunk does any prep work it needs to do
-			for (int i = 0; i < paramTypes.Length; i++)
-			{
-				// arg 0 is this, so + 1
-				paramLoadInfos.Add(EmitParamterLoad(il, i + 1, paramTypes[i], adapterField));
-			}
+			var paramLoadInfos = paramTypes
+				.Select(
+					// arg 0 is this, so + 1
+					(t, i) => EmitParamterLoad(il, i + 1, t, adapterField))
+				.ToArray();
+
 			// phase 2:  actually load the individual params, leaving each one on the stack
 			foreach (var pli in paramLoadInfos)
 			{
@@ -427,7 +425,7 @@ namespace BizHawk.BizInvoke
 			{
 				var entryPtr = dll.GetProcAddrOrThrow(entryPointName);
 				o.GetType().GetField(field.Name).SetValue(
-					o, adapter.GetDepartureFunctionPointer(entryPtr, new ParameterInfo(returnType, paramTypes), o));
+					o, adapter.GetDepartureFunctionPointer(entryPtr, new(returnType, paramTypes), o));
 			};
 		}
 
@@ -452,6 +450,7 @@ namespace BizHawk.BizInvoke
 			il.Emit(OpCodes.Conv_I);
 		}
 
+#if false
 		/// <summary>
 		/// load a UIntPtr constant in an IL stream
 		/// </summary>
@@ -472,6 +471,7 @@ namespace BizHawk.BizInvoke
 
 			il.Emit(OpCodes.Conv_U);
 		}
+#endif
 
 		/// <summary>
 		/// emit a single parameter load with unmanaged conversions.  The evaluation stack will be empty when the IL generated here runs,
@@ -693,7 +693,7 @@ namespace BizHawk.BizInvoke
 		public CallingConvention CallingConvention { get; }
 
 		/// <remarks>The annotated method's name is used iff <see langword="null"/>.</remarks>
-		public string? EntryPoint { get; set; } = null;
+		public string? EntryPoint { get; set; }
 
 		/// <summary><see langword="true"/> iff a compatibility interop should be used, which is slower but supports more argument types.</summary>
 		public bool Compatibility { get; set; }

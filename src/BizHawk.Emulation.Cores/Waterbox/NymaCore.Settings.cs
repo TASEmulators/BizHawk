@@ -216,13 +216,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return val;
 		}
 
-		private void SettingsQuery(string name, IntPtr dest)
+		private unsafe void SettingsQuery(string name, IntPtr dest)
 		{
 			var val = SettingsQuery(name);
 			var bytes = Encoding.UTF8.GetBytes(val);
 			if (bytes.Length > 255)
+			{
 				throw new InvalidOperationException($"Value {val} for setting {name} was too long");
-			WaterboxUtils.ZeroMemory(dest, 256);
+			}
+
+			new Span<byte>((void*)dest, 256).Clear();
 			Marshal.Copy(bytes, 0, dest, bytes.Length);
 		}
 

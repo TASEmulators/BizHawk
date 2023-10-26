@@ -34,6 +34,7 @@ namespace BizHawk.BizInvoke
 				CallingConventions.Standard,
 				new[] { typeof(object), typeof(IntPtr) });
 
+			// ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
 			delegateCtor.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
 
 			var delegateInvoke = delegateType.DefineMethod(
@@ -44,7 +45,7 @@ namespace BizHawk.BizInvoke
 
 			// we have to project all of the attributes from the baseMethod to the delegateInvoke
 			// so for something like [Out], the interop engine will see it and use it
-			for (int i = 0; i < paramInfos.Length; i++)
+			for (var i = 0; i < paramInfos.Length; i++)
 			{
 				var p = delegateInvoke.DefineParameter(i + 1, ParameterAttributes.None, paramInfos[i].Name);
 				foreach (var a in paramInfos[i].GetCustomAttributes(false))
@@ -61,6 +62,7 @@ namespace BizHawk.BizInvoke
 				}
 			}
 
+			// ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
 			delegateInvoke.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
 
 			// add the [UnmanagedFunctionPointer] to the delegate so interop will know how to call it
@@ -80,13 +82,15 @@ namespace BizHawk.BizInvoke
 		{
 			// anything more clever we can do here?
 			var t = o.GetType();
+
 			if (t == typeof(OutAttribute) || t == typeof(InAttribute))
 			{
-				return new CustomAttributeBuilder(t.GetConstructor(Type.EmptyTypes)!, Array.Empty<object>());
+				return new(t.GetConstructor(Type.EmptyTypes)!, Array.Empty<object>());
 			}
-			else if (t == typeof(MarshalAsAttribute))
+
+			if (t == typeof(MarshalAsAttribute))
 			{
-				return new CustomAttributeBuilder(t.GetConstructor(new[] { typeof(UnmanagedType) })!, new object[] { ((MarshalAsAttribute)o).Value });
+				return new(t.GetConstructor(new[] { typeof(UnmanagedType) })!, new object[] { ((MarshalAsAttribute)o).Value });
 			}
 
 			throw new InvalidOperationException($"Unknown parameter attribute {t.Name}");
