@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace BizHawk.SrcGen.SettingsUtil;
+
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -6,8 +8,6 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-namespace BizHawk.SrcGen.SettingsUtil;
 
 [Generator]
 public class DefaultSetterGenerator : ISourceGenerator

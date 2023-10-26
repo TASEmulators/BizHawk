@@ -10,7 +10,7 @@
 	<Import Project="LibCommon.props" />
 	<PropertyGroup>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-		<NoWarn>$(NoWarn);RS2008</NoWarn>
+		<NoWarn>$(NoWarn)IDE0065;RS2008</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
