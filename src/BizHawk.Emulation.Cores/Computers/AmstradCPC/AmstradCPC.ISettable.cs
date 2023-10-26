@@ -52,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		[CoreSettings]
 		public class AmstradCPCSettings
 		{
 			[DisplayName("AY-3-8912 Panning Config")]
@@ -85,6 +86,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
+		[CoreSettings]
 		public class AmstradCPCSyncSettings
 		{
 			[DisplayName("Deterministic Emulation")]

@@ -109,6 +109,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		[CoreSettings]
 		public class CitraSettings
 		{
 			[DisplayName("Resolution Scale Factor")]
@@ -240,6 +241,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				=> SettingsUtil.SetDefaultValues(this);
 		}
 
+		[CoreSettings]
 		public class CitraSyncSettings
 		{
 			[DisplayName("Use CPU JIT")]

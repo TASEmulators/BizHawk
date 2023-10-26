@@ -122,6 +122,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			Rotate270,
 		}
 
+		[CoreSettings]
 		public class NDSSettings
 		{
 			[DisplayName("Screen Layout")]
@@ -226,6 +227,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static readonly DateTime minDate = new(2000, 1, 1);
 		private static readonly DateTime maxDate = new(2099, 12, 31, 23, 59, 59);
 
+		[CoreSettings]
 		public class NDSSyncSettings
 		{
 			public enum ThreeDeeRendererType : int

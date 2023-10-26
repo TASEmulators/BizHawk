@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private Settings _settings;
 		private SyncSettings _syncSettings;
 
+		[CoreSettings]
 		public class Settings
 		{
 			[DisplayName("Monochrome")]
@@ -25,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				=> (Settings)MemberwiseClone();
 		}
 
+		[CoreSettings]
 		public class SyncSettings
 		{
 			[DisplayName("Initial Time")]

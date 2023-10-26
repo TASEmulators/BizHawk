@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		[CoreSettings]
 		public class MAMERTCSettings
 		{
 			[DisplayName("Initial Time")]

@@ -1,8 +1,9 @@
 ﻿using System;
-using BizHawk.Emulation.Common;
 using System.ComponentModel;
-using BizHawk.Common;
 using System.Drawing;
+
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
@@ -11,6 +12,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		private Settings _settings;
 		private SyncSettings _syncSettings;
 
+		[CoreSettings]
 		public class Settings
 		{
 			[DisplayName("Background Layer")]
@@ -83,6 +85,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			}
 		}
 
+		[CoreSettings]
 		public class SyncSettings
 		{
 			[DisplayName("Initial Time")]

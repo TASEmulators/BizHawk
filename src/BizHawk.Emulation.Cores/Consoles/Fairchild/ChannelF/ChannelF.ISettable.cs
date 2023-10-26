@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		[CoreSettings]
 		public class ChannelFSettings
 		{
 			[DisplayName("Default Background Color")]
@@ -50,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			}
 		}
 
+		[CoreSettings]
 		public class ChannelFSyncSettings
 		{
 			[DisplayName("Deterministic Emulation")]

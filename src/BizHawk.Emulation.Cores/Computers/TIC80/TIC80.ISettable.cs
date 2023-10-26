@@ -30,6 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		[CoreSettings]
 		public class TIC80Settings
 		{
 			[DisplayName("Crop")]
@@ -44,6 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 				=> (TIC80Settings)MemberwiseClone();
 		}
 
+		[CoreSettings]
 		public class TIC80SyncSettings
 		{
 			[DisplayName("Gamepad 1 Enable")]

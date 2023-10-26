@@ -30,6 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		[CoreSettings]
 		public class Ares64Settings
 		{
 			[DisplayName("Deinterlacer")]
@@ -50,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				=> (Ares64Settings)MemberwiseClone();
 		}
 
+		[CoreSettings]
 		public class Ares64SyncSettings
 		{
 			[DisplayName("Initial Time")]

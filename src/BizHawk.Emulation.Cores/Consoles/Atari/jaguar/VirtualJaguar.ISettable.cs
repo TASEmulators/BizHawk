@@ -30,6 +30,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		[CoreSettings]
 		public class VirtualJaguarSettings
 		{
 			[DisplayName("Trace M68K (CPU)")]
@@ -54,6 +55,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				=> (VirtualJaguarSettings)MemberwiseClone();
 		}
 
+		[CoreSettings]
 		public class VirtualJaguarSyncSettings
 		{
 			[DisplayName("Player 1 Connected")]

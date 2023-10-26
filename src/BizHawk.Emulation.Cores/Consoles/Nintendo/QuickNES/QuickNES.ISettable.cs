@@ -50,6 +50,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// </summary>
 		private QuickNESSyncSettings _syncSettingsNext;
 
+		[CoreSettings]
 		public class QuickNESSettings
 		{
 			[DefaultValue(8)]
@@ -150,6 +151,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
+		[CoreSettings]
 		public class QuickNESSyncSettings
 		{
 			[DefaultValue(true)]

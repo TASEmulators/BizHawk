@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		[CoreSettings]
 		public class ZXSpectrumSettings
 		{
 			[DisplayName("AY-3-8912 Panning Config")]
@@ -97,6 +98,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
+		[CoreSettings]
 		public class ZXSpectrumSyncSettings
 		{
 			[DisplayName("Deterministic Emulation")]

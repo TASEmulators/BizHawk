@@ -45,6 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		[CoreSettings]
 		public class SameboySettings
 		{
 			public enum GBPaletteType : uint
@@ -192,6 +193,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				=> _customPal = (int[])pal.Clone();
 		}
 
+		[CoreSettings]
 		public class SameboySyncSettings
 		{
 			[DisplayName("Use official BIOS")]

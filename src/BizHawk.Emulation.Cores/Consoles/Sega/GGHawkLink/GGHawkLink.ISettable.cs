@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -7,14 +8,10 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 	public partial class GGHawkLink : IEmulator, IStatable, ISettable<GGHawkLink.GGLinkSettings, GGHawkLink.GGLinkSyncSettings>
 	{
 		public GGLinkSettings GetSettings()
-		{
-			return linkSettings.Clone();
-		}
+			=> linkSettings.Clone();
 
 		public GGLinkSyncSettings GetSyncSettings()
-		{
-			return linkSyncSettings.Clone();
-		}
+			=> linkSyncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(GGLinkSettings o)
 		{
@@ -24,14 +21,15 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public PutSettingsDirtyBits PutSyncSettings(GGLinkSyncSettings o)
 		{
-			bool ret = GGLinkSyncSettings.NeedsReboot(linkSyncSettings, o);
+			var ret = GGLinkSyncSettings.NeedsReboot(linkSyncSettings, o);
 			linkSyncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		private GGLinkSettings linkSettings = new GGLinkSettings();
-		public GGLinkSyncSettings linkSyncSettings = new GGLinkSyncSettings();
+		private GGLinkSettings linkSettings = new();
+		public GGLinkSyncSettings linkSyncSettings = new();
 
+		[CoreSettings]
 		public class GGLinkSettings
 		{
 			public enum AudioSrc
@@ -46,29 +44,29 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			[DefaultValue(AudioSrc.Left)]
 			public AudioSrc AudioSet { get; set; }
 
+			public GGLinkSettings()
+				=> SettingsUtil.SetDefaultValues(this);
+
 			public GGLinkSettings Clone()
-			{
-				return (GGLinkSettings)MemberwiseClone();
-			}
+				=> (GGLinkSettings)MemberwiseClone();
 		}
 
+		[CoreSettings]
 		public class GGLinkSyncSettings
 		{
-
 			[DisplayName("Use Existing SaveRAM")]
 			[Description("When true, existing SaveRAM will be loaded at boot up")]
 			[DefaultValue(true)]
 			public bool Use_SRAM { get; set; }
 
+			public GGLinkSyncSettings()
+				=> SettingsUtil.SetDefaultValues(this);
+
 			public GGLinkSyncSettings Clone()
-			{
-				return (GGLinkSyncSettings)MemberwiseClone();
-			}
+				=> (GGLinkSyncSettings)MemberwiseClone();
 
 			public static bool NeedsReboot(GGLinkSyncSettings x, GGLinkSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+				=> !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

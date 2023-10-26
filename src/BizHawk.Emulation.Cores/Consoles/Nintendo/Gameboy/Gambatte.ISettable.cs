@@ -97,6 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
+		[CoreSettings]
 		public class GambatteSyncSettings
 		{
 			[DisplayName("Use official Nintendo BootROM")]

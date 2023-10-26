@@ -1,8 +1,8 @@
-namespace BizHawk.Analyzers;
-
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+namespace BizHawk.Analyzers;
 
 public static class RoslynUtils
 {

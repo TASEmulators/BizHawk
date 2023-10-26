@@ -37,6 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public GBSettings _settings = new GBSettings();
 		public GBSyncSettings _syncSettings = new GBSyncSettings();
 
+		[CoreSettings]
 		public class GBSettings
 		{
 			public enum PaletteType
@@ -82,6 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
+		[CoreSettings]
 		public class GBSyncSettings
 		{
 			public enum ConsoleModeType

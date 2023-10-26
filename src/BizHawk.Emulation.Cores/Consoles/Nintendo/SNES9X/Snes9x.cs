@@ -149,6 +149,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		[CoreSettings]
 		public class Settings
 		{
 			[DefaultValue(true)]
@@ -234,6 +235,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			}
 		}
 
+		[CoreSettings]
 		public class SyncSettings
 		{
 			[DefaultValue(LibSnes9x.LeftPortDevice.Joypad)]

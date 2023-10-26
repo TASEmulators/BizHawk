@@ -116,6 +116,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private GPGXSyncSettings _syncSettings;
 		private GPGXSettings _settings;
 
+		[CoreSettings]
 		public class GPGXSettings
 		{
 			[DeepEqualsIgnore]
@@ -239,6 +240,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			
 		}
 
+		[CoreSettings]
 		public class GPGXSyncSettings
 		{
 			[DisplayName("Use Six Button Controllers")]

@@ -179,6 +179,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			_core.SetCDReadCallback(_cdcallback);
 		}
 
+		[CoreSettings]
 		public class SyncSettings
 		{
 			[DefaultValue(LibPicoDrive.Region.Auto)]

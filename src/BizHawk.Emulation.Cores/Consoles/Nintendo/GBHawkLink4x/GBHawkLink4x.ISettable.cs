@@ -30,6 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		private GBLink4xSettings Link4xSettings = new GBLink4xSettings();
 		public GBLink4xSyncSettings Link4xSyncSettings = new GBLink4xSyncSettings();
 
+		[CoreSettings]
 		public class GBLink4xSettings
 		{
 			[DisplayName("Color Mode A")]
@@ -71,6 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			public GBLink4xSettings() => SettingsUtil.SetDefaultValues(this);
 		}
 
+		[CoreSettings]
 		public class GBLink4xSyncSettings
 		{
 			[DisplayName("Console Mode A")]

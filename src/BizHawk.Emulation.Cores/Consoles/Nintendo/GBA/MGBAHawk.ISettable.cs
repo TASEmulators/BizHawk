@@ -55,6 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		private Settings _settings;
 
+		[CoreSettings]
 		public class Settings
 		{
 			[DisplayName("Display BG Layer 0")]
@@ -143,6 +144,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		private SyncSettings _syncSettings;
 
+		[CoreSettings]
 		public class SyncSettings
 		{
 			[DisplayName("Skip BIOS")]

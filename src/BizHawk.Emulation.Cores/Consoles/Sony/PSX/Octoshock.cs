@@ -1142,6 +1142,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			BobOffset
 		}
 
+		[CoreSettings]
 		public class Settings
 		{
 			[DisplayName("Determine Lag from GPU Frames")]
