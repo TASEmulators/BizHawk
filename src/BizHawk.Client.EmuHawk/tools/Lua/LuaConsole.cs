@@ -1261,6 +1261,25 @@ namespace BizHawk.Client.EmuHawk
 			LuaImp.RegisteredFunctions.Clear(Emulator);
 		}
 
+		public bool LoadByFileExtension(string path, out bool abort)
+		{
+			var ext = Path.GetExtension(path)?.ToLowerInvariant();
+			if (ext is ".luases")
+			{
+				LoadLuaSession(path);
+				abort = true;
+				return true;
+			}
+			abort = false;
+			if (ext is ".lua" or ".txt")
+			{
+				LoadLuaFile(path);
+				UpdateDialog();
+				return true;
+			}
+			return false;
+		}
+
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
 		{
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
@@ -1268,16 +1287,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var path in filePaths)
 				{
-					if (Path.GetExtension(path)?.ToLowerInvariant() == ".lua" || Path.GetExtension(path)?.ToLowerInvariant() == ".txt")
-					{
-						LoadLuaFile(path);
-						UpdateDialog();
-					}
-					else if (Path.GetExtension(path)?.ToLowerInvariant() == ".luases")
-					{
-						LoadLuaSession(path);
-						return;
-					}
+					_ = LoadByFileExtension(path, out var abort);
+					if (abort) return;
 				}
 			}
 			catch (Exception ex)
