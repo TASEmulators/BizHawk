@@ -39,7 +39,7 @@ namespace BizHawk.Common
 			// although it's fairly unlikely we'll even reach this point, MAX_PATH can only be bypassed under certain circumstances
 			while (true)
 			{
-				var bufSize = ret + 1;
+				var bufSize = ret;
 				var buffer = new char[bufSize];
 				fixed (char* p = buffer)
 				{
