@@ -45,14 +45,15 @@ Then clone your fork with Git.
 You should add the main repo as an extra remote (upstream) to stay up-to-date. With the CLI that would look like:
 ```sh
 git remote add upstream https://github.com/TASEmulators/BizHawk.git
-git pull --set-upstream-to=upstream/master master
+git fetch upstream
+git branch --set-upstream-to=upstream/master master
 ```
 
-Before touching the code, pull `master` and create a new branch off it with a descriptive name.
+Before touching the code, create a new branch off `master` it with a descriptive name.
 
 After touching the code, commit your changes. Try to group your changes into many smaller commits with a clear purpose to each—committing early and often can help. Bonus points if each commit can build and run.  
 If you made the branch a while ago, pull `master` and *rebase, not merge*. Then push to your fork, and you can submit a pull request at any time on GitHub.  
-Your commit message summary [should be](https://www.git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project#_commit_guidelines) written in the *imperative* tense (imagine "This commit will" comes before it). GitHub wraps at 70 chars.  
+Your commit message summary [should be written](https://www.git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project#_commit_guidelines) in the *imperative* tense (imagine "This commit will ..." comes before it). GitHub wraps at 70 chars.  
 The description should include any non-obvious effects the changes will have. If you feel you need to explain what the code does, consider using code comments instead. It's okay to leave the description blank for simple commits.  
 You can use limited Markdown in the summary and description, including monospace, commit/Issue links, and, in the description, bullet points.
 In the description, link to related commits and Issues with a short-hash (`abc123def`) or ID (`#1234`), respectively. If your commit fixes an Issue, put it in the summary and use a [closing keyword](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/using-keywords-in-issues-and-pull-requests#linking-a-pull-request-to-an-issue).
