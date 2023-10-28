@@ -4,15 +4,18 @@ Jump to:
 	- [For any: .NET project](#for-any-net-project)
 - Projects
 	- [blip_buf](#blip_buf)
+	- [Citra](#citra)
 	- [Cygne](#cygne)
 	- [DiscoHawk](#discohawk)
 	- [EmuHawk](#emuhawk)
 	- [Ext. tools](#ext-tools)
-	- [FlatBuffers (managed)](#flatbuffers-managed)
 	- [Handy](#handy)
 	- [HawkQuantizer](#hawkquantizer)
 	- [iso-parser](#iso-parser)
+	- [LibBizAbiAdapter](#libbizabiadapter)
+	- [LibBizHash](#libbizhash)
 	- [libmupen64plus](#libmupen64plus)
+	- [librcheevos](#librcheevos)
 	- [LibretroBridge](#libretrobridge)
 	- [Mednadisc](#mednadisc)
 	- [Misc. submodules](#misc-submodules)
@@ -86,6 +89,13 @@ Uses C.
 
 
 
+## Citra
+> Build scripts for the (unmanaged side of the) Citra port.
+
+Uses C++.
+
+
+
 ## Cygne
 > The unmanaged side of the Cygne core from Mednafen.
 
@@ -141,13 +151,6 @@ These use C#; you will need the .NET SDK or an IDE which includes it. See the [.
 
 
 
-## FlatBuffers (managed)
-> Library (incl. generated code) used for serialisation in Nyma cores.
-
-Uses C#; you will need the .NET SDK or an IDE which includes it. See the [.NET section](#for-any-net-project).
-
-
-
 ## Handy
 > The unmanaged side of the Handy core from Mednafen.
 
@@ -169,10 +172,31 @@ Uses C#; you will need the .NET SDK or an IDE which includes it. See the [.NET s
 
 
 
+## LibBizAbiAdapter
+> A tiny shim used by `BizHawk.BizInvoke`.
+
+Uses x86 assembly.
+
+
+
+## LibBizHash
+> Used for hardware-accelerated computation of checksums, since proper ISA extension support isn't available until .NET 6.
+
+Uses C.
+
+
+
 ## libmupen64plus
 > The unmanaged side of the Mupen64Plus core and its bundled plugins.
 
 These use C/C++.
+
+
+
+## librcheevos
+> Build scripts for the rcheevos library, used for RetroAchievements support in EmuHawk.
+
+Uses C.
 
 
 
@@ -255,8 +279,14 @@ These use C#; you will need the .NET SDK or an IDE which includes it. See the [.
 ### BizHawk Analyzer
 > Performs additional code style checks not covered by the other Analyzers.
 
-### ReflectionCache source generator
+### ReflectionCache Source Generator
 > Generates a helper class in an assembly for accessing `<EmbeddedResource/>`s and `Type`s.
+
+### SettingsUtil Source Generator
+> Extra codegen for settings and sync settings object serialisation.
+
+### VersionInfo Source Generator
+> Adds metadata from Git to `BizHawk.Common`.
 
 
 
