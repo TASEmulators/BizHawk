@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecordingModeCheckbox_MouseClick(object sender, MouseEventArgs e)
 		{
 			RecordingMode ^= true;
-			Tastudio.WasRecording = RecordingMode; // hard reset at manual click
+			Tastudio.WasRecording = RecordingMode; // hard reset at manual click and hotkey
 		}
 
 		private void RewindButton_MouseDown(object sender, MouseEventArgs e)

@@ -712,6 +712,12 @@ namespace BizHawk.Client.EmuHawk
 			TasPlaybackBox.RecordingMode = false;
 		}
 
+		private void TastudioToggleReadOnly()
+		{
+			TasPlaybackBox.RecordingMode ^= true;
+			WasRecording = TasPlaybackBox.RecordingMode; // hard reset at manual click and hotkey
+		}
+
 		private void TastudioRecordMode()
 		{
 			TasPlaybackBox.RecordingMode = true;
