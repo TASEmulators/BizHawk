@@ -425,6 +425,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					_triggerAutoRestore = true;
+					TastudioPlayMode(true);
 					JumpToGreenzone();
 				}
 
@@ -597,6 +598,7 @@ namespace BizHawk.Client.EmuHawk
 						_axisPaintState = CurrentTasMovie.GetAxisState(frame, buttonName);
 						
 						_triggerAutoRestore = true;
+						TastudioPlayMode(true);
 						return;
 					}
 				}
@@ -666,6 +668,7 @@ namespace BizHawk.Client.EmuHawk
 							CurrentTasMovie.SetBoolStates(firstSel, lastSel - firstSel + 1, buttonName, !allPressed);
 							_boolPaintState = CurrentTasMovie.BoolIsPressed(lastSel, buttonName);
 							_triggerAutoRestore = true;
+							TastudioPlayMode(true);
 							RefreshDialog();
 						}
 #if false // to match previous behaviour
@@ -681,6 +684,7 @@ namespace BizHawk.Client.EmuHawk
 							CurrentTasMovie.ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
 							_triggerAutoRestore = true;
+							TastudioPlayMode(true);
 							RefreshDialog();
 						}
 					}
@@ -809,6 +813,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AxisEditRow = -1;
 				_triggerAutoRestore = true;
+				TastudioPlayMode(true);
 				JumpToGreenzone();
 				DoTriggeredAutoRestoreIfNeeded();
 				RefreshDialog();
@@ -1122,6 +1127,7 @@ namespace BizHawk.Client.EmuHawk
 				if (_rightClickAlt || _rightClickControl || _rightClickShift)
 				{
 					_triggerAutoRestore = true;
+					TastudioPlayMode(true);
 					JumpToGreenzone();
 					_suppressContextMenu = true;
 				}
@@ -1152,6 +1158,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (!_triggerAutoRestore)
 					{
+						TastudioPlayMode(true);
 						JumpToGreenzone();
 					}
 				}
@@ -1358,6 +1365,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, _axisBackupState);
 					_triggerAutoRestore = Emulator.Frame > _axisEditRow;
+					TastudioPlayMode(true);
 					JumpToGreenzone();
 					DoTriggeredAutoRestoreIfNeeded();
 				}
@@ -1431,6 +1439,7 @@ namespace BizHawk.Client.EmuHawk
 				if (value != prev) // Auto-restore
 				{
 					_triggerAutoRestore = Emulator.Frame > _axisEditRow;
+					TastudioPlayMode(true);
 					JumpToGreenzone();
 					DoTriggeredAutoRestoreIfNeeded();
 				}

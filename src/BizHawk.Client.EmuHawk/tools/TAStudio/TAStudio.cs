@@ -707,20 +707,31 @@ namespace BizHawk.Client.EmuHawk
 			loadZone.PlaceZone(CurrentTasMovie, Config);
 		}
 
-		private void TastudioPlayMode()
-		{
-			TasPlaybackBox.RecordingMode = false;
-		}
-
 		private void TastudioToggleReadOnly()
 		{
 			TasPlaybackBox.RecordingMode ^= true;
 			WasRecording = TasPlaybackBox.RecordingMode; // hard reset at manual click and hotkey
 		}
 
-		private void TastudioRecordMode()
+		private void TastudioPlayMode(bool resetWasRecording = false)
+		{
+			TasPlaybackBox.RecordingMode = false;
+
+			// once user started editing, rec mode is unsafe
+			if (resetWasRecording)
+			{
+				WasRecording = TasPlaybackBox.RecordingMode;
+			}
+		}
+
+		private void TastudioRecordMode(bool resetWasRecording = false)
 		{
 			TasPlaybackBox.RecordingMode = true;
+
+			if (resetWasRecording)
+			{
+				WasRecording = TasPlaybackBox.RecordingMode;
+			}
 		}
 
 		private void TastudioStopMovie()
@@ -1024,6 +1035,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_triggerAutoRestore)
 			{
+				TastudioPlayMode(true); // once user started editing, rec mode is unsafe
 				DoAutoRestore();
 
 				_triggerAutoRestore = false;
