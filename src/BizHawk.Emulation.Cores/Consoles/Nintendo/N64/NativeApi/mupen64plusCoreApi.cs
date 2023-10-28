@@ -785,10 +785,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		{
 			IntPtr[] waitHandles = { handle.SafeWaitHandle.DangerousGetHandle() };
 			const uint count = 1;
-			var QS_MASK = ThreadHacks.QS_ALLINPUT; // message queue status
+			var QS_MASK = WmImports.QS_ALLINPUT; // message queue status
 			QS_MASK = 0; //bizhawk edit?? did we need any messages here?? apparently not???
 			uint nativeResult;
-			ThreadHacks.MSG msg;
+			WmImports.MSG msg;
 			while (true)
 			{
 				// MsgWaitForMultipleObjectsEx with MWMO_INPUTAVAILABLE returns,
@@ -796,10 +796,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				nativeResult = ThreadHacks.MsgWaitForMultipleObjectsEx(count, waitHandles, 0xFFFFFFFF, QS_MASK, ThreadHacks.MWMO_INPUTAVAILABLE);
 				if (IsNativeWaitSuccessful(count, nativeResult, out int managedResult) || WaitHandle.WaitTimeout == managedResult) break;
 				// there is a message, pump and dispatch it
-				if (ThreadHacks.PeekMessage(out msg, IntPtr.Zero, 0, 0, ThreadHacks.PM_REMOVE))
+				if (WmImports.PeekMessage(out msg, IntPtr.Zero, 0, 0, WmImports.PM_REMOVE))
 				{
-					ThreadHacks.TranslateMessage(ref msg);
-					ThreadHacks.DispatchMessage(ref msg);
+					WmImports.TranslateMessage(ref msg);
+					WmImports.DispatchMessage(ref msg);
 				}
 			}
 //			handle.WaitOne();

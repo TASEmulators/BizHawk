@@ -4,6 +4,8 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Global
+
 namespace BizHawk.Common
 {
 	public static class ShellLinkImports
@@ -19,15 +21,21 @@ namespace BizHawk.Common
 			public uint nFileSizeLow;
 			public uint dwReserved0;
 			public uint dwReserved1;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] public string cFileName;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)] public string cAlternateFileName;
+			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+			public string cFileName;
+			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
+			public string cAlternateFileName;
 		}
 
 		[Flags]
-		public enum SLGP_FLAGS {}
+		public enum SLGP_FLAGS
+		{
+		}
 
 		[Flags]
-		public enum SLR_FLAGS {}
+		public enum SLR_FLAGS
+		{
+		}
 
 		/// <summary>The IShellLink interface allows Shell links to be created, modified, and resolved</summary>
 		[ComImport]
@@ -108,6 +116,8 @@ namespace BizHawk.Common
 		/// <remarks>CLSID_ShellLink from ShlGuid.h</remarks>
 		[ComImport]
 		[Guid("00021401-0000-0000-C000-000000000046")]
-		public class ShellLink /* : IPersistFile, IShellLinkW */ {}
+		public class ShellLink /* : IPersistFile, IShellLinkW */
+		{
+		}
 	}
 }

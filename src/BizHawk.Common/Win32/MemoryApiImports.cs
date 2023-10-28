@@ -2,10 +2,11 @@
 using System.Runtime.InteropServices;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
+// ReSharper disable UnusedMember.Global
 
 namespace BizHawk.Common
 {
-	public static class Kernel32Imports
+	public static class MemoryApiImports
 	{
 		[Flags]
 		public enum AllocationType : uint

@@ -2,6 +2,9 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Global
+// ReSharper disable UnusedMember.Global
+
 namespace BizHawk.Common
 {
 	public class Win32ShellContextMenu
@@ -117,6 +120,7 @@ namespace BizHawk.Common
 			}
 		}
 
+#pragma warning disable CA1069
 		[Flags]
 		public enum TPM
 		{
@@ -140,6 +144,7 @@ namespace BizHawk.Common
 			TPM_NOANIMATION = 0x4000,
 			TPM_LAYOUTRTL = 0x8000,
 		}
+#pragma warning restore CA1069
 
 		[Flags]
 		public enum CMF : uint

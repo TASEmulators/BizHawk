@@ -63,7 +63,11 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
-			if (!OSTailoredCode.IsUnixHost) Win32Imports.HideCaret(Handle);
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				WmImports.HideCaret(Handle);
+			}
+
 			base.OnMouseClick(e);
 		}
 
@@ -253,7 +257,10 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnGotFocus(EventArgs e)
 		{
-			if (!OSTailoredCode.IsUnixHost) Win32Imports.HideCaret(Handle);
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				WmImports.HideCaret(Handle);
+			}
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

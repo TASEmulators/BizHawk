@@ -1,6 +1,6 @@
 ﻿using System;
 
-using static BizHawk.Common.Kernel32Imports;
+using static BizHawk.Common.MemoryApiImports;
 using static BizHawk.Common.MemoryBlock;
 
 namespace BizHawk.Common

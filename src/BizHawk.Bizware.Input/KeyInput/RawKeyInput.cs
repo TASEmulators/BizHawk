@@ -9,7 +9,7 @@ using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 
 using static BizHawk.Common.RawInputImports;
-using static BizHawk.Common.Win32Imports;
+using static BizHawk.Common.WmImports;
 
 using RawKey = Vortice.DirectInput.Key;
 
@@ -35,7 +35,7 @@ namespace BizHawk.Bizware.Input
 		{
 			var wc = default(WNDCLASS);
 			wc.lpfnWndProc = _wndProc;
-			wc.hInstance = GetModuleHandle(null);
+			wc.hInstance = Win32Imports.GetModuleHandle(null);
 			wc.lpszClassName = "RawKeyInputClass";
 
 			var atom = RegisterClass(ref wc);
@@ -125,7 +125,7 @@ namespace BizHawk.Bizware.Input
 					nHeight: 1,
 					hWndParent: HWND_MESSAGE,
 					hMenu: IntPtr.Zero,
-					hInstance: GetModuleHandle(null),
+					hInstance: Win32Imports.GetModuleHandle(null),
 					lpParam: IntPtr.Zero);
 
 			if (window == IntPtr.Zero)

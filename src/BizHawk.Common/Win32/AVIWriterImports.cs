@@ -4,6 +4,8 @@
 using System;
 using System.Runtime.InteropServices;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Global
+
 namespace BizHawk.Common
 {
 	public static class AVIWriterImports
@@ -35,7 +37,8 @@ namespace BizHawk.Common
 			public RECT rcFrame;
 			public int dwEditCount;
 			public int dwFormatChangeCount;
-			[MarshalAs(UnmanagedType.LPWStr, SizeConst=64)] public string szName;
+			[MarshalAs(UnmanagedType.LPWStr, SizeConst = 64)]
+			public string szName;
 
 			[StructLayout(LayoutKind.Sequential, Pack = 1)]
 			public struct RECT
@@ -63,9 +66,7 @@ namespace BizHawk.Common
 			public uint biClrImportant;
 
 			public void Init()
-			{
-				biSize = (uint)Marshal.SizeOf(this);
-			}
+				=> biSize = (uint)Marshal.SizeOf(this);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -96,9 +97,7 @@ namespace BizHawk.Common
 			public ushort cbSize;
 
 			public void Init()
-			{
-				cbSize = (ushort)Marshal.SizeOf(this);
-			}
+				=> cbSize = (ushort)Marshal.SizeOf(this);
 		}
 
 		/// <summary>Create a new stream in an existing file and creates an interface to the new stream</summary>

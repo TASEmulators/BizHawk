@@ -868,7 +868,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			groupFreeze.SuspendLayout();
 
-			Win32Imports.SendMessage(groupFreeze.Handle, 11, (IntPtr)0, IntPtr.Zero); //WM_SETREDRAW false
+			WmImports.SendMessage(groupFreeze.Handle, 11, (IntPtr)0, IntPtr.Zero); //WM_SETREDRAW false
 
 			var tp = tabctrlDetails.SelectedTab;
 
@@ -886,7 +886,7 @@ namespace BizHawk.Client.EmuHawk
 
 			groupFreeze.ResumeLayout();
 
-			Win32Imports.SendMessage(groupFreeze.Handle, 11, (IntPtr)1, IntPtr.Zero); //WM_SETREDRAW true
+			WmImports.SendMessage(groupFreeze.Handle, 11, (IntPtr)1, IntPtr.Zero); //WM_SETREDRAW true
 			groupFreeze.Refresh();
 		}
 
