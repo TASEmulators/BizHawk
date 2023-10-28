@@ -95,10 +95,13 @@ namespace BizHawk.Bizware.Input
 					lock (rawKeyInput.LockObj)
 					{
 						// TODO: Make a separate enum map for RAWINPUT / VKeys and don't rely on DKeyInput's maps 
-						var rawKey = rawKeyInput.HandleAltKbLayouts
-							? DKeyInput.VKeyToDKeyMap.GetValueOrDefault(input->data.keyboard.VKey, RawKey.Unknown)
-							: (RawKey)(input->data.keyboard.MakeCode |
-								(input->data.keyboard.Flags >= RAWKEYBOARD.RIM_KEY.E0 ? 0x80 : 0));
+						var rawKey = (RawKey)(input->data.keyboard.MakeCode |
+							(input->data.keyboard.Flags >= RAWKEYBOARD.RIM_KEY.E0 ? 0x80 : 0));
+
+						if (rawKeyInput.HandleAltKbLayouts)
+						{
+							rawKey = DKeyInput.MapToRealKeyViaScanCode(rawKey);
+						}
 
 						if (DKeyInput.KeyEnumMap.TryGetValue(rawKey, out var key) && key != DistinctKey.Unknown)
 						{

@@ -51,11 +51,17 @@ namespace BizHawk.Bizware.Input
 
 		public static IEnumerable<KeyEvent> Update(Config config)
 		{
-			DistinctKey Mapped(DInputKey k) => KeyEnumMap[config.HandleAlternateKeyboardLayouts ? MapToRealKeyViaScanCode(k) : k];
+			DistinctKey Mapped(DInputKey k)
+				=> KeyEnumMap[config.HandleAlternateKeyboardLayouts ? MapToRealKeyViaScanCode(k) : k];
 
 			lock (_lockObj)
 			{
-				if (_keyboard == null || _keyboard.Acquire().Failure || _keyboard.Poll().Failure) return Enumerable.Empty<KeyEvent>();
+				if (_keyboard == null ||
+					_keyboard.Acquire().Failure ||
+					_keyboard.Poll().Failure)
+				{
+					return Enumerable.Empty<KeyEvent>();
+				}
 
 				var eventList = new List<KeyEvent>();
 				while (true)
@@ -63,8 +69,14 @@ namespace BizHawk.Bizware.Input
 					try
 					{
 						var events = _keyboard.GetBufferedKeyboardData();
-						if (events.Length == 0) return eventList;
-						eventList.AddRange(events.Select(e => new KeyEvent(Mapped(e.Key), e.IsPressed)));
+						if (events.Length == 0)
+						{
+							return eventList;
+						}
+
+						eventList.AddRange(events
+							.Select(e => new KeyEvent(Mapped(e.Key), e.IsPressed))
+							.Where(ke => ke.Key != DistinctKey.Unknown));
 					}
 					catch (SharpGen.Runtime.SharpGenException)
 					{
@@ -74,7 +86,7 @@ namespace BizHawk.Bizware.Input
 			}
 		}
 
-		private static DInputKey MapToRealKeyViaScanCode(DInputKey key)
+		/*private*/ internal static DInputKey MapToRealKeyViaScanCode(DInputKey key)
 		{
 			const uint MAPVK_VSC_TO_VK_EX = 0x03;
 			// DInputKey is a scancode as is
@@ -232,7 +244,7 @@ namespace BizHawk.Bizware.Input
 			[DInputKey.Unknown] = DistinctKey.Unknown
 		};
 
-		/*private*/ internal static readonly IReadOnlyDictionary<uint, DInputKey> VKeyToDKeyMap = new Dictionary<uint, DInputKey>
+		private static readonly IReadOnlyDictionary<uint, DInputKey> VKeyToDKeyMap = new Dictionary<uint, DInputKey>
 		{
 			[0x30] = DInputKey.D0,
 			[0x31] = DInputKey.D1,
