@@ -52,7 +52,8 @@ namespace BizHawk.Emulation.Common
 			foreach (var kvp in copyFrom.Axes) Axes.Add(kvp);
 			HapticsChannels.AddRange(copyFrom.HapticsChannels);
 			CategoryLabels = copyFrom.CategoryLabels;
-			_orderedControls = copyFrom._orderedControls;
+			// Do not clone _orderedControls, as GenOrderedControls may be overridden by the derived class
+			// _orderedControls = copyFrom._orderedControls;
 			MakeImmutable();
 		}
 
