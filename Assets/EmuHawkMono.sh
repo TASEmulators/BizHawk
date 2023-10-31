@@ -1,9 +1,5 @@
 #!/bin/sh
 cd "$(dirname "$(realpath "$0")")"
-if [ "$(ps -C "mono" -o "cmd" --no-headers | grep "EmuHawk.exe")" ]; then
-	echo "EmuHawk is already running, exiting..."
-	exit 0
-fi
 libpath=""
 if [ "$(command -v lsb_release)" ]; then
 	case "$(lsb_release -i | cut -c17- | tr -d "\n" | tr A-Z a-z)" in
@@ -23,11 +19,17 @@ export MONO_CRASH_NOFILE=1
 export MONO_WINFORMS_XIM_STYLE=disabled # see https://bugzilla.xamarin.com/show_bug.cgi?id=28047#c9
 export BIZHAWK_INT_SYSLIB_PATH="$libpath"
 if [ "$1" = "--mono-no-redirect" ]; then
+#	printf "(passing --mono-no-redirect is no longer necessary)\n" #TODO uncomment later
 	shift
-	printf "(received --mono-no-redirect, stdout was not captured)\n" >EmuHawkMono_laststdout.txt
-	printf "(received --mono-no-redirect, stderr was not captured)\n" >EmuHawkMono_laststderr.txt
-	mono ./EmuHawk.exe "$@"
-else
-	printf "(output captured in %s/EmuHawkMono_last*.txt, pass --mono-no-redirect as first argument to disable)\n" "$PWD" >&2
-	mono ./EmuHawk.exe "$@" >EmuHawkMono_laststdout.txt 2>EmuHawkMono_laststderr.txt
 fi
+if (ps -C "mono" -o "cmd" --no-headers | grep -Fq "EmuHawk.exe"); then
+	printf "(it seems EmuHawk is already running, NOT capturing output)\n" >&2
+	exec mono EmuHawk.exe "$@"
+fi
+o="$(mktemp -u)"
+e="$(mktemp -u)"
+mkfifo "$o" "$e"
+printf "(capturing output in %s/EmuHawkMono_last*.txt)\n" "$PWD" >&2
+tee EmuHawkMono_laststdout.txt <"$o" &
+tee EmuHawkMono_laststderr.txt <"$e" | sed "s/.*/$(tput setaf 1)&$(tput sgr0)/" >&2 &
+exec mono EmuHawk.exe "$@" >"$o" 2>"$e"
