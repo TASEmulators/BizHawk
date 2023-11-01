@@ -167,13 +167,19 @@ namespace BizHawk.Bizware.Graphics
 		public void MakeContextCurrent()
 		{
 			// no-op if already current
-			_ = SDL_GL_MakeCurrent(_sdlWindow, _glContext);
+			if (SDL_GL_MakeCurrent(_sdlWindow, _glContext) != 0)
+			{
+				throw new($"Failed to set context to current! SDL error: {SDL_GetError()}");
+			}
 		}
 
 		public static void MakeNoneCurrent()
 		{
 			// no-op if nothing is current
-			_ = SDL_GL_MakeCurrent(IntPtr.Zero, IntPtr.Zero);
+			if (SDL_GL_MakeCurrent(IntPtr.Zero, IntPtr.Zero) != 0)
+			{
+				throw new($"Failed to clear current context! SDL error: {SDL_GetError()}");
+			}
 		}
 
 		public static IntPtr GetGLProcAddress(string proc)
