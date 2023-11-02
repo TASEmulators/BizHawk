@@ -266,10 +266,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					throw new InvalidOperationException("Invalid firmware length");
 				}
 
-				if (fw.Length == 0x20000) // fw checks dont work on dsi firmware for some reason, need to check what's going wrong
-				{
-					NDSFirmware.MaybeWarnIfBadFw(fw, CoreComm.ShowMessage);
-				}
+				NDSFirmware.MaybeWarnIfBadFw(fw, CoreComm.ShowMessage);
 			}
 
 			var error = _core.Init(

@@ -56,7 +56,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				return;
 			}
 
-			CheckDecryptedCodeChecksum(fw, warningCallback);
+			if (fw.Length != 0x20000) // no code in DSi firmware
+			{
+				CheckDecryptedCodeChecksum(fw, warningCallback);
+			}
 		}
 
 		private static unsafe ushort Crc16(byte* data, int len, int seed)
