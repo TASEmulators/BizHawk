@@ -17,7 +17,6 @@
 #include <waterboxcore.h>
 
 static bool SkipFW;
-static time_t CurTime;
 static bool GLPresentation;
 
 struct NDSTime
@@ -140,7 +139,6 @@ ECL_EXPORT const char* Init(InitConfig* initConfig,
 
 struct MyFrameInfo : public FrameInfo
 {
-	s64 Time;
 	u32 Keys;
 	u8 TouchX;
 	u8 TouchY;
@@ -190,7 +188,8 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 
 	if (f->Keys & 0x1000)
 	{
-		NDS::TouchScreen(f->TouchX, f->TouchY);
+		// move touch coords incrementally to our new touch point
+		NDS::MoveTouch(f->TouchX, f->TouchY);
 	}
 	else
 	{
@@ -222,9 +221,13 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 		}
 	}
 
-	CurTime = f->Time;
-
 	NDS::RunFrame();
+
+	if (f->Keys & 0x1000)
+	{
+		// finalize touch after emulation finishes
+		NDS::TouchScreen(f->TouchX, f->TouchY);
+	}
 
 	if (!GPU3D::CurrentRenderer->Accelerated)
 	{
