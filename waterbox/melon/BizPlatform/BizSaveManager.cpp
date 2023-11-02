@@ -62,30 +62,58 @@ ECL_EXPORT bool SaveRamIsDirty()
 	return NdsSaveRamIsDirty || GbaSaveRamIsDirty;
 }
 
-ECL_EXPORT void ImportDSiWareSavs(u32 titleId)
+static void ImportTitleData(DSi_NAND::NANDMount& mount, u32 titleId, int which, const char* path, u8** in)
+{
+	if (auto file = Platform::OpenFile(path, Platform::FileMode::Write))
+	{
+		auto len = Platform::FileLength(file);
+		Platform::FileRewind(file);
+		Platform::FileWrite(*in, len, 1, file);
+		Platform::CloseFile(file);
+		*in += len;
+	}
+
+	mount.ImportTitleData(DSIWARE_CATEGORY, titleId, which, path);
+}
+
+ECL_EXPORT void ImportDSiWareSavs(u32 titleId, u8* data)
 {
 	auto& nand = DSi::NANDImage;
 	if (nand && *nand)
 	{
 		if (auto mount = DSi_NAND::NANDMount(*nand))
 		{
-			mount.ImportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_PublicSav, "public.sav");
-			mount.ImportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_PrivateSav, "private.sav");
-			mount.ImportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_BannerSav, "banner.sav");
+			ImportTitleData(mount, titleId, DSi_NAND::TitleData_PublicSav, "public.sav", &data);
+			ImportTitleData(mount, titleId, DSi_NAND::TitleData_PrivateSav, "private.sav", &data);
+			ImportTitleData(mount, titleId, DSi_NAND::TitleData_BannerSav, "banner.sav", &data);
 		}
 	}
 }
 
-ECL_EXPORT void ExportDSiWareSavs(u32 titleId)
+static void ExportTitleData(DSi_NAND::NANDMount& mount, u32 titleId, int which, const char* path, u8** out)
+{
+	mount.ExportTitleData(DSIWARE_CATEGORY, titleId, which, path);
+
+	if (auto file = Platform::OpenFile(path, Platform::FileMode::Read))
+	{
+		auto len = Platform::FileLength(file);
+		Platform::FileRewind(file);
+		Platform::FileRead(*out, len, 1, file);
+		Platform::CloseFile(file);
+		*out += len;
+	}
+}
+
+ECL_EXPORT void ExportDSiWareSavs(u32 titleId, u8* data)
 {
 	auto& nand = DSi::NANDImage;
 	if (nand && *nand)
 	{
 		if (auto mount = DSi_NAND::NANDMount(*nand))
 		{
-			mount.ExportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_PublicSav, "public.sav");
-			mount.ExportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_PrivateSav, "private.sav");
-			mount.ExportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_BannerSav, "banner.sav");
+			ExportTitleData(mount, titleId, DSi_NAND::TitleData_PublicSav, "public.sav", &data);
+			ExportTitleData(mount, titleId, DSi_NAND::TitleData_PrivateSav, "private.sav", &data);
+			ExportTitleData(mount, titleId, DSi_NAND::TitleData_BannerSav, "banner.sav", &data);
 		}
 	}
 }
