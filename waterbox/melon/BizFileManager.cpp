@@ -262,6 +262,13 @@ const char* InitDSiBIOS()
 	Platform::FileRead(DSi::ARM9iBIOS, sizeof(DSi::ARM9iBIOS), 1, bios9i);
 	Platform::CloseFile(bios9i);
 
+	if (!Platform::GetConfigBool(Platform::DSi_FullBIOSBoot))
+	{
+		static const u8 branch[] = { 0xFE, 0xFF, 0xFF, 0xEA };
+		memcpy(DSi::ARM7iBIOS, branch, sizeof(branch));
+		memcpy(DSi::ARM9iBIOS, branch, sizeof(branch));
+	}
+
 	return nullptr;
 }
 
