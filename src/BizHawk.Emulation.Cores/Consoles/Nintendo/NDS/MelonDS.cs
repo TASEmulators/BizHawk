@@ -466,7 +466,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			return new LibMelonDS.FrameInfo
 			{
-				Time = GetRtcTime(!DeterministicEmulation),
 				Keys = GetButtons(controller),
 				TouchX = (byte)controller.AxisValue("Touch X"),
 				TouchY = (byte)controller.AxisValue("Touch Y"),

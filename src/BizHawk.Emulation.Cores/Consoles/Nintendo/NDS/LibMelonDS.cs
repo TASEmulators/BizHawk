@@ -33,7 +33,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
-			public long Time;
 			public Buttons Keys;
 			public byte TouchX;
 			public byte TouchY;

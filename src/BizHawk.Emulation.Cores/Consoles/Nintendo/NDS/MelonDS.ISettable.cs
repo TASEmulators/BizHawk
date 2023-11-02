@@ -7,7 +7,6 @@ using System.Text;
 using Newtonsoft.Json;
 
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 // ReSharper disable SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
