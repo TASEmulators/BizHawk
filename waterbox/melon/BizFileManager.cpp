@@ -315,7 +315,7 @@ static void SanitizeNANDSettings(DSi_NAND::DSiFirmwareSystemSettings& settings)
 
 const char* InitNAND(FirmwareSettings& fwSettings, bool clearNand, bool dsiWare)
 {
-	auto nand = DSi_NAND::NANDImage(Platform::OpenFile("nand.bin", Platform::FileMode::Read), &DSi::ARM7iBIOS[0x8308]);
+	auto nand = DSi_NAND::NANDImage(Platform::OpenFile("nand.bin", Platform::FileMode::ReadWrite), &DSi::ARM7iBIOS[0x8308]);
 	if (!nand)
 	{
 		return "Failed to parse DSi NAND!";
