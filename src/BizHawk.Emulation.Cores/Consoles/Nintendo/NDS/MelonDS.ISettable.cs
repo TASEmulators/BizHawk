@@ -1,13 +1,14 @@
-using BizHawk.Common;
-using BizHawk.Emulation.Common;
-
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
 using System.Text;
-using BizHawk.Common.CollectionExtensions;
+
 using Newtonsoft.Json;
+
+using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
+using BizHawk.Emulation.Common;
 
 // ReSharper disable SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
 
@@ -30,10 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			LibMelonDS.ConfigEntry.DSiSD_Enable => false, // TODO
 			LibMelonDS.ConfigEntry.DSiSD_ReadOnly => false, // TODO
 			LibMelonDS.ConfigEntry.DSiSD_FolderSync => false, // TODO
-			LibMelonDS.ConfigEntry.Firm_OverrideSettings => _activeSyncSettings.FirmwareOverride,
 			LibMelonDS.ConfigEntry.DSi_FullBIOSBoot => false, // TODO
-			LibMelonDS.ConfigEntry.UseRealTime => false, // RTC callback overrides this anyways, really this is so gmtime_r is used over localtime_r
-			LibMelonDS.ConfigEntry.FixedBootTime => true, // this just means use TimeAtBoot (which we always want at Unix epoch)
 			_ => throw new InvalidOperationException()
 		};
 
@@ -41,32 +39,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			LibMelonDS.ConfigEntry.DLDI_ImageSize => 0, // TODO
 			LibMelonDS.ConfigEntry.DSiSD_ImageSize => 0, // TODO
-			LibMelonDS.ConfigEntry.Firm_Language => (int)_activeSyncSettings.FirmwareLanguage,
-			LibMelonDS.ConfigEntry.Firm_BirthdayMonth => (int)_activeSyncSettings.FirmwareBirthdayMonth,
-			LibMelonDS.ConfigEntry.Firm_BirthdayDay => _activeSyncSettings.FirmwareBirthdayDay,
-			LibMelonDS.ConfigEntry.Firm_Color => (int)_activeSyncSettings.FirmwareFavouriteColour,
 			LibMelonDS.ConfigEntry.AudioBitDepth => (int)_settings.AudioBitDepth,
-			LibMelonDS.ConfigEntry.TimeAtBoot => 0,
 			_ => throw new InvalidOperationException()
 		};
 
-		private void GetStringSettingCallback(LibMelonDS.ConfigEntry configEntry, IntPtr buffer, int bufferSize)
+		private static void GetStringSettingCallback(LibMelonDS.ConfigEntry configEntry, IntPtr buffer, int bufferSize)
 		{
+			// none of these are actually implemented yet
 			var ret = configEntry switch
 			{
-				LibMelonDS.ConfigEntry.BIOS9Path => _configEntryToPath.GetValueOrDefault(configEntry),
-				LibMelonDS.ConfigEntry.BIOS7Path => _configEntryToPath.GetValueOrDefault(configEntry),
-				LibMelonDS.ConfigEntry.FirmwarePath => _configEntryToPath.GetValueOrDefault(configEntry),
-				LibMelonDS.ConfigEntry.DSi_BIOS9Path => _configEntryToPath.GetValueOrDefault(configEntry),
-				LibMelonDS.ConfigEntry.DSi_BIOS7Path => _configEntryToPath.GetValueOrDefault(configEntry),
-				LibMelonDS.ConfigEntry.DSi_FirmwarePath => _configEntryToPath.GetValueOrDefault(configEntry),
-				LibMelonDS.ConfigEntry.DSi_NANDPath => _configEntryToPath.GetValueOrDefault(configEntry),
 				LibMelonDS.ConfigEntry.DLDI_ImagePath => "dldi.bin",
 				LibMelonDS.ConfigEntry.DLDI_FolderPath => "dldi",
 				LibMelonDS.ConfigEntry.DSiSD_ImagePath => "sd.bin",
 				LibMelonDS.ConfigEntry.DSiSD_FolderPath => "sd",
-				LibMelonDS.ConfigEntry.Firm_Username => _activeSyncSettings.FirmwareUsername,
-				LibMelonDS.ConfigEntry.Firm_Message => _activeSyncSettings.FirmwareMessage,
 				LibMelonDS.ConfigEntry.WifiSettingsPath => "wfcsettings.bin",
 				_ => throw new InvalidOperationException()
 			};
@@ -272,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			private DateTime _initaltime;
 
 			[DisplayName("Initial Time")]
-			[Description("Initial time of emulation.")]
+			[Description("Initial time of emulation. Not used if Use Real Time is true")]
 			[DefaultValue(typeof(DateTime), "2010-01-01")]
 			[TypeConverter(typeof(BizDateTimeConverter))]
 			public DateTime InitialTime
@@ -282,8 +267,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 
 			[DisplayName("Use Real Time")]
-			[Description("If true, RTC clock will be based off of real time instead of emulated time. Ignored (set to false) when recording a movie.")]
-			[DefaultValue(false)]
+			[Description("If true, the initial RTC clock will be based off of real time instead of the Initial Time setting. Ignored (set to false) when recording a movie.")]
+			[DefaultValue(true)]
 			public bool UseRealTime { get; set; }
 
 			[DisplayName("DSi Mode")]
@@ -441,6 +426,40 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				get => _firmwaremessage;
 				set => _firmwaremessage = value.Substring(0, Math.Min(26, value.Length));
+			}
+
+			public unsafe void GetFirmwareSettings(out LibMelonDS.FirmwareSettings fwSettings)
+			{
+				fwSettings.OverrideSettings = FirmwareOverride;
+				fwSettings.UsernameLength = Math.Min(FirmwareUsername.Length, 10);
+
+				fixed (char* p = fwSettings.Username)
+				{
+					var username = new Span<char>(p, 10);
+					username.Clear();
+
+					FirmwareUsername
+						.AsSpan()
+						.Slice(0, fwSettings.UsernameLength)
+						.CopyTo(username);
+				}
+
+				fwSettings.Language = FirmwareLanguage;
+				fwSettings.BirthdayMonth = FirmwareBirthdayMonth;
+				fwSettings.BirthdayDay = FirmwareBirthdayDay;
+				fwSettings.Color = FirmwareFavouriteColour;
+				fwSettings.MessageLength = Math.Min(FirmwareMessage.Length, 26);
+
+				fixed (char* p = fwSettings.Message)
+				{
+					var message = new Span<char>(p, 26);
+					message.Clear();
+
+					FirmwareMessage
+						.AsSpan()
+						.Slice(0, fwSettings.MessageLength)
+						.CopyTo(message);
+				}
 			}
 
 			public NDSSyncSettings Clone()

@@ -25,7 +25,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private readonly NDSDisassembler _disassembler;
 
 		private readonly Dictionary<string, byte[]> _coreFiles = new();
-		private readonly Dictionary<LibMelonDS.ConfigEntry, string> _configEntryToPath = new();
 		private readonly LibMelonDS.FileCallbackInterface _fileCallbackInterface;
 
 		private int GetFileLengthCallback(string path)
@@ -35,17 +34,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			var file = _coreFiles[path];
 			Marshal.Copy(file, 0, buffer, file.Length);
-		}
-
-		private void AddCoreFile(LibMelonDS.ConfigEntry configEntry, string path, byte[] file)
-		{
-			if (file.Length == 0)
-			{
-				throw new InvalidOperationException($"Tried to add 0-sized core file to {path}");
-			}
-
-			_configEntryToPath.Add(configEntry, path);
-			_coreFiles.Add(path, file);
 		}
 
 		private void AddCoreFile(string path, byte[] file)
@@ -213,27 +201,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			if (_activeSyncSettings.UseRealBIOS)
 			{
-				AddCoreFile(LibMelonDS.ConfigEntry.BIOS7Path, "bios7.bin",
-					CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7")));
-				AddCoreFile(LibMelonDS.ConfigEntry.BIOS9Path, "bios9.bin",
-					CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9")));
+				AddCoreFile("bios7.bin", CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7")));
+				AddCoreFile("bios9.bin", CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9")));
+				AddCoreFile("firmware.bin", CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", IsDSi ? "firmwarei" : "firmware")));
 			}
 
 			if (IsDSi)
 			{
-				AddCoreFile(LibMelonDS.ConfigEntry.DSi_BIOS7Path, "bios7i.bin",
-					CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7i")));
-				AddCoreFile(LibMelonDS.ConfigEntry.DSi_BIOS9Path, "bios9i.bin",
-					CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9i")));
-				AddCoreFile(LibMelonDS.ConfigEntry.DSi_FirmwarePath, "firmwarei.bin",
-					CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "firmwarei")));
-				AddCoreFile(LibMelonDS.ConfigEntry.DSi_NANDPath, "nand.bin",
-					DecideNAND(CoreComm.CoreFileProvider, (DSiTitleId.Upper & ~0xFF) == 0x00030000, roms[0][0x1B0]));
-			}
-			else if (_activeSyncSettings.UseRealBIOS)
-			{
-				AddCoreFile(LibMelonDS.ConfigEntry.FirmwarePath, "firmware.bin",
-					CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "firmware")));
+				AddCoreFile("bios7i.bin", CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7i")));
+				AddCoreFile("bios9i.bin", CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9i")));
+				AddCoreFile("nand.bin", DecideNAND(CoreComm.CoreFileProvider, (DSiTitleId.Upper & ~0xFF) == 0x00030000, roms[0][0x1B0]));
 			}
 
 			if (IsDSiWare)
@@ -250,6 +227,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				}
 			}
 
+			_activeSyncSettings.FirmwareOverride |= !_activeSyncSettings.UseRealBIOS || lp.DeterministicEmulationRequested;
+
+			// ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
+			if (!IsDSi && _activeSyncSettings.FirmwareStartUp == NDSSyncSettings.StartUp.AutoBoot)
+			{
+				_activeSyncSettings.FirmwareLanguage |= (NDSSyncSettings.Language)0x40;
+			}
+
+			_activeSyncSettings.UseRealTime &= !lp.DeterministicEmulationRequested;
+			var startTime = _activeSyncSettings.UseRealTime ? DateTime.Now : _activeSyncSettings.InitialTime;
+
 			LibMelonDS.InitConfig initConfig;
 			initConfig.SkipFW = _activeSyncSettings.SkipFirmware && !IsDSi;
 			initConfig.HasGBACart = roms.Count == 2;
@@ -261,24 +249,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			initConfig.RenderSettings.SoftThreaded = _activeSyncSettings.ThreadedRendering;
 			initConfig.RenderSettings.GLScaleFactor = _activeSyncSettings.GLScaleFactor;
 			initConfig.RenderSettings.GLBetterPolygons = _activeSyncSettings.GLBetterPolygons;
-
-			_activeSyncSettings.FirmwareOverride |= !_activeSyncSettings.UseRealBIOS || lp.DeterministicEmulationRequested;
-
-			// ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-			if (!IsDSi && _syncSettings.FirmwareStartUp == NDSSyncSettings.StartUp.AutoBoot)
-			{
-				_activeSyncSettings.FirmwareLanguage |= (NDSSyncSettings.Language)0x40;
-			}
+			initConfig.StartTime.Year = startTime.Year % 100;
+			initConfig.StartTime.Month = startTime.Month;
+			initConfig.StartTime.Day = startTime.Day;
+			initConfig.StartTime.Hour = startTime.Hour;
+			initConfig.StartTime.Minute = startTime.Minute;
+			initConfig.StartTime.Second = startTime.Second;
+			_activeSyncSettings.GetFirmwareSettings(out initConfig.FirmwareSettings);
 
 			if (_activeSyncSettings.UseRealBIOS)
 			{
-				var fw = _coreFiles[_configEntryToPath[IsDSi ? LibMelonDS.ConfigEntry.DSi_FirmwarePath : LibMelonDS.ConfigEntry.FirmwarePath]];
-				if (IsDSi || NDSFirmware.MaybeWarnIfBadFw(fw, CoreComm)) // fw checks dont work on dsi firmware, don't bother
+				var fw = _coreFiles["firmware.bin"];
+
+				if (fw.Length is not (0x20000 or 0x40000 or 0x80000))
 				{
-					if (_activeSyncSettings.FirmwareOverride)
-					{
-						NDSFirmware.SanitizeFw(fw);
-					}
+					throw new InvalidOperationException("Invalid firmware length");
+				}
+
+				if (fw.Length == 0x20000) // fw checks dont work on dsi firmware for some reason, need to check what's going wrong
+				{
+					NDSFirmware.MaybeWarnIfBadFw(fw, CoreComm.ShowMessage);
 				}
 			}
 
@@ -288,6 +278,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_fileCallbackInterface.AllCallbacksInArray(_adapter),
 				_logCallback,
 				_glContext != null ? _getGLProcAddressCallback : null);
+
 			if (error != IntPtr.Zero)
 			{
 				using (_exe.EnterExit())
@@ -296,15 +287,34 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				}
 			}
 
-			// the semantics of firmware override mean that sync settings will override firmware on a hard reset, which we don't want here
-			_activeSyncSettings.FirmwareOverride = false;
+			// add DSiWare sav files to the core files, so we can import/export for SaveRAM
+			if (IsDSiWare)
+			{
+				_core.DSiWareSavsLength(DSiTitleId.Lower, out var publicSavSize, out var privateSavSize, out var bannerSavSize);
+
+				if (publicSavSize != 0)
+				{
+					AddCoreFile("public.sav", new byte[publicSavSize]);
+				}
+
+				if (privateSavSize != 0)
+				{
+					AddCoreFile("private.sav", new byte[privateSavSize]);
+				}
+
+				if (bannerSavSize != 0)
+				{
+					AddCoreFile("banner.sav", new byte[bannerSavSize]);
+				}
+
+				DSiWareSaveLength = publicSavSize + privateSavSize + bannerSavSize;
+			}
 
 			PostInit();
 
 			((MemoryDomainList)this.AsMemoryDomains()).SystemBus = new NDSSystemBus(this.AsMemoryDomains()["ARM9 System Bus"], this.AsMemoryDomains()["ARM7 System Bus"]);
 
 			DeterministicEmulation = lp.DeterministicEmulationRequested || !_activeSyncSettings.UseRealTime;
-			InitializeRtc(_activeSyncSettings.InitialTime);
 
 			_frameThreadPtr = _core.GetFrameThreadProc();
 			if (_frameThreadPtr != IntPtr.Zero)

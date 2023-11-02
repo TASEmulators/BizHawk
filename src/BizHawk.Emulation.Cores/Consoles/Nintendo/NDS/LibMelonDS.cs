@@ -51,6 +51,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
+		public struct NDSTime
+		{
+			public int Year;
+			public int Month;
+			public int Day;
+			public int Hour;
+			public int Minute;
+			public int Second;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public unsafe struct FirmwareSettings
+		{
+			public bool OverrideSettings;
+			public int UsernameLength;
+			public fixed char Username[10];
+			public NDS.NDSSyncSettings.Language Language;
+			public NDS.NDSSyncSettings.Month BirthdayMonth;
+			public int BirthdayDay;
+			public NDS.NDSSyncSettings.Color Color;
+			public int MessageLength;
+			public fixed char Message[26];
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
 		public struct InitConfig
 		{
 			public bool SkipFW;
@@ -61,20 +86,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public bool IsWinApi;
 			public NDS.NDSSyncSettings.ThreeDeeRendererType ThreeDeeRenderer;
 			public RenderSettings RenderSettings;
+			public NDSTime StartTime;
+			public FirmwareSettings FirmwareSettings;
 		}
 
 		public enum ConfigEntry
 		{
+			// JIT_ENABLED define would add 5 entries here
+			// it is currently not (and unlikely ever to be) defined
+
 			ExternalBIOSEnable,
-
-			BIOS9Path,
-			BIOS7Path,
-			FirmwarePath,
-
-			DSi_BIOS9Path,
-			DSi_BIOS7Path,
-			DSi_FirmwarePath,
-			DSi_NANDPath,
 
 			DLDI_Enable,
 			DLDI_ImagePath,
@@ -90,13 +111,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			DSiSD_FolderSync,
 			DSiSD_FolderPath,
 
-			Firm_OverrideSettings,
-			Firm_Username,
-			Firm_Language,
-			Firm_BirthdayMonth,
-			Firm_BirthdayDay,
-			Firm_Color,
-			Firm_Message,
 			Firm_MAC,
 
 			WifiSettingsPath,
@@ -105,10 +119,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			DSi_FullBIOSBoot,
 
-			// BizHawk-melonDS specific
-			UseRealTime,
-			FixedBootTime,
-			TimeAtBoot,
+			// GDBSTUB_ENABLED define would add 5 entries here
+			// it will not be defined for our purposes
 		}
 
 		[UnmanagedFunctionPointer(CC)]
@@ -192,10 +204,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public abstract bool SaveRamIsDirty();
 
 		[BizImport(CC)]
-		public abstract void ImportDSiWareSavs(uint titleId);
+		public abstract void ImportDSiWareSavs(uint titleId, byte[] data);
 
 		[BizImport(CC)]
-		public abstract void ExportDSiWareSavs(uint titleId);
+		public abstract void ExportDSiWareSavs(uint titleId, byte[] data);
 
 		[BizImport(CC)]
 		public abstract void DSiWareSavsLength(uint titleId, out int publicSavSize, out int privateSavSize, out int bannerSavSize);
