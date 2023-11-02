@@ -7,16 +7,16 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
-	[PortedCore(CoreNames.Snes9X, "", "5e0319ab3ef9611250efb18255186d0dc0d7e125", "https://github.com/snes9xgit/snes9x")]
+	[PortedCore(CoreNames.Snes9X, "", "e49165c5607011f4d95adcb7b5983140ab5a75f1", "https://github.com/snes9xgit/snes9x")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public class Snes9x : WaterboxCore, 
+	public class Snes9x : WaterboxCore,
 		ISettable<Snes9x.Settings, Snes9x.SyncSettings>, IRegionable
 	{
 		private readonly LibSnes9x _core;
 
 		[CoreConstructor(VSystemID.Raw.SNES)]
-		public Snes9x(CoreComm comm, byte[] rom, Settings settings, SyncSettings syncSettings)
-			:base(comm, new Configuration
+		public Snes9x(CoreLoadParameters<Settings, SyncSettings> loadParameters)
+			:base(loadParameters.Comm, new Configuration
 			{
 				DefaultWidth = 256,
 				DefaultHeight = 224,
@@ -26,23 +26,40 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				SystemId = VSystemID.Raw.SNES,
 			})
 		{
-			settings ??= new Settings();
-			syncSettings ??= new SyncSettings();
+			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath, null);
+			this._currentMsuTrack = new ProxiedFile();
 
+			LibSnes9x.OpenAudio openAudioCb = MsuOpenAudio;
+			LibSnes9x.SeekAudio seekAudioCb = _currentMsuTrack.Seek;
+			LibSnes9x.ReadAudio readAudioCb = _currentMsuTrack.ReadByte;
+			LibSnes9x.AudioEnd audioEndCb = _currentMsuTrack.AtEnd;
 			_core = PreInit<LibSnes9x>(new WaterboxOptions
 			{
 				Filename = "snes9x.wbx",
 				SbrkHeapSizeKB = 1024,
-				SealedHeapSizeKB = 12 * 1024,
-				InvisibleHeapSizeKB = 6 * 1024,
-				PlainHeapSizeKB = 12 * 1024,
-				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			});
+				InvisibleHeapSizeKB = 5 * 1024,
+				MmapHeapSizeKB = 1024,
+				PlainHeapSizeKB = 13 * 1024,
+				SkipCoreConsistencyCheck = loadParameters.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = loadParameters.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
+			}, new Delegate[] { openAudioCb, seekAudioCb, readAudioCb, audioEndCb });
 
 			if (!_core.biz_init())
 				throw new InvalidOperationException("Init() failed");
-			if (!_core.biz_load_rom(rom, rom.Length))
+
+			// add msu data file if it exists
+			try
+			{
+				// "msu1.rom" is hardcoded in the core
+				_exe.AddReadonlyFile(File.ReadAllBytes($"{_romPath}.msu"), "msu1.rom");
+			}
+			catch
+			{
+				// ignored
+			}
+			_core.SetMsu1Callbacks(openAudioCb, seekAudioCb, readAudioCb, audioEndCb);
+
+			if (!_core.biz_load_rom(loadParameters.Roms[0].RomData, loadParameters.Roms[0].RomData.Length))
 				throw new InvalidOperationException("LoadRom() failed");
 
 			PostInit();
@@ -62,9 +79,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				Region = DisplayType.PAL;
 			}
 
-			_syncSettings = syncSettings;
+			_syncSettings = loadParameters.SyncSettings ?? new SyncSettings();
 			InitControllers();
-			PutSettings(settings);
+			PutSettings(loadParameters.Settings ?? new Settings());
+		}
+
+		private readonly ProxiedFile _currentMsuTrack;
+		private bool _disposed;
+
+		private bool MsuOpenAudio(ushort trackId) => _currentMsuTrack.OpenMsuTrack(_romPath, trackId);
+
+		public override void Dispose()
+		{
+			if (_disposed) return;
+
+			_disposed = true;
+			_currentMsuTrack?.Dispose();
+			base.Dispose();
 		}
 
 		private void InitControllers()
@@ -102,6 +133,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		private Settings _settings;
 		private SyncSettings _syncSettings;
+		private readonly string _romPath;
 
 		public Settings GetSettings()
 		{
