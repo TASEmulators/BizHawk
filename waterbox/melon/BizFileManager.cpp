@@ -259,7 +259,7 @@ const char* InitDSiBIOS()
 	}
 
 	Platform::FileRewind(bios9i);
-	Platform::FileRead(DSi::ARM9iBIOS, sizeof(DSi::ARM7iBIOS), 1, bios9i);
+	Platform::FileRead(DSi::ARM9iBIOS, sizeof(DSi::ARM9iBIOS), 1, bios9i);
 	Platform::CloseFile(bios9i);
 
 	return nullptr;
