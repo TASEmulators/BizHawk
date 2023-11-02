@@ -49,7 +49,7 @@ const char* InitNDSBIOS()
 		}
 
 		Platform::FileRewind(bios7);
-		Platform::FileRead(NDS::ARM7BIOS, sizeof(bios7), 1, bios7);
+		Platform::FileRead(NDS::ARM7BIOS, sizeof(NDS::ARM7BIOS), 1, bios7);
 		Platform::CloseFile(bios7);
 
 		auto bios9 = Platform::OpenFile("bios9.bin", Platform::FileMode::Read);
@@ -65,7 +65,7 @@ const char* InitNDSBIOS()
 		}
 
 		Platform::FileRewind(bios9);
-		Platform::FileRead(NDS::ARM9BIOS, sizeof(bios9), 1, bios9);
+		Platform::FileRead(NDS::ARM9BIOS, sizeof(NDS::ARM9BIOS), 1, bios9);
 		Platform::CloseFile(bios9);
 	}
 	else
@@ -243,7 +243,7 @@ const char* InitDSiBIOS()
 	}
 
 	Platform::FileRewind(bios7i);
-	Platform::FileRead(DSi::ARM7iBIOS, sizeof(bios7i), 1, bios7i);
+	Platform::FileRead(DSi::ARM7iBIOS, sizeof(DSi::ARM7iBIOS), 1, bios7i);
 	Platform::CloseFile(bios7i);
 
 	auto bios9i = Platform::OpenFile("bios9i.bin", Platform::FileMode::Read);
@@ -259,7 +259,7 @@ const char* InitDSiBIOS()
 	}
 
 	Platform::FileRewind(bios9i);
-	Platform::FileRead(DSi::ARM9iBIOS, sizeof(bios9i), 1, bios9i);
+	Platform::FileRead(DSi::ARM7iBIOS, sizeof(DSi::ARM7iBIOS), 1, bios9i);
 	Platform::CloseFile(bios9i);
 
 	return nullptr;
