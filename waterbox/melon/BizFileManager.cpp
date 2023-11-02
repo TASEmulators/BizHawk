@@ -338,13 +338,13 @@ const char* InitNAND(FirmwareSettings& fwSettings, bool clearNand, bool dsiWare)
 		{
 			SanitizeNANDSettings(settings);
 			memset(settings.Nickname, 0, sizeof(settings.Nickname));
-			memcpy(settings.Nickname, fwSettings.Username, fwSettings.UsernameLength);
+			memcpy(settings.Nickname, fwSettings.Username, fwSettings.UsernameLength * 2);
 			settings.Language = static_cast<SPI_Firmware::Language>(fwSettings.Language & SPI_Firmware::Language::Reserved);
 			settings.FavoriteColor = fwSettings.Color;
 			settings.BirthdayMonth = fwSettings.BirthdayMonth;
 			settings.BirthdayDay = fwSettings.BirthdayDay;
 			memset(settings.Message, 0, sizeof(settings.Message));
-			memcpy(settings.Message, fwSettings.Message, fwSettings.MessageLength);
+			memcpy(settings.Message, fwSettings.Message, fwSettings.MessageLength * 2);
 		}
 
 		settings.TouchCalibrationADC1[0] = 0;
