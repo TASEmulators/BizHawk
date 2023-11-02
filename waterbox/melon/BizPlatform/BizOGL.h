@@ -10,8 +10,7 @@
 #define __gl_h_
 
 #include <stdint.h>
-
-#include <emulibc.h>
+#include <utility>
 
 namespace BizOGL
 {
@@ -27,12 +26,49 @@ enum class LoadGLVersion
 
 void LoadGL(LoadGLProc load, LoadGLVersion version, bool isWinApi);
 
+extern bool IsWinAPI;
+
+template<class T>
+class GLFunctor;
+
+template<class Result, class... Args>
+class GLFunctor<Result (Args...)>
+{
+	using GLFunc = Result (*)(Args...);
+
+public:
+	explicit operator bool() const
+	{
+		return glProc != nullptr;
+	}
+
+	Result operator()(Args... args) const
+	{
+		if (IsWinAPI)
+		{
+			using WinAPIGLFunc = __attribute__((ms_abi)) GLFunc;
+			return reinterpret_cast<WinAPIGLFunc>(glProc)(std::forward<Args>(args)...);
+		}
+
+		return glProc(std::forward<Args>(args)...);
+	}
+
+	GLFunc& operator=(void* proc)
+	{
+		glProc = reinterpret_cast<GLFunc>(proc);
+		return glProc;
+	}
+
+	bool operator==(const GLFunc& proc) const
+	{
+		return glProc == proc;
+	}
+
+private:
+	GLFunc glProc = nullptr;
+};
+
 }
-
-#define GLAPI ECL_INVISIBLE extern "C"
-
-GLAPI bool IsWinAPI;
-#define WRAP_PFN(pfn, ...) (IsWinAPI ? ((__attribute__((ms_abi)) decltype(pfn))pfn)(__VA_ARGS__) : pfn(__VA_ARGS__))
 
 typedef unsigned int GLenum;
 typedef unsigned char GLboolean;
@@ -1377,1727 +1413,1163 @@ typedef void (*GLDEBUGPROC)(GLenum source,GLenum type,GLuint id,GLenum severity,
 #define GL_STACK_OVERFLOW 0x0503
 
 #define GL_VERSION_1_0 1
-typedef void (*PFNGLCULLFACEPROC)(GLenum mode);
-GLAPI PFNGLCULLFACEPROC biz_glCullFace;
-#define glCullFace(...) WRAP_PFN(biz_glCullFace, __VA_ARGS__)
-typedef void (*PFNGLFRONTFACEPROC)(GLenum mode);
-GLAPI PFNGLFRONTFACEPROC biz_glFrontFace;
-#define glFrontFace(...) WRAP_PFN(biz_glFrontFace, __VA_ARGS__)
-typedef void (*PFNGLHINTPROC)(GLenum target, GLenum mode);
-GLAPI PFNGLHINTPROC biz_glHint;
-#define glHint(...) WRAP_PFN(biz_glHint, __VA_ARGS__)
-typedef void (*PFNGLLINEWIDTHPROC)(GLfloat width);
-GLAPI PFNGLLINEWIDTHPROC biz_glLineWidth;
-#define glLineWidth(...) WRAP_PFN(biz_glLineWidth, __VA_ARGS__)
-typedef void (*PFNGLPOINTSIZEPROC)(GLfloat size);
-GLAPI PFNGLPOINTSIZEPROC biz_glPointSize;
-#define glPointSize(...) WRAP_PFN(biz_glPointSize, __VA_ARGS__)
-typedef void (*PFNGLPOLYGONMODEPROC)(GLenum face, GLenum mode);
-GLAPI PFNGLPOLYGONMODEPROC biz_glPolygonMode;
-#define glPolygonMode(...) WRAP_PFN(biz_glPolygonMode, __VA_ARGS__)
-typedef void (*PFNGLSCISSORPROC)(GLint x, GLint y, GLsizei width, GLsizei height);
-GLAPI PFNGLSCISSORPROC biz_glScissor;
-#define glScissor(...) WRAP_PFN(biz_glScissor, __VA_ARGS__)
-typedef void (*PFNGLTEXPARAMETERFPROC)(GLenum target, GLenum pname, GLfloat param);
-GLAPI PFNGLTEXPARAMETERFPROC biz_glTexParameterf;
-#define glTexParameterf(...) WRAP_PFN(biz_glTexParameterf, __VA_ARGS__)
-typedef void (*PFNGLTEXPARAMETERFVPROC)(GLenum target, GLenum pname, const GLfloat *params);
-GLAPI PFNGLTEXPARAMETERFVPROC biz_glTexParameterfv;
-#define glTexParameterfv(...) WRAP_PFN(biz_glTexParameterfv, __VA_ARGS__)
-typedef void (*PFNGLTEXPARAMETERIPROC)(GLenum target, GLenum pname, GLint param);
-GLAPI PFNGLTEXPARAMETERIPROC biz_glTexParameteri;
-#define glTexParameteri(...) WRAP_PFN(biz_glTexParameteri, __VA_ARGS__)
-typedef void (*PFNGLTEXPARAMETERIVPROC)(GLenum target, GLenum pname, const GLint *params);
-GLAPI PFNGLTEXPARAMETERIVPROC biz_glTexParameteriv;
-#define glTexParameteriv(...) WRAP_PFN(biz_glTexParameteriv, __VA_ARGS__)
-typedef void (*PFNGLTEXIMAGE1DPROC)(GLenum target, GLint level, GLint internalformat, GLsizei width, GLint border, GLenum format, GLenum type, const void *pixels);
-GLAPI PFNGLTEXIMAGE1DPROC biz_glTexImage1D;
-#define glTexImage1D(...) WRAP_PFN(biz_glTexImage1D, __VA_ARGS__)
-typedef void (*PFNGLTEXIMAGE2DPROC)(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels);
-GLAPI PFNGLTEXIMAGE2DPROC biz_glTexImage2D;
-#define glTexImage2D(...) WRAP_PFN(biz_glTexImage2D, __VA_ARGS__)
-typedef void (*PFNGLDRAWBUFFERPROC)(GLenum buf);
-GLAPI PFNGLDRAWBUFFERPROC biz_glDrawBuffer;
-#define glDrawBuffer(...) WRAP_PFN(biz_glDrawBuffer, __VA_ARGS__)
-typedef void (*PFNGLCLEARPROC)(GLbitfield mask);
-GLAPI PFNGLCLEARPROC biz_glClear;
-#define glClear(...) WRAP_PFN(biz_glClear, __VA_ARGS__)
-typedef void (*PFNGLCLEARCOLORPROC)(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
-GLAPI PFNGLCLEARCOLORPROC biz_glClearColor;
-#define glClearColor(...) WRAP_PFN(biz_glClearColor, __VA_ARGS__)
-typedef void (*PFNGLCLEARSTENCILPROC)(GLint s);
-GLAPI PFNGLCLEARSTENCILPROC biz_glClearStencil;
-#define glClearStencil(...) WRAP_PFN(biz_glClearStencil, __VA_ARGS__)
-typedef void (*PFNGLCLEARDEPTHPROC)(GLdouble depth);
-GLAPI PFNGLCLEARDEPTHPROC biz_glClearDepth;
-#define glClearDepth(...) WRAP_PFN(biz_glClearDepth, __VA_ARGS__)
-typedef void (*PFNGLSTENCILMASKPROC)(GLuint mask);
-GLAPI PFNGLSTENCILMASKPROC biz_glStencilMask;
-#define glStencilMask(...) WRAP_PFN(biz_glStencilMask, __VA_ARGS__)
-typedef void (*PFNGLCOLORMASKPROC)(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
-GLAPI PFNGLCOLORMASKPROC biz_glColorMask;
-#define glColorMask(...) WRAP_PFN(biz_glColorMask, __VA_ARGS__)
-typedef void (*PFNGLDEPTHMASKPROC)(GLboolean flag);
-GLAPI PFNGLDEPTHMASKPROC biz_glDepthMask;
-#define glDepthMask(...) WRAP_PFN(biz_glDepthMask, __VA_ARGS__)
-typedef void (*PFNGLDISABLEPROC)(GLenum cap);
-GLAPI PFNGLDISABLEPROC biz_glDisable;
-#define glDisable(...) WRAP_PFN(biz_glDisable, __VA_ARGS__)
-typedef void (*PFNGLENABLEPROC)(GLenum cap);
-GLAPI PFNGLENABLEPROC biz_glEnable;
-#define glEnable(...) WRAP_PFN(biz_glEnable, __VA_ARGS__)
-typedef void (*PFNGLFINISHPROC)(void);
-GLAPI PFNGLFINISHPROC biz_glFinish;
-#define glFinish(...) WRAP_PFN(biz_glFinish, __VA_ARGS__)
-typedef void (*PFNGLFLUSHPROC)(void);
-GLAPI PFNGLFLUSHPROC biz_glFlush;
-#define glFlush(...) WRAP_PFN(biz_glFlush, __VA_ARGS__)
-typedef void (*PFNGLBLENDFUNCPROC)(GLenum sfactor, GLenum dfactor);
-GLAPI PFNGLBLENDFUNCPROC biz_glBlendFunc;
-#define glBlendFunc(...) WRAP_PFN(biz_glBlendFunc, __VA_ARGS__)
-typedef void (*PFNGLLOGICOPPROC)(GLenum opcode);
-GLAPI PFNGLLOGICOPPROC biz_glLogicOp;
-#define glLogicOp(...) WRAP_PFN(biz_glLogicOp, __VA_ARGS__)
-typedef void (*PFNGLSTENCILFUNCPROC)(GLenum func, GLint ref, GLuint mask);
-GLAPI PFNGLSTENCILFUNCPROC biz_glStencilFunc;
-#define glStencilFunc(...) WRAP_PFN(biz_glStencilFunc, __VA_ARGS__)
-typedef void (*PFNGLSTENCILOPPROC)(GLenum fail, GLenum zfail, GLenum zpass);
-GLAPI PFNGLSTENCILOPPROC biz_glStencilOp;
-#define glStencilOp(...) WRAP_PFN(biz_glStencilOp, __VA_ARGS__)
-typedef void (*PFNGLDEPTHFUNCPROC)(GLenum func);
-GLAPI PFNGLDEPTHFUNCPROC biz_glDepthFunc;
-#define glDepthFunc(...) WRAP_PFN(biz_glDepthFunc, __VA_ARGS__)
-typedef void (*PFNGLPIXELSTOREFPROC)(GLenum pname, GLfloat param);
-GLAPI PFNGLPIXELSTOREFPROC biz_glPixelStoref;
-#define glPixelStoref(...) WRAP_PFN(biz_glPixelStoref, __VA_ARGS__)
-typedef void (*PFNGLPIXELSTOREIPROC)(GLenum pname, GLint param);
-GLAPI PFNGLPIXELSTOREIPROC biz_glPixelStorei;
-#define glPixelStorei(...) WRAP_PFN(biz_glPixelStorei, __VA_ARGS__)
-typedef void (*PFNGLREADBUFFERPROC)(GLenum src);
-GLAPI PFNGLREADBUFFERPROC biz_glReadBuffer;
-#define glReadBuffer(...) WRAP_PFN(biz_glReadBuffer, __VA_ARGS__)
-typedef void (*PFNGLREADPIXELSPROC)(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void *pixels);
-GLAPI PFNGLREADPIXELSPROC biz_glReadPixels;
-#define glReadPixels(...) WRAP_PFN(biz_glReadPixels, __VA_ARGS__)
-typedef void (*PFNGLGETBOOLEANVPROC)(GLenum pname, GLboolean *data);
-GLAPI PFNGLGETBOOLEANVPROC biz_glGetBooleanv;
-#define glGetBooleanv(...) WRAP_PFN(biz_glGetBooleanv, __VA_ARGS__)
-typedef void (*PFNGLGETDOUBLEVPROC)(GLenum pname, GLdouble *data);
-GLAPI PFNGLGETDOUBLEVPROC biz_glGetDoublev;
-#define glGetDoublev(...) WRAP_PFN(biz_glGetDoublev, __VA_ARGS__)
-typedef GLenum (*PFNGLGETERRORPROC)(void);
-GLAPI PFNGLGETERRORPROC biz_glGetError;
-#define glGetError(...) WRAP_PFN(biz_glGetError, __VA_ARGS__)
-typedef void (*PFNGLGETFLOATVPROC)(GLenum pname, GLfloat *data);
-GLAPI PFNGLGETFLOATVPROC biz_glGetFloatv;
-#define glGetFloatv(...) WRAP_PFN(biz_glGetFloatv, __VA_ARGS__)
-typedef void (*PFNGLGETINTEGERVPROC)(GLenum pname, GLint *data);
-GLAPI PFNGLGETINTEGERVPROC biz_glGetIntegerv;
-#define glGetIntegerv(...) WRAP_PFN(biz_glGetIntegerv, __VA_ARGS__)
-typedef const GLubyte * (*PFNGLGETSTRINGPROC)(GLenum name);
-GLAPI PFNGLGETSTRINGPROC biz_glGetString;
-#define glGetString(...) WRAP_PFN(biz_glGetString, __VA_ARGS__)
-typedef void (*PFNGLGETTEXIMAGEPROC)(GLenum target, GLint level, GLenum format, GLenum type, void *pixels);
-GLAPI PFNGLGETTEXIMAGEPROC biz_glGetTexImage;
-#define glGetTexImage(...) WRAP_PFN(biz_glGetTexImage, __VA_ARGS__)
-typedef void (*PFNGLGETTEXPARAMETERFVPROC)(GLenum target, GLenum pname, GLfloat *params);
-GLAPI PFNGLGETTEXPARAMETERFVPROC biz_glGetTexParameterfv;
-#define glGetTexParameterfv(...) WRAP_PFN(biz_glGetTexParameterfv, __VA_ARGS__)
-typedef void (*PFNGLGETTEXPARAMETERIVPROC)(GLenum target, GLenum pname, GLint *params);
-GLAPI PFNGLGETTEXPARAMETERIVPROC biz_glGetTexParameteriv;
-#define glGetTexParameteriv(...) WRAP_PFN(biz_glGetTexParameteriv, __VA_ARGS__)
-typedef void (*PFNGLGETTEXLEVELPARAMETERFVPROC)(GLenum target, GLint level, GLenum pname, GLfloat *params);
-GLAPI PFNGLGETTEXLEVELPARAMETERFVPROC biz_glGetTexLevelParameterfv;
-#define glGetTexLevelParameterfv(...) WRAP_PFN(biz_glGetTexLevelParameterfv, __VA_ARGS__)
-typedef void (*PFNGLGETTEXLEVELPARAMETERIVPROC)(GLenum target, GLint level, GLenum pname, GLint *params);
-GLAPI PFNGLGETTEXLEVELPARAMETERIVPROC biz_glGetTexLevelParameteriv;
-#define glGetTexLevelParameteriv(...) WRAP_PFN(biz_glGetTexLevelParameteriv, __VA_ARGS__)
-typedef GLboolean (*PFNGLISENABLEDPROC)(GLenum cap);
-GLAPI PFNGLISENABLEDPROC biz_glIsEnabled;
-#define glIsEnabled(...) WRAP_PFN(biz_glIsEnabled, __VA_ARGS__)
-typedef void (*PFNGLDEPTHRANGEPROC)(GLdouble n, GLdouble f);
-GLAPI PFNGLDEPTHRANGEPROC biz_glDepthRange;
-#define glDepthRange(...) WRAP_PFN(biz_glDepthRange, __VA_ARGS__)
-typedef void (*PFNGLVIEWPORTPROC)(GLint x, GLint y, GLsizei width, GLsizei height);
-GLAPI PFNGLVIEWPORTPROC biz_glViewport;
-#define glViewport(...) WRAP_PFN(biz_glViewport, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLenum mode)> biz_glCullFace;
+#define glCullFace biz_glCullFace
+extern BizOGL::GLFunctor<void (GLenum mode)> biz_glFrontFace;
+#define glFrontFace biz_glFrontFace
+extern BizOGL::GLFunctor<void (GLenum target, GLenum mode)> biz_glHint;
+#define glHint biz_glHint
+extern BizOGL::GLFunctor<void (GLfloat width)> biz_glLineWidth;
+#define glLineWidth biz_glLineWidth
+extern BizOGL::GLFunctor<void (GLfloat size)> biz_glPointSize;
+#define glPointSize biz_glPointSize
+extern BizOGL::GLFunctor<void (GLenum face, GLenum mode)> biz_glPolygonMode;
+#define glPolygonMode biz_glPolygonMode
+extern BizOGL::GLFunctor<void (GLint x, GLint y, GLsizei width, GLsizei height)> biz_glScissor;
+#define glScissor biz_glScissor
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, GLfloat param)> biz_glTexParameterf;
+#define glTexParameterf biz_glTexParameterf
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, const GLfloat *params)> biz_glTexParameterfv;
+#define glTexParameterfv biz_glTexParameterfv
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, GLint param)> biz_glTexParameteri;
+#define glTexParameteri biz_glTexParameteri
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, const GLint *params)> biz_glTexParameteriv;
+#define glTexParameteriv biz_glTexParameteriv
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLint internalformat, GLsizei width, GLint border, GLenum format, GLenum type, const void *pixels)> biz_glTexImage1D;
+#define glTexImage1D biz_glTexImage1D
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels)> biz_glTexImage2D;
+#define glTexImage2D biz_glTexImage2D
+extern BizOGL::GLFunctor<void (GLenum buf)> biz_glDrawBuffer;
+#define glDrawBuffer biz_glDrawBuffer
+extern BizOGL::GLFunctor<void (GLbitfield mask)> biz_glClear;
+#define glClear biz_glClear
+extern BizOGL::GLFunctor<void (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)> biz_glClearColor;
+#define glClearColor biz_glClearColor
+extern BizOGL::GLFunctor<void (GLint s)> biz_glClearStencil;
+#define glClearStencil biz_glClearStencil
+extern BizOGL::GLFunctor<void (GLdouble depth)> biz_glClearDepth;
+#define glClearDepth biz_glClearDepth
+extern BizOGL::GLFunctor<void (GLuint mask)> biz_glStencilMask;
+#define glStencilMask biz_glStencilMask
+extern BizOGL::GLFunctor<void (GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)> biz_glColorMask;
+#define glColorMask biz_glColorMask
+extern BizOGL::GLFunctor<void (GLboolean flag)> biz_glDepthMask;
+#define glDepthMask biz_glDepthMask
+extern BizOGL::GLFunctor<void (GLenum cap)> biz_glDisable;
+#define glDisable biz_glDisable
+extern BizOGL::GLFunctor<void (GLenum cap)> biz_glEnable;
+#define glEnable biz_glEnable
+extern BizOGL::GLFunctor<void (void)> biz_glFinish;
+#define glFinish biz_glFinish
+extern BizOGL::GLFunctor<void (void)> biz_glFlush;
+#define glFlush biz_glFlush
+extern BizOGL::GLFunctor<void (GLenum sfactor, GLenum dfactor)> biz_glBlendFunc;
+#define glBlendFunc biz_glBlendFunc
+extern BizOGL::GLFunctor<void (GLenum opcode)> biz_glLogicOp;
+#define glLogicOp biz_glLogicOp
+extern BizOGL::GLFunctor<void (GLenum func, GLint ref, GLuint mask)> biz_glStencilFunc;
+#define glStencilFunc biz_glStencilFunc
+extern BizOGL::GLFunctor<void (GLenum fail, GLenum zfail, GLenum zpass)> biz_glStencilOp;
+#define glStencilOp biz_glStencilOp
+extern BizOGL::GLFunctor<void (GLenum func)> biz_glDepthFunc;
+#define glDepthFunc biz_glDepthFunc
+extern BizOGL::GLFunctor<void (GLenum pname, GLfloat param)> biz_glPixelStoref;
+#define glPixelStoref biz_glPixelStoref
+extern BizOGL::GLFunctor<void (GLenum pname, GLint param)> biz_glPixelStorei;
+#define glPixelStorei biz_glPixelStorei
+extern BizOGL::GLFunctor<void (GLenum src)> biz_glReadBuffer;
+#define glReadBuffer biz_glReadBuffer
+extern BizOGL::GLFunctor<void (GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void *pixels)> biz_glReadPixels;
+#define glReadPixels biz_glReadPixels
+extern BizOGL::GLFunctor<void (GLenum pname, GLboolean *data)> biz_glGetBooleanv;
+#define glGetBooleanv biz_glGetBooleanv
+extern BizOGL::GLFunctor<void (GLenum pname, GLdouble *data)> biz_glGetDoublev;
+#define glGetDoublev biz_glGetDoublev
+extern BizOGL::GLFunctor<GLenum (void)> biz_glGetError;
+#define glGetError biz_glGetError
+extern BizOGL::GLFunctor<void (GLenum pname, GLfloat *data)> biz_glGetFloatv;
+#define glGetFloatv biz_glGetFloatv
+extern BizOGL::GLFunctor<void (GLenum pname, GLint *data)> biz_glGetIntegerv;
+#define glGetIntegerv biz_glGetIntegerv
+extern BizOGL::GLFunctor<const GLubyte * (GLenum name)> biz_glGetString;
+#define glGetString biz_glGetString
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLenum format, GLenum type, void *pixels)> biz_glGetTexImage;
+#define glGetTexImage biz_glGetTexImage
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, GLfloat *params)> biz_glGetTexParameterfv;
+#define glGetTexParameterfv biz_glGetTexParameterfv
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, GLint *params)> biz_glGetTexParameteriv;
+#define glGetTexParameteriv biz_glGetTexParameteriv
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLenum pname, GLfloat *params)> biz_glGetTexLevelParameterfv;
+#define glGetTexLevelParameterfv biz_glGetTexLevelParameterfv
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLenum pname, GLint *params)> biz_glGetTexLevelParameteriv;
+#define glGetTexLevelParameteriv biz_glGetTexLevelParameteriv
+extern BizOGL::GLFunctor<GLboolean (GLenum cap)> biz_glIsEnabled;
+#define glIsEnabled biz_glIsEnabled
+extern BizOGL::GLFunctor<void (GLdouble n, GLdouble f)> biz_glDepthRange;
+#define glDepthRange biz_glDepthRange
+extern BizOGL::GLFunctor<void (GLint x, GLint y, GLsizei width, GLsizei height)> biz_glViewport;
+#define glViewport biz_glViewport
 
 #define GL_VERSION_1_1 1
-typedef void (*PFNGLDRAWARRAYSPROC)(GLenum mode, GLint first, GLsizei count);
-GLAPI PFNGLDRAWARRAYSPROC biz_glDrawArrays;
-#define glDrawArrays(...) WRAP_PFN(biz_glDrawArrays, __VA_ARGS__)
-typedef void (*PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
-GLAPI PFNGLDRAWELEMENTSPROC biz_glDrawElements;
-#define glDrawElements(...) WRAP_PFN(biz_glDrawElements, __VA_ARGS__)
-typedef void (*PFNGLPOLYGONOFFSETPROC)(GLfloat factor, GLfloat units);
-GLAPI PFNGLPOLYGONOFFSETPROC biz_glPolygonOffset;
-#define glPolygonOffset(...) WRAP_PFN(biz_glPolygonOffset, __VA_ARGS__)
-typedef void (*PFNGLCOPYTEXIMAGE1DPROC)(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border);
-GLAPI PFNGLCOPYTEXIMAGE1DPROC biz_glCopyTexImage1D;
-#define glCopyTexImage1D(...) WRAP_PFN(biz_glCopyTexImage1D, __VA_ARGS__)
-typedef void (*PFNGLCOPYTEXIMAGE2DPROC)(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border);
-GLAPI PFNGLCOPYTEXIMAGE2DPROC biz_glCopyTexImage2D;
-#define glCopyTexImage2D(...) WRAP_PFN(biz_glCopyTexImage2D, __VA_ARGS__)
-typedef void (*PFNGLCOPYTEXSUBIMAGE1DPROC)(GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width);
-GLAPI PFNGLCOPYTEXSUBIMAGE1DPROC biz_glCopyTexSubImage1D;
-#define glCopyTexSubImage1D(...) WRAP_PFN(biz_glCopyTexSubImage1D, __VA_ARGS__)
-typedef void (*PFNGLCOPYTEXSUBIMAGE2DPROC)(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);
-GLAPI PFNGLCOPYTEXSUBIMAGE2DPROC biz_glCopyTexSubImage2D;
-#define glCopyTexSubImage2D(...) WRAP_PFN(biz_glCopyTexSubImage2D, __VA_ARGS__)
-typedef void (*PFNGLTEXSUBIMAGE1DPROC)(GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, const void *pixels);
-GLAPI PFNGLTEXSUBIMAGE1DPROC biz_glTexSubImage1D;
-#define glTexSubImage1D(...) WRAP_PFN(biz_glTexSubImage1D, __VA_ARGS__)
-typedef void (*PFNGLTEXSUBIMAGE2DPROC)(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels);
-GLAPI PFNGLTEXSUBIMAGE2DPROC biz_glTexSubImage2D;
-#define glTexSubImage2D(...) WRAP_PFN(biz_glTexSubImage2D, __VA_ARGS__)
-typedef void (*PFNGLBINDTEXTUREPROC)(GLenum target, GLuint texture);
-GLAPI PFNGLBINDTEXTUREPROC biz_glBindTexture;
-#define glBindTexture(...) WRAP_PFN(biz_glBindTexture, __VA_ARGS__)
-typedef void (*PFNGLDELETETEXTURESPROC)(GLsizei n, const GLuint *textures);
-GLAPI PFNGLDELETETEXTURESPROC biz_glDeleteTextures;
-#define glDeleteTextures(...) WRAP_PFN(biz_glDeleteTextures, __VA_ARGS__)
-typedef void (*PFNGLGENTEXTURESPROC)(GLsizei n, GLuint *textures);
-GLAPI PFNGLGENTEXTURESPROC biz_glGenTextures;
-#define glGenTextures(...) WRAP_PFN(biz_glGenTextures, __VA_ARGS__)
-typedef GLboolean (*PFNGLISTEXTUREPROC)(GLuint texture);
-GLAPI PFNGLISTEXTUREPROC biz_glIsTexture;
-#define glIsTexture(...) WRAP_PFN(biz_glIsTexture, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLenum mode, GLint first, GLsizei count)> biz_glDrawArrays;
+#define glDrawArrays biz_glDrawArrays
+extern BizOGL::GLFunctor<void (GLenum mode, GLsizei count, GLenum type, const void *indices)> biz_glDrawElements;
+#define glDrawElements biz_glDrawElements
+extern BizOGL::GLFunctor<void (GLfloat factor, GLfloat units)> biz_glPolygonOffset;
+#define glPolygonOffset biz_glPolygonOffset
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border)> biz_glCopyTexImage1D;
+#define glCopyTexImage1D biz_glCopyTexImage1D
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border)> biz_glCopyTexImage2D;
+#define glCopyTexImage2D biz_glCopyTexImage2D
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width)> biz_glCopyTexSubImage1D;
+#define glCopyTexSubImage1D biz_glCopyTexSubImage1D
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height)> biz_glCopyTexSubImage2D;
+#define glCopyTexSubImage2D biz_glCopyTexSubImage2D
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, const void *pixels)> biz_glTexSubImage1D;
+#define glTexSubImage1D biz_glTexSubImage1D
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels)> biz_glTexSubImage2D;
+#define glTexSubImage2D biz_glTexSubImage2D
+extern BizOGL::GLFunctor<void (GLenum target, GLuint texture)> biz_glBindTexture;
+#define glBindTexture biz_glBindTexture
+extern BizOGL::GLFunctor<void (GLsizei n, const GLuint *textures)> biz_glDeleteTextures;
+#define glDeleteTextures biz_glDeleteTextures
+extern BizOGL::GLFunctor<void (GLsizei n, GLuint *textures)> biz_glGenTextures;
+#define glGenTextures biz_glGenTextures
+extern BizOGL::GLFunctor<GLboolean (GLuint texture)> biz_glIsTexture;
+#define glIsTexture biz_glIsTexture
 
 #define GL_VERSION_1_2 1
-typedef void (*PFNGLDRAWRANGEELEMENTSPROC)(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices);
-GLAPI PFNGLDRAWRANGEELEMENTSPROC biz_glDrawRangeElements;
-#define glDrawRangeElements(...) WRAP_PFN(biz_glDrawRangeElements, __VA_ARGS__)
-typedef void (*PFNGLTEXIMAGE3DPROC)(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const void *pixels);
-GLAPI PFNGLTEXIMAGE3DPROC biz_glTexImage3D;
-#define glTexImage3D(...) WRAP_PFN(biz_glTexImage3D, __VA_ARGS__)
-typedef void (*PFNGLTEXSUBIMAGE3DPROC)(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void *pixels);
-GLAPI PFNGLTEXSUBIMAGE3DPROC biz_glTexSubImage3D;
-#define glTexSubImage3D(...) WRAP_PFN(biz_glTexSubImage3D, __VA_ARGS__)
-typedef void (*PFNGLCOPYTEXSUBIMAGE3DPROC)(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);
-GLAPI PFNGLCOPYTEXSUBIMAGE3DPROC biz_glCopyTexSubImage3D;
-#define glCopyTexSubImage3D(...) WRAP_PFN(biz_glCopyTexSubImage3D, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices)> biz_glDrawRangeElements;
+#define glDrawRangeElements biz_glDrawRangeElements
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const void *pixels)> biz_glTexImage3D;
+#define glTexImage3D biz_glTexImage3D
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void *pixels)> biz_glTexSubImage3D;
+#define glTexSubImage3D biz_glTexSubImage3D
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height)> biz_glCopyTexSubImage3D;
+#define glCopyTexSubImage3D biz_glCopyTexSubImage3D
 
 #define GL_VERSION_1_3 1
-typedef void (*PFNGLACTIVETEXTUREPROC)(GLenum texture);
-GLAPI PFNGLACTIVETEXTUREPROC biz_glActiveTexture;
-#define glActiveTexture(...) WRAP_PFN(biz_glActiveTexture, __VA_ARGS__)
-typedef void (*PFNGLSAMPLECOVERAGEPROC)(GLfloat value, GLboolean invert);
-GLAPI PFNGLSAMPLECOVERAGEPROC biz_glSampleCoverage;
-#define glSampleCoverage(...) WRAP_PFN(biz_glSampleCoverage, __VA_ARGS__)
-typedef void (*PFNGLCOMPRESSEDTEXIMAGE3DPROC)(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const void *data);
-GLAPI PFNGLCOMPRESSEDTEXIMAGE3DPROC biz_glCompressedTexImage3D;
-#define glCompressedTexImage3D(...) WRAP_PFN(biz_glCompressedTexImage3D, __VA_ARGS__)
-typedef void (*PFNGLCOMPRESSEDTEXIMAGE2DPROC)(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const void *data);
-GLAPI PFNGLCOMPRESSEDTEXIMAGE2DPROC biz_glCompressedTexImage2D;
-#define glCompressedTexImage2D(...) WRAP_PFN(biz_glCompressedTexImage2D, __VA_ARGS__)
-typedef void (*PFNGLCOMPRESSEDTEXIMAGE1DPROC)(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, const void *data);
-GLAPI PFNGLCOMPRESSEDTEXIMAGE1DPROC biz_glCompressedTexImage1D;
-#define glCompressedTexImage1D(...) WRAP_PFN(biz_glCompressedTexImage1D, __VA_ARGS__)
-typedef void (*PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC)(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void *data);
-GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC biz_glCompressedTexSubImage3D;
-#define glCompressedTexSubImage3D(...) WRAP_PFN(biz_glCompressedTexSubImage3D, __VA_ARGS__)
-typedef void (*PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC)(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *data);
-GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC biz_glCompressedTexSubImage2D;
-#define glCompressedTexSubImage2D(...) WRAP_PFN(biz_glCompressedTexSubImage2D, __VA_ARGS__)
-typedef void (*PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC)(GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, const void *data);
-GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC biz_glCompressedTexSubImage1D;
-#define glCompressedTexSubImage1D(...) WRAP_PFN(biz_glCompressedTexSubImage1D, __VA_ARGS__)
-typedef void (*PFNGLGETCOMPRESSEDTEXIMAGEPROC)(GLenum target, GLint level, void *img);
-GLAPI PFNGLGETCOMPRESSEDTEXIMAGEPROC biz_glGetCompressedTexImage;
-#define glGetCompressedTexImage(...) WRAP_PFN(biz_glGetCompressedTexImage, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLenum texture)> biz_glActiveTexture;
+#define glActiveTexture biz_glActiveTexture
+extern BizOGL::GLFunctor<void (GLfloat value, GLboolean invert)> biz_glSampleCoverage;
+#define glSampleCoverage biz_glSampleCoverage
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const void *data)> biz_glCompressedTexImage3D;
+#define glCompressedTexImage3D biz_glCompressedTexImage3D
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const void *data)> biz_glCompressedTexImage2D;
+#define glCompressedTexImage2D biz_glCompressedTexImage2D
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, const void *data)> biz_glCompressedTexImage1D;
+#define glCompressedTexImage1D biz_glCompressedTexImage1D
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void *data)> biz_glCompressedTexSubImage3D;
+#define glCompressedTexSubImage3D biz_glCompressedTexSubImage3D
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *data)> biz_glCompressedTexSubImage2D;
+#define glCompressedTexSubImage2D biz_glCompressedTexSubImage2D
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, const void *data)> biz_glCompressedTexSubImage1D;
+#define glCompressedTexSubImage1D biz_glCompressedTexSubImage1D
+extern BizOGL::GLFunctor<void (GLenum target, GLint level, void *img)> biz_glGetCompressedTexImage;
+#define glGetCompressedTexImage biz_glGetCompressedTexImage
 
 #define GL_VERSION_1_4 1
-typedef void (*PFNGLBLENDFUNCSEPARATEPROC)(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
-GLAPI PFNGLBLENDFUNCSEPARATEPROC biz_glBlendFuncSeparate;
-#define glBlendFuncSeparate(...) WRAP_PFN(biz_glBlendFuncSeparate, __VA_ARGS__)
-typedef void (*PFNGLMULTIDRAWARRAYSPROC)(GLenum mode, const GLint *first, const GLsizei *count, GLsizei drawcount);
-GLAPI PFNGLMULTIDRAWARRAYSPROC biz_glMultiDrawArrays;
-#define glMultiDrawArrays(...) WRAP_PFN(biz_glMultiDrawArrays, __VA_ARGS__)
-typedef void (*PFNGLMULTIDRAWELEMENTSPROC)(GLenum mode, const GLsizei *count, GLenum type, const void *const*indices, GLsizei drawcount);
-GLAPI PFNGLMULTIDRAWELEMENTSPROC biz_glMultiDrawElements;
-#define glMultiDrawElements(...) WRAP_PFN(biz_glMultiDrawElements, __VA_ARGS__)
-typedef void (*PFNGLPOINTPARAMETERFPROC)(GLenum pname, GLfloat param);
-GLAPI PFNGLPOINTPARAMETERFPROC biz_glPointParameterf;
-#define glPointParameterf(...) WRAP_PFN(biz_glPointParameterf, __VA_ARGS__)
-typedef void (*PFNGLPOINTPARAMETERFVPROC)(GLenum pname, const GLfloat *params);
-GLAPI PFNGLPOINTPARAMETERFVPROC biz_glPointParameterfv;
-#define glPointParameterfv(...) WRAP_PFN(biz_glPointParameterfv, __VA_ARGS__)
-typedef void (*PFNGLPOINTPARAMETERIPROC)(GLenum pname, GLint param);
-GLAPI PFNGLPOINTPARAMETERIPROC biz_glPointParameteri;
-#define glPointParameteri(...) WRAP_PFN(biz_glPointParameteri, __VA_ARGS__)
-typedef void (*PFNGLPOINTPARAMETERIVPROC)(GLenum pname, const GLint *params);
-GLAPI PFNGLPOINTPARAMETERIVPROC biz_glPointParameteriv;
-#define glPointParameteriv(...) WRAP_PFN(biz_glPointParameteriv, __VA_ARGS__)
-typedef void (*PFNGLBLENDCOLORPROC)(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
-GLAPI PFNGLBLENDCOLORPROC biz_glBlendColor;
-#define glBlendColor(...) WRAP_PFN(biz_glBlendColor, __VA_ARGS__)
-typedef void (*PFNGLBLENDEQUATIONPROC)(GLenum mode);
-GLAPI PFNGLBLENDEQUATIONPROC biz_glBlendEquation;
-#define glBlendEquation(...) WRAP_PFN(biz_glBlendEquation, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha)> biz_glBlendFuncSeparate;
+#define glBlendFuncSeparate biz_glBlendFuncSeparate
+extern BizOGL::GLFunctor<void (GLenum mode, const GLint *first, const GLsizei *count, GLsizei drawcount)> biz_glMultiDrawArrays;
+#define glMultiDrawArrays biz_glMultiDrawArrays
+extern BizOGL::GLFunctor<void (GLenum mode, const GLsizei *count, GLenum type, const void *const*indices, GLsizei drawcount)> biz_glMultiDrawElements;
+#define glMultiDrawElements biz_glMultiDrawElements
+extern BizOGL::GLFunctor<void (GLenum pname, GLfloat param)> biz_glPointParameterf;
+#define glPointParameterf biz_glPointParameterf
+extern BizOGL::GLFunctor<void (GLenum pname, const GLfloat *params)> biz_glPointParameterfv;
+#define glPointParameterfv biz_glPointParameterfv
+extern BizOGL::GLFunctor<void (GLenum pname, GLint param)> biz_glPointParameteri;
+#define glPointParameteri biz_glPointParameteri
+extern BizOGL::GLFunctor<void (GLenum pname, const GLint *params)> biz_glPointParameteriv;
+#define glPointParameteriv biz_glPointParameteriv
+extern BizOGL::GLFunctor<void (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)> biz_glBlendColor;
+#define glBlendColor biz_glBlendColor
+extern BizOGL::GLFunctor<void (GLenum mode)> biz_glBlendEquation;
+#define glBlendEquation biz_glBlendEquation
 
 #define GL_VERSION_1_5 1
-typedef void (*PFNGLGENQUERIESPROC)(GLsizei n, GLuint *ids);
-GLAPI PFNGLGENQUERIESPROC biz_glGenQueries;
-#define glGenQueries(...) WRAP_PFN(biz_glGenQueries, __VA_ARGS__)
-typedef void (*PFNGLDELETEQUERIESPROC)(GLsizei n, const GLuint *ids);
-GLAPI PFNGLDELETEQUERIESPROC biz_glDeleteQueries;
-#define glDeleteQueries(...) WRAP_PFN(biz_glDeleteQueries, __VA_ARGS__)
-typedef GLboolean (*PFNGLISQUERYPROC)(GLuint id);
-GLAPI PFNGLISQUERYPROC biz_glIsQuery;
-#define glIsQuery(...) WRAP_PFN(biz_glIsQuery, __VA_ARGS__)
-typedef void (*PFNGLBEGINQUERYPROC)(GLenum target, GLuint id);
-GLAPI PFNGLBEGINQUERYPROC biz_glBeginQuery;
-#define glBeginQuery(...) WRAP_PFN(biz_glBeginQuery, __VA_ARGS__)
-typedef void (*PFNGLENDQUERYPROC)(GLenum target);
-GLAPI PFNGLENDQUERYPROC biz_glEndQuery;
-#define glEndQuery(...) WRAP_PFN(biz_glEndQuery, __VA_ARGS__)
-typedef void (*PFNGLGETQUERYIVPROC)(GLenum target, GLenum pname, GLint *params);
-GLAPI PFNGLGETQUERYIVPROC biz_glGetQueryiv;
-#define glGetQueryiv(...) WRAP_PFN(biz_glGetQueryiv, __VA_ARGS__)
-typedef void (*PFNGLGETQUERYOBJECTIVPROC)(GLuint id, GLenum pname, GLint *params);
-GLAPI PFNGLGETQUERYOBJECTIVPROC biz_glGetQueryObjectiv;
-#define glGetQueryObjectiv(...) WRAP_PFN(biz_glGetQueryObjectiv, __VA_ARGS__)
-typedef void (*PFNGLGETQUERYOBJECTUIVPROC)(GLuint id, GLenum pname, GLuint *params);
-GLAPI PFNGLGETQUERYOBJECTUIVPROC biz_glGetQueryObjectuiv;
-#define glGetQueryObjectuiv(...) WRAP_PFN(biz_glGetQueryObjectuiv, __VA_ARGS__)
-typedef void (*PFNGLBINDBUFFERPROC)(GLenum target, GLuint buffer);
-GLAPI PFNGLBINDBUFFERPROC biz_glBindBuffer;
-#define glBindBuffer(...) WRAP_PFN(biz_glBindBuffer, __VA_ARGS__)
-typedef void (*PFNGLDELETEBUFFERSPROC)(GLsizei n, const GLuint *buffers);
-GLAPI PFNGLDELETEBUFFERSPROC biz_glDeleteBuffers;
-#define glDeleteBuffers(...) WRAP_PFN(biz_glDeleteBuffers, __VA_ARGS__)
-typedef void (*PFNGLGENBUFFERSPROC)(GLsizei n, GLuint *buffers);
-GLAPI PFNGLGENBUFFERSPROC biz_glGenBuffers;
-#define glGenBuffers(...) WRAP_PFN(biz_glGenBuffers, __VA_ARGS__)
-typedef GLboolean (*PFNGLISBUFFERPROC)(GLuint buffer);
-GLAPI PFNGLISBUFFERPROC biz_glIsBuffer;
-#define glIsBuffer(...) WRAP_PFN(biz_glIsBuffer, __VA_ARGS__)
-typedef void (*PFNGLBUFFERDATAPROC)(GLenum target, GLsizeiptr size, const void *data, GLenum usage);
-GLAPI PFNGLBUFFERDATAPROC biz_glBufferData;
-#define glBufferData(...) WRAP_PFN(biz_glBufferData, __VA_ARGS__)
-typedef void (*PFNGLBUFFERSUBDATAPROC)(GLenum target, GLintptr offset, GLsizeiptr size, const void *data);
-GLAPI PFNGLBUFFERSUBDATAPROC biz_glBufferSubData;
-#define glBufferSubData(...) WRAP_PFN(biz_glBufferSubData, __VA_ARGS__)
-typedef void (*PFNGLGETBUFFERSUBDATAPROC)(GLenum target, GLintptr offset, GLsizeiptr size, void *data);
-GLAPI PFNGLGETBUFFERSUBDATAPROC biz_glGetBufferSubData;
-#define glGetBufferSubData(...) WRAP_PFN(biz_glGetBufferSubData, __VA_ARGS__)
-typedef void * (*PFNGLMAPBUFFERPROC)(GLenum target, GLenum access);
-GLAPI PFNGLMAPBUFFERPROC biz_glMapBuffer;
-#define glMapBuffer(...) WRAP_PFN(biz_glMapBuffer, __VA_ARGS__)
-typedef GLboolean (*PFNGLUNMAPBUFFERPROC)(GLenum target);
-GLAPI PFNGLUNMAPBUFFERPROC biz_glUnmapBuffer;
-#define glUnmapBuffer(...) WRAP_PFN(biz_glUnmapBuffer, __VA_ARGS__)
-typedef void (*PFNGLGETBUFFERPARAMETERIVPROC)(GLenum target, GLenum pname, GLint *params);
-GLAPI PFNGLGETBUFFERPARAMETERIVPROC biz_glGetBufferParameteriv;
-#define glGetBufferParameteriv(...) WRAP_PFN(biz_glGetBufferParameteriv, __VA_ARGS__)
-typedef void (*PFNGLGETBUFFERPOINTERVPROC)(GLenum target, GLenum pname, void **params);
-GLAPI PFNGLGETBUFFERPOINTERVPROC biz_glGetBufferPointerv;
-#define glGetBufferPointerv(...) WRAP_PFN(biz_glGetBufferPointerv, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLsizei n, GLuint *ids)> biz_glGenQueries;
+#define glGenQueries biz_glGenQueries
+extern BizOGL::GLFunctor<void (GLsizei n, const GLuint *ids)> biz_glDeleteQueries;
+#define glDeleteQueries biz_glDeleteQueries
+extern BizOGL::GLFunctor<GLboolean (GLuint id)> biz_glIsQuery;
+#define glIsQuery biz_glIsQuery
+extern BizOGL::GLFunctor<void (GLenum target, GLuint id)> biz_glBeginQuery;
+#define glBeginQuery biz_glBeginQuery
+extern BizOGL::GLFunctor<void (GLenum target)> biz_glEndQuery;
+#define glEndQuery biz_glEndQuery
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, GLint *params)> biz_glGetQueryiv;
+#define glGetQueryiv biz_glGetQueryiv
+extern BizOGL::GLFunctor<void (GLuint id, GLenum pname, GLint *params)> biz_glGetQueryObjectiv;
+#define glGetQueryObjectiv biz_glGetQueryObjectiv
+extern BizOGL::GLFunctor<void (GLuint id, GLenum pname, GLuint *params)> biz_glGetQueryObjectuiv;
+#define glGetQueryObjectuiv biz_glGetQueryObjectuiv
+extern BizOGL::GLFunctor<void (GLenum target, GLuint buffer)> biz_glBindBuffer;
+#define glBindBuffer biz_glBindBuffer
+extern BizOGL::GLFunctor<void (GLsizei n, const GLuint *buffers)> biz_glDeleteBuffers;
+#define glDeleteBuffers biz_glDeleteBuffers
+extern BizOGL::GLFunctor<void (GLsizei n, GLuint *buffers)> biz_glGenBuffers;
+#define glGenBuffers biz_glGenBuffers
+extern BizOGL::GLFunctor<GLboolean (GLuint buffer)> biz_glIsBuffer;
+#define glIsBuffer biz_glIsBuffer
+extern BizOGL::GLFunctor<void (GLenum target, GLsizeiptr size, const void *data, GLenum usage)> biz_glBufferData;
+#define glBufferData biz_glBufferData
+extern BizOGL::GLFunctor<void (GLenum target, GLintptr offset, GLsizeiptr size, const void *data)> biz_glBufferSubData;
+#define glBufferSubData biz_glBufferSubData
+extern BizOGL::GLFunctor<void (GLenum target, GLintptr offset, GLsizeiptr size, void *data)> biz_glGetBufferSubData;
+#define glGetBufferSubData biz_glGetBufferSubData
+extern BizOGL::GLFunctor<void * (GLenum target, GLenum access)> biz_glMapBuffer;
+#define glMapBuffer biz_glMapBuffer
+extern BizOGL::GLFunctor<GLboolean (GLenum target)> biz_glUnmapBuffer;
+#define glUnmapBuffer biz_glUnmapBuffer
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, GLint *params)> biz_glGetBufferParameteriv;
+#define glGetBufferParameteriv biz_glGetBufferParameteriv
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, void **params)> biz_glGetBufferPointerv;
+#define glGetBufferPointerv biz_glGetBufferPointerv
 
 #define GL_VERSION_2_0 1
-typedef void (*PFNGLBLENDEQUATIONSEPARATEPROC)(GLenum modeRGB, GLenum modeAlpha);
-GLAPI PFNGLBLENDEQUATIONSEPARATEPROC biz_glBlendEquationSeparate;
-#define glBlendEquationSeparate(...) WRAP_PFN(biz_glBlendEquationSeparate, __VA_ARGS__)
-typedef void (*PFNGLDRAWBUFFERSPROC)(GLsizei n, const GLenum *bufs);
-GLAPI PFNGLDRAWBUFFERSPROC biz_glDrawBuffers;
-#define glDrawBuffers(...) WRAP_PFN(biz_glDrawBuffers, __VA_ARGS__)
-typedef void (*PFNGLSTENCILOPSEPARATEPROC)(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
-GLAPI PFNGLSTENCILOPSEPARATEPROC biz_glStencilOpSeparate;
-#define glStencilOpSeparate(...) WRAP_PFN(biz_glStencilOpSeparate, __VA_ARGS__)
-typedef void (*PFNGLSTENCILFUNCSEPARATEPROC)(GLenum face, GLenum func, GLint ref, GLuint mask);
-GLAPI PFNGLSTENCILFUNCSEPARATEPROC biz_glStencilFuncSeparate;
-#define glStencilFuncSeparate(...) WRAP_PFN(biz_glStencilFuncSeparate, __VA_ARGS__)
-typedef void (*PFNGLSTENCILMASKSEPARATEPROC)(GLenum face, GLuint mask);
-GLAPI PFNGLSTENCILMASKSEPARATEPROC biz_glStencilMaskSeparate;
-#define glStencilMaskSeparate(...) WRAP_PFN(biz_glStencilMaskSeparate, __VA_ARGS__)
-typedef void (*PFNGLATTACHSHADERPROC)(GLuint program, GLuint shader);
-GLAPI PFNGLATTACHSHADERPROC biz_glAttachShader;
-#define glAttachShader(...) WRAP_PFN(biz_glAttachShader, __VA_ARGS__)
-typedef void (*PFNGLBINDATTRIBLOCATIONPROC)(GLuint program, GLuint index, const GLchar *name);
-GLAPI PFNGLBINDATTRIBLOCATIONPROC biz_glBindAttribLocation;
-#define glBindAttribLocation(...) WRAP_PFN(biz_glBindAttribLocation, __VA_ARGS__)
-typedef void (*PFNGLCOMPILESHADERPROC)(GLuint shader);
-GLAPI PFNGLCOMPILESHADERPROC biz_glCompileShader;
-#define glCompileShader(...) WRAP_PFN(biz_glCompileShader, __VA_ARGS__)
-typedef GLuint (*PFNGLCREATEPROGRAMPROC)(void);
-GLAPI PFNGLCREATEPROGRAMPROC biz_glCreateProgram;
-#define glCreateProgram(...) WRAP_PFN(biz_glCreateProgram, __VA_ARGS__)
-typedef GLuint (*PFNGLCREATESHADERPROC)(GLenum type);
-GLAPI PFNGLCREATESHADERPROC biz_glCreateShader;
-#define glCreateShader(...) WRAP_PFN(biz_glCreateShader, __VA_ARGS__)
-typedef void (*PFNGLDELETEPROGRAMPROC)(GLuint program);
-GLAPI PFNGLDELETEPROGRAMPROC biz_glDeleteProgram;
-#define glDeleteProgram(...) WRAP_PFN(biz_glDeleteProgram, __VA_ARGS__)
-typedef void (*PFNGLDELETESHADERPROC)(GLuint shader);
-GLAPI PFNGLDELETESHADERPROC biz_glDeleteShader;
-#define glDeleteShader(...) WRAP_PFN(biz_glDeleteShader, __VA_ARGS__)
-typedef void (*PFNGLDETACHSHADERPROC)(GLuint program, GLuint shader);
-GLAPI PFNGLDETACHSHADERPROC biz_glDetachShader;
-#define glDetachShader(...) WRAP_PFN(biz_glDetachShader, __VA_ARGS__)
-typedef void (*PFNGLDISABLEVERTEXATTRIBARRAYPROC)(GLuint index);
-GLAPI PFNGLDISABLEVERTEXATTRIBARRAYPROC biz_glDisableVertexAttribArray;
-#define glDisableVertexAttribArray(...) WRAP_PFN(biz_glDisableVertexAttribArray, __VA_ARGS__)
-typedef void (*PFNGLENABLEVERTEXATTRIBARRAYPROC)(GLuint index);
-GLAPI PFNGLENABLEVERTEXATTRIBARRAYPROC biz_glEnableVertexAttribArray;
-#define glEnableVertexAttribArray(...) WRAP_PFN(biz_glEnableVertexAttribArray, __VA_ARGS__)
-typedef void (*PFNGLGETACTIVEATTRIBPROC)(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
-GLAPI PFNGLGETACTIVEATTRIBPROC biz_glGetActiveAttrib;
-#define glGetActiveAttrib(...) WRAP_PFN(biz_glGetActiveAttrib, __VA_ARGS__)
-typedef void (*PFNGLGETACTIVEUNIFORMPROC)(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
-GLAPI PFNGLGETACTIVEUNIFORMPROC biz_glGetActiveUniform;
-#define glGetActiveUniform(...) WRAP_PFN(biz_glGetActiveUniform, __VA_ARGS__)
-typedef void (*PFNGLGETATTACHEDSHADERSPROC)(GLuint program, GLsizei maxCount, GLsizei *count, GLuint *shaders);
-GLAPI PFNGLGETATTACHEDSHADERSPROC biz_glGetAttachedShaders;
-#define glGetAttachedShaders(...) WRAP_PFN(biz_glGetAttachedShaders, __VA_ARGS__)
-typedef GLint (*PFNGLGETATTRIBLOCATIONPROC)(GLuint program, const GLchar *name);
-GLAPI PFNGLGETATTRIBLOCATIONPROC biz_glGetAttribLocation;
-#define glGetAttribLocation(...) WRAP_PFN(biz_glGetAttribLocation, __VA_ARGS__)
-typedef void (*PFNGLGETPROGRAMIVPROC)(GLuint program, GLenum pname, GLint *params);
-GLAPI PFNGLGETPROGRAMIVPROC biz_glGetProgramiv;
-#define glGetProgramiv(...) WRAP_PFN(biz_glGetProgramiv, __VA_ARGS__)
-typedef void (*PFNGLGETPROGRAMINFOLOGPROC)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-GLAPI PFNGLGETPROGRAMINFOLOGPROC biz_glGetProgramInfoLog;
-#define glGetProgramInfoLog(...) WRAP_PFN(biz_glGetProgramInfoLog, __VA_ARGS__)
-typedef void (*PFNGLGETSHADERIVPROC)(GLuint shader, GLenum pname, GLint *params);
-GLAPI PFNGLGETSHADERIVPROC biz_glGetShaderiv;
-#define glGetShaderiv(...) WRAP_PFN(biz_glGetShaderiv, __VA_ARGS__)
-typedef void (*PFNGLGETSHADERINFOLOGPROC)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-GLAPI PFNGLGETSHADERINFOLOGPROC biz_glGetShaderInfoLog;
-#define glGetShaderInfoLog(...) WRAP_PFN(biz_glGetShaderInfoLog, __VA_ARGS__)
-typedef void (*PFNGLGETSHADERSOURCEPROC)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source);
-GLAPI PFNGLGETSHADERSOURCEPROC biz_glGetShaderSource;
-#define glGetShaderSource(...) WRAP_PFN(biz_glGetShaderSource, __VA_ARGS__)
-typedef GLint (*PFNGLGETUNIFORMLOCATIONPROC)(GLuint program, const GLchar *name);
-GLAPI PFNGLGETUNIFORMLOCATIONPROC biz_glGetUniformLocation;
-#define glGetUniformLocation(...) WRAP_PFN(biz_glGetUniformLocation, __VA_ARGS__)
-typedef void (*PFNGLGETUNIFORMFVPROC)(GLuint program, GLint location, GLfloat *params);
-GLAPI PFNGLGETUNIFORMFVPROC biz_glGetUniformfv;
-#define glGetUniformfv(...) WRAP_PFN(biz_glGetUniformfv, __VA_ARGS__)
-typedef void (*PFNGLGETUNIFORMIVPROC)(GLuint program, GLint location, GLint *params);
-GLAPI PFNGLGETUNIFORMIVPROC biz_glGetUniformiv;
-#define glGetUniformiv(...) WRAP_PFN(biz_glGetUniformiv, __VA_ARGS__)
-typedef void (*PFNGLGETVERTEXATTRIBDVPROC)(GLuint index, GLenum pname, GLdouble *params);
-GLAPI PFNGLGETVERTEXATTRIBDVPROC biz_glGetVertexAttribdv;
-#define glGetVertexAttribdv(...) WRAP_PFN(biz_glGetVertexAttribdv, __VA_ARGS__)
-typedef void (*PFNGLGETVERTEXATTRIBFVPROC)(GLuint index, GLenum pname, GLfloat *params);
-GLAPI PFNGLGETVERTEXATTRIBFVPROC biz_glGetVertexAttribfv;
-#define glGetVertexAttribfv(...) WRAP_PFN(biz_glGetVertexAttribfv, __VA_ARGS__)
-typedef void (*PFNGLGETVERTEXATTRIBIVPROC)(GLuint index, GLenum pname, GLint *params);
-GLAPI PFNGLGETVERTEXATTRIBIVPROC biz_glGetVertexAttribiv;
-#define glGetVertexAttribiv(...) WRAP_PFN(biz_glGetVertexAttribiv, __VA_ARGS__)
-typedef void (*PFNGLGETVERTEXATTRIBPOINTERVPROC)(GLuint index, GLenum pname, void **pointer);
-GLAPI PFNGLGETVERTEXATTRIBPOINTERVPROC biz_glGetVertexAttribPointerv;
-#define glGetVertexAttribPointerv(...) WRAP_PFN(biz_glGetVertexAttribPointerv, __VA_ARGS__)
-typedef GLboolean (*PFNGLISPROGRAMPROC)(GLuint program);
-GLAPI PFNGLISPROGRAMPROC biz_glIsProgram;
-#define glIsProgram(...) WRAP_PFN(biz_glIsProgram, __VA_ARGS__)
-typedef GLboolean (*PFNGLISSHADERPROC)(GLuint shader);
-GLAPI PFNGLISSHADERPROC biz_glIsShader;
-#define glIsShader(...) WRAP_PFN(biz_glIsShader, __VA_ARGS__)
-typedef void (*PFNGLLINKPROGRAMPROC)(GLuint program);
-GLAPI PFNGLLINKPROGRAMPROC biz_glLinkProgram;
-#define glLinkProgram(...) WRAP_PFN(biz_glLinkProgram, __VA_ARGS__)
-typedef void (*PFNGLSHADERSOURCEPROC)(GLuint shader, GLsizei count, const GLchar *const*string, const GLint *length);
-GLAPI PFNGLSHADERSOURCEPROC biz_glShaderSource;
-#define glShaderSource(...) WRAP_PFN(biz_glShaderSource, __VA_ARGS__)
-typedef void (*PFNGLUSEPROGRAMPROC)(GLuint program);
-GLAPI PFNGLUSEPROGRAMPROC biz_glUseProgram;
-#define glUseProgram(...) WRAP_PFN(biz_glUseProgram, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM1FPROC)(GLint location, GLfloat v0);
-GLAPI PFNGLUNIFORM1FPROC biz_glUniform1f;
-#define glUniform1f(...) WRAP_PFN(biz_glUniform1f, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM2FPROC)(GLint location, GLfloat v0, GLfloat v1);
-GLAPI PFNGLUNIFORM2FPROC biz_glUniform2f;
-#define glUniform2f(...) WRAP_PFN(biz_glUniform2f, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM3FPROC)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
-GLAPI PFNGLUNIFORM3FPROC biz_glUniform3f;
-#define glUniform3f(...) WRAP_PFN(biz_glUniform3f, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM4FPROC)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
-GLAPI PFNGLUNIFORM4FPROC biz_glUniform4f;
-#define glUniform4f(...) WRAP_PFN(biz_glUniform4f, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM1IPROC)(GLint location, GLint v0);
-GLAPI PFNGLUNIFORM1IPROC biz_glUniform1i;
-#define glUniform1i(...) WRAP_PFN(biz_glUniform1i, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM2IPROC)(GLint location, GLint v0, GLint v1);
-GLAPI PFNGLUNIFORM2IPROC biz_glUniform2i;
-#define glUniform2i(...) WRAP_PFN(biz_glUniform2i, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM3IPROC)(GLint location, GLint v0, GLint v1, GLint v2);
-GLAPI PFNGLUNIFORM3IPROC biz_glUniform3i;
-#define glUniform3i(...) WRAP_PFN(biz_glUniform3i, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM4IPROC)(GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
-GLAPI PFNGLUNIFORM4IPROC biz_glUniform4i;
-#define glUniform4i(...) WRAP_PFN(biz_glUniform4i, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM1FVPROC)(GLint location, GLsizei count, const GLfloat *value);
-GLAPI PFNGLUNIFORM1FVPROC biz_glUniform1fv;
-#define glUniform1fv(...) WRAP_PFN(biz_glUniform1fv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM2FVPROC)(GLint location, GLsizei count, const GLfloat *value);
-GLAPI PFNGLUNIFORM2FVPROC biz_glUniform2fv;
-#define glUniform2fv(...) WRAP_PFN(biz_glUniform2fv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM3FVPROC)(GLint location, GLsizei count, const GLfloat *value);
-GLAPI PFNGLUNIFORM3FVPROC biz_glUniform3fv;
-#define glUniform3fv(...) WRAP_PFN(biz_glUniform3fv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM4FVPROC)(GLint location, GLsizei count, const GLfloat *value);
-GLAPI PFNGLUNIFORM4FVPROC biz_glUniform4fv;
-#define glUniform4fv(...) WRAP_PFN(biz_glUniform4fv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM1IVPROC)(GLint location, GLsizei count, const GLint *value);
-GLAPI PFNGLUNIFORM1IVPROC biz_glUniform1iv;
-#define glUniform1iv(...) WRAP_PFN(biz_glUniform1iv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM2IVPROC)(GLint location, GLsizei count, const GLint *value);
-GLAPI PFNGLUNIFORM2IVPROC biz_glUniform2iv;
-#define glUniform2iv(...) WRAP_PFN(biz_glUniform2iv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM3IVPROC)(GLint location, GLsizei count, const GLint *value);
-GLAPI PFNGLUNIFORM3IVPROC biz_glUniform3iv;
-#define glUniform3iv(...) WRAP_PFN(biz_glUniform3iv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM4IVPROC)(GLint location, GLsizei count, const GLint *value);
-GLAPI PFNGLUNIFORM4IVPROC biz_glUniform4iv;
-#define glUniform4iv(...) WRAP_PFN(biz_glUniform4iv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX2FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLUNIFORMMATRIX2FVPROC biz_glUniformMatrix2fv;
-#define glUniformMatrix2fv(...) WRAP_PFN(biz_glUniformMatrix2fv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX3FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLUNIFORMMATRIX3FVPROC biz_glUniformMatrix3fv;
-#define glUniformMatrix3fv(...) WRAP_PFN(biz_glUniformMatrix3fv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX4FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLUNIFORMMATRIX4FVPROC biz_glUniformMatrix4fv;
-#define glUniformMatrix4fv(...) WRAP_PFN(biz_glUniformMatrix4fv, __VA_ARGS__)
-typedef void (*PFNGLVALIDATEPROGRAMPROC)(GLuint program);
-GLAPI PFNGLVALIDATEPROGRAMPROC biz_glValidateProgram;
-#define glValidateProgram(...) WRAP_PFN(biz_glValidateProgram, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB1DPROC)(GLuint index, GLdouble x);
-GLAPI PFNGLVERTEXATTRIB1DPROC biz_glVertexAttrib1d;
-#define glVertexAttrib1d(...) WRAP_PFN(biz_glVertexAttrib1d, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB1DVPROC)(GLuint index, const GLdouble *v);
-GLAPI PFNGLVERTEXATTRIB1DVPROC biz_glVertexAttrib1dv;
-#define glVertexAttrib1dv(...) WRAP_PFN(biz_glVertexAttrib1dv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB1FPROC)(GLuint index, GLfloat x);
-GLAPI PFNGLVERTEXATTRIB1FPROC biz_glVertexAttrib1f;
-#define glVertexAttrib1f(...) WRAP_PFN(biz_glVertexAttrib1f, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB1FVPROC)(GLuint index, const GLfloat *v);
-GLAPI PFNGLVERTEXATTRIB1FVPROC biz_glVertexAttrib1fv;
-#define glVertexAttrib1fv(...) WRAP_PFN(biz_glVertexAttrib1fv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB1SPROC)(GLuint index, GLshort x);
-GLAPI PFNGLVERTEXATTRIB1SPROC biz_glVertexAttrib1s;
-#define glVertexAttrib1s(...) WRAP_PFN(biz_glVertexAttrib1s, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB1SVPROC)(GLuint index, const GLshort *v);
-GLAPI PFNGLVERTEXATTRIB1SVPROC biz_glVertexAttrib1sv;
-#define glVertexAttrib1sv(...) WRAP_PFN(biz_glVertexAttrib1sv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB2DPROC)(GLuint index, GLdouble x, GLdouble y);
-GLAPI PFNGLVERTEXATTRIB2DPROC biz_glVertexAttrib2d;
-#define glVertexAttrib2d(...) WRAP_PFN(biz_glVertexAttrib2d, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB2DVPROC)(GLuint index, const GLdouble *v);
-GLAPI PFNGLVERTEXATTRIB2DVPROC biz_glVertexAttrib2dv;
-#define glVertexAttrib2dv(...) WRAP_PFN(biz_glVertexAttrib2dv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB2FPROC)(GLuint index, GLfloat x, GLfloat y);
-GLAPI PFNGLVERTEXATTRIB2FPROC biz_glVertexAttrib2f;
-#define glVertexAttrib2f(...) WRAP_PFN(biz_glVertexAttrib2f, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB2FVPROC)(GLuint index, const GLfloat *v);
-GLAPI PFNGLVERTEXATTRIB2FVPROC biz_glVertexAttrib2fv;
-#define glVertexAttrib2fv(...) WRAP_PFN(biz_glVertexAttrib2fv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB2SPROC)(GLuint index, GLshort x, GLshort y);
-GLAPI PFNGLVERTEXATTRIB2SPROC biz_glVertexAttrib2s;
-#define glVertexAttrib2s(...) WRAP_PFN(biz_glVertexAttrib2s, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB2SVPROC)(GLuint index, const GLshort *v);
-GLAPI PFNGLVERTEXATTRIB2SVPROC biz_glVertexAttrib2sv;
-#define glVertexAttrib2sv(...) WRAP_PFN(biz_glVertexAttrib2sv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB3DPROC)(GLuint index, GLdouble x, GLdouble y, GLdouble z);
-GLAPI PFNGLVERTEXATTRIB3DPROC biz_glVertexAttrib3d;
-#define glVertexAttrib3d(...) WRAP_PFN(biz_glVertexAttrib3d, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB3DVPROC)(GLuint index, const GLdouble *v);
-GLAPI PFNGLVERTEXATTRIB3DVPROC biz_glVertexAttrib3dv;
-#define glVertexAttrib3dv(...) WRAP_PFN(biz_glVertexAttrib3dv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB3FPROC)(GLuint index, GLfloat x, GLfloat y, GLfloat z);
-GLAPI PFNGLVERTEXATTRIB3FPROC biz_glVertexAttrib3f;
-#define glVertexAttrib3f(...) WRAP_PFN(biz_glVertexAttrib3f, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB3FVPROC)(GLuint index, const GLfloat *v);
-GLAPI PFNGLVERTEXATTRIB3FVPROC biz_glVertexAttrib3fv;
-#define glVertexAttrib3fv(...) WRAP_PFN(biz_glVertexAttrib3fv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB3SPROC)(GLuint index, GLshort x, GLshort y, GLshort z);
-GLAPI PFNGLVERTEXATTRIB3SPROC biz_glVertexAttrib3s;
-#define glVertexAttrib3s(...) WRAP_PFN(biz_glVertexAttrib3s, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB3SVPROC)(GLuint index, const GLshort *v);
-GLAPI PFNGLVERTEXATTRIB3SVPROC biz_glVertexAttrib3sv;
-#define glVertexAttrib3sv(...) WRAP_PFN(biz_glVertexAttrib3sv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4NBVPROC)(GLuint index, const GLbyte *v);
-GLAPI PFNGLVERTEXATTRIB4NBVPROC biz_glVertexAttrib4Nbv;
-#define glVertexAttrib4Nbv(...) WRAP_PFN(biz_glVertexAttrib4Nbv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4NIVPROC)(GLuint index, const GLint *v);
-GLAPI PFNGLVERTEXATTRIB4NIVPROC biz_glVertexAttrib4Niv;
-#define glVertexAttrib4Niv(...) WRAP_PFN(biz_glVertexAttrib4Niv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4NSVPROC)(GLuint index, const GLshort *v);
-GLAPI PFNGLVERTEXATTRIB4NSVPROC biz_glVertexAttrib4Nsv;
-#define glVertexAttrib4Nsv(...) WRAP_PFN(biz_glVertexAttrib4Nsv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4NUBPROC)(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
-GLAPI PFNGLVERTEXATTRIB4NUBPROC biz_glVertexAttrib4Nub;
-#define glVertexAttrib4Nub(...) WRAP_PFN(biz_glVertexAttrib4Nub, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4NUBVPROC)(GLuint index, const GLubyte *v);
-GLAPI PFNGLVERTEXATTRIB4NUBVPROC biz_glVertexAttrib4Nubv;
-#define glVertexAttrib4Nubv(...) WRAP_PFN(biz_glVertexAttrib4Nubv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4NUIVPROC)(GLuint index, const GLuint *v);
-GLAPI PFNGLVERTEXATTRIB4NUIVPROC biz_glVertexAttrib4Nuiv;
-#define glVertexAttrib4Nuiv(...) WRAP_PFN(biz_glVertexAttrib4Nuiv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4NUSVPROC)(GLuint index, const GLushort *v);
-GLAPI PFNGLVERTEXATTRIB4NUSVPROC biz_glVertexAttrib4Nusv;
-#define glVertexAttrib4Nusv(...) WRAP_PFN(biz_glVertexAttrib4Nusv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4BVPROC)(GLuint index, const GLbyte *v);
-GLAPI PFNGLVERTEXATTRIB4BVPROC biz_glVertexAttrib4bv;
-#define glVertexAttrib4bv(...) WRAP_PFN(biz_glVertexAttrib4bv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4DPROC)(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-GLAPI PFNGLVERTEXATTRIB4DPROC biz_glVertexAttrib4d;
-#define glVertexAttrib4d(...) WRAP_PFN(biz_glVertexAttrib4d, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4DVPROC)(GLuint index, const GLdouble *v);
-GLAPI PFNGLVERTEXATTRIB4DVPROC biz_glVertexAttrib4dv;
-#define glVertexAttrib4dv(...) WRAP_PFN(biz_glVertexAttrib4dv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4FPROC)(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-GLAPI PFNGLVERTEXATTRIB4FPROC biz_glVertexAttrib4f;
-#define glVertexAttrib4f(...) WRAP_PFN(biz_glVertexAttrib4f, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4FVPROC)(GLuint index, const GLfloat *v);
-GLAPI PFNGLVERTEXATTRIB4FVPROC biz_glVertexAttrib4fv;
-#define glVertexAttrib4fv(...) WRAP_PFN(biz_glVertexAttrib4fv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4IVPROC)(GLuint index, const GLint *v);
-GLAPI PFNGLVERTEXATTRIB4IVPROC biz_glVertexAttrib4iv;
-#define glVertexAttrib4iv(...) WRAP_PFN(biz_glVertexAttrib4iv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4SPROC)(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
-GLAPI PFNGLVERTEXATTRIB4SPROC biz_glVertexAttrib4s;
-#define glVertexAttrib4s(...) WRAP_PFN(biz_glVertexAttrib4s, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4SVPROC)(GLuint index, const GLshort *v);
-GLAPI PFNGLVERTEXATTRIB4SVPROC biz_glVertexAttrib4sv;
-#define glVertexAttrib4sv(...) WRAP_PFN(biz_glVertexAttrib4sv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4UBVPROC)(GLuint index, const GLubyte *v);
-GLAPI PFNGLVERTEXATTRIB4UBVPROC biz_glVertexAttrib4ubv;
-#define glVertexAttrib4ubv(...) WRAP_PFN(biz_glVertexAttrib4ubv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4UIVPROC)(GLuint index, const GLuint *v);
-GLAPI PFNGLVERTEXATTRIB4UIVPROC biz_glVertexAttrib4uiv;
-#define glVertexAttrib4uiv(...) WRAP_PFN(biz_glVertexAttrib4uiv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIB4USVPROC)(GLuint index, const GLushort *v);
-GLAPI PFNGLVERTEXATTRIB4USVPROC biz_glVertexAttrib4usv;
-#define glVertexAttrib4usv(...) WRAP_PFN(biz_glVertexAttrib4usv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBPOINTERPROC)(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer);
-GLAPI PFNGLVERTEXATTRIBPOINTERPROC biz_glVertexAttribPointer;
-#define glVertexAttribPointer(...) WRAP_PFN(biz_glVertexAttribPointer, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLenum modeRGB, GLenum modeAlpha)> biz_glBlendEquationSeparate;
+#define glBlendEquationSeparate biz_glBlendEquationSeparate
+extern BizOGL::GLFunctor<void (GLsizei n, const GLenum *bufs)> biz_glDrawBuffers;
+#define glDrawBuffers biz_glDrawBuffers
+extern BizOGL::GLFunctor<void (GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass)> biz_glStencilOpSeparate;
+#define glStencilOpSeparate biz_glStencilOpSeparate
+extern BizOGL::GLFunctor<void (GLenum face, GLenum func, GLint ref, GLuint mask)> biz_glStencilFuncSeparate;
+#define glStencilFuncSeparate biz_glStencilFuncSeparate
+extern BizOGL::GLFunctor<void (GLenum face, GLuint mask)> biz_glStencilMaskSeparate;
+#define glStencilMaskSeparate biz_glStencilMaskSeparate
+extern BizOGL::GLFunctor<void (GLuint program, GLuint shader)> biz_glAttachShader;
+#define glAttachShader biz_glAttachShader
+extern BizOGL::GLFunctor<void (GLuint program, GLuint index, const GLchar *name)> biz_glBindAttribLocation;
+#define glBindAttribLocation biz_glBindAttribLocation
+extern BizOGL::GLFunctor<void (GLuint shader)> biz_glCompileShader;
+#define glCompileShader biz_glCompileShader
+extern BizOGL::GLFunctor<GLuint (void)> biz_glCreateProgram;
+#define glCreateProgram biz_glCreateProgram
+extern BizOGL::GLFunctor<GLuint (GLenum type)> biz_glCreateShader;
+#define glCreateShader biz_glCreateShader
+extern BizOGL::GLFunctor<void (GLuint program)> biz_glDeleteProgram;
+#define glDeleteProgram biz_glDeleteProgram
+extern BizOGL::GLFunctor<void (GLuint shader)> biz_glDeleteShader;
+#define glDeleteShader biz_glDeleteShader
+extern BizOGL::GLFunctor<void (GLuint program, GLuint shader)> biz_glDetachShader;
+#define glDetachShader biz_glDetachShader
+extern BizOGL::GLFunctor<void (GLuint index)> biz_glDisableVertexAttribArray;
+#define glDisableVertexAttribArray biz_glDisableVertexAttribArray
+extern BizOGL::GLFunctor<void (GLuint index)> biz_glEnableVertexAttribArray;
+#define glEnableVertexAttribArray biz_glEnableVertexAttribArray
+extern BizOGL::GLFunctor<void (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name)> biz_glGetActiveAttrib;
+#define glGetActiveAttrib biz_glGetActiveAttrib
+extern BizOGL::GLFunctor<void (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name)> biz_glGetActiveUniform;
+#define glGetActiveUniform biz_glGetActiveUniform
+extern BizOGL::GLFunctor<void (GLuint program, GLsizei maxCount, GLsizei *count, GLuint *shaders)> biz_glGetAttachedShaders;
+#define glGetAttachedShaders biz_glGetAttachedShaders
+extern BizOGL::GLFunctor<GLint (GLuint program, const GLchar *name)> biz_glGetAttribLocation;
+#define glGetAttribLocation biz_glGetAttribLocation
+extern BizOGL::GLFunctor<void (GLuint program, GLenum pname, GLint *params)> biz_glGetProgramiv;
+#define glGetProgramiv biz_glGetProgramiv
+extern BizOGL::GLFunctor<void (GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog)> biz_glGetProgramInfoLog;
+#define glGetProgramInfoLog biz_glGetProgramInfoLog
+extern BizOGL::GLFunctor<void (GLuint shader, GLenum pname, GLint *params)> biz_glGetShaderiv;
+#define glGetShaderiv biz_glGetShaderiv
+extern BizOGL::GLFunctor<void (GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog)> biz_glGetShaderInfoLog;
+#define glGetShaderInfoLog biz_glGetShaderInfoLog
+extern BizOGL::GLFunctor<void (GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source)> biz_glGetShaderSource;
+#define glGetShaderSource biz_glGetShaderSource
+extern BizOGL::GLFunctor<GLint (GLuint program, const GLchar *name)> biz_glGetUniformLocation;
+#define glGetUniformLocation biz_glGetUniformLocation
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLfloat *params)> biz_glGetUniformfv;
+#define glGetUniformfv biz_glGetUniformfv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLint *params)> biz_glGetUniformiv;
+#define glGetUniformiv biz_glGetUniformiv
+extern BizOGL::GLFunctor<void (GLuint index, GLenum pname, GLdouble *params)> biz_glGetVertexAttribdv;
+#define glGetVertexAttribdv biz_glGetVertexAttribdv
+extern BizOGL::GLFunctor<void (GLuint index, GLenum pname, GLfloat *params)> biz_glGetVertexAttribfv;
+#define glGetVertexAttribfv biz_glGetVertexAttribfv
+extern BizOGL::GLFunctor<void (GLuint index, GLenum pname, GLint *params)> biz_glGetVertexAttribiv;
+#define glGetVertexAttribiv biz_glGetVertexAttribiv
+extern BizOGL::GLFunctor<void (GLuint index, GLenum pname, void **pointer)> biz_glGetVertexAttribPointerv;
+#define glGetVertexAttribPointerv biz_glGetVertexAttribPointerv
+extern BizOGL::GLFunctor<GLboolean (GLuint program)> biz_glIsProgram;
+#define glIsProgram biz_glIsProgram
+extern BizOGL::GLFunctor<GLboolean (GLuint shader)> biz_glIsShader;
+#define glIsShader biz_glIsShader
+extern BizOGL::GLFunctor<void (GLuint program)> biz_glLinkProgram;
+#define glLinkProgram biz_glLinkProgram
+extern BizOGL::GLFunctor<void (GLuint shader, GLsizei count, const GLchar *const*string, const GLint *length)> biz_glShaderSource;
+#define glShaderSource biz_glShaderSource
+extern BizOGL::GLFunctor<void (GLuint program)> biz_glUseProgram;
+#define glUseProgram biz_glUseProgram
+extern BizOGL::GLFunctor<void (GLint location, GLfloat v0)> biz_glUniform1f;
+#define glUniform1f biz_glUniform1f
+extern BizOGL::GLFunctor<void (GLint location, GLfloat v0, GLfloat v1)> biz_glUniform2f;
+#define glUniform2f biz_glUniform2f
+extern BizOGL::GLFunctor<void (GLint location, GLfloat v0, GLfloat v1, GLfloat v2)> biz_glUniform3f;
+#define glUniform3f biz_glUniform3f
+extern BizOGL::GLFunctor<void (GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)> biz_glUniform4f;
+#define glUniform4f biz_glUniform4f
+extern BizOGL::GLFunctor<void (GLint location, GLint v0)> biz_glUniform1i;
+#define glUniform1i biz_glUniform1i
+extern BizOGL::GLFunctor<void (GLint location, GLint v0, GLint v1)> biz_glUniform2i;
+#define glUniform2i biz_glUniform2i
+extern BizOGL::GLFunctor<void (GLint location, GLint v0, GLint v1, GLint v2)> biz_glUniform3i;
+#define glUniform3i biz_glUniform3i
+extern BizOGL::GLFunctor<void (GLint location, GLint v0, GLint v1, GLint v2, GLint v3)> biz_glUniform4i;
+#define glUniform4i biz_glUniform4i
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLfloat *value)> biz_glUniform1fv;
+#define glUniform1fv biz_glUniform1fv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLfloat *value)> biz_glUniform2fv;
+#define glUniform2fv biz_glUniform2fv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLfloat *value)> biz_glUniform3fv;
+#define glUniform3fv biz_glUniform3fv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLfloat *value)> biz_glUniform4fv;
+#define glUniform4fv biz_glUniform4fv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLint *value)> biz_glUniform1iv;
+#define glUniform1iv biz_glUniform1iv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLint *value)> biz_glUniform2iv;
+#define glUniform2iv biz_glUniform2iv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLint *value)> biz_glUniform3iv;
+#define glUniform3iv biz_glUniform3iv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLint *value)> biz_glUniform4iv;
+#define glUniform4iv biz_glUniform4iv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glUniformMatrix2fv;
+#define glUniformMatrix2fv biz_glUniformMatrix2fv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glUniformMatrix3fv;
+#define glUniformMatrix3fv biz_glUniformMatrix3fv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glUniformMatrix4fv;
+#define glUniformMatrix4fv biz_glUniformMatrix4fv
+extern BizOGL::GLFunctor<void (GLuint program)> biz_glValidateProgram;
+#define glValidateProgram biz_glValidateProgram
+extern BizOGL::GLFunctor<void (GLuint index, GLdouble x)> biz_glVertexAttrib1d;
+#define glVertexAttrib1d biz_glVertexAttrib1d
+extern BizOGL::GLFunctor<void (GLuint index, const GLdouble *v)> biz_glVertexAttrib1dv;
+#define glVertexAttrib1dv biz_glVertexAttrib1dv
+extern BizOGL::GLFunctor<void (GLuint index, GLfloat x)> biz_glVertexAttrib1f;
+#define glVertexAttrib1f biz_glVertexAttrib1f
+extern BizOGL::GLFunctor<void (GLuint index, const GLfloat *v)> biz_glVertexAttrib1fv;
+#define glVertexAttrib1fv biz_glVertexAttrib1fv
+extern BizOGL::GLFunctor<void (GLuint index, GLshort x)> biz_glVertexAttrib1s;
+#define glVertexAttrib1s biz_glVertexAttrib1s
+extern BizOGL::GLFunctor<void (GLuint index, const GLshort *v)> biz_glVertexAttrib1sv;
+#define glVertexAttrib1sv biz_glVertexAttrib1sv
+extern BizOGL::GLFunctor<void (GLuint index, GLdouble x, GLdouble y)> biz_glVertexAttrib2d;
+#define glVertexAttrib2d biz_glVertexAttrib2d
+extern BizOGL::GLFunctor<void (GLuint index, const GLdouble *v)> biz_glVertexAttrib2dv;
+#define glVertexAttrib2dv biz_glVertexAttrib2dv
+extern BizOGL::GLFunctor<void (GLuint index, GLfloat x, GLfloat y)> biz_glVertexAttrib2f;
+#define glVertexAttrib2f biz_glVertexAttrib2f
+extern BizOGL::GLFunctor<void (GLuint index, const GLfloat *v)> biz_glVertexAttrib2fv;
+#define glVertexAttrib2fv biz_glVertexAttrib2fv
+extern BizOGL::GLFunctor<void (GLuint index, GLshort x, GLshort y)> biz_glVertexAttrib2s;
+#define glVertexAttrib2s biz_glVertexAttrib2s
+extern BizOGL::GLFunctor<void (GLuint index, const GLshort *v)> biz_glVertexAttrib2sv;
+#define glVertexAttrib2sv biz_glVertexAttrib2sv
+extern BizOGL::GLFunctor<void (GLuint index, GLdouble x, GLdouble y, GLdouble z)> biz_glVertexAttrib3d;
+#define glVertexAttrib3d biz_glVertexAttrib3d
+extern BizOGL::GLFunctor<void (GLuint index, const GLdouble *v)> biz_glVertexAttrib3dv;
+#define glVertexAttrib3dv biz_glVertexAttrib3dv
+extern BizOGL::GLFunctor<void (GLuint index, GLfloat x, GLfloat y, GLfloat z)> biz_glVertexAttrib3f;
+#define glVertexAttrib3f biz_glVertexAttrib3f
+extern BizOGL::GLFunctor<void (GLuint index, const GLfloat *v)> biz_glVertexAttrib3fv;
+#define glVertexAttrib3fv biz_glVertexAttrib3fv
+extern BizOGL::GLFunctor<void (GLuint index, GLshort x, GLshort y, GLshort z)> biz_glVertexAttrib3s;
+#define glVertexAttrib3s biz_glVertexAttrib3s
+extern BizOGL::GLFunctor<void (GLuint index, const GLshort *v)> biz_glVertexAttrib3sv;
+#define glVertexAttrib3sv biz_glVertexAttrib3sv
+extern BizOGL::GLFunctor<void (GLuint index, const GLbyte *v)> biz_glVertexAttrib4Nbv;
+#define glVertexAttrib4Nbv biz_glVertexAttrib4Nbv
+extern BizOGL::GLFunctor<void (GLuint index, const GLint *v)> biz_glVertexAttrib4Niv;
+#define glVertexAttrib4Niv biz_glVertexAttrib4Niv
+extern BizOGL::GLFunctor<void (GLuint index, const GLshort *v)> biz_glVertexAttrib4Nsv;
+#define glVertexAttrib4Nsv biz_glVertexAttrib4Nsv
+extern BizOGL::GLFunctor<void (GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w)> biz_glVertexAttrib4Nub;
+#define glVertexAttrib4Nub biz_glVertexAttrib4Nub
+extern BizOGL::GLFunctor<void (GLuint index, const GLubyte *v)> biz_glVertexAttrib4Nubv;
+#define glVertexAttrib4Nubv biz_glVertexAttrib4Nubv
+extern BizOGL::GLFunctor<void (GLuint index, const GLuint *v)> biz_glVertexAttrib4Nuiv;
+#define glVertexAttrib4Nuiv biz_glVertexAttrib4Nuiv
+extern BizOGL::GLFunctor<void (GLuint index, const GLushort *v)> biz_glVertexAttrib4Nusv;
+#define glVertexAttrib4Nusv biz_glVertexAttrib4Nusv
+extern BizOGL::GLFunctor<void (GLuint index, const GLbyte *v)> biz_glVertexAttrib4bv;
+#define glVertexAttrib4bv biz_glVertexAttrib4bv
+extern BizOGL::GLFunctor<void (GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)> biz_glVertexAttrib4d;
+#define glVertexAttrib4d biz_glVertexAttrib4d
+extern BizOGL::GLFunctor<void (GLuint index, const GLdouble *v)> biz_glVertexAttrib4dv;
+#define glVertexAttrib4dv biz_glVertexAttrib4dv
+extern BizOGL::GLFunctor<void (GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w)> biz_glVertexAttrib4f;
+#define glVertexAttrib4f biz_glVertexAttrib4f
+extern BizOGL::GLFunctor<void (GLuint index, const GLfloat *v)> biz_glVertexAttrib4fv;
+#define glVertexAttrib4fv biz_glVertexAttrib4fv
+extern BizOGL::GLFunctor<void (GLuint index, const GLint *v)> biz_glVertexAttrib4iv;
+#define glVertexAttrib4iv biz_glVertexAttrib4iv
+extern BizOGL::GLFunctor<void (GLuint index, GLshort x, GLshort y, GLshort z, GLshort w)> biz_glVertexAttrib4s;
+#define glVertexAttrib4s biz_glVertexAttrib4s
+extern BizOGL::GLFunctor<void (GLuint index, const GLshort *v)> biz_glVertexAttrib4sv;
+#define glVertexAttrib4sv biz_glVertexAttrib4sv
+extern BizOGL::GLFunctor<void (GLuint index, const GLubyte *v)> biz_glVertexAttrib4ubv;
+#define glVertexAttrib4ubv biz_glVertexAttrib4ubv
+extern BizOGL::GLFunctor<void (GLuint index, const GLuint *v)> biz_glVertexAttrib4uiv;
+#define glVertexAttrib4uiv biz_glVertexAttrib4uiv
+extern BizOGL::GLFunctor<void (GLuint index, const GLushort *v)> biz_glVertexAttrib4usv;
+#define glVertexAttrib4usv biz_glVertexAttrib4usv
+extern BizOGL::GLFunctor<void (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer)> biz_glVertexAttribPointer;
+#define glVertexAttribPointer biz_glVertexAttribPointer
 
 #define GL_VERSION_2_1 1
-typedef void (*PFNGLUNIFORMMATRIX2X3FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLUNIFORMMATRIX2X3FVPROC biz_glUniformMatrix2x3fv;
-#define glUniformMatrix2x3fv(...) WRAP_PFN(biz_glUniformMatrix2x3fv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX3X2FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLUNIFORMMATRIX3X2FVPROC biz_glUniformMatrix3x2fv;
-#define glUniformMatrix3x2fv(...) WRAP_PFN(biz_glUniformMatrix3x2fv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX2X4FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLUNIFORMMATRIX2X4FVPROC biz_glUniformMatrix2x4fv;
-#define glUniformMatrix2x4fv(...) WRAP_PFN(biz_glUniformMatrix2x4fv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX4X2FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLUNIFORMMATRIX4X2FVPROC biz_glUniformMatrix4x2fv;
-#define glUniformMatrix4x2fv(...) WRAP_PFN(biz_glUniformMatrix4x2fv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX3X4FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLUNIFORMMATRIX3X4FVPROC biz_glUniformMatrix3x4fv;
-#define glUniformMatrix3x4fv(...) WRAP_PFN(biz_glUniformMatrix3x4fv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX4X3FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLUNIFORMMATRIX4X3FVPROC biz_glUniformMatrix4x3fv;
-#define glUniformMatrix4x3fv(...) WRAP_PFN(biz_glUniformMatrix4x3fv, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glUniformMatrix2x3fv;
+#define glUniformMatrix2x3fv biz_glUniformMatrix2x3fv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glUniformMatrix3x2fv;
+#define glUniformMatrix3x2fv biz_glUniformMatrix3x2fv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glUniformMatrix2x4fv;
+#define glUniformMatrix2x4fv biz_glUniformMatrix2x4fv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glUniformMatrix4x2fv;
+#define glUniformMatrix4x2fv biz_glUniformMatrix4x2fv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glUniformMatrix3x4fv;
+#define glUniformMatrix3x4fv biz_glUniformMatrix3x4fv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glUniformMatrix4x3fv;
+#define glUniformMatrix4x3fv biz_glUniformMatrix4x3fv
 
 #define GL_VERSION_3_0 1
-typedef void (*PFNGLCOLORMASKIPROC)(GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a);
-GLAPI PFNGLCOLORMASKIPROC biz_glColorMaski;
-#define glColorMaski(...) WRAP_PFN(biz_glColorMaski, __VA_ARGS__)
-typedef void (*PFNGLGETBOOLEANI_VPROC)(GLenum target, GLuint index, GLboolean *data);
-GLAPI PFNGLGETBOOLEANI_VPROC biz_glGetBooleani_v;
-#define glGetBooleani_v(...) WRAP_PFN(biz_glGetBooleani_v, __VA_ARGS__)
-typedef void (*PFNGLGETINTEGERI_VPROC)(GLenum target, GLuint index, GLint *data);
-GLAPI PFNGLGETINTEGERI_VPROC biz_glGetIntegeri_v;
-#define glGetIntegeri_v(...) WRAP_PFN(biz_glGetIntegeri_v, __VA_ARGS__)
-typedef void (*PFNGLENABLEIPROC)(GLenum target, GLuint index);
-GLAPI PFNGLENABLEIPROC biz_glEnablei;
-#define glEnablei(...) WRAP_PFN(biz_glEnablei, __VA_ARGS__)
-typedef void (*PFNGLDISABLEIPROC)(GLenum target, GLuint index);
-GLAPI PFNGLDISABLEIPROC biz_glDisablei;
-#define glDisablei(...) WRAP_PFN(biz_glDisablei, __VA_ARGS__)
-typedef GLboolean (*PFNGLISENABLEDIPROC)(GLenum target, GLuint index);
-GLAPI PFNGLISENABLEDIPROC biz_glIsEnabledi;
-#define glIsEnabledi(...) WRAP_PFN(biz_glIsEnabledi, __VA_ARGS__)
-typedef void (*PFNGLBEGINTRANSFORMFEEDBACKPROC)(GLenum primitiveMode);
-GLAPI PFNGLBEGINTRANSFORMFEEDBACKPROC biz_glBeginTransformFeedback;
-#define glBeginTransformFeedback(...) WRAP_PFN(biz_glBeginTransformFeedback, __VA_ARGS__)
-typedef void (*PFNGLENDTRANSFORMFEEDBACKPROC)(void);
-GLAPI PFNGLENDTRANSFORMFEEDBACKPROC biz_glEndTransformFeedback;
-#define glEndTransformFeedback(...) WRAP_PFN(biz_glEndTransformFeedback, __VA_ARGS__)
-typedef void (*PFNGLBINDBUFFERRANGEPROC)(GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
-GLAPI PFNGLBINDBUFFERRANGEPROC biz_glBindBufferRange;
-#define glBindBufferRange(...) WRAP_PFN(biz_glBindBufferRange, __VA_ARGS__)
-typedef void (*PFNGLBINDBUFFERBASEPROC)(GLenum target, GLuint index, GLuint buffer);
-GLAPI PFNGLBINDBUFFERBASEPROC biz_glBindBufferBase;
-#define glBindBufferBase(...) WRAP_PFN(biz_glBindBufferBase, __VA_ARGS__)
-typedef void (*PFNGLTRANSFORMFEEDBACKVARYINGSPROC)(GLuint program, GLsizei count, const GLchar *const*varyings, GLenum bufferMode);
-GLAPI PFNGLTRANSFORMFEEDBACKVARYINGSPROC biz_glTransformFeedbackVaryings;
-#define glTransformFeedbackVaryings(...) WRAP_PFN(biz_glTransformFeedbackVaryings, __VA_ARGS__)
-typedef void (*PFNGLGETTRANSFORMFEEDBACKVARYINGPROC)(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLsizei *size, GLenum *type, GLchar *name);
-GLAPI PFNGLGETTRANSFORMFEEDBACKVARYINGPROC biz_glGetTransformFeedbackVarying;
-#define glGetTransformFeedbackVarying(...) WRAP_PFN(biz_glGetTransformFeedbackVarying, __VA_ARGS__)
-typedef void (*PFNGLCLAMPCOLORPROC)(GLenum target, GLenum clamp);
-GLAPI PFNGLCLAMPCOLORPROC biz_glClampColor;
-#define glClampColor(...) WRAP_PFN(biz_glClampColor, __VA_ARGS__)
-typedef void (*PFNGLBEGINCONDITIONALRENDERPROC)(GLuint id, GLenum mode);
-GLAPI PFNGLBEGINCONDITIONALRENDERPROC biz_glBeginConditionalRender;
-#define glBeginConditionalRender(...) WRAP_PFN(biz_glBeginConditionalRender, __VA_ARGS__)
-typedef void (*PFNGLENDCONDITIONALRENDERPROC)(void);
-GLAPI PFNGLENDCONDITIONALRENDERPROC biz_glEndConditionalRender;
-#define glEndConditionalRender(...) WRAP_PFN(biz_glEndConditionalRender, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBIPOINTERPROC)(GLuint index, GLint size, GLenum type, GLsizei stride, const void *pointer);
-GLAPI PFNGLVERTEXATTRIBIPOINTERPROC biz_glVertexAttribIPointer;
-#define glVertexAttribIPointer(...) WRAP_PFN(biz_glVertexAttribIPointer, __VA_ARGS__)
-typedef void (*PFNGLGETVERTEXATTRIBIIVPROC)(GLuint index, GLenum pname, GLint *params);
-GLAPI PFNGLGETVERTEXATTRIBIIVPROC biz_glGetVertexAttribIiv;
-#define glGetVertexAttribIiv(...) WRAP_PFN(biz_glGetVertexAttribIiv, __VA_ARGS__)
-typedef void (*PFNGLGETVERTEXATTRIBIUIVPROC)(GLuint index, GLenum pname, GLuint *params);
-GLAPI PFNGLGETVERTEXATTRIBIUIVPROC biz_glGetVertexAttribIuiv;
-#define glGetVertexAttribIuiv(...) WRAP_PFN(biz_glGetVertexAttribIuiv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI1IPROC)(GLuint index, GLint x);
-GLAPI PFNGLVERTEXATTRIBI1IPROC biz_glVertexAttribI1i;
-#define glVertexAttribI1i(...) WRAP_PFN(biz_glVertexAttribI1i, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI2IPROC)(GLuint index, GLint x, GLint y);
-GLAPI PFNGLVERTEXATTRIBI2IPROC biz_glVertexAttribI2i;
-#define glVertexAttribI2i(...) WRAP_PFN(biz_glVertexAttribI2i, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI3IPROC)(GLuint index, GLint x, GLint y, GLint z);
-GLAPI PFNGLVERTEXATTRIBI3IPROC biz_glVertexAttribI3i;
-#define glVertexAttribI3i(...) WRAP_PFN(biz_glVertexAttribI3i, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI4IPROC)(GLuint index, GLint x, GLint y, GLint z, GLint w);
-GLAPI PFNGLVERTEXATTRIBI4IPROC biz_glVertexAttribI4i;
-#define glVertexAttribI4i(...) WRAP_PFN(biz_glVertexAttribI4i, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI1UIPROC)(GLuint index, GLuint x);
-GLAPI PFNGLVERTEXATTRIBI1UIPROC biz_glVertexAttribI1ui;
-#define glVertexAttribI1ui(...) WRAP_PFN(biz_glVertexAttribI1ui, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI2UIPROC)(GLuint index, GLuint x, GLuint y);
-GLAPI PFNGLVERTEXATTRIBI2UIPROC biz_glVertexAttribI2ui;
-#define glVertexAttribI2ui(...) WRAP_PFN(biz_glVertexAttribI2ui, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI3UIPROC)(GLuint index, GLuint x, GLuint y, GLuint z);
-GLAPI PFNGLVERTEXATTRIBI3UIPROC biz_glVertexAttribI3ui;
-#define glVertexAttribI3ui(...) WRAP_PFN(biz_glVertexAttribI3ui, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI4UIPROC)(GLuint index, GLuint x, GLuint y, GLuint z, GLuint w);
-GLAPI PFNGLVERTEXATTRIBI4UIPROC biz_glVertexAttribI4ui;
-#define glVertexAttribI4ui(...) WRAP_PFN(biz_glVertexAttribI4ui, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI1IVPROC)(GLuint index, const GLint *v);
-GLAPI PFNGLVERTEXATTRIBI1IVPROC biz_glVertexAttribI1iv;
-#define glVertexAttribI1iv(...) WRAP_PFN(biz_glVertexAttribI1iv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI2IVPROC)(GLuint index, const GLint *v);
-GLAPI PFNGLVERTEXATTRIBI2IVPROC biz_glVertexAttribI2iv;
-#define glVertexAttribI2iv(...) WRAP_PFN(biz_glVertexAttribI2iv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI3IVPROC)(GLuint index, const GLint *v);
-GLAPI PFNGLVERTEXATTRIBI3IVPROC biz_glVertexAttribI3iv;
-#define glVertexAttribI3iv(...) WRAP_PFN(biz_glVertexAttribI3iv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI4IVPROC)(GLuint index, const GLint *v);
-GLAPI PFNGLVERTEXATTRIBI4IVPROC biz_glVertexAttribI4iv;
-#define glVertexAttribI4iv(...) WRAP_PFN(biz_glVertexAttribI4iv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI1UIVPROC)(GLuint index, const GLuint *v);
-GLAPI PFNGLVERTEXATTRIBI1UIVPROC biz_glVertexAttribI1uiv;
-#define glVertexAttribI1uiv(...) WRAP_PFN(biz_glVertexAttribI1uiv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI2UIVPROC)(GLuint index, const GLuint *v);
-GLAPI PFNGLVERTEXATTRIBI2UIVPROC biz_glVertexAttribI2uiv;
-#define glVertexAttribI2uiv(...) WRAP_PFN(biz_glVertexAttribI2uiv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI3UIVPROC)(GLuint index, const GLuint *v);
-GLAPI PFNGLVERTEXATTRIBI3UIVPROC biz_glVertexAttribI3uiv;
-#define glVertexAttribI3uiv(...) WRAP_PFN(biz_glVertexAttribI3uiv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI4UIVPROC)(GLuint index, const GLuint *v);
-GLAPI PFNGLVERTEXATTRIBI4UIVPROC biz_glVertexAttribI4uiv;
-#define glVertexAttribI4uiv(...) WRAP_PFN(biz_glVertexAttribI4uiv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI4BVPROC)(GLuint index, const GLbyte *v);
-GLAPI PFNGLVERTEXATTRIBI4BVPROC biz_glVertexAttribI4bv;
-#define glVertexAttribI4bv(...) WRAP_PFN(biz_glVertexAttribI4bv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI4SVPROC)(GLuint index, const GLshort *v);
-GLAPI PFNGLVERTEXATTRIBI4SVPROC biz_glVertexAttribI4sv;
-#define glVertexAttribI4sv(...) WRAP_PFN(biz_glVertexAttribI4sv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI4UBVPROC)(GLuint index, const GLubyte *v);
-GLAPI PFNGLVERTEXATTRIBI4UBVPROC biz_glVertexAttribI4ubv;
-#define glVertexAttribI4ubv(...) WRAP_PFN(biz_glVertexAttribI4ubv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBI4USVPROC)(GLuint index, const GLushort *v);
-GLAPI PFNGLVERTEXATTRIBI4USVPROC biz_glVertexAttribI4usv;
-#define glVertexAttribI4usv(...) WRAP_PFN(biz_glVertexAttribI4usv, __VA_ARGS__)
-typedef void (*PFNGLGETUNIFORMUIVPROC)(GLuint program, GLint location, GLuint *params);
-GLAPI PFNGLGETUNIFORMUIVPROC biz_glGetUniformuiv;
-#define glGetUniformuiv(...) WRAP_PFN(biz_glGetUniformuiv, __VA_ARGS__)
-typedef void (*PFNGLBINDFRAGDATALOCATIONPROC)(GLuint program, GLuint color, const GLchar *name);
-GLAPI PFNGLBINDFRAGDATALOCATIONPROC biz_glBindFragDataLocation;
-#define glBindFragDataLocation(...) WRAP_PFN(biz_glBindFragDataLocation, __VA_ARGS__)
-typedef GLint (*PFNGLGETFRAGDATALOCATIONPROC)(GLuint program, const GLchar *name);
-GLAPI PFNGLGETFRAGDATALOCATIONPROC biz_glGetFragDataLocation;
-#define glGetFragDataLocation(...) WRAP_PFN(biz_glGetFragDataLocation, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM1UIPROC)(GLint location, GLuint v0);
-GLAPI PFNGLUNIFORM1UIPROC biz_glUniform1ui;
-#define glUniform1ui(...) WRAP_PFN(biz_glUniform1ui, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM2UIPROC)(GLint location, GLuint v0, GLuint v1);
-GLAPI PFNGLUNIFORM2UIPROC biz_glUniform2ui;
-#define glUniform2ui(...) WRAP_PFN(biz_glUniform2ui, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM3UIPROC)(GLint location, GLuint v0, GLuint v1, GLuint v2);
-GLAPI PFNGLUNIFORM3UIPROC biz_glUniform3ui;
-#define glUniform3ui(...) WRAP_PFN(biz_glUniform3ui, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM4UIPROC)(GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3);
-GLAPI PFNGLUNIFORM4UIPROC biz_glUniform4ui;
-#define glUniform4ui(...) WRAP_PFN(biz_glUniform4ui, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM1UIVPROC)(GLint location, GLsizei count, const GLuint *value);
-GLAPI PFNGLUNIFORM1UIVPROC biz_glUniform1uiv;
-#define glUniform1uiv(...) WRAP_PFN(biz_glUniform1uiv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM2UIVPROC)(GLint location, GLsizei count, const GLuint *value);
-GLAPI PFNGLUNIFORM2UIVPROC biz_glUniform2uiv;
-#define glUniform2uiv(...) WRAP_PFN(biz_glUniform2uiv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM3UIVPROC)(GLint location, GLsizei count, const GLuint *value);
-GLAPI PFNGLUNIFORM3UIVPROC biz_glUniform3uiv;
-#define glUniform3uiv(...) WRAP_PFN(biz_glUniform3uiv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM4UIVPROC)(GLint location, GLsizei count, const GLuint *value);
-GLAPI PFNGLUNIFORM4UIVPROC biz_glUniform4uiv;
-#define glUniform4uiv(...) WRAP_PFN(biz_glUniform4uiv, __VA_ARGS__)
-typedef void (*PFNGLTEXPARAMETERIIVPROC)(GLenum target, GLenum pname, const GLint *params);
-GLAPI PFNGLTEXPARAMETERIIVPROC biz_glTexParameterIiv;
-#define glTexParameterIiv(...) WRAP_PFN(biz_glTexParameterIiv, __VA_ARGS__)
-typedef void (*PFNGLTEXPARAMETERIUIVPROC)(GLenum target, GLenum pname, const GLuint *params);
-GLAPI PFNGLTEXPARAMETERIUIVPROC biz_glTexParameterIuiv;
-#define glTexParameterIuiv(...) WRAP_PFN(biz_glTexParameterIuiv, __VA_ARGS__)
-typedef void (*PFNGLGETTEXPARAMETERIIVPROC)(GLenum target, GLenum pname, GLint *params);
-GLAPI PFNGLGETTEXPARAMETERIIVPROC biz_glGetTexParameterIiv;
-#define glGetTexParameterIiv(...) WRAP_PFN(biz_glGetTexParameterIiv, __VA_ARGS__)
-typedef void (*PFNGLGETTEXPARAMETERIUIVPROC)(GLenum target, GLenum pname, GLuint *params);
-GLAPI PFNGLGETTEXPARAMETERIUIVPROC biz_glGetTexParameterIuiv;
-#define glGetTexParameterIuiv(...) WRAP_PFN(biz_glGetTexParameterIuiv, __VA_ARGS__)
-typedef void (*PFNGLCLEARBUFFERIVPROC)(GLenum buffer, GLint drawbuffer, const GLint *value);
-GLAPI PFNGLCLEARBUFFERIVPROC biz_glClearBufferiv;
-#define glClearBufferiv(...) WRAP_PFN(biz_glClearBufferiv, __VA_ARGS__)
-typedef void (*PFNGLCLEARBUFFERUIVPROC)(GLenum buffer, GLint drawbuffer, const GLuint *value);
-GLAPI PFNGLCLEARBUFFERUIVPROC biz_glClearBufferuiv;
-#define glClearBufferuiv(...) WRAP_PFN(biz_glClearBufferuiv, __VA_ARGS__)
-typedef void (*PFNGLCLEARBUFFERFVPROC)(GLenum buffer, GLint drawbuffer, const GLfloat *value);
-GLAPI PFNGLCLEARBUFFERFVPROC biz_glClearBufferfv;
-#define glClearBufferfv(...) WRAP_PFN(biz_glClearBufferfv, __VA_ARGS__)
-typedef void (*PFNGLCLEARBUFFERFIPROC)(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil);
-GLAPI PFNGLCLEARBUFFERFIPROC biz_glClearBufferfi;
-#define glClearBufferfi(...) WRAP_PFN(biz_glClearBufferfi, __VA_ARGS__)
-typedef const GLubyte * (*PFNGLGETSTRINGIPROC)(GLenum name, GLuint index);
-GLAPI PFNGLGETSTRINGIPROC biz_glGetStringi;
-#define glGetStringi(...) WRAP_PFN(biz_glGetStringi, __VA_ARGS__)
-typedef GLboolean (*PFNGLISRENDERBUFFERPROC)(GLuint renderbuffer);
-GLAPI PFNGLISRENDERBUFFERPROC biz_glIsRenderbuffer;
-#define glIsRenderbuffer(...) WRAP_PFN(biz_glIsRenderbuffer, __VA_ARGS__)
-typedef void (*PFNGLBINDRENDERBUFFERPROC)(GLenum target, GLuint renderbuffer);
-GLAPI PFNGLBINDRENDERBUFFERPROC biz_glBindRenderbuffer;
-#define glBindRenderbuffer(...) WRAP_PFN(biz_glBindRenderbuffer, __VA_ARGS__)
-typedef void (*PFNGLDELETERENDERBUFFERSPROC)(GLsizei n, const GLuint *renderbuffers);
-GLAPI PFNGLDELETERENDERBUFFERSPROC biz_glDeleteRenderbuffers;
-#define glDeleteRenderbuffers(...) WRAP_PFN(biz_glDeleteRenderbuffers, __VA_ARGS__)
-typedef void (*PFNGLGENRENDERBUFFERSPROC)(GLsizei n, GLuint *renderbuffers);
-GLAPI PFNGLGENRENDERBUFFERSPROC biz_glGenRenderbuffers;
-#define glGenRenderbuffers(...) WRAP_PFN(biz_glGenRenderbuffers, __VA_ARGS__)
-typedef void (*PFNGLRENDERBUFFERSTORAGEPROC)(GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
-GLAPI PFNGLRENDERBUFFERSTORAGEPROC biz_glRenderbufferStorage;
-#define glRenderbufferStorage(...) WRAP_PFN(biz_glRenderbufferStorage, __VA_ARGS__)
-typedef void (*PFNGLGETRENDERBUFFERPARAMETERIVPROC)(GLenum target, GLenum pname, GLint *params);
-GLAPI PFNGLGETRENDERBUFFERPARAMETERIVPROC biz_glGetRenderbufferParameteriv;
-#define glGetRenderbufferParameteriv(...) WRAP_PFN(biz_glGetRenderbufferParameteriv, __VA_ARGS__)
-typedef GLboolean (*PFNGLISFRAMEBUFFERPROC)(GLuint framebuffer);
-GLAPI PFNGLISFRAMEBUFFERPROC biz_glIsFramebuffer;
-#define glIsFramebuffer(...) WRAP_PFN(biz_glIsFramebuffer, __VA_ARGS__)
-typedef void (*PFNGLBINDFRAMEBUFFERPROC)(GLenum target, GLuint framebuffer);
-GLAPI PFNGLBINDFRAMEBUFFERPROC biz_glBindFramebuffer;
-#define glBindFramebuffer(...) WRAP_PFN(biz_glBindFramebuffer, __VA_ARGS__)
-typedef void (*PFNGLDELETEFRAMEBUFFERSPROC)(GLsizei n, const GLuint *framebuffers);
-GLAPI PFNGLDELETEFRAMEBUFFERSPROC biz_glDeleteFramebuffers;
-#define glDeleteFramebuffers(...) WRAP_PFN(biz_glDeleteFramebuffers, __VA_ARGS__)
-typedef void (*PFNGLGENFRAMEBUFFERSPROC)(GLsizei n, GLuint *framebuffers);
-GLAPI PFNGLGENFRAMEBUFFERSPROC biz_glGenFramebuffers;
-#define glGenFramebuffers(...) WRAP_PFN(biz_glGenFramebuffers, __VA_ARGS__)
-typedef GLenum (*PFNGLCHECKFRAMEBUFFERSTATUSPROC)(GLenum target);
-GLAPI PFNGLCHECKFRAMEBUFFERSTATUSPROC biz_glCheckFramebufferStatus;
-#define glCheckFramebufferStatus(...) WRAP_PFN(biz_glCheckFramebufferStatus, __VA_ARGS__)
-typedef void (*PFNGLFRAMEBUFFERTEXTURE1DPROC)(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
-GLAPI PFNGLFRAMEBUFFERTEXTURE1DPROC biz_glFramebufferTexture1D;
-#define glFramebufferTexture1D(...) WRAP_PFN(biz_glFramebufferTexture1D, __VA_ARGS__)
-typedef void (*PFNGLFRAMEBUFFERTEXTURE2DPROC)(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
-GLAPI PFNGLFRAMEBUFFERTEXTURE2DPROC biz_glFramebufferTexture2D;
-#define glFramebufferTexture2D(...) WRAP_PFN(biz_glFramebufferTexture2D, __VA_ARGS__)
-typedef void (*PFNGLFRAMEBUFFERTEXTURE3DPROC)(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint zoffset);
-GLAPI PFNGLFRAMEBUFFERTEXTURE3DPROC biz_glFramebufferTexture3D;
-#define glFramebufferTexture3D(...) WRAP_PFN(biz_glFramebufferTexture3D, __VA_ARGS__)
-typedef void (*PFNGLFRAMEBUFFERRENDERBUFFERPROC)(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
-GLAPI PFNGLFRAMEBUFFERRENDERBUFFERPROC biz_glFramebufferRenderbuffer;
-#define glFramebufferRenderbuffer(...) WRAP_PFN(biz_glFramebufferRenderbuffer, __VA_ARGS__)
-typedef void (*PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC)(GLenum target, GLenum attachment, GLenum pname, GLint *params);
-GLAPI PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC biz_glGetFramebufferAttachmentParameteriv;
-#define glGetFramebufferAttachmentParameteriv(...) WRAP_PFN(biz_glGetFramebufferAttachmentParameteriv, __VA_ARGS__)
-typedef void (*PFNGLGENERATEMIPMAPPROC)(GLenum target);
-GLAPI PFNGLGENERATEMIPMAPPROC biz_glGenerateMipmap;
-#define glGenerateMipmap(...) WRAP_PFN(biz_glGenerateMipmap, __VA_ARGS__)
-typedef void (*PFNGLBLITFRAMEBUFFERPROC)(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
-GLAPI PFNGLBLITFRAMEBUFFERPROC biz_glBlitFramebuffer;
-#define glBlitFramebuffer(...) WRAP_PFN(biz_glBlitFramebuffer, __VA_ARGS__)
-typedef void (*PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
-GLAPI PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC biz_glRenderbufferStorageMultisample;
-#define glRenderbufferStorageMultisample(...) WRAP_PFN(biz_glRenderbufferStorageMultisample, __VA_ARGS__)
-typedef void (*PFNGLFRAMEBUFFERTEXTURELAYERPROC)(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer);
-GLAPI PFNGLFRAMEBUFFERTEXTURELAYERPROC biz_glFramebufferTextureLayer;
-#define glFramebufferTextureLayer(...) WRAP_PFN(biz_glFramebufferTextureLayer, __VA_ARGS__)
-typedef void * (*PFNGLMAPBUFFERRANGEPROC)(GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
-GLAPI PFNGLMAPBUFFERRANGEPROC biz_glMapBufferRange;
-#define glMapBufferRange(...) WRAP_PFN(biz_glMapBufferRange, __VA_ARGS__)
-typedef void (*PFNGLFLUSHMAPPEDBUFFERRANGEPROC)(GLenum target, GLintptr offset, GLsizeiptr length);
-GLAPI PFNGLFLUSHMAPPEDBUFFERRANGEPROC biz_glFlushMappedBufferRange;
-#define glFlushMappedBufferRange(...) WRAP_PFN(biz_glFlushMappedBufferRange, __VA_ARGS__)
-typedef void (*PFNGLBINDVERTEXARRAYPROC)(GLuint array);
-GLAPI PFNGLBINDVERTEXARRAYPROC biz_glBindVertexArray;
-#define glBindVertexArray(...) WRAP_PFN(biz_glBindVertexArray, __VA_ARGS__)
-typedef void (*PFNGLDELETEVERTEXARRAYSPROC)(GLsizei n, const GLuint *arrays);
-GLAPI PFNGLDELETEVERTEXARRAYSPROC biz_glDeleteVertexArrays;
-#define glDeleteVertexArrays(...) WRAP_PFN(biz_glDeleteVertexArrays, __VA_ARGS__)
-typedef void (*PFNGLGENVERTEXARRAYSPROC)(GLsizei n, GLuint *arrays);
-GLAPI PFNGLGENVERTEXARRAYSPROC biz_glGenVertexArrays;
-#define glGenVertexArrays(...) WRAP_PFN(biz_glGenVertexArrays, __VA_ARGS__)
-typedef GLboolean (*PFNGLISVERTEXARRAYPROC)(GLuint array);
-GLAPI PFNGLISVERTEXARRAYPROC biz_glIsVertexArray;
-#define glIsVertexArray(...) WRAP_PFN(biz_glIsVertexArray, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a)> biz_glColorMaski;
+#define glColorMaski biz_glColorMaski
+extern BizOGL::GLFunctor<void (GLenum target, GLuint index, GLboolean *data)> biz_glGetBooleani_v;
+#define glGetBooleani_v biz_glGetBooleani_v
+extern BizOGL::GLFunctor<void (GLenum target, GLuint index, GLint *data)> biz_glGetIntegeri_v;
+#define glGetIntegeri_v biz_glGetIntegeri_v
+extern BizOGL::GLFunctor<void (GLenum target, GLuint index)> biz_glEnablei;
+#define glEnablei biz_glEnablei
+extern BizOGL::GLFunctor<void (GLenum target, GLuint index)> biz_glDisablei;
+#define glDisablei biz_glDisablei
+extern BizOGL::GLFunctor<GLboolean (GLenum target, GLuint index)> biz_glIsEnabledi;
+#define glIsEnabledi biz_glIsEnabledi
+extern BizOGL::GLFunctor<void (GLenum primitiveMode)> biz_glBeginTransformFeedback;
+#define glBeginTransformFeedback biz_glBeginTransformFeedback
+extern BizOGL::GLFunctor<void (void)> biz_glEndTransformFeedback;
+#define glEndTransformFeedback biz_glEndTransformFeedback
+extern BizOGL::GLFunctor<void (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size)> biz_glBindBufferRange;
+#define glBindBufferRange biz_glBindBufferRange
+extern BizOGL::GLFunctor<void (GLenum target, GLuint index, GLuint buffer)> biz_glBindBufferBase;
+#define glBindBufferBase biz_glBindBufferBase
+extern BizOGL::GLFunctor<void (GLuint program, GLsizei count, const GLchar *const*varyings, GLenum bufferMode)> biz_glTransformFeedbackVaryings;
+#define glTransformFeedbackVaryings biz_glTransformFeedbackVaryings
+extern BizOGL::GLFunctor<void (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLsizei *size, GLenum *type, GLchar *name)> biz_glGetTransformFeedbackVarying;
+#define glGetTransformFeedbackVarying biz_glGetTransformFeedbackVarying
+extern BizOGL::GLFunctor<void (GLenum target, GLenum clamp)> biz_glClampColor;
+#define glClampColor biz_glClampColor
+extern BizOGL::GLFunctor<void (GLuint id, GLenum mode)> biz_glBeginConditionalRender;
+#define glBeginConditionalRender biz_glBeginConditionalRender
+extern BizOGL::GLFunctor<void (void)> biz_glEndConditionalRender;
+#define glEndConditionalRender biz_glEndConditionalRender
+extern BizOGL::GLFunctor<void (GLuint index, GLint size, GLenum type, GLsizei stride, const void *pointer)> biz_glVertexAttribIPointer;
+#define glVertexAttribIPointer biz_glVertexAttribIPointer
+extern BizOGL::GLFunctor<void (GLuint index, GLenum pname, GLint *params)> biz_glGetVertexAttribIiv;
+#define glGetVertexAttribIiv biz_glGetVertexAttribIiv
+extern BizOGL::GLFunctor<void (GLuint index, GLenum pname, GLuint *params)> biz_glGetVertexAttribIuiv;
+#define glGetVertexAttribIuiv biz_glGetVertexAttribIuiv
+extern BizOGL::GLFunctor<void (GLuint index, GLint x)> biz_glVertexAttribI1i;
+#define glVertexAttribI1i biz_glVertexAttribI1i
+extern BizOGL::GLFunctor<void (GLuint index, GLint x, GLint y)> biz_glVertexAttribI2i;
+#define glVertexAttribI2i biz_glVertexAttribI2i
+extern BizOGL::GLFunctor<void (GLuint index, GLint x, GLint y, GLint z)> biz_glVertexAttribI3i;
+#define glVertexAttribI3i biz_glVertexAttribI3i
+extern BizOGL::GLFunctor<void (GLuint index, GLint x, GLint y, GLint z, GLint w)> biz_glVertexAttribI4i;
+#define glVertexAttribI4i biz_glVertexAttribI4i
+extern BizOGL::GLFunctor<void (GLuint index, GLuint x)> biz_glVertexAttribI1ui;
+#define glVertexAttribI1ui biz_glVertexAttribI1ui
+extern BizOGL::GLFunctor<void (GLuint index, GLuint x, GLuint y)> biz_glVertexAttribI2ui;
+#define glVertexAttribI2ui biz_glVertexAttribI2ui
+extern BizOGL::GLFunctor<void (GLuint index, GLuint x, GLuint y, GLuint z)> biz_glVertexAttribI3ui;
+#define glVertexAttribI3ui biz_glVertexAttribI3ui
+extern BizOGL::GLFunctor<void (GLuint index, GLuint x, GLuint y, GLuint z, GLuint w)> biz_glVertexAttribI4ui;
+#define glVertexAttribI4ui biz_glVertexAttribI4ui
+extern BizOGL::GLFunctor<void (GLuint index, const GLint *v)> biz_glVertexAttribI1iv;
+#define glVertexAttribI1iv biz_glVertexAttribI1iv
+extern BizOGL::GLFunctor<void (GLuint index, const GLint *v)> biz_glVertexAttribI2iv;
+#define glVertexAttribI2iv biz_glVertexAttribI2iv
+extern BizOGL::GLFunctor<void (GLuint index, const GLint *v)> biz_glVertexAttribI3iv;
+#define glVertexAttribI3iv biz_glVertexAttribI3iv
+extern BizOGL::GLFunctor<void (GLuint index, const GLint *v)> biz_glVertexAttribI4iv;
+#define glVertexAttribI4iv biz_glVertexAttribI4iv
+extern BizOGL::GLFunctor<void (GLuint index, const GLuint *v)> biz_glVertexAttribI1uiv;
+#define glVertexAttribI1uiv biz_glVertexAttribI1uiv
+extern BizOGL::GLFunctor<void (GLuint index, const GLuint *v)> biz_glVertexAttribI2uiv;
+#define glVertexAttribI2uiv biz_glVertexAttribI2uiv
+extern BizOGL::GLFunctor<void (GLuint index, const GLuint *v)> biz_glVertexAttribI3uiv;
+#define glVertexAttribI3uiv biz_glVertexAttribI3uiv
+extern BizOGL::GLFunctor<void (GLuint index, const GLuint *v)> biz_glVertexAttribI4uiv;
+#define glVertexAttribI4uiv biz_glVertexAttribI4uiv
+extern BizOGL::GLFunctor<void (GLuint index, const GLbyte *v)> biz_glVertexAttribI4bv;
+#define glVertexAttribI4bv biz_glVertexAttribI4bv
+extern BizOGL::GLFunctor<void (GLuint index, const GLshort *v)> biz_glVertexAttribI4sv;
+#define glVertexAttribI4sv biz_glVertexAttribI4sv
+extern BizOGL::GLFunctor<void (GLuint index, const GLubyte *v)> biz_glVertexAttribI4ubv;
+#define glVertexAttribI4ubv biz_glVertexAttribI4ubv
+extern BizOGL::GLFunctor<void (GLuint index, const GLushort *v)> biz_glVertexAttribI4usv;
+#define glVertexAttribI4usv biz_glVertexAttribI4usv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLuint *params)> biz_glGetUniformuiv;
+#define glGetUniformuiv biz_glGetUniformuiv
+extern BizOGL::GLFunctor<void (GLuint program, GLuint color, const GLchar *name)> biz_glBindFragDataLocation;
+#define glBindFragDataLocation biz_glBindFragDataLocation
+extern BizOGL::GLFunctor<GLint (GLuint program, const GLchar *name)> biz_glGetFragDataLocation;
+#define glGetFragDataLocation biz_glGetFragDataLocation
+extern BizOGL::GLFunctor<void (GLint location, GLuint v0)> biz_glUniform1ui;
+#define glUniform1ui biz_glUniform1ui
+extern BizOGL::GLFunctor<void (GLint location, GLuint v0, GLuint v1)> biz_glUniform2ui;
+#define glUniform2ui biz_glUniform2ui
+extern BizOGL::GLFunctor<void (GLint location, GLuint v0, GLuint v1, GLuint v2)> biz_glUniform3ui;
+#define glUniform3ui biz_glUniform3ui
+extern BizOGL::GLFunctor<void (GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3)> biz_glUniform4ui;
+#define glUniform4ui biz_glUniform4ui
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLuint *value)> biz_glUniform1uiv;
+#define glUniform1uiv biz_glUniform1uiv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLuint *value)> biz_glUniform2uiv;
+#define glUniform2uiv biz_glUniform2uiv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLuint *value)> biz_glUniform3uiv;
+#define glUniform3uiv biz_glUniform3uiv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLuint *value)> biz_glUniform4uiv;
+#define glUniform4uiv biz_glUniform4uiv
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, const GLint *params)> biz_glTexParameterIiv;
+#define glTexParameterIiv biz_glTexParameterIiv
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, const GLuint *params)> biz_glTexParameterIuiv;
+#define glTexParameterIuiv biz_glTexParameterIuiv
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, GLint *params)> biz_glGetTexParameterIiv;
+#define glGetTexParameterIiv biz_glGetTexParameterIiv
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, GLuint *params)> biz_glGetTexParameterIuiv;
+#define glGetTexParameterIuiv biz_glGetTexParameterIuiv
+extern BizOGL::GLFunctor<void (GLenum buffer, GLint drawbuffer, const GLint *value)> biz_glClearBufferiv;
+#define glClearBufferiv biz_glClearBufferiv
+extern BizOGL::GLFunctor<void (GLenum buffer, GLint drawbuffer, const GLuint *value)> biz_glClearBufferuiv;
+#define glClearBufferuiv biz_glClearBufferuiv
+extern BizOGL::GLFunctor<void (GLenum buffer, GLint drawbuffer, const GLfloat *value)> biz_glClearBufferfv;
+#define glClearBufferfv biz_glClearBufferfv
+extern BizOGL::GLFunctor<void (GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil)> biz_glClearBufferfi;
+#define glClearBufferfi biz_glClearBufferfi
+extern BizOGL::GLFunctor<const GLubyte * (GLenum name, GLuint index)> biz_glGetStringi;
+#define glGetStringi biz_glGetStringi
+extern BizOGL::GLFunctor<GLboolean (GLuint renderbuffer)> biz_glIsRenderbuffer;
+#define glIsRenderbuffer biz_glIsRenderbuffer
+extern BizOGL::GLFunctor<void (GLenum target, GLuint renderbuffer)> biz_glBindRenderbuffer;
+#define glBindRenderbuffer biz_glBindRenderbuffer
+extern BizOGL::GLFunctor<void (GLsizei n, const GLuint *renderbuffers)> biz_glDeleteRenderbuffers;
+#define glDeleteRenderbuffers biz_glDeleteRenderbuffers
+extern BizOGL::GLFunctor<void (GLsizei n, GLuint *renderbuffers)> biz_glGenRenderbuffers;
+#define glGenRenderbuffers biz_glGenRenderbuffers
+extern BizOGL::GLFunctor<void (GLenum target, GLenum internalformat, GLsizei width, GLsizei height)> biz_glRenderbufferStorage;
+#define glRenderbufferStorage biz_glRenderbufferStorage
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, GLint *params)> biz_glGetRenderbufferParameteriv;
+#define glGetRenderbufferParameteriv biz_glGetRenderbufferParameteriv
+extern BizOGL::GLFunctor<GLboolean (GLuint framebuffer)> biz_glIsFramebuffer;
+#define glIsFramebuffer biz_glIsFramebuffer
+extern BizOGL::GLFunctor<void (GLenum target, GLuint framebuffer)> biz_glBindFramebuffer;
+#define glBindFramebuffer biz_glBindFramebuffer
+extern BizOGL::GLFunctor<void (GLsizei n, const GLuint *framebuffers)> biz_glDeleteFramebuffers;
+#define glDeleteFramebuffers biz_glDeleteFramebuffers
+extern BizOGL::GLFunctor<void (GLsizei n, GLuint *framebuffers)> biz_glGenFramebuffers;
+#define glGenFramebuffers biz_glGenFramebuffers
+extern BizOGL::GLFunctor<GLenum (GLenum target)> biz_glCheckFramebufferStatus;
+#define glCheckFramebufferStatus biz_glCheckFramebufferStatus
+extern BizOGL::GLFunctor<void (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)> biz_glFramebufferTexture1D;
+#define glFramebufferTexture1D biz_glFramebufferTexture1D
+extern BizOGL::GLFunctor<void (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)> biz_glFramebufferTexture2D;
+#define glFramebufferTexture2D biz_glFramebufferTexture2D
+extern BizOGL::GLFunctor<void (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint zoffset)> biz_glFramebufferTexture3D;
+#define glFramebufferTexture3D biz_glFramebufferTexture3D
+extern BizOGL::GLFunctor<void (GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer)> biz_glFramebufferRenderbuffer;
+#define glFramebufferRenderbuffer biz_glFramebufferRenderbuffer
+extern BizOGL::GLFunctor<void (GLenum target, GLenum attachment, GLenum pname, GLint *params)> biz_glGetFramebufferAttachmentParameteriv;
+#define glGetFramebufferAttachmentParameteriv biz_glGetFramebufferAttachmentParameteriv
+extern BizOGL::GLFunctor<void (GLenum target)> biz_glGenerateMipmap;
+#define glGenerateMipmap biz_glGenerateMipmap
+extern BizOGL::GLFunctor<void (GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)> biz_glBlitFramebuffer;
+#define glBlitFramebuffer biz_glBlitFramebuffer
+extern BizOGL::GLFunctor<void (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height)> biz_glRenderbufferStorageMultisample;
+#define glRenderbufferStorageMultisample biz_glRenderbufferStorageMultisample
+extern BizOGL::GLFunctor<void (GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer)> biz_glFramebufferTextureLayer;
+#define glFramebufferTextureLayer biz_glFramebufferTextureLayer
+extern BizOGL::GLFunctor<void * (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access)> biz_glMapBufferRange;
+#define glMapBufferRange biz_glMapBufferRange
+extern BizOGL::GLFunctor<void (GLenum target, GLintptr offset, GLsizeiptr length)> biz_glFlushMappedBufferRange;
+#define glFlushMappedBufferRange biz_glFlushMappedBufferRange
+extern BizOGL::GLFunctor<void (GLuint array)> biz_glBindVertexArray;
+#define glBindVertexArray biz_glBindVertexArray
+extern BizOGL::GLFunctor<void (GLsizei n, const GLuint *arrays)> biz_glDeleteVertexArrays;
+#define glDeleteVertexArrays biz_glDeleteVertexArrays
+extern BizOGL::GLFunctor<void (GLsizei n, GLuint *arrays)> biz_glGenVertexArrays;
+#define glGenVertexArrays biz_glGenVertexArrays
+extern BizOGL::GLFunctor<GLboolean (GLuint array)> biz_glIsVertexArray;
+#define glIsVertexArray biz_glIsVertexArray
 
 #define GL_VERSION_3_1 1
-typedef void (*PFNGLDRAWARRAYSINSTANCEDPROC)(GLenum mode, GLint first, GLsizei count, GLsizei instancecount);
-GLAPI PFNGLDRAWARRAYSINSTANCEDPROC biz_glDrawArraysInstanced;
-#define glDrawArraysInstanced(...) WRAP_PFN(biz_glDrawArraysInstanced, __VA_ARGS__)
-typedef void (*PFNGLDRAWELEMENTSINSTANCEDPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount);
-GLAPI PFNGLDRAWELEMENTSINSTANCEDPROC biz_glDrawElementsInstanced;
-#define glDrawElementsInstanced(...) WRAP_PFN(biz_glDrawElementsInstanced, __VA_ARGS__)
-typedef void (*PFNGLTEXBUFFERPROC)(GLenum target, GLenum internalformat, GLuint buffer);
-GLAPI PFNGLTEXBUFFERPROC biz_glTexBuffer;
-#define glTexBuffer(...) WRAP_PFN(biz_glTexBuffer, __VA_ARGS__)
-typedef void (*PFNGLPRIMITIVERESTARTINDEXPROC)(GLuint index);
-GLAPI PFNGLPRIMITIVERESTARTINDEXPROC biz_glPrimitiveRestartIndex;
-#define glPrimitiveRestartIndex(...) WRAP_PFN(biz_glPrimitiveRestartIndex, __VA_ARGS__)
-typedef void (*PFNGLCOPYBUFFERSUBDATAPROC)(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
-GLAPI PFNGLCOPYBUFFERSUBDATAPROC biz_glCopyBufferSubData;
-#define glCopyBufferSubData(...) WRAP_PFN(biz_glCopyBufferSubData, __VA_ARGS__)
-typedef void (*PFNGLGETUNIFORMINDICESPROC)(GLuint program, GLsizei uniformCount, const GLchar *const*uniformNames, GLuint *uniformIndices);
-GLAPI PFNGLGETUNIFORMINDICESPROC biz_glGetUniformIndices;
-#define glGetUniformIndices(...) WRAP_PFN(biz_glGetUniformIndices, __VA_ARGS__)
-typedef void (*PFNGLGETACTIVEUNIFORMSIVPROC)(GLuint program, GLsizei uniformCount, const GLuint *uniformIndices, GLenum pname, GLint *params);
-GLAPI PFNGLGETACTIVEUNIFORMSIVPROC biz_glGetActiveUniformsiv;
-#define glGetActiveUniformsiv(...) WRAP_PFN(biz_glGetActiveUniformsiv, __VA_ARGS__)
-typedef void (*PFNGLGETACTIVEUNIFORMNAMEPROC)(GLuint program, GLuint uniformIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformName);
-GLAPI PFNGLGETACTIVEUNIFORMNAMEPROC biz_glGetActiveUniformName;
-#define glGetActiveUniformName(...) WRAP_PFN(biz_glGetActiveUniformName, __VA_ARGS__)
-typedef GLuint (*PFNGLGETUNIFORMBLOCKINDEXPROC)(GLuint program, const GLchar *uniformBlockName);
-GLAPI PFNGLGETUNIFORMBLOCKINDEXPROC biz_glGetUniformBlockIndex;
-#define glGetUniformBlockIndex(...) WRAP_PFN(biz_glGetUniformBlockIndex, __VA_ARGS__)
-typedef void (*PFNGLGETACTIVEUNIFORMBLOCKIVPROC)(GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params);
-GLAPI PFNGLGETACTIVEUNIFORMBLOCKIVPROC biz_glGetActiveUniformBlockiv;
-#define glGetActiveUniformBlockiv(...) WRAP_PFN(biz_glGetActiveUniformBlockiv, __VA_ARGS__)
-typedef void (*PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC)(GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName);
-GLAPI PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC biz_glGetActiveUniformBlockName;
-#define glGetActiveUniformBlockName(...) WRAP_PFN(biz_glGetActiveUniformBlockName, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMBLOCKBINDINGPROC)(GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
-GLAPI PFNGLUNIFORMBLOCKBINDINGPROC biz_glUniformBlockBinding;
-#define glUniformBlockBinding(...) WRAP_PFN(biz_glUniformBlockBinding, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLenum mode, GLint first, GLsizei count, GLsizei instancecount)> biz_glDrawArraysInstanced;
+#define glDrawArraysInstanced biz_glDrawArraysInstanced
+extern BizOGL::GLFunctor<void (GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount)> biz_glDrawElementsInstanced;
+#define glDrawElementsInstanced biz_glDrawElementsInstanced
+extern BizOGL::GLFunctor<void (GLenum target, GLenum internalformat, GLuint buffer)> biz_glTexBuffer;
+#define glTexBuffer biz_glTexBuffer
+extern BizOGL::GLFunctor<void (GLuint index)> biz_glPrimitiveRestartIndex;
+#define glPrimitiveRestartIndex biz_glPrimitiveRestartIndex
+extern BizOGL::GLFunctor<void (GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size)> biz_glCopyBufferSubData;
+#define glCopyBufferSubData biz_glCopyBufferSubData
+extern BizOGL::GLFunctor<void (GLuint program, GLsizei uniformCount, const GLchar *const*uniformNames, GLuint *uniformIndices)> biz_glGetUniformIndices;
+#define glGetUniformIndices biz_glGetUniformIndices
+extern BizOGL::GLFunctor<void (GLuint program, GLsizei uniformCount, const GLuint *uniformIndices, GLenum pname, GLint *params)> biz_glGetActiveUniformsiv;
+#define glGetActiveUniformsiv biz_glGetActiveUniformsiv
+extern BizOGL::GLFunctor<void (GLuint program, GLuint uniformIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformName)> biz_glGetActiveUniformName;
+#define glGetActiveUniformName biz_glGetActiveUniformName
+extern BizOGL::GLFunctor<GLuint (GLuint program, const GLchar *uniformBlockName)> biz_glGetUniformBlockIndex;
+#define glGetUniformBlockIndex biz_glGetUniformBlockIndex
+extern BizOGL::GLFunctor<void (GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params)> biz_glGetActiveUniformBlockiv;
+#define glGetActiveUniformBlockiv biz_glGetActiveUniformBlockiv
+extern BizOGL::GLFunctor<void (GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName)> biz_glGetActiveUniformBlockName;
+#define glGetActiveUniformBlockName biz_glGetActiveUniformBlockName
+extern BizOGL::GLFunctor<void (GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding)> biz_glUniformBlockBinding;
+#define glUniformBlockBinding biz_glUniformBlockBinding
 
 #define GL_VERSION_3_2 1
-typedef void (*PFNGLDRAWELEMENTSBASEVERTEXPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices, GLint basevertex);
-GLAPI PFNGLDRAWELEMENTSBASEVERTEXPROC biz_glDrawElementsBaseVertex;
-#define glDrawElementsBaseVertex(...) WRAP_PFN(biz_glDrawElementsBaseVertex, __VA_ARGS__)
-typedef void (*PFNGLDRAWRANGEELEMENTSBASEVERTEXPROC)(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLint basevertex);
-GLAPI PFNGLDRAWRANGEELEMENTSBASEVERTEXPROC biz_glDrawRangeElementsBaseVertex;
-#define glDrawRangeElementsBaseVertex(...) WRAP_PFN(biz_glDrawRangeElementsBaseVertex, __VA_ARGS__)
-typedef void (*PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount, GLint basevertex);
-GLAPI PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXPROC biz_glDrawElementsInstancedBaseVertex;
-#define glDrawElementsInstancedBaseVertex(...) WRAP_PFN(biz_glDrawElementsInstancedBaseVertex, __VA_ARGS__)
-typedef void (*PFNGLMULTIDRAWELEMENTSBASEVERTEXPROC)(GLenum mode, const GLsizei *count, GLenum type, const void *const*indices, GLsizei drawcount, const GLint *basevertex);
-GLAPI PFNGLMULTIDRAWELEMENTSBASEVERTEXPROC biz_glMultiDrawElementsBaseVertex;
-#define glMultiDrawElementsBaseVertex(...) WRAP_PFN(biz_glMultiDrawElementsBaseVertex, __VA_ARGS__)
-typedef void (*PFNGLPROVOKINGVERTEXPROC)(GLenum mode);
-GLAPI PFNGLPROVOKINGVERTEXPROC biz_glProvokingVertex;
-#define glProvokingVertex(...) WRAP_PFN(biz_glProvokingVertex, __VA_ARGS__)
-typedef GLsync (*PFNGLFENCESYNCPROC)(GLenum condition, GLbitfield flags);
-GLAPI PFNGLFENCESYNCPROC biz_glFenceSync;
-#define glFenceSync(...) WRAP_PFN(biz_glFenceSync, __VA_ARGS__)
-typedef GLboolean (*PFNGLISSYNCPROC)(GLsync sync);
-GLAPI PFNGLISSYNCPROC biz_glIsSync;
-#define glIsSync(...) WRAP_PFN(biz_glIsSync, __VA_ARGS__)
-typedef void (*PFNGLDELETESYNCPROC)(GLsync sync);
-GLAPI PFNGLDELETESYNCPROC biz_glDeleteSync;
-#define glDeleteSync(...) WRAP_PFN(biz_glDeleteSync, __VA_ARGS__)
-typedef GLenum (*PFNGLCLIENTWAITSYNCPROC)(GLsync sync, GLbitfield flags, GLuint64 timeout);
-GLAPI PFNGLCLIENTWAITSYNCPROC biz_glClientWaitSync;
-#define glClientWaitSync(...) WRAP_PFN(biz_glClientWaitSync, __VA_ARGS__)
-typedef void (*PFNGLWAITSYNCPROC)(GLsync sync, GLbitfield flags, GLuint64 timeout);
-GLAPI PFNGLWAITSYNCPROC biz_glWaitSync;
-#define glWaitSync(...) WRAP_PFN(biz_glWaitSync, __VA_ARGS__)
-typedef void (*PFNGLGETINTEGER64VPROC)(GLenum pname, GLint64 *data);
-GLAPI PFNGLGETINTEGER64VPROC biz_glGetInteger64v;
-#define glGetInteger64v(...) WRAP_PFN(biz_glGetInteger64v, __VA_ARGS__)
-typedef void (*PFNGLGETSYNCIVPROC)(GLsync sync, GLenum pname, GLsizei count, GLsizei *length, GLint *values);
-GLAPI PFNGLGETSYNCIVPROC biz_glGetSynciv;
-#define glGetSynciv(...) WRAP_PFN(biz_glGetSynciv, __VA_ARGS__)
-typedef void (*PFNGLGETINTEGER64I_VPROC)(GLenum target, GLuint index, GLint64 *data);
-GLAPI PFNGLGETINTEGER64I_VPROC biz_glGetInteger64i_v;
-#define glGetInteger64i_v(...) WRAP_PFN(biz_glGetInteger64i_v, __VA_ARGS__)
-typedef void (*PFNGLGETBUFFERPARAMETERI64VPROC)(GLenum target, GLenum pname, GLint64 *params);
-GLAPI PFNGLGETBUFFERPARAMETERI64VPROC biz_glGetBufferParameteri64v;
-#define glGetBufferParameteri64v(...) WRAP_PFN(biz_glGetBufferParameteri64v, __VA_ARGS__)
-typedef void (*PFNGLFRAMEBUFFERTEXTUREPROC)(GLenum target, GLenum attachment, GLuint texture, GLint level);
-GLAPI PFNGLFRAMEBUFFERTEXTUREPROC biz_glFramebufferTexture;
-#define glFramebufferTexture(...) WRAP_PFN(biz_glFramebufferTexture, __VA_ARGS__)
-typedef void (*PFNGLTEXIMAGE2DMULTISAMPLEPROC)(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
-GLAPI PFNGLTEXIMAGE2DMULTISAMPLEPROC biz_glTexImage2DMultisample;
-#define glTexImage2DMultisample(...) WRAP_PFN(biz_glTexImage2DMultisample, __VA_ARGS__)
-typedef void (*PFNGLTEXIMAGE3DMULTISAMPLEPROC)(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
-GLAPI PFNGLTEXIMAGE3DMULTISAMPLEPROC biz_glTexImage3DMultisample;
-#define glTexImage3DMultisample(...) WRAP_PFN(biz_glTexImage3DMultisample, __VA_ARGS__)
-typedef void (*PFNGLGETMULTISAMPLEFVPROC)(GLenum pname, GLuint index, GLfloat *val);
-GLAPI PFNGLGETMULTISAMPLEFVPROC biz_glGetMultisamplefv;
-#define glGetMultisamplefv(...) WRAP_PFN(biz_glGetMultisamplefv, __VA_ARGS__)
-typedef void (*PFNGLSAMPLEMASKIPROC)(GLuint maskNumber, GLbitfield mask);
-GLAPI PFNGLSAMPLEMASKIPROC biz_glSampleMaski;
-#define glSampleMaski(...) WRAP_PFN(biz_glSampleMaski, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLenum mode, GLsizei count, GLenum type, const void *indices, GLint basevertex)> biz_glDrawElementsBaseVertex;
+#define glDrawElementsBaseVertex biz_glDrawElementsBaseVertex
+extern BizOGL::GLFunctor<void (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLint basevertex)> biz_glDrawRangeElementsBaseVertex;
+#define glDrawRangeElementsBaseVertex biz_glDrawRangeElementsBaseVertex
+extern BizOGL::GLFunctor<void (GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount, GLint basevertex)> biz_glDrawElementsInstancedBaseVertex;
+#define glDrawElementsInstancedBaseVertex biz_glDrawElementsInstancedBaseVertex
+extern BizOGL::GLFunctor<void (GLenum mode, const GLsizei *count, GLenum type, const void *const*indices, GLsizei drawcount, const GLint *basevertex)> biz_glMultiDrawElementsBaseVertex;
+#define glMultiDrawElementsBaseVertex biz_glMultiDrawElementsBaseVertex
+extern BizOGL::GLFunctor<void (GLenum mode)> biz_glProvokingVertex;
+#define glProvokingVertex biz_glProvokingVertex
+extern BizOGL::GLFunctor<GLsync (GLenum condition, GLbitfield flags)> biz_glFenceSync;
+#define glFenceSync biz_glFenceSync
+extern BizOGL::GLFunctor<GLboolean (GLsync sync)> biz_glIsSync;
+#define glIsSync biz_glIsSync
+extern BizOGL::GLFunctor<void (GLsync sync)> biz_glDeleteSync;
+#define glDeleteSync biz_glDeleteSync
+extern BizOGL::GLFunctor<GLenum (GLsync sync, GLbitfield flags, GLuint64 timeout)> biz_glClientWaitSync;
+#define glClientWaitSync biz_glClientWaitSync
+extern BizOGL::GLFunctor<void (GLsync sync, GLbitfield flags, GLuint64 timeout)> biz_glWaitSync;
+#define glWaitSync biz_glWaitSync
+extern BizOGL::GLFunctor<void (GLenum pname, GLint64 *data)> biz_glGetInteger64v;
+#define glGetInteger64v biz_glGetInteger64v
+extern BizOGL::GLFunctor<void (GLsync sync, GLenum pname, GLsizei count, GLsizei *length, GLint *values)> biz_glGetSynciv;
+#define glGetSynciv biz_glGetSynciv
+extern BizOGL::GLFunctor<void (GLenum target, GLuint index, GLint64 *data)> biz_glGetInteger64i_v;
+#define glGetInteger64i_v biz_glGetInteger64i_v
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, GLint64 *params)> biz_glGetBufferParameteri64v;
+#define glGetBufferParameteri64v biz_glGetBufferParameteri64v
+extern BizOGL::GLFunctor<void (GLenum target, GLenum attachment, GLuint texture, GLint level)> biz_glFramebufferTexture;
+#define glFramebufferTexture biz_glFramebufferTexture
+extern BizOGL::GLFunctor<void (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations)> biz_glTexImage2DMultisample;
+#define glTexImage2DMultisample biz_glTexImage2DMultisample
+extern BizOGL::GLFunctor<void (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations)> biz_glTexImage3DMultisample;
+#define glTexImage3DMultisample biz_glTexImage3DMultisample
+extern BizOGL::GLFunctor<void (GLenum pname, GLuint index, GLfloat *val)> biz_glGetMultisamplefv;
+#define glGetMultisamplefv biz_glGetMultisamplefv
+extern BizOGL::GLFunctor<void (GLuint maskNumber, GLbitfield mask)> biz_glSampleMaski;
+#define glSampleMaski biz_glSampleMaski
 
 #define GL_VERSION_3_3 1
-typedef void (*PFNGLBINDFRAGDATALOCATIONINDEXEDPROC)(GLuint program, GLuint colorNumber, GLuint index, const GLchar *name);
-GLAPI PFNGLBINDFRAGDATALOCATIONINDEXEDPROC biz_glBindFragDataLocationIndexed;
-#define glBindFragDataLocationIndexed(...) WRAP_PFN(biz_glBindFragDataLocationIndexed, __VA_ARGS__)
-typedef GLint (*PFNGLGETFRAGDATAINDEXPROC)(GLuint program, const GLchar *name);
-GLAPI PFNGLGETFRAGDATAINDEXPROC biz_glGetFragDataIndex;
-#define glGetFragDataIndex(...) WRAP_PFN(biz_glGetFragDataIndex, __VA_ARGS__)
-typedef void (*PFNGLGENSAMPLERSPROC)(GLsizei count, GLuint *samplers);
-GLAPI PFNGLGENSAMPLERSPROC biz_glGenSamplers;
-#define glGenSamplers(...) WRAP_PFN(biz_glGenSamplers, __VA_ARGS__)
-typedef void (*PFNGLDELETESAMPLERSPROC)(GLsizei count, const GLuint *samplers);
-GLAPI PFNGLDELETESAMPLERSPROC biz_glDeleteSamplers;
-#define glDeleteSamplers(...) WRAP_PFN(biz_glDeleteSamplers, __VA_ARGS__)
-typedef GLboolean (*PFNGLISSAMPLERPROC)(GLuint sampler);
-GLAPI PFNGLISSAMPLERPROC biz_glIsSampler;
-#define glIsSampler(...) WRAP_PFN(biz_glIsSampler, __VA_ARGS__)
-typedef void (*PFNGLBINDSAMPLERPROC)(GLuint unit, GLuint sampler);
-GLAPI PFNGLBINDSAMPLERPROC biz_glBindSampler;
-#define glBindSampler(...) WRAP_PFN(biz_glBindSampler, __VA_ARGS__)
-typedef void (*PFNGLSAMPLERPARAMETERIPROC)(GLuint sampler, GLenum pname, GLint param);
-GLAPI PFNGLSAMPLERPARAMETERIPROC biz_glSamplerParameteri;
-#define glSamplerParameteri(...) WRAP_PFN(biz_glSamplerParameteri, __VA_ARGS__)
-typedef void (*PFNGLSAMPLERPARAMETERIVPROC)(GLuint sampler, GLenum pname, const GLint *param);
-GLAPI PFNGLSAMPLERPARAMETERIVPROC biz_glSamplerParameteriv;
-#define glSamplerParameteriv(...) WRAP_PFN(biz_glSamplerParameteriv, __VA_ARGS__)
-typedef void (*PFNGLSAMPLERPARAMETERFPROC)(GLuint sampler, GLenum pname, GLfloat param);
-GLAPI PFNGLSAMPLERPARAMETERFPROC biz_glSamplerParameterf;
-#define glSamplerParameterf(...) WRAP_PFN(biz_glSamplerParameterf, __VA_ARGS__)
-typedef void (*PFNGLSAMPLERPARAMETERFVPROC)(GLuint sampler, GLenum pname, const GLfloat *param);
-GLAPI PFNGLSAMPLERPARAMETERFVPROC biz_glSamplerParameterfv;
-#define glSamplerParameterfv(...) WRAP_PFN(biz_glSamplerParameterfv, __VA_ARGS__)
-typedef void (*PFNGLSAMPLERPARAMETERIIVPROC)(GLuint sampler, GLenum pname, const GLint *param);
-GLAPI PFNGLSAMPLERPARAMETERIIVPROC biz_glSamplerParameterIiv;
-#define glSamplerParameterIiv(...) WRAP_PFN(biz_glSamplerParameterIiv, __VA_ARGS__)
-typedef void (*PFNGLSAMPLERPARAMETERIUIVPROC)(GLuint sampler, GLenum pname, const GLuint *param);
-GLAPI PFNGLSAMPLERPARAMETERIUIVPROC biz_glSamplerParameterIuiv;
-#define glSamplerParameterIuiv(...) WRAP_PFN(biz_glSamplerParameterIuiv, __VA_ARGS__)
-typedef void (*PFNGLGETSAMPLERPARAMETERIVPROC)(GLuint sampler, GLenum pname, GLint *params);
-GLAPI PFNGLGETSAMPLERPARAMETERIVPROC biz_glGetSamplerParameteriv;
-#define glGetSamplerParameteriv(...) WRAP_PFN(biz_glGetSamplerParameteriv, __VA_ARGS__)
-typedef void (*PFNGLGETSAMPLERPARAMETERIIVPROC)(GLuint sampler, GLenum pname, GLint *params);
-GLAPI PFNGLGETSAMPLERPARAMETERIIVPROC biz_glGetSamplerParameterIiv;
-#define glGetSamplerParameterIiv(...) WRAP_PFN(biz_glGetSamplerParameterIiv, __VA_ARGS__)
-typedef void (*PFNGLGETSAMPLERPARAMETERFVPROC)(GLuint sampler, GLenum pname, GLfloat *params);
-GLAPI PFNGLGETSAMPLERPARAMETERFVPROC biz_glGetSamplerParameterfv;
-#define glGetSamplerParameterfv(...) WRAP_PFN(biz_glGetSamplerParameterfv, __VA_ARGS__)
-typedef void (*PFNGLGETSAMPLERPARAMETERIUIVPROC)(GLuint sampler, GLenum pname, GLuint *params);
-GLAPI PFNGLGETSAMPLERPARAMETERIUIVPROC biz_glGetSamplerParameterIuiv;
-#define glGetSamplerParameterIuiv(...) WRAP_PFN(biz_glGetSamplerParameterIuiv, __VA_ARGS__)
-typedef void (*PFNGLQUERYCOUNTERPROC)(GLuint id, GLenum target);
-GLAPI PFNGLQUERYCOUNTERPROC biz_glQueryCounter;
-#define glQueryCounter(...) WRAP_PFN(biz_glQueryCounter, __VA_ARGS__)
-typedef void (*PFNGLGETQUERYOBJECTI64VPROC)(GLuint id, GLenum pname, GLint64 *params);
-GLAPI PFNGLGETQUERYOBJECTI64VPROC biz_glGetQueryObjecti64v;
-#define glGetQueryObjecti64v(...) WRAP_PFN(biz_glGetQueryObjecti64v, __VA_ARGS__)
-typedef void (*PFNGLGETQUERYOBJECTUI64VPROC)(GLuint id, GLenum pname, GLuint64 *params);
-GLAPI PFNGLGETQUERYOBJECTUI64VPROC biz_glGetQueryObjectui64v;
-#define glGetQueryObjectui64v(...) WRAP_PFN(biz_glGetQueryObjectui64v, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBDIVISORPROC)(GLuint index, GLuint divisor);
-GLAPI PFNGLVERTEXATTRIBDIVISORPROC biz_glVertexAttribDivisor;
-#define glVertexAttribDivisor(...) WRAP_PFN(biz_glVertexAttribDivisor, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBP1UIPROC)(GLuint index, GLenum type, GLboolean normalized, GLuint value);
-GLAPI PFNGLVERTEXATTRIBP1UIPROC biz_glVertexAttribP1ui;
-#define glVertexAttribP1ui(...) WRAP_PFN(biz_glVertexAttribP1ui, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBP1UIVPROC)(GLuint index, GLenum type, GLboolean normalized, const GLuint *value);
-GLAPI PFNGLVERTEXATTRIBP1UIVPROC biz_glVertexAttribP1uiv;
-#define glVertexAttribP1uiv(...) WRAP_PFN(biz_glVertexAttribP1uiv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBP2UIPROC)(GLuint index, GLenum type, GLboolean normalized, GLuint value);
-GLAPI PFNGLVERTEXATTRIBP2UIPROC biz_glVertexAttribP2ui;
-#define glVertexAttribP2ui(...) WRAP_PFN(biz_glVertexAttribP2ui, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBP2UIVPROC)(GLuint index, GLenum type, GLboolean normalized, const GLuint *value);
-GLAPI PFNGLVERTEXATTRIBP2UIVPROC biz_glVertexAttribP2uiv;
-#define glVertexAttribP2uiv(...) WRAP_PFN(biz_glVertexAttribP2uiv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBP3UIPROC)(GLuint index, GLenum type, GLboolean normalized, GLuint value);
-GLAPI PFNGLVERTEXATTRIBP3UIPROC biz_glVertexAttribP3ui;
-#define glVertexAttribP3ui(...) WRAP_PFN(biz_glVertexAttribP3ui, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBP3UIVPROC)(GLuint index, GLenum type, GLboolean normalized, const GLuint *value);
-GLAPI PFNGLVERTEXATTRIBP3UIVPROC biz_glVertexAttribP3uiv;
-#define glVertexAttribP3uiv(...) WRAP_PFN(biz_glVertexAttribP3uiv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBP4UIPROC)(GLuint index, GLenum type, GLboolean normalized, GLuint value);
-GLAPI PFNGLVERTEXATTRIBP4UIPROC biz_glVertexAttribP4ui;
-#define glVertexAttribP4ui(...) WRAP_PFN(biz_glVertexAttribP4ui, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBP4UIVPROC)(GLuint index, GLenum type, GLboolean normalized, const GLuint *value);
-GLAPI PFNGLVERTEXATTRIBP4UIVPROC biz_glVertexAttribP4uiv;
-#define glVertexAttribP4uiv(...) WRAP_PFN(biz_glVertexAttribP4uiv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXP2UIPROC)(GLenum type, GLuint value);
-GLAPI PFNGLVERTEXP2UIPROC biz_glVertexP2ui;
-#define glVertexP2ui(...) WRAP_PFN(biz_glVertexP2ui, __VA_ARGS__)
-typedef void (*PFNGLVERTEXP2UIVPROC)(GLenum type, const GLuint *value);
-GLAPI PFNGLVERTEXP2UIVPROC biz_glVertexP2uiv;
-#define glVertexP2uiv(...) WRAP_PFN(biz_glVertexP2uiv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXP3UIPROC)(GLenum type, GLuint value);
-GLAPI PFNGLVERTEXP3UIPROC biz_glVertexP3ui;
-#define glVertexP3ui(...) WRAP_PFN(biz_glVertexP3ui, __VA_ARGS__)
-typedef void (*PFNGLVERTEXP3UIVPROC)(GLenum type, const GLuint *value);
-GLAPI PFNGLVERTEXP3UIVPROC biz_glVertexP3uiv;
-#define glVertexP3uiv(...) WRAP_PFN(biz_glVertexP3uiv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXP4UIPROC)(GLenum type, GLuint value);
-GLAPI PFNGLVERTEXP4UIPROC biz_glVertexP4ui;
-#define glVertexP4ui(...) WRAP_PFN(biz_glVertexP4ui, __VA_ARGS__)
-typedef void (*PFNGLVERTEXP4UIVPROC)(GLenum type, const GLuint *value);
-GLAPI PFNGLVERTEXP4UIVPROC biz_glVertexP4uiv;
-#define glVertexP4uiv(...) WRAP_PFN(biz_glVertexP4uiv, __VA_ARGS__)
-typedef void (*PFNGLTEXCOORDP1UIPROC)(GLenum type, GLuint coords);
-GLAPI PFNGLTEXCOORDP1UIPROC biz_glTexCoordP1ui;
-#define glTexCoordP1ui(...) WRAP_PFN(biz_glTexCoordP1ui, __VA_ARGS__)
-typedef void (*PFNGLTEXCOORDP1UIVPROC)(GLenum type, const GLuint *coords);
-GLAPI PFNGLTEXCOORDP1UIVPROC biz_glTexCoordP1uiv;
-#define glTexCoordP1uiv(...) WRAP_PFN(biz_glTexCoordP1uiv, __VA_ARGS__)
-typedef void (*PFNGLTEXCOORDP2UIPROC)(GLenum type, GLuint coords);
-GLAPI PFNGLTEXCOORDP2UIPROC biz_glTexCoordP2ui;
-#define glTexCoordP2ui(...) WRAP_PFN(biz_glTexCoordP2ui, __VA_ARGS__)
-typedef void (*PFNGLTEXCOORDP2UIVPROC)(GLenum type, const GLuint *coords);
-GLAPI PFNGLTEXCOORDP2UIVPROC biz_glTexCoordP2uiv;
-#define glTexCoordP2uiv(...) WRAP_PFN(biz_glTexCoordP2uiv, __VA_ARGS__)
-typedef void (*PFNGLTEXCOORDP3UIPROC)(GLenum type, GLuint coords);
-GLAPI PFNGLTEXCOORDP3UIPROC biz_glTexCoordP3ui;
-#define glTexCoordP3ui(...) WRAP_PFN(biz_glTexCoordP3ui, __VA_ARGS__)
-typedef void (*PFNGLTEXCOORDP3UIVPROC)(GLenum type, const GLuint *coords);
-GLAPI PFNGLTEXCOORDP3UIVPROC biz_glTexCoordP3uiv;
-#define glTexCoordP3uiv(...) WRAP_PFN(biz_glTexCoordP3uiv, __VA_ARGS__)
-typedef void (*PFNGLTEXCOORDP4UIPROC)(GLenum type, GLuint coords);
-GLAPI PFNGLTEXCOORDP4UIPROC biz_glTexCoordP4ui;
-#define glTexCoordP4ui(...) WRAP_PFN(biz_glTexCoordP4ui, __VA_ARGS__)
-typedef void (*PFNGLTEXCOORDP4UIVPROC)(GLenum type, const GLuint *coords);
-GLAPI PFNGLTEXCOORDP4UIVPROC biz_glTexCoordP4uiv;
-#define glTexCoordP4uiv(...) WRAP_PFN(biz_glTexCoordP4uiv, __VA_ARGS__)
-typedef void (*PFNGLMULTITEXCOORDP1UIPROC)(GLenum texture, GLenum type, GLuint coords);
-GLAPI PFNGLMULTITEXCOORDP1UIPROC biz_glMultiTexCoordP1ui;
-#define glMultiTexCoordP1ui(...) WRAP_PFN(biz_glMultiTexCoordP1ui, __VA_ARGS__)
-typedef void (*PFNGLMULTITEXCOORDP1UIVPROC)(GLenum texture, GLenum type, const GLuint *coords);
-GLAPI PFNGLMULTITEXCOORDP1UIVPROC biz_glMultiTexCoordP1uiv;
-#define glMultiTexCoordP1uiv(...) WRAP_PFN(biz_glMultiTexCoordP1uiv, __VA_ARGS__)
-typedef void (*PFNGLMULTITEXCOORDP2UIPROC)(GLenum texture, GLenum type, GLuint coords);
-GLAPI PFNGLMULTITEXCOORDP2UIPROC biz_glMultiTexCoordP2ui;
-#define glMultiTexCoordP2ui(...) WRAP_PFN(biz_glMultiTexCoordP2ui, __VA_ARGS__)
-typedef void (*PFNGLMULTITEXCOORDP2UIVPROC)(GLenum texture, GLenum type, const GLuint *coords);
-GLAPI PFNGLMULTITEXCOORDP2UIVPROC biz_glMultiTexCoordP2uiv;
-#define glMultiTexCoordP2uiv(...) WRAP_PFN(biz_glMultiTexCoordP2uiv, __VA_ARGS__)
-typedef void (*PFNGLMULTITEXCOORDP3UIPROC)(GLenum texture, GLenum type, GLuint coords);
-GLAPI PFNGLMULTITEXCOORDP3UIPROC biz_glMultiTexCoordP3ui;
-#define glMultiTexCoordP3ui(...) WRAP_PFN(biz_glMultiTexCoordP3ui, __VA_ARGS__)
-typedef void (*PFNGLMULTITEXCOORDP3UIVPROC)(GLenum texture, GLenum type, const GLuint *coords);
-GLAPI PFNGLMULTITEXCOORDP3UIVPROC biz_glMultiTexCoordP3uiv;
-#define glMultiTexCoordP3uiv(...) WRAP_PFN(biz_glMultiTexCoordP3uiv, __VA_ARGS__)
-typedef void (*PFNGLMULTITEXCOORDP4UIPROC)(GLenum texture, GLenum type, GLuint coords);
-GLAPI PFNGLMULTITEXCOORDP4UIPROC biz_glMultiTexCoordP4ui;
-#define glMultiTexCoordP4ui(...) WRAP_PFN(biz_glMultiTexCoordP4ui, __VA_ARGS__)
-typedef void (*PFNGLMULTITEXCOORDP4UIVPROC)(GLenum texture, GLenum type, const GLuint *coords);
-GLAPI PFNGLMULTITEXCOORDP4UIVPROC biz_glMultiTexCoordP4uiv;
-#define glMultiTexCoordP4uiv(...) WRAP_PFN(biz_glMultiTexCoordP4uiv, __VA_ARGS__)
-typedef void (*PFNGLNORMALP3UIPROC)(GLenum type, GLuint coords);
-GLAPI PFNGLNORMALP3UIPROC biz_glNormalP3ui;
-#define glNormalP3ui(...) WRAP_PFN(biz_glNormalP3ui, __VA_ARGS__)
-typedef void (*PFNGLNORMALP3UIVPROC)(GLenum type, const GLuint *coords);
-GLAPI PFNGLNORMALP3UIVPROC biz_glNormalP3uiv;
-#define glNormalP3uiv(...) WRAP_PFN(biz_glNormalP3uiv, __VA_ARGS__)
-typedef void (*PFNGLCOLORP3UIPROC)(GLenum type, GLuint color);
-GLAPI PFNGLCOLORP3UIPROC biz_glColorP3ui;
-#define glColorP3ui(...) WRAP_PFN(biz_glColorP3ui, __VA_ARGS__)
-typedef void (*PFNGLCOLORP3UIVPROC)(GLenum type, const GLuint *color);
-GLAPI PFNGLCOLORP3UIVPROC biz_glColorP3uiv;
-#define glColorP3uiv(...) WRAP_PFN(biz_glColorP3uiv, __VA_ARGS__)
-typedef void (*PFNGLCOLORP4UIPROC)(GLenum type, GLuint color);
-GLAPI PFNGLCOLORP4UIPROC biz_glColorP4ui;
-#define glColorP4ui(...) WRAP_PFN(biz_glColorP4ui, __VA_ARGS__)
-typedef void (*PFNGLCOLORP4UIVPROC)(GLenum type, const GLuint *color);
-GLAPI PFNGLCOLORP4UIVPROC biz_glColorP4uiv;
-#define glColorP4uiv(...) WRAP_PFN(biz_glColorP4uiv, __VA_ARGS__)
-typedef void (*PFNGLSECONDARYCOLORP3UIPROC)(GLenum type, GLuint color);
-GLAPI PFNGLSECONDARYCOLORP3UIPROC biz_glSecondaryColorP3ui;
-#define glSecondaryColorP3ui(...) WRAP_PFN(biz_glSecondaryColorP3ui, __VA_ARGS__)
-typedef void (*PFNGLSECONDARYCOLORP3UIVPROC)(GLenum type, const GLuint *color);
-GLAPI PFNGLSECONDARYCOLORP3UIVPROC biz_glSecondaryColorP3uiv;
-#define glSecondaryColorP3uiv(...) WRAP_PFN(biz_glSecondaryColorP3uiv, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLuint program, GLuint colorNumber, GLuint index, const GLchar *name)> biz_glBindFragDataLocationIndexed;
+#define glBindFragDataLocationIndexed biz_glBindFragDataLocationIndexed
+extern BizOGL::GLFunctor<GLint (GLuint program, const GLchar *name)> biz_glGetFragDataIndex;
+#define glGetFragDataIndex biz_glGetFragDataIndex
+extern BizOGL::GLFunctor<void (GLsizei count, GLuint *samplers)> biz_glGenSamplers;
+#define glGenSamplers biz_glGenSamplers
+extern BizOGL::GLFunctor<void (GLsizei count, const GLuint *samplers)> biz_glDeleteSamplers;
+#define glDeleteSamplers biz_glDeleteSamplers
+extern BizOGL::GLFunctor<GLboolean (GLuint sampler)> biz_glIsSampler;
+#define glIsSampler biz_glIsSampler
+extern BizOGL::GLFunctor<void (GLuint unit, GLuint sampler)> biz_glBindSampler;
+#define glBindSampler biz_glBindSampler
+extern BizOGL::GLFunctor<void (GLuint sampler, GLenum pname, GLint param)> biz_glSamplerParameteri;
+#define glSamplerParameteri biz_glSamplerParameteri
+extern BizOGL::GLFunctor<void (GLuint sampler, GLenum pname, const GLint *param)> biz_glSamplerParameteriv;
+#define glSamplerParameteriv biz_glSamplerParameteriv
+extern BizOGL::GLFunctor<void (GLuint sampler, GLenum pname, GLfloat param)> biz_glSamplerParameterf;
+#define glSamplerParameterf biz_glSamplerParameterf
+extern BizOGL::GLFunctor<void (GLuint sampler, GLenum pname, const GLfloat *param)> biz_glSamplerParameterfv;
+#define glSamplerParameterfv biz_glSamplerParameterfv
+extern BizOGL::GLFunctor<void (GLuint sampler, GLenum pname, const GLint *param)> biz_glSamplerParameterIiv;
+#define glSamplerParameterIiv biz_glSamplerParameterIiv
+extern BizOGL::GLFunctor<void (GLuint sampler, GLenum pname, const GLuint *param)> biz_glSamplerParameterIuiv;
+#define glSamplerParameterIuiv biz_glSamplerParameterIuiv
+extern BizOGL::GLFunctor<void (GLuint sampler, GLenum pname, GLint *params)> biz_glGetSamplerParameteriv;
+#define glGetSamplerParameteriv biz_glGetSamplerParameteriv
+extern BizOGL::GLFunctor<void (GLuint sampler, GLenum pname, GLint *params)> biz_glGetSamplerParameterIiv;
+#define glGetSamplerParameterIiv biz_glGetSamplerParameterIiv
+extern BizOGL::GLFunctor<void (GLuint sampler, GLenum pname, GLfloat *params)> biz_glGetSamplerParameterfv;
+#define glGetSamplerParameterfv biz_glGetSamplerParameterfv
+extern BizOGL::GLFunctor<void (GLuint sampler, GLenum pname, GLuint *params)> biz_glGetSamplerParameterIuiv;
+#define glGetSamplerParameterIuiv biz_glGetSamplerParameterIuiv
+extern BizOGL::GLFunctor<void (GLuint id, GLenum target)> biz_glQueryCounter;
+#define glQueryCounter biz_glQueryCounter
+extern BizOGL::GLFunctor<void (GLuint id, GLenum pname, GLint64 *params)> biz_glGetQueryObjecti64v;
+#define glGetQueryObjecti64v biz_glGetQueryObjecti64v
+extern BizOGL::GLFunctor<void (GLuint id, GLenum pname, GLuint64 *params)> biz_glGetQueryObjectui64v;
+#define glGetQueryObjectui64v biz_glGetQueryObjectui64v
+extern BizOGL::GLFunctor<void (GLuint index, GLuint divisor)> biz_glVertexAttribDivisor;
+#define glVertexAttribDivisor biz_glVertexAttribDivisor
+extern BizOGL::GLFunctor<void (GLuint index, GLenum type, GLboolean normalized, GLuint value)> biz_glVertexAttribP1ui;
+#define glVertexAttribP1ui biz_glVertexAttribP1ui
+extern BizOGL::GLFunctor<void (GLuint index, GLenum type, GLboolean normalized, const GLuint *value)> biz_glVertexAttribP1uiv;
+#define glVertexAttribP1uiv biz_glVertexAttribP1uiv
+extern BizOGL::GLFunctor<void (GLuint index, GLenum type, GLboolean normalized, GLuint value)> biz_glVertexAttribP2ui;
+#define glVertexAttribP2ui biz_glVertexAttribP2ui
+extern BizOGL::GLFunctor<void (GLuint index, GLenum type, GLboolean normalized, const GLuint *value)> biz_glVertexAttribP2uiv;
+#define glVertexAttribP2uiv biz_glVertexAttribP2uiv
+extern BizOGL::GLFunctor<void (GLuint index, GLenum type, GLboolean normalized, GLuint value)> biz_glVertexAttribP3ui;
+#define glVertexAttribP3ui biz_glVertexAttribP3ui
+extern BizOGL::GLFunctor<void (GLuint index, GLenum type, GLboolean normalized, const GLuint *value)> biz_glVertexAttribP3uiv;
+#define glVertexAttribP3uiv biz_glVertexAttribP3uiv
+extern BizOGL::GLFunctor<void (GLuint index, GLenum type, GLboolean normalized, GLuint value)> biz_glVertexAttribP4ui;
+#define glVertexAttribP4ui biz_glVertexAttribP4ui
+extern BizOGL::GLFunctor<void (GLuint index, GLenum type, GLboolean normalized, const GLuint *value)> biz_glVertexAttribP4uiv;
+#define glVertexAttribP4uiv biz_glVertexAttribP4uiv
+extern BizOGL::GLFunctor<void (GLenum type, GLuint value)> biz_glVertexP2ui;
+#define glVertexP2ui biz_glVertexP2ui
+extern BizOGL::GLFunctor<void (GLenum type, const GLuint *value)> biz_glVertexP2uiv;
+#define glVertexP2uiv biz_glVertexP2uiv
+extern BizOGL::GLFunctor<void (GLenum type, GLuint value)> biz_glVertexP3ui;
+#define glVertexP3ui biz_glVertexP3ui
+extern BizOGL::GLFunctor<void (GLenum type, const GLuint *value)> biz_glVertexP3uiv;
+#define glVertexP3uiv biz_glVertexP3uiv
+extern BizOGL::GLFunctor<void (GLenum type, GLuint value)> biz_glVertexP4ui;
+#define glVertexP4ui biz_glVertexP4ui
+extern BizOGL::GLFunctor<void (GLenum type, const GLuint *value)> biz_glVertexP4uiv;
+#define glVertexP4uiv biz_glVertexP4uiv
+extern BizOGL::GLFunctor<void (GLenum type, GLuint coords)> biz_glTexCoordP1ui;
+#define glTexCoordP1ui biz_glTexCoordP1ui
+extern BizOGL::GLFunctor<void (GLenum type, const GLuint *coords)> biz_glTexCoordP1uiv;
+#define glTexCoordP1uiv biz_glTexCoordP1uiv
+extern BizOGL::GLFunctor<void (GLenum type, GLuint coords)> biz_glTexCoordP2ui;
+#define glTexCoordP2ui biz_glTexCoordP2ui
+extern BizOGL::GLFunctor<void (GLenum type, const GLuint *coords)> biz_glTexCoordP2uiv;
+#define glTexCoordP2uiv biz_glTexCoordP2uiv
+extern BizOGL::GLFunctor<void (GLenum type, GLuint coords)> biz_glTexCoordP3ui;
+#define glTexCoordP3ui biz_glTexCoordP3ui
+extern BizOGL::GLFunctor<void (GLenum type, const GLuint *coords)> biz_glTexCoordP3uiv;
+#define glTexCoordP3uiv biz_glTexCoordP3uiv
+extern BizOGL::GLFunctor<void (GLenum type, GLuint coords)> biz_glTexCoordP4ui;
+#define glTexCoordP4ui biz_glTexCoordP4ui
+extern BizOGL::GLFunctor<void (GLenum type, const GLuint *coords)> biz_glTexCoordP4uiv;
+#define glTexCoordP4uiv biz_glTexCoordP4uiv
+extern BizOGL::GLFunctor<void (GLenum texture, GLenum type, GLuint coords)> biz_glMultiTexCoordP1ui;
+#define glMultiTexCoordP1ui biz_glMultiTexCoordP1ui
+extern BizOGL::GLFunctor<void (GLenum texture, GLenum type, const GLuint *coords)> biz_glMultiTexCoordP1uiv;
+#define glMultiTexCoordP1uiv biz_glMultiTexCoordP1uiv
+extern BizOGL::GLFunctor<void (GLenum texture, GLenum type, GLuint coords)> biz_glMultiTexCoordP2ui;
+#define glMultiTexCoordP2ui biz_glMultiTexCoordP2ui
+extern BizOGL::GLFunctor<void (GLenum texture, GLenum type, const GLuint *coords)> biz_glMultiTexCoordP2uiv;
+#define glMultiTexCoordP2uiv biz_glMultiTexCoordP2uiv
+extern BizOGL::GLFunctor<void (GLenum texture, GLenum type, GLuint coords)> biz_glMultiTexCoordP3ui;
+#define glMultiTexCoordP3ui biz_glMultiTexCoordP3ui
+extern BizOGL::GLFunctor<void (GLenum texture, GLenum type, const GLuint *coords)> biz_glMultiTexCoordP3uiv;
+#define glMultiTexCoordP3uiv biz_glMultiTexCoordP3uiv
+extern BizOGL::GLFunctor<void (GLenum texture, GLenum type, GLuint coords)> biz_glMultiTexCoordP4ui;
+#define glMultiTexCoordP4ui biz_glMultiTexCoordP4ui
+extern BizOGL::GLFunctor<void (GLenum texture, GLenum type, const GLuint *coords)> biz_glMultiTexCoordP4uiv;
+#define glMultiTexCoordP4uiv biz_glMultiTexCoordP4uiv
+extern BizOGL::GLFunctor<void (GLenum type, GLuint coords)> biz_glNormalP3ui;
+#define glNormalP3ui biz_glNormalP3ui
+extern BizOGL::GLFunctor<void (GLenum type, const GLuint *coords)> biz_glNormalP3uiv;
+#define glNormalP3uiv biz_glNormalP3uiv
+extern BizOGL::GLFunctor<void (GLenum type, GLuint color)> biz_glColorP3ui;
+#define glColorP3ui biz_glColorP3ui
+extern BizOGL::GLFunctor<void (GLenum type, const GLuint *color)> biz_glColorP3uiv;
+#define glColorP3uiv biz_glColorP3uiv
+extern BizOGL::GLFunctor<void (GLenum type, GLuint color)> biz_glColorP4ui;
+#define glColorP4ui biz_glColorP4ui
+extern BizOGL::GLFunctor<void (GLenum type, const GLuint *color)> biz_glColorP4uiv;
+#define glColorP4uiv biz_glColorP4uiv
+extern BizOGL::GLFunctor<void (GLenum type, GLuint color)> biz_glSecondaryColorP3ui;
+#define glSecondaryColorP3ui biz_glSecondaryColorP3ui
+extern BizOGL::GLFunctor<void (GLenum type, const GLuint *color)> biz_glSecondaryColorP3uiv;
+#define glSecondaryColorP3uiv biz_glSecondaryColorP3uiv
 
 #define GL_VERSION_4_0 1
-typedef void (*PFNGLMINSAMPLESHADINGPROC)(GLfloat value);
-GLAPI PFNGLMINSAMPLESHADINGPROC biz_glMinSampleShading;
-#define glMinSampleShading(...) WRAP_PFN(biz_glMinSampleShading, __VA_ARGS__)
-typedef void (*PFNGLBLENDEQUATIONIPROC)(GLuint buf, GLenum mode);
-GLAPI PFNGLBLENDEQUATIONIPROC biz_glBlendEquationi;
-#define glBlendEquationi(...) WRAP_PFN(biz_glBlendEquationi, __VA_ARGS__)
-typedef void (*PFNGLBLENDEQUATIONSEPARATEIPROC)(GLuint buf, GLenum modeRGB, GLenum modeAlpha);
-GLAPI PFNGLBLENDEQUATIONSEPARATEIPROC biz_glBlendEquationSeparatei;
-#define glBlendEquationSeparatei(...) WRAP_PFN(biz_glBlendEquationSeparatei, __VA_ARGS__)
-typedef void (*PFNGLBLENDFUNCIPROC)(GLuint buf, GLenum src, GLenum dst);
-GLAPI PFNGLBLENDFUNCIPROC biz_glBlendFunci;
-#define glBlendFunci(...) WRAP_PFN(biz_glBlendFunci, __VA_ARGS__)
-typedef void (*PFNGLBLENDFUNCSEPARATEIPROC)(GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
-GLAPI PFNGLBLENDFUNCSEPARATEIPROC biz_glBlendFuncSeparatei;
-#define glBlendFuncSeparatei(...) WRAP_PFN(biz_glBlendFuncSeparatei, __VA_ARGS__)
-typedef void (*PFNGLDRAWARRAYSINDIRECTPROC)(GLenum mode, const void *indirect);
-GLAPI PFNGLDRAWARRAYSINDIRECTPROC biz_glDrawArraysIndirect;
-#define glDrawArraysIndirect(...) WRAP_PFN(biz_glDrawArraysIndirect, __VA_ARGS__)
-typedef void (*PFNGLDRAWELEMENTSINDIRECTPROC)(GLenum mode, GLenum type, const void *indirect);
-GLAPI PFNGLDRAWELEMENTSINDIRECTPROC biz_glDrawElementsIndirect;
-#define glDrawElementsIndirect(...) WRAP_PFN(biz_glDrawElementsIndirect, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM1DPROC)(GLint location, GLdouble x);
-GLAPI PFNGLUNIFORM1DPROC biz_glUniform1d;
-#define glUniform1d(...) WRAP_PFN(biz_glUniform1d, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM2DPROC)(GLint location, GLdouble x, GLdouble y);
-GLAPI PFNGLUNIFORM2DPROC biz_glUniform2d;
-#define glUniform2d(...) WRAP_PFN(biz_glUniform2d, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM3DPROC)(GLint location, GLdouble x, GLdouble y, GLdouble z);
-GLAPI PFNGLUNIFORM3DPROC biz_glUniform3d;
-#define glUniform3d(...) WRAP_PFN(biz_glUniform3d, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM4DPROC)(GLint location, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-GLAPI PFNGLUNIFORM4DPROC biz_glUniform4d;
-#define glUniform4d(...) WRAP_PFN(biz_glUniform4d, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM1DVPROC)(GLint location, GLsizei count, const GLdouble *value);
-GLAPI PFNGLUNIFORM1DVPROC biz_glUniform1dv;
-#define glUniform1dv(...) WRAP_PFN(biz_glUniform1dv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM2DVPROC)(GLint location, GLsizei count, const GLdouble *value);
-GLAPI PFNGLUNIFORM2DVPROC biz_glUniform2dv;
-#define glUniform2dv(...) WRAP_PFN(biz_glUniform2dv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM3DVPROC)(GLint location, GLsizei count, const GLdouble *value);
-GLAPI PFNGLUNIFORM3DVPROC biz_glUniform3dv;
-#define glUniform3dv(...) WRAP_PFN(biz_glUniform3dv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORM4DVPROC)(GLint location, GLsizei count, const GLdouble *value);
-GLAPI PFNGLUNIFORM4DVPROC biz_glUniform4dv;
-#define glUniform4dv(...) WRAP_PFN(biz_glUniform4dv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX2DVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLUNIFORMMATRIX2DVPROC biz_glUniformMatrix2dv;
-#define glUniformMatrix2dv(...) WRAP_PFN(biz_glUniformMatrix2dv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX3DVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLUNIFORMMATRIX3DVPROC biz_glUniformMatrix3dv;
-#define glUniformMatrix3dv(...) WRAP_PFN(biz_glUniformMatrix3dv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX4DVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLUNIFORMMATRIX4DVPROC biz_glUniformMatrix4dv;
-#define glUniformMatrix4dv(...) WRAP_PFN(biz_glUniformMatrix4dv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX2X3DVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLUNIFORMMATRIX2X3DVPROC biz_glUniformMatrix2x3dv;
-#define glUniformMatrix2x3dv(...) WRAP_PFN(biz_glUniformMatrix2x3dv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX2X4DVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLUNIFORMMATRIX2X4DVPROC biz_glUniformMatrix2x4dv;
-#define glUniformMatrix2x4dv(...) WRAP_PFN(biz_glUniformMatrix2x4dv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX3X2DVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLUNIFORMMATRIX3X2DVPROC biz_glUniformMatrix3x2dv;
-#define glUniformMatrix3x2dv(...) WRAP_PFN(biz_glUniformMatrix3x2dv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX3X4DVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLUNIFORMMATRIX3X4DVPROC biz_glUniformMatrix3x4dv;
-#define glUniformMatrix3x4dv(...) WRAP_PFN(biz_glUniformMatrix3x4dv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX4X2DVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLUNIFORMMATRIX4X2DVPROC biz_glUniformMatrix4x2dv;
-#define glUniformMatrix4x2dv(...) WRAP_PFN(biz_glUniformMatrix4x2dv, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMMATRIX4X3DVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLUNIFORMMATRIX4X3DVPROC biz_glUniformMatrix4x3dv;
-#define glUniformMatrix4x3dv(...) WRAP_PFN(biz_glUniformMatrix4x3dv, __VA_ARGS__)
-typedef void (*PFNGLGETUNIFORMDVPROC)(GLuint program, GLint location, GLdouble *params);
-GLAPI PFNGLGETUNIFORMDVPROC biz_glGetUniformdv;
-#define glGetUniformdv(...) WRAP_PFN(biz_glGetUniformdv, __VA_ARGS__)
-typedef GLint (*PFNGLGETSUBROUTINEUNIFORMLOCATIONPROC)(GLuint program, GLenum shadertype, const GLchar *name);
-GLAPI PFNGLGETSUBROUTINEUNIFORMLOCATIONPROC biz_glGetSubroutineUniformLocation;
-#define glGetSubroutineUniformLocation(...) WRAP_PFN(biz_glGetSubroutineUniformLocation, __VA_ARGS__)
-typedef GLuint (*PFNGLGETSUBROUTINEINDEXPROC)(GLuint program, GLenum shadertype, const GLchar *name);
-GLAPI PFNGLGETSUBROUTINEINDEXPROC biz_glGetSubroutineIndex;
-#define glGetSubroutineIndex(...) WRAP_PFN(biz_glGetSubroutineIndex, __VA_ARGS__)
-typedef void (*PFNGLGETACTIVESUBROUTINEUNIFORMIVPROC)(GLuint program, GLenum shadertype, GLuint index, GLenum pname, GLint *values);
-GLAPI PFNGLGETACTIVESUBROUTINEUNIFORMIVPROC biz_glGetActiveSubroutineUniformiv;
-#define glGetActiveSubroutineUniformiv(...) WRAP_PFN(biz_glGetActiveSubroutineUniformiv, __VA_ARGS__)
-typedef void (*PFNGLGETACTIVESUBROUTINEUNIFORMNAMEPROC)(GLuint program, GLenum shadertype, GLuint index, GLsizei bufSize, GLsizei *length, GLchar *name);
-GLAPI PFNGLGETACTIVESUBROUTINEUNIFORMNAMEPROC biz_glGetActiveSubroutineUniformName;
-#define glGetActiveSubroutineUniformName(...) WRAP_PFN(biz_glGetActiveSubroutineUniformName, __VA_ARGS__)
-typedef void (*PFNGLGETACTIVESUBROUTINENAMEPROC)(GLuint program, GLenum shadertype, GLuint index, GLsizei bufSize, GLsizei *length, GLchar *name);
-GLAPI PFNGLGETACTIVESUBROUTINENAMEPROC biz_glGetActiveSubroutineName;
-#define glGetActiveSubroutineName(...) WRAP_PFN(biz_glGetActiveSubroutineName, __VA_ARGS__)
-typedef void (*PFNGLUNIFORMSUBROUTINESUIVPROC)(GLenum shadertype, GLsizei count, const GLuint *indices);
-GLAPI PFNGLUNIFORMSUBROUTINESUIVPROC biz_glUniformSubroutinesuiv;
-#define glUniformSubroutinesuiv(...) WRAP_PFN(biz_glUniformSubroutinesuiv, __VA_ARGS__)
-typedef void (*PFNGLGETUNIFORMSUBROUTINEUIVPROC)(GLenum shadertype, GLint location, GLuint *params);
-GLAPI PFNGLGETUNIFORMSUBROUTINEUIVPROC biz_glGetUniformSubroutineuiv;
-#define glGetUniformSubroutineuiv(...) WRAP_PFN(biz_glGetUniformSubroutineuiv, __VA_ARGS__)
-typedef void (*PFNGLGETPROGRAMSTAGEIVPROC)(GLuint program, GLenum shadertype, GLenum pname, GLint *values);
-GLAPI PFNGLGETPROGRAMSTAGEIVPROC biz_glGetProgramStageiv;
-#define glGetProgramStageiv(...) WRAP_PFN(biz_glGetProgramStageiv, __VA_ARGS__)
-typedef void (*PFNGLPATCHPARAMETERIPROC)(GLenum pname, GLint value);
-GLAPI PFNGLPATCHPARAMETERIPROC biz_glPatchParameteri;
-#define glPatchParameteri(...) WRAP_PFN(biz_glPatchParameteri, __VA_ARGS__)
-typedef void (*PFNGLPATCHPARAMETERFVPROC)(GLenum pname, const GLfloat *values);
-GLAPI PFNGLPATCHPARAMETERFVPROC biz_glPatchParameterfv;
-#define glPatchParameterfv(...) WRAP_PFN(biz_glPatchParameterfv, __VA_ARGS__)
-typedef void (*PFNGLBINDTRANSFORMFEEDBACKPROC)(GLenum target, GLuint id);
-GLAPI PFNGLBINDTRANSFORMFEEDBACKPROC biz_glBindTransformFeedback;
-#define glBindTransformFeedback(...) WRAP_PFN(biz_glBindTransformFeedback, __VA_ARGS__)
-typedef void (*PFNGLDELETETRANSFORMFEEDBACKSPROC)(GLsizei n, const GLuint *ids);
-GLAPI PFNGLDELETETRANSFORMFEEDBACKSPROC biz_glDeleteTransformFeedbacks;
-#define glDeleteTransformFeedbacks(...) WRAP_PFN(biz_glDeleteTransformFeedbacks, __VA_ARGS__)
-typedef void (*PFNGLGENTRANSFORMFEEDBACKSPROC)(GLsizei n, GLuint *ids);
-GLAPI PFNGLGENTRANSFORMFEEDBACKSPROC biz_glGenTransformFeedbacks;
-#define glGenTransformFeedbacks(...) WRAP_PFN(biz_glGenTransformFeedbacks, __VA_ARGS__)
-typedef GLboolean (*PFNGLISTRANSFORMFEEDBACKPROC)(GLuint id);
-GLAPI PFNGLISTRANSFORMFEEDBACKPROC biz_glIsTransformFeedback;
-#define glIsTransformFeedback(...) WRAP_PFN(biz_glIsTransformFeedback, __VA_ARGS__)
-typedef void (*PFNGLPAUSETRANSFORMFEEDBACKPROC)(void);
-GLAPI PFNGLPAUSETRANSFORMFEEDBACKPROC biz_glPauseTransformFeedback;
-#define glPauseTransformFeedback(...) WRAP_PFN(biz_glPauseTransformFeedback, __VA_ARGS__)
-typedef void (*PFNGLRESUMETRANSFORMFEEDBACKPROC)(void);
-GLAPI PFNGLRESUMETRANSFORMFEEDBACKPROC biz_glResumeTransformFeedback;
-#define glResumeTransformFeedback(...) WRAP_PFN(biz_glResumeTransformFeedback, __VA_ARGS__)
-typedef void (*PFNGLDRAWTRANSFORMFEEDBACKPROC)(GLenum mode, GLuint id);
-GLAPI PFNGLDRAWTRANSFORMFEEDBACKPROC biz_glDrawTransformFeedback;
-#define glDrawTransformFeedback(...) WRAP_PFN(biz_glDrawTransformFeedback, __VA_ARGS__)
-typedef void (*PFNGLDRAWTRANSFORMFEEDBACKSTREAMPROC)(GLenum mode, GLuint id, GLuint stream);
-GLAPI PFNGLDRAWTRANSFORMFEEDBACKSTREAMPROC biz_glDrawTransformFeedbackStream;
-#define glDrawTransformFeedbackStream(...) WRAP_PFN(biz_glDrawTransformFeedbackStream, __VA_ARGS__)
-typedef void (*PFNGLBEGINQUERYINDEXEDPROC)(GLenum target, GLuint index, GLuint id);
-GLAPI PFNGLBEGINQUERYINDEXEDPROC biz_glBeginQueryIndexed;
-#define glBeginQueryIndexed(...) WRAP_PFN(biz_glBeginQueryIndexed, __VA_ARGS__)
-typedef void (*PFNGLENDQUERYINDEXEDPROC)(GLenum target, GLuint index);
-GLAPI PFNGLENDQUERYINDEXEDPROC biz_glEndQueryIndexed;
-#define glEndQueryIndexed(...) WRAP_PFN(biz_glEndQueryIndexed, __VA_ARGS__)
-typedef void (*PFNGLGETQUERYINDEXEDIVPROC)(GLenum target, GLuint index, GLenum pname, GLint *params);
-GLAPI PFNGLGETQUERYINDEXEDIVPROC biz_glGetQueryIndexediv;
-#define glGetQueryIndexediv(...) WRAP_PFN(biz_glGetQueryIndexediv, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLfloat value)> biz_glMinSampleShading;
+#define glMinSampleShading biz_glMinSampleShading
+extern BizOGL::GLFunctor<void (GLuint buf, GLenum mode)> biz_glBlendEquationi;
+#define glBlendEquationi biz_glBlendEquationi
+extern BizOGL::GLFunctor<void (GLuint buf, GLenum modeRGB, GLenum modeAlpha)> biz_glBlendEquationSeparatei;
+#define glBlendEquationSeparatei biz_glBlendEquationSeparatei
+extern BizOGL::GLFunctor<void (GLuint buf, GLenum src, GLenum dst)> biz_glBlendFunci;
+#define glBlendFunci biz_glBlendFunci
+extern BizOGL::GLFunctor<void (GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)> biz_glBlendFuncSeparatei;
+#define glBlendFuncSeparatei biz_glBlendFuncSeparatei
+extern BizOGL::GLFunctor<void (GLenum mode, const void *indirect)> biz_glDrawArraysIndirect;
+#define glDrawArraysIndirect biz_glDrawArraysIndirect
+extern BizOGL::GLFunctor<void (GLenum mode, GLenum type, const void *indirect)> biz_glDrawElementsIndirect;
+#define glDrawElementsIndirect biz_glDrawElementsIndirect
+extern BizOGL::GLFunctor<void (GLint location, GLdouble x)> biz_glUniform1d;
+#define glUniform1d biz_glUniform1d
+extern BizOGL::GLFunctor<void (GLint location, GLdouble x, GLdouble y)> biz_glUniform2d;
+#define glUniform2d biz_glUniform2d
+extern BizOGL::GLFunctor<void (GLint location, GLdouble x, GLdouble y, GLdouble z)> biz_glUniform3d;
+#define glUniform3d biz_glUniform3d
+extern BizOGL::GLFunctor<void (GLint location, GLdouble x, GLdouble y, GLdouble z, GLdouble w)> biz_glUniform4d;
+#define glUniform4d biz_glUniform4d
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLdouble *value)> biz_glUniform1dv;
+#define glUniform1dv biz_glUniform1dv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLdouble *value)> biz_glUniform2dv;
+#define glUniform2dv biz_glUniform2dv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLdouble *value)> biz_glUniform3dv;
+#define glUniform3dv biz_glUniform3dv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, const GLdouble *value)> biz_glUniform4dv;
+#define glUniform4dv biz_glUniform4dv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glUniformMatrix2dv;
+#define glUniformMatrix2dv biz_glUniformMatrix2dv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glUniformMatrix3dv;
+#define glUniformMatrix3dv biz_glUniformMatrix3dv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glUniformMatrix4dv;
+#define glUniformMatrix4dv biz_glUniformMatrix4dv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glUniformMatrix2x3dv;
+#define glUniformMatrix2x3dv biz_glUniformMatrix2x3dv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glUniformMatrix2x4dv;
+#define glUniformMatrix2x4dv biz_glUniformMatrix2x4dv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glUniformMatrix3x2dv;
+#define glUniformMatrix3x2dv biz_glUniformMatrix3x2dv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glUniformMatrix3x4dv;
+#define glUniformMatrix3x4dv biz_glUniformMatrix3x4dv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glUniformMatrix4x2dv;
+#define glUniformMatrix4x2dv biz_glUniformMatrix4x2dv
+extern BizOGL::GLFunctor<void (GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glUniformMatrix4x3dv;
+#define glUniformMatrix4x3dv biz_glUniformMatrix4x3dv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLdouble *params)> biz_glGetUniformdv;
+#define glGetUniformdv biz_glGetUniformdv
+extern BizOGL::GLFunctor<GLint (GLuint program, GLenum shadertype, const GLchar *name)> biz_glGetSubroutineUniformLocation;
+#define glGetSubroutineUniformLocation biz_glGetSubroutineUniformLocation
+extern BizOGL::GLFunctor<GLuint (GLuint program, GLenum shadertype, const GLchar *name)> biz_glGetSubroutineIndex;
+#define glGetSubroutineIndex biz_glGetSubroutineIndex
+extern BizOGL::GLFunctor<void (GLuint program, GLenum shadertype, GLuint index, GLenum pname, GLint *values)> biz_glGetActiveSubroutineUniformiv;
+#define glGetActiveSubroutineUniformiv biz_glGetActiveSubroutineUniformiv
+extern BizOGL::GLFunctor<void (GLuint program, GLenum shadertype, GLuint index, GLsizei bufSize, GLsizei *length, GLchar *name)> biz_glGetActiveSubroutineUniformName;
+#define glGetActiveSubroutineUniformName biz_glGetActiveSubroutineUniformName
+extern BizOGL::GLFunctor<void (GLuint program, GLenum shadertype, GLuint index, GLsizei bufSize, GLsizei *length, GLchar *name)> biz_glGetActiveSubroutineName;
+#define glGetActiveSubroutineName biz_glGetActiveSubroutineName
+extern BizOGL::GLFunctor<void (GLenum shadertype, GLsizei count, const GLuint *indices)> biz_glUniformSubroutinesuiv;
+#define glUniformSubroutinesuiv biz_glUniformSubroutinesuiv
+extern BizOGL::GLFunctor<void (GLenum shadertype, GLint location, GLuint *params)> biz_glGetUniformSubroutineuiv;
+#define glGetUniformSubroutineuiv biz_glGetUniformSubroutineuiv
+extern BizOGL::GLFunctor<void (GLuint program, GLenum shadertype, GLenum pname, GLint *values)> biz_glGetProgramStageiv;
+#define glGetProgramStageiv biz_glGetProgramStageiv
+extern BizOGL::GLFunctor<void (GLenum pname, GLint value)> biz_glPatchParameteri;
+#define glPatchParameteri biz_glPatchParameteri
+extern BizOGL::GLFunctor<void (GLenum pname, const GLfloat *values)> biz_glPatchParameterfv;
+#define glPatchParameterfv biz_glPatchParameterfv
+extern BizOGL::GLFunctor<void (GLenum target, GLuint id)> biz_glBindTransformFeedback;
+#define glBindTransformFeedback biz_glBindTransformFeedback
+extern BizOGL::GLFunctor<void (GLsizei n, const GLuint *ids)> biz_glDeleteTransformFeedbacks;
+#define glDeleteTransformFeedbacks biz_glDeleteTransformFeedbacks
+extern BizOGL::GLFunctor<void (GLsizei n, GLuint *ids)> biz_glGenTransformFeedbacks;
+#define glGenTransformFeedbacks biz_glGenTransformFeedbacks
+extern BizOGL::GLFunctor<GLboolean (GLuint id)> biz_glIsTransformFeedback;
+#define glIsTransformFeedback biz_glIsTransformFeedback
+extern BizOGL::GLFunctor<void (void)> biz_glPauseTransformFeedback;
+#define glPauseTransformFeedback biz_glPauseTransformFeedback
+extern BizOGL::GLFunctor<void (void)> biz_glResumeTransformFeedback;
+#define glResumeTransformFeedback biz_glResumeTransformFeedback
+extern BizOGL::GLFunctor<void (GLenum mode, GLuint id)> biz_glDrawTransformFeedback;
+#define glDrawTransformFeedback biz_glDrawTransformFeedback
+extern BizOGL::GLFunctor<void (GLenum mode, GLuint id, GLuint stream)> biz_glDrawTransformFeedbackStream;
+#define glDrawTransformFeedbackStream biz_glDrawTransformFeedbackStream
+extern BizOGL::GLFunctor<void (GLenum target, GLuint index, GLuint id)> biz_glBeginQueryIndexed;
+#define glBeginQueryIndexed biz_glBeginQueryIndexed
+extern BizOGL::GLFunctor<void (GLenum target, GLuint index)> biz_glEndQueryIndexed;
+#define glEndQueryIndexed biz_glEndQueryIndexed
+extern BizOGL::GLFunctor<void (GLenum target, GLuint index, GLenum pname, GLint *params)> biz_glGetQueryIndexediv;
+#define glGetQueryIndexediv biz_glGetQueryIndexediv
 
 #define GL_VERSION_4_1 1
-typedef void (*PFNGLRELEASESHADERCOMPILERPROC)(void);
-GLAPI PFNGLRELEASESHADERCOMPILERPROC biz_glReleaseShaderCompiler;
-#define glReleaseShaderCompiler(...) WRAP_PFN(biz_glReleaseShaderCompiler, __VA_ARGS__)
-typedef void (*PFNGLSHADERBINARYPROC)(GLsizei count, const GLuint *shaders, GLenum binaryFormat, const void *binary, GLsizei length);
-GLAPI PFNGLSHADERBINARYPROC biz_glShaderBinary;
-#define glShaderBinary(...) WRAP_PFN(biz_glShaderBinary, __VA_ARGS__)
-typedef void (*PFNGLGETSHADERPRECISIONFORMATPROC)(GLenum shadertype, GLenum precisiontype, GLint *range, GLint *precision);
-GLAPI PFNGLGETSHADERPRECISIONFORMATPROC biz_glGetShaderPrecisionFormat;
-#define glGetShaderPrecisionFormat(...) WRAP_PFN(biz_glGetShaderPrecisionFormat, __VA_ARGS__)
-typedef void (*PFNGLDEPTHRANGEFPROC)(GLfloat n, GLfloat f);
-GLAPI PFNGLDEPTHRANGEFPROC biz_glDepthRangef;
-#define glDepthRangef(...) WRAP_PFN(biz_glDepthRangef, __VA_ARGS__)
-typedef void (*PFNGLCLEARDEPTHFPROC)(GLfloat d);
-GLAPI PFNGLCLEARDEPTHFPROC biz_glClearDepthf;
-#define glClearDepthf(...) WRAP_PFN(biz_glClearDepthf, __VA_ARGS__)
-typedef void (*PFNGLGETPROGRAMBINARYPROC)(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, void *binary);
-GLAPI PFNGLGETPROGRAMBINARYPROC biz_glGetProgramBinary;
-#define glGetProgramBinary(...) WRAP_PFN(biz_glGetProgramBinary, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMBINARYPROC)(GLuint program, GLenum binaryFormat, const void *binary, GLsizei length);
-GLAPI PFNGLPROGRAMBINARYPROC biz_glProgramBinary;
-#define glProgramBinary(...) WRAP_PFN(biz_glProgramBinary, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMPARAMETERIPROC)(GLuint program, GLenum pname, GLint value);
-GLAPI PFNGLPROGRAMPARAMETERIPROC biz_glProgramParameteri;
-#define glProgramParameteri(...) WRAP_PFN(biz_glProgramParameteri, __VA_ARGS__)
-typedef void (*PFNGLUSEPROGRAMSTAGESPROC)(GLuint pipeline, GLbitfield stages, GLuint program);
-GLAPI PFNGLUSEPROGRAMSTAGESPROC biz_glUseProgramStages;
-#define glUseProgramStages(...) WRAP_PFN(biz_glUseProgramStages, __VA_ARGS__)
-typedef void (*PFNGLACTIVESHADERPROGRAMPROC)(GLuint pipeline, GLuint program);
-GLAPI PFNGLACTIVESHADERPROGRAMPROC biz_glActiveShaderProgram;
-#define glActiveShaderProgram(...) WRAP_PFN(biz_glActiveShaderProgram, __VA_ARGS__)
-typedef GLuint (*PFNGLCREATESHADERPROGRAMVPROC)(GLenum type, GLsizei count, const GLchar *const*strings);
-GLAPI PFNGLCREATESHADERPROGRAMVPROC biz_glCreateShaderProgramv;
-#define glCreateShaderProgramv(...) WRAP_PFN(biz_glCreateShaderProgramv, __VA_ARGS__)
-typedef void (*PFNGLBINDPROGRAMPIPELINEPROC)(GLuint pipeline);
-GLAPI PFNGLBINDPROGRAMPIPELINEPROC biz_glBindProgramPipeline;
-#define glBindProgramPipeline(...) WRAP_PFN(biz_glBindProgramPipeline, __VA_ARGS__)
-typedef void (*PFNGLDELETEPROGRAMPIPELINESPROC)(GLsizei n, const GLuint *pipelines);
-GLAPI PFNGLDELETEPROGRAMPIPELINESPROC biz_glDeleteProgramPipelines;
-#define glDeleteProgramPipelines(...) WRAP_PFN(biz_glDeleteProgramPipelines, __VA_ARGS__)
-typedef void (*PFNGLGENPROGRAMPIPELINESPROC)(GLsizei n, GLuint *pipelines);
-GLAPI PFNGLGENPROGRAMPIPELINESPROC biz_glGenProgramPipelines;
-#define glGenProgramPipelines(...) WRAP_PFN(biz_glGenProgramPipelines, __VA_ARGS__)
-typedef GLboolean (*PFNGLISPROGRAMPIPELINEPROC)(GLuint pipeline);
-GLAPI PFNGLISPROGRAMPIPELINEPROC biz_glIsProgramPipeline;
-#define glIsProgramPipeline(...) WRAP_PFN(biz_glIsProgramPipeline, __VA_ARGS__)
-typedef void (*PFNGLGETPROGRAMPIPELINEIVPROC)(GLuint pipeline, GLenum pname, GLint *params);
-GLAPI PFNGLGETPROGRAMPIPELINEIVPROC biz_glGetProgramPipelineiv;
-#define glGetProgramPipelineiv(...) WRAP_PFN(biz_glGetProgramPipelineiv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM1IPROC)(GLuint program, GLint location, GLint v0);
-GLAPI PFNGLPROGRAMUNIFORM1IPROC biz_glProgramUniform1i;
-#define glProgramUniform1i(...) WRAP_PFN(biz_glProgramUniform1i, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM1IVPROC)(GLuint program, GLint location, GLsizei count, const GLint *value);
-GLAPI PFNGLPROGRAMUNIFORM1IVPROC biz_glProgramUniform1iv;
-#define glProgramUniform1iv(...) WRAP_PFN(biz_glProgramUniform1iv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM1FPROC)(GLuint program, GLint location, GLfloat v0);
-GLAPI PFNGLPROGRAMUNIFORM1FPROC biz_glProgramUniform1f;
-#define glProgramUniform1f(...) WRAP_PFN(biz_glProgramUniform1f, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM1FVPROC)(GLuint program, GLint location, GLsizei count, const GLfloat *value);
-GLAPI PFNGLPROGRAMUNIFORM1FVPROC biz_glProgramUniform1fv;
-#define glProgramUniform1fv(...) WRAP_PFN(biz_glProgramUniform1fv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM1DPROC)(GLuint program, GLint location, GLdouble v0);
-GLAPI PFNGLPROGRAMUNIFORM1DPROC biz_glProgramUniform1d;
-#define glProgramUniform1d(...) WRAP_PFN(biz_glProgramUniform1d, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM1DVPROC)(GLuint program, GLint location, GLsizei count, const GLdouble *value);
-GLAPI PFNGLPROGRAMUNIFORM1DVPROC biz_glProgramUniform1dv;
-#define glProgramUniform1dv(...) WRAP_PFN(biz_glProgramUniform1dv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM1UIPROC)(GLuint program, GLint location, GLuint v0);
-GLAPI PFNGLPROGRAMUNIFORM1UIPROC biz_glProgramUniform1ui;
-#define glProgramUniform1ui(...) WRAP_PFN(biz_glProgramUniform1ui, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM1UIVPROC)(GLuint program, GLint location, GLsizei count, const GLuint *value);
-GLAPI PFNGLPROGRAMUNIFORM1UIVPROC biz_glProgramUniform1uiv;
-#define glProgramUniform1uiv(...) WRAP_PFN(biz_glProgramUniform1uiv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM2IPROC)(GLuint program, GLint location, GLint v0, GLint v1);
-GLAPI PFNGLPROGRAMUNIFORM2IPROC biz_glProgramUniform2i;
-#define glProgramUniform2i(...) WRAP_PFN(biz_glProgramUniform2i, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM2IVPROC)(GLuint program, GLint location, GLsizei count, const GLint *value);
-GLAPI PFNGLPROGRAMUNIFORM2IVPROC biz_glProgramUniform2iv;
-#define glProgramUniform2iv(...) WRAP_PFN(biz_glProgramUniform2iv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM2FPROC)(GLuint program, GLint location, GLfloat v0, GLfloat v1);
-GLAPI PFNGLPROGRAMUNIFORM2FPROC biz_glProgramUniform2f;
-#define glProgramUniform2f(...) WRAP_PFN(biz_glProgramUniform2f, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM2FVPROC)(GLuint program, GLint location, GLsizei count, const GLfloat *value);
-GLAPI PFNGLPROGRAMUNIFORM2FVPROC biz_glProgramUniform2fv;
-#define glProgramUniform2fv(...) WRAP_PFN(biz_glProgramUniform2fv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM2DPROC)(GLuint program, GLint location, GLdouble v0, GLdouble v1);
-GLAPI PFNGLPROGRAMUNIFORM2DPROC biz_glProgramUniform2d;
-#define glProgramUniform2d(...) WRAP_PFN(biz_glProgramUniform2d, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM2DVPROC)(GLuint program, GLint location, GLsizei count, const GLdouble *value);
-GLAPI PFNGLPROGRAMUNIFORM2DVPROC biz_glProgramUniform2dv;
-#define glProgramUniform2dv(...) WRAP_PFN(biz_glProgramUniform2dv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM2UIPROC)(GLuint program, GLint location, GLuint v0, GLuint v1);
-GLAPI PFNGLPROGRAMUNIFORM2UIPROC biz_glProgramUniform2ui;
-#define glProgramUniform2ui(...) WRAP_PFN(biz_glProgramUniform2ui, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM2UIVPROC)(GLuint program, GLint location, GLsizei count, const GLuint *value);
-GLAPI PFNGLPROGRAMUNIFORM2UIVPROC biz_glProgramUniform2uiv;
-#define glProgramUniform2uiv(...) WRAP_PFN(biz_glProgramUniform2uiv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM3IPROC)(GLuint program, GLint location, GLint v0, GLint v1, GLint v2);
-GLAPI PFNGLPROGRAMUNIFORM3IPROC biz_glProgramUniform3i;
-#define glProgramUniform3i(...) WRAP_PFN(biz_glProgramUniform3i, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM3IVPROC)(GLuint program, GLint location, GLsizei count, const GLint *value);
-GLAPI PFNGLPROGRAMUNIFORM3IVPROC biz_glProgramUniform3iv;
-#define glProgramUniform3iv(...) WRAP_PFN(biz_glProgramUniform3iv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM3FPROC)(GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
-GLAPI PFNGLPROGRAMUNIFORM3FPROC biz_glProgramUniform3f;
-#define glProgramUniform3f(...) WRAP_PFN(biz_glProgramUniform3f, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM3FVPROC)(GLuint program, GLint location, GLsizei count, const GLfloat *value);
-GLAPI PFNGLPROGRAMUNIFORM3FVPROC biz_glProgramUniform3fv;
-#define glProgramUniform3fv(...) WRAP_PFN(biz_glProgramUniform3fv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM3DPROC)(GLuint program, GLint location, GLdouble v0, GLdouble v1, GLdouble v2);
-GLAPI PFNGLPROGRAMUNIFORM3DPROC biz_glProgramUniform3d;
-#define glProgramUniform3d(...) WRAP_PFN(biz_glProgramUniform3d, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM3DVPROC)(GLuint program, GLint location, GLsizei count, const GLdouble *value);
-GLAPI PFNGLPROGRAMUNIFORM3DVPROC biz_glProgramUniform3dv;
-#define glProgramUniform3dv(...) WRAP_PFN(biz_glProgramUniform3dv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM3UIPROC)(GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2);
-GLAPI PFNGLPROGRAMUNIFORM3UIPROC biz_glProgramUniform3ui;
-#define glProgramUniform3ui(...) WRAP_PFN(biz_glProgramUniform3ui, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM3UIVPROC)(GLuint program, GLint location, GLsizei count, const GLuint *value);
-GLAPI PFNGLPROGRAMUNIFORM3UIVPROC biz_glProgramUniform3uiv;
-#define glProgramUniform3uiv(...) WRAP_PFN(biz_glProgramUniform3uiv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM4IPROC)(GLuint program, GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
-GLAPI PFNGLPROGRAMUNIFORM4IPROC biz_glProgramUniform4i;
-#define glProgramUniform4i(...) WRAP_PFN(biz_glProgramUniform4i, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM4IVPROC)(GLuint program, GLint location, GLsizei count, const GLint *value);
-GLAPI PFNGLPROGRAMUNIFORM4IVPROC biz_glProgramUniform4iv;
-#define glProgramUniform4iv(...) WRAP_PFN(biz_glProgramUniform4iv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM4FPROC)(GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
-GLAPI PFNGLPROGRAMUNIFORM4FPROC biz_glProgramUniform4f;
-#define glProgramUniform4f(...) WRAP_PFN(biz_glProgramUniform4f, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM4FVPROC)(GLuint program, GLint location, GLsizei count, const GLfloat *value);
-GLAPI PFNGLPROGRAMUNIFORM4FVPROC biz_glProgramUniform4fv;
-#define glProgramUniform4fv(...) WRAP_PFN(biz_glProgramUniform4fv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM4DPROC)(GLuint program, GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3);
-GLAPI PFNGLPROGRAMUNIFORM4DPROC biz_glProgramUniform4d;
-#define glProgramUniform4d(...) WRAP_PFN(biz_glProgramUniform4d, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM4DVPROC)(GLuint program, GLint location, GLsizei count, const GLdouble *value);
-GLAPI PFNGLPROGRAMUNIFORM4DVPROC biz_glProgramUniform4dv;
-#define glProgramUniform4dv(...) WRAP_PFN(biz_glProgramUniform4dv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM4UIPROC)(GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3);
-GLAPI PFNGLPROGRAMUNIFORM4UIPROC biz_glProgramUniform4ui;
-#define glProgramUniform4ui(...) WRAP_PFN(biz_glProgramUniform4ui, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORM4UIVPROC)(GLuint program, GLint location, GLsizei count, const GLuint *value);
-GLAPI PFNGLPROGRAMUNIFORM4UIVPROC biz_glProgramUniform4uiv;
-#define glProgramUniform4uiv(...) WRAP_PFN(biz_glProgramUniform4uiv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX2FVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX2FVPROC biz_glProgramUniformMatrix2fv;
-#define glProgramUniformMatrix2fv(...) WRAP_PFN(biz_glProgramUniformMatrix2fv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX3FVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX3FVPROC biz_glProgramUniformMatrix3fv;
-#define glProgramUniformMatrix3fv(...) WRAP_PFN(biz_glProgramUniformMatrix3fv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX4FVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX4FVPROC biz_glProgramUniformMatrix4fv;
-#define glProgramUniformMatrix4fv(...) WRAP_PFN(biz_glProgramUniformMatrix4fv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX2DVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX2DVPROC biz_glProgramUniformMatrix2dv;
-#define glProgramUniformMatrix2dv(...) WRAP_PFN(biz_glProgramUniformMatrix2dv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX3DVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX3DVPROC biz_glProgramUniformMatrix3dv;
-#define glProgramUniformMatrix3dv(...) WRAP_PFN(biz_glProgramUniformMatrix3dv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX4DVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX4DVPROC biz_glProgramUniformMatrix4dv;
-#define glProgramUniformMatrix4dv(...) WRAP_PFN(biz_glProgramUniformMatrix4dv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX2X3FVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX2X3FVPROC biz_glProgramUniformMatrix2x3fv;
-#define glProgramUniformMatrix2x3fv(...) WRAP_PFN(biz_glProgramUniformMatrix2x3fv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX3X2FVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX3X2FVPROC biz_glProgramUniformMatrix3x2fv;
-#define glProgramUniformMatrix3x2fv(...) WRAP_PFN(biz_glProgramUniformMatrix3x2fv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX2X4FVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX2X4FVPROC biz_glProgramUniformMatrix2x4fv;
-#define glProgramUniformMatrix2x4fv(...) WRAP_PFN(biz_glProgramUniformMatrix2x4fv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX4X2FVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX4X2FVPROC biz_glProgramUniformMatrix4x2fv;
-#define glProgramUniformMatrix4x2fv(...) WRAP_PFN(biz_glProgramUniformMatrix4x2fv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX3X4FVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX3X4FVPROC biz_glProgramUniformMatrix3x4fv;
-#define glProgramUniformMatrix3x4fv(...) WRAP_PFN(biz_glProgramUniformMatrix3x4fv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX4X3FVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX4X3FVPROC biz_glProgramUniformMatrix4x3fv;
-#define glProgramUniformMatrix4x3fv(...) WRAP_PFN(biz_glProgramUniformMatrix4x3fv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX2X3DVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX2X3DVPROC biz_glProgramUniformMatrix2x3dv;
-#define glProgramUniformMatrix2x3dv(...) WRAP_PFN(biz_glProgramUniformMatrix2x3dv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX3X2DVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX3X2DVPROC biz_glProgramUniformMatrix3x2dv;
-#define glProgramUniformMatrix3x2dv(...) WRAP_PFN(biz_glProgramUniformMatrix3x2dv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX2X4DVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX2X4DVPROC biz_glProgramUniformMatrix2x4dv;
-#define glProgramUniformMatrix2x4dv(...) WRAP_PFN(biz_glProgramUniformMatrix2x4dv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX4X2DVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX4X2DVPROC biz_glProgramUniformMatrix4x2dv;
-#define glProgramUniformMatrix4x2dv(...) WRAP_PFN(biz_glProgramUniformMatrix4x2dv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX3X4DVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX3X4DVPROC biz_glProgramUniformMatrix3x4dv;
-#define glProgramUniformMatrix3x4dv(...) WRAP_PFN(biz_glProgramUniformMatrix3x4dv, __VA_ARGS__)
-typedef void (*PFNGLPROGRAMUNIFORMMATRIX4X3DVPROC)(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value);
-GLAPI PFNGLPROGRAMUNIFORMMATRIX4X3DVPROC biz_glProgramUniformMatrix4x3dv;
-#define glProgramUniformMatrix4x3dv(...) WRAP_PFN(biz_glProgramUniformMatrix4x3dv, __VA_ARGS__)
-typedef void (*PFNGLVALIDATEPROGRAMPIPELINEPROC)(GLuint pipeline);
-GLAPI PFNGLVALIDATEPROGRAMPIPELINEPROC biz_glValidateProgramPipeline;
-#define glValidateProgramPipeline(...) WRAP_PFN(biz_glValidateProgramPipeline, __VA_ARGS__)
-typedef void (*PFNGLGETPROGRAMPIPELINEINFOLOGPROC)(GLuint pipeline, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-GLAPI PFNGLGETPROGRAMPIPELINEINFOLOGPROC biz_glGetProgramPipelineInfoLog;
-#define glGetProgramPipelineInfoLog(...) WRAP_PFN(biz_glGetProgramPipelineInfoLog, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBL1DPROC)(GLuint index, GLdouble x);
-GLAPI PFNGLVERTEXATTRIBL1DPROC biz_glVertexAttribL1d;
-#define glVertexAttribL1d(...) WRAP_PFN(biz_glVertexAttribL1d, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBL2DPROC)(GLuint index, GLdouble x, GLdouble y);
-GLAPI PFNGLVERTEXATTRIBL2DPROC biz_glVertexAttribL2d;
-#define glVertexAttribL2d(...) WRAP_PFN(biz_glVertexAttribL2d, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBL3DPROC)(GLuint index, GLdouble x, GLdouble y, GLdouble z);
-GLAPI PFNGLVERTEXATTRIBL3DPROC biz_glVertexAttribL3d;
-#define glVertexAttribL3d(...) WRAP_PFN(biz_glVertexAttribL3d, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBL4DPROC)(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-GLAPI PFNGLVERTEXATTRIBL4DPROC biz_glVertexAttribL4d;
-#define glVertexAttribL4d(...) WRAP_PFN(biz_glVertexAttribL4d, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBL1DVPROC)(GLuint index, const GLdouble *v);
-GLAPI PFNGLVERTEXATTRIBL1DVPROC biz_glVertexAttribL1dv;
-#define glVertexAttribL1dv(...) WRAP_PFN(biz_glVertexAttribL1dv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBL2DVPROC)(GLuint index, const GLdouble *v);
-GLAPI PFNGLVERTEXATTRIBL2DVPROC biz_glVertexAttribL2dv;
-#define glVertexAttribL2dv(...) WRAP_PFN(biz_glVertexAttribL2dv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBL3DVPROC)(GLuint index, const GLdouble *v);
-GLAPI PFNGLVERTEXATTRIBL3DVPROC biz_glVertexAttribL3dv;
-#define glVertexAttribL3dv(...) WRAP_PFN(biz_glVertexAttribL3dv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBL4DVPROC)(GLuint index, const GLdouble *v);
-GLAPI PFNGLVERTEXATTRIBL4DVPROC biz_glVertexAttribL4dv;
-#define glVertexAttribL4dv(...) WRAP_PFN(biz_glVertexAttribL4dv, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBLPOINTERPROC)(GLuint index, GLint size, GLenum type, GLsizei stride, const void *pointer);
-GLAPI PFNGLVERTEXATTRIBLPOINTERPROC biz_glVertexAttribLPointer;
-#define glVertexAttribLPointer(...) WRAP_PFN(biz_glVertexAttribLPointer, __VA_ARGS__)
-typedef void (*PFNGLGETVERTEXATTRIBLDVPROC)(GLuint index, GLenum pname, GLdouble *params);
-GLAPI PFNGLGETVERTEXATTRIBLDVPROC biz_glGetVertexAttribLdv;
-#define glGetVertexAttribLdv(...) WRAP_PFN(biz_glGetVertexAttribLdv, __VA_ARGS__)
-typedef void (*PFNGLVIEWPORTARRAYVPROC)(GLuint first, GLsizei count, const GLfloat *v);
-GLAPI PFNGLVIEWPORTARRAYVPROC biz_glViewportArrayv;
-#define glViewportArrayv(...) WRAP_PFN(biz_glViewportArrayv, __VA_ARGS__)
-typedef void (*PFNGLVIEWPORTINDEXEDFPROC)(GLuint index, GLfloat x, GLfloat y, GLfloat w, GLfloat h);
-GLAPI PFNGLVIEWPORTINDEXEDFPROC biz_glViewportIndexedf;
-#define glViewportIndexedf(...) WRAP_PFN(biz_glViewportIndexedf, __VA_ARGS__)
-typedef void (*PFNGLVIEWPORTINDEXEDFVPROC)(GLuint index, const GLfloat *v);
-GLAPI PFNGLVIEWPORTINDEXEDFVPROC biz_glViewportIndexedfv;
-#define glViewportIndexedfv(...) WRAP_PFN(biz_glViewportIndexedfv, __VA_ARGS__)
-typedef void (*PFNGLSCISSORARRAYVPROC)(GLuint first, GLsizei count, const GLint *v);
-GLAPI PFNGLSCISSORARRAYVPROC biz_glScissorArrayv;
-#define glScissorArrayv(...) WRAP_PFN(biz_glScissorArrayv, __VA_ARGS__)
-typedef void (*PFNGLSCISSORINDEXEDPROC)(GLuint index, GLint left, GLint bottom, GLsizei width, GLsizei height);
-GLAPI PFNGLSCISSORINDEXEDPROC biz_glScissorIndexed;
-#define glScissorIndexed(...) WRAP_PFN(biz_glScissorIndexed, __VA_ARGS__)
-typedef void (*PFNGLSCISSORINDEXEDVPROC)(GLuint index, const GLint *v);
-GLAPI PFNGLSCISSORINDEXEDVPROC biz_glScissorIndexedv;
-#define glScissorIndexedv(...) WRAP_PFN(biz_glScissorIndexedv, __VA_ARGS__)
-typedef void (*PFNGLDEPTHRANGEARRAYVPROC)(GLuint first, GLsizei count, const GLdouble *v);
-GLAPI PFNGLDEPTHRANGEARRAYVPROC biz_glDepthRangeArrayv;
-#define glDepthRangeArrayv(...) WRAP_PFN(biz_glDepthRangeArrayv, __VA_ARGS__)
-typedef void (*PFNGLDEPTHRANGEINDEXEDPROC)(GLuint index, GLdouble n, GLdouble f);
-GLAPI PFNGLDEPTHRANGEINDEXEDPROC biz_glDepthRangeIndexed;
-#define glDepthRangeIndexed(...) WRAP_PFN(biz_glDepthRangeIndexed, __VA_ARGS__)
-typedef void (*PFNGLGETFLOATI_VPROC)(GLenum target, GLuint index, GLfloat *data);
-GLAPI PFNGLGETFLOATI_VPROC biz_glGetFloati_v;
-#define glGetFloati_v(...) WRAP_PFN(biz_glGetFloati_v, __VA_ARGS__)
-typedef void (*PFNGLGETDOUBLEI_VPROC)(GLenum target, GLuint index, GLdouble *data);
-GLAPI PFNGLGETDOUBLEI_VPROC biz_glGetDoublei_v;
-#define glGetDoublei_v(...) WRAP_PFN(biz_glGetDoublei_v, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (void)> biz_glReleaseShaderCompiler;
+#define glReleaseShaderCompiler biz_glReleaseShaderCompiler
+extern BizOGL::GLFunctor<void (GLsizei count, const GLuint *shaders, GLenum binaryFormat, const void *binary, GLsizei length)> biz_glShaderBinary;
+#define glShaderBinary biz_glShaderBinary
+extern BizOGL::GLFunctor<void (GLenum shadertype, GLenum precisiontype, GLint *range, GLint *precision)> biz_glGetShaderPrecisionFormat;
+#define glGetShaderPrecisionFormat biz_glGetShaderPrecisionFormat
+extern BizOGL::GLFunctor<void (GLfloat n, GLfloat f)> biz_glDepthRangef;
+#define glDepthRangef biz_glDepthRangef
+extern BizOGL::GLFunctor<void (GLfloat d)> biz_glClearDepthf;
+#define glClearDepthf biz_glClearDepthf
+extern BizOGL::GLFunctor<void (GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, void *binary)> biz_glGetProgramBinary;
+#define glGetProgramBinary biz_glGetProgramBinary
+extern BizOGL::GLFunctor<void (GLuint program, GLenum binaryFormat, const void *binary, GLsizei length)> biz_glProgramBinary;
+#define glProgramBinary biz_glProgramBinary
+extern BizOGL::GLFunctor<void (GLuint program, GLenum pname, GLint value)> biz_glProgramParameteri;
+#define glProgramParameteri biz_glProgramParameteri
+extern BizOGL::GLFunctor<void (GLuint pipeline, GLbitfield stages, GLuint program)> biz_glUseProgramStages;
+#define glUseProgramStages biz_glUseProgramStages
+extern BizOGL::GLFunctor<void (GLuint pipeline, GLuint program)> biz_glActiveShaderProgram;
+#define glActiveShaderProgram biz_glActiveShaderProgram
+extern BizOGL::GLFunctor<GLuint (GLenum type, GLsizei count, const GLchar *const*strings)> biz_glCreateShaderProgramv;
+#define glCreateShaderProgramv biz_glCreateShaderProgramv
+extern BizOGL::GLFunctor<void (GLuint pipeline)> biz_glBindProgramPipeline;
+#define glBindProgramPipeline biz_glBindProgramPipeline
+extern BizOGL::GLFunctor<void (GLsizei n, const GLuint *pipelines)> biz_glDeleteProgramPipelines;
+#define glDeleteProgramPipelines biz_glDeleteProgramPipelines
+extern BizOGL::GLFunctor<void (GLsizei n, GLuint *pipelines)> biz_glGenProgramPipelines;
+#define glGenProgramPipelines biz_glGenProgramPipelines
+extern BizOGL::GLFunctor<GLboolean (GLuint pipeline)> biz_glIsProgramPipeline;
+#define glIsProgramPipeline biz_glIsProgramPipeline
+extern BizOGL::GLFunctor<void (GLuint pipeline, GLenum pname, GLint *params)> biz_glGetProgramPipelineiv;
+#define glGetProgramPipelineiv biz_glGetProgramPipelineiv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLint v0)> biz_glProgramUniform1i;
+#define glProgramUniform1i biz_glProgramUniform1i
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLint *value)> biz_glProgramUniform1iv;
+#define glProgramUniform1iv biz_glProgramUniform1iv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLfloat v0)> biz_glProgramUniform1f;
+#define glProgramUniform1f biz_glProgramUniform1f
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLfloat *value)> biz_glProgramUniform1fv;
+#define glProgramUniform1fv biz_glProgramUniform1fv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLdouble v0)> biz_glProgramUniform1d;
+#define glProgramUniform1d biz_glProgramUniform1d
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLdouble *value)> biz_glProgramUniform1dv;
+#define glProgramUniform1dv biz_glProgramUniform1dv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLuint v0)> biz_glProgramUniform1ui;
+#define glProgramUniform1ui biz_glProgramUniform1ui
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLuint *value)> biz_glProgramUniform1uiv;
+#define glProgramUniform1uiv biz_glProgramUniform1uiv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLint v0, GLint v1)> biz_glProgramUniform2i;
+#define glProgramUniform2i biz_glProgramUniform2i
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLint *value)> biz_glProgramUniform2iv;
+#define glProgramUniform2iv biz_glProgramUniform2iv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLfloat v0, GLfloat v1)> biz_glProgramUniform2f;
+#define glProgramUniform2f biz_glProgramUniform2f
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLfloat *value)> biz_glProgramUniform2fv;
+#define glProgramUniform2fv biz_glProgramUniform2fv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLdouble v0, GLdouble v1)> biz_glProgramUniform2d;
+#define glProgramUniform2d biz_glProgramUniform2d
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLdouble *value)> biz_glProgramUniform2dv;
+#define glProgramUniform2dv biz_glProgramUniform2dv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLuint v0, GLuint v1)> biz_glProgramUniform2ui;
+#define glProgramUniform2ui biz_glProgramUniform2ui
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLuint *value)> biz_glProgramUniform2uiv;
+#define glProgramUniform2uiv biz_glProgramUniform2uiv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLint v0, GLint v1, GLint v2)> biz_glProgramUniform3i;
+#define glProgramUniform3i biz_glProgramUniform3i
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLint *value)> biz_glProgramUniform3iv;
+#define glProgramUniform3iv biz_glProgramUniform3iv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2)> biz_glProgramUniform3f;
+#define glProgramUniform3f biz_glProgramUniform3f
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLfloat *value)> biz_glProgramUniform3fv;
+#define glProgramUniform3fv biz_glProgramUniform3fv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLdouble v0, GLdouble v1, GLdouble v2)> biz_glProgramUniform3d;
+#define glProgramUniform3d biz_glProgramUniform3d
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLdouble *value)> biz_glProgramUniform3dv;
+#define glProgramUniform3dv biz_glProgramUniform3dv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2)> biz_glProgramUniform3ui;
+#define glProgramUniform3ui biz_glProgramUniform3ui
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLuint *value)> biz_glProgramUniform3uiv;
+#define glProgramUniform3uiv biz_glProgramUniform3uiv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLint v0, GLint v1, GLint v2, GLint v3)> biz_glProgramUniform4i;
+#define glProgramUniform4i biz_glProgramUniform4i
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLint *value)> biz_glProgramUniform4iv;
+#define glProgramUniform4iv biz_glProgramUniform4iv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)> biz_glProgramUniform4f;
+#define glProgramUniform4f biz_glProgramUniform4f
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLfloat *value)> biz_glProgramUniform4fv;
+#define glProgramUniform4fv biz_glProgramUniform4fv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3)> biz_glProgramUniform4d;
+#define glProgramUniform4d biz_glProgramUniform4d
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLdouble *value)> biz_glProgramUniform4dv;
+#define glProgramUniform4dv biz_glProgramUniform4dv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3)> biz_glProgramUniform4ui;
+#define glProgramUniform4ui biz_glProgramUniform4ui
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, const GLuint *value)> biz_glProgramUniform4uiv;
+#define glProgramUniform4uiv biz_glProgramUniform4uiv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glProgramUniformMatrix2fv;
+#define glProgramUniformMatrix2fv biz_glProgramUniformMatrix2fv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glProgramUniformMatrix3fv;
+#define glProgramUniformMatrix3fv biz_glProgramUniformMatrix3fv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glProgramUniformMatrix4fv;
+#define glProgramUniformMatrix4fv biz_glProgramUniformMatrix4fv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glProgramUniformMatrix2dv;
+#define glProgramUniformMatrix2dv biz_glProgramUniformMatrix2dv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glProgramUniformMatrix3dv;
+#define glProgramUniformMatrix3dv biz_glProgramUniformMatrix3dv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glProgramUniformMatrix4dv;
+#define glProgramUniformMatrix4dv biz_glProgramUniformMatrix4dv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glProgramUniformMatrix2x3fv;
+#define glProgramUniformMatrix2x3fv biz_glProgramUniformMatrix2x3fv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glProgramUniformMatrix3x2fv;
+#define glProgramUniformMatrix3x2fv biz_glProgramUniformMatrix3x2fv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glProgramUniformMatrix2x4fv;
+#define glProgramUniformMatrix2x4fv biz_glProgramUniformMatrix2x4fv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glProgramUniformMatrix4x2fv;
+#define glProgramUniformMatrix4x2fv biz_glProgramUniformMatrix4x2fv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glProgramUniformMatrix3x4fv;
+#define glProgramUniformMatrix3x4fv biz_glProgramUniformMatrix3x4fv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)> biz_glProgramUniformMatrix4x3fv;
+#define glProgramUniformMatrix4x3fv biz_glProgramUniformMatrix4x3fv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glProgramUniformMatrix2x3dv;
+#define glProgramUniformMatrix2x3dv biz_glProgramUniformMatrix2x3dv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glProgramUniformMatrix3x2dv;
+#define glProgramUniformMatrix3x2dv biz_glProgramUniformMatrix3x2dv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glProgramUniformMatrix2x4dv;
+#define glProgramUniformMatrix2x4dv biz_glProgramUniformMatrix2x4dv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glProgramUniformMatrix4x2dv;
+#define glProgramUniformMatrix4x2dv biz_glProgramUniformMatrix4x2dv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glProgramUniformMatrix3x4dv;
+#define glProgramUniformMatrix3x4dv biz_glProgramUniformMatrix3x4dv
+extern BizOGL::GLFunctor<void (GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble *value)> biz_glProgramUniformMatrix4x3dv;
+#define glProgramUniformMatrix4x3dv biz_glProgramUniformMatrix4x3dv
+extern BizOGL::GLFunctor<void (GLuint pipeline)> biz_glValidateProgramPipeline;
+#define glValidateProgramPipeline biz_glValidateProgramPipeline
+extern BizOGL::GLFunctor<void (GLuint pipeline, GLsizei bufSize, GLsizei *length, GLchar *infoLog)> biz_glGetProgramPipelineInfoLog;
+#define glGetProgramPipelineInfoLog biz_glGetProgramPipelineInfoLog
+extern BizOGL::GLFunctor<void (GLuint index, GLdouble x)> biz_glVertexAttribL1d;
+#define glVertexAttribL1d biz_glVertexAttribL1d
+extern BizOGL::GLFunctor<void (GLuint index, GLdouble x, GLdouble y)> biz_glVertexAttribL2d;
+#define glVertexAttribL2d biz_glVertexAttribL2d
+extern BizOGL::GLFunctor<void (GLuint index, GLdouble x, GLdouble y, GLdouble z)> biz_glVertexAttribL3d;
+#define glVertexAttribL3d biz_glVertexAttribL3d
+extern BizOGL::GLFunctor<void (GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)> biz_glVertexAttribL4d;
+#define glVertexAttribL4d biz_glVertexAttribL4d
+extern BizOGL::GLFunctor<void (GLuint index, const GLdouble *v)> biz_glVertexAttribL1dv;
+#define glVertexAttribL1dv biz_glVertexAttribL1dv
+extern BizOGL::GLFunctor<void (GLuint index, const GLdouble *v)> biz_glVertexAttribL2dv;
+#define glVertexAttribL2dv biz_glVertexAttribL2dv
+extern BizOGL::GLFunctor<void (GLuint index, const GLdouble *v)> biz_glVertexAttribL3dv;
+#define glVertexAttribL3dv biz_glVertexAttribL3dv
+extern BizOGL::GLFunctor<void (GLuint index, const GLdouble *v)> biz_glVertexAttribL4dv;
+#define glVertexAttribL4dv biz_glVertexAttribL4dv
+extern BizOGL::GLFunctor<void (GLuint index, GLint size, GLenum type, GLsizei stride, const void *pointer)> biz_glVertexAttribLPointer;
+#define glVertexAttribLPointer biz_glVertexAttribLPointer
+extern BizOGL::GLFunctor<void (GLuint index, GLenum pname, GLdouble *params)> biz_glGetVertexAttribLdv;
+#define glGetVertexAttribLdv biz_glGetVertexAttribLdv
+extern BizOGL::GLFunctor<void (GLuint first, GLsizei count, const GLfloat *v)> biz_glViewportArrayv;
+#define glViewportArrayv biz_glViewportArrayv
+extern BizOGL::GLFunctor<void (GLuint index, GLfloat x, GLfloat y, GLfloat w, GLfloat h)> biz_glViewportIndexedf;
+#define glViewportIndexedf biz_glViewportIndexedf
+extern BizOGL::GLFunctor<void (GLuint index, const GLfloat *v)> biz_glViewportIndexedfv;
+#define glViewportIndexedfv biz_glViewportIndexedfv
+extern BizOGL::GLFunctor<void (GLuint first, GLsizei count, const GLint *v)> biz_glScissorArrayv;
+#define glScissorArrayv biz_glScissorArrayv
+extern BizOGL::GLFunctor<void (GLuint index, GLint left, GLint bottom, GLsizei width, GLsizei height)> biz_glScissorIndexed;
+#define glScissorIndexed biz_glScissorIndexed
+extern BizOGL::GLFunctor<void (GLuint index, const GLint *v)> biz_glScissorIndexedv;
+#define glScissorIndexedv biz_glScissorIndexedv
+extern BizOGL::GLFunctor<void (GLuint first, GLsizei count, const GLdouble *v)> biz_glDepthRangeArrayv;
+#define glDepthRangeArrayv biz_glDepthRangeArrayv
+extern BizOGL::GLFunctor<void (GLuint index, GLdouble n, GLdouble f)> biz_glDepthRangeIndexed;
+#define glDepthRangeIndexed biz_glDepthRangeIndexed
+extern BizOGL::GLFunctor<void (GLenum target, GLuint index, GLfloat *data)> biz_glGetFloati_v;
+#define glGetFloati_v biz_glGetFloati_v
+extern BizOGL::GLFunctor<void (GLenum target, GLuint index, GLdouble *data)> biz_glGetDoublei_v;
+#define glGetDoublei_v biz_glGetDoublei_v
 
 #define GL_VERSION_4_2 1
-typedef void (*PFNGLDRAWARRAYSINSTANCEDBASEINSTANCEPROC)(GLenum mode, GLint first, GLsizei count, GLsizei instancecount, GLuint baseinstance);
-GLAPI PFNGLDRAWARRAYSINSTANCEDBASEINSTANCEPROC biz_glDrawArraysInstancedBaseInstance;
-#define glDrawArraysInstancedBaseInstance(...) WRAP_PFN(biz_glDrawArraysInstancedBaseInstance, __VA_ARGS__)
-typedef void (*PFNGLDRAWELEMENTSINSTANCEDBASEINSTANCEPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount, GLuint baseinstance);
-GLAPI PFNGLDRAWELEMENTSINSTANCEDBASEINSTANCEPROC biz_glDrawElementsInstancedBaseInstance;
-#define glDrawElementsInstancedBaseInstance(...) WRAP_PFN(biz_glDrawElementsInstancedBaseInstance, __VA_ARGS__)
-typedef void (*PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXBASEINSTANCEPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount, GLint basevertex, GLuint baseinstance);
-GLAPI PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXBASEINSTANCEPROC biz_glDrawElementsInstancedBaseVertexBaseInstance;
-#define glDrawElementsInstancedBaseVertexBaseInstance(...) WRAP_PFN(biz_glDrawElementsInstancedBaseVertexBaseInstance, __VA_ARGS__)
-typedef void (*PFNGLGETINTERNALFORMATIVPROC)(GLenum target, GLenum internalformat, GLenum pname, GLsizei count, GLint *params);
-GLAPI PFNGLGETINTERNALFORMATIVPROC biz_glGetInternalformativ;
-#define glGetInternalformativ(...) WRAP_PFN(biz_glGetInternalformativ, __VA_ARGS__)
-typedef void (*PFNGLGETACTIVEATOMICCOUNTERBUFFERIVPROC)(GLuint program, GLuint bufferIndex, GLenum pname, GLint *params);
-GLAPI PFNGLGETACTIVEATOMICCOUNTERBUFFERIVPROC biz_glGetActiveAtomicCounterBufferiv;
-#define glGetActiveAtomicCounterBufferiv(...) WRAP_PFN(biz_glGetActiveAtomicCounterBufferiv, __VA_ARGS__)
-typedef void (*PFNGLBINDIMAGETEXTUREPROC)(GLuint unit, GLuint texture, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format);
-GLAPI PFNGLBINDIMAGETEXTUREPROC biz_glBindImageTexture;
-#define glBindImageTexture(...) WRAP_PFN(biz_glBindImageTexture, __VA_ARGS__)
-typedef void (*PFNGLMEMORYBARRIERPROC)(GLbitfield barriers);
-GLAPI PFNGLMEMORYBARRIERPROC biz_glMemoryBarrier;
-#define glMemoryBarrier(...) WRAP_PFN(biz_glMemoryBarrier, __VA_ARGS__)
-typedef void (*PFNGLTEXSTORAGE1DPROC)(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width);
-GLAPI PFNGLTEXSTORAGE1DPROC biz_glTexStorage1D;
-#define glTexStorage1D(...) WRAP_PFN(biz_glTexStorage1D, __VA_ARGS__)
-typedef void (*PFNGLTEXSTORAGE2DPROC)(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
-GLAPI PFNGLTEXSTORAGE2DPROC biz_glTexStorage2D;
-#define glTexStorage2D(...) WRAP_PFN(biz_glTexStorage2D, __VA_ARGS__)
-typedef void (*PFNGLTEXSTORAGE3DPROC)(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth);
-GLAPI PFNGLTEXSTORAGE3DPROC biz_glTexStorage3D;
-#define glTexStorage3D(...) WRAP_PFN(biz_glTexStorage3D, __VA_ARGS__)
-typedef void (*PFNGLDRAWTRANSFORMFEEDBACKINSTANCEDPROC)(GLenum mode, GLuint id, GLsizei instancecount);
-GLAPI PFNGLDRAWTRANSFORMFEEDBACKINSTANCEDPROC biz_glDrawTransformFeedbackInstanced;
-#define glDrawTransformFeedbackInstanced(...) WRAP_PFN(biz_glDrawTransformFeedbackInstanced, __VA_ARGS__)
-typedef void (*PFNGLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC)(GLenum mode, GLuint id, GLuint stream, GLsizei instancecount);
-GLAPI PFNGLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC biz_glDrawTransformFeedbackStreamInstanced;
-#define glDrawTransformFeedbackStreamInstanced(...) WRAP_PFN(biz_glDrawTransformFeedbackStreamInstanced, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLenum mode, GLint first, GLsizei count, GLsizei instancecount, GLuint baseinstance)> biz_glDrawArraysInstancedBaseInstance;
+#define glDrawArraysInstancedBaseInstance biz_glDrawArraysInstancedBaseInstance
+extern BizOGL::GLFunctor<void (GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount, GLuint baseinstance)> biz_glDrawElementsInstancedBaseInstance;
+#define glDrawElementsInstancedBaseInstance biz_glDrawElementsInstancedBaseInstance
+extern BizOGL::GLFunctor<void (GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount, GLint basevertex, GLuint baseinstance)> biz_glDrawElementsInstancedBaseVertexBaseInstance;
+#define glDrawElementsInstancedBaseVertexBaseInstance biz_glDrawElementsInstancedBaseVertexBaseInstance
+extern BizOGL::GLFunctor<void (GLenum target, GLenum internalformat, GLenum pname, GLsizei count, GLint *params)> biz_glGetInternalformativ;
+#define glGetInternalformativ biz_glGetInternalformativ
+extern BizOGL::GLFunctor<void (GLuint program, GLuint bufferIndex, GLenum pname, GLint *params)> biz_glGetActiveAtomicCounterBufferiv;
+#define glGetActiveAtomicCounterBufferiv biz_glGetActiveAtomicCounterBufferiv
+extern BizOGL::GLFunctor<void (GLuint unit, GLuint texture, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format)> biz_glBindImageTexture;
+#define glBindImageTexture biz_glBindImageTexture
+extern BizOGL::GLFunctor<void (GLbitfield barriers)> biz_glMemoryBarrier;
+#define glMemoryBarrier biz_glMemoryBarrier
+extern BizOGL::GLFunctor<void (GLenum target, GLsizei levels, GLenum internalformat, GLsizei width)> biz_glTexStorage1D;
+#define glTexStorage1D biz_glTexStorage1D
+extern BizOGL::GLFunctor<void (GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height)> biz_glTexStorage2D;
+#define glTexStorage2D biz_glTexStorage2D
+extern BizOGL::GLFunctor<void (GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth)> biz_glTexStorage3D;
+#define glTexStorage3D biz_glTexStorage3D
+extern BizOGL::GLFunctor<void (GLenum mode, GLuint id, GLsizei instancecount)> biz_glDrawTransformFeedbackInstanced;
+#define glDrawTransformFeedbackInstanced biz_glDrawTransformFeedbackInstanced
+extern BizOGL::GLFunctor<void (GLenum mode, GLuint id, GLuint stream, GLsizei instancecount)> biz_glDrawTransformFeedbackStreamInstanced;
+#define glDrawTransformFeedbackStreamInstanced biz_glDrawTransformFeedbackStreamInstanced
 
 #define GL_VERSION_4_3 1
-typedef void (*PFNGLCLEARBUFFERDATAPROC)(GLenum target, GLenum internalformat, GLenum format, GLenum type, const void *data);
-GLAPI PFNGLCLEARBUFFERDATAPROC biz_glClearBufferData;
-#define glClearBufferData(...) WRAP_PFN(biz_glClearBufferData, __VA_ARGS__)
-typedef void (*PFNGLCLEARBUFFERSUBDATAPROC)(GLenum target, GLenum internalformat, GLintptr offset, GLsizeiptr size, GLenum format, GLenum type, const void *data);
-GLAPI PFNGLCLEARBUFFERSUBDATAPROC biz_glClearBufferSubData;
-#define glClearBufferSubData(...) WRAP_PFN(biz_glClearBufferSubData, __VA_ARGS__)
-typedef void (*PFNGLDISPATCHCOMPUTEPROC)(GLuint num_groups_x, GLuint num_groups_y, GLuint num_groups_z);
-GLAPI PFNGLDISPATCHCOMPUTEPROC biz_glDispatchCompute;
-#define glDispatchCompute(...) WRAP_PFN(biz_glDispatchCompute, __VA_ARGS__)
-typedef void (*PFNGLDISPATCHCOMPUTEINDIRECTPROC)(GLintptr indirect);
-GLAPI PFNGLDISPATCHCOMPUTEINDIRECTPROC biz_glDispatchComputeIndirect;
-#define glDispatchComputeIndirect(...) WRAP_PFN(biz_glDispatchComputeIndirect, __VA_ARGS__)
-typedef void (*PFNGLCOPYIMAGESUBDATAPROC)(GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei srcWidth, GLsizei srcHeight, GLsizei srcDepth);
-GLAPI PFNGLCOPYIMAGESUBDATAPROC biz_glCopyImageSubData;
-#define glCopyImageSubData(...) WRAP_PFN(biz_glCopyImageSubData, __VA_ARGS__)
-typedef void (*PFNGLFRAMEBUFFERPARAMETERIPROC)(GLenum target, GLenum pname, GLint param);
-GLAPI PFNGLFRAMEBUFFERPARAMETERIPROC biz_glFramebufferParameteri;
-#define glFramebufferParameteri(...) WRAP_PFN(biz_glFramebufferParameteri, __VA_ARGS__)
-typedef void (*PFNGLGETFRAMEBUFFERPARAMETERIVPROC)(GLenum target, GLenum pname, GLint *params);
-GLAPI PFNGLGETFRAMEBUFFERPARAMETERIVPROC biz_glGetFramebufferParameteriv;
-#define glGetFramebufferParameteriv(...) WRAP_PFN(biz_glGetFramebufferParameteriv, __VA_ARGS__)
-typedef void (*PFNGLGETINTERNALFORMATI64VPROC)(GLenum target, GLenum internalformat, GLenum pname, GLsizei count, GLint64 *params);
-GLAPI PFNGLGETINTERNALFORMATI64VPROC biz_glGetInternalformati64v;
-#define glGetInternalformati64v(...) WRAP_PFN(biz_glGetInternalformati64v, __VA_ARGS__)
-typedef void (*PFNGLINVALIDATETEXSUBIMAGEPROC)(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth);
-GLAPI PFNGLINVALIDATETEXSUBIMAGEPROC biz_glInvalidateTexSubImage;
-#define glInvalidateTexSubImage(...) WRAP_PFN(biz_glInvalidateTexSubImage, __VA_ARGS__)
-typedef void (*PFNGLINVALIDATETEXIMAGEPROC)(GLuint texture, GLint level);
-GLAPI PFNGLINVALIDATETEXIMAGEPROC biz_glInvalidateTexImage;
-#define glInvalidateTexImage(...) WRAP_PFN(biz_glInvalidateTexImage, __VA_ARGS__)
-typedef void (*PFNGLINVALIDATEBUFFERSUBDATAPROC)(GLuint buffer, GLintptr offset, GLsizeiptr length);
-GLAPI PFNGLINVALIDATEBUFFERSUBDATAPROC biz_glInvalidateBufferSubData;
-#define glInvalidateBufferSubData(...) WRAP_PFN(biz_glInvalidateBufferSubData, __VA_ARGS__)
-typedef void (*PFNGLINVALIDATEBUFFERDATAPROC)(GLuint buffer);
-GLAPI PFNGLINVALIDATEBUFFERDATAPROC biz_glInvalidateBufferData;
-#define glInvalidateBufferData(...) WRAP_PFN(biz_glInvalidateBufferData, __VA_ARGS__)
-typedef void (*PFNGLINVALIDATEFRAMEBUFFERPROC)(GLenum target, GLsizei numAttachments, const GLenum *attachments);
-GLAPI PFNGLINVALIDATEFRAMEBUFFERPROC biz_glInvalidateFramebuffer;
-#define glInvalidateFramebuffer(...) WRAP_PFN(biz_glInvalidateFramebuffer, __VA_ARGS__)
-typedef void (*PFNGLINVALIDATESUBFRAMEBUFFERPROC)(GLenum target, GLsizei numAttachments, const GLenum *attachments, GLint x, GLint y, GLsizei width, GLsizei height);
-GLAPI PFNGLINVALIDATESUBFRAMEBUFFERPROC biz_glInvalidateSubFramebuffer;
-#define glInvalidateSubFramebuffer(...) WRAP_PFN(biz_glInvalidateSubFramebuffer, __VA_ARGS__)
-typedef void (*PFNGLMULTIDRAWARRAYSINDIRECTPROC)(GLenum mode, const void *indirect, GLsizei drawcount, GLsizei stride);
-GLAPI PFNGLMULTIDRAWARRAYSINDIRECTPROC biz_glMultiDrawArraysIndirect;
-#define glMultiDrawArraysIndirect(...) WRAP_PFN(biz_glMultiDrawArraysIndirect, __VA_ARGS__)
-typedef void (*PFNGLMULTIDRAWELEMENTSINDIRECTPROC)(GLenum mode, GLenum type, const void *indirect, GLsizei drawcount, GLsizei stride);
-GLAPI PFNGLMULTIDRAWELEMENTSINDIRECTPROC biz_glMultiDrawElementsIndirect;
-#define glMultiDrawElementsIndirect(...) WRAP_PFN(biz_glMultiDrawElementsIndirect, __VA_ARGS__)
-typedef void (*PFNGLGETPROGRAMINTERFACEIVPROC)(GLuint program, GLenum programInterface, GLenum pname, GLint *params);
-GLAPI PFNGLGETPROGRAMINTERFACEIVPROC biz_glGetProgramInterfaceiv;
-#define glGetProgramInterfaceiv(...) WRAP_PFN(biz_glGetProgramInterfaceiv, __VA_ARGS__)
-typedef GLuint (*PFNGLGETPROGRAMRESOURCEINDEXPROC)(GLuint program, GLenum programInterface, const GLchar *name);
-GLAPI PFNGLGETPROGRAMRESOURCEINDEXPROC biz_glGetProgramResourceIndex;
-#define glGetProgramResourceIndex(...) WRAP_PFN(biz_glGetProgramResourceIndex, __VA_ARGS__)
-typedef void (*PFNGLGETPROGRAMRESOURCENAMEPROC)(GLuint program, GLenum programInterface, GLuint index, GLsizei bufSize, GLsizei *length, GLchar *name);
-GLAPI PFNGLGETPROGRAMRESOURCENAMEPROC biz_glGetProgramResourceName;
-#define glGetProgramResourceName(...) WRAP_PFN(biz_glGetProgramResourceName, __VA_ARGS__)
-typedef void (*PFNGLGETPROGRAMRESOURCEIVPROC)(GLuint program, GLenum programInterface, GLuint index, GLsizei propCount, const GLenum *props, GLsizei count, GLsizei *length, GLint *params);
-GLAPI PFNGLGETPROGRAMRESOURCEIVPROC biz_glGetProgramResourceiv;
-#define glGetProgramResourceiv(...) WRAP_PFN(biz_glGetProgramResourceiv, __VA_ARGS__)
-typedef GLint (*PFNGLGETPROGRAMRESOURCELOCATIONPROC)(GLuint program, GLenum programInterface, const GLchar *name);
-GLAPI PFNGLGETPROGRAMRESOURCELOCATIONPROC biz_glGetProgramResourceLocation;
-#define glGetProgramResourceLocation(...) WRAP_PFN(biz_glGetProgramResourceLocation, __VA_ARGS__)
-typedef GLint (*PFNGLGETPROGRAMRESOURCELOCATIONINDEXPROC)(GLuint program, GLenum programInterface, const GLchar *name);
-GLAPI PFNGLGETPROGRAMRESOURCELOCATIONINDEXPROC biz_glGetProgramResourceLocationIndex;
-#define glGetProgramResourceLocationIndex(...) WRAP_PFN(biz_glGetProgramResourceLocationIndex, __VA_ARGS__)
-typedef void (*PFNGLSHADERSTORAGEBLOCKBINDINGPROC)(GLuint program, GLuint storageBlockIndex, GLuint storageBlockBinding);
-GLAPI PFNGLSHADERSTORAGEBLOCKBINDINGPROC biz_glShaderStorageBlockBinding;
-#define glShaderStorageBlockBinding(...) WRAP_PFN(biz_glShaderStorageBlockBinding, __VA_ARGS__)
-typedef void (*PFNGLTEXBUFFERRANGEPROC)(GLenum target, GLenum internalformat, GLuint buffer, GLintptr offset, GLsizeiptr size);
-GLAPI PFNGLTEXBUFFERRANGEPROC biz_glTexBufferRange;
-#define glTexBufferRange(...) WRAP_PFN(biz_glTexBufferRange, __VA_ARGS__)
-typedef void (*PFNGLTEXSTORAGE2DMULTISAMPLEPROC)(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
-GLAPI PFNGLTEXSTORAGE2DMULTISAMPLEPROC biz_glTexStorage2DMultisample;
-#define glTexStorage2DMultisample(...) WRAP_PFN(biz_glTexStorage2DMultisample, __VA_ARGS__)
-typedef void (*PFNGLTEXSTORAGE3DMULTISAMPLEPROC)(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
-GLAPI PFNGLTEXSTORAGE3DMULTISAMPLEPROC biz_glTexStorage3DMultisample;
-#define glTexStorage3DMultisample(...) WRAP_PFN(biz_glTexStorage3DMultisample, __VA_ARGS__)
-typedef void (*PFNGLTEXTUREVIEWPROC)(GLuint texture, GLenum target, GLuint origtexture, GLenum internalformat, GLuint minlevel, GLuint numlevels, GLuint minlayer, GLuint numlayers);
-GLAPI PFNGLTEXTUREVIEWPROC biz_glTextureView;
-#define glTextureView(...) WRAP_PFN(biz_glTextureView, __VA_ARGS__)
-typedef void (*PFNGLBINDVERTEXBUFFERPROC)(GLuint bindingindex, GLuint buffer, GLintptr offset, GLsizei stride);
-GLAPI PFNGLBINDVERTEXBUFFERPROC biz_glBindVertexBuffer;
-#define glBindVertexBuffer(...) WRAP_PFN(biz_glBindVertexBuffer, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBFORMATPROC)(GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset);
-GLAPI PFNGLVERTEXATTRIBFORMATPROC biz_glVertexAttribFormat;
-#define glVertexAttribFormat(...) WRAP_PFN(biz_glVertexAttribFormat, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBIFORMATPROC)(GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
-GLAPI PFNGLVERTEXATTRIBIFORMATPROC biz_glVertexAttribIFormat;
-#define glVertexAttribIFormat(...) WRAP_PFN(biz_glVertexAttribIFormat, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBLFORMATPROC)(GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
-GLAPI PFNGLVERTEXATTRIBLFORMATPROC biz_glVertexAttribLFormat;
-#define glVertexAttribLFormat(...) WRAP_PFN(biz_glVertexAttribLFormat, __VA_ARGS__)
-typedef void (*PFNGLVERTEXATTRIBBINDINGPROC)(GLuint attribindex, GLuint bindingindex);
-GLAPI PFNGLVERTEXATTRIBBINDINGPROC biz_glVertexAttribBinding;
-#define glVertexAttribBinding(...) WRAP_PFN(biz_glVertexAttribBinding, __VA_ARGS__)
-typedef void (*PFNGLVERTEXBINDINGDIVISORPROC)(GLuint bindingindex, GLuint divisor);
-GLAPI PFNGLVERTEXBINDINGDIVISORPROC biz_glVertexBindingDivisor;
-#define glVertexBindingDivisor(...) WRAP_PFN(biz_glVertexBindingDivisor, __VA_ARGS__)
-typedef void (*PFNGLDEBUGMESSAGECONTROLPROC)(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint *ids, GLboolean enabled);
-GLAPI PFNGLDEBUGMESSAGECONTROLPROC biz_glDebugMessageControl;
-#define glDebugMessageControl(...) WRAP_PFN(biz_glDebugMessageControl, __VA_ARGS__)
-typedef void (*PFNGLDEBUGMESSAGEINSERTPROC)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *buf);
-GLAPI PFNGLDEBUGMESSAGEINSERTPROC biz_glDebugMessageInsert;
-#define glDebugMessageInsert(...) WRAP_PFN(biz_glDebugMessageInsert, __VA_ARGS__)
-typedef void (*PFNGLDEBUGMESSAGECALLBACKPROC)(GLDEBUGPROC callback, const void *userParam);
-GLAPI PFNGLDEBUGMESSAGECALLBACKPROC biz_glDebugMessageCallback;
-#define glDebugMessageCallback(...) WRAP_PFN(biz_glDebugMessageCallback, __VA_ARGS__)
-typedef GLuint (*PFNGLGETDEBUGMESSAGELOGPROC)(GLuint count, GLsizei bufSize, GLenum *sources, GLenum *types, GLuint *ids, GLenum *severities, GLsizei *lengths, GLchar *messageLog);
-GLAPI PFNGLGETDEBUGMESSAGELOGPROC biz_glGetDebugMessageLog;
-#define glGetDebugMessageLog(...) WRAP_PFN(biz_glGetDebugMessageLog, __VA_ARGS__)
-typedef void (*PFNGLPUSHDEBUGGROUPPROC)(GLenum source, GLuint id, GLsizei length, const GLchar *message);
-GLAPI PFNGLPUSHDEBUGGROUPPROC biz_glPushDebugGroup;
-#define glPushDebugGroup(...) WRAP_PFN(biz_glPushDebugGroup, __VA_ARGS__)
-typedef void (*PFNGLPOPDEBUGGROUPPROC)(void);
-GLAPI PFNGLPOPDEBUGGROUPPROC biz_glPopDebugGroup;
-#define glPopDebugGroup(...) WRAP_PFN(biz_glPopDebugGroup, __VA_ARGS__)
-typedef void (*PFNGLOBJECTLABELPROC)(GLenum identifier, GLuint name, GLsizei length, const GLchar *label);
-GLAPI PFNGLOBJECTLABELPROC biz_glObjectLabel;
-#define glObjectLabel(...) WRAP_PFN(biz_glObjectLabel, __VA_ARGS__)
-typedef void (*PFNGLGETOBJECTLABELPROC)(GLenum identifier, GLuint name, GLsizei bufSize, GLsizei *length, GLchar *label);
-GLAPI PFNGLGETOBJECTLABELPROC biz_glGetObjectLabel;
-#define glGetObjectLabel(...) WRAP_PFN(biz_glGetObjectLabel, __VA_ARGS__)
-typedef void (*PFNGLOBJECTPTRLABELPROC)(const void *ptr, GLsizei length, const GLchar *label);
-GLAPI PFNGLOBJECTPTRLABELPROC biz_glObjectPtrLabel;
-#define glObjectPtrLabel(...) WRAP_PFN(biz_glObjectPtrLabel, __VA_ARGS__)
-typedef void (*PFNGLGETOBJECTPTRLABELPROC)(const void *ptr, GLsizei bufSize, GLsizei *length, GLchar *label);
-GLAPI PFNGLGETOBJECTPTRLABELPROC biz_glGetObjectPtrLabel;
-#define glGetObjectPtrLabel(...) WRAP_PFN(biz_glGetObjectPtrLabel, __VA_ARGS__)
-typedef void (*PFNGLGETPOINTERVPROC)(GLenum pname, void **params);
-GLAPI PFNGLGETPOINTERVPROC biz_glGetPointerv;
-#define glGetPointerv(...) WRAP_PFN(biz_glGetPointerv, __VA_ARGS__)
+extern BizOGL::GLFunctor<void (GLenum target, GLenum internalformat, GLenum format, GLenum type, const void *data)> biz_glClearBufferData;
+#define glClearBufferData biz_glClearBufferData
+extern BizOGL::GLFunctor<void (GLenum target, GLenum internalformat, GLintptr offset, GLsizeiptr size, GLenum format, GLenum type, const void *data)> biz_glClearBufferSubData;
+#define glClearBufferSubData biz_glClearBufferSubData
+extern BizOGL::GLFunctor<void (GLuint num_groups_x, GLuint num_groups_y, GLuint num_groups_z)> biz_glDispatchCompute;
+#define glDispatchCompute biz_glDispatchCompute
+extern BizOGL::GLFunctor<void (GLintptr indirect)> biz_glDispatchComputeIndirect;
+#define glDispatchComputeIndirect biz_glDispatchComputeIndirect
+extern BizOGL::GLFunctor<void (GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei srcWidth, GLsizei srcHeight, GLsizei srcDepth)> biz_glCopyImageSubData;
+#define glCopyImageSubData biz_glCopyImageSubData
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, GLint param)> biz_glFramebufferParameteri;
+#define glFramebufferParameteri biz_glFramebufferParameteri
+extern BizOGL::GLFunctor<void (GLenum target, GLenum pname, GLint *params)> biz_glGetFramebufferParameteriv;
+#define glGetFramebufferParameteriv biz_glGetFramebufferParameteriv
+extern BizOGL::GLFunctor<void (GLenum target, GLenum internalformat, GLenum pname, GLsizei count, GLint64 *params)> biz_glGetInternalformati64v;
+#define glGetInternalformati64v biz_glGetInternalformati64v
+extern BizOGL::GLFunctor<void (GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth)> biz_glInvalidateTexSubImage;
+#define glInvalidateTexSubImage biz_glInvalidateTexSubImage
+extern BizOGL::GLFunctor<void (GLuint texture, GLint level)> biz_glInvalidateTexImage;
+#define glInvalidateTexImage biz_glInvalidateTexImage
+extern BizOGL::GLFunctor<void (GLuint buffer, GLintptr offset, GLsizeiptr length)> biz_glInvalidateBufferSubData;
+#define glInvalidateBufferSubData biz_glInvalidateBufferSubData
+extern BizOGL::GLFunctor<void (GLuint buffer)> biz_glInvalidateBufferData;
+#define glInvalidateBufferData biz_glInvalidateBufferData
+extern BizOGL::GLFunctor<void (GLenum target, GLsizei numAttachments, const GLenum *attachments)> biz_glInvalidateFramebuffer;
+#define glInvalidateFramebuffer biz_glInvalidateFramebuffer
+extern BizOGL::GLFunctor<void (GLenum target, GLsizei numAttachments, const GLenum *attachments, GLint x, GLint y, GLsizei width, GLsizei height)> biz_glInvalidateSubFramebuffer;
+#define glInvalidateSubFramebuffer biz_glInvalidateSubFramebuffer
+extern BizOGL::GLFunctor<void (GLenum mode, const void *indirect, GLsizei drawcount, GLsizei stride)> biz_glMultiDrawArraysIndirect;
+#define glMultiDrawArraysIndirect biz_glMultiDrawArraysIndirect
+extern BizOGL::GLFunctor<void (GLenum mode, GLenum type, const void *indirect, GLsizei drawcount, GLsizei stride)> biz_glMultiDrawElementsIndirect;
+#define glMultiDrawElementsIndirect biz_glMultiDrawElementsIndirect
+extern BizOGL::GLFunctor<void (GLuint program, GLenum programInterface, GLenum pname, GLint *params)> biz_glGetProgramInterfaceiv;
+#define glGetProgramInterfaceiv biz_glGetProgramInterfaceiv
+extern BizOGL::GLFunctor<GLuint (GLuint program, GLenum programInterface, const GLchar *name)> biz_glGetProgramResourceIndex;
+#define glGetProgramResourceIndex biz_glGetProgramResourceIndex
+extern BizOGL::GLFunctor<void (GLuint program, GLenum programInterface, GLuint index, GLsizei bufSize, GLsizei *length, GLchar *name)> biz_glGetProgramResourceName;
+#define glGetProgramResourceName biz_glGetProgramResourceName
+extern BizOGL::GLFunctor<void (GLuint program, GLenum programInterface, GLuint index, GLsizei propCount, const GLenum *props, GLsizei count, GLsizei *length, GLint *params)> biz_glGetProgramResourceiv;
+#define glGetProgramResourceiv biz_glGetProgramResourceiv
+extern BizOGL::GLFunctor<GLint (GLuint program, GLenum programInterface, const GLchar *name)> biz_glGetProgramResourceLocation;
+#define glGetProgramResourceLocation biz_glGetProgramResourceLocation
+extern BizOGL::GLFunctor<GLint (GLuint program, GLenum programInterface, const GLchar *name)> biz_glGetProgramResourceLocationIndex;
+#define glGetProgramResourceLocationIndex biz_glGetProgramResourceLocationIndex
+extern BizOGL::GLFunctor<void (GLuint program, GLuint storageBlockIndex, GLuint storageBlockBinding)> biz_glShaderStorageBlockBinding;
+#define glShaderStorageBlockBinding biz_glShaderStorageBlockBinding
+extern BizOGL::GLFunctor<void (GLenum target, GLenum internalformat, GLuint buffer, GLintptr offset, GLsizeiptr size)> biz_glTexBufferRange;
+#define glTexBufferRange biz_glTexBufferRange
+extern BizOGL::GLFunctor<void (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations)> biz_glTexStorage2DMultisample;
+#define glTexStorage2DMultisample biz_glTexStorage2DMultisample
+extern BizOGL::GLFunctor<void (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations)> biz_glTexStorage3DMultisample;
+#define glTexStorage3DMultisample biz_glTexStorage3DMultisample
+extern BizOGL::GLFunctor<void (GLuint texture, GLenum target, GLuint origtexture, GLenum internalformat, GLuint minlevel, GLuint numlevels, GLuint minlayer, GLuint numlayers)> biz_glTextureView;
+#define glTextureView biz_glTextureView
+extern BizOGL::GLFunctor<void (GLuint bindingindex, GLuint buffer, GLintptr offset, GLsizei stride)> biz_glBindVertexBuffer;
+#define glBindVertexBuffer biz_glBindVertexBuffer
+extern BizOGL::GLFunctor<void (GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset)> biz_glVertexAttribFormat;
+#define glVertexAttribFormat biz_glVertexAttribFormat
+extern BizOGL::GLFunctor<void (GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset)> biz_glVertexAttribIFormat;
+#define glVertexAttribIFormat biz_glVertexAttribIFormat
+extern BizOGL::GLFunctor<void (GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset)> biz_glVertexAttribLFormat;
+#define glVertexAttribLFormat biz_glVertexAttribLFormat
+extern BizOGL::GLFunctor<void (GLuint attribindex, GLuint bindingindex)> biz_glVertexAttribBinding;
+#define glVertexAttribBinding biz_glVertexAttribBinding
+extern BizOGL::GLFunctor<void (GLuint bindingindex, GLuint divisor)> biz_glVertexBindingDivisor;
+#define glVertexBindingDivisor biz_glVertexBindingDivisor
+extern BizOGL::GLFunctor<void (GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint *ids, GLboolean enabled)> biz_glDebugMessageControl;
+#define glDebugMessageControl biz_glDebugMessageControl
+extern BizOGL::GLFunctor<void (GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *buf)> biz_glDebugMessageInsert;
+#define glDebugMessageInsert biz_glDebugMessageInsert
+extern BizOGL::GLFunctor<void (GLDEBUGPROC callback, const void *userParam)> biz_glDebugMessageCallback;
+#define glDebugMessageCallback biz_glDebugMessageCallback
+extern BizOGL::GLFunctor<GLuint (GLuint count, GLsizei bufSize, GLenum *sources, GLenum *types, GLuint *ids, GLenum *severities, GLsizei *lengths, GLchar *messageLog)> biz_glGetDebugMessageLog;
+#define glGetDebugMessageLog biz_glGetDebugMessageLog
+extern BizOGL::GLFunctor<void (GLenum source, GLuint id, GLsizei length, const GLchar *message)> biz_glPushDebugGroup;
+#define glPushDebugGroup biz_glPushDebugGroup
+extern BizOGL::GLFunctor<void (void)> biz_glPopDebugGroup;
+#define glPopDebugGroup biz_glPopDebugGroup
+extern BizOGL::GLFunctor<void (GLenum identifier, GLuint name, GLsizei length, const GLchar *label)> biz_glObjectLabel;
+#define glObjectLabel biz_glObjectLabel
+extern BizOGL::GLFunctor<void (GLenum identifier, GLuint name, GLsizei bufSize, GLsizei *length, GLchar *label)> biz_glGetObjectLabel;
+#define glGetObjectLabel biz_glGetObjectLabel
+extern BizOGL::GLFunctor<void (const void *ptr, GLsizei length, const GLchar *label)> biz_glObjectPtrLabel;
+#define glObjectPtrLabel biz_glObjectPtrLabel
+extern BizOGL::GLFunctor<void (const void *ptr, GLsizei bufSize, GLsizei *length, GLchar *label)> biz_glGetObjectPtrLabel;
+#define glGetObjectPtrLabel biz_glGetObjectPtrLabel
+extern BizOGL::GLFunctor<void (GLenum pname, void **params)> biz_glGetPointerv;
+#define glGetPointerv biz_glGetPointerv
 
 #endif

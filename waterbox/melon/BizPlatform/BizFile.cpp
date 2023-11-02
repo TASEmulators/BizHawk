@@ -138,30 +138,6 @@ private:
 
 static std::unordered_map<std::string, std::pair<std::shared_ptr<u8[]>, size_t>> FileBufferCache;
 
-// TODO - I don't like this approach with NAND
-// Perhaps instead it would be better to use FileFlush to write to disk
-// (guarded by frontend determinism switch, of course) 
-
-ECL_EXPORT u32 GetNANDSize()
-{
-	auto path = GetConfigString(ConfigEntry::DSi_NANDPath);
-	if (auto cache = FileBufferCache.find(path); cache != FileBufferCache.end())
-	{
-		return cache->second.second;
-	}
-
-	return 0;
-}
-
-ECL_EXPORT void GetNANDData(u8* buf)
-{
-	auto path = GetConfigString(ConfigEntry::DSi_NANDPath);
-	if (auto cache = FileBufferCache.find(path); cache != FileBufferCache.end())
-	{
-		memcpy(buf, cache->second.first.get(), cache->second.second);
-	}
-}
-
 FileHandle* OpenFile(const std::string& path, FileMode mode)
 {
 	if ((mode & FileMode::ReadWrite) == FileMode::None)

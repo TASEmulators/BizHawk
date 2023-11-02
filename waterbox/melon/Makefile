@@ -22,6 +22,7 @@ CORE_SRCS = \
 	CP15.cpp \
 	CRC32.cpp \
 	DMA.cpp \
+	DMA_Timings.cpp \
 	DSi.cpp \
 	DSi_AES.cpp \
 	DSi_Camera.cpp \
@@ -32,7 +33,9 @@ CORE_SRCS = \
 	DSi_NWifi.cpp \
 	DSi_SD.cpp \
 	DSi_SPI_TSC.cpp \
+	FATIO.cpp \
 	FATStorage.cpp \
+	FreeBIOS.cpp \
 	GBACart.cpp \
 	GPU.cpp \
 	GPU2D.cpp \
@@ -45,6 +48,7 @@ CORE_SRCS = \
 	RTC.cpp \
 	Savestate.cpp \
 	SPI.cpp \
+	SPI_Firmware.cpp \
 	SPU.cpp \
 	Wifi.cpp \
 	WifiAP.cpp
@@ -67,7 +71,6 @@ TEAKRA_SRCS = \
 	timer.cpp
 
 FATFS_SRCS = \
-	diskio.c \
 	ff.c \
 	ffsystem.c \
 	ffunicode.c

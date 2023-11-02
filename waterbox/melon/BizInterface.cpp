@@ -20,6 +20,16 @@ static bool SkipFW;
 static time_t CurTime;
 static bool GLPresentation;
 
+struct NDSTime
+{
+	int Year; // 0-99
+	int Month; // 1-12
+	int Day; // 1-(28/29/30/31 depending on month/year)
+	int Hour; // 0-23
+	int Minute; // 0-59
+	int Second; // 0-59
+};
+
 struct InitConfig
 {
 	bool SkipFW;
@@ -30,6 +40,8 @@ struct InitConfig
 	bool IsWinApi;
 	int ThreeDeeRenderer;
 	GPU::RenderSettings RenderSettings;
+	NDSTime StartTime;
+	FileManager::FirmwareSettings FirmwareSettings;
 };
 
 ECL_EXPORT const char* Init(InitConfig* initConfig,
@@ -45,12 +57,24 @@ ECL_EXPORT const char* Init(InitConfig* initConfig,
 	SkipFW = initConfig->SkipFW;
 	NDS::SetConsoleType(initConfig->DSi);
 
-	CurTime = 0;
-	RTC::RtcCallback = []() { return CurTime; };
+	if (const char* error = FileManager::InitNDSBIOS())
+	{
+		return error;
+	}
+
+	if (const char* error = FileManager::InitFirmware(initConfig->FirmwareSettings))
+	{
+		return error;
+	}
 
 	if (initConfig->DSi)
 	{
-		if (const char* error = FileManager::InitNAND(initConfig->ClearNAND, initConfig->LoadDSiWare))
+		if (const char* error = FileManager::InitDSiBIOS())
+		{
+			return error;
+		}
+
+		if (const char* error = FileManager::InitNAND(initConfig->FirmwareSettings, initConfig->ClearNAND, initConfig->LoadDSiWare))
 		{
 			return error;
 		}
@@ -60,6 +84,9 @@ ECL_EXPORT const char* Init(InitConfig* initConfig,
 	{
 		return "Failed to init core!";
 	}
+
+	RTC::SetDateTime(initConfig->StartTime.Year, initConfig->StartTime.Month, initConfig->StartTime.Day,
+		initConfig->StartTime.Hour, initConfig->StartTime.Minute, initConfig->StartTime.Second);
 
 	if (loadGLProc)
 	{
@@ -91,7 +118,7 @@ ECL_EXPORT const char* Init(InitConfig* initConfig,
 	GPU::InitRenderer(initConfig->ThreeDeeRenderer);
 	GPU::SetRenderSettings(initConfig->ThreeDeeRenderer, initConfig->RenderSettings);
 
-	NDS::LoadBIOS();
+	NDS::Reset();
 
 	if (!initConfig->LoadDSiWare)
 	{
@@ -126,14 +153,14 @@ static s16 biz_mic_input[735];
 
 static bool ValidRange(s8 sensor)
 {
-	return (sensor >= 0) && (sensor <= 10);
+	return sensor >= 0 && sensor <= 10;
 }
 
 static int sampPos = 0;
 
 static void MicFeedNoise(s8 vol)
 {
-	int sampLen = sizeof(mic_blow) / sizeof (*mic_blow);
+	int sampLen = sizeof(mic_blow) / sizeof(*mic_blow);
 
 	for (int i = 0; i < 735; i++)
 	{
@@ -150,7 +177,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 
 	if (f->Keys & 0x8000)
 	{
-		NDS::LoadBIOS();
+		NDS::Reset();
 		if (SkipFW || NDS::NeedsDirectBoot())
 		{
 			NDS::SetupDirectBoot("nds.rom");

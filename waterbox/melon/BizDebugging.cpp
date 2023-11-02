@@ -72,12 +72,6 @@ void TraceTrampoline(TraceMask_t type, u32* regs, u32 opcode)
 	TraceCallback(type, opcode, regs, disasm, NDS::GetSysClockCycles(2));
 }
 
-namespace NDS
-{
-	extern ARMv5* ARM9;
-	extern ARMv4* ARM7;
-}
-
 ECL_EXPORT void GetRegs(u32* regs)
 {
 	for (int i = 0; i < 16; i++)
