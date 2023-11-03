@@ -31,42 +31,40 @@ static std::optional<std::pair<std::unique_ptr<u8[]>, size_t>> GetFileData(std::
 	return std::make_pair(std::move(data), size);
 }
 
+static bool LoadBIOS(const char* path, u8* buffer, size_t len)
+{
+	auto bios = Platform::OpenFile(path, Platform::FileMode::Read);
+	if (!bios)
+	{
+		return false;
+	}
+
+	if (Platform::FileLength(bios) != len)
+	{
+		Platform::CloseFile(bios);
+		return false;
+	}
+
+	Platform::FileRewind(bios);
+	auto read = Platform::FileRead(buffer, len, 1, bios);
+	Platform::CloseFile(bios);
+	return read == len;
+}
+
 // Inits NDS BIOS7 and BIOS9
 const char* InitNDSBIOS()
 {
 	if (NDS::ConsoleType == 1 || Platform::GetConfigBool(Platform::ExternalBIOSEnable))
 	{
-		auto bios7 = Platform::OpenFile("bios7.bin", Platform::FileMode::Read);
-		if (!bios7)
+		if (!LoadBIOS("bios7.bin", NDS::ARM7BIOS, sizeof(NDS::ARM7BIOS)))
 		{
-			return "Failed to obtain BIOS7!";
+			return "Failed to load BIOS7!";
 		}
 
-		if (Platform::FileLength(bios7) != sizeof(NDS::ARM7BIOS))
+		if (!LoadBIOS("bios9.bin", NDS::ARM9BIOS, sizeof(NDS::ARM9BIOS)))
 		{
-			Platform::CloseFile(bios7);
-			return "Incorrectly sized BIOS7!";
+			return "Failed to load BIOS9!";
 		}
-
-		Platform::FileRewind(bios7);
-		Platform::FileRead(NDS::ARM7BIOS, sizeof(NDS::ARM7BIOS), 1, bios7);
-		Platform::CloseFile(bios7);
-
-		auto bios9 = Platform::OpenFile("bios9.bin", Platform::FileMode::Read);
-		if (!bios9)
-		{
-			return "Failed to obtain BIOS9!";
-		}
-
-		if (Platform::FileLength(bios9) != sizeof(NDS::ARM9BIOS))
-		{
-			Platform::CloseFile(bios9);
-			return "Incorrectly sized BIOS9!";
-		}
-
-		Platform::FileRewind(bios9);
-		Platform::FileRead(NDS::ARM9BIOS, sizeof(NDS::ARM9BIOS), 1, bios9);
-		Platform::CloseFile(bios9);
 	}
 	else
 	{
@@ -230,43 +228,21 @@ const char* InitDSiBIOS()
 		return "Tried to init DSi BIOSes in NDS mode";
 	}
 
-	auto bios7i = Platform::OpenFile("bios7i.bin", Platform::FileMode::Read);
-	if (!bios7i)
+	if (!LoadBIOS("bios7i.bin", DSi::ARM7iBIOS, sizeof(DSi::ARM7iBIOS)))
 	{
-		return "Failed to obtain BIOS7i!";
+		return "Failed to load BIOS7i!";
 	}
 
-	if (Platform::FileLength(bios7i) != sizeof(DSi::ARM7iBIOS))
+	if (!LoadBIOS("bios9i.bin", DSi::ARM9iBIOS, sizeof(DSi::ARM9iBIOS)))
 	{
-		Platform::CloseFile(bios7i);
-		return "Incorrectly sized BIOS7i!";
+		return "Failed to load BIOS9i!";
 	}
-
-	Platform::FileRewind(bios7i);
-	Platform::FileRead(DSi::ARM7iBIOS, sizeof(DSi::ARM7iBIOS), 1, bios7i);
-	Platform::CloseFile(bios7i);
-
-	auto bios9i = Platform::OpenFile("bios9i.bin", Platform::FileMode::Read);
-	if (!bios9i)
-	{
-		return "Failed to obtain BIOS9i!";
-	}
-
-	if (Platform::FileLength(bios9i) != sizeof(DSi::ARM9iBIOS))
-	{
-		Platform::CloseFile(bios9i);
-		return "Incorrectly sized BIOS9i!";
-	}
-
-	Platform::FileRewind(bios9i);
-	Platform::FileRead(DSi::ARM9iBIOS, sizeof(DSi::ARM9iBIOS), 1, bios9i);
-	Platform::CloseFile(bios9i);
 
 	if (!Platform::GetConfigBool(Platform::DSi_FullBIOSBoot))
 	{
-		static const u8 branch[] = { 0xFE, 0xFF, 0xFF, 0xEA };
-		memcpy(DSi::ARM7iBIOS, branch, sizeof(branch));
-		memcpy(DSi::ARM9iBIOS, branch, sizeof(branch));
+		static const u8 patch[] = { 0xFE, 0xFF, 0xFF, 0xEA };
+		memcpy(DSi::ARM7iBIOS, patch, sizeof(patch));
+		memcpy(DSi::ARM9iBIOS, patch, sizeof(patch));
 	}
 
 	return nullptr;
