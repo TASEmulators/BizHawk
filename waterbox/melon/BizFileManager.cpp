@@ -376,6 +376,12 @@ const char* InitNAND(FirmwareSettings& fwSettings, bool clearNand, bool dsiWare)
 
 		if (dsiWare)
 		{
+			auto rom = GetFileData("dsiware.rom");
+			if (!rom)
+			{
+				return "Failed to obtain DSiWare ROM!";
+			}
+
 			auto tmdData = GetFileData("tmd.rom");
 			if (!tmdData)
 			{
@@ -390,9 +396,23 @@ const char* InitNAND(FirmwareSettings& fwSettings, bool clearNand, bool dsiWare)
 			DSi_TMD::TitleMetadata tmd;
 			memcpy(&tmd, tmdData->first.get(), sizeof(DSi_TMD::TitleMetadata));
 
-			if (!mount.ImportTitle("dsiware.rom", tmd, false))
+			if (!mount.ImportTitle(rom->first.get(), rom->second, tmd, false))
 			{
 				return "Loading DSiWare failed!";
+			}
+
+			// verify that the imported title is supported by this NAND
+			// it will not actually appear otherwise
+			DSi_NAND::DSiSerialData serialData;
+			if (!mount.ReadSerialData(serialData))
+			{
+				return "Failed to obtain serial data!";
+			}
+
+			auto regionFlags = rom->second > 0x1B0 ? rom->first[0x1B0] : 0;
+			if (!(regionFlags & (1 << static_cast<u8>(serialData.Region))))
+			{
+				return "Loaded NAND region does not support this DSiWare title!";
 			}
 		}
 	}
