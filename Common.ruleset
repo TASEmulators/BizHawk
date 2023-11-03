@@ -461,10 +461,6 @@
 		<!-- Use the Regex source generator -->
 		<Rule Id="MA0110" Action="Error" />
 	</Rules>
-	<Rules AnalyzerId="Microsoft.CodeAnalysis.FxCopAnalyzers" RuleNamespace="Microsoft.CodeAnalysis.FxCopAnalyzers">
-		<!-- Implement serialization constructors -->
-		<Rule Id="CA2229" Action="Hidden" />
-	</Rules>
 	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.SpacingRules">
 		<!-- Keywords should be spaced correctly -->
 		<Rule Id="SA1000" Action="Hidden" />

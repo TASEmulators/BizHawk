@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
 using NymaTypes;
 

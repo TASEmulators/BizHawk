@@ -10,9 +10,10 @@
 	<Import Project="LibCommon.props" />
 	<PropertyGroup>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-		<NoWarn>$(NoWarn)IDE0065;RS2008</NoWarn>
+		<NoWarn>$(NoWarn);RS2008</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
+		<EditorConfigFiles Include="$(MSBuildProjectDirectory)/../Analyzers.editorconfig" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0" />
 		<Compile Include="$(MSBuildProjectDirectory)/../AnalyzersCommon/**/*.cs" />
