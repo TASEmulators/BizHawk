@@ -119,6 +119,8 @@ namespace BizHawk.Common
 
 		private class UnixMonoLLManager : ILinkedLibManager
 		{
+			private const int RTLD_NOW = 2;
+
 			[DllImport("libdl.so.2")]
 			private static extern int dlclose(IntPtr handle);
 
@@ -155,40 +157,24 @@ namespace BizHawk.Common
 			public string GetErrorMessage()
 			{
 				var errCharPtr = dlerror();
-				return errCharPtr == IntPtr.Zero ? "No error present" : Marshal.PtrToStringAnsi(errCharPtr);
+				return errCharPtr == IntPtr.Zero ? "No error present" : Marshal.PtrToStringAnsi(errCharPtr)!;
 			}
-
-			private const int RTLD_NOW = 2;
 		}
 
 		private class WindowsLLManager : ILinkedLibManager
 		{
-			// comments reference extern functions removed from SevenZip.NativeMethods
+			// functions taken from LoaderApiImports
+			// TODO: Should we apply the same EXE_PROJECT hack to that file?
 
-			[DllImport("kernel32.dll")]
-			private static extern bool FreeLibrary(IntPtr hModule); // return type was annotated MarshalAs(UnmanagedType.Bool)
+			[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true, ExactSpelling = true)]
+			private static extern IntPtr LoadLibraryW(string lpLibFileName);
 
-			[DllImport("kernel32.dll")]
-			private static extern uint GetLastError();
+			[DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+			[return: MarshalAs(UnmanagedType.Bool)]
+			private static extern bool FreeLibrary(IntPtr hLibModule);
 
-			private enum FORMAT_MESSAGE : uint
-			{
-				ALLOCATE_BUFFER = 0x00000100,
-				IGNORE_INSERTS = 0x00000200,
-				FROM_SYSTEM = 0x00001000,
-			}
-
-			[DllImport("kernel32.dll")]
-			private static extern int FormatMessageA(FORMAT_MESSAGE flags, IntPtr source, uint messageId, uint languageId, out IntPtr outMsg, int size, IntPtr args);
-
-			[DllImport("kernel32.dll")]
-			private static extern IntPtr LocalFree(IntPtr hMem); // use this to free a message from FORMAT_MESSAGE.ALLOCATE_BUFFER
-
-			[DllImport("kernel32.dll", SetLastError = true)] // had BestFitMapping = false, ThrowOnUnmappableChar = true
-			private static extern IntPtr GetProcAddress(IntPtr hModule, string procName); // param procName was annotated `[MarshalAs(UnmanagedType.LPStr)]`
-
-			[DllImport("kernel32.dll", SetLastError = true)] // had BestFitMapping = false, ThrowOnUnmappableChar = true
-			private static extern IntPtr LoadLibrary(string dllToLoad); // param dllToLoad was annotated `[MarshalAs(UnmanagedType.LPStr)]`
+			[DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+			private static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
 
 			public int FreeByPtr(IntPtr hModule) => FreeLibrary(hModule) ? 0 : 1;
 
@@ -197,25 +183,30 @@ namespace BizHawk.Common
 			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName)
 			{
 				var ret = GetProcAddrOrZero(hModule, procName);
-				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)}, error code: {GetLastError()}");
+				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)}, {GetErrorMessage()}");
 			}
 
-			public IntPtr LoadOrZero(string dllToLoad) => LoadLibrary(dllToLoad);
+			public IntPtr LoadOrZero(string dllToLoad) => LoadLibraryW(dllToLoad);
 
 			public IntPtr LoadOrThrow(string dllToLoad)
 			{
 				var ret = LoadOrZero(dllToLoad);
-				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(LoadLibrary)}, error code: {GetLastError()}");
+				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(LoadLibraryW)}, {GetErrorMessage()}");
 			}
 
-			public string GetErrorMessage()
+			[DllImport("kernel32.dll", ExactSpelling = true)]
+			private static extern uint GetLastError();
+
+			[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+			private static extern unsafe int FormatMessageW(int flags, IntPtr source, uint messageId, uint languageId, char* outMsg, int size, IntPtr args);
+
+			public unsafe string GetErrorMessage()
 			{
 				var errCode = GetLastError();
-				var sz = FormatMessageA(FORMAT_MESSAGE.ALLOCATE_BUFFER | FORMAT_MESSAGE.FROM_SYSTEM | FORMAT_MESSAGE.IGNORE_INSERTS,
-					IntPtr.Zero, errCode, 0, out var buffer, 1024, IntPtr.Zero);
-				var ret = Marshal.PtrToStringAnsi(buffer, sz);
-				_ = LocalFree(buffer);
-				return ret;
+				var buffer = stackalloc char[1024];
+				const int FORMAT_MESSAGE_FROM_SYSTEM = 0x1000;
+				var sz = FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM, IntPtr.Zero, errCode, 0, buffer, 1024, IntPtr.Zero);
+				return $"error code: 0x{errCode:X8}, error message: {new string(buffer, 0, sz)}";
 			}
 		}
 

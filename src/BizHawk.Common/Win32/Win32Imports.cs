@@ -17,9 +17,6 @@ namespace BizHawk.Common
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
 		public static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)] string lpFileName);
 
-		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		public static extern IntPtr GetModuleHandle(string lpModuleName);
-
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern uint MapVirtualKey(uint uCode, uint uMapType);
 

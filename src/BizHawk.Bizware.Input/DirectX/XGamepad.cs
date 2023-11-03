@@ -32,29 +32,24 @@ namespace BizHawk.Bizware.Input
 				IsAvailable = XInput.Version != XInputVersion.Invalid;
 				if (IsAvailable)
 				{
-					var llManager = OSTailoredCode.LinkedLibManager;
 					var libHandle = XInput.Version switch
 					{
-						XInputVersion.Version14 => llManager.LoadOrThrow("xinput1_4.dll"),
-						XInputVersion.Version13 => llManager.LoadOrThrow("xinput1_3.dll"),
+						XInputVersion.Version14 => LoaderApiImports.GetModuleHandleW("xinput1_4.dll"),
+						XInputVersion.Version13 => LoaderApiImports.GetModuleHandleW("xinput1_3.dll"),
 						_ => IntPtr.Zero // unofficial API isn't available for 9.1.0
 					};
 
 					if (libHandle != IntPtr.Zero)
 					{
-						var fptr = llManager.GetProcAddrOrZero(libHandle, "#100");
+						var fptr = LoaderApiImports.GetProcAddress(libHandle, new IntPtr(100));
 						if (fptr != IntPtr.Zero)
 						{
 							XInputGetStateExProc =
 								Marshal.GetDelegateForFunctionPointer<XInputGetStateExProcDelegate>(fptr);
 						}
-
-						// nb: this doesn't actually free the library here, rather it will just decrement the reference count
-						llManager.FreeByPtr(libHandle);
 					}
 
 					// don't remove this code. it's important to catch errors on systems with broken xinput installs.
-
 					_ = XInputGetStateExProc?.Invoke(0, out _);
 					_ = XInput.GetState(0, out _);
 				}

@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 
 using static BizHawk.Common.RawInputImports;
 using static BizHawk.Common.WmImports;
@@ -35,7 +34,7 @@ namespace BizHawk.Bizware.Input
 		{
 			var wc = default(WNDCLASS);
 			wc.lpfnWndProc = _wndProc;
-			wc.hInstance = Win32Imports.GetModuleHandle(null);
+			wc.hInstance = LoaderApiImports.GetModuleHandleW(null);
 			wc.lpszClassName = "RawKeyInputClass";
 
 			var atom = RegisterClass(ref wc);
@@ -128,7 +127,7 @@ namespace BizHawk.Bizware.Input
 					nHeight: 1,
 					hWndParent: HWND_MESSAGE,
 					hMenu: IntPtr.Zero,
-					hInstance: Win32Imports.GetModuleHandle(null),
+					hInstance: LoaderApiImports.GetModuleHandleW(null),
 					lpParam: IntPtr.Zero);
 
 			if (window == IntPtr.Zero)
