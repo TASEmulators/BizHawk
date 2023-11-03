@@ -112,7 +112,11 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var asmVer in new[]
 			{
 				BizInvoke.ReflectionCache.AsmVersion,
+				Bizware.Audio.ReflectionCache.AsmVersion,
 				Bizware.BizwareGL.ReflectionCache.AsmVersion,
+				Bizware.Graphics.ReflectionCache.AsmVersion,
+				Bizware.Graphics.Controls.ReflectionCache.AsmVersion,
+				Bizware.Input.ReflectionCache.AsmVersion,
 				Client.Common.ReflectionCache.AsmVersion,
 				Common.ReflectionCache.AsmVersion,
 				Emulation.Common.ReflectionCache.AsmVersion,
