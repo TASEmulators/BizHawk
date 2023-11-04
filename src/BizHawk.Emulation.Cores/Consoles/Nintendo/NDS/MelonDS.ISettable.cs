@@ -329,11 +329,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				German,
 				Italian,
 				Spanish,
+				Chinese,
+				Korean,
 			}
 
 			[DisplayName("Firmware Language")]
 			[Description("Language in firmware. Only applicable if firmware override is in effect.")]
 			[DefaultValue(Language.English)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public Language FirmwareLanguage { get; set; }
 
 			public enum Month : int

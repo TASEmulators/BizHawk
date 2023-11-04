@@ -6,6 +6,7 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	// mostly a c++ -> c# port of melon's firmware verification code
+	// TODO: a lot of this has been removed as it's not really needed anymore (our c++ code forces correctness everywhere)
 	internal static class NDSFirmware
 	{
 		public static void MaybeWarnIfBadFw(byte[] fw, Action<string> warningCallback)
@@ -16,83 +17,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				return;
 			}
 
-			var fwMask = fw.Length - 1;
-			var badCrc16s = string.Empty;
-
-			if (!VerifyCrc16(fw, 0x2C, (fw[0x2C + 1] << 8) | fw[0x2C], 0x0000, 0x2A))
-			{
-				badCrc16s += " Wifi ";
-			}
-
-			if (!VerifyCrc16(fw, 0x7FA00 & fwMask, 0xFE, 0x0000, 0x7FAFE & fwMask))
-			{
-				badCrc16s += " AP1 ";
-			}
-
-			if (!VerifyCrc16(fw, 0x7FB00 & fwMask, 0xFE, 0x0000, 0x7FBFE & fwMask))
-			{
-				badCrc16s += " AP2 ";
-			}
-
-			if (!VerifyCrc16(fw, 0x7FC00 & fwMask, 0xFE, 0x0000, 0x7FCFE & fwMask))
-			{
-				badCrc16s += " AP3 ";
-			}
-
-			if (!VerifyCrc16(fw, 0x7FE00 & fwMask, 0x70, 0xFFFF, 0x7FE72 & fwMask))
-			{
-				badCrc16s += " USER0 ";
-			}
-
-			if (!VerifyCrc16(fw, 0x7FF00 & fwMask, 0x70, 0xFFFF, 0x7FF72 & fwMask))
-			{
-				badCrc16s += " USER1 ";
-			}
-
-			if (badCrc16s != string.Empty)
-			{
-				warningCallback("Bad Firmware CRC16(s) detected! Firmware might not work! Bad CRC16(s): " + badCrc16s);
-				return;
-			}
-
 			if (fw.Length != 0x20000) // no code in DSi firmware
 			{
+				// TODO: is this hashing strat actually a good idea?
 				CheckDecryptedCodeChecksum(fw, warningCallback);
-			}
-		}
-
-		private static unsafe ushort Crc16(byte* data, int len, int seed)
-		{
-			Span<ushort> poly = stackalloc ushort[8] { 0xC0C1, 0xC181, 0xC301, 0xC601, 0xCC01, 0xD801, 0xF001, 0xA001 };
-
-			for (var i = 0; i < len; i++)
-			{
-				seed ^= data[i];
-
-				for (var j = 0; j < 8; j++)
-				{
-					if ((seed & 0x1) != 0)
-					{
-						seed >>= 1;
-						seed ^= (poly[j] << (7 - j));
-					}
-					else
-					{
-						seed >>= 1;
-					}
-				}
-			}
-
-			return (ushort)(seed & 0xFFFF);
-		}
-
-		private static unsafe bool VerifyCrc16(byte[] fw, int startaddr, int len, int seed, int crcaddr)
-		{
-			var storedCrc16 = (ushort)((fw[crcaddr + 1] << 8) | fw[crcaddr]);
-			fixed (byte* start = &fw[startaddr])
-			{
-				var actualCrc16 = Crc16(start, len, seed);
-				return storedCrc16 == actualCrc16;
 			}
 		}
 
