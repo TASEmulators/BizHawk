@@ -82,7 +82,13 @@ static void SanitizeExternalFirmware(SPI_Firmware::Firmware& firmware)
 	const bool isDSiFw = header.ConsoleType == SPI_Firmware::FirmwareConsoleType::DSi;
 	const auto defaultHeader = SPI_Firmware::FirmwareHeader(isDSiFw);
 
-	header.UserSettingsOffset = (0x7FE00 & firmware.Mask()) >> 3;
+	// the user data offset won't necessarily be 0x7FE00 & Mask, DSi/iQue use 0x7FC00 & Mask instead
+	// but we don't want to crash due to an invalid offset
+	const auto maxUserDataOffset = 0x7FE00 & firmware.Mask();
+	if (firmware.UserDataOffset() > maxUserDataOffset)
+	{
+		header.UserSettingsOffset = maxUserDataOffset >> 3;
+	}
 
 	if (isDSiFw)
 	{
@@ -152,10 +158,11 @@ static void SetFirmwareSettings(SPI_Firmware::UserData& userData, FirmwareSettin
 		memset(userData.Unused3, 0xFF, sizeof(userData.Unused3));
 	}
 
-	// only extended settings should have Chinese
-	if ((userData.Settings & SPI_Firmware::Language::Reserved) == SPI_Firmware::Language::Chinese)
+	// only extended settings should have Chinese / Korean
+	// note that SPI_Firmware::Language::Reserved is Korean, so it's valid to have language set to that
+	if ((userData.Settings & SPI_Firmware::Language::Reserved) >= SPI_Firmware::Language::Chinese)
 	{
-		userData.Settings &= SPI_Firmware::Language::Reserved;
+		userData.Settings &= ~SPI_Firmware::Language::Reserved;
 		userData.Settings |= SPI_Firmware::Language::English;
 	}
 }
@@ -248,16 +255,36 @@ const char* InitDSiBIOS()
 	return nullptr;
 }
 
-static void SanitizeNANDSettings(DSi_NAND::DSiFirmwareSystemSettings& settings)
+static u8 GetDefaultCountryCode(DSi_NAND::ConsoleRegion region)
+{
+	// TODO: CountryCode probably should be configurable
+	// these defaults are also completely arbitrary
+	switch (region)
+	{
+		case DSi_NAND::ConsoleRegion::Japan: return 0x01; // Japan
+		case DSi_NAND::ConsoleRegion::USA: return 0x31; // United States
+		case DSi_NAND::ConsoleRegion::Europe: return 0x6E; // United Kingdom
+		case DSi_NAND::ConsoleRegion::Australia: return 0x41; // Australia
+		case DSi_NAND::ConsoleRegion::China: return 0xA0; // China
+		case DSi_NAND::ConsoleRegion::Korea: return 0x88; // Korea
+		default: return 0x31; // ???
+	}
+}
+
+static void SanitizeNANDSettings(DSi_NAND::DSiFirmwareSystemSettings& settings, DSi_NAND::ConsoleRegion region)
 {
 	memset(settings.Zero00, 0, sizeof(settings.Zero00));
 	settings.Version = 1;
 	settings.UpdateCounter = 0;
 	memset(settings.Zero01, 0, sizeof(settings.Zero01));
 	settings.BelowRAMAreaSize = 0x128;
+	// bit 0-1 are unknown (but usually 1)
+	// bit 2 indicates language set (?)
+	// bit 3 is wifi enable (really wifi LED enable; usually set)
+	// bit 24 set will indicate EULA is "agreed" to
 	settings.ConfigFlags = 0x0100000F;
 	settings.Zero02 = 0;
-	settings.CountryCode = 49; // United States
+	settings.CountryCode = GetDefaultCountryCode(region);
 	settings.RTCYear = 0;
 	settings.RTCOffset = 0;
 	memset(settings.Zero3, 0, sizeof(settings.Zero3));
@@ -289,6 +316,20 @@ static void SanitizeNANDSettings(DSi_NAND::DSiFirmwareSystemSettings& settings)
 	memset(settings.ParentalControlsSecretAnswer, 0, sizeof(settings.ParentalControlsSecretAnswer));
 }
 
+static SPI_Firmware::Language GetDefaultDSiLanguage(DSi_NAND::ConsoleRegion region)
+{
+	switch (region)
+	{
+		case DSi_NAND::ConsoleRegion::Japan: return SPI_Firmware::Language::Japanese;
+		case DSi_NAND::ConsoleRegion::USA: return SPI_Firmware::Language::English;
+		case DSi_NAND::ConsoleRegion::Europe: return SPI_Firmware::Language::English;
+		case DSi_NAND::ConsoleRegion::Australia: return SPI_Firmware::Language::English;
+		case DSi_NAND::ConsoleRegion::China: return SPI_Firmware::Language::Chinese;
+		case DSi_NAND::ConsoleRegion::Korea: return SPI_Firmware::Language::Reserved; // actually Korean
+		default: return SPI_Firmware::Language::English; // ???
+	}
+}
+
 const char* InitNAND(FirmwareSettings& fwSettings, bool clearNand, bool dsiWare)
 {
 	auto nand = DSi_NAND::NANDImage(Platform::OpenFile("nand.bin", Platform::FileMode::ReadWrite), &DSi::ARM7iBIOS[0x8308]);
@@ -310,9 +351,16 @@ const char* InitNAND(FirmwareSettings& fwSettings, bool clearNand, bool dsiWare)
 			return "Failed to read DSi NAND user data";
 		}
 
+		// serial data will contain the NAND's region
+		DSi_NAND::DSiSerialData serialData;
+		if (!mount.ReadSerialData(serialData))
+		{
+			return "Failed to obtain serial data!";
+		}
+
 		if (fwSettings.OverrideSettings)
 		{
-			SanitizeNANDSettings(settings);
+			SanitizeNANDSettings(settings, serialData.Region);
 			memset(settings.Nickname, 0, sizeof(settings.Nickname));
 			memcpy(settings.Nickname, fwSettings.Username, fwSettings.UsernameLength * 2);
 			settings.Language = static_cast<SPI_Firmware::Language>(fwSettings.Language & SPI_Firmware::Language::Reserved);
@@ -321,6 +369,11 @@ const char* InitNAND(FirmwareSettings& fwSettings, bool clearNand, bool dsiWare)
 			settings.BirthdayDay = fwSettings.BirthdayDay;
 			memset(settings.Message, 0, sizeof(settings.Message));
 			memcpy(settings.Message, fwSettings.Message, fwSettings.MessageLength * 2);
+
+			if (!((1 << static_cast<u8>(settings.Language)) & serialData.SupportedLanguages))
+			{
+				settings.Language = GetDefaultDSiLanguage(serialData.Region);
+			}
 		}
 
 		settings.TouchCalibrationADC1[0] = 0;
@@ -379,12 +432,6 @@ const char* InitNAND(FirmwareSettings& fwSettings, bool clearNand, bool dsiWare)
 
 			// verify that the imported title is supported by this NAND
 			// it will not actually appear otherwise
-			DSi_NAND::DSiSerialData serialData;
-			if (!mount.ReadSerialData(serialData))
-			{
-				return "Failed to obtain serial data!";
-			}
-
 			auto regionFlags = rom->second > 0x1B0 ? rom->first[0x1B0] : 0;
 			if (!(regionFlags & (1 << static_cast<u8>(serialData.Region))))
 			{

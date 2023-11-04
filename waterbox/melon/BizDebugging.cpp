@@ -3,6 +3,7 @@
 #include "GBACart.h"
 #include "DSi.h"
 #include "ARM.h"
+#include "SPI.h"
 
 #include "dthumb.h"
 
@@ -264,6 +265,8 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 
 	ADD_MEMORY_DOMAIN("ARM9 BIOS", NDS::ARM9BIOS, sizeof(NDS::ARM9BIOS), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
 	ADD_MEMORY_DOMAIN("ARM7 BIOS", NDS::ARM7BIOS, sizeof(NDS::ARM7BIOS), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
+
+	ADD_MEMORY_DOMAIN("Firmware", SPI_Firmware::GetFirmware()->Buffer(), SPI_Firmware::GetFirmware()->Length(), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
 
 	if (NDS::ConsoleType == 1)
 	{
