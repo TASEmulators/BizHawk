@@ -92,12 +92,12 @@ static void SanitizeExternalFirmware(SPI_Firmware::Firmware& firmware)
 
 	if (isDSiFw)
 	{
-		memset(&header.Unknown0[0], 0, (uintptr_t)&header.Unused2[0] - (uintptr_t)&header.Unknown0[0]);
-		header.Unused2[0] = header.Unused2[1] = 0xFF;
+		memset(&header.Bytes[0x22], 0x00, 6);
+		memset(&header.Bytes[0x28], 0xFF, 2);
 	}
 
-	memcpy(&header.WifiConfigLength, &defaultHeader.WifiConfigLength, (uintptr_t)&header.Unknown4 - (uintptr_t)&header.WifiConfigLength);
-	memset(&header.Unknown4, 0xFF, (uintptr_t)&header.Unused7 - (uintptr_t)&header.Unknown4 + 1);
+	memcpy(&header.Bytes[0x2C], &defaultHeader.Bytes[0x2C], 0x136);
+	memset(&header.Bytes[0x162], 0xFF, 0x9E);
 
 	if (isDSiFw)
 	{
@@ -108,7 +108,7 @@ static void SanitizeExternalFirmware(SPI_Firmware::Firmware& firmware)
 	header.UpdateChecksum();
 
 	auto& aps = firmware.AccessPoints();
-	aps[0] = SPI_Firmware::WifiAccessPoint(NDS::ConsoleType);
+	aps[0] = SPI_Firmware::WifiAccessPoint(isDSiFw);
 	aps[1] = SPI_Firmware::WifiAccessPoint();
 	aps[2] = SPI_Firmware::WifiAccessPoint();
 
@@ -133,15 +133,16 @@ static void FixFirmwareTouchscreenCalibration(SPI_Firmware::UserData& userData)
 	userData.TouchCalibrationPixel2[1] = 191;
 }
 
-static void SetFirmwareSettings(SPI_Firmware::UserData& userData, FirmwareSettings& fwSettings, bool dsiFw)
+static void SetFirmwareSettings(SPI_Firmware::UserData& userData, FirmwareSettings& fwSettings)
 {
 	memset(userData.Bytes, 0, 0x74);
+
 	userData.Version = 5;
 	FixFirmwareTouchscreenCalibration(userData);
 
 	userData.NameLength = fwSettings.UsernameLength;
 	memcpy(userData.Nickname, fwSettings.Username, sizeof(fwSettings.Username));
-	userData.Settings = fwSettings.Language | SPI_Firmware::BacklightLevel::Max | 0xFC00;
+	userData.Settings = fwSettings.Language | SPI_Firmware::BacklightLevel::Max | 0xEC00;
 	userData.BirthdayMonth = fwSettings.BirthdayMonth;
 	userData.BirthdayDay = fwSettings.BirthdayDay;
 	userData.FavoriteColor = fwSettings.Color;
@@ -151,7 +152,14 @@ static void SetFirmwareSettings(SPI_Firmware::UserData& userData, FirmwareSettin
 	if (userData.ExtendedSettings.Unknown0 == 1)
 	{
 		userData.ExtendedSettings.ExtendedLanguage = static_cast<SPI_Firmware::Language>(fwSettings.Language & SPI_Firmware::Language::Reserved);
-		memset(userData.ExtendedSettings.Unused0, dsiFw ? 0x00 : 0xFF, sizeof(userData.ExtendedSettings.Unused0));
+		memset(userData.ExtendedSettings.Unused0, 0, sizeof(userData.ExtendedSettings.Unused0));
+
+		if (!((1 << static_cast<u8>(userData.ExtendedSettings.ExtendedLanguage)) & userData.ExtendedSettings.SupportedLanguageMask))
+		{
+			userData.ExtendedSettings.ExtendedLanguage = SPI_Firmware::Language::English;
+			userData.Settings &= ~SPI_Firmware::Language::Reserved;
+			userData.Settings |= SPI_Firmware::Language::English;
+		}
 	}
 	else
 	{
@@ -184,7 +192,7 @@ const char* InitFirmware(FirmwareSettings& fwSettings)
 
 		if (firmware.Buffer())
 		{
-			// Fix header and AP points
+			// sanitize header, wifi calibration, and AP points
 			SanitizeExternalFirmware(firmware);
 		}
 	}
@@ -208,7 +216,7 @@ const char* InitFirmware(FirmwareSettings& fwSettings)
 	{
 		for (SPI_Firmware::UserData& userData : firmware.UserData())
 		{
-			SetFirmwareSettings(userData, fwSettings, firmware.Header().ConsoleType == SPI_Firmware::FirmwareConsoleType::DSi);
+			SetFirmwareSettings(userData, fwSettings);
 			userData.UpdateChecksum();
 		}
 
@@ -247,6 +255,7 @@ const char* InitDSiBIOS()
 
 	if (!Platform::GetConfigBool(Platform::DSi_FullBIOSBoot))
 	{
+		// upstream applies this patch, for whatever reason
 		static const u8 patch[] = { 0xFE, 0xFF, 0xFF, 0xEA };
 		memcpy(DSi::ARM7iBIOS, patch, sizeof(patch));
 		memcpy(DSi::ARM9iBIOS, patch, sizeof(patch));
@@ -316,20 +325,6 @@ static void SanitizeNANDSettings(DSi_NAND::DSiFirmwareSystemSettings& settings, 
 	memset(settings.ParentalControlsSecretAnswer, 0, sizeof(settings.ParentalControlsSecretAnswer));
 }
 
-static SPI_Firmware::Language GetDefaultDSiLanguage(DSi_NAND::ConsoleRegion region)
-{
-	switch (region)
-	{
-		case DSi_NAND::ConsoleRegion::Japan: return SPI_Firmware::Language::Japanese;
-		case DSi_NAND::ConsoleRegion::USA: return SPI_Firmware::Language::English;
-		case DSi_NAND::ConsoleRegion::Europe: return SPI_Firmware::Language::English;
-		case DSi_NAND::ConsoleRegion::Australia: return SPI_Firmware::Language::English;
-		case DSi_NAND::ConsoleRegion::China: return SPI_Firmware::Language::Chinese;
-		case DSi_NAND::ConsoleRegion::Korea: return SPI_Firmware::Language::Reserved; // actually Korean
-		default: return SPI_Firmware::Language::English; // ???
-	}
-}
-
 const char* InitNAND(FirmwareSettings& fwSettings, bool clearNand, bool dsiWare)
 {
 	auto nand = DSi_NAND::NANDImage(Platform::OpenFile("nand.bin", Platform::FileMode::ReadWrite), &DSi::ARM7iBIOS[0x8308]);
@@ -372,7 +367,8 @@ const char* InitNAND(FirmwareSettings& fwSettings, bool clearNand, bool dsiWare)
 
 			if (!((1 << static_cast<u8>(settings.Language)) & serialData.SupportedLanguages))
 			{
-				settings.Language = GetDefaultDSiLanguage(serialData.Region);
+				// English is valid among all NANDs
+				settings.Language = SPI_Firmware::Language::English;
 			}
 		}
 
