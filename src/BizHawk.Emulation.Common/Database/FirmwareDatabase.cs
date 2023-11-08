@@ -47,6 +47,8 @@ namespace BizHawk.Emulation.Common
 						additionalInfo: additionalInfo,
 						isBad: isBad);
 
+			// make sure id doesn't have a space, it is stored in the (space delimited) movie header!
+
 			void Option(string systemId, string id, in FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 			{
 				var option = new FirmwareOption(new(systemId, id), ff.Hash, ff.Size, ff.IsBad ? FirmwareOptionStatus.Bad : status);
@@ -141,6 +143,7 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("719B9EEF33692406D7170FF526069615759C4DFC", 65536, "NDS", "bios9i", "NDS_Bios9i.bin", "ARM9i BIOS");
 			Firmware("NDS", "firmware", "NDS Firmware");
 			// throwing a ton of hashes from various reported firmwares
+			// TODO: Probably should just add in no-intro hashes
 			var knownhack1 = File("22A7547DBC302BCBFB4005CFB5A2D426D3F85AC6", 262144, "NDS_Firmware [b1].bin", "NDS Firmware", "known hack", true);
 			var knownhack2 = File("AE22DE59FBF3F35CCFBEACAEBA6FA87AC5E7B14B", 262144, "NDS_Firmware [b2].bin", "NDS Firmware", "known hack", true);
 			var knownhack3 = File("1CF9E67C2C703BB9961BBCDD39CD2C7E319A803B", 262144, "NDS_Firmware [b3].bin", "NDS Firmware", "known hack", true);
@@ -158,12 +161,12 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption(SHA1Checksum.Dummy, 131072, "NDS", "firmwarei", "DSi_Firmware.bin", "DSi Firmware");
 			// options for each region due to region locking of the DSi
 			// also, the sizes include the "nocash footer" which contains the eMMC CID and CPU/Console ID
-			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (JPN)", "DSi_Nand_JPN.bin", "DSi NAND (Japan)");
-			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (EUR)", "DSi_Nand_EUR.bin", "DSi NAND (Europe)");
-			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (USA)", "DSi_Nand_USA.bin", "DSi NAND (USA)");
-			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (AUS)", "DSi_Nand_AUS.bin", "DSi NAND (Australia)");
-			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (CHN)", "DSi_Nand_CHN.bin", "DSi NAND (China)");
-			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (KOR)", "DSi_Nand_KOR.bin", "DSi NAND (Korea)");
+			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND_JPN", "DSi_Nand_JPN.bin", "DSi NAND (Japan)");
+			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND_EUR", "DSi_Nand_EUR.bin", "DSi NAND (Europe)");
+			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND_USA", "DSi_Nand_USA.bin", "DSi NAND (USA)");
+			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND_AUS", "DSi_Nand_AUS.bin", "DSi NAND (Australia)");
+			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND_CHN", "DSi_Nand_CHN.bin", "DSi NAND (China)");
+			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND_KOR", "DSi_Nand_KOR.bin", "DSi NAND (Korea)");
 
 			// bleh, undefined hash AND size...
 			FirmwareAndOption(SHA1Checksum.Dummy, 0, "3DS", "aes_keys", "aes_keys.txt", "AES Keys");
@@ -486,15 +489,15 @@ namespace BizHawk.Emulation.Common
 			var fxscsi = File("65482A23AC5C10A6095AEE1DB5824CCA54EAD6E5", 512 * 1024, "PCFX_fx-scsi.rom", "PCFX SCSI ROM");
 			Option("PCFX", "SCSIROM", in fxscsi);
 
-			Firmware("N64DD", "IPL JPN", "N64DD Japan IPL");
+			Firmware("N64DD", "IPL_JPN", "N64DD Japan IPL");
 			var ddv10 = File("58670C0063793A8F3BE957D71D937B618829BA9E", 4 * 1024 * 1024, "64DD_IPL_v10_JPN.bin", "N64DD JPN IPL v1.0 (Beta)");
 			var ddv11 = File("B3E26DBB4E945F78C918FABC5B9E60FCF262C47B", 4 * 1024 * 1024, "64DD_IPL_v11_JPN.bin", "N64DD JPN IPL v1.1 (Beta)");
 			var ddv12 = File("BF861922DCB78C316360E3E742F4F70FF63C9BC3", 4 * 1024 * 1024, "64DD_IPL_v12_JPN.bin", "N64DD JPN IPL v1.2 (Retail)");
-			Option("N64DD", "IPL JPN", in ddv10, FirmwareOptionStatus.Unacceptable);
-			Option("N64DD", "IPL JPN", in ddv11, FirmwareOptionStatus.Unacceptable);
-			Option("N64DD", "IPL JPN", in ddv12, FirmwareOptionStatus.Ideal);
-			FirmwareAndOption("10C4173C2A7EB09C6579818F72EF18FA0B6D32DE", 4 * 1024 * 1024, "N64DD", "IPL DEV", "64DD_IPL_DEV.bin", "N64DD Development IPL");
-			FirmwareAndOption("3C5B93CA231550C68693A14F03CEA8D5DBD1BE9E", 4 * 1024 * 1024, "N64DD", "IPL USA", "64DD_IPL_USA.bin", "N64DD Prototype USA IPL");
+			Option("N64DD", "IPL_JPN", in ddv10, FirmwareOptionStatus.Unacceptable);
+			Option("N64DD", "IPL_JPN", in ddv11, FirmwareOptionStatus.Unacceptable);
+			Option("N64DD", "IPL_JPN", in ddv12, FirmwareOptionStatus.Ideal);
+			FirmwareAndOption("10C4173C2A7EB09C6579818F72EF18FA0B6D32DE", 4 * 1024 * 1024, "N64DD", "IPL_DEV", "64DD_IPL_DEV.bin", "N64DD Development IPL");
+			FirmwareAndOption("3C5B93CA231550C68693A14F03CEA8D5DBD1BE9E", 4 * 1024 * 1024, "N64DD", "IPL_USA", "64DD_IPL_USA.bin", "N64DD Prototype USA IPL");
 
 			/*Firmware("PS2", "BIOS", "PS2 Bios");
 			Option("PS2", "BIOS", File("FBD54BFC020AF34008B317DCB80B812DD29B3759", 4 * 1024 * 1024, "ps2-0230j-20080220.bin", "PS2 Bios"));

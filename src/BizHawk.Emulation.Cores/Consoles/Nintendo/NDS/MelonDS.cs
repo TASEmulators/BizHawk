@@ -355,21 +355,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static byte[] DecideNAND(ICoreFileProvider cfp, bool isDSiEnhanced, byte regionFlags)
 		{
 			// TODO: priority settings?
-			var nandOptions = new List<string> { "NAND (JPN)", "NAND (USA)", "NAND (EUR)", "NAND (AUS)", "NAND (CHN)", "NAND (KOR)" };
+			var nandOptions = new List<string> { "JPN", "USA", "EUR", "AUS", "CHN", "KOR" };
 			if (isDSiEnhanced) // NB: Core makes cartridges region free regardless, DSiWare must follow DSi region locking however (we'll enforce it regardless)
 			{
 				nandOptions.Clear();
-				if (regionFlags.Bit(0)) nandOptions.Add("NAND (JPN)");
-				if (regionFlags.Bit(1)) nandOptions.Add("NAND (USA)");
-				if (regionFlags.Bit(2)) nandOptions.Add("NAND (EUR)");
-				if (regionFlags.Bit(3)) nandOptions.Add("NAND (AUS)");
-				if (regionFlags.Bit(4)) nandOptions.Add("NAND (CHN)");
-				if (regionFlags.Bit(5)) nandOptions.Add("NAND (KOR)");
+				if (regionFlags.Bit(0)) nandOptions.Add("JPN");
+				if (regionFlags.Bit(1)) nandOptions.Add("USA");
+				if (regionFlags.Bit(2)) nandOptions.Add("EUR");
+				if (regionFlags.Bit(3)) nandOptions.Add("AUS");
+				if (regionFlags.Bit(4)) nandOptions.Add("CHN");
+				if (regionFlags.Bit(5)) nandOptions.Add("KOR");
 			}
 
 			foreach (var option in nandOptions)
 			{
-				var ret = cfp.GetFirmware(new("NDS", option));
+				var ret = cfp.GetFirmware(new("NDS", $"NAND_{option}"));
 				if (ret is not null) return ret;
 			}
 
