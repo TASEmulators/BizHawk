@@ -198,6 +198,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			});
 
 			_activeSyncSettings.UseRealBIOS |= IsDSi;
+			_activeSyncSettings.UseRealBIOS |= roms.Count == 2;
 
 			if (_activeSyncSettings.UseRealBIOS)
 			{
