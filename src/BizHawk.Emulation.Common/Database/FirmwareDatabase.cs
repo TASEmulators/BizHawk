@@ -47,8 +47,6 @@ namespace BizHawk.Emulation.Common
 						additionalInfo: additionalInfo,
 						isBad: isBad);
 
-			// make sure id doesn't have a space, it is stored in the (space delimited) movie header!
-
 			void Option(string systemId, string id, in FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 			{
 				var option = new FirmwareOption(new(systemId, id), ff.Hash, ff.Size, ff.IsBad ? FirmwareOptionStatus.Bad : status);
