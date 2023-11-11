@@ -52,7 +52,7 @@ namespace BizHawk.Common
 		public static extern unsafe int XQueryKeymap(IntPtr display, byte* keys_return);
 
 		// copied from OpenTK
-		public enum Keysym
+		public enum Keysym : ulong
 		{
 			/*
 			 * TTY function keys, cleverly chosen to map to ASCII, for convenience of
@@ -466,6 +466,7 @@ namespace BizHawk.Common
 		}
 
 		[DllImport(LIB)]
+		[return: MarshalAs(UnmanagedType.SysUInt)]
 		public static extern Keysym XLookupKeysym(ref XKeyEvent key_event, int index);
 
 		[DllImport(LIB)]
@@ -492,22 +493,21 @@ namespace BizHawk.Common
 		[StructLayout(LayoutKind.Sequential)]
 		public unsafe struct XkbNamesRec
 		{
-			// the ulongs here are Atom, which are actually more nuint
-			// they're ulong here as you can't use nuint in a fixed buffer (thanks microsoft)
-			// TODO: maybe make this work with 32 bit
-
-			public ulong keycodes;
-			public ulong geometry;
-			public ulong symbols;
-			public ulong types;
-			public ulong compat;
-			public fixed ulong vmods[16];
-			public fixed ulong indicators[32];
-			public fixed ulong groups[4];
+			public nuint keycodes;
+			public nuint geometry;
+			public nuint symbols;
+			public nuint types;
+			public nuint compat;
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+			public nuint[] vmods;
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
+			public nuint[] indicators;
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+			public nuint[] groups;
 			public XkbKeyNameRec* keys;
 			public XkbKeyAliasRec* key_aliases;
-			public ulong* radio_groups;
-			public ulong phys_symbols;
+			public nuint* radio_groups;
+			public nuint phys_symbols;
 
 			public byte num_keys;
 			public byte num_key_aliases;
@@ -515,7 +515,7 @@ namespace BizHawk.Common
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public unsafe struct XkbDescRec
+		public struct XkbDescRec
 		{
 			public IntPtr dpy;
 			public ushort flags;
@@ -527,7 +527,7 @@ namespace BizHawk.Common
 			public IntPtr server;
 			public IntPtr map;
 			public IntPtr indicators;
-			public XkbNamesRec* names;
+			public IntPtr names; // XkbNamesRec*
 			public IntPtr compat;
 			public IntPtr geom;
 		}

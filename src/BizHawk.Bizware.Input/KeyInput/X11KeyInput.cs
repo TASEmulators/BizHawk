@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Runtime.InteropServices;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
@@ -113,10 +113,11 @@ namespace BizHawk.Bizware.Input
 				if (keyboard != null)
 				{
 					_ = XkbGetNames(Display, 0x3FF, keyboard);
+					var names = Marshal.PtrToStructure<XkbNamesRec>(keyboard->names);
 
 					for (int i = keyboard->min_key_code; i <= keyboard->max_key_code; i++)
 					{
-						var name = new string(keyboard->names->keys[i].name, 0, 4);
+						var name = new string(names.keys[i].name, 0, 4);
 						var key = name switch
 						{
 							"TLDE" => DistinctKey.OemTilde,
