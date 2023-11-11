@@ -15,13 +15,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
 	public partial class Citra
 	{
-		private static readonly LibCitra _core;
+		private static DynamicLibraryImportResolver _resolver;
+		private static LibCitra _core;
 
-		static Citra()
+		// This is a hack, largely just so we can forcefully evict file handles Citra keeps open even after shutdown.
+		// While keeping these file handles open is mostly harmless, this ends up being bad when recording a movie.
+		// These file handles would be in the user folder, and the user folder must be cleared out when recording a movie!
+		private static void ResetCitraResolver()
 		{
-			var resolver = new DynamicLibraryImportResolver(
-				OSTailoredCode.IsUnixHost ? "libcitra-headless.so" : "citra-headless.dll", hasLimitedLifetime: false);
-			_core = BizInvoker.GetInvoker<LibCitra>(resolver, CallingConventionAdapters.Native);
+			_resolver?.Dispose();
+			_resolver = new(OSTailoredCode.IsUnixHost ? "libcitra-headless.so" : "citra-headless.dll", hasLimitedLifetime: true);
+			_core = BizInvoker.GetInvoker<LibCitra>(_resolver, CallingConventionAdapters.Native);
 		}
 
 		private static Citra CurrentCore;
@@ -48,6 +52,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			}
 
 			CurrentCore?.Dispose();
+			ResetCitraResolver();
+
 			CurrentCore = this;
 
 			_serviceProvider = new(this);
