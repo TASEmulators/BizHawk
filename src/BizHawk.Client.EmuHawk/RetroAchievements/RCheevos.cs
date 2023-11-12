@@ -588,7 +588,7 @@ namespace BizHawk.Client.EmuHawk
 
 								_dialogParent.AddOnScreenMessage($"Leaderboard Attempt Complete! ({lboard.Score})");
 								_dialogParent.AddOnScreenMessage(lboard.Description);
-								if (EnableSoundEffects) _unlockSound.PlayNoExceptions();
+								if (EnableSoundEffects) _lboardCompleteSound.PlayNoExceptions();
 							}
 						}
 

@@ -14,6 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly SoundPlayer _unlockSound = new(Path.Combine(PathUtils.ExeDirectoryPath, "overlay/unlock.wav"));
 		private static readonly SoundPlayer _lboardStartSound = new(Path.Combine(PathUtils.ExeDirectoryPath, "overlay/lb.wav"));
 		private static readonly SoundPlayer _lboardFailedSound = new(Path.Combine(PathUtils.ExeDirectoryPath, "overlay/lbcancel.wav"));
+		private static readonly SoundPlayer _lboardCompleteSound = new(Path.Combine(PathUtils.ExeDirectoryPath, "overlay/lbcomplete.wav"));
 		private static readonly SoundPlayer _infoSound = new(Path.Combine(PathUtils.ExeDirectoryPath, "overlay/info.wav"));
 
 		private bool EnableSoundEffects { get; set; }
