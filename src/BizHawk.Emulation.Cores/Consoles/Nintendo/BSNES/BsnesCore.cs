@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Components.W65816;
@@ -65,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				msuEndCb = _currentMsuTrack.AtEnd
 			};
 
-			Api = new BsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm, callbacks.AllDelegatesInMemoryOrder());
+			Api = new(PathUtils.DllDirectoryPath, CoreComm, callbacks.AllDelegatesInMemoryOrder());
 
 			_controllers = new BsnesControllers(_syncSettings, subframe);
 

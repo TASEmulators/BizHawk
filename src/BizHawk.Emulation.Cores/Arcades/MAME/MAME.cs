@@ -11,6 +11,7 @@ using System.Text;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -67,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_exe = new(new()
 			{
 				Filename = "libmamearcade.wbx",
-				Path = lp.Comm.CoreFileProvider.DllPath(),
+				Path = PathUtils.DllDirectoryPath,
 				SbrkHeapSizeKB = 512 * 1024,
 				InvisibleHeapSizeKB = 4,
 				MmapHeapSizeKB = 1024 * 1024,

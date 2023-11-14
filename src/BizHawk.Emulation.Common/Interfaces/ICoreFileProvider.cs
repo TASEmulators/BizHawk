@@ -6,11 +6,6 @@
 	public interface ICoreFileProvider
 	{
 		/// <summary>
-		/// produces a path that contains emulation related DLL and exe files
-		/// </summary>
-		string DllPath();
-
-		/// <summary>
 		/// produces a path that contains saveram... because libretro cores need it
 		/// </summary>
 		string GetRetroSaveRAMDirectory(IGameInfo game);

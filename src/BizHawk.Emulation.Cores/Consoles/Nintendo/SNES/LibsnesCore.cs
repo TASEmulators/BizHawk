@@ -4,6 +4,7 @@ using System.Xml;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.W65816;
 
@@ -69,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_pathrequestcb = snes_path_request;
 
 			// TODO: pass profile here
-			Api = new LibsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm, new Delegate[]
+			Api = new(PathUtils.DllDirectoryPath, CoreComm, new Delegate[]
 			{
 				_videocb,
 				_inputpollcb,

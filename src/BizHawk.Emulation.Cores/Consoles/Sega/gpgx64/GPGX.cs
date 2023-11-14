@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Common;
@@ -38,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			_elf = new WaterboxHost(new WaterboxOptions
 			{
-				Path = lp.Comm.CoreFileProvider.DllPath(),
+				Path = PathUtils.DllDirectoryPath,
 				Filename = "gpgx.wbx",
 				SbrkHeapSizeKB = 512,
 				SealedHeapSizeKB = 4 * 1024,

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using BizHawk.Common;
 using BizHawk.BizInvoke;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Waterbox
@@ -48,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		protected T PreInit<T>(WaterboxOptions options, IEnumerable<Delegate> allExtraDelegates = null)
 			where T : LibWaterboxCore
 		{
-			options.Path ??= CoreComm.CoreFileProvider.DllPath();
+			options.Path ??= PathUtils.DllDirectoryPath;
 			_exe = new WaterboxHost(options);
 			var delegates = new Delegate[] { _inputCallback }.AsEnumerable();
 			if (allExtraDelegates != null)
