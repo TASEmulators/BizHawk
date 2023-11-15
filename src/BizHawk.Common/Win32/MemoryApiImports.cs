@@ -37,11 +37,11 @@ namespace BizHawk.Common
 			WRITECOMBINE_Modifierflag = 0x400
 		}
 
-		[DllImport("kernel32.dll", SetLastError = true)]
+		[DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
 		public static extern UIntPtr VirtualAlloc(UIntPtr lpAddress, UIntPtr dwSize,
 			AllocationType flAllocationType, MemoryProtection flProtect);
 
-		[DllImport("kernel32.dll", SetLastError = true)]
+		[DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool VirtualProtect(
 			UIntPtr lpAddress,
@@ -56,7 +56,7 @@ namespace BizHawk.Common
 			Release = 0x8000,
 		}
 
-		[DllImport("kernel32.dll")]
+		[DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool VirtualFree(UIntPtr lpAddress, UIntPtr dwSize, FreeType dwFreeType);
 	}

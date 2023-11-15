@@ -46,10 +46,10 @@ namespace BizHawk.Bizware.Input
 				// similar code shouldn't be needed on other platforms (which have global message queues and not thread local message queues)
 				if (!OSTailoredCode.IsUnixHost)
 				{
-					while (WmImports.PeekMessage(out var msg, IntPtr.Zero, 0, 0, WmImports.PM_REMOVE))
+					while (WmImports.PeekMessageW(out var msg, IntPtr.Zero, 0, 0, WmImports.PM_REMOVE))
 					{
 						WmImports.TranslateMessage(ref msg);
-						WmImports.DispatchMessage(ref msg);
+						WmImports.DispatchMessageW(ref msg);
 					}
 				}
 

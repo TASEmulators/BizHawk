@@ -32,12 +32,12 @@ namespace BizHawk.Bizware.Input
 
 		private static readonly Lazy<IntPtr> _rawInputWindowAtom = new(() =>
 		{
-			var wc = default(WNDCLASS);
+			var wc = default(WNDCLASSW);
 			wc.lpfnWndProc = _wndProc;
 			wc.hInstance = LoaderApiImports.GetModuleHandleW(null);
 			wc.lpszClassName = "RawKeyInputClass";
 
-			var atom = RegisterClass(ref wc);
+			var atom = RegisterClassW(ref wc);
 			if (atom == IntPtr.Zero)
 			{
 				throw new InvalidOperationException("Failed to register RAWINPUT window class");
@@ -48,27 +48,27 @@ namespace BizHawk.Bizware.Input
 
 		private static unsafe IntPtr WndProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam)
 		{
-			var ud = GetWindowLongPtr(hWnd, GWLP_USERDATA);
+			var ud = GetWindowLongPtrW(hWnd, GWLP_USERDATA);
 			if (ud == IntPtr.Zero)
 			{
-				return DefWindowProc(hWnd, uMsg, wParam, lParam);
+				return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 			}
 
 			if (uMsg != WM_INPUT)
 			{
 				if (uMsg == WM_CLOSE)
 				{
-					SetWindowLongPtr(hWnd, GWLP_USERDATA, IntPtr.Zero);
+					SetWindowLongPtrW(hWnd, GWLP_USERDATA, IntPtr.Zero);
 					GCHandle.FromIntPtr(ud).Free();
 				}
 
-				return DefWindowProc(hWnd, uMsg, wParam, lParam);
+				return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 			}
 
 			if (GetRawInputData(lParam, RID.INPUT, IntPtr.Zero,
 					out var size, Marshal.SizeOf<RAWINPUTHEADER>()) == -1)
 			{
-				return DefWindowProc(hWnd, uMsg, wParam, lParam);
+				return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 			}
 
 			// don't think size should ever be this big, but just in case
@@ -83,7 +83,7 @@ namespace BizHawk.Bizware.Input
 				if (GetRawInputData(lParam, RID.INPUT, input,
 						ref size, Marshal.SizeOf<RAWINPUTHEADER>()) == -1)
 				{
-					return DefWindowProc(hWnd, uMsg, wParam, lParam);
+					return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 				}
 
 				if (input->header.dwType == RAWINPUTHEADER.RIM_TYPE.KEYBOARD && input->data.keyboard.Flags <= RAWKEYBOARD.RIM_KEY.E1)
@@ -116,7 +116,7 @@ namespace BizHawk.Bizware.Input
 		private static IntPtr CreateRawInputWindow()
 		{
 			const int WS_CHILD = 0x40000000;
-			var window = CreateWindowEx(
+			var window = CreateWindowExW(
 					dwExStyle: 0,
 					lpClassName: _rawInputWindowAtom.Value,
 					lpWindowName: "RawKeyInput",
@@ -170,7 +170,7 @@ namespace BizHawk.Bizware.Input
 				if (RawInputWindow != IntPtr.Zero)
 				{
 					// Can't use DestroyWindow, that's only allowed in the thread that created the window!
-					PostMessage(RawInputWindow, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+					PostMessageW(RawInputWindow, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
 					RawInputWindow = IntPtr.Zero;
 				}
 			}
@@ -184,15 +184,15 @@ namespace BizHawk.Bizware.Input
 				{
 					RawInputWindow = CreateRawInputWindow();
 					var handle = GCHandle.Alloc(this, GCHandleType.Normal);
-					SetWindowLongPtr(RawInputWindow, GWLP_USERDATA, GCHandle.ToIntPtr(handle));
+					SetWindowLongPtrW(RawInputWindow, GWLP_USERDATA, GCHandle.ToIntPtr(handle));
 				}
 
 				HandleAltKbLayouts = handleAltKbLayouts;
 
-				while (PeekMessage(out var msg, RawInputWindow, 0, 0, PM_REMOVE))
+				while (PeekMessageW(out var msg, RawInputWindow, 0, 0, PM_REMOVE))
 				{
 					TranslateMessage(ref msg);
-					DispatchMessage(ref msg);
+					DispatchMessageW(ref msg);
 				}
 
 				var ret = KeyEvents;

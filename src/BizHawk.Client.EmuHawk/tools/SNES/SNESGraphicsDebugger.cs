@@ -868,7 +868,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			groupFreeze.SuspendLayout();
 
-			WmImports.SendMessage(groupFreeze.Handle, 11, (IntPtr)0, IntPtr.Zero); //WM_SETREDRAW false
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				// WM_SETREDRAW false
+				WmImports.SendMessageW(groupFreeze.Handle, 11, (IntPtr)0, IntPtr.Zero);
+			}
 
 			var tp = tabctrlDetails.SelectedTab;
 
@@ -886,7 +890,12 @@ namespace BizHawk.Client.EmuHawk
 
 			groupFreeze.ResumeLayout();
 
-			WmImports.SendMessage(groupFreeze.Handle, 11, (IntPtr)1, IntPtr.Zero); //WM_SETREDRAW true
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				// WM_SETREDRAW true
+				WmImports.SendMessageW(groupFreeze.Handle, 11, (IntPtr)1, IntPtr.Zero);
+			}
+
 			groupFreeze.Refresh();
 		}
 

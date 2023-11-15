@@ -90,7 +90,7 @@ namespace BizHawk.Bizware.Input
 		{
 			const uint MAPVK_VSC_TO_VK_EX = 0x03;
 			// DInputKey is a scancode as is
-			var virtualKey = MapVirtualKey((uint) key, MAPVK_VSC_TO_VK_EX);
+			var virtualKey = MapVirtualKeyW((uint) key, MAPVK_VSC_TO_VK_EX);
 			return VKeyToDKeyMap.GetValueOrDefault(virtualKey, DInputKey.Unknown);
 		}
 

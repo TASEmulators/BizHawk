@@ -10,16 +10,19 @@ namespace BizHawk.Common
 {
 	public static class CommctrlImports
 	{
-		public const int LVM_GETHEADER = 4127;
-		public const int HDM_GETITEM = 4619;
-		public const int HDM_SETITEM = 4620;
+		public const int LVM_FIRST = 0x1000;
+		public const int LVM_GETHEADER = LVM_FIRST + 31;
+
+		public const int HDM_FIRST = 0x1200;
+		public const int HDM_GETITEMW = HDM_FIRST + 11;
+		public const int HDM_SETITEMW = HDM_FIRST + 12;
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct HDITEM
+		public struct HDITEMW
 		{
 			public Mask mask;
 			public int cxy;
-			[MarshalAs(UnmanagedType.LPTStr)]
+			[MarshalAs(UnmanagedType.LPWStr)]
 			public string pszText;
 			public IntPtr hbm;
 			public int cchTextMax;
@@ -38,20 +41,20 @@ namespace BizHawk.Common
 			public uint state;
 
 			[Flags]
-			public enum Mask
+			public enum Mask : uint
 			{
 				Format = 0x4
 			}
 
 			[Flags]
-			public enum Format
+			public enum Format : int
 			{
 				SortDown = 0x200,
 				SortUp = 0x400
 			}
 		}
 
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, ref HDITEM lParam);
+		[DllImport("user32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+		public static extern IntPtr SendMessageW(IntPtr hWnd, uint msg, IntPtr wParam, ref HDITEMW lParam);
 	}
 }

@@ -17,13 +17,13 @@ namespace BizHawk.Common
 		[UnmanagedFunctionPointer(CallingConvention.Winapi)]
 		public delegate int BFFCALLBACK(IntPtr hwnd, uint uMsg, IntPtr lParam, IntPtr lpData);
 
-		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		public struct BROWSEINFO
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+		public struct BROWSEINFOW
 		{
 			public IntPtr hwndOwner;
 			public IntPtr pidlRoot;
 			public IntPtr pszDisplayName;
-			[MarshalAs(UnmanagedType.LPTStr)]
+			[MarshalAs(UnmanagedType.LPWStr)]
 			public string lpszTitle;
 			public FLAGS ulFlags;
 			[MarshalAs(UnmanagedType.FunctionPtr)]
@@ -78,16 +78,16 @@ namespace BizHawk.Common
 			void HeapMinimize();
 		}
 
-		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
-		public static extern IntPtr SHBrowseForFolder(ref BROWSEINFO bi);
+		[DllImport("shell32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+		public static extern IntPtr SHBrowseForFolderW(ref BROWSEINFOW bi);
 
-		[DllImport("shell32.dll")]
+		[DllImport("shell32.dll", ExactSpelling = true)]
 		public static extern int SHGetMalloc(out IMalloc ppMalloc);
 
-		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
-		public static extern int SHGetPathFromIDList(IntPtr pidl, StringBuilder pszPath);
+		[DllImport("shell32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+		public static extern int SHGetPathFromIDListW(IntPtr pidl, char[] pszPath);
 
-		[DllImport("shell32.dll")]
+		[DllImport("shell32.dll", ExactSpelling = true)]
 		public static extern int SHGetSpecialFolderLocation(IntPtr hwndOwner, int nFolder, out IntPtr ppidl);
 	}
 }

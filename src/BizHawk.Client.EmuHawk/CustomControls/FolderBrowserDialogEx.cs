@@ -23,8 +23,8 @@ namespace BizHawk.Client.EmuHawk
 	/// </remarks>
 	public sealed class FolderBrowserEx : Component
 	{
-		private const BROWSEINFO.FLAGS BrowseOptions = BROWSEINFO.FLAGS.RestrictToFilesystem | BROWSEINFO.FLAGS.RestrictToDomain |
-			BROWSEINFO.FLAGS.NewDialogStyle | BROWSEINFO.FLAGS.ShowTextBox;
+		private const BROWSEINFOW.FLAGS BrowseOptions = BROWSEINFOW.FLAGS.RestrictToFilesystem | BROWSEINFOW.FLAGS.RestrictToDomain |
+			BROWSEINFOW.FLAGS.NewDialogStyle | BROWSEINFOW.FLAGS.ShowTextBox;
 
 		public string Description = "Please select a folder below:";
 
@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 					var str = Marshal.StringToHGlobalUni(SelectedPath);
 					try
 					{
-						WmImports.SendMessage(hwnd, BFFM_SETSELECTIONW, new(1), str);
+						WmImports.SendMessageW(hwnd, BFFM_SETSELECTIONW, new(1), str);
 					}
 					finally
 					{
@@ -62,14 +62,14 @@ namespace BizHawk.Client.EmuHawk
 			var browseOptions = BrowseOptions;
 			if (ApartmentState.MTA == Application.OleRequired())
 			{
-				browseOptions &= ~BROWSEINFO.FLAGS.NewDialogStyle;
+				browseOptions &= ~BROWSEINFOW.FLAGS.NewDialogStyle;
 			}
 
 			var pidlRet = IntPtr.Zero;
 			try
 			{
 				var buffer = Marshal.AllocHGlobal(Win32Imports.MAX_PATH);
-				var bi = new BROWSEINFO
+				var bi = new BROWSEINFOW
 				{
 					hwndOwner = hWndOwner,
 					pidlRoot = pidlRoot,
@@ -79,20 +79,20 @@ namespace BizHawk.Client.EmuHawk
 					lpfn = Callback
 				};
 
-				pidlRet = SHBrowseForFolder(ref bi);
+				pidlRet = SHBrowseForFolderW(ref bi);
 				Marshal.FreeHGlobal(buffer);
 				if (pidlRet == IntPtr.Zero)
 				{
 					return DialogResult.Cancel; // user clicked Cancel
 				}
 
-				var path = new StringBuilder(Win32Imports.MAX_PATH);
-				if (SHGetPathFromIDList(pidlRet, path) == 0)
+				var path = new char[Win32Imports.MAX_PATH];
+				if (SHGetPathFromIDListW(pidlRet, path) == 0)
 				{
 					return DialogResult.Cancel;
 				}
 
-				SelectedPath = path.ToString();
+				SelectedPath = new string(path).TrimEnd('\0');
 			}
 			finally
 			{

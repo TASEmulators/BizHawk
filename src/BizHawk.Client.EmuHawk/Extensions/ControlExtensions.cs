@@ -191,34 +191,34 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var columnHeader = WmImports.SendMessage(listViewControl.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
+			var columnHeader = WmImports.SendMessageW(listViewControl.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
 			for (int columnNumber = 0, l = listViewControl.Columns.Count; columnNumber < l; columnNumber++)
 			{
 				var columnPtr = new IntPtr(columnNumber);
-				var item = new HDITEM { mask = HDITEM.Mask.Format };
-				if (SendMessage(columnHeader, HDM_GETITEM, columnPtr, ref item) == IntPtr.Zero)
+				var item = new HDITEMW { mask = HDITEMW.Mask.Format };
+				if (SendMessageW(columnHeader, HDM_GETITEMW, columnPtr, ref item) == IntPtr.Zero)
 				{
 					throw new Win32Exception();
 				}
 
 				if (columnNumber != columnIndex || order == SortOrder.None)
 				{
-					item.fmt &= ~HDITEM.Format.SortDown & ~HDITEM.Format.SortUp;
+					item.fmt &= ~HDITEMW.Format.SortDown & ~HDITEMW.Format.SortUp;
 				}
 				// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
 				else switch (order)
 				{
 					case SortOrder.Ascending:
-						item.fmt &= ~HDITEM.Format.SortDown;
-						item.fmt |= HDITEM.Format.SortUp;
+						item.fmt &= ~HDITEMW.Format.SortDown;
+						item.fmt |= HDITEMW.Format.SortUp;
 						break;
 					case SortOrder.Descending:
-						item.fmt &= ~HDITEM.Format.SortUp;
-						item.fmt |= HDITEM.Format.SortDown;
+						item.fmt &= ~HDITEMW.Format.SortUp;
+						item.fmt |= HDITEMW.Format.SortDown;
 						break;
 				}
 
-				if (SendMessage(columnHeader, HDM_SETITEM, columnPtr, ref item) == IntPtr.Zero)
+				if (SendMessageW(columnHeader, HDM_SETITEMW, columnPtr, ref item) == IntPtr.Zero)
 				{
 					throw new Win32Exception();
 				}

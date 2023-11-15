@@ -82,9 +82,9 @@ namespace BizHawk.Common.PathExtensions
 				if (File.Exists(path1.SubstringBefore('|'))) return FileAttributes.Normal;
 				throw new FileNotFoundException();
 			}
-			var path = new StringBuilder(Win32Imports.MAX_PATH);
-			return Win32Imports.PathRelativePathTo(path, fromPath, GetPathAttribute(fromPath), toPath, GetPathAttribute(toPath))
-				? path.ToString()
+			var path = new char[Win32Imports.MAX_PATH];
+			return Win32Imports.PathRelativePathToW(path, fromPath, GetPathAttribute(fromPath), toPath, GetPathAttribute(toPath))
+				? new string(path).TrimEnd('\0')
 				: throw new ArgumentException(message: "Paths must have a common prefix", paramName: nameof(toPath));
 		}
 

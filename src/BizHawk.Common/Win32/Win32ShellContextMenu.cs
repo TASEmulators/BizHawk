@@ -224,19 +224,19 @@ namespace BizHawk.Common
 			int HandleMenuMsg(int uMsg, IntPtr wParam, IntPtr lParam);
 		}
 
-		[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
+		[DllImport("shell32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, PreserveSig = false)]
 		public static extern IShellItem SHCreateItemFromParsingName(
 			[In] string pszPath,
 			[In] IntPtr pbc,
 			[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
 
-		[DllImport("shell32.dll", PreserveSig = false)]
+		[DllImport("shell32.dll", ExactSpelling = true, PreserveSig = false)]
 		public static extern IntPtr SHGetIDListFromObject([In, MarshalAs(UnmanagedType.IUnknown)] object punk);
 
-		[DllImport("shell32.dll", EntryPoint = "#16")]
+		[DllImport("shell32.dll", EntryPoint = "#16", ExactSpelling = true)]
 		public static extern IntPtr ILFindLastID(IntPtr pidl);
 
-		[DllImport("user32.dll")]
+		[DllImport("user32.dll", ExactSpelling = true)]
 		public static extern int TrackPopupMenuEx(IntPtr hmenu, TPM fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
 
 		private IContextMenu ComInterface { get; }
@@ -271,10 +271,11 @@ namespace BizHawk.Common
 
 		private ref struct TempMenu
 		{
-			[DllImport("user32.dll")]
+			[DllImport("user32.dll", ExactSpelling = true)]
 			private static extern IntPtr CreatePopupMenu();
 
-			[DllImport("user32.dll", SetLastError = true)]
+			[DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
+			[return: MarshalAs(UnmanagedType.Bool)]
 			private static extern bool DestroyMenu(IntPtr hMenu);
 
 			public IntPtr Handle { get; private set; }

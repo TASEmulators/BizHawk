@@ -796,10 +796,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				nativeResult = ThreadHacks.MsgWaitForMultipleObjectsEx(count, waitHandles, 0xFFFFFFFF, QS_MASK, ThreadHacks.MWMO_INPUTAVAILABLE);
 				if (IsNativeWaitSuccessful(count, nativeResult, out int managedResult) || WaitHandle.WaitTimeout == managedResult) break;
 				// there is a message, pump and dispatch it
-				if (WmImports.PeekMessage(out msg, IntPtr.Zero, 0, 0, WmImports.PM_REMOVE))
+				if (WmImports.PeekMessageW(out msg, IntPtr.Zero, 0, 0, WmImports.PM_REMOVE))
 				{
 					WmImports.TranslateMessage(ref msg);
-					WmImports.DispatchMessage(ref msg);
+					WmImports.DispatchMessageW(ref msg);
 				}
 			}
 //			handle.WaitOne();

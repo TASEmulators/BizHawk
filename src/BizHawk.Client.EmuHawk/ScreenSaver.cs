@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					const int SPI_GETSCREENSAVERTIMEOUT = 14;
 					int value = default;
-					Win32Imports.SystemParametersInfo(SPI_GETSCREENSAVERTIMEOUT, 0, ref value, 0);
+					Win32Imports.SystemParametersInfoW(SPI_GETSCREENSAVERTIMEOUT, 0, ref value, 0);
 					return value;
 				}
 				set
@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 					const int SPI_SETSCREENSAVERTIMEOUT = 15;
 					const int SPIF_SENDWININICHANGE = 2;
 					int nullVar = default;
-					Win32Imports.SystemParametersInfo(SPI_SETSCREENSAVERTIMEOUT, value, ref nullVar, SPIF_SENDWININICHANGE);
+					Win32Imports.SystemParametersInfoW(SPI_SETSCREENSAVERTIMEOUT, value, ref nullVar, SPIF_SENDWININICHANGE);
 				}
 			}
 		}
