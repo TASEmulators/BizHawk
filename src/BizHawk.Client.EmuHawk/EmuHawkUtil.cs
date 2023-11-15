@@ -23,16 +23,19 @@ namespace BizHawk.Client.EmuHawk
 
 			using var link = new ShellLinkImports.ShellLink();
 
-			const uint STGM_READ = 0;
-			link.Load(filename, STGM_READ);
+			unsafe
+			{
+				const uint STGM_READ = 0;
+				((ShellLinkImports.IPersistFile*)link)->Load(filename, STGM_READ);
 
 #if false
-			// TODO: if I can get hold of the hwnd call resolve first. This handles moved and renamed files.
-			link.Resolve(hwnd, 0);
+				// TODO: if I can get hold of the hwnd call resolve first. This handles moved and renamed files.
+				((ShellLinkImports.IShellLinkW*)link)->Resolve(hwnd, 0);
 #endif
 
-			link.GetPath(out var path, Win32Imports.MAX_PATH + 1, out _, 0);
-			return path;
+				((ShellLinkImports.IShellLinkW*)link)->GetPath(out var path, Win32Imports.MAX_PATH + 1, 0);
+				return path;
+			}
 		}
 	}
 }

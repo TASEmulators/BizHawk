@@ -10,33 +10,6 @@ namespace BizHawk.Common
 {
 	public static class ShellLinkImports
 	{
-		[StructLayout(LayoutKind.Sequential)]
-		public struct WIN32_FIND_DATAW
-		{
-			public uint dwFileAttributes;
-			public FILETIME ftCreationTime;
-			public FILETIME ftLastAccessTime;
-			public FILETIME ftLastWriteTime;
-			public uint nFileSizeHigh;
-			public uint nFileSizeLow;
-			public uint dwReserved0;
-			public uint dwReserved1;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = Win32Imports.MAX_PATH)]
-			public string cFileName;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
-			public string cAlternateFileName;
-			// Obsolete fields
-			public uint dwFileType;
-			public uint dwCreatorType;
-			public int wFinderFlags;
-
-			public struct FILETIME
-			{
-				public uint dwLowDateTime;
-				public uint dwHighDateTime;
-			}
-		}
-
 		/// <summary>The IShellLink interface allows Shell links to be created, modified, and resolved</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public unsafe struct IShellLinkW
@@ -72,25 +45,35 @@ namespace BizHawk.Common
 			}
 
 			public IShellLinkWVtbl* lpVtbl;
-		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		public unsafe struct IPersist
-		{
-			public static readonly Guid Guid = new("0000010c-0000-0000-C000-000000000046");
-
-			[StructLayout(LayoutKind.Sequential)]
-			public struct IPersistVtbl
+			public void GetPath(out string pszFile, int cch, uint fFlags)
 			{
-				// IUnknown functions
-				public delegate* unmanaged[Stdcall]<IPersist*, in Guid, out IntPtr, int> QueryInterface;
-				public delegate* unmanaged[Stdcall]<IPersist*, uint> AddRef;
-				public delegate* unmanaged[Stdcall]<IPersist*, uint> Release;
-				// IPersist functions
-				public delegate* unmanaged[Stdcall]<IPersist*, out Guid, int> GetClassID;
+				fixed (IShellLinkW* _this = &this)
+				{
+					var _pszFile = Marshal.AllocCoTaskMem(cch * sizeof(char));
+					try
+					{
+						var hr = lpVtbl->GetPath(_this, _pszFile, cch, IntPtr.Zero, fFlags);
+						Marshal.ThrowExceptionForHR(hr);
+						pszFile = Marshal.PtrToStringUni(_pszFile);
+					}
+					finally
+					{
+						Marshal.FreeCoTaskMem(_pszFile);
+					}
+				}
 			}
 
-			public IPersistVtbl* lpVtbl;
+#if false
+			public void Resolve(IntPtr hwnd, int fFlags)
+			{
+				fixed (IShellLinkW* _this = &this)
+				{
+					var hr = lpVtbl->Resolve(_this, hwnd, fFlags);
+					Marshal.ThrowExceptionForHR(hr);
+				}
+			}
+#endif
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -116,12 +99,31 @@ namespace BizHawk.Common
 			}
 
 			public IPersistFileVtbl* lpVtbl;
+
+			public void Load(string pszFileName, uint dwMode)
+			{
+				fixed (IPersistFile* _this = &this)
+				{
+					var _pszFileName = Marshal.StringToCoTaskMemUni(pszFileName);
+					try
+					{
+						var hr = lpVtbl->Load(_this, _pszFileName, dwMode);
+						Marshal.ThrowExceptionForHR(hr);
+					}
+					finally
+					{
+						Marshal.FreeCoTaskMem(_pszFileName);
+					}
+				}
+			}
 		}
 
 		/// <remarks>CLSID_ShellLink from ShlGuid.h</remarks>
 		public unsafe class ShellLink : IDisposable
 		{
 			public static readonly Guid Guid = new("00021401-0000-0000-C000-000000000046");
+			public static explicit operator IShellLinkW*(ShellLink link) => link.SLI;
+			public static explicit operator IPersistFile*(ShellLink link) => link.PFI;
 
 			private IShellLinkW* SLI;
 			private IPersistFile* PFI;
@@ -132,7 +134,7 @@ namespace BizHawk.Common
 				Marshal.ThrowExceptionForHR(hr);
 
 				var sli = (IShellLinkW*)psl;
-				hr = sli->lpVtbl->QueryInterface(sli, in IPersist.Guid, out var ppf);
+				hr = sli->lpVtbl->QueryInterface(sli, in IPersistFile.Guid, out var ppf);
 				var hrEx = Marshal.GetExceptionForHR(hr);
 				if (hrEx != null)
 				{
@@ -157,44 +159,6 @@ namespace BizHawk.Common
 					SLI->lpVtbl->Release(SLI);
 					SLI = null;
 				}
-			}
-
-			public void GetPath(out string pszFile, int cch, out WIN32_FIND_DATAW pfd, uint fFlags)
-			{
-				var pszFile_ = Marshal.AllocCoTaskMem(cch * sizeof(char));
-#if false // should we do this? we don't need pfd (NULL is valid), and we could delete the WIN32_FIND_DATAW definition by doing this
-				var hr = SLI->lpVtbl->GetPath(SLI, pszFile_, cch, IntPtr.Zero, fFlags);
-#else
-				var pfd_ = Marshal.AllocCoTaskMem(Marshal.SizeOf<WIN32_FIND_DATAW>());
-				var hr = SLI->lpVtbl->GetPath(SLI, pszFile_, cch, pfd_, fFlags);
-#endif
-				try
-				{
-					Marshal.ThrowExceptionForHR(hr);
-					pszFile = Marshal.PtrToStringUni(pszFile_);
-					pfd = Marshal.PtrToStructure<WIN32_FIND_DATAW>(pfd_);
-				}
-				finally
-				{
-					Marshal.FreeCoTaskMem(pszFile_);
-					Marshal.FreeCoTaskMem(pfd_);
-				}
-			}
-
-#if false
-			public void Resolve(IntPtr hwnd, int fFlags)
-			{
-				var hr = SLI->lpVtbl->Resolve(SLI, hwnd, fFlags);
-				Marshal.ThrowExceptionForHR(hr);
-			}
-#endif
-
-			public void Load(string pszFileName, uint dwMode)
-			{
-				var pszFileName_ = Marshal.StringToCoTaskMemUni(pszFileName);
-				var hr = PFI->lpVtbl->Load(PFI, pszFileName_, dwMode);
-				Marshal.FreeCoTaskMem(pszFileName_);
-				Marshal.ThrowExceptionForHR(hr);
 			}
 		}
 	}
