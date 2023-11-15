@@ -55,34 +55,8 @@ namespace BizHawk.Common
 			}
 		}
 
-		[Guid("00000002-0000-0000-C000-000000000046")]
-		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-		public interface IMalloc
-		{
-			[PreserveSig]
-			IntPtr Alloc([In] int cb);
-
-			[PreserveSig]
-			IntPtr Realloc([In] IntPtr pv, [In] int cb);
-
-			[PreserveSig]
-			void Free([In] IntPtr pv);
-
-			[PreserveSig]
-			int GetSize([In] IntPtr pv);
-
-			[PreserveSig]
-			int DidAlloc(IntPtr pv);
-
-			[PreserveSig]
-			void HeapMinimize();
-		}
-
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
 		public static extern IntPtr SHBrowseForFolderW(ref BROWSEINFOW bi);
-
-		[DllImport("shell32.dll", ExactSpelling = true)]
-		public static extern int SHGetMalloc(out IMalloc ppMalloc);
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
 		public static extern int SHGetPathFromIDListW(IntPtr pidl, char[] pszPath);

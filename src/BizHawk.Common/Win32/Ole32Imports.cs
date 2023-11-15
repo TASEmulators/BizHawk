@@ -39,7 +39,7 @@ namespace BizHawk.Common
 			PS_DLL = 0x80000000
 		}
 
-		[DllImport("Ole32.dll", ExactSpelling = true)]
+		[DllImport("ole32.dll", ExactSpelling = true)]
 		public static extern int CoCreateInstance(
 			[In, MarshalAs(UnmanagedType.LPStruct)] Guid rclsid,
 			IntPtr pUnkOuter,

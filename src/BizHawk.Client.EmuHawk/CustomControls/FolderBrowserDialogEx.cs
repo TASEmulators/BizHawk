@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -59,28 +58,28 @@ namespace BizHawk.Client.EmuHawk
 				return DialogResult.Cancel;
 			}
 
-			var browseOptions = BrowseOptions;
-			if (ApartmentState.MTA == Application.OleRequired())
-			{
-				browseOptions &= ~BROWSEINFOW.FLAGS.NewDialogStyle;
-			}
-
 			var pidlRet = IntPtr.Zero;
+			var pszDisplayName = IntPtr.Zero;
 			try
 			{
-				var buffer = Marshal.AllocHGlobal(Win32Imports.MAX_PATH);
+				var browseOptions = BrowseOptions;
+				if (ApartmentState.MTA == Application.OleRequired())
+				{
+					browseOptions &= ~BROWSEINFOW.FLAGS.NewDialogStyle;
+				}
+
+				pszDisplayName = Marshal.AllocCoTaskMem(Win32Imports.MAX_PATH * sizeof(char));
 				var bi = new BROWSEINFOW
 				{
 					hwndOwner = hWndOwner,
 					pidlRoot = pidlRoot,
-					pszDisplayName = buffer,
+					pszDisplayName = pszDisplayName,
 					lpszTitle = Description,
 					ulFlags = browseOptions,
 					lpfn = Callback
 				};
 
 				pidlRet = SHBrowseForFolderW(ref bi);
-				Marshal.FreeHGlobal(buffer);
 				if (pidlRet == IntPtr.Zero)
 				{
 					return DialogResult.Cancel; // user clicked Cancel
@@ -96,13 +95,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			finally
 			{
-				_ = SHGetMalloc(out var malloc);
-				malloc.Free(pidlRoot);
-
-				if (pidlRet != IntPtr.Zero)
-				{
-					malloc.Free(pidlRet);
-				}
+				Marshal.FreeCoTaskMem(pidlRoot);
+				Marshal.FreeCoTaskMem(pidlRet);
+				Marshal.FreeCoTaskMem(pszDisplayName);
 			}
 
 			return DialogResult.OK;
