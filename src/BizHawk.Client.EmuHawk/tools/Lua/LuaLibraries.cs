@@ -182,7 +182,11 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var lib in Libraries.Values)
 			{
 				lib.APIs = _apiContainer;
-				Debug.Assert(ServiceInjector.UpdateServices(newServiceProvider, lib, mayCache: true));
+				if (!ServiceInjector.UpdateServices(newServiceProvider, lib, mayCache: true))
+				{
+					throw new("Lua lib has required service(s) that can't be fulfilled");
+				}
+
 				lib.Restarted();
 			}
 		}
