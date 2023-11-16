@@ -1,6 +1,7 @@
 #nullable disable
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -48,30 +49,24 @@ namespace BizHawk.Common
 
 			public void GetPath(out string pszFile, int cch, uint fFlags)
 			{
-				fixed (IShellLinkW* _this = &this)
+				var _pszFile = Marshal.AllocCoTaskMem(cch * sizeof(char));
+				try
 				{
-					var _pszFile = Marshal.AllocCoTaskMem(cch * sizeof(char));
-					try
-					{
-						var hr = lpVtbl->GetPath(_this, _pszFile, cch, IntPtr.Zero, fFlags);
-						Marshal.ThrowExceptionForHR(hr);
-						pszFile = Marshal.PtrToStringUni(_pszFile);
-					}
-					finally
-					{
-						Marshal.FreeCoTaskMem(_pszFile);
-					}
+					var hr = lpVtbl->GetPath((IShellLinkW*)Unsafe.AsPointer(ref this), _pszFile, cch, IntPtr.Zero, fFlags);
+					Marshal.ThrowExceptionForHR(hr);
+					pszFile = Marshal.PtrToStringUni(_pszFile);
+				}
+				finally
+				{
+					Marshal.FreeCoTaskMem(_pszFile);
 				}
 			}
 
 #if false
 			public void Resolve(IntPtr hwnd, int fFlags)
 			{
-				fixed (IShellLinkW* _this = &this)
-				{
-					var hr = lpVtbl->Resolve(_this, hwnd, fFlags);
-					Marshal.ThrowExceptionForHR(hr);
-				}
+				var hr = lpVtbl->Resolve((IShellLinkW*)Unsafe.AsPointer(ref this), hwnd, fFlags);
+				Marshal.ThrowExceptionForHR(hr);
 			}
 #endif
 		}
@@ -102,18 +97,15 @@ namespace BizHawk.Common
 
 			public void Load(string pszFileName, uint dwMode)
 			{
-				fixed (IPersistFile* _this = &this)
+				var _pszFileName = Marshal.StringToCoTaskMemUni(pszFileName);
+				try
 				{
-					var _pszFileName = Marshal.StringToCoTaskMemUni(pszFileName);
-					try
-					{
-						var hr = lpVtbl->Load(_this, _pszFileName, dwMode);
-						Marshal.ThrowExceptionForHR(hr);
-					}
-					finally
-					{
-						Marshal.FreeCoTaskMem(_pszFileName);
-					}
+					var hr = lpVtbl->Load((IPersistFile*)Unsafe.AsPointer(ref this), _pszFileName, dwMode);
+					Marshal.ThrowExceptionForHR(hr);
+				}
+				finally
+				{
+					Marshal.FreeCoTaskMem(_pszFileName);
 				}
 			}
 		}

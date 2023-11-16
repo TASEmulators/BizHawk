@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 
-using static BizHawk.Common.ShlobjImports;
+using static BizHawk.Common.Shell32Imports;
 
 namespace BizHawk.Client.EmuHawk
 {

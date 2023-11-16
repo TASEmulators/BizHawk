@@ -1,8 +1,12 @@
 ﻿#nullable disable
 
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
+
+// ReSharper disable UnusedMember.Global
+
+#pragma warning disable CA1069 // This warning is just dumb
 
 namespace BizHawk.Common
 {
@@ -13,8 +17,39 @@ namespace BizHawk.Common
 	{
 		public const int MAX_PATH = 260;
 
+		[Flags]
+		public enum TPM
+		{
+			LEFTBUTTON = 0x0000,
+			RIGHTBUTTON = 0x0002,
+			LEFTALIGN = 0x0000,
+			CENTERALIGN = 0x000,
+			RIGHTALIGN = 0x000,
+			TOPALIGN = 0x0000,
+			VCENTERALIGN = 0x0010,
+			BOTTOMALIGN = 0x0020,
+			HORIZONTAL = 0x0000,
+			VERTICAL = 0x0040,
+			NONOTIFY = 0x0080,
+			RETURNCMD = 0x0100,
+			RECURSE = 0x0001,
+			HORPOSANIMATION = 0x0400,
+			HORNEGANIMATION = 0x0800,
+			VERPOSANIMATION = 0x1000,
+			VERNEGANIMATION = 0x2000,
+			NOANIMATION = 0x4000,
+			LAYOUTRTL = 0x8000,
+		}
+
+		[DllImport("user32.dll", ExactSpelling = true)]
+		public static extern IntPtr CreatePopupMenu();
+
 		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
 		public static extern bool DeleteFileW(string lpFileName);
+
+		[DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool DestroyMenu(IntPtr hMenu);
 
 		[DllImport("user32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
 		public static extern uint MapVirtualKeyW(uint uCode, uint uMapType);
@@ -27,5 +62,8 @@ namespace BizHawk.Common
 
 		[DllImport("winmm.dll", ExactSpelling = true)]
 		public static extern uint timeBeginPeriod(uint uMilliseconds);
+
+		[DllImport("user32.dll", ExactSpelling = true)]
+		public static extern int TrackPopupMenuEx(IntPtr hmenu, TPM fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
 	}
 }

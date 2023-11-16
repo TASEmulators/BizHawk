@@ -2,14 +2,13 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Text;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable UnusedMember.Global
 
 namespace BizHawk.Common
 {
-	public static class ShlobjImports
+	public static class Shell32Imports
 	{
 		public const int BFFM_INITIALIZED = 1;
 		public const int BFFM_SETSELECTIONW = 0x400 + 103;
@@ -63,5 +62,18 @@ namespace BizHawk.Common
 
 		[DllImport("shell32.dll", ExactSpelling = true)]
 		public static extern int SHGetSpecialFolderLocation(IntPtr hwndOwner, int nFolder, out IntPtr ppidl);
+
+		[DllImport("shell32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+		public static extern int SHCreateItemFromParsingName(
+			[In] string pszPath,
+			[In] IntPtr pbc,
+			[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid,
+			out IntPtr ppv);
+
+		[DllImport("shell32.dll", ExactSpelling = true)]
+		public static extern int SHGetIDListFromObject(IntPtr punk, out IntPtr ppidl);
+
+		[DllImport("shell32.dll", EntryPoint = "#16")]
+		public static extern IntPtr ILFindLastID(IntPtr pidl);
 	}
 }
