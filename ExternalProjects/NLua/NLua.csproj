@@ -6,8 +6,6 @@
 	<PropertyGroup>
 		<RootNamespace>NLua</RootNamespace>
 		<AssemblyName>NLua</AssemblyName>
-		<EnableNETAnalyzers>false</EnableNETAnalyzers><!-- TODO re-enable -->
-		<EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild><!-- TODO re-enable -->
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
 
