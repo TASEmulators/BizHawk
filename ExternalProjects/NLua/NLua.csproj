@@ -1,8 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+	<Import Project="../LibCommon.props" />
+	<PropertyGroup>
 		<RootNamespace>NLua</RootNamespace>
 		<AssemblyName>NLua</AssemblyName>
+		<EnableNETAnalyzers>false</EnableNETAnalyzers><!-- TODO re-enable -->
+		<EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild><!-- TODO re-enable -->
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
 
@@ -23,7 +28,6 @@
 		<Reference Include="BizHawk.Common" HintPath="../../output/dll/BizHawk.Common.dll" />
 	</ItemGroup>
 
-	<Import Project="../LibCommon.props" />
 	<PropertyGroup>
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
