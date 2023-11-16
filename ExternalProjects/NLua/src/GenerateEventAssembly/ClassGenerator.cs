@@ -1,4 +1,5 @@
 ﻿using System;
+
 using NLua.Native;
 
 namespace NLua.GenerateEventAssembly

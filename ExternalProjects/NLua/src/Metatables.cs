@@ -14,13 +14,13 @@ namespace NLua
 	public class MetaFunctions
 	{
 		public static readonly LuaNativeFunction GcFunction = CollectObject;
-		public static readonly LuaNativeFunction IndexFunction  = GetMethod;
+		public static readonly LuaNativeFunction IndexFunction = GetMethod;
 		public static readonly LuaNativeFunction NewIndexFunction = SetFieldOrProperty;
-		public static readonly LuaNativeFunction BaseIndexFunction  = GetBaseMethod;
-		public static readonly LuaNativeFunction ClassIndexFunction  = GetClassMethod;
-		public static readonly LuaNativeFunction ClassNewIndexFunction  = SetClassFieldOrProperty;
-		public static readonly LuaNativeFunction ExecuteDelegateFunction  = RunFunctionDelegate;
-		public static readonly LuaNativeFunction CallConstructorFunction  = CallConstructor;
+		public static readonly LuaNativeFunction BaseIndexFunction = GetBaseMethod;
+		public static readonly LuaNativeFunction ClassIndexFunction = GetClassMethod;
+		public static readonly LuaNativeFunction ClassNewIndexFunction = SetClassFieldOrProperty;
+		public static readonly LuaNativeFunction ExecuteDelegateFunction = RunFunctionDelegate;
+		public static readonly LuaNativeFunction CallConstructorFunction = CallConstructor;
 		public static readonly LuaNativeFunction ToStringFunction = ToStringLua;
 		public static readonly LuaNativeFunction CallDelegateFunction = CallDelegate;
 
@@ -31,7 +31,7 @@ namespace NLua
 		public static readonly LuaNativeFunction ModulosFunction = ModLua;
 		public static readonly LuaNativeFunction UnaryNegationFunction = UnaryNegationLua;
 		public static readonly LuaNativeFunction EqualFunction = EqualLua;
-		public static readonly LuaNativeFunction LessThanFunction  = LessThanLua;
+		public static readonly LuaNativeFunction LessThanFunction = LessThanLua;
 		public static readonly LuaNativeFunction LessThanOrEqualFunction = LessThanOrEqualLua;
 
 		internal readonly Dictionary<object, Dictionary<object, object>> _memberCache = new();

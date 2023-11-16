@@ -103,7 +103,7 @@ namespace NLua.Method
 		internal int SetPendingException(Exception e)
 			=> _translator.interpreter.SetPendingException(e);
 
-		internal void FillMethodArguments(LuaState luaState, int numStackToSkip)
+		internal int FillMethodArguments(LuaState luaState, int numStackToSkip)
 		{
 			var args = _lastCalledMethod.args;
 
@@ -114,7 +114,7 @@ namespace NLua.Method
 				if (_lastCalledMethod.argTypes[i].IsParamsArray)
 				{
 					var count = _lastCalledMethod.argTypes.Length - i;
-					var paramArray = _translator.TableToArray(luaState, type.ExtractValue, type.ParameterType, index, count);
+					var paramArray = ObjectTranslator.TableToArray(luaState, type.ExtractValue, type.ParameterType, index, count);
 					args[_lastCalledMethod.argTypes[i].Index] = paramArray;
 				}
 				else
@@ -125,9 +125,11 @@ namespace NLua.Method
 				if (_lastCalledMethod.args[_lastCalledMethod.argTypes[i].Index] == null &&
 				    !luaState.IsNil(i + 1 + numStackToSkip))
 				{
-					throw new LuaException($"Argument number {(i + 1)} is invalid");
+					return i + 1;
 				}
 			}
+
+			return 0;
 		}
 
 		internal int PushReturnValue(LuaState luaState)
@@ -224,7 +226,13 @@ namespace NLua.Method
 					throw new LuaException("Lua stack overflow");
 				}
 
-				FillMethodArguments(luaState, numStackToSkip);
+				var invalidArgNum = FillMethodArguments(luaState, 0);
+				if (invalidArgNum != 0)
+				{
+					_translator.ThrowError(luaState, $"Argument number {invalidArgNum} is invalid");
+					return 1;
+				}
+
 				return CallInvoke(luaState, method, targetObject);
 			}
 
@@ -335,7 +343,12 @@ namespace NLua.Method
 						throw new LuaException("Lua stack overflow");
 					}
 
-					FillMethodArguments(luaState, 0);
+					var invalidArgNum = FillMethodArguments(luaState, 0);
+					if (invalidArgNum != 0)
+					{
+						_translator.ThrowError(luaState, $"Argument number {invalidArgNum} is invalid");
+						return 1;
+					}
 				}
 				else if (!_translator.MatchParameters(luaState, _method,  _lastCalledMethod, 0))
 				{

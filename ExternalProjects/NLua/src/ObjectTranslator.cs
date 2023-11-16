@@ -1097,7 +1097,7 @@ namespace NLua
 		internal bool MatchParameters(LuaState luaState, MethodBase method, MethodCache methodCache, int skipParam)
 			=> metaFunctions.MatchParameters(luaState, method, methodCache, skipParam);
 
-		internal Array TableToArray(LuaState luaState, ExtractValue extractValue, Type paramArrayType, int startIndex, int count)
+		internal static Array TableToArray(LuaState luaState, ExtractValue extractValue, Type paramArrayType, int startIndex, int count)
 			=> MetaFunctions.TableToArray(luaState, extractValue, paramArrayType, ref startIndex, count);
 
 		private Type TypeOf(LuaState luaState, int idx)
