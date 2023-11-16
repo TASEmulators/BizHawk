@@ -1,4 +1,4 @@
-﻿namespace NLua
+﻿namespace NLua.Native
 {
 	/// <summary>
 	/// Used by Compare

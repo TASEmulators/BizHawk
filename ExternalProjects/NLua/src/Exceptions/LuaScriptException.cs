@@ -43,10 +43,8 @@ namespace NLua.Exceptions
 			IsNetException = true;
 		}
 
+		// Prepend the error source
 		public override string ToString()
-		{
-			// Prepend the error source
-			return GetType().FullName + ": " + _source + Message;
-		}
+			=> GetType().FullName + ": " + _source + Message;
 	}
 }

@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading;
 
 using NLua;
+using NLua.Native;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;

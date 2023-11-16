@@ -9,16 +9,14 @@ namespace NLua.Method
 	/// </summary>
 	internal class EventHandlerContainer : IDisposable
 	{
-		private readonly Dictionary<Delegate, RegisterEventHandler> _dict = new Dictionary<Delegate, RegisterEventHandler>();
+		private readonly Dictionary<Delegate, RegisterEventHandler> _dict = new();
 
 		public void Add(Delegate handler, RegisterEventHandler eventInfo)
-		{
-			_dict.Add(handler, eventInfo);
-		}
+			=> _dict.Add(handler, eventInfo);
 
 		public void Remove(Delegate handler)
 		{
-			bool found = _dict.Remove(handler);
+			var found = _dict.Remove(handler);
 			Debug.Assert(found);
 		}
 
@@ -27,8 +25,10 @@ namespace NLua.Method
 		/// </summary>
 		public void Dispose()
 		{
-			foreach (KeyValuePair<Delegate, RegisterEventHandler> pair in _dict)
+			foreach (var pair in _dict)
+			{
 				pair.Value.RemovePending(pair.Key);
+			}
 
 			_dict.Clear();
 		}

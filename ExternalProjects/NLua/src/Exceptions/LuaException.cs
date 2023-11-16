@@ -15,6 +15,5 @@ namespace NLua.Exceptions
 		public LuaException (string message, Exception innerException) : base(message, innerException)
 		{
 		}
-
 	}
 }

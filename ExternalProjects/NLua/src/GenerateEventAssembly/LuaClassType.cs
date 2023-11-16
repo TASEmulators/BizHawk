@@ -1,6 +1,6 @@
 using System;
 
-namespace NLua
+namespace NLua.GenerateEventAssembly
 {
 	/// <summary>
 	/// Structure to store a type and the return types of

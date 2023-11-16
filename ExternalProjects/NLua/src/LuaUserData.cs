@@ -1,30 +1,27 @@
 ﻿using NLua.Extensions;
+using NLua.Native;
 
 namespace NLua
 {
 	public class LuaUserData : LuaBase
 	{
-		public LuaUserData(int reference, Lua interpreter):base(reference, interpreter)
+		public LuaUserData(int reference, Lua interpreter)
+			: base(reference, interpreter)
 		{
 		}
 
 		/// <summary>
 		/// Indexer for string fields of the userdata
 		/// </summary>
-		public object this[string field] {
-			get
-			{
-				Lua lua;
-				if (!TryGet(out lua))
-					return null;
-
-				return lua.GetObject(_Reference, field);
-			}
+		public object this[string field]
+		{
+			get => !TryGet(out var lua) ? null : lua.GetObject(_Reference, field);
 			set
 			{
-				Lua lua;
-				if (!TryGet(out lua))
+				if (!TryGet(out var lua))
+				{
 					return;
+				}
 
 				lua.SetObject(_Reference, field, value);
 			}
@@ -33,19 +30,12 @@ namespace NLua
 		/// <summary>
 		/// Indexer for numeric fields of the userdata
 		/// </summary>
-		public object this[object field] {
-			get
-			{
-				Lua lua;
-				if (!TryGet(out lua))
-					return null;
-
-				return lua.GetObject(_Reference, field);
-			}
+		public object this[object field]
+		{
+			get => !TryGet(out var lua) ? null : lua.GetObject(_Reference, field);
 			set
 			{
-				Lua lua;
-				if (!TryGet(out lua))
+				if (!TryGet(out var lua))
 					return;
 
 				lua.SetObject(_Reference, field, value);
@@ -57,25 +47,15 @@ namespace NLua
 		/// an array
 		/// </summary>
 		public object[] Call(params object[] args)
-		{
-			Lua lua;
-			if (!TryGet(out lua))
-				return null;
-
-			return lua.CallFunction(this, args);
-		}
+			=> !TryGet(out var lua) ? null : lua.CallFunction(this, args);
 
 		/// <summary>
 		/// Pushes this userdata into the Lua stack
 		/// </summary>
 		internal void Push(LuaState luaState)
-		{
-			luaState.GetRef(_Reference);
-		}
+			=> luaState.GetRef(_Reference);
 
 		public override string ToString()
-		{
-			return "userdata";
-		}
+			=> "userdata";
 	}
 }

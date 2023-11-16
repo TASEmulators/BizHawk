@@ -29,6 +29,7 @@
 	</ItemGroup>
 
 	<PropertyGroup>
+		<NoWarn>$(NoWarn);IDE0005</NoWarn>
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 </Project>

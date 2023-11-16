@@ -1,13 +1,13 @@
 ﻿using System.Runtime.InteropServices;
 using System.Security;
+
 using charptr_t = System.IntPtr;
-using lua_Debug = System.IntPtr;
 using lua_KContext = System.IntPtr;
 using lua_State = System.IntPtr;
 using size_t = System.UIntPtr;
 using voidptr_t = System.IntPtr;
 
-namespace NLua
+namespace NLua.Native
 {
 	/// <summary>
 	/// Type for C# callbacks
@@ -18,15 +18,6 @@ namespace NLua
 	[SuppressUnmanagedCodeSecurity]
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 	public delegate int LuaNativeFunction(lua_State luaState);
-
-	/// <summary>
-	/// Type for debugging hook functions callbacks. 
-	/// </summary>
-	/// <param name="luaState"></param>
-	/// <param name="ar"></param>
-	[SuppressUnmanagedCodeSecurity]
-	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-	public delegate void LuaHookFunction(lua_State luaState, lua_Debug ar);
 
 	/// <summary>
 	/// Type for continuation functions 

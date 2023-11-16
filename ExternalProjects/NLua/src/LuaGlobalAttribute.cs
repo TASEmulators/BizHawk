@@ -5,8 +5,6 @@ namespace NLua
 	/// <summary>
 	/// Marks a method for global usage in Lua scripts
 	/// </summary>
-	/// <see cref="LuaRegistrationHelper.TaggedInstanceMethods"/>
-	/// <see cref="LuaRegistrationHelper.TaggedStaticMethods"/>
 	[AttributeUsage(AttributeTargets.Method)]
 	public sealed class LuaGlobalAttribute : Attribute
 	{

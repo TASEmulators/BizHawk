@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace NLua
+namespace NLua.Native
 {
 	/// <summary>
 	/// LuaRegister store the name and the delegate to register a native function

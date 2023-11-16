@@ -1,5 +1,4 @@
-﻿// ReSharper disable IdentifierTypo
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Security;
 
 using BizHawk.BizInvoke;
@@ -7,23 +6,20 @@ using BizHawk.BizInvoke;
 using charptr_t = System.IntPtr;
 using lua_Alloc = System.IntPtr;
 using lua_CFunction = System.IntPtr;
-using lua_Debug = System.IntPtr;
-using lua_Hook = System.IntPtr;
 using lua_Integer = System.Int64;
 using lua_KContext = System.IntPtr;
 using lua_KFunction = System.IntPtr;
 using lua_Number = System.Double;
-using lua_Number_ptr = System.IntPtr;
 using lua_Reader = System.IntPtr;
 using lua_State = System.IntPtr;
-using lua_WarnFunction = System.IntPtr;
 using lua_Writer = System.IntPtr;
 using size_t = System.UIntPtr;
 using voidptr_t = System.IntPtr;
 
 #pragma warning disable SA1121 // Use built-in type alias
+#pragma warning disable IDE1006 // Naming rule violation
 
-namespace NLua
+namespace NLua.Native
 {
 	[SuppressUnmanagedCodeSecurity]
 	public abstract class LuaNativeMethods

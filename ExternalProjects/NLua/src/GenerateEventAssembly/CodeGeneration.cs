@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Threading;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
-using System.Reflection.Emit;
-using System.Collections.Generic;
 using NLua.Method;
 
-namespace NLua
+namespace NLua.GenerateEventAssembly
 {
 	internal class CodeGeneration
 	{
-		private readonly Dictionary<Type, LuaClassType> _classCollection = new Dictionary<Type, LuaClassType>();
-		private readonly Dictionary<Type, Type> _delegateCollection = new Dictionary<Type, Type>();
+		private readonly Dictionary<Type, LuaClassType> _classCollection = new();
+		private readonly Dictionary<Type, Type> _delegateCollection = new();
 
 		static CodeGeneration()
 		{
@@ -24,31 +23,14 @@ namespace NLua
 		/// <summary>
 		/// Singleton instance of the class
 		/// </summary>
-		public static CodeGeneration Instance { get; } = new CodeGeneration();
+		public static CodeGeneration Instance { get; } = new();
 
-		/// <summary>
-		/// Generates an event handler that calls a Lua function
-		/// </summary>
-		private Type GenerateEvent(Type eventHandlerType)
-		{
-			throw new NotImplementedException("Emit not available on .NET Standard ");
-		}
-
-		/// <summary>
-		/// Generates a type that can be used for instantiating a delegate
-		/// of the provided type, given a Lua function.
-		/// </summary>
-		private Type GenerateDelegate(Type delegateType)
-		{
-			throw new NotImplementedException("GenerateDelegate is not available on Windows Store, please register your LuaDelegate type with Lua.RegisterLuaDelegateType( yourDelegate, theLuaDelegateHandler) ");
-		}
-
-		internal void GetReturnTypesFromClass(Type klass, out Type[][] returnTypes)
+		internal static void GetReturnTypesFromClass(Type klass, out Type[][] returnTypes)
 		{
 			var classMethods = klass.GetMethods();
 			returnTypes = new Type[classMethods.Length][];
 
-			int i = 0;
+			var i = 0;
 
 			foreach (var method in classMethods)
 			{
@@ -65,16 +47,7 @@ namespace NLua
 			}
 		}
 
-		/// <summary>
-		/// Generates an implementation of klass, if it is an interface, or
-		/// a subclass of klass that delegates its virtual methods to a Lua table.
-		/// </summary>
-		public void GenerateClass(Type klass, out Type newType, out Type[][] returnTypes)
-		{
-			throw new NotImplementedException("Emit not available on .NET Standard");
-		}
-
-		internal void GetReturnTypesFromMethod(MethodInfo method, out Type[] returnTypes)
+		internal static void GetReturnTypesFromMethod(MethodInfo method, out Type[] returnTypes)
 		{
 			var paramInfo = method.GetParameters();
 			var paramTypes = new Type[paramInfo.Length];
@@ -82,43 +55,24 @@ namespace NLua
 
 			// Counts out and ref parameters, for later use, 
 			// and creates the list of return types
-			int nOutParams = 0;
-			int nOutAndRefParams = 0;
 			var returnType = method.ReturnType;
 			returnTypesList.Add(returnType);
 
-			for (int i = 0; i < paramTypes.Length; i++)
+			for (var i = 0; i < paramTypes.Length; i++)
 			{
 				paramTypes[i] = paramInfo[i].ParameterType;
-
-				if (!paramInfo[i].IsIn && paramInfo[i].IsOut)
-				{
-					nOutParams++;
-				}
 
 				if (paramTypes[i].IsByRef)
 				{
 					returnTypesList.Add(paramTypes[i].GetElementType());
-					nOutAndRefParams++;
 				}
 			}
 
 			returnTypes = returnTypesList.ToArray();
 		}
 
-		/// <summary>
-		/// Gets an event handler for the event type that delegates to the eventHandler Lua function.
-		/// Caches the generated type.
-		/// </summary>
-		public LuaEventHandler GetEvent(Type eventHandlerType, LuaFunction eventHandler)
-		{
-			throw new NotImplementedException("Emit not available on .NET Standard");
-		}
-
 		public void RegisterLuaDelegateType(Type delegateType, Type luaDelegateType)
-		{
-			_delegateCollection[delegateType] = luaDelegateType;
-		}
+			=> _delegateCollection[delegateType] = luaDelegateType;
 
 		public void RegisterLuaClassType(Type klass, Type luaClass)
 		{
@@ -135,26 +89,14 @@ namespace NLua
 		public Delegate GetDelegate(Type delegateType, LuaFunction luaFunc)
 		{
 			var returnTypes = new List<Type>();
-			Type luaDelegateType;
-
-			if (_delegateCollection.ContainsKey(delegateType))
-			{
-				luaDelegateType = _delegateCollection[delegateType];
-			}
-			else
-			{
-				luaDelegateType = GenerateDelegate(delegateType);
-				_delegateCollection[delegateType] = luaDelegateType;
-			}
+			var luaDelegateType = _delegateCollection[delegateType];
 
 			var methodInfo = delegateType.GetMethod("Invoke");
-			returnTypes.Add(methodInfo.ReturnType);
+			returnTypes.Add(methodInfo!.ReturnType);
 
-			foreach (ParameterInfo paramInfo in methodInfo.GetParameters())
-			{
-				if (paramInfo.ParameterType.IsByRef)
-					returnTypes.Add(paramInfo.ParameterType);
-			}
+			returnTypes.AddRange(methodInfo.GetParameters()
+				.Where(paramInfo => paramInfo.ParameterType.IsByRef)
+				.Select(paramInfo => paramInfo.ParameterType));
 
 			var luaDelegate = (LuaDelegate)Activator.CreateInstance(luaDelegateType);
 			luaDelegate.Function = luaFunc;
@@ -170,21 +112,8 @@ namespace NLua
 		/// </summary>
 		public object GetClassInstance(Type klass, LuaTable luaTable)
 		{
-			LuaClassType luaClassType;
-
-			if (_classCollection.ContainsKey(klass))
-				luaClassType = _classCollection[klass];
-			else
-			{
-				luaClassType = default;
-				GenerateClass(klass, out luaClassType.klass, out luaClassType.returnTypes);
-				_classCollection[klass] = luaClassType;
-			}
-
-			return Activator.CreateInstance(luaClassType.klass, new object[] {
-				luaTable,
-				luaClassType.returnTypes
-			});
+			var luaClassType = _classCollection[klass];
+			return Activator.CreateInstance(luaClassType.klass, luaTable, luaClassType.returnTypes);
 		}
 	}
 }
