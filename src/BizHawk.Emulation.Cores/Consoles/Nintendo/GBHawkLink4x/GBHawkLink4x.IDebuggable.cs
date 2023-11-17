@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			}
 			else if (register.StartsWithOrdinal("D "))
 			{
-				C.SetCpuRegister(register.Replace("D ", ""), value);
+				D.SetCpuRegister(register.Replace("D ", ""), value);
 			}
 		}
 
