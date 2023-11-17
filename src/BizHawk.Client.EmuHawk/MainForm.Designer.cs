@@ -1020,7 +1020,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// mzMenuItem
 			// 
-			this.mzMenuItem.Text = "&Max";
+			this.mzMenuItem.Text = "1&0x";
 			this.mzMenuItem.Click += new System.EventHandler(this.WindowSize_Click);
 			// 
 			// SwitchToFullscreenMenuItem
