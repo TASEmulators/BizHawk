@@ -696,7 +696,8 @@ namespace BizHawk.Client.EmuHawk
 				x2MenuItem.Checked =
 				x3MenuItem.Checked =
 				x4MenuItem.Checked =
-				x5MenuItem.Checked = false;
+				x5MenuItem.Checked = 
+				mzMenuItem.Checked = false;
 
 			switch (Config.TargetZoomFactors[Emulator.SystemId])
 			{
