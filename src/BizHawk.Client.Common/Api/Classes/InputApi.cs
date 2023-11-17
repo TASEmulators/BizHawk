@@ -2,6 +2,7 @@
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -43,7 +44,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public IReadOnlyDictionary<string, int> GetPressedAxes()
-			=> _inputManager.ControllerInputCoalescer.AxisValues().ToDictionary(static kvp => kvp.Key, static kvp => kvp.Value);
+			=> _inputManager.ControllerInputCoalescer.AxisValues().ToDictionary();
 
 		public IReadOnlyList<string> GetPressedButtons()
 			=> _inputManager.ControllerInputCoalescer.BoolButtons().Where(static kvp => kvp.Value)

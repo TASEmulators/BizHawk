@@ -175,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			lock (_axisValues)
 			{
-				return _axisValues.ToDictionary(d => d.Key, d => d.Value);
+				return _axisValues.ToDictionary();
 			}
 			
 		}

@@ -283,6 +283,10 @@ namespace BizHawk.Common.CollectionExtensions
 			return true;
 		}
 
+		/// <summary>shallow clone</summary>
+		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> list)
+			=> list.ToDictionary(static kvp => kvp.Key, static kvp => kvp.Value);
+
 		public static bool IsSortedAsc<T>(this IReadOnlyList<T> list)
 			where T : IComparable<T>
 		{

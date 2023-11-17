@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using BizHawk.Common.CollectionExtensions;
+
 using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
@@ -83,8 +86,8 @@ namespace BizHawk.Client.Common
 
 		public void FromLagLog(TasLagLog log)
 		{
-			_lagLog = log._lagLog.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-			_wasLag = log._wasLag.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+			_lagLog = log._lagLog.ToDictionary();
+			_wasLag = log._wasLag.ToDictionary();
 		}
 
 		public void StartFromFrame(int index)

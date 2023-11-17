@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -78,7 +79,7 @@ namespace BizHawk.Client.Common
 		public IReadOnlyDictionary<string, string> GetHeader()
 			=> _movieSession.Movie.NotActive()
 				? new Dictionary<string, string>()
-				: _movieSession.Movie.HeaderEntries.ToDictionary(static kvp => kvp.Key, static kvp => kvp.Value);
+				: _movieSession.Movie.HeaderEntries.ToDictionary();
 
 		public IReadOnlyList<string> GetComments()
 			=> _movieSession.Movie.Comments.ToList();
