@@ -19,10 +19,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			Dictionary<string, RegisterValue> dict = new();
-			foreach (var ref in A.GetCpuFlagsAndRegisters()) dict[PFX_A + reg.Key] = reg.Value;
-			foreach (var ref in B.GetCpuFlagsAndRegisters()) dict[PFX_B + reg.Key] = reg.Value;
-			foreach (var ref in C.GetCpuFlagsAndRegisters()) dict[PFX_C + reg.Key] = reg.Value;
-			foreach (var ref in D.GetCpuFlagsAndRegisters()) dict[PFX_D + reg.Key] = reg.Value;
+			foreach (var reg in A.GetCpuFlagsAndRegisters()) dict[PFX_A + reg.Key] = reg.Value;
+			foreach (var reg in B.GetCpuFlagsAndRegisters()) dict[PFX_B + reg.Key] = reg.Value;
+			foreach (var reg in C.GetCpuFlagsAndRegisters()) dict[PFX_C + reg.Key] = reg.Value;
+			foreach (var reg in D.GetCpuFlagsAndRegisters()) dict[PFX_D + reg.Key] = reg.Value;
 			return dict;
 		}
 
