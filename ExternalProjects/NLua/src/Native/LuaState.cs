@@ -43,6 +43,7 @@ namespace NLua.Native
 
 		private LuaState(IntPtr luaThread, LuaState mainState)
 		{
+			NativeMethods = LuaNativeMethodLoader.GetNativeMethods();
 			_mainState = mainState;
 			Handle = luaThread;
 
