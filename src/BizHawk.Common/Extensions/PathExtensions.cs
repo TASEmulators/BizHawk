@@ -184,25 +184,33 @@ namespace BizHawk.Common.PathExtensions
 
 		static PathUtils()
 		{
-			var dirPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-			ExeDirectoryPath = OSTailoredCode.IsUnixHost
-				? string.IsNullOrEmpty(dirPath) || dirPath == "/" ? string.Empty : dirPath
-				: string.IsNullOrEmpty(dirPath) ? throw new Exception("failed to get location of executable, very bad things must have happened") : dirPath.RemoveSuffix('\\');
-			DllDirectoryPath = Path.Combine(OSTailoredCode.IsUnixHost && ExeDirectoryPath == string.Empty ? "/" : ExeDirectoryPath, "dll");
-			// yes, this is a lot of extra code to make sure BizHawk can run in `/` on Unix, but I've made up for it by caching these for the program lifecycle --yoshi
-			DataDirectoryPath = ExeDirectoryPath;
-			if (OSTailoredCode.IsUnixHost)
+			static string? ReadPathFromEnvVar(string envVarName)
 			{
-				var envVar = Environment.GetEnvironmentVariable("BIZHAWK_DATA_HOME");
+				var envVar = Environment.GetEnvironmentVariable(envVarName);
 				try
 				{
 					envVar = envVar?.MakeAbsolute() ?? string.Empty;
-					if (Directory.Exists(envVar)) DataDirectoryPath = envVar;
+					if (Directory.Exists(envVar)) return envVar;
 				}
 				catch
 				{
 					// ignored
 				}
+				return null;
+			}
+			if (OSTailoredCode.IsUnixHost)
+			{
+				var dirPath = ReadPathFromEnvVar("BIZHAWK_HOME") ?? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+				ExeDirectoryPath = string.IsNullOrEmpty(dirPath) || dirPath == "/" ? string.Empty : dirPath;
+				DllDirectoryPath = Path.Combine(ExeDirectoryPath == string.Empty ? "/" : ExeDirectoryPath, "dll");
+				// yes, this is a lot of extra code to make sure BizHawk can run in `/` on Unix, but I've made up for it by caching these for the program lifecycle --yoshi
+				DataDirectoryPath = ReadPathFromEnvVar("BIZHAWK_DATA_HOME") ?? ExeDirectoryPath;
+			}
+			else
+			{
+				var dirPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+				DataDirectoryPath = ExeDirectoryPath = string.IsNullOrEmpty(dirPath) ? throw new Exception("failed to get location of executable, very bad things must have happened") : dirPath.RemoveSuffix('\\');
+				DllDirectoryPath = Path.Combine(ExeDirectoryPath, "dll");
 			}
 		}
 	}
