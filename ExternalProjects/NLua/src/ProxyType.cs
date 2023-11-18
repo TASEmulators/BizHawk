@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace NLua
 {
-	public class ProxyType
+	internal class ProxyType
 	{
 		public ProxyType(Type proxy)
 		{

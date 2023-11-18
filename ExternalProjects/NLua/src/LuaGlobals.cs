@@ -135,18 +135,14 @@ namespace NLua
 			foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
 			{
 				var name = method.Name;
-				if (
-					// Check that the LuaHideAttribute and LuaGlobalAttribute were not applied
-					!method.GetCustomAttributes(typeof(LuaHideAttribute), false).Any() &&
-					!method.GetCustomAttributes(typeof(LuaGlobalAttribute), false).Any() &&
-					// Exclude some generic .NET methods that wouldn't be very usefull in Lua
-					name != "GetType" && name != "GetHashCode" && name != "Equals" &&
-					name != "ToString" && name != "Clone" && name != "Dispose" &&
-					name != "GetEnumerator" && name != "CopyTo" &&
-					!name.StartsWith("get_", StringComparison.Ordinal) &&
-					!name.StartsWith("set_", StringComparison.Ordinal) &&
-					!name.StartsWith("add_", StringComparison.Ordinal) &&
-					!name.StartsWith("remove_", StringComparison.Ordinal))
+				// Exclude some generic .NET methods that wouldn't be very useful in Lua
+				if (name != "GetType" && name != "GetHashCode" && name != "Equals" &&
+				    name != "ToString" && name != "Clone" && name != "Dispose" &&
+				    name != "GetEnumerator" && name != "CopyTo" &&
+				    !name.StartsWith("get_", StringComparison.Ordinal) &&
+				    !name.StartsWith("set_", StringComparison.Ordinal) &&
+				    !name.StartsWith("add_", StringComparison.Ordinal) &&
+				    !name.StartsWith("remove_", StringComparison.Ordinal))
 				{
 					// Format for easy method invocation
 					var command = path + ":" + name + "(";
@@ -161,23 +157,14 @@ namespace NLua
 
 			foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
 			{
-				// Check that the LuaHideAttribute and LuaGlobalAttribute were not applied
-				if (!field.GetCustomAttributes(typeof(LuaHideAttribute), false).Any() &&
-				    !field.GetCustomAttributes(typeof(LuaGlobalAttribute), false).Any())
-				{
-					// Go into recursion for members
-					RegisterPath(path + "." + field.Name, field.FieldType, recursionCounter + 1, entry);
-				}
+				// Go into recursion for members
+				RegisterPath(path + "." + field.Name, field.FieldType, recursionCounter + 1, entry);
 			}
 
 			foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
 			{
-				if (
-					// Check that the LuaHideAttribute and LuaGlobalAttribute were not applied
-					(!property.GetCustomAttributes(typeof(LuaHideAttribute), false).Any()) &&
-					(!property.GetCustomAttributes(typeof(LuaGlobalAttribute), false).Any())
-					// Exclude some generic .NET properties that wouldn't be very useful in Lua
-					&& property.Name != "Item")
+				// Exclude some generic .NET properties that wouldn't be very useful in Lua
+				if (property.Name != "Item")
 				{
 					// Go into recursion for members
 					RegisterPath(path + "." + property.Name, property.PropertyType, recursionCounter + 1, entry);

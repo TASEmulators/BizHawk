@@ -198,14 +198,16 @@ namespace NLua
 					return _extractNetObject;
 				case LuaType.Table:
 				{
-					if (luaState.GetMetaField(stackPos, "__index") != LuaType.Nil)
+					if (luaState.GetMetaField(stackPos, "__index") == LuaType.Nil)
 					{
-						var obj = _translator.GetNetObject(luaState, -1);
-						luaState.SetTop(-2);
-						if (obj != null && paramType.IsInstanceOfType(obj))
-						{
-							return _extractNetObject;
-						}
+						return null;
+					}
+
+					var obj = _translator.GetNetObject(luaState, -1);
+					luaState.SetTop(-2);
+					if (obj != null && paramType.IsInstanceOfType(obj))
+					{
+						return _extractNetObject;
 					}
 
 					break;
@@ -219,7 +221,7 @@ namespace NLua
 				case LuaType.UserData:
 				case LuaType.Thread:
 				default:
-					return null;
+					break;
 			}
 
 			var netObj = _translator.GetNetObject(luaState, stackPos);

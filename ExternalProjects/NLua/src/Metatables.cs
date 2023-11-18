@@ -11,7 +11,7 @@ using NLua.Native;
 
 namespace NLua
 {
-	public class MetaFunctions
+	internal class MetaFunctions
 	{
 		public static readonly LuaNativeFunction GcFunction = CollectObject;
 		public static readonly LuaNativeFunction IndexFunction = GetMethod;

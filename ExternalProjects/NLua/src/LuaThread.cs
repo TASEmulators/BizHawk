@@ -6,11 +6,11 @@ using NLua.Native;
 
 namespace NLua
 {
-	public class LuaThread : LuaBase, IEquatable<LuaThread>, IEquatable<LuaState>, IEquatable<Lua>
+	public class LuaThread : LuaBase, IEquatable<LuaThread>, IEquatable<Lua>
 	{
 		private readonly ObjectTranslator _translator;
 
-		public LuaState State { get; }
+		internal LuaState State { get; }
 
 		/// <summary>
 		/// Get the main thread object
@@ -38,6 +38,7 @@ namespace NLua
 		/// <summary>
 		/// Resumes this thread
 		/// </summary>
+		// ReSharper disable once UnusedMember.Global
 		public LuaStatus Resume()
 		{
 			// We leave nothing on the stack if we error
@@ -76,38 +77,9 @@ namespace NLua
 		/// <summary>
 		/// Yields this thread
 		/// </summary>
+		// ReSharper disable once UnusedMember.Global
 		public void Yield()
 			=> State.Yield(0);
-
-		public void XMove(LuaState to, object val, int index = 1)
-		{
-			var oldTop = State.GetTop();
-
-			_translator.Push(State, val);
-			State.XMove(to, index);
-
-			State.SetTop(oldTop);
-		}
-
-		public void XMove(Lua to, object val, int index = 1)
-		{
-			var oldTop = State.GetTop();
-
-			_translator.Push(State, val);
-			State.XMove(to.State, index);
-
-			State.SetTop(oldTop);
-		}
-
-		public void XMove(LuaThread thread, object val, int index = 1)
-		{
-			var oldTop = State.GetTop();
-
-			_translator.Push(State, val);
-			State.XMove(thread.State, index);
-
-			State.SetTop(oldTop);
-		}
 
 		/// <summary>
 		/// Pushes this thread into the Lua stack
@@ -122,7 +94,6 @@ namespace NLua
 		{
 			LuaThread thread => State == thread.State,
 			Lua interpreter => State == interpreter.State,
-			LuaState state => State == state,
 			_ => base.Equals(obj)
 		};
 
@@ -130,19 +101,12 @@ namespace NLua
 			=> base.GetHashCode();
 
 		public bool Equals(LuaThread other) => State == other?.State;
-		public bool Equals(LuaState other) => State == other;
 		public bool Equals(Lua other) => State == other?.State;
 
-		public static explicit operator LuaState(LuaThread thread) => thread.State;
 		public static explicit operator LuaThread(Lua interpreter) => interpreter.Thread;
 
 		public static bool operator ==(LuaThread threadA, LuaThread threadB) => threadA?.State == threadB?.State;
 		public static bool operator !=(LuaThread threadA, LuaThread threadB) => threadA?.State != threadB?.State;
-
-		public static bool operator ==(LuaThread thread, LuaState state) => thread?.State == state;
-		public static bool operator !=(LuaThread thread, LuaState state) => thread?.State != state;
-		public static bool operator ==(LuaState state, LuaThread thread) => state == thread?.State;
-		public static bool operator !=(LuaState state, LuaThread thread) => state != thread?.State;
 
 		public static bool operator ==(LuaThread thread, Lua interpreter) => thread?.State == interpreter?.State;
 		public static bool operator !=(LuaThread thread, Lua interpreter) => thread?.State != interpreter?.State;

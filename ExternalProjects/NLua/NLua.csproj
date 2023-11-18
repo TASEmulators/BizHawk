@@ -21,13 +21,9 @@
 		<WarningsAsErrors />
 	</PropertyGroup>
 
-	<ItemGroup>
-		<Reference Include="BizHawk.BizInvoke" HintPath="../../output/dll/BizHawk.BizInvoke.dll" />
-		<Reference Include="BizHawk.Common" HintPath="../../output/dll/BizHawk.Common.dll" />
-	</ItemGroup>
-
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);IDE0005</NoWarn>
 		<Nullable>disable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 </Project>

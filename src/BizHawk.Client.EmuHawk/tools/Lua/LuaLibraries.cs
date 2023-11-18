@@ -9,14 +9,16 @@ using System.Threading;
 using NLua;
 using NLua.Native;
 
+using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public class LuaLibraries : ILuaLibraries
 	{
+		public static readonly bool IsAvailable = LuaNativeMethodLoader.EnsureNativeMethodsLoaded();
+
 		public LuaLibraries(
 			LuaFileList scriptList,
 			LuaFunctionList registeredFuncList,
@@ -28,6 +30,11 @@ namespace BizHawk.Client.EmuHawk
 			IEmulator emulator,
 			IGameInfo game)
 		{
+			if (!IsAvailable)
+			{
+				throw new InvalidOperationException("The Lua dynamic library was not able to be loaded");
+			}
+
 			void EnumerateLuaFunctions(string name, Type type, LuaLibraryBase instance)
 			{
 				if (instance != null) _lua.NewTable(name);
@@ -302,8 +309,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaFile luaFile,
 			string name = null)
 		{
-			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile,
-				() => { _lua.NewThread(out var thread); return thread; }, name);
+			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, () => _lua.NewThread(), name);
 			RegisteredFunctions.Add(nlf);
 			return nlf;
 		}
@@ -320,8 +326,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var content = File.ReadAllText(file);
 			var main = _lua.LoadString(content, "main");
-			_lua.NewThread(main, out var ret);
-			return ret;
+			return _lua.NewThread(main);
 		}
 
 		public void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)

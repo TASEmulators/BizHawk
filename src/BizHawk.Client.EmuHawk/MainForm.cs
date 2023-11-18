@@ -705,7 +705,7 @@ namespace BizHawk.Client.EmuHawk
 			//start Lua Console if requested in the command line arguments
 			if (_argParser.luaConsole)
 			{
-				Tools.Load<LuaConsole>();
+				OpenLuaConsole();
 			}
 			//load Lua Script if requested in the command line arguments
 			if (_argParser.luaScript != null)
@@ -1475,6 +1475,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenLuaConsole()
 		{
+			if (!LuaLibraries.IsAvailable)
+			{
+				ShowMessageBox(
+					owner: null,
+					text: "Native Lua dynamic library was unable to be loaded. " + (OSTailoredCode.IsUnixHost
+						? "Make sure Lua is installed with your package manager."
+						: "This library is provided in the dll/ folder, try redownloading BizHawk to fix this error."),
+					caption: "Lua Load Error",
+					EMsgBoxIcon.Error);
+				return;
+			}
+
 			Tools.Load<LuaConsole>();
 		}
 

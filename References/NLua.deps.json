@@ -14,9 +14,7 @@
           "Meziantou.Analyzer": "2.0.33",
           "NETStandard.Library": "2.0.3",
           "Nullable": "1.3.1",
-          "StyleCop.Analyzers": "1.2.0-beta.435",
-          "BizHawk.BizInvoke": "1.0.0.0",
-          "BizHawk.Common": "1.0.0.0"
+          "StyleCop.Analyzers": "1.2.0-beta.435"
         },
         "runtime": {
           "NLua.dll": {}
@@ -42,55 +40,7 @@
           "StyleCop.Analyzers.Unstable": "1.2.0.435"
         }
       },
-      "StyleCop.Analyzers.Unstable/1.2.0.435": {},
-      "BizHawk.BizInvoke/1.0.0.0": {
-        "runtime": {
-          "BizHawk.BizInvoke.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
-      },
-      "BizHawk.Common/1.0.0.0": {
-        "runtime": {
-          "BizHawk.Common.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
-      },
-      "System.Memory/4.0.1.2": {
-        "runtime": {
-          "System.Memory.dll": {
-            "assemblyVersion": "4.0.1.2",
-            "fileVersion": "4.6.31308.1"
-          }
-        }
-      },
-      "System.Buffers/4.0.3.0": {
-        "runtime": {
-          "System.Buffers.dll": {
-            "assemblyVersion": "4.0.3.0",
-            "fileVersion": "4.6.28619.1"
-          }
-        }
-      },
-      "System.Runtime.CompilerServices.Unsafe/6.0.0.0": {
-        "runtime": {
-          "System.Runtime.CompilerServices.Unsafe.dll": {
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
-          }
-        }
-      },
-      "System.Numerics.Vectors/4.1.4.0": {
-        "runtime": {
-          "System.Numerics.Vectors.dll": {
-            "assemblyVersion": "4.1.4.0",
-            "fileVersion": "4.6.26515.6"
-          }
-        }
-      }
+      "StyleCop.Analyzers.Unstable/1.2.0.435": {}
     }
   },
   "libraries": {
@@ -161,36 +111,6 @@
       "sha512": "sha512-ouwPWZxbOV3SmCZxIRqHvljkSzkCyi1tDoMzQtDb/bRP8ctASV/iRJr+A2Gdj0QLaLmWnqTWDrH82/iP+X80Lg==",
       "path": "stylecop.analyzers.unstable/1.2.0.435",
       "hashPath": "stylecop.analyzers.unstable.1.2.0.435.nupkg.sha512"
-    },
-    "BizHawk.BizInvoke/1.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "BizHawk.Common/1.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "System.Memory/4.0.1.2": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "System.Buffers/4.0.3.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "System.Runtime.CompilerServices.Unsafe/6.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "System.Numerics.Vectors/4.1.4.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
     }
   }
 }

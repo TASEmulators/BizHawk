@@ -28,11 +28,9 @@ namespace NLua
 		// ReSharper disable once UnusedAutoPropertyAccessor.Global
 		public bool IsExecuting { get; private set; }
 
-		public LuaState State { get; private set; }
+		internal LuaState State { get; private set; }
 
 		internal ObjectTranslator Translator { get; private set; }
-
-		private readonly bool _StatePassed;
 
 		// The commented code bellow is the initLua, the code assigned here is minified for size/performance reasons.
 		private const string InitLuanet = @"local a={}local rawget=rawget;local b=luanet.import_type;local c=luanet.load_assembly;luanet.error,luanet.type=error,type;function a:__index(d)local e=rawget(self,'.fqn')e=(e and e..'.'or'')..d;local f=rawget(luanet,d)or b(e)if f==nil then pcall(c,e)f={['.fqn']=e}setmetatable(f,a)end;rawset(self,d,f)return f end;function a:__call(...)error('No such type: '..rawget(self,'.fqn'),2)end;luanet['.fqn']=false;setmetatable(luanet,a)luanet.load_assembly('mscorlib')";
@@ -243,34 +241,13 @@ namespace NLua
 			State.AtPanic(_panicCallback);
 		}
 
-		// CAUTION: NLua.Lua instances can't share the same lua state! 
-		public Lua(LuaState luaState)
-		{
-			luaState.PushString("NLua_Loaded");
-			luaState.GetTable((int)LuaRegistry.Index);
-
-			if (luaState.ToBoolean(-1))
-			{
-				luaState.SetTop(-2);
-				throw new LuaException("There is already a NLua.Lua instance associated with this Lua state");
-			}
-
-			State = luaState;
-			_StatePassed = true;
-			luaState.SetTop(-2);
-			Init();
-		}
-
 		internal void Init()
 		{
 			State.PushString("NLua_Loaded");
 			State.PushBoolean(true);
 			State.SetTable((int)LuaRegistry.Index);
-			if (_StatePassed == false)
-			{
-				State.NewTable();
-				State.SetGlobal("luanet");
-			}
+			State.NewTable();
+			State.SetGlobal("luanet");
 			State.PushGlobalTable();
 			State.GetGlobal("luanet");
 			State.PushString("getmetatable");
@@ -287,7 +264,7 @@ namespace NLua
 
 		public void Close()
 		{
-			if (_StatePassed || State == null)
+			if (State == null)
 			{
 				return;
 			}
@@ -341,7 +318,7 @@ namespace NLua
 		/// <para>Return a debug.traceback() call result (a multi-line string, containing a full stack trace, including C calls.</para>
 		/// <para>Note: it won't return anything unless the interpreter is in the middle of execution - that is, it only makes sense to call it from a method called from Lua, or during a coroutine yield.</para>
 		/// </summary>
-		public string GetDebugTraceback()
+		internal string GetDebugTraceback()
 		{
 			var oldTop = State.GetTop();
 			State.GetGlobal("debug"); // stack: debug
@@ -875,7 +852,7 @@ namespace NLua
 				State.SetTable(-3);
 			}
 
-			State.SetTop( oldTop);
+			State.SetTop(oldTop);
 		}
 
 		public Dictionary<object, object> GetTableDict(LuaTable table)
@@ -899,41 +876,6 @@ namespace NLua
 			State.SetTop(oldTop);
 			return dict;
 		}
-
-		/// <summary>
-		/// Gets up value (see lua docs)
-		/// </summary>
-		/// <param name = "funcindex">see lua docs</param>
-		/// <param name = "n">see lua docs</param>
-		/// <returns>see lua docs</returns>
-		public string GetUpValue(int funcindex, int n)
-			=> State.GetUpValue(funcindex, n);
-
-		/// <summary>
-		/// Sets up value (see lua docs)
-		/// </summary>
-		/// <param name = "funcindex">see lua docs</param>
-		/// <param name = "n">see lua docs</param>
-		/// <returns>see lua docs</returns>
-		public string SetUpValue(int funcindex, int n)
-			=> State.SetUpValue(funcindex, n);
-
-		/// <summary>
-		/// Pops a value from the lua stack.
-		/// </summary>
-		/// <returns>Returns the top value from the lua stack.</returns>
-		public object Pop()
-		{
-			var top = State.GetTop();
-			return Translator.PopValues(State, top - 1)[0];
-		}
-
-		/// <summary>
-		/// Pushes a value onto the lua stack.
-		/// </summary>
-		/// <param name = "value">Value to push.</param>
-		public void Push(object value)
-			=> Translator.Push(State, value);
 
 		internal void DisposeInternal(int reference, bool finalized)
 		{
@@ -1028,137 +970,35 @@ namespace NLua
 			return state;
 		}
 
-		public void XMove(LuaState to, object val, int index = 1)
-		{
-			var oldTop = State.GetTop();
-
-			Translator.Push(State, val);
-			State.XMove(to, index);
-
-			State.SetTop(oldTop);
-		}
-
-		public void XMove(Lua to, object val, int index = 1)
-		{
-			var oldTop = State.GetTop();
-
-			Translator.Push(State, val);
-			State.XMove(to.State, index);
-
-			State.SetTop(oldTop);
-		}
-
-		public void XMove(LuaThread thread, object val, int index = 1)
-		{
-			var oldTop = State.GetTop();
-
-			Translator.Push(State, val);
-			State.XMove(thread.State, index);
-
-			State.SetTop(oldTop);
-		}
-
 		/// <summary>
 		/// Creates a new empty thread
 		/// </summary>
-		public LuaState NewThread(out LuaThread thread)
+		public LuaThread NewThread()
 		{
 			var oldTop = State.GetTop();
 
-			var state = State.NewThread();
-			thread = (LuaThread)Translator.GetObject(State, -1);
+			State.NewThread();
+			var thread = (LuaThread)Translator.GetObject(State, -1);
 
 			State.SetTop(oldTop);
-			return state;
-		}
-
-		/// <summary>
-		/// Creates a new empty thread as a global variable or as a field
-		/// inside an existing table
-		/// </summary>
-		public LuaState NewThread(string fullPath)
-		{
-			var path = FullPathToArray(fullPath);
-			var oldTop = State.GetTop();
-
-			LuaState state;
-
-			if (path.Length == 1)
-			{
-				state = State.NewThread();
-				State.SetGlobal(fullPath);
-			}
-			else
-			{
-				State.GetGlobal(path[0]);
-
-				for (var i = 1; i < path.Length - 1; i++)
-				{
-					State.PushString(path[i]);
-					State.GetTable(-2);
-				}
-
-				State.PushString(path[path.Length - 1]);
-				state = State.NewThread();
-				State.SetTable(-3);
-			}
-
-			State.SetTop(oldTop);
-			return state;
+			return thread;
 		}
 
 		/// <summary>
 		/// Creates a new coroutine thread
 		/// </summary>
-		public LuaState NewThread(LuaFunction function, out LuaThread thread)
+		public LuaThread NewThread(LuaFunction function)
 		{
 			var oldTop = State.GetTop();
 
 			var state = State.NewThread();
-			thread = (LuaThread)Translator.GetObject(State, -1);
+			var thread = (LuaThread)Translator.GetObject(State, -1);
 
 			Translator.Push(State, function);
 			State.XMove(state, 1);
 
 			State.SetTop(oldTop);
-			return state;
-		}
-
-		/// <summary>
-		/// Creates a new coroutine thread as a global variable or as a field
-		/// inside an existing table
-		/// </summary>
-		public void NewThread(string fullPath, LuaFunction function)
-		{
-			var path = FullPathToArray(fullPath);
-			var oldTop = State.GetTop();
-
-			LuaState state;
-
-			if (path.Length == 1)
-			{
-				state = State.NewThread();
-				State.SetGlobal(fullPath);
-			}
-			else
-			{
-				State.GetGlobal(path[0]);
-
-				for (var i = 1; i < path.Length - 1; i++)
-				{
-					State.PushString(path[i]);
-					State.GetTable(-2);
-				}
-
-				State.PushString(path[path.Length - 1]);
-				state = State.NewThread();
-				State.SetTable(-3);
-			}
-
-			Translator.Push(State, function);
-			State.XMove(state, 1);
-
-			State.SetTop(oldTop);
+			return thread;
 		}
 
 		public LuaFunction RegisterFunction(string path, MethodBase function)
@@ -1172,7 +1012,7 @@ namespace NLua
 		{
 			// We leave nothing on the stack when we are done
 			var oldTop = State.GetTop();
-			var wrapper = new LuaMethodWrapper(Translator, target, new ProxyType(function.DeclaringType), function);
+			var wrapper = new LuaMethodWrapper(Translator, target, new(function.DeclaringType), function);
 
 			Translator.Push(State, new LuaNativeFunction(wrapper.InvokeFunction));
 

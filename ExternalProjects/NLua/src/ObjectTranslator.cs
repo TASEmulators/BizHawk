@@ -14,7 +14,7 @@ using NLua.Native;
 
 namespace NLua
 {
-	public class ObjectTranslator
+	internal class ObjectTranslator
 	{
 		// Compare cache entries by exact reference to avoid unwanted aliases
 		private class ReferenceComparer : IEqualityComparer<object>
@@ -61,7 +61,7 @@ namespace NLua
 		/// </summary>
 		internal int _nextObj;
 
-		public MetaFunctions MetaFunctionsInstance => metaFunctions;
+		internal MetaFunctions MetaFunctionsInstance => metaFunctions;
 		public Lua Interpreter => interpreter;
 		public IntPtr Tag => _tagPtr;
 
