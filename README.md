@@ -152,7 +152,7 @@ EmuHawk depends on certain libraries for graphics, and these don't work on macOS
 (Curious what this Nix thing is about? [Start here](https://zero-to-nix.com).)
 
 Dev builds and a few recent releases can be built with Nix, either by cloning the repo, or by `fetchzip`'ing a commit and importing the expression from it. (The repo isn't a Flake yet, but you should be able to IFD.)
-See the [dedicated Nix usage readme](nix_expr_usage_docs.md) for what attributes are exposed.
+See the [dedicated Nix usage readme](Dist/nix_expr_usage_docs.md) for what attributes are exposed.
 If you use a non-NixOS distro with Nix installed, you just need to add one argument and your host graphics drivers will be picked up thanks to nixGL.
 
 [to top](#bizhawk)
