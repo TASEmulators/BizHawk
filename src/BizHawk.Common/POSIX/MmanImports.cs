@@ -14,13 +14,13 @@ namespace BizHawk.Common
 			Execute = 0x4
 		}
 
-		[DllImport("libc.so.6")]
+		[DllImport("libc")]
 		public static extern IntPtr mmap(IntPtr addr, UIntPtr length, MemoryProtection prot, int flags, int fd, IntPtr offset);
 
-		[DllImport("libc.so.6")]
+		[DllImport("libc")]
 		public static extern int mprotect(IntPtr addr, UIntPtr len, MemoryProtection prot);
 
-		[DllImport("libc.so.6")]
+		[DllImport("libc")]
 		public static extern int munmap(IntPtr addr, UIntPtr length);
 	}
 }

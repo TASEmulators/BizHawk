@@ -22,7 +22,7 @@ namespace BizHawk.Bizware.Test
 				{
 					var firstAsm = Array.Find(AppDomain.CurrentDomain.GetAssemblies(), asm => asm.FullName == args.Name);
 					if (firstAsm is not null) return firstAsm;
-					var guessFilename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "dll", $"{new AssemblyName(args.Name).Name}.dll");
+					var guessFilename = Path.Combine(AppContext.BaseDirectory, "dll", $"{new AssemblyName(args.Name).Name}.dll");
 					return File.Exists(guessFilename) ? Assembly.LoadFile(guessFilename) : null;
 				}
 			};

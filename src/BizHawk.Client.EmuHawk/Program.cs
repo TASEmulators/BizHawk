@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -13,60 +14,54 @@ using BizHawk.Common.PathExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 
-using OSTC = EXE_PROJECT.OSTailoredCode;
-
 namespace BizHawk.Client.EmuHawk
 {
 	internal static class Program
 	{
+		// Declared here instead of a more usual place to avoid dependencies on the more usual place
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool SetDllDirectoryW(string lpPathName);
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool DeleteFileW(string lpFileName);
+
 		static Program()
 		{
-			//this needs to be done before the warnings/errors show up
+			// This needs to be done before the warnings/errors show up
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			// quickly check if the user is running this as a 32 bit process somehow
+			// Quickly check if the user is running this as a 32 bit process somehow
+			// TODO: We may want to remove this sometime, EmuHawk should be able to run somewhat as 32 bit if the user really wants to
+			// (There are no longer any hard 64 bit deps, i.e. SlimDX is no longer around)
 			if (!Environment.Is64BitProcess)
 			{
-				using (var box = new ExceptionBox($"EmuHawk requires a 64 bit environment in order to run! EmuHawk will now close.")) box.ShowDialog();
-				Process.GetCurrentProcess().Kill();
-				return;
-			}
-
-			if (OSTC.IsUnixHost)
-			{
-				// for Unix, skip everything else and just wire up the event handler
-				AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-				return;
-			}
-
-			foreach (var (dllToLoad, desc) in new[]
-			{
-				("vcruntime140_1.dll", "Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019 (x64)"),
-				("msvcr100.dll", "Microsoft Visual C++ 2010 SP1 Runtime (x64)"), // for Mupen64Plus, and some others
-			})
-			{
-				var p = OSTC.LinkedLibManager.LoadOrZero(dllToLoad);
-				if (p != IntPtr.Zero)
-				{
-					OSTC.LinkedLibManager.FreeByPtr(p);
-					continue;
-				}
-				// else it's missing or corrupted
-				using (ExceptionBox box = new($"EmuHawk needs {desc} in order to run! See the readme on GitHub for more info. (EmuHawk will now close.) Internal error message: {OSTC.LinkedLibManager.GetErrorMessage()}"))
+				using (var box = new ExceptionBox(
+							"EmuHawk requires a 64 bit environment in order to run! EmuHawk will now close."))
 				{
 					box.ShowDialog();
 				}
+
 				Process.GetCurrentProcess().Kill();
+				return;
+			}
+
+			// In case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
+			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+
+			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				// Windows needs extra considerations for the dll directory
+				// we can skip all this on non-Windows platforms
 				return;
 			}
 
 			// this will look in subdirectory "dll" to load pinvoked stuff
-			var dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
-			_ = SetDllDirectory(dllDir);
-
-			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
-			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+			var dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
+			_ = SetDllDirectoryW(dllDir);
 
 			try
 			{
@@ -94,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 		private static int Main(string[] args)
 		{
 			var exitCode = SubMain(args);
-			if (OSTC.IsUnixHost)
+			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			{
 				Console.WriteLine("BizHawk has completed its shutdown routines, killing process...");
 				Process.GetCurrentProcess().Kill();
@@ -102,37 +97,60 @@ namespace BizHawk.Client.EmuHawk
 			return exitCode;
 		}
 
-		//NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
+		// NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
 		private static int SubMain(string[] args)
 		{
 			// this check has to be done VERY early.  i stepped through a debug build with wrong .dll versions purposely used,
 			// and there was a TypeLoadException before the first line of SubMain was reached (some static ColorType init?)
-			var thisAsmVer = EmuHawk.ReflectionCache.AsmVersion;
-			foreach (var asmVer in new[]
-			{
-				BizInvoke.ReflectionCache.AsmVersion,
-				Bizware.Audio.ReflectionCache.AsmVersion,
-				Bizware.BizwareGL.ReflectionCache.AsmVersion,
-				Bizware.Graphics.ReflectionCache.AsmVersion,
-				Bizware.Graphics.Controls.ReflectionCache.AsmVersion,
-				Bizware.Input.ReflectionCache.AsmVersion,
-				Client.Common.ReflectionCache.AsmVersion,
-				Common.ReflectionCache.AsmVersion,
-				Emulation.Common.ReflectionCache.AsmVersion,
-				Emulation.Cores.ReflectionCache.AsmVersion,
-				Emulation.DiscSystem.ReflectionCache.AsmVersion,
-				WinForms.Controls.ReflectionCache.AsmVersion,
-			})
-			{
-				if (asmVer != thisAsmVer)
+			var thisAsmVer = ReflectionCache.AsmVersion;
+			if (new[]
 				{
-					MessageBox.Show("One or more of the BizHawk.* assemblies have the wrong version!\n(Did you attempt to update by overwriting an existing install?)");
+					BizInvoke.ReflectionCache.AsmVersion,
+					Bizware.Audio.ReflectionCache.AsmVersion,
+					Bizware.BizwareGL.ReflectionCache.AsmVersion,
+					Bizware.Graphics.ReflectionCache.AsmVersion,
+					Bizware.Graphics.Controls.ReflectionCache.AsmVersion,
+					Bizware.Input.ReflectionCache.AsmVersion,
+					Client.Common.ReflectionCache.AsmVersion,
+					Common.ReflectionCache.AsmVersion,
+					Emulation.Common.ReflectionCache.AsmVersion,
+					Emulation.Cores.ReflectionCache.AsmVersion,
+					Emulation.DiscSystem.ReflectionCache.AsmVersion,
+					WinForms.Controls.ReflectionCache.AsmVersion,
+				}.Any(asmVer => asmVer != thisAsmVer))
+			{
+				MessageBox.Show("One or more of the BizHawk.* assemblies have the wrong version!\n(Did you attempt to update by overwriting an existing install?)");
+				return -1;
+			}
+
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				// TODO: We optimally should only require the new VS2015-2022 all in one redist be installed
+				// None of this old 2010 runtime garbage
+				// (It's probably as simple as just recompiling old mupen .dlls against newer VS and probably just removing speex completely)
+				foreach (var (dllToLoad, desc) in new[]
+						{
+							("vcruntime140_1.dll", "Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019, and 2022 (x64)"),
+							// for libspeexdsp.dll, mupen64plus-audio-bkm.dll, mupen64plus-video-glide64.dll, mupen64plus-video-glide64mk2.dll, mupen64plus-video-rice.dll
+							("msvcr100.dll", "Microsoft Visual C++ 2010 SP1 Runtime (x64)"),
+						})
+				{
+					var p = OSTailoredCode.LinkedLibManager.LoadOrZero(dllToLoad);
+					if (p != IntPtr.Zero)
+					{
+						OSTailoredCode.LinkedLibManager.FreeByPtr(p);
+						continue;
+					}
+
+					// else it's missing or corrupted
+					MessageBox.Show($"EmuHawk needs {desc} in order to run! See the readme on GitHub for more info. (EmuHawk will now close.) " +
+						$"Internal error message: {OSTailoredCode.LinkedLibManager.GetErrorMessage()}");
 					return -1;
 				}
 			}
 
-			typeof(Form).GetField(OSTC.IsUnixHost ? "default_icon" : "defaultIcon", BindingFlags.NonPublic | BindingFlags.Static)
+			typeof(Form).GetField(OSTailoredCode.IsUnixHost ? "default_icon" : "defaultIcon", BindingFlags.NonPublic | BindingFlags.Static)!
 				.SetValue(null, Properties.Resources.Logo);
 
 			TempFileManager.Start();
@@ -195,8 +213,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						// try to fallback on the faster option on Windows
 						// if we're on a Unix platform, there's only 1 fallback here...
-						1 when OSTC.IsUnixHost => (EDispMethod.GdiPlus, "GDI+"),
-						1 or 2 when !OSTC.IsUnixHost => dispMethod == EDispMethod.D3D9
+						1 when OSTailoredCode.IsUnixHost => (EDispMethod.GdiPlus, "GDI+"),
+						1 or 2 when !OSTailoredCode.IsUnixHost => dispMethod == EDispMethod.D3D9
 							? (EDispMethod.OpenGL, "OpenGL")
 							: (EDispMethod.D3D9, "Direct3D9"),
 						_ => (EDispMethod.GdiPlus, "GDI+")
@@ -210,16 +228,16 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch (Exception ex)
 					{
-						var fallback = ChooseFallback();
-						new ExceptionBox(new Exception($"Initialization of Display Method failed; falling back to {fallback.Name}", ex)).ShowDialog();
-						return TryInitIGL(initialConfig.DispMethod = fallback.Method);
+						var (method, name) = ChooseFallback();
+						new ExceptionBox(new Exception($"Initialization of Display Method failed; falling back to {name}", ex)).ShowDialog();
+						return TryInitIGL(initialConfig.DispMethod = method);
 					}
 				}
 
 				switch (dispMethod)
 				{
 					case EDispMethod.D3D9:
-						if (OSTC.IsUnixHost || OSTC.IsWine)
+						if (OSTailoredCode.IsUnixHost || OSTailoredCode.IsWine)
 						{
 							// possibly sharing config w/ Windows, assume the user wants the not-slow method (but don't change the config)
 							return TryInitIGL(EDispMethod.OpenGL);
@@ -230,17 +248,17 @@ namespace BizHawk.Client.EmuHawk
 						}
 						catch (Exception ex)
 						{
-							var fallback = ChooseFallback();
-							new ExceptionBox(new Exception($"Initialization of Direct3D9 Display Method failed; falling back to {fallback.Name}", ex)).ShowDialog();
-							return TryInitIGL(initialConfig.DispMethod = fallback.Method);
+							var (method, name) = ChooseFallback();
+							new ExceptionBox(new Exception($"Initialization of Direct3D9 Display Method failed; falling back to {name}", ex)).ShowDialog();
+							return TryInitIGL(initialConfig.DispMethod = method);
 						}
 					case EDispMethod.OpenGL:
 						if (!IGL_OpenGL.Available)
 						{
 							// too old to use, need to fallback to something else
-							var fallback = ChooseFallback();
-							new ExceptionBox(new Exception($"Initialization of OpenGL Display Method failed; falling back to {fallback.Name}")).ShowDialog();
-							return TryInitIGL(initialConfig.DispMethod = fallback.Method);
+							var (method, name) = ChooseFallback();
+							new ExceptionBox(new Exception($"Initialization of OpenGL Display Method failed; falling back to {name}")).ShowDialog();
+							return TryInitIGL(initialConfig.DispMethod = method);
 						}
 						var igl = new IGL_OpenGL();
 						// need to have a context active for checking renderer, will be disposed afterwards
@@ -265,24 +283,25 @@ namespace BizHawk.Client.EmuHawk
 
 			Sound globalSound = null;
 
-			if (!OSTC.IsUnixHost)
+			if (!OSTailoredCode.IsUnixHost)
 			{
-				//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
-				//The relevant initialization happened just before in "create IGL context".
-				//It isn't clear whether we need the earlier SetDllDirectory(), but I think we do.
-				//note: this is pasted instead of being put in a static method due to this initialization code being sensitive to things like that, and not wanting to cause it to break
-				//pasting should be safe (not affecting the jit order of things)
-				var dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
-				_ = SetDllDirectory(dllDir);
+				// WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
+				// The relevant initialization happened just before in "create IGL context".
+				// It isn't clear whether we need the earlier SetDllDirectory(), but I think we do.
+				// note: this is pasted instead of being put in a static method due to this initialization code being sensitive to things like that, and not wanting to cause it to break
+				// pasting should be safe (not affecting the jit order of things)
+				var dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
+				_ = SetDllDirectoryW(dllDir);
 			}
 
-			if (OSTC.HostWindowsVersion is null || OSTC.HostWindowsVersion.Value.Version >= OSTC.WindowsVersion._10) // "windows isn't capable of being useful for non-administrators until windows 10" --zeromus
+			if (OSTailoredCode.HostWindowsVersion is null ||
+				OSTailoredCode.HostWindowsVersion.Value.Version >= OSTailoredCode.WindowsVersion._10) // "windows isn't capable of being useful for non-administrators until windows 10" --zeromus
 			{
 				if (EmuHawkUtil.CLRHostHasElevatedPrivileges)
 				{
 					using MsgBox dialog = new(
 						title: "This EmuHawk is privileged",
-						message: $"EmuHawk detected it {(OSTC.IsUnixHost ? "is running as root (Superuser)" : "has Administrator privileges")}.\n"
+						message: $"EmuHawk detected it {(OSTailoredCode.IsUnixHost ? "is running as root (Superuser)" : "has Administrator privileges")}.\n"
 							+ "This is a bad idea.",
 						boxIcon: MessageBoxIcon.Warning);
 					dialog.ShowDialog();
@@ -321,11 +340,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 					initialConfig = ConfigService.Load<Config>(iniPath);
 					initialConfig.ResolveDefaults();
+					// ReSharper disable once AccessToDisposedClosure
 					mf.Config = initialConfig;
 				};
-//				var title = mf.Text;
 				mf.Show();
-//				mf.Text = title;
 				try
 				{
 					exitCode = mf.ProgramRunLoop();
@@ -357,17 +375,9 @@ namespace BizHawk.Client.EmuHawk
 				Input.Instance?.Adapter?.DeInitAll();
 			}
 
-			//return 0 assuming things have gone well, non-zero values could be used as error codes or for scripting purposes
+			// return 0 assuming things have gone well, non-zero values could be used as error codes or for scripting purposes
 			return exitCode;
-		} //SubMain
-
-		//declared here instead of a more usual place to avoid dependencies on the more usual place
-
-		[DllImport("kernel32.dll", SetLastError = true)]
-		private static extern uint SetDllDirectory(string lpPathName);
-
-		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
-		private static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
+		}
 
 		/// <remarks>http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips</remarks>
 		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
@@ -377,14 +387,16 @@ namespace BizHawk.Client.EmuHawk
 			lock (AppDomain.CurrentDomain)
 			{
 				var firstAsm = Array.Find(AppDomain.CurrentDomain.GetAssemblies(), asm => asm.FullName == requested);
-				if (firstAsm != null) return firstAsm;
+				if (firstAsm != null)
+				{
+					return firstAsm;
+				}
 
-				//load missing assemblies by trying to find them in the dll directory
+				// load missing assemblies by trying to find them in the dll directory
 				var dllname = $"{new AssemblyName(requested).Name}.dll";
-				var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
-				var simpleName = new AssemblyName(requested).Name;
+				var directory = Path.Combine(AppContext.BaseDirectory, "dll");
 				var fname = Path.Combine(directory, dllname);
-				//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unmanaged) assemblies can't load
+				// it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unmanaged) assemblies can't load
 				return File.Exists(fname) ? Assembly.LoadFile(fname) : null;
 			}
 		}

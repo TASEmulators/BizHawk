@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				string execPath = Assembly.GetEntryAssembly().Location;
+				var execPath = AppContext.BaseDirectory;
 				dynamic ji = Activator.CreateInstance(JumpTask);
 
 				ji.ApplicationPath = execPath;

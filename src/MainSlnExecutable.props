@@ -1,7 +1,6 @@
 <Project>
 	<Import Project="MainSlnCommon.props" />
 	<PropertyGroup>
-		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
 		<OutputPath>$(MSBuildProjectDirectory)/../../output</OutputPath>
 		<AssemblyName>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1))))</AssemblyName>
 	</PropertyGroup>
@@ -11,9 +10,6 @@
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
-	<ItemGroup>
-		<Compile Include="$(MSBuildProjectDirectory)/../BizHawk.Common/OSTailoredCode.cs" />
-	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
 			<NotExecFilesFromExecProj Include="$(OutputPath)*.deps.json" />

@@ -51,6 +51,12 @@ namespace BizHawk.Common
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool DestroyMenu(IntPtr hMenu);
 
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+		public static extern unsafe int FormatMessageW(int flags, IntPtr source, uint messageId, uint languageId, char* outMsg, int size, IntPtr args);
+
+		[DllImport("kernel32.dll", ExactSpelling = true)]
+		public static extern uint GetLastError();
+
 		[DllImport("user32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
 		public static extern uint MapVirtualKeyW(uint uCode, uint uMapType);
 

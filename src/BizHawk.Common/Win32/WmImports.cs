@@ -13,6 +13,12 @@ namespace BizHawk.Common
 		public static readonly IntPtr HWND_MESSAGE = new(-3);
 		public const int GWLP_USERDATA = -21;
 
+		public enum ChangeWindowMessageFilterFlags : uint
+		{
+			Add = 1,
+			Remove = 2,
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct MSG
 		{
@@ -43,6 +49,9 @@ namespace BizHawk.Common
 			public string lpszMenuName;
 			public string lpszClassName;
 		}
+
+		[DllImport("user32.dll", ExactSpelling = true)]
+		public static extern bool ChangeWindowMessageFilter(uint msg, ChangeWindowMessageFilterFlags flags);
 
 		[DllImport("user32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
 		public static extern IntPtr CreateWindowExW(int dwExStyle, IntPtr lpClassName, string lpWindowName,

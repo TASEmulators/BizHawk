@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 
 using BizHawk.Common.StringExtensions;
 
@@ -200,7 +199,7 @@ namespace BizHawk.Common.PathExtensions
 			}
 			if (OSTailoredCode.IsUnixHost)
 			{
-				var dirPath = ReadPathFromEnvVar("BIZHAWK_HOME") ?? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+				var dirPath = ReadPathFromEnvVar("BIZHAWK_HOME") ?? AppContext.BaseDirectory;
 				ExeDirectoryPath = string.IsNullOrEmpty(dirPath) || dirPath == "/" ? string.Empty : dirPath;
 				DllDirectoryPath = Path.Combine(ExeDirectoryPath == string.Empty ? "/" : ExeDirectoryPath, "dll");
 				// yes, this is a lot of extra code to make sure BizHawk can run in `/` on Unix, but I've made up for it by caching these for the program lifecycle --yoshi
@@ -208,8 +207,8 @@ namespace BizHawk.Common.PathExtensions
 			}
 			else
 			{
-				var dirPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-				DataDirectoryPath = ExeDirectoryPath = string.IsNullOrEmpty(dirPath) ? throw new Exception("failed to get location of executable, very bad things must have happened") : dirPath.RemoveSuffix('\\');
+				var dirPath = AppContext.BaseDirectory;
+				DataDirectoryPath = ExeDirectoryPath = string.IsNullOrEmpty(dirPath) ? throw new("failed to get location of executable, very bad things must have happened") : dirPath.RemoveSuffix('\\');
 				DllDirectoryPath = Path.Combine(ExeDirectoryPath, "dll");
 			}
 		}

@@ -1,5 +1,5 @@
+using System;
 using System.IO;
-using System.Reflection;
 
 using BizHawk.Common.StringExtensions;
 
@@ -24,7 +24,7 @@ namespace BizHawk.Common
 		static VersionInfo()
 		{
 			var path = Path.Combine(
-				Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)?.RemoveSuffix(Path.DirectorySeparatorChar) ?? string.Empty,
+				AppContext.BaseDirectory.RemoveSuffix(Path.DirectorySeparatorChar),
 				"dll",
 				"custombuild.txt"
 			);
