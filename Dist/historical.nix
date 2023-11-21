@@ -1,6 +1,6 @@
 { lib
 # infrastructure
-, drvVersionAtLeast
+, isVersionAtLeast
 , replaceDotWithUnderscore
 , fetchFromGitHub
 , fetchFromGitLab
@@ -13,14 +13,17 @@
 	 * updating? make sure to hit the rest of this file, the hand-written deps `/Dist/deps-historical.nix`,
 	 * the shell script for CI `/Dist/nix_expr_check_attrs.sh`, and the docs `/Dist/nix_expr_usage_docs.md`
 	 */
-	releases = [ "2.9.1" "2.9" "2.8" "2.7" "2.6.3" "2.6.2" "2.6.1" "2.6" ];
+	releases = [
+		"2.9.1" "2.9" "2.8" "2.7" "2.6.3" "2.6.2" "2.6.1" "2.6"
+		"2.5.2" "2.5.1" "2.5" "2.4.2" "2.4.1" "2.4" "2.3.3" "2.3.2"
+	];
 	releaseCount = lib.length releases;
 	releaseFrags = builtins.map replaceDotWithUnderscore releases;
 	releaseOffsetLookup = lib.listToAttrs (lib.imap0 (lib.flip lib.nameValuePair) releaseFrags);
 	depsForHistoricalRelease = releaseFrag: fetchNuGet: let
 		file = import ./deps-historical.nix;
-		windows = (builtins.map (s: file."since-${s}") releaseFrags) ++ (builtins.map (s: file."until-${s}") releaseFrags);
-		extras = builtins.map (s: file."only-${s}") releaseFrags;
+		windows = builtins.map (s: file."since-${s}" or []) releaseFrags ++ builtins.map (s: file."until-${s}" or []) releaseFrags;
+		extras = builtins.map (s: file."only-${s}" or []) releaseFrags;
 		i = releaseOffsetLookup.${releaseFrag};
 	in builtins.map fetchNuGet (lib.elemAt extras i ++ lib.concatLists (lib.sublist i releaseCount windows));
 	releaseTagSourceInfos = let
@@ -36,11 +39,10 @@
 			};
 		in (lib.optionalAttrs (dotnet-sdk != null) { inherit dotnet-sdk; }) // {
 			inherit shortHash version;
-			branch = "master";
-			drv = fetchFromGitHub (fetcherArgs // { owner = "TASEmulators"; });
+			src = fetchFromGitHub (fetcherArgs // { owner = "TASEmulators"; });
 			#TODO can use `srcs` w/ `buildDotnetModule`?
 			# verified hashes match for 2.7 through 2.9, but 2.9.1 rev (745efb1dd) was missing (force-push nonsense IIRC)
-			drv1 = fetchFromGitLab (fetcherArgs // { owner = "TASVideos"; });
+			src1 = fetchFromGitLab (fetcherArgs // { owner = "TASVideos"; });
 			nugetDeps = let
 				releaseFrag = replaceDotWithUnderscore version;
 			in mkNugetDeps {
@@ -138,6 +140,47 @@
 			hashPostPatching = "sha256-kswmNENYxumQlJdUKRQcb5Ni5+aXUqKxEnJ8jX5OHQ0=";
 			dotnet-sdk = dotnet-sdk_5;
 		};
+		# if you want to get these building from source, start by changing `releasesEmuHawkInstallables` in `default.nix` so the attrs are actually exposed
+		info-2_5_2 = {
+			version = "2.5.2";
+			rev = "21a476200e76ef815d2bb66dffc167f9720a4eb9";
+			hashPostPatching = "";
+		};
+		info-2_5_1 = {
+			version = "2.5.1";
+			rev = "f104807193bd5a4bffdd67d52967ab844038775e";
+			hashPostPatching = "";
+		};
+		info-2_5 = {
+			version = "2.5";
+			rev = "5b93ef14dc613417eb937c1f793dd2dfb851d717";
+			hashPostPatching = "";
+		};
+		info-2_4_2 = {
+			version = "2.4.2";
+			rev = "546ccda9189e346840909350eca8b1fdcadad081";
+			hashPostPatching = "";
+		};
+		info-2_4_1 = {
+			version = "2.4.1";
+			rev = "60a1ddea5e4775f3be4bd417d53cacf0eba978c4";
+			hashPostPatching = "";
+		};
+		info-2_4 = {
+			version = "2.4";
+			rev = "16f5da9f9c2e57ac7a8bb70b2028e3a9501127b8";
+			hashPostPatching = "";
+		};
+		info-2_3_3 = {
+			version = "2.3.3";
+			rev = "c330541c35e97c66df31d1616a69927cf65bf318";
+			hashPostPatching = "";
+		};
+		info-2_3_2 = {
+			version = "2.3.2";
+			rev = "92847b1d1d534108143cfbff1e266036332c0573";
+			hashPostPatching = "";
+		};
 	};
 in {
 	inherit depsForHistoricalRelease releaseFrags releaseTagSourceInfos;
@@ -145,40 +188,51 @@ in {
 	populateHawkSourceInfo = hawkSourceInfo: let
 		inherit (hawkSourceInfo) version;
 		neededExtraManagedDepsApprox = [ "virtu" ]
-			++ lib.optionals (drvVersionAtLeast "2.6" version) [ "hawkQuantizer" "isoParser" ]
-			++ lib.optionals (drvVersionAtLeast "2.6.2" version) [ "flatBuffersGenOutput" "srcGenReflectionCache" ]
-			++ lib.optionals (!drvVersionAtLeast "2.9" version) [ "flatBuffersCore" "gongShell" ]
-			++ lib.optionals (drvVersionAtLeast "2.9" version) [ "bizhawkAnalyzer" "nlua" ]
-			++ lib.optional (drvVersionAtLeast "2.9.1" version) "srcGenVersionInfo"
-			++ lib.optionals (!drvVersionAtLeast "2.9.2" version) [ "slimDX" "systemDataSqliteDropIn" ]
-			++ lib.optional (drvVersionAtLeast "2.9.2" version) "srcGenSettingsUtil"
+			++ lib.optionals (isVersionAtLeast "2.6" version) [ "hawkQuantizer" "isoParser" ]
+			++ lib.optionals (isVersionAtLeast "2.6.2" version) [ "flatBuffersGenOutput" "srcGenReflectionCache" ]
+			++ lib.optionals (!isVersionAtLeast "2.9" version) [ "flatBuffersCore" "gongShell" ]
+			++ lib.optionals (isVersionAtLeast "2.9" version) [ "bizhawkAnalyzer" "nlua" ]
+			++ lib.optional (isVersionAtLeast "2.9.1" version) "srcGenVersionInfo"
+			++ lib.optionals (!isVersionAtLeast "2.9.2" version) [ "slimDX" "systemDataSqliteDropIn" ]
+			++ lib.optional (isVersionAtLeast "2.9.2" version) "srcGenSettingsUtil"
 			;
 	in {
 		inherit neededExtraManagedDepsApprox;
 		__contentAddressed = false; #TODO try w/ CA
-		copyingAssetsInEmuHawkProj = drvVersionAtLeast "2.6.3" version;
+		copyingAssetsInEmuHawkProj = isVersionAtLeast "2.6.3" version;
 		dotnet-sdk = dotnet-sdk_6;
-		exePathRespectsEnvVar = drvVersionAtLeast "2.9.2" version;
-		hasAssetsInOutput = !drvVersionAtLeast "2.6.1" version;
-		hasFFmpegPatch_e68a49aa5 = drvVersionAtLeast "2.9.2" version; # with e68a49aa5, downloading *and running* FFmpeg finally works; TODO use FFmpeg from Nixpkgs since it's a stable version (4.4.1)
-		hasMiscTypeCheckerPatch_6afb3be98 = drvVersionAtLeast "2.6.2" version;
+		exePathRespectsEnvVar = isVersionAtLeast "2.9.2" version;
+		hasAssemblyResolveHandler = isVersionAtLeast "2.3.3" version;
+		hasAssetsInOutput = !isVersionAtLeast "2.6.1" version;
+		hasFFmpegPatch_e68a49aa5 = isVersionAtLeast "2.9.2" version; # with e68a49aa5, downloading *and running* FFmpeg finally works; TODO use FFmpeg from Nixpkgs since it's a stable version (4.4.1)
+		hasMiscTypeCheckerPatch_6afb3be98 = isVersionAtLeast "2.6.2" version;
 		neededExtraManagedDeps = neededExtraManagedDepsApprox;
-		needsSDL = drvVersionAtLeast "2.9.2" version;
+		needsSDL = isVersionAtLeast "2.9.2" version;
 		nugetDeps = ./deps.nix;
-		packageScriptNeeds7Zip = !drvVersionAtLeast "2.6.3" version;
-		packageScriptRemovesWinFilesFromLinux = drvVersionAtLeast "2.9.2" version;
-		pathConfigNeedsOrdinal = !drvVersionAtLeast "2.7.1" version;
+		packageScriptNeeds7Zip = !isVersionAtLeast "2.6.3" version;
+		packageScriptRemovesWinFilesFromLinux = isVersionAtLeast "2.9.2" version;
+		pathConfigNeedsOrdinal = !isVersionAtLeast "2.7.1" version;
 		releaseArtifactHasRogueOTKAsmConfig = version == "2.9.1";
-		versionProjNeedsDoubleBuild = !drvVersionAtLeast "2.9.1" version;
+		releaseArtifactNeedsLowercaseAsms = !isVersionAtLeast "2.3.3" version;
+		releaseArtifactNeedsOTKAsmConfig = isVersionAtLeast "2.3.3" version && !isVersionAtLeast "2.5" version; # see a1b501fe5
+		releaseArtifactNeedsVBDotnetReference = !isVersionAtLeast "2.5.1" version;
+		versionProjNeedsDoubleBuild = !isVersionAtLeast "2.9.1" version;
 		#TODO warn about missing/broken features when eval'ing older releases
 	} // hawkSourceInfo;
 	/** to be passed to `splitReleaseArtifact` */
 	releaseArtifactInfos = lib.mapAttrs'
 		(releaseFrag: value: {
 			name = "bizhawkAssemblies-${releaseFrag}-bin";
-			value = {
-				hawkSourceInfo = releaseTagSourceInfos."info-${releaseFrag}" // { branch = "release"; } // value.hawkSourceInfo or {};
-			} // value;
+			value = let
+				hawkSourceInfo = releaseTagSourceInfos."info-${releaseFrag}" // value.hawkSourceInfo or {};
+			in {
+				inherit hawkSourceInfo;
+				${if isVersionAtLeast "2.6" hawkSourceInfo.version
+					then if isVersionAtLeast "2.6.3" hawkSourceInfo.version
+						then null
+						else "zippedTarball"
+					else "crossPlatformArtifact"} = true;
+			} // lib.optionalAttrs (!isVersionAtLeast "2.6" hawkSourceInfo.version) { stripRoot = false; } // value;
 		})
 		{
 			"2_9_1" = {
@@ -200,16 +254,39 @@ in {
 				hashPrePatching = "sha256-gCHySfNOjqazbQDqk5lKJIYmPI6onqcaVDwuY8Ud2ns=";
 			};
 			"2_6_2" = {
-				zippedTarball = true;
 				hashPrePatching = "sha256-tlnF/ZQOkLMbiEV2BqhxzQ/KixGZ30+LgOUoHvpv13s=";
 			};
 			"2_6_1" = {
-				zippedTarball = true;
 				hashPrePatching = "sha256-Ou4NbRo7Gh0HWviXSEHtp0PpsGDdYsN8yhR0/gQy3rY=";
 			};
 			"2_6" = {
-				zippedTarball = true;
 				hashPrePatching = "sha256-AHP1mgedC9wUq+YAJD0gM4Lrl0H0UkrWyifEDC9KLog=";
 			};
+			"2_5_2" = {
+				hashPrePatching = "sha256-vurAHOSWwpHZ96cLnRvb6wR+6dvTVKgoqUvlU4Qyp3g=";
+			};
+			"2_5_1" = {
+				hashPrePatching = "sha256-tB6UXQPFHPIhV5bERkv/kAktyMn3dnlI4nzIwXO9imQ=";
+			};
+			"2_5" = {
+				url = "https://github.com/TASEmulators/BizHawk/releases/download/2.5/BizHawk-2.5.0.zip";
+				hashPrePatching = "sha256-OPuNxgHWYBCw6gkkllir0U9z+ZF3K8K2o24W00MWgLk=";
+			};
+			"2_4_2" = {
+				hashPrePatching = "sha256-0ZunzBTO4O+B89N5PI0+AeVFBhe9shEtCANsYJBVdaY=";
+			};
+			"2_4_1" = {
+				hashPrePatching = "sha256-uORUDsPh7ePRzB69wqKW65Cch35Fjg34Q0aa7Vcf+dA=";
+			};
+			"2_4" = {
+				hashPrePatching = "sha256-vgocYt0Wo5LSLxHF5W1aFi2xqkklMYhZP4zHOIFbCb0=";
+			};
+			"2_3_3" = {
+				hashPrePatching = "sha256-kLPNpnggnrc7TgA6NCC0P/tkFiUgTHVyKPdUz0UX1EE=";
+			};
+			"2_3_2" = {
+				hashPrePatching = "sha256-x2DwrzBkPAGhlov/eU/VwXuHVP/Rv0o7pZptmsSQLJU=";
+			};
+			# older releases won't pass prereq checker w/o WINE libs, relevant change was https://github.com/TASEmulators/BizHawk/commit/27a4062ea22e5cb4a81628580ce47fec7a2709a5#diff-aff17d6fcf6169cad48e9c8d08145b0de360e874aa8ffee0ea66e636cccda39f
 		};
 }

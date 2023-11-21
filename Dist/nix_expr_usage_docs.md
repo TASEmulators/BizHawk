@@ -23,6 +23,14 @@ Version | Attr for asms | Attr for EmuHawk | Attr for DiscoHawk
 2.6.1 from source | DIY | `emuhawk-2_6_1` | DIY
 2.6 | `bizhawkAssemblies-2_6-bin` | `emuhawk-2_6-bin` | DIY
 2.6 from source | DIY | `emuhawk-2_6` | DIY
+2.5.2 | `bizhawkAssemblies-2_5_2-bin` | `emuhawk-2_5_2-bin` | DIY
+2.5.1 | `bizhawkAssemblies-2_5_1-bin` | `emuhawk-2_5_1-bin` | DIY
+2.5 | `bizhawkAssemblies-2_5-bin` | `emuhawk-2_5-bin` | DIY
+2.4.2 | `bizhawkAssemblies-2_4_2-bin` | `emuhawk-2_4_2-bin` | DIY
+2.4.1 | `bizhawkAssemblies-2_4_1-bin` | `emuhawk-2_4_1-bin` | DIY
+2.4 | `bizhawkAssemblies-2_4-bin` | `emuhawk-2_4-bin` | DIY
+2.3.3 | `bizhawkAssemblies-2_3_3-bin` | `emuhawk-2_3_3-bin` | DIY
+2.3.2 | `bizhawkAssemblies-2_3_2-bin` | `emuhawk-2_3_2-bin` | DIY
 
 Nix functions and data:
 - `buildAssembliesFor`

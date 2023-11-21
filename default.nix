@@ -3,6 +3,7 @@
 , stdenv ? pkgs.stdenvNoCC
 # infrastructure
 , buildDotnetModule ? pkgs.buildDotnetModule
+, dpkg ? pkgs.dpkg
 , fetchFromGitHub ? pkgs.fetchFromGitHub
 , fetchFromGitLab ? pkgs.fetchFromGitLab
 , fetchpatch ? pkgs.fetchpatch
@@ -19,8 +20,7 @@
 	version = "2.9.2-local"; # used in default value of `BIZHAWK_DATA_HOME`, which distinguishes parallel installs' config and other data
 in {
 	inherit version;
-	branch = "master"; # must be regex-escaped (interpolated as `sed "s/.../${branch}/"`); written into movies and savestates, written to config to detect in-place upgrades (N/A to Nix), and of course also shown in the About dialog
-	drv = builtins.path { path = ./.; name = "BizHawk-${version}"; }; # source derivation; did have filter here for speed, but it wasn't faster and it wasn't correct and it couldn't be made correct and I'm mad
+	src = builtins.path { path = ./.; name = "BizHawk-${version}"; }; # source derivation; did have filter here for speed, but it wasn't faster and it wasn't correct and it couldn't be made correct and I'm mad
 }
 # makedeps
 , dotnet-sdk_6 ? pkgs.dotnet-sdk_6
@@ -50,8 +50,8 @@ in {
 , forNixOS ? true
 , initConfig ? {} # forwarded to Dist/launch-scripts.nix (see docs there)
 }: let
+	isVersionAtLeast = lib.flip lib.versionAtLeast; # I stand by this being the more useful param order w.r.t. currying
 	replaceDotWithUnderscore = s: lib.replaceStrings [ "." ] [ "_" ] s;
-	drvVersionAtLeast = exVer: acVer: builtins.compareVersions exVer acVer <= 0;
 	/** you can't actually make hard links in the sandbox, so this just copies, and we'll rely on Nix' automatic deduping */
 	hardLinkJoin =
 		{ name
@@ -72,7 +72,7 @@ in {
 		'';
 	inherit (import Dist/historical.nix {
 		inherit lib
-			drvVersionAtLeast replaceDotWithUnderscore
+			isVersionAtLeast replaceDotWithUnderscore
 			fetchFromGitHub fetchFromGitLab mkNugetDeps
 			dotnet-sdk_5 dotnet-sdk_6;
 	}) depsForHistoricalRelease populateHawkSourceInfo releaseArtifactInfos releaseFrags releaseTagSourceInfos;
@@ -94,10 +94,16 @@ in {
 			buildConfig doCheck emuhawkBuildFlavour extraDefines extraDotnetBuildFlags;
 		mono = if mono != null
 			then mono # allow older Mono if set explicitly
-			else if drvVersionAtLeast "6.12.0.151" pkgs.mono.version
+			else if isVersionAtLeast "6.12.0.151" pkgs.mono.version
 				then pkgs.mono
 				else lib.trace "provided Mono too old, using Mono from Nixpkgs 23.05"
 					(import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/23.05.tar.gz") {}).mono;
+		monoBasic = fetchzip {
+			url = "https://download.mono-project.com/repo/debian/pool/main/m/mono-basic/libmono-microsoft-visualbasic10.0-cil_4.7-0xamarin3+debian9b1_all.deb";
+			nativeBuildInputs = [ dpkg ];
+			hash = "sha256-2m1FwpDxzqVXR6GUB3oFuTqIXCde/msb+tg8v6lIN6s=";
+			# tried and failed building from source, following https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=mono-basic
+		};
 	};
 	emuhawk-local = pp.buildEmuHawkInstallableFor {
 		inherit forNixOS;
@@ -106,8 +112,8 @@ in {
 	asmsFromReleaseArtifacts = lib.mapAttrs (_: pp.splitReleaseArtifact) releaseArtifactInfos;
 	# the asms for from-CWD and latest release from-source are exposed below as `bizhawkAssemblies` and `bizhawkAssemblies-latest`, respectively
 	# apart from that, no `asmsFromSource`, since if you're only after the assets you might as well use the release artifact
-	releasesEmuHawkInstallables = lib.listToAttrs (lib.concatLists (builtins.map
-		(versionFrag: [
+	releasesEmuHawkInstallables = lib.pipe releaseFrags [
+		(builtins.map (versionFrag: [
 			({
 				name = "emuhawk-${versionFrag}";
 				value = pp.buildEmuHawkInstallableFor {
@@ -122,8 +128,12 @@ in {
 					bizhawkAssemblies = asmsFromReleaseArtifacts."bizhawkAssemblies-${versionFrag}-bin";
 				};
 			})
-		])
-		releaseFrags));
+		]))
+		lib.concatLists
+		lib.listToAttrs
+		(lib.filterAttrs (name: value: lib.hasSuffix "-bin" name
+			|| isVersionAtLeast "2.6" value.hawkSourceInfo.version))
+	];
 	latestVersionFrag = lib.head releaseFrags;
 	combined = pp // asmsFromReleaseArtifacts // releasesEmuHawkInstallables // {
 		inherit depsForHistoricalRelease releaseTagSourceInfos;

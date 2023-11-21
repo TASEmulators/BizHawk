@@ -18,6 +18,7 @@
 # rundeps
 , lua
 , mono
+, monoBasic
 , openal
 , SDL2
 , udev
@@ -47,9 +48,8 @@
 	 * TODO replace this with something more like `buildExtraManagedDepsFor`; for existing Nix exprs see https://gitlab.com/YoshiRulz/yoshis-hawk-thoughts/-/issues/10
 	 */
 	buildUnmanagedDepsFor = hawkSourceInfo: stdenv.mkDerivation {
-		inherit (hawkSourceInfo) version;
+		inherit (hawkSourceInfo) src version;
 		pname = "bizhawk-native-deps";
-		src = hawkSourceInfo.drv;
 		dontBuild = true;
 		installPhase = ''
 			runHook preInstall
@@ -73,10 +73,9 @@
 		extraManagedDeps = hawkSourceInfo.extraManagedDeps or buildExtraManagedDepsFor hawkSourceInfo;
 	in buildDotnetModule (lib.fix (finalAttrs: { # proper `finalAttrs` not supported >:(
 		inherit doCheck mono;
-		inherit (hawkSourceInfo) __contentAddressed dotnet-sdk nugetDeps version;
+		inherit (hawkSourceInfo) __contentAddressed dotnet-sdk nugetDeps src version;
 		pname = "BizHawk";
 		isLocalBuild = lib.hasSuffix "-local" finalAttrs.version;
-		src = hawkSourceInfo.drv;
 		postUnpack = lib.optionalString finalAttrs.isLocalBuild ''(cd BizHawk-*-local; Dist/CleanupBuildOutputDirs.sh)'';
 		outputs = [ "out" "assets" "extraUnmanagedDeps" "waterboxCores" ];
 		propagatedBuildOutputs = []; # without this, other outputs depend on `out`
@@ -254,8 +253,9 @@ in {
 	splitReleaseArtifact =
 		{ hawkSourceInfo
 		, hashPrePatching
+		, crossPlatformArtifact ? false
 		, zippedTarball ? false
-		, url ? "https://github.com/TASEmulators/BizHawk/releases/download/${hawkSourceInfo.version}/BizHawk-${hawkSourceInfo.version}-linux-x64${if zippedTarball then ".tar.zip" else ".tar.gz"}"
+		, url ? "https://github.com/TASEmulators/BizHawk/releases/download/${hawkSourceInfo.version}/BizHawk-${hawkSourceInfo.version}${if crossPlatformArtifact then ".zip" else if zippedTarball then "-linux-x64.tar.zip" else "-linux-x64.tar.gz"}"
 		, stripRoot ? true
 		}: assert buildConfig == "Release"; let
 			artifact = fetchzip { inherit stripRoot url; hash = hashPrePatching; };
@@ -275,10 +275,13 @@ in {
 			rm -f EmuHawkMono.sh
 			${if hawkSourceInfo'.releaseArtifactHasRogueOTKAsmConfig then ''mv -ft dll OpenTK.dll.config
 			'' else ""}rmdir Firmware
-			mkdir ExternalTools && touch ExternalTools/.keep
+			mkdir -p ExternalTools; touch ExternalTools/.keep
 
-			mkdir -p $out; mv -t $out defctrl.json DiscoHawk.exe* dll EmuHawk.exe* gamedb Shaders
-			printf '${emuhawkBuildFlavour}' >$out/dll/custombuild.txt
+			mkdir -p $out; mv -t $out defctrl.json DiscoHawk.exe* dll EmuHawk.exe* gamedb [Ss]haders
+			${if hawkSourceInfo'.releaseArtifactNeedsVBDotnetReference then ''cp -t $out/dll '${lib.getOutput "out" monoBasic}/usr/lib/mono/4.5/Microsoft.VisualBasic.dll'
+			'' else ""}${if hawkSourceInfo'.releaseArtifactNeedsLowercaseAsms then ''(cd $out/dll; for s in Client.Common Emulation.Cores; do cp BizHawk.$s.dll Bizhawk.$s.dll; done)
+			'' else ""}${if hawkSourceInfo'.releaseArtifactNeedsOTKAsmConfig then ''cp -t $out/dll '${releaseTagSourceInfos.info-2_6.src}/Assets/dll/OpenTK.dll.config'
+			'' else ""}printf '${emuhawkBuildFlavour}' >$out/dll/custombuild.txt
 
 			mkdir -p $extraUnmanagedDeps/lib; mv -t $extraUnmanagedDeps/lib $out/dll/*.so*
 			mkdir -p $waterboxCores/dll; mv -t $waterboxCores/dll $out/dll/*.wbx*

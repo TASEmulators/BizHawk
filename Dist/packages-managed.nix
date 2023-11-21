@@ -2,7 +2,7 @@
 	grabFromReferences = { filePfx, subdir ? "" }: runCommand filePfx {
 		inherit (hawkSourceInfo) __contentAddressed;
 		meta.sourceProvenance = [ lib.sourceTypes.binaryBytecode ];
-	} ''mkdir -p "$out${subdir}"; cp -vt "$out${subdir}" '${hawkSourceInfo.drv}/References${subdir}'/${filePfx}*'';
+	} ''mkdir -p "$out${subdir}"; cp -vt "$out${subdir}" '${hawkSourceInfo.src}/References${subdir}/${filePfx}'*'';
 in { #TODO build all but flatBuffersCore, gongShell, slimDX, and systemDataSqliteDropIn from source
 	bizhawkAnalyzer = grabFromReferences { filePfx = "BizHawk.Analyzer"; };
 	flatBuffersCore = grabFromReferences { filePfx = "FlatBuffers.Core"; };
