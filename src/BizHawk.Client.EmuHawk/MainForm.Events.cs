@@ -1662,8 +1662,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PsxHashDiscsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is not Octoshock psx) return;
-			using PSXHashDiscs form = new(psx);
+			if (Emulator is not IRedumpDiscChecksumInfo psx) return;
+			using PSXHashDiscs form = new() { _psx = psx };
 			this.ShowDialogWithTempMute(form);
 		}
 

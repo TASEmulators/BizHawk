@@ -5,12 +5,17 @@ using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
+using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
 	[PortedCore(CoreNames.Nymashock, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
-	public class Nymashock : NymaCore, IRegionable, ICycleTiming
+	public class Nymashock : NymaCore, IRegionable, ICycleTiming, IRedumpDiscChecksumInfo
 	{
+		public string RomDetails { get; }
+
+		private readonly IReadOnlyList<Disc> _discs;
+
 		protected override void AddAxis(
 			ControllerDefinition ret,
 			string name,
@@ -68,7 +73,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			DoInit<LibNymaCore>(lp, "shock.wbx", firmwares);
 
 			_cachedSettingsInfo ??= SettingsInfo.Clone();
+
+			List<Disc> discs = new();
+			foreach (var disc in lp.Discs) discs.Add(disc.DiscData);
+			_discs = discs;
+			RomDetails = DiscChecksumUtils.GenQuickRomDetails(lp.Discs);
 		}
+
+		public string CalculateDiscHashes()
+			=> DiscChecksumUtils.CalculateDiscHashesImpl(_discs);
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
