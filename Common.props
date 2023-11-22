@@ -42,6 +42,7 @@
 		<PackageReference Include="Nullable" Version="1.3.1" PrivateAssets="all" />
 		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435" PrivateAssets="all" /><!-- don't forget to update .stylecop.json at the same time -->
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.Analyzer.dll" />
+		<GlobalAnalyzerConfigFiles Include="$(MSBuildProjectDirectory)/../../.global.editorconfig.ini" />
 		<AdditionalFiles Include="$(MSBuildProjectDirectory)/../../.stylecop.json" />
 	</ItemGroup>
 	<PropertyGroup Condition=" $(IsTargetingNetFramework) ">
