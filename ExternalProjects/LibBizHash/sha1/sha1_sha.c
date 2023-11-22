@@ -6,7 +6,7 @@
 #include <immintrin.h>
 #include "common.h"
 
-__attribute__((target("sha", "sse4.1")))
+__attribute__((target("sha,sse4.1")))
 void sha1_sha(uint32_t state[5], const uint8_t data[], uint32_t length) {
 	__m128i ABCD, ABCD_SAVE, E0, E0_SAVE, E1;
 	__m128i MSG0, MSG1, MSG2, MSG3;
