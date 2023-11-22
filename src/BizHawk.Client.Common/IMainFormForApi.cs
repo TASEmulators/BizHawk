@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 
 using BizHawk.Emulation.Common;
@@ -117,5 +118,15 @@ namespace BizHawk.Client.Common
 		void ToggleSound();
 
 		void UnpauseEmulator();
+
+		event BeforeQuickLoadEventHandler QuicksaveLoad;
+
+		event BeforeQuickSaveEventHandler QuicksaveSave;
+
+		event EventHandler RomLoaded;
+
+		event StateLoadedEventHandler SavestateLoaded;
+
+		event StateSavedEventHandler SavestateSaved;
 	}
 }

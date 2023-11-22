@@ -1014,6 +1014,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public EmuClientApi EmuClient { get; set; }
 
+		public event BeforeQuickLoadEventHandler QuicksaveLoad;
+
+		public event BeforeQuickSaveEventHandler QuicksaveSave;
+
+		public event EventHandler RomLoaded;
+
+		public event StateLoadedEventHandler SavestateLoaded;
+
+		public event StateSavedEventHandler SavestateSaved;
+
 		private readonly InputManager InputManager;
 
 		private IVideoProvider _currentVideoProvider = NullVideo.Instance;
@@ -4013,7 +4023,7 @@ namespace BizHawk.Client.EmuHawk
 
 					ExtToolManager.BuildToolStrip();
 
-					EmuClient.OnRomLoaded();
+					RomLoaded?.Invoke(null, EventArgs.Empty);
 					return true;
 				}
 				else if (Emulator.IsNull())
@@ -4027,7 +4037,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					// The ROM has been loaded by a recursive invocation of the LoadROM method.
-					EmuClient.OnRomLoaded();
+					RomLoaded?.Invoke(null, EventArgs.Empty);
 					return true;
 				}
 			}
@@ -4254,7 +4264,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			OSD.ClearGuiText();
-			EmuClient.OnStateLoaded(this, userFriendlyStateName);
+			if (SavestateLoaded is not null)
+			{
+				StateLoadedEventArgs args = new(userFriendlyStateName);
+				SavestateLoaded(this, args);
+			}
 			RA?.OnLoadState(path);
 
 			if (Tools.Has<LuaConsole>())
@@ -4287,7 +4301,13 @@ namespace BizHawk.Client.EmuHawk
 			if (!Emulator.HasSavestates()) return false;
 
 			var quickSlotName = $"QuickSave{slot % 10}";
-			EmuClient.OnBeforeQuickLoad(this, quickSlotName, out var handled);
+			var handled = false;
+			if (QuicksaveLoad is not null)
+			{
+				BeforeQuickLoadEventArgs args = new(quickSlotName);
+				QuicksaveLoad(this, args);
+				handled = args.Handled;
+			}
 			if (handled) return true; // not sure
 
 			if (IsSavestateSlave) return Master.LoadQuickSave(SlotToInt(quickSlotName));
@@ -4319,7 +4339,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				new SavestateFile(Emulator, MovieSession, MovieSession.UserBag).Create(path, Config.Savestates);
 
-				EmuClient.OnStateSaved(this, userFriendlyStateName);
+				if (SavestateSaved is not null)
+				{
+					StateSavedEventArgs args = new(userFriendlyStateName);
+					SavestateSaved(this, args);
+				}
 				RA?.OnSaveState(path);
 
 				if (!suppressOSD)
@@ -4346,7 +4370,13 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 			var quickSlotName = $"QuickSave{slot % 10}";
-			EmuClient.OnBeforeQuickSave(this, quickSlotName, out var handled);
+			var handled = false;
+			if (QuicksaveSave is not null)
+			{
+				BeforeQuickSaveEventArgs args = new(quickSlotName);
+				QuicksaveSave(this, args);
+				handled = args.Handled;
+			}
 			if (handled)
 			{
 				return;
