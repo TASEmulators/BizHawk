@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			return downloadForm.DownloadSucceeded();
 		}
 
-		public static bool CheckUpdateRA(IMainFormForRetroAchievements mainForm)
+		public static bool CheckUpdateRA(IDialogParent dialogParent)
 		{
 			try
 			{
@@ -71,8 +71,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (_version < minVer)
 					{
-						if (!mainForm.ShowMessageBox2(
-								owner: null,
+						if (!dialogParent.ModalMessageBox2(
 								text:
 								"An update is required to use RetroAchievements. Do you want to download the update now?",
 								caption: "Update",
@@ -86,8 +85,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (_version >= lastestVer) return true;
 
-					if (!mainForm.ShowMessageBox2(
-							owner: null,
+					if (!dialogParent.ModalMessageBox2(
 							text:
 							"An optional update is available for RetroAchievements. Do you want to download the update now?",
 							caption: "Update",
@@ -100,8 +98,7 @@ namespace BizHawk.Client.EmuHawk
 					return true; // even if this fails, should be OK to use the old dll
 				}
 
-				mainForm.ShowMessageBox(
-					owner: null,
+				dialogParent.ModalMessageBox(
 					text: "Failed to fetch update information, cannot start RetroAchievements.",
 					caption: "Error",
 					icon: EMsgBoxIcon.Error);
@@ -111,8 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception ex)
 			{
 				// is this needed?
-				mainForm.ShowMessageBox(
-					owner: null,
+				dialogParent.ModalMessageBox(
 					text: $"Exception {ex.Message} occurred when fetching update information, cannot start RetroAchievements.",
 					caption: "Error",
 					icon: EMsgBoxIcon.Error);

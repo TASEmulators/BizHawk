@@ -1,11 +1,9 @@
-using System;
-
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public interface IMainFormForRetroAchievements : IDialogController
+	public interface IMainFormForRetroAchievements
 	{
 		LoadRomArgs CurrentlyOpenRomArgs { get; }
 
@@ -16,8 +14,6 @@ namespace BizHawk.Client.EmuHawk
 		bool FastForward { get; set; }
 
 		GameInfo Game { get; }
-
-		IntPtr Handle { get; }
 
 		IMovieSession MovieSession { get; }
 

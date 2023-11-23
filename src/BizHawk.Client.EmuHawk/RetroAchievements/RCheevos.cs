@@ -202,13 +202,21 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void HandleHardcoreModeDisable(string reason)
 		{
-			_mainForm.ShowMessageBox(null, $"{reason} Disabling hardcore mode.", "Warning", EMsgBoxIcon.Warning);
+			_dialogParent.ModalMessageBox(
+				caption: "Warning",
+				icon: EMsgBoxIcon.Warning,
+				text: $"{reason} Disabling hardcore mode.");
 			HardcoreMode = false;
 		}
 
-		public RCheevos(IMainFormForRetroAchievements mainForm, InputManager inputManager, ToolManager tools,
-			Func<Config> getConfig, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
-			: base(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback)
+		public RCheevos(
+			MainForm mainForm,
+			InputManager inputManager,
+			ToolManager tools,
+			Func<Config> getConfig,
+			ToolStripItemCollection raDropDownItems,
+			Action shutdownRACallback)
+				: base(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback)
 		{
 			_isActive = true;
 			_httpThread = new(HttpRequestThreadProc) { IsBackground = true, Priority = ThreadPriority.BelowNormal, Name = "RCheevos HTTP Thread" };
@@ -299,7 +307,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (HardcoreMode)
 			{
-				e.Handled = _mainForm.ShowMessageBox2(null, "Loading a quicksave is not allowed in hardcode mode. Abort loading state?", "Warning", EMsgBoxIcon.Warning);
+				e.Handled = _dialogParent.ModalMessageBox2(
+					caption: "Warning",
+					icon: EMsgBoxIcon.Warning,
+					text: "Loading a quicksave is not allowed in hardcode mode. Abort loading state?");
 			}
 		}
 
@@ -465,8 +476,8 @@ namespace BizHawk.Client.EmuHawk
 
 							cheevo.SetUnlocked(HardcoreMode, true);
 							var prefix = HardcoreMode ? "[HARDCORE] " : "";
-							_mainForm.AddOnScreenMessage($"{prefix}Achievement Unlocked!");
-							_mainForm.AddOnScreenMessage(cheevo.Description);
+							_dialogParent.AddOnScreenMessage($"{prefix}Achievement Unlocked!");
+							_dialogParent.AddOnScreenMessage(cheevo.Description);
 							if (EnableSoundEffects) _unlockSound.PlayNoExceptions();
 
 							if (cheevo.IsOfficial)
@@ -486,8 +497,8 @@ namespace BizHawk.Client.EmuHawk
 						{
 							cheevo.IsPrimed = true;
 							var prefix = HardcoreMode ? "[HARDCORE] " : "";
-							_mainForm.AddOnScreenMessage($"{prefix}Achievement Primed!");
-							_mainForm.AddOnScreenMessage(cheevo.Description);
+							_dialogParent.AddOnScreenMessage($"{prefix}Achievement Primed!");
+							_dialogParent.AddOnScreenMessage(cheevo.Description);
 							if (EnableSoundEffects) _infoSound.PlayNoExceptions();
 						}
 
@@ -505,8 +516,8 @@ namespace BizHawk.Client.EmuHawk
 							if (!lboard.Hidden)
 							{
 								CurrentLboard = lboard;
-								_mainForm.AddOnScreenMessage($"Leaderboard Attempt Started!");
-								_mainForm.AddOnScreenMessage(lboard.Description);
+								_dialogParent.AddOnScreenMessage($"Leaderboard Attempt Started!");
+								_dialogParent.AddOnScreenMessage(lboard.Description);
 								if (EnableSoundEffects) _lboardStartSound.PlayNoExceptions();
 							}
 						}
@@ -527,8 +538,8 @@ namespace BizHawk.Client.EmuHawk
 									CurrentLboard = null;
 								}
 
-								_mainForm.AddOnScreenMessage($"Leaderboard Attempt Failed! ({lboard.Score})");
-								_mainForm.AddOnScreenMessage(lboard.Description);
+								_dialogParent.AddOnScreenMessage($"Leaderboard Attempt Failed! ({lboard.Score})");
+								_dialogParent.AddOnScreenMessage(lboard.Description);
 								if (EnableSoundEffects) _lboardFailedSound.PlayNoExceptions();
 							}
 
@@ -565,8 +576,8 @@ namespace BizHawk.Client.EmuHawk
 									CurrentLboard = null;
 								}
 
-								_mainForm.AddOnScreenMessage($"Leaderboard Attempt Complete! ({lboard.Score})");
-								_mainForm.AddOnScreenMessage(lboard.Description);
+								_dialogParent.AddOnScreenMessage($"Leaderboard Attempt Complete! ({lboard.Score})");
+								_dialogParent.AddOnScreenMessage(lboard.Description);
 								if (EnableSoundEffects) _unlockSound.PlayNoExceptions();
 							}
 						}
@@ -592,8 +603,8 @@ namespace BizHawk.Client.EmuHawk
 						{
 							cheevo.IsPrimed = false;
 							var prefix = HardcoreMode ? "[HARDCORE] " : "";
-							_mainForm.AddOnScreenMessage($"{prefix}Achievement Unprimed!");
-							_mainForm.AddOnScreenMessage(cheevo.Description);
+							_dialogParent.AddOnScreenMessage($"{prefix}Achievement Unprimed!");
+							_dialogParent.AddOnScreenMessage(cheevo.Description);
 							if (EnableSoundEffects) _infoSound.PlayNoExceptions();
 						}
 

@@ -9,6 +9,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public abstract partial class RetroAchievements : IRetroAchievements
 	{
+		protected readonly IDialogParent _dialogParent;
+
 		protected readonly IMainFormForRetroAchievements _mainForm;
 		protected readonly InputManager _inputManager;
 		protected readonly ToolManager _tools;
@@ -23,9 +25,15 @@ namespace BizHawk.Client.EmuHawk
 
 		protected IReadOnlyList<MemFunctions> _memFunctions;
 
-		protected RetroAchievements(IMainFormForRetroAchievements mainForm, InputManager inputManager, ToolManager tools, 
-			Func<Config> getConfig, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
+		protected RetroAchievements(
+			MainForm mainForm,
+			InputManager inputManager,
+			ToolManager tools, 
+			Func<Config> getConfig,
+			ToolStripItemCollection raDropDownItems,
+			Action shutdownRACallback)
 		{
+			_dialogParent = mainForm;
 			_mainForm = mainForm;
 			_inputManager = inputManager;
 			_tools = tools;
@@ -34,11 +42,16 @@ namespace BizHawk.Client.EmuHawk
 			_shutdownRACallback = shutdownRACallback;
 		}
 
-		public static IRetroAchievements CreateImpl(IMainFormForRetroAchievements mainForm, InputManager inputManager, ToolManager tools,
-			Func<Config> getConfig, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
+		public static IRetroAchievements CreateImpl(
+			MainForm mainForm,
+			InputManager inputManager,
+			ToolManager tools,
+			Func<Config> getConfig,
+			ToolStripItemCollection raDropDownItems,
+			Action shutdownRACallback)
 		{
-			if (getConfig().SkipRATelemetryWarning || mainForm.ShowMessageBox2(
-				owner: null,
+			var config = getConfig();
+			if (config.SkipRATelemetryWarning || mainForm.ModalMessageBox2(
 				text: "In order to use RetroAchievements, some information needs to be sent to retroachievements.org:\n" +
 				"\n\u2022 Your RetroAchievements username and password (first login) or token (subsequent logins)." +
 				"\n\u2022 The hash of the game(s) you have loaded into BizHawk. (for game identification + achievement unlock + leaderboard submission)" +
@@ -51,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 				icon: EMsgBoxIcon.Question,
 				useOKCancel: false))
 			{
-				getConfig().SkipRATelemetryWarning = true;
+				config.SkipRATelemetryWarning = true;
 
 				if (RAIntegration.IsAvailable && RAIntegration.CheckUpdateRA(mainForm))
 				{

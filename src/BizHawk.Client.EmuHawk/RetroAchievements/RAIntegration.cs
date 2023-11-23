@@ -100,7 +100,10 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void HandleHardcoreModeDisable(string reason)
 		{
-			_mainForm.ShowMessageBox(null, $"{reason} Disabling hardcore mode.", "Warning", EMsgBoxIcon.Warning);
+			_dialogParent.ModalMessageBox(
+				caption: "Warning",
+				icon: EMsgBoxIcon.Warning,
+				text: $"{reason} Disabling hardcore mode.");
 			RA.WarnDisableHardcore(null);
 		}
 
@@ -110,16 +113,21 @@ namespace BizHawk.Client.EmuHawk
 		protected override int IdentifyRom(byte[] rom)
 			=> RA.IdentifyRom(rom, rom.Length);
 
-		public RAIntegration(IMainFormForRetroAchievements mainForm, InputManager inputManager, ToolManager tools,
-			Func<Config> getConfig, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
-			: base(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback)
+		public RAIntegration(
+			MainForm mainForm,
+			InputManager inputManager,
+			ToolManager tools,
+			Func<Config> getConfig,
+			ToolStripItemCollection raDropDownItems,
+			Action shutdownRACallback)
+				: base(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback)
 		{
 			_memGuard = new(_memLock, _memSema, _memSync);
 			_memAccess = new(_memLock, _memSema, _memSync);
 			
 			RA = BizInvoker.GetInvoker<RAInterface>(_resolver, _memAccess, CallingConventionAdapters.Native);
 
-			RA.InitClient(_mainForm.Handle, "BizHawk", VersionInfo.GetEmuVersion());
+			RA.InitClient(mainForm.AsWinFormsHandle().Handle, "BizHawk", VersionInfo.GetEmuVersion());
 
 			_isActive = () => !Emu.IsNull();
 			_unpause = _mainForm.UnpauseEmulator;
