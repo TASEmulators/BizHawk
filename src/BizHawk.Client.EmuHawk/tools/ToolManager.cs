@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 		private IExternalApiProvider ApiProvider
 		{
 			get => _apiProvider;
-			set => _owner.EmuClient = (EmuClientApi) (_apiProvider = value).GetApi<IEmuClientApi>();
+			set => _apiProvider = value;
 		}
 
 		/// <summary>

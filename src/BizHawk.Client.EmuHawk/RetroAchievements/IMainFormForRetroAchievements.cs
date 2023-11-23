@@ -9,8 +9,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		LoadRomArgs CurrentlyOpenRomArgs { get; }
 
-		EmuClientApi EmuClient { get; }
-
 		IEmulator Emulator { get; }
 
 		bool FrameInch { get; set; }
@@ -22,6 +20,8 @@ namespace BizHawk.Client.EmuHawk
 		IntPtr Handle { get; }
 
 		IMovieSession MovieSession { get; }
+
+		event BeforeQuickLoadEventHandler QuicksaveLoad;
 
 		SettingsAdapter GetSettingsAdapterForLoadedCoreUntyped();
 

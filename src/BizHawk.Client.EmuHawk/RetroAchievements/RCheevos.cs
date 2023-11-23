@@ -250,7 +250,7 @@ namespace BizHawk.Client.EmuHawk
 #if false
 			_lboardListForm.Dispose();
 #endif
-			_mainForm.EmuClient.BeforeQuickLoad -= QuickLoadCallback;
+			_mainForm.QuicksaveLoad -= QuickLoadCallback;
 		}
 
 		public override void OnSaveState(string path)
@@ -428,7 +428,7 @@ namespace BizHawk.Client.EmuHawk
 			Update();
 
 			// note: this can only catch quicksaves (probably only case of accidential use from hotkeys)
-			_mainForm.EmuClient.BeforeQuickLoad += QuickLoadCallback;
+			_mainForm.QuicksaveLoad += QuickLoadCallback;
 		}
 
 		public override void Update()

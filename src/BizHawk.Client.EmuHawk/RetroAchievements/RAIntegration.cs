@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RA?.Shutdown();
 			_memGuard.Dispose();
-			_mainForm.EmuClient.BeforeQuickLoad -= QuickLoadCallback;
+			_mainForm.QuicksaveLoad -= QuickLoadCallback;
 		}
 
 		public override void OnSaveState(string path)
@@ -232,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm.UpdateWindowTitle();
 
 			// note: this can only catch quicksaves (probably only case of accidential use from hotkeys)
-			_mainForm.EmuClient.BeforeQuickLoad += QuickLoadCallback;
+			_mainForm.QuicksaveLoad += QuickLoadCallback;
 		}
 
 		public bool OverlayActive => RA.IsOverlayFullyVisible();

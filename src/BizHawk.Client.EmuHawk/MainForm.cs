@@ -1012,8 +1012,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public EmuClientApi EmuClient { get; set; }
-
 		public event BeforeQuickLoadEventHandler QuicksaveLoad;
 
 		public event BeforeQuickSaveEventHandler QuicksaveSave;
