@@ -321,7 +321,7 @@ namespace BizHawk.Client.Common
 		public void PopupMessage(string message) => _dialogParent.ModalMessageBox(message, "Warning", EMsgBoxIcon.Warning);
 
 		private void Output(string message)
-			=> _dialogParent.DialogController.AddOnScreenMessage(message);
+			=> _dialogParent.AddOnScreenMessage(message);
 
 		private void LatchInputToUser()
 		{
