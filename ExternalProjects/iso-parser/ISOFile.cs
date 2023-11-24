@@ -51,12 +51,14 @@ namespace ISOParser
 		/// </summary>
 		public const int SECTOR_SIZE = 2048;
 
+#pragma warning disable CA2211
 		/// <summary>
 		/// Making this a static for now. Every other way I tried was fairly ineligant (asni)
 		/// </summary>
 		public static ISOFormat Format;
 
 		public static List<CDIPathNode> CDIPathTable;
+#pragma warning restore CA2211
 
 		/// <summary>
 		/// This is a list of all the volume descriptors in the disk image.

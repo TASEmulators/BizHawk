@@ -161,11 +161,11 @@ namespace ISOParser
 
 			// Read Data Offset
 			s.Read(buffer, 0, 8);
-			this.OffsetOfData = (long)bc.ToInt32(buffer);
+			this.OffsetOfData = bc.ToInt32(buffer);
 
 			// Read Data Length
 			s.Read(buffer, 0, 8);
-			this.LengthOfData = (long)bc.ToInt32(buffer);
+			this.LengthOfData = bc.ToInt32(buffer);
 
 			// Read the time and flags
 			s.Read(buffer, 0, 8);
