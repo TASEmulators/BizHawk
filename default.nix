@@ -43,7 +43,7 @@ in {
 , buildConfig ? "Release" # "Debug"/"Release"
 , debugPInvokes ? false # forwarded to Dist/launch-scripts.nix
 , debugDotnetHostCrashes ? false # forwarded to Dist/launch-scripts.nix
-, doCheck ? false # runs `Dist/BuildTest${buildConfig}.sh`
+, doCheck ? true # runs `Dist/BuildTest${buildConfig}.sh`
 , emuhawkBuildFlavour ? "NixHawk"
 , extraDefines ? "" # added to `<DefineConstants/>`, so ';'-separated
 , extraDotnetBuildFlags ? "" # currently passed to EVERY `dotnet build` and `dotnet test` invocation (and does not replace the flags for parallel compilation added by default)

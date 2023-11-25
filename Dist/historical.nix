@@ -216,6 +216,7 @@ in {
 		releaseArtifactNeedsLowercaseAsms = !isVersionAtLeast "2.3.3" version;
 		releaseArtifactNeedsOTKAsmConfig = isVersionAtLeast "2.3.3" version && !isVersionAtLeast "2.5" version; # see a1b501fe5
 		releaseArtifactNeedsVBDotnetReference = !isVersionAtLeast "2.5.1" version;
+		testProjectNeedsCIEnvVar = !isVersionAtLeast "2.8" version; # platform-specific tests don't run "in CI" because they assume Arch filesystem conventions (on Linux)--before 908d4519c, `-p:ContinuousIntegrationBuild=true` wasn't respected but `GITLAB_CI` was
 		versionProjNeedsDoubleBuild = !isVersionAtLeast "2.9.1" version;
 		#TODO warn about missing/broken features when eval'ing older releases
 	} // hawkSourceInfo;

@@ -103,7 +103,7 @@
 		buildType = buildConfig; #TODO move debug symbols to `!debug`?
 		extraDotnetBuildFlags = let
 			s = lib.optionalString (extraDefines != "") "-p:MachineExtraCompilationFlag=${extraDefines} ";
-		in "-maxcpucount:$NIX_BUILD_CORES -p:BuildInParallel=true --no-restore ${s}${extraDotnetBuildFlags}";
+		in "-maxcpucount:$NIX_BUILD_CORES -p:BuildInParallel=true --no-restore -p:ContinuousIntegrationBuild=true ${s}${extraDotnetBuildFlags}";
 		buildPhase = ''
 			runHook preBuild
 
@@ -116,14 +116,12 @@
 			runHook postBuild
 		'';
 		checkNativeInputs = finalAttrs.buildInputs;
-		/** TODO WHY DOESN'T THIS WORK */
 		checkPhase = ''
 			runHook preCheck
 
-			export GITLAB_CI=1 # pretend to be in GitLab CI -- platform-specific tests don't run in CI because they assume an Arch filesystem (on Linux hosts)
-			# from 2.7.1, use standard -p:ContinuousIntegrationBuild=true instead
 			export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${lib.makeLibraryPath finalAttrs.checkNativeInputs}"
-			Dist/BuildTest${finalAttrs.buildType}.sh ${finalAttrs.extraDotnetBuildFlags}
+			${if hawkSourceInfo.testProjectNeedsCIEnvVar then ''export GITLAB_CI=1
+			'' else ""}Dist/BuildTest${finalAttrs.buildType}.sh ${finalAttrs.extraDotnetBuildFlags}
 
 			# can't build w/ extra Analyzers, it fails to restore :(
 #			Dist/Build${finalAttrs.buildType}.sh -p:MachineRunAnalyzersDuringBuild=true ${finalAttrs.extraDotnetBuildFlags}
