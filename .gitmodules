@@ -63,3 +63,10 @@
 	path = citra/citra
 	url = https://github.com/CasualPokePlayer/citra
 	branch = headless
+[submodule "ExternalProjects/SDL2/SDL"]
+	path = ExternalProjects/SDL2/SDL
+	url = https://github.com/libsdl-org/SDL.git
+	branch = SDL2
+[submodule "ExternalProjects/SDL2/libusb"]
+	path = ExternalProjects/SDL2/libusb
+	url = https://github.com/libusb/libusb.git
