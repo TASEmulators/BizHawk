@@ -49,7 +49,7 @@ build_ext_projs:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
     when: always
   script:
-  - for d in $CI_PROJECT_DIR/ExternalProjects/*; do [ -e "$d/build_release.sh" -a "$(find "$d" -maxdepth 1 -name '*.csproj' -print -quit)" ] && cd "$d" && ./build_release.sh; done
+  - for d in $CI_PROJECT_DIR/ExternalProjects/*; do if [ -e "$d/build_release.sh" -a "$(find "$d" -maxdepth 1 -name '*.csproj' -print -quit)" ]; then cd "$d"; ./build_release.sh || exit $?; fi; done
   stage: test
 
 build_ext_tools:
@@ -65,8 +65,7 @@ build_ext_tools:
   stage: test
 
 build_nix_master:
-  allow_failure: true
-  extends: .with_cachix_mono
+# extends: .with_cachix_mono
   needs: []
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
@@ -76,14 +75,13 @@ build_nix_master:
   stage: test
 
 build_nix_prev_release:
-  allow_failure: true
-  extends: .with_cachix_mono
+# extends: .with_cachix_mono
   needs: []
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
     when: always
   script:
-  - nix-build --pure -A emuhawk-2_8 --arg doCheck true
+  - nix-build --pure -A emuhawk-latest --arg doCheck true
   stage: test
 
 check_style:
