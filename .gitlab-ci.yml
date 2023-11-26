@@ -66,6 +66,7 @@ build_ext_tools:
 
 build_nix_master:
 # extends: .with_cachix_mono
+  image: nixos/nix:latest
   needs: []
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
@@ -76,6 +77,7 @@ build_nix_master:
 
 build_nix_prev_release:
 # extends: .with_cachix_mono
+  image: nixos/nix:latest
   needs: []
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
