@@ -52,6 +52,15 @@ set(SDL_LIBSAMPLERATE OFF)
 # We handle ld path finding with LD_LIBRARY_PATH for Linux
 set(SDL_RPATH OFF)
 
+# We only use a small portion of X11 functionality
+set(SDL_X11_XCURSOR OFF)
+set(SDL_X11_XDBE OFF)
+set(SDL_X11_XINPUT OFF)
+set(SDL_X11_XFIXES OFF)
+set(SDL_X11_XRANDR OFF)
+set(SDL_X11_XSCRNSAVER ON)
+set(SDL_X11_XSHAPE OFF)
+
 # No Wayland support yet (TODO: Enable this if we ever get Wayland support)
 set(SDL_WAYLAND OFF)
 
