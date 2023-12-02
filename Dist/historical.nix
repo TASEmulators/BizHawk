@@ -207,6 +207,7 @@ in {
 		hasFFmpegPatch_e68a49aa5 = isVersionAtLeast "2.9.2" version; # with e68a49aa5, downloading *and running* FFmpeg finally works; TODO use FFmpeg from Nixpkgs since it's a stable version (4.4.1)
 		hasMiscTypeCheckerPatch_6afb3be98 = isVersionAtLeast "2.6.2" version;
 		neededExtraManagedDeps = neededExtraManagedDepsApprox;
+		needsLibGLVND = false; # true iff not using nixGL (i.e. on NixOS) AND using the OpenGL renderer (the default option)
 		needsSDL = isVersionAtLeast "2.9.2" version;
 		nugetDeps = ./deps.nix;
 		packageScriptNeeds7Zip = !isVersionAtLeast "2.6.3" version;

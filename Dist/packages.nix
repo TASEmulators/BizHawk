@@ -16,6 +16,7 @@
 # makedeps
 , git
 # rundeps
+, libGL
 , lua
 , mono
 , monoBasic
@@ -63,7 +64,7 @@
 	};
 	genDepsHostTargetFor = { hawkSourceInfo, mono' ? mono }: [ lua mono' openal (lib.getOutput "out" zstd) ]
 		++ lib.optionals hawkSourceInfo.needsSDL [ SDL2 (lib.getOutput "out" udev) ]
-		;
+		++ lib.optional hawkSourceInfo.needsLibGLVND (lib.getOutput "out" libGL);
 	/**
 	 * see splitReleaseArtifact re: outputs
 	 * and no you can't build only DiscoHawk and its deps; deal with it
@@ -224,6 +225,7 @@
 	buildInstallable' =
 		{ hawkSourceInfo
 		, bizhawkAssemblies
+		, forNixOS
 		, pname
 		, launchScriptAttrName
 		, desktopName
@@ -233,7 +235,7 @@
 				then lib.traceIf (hawkSourceInfo != null) "`hawkSourceInfo` passed to `build{EmuHawk,DiscoHawk}InstallableFor` will be ignored in favour of `bizhawkAssemblies.hawkSourceInfo`"
 					bizhawkAssemblies
 				else assert lib.assertMsg (hawkSourceInfo != null) "must pass either `hawkSourceInfo` or `bizhawkAssemblies` to `build{EmuHawk,DiscoHawk}InstallableFor`";
-					buildAssembliesFor hawkSourceInfo;
+					buildAssembliesFor (lib.optionalAttrs forNixOS { needsLibGLVND = true; } // hawkSourceInfo);
 		in buildInstallable {
 			inherit desktopName pname;
 			bizhawkAssemblies = bizhawkAssembliesFinal;
@@ -287,10 +289,11 @@ in {
 	buildDiscoHawkInstallableFor =
 		{ bizhawkAssemblies ? null
 		, hawkSourceInfo ? null
+		, forNixOS ? true # currently only adds Mesa to buildInputs, and DiscoHawk doesn't need that, but it's propagated through here so the asms derivation can be shared between it and EmuHawk
 		, desktopName ? "DiscoHawk (Mono Runtime)"
 		, desktopIcon ? null
 		}: buildInstallable' {
-			inherit bizhawkAssemblies desktopIcon desktopName hawkSourceInfo;
+			inherit bizhawkAssemblies desktopIcon desktopName forNixOS hawkSourceInfo;
 			pname = "discohawk-monort";
 			launchScriptAttrName = "discohawk";
 		};
@@ -301,7 +304,7 @@ in {
 		, desktopName ? "EmuHawk (Mono Runtime)"
 		, desktopIcon ? null
 		}: buildInstallable' {
-			inherit bizhawkAssemblies desktopIcon desktopName hawkSourceInfo;
+			inherit bizhawkAssemblies desktopIcon desktopName forNixOS hawkSourceInfo;
 			pname = "emuhawk-monort";
 			launchScriptAttrName = if forNixOS then "emuhawk" else "emuhawkNonNixOS";
 		};

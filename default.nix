@@ -30,6 +30,7 @@ in {
 , git ? pkgs.gitMinimal # only when building from-CWD (`-local`)
 # rundeps
 , coreutils ? pkgs.coreutils
+, libGL ? pkgs.libGL
 , lua ? pkgs.lua54Packages.lua
 , mono ? null
 , nixGLChannel ? (pkgs.nixgl or import (fetchTarball "https://github.com/guibou/nixGL/archive/489d6b095ab9d289fe11af0219a9ff00fe87c7c5.tar.gz") {})
@@ -90,7 +91,7 @@ in {
 			buildDotnetModule fetchpatch fetchzip hardLinkJoin launchScriptsFor makeDesktopItem
 				releaseTagSourceInfos runCommand symlinkJoin writeShellScriptBin
 			git
-			lua openal SDL2 udev zstd
+			libGL lua openal SDL2 udev zstd
 			buildConfig doCheck emuhawkBuildFlavour extraDefines extraDotnetBuildFlags;
 		mono = if mono != null
 			then mono # allow older Mono if set explicitly
@@ -109,7 +110,10 @@ in {
 		inherit forNixOS;
 		hawkSourceInfo = hawkSourceInfoDevBuild;
 	};
-	asmsFromReleaseArtifacts = lib.mapAttrs (_: pp.splitReleaseArtifact) releaseArtifactInfos;
+	fillTargetOSDifferences = hawkSourceInfo: lib.optionalAttrs forNixOS { needsLibGLVND = true; } // hawkSourceInfo; # don't like this, but the alternative is including `forNixOS` in `hawkSourceInfo` directly
+	asmsFromReleaseArtifacts = lib.mapAttrs
+		(_: a: pp.splitReleaseArtifact (a // { hawkSourceInfo = fillTargetOSDifferences a.hawkSourceInfo; }))
+		releaseArtifactInfos;
 	# the asms for from-CWD and latest release from-source are exposed below as `bizhawkAssemblies` and `bizhawkAssemblies-latest`, respectively
 	# apart from that, no `asmsFromSource`, since if you're only after the assets you might as well use the release artifact
 	releasesEmuHawkInstallables = lib.pipe releaseFrags [
@@ -137,13 +141,19 @@ in {
 	latestVersionFrag = lib.head releaseFrags;
 	combined = pp // asmsFromReleaseArtifacts // releasesEmuHawkInstallables // {
 		inherit depsForHistoricalRelease releaseTagSourceInfos;
-		bizhawkAssemblies = pp.buildAssembliesFor hawkSourceInfoDevBuild;
-		"bizhawkAssemblies-${latestVersionFrag}" = pp.buildAssembliesFor releaseTagSourceInfos."info-${latestVersionFrag}";
-		discohawk = pp.buildDiscoHawkInstallableFor { hawkSourceInfo = hawkSourceInfoDevBuild; };
+		bizhawkAssemblies = pp.buildAssembliesFor (fillTargetOSDifferences hawkSourceInfoDevBuild);
+		"bizhawkAssemblies-${latestVersionFrag}" = pp.buildAssembliesFor
+			(fillTargetOSDifferences releaseTagSourceInfos."info-${latestVersionFrag}");
+		discohawk = pp.buildDiscoHawkInstallableFor {
+			inherit forNixOS;
+			hawkSourceInfo = hawkSourceInfoDevBuild;
+		};
 		"discohawk-${latestVersionFrag}" = pp.buildDiscoHawkInstallableFor {
+			inherit forNixOS;
 			hawkSourceInfo = releaseTagSourceInfos."info-${latestVersionFrag}";
 		};
 		"discohawk-${latestVersionFrag}-bin" = pp.buildDiscoHawkInstallableFor {
+			inherit forNixOS;
 			bizhawkAssemblies = asmsFromReleaseArtifacts."bizhawkAssemblies-${latestVersionFrag}-bin";
 		};
 		emuhawk = emuhawk-local;
