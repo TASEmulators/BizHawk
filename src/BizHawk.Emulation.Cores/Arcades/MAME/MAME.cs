@@ -39,12 +39,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				var text = info.Replace(". ", "\n").Replace("\n\n", "\n");
 				lp.Comm.Notify(text, 4 * Regex.Matches(text, "\n").Count);
 				RomDetails =
-					$"Full Name:    { _gameFullName }\r\n" +
-					$"Short Name:   { _gameShortName }\r\n" +
-					$"Resolution:   { BufferWidth }x{ BufferHeight }\r\n" +
-					$"Aspect Ratio: { _wAspect }:{ _hAspect }\r\n" +
-					$"Framerate:    { (float)VsyncNumerator / VsyncDenominator } " +
-					$"({ VsyncNumerator } / { VsyncDenominator })\r\n\r\n" +
+					$"Full Name:          { _gameFullName }\r\n" +
+					$"Short Name:         { _gameShortName }\r\n" +
+					$"Resolution:         { BufferWidth }x{ BufferHeight }\r\n" +
+					$"Aspect Ratio:       { _wAspect }:{ _hAspect }\r\n" +
+					$"Framerate:          { (float)VsyncNumerator / VsyncDenominator } " +
+					$"({ VsyncNumerator } / { VsyncDenominator })\r\n" +
+					$"Driver Source File: { _driverSourceFile.Substring(_driverSourceFile.IndexOf("src"))}\r\n\r\n" +
 					text + (text == "" ? "" : "\r\n") +
 					string.Join("\r\n", _romHashes.Select(static r => $"{r.Value} - {r.Key}"));
 
@@ -134,6 +135,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private readonly string _gameFileName;
 		private string _gameFullName = "Arcade";
 		private string _gameShortName = "arcade";
+		private string _driverSourceFile = "";
 		private string _loadFailure = string.Empty;
 		private readonly SortedList<string, string> _romHashes = new();
 
@@ -280,6 +282,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			_gameFullName = MameGetString(MAMELuaCommand.GetGameFullName);
 			_gameShortName = MameGetString(MAMELuaCommand.GetGameShortName);
+			_driverSourceFile = MameGetString(MAMELuaCommand.GetDriverSourceFile);
 		}
 
 		private void CheckVersions()
@@ -334,6 +337,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetVersion = "return emu.app_version()";
 			public const string GetGameShortName = "return manager.machine.system.name";
 			public const string GetGameFullName = "return manager.machine.system.description";
+			public const string GetDriverSourceFile = "return manager.machine.system.source_file";
 			public const string GetWidth = "return (select(1, manager.machine.video:snapshot_size()))";
 			public const string GetHeight = "return (select(2, manager.machine.video:snapshot_size()))";
 			public const string GetPixels = "return manager.machine.video:snapshot_pixels()";
