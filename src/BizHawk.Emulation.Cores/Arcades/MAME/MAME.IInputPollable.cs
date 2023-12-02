@@ -49,9 +49,16 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				{
 					var tag = buttonField.SubstringBefore(',');
 					var field = buttonField.SubstringAfterLast(',');
+					var dupName = "";
 					buttonFieldList.Add(field);
 					AddFieldPtr(tag, field);
-					MAMEController.BoolButtons.Add(field);
+
+					if (MAMEController.BoolButtons.Contains(field))
+					{
+						dupName = $" [{ tag }]"; 
+					}
+
+					MAMEController.BoolButtons.Add(field + dupName);
 				}
 			}
 
