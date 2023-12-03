@@ -364,11 +364,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					"return v.refresh_attoseconds " +
 				"end";
 			public const string GetBoundX =
-				"local b = manager.machine.video.snapshot_target.current_view.bounds " +
-				"return b.x1-b.x0";
+				"return tostring(manager.machine.video.snapshot_target.current_view.bounds.width)";
 			public const string GetBoundY =
-				"local b = manager.machine.video.snapshot_target.current_view.bounds " +
-				"return b.y1-b.y0";
+				"return manager.machine.video.snapshot_target.current_view.bounds.height";
 			public const string GetROMsInfo =
 				"local final = {} " +
 				"for __, r in pairs(manager.machine.devices[\":\"].roms) do " +
