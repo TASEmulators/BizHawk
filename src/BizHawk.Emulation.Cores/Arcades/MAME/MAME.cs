@@ -224,17 +224,24 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			if (_syncSettings.DriverSettings.TryGetValue(
 				MAMELuaCommand.MakeLookupKey(gameName, LibMAME.BIOS_LUA_CODE),
-				out var value))
+				out var biosValue))
 			{
-				args.AddRange(new[] { "-bios", value });
+				args.AddRange(new[] { "-bios", biosValue });
+			}
+
+			if (_syncSettings.DriverSettings.TryGetValue(
+				MAMELuaCommand.MakeLookupKey(gameName, LibMAME.VIEW_LUA_CODE),
+				out var viewValue))
+			{
+				args.AddRange(new[] { "-snapview", viewValue });
 			}
 
 			if (_core.mame_launch(args.Count, args.ToArray()) == 0)
 			{
 				CheckVersions();
 				UpdateGameName();
-				UpdateVideo();
 				UpdateAspect();
+				UpdateVideo();
 				UpdateFramerate();
 				InitMemoryDomains();
 				GetNVRAMFilenames();
@@ -364,7 +371,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					"return v.refresh_attoseconds " +
 				"end";
 			public const string GetBoundX =
-				"return tostring(manager.machine.video.snapshot_target.current_view.bounds.width)";
+				"return manager.machine.video.snapshot_target.current_view.bounds.width";
 			public const string GetBoundY =
 				"return manager.machine.video.snapshot_target.current_view.bounds.height";
 			public const string GetROMsInfo =
@@ -444,6 +451,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"end " +
 				"table.sort(final) " +
 				"return table.concat(final)";
+			public static string GetViewName(string index) =>
+				$"return manager.machine.video.snapshot_target.view_names[{ index }]";
 		}
 	}
 }

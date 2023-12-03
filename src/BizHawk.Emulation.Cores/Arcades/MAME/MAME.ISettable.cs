@@ -120,11 +120,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				{
 					_core.mame_lua_execute($"{ s.LuaCode }.user_value = { setting.Value }");
 				}
-
-				if (s != null && s.Type == SettingType.VIEW)
-				{
-					_core.mame_lua_execute($"{ s.LuaCode } = { setting.Value }");
-				}
 			}
 		}
 
@@ -203,9 +198,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				Name = "View",
 				GameName = _gameShortName,
-				LuaCode = "manager.machine.video.snapshot_target.view_index",
+				LuaCode = LibMAME.VIEW_LUA_CODE,
 				Type = SettingType.VIEW,
-				DefaultValue = "1"
+				DefaultValue = MameGetString(MAMELuaCommand.GetViewName("1"))
 			};
 
 			foreach (var View in Views)
@@ -213,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				if (View != string.Empty)
 				{
 					var substrings = View.Split(',');
-					setting.Options.Add(substrings[0], substrings[1]);
+					setting.Options.Add(substrings[1], substrings[1]);
 				}
 			}
 
