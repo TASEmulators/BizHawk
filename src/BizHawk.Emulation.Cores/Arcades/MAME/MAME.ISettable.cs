@@ -120,6 +120,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				{
 					_core.mame_lua_execute($"{ s.LuaCode }.user_value = { setting.Value }");
 				}
+
+				if (s != null && s.Type == SettingType.VIEW)
+				{
+					_core.mame_lua_execute($"{ s.LuaCode } = { setting.Value }");
+				}
 			}
 		}
 
@@ -189,6 +194,35 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
+		private void GetViewsInfo()
+		{
+			var ViewsInfo = MameGetString(MAMELuaCommand.GetViewsInfo);
+			var Views = ViewsInfo.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+			var setting = new DriverSetting
+			{
+				Name = "View",
+				GameName = _gameShortName,
+				LuaCode = "manager.machine.video.snapshot_target.view_index",
+				Type = SettingType.VIEW,
+				DefaultValue = "1"
+			};
+
+			foreach (var View in Views)
+			{
+				if (View != string.Empty)
+				{
+					var substrings = View.Split(',');
+					setting.Options.Add(substrings[0], substrings[1]);
+				}
+			}
+
+			if (setting.Options.Count > 0)
+			{
+				CurrentDriverSettings.Add(setting);
+			}
+		}
+
 		public class DriverSetting
 		{
 			public string Name { get; set; }
@@ -210,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public enum SettingType
 		{
-			DIPSWITCH, BIOS
+			DIPSWITCH, BIOS, VIEW
 		}
 	}
 }

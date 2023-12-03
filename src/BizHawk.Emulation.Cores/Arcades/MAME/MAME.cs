@@ -240,6 +240,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				GetNVRAMFilenames();
 				GetInputFields();
 				GetROMsInfo();
+				GetViewsInfo();
 				FetchDefaultGameSettings();
 				OverrideGameSettings();
 
@@ -363,10 +364,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					"return v.refresh_attoseconds " +
 				"end";
 			public const string GetBoundX =
-				"local b = manager.machine.render.ui_target.current_view.bounds " +
+				"local b = manager.machine.video.snapshot_target.current_view.bounds " +
 				"return b.x1-b.x0";
 			public const string GetBoundY =
-				"local b = manager.machine.render.ui_target.current_view.bounds " +
+				"local b = manager.machine.video.snapshot_target.current_view.bounds " +
 				"return b.y1-b.y0";
 			public const string GetROMsInfo =
 				"local final = {} " +
@@ -410,6 +411,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 							"break " +
 						"end " +
 					"end " +
+				"end " +
+				"table.sort(final) " +
+				"return table.concat(final)";
+			public const string GetViewsInfo =
+				"local final = {} " +
+				"for index, name in pairs(manager.machine.video.snapshot_target.view_names) do " +
+					"table.insert(final, string.format(\"%s,%s;\", index, name)) " +
 				"end " +
 				"table.sort(final) " +
 				"return table.concat(final)";
