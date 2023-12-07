@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_logCallback, _getGLProcAddressCallback
 			});
 
-			_activeSyncSettings.UseRealBIOS |= IsDSi
+			_activeSyncSettings.UseRealBIOS |= IsDSi;
 
 			if (_activeSyncSettings.UseRealBIOS)
 			{
