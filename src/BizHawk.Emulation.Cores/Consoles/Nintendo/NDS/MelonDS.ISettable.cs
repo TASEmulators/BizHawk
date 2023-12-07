@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public bool UseDSi { get; set; }
 
 			[DisplayName("Use Real BIOS")]
-			[Description("If true, real BIOS files will be used. Forced true for DSi or when a GBA cartridge is present.")]
+			[Description("If true, real BIOS files will be used. Forced true for DSi.")]
 			[DefaultValue(false)]
 			public bool UseRealBIOS { get; set; }
 
