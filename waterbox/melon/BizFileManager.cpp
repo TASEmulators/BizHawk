@@ -543,6 +543,13 @@ const char* InitCarts(bool gba)
 		return "Failed to load NDS ROM!";
 	}
 
+	if (ndsRom->second >= 0x15C && NDS::IsLoadedARM9BIOSBuiltIn())
+	{
+		// copy logo to the ARM9 bios
+		// this is only needed for the builtin bios, which omits the logo
+		memcpy(&NDS::ARM9BIOS[0x20], &ndsRom->first[0xC0], 0x9C);
+	}
+
 	if (gba)
 	{
 		auto gbaRom = GetFileData("gba.rom");
