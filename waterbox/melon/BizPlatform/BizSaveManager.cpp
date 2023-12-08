@@ -23,12 +23,11 @@ ECL_EXPORT void PutSaveRam(u8* data, u32 len)
 		NDS::LoadSave(data, len);
 		NdsSaveRamIsDirty = false;
 
-		data += ndsSaveLen;
-		len -= ndsSaveLen;
-
-		if (gbaSaveLen && len >= gbaSaveLen)
+		if (gbaSaveLen && len >= (ndsSaveLen + gbaSaveLen))
 		{
-			GBACart::LoadSave(data, gbaSaveLen);
+			// don't use GBACart::LoadSave! it will re-allocate the save buffer (bad!)
+			// NDS::LoadSave is fine (and should be used)
+			memcpy(GBACart::GetSaveMemory(), data + ndsSaveLen, gbaSaveLen);
 			GbaSaveRamIsDirty = false;
 		}
 	}
