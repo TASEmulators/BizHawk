@@ -21,7 +21,7 @@ enum SNES_MEMORY {
     WRAM,
     APURAM,
     VRAM,
-    OBJECTS,
+    OAM,
     CGRAM
 };
 

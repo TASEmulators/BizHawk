@@ -405,11 +405,11 @@ EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
             *size = sizeof(ppufast.vram);
             *word_size = sizeof(*ppufast.vram);
             return ppufast.vram;
-        case SNES_MEMORY::OBJECTS: // returns a pointer to an array of "objects", not raw OAM memory
+        case SNES_MEMORY::OAM:
             if (!fast_ppu) break;
-            *size = sizeof(ppufast.objects);
-            *word_size = sizeof(*ppufast.objects);
-            return (void*) ppufast.objects;
+            *size = (128 * 32 + 128 * 2) / 8;
+            *word_size = 1;
+            return nullptr; // needs read_oam / write_oam functions below
         case SNES_MEMORY::CGRAM:
             if (!fast_ppu) break;
             *size = sizeof(ppufast.cgram);
@@ -428,6 +428,20 @@ EXPORT uint8_t snes_bus_read(unsigned addr)
 EXPORT void snes_bus_write(unsigned addr, uint8_t value)
 {
     bus.write(addr, value);
+}
+
+EXPORT uint8_t snes_read_oam(uint16_t addr)
+{
+    if (!SuperFamicom::system.fastPPU()) return 0;
+
+    return ppufast.readObject(addr);
+}
+
+EXPORT void snes_write_oam(uint16_t addr, uint8_t value)
+{
+    if (!SuperFamicom::system.fastPPU()) return;
+
+    return ppufast.writeObject(addr, value);
 }
 
 EXPORT void* snes_get_sgb_memory_region(int id, int* size)
