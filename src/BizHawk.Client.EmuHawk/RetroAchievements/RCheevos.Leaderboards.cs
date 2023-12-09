@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 				InternalDoRequest(apiParamsResult, ref api_req);
 			}
 
-			public LboardTriggerRequest(string username, string api_token, int id, int value, string hash)
+			public LboardTriggerRequest(string username, string api_token, uint id, int value, string hash)
 			{
 				_apiParams = new(username, api_token, id, value, hash);
 			}
@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public class LBoard
 		{
-			public int ID { get; }
+			public uint ID { get; }
 			public int Format { get; }
 			public string Title { get; }
 			public string Description { get; }

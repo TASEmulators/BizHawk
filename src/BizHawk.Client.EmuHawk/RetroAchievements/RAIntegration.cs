@@ -107,10 +107,10 @@ namespace BizHawk.Client.EmuHawk
 			RA.WarnDisableHardcore(null);
 		}
 
-		protected override int IdentifyHash(string hash)
+		protected override uint IdentifyHash(string hash)
 			=> RA.IdentifyHash(hash);
 
-		protected override int IdentifyRom(byte[] rom)
+		protected override uint IdentifyRom(byte[] rom)
 			=> RA.IdentifyRom(rom, rom.Length);
 
 		public RAIntegration(
@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 				for (var i = 0; i < _memFunctions.Count; i++)
 				{
 					_memFunctions[i].MemGuard = _memGuard;
-					RA.InstallMemoryBank(i, _memFunctions[i].ReadFunc, _memFunctions[i].WriteFunc, _memFunctions[i].BankSize);
+					RA.InstallMemoryBank(i, _memFunctions[i].ReadFunc, _memFunctions[i].WriteFunc, checked((int)_memFunctions[i].BankSize));
 					RA.InstallMemoryBankBlockReader(i, _memFunctions[i].ReadBlockFunc);
 				}
 			}
@@ -224,9 +224,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var ids = GetRAGameIds(_mainForm.CurrentlyOpenRomArgs.OpenAdvanced, consoleId);
 
-				AllGamesVerified = !ids.Contains(0);
+				AllGamesVerified = !ids.Contains(0u);
 
-				RA.ActivateGame(ids.Count > 0 ? ids[0] : 0);
+				RA.ActivateGame(ids.Count > 0 ? ids[0] : 0u);
 			}
 			else
 			{

@@ -137,13 +137,13 @@ namespace BizHawk.Client.EmuHawk
 		public abstract void UpdateHWnd(IntPtr hwnd);
 
 		[BizImport(cc, EntryPoint = "_RA_IdentifyRom")]
-		public abstract int IdentifyRom(byte[] rom, int romSize);
+		public abstract uint IdentifyRom(byte[] rom, int romSize);
 
 		[BizImport(cc, EntryPoint = "_RA_IdentifyHash")]
-		public abstract int IdentifyHash(string hash);
+		public abstract uint IdentifyHash(string hash);
 
 		[BizImport(cc, EntryPoint = "_RA_ActivateGame")]
-		public abstract void ActivateGame(int gameId);
+		public abstract void ActivateGame(uint gameId);
 
 		[BizImport(cc, EntryPoint = "_RA_OnLoadNewRom")]
 		[return: MarshalAs(UnmanagedType.Bool)]

@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public abstract partial class RetroAchievements
 	{
-		public enum ConsoleID : int
+		public enum ConsoleID : uint
 		{
 			UnknownConsoleID = 0,
 			MegaDrive = 1,

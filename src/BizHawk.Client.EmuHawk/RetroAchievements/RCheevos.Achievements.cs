@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 				InternalDoRequest(apiParamsResult, ref api_req);
 			}
 
-			public CheevoUnlockRequest(string username, string api_token, int achievement_id, bool hardcore, string game_hash)
+			public CheevoUnlockRequest(string username, string api_token, uint achievement_id, bool hardcore, string game_hash)
 			{
 				_apiParams = new(username, api_token, achievement_id, hardcore, game_hash);
 			}
@@ -40,8 +40,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public class Cheevo
 		{
-			public int ID { get; }
-			public int Points { get; }
+			public uint ID { get; }
+			public uint Points { get; }
 			public LibRCheevos.rc_runtime_achievement_category_t Category { get; }
 			public string Title { get; }
 			public string Description { get; }
@@ -129,9 +129,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly byte[] _cheevoFormatBuffer = new byte[1024];
 
-		private string GetCheevoProgress(int id)
+		private string GetCheevoProgress(uint id)
 		{
-			var len = _lib.rc_runtime_format_achievement_measured(_runtime, id, _cheevoFormatBuffer, _cheevoFormatBuffer.Length);
+			var len = _lib.rc_runtime_format_achievement_measured(_runtime, id, _cheevoFormatBuffer, new((uint)_cheevoFormatBuffer.Length));
 			return Encoding.ASCII.GetString(_cheevoFormatBuffer, 0, len);
 		}
 

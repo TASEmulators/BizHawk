@@ -247,12 +247,11 @@ namespace BizHawk.Client.EmuHawk
 		// outputs results in the console
 		public static void DebugHash()
 		{
-			using var ofd = new OpenFileDialog
-			{
-				CheckFileExists = true,
-				CheckPathExists = true,
-				InitialDirectory = PathUtils.ExeDirectoryPath,
-			};
+			using var ofd = new OpenFileDialog();
+
+			ofd.CheckFileExists = true;
+			ofd.CheckPathExists = true;
+			ofd.InitialDirectory = PathUtils.ExeDirectoryPath;
 
 			string path = null;
 			if (ofd.ShowDialog()

@@ -13,10 +13,10 @@ namespace BizHawk.Client.EmuHawk
 	public abstract partial class RetroAchievements
 	{
 		protected bool AllGamesVerified { get; set; }
-		protected abstract int IdentifyHash(string hash);
-		protected abstract int IdentifyRom(byte[] rom);
+		protected abstract uint IdentifyHash(string hash);
+		protected abstract uint IdentifyRom(byte[] rom);
 
-		private int HashDisc(string path, ConsoleID consoleID)
+		private uint HashDisc(string path, ConsoleID consoleID)
 		{
 			// this shouldn't throw in practice, this is only called when loading was successful!
 			using var disc = DiscExtensions.CreateAnyType(path, e => throw new(e));
@@ -276,7 +276,7 @@ namespace BizHawk.Client.EmuHawk
 			return IdentifyHash(hash);
 		}
 
-		private int HashArcade(string path)
+		private uint HashArcade(string path)
 		{
 			// Arcade wants to just hash the filename (with no extension)
 			var name = Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(path));
@@ -284,7 +284,7 @@ namespace BizHawk.Client.EmuHawk
 			return IdentifyHash(hash);
 		}
 
-		private int Hash3DS(string path)
+		private uint Hash3DS(string path)
 		{
 			// 3DS is too big to hash as a byte array...
 			var hash = new byte[33];
@@ -292,9 +292,9 @@ namespace BizHawk.Client.EmuHawk
 				? IdentifyHash(Encoding.ASCII.GetString(hash, 0, 32)) : 0;
 		}
 
-		protected IReadOnlyList<int> GetRAGameIds(IOpenAdvanced ioa, ConsoleID consoleID)
+		protected IReadOnlyList<uint> GetRAGameIds(IOpenAdvanced ioa, ConsoleID consoleID)
 		{
-			var ret = new List<int>();
+			var ret = new List<uint>();
 			switch (ioa.TypeName)
 			{
 				case OpenAdvancedTypes.OpenRom:

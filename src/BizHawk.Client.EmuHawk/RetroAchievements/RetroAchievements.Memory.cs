@@ -94,32 +94,32 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate byte ReadMemoryFunc(int address);
+		public delegate byte ReadMemoryFunc(uint address);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void WriteMemoryFunc(int address, byte value);
+		public delegate void WriteMemoryFunc(uint address, byte value);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate int ReadMemoryBlockFunc(int address, IntPtr buffer, int bytes);
+		public delegate uint ReadMemoryBlockFunc(uint address, IntPtr buffer, uint bytes);
 
 		protected class MemFunctions
 		{
 			protected readonly MemoryDomain _domain;
-			private readonly int _domainAddrStart; // addr of _domain where bank begins
-			private readonly int _addressMangler; // of course, let's *not* correct internal core byteswapping!
+			private readonly uint _domainAddrStart; // addr of _domain where bank begins
+			private readonly uint _addressMangler; // of course, let's *not* correct internal core byteswapping!
 
 			public ReadMemoryFunc ReadFunc { get; protected init; }
 			public WriteMemoryFunc WriteFunc { get; protected init; }
 			public ReadMemoryBlockFunc ReadBlockFunc { get; protected init; }
 
-			public readonly int BankSize;
+			public readonly uint BankSize;
 
 			public RAMemGuard MemGuard { get; set; }
 
-			protected virtual int FixAddr(int addr)
+			protected virtual uint FixAddr(uint addr)
 				=> _domainAddrStart + addr;
 
-			protected virtual byte ReadMem(int addr)
+			protected virtual byte ReadMem(uint addr)
 			{
 				using (MemGuard.EnterExit())
 				{
@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			protected virtual void WriteMem(int addr, byte val)
+			protected virtual void WriteMem(uint addr, byte val)
 			{
 				using (MemGuard.EnterExit())
 				{
@@ -135,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			
-			protected virtual int ReadMemBlock(int addr, IntPtr buffer, int bytes)
+			protected virtual uint ReadMemBlock(uint addr, IntPtr buffer, uint bytes)
 			{
 				addr = FixAddr(addr);
 
@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var ret = new byte[length];
 						_domain.BulkPeekByte(((long)addr).RangeToExclusive(end), ret);
-						Marshal.Copy(ret, 0, buffer, length);
+						Marshal.Copy(ret, 0, buffer, (int)length);
 					}
 					else
 					{
@@ -170,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			public MemFunctions(MemoryDomain domain, int domainAddrStart, long bankSize, int addressMangler = 0)
+			public MemFunctions(MemoryDomain domain, uint domainAddrStart, long bankSize, uint addressMangler = 0)
 			{
 				_domain = domain;
 				_domainAddrStart = domainAddrStart;
@@ -180,12 +180,12 @@ namespace BizHawk.Client.EmuHawk
 				WriteFunc = WriteMem;
 				ReadBlockFunc = ReadMemBlock;
 
-				if (bankSize > int.MaxValue)
+				if (bankSize > uint.MaxValue)
 				{
 					throw new OverflowException("bankSize is too big!");
 				}
 
-				BankSize = (int)bankSize;
+				BankSize = (uint)bankSize;
 			}
 		}
 
@@ -203,10 +203,10 @@ namespace BizHawk.Client.EmuHawk
 		// this is a complete hack because the libretro Intelli core sucks and so achievements are made expecting this format
 		private class IntelliMemFunctions : MemFunctions
 		{
-			protected override int FixAddr(int addr)
+			protected override uint FixAddr(uint addr)
 				=> (addr >> 1) + (~addr & 1);
 
-			protected override byte ReadMem(int addr)
+			protected override byte ReadMem(uint addr)
 			{
 				if ((addr & 2) != 0)
 				{
@@ -216,7 +216,7 @@ namespace BizHawk.Client.EmuHawk
 				return base.ReadMem(addr);
 			}
 
-			protected override void WriteMem(int addr, byte val)
+			protected override void WriteMem(uint addr, byte val)
 			{
 				if ((addr & 2) != 0)
 				{
@@ -226,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 				base.WriteMem(addr, val);
 			}
 
-			protected override int ReadMemBlock(int addr, IntPtr buffer, int bytes)
+			protected override uint ReadMemBlock(uint addr, IntPtr buffer, uint bytes)
 			{
 				if (addr >= BankSize)
 				{
@@ -268,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 			private readonly IDebuggable _debuggable;
 			private readonly MemoryDomain _vram; // our vram is unpacked, but RA expects it packed
 
-			private byte ReadVRAMPacked(int addr)
+			private byte ReadVRAMPacked(uint addr)
 			{
 				return (byte)(((_vram.PeekByte(addr * 4 + 0) & 3) << 6)
 					| ((_vram.PeekByte(addr * 4 + 1) & 3) << 4)
@@ -276,7 +276,7 @@ namespace BizHawk.Client.EmuHawk
 					| ((_vram.PeekByte(addr * 4 + 3) & 3) << 0));
 			}
 
-			protected override byte ReadMem(int addr)
+			protected override byte ReadMem(uint addr)
 			{
 				using (MemGuard.EnterExit())
 				{
@@ -291,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			protected override void WriteMem(int addr, byte val)
+			protected override void WriteMem(uint addr, byte val)
 			{
 				using (MemGuard.EnterExit())
 				{
@@ -310,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			protected override int ReadMemBlock(int addr, IntPtr buffer, int bytes)
+			protected override uint ReadMemBlock(uint addr, IntPtr buffer, uint bytes)
 			{
 				if (addr >= BankSize)
 				{
@@ -367,12 +367,12 @@ namespace BizHawk.Client.EmuHawk
 		};
 
 		// these consoles will use part of the system bus at an offset
-		private static readonly Dictionary<ConsoleID, (int Start, int Size)[]> UsePartialSysBus = new()
+		private static readonly Dictionary<ConsoleID, (uint Start, uint Size)[]> UsePartialSysBus = new()
 		{
-			[ConsoleID.MasterSystem] = new[] { (0xC000, 0x2000) },
-			[ConsoleID.GameGear] = new[] { (0xC000, 0x2000) },
-			[ConsoleID.Colecovision] = new[] { (0x6000, 0x400) },
-			[ConsoleID.SG1000] = new[] { (0xC000, 0x2000), (0x2000, 0x2000), (0x8000, 0x2000) },
+			[ConsoleID.MasterSystem] = new[] { (0xC000u, 0x2000u) },
+			[ConsoleID.GameGear] = new[] { (0xC000u, 0x2000u) },
+			[ConsoleID.Colecovision] = new[] { (0x6000u, 0x400u) },
+			[ConsoleID.SG1000] = new[] { (0xC000u, 0x2000u), (0x2000u, 0x2000u), (0x8000u, 0x2000u) },
 		};
 
 		// anything more complicated will be handled accordingly
@@ -381,7 +381,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var mfs = new List<MemFunctions>();
 
-			void TryAddDomain(string domain, int? size = null, int addressMangler = 0)
+			void TryAddDomain(string domain, uint? size = null, uint addressMangler = 0)
 			{
 				if (domains.Has(domain))
 				{
@@ -422,7 +422,7 @@ namespace BizHawk.Client.EmuHawk
 						mfs.Add(new(domains["68K RAM"], 0, domains["68K RAM"].Size, 1));
 						TryAddDomain("32X RAM", addressMangler: 1);
 						// our picodrive doesn't byteswap its SRAM, so...
-						TryAddDomain("SRAM", addressMangler: domains["SRAM"] is MemoryDomainIntPtrSwap16Monitor ? 1 : 0);
+						TryAddDomain("SRAM", addressMangler: domains["SRAM"] is MemoryDomainIntPtrSwap16Monitor ? 1u : 0u);
 						break;
 					case ConsoleID.SNES:
 						mfs.Add(new(domains["WRAM"], 0, domains["WRAM"].Size));

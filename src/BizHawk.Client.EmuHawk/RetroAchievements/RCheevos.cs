@@ -41,9 +41,9 @@ namespace BizHawk.Client.EmuHawk
 		private IntPtr _runtime;
 
 		private readonly LibRCheevos.rc_runtime_event_handler_t _eventcb;
-		private readonly LibRCheevos.rc_peek_t _peekcb;
+		private readonly LibRCheevos.rc_runtime_peek_t _peekcb;
 
-		private readonly Dictionary<int, (ReadMemoryFunc Func, int Start)> _readMap = new();
+		private readonly Dictionary<uint, (ReadMemoryFunc Func, uint Start)> _readMap = new();
 
 		private ToolStripMenuItem _hardcoreModeMenuItem;
 		private bool _hardcoreMode;
@@ -369,12 +369,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_memFunctions = CreateMemoryBanks(_consoleId, Domains, Emu.CanDebug() ? Emu.AsDebuggable() : null);
 
-				var addr = 0;
+				uint addr = 0;
 				foreach (var memFunctions in _memFunctions)
 				{
 					if (memFunctions.ReadFunc is not null)
 					{
-						for (var i = 0; i < memFunctions.BankSize; i++)
+						for (uint i = 0; i < memFunctions.BankSize; i++)
 						{
 							_readMap.Add(addr + i, (memFunctions.ReadFunc, addr));
 						}
@@ -392,7 +392,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var ids = GetRAGameIds(_mainForm.CurrentlyOpenRomArgs.OpenAdvanced, _consoleId);
 
-				AllGamesVerified = !ids.Contains(0);
+				AllGamesVerified = !ids.Contains(0u);
 
 				var gameId = ids.Count > 0 ? ids[0] : 0;
 				_gameData = new();
@@ -427,7 +427,9 @@ namespace BizHawk.Client.EmuHawk
 
 			// validate addresses now that we have cheevos init
 			// ReSharper disable once ConvertToLocalFunction
+#pragma warning disable IDE0039
 			LibRCheevos.rc_runtime_validate_address_t peekcb = address => _readMap.ContainsKey(address);
+#pragma warning restore IDE0039
 			_lib.rc_runtime_validate_addresses(_runtime, _eventcb, peekcb);
 
 			_gameInfoForm.Restart(_gameData.Title, _gameData.TotalCheevoPoints(HardcoreMode), CurrentRichPresence ?? "N/A");
@@ -613,10 +615,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int PeekCallback(int address, int num_bytes, IntPtr ud)
+		private uint PeekCallback(uint address, uint num_bytes, IntPtr ud)
 		{
-			byte Peek(int addr)
-				=> _readMap.TryGetValue(addr, out var reader) ? reader.Func(addr - reader.Start) : (byte)0;
+			uint Peek(uint addr)
+				=> _readMap.TryGetValue(addr, out var reader) ? reader.Func(addr - reader.Start) : 0u;
 
 			return num_bytes switch
 			{
