@@ -32,8 +32,8 @@ namespace BizHawk.Client.EmuHawk
 			// init readers
 			_filereader = new(OpenFileCallback, SeekFileCallback, TellFileCallback, ReadFileCallback, CloseFileCallback);
 			_cdreader = new(OpenTrackCallback, ReadSectorCallback, CloseTrackCallback, FirstTrackSectorCallback);
-			_lib.rc_hash_init_custom_filereader(ref _filereader);
-			_lib.rc_hash_init_custom_cdreader(ref _cdreader);
+			_lib.rc_hash_init_custom_filereader(in _filereader);
+			_lib.rc_hash_init_custom_cdreader(in _cdreader);
 
 			_http.DefaultRequestHeaders.UserAgent.ParseAdd($"BizHawk/{VersionInfo.GetEmuVersion()}");
 		}
@@ -380,7 +380,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					addr += memFunctions.BankSize;
+					addr = checked(addr + memFunctions.BankSize);
 				}
 			}
 

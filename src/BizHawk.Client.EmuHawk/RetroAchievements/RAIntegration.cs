@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 				for (var i = 0; i < _memFunctions.Count; i++)
 				{
 					_memFunctions[i].MemGuard = _memGuard;
-					RA.InstallMemoryBank(i, _memFunctions[i].ReadFunc, _memFunctions[i].WriteFunc, checked((int)_memFunctions[i].BankSize));
+					RA.InstallMemoryBank(i, _memFunctions[i].ReadFunc, _memFunctions[i].WriteFunc, (int)_memFunctions[i].BankSize);
 					RA.InstallMemoryBankBlockReader(i, _memFunctions[i].ReadBlockFunc);
 				}
 			}

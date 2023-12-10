@@ -139,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				addr = FixAddr(addr);
 
-				if (addr >= (_domainAddrStart + BankSize))
+				if (addr >= _domainAddrStart + BankSize)
 				{
 					return 0;
 				}
@@ -180,7 +180,8 @@ namespace BizHawk.Client.EmuHawk
 				WriteFunc = WriteMem;
 				ReadBlockFunc = ReadMemBlock;
 
-				if (bankSize > uint.MaxValue)
+				// while rcheevos could go all the way to uint.MaxValue, RAIntegration is restricted to int.MaxValue
+				if (bankSize > int.MaxValue)
 				{
 					throw new OverflowException("bankSize is too big!");
 				}

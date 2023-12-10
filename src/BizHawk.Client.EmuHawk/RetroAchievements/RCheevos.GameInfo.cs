@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public sealed class UserUnlocksRequest : RCheevoHttpRequest
 		{
-			private LibRCheevos.rc_api_fetch_user_unlocks_request_t _apiParams;
+			private readonly LibRCheevos.rc_api_fetch_user_unlocks_request_t _apiParams;
 			private readonly IReadOnlyDictionary<uint, Cheevo> _cheevos;
 
 			protected override void ResponseCallback(byte[] serv_resp)
@@ -33,9 +33,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					unsafe
 					{
+						var unlocks = (uint*)resp.achievement_ids;
 						for (var i = 0; i < resp.num_achievement_ids; i++)
 						{
-							if (_cheevos.TryGetValue(resp.achievement_ids[i], out var cheevo))
+							if (_cheevos.TryGetValue(unlocks![i], out var cheevo))
 							{
 								cheevo.SetUnlocked(_apiParams.hardcore, true);
 							}
@@ -52,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public override void DoRequest()
 			{
-				var apiParamsResult = _lib.rc_api_init_fetch_user_unlocks_request(out var api_req, ref _apiParams);
+				var apiParamsResult = _lib.rc_api_init_fetch_user_unlocks_request(out var api_req, in _apiParams);
 				InternalDoRequest(apiParamsResult, ref api_req);
 			}
 
@@ -67,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private sealed class GameDataRequest : RCheevoHttpRequest
 		{
-			private LibRCheevos.rc_api_fetch_game_data_request_t _apiParams;
+			private readonly LibRCheevos.rc_api_fetch_game_data_request_t _apiParams;
 			private readonly Func<bool> _allowUnofficialCheevos;
 
 			public GameData GameData { get; private set; }
@@ -90,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 			public override void DoRequest()
 			{
 				GameData = new();
-				var apiParamsResult = _lib.rc_api_init_fetch_game_data_request(out var api_req, ref _apiParams);
+				var apiParamsResult = _lib.rc_api_init_fetch_game_data_request(out var api_req, in _apiParams);
 				InternalDoRequest(apiParamsResult, ref api_req);
 			}
 
@@ -103,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private sealed class ImageRequest : RCheevoHttpRequest
 		{
-			private LibRCheevos.rc_api_fetch_image_request_t _apiParams;
+			private readonly LibRCheevos.rc_api_fetch_image_request_t _apiParams;
 
 			public Bitmap Image { get; private set; }
 
@@ -131,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				var apiParamsResult = _lib.rc_api_init_fetch_image_request(out var api_req, ref _apiParams);
+				var apiParamsResult = _lib.rc_api_init_fetch_image_request(out var api_req, in _apiParams);
 				InternalDoRequest(apiParamsResult, ref api_req);
 			}
 
@@ -195,17 +196,19 @@ namespace BizHawk.Client.EmuHawk
 				RichPresenseScript = resp.RichPresenceScript;
 
 				var cheevos = new Dictionary<uint, Cheevo>();
+				var cptr = (LibRCheevos.rc_api_achievement_definition_t*)resp.achievements;
 				for (var i = 0; i < resp.num_achievements; i++)
 				{
-					cheevos.Add(resp.achievements[i].id, new(in resp.achievements[i], allowUnofficialCheevos));
+					cheevos.Add(cptr![i].id, new(in cptr[i], allowUnofficialCheevos));
 				}
 
 				_cheevos = cheevos;
 
 				var lboards = new Dictionary<uint, LBoard>();
+				var lptr = (LibRCheevos.rc_api_leaderboard_definition_t*)resp.leaderboards;
 				for (var i = 0; i < resp.num_leaderboards; i++)
 				{
-					lboards.Add(resp.leaderboards[i].id, new(in resp.leaderboards[i]));
+					lboards.Add(lptr![i].id, new(in lptr[i]));
 				}
 
 				_lboards = lboards;
@@ -231,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private sealed class ResolveHashRequest : RCheevoHttpRequest
 		{
-			private LibRCheevos.rc_api_resolve_hash_request_t _apiParams;
+			private readonly LibRCheevos.rc_api_resolve_hash_request_t _apiParams;
 			public uint GameID { get; private set; }
 
 			// eh? not sure I want this retried, given the blocking behavior
@@ -255,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 			public override void DoRequest()
 			{
 				GameID = 0;
-				var apiParamsResult = _lib.rc_api_init_resolve_hash_request(out var api_req, ref _apiParams);
+				var apiParamsResult = _lib.rc_api_init_resolve_hash_request(out var api_req, in _apiParams);
 				InternalDoRequest(apiParamsResult, ref api_req);
 			}
 
@@ -282,7 +285,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override uint IdentifyRom(byte[] rom)
 		{
 			var hash = new byte[33];
-			if (_lib.rc_hash_generate_from_buffer(hash, _consoleId, rom, new((uint)rom.Length)))
+			if (_lib.rc_hash_generate_from_buffer(hash, _consoleId, rom, (uint)rom.Length))
 			{
 				return IdentifyHash(Encoding.ASCII.GetString(hash, 0, 32));
 			}

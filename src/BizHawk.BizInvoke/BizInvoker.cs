@@ -223,6 +223,18 @@ namespace BizHawk.BizInvoke
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
 			var returnType = baseMethod.ReturnType;
 
+			static Type[]? NullifyIfEmpty(Type[]? t)
+				=> t?.Length == 0 ? null : t;
+
+			static Type[]?[]? NullifyIfAllNull(Type[]?[] t)
+				=> t.All(t => t == null) ? null : t;
+
+			// this stuff is required for in
+			var paramTypeRequiredCustomModifiers = NullifyIfAllNull(paramInfos.Select(pi => NullifyIfEmpty(pi.GetRequiredCustomModifiers())).ToArray());
+			var paramTypeOptionalCustomModifiers = NullifyIfAllNull(paramInfos.Select(pi => NullifyIfEmpty(pi.GetOptionalCustomModifiers())).ToArray());
+			var returnTypeRequiredCustomModifiers = NullifyIfEmpty(baseMethod.ReturnParameter?.GetRequiredCustomModifiers());
+			var returnTypeOptionalCustomModifiers = NullifyIfEmpty(baseMethod.ReturnParameter?.GetRequiredCustomModifiers());
+
 			if (paramTypes.Concat(new[] { returnType }).Any(typeof(Delegate).IsAssignableFrom))
 			{
 				// this isn't a problem if CallingConventionAdapters.Waterbox is a no-op, but it is otherwise:  we don't
@@ -245,7 +257,11 @@ namespace BizHawk.BizInvoke
 				MethodAttributes.Virtual | MethodAttributes.Public,
 				CallingConventions.HasThis,
 				returnType,
-				paramTypes);
+				returnTypeRequiredCustomModifiers,
+				returnTypeOptionalCustomModifiers,
+				paramTypes,
+				paramTypeRequiredCustomModifiers,
+				paramTypeOptionalCustomModifiers);
 
 			var il = method.GetILGenerator();
 

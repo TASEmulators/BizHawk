@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private sealed class LoginRequest : RCheevoHttpRequest
 		{
-			private LibRCheevos.rc_api_login_request_t _apiParams;
+			private readonly LibRCheevos.rc_api_login_request_t _apiParams;
 			public string Username { get; private set; }
 			public string ApiToken { get; private set; }
 
@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public override void DoRequest()
 			{
-				var apiParamsResult = _lib.rc_api_init_login_request(out var api_req, ref _apiParams);
+				var apiParamsResult = _lib.rc_api_init_login_request(out var api_req, in _apiParams);
 				InternalDoRequest(apiParamsResult, ref api_req);
 			}
 

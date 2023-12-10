@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace BizHawk.BizInvoke
@@ -83,7 +84,7 @@ namespace BizHawk.BizInvoke
 			// anything more clever we can do here?
 			var t = o.GetType();
 
-			if (t == typeof(OutAttribute) || t == typeof(InAttribute))
+			if (t == typeof(OutAttribute) || t == typeof(InAttribute) || t == typeof(IsReadOnlyAttribute))
 			{
 				return new(t.GetConstructor(Type.EmptyTypes)!, Array.Empty<object>());
 			}

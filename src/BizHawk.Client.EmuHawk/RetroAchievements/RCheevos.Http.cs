@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var apiTask = request.post_data != IntPtr.Zero
-					? HttpPost(request.URL, request.PostData)
+					? HttpPost(request.URL, request.PostData, request.ContentType)
 					: HttpGet(request.URL);
 
 				apiTask.ContinueWith(async t =>
@@ -243,11 +243,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static async Task<byte[]> HttpPost(string url, string post)
+		private static async Task<byte[]> HttpPost(string url, string post, string type)
 		{
 			try
 			{
-				using var content = new StringContent(post, Encoding.UTF8, "application/x-www-form-urlencoded");
+				using var content = new StringContent(post, Encoding.UTF8, type ?? "application/x-www-form-urlencoded");
 				using var response = await _http.PostAsync(url, content).ConfigureAwait(false);
 				return response.IsSuccessStatusCode
 					? await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false)

@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private sealed class StartGameSessionRequest : RCheevoHttpRequest
 		{
-			private LibRCheevos.rc_api_start_session_request_t _apiParams;
+			private readonly LibRCheevos.rc_api_start_session_request_t _apiParams;
 
 			public StartGameSessionRequest(string username, string apiToken, uint gameId)
 			{
@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public override void DoRequest()
 			{
-				var apiParamsResult = _lib.rc_api_init_start_session_request(out var api_req, ref _apiParams);
+				var apiParamsResult = _lib.rc_api_init_start_session_request(out var api_req, in _apiParams);
 				InternalDoRequest(apiParamsResult, ref api_req);
 			}
 
@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private sealed class PingRequest : RCheevoHttpRequest
 		{
-			private LibRCheevos.rc_api_ping_request_t _apiParams;
+			private readonly LibRCheevos.rc_api_ping_request_t _apiParams;
 
 			public PingRequest(string username, string apiToken, uint gameId, string richPresence)
 			{
@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public override void DoRequest()
 			{
-				var apiParamsResult = _lib.rc_api_init_ping_request(out var api_req, ref _apiParams);
+				var apiParamsResult = _lib.rc_api_init_ping_request(out var api_req, in _apiParams);
 				InternalDoRequest(apiParamsResult, ref api_req);
 			}
 
@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (RichPresenceActive)
 			{
-				var len = _lib.rc_runtime_get_richpresence(_runtime, _richPresenceBuffer, new((uint)_richPresenceBuffer.Length), _peekcb, IntPtr.Zero, IntPtr.Zero);
+				var len = _lib.rc_runtime_get_richpresence(_runtime, _richPresenceBuffer, (uint)_richPresenceBuffer.Length, _peekcb, IntPtr.Zero, IntPtr.Zero);
 				CurrentRichPresence = Encoding.UTF8.GetString(_richPresenceBuffer, 0, len);
 			}
 			else

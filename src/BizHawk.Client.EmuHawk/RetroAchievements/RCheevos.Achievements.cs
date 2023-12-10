@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private sealed class CheevoUnlockRequest : RCheevoHttpRequest
 		{
-			private LibRCheevos.rc_api_award_achievement_request_t _apiParams;
+			private readonly LibRCheevos.rc_api_award_achievement_request_t _apiParams;
 
 			protected override void ResponseCallback(byte[] serv_resp)
 			{
@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public override void DoRequest()
 			{
-				var apiParamsResult = _lib.rc_api_init_award_achievement_request(out var api_req, ref _apiParams);
+				var apiParamsResult = _lib.rc_api_init_award_achievement_request(out var api_req, in _apiParams);
 				InternalDoRequest(apiParamsResult, ref api_req);
 			}
 
@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetCheevoProgress(uint id)
 		{
-			var len = _lib.rc_runtime_format_achievement_measured(_runtime, id, _cheevoFormatBuffer, new((uint)_cheevoFormatBuffer.Length));
+			var len = _lib.rc_runtime_format_achievement_measured(_runtime, id, _cheevoFormatBuffer, (uint)_cheevoFormatBuffer.Length);
 			return Encoding.ASCII.GetString(_cheevoFormatBuffer, 0, len);
 		}
 
