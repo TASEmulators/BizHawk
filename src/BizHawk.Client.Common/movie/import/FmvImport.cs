@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common.movie.import
 			syncSettings.Controls.NesLeftPort = controllerSettings.NesLeftPort;
 			syncSettings.Controls.NesRightPort = controllerSettings.NesRightPort;
 
-			SimpleController controllers = new(_deck.ControllerDef);
+			SimpleLogEntryController controllers = new(_deck.ControllerDef, Result.Movie.SystemID);
 
 			/*
 			 * 01 Right

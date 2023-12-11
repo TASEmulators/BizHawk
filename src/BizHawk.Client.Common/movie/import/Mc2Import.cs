@@ -147,7 +147,7 @@ namespace BizHawk.Client.Common.movie.import
 		{
 			var buttons = new[] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
 
-			SimpleController controllers = new(_deck.Definition);
+			SimpleLogEntryController controllers = new(_deck.Definition, Result.Movie.SystemID);
 
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');

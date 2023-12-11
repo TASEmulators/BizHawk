@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Common
 
 		public readonly string Name;
 
-		public IReadOnlyList<string> OrderedControlsFlat => _orderedControlsFlat ??= ControlsOrdered.SelectMany(static s => s).ToList();
+		public IReadOnlyList<string> OrderedControlsFlat => _orderedControlsFlat ??= ControlsOrdered.SelectMany(static s => s).ToArray();
 
 		public ControllerDefinition(string name)
 			=> Name = name;

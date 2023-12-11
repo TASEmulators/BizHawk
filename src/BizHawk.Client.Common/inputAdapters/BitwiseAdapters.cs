@@ -8,8 +8,6 @@ namespace BizHawk.Client.Common
 	{
 		public ControllerDefinition Definition => Source.Definition;
 
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
 		public bool IsPressed(string button)
 		{
 			if (Source != null && SourceAnd != null)
@@ -36,8 +34,6 @@ namespace BizHawk.Client.Common
 	{
 		public ControllerDefinition Definition => Source.Definition;
 
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
 		public bool IsPressed(string button)
 		{
 			if (Source != null && SourceXor != null)
@@ -63,8 +59,6 @@ namespace BizHawk.Client.Common
 	public class ORAdapter : IInputAdapter
 	{
 		public ControllerDefinition Definition => Source.Definition;
-
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
 		public bool IsPressed(string button)
 		{
