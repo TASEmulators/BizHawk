@@ -15,16 +15,17 @@ namespace BizHawk.Client.EmuHawk
 	public partial class RAIntegration : RetroAchievements
 	{
 		private readonly RAInterface RA;
-		
+
 		static RAIntegration()
 		{
+			if (OSTailoredCode.IsUnixHost)
+			{
+				// RAIntegration is Windows only
+				return;
+			}
+
 			try
 			{
-				if (OSTailoredCode.IsUnixHost)
-				{
-					throw new NotSupportedException("RAIntegration is Windows only!");
-				}
-
 				AttachDll();
 			}
 			catch
@@ -56,25 +57,24 @@ namespace BizHawk.Client.EmuHawk
 		private void RebuildMenu()
 		{
 			var numItems = RA.GetPopupMenuItems(_menuItems);
-			var tsmiddi = _raDropDownItems;
-			tsmiddi.Clear();
+			_raDropDownItems.Clear();
 			{
 				var tsi = new ToolStripMenuItem("Shutdown RetroAchievements");
 				tsi.Click += (_, _) => _shutdownRACallback();
-				tsmiddi.Add(tsi);
+				_raDropDownItems.Add(tsi);
 
-				tsi = new ToolStripMenuItem("Autostart RetroAchievements")
+				tsi = new("Autostart RetroAchievements")
 				{
 					Checked = _getConfig().RAAutostart,
 					CheckOnClick = true,
 				};
 				tsi.CheckedChanged += (_, _) => _getConfig().RAAutostart ^= true;
-				tsmiddi.Add(tsi);
+				_raDropDownItems.Add(tsi);
 
 				var tss = new ToolStripSeparator();
-				tsmiddi.Add(tss);
+				_raDropDownItems.Add(tss);
 			}
-			for (int i = 0; i < numItems; i++)
+			for (var i = 0; i < numItems; i++)
 			{
 				if (_menuItems[i].Label != IntPtr.Zero)
 				{
@@ -88,12 +88,12 @@ namespace BizHawk.Client.EmuHawk
 						RA.InvokeDialog(id);
 						_mainForm.UpdateWindowTitle();
 					};
-					tsmiddi.Add(tsi);
+					_raDropDownItems.Add(tsi);
 				}
 				else
 				{
 					var tss = new ToolStripSeparator();
-					tsmiddi.Add(tss);
+					_raDropDownItems.Add(tss);
 				}
 			}
 		}

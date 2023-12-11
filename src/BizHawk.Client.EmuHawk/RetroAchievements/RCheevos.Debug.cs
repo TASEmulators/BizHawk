@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -55,30 +56,37 @@ namespace BizHawk.Client.EmuHawk
 			return file.GetStream().Position;
 		}
 
-		private static UIntPtr ReadFileCallback(IntPtr file_handle, IntPtr buffer, UIntPtr requested_bytes)
+		private static nuint ReadFileCallback(IntPtr file_handle, IntPtr buffer, nuint requested_bytes)
 		{
 			var handle = GCHandle.FromIntPtr(file_handle);
 			var file = (HawkFile)handle.Target;
+			var stream = file.GetStream();
+
 			// this is poop without spans
 			const int TMP_BUFFER_LEN = 65536;
-			var tmp = new byte[TMP_BUFFER_LEN];
-			var stream = file.GetStream();
-			var remainingBytes = (ulong)requested_bytes;
-
-			while (remainingBytes != 0)
+			var tmp = ArrayPool<byte>.Shared.Rent(TMP_BUFFER_LEN);
+			try
 			{
-				var numRead = stream.Read(tmp, 0, (int)Math.Min(remainingBytes, TMP_BUFFER_LEN));
-				if (numRead == 0) // reached end of stream
+				var remainingBytes = requested_bytes;
+				while (remainingBytes != 0)
 				{
-					break;
+					var numRead = stream.Read(tmp, 0, (int)Math.Min(remainingBytes, TMP_BUFFER_LEN));
+					if (numRead == 0) // reached end of stream
+					{
+						break;
+					}
+
+					Marshal.Copy(tmp, 0, buffer, numRead);
+					buffer += numRead;
+					remainingBytes -= (uint)numRead;
 				}
 
-				Marshal.Copy(tmp, 0, buffer, numRead);
-				buffer += numRead;
-				remainingBytes -= (ulong)numRead;
+				return requested_bytes - remainingBytes;
 			}
-
-			return new((ulong)requested_bytes - remainingBytes);
+			finally
+			{
+				ArrayPool<byte>.Shared.Return(tmp);
+			}
 		}
 
 		private static void CloseFileCallback(IntPtr file_handle)
@@ -189,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 				_buf2448 = new byte[2448];
 			}
 
-			public int ReadSector(int lba, IntPtr buffer, ulong requestedBytes)
+			public int ReadSector(int lba, IntPtr buffer, nuint requestedBytes)
 			{
 				if (lba < _track.LBA || lba >= _track.NextTrack.LBA)
 				{
@@ -221,11 +229,11 @@ namespace BizHawk.Client.EmuHawk
 			return GCHandle.ToIntPtr(handle);
 		}
 
-		private static UIntPtr ReadSectorCallback(IntPtr track_handle, uint sector, IntPtr buffer, UIntPtr requested_bytes)
+		private static nuint ReadSectorCallback(IntPtr track_handle, uint sector, IntPtr buffer, nuint requested_bytes)
 		{
 			var handle = GCHandle.FromIntPtr(track_handle);
 			var track = (RCTrack)handle.Target;
-			return new((uint)track.ReadSector((int)sector, buffer, (ulong)requested_bytes));
+			return (uint)track.ReadSector((int)sector, buffer, requested_bytes);
 		}
 
 		private static void CloseTrackCallback(IntPtr track_handle)
@@ -302,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			static string ResolvePath(string path)
 			{
-				if (Disc.IsValidExtension(Path.GetExtension(path)))
+				if (path.IndexOf('|') == -1 && Disc.IsValidExtension(Path.GetExtension(path)))
 				{
 					return path; // nothing to do in this case
 				}
@@ -334,7 +342,7 @@ namespace BizHawk.Client.EmuHawk
 
 			static ConsoleID IdentifyConsole(string path)
 			{
-				if (Disc.IsValidExtension(Path.GetExtension(path)))
+				if (path.IndexOf('|') == -1 && Disc.IsValidExtension(Path.GetExtension(path)))
 				{
 					using var disc = DiscExtensions.CreateAnyType(path, Console.WriteLine);
 					if (disc is null)

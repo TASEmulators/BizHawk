@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -42,8 +41,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly LibRCheevos.rc_runtime_event_handler_t _eventcb;
 		private readonly LibRCheevos.rc_runtime_peek_t _peekcb;
+		private readonly LibRCheevos.rc_runtime_validate_address_t _validatecb;
 
-		private readonly Dictionary<uint, (ReadMemoryFunc Func, uint Start)> _readMap = new();
+		private byte[] _readMap = Array.Empty<byte>();
 
 		private ToolStripMenuItem _hardcoreModeMenuItem;
 		private bool _hardcoreMode;
@@ -231,6 +231,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_eventcb = EventHandlerCallback;
 			_peekcb = PeekCallback;
+			_validatecb = ValidateCallback;
 
 			var config = _getConfig();
 			CheevosActive = config.RACheevosActive;
@@ -327,6 +328,9 @@ namespace BizHawk.Client.EmuHawk
 			config.RAAllowUnofficialCheevos = AllowUnofficialCheevos;
 		}
 
+		private bool ValidateCallback(uint address)
+			=> address < _readMap.Length && _readMap[address] != 0xFF;
+
 		public override void Restart()
 		{
 			if (_firstRestart)
@@ -363,24 +367,32 @@ namespace BizHawk.Client.EmuHawk
 			_consoleId = SystemIdToConsoleId();
 
 			// init the read map
-			_readMap.Clear();
+			_readMap = Array.Empty<byte>();
 
 			if (Emu.HasMemoryDomains())
 			{
 				_memFunctions = CreateMemoryBanks(_consoleId, Domains, Emu.CanDebug() ? Emu.AsDebuggable() : null);
+				if (_memFunctions.Count > 255)
+				{
+					throw new InvalidOperationException("_memFunctions must have less than 256 memory banks");
+				}
+
+				// this is kind of poop, it would prevent having >2GiB total banksize
+				// but no system needs that right now, the largest is just New 3DS at 256MiB
+				_readMap = new byte[_memFunctions.Sum(mfun => mfun.BankSize)];
 
 				uint addr = 0;
-				foreach (var memFunctions in _memFunctions)
+				for (var i = 0; i < _memFunctions.Count; i++)
 				{
-					if (memFunctions.ReadFunc is not null)
+					_memFunctions[i].StartAddress = addr;
+
+					var mapValue = _memFunctions[i].ReadFunc is not null ? i : 0xFF;
+					for (var j = 0; j < _memFunctions[i].BankSize; j++)
 					{
-						for (uint i = 0; i < memFunctions.BankSize; i++)
-						{
-							_readMap.Add(addr + i, (memFunctions.ReadFunc, addr));
-						}
+						_readMap[addr + j] = (byte)mapValue;
 					}
 
-					addr = checked(addr + memFunctions.BankSize);
+					addr = checked(addr + _memFunctions[i].BankSize);
 				}
 			}
 
@@ -426,11 +438,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// validate addresses now that we have cheevos init
-			// ReSharper disable once ConvertToLocalFunction
-#pragma warning disable IDE0039
-			LibRCheevos.rc_runtime_validate_address_t peekcb = address => _readMap.ContainsKey(address);
-#pragma warning restore IDE0039
-			_lib.rc_runtime_validate_addresses(_runtime, _eventcb, peekcb);
+			_lib.rc_runtime_validate_addresses(_runtime, _eventcb, _validatecb);
 
 			_gameInfoForm.Restart(_gameData.Title, _gameData.TotalCheevoPoints(HardcoreMode), CurrentRichPresence ?? "N/A");
 			_cheevoListForm.Restart(_gameData.GameID == 0 ? Array.Empty<Cheevo>() : _gameData.CheevoEnumerable, GetCheevoProgress);
@@ -615,19 +623,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private uint PeekCallback(uint address, uint num_bytes, IntPtr ud)
+		private uint Peek(uint address)
 		{
-			uint Peek(uint addr)
-				=> _readMap.TryGetValue(addr, out var reader) ? reader.Func(addr - reader.Start) : 0u;
-
-			return num_bytes switch
+			if (address < _readMap.Length && _readMap[address] != 0xFF)
 			{
-				1 => Peek(address),
-				2 => Peek(address) | (Peek(address + 1) << 8),
-				4 => Peek(address) | (Peek(address + 1) << 8) | (Peek(address + 2) << 16) | (Peek(address + 3) << 24),
-				_ => throw new InvalidOperationException($"Requested {num_bytes} in {nameof(PeekCallback)}"),
-			};
+				var memFuncs = _memFunctions[_readMap[address]];
+				return memFuncs.ReadFunc(address - memFuncs.StartAddress);
+			}
+
+			return 0;
 		}
+
+		private uint PeekCallback(uint address, uint num_bytes, IntPtr ud) => num_bytes switch
+		{
+			1 => Peek(address),
+			2 => Peek(address) | (Peek(address + 1) << 8),
+			4 => Peek(address) | (Peek(address + 1) << 8) | (Peek(address + 2) << 16) | (Peek(address + 3) << 24),
+			_ => throw new InvalidOperationException($"Requested {num_bytes} in {nameof(PeekCallback)}"),
+		};
 
 		public override void OnFrameAdvance()
 		{

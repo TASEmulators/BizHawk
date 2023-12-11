@@ -112,6 +112,7 @@ namespace BizHawk.Client.EmuHawk
 			public WriteMemoryFunc WriteFunc { get; protected init; }
 			public ReadMemoryBlockFunc ReadBlockFunc { get; protected init; }
 
+			public uint StartAddress; // this is set for our rcheevos impl
 			public readonly uint BankSize;
 
 			public RAMemGuard MemGuard { get; set; }
