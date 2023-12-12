@@ -1,3 +1,4 @@
+﻿using System;
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,11 +21,16 @@ namespace BizHawk.Client.Common
 			_systemId = systemId;
 			_source = source;
 			_controlsOrdered = _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0).ToList();
-			foreach (var group in _controlsOrdered)
+			foreach (var group in _controlsOrdered) foreach (var button in group)
 			{
-				foreach (var button in group)
+				var found = Bk2MnemonicLookup.Lookup(button, _systemId);
+				try
 				{
-					_mnemonics.Add(button, Bk2MnemonicLookup.Lookup(button, _systemId));
+					_mnemonics.Add(button, found);
+				}
+				catch (ArgumentException e)
+				{
+					throw new ArgumentException(innerException: e, paramName: nameof(source), message: $"duplicate KEY {button} in input log mnemonic cache (was {_mnemonics[button]}, attempting to set {found})");
 				}
 			}
 		}
