@@ -43,6 +43,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				fieldPtrList.Add(ptr);
 			}
 
+			MAMEController.BoolButtons.Add("Reset");
+
 			foreach (var buttonField in buttonFields)
 			{
 				if (buttonField != string.Empty && !buttonField.Contains('%'))
@@ -77,8 +79,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					MAMEController.AddAxis(field, min.RangeTo(max), def);
 				}
 			}
-
-			MAMEController.BoolButtons.Add("Reset");
 
 			_buttonFields = buttonFieldList.ToArray();
 			_analogFields = analogFieldList.ToArray();
