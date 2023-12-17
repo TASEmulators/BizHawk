@@ -15,6 +15,7 @@ namespace BizHawk.Bizware.Audio
 	public sealed class DirectSoundSoundOutput : ISoundOutput
 	{
 		private readonly IHostAudioManager _sound;
+		private readonly IntPtr _mainWindowHandle;
 		private bool _disposed;
 		private DirectSound _device;
 		private SecondarySoundBuffer _deviceBuffer;
@@ -27,6 +28,7 @@ namespace BizHawk.Bizware.Audio
 		public DirectSoundSoundOutput(IHostAudioManager sound, IntPtr mainWindowHandle, string soundDevice)
 		{
 			_sound = sound;
+			_mainWindowHandle = mainWindowHandle; // needed for resetting _device on device invalidation
 			_retryCounter = 5;
 
 			var deviceInfo = DirectSound.GetDevices().Find(d => d.Description == soundDevice);
@@ -44,6 +46,16 @@ namespace BizHawk.Bizware.Audio
 			_disposed = true;
 		}
 
+		private void ResetToDefaultDevice()
+		{
+			_deviceBuffer?.Dispose();
+			_deviceBuffer = null;
+
+			_device.Dispose();
+			_device = new();
+			_device.SetCooperativeLevel(_mainWindowHandle, CooperativeLevel.Priority);
+		}
+
 		public static IEnumerable<string> GetDeviceNames()
 		{
 			return DirectSound.GetDevices().Select(d => d.Description);
@@ -55,9 +67,30 @@ namespace BizHawk.Bizware.Audio
 
 		public int MaxSamplesDeficit { get; private set; }
 
-		private bool IsPlaying => _deviceBuffer != null &&
-			((BufferStatus)_deviceBuffer.Status & BufferStatus.BufferLost) == 0 &&
-			((BufferStatus)_deviceBuffer.Status & BufferStatus.Playing) == BufferStatus.Playing;
+		private bool IsPlaying
+		{
+			get
+			{
+				if (_deviceBuffer == null)
+				{
+					return false;
+				}
+
+				try
+				{
+					var status = (BufferStatus)_deviceBuffer.Status;
+					return (status & BufferStatus.BufferLost) == 0 &&
+						(status & BufferStatus.Playing) == BufferStatus.Playing;
+				}
+				catch (SharpDXException)
+				{
+					// this only seems to ever occur if the device is disconnected...
+					ResetToDefaultDevice();
+					StartPlaying();
+					return false;
+				}
+			}
+		}
 
 		private void StartPlaying()
 		{
