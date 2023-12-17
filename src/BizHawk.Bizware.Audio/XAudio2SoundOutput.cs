@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 using BizHawk.Client.Common;
-using BizHawk.Common;
 
 using Vortice.MediaFoundation;
 using Vortice.Multimedia;
@@ -16,7 +14,7 @@ namespace BizHawk.Bizware.Audio
 	{
 		private bool _disposed;
 		private readonly IHostAudioManager _sound;
-		private readonly DeferredXAudio2ErrorCallback _deferredErrorCallback;
+		private volatile bool _deviceResetRequired;
 		private IXAudio2 _device;
 		private IXAudio2MasteringVoice _masteringVoice;
 		private IXAudio2SourceVoice _sourceVoice;
@@ -52,7 +50,7 @@ namespace BizHawk.Bizware.Audio
 			_device.Dispose();
 
 			_device = XAudio2.XAudio2Create();
-			_device.CriticalError += (_, _) => _deferredErrorCallback.OnCriticalError();
+			_device.CriticalError += (_, _) => _deviceResetRequired = true;
 			_masteringVoice = _device.CreateMasteringVoice(
 				inputChannels: _sound.ChannelCount,
 				inputSampleRate: _sound.SampleRate);
@@ -69,8 +67,7 @@ namespace BizHawk.Bizware.Audio
 			_device = XAudio2.XAudio2Create();
 			// this is for fatal errors which require resetting to the default audio device
 			// note that this won't be called on the main thread, so we'll defer the reset to the main thread
-			_deferredErrorCallback = new(ResetToDefaultDevice);
-			_device.CriticalError += (_, _) => _deferredErrorCallback.OnCriticalError();
+			_device.CriticalError += (_, _) => _deviceResetRequired = true;
 			_masteringVoice = _device.CreateMasteringVoice(
 				inputChannels: _sound.ChannelCount, 
 				inputSampleRate: _sound.SampleRate,
@@ -83,7 +80,6 @@ namespace BizHawk.Bizware.Audio
 
 			_masteringVoice.Dispose();
 			_device.Dispose();
-			_deferredErrorCallback.Dispose();
 
 			_disposed = true;
 		}
@@ -132,6 +128,12 @@ namespace BizHawk.Bizware.Audio
 
 		public int CalculateSamplesNeeded()
 		{
+			if (_deviceResetRequired)
+			{
+				_deviceResetRequired = false;
+				ResetToDefaultDevice();
+			}
+
 			var isInitializing = _runningSamplesQueued == 0;
 			var voiceState = _sourceVoice.State;
 			var detectedUnderrun = !isInitializing && voiceState.BuffersQueued == 0;
@@ -209,100 +211,6 @@ namespace BizHawk.Bizware.Audio
 				{
 					MaxLength = length;
 					AudioBuffer = new(length, BufferFlags.None);
-				}
-			}
-		}
-
-		private sealed class DeferredXAudio2ErrorCallback : IDisposable
-		{
-			private const int WM_CLOSE = 0x0010;
-			private const int WM_DEFERRED_ERROR_CALLBACK = 0x0400 + 1;
-
-			private static readonly WmImports.WNDPROC _wndProc = WndProc;
-
-			private static readonly Lazy<IntPtr> _deferredXAudio2CallbackWindowAtom = new(() =>
-			{
-				var wc = default(WmImports.WNDCLASSW);
-				wc.lpfnWndProc = _wndProc;
-				wc.hInstance = LoaderApiImports.GetModuleHandleW(null);
-				wc.lpszClassName = "DeferredXAudio2ErrorCallbackClass";
-
-				var atom = WmImports.RegisterClassW(ref wc);
-				if (atom == IntPtr.Zero)
-				{
-					throw new InvalidOperationException("Failed to register deferred XAudio2 error callback window class");
-				}
-
-				return atom;
-			});
-
-			private static IntPtr WndProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam)
-			{
-				var ud = WmImports.GetWindowLongPtrW(hWnd, WmImports.GWLP_USERDATA);
-				if (ud == IntPtr.Zero)
-				{
-					return WmImports.DefWindowProcW(hWnd, uMsg, wParam, lParam);
-				}
-
-				if (uMsg != WM_DEFERRED_ERROR_CALLBACK)
-				{
-					if (uMsg == WM_CLOSE)
-					{
-						WmImports.SetWindowLongPtrW(hWnd, WmImports.GWLP_USERDATA, IntPtr.Zero);
-						GCHandle.FromIntPtr(ud).Free();
-					}
-
-					return WmImports.DefWindowProcW(hWnd, uMsg, wParam, lParam);
-				}
-
-				// reset to the default audio device
-
-				var deferredCallback = (DeferredXAudio2ErrorCallback)GCHandle.FromIntPtr(ud).Target;
-				deferredCallback.ResetToDefaultDeviceCallback();
-
-				return WmImports.DefWindowProcW(hWnd, uMsg, wParam, lParam);
-			}
-
-			private readonly Action ResetToDefaultDeviceCallback;
-			private IntPtr _deferredErrorCallbackWindow;
-
-			public DeferredXAudio2ErrorCallback(Action resetToDefaultDeviceCallback)
-			{
-				ResetToDefaultDeviceCallback = resetToDefaultDeviceCallback;
-
-				const int WS_CHILD = 0x40000000;
-				_deferredErrorCallbackWindow = WmImports.CreateWindowExW(
-					dwExStyle: 0,
-					lpClassName: _deferredXAudio2CallbackWindowAtom.Value,
-					lpWindowName: "DeferredXAudio2ErrorCallback",
-					dwStyle: WS_CHILD,
-					X: 0,
-					Y: 0,
-					nWidth: 1,
-					nHeight: 1,
-					hWndParent: WmImports.HWND_MESSAGE,
-					hMenu: IntPtr.Zero,
-					hInstance: LoaderApiImports.GetModuleHandleW(null),
-					lpParam: IntPtr.Zero);
-
-				if (_deferredErrorCallbackWindow == IntPtr.Zero)
-				{
-					throw new InvalidOperationException("Failed to create deferred XAudio2 error callback window");
-				}
-
-				var handle = GCHandle.Alloc(this, GCHandleType.Normal);
-				WmImports.SetWindowLongPtrW(_deferredErrorCallbackWindow, WmImports.GWLP_USERDATA, GCHandle.ToIntPtr(handle));
-			}
-
-			public void OnCriticalError()
-				=> WmImports.PostMessageW(_deferredErrorCallbackWindow, WM_DEFERRED_ERROR_CALLBACK, IntPtr.Zero, IntPtr.Zero);
-
-			public void Dispose()
-			{
-				if (_deferredErrorCallbackWindow != IntPtr.Zero)
-				{
-					WmImports.DestroyWindow(_deferredErrorCallbackWindow);
-					_deferredErrorCallbackWindow = IntPtr.Zero;
 				}
 			}
 		}
