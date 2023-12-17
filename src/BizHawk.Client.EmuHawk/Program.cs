@@ -302,8 +302,9 @@ namespace BizHawk.Client.EmuHawk
 					using MsgBox dialog = new(
 						title: "This EmuHawk is privileged",
 						message: $"EmuHawk detected it {(OSTailoredCode.IsUnixHost ? "is running as root (Superuser)" : "has Administrator privileges")}.\n"
-							+ "Regularly using {(OSTailoredCode.IsUnixHost ? "Superuser" : "Administrator")} for things other than system administration makes it easier to hack you.\n"
-							+ "If you're certain, you may continue anyway (and without support). You'll find a flag \"{nameof(Config.SkipSuperuserPrivsCheck)}\" in the config file, which disables this warning.",
+							+ $"Regularly using {(OSTailoredCode.IsUnixHost ? "Superuser" : "Administrator")} for things other than system administration makes it easier to hack you.\n"
+							+ "If you're certain, you may continue anyway (and without support).\n"
+							+ $"You'll find a flag \"{nameof(Config.SkipSuperuserPrivsCheck)}\" in the config file, which disables this warning.",
 						boxIcon: MessageBoxIcon.Warning);
 					dialog.ShowDialog();
 				}
