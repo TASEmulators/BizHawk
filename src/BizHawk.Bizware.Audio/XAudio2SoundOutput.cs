@@ -41,26 +41,6 @@ namespace BizHawk.Bizware.Audio
 			return $"{MMDEVAPI_TOKEN}{device.Id}{DEVINTERFACE_AUDIO_RENDER}";
 		}
 
-		private void ResetToDefaultDevice()
-		{
-			var wasPlaying = _sourceVoice != null;
-			_sourceVoice?.Dispose();
-			_bufferPool?.Dispose();
-			_masteringVoice.Dispose();
-			_device.Dispose();
-
-			_device = XAudio2.XAudio2Create();
-			_device.CriticalError += (_, _) => _deviceResetRequired = true;
-			_masteringVoice = _device.CreateMasteringVoice(
-				inputChannels: _sound.ChannelCount,
-				inputSampleRate: _sound.SampleRate);
-
-			if (wasPlaying)
-			{
-				StartSound();
-			}
-		}
-
 		public XAudio2SoundOutput(IHostAudioManager sound, string chosenDeviceName)
 		{
 			_sound = sound;
@@ -126,14 +106,29 @@ namespace BizHawk.Bizware.Audio
 			BufferSizeSamples = 0;
 		}
 
-		public int CalculateSamplesNeeded()
+		private void ResetToDefaultDeviceIfNeeded()
 		{
 			if (_deviceResetRequired)
 			{
 				_deviceResetRequired = false;
-				ResetToDefaultDevice();
-			}
 
+				StopSound();
+				_masteringVoice.Dispose();
+				_device.Dispose();
+
+				_device = XAudio2.XAudio2Create();
+				_device.CriticalError += (_, _) => _deviceResetRequired = true;
+				_masteringVoice = _device.CreateMasteringVoice(
+					inputChannels: _sound.ChannelCount,
+					inputSampleRate: _sound.SampleRate);
+
+				StartSound();
+			}
+		}
+
+		public int CalculateSamplesNeeded()
+		{
+			ResetToDefaultDeviceIfNeeded();
 			var isInitializing = _runningSamplesQueued == 0;
 			var voiceState = _sourceVoice.State;
 			var detectedUnderrun = !isInitializing && voiceState.BuffersQueued == 0;

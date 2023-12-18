@@ -8,6 +8,7 @@ using Silk.NET.Core.Native;
 using Silk.NET.OpenAL;
 using Silk.NET.OpenAL.Extensions.Creative;
 using Silk.NET.OpenAL.Extensions.Enumeration;
+using Silk.NET.OpenAL.Extensions.EXT;
 
 namespace BizHawk.Bizware.Audio
 {
@@ -29,6 +30,8 @@ namespace BizHawk.Bizware.Audio
 		private BufferPool _bufferPool;
 		private int _currentSamplesQueued;
 		private short[] _tempSampleBuffer;
+		private unsafe Device* _device;
+		private Disconnect _disconnectExt;
 
 		public OpenALSoundOutput(IHostAudioManager sound, string chosenDeviceName)
 		{
@@ -37,6 +40,12 @@ namespace BizHawk.Bizware.Audio
 				GetDeviceNames().Contains(chosenDeviceName) ? chosenDeviceName : null,
 				_sound.SampleRate
 			);
+
+			unsafe
+			{
+				_device = _alc.GetContextsDevice(_alc.GetCurrentContext());
+				_disconnectExt = _alc.TryGetExtension<Disconnect>(_device, out var ext) ? ext : null;
+			}
 		}
 
 		public void Dispose()
@@ -85,8 +94,28 @@ namespace BizHawk.Bizware.Audio
 			BufferSizeSamples = 0;
 		}
 
+		private unsafe void ResetToDefaultDeviceIfDisconnected()
+		{
+			var connected = 1;
+			_disconnectExt?.GetContextProperty(_device, DisconnectContextInteger.Connected, 1, &connected);
+			if (connected != 0)
+			{
+				return;
+			}
+
+			StopSound();
+			_context.Dispose();
+
+			_context = new(device: null, _sound.SampleRate);
+			_device = _alc.GetContextsDevice(_alc.GetCurrentContext());
+			_disconnectExt = _alc.TryGetExtension<Disconnect>(_device, out var ext) ? ext : null;
+
+			StartSound();
+		}
+
 		public int CalculateSamplesNeeded()
 		{
+			ResetToDefaultDeviceIfDisconnected();
 			var currentSamplesPlayed = GetSource(GetSourceInteger.SampleOffset);
 			var sourceState = GetSourceState();
 			var isInitializing = sourceState == SourceState.Initial;

@@ -46,16 +46,6 @@ namespace BizHawk.Bizware.Audio
 			_disposed = true;
 		}
 
-		private void ResetToDefaultDevice()
-		{
-			_deviceBuffer?.Dispose();
-			_deviceBuffer = null;
-
-			_device.Dispose();
-			_device = new();
-			_device.SetCooperativeLevel(_mainWindowHandle, CooperativeLevel.Priority);
-		}
-
 		public static IEnumerable<string> GetDeviceNames()
 		{
 			return DirectSound.GetDevices().Select(d => d.Description);
@@ -66,6 +56,18 @@ namespace BizHawk.Bizware.Audio
 		private int BufferSizeBytes => BufferSizeSamples * _sound.BlockAlign;
 
 		public int MaxSamplesDeficit { get; private set; }
+
+		private void ResetToDefaultDevice()
+		{
+			_deviceBuffer.Dispose();
+			_deviceBuffer = null;
+
+			_device.Dispose();
+			_device = new();
+			_device.SetCooperativeLevel(_mainWindowHandle, CooperativeLevel.Priority);
+
+			StartPlaying();
+		}
 
 		private bool IsPlaying
 		{
@@ -86,7 +88,6 @@ namespace BizHawk.Bizware.Audio
 				{
 					// this only seems to ever occur if the device is disconnected...
 					ResetToDefaultDevice();
-					StartPlaying();
 					return false;
 				}
 			}
