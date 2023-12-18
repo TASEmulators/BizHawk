@@ -59,6 +59,7 @@ namespace BizHawk.Bizware.Audio
 
 		private void ResetToDefaultDevice()
 		{
+			// can't use StopSound, as that checks IsPlaying, which will end up calling this function again!
 			_deviceBuffer.Dispose();
 			_deviceBuffer = null;
 
