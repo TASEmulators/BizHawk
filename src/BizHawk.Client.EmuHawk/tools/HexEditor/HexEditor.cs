@@ -2232,28 +2232,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void viewN64MatrixToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			static double Wat(uint n)
+				=> unchecked((int) n) / 65536.0;
 			if (_highlightedAddress is null) return;
-			bool bigEndian = true;
 			var addr = _highlightedAddress.Value & ~0b11L;
-			//ushort  = _domain.PeekWord(addr, bigEndian);
 			const int SIZE = 4;
-			var matVals = new float[SIZE, SIZE];
-			for (int i = 0; i < 4; i++)
-			{
-					for (int j = 0; j < 4; j++)
-					{
-						ushort hi = _domain.PeekUshort(((addr+(i<<3)+(j<<1)     )^0x0), bigEndian);
-						ushort lo = _domain.PeekUshort(((addr+(i<<3)+(j<<1) + 32)^0x0), bigEndian);
-						matVals[i,j] = ((hi << 16) | lo) / 65536.0f;
-					}
-			}
+			var raw = new ushort[2 * SIZE * SIZE];
+			_domain.BulkPeekUshort(addr.RangeTo(addr + (SIZE * SIZE * sizeof(float) - 1)), bigEndian: true, raw);
 			List<List<string>> strings = new();
 			for (var y = 0; y < SIZE; y++)
 			{
 				strings.Add(new());
 				for (var x = 0; x < SIZE; x++)
 				{
-					strings[y].Add(matVals[y, x].ToString(CultureInfo.InvariantCulture)); // was going to right-pad, as the previous code did (poorly), but I realised that's not necessary and not really helpful, as well as being hard to get right --yoshi
+					var i = y * SIZE + x;
+					uint n = raw[i];
+					n <<= 16;
+					n |= raw[SIZE * SIZE + i];
+					strings[y].Add(((float) Wat(n)).ToString(CultureInfo.InvariantCulture)); // was going to right-pad, as the previous code did (poorly), but I realised that's not necessary and not really helpful, as well as being hard to get right --yoshi
 				}
 			}
 			using N64MatrixDisplayDialog dialog = new(strings);
