@@ -17,12 +17,36 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Windows.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
 	// int to long TODO: 32 bit domains have more digits than the hex editor can account for and the address covers up the 0 column
 	public partial class HexEditor : ToolFormBase, IToolFormAutoConfig
 	{
+		private sealed class N64MatrixDisplayDialog : Form
+		{
+			public N64MatrixDisplayDialog()
+			{
+				TableLayoutPanel tlp = new() { Size = new(352, 104) };
+				const int SIZE = 4;
+				for (var y = 0; y < SIZE; y++) tlp.RowStyles.Add(new());
+				for (var x = 0; x < SIZE; x++) tlp.ColumnStyles.Add(new());
+				for (var y = 0; y < SIZE; y++) for (var x = 0; x < SIZE; x++) tlp.Controls.Add(
+					new SzTextBoxEx { ReadOnly = true, Size = new(80, 23), Text = strings[y][x] },
+					row: y,
+					column: x);
+				SzButtonEx btnCopyTSV = new() { Size = new(128, 23), Text = ".tsv --> Clipboard" };
+				btnCopyTSV.Click += (_, _) => Clipboard.SetText(string.Join(
+					"\n",
+					strings.Select(static l => string.Join("\t", l))));
+				ClientSize = new(352, 144);
+				SuspendLayout();
+				Controls.Add(new SingleColumnFLP { Controls = { tlp, btnCopyTSV } });
+				ResumeLayout();
+			}
+		}
+
 		private class NullMemoryDomain : MemoryDomain
 		{
 			public override byte PeekByte(long addr) => 0;
@@ -1973,8 +1997,9 @@ namespace BizHawk.Client.EmuHawk
 				FreezeContextItem.Image = Resources.Freeze;
 			}
 
-
-			toolStripMenuItem1.Visible = viewN64MatrixToolStripMenuItem.Visible = DataSize == 4;
+			var shouldShowN64Matrix = _highlightedAddress is not null && Emulator.SystemId is VSystemID.Raw.N64;
+			toolStripMenuItem1.Visible = viewN64MatrixToolStripMenuItem.Visible = shouldShowN64Matrix;
+			viewN64MatrixToolStripMenuItem.Visible = shouldShowN64Matrix && (_highlightedAddress.Value & 0b11) is 0;
 		}
 
 		private void IncrementContextItem_Click(object sender, EventArgs e)
@@ -2207,17 +2232,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void viewN64MatrixToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!_highlightedAddress.HasValue)
-			{
-				return;
-			}
-
+			if (_highlightedAddress is null) return;
 			bool bigEndian = true;
-			long addr = _highlightedAddress.Value;
+			var addr = _highlightedAddress.Value & ~0b11L;
 			//ushort  = _domain.PeekWord(addr, bigEndian);
-
-			float[,] matVals = new float[4,4];
-
+			const int SIZE = 4;
+			var matVals = new float[SIZE, SIZE];
 			for (int i = 0; i < 4; i++)
 			{
 					for (int j = 0; j < 4; j++)
@@ -2227,24 +2247,17 @@ namespace BizHawk.Client.EmuHawk
 						matVals[i,j] = ((hi << 16) | lo) / 65536.0f;
 					}
 			}
-
-#if false // if needed
-			DialogController.ShowMessageBox(new System.Numerics.Matrix4x4() {
-				M11 = matVals[0, 0], M12 = matVals[0, 1], M13 = matVals[0, 2], M14 = matVals[0, 3],
-				M21 = matVals[1, 0], M22 = matVals[1, 1], M23 = matVals[1, 2], M24 = matVals[1, 3],
-				M31 = matVals[2, 0], M32 = matVals[2, 1], M33 = matVals[2, 2], M34 = matVals[2, 3],
-				M41 = matVals[3, 0], M42 = matVals[3, 1], M43 = matVals[3, 2], M44 = matVals[3, 3]
-			}.ToString());
-#endif
-
-			using var sw = new StringWriter();
-			for (int i = 0; i < 4; i++)
+			List<List<string>> strings = new();
+			for (var y = 0; y < SIZE; y++)
 			{
-				sw.WriteLine("{0,18:0.00000} {1,18:0.00000} {2,18:0.00000} {3,18:0.00000}", matVals[i, 0], matVals[i, 1], matVals[i, 2], matVals[i, 3]);
+				strings.Add(new());
+				for (var x = 0; x < SIZE; x++)
+				{
+					strings[y].Add(matValue[y, x].ToString(CultureInfo.InvariantCulture)); // was going to right-pad, as the previous code did (poorly), but I realised that's not necessary and not really helpful, as well as being hard to get right --yoshi
+				}
 			}
-
-			var str = sw.ToString();
-			DialogController.ShowMessageBox(str);
+			using N64MatrixDisplayDialog dialog = new(strings);
+			this.ShowDialogAsChild(dialog);
 		}
 	}
 }
