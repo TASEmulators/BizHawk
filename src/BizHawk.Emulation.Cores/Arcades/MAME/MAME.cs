@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					$"Aspect Ratio:       { _wAspect }:{ _hAspect }\r\n" +
 					$"Framerate:          { (float)VsyncNumerator / VsyncDenominator } " +
 					$"({ VsyncNumerator } / { VsyncDenominator })\r\n" +
-					$"Driver Source File: { _driverSourceFile.Substring(_driverSourceFile.IndexOf("src"))}\r\n\r\n" +
+					$"Driver Source File: { _driverSourceFile.RemovePrefix("src")}\r\n\r\n" +
 					text + (text == "" ? "" : "\r\n") +
 					string.Join("\r\n", _romHashes.Select(static r => $"{r.Value} - {r.Key}"));
 
