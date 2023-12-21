@@ -17,7 +17,7 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common.CollectionExtensions;
-using BizHawk.Windows.Controls;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private sealed class N64MatrixDisplayDialog : Form
 		{
-			public N64MatrixDisplayDialog()
+			public N64MatrixDisplayDialog(IReadOnlyList<IReadOnlyList<string>> strings)
 			{
 				TableLayoutPanel tlp = new() { Size = new(352, 104) };
 				const int SIZE = 4;
@@ -1999,7 +1999,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var shouldShowN64Matrix = _highlightedAddress is not null && Emulator.SystemId is VSystemID.Raw.N64;
 			toolStripMenuItem1.Visible = viewN64MatrixToolStripMenuItem.Visible = shouldShowN64Matrix;
-			viewN64MatrixToolStripMenuItem.Visible = shouldShowN64Matrix && (_highlightedAddress.Value & 0b11) is 0;
+			viewN64MatrixToolStripMenuItem.Enabled = shouldShowN64Matrix && (_highlightedAddress.Value & 0b11) is 0;
 		}
 
 		private void IncrementContextItem_Click(object sender, EventArgs e)
@@ -2253,7 +2253,7 @@ namespace BizHawk.Client.EmuHawk
 				strings.Add(new());
 				for (var x = 0; x < SIZE; x++)
 				{
-					strings[y].Add(matValue[y, x].ToString(CultureInfo.InvariantCulture)); // was going to right-pad, as the previous code did (poorly), but I realised that's not necessary and not really helpful, as well as being hard to get right --yoshi
+					strings[y].Add(matVals[y, x].ToString(CultureInfo.InvariantCulture)); // was going to right-pad, as the previous code did (poorly), but I realised that's not necessary and not really helpful, as well as being hard to get right --yoshi
 				}
 			}
 			using N64MatrixDisplayDialog dialog = new(strings);
