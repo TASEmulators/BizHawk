@@ -16,11 +16,11 @@ namespace BizHawk.Common
 			enumType = type;
 		}
 
-		public override bool CanConvertFrom(ITypeDescriptorContext context, Type srcType) => srcType == typeof(string);
+		public override bool CanConvertFrom(ITypeDescriptorContext? context, Type srcType) => srcType == typeof(string);
 
-		public override bool CanConvertTo(ITypeDescriptorContext context, Type destType) => destType == typeof(string);
+		public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destType) => destType == typeof(string);
 
-		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+		public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object? value)
 		{
 			var valueStr = value?.ToString() ?? throw new ArgumentNullException(paramName: nameof(value));
 			return Enum.Parse(
@@ -31,7 +31,7 @@ namespace BizHawk.Common
 			);
 		}
 
-		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destType)
+		public override object ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destType)
 		{
 			var fieldName = Enum.GetName(enumType, value ?? throw new ArgumentNullException(paramName: nameof(value)));
 			if (fieldName != null)
@@ -47,14 +47,14 @@ namespace BizHawk.Common
 			return value.ToString();
 		}
 
-		public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) => new(
+		public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext? context) => new(
 			enumType.GetFields(BindingFlags.Public | BindingFlags.Static)
 				.Select(fi => fi.GetValue(null))
 				.ToList()
 		);
 
-		public override bool GetStandardValuesExclusive(ITypeDescriptorContext context) => true;
+		public override bool GetStandardValuesExclusive(ITypeDescriptorContext? context) => true;
 
-		public override bool GetStandardValuesSupported(ITypeDescriptorContext context) => true;
+		public override bool GetStandardValuesSupported(ITypeDescriptorContext? context) => true;
 	}
 }

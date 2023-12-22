@@ -22,6 +22,10 @@
 		<None Include="$(ProjectDir)../../Assets/dll/libbizhash.*" CopyToOutputDirectory="PreserveNewest" />
 		<None Include="$(ProjectDir)../../Assets/dll/libzstd.*" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
+	<PropertyGroup>
+		<!-- Works around weird issue with IsExternalInit specifically, cause is likely related to https://github.com/Sergio0694/PolySharp/issues/48? -->
+		<PolySharpExcludeTypeForwardedToDeclarations>true</PolySharpExcludeTypeForwardedToDeclarations>
+	</PropertyGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="data/**/*" />
 	</ItemGroup>

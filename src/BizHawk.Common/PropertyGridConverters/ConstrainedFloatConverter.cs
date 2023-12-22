@@ -12,14 +12,14 @@ namespace BizHawk.Common
 	/// </summary>
 	public class ConstrainedFloatConverter : TypeConverter
 	{
-		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+		public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
 		{
 			return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
 		}
 
-		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+		public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object? value)
 		{
-			var range = (RangeAttribute)context.Instance
+			var range = (RangeAttribute)context!.Instance
 				.GetType()
 				.GetProperty(context.PropertyDescriptor!.Name)!
 				.GetCustomAttributes()
@@ -40,7 +40,7 @@ namespace BizHawk.Common
 			throw new FormatException($"Invalid value: {value}, {context.PropertyDescriptor.Name} must be a float.");
 		}
 
-		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+		public override object ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
 		{
 			if (destinationType == null)
 			{

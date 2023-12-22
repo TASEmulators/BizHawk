@@ -5,6 +5,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+#if NET6_0
+using System.Runtime.CompilerServices;
+#endif
 using System.Threading;
 
 namespace BizHawk.Common
@@ -79,7 +82,7 @@ namespace BizHawk.Common
 		}
 
 #if NET6_0
-		public static string DescribeIsNull<T>(T? obj, [CallerArgumentExpression("obj")] string expr = default)
+		public static string DescribeIsNull<T>(T? obj, [CallerArgumentExpression("obj")] string? expr = default)
 #else
 		public static string DescribeIsNull<T>(T? obj, string expr)
 #endif
@@ -87,7 +90,7 @@ namespace BizHawk.Common
 			=> $"{expr} is {(obj is null ? "null" : "not null")}";
 
 #if NET6_0
-		public static string DescribeIsNullValT<T>(T? boxed, [CallerArgumentExpression("boxed")] string expr = default)
+		public static string DescribeIsNullValT<T>(T? boxed, [CallerArgumentExpression("boxed")] string? expr = default)
 #else
 		public static string DescribeIsNullValT<T>(T? boxed, string expr)
 #endif
