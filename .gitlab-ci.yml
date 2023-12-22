@@ -27,7 +27,7 @@ build_asms_debug:
       - output
   image: mcr.microsoft.com/dotnet/sdk:6.0
   script:
-    - Dist/BuildDebug.sh
+    - Dist/BuildDebug.sh -v normal
   stage: build
 
 build_asms_release:
@@ -39,7 +39,7 @@ build_asms_release:
   image: mcr.microsoft.com/dotnet/sdk:6.0
   script:
   - if [ "$CI_COMMIT_REF_SLUG" == "release" ]; then Dist/UpdateVersionInfoForRelease.sh; fi
-  - Dist/BuildRelease.sh
+  - Dist/BuildRelease.sh -v normal
   stage: build
 
 build_ext_projs:
@@ -49,7 +49,7 @@ build_ext_projs:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
     when: always
   script:
-  - for d in $CI_PROJECT_DIR/ExternalProjects/*; do if [ -e "$d/build_release.sh" -a "$(find "$d" -maxdepth 1 -name '*.csproj' -print -quit)" ]; then cd "$d"; ./build_release.sh || exit $?; fi; done
+  - for d in $CI_PROJECT_DIR/ExternalProjects/*; do if [ -e "$d/build_release.sh" -a "$(find "$d" -maxdepth 1 -name '*.csproj' -print -quit)" ]; then cd "$d"; ./build_release.sh -v normal || exit $?; fi; done
   stage: test
 
 build_ext_tools:
@@ -61,7 +61,7 @@ build_ext_tools:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
     when: always
   script:
-  - for d in $CI_PROJECT_DIR/ExternalToolProjects/*; do if [ -d "$d" ]; then cd "$d" && ./build_release.sh; fi; done
+  - for d in $CI_PROJECT_DIR/ExternalToolProjects/*; do if [ -d "$d" ]; then cd "$d" && ./build_release.sh -v normal; fi; done
   stage: test
 
 build_nix_master:
@@ -99,7 +99,7 @@ check_style:
     when: always
     allow_failure: false
   script:
-  - Dist/BuildRelease.sh -p:RunAnalyzersDuringBuild=true
+  - Dist/BuildRelease.sh -v normal -p:RunAnalyzersDuringBuild=true
   stage: test
 
 .disabled_job_infersharp:
@@ -198,7 +198,7 @@ run_tests:
     artifacts: false
   script:
   - Dist/BuildDebug.sh # populate output
-  - Dist/BuildTestRelease.sh
+  - Dist/BuildTestRelease.sh -v normal
   stage: test
 
 .disabled_job_sast:
