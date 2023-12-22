@@ -14,8 +14,8 @@ namespace BizHawk.Client.EmuHawk
 			using (_renderer.LockGraphics(e.Graphics))
 			{
 				// White Background
-				_renderer.SetBrush(Color.White);
-				_renderer.SetSolidPen(Color.White);
+				_renderer.SetBrush(_backColor);
+				_renderer.SetSolidPen(_backColor);
 				_renderer.FillRectangle(e.ClipRectangle);
 
 				// Lag frame calculations
@@ -510,7 +510,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoSelectionBG(List<RollColumn> visibleColumns, Rectangle rect)
 		{
-			Color rowColor = Color.White;
 			var visibleRows = FirstVisibleRow.RangeTo(LastVisibleRow);
 			int lastRow = -1;
 			foreach (Cell cell in _selectedItems)
@@ -527,6 +526,7 @@ namespace BizHawk.Client.EmuHawk
 				};
 				relativeCell.RowIndex -= CountLagFramesAbsolute(relativeCell.RowIndex.Value);
 
+				var rowColor = _backColor;
 				if (QueryRowBkColor != null && lastRow != cell.RowIndex.Value)
 				{
 					QueryRowBkColor(cell.RowIndex.Value, ref rowColor);
@@ -603,27 +603,21 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0, f = 0; f < range; i++, f++)
 			{
 				f += _lagFrames[i];
-				Color rowColor = Color.White;
+				var rowColor = _backColor;
 				QueryRowBkColor?.Invoke(f + startIndex, ref rowColor);
 
 				foreach (var column in visibleColumns)
 				{
-					Color itemColor = Color.White;
+					var itemColor = rowColor;
 					QueryItemBkColor?.Invoke(f + startIndex, column, ref itemColor);
-
-					if (itemColor == Color.White)
-					{
-						itemColor = rowColor;
-					}
-					else if (itemColor.A != 255 && itemColor.A != 0)
+					if (itemColor.A is not 0 or 255)
 					{
 						float alpha = (float)itemColor.A / 255;
 						itemColor = Color.FromArgb(rowColor.R - (int)((rowColor.R - itemColor.R) * alpha),
 							rowColor.G - (int)((rowColor.G - itemColor.G) * alpha),
 							rowColor.B - (int)((rowColor.B - itemColor.B) * alpha));
 					}
-
-					if (itemColor != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
+					if (itemColor != _backColor) // An easy optimization, don't draw unless the user specified something other than the default
 					{
 						var cell = new Cell
 						{

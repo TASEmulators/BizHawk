@@ -31,8 +31,21 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Timer _hoverTimer = new Timer();
 		private readonly byte[] _lagFrames = new byte[256]; // Large enough value that it shouldn't ever need resizing. // apparently not large enough for 4K
 
-		private readonly Color _foreColor;
-		private readonly Color _backColor;
+		private Color _backColor;
+
+		public override Color BackColor
+		{
+			get => _backColor;
+			set => base.BackColor = _backColor = value;
+		}
+
+		private Color _foreColor;
+
+		public override Color ForeColor
+		{
+			get => _foreColor;
+			set => base.ForeColor = _foreColor = value;
+		}
 
 		private RollColumns _columns = new RollColumns();
 		private bool _horizontalOrientation;
@@ -117,8 +130,18 @@ namespace BizHawk.Client.EmuHawk
 			_hoverTimer.Tick += HoverTimerEventProcessor;
 			_hoverTimer.Stop();
 
-			_foreColor = ForeColor;
-			_backColor = BackColor;
+			if (OSTailoredCode.IsUnixHost)
+			{
+				// sorry dark theme users, but this needs to be readable
+				_backColor = Color.White;
+				_foreColor = Color.Black;
+			}
+			else
+			{
+				// this is the ctor, so these reads will always return the default values
+				_backColor = base.BackColor;
+				_foreColor = base.ForeColor;
+			}
 		}
 
 		private void HoverTimerEventProcessor(object sender, EventArgs e)
