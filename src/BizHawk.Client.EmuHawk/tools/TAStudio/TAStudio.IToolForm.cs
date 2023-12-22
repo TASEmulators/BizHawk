@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-
-using BizHawk.Client.Common;
+﻿using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -135,30 +133,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			StopSeeking();
-
-			if (CurrentTasMovie != null && CurrentTasMovie.Changes)
-			{
-				var result = MainForm.DoWithTempMute(() => MessageBox.Show(
-					"Save Changes?",
-					"Tastudio",
-					MessageBoxButtons.YesNoCancel,
-					MessageBoxIcon.Question,
-					MessageBoxDefaultButton.Button3));
-				if (result == DialogResult.Yes)
-				{
-					SaveTas();
-				}
-				else if (result == DialogResult.No)
-				{
-					CurrentTasMovie.ClearChanges();
-					return true;
-				}
-				else if (result == DialogResult.Cancel)
-				{
-					return false;
-				}
-			}
-
+			if (CurrentTasMovie?.Changes is not true) return true;
+			var result = DialogController.DoWithTempMute(() => this.ModalMessageBox3(
+				caption: "Closing with Unsaved Changes",
+				icon: EMsgBoxIcon.Question,
+				text: $"Save {WindowTitleStatic} project?"));
+			if (result is null) return false;
+			if (result.Value) SaveTas();
+			else CurrentTasMovie.ClearChanges();
 			return true;
 		}
 	}

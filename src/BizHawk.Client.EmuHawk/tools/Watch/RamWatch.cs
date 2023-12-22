@@ -206,32 +206,28 @@ namespace BizHawk.Client.EmuHawk
 
 		public override bool AskSaveChanges()
 		{
-			if (_watches.Changes)
+			if (!_watches.Changes) return true;
+			var result = DialogController.DoWithTempMute(() => this.ModalMessageBox3(
+				caption: "Closing with Unsaved Changes",
+				icon: EMsgBoxIcon.Question,
+				text: "Save watch file?"));
+			if (result is null) return false;
+			if (result.Value)
 			{
-				var result = MainForm.DoWithTempMute(() => MessageBox.Show("Save Changes?", "RAM Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3));
-				if (result == DialogResult.Yes)
+				if (string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 				{
-					if (string.IsNullOrWhiteSpace(_watches.CurrentFileName))
-					{
-						SaveAs();
-					}
-					else
-					{
-						_watches.Save();
-						Config.RecentWatches.Add(_watches.CurrentFileName);
-					}
+					SaveAs();
 				}
-				else if (result == DialogResult.No)
+				else
 				{
-					_watches.Changes = false;
-					return true;
-				}
-				else if (result == DialogResult.Cancel)
-				{
-					return false;
+					_watches.Save();
+					Config.RecentWatches.Add(_watches.CurrentFileName);
 				}
 			}
-
+			else
+			{
+				_watches.Changes = false;
+			}
 			return true;
 		}
 

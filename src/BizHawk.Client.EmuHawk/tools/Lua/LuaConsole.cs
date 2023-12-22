@@ -700,28 +700,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public override bool AskSaveChanges()
 		{
-			if (LuaImp.ScriptList.Changes && !string.IsNullOrEmpty(LuaImp.ScriptList.Filename))
-			{
-				var result = MainForm.DoWithTempMute(() => MessageBox.Show("Save changes to session?", "Lua Console", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3));
-				if (result == DialogResult.Yes)
-				{
-					SaveOrSaveAs();
-
-					return true;
-				}
-
-				if (result == DialogResult.No)
-				{
-					LuaImp.ScriptList.Changes = false;
-					return true;
-				}
-
-				if (result == DialogResult.Cancel)
-				{
-					return false;
-				}
-			}
-
+			if (!LuaImp.ScriptList.Changes || string.IsNullOrEmpty(LuaImp.ScriptList.Filename)) return true;
+			var result = DialogController.DoWithTempMute(() => this.ModalMessageBox3(
+				caption: "Closing with Unsaved Changes",
+				icon: EMsgBoxIcon.Question,
+				text: $"Save {WindowTitleStatic} session?"));
+			if (result is null) return false;
+			if (result.Value) SaveOrSaveAs();
+			else LuaImp.ScriptList.Changes = false;
 			return true;
 		}
 
