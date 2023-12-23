@@ -61,9 +61,9 @@ dotnet_diagnostic.IDE0052.severity = silent # TODO: should be warning imo, but t
 # Use compound assignment
 dotnet_diagnostic.IDE0054.severity = warning
 # Use index operator
-dotnet_diagnostic.IDE0056.severity = warning
+dotnet_diagnostic.IDE0056.severity = suggestion
 # Use range operator
-dotnet_diagnostic.IDE0057.severity = warning
+dotnet_diagnostic.IDE0057.severity = suggestion
 # Use simple using statement
 dotnet_diagnostic.IDE0063.severity = suggestion
 # Make struct fields writable
