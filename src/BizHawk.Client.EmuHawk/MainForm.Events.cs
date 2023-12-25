@@ -1818,7 +1818,7 @@ namespace BizHawk.Client.EmuHawk
 			Config.N64UseCircularAnalogConstraint ^= true;
 		}
 
-		private void Mupen64PlusSetNonVILagFrames(bool newValue, ISettingsAdapter settable)
+		private static void Mupen64PlusSetMupenStyleLag(bool newValue, ISettingsAdapter settable)
 		{
 			var s = (N64Settings) settable.GetSettings();
 			s.UseMupenStyleLag = newValue;
@@ -1826,7 +1826,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MupenStyleLagMenuItem_Click(object sender, EventArgs e)
-			=> Mupen64PlusSetNonVILagFrames(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<N64>());
+			=> Mupen64PlusSetMupenStyleLag(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<N64>());
 
 		private void Mupen64PlusSetUseExpansionSlot(bool newValue, ISettingsAdapter settable)
 		{
@@ -2842,9 +2842,9 @@ namespace BizHawk.Client.EmuHawk
 			var mupen64PlusGraphicsSettingsItem = CreateSettingsItem("Video Plugins...", N64PluginSettingsMenuItem_Click);
 			var mupen64PlusGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenMupen64PlusGamepadSettingsDialog(GetSettingsAdapterFor<N64>()));
 			var mupen64PlusAnalogConstraintItem = CreateSettingsItem("Circular Analog Range", N64CircularAnalogRangeMenuItem_Click);
-			var mupen64PlusNonVILagFramesItem = CreateSettingsItem("Non-VI Lag Frames", (sender, _) => Mupen64PlusSetNonVILagFrames(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<N64>()));
+			var mupen64PlusMupenStyleLagFramesItem = CreateSettingsItem("Mupen Style Lag Frames", (sender, _) => Mupen64PlusSetMupenStyleLag(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<N64>()));
 			var mupen64PlusUseExpansionSlotItem = CreateSettingsItem("Use Expansion Slot", (sender, _) => Mupen64PlusSetUseExpansionSlot(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<N64>()));
-			var mupen64PlusSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Mupen64Plus, mupen64PlusGraphicsSettingsItem, mupen64PlusGamepadSettingsItem, mupen64PlusAnalogConstraintItem, mupen64PlusNonVILagFramesItem, mupen64PlusUseExpansionSlotItem);
+			var mupen64PlusSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Mupen64Plus, mupen64PlusGraphicsSettingsItem, mupen64PlusGamepadSettingsItem, mupen64PlusAnalogConstraintItem, mupen64PlusMupenStyleLagFramesItem, mupen64PlusUseExpansionSlotItem);
 			mupen64PlusSubmenu.DropDownOpened += (_, _) =>
 			{
 				var settable = GetSettingsAdapterFor<N64>();
@@ -2855,7 +2855,7 @@ namespace BizHawk.Client.EmuHawk
 				mupen64PlusGraphicsSettingsItem.Enabled = !loadedCoreIsMupen64Plus || !isMovieActive;
 				mupen64PlusGamepadSettingsItem.Enabled = !loadedCoreIsMupen64Plus || !isMovieActive;
 				mupen64PlusAnalogConstraintItem.Checked = Config.N64UseCircularAnalogConstraint;
-				mupen64PlusNonVILagFramesItem.Checked = s.UseMupenStyleLag;
+				mupen64PlusMupenStyleLagFramesItem.Checked = s.UseMupenStyleLag;
 				if (loadedCoreIsMupen64Plus)
 				{
 					mupen64PlusUseExpansionSlotItem.Checked = mupen64Plus.UsingExpansionSlot;

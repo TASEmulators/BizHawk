@@ -221,7 +221,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			_inputProvider.Controller = controller;
 
-			IsVIFrame = false;
+			FrameFinished = false;
 
 			api.setTraceCallback(Tracer?.IsEnabled() is true ? _tracecb : null);
 

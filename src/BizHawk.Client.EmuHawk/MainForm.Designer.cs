@@ -1765,7 +1765,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// MupenStyleLagMenuItem
 			// 
-			this.MupenStyleLagMenuItem.Text = "&Non-VI Lag Frames";
+			this.MupenStyleLagMenuItem.Text = "&Mupen Style Lag Frames";
 			this.MupenStyleLagMenuItem.Click += new System.EventHandler(this.MupenStyleLagMenuItem_Click);
 			// 
 			// N64ExpansionSlotMenuItem

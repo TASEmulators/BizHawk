@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				if (_settings.UseMupenStyleLag)
 				{
-					return !IsVIFrame;
+					return !FrameFinished;
 				}
 
 				return !_inputProvider.LastFrameInputPolled;
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				if (_settings.UseMupenStyleLag)
 				{
-					IsVIFrame = !value;
+					FrameFinished = !value;
 				}
 				else
 				{
@@ -32,10 +32,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 		}
 
-		public bool IsVIFrame
+		public bool FrameFinished
 		{
-			get => _videoProvider.IsVIFrame;
-			internal set => _videoProvider.IsVIFrame = value;
+			get => _videoProvider.FrameFinished;
+			internal set => _videoProvider.FrameFinished = value;
 		}
 
 		// TODO: optimize managed to unmanaged using the ActiveChanged event
