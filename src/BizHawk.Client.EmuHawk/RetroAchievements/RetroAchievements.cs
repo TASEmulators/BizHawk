@@ -47,6 +47,7 @@ namespace BizHawk.Client.EmuHawk
 			InputManager inputManager,
 			ToolManager tools,
 			Func<Config> getConfig,
+			Action<string> playWavFile,
 			ToolStripItemCollection raDropDownItems,
 			Action shutdownRACallback)
 		{
@@ -72,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					return new RCheevos(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback);
+					return new RCheevos(mainForm, inputManager, tools, getConfig, playWavFile, raDropDownItems, shutdownRACallback);
 				}
 			}
 

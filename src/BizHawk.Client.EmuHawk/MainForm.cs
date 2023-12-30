@@ -4895,13 +4895,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenRetroAchievements()
 		{
-			RA = RetroAchievements.CreateImpl(this, InputManager, Tools, () => Config, RetroAchievementsMenuItem.DropDownItems, () =>
-			{
-				RA.Dispose();
-				RA = null;
-				RetroAchievementsMenuItem.DropDownItems.Clear();
-				RetroAchievementsMenuItem.DropDownItems.Add(StartRetroAchievementsMenuItem);
-			});
+			RA = RetroAchievements.CreateImpl(
+				this,
+				InputManager,
+				Tools,
+				() => Config,
+				path => Sound.PlayWavFile(path, 1), // TODO: Make this configurable
+				RetroAchievementsMenuItem.DropDownItems,
+				() =>
+				{
+					RA.Dispose();
+					RA = null;
+					RetroAchievementsMenuItem.DropDownItems.Clear();
+					RetroAchievementsMenuItem.DropDownItems.Add(StartRetroAchievementsMenuItem);
+				});
 
 			RA?.Restart();
 		}

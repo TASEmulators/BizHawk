@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 using SharpDX;
 using SharpDX.DirectSound;
@@ -18,7 +20,7 @@ namespace BizHawk.Bizware.Audio
 		private readonly IntPtr _mainWindowHandle;
 		private bool _disposed;
 		private DirectSound _device;
-		private SecondarySoundBuffer _deviceBuffer;
+		private SecondarySoundBuffer _deviceBuffer, _wavDeviceBuffer;
 		private int _actualWriteOffsetBytes = -1;
 		private int _filledBufferSizeBytes;
 		private long _lastWriteTime;
@@ -40,6 +42,7 @@ namespace BizHawk.Bizware.Audio
 		{
 			if (_disposed) return;
 
+			StopWav(throwOnInvalidDevice: false);
 			_device.Dispose();
 			_device = null;
 
@@ -62,6 +65,8 @@ namespace BizHawk.Bizware.Audio
 			// can't use StopSound, as that checks IsPlaying, which will end up calling this function again!
 			_deviceBuffer.Dispose();
 			_deviceBuffer = null;
+
+			StopWav(throwOnInvalidDevice: false);
 
 			_device.Dispose();
 			_device = new();
@@ -272,6 +277,105 @@ namespace BizHawk.Bizware.Audio
 				_deviceBuffer?.Restore();
 				StartPlaying();
 			}
+		}
+
+		private bool IsWavPlaying
+		{
+			get
+			{
+				if (_wavDeviceBuffer == null)
+				{
+					return false;
+				}
+
+				var status = (BufferStatus)_wavDeviceBuffer.Status;
+				return (status & BufferStatus.BufferLost) == 0 &&
+					(status & BufferStatus.Playing) == BufferStatus.Playing;
+			}
+		}
+
+		private void StopWav(bool throwOnInvalidDevice = true)
+		{
+			bool isPlaying;
+			try
+			{
+				isPlaying = IsWavPlaying;
+			}
+			catch (SharpDXException)
+			{
+				if (throwOnInvalidDevice)
+				{
+					throw;
+				}
+
+				isPlaying = false;
+			}
+
+			if (isPlaying)
+			{
+				try
+				{
+					_wavDeviceBuffer.Stop();
+				}
+				catch (SharpDXException)
+				{
+				}
+			}
+
+			_wavDeviceBuffer?.Dispose();
+			_wavDeviceBuffer = null;
+		}
+
+		public void PlayWavFile(string path, double volume)
+		{
+			using var wavStream = new SDL2WavStream(path);
+			var format = wavStream.Format == SDL2WavStream.AudioFormat.F32LSB
+				? WaveFormat.CreateIeeeFloatWaveFormat(wavStream.Frequency, wavStream.Channels)
+				: new(wavStream.Frequency, wavStream.BitsPerSample, wavStream.Channels);
+
+			var desc = new SoundBufferDescription
+			{
+				Format = format,
+				Flags =
+					BufferFlags.GlobalFocus |
+					BufferFlags.Software |
+					BufferFlags.GetCurrentPosition2 |
+					BufferFlags.ControlVolume,
+				BufferBytes = unchecked((int)wavStream.Length)
+			};
+
+			StopWav();
+			_wavDeviceBuffer = new(_device, desc);
+			const int TEMP_BUFFER_LENGTH = 65536;
+			var tempBuffer = ArrayPool<byte>.Shared.Rent(TEMP_BUFFER_LENGTH);
+			try
+			{
+				var bufferOffset = 0;
+				while (true)
+				{
+					var numRead = wavStream.Read(tempBuffer, 0, TEMP_BUFFER_LENGTH);
+					if (numRead == 0)
+					{
+						break;
+					}
+
+					if (wavStream.Format == SDL2WavStream.AudioFormat.S16MSB)
+					{
+						EndiannessUtils.MutatingByteSwap16(tempBuffer.AsSpan()[..numRead]);
+					}
+
+					_wavDeviceBuffer.Write(tempBuffer, 0, numRead, bufferOffset, LockFlags.None);
+					bufferOffset += numRead;
+				}
+			}
+			finally
+			{
+				ArrayPool<byte>.Shared.Return(tempBuffer);
+			}
+
+			const int range = Volume.Maximum - Volume.Minimum;
+			_wavDeviceBuffer.Volume = (int)(Math.Pow(volume, 0.1) * range) + Volume.Minimum;
+			_wavDeviceBuffer.Play(0, PlayFlags.None);
 		}
 	}
 }

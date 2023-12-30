@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 using Vortice.MediaFoundation;
 using Vortice.Multimedia;
@@ -17,8 +18,9 @@ namespace BizHawk.Bizware.Audio
 		private volatile bool _deviceResetRequired;
 		private IXAudio2 _device;
 		private IXAudio2MasteringVoice _masteringVoice;
-		private IXAudio2SourceVoice _sourceVoice;
+		private IXAudio2SourceVoice _sourceVoice, _wavVoice;
 		private BufferPool _bufferPool;
+		private AudioBuffer _wavBuffer;
 		private long _runningSamplesQueued;
 
 		private static string GetDeviceId(string deviceName)
@@ -49,7 +51,7 @@ namespace BizHawk.Bizware.Audio
 			// note that this won't be called on the main thread, so we'll defer the reset to the main thread
 			_device.CriticalError += (_, _) => _deviceResetRequired = true;
 			_masteringVoice = _device.CreateMasteringVoice(
-				inputChannels: _sound.ChannelCount, 
+				inputChannels: _sound.ChannelCount,
 				inputSampleRate: _sound.SampleRate,
 				deviceId: GetDeviceId(chosenDeviceName));
 		}
@@ -58,6 +60,7 @@ namespace BizHawk.Bizware.Audio
 		{
 			if (_disposed) return;
 
+			StopWav();
 			_masteringVoice.Dispose();
 			_device.Dispose();
 
@@ -113,6 +116,7 @@ namespace BizHawk.Bizware.Audio
 				_deviceResetRequired = false;
 
 				StopSound();
+				StopWav();
 				_masteringVoice.Dispose();
 				_device.Dispose();
 
@@ -138,6 +142,7 @@ namespace BizHawk.Bizware.Audio
 			{
 				_sound.HandleInitializationOrUnderrun(detectedUnderrun, ref samplesNeeded);
 			}
+
 			return samplesNeeded;
 		}
 
@@ -152,6 +157,38 @@ namespace BizHawk.Bizware.Audio
 			item.AudioBuffer.AudioBytes = byteCount;
 			_sourceVoice.SubmitSourceBuffer(item.AudioBuffer);
 			_runningSamplesQueued += sampleCount;
+		}
+
+		private void StopWav()
+		{
+			_wavVoice?.Stop();
+			_wavVoice?.Dispose();
+			_wavVoice = null;
+
+			_wavBuffer?.Dispose();
+			_wavBuffer = null;
+		}
+
+		public void PlayWavFile(string path, double volume)
+		{
+			using var wavStream = new SDL2WavStream(path);
+			var format = wavStream.Format == SDL2WavStream.AudioFormat.F32LSB
+				? WaveFormat.CreateIeeeFloatWaveFormat(wavStream.Frequency, wavStream.Channels)
+				: new(wavStream.Frequency, wavStream.BitsPerSample, wavStream.Channels);
+
+			StopWav();
+			_wavVoice = _device.CreateSourceVoice(format);
+			_wavBuffer = new(unchecked((int)wavStream.Length));
+
+			wavStream.Read(_wavBuffer.AsSpan());
+			if (wavStream.Format == SDL2WavStream.AudioFormat.S16MSB)
+			{
+				EndiannessUtils.MutatingByteSwap16(_wavBuffer.AsSpan());
+			}
+
+			_wavVoice.SubmitSourceBuffer(_wavBuffer);
+			_wavVoice.Volume = (float)volume;
+			_wavVoice.Start();
 		}
 
 		private class BufferPool : IDisposable

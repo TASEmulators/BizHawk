@@ -214,10 +214,13 @@ namespace BizHawk.Client.EmuHawk
 			InputManager inputManager,
 			ToolManager tools,
 			Func<Config> getConfig,
+			Action<string> playWavFile,
 			ToolStripItemCollection raDropDownItems,
 			Action shutdownRACallback)
 				: base(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback)
 		{
+			_playWavFileCallback = playWavFile;
+
 			_isActive = true;
 			_httpThread = new(HttpRequestThreadProc) { IsBackground = true, Priority = ThreadPriority.BelowNormal, Name = "RCheevos HTTP Thread" };
 			_httpThread.Start();
@@ -227,7 +230,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				throw new("rc_runtime_alloc returned NULL!");
 			}
-			Login();
 
 			_eventcb = EventHandlerCallback;
 			_peekcb = PeekCallback;
@@ -241,6 +243,7 @@ namespace BizHawk.Client.EmuHawk
 			EnableSoundEffects = config.RASoundEffects;
 			AllowUnofficialCheevos = config.RAAllowUnofficialCheevos;
 
+			Login();
 			BuildMenu(raDropDownItems);
 		}
 
@@ -488,7 +491,7 @@ namespace BizHawk.Client.EmuHawk
 							var prefix = HardcoreMode ? "[HARDCORE] " : "";
 							_dialogParent.AddOnScreenMessage($"{prefix}Achievement Unlocked!");
 							_dialogParent.AddOnScreenMessage(cheevo.Description);
-							if (EnableSoundEffects) _unlockSound.PlayNoExceptions();
+							PlaySound(_unlockSound);
 
 							if (cheevo.IsOfficial)
 							{
@@ -509,7 +512,7 @@ namespace BizHawk.Client.EmuHawk
 							var prefix = HardcoreMode ? "[HARDCORE] " : "";
 							_dialogParent.AddOnScreenMessage($"{prefix}Achievement Primed!");
 							_dialogParent.AddOnScreenMessage(cheevo.Description);
-							if (EnableSoundEffects) _infoSound.PlayNoExceptions();
+							PlaySound(_infoSound);
 						}
 
 						break;
@@ -528,7 +531,7 @@ namespace BizHawk.Client.EmuHawk
 								CurrentLboard = lboard;
 								_dialogParent.AddOnScreenMessage($"Leaderboard Attempt Started!");
 								_dialogParent.AddOnScreenMessage(lboard.Description);
-								if (EnableSoundEffects) _lboardStartSound.PlayNoExceptions();
+								PlaySound(_lboardStartSound);
 							}
 						}
 
@@ -550,7 +553,7 @@ namespace BizHawk.Client.EmuHawk
 
 								_dialogParent.AddOnScreenMessage($"Leaderboard Attempt Failed! ({lboard.Score})");
 								_dialogParent.AddOnScreenMessage(lboard.Description);
-								if (EnableSoundEffects) _lboardFailedSound.PlayNoExceptions();
+								PlaySound(_lboardFailedSound);
 							}
 
 							lboard.SetScore(0);
@@ -588,7 +591,7 @@ namespace BizHawk.Client.EmuHawk
 
 								_dialogParent.AddOnScreenMessage($"Leaderboard Attempt Complete! ({lboard.Score})");
 								_dialogParent.AddOnScreenMessage(lboard.Description);
-								if (EnableSoundEffects) _unlockSound.PlayNoExceptions();
+								PlaySound(_unlockSound);
 							}
 						}
 
@@ -615,7 +618,7 @@ namespace BizHawk.Client.EmuHawk
 							var prefix = HardcoreMode ? "[HARDCORE] " : "";
 							_dialogParent.AddOnScreenMessage($"{prefix}Achievement Unprimed!");
 							_dialogParent.AddOnScreenMessage(cheevo.Description);
-							if (EnableSoundEffects) _infoSound.PlayNoExceptions();
+							PlaySound(_infoSound);
 						}
 
 						break;

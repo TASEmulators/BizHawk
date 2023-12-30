@@ -76,5 +76,9 @@ namespace BizHawk.Client.Common
 			if (sampleCount == 0) return;
 			_remainingSamples += sampleCount;
 		}
+
+		public void PlayWavFile(string path, double volume)
+		{
+		}
 	}
 }

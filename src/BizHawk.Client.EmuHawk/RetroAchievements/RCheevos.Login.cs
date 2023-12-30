@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					config.RAUsername = Username;
 					config.RAToken = ApiToken;
-					if (EnableSoundEffects) _loginSound.PlayNoExceptions();
+					PlaySound(_loginSound);
 					return;
 				}
 			}
@@ -79,9 +79,9 @@ namespace BizHawk.Client.EmuHawk
 			config.RAUsername = Username;
 			config.RAToken = ApiToken;
 
-			if (LoggedIn && EnableSoundEffects)
+			if (LoggedIn)
 			{
-				_loginSound.PlayNoExceptions();
+				PlaySound(_loginSound);
 			}
 		}
 

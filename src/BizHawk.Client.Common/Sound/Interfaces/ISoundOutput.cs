@@ -10,5 +10,6 @@ namespace BizHawk.Client.Common
 		int MaxSamplesDeficit { get; }
 		int CalculateSamplesNeeded();
 		void WriteSamples(short[] samples, int sampleOffset, int sampleCount);
+		void PlayWavFile(string path, double volume);
 	}
 }
