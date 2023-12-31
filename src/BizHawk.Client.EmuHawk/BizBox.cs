@@ -2,20 +2,26 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
+
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class BizBox : Form
 	{
-		public BizBox()
+		private static readonly byte[] _bizBoxSound = ReflectionCache.EmbeddedResourceStream("Resources.nothawk.wav").ReadAllBytes();
+		private readonly Action<byte[]> _playWavFileCallback;
+
+		public BizBox(Action<byte[]> playWavFileCallback)
 		{
 			InitializeComponent();
 			Icon = Resources.Logo;
 			pictureBox1.Image = Resources.CorpHawk;
 			btnCopyHash.Image = Resources.Duplicate;
+			_playWavFileCallback = playWavFileCallback;
 		}
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -60,6 +66,9 @@ namespace BizHawk.Client.EmuHawk
 
 			linkLabel2.Text = $"Commit :{VersionInfo.GIT_BRANCH}@{VersionInfo.GIT_SHORTHASH}";
 		}
+
+		private void BizBox_Shown(object sender, EventArgs e)
+			=> _playWavFileCallback(_bizBoxSound);
 
 		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
