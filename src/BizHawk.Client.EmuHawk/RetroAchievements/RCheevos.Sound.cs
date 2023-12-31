@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlaySound(Stream wavFile)
 		{
-			if (EnableSoundEffects)
+			if (EnableSoundEffects && wavFile != null)
 			{
 				wavFile.Position = 0;
 				_playWavFileCallback(wavFile);
