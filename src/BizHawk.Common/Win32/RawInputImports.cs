@@ -88,14 +88,14 @@ namespace BizHawk.Common
 		public struct RAWKEYBOARD
 		{
 			public ushort MakeCode;
-			public RIM_KEY Flags;
+			public RI_KEY Flags;
 			public ushort Reserved;
 			public ushort VKey;
 			public uint Message;
 			public uint ExtraInformation;
 
 			[Flags]
-			public enum RIM_KEY : ushort
+			public enum RI_KEY : ushort
 			{
 				MAKE = 0,
 				BREAK = 1,
