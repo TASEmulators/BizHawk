@@ -94,12 +94,13 @@ namespace BizHawk.Common
 			public uint Message;
 			public uint ExtraInformation;
 
+			[Flags]
 			public enum RIM_KEY : ushort
 			{
 				MAKE = 0,
 				BREAK = 1,
 				E0 = 2,
-				E1 = 3,
+				E1 = 4,
 			}
 		}
 

@@ -86,7 +86,8 @@ namespace BizHawk.Bizware.Input
 					return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 				}
 
-				if (input->header.dwType == RAWINPUTHEADER.RIM_TYPE.KEYBOARD && input->data.keyboard.Flags <= RAWKEYBOARD.RIM_KEY.E1)
+				if (input->header.dwType == RAWINPUTHEADER.RIM_TYPE.KEYBOARD &&
+					(input->data.keyboard.Flags & ~(RAWKEYBOARD.RIM_KEY.E0 | RAWKEYBOARD.RIM_KEY.BREAK)) == 0)
 				{
 					var handle = GCHandle.FromIntPtr(ud);
 					var rawKeyInput = (RawKeyInput)handle.Target;
@@ -95,7 +96,16 @@ namespace BizHawk.Bizware.Input
 					{
 						// TODO: Make a separate enum map for RAWINPUT / VKeys and don't rely on DKeyInput's maps 
 						var rawKey = (RawKey)(input->data.keyboard.MakeCode |
-							(input->data.keyboard.Flags >= RAWKEYBOARD.RIM_KEY.E0 ? 0x80 : 0));
+							((input->data.keyboard.Flags & RAWKEYBOARD.RIM_KEY.E0) != 0 ? 0x80 : 0));
+
+						// kind of a dumb hack, the Pause key is apparently special here
+						// keyboards would send scancode 0x1D with an E1 prefix, followed by 0x45 (which is NumLock!)
+						// this "NumLock" press will set the VKey to 255 (invalid VKey), so we can use that to know if this is actually a Pause press
+						// (note that DIK_PAUSE is just 0x45 with an E0 prefix, although this is likely just a conversion DirectInput does internally)
+						if (rawKey == RawKey.NumberLock && input->data.keyboard.VKey == 0xFF)
+						{
+							rawKey = RawKey.Pause;
+						}
 
 						if (rawKeyInput.HandleAltKbLayouts)
 						{
@@ -104,7 +114,7 @@ namespace BizHawk.Bizware.Input
 
 						if (DKeyInput.KeyEnumMap.TryGetValue(rawKey, out var key) && key != DistinctKey.Unknown)
 						{
-							rawKeyInput.KeyEvents.Add(new(key, input->data.keyboard.Flags is RAWKEYBOARD.RIM_KEY.MAKE or RAWKEYBOARD.RIM_KEY.E0));
+							rawKeyInput.KeyEvents.Add(new(key, (input->data.keyboard.Flags & RAWKEYBOARD.RIM_KEY.BREAK) == RAWKEYBOARD.RIM_KEY.MAKE));
 						}
 					}
 				}
