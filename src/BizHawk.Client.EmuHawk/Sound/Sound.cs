@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 
 using BizHawk.Bizware.Audio;
@@ -236,12 +237,12 @@ namespace BizHawk.Client.EmuHawk
 			_outputDevice.WriteSamples(samples, sampleOffset, sampleCount);
 		}
 
-		public void PlayWavFile(string path, float atten)
+		public void PlayWavFile(Stream wavFile, float atten)
 		{
 			if (atten <= 0) return;
 			try
 			{
-				_outputDevice.PlayWavFile(path, Math.Min(atten, 1));
+				_outputDevice.PlayWavFile(wavFile, Math.Min(atten, 1));
 			}
 			catch (Exception e)
 			{

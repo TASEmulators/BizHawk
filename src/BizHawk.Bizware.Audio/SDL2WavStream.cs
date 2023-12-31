@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Buffers;
 using System.IO;
+using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 
@@ -16,11 +18,11 @@ namespace BizHawk.Bizware.Audio
 		// These are the only formats SDL2's wav loadder will output
 		public enum AudioFormat : ushort
 		{
-			U8 = 0x0008,
-			S16LSB = 0x8010,
-			S32LSB = 0x8020,
-			F32LSB = 0x8120,
-			S16MSB = 0x9010,
+			U8 = AUDIO_U8,
+			S16LSB = AUDIO_S16LSB,
+			S32LSB = AUDIO_S32LSB,
+			F32LSB = AUDIO_F32LSB,
+			S16MSB = AUDIO_S16MSB,
 		}
 
 		public int Frequency { get; }
@@ -34,12 +36,19 @@ namespace BizHawk.Bizware.Audio
 			AudioFormat.S32LSB or AudioFormat.F32LSB => 32,
 			_ => throw new InvalidOperationException(),
 		};
+		
+		[DllImport("SDL2", CallingConvention = CallingConvention.Cdecl)]
+		private static extern IntPtr SDL_LoadWAV_RW(
+			IntPtr src,
+			int freesrc,
+			out SDL_AudioSpec spec,
+			out IntPtr audio_buf,
+			out uint audio_len);
 
-		public SDL2WavStream(string path)
+		public SDL2WavStream(Stream wavFile)
 		{
-			// TODO: Perhaps this should just take a Stream?
-			// need to update SDL2-CS since the version we're on doesn't expose SDL_LoadWAV_RW :(
-			if (SDL_LoadWAV(path, out var spec, out var wav, out var len) == IntPtr.Zero)
+			using var rwOpWrapper = new SDLRwOpsStreamWrapper(wavFile);
+			if (SDL_LoadWAV_RW(rwOpWrapper.Rw, 0, out var spec, out var wav, out var len) == IntPtr.Zero)
 			{
 				throw new($"Could not load WAV file! SDL error: {SDL_GetError()}");
 			}
@@ -121,5 +130,94 @@ namespace BizHawk.Bizware.Audio
 
 		public override void Write(byte[] buffer, int offset, int count)
 			=> throw new NotSupportedException();
+
+		private unsafe class SDLRwOpsStreamWrapper : IDisposable
+		{
+			public IntPtr Rw { get; private set; }
+			private readonly Stream _s;
+
+			private readonly SDLRWopsSizeCallback _sizeCallback;
+			private readonly SDLRWopsSeekCallback _seekCallback;
+			private readonly SDLRWopsReadCallback _readCallback;
+			private readonly SDLRWopsWriteCallback _writeCallback;
+			private readonly SDLRWopsCloseCallback _closeCallback;
+
+			public SDLRwOpsStreamWrapper(Stream s)
+			{
+				Rw = SDL_AllocRW();
+				if (Rw == IntPtr.Zero)
+				{
+					throw new($"Could not allocate SDL_RWops! SDL error: {SDL_GetError()}");
+				}
+
+				_s = s;
+				_sizeCallback = SizeCallback;
+				_seekCallback = SeekCallback;
+				_readCallback = ReadCallback;
+				_writeCallback = WriteCallback;
+				_closeCallback = CloseCallback;
+
+				var rw = (SDL_RWops*)Rw;
+				rw->size = Marshal.GetFunctionPointerForDelegate(_sizeCallback);
+				rw->seek = Marshal.GetFunctionPointerForDelegate(_seekCallback);
+				rw->read = Marshal.GetFunctionPointerForDelegate(_readCallback);
+				rw->write = Marshal.GetFunctionPointerForDelegate(_writeCallback);
+				rw->close = Marshal.GetFunctionPointerForDelegate(_closeCallback);
+				rw->type = SDL_RWOPS_UNKNOWN;
+			}
+
+			private long SizeCallback(IntPtr ctx)
+				=> _s.Length;
+
+			private long SeekCallback(IntPtr ctx, long offset, int whence)
+				=> _s.Seek(offset, (SeekOrigin)whence);
+
+			private nint ReadCallback(IntPtr ctx, IntPtr ptr, nint size, nint num)
+			{
+				const int TEMP_BUFFER_LENGTH = 65536;
+				var tempBuffer = ArrayPool<byte>.Shared.Rent(TEMP_BUFFER_LENGTH);
+				try
+				{
+					var numBytes = (nuint)size * (nuint)num;
+					var remainingBytes = numBytes;
+					while (remainingBytes != 0)
+					{
+						var numRead = _s.Read(tempBuffer, 0, (int)Math.Min(remainingBytes, TEMP_BUFFER_LENGTH));
+						if (numRead == 0)
+						{
+							break;
+						}
+
+						Marshal.Copy(tempBuffer, 0, ptr, numRead);
+						ptr += numRead;
+						remainingBytes -= (uint)numRead;
+					}
+
+					return (nint)((numBytes - remainingBytes) / (nuint)size);
+				}
+				finally
+				{
+					ArrayPool<byte>.Shared.Return(tempBuffer);
+				}
+			}
+
+			private static nint WriteCallback(IntPtr ctx, IntPtr ptr, nint size, nint num)
+				=> 0;
+
+			private int CloseCallback(IntPtr ctx)
+			{
+				Dispose();
+				return 0;
+			}
+
+			public void Dispose()
+			{
+				if (Rw != IntPtr.Zero)
+				{
+					SDL_FreeRW(Rw);
+					Rw = IntPtr.Zero;
+				}
+			}
+		}
 	}
 }

@@ -4900,7 +4900,7 @@ namespace BizHawk.Client.EmuHawk
 				InputManager,
 				Tools,
 				() => Config,
-				path => Sound.PlayWavFile(path, 1), // TODO: Make this configurable
+				wavFile => Sound.PlayWavFile(wavFile, 1), // TODO: Make this configurable
 				RetroAchievementsMenuItem.DropDownItems,
 				() =>
 				{

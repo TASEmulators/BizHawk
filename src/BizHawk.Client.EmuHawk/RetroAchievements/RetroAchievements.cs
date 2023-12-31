@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -47,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			InputManager inputManager,
 			ToolManager tools,
 			Func<Config> getConfig,
-			Action<string> playWavFile,
+			Action<Stream> playWavFile,
 			ToolStripItemCollection raDropDownItems,
 			Action shutdownRACallback)
 		{

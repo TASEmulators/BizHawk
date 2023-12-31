@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -326,9 +327,9 @@ namespace BizHawk.Bizware.Audio
 			_wavDeviceBuffer = null;
 		}
 
-		public void PlayWavFile(string path, double volume)
+		public void PlayWavFile(Stream wavFile, double volume)
 		{
-			using var wavStream = new SDL2WavStream(path);
+			using var wavStream = new SDL2WavStream(wavFile);
 			var format = wavStream.Format == SDL2WavStream.AudioFormat.F32LSB
 				? WaveFormat.CreateIeeeFloatWaveFormat(wavStream.Frequency, wavStream.Channels)
 				: new(wavStream.Frequency, wavStream.BitsPerSample, wavStream.Channels);

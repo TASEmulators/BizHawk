@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using BizHawk.Client.Common;
@@ -186,9 +187,9 @@ namespace BizHawk.Bizware.Audio
 			}
 		}
 
-		public void PlayWavFile(string path, double volume)
+		public void PlayWavFile(Stream wavFile, double volume)
 		{
-			using var wavStream = new SDL2WavStream(path);
+			using var wavStream = new SDL2WavStream(wavFile);
 			if (wavStream.Channels > 2)
 			{
 				throw new NotSupportedException("OpenAL does not support more than 2 channels");

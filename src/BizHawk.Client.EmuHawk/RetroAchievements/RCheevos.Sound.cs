@@ -7,21 +7,34 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RCheevos
 	{
-		private readonly Action<string> _playWavFileCallback;
+		private static MemoryStream ReadWavFile(string path)
+		{
+			try
+			{
+				return new(File.ReadAllBytes(Path.Combine(PathUtils.ExeDirectoryPath, path)), false);
+			}
+			catch
+			{
+				return null;
+			}
+		}
 
-		private static readonly string _loginSound = Path.Combine(PathUtils.ExeDirectoryPath, "overlay/login.wav");
-		private static readonly string _unlockSound = Path.Combine(PathUtils.ExeDirectoryPath, "overlay/unlock.wav");
-		private static readonly string _lboardStartSound = Path.Combine(PathUtils.ExeDirectoryPath, "overlay/lb.wav");
-		private static readonly string _lboardFailedSound = Path.Combine(PathUtils.ExeDirectoryPath, "overlay/lbcancel.wav");
-		private static readonly string _infoSound = Path.Combine(PathUtils.ExeDirectoryPath, "overlay/info.wav");
+		private static readonly MemoryStream _loginSound = ReadWavFile("overlay/login.wav");
+		private static readonly MemoryStream _unlockSound = ReadWavFile( "overlay/unlock.wav");
+		private static readonly MemoryStream _lboardStartSound = ReadWavFile("overlay/lb.wav");
+		private static readonly MemoryStream _lboardFailedSound = ReadWavFile("overlay/lbcancel.wav");
+		private static readonly MemoryStream _infoSound = ReadWavFile("overlay/info.wav");
+
+		private readonly Action<Stream> _playWavFileCallback;
 
 		private bool EnableSoundEffects { get; set; }
 
-		private void PlaySound(string path)
+		private void PlaySound(Stream wavFile)
 		{
 			if (EnableSoundEffects)
 			{
-				_playWavFileCallback(path);
+				wavFile.Position = 0;
+				_playWavFileCallback(wavFile);
 			}
 		}
 	}
