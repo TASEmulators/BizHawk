@@ -214,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 			InputManager inputManager,
 			ToolManager tools,
 			Func<Config> getConfig,
-			Action<string> playWavFile,
+			Action<Stream> playWavFile,
 			ToolStripItemCollection raDropDownItems,
 			Action shutdownRACallback)
 				: base(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback)
