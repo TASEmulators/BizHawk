@@ -12,9 +12,6 @@
 #include "Nes_Core.h"
 class Nes_State;
 
-// Register optional mappers included with Nes_Emu
-void register_optional_mappers();
-
 extern const char unsupported_mapper []; // returned when cartridge uses unsupported mapper
 
 class Nes_Emu {

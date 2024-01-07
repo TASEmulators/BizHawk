@@ -8,11 +8,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 	public abstract class LibQuickNES
 	{
 		/// <summary>
-		/// setup extra mappers.  should be done before anything else
-		/// </summary>
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract void qn_setup_mappers();
-		/// <summary>
 		/// create a new quicknes context
 		/// </summary>
 		/// <returns>NULL on failure</returns>

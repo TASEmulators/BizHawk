@@ -20,9 +20,6 @@ public:
 	typedef Nes_Mapper* (*creator_func_t)();
 	static void register_mapper( int code, creator_func_t );
 	
-	// Register optional mappers included with Nes_Emu
-	void register_optional_mappers();
-	
 	// Create mapper appropriate for cartridge. Returns NULL if it uses unsupported mapper.
 	static Nes_Mapper* create( Nes_Cart const*, Nes_Core* );
 	
@@ -174,26 +171,6 @@ private:
 	
 	void default_reset_state();
 	
-	struct mapping_t {
-		int code;
-		Nes_Mapper::creator_func_t func;
-	};
-	static mapping_t mappers [];
-	static creator_func_t get_mapper_creator( int code );
-	
-	// built-in mappers
-	static Nes_Mapper* make_nrom();
-	static Nes_Mapper* make_unrom();
-	static Nes_Mapper* make_aorom();
-	static Nes_Mapper* make_cnrom();
-	static Nes_Mapper* make_mmc1();
-	static Nes_Mapper* make_mmc3();
-};
-
-template<class T>
-struct register_mapper {
-	/*void*/ register_mapper( int code ) { Nes_Mapper::register_mapper( code, create ); }
-	static Nes_Mapper* create() { return BLARGG_NEW T; }
 };
 
 #ifdef NDEBUG

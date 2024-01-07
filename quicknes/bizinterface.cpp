@@ -39,11 +39,6 @@ void operator delete(void *p)
 #define EXPORT extern "C" __attribute__((force_align_arg_pointer))
 #endif
 
-EXPORT void qn_setup_mappers()
-{
-	register_optional_mappers();
-}
-
 EXPORT Nes_Emu *qn_new()
 {
 	return new Nes_Emu();
@@ -293,19 +288,19 @@ EXPORT const char *qn_get_mapper(Nes_Emu *e, int *number)
 	case 2: return "unrom";
 	case 3: return "cnrom";
 	case 4: return "mmc3";
-	case 7: return "aorom";
-	case 69: return "fme7";
 	case 5: return "mmc5";
+	case 7: return "aorom";
+	case 9: return "mmc2";
+	case 10: return "mmc4";
+	case 11: return "color_dreams";
 	case 19: return "namco106";
 	case 24: return "vrc6a";
 	case 26: return "vrc6b";
-	case 11: return "color_dreams";
 	case 34: return "nina1";
 	case 66: return "gnrom";
+	case 69: return "fme7";
 	case 87: return "mapper_87";
 	case 232: return "quattro";
-	case 9: return "mmc2";
-	case 10: return "mmc4";
 	}
 }
 
