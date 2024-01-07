@@ -39,21 +39,6 @@
     <ClCompile Include="..\nes_emu\Effects_Buffer.cpp">
       <Filter>Source Files\nes_emu</Filter>
     </ClCompile>
-    <ClCompile Include="..\nes_emu\Mapper_Fme7.cpp">
-      <Filter>Source Files\nes_emu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\nes_emu\Mapper_Mmc5.cpp">
-      <Filter>Source Files\nes_emu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\nes_emu\Mapper_Namco106.cpp">
-      <Filter>Source Files\nes_emu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\nes_emu\Mapper_Vrc6.cpp">
-      <Filter>Source Files\nes_emu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\nes_emu\misc_mappers.cpp">
-      <Filter>Source Files\nes_emu</Filter>
-    </ClCompile>
     <ClCompile Include="..\nes_emu\Multi_Buffer.cpp">
       <Filter>Source Files\nes_emu</Filter>
     </ClCompile>
@@ -88,15 +73,6 @@
       <Filter>Source Files\nes_emu</Filter>
     </ClCompile>
     <ClCompile Include="..\nes_emu\Nes_Mapper.cpp">
-      <Filter>Source Files\nes_emu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\nes_emu\nes_mappers.cpp">
-      <Filter>Source Files\nes_emu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\nes_emu\Nes_Mmc1.cpp">
-      <Filter>Source Files\nes_emu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\nes_emu\Nes_Mmc3.cpp">
       <Filter>Source Files\nes_emu</Filter>
     </ClCompile>
     <ClCompile Include="..\nes_emu\Nes_Namco_Apu.cpp">
@@ -135,8 +111,14 @@
     <ClCompile Include="..\bizinterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\nes_emu\Mmc24.cpp">
-      <Filter>Source Files\nes_emu</Filter>
+    <ClCompile Include="..\nes_emu\emu2413.cpp">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\emu2413_state.cpp">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nes_emu\Nes_Vrc7.cpp">
+      <Filter>Header Files\nes_emu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -261,6 +243,15 @@
       <Filter>Header Files\fex</Filter>
     </ClInclude>
     <ClInclude Include="..\nes_emu\Mmc24.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\emu2413.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\emu2413_state.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Vrc7.h">
       <Filter>Header Files\nes_emu</Filter>
     </ClInclude>
   </ItemGroup>

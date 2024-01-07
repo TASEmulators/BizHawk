@@ -19,12 +19,8 @@
     <ClCompile Include="..\nes_emu\apu_state.cpp" />
     <ClCompile Include="..\nes_emu\Blip_Buffer.cpp" />
     <ClCompile Include="..\nes_emu\Effects_Buffer.cpp" />
-    <ClCompile Include="..\nes_emu\Mapper_Fme7.cpp" />
-    <ClCompile Include="..\nes_emu\Mapper_Mmc5.cpp" />
-    <ClCompile Include="..\nes_emu\Mapper_Namco106.cpp" />
-    <ClCompile Include="..\nes_emu\Mapper_Vrc6.cpp" />
-    <ClCompile Include="..\nes_emu\misc_mappers.cpp" />
-    <ClCompile Include="..\nes_emu\Mmc24.cpp" />
+    <ClCompile Include="..\nes_emu\emu2413.cpp" />
+    <ClCompile Include="..\nes_emu\emu2413_state.cpp" />
     <ClCompile Include="..\nes_emu\Multi_Buffer.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Apu.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Buffer.cpp" />
@@ -37,9 +33,6 @@
     <ClCompile Include="..\nes_emu\Nes_File.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Fme7_Apu.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Mapper.cpp" />
-    <ClCompile Include="..\nes_emu\nes_mappers.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Mmc1.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Mmc3.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Namco_Apu.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Oscs.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Ppu.cpp" />
@@ -48,6 +41,7 @@
     <ClCompile Include="..\nes_emu\Nes_State.cpp" />
     <ClCompile Include="..\nes_emu\nes_util.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Vrc6_Apu.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Vrc7.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\fex\blargg_common.h" />
@@ -65,6 +59,8 @@
     <ClInclude Include="..\nes_emu\Blip_Buffer.h" />
     <ClInclude Include="..\nes_emu\Blip_Synth.h" />
     <ClInclude Include="..\nes_emu\Effects_Buffer.h" />
+    <ClInclude Include="..\nes_emu\emu2413.h" />
+    <ClInclude Include="..\nes_emu\emu2413_state.h" />
     <ClInclude Include="..\nes_emu\Mmc24.h" />
     <ClInclude Include="..\nes_emu\Multi_Buffer.h" />
     <ClInclude Include="..\nes_emu\Nes_Apu.h" />
@@ -91,6 +87,7 @@
     <ClInclude Include="..\nes_emu\Nes_State.h" />
     <ClInclude Include="..\nes_emu\nes_util.h" />
     <ClInclude Include="..\nes_emu\Nes_Vrc6_Apu.h" />
+    <ClInclude Include="..\nes_emu\Nes_Vrc7.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F07F76D3-08E6-4EBC-82F9-53FF90ABD9A9}</ProjectGuid>
@@ -102,14 +99,14 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
