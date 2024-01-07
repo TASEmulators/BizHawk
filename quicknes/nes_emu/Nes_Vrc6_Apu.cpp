@@ -50,7 +50,6 @@ void Nes_Vrc6_Apu::output( Blip_Buffer* buf )
 
 void Nes_Vrc6_Apu::run_until( nes_time_t time )
 {
-	require( time >= last_time );
 	run_square( oscs [0], time );
 	run_square( oscs [1], time );
 	run_saw( time );
@@ -59,9 +58,6 @@ void Nes_Vrc6_Apu::run_until( nes_time_t time )
 
 void Nes_Vrc6_Apu::write_osc( nes_time_t time, int osc_index, int reg, int data )
 {
-	require( (unsigned) osc_index < osc_count );
-	require( (unsigned) reg < reg_count );
-	
 	run_until( time );
 	oscs [osc_index].regs [reg] = data;
 }
@@ -71,7 +67,6 @@ void Nes_Vrc6_Apu::end_frame( nes_time_t time )
 	if ( time > last_time )
 		run_until( time );
 	
-	assert( last_time >= time );
 	last_time -= time;
 }
 
@@ -104,6 +99,9 @@ void Nes_Vrc6_Apu::load_state( vrc6_apu_state_t const& in )
 	}
 	if ( !oscs [2].phase )
 		oscs [2].phase = 1;
+
+	//Run sound channels for 0 cycles for clean audio after loading state
+	this->run_until(this->last_time);
 }
 
 void Nes_Vrc6_Apu::run_square( Vrc6_Osc& osc, nes_time_t end_time )
@@ -214,4 +212,3 @@ void Nes_Vrc6_Apu::run_saw( nes_time_t end_time )
 	
 	osc.last_amp = last_amp;
 }
-

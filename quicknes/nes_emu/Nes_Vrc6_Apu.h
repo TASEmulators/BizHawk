@@ -6,6 +6,8 @@
 #ifndef NES_VRC6_APU_H
 #define NES_VRC6_APU_H
 
+#include <stdint.h>
+
 #include "Nes_Apu.h"
 #include "Blip_Buffer.h"
 
@@ -42,7 +44,7 @@ private:
 	
 	struct Vrc6_Osc
 	{
-		BOOST::uint8_t regs [3];
+		uint8_t regs [3];
 		Blip_Buffer* output;
 		int delay;
 		int last_amp;
@@ -68,17 +70,16 @@ private:
 
 struct vrc6_apu_state_t
 {
-	BOOST::uint8_t regs [3] [3];
-	BOOST::uint8_t saw_amp;
-	BOOST::uint16_t delays [3];
-	BOOST::uint8_t phases [3];
-	BOOST::uint8_t unused;
+	uint8_t regs [3] [3];
+	uint8_t saw_amp;
+	uint16_t delays [3];
+	uint8_t phases [3];
+	uint8_t unused;
 };
 BOOST_STATIC_ASSERT( sizeof (vrc6_apu_state_t) == 20 );
 
 inline void Nes_Vrc6_Apu::osc_output( int i, Blip_Buffer* buf )
 {
-	assert( (unsigned) i < osc_count );
 	oscs [i].output = buf;
 }
 
@@ -96,4 +97,3 @@ inline void Nes_Vrc6_Apu::treble_eq( blip_eq_t const& eq )
 }
 
 #endif
-

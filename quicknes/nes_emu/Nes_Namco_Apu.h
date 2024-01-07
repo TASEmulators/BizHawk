@@ -61,16 +61,16 @@ private:
 	BOOST::uint8_t& access();
 	void run_until( nes_time_t );
 };
-/*
+
 struct namco_state_t
 {
-	BOOST::uint8_t regs [0x80];
-	BOOST::uint8_t addr;
-	BOOST::uint8_t unused;
-	BOOST::uint8_t positions [8];
-	BOOST::uint32_t delays [8];
+	uint8_t regs [0x80];
+	uint8_t addr;
+	uint8_t unused;
+	uint8_t positions [8];
+	uint32_t delays [8];
 };
-*/
+
 
 inline BOOST::uint8_t& Nes_Namco_Apu::access()
 {

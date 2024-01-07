@@ -13,7 +13,7 @@ endif
 
 CXXFLAGS_32 = -march=pentium4 -mtune=core2
 CXXFLAGS_64 =
-CXXFLAGS = -Wall -DDISABLE_AUTO_FILE -D__LIBRETRO__ -DNDEBUG -I.. -O3 -Wno-multichar -fno-exceptions -fomit-frame-pointer -flto $(CXXFLAGS_$(ARCH)) 
+CXXFLAGS = -Wall -DDISABLE_AUTO_FILE -D__LIBRETRO__ -DNDEBUG -I.. -I../nes_emu -O3 -Wno-multichar -fno-exceptions -fomit-frame-pointer -flto $(CXXFLAGS_$(ARCH)) 
 # TODO: include these as options in the Makefile
 # -fprofile-generate
 # -fprofile-use
@@ -42,8 +42,6 @@ SRCS = \
 	../nes_emu/Nes_File.cpp \
 	../nes_emu/Nes_Fme7_Apu.cpp \
 	../nes_emu/Nes_Mapper.cpp \
-	../nes_emu/Nes_Mmc1.cpp \
-	../nes_emu/Nes_Mmc3.cpp \
 	../nes_emu/Nes_Namco_Apu.cpp \
 	../nes_emu/Nes_Oscs.cpp \
 	../nes_emu/Nes_Ppu.cpp \
@@ -52,7 +50,9 @@ SRCS = \
 	../nes_emu/Nes_State.cpp \
 	../nes_emu/nes_util.cpp \
 	../nes_emu/Nes_Vrc6_Apu.cpp \
-	../nes_emu/Mmc24.cpp \
+	../nes_emu/Nes_Vrc7.cpp \
+	../nes_emu/emu2413.cpp \
+	../nes_emu/emu2413_state.cpp \
 	../bizinterface.cpp \
 	../fex/Data_Reader.cpp \
 	../fex/blargg_errors.cpp \
