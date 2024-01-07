@@ -30,11 +30,6 @@ SRCS = \
 	../nes_emu/apu_state.cpp \
 	../nes_emu/Blip_Buffer.cpp \
 	../nes_emu/Effects_Buffer.cpp \
-	../nes_emu/Mapper_Fme7.cpp \
-	../nes_emu/Mapper_Mmc5.cpp \
-	../nes_emu/Mapper_Namco106.cpp \
-	../nes_emu/Mapper_Vrc6.cpp \
-	../nes_emu/misc_mappers.cpp \
 	../nes_emu/Multi_Buffer.cpp \
 	../nes_emu/Nes_Apu.cpp \
 	../nes_emu/Nes_Buffer.cpp \
@@ -47,7 +42,6 @@ SRCS = \
 	../nes_emu/Nes_File.cpp \
 	../nes_emu/Nes_Fme7_Apu.cpp \
 	../nes_emu/Nes_Mapper.cpp \
-	../nes_emu/nes_mappers.cpp \
 	../nes_emu/Nes_Mmc1.cpp \
 	../nes_emu/Nes_Mmc3.cpp \
 	../nes_emu/Nes_Namco_Apu.cpp \
