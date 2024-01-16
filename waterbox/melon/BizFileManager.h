@@ -22,6 +22,7 @@ const char* InitFirmware(FirmwareSettings& fwSettings);
 const char* InitDSiBIOS();
 const char* InitNAND(FirmwareSettings& fwSettings, bool clearNand, bool dsiWare);
 const char* InitCarts(bool gba);
+void SetupDirectBoot();
 
 }
 
