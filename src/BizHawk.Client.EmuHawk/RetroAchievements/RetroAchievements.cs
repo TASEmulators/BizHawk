@@ -41,6 +41,11 @@ namespace BizHawk.Client.EmuHawk
 			_getConfig = getConfig;
 			_raDropDownItems = raDropDownItems;
 			_shutdownRACallback = shutdownRACallback;
+
+			_getCiaNormalKeyFunc = GetCiaNormalKeyFunc;
+			_getNcchNormalKeysFunc = GetNcchNormalKeysFunc;
+			RCheevos._lib.rc_hash_init_3ds_get_cia_normal_key_func(_getCiaNormalKeyFunc);
+			RCheevos._lib.rc_hash_init_3ds_get_ncch_normal_keys_func(_getNcchNormalKeysFunc);
 		}
 
 		public static IRetroAchievements CreateImpl(

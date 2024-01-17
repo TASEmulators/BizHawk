@@ -55,6 +55,9 @@ namespace BizHawk.Client.EmuHawk
 
 			public DateTime Created { get; }
 			public DateTime Updated { get; }
+			public LibRCheevos.rc_runtime_achievement_type_t Type { get; }
+			public float Rarity { get; }
+			public float RarityHardcore { get; }
 
 			public bool IsSoftcoreUnlocked { get; set; }
 			public bool IsHardcoreUnlocked { get; set; }
@@ -100,6 +103,9 @@ namespace BizHawk.Client.EmuHawk
 				BadgeName = cheevo.BadgeName;
 				Created = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(cheevo.created).ToLocalTime();
 				Updated = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(cheevo.updated).ToLocalTime();
+				Type = cheevo.type;
+				Rarity = cheevo.rarity;
+				RarityHardcore = cheevo.rarity_hardcore;
 				IsSoftcoreUnlocked = false;
 				IsHardcoreUnlocked = false;
 				IsPrimed = false;
@@ -119,6 +125,9 @@ namespace BizHawk.Client.EmuHawk
 				BadgeName = cheevo.BadgeName;
 				Created = cheevo.Created;
 				Updated = cheevo.Updated;
+				Type = cheevo.Type;
+				Rarity = cheevo.Rarity;
+				RarityHardcore = cheevo.RarityHardcore;
 				IsSoftcoreUnlocked = false;
 				IsHardcoreUnlocked = false;
 				IsPrimed = false;

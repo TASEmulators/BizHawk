@@ -90,6 +90,14 @@ namespace BizHawk.Client.EmuHawk
 			RC_ACHIEVEMENT_CATEGORY_UNOFFICIAL = 5,
 		}
 
+		public enum rc_runtime_achievement_type_t : uint
+		{
+			RC_ACHIEVEMENT_TYPE_STANDARD = 0,
+			RC_ACHIEVEMENT_TYPE_MISSABLE = 1,
+			RC_ACHIEVEMENT_TYPE_PROGRESSION = 2,
+			RC_ACHIEVEMENT_TYPE_WIN = 3,
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct rc_runtime_event_t
 		{
@@ -163,13 +171,17 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public readonly record struct rc_api_start_session_request_t(string username, string api_token, uint game_id)
+		public readonly record struct rc_api_start_session_request_t(string username, string api_token, uint game_id, string game_hash, bool hardcore)
 		{
 			[MarshalAs(UnmanagedType.LPUTF8Str)]
 			public readonly string username = username;
 			[MarshalAs(UnmanagedType.LPUTF8Str)]
 			public readonly string api_token = api_token;
 			public readonly uint game_id = game_id;
+			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			public readonly string game_hash = game_hash;
+			[MarshalAs(UnmanagedType.Bool)]
+			public readonly bool hardcore = hardcore;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -182,7 +194,8 @@ namespace BizHawk.Client.EmuHawk
 
 		[StructLayout(LayoutKind.Sequential)]
 		public readonly record struct rc_api_achievement_definition_t(uint id, uint points, rc_runtime_achievement_category_t category,
-			IntPtr title, IntPtr description, IntPtr definition, IntPtr author, IntPtr badge_name, long created, long updated)
+			IntPtr title, IntPtr description, IntPtr definition, IntPtr author, IntPtr badge_name, long created, long updated,
+			rc_runtime_achievement_type_t type, float rarity, float rarity_hardcore)
 		{
 			public string Title => Mershul.PtrToStringUtf8(title);
 			public string Description => Mershul.PtrToStringUtf8(description);
@@ -252,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public readonly record struct rc_api_ping_request_t(string username, string api_token, uint game_id, string rich_presence)
+		public readonly record struct rc_api_ping_request_t(string username, string api_token, uint game_id, string rich_presence, string game_hash, bool hardcore)
 		{
 			[MarshalAs(UnmanagedType.LPUTF8Str)]
 			public readonly string username = username;
@@ -260,7 +273,9 @@ namespace BizHawk.Client.EmuHawk
 			public readonly string api_token = api_token;
 			public readonly uint game_id = game_id;
 			[MarshalAs(UnmanagedType.LPUTF8Str)]
-			public readonly string rich_presence = rich_presence;
+			public readonly string game_hash = game_hash;
+			[MarshalAs(UnmanagedType.Bool)]
+			public readonly bool hardcore = hardcore;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -344,6 +359,17 @@ namespace BizHawk.Client.EmuHawk
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void rc_hash_message_callback([MarshalAs(UnmanagedType.LPUTF8Str)] string message);
 
+		[UnmanagedFunctionPointer(cc)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public delegate bool rc_hash_3ds_get_cia_normal_key_func(byte common_key_index, IntPtr out_normal_key);
+
+		[UnmanagedFunctionPointer(cc)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public delegate bool rc_hash_3ds_get_ncch_normal_keys_func(IntPtr primary_key_y, byte secondary_key_x_slot, IntPtr optional_program_id, IntPtr out_primary_key, IntPtr out_secondary_key);
+
+		[BizImport(cc)]
+		public abstract IntPtr rc_version_string();
+
 		[BizImport(cc)]
 		public abstract IntPtr rc_error_str(rc_error_t error_code);
 
@@ -403,6 +429,12 @@ namespace BizHawk.Client.EmuHawk
 
 		[BizImport(cc, Compatibility = true)]
 		public abstract void rc_hash_init_custom_filereader(in rc_hash_filereader reader);
+
+		[BizImport(cc)]
+		public abstract void rc_hash_init_3ds_get_cia_normal_key_func(rc_hash_3ds_get_cia_normal_key_func func);
+
+		[BizImport(cc)]
+		public abstract void rc_hash_init_3ds_get_ncch_normal_keys_func(rc_hash_3ds_get_ncch_normal_keys_func func);
 
 		[BizImport(cc)]
 		[return: MarshalAs(UnmanagedType.Bool)]

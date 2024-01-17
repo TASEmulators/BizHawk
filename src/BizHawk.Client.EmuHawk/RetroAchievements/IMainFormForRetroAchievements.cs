@@ -17,6 +17,8 @@ namespace BizHawk.Client.EmuHawk
 
 		IMovieSession MovieSession { get; }
 
+		FirmwareManager FirmwareManager { get; }
+
 		event BeforeQuickLoadEventHandler QuicksaveLoad;
 
 		SettingsAdapter GetSettingsAdapterForLoadedCoreUntyped();

@@ -12,9 +12,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			private readonly LibRCheevos.rc_api_start_session_request_t _apiParams;
 
-			public StartGameSessionRequest(string username, string apiToken, uint gameId)
+			public StartGameSessionRequest(string username, string apiToken, uint gameId, string gameHash, bool hardcore)
 			{
-				_apiParams = new(username, apiToken, gameId);
+				_apiParams = new(username, apiToken, gameId, gameHash, hardcore);
 			}
 
 			public override void DoRequest()
@@ -35,17 +35,15 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void StartGameSession()
-		{
-			PushRequest(new StartGameSessionRequest(Username, ApiToken, _gameData.GameID));
-		}
+			=> PushRequest(new StartGameSessionRequest(Username, ApiToken, _gameData.GameID, _gameHash, HardcoreMode));
 
 		private sealed class PingRequest : RCheevoHttpRequest
 		{
 			private readonly LibRCheevos.rc_api_ping_request_t _apiParams;
 
-			public PingRequest(string username, string apiToken, uint gameId, string richPresence)
+			public PingRequest(string username, string apiToken, uint gameId, string richPresence, string gameHash, bool hardcore)
 			{
-				_apiParams = new(username, apiToken, gameId, richPresence);
+				_apiParams = new(username, apiToken, gameId, richPresence, gameHash, hardcore);
 			}
 
 			public override void DoRequest()
@@ -66,9 +64,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void SendPing()
-		{
-			PushRequest(new PingRequest(Username, ApiToken, _gameData.GameID, CurrentRichPresence));
-		}
+			=> PushRequest(new PingRequest(Username, ApiToken, _gameData.GameID, CurrentRichPresence, _gameHash, HardcoreMode));
 
 		private readonly byte[] _richPresenceBuffer = new byte[1024];
 
