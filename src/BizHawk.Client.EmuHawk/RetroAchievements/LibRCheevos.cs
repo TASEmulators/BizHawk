@@ -273,6 +273,8 @@ namespace BizHawk.Client.EmuHawk
 			public readonly string api_token = api_token;
 			public readonly uint game_id = game_id;
 			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			public readonly string rich_presence = rich_presence;
+			[MarshalAs(UnmanagedType.LPUTF8Str)]
 			public readonly string game_hash = game_hash;
 			[MarshalAs(UnmanagedType.Bool)]
 			public readonly bool hardcore = hardcore;
