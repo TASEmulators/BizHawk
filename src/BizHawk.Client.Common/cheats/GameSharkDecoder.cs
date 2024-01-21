@@ -52,7 +52,8 @@ namespace BizHawk.Client.Common.cheats
 		private static IDecodeResult GameBoy(string code)
 		{
 			// Game Genie
-			if (code.LastIndexOf("-", StringComparison.Ordinal) == 7 && code.IndexOf("-", StringComparison.Ordinal) == 3)
+			if ((code.Length is 11 && code[3] is '-' && code[7] is '-')
+				|| (code.Length is 7 && code[3] is '-'))
 			{
 				return GbGgGameGenieDecoder.Decode(code);
 			}
