@@ -52,7 +52,7 @@ git fetch upstream
 git branch --set-upstream-to=upstream/master master
 ```
 
-Before touching the code, create a new branch off `master` it with a descriptive name.
+Before touching the code, create a new branch off `master` with a descriptive name.
 
 After touching the code, commit your changes. Try to group your changes into many smaller commits with a clear purpose to each—committing early and often can help. Bonus points if each commit can build and run.  
 If you made the branch a while ago, pull `master` and *rebase, not merge*. Then push to your fork, and you can submit a pull request at any time on GitHub.  
