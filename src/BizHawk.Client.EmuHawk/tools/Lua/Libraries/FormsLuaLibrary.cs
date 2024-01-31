@@ -68,9 +68,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("local inforbut = forms.button( 333, \"Caption\", function()\r\n\tconsole.log( \"Creates a button control on the given form. The caption property will be the text value on the button. clickEvent is the name of a Lua function that will be invoked when the button is clicked. x, and y are the optional location parameters for the position of the button within the given form. The function returns the handle of the created button. Width and Height are optional, if not specified they will be a default size\" );\r\nend, 2, 48, 18, 24 );")]
+		[LuaMethodExample("local inforbut = forms.button( 333, \"Caption\", function()\r\n\tconsole.log( \"Creates a button control on the given form. The caption property will be the text value on the button. clickEvent is the name of a Lua function that will be invoked when the button is clicked. x, and y are the optional location parameters for the position of the button within the given form. If x is specified, y must also be specified. width and height are optional, if not specified they will be a default size. If width is specified, height must also be specified. The function returns the handle of the created button\" );\r\nend, 2, 48, 18, 24 );")]
 		[LuaMethod(
-			"button", "Creates a button control on the given form. The caption property will be the text value on the button. clickEvent is the name of a Lua function that will be invoked when the button is clicked. x, and y are the optional location parameters for the position of the button within the given form. The function returns the handle of the created button. Width and Height are optional, if not specified they will be a default size")]
+			"button", "Creates a button control on the given form. The caption property will be the text value on the button. clickEvent is the name of a Lua function that will be invoked when the button is clicked. x, and y are the optional location parameters for the position of the button within the given form. If x is specified, y must also be specified. width and height are optional, if not specified they will be a default size. If width is specified, height must also be specified. The function returns the handle of the created button")]
 		public long Button(
 			long formHandle,
 			string caption,
@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local inforche = forms.checkbox( 333, \"Caption\", 2, 48 );")]
 		[LuaMethod(
-			"checkbox", "Creates a checkbox control on the given form. The caption property will be the text of the checkbox. x and y are the optional location parameters for the position of the checkbox within the form")]
+			"checkbox", "Creates a checkbox control on the given form. The caption property will be the text of the checkbox. x and y are the optional location parameters for the position of the checkbox within the form. If x is specified, y must also be specified. The function returns the handle of the created checkbox")]
 		public long Checkbox(long formHandle, string caption, int? x = null, int? y = null)
 		{
 			var form = GetForm(formHandle);
@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local infordro = forms.dropdown(333, { \"item 1\", \"item2\" }, 2, 48, 18, 24);")]
 		[LuaMethod(
-			"dropdown", "Creates a dropdown (with a ComboBoxStyle of DropDownList) control on the given form. Dropdown items are passed via a lua table. Only the values will be pulled for the dropdown items, the keys are irrelevant. Items will be sorted alphabetically. x and y are the optional location parameters, and width and height are the optional size parameters.")]
+			"dropdown", "Creates a dropdown (with a ComboBoxStyle of DropDownList) control on the given form. Dropdown items are passed via a lua table. Only the values will be pulled for the dropdown items, the keys are irrelevant. Items will be sorted alphabetically. x and y are the optional location parameters, and width and height are the optional size parameters. If x is specified, y must also be specified. Similarly, If width is specified, height must be specified. The function returns the handle of the created dropdown menu")]
 		public long Dropdown(
 			long formHandle,
 			LuaTable items,
@@ -301,7 +301,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local inforlab = forms.label( 333, \"Caption\", 2, 48, 18, 24, false );")]
 		[LuaMethod(
-			"label", "Creates a label control on the given form. The caption property is the text of the label. x, and y are the optional location parameters for the position of the label within the given form. The function returns the handle of the created label. Width and Height are optional, if not specified they will be a default size.")]
+			"label", "Creates a label control on the given form. The caption property is the text of the label. x, and y are the optional location parameters for the position of the label within the given form. If x is specified, y must also be specified. width and height are optional, if not specified they will be a default size. If width is specified, height must also be specified. The function returns the handle of the created label")]
 		public long Label(
 			long formHandle,
 			string caption,
@@ -341,7 +341,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local infornew = forms.newform( 18, 24, \"Title\", function()\r\n\tconsole.log( \"creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.\" );\r\nend );")]
 		[LuaMethod(
-			"newform", "creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.")]
+			"newform", "creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created")]
 		public long NewForm(
 			int? width = null,
 			int? height = null,
@@ -399,7 +399,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodExample("local inforpic = forms.pictureBox( 333, 2, 48, 18, 24 );")]
 		[LuaMethod(
 			"pictureBox",
-			"Creates a new drawing area in the form. Optionally the location in the form as well as the size of the drawing area can be specified. Returns the handle the component can be refered to with.")]
+			"Creates a new drawing area in the form. x, and y are the optional location parameters for the position of the pictureBox within the given form. If x is specified, y must also be specified. width and height are the optional size parameters. If width is specified, height must also be specified. The function returns the handle of the created pictureBox")]
 		public long PictureBox(long formHandle, int? x = null, int? y = null, int? width = null, int? height = null)
 		{
 			var form = GetForm(formHandle);
@@ -750,7 +750,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodExample("forms.drawImage( 334, \"C:\\image.png\", 16, 32, 18, 24, false );")]
 		[LuaMethod(
 			"drawImage",
-			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
+			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly. If x is specified, y must also be specified")]
 		public void DrawImage(
 			long componentHandle,
 			string path,
@@ -826,7 +826,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodExample("forms.drawImageRegion( 334, \"C:\\image.bmp\", 11, 22, 33, 44, 21, 43, 34, 45 );")]
 		[LuaMethod(
 			"drawImageRegion",
-			"Draws a region of the given image file at the given location on the canvas, and optionally resizes it before drawing. Consult this diagram to see its usage (renders embedded on the TASVideos Wiki): [https://user-images.githubusercontent.com/13409956/198868522-55dc1e5f-ae67-4ebb-a75f-558656cb4468.png|alt=Diagram showing how to use forms.drawImageRegion]")]
+			"Draws a region of the given image file at the given location on the canvas, and optionally resizes it before drawing. If dest_width is specified, dest_height must also be specified. Consult this diagram to see its usage (renders embedded on the TASVideos Wiki): [https://user-images.githubusercontent.com/13409956/198868522-55dc1e5f-ae67-4ebb-a75f-558656cb4468.png|alt=Diagram showing how to use forms.drawImageRegion]")]
 		public void DrawImageRegion(
 			long componentHandle,
 			string path,
@@ -1296,7 +1296,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("forms.setdropdownitems(dropdown_handle, { \"item1\", \"item2\" });")]
-		[LuaMethod("setdropdownitems", "Updates the item list of a dropdown menu. The optional third parameter toggles alphabetical sorting of items, pass false to skip sorting.")]
+		[LuaMethod("setdropdownitems", "Updates the item list of a dropdown menu. The optional third parameter toggles alphabetical sorting of items, pass false to skip sorting")]
 		public void SetDropdownItems(long handle, LuaTable items, bool alphabetize = true)
 		{
 			try
@@ -1451,7 +1451,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local infortex = forms.textbox( 333, \"Caption\", 18, 24, \"HEX\", 2, 48, true, false, \"Both\" );")]
 		[LuaMethod(
-			"textbox", "Creates a textbox control on the given form. The caption property will be the initial value of the textbox (default is empty). Width and Height are option, if not specified they will be a default size of 100, 20. Type is an optional property to restrict the textbox input. The available options are HEX, SIGNED, and UNSIGNED. Passing it null or any other value will set it to no restriction. x, and y are the optional location parameters for the position of the textbox within the given form. The function returns the handle of the created textbox. If true, the multiline will enable the standard winform multi-line property. If true, the fixedWidth options will create a fixed width font. Scrollbars is an optional property to specify which scrollbars to display. The available options are Vertical, Horizontal, Both, and None. Scrollbars are only shown on a multiline textbox")]
+			"textbox", "Creates a textbox control on the given form. The caption property will be the initial value of the textbox (default is empty). width and height are optional, if not specified they will be a default size of 100, 20. Type is an optional property to restrict the textbox input. The available options are HEX, SIGNED, and UNSIGNED. Passing it null or any other value will set it to no restriction. x, and y are the optional location parameters for the position of the textbox within the given form. If true, the multiline property enables the standard winform multi-line property. When true, fixedWidth causes the textbox to use a fixed width font. Scrollbars is an optional property to specify which scrollbars to display. The available options are Vertical, Horizontal, Both, and None. Scrollbars are only shown on a multiline textbox. The function returns the handle of the created textbox")]
 		public long Textbox(
 			long formHandle,
 			string caption = null,
