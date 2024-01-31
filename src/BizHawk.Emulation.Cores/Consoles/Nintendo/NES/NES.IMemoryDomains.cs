@@ -27,6 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			domains.Add(SystemBus);
 			domains.Add(PPUBus);
 			domains.Add(CIRAMdomain);
+			domains.Add(new MemoryDomainByteArray("PALRAM", MemoryDomain.Endian.Little, ppu.PALRAM, writable: true, wordSize: 1));
 			domains.Add(OAMdoman);
 
 			if (Board is not FDS && Board.SaveRam != null)
