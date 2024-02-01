@@ -6,8 +6,11 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
+
+using static BizHawk.Common.StringExtensions.NumericStringExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -61,30 +64,37 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			var old = _syncSettings.RegionOverride;
-			_syncSettings.RegionOverride = (NES.NESSyncSettings.Region)
-				Enum.Parse(
+			static byte[]/*?*/ ParseInitRAMPattern(string/*?*/ ss)
+			{
+				if (string.IsNullOrWhiteSpace(ss)) return null;
+				if (!ss.All(NumericStringExtensions.IsHex))
+				{
+					//TODO warn
+					return null;
+				}
+				var s = ss.AsSpan();
+				var a = new byte[(s.Length + 1) / 2];
+				var iArr = 0;
+				var iStr = 0;
+				if (s.Length % 2 is 1) a[iArr++] = ParseU8FromHex(s.Slice(start: iStr++, length: 1));
+				while (iStr < s.Length)
+				{
+					a[iArr++] = ParseU8FromHex(s.Slice(start: iStr, length: 2));
+					iStr += 2;
+				}
+				return a;
+			}
+
+			var newInitRAMPattern = ParseInitRAMPattern(RamPatternOverrideBox.Text);
+			var newRegionOverride = (NES.NESSyncSettings.Region) Enum.Parse(
 				typeof(NES.NESSyncSettings.Region),
 				(string)RegionComboBox.SelectedItem);
 
-			var oldRam = _syncSettings.InitialWRamStatePattern;
-
-			if (!string.IsNullOrWhiteSpace(RamPatternOverrideBox.Text))
-			{
-				_syncSettings.InitialWRamStatePattern = Enumerable.Range(0, RamPatternOverrideBox.Text.Length)
-					.Where(x => x % 2 == 0)
-					.Select(x => Convert.ToByte(RamPatternOverrideBox.Text.Substring(x, 2), 16))
-					.ToArray();
-			}
-			else
-			{
-				_syncSettings.InitialWRamStatePattern = null;
-			}
-
-			bool changed = (_dataTableDictionary != null && _dataTableDictionary.WasModified) ||
-				old != _syncSettings.RegionOverride ||
-				!oldRam.SequenceEqual(_syncSettings.InitialWRamStatePattern);
-
+			var changed = _dataTableDictionary?.WasModified is true
+				|| newRegionOverride != _syncSettings.RegionOverride
+				|| !newInitRAMPattern.SequenceEqual(_syncSettings.InitialWRamStatePattern);
+			_syncSettings.InitialWRamStatePattern = newInitRAMPattern;
+			_syncSettings.RegionOverride = newRegionOverride;
 			DialogResult = DialogResult.OK;
 			if (changed)
 			{
