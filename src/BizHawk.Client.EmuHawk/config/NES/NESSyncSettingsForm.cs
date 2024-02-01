@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
@@ -48,15 +49,9 @@ namespace BizHawk.Client.EmuHawk
 			RegionComboBox.Items.AddRange(Enum.GetNames(typeof(NES.NESSyncSettings.Region)).Cast<object>().ToArray());
 			RegionComboBox.SelectedItem = Enum.GetName(typeof(NES.NESSyncSettings.Region), _syncSettings.RegionOverride);
 
-			if (_syncSettings.InitialWRamStatePattern != null && _syncSettings.InitialWRamStatePattern.Any())
+			if (_syncSettings.InitialWRamStatePattern is { Count: > 0 } initWRAMPattern)
 			{
-				var sb = new StringBuilder();
-				foreach (var b in _syncSettings.InitialWRamStatePattern)
-				{
-					sb.Append($"{b:X2}");
-				}
-
-				RamPatternOverrideBox.Text = sb.ToString();
+				RamPatternOverrideBox.Text = initWRAMPattern.BytesToHexString();
 			}
 		}
 
