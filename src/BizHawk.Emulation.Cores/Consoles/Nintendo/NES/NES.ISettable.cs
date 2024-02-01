@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -59,7 +62,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public NESControlSettings Controls = new NESControlSettings();
 
-			public List<byte> InitialWRamStatePattern = null;
+			[JsonConverter(typeof(U8ArrayAsNormalJSONListConverter))] // this preserves the old behaviour of e,g, 0x1234ABCD --> [18,52,171,205]; omitting it will use base64 e.g. "EjSrzQ=="
+			[JsonProperty(PropertyName = nameof(InitialWRamStatePattern))]
+			private byte[]/*?*/ _initialWRamStatePattern = null;
+
+			[JsonIgnore]
+			public byte[] InitialWRamStatePattern
+			{
+				get
+				{
+					if (_initialWRamStatePattern is null) return Array.Empty<byte>();
+					if (_initialWRamStatePattern.Length is 0)
+					{
+						_initialWRamStatePattern = null;
+						return Array.Empty<byte>();
+					}
+					return _initialWRamStatePattern;
+				}
+				set => _initialWRamStatePattern = value.Length is 0 ? null : value;
+			}
 
 			public NESSyncSettings Clone()
 			{
@@ -75,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return !(Util.DictionaryEqual(x.BoardProperties, y.BoardProperties)
 					&& x.RegionOverride == y.RegionOverride
 					&& !NESControlSettings.NeedsReboot(x.Controls, y.Controls)
-					&& ((x.InitialWRamStatePattern ?? new List<byte>()).SequenceEqual(y.InitialWRamStatePattern ?? new List<byte>()))
+					&& x.InitialWRamStatePattern.SequenceEqual(y.InitialWRamStatePattern)
 					&& x.VSDipswitches.Equals(y.VSDipswitches));
 			}
 

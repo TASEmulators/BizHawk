@@ -49,10 +49,8 @@ namespace BizHawk.Client.EmuHawk
 			RegionComboBox.Items.AddRange(Enum.GetNames(typeof(NES.NESSyncSettings.Region)).Cast<object>().ToArray());
 			RegionComboBox.SelectedItem = Enum.GetName(typeof(NES.NESSyncSettings.Region), _syncSettings.RegionOverride);
 
-			if (_syncSettings.InitialWRamStatePattern is { Count: > 0 } initWRAMPattern)
-			{
-				RamPatternOverrideBox.Text = initWRAMPattern.BytesToHexString();
-			}
+			var initWRAMPattern = _syncSettings.InitialWRamStatePattern;
+			if (initWRAMPattern.Length is not 0) RamPatternOverrideBox.Text = initWRAMPattern.BytesToHexString();
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)
@@ -69,14 +67,14 @@ namespace BizHawk.Client.EmuHawk
 				typeof(NES.NESSyncSettings.Region),
 				(string)RegionComboBox.SelectedItem);
 
-			var oldRam = _syncSettings.InitialWRamStatePattern ?? new List<byte>();
+			var oldRam = _syncSettings.InitialWRamStatePattern;
 
 			if (!string.IsNullOrWhiteSpace(RamPatternOverrideBox.Text))
 			{
 				_syncSettings.InitialWRamStatePattern = Enumerable.Range(0, RamPatternOverrideBox.Text.Length)
 					.Where(x => x % 2 == 0)
 					.Select(x => Convert.ToByte(RamPatternOverrideBox.Text.Substring(x, 2), 16))
-					.ToList();
+					.ToArray();
 			}
 			else
 			{
@@ -85,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 
 			bool changed = (_dataTableDictionary != null && _dataTableDictionary.WasModified) ||
 				old != _syncSettings.RegionOverride ||
-				!(oldRam.SequenceEqual(_syncSettings.InitialWRamStatePattern ?? new List<byte>()));
+				!oldRam.SequenceEqual(_syncSettings.InitialWRamStatePattern);
 
 			DialogResult = DialogResult.OK;
 			if (changed)
