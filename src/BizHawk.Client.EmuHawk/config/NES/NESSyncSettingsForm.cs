@@ -64,13 +64,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			static byte[]/*?*/ ParseInitRAMPattern(string/*?*/ ss)
+			static byte[] ParseInitRAMPattern(string/*?*/ ss)
 			{
-				if (string.IsNullOrWhiteSpace(ss)) return null;
+				if (string.IsNullOrWhiteSpace(ss)) return Array.Empty<byte>();
 				if (!ss.All(NumericStringExtensions.IsHex))
 				{
 					//TODO warn
-					return null;
+					return Array.Empty<byte>();
 				}
 				var s = ss.AsSpan();
 				var a = new byte[(s.Length + 1) / 2];
