@@ -197,27 +197,21 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("81193965A374D77B99B4743D317824B53C3E3C78", 1024, "ChannelF", "ChannelF_sl131253", "ChannelF_SL31253.rom", "Channel F Rom0");
 			FirmwareAndOption("8F70D1B74483BA3A37E86CF16C849D601A8C3D2C", 1024, "ChannelF", "ChannelF_sl131254", "ChannelF_SL31254.rom", "Channel F Rom1");
 
-			// for saturn, we think any bios region can pretty much run any iso
-			// so, we're going to lay this out carefully so that we choose things in a sensible order, but prefer the correct region
+			// Saturn
 			var ss_100_j = File("2B8CB4F87580683EB4D760E4ED210813D667F0A2", 524288, "SAT_1.00-(J).bin", "Bios v1.00 (J)");
 			var ss_100_ue = File("FAA8EA183A6D7BBE5D4E03BB1332519800D3FBC3", 524288, "SAT_1.00-(U+E).bin", "Bios v1.00 (U+E)");
-			var ss_100a_ue = File("3BB41FEB82838AB9A35601AC666DE5AACFD17A58", 524288, "SAT_1.00a-(U+E).bin", "Bios v1.00a (U+E)"); // ?? is this size correct?
-			var ss_101_j = File("DF94C5B4D47EB3CC404D88B33A8FDA237EAF4720", 524288, "SAT_1.01-(J).bin", "Bios v1.01 (J)"); // ?? is this size correct?
+			var ss_100a_ue = File("3BB41FEB82838AB9A35601AC666DE5AACFD17A58", 524288, "SAT_1.00a-(U+E).bin", "Bios v1.00a (U+E)");
+			var ss_101_j = File("DF94C5B4D47EB3CC404D88B33A8FDA237EAF4720", 524288, "SAT_1.01-(J).bin", "Bios v1.01 (J)");
+			// set mednafen's preferred bios files to ideal (we'll consider other known bios files to be acceptable)
 			Firmware("SAT", "J", "Bios (J)");
 			Option("SAT", "J", in ss_100_j);
-			Option("SAT", "J", in ss_101_j);
-			Option("SAT", "J", in ss_100_ue);
-			Option("SAT", "J", in ss_100a_ue);
+			Option("SAT", "J", in ss_101_j, FirmwareOptionStatus.Ideal);
 			Firmware("SAT", "U", "Bios (U)");
-			Option("SAT", "U", in ss_100_ue);
+			Option("SAT", "U", in ss_100_ue, FirmwareOptionStatus.Ideal);
 			Option("SAT", "U", in ss_100a_ue);
-			Option("SAT", "U", in ss_100_j);
-			Option("SAT", "U", in ss_101_j);
 			Firmware("SAT", "E", "Bios (E)");
-			Option("SAT", "E", in ss_100_ue);
+			Option("SAT", "E", in ss_100_ue, FirmwareOptionStatus.Ideal);
 			Option("SAT", "E", in ss_100a_ue);
-			Option("SAT", "E", in ss_100_j);
-			Option("SAT", "E", in ss_101_j);
 			FirmwareAndOption("A67CD4F550751F8B91DE2B8B74528AB4E0C11C77", 2 * 1024 * 1024, "SAT", "KOF95", "SAT_KoF95.bin", "King of Fighters cartridge");
 			//Firmware("SAT", "ULTRAMAN", "Ultraman cartridge");
 			FirmwareAndOption("56C1B93DA6B660BF393FBF48CA47569000EF4047", 2 * 1024 * 1024, "SAT", "ULTRAMAN", "SAT_Ultraman.bin", "Ultraman cartridge");
