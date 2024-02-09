@@ -524,8 +524,8 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case ConsoleID.Saturn:
 						// todo: add System Bus so this isn't needed
-						mfs.Add(new(domains["Work Ram Low"], 0, domains["Work Ram Low"].Size));
-						mfs.Add(new(domains["Work Ram High"], 0, domains["Work Ram High"].Size));
+						mfs.Add(new(domains["Work Ram Low"], 0, domains["Work Ram Low"].Size, 1));
+						mfs.Add(new(domains["Work Ram High"], 0, domains["Work Ram High"].Size, 1));
 						break;
 					case ConsoleID.Intellivision:
 						// special case
