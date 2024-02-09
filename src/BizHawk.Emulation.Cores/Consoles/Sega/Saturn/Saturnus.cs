@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
 	[PortedCore(CoreNames.Saturnus, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
-	public class Saturnus : NymaCore, IRegionable
+	public class Saturnus : NymaCore, IRegionable, ISaveRam
 	{
 		private readonly LibSaturnus _saturnus;
 
