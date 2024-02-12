@@ -130,18 +130,8 @@ namespace BizHawk.Client.EmuHawk
 			_hoverTimer.Tick += HoverTimerEventProcessor;
 			_hoverTimer.Stop();
 
-			if (OSTailoredCode.IsUnixHost)
-			{
-				// sorry dark theme users, but this needs to be readable
-				_backColor = Color.White;
-				_foreColor = Color.Black;
-			}
-			else
-			{
-				// this is the ctor, so these reads will always return the default values
-				_backColor = base.BackColor;
-				_foreColor = base.ForeColor;
-			}
+			_backColor = Color.White;
+			_foreColor = Color.Black;
 		}
 
 		private void HoverTimerEventProcessor(object sender, EventArgs e)
