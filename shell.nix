@@ -38,4 +38,7 @@
 		(lib.mapAttrs (_: asms: lib.traceIf (lib.hasSuffix "-bin" asms.name) "the attr specified packages BizHawk from release artifacts; some builddeps may be missing from this shell"
 			f asms))
 	];
-in shells // shells.emuhawk-latest
+in shells // mkShell {
+	packages = [ avail.emuhawk.hawkSourceInfo.dotnet-sdk ];
+	inputsFrom = [ shells.emuhawk-latest ]; # this is the intended way to `override` a shell env.
+}
