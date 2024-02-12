@@ -8,14 +8,14 @@
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Silk.NET.OpenAL" Version="2.18.0" />
-		<PackageReference Include="Silk.NET.OpenAL.Extensions.Creative" Version="2.18.0" />
-		<PackageReference Include="Silk.NET.OpenAL.Extensions.Enumeration" Version="2.18.0" />
-		<PackageReference Include="Silk.NET.OpenAL.Extensions.EXT" Version="2.18.0" />
-		<PackageReference Include="Vortice.MediaFoundation" Version="2.4.2" />
-		<PackageReference Include="Vortice.XAudio2" Version="2.4.2" />
-		<PackageReference Include="SharpDX.DirectSound" Version="4.2.0" />
-		<PackageReference Include="ppy.SDL2-CS" Version="1.0.630-alpha" ExcludeAssets="native;contentFiles" />
+		<PackageReference Include="Silk.NET.OpenAL" />
+		<PackageReference Include="Silk.NET.OpenAL.Extensions.Creative" />
+		<PackageReference Include="Silk.NET.OpenAL.Extensions.Enumeration" />
+		<PackageReference Include="Silk.NET.OpenAL.Extensions.EXT" />
+		<PackageReference Include="Vortice.MediaFoundation" />
+		<PackageReference Include="Vortice.XAudio2" />
+		<PackageReference Include="SharpDX.DirectSound" />
+		<PackageReference Include="ppy.SDL2-CS" ExcludeAssets="native;contentFiles" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 	</ItemGroup>
 </Project>
