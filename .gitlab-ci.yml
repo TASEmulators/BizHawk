@@ -25,7 +25,7 @@ build_asms_debug:
     name: "$CI_HAWK_TMPARTIFACT_NAME"
     paths:
       - output
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:8.0
   script:
     - Dist/BuildDebug.sh -v normal
   stage: build
@@ -36,7 +36,7 @@ build_asms_release:
     name: "$CI_HAWK_TMPARTIFACT_NAME"
     paths:
     - output
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:8.0
   script:
   - if [ "$CI_COMMIT_REF_SLUG" == "release" ]; then Dist/UpdateVersionInfoForRelease.sh; fi
   - Dist/BuildRelease.sh -v normal
@@ -44,7 +44,7 @@ build_asms_release:
 
 build_ext_projs:
   allow_failure: true
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:8.0
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
     when: always
@@ -54,7 +54,7 @@ build_ext_projs:
 
 build_ext_tools:
   allow_failure: true
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:8.0
   needs:
   - build_asms_release
   rules:
@@ -87,7 +87,7 @@ build_nix_prev_release:
   stage: test
 
 check_style:
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:8.0
   needs:
   - job: build_asms_release
     artifacts: false
@@ -192,7 +192,7 @@ run_tests:
     reports:
       junit:
       - test_output/*.coverage.xml
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:8.0
   needs:
   - job: build_asms_release
     artifacts: false
