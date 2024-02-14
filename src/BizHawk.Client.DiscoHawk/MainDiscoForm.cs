@@ -116,23 +116,38 @@ namespace BizHawk.Client.DiscoHawk
 
 		private void LblMp3ExtractMagicArea_DragDrop(object sender, DragEventArgs e)
 		{
-			var files = ValidateDrop(e.Data);
-			if (files.Count == 0) return;
-			foreach (var file in files)
+			lblMp3ExtractMagicArea.AllowDrop = false;
+			Cursor = Cursors.WaitCursor;
+			try
 			{
-				using var disc = Disc.LoadAutomagic(file);
-				var (path, filename, _) = file.SplitPathToDirFileAndExt();
-				static bool? PromptForOverwrite(string mp3Path)
-					=> MessageBox.Show(
-						$"Do you want to overwrite existing files? Choosing \"No\" will simply skip those. You could also \"Cancel\" the extraction entirely.\n\ncaused by file: {mp3Path}",
-						"File to extract already exists",
-						MessageBoxButtons.YesNoCancel) switch
-					{
-						DialogResult.Yes => true,
-						DialogResult.No => false,
-						_ => null
-					};
-				AudioExtractor.Extract(disc, path, filename, PromptForOverwrite);
+				var files = ValidateDrop(e.Data);
+				if (files.Count == 0) return;
+				foreach (var file in files)
+				{
+					using var disc = Disc.LoadAutomagic(file);
+					var (path, filename, _) = file.SplitPathToDirFileAndExt();
+					static bool? PromptForOverwrite(string mp3Path)
+						=> MessageBox.Show(
+							$"Do you want to overwrite existing files? Choosing \"No\" will simply skip those. You could also \"Cancel\" the extraction entirely.\n\ncaused by file: {mp3Path}",
+							"File to extract already exists",
+							MessageBoxButtons.YesNoCancel) switch
+						{
+							DialogResult.Yes => true,
+							DialogResult.No => false,
+							_ => null
+						};
+					AudioExtractor.Extract(disc, path, filename, PromptForOverwrite);
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.ToString(), "Error loading disc");
+				throw;
+			}
+			finally
+			{
+				lblMp3ExtractMagicArea.AllowDrop = true;
+				Cursor = Cursors.Default;
 			}
 		}
 
