@@ -1,9 +1,10 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 
+using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.DiscSystem;
 
@@ -116,6 +117,20 @@ namespace BizHawk.Client.DiscoHawk
 
 		private void LblMp3ExtractMagicArea_DragDrop(object sender, DragEventArgs e)
 		{
+			if (!FFmpegService.QueryServiceAvailable())
+			{
+#if true
+				MessageBox.Show(
+					caption: "FFmpeg missing",
+					text: "This function requires FFmpeg, but it doesn't appear to have been downloaded.\n"
+						+ "EmuHawk can automatically download it: you just need to set up A/V recording with the FFmpeg writer.");
+				return;
+#else
+				using EmuHawk.FFmpegDownloaderForm dialog = new(); // builds fine when <Compile Include/>'d, but the .resx won't load even if it's also included
+				dialog.ShowDialog(owner: this);
+				if (!FFmpegService.QueryServiceAvailable()) return;
+#endif
+			}
 			lblMp3ExtractMagicArea.AllowDrop = false;
 			Cursor = Cursors.WaitCursor;
 			try
