@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 				else
 				{
 					sb.Append(_source.IsPressed(button)
-						? mnemonicChar
+						? mnemonicChar.Value
 						: ' ');
 				}
 			}
