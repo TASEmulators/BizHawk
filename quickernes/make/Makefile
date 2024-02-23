@@ -13,12 +13,12 @@ endif
 
 CXXFLAGS_32 = -march=pentium4 -mtune=core2
 CXXFLAGS_64 =
-CXXFLAGS = -Wall -I.. -I../core -O3 -Wfatal-errors -Werror -fomit-frame-pointer -flto $(CXXFLAGS_$(ARCH)) -D_QUICKERNES_CPU_FUNCTION_ALIGNMENT=\"1024\"
+CXXFLAGS = -Wall -I.. -I../core -O3 -Wfatal-errors -Werror -fomit-frame-pointer -flto $(CXXFLAGS_$(ARCH))
 
 # TODO: include these as options in the Makefile
 # -fprofile-generate
 # -fprofile-use
-TARGET = libquicknes.dll
+TARGET = libquickernes.so
 LDFLAGS_32 = -static -static-libgcc -static-libstdc++
 LDFLAGS_64 =
 LDFLAGS = -shared $(LDFLAGS_$(ARCH)) $(CXXFLAGS)

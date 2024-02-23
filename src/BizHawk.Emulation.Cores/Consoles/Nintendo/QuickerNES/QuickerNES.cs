@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 		static QuickerNES()
 		{
 			var resolver = new DynamicLibraryImportResolver(
-				$"libquickernes.dll", hasLimitedLifetime: false);
+				$"libquickernes{(OSTailoredCode.IsUnixHost ? ".so" : ".dll")}", hasLimitedLifetime: false);
 			QN = BizInvoker.GetInvoker<LibQuickerNES>(resolver, CallingConventionAdapters.Native);
 		}
 
