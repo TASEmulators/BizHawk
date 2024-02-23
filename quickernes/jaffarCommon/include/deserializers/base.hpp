@@ -16,7 +16,7 @@ class Base
   public:
 
   Base(
-    const void* __restrict__ inputDataBuffer, 
+    const void* __restrict inputDataBuffer, 
     const size_t inputDataBufferSize
   ) :
    _inputDataBuffer((const uint8_t*)inputDataBuffer),
@@ -25,14 +25,14 @@ class Base
 
   virtual ~Base() = default;
 
-  virtual void pop(void* const __restrict__ outputDataBuffer, const size_t outputDataSize) = 0;
-  virtual void popContiguous(void* const __restrict__ outputDataBuffer, const size_t outputDataSize) = 0;
+  virtual void pop(void* const __restrict outputDataBuffer, const size_t outputDataSize) = 0;
+  virtual void popContiguous(void* const __restrict outputDataBuffer, const size_t outputDataSize) = 0;
   inline size_t getInputSize() const { return _inputDataBufferPos; }
   inline const uint8_t* getInputDataBuffer() const { return _inputDataBuffer; }
 
   protected:
 
-  const uint8_t* __restrict__ const _inputDataBuffer;
+  const uint8_t* __restrict const _inputDataBuffer;
   const size_t _inputDataBufferSize;
   size_t _inputDataBufferPos = 0;
 };

@@ -16,7 +16,7 @@ class Base
   public:
 
   Base(
-    void* __restrict__ outputDataBuffer, 
+    void* __restrict outputDataBuffer, 
     const size_t outputDataBufferSize
   ) :
    _outputDataBuffer((uint8_t*)outputDataBuffer),
@@ -25,14 +25,14 @@ class Base
 
   virtual ~Base() = default;
 
-  virtual void push(const void* const __restrict__ inputData, const size_t inputDataSize) = 0;
-  virtual void pushContiguous(const void* const __restrict__ inputData, const size_t inputDataSize) = 0;
+  virtual void push(const void* const __restrict inputData, const size_t inputDataSize) = 0;
+  virtual void pushContiguous(const void* const __restrict inputData, const size_t inputDataSize) = 0;
   inline size_t getOutputSize() const { return _outputDataBufferPos; }
   inline uint8_t* getOutputDataBuffer() const { return _outputDataBuffer; }
 
   protected:
 
-  uint8_t* __restrict__ const _outputDataBuffer;
+  uint8_t* __restrict const _outputDataBuffer;
   const size_t _outputDataBufferSize;
   size_t _outputDataBufferPos = 0;
 };
