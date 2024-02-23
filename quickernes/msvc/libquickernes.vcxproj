@@ -96,29 +96,29 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="libquickernes.rc" />
+
   </ItemGroup>
   <ItemGroup>
-	<ClCompile Include="..\core\apu\vrc7\emu2413_state.cpp" />
-	<ClCompile Include="..\core\apu\vrc7\emu2413.cpp " />
-	<ClCompile Include="..\core\apu\vrc7\apu.cpp" />
-	<ClCompile Include="..\core\apu\fme7\apu.cpp" />
-	<ClCompile Include="..\core\apu\namco\apu.cpp" />
-	<ClCompile Include="..\core\apu\effectsBuffer.cpp" />
-	<ClCompile Include="..\core\apu\blipBuffer.cpp" />
-	<ClCompile Include="..\core\apu\NESEffectsBuffer.cpp" />
-	<ClCompile Include="..\core\apu\vrc6\apu.cpp" />
-	<ClCompile Include="..\core\apu\oscs.cpp" />
-	<ClCompile Include="..\core\apu\apu.cpp" />
-	<ClCompile Include="..\core\apu\buffer.cpp" />
-	<ClCompile Include="..\core\apu\multiBuffer.cpp" />
-	<ClCompile Include="..\core\emu.cpp" />
-	<ClCompile Include="..\core\mappers\mapper.cpp" />
-	<ClCompile Include="..\core\cpu.cpp" />
-	<ClCompile Include="..\core\ppu\ppu.cpp" />
-	<ClCompile Include="..\core\ppu\ppuRendering.cpp" />
-	<ClCompile Include="..\core\ppu\ppuImpl.cpp" />
-	<ClCompile Include="..\bizinterface.cpp " />
+    <ClCompile Include="..\core\apu\apu.cpp" />
+    <ClCompile Include="..\core\apu\fme7\apu_fme7.cpp" />
+    <ClCompile Include="..\core\apu\namco\apu_namco.cpp" />
+    <ClCompile Include="..\core\apu\vrc6\apu_vrc6.cpp" />
+    <ClCompile Include="..\core\apu\vrc7\apu_vrc7.cpp" />
+    <ClCompile Include="..\core\apu\vrc7\emu2413_state.cpp" />
+    <ClCompile Include="..\core\apu\vrc7\emu2413.cpp " />
+    <ClCompile Include="..\core\apu\effectsBuffer.cpp" />
+    <ClCompile Include="..\core\apu\blipBuffer.cpp" />
+    <ClCompile Include="..\core\apu\NESEffectsBuffer.cpp" />
+    <ClCompile Include="..\core\apu\oscs.cpp" />
+    <ClCompile Include="..\core\apu\buffer.cpp" />
+    <ClCompile Include="..\core\apu\multiBuffer.cpp" />
+    <ClCompile Include="..\core\emu.cpp" />
+    <ClCompile Include="..\core\mappers\mapper.cpp" />
+    <ClCompile Include="..\core\cpu.cpp" />
+    <ClCompile Include="..\core\ppu\ppu.cpp" />
+    <ClCompile Include="..\core\ppu\ppuRendering.cpp" />
+    <ClCompile Include="..\core\ppu\ppuImpl.cpp" />
+    <ClCompile Include="..\bizinterface.cpp " />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F07F76D3-08E6-4EBC-82F9-53FF90ABD9A9}</ProjectGuid>

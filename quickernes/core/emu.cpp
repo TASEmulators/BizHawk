@@ -3,6 +3,8 @@
 #include <cstring>
 #include "mappers/mapper.hpp"
 #include "emu.hpp"
+#include "apu/buffer.hpp"
+#include "apu/NESEffectsBuffer.hpp"
 
 /* Copyright (C) 2004-2006 Shay Green. This module is free software; you
 can redistribute it and/or modify it under the terms of the GNU Lesser
@@ -177,6 +179,18 @@ void Emu::write_chr( void const* p, long count, long offset )
 	long end = offset + count;
 	memcpy( (uint8_t*) chr_mem() + offset, p, count );
 	emu.ppu.rebuild_chr( offset, end );
+}
+
+Multi_Buffer* set_apu(Nes_Effects_Buffer* buf, Apu* apu)
+{
+	buf->set_apu(apu);
+	return buf;
+}
+
+Multi_Buffer* set_apu(Buffer* buf, Apu* apu)
+{
+	buf->set_apu(apu);
+	return buf;
 }
 
 const char * Emu::set_sample_rate( long rate, class Buffer* buf )

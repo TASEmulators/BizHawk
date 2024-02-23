@@ -27,12 +27,6 @@ Nes_Effects_Buffer::Nes_Effects_Buffer() : Effects_Buffer(true) // nes never use
 
 Nes_Effects_Buffer::~Nes_Effects_Buffer() {}
 
-Multi_Buffer *set_apu(Nes_Effects_Buffer *buf, Apu *apu)
-{
-  buf->set_apu(apu);
-  return buf;
-}
-
 void Nes_Effects_Buffer::enable_nonlinearity(bool b)
 {
   if (b) clear();
