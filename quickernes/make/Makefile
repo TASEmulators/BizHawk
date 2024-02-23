@@ -18,7 +18,7 @@ CXXFLAGS = -Wall -I.. -I../core -O3 -Wfatal-errors -Werror -fomit-frame-pointer 
 # TODO: include these as options in the Makefile
 # -fprofile-generate
 # -fprofile-use
-TARGET = libquickernes.dll
+TARGET = libquicknes.dll
 LDFLAGS_32 = -static -static-libgcc -static-libstdc++
 LDFLAGS_64 =
 LDFLAGS = -shared $(LDFLAGS_$(ARCH)) $(CXXFLAGS)
@@ -29,13 +29,13 @@ DESTCOPY_64 = ../../output/dll
 SRCS = \
 	../core/apu/vrc7/emu2413_state.cpp \
 	../core/apu/vrc7/emu2413.cpp  \
-	../core/apu/vrc7/apu.cpp \
-	../core/apu/fme7/apu.cpp \
-	../core/apu/namco/apu.cpp \
+	../core/apu/vrc7/apu_vrc7.cpp \
+	../core/apu/fme7/apu_fme7.cpp \
+	../core/apu/namco/apu_namco.cpp \
 	../core/apu/effectsBuffer.cpp \
 	../core/apu/blipBuffer.cpp \
 	../core/apu/NESEffectsBuffer.cpp \
-	../core/apu/vrc6/apu.cpp \
+	../core/apu/vrc6/apu_vrc6.cpp \
 	../core/apu/oscs.cpp \
 	../core/apu/apu.cpp \
 	../core/apu/buffer.cpp \

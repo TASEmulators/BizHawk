@@ -223,7 +223,7 @@ uint8_t clock_table [256] = {
 };
 
 #ifdef __linux__
-__attribute__((optimize(align-functions=1024)))
+__attribute__((optimize("align-functions=1024")))
 #endif
  Cpu::result_t Cpu::run ( nes_time_t end ) 
 {
