@@ -31,7 +31,7 @@ using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
@@ -3932,7 +3932,7 @@ namespace BizHawk.Client.EmuHawk
 
 						Game.Status = nes.RomStatus;
 					}
-					else if (loader.LoadedEmulator is QuickNES qns)
+					else if (loader.LoadedEmulator is QuickerNES qns)
 					{
 						if (!string.IsNullOrWhiteSpace(qns.BootGodName))
 						{
@@ -4433,7 +4433,7 @@ namespace BizHawk.Client.EmuHawk
 			return Emulator switch
 			{
 				Snes9x => PromptToSwitchCore(CoreNames.Snes9X, CoreNames.Bsnes115, () => Config.PreferredCores[VSystemID.Raw.SNES] = CoreNames.Bsnes115),
-				QuickNES => PromptToSwitchCore(CoreNames.QuickNes, CoreNames.NesHawk, () => Config.PreferredCores[VSystemID.Raw.NES] = CoreNames.NesHawk),
+				QuickerNES => PromptToSwitchCore(CoreNames.QuickerNes, CoreNames.NesHawk, () => Config.PreferredCores[VSystemID.Raw.NES] = CoreNames.NesHawk),
 				HyperNyma => PromptToSwitchCore(CoreNames.HyperNyma, CoreNames.TurboNyma, () => Config.PreferredCores[VSystemID.Raw.PCE] = CoreNames.TurboNyma),
 				_ => true
 			};

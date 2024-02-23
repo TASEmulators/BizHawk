@@ -12,7 +12,7 @@ You will need to run "pacman -S mingw-w64-x86_64-gcc" to install the mingw64 com
 lynx: use lynx/msvc/bizlynx.sln
 wonderswan: use wonderswan/msvc/bizswan.sln
 libretrobridge: use LibretroBridge/msvc/LibretroBridge.sln
-quicknes: use quicknes/msvc/libquicknes.sln
+quickernes: use quickernes/msvc/libquickernes.sln
 gambatte: use submodules/gambatte/bizhawk/msvc/libgambatte.sln
 octoshock (psx): use psx/octoshock/bizhawk/octoshock.sln
 

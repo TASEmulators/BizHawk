@@ -6,7 +6,7 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES;
 
 namespace BizHawk.Emulation.Cores
 {
@@ -137,9 +137,9 @@ namespace BizHawk.Emulation.Cores
 				}
 			}
 			else
-				// Quicknes Can support none, one or two controllers.
+				// Quickernes Can support none, one or two controllers.
 			{
-				var ss = ((QuickNES)core).GetSyncSettings();
+				var ss = ((QuickerNES)core).GetSyncSettings();
 				if (ss.LeftPortConnected && ss.RightPortConnected)
 				{
 					// Set both controllers

@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{ 0x00<<SHIFT, 0x00<<SHIFT, 0x00<<SHIFT }, /* Value 63 */
 		};
 
-		public static readonly byte[,] QuickNESPalette =
+		public static readonly byte[,] QuickerNESPalette =
 		{
 			{102, 102, 102},
 			{0, 42, 136},

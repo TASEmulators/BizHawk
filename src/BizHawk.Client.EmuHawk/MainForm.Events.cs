@@ -36,7 +36,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Faust;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.VB;
 using BizHawk.Emulation.Cores.Consoles.O2Hawk;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
@@ -1359,9 +1359,9 @@ namespace BizHawk.Client.EmuHawk
 			return this.ShowDialogWithTempMute(form);
 		}
 
-		private DialogResult OpenQuickNesGraphicsSettingsDialog(ISettingsAdapter settable)
+		private DialogResult OpenQuickerNesGraphicsSettingsDialog(ISettingsAdapter settable)
 		{
-			using QuickNesConfig form = new(Config, DialogController, settable);
+			using QuickerNesConfig form = new(Config, DialogController, settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1371,7 +1371,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				NES => OpenNesHawkGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<NES>()),
 				SubNESHawk => OpenNesHawkGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>()),
-				QuickNES => OpenQuickNesGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<QuickNES>()),
+				QuickerNES => OpenQuickerNesGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<QuickerNES>()),
 				_ => DialogResult.None
 			};
 		}
@@ -1451,11 +1451,11 @@ namespace BizHawk.Client.EmuHawk
 			return this.ShowDialogWithTempMute(form);
 		}
 
-		private DialogResult OpenQuickNesGamepadSettingsDialog(ISettingsAdapter settable)
+		private DialogResult OpenQuickerNesGamepadSettingsDialog(ISettingsAdapter settable)
 			=> GenericCoreConfig.DoDialogFor(
 				this,
 				settable,
-				"QuickNES Controller Settings",
+				"QuickerNES Controller Settings",
 				isMovieActive: MovieSession.Movie.IsActive(),
 				ignoreSettings: true);
 
@@ -1465,7 +1465,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				NES => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<NES>()),
 				SubNESHawk => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>()),
-				QuickNES => OpenQuickNesGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<QuickNES>()),
+				QuickerNES => OpenQuickerNesGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<QuickerNES>()),
 				_ => DialogResult.None
 			};
 		}
@@ -2921,15 +2921,15 @@ namespace BizHawk.Client.EmuHawk
 			// PicoDrive
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.PicoDrive, CreateGenericCoreConfigItem<PicoDrive>(CoreNames.PicoDrive)));
 
-			// QuickNes
-			var quickNesGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenQuickNesGamepadSettingsDialog(GetSettingsAdapterFor<QuickNES>()));
-			var quickNesSubmenu = CreateCoreSubmenu(
+			// QuickerNes
+			var quickerNesGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenQuickerNesGamepadSettingsDialog(GetSettingsAdapterFor<QuickerNES>()));
+			var quickerNesSubmenu = CreateCoreSubmenu(
 				VSystemCategory.Consoles,
-				CoreNames.QuickNes,
-				quickNesGamepadSettingsItem,
-				CreateSettingsItem("Graphics Settings...", (_, _) => OpenQuickNesGraphicsSettingsDialog(GetSettingsAdapterFor<QuickNES>())));
-			quickNesSubmenu.DropDownOpened += (_, _) => quickNesGamepadSettingsItem.Enabled = (MovieSession.Movie.NotActive() || Emulator is not QuickNES) && Tools.IsAvailable<NesControllerSettings>();
-			items.Add(quickNesSubmenu);
+				CoreNames.QuickerNes,
+				quickerNesGamepadSettingsItem,
+				CreateSettingsItem("Graphics Settings...", (_, _) => OpenQuickerNesGraphicsSettingsDialog(GetSettingsAdapterFor<QuickerNES>())));
+			quickerNesSubmenu.DropDownOpened += (_, _) => quickerNesGamepadSettingsItem.Enabled = (MovieSession.Movie.NotActive() || Emulator is not QuickerNES) && Tools.IsAvailable<NesControllerSettings>();
+			items.Add(quickerNesSubmenu);
 
 			// SameBoy
 			items.Add(CreateCoreSubmenu(

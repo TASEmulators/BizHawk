@@ -423,7 +423,7 @@
 			// 
 			this.label7.Location = new System.Drawing.Point(142, 67);
 			this.label7.Name = "label7";
-			this.label7.Text = "(The QuickNES palette is the default)";
+			this.label7.Text = "(The QuickerNES palette is the default)";
 			// 
 			// NESGraphicsConfig
 			// 

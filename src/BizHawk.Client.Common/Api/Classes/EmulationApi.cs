@@ -7,7 +7,7 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -200,7 +200,7 @@ namespace BizHawk.Client.Common
 			NES nes => nes.GetSettings(),
 			NDS nds => nds.GetSettings(),
 			PCEngine pce => pce.GetSettings(),
-			QuickNES quickNes => quickNes.GetSettings(),
+			QuickerNES quickerNes => quickerNes.GetSettings(),
 			SMS sms => sms.GetSettings(),
 			WonderSwan ws => ws.GetSettings(),
 			_ => null
@@ -213,7 +213,7 @@ namespace BizHawk.Client.Common
 			NES nes => nes.PutSettings((NES.NESSettings) settings),
 			NDS nds => nds.PutSettings((NDS.NDSSettings) settings),
 			PCEngine pce => pce.PutSettings((PCEngine.PCESettings) settings),
-			QuickNES quickNes => quickNes.PutSettings((QuickNES.QuickNESSettings) settings),
+			QuickerNES quickerNes => quickerNes.PutSettings((QuickerNES.QuickerNESSettings) settings),
 			SMS sms => sms.PutSettings((SMS.SmsSettings) settings),
 			WonderSwan ws => ws.PutSettings((WonderSwan.Settings) settings),
 			_ => PutSettingsDirtyBits.None
@@ -286,14 +286,14 @@ namespace BizHawk.Client.Common
 				}
 				pce.PutSettings(s);
 			}
-			void SetQuickNES(QuickNES quicknes)
+			void SetQuickerNES(QuickerNES quickernes)
 			{
-				var s = quicknes.GetSettings();
+				var s = quickernes.GetSettings();
 				// this core doesn't support disabling BG
 				var showSp = GetSetting(args, 0);
 				if (showSp && s.NumSprites == 0) s.NumSprites = 8;
 				else if (!showSp && s.NumSprites > 0) s.NumSprites = 0;
-				quicknes.PutSettings(s);
+				quickernes.PutSettings(s);
 			}
 			void SetSmsHawk(SMS sms)
 			{
@@ -322,8 +322,8 @@ namespace BizHawk.Client.Common
 				case PCEngine pce:
 					SetPCEHawk(pce);
 					break;
-				case QuickNES quicknes:
-					SetQuickNES(quicknes);
+				case QuickerNES quickernes:
+					SetQuickerNES(quickernes);
 					break;
 				case SMS sms:
 					SetSmsHawk(sms);

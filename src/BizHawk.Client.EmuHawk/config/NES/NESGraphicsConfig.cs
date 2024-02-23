@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 					DialogController.AddOnScreenMessage("Standard Palette set");
 				}
 
-				return (byte[,])Palettes.QuickNESPalette.Clone();
+				return (byte[,])Palettes.QuickerNESPalette.Clone();
 				
 			}
 			

@@ -250,7 +250,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public MyVideoProvider videoProvider;
 
-		[Obsolete] // with the changes to both nes and quicknes cores, nothing uses this anymore
+		[Obsolete] // with the changes to both nes and quickernes cores, nothing uses this anymore
 		public static readonly ControllerDefinition NESController =
 			new ControllerDefinition("NES Controller")
 			{

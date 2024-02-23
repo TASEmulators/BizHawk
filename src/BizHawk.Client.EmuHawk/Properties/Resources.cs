@@ -147,8 +147,8 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Icon PokeIcon = ReadEmbeddedIcon("poke");
 		internal static readonly Bitmap Poke = ReadEmbeddedBitmap("poke");
 		internal static readonly Bitmap Previous = ReadEmbeddedBitmap("Previous");
-		internal static readonly Icon QuickNesIcon = ReadEmbeddedIcon("QuickNes");
-		internal static readonly Bitmap QuickNes = ReadEmbeddedBitmap("QuickNes");
+		internal static readonly Icon QuickerNesIcon = ReadEmbeddedIcon("QuickerNes");
+		internal static readonly Bitmap QuickerNes = ReadEmbeddedBitmap("QuickerNes");
 		internal static readonly Bitmap ReadOnly = ReadEmbeddedBitmap("ReadOnly");
 		internal static readonly Bitmap Reboot = ReadEmbeddedBitmap("reboot");
 		internal static readonly Bitmap Recent = ReadEmbeddedBitmap("Recent");

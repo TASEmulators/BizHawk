@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 			PutSyncSettings<Atari2600>(a2600Settings);
 
 			// NES
-			_config.PreferredCores[VSystemID.Raw.NES] = CoreNames.QuickNes;
+			_config.PreferredCores[VSystemID.Raw.NES] = CoreNames.QuickerNes;
 
 			// NDS
 			var ssMelonDS = GetSyncSettings<NDS, NDS.NDSSyncSettings>();
