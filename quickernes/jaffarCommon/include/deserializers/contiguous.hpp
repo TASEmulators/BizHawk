@@ -21,14 +21,14 @@ class Contiguous final : public deserializer::Base
   public:
 
   Contiguous(
-    const void* __restrict__ inputDataBuffer = nullptr, 
+    const void* __restrict inputDataBuffer = nullptr, 
     const size_t inputDataBufferSize = std::numeric_limits<uint32_t>::max()
   ) : deserializer::Base(inputDataBuffer, inputDataBufferSize)
   {  }
 
   ~Contiguous() = default;
 
-  inline void popContiguous(void* const __restrict__ outputDataBuffer, const size_t outputDataSize) override
+  inline void popContiguous(void* const __restrict outputDataBuffer, const size_t outputDataSize) override
   { 
     // Making sure we do not exceed the maximum size estipulated
     if (_inputDataBufferPos  + outputDataSize> _inputDataBufferSize) throw std::runtime_error("Maximum input data position reached before contiguous deserialization");
@@ -40,7 +40,7 @@ class Contiguous final : public deserializer::Base
     _inputDataBufferPos += outputDataSize;
   }
 
-  inline void pop(void* const __restrict__ outputDataBuffer, const size_t outputDataSize) override
+  inline void pop(void* const __restrict outputDataBuffer, const size_t outputDataSize) override
   {
     popContiguous(outputDataBuffer, outputDataSize);
   }

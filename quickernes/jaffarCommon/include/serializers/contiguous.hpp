@@ -21,14 +21,14 @@ class Contiguous final : public serializer::Base
   public:
 
   Contiguous(
-    void* __restrict__ outputDataBuffer = nullptr, 
+    void* __restrict outputDataBuffer = nullptr, 
     const size_t outputDataBufferSize = std::numeric_limits<uint32_t>::max()
   ) : serializer::Base(outputDataBuffer, outputDataBufferSize)
   {  }
 
   ~Contiguous() = default;
 
-  inline void pushContiguous(const void* const __restrict__ inputData, const size_t inputDataSize) override
+  inline void pushContiguous(const void* const __restrict inputData, const size_t inputDataSize) override
   {
     // Only perform memcpy if the output block is not null
     if (_outputDataBuffer != nullptr) memcpy(&_outputDataBuffer[_outputDataBufferPos], inputData, inputDataSize);
@@ -40,7 +40,7 @@ class Contiguous final : public serializer::Base
     if (_outputDataBufferPos > _outputDataBufferSize) throw std::runtime_error("Maximum output data position reached before contiguous serialization");
   }
 
-  inline void push(const void* const __restrict__ inputData, const size_t inputDataSize) override
+  inline void push(const void* const __restrict inputData, const size_t inputDataSize) override
   {
     pushContiguous(inputData, inputDataSize);
   }
