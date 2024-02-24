@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 		public static readonly IReadOnlyList<(string[] AppliesTo, string[] CoreNames)> CorePickerUIData = new List<(string[], string[])>
 		{
 			(new[] { VSystemID.Raw.NES },
-				new[] { CoreNames.QuickerNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
+				new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
 			(new[] { VSystemID.Raw.SNES },
 				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes, CoreNames.Bsnes115, CoreNames.SubBsnes115 }),
 			(new[] { VSystemID.Raw.N64 },
@@ -321,7 +321,7 @@ namespace BizHawk.Client.Common
 
 		public Dictionary<string, string> PreferredCores = new()
 		{
-			[VSystemID.Raw.NES] = CoreNames.QuickerNes,
+			[VSystemID.Raw.NES] = CoreNames.QuickNes,
 			[VSystemID.Raw.SNES] = CoreNames.Snes9X,
 			[VSystemID.Raw.N64] = CoreNames.Mupen64Plus,
 			[VSystemID.Raw.GB] = CoreNames.Gambatte,

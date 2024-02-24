@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	public partial class QuickerNES : IDebuggable
+	public partial class QuickNES : IDebuggable
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

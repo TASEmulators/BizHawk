@@ -7,21 +7,21 @@ using Newtonsoft.Json;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	public partial class QuickerNES : ISettable<QuickerNES.QuickerNESSettings, QuickerNES.QuickerNESSyncSettings>
+	public partial class QuickNES : ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>
 	{
-		public QuickerNESSettings GetSettings()
+		public QuickNESSettings GetSettings()
 		{
 			return _settings.Clone();
 		}
 
-		public QuickerNESSyncSettings GetSyncSettings()
+		public QuickNESSyncSettings GetSyncSettings()
 		{
 			return _syncSettingsNext.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(QuickerNESSettings o)
+		public PutSettingsDirtyBits PutSettings(QuickNESSettings o)
 		{
 			_settings = o;
 			QN.qn_set_sprite_limit(Context, _settings.NumSprites);
@@ -31,27 +31,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 			return PutSettingsDirtyBits.None;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(QuickerNESSyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(QuickNESSyncSettings o)
 		{
-			bool ret = QuickerNESSyncSettings.NeedsReboot(_syncSettings, o);
+			bool ret = QuickNESSyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettingsNext = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		private QuickerNESSettings _settings;
+		private QuickNESSettings _settings;
 
 		/// <summary>
 		/// the syncsettings that this run of emulation is using (was passed to ctor)
 		/// </summary>
-		private readonly QuickerNESSyncSettings _syncSettings;
+		private readonly QuickNESSyncSettings _syncSettings;
 
 		/// <summary>
 		/// the syncsettings that were requested but won't be used yet
 		/// </summary>
-		private QuickerNESSyncSettings _syncSettingsNext;
+		private QuickNESSyncSettings _syncSettingsNext;
 
 		[CoreSettings]
-		public class QuickerNESSettings
+		public class QuickNESSettings
 		{
 			[DefaultValue(8)]
 			[Description("Set the number of sprites visible per line.  0 hides all sprites, 8 behaves like a normal NES, and 64 is maximum.")]
@@ -91,14 +91,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 			[JsonIgnore]
 			private byte[] _Palette;
 
-			public QuickerNESSettings Clone()
+			public QuickNESSettings Clone()
 			{
-				var ret = (QuickerNESSettings)MemberwiseClone();
+				var ret = (QuickNESSettings)MemberwiseClone();
 				ret._Palette = (byte[])_Palette.Clone();
 				return ret;
 			}
 
-			public QuickerNESSettings()
+			public QuickNESSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
 				SetDefaultColors();
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 				}
 				else
 				{
-					// use quickerNES's deemph calculator
+					// use quickNES's deemph calculator
 					for (int c = 0; c < 64 * 8; c++)
 					{
 						int a = c & 63;
@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 		}
 
 		[CoreSettings]
-		public class QuickerNESSyncSettings
+		public class QuickNESSyncSettings
 		{
 			[DefaultValue(true)]
 			[DisplayName("Left Port Connected")]
@@ -164,17 +164,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 			[Description("Specifies whether or not the Right (Player 2) Controller is connected")]
 			public bool RightPortConnected { get; set; }
 
-			public QuickerNESSyncSettings()
+			public QuickNESSyncSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public QuickerNESSyncSettings Clone()
+			public QuickNESSyncSettings Clone()
 			{
-				return (QuickerNESSyncSettings)MemberwiseClone();
+				return (QuickNESSyncSettings)MemberwiseClone();
 			}
 
-			public static bool NeedsReboot(QuickerNESSyncSettings x, QuickerNESSyncSettings y)
+			public static bool NeedsReboot(QuickNESSyncSettings x, QuickNESSyncSettings y)
 			{
 				// the core can handle dynamic plugging and unplugging, but that changes
 				// the ControllerDefinition, and we're not ready for that

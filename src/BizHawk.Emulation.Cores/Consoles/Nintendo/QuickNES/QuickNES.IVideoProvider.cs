@@ -1,8 +1,8 @@
 ﻿using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	public partial class QuickerNES : IVideoProvider
+	public partial class QuickNES : IVideoProvider
 	{
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }

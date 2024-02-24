@@ -3,9 +3,9 @@ using System.Runtime.InteropServices;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	public partial class QuickerNES : INESPPUViewable
+	public partial class QuickNES : INESPPUViewable
 	{
 		// todo: don't just call the callbacks at the end of frame; use the scanline info
 		private Action _callBack1;
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 			return QN.qn_peek_ppu(Context, addr);
 		}
 
-		// we don't use quickernes's MMC5 at all, so these three methods are just stubs
+		// we don't use quicknes's MMC5 at all, so these three methods are just stubs
 		public byte[] GetExTiles()
 		{
 			throw new InvalidOperationException();

@@ -10,23 +10,23 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.BizInvoke;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	[PortedCore(CoreNames.QuickerNes, "", "1.0.0", "https://github.com/SergioMartin86/quickerNES")]
+	[PortedCore(CoreNames.QuickNes, "", "1.0.0", "https://github.com/SergioMartin86/quickNES")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public sealed partial class QuickerNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable,
+	public sealed partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable,
 		IBoardInfo, IVideoLogicalOffsets, IStatable, IDebuggable,
-		ISettable<QuickerNES.QuickerNESSettings, QuickerNES.QuickerNESSyncSettings>, INESPPUViewable
+		ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, INESPPUViewable
 	{
-		static QuickerNES()
+		static QuickNES()
 		{
 			var resolver = new DynamicLibraryImportResolver(
-				$"libquickernes{(OSTailoredCode.IsUnixHost ? ".so" : ".dll")}", hasLimitedLifetime: false);
-			QN = BizInvoker.GetInvoker<LibQuickerNES>(resolver, CallingConventionAdapters.Native);
+				$"libquicknes{(OSTailoredCode.IsUnixHost ? ".so" : ".dll")}", hasLimitedLifetime: false);
+			QN = BizInvoker.GetInvoker<LibQuickNES>(resolver, CallingConventionAdapters.Native);
 		}
 
 		[CoreConstructor(VSystemID.Raw.NES, Priority = CorePriority.Low)]
-		public QuickerNES(byte[] file, QuickerNESSettings settings, QuickerNESSyncSettings syncSettings)
+		public QuickNES(byte[] file, QuickNESSettings settings, QuickNESSyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			Context = QN.qn_new();
@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 			try
 			{
 				file = FixInesHeader(file);
-				LibQuickerNES.ThrowStringError(QN.qn_loadines(Context, file, file.Length));
+				LibQuickNES.ThrowStringError(QN.qn_loadines(Context, file, file.Length));
 
 				InitSaveRamBuff();
 				InitSaveStateBuff();
@@ -47,11 +47,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 
 				int mapper = 0;
 				string mappername = Marshal.PtrToStringAnsi(QN.qn_get_mapper(Context, ref mapper));
-				Console.WriteLine("QuickerNES: Booted with Mapper #{0} \"{1}\"", mapper, mappername);
+				Console.WriteLine("QuickNES: Booted with Mapper #{0} \"{1}\"", mapper, mappername);
 				BoardName = mappername;
-				PutSettings(settings ?? new QuickerNESSettings());
+				PutSettings(settings ?? new QuickNESSettings());
 
-				_syncSettings = syncSettings ?? new QuickerNESSyncSettings();
+				_syncSettings = syncSettings ?? new QuickNESSyncSettings();
 				_syncSettingsNext = _syncSettings.Clone();
 
 				SetControllerDefinition();
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 			}
 		}
 
-		private static readonly LibQuickerNES QN;
+		private static readonly LibQuickNES QN;
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 
 			QN.qn_set_tracecb(Context, Tracer.IsEnabled() ? _traceCb : null);
 
-			LibQuickerNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2));
+			LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2));
 			IsLagFrame = QN.qn_get_joypad_read_count(Context) == 0;
 			if (IsLagFrame)
 				LagCount++;
@@ -248,11 +248,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 		private void CheckDisposed()
 		{
 			if (Context == IntPtr.Zero)
-				throw new ObjectDisposedException(nameof(QuickerNES));
+				throw new ObjectDisposedException(nameof(QuickNES));
 		}
 
-		// Fix some incorrect ines header entries that QuickerNES uses to load games.
-		// we need to do this from the raw file since QuickerNES hasn't had time to process it yet.
+		// Fix some incorrect ines header entries that QuickNES uses to load games.
+		// we need to do this from the raw file since QuickNES hasn't had time to process it yet.
 		private byte[] FixInesHeader(byte[] file)
 		{
 			var sha1 = SHA1Checksum.ComputeDigestHex(file);
@@ -274,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 			return file;
 		}
 
-		// These games are known to not work in quickneres but quickernes thinks it can run them, bail out if one of these is loaded
+		// These games are known to not work in quickneres but quicknes thinks it can run them, bail out if one of these is loaded
 		private static readonly HashSet<string> HashBlackList = new HashSet<string>
 		{
 			"E39CA4477D3B96E1CE3A1C61D8055187EA5F1784", // Bill and Ted's Excellent Adventure

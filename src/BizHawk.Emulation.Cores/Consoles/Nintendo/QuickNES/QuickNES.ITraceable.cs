@@ -4,13 +4,13 @@ using System.Runtime.InteropServices;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	partial class QuickerNES
+	partial class QuickNES
 	{
 		public TraceBuffer Tracer { get; private set; }
 
-		private LibQuickerNES.TraceCallback _traceCb;
+		private LibQuickNES.TraceCallback _traceCb;
 
 		private const string TraceHeader = "6502: PC, mnemonic, operands, registers (A, X, Y, P, SP)";
 

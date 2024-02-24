@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class QuickerNesConfig
+	partial class QuickNesConfig
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -112,7 +112,7 @@
 			this.buttonPalReset.Name = "buttonPalReset";
 			this.buttonPalReset.Size = new System.Drawing.Size(151, 23);
 			this.buttonPalReset.TabIndex = 5;
-			this.buttonPalReset.Text = "Reset to QuickerNES Default";
+			this.buttonPalReset.Text = "Reset to QuickNES Default";
 			this.buttonPalReset.UseVisualStyleBackColor = true;
 			this.buttonPalReset.Click += new System.EventHandler(this.ButtonPalReset_Click);
 			// 
@@ -123,7 +123,7 @@
 			this.label1.Name = "label1";
 			this.label1.Text = "Palette:";
 			// 
-			// QuickerNesConfig
+			// QuickNesConfig
 			// 
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -138,10 +138,10 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.propertyGrid1);
 			this.MinimumSize = new System.Drawing.Size(390, 285);
-			this.Name = "QuickerNesConfig";
+			this.Name = "QuickNesConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "NES Graphics Settings";
-			this.Load += new System.EventHandler(this.QuickerNesConfig_Load);
+			this.Load += new System.EventHandler(this.QuickNesConfig_Load);
 			this.groupBox1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);

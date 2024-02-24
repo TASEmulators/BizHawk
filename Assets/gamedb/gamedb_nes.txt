@@ -12,7 +12,7 @@
 ;h - hack
 ;u - unknown
 
-;Hash	Status	Name	System ID	Notes	MetaData	Configurations	CoreForce[neshawk|quickernes]
+;Hash	Status	Name	System ID	Notes	MetaData	Configurations	CoreForce[neshawk|quicknes]
 
 ; ************ NES / Famicom ************
 

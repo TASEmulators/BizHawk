@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	public static class Nes_NTSC_Colors
 	{

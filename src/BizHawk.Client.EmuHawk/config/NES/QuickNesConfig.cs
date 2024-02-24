@@ -2,34 +2,34 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class QuickerNesConfig : Form, IDialogParent
+	public partial class QuickNesConfig : Form, IDialogParent
 	{
 		private readonly Config _config;
 
 		private readonly ISettingsAdapter _settable;
 
-		private readonly QuickerNES.QuickerNESSettings _settings;
+		private readonly QuickNES.QuickNESSettings _settings;
 
 		public IDialogController DialogController { get; }
 
-		public QuickerNesConfig(Config config, IDialogController dialogController, ISettingsAdapter settable)
+		public QuickNesConfig(Config config, IDialogController dialogController, ISettingsAdapter settable)
 		{
 			_config = config;
 			_settable = settable;
-			_settings = (QuickerNES.QuickerNESSettings) _settable.GetSettings();
+			_settings = (QuickNES.QuickNESSettings) _settable.GetSettings();
 			DialogController = dialogController;
 			InitializeComponent();
-			Icon = Properties.Resources.QuickerNesIcon;
+			Icon = Properties.Resources.QuickNesIcon;
 		}
 
-		private void QuickerNesConfig_Load(object sender, EventArgs e)
+		private void QuickNesConfig_Load(object sender, EventArgs e)
 		{
 			propertyGrid1.SelectedObject = _settings;
 			SetPaletteImage();

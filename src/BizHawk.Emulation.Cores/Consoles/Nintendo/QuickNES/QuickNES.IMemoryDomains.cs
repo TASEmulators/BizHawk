@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	public partial class QuickerNES
+	public partial class QuickNES
 	{
 		private void InitMemoryDomains()
 		{

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 
 using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Local
@@ -26,73 +26,73 @@ namespace BizHawk.Client.Common
 			set => APIs.Emulation.PutSettings(value);
 		}
 
-		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickerNes</exception>
+		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("if ( nes.getallowmorethaneightsprites( ) ) then\r\n\tconsole.log( \"Gets the NES setting 'Allow more than 8 sprites per scanline' value\" );\r\nend;")]
 		[LuaMethod("getallowmorethaneightsprites", "Gets the NES setting 'Allow more than 8 sprites per scanline' value")]
 		public bool GetAllowMoreThanEightSprites()
 			=> Settings switch
 			{
 				NES.NESSettings nhs => nhs.AllowMoreThanEightSprites,
-				QuickerNES.QuickerNESSettings qns => qns.NumSprites != 8,
+				QuickNES.QuickNESSettings qns => qns.NumSprites != 8,
 				_ => throw new InvalidOperationException()
 			};
 
-		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickerNes</exception>
+		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("local innesget = nes.getbottomscanline( false );")]
 		[LuaMethod("getbottomscanline", "Gets the current value for the bottom scanline value")]
 		public int GetBottomScanline(bool pal = false)
 			=> Settings switch
 			{
 				NES.NESSettings nhs => pal ? nhs.PAL_BottomLine : nhs.NTSC_BottomLine,
-				QuickerNES.QuickerNESSettings qns => qns.ClipTopAndBottom ? 231 : 239,
+				QuickNES.QuickNESSettings qns => qns.ClipTopAndBottom ? 231 : 239,
 				_ => throw new InvalidOperationException()
 			};
 
-		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickerNes</exception>
+		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("if ( nes.getclipleftandright( ) ) then\r\n\tconsole.log( \"Gets the current value for the Clip Left and Right sides option\" );\r\nend;")]
 		[LuaMethod("getclipleftandright", "Gets the current value for the Clip Left and Right sides option")]
 		public bool GetClipLeftAndRight()
 			=> Settings switch
 			{
 				NES.NESSettings nhs => nhs.ClipLeftAndRight,
-				QuickerNES.QuickerNESSettings qns => qns.ClipLeftAndRight,
+				QuickNES.QuickNESSettings qns => qns.ClipLeftAndRight,
 				_ => throw new InvalidOperationException()
 			};
 
-		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickerNes</exception>
+		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("if ( nes.getdispbackground( ) ) then\r\n\tconsole.log( \"Indicates whether or not the bg layer is being displayed\" );\r\nend;")]
 		[LuaMethod("getdispbackground", "Indicates whether or not the bg layer is being displayed")]
 		public bool GetDisplayBackground()
 			=> Settings switch
 			{
 				NES.NESSettings nhs => nhs.DispBackground,
-				QuickerNES.QuickerNESSettings => true,
+				QuickNES.QuickNESSettings => true,
 				_ => throw new InvalidOperationException()
 			};
 
-		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickerNes</exception>
+		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("if ( nes.getdispsprites( ) ) then\r\n\tconsole.log( \"Indicates whether or not sprites are being displayed\" );\r\nend;")]
 		[LuaMethod("getdispsprites", "Indicates whether or not sprites are being displayed")]
 		public bool GetDisplaySprites()
 			=> Settings switch
 			{
 				NES.NESSettings nhs => nhs.DispSprites,
-				QuickerNES.QuickerNESSettings qns => qns.NumSprites > 0,
+				QuickNES.QuickNESSettings qns => qns.NumSprites > 0,
 				_ => throw new InvalidOperationException()
 			};
 
-		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickerNes</exception>
+		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("local innesget = nes.gettopscanline(false);")]
 		[LuaMethod("gettopscanline", "Gets the current value for the top scanline value")]
 		public int GetTopScanline(bool pal = false)
 			=> Settings switch
 			{
 				NES.NESSettings nhs => pal ? nhs.PAL_TopLine : nhs.NTSC_TopLine,
-				QuickerNES.QuickerNESSettings qns => qns.ClipTopAndBottom ? 8 : 0,
+				QuickNES.QuickNESSettings qns => qns.ClipTopAndBottom ? 8 : 0,
 				_ => throw new InvalidOperationException()
 			};
 
-		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickerNes</exception>
+		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("nes.setallowmorethaneightsprites( true );")]
 		[LuaMethod("setallowmorethaneightsprites", "Sets the NES setting 'Allow more than 8 sprites per scanline'")]
 		public void SetAllowMoreThanEightSprites(bool allow)
@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 					nhs.AllowMoreThanEightSprites = allow;
 					Settings = nhs;
 					break;
-				case QuickerNES.QuickerNESSettings qns:
+				case QuickNES.QuickNESSettings qns:
 					qns.NumSprites = allow ? 64 : 8;
 					Settings = qns;
 					break;
@@ -112,7 +112,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickerNes</exception>
+		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("nes.setclipleftandright( true );")]
 		[LuaMethod("setclipleftandright", "Sets the Clip Left and Right sides option")]
 		public void SetClipLeftAndRight(bool leftandright)
@@ -123,7 +123,7 @@ namespace BizHawk.Client.Common
 					nhs.ClipLeftAndRight = leftandright;
 					Settings = nhs;
 					break;
-				case QuickerNES.QuickerNESSettings qns:
+				case QuickNES.QuickNESSettings qns:
 					qns.ClipLeftAndRight = leftandright;
 					Settings = qns;
 					break;
@@ -132,7 +132,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickerNes</exception>
+		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("nes.setdispbackground( true );")]
 		[LuaMethod("setdispbackground", "Sets whether or not the background layer will be displayed")]
 		public void SetDisplayBackground(bool show)
@@ -143,14 +143,14 @@ namespace BizHawk.Client.Common
 					nhs.DispBackground = show;
 					Settings = nhs;
 					break;
-				case QuickerNES.QuickerNESSettings:
+				case QuickNES.QuickNESSettings:
 					return;
 				default:
 					throw new InvalidOperationException();
 			}
 		}
 
-		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickerNes</exception>
+		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("nes.setdispsprites( true );")]
 		[LuaMethod("setdispsprites", "Sets whether or not sprites will be displayed")]
 		public void SetDisplaySprites(bool show)
@@ -161,7 +161,7 @@ namespace BizHawk.Client.Common
 					nhs.DispSprites = show;
 					Settings = nhs;
 					break;
-				case QuickerNES.QuickerNESSettings qns:
+				case QuickNES.QuickNESSettings qns:
 					qns.NumSprites = show ? 8 : 0;
 					Settings = qns;
 					break;
@@ -170,7 +170,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickerNes</exception>
+		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("nes.setscanlines( 10, 20, false );")]
 		[LuaMethod("setscanlines", "sets the top and bottom scanlines to be drawn (same values as in the graphics options dialog). Top must be in the range of 0 to 127, bottom must be between 128 and 239. Not supported in the Quick Nes core")]
 		public void SetScanlines(int top, int bottom, bool pal = false)
@@ -209,7 +209,7 @@ namespace BizHawk.Client.Common
 
 					Settings = nhs;
 					break;
-				case QuickerNES.QuickerNESSettings:
+				case QuickNES.QuickNESSettings:
 					return;
 				default:
 					throw new InvalidOperationException();

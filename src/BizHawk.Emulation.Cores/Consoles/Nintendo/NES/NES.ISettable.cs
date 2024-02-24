@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public NESSettings()
 			{
-				Palette = (byte[,])Palettes.QuickerNESPalette.Clone();
+				Palette = (byte[,])Palettes.QuickNESPalette.Clone();
 			}
 
 			[Newtonsoft.Json.JsonConstructor]
@@ -183,7 +183,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (Palette == null)
 					// only needed for SVN purposes
 					// edit: what does this mean?
-					this.Palette = (byte[,])Palettes.QuickerNESPalette.Clone();
+					this.Palette = (byte[,])Palettes.QuickNESPalette.Clone();
 				else
 					this.Palette = Palette;
 			}

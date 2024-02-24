@@ -194,9 +194,9 @@
 		<Compile Update="config/NES/NESVSSettings.cs" SubType="Form" />
 		<Compile Update="config/NES/NESVSSettings.Designer.cs" DependentUpon="NESVSSettings.cs" />
 		<EmbeddedResource Update="config/NES/NESVSSettings.resx" DependentUpon="NESVSSettings.cs" />
-		<Compile Update="config/NES/QuickerNesConfig.cs" SubType="Form" />
-		<Compile Update="config/NES/QuickerNesConfig.Designer.cs" DependentUpon="QuickerNesConfig.cs" />
-		<EmbeddedResource Update="config/NES/QuickerNesConfig.resx" DependentUpon="QuickerNesConfig.cs" />
+		<Compile Update="config/NES/QuickNesConfig.cs" SubType="Form" />
+		<Compile Update="config/NES/QuickNesConfig.Designer.cs" DependentUpon="QuickNesConfig.cs" />
+		<EmbeddedResource Update="config/NES/QuickNesConfig.resx" DependentUpon="QuickNesConfig.cs" />
 		<Compile Update="config/PathConfig.cs" SubType="Form" />
 		<Compile Update="config/PathConfig.Designer.cs" DependentUpon="PathConfig.cs" />
 		<EmbeddedResource Update="config/PathConfig.resx" DependentUpon="PathConfig.cs" />

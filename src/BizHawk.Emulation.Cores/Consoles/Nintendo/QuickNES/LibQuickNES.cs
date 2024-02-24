@@ -3,18 +3,18 @@ using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	public abstract class LibQuickerNES
+	public abstract class LibQuickNES
 	{
 		/// <summary>
-		/// create a new quickernes context
+		/// create a new quicknes context
 		/// </summary>
 		/// <returns>NULL on failure</returns>
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract IntPtr qn_new();
 		/// <summary>
-		/// destroy a quickernes context
+		/// destroy a quicknes context
 		/// </summary>
 		/// <param name="e">context previously returned from qn_new()</param>
 		[BizImport(CallingConvention.Cdecl)]
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void qn_blit(IntPtr e, int[] dest, int[] colors, int cropleft, int croptop, int cropright, int cropbottom);
 		/// <summary>
-		/// get quickernes's default palette
+		/// get quicknes's default palette
 		/// </summary>
 		/// <returns>1536 bytes suitable for qn_blit</returns>
 		[BizImport(CallingConvention.Cdecl)]
@@ -222,7 +222,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 		public abstract void qn_peek_ppubus(IntPtr e, byte[] dest);
 
 		/// <summary>
-		/// handle "string error" as returned by some quickernes functions
+		/// handle "string error" as returned by some quicknes functions
 		/// </summary>
 		public static void ThrowStringError(IntPtr p)
 		{
@@ -234,11 +234,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 				|| s == " truncated file" // This is a garbage rom not worth anyone's time but at least NesHawk handles these better, and these occur before the core has a chance to assess an unsupported mapper
 				) 
 			{
-				throw new Common.UnsupportedGameException("Quickernes unsupported mapper");
+				throw new Common.UnsupportedGameException("Quicknes unsupported mapper");
 			}
 			else
 			{
-				throw new InvalidOperationException("LibQuickerNES error: " + s);
+				throw new InvalidOperationException("LibQuickNES error: " + s);
 			}
 		}
 	}

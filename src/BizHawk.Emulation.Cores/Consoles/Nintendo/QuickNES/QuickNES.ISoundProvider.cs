@@ -1,9 +1,9 @@
 ﻿using System;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	public partial class QuickerNES : ISoundProvider
+	public partial class QuickNES : ISoundProvider
 	{
 		private readonly short[] _monoBuff = new short[1024];
 		private readonly short[] _stereoBuff = new short[2048];
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickerNES
 
 		private void InitAudio()
 		{
-			LibQuickerNES.ThrowStringError(QN.qn_set_sample_rate(Context, 44100));
+			LibQuickNES.ThrowStringError(QN.qn_set_sample_rate(Context, 44100));
 		}
 
 		private void DrainAudio()
