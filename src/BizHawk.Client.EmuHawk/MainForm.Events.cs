@@ -1191,7 +1191,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Config.TrustedExtTools.Count is 0) return;
 
 			ExternalToolMenuItem.DropDownItems.Add(new ToolStripSeparatorEx());
-			ToolStripMenuItemEx forgetTrustedItem = new() { Text = "Forget trusted tools" };
+			ToolStripMenuItemEx forgetTrustedItem = new() { Text = "Forget Trusted Tools" };
 			forgetTrustedItem.Click += (_, _) =>
 			{
 				if (this.ModalMessageBox2(
