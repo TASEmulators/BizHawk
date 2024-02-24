@@ -2922,14 +2922,14 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.PicoDrive, CreateGenericCoreConfigItem<PicoDrive>(CoreNames.PicoDrive)));
 
 			// QuickNes
-			var quickerNesGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenQuickNesGamepadSettingsDialog(GetSettingsAdapterFor<QuickNES>()));
-			var quickerNesSubmenu = CreateCoreSubmenu(
+			var quickNesGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenQuickNesGamepadSettingsDialog(GetSettingsAdapterFor<QuickNES>()));
+			var quickNesSubmenu = CreateCoreSubmenu(
 				VSystemCategory.Consoles,
 				CoreNames.QuickNes,
-				quickerNesGamepadSettingsItem,
+				quickNesGamepadSettingsItem,
 				CreateSettingsItem("Graphics Settings...", (_, _) => OpenQuickNesGraphicsSettingsDialog(GetSettingsAdapterFor<QuickNES>())));
-			quickerNesSubmenu.DropDownOpened += (_, _) => quickerNesGamepadSettingsItem.Enabled = (MovieSession.Movie.NotActive() || Emulator is not QuickNES) && Tools.IsAvailable<NesControllerSettings>();
-			items.Add(quickerNesSubmenu);
+			quickNesSubmenu.DropDownOpened += (_, _) => quickNesGamepadSettingsItem.Enabled = (MovieSession.Movie.NotActive() || Emulator is not QuickNES) && Tools.IsAvailable<NesControllerSettings>();
+			items.Add(quickNesSubmenu);
 
 			// SameBoy
 			items.Add(CreateCoreSubmenu(
