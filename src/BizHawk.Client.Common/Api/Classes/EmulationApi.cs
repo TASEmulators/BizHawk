@@ -200,7 +200,7 @@ namespace BizHawk.Client.Common
 			NES nes => nes.GetSettings(),
 			NDS nds => nds.GetSettings(),
 			PCEngine pce => pce.GetSettings(),
-			QuickNES quickerNes => quickerNes.GetSettings(),
+			QuickNES quickNes => quickNes.GetSettings(),
 			SMS sms => sms.GetSettings(),
 			WonderSwan ws => ws.GetSettings(),
 			_ => null
@@ -213,7 +213,7 @@ namespace BizHawk.Client.Common
 			NES nes => nes.PutSettings((NES.NESSettings) settings),
 			NDS nds => nds.PutSettings((NDS.NDSSettings) settings),
 			PCEngine pce => pce.PutSettings((PCEngine.PCESettings) settings),
-			QuickNES quickerNes => quickerNes.PutSettings((QuickNES.QuickNESSettings) settings),
+			QuickNES quickNes => quickNes.PutSettings((QuickNES.QuickNESSettings) settings),
 			SMS sms => sms.PutSettings((SMS.SmsSettings) settings),
 			WonderSwan ws => ws.PutSettings((WonderSwan.Settings) settings),
 			_ => PutSettingsDirtyBits.None
