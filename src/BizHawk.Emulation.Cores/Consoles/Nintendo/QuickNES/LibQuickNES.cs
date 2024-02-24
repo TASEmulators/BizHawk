@@ -234,11 +234,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				|| s == " truncated file" // This is a garbage rom not worth anyone's time but at least NesHawk handles these better, and these occur before the core has a chance to assess an unsupported mapper
 				) 
 			{
-				throw new Common.UnsupportedGameException("Quicknes unsupported mapper");
+				throw new Common.UnsupportedGameException(CoreNames.QuickNes + " unsupported mapper");
 			}
 			else
 			{
-				throw new InvalidOperationException("LibQuickNES error: " + s);
+				throw new InvalidOperationException($"{nameof(LibQuickNES)} error: {s}");
 			}
 		}
 	}

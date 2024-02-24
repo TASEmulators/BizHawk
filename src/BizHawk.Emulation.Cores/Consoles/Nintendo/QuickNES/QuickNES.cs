@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 				int mapper = 0;
 				string mappername = Marshal.PtrToStringAnsi(QN.qn_get_mapper(Context, ref mapper));
-				Console.WriteLine("QuickNES: Booted with Mapper #{0} \"{1}\"", mapper, mappername);
+				Console.WriteLine($"{CoreNames.QuickNes}: Booted with Mapper #{mapper} \"{mappername}\"");
 				BoardName = mappername;
 				PutSettings(settings ?? new QuickNESSettings());
 

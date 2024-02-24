@@ -1455,7 +1455,7 @@ namespace BizHawk.Client.EmuHawk
 			=> GenericCoreConfig.DoDialogFor(
 				this,
 				settable,
-				"QuickNES Controller Settings",
+				CoreNames.QuickNes + " Controller Settings",
 				isMovieActive: MovieSession.Movie.IsActive(),
 				ignoreSettings: true);
 
