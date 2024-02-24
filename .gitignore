@@ -6,6 +6,8 @@
 /test_output
 **/ipch/**
 /Assets/dll/*.wbx
+Backup/
+UpgradeLog.htm
 
 *.ilk
 *.il
