@@ -1,4 +1,5 @@
 #include "NDS.h"
+#include "NDSCart.h"
 #include "DSi.h"
 #include "DSi_NAND.h"
 #include "DSi_TMD.h"
@@ -8,10 +9,17 @@
 
 #include "BizFileManager.h"
 
+// need to peek at these internals
+namespace DSi_BPTWL
+{
+	extern u8 Registers[0x100];
+}
+
 namespace FileManager
 {
 
 constexpr u32 DSIWARE_CATEGORY = 0x00030004;
+static u8 DSiWareID[8];
 
 static std::optional<std::pair<std::unique_ptr<u8[]>, size_t>> GetFileData(std::string path)
 {
@@ -413,9 +421,9 @@ const char* InitNAND(FirmwareSettings& fwSettings, bool clearNand, bool dsiWare)
 				return "Failed to obtain TMD!";
 			}
 
-			if (tmdData->second < sizeof(DSi_TMD::TitleMetadata))
+			if (tmdData->second != sizeof(DSi_TMD::TitleMetadata))
 			{
-				return "TMD is too small!";
+				return "TMD is the wrong size!";
 			}
 
 			DSi_TMD::TitleMetadata tmd;
@@ -432,6 +440,11 @@ const char* InitNAND(FirmwareSettings& fwSettings, bool clearNand, bool dsiWare)
 			if (!(regionFlags & (1 << static_cast<u8>(serialData.Region))))
 			{
 				return "Loaded NAND region does not support this DSiWare title!";
+			}
+
+			if (rom->second >= 0x238)
+			{
+				memcpy(&DSiWareID, &rom->first[0x230], sizeof(DSiWareID));
 			}
 		}
 	}
@@ -566,6 +579,50 @@ const char* InitCarts(bool gba)
 	}
 
 	return nullptr;
+}
+
+#pragma pack(push, 1)
+
+struct DSiAutoLoad
+{
+	u8 ID[4]; // "TLNC"
+	u8 Unknown1; // "usually 01h"
+	u8 Length; // starting from PrevTitleId
+	u16 CRC16; // covering Length bytes ("18h=norm")
+	u8 PrevTitleID[8]; // can be 0 ("anonymous")
+	u8 NewTitleID[8];
+	u32 Flags; // bit 0: is valid, bit 1-3: boot type ("01h=Cartridge, 02h=Landing, 03h=DSiware"), other bits unknown/unused
+	u32 Unused1; // this part is typically still checksummed
+	u8 Unused2[0xE0]; // this part isn't checksummed, but is 0 filled on erasing autoload data
+};
+
+#pragma pack(pop)
+
+static_assert(sizeof(DSiAutoLoad) == 0x100, "DSiAutoLoad wrong size");
+
+void SetupDirectBoot()
+{
+	if (NDSCart::Cart)
+	{
+		NDS::SetupDirectBoot("nds.rom");
+	}
+	else
+	{
+		// set warm boot flag
+		DSi_BPTWL::Registers[0x70] |= 1;
+
+		// setup "auto-load" feature
+		DSiAutoLoad dsiAutoLoad;
+		memset(&dsiAutoLoad, 0, sizeof(dsiAutoLoad));
+		memcpy(dsiAutoLoad.ID, "TLNC", sizeof(dsiAutoLoad.ID));
+		dsiAutoLoad.Unknown1 = 0x01;
+		dsiAutoLoad.Length = 0x18;
+		memcpy(dsiAutoLoad.NewTitleID, DSiWareID, sizeof(DSiWareID));
+		dsiAutoLoad.Flags |= (0x03 << 1) | 0x01;
+		dsiAutoLoad.Flags |= (1 << 4); // unknown bit, seems to be required to boot into games (errors otherwise?)
+		dsiAutoLoad.CRC16 = SPI_Firmware::CRC16((u8*)&dsiAutoLoad.PrevTitleID, dsiAutoLoad.Length, 0xFFFF);
+		memcpy(&NDS::MainRAM[0x300], &dsiAutoLoad, sizeof(dsiAutoLoad));
+	}
 }
 
 }

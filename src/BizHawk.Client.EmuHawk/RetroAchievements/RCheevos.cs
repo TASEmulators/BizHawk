@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -21,6 +22,9 @@ namespace BizHawk.Client.EmuHawk
 			var resolver = new DynamicLibraryImportResolver(
 				OSTailoredCode.IsUnixHost ? "librcheevos.so" : "librcheevos.dll", hasLimitedLifetime: false);
 			_lib = BizInvoker.GetInvoker<LibRCheevos>(resolver, CallingConventionAdapters.Native);
+
+			var version = Marshal.PtrToStringAnsi(_lib.rc_version_string());
+			Console.WriteLine($"Loaded RCheevos v{version}");
 
 			// init message callbacks
 			_errorMessageCallback = ErrorMessageCallback;

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 
+using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.DiscSystem;
 
@@ -116,23 +117,52 @@ namespace BizHawk.Client.DiscoHawk
 
 		private void LblMp3ExtractMagicArea_DragDrop(object sender, DragEventArgs e)
 		{
-			var files = ValidateDrop(e.Data);
-			if (files.Count == 0) return;
-			foreach (var file in files)
+			if (!FFmpegService.QueryServiceAvailable())
 			{
-				using var disc = Disc.LoadAutomagic(file);
-				var (path, filename, _) = file.SplitPathToDirFileAndExt();
-				static bool? PromptForOverwrite(string mp3Path)
-					=> MessageBox.Show(
-						$"Do you want to overwrite existing files? Choosing \"No\" will simply skip those. You could also \"Cancel\" the extraction entirely.\n\ncaused by file: {mp3Path}",
-						"File to extract already exists",
-						MessageBoxButtons.YesNoCancel) switch
-					{
-						DialogResult.Yes => true,
-						DialogResult.No => false,
-						_ => null
-					};
-				AudioExtractor.Extract(disc, path, filename, PromptForOverwrite);
+#if true
+				MessageBox.Show(
+					caption: "FFmpeg missing",
+					text: "This function requires FFmpeg, but it doesn't appear to have been downloaded.\n"
+						+ "EmuHawk can automatically download it: you just need to set up A/V recording with the FFmpeg writer.");
+				return;
+#else
+				using EmuHawk.FFmpegDownloaderForm dialog = new(); // builds fine when <Compile Include/>'d, but the .resx won't load even if it's also included
+				dialog.ShowDialog(owner: this);
+				if (!FFmpegService.QueryServiceAvailable()) return;
+#endif
+			}
+			lblMp3ExtractMagicArea.AllowDrop = false;
+			Cursor = Cursors.WaitCursor;
+			try
+			{
+				var files = ValidateDrop(e.Data);
+				if (files.Count == 0) return;
+				foreach (var file in files)
+				{
+					using var disc = Disc.LoadAutomagic(file);
+					var (path, filename, _) = file.SplitPathToDirFileAndExt();
+					static bool? PromptForOverwrite(string mp3Path)
+						=> MessageBox.Show(
+							$"Do you want to overwrite existing files? Choosing \"No\" will simply skip those. You could also \"Cancel\" the extraction entirely.\n\ncaused by file: {mp3Path}",
+							"File to extract already exists",
+							MessageBoxButtons.YesNoCancel) switch
+						{
+							DialogResult.Yes => true,
+							DialogResult.No => false,
+							_ => null
+						};
+					AudioExtractor.Extract(disc, path, filename, PromptForOverwrite);
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.ToString(), "Error loading disc");
+				throw;
+			}
+			finally
+			{
+				lblMp3ExtractMagicArea.AllowDrop = true;
+				Cursor = Cursors.Default;
 			}
 		}
 

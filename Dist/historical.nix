@@ -8,6 +8,7 @@
 # makedeps
 , dotnet-sdk_5
 , dotnet-sdk_6
+, dotnet-sdk_8
 }: let
 	/**
 	 * updating? make sure to hit the rest of this file, the hand-written deps `/Dist/deps-historical.nix`,
@@ -78,6 +79,7 @@
 					-i $out/Dist/.InvokeCLIOnMainSln.sh
 			'';
 			hashPostPatching = "sha256-g6U0B+wY5uosP5WyNFKylBRX9kq+zM6H+f05egYqcAQ=";
+			dotnet-sdk = dotnet-sdk_6;
 		};
 		info-2_9 = {
 			version = "2.9";
@@ -86,6 +88,7 @@
 				commitCount=20208
 			'' + pre-2_9_1-no-git-patch + from-2_6_2-through-2_9-no-git-patch;
 			hashPostPatching = "sha256-gDLStqpRGxTlXip+FKWj/O7sQElBNjQK8HpjZbXsrC0=";
+			dotnet-sdk = dotnet-sdk_6;
 		};
 		info-2_8 = {
 			version = "2.8";
@@ -94,6 +97,7 @@
 				commitCount=19337
 			'' + pre-2_9_1-no-git-patch + from-2_6_2-through-2_9-no-git-patch;
 			hashPostPatching = "sha256-TfxAA8QkyImau0MxCdbTWFKneXZwpXYPIB+iN9z+Unk=";
+			dotnet-sdk = dotnet-sdk_6;
 		};
 		info-2_7 = {
 			version = "2.7";
@@ -200,7 +204,7 @@ in {
 		inherit neededExtraManagedDepsApprox;
 		__contentAddressed = false; #TODO try w/ CA
 		copyingAssetsInEmuHawkProj = isVersionAtLeast "2.6.3" version;
-		dotnet-sdk = dotnet-sdk_6;
+		dotnet-sdk = dotnet-sdk_8;
 		exePathRespectsEnvVar = isVersionAtLeast "2.9.2" version;
 		hasAssemblyResolveHandler = isVersionAtLeast "2.3.3" version;
 		hasAssetsInOutput = !isVersionAtLeast "2.6.1" version;

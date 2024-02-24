@@ -23,6 +23,7 @@ in {
 	src = builtins.path { path = ./.; name = "BizHawk-${version}"; }; # source derivation; did have filter here for speed, but it wasn't faster and it wasn't correct and it couldn't be made correct and I'm mad
 }
 # makedeps
+, dotnet-sdk_8 ? pkgs.dotnet-sdk_8
 , dotnet-sdk_6 ? pkgs.dotnet-sdk_6
 , dotnet-sdk_5 ? let result = builtins.tryEval pkgs.dotnet-sdk_5; in if result.success
 	then result.value
@@ -75,7 +76,7 @@ in {
 		inherit lib
 			isVersionAtLeast replaceDotWithUnderscore
 			fetchFromGitHub fetchFromGitLab mkNugetDeps
-			dotnet-sdk_5 dotnet-sdk_6;
+			dotnet-sdk_5 dotnet-sdk_6 dotnet-sdk_8;
 	}) depsForHistoricalRelease populateHawkSourceInfo releaseArtifactInfos releaseFrags releaseTagSourceInfos;
 	launchScriptsFor = bizhawkAssemblies: isManualLocalBuild: import Dist/launch-scripts.nix {
 		inherit lib

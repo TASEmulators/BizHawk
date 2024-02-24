@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
@@ -17,11 +17,11 @@
 	</PropertyGroup>
 	<!-- BIZHAWKTEST_SAVE_IMAGES=none => no extra defines -->
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" PrivateAssets="all" />
-		<PackageReference Include="MSTest.TestAdapter" Version="2.2.9" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.2.9" />
-		<PackageReference Include="JunitXml.TestLogger" Version="3.0.124" />
-		<PackageReference Include="Magick.NET-Q8-AnyCPU" Version="13.0.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" PrivateAssets="all" />
+		<PackageReference Include="MSTest.TestAdapter" />
+		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="JunitXml.TestLogger" />
+		<PackageReference Include="Magick.NET-Q8-AnyCPU" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 		<EmbeddedResource Include="res/**/*" />
 		<Content Include="$(ProjectDir)../../Assets/gamedb/**/*" LinkBase="gamedb" CopyToOutputDirectory="PreserveNewest" />

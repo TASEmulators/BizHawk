@@ -98,6 +98,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				InitAllSettingsInfo(portData);
 				_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
 
+				var rtcStart = DateTime.Parse("2010-01-01", DateTimeFormatInfo.InvariantInfo);
+				try
+				{
+					rtcStart = DateTime.Parse(SettingsQuery("nyma.rtcinitialtime"), DateTimeFormatInfo.InvariantInfo);
+				}
+				catch
+				{
+					Console.Error.WriteLine($"Couldn't parse DateTime \"{SettingsQuery("nyma.rtcinitialtime")}\"");
+				}
+
+				// Don't optimistically set deterministic, as some cores like faust can change this
+				DeterministicEmulation = deterministic; // || SettingsQuery("nyma.rtcrealtime") == "0";
+				InitializeRtc(rtcStart);
+				_nyma.SetInitialTime(GetRtcTime(SettingsQuery("nyma.rtcrealtime") != "0"));
+
 				if (discs?.Length > 0)
 				{
 					_disks = discs;
@@ -167,18 +182,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				if (_disks != null)
 					_nyma.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
 				PutSettings(_settings);
-				DateTime RtcStart = DateTime.Parse("2010-01-01", DateTimeFormatInfo.InvariantInfo);
-				try
-				{
-					RtcStart = DateTime.Parse(SettingsQuery("nyma.rtcinitialtime"), DateTimeFormatInfo.InvariantInfo);
-				}
-				catch
-				{
-					Console.Error.WriteLine($"Couldn't parse DateTime \"{SettingsQuery("nyma.rtcinitialtime")}\"");
-				}
-				// Don't optimistically set deterministic, as some cores like faust can change this
-				DeterministicEmulation = deterministic; // || SettingsQuery("nyma.rtcrealtime") == "0";
-				InitializeRtc(RtcStart);
+
 				_frameThreadPtr = _nyma.GetFrameThreadProc();
 				if (_frameThreadPtr != IntPtr.Zero)
 				{

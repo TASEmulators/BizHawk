@@ -8,6 +8,11 @@ namespace BizHawk.Client.Common
 {
 	public sealed class SQLiteApi : ISQLiteApi
 	{
+		static SQLiteApi()
+		{
+			SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
+		}
+
 		private SqliteConnection _dbConnection;
 
 		public string CreateDatabase(string name)

@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int chr_reg;
 		public int chip_offset;
 		public bool cheetahmen = false;
-		private byte[] eRAM = new byte[4];
+		private byte[] eRAM = new byte[1 << 3];
 		private int chr_bank_mask_8k, prg_bank_mask_16k, prg_bank_mask_32k;
 
 		public override bool Configure(EDetectionOrigin origin)

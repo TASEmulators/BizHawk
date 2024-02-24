@@ -1,3 +1,5 @@
+using System;
+using System.Globalization;
 using System.Linq;
 
 namespace BizHawk.Common.StringExtensions
@@ -30,6 +32,26 @@ namespace BizHawk.Common.StringExtensions
 		/// That is, all chars of the copy will be hex digits (<c>[0-9A-F]</c>).
 		/// </returns>
 		public static string OnlyHex(this string? raw) => string.IsNullOrWhiteSpace(raw) ? string.Empty : string.Concat(raw.Where(IsHex)).ToUpperInvariant();
+
+#if NET7_0_OR_GREATER
+		public static ushort ParseU16FromHex(ReadOnlySpan<char> str)
+			=> ushort.Parse(str, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+
+		public static byte ParseU8FromHex(ReadOnlySpan<char> str)
+			=> byte.Parse(str, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+#else
+		public static ushort ParseU16FromHex(ReadOnlySpan<char> str)
+			=> ParseU16FromHex(str.ToString());
+
+		public static ushort ParseU16FromHex(string str)
+			=> ushort.Parse(str, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+
+		public static byte ParseU8FromHex(ReadOnlySpan<char> str)
+			=> ParseU8FromHex(str.ToString());
+
+		public static byte ParseU8FromHex(string str)
+			=> byte.Parse(str, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+#endif
 
 		/// <returns><see langword="true"/> iff <paramref name="str"/> is not <see langword="null"/> and all chars of <paramref name="str"/> are digits</returns>
 		public static bool IsUnsigned(this string? str) => !string.IsNullOrWhiteSpace(str) && str.All(IsUnsigned);
