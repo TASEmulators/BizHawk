@@ -191,9 +191,9 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <Target Name="CopyToHawkAssets" AfterTargets="PostBuildEvent">
-    <Copy SourceFiles="$(OutDir)libquickernes.dll" DestinationFolder="$(ProjectDir)../../Assets/dll" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(OutDir)libquicknes.dll" DestinationFolder="$(ProjectDir)../../Assets/dll" SkipUnchangedFiles="true" />
   </Target>
   <Target Name="CopyToHawkOutput" AfterTargets="PostBuildEvent" Condition=" Exists('$(ProjectDir)../../output/dll') ">
-    <Copy SourceFiles="$(OutDir)libquickernes.dll" DestinationFolder="$(ProjectDir)../../output/dll" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(OutDir)libquicknes.dll" DestinationFolder="$(ProjectDir)../../output/dll" SkipUnchangedFiles="true" />
   </Target>
 </Project>

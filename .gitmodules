@@ -71,5 +71,5 @@
 	path = ExternalProjects/SDL2/libusb
 	url = https://github.com/libusb/libusb.git
 [submodule "quickernes/core"]
-	path = quickernes/core
+	path = quicknes/core
 	url = https://github.com/SergioMartin86/quickerNES.git
