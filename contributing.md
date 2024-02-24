@@ -264,8 +264,8 @@ Uses C++.
 
 
 
-## QuickerNES
-> The unmanaged side of the QuickerNES core.
+## QuickNES
+> The unmanaged side of the QuickNES core.
 
 Uses C++.
 

@@ -316,7 +316,7 @@ MSX | **MSXHawk**
 N64 | Ares64, **Mupen64Plus**
 NDS | **melonDS**
 Neo Geo Pocket | **NeoPop**
-NES | **NesHawk**, QuickerNes
+NES | **NesHawk**, QuickNes
 Odyssey² | **O2Hawk**
 PC-FX | **T.S.T.**
 Playstation (PSX) | **Nymashock**, **Octoshock**
