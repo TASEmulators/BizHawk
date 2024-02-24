@@ -12,7 +12,7 @@ using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	[PortedCore(CoreNames.QuickNes, "", "1.0.0", "https://github.com/SergioMartin86/quickNES")]
+	[PortedCore(CoreNames.QuickNes, "", "1.0.0", "https://github.com/SergioMartin86/quickerNES")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public sealed partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable,
 		IBoardInfo, IVideoLogicalOffsets, IStatable, IDebuggable,
@@ -274,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			return file;
 		}
 
-		// These games are known to not work in quickneres but quicknes thinks it can run them, bail out if one of these is loaded
+		// These games are known to not work in quicknes but quicknes thinks it can run them, bail out if one of these is loaded
 		private static readonly HashSet<string> HashBlackList = new HashSet<string>
 		{
 			"E39CA4477D3B96E1CE3A1C61D8055187EA5F1784", // Bill and Ted's Excellent Adventure
