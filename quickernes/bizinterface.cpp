@@ -1,9 +1,9 @@
 #include <cstdlib>
 #include <cstring>
-#include "core/emu.hpp"
-#include "jaffarCommon/include/file.hpp"
-#include "jaffarCommon/include/serializers/contiguous.hpp"
-#include "jaffarCommon/include/deserializers/contiguous.hpp"
+#include <emu.hpp>
+#include <jaffarCommon/include/file.hpp>
+#include <jaffarCommon/include/serializers/contiguous.hpp>
+#include <jaffarCommon/include/deserializers/contiguous.hpp>
 
 #ifdef _MSC_VER
 #define EXPORT extern "C" __declspec(dllexport)
@@ -13,20 +13,28 @@
 #define EXPORT extern "C" __attribute__((force_align_arg_pointer))
 #endif
 
+// Relevant defines for video output
+#define VIDEO_BUFFER_SIZE 65536
+#define DEFAULT_WIDTH 256
+#define DEFAULT_HEIGHT 240
+
+
 EXPORT quickerNES::Emu *qn_new()
 {
   // Zero intialized emulator to make super sure no side effects from previous data remains
   auto ptr = calloc(1, sizeof(quickerNES::Emu));
   auto e = new (ptr) quickerNES::Emu();
 
-  // Disabling state block headers; they occupy space and serve no purpose in BizHawk
-  e->disableStateBlock("HEAD");
+  // Creating video buffer
+  auto videoBuffer = (uint8_t *) malloc(VIDEO_BUFFER_SIZE);
+  e->set_pixels(videoBuffer, DEFAULT_WIDTH + 8);
 
   return e;
 }
 
 EXPORT void qn_delete(quickerNES::Emu *e)
 { 
+  free(e->get_pixels_base_ptr());
   free(e);
 }
 
