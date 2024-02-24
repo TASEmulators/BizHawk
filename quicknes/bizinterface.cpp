@@ -185,7 +185,7 @@ EXPORT int qn_get_memory_area(quickerNES::Emu *e, int which, const void **data, 
 		*data = e->high_mem();
 		*size = e->high_mem_size;
 		*writable = 1;
-		*name = "SRAM";
+		*name = "WRAM";
 		return 1;
 	case 2:
 		*data = e->chr_mem();
@@ -215,13 +215,13 @@ EXPORT int qn_get_memory_area(quickerNES::Emu *e, int which, const void **data, 
 		*data = e->pal_mem();
 		*size = e->pal_mem_size();
 		*writable = 1;
-		*name = "Palette RAM";
+		*name = "PALRAM";
 		return 1;
 	case 7:
 	    *data = e->spr_mem();
 		*size = e->spr_mem_size();
 		*writable = 1;
-		*name = "Sprite RAM";
+		*name = "OAM";
 		return 1;
 	}
 }
