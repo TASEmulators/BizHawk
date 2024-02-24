@@ -286,6 +286,9 @@ class Emu
   bool extra_fade_sound_out;
   unsigned extra_sound_buf_changed_count;
 
+  // Video buffer 
+  void* _videoBuffer;
+
   public:
   void SaveAudioBufferState();
   void RestoreAudioBufferState();

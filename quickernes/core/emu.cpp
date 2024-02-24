@@ -17,6 +17,11 @@ more details. You should have received a copy of the GNU Lesser General
 Public License along with this module; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 
+// Relevant defines for rendering
+#define VIDEO_BUFFER_SIZE 65536
+#define DEFAULT_WIDTH 256
+#define DEFAULT_HEIGHT 240
+
 namespace quickerNES
 {
 
@@ -49,10 +54,15 @@ Emu::Emu()
 	extra_fade_sound_in = false;
 	extra_fade_sound_out = false;
 	extra_sound_buf_changed_count = 0;
+
+	_videoBuffer = (uint8_t *) malloc(VIDEO_BUFFER_SIZE);
+    set_pixels(_videoBuffer, DEFAULT_WIDTH + 8);
+	
 }
 
 Emu::~Emu()
 {
+    free(_videoBuffer);
 	delete default_sound_buf;
 }
 

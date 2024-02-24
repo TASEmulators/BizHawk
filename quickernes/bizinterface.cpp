@@ -13,24 +13,15 @@
 #define EXPORT extern "C" __attribute__((force_align_arg_pointer))
 #endif
 
-// Relevant defines for rendering
-#define VIDEO_BUFFER_SIZE 65536
-#define DEFAULT_WIDTH 256
-#define DEFAULT_HEIGHT 240
-
 EXPORT quickerNES::Emu *qn_new()
 {
   // Zero intialized emulator to make super sure no side effects from previous data remains
   auto ptr = calloc(1, sizeof(quickerNES::Emu));
-  auto e = new (ptr) quickerNES::Emu();
-  auto videoBuffer = (uint8_t *) malloc(VIDEO_BUFFER_SIZE);
-  e->set_pixels(videoBuffer, DEFAULT_WIDTH + 8);
-  return e;
+  return new (ptr) quickerNES::Emu();
 }
 
 EXPORT void qn_delete(quickerNES::Emu *e)
 { 
-  free(e->frame().pixels);
   free(e);
 }
 
