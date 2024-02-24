@@ -23,7 +23,7 @@ Jump to:
 	- [NLua](#nlua)
 	- [Nyma cores](#nyma-cores)
 	- [Octoshock](#octoshock)
-	- [QuickNES](#quicknes)
+	- [quickerNES](#quickernes)
 	- [Roslyn Analyzers](#roslyn-analyzers)
 	- [Virtu](#virtu)
 	- [Waterbox (host)](#waterbox-host)
@@ -264,8 +264,8 @@ Uses C++.
 
 
 
-## QuickNES
-> The unmanaged side of the QuickNES core.
+## quickerNES
+> The unmanaged side of the quickerNES core.
 
 Uses C++.
 
