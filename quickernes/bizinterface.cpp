@@ -17,7 +17,12 @@ EXPORT quickerNES::Emu *qn_new()
 {
   // Zero intialized emulator to make super sure no side effects from previous data remains
   auto ptr = calloc(1, sizeof(quickerNES::Emu));
-  return new (ptr) quickerNES::Emu();
+  auto e = new (ptr) quickerNES::Emu();
+
+  // Disabling state block headers; they occupy space and serve no purpose in BizHawk
+  e->disableStateBlock("HEAD");
+
+  return e;
 }
 
 EXPORT void qn_delete(quickerNES::Emu *e)
