@@ -23,7 +23,7 @@ Jump to:
 	- [NLua](#nlua)
 	- [Nyma cores](#nyma-cores)
 	- [Octoshock](#octoshock)
-	- [QuickerNES](#quickernes)
+	- [QuickNES](#quicknes)
 	- [Roslyn Analyzers](#roslyn-analyzers)
 	- [Virtu](#virtu)
 	- [Waterbox (host)](#waterbox-host)
