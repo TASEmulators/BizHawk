@@ -35,6 +35,11 @@ ECL_EXPORT void PreInit()
 	SetupMDFNGameInfo();
 }
 
+ECL_EXPORT void SetInitialTime(int64_t initialTime)
+{
+	FrontendTime = initialTime;
+}
+
 static void Setup()
 {
 	pixels = (uint32_t*)alloc_invisible(Game->fb_width * Game->fb_height * sizeof(*pixels));

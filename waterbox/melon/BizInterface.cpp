@@ -129,7 +129,7 @@ ECL_EXPORT const char* Init(InitConfig* initConfig,
 
 	if (SkipFW || NDS::NeedsDirectBoot())
 	{
-		NDS::SetupDirectBoot("nds.rom");
+		FileManager::SetupDirectBoot();
 	}
 
 	NDS::Start();
@@ -178,7 +178,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 		NDS::Reset();
 		if (SkipFW || NDS::NeedsDirectBoot())
 		{
-			NDS::SetupDirectBoot("nds.rom");
+			FileManager::SetupDirectBoot();
 		}
 
 		NDS::Start();

@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			{
 				var message = new byte[1024];
 				var res = _core.Citra_InstallCIA(_context, romPath, message, message.Length);
-				var outMsg = Encoding.UTF8.GetString(message).TrimEnd();
+				var outMsg = Encoding.UTF8.GetString(message).TrimEnd('\0');
 				if (res)
 				{
 					romPath = outMsg;

@@ -11,22 +11,13 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
 if(MSVC)
-	# MSVC targets don't export all symbols unless this is on
-	set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
 	# max warnings, treat as errors
 	add_compile_options(/W4)
 	add_compile_options(/WX)
 
-	# ignore some warnings
-	# this differs between clang-cl and cl
-	if(CMAKE_C_COMPILER_ID MATCHES "Clang")
+	# ignore some warnings on cl
+	if(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 		add_compile_options(
-			-Wno-unused-parameter
-		)
-	else()
-		add_compile_options(
-			/wd4100 # "unreferenced formal parameter"
 			/wd4244 # "conversion from 'type1' to 'type2', possible loss of data"
 			/wd4245 # "conversion from 'type1' to 'type2', signed/unsigned mismatch"
 		)
@@ -46,12 +37,6 @@ else()
 	# max warnings, treat as errors
 	add_compile_options(-Wall -Wextra)
 	add_compile_options(-Werror)
-
-	# ignore some warnings
-	add_compile_options(
-		-Wno-unused-parameter
-		-Wno-implicit-fallthrough
-	)
 
 	# strip in release, optimize for gdb usage in debug
 	add_link_options($<$<CONFIG:RELEASE>:-s>)
@@ -75,7 +60,7 @@ add_library(
 	${RC_SRC_DIR}/rc_compat.c
 	${RC_SRC_DIR}/rc_compat.h
 	${RC_SRC_DIR}/rc_util.c
-	${RC_SRC_DIR}/rc_util.h
+	${RC_SRC_DIR}/rc_version.c
 	${RC_SRC_DIR}/rc_version.h
 	${RC_SRC_DIR}/rapi/rc_api_common.c
 	${RC_SRC_DIR}/rapi/rc_api_common.h
@@ -99,6 +84,8 @@ add_library(
 	${RC_SRC_DIR}/rcheevos/runtime_progress.c
 	${RC_SRC_DIR}/rcheevos/trigger.c
 	${RC_SRC_DIR}/rcheevos/value.c
+	${RC_SRC_DIR}/rhash/aes.c
+	${RC_SRC_DIR}/rhash/aes.h
 	${RC_SRC_DIR}/rhash/cdreader.c
 	${RC_SRC_DIR}/rhash/hash.c
 	${RC_SRC_DIR}/rhash/md5.c
@@ -110,13 +97,15 @@ add_library(
 	${RC_INCLUDE_DIR}/rc_api_user.h
 	${RC_INCLUDE_DIR}/rc_consoles.h
 	${RC_INCLUDE_DIR}/rc_error.h
+	${RC_INCLUDE_DIR}/rc_export.h
 	${RC_INCLUDE_DIR}/rc_hash.h
 	${RC_INCLUDE_DIR}/rc_runtime.h
 	${RC_INCLUDE_DIR}/rc_runtime_types.h
+	${RC_INCLUDE_DIR}/rc_util.h
 	${RC_INCLUDE_DIR}/rcheevos.h
 )
 
-target_compile_definitions(${RC_TARGET} PRIVATE RC_DISABLE_LUA RC_NO_THREADS)
+target_compile_definitions(${RC_TARGET} PRIVATE RC_DISABLE_LUA RC_NO_THREADS RC_SHARED)
 target_include_directories(${RC_TARGET} PRIVATE ${RC_INCLUDE_DIR})
 
 add_custom_command(

@@ -26,8 +26,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// Do this before calling anything, even settings queries
 		/// </summary>
-		[BizImport(CC, Compatibility = true)]
+		[BizImport(CC)]
 		public abstract void PreInit();
+
+		/// <summary>
+		/// Set the initial frontend time, this needs to be done before InitRom/InitCd
+		/// As init process might query the frontend time
+		/// </summary>
+		[BizImport(CC)]
+		public abstract void SetInitialTime(long initialTime);
 
 		/// <summary>
 		/// Load a ROM

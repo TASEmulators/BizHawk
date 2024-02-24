@@ -1,10 +1,12 @@
 #include <src/types.h>
 #include <src/mednafen.h>
+#include <src/Time.h>
 #include <src/ss/ss.h>
 #include "nyma.h"
 #include <emulibc.h>
 #include <waterboxcore.h>
 #include <src/ss/cart.h>
+#include <src/ss/smpc.h>
 namespace MDFN_IEN_SS
 {
 	#include <src/ss/scsp.h>
@@ -42,6 +44,90 @@ namespace MDFN_IEN_SS
 	extern uint16 ROM[0x100000];
 
 	extern int ActiveCartType;
+
+	extern struct SMPC_RTC
+	{
+		uint64 ClockAccum;
+		bool Valid;
+		union
+		{
+			uint8 raw[7];
+			struct
+			{
+				uint8 year[2];
+				uint8 wday_mon;
+				uint8 mday;
+				uint8 hour;
+				uint8 minute;
+				uint8 second;
+			};
+		};
+	} RTC;
+
+	extern uint8 SaveMem[4];
+}
+
+ECL_EXPORT uint32_t GetSaveRamLength()
+{
+	if (ActiveCartType == CART_BACKUP_MEM)
+		return sizeof(BackupRAM) + sizeof(ExtBackupRAM) + sizeof(uint8_t) + sizeof(RTC.raw) + sizeof(SaveMem);
+
+	return sizeof(BackupRAM) + sizeof(uint8_t) + sizeof(RTC.raw) + sizeof(SaveMem);
+}
+
+ECL_EXPORT void GetSaveRam(uint8_t* data)
+{
+	memcpy(data, BackupRAM, sizeof(BackupRAM));
+	data += sizeof(BackupRAM);
+
+	if (ActiveCartType == CART_BACKUP_MEM)
+	{
+		memcpy(data, ExtBackupRAM, sizeof(ExtBackupRAM));
+		data += sizeof(ExtBackupRAM);
+	}
+
+	*data = RTC.Valid;
+	data += sizeof(uint8_t);
+
+	memcpy(data, RTC.raw, sizeof(RTC.raw));
+	data += sizeof(RTC.raw);
+
+	memcpy(data, SaveMem, sizeof(SaveMem));
+}
+
+ECL_EXPORT void PutSaveRam(uint8_t* data, uint32_t length)
+{
+	if (length >= sizeof(BackupRAM))
+	{
+		memcpy(BackupRAM, data, sizeof(BackupRAM));
+		data += sizeof(BackupRAM);
+		length -= sizeof(BackupRAM);
+	}
+
+	if (ActiveCartType == CART_BACKUP_MEM)
+	{
+		if (length >= sizeof(ExtBackupRAM))
+		{
+			memcpy(ExtBackupRAM, data, sizeof(ExtBackupRAM));
+			data += sizeof(ExtBackupRAM);
+			length -= sizeof(ExtBackupRAM);
+		}
+	}
+
+	if (length >= (sizeof(uint8_t) + sizeof(RTC.raw) + sizeof(SaveMem)))
+	{
+		RTC.Valid = *data != 0;
+		data += sizeof(uint8_t);
+		memcpy(RTC.raw, data, sizeof(RTC.raw));
+		data += sizeof(RTC.raw);
+		memcpy(SaveMem, data, sizeof(SaveMem));
+	}
+
+	if (MDFN_GetSettingB("ss.smpc.autortc"))
+	{
+		struct tm ht = Time::UTCTime();
+		SMPC_SetRTC(&ht, MDFN_GetSettingUI("ss.smpc.autortc.lang"));
+	}
 }
 
 ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
@@ -56,23 +142,25 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 		i++;\
 	}\
 	while (0)
-	AddMemoryDomain("Sound Ram", SCSP.GetRAMPtr(), 0x100000, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
-	AddMemoryDomain("Backup Ram", BackupRAM, sizeof(BackupRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
-	AddMemoryDomain("Boot Rom", BIOSROM, 524288, MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
-	AddMemoryDomain("Work Ram Low", WorkRAML, sizeof(WorkRAML), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
-	AddMemoryDomain("Work Ram High", WorkRAMH, sizeof(WorkRAMH), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_PRIMARY);
-	AddMemoryDomain("VDP1 Ram", VDP1::VRAM, sizeof(VDP1::VRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
-	AddMemoryDomain("VDP1 Framebuffer", VDP1::FB, sizeof(VDP1::FB), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
-	AddMemoryDomain("VDP2 Ram", VDP2::VRAM, sizeof(VDP2::VRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
-	AddMemoryDomain("VDP2 CRam", VDP2::CRAM, sizeof(VDP2::CRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+	AddMemoryDomain("Sound Ram", SCSP.GetRAMPtr(), 0x100000, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+	AddMemoryDomain("Backup Ram", BackupRAM, sizeof(BackupRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+	AddMemoryDomain("Boot Rom", BIOSROM, 524288, MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+	AddMemoryDomain("Work Ram Low", WorkRAML, sizeof(WorkRAML), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+	AddMemoryDomain("Work Ram High", WorkRAMH, sizeof(WorkRAMH), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_PRIMARY);
+	AddMemoryDomain("VDP1 Ram", VDP1::VRAM, sizeof(VDP1::VRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+	AddMemoryDomain("VDP1 Framebuffer", VDP1::FB, sizeof(VDP1::FB), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+	AddMemoryDomain("VDP2 Ram", VDP2::VRAM, sizeof(VDP2::VRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+	AddMemoryDomain("VDP2 CRam", VDP2::CRAM, sizeof(VDP2::CRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 	if (ActiveCartType == CART_BACKUP_MEM)
-		AddMemoryDomain("Backup Cart", ExtBackupRAM, sizeof(ExtBackupRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+		AddMemoryDomain("Backup Cart", ExtBackupRAM, sizeof(ExtBackupRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 	if (ActiveCartType == CART_CS1RAM_16M)
-		AddMemoryDomain("CS1 Cart", CS1RAM, 0x1000000, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+		AddMemoryDomain("CS1 Cart", CS1RAM, 0x1000000, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 	if (ActiveCartType == CART_EXTRAM_4M)
-		AddMemoryDomain("Ram Cart", ExtRAM, sizeof(ExtRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+		AddMemoryDomain("Ram Cart", ExtRAM, sizeof(ExtRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 	if (ActiveCartType == CART_EXTRAM_1M)
-		AddMemoryDomain("Ram Cart", ExtRAM, sizeof(ExtRAM) / 4, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+		AddMemoryDomain("Ram Cart", ExtRAM, sizeof(ExtRAM) / 4, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 	if (ActiveCartType == CART_KOF95 || ActiveCartType == CART_ULTRAMAN)
-	AddMemoryDomain("Rom Cart", ROM, sizeof(ROM), MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+	AddMemoryDomain("Rom Cart", ROM, sizeof(ROM), MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+	AddMemoryDomain("SMPC RTC", RTC.raw, sizeof(RTC.raw), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1);
+	AddMemoryDomain("SMPC SaveMem", SaveMem, sizeof(SaveMem), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1);
 }

@@ -89,8 +89,23 @@ namespace BizHawk.Bizware.Input
 		/*private*/ internal static DInputKey MapToRealKeyViaScanCode(DInputKey key)
 		{
 			const uint MAPVK_VSC_TO_VK_EX = 0x03;
-			// DInputKey is a scancode as is
-			var virtualKey = MapVirtualKeyW((uint) key, MAPVK_VSC_TO_VK_EX);
+			// DInputKey is a scancode with bit 7 indicating an E0 prefix
+			var scanCode = (uint)key;
+			if ((scanCode & 0x80) != 0)
+			{
+				// exception for the Pause key (which uses an E1 prefix rather with 1D)
+				if (key == DInputKey.Pause)
+				{
+					scanCode = 0xE11D;
+				}
+				else
+				{
+					scanCode &= 0x7F;
+					scanCode |= 0xE000;
+				}
+			}
+
+			var virtualKey = MapVirtualKeyW(scanCode, MAPVK_VSC_TO_VK_EX);
 			return VKeyToDKeyMap.GetValueOrDefault(virtualKey, DInputKey.Unknown);
 		}
 

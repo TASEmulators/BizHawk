@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(APPVEYOR)' != '' ">
 		<TargetFramework>netcoreapp3.1</TargetFramework>
@@ -11,10 +11,10 @@
 		<OutputPath>$(ProjectDir)../../test_output</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" PrivateAssets="all" />
-		<PackageReference Include="MSTest.TestAdapter" Version="2.2.9" PrivateAssets="all" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.2.9" PrivateAssets="all" />
-		<PackageReference Include="JunitXml.TestLogger" Version="3.0.124" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" PrivateAssets="all" />
+		<PackageReference Include="MSTest.TestAdapter" PrivateAssets="all" />
+		<PackageReference Include="MSTest.TestFramework" PrivateAssets="all" />
+		<PackageReference Include="JunitXml.TestLogger" PrivateAssets="all" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 		<Reference Include="NLua, Version=1.4.1.0, Culture=neutral, PublicKeyToken=null, processorArchitecture=MSIL" SpecificVersion="false" HintPath="$(ProjectDir)../../References/NLua.dll" Private="true" />
 		<None Include="$(ProjectDir)../../Assets/dll/lua54.dll" CopyToOutputDirectory="PreserveNewest" />

@@ -100,11 +100,15 @@ in {
 			exit 1
 		fi
 
-		if [ -z "$LD_LIBRARY_PATH" ]; then
-			export LD_LIBRARY_PATH="$BIZHAWK_HOME/dll"
+		if [ "$XDG_DATA_HOME" ]; then
+			BIZHAWK_DATA_HOME="$XDG_DATA_HOME"
 		else
-			export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$BIZHAWK_HOME/dll"
+			BIZHAWK_DATA_HOME="$HOME/.local/share"
 		fi
+		export BIZHAWK_DATA_HOME="$BIZHAWK_DATA_HOME/emuhawk-monort-${hawkVersion}"
+		cd "$BIZHAWK_DATA_HOME"
+
+		export MONO_PATH="$BIZHAWK_HOME/dll"
 		${lib.optionalString (!debugPInvokes) "# "}export MONO_LOG_LEVEL=debug MONO_LOG_MASK=dll # pass `--arg debugPInvokes true` to nix-build to enable
 		exec '${lib.getBin bizhawkAssemblies.mono}/bin/mono' "$BIZHAWK_HOME/DiscoHawk.exe" "$@"
 	'';

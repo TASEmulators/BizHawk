@@ -362,17 +362,15 @@ namespace BizHawk.Client.EmuHawk
 		// these consoles will use the entire main memory domain
 		private static readonly ConsoleID[] UseFullMainMem =
 		{
-			ConsoleID.PlayStation, ConsoleID.Lynx, ConsoleID.Lynx, ConsoleID.NeoGeoPocket,
-			ConsoleID.Jaguar, ConsoleID.JaguarCD, ConsoleID.DS, ConsoleID.DSi,
-			ConsoleID.AppleII, ConsoleID.Vectrex, ConsoleID.Tic80, ConsoleID.PCEngine,
-			ConsoleID.Uzebox, ConsoleID.Nintendo3DS,
+			ConsoleID.PlayStation, ConsoleID.Lynx, ConsoleID.NeoGeoPocket, ConsoleID.Jaguar,
+			ConsoleID.JaguarCD, ConsoleID.DS, ConsoleID.DSi, ConsoleID.AppleII,
+			ConsoleID.Vectrex, ConsoleID.Tic80, ConsoleID.PCEngine, ConsoleID.Uzebox,
+			ConsoleID.Nintendo3DS,
 		};
 
 		// these consoles will use part of the system bus at an offset
 		private static readonly Dictionary<ConsoleID, (uint Start, uint Size)[]> UsePartialSysBus = new()
 		{
-			[ConsoleID.MasterSystem] = new[] { (0xC000u, 0x2000u) },
-			[ConsoleID.GameGear] = new[] { (0xC000u, 0x2000u) },
 			[ConsoleID.Colecovision] = new[] { (0x6000u, 0x400u) },
 			[ConsoleID.SG1000] = new[] { (0xC000u, 0x2000u), (0x2000u, 0x2000u), (0x8000u, 0x2000u) },
 		};
@@ -425,6 +423,12 @@ namespace BizHawk.Client.EmuHawk
 						TryAddDomain("32X RAM", addressMangler: 1);
 						// our picodrive doesn't byteswap its SRAM, so...
 						TryAddDomain("SRAM", addressMangler: domains["SRAM"] is MemoryDomainIntPtrSwap16Monitor ? 1u : 0u);
+						break;
+					case ConsoleID.MasterSystem:
+					case ConsoleID.GameGear:
+						mfs.Add(new(domains["Main RAM"], 0, domains["Main RAM"].Size));
+						TryAddDomain("Cart (Volatile) RAM");
+						TryAddDomain("Save RAM");
 						break;
 					case ConsoleID.SNES:
 						mfs.Add(new(domains["WRAM"], 0, domains["WRAM"].Size));
@@ -520,8 +524,8 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case ConsoleID.Saturn:
 						// todo: add System Bus so this isn't needed
-						mfs.Add(new(domains["Work Ram Low"], 0, domains["Work Ram Low"].Size));
-						mfs.Add(new(domains["Work Ram High"], 0, domains["Work Ram High"].Size));
+						mfs.Add(new(domains["Work Ram Low"], 0, domains["Work Ram Low"].Size, 1));
+						mfs.Add(new(domains["Work Ram High"], 0, domains["Work Ram High"].Size, 1));
 						break;
 					case ConsoleID.Intellivision:
 						// special case

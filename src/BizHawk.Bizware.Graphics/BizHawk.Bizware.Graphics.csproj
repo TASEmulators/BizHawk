@@ -8,9 +8,9 @@
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Silk.NET.OpenGL.Legacy" Version="2.18.0" />
-		<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
-		<PackageReference Include="ppy.SDL2-CS" Version="1.0.630-alpha" ExcludeAssets="native;contentFiles" />
+		<PackageReference Include="Silk.NET.OpenGL.Legacy" />
+		<PackageReference Include="SharpDX.Direct3D9" />
+		<PackageReference Include="ppy.SDL2-CS" ExcludeAssets="native;contentFiles" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />
 	</ItemGroup>
 </Project>

@@ -121,6 +121,14 @@ namespace BizHawk.Common.NumberExtensions
 			return val;
 		}
 
+		public static void RotateRightU8(ref byte b, int shift)
+		{
+			byte temp = b;
+			temp <<= 8 - shift;
+			b >>= shift;
+			b |= temp;
+		}
+
 		public static int RoundToInt(this double d) => (int) Math.Round(d);
 
 		public static int RoundToInt(this float f) => (int) Math.Round(f);

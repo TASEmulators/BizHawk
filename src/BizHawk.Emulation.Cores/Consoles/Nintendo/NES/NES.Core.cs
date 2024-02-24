@@ -1,7 +1,6 @@
 // NOTE: to match Mesen timings, set idleSynch to true at power on, and set start_up_offset to -3
 
 using System;
-using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -227,11 +226,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// apu has some specific power up bahaviour that we will emulate here
 			apu.NESHardReset();
 
-			if (SyncSettings.InitialWRamStatePattern != null && SyncSettings.InitialWRamStatePattern.Any())
+			var initWRAMPattern = SyncSettings.InitialWRamStatePattern;
+			if (initWRAMPattern.Length is not 0)
 			{
 				for (int i = 0; i < 0x800; i++)
 				{
-					ram[i] = SyncSettings.InitialWRamStatePattern[i % SyncSettings.InitialWRamStatePattern.Count];
+					ram[i] = initWRAMPattern[i % initWRAMPattern.Length];
 				}
 			}
 			else

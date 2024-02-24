@@ -239,7 +239,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			var startTime = _activeSyncSettings.UseRealTime ? DateTime.Now : _activeSyncSettings.InitialTime;
 
 			LibMelonDS.InitConfig initConfig;
-			initConfig.SkipFW = _activeSyncSettings.SkipFirmware && !IsDSi;
+			initConfig.SkipFW = _activeSyncSettings.SkipFirmware;
 			initConfig.HasGBACart = roms.Count == 2;
 			initConfig.DSi = IsDSi;
 			initConfig.ClearNAND = _activeSyncSettings.ClearNAND || lp.DeterministicEmulationRequested;

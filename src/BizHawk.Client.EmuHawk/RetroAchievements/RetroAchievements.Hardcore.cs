@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
 using BizHawk.Emulation.Cores.Computers.MSX;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
@@ -110,7 +111,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				case SubNESHawk or SubBsnesCore or SubGBHawk:
 					// this is mostly due to wonkiness with subframes which can be used as pseudo slowdown
-					HandleHardcoreModeDisable($"Using subframes in hardcore mode is not allowed.");
+					HandleHardcoreModeDisable("Using subframes in hardcore mode is not allowed.");
+					break;
+				case MAME:
+					// this is a very complicated case that needs special handling the future
+					HandleHardcoreModeDisable("Using MAME in hardcore mode is not allowed.");
 					break;
 				case NymaCore nyma:
 					if (nyma.GetSettings().DisabledLayers.Any())
@@ -121,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 				case GambatteLink gl:
 					if (gl.GetSyncSettings()._linkedSyncSettings.Any(ss => !ss.DisplayBG || !ss.DisplayOBJ || !ss.DisplayWindow))
 					{
-						HandleHardcoreModeDisable($"Disabling GambatteLink's graphics layers in hardcore mode is not allowed.");
+						HandleHardcoreModeDisable("Disabling GambatteLink's graphics layers in hardcore mode is not allowed.");
 					}
 					break;
 				case Gameboy gb:
@@ -129,11 +134,11 @@ namespace BizHawk.Client.EmuHawk
 					var ss = gb.GetSyncSettings();
 					if (!ss.DisplayBG || !ss.DisplayOBJ || !ss.DisplayWindow)
 					{
-						HandleHardcoreModeDisable($"Disabling Gambatte's graphics layers in hardcore mode is not allowed.");
+						HandleHardcoreModeDisable("Disabling Gambatte's graphics layers in hardcore mode is not allowed.");
 					}
 					else if (ss.FrameLength is Gameboy.GambatteSyncSettings.FrameLengthType.UserDefinedFrames)
 					{
-						HandleHardcoreModeDisable($"Using subframes in hardcore mode is not allowed.");
+						HandleHardcoreModeDisable("Using subframes in hardcore mode is not allowed.");
 					}
 					break;
 				}
@@ -143,6 +148,10 @@ namespace BizHawk.Client.EmuHawk
 					if (!ss.ClearNAND)
 					{
 						HandleHardcoreModeDisable("Disabling DSi NAND clear in hardcore mode is not allowed.");
+					}
+					else if (!ss.SkipFirmware)
+					{
+						HandleHardcoreModeDisable("Disabling Skip Firmware in DSi mode in hardcore mode is not allowed.");
 					}
 					break;
 				}

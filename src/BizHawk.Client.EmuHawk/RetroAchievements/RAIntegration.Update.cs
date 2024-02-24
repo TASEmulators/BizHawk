@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			_resolver = new("RA_Integration-x64.dll", hasLimitedLifetime: true);
 			_RA = BizInvoker.GetInvoker<RAInterface>(_resolver, DummyMonitor.Singleton, CallingConventionAdapters.Native);
 			_version = new(Marshal.PtrToStringAnsi(_RA.IntegrationVersion())!);
-			Console.WriteLine($"Loaded RetroAchievements v{_version}");
+			Console.WriteLine($"Loaded RAIntegration v{_version}");
 		}
 
 		private static void DetachDll()
