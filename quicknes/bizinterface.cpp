@@ -88,7 +88,7 @@ EXPORT const quickerNES::Emu::rgb_t *qn_get_default_colors()
 
 EXPORT int qn_get_joypad_read_count(quickerNES::Emu *e)
 {
-	return e->frame().joypad_read_count;
+	return e->get_joypad_read_count();
 }
 
 EXPORT void qn_get_audio_info(quickerNES::Emu *e, int *sample_count, int *chan_count)
@@ -334,5 +334,5 @@ EXPORT void qn_peek_ppubus(quickerNES::Emu *e, uint8_t *dest)
 
 EXPORT void qn_set_tracecb(quickerNES::Emu *e, void (*cb)(unsigned int *dest))
 {
-	// In spirit of performance, this function is no longer supported
+	e->set_tracecb(cb);
 }
