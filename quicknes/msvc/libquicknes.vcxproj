@@ -148,10 +148,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\core\source\quickerNES\core;..\core\extern</IncludePath>
+    <IncludePath>..\core\source\quickerNES\core;..\core\extern;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\core\source\quickerNES\core;..\core\extern</IncludePath>
+    <IncludePath>..\core\source\quickerNES\core;..\core\extern;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -159,7 +159,7 @@
       <Optimization>Disabled</Optimization>
       <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);_QUICKERNES_DETECT_JOYPAD_READS;_QUICKERNES_ENABLE_TRACEBACK_SUPPORT;</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -178,7 +178,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);_QUICKERNES_DETECT_JOYPAD_READS;_QUICKERNES_ENABLE_TRACEBACK_SUPPORT;</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
