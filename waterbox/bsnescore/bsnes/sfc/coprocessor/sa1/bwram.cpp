@@ -39,6 +39,8 @@ auto SA1::BWRAM::writeCPU(uint address, uint8 data) -> void {
     address = sa1.mmio.sbm * 0x2000 + (address & 0x1fff);
   }
 
+  //note: BW-RAM protection works only when both SWEN and CWEN are disabled.
+  if(!sa1.mmio.swen && !sa1.mmio.cwen && (address & 0x3ffff) < 0x100 << sa1.mmio.bwp) return;
   return write(address, data);
 }
 
@@ -71,6 +73,15 @@ auto SA1::BWRAM::readLinear(uint address, uint8 data) -> uint8 {
 }
 
 auto SA1::BWRAM::writeLinear(uint address, uint8 data) -> void {
+  //note: BW-RAM protection works only when both SWEN and CWEN are disabled.
+  //this is required for Kirby's Dream Land 3 to work:
+  //* BWPA = 02 (protect 400000-4003ff)
+  //* SWEN = 80 (writes enabled)
+  //* CWEN = 00 (writes disabled)
+  //KDL3 proceeds to write to 4001ax and 40032x which must succeed.
+  //note: BWPA also affects SA-1 protection
+  if(!sa1.mmio.swen && !sa1.mmio.cwen && (address & 0x3ffff) < 0x100 << sa1.mmio.bwp) return;
+
   return write(address, data);
 }
 
