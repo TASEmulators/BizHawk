@@ -61,7 +61,7 @@
 	url = https://github.com/RetroAchievements/rcheevos.git
 [submodule "citra/citra"]
 	path = citra/citra
-	url = https://github.com/CasualPokePlayer/citra
+	url = https://github.com/CasualPokePlayer/encore.git
 	branch = headless
 [submodule "ExternalProjects/SDL2/SDL"]
 	path = ExternalProjects/SDL2/SDL
