@@ -59,8 +59,8 @@
 [submodule "ExternalProjects/librcheevos/rcheevos"]
 	path = ExternalProjects/librcheevos/rcheevos
 	url = https://github.com/RetroAchievements/rcheevos.git
-[submodule "citra/citra"]
-	path = citra/citra
+[submodule "encore/encore"]
+	path = encore/encore
 	url = https://github.com/CasualPokePlayer/encore.git
 	branch = headless
 [submodule "ExternalProjects/SDL2/SDL"]

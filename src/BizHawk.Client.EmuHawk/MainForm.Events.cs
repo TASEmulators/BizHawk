@@ -2747,7 +2747,7 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.ChannelFHawk, CreateGenericCoreConfigItem<ChannelF>(CoreNames.ChannelFHawk)));
 
 			// Encore
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Encore, CreateGenericCoreConfigItem<Citra>(CoreNames.Encore)));
+			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Encore, CreateGenericCoreConfigItem<Encore>(CoreNames.Encore)));
 
 			// ColecoHawk
 			var colecoHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenColecoHawkGamepadSettingsDialog(GetSettingsAdapterFor<ColecoVision>()));
