@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		private static void ResetEncoreResolver()
 		{
 			_resolver?.Dispose();
-			_resolver = new(OSTailoredCode.IsUnixHost ? "libencore-headless.so" : "encore-headless.dll", hasLimitedLifetime: true);
+			_resolver = new(OSTailoredCode.IsUnixHost ? "libencore.so" : "encore.dll", hasLimitedLifetime: true);
 			_core = BizInvoker.GetInvoker<LibEncore>(_resolver, CallingConventionAdapters.Native);
 		}
 
