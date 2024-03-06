@@ -254,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayTypeDropDown_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			var newDisp Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()); //TODO use Tag or Index
+			var newDisp = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()); //TODO use Tag or Index
 			ValueBox.Type = CompareBox.Type = newDisp;
 			ValueHexIndLabel.Text = CompareHexIndLabel.Text = newDisp is WatchDisplayType.Hex ? HexInd : string.Empty; //TODO "0b" for binary
 			// NOT writing to `_cheat`, the "Override" button handles that
