@@ -4,7 +4,7 @@ Jump to:
 	- [For any: .NET project](#for-any-net-project)
 - Projects
 	- [blip_buf](#blip_buf)
-	- [Citra](#citra)
+	- [Encore](#encore)
 	- [Cygne](#cygne)
 	- [DiscoHawk](#discohawk)
 	- [EmuHawk](#emuhawk)
@@ -89,8 +89,8 @@ Uses C.
 
 
 
-## Citra
-> Build scripts for the (unmanaged side of the) Citra port.
+## Encore
+> Build scripts for the (unmanaged side of the) Encore port.
 
 Uses C++.
 

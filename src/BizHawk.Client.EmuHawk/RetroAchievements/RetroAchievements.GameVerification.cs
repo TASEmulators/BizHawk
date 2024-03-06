@@ -292,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 		// Stuff needed for 3DS hashing...
 		private readonly LibRCheevos.rc_hash_3ds_get_cia_normal_key_func _getCiaNormalKeyFunc;
 		private readonly LibRCheevos.rc_hash_3ds_get_ncch_normal_keys_func _getNcchNormalKeysFunc;
-		// https://github.com/citra-emu/citra/blob/2b20082581906fe973e26ed36bef695aa1f64527/src/core/hw/aes/key.cpp#L23-L30
+		// https://github.com/CasualPokePlayer/encore/blob/2b20082581906fe973e26ed36bef695aa1f64527/src/core/hw/aes/key.cpp#L23-L30
 		private static readonly BigInteger GENERATOR_CONSTANT = BigInteger.Parse("1FF9E9AAC5FE0408024591DC5D52768A", NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 		private static readonly BigInteger U128_MAX = BigInteger.Parse("0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 

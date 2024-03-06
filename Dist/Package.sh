@@ -13,11 +13,11 @@ if [ "$1" = "windows-x64" ]; then
 	rm -f "EmuHawkMono.sh"
 	cd "dll"
 	rm -f "libe_sqlite3.so" "libSDL2.so" "OpenTK.dll.config" \
-		"libbizlynx.dll.so" "libbizswan.dll.so" "libblip_buf.so" "libbizhash.so" "libcitra-headless.so" "libdarm.so" "libemu83.so" "libfwunpack.so" "libgambatte.so" "libLibretroBridge.so" "libquicknes.dll.so.0.7.0" "librcheevos.so" "libsameboy.so" "libmgba.dll.so" "libMSXHawk.so" "libwaterboxhost.so"
+		"libbizlynx.dll.so" "libbizswan.dll.so" "libblip_buf.so" "libbizhash.so" "libdarm.so" "libemu83.so" "libencore.so" "libfwunpack.so" "libgambatte.so" "libLibretroBridge.so" "libquicknes.dll.so.0.7.0" "librcheevos.so" "libsameboy.so" "libmgba.dll.so" "libMSXHawk.so" "libwaterboxhost.so"
 else
 	find . -type f -name "*.sh" -exec chmod +x {} \; # installed with -m644 but needs to be 755
 	cd "dll"
 	rm -f "e_sqlite3.dll" "lua54.dll" "SDL.dll" "SDL2.dll" \
 		"mupen64plus-audio-bkm.dll" "mupen64plus-input-bkm.dll" "mupen64plus-rsp-cxd4-sse2.dll" "mupen64plus-rsp-hle.dll" "mupen64plus-video-angrylion-rdp.dll" "mupen64plus-video-glide64.dll" "mupen64plus-video-glide64mk2.dll" "mupen64plus-video-GLideN64.dll" "mupen64plus-video-rice.dll" "mupen64plus.dll" "octoshock.dll" \
-		"bizlynx.dll" "bizswan.dll" "blip_buf.dll" "libbizhash.dll" "libdarm.dll" "libemu83.dll" "libfwunpack.dll" "libgambatte.dll" "libLibretroBridge.dll" "libquicknes.dll" "librcheevos.dll" "libsameboy.dll" "mgba.dll" "MSXHawk.dll" "waterboxhost.dll" "citra-headless.dll"
+		"bizlynx.dll" "bizswan.dll" "blip_buf.dll" "libbizhash.dll" "libdarm.dll" "libemu83.dll" "libfwunpack.dll" "libgambatte.dll" "libLibretroBridge.dll" "libquicknes.dll" "librcheevos.dll" "libsameboy.dll" "mgba.dll" "MSXHawk.dll" "waterboxhost.dll" "encore.dll"
 fi

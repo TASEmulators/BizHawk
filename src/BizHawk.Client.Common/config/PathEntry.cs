@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 				// some cores
 				"Palettes" => 0x30,
 
-				// currently Citra only
+				// currently Encore only
 				// potentially applicable for future cores (Dolphin?)
 				"User" => 0x40,
 
