@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MarkerView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			// This could happen if the control is told to redraw while Tastudio is rebooting, as we would not have a TasMovie just yet
-			if (Tastudio.CurrentTasMovie == null)
+			if (Tastudio.CurrentTasMovie is null)
 			{
 				return;
 			}
@@ -82,11 +82,11 @@ namespace BizHawk.Client.EmuHawk
 			else if (index < Markers.Count)
 			{
 				var marker = Markers[index];
-				var record = Tastudio.CurrentTasMovie[marker.Frame];
+				bool? lagged = Tastudio.CurrentTasMovie.LagLog[marker.Frame];
 
-				if (record.Lagged.HasValue)
+				if (lagged.HasValue)
 				{
-					if (record.Lagged.Value)
+					if (lagged.Value)
 					{
 						color = column.Name == "FrameColumn"
 							? Tastudio.Palette.LagZone_FrameCol
