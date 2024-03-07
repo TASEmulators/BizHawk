@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			_syncSettings = lp.SyncSettings ?? new();
 
 			DeterministicEmulation = lp.DeterministicEmulationRequested;
-			_userPath = lp.Comm.CoreFileProvider.GetUserPath(SystemId, temp: DeterministicEmulation) + Path.DirectorySeparatorChar;
+			_userPath = lp.Comm.CoreFileProvider.GetUserPath(SystemId, temp: DeterministicEmulation && _syncSettings.TempUserFolder) + Path.DirectorySeparatorChar;
 			_userPath = _userPath.Replace('\\', '/'); // Encore doesn't like backslashes in the user folder, for whatever reason
 
 			_configCallbackInterface.GetBoolean = GetBooleanSettingCallback;
@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			if (!_supportsOpenGL43/* && _syncSettings.GraphicsApi == EncoreSyncSettings.EGraphicsApi.OpenGL*/)
 			{
 				throw new("OpenGL 4.3 is required, but it is not supported on this machine");
-//				lp.Comm.Notify("OpenGL 4.3 is not supported on this machine, falling back to software renderer", null);
+				//lp.Comm.Notify("OpenGL 4.3 is not supported on this machine, falling back to software renderer", null);
 			}
 
 			_glCallbackInterface.RequestGLContext = RequestGLContextCallback;
@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			if (!_core.Encore_LoadROM(_context, romPath, errorMessage, errorMessage.Length))
 			{
 				Dispose();
-				throw new($"{Encoding.UTF8.GetString(errorMessage).TrimEnd()}");
+				throw new($"{Encoding.UTF8.GetString(errorMessage).TrimEnd('\0')}");
 			}
 
 			InitMemoryDomains();

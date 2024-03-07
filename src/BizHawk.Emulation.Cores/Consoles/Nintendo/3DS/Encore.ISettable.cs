@@ -19,11 +19,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		private bool GetBooleanSettingCallback(string label) => label switch
 		{
 			"use_cpu_jit" => _syncSettings.UseCpuJit,
+			"async_shader_compilation" => !DeterministicEmulation && _syncSettings.AsyncShaderCompilation,
 			"use_hw_shader" => _syncSettings.UseHwShader,
 			"shaders_accurate_mul" => _syncSettings.ShadersAccurateMul,
 			"use_shader_jit" => _syncSettings.UseShaderJit,
 			"use_virtual_sd" => _syncSettings.UseVirtualSd,
 			"is_new_3ds" => _syncSettings.IsNew3ds,
+			"lle_applets" => _syncSettings.LleApplets,
+			"plugin_loader" => _syncSettings.PluginLoaderEnabled,
+			"allow_plugin_loader" => _syncSettings.AllowPluginLoader,
 			"filter_mode" => _settings.FilterMode,
 			"swap_screen" => _settings.SwapScreen,
 			"upright_screen" => _settings.UprightScreen,
@@ -36,10 +40,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		private ulong GetIntegerSettingCallback(string label) => label switch
 		{
 			"cpu_clock_percentage" => (ulong)_syncSettings.CpuClockPercentage,
-			"graphics_api" => (ulong)EncoreSyncSettings.EGraphicsApi.OpenGL,//_supportsOpenGL43 ? (ulong)_syncSettings.GraphicsApi : (ulong)EncoreSyncSettings.EGraphicsApi.Software,
+			"graphics_api" => (ulong)EncoreSyncSettings.EGraphicsApi.OpenGL,/*_supportsOpenGL43 ? (ulong)_syncSettings.GraphicsApi : (ulong)EncoreSyncSettings.EGraphicsApi.Software,*/
 			"region_value" => (ulong)_syncSettings.RegionValue,
 			"init_clock" => _syncSettings.UseRealTime && !DeterministicEmulation ? 0UL : 1UL,
 			"init_time" => (ulong)(_syncSettings.InitialTime - _epoch).TotalSeconds,
+			"init_ticks_type" => _syncSettings.RandomInitTicks && !DeterministicEmulation ? 0UL : 01UL,
+			"init_ticks_override" => (ulong)_syncSettings.InitTickCount,
 			"birthmonth" => (ulong)_syncSettings.CFGBirthdayMonth,
 			"birthday" => (ulong)_syncSettings.CFGBirthdayDay,
 			"language" => (ulong)_syncSettings.CFGSystemLanguage,
@@ -47,6 +53,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			"playcoins" => _syncSettings.PTMPlayCoins,
 			"resolution_factor" => (ulong)_settings.ResolutionFactor,
 			"texture_filter" => (ulong)_settings.TextureFilter,
+			"texture_sampling" => (ulong)_settings.TextureSampling,
 			"mono_render_option" => (ulong)_settings.MonoRenderOption,
 			"render_3d" => (ulong)_settings.StereoRenderOption,
 			"factor_3d" => (ulong)_settings.Factor3D,
@@ -60,7 +67,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			"custom_bottom_right" => (ulong)_settings.CustomLayoutBottomScreenRectangle.Right,
 			"custom_bottom_bottom" => (ulong)_settings.CustomLayoutBottomScreenRectangle.Bottom,
 			"custom_second_layer_opacity" => (ulong)_settings.CustomLayoutSecondLayerOpacity,
-			"window_scale_factor" => (ulong)_settings.WindowFactor,
 			_ => throw new InvalidOperationException()
 		};
 
@@ -118,28 +124,33 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			[Range(1, 10)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int ResolutionFactor { get; set; }
-			
-			[DisplayName("Window Scale Factor")]
-			[Description("Scale factor for the window.")]
-			[DefaultValue(1)]
-			[Range(1, 10)]
-			[TypeConverter(typeof(ConstrainedIntConverter))]
-			public int WindowFactor { get; set; }
 
 			public enum ETextureFilter
 			{
 				None = 0,
 				Anime4K = 1,
 				Bicubic = 2,
-				NearestNeighbor = 3,
-				ScaleForce = 4,
-				xBRZ = 5
+				ScaleForce = 3,
+				xBRZ = 4,
+				MMPX = 5,
 			}
 
 			[DisplayName("Texture Filter")]
 			[Description("")]
 			[DefaultValue(ETextureFilter.None)]
 			public ETextureFilter TextureFilter { get; set; }
+
+			public enum ETextureSampling
+			{
+				GameControlled = 0,
+				NearestNeighbor = 1,
+				Linear = 2,
+			}
+
+			[DisplayName("Texture Sampling")]
+			[Description("")]
+			[DefaultValue(ETextureSampling.GameControlled)]
+			public ETextureSampling TextureSampling { get; set; }
 
 			public enum EMonoRenderOption
 			{
@@ -244,6 +255,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		[CoreSettings]
 		public class EncoreSyncSettings
 		{
+			[DisplayName("Use Temp User Folder For Movies")]
+			[Description("WARNING: Setting this to false means your current user folder will be used, if the folder is not prepared correctly your movie will desync!")]
+			[DefaultValue(true)]
+			public bool TempUserFolder { get; set; }
+
 			[DisplayName("Use CPU JIT")]
 			[Description("Whether to use the Just-In-Time (JIT) compiler for CPU emulation")]
 			[DefaultValue(true)]
@@ -258,16 +274,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int CpuClockPercentage { get; set; }
 
+			/// <summary>
+			/// TOOD: Vulkan support
+			/// </summary>
 			public enum EGraphicsApi
 			{
-				Software,
-				OpenGL
+				Software = 0,
+				OpenGL = 1,
 			}
 
 			[DisplayName("Graphics API")]
-			[Description("Whether to render using OpenGL or Software. Forced to software if OpenGL 4.3+ is not available.")]
+			[Description("Whether to render using OpenGL or Software. Forced to software if OpenGL 4.3+ is not available.\n" +
+				"NOTE: Set the 'Display Method' in Config -> Display to OpenGL for optimal OpenGL rendering performance.")]
 			[DefaultValue(EGraphicsApi.OpenGL)]
 			public EGraphicsApi GraphicsApi { get; set; }
+
+			[DisplayName("Async Shader Compilation")]
+			[Description("Compile shaders in background threads to avoid shader compilation stutters. Ignored (set to false) when recording a movie.")]
+			[DefaultValue(true)]
+			public bool AsyncShaderCompilation { get; set; }
 
 			[DisplayName("Use HW Shader")]
 			[Description("Whether to use hardware shaders to emulate 3DS shaders")]
@@ -301,6 +326,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			[DefaultValue(true)]
 			public bool IsNew3ds { get; set; }
 
+			[DisplayName("LLE Applets")]
+			[Description("Whether to use LLE system applets, if installed.")]
+			[DefaultValue(false)]
+			public bool LleApplets { get; set; }
+
 			public enum ERegionValue
 			{
 				Autodetect = -1,
@@ -328,7 +358,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			[DefaultValue(typeof(DateTime), "2010-01-01")]
 			[TypeConverter(typeof(BizDateTimeConverter))]
 			public DateTime InitialTime { get; set; }
-			
+
+			[DisplayName("Random Initial Ticks")]
+			[Description("If true, the initial system tick count will be randomized. Ignored (set to false) when recording a movie.")]
+			[DefaultValue(true)]
+			public bool RandomInitTicks { get; set; }
+
+			[DisplayName("Initial Tick Count")]
+			[Description("The system ticks count to use when Encore starts, if not randomized.")]
+			[DefaultValue(typeof(long), "0")]
+			public long InitTickCount { get; set; }
+
+			[DisplayName("Enable 3GX Plugin Loader")]
+			[Description("")]
+			[DefaultValue(false)]
+			public bool PluginLoaderEnabled { get; set; }
+
+			[DisplayName("Allow Games To Change Plugin Loader State")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool AllowPluginLoader { get; set; }
+
 			[DisplayName("CFG Username")]
 			[Description("The system username that Encore will use during emulation")]
 			[DefaultValue("ENCORE")]
@@ -396,9 +446,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			[Description("The system sound output mode that Encore will use during emulation")]
 			[DefaultValue(ECFGSoundOutputMode.Stereo)]
 			public ECFGSoundOutputMode CFGSoundOutputMode { get; set; }
-			
-			[DisplayName("CFG Sound Output Mode")]
-			[Description("The system sound output mode that Encore will use during emulation")]
+
+			[DisplayName("PTM Play Coins")]
+			[Description("")]
 			[DefaultValue(typeof(ushort), "42")]
 			public ushort PTMPlayCoins { get; set; }
 

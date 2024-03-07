@@ -6,8 +6,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
 	public class EncoreVideoProvider : IVideoProvider
 	{
-		internal int Width = 400;
-		internal int Height = 480;
+		internal int VW = 400;
+		internal int VH = 480;
+		internal int BW = 400;
+		internal int BH = 480;
 		internal bool VideoDirty;
 
 		protected readonly LibEncore _core;
@@ -20,10 +22,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		}
 
 		// ReSharper disable ConvertToAutoPropertyWhenPossible
-		public int VirtualWidth => Width;
-		public int VirtualHeight => Height;
-		public int BufferWidth => Width;
-		public int BufferHeight => Height;
+		public int VirtualWidth => VW;
+		public int VirtualHeight => VH;
+		public int BufferWidth => BW;
+		public int BufferHeight => BH;
 		public int VsyncNumerator => 268111856;
 		public int VsyncDenominator => 4481136;
 		public int BackgroundColor => 0;
@@ -34,9 +36,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		{
 			if (VideoDirty)
 			{
-				if (_vbuf.Length < Width * Height)
+				if (_vbuf.Length < BW * BH)
 				{
-					_vbuf = new int[Width * Height];
+					_vbuf = new int[BW * BH];
 				}
 
 				_core.Encore_ReadFrameBuffer(_context, _vbuf);

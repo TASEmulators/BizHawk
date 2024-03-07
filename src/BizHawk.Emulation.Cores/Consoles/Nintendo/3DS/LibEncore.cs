@@ -122,7 +122,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		public abstract void Encore_Reset(IntPtr context);
 
 		[BizImport(cc)]
-		public abstract void Encore_GetVideoDimensions(IntPtr context, out int width, out int height);
+		public abstract void Encore_GetVideoVirtualDimensions(IntPtr context, out int width, out int height);
+
+		[BizImport(cc)]
+		public abstract void Encore_GetVideoBufferDimensions(IntPtr context, out int width, out int height);
 
 		[BizImport(cc)]
 		public abstract int Encore_GetGLTexture(IntPtr context);

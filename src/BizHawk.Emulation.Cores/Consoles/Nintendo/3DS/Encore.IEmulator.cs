@@ -53,7 +53,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		private void OnVideoRefresh()
 		{
-			_core.Encore_GetVideoDimensions(_context, out _encoreVideoProvider.Width, out _encoreVideoProvider.Height);
+			_core.Encore_GetVideoVirtualDimensions(_context, out _encoreVideoProvider.VW, out _encoreVideoProvider.VH);
+			_core.Encore_GetVideoBufferDimensions(_context, out _encoreVideoProvider.BW, out _encoreVideoProvider.BH);
 			_encoreVideoProvider.VideoDirty = true;
 
 			_core.Encore_GetTouchScreenLayout(_context, out var x, out var y, out var width, out var height, out var rotated, out var enabled);
