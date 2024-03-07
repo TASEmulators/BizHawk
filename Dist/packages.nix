@@ -63,8 +63,13 @@
 		'';
 		dontFixup = true;
 	};
-	genDepsHostTargetFor = { hawkSourceInfo, mono' ? mono }: [ libgdiplus lua mono' openal (lib.getOutput "out" zstd) ]
-		++ lib.optionals hawkSourceInfo.needsSDL [ SDL2 (lib.getOutput "out" udev) ]
+	genDepsHostTargetFor = { hawkSourceInfo, mono' ? mono }: [
+		(lib.getOutput "out" libgdiplus)
+		lua
+		mono'
+		openal
+		(lib.getOutput "out" zstd)
+	] ++ lib.optionals hawkSourceInfo.needsSDL [ SDL2 (lib.getOutput "out" udev) ]
 		++ lib.optional hawkSourceInfo.needsLibGLVND (lib.getOutput "out" libGL);
 	/**
 	 * see splitReleaseArtifact re: outputs
