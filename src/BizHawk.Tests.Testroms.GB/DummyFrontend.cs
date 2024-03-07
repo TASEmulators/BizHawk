@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
@@ -73,77 +74,41 @@ namespace BizHawk.Tests.Testroms.GB
 
 			public string GetRetroSystemPath(IGameInfo game)
 				=> throw new NotImplementedException();
-		}
 
-		private sealed class FakeGraphicsControl : IGraphicsControl
-		{
-			private readonly IGL_GdiPlus _gdi;
-
-			private readonly Func<(int, int)> _getVirtualSize;
-
-			public Rectangle ClientRectangle
-			{
-				get
-				{
-					var (w, h) = _getVirtualSize();
-					return new(0, 0, w, h);
-				}
-			}
-
-			public RenderTargetWrapper? RenderTargetWrapper { get; set; }
-
-			public FakeGraphicsControl(IGL_GdiPlus glImpl, Func<(int Width, int Height)> getVirtualSize)
-			{
-				_gdi = glImpl;
-				_getVirtualSize = getVirtualSize;
-			}
-
-			public void Begin()
-			{
-				_gdi.BeginControl(this);
-				RenderTargetWrapper!.CreateGraphics();
-			}
-
-			public Graphics CreateGraphics()
-			{
-				var (w, h) = _getVirtualSize();
-				return Graphics.FromImage(new Bitmap(w, h));
-			}
-
-			public void End()
-				=> _gdi.EndControl(this);
-
-			public void SetVsync(bool state) {}
-
-			public void SwapBuffers()
-			{
-				_gdi.SwapControl(this);
-				if (RenderTargetWrapper!.MyBufferedGraphics is null) return;
-				RenderTargetWrapper.CreateGraphics();
-			}
-
-			public void Dispose() {}
+			public string GetUserPath(string sysID, bool temp)
+				=> throw new NotImplementedException(); // only used by Encore
 		}
 
 		public sealed class SimpleGDIPDisplayManager : DisplayManagerBase
 		{
-			private readonly FakeGraphicsControl _gc;
-
-			private SimpleGDIPDisplayManager(Config config, IEmulator emuCore, IGL_GdiPlus glImpl)
-				: base(config, emuCore, inputManager: null, movieSession: null, EDispMethod.GdiPlus, glImpl, new GDIPlusGuiRenderer(glImpl))
-			{
-				_gc = (FakeGraphicsControl) glImpl.Internal_CreateGraphicsControl();
-				Blank();
-			}
+			private SimpleGDIPDisplayManager(Config config, IEmulator emuCore, IGL_GDIPlus glImpl)
+				: base(
+					config,
+					emuCore,
+					inputManager: null,
+					movieSession: null,
+					EDispMethod.GdiPlus,
+					glImpl,
+					new GDIPlusGuiRenderer(glImpl))
+				{}
 
 			public SimpleGDIPDisplayManager(Config config, IEmulator emuCore, Func<(int Width, int Height)> getVirtualSize)
-				: this(config, emuCore, new IGL_GdiPlus(self => new FakeGraphicsControl(self, getVirtualSize))) {}
+				: this(config, emuCore, new IGL_GDIPlus()) {}
 
-			protected override void ActivateGLContext()
-				=> _gc.Begin();
+			protected override void ActivateGraphicsControlContext() {}
 
-			protected override void SwapBuffersOfGraphicsControl()
-				=> _gc.SwapBuffers();
+			public override void ActivateOpenGLContext() {}
+
+			protected override Size GetGraphicsControlSize()
+				=> throw new NotImplementedException();
+
+			public override Size GetPanelNativeSize()
+				=> throw new NotImplementedException();
+
+			protected override Point GraphicsControlPointToClient(Point p)
+				=> throw new NotImplementedException();
+
+			protected override void SwapBuffersOfGraphicsControl() {}
 		}
 
 		private static int _totalFrames = 0;
@@ -198,7 +163,12 @@ namespace BizHawk.Tests.Testroms.GB
 			var (core, biosWaitDuration) = init(
 				efp,
 				_config,
-				new(Console.WriteLine, (s, _) => Console.WriteLine(s), efp, CoreComm.CorePreferencesFlags.None));
+				new(
+					Console.WriteLine,
+					(s, _) => Console.WriteLine(s),
+					efp,
+					CoreComm.CorePreferencesFlags.None,
+					oglProvider: null!));
 			Core = core;
 			_controller = new(Core.ControllerDefinition);
 			FrameAdvanceTo(biosWaitDuration);

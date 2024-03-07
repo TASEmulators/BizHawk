@@ -17,6 +17,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Gameboy : IInputPollable, IRomInfo, IGameboyCommon, ICycleTiming, ILinkable
 	{
+		/// <remarks>HACK disables BIOS requirement if the environment looks like a test runner...</remarks>
+		private static readonly bool TestromsBIOSDisableHack = Type.GetType("Microsoft.VisualStudio.TestTools.UnitTesting.Assert, Microsoft.VisualStudio.TestPlatform.TestFramework") is not null;
+
 		[CoreConstructor(VSystemID.Raw.GB)]
 		[CoreConstructor(VSystemID.Raw.GBC)]
 		[CoreConstructor(VSystemID.Raw.SGB)]
@@ -132,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					return true;
 				}
 
-				var useBios = _syncSettings.EnableBIOS || ForceBios();
+				var useBios = _syncSettings.EnableBIOS || (!TestromsBIOSDisableHack && ForceBios());
 				if (useBios)
 				{
 					FirmwareID fwid = new(

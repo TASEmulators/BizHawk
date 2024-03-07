@@ -4,6 +4,7 @@
 	</PropertyGroup>
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
+		<NoWarn>$(NoWarn);CA1310;CA1416</NoWarn>
 		<OutputPath>$(ProjectDir)../../test_output</OutputPath>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(BIZHAWKTEST_RUN_KNOWN_FAILURES)' == '' ">
@@ -22,6 +23,7 @@
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="JunitXml.TestLogger" />
 		<PackageReference Include="Magick.NET-Q8-AnyCPU" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 		<EmbeddedResource Include="res/**/*" />
 		<Content Include="$(ProjectDir)../../Assets/gamedb/**/*" LinkBase="gamedb" CopyToOutputDirectory="PreserveNewest" />
