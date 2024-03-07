@@ -23,6 +23,12 @@
 		shellHook = ''
 			export BIZHAWKBUILD_HOME='${builtins.toString ./.}'
 			export BIZHAWK_HOME="$BIZHAWKBUILD_HOME/output"
+			ldLibPath='${lib.makeLibraryPath bizhawkAssemblies.buildInputs}' # for running tests
+			if [ -z "$LD_LIBRARY_PATH" ]; then
+				export LD_LIBRARY_PATH="$ldLibPath"
+			else
+				export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$ldLibPath"
+			fi
 			alias discohawk-monort-local='${avail.launchScriptsForLocalBuild.discohawk}'
 			alias emuhawk-monort-local='${avail.launchScriptsForLocalBuild.emuhawk}'
 			pfx="$(realpath --relative-to="$PWD" "$BIZHAWKBUILD_HOME")/"

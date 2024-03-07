@@ -16,6 +16,7 @@
 # makedeps
 , git
 # rundeps
+, libgdiplus
 , libGL
 , lua
 , mono
@@ -62,7 +63,7 @@
 		'';
 		dontFixup = true;
 	};
-	genDepsHostTargetFor = { hawkSourceInfo, mono' ? mono }: [ lua mono' openal (lib.getOutput "out" zstd) ]
+	genDepsHostTargetFor = { hawkSourceInfo, mono' ? mono }: [ libgdiplus lua mono' openal (lib.getOutput "out" zstd) ]
 		++ lib.optionals hawkSourceInfo.needsSDL [ SDL2 (lib.getOutput "out" udev) ]
 		++ lib.optional hawkSourceInfo.needsLibGLVND (lib.getOutput "out" libGL);
 	/**

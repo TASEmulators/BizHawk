@@ -31,6 +31,7 @@ in {
 , git ? pkgs.gitMinimal # only when building from-CWD (`-local`)
 # rundeps
 , coreutils ? pkgs.coreutils
+, libgdiplus ? pkgs.libgdiplus
 , libGL ? pkgs.libGL
 , lua ? pkgs.lua54Packages.lua
 , mono ? null
@@ -92,7 +93,7 @@ in {
 			buildDotnetModule fetchpatch fetchzip hardLinkJoin launchScriptsFor makeDesktopItem
 				releaseTagSourceInfos runCommand symlinkJoin writeShellScriptBin
 			git
-			libGL lua openal SDL2 udev zstd
+			libgdiplus libGL lua openal SDL2 udev zstd
 			buildConfig doCheck emuhawkBuildFlavour extraDefines extraDotnetBuildFlags;
 		mono = if mono != null
 			then mono # allow older Mono if set explicitly
