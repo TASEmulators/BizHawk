@@ -23,7 +23,7 @@
 		shellHook = ''
 			export BIZHAWKBUILD_HOME='${builtins.toString ./.}'
 			export BIZHAWK_HOME="$BIZHAWKBUILD_HOME/output"
-			ldLibPath='${lib.makeLibraryPath bizhawkAssemblies.buildInputs}' # for running tests
+			ldLibPath='${lib.makeLibraryPath drv.buildInputs}' # for running tests
 			if [ -z "$LD_LIBRARY_PATH" ]; then
 				export LD_LIBRARY_PATH="$ldLibPath"
 			else
