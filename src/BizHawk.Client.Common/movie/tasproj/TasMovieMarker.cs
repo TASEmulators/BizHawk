@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -296,18 +297,14 @@ namespace BizHawk.Client.Common
 
 		public TasMovieMarker Previous(int currentFrame)
 		{
-			return this
-				.Where(m => m.Frame < currentFrame)
-				.OrderBy(m => m.Frame)
-				.LastOrDefault();
+			return PreviousOrCurrent(currentFrame - 1);
 		}
 
 		public TasMovieMarker PreviousOrCurrent(int currentFrame)
 		{
-			return this
-				.Where(m => m.Frame <= currentFrame)
-				.OrderBy(m => m.Frame)
-				.LastOrDefault();
+			int lowerBoundIndex = this.LowerBoundBinarySearch(static m => m.Frame, currentFrame);
+
+			return lowerBoundIndex < 0 ? null : this[lowerBoundIndex];
 		}
 
 		public TasMovieMarker Next(int currentFrame)
