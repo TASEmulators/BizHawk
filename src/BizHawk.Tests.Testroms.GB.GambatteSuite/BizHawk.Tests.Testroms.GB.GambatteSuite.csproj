@@ -2,12 +2,11 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 	</PropertyGroup>
-	<Import Project="../MainSlnCommon.props" />
+	<Import Project="../MainSlnTest.props" />
 	<PropertyGroup>
-		<OutputPath>$(ProjectDir)../../test_output</OutputPath>
+		<NoWarn>$(NoWarn);CA1310;CA1416</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" PrivateAssets="all" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Tests.Testroms.GB/BizHawk.Tests.Testroms.GB.csproj" />
 		<EmbeddedResource Include="res/**/*" />
 		<RuntimeHostConfigurationOption Include="System.Drawing.EnableUnixSupport" Value="true" />
