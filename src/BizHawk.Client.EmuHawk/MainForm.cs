@@ -3301,8 +3301,19 @@ namespace BizHawk.Client.EmuHawk
 				// Tools will want to be updated after rewind (load state), but we only need to manually do this if we did not frame advance.
 				UpdateToolsAfter();
 			}
+			if(Config.MuteInBG) {
+				if(WindowState == FormWindowState.Minimized) {
+					Sound.StopSound();
+				}
+				else { 
+					Sound.StartSound();
+				}
+			} else { 
+				Sound.StartSound();
+			}
 
 			Sound.UpdateSound(atten, DisableSecondaryThrottling);
+
 		}
 
 		private void CalcFramerateAndUpdateDisplay(long currentTimestamp, bool isRewinding, bool isFastForwarding)

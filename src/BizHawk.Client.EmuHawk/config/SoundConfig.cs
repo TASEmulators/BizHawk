@@ -22,6 +22,7 @@ namespace BizHawk.Client.EmuHawk
 			_config = config;
 			_getDeviceNamesCallback = getDeviceNamesCallback;
 			DialogController = dialogController;
+		
 			InitializeComponent();
 		}
 
@@ -44,6 +45,7 @@ namespace BizHawk.Client.EmuHawk
 			nudNormal.Value = _config.SoundVolume;
 			tbRWFF.Value = _config.SoundVolumeRWFF;
 			nudRWFF.Value = _config.SoundVolumeRWFF;
+			MuteInBG.Checked = _config.MuteInBG;
 			UpdateSoundDialog();
 
 			_programmaticallyChangingValue = false;
@@ -76,6 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.SoundVolume = tbNormal.Value;
 			_config.SoundVolumeRWFF = tbRWFF.Value;
 			_config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
+			_config.MuteInBG = MuteInBG.Checked;
 			DialogResult = DialogResult.OK;
 		}
 
@@ -145,5 +148,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			tbRWFF.Value = (int)nudRWFF.Value;
 		}
+
+		public bool GetMuteInBackgroundChecked() { 
+			return MuteInBG.Checked;
+		}
+
 	}
 }

@@ -31,8 +31,13 @@ namespace BizHawk.Client.EmuHawk
 		static Program()
 		{
 			// This needs to be done before the warnings/errors show up
+			
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+			
+			
+			
+			
 
 			// Quickly check if the user is running this as a 32 bit process somehow
 			// TODO: We may want to remove this sometime, EmuHawk should be able to run somewhat as 32 bit if the user really wants to
@@ -89,6 +94,7 @@ namespace BizHawk.Client.EmuHawk
 		private static int Main(string[] args)
 		{
 			var exitCode = SubMain(args);
+
 			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			{
 				Console.WriteLine("BizHawk has completed its shutdown routines, killing process...");
