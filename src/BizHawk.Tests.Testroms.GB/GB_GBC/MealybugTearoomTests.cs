@@ -230,8 +230,8 @@ namespace BizHawk.Tests.Testroms.GB
 					.Select(static testCase => new object?[] { testCase });
 			}
 
-			public string GetDisplayName(MethodInfo methodInfo, object?[] data)
-				=> $"{methodInfo.Name}({((MealybugTestCase) data[0]!).DisplayName()})";
+			public string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
+				=> $"{methodInfo.Name}({((MealybugTestCase) data![0]!).DisplayName()})";
 		}
 
 		private const string SUITE_ID = "Mealybug";
