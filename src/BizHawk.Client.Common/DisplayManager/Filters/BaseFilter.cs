@@ -151,6 +151,7 @@ namespace BizHawk.Client.Common.Filters
 
 		private IOSurfaceInfo FindIOSurfaceInfo(string channel, SurfaceDirection direction)
 		{
+			// intentionally not using List.Find for perf
 			foreach (var iosi in _ioSurfaceInfos)
 			{
 				if (iosi.Channel == channel && iosi.SurfaceDirection == direction)
