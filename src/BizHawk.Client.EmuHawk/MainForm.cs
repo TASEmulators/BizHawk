@@ -3301,8 +3301,9 @@ namespace BizHawk.Client.EmuHawk
 				// Tools will want to be updated after rewind (load state), but we only need to manually do this if we did not frame advance.
 				UpdateToolsAfter();
 			}
+
 			if(Config.MuteInBG) {
-				if(WindowState == FormWindowState.Minimized) {
+				if(WindowState == FormWindowState.Minimized || Form.ActiveForm == null) {
 					Sound.StopSound();
 				}
 				else { 
