@@ -27,7 +27,7 @@ namespace BizHawk.Tests.Testroms.GB
 			}
 
 			public string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
-				=> $"{methodInfo.Name}({(CoreSetup) data![0]!})";
+				=> $"{methodInfo.Name}(\"{(CoreSetup) data![0]!}\")";
 		}
 
 		private const string ROM_EMBED_PATH = "res.BullyGB_artifact.bully.gb";

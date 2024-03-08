@@ -69,7 +69,7 @@ namespace BizHawk.Tests.Testroms.GB
 			}
 
 			public string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
-				=> $"{methodInfo.Name}({((AcidTestCase) data![0]!).DisplayName()})";
+				=> $"{methodInfo.Name}(\"{((AcidTestCase) data![0]!).DisplayName()}\")";
 		}
 
 		private const string SUITE_ID = "AcidTestroms";

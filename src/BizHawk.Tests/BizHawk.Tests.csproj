@@ -5,7 +5,7 @@
 	<PropertyGroup Condition=" '$(APPVEYOR)' != '' ">
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 	</PropertyGroup>
-	<Import Project="../MainSlnTest.props" />
+	<Import Project="../TestProjects.props" />
 	<PropertyGroup>
 		<DefineConstants Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">$(DefineConstants);SKIP_PLATFORM_TESTS</DefineConstants>
 	</PropertyGroup>
