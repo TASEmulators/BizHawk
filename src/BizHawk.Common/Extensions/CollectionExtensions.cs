@@ -21,14 +21,13 @@ namespace BizHawk.Common.CollectionExtensions
 			where TKey : IComparable<TKey>
 		{
 			int min = 0;
-			int max = list.Count;
+			int max = list.Count - 1;
 			int mid;
-			TKey midKey;
 			while (min < max)
 			{
 				mid = (max + min) / 2;
 				T midItem = list[mid];
-				midKey = keySelector(midItem);
+				var midKey = keySelector(midItem);
 				int comp = midKey.CompareTo(key);
 				if (comp < 0)
 				{
@@ -44,32 +43,16 @@ namespace BizHawk.Common.CollectionExtensions
 				}
 			}
 
-			// did we find it exactly?
-			if (min == max && keySelector(list[min]).CompareTo(key) == 0)
+			int compareResult = keySelector(list[min]).CompareTo(key);
+
+			// return something corresponding to lower_bound semantics
+			// if min is higher than key, return min - 1. Otherwise, when min is <=key, return min directly.
+			if (compareResult > 0)
 			{
-				return min;
+				return min - 1;
 			}
 
-			mid = min;
-
-			// we didn't find it. return something corresponding to lower_bound semantics
-			if (mid == list.Count)
-			{
-				return max; // had to go all the way to max before giving up; lower bound is max
-			}
-
-			if (mid == 0)
-			{
-				return -1; // had to go all the way to min before giving up; lower bound is min
-			}
-
-			midKey = keySelector(list[mid]);
-			if (midKey.CompareTo(key) >= 0)
-			{
-				return mid - 1;
-			}
-
-			return mid;
+			return min;
 		}
 
 		/// <exception cref="InvalidOperationException"><paramref name="key"/> not found after mapping <paramref name="keySelector"/> over <paramref name="list"/></exception>
@@ -256,7 +239,7 @@ namespace BizHawk.Common.CollectionExtensions
 			else
 			{
 				foreach (var item in list.Where(item => match(item)) // can't simply cast to Func<T, bool>
-					.ToList()) // very important
+							.ToList()) // very important
 				{
 					list.Remove(item);
 				}

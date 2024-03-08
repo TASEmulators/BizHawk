@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (index < Markers.Count)
 			{
 				var marker = Markers[index];
-				bool? lagged = Tastudio.CurrentTasMovie.LagLog[marker.Frame];
+				bool? lagged = Tastudio.CurrentTasMovie.LagLog[marker.Frame + 1];
 
 				if (lagged.HasValue)
 				{
