@@ -180,6 +180,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PopulateTypeDropdown()
 		{
+			var wasSelected = DisplayTypeDropDown.SelectedItem?.ToString() ?? string.Empty;
+			bool Reselect()
+			{
+				for (var i = 0; i < DisplayTypeDropDown.Items.Count; i++)
+				{
+					if (DisplayTypeDropDown.Items[i].ToString() == wasSelected)
+					{
+						DisplayTypeDropDown.SelectedIndex = i;
+						return true;
+					}
+				}
+				return false;
+			}
 			DisplayTypeDropDown.Items.Clear();
 			switch (SizeDropDown.SelectedIndex)
 			{
@@ -206,8 +219,10 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 			}
-
-			DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items[0];
+			DisplayTypeDropDown.SelectedIndex = 0;
+			if (Reselect()) return;
+			wasSelected = Watch.DisplayTypeToString(WatchDisplayType.Hex);
+			_ = Reselect();
 		}
 
 		private void CheckFormState()
