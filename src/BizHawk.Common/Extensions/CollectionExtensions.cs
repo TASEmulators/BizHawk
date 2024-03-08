@@ -17,6 +17,14 @@ namespace BizHawk.Common.CollectionExtensions
 			return desc ? source.OrderByDescending(keySelector) : source.OrderBy(keySelector);
 		}
 
+		/// <summary>Implements an indirected binary search.</summary>
+		/// <return>
+		/// The index of the element whose key matches <paramref name="key"/>;
+		/// or if none match, the index of the element whose key is closest and lower;
+		/// or if all elements' keys are higher, <c>-1</c>.<br/>
+		/// (Equivalently: If none match, 1 less than the index where inserting an element with the given <paramref name="key"/> would keep the list sorted)
+		/// </return>
+		/// <remarks>The returned index may not be accurate if <paramref name="list"/> is not sorted in ascending order with respect to <paramref name="keySelector"/>.</remarks>
 		public static int LowerBoundBinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key)
 			where TKey : IComparable<TKey>
 		{
