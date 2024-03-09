@@ -64,6 +64,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			_userPath = lp.Comm.CoreFileProvider.GetUserPath(SystemId, temp: DeterministicEmulation && _syncSettings.TempUserFolder) + Path.DirectorySeparatorChar;
 			_userPath = _userPath.Replace('\\', '/'); // Encore doesn't like backslashes in the user folder, for whatever reason
 
+			// copy firmware over to the user folder
+			// this must be done before Encore_CreateContext is called!
+			var sysDataDir = Path.Combine(_userPath, "sysdata");
+			if (!Directory.Exists(sysDataDir))
+			{
+				Directory.CreateDirectory(sysDataDir);
+			}
+
+			var aesKeys = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "aes_keys"));
+			if (aesKeys is not null)
+			{
+				File.WriteAllBytes(Path.Combine(sysDataDir, "aes_keys.txt"), aesKeys);
+			}
+
+			var seeddb = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "seeddb"));
+			if (seeddb is not null)
+			{
+				File.WriteAllBytes(Path.Combine(sysDataDir, "seeddb.bin"), seeddb);
+			}
+
 			_configCallbackInterface.GetBoolean = GetBooleanSettingCallback;
 			_configCallbackInterface.GetInteger = GetIntegerSettingCallback;
 			_configCallbackInterface.GetFloat = GetFloatSettingCallback;
@@ -99,24 +119,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			}
 
 			_serviceProvider.Register<IVideoProvider>(_encoreVideoProvider);
-
-			var sysDataDir = Path.Combine(_userPath, "sysdata");
-			if (!Directory.Exists(sysDataDir))
-			{
-				Directory.CreateDirectory(sysDataDir);
-			}
-
-			var aesKeys = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "aes_keys"));
-			if (aesKeys is not null)
-			{
-				File.WriteAllBytes(Path.Combine(sysDataDir, "aes_keys.txt"), aesKeys);
-			}
-
-			var seeddb = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "seeddb"));
-			if (seeddb is not null)
-			{
-				File.WriteAllBytes(Path.Combine(sysDataDir, "seeddb.bin"), seeddb);
-			}
 
 			var romPath = lp.Roms[0].RomPath;
 			if (lp.Roms[0].Extension.ToLowerInvariant() == ".cia")
