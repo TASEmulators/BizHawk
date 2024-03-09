@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				WireMemoryDomains();
 			}
 
-			_core.Encore_RunFrame(_context);
+			IsLagFrame = _core.Encore_RunFrame(_context);
 
 			OnVideoRefresh();
 

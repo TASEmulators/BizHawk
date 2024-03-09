@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		public abstract bool Encore_LoadROM(IntPtr context, string romPath, byte[] errorMessageBuffer, int errorMessageBufferLen);
 
 		[BizImport(cc)]
-		public abstract void Encore_RunFrame(IntPtr context);
+		public abstract bool Encore_RunFrame(IntPtr context);
 
 		[BizImport(cc)]
 		public abstract void Encore_Reset(IntPtr context);
