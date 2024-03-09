@@ -51,7 +51,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_outputDevice = config.SoundOutputMethod switch
 				{
-					// TODO-me : Vérifier ici.
 					ESoundOutputMethod.DirectSound => new DirectSoundSoundOutput(this, mainWindowHandle, config.SoundDevice),
 					ESoundOutputMethod.XAudio2 => new XAudio2SoundOutput(this, config.SoundDevice),
 					ESoundOutputMethod.OpenAL => new OpenALSoundOutput(this, config.SoundDevice),
@@ -61,7 +60,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
-		/// TODO-me : Might be interesting
 		/// The maximum number of milliseconds the sound output buffer can go below full before causing a noticeable sound interruption.
 		/// </summary>
 		public int SoundMaxBufferDeficitMs { get; set; }
@@ -129,7 +127,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (source.SyncMode == SyncSoundMode.Async)
 			{
-				// TODO-me : RecalculateMagic could be interesting
 				_bufferedAsync.RecalculateMagic(_getCoreVsyncRateCallback());
 				_bufferedProvider = _bufferedAsync;
 			}
@@ -142,7 +139,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void HandleInitializationOrUnderrun(bool isUnderrun, ref int samplesNeeded)
 		{
-			// TODO-me : interesting
 			// Fill device buffer with silence but leave enough room for one frame
 			int samplesPerFrame = (int)Math.Round(SampleRate / _getCoreVsyncRateCallback());
 			int silenceSamples = Math.Max(samplesNeeded - samplesPerFrame, 0);
@@ -198,7 +194,6 @@ namespace BizHawk.Client.EmuHawk
 					int outputThresholdMs = 20;
 					while (sampleCount > samplesNeeded)
 					{
-						// TODO-me : interesting
 						if (samplesNeeded >= outputThresholdMs * samplesPerMs)
 						{
 							// If we were given a large enough number of samples (e.g. larger than the device's

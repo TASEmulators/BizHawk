@@ -257,6 +257,10 @@ namespace BizHawk.Client.Common
 
 		public bool MuteInBG { get; set; } = false;
 
+		public bool MuteOnLag { get; set; } = false;
+
+		public decimal FPSThreshold { get; set; } = 100;
+
 		// Lua
 		public RecentFiles RecentLua { get; set; } = new RecentFiles(8);
 		public RecentFiles RecentLuaSession { get; set; } = new RecentFiles(8);

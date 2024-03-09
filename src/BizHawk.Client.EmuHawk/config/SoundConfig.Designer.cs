@@ -52,6 +52,9 @@
             this.cbEnableMaster = new System.Windows.Forms.CheckBox();
             this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.MuteInBG = new System.Windows.Forms.CheckBox();
+            this.muteOnLag = new System.Windows.Forms.CheckBox();
+            this.fpsThreshold = new System.Windows.Forms.NumericUpDown();
+            this.fpsThresholdLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             this.grpSoundVol.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudRWFF)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbRWFF)).BeginInit();
@@ -59,13 +62,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudNormal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BufferSizeNumeric)).BeginInit();
             this.grpOutputMethod.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.fpsThreshold)).BeginInit();
             this.SuspendLayout();
             // 
             // Cancel
             // 
             this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(864, 701);
+            this.Cancel.Location = new System.Drawing.Point(1009, 893);
             this.Cancel.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(200, 55);
@@ -77,7 +81,7 @@
             // OK
             // 
             this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OK.Location = new System.Drawing.Point(648, 701);
+            this.OK.Location = new System.Drawing.Point(793, 893);
             this.OK.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(200, 55);
@@ -205,15 +209,15 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxSoundDevices.FormattingEnabled = true;
             this.listBoxSoundDevices.ItemHeight = 31;
-            this.listBoxSoundDevices.Location = new System.Drawing.Point(371, 323);
+            this.listBoxSoundDevices.Location = new System.Drawing.Point(371, 354);
             this.listBoxSoundDevices.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.listBoxSoundDevices.Name = "listBoxSoundDevices";
-            this.listBoxSoundDevices.Size = new System.Drawing.Size(675, 314);
+            this.listBoxSoundDevices.Size = new System.Drawing.Size(820, 438);
             this.listBoxSoundDevices.TabIndex = 8;
             // 
             // SoundDeviceLabel
             // 
-            this.SoundDeviceLabel.Location = new System.Drawing.Point(365, 284);
+            this.SoundDeviceLabel.Location = new System.Drawing.Point(365, 315);
             this.SoundDeviceLabel.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.SoundDeviceLabel.Name = "SoundDeviceLabel";
             this.SoundDeviceLabel.Text = "Sound Device:";
@@ -221,7 +225,7 @@
             // BufferSizeLabel
             // 
             this.BufferSizeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.BufferSizeLabel.Location = new System.Drawing.Point(365, 644);
+            this.BufferSizeLabel.Location = new System.Drawing.Point(365, 808);
             this.BufferSizeLabel.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.BufferSizeLabel.Name = "BufferSizeLabel";
             this.BufferSizeLabel.Text = "Buffer Size:";
@@ -229,7 +233,7 @@
             // BufferSizeNumeric
             // 
             this.BufferSizeNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.BufferSizeNumeric.Location = new System.Drawing.Point(535, 642);
+            this.BufferSizeNumeric.Location = new System.Drawing.Point(535, 806);
             this.BufferSizeNumeric.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.BufferSizeNumeric.Maximum = new decimal(new int[] {
             250,
@@ -253,7 +257,7 @@
             // BufferSizeUnitsLabel
             // 
             this.BufferSizeUnitsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.BufferSizeUnitsLabel.Location = new System.Drawing.Point(697, 648);
+            this.BufferSizeUnitsLabel.Location = new System.Drawing.Point(708, 808);
             this.BufferSizeUnitsLabel.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.BufferSizeUnitsLabel.Name = "BufferSizeUnitsLabel";
             this.BufferSizeUnitsLabel.Text = "milliseconds";
@@ -337,7 +341,7 @@
             // label3
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label3.Location = new System.Drawing.Point(401, 81);
+            this.label3.Location = new System.Drawing.Point(408, 77);
             this.label3.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.label3.Name = "label3";
             this.label3.Text = "Controls whether cores\neven generate audio.";
@@ -352,13 +356,48 @@
             this.MuteInBG.Text = "Mute in background";
             this.MuteInBG.UseVisualStyleBackColor = true;
             // 
+            // muteOnLag
+            // 
+            this.muteOnLag.AutoSize = true;
+            this.muteOnLag.Location = new System.Drawing.Point(371, 258);
+            this.muteOnLag.Name = "muteOnLag";
+            this.muteOnLag.Size = new System.Drawing.Size(200, 36);
+            this.muteOnLag.TabIndex = 21;
+            this.muteOnLag.Text = "Mute on lag";
+            this.muteOnLag.UseVisualStyleBackColor = true;
+            this.muteOnLag.CheckedChanged += new System.EventHandler(this.muteOnLag_CheckedChanged);
+            // 
+            // fpsThreshold
+            // 
+            this.fpsThreshold.Location = new System.Drawing.Point(1071, 260);
+            this.fpsThreshold.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.fpsThreshold.Name = "fpsThreshold";
+            this.fpsThreshold.Size = new System.Drawing.Size(120, 38);
+            this.fpsThreshold.TabIndex = 10;
+            this.fpsThreshold.Value = new decimal(new int[] {
+            56,
+            0,
+            0,
+            0});
+            // 
+            // fpsThresholdLabel
+            // 
+            this.fpsThresholdLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.fpsThresholdLabel.Location = new System.Drawing.Point(648, 262);
+            this.fpsThresholdLabel.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.fpsThresholdLabel.Name = "fpsThresholdLabel";
+            this.fpsThresholdLabel.Text = "FPS Threshold for Mute on Lag\r\n";
+            // 
             // SoundConfig
             // 
             this.AcceptButton = this.OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(1081, 772);
+            this.ClientSize = new System.Drawing.Size(1226, 964);
+            this.Controls.Add(this.fpsThresholdLabel);
+            this.Controls.Add(this.fpsThreshold);
+            this.Controls.Add(this.muteOnLag);
             this.Controls.Add(this.MuteInBG);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cbEnableMaster);
@@ -389,6 +428,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.BufferSizeNumeric)).EndInit();
             this.grpOutputMethod.ResumeLayout(false);
             this.grpOutputMethod.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.fpsThreshold)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -420,5 +460,8 @@
 		private System.Windows.Forms.CheckBox cbEnableMaster;
 		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private System.Windows.Forms.CheckBox MuteInBG;
+		private System.Windows.Forms.CheckBox muteOnLag;
+		private System.Windows.Forms.NumericUpDown fpsThreshold;
+		private WinForms.Controls.LocLabelEx fpsThresholdLabel;
 	}
 }

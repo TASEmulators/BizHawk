@@ -46,6 +46,8 @@ namespace BizHawk.Client.EmuHawk
 			tbRWFF.Value = _config.SoundVolumeRWFF;
 			nudRWFF.Value = _config.SoundVolumeRWFF;
 			MuteInBG.Checked = _config.MuteInBG;
+			muteOnLag.Checked = _config.MuteOnLag;
+			fpsThreshold.Value = _config.FPSThreshold;
 			UpdateSoundDialog();
 
 			_programmaticallyChangingValue = false;
@@ -79,6 +81,8 @@ namespace BizHawk.Client.EmuHawk
 			_config.SoundVolumeRWFF = tbRWFF.Value;
 			_config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
 			_config.MuteInBG = MuteInBG.Checked;
+			_config.MuteOnLag = muteOnLag.Checked;
+			_config.FPSThreshold = fpsThreshold.Value;
 			DialogResult = DialogResult.OK;
 		}
 
@@ -149,9 +153,13 @@ namespace BizHawk.Client.EmuHawk
 			tbRWFF.Value = (int)nudRWFF.Value;
 		}
 
-		public bool GetMuteInBackgroundChecked() { 
-			return MuteInBG.Checked;
+		private void muteOnLag_CheckedChanged(object sender, EventArgs e)
+		{
+			if(muteOnLag.Checked) { 
+				fpsThreshold.Enabled = true;
+			} else { 
+				fpsThreshold.Enabled = false; 
+			}
 		}
-
 	}
 }
