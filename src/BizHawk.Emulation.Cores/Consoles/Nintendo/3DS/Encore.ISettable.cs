@@ -26,7 +26,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			"use_virtual_sd" => _syncSettings.UseVirtualSd,
 			"is_new_3ds" => _syncSettings.IsNew3ds,
 			"lle_applets" => _syncSettings.LleApplets,
-			"allow_async_file_io" => !DeterministicEmulation && _syncSettings.AllowAsyncFileIo,
 			"plugin_loader" => _syncSettings.PluginLoaderEnabled,
 			"allow_plugin_loader" => _syncSettings.AllowPluginLoader,
 			"want_determinism" => DeterministicEmulation,
@@ -332,11 +331,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			[Description("Whether to use LLE system applets, if installed.")]
 			[DefaultValue(false)]
 			public bool LleApplets { get; set; }
-
-			[DisplayName("Allow Async File I/O")]
-			[Description("If true, file i/o may be performed asynchronously. May reduce stutters for slow HDDs, but may result in longer load times. Ignored (set to false) when recording a movie.")]
-			[DefaultValue(true)]
-			public bool AllowAsyncFileIo { get; set; }
 
 			public enum ERegionValue
 			{
