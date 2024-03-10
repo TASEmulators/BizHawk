@@ -193,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 				offsetX = -3;
 				offsetY = 1;
 
-				if (CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithIcons)
+				if (Settings.DenoteMarkersWithIcons && CurrentTasMovie.Markers.IsMarker(index))
 				{
 					bitmap = icon_marker;
 				}
@@ -235,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (columnName == FrameColumnName)
 			{
-				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithBGColor)
+				if (Emulator.Frame != index && Settings.DenoteMarkersWithBGColor && CurrentTasMovie.Markers.IsMarker(index))
 				{
 					color = Palette.Marker_FrameCol;
 				}

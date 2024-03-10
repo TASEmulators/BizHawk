@@ -322,7 +322,15 @@ namespace BizHawk.Client.Common
 
 		public bool IsMarker(int frame)
 		{
-			return this.Any(m => m == frame);
+			// TODO: could use a BinarySearch here, but CollectionExtensions.BinarySearch currently throws
+			// an exception on failure, which is probably so expensive it nullifies any performance benefits
+			foreach (var marker in this)
+			{
+				if (marker.Frame > frame) return false;
+				if (marker.Frame == frame) return true;
+			}
+
+			return false;
 		}
 
 		public TasMovieMarker Get(int frame)
