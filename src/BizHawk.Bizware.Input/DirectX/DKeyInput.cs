@@ -9,7 +9,7 @@ using BizHawk.Common.CollectionExtensions;
 
 using Vortice.DirectInput;
 
-using static BizHawk.Common.Win32Imports;
+using static BizHawk.Common.RawInputImports;
 
 using DInputKey = Vortice.DirectInput.Key;
 
@@ -86,7 +86,7 @@ namespace BizHawk.Bizware.Input
 			}
 		}
 
-		/*private*/ internal static DInputKey MapToRealKeyViaScanCode(DInputKey key)
+		private static DInputKey MapToRealKeyViaScanCode(DInputKey key)
 		{
 			const uint MAPVK_VSC_TO_VK_EX = 0x03;
 			// DInputKey is a scancode with bit 7 indicating an E0 prefix
@@ -109,8 +109,7 @@ namespace BizHawk.Bizware.Input
 			return VKeyToDKeyMap.GetValueOrDefault(virtualKey, DInputKey.Unknown);
 		}
 
-		// DInputKey is just a scancode so it's used with RawKeyInput
-		/*private*/ internal static readonly IReadOnlyDictionary<DInputKey, DistinctKey> KeyEnumMap = new Dictionary<DInputKey, DistinctKey>
+		private static readonly IReadOnlyDictionary<DInputKey, DistinctKey> KeyEnumMap = new Dictionary<DInputKey, DistinctKey>
 		{
 			[DInputKey.D0] = DistinctKey.D0,
 			[DInputKey.D1] = DistinctKey.D1,

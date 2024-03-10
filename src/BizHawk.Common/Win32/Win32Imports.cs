@@ -57,9 +57,6 @@ namespace BizHawk.Common
 		[DllImport("kernel32.dll", ExactSpelling = true)]
 		public static extern uint GetLastError();
 
-		[DllImport("user32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
-		public static extern uint MapVirtualKeyW(uint uCode, uint uMapType);
-
 		[DllImport("shlwapi.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
 		public static extern bool PathRelativePathToW([Out] char[] pszPath, [In] string pszFrom, [In] FileAttributes dwAttrFrom, [In] string pszTo, [In] FileAttributes dwAttrTo);
 

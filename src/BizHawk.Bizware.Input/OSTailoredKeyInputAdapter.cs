@@ -12,7 +12,7 @@ namespace BizHawk.Bizware.Input
 	/// Abstract class which only handles keyboard input
 	/// Uses OS specific functionality, as there is no good cross platform way to do this
 	/// (Mostly as all the available cross-platform options require a focused window, arg!)
-	/// TODO: Doesn't work for Wayland yet (well, XWayland probably works fine? Probably want libinput support regardless)
+	/// TODO: Doesn't work for Wayland yet (must use XWayland, which Wayland users need to use anyways for BizHawk)
 	/// </summary>
 	public abstract class OSTailoredKeyInputAdapter : IHostInputAdapter
 	{
