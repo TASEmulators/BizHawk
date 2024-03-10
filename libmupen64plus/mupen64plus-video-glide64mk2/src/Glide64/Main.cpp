@@ -160,16 +160,6 @@ enum {
 	ZELDA
 };
 
-#ifdef __WINDOWS__
-#define WINPROC_OVERRIDE
-#endif
-
-#ifdef WINPROC_OVERRIDE
-LRESULT CALLBACK WndProc (HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-WNDPROC oldWndProc = NULL;
-WNDPROC myWndProc = NULL;
-#endif
-
 #ifdef ALTTAB_FIX
 HHOOK hhkLowLevelKybd = NULL;
 LRESULT CALLBACK LowLevelKeyboardProc(int nCode,
@@ -1585,11 +1575,6 @@ void CALL CloseDLL (void)
 {
   VLOG ("CloseDLL ()\n");
 
-  // re-set the old window proc
-#ifdef WINPROC_OVERRIDE
-  SetWindowLong (gfx.hWnd, GWL_WNDPROC, (long)oldWndProc);
-#endif
-
 #ifdef ALTTAB_FIX
   if (hhkLowLevelKybd)
   {
@@ -1722,15 +1707,6 @@ EXPORT int CALL InitiateGFX (GFX_INFO Gfx_Info)
   debug_init ();    // Initialize debugger
 
   gfx = Gfx_Info;
-
-#ifdef WINPROC_OVERRIDE
-  // [H.Morii] inject our own winproc so that "alt-enter to fullscreen"
-  // message is shown when the emulator window is activated.
-  WNDPROC curWndProc = (WNDPROC)GetWindowLong(gfx.hWnd, GWL_WNDPROC);
-  if (curWndProc && curWndProc != (WNDPROC)WndProc) {
-    oldWndProc = (WNDPROC)SetWindowLong (gfx.hWnd, GWL_WNDPROC, (long)WndProc);
-  }
-#endif
 
   util_init ();
   math_init ();
@@ -1961,14 +1937,8 @@ void drawViRegBG()
 
 }
 
-void drawNoFullscreenMessage();
-
 void DrawFrameBuffer ()
 {
-  if (!fullscreen)
-  {
-    drawNoFullscreenMessage();
-  }
   if (to_fullscreen)
     GoToFullScreen();
 
@@ -2505,40 +2475,10 @@ EXPORT void CALL ViWidthChanged (void)
 {
 }
 
-#ifdef WINPROC_OVERRIDE
-LRESULT CALLBACK WndProc (HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-  switch (msg)
-  {
-  case WM_ACTIVATEAPP:
-    if (wParam == TRUE && !fullscreen) rdp.window_changed = TRUE;
-    break;
-  case WM_PAINT:
-    if (!fullscreen) rdp.window_changed = TRUE;
-    break;
-
-    /*    case WM_DESTROY:
-    SetWindowLong (gfx.hWnd, GWL_WNDPROC, (long)oldWndProc);
-    break;*/
-  }
-
-  return CallWindowProc(oldWndProc, hwnd, msg, wParam, lParam);
-}
-#endif
-
 }
 
 int CheckKeyPressed(int key, int mask)
 {
-static Glide64Keys g64Keys;
-  if (settings.use_hotkeys == 0)
-    return 0;
-#ifdef __WINDOWS__
-  return (GetAsyncKeyState(g64Keys[key]) & mask);
-#else
-  if (grKeyPressed)
-    return grKeyPressed(g64Keys[key]);
-#endif
   return 0;
 }
 

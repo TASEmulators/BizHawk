@@ -22,7 +22,7 @@
 /* This file contains the Core video extension functions which will be exported
  * outside of the core library.
  */
-
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <SDL.h>
@@ -40,7 +40,7 @@
 #endif
 
 /* local variables */
-static m64p_video_extension_functions l_ExternalVideoFuncTable = {10, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+static m64p_video_extension_functions l_ExternalVideoFuncTable = {11, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 static int l_VideoExtensionActive = 0;
 static int l_VideoOutputActive = 0;
 static int l_Fullscreen = 0;
@@ -90,6 +90,8 @@ int VidExt_VideoRunning(void)
     return l_VideoOutputActive;
 }
 
+size_t vidext_init = 0;
+
 /* video extension functions to be called by the video plugin */
 EXPORT m64p_error CALL VidExt_Init(void)
 {
@@ -103,6 +105,7 @@ EXPORT m64p_error CALL VidExt_Init(void)
         return M64ERR_SYSTEM_FAIL;
     }
 
+	vidext_init = 1;
     return M64ERR_SUCCESS;
 }
 
@@ -120,7 +123,7 @@ EXPORT m64p_error CALL VidExt_Quit(void)
         return rval;
     }
 
-    if (!SDL_WasInit(SDL_INIT_VIDEO))
+    if (vidext_init == 0)
         return M64ERR_NOT_INIT;
 
     SDL_ShowCursor(SDL_ENABLE);
@@ -128,6 +131,7 @@ EXPORT m64p_error CALL VidExt_Quit(void)
     l_pScreen = NULL;
     l_VideoOutputActive = 0;
     StateChanged(M64CORE_VIDEO_MODE, M64VIDEO_NONE);
+	vidext_init = 0;
 
     return M64ERR_SUCCESS;
 }
@@ -186,7 +190,6 @@ EXPORT m64p_error CALL VidExt_SetVideoMode(int Width, int Height, int BitsPerPix
 {
     const SDL_VideoInfo *videoInfo;
     int videoFlags = 0;
-	SDL_SysWMinfo SysInfo;
 
     /* call video extension override if necessary */
     if (l_VideoExtensionActive)
@@ -245,13 +248,6 @@ EXPORT m64p_error CALL VidExt_SetVideoMode(int Width, int Height, int BitsPerPix
         DebugMessage(M64MSG_ERROR, "SDL_SetVideoMode failed: %s", SDL_GetError());
         return M64ERR_SYSTEM_FAIL;
     }
-
-	SDL_VERSION(&SysInfo.version);
-	if (SDL_GetWMInfo(&SysInfo))
-	{
-		// Hide the SDL window
-		ShowWindow(SysInfo.window,0);
-	}
 
     SDL_ShowCursor(SDL_DISABLE);
 
