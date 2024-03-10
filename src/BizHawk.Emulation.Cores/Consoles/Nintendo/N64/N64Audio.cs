@@ -78,7 +78,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				if (RenderSound)
 				{
 					Resampler.EnqueueSamples(audioBuffer, audioBufferSize / 2);
-					Resampler.Flush();
 				}
 			}
 		}
