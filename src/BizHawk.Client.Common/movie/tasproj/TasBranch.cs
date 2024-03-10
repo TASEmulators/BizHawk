@@ -290,14 +290,19 @@ namespace BizHawk.Client.Common
 	{
 		public static int IndexOfFrame(this IList<TasBranch> list, int frame)
 		{
-			var branch = list
-				.Where(b => b.Frame == frame)
-				.OrderByDescending(b => b.TimeStamp)
-				.FirstOrDefault();
+			// intentionally not using linq here because this is called many times per frame
+			int index = -1;
+			var timeStamp = DateTime.MaxValue;
+			for (int i = 0; i < list.Count; i++)
+			{
+				if (list[i].Frame == frame && list[i].TimeStamp < timeStamp)
+				{
+					index = i;
+					timeStamp = list[i].TimeStamp;
+				}
+			}
 
-			return branch == null
-				? -1
-				: list.IndexOf(branch);
+			return index;
 		}
 
 		// TODO: stop relying on the index value of a branch
