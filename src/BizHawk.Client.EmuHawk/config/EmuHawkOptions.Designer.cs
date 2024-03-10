@@ -42,9 +42,6 @@
 			this.RunInBackgroundCheckbox = new System.Windows.Forms.CheckBox();
 			this.EnableContextMenuCheckbox = new System.Windows.Forms.CheckBox();
 			this.PauseWhenMenuActivatedCheckbox = new System.Windows.Forms.CheckBox();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.rbInputMethodSDL2 = new System.Windows.Forms.RadioButton();
-			this.rbInputMethodDirectInput = new System.Windows.Forms.RadioButton();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.StartPausedCheckbox = new System.Windows.Forms.CheckBox();
 			this.label14 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -76,7 +73,6 @@
 			this.cbMergeLAndRModifierKeys = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
-			this.groupBox3.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.tabPage3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -131,7 +127,6 @@
 			this.tabPage1.Controls.Add(this.RunInBackgroundCheckbox);
 			this.tabPage1.Controls.Add(this.EnableContextMenuCheckbox);
 			this.tabPage1.Controls.Add(this.PauseWhenMenuActivatedCheckbox);
-			this.tabPage1.Controls.Add(this.groupBox3);
 			this.tabPage1.Controls.Add(this.groupBox1);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
@@ -224,39 +219,6 @@
 			this.PauseWhenMenuActivatedCheckbox.TabIndex = 17;
 			this.PauseWhenMenuActivatedCheckbox.Text = "Pause when menu activated";
 			this.PauseWhenMenuActivatedCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// groupBox3
-			// 
-			this.groupBox3.Controls.Add(this.rbInputMethodSDL2);
-			this.groupBox3.Controls.Add(this.rbInputMethodDirectInput);
-			this.groupBox3.Location = new System.Drawing.Point(6, 151);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(369, 48);
-			this.groupBox3.TabIndex = 16;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Input Method (requires restart)";
-			// 
-			// rbInputMethodSDL2
-			// 
-			this.rbInputMethodSDL2.AutoSize = true;
-			this.rbInputMethodSDL2.Location = new System.Drawing.Point(136, 19);
-			this.rbInputMethodSDL2.Name = "rbInputMethodSDL2";
-			this.rbInputMethodSDL2.Size = new System.Drawing.Size(65, 17);
-			this.rbInputMethodSDL2.TabIndex = 1;
-			this.rbInputMethodSDL2.TabStop = true;
-			this.rbInputMethodSDL2.Text = "SDL2";
-			this.rbInputMethodSDL2.UseVisualStyleBackColor = true;
-			// 
-			// rbInputMethodDirectInput
-			// 
-			this.rbInputMethodDirectInput.AutoSize = true;
-			this.rbInputMethodDirectInput.Location = new System.Drawing.Point(7, 20);
-			this.rbInputMethodDirectInput.Name = "rbInputMethodDirectInput";
-			this.rbInputMethodDirectInput.Size = new System.Drawing.Size(114, 17);
-			this.rbInputMethodDirectInput.TabIndex = 0;
-			this.rbInputMethodDirectInput.TabStop = true;
-			this.rbInputMethodDirectInput.Text = "DirectInput+XInput";
-			this.rbInputMethodDirectInput.UseVisualStyleBackColor = true;
 			// 
 			// groupBox1
 			// 
@@ -546,8 +508,6 @@
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage1.PerformLayout();
-			this.groupBox3.ResumeLayout(false);
-			this.groupBox3.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
@@ -594,9 +554,6 @@
 		private System.Windows.Forms.CheckBox RunInBackgroundCheckbox;
 		private System.Windows.Forms.CheckBox EnableContextMenuCheckbox;
 		private System.Windows.Forms.CheckBox PauseWhenMenuActivatedCheckbox;
-		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.RadioButton rbInputMethodSDL2;
-		private System.Windows.Forms.RadioButton rbInputMethodDirectInput;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.CheckBox StartPausedCheckbox;
 		private BizHawk.WinForms.Controls.LocLabelEx label14;
