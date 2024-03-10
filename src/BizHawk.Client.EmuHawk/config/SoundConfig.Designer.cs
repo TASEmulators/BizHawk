@@ -35,6 +35,8 @@
             this.nudRWFF = new System.Windows.Forms.NumericUpDown();
             this.cbEnableRWFF = new System.Windows.Forms.CheckBox();
             this.tbRWFF = new System.Windows.Forms.TrackBar();
+            this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.tbNormal = new System.Windows.Forms.TrackBar();
             this.nudNormal = new System.Windows.Forms.NumericUpDown();
             this.listBoxSoundDevices = new System.Windows.Forms.ListBox();
@@ -53,8 +55,6 @@
             this.BufferSizeUnitsLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             this.BufferSizeLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             this.SoundDeviceLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.grpSoundVol.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudRWFF)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbRWFF)).BeginInit();
@@ -158,6 +158,22 @@
             this.tbRWFF.TabIndex = 6;
             this.tbRWFF.TickFrequency = 10;
             this.tbRWFF.Scroll += new System.EventHandler(this.TbRwff_Scroll);
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.Location = new System.Drawing.Point(149, 100);
+            this.label2.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label2.Name = "label2";
+            this.label2.Text = "RW && FF";
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.Location = new System.Drawing.Point(16, 100);
+            this.label1.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label1.Name = "label1";
+            this.label1.Text = "Normal";
             // 
             // tbNormal
             // 
@@ -328,7 +344,7 @@
             this.FpsThresholdNumeric.Size = new System.Drawing.Size(120, 38);
             this.FpsThresholdNumeric.TabIndex = 10;
             this.FpsThresholdNumeric.Value = new decimal(new int[] {
-            56,
+            100,
             0,
             0,
             0});
@@ -336,10 +352,10 @@
             // fpsThresholdLabel
             // 
             this.fpsThresholdLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.fpsThresholdLabel.Location = new System.Drawing.Point(648, 262);
+            this.fpsThresholdLabel.Location = new System.Drawing.Point(628, 262);
             this.fpsThresholdLabel.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.fpsThresholdLabel.Name = "fpsThresholdLabel";
-            this.fpsThresholdLabel.Text = "FPS Threshold for Mute on Lag\r\n";
+            this.fpsThresholdLabel.Text = "FPS Threshold % for Mute on Lag\r\n";
             // 
             // label3
             // 
@@ -371,22 +387,6 @@
             this.SoundDeviceLabel.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.SoundDeviceLabel.Name = "SoundDeviceLabel";
             this.SoundDeviceLabel.Text = "Sound Device:";
-            // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label2.Location = new System.Drawing.Point(149, 100);
-            this.label2.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
-            this.label2.Name = "label2";
-            this.label2.Text = "RW && FF";
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.Location = new System.Drawing.Point(16, 100);
-            this.label1.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
-            this.label1.Name = "label1";
-            this.label1.Text = "Normal";
             // 
             // SoundConfig
             // 
