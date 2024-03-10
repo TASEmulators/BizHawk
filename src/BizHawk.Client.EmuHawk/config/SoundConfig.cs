@@ -154,11 +154,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void muteOnLag_CheckedChanged(object sender, EventArgs e)
 		{
-			if(cbMuteOnLag.Checked) { 
-				FpsThresholdNumeric.Enabled = true;
-			} else { 
-				FpsThresholdNumeric.Enabled = false; 
-			}
+			FpsThresholdNumeric.Enabled = ((CheckBox)sender).Checked;
 		}
 	}
 }
