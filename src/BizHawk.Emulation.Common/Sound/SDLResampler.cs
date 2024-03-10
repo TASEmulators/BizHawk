@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Common
 		/// <param name="nsamp">number of sample pairs</param>
 		public unsafe void EnqueueSamples(short[] userbuf, int nsamp)
 		{
-			if (nsamp * 2 < userbuf.Length)
+			if (userbuf.Length < nsamp * 2)
 			{
 				throw new("User buffer contained less than nsamp * 2 shorts!");
 			}
