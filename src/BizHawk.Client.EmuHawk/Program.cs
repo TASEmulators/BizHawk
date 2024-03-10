@@ -128,11 +128,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// TODO: We optimally should only require the new VS2015-2022 all in one redist be installed
 				// None of this old 2010 runtime garbage
-				// (It's probably as simple as just recompiling old mupen .dlls against newer VS and probably just removing speex completely)
+				// (just removing speex completely, perhaps can just use SDL2 as a replacement?)
 				foreach (var (dllToLoad, desc) in new[]
 						{
 							("vcruntime140_1.dll", "Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019, and 2022 (x64)"),
-							// for libspeexdsp.dll, mupen64plus-audio-bkm.dll, mupen64plus-video-glide64.dll, mupen64plus-video-glide64mk2.dll, mupen64plus-video-rice.dll
+							// for libspeexdsp.dll
 							("msvcr100.dll", "Microsoft Visual C++ 2010 SP1 Runtime (x64)"),
 						})
 				{
