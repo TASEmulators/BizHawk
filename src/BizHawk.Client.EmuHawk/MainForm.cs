@@ -3302,7 +3302,6 @@ namespace BizHawk.Client.EmuHawk
 				UpdateToolsAfter();
 			}
 
-
 			// Mutes the game if EmuHawk is unfocused or minimized
 			// An option in the sound settings needs to be turned on for this to work.
 			if (Config.MuteInBG) {
@@ -3329,9 +3328,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			
-
 			Sound.UpdateSound(atten, DisableSecondaryThrottling);
-
 		}
 
 		private void CalcFramerateAndUpdateDisplay(long currentTimestamp, bool isRewinding, bool isFastForwarding)

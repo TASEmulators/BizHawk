@@ -154,7 +154,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateSound(float atten, bool isSecondaryThrottlingDisabled)
 		{
-			
 			if (!Config.SoundEnabled || !IsStarted || _bufferedProvider == null || _disposed)
 			{
 				_bufferedProvider?.DiscardSamples();
@@ -189,7 +188,6 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return;
 					}
-
 					int samplesPerMs = SampleRate / 1000;
 					int outputThresholdMs = 20;
 					while (sampleCount > samplesNeeded)

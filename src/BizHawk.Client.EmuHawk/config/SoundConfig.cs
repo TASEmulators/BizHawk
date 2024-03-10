@@ -22,7 +22,6 @@ namespace BizHawk.Client.EmuHawk
 			_config = config;
 			_getDeviceNamesCallback = getDeviceNamesCallback;
 			DialogController = dialogController;
-		
 			InitializeComponent();
 		}
 
@@ -50,7 +49,6 @@ namespace BizHawk.Client.EmuHawk
 			FpsThresholdNumeric.Value = _config.FPSThreshold;
 			FpsThresholdNumeric.Enabled = _config.MuteOnLag;
 			UpdateSoundDialog();
-
 			_programmaticallyChangingValue = false;
 		}
 
