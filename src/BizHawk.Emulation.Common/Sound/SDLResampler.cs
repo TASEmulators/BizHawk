@@ -81,6 +81,11 @@ namespace BizHawk.Emulation.Common
 		/// <param name="nsamp">number of sample pairs</param>
 		public unsafe void EnqueueSamples(short[] userbuf, int nsamp)
 		{
+			if (nsamp * 2 < userbuf.Length)
+			{
+				throw new("User buffer contained less than nsamp * 2 shorts!");
+			}
+
 			fixed (short* ub = userbuf)
 			{
 				if (SDL_AudioStreamPut(_stream, (IntPtr)ub, nsamp * 4) != 0)
@@ -139,11 +144,11 @@ namespace BizHawk.Emulation.Common
 
 		private void InternalDrain(short[] buf, int nsamp)
 		{
-			if (_outNumSamps + nsamp * 2 > _outBuf.Length)
+			if (_outNumSamps + nsamp * 2 > _outSamples.Length)
 			{
-				var newbuf = new short[_outNumSamps + nsamp * 2];
-				Buffer.BlockCopy(_outSamples, 0, newbuf, 0, _outNumSamps * sizeof(short));
-				_outSamples = newbuf;
+				var newBuf = new short[_outNumSamps + nsamp * 2];
+				Buffer.BlockCopy(_outSamples, 0, newBuf, 0, _outNumSamps * sizeof(short));
+				_outSamples = newBuf;
 			}
 
 			Buffer.BlockCopy(buf, 0, _outSamples, _outNumSamps * sizeof(short), nsamp * 2 * sizeof(short));
