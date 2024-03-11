@@ -74,6 +74,11 @@ namespace BizHawk.Client.Common
 		[LuaMethod("closerom", "Closes the loaded Rom")]
 		public void CloseRom()
 		{
+			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			{
+				throw new InvalidOperationException("client.closerom() is not allowed during input/memory callbacks");
+			}
+
 			_luaLibsImpl.IsRebootingCore = true;
 			APIs.EmuClient.CloseRom();
 			_luaLibsImpl.IsRebootingCore = false;
@@ -102,6 +107,11 @@ namespace BizHawk.Client.Common
 		[LuaMethod("seekframe", "Makes the emulator seek to the frame specified")]
 		public void SeekFrame(int frame)
 		{
+			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			{
+				throw new InvalidOperationException("client.seekframe() is not allowed during input/memory callbacks");
+			}
+
 			if (frame < Emulator.Frame)
 			{
 				Log("client.seekframe: cannot seek backwards");
@@ -200,6 +210,11 @@ namespace BizHawk.Client.Common
 		[LuaMethod("openrom", "Loads a ROM from the given path. Returns true if the ROM was successfully loaded, otherwise false.")]
 		public bool OpenRom(string path)
 		{
+			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			{
+				throw new InvalidOperationException("client.openrom() is not allowed during input/memory callbacks");
+			}
+
 			_luaLibsImpl.IsRebootingCore = true;
 			var success = APIs.EmuClient.OpenRom(path);
 			_luaLibsImpl.IsRebootingCore = false;
@@ -235,6 +250,11 @@ namespace BizHawk.Client.Common
 		[LuaMethod("reboot_core", "Reboots the currently loaded core")]
 		public void RebootCore()
 		{
+			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			{
+				throw new InvalidOperationException("client.reboot_core() is not allowed during input/memory callbacks");
+			}
+
 			_luaLibsImpl.IsRebootingCore = true;
 			APIs.EmuClient.RebootCore();
 			_luaLibsImpl.IsRebootingCore = false;
