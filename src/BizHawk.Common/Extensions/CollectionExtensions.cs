@@ -247,7 +247,7 @@ namespace BizHawk.Common.CollectionExtensions
 			else
 			{
 				foreach (var item in list.Where(item => match(item)) // can't simply cast to Func<T, bool>
-							.ToList()) // very important
+							.ToArray()) // very important
 				{
 					list.Remove(item);
 				}

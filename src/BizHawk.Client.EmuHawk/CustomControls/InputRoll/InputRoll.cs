@@ -267,7 +267,11 @@ namespace BizHawk.Client.EmuHawk
 
 					if (_selectedItems.Max(s => s.RowIndex) >= _rowCount)
 					{
+#if NETFRAMEWORK
+						_selectedItems.RemoveAll(i => i.RowIndex >= _rowCount);
+#else
 						_selectedItems.RemoveWhere(i => i.RowIndex >= _rowCount);
+#endif
 					}
 
 					RecalculateScrollBars();
