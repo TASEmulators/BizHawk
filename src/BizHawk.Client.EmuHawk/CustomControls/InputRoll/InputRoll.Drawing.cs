@@ -290,16 +290,15 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				int xPadding = CellWidthPadding + 1 - _hBar.Value;
+				var currentCell = new Cell();
 				for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 				{
 					f += _lagFrames[i];
 					foreach (var column in visibleColumns)
 					{
-						RollColumn col = column;
-
 						int strOffsetX = 0;
 						int strOffsetY = 0;
-						Point point = new Point(col.Left + xPadding, RowsToPixels(i) + CellHeightPadding);
+						Point point = new Point(column.Left + xPadding, RowsToPixels(i) + CellHeightPadding);
 
 						Bitmap image = null;
 						int bitmapOffsetX = 0;
@@ -315,13 +314,15 @@ namespace BizHawk.Client.EmuHawk
 						QueryItemText(f + startRow, column, out var text, ref strOffsetX, ref strOffsetY);
 
 						bool rePrep = false;
-						if (_selectedItems.Contains(new Cell { Column = column, RowIndex = f + startRow }))
+						currentCell.Column = column;
+						currentCell.RowIndex = f + startRow;
+						if (_selectedItems.Contains(currentCell))
 						{
 							_renderer.PrepDrawString(Font, SystemColors.HighlightText);
 							rePrep = true;
 						}
 
-						DrawString(text, new Rectangle(point.X + strOffsetX, point.Y + strOffsetY, col.Width, ColumnHeight));
+						DrawString(text, new Rectangle(point.X + strOffsetX, point.Y + strOffsetY, column.Width, ColumnHeight));
 
 						if (rePrep)
 						{
@@ -600,6 +601,7 @@ namespace BizHawk.Client.EmuHawk
 			int startIndex = firstVisibleRow;
 			int range = Math.Min(lastVisibleRow, RowCount - 1) - startIndex + 1;
 
+			var currentCell = new Cell();
 			for (int i = 0, f = 0; f < range; i++, f++)
 			{
 				f += _lagFrames[i];
@@ -610,7 +612,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var itemColor = rowColor;
 					QueryItemBkColor?.Invoke(f + startIndex, column, ref itemColor);
-					if (itemColor.A is not 0 or 255)
+					if (itemColor.A is not (0 or 255))
 					{
 						float alpha = (float)itemColor.A / 255;
 						itemColor = Color.FromArgb(rowColor.R - (int)((rowColor.R - itemColor.R) * alpha),
@@ -619,12 +621,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 					if (itemColor != _backColor) // An easy optimization, don't draw unless the user specified something other than the default
 					{
-						var cell = new Cell
-						{
-							Column = column,
-							RowIndex = i
-						};
-						DrawCellBG(itemColor, cell, visibleColumns, rect);
+						currentCell.Column = column;
+						currentCell.RowIndex = i;
+						DrawCellBG(itemColor, currentCell, visibleColumns, rect);
 					}
 				}
 			}
