@@ -2,7 +2,6 @@
 using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -195,8 +194,8 @@ namespace BizHawk.Client.Common
 
 		public static void ResolveWithDefaults(IDictionary<string, string> dict)
 		{
+			foreach (var k in dict.Keys.Where(static k => !AllHotkeys.ContainsKey(k)).ToArray()) dict.Remove(k); // remove extraneous
 			foreach (var (k, v) in AllHotkeys) if (!dict.ContainsKey(k)) dict[k] = v.DefaultBinding; // add missing
-			dict.RemoveAll(static kvp => !AllHotkeys.ContainsKey(kvp.Key)); // remove extraneous
 		}
 
 		public readonly string DefaultBinding;
