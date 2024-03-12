@@ -189,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (columnName == FrameColumnName)
 			{
-				var record = CurrentTasMovie[index];
+				ITasMovieRecord record;
 				offsetX = -3;
 				offsetY = 1;
 
@@ -197,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					bitmap = icon_marker;
 				}
-				else if (record.HasState && Settings.DenoteStatesWithIcons)
+				else if (Settings.DenoteStatesWithIcons && (record = CurrentTasMovie[index]).HasState)
 				{
 					if (record.Lagged.HasValue && record.Lagged.Value)
 					{
