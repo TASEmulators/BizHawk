@@ -233,9 +233,9 @@ namespace BizHawk.Common.CollectionExtensions
 		/// (This is an extension method which reimplements <see cref="List{T}.RemoveAll"/> for other <see cref="ICollection{T}">collections</see>.
 		/// It defers to the existing <see cref="List{T}.RemoveAll">RemoveAll</see> if the receiver's type is <see cref="List{T}"/> or a subclass.)
 		/// </remarks>
-		public static int RemoveAll<T>(this ICollection<T> list, Predicate<T> match)
+		public static int RemoveAll<T>(this ICollection<T> list, Func<T, bool> match)
 		{
-			if (list is List<T> listImpl) return listImpl.RemoveAll(match);
+			if (list is List<T> listImpl) return listImpl.RemoveAll(item => match(item)); // can't simply cast to Predicate<T>, but thankfully we only need to allocate 1 extra delegate
 			var c = list.Count;
 			if (list is IList<T> iList)
 			{
@@ -246,7 +246,7 @@ namespace BizHawk.Common.CollectionExtensions
 			}
 			else
 			{
-				foreach (var item in list.Where(item => match(item)) // can't simply cast to Func<T, bool>
+				foreach (var item in list.Where(match)
 							.ToArray()) // very important
 				{
 					list.Remove(item);
