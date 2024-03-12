@@ -168,17 +168,11 @@ namespace BizHawk.Client.EmuHawk
 					offsetY = 5;
 				}
 
-				if (index == Emulator.Frame && index == MainForm.PauseOnFrame)
+				if (index == Emulator.Frame)
 				{
-					bitmap = TasView.HorizontalOrientation ?
-						ts_v_arrow_green_blue :
-						ts_h_arrow_green_blue;
-				}
-				else if (index == Emulator.Frame)
-				{
-					bitmap = TasView.HorizontalOrientation ?
-						ts_v_arrow_blue :
-						ts_h_arrow_blue;
+					bitmap = index == MainForm.PauseOnFrame
+						? TasView.HorizontalOrientation ? ts_v_arrow_green_blue : ts_h_arrow_green_blue 
+						: TasView.HorizontalOrientation ? ts_v_arrow_blue : ts_h_arrow_blue;
 				}
 				else if (index == LastPositionFrame)
 				{
@@ -189,7 +183,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (columnName == FrameColumnName)
 			{
-				ITasMovieRecord record;
 				offsetX = -3;
 				offsetY = 1;
 
@@ -197,16 +190,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					bitmap = icon_marker;
 				}
-				else if (Settings.DenoteStatesWithIcons && (record = CurrentTasMovie[index]).HasState)
+				else if (Settings.DenoteStatesWithIcons)
 				{
-					if (record.Lagged.HasValue && record.Lagged.Value)
-					{
-						bitmap = icon_anchor_lag;
-					}
-					else
-					{
-						bitmap = icon_anchor;
-					}
+					var record = CurrentTasMovie[index];
+					if (record.HasState) bitmap = record.Lagged is true ? icon_anchor_lag : icon_anchor;
 				}
 			}
 		}
