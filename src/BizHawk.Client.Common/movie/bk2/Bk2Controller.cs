@@ -86,21 +86,26 @@ namespace BizHawk.Client.Common
 		{
 			if (!string.IsNullOrWhiteSpace(mnemonic))
 			{
-				var trimmed = mnemonic.Replace("|", "");
 				var iterator = 0;
 
 				foreach (var key in ControlsOrdered)
 				{
+					while (mnemonic[iterator] == '|') iterator++;
+
 					if (key.IsBool)
 					{
-						_myBoolButtons[key.Name] = trimmed[iterator] != '.';
+						_myBoolButtons[key.Name] = mnemonic[iterator] != '.';
 						iterator++;
 					}
 					else if (key.IsAxis)
 					{
-						var commaIndex = trimmed.Substring(iterator).IndexOf(',');
-						var temp = trimmed.Substring(iterator, commaIndex);
-						var val = int.Parse(temp.Trim());
+						var commaIndex = mnemonic.IndexOf(',', iterator);
+#if NET6_0_OR_GREATER
+						var val = int.Parse(mnemonic.AsSpan(iterator, commaIndex));
+#else
+						var axisValueString = mnemonic.Substring(iterator, commaIndex);
+						var val = int.Parse(axisValueString);
+#endif
 						_myAxisControls[key.Name] = val;
 
 						iterator += commaIndex + 1;
