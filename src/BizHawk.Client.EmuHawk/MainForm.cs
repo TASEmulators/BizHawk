@@ -3315,7 +3315,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// Mutes the game if the current FPS reaches the threshold chosen by the user or lower
 			// An option in the sound settings needs to be turned on for this to work.
-			if (Config.MuteOnLag && _lastFps <= 60 * ((double)Config.FPSThresholdPercentage / 100))
+			if (Config.MuteOnLag && _lastFps <= PlatformFrameRates.GetFrameRate(Emulator.SystemId, Emulator.HasRegions() && Emulator.AsRegionable().Region is DisplayType.PAL) * ((double)Config.FPSThresholdPercentage / 100))
 			{
 				Sound.StopSound();
 			}
