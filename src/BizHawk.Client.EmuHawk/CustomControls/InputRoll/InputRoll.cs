@@ -22,7 +22,8 @@ namespace BizHawk.Client.EmuHawk
 	public partial class InputRoll : Control
 	{
 		private readonly IControlRenderer _renderer;
-		private readonly SortedSet<Cell> _selectedItems = new SortedSet<Cell>(new SortCell());
+
+		private readonly CellList _selectedItems = new();
 
 		// scrollbar location(s) are calculated later (e.g. on resize)
 		private readonly VScrollBar _vBar = new VScrollBar { Visible = false };
@@ -265,13 +266,10 @@ namespace BizHawk.Client.EmuHawk
 
 					_rowCount = value;
 
+					//TODO replace this with a binary search + truncate
 					if (_selectedItems.Max(s => s.RowIndex) >= _rowCount)
 					{
-#if NETFRAMEWORK
 						_selectedItems.RemoveAll(i => i.RowIndex >= _rowCount);
-#else
-						_selectedItems.RemoveWhere(i => i.RowIndex >= _rowCount);
-#endif
 					}
 
 					RecalculateScrollBars();
@@ -576,7 +574,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					_selectedItems.RemoveWhere(cell => cell.RowIndex == index);
+					IEnumerable<Cell> items = _selectedItems.Where(cell => cell.RowIndex == index);
+					_selectedItems.RemoveAll(items.Contains);
 					_lastSelectedRow = _selectedItems.LastOrDefault()?.RowIndex;
 				}
 			}
@@ -612,7 +611,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TruncateSelection(int index)
 		{
-			_selectedItems.RemoveWhere(cell => cell.RowIndex > index);
+			_selectedItems.RemoveAll(cell => cell.RowIndex > index);
 			_lastSelectedRow = _selectedItems.LastOrDefault()?.RowIndex;
 		}
 
@@ -1788,7 +1787,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (FullRowSelect)
 				{
-					if (toggle && (_selectedItems.RemoveWhere(x => x.RowIndex == row) is not 0))
+					if (toggle && (_selectedItems.RemoveAll(x => x.RowIndex == row) is not 0))
 					{
 						_lastSelectedRow = _selectedItems.LastOrDefault()?.RowIndex;
 					}

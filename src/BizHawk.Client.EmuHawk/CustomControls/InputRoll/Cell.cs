@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Diagnostics;
+
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// Represents a single cell of the <see cref="InputRoll"/>
 	/// </summary>
-	public class Cell
+	public sealed class Cell : IComparable<Cell>
 	{
 		public RollColumn Column { get; internal set; }
 		public int? RowIndex { get; internal set; }
@@ -18,6 +21,9 @@ namespace BizHawk.Client.EmuHawk
 			Column = cell.Column;
 			RowIndex = cell.RowIndex;
 		}
+
+		public int CompareTo(Cell other)
+			=> SortCell.Compare(this, other);
 
 		public override bool Equals(object obj)
 		{
@@ -45,9 +51,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 
-	internal class SortCell : IComparer<Cell>
+	internal static class SortCell
 	{
-		int IComparer<Cell>.Compare(Cell c1, Cell c2)
+		public static int Compare(Cell c1, Cell c2)
 		{
 			if (c1 is null && c2 is null)
 			{
@@ -83,6 +89,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return string.CompareOrdinal(c1.Column.Name, c2.Column.Name);
+		}
+	}
+
+	public sealed class CellList : SortedList<Cell>
+	{
+		/// <remarks>restore the distinctness invariant from <see cref="System.Collections.Generic.SortedSet{T}"/>; though I don't think we actually rely on it anywhere --yoshi</remarks>
+		public override void Add(Cell item)
+		{
+			var i = _list.BinarySearch(item);
+			if (i >= 0)
+			{
+				Debug.Assert(false, $"{nameof(CellList)}'s distinctness invariant was almost broken! CellList.Add({(item is null ? "null" : $"Cell(r: {item.RowIndex}, c: \"{item.Column?.Name ?? "(unnamed)"}\")")})");
+				return;
+			}
+			_list.Insert(~i, item);
 		}
 	}
 
