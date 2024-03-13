@@ -284,6 +284,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			};
 
 			_watchList = (append ? _watchList.Concat(list) : list).ToArray();
+			_isSorted = false; //TODO can this be smarter, such as by inserting instead of appending?
 		}
 
 		public void Sort(string column, bool reverse)
