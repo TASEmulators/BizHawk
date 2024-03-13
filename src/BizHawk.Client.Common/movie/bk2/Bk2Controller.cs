@@ -101,14 +101,14 @@ namespace BizHawk.Client.Common
 					{
 						var commaIndex = mnemonic.IndexOf(',', iterator);
 #if NET6_0_OR_GREATER
-						var val = int.Parse(mnemonic.AsSpan(iterator, commaIndex));
+						var val = int.Parse(mnemonic.AsSpan(start: iterator, length: commaIndex - iterator));
 #else
-						var axisValueString = mnemonic.Substring(iterator, commaIndex);
+						var axisValueString = mnemonic.Substring(startIndex: iterator, length: commaIndex - iterator);
 						var val = int.Parse(axisValueString);
 #endif
 						_myAxisControls[key.Name] = val;
 
-						iterator += commaIndex + 1;
+						iterator = commaIndex + 1;
 					}
 				}
 			}
