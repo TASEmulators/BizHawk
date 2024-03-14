@@ -576,8 +576,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					IEnumerable<Cell> items = _selectedItems.Where(cell => cell.RowIndex == index);
-					_selectedItems.RemoveWhere(items.Contains);
+					_selectedItems.RemoveWhere(cell => cell.RowIndex == index);
 					_lastSelectedRow = _selectedItems.LastOrDefault()?.RowIndex;
 				}
 			}
