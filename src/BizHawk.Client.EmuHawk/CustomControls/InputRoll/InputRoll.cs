@@ -10,7 +10,6 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
-using CollectionExtensions = BizHawk.Common.CollectionExtensions.CollectionExtensions;
 
 // TODO: There are some bad interactions between ScrollToIndex and MakeIndexVisible that are preventing things from working as intended.
 //       But, the current behaviour is ok for now for what it is used for.
