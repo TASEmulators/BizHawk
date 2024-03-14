@@ -619,6 +619,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				CurrentTasMovie.RemoveFrames(TasView.SelectedRows.ToArray());
+				SetTasViewRowCount();
 				SetSplicer();
 
 				if (needsToRollback)

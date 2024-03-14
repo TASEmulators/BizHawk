@@ -10,6 +10,7 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using CollectionExtensions = BizHawk.Common.CollectionExtensions.CollectionExtensions;
 
 // TODO: There are some bad interactions between ScrollToIndex and MakeIndexVisible that are preventing things from working as intended.
 //       But, the current behaviour is ok for now for what it is used for.
@@ -267,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 					_rowCount = value;
 
 					//TODO replace this with a binary search + truncate
-					if (_selectedItems.Max(s => s.RowIndex) >= _rowCount)
+					if (_selectedItems.LastOrDefault()?.RowIndex >= _rowCount)
 					{
 						_selectedItems.RemoveAll(i => i.RowIndex >= _rowCount);
 					}
@@ -623,13 +624,13 @@ namespace BizHawk.Client.EmuHawk
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int? SelectionStartIndex
-			=> AnyRowsSelected ? SelectedRowsWithDuplicates.Min() : null;
+			=> AnyRowsSelected ? SelectedRowsWithDuplicates.First() : null;
 
 		/// <returns>the <see cref="Cell.RowIndex"/> of the selected row with the latest index, or <see langword="null"/> if no rows are selected</returns>
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int? SelectionEndIndex
-			=> AnyRowsSelected ? SelectedRowsWithDuplicates.Max() : null;
+			=> AnyRowsSelected ? SelectedRowsWithDuplicates.Last() : null;
 
 		/// <summary>
 		/// Gets or sets the current Cell that the mouse was in.
