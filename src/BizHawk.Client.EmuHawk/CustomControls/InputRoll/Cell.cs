@@ -2,6 +2,7 @@
 using System.Diagnostics;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -105,6 +106,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 			_list.Insert(~i, item);
 		}
+
+		public bool IncludesRow(int rowIndex)
+#if false
+			=> _list.Exists(cell => cell.RowIndex == rowIndex);
+#elif false
+		{
+			var i = _list.BinarySearch(new() { RowIndex = rowIndex, Column = null });
+			return i >= 0 || (~i < _list.Count && _list[~i].RowIndex == rowIndex);
+		}
+#else
+		{
+			var i = _list.LowerBoundBinarySearch(static c => c.RowIndex ?? -1, rowIndex);
+			return i >= 0 && _list[i].RowIndex == rowIndex;
+		}
+#endif
 	}
 
 	public static class CellExtensions
