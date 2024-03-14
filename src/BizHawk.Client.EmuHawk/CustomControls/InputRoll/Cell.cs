@@ -21,8 +21,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override bool Equals(object obj)
 		{
-			var cell = obj as Cell;
-			if (cell != null)
+			if (obj is Cell cell)
 			{
 				return Column == cell.Column && RowIndex == cell.RowIndex;
 			}
@@ -50,17 +49,17 @@ namespace BizHawk.Client.EmuHawk
 	{
 		int IComparer<Cell>.Compare(Cell c1, Cell c2)
 		{
-			if (c1 == null && c2 == null)
+			if (c1 is null && c2 is null)
 			{
 				return 0;
 			}
 
-			if (c2 == null)
+			if (c2 is null)
 			{
 				return 1;
 			}
 
-			if (c1 == null)
+			if (c1 is null)
 			{
 				return -1;
 			}
