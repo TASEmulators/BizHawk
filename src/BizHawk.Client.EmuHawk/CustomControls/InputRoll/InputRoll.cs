@@ -969,7 +969,7 @@ namespace BizHawk.Client.EmuHawk
 			=> SelectedRowsWithDuplicates.First();
 
 		public bool IsRowSelected(int rowIndex)
-			=> _selectedItems.Any(cell => cell.RowIndex == rowIndex);
+			=> _selectedItems.IncludesRow(rowIndex);
 
 		public IEnumerable<ToolStripItem> GenerateContextMenuItems()
 		{
@@ -1159,12 +1159,12 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (ModifierKeys == Keys.Shift && CurrentCell.Column.Type == ColumnType.Text)
 					{
-						if (_selectedItems.Any())
+						if (_selectedItems.Count is not 0)
 						{
 							if (FullRowSelect)
 							{
 								var targetRow = CurrentCell.RowIndex.Value;
-								if (!_selectedItems.Any(c => c.RowIndex == targetRow))
+								if (!_selectedItems.IncludesRow(targetRow))
 								{
 									int additionStart, additionEndExcl;
 									SortedList<int> rowIndices = new(SelectedRows);
@@ -1465,8 +1465,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (MultiSelect && _lastSelectedRow > 0)
 					{
-						if (_selectedItems.Any(i => i.RowIndex == _lastSelectedRow.Value)
-							&& _selectedItems.Any(i => i.RowIndex == _lastSelectedRow - 1)) // Unhighlight if already highlighted
+						if (_selectedItems.IncludesRow(_lastSelectedRow.Value)
+							&& _selectedItems.IncludesRow(_lastSelectedRow.Value - 1)) // Unhighlight if already highlighted
 						{
 							SelectRow(_lastSelectedRow.Value, false);
 						}
@@ -1482,8 +1482,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (MultiSelect && _lastSelectedRow < RowCount - 1)
 					{
-						if (_selectedItems.Any(i => i.RowIndex == _lastSelectedRow.Value)
-							&& _selectedItems.Any(i => i.RowIndex == _lastSelectedRow + 1)) // Unhighlight if already highlighted
+						if (_selectedItems.IncludesRow(_lastSelectedRow.Value)
+							&& _selectedItems.IncludesRow(_lastSelectedRow.Value + 1)) // Unhighlight if already highlighted
 						{
 							var origIndex = _lastSelectedRow.Value;
 							SelectRow(origIndex, false);
@@ -1787,8 +1787,9 @@ namespace BizHawk.Client.EmuHawk
 
 				if (FullRowSelect)
 				{
-					if (toggle && (_selectedItems.RemoveAll(x => x.RowIndex == row) is not 0))
+					if (toggle && _selectedItems.IncludesRow(row))
 					{
+						_selectedItems.RemoveAll(x => x.RowIndex == row);
 						_lastSelectedRow = _selectedItems.LastOrDefault()?.RowIndex;
 					}
 					else
@@ -1803,7 +1804,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					_lastSelectedRow = null; // TODO: tracking this by cell is a lot more work
-					if (toggle && _selectedItems.Any(x => x.RowIndex == row))
+					if (toggle && _selectedItems.IncludesRow(row))
 					{
 						var item = _selectedItems
 							.FirstOrDefault(x => x.Equals(cell));
