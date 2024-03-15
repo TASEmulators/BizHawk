@@ -1164,51 +1164,34 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (FullRowSelect)
 							{
-								var selected = _selectedItems.Any(c => c.RowIndex.HasValue && CurrentCell.RowIndex.HasValue && c.RowIndex == CurrentCell.RowIndex);
-
-								if (!selected)
+								var targetRow = CurrentCell.RowIndex.Value;
+								if (!_selectedItems.Any(c => c.RowIndex == targetRow))
 								{
-									var rowIndices = SelectedRows.ToList();
+									int additionStart, additionEndExcl;
+									SortedList<int> rowIndices = new(SelectedRows);
 									var firstIndex = rowIndices.Min();
-									var lastIndex = rowIndices.Max();
-
-									if (CurrentCell.RowIndex.Value < firstIndex)
+									if (targetRow < firstIndex)
 									{
-										for (int i = CurrentCell.RowIndex.Value; i < firstIndex; i++)
+										additionStart = targetRow;
+										additionEndExcl = firstIndex;
+									}
+									else
+									{
+										var lastIndex = rowIndices.Max();
+										if (targetRow > lastIndex)
 										{
-											SelectCell(new Cell
-												{
-													RowIndex = i,
-													Column = CurrentCell.Column
-												});
+											additionStart = lastIndex + 1;
+											additionEndExcl = targetRow + 1;
+										}
+										else // Somewhere in between, a scenario that can happen with ctrl-clicking, find the previous and highlight from there --adelikat // shouldn't it be from the previous click target? --yoshi
+										{
+											var insertionPoint = ~rowIndices.BinarySearch(targetRow); // the search will never succeed since we already know the target row isn't among those selected
+											additionStart = rowIndices[insertionPoint - 1]; // insertionPoint is strictly greater than needle, so subtract 1 (this is safe because insertionPoint would only be 0 if needle was less than the first element, which it isn't)
+											additionEndExcl = targetRow + 1;
 										}
 									}
-									else if (CurrentCell.RowIndex.Value > lastIndex)
-									{
-										for (int i = lastIndex + 1; i <= CurrentCell.RowIndex.Value; i++)
-										{
-											SelectCell(new Cell
-											{
-												RowIndex = i,
-												Column = CurrentCell.Column
-											});
-										}
-									}
-									else // Somewhere in between, a scenario that can happen with ctrl-clicking, find the previous and highlight from there
-									{
-										var nearest = rowIndices
-											.Where(x => x < CurrentCell.RowIndex.Value)
-											.Max();
-
-										for (int i = nearest + 1; i <= CurrentCell.RowIndex.Value; i++)
-										{
-											SelectCell(new Cell
-											{
-												RowIndex = i,
-												Column = CurrentCell.Column
-											});
-										}
-									}
+									var col = CurrentCell.Column;
+									for (var i = additionStart; i < additionEndExcl; i++) SelectCell(new() { RowIndex = i, Column = col });
 								}
 							}
 							else
@@ -1795,7 +1778,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="toggle">Specifies whether or not to toggle the current state, rather than force the value to true</param>
 		private void SelectCell(Cell cell, bool toggle = false)
 		{
-			if (cell.RowIndex.HasValue && cell.RowIndex < RowCount)
+			if (cell.RowIndex is int row && row < RowCount)
 			{
 				if (!MultiSelect)
 				{
@@ -1805,28 +1788,23 @@ namespace BizHawk.Client.EmuHawk
 
 				if (FullRowSelect)
 				{
-					if (toggle && _selectedItems.Any(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex))
+					if (toggle && (_selectedItems.RemoveWhere(x => x.RowIndex == row) is not 0))
 					{
-						_selectedItems.RemoveWhere(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex);
 						_lastSelectedRow = _selectedItems.LastOrDefault()?.RowIndex;
 					}
 					else
 					{
 						foreach (var column in _columns)
 						{
-							_selectedItems.Add(new Cell
-							{
-								RowIndex = cell.RowIndex,
-								Column = column
-							});
-							_lastSelectedRow = cell.RowIndex;
+							_selectedItems.Add(new() { RowIndex = row, Column = column });
+							_lastSelectedRow = row;
 						}
 					}
 				}
 				else
 				{
 					_lastSelectedRow = null; // TODO: tracking this by cell is a lot more work
-					if (toggle && _selectedItems.Any(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex))
+					if (toggle && _selectedItems.Any(x => x.RowIndex == row))
 					{
 						var item = _selectedItems
 							.FirstOrDefault(x => x.Equals(cell));
