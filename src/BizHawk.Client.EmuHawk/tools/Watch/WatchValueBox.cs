@@ -3,11 +3,13 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common.NumberExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class WatchValueBox : TextBox, INumberBox
+	public class WatchValueBox : ClipboardEventTextBox, INumberBox
 	{
 		private WatchSize _size = WatchSize.Byte;
 		private WatchDisplayType _type = WatchDisplayType.Hex;
@@ -429,6 +431,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			base.OnTextChanged(e);
+		}
+
+		protected override void OnPaste(PasteEventArgs e)
+		{
+			if (Type == WatchDisplayType.Hex && e.ContainsText)
+			{
+				string text = e.Text.Trim().RemovePrefix("0x").RemovePrefix('$');
+				if (text.IsHex())
+				{
+					PasteWithMaxLength(text);
+				}
+				e.Handled = true;
+			}
+
+			base.OnPaste(e);
 		}
 
 		public int? ToRawInt()
