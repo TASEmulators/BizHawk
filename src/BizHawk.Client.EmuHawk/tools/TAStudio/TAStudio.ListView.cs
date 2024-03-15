@@ -293,9 +293,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private readonly string[] _formatCache = Enumerable.Range(1, 10).Select(i => $"D{i}").ToArray();
+
 		/// <returns><paramref name="index"/> with leading zeroes such that every frame in the movie will be printed with the same number of digits</returns>
 		private string FrameToStringPadded(int index)
-			=> index.ToString().PadLeft(CurrentTasMovie.InputLogLength.ToString().Length, '0');
+			=> index.ToString(_formatCache[(int)Math.Log10(Math.Max(CurrentTasMovie.InputLogLength, 1))]);
 
 		private void TasView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
