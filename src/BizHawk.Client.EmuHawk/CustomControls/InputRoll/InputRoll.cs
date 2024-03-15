@@ -952,7 +952,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[Browsable(false)]
 		private IEnumerable<int> SelectedRowsWithDuplicates
-			=> _selectedItems.Where(static cell => cell.RowIndex is not null).Select(static cell => cell.RowIndex.Value);
+			=> _selectedItems.Select(static cell => cell.RowIndex ?? -1).Where(static i => i >= 0);
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -1168,13 +1168,7 @@ namespace BizHawk.Client.EmuHawk
 
 								if (!selected)
 								{
-									var rowIndices = _selectedItems
-										.Where(c => c.RowIndex.HasValue)
-										.Select(c => c.RowIndex ?? -1)
-										.Where(c => c >= 0) // Hack to avoid possible Nullable exceptions
-										.Distinct()
-										.ToList();
-
+									var rowIndices = SelectedRows.ToList();
 									var firstIndex = rowIndices.Min();
 									var lastIndex = rowIndices.Max();
 
