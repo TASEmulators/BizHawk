@@ -1844,10 +1844,9 @@ namespace BizHawk.Client.EmuHawk
 		private Cell CalculatePointedCell(int x, int y)
 		{
 			var newCell = new Cell();
-			var columns = _columns.VisibleColumns.ToList();
 
 			// If pointing to a column header
-			if (columns.Any())
+			if (_columns.VisibleColumns.Any())
 			{
 				if (HorizontalOrientation)
 				{
@@ -1890,10 +1889,10 @@ namespace BizHawk.Client.EmuHawk
 			if (_horizontalOrientation)
 			{
 				return _columns.VisibleColumns.Select(static (n, i) => (Column: n, Index: i))
-					.FirstOrNull(item => (GetHColTop(item.Index) - _vBar.Value).RangeTo(GetHColBottom(item.Index) - _vBar.Value).Contains(pixel))
+					.FirstOrNull(item => pixel >= GetHColTop(item.Index) - _vBar.Value && pixel <= GetHColBottom(item.Index) - _vBar.Value)
 					?.Column;
 			}
-			return _columns.VisibleColumns.FirstOrDefault(column => (column.Left - _hBar.Value).RangeTo(column.Right - _hBar.Value).Contains(pixel));
+			return _columns.VisibleColumns.FirstOrDefault(column => pixel >= column.Left - _hBar.Value && pixel <= column.Right - _hBar.Value);
 		}
 
 		/// <summary>
