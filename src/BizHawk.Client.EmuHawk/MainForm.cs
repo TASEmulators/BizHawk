@@ -2748,6 +2748,18 @@ namespace BizHawk.Client.EmuHawk
 					Config.TargetZoomFactors[Emulator.SystemId] = 5;
 					break;
 				case 5:
+					Config.TargetZoomFactors[Emulator.SystemId] = 6;
+					break;
+				case 6:
+					Config.TargetZoomFactors[Emulator.SystemId] = 7;
+					break;
+				case 7:
+					Config.TargetZoomFactors[Emulator.SystemId] = 8;
+					break;
+				case 8:
+					Config.TargetZoomFactors[Emulator.SystemId] = 9;
+					break;
+				case 9:
 					Config.TargetZoomFactors[Emulator.SystemId] = 10;
 					break;
 				case 10:
@@ -2776,8 +2788,20 @@ namespace BizHawk.Client.EmuHawk
 				case 5:
 					Config.TargetZoomFactors[Emulator.SystemId] = 4;
 					break;
-				case 10:
+				case 6:
 					Config.TargetZoomFactors[Emulator.SystemId] = 5;
+					break;
+				case 7:
+					Config.TargetZoomFactors[Emulator.SystemId] = 6;
+					break;
+				case 8:
+					Config.TargetZoomFactors[Emulator.SystemId] = 7;
+					break;
+				case 9:
+					Config.TargetZoomFactors[Emulator.SystemId] = 8;
+					break;
+				case 10:
+					Config.TargetZoomFactors[Emulator.SystemId] = 9;
 					return;
 			}
 

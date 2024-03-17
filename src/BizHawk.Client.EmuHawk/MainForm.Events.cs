@@ -696,7 +696,11 @@ namespace BizHawk.Client.EmuHawk
 				x2MenuItem.Checked =
 				x3MenuItem.Checked =
 				x4MenuItem.Checked =
-				x5MenuItem.Checked = 
+				x5MenuItem.Checked =
+				x6MenuItem.Checked =
+				x7MenuItem.Checked =
+				x8MenuItem.Checked =
+				x9MenuItem.Checked =
 				mzMenuItem.Checked = false;
 
 			switch (Config.TargetZoomFactors[Emulator.SystemId])
@@ -716,6 +720,18 @@ namespace BizHawk.Client.EmuHawk
 				case 5:
 					x5MenuItem.Checked = true;
 					break;
+				case 6:
+					x6MenuItem.Checked = true;
+					break;
+				case 7:
+					x7MenuItem.Checked = true;
+					break;
+				case 8:
+					x8MenuItem.Checked = true;
+					break;
+				case 9:
+					x9MenuItem.Checked = true;
+					break;
 				case 10:
 					mzMenuItem.Checked = true;
 					break;
@@ -729,6 +745,10 @@ namespace BizHawk.Client.EmuHawk
 			if (sender == x3MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 3;
 			if (sender == x4MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 4;
 			if (sender == x5MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 5;
+			if (sender == x6MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 6;
+			if (sender == x7MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 7;
+			if (sender == x8MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 8;
+			if (sender == x9MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 9;
 			if (sender == mzMenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 10;
 
 			FrameBufferResized();
