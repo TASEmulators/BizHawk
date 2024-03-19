@@ -83,64 +83,79 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private void SetControllerDefinition()
 		{
 			ControllerDefinition def = new("NES Controller");
-			if (_syncSettings.LeftPortConnected || _syncSettings.RightPortConnected)
-				def.BoolButtons.AddRange(PadP1.Select(p => p.Name));
-			if (_syncSettings.LeftPortConnected && _syncSettings.RightPortConnected)
-				def.BoolButtons.AddRange(PadP2.Select(p => p.Name));
+			void AddButtons(IEnumerable<(string PrefixedName, int Bitmask)> entries)
+				=> def.BoolButtons.AddRange(entries.Select(static p => p.PrefixedName));
+			var playerNo = 1;
+			AddButtons(_syncSettings.Port1 switch
+			{
+				Port1PeripheralOption.Gamepad => GamepadButtons[playerNo++],
+				Port1PeripheralOption.FourScore => throw new NotImplementedException("TODO"),
+				_ => Enumerable.Empty<(string PrefixedName, int Bitmask)>()
+			});
+			AddButtons(_syncSettings.Port2 switch
+			{
+				Port2PeripheralOption.Gamepad => GamepadButtons[playerNo++],
+				Port2PeripheralOption.FourScore2 => throw new NotImplementedException("TODO"),
+				_ => Enumerable.Empty<(string PrefixedName, int Bitmask)>()
+			});
 			def.BoolButtons.AddRange(new[] { "Reset", "Power" }); // console buttons
 			ControllerDefinition = def.MakeImmutable();
 		}
 
-		private struct PadEnt
+		private static readonly (string PrefixedName, int Bitmask)[][] GamepadButtons = new[]
 		{
-			public readonly string Name;
-			public readonly int Mask;
-			public PadEnt(string Name, int Mask)
-			{
-				this.Name = Name;
-				this.Mask = Mask;
-			}
-		}
-
-		private static PadEnt[] GetPadList(int player)
-		{
-			string prefix = $"P{player} ";
-			return PadNames.Zip(PadMasks, (s, i) => new PadEnt(prefix + s, i)).ToArray();
-		}
-
-		private static readonly string[] PadNames =
-		{
-			"Up", "Down", "Left", "Right", "Start", "Select", "B", "A"
+			new[] {
+				("P1 Up", 0b1_0000),
+				("P1 Down", 0b10_0000),
+				("P1 Left", 0b100_0000),
+				("P1 Right", 0b1000_0000),
+				("P1 Start", 0b1000),
+				("P1 Select", 0b100),
+				("P1 B", 0b10),
+				("P1 A", 0b1),
+			},
+			new[] {
+				("P2 Up", 0b1_0000),
+				("P2 Down", 0b10_0000),
+				("P2 Left", 0b100_0000),
+				("P2 Right", 0b1000_0000),
+				("P2 Start", 0b1000),
+				("P2 Select", 0b100),
+				("P2 B", 0b10),
+				("P2 A", 0b1),
+			},
 		};
-		private static readonly int[] PadMasks =
-		{
-			16, 32, 64, 128, 8, 4, 2, 1
-		};
-
-		private static readonly PadEnt[] PadP1 = GetPadList(1);
-		private static readonly PadEnt[] PadP2 = GetPadList(2);
-
-		private int GetPad(IController controller, IEnumerable<PadEnt> buttons)
-		{
-			int ret = 0;
-			foreach (var b in buttons)
-			{
-				if (controller.IsPressed(b.Name))
-					ret |= b.Mask;
-			}
-			return ret;
-		}
 
 		private void SetPads(IController controller, out int j1, out int j2)
 		{
-			if (_syncSettings.LeftPortConnected)
-				j1 = GetPad(controller, PadP1) | unchecked((int)0xffffff00);
-			else
-				j1 = 0;
-			if (_syncSettings.RightPortConnected)
-				j2 = GetPad(controller, _syncSettings.LeftPortConnected ? PadP2 : PadP1) | unchecked((int)0xffffff00);
-			else
-				j2 = 0;
+			static int PackGamepadButtonsFor(int playerNo, IController controller)
+			{
+				int ret = unchecked((int) 0xFFFFFF00); //TODO this is clearly a bitfield and not an integer; use u32
+				foreach (var (prefixedName, bitmask) in GamepadButtons[playerNo])
+				{
+					if (controller.IsPressed(prefixedName)) ret |= bitmask;
+				}
+				return ret;
+			}
+			j1 = 0;
+			j2 = 0;
+			var playerNo = 1;
+			switch (_syncSettings.Port1)
+			{
+				case Port1PeripheralOption.Gamepad:
+					j1 = PackGamepadButtonsFor(playerNo++, controller);
+					break;
+				case Port1PeripheralOption.FourScore:
+					throw new NotImplementedException("TODO");
+			}
+			switch (_syncSettings.Port2)
+			{
+				case Port2PeripheralOption.Gamepad:
+					j2 = PackGamepadButtonsFor(playerNo++, controller);
+					break;
+				case Port2PeripheralOption.FourScore2:
+					throw new NotImplementedException("TODO");
+			}
 		}
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
