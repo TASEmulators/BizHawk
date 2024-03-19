@@ -690,67 +690,36 @@ namespace BizHawk.Client.EmuHawk
 			DisplayMessagesMenuItem.Checked = Config.DisplayMessages;
 		}
 
+		private IReadOnlyCollection<ToolStripItem> CreateWindowSizeFactorSubmenus(int max_factor)
+		{
+			List<ToolStripItem> items = new();
+			for (int i = 1; i <= max_factor; i++)
+			{
+				var temp = new ToolStripMenuItemEx()
+				{
+					Tag = i,
+					Text = $"{i / 10}&{i % 10}x"
+				};
+				temp.Click += new System.EventHandler(this.WindowSize_Click);
+				items.Add(temp);
+			}
+			return items;
+		}
+
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			x1MenuItem.Checked =
-				x2MenuItem.Checked =
-				x3MenuItem.Checked =
-				x4MenuItem.Checked =
-				x5MenuItem.Checked =
-				x6MenuItem.Checked =
-				x7MenuItem.Checked =
-				x8MenuItem.Checked =
-				x9MenuItem.Checked =
-				mzMenuItem.Checked = false;
-
-			switch (Config.TargetZoomFactors[Emulator.SystemId])
+			foreach (ToolStripMenuItemEx item in WindowSizeSubMenu.DropDownItems)
 			{
-				case 1:
-					x1MenuItem.Checked = true;
-					break;
-				case 2:
-					x2MenuItem.Checked = true;
-					break;
-				case 3:
-					x3MenuItem.Checked = true;
-					break;
-				case 4:
-					x4MenuItem.Checked = true;
-					break;
-				case 5:
-					x5MenuItem.Checked = true;
-					break;
-				case 6:
-					x6MenuItem.Checked = true;
-					break;
-				case 7:
-					x7MenuItem.Checked = true;
-					break;
-				case 8:
-					x8MenuItem.Checked = true;
-					break;
-				case 9:
-					x9MenuItem.Checked = true;
-					break;
-				case 10:
-					mzMenuItem.Checked = true;
-					break;
+				item.Checked = Config.TargetZoomFactors[Emulator.SystemId] == (int) item.Tag;
 			}
 		}
 
 		private void WindowSize_Click(object sender, EventArgs e)
 		{
-			if (sender == x1MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 1;
-			if (sender == x2MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 2;
-			if (sender == x3MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 3;
-			if (sender == x4MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 4;
-			if (sender == x5MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 5;
-			if (sender == x6MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 6;
-			if (sender == x7MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 7;
-			if (sender == x8MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 8;
-			if (sender == x9MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 9;
-			if (sender == mzMenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 10;
-
+			foreach (ToolStripMenuItemEx item in WindowSizeSubMenu.DropDownItems)
+			{
+				if (sender == item) Config.TargetZoomFactors[Emulator.SystemId] = (int) item.Tag;
+			}
 			FrameBufferResized();
 		}
 

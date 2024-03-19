@@ -66,6 +66,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			UpdateWindowTitle();
 
+			WindowSizeSubMenu.DropDownItems.AddRange(CreateWindowSizeFactorSubmenus(max_factor: 10).ToArray());
+
 			foreach (var (groupLabel, appliesTo, coreNames) in Config.CorePickerUIData.Select(static tuple => (GroupLabel: tuple.AppliesTo[0], tuple.AppliesTo, tuple.CoreNames))
 				.OrderBy(static tuple => tuple.GroupLabel))
 			{
@@ -2733,78 +2735,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncreaseWindowSize()
 		{
-			switch (Config.TargetZoomFactors[Emulator.SystemId])
+			object max_factor = WindowSizeSubMenu.DropDownItems[WindowSizeSubMenu.DropDownItems.Count - 1].Tag;
+			if (Config.TargetZoomFactors[Emulator.SystemId] < (int) max_factor)
 			{
-				case 1:
-					Config.TargetZoomFactors[Emulator.SystemId] = 2;
-					break;
-				case 2:
-					Config.TargetZoomFactors[Emulator.SystemId] = 3;
-					break;
-				case 3:
-					Config.TargetZoomFactors[Emulator.SystemId] = 4;
-					break;
-				case 4:
-					Config.TargetZoomFactors[Emulator.SystemId] = 5;
-					break;
-				case 5:
-					Config.TargetZoomFactors[Emulator.SystemId] = 6;
-					break;
-				case 6:
-					Config.TargetZoomFactors[Emulator.SystemId] = 7;
-					break;
-				case 7:
-					Config.TargetZoomFactors[Emulator.SystemId] = 8;
-					break;
-				case 8:
-					Config.TargetZoomFactors[Emulator.SystemId] = 9;
-					break;
-				case 9:
-					Config.TargetZoomFactors[Emulator.SystemId] = 10;
-					break;
-				case 10:
-					return;
+				Config.TargetZoomFactors[Emulator.SystemId]++;
 			}
-
 			AddOnScreenMessage($"Screensize set to {Config.TargetZoomFactors[Emulator.SystemId]}x");
 			FrameBufferResized();
 		}
 
 		private void DecreaseWindowSize()
 		{
-			switch (Config.TargetZoomFactors[Emulator.SystemId])
+			object min_factor = WindowSizeSubMenu.DropDownItems[1].Tag;
+			if (Config.TargetZoomFactors[Emulator.SystemId] > (int) min_factor)
 			{
-				case 1:
-					return;
-				case 2:
-					Config.TargetZoomFactors[Emulator.SystemId] = 1;
-					break;
-				case 3:
-					Config.TargetZoomFactors[Emulator.SystemId] = 2;
-					break;
-				case 4:
-					Config.TargetZoomFactors[Emulator.SystemId] = 3;
-					break;
-				case 5:
-					Config.TargetZoomFactors[Emulator.SystemId] = 4;
-					break;
-				case 6:
-					Config.TargetZoomFactors[Emulator.SystemId] = 5;
-					break;
-				case 7:
-					Config.TargetZoomFactors[Emulator.SystemId] = 6;
-					break;
-				case 8:
-					Config.TargetZoomFactors[Emulator.SystemId] = 7;
-					break;
-				case 9:
-					Config.TargetZoomFactors[Emulator.SystemId] = 8;
-					break;
-				case 10:
-					Config.TargetZoomFactors[Emulator.SystemId] = 9;
-					return;
+				Config.TargetZoomFactors[Emulator.SystemId]--;
 			}
-
 			AddOnScreenMessage($"Screensize set to {Config.TargetZoomFactors[Emulator.SystemId]}x");
 			FrameBufferResized();
 		}
