@@ -700,7 +700,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WindowSize_Click(object sender, EventArgs e)
 		{
-			Config.TargetZoomFactors[Emulator.SystemId] = (int) ((Control)sender).Tag;
+			Config.TargetZoomFactors[Emulator.SystemId] = (int) ((ToolStripMenuItem) sender).Tag;
 			FrameBufferResized();
 		}
 
