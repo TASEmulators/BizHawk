@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
-using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
@@ -29,15 +28,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly FilesystemFilterSet ScriptsAndTextFilesFSFilterSet = new(FilesystemFilter.LuaScripts, FilesystemFilter.TextFiles);
 
-		private static readonly FilesystemFilterSet SessionsFSFilterSet = new FilesystemFilterSet(new FilesystemFilter("Lua Session Files", new[] { "luases" }));
+		private static readonly FilesystemFilterSet SessionsFSFilterSet = new(new FilesystemFilter("Lua Session Files", new[] { "luases" }));
 
 		public static Icon ToolIcon
 			=> Resources.TextDocIcon;
 
-		private readonly LuaAutocompleteInstaller _luaAutoInstaller = new LuaAutocompleteInstaller();
+		private readonly LuaAutocompleteInstaller _luaAutoInstaller = new();
 		private readonly Dictionary<LuaFile, FileSystemWatcher> _watches = new();
 
 		private readonly int _defaultSplitDistance;
+		private LuaFile _lastScriptUsed = null;
 
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _sortReverse;
 		private string _lastColumnSorted;
 
-		private readonly List<string> _consoleCommandHistory = new List<string>();
+		private readonly List<string> _consoleCommandHistory = new();
 		private int _consoleCommandHistoryIndex = -1;
 
 		public ToolDialogSettings.ColumnList Columns { get; set; }
@@ -56,9 +56,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Columns = new List<RollColumn>
 				{
-					new RollColumn { Name = IconColumnName, Text = " ", Visible = true, UnscaledWidth = 22, Type = ColumnType.Image },
-					new RollColumn { Name = ScriptColumnName, Text = "Script", Visible = true, UnscaledWidth = 92, Type = ColumnType.Text },
-					new RollColumn { Name = PathColumnName, Text = "Path", Visible = true, UnscaledWidth = 300, Type = ColumnType.Text }
+					new() { Name = IconColumnName, Text = " ", Visible = true, UnscaledWidth = 22, Type = ColumnType.Image },
+					new() { Name = ScriptColumnName, Text = "Script", Visible = true, UnscaledWidth = 92, Type = ColumnType.Text },
+					new() { Name = PathColumnName, Text = "Path", Visible = true, UnscaledWidth = 300, Type = ColumnType.Text }
 				};
 			}
 
@@ -245,6 +245,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateDialog();
+		}
+
+		public void ToggleLastLuaScript()
+		{
+			if (_lastScriptUsed is not null)
+			{
+				ToggleLuaScript(_lastScriptUsed);
+			}
 		}
 
 		private void SetColumns()
@@ -1488,7 +1496,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			file.Toggle();
-
+			_lastScriptUsed = file;
 			if (file.Enabled && file.Thread is null)
 			{
 				LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator); // First remove any existing registered functions for this file
@@ -1499,6 +1507,8 @@ namespace BizHawk.Client.EmuHawk
 				DisableLuaScript(file);
 				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
 			}
+
+			LuaListView.Refresh();
 		}
 
 		private void DisableLuaScript(LuaFile file)
