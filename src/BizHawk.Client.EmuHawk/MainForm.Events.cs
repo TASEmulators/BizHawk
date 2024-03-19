@@ -690,22 +690,6 @@ namespace BizHawk.Client.EmuHawk
 			DisplayMessagesMenuItem.Checked = Config.DisplayMessages;
 		}
 
-		private IReadOnlyCollection<ToolStripItem> CreateWindowSizeFactorSubmenus(int max_factor)
-		{
-			List<ToolStripItem> items = new();
-			for (int i = 1; i <= max_factor; i++)
-			{
-				var temp = new ToolStripMenuItemEx()
-				{
-					Tag = i,
-					Text = $"{i / 10}&{i % 10}x"
-				};
-				temp.Click += new System.EventHandler(this.WindowSize_Click);
-				items.Add(temp);
-			}
-			return items;
-		}
-
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			foreach (ToolStripMenuItemEx item in WindowSizeSubMenu.DropDownItems)

@@ -66,7 +66,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			UpdateWindowTitle();
 
-			WindowSizeSubMenu.DropDownItems.AddRange(CreateWindowSizeFactorSubmenus(max_factor: 10).ToArray());
+			ToolStripItem[] CreateWindowSizeFactorSubmenus(int max_factor)
+			{
+				var items = new ToolStripItem[max_factor];
+				for (int i = 1; i <= max_factor; i++)
+				{
+					long quotient = Math.DivRem(i, 10, out long remainder);
+					var temp = new ToolStripMenuItemEx
+					{
+						Tag = i,
+						Text = $"{(quotient > 0 ? quotient : "")}&{remainder}x"
+					};
+					temp.Click += this.WindowSize_Click;
+					items[i - 1] = temp;
+				}
+				return items;
+			}
+			WindowSizeSubMenu.DropDownItems.AddRange(CreateWindowSizeFactorSubmenus(max_factor: 10));
 
 			foreach (var (groupLabel, appliesTo, coreNames) in Config.CorePickerUIData.Select(static tuple => (GroupLabel: tuple.AppliesTo[0], tuple.AppliesTo, tuple.CoreNames))
 				.OrderBy(static tuple => tuple.GroupLabel))
