@@ -2751,8 +2751,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncreaseWindowSize()
 		{
-			object max_factor = WindowSizeSubMenu.DropDownItems[WindowSizeSubMenu.DropDownItems.Count - 1].Tag;
-			if (Config.TargetZoomFactors[Emulator.SystemId] < (int) max_factor)
+			if (Config.TargetZoomFactors[Emulator.SystemId] < 10)
 			{
 				Config.TargetZoomFactors[Emulator.SystemId]++;
 			}
@@ -2762,8 +2761,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DecreaseWindowSize()
 		{
-			object min_factor = WindowSizeSubMenu.DropDownItems[1].Tag;
-			if (Config.TargetZoomFactors[Emulator.SystemId] > (int) min_factor)
+			if (Config.TargetZoomFactors[Emulator.SystemId] > 1)
 			{
 				Config.TargetZoomFactors[Emulator.SystemId]--;
 			}
