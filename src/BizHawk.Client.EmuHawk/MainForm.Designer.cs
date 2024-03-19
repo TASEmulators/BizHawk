@@ -57,6 +57,7 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator21 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.AutoloadLastSlotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SaveSlotSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SelectSlot0MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SelectSlot1MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SelectSlot2MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SelectSlot3MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -66,7 +67,6 @@ namespace BizHawk.Client.EmuHawk
 			this.SelectSlot7MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SelectSlot8MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SelectSlot9MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SelectSlot0MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PreviousSlotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NextSlotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator5 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
@@ -134,7 +134,6 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripMenuItem4 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.DisplayStatusBarMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DisplayMessagesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator8 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.DisplayLogWindowMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ConfigSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ControllersMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -206,9 +205,9 @@ namespace BizHawk.Client.EmuHawk
 			this.GameSharkConverterMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator29 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.MultiDiskBundlerFileMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.BatchRunnerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ExternalToolMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.dummyExternalTool = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.BatchRunnerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RetroAchievementsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.StartRetroAchievementsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NESSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -260,14 +259,14 @@ namespace BizHawk.Client.EmuHawk
 			this.ColecoUseSGMMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64SubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64PluginSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Ares64SubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Ares64SettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64ControllerSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator23 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.N64CircularAnalogRangeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Ares64CircularAnalogRangeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MupenStyleLagMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64ExpansionSlotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.Ares64SubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.Ares64SettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.Ares64CircularAnalogRangeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.GBLSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.GBLsettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AppleSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -373,6 +372,7 @@ namespace BizHawk.Client.EmuHawk
 			this.ShowMenuContextMenuSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ShowMenuContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
+			this.toolStripSeparator8 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -380,7 +380,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// MainformMenu
 			// 
-			this.MainformMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.MainformMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.FileSubMenu,
 			this.EmulationSubMenu,
@@ -529,6 +528,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// AutosaveLastSlotMenuItem
 			// 
+			this.AutosaveLastSlotMenuItem.Name = "AutosaveLastSlotMenuItem";
 			this.AutosaveLastSlotMenuItem.Text = "Autosave Last Slot";
 			this.AutosaveLastSlotMenuItem.Click += new System.EventHandler(this.AutosaveLastSlotMenuItem_Click);
 			// 
@@ -633,6 +633,11 @@ namespace BizHawk.Client.EmuHawk
 			this.SaveSlotSubMenu.Text = "Save S&lot";
 			this.SaveSlotSubMenu.DropDownOpened += new System.EventHandler(this.SaveSlotSubMenu_DropDownOpened);
 			// 
+			// SelectSlot0MenuItem
+			// 
+			this.SelectSlot0MenuItem.Text = "Select Slot 10";
+			this.SelectSlot0MenuItem.Click += new System.EventHandler(this.SelectSlotMenuItems_Click);
+			// 
 			// SelectSlot1MenuItem
 			// 
 			this.SelectSlot1MenuItem.Text = "Select Slot 1";
@@ -677,11 +682,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SelectSlot9MenuItem.Text = "Select Slot 9";
 			this.SelectSlot9MenuItem.Click += new System.EventHandler(this.SelectSlotMenuItems_Click);
-			// 
-			// SelectSlot0MenuItem
-			// 
-			this.SelectSlot0MenuItem.Text = "Select Slot 10";
-			this.SelectSlot0MenuItem.Click += new System.EventHandler(this.SelectSlotMenuItems_Click);
 			// 
 			// PreviousSlotMenuItem
 			// 
@@ -866,7 +866,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.CaptureLuaMenuItem.CheckOnClick = true;
 			this.CaptureLuaMenuItem.Name = "CaptureLuaMenuItem";
-			this.CaptureLuaMenuItem.Size = new System.Drawing.Size(288, 26);
+			this.CaptureLuaMenuItem.Size = new System.Drawing.Size(225, 22);
 			this.CaptureLuaMenuItem.Text = "Capture Lua";
 			this.CaptureLuaMenuItem.Click += new System.EventHandler(this.CaptureLuaMenuItem_Click);
 			// 
@@ -1399,6 +1399,17 @@ namespace BizHawk.Client.EmuHawk
 			this.BasicBotMenuItem.Text = "Basic Bot";
 			this.BasicBotMenuItem.Click += new System.EventHandler(this.BasicBotMenuItem_Click);
 			// 
+			// RetroAchievementsMenuItem
+			// 
+			this.RetroAchievementsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			StartRetroAchievementsMenuItem});
+			this.RetroAchievementsMenuItem.Text = "&RetroAchievements";
+			// 
+			// StartRetroAchievementsMenuItem
+			// 
+			this.StartRetroAchievementsMenuItem.Text = "&Start RetroAchievements";
+			this.StartRetroAchievementsMenuItem.Click += new System.EventHandler(this.StartRetroAchievementsMenuItem_Click);
+			// 
 			// CheatsMenuItem
 			// 
 			this.CheatsMenuItem.Text = "Cheats";
@@ -1414,12 +1425,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MultiDiskBundlerFileMenuItem.Text = "Multi-disk Bundler";
 			this.MultiDiskBundlerFileMenuItem.Click += new System.EventHandler(this.MultidiskBundlerMenuItem_Click);
 			// 
-			// BatchRunnerMenuItem
-			// 
-			this.BatchRunnerMenuItem.Text = "Batch Runner...";
-			this.BatchRunnerMenuItem.Visible = false;
-			this.BatchRunnerMenuItem.Click += new System.EventHandler(this.BatchRunnerMenuItem_Click);
-			// 
 			// ExternalToolMenuItem
 			// 
 			this.ExternalToolMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1431,16 +1436,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.dummyExternalTool.Text = "None";
 			// 
-			// RetroAchievementsMenuItem
+			// BatchRunnerMenuItem
 			// 
-			this.RetroAchievementsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.StartRetroAchievementsMenuItem});
-			this.RetroAchievementsMenuItem.Text = "&RetroAchievements";
-			// 
-			// StartRetroAchievementsMenuItem
-			// 
-			this.StartRetroAchievementsMenuItem.Text = "&Start RetroAchievements";
-			this.StartRetroAchievementsMenuItem.Click += new System.EventHandler(this.StartRetroAchievementsMenuItem_Click);
+			this.BatchRunnerMenuItem.Text = "Batch Runner...";
+			this.BatchRunnerMenuItem.Visible = false;
+			this.BatchRunnerMenuItem.Click += new System.EventHandler(this.BatchRunnerMenuItem_Click);
 			// 
 			// NESSubMenu
 			// 
@@ -1971,7 +1971,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// MainStatusBar
 			// 
-			this.MainStatusBar.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.MainStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.DumpStatusButton,
 			this.EmuStatus,
@@ -1997,7 +1996,7 @@ namespace BizHawk.Client.EmuHawk
 			this.ProfileFirstBootLabel,
 			this.LinkConnectStatusBarButton,
 			this.UpdateNotification});
-			this.MainStatusBar.Location = new System.Drawing.Point(0, 382);
+			this.MainStatusBar.Location = new System.Drawing.Point(0, 386);
 			this.MainStatusBar.Name = "MainStatusBar";
 			this.MainStatusBar.ShowItemToolTips = true;
 			this.MainStatusBar.SizingGrip = false;
@@ -2009,7 +2008,7 @@ namespace BizHawk.Client.EmuHawk
 			this.DumpStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.DumpStatusButton.Name = "DumpStatusButton";
 			this.DumpStatusButton.ShowDropDownArrow = false;
-			this.DumpStatusButton.Size = new System.Drawing.Size(4, 24);
+			this.DumpStatusButton.Size = new System.Drawing.Size(4, 20);
 			this.DumpStatusButton.Text = "No ROM loaded";
 			this.DumpStatusButton.Click += new System.EventHandler(this.DumpStatusButton_Click);
 			// 
@@ -2019,7 +2018,7 @@ namespace BizHawk.Client.EmuHawk
 			this.PlayRecordStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.PlayRecordStatusButton.Name = "PlayRecordStatusButton";
 			this.PlayRecordStatusButton.ShowDropDownArrow = false;
-			this.PlayRecordStatusButton.Size = new System.Drawing.Size(4, 24);
+			this.PlayRecordStatusButton.Size = new System.Drawing.Size(4, 20);
 			this.PlayRecordStatusButton.Text = "No movie is active";
 			// 
 			// PauseStatusButton
@@ -2029,7 +2028,7 @@ namespace BizHawk.Client.EmuHawk
 			this.PauseStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.PauseStatusButton.Name = "PauseStatusButton";
 			this.PauseStatusButton.ShowDropDownArrow = false;
-			this.PauseStatusButton.Size = new System.Drawing.Size(4, 24);
+			this.PauseStatusButton.Size = new System.Drawing.Size(4, 20);
 			this.PauseStatusButton.Text = "toolStripDropDownButton1";
 			this.PauseStatusButton.ToolTipText = "Emulator is paused";
 			this.PauseStatusButton.Click += new System.EventHandler(this.PauseMenuItem_Click);
@@ -2158,7 +2157,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// MainFormContextMenu
 			// 
-			this.MainFormContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.MainFormContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.OpenRomContextMenuItem,
 			this.LoadLastRomContextMenuItem,
@@ -2186,7 +2184,7 @@ namespace BizHawk.Client.EmuHawk
 			this.ShowMenuContextMenuSeparator,
 			this.ShowMenuContextMenuItem});
 			this.MainFormContextMenu.Name = "contextMenuStrip1";
-			this.MainFormContextMenu.Size = new System.Drawing.Size(257, 532);
+			this.MainFormContextMenu.Size = new System.Drawing.Size(217, 490);
 			this.MainFormContextMenu.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.MainFormContextMenu_Closing);
 			this.MainFormContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.MainFormContextMenu_Opening);
 			// 
@@ -2760,7 +2758,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AmstradCPCNonSyncSettingsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem CaptureLuaMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AutosaveLastSlotMenuItem;
 		private ToolStripSeparatorEx toolStripSeparator24;
-		private ToolStripMenuItemEx AutosaveLastSlotMenuItem;
 	}
 }
