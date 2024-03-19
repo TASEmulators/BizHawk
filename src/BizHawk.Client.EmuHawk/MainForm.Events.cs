@@ -692,7 +692,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			foreach (ToolStripMenuItemEx item in WindowSizeSubMenu.DropDownItems)
+			foreach (ToolStripMenuItem item in WindowSizeSubMenu.DropDownItems)
 			{
 				item.Checked = Config.TargetZoomFactors[Emulator.SystemId] == (int) item.Tag;
 			}
@@ -700,10 +700,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WindowSize_Click(object sender, EventArgs e)
 		{
-			foreach (ToolStripMenuItemEx item in WindowSizeSubMenu.DropDownItems)
-			{
-				if (sender == item) Config.TargetZoomFactors[Emulator.SystemId] = (int) item.Tag;
-			}
+			Config.TargetZoomFactors[Emulator.SystemId] = (int) ((Control)sender).Tag;
 			FrameBufferResized();
 		}
 
