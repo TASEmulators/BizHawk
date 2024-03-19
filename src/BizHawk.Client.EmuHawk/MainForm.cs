@@ -62,14 +62,16 @@ namespace BizHawk.Client.EmuHawk
 			AppendAllFilesEntry = false,
 		};
 
-		private void MainForm_Load(object sender, EventArgs e)
-		{
-			UpdateWindowTitle();
+		private const int WINDOW_SCALE_MAX = 10;
 
-			ToolStripItem[] CreateWindowSizeFactorSubmenus(int max_factor)
+		private void MainForm_Load(object sender, EventArgs e)
+		{	
+			UpdateWindowTitle();
+			
+			ToolStripItem[] CreateWindowSizeFactorSubmenus()
 			{
-				var items = new ToolStripItem[max_factor];
-				for (int i = 1; i <= max_factor; i++)
+				var items = new ToolStripItem[WINDOW_SCALE_MAX];
+				for (int i = 1; i <= WINDOW_SCALE_MAX; i++)
 				{
 					long quotient = Math.DivRem(i, 10, out long remainder);
 					var temp = new ToolStripMenuItemEx
@@ -82,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				return items;
 			}
-			WindowSizeSubMenu.DropDownItems.AddRange(CreateWindowSizeFactorSubmenus(max_factor: 10));
+			WindowSizeSubMenu.DropDownItems.AddRange(CreateWindowSizeFactorSubmenus());
 
 			foreach (var (groupLabel, appliesTo, coreNames) in Config.CorePickerUIData.Select(static tuple => (GroupLabel: tuple.AppliesTo[0], tuple.AppliesTo, tuple.CoreNames))
 				.OrderBy(static tuple => tuple.GroupLabel))
@@ -2751,7 +2753,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncreaseWindowSize()
 		{
-			if (Config.TargetZoomFactors[Emulator.SystemId] < 10)
+			if (Config.TargetZoomFactors[Emulator.SystemId] < WINDOW_SCALE_MAX)
 			{
 				Config.TargetZoomFactors[Emulator.SystemId]++;
 			}
