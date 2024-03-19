@@ -26,4 +26,8 @@
 		<Nullable>disable</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="System.Memory" />
+	</ItemGroup>
 </Project>

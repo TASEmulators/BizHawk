@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -355,7 +356,7 @@ namespace NLua.Native
 		/// Pushes binary buffer onto the stack (usually UTF encoded string) or any arbitraty binary data
 		/// </summary>
 		/// <param name="buffer"></param>
-		public void PushBuffer(byte[] buffer)
+		public void PushBuffer(ReadOnlySpan<byte> buffer)
 		{
 			if (buffer == null)
 			{
@@ -378,8 +379,11 @@ namespace NLua.Native
 				return;
 			}
 
-			var buffer = Encoding.UTF8.GetBytes(value);
-			PushBuffer(buffer);
+			// could also use GetByteCount here, but why iterate twice when we're renting the memory anyway?
+			byte[] buffer = ArrayPool<byte>.Shared.Rent(Encoding.UTF8.GetMaxByteCount(value.Length));
+			int actualLength = Encoding.UTF8.GetBytes(value, 0, value.Length, buffer, 0);
+			PushBuffer(buffer.AsSpan(0, actualLength));
+			ArrayPool<byte>.Shared.Return(buffer);
 		}
 
 		/// <summary>
@@ -556,13 +560,7 @@ namespace NLua.Native
 		public long ToInteger(int index)
 			=> NativeMethods.ToIntegerX(Handle, index, out _);
 
-		/// <summary>
-		/// Converts the Lua value at the given index to a byte array.
-		/// </summary>
-		/// <param name="index"></param>
-		/// <param name="callMetamethod">Calls __tostring field if present</param>
-		/// <returns></returns>
-		public byte[] ToBuffer(int index, bool callMetamethod = true)
+		private IntPtr ToLString(int index, bool callMetamethod, out int stringLength)
 		{
 			UIntPtr len;
 			IntPtr buff;
@@ -577,19 +575,26 @@ namespace NLua.Native
 				buff = NativeMethods.ToLString(Handle, index, out len);
 			}
 
-			if (buff == IntPtr.Zero)
-			{
-				return null;
-			}
+			stringLength = (int)len;
 
-			var length = (int)len;
-			if (length == 0)
-			{
-				return Array.Empty<byte>();
-			}
+			return buff;
+		}
+
+		/// <summary>
+		/// Converts the Lua value at the given index to a byte array.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <param name="callMetamethod">Calls __tostring field if present</param>
+		/// <returns></returns>
+		public byte[] ToBuffer(int index, bool callMetamethod = true)
+		{
+			IntPtr buffer = ToLString(index, callMetamethod, out int length);
+
+			if (buffer == IntPtr.Zero) return null;
+			if (length == 0) return Array.Empty<byte>();
 
 			var output = new byte[length];
-			Marshal.Copy(buff, output, 0, length);
+			Marshal.Copy(buffer, output, 0, length);
 			return output;
 		}
 
@@ -601,8 +606,15 @@ namespace NLua.Native
 		/// <returns></returns>
 		public string ToString(int index, bool callMetamethod = true)
 		{
-			var buffer = ToBuffer(index, callMetamethod);
-			return buffer == null ? null : Encoding.UTF8.GetString(buffer);
+			var buffer = ToLString(index, callMetamethod, out int length);
+
+			if (buffer == IntPtr.Zero) return null;
+			if (length == 0) return "";
+
+			unsafe
+			{
+				return Encoding.UTF8.GetString((byte*)buffer.ToPointer(), length);
+			}
 		}
 
 		/// <summary>
