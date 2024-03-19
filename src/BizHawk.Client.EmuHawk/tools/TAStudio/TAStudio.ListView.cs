@@ -168,17 +168,11 @@ namespace BizHawk.Client.EmuHawk
 					offsetY = 5;
 				}
 
-				if (index == Emulator.Frame && index == MainForm.PauseOnFrame)
+				if (index == Emulator.Frame)
 				{
-					bitmap = TasView.HorizontalOrientation ?
-						ts_v_arrow_green_blue :
-						ts_h_arrow_green_blue;
-				}
-				else if (index == Emulator.Frame)
-				{
-					bitmap = TasView.HorizontalOrientation ?
-						ts_v_arrow_blue :
-						ts_h_arrow_blue;
+					bitmap = index == MainForm.PauseOnFrame
+						? TasView.HorizontalOrientation ? ts_v_arrow_green_blue : ts_h_arrow_green_blue 
+						: TasView.HorizontalOrientation ? ts_v_arrow_blue : ts_h_arrow_blue;
 				}
 				else if (index == LastPositionFrame)
 				{
@@ -189,24 +183,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (columnName == FrameColumnName)
 			{
-				var record = CurrentTasMovie[index];
 				offsetX = -3;
 				offsetY = 1;
 
-				if (CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithIcons)
+				if (Settings.DenoteMarkersWithIcons && CurrentTasMovie.Markers.IsMarker(index))
 				{
 					bitmap = icon_marker;
 				}
-				else if (record.HasState && Settings.DenoteStatesWithIcons)
+				else if (Settings.DenoteStatesWithIcons)
 				{
-					if (record.Lagged.HasValue && record.Lagged.Value)
-					{
-						bitmap = icon_anchor_lag;
-					}
-					else
-					{
-						bitmap = icon_anchor;
-					}
+					var record = CurrentTasMovie[index];
+					if (record.HasState) bitmap = record.Lagged is true ? icon_anchor_lag : icon_anchor;
 				}
 			}
 		}
@@ -235,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (columnName == FrameColumnName)
 			{
-				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithBGColor)
+				if (Emulator.Frame != index && Settings.DenoteMarkersWithBGColor && CurrentTasMovie.Markers.IsMarker(index))
 				{
 					color = Palette.Marker_FrameCol;
 				}
@@ -306,9 +293,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private readonly string[] _formatCache = Enumerable.Range(1, 10).Select(i => $"D{i}").ToArray();
+
 		/// <returns><paramref name="index"/> with leading zeroes such that every frame in the movie will be printed with the same number of digits</returns>
 		private string FrameToStringPadded(int index)
-			=> index.ToString().PadLeft(CurrentTasMovie.InputLogLength.ToString().Length, '0');
+			=> index.ToString(_formatCache[(int)Math.Log10(Math.Max(CurrentTasMovie.InputLogLength, 1))]);
 
 		private void TasView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{

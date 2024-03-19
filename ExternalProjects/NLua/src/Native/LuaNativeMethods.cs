@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
@@ -184,7 +185,7 @@ namespace NLua.Native
 		internal delegate* unmanaged[Cdecl]<lua_State, charptr_t, size_t, charptr_t> lua_pushlstring;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public charptr_t PushLString(lua_State luaState, byte[] s, size_t len)
+		public charptr_t PushLString(lua_State luaState, ReadOnlySpan<byte> s, size_t len)
 		{
 			fixed (byte* _s = s)
 			{

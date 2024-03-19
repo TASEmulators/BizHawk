@@ -68,6 +68,7 @@ extern int buffer_cleared; // mark that the buffer has been cleared, used to che
 #include <windows.h>
 extern "C" {
     #include <SDL_opengl.h>
+    #define glActiveTextureARB _glActiveTextureARB
     extern PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
     extern PFNGLATTACHOBJECTARBPROC glAttachObjectARB;
     extern PFNGLBINDFRAMEBUFFEREXTPROC glBindFramebufferEXT;
@@ -88,6 +89,7 @@ extern "C" {
     extern PFNGLGETOBJECTPARAMETERIVARBPROC glGetObjectParameterivARB;
     extern PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocationARB;
     extern PFNGLLINKPROGRAMARBPROC glLinkProgramARB;
+    #define glMultiTexCoord2fARB _glMultiTexCoord2fARB
     extern PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
     extern PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT;
     extern PFNGLSECONDARYCOLOR3FPROC glSecondaryColor3f;

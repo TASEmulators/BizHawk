@@ -17,18 +17,25 @@ namespace BizHawk.Common.CollectionExtensions
 			return desc ? source.OrderByDescending(keySelector) : source.OrderBy(keySelector);
 		}
 
+		/// <summary>Implements an indirected binary search.</summary>
+		/// <return>
+		/// The index of the element whose key matches <paramref name="key"/>;
+		/// or if none match, the index of the element whose key is closest and lower;
+		/// or if all elements' keys are higher, <c>-1</c>.<br/>
+		/// (Equivalently: If none match, 1 less than the index where inserting an element with the given <paramref name="key"/> would keep the list sorted)
+		/// </return>
+		/// <remarks>The returned index may not be accurate if <paramref name="list"/> is not sorted in ascending order with respect to <paramref name="keySelector"/>.</remarks>
 		public static int LowerBoundBinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key)
 			where TKey : IComparable<TKey>
 		{
 			int min = 0;
-			int max = list.Count;
+			int max = list.Count - 1;
 			int mid;
-			TKey midKey;
 			while (min < max)
 			{
 				mid = (max + min) / 2;
 				T midItem = list[mid];
-				midKey = keySelector(midItem);
+				var midKey = keySelector(midItem);
 				int comp = midKey.CompareTo(key);
 				if (comp < 0)
 				{
@@ -44,32 +51,16 @@ namespace BizHawk.Common.CollectionExtensions
 				}
 			}
 
-			// did we find it exactly?
-			if (min == max && keySelector(list[min]).CompareTo(key) == 0)
+			int compareResult = keySelector(list[min]).CompareTo(key);
+
+			// return something corresponding to lower_bound semantics
+			// if min is higher than key, return min - 1. Otherwise, when min is <=key, return min directly.
+			if (compareResult > 0)
 			{
-				return min;
+				return min - 1;
 			}
 
-			mid = min;
-
-			// we didn't find it. return something corresponding to lower_bound semantics
-			if (mid == list.Count)
-			{
-				return max; // had to go all the way to max before giving up; lower bound is max
-			}
-
-			if (mid == 0)
-			{
-				return -1; // had to go all the way to min before giving up; lower bound is min
-			}
-
-			midKey = keySelector(list[mid]);
-			if (midKey.CompareTo(key) >= 0)
-			{
-				return mid - 1;
-			}
-
-			return mid;
+			return min;
 		}
 
 		/// <exception cref="InvalidOperationException"><paramref name="key"/> not found after mapping <paramref name="keySelector"/> over <paramref name="list"/></exception>
@@ -242,9 +233,9 @@ namespace BizHawk.Common.CollectionExtensions
 		/// (This is an extension method which reimplements <see cref="List{T}.RemoveAll"/> for other <see cref="ICollection{T}">collections</see>.
 		/// It defers to the existing <see cref="List{T}.RemoveAll">RemoveAll</see> if the receiver's type is <see cref="List{T}"/> or a subclass.)
 		/// </remarks>
-		public static int RemoveAll<T>(this ICollection<T> list, Predicate<T> match)
+		public static int RemoveAll<T>(this ICollection<T> list, Func<T, bool> match)
 		{
-			if (list is List<T> listImpl) return listImpl.RemoveAll(match);
+			if (list is List<T> listImpl) return listImpl.RemoveAll(item => match(item)); // can't simply cast to Predicate<T>, but thankfully we only need to allocate 1 extra delegate
 			var c = list.Count;
 			if (list is IList<T> iList)
 			{
@@ -255,8 +246,8 @@ namespace BizHawk.Common.CollectionExtensions
 			}
 			else
 			{
-				foreach (var item in list.Where(item => match(item)) // can't simply cast to Func<T, bool>
-					.ToList()) // very important
+				foreach (var item in list.Where(match)
+							.ToArray()) // very important
 				{
 					list.Remove(item);
 				}

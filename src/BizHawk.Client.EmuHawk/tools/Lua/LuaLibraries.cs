@@ -165,6 +165,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsUpdateSupressed { get; set; }
 
+		public bool IsInInputOrMemoryCallback { get; set; }
+
 		private readonly IDictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
 
 		private EventWaitHandle LuaWait;
@@ -309,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaFile luaFile,
 			string name = null)
 		{
-			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, () => _lua.NewThread(), name);
+			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, () => _lua.NewThread(), this, name);
 			RegisteredFunctions.Add(nlf);
 			return nlf;
 		}

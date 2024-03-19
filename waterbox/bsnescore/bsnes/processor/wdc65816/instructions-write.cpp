@@ -90,8 +90,8 @@ auto WDC65816::instructionIndexedIndirectWrite8() -> void {
   U.l = fetch();
   idle2();
   idle();
-  V.l = readDirect(U.l + X.w + 0);
-  V.h = readDirect(U.l + X.w + 1);
+  V.l = readDirectX(U.l + X.w, 0);
+  V.h = readDirectX(U.l + X.w, 1);
 L writeBank(V.w + 0, A.l);
 }
 
@@ -99,8 +99,8 @@ auto WDC65816::instructionIndexedIndirectWrite16() -> void {
   U.l = fetch();
   idle2();
   idle();
-  V.l = readDirect(U.l + X.w + 0);
-  V.h = readDirect(U.l + X.w + 1);
+  V.l = readDirectX(U.l + X.w, 0);
+  V.h = readDirectX(U.l + X.w, 1);
   writeBank(V.w + 0, A.l);
 L writeBank(V.w + 1, A.h);
 }

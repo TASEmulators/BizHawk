@@ -139,6 +139,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
+				if (_luaLibsImpl.IsInInputOrMemoryCallback)
+				{
+					throw new InvalidOperationException("tastudio.setplayback() is not allowed during input/memory callbacks");
+				}
+
 				_luaLibsImpl.IsUpdateSupressed = true;
 
 				int f;
@@ -298,6 +303,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
+				if (_luaLibsImpl.IsInInputOrMemoryCallback)
+				{
+					throw new InvalidOperationException("tastudio.applyinputchanges() is not allowed during input/memory callbacks");
+				}
+
 				_luaLibsImpl.IsUpdateSupressed = true;
 
 				if (_changeList.Count > 0)
@@ -424,6 +434,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
+				if (_luaLibsImpl.IsInInputOrMemoryCallback)
+				{
+					throw new InvalidOperationException("tastudio.loadbranch() is not allowed during input/memory callbacks");
+				}
+
 				_luaLibsImpl.IsUpdateSupressed = true;
 
 				Tastudio.LoadBranchByIndex(index);

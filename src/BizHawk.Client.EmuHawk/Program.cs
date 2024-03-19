@@ -126,24 +126,17 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!OSTailoredCode.IsUnixHost)
 			{
-				// TODO: We optimally should only require the new VS2015-2022 all in one redist be installed
-				// None of this old 2010 runtime garbage
-				// (It's probably as simple as just recompiling old mupen .dlls against newer VS and probably just removing speex completely)
-				foreach (var (dllToLoad, desc) in new[]
-						{
-							("vcruntime140_1.dll", "Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019, and 2022 (x64)"),
-							// for libspeexdsp.dll, mupen64plus-audio-bkm.dll, mupen64plus-video-glide64.dll, mupen64plus-video-glide64mk2.dll, mupen64plus-video-rice.dll
-							("msvcr100.dll", "Microsoft Visual C++ 2010 SP1 Runtime (x64)"),
-						})
+				// Check if we have the C++ VS2015-2022 redist all in one redist be installed
+				var p = OSTailoredCode.LinkedLibManager.LoadOrZero("vcruntime140_1.dll");
+				if (p != IntPtr.Zero)
 				{
-					var p = OSTailoredCode.LinkedLibManager.LoadOrZero(dllToLoad);
-					if (p != IntPtr.Zero)
-					{
-						OSTailoredCode.LinkedLibManager.FreeByPtr(p);
-						continue;
-					}
-
+					OSTailoredCode.LinkedLibManager.FreeByPtr(p);
+				}
+				else
+				{
 					// else it's missing or corrupted
+					const string desc =
+						"Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019, and 2022 (x64)";
 					MessageBox.Show($"EmuHawk needs {desc} in order to run! See the readme on GitHub for more info. (EmuHawk will now close.) " +
 						$"Internal error message: {OSTailoredCode.LinkedLibManager.GetErrorMessage()}");
 					return -1;

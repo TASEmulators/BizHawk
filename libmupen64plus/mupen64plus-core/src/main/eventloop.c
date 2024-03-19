@@ -20,6 +20,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.          *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <SDL.h>
 #if ! SDL_VERSION_ATLEAST(1,3,0)
@@ -51,9 +52,6 @@
 #define SDL_SCANCODE_8 SDLK_8
 #define SDL_SCANCODE_9 SDLK_9
 #define SDL_SCANCODE_UNKNOWN SDLK_UNKNOWN
-
-#define SDL_SetEventFilter(func, data) SDL_SetEventFilter(func)
-#define event_sdl_filter(userdata, event) event_sdl_filter(const event)
 
 #endif
 
@@ -241,83 +239,15 @@ static int MatchJoyCommand(const SDL_Event *event, eJoyCommand cmd)
 }
 
 /*********************************************************************************************************
-* sdl event filter
-*/
-static int SDLCALL event_sdl_filter(void *userdata, SDL_Event *event)
-{
-    switch(event->type)
-    {
-#if SDL_VERSION_ATLEAST(2,0,0)
-        case SDL_WINDOWEVENT:
-            switch (event->window.event) {
-                case SDL_WINDOWEVENT_RESIZED:
-                    // call the video plugin.  if the video plugin supports resizing, it will resize its viewport and call
-                    // VidExt_ResizeWindow to update the window manager handling our opengl output window
-                    gfx.resizeVideoOutput(event->window.data1, event->window.data2);
-                    return 0;  // consumed the event
-                    break;
-            }
-            break;
-#else
-        case SDL_VIDEORESIZE:
-            // call the video plugin.  if the video plugin supports resizing, it will resize its viewport and call
-            // VidExt_ResizeWindow to update the window manager handling our opengl output window
-            gfx.resizeVideoOutput(event->resize.w, event->resize.h);
-            return 0;  // consumed the event
-            break;
-#endif
-
-        // Ignore key events
-        case SDL_JOYAXISMOTION:
-        case SDL_JOYBUTTONDOWN:
-        case SDL_JOYBUTTONUP:
-        case SDL_JOYHATMOTION:
-		case SDL_KEYDOWN:
-		case SDL_KEYUP:
-
-            return 0;
-            break;
-    }
-
-    return 1;
-}
-
-/*********************************************************************************************************
 * global functions
 */
 
 void event_initialize(void)
 {
-    const char *event_str = NULL;
     int i;
-
     /* set initial state of all joystick commands to 'off' */
     for (i = 0; i < NumJoyCommands; i++)
         JoyCmdActive[i] = 0;
-
-    /* activate any joysticks which are referenced in the joystick event command strings */
-    for (i = 0; i < NumJoyCommands; i++)
-    {
-        event_str = ConfigGetParamString(l_CoreEventsConfig, JoyCmdName[i]);
-        if (event_str != NULL && strlen(event_str) >= 4 && event_str[0] == 'J' && event_str[1] >= '0' && event_str[1] <= '9')
-        {
-            int device = event_str[1] - '0';
-            if (!SDL_WasInit(SDL_INIT_JOYSTICK))
-                SDL_InitSubSystem(SDL_INIT_JOYSTICK);
-#if SDL_VERSION_ATLEAST(2,0,0)
-            SDL_JoystickOpen(device);
-#else
-            if (!SDL_JoystickOpened(device))
-                SDL_JoystickOpen(device);
-#endif
-        }
-    }
-
-    /* set up SDL event filter and disable key repeat */
-#if !SDL_VERSION_ATLEAST(2,0,0)
-    SDL_EnableKeyRepeat(0, 0);
-#endif
-    SDL_SetEventFilter(event_sdl_filter, NULL);
 }
 
 int event_set_core_defaults(void)

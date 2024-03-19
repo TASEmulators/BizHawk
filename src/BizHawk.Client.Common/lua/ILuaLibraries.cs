@@ -17,6 +17,9 @@ namespace BizHawk.Client.Common
 
 		bool IsUpdateSupressed { get; set; }
 
+		/// <remarks>not really sure if this is the right place to put it, multiple different places need this...</remarks>
+		bool IsInInputOrMemoryCallback { get; set; }
+
 		LuaFunctionList RegisteredFunctions { get; }
 
 		public PathEntryCollection PathEntries { get; }

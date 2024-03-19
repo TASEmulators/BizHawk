@@ -112,7 +112,9 @@ EXPORT m64p_error CALL CoreShutdown(void)
     savestates_deinit();
 
     /* tell SDL to shut down */
-    SDL_Quit();
+    extern int initialized_video;
+    if (initialized_video)
+        SDL_QuitSubSystem(SDL_INIT_VIDEO);
 
     l_CoreInit = 0;
     return M64ERR_SUCCESS;

@@ -207,21 +207,21 @@ namespace BizHawk.Client.Common.Filters
 	/// </summary>
 	public class ScreenControl3DS : BaseFilter
 	{
-		private readonly Citra _citra;
+		private readonly Encore _encore;
 
-		public ScreenControl3DS(Citra citra)
+		public ScreenControl3DS(Encore encore)
 		{
-			_citra = citra;
+			_encore = encore;
 		}
 
 		public override Vector2 UntransformPoint(string channel, Vector2 point)
 		{
-			if (_citra.TouchScreenEnabled)
+			if (_encore.TouchScreenEnabled)
 			{
-				var rect = _citra.TouchScreenRectangle;
-				var rotated = _citra.TouchScreenRotated;
-				var bufferWidth = (float)_citra.AsVideoProvider().BufferWidth;
-				var bufferHeight = (float)_citra.AsVideoProvider().BufferHeight;
+				var rect = _encore.TouchScreenRectangle;
+				var rotated = _encore.TouchScreenRotated;
+				var bufferWidth = (float)_encore.AsVideoProvider().BufferWidth;
+				var bufferHeight = (float)_encore.AsVideoProvider().BufferHeight;
 
 				// reset the point's origin to the top left of the screen
 				point.X -= rect.X;
@@ -248,10 +248,10 @@ namespace BizHawk.Client.Common.Filters
 
 		public override Vector2 TransformPoint(string channel, Vector2 point)
 		{
-			if (_citra.TouchScreenEnabled)
+			if (_encore.TouchScreenEnabled)
 			{
-				var rect = _citra.TouchScreenRectangle;
-				var rotated = _citra.TouchScreenRotated;
+				var rect = _encore.TouchScreenRectangle;
+				var rotated = _encore.TouchScreenRotated;
 
 				if (rotated)
 				{

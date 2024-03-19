@@ -25,20 +25,21 @@
 
 #ifdef _MSC_VER
   #define M64P_FPU_INLINE static __inline
-  #include <float.h>
-  typedef enum { FE_TONEAREST = 0, FE_TOWARDZERO, FE_UPWARD, FE_DOWNWARD } eRoundType;
-  static void fesetround(eRoundType RoundType)
-  {
-    static const unsigned int msRound[4] = { _RC_NEAR, _RC_CHOP, _RC_UP, _RC_DOWN };
-    unsigned int oldX87, oldSSE2;
+  #include <fenv.h>
+  //#include <float.h>
+  //typedef enum { FE_TONEAREST = 0, FE_TOWARDZERO, FE_UPWARD, FE_DOWNWARD } eRoundType;
+  //static void fesetround(eRoundType RoundType)
+  //{
+    //static const unsigned int msRound[4] = { _RC_NEAR, _RC_CHOP, _RC_UP, _RC_DOWN };
+	//unsigned int oldX87, oldSSE2;
     //__control87_2(msRound[RoundType], _MCW_RC, &oldX87, &oldSSE2); //? ? ? ?
-		_control87(msRound[RoundType], _MCW_RC);
-  }
-  static __inline double round(double x) { return floor(x + 0.5); }
-  static __inline float roundf(float x) { return (float) floor(x + 0.5); }
-  static __inline double trunc(double x) { return (double) (int) x; }
-  static __inline float truncf(float x) { return (float) (int) x; }
-  #define isnan _isnan
+    //_control87(msRound[RoundType], _MCW_RC);
+  //}
+  //static __inline double round(double x) { return floor(x + 0.5); }
+  //static __inline float roundf(float x) { return (float) floor(x + 0.5); }
+  //static __inline double trunc(double x) { return (double) (int) x; }
+  //static __inline float truncf(float x) { return (float) (int) x; }
+  //#define isnan _isnan
 #else
   #define M64P_FPU_INLINE static inline
   #include <fenv.h>

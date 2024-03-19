@@ -311,6 +311,12 @@ namespace BizHawk.Client.EmuHawk
 				case "Lua Console":
 					OpenLuaConsole();
 					break;
+				case "Toggle Last Lua Script":
+					if (Tools.IsLoaded<LuaConsole>())
+					{
+						Tools.LuaConsole.ToggleLastLuaScript();
+					}
+					break;
 				case "Cheats":
 					Tools.Load<Cheats>();
 					break;

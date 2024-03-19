@@ -1191,7 +1191,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Config.TrustedExtTools.Count is 0) return;
 
 			ExternalToolMenuItem.DropDownItems.Add(new ToolStripSeparatorEx());
-			ToolStripMenuItemEx forgetTrustedItem = new() { Text = "Forget trusted tools" };
+			ToolStripMenuItemEx forgetTrustedItem = new() { Text = "Forget Trusted Tools" };
 			forgetTrustedItem.Click += (_, _) =>
 			{
 				if (this.ModalMessageBox2(
@@ -2746,8 +2746,8 @@ namespace BizHawk.Client.EmuHawk
 			// ChannelFHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.ChannelFHawk, CreateGenericCoreConfigItem<ChannelF>(CoreNames.ChannelFHawk)));
 
-			// Citra
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Citra, CreateGenericCoreConfigItem<Citra>(CoreNames.Citra)));
+			// Encore
+			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Encore, CreateGenericCoreConfigItem<Encore>(CoreNames.Encore)));
 
 			// ColecoHawk
 			var colecoHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenColecoHawkGamepadSettingsDialog(GetSettingsAdapterFor<ColecoVision>()));

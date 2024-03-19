@@ -139,8 +139,8 @@ namespace BizHawk.Tests.Testroms.GB.CPPTestroms
 					.Select(static testCase => new object?[] { testCase });
 			}
 
-			public string GetDisplayName(MethodInfo methodInfo, object?[] data)
-				=> $"{methodInfo.Name}({((CPPTestromsHexStrTestCase) data[0]!).DisplayName()})";
+			public string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
+				=> $"{methodInfo.Name}(\"{((CPPTestromsHexStrTestCase) data![0]!).DisplayName()}\")";
 		}
 
 		private static readonly byte[,] GLYPHS = {

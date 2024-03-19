@@ -37,8 +37,8 @@
   #define strdup _strdup
 
   // for isnan()
-  #include <float.h>
-  #define isnan _isnan
+  //#include <float.h>
+  //#define isnan _isnan
 
 #else  /* Not WIN32 */
 

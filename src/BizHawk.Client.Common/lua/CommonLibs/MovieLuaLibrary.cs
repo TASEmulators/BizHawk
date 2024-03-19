@@ -71,6 +71,11 @@ namespace BizHawk.Client.Common
 		[LuaMethod("play_from_start", "Resets the core to frame 0 with the currently loaded movie in playback mode. If a path to a movie is specified, attempts to load it, then continues with playback if it was successful. Returns true iff successful.")]
 		public bool PlayFromStart(string path = "")
 		{
+			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			{
+				throw new InvalidOperationException("movie.play_from_start() is not allowed during input/memory callbacks");
+			}
+
 			_luaLibsImpl.IsRebootingCore = true;
 			var success = APIs.Movie.PlayFromStart(path);
 			_luaLibsImpl.IsRebootingCore = false;

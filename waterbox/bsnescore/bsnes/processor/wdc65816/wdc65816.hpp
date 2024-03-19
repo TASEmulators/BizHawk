@@ -58,6 +58,7 @@ struct WDC65816 {
   alwaysinline auto pushN(uint8 data) -> void;
   alwaysinline auto readDirect(uint address) -> uint8;
   alwaysinline auto writeDirect(uint address, uint8 data) -> void;
+  alwaysinline auto readDirectX(uint address, uint offset) -> uint8;
   alwaysinline auto readDirectN(uint address) -> uint8;
   alwaysinline auto readBank(uint address) -> uint8;
   alwaysinline auto writeBank(uint address, uint8 data) -> void;

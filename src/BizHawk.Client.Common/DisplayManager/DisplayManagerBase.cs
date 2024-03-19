@@ -480,7 +480,7 @@ namespace BizHawk.Client.Common
 			return GlobalEmulator switch
 			{
 				NDS nds => new ScreenControlNDS(nds),
-				Citra citra => new ScreenControl3DS(citra),
+				Encore encore => new ScreenControl3DS(encore),
 				_ => null
 			};
 		}

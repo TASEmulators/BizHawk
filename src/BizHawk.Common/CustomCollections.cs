@@ -73,6 +73,14 @@ namespace BizHawk.Common
 
 		public virtual IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
 
+		/// <remarks>throws if list is empty</remarks>
+		public T Max()
+			=> _list[_list.Count - 1];
+
+		/// <remarks>throws if list is empty</remarks>
+		public T Min()
+			=> _list[0];
+
 		public virtual int IndexOf(T item)
 		{
 			var i = _list.BinarySearch(item);
