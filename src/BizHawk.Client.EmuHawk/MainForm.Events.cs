@@ -692,45 +692,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			x1MenuItem.Checked =
-				x2MenuItem.Checked =
-				x3MenuItem.Checked =
-				x4MenuItem.Checked =
-				x5MenuItem.Checked = 
-				mzMenuItem.Checked = false;
-
-			switch (Config.TargetZoomFactors[Emulator.SystemId])
+			foreach (ToolStripMenuItem item in WindowSizeSubMenu.DropDownItems)
 			{
-				case 1:
-					x1MenuItem.Checked = true;
-					break;
-				case 2:
-					x2MenuItem.Checked = true;
-					break;
-				case 3:
-					x3MenuItem.Checked = true;
-					break;
-				case 4:
-					x4MenuItem.Checked = true;
-					break;
-				case 5:
-					x5MenuItem.Checked = true;
-					break;
-				case 10:
-					mzMenuItem.Checked = true;
-					break;
+				item.Checked = Config.TargetZoomFactors[Emulator.SystemId] == (int) item.Tag;
 			}
 		}
 
 		private void WindowSize_Click(object sender, EventArgs e)
 		{
-			if (sender == x1MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 1;
-			if (sender == x2MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 2;
-			if (sender == x3MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 3;
-			if (sender == x4MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 4;
-			if (sender == x5MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 5;
-			if (sender == mzMenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 10;
-
+			Config.TargetZoomFactors[Emulator.SystemId] = (int) ((ToolStripMenuItem) sender).Tag;
 			FrameBufferResized();
 		}
 
