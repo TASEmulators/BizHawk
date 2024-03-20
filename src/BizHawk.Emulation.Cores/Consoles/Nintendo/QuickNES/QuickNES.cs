@@ -83,78 +83,136 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private void SetControllerDefinition()
 		{
 			ControllerDefinition def = new("NES Controller");
-			void AddButtons(IEnumerable<(string PrefixedName, int Bitmask)> entries)
+			void AddButtons(IEnumerable<(string PrefixedName, uint Bitmask)> entries)
 				=> def.BoolButtons.AddRange(entries.Select(static p => p.PrefixedName));
-			var playerNo = 1;
 			AddButtons(_syncSettings.Port1 switch
 			{
-				Port1PeripheralOption.Gamepad => GamepadButtons[playerNo++],
-				Port1PeripheralOption.FourScore => throw new NotImplementedException("TODO"),
-				_ => Enumerable.Empty<(string PrefixedName, int Bitmask)>()
+				Port1PeripheralOption.Gamepad => GamepadButtons[0],
+				Port1PeripheralOption.FourScore => FourScoreButtons[0],
+				_ => Enumerable.Empty<(string PrefixedName, uint Bitmask)>()
 			});
 			AddButtons(_syncSettings.Port2 switch
 			{
-				Port2PeripheralOption.Gamepad => GamepadButtons[playerNo++],
-				Port2PeripheralOption.FourScore2 => throw new NotImplementedException("TODO"),
-				_ => Enumerable.Empty<(string PrefixedName, int Bitmask)>()
+				Port2PeripheralOption.Gamepad => GamepadButtons[1],
+				Port2PeripheralOption.FourScore2 => FourScoreButtons[1],
+				_ => Enumerable.Empty<(string PrefixedName, uint Bitmask)>()
 			});
 			def.BoolButtons.AddRange(new[] { "Reset", "Power" }); // console buttons
 			ControllerDefinition = def.MakeImmutable();
 		}
 
-		private static readonly (string PrefixedName, int Bitmask)[][] GamepadButtons = new[]
+		private static readonly (string PrefixedName, uint Bitmask)[][] GamepadButtons = new[]
 		{
 			new[] {
-				("P1 Up", 0b1_0000),
-				("P1 Down", 0b10_0000),
-				("P1 Left", 0b100_0000),
-				("P1 Right", 0b1000_0000),
-				("P1 Start", 0b1000),
-				("P1 Select", 0b100),
-				("P1 B", 0b10),
-				("P1 A", 0b1),
-			},
-			new[] {
-				("P2 Up", 0b1_0000),
-				("P2 Down", 0b10_0000),
-				("P2 Left", 0b100_0000),
-				("P2 Right", 0b1000_0000),
-				("P2 Start", 0b1000),
-				("P2 Select", 0b100),
-				("P2 B", 0b10),
-				("P2 A", 0b1),
+				("P1 Up",     0b0000_0000_0000_0000_0000_0000_0001_0000u),
+				("P1 Down",   0b0000_0000_0000_0000_0000_0000_0010_0000u),
+				("P1 Left",   0b0000_0000_0000_0000_0000_0000_0100_0000u),
+				("P1 Right",  0b0000_0000_0000_0000_0000_0000_1000_0000u),
+				("P1 Start",  0b0000_0000_0000_0000_0000_0000_0000_1000u),
+				("P1 Select", 0b0000_0000_0000_0000_0000_0000_0000_0100u),
+				("P1 B",      0b0000_0000_0000_0000_0000_0000_0000_0010u),
+				("P1 A",      0b0000_0000_0000_0000_0000_0000_0000_0001u),
+			},					
+			new[] {				
+				("P2 Up",     0b0000_0000_0000_0000_0000_0000_0001_0000u),
+				("P2 Down",   0b0000_0000_0000_0000_0000_0000_0010_0000u),
+				("P2 Left",   0b0000_0000_0000_0000_0000_0000_0100_0000u),
+				("P2 Right",  0b0000_0000_0000_0000_0000_0000_1000_0000u),
+				("P2 Start",  0b0000_0000_0000_0000_0000_0000_0000_1000u),
+				("P2 Select", 0b0000_0000_0000_0000_0000_0000_0000_0100u),
+				("P2 B",      0b0000_0000_0000_0000_0000_0000_0000_0010u),
+				("P2 A",      0b0000_0000_0000_0000_0000_0000_0000_0001u),
 			},
 		};
 
-		private void SetPads(IController controller, out int j1, out int j2)
+		private static readonly (string PrefixedName, uint Bitmask)[][] FourScoreButtons = new[]
 		{
-			static int PackGamepadButtonsFor(int playerNo, IController controller)
+			new[] {
+				("P1 Up",     0b0000_0000_0000_0000_0000_0000_0001_0000u),
+				("P1 Down",   0b0000_0000_0000_0000_0000_0000_0010_0000u),
+				("P1 Left",   0b0000_0000_0000_0000_0000_0000_0100_0000u),
+				("P1 Right",  0b0000_0000_0000_0000_0000_0000_1000_0000u),
+				("P1 Start",  0b0000_0000_0000_0000_0000_0000_0000_1000u),
+				("P1 Select", 0b0000_0000_0000_0000_0000_0000_0000_0100u),
+				("P1 B",      0b0000_0000_0000_0000_0000_0000_0000_0010u),
+				("P1 A",      0b0000_0000_0000_0000_0000_0000_0000_0001u),
+
+			    ("P3 Up",     0b0000_0000_0000_0000_0001_0000_0000_0000u),
+				("P3 Down",   0b0000_0000_0000_0000_0010_0000_0000_0000u),
+				("P3 Left",   0b0000_0000_0000_0000_0100_0000_0000_0000u),
+				("P3 Right",  0b0000_0000_0000_0000_1000_0000_0000_0000u),
+				("P3 Start",  0b0000_0000_0000_0000_0000_1000_0000_0000u),
+				("P3 Select", 0b0000_0000_0000_0000_0000_0100_0000_0000u),
+				("P3 B",      0b0000_0000_0000_0000_0000_0010_0000_0000u),
+				("P3 A",      0b0000_0000_0000_0000_0000_0001_0000_0000u),
+			},
+			new[] {
+				("P2 Up",     0b0000_0000_0000_0000_0000_0000_0001_0000u),
+				("P2 Down",   0b0000_0000_0000_0000_0000_0000_0010_0000u),
+				("P2 Left",   0b0000_0000_0000_0000_0000_0000_0100_0000u),
+				("P2 Right",  0b0000_0000_0000_0000_0000_0000_1000_0000u),
+				("P2 Start",  0b0000_0000_0000_0000_0000_0000_0000_1000u),
+				("P2 Select", 0b0000_0000_0000_0000_0000_0000_0000_0100u),
+				("P2 B",      0b0000_0000_0000_0000_0000_0000_0000_0010u),
+				("P2 A",      0b0000_0000_0000_0000_0000_0000_0000_0001u),
+
+				("P4 Up",     0b0000_0000_0000_0000_0001_0000_0000_0000u),
+				("P4 Down",   0b0000_0000_0000_0000_0010_0000_0000_0000u),
+				("P4 Left",   0b0000_0000_0000_0000_0100_0000_0000_0000u),
+				("P4 Right",  0b0000_0000_0000_0000_1000_0000_0000_0000u),
+				("P4 Start",  0b0000_0000_0000_0000_0000_1000_0000_0000u),
+				("P4 Select", 0b0000_0000_0000_0000_0000_0100_0000_0000u),
+				("P4 B",      0b0000_0000_0000_0000_0000_0010_0000_0000u),
+				("P4 A",      0b0000_0000_0000_0000_0000_0001_0000_0000u),
+			},
+		};
+
+
+
+		private void SetPads(IController controller, out uint j1, out uint j2)
+		{
+			static uint PackGamepadButtonsFor(int portNumber, IController controller)
 			{
-				int ret = unchecked((int) 0xFFFFFF00); //TODO this is clearly a bitfield and not an integer; use u32
-				foreach (var (prefixedName, bitmask) in GamepadButtons[playerNo])
+				uint ret = unchecked(0xFFFFFF00u);
+				foreach (var (prefixedName, bitmask) in GamepadButtons[portNumber])
 				{
 					if (controller.IsPressed(prefixedName)) ret |= bitmask;
 				}
 				return ret;
 			}
+
+			static uint PackFourscoreButtonsFor(int portNumber, IController controller)
+			{
+				uint ret = 0;
+				if (portNumber == 0) ret |= 0b1111_1111_0000_1000_0000_0000_0000_0000u;
+				if (portNumber == 1) ret |= 0b1111_1111_0000_0100_0000_0000_0000_0000u;
+
+				foreach (var (prefixedName, bitmask) in FourScoreButtons[portNumber])
+				{
+					if (controller.IsPressed(prefixedName)) ret |= bitmask;
+				}
+				return ret;
+			}
+
 			j1 = 0;
 			j2 = 0;
-			var playerNo = 1;
 			switch (_syncSettings.Port1)
 			{
 				case Port1PeripheralOption.Gamepad:
-					j1 = PackGamepadButtonsFor(playerNo++, controller);
+					j1 = PackGamepadButtonsFor(0, controller);
 					break;
 				case Port1PeripheralOption.FourScore:
-					throw new NotImplementedException("TODO");
+					j1 = PackFourscoreButtonsFor(0, controller);
+					break;
 			}
 			switch (_syncSettings.Port2)
 			{
 				case Port2PeripheralOption.Gamepad:
-					j2 = PackGamepadButtonsFor(playerNo++, controller);
+					j2 = PackGamepadButtonsFor(1, controller);
 					break;
 				case Port2PeripheralOption.FourScore2:
-					throw new NotImplementedException("TODO");
+					j2 = PackFourscoreButtonsFor(1, controller);
+					break;
 			}
 		}
 

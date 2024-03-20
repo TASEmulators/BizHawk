@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <param name="pad2">pad 2 input</param>
 		/// <returns>string error</returns>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract IntPtr qn_emulate_frame(IntPtr e, int pad1, int pad2);
+		public abstract IntPtr qn_emulate_frame(IntPtr e, uint pad1, uint pad2);
 		/// <summary>
 		/// blit to rgb32
 		/// </summary>
