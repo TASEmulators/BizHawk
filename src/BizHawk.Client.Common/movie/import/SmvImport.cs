@@ -29,7 +29,7 @@ namespace BizHawk.Client.Common.movie.import
 				return;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.SNES;
+			Result.Movie.SystemID = VSystemID.Raw.SNES;
 
 			// 004 4-byte little-endian unsigned int: version number
 			uint versionNumber = r.ReadUInt32();
@@ -190,9 +190,11 @@ namespace BizHawk.Client.Common.movie.import
 				Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 			}
 
-			var _controllers = new Snes9xControllers(ss);
-			Result.Movie.LogKey = new Bk2LogEntryGenerator("SNES", new Bk2Controller(_controllers.ControllerDefinition)).GenerateLogKey();
-			SimpleController controllers = new(_controllers.ControllerDefinition);
+			ControllerDefinition definition = new Snes9xControllers(ss).ControllerDefinition;
+			definition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
+			SimpleController controllers = new(definition);
+
+			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(definition);
 
 			r.BaseStream.Position = firstFrameOffset;
 			/*

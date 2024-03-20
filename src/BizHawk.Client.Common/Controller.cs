@@ -9,8 +9,6 @@ namespace BizHawk.Client.Common
 {
 	public class Controller : IController
 	{
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
 		public Controller(ControllerDefinition definition)
 		{
 			Definition = definition;

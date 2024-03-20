@@ -89,7 +89,7 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			var controlConverter = new GPGXControlConverter(input, false);
-			
+			controlConverter.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
 			SimpleController controller = new(controlConverter.ControllerDef);
 
 			// Unknown.

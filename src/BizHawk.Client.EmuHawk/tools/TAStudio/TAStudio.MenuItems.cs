@@ -441,7 +441,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					_tasClipboard.Add(new TasClipboardEntry(index, input));
-					var logEntry = CurrentTasMovie.LogGeneratorInstance(input).GenerateLogEntry();
+					var logEntry = Bk2LogEntryGenerator.GenerateLogEntry(input);
 					sb.AppendLine(Settings.CopyIncludesFrameNo ? $"{FrameToStringPadded(index)} {logEntry}" : logEntry);
 				}
 
@@ -560,8 +560,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					_tasClipboard.Add(new TasClipboardEntry(index, input));
-					var lg = CurrentTasMovie.LogGeneratorInstance(input);
-					sb.AppendLine(lg.GenerateLogEntry());
+					sb.AppendLine(Bk2LogEntryGenerator.GenerateLogEntry(input));
 				}
 
 				Clipboard.SetDataObject(sb.ToString());

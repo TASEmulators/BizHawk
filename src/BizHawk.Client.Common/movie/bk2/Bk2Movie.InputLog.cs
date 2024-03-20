@@ -13,15 +13,7 @@ namespace BizHawk.Client.Common
 		public void WriteInputLog(TextWriter writer)
 		{
 			writer.WriteLine("[Input]");
-			if (string.IsNullOrEmpty(LogKey))
-			{
-				var lg = LogGeneratorInstance(Session.MovieController);
-				writer.WriteLine(lg.GenerateLogKey());
-			}
-			else
-			{
-				writer.WriteLine($"LogKey:{LogKey}");
-			}
+			writer.WriteLine($"LogKey:{(string.IsNullOrEmpty(LogKey) ? Bk2LogEntryGenerator.GenerateLogKey(Session.MovieController.Definition) : LogKey)}");
 
 			foreach (var record in Log)
 			{

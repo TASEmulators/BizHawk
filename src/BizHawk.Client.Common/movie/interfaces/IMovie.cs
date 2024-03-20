@@ -75,11 +75,6 @@ namespace BizHawk.Client.Common
 		void SaveBackup();
 
 		/// <summary>
-		/// Creates a log generator using the given input source
-		/// </summary>
-		Bk2LogEntryGenerator LogGeneratorInstance(IController source);
-
-		/// <summary>
 		/// Instructs the movie to save the current contents to Filename
 		/// </summary>
 		void Save();
