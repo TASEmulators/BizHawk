@@ -13,7 +13,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public RollColumn Column { get; internal set; }
 		public int? RowIndex { get; internal set; }
-		public string CurrentText { get; internal set; }
 
 		public Cell() { }
 
