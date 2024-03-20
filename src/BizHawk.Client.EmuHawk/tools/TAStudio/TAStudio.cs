@@ -340,6 +340,8 @@ namespace BizHawk.Client.EmuHawk
 			movie.GetClientSettingsOnLoad = json => TasView.LoadSettingsSerialized(json);
 		}
 
+		private static readonly string[] N64CButtonSuffixes = { " C Up", " C Down", " C Left", " C Right" };
+
 		private void SetUpColumns()
 		{
 			TasView.AllColumns.Clear();
@@ -357,8 +359,11 @@ namespace BizHawk.Client.EmuHawk
 				.LogGeneratorInstance(MovieSession.MovieController)
 				.Map();
 
-			foreach (var (name, mnemonic) in columnNames)
+			foreach (var (name, mnemonic0) in columnNames)
 			{
+				var mnemonic = Emulator.SystemId is VSystemID.Raw.N64 && N64CButtonSuffixes.Any(name.EndsWithOrdinal)
+					? $"c{mnemonic0.ToUpperInvariant()}" // prepend 'c' to differentiate from L/R buttons -- this only affects the column headers
+					: mnemonic0;
 				ColumnType type;
 				int digits;
 				if (ControllerType.Axes.TryGetValue(name, out var range))
@@ -394,12 +399,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Emulator.SystemId is VSystemID.Raw.N64)
 			{
-				foreach (var c in TasView.AllColumns
-					.Where(static c => c.Name.EndsWithOrdinal(" C Up") || c.Name.EndsWithOrdinal(" C Down")
-						|| c.Name.EndsWithOrdinal(" C Left") || c.Name.EndsWithOrdinal(" C Right")))
-				{
-					c.Text = $"c{c.Text.ToUpperInvariant()}"; // prepend 'c' to differentiate from L/R buttons -- only affects table header
-				}
 				var fakeAnalogControls = TasView.AllColumns
 					.Where(c =>
 						c.Name.EndsWithOrdinal("A Up")
