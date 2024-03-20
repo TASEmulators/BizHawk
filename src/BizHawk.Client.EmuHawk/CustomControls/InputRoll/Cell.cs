@@ -41,6 +41,9 @@ namespace BizHawk.Client.EmuHawk
 			return Column.GetHashCode() + RowIndex.GetHashCode();
 		}
 
+		public override string ToString()
+			=> $"Cell(r: {RowIndex?.ToString() ?? "null"}, c: \"{Column?.Name ?? "(no column)"}\")";
+
 		public static bool operator ==(Cell a, Cell b)
 		{
 			return a?.Equals(b) ?? b is null;
@@ -101,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 			var i = _list.BinarySearch(item);
 			if (i >= 0)
 			{
-				Debug.Assert(false, $"{nameof(CellList)}'s distinctness invariant was almost broken! CellList.Add({(item is null ? "null" : $"Cell(r: {item.RowIndex}, c: \"{item.Column?.Name ?? "(unnamed)"}\")")})");
+				Debug.Assert(false, $"{nameof(CellList)}'s distinctness invariant was almost broken! CellList.Add({(item is null ? "null" : item.ToString())})");
 				return;
 			}
 			_list.Insert(~i, item);
