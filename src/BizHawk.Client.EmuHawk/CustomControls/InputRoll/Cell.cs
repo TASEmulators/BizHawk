@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// Represents a single cell of the <see cref="InputRoll"/>
 	/// </summary>
-	public sealed class Cell : IComparable<Cell>
+	public sealed class Cell : IComparable<Cell>, IEquatable<Cell>
 	{
 		public RollColumn Column { get; internal set; }
 		public int? RowIndex { get; internal set; }
@@ -25,15 +25,11 @@ namespace BizHawk.Client.EmuHawk
 		public int CompareTo(Cell other)
 			=> SortCell.Compare(this, other);
 
-		public override bool Equals(object obj)
-		{
-			if (obj is Cell cell)
-			{
-				return Column == cell.Column && RowIndex == cell.RowIndex;
-			}
+		public bool Equals(Cell other)
+			=> other is not null && Column?.Name == other.Column?.Name && RowIndex == other.RowIndex;
 
-			return false;
-		}
+		public override bool Equals(object obj)
+			=> obj is Cell other && Equals(other);
 
 		public override int GetHashCode()
 		{
@@ -44,14 +40,10 @@ namespace BizHawk.Client.EmuHawk
 			=> $"Cell(r: {RowIndex?.ToString() ?? "null"}, c: \"{Column?.Name ?? "(no column)"}\")";
 
 		public static bool operator ==(Cell a, Cell b)
-		{
-			return a?.Equals(b) ?? b is null;
-		}
+			=> a is null ? b is null : a.Equals(b);
 
 		public static bool operator !=(Cell a, Cell b)
-		{
-			return !(a == b);
-		}
+			=> a is null ? b is not null : !a.Equals(b);
 	}
 
 	internal static class SortCell
