@@ -106,9 +106,5 @@ namespace BizHawk.Client.EmuHawk
 			base.Clear();
 			ColumnsChanged();
 		}
-
-		public IEnumerable<string> Groups => this
-			.Select(x => x.Group)
-			.Distinct();
 	}
 }

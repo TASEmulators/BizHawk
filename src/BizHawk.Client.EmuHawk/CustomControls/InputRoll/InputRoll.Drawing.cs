@@ -88,11 +88,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				RollColumn col = visibleColumns[j];
 				int height = CellHeight;
-				if (col.Rotatable && col.RotatedHeight != null)
-				{
-					height = Math.Max(height, col.RotatedHeight.Value);
-				}
-				else if (col.Rotatable)
+				if (col.Rotatable)
 				{
 					int strOffsetX = 0;
 					int strOffsetY = 0;
