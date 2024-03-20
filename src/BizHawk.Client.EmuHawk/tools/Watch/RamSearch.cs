@@ -139,8 +139,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RamSearch_Load(object sender, EventArgs e)
 		{
-			if (Settings.Columns.Exists(static c => string.IsNullOrWhiteSpace(c.Text))) Settings = new(); //HACK for previous config settings
-
 			RamSearchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 
 			_settings = new SearchEngineSettings(MemoryDomains, Settings.UseUndoHistory);
