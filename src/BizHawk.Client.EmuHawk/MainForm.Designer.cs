@@ -123,12 +123,6 @@ namespace BizHawk.Client.EmuHawk
 			this.LoadedCoreNameMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ViewSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.WindowSizeSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.x1MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.x2MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.x3MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.x4MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.x5MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.mzMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SwitchToFullscreenMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.DisplayFPSMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -983,45 +977,8 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// WindowSizeSubMenu
 			// 
-			this.WindowSizeSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.x1MenuItem,
-			this.x2MenuItem,
-			this.x3MenuItem,
-			this.x4MenuItem,
-			this.x5MenuItem,
-			this.mzMenuItem});
 			this.WindowSizeSubMenu.Text = "&Window Size";
 			this.WindowSizeSubMenu.DropDownOpened += new System.EventHandler(this.WindowSizeSubMenu_DropDownOpened);
-			// 
-			// x1MenuItem
-			// 
-			this.x1MenuItem.Text = "&1x";
-			this.x1MenuItem.Click += new System.EventHandler(this.WindowSize_Click);
-			// 
-			// x2MenuItem
-			// 
-			this.x2MenuItem.Text = "&2x";
-			this.x2MenuItem.Click += new System.EventHandler(this.WindowSize_Click);
-			// 
-			// x3MenuItem
-			// 
-			this.x3MenuItem.Text = "&3x";
-			this.x3MenuItem.Click += new System.EventHandler(this.WindowSize_Click);
-			// 
-			// x4MenuItem
-			// 
-			this.x4MenuItem.Text = "&4x";
-			this.x4MenuItem.Click += new System.EventHandler(this.WindowSize_Click);
-			// 
-			// x5MenuItem
-			// 
-			this.x5MenuItem.Text = "&5x";
-			this.x5MenuItem.Click += new System.EventHandler(this.WindowSize_Click);
-			// 
-			// mzMenuItem
-			// 
-			this.mzMenuItem.Text = "1&0x";
-			this.mzMenuItem.Click += new System.EventHandler(this.WindowSize_Click);
 			// 
 			// SwitchToFullscreenMenuItem
 			// 
@@ -2524,12 +2481,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveNamedStateMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator7;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx LoadNamedStateMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx x1MenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx x2MenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx x3MenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx x4MenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx x5MenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx mzMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx MovieSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentMovieSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecordMovieMenuItem;

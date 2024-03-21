@@ -71,6 +71,9 @@ namespace BizHawk.Common
 
 		public virtual void CopyTo(T[] array, int arrayIndex) => _list.CopyTo(array, arrayIndex);
 
+		public T FirstOrDefault()
+			=> _list.Count is 0 ? default! : _list[0];
+
 		public virtual IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
 
 		/// <remarks>throws if list is empty</remarks>
@@ -86,6 +89,9 @@ namespace BizHawk.Common
 			var i = _list.BinarySearch(item);
 			return i < 0 ? -1 : i;
 		}
+
+		public T LastOrDefault()
+			=> _list.Count is 0 ? default! : _list[_list.Count - 1];
 
 		public virtual bool Remove(T item)
 		{

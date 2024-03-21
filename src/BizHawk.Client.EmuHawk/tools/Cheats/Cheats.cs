@@ -162,7 +162,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Cheats_Load(object sender, EventArgs e)
 		{
-			if (Settings.Columns.Exists(static c => string.IsNullOrWhiteSpace(c.Text))) Settings = new(); //HACK for previous config settings
 			CheatEditor.MemoryDomains = Core;
 			LoadConfigSettings();
 			CheatsMenu.Items.Add(CheatListView.ToColumnsMenu(ColumnToggleCallback));
