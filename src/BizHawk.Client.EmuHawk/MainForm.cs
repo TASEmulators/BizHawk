@@ -4162,6 +4162,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result.Errors.Any())
 			{
 				ShowMessageBox(owner: null, string.Join("\n", result.Errors), "Conversion error", EMsgBoxIcon.Error);
+				return;
 			}
 
 			if (result.Warnings.Any())

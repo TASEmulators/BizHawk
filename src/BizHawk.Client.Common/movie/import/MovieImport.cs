@@ -4,6 +4,8 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
+using BizHawk.Common.CollectionExtensions;
+
 namespace BizHawk.Client.Common
 {
 	public static class MovieImport
@@ -39,23 +41,12 @@ namespace BizHawk.Client.Common
 			Config config)
 		{
 			string ext = Path.GetExtension(path) ?? "";
-			var importerType = ImporterForExtension(ext);
-
-			if (importerType == default)
-			{
-				return ImportResult.Error($"No importer found for file type {ext}");
-			}
-
+			var result = Importers.FirstOrNull(kvp => string.Equals(kvp.Value.Extension, ext, StringComparison.OrdinalIgnoreCase));
 			// Create a new instance of the importer class using the no-argument constructor
-
-			return importerType.GetConstructor(Array.Empty<Type>())?.Invoke(Array.Empty<object>()) is IMovieImport importer
-				? importer.Import(dialogParent, session, path, config)
-				: ImportResult.Error($"No importer found for file type {ext}");
-		}
-
-		private static Type ImporterForExtension(string ext)
-		{
-			return Importers.First(i => string.Equals(i.Value.Extension, ext, StringComparison.OrdinalIgnoreCase)).Key;
+			return result is { Key: var importerType }
+				&& importerType.GetConstructor(Array.Empty<Type>())?.Invoke(Array.Empty<object>()) is IMovieImport importer
+					? importer.Import(dialogParent, session, path, config)
+					: ImportResult.Error($"No importer found for file type {ext}");
 		}
 	}
 }
