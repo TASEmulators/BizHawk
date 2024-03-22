@@ -8,11 +8,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 	public abstract class LibQuickNES
 	{
 		/// <summary>
-		/// setup extra mappers.  should be done before anything else
-		/// </summary>
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract void qn_setup_mappers();
-		/// <summary>
 		/// create a new quicknes context
 		/// </summary>
 		/// <returns>NULL on failure</returns>
@@ -48,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <param name="pad2">pad 2 input</param>
 		/// <returns>string error</returns>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract IntPtr qn_emulate_frame(IntPtr e, int pad1, int pad2);
+		public abstract IntPtr qn_emulate_frame(IntPtr e, uint pad1, uint pad2);
 		/// <summary>
 		/// blit to rgb32
 		/// </summary>
@@ -239,11 +234,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				|| s == " truncated file" // This is a garbage rom not worth anyone's time but at least NesHawk handles these better, and these occur before the core has a chance to assess an unsupported mapper
 				) 
 			{
-				throw new Common.UnsupportedGameException("Quicknes unsupported mapper");
+				throw new Common.UnsupportedGameException(CoreNames.QuickNes + " unsupported mapper");
 			}
 			else
 			{
-				throw new InvalidOperationException("LibQuickNES error: " + s);
+				throw new InvalidOperationException($"{nameof(LibQuickNES)} error: {s}");
 			}
 		}
 	}
