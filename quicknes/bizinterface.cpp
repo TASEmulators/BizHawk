@@ -1,9 +1,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <emu.hpp>
-#include <jaffarCommon/include/file.hpp>
-#include <jaffarCommon/include/serializers/contiguous.hpp>
-#include <jaffarCommon/include/deserializers/contiguous.hpp>
+#include <jaffarCommon/file.hpp>
+#include <jaffarCommon/serializers/contiguous.hpp>
+#include <jaffarCommon/deserializers/contiguous.hpp>
 
 #ifdef _MSC_VER
 #define EXPORT extern "C" __declspec(dllexport)

@@ -11,11 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\core\extern\jaffarCommon\include\file.hpp" />
-    <ClInclude Include="..\core\extern\jaffarCommon\include\deserializers\contiguous.hpp" />
-    <ClInclude Include="..\core\extern\jaffarCommon\include\deserializers\base.hpp" />
-    <ClInclude Include="..\core\extern\jaffarCommon\include\serializers\contiguous.hpp" />
-    <ClInclude Include="..\core\extern\jaffarCommon\include\serializers\base.hpp" />
+    <ClInclude Include="..\core\extern\jaffarCommon\include\jaffarCommon\file.hpp" />
+    <ClInclude Include="..\core\extern\jaffarCommon\include\jaffarCommon\deserializers\contiguous.hpp" />
+    <ClInclude Include="..\core\extern\jaffarCommon\include\jaffarCommon\deserializers\base.hpp" />
+    <ClInclude Include="..\core\extern\jaffarCommon\include\jaffarCommon\serializers\contiguous.hpp" />
+    <ClInclude Include="..\core\extern\jaffarCommon\include\jaffarCommon\serializers\base.hpp" />
     <ClInclude Include="..\core\source\quickerNES\core\apu\vrc7\emu2413_state.hpp" />
     <ClInclude Include="..\core\source\quickerNES\core\apu\vrc7\apu.hpp" />
     <ClInclude Include="..\core\source\quickerNES\core\apu\vrc7\emu2413.hpp" />
@@ -148,10 +148,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\core\source\quickerNES\core;..\core\extern;$(IncludePath)</IncludePath>
+    <IncludePath>..\core\source\quickerNES\core;..\core\extern\jaffarCommon\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\core\source\quickerNES\core;..\core\extern;$(IncludePath)</IncludePath>
+    <IncludePath>..\core\source\quickerNES\core;..\core\extern\jaffarCommon\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
