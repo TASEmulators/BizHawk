@@ -73,3 +73,4 @@
 [submodule "quicknes/core"]
 	path = quicknes/core
 	url = https://github.com/TASEmulators/quickerNES.git
+	branch = main
