@@ -18,7 +18,14 @@ CXXFLAGS = -Wall -I../core/source/quickerNES/core/ -I../core/extern -O3 -Wfatal-
 # TODO: include these as options in the Makefile
 # -fprofile-generate
 # -fprofile-use
-TARGET = libquicknes.so
+
+UNAME := $(shell uname)
+ifeq ($(UNAME), Linux)
+	TARGET = libquicknes.so
+else
+	TARGET = libquicknes.dll
+endif
+
 LDFLAGS_32 = -static -static-libgcc -static-libstdc++
 LDFLAGS_64 =
 LDFLAGS = -shared $(LDFLAGS_$(ARCH)) $(CXXFLAGS)
