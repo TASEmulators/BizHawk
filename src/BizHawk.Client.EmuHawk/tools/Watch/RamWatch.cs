@@ -1252,9 +1252,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void WatchListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
-		{
-			OrderColumn(e.Column);
-		}
+			=> OrderColumn(e.Column!);
 
 		private void ErrorIconButton_Click(object sender, EventArgs e)
 		{
