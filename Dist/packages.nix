@@ -31,6 +31,7 @@
 , extraDefines
 , extraDotnetBuildFlags
 }: let
+	getMainOutput = lib.getOutput "out";
 	/** to override just one, you'll probably want to manually import packages-managed.nix, and combine that with the output of this */
 	buildExtraManagedDepsFor = hawkSourceInfo: let
 		pm = import ./packages-managed.nix {
@@ -63,13 +64,13 @@
 		dontFixup = true;
 	};
 	genDepsHostTargetFor = { hawkSourceInfo, mono' ? mono }: [
-		(lib.getOutput "out" libgdiplus)
+		(getMainOutput libgdiplus)
 		lua
 		mono'
 		openal
-		(lib.getOutput "out" zstd)
-	] ++ lib.optionals hawkSourceInfo.needsSDL [ SDL2 (lib.getOutput "out" udev) ]
-		++ lib.optional hawkSourceInfo.needsLibGLVND (lib.getOutput "out" libGL);
+		(getMainOutput zstd)
+	] ++ lib.optionals hawkSourceInfo.needsSDL [ SDL2 (getMainOutput udev) ]
+		++ lib.optional hawkSourceInfo.needsLibGLVND (getMainOutput libGL);
 	/**
 	 * see splitReleaseArtifact re: outputs
 	 * and no you can't build only DiscoHawk and its deps; deal with it
@@ -286,7 +287,7 @@ in {
 			mkdir -p ExternalTools; touch ExternalTools/.keep
 
 			mkdir -p $out; mv -t $out defctrl.json DiscoHawk.exe* dll EmuHawk.exe* gamedb [Ss]haders
-			${if hawkSourceInfo'.releaseArtifactNeedsVBDotnetReference then ''cp -t $out/dll '${lib.getOutput "out" monoBasic}/usr/lib/mono/4.5/Microsoft.VisualBasic.dll'
+			${if hawkSourceInfo'.releaseArtifactNeedsVBDotnetReference then ''cp -t $out/dll '${getMainOutput monoBasic}/usr/lib/mono/4.5/Microsoft.VisualBasic.dll'
 			'' else ""}${if hawkSourceInfo'.releaseArtifactNeedsLowercaseAsms then ''(cd $out/dll; for s in Client.Common Emulation.Cores; do cp BizHawk.$s.dll Bizhawk.$s.dll; done)
 			'' else ""}${if hawkSourceInfo'.releaseArtifactNeedsOTKAsmConfig then ''cp -t $out/dll '${releaseTagSourceInfos.info-2_6.src}/Assets/dll/OpenTK.dll.config'
 			'' else ""}printf '${hawkSourceInfo'.frontendPackageFlavour}' >$out/dll/custombuild.txt
