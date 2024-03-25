@@ -1,12 +1,16 @@
 # BizHawk
 
-A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
+An emulation project.
+
+EmuHawk is a multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners). More info [below](#features-and-systems).
+
+A7800Hawk, Atari2600Hawk, C64Hawk, ColecoHawk, GBHawk, IntelliHawk, NesHawk, O2Hawk, PCEHawk, SMSHawk, TI83Hawk, VectrexHawk, and ZXHawk are bespoke emulation cores written in C#. MSXHawk is a bespoke emulation core written in C++. More info [below](#cores).
 
 [![(latest) release | GitHub](https://img.shields.io/github/release/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&sort=semver&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 [![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/-/pipelines/master/latest)
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/issues)
 
-[![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
+[![built with nix](https://builtwithnix.org/badge.svg)](#nixnixos)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/5365/badge)](https://bestpractices.coreinfrastructure.org/projects/5365)
 
 ---
@@ -33,7 +37,7 @@ Jump to:
 
 ## Features and systems
 
-The BizHawk common features (across all cores) are:
+EmuHawk's features (common across all cores) are:
 * format, region, and integrity detection for game images
 * 10 save slots with hotkeys and infinite named savestates
 * speed control, including frame stepping and rewinding
@@ -397,7 +401,7 @@ Those with hardware or other domain knowledge may be able to help triage [issues
 
 ### Localization
 
-ping YoshiRulz on IRC or Discord (`YoshiRulz#4472`)
+Not available. Contact YoshiRulz on Discord or [elsewhere](https://yoshirulz.dev) if you're interested in translating.
 
 [to top](#bizhawk)
 
