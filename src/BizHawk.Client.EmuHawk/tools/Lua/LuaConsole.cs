@@ -1318,7 +1318,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void LuaListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
-			var columnToSort = e.Column.Name;
+			var columnToSort = e.Column!.Name;
 			var luaListTemp = new List<LuaFile>();
 			if (columnToSort != _lastColumnSorted)
 			{

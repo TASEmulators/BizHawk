@@ -593,8 +593,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				if (BranchView.CurrentCell.IsDataCell()
-					&& BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
+				if (BranchView.CurrentCell is { RowIndex: not null, Column.Name: BranchNumberColumnName })
 				{
 					BranchView.DragCurrentCell();
 				}
