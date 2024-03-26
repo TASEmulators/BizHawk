@@ -441,7 +441,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <typeparam name="T">Type of tool to check</typeparam>
 		/// <remarks>yo why do we have 4 versions of this, each with slightly different behaviour in edge cases --yoshi</remarks>
 		public bool IsLoaded<T>() where T : IToolForm
-			=> _tools.OfType<T>().FirstOrDefault()?.IsActive is true;
+			=> _tools.Find(static t => t is T)?.IsActive is true;
 
 		public bool IsLoaded(Type toolType)
 			=> _tools.Find(t => t.GetType() == toolType)?.IsActive is true;
