@@ -140,8 +140,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_position = 0;
 
 			if (
-				_dataBlocks.Count > 0 &&        // data blocks are present &&
-				_currentDataBlockIndex >= 0     // the current data block index is 1 or greater
+				_dataBlocks.Count > 0 && // data blocks are present &&
+				_currentDataBlockIndex >= 0 // the current data block index is 1 or greater
 				)
 			{
 				while (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count)
@@ -189,8 +189,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_tapeIsPlaying = false;
 
 			if (
-				_currentDataBlockIndex >= 0 &&                                              // we are at datablock 1 or above
-				_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count - 1      // the block is still playing back
+				_currentDataBlockIndex >= 0 && // we are at datablock 1 or above
+				_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count - 1 // the block is still playing back
 				)
 			{
 				// move to the next block
@@ -206,8 +206,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				_position = 0;
 
 				if (
-					_currentDataBlockIndex < 0 &&       // block index is -1
-					_dataBlocks.Count > 0               // number of blocks is greater than 0
+					_currentDataBlockIndex < 0 && // block index is -1
+					_dataBlocks.Count > 0 // number of blocks is greater than 0
 					)
 				{
 					// move the index on to 0
