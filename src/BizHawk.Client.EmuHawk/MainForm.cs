@@ -2379,7 +2379,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheckMessages()
 		{
-			var currentTime = DateTime.Now;
+			var currentTime = DateTime.UtcNow;
 			// only check window messages a maximum of once per millisecond
 			// this check is irrelvant for the 99% of cases where fps are <1k
 			// but gives a slight fps boost in those scenarios
