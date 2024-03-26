@@ -2396,12 +2396,12 @@ namespace BizHawk.Client.EmuHawk
 				PathsFromDragDrop = null;
 			});
 
-			List<string[]> todo = new();
+			string[][] todo = Array.Empty<string[]>();
 			lock (_singleInstanceForwardedArgs)
 			{
 				if (_singleInstanceForwardedArgs.Count > 0)
 				{
-					todo = new List<string[]>(_singleInstanceForwardedArgs);
+					todo = _singleInstanceForwardedArgs.ToArray();
 					_singleInstanceForwardedArgs.Clear();
 				}
 			}
