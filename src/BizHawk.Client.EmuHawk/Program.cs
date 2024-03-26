@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			// This needs to be done before the warnings/errors show up
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-
+			
 			// Quickly check if the user is running this as a 32 bit process somehow
 			// TODO: We may want to remove this sometime, EmuHawk should be able to run somewhat as 32 bit if the user really wants to
 			// (There are no longer any hard 64 bit deps, i.e. SlimDX is no longer around)

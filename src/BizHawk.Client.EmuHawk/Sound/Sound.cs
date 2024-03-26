@@ -188,7 +188,6 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return;
 					}
-
 					int samplesPerMs = SampleRate / 1000;
 					int outputThresholdMs = 20;
 					while (sampleCount > samplesNeeded)
