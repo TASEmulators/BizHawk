@@ -171,13 +171,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IDictionary<string, int> GetAxisValues()
+		public KeyValuePair<string, int>[] GetAxisValues()
 		{
 			lock (_axisValues)
 			{
-				return _axisValues.ToDictionary();
+				return _axisValues.ToArray();
 			}
-			
 		}
 
 		/// <summary>
