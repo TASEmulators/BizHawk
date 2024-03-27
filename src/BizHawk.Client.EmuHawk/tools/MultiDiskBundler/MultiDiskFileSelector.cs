@@ -50,8 +50,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PathBox_DragEnter(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent(DataFormats.FileDrop) &&
-				((string[])e.Data.GetData(DataFormats.FileDrop)).Length == 1)
+			if (e.Data.GetDataPresent(DataFormats.FileDrop)
+				&& ((string[]) e.Data.GetData(DataFormats.FileDrop)).Length is 1)
 			{
 				e.Effect = DragDropEffects.Copy;
 			}

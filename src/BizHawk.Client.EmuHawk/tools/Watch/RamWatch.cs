@@ -1137,13 +1137,11 @@ namespace BizHawk.Client.EmuHawk
 				MoveBottomContextMenuItem.Visible =
 					WatchListView.AnyRowsSelected;
 
-			ReadBreakpointContextMenuItem.Visible =
-			WriteBreakpointContextMenuItem.Visible =
-			Separator6.Visible =
-				SelectedWatches.Any() &&
-				Debuggable != null &&
-				Debuggable.MemoryCallbacksAvailable() &&
-				SelectedWatches.All(w => w.Domain.Name == (MemoryDomains != null ? MemoryDomains.SystemBus.Name : ""));
+			var sysBusName = MemoryDomains?.SystemBus?.Name ?? string.Empty;
+			ReadBreakpointContextMenuItem.Visible = WriteBreakpointContextMenuItem.Visible
+				= Separator6.Visible
+					= Debuggable?.MemoryCallbacksAvailable() is true
+						&& SelectedWatches.Any() && SelectedWatches.All(w => w.Domain.Name == sysBusName);
 
 			SplitContextMenuItem.Enabled = MaySplitAllSelected;
 

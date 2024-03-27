@@ -1593,8 +1593,8 @@ namespace BizHawk.Client.EmuHawk
 			_lastCell = CurrentCell;
 			CurrentCell = newCell;
 
-			if (PointedCellChanged != null &&
-				(_lastCell?.Column != CurrentCell.Column || _lastCell?.RowIndex != CurrentCell.RowIndex))
+			if (PointedCellChanged is not null
+				&& !(_lastCell?.Column == CurrentCell.Column && _lastCell?.RowIndex == CurrentCell.RowIndex)) //TODO isn't this just `Cell.==`? --yoshi
 			{
 				PointedCellChanged(this, new CellEventArgs(_lastCell, CurrentCell));
 			}

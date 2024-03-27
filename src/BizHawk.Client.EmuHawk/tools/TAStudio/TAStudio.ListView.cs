@@ -915,9 +915,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Left)
 			{
-				if (TasView.CurrentCell.RowIndex.HasValue &&
-					TasView.CurrentCell.Column.Name == FrameColumnName &&
-					!AxisEditingMode)
+				if (!AxisEditingMode && TasView.CurrentCell is { RowIndex: not null, Column.Name: FrameColumnName })
 				{
 					var existingMarker = CurrentTasMovie.Markers.FirstOrDefault(m => m.Frame == TasView.CurrentCell.RowIndex.Value);
 

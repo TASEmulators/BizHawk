@@ -142,10 +142,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Highlight the branch cell a little, if hovering over it
-			if (BranchView.CurrentCell.IsDataCell()
-				&& BranchView.CurrentCell.Column.Name == BranchNumberColumnName &&
-				column.Name == BranchNumberColumnName &&
-				index == BranchView.CurrentCell.RowIndex)
+			if (BranchView.CurrentCell is { RowIndex: int targetRow, Column.Name: BranchNumberColumnName }
+				&& index == targetRow && column.Name is BranchNumberColumnName)
 			{
 				color = Color.FromArgb((byte)(color.A - 24), (byte)(color.R - 24), (byte)(color.G - 24), (byte)(color.B - 24));
 			}
@@ -676,11 +674,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.NewCell?.RowIndex != null && e.NewCell.Column != null && e.NewCell.RowIndex < Branches.Count)
 			{
-				if (BranchView.CurrentCell.Column.Name == BranchNumberColumnName &&
-					BranchView.CurrentCell.RowIndex.HasValue &&
-					BranchView.CurrentCell.RowIndex < Branches.Count)
+				if (BranchView.CurrentCell is { RowIndex: int targetRow, Column.Name: BranchNumberColumnName }
+					&& targetRow < Branches.Count)
 				{
-					var branch = Branches[BranchView.CurrentCell.RowIndex.Value];
+					var branch = Branches[targetRow];
 					Point location = PointToScreen(Location);
 					int width = branch.OSDFrameBuffer.Width;
 					int height = branch.OSDFrameBuffer.Height;

@@ -1944,10 +1944,8 @@ namespace BizHawk.Client.EmuHawk
 				DumpStatusButton.ToolTipText = "Verified good dump";
 			}
 
-			if (_multiDiskMode && !(
-				Game.Status == RomStatus.Imperfect ||
-				Game.Status == RomStatus.Unimplemented ||
-				Game.Status == RomStatus.NotWorking))
+			if (_multiDiskMode
+				&& Game.Status is not (RomStatus.Imperfect or RomStatus.Unimplemented or RomStatus.NotWorking))
 			{
 				DumpStatusButton.ToolTipText = "Multi-disk bundler";
 				DumpStatusButton.Image = Properties.Resources.RetroQuestion;
@@ -3264,32 +3262,21 @@ namespace BizHawk.Client.EmuHawk
 					CalcFramerateAndUpdateDisplay(currentTimestamp, isRewinding, isFastForwarding);
 				}
 
-				if (Tools.IsLoaded<TAStudio>() &&
-					Tools.TAStudio.LastPositionFrame == Emulator.Frame)
+				if (IsSeeking && PauseOnFrame.Value <= Emulator.Frame)
 				{
-					if (PauseOnFrame.HasValue &&
-						PauseOnFrame.Value <= Tools.TAStudio.LastPositionFrame)
+					if (PauseOnFrame.Value == Emulator.Frame)
 					{
-						var record = (MovieSession.Movie as ITasMovie)[Emulator.Frame];
-						if (!record.Lagged.HasValue && IsSeeking)
-						{
-							// haven't yet greenzoned the frame, hence it's after editing
-							// then we want to pause here. taseditor fashion
-							PauseEmulator();
-						}
+						PauseEmulator();
+						if (Tools.IsLoaded<TAStudio>()) Tools.TAStudio.StopSeeking();
+						else PauseOnFrame = null;
 					}
-				}
-
-				if (IsSeeking && Emulator.Frame == PauseOnFrame.Value)
-				{
-					PauseEmulator();
-					if (Tools.IsLoaded<TAStudio>())
+					else if (Tools.IsLoaded<TAStudio>()
+						&& Tools.TAStudio.LastPositionFrame == Emulator.Frame
+						&& ((ITasMovie) MovieSession.Movie)[Emulator.Frame].Lagged is null)
 					{
-						Tools.TAStudio.StopSeeking();
-					}
-					else
-					{
-						PauseOnFrame = null;
+						// haven't yet greenzoned the frame, hence it's after editing
+						// then we want to pause here. taseditor fashion
+						PauseEmulator();
 					}
 				}
 			}

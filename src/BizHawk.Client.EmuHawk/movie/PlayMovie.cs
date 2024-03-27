@@ -595,15 +595,11 @@ namespace BizHawk.Client.EmuHawk
 			_config.TurboSeek = TurboCheckbox.Checked;
 			Run();
 			_movieSession.ReadOnly = ReadOnlyCheckBox.Checked;
-
-			if (StopOnFrameCheckbox.Checked &&
-				(StopOnFrameTextBox.ToRawInt().HasValue || LastFrameCheckbox.Checked))
+			if (StopOnFrameCheckbox.Checked)
 			{
-				_mainForm.PauseOnFrame = LastFrameCheckbox.Checked
-					? _movieSession.Movie.InputLogLength
-					: StopOnFrameTextBox.ToRawInt();
+				if (LastFrameCheckbox.Checked) _mainForm.PauseOnFrame = _movieSession.Movie.InputLogLength;
+				else if (StopOnFrameTextBox.ToRawInt() is int i) _mainForm.PauseOnFrame = i;
 			}
-
 			Close();
 		}
 

@@ -377,16 +377,11 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void SetVideoParameters(int width, int height)
 		{
-			var change = _parameters.width != width ||
-				_parameters.height != height;
-
+			var change = width != _parameters.width || height != _parameters.height;
+			if (!change) return;
 			_parameters.width = width;
 			_parameters.height = height;
-
-			if (change)
-			{
-				Segment();
-			}
+			Segment();
 		}
 
 		/// <summary>
@@ -394,20 +389,14 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
-			var change = _parameters.a_samplerate != sampleRate ||
-				_parameters.a_channels != channels ||
-				_parameters.a_bits != bits ||
-				_parameters.has_audio != true;
-
+			var change = !_parameters.has_audio || sampleRate != _parameters.a_samplerate
+				|| channels != _parameters.a_channels || bits != _parameters.a_bits;
+			if (!change) return;
 			_parameters.a_samplerate = sampleRate;
 			_parameters.a_channels = channels;
 			_parameters.a_bits = bits;
 			_parameters.has_audio = true;
-
-			if (change)
-			{
-				Segment();
-			}
+			Segment();
 		}
 
 		public class CodecToken : IDisposable

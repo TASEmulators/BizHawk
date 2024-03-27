@@ -906,9 +906,8 @@ namespace BizHawk.Client.EmuHawk
 			if (_secondaryHighlightedAddresses.Any())
 			{
 				MainForm.CheatList.RemoveRange(
-					MainForm.CheatList.Where(
-						cheat => !cheat.IsSeparator && cheat.Domain == _domain &&
-							_secondaryHighlightedAddresses.Contains(cheat.Address ?? 0)));
+					MainForm.CheatList.Where(cheat => !cheat.IsSeparator && cheat.Domain == _domain
+						&& _secondaryHighlightedAddresses.Contains(cheat.Address ?? 0)));
 			}
 
 			MemoryViewerBox.Refresh();
@@ -1539,10 +1538,8 @@ namespace BizHawk.Client.EmuHawk
 			AddToRamWatchMenuItem.Enabled =
 				_highlightedAddress.HasValue;
 
-			PokeAddressMenuItem.Enabled =
-				FreezeAddressMenuItem.Enabled =
-				_highlightedAddress.HasValue &&
-				_domain.Writable;
+			PokeAddressMenuItem.Enabled = FreezeAddressMenuItem.Enabled
+				= _highlightedAddress is not null && _domain.Writable;
 		}
 
 		private void MemoryDomainsMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1966,25 +1963,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var data = Clipboard.GetDataObject();
 
-			CopyContextItem.Visible =
-				AddToRamWatchContextItem.Visible =
-				_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any();
+			var selectionNotEmpty = _highlightedAddress is not null || _secondaryHighlightedAddresses.Any();
+			CopyContextItem.Visible = AddToRamWatchContextItem.Visible = selectionNotEmpty;
 
-			FreezeContextItem.Visible =
-				PokeContextItem.Visible =
-				IncrementContextItem.Visible =
-				DecrementContextItem.Visible =
-				ContextSeparator2.Visible =
-				(_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
-				_domain.Writable;
+			FreezeContextItem.Visible = PokeContextItem.Visible
+				= IncrementContextItem.Visible
+				= DecrementContextItem.Visible
+				= ContextSeparator2.Visible
+					= selectionNotEmpty && _domain.Writable;
 
 			UnfreezeAllContextItem.Visible = MainForm.CheatList.AnyActive;
 			PasteContextItem.Visible = _domain.Writable && data != null && data.GetDataPresent(DataFormats.Text);
 
-			ContextSeparator1.Visible =
-				_highlightedAddress.HasValue ||
-				_secondaryHighlightedAddresses.Any() ||
-				(data != null && data.GetDataPresent(DataFormats.Text));
+			ContextSeparator1.Visible = selectionNotEmpty || data?.GetDataPresent(DataFormats.Text) is true;
 
 			if (_highlightedAddress.HasValue && IsFrozen(_highlightedAddress.Value))
 			{

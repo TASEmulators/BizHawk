@@ -22,9 +22,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ToBk2MenuItem.Enabled =
-				!string.IsNullOrWhiteSpace(CurrentTasMovie.Filename) &&
-				(CurrentTasMovie.Filename != DefaultTasProjName());
+			ToBk2MenuItem.Enabled = !string.IsNullOrWhiteSpace(CurrentTasMovie.Filename)
+				&& CurrentTasMovie.Filename != DefaultTasProjName();
 
 			saveSelectionToMacroToolStripMenuItem.Enabled =
 				placeMacroAtSelectionToolStripMenuItem.Enabled =
