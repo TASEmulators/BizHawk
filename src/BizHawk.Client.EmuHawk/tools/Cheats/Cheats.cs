@@ -566,7 +566,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
-			var column = e.Column;
+			var column = e.Column!;
 			if (column.Name != _sortedColumn)
 			{
 				_sortReverse = false;

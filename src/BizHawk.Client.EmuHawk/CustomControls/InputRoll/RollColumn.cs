@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿﻿#nullable enable
+
+namespace BizHawk.Client.EmuHawk
 {
 	public class RollColumn
 	{
