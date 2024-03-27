@@ -27,12 +27,6 @@
 		N64Tas = 4
 	}
 
-	public enum EHostInputMethod
-	{
-		SDL2 = 0,
-		DirectInput = 1
-	}
-
 	public enum OpposingDirPolicy
 	{
 		Priority = 0,
