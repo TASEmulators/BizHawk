@@ -944,7 +944,7 @@ namespace BizHawk.Client.EmuHawk
 					new(name: WatchList.Value, widthUnscaled: 59, text: "Value"),
 					new(name: WatchList.Prev, widthUnscaled: 59, text: "Prev"),
 					new(name: WatchList.ChangesCol, widthUnscaled: 60, text: "Changes"),
-					new(name: WatchList.Diff, widthUnscaled: 59, text: "Diff") { Visisble = false },
+					new(name: WatchList.Diff, widthUnscaled: 59, text: "Diff") { Visible = false },
 				};
 
 				PreviewMode = true;
