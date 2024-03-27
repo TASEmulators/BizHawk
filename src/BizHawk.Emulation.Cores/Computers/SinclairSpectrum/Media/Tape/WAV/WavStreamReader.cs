@@ -24,8 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public int ReadNext()
 		{
 			// check - sample should be in PCM format
-			if (m_header.fmtCode != WAVE_FORMAT_PCM &&
-				m_header.fmtCode != WAVE_FORMAT_IEEE_FLOAT)
+			if (m_header.fmtCode is not (WAVE_FORMAT_PCM or WAVE_FORMAT_IEEE_FLOAT))
 			{
 				throw new FormatException($"Not supported audio format: fmtCode={m_header.fmtCode}, bitDepth={m_header.bitDepth}");
 			}

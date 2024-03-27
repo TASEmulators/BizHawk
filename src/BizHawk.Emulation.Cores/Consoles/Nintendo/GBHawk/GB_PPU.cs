@@ -558,9 +558,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// Also, on DMG only, this process only runs if sprites are on in the LCDC (on GBC it always runs)
 				for (int i = 0; i < SL_sprites_index; i++)
 				{
-					if ((pixel_counter >= (SL_sprites[i * 4 + 1] - 8)) &&
-						(pixel_counter < (SL_sprites[i * 4 + 1])) &&
-						!evaled_sprites.Bit(i))
+					if (!evaled_sprites.Bit(i) && pixel_counter - SL_sprites[4 * i + 1] is >= -8 and < 0)
 					{
 						going_to_fetch = true;
 						fetch_sprite = true;
@@ -981,9 +979,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// at this time it is unknown what each cycle does, but we only need to accurately keep track of cycles
 					for (int i = 0; i < SL_sprites_index; i++)
 					{
-						if ((pixel_counter >= (SL_sprites[i * 4 + 1] - 8)) &&
-								(pixel_counter < (SL_sprites[i * 4 + 1])) &&
-								!evaled_sprites.Bit(i))
+						if (!evaled_sprites.Bit(i) && pixel_counter - SL_sprites[4 * i + 1] is >= -8 and < 0)
 						{
 							sprite_fetch_counter += 6;
 							evaled_sprites |= (1 << i);
@@ -1221,8 +1217,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						ushort temp = DMA_OAM_access ? Core.OAM[OAM_scan_index * 4] : (ushort)0xFF;
 						// (sprite Y - 16) equals LY, we have a sprite
-						if ((temp - 16) <= LY &&
-							((temp - 16) + 8 + (LCDC.Bit(2) ? 8 : 0)) > LY)
+						if (LCDC.Bit(2) ? LY - temp is >= -16 and < 0 : LY - temp is >= -16 and < -8)
 						{
 							// always pick the first 10 in range sprites
 							if (SL_sprites_index < 10)

@@ -181,8 +181,8 @@
 			_lagged = false;
 
 			byte value = 0xC0;
-			if ((_controller.IsPressed("Pause") && !IsGameGear) ||
-				(_controller.IsPressed("P1 Start") && IsGameGear_C))
+			if ((!IsGameGear && _controller.IsPressed("Pause"))
+				|| (IsGameGear_C && _controller.IsPressed("P1 Start")))
 			{
 				value ^= 0x80;
 			}

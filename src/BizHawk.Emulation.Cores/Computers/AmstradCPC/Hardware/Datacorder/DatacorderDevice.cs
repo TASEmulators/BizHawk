@@ -176,10 +176,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_waitEdge = 0;
 			_position = 0;
 
-			if (
-				_dataBlocks.Count > 0 && // data blocks are present &&
-				_currentDataBlockIndex >= 0 // the current data block index is 1 or greater
-				)
+			if (_dataBlocks.Count > 0 && _currentDataBlockIndex >= 0) //TODO removed a comment that said "index is 1 or greater", but code is clearly "0 or greater"--which is correct? --yoshi
 			{
 				while (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count)
 				{
@@ -225,10 +222,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// sign that the tape is no longer playing
 			_tapeIsPlaying = false;
 
-			if (
-				_currentDataBlockIndex >= 0 && // we are at datablock 1 or above
-				_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count - 1 // the block is still playing back
-				)
+			if (_currentDataBlockIndex >= 0 && // we are at datablock 1 or above //TODO 1-indexed then? --yoshi
+				_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count - 1) // the block is still playing back
 			{
 				// move to the next block
 				_currentDataBlockIndex++;
@@ -242,10 +237,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				_waitEdge = 0;
 				_position = 0;
 
-				if (
-					_currentDataBlockIndex < 0 && // block index is -1
-					_dataBlocks.Count > 0 // number of blocks is greater than 0
-					)
+				if (_currentDataBlockIndex < 0 && _dataBlocks.Count > 0) //TODO deleted a comment that said "block index is -1", but code is clearly "is negative"--are lower values not reachable? --yoshi
 				{
 					// move the index on to 0
 					_currentDataBlockIndex = 0;

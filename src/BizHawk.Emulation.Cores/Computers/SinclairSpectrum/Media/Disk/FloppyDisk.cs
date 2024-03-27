@@ -189,31 +189,35 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				return false;
 
 			var zeroSecs = DiskTracks[0].Sectors;
-			if (zeroSecs[0].SectorID != 65 ||
-				zeroSecs[1].SectorID != 66 ||
-				zeroSecs[2].SectorID != 67 ||
-				zeroSecs[3].SectorID != 68 ||
-				zeroSecs[4].SectorID != 69 ||
-				zeroSecs[5].SectorID != 70 ||
-				zeroSecs[6].SectorID != 71 ||
-				zeroSecs[7].SectorID != 72 ||
-				zeroSecs[8].SectorID != 73)
+			if (zeroSecs[0].SectorID is not 65
+				|| zeroSecs[1].SectorID is not 66
+				|| zeroSecs[2].SectorID is not 67
+				|| zeroSecs[3].SectorID is not 68
+				|| zeroSecs[4].SectorID is not 69
+				|| zeroSecs[5].SectorID is not 70
+				|| zeroSecs[6].SectorID is not 71
+				|| zeroSecs[7].SectorID is not 72
+				|| zeroSecs[8].SectorID is not 73)
+			{
 				return false;
+			}
 
 			var oneSecs = DiskTracks[1].Sectors;
 
 			if (oneSecs.Length != 8)
 				return false;
 
-			if (oneSecs[0].SectorID != 17 ||
-				oneSecs[1].SectorID != 18 ||
-				oneSecs[2].SectorID != 19 ||
-				oneSecs[3].SectorID != 20 ||
-				oneSecs[4].SectorID != 21 ||
-				oneSecs[5].SectorID != 22 ||
-				oneSecs[6].SectorID != 23 ||
-				oneSecs[7].SectorID != 24)
+			if (oneSecs[0].SectorID is not 17
+				|| oneSecs[1].SectorID is not 18
+				|| oneSecs[2].SectorID is not 19
+				|| oneSecs[3].SectorID is not 20
+				|| oneSecs[4].SectorID is not 21
+				|| oneSecs[5].SectorID is not 22
+				|| oneSecs[6].SectorID is not 23
+				|| oneSecs[7].SectorID is not 24)
+			{
 				return false;
+			}
 
 			return true;
 		}
@@ -240,17 +244,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				return false;
 
 			// check for correct sector 0 lengths
-			if (DiskTracks[0].Sectors[0].SectorSize != 2 ||
-				DiskTracks[0].Sectors[0].SectorData.Length < 0x200)
-				return false;
+			if (DiskTracks[0].Sectors[0] is not { SectorSize: 2, SectorData.Length: >= 0x200 }) return false;
 
 			// sector[1] (SectorID 2) contains the weak sectors
-			Sector sec = DiskTracks[0].Sectors[1];
-
 			// check for correct sector 1 lengths
-			if (sec.SectorSize != 2 ||
-				sec.SectorData.Length < 0x200)
-				return false;
+			if (DiskTracks[0].Sectors[1] is not { SectorSize: 2, SectorData.Length: >= 0x200 } sec) return false;
 
 			// secID 2 needs a CRC error
 			//if (!(sec.Status1.Bit(5) || sec.Status2.Bit(5)))

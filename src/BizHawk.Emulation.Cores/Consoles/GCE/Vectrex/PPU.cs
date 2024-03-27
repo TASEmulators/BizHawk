@@ -267,10 +267,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void new_draw_line()
 		{
-			if (((ramp_sig && !zero_sig) && ((x_vel != x_vel_old) || (y_vel != y_vel_old))) ||
-				(blank_sig != blank_old) ||
-				(bright_int_1 != bright_int_1_old) ||
-				(zero_sig != zero_old))
+			if ((ramp_sig && !zero_sig && (x_vel != x_vel_old || y_vel != y_vel_old))
+				|| blank_sig != blank_old
+				|| bright_int_1 != bright_int_1_old
+				|| zero_sig != zero_old)
 			{
 				draw_lines[line_pointer * 4 + 2] = x_pos;
 				draw_lines[line_pointer * 4 + 3] = y_pos;

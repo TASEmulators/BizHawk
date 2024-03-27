@@ -309,12 +309,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				int scrPix = pix - _ula.FirstPaperTState;
 				int scrLin = line - _ula.FirstPaperLine;
 
-				if ((line >= (_ula.FirstPaperLine - _ula.BorderTopHeight)) && (line < (_ula.FirstPaperLine + 192 + _ula.BorderBottomHeight)) &&
-					(pix >= (_ula.FirstPaperTState - _ula.BorderLeftTime)) && (pix < (_ula.FirstPaperTState + 128 + _ula.BorderRightTime)))
+				if (_ula.FirstPaperLine - _ula.BorderTopHeight <= line && line < _ula.FirstPaperLine + 192 + _ula.BorderBottomHeight
+					&& _ula.FirstPaperTState - _ula.BorderLeftTime <= pix && pix < _ula.FirstPaperTState + 128 + _ula.BorderRightTime)
 				{
 					// visibleArea (vertical)
-					if ((line >= _ula.FirstPaperLine) && (line < (_ula.FirstPaperLine + 192)) &&
-						(pix >= _ula.FirstPaperTState) && (pix < (_ula.FirstPaperTState + 128)))
+					if (_ula.FirstPaperLine <= line && line < _ula.FirstPaperLine + 192
+						&& _ula.FirstPaperTState <= pix && pix < _ula.FirstPaperTState + 128)
 					{
 						// pixel area
 						switch (scrPix & 7)
@@ -370,15 +370,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 								break;
 						}
 					}
-					else if ((line >= _ula.FirstPaperLine) && (line < (_ula.FirstPaperLine + 192)) &&
-						(pix == (_ula.FirstPaperTState - 2))) // border & fetch B1
+					else if (_ula.FirstPaperLine <= line && line < _ula.FirstPaperLine + 192
+						&& pix == _ula.FirstPaperTState - 2) // border & fetch B1
 					{
 						Renderer[item].RAction = RenderAction.BorderAndFetchByte1; // border & fetch B1
 						// +2 = prefetch!
 						Renderer[item].ByteAddress = CalculateByteAddress(scrPix + 2, scrLin);
 					}
-					else if ((line >= _ula.FirstPaperLine) && (line < (_ula.FirstPaperLine + 192)) &&
-						(pix == (_ula.FirstPaperTState - 1))) // border & fetch A1
+					else if (_ula.FirstPaperLine <= line && line < _ula.FirstPaperLine + 192
+						&& pix == _ula.FirstPaperTState - 1) // border & fetch A1
 					{
 						Renderer[item].RAction = RenderAction.BorderAndFetchAttribute1; // border & fetch A1
 						// +1 = prefetch!

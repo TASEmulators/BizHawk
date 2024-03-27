@@ -259,8 +259,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				_writePending = false;
 				BankConfiguration(_dataHoldRegister);
 			}
-			else if (_writeEnabled && _writePending &&
-					Core.DistinctAccessCount == _distinctAccesses + 5)
+			else if (_writeEnabled && _writePending && Core.DistinctAccessCount == _distinctAccesses + 5)
 			{
 				if ((addr & 0x800) == 0)
 				{
@@ -309,8 +308,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			// Handle poke if writing enabled
-			else if (_writeEnabled && _writePending &&
-				(Core.DistinctAccessCount == (_distinctAccesses + 5)))
+			else if (_writeEnabled && _writePending && Core.DistinctAccessCount == _distinctAccesses + 5)
 			{
 				if ((addr & 0x0800) == 0)
 				{

@@ -348,9 +348,9 @@
 					_parseCycleBaSprite0 = _parseBa & BaTypeMaskSprite0;
 					_parseCycleBaSprite1 = (_parseBa & BaTypeMaskSprite1) >> 4;
 					_parseCycleBaSprite2 = (_parseBa & BaTypeMaskSprite2) >> 8;
-					_ba = !((_parseCycleBaSprite0 < 8 && _sprites[_parseCycleBaSprite0].Dma) ||
-						(_parseCycleBaSprite1 < 8 && _sprites[_parseCycleBaSprite1].Dma) ||
-						(_parseCycleBaSprite2 < 8 && _sprites[_parseCycleBaSprite2].Dma));
+					_ba = !((_parseCycleBaSprite0 < 8 && _sprites[_parseCycleBaSprite0].Dma)
+						|| (_parseCycleBaSprite1 < 8 && _sprites[_parseCycleBaSprite1].Dma)
+						|| (_parseCycleBaSprite2 < 8 && _sprites[_parseCycleBaSprite2].Dma));
 					break;
 			}
 

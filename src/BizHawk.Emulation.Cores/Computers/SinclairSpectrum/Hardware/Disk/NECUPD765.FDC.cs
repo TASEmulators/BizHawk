@@ -790,8 +790,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 									ActiveCommandParams.EOT = ActiveCommandParams.Sector;
 								}
 
-								if (!CMD_FLAG_SK && !Status2.Bit(SR2_CM) &&
-									ActiveDrive.Disk.Protection == ProtectionType.PaulOwens)
+								if (!CMD_FLAG_SK && !Status2.Bit(SR2_CM)
+									&& ActiveDrive.Disk.Protection is ProtectionType.PaulOwens)
 								{
 									ActiveCommandParams.EOT = ActiveCommandParams.Sector;
 									SetBit(SR2_CM, ref Status2);
@@ -1054,10 +1054,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							sec.SectorReadCompleted();
 
 							// end of sector - compare IDs
-							if (sec.TrackNumber != ActiveCommandParams.Cylinder ||
-								sec.SideNumber != ActiveCommandParams.Head ||
-								sec.SectorID != ActiveCommandParams.Sector ||
-								sec.SectorSize != ActiveCommandParams.SectorSize)
+							if (sec.TrackNumber != ActiveCommandParams.Cylinder
+								|| sec.SideNumber != ActiveCommandParams.Head
+								|| sec.SectorID != ActiveCommandParams.Sector
+								|| sec.SectorSize != ActiveCommandParams.SectorSize)
 							{
 								SetBit(SR1_ND, ref Status1);
 							}
@@ -2134,8 +2134,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					// for now I will assume that the first call is aimed at DriveA, the second at DriveB (which we are NOT implementing)
 
 					// check active drive first
-					if (ActiveDrive.SeekStatus == SEEK_RECALIBRATE ||
-						ActiveDrive.SeekStatus == SEEK_SEEK)
+					if (ActiveDrive.SeekStatus is SEEK_RECALIBRATE or SEEK_SEEK)
 					{
 						// interrupt has been raised for this drive
 						// acknowledge
@@ -2692,25 +2691,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			// check for error bits
-			if (GetBit(SR1_DE, Status1) ||
-				GetBit(SR1_MA, Status1) ||
-				GetBit(SR1_ND, Status1) ||
-				GetBit(SR1_NW, Status1) ||
-				GetBit(SR1_OR, Status1) ||
-				GetBit(SR2_BC, Status2) ||
-				GetBit(SR2_CM, Status2) ||
-				GetBit(SR2_DD, Status2) ||
-				GetBit(SR2_MD, Status2) ||
-				GetBit(SR2_SN, Status2) ||
-				GetBit(SR2_WC, Status2))
+			if (GetBit(SR1_DE, Status1)
+				|| GetBit(SR1_MA, Status1)
+				|| GetBit(SR1_ND, Status1)
+				|| GetBit(SR1_NW, Status1)
+				|| GetBit(SR1_OR, Status1)
+				|| GetBit(SR2_BC, Status2)
+				|| GetBit(SR2_CM, Status2)
+				|| GetBit(SR2_DD, Status2)
+				|| GetBit(SR2_MD, Status2)
+				|| GetBit(SR2_SN, Status2)
+				|| GetBit(SR2_WC, Status2))
 			{
 				// error bits set - unset end of track
 				UnSetBit(SR1_EN, ref Status1);
 			}
 
 			// check for data errors
-			if (GetBit(SR1_DE, Status1) ||
-				GetBit(SR2_DD, Status2))
+			if (GetBit(SR1_DE, Status1)
+				|| GetBit(SR2_DD, Status2))
 			{
 				// unset control mark
 				UnSetBit(SR2_CM, ref Status2);

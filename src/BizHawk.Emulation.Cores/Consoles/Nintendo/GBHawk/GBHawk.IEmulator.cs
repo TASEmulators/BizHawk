@@ -258,11 +258,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				input_register |= 0xF;
 			}
 
-			// check for interrupts			
-			if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
-				((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
-				((contr_prev & 2) > 0) && ((input_register & 2) == 0) ||
-				((contr_prev & 1) > 0) && ((input_register & 1) == 0))
+			// check for interrupts
+			if (((contr_prev & 0b1000) is not 0 && (input_register & 0b1000) is 0)
+				|| ((contr_prev & 0b100) is not 0 && (input_register & 0b100) is 0)
+				|| ((contr_prev & 0b10) is not 0 && (input_register & 0b10) is 0)
+				|| ((contr_prev & 0b1) is not 0 && (input_register & 0b1) is 0))
 			{
 				if (REG_FFFF.Bit(4)) { cpu.FlagI = true; }
 				REG_FF0F |= 0x10;

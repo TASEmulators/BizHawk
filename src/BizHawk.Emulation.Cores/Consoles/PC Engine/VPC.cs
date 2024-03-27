@@ -245,8 +245,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private void RenderScanLine()
 		{
-			if (((VDC1.ActiveLine + VDC1.ViewStartLine) >= PCE.Settings.BottomLine) ||
-				((VDC1.ActiveLine + VDC1.ViewStartLine) < PCE.Settings.TopLine))
+			if (PCE.Settings.BottomLine <= VDC1.ActiveLine + VDC1.ViewStartLine
+				|| VDC1.ActiveLine + VDC1.ViewStartLine < PCE.Settings.TopLine)
 			{
 				return;
 			}

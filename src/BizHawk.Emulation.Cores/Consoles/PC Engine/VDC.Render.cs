@@ -107,10 +107,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public void RenderScanLine()
 		{
-			if (((ActiveLine + ViewStartLine) >= pce.Settings.BottomLine) ||
-				((ActiveLine + ViewStartLine) < pce.Settings.TopLine))	
+			if (pce.Settings.BottomLine <= ActiveLine + ViewStartLine
+				|| ActiveLine + ViewStartLine < pce.Settings.TopLine)
+			{
 				return;
-
+			}
 			RenderBackgroundScanline(pce.Settings.ShowBG1);
 			RenderSpritesScanline(pce.Settings.ShowOBJ1);
 		}
