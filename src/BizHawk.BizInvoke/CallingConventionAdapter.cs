@@ -279,10 +279,9 @@ namespace BizHawk.BizInvoke
 
 			private static void VerifyParameter(Type type)
 			{
-				if (type == typeof(float) || type == typeof(double) ||
-					type == typeof(void) || type.IsPrimitive || type.IsEnum ||
-					type.IsPointer || typeof(Delegate).IsAssignableFrom(type) ||
-					type.IsByRef || type.IsClass)
+				if (type.IsPrimitive || type.IsEnum || type.IsPointer || type.IsByRef || type.IsClass
+					|| type == typeof(float) || type == typeof(double) || type == typeof(void) //TODO aren't these covered by IsPrimitive? --yoshi
+					|| typeof(Delegate).IsAssignableFrom(type))
 				{
 					return;
 				}

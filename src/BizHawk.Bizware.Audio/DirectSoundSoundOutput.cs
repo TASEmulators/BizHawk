@@ -88,8 +88,7 @@ namespace BizHawk.Bizware.Audio
 				try
 				{
 					var status = (BufferStatus)_deviceBuffer.Status;
-					return (status & BufferStatus.BufferLost) == 0 &&
-						(status & BufferStatus.Playing) == BufferStatus.Playing;
+					return (status & (BufferStatus.BufferLost | BufferStatus.Playing)) is BufferStatus.Playing;
 				}
 				catch (SharpDXException)
 				{
@@ -290,8 +289,7 @@ namespace BizHawk.Bizware.Audio
 				}
 
 				var status = (BufferStatus)_wavDeviceBuffer.Status;
-				return (status & BufferStatus.BufferLost) == 0 &&
-					(status & BufferStatus.Playing) == BufferStatus.Playing;
+				return (status & (BufferStatus.BufferLost | BufferStatus.Playing)) is BufferStatus.Playing;
 			}
 		}
 

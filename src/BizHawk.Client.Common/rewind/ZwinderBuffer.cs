@@ -160,12 +160,14 @@ namespace BizHawk.Client.Common
 		{
 			long targetSize = settings.BufferSize * 1024 * 1024;
 			long size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
-			return Size == size &&
-				_useCompression == settings.UseCompression &&
-				_fixedRewindInterval == settings.UseFixedRewindInterval &&
-				(_fixedRewindInterval ? _targetRewindInterval == settings.TargetRewindInterval : _targetFrameLength == settings.TargetFrameLength) &&
-				_allowOutOfOrderStates == settings.AllowOutOfOrderStates &&
-				_backingStoreType == settings.BackingStore;
+			return Size == size
+				&& _useCompression == settings.UseCompression
+				&& _fixedRewindInterval == settings.UseFixedRewindInterval
+				&& (_fixedRewindInterval
+					? _targetRewindInterval == settings.TargetRewindInterval
+					: _targetFrameLength == settings.TargetFrameLength)
+				&& _allowOutOfOrderStates == settings.AllowOutOfOrderStates
+				&& _backingStoreType == settings.BackingStore;
 		}
 
 		private bool ShouldCaptureForFrameDiff(int frameDiff)

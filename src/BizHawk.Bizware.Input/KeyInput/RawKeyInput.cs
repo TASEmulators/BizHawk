@@ -85,8 +85,8 @@ namespace BizHawk.Bizware.Input
 					return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 				}
 
-				if (input->header.dwType == RAWINPUTHEADER.RIM_TYPE.KEYBOARD &&
-					(input->data.keyboard.Flags & ~(RAWKEYBOARD.RI_KEY.E0 | RAWKEYBOARD.RI_KEY.BREAK)) == 0)
+				if (input->header.dwType is RAWINPUTHEADER.RIM_TYPE.KEYBOARD
+					&& (input->data.keyboard.Flags & ~(RAWKEYBOARD.RI_KEY.E0 | RAWKEYBOARD.RI_KEY.BREAK)) is 0)
 				{
 					var handle = GCHandle.FromIntPtr(ud);
 					var rawKeyInput = (RawKeyInput)handle.Target;

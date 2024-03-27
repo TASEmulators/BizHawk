@@ -415,9 +415,7 @@ namespace BizHawk.Emulation.DiscSystem
 			var v2 = chunkID == "DAOX";
 			var ntracks = ret.LastTrack - ret.FirstTrack + 1;
 
-			if (ntracks <= 0 ||
-				ret.FirstTrack is < 0 or > 99 ||
-				ret.LastTrack is < 0 or > 99)
+			if (ntracks <= 0 || ret.FirstTrack is < 0 or > 99 || ret.LastTrack is < 0 or > 99)
 			{
 				throw new NRGParseException("Malformed NRG format: Corrupt track numbers in DAO chunk!");
 			}
@@ -443,9 +441,7 @@ namespace BizHawk.Emulation.DiscSystem
 					track.TrackStartFileOffset = BinaryPrimitives.ReadInt64BigEndian(chunkData.Slice(i + 26, sizeof(long)));
 					track.TrackEndFileOffset = BinaryPrimitives.ReadInt64BigEndian(chunkData.Slice(i + 34, sizeof(long)));
 
-					if (track.PregapFileOffset < 0 ||
-						track.TrackStartFileOffset < 0 ||
-						track.TrackEndFileOffset < 0)
+					if (track.PregapFileOffset < 0 || track.TrackStartFileOffset < 0 || track.TrackEndFileOffset < 0)
 					{
 						throw new NRGParseException("Malformed NRG format: Negative file offsets in DAOX chunk!");
 					}
@@ -849,9 +845,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 				if (nrgf.DAOTrackInfos.Count > 0)
 				{
-					if (nrgf.TAOTrackInfos.Count > 0 ||
-						nrgf.RELOs.Count > 0 ||
-						nrgf.TOCTs.Count > 0)
+					if (nrgf.TAOTrackInfos.Count is not 0 || nrgf.RELOs.Count is not 0 || nrgf.TOCTs.Count is not 0)
 					{
 						throw new NRGParseException("Malformed NRG format: DAO and TAO chunks both present on file!");
 					}

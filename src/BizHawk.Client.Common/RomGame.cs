@@ -105,8 +105,7 @@ namespace BizHawk.Client.Common
 			{
 				RomData = FileData;
 			}
-			else if (file.Extension == ".dsk" || file.Extension == ".tap" || file.Extension == ".tzx" ||
-				file.Extension == ".pzx" || file.Extension == ".csw" || file.Extension == ".wav" || file.Extension == ".cdt")
+			else if (file.Extension is ".cdt" or ".csw" or ".dsk" or ".pzx" or ".tap" or ".tzx" or ".wav")
 			{
 				// these are not roms. unfortunately if treated as such there are certain edge-cases
 				// where a header offset is detected. This should mitigate this issue until a cleaner solution is found

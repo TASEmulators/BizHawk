@@ -239,8 +239,8 @@ namespace BizHawk.Client.Common
 
 			UpdateHistory(_baseSamplesPerFrame, count, BaseSampleRateMaxHistoryLength);
 
-			if (_baseSamplesPerFrame.Count >= BaseSampleRateUsableHistoryLength &&
-				!_baseEmptyFrameCorrectionHistory.Any(n => n))
+			if (_baseSamplesPerFrame.Count >= BaseSampleRateUsableHistoryLength
+				&& !_baseEmptyFrameCorrectionHistory.Contains(true))
 			{
 				double baseAverageSamplesPerFrame = _baseSamplesPerFrame.Average();
 				if (baseAverageSamplesPerFrame != 0.0)

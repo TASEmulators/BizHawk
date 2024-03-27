@@ -324,16 +324,8 @@ namespace BizHawk.Client.Common
 		/// <param name="other">The <see cref="Watch"/> to compare</param>
 		/// <returns>True if both object are equals; otherwise, false</returns>
 		public bool Equals(Watch other)
-		{
-			if (other is null)
-			{
-				return false;
-			}
-
-			return _domain == other._domain &&
-				Address == other.Address &&
-				Size == other.Size;
-		}
+			=> other is not null
+				&& _domain == other._domain && Address == other.Address && Size == other.Size;
 
 		/// <summary>
 		/// Determines if this <see cref="Watch"/> is equals to an instance of <see cref="Cheat"/>

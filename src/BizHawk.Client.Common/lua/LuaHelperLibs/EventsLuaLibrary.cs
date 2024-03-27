@@ -115,8 +115,9 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				if (DebuggableCore != null && DebuggableCore.MemoryCallbacksAvailable() &&
-					DebuggableCore.MemoryCallbacks.ExecuteCallbacksAvailable)
+				if (DebuggableCore is not null
+					&& DebuggableCore.MemoryCallbacksAvailable()
+					&& DebuggableCore.MemoryCallbacks.ExecuteCallbacksAvailable)
 				{
 					if (!HasScope(scope))
 					{

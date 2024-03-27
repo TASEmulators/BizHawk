@@ -56,9 +56,7 @@ namespace BizHawk.Bizware.Input
 
 			lock (_lockObj)
 			{
-				if (_keyboard == null ||
-					_keyboard.Acquire().Failure ||
-					_keyboard.Poll().Failure)
+				if (_keyboard is null || _keyboard.Acquire().Failure || _keyboard.Poll().Failure)
 				{
 					return Enumerable.Empty<KeyEvent>();
 				}

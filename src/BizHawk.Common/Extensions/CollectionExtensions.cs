@@ -89,13 +89,7 @@ namespace BizHawk.Common.CollectionExtensions
 					return midItem;
 				}
 			}
-
-			if (min == max &&
-				keySelector(list[min]).CompareTo(key) == 0)
-			{
-				return list[min];
-			}
-
+			if (min == max && keySelector(list[min]).CompareTo(key) is 0) return list[min];
 			throw new InvalidOperationException("Item not found");
 		}
 

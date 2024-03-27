@@ -238,8 +238,8 @@ namespace BizHawk.Client.Common.FilterManager
 						{
 							newTarget = true;
 						}
-						else if (currState.SurfaceDisposition == SurfaceDisposition.Texture &&
-								iosi.SurfaceDisposition == SurfaceDisposition.RenderTarget)
+						else if (currState.SurfaceDisposition is SurfaceDisposition.Texture
+							&& iosi.SurfaceDisposition is SurfaceDisposition.RenderTarget)
 						{
 							newTarget = true;
 						}

@@ -224,8 +224,7 @@ namespace BizHawk.Client.Common
 				case WatchSize.Word:
 					return addr == _watch.Address || addr == _watch.Address + 1;
 				case WatchSize.DWord:
-					return addr == _watch.Address || addr == _watch.Address + 1 ||
-						addr == _watch.Address + 2 || addr == _watch.Address + 3;
+					return addr >= _watch.Address && addr <= _watch.Address + 3;
 			}
 		}
 

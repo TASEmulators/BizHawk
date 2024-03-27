@@ -32,11 +32,11 @@ namespace BizHawk.Bizware.Graphics
 
 			// set some sensible defaults
 			SDL_GL_ResetAttributes();
-			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_RED_SIZE, 8) != 0 ||
-				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_GREEN_SIZE, 8) != 0 ||
-				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BLUE_SIZE, 8) != 0 ||
-				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_ALPHA_SIZE, 0) != 0 ||
-				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DOUBLEBUFFER, 1) != 0)
+			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_RED_SIZE, 8) is not 0
+				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_GREEN_SIZE, 8) is not 0
+				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BLUE_SIZE, 8) is not 0
+				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_ALPHA_SIZE, 0) is not 0
+				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DOUBLEBUFFER, 1) is not 0)
 			{
 				throw new($"Could not set GL attributes! SDL Error: {SDL_GetError()}");
 			}

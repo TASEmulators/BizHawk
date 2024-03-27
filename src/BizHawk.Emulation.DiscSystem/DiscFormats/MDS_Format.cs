@@ -481,8 +481,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 						var (dir, fileNoExt, _) = aFile.MDSPath.SplitPathToDirFileAndExt();
 
-						if (f.FilenameOffset == 0 ||
-							string.Equals(fileName, "*.mdf", StringComparison.OrdinalIgnoreCase))
+						if (f.FilenameOffset is 0
+							|| string.Equals(fileName, "*.mdf", StringComparison.OrdinalIgnoreCase))
 						{
 							fileName = $@"{dir}\{fileNoExt}.mdf";
 						}

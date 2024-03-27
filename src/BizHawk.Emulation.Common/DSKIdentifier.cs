@@ -207,9 +207,9 @@ namespace BizHawk.Emulation.Common
 						}
 					}
 
-					if (trk.Sectors[0].SectorData[7] == 3 &&
-						trk.Sectors[0].SectorData[9] == 23 &&
-						trk.Sectors[0].SectorData[2] == 40)
+					if (trk.Sectors[0].SectorData[7] is 3
+						&& trk.Sectors[0].SectorData[9] is 23
+						&& trk.Sectors[0].SectorData[2] is 40)
 					{
 						IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 						return;
