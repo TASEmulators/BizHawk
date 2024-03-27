@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				case LibsnesApi.SNES_MAPPER.BSXROM:
 					if (bank is (>= 0x40 and <= 0x7F) or >= 0xC0
 						|| (low >= 0x8000 && bank is (>= 0x00 and <= 0x3F) or (>= 0x80 and <= 0xBF))
-						|| (low >= 0x6000 and <= 0x7FFF && bank is >= 0x20 and <= 0x3F))
+						|| (low is >= 0x6000 and <= 0x7FFF && bank is >= 0x20 and <= 0x3F))
 					{
 						return Api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
 					}

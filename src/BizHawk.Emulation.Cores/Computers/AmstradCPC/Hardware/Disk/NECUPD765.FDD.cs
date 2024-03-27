@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// or the index hole being passed twice
 			while (iHole <= 2)
 			{
-                var next = trk.Sectors[index];
+				var next = trk.Sectors[index];
 				// does the requested sector match the current sector
 				if (next.SectorIDInfo.C == ActiveCommandParams.Cylinder
 					&& next.SectorIDInfo.H == ActiveCommandParams.Head

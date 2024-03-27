@@ -222,8 +222,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// sign that the tape is no longer playing
 			_tapeIsPlaying = false;
 
-			if (_currentDataBlockIndex >= 0 && // we are at datablock 1 or above //TODO 1-indexed then? --yoshi
-				_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count - 1) // the block is still playing back
+			if (_currentDataBlockIndex >= 0 // we are at datablock 1 or above //TODO 1-indexed then? --yoshi
+				&& _position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count - 1) // the block is still playing back
 			{
 				// move to the next block
 				_currentDataBlockIndex++;

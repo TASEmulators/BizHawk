@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				_waitEdge = 0;
 				_position = 0;
 
-				if (_currentDataBlockIndex < 0 && _dataBlocks.Count > 0)
+				if (_currentDataBlockIndex < 0 && _dataBlocks.Count > 0) //TODO deleted a comment that said "block index is -1", but code is clearly "is negative"--are lower values not reachable? --yoshi
 				{
 					// move the index on to 0
 					_currentDataBlockIndex = 0;
@@ -814,7 +814,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					return;
 
 				// don't autostop if there is only 1 block
-				if (DataBlocks.Count == 1
+				if (DataBlocks.Count is 1
 					|| _dataBlocks[_currentDataBlockIndex].BlockDescription is BlockType.CSW_Recording or BlockType.WAV_Recording)
 				{
 					return;
