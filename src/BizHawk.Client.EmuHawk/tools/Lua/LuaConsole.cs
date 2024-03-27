@@ -56,9 +56,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Columns = new List<RollColumn>
 				{
-					new() { Name = IconColumnName, Text = " ", Visible = true, UnscaledWidth = 22, Type = ColumnType.Image },
-					new() { Name = ScriptColumnName, Text = "Script", Visible = true, UnscaledWidth = 92, Type = ColumnType.Text },
-					new() { Name = PathColumnName, Text = "Path", Visible = true, UnscaledWidth = 300, Type = ColumnType.Text }
+					new(name: IconColumnName, widthUnscaled: 22, type: ColumnType.Image, text: " "),
+					new(name: ScriptColumnName, widthUnscaled: 92, text: "Script"),
+					new(name: PathColumnName, widthUnscaled: 300, text: "Path"),
 				};
 			}
 

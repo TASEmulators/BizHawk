@@ -345,14 +345,10 @@ namespace BizHawk.Client.EmuHawk
 		private void SetUpColumns()
 		{
 			TasView.AllColumns.Clear();
-			AddColumn(CursorColumnName, "", 18);
-			TasView.AllColumns.Add(new RollColumn
+			TasView.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 18, type: ColumnType.Boolean, text: string.Empty));
+			TasView.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 68, text: "Frame#")
 			{
-				Name = FrameColumnName,
-				Text = "Frame#",
-				UnscaledWidth = 68,
-				Type = ColumnType.Text,
-				Rotatable = true
+				Rotatable = true,
 			});
 
 			var columnNames = MovieSession.Movie
@@ -377,7 +373,11 @@ namespace BizHawk.Client.EmuHawk
 					digits = mnemonic.Length;
 				}
 
-				AddColumn(name, mnemonic, (digits * 6) + 14, type); // magic numbers reused in EditBranchTextPopUp()
+				TasView.AllColumns.Add(new(
+					name: name,
+					widthUnscaled: (digits * 6) + 14, // magic numbers reused in EditBranchTextPopUp() --feos // not since eb63fa5a9 (before 2.3.3) --yoshi
+					type: type,
+					text: mnemonic));
 			}
 
 			var columnsToHide = TasView.AllColumns
@@ -464,16 +464,9 @@ namespace BizHawk.Client.EmuHawk
 			SetUpToolStripColumns();
 		}
 
-		public void AddColumn(string columnName, string columnText, int columnWidth, ColumnType columnType = ColumnType.Boolean)
-		{
-			TasView.AllColumns.Add(new RollColumn
-			{
-				Name = columnName,
-				Text = columnText,
-				UnscaledWidth = columnWidth,
-				Type = columnType
-			});
-		}
+		/// <remarks>for Lua</remarks>
+		public void AddColumn(string name, string text, int widthUnscaled)
+			=> TasView.AllColumns.Add(new(name: name, widthUnscaled: widthUnscaled, type: ColumnType.Text, text: text));
 
 		public void LoadBranchByIndex(int index) => BookMarkControl.LoadBranchExternal(index);
 		public void ClearFramesExternal() => ClearFramesMenuItem_Click(null, null);

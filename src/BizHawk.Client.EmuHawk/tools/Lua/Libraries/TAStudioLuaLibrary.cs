@@ -363,10 +363,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("addcolumn", "")]
 		public void AddColumn(string name, string text, int width)
 		{
-			if (Engaged())
-			{
-				Tastudio.AddColumn(name, text, width, ColumnType.Text);
-			}
+			if (Engaged()) Tastudio.AddColumn(name: name, widthUnscaled: width, text: text);
 		}
 
 		[LuaMethodExample("tastudio.setbranchtext( \"Some text\", 1 );")]

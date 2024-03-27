@@ -43,23 +43,8 @@ namespace BizHawk.Client.EmuHawk
 		private void SetupColumns()
 		{
 			MarkerView.AllColumns.Clear();
-			MarkerView.AllColumns.AddRange(new[]
-			{
-				new RollColumn
-				{
-					Name = "FrameColumn",
-					Text = "Frame",
-					UnscaledWidth = 52,
-					Type = ColumnType.Text
-				},
-				new RollColumn
-				{
-					Name = "LabelColumn",
-					Text = "",
-					UnscaledWidth = 125,
-					Type = ColumnType.Text
-				}
-			});
+			MarkerView.AllColumns.Add(new(name: "FrameColumn", widthUnscaled: 52, text: "Frame"));
+			MarkerView.AllColumns.Add(new(name: "LabelColumn", widthUnscaled: 125, text: string.Empty));
 		}
 
 		public InputRoll MarkerInputRoll => MarkerView;

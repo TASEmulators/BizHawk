@@ -167,14 +167,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Columns = new List<RollColumn>
 				{
-					new() { Text = "Address", Name = WatchList.Address, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
-					new() { Text = "Value", Name = WatchList.Value, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
-					new() { Text = "Prev", Name = WatchList.Prev, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
-					new() { Text = "Changes", Name = WatchList.ChangesCol, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
-					new() { Text = "Diff", Name = WatchList.Diff, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
-					new() { Text = "Type", Name = WatchList.Type, Visible = false, UnscaledWidth = 55, Type = ColumnType.Text },
-					new() { Text = "Domain", Name = WatchList.Domain, Visible = true, UnscaledWidth = 55, Type = ColumnType.Text },
-					new() { Text = "Notes", Name = WatchList.Notes, Visible = true, UnscaledWidth = 128, Type = ColumnType.Text }
+					new(name: WatchList.Address, widthUnscaled: 60, text: "Address"),
+					new(name: WatchList.Value, widthUnscaled: 59, text: "Value"),
+					new(name: WatchList.Prev, widthUnscaled: 59, text: "Prev") { Visible = false },
+					new(name: WatchList.ChangesCol, widthUnscaled: 60, text: "Changes"),
+					new(name: WatchList.Diff, widthUnscaled: 59, text: "Diff") { Visible = false },
+					new(name: WatchList.Type, widthUnscaled: 55, text: "Type") { Visible = false },
+					new(name: WatchList.Domain, widthUnscaled: 55, text: "Domain"),
+					new(name: WatchList.Notes, widthUnscaled: 128, text: "Notes"),
 				};
 			}
 

@@ -36,23 +36,8 @@ namespace BizHawk.Client.EmuHawk
 			DisassemblerView.QueryItemText += DisassemblerView_QueryItemText;
 			DisassemblerView.QueryItemBkColor += DisassemblerView_QueryItemBkColor;
 			DisassemblerView.AllColumns.Clear();
-			DisassemblerView.AllColumns.AddRange(new[]
-			{
-				new RollColumn
-				{
-					Name = AddressColumnName,
-					Text = AddressColumnName,
-					UnscaledWidth = 94,
-					Type = ColumnType.Text
-				},
-				new RollColumn
-				{
-					Name = InstructionColumnName,
-					Text = InstructionColumnName,
-					UnscaledWidth = 291,
-					Type = ColumnType.Text
-				}
-			});
+			DisassemblerView.AllColumns.Add(new(name: AddressColumnName, widthUnscaled: 94, text: AddressColumnName));
+			DisassemblerView.AllColumns.Add(new(name: InstructionColumnName, widthUnscaled: 291, text: InstructionColumnName));
 		}
 
 		private void EngageDebugger()

@@ -72,30 +72,9 @@ namespace BizHawk.Client.EmuHawk
 		private void SetupColumns()
 		{
 			BranchView.AllColumns.Clear();
-			BranchView.AllColumns.AddRange(new[]
-			{
-				new RollColumn
-				{
-					Name = BranchNumberColumnName,
-					Text = "#",
-					UnscaledWidth = 30,
-					Type = ColumnType.Text
-				},
-				new RollColumn
-				{
-					Name = FrameColumnName,
-					Text = "Frame",
-					UnscaledWidth = 64,
-					Type = ColumnType.Text
-				},
-				new RollColumn
-				{
-					Name = UserTextColumnName,
-					Text = "UserText",
-					UnscaledWidth = 90,
-					Type = ColumnType.Text
-				}
-			});
+			BranchView.AllColumns.Add(new(name: BranchNumberColumnName, widthUnscaled: 30, text: "#"));
+			BranchView.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 64, text: "Frame"));
+			BranchView.AllColumns.Add(new(name: UserTextColumnName, widthUnscaled: 90, text: "UserText"));
 		}
 
 		private void QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
