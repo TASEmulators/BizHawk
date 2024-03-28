@@ -15,29 +15,7 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = owner;
 		}
 
-		internal void AddUniformInfo(UniformInfo ui)
-		{
-			_uniformInfos.Add(ui);
-		}
-
-		public IEnumerable<UniformInfo> UniformInfos => _uniformInfos;
-
-		private readonly List<UniformInfo> _uniformInfos = new();
-
-		/// <returns>the first and only <see cref="UniformInfo"/></returns>
-		/// <exception cref="InvalidOperationException">more than one <see cref="UniformInfo"/> exists</exception>
-		public UniformInfo Sole
-		{
-			get
-			{
-				if (_uniformInfos.Count != 1)
-				{
-					throw new InvalidOperationException();
-				}
-
-				return _uniformInfos[0];
-			}
-		}
+		public UniformInfo UniformInfo { get; init; }
 
 		public Pipeline Owner { get; }
 		

@@ -508,11 +508,8 @@ namespace BizHawk.Bizware.Graphics
 
 		public void SetPipelineUniform(PipelineUniform uniform, bool value)
 		{
-			foreach (var ui in uniform.UniformInfos)
-			{
-				var uw = (UniformWrapper)ui.Opaque;
-				uw.CT.SetValue(_device, uw.EffectHandle, value);
-			}
+			var uw = (UniformWrapper)uniform.UniformInfo.Opaque;
+			uw.CT.SetValue(_device, uw.EffectHandle, value);
 		}
 
 		public void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4x4 mat, bool transpose)
@@ -520,48 +517,33 @@ namespace BizHawk.Bizware.Graphics
 
 		public void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4x4 mat, bool transpose)
 		{
-			foreach (var ui in uniform.UniformInfos)
-			{
-				var uw = (UniformWrapper)ui.Opaque;
-				uw.CT.SetValue(_device, uw.EffectHandle, mat.ToSharpDXMatrix(!transpose));
-			}
+			var uw = (UniformWrapper)uniform.UniformInfo.Opaque;
+			uw.CT.SetValue(_device, uw.EffectHandle, mat.ToSharpDXMatrix(!transpose));
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, Vector4 value)
 		{
-			foreach (var ui in uniform.UniformInfos)
-			{
-				var uw = (UniformWrapper)ui.Opaque;
-				uw.CT.SetValue(_device, uw.EffectHandle, value.ToSharpDXVector4());
-			}
+			var uw = (UniformWrapper)uniform.UniformInfo.Opaque;
+			uw.CT.SetValue(_device, uw.EffectHandle, value.ToSharpDXVector4());
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, Vector2 value)
 		{
-			foreach (var ui in uniform.UniformInfos)
-			{
-				var uw = (UniformWrapper)ui.Opaque;
-				uw.CT.SetValue(_device, uw.EffectHandle, value.ToSharpDXVector2());
-			}
+			var uw = (UniformWrapper)uniform.UniformInfo.Opaque;
+			uw.CT.SetValue(_device, uw.EffectHandle, value.ToSharpDXVector2());
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, float value)
 		{
-			foreach (var ui in uniform.UniformInfos)
-			{
-				var uw = (UniformWrapper)ui.Opaque;
-				uw.CT.SetValue(_device, uw.EffectHandle, value);
-			}
+			var uw = (UniformWrapper)uniform.UniformInfo.Opaque;
+			uw.CT.SetValue(_device, uw.EffectHandle, value);
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, Vector4[] values)
 		{
 			var v = Array.ConvertAll(values, v => v.ToSharpDXVector4());
-			foreach (var ui in uniform.UniformInfos)
-			{
-				var uw = (UniformWrapper)ui.Opaque;
-				uw.CT.SetValue(_device, uw.EffectHandle, v);
-			}
+			var uw = (UniformWrapper)uniform.UniformInfo.Opaque;
+			uw.CT.SetValue(_device, uw.EffectHandle, v);
 		}
 
 		public void SetPipelineUniformSampler(PipelineUniform uniform, Texture2d tex)
@@ -572,20 +554,17 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			var tw = (TextureWrapper)tex.Opaque;
-			foreach (var ui in uniform.UniformInfos)
+			if (!uniform.UniformInfo.IsSampler)
 			{
-				if (!ui.IsSampler)
-				{
-					throw new InvalidOperationException("Uniform was not a texture/sampler");
-				}
-
-				_device.SetTexture(ui.SamplerIndex, tw.Texture);
-
-				_device.SetSamplerState(ui.SamplerIndex, SamplerState.AddressU, (int)tw.WrapClamp);
-				_device.SetSamplerState(ui.SamplerIndex, SamplerState.AddressV, (int)tw.WrapClamp);
-				_device.SetSamplerState(ui.SamplerIndex, SamplerState.MinFilter, (int)tw.MinFilter);
-				_device.SetSamplerState(ui.SamplerIndex, SamplerState.MagFilter, (int)tw.MagFilter);
+				throw new InvalidOperationException("Uniform was not a texture/sampler");
 			}
+
+			_device.SetTexture(uniform.UniformInfo.SamplerIndex, tw.Texture);
+
+			_device.SetSamplerState(uniform.UniformInfo.SamplerIndex, SamplerState.AddressU, (int)tw.WrapClamp);
+			_device.SetSamplerState(uniform.UniformInfo.SamplerIndex, SamplerState.AddressV, (int)tw.WrapClamp);
+			_device.SetSamplerState(uniform.UniformInfo.SamplerIndex, SamplerState.MinFilter, (int)tw.MinFilter);
+			_device.SetSamplerState(uniform.UniformInfo.SamplerIndex, SamplerState.MagFilter, (int)tw.MagFilter);
 		}
 
 		public void SetTextureWrapMode(Texture2d tex, bool clamp)

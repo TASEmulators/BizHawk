@@ -443,30 +443,30 @@ namespace BizHawk.Bizware.Graphics
 
 		public void SetPipelineUniform(PipelineUniform uniform, bool value)
 		{
-			GL.Uniform1((int)uniform.Sole.Opaque, value ? 1 : 0);
+			GL.Uniform1((int)uniform.UniformInfo.Opaque, value ? 1 : 0);
 		}
 
 		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4x4 mat, bool transpose)
 		{
-			GL.UniformMatrix4((int)uniform.Sole.Opaque, 1, transpose, (float*)&mat);
+			GL.UniformMatrix4((int)uniform.UniformInfo.Opaque, 1, transpose, (float*)&mat);
 		}
 
 		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4x4 mat, bool transpose)
 		{
 			fixed (Matrix4x4* pMat = &mat)
 			{
-				GL.UniformMatrix4((int)uniform.Sole.Opaque, 1, transpose, (float*)pMat);
+				GL.UniformMatrix4((int)uniform.UniformInfo.Opaque, 1, transpose, (float*)pMat);
 			}
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, Vector4 value)
 		{
-			GL.Uniform4((int)uniform.Sole.Opaque, value.X, value.Y, value.Z, value.W);
+			GL.Uniform4((int)uniform.UniformInfo.Opaque, value.X, value.Y, value.Z, value.W);
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, Vector2 value)
 		{
-			GL.Uniform2((int)uniform.Sole.Opaque, value.X, value.Y);
+			GL.Uniform2((int)uniform.UniformInfo.Opaque, value.X, value.Y);
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, float value)
@@ -476,20 +476,20 @@ namespace BizHawk.Bizware.Graphics
 				return; // uniform was optimized out
             }
 
-			GL.Uniform1((int)uniform.Sole.Opaque, value);
+			GL.Uniform1((int)uniform.UniformInfo.Opaque, value);
 		}
 
 		public unsafe void SetPipelineUniform(PipelineUniform uniform, Vector4[] values)
 		{
 			fixed (Vector4* pValues = &values[0])
 			{
-				GL.Uniform4((int)uniform.Sole.Opaque, (uint)values.Length, (float*)pValues);
+				GL.Uniform4((int)uniform.UniformInfo.Opaque, (uint)values.Length, (float*)pValues);
 			}
 		}
 
 		public void SetPipelineUniformSampler(PipelineUniform uniform, Texture2d tex)
 		{
-			var n = (int)uniform.Sole.Opaque >> 24;
+			var n = (int)uniform.UniformInfo.Opaque >> 24;
 
 			// set the sampler index into the uniform first
 			GL.ActiveTexture(TextureUnit.Texture0 + n);

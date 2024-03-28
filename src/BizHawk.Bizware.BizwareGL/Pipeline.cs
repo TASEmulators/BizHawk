@@ -29,12 +29,10 @@ namespace BizHawk.Bizware.BizwareGL
 			UniformsDictionary = new(this);
 			foreach (var ui in uniforms)
 			{
-				UniformsDictionary[ui.Name] = new(this);
-			}
-
-			foreach (var ui in uniforms)
-			{
-				UniformsDictionary[ui.Name].AddUniformInfo(ui);
+				UniformsDictionary[ui.Name] = new(this)
+				{
+					UniformInfo = ui
+				};
 			}
 		}
 
