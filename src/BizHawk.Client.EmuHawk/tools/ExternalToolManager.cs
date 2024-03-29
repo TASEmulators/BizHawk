@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -109,12 +111,15 @@ namespace BizHawk.Client.EmuHawk
 			if (DirectoryMonitor == null) return;
 			DirectoryInfo di = new(DirectoryMonitor.Path);
 			if (!di.Exists) return;
-			foreach (var fi in di.GetFiles("*.dll")) MenuItems.Add(GenerateToolTipFromFileName(fi.FullName));
+			foreach (var fi in di.GetFiles("*.dll")) Process(fi.FullName);
 		}
 
 		/// <summary>Generates a <see cref="ToolStripMenuItem"/> from an assembly at <paramref name="fileName"/> containing an external tool.</summary>
-		/// <returns>a <see cref="ToolStripMenuItem"/> with its <see cref="ToolStripItem.Tag"/> containing a <see cref="MenuItemInfo"/></returns>
-		private ToolStripMenuItem GenerateToolTipFromFileName(string fileName)
+		/// <returns>
+		/// a <see cref="ToolStripMenuItem"/> with its <see cref="ToolStripItem.Tag"/> containing a <see cref="MenuItemInfo"/>, or
+		/// <see langword="null"/> if the file is not a .NET assembly
+		/// </returns>
+		private ToolStripMenuItem/*?*/ GenerateToolTipFromFileName(string fileName)
 		{
 			if (fileName == null) throw new Exception();
 			var item = new ToolStripMenuItem(Path.GetFileName(fileName))
@@ -186,6 +191,11 @@ namespace BizHawk.Client.EmuHawk
 				if (!string.IsNullOrWhiteSpace(toolAttribute.Description)) item.ToolTipText = toolAttribute.Description;
 				return item;
 			}
+			catch (BadImageFormatException)
+			{
+				Console.WriteLine($"ignoring <exttools>/{fileName.MakeRelativeTo(DirectoryMonitor.Path).RemovePrefix("./")} as it doesn't seem to be an assembly (are you not targeting `net48`?)");
+				return null;
+			}
 			catch (Exception e)
 			{
 #if DEBUG
@@ -196,7 +206,6 @@ namespace BizHawk.Client.EmuHawk
 #endif
 				item.ToolTipText = e switch
 				{
-					BadImageFormatException => "This assembly can't be loaded, probably because it's corrupt or targets an incompatible .NET runtime.",
 					ExternalToolApplicabilityAttributeBase.DuplicateException => "The IExternalToolForm has conflicting applicability attributes.",
 					ExternalToolAttribute.MissingException => "The assembly doesn't contain a class implementing IExternalToolForm and annotated with [ExternalTool].",
 					ReflectionTypeLoadException => "Something went wrong while trying to load the assembly.",
@@ -214,8 +223,12 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="sender">Object that raised the event</param>
 		/// <param name="e">Event arguments</param>
 		private void DirectoryMonitor_Created(object sender, FileSystemEventArgs e)
+			=> Process(e.FullPath);
+
+		private void Process(string fileName)
 		{
-			MenuItems.Add(GenerateToolTipFromFileName(e.FullPath));
+			var item = GenerateToolTipFromFileName(fileName);
+			if (item is not null) MenuItems.Add(item);
 		}
 
 		public IReadOnlyCollection<ToolStripItem> ToolStripItems
