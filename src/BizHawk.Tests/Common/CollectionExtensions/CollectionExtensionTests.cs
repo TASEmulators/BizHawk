@@ -95,6 +95,7 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 		{
 			List<string> testList = new(new[] { "a", "abc", "abcdef" });
 			Assert.ThrowsException<InvalidOperationException>(() => testList.BinarySearch(static s => s.Length, 4));
+			Assert.ThrowsException<InvalidOperationException>(() => testList.BinarySearch(static s => s.Length, 7));
 			Assert.AreEqual("abc", testList.BinarySearch(static s => s.Length, 3));
 
 			List<int> emptyList = new List<int>();
