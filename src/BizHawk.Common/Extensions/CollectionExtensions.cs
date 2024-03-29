@@ -28,12 +28,13 @@ namespace BizHawk.Common.CollectionExtensions
 		public static int LowerBoundBinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key)
 			where TKey : IComparable<TKey>
 		{
+			if (list.Count is 0) return -1;
+
 			int min = 0;
 			int max = list.Count - 1;
-			int mid;
 			while (min < max)
 			{
-				mid = (max + min) / 2;
+				int mid = (max + min) / 2;
 				T midItem = list[mid];
 				var midKey = keySelector(midItem);
 				int comp = midKey.CompareTo(key);
@@ -69,7 +70,7 @@ namespace BizHawk.Common.CollectionExtensions
 			where TKey : IComparable<TKey>
 		{
 			int min = 0;
-			int max = list.Count;
+			int max = list.Count - 1;
 			while (min < max)
 			{
 				int mid = (max + min) / 2;
