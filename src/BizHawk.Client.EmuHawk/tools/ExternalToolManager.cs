@@ -117,10 +117,15 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>Generates a <see cref="ToolStripMenuItem"/> from an assembly at <paramref name="fileName"/> containing an external tool.</summary>
 		/// <returns>
 		/// a <see cref="ToolStripMenuItem"/> with its <see cref="ToolStripItem.Tag"/> containing a <see cref="MenuItemInfo"/>, or
-		/// <see langword="null"/> if the file is not a .NET assembly
+		/// <see langword="null"/> if the file is not a .NET assembly or does not reference a BizHawk assembly
 		/// </returns>
 		private ToolStripMenuItem/*?*/ GenerateToolTipFromFileName(string fileName)
 		{
+			ToolStripMenuItem/*?*/ Fail(string reason)
+			{
+				Console.WriteLine($"ignoring <exttools>/{fileName.MakeRelativeTo(DirectoryMonitor.Path).RemovePrefix("./")} as {reason}");
+				return null;
+			}
 			if (fileName == null) throw new Exception();
 			var item = new ToolStripMenuItem(Path.GetFileName(fileName))
 			{
@@ -136,6 +141,10 @@ namespace BizHawk.Client.EmuHawk
 				var asmBytes = File.ReadAllBytes(fileName);
 				var externalToolFile = Assembly.Load(asmBytes);
 #endif
+				if (!externalToolFile.GetReferencedAssemblies().Any(static name => name.Name.StartsWithOrdinal("BizHawk.")))
+				{
+					return Fail("it doesn't reference a BizHawk assembly");
+				}
 				var entryPoint = externalToolFile.GetTypes()
 					.SingleOrDefault(t => typeof(IExternalToolForm).IsAssignableFrom(t) && t.GetCustomAttributes().OfType<ExternalToolAttribute>().Any());
 				if (entryPoint == null) throw new ExternalToolAttribute.MissingException();
@@ -193,8 +202,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (BadImageFormatException)
 			{
-				Console.WriteLine($"ignoring <exttools>/{fileName.MakeRelativeTo(DirectoryMonitor.Path).RemovePrefix("./")} as it doesn't seem to be an assembly (are you not targeting `net48`?)");
-				return null;
+				return Fail("it doesn't seem to be an assembly (are you not targeting `net48`?)");
 			}
 			catch (Exception e)
 			{
