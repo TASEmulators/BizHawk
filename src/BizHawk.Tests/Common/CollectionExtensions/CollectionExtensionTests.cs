@@ -85,6 +85,20 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 			Assert.AreEqual(2, a.LowerBoundBinarySearch(static s => s.Length, 5), "length 5");
 			Assert.AreEqual(4, a.LowerBoundBinarySearch(static s => s.Length, 7), "length 7");
 			Assert.AreEqual(4, a.LowerBoundBinarySearch(static s => s.Length, 8), "length 8");
+
+			List<int> emptyList = new List<int>();
+			Assert.AreEqual(-1, emptyList.LowerBoundBinarySearch(static i => i, 13));
+		}
+
+		[TestMethod]
+		public void TestBinarySearchExtension()
+		{
+			List<string> testList = new(new[] { "a", "abc", "abcdef" });
+			Assert.ThrowsException<InvalidOperationException>(() => testList.BinarySearch(static s => s.Length, 4));
+			Assert.AreEqual("abc", testList.BinarySearch(static s => s.Length, 3));
+
+			List<int> emptyList = new List<int>();
+			Assert.ThrowsException<InvalidOperationException>(() => emptyList.BinarySearch(i => i, 15));
 		}
 
 		[TestMethod]
