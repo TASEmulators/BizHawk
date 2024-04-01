@@ -853,10 +853,11 @@ namespace BizHawk.Client.EmuHawk
 					Tools.LuaConsole.ResumeScripts(false);
 				}
 
-				StepRunLoop_Core();
+				bool newFrame = StepRunLoop_Core();
 				StepRunLoop_Throttle();
 
-				Render();
+				if (newFrame)
+					Render();
 
 				// HACK: RAIntegration might peek at memory during messages
 				// we need this to allow memory access here, otherwise it will deadlock
@@ -3057,7 +3058,7 @@ namespace BizHawk.Client.EmuHawk
 			PressFrameAdvance = false;
 		}
 
-		private void StepRunLoop_Core(bool force = false)
+		private bool StepRunLoop_Core(bool force = false)
 		{
 			var runFrame = false;
 			_runloopFrameAdvance = false;
@@ -3131,6 +3132,8 @@ namespace BizHawk.Client.EmuHawk
 			bool isRewinding = Rewind(ref runFrame, currentTimestamp, out var returnToRecording);
 
 			float atten = 0;
+
+			bool newFrame = true;
 
 			// BlockFrameAdvance (true when input it being editted in TAStudio) supercedes all other frame advance conditions
 			if ((runFrame || force) && !BlockFrameAdvance)
@@ -3212,7 +3215,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				bool render = !InvisibleEmulation && (!_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false));
-				bool newFrame = Emulator.FrameAdvance(InputManager.ControllerOutput, render, renderSound);
+				newFrame = Emulator.FrameAdvance(InputManager.ControllerOutput, render, renderSound);
 
 				MovieSession.HandleFrameAfter();
 
@@ -3287,6 +3290,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Sound.UpdateSound(atten, DisableSecondaryThrottling);
+
+			return newFrame;
 		}
 
 		private void CalcFramerateAndUpdateDisplay(long currentTimestamp, bool isRewinding, bool isFastForwarding)
