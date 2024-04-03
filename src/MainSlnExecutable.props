@@ -1,8 +1,11 @@
 <Project>
 	<Import Project="MainSlnCommon.props" />
 	<PropertyGroup>
-		<OutputPath>$(MSBuildProjectDirectory)/../../output</OutputPath>
-		<ProjectNameTail>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1))))</ProjectNameTail>
+		<OutputPath>$(MSBuildProjectDirectory)/../../output/</OutputPath>
+		<!-- Setting TargetFileName does not change the AssemblyName (as setting TargetName would), but also does not change the output file name
+			 for the executable on build (as one would expect). So we still need to rename the executable file below. Using this method has the advantage
+			 of IDEs respecting the TargetFileName and expecting it. -->
+		<TargetFileName>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1)))).exe</TargetFileName>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 		<OutputType>Exe</OutputType>
@@ -12,13 +15,9 @@
 	</PropertyGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
-			<ExecutableAndConfigFromExecProj Include="$(OutputPath)$(MSBuildProjectName).exe*" />
-			<NotExecFilesFromExecProj Include="$(OutputPath)*.deps.json" />
 			<NotExecFilesFromExecProj Include="$(OutputPath)*.dll" />
-			<NotExecFilesFromExecProj Include="$(OutputPath)*.pdb" Exclude="$(OutputPath)EmuHawk.pdb;$(OutputPath)DiscoHawk.pdb" />
-			<NotExecFilesFromExecProj Include="$(OutputPath)*.xml" />
 		</ItemGroup>
-		<Move Condition=" $(IsTargetingNetFramework) " SourceFiles="@(NotExecFilesFromExecProj)" DestinationFolder="$(OutputPath)dll/" />
-		<Move SourceFiles="@(ExecutableAndConfigFromExecProj)" DestinationFiles="@(ExecutableAndConfigFromExecProj->Replace($(MSBuildProjectName), $(ProjectNameTail)))" /> <!-- keep assembly name as e.g. `BizHawk.Client.EmuHawk`, but rename file to simply `EmuHawk.exe` as we've been doing -->
+		<Move SourceFiles="@(NotExecFilesFromExecProj)" DestinationFolder="$(OutputPath)dll/" />
+		<Move SourceFiles="$(OutputPath)$(MSBuildProjectName).exe" DestinationFiles="$(OutputPath)$(TargetFileName)" />
 	</Target>
 </Project>
