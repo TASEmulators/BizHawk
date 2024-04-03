@@ -19,16 +19,14 @@
 		<Nullable>enable</Nullable>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+		<DebugType>embedded</DebugType>
+		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-		<DebugSymbols>true</DebugSymbols>
-		<DebugType>portable</DebugType>
 		<DefineConstants>DEBUG;TRACE</DefineConstants>
 		<Optimize>false</Optimize>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-		<DebugSymbols>false</DebugSymbols>
-		<DebugType>portable</DebugType>
 		<DefineConstants>TRACE</DefineConstants>
 		<Optimize>true</Optimize>
 		<PathMap>$(MSBuildProjectDirectory)=${$(MSBuildProjectName)}/</PathMap>
