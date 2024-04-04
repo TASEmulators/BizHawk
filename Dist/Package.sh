@@ -8,7 +8,6 @@ find "output" -type f \( -wholename "output/EmuHawk.exe" -o -wholename "output/D
 	-not -wholename "output/dll/*.xml" -not -wholename "output/dll/libsneshawk-64*.exe" -not -wholename "output/dll/gpgx.elf" -not -wholename "output/dll/miniclient.*" \
 	-exec install -D -m644 "{}" "packaged_{}" \;
 cd "$targetDir"
-mkdir "Firmware"
 if [ "$1" = "windows-x64" ]; then
 	rm -f "EmuHawkMono.sh"
 	cd "dll"

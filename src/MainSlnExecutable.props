@@ -21,5 +21,6 @@
 		</ItemGroup>
 		<Move SourceFiles="@(NotExecFilesFromExecProj)" DestinationFolder="$(OutputPath)dll/" />
 		<Move SourceFiles="@(ExecFilesFromExecProj)" DestinationFiles="@(ExecFilesFromExecProj->Replace('BizHawk.Client.', ''))" />
+		<MakeDir Directories="$(OutputPath)ExternalTools;$(OutputPath)Firmware;$(OutputPath)Tools" />
 	</Target>
 </Project>
