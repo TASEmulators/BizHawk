@@ -657,20 +657,22 @@ namespace BizHawk.Client.EmuHawk
 					&& targetRow < Branches.Count)
 				{
 					var branch = Branches[targetRow];
+					var bb = branch.OSDFrameBuffer;
+					var width = bb.Width;
 					Point location = PointToScreen(Location);
-					int width = branch.OSDFrameBuffer.Width;
-					int height = branch.OSDFrameBuffer.Height;
 					location.Offset(-width, 0);
 
 					if (location.X < 0)
 					{
 						location.Offset(width + Width, 0);
 					}
-
-					_screenshot.UpdateValues(branch, location, width, height,
-						(int)Graphics.FromHwnd(Handle).MeasureString(
-							branch.UserText, _screenshot.Font, width).Height);
-
+					_screenshot.UpdateValues(
+						bb,
+						branch.UserText,
+						location,
+						width: width,
+						height: bb.Height,
+						Graphics.FromHwnd(Handle).MeasureString);
 					_screenshot.FadeIn();
 				}
 				else

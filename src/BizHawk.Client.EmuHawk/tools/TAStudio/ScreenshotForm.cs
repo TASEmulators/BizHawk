@@ -1,7 +1,8 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
+using BizHawk.Bizware.BizwareGL;
 
 // We pretend it's a tooltip kind of thing, so show only the actual contents
 // and avoid stealing focus, while still being topmost
@@ -58,15 +59,20 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		public void UpdateValues(TasBranch branch, Point location , int width, int height, int padding)
+		public void UpdateValues(
+			BitmapBuffer bb,
+			string captionText,
+			Point location,
+			int width,
+			int height,
+			Func<string, Font, int, SizeF> measureString)
 		{
-			var bb = branch.OSDFrameBuffer;
 			bb.DiscardAlpha();
 			_bitmap = bb.ToSysdrawingBitmap();
 			Width = width;
-			Padding = padding;
+			Padding = (int) measureString(captionText, Font, width).Height;
 			_drawingHeight = height;
-			Text = branch.UserText;
+			Text = captionText;
 			Location = location;
 
 			if (Padding > 0)
