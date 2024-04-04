@@ -15,9 +15,11 @@
 	</PropertyGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
-			<NotExecFilesFromExecProj Include="$(OutputPath)*.dll" />
+			<ExecFilesFromExecProj Include="$(OutputPath)$(MSBuildProjectName).*" /> <!-- doesn't include the .exe.config because those are automatically renamed??? -->
+			<NotExecFilesFromExecProj Include="$(OutputPath)*.dll;$(OutputPath)*.pdb;$(OutputPath)*.xml" Exclude="@(ExecFilesFromExecProj)" />
+			<NotExecFilesFromExecProj Remove="$(OutputPath)DiscoHawk.*;$(OutputPath)EmuHawk.*" /> <!-- otherwise one will move the other's to /output/dll -->
 		</ItemGroup>
 		<Move SourceFiles="@(NotExecFilesFromExecProj)" DestinationFolder="$(OutputPath)dll/" />
-		<Move SourceFiles="$(OutputPath)$(MSBuildProjectName).exe" DestinationFiles="$(OutputPath)$(TargetFileName)" />
+		<Move SourceFiles="@(ExecFilesFromExecProj)" DestinationFiles="@(ExecFilesFromExecProj->Replace('BizHawk.Client.', ''))" />
 	</Target>
 </Project>
