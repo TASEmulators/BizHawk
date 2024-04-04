@@ -1,11 +1,10 @@
 <Project>
 	<Import Project="../Common.props" />
 	<PropertyGroup>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DefineConstants>$(DefineConstants);AVI_SUPPORT</DefineConstants>
-		<DocumentationFile>$(MSBuildProjectDirectory)/bin/doc_comments.xml</DocumentationFile>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile> <!-- it would be nice to rename this to *.api_reference.xml or something, but it seems https://github.com/dotnet/standard/issues/614 was never fixed -->
 		<NoWarn>$(NoWarn);CS1573;CS1591;NU1702</NoWarn>
-		<OutputPath>$(MSBuildProjectDirectory)/../../output/dll</OutputPath>
+		<PublishDocumentationFiles>false</PublishDocumentationFiles>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(SolutionDir)' != '' ">

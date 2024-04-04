@@ -1,0 +1,24 @@
+<Project>
+	<PropertyGroup>
+		<FinalPublishDir>$(SolutionDir)output/</FinalPublishDir>
+	</PropertyGroup>
+	<Target Name="CombineOutputDirs" AfterTargets="Publish">
+		<ItemGroup>
+			<Assets Include="$(SolutionDir)Assets/**/*" />
+			<ExecProjFilesForPublication Include="$(SolutionDir)src/BizHawk.Client.DiscoHawk/bin/$(Configuration)/net48/publish/**/*" />
+			<ExecProjFilesForPublication Include="$(SolutionDir)src/BizHawk.Client.EmuHawk/bin/$(Configuration)/net48/publish/**/*" />
+		</ItemGroup>
+		<!-- what happens if there's a conflict? hopefully the first <Copy/> is executed first -->
+		<Copy SourceFiles="@(ExecProjFilesForPublication)" DestinationFolder="$(FinalPublishDir)dll" />
+		<Copy SourceFiles="@(Assets)" DestinationFolder="$(FinalPublishDir)%(RecursiveDir)" />
+	</Target>
+	<Target Name="FinalisePublication" AfterTargets="CombineOutputDirs">
+		<ItemGroup>
+			<ExecutablesAndSupplements Include="$(FinalPublishDir)dll/BizHawk.Client.DiscoHawk.*" />
+			<ExecutablesAndSupplements Include="$(FinalPublishDir)dll/BizHawk.Client.EmuHawk.*" />
+		</ItemGroup>
+		<Move SourceFiles="@(ExecutablesAndSupplements)" DestinationFiles="@(ExecutablesAndSupplements->Replace('dll/BizHawk.Client.', ''))" />
+		<Delete Files="$(FinalPublishDir)dll/doc_comments.xml" />
+		<MakeDir Directories="$(FinalPublishDir)ExternalTools;$(FinalPublishDir)Firmware;$(FinalPublishDir)Tools" />
+	</Target>
+</Project>
