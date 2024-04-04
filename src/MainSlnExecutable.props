@@ -20,5 +20,6 @@
 		</ItemGroup>
 		<Move Condition=" $(IsTargetingNetFramework) " SourceFiles="@(NotExecFilesFromExecProj)" DestinationFolder="$(OutputPath)dll/" />
 		<Move SourceFiles="@(ExecutableAndConfigFromExecProj)" DestinationFiles="@(ExecutableAndConfigFromExecProj->Replace($(MSBuildProjectName), $(ProjectNameTail)))" /> <!-- keep assembly name as e.g. `BizHawk.Client.EmuHawk`, but rename file to simply `EmuHawk.exe` as we've been doing -->
+		<MakeDir Directories="$(OutputPath)ExternalTools;$(OutputPath)Firmware;$(OutputPath)Tools" />
 	</Target>
 </Project>
