@@ -10,6 +10,7 @@ git --version > NUL
 @if errorlevel 1 goto MISSINGGIT
 
 dotnet build ..\BizHawk.sln -c Release --no-incremental
+dotnet publish ..\BizHawk.sln -c Release --no-build
 @if not errorlevel 0 goto DOTNETBUILDFAILED
 rem -p:Platform="Any CPU"
 rem -p:RunAnalyzersDuringBuild=true

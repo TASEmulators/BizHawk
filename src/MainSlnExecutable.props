@@ -1,26 +1,9 @@
 <Project>
 	<Import Project="MainSlnCommon.props" />
-	<PropertyGroup>
-		<OutputPath>$(MSBuildProjectDirectory)/../../output/</OutputPath>
-		<!-- Setting TargetFileName does not change the AssemblyName (as setting TargetName would), but also does not change the output file name
-			 for the executable on build (as one would expect). So we still need to rename the executable file below. Using this method has the advantage
-			 of IDEs respecting the TargetFileName and expecting it. -->
-		<TargetFileName>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1)))).exe</TargetFileName>
-	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<ItemGroup>
-			<ExecFilesFromExecProj Include="$(OutputPath)$(MSBuildProjectName).*" /> <!-- doesn't include the .exe.config because those are automatically renamed??? -->
-			<NotExecFilesFromExecProj Include="$(OutputPath)*.dll;$(OutputPath)*.pdb;$(OutputPath)*.xml" Exclude="@(ExecFilesFromExecProj)" />
-			<NotExecFilesFromExecProj Remove="$(OutputPath)DiscoHawk.*;$(OutputPath)EmuHawk.*" /> <!-- otherwise one will move the other's to /output/dll -->
-		</ItemGroup>
-		<Move SourceFiles="@(NotExecFilesFromExecProj)" DestinationFolder="$(OutputPath)dll/" />
-		<Move SourceFiles="@(ExecFilesFromExecProj)" DestinationFiles="@(ExecFilesFromExecProj->Replace('BizHawk.Client.', ''))" />
-		<MakeDir Directories="$(OutputPath)ExternalTools;$(OutputPath)Firmware;$(OutputPath)Tools" />
-	</Target>
 </Project>
