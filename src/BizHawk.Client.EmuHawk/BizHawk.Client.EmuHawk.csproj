@@ -457,8 +457,6 @@
 		<Compile Update="tools/TAStudio/PlaybackBox.Designer.cs" DependentUpon="PlaybackBox.cs" />
 		<EmbeddedResource Update="tools/TAStudio/PlaybackBox.resx" DependentUpon="PlaybackBox.cs" />
 		<Compile Update="tools/TAStudio/ScreenshotForm.cs" SubType="Form" />
-		<Compile Update="tools/TAStudio/ScreenshotForm.Designer.cs" DependentUpon="ScreenshotForm.cs" />
-		<EmbeddedResource Update="tools/TAStudio/ScreenshotForm.resx" DependentUpon="ScreenshotForm.cs" />
 		<Compile Update="tools/TAStudio/TAStudio.Callbacks.cs" DependentUpon="TAStudio.cs" SubType="Form" />
 		<Compile Update="tools/TAStudio/TAStudio.cs" SubType="Form" />
 		<Compile Update="tools/TAStudio/TAStudio.Designer.cs" DependentUpon="TAStudio.cs" />

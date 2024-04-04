@@ -4,13 +4,15 @@ using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
 
-// We pretend it's a tooltip kind of thing, so show only the actual contents
-// and avoid stealing focus, while still being topmost
-// http://stackoverflow.com/a/25219399/2792852
-// This is not an actual tooltip, because they can't reliably fade in and out with transparency
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ScreenshotForm : Form
+	/// <remarks>
+	/// This is not an actual tooltip, because they can't reliably fade in and out with transparency.<br/>
+	/// We pretend it's a tooltip kind of thing,
+	/// so show only the actual contents and avoid stealing focus, while still being topmost:
+	/// <see href="https://stackoverflow.com/a/25219399"/>
+	/// </remarks>
+	public class ScreenshotForm : Form
 	{
 		private const int WS_EX_TOPMOST = 0x00000008;
 		
@@ -30,8 +32,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public ScreenshotForm()
 		{
-			InitializeComponent();
-			
+			SuspendLayout();
+			AutoScaleMode = AutoScaleMode.None;
+			ClientSize = new(314, 234);
+			ControlBox = false;
+			FormBorderStyle = FormBorderStyle.None;
+			MaximizeBox = false;
+			MinimizeBox = false;
+			Name = nameof(ScreenshotForm);
+			ShowIcon = false;
+			ShowInTaskbar = false;
+			StartPosition = FormStartPosition.Manual;
+			ResumeLayout(performLayout: false);
+
 			var fontSize = 10;
 			var fontStyle = FontStyle.Regular;
 			Font = new Font(FontFamily.GenericMonospace, fontSize, fontStyle);
