@@ -16,10 +16,11 @@ namespace BizHawk.Client.EmuHawk
 		private const int Interval = 40;
 		private const double AlphaStep = 0.125;
 
+		private Bitmap/*?*/ _bitmap = null;
+
 		private readonly Timer _showTimer = new Timer();
 		private readonly Timer _hideTimer = new Timer();
 
-		private TasBranch _branch;
 		private int _drawingHeight;
 
 		public new Font Font;
@@ -59,11 +60,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues(TasBranch branch, Point location , int width, int height, int padding)
 		{
-			_branch = branch;
+			var bb = branch.OSDFrameBuffer;
+			bb.DiscardAlpha();
+			_bitmap = bb.ToSysdrawingBitmap();
 			Width = width;
 			Padding = padding;
 			_drawingHeight = height;
-			Text = _branch.UserText;
+			Text = branch.UserText;
 			Location = location;
 
 			if (Padding > 0)
@@ -77,9 +80,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			_branch.OSDFrameBuffer.DiscardAlpha();
-			var bitmap = _branch.OSDFrameBuffer.ToSysdrawingBitmap();
-			e.Graphics.DrawImage(bitmap, new Rectangle(0, 0, Width, _drawingHeight));
+			e.Graphics.DrawImage(_bitmap!, new Rectangle(0, 0, Width, _drawingHeight));
 			if (Padding > 0)
 			{
 				e.Graphics.DrawRectangle(new Pen(Brushes.Black), new Rectangle(new Point(0, _drawingHeight), new Size(Width - 1, Padding - 1)));
