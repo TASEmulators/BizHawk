@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using BizHawk.Bizware.BizwareGL;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -13,6 +14,15 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class SavestateFile
 	{
+		public static BitmapBuffer/*?*/ GetFrameBufferFrom(string path)
+		{
+			using var bl = ZipStateLoader.LoadAndDetect(path);
+			if (bl is null) return null;
+			IVideoProvider/*?*/ vp = null;
+			bl.GetLump(BinaryStateLump.Framebuffer, abort: false, br => QuickBmpFile.LoadAuto(br.BaseStream, out vp));
+			return vp is null ? null : new(width: vp.BufferWidth, height: vp.BufferHeight, vp.GetVideoBuffer());
+		}
+
 		private readonly IEmulator _emulator;
 		private readonly IStatable _statable;
 		private readonly IVideoProvider _videoProvider;

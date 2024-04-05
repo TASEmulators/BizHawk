@@ -2472,6 +2472,43 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private readonly ScreenshotForm _screenshotTooltip = new();
+
+		private void SlotStatusButtons_MouseEnter(object/*?*/ sender, EventArgs e)
+		{
+			var slot = 10;
+			if (sender == Slot1StatusButton) slot = 1;
+			else if (sender == Slot2StatusButton) slot = 2;
+			else if (sender == Slot3StatusButton) slot = 3;
+			else if (sender == Slot4StatusButton) slot = 4;
+			else if (sender == Slot5StatusButton) slot = 5;
+			else if (sender == Slot6StatusButton) slot = 6;
+			else if (sender == Slot7StatusButton) slot = 7;
+			else if (sender == Slot8StatusButton) slot = 8;
+			else if (sender == Slot9StatusButton) slot = 9;
+			//TODO just put the slot number in Control.Tag already
+			if (!(HasSlot(slot) && ReadScreenshotFromSavestate(slot: slot) is {} bb))
+			{
+				_screenshotTooltip.FadeOut();
+				return;
+			}
+			var width = bb.Width;
+			var height = bb.Height;
+			var location = PointToScreen(MainStatusBar.Location);
+			location.Offset(((e as MouseEventArgs)?.X ?? 50) - width/2, -height);
+			_screenshotTooltip.UpdateValues(
+				bb,
+				captionText: string.Empty,
+				location,
+				width: width,
+				height: height,
+				Graphics.FromHwnd(Handle).MeasureString);
+			_screenshotTooltip.FadeIn();
+		}
+
+		private void SlotStatusButtons_MouseLeave(object/*?*/ sender, EventArgs e)
+			=> _screenshotTooltip.FadeOut();
+
 		private void SlotStatusButtons_MouseUp(object sender, MouseEventArgs e)
 		{
 			var slot = 10;

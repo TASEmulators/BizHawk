@@ -195,6 +195,18 @@ namespace BizHawk.Client.EmuHawk
 			SetStatusBar();
 			_stateSlots.Update(Emulator, MovieSession.Movie, SaveStatePrefix());
 
+			var quickslotButtons = new[]
+			{
+				Slot1StatusButton, Slot2StatusButton, Slot3StatusButton, Slot4StatusButton, Slot5StatusButton,
+				Slot6StatusButton, Slot7StatusButton, Slot8StatusButton, Slot9StatusButton, Slot0StatusButton,
+			};
+			for (var i = 0; i < quickslotButtons.Length; i++)
+			{
+				ref var button = ref quickslotButtons[i];
+				button.MouseEnter += SlotStatusButtons_MouseEnter;
+				button.MouseLeave += SlotStatusButtons_MouseLeave;
+			}
+
 			// New version notification
 			UpdateChecker.CheckComplete += (s2, e2) =>
 			{
@@ -4234,6 +4246,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return int.Parse(slot.Substring(slot.Length - 1, 1));
 		}
+
+		public BitmapBuffer/*?*/ ReadScreenshotFromSavestate(int slot)
+			=> Emulator.HasSavestates()
+				? SavestateFile.GetFrameBufferFrom($"{SaveStatePrefix()}.QuickSave{slot % 10}.State")
+				: null;
 
 		public bool LoadState(string path, string userFriendlyStateName, bool suppressOSD = false) // Move to client.common
 		{
