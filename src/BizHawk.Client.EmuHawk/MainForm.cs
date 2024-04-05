@@ -4248,9 +4248,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public BitmapBuffer/*?*/ ReadScreenshotFromSavestate(int slot)
-			=> Emulator.HasSavestates()
-				? SavestateFile.GetFrameBufferFrom($"{SaveStatePrefix()}.QuickSave{slot % 10}.State")
-				: null;
+		{
+			if (!Emulator.HasSavestates()) return false;
+			var path = $"{SaveStatePrefix()}.QuickSave{slot % 10}.State";
+			return File.Exists(path) ? SavestateFile.GetFrameBufferFrom(path) : null;
+		}
 
 		public bool LoadState(string path, string userFriendlyStateName, bool suppressOSD = false) // Move to client.common
 		{
