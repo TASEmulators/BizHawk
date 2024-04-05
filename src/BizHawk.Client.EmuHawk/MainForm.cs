@@ -4249,7 +4249,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public BitmapBuffer/*?*/ ReadScreenshotFromSavestate(int slot)
 		{
-			if (!Emulator.HasSavestates()) return false;
+			if (!Emulator.HasSavestates()) return null;
 			var path = $"{SaveStatePrefix()}.QuickSave{slot % 10}.State";
 			return File.Exists(path) ? SavestateFile.GetFrameBufferFrom(path) : null;
 		}
