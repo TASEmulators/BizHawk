@@ -27,7 +27,7 @@
 	url = https://github.com/TASEmulators/mednafen.git
 [submodule "submodules/gambatte"]
 	path = submodules/gambatte
-	url = https://github.com/pokemon-speedrunning/gambatte-core.git
+	url = https://github.com/roydmerkel/gambatte-core.git
 [submodule "waterbox/llvm-project"]
 	path = waterbox/llvm-project
 	url = https://github.com/llvm/llvm-project.git
