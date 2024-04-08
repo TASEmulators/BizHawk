@@ -15,6 +15,8 @@
 #include "eeprom_i2c.h"
 #include "vdp_render.h"
 
+struct config_t config;
+
 char GG_ROM[256] = "GG_ROM"; // game genie rom
 char AR_ROM[256] = "AR_ROM"; // actin replay rom
 char SK_ROM[256] = "SK_ROM"; // sanic and knuckles
@@ -217,7 +219,7 @@ typedef struct
 
 
 extern uint8 *bg_pattern_cache;
-extern uint32 pixel[];
+extern uint32* pixel;
 
 GPGX_EX void gpgx_get_vdp_view(vdpview_t *view)
 {
@@ -467,20 +469,20 @@ GPGX_EX void gpgx_write_m68k_bus(unsigned addr, unsigned data)
 {
 	cpu_memory_map m = m68k.memory_map[addr >> 16 & 0xff];
 	if (m.base && !m.write8)
-		m.base[addr & 0xffff ^ 1] = data;
+		m.base[(addr & 0xffff) ^ 1] = data;
 }
 
 GPGX_EX void gpgx_write_s68k_bus(unsigned addr, unsigned data)
 {
 	cpu_memory_map m = s68k.memory_map[addr >> 16 & 0xff];
 	if (m.base && !m.write8)
-		m.base[addr & 0xffff ^ 1] = data;
+		m.base[(addr & 0xffff) ^ 1] = data;
 }
 GPGX_EX unsigned gpgx_peek_m68k_bus(unsigned addr)
 {
 	cpu_memory_map m = m68k.memory_map[addr >> 16 & 0xff];
 	if (m.base && !m.read8)
-		return m.base[addr & 0xffff ^ 1];
+		return m.base[(addr & 0xffff) ^ 1];
 	else
 		return 0xff;
 }
@@ -488,7 +490,7 @@ GPGX_EX unsigned gpgx_peek_s68k_bus(unsigned addr)
 {
 	cpu_memory_map m = s68k.memory_map[addr >> 16 & 0xff];
 	if (m.base && !m.read8)
-		return m.base[addr & 0xffff ^ 1];
+		return m.base[(addr & 0xffff) ^ 1];
 	else
 		return 0xff;
 }
@@ -530,22 +532,114 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	bitmap.pitch = 1024 * 4;
 	bitmap.data = alloc_invisible(2 * 1024 * 1024);
 	tempsram = alloc_invisible(24 * 1024);
-	bg_pattern_cache = alloc_invisible(0x80000);
 
-	ext.md_cart.rom = alloc_plain(32 * 1024 * 1024);
-	SZHVC_add = alloc_sealed(131072);
-	SZHVC_sub = alloc_sealed(131072);
-	ym2612_lfo_pm_table = alloc_sealed(131072);
-	vdp_bp_lut = alloc_sealed(262144);
-	vdp_lut = alloc_sealed(6 * sizeof(*vdp_lut));
-	for (int i = 0; i < 6; i++)
-		vdp_lut[i] = alloc_sealed(65536);
+	/**
+	 * Allocating large buffers
+	 */
+
+	// cart_hw/areplay.h
+
+	action_replay.ram = alloc_plain(sizeof(uint8) * 0x10000);
+	
+	// cart_hw/md_cart.h
+
+	ext.md_cart.lockrom = alloc_plain(sizeof(uint8) * 0x10000);
+	ext.md_cart.rom = alloc_plain(sizeof(uint8) * MAXROMSIZE);
+
+	// cart_hw/sram.h
+
+	sram.sram = alloc_plain(sizeof(uint8) * 0x10000);
+
+	// cd_hw/cd_cart.h
+
+	ext.cd_hw.cartridge.area = alloc_plain(sizeof(uint8) * 0x810000);
+
+	// cd_hw/cdc.h
+
+	memset(&cdc, 0, sizeof(cdc_t));
+	ext.cd_hw.cdc_hw.ram = alloc_plain(sizeof(uint8) * (0x4000 + 2352));
+	
+	// cd_hw/gfx.h
+
+	memset(&ext.cd_hw.gfx_hw, 0, sizeof(gfx_t));
+	ext.cd_hw.gfx_hw.lut_offset = (uint16*) alloc_sealed(sizeof(uint16) * 0x8000);
+
+	for (size_t i = 0; i < 4; i++) 
+	{
+		ext.cd_hw.gfx_hw.lut_prio[i] = (uint8**) alloc_sealed (sizeof(uint8*) * 0x100);
+		for (size_t j = 0; j < 0x100; j++)  ext.cd_hw.gfx_hw.lut_prio[i][j] = (uint8*) alloc_sealed (sizeof(uint8) * 0x100);
+	}
+		
+	ext.cd_hw.gfx_hw.lut_pixel = (uint8*) alloc_sealed(sizeof(uint8) * 0x200);
+	ext.cd_hw.gfx_hw.lut_cell  = (uint8*) alloc_sealed(sizeof(uint8) * 0x100);
+
+	// cd_hw/pcm.h
+
+	memset(&ext.cd_hw.pcm_hw, 0, sizeof(pcm_t));
+	ext.cd_hw.pcm_hw.ram = (uint8*) alloc_plain(sizeof(uint8) * 0x10000);
+
+	// cd_hw/scd.h
+
+	ext.cd_hw.bootrom     = (uint8*) alloc_sealed(sizeof(uint8) * 0x20000);
+	ext.cd_hw.prg_ram     = (uint8*) alloc_plain(sizeof(uint8) * 0x80000);
+	ext.cd_hw.word_ram[0] = (uint8*) alloc_plain(sizeof(uint8) * 0x20000);
+	ext.cd_hw.word_ram[1] = (uint8*) alloc_plain(sizeof(uint8) * 0x20000);
+	ext.cd_hw.word_ram_2M = (uint8*) alloc_plain(sizeof(uint8) * 0x40000);
+	ext.cd_hw.bram        = (uint8*) alloc_plain(sizeof(uint8) * 0x2000);
+	
+	// sound.h
+
+	fm_buffer = (int*) alloc_sealed(sizeof(int) * 1080 * 2 * 48);
+
+	// z80.h
+
+	SZ        = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
+	SZ_BIT    = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
+	SZP       = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
+	SZHV_inc  = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
+	SZHV_dec  = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
+	SZHVC_add = (UINT8* ) alloc_sealed(sizeof(UINT8) * 2*256*256);
+	SZHVC_sub = (UINT8* ) alloc_sealed(sizeof(UINT8) * 2*256*256);
+
+	// genesis.h
+
+	boot_rom = (uint8*) alloc_plain(sizeof(uint8) * 0x800);
+	work_ram = (uint8*) alloc_plain(sizeof(uint8) * 0x10000);
+	zram     = (uint8*) alloc_plain(sizeof(uint8) * 0x2000);
+
+	// vdp_ctrl.h
+
+	sat  = (uint8*) alloc_plain (sizeof(uint8) * 0x400);
+	vram = (uint8*) alloc_plain (sizeof(uint8) * 0x10000);
+	bg_name_dirty = (uint8 *) alloc_plain (sizeof(uint8 ) * 0x800);
+	bg_name_list  = (uint16*) alloc_plain (sizeof(uint16) * 0x800);
+	
+	// vdp_render.h
+
+	bg_pattern_cache = (uint8      *) alloc_invisible (sizeof(uint8      ) * 0x80000);
+	name_lut         = (uint8      *) alloc_sealed (sizeof(uint8      ) * 0x400);
+	bp_lut           = (uint32     *) alloc_sealed (sizeof(uint32     ) * 0x10000);
+	lut[0]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
+	lut[1]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
+	lut[2]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
+	lut[3]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
+	lut[4]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
+	lut[5]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
+	pixel            = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x100);
+	pixel_lut[0]     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x200);
+	pixel_lut[1]     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x200);
+	pixel_lut[2]     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x200);
+	pixel_lut_m4     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x40);
+	linebuf[0]       = (uint8      *) alloc_invisible (sizeof(uint8      ) * 0x200);
+	linebuf[1]       = (uint8      *) alloc_invisible (sizeof(uint8      ) * 0x200);
 
 	/* sound options */
-	config.psg_preamp  = 150;
-	config.fm_preamp= 100;
-	config.hq_fm = 1; /* high-quality resampling */
-	config.psgBoostNoise  = 1;
+	config.psg_preamp     = 150;
+	config.fm_preamp      = 100;
+	config.cdda_volume    = 100;
+	config.pcm_volume     = 100;
+	config.hq_fm          = 1;
+	config.hq_psg         = 1;
 	config.filter = settings->Filter; //0; /* no filter */
 	config.lp_range = settings->LowPassRange; //0x9999; /* 0.6 in 16.16 fixed point */
 	config.low_freq = settings->LowFreq; //880;
@@ -553,25 +647,32 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	config.lg = settings->LowGain; //100;
 	config.mg = settings->MidGain; //100;
 	config.hg = settings->HighGain; //100;
-	config.dac_bits = 14; /* MAX DEPTH */
-	config.ym2413= 2; /* AUTO */
-	config.mono  = 0; /* STEREO output */
+	config.ym2612         = 1;
+	config.ym2413         = 1; /* (0 = always OFF, 1 = always ON, 2 = AUTO) */
+	config.ym3438         = 1;
+	config.opll           = 1;
+	config.mono           = 0;
 
 	/* system options */
-	config.system = 0; /* AUTO */
-	config.region_detect = settings->Region; // see loadrom.c
-	config.vdp_mode = 0; /* AUTO */
-	config.master_clock = 0; /* AUTO */
-	config.force_dtack = 0;
-	config.addr_error = 1;
-	config.bios = 0;
-	config.lock_on = 0;
+	config.system         = 0; /* = AUTO (or SYSTEM_SG, SYSTEM_SGII, SYSTEM_SGII_RAM_EXT, SYSTEM_MARKIII, SYSTEM_SMS, SYSTEM_SMS2, SYSTEM_GG, SYSTEM_MD) */
+	config.region_detect  = settings->Region; /* = AUTO (1 = USA, 2 = EUROPE, 3 = JAPAN/NTSC, 4 = JAPAN/PAL) */
+	config.vdp_mode       = 0; /* = AUTO (1 = NTSC, 2 = PAL) */
+	config.master_clock   = 0; /* = AUTO (1 = NTSC, 2 = PAL) */
+	config.force_dtack    = 0;
+	config.addr_error     = 1;
+	config.bios           = 0;
+	config.lock_on        = 0; /* = OFF (or TYPE_SK, TYPE_GG & TYPE_AR) */
+	config.add_on         = 0; /* = HW_ADDON_AUTO (or HW_ADDON_MEGACD, HW_ADDON_MEGASD & HW_ADDON_ONE) */
+	config.cd_latency     = 1;
 
-	/* video options */
-	config.overscan = 0;
-	config.gg_extra = 0;
-	config.ntsc = 0;
-	config.render = 1;
+	/* display options */
+	config.overscan = 0;  /* 3 = all borders (0 = no borders , 1 = vertical borders only, 2 = horizontal borders only) */
+	config.gg_extra = 0;  /* 1 = show extended Game Gear screen (256x192) */
+	config.render   = 1;  /* 1 = double resolution output (only when interlaced mode 2 is enabled) */
+	config.ntsc     = 0;
+	config.lcd      = 0;  /* 0.8 fixed point */
+	config.enhanced_vscroll = 0;
+	config.enhanced_vscroll_limit = 8;
 
 	// set overall input system type
 	// usual is MD GAMEPAD or NONE
