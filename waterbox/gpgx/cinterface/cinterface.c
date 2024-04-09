@@ -543,7 +543,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	
 	// cart_hw/md_cart.h
 
-	ext.md_cart.lockrom = alloc_plain(sizeof(uint8) * 0x10000);
+	ext.md_cart.lockrom = alloc_sealed(sizeof(uint8) * 0x10000);
 	ext.md_cart.rom = alloc_plain(sizeof(uint8) * MAXROMSIZE);
 
 	// cart_hw/sram.h
@@ -589,7 +589,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	
 	// sound.h
 
-	fm_buffer = (int*) alloc_sealed(sizeof(int) * 1080 * 2 * 48);
+	fm_buffer = (int*) alloc_plain(sizeof(int) * 1080 * 2 * 48);
 
 	// z80.h
 
@@ -603,7 +603,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 	// genesis.h
 
-	boot_rom = (uint8*) alloc_plain(sizeof(uint8) * 0x800);
+	boot_rom = (uint8*) alloc_sealed(sizeof(uint8) * 0x800);
 	work_ram = (uint8*) alloc_plain(sizeof(uint8) * 0x10000);
 	zram     = (uint8*) alloc_plain(sizeof(uint8) * 0x2000);
 
@@ -625,7 +625,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	lut[3]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
 	lut[4]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
 	lut[5]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
-	pixel            = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x100);
+	pixel            = (PIXEL_OUT_T*) alloc_plain (sizeof(PIXEL_OUT_T) * 0x100);
 	pixel_lut[0]     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x200);
 	pixel_lut[1]     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x200);
 	pixel_lut[2]     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x200);
