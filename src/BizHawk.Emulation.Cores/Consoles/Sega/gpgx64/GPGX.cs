@@ -214,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					srcdata = GetCDData(_cds[0]);
 					if (srcdata.Length != maxsize)
 					{
-						Console.WriteLine("Couldn't satisfy firmware request {0} because of struct size.", filename);
+						Console.WriteLine("Couldn't satisfy firmware request {0} because of struct size ({1} != {2}).", filename, srcdata.Length, maxsize);
 						return 0;
 					}
 				}
