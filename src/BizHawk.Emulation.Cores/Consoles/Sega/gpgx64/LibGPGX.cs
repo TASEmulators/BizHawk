@@ -48,10 +48,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				ThreeBand = 2
 			}
 			public FilterType Filter;
+
 			public INPUT_SYSTEM InputSystemA;
 			public INPUT_SYSTEM InputSystemB;
 			public bool SixButton;
 			public bool ForceSram;
+
+			public enum YM2612SoundChipType : byte
+			{
+				Vanilla = 0,
+				Nuked = 1,
+			}
+			public YM2612SoundChipType YM2612SoundChip;
+
+			public enum YM2413SoundChipType : byte
+			{
+				Mame = 0,
+				Nuked = 1,
+			}
+			public YM2413SoundChipType YM2413SoundChip;
 		}
 
 		[BizImport(CallingConvention.Cdecl)]

@@ -13,7 +13,14 @@ CCFLAGS := 	-Iutil \
 	-Icinterface \
 	-Wall -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast -Werror=implicit-function-declaration \
 	-std=c99 -fomit-frame-pointer -Wfatal-errors \
-	-DUSE_BIZHAWK_CALLBACKS -DUSE_RAM_DEEPFREEZE -DLSB_FIRST -DUSE_32BPP_RENDERING -DINLINE=static\ __inline__ -fcommon
+	-DUSE_BIZHAWK_CALLBACKS \
+	-DHAVE_YM3438_CORE \
+	-DHAVE_OPLL_CORE \
+	-DUSE_RAM_DEEPFREEZE \
+	-DLSB_FIRST \
+	-DUSE_32BPP_RENDERING \
+	-DINLINE=static\ __inline__ \
+	-fcommon
 
 LDFLAGS :=
 

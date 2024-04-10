@@ -263,6 +263,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue(LibGPGX.Region.Autodetect)]
 			public LibGPGX.Region Region { get; set; }
 
+			[DisplayName("YM2413 Sound Chip Type")]
+			[DefaultValue(LibGPGX.InitSettings.YM2413SoundChipType.Nuked)]
+			public LibGPGX.InitSettings.YM2413SoundChipType YM2413SoundChip { get; set; }
+
+			[DisplayName("YM2612 Sound Chip Type")]
+			[DefaultValue(LibGPGX.InitSettings.YM2612SoundChipType.Nuked)]
+			public LibGPGX.InitSettings.YM2612SoundChipType YM2612SoundChip { get; set; }
+
 			[DisplayName("Audio Filter")]
 			[DefaultValue(LibGPGX.InitSettings.FilterType.LowPass)]
 			public LibGPGX.InitSettings.FilterType Filter { get; set; }
@@ -320,6 +328,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					InputSystemB = SystemForSystem(ControlTypeRight),
 					Region = Region,
 					ForceSram = game["sram"],
+					YM2612SoundChip = YM2612SoundChip,
+			        YM2413SoundChip = YM2413SoundChip
 				};
 			}
 

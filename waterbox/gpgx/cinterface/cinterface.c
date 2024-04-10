@@ -495,6 +495,18 @@ GPGX_EX unsigned gpgx_peek_s68k_bus(unsigned addr)
 		return 0xff;
 }
 
+enum YM2612SoundChipType
+{
+	YM2612_Vanilla = 0,
+	YM2612_Nuked = 1
+};
+
+enum YM2413SoundChipType
+{
+	YM2413_Mame = 0,
+	YM2413_Nuked = 1
+};
+
 struct InitSettings
 {
 	uint32_t BackdropColor;
@@ -510,6 +522,8 @@ struct InitSettings
 	char InputSystemB;
 	char SixButton;
 	char ForceSram;
+	uint8_t YM2612SoundChip;
+	uint8_t YM2413SoundChip;
 };
 
 GPGX_EX int gpgx_init(const char* feromextension,
@@ -652,10 +666,11 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	config.lg = settings->LowGain; //100;
 	config.mg = settings->MidGain; //100;
 	config.hg = settings->HighGain; //100;
-	config.ym2612         = 1;
-	config.ym2413         = 1; /* (0 = always OFF, 1 = always ON, 2 = AUTO) */
-	config.ym3438         = 1;
-	config.opll           = 1;
+
+	config.ym2612         = settings->YM2612SoundChip == YM2612_Vanilla;
+	config.ym2413         = settings->YM2413SoundChip == YM2413_Mame;
+	config.ym3438         = settings->YM2612SoundChip == YM2612_Nuked;
+	config.opll           = settings->YM2413SoundChip == YM2413_Nuked;
 	config.mono           = 0;
 
 	/* system options */
