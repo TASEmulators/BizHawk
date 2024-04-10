@@ -314,8 +314,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			//zero 07-jul-2015 - throws a dollar in the pile, since he probably messed it up worse
 			for (int i = 0; i < LibGPGX.CD_MAX_TRACKS; i++)
 			{
+				ret.tracks[i].loopEnabled = 0;
+				ret.tracks[i].loopOffset = 0;
+				
 				if (i < ntrack)
 				{
+					ret.tracks[i].mode = ses.Tracks[i].Mode;
 					ret.tracks[i].start = ses.Tracks[i + 1].LBA;
 					ret.tracks[i].end = ses.Tracks[i + 2].LBA;
 					if (i == ntrack - 1)
@@ -326,6 +330,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 				else
 				{
+					ret.tracks[i].mode = 0;
 					ret.tracks[i].start = 0;
 					ret.tracks[i].end = 0;
 				}

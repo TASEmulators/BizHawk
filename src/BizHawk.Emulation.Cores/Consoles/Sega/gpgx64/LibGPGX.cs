@@ -271,6 +271,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			public int start;
 			public int end;
+			public int mode;
+			public int loopEnabled;
+			public int loopOffset;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

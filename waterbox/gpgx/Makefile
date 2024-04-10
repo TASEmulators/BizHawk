@@ -19,6 +19,6 @@ LDFLAGS :=
 
 TARGET := gpgx.wbx
 
-SRCS = $(shell find $(GPGX_DIR)/core -type f -name '*.c') cinterface/cinterface.c
+SRCS = $(shell find $(GPGX_DIR)/core -type f -name '*.c') cinterface/cinterface.c cinterface/cddImpl.c
 
 include ../common.mak

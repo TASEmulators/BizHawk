@@ -530,8 +530,8 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	bitmap.width = 1024;
 	bitmap.height = 512;
 	bitmap.pitch = 1024 * 4;
-	bitmap.data = alloc_invisible(2 * 1024 * 1024);
-	tempsram = alloc_invisible(24 * 1024);
+	bitmap.data = alloc_plain(2 * 1024 * 1024);
+	tempsram = alloc_plain(24 * 1024);
 
 	/**
 	 * Allocating large buffers
@@ -543,7 +543,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	
 	// cart_hw/md_cart.h
 
-	ext.md_cart.lockrom = alloc_sealed(sizeof(uint8) * 0x10000);
+	ext.md_cart.lockrom = alloc_plain(sizeof(uint8) * 0x10000);
 	ext.md_cart.rom = alloc_plain(sizeof(uint8) * MAXROMSIZE);
 
 	// cart_hw/sram.h
@@ -562,16 +562,16 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	// cd_hw/gfx.h
 
 	memset(&ext.cd_hw.gfx_hw, 0, sizeof(gfx_t));
-	ext.cd_hw.gfx_hw.lut_offset = (uint16*) alloc_sealed(sizeof(uint16) * 0x8000);
+	ext.cd_hw.gfx_hw.lut_offset = (uint16*) alloc_plain(sizeof(uint16) * 0x8000);
 
 	for (size_t i = 0; i < 4; i++) 
 	{
-		ext.cd_hw.gfx_hw.lut_prio[i] = (uint8**) alloc_sealed (sizeof(uint8*) * 0x100);
-		for (size_t j = 0; j < 0x100; j++)  ext.cd_hw.gfx_hw.lut_prio[i][j] = (uint8*) alloc_sealed (sizeof(uint8) * 0x100);
+		ext.cd_hw.gfx_hw.lut_prio[i] = (uint8**) alloc_plain (sizeof(uint8*) * 0x100);
+		for (size_t j = 0; j < 0x100; j++)  ext.cd_hw.gfx_hw.lut_prio[i][j] = (uint8*) alloc_plain (sizeof(uint8) * 0x100);
 	}
 		
-	ext.cd_hw.gfx_hw.lut_pixel = (uint8*) alloc_sealed(sizeof(uint8) * 0x200);
-	ext.cd_hw.gfx_hw.lut_cell  = (uint8*) alloc_sealed(sizeof(uint8) * 0x100);
+	ext.cd_hw.gfx_hw.lut_pixel = (uint8*) alloc_plain(sizeof(uint8) * 0x200);
+	ext.cd_hw.gfx_hw.lut_cell  = (uint8*) alloc_plain(sizeof(uint8) * 0x100);
 
 	// cd_hw/pcm.h
 
@@ -580,7 +580,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 	// cd_hw/scd.h
 
-	ext.cd_hw.bootrom     = (uint8*) alloc_sealed(sizeof(uint8) * 0x20000);
+	ext.cd_hw.bootrom     = (uint8*) alloc_plain(sizeof(uint8) * 0x20000);
 	ext.cd_hw.prg_ram     = (uint8*) alloc_plain(sizeof(uint8) * 0x80000);
 	ext.cd_hw.word_ram[0] = (uint8*) alloc_plain(sizeof(uint8) * 0x20000);
 	ext.cd_hw.word_ram[1] = (uint8*) alloc_plain(sizeof(uint8) * 0x20000);
@@ -593,17 +593,17 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 	// z80.h
 
-	SZ        = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
-	SZ_BIT    = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
-	SZP       = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
-	SZHV_inc  = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
-	SZHV_dec  = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
-	SZHVC_add = (UINT8* ) alloc_sealed(sizeof(UINT8) * 2*256*256);
-	SZHVC_sub = (UINT8* ) alloc_sealed(sizeof(UINT8) * 2*256*256);
+	SZ        = (UINT8* ) alloc_plain(sizeof(UINT8) * 256);
+	SZ_BIT    = (UINT8* ) alloc_plain(sizeof(UINT8) * 256);
+	SZP       = (UINT8* ) alloc_plain(sizeof(UINT8) * 256);
+	SZHV_inc  = (UINT8* ) alloc_plain(sizeof(UINT8) * 256);
+	SZHV_dec  = (UINT8* ) alloc_plain(sizeof(UINT8) * 256);
+	SZHVC_add = (UINT8* ) alloc_plain(sizeof(UINT8) * 2*256*256);
+	SZHVC_sub = (UINT8* ) alloc_plain(sizeof(UINT8) * 2*256*256);
 
 	// genesis.h
 
-	boot_rom = (uint8*) alloc_sealed(sizeof(uint8) * 0x800);
+	boot_rom = (uint8*) alloc_plain(sizeof(uint8) * 0x800);
 	work_ram = (uint8*) alloc_plain(sizeof(uint8) * 0x10000);
 	zram     = (uint8*) alloc_plain(sizeof(uint8) * 0x2000);
 
@@ -616,22 +616,22 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	
 	// vdp_render.h
 
-	bg_pattern_cache = (uint8      *) alloc_invisible (sizeof(uint8      ) * 0x80000);
-	name_lut         = (uint8      *) alloc_sealed (sizeof(uint8      ) * 0x400);
-	bp_lut           = (uint32     *) alloc_sealed (sizeof(uint32     ) * 0x10000);
-	lut[0]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
-	lut[1]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
-	lut[2]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
-	lut[3]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
-	lut[4]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
-	lut[5]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
+	bg_pattern_cache = (uint8      *) alloc_plain (sizeof(uint8      ) * 0x80000);
+	name_lut         = (uint8      *) alloc_plain (sizeof(uint8      ) * 0x400);
+	bp_lut           = (uint32     *) alloc_plain (sizeof(uint32     ) * 0x10000);
+	lut[0]           = (uint8      *) alloc_plain (sizeof(uint8      ) * LUT_SIZE);
+	lut[1]           = (uint8      *) alloc_plain (sizeof(uint8      ) * LUT_SIZE);
+	lut[2]           = (uint8      *) alloc_plain (sizeof(uint8      ) * LUT_SIZE);
+	lut[3]           = (uint8      *) alloc_plain (sizeof(uint8      ) * LUT_SIZE);
+	lut[4]           = (uint8      *) alloc_plain (sizeof(uint8      ) * LUT_SIZE);
+	lut[5]           = (uint8      *) alloc_plain (sizeof(uint8      ) * LUT_SIZE);
 	pixel            = (PIXEL_OUT_T*) alloc_plain (sizeof(PIXEL_OUT_T) * 0x100);
-	pixel_lut[0]     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x200);
-	pixel_lut[1]     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x200);
-	pixel_lut[2]     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x200);
-	pixel_lut_m4     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x40);
-	linebuf[0]       = (uint8      *) alloc_invisible (sizeof(uint8      ) * 0x200);
-	linebuf[1]       = (uint8      *) alloc_invisible (sizeof(uint8      ) * 0x200);
+	pixel_lut[0]     = (PIXEL_OUT_T*) alloc_plain (sizeof(PIXEL_OUT_T) * 0x200);
+	pixel_lut[1]     = (PIXEL_OUT_T*) alloc_plain (sizeof(PIXEL_OUT_T) * 0x200);
+	pixel_lut[2]     = (PIXEL_OUT_T*) alloc_plain (sizeof(PIXEL_OUT_T) * 0x200);
+	pixel_lut_m4     = (PIXEL_OUT_T*) alloc_plain (sizeof(PIXEL_OUT_T) * 0x40);
+	linebuf[0]       = (uint8      *) alloc_plain (sizeof(uint8      ) * 0x200);
+	linebuf[1]       = (uint8      *) alloc_plain (sizeof(uint8      ) * 0x200);
 
 	/* sound options */
 	config.psg_preamp     = 150;
@@ -693,7 +693,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 			config.input[i].padtype = settings->SixButton ? DEVICE_PAD6B : DEVICE_PAD3B;
 	}
 
-	if (!load_rom("PRIMARY_ROM"))
+	if (!load_rom("PRIMARY_ROM", "PRIMARY_CD", "SECONDARY_CD"))
 		return 0;
 
 	audio_init(44100, 0);
