@@ -8,12 +8,12 @@
 #define snprintf _snprintf
 #endif
 
-#include "shared.h"
-#include "genesis.h"
-#include "md_ntsc.h"
-#include "sms_ntsc.h"
-#include "eeprom_i2c.h"
-#include "vdp_render.h"
+#include <shared.h>
+#include <genesis.h>
+#include <md_ntsc.h>
+#include <sms_ntsc.h>
+#include <eeprom_i2c.h>
+#include <vdp_render.h>
 
 struct config_t config;
 
@@ -533,6 +533,11 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	bitmap.data = alloc_plain(2 * 1024 * 1024);
 	tempsram = alloc_plain(24 * 1024);
 
+    // Initializing ram deepfreeze list
+	#ifdef USE_RAM_DEEPFREEZE
+	deepfreeze_list_size = 0;
+	#endif
+
 	/**
 	 * Allocating large buffers
 	 */
@@ -707,6 +712,22 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 	return 1;
 }
+
+#ifdef USE_RAM_DEEPFREEZE
+
+GPGX_EX void gpgx_add_deepfreeze_list_entry(const int address, const uint8_t value)
+{
+	deepfreeze_list[deepfreeze_list_size].address = address;
+	deepfreeze_list[deepfreeze_list_size].value = value;
+	deepfreeze_list_size++;
+}
+
+GPGX_EX void gpgx_clear_deepfreeze_list()
+{
+	deepfreeze_list_size = 0;
+}
+
+#endif
 
 GPGX_EX void gpgx_reset(int hard)
 {
