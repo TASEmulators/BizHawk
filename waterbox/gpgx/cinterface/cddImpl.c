@@ -345,13 +345,20 @@ void cdd_read_data(uint8 *dst, uint8 *subheader)
       else
       {
         /* skip block sync pattern (12 bytes) + block header (4 bytes) + Mode 2 sub-header (first 4 bytes) then read Mode 2 sub-header (last 4 bytes) */
-		// Is this all handled by bizhawk?
-		cdd_readcallback(cdd.lba, dst, 0);
+		
+
+		uint8_t buffer[2352];
+	    cdd_readcallback(cdd.lba, buffer, 0);
+
         // cdStreamSeek(trackStream[0], (cdd.lba * 2352) + 12 + 4 + 4, SEEK_SET);
-        // cdStreamRead(subheader, 4, 1, trackStream[0]);
+        size_t pos = 12 + 4 + 4;
+
+		// cdStreamRead(subheader, 4, 1, trackStream[0]);
+		memcpy(subheader, &buffer[pos],  4); pos += 4;
 
         /* read Mode 2 user data (max 2328 bytes) */
         // cdStreamRead(dst, 2328, 1, trackStream[0]);
+		memcpy(dst, &buffer[pos],  2328);
       }
     }
   }
@@ -507,8 +514,8 @@ void cdd_seek_toc(int lba)
 
 void cdd_read_toc(uint8 *dst, size_t size)
 {
-	if (size > 2560) { fprintf(stderr, "Excessive size requested (%lu) on cdd_read_toc()\n", size); exit(1); }
-	uint8_t buffer[2560];
+	if (size > 2352) { fprintf(stderr, "Excessive size requested (%lu) on cdd_read_toc()\n", size); exit(1); }
+	uint8_t buffer[2352];
 	cdd_readcallback(tocLba, buffer, 0);
 	memcpy(dst, buffer, size);
 //   if (tocStream == NULL) return;
