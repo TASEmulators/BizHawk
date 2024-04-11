@@ -1,4 +1,8 @@
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/23.11.tar.gz") {}
+{ system ? builtins.currentSystem
+, pkgs ? import (fetchTarball {
+		url = "https://github.com/NixOS/nixpkgs/archive/23.11.tar.gz";
+		sha256 = "1ndiv385w1qyb3b18vw13991fzb9wg4cl21wglk89grsfsnra41k";
+	}) { inherit system; }
 , lib ? pkgs.lib
 , stdenv ? pkgs.stdenvNoCC
 # infrastructure
@@ -27,7 +31,10 @@ in {
 , dotnet-sdk_6 ? pkgs.dotnet-sdk_6
 , dotnet-sdk_5 ? let result = builtins.tryEval pkgs.dotnet-sdk_5; in if result.success
 	then result.value
-	else (import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/5234f4ce9340fffb705b908fff4896faeddb8a12^.tar.gz") {}).dotnet-sdk_5
+	else (import (fetchTarball {
+		url = "https://github.com/NixOS/nixpkgs/archive/5234f4ce9340fffb705b908fff4896faeddb8a12^.tar.gz";
+		sha256 = "0glawbqvvvbiz1gn7i1skhaqw96ilgdds6gzq7mj29kfk4vkzng1";
+	}) { inherit system; }).dotnet-sdk_5
 , git ? pkgs.gitMinimal # only when building from-CWD (`-local`)
 # rundeps
 , coreutils ? pkgs.coreutils
@@ -35,7 +42,10 @@ in {
 , libGL ? pkgs.libGL
 , lua ? pkgs.lua54Packages.lua
 , mono ? null
-, nixGLChannel ? (pkgs.nixgl or import (fetchTarball "https://github.com/guibou/nixGL/archive/489d6b095ab9d289fe11af0219a9ff00fe87c7c5.tar.gz") {})
+, nixGLChannel ? (pkgs.nixgl or import (fetchTarball {
+		url = "https://github.com/guibou/nixGL/archive/489d6b095ab9d289fe11af0219a9ff00fe87c7c5.tar.gz";
+		sha256 = "03kwsz8mf0p1v1clz42zx8cmy6hxka0cqfbfasimbj858lyd930k";
+	}) { inherit system; })
 , nixGL ? nixGLChannel.auto.nixGLDefault
 #, nixVulkan ? nixGLChannel.auto.nixVulkanNvidia
 , openal ? pkgs.openal
@@ -100,7 +110,10 @@ in {
 			else if isVersionAtLeast "6.12.0.151" pkgs.mono.version
 				then pkgs.mono
 				else lib.trace "provided Mono too old, using Mono from Nixpkgs 23.05"
-					(import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/23.05.tar.gz") {}).mono;
+					(import (fetchTarball {
+						url = "https://github.com/NixOS/nixpkgs/archive/23.05.tar.gz";
+						sha256 = "10wn0l08j9lgqcw8177nh2ljrnxdrpri7bp0g7nvrsn9rkawvlbf";
+					}) { inherit system; }).mono;
 		monoBasic = fetchzip {
 			url = "https://download.mono-project.com/repo/debian/pool/main/m/mono-basic/libmono-microsoft-visualbasic10.0-cil_4.7-0xamarin3+debian9b1_all.deb";
 			nativeBuildInputs = [ dpkg ];
