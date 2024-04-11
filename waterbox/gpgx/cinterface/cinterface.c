@@ -42,8 +42,6 @@ uint8 cinterface_custom_backdrop = 0;
 uint32 cinterface_custom_backdrop_color = 0xffff00ff; // pink
 extern uint8 border;
 
-int cinterface_force_sram = 0;
-
 #define GPGX_EX ECL_EXPORT
 
 static int vwidth;
@@ -532,7 +530,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 {
 	_debug_puts("Initializing GPGX native...");
 
-	cinterface_force_sram = settings->ForceSram;
+	force_sram = settings->ForceSram;
 
 	memset(&bitmap, 0, sizeof(bitmap));
 
