@@ -546,9 +546,9 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	tempsram = alloc_plain(24 * 1024);
 
     // Initializing ram deepfreeze list
-	#ifdef USE_RAM_DEEPFREEZE
+#ifdef USE_RAM_DEEPFREEZE
 	deepfreeze_list_size = 0;
-	#endif
+#endif
 
 	/**
 	 * Allocating large buffers
@@ -728,11 +728,16 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 #ifdef USE_RAM_DEEPFREEZE
 
-GPGX_EX void gpgx_add_deepfreeze_list_entry(const int address, const uint8_t value)
+GPGX_EX int gpgx_add_deepfreeze_list_entry(const int address, const uint8_t value)
 {
+    // Prevent overflowing
+    if (deepfreeze_list_size == MAX_DEEP_FREEZE_ENTRIES) return -1;
+
 	deepfreeze_list[deepfreeze_list_size].address = address;
 	deepfreeze_list[deepfreeze_list_size].value = value;
 	deepfreeze_list_size++;
+
+	return 0;
 }
 
 GPGX_EX void gpgx_clear_deepfreeze_list()
