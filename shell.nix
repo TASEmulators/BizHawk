@@ -1,4 +1,5 @@
-{ pkgs ? import <nixpkgs> {}
+{ system ? builtins.currentSystem
+, pkgs ? import <nixpkgs> { inherit system; }
 , lib ? pkgs.lib
 , mkShell ? pkgs.mkShell
 , git-cola ? pkgs.git-cola
@@ -12,7 +13,7 @@
 , useVSCode ? false
 }: let
 	# thinking of exposing pre-configured IDEs from `default.nix` so they're available here
-	avail = import ./. { inherit debugDotnetHostCrashes debugPInvokes forNixOS; };
+	avail = import ./. { inherit debugDotnetHostCrashes debugPInvokes forNixOS system; };
 	f = drv: mkShell {
 		packages = [ git ]
 			++ lib.optionals useNanoAndCola [ git-cola nano ]
