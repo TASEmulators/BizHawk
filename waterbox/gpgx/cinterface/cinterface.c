@@ -217,8 +217,8 @@ typedef struct
 } vdpview_t;
 
 
-extern uint8 *bg_pattern_cache;
-extern uint32* pixel;
+extern uint8 ALIGNED_(4) bg_pattern_cache[0x80000];
+uint32_t pixel[0x100];
 
 GPGX_EX void gpgx_get_vdp_view(vdpview_t *view)
 {
