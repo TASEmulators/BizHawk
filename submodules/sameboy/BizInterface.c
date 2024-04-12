@@ -1,10 +1,13 @@
-#undef GB_INTERNAL // don't rely on GB_INTERNAL in interface
+#include <string.h>
+#include <gb.h>
 
-#include "gb.h"
 #include "blip_buf.h"
-#include "stdio.h"
 
-#define EXPORT __attribute__((visibility("default")))
+#ifdef _WIN32
+	#define EXPORT __declspec(dllexport)
+#else
+	#define EXPORT __attribute__((visibility("default")))
+#endif
 
 typedef int8_t s8;
 typedef int16_t s16;
@@ -127,6 +130,11 @@ static void ExecCallbackRelay(GB_gameboy_t* gb, u16 addr, u8 opcode)
 static void PrinterCallbackRelay(GB_gameboy_t* gb, u32* image, u8 height, u8 top_margin, u8 bottom_margin, u8 exposure)
 {
 	((biz_t*)gb)->printer_cb(image, height, top_margin, bottom_margin, exposure);
+}
+
+static void PrinterDoneCallbackRelay(GB_gameboy_t* gb)
+{
+	// nothing to do
 }
 
 static void ScanlineCallbackRelay(GB_gameboy_t* gb, u8 line)
@@ -503,7 +511,7 @@ EXPORT void sameboy_setprintercallback(biz_t* biz, printer_callback_t callback)
 	biz->printer_cb = callback;
 	if (callback)
 	{
-		GB_connect_printer(&biz->gb, PrinterCallbackRelay);
+		GB_connect_printer(&biz->gb, PrinterCallbackRelay, PrinterDoneCallbackRelay);
 	}
 	else
 	{
