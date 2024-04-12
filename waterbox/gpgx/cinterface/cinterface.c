@@ -579,110 +579,14 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	bitmap.data = alloc_plain(2 * 1024 * 1024);
 	tempsram = alloc_plain(24 * 1024);
 
+    // cd_hw/cd_cart.h
+
+	ext.cd_hw.cartridge.area = alloc_plain(sizeof(uint8) * 0x810000);
+
     // Initializing ram deepfreeze list
 #ifdef USE_RAM_DEEPFREEZE
 	deepfreeze_list_size = 0;
 #endif
-
-	/**
-	 * Allocating large buffers
-	 */
-
-	// cart_hw/areplay.h
-
-	action_replay.ram = alloc_plain(sizeof(uint8) * 0x10000);
-	
-	// cart_hw/md_cart.h
-
-	ext.md_cart.lockrom = alloc_sealed(sizeof(uint8) * 0x10000);
-	ext.md_cart.rom = alloc_plain(sizeof(uint8) * MAXROMSIZE);
-
-	// cart_hw/sram.h
-
-	sram.sram = alloc_plain(sizeof(uint8) * 0x10000);
-
-	// cd_hw/cd_cart.h
-
-	ext.cd_hw.cartridge.area = alloc_plain(sizeof(uint8) * 0x810000);
-
-	// cd_hw/cdc.h
-
-	memset(&cdc, 0, sizeof(cdc_t));
-	ext.cd_hw.cdc_hw.ram = alloc_plain(sizeof(uint8) * (0x4000 + 2352));
-	
-	// cd_hw/gfx.h
-
-	memset(&ext.cd_hw.gfx_hw, 0, sizeof(gfx_t));
-	ext.cd_hw.gfx_hw.lut_offset = (uint16*) alloc_sealed(sizeof(uint16) * 0x8000);
-
-	for (size_t i = 0; i < 4; i++) 
-	{
-		ext.cd_hw.gfx_hw.lut_prio[i] = (uint8**) alloc_sealed (sizeof(uint8*) * 0x100);
-		for (size_t j = 0; j < 0x100; j++)  ext.cd_hw.gfx_hw.lut_prio[i][j] = (uint8*) alloc_sealed (sizeof(uint8) * 0x100);
-	}
-		
-	ext.cd_hw.gfx_hw.lut_pixel = (uint8*) alloc_sealed(sizeof(uint8) * 0x200);
-	ext.cd_hw.gfx_hw.lut_cell  = (uint8*) alloc_sealed(sizeof(uint8) * 0x100);
-
-	// cd_hw/pcm.h
-
-	memset(&ext.cd_hw.pcm_hw, 0, sizeof(pcm_t));
-	ext.cd_hw.pcm_hw.ram = (uint8*) alloc_plain(sizeof(uint8) * 0x10000);
-
-	// cd_hw/scd.h
-
-	ext.cd_hw.bootrom     = (uint8*) alloc_plain(sizeof(uint8) * 0x20000);
-	ext.cd_hw.prg_ram     = (uint8*) alloc_plain(sizeof(uint8) * 0x80000);
-	ext.cd_hw.word_ram[0] = (uint8*) alloc_plain(sizeof(uint8) * 0x20000);
-	ext.cd_hw.word_ram[1] = (uint8*) alloc_plain(sizeof(uint8) * 0x20000);
-	ext.cd_hw.word_ram_2M = (uint8*) alloc_plain(sizeof(uint8) * 0x40000);
-	ext.cd_hw.bram        = (uint8*) alloc_plain(sizeof(uint8) * 0x2000);
-	
-	// sound.h
-
-	fm_buffer = (int*) alloc_plain(sizeof(int) * 1080 * 2 * 48);
-
-	// z80.h
-
-	SZ        = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
-	SZ_BIT    = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
-	SZP       = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
-	SZHV_inc  = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
-	SZHV_dec  = (UINT8* ) alloc_sealed(sizeof(UINT8) * 256);
-	SZHVC_add = (UINT8* ) alloc_sealed(sizeof(UINT8) * 2*256*256);
-	SZHVC_sub = (UINT8* ) alloc_sealed(sizeof(UINT8) * 2*256*256);
-
-	// genesis.h
-
-	boot_rom = (uint8*) alloc_sealed(sizeof(uint8) * 0x800);
-	work_ram = (uint8*) alloc_plain(sizeof(uint8) * 0x10000);
-	zram     = (uint8*) alloc_plain(sizeof(uint8) * 0x2000);
-
-	// vdp_ctrl.h
-
-	sat  = (uint8*) alloc_plain (sizeof(uint8) * 0x400);
-	vram = (uint8*) alloc_plain (sizeof(uint8) * 0x10000);
-	bg_name_dirty = (uint8 *) alloc_plain (sizeof(uint8 ) * 0x800);
-	bg_name_list  = (uint16*) alloc_plain (sizeof(uint16) * 0x800);
-	
-	// vdp_render.h
-
-	bg_pattern_cache = (uint8      *) alloc_invisible (sizeof(uint8      ) * 0x80000);
-	name_lut         = (uint8      *) alloc_sealed (sizeof(uint8      ) * 0x400);
-	bp_lut           = (uint32     *) alloc_sealed (sizeof(uint32     ) * 0x10000);
-	lut[0]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
-	lut[1]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
-	lut[2]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
-	lut[3]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
-	lut[4]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
-	lut[5]           = (uint8      *) alloc_sealed (sizeof(uint8      ) * LUT_SIZE);
-	pixel            = (PIXEL_OUT_T*) alloc_plain (sizeof(PIXEL_OUT_T) * 0x100);
-	pixel_lut[0]     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x200);
-	pixel_lut[1]     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x200);
-	pixel_lut[2]     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x200);
-	pixel_lut_m4     = (PIXEL_OUT_T*) alloc_sealed (sizeof(PIXEL_OUT_T) * 0x40);
-	linebuf[0]       = (uint8      *) alloc_invisible (sizeof(uint8      ) * 0x200);
-	linebuf[1]       = (uint8      *) alloc_invisible (sizeof(uint8      ) * 0x200);
 
 	/* sound options */
 	config.psg_preamp     = 150;
