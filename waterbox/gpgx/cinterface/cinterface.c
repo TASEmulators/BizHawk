@@ -14,6 +14,7 @@
 #include <sms_ntsc.h>
 #include <eeprom_i2c.h>
 #include <vdp_render.h>
+#include <debug/cpuhook.h>
 
 struct config_t config;
 
@@ -524,6 +525,36 @@ struct InitSettings
 	uint8_t YM2413SoundChip;
 };
 
+
+#ifdef HOOK_CPU
+#ifdef USE_BIZHAWK_CALLBACKS
+
+extern void CDLog68k(uint addr, uint flags);
+
+void bk_cpu_hook(hook_type_t type, int width, unsigned int address, unsigned int value)
+{
+  switch(type)
+  {
+	case HOOK_M68K_E:
+	{
+		if (biz_execcb) biz_execcb(m68k.pc);
+
+		if(biz_cdcallback)
+		{
+			CDLog68k(m68k.pc,eCDLog_Flags_Exec68k);
+			CDLog68k(m68k.pc+1,eCDLog_Flags_Exec68k);
+		}
+
+		biz_lastpc = m68k.pc;
+	}
+	break;
+	default: break;
+  }
+}
+
+#endif // USE_BIZHAWK_CALLBACKS
+#endif // HOOK_CPU
+
 GPGX_EX int gpgx_init(const char* feromextension,
 	ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize),
 	struct InitSettings *settings)
@@ -531,6 +562,9 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	_debug_puts("Initializing GPGX native...");
 
 	force_sram = settings->ForceSram;
+
+	// Setting cpu hook
+	set_cpu_hook(bk_cpu_hook);
 
 	memset(&bitmap, 0, sizeof(bitmap));
 

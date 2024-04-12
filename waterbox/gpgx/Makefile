@@ -10,6 +10,7 @@ CCFLAGS := 	-Iutil \
 	-I${GPGX_DIR}/core/sound \
 	-I${GPGX_DIR}/core/ntsc \
 	-I${GPGX_DIR}/core/cd_hw \
+	-I${GPGX_DIR}/core/debug \
 	-Icinterface \
 	-Wall -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast -Werror=implicit-function-declaration \
 	-std=c99 -fomit-frame-pointer -Wfatal-errors \
@@ -19,6 +20,7 @@ CCFLAGS := 	-Iutil \
 	-DUSE_RAM_DEEPFREEZE \
 	-DLSB_FIRST \
 	-DUSE_32BPP_RENDERING \
+	-DHOOK_CPU \
 	-DINLINE=static\ __inline__ \
 	-fcommon
 
