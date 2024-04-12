@@ -84,7 +84,7 @@ add_library(
 	${CORE_DIR}/timing.h
 )
 
-target_compile_definitions(core PUBLIC _USE_MATH_DEFINES _CRT_SECURE_NO_WARNINGS)
+target_compile_definitions(core PUBLIC _USE_MATH_DEFINES _GNU_SOURCE _CRT_SECURE_NO_WARNINGS)
 target_compile_definitions(core PUBLIC GB_DISABLE_DEBUGGER GB_DISABLE_CHEATS GB_DISABLE_TIMEKEEPING GB_DISABLE_REWIND GB_VERSION="BizHawk")
 target_compile_definitions(core PRIVATE GB_INTERNAL)
 target_include_directories(core PUBLIC ${CORE_DIR})
