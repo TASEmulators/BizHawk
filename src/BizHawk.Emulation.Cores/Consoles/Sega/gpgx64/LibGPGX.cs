@@ -67,6 +67,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				Nuked = 1,
 			}
 			public YM2413SoundChipType YM2413SoundChip;
+
+			public bool SpritesAlwaysOnTop;
 		}
 
 		[BizImport(CallingConvention.Cdecl)]

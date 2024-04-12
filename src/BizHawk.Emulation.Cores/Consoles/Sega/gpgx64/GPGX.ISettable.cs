@@ -264,10 +264,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public LibGPGX.Region Region { get; set; }
 
 			[DisplayName("YM2413 Sound Chip Type")]
+			[Description("Selects the sound chip implementation to use for SMS/GG games (YM2413 sound chip)")]
 			[DefaultValue(LibGPGX.InitSettings.YM2413SoundChipType.Nuked)]
 			public LibGPGX.InitSettings.YM2413SoundChipType YM2413SoundChip { get; set; }
 
 			[DisplayName("YM2612 Sound Chip Type")]
+			[Description("Selects the sound chip implementation to use for Genesis / SegaCD games (YM2612 sound chip)")]
 			[DefaultValue(LibGPGX.InitSettings.YM2612SoundChipType.Nuked)]
 			public LibGPGX.InitSettings.YM2612SoundChipType YM2612SoundChip { get; set; }
 
@@ -311,6 +313,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue(0xffff00ff)]
 			public uint BackdropColor { get; set; }
 
+			[DisplayName("Sprites always on top")]
+			[Description("Forces sprites to always be displayed on top")]
+			[DefaultValue(false)]
+			public bool SpritesAlwaysOnTop { get; set; }
+
 			public LibGPGX.InitSettings GetNativeSettings(GameInfo game)
 			{
 				return new LibGPGX.InitSettings
@@ -329,7 +336,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					Region = Region,
 					ForceSram = game["sram"],
 					YM2612SoundChip = YM2612SoundChip,
-			        YM2413SoundChip = YM2413SoundChip
+			        YM2413SoundChip = YM2413SoundChip,
+					SpritesAlwaysOnTop = SpritesAlwaysOnTop
 				};
 			}
 

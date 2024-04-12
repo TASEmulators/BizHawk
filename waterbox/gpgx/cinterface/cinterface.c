@@ -523,6 +523,7 @@ struct InitSettings
 	char ForceSram;
 	uint8_t YM2612SoundChip;
 	uint8_t YM2413SoundChip;
+	uint8_t SpritesAlwaysOnTop;
 };
 
 
@@ -595,6 +596,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	config.pcm_volume     = 100;
 	config.hq_fm          = 1;
 	config.hq_psg         = 1;
+	config.sprites_always_on_top = 0;
 	config.filter = settings->Filter; //0; /* no filter */
 	config.lp_range = settings->LowPassRange; //0x9999; /* 0.6 in 16.16 fixed point */
 	config.low_freq = settings->LowFreq; //880;
@@ -629,6 +631,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	config.lcd      = 0;  /* 0.8 fixed point */
 	config.enhanced_vscroll = 0;
 	config.enhanced_vscroll_limit = 8;
+	config.sprites_always_on_top = settings->SpritesAlwaysOnTop;
 
 	// set overall input system type
 	// usual is MD GAMEPAD or NONE
