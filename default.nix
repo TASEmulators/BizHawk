@@ -1,8 +1,8 @@
 { system ? builtins.currentSystem
 , pkgs ? import (fetchTarball {
-		url = "https://github.com/NixOS/nixpkgs/archive/23.11.tar.gz";
-		sha256 = "1ndiv385w1qyb3b18vw13991fzb9wg4cl21wglk89grsfsnra41k";
-	}) { inherit system; }
+	url = "https://github.com/NixOS/nixpkgs/archive/23.11.tar.gz";
+	sha256 = "1ndiv385w1qyb3b18vw13991fzb9wg4cl21wglk89grsfsnra41k";
+}) { inherit system; }
 , lib ? pkgs.lib
 , stdenv ? pkgs.stdenvNoCC
 # infrastructure
@@ -43,9 +43,9 @@ in {
 , lua ? pkgs.lua54Packages.lua
 , mono ? null
 , nixGLChannel ? (pkgs.nixgl or import (fetchTarball {
-		url = "https://github.com/guibou/nixGL/archive/489d6b095ab9d289fe11af0219a9ff00fe87c7c5.tar.gz";
-		sha256 = "03kwsz8mf0p1v1clz42zx8cmy6hxka0cqfbfasimbj858lyd930k";
-	}) { inherit system; })
+	url = "https://github.com/guibou/nixGL/archive/489d6b095ab9d289fe11af0219a9ff00fe87c7c5.tar.gz";
+	sha256 = "03kwsz8mf0p1v1clz42zx8cmy6hxka0cqfbfasimbj858lyd930k";
+}) { inherit system; })
 , nixGL ? nixGLChannel.auto.nixGLDefault
 #, nixVulkan ? nixGLChannel.auto.nixVulkanNvidia
 , openal ? pkgs.openal
