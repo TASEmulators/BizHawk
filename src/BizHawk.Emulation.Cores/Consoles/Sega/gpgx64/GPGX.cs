@@ -417,6 +417,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Core.gpgx_flush_vram(); // fully regenerate internal caches as needed
 			return new VDPView(v, _elf);
 		}
+		
+		public int AddDeepFreezeValue(int address, byte value)
+		{
+			return Core.gpgx_add_deepfreeze_list_entry(address, value);
+		}
+
+		public void ClearDeepFreezeList()
+		{
+			Core.gpgx_clear_deepfreeze_list();
+		}
 
 		public DisplayType Region { get; }
 	}

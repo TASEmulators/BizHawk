@@ -303,6 +303,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 		[BizImport(CallingConvention.Cdecl)]
+		public abstract int gpgx_add_deepfreeze_list_entry(int address, byte value);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void gpgx_clear_deepfreeze_list();
+
+		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_set_cdd_callback(cd_read_cb cddcb);
 
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
