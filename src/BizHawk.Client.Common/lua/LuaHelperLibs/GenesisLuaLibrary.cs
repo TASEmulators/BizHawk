@@ -20,12 +20,7 @@ namespace BizHawk.Client.Common
 			get => APIs.Emulation.GetSettings() as GPGX.GPGXSettings ?? new GPGX.GPGXSettings();
 			set => APIs.Emulation.PutSettings(value);
 		}
-
-		private GPGX gpgx
-		{
-			get => APIs.Emulation as GPGX;
-		}
-
+	
 		[LuaMethodExample("if ( genesis.getlayer_bga( ) ) then\r\n\tconsole.log( \"Returns whether the bg layer A is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bga", "Returns whether the bg layer A is displayed")]
 		public bool GetLayerBgA()
@@ -72,14 +67,18 @@ namespace BizHawk.Client.Common
 		[LuaMethod("add_deepfreeze_value", "Adds an address to deepfreeze to a given value. The value will not change at any point during emulation.")]
 		public int AddDeepFreezeValue(int address, byte value)
 		{
-			return gpgx.AddDeepFreezeValue(address, value);
+			// Here we'd need to get access to the gpgx core
+			// var gpgx = getGPGXCore();
+			// return gpgx.AddDeepFreezeValue(address, value);
 		}
 
 		[LuaMethodExample("genesis.clear_deepfreeze_list();")]
 		[LuaMethod("clear_deepfreeze_list", "Clears the list of deep frozen variables")]
 		public void ClearDeepFreezeList()
 		{
-			gpgx.ClearDeepFreezeList();
+			// Here we'd need to get access to the gpgx core
+			// var gpgx = getGPGXCore();
+			// gpgx.ClearDeepFreezeList();
 		}
 	}
 }
