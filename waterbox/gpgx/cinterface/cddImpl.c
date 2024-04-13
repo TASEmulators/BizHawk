@@ -223,7 +223,8 @@ void cdd_update(void)
       header[3] = 0x01;
 
       /* data track sector read is controlled by CDC */
-      cdd.lba += cdc_decoder_update(*(uint32 *)(header));
+      cdc_decoder_update(*(uint32 *)(header));
+	  cdd.lba++;
     }
     else if (cdd.index < cdd.toc.last)
     {

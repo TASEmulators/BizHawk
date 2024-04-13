@@ -582,7 +582,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
     // cd_hw/cd_cart.h
 
-	ext.cd_hw.cartridge.area = alloc_plain(sizeof(uint8) * 0x810000);
+	ext.cd_hw.cartridge.area = alloc_plain(SCD_CARTRIDGE_AREA_SIZE);
 
     // Initializing ram deepfreeze list
 #ifdef USE_RAM_DEEPFREEZE
