@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	[PortedCore(CoreNames.Mgba, "endrift", "0.10", "https://mgba.io/")]
+	[PortedCore(CoreNames.Mgba, "endrift", "0.11", "https://mgba.io/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
 	public partial class MGBAHawk
 	{
