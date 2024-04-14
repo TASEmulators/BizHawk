@@ -7,7 +7,7 @@ CXXFLAGS := -std=c++17 \
 	-Wno-unqualified-std-cast-call -Wno-mismatched-tags -Wno-overloaded-virtual -Wno-bitwise-instead-of-logical \
 	-fno-threadsafe-statics -fno-strict-aliasing -fwrapv
 
-CCFLAGS := -std=c11 -DGB_INTERNAL -DGB_DISABLE_DEBUGGER -DGB_DISABLE_CHEATS -DGB_DISABLE_TIMEKEEPING -D_GNU_SOURCE -DGB_VERSION= \
+CCFLAGS := -std=c11 -DGB_INTERNAL -DGB_DISABLE_DEBUGGER -DGB_DISABLE_CHEATS -DGB_DISABLE_TIMEKEEPING -DGB_DISABLE_REWIND -D_GNU_SOURCE -DGB_VERSION= \
 	-Wall -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-missing-braces -Wno-missing-field-initializers
 
 TARGET = bsnes.wbx
