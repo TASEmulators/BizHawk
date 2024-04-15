@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-LLVM_TAG=llvmorg-16.0.0
+LLVM_TAG=llvmorg-18.1.3
 LLVM_DIRS="cmake compiler-rt libunwind libcxx libcxxabi"
 LLVM_PATH=../llvm-project
 LLVM_GIT_DIR=$(git rev-parse --git-path modules/waterbox/llvm-project)
