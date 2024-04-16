@@ -70,6 +70,7 @@ namespace BizHawk.Client.Common
 			// Here we'd need to get access to the gpgx core
 			// var gpgx = getGPGXCore();
 			// return gpgx.AddDeepFreezeValue(address, value);
+			return 1;
 		}
 
 		[LuaMethodExample("genesis.clear_deepfreeze_list();")]
