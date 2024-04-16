@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 // ReSharper disable UnusedMember.Global
@@ -14,6 +15,9 @@ namespace BizHawk.Client.Common
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "genesis";
+
+		[RequiredService]
+		private GPGX gpgx { get; set; }
 
 		private GPGX.GPGXSettings Settings
 		{
@@ -67,19 +71,14 @@ namespace BizHawk.Client.Common
 		[LuaMethod("add_deepfreeze_value", "Adds an address to deepfreeze to a given value. The value will not change at any point during emulation.")]
 		public int AddDeepFreezeValue(int address, byte value)
 		{
-			// Here we'd need to get access to the gpgx core
-			// var gpgx = getGPGXCore();
-			// return gpgx.AddDeepFreezeValue(address, value);
-			return 1;
+			return gpgx.AddDeepFreezeValue(address, value);
 		}
 
 		[LuaMethodExample("genesis.clear_deepfreeze_list();")]
 		[LuaMethod("clear_deepfreeze_list", "Clears the list of deep frozen variables")]
 		public void ClearDeepFreezeList()
 		{
-			// Here we'd need to get access to the gpgx core
-			// var gpgx = getGPGXCore();
-			// gpgx.ClearDeepFreezeList();
+			gpgx.ClearDeepFreezeList();
 		}
 	}
 }
