@@ -59,7 +59,7 @@ static uint8_t brm_format[0x40] =
 ECL_ENTRY void (*biz_execcb)(unsigned addr);
 ECL_ENTRY void (*biz_readcb)(unsigned addr);
 ECL_ENTRY void (*biz_writecb)(unsigned addr);
-CDCallback biz_cdcallback = NULL;
+CDCallback biz_cdcb = NULL;
 unsigned biz_lastpc = 0;
 ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int audio);
 uint8 *tempsram;
@@ -530,7 +530,49 @@ struct InitSettings
 #ifdef HOOK_CPU
 #ifdef USE_BIZHAWK_CALLBACKS
 
-extern void CDLog68k(uint addr, uint flags);
+void CDLog68k(uint addr, uint flags)
+{
+	addr &= 0x00FFFFFF;
+
+	//check for sram region first
+	if(sram.on)
+	{
+		if(addr >= sram.start && addr <= sram.end)
+		{
+			biz_cdcb(addr - sram.start, eCDLog_AddrType_SRAM, flags);
+			return;
+		}
+	}
+
+	if(addr < 0x400000)
+	{
+		uint block64k_rom;
+
+		//apply memory map to process rom address
+		unsigned char* block64k = m68k.memory_map[((addr)>>16)&0xff].base;
+		
+		//outside the ROM range. complex mapping logic/accessories; not sure how to handle any of this
+		if(block64k < cart.rom || block64k >= cart.rom + cart.romsize)
+			return;
+
+		block64k_rom = block64k - cart.rom;
+		addr = ((addr) & 0xffff) + block64k_rom;
+
+		//outside the ROM range somehow
+		if(addr >= cart.romsize)
+			return;
+
+		biz_cdcb(addr, eCDLog_AddrType_MDCART, flags);
+		return;
+	}
+
+	if(addr > 0xFF0000)
+	{
+		//no memory map needed
+		biz_cdcb(addr & 0xFFFF, eCDLog_AddrType_RAM68k, flags);
+		return;
+	}
+}
 
 void bk_cpu_hook(hook_type_t type, int width, unsigned int address, unsigned int value)
 {
@@ -538,15 +580,28 @@ void bk_cpu_hook(hook_type_t type, int width, unsigned int address, unsigned int
   {
 	case HOOK_M68K_E:
 	{
-		if (biz_execcb) biz_execcb(m68k.pc);
+		if (biz_execcb)
+			biz_execcb(address);
 
-		if(biz_cdcallback)
+		if(biz_cdcb)
 		{
-			CDLog68k(m68k.pc,eCDLog_Flags_Exec68k);
-			CDLog68k(m68k.pc+1,eCDLog_Flags_Exec68k);
+			CDLog68k(address, eCDLog_Flags_Exec68k);
+			CDLog68k(address + 1, eCDLog_Flags_Exec68k);
 		}
 
-		biz_lastpc = m68k.pc;
+		biz_lastpc = address;
+	}
+	break;
+	case HOOK_M68K_R:
+	{
+		if (biz_readcb)
+			biz_readcb(address);
+	}
+	break;
+	case HOOK_M68K_W:
+	{
+		if (biz_writecb)
+			biz_writecb(address);
 	}
 	break;
 	default: break;
@@ -705,7 +760,7 @@ GPGX_EX void gpgx_set_mem_callback(ECL_ENTRY void (*read)(unsigned), ECL_ENTRY v
 
 GPGX_EX void gpgx_set_cd_callback(CDCallback cdcallback)
 {
-	biz_cdcallback = cdcallback;
+	biz_cdcb = cdcallback;
 }
 
 GPGX_EX void gpgx_set_draw_mask(int mask)
