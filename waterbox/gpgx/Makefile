@@ -12,6 +12,7 @@ CCFLAGS := 	-Iutil \
 	-I${GPGX_DIR}/core/cd_hw \
 	-I${GPGX_DIR}/core/debug \
 	-Icinterface \
+	-Iutil \
 	-Wall -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast -Werror=implicit-function-declaration \
 	-std=c99 -fomit-frame-pointer -Wfatal-errors \
 	-DUSE_BIZHAWK_CALLBACKS \
@@ -38,7 +39,6 @@ SRCS = $(GPGX_DIR)/core/sound/sound.c \
 	   $(GPGX_DIR)/core/sound/ym2612.c \
 	   $(GPGX_DIR)/core/membnk.c \
 	   $(GPGX_DIR)/core/vdp_ctrl.c \
-	   $(GPGX_DIR)/core/scrc32.c \
 	   $(GPGX_DIR)/core/z80/z80.c \
 	   $(GPGX_DIR)/core/io_ctrl.c \
 	   $(GPGX_DIR)/core/ntsc/sms_ntsc.c \
@@ -80,7 +80,8 @@ SRCS = $(GPGX_DIR)/core/sound/sound.c \
 	   $(GPGX_DIR)/core/cart_hw/megasd.c \
 	   $(GPGX_DIR)/core/debug/cpuhook.c \
 	   $(GPGX_DIR)/core/loadrom.c \
+	   cinterface/cddImpl.c \
 	   cinterface/cinterface.c \
-	   cinterface/cddImpl.c
+	   util/scrc32.c
 
 include ../common.mak
