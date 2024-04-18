@@ -753,12 +753,13 @@ GPGX_EX void gpgx_set_mem_callback(ECL_ENTRY void (*read)(unsigned), ECL_ENTRY v
 	biz_readcb = read;
 	biz_writecb = write;
 	biz_execcb = exec;
-	set_cpu_hook((read && write && exec) ? bk_cpu_hook : NULL);
+	set_cpu_hook((read || write || exec || biz_cdcb) ? bk_cpu_hook : NULL);
 }
 
 GPGX_EX void gpgx_set_cd_callback(CDCallback cdcallback)
 {
 	biz_cdcb = cdcallback;
+	set_cpu_hook((biz_readcb || biz_writecb || biz_execcb || biz_cdcb) ? bk_cpu_hook : NULL);
 }
 
 GPGX_EX void gpgx_set_draw_mask(int mask)
