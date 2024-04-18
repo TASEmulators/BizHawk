@@ -619,9 +619,6 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 	force_sram = settings->ForceSram;
 
-	// Setting cpu hook
-	set_cpu_hook(bk_cpu_hook);
-
 	memset(&bitmap, 0, sizeof(bitmap));
 
 	strncpy(romextension, feromextension, 3);
@@ -756,6 +753,7 @@ GPGX_EX void gpgx_set_mem_callback(ECL_ENTRY void (*read)(unsigned), ECL_ENTRY v
 	biz_readcb = read;
 	biz_writecb = write;
 	biz_execcb = exec;
+	set_cpu_hook((read && write && exec) ? bk_cpu_hook : NULL);
 }
 
 GPGX_EX void gpgx_set_cd_callback(CDCallback cdcallback)
