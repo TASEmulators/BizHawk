@@ -54,14 +54,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public bool SixButton;
 			public bool ForceSram;
 
-			public enum SMSFMSoundChipType : byte
-			{
-				YM2413_DISABLED = 0,
-				YM2413_MAME = 1,
-				YM2413_NUKED = 2
-			}
-			public SMSFMSoundChipType SMSFMSoundChip;
-
 			public enum GenesisFMSoundChipType : byte
 			{
 				YM2612_MAME_DISCRETE = 0,
