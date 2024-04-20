@@ -525,7 +525,6 @@ struct InitSettings
 	char InputSystemB;
 	char SixButton;
 	char ForceSram;
-	uint8_t SMSFMSoundChip;
 	uint8_t GenesisFMSoundChip;
 	uint8_t SpritesAlwaysOnTop;
 };
@@ -661,8 +660,10 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	config.mg = settings->MidGain; //100;
 	config.hg = settings->HighGain; //100;
 
-    // Selecting FM Sound chip to use for SMS / GG emulation
-    switch (settings->SMSFMSoundChip)
+    // Selecting FM Sound chip to use for SMS / GG emulation. Using a default for now, until we also
+	// accept this core for SMS/GG emulation in BizHawk
+	int smsFMChipType = YM2413_NUKED;
+    switch (smsFMChipType)
 	{
 	  case YM2413_DISABLED: 
 	    config.opll = 0;
