@@ -526,7 +526,7 @@ struct InitSettings
 	char SixButton;
 	char ForceSram;
 	uint8_t SMSFMSoundChip;
-	uint8_t GenesiFMSoundChip;
+	uint8_t GenesisFMSoundChip;
 	uint8_t SpritesAlwaysOnTop;
 };
 
@@ -681,7 +681,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	}
 
 	// Selecting FM Sound chip to use for Genesis / Megadrive / CD emulation
-    switch (settings->SMSFMSoundChip)
+    switch (settings->GenesisFMSoundChip)
 	{
 	  case YM2612_MAME_DISCRETE: 
 		config.ym2612 = YM2612_DISCRETE;
