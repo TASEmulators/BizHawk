@@ -148,7 +148,7 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 				if (!string.IsNullOrEmpty(parseJob.OUT_Log)) Console.WriteLine(parseJob.OUT_Log);
 				ConcatenateJobLog(parseJob);
-				if (!okParse) return;
+				if (!okParse || parseJob.OUT_ErrorLevel) return;
 
 				// compile the cue file
 				// includes resolving required bin files and finding out what would processing would need to happen in order to load the cue

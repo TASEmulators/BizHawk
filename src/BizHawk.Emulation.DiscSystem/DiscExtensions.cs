@@ -27,7 +27,9 @@ namespace BizHawk.Emulation.DiscSystem
 
 			if (discMountJob.OUT_ErrorLevel)
 			{
-				throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
+				throw new Exception(string.IsNullOrEmpty(discMountJob.OUT_Log)
+					? $"Could not process file \"{path}\"."
+					: $"Could not process file \"{path}\". Warnings/errors:\n{discMountJob.OUT_Log}\n(end disc load log)");
 			}
 
 			var disc = discMountJob.OUT_Disc;

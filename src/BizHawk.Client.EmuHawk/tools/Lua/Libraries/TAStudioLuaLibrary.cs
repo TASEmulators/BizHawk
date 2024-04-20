@@ -511,11 +511,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.QueryItemTextCallback = (index, name) =>
-				{
-					var result = luaf.Call(index, name);
-					return result?[0]?.ToString();
-				};
+				Tastudio.QueryItemTextCallback = (index, name) => luaf.Call(index, name)?.FirstOrDefault()?.ToString();
 			}
 		}
 

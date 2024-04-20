@@ -86,7 +86,7 @@
 			this.grpName.Size = new System.Drawing.Size(486, 45);
 			this.grpName.TabIndex = 11;
 			this.grpName.TabStop = false;
-			this.grpName.Text = "Name";
+			this.grpName.Text = "Output Bundle Path";
 			// 
 			// BrowseBtn
 			// 
