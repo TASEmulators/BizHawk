@@ -661,22 +661,6 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	config.mg = settings->MidGain; //100;
 	config.hg = settings->HighGain; //100;
 
-
-// enum SMSFMSoundChipType
-// {
-// 	YM2413_MAME = 0,
-// 	YM2413_NUKED = 1
-// };
-
-// enum GenesisFMSoundChipType
-// {
-// 	YM2612_MAME_DISCRETE = 0,
-// 	YM2612_MAME_ENHANCED = 1,
-// 	YM2612_NUKED = 2,
-// 	YM3438_MAME = 4,
-// 	YM3438_NUKED = 5
-// };
-
     // Selecting FM Sound chip to use for SMS / GG emulation
     switch (settings->SMSFMSoundChip)
 	{

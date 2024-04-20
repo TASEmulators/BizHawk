@@ -263,15 +263,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue(LibGPGX.Region.Autodetect)]
 			public LibGPGX.Region Region { get; set; }
 
-			[DisplayName("YM2413 Sound Chip Type")]
-			[Description("Selects the sound chip implementation to use for SMS/GG games (YM2413 sound chip)")]
-			[DefaultValue(LibGPGX.InitSettings.YM2413SoundChipType.Nuked)]
-			public LibGPGX.InitSettings.YM2413SoundChipType YM2413SoundChip { get; set; }
+			[DisplayName("SMS FM Sound Chip Type")]
+			[Description("Selects the sound chip implementation to use for SMS/GG games (YM2413 FM sound chip)")]
+			[DefaultValue(LibGPGX.InitSettings.SMSFMSoundChipType.YM2413_NUKED)]
+			public LibGPGX.InitSettings.SMSFMSoundChipType SMSFMSoundChip { get; set; }
 
-			[DisplayName("YM2612 Sound Chip Type")]
-			[Description("Selects the sound chip implementation to use for Genesis / SegaCD games (YM2612 sound chip)")]
-			[DefaultValue(LibGPGX.InitSettings.YM2612SoundChipType.Nuked)]
-			public LibGPGX.InitSettings.YM2612SoundChipType YM2612SoundChip { get; set; }
+			[DisplayName("Genesis FM Sound Chip Type")]
+			[Description("Selects the sound chip implementation to use for Genesis / MegaDrive / SegaCD games (YM2612 or YM3438 FM sound chip)")]
+			[DefaultValue(LibGPGX.InitSettings.GenesisFMSoundChipType.YM3438_NUKED)]
+			public LibGPGX.InitSettings.GenesisFMSoundChipType GenesisFMSoundChip { get; set; }
 
 			[DisplayName("Audio Filter")]
 			[DefaultValue(LibGPGX.InitSettings.FilterType.LowPass)]
@@ -335,8 +335,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					InputSystemB = SystemForSystem(ControlTypeRight),
 					Region = Region,
 					ForceSram = game["sram"],
-					YM2612SoundChip = YM2612SoundChip,
-			        YM2413SoundChip = YM2413SoundChip,
+					SMSFMSoundChip = SMSFMSoundChip,
+			        GenesisFMSoundChip = GenesisFMSoundChip,
 					SpritesAlwaysOnTop = SpritesAlwaysOnTop
 				};
 			}
