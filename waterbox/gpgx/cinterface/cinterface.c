@@ -494,16 +494,20 @@ GPGX_EX unsigned gpgx_peek_s68k_bus(unsigned addr)
 		return 0xff;
 }
 
-enum YM2612SoundChipType
+enum SMSFMSoundChipType
 {
-	YM2612_Vanilla = 0,
-	YM2612_Nuked = 1
+	YM2413_DISABLED = 0,
+	YM2413_MAME = 1,
+	YM2413_NUKED = 2
 };
 
-enum YM2413SoundChipType
+enum GenesisFMSoundChipType
 {
-	YM2413_Mame = 0,
-	YM2413_Nuked = 1
+	YM2612_MAME_DISCRETE = 0,
+	YM2612_MAME_ENHANCED = 1,
+	YM2612_NUKED = 2,
+	YM3438_MAME = 4,
+	YM3438_NUKED = 5
 };
 
 struct InitSettings
@@ -521,8 +525,8 @@ struct InitSettings
 	char InputSystemB;
 	char SixButton;
 	char ForceSram;
-	uint8_t YM2612SoundChip;
-	uint8_t YM2413SoundChip;
+	uint8_t SMSFMSoundChip;
+	uint8_t GenesiFMSoundChip;
 	uint8_t SpritesAlwaysOnTop;
 };
 
@@ -657,10 +661,70 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	config.mg = settings->MidGain; //100;
 	config.hg = settings->HighGain; //100;
 
-	config.ym2612         = settings->YM2612SoundChip == YM2612_Vanilla;
-	config.ym2413         = settings->YM2413SoundChip == YM2413_Mame;
-	config.ym3438         = settings->YM2612SoundChip == YM2612_Nuked;
-	config.opll           = settings->YM2413SoundChip == YM2413_Nuked;
+
+// enum SMSFMSoundChipType
+// {
+// 	YM2413_MAME = 0,
+// 	YM2413_NUKED = 1
+// };
+
+// enum GenesisFMSoundChipType
+// {
+// 	YM2612_MAME_DISCRETE = 0,
+// 	YM2612_MAME_ENHANCED = 1,
+// 	YM2612_NUKED = 2,
+// 	YM3438_MAME = 4,
+// 	YM3438_NUKED = 5
+// };
+
+    // Selecting FM Sound chip to use for SMS / GG emulation
+    switch (settings->SMSFMSoundChip)
+	{
+	  case YM2413_DISABLED: 
+	    config.opll = 0;
+		config.ym2413 = 0;
+        break;
+
+      case YM2413_MAME: 
+	    config.opll = 0;
+		config.ym2413 = 1;
+        break;
+
+	  case YM2413_NUKED: 
+	    config.opll = 1;
+		config.ym2413 = 0;
+        break;
+	}
+
+	// Selecting FM Sound chip to use for Genesis / Megadrive / CD emulation
+    switch (settings->SMSFMSoundChip)
+	{
+	  case YM2612_MAME_DISCRETE: 
+		config.ym2612 = YM2612_DISCRETE;
+		config.ym3438 = 0;
+        break;
+
+      case YM2612_MAME_ENHANCED: 
+		config.ym2612 = YM2612_ENHANCED;
+		config.ym3438 = 0;
+        break;
+
+	  case YM2612_NUKED: 
+		config.ym2612 = 0;
+		config.ym3438 = 1;
+        break;
+
+	  case YM3438_MAME: 
+		config.ym2612 = YM2612_INTEGRATED;
+		config.ym3438 = 0;
+        break;
+
+	  case YM3438_NUKED: 
+		config.ym2612 = 0;
+		config.ym3438 = 2;
+        break;
+	}
+
 	config.mono           = 0;
 
 	/* system options */
