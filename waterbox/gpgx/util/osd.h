@@ -26,14 +26,6 @@ typedef unsigned char bool;
 #define M_PI 3.1415926535897932385
 #endif
 
-#if defined(__GNUC__)
-#define LIKELY(x) __builtin_expect(!!(x), 1)
-#define UNLIKELY(x) __builtin_expect(!!(x), 0)
-#else
-#define LIKELY(x) x
-#define UNLIKELY(x) x
-#endif
-
 typedef struct
 {
   int8_t device;
