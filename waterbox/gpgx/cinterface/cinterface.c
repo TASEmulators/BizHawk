@@ -60,7 +60,6 @@ ECL_ENTRY void (*biz_execcb)(unsigned addr);
 ECL_ENTRY void (*biz_readcb)(unsigned addr);
 ECL_ENTRY void (*biz_writecb)(unsigned addr);
 CDCallback biz_cdcb = NULL;
-unsigned biz_lastpc = 0;
 ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int audio);
 uint8 *tempsram;
 
@@ -591,8 +590,6 @@ void bk_cpu_hook(hook_type_t type, int width, unsigned int address, unsigned int
 			CDLog68k(address, eCDLog_Flags_Exec68k);
 			CDLog68k(address + 1, eCDLog_Flags_Exec68k);
 		}
-
-		biz_lastpc = address;
 	}
 	break;
 	case HOOK_M68K_R:
@@ -873,8 +870,6 @@ GPGX_EX int gpgx_getregs(gpregister_t *regs)
 	MAKEREG(ISP);
 	MAKEREG(IR);
 #undef MAKEREG
-
-	(regs-6)->value = biz_lastpc; // during read/write callbacks, PC runs away due to prefetch. restore it.
 
 	// 13
 #define MAKEREG(x) regs->name = "Z80 " #x; regs->value = Z80.x.d; regs++; ret++;
