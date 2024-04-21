@@ -14,7 +14,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<EditorConfigFiles Include="$(MSBuildProjectDirectory)/../Analyzers.editorconfig" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
 		<Compile Include="$(MSBuildProjectDirectory)/../AnalyzersCommon/**/*.cs" />
 	</ItemGroup>

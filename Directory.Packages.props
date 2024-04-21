@@ -8,8 +8,7 @@
 		<PackageVersion Include="Menees.Analyzers" Version="3.0.10" />
 		<PackageVersion Include="Meziantou.Analyzer" Version="2.0.33" />
 		<PackageVersion Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
-		<PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
 		<PackageVersion Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageVersion Include="Microsoft.Data.Sqlite.Core" Version="8.0.1" />
 		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
