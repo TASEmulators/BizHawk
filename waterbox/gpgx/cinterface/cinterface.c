@@ -496,18 +496,18 @@ GPGX_EX unsigned gpgx_peek_s68k_bus(unsigned addr)
 
 enum SMSFMSoundChipType
 {
-	YM2413_DISABLED = 0,
-	YM2413_MAME = 1,
-	YM2413_NUKED = 2
+	YM2413_DISABLED,
+	YM2413_MAME,
+	YM2413_NUKED
 };
 
 enum GenesisFMSoundChipType
 {
-	YM2612_MAME_DISCRETE = 0,
-	YM2612_MAME_ENHANCED = 1,
-	YM2612_NUKED = 2,
-	YM3438_MAME = 4,
-	YM3438_NUKED = 5
+	MAME_YM2612,
+	MAME_ASIC_YM3438,
+	MAME_Enhanced_YM3438,
+	Nuked_YM2612,
+	Nuked_YM3438
 };
 
 struct InitSettings
@@ -629,11 +629,11 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 	load_archive_cb = feload_archive_cb;
 
-	bitmap.width = 1024;
+	bitmap.width  = 1024;
 	bitmap.height = 512;
-	bitmap.pitch = 1024 * 4;
-	bitmap.data = alloc_plain(2 * 1024 * 1024);
-	tempsram = alloc_plain(24 * 1024);
+	bitmap.pitch  = 1024 * 4;
+	bitmap.data   = alloc_plain(2 * 1024 * 1024);
+	tempsram      = alloc_plain(24 * 1024);
 
     // cd_hw/cd_cart.h
 
@@ -645,20 +645,21 @@ GPGX_EX int gpgx_init(const char* feromextension,
 #endif
 
 	/* sound options */
-	config.psg_preamp     = 150;
-	config.fm_preamp      = 100;
-	config.cdda_volume    = 100;
-	config.pcm_volume     = 100;
-	config.hq_fm          = 1;
-	config.hq_psg         = 1;
-	config.sprites_always_on_top = 0;
-	config.filter = settings->Filter; //0; /* no filter */
-	config.lp_range = settings->LowPassRange; //0x9999; /* 0.6 in 16.16 fixed point */
-	config.low_freq = settings->LowFreq; //880;
-	config.high_freq = settings->HighFreq; //5000;
-	config.lg = settings->LowGain; //100;
-	config.mg = settings->MidGain; //100;
-	config.hg = settings->HighGain; //100;
+	config.psg_preamp            = 150;
+	config.fm_preamp             = 100;
+	config.cdda_volume           = 100;
+	config.pcm_volume            = 100;
+	config.hq_fm                 = 1;
+	config.hq_psg                = 1;
+	config.filter                = settings->Filter; //0; /* no filter */
+	config.lp_range              = settings->LowPassRange; //0x9999; /* 0.6 in 16.16 fixed point */
+	config.low_freq              = settings->LowFreq; //880;
+	config.high_freq             = settings->HighFreq; //5000;
+	config.lg                    = settings->LowGain; //100;
+	config.mg                    = settings->MidGain; //100;
+	config.hg                    = settings->HighGain; //100;
+	config.mono                  = 0;
+	config.ym3438                = 0;
 
     // Selecting FM Sound chip to use for SMS / GG emulation. Using a default for now, until we also
 	// accept this core for SMS/GG emulation in BizHawk
@@ -684,33 +685,31 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	// Selecting FM Sound chip to use for Genesis / Megadrive / CD emulation
     switch (settings->GenesisFMSoundChip)
 	{
-	  case YM2612_MAME_DISCRETE: 
+	  case MAME_YM2612:
 		config.ym2612 = YM2612_DISCRETE;
-		config.ym3438 = 0;
+		YM2612Config(YM2612_DISCRETE);
         break;
 
-      case YM2612_MAME_ENHANCED: 
+	  case MAME_ASIC_YM3438:
+		config.ym2612 = YM2612_INTEGRATED;
+		YM2612Config(YM2612_INTEGRATED);
+        break;
+
+      case MAME_Enhanced_YM3438:
 		config.ym2612 = YM2612_ENHANCED;
-		config.ym3438 = 0;
+		YM2612Config(YM2612_ENHANCED);
         break;
 
-	  case YM2612_NUKED: 
-		config.ym2612 = 0;
+	  case Nuked_YM2612:
+		OPN2_SetChipType(ym3438_mode_ym2612);
 		config.ym3438 = 1;
         break;
 
-	  case YM3438_MAME: 
-		config.ym2612 = YM2612_INTEGRATED;
-		config.ym3438 = 0;
-        break;
-
-	  case YM3438_NUKED: 
-		config.ym2612 = 0;
+	  case Nuked_YM3438:
+		OPN2_SetChipType(ym3438_mode_readmode);
 		config.ym3438 = 2;
         break;
 	}
-
-	config.mono           = 0;
 
 	/* system options */
 	config.system         = 0; /* = AUTO (or SYSTEM_SG, SYSTEM_SGII, SYSTEM_SGII_RAM_EXT, SYSTEM_MARKIII, SYSTEM_SMS, SYSTEM_SMS2, SYSTEM_GG, SYSTEM_MD) */
@@ -725,14 +724,14 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	config.cd_latency     = 1;
 
 	/* display options */
-	config.overscan = 0;  /* 3 = all borders (0 = no borders , 1 = vertical borders only, 2 = horizontal borders only) */
-	config.gg_extra = 0;  /* 1 = show extended Game Gear screen (256x192) */
-	config.render   = 1;  /* 1 = double resolution output (only when interlaced mode 2 is enabled) */
-	config.ntsc     = 0;
-	config.lcd      = 0;  /* 0.8 fixed point */
-	config.enhanced_vscroll = 0;
+	config.overscan               = 0;  /* 3 = all borders (0 = no borders , 1 = vertical borders only, 2 = horizontal borders only) */
+	config.gg_extra               = 0;  /* 1 = show extended Game Gear screen (256x192) */
+	config.render                 = 1;  /* 1 = double resolution output (only when interlaced mode 2 is enabled) */
+	config.ntsc                   = 0;
+	config.lcd                    = 0;  /* 0.8 fixed point */
+	config.enhanced_vscroll       = 0;
 	config.enhanced_vscroll_limit = 8;
-	config.sprites_always_on_top = settings->SpritesAlwaysOnTop;
+	config.sprites_always_on_top  = settings->SpritesAlwaysOnTop;
 
 	// set overall input system type
 	// usual is MD GAMEPAD or NONE

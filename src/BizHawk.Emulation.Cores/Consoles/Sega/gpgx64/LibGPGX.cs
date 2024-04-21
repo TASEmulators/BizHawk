@@ -56,11 +56,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			public enum GenesisFMSoundChipType : byte
 			{
-				YM2612_MAME_DISCRETE = 0,
-				YM2612_MAME_ENHANCED = 1,
-				YM2612_NUKED = 2,
-				YM3438_MAME = 4,
-				YM3438_NUKED = 5
+				MAME_YM2612,
+				MAME_ASIC_YM3438,
+				MAME_Enhanced_YM3438,
+				Nuked_YM2612,
+				Nuked_YM3438
 			}
 			public GenesisFMSoundChipType GenesisFMSoundChip;
 

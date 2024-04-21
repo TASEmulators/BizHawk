@@ -264,8 +264,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public LibGPGX.Region Region { get; set; }
 
 			[DisplayName("FM Sound Chip Type")]
-			[Description("Selects the sound chip implementation to use for Genesis / MegaDrive / SegaCD games (YM2612 or YM3438 FM sound chip)")]
-			[DefaultValue(LibGPGX.InitSettings.GenesisFMSoundChipType.YM3438_NUKED)]
+			[Description("Sets the method used to emulate the FM synthesizer (main sound generator) of the Mega Drive/Genesis.  'MAME' options are fast, and run full speed on most systems.  'Nuked' options are cycle accurate, very high quality, and have substantial CPU requirements.  The 'YM2612' chip is used by the original Model 1 Mega Drive/Genesis.  The 'YM3438' is used in later Mega Drive/Genesis revisions.")]
+			[DefaultValue(LibGPGX.InitSettings.GenesisFMSoundChipType.MAME_YM2612)]
 			public LibGPGX.InitSettings.GenesisFMSoundChipType GenesisFMSoundChip { get; set; }
 
 			[DisplayName("Audio Filter")]
