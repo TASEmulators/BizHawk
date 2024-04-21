@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
-	[PortedCore(CoreNames.Gpgx, "", "r874", "https://code.google.com/p/genplus-gx/")]
+	[PortedCore(CoreNames.Gpgx, "Eke-Eke", "25a90c6", "https://github.com/ekeeke/Genesis-Plus-GX")]
 	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				SbrkHeapSizeKB = 512,
 				SealedHeapSizeKB = 4 * 1024,
 				InvisibleHeapSizeKB = 4 * 1024,
-				PlainHeapSizeKB = 34 * 1024,
+				PlainHeapSizeKB = 48 * 1024,
 				MmapHeapSizeKB = 1 * 1024,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
@@ -214,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					srcdata = GetCDData(_cds[0]);
 					if (srcdata.Length != maxsize)
 					{
-						Console.WriteLine("Couldn't satisfy firmware request {0} because of struct size.", filename);
+						Console.WriteLine("Couldn't satisfy firmware request {0} because of struct size ({1} != {2}).", filename, srcdata.Length, maxsize);
 						return 0;
 					}
 				}
@@ -314,8 +314,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			//zero 07-jul-2015 - throws a dollar in the pile, since he probably messed it up worse
 			for (int i = 0; i < LibGPGX.CD_MAX_TRACKS; i++)
 			{
+				ret.tracks[i].loopEnabled = 0;
+				ret.tracks[i].loopOffset = 0;
+				
 				if (i < ntrack)
 				{
+					ret.tracks[i].mode = ses.Tracks[i].Mode;
 					ret.tracks[i].start = ses.Tracks[i + 1].LBA;
 					ret.tracks[i].end = ses.Tracks[i + 2].LBA;
 					if (i == ntrack - 1)
@@ -326,6 +330,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 				else
 				{
+					ret.tracks[i].mode = 0;
 					ret.tracks[i].start = 0;
 					ret.tracks[i].end = 0;
 				}
@@ -411,6 +416,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Core.gpgx_get_vdp_view(v);
 			Core.gpgx_flush_vram(); // fully regenerate internal caches as needed
 			return new VDPView(v, _elf);
+		}
+		
+		public int AddDeepFreezeValue(int address, byte value)
+		{
+			return Core.gpgx_add_deepfreeze_list_entry(address, value);
+		}
+
+		public void ClearDeepFreezeList()
+		{
+			Core.gpgx_clear_deepfreeze_list();
 		}
 
 		public DisplayType Region { get; }

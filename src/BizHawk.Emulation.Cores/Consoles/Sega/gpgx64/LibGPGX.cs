@@ -48,10 +48,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				ThreeBand = 2
 			}
 			public FilterType Filter;
+
 			public INPUT_SYSTEM InputSystemA;
 			public INPUT_SYSTEM InputSystemB;
 			public bool SixButton;
 			public bool ForceSram;
+
+			public enum GenesisFMSoundChipType : byte
+			{
+				MAME_YM2612,
+				MAME_ASIC_YM3438,
+				MAME_Enhanced_YM3438,
+				Nuked_YM2612,
+				Nuked_YM3438
+			}
+			public GenesisFMSoundChipType GenesisFMSoundChip;
+
+			public bool SpritesAlwaysOnTop;
 		}
 
 		[BizImport(CallingConvention.Cdecl)]
@@ -271,6 +284,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			public int start;
 			public int end;
+			public int mode;
+			public int loopEnabled;
+			public int loopOffset;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -281,6 +297,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = CD_MAX_TRACKS)]
 			public readonly CDTrack[] tracks = new CDTrack[CD_MAX_TRACKS];
 		}
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract int gpgx_add_deepfreeze_list_entry(int address, byte value);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void gpgx_clear_deepfreeze_list();
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_set_cdd_callback(cd_read_cb cddcb);
