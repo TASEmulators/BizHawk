@@ -6,6 +6,10 @@ variables:
   CI_HAWK_ARTIFACT_NAME_TAR: "$CI_HAWK_ARTIFACT_NAME.tar"
   CI_HAWK_TMPARTIFACT_NAME: "BizHawk_tempbuild_${CI_COMMIT_REF_SLUG}_${CI_COMMIT_SHORT_SHA}"
 
+workflow:
+  auto_cancel:
+    on_job_failure: all
+
 stages:
 - build
 - test
