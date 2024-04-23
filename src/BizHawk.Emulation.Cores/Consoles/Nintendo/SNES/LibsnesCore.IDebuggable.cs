@@ -20,6 +20,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			bool fz = (regs.p & 0x02) != 0;
 			bool fc = (regs.p & 0x01) != 0;
 
+			Api.QUERY_peek_gb_banks(out var banks);
+
 			return new Dictionary<string, RegisterValue>
 			{
 				["PC"] = regs.pc,
@@ -39,7 +41,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				["Flag Z"] = fz,
 				["Flag C"] = fc,
 				["V"] = regs.v,
-				["H"] = regs.h
+				["H"] = regs.h,
+				["ROM0 BANK"] = banks.rom0,
+				["ROMX BANK"] = banks.romx,
+				["VRAM BANK"] = banks.vram,
+				["SRAM BANK"] = banks.sram,
+				["WRAM BANK"] = banks.wram
 			};
 		}
 

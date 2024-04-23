@@ -124,6 +124,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 
 			using (Api.EnterExit()) this.BoardName = Marshal.PtrToStringAnsi(Api.core.snes_get_board());
+			this.SdbBoardName = "";
+			if (_isSGB)
+			{
+				using (Api.EnterExit()) this.SdbBoardName = Marshal.PtrToStringAnsi(Api.core.snes_get_sgb_board());
+			}
 			_region = Api.core.snes_get_region();
 			if (_region == BsnesApi.SNES_REGION.NTSC)
 			{
@@ -161,6 +166,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private bool _disposed;
 
 		public string BoardName { get; }
+		public string SdbBoardName { get; }
 
 		internal BsnesApi Api { get; }
 

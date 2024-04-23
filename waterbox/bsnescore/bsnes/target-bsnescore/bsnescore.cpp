@@ -455,6 +455,25 @@ EXPORT void* snes_get_sgb_memory_region(int id, int* size)
     return ret;
 }
 
+const char* sgb_board;
+EXPORT const char* snes_get_sgb_board(void)
+{
+    if (!sgb_board) sgb_board = strdup(program->gameBoy.document["game/board"].text().data());
+
+    return sgb_board;
+}
+
+EXPORT uint16_t snes_get_sgb_bank(int id)
+{
+    if(!emulator->loaded()) return 0;
+    if(!GB_is_inited(&icd.sameboy)) return 0;
+
+    size_t s = 0;
+	uint16_t bank = 0;
+    void* ret = GB_get_direct_access(&icd.sameboy, (GB_direct_access_t)id, &s, &bank);
+    return bank;
+}
+
 EXPORT uint8_t snes_sgb_bus_read(uint16_t addr)
 {
     return GB_safe_read_memory(&icd.sameboy, addr);

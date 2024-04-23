@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		static LibsnesApi()
 		{
-			if (sizeof(CommStruct) != 368)
+			if (sizeof(CommStruct) != 384)
 			{
 				throw new InvalidOperationException("sizeof(comm)");
 			}
@@ -213,6 +213,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public ushort v, h;
 		}
 
+		[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		public struct MemoryBanksComm
+		{
+			public ushort rom0, romx, sram;
+			public byte wram, vram;
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct LayerEnables
 		{
@@ -346,14 +353,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public CPURegs cpuregs;
 			[FieldOffset(344)]
 			public LayerEnables layerEnables;
-
 			[FieldOffset(356)]
+			public MemoryBanksComm memorybanks;
+
+			[FieldOffset(364)]
 			//static configuration-type information which can be grabbed off the core at any time without even needing a QUERY command
 			public SNES_REGION region;
-			[FieldOffset(360)]
+			[FieldOffset(368)]
 			public SNES_MAPPER mapper;
+			[FieldOffset(372)]
+			public GameBoy_MAPPER gameboy_mapper;
 
-			[FieldOffset(364)] private uint BLANK0;
+			[FieldOffset(376)] private uint BLANK0;
 
 
 			//utilities
@@ -388,6 +399,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				using (_exe.EnterExit())
 				{
 					return _comm->mapper;
+				}
+			}
+		}
+
+		public GameBoy_MAPPER GameboyMapper
+		{
+			get
+			{
+				using (_exe.EnterExit())
+				{
+					LibsnesApi.GameBoy_MAPPER mapper;
+					QUERY_get_gb_mapper(out mapper);
+					return mapper;
 				}
 			}
 		}

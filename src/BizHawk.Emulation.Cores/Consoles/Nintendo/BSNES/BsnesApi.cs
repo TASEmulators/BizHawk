@@ -52,6 +52,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract IntPtr snes_get_sgb_memory_region(int id, out int size);
 		[BizImport(CallingConvention.Cdecl)]
+		public abstract ushort snes_get_sgb_bank(int id);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract IntPtr snes_get_sgb_board();
+		[BizImport(CallingConvention.Cdecl)]
 		public abstract byte snes_sgb_bus_read(ushort address);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_sgb_bus_write(ushort address, byte value);

@@ -1,9 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
+	public class BSNESMemoryDomainIntPtrMonitor : MemoryDomainIntPtrMonitor
+	{
+		private BsnesApi _api;
+		private int _regionId;
+
+		public BSNESMemoryDomainIntPtrMonitor(BsnesApi api, int regionId, string name, Endian endian, IntPtr data, long size, bool writable, int wordSize, IMonitor monitor)
+			: base(name, endian, data, size, writable, wordSize, monitor)
+		{
+			_api = api;
+			_regionId = regionId;
+		}
+
+		public int GetBank()
+		{
+			return _api.core.snes_get_sgb_bank(_regionId);
+		}
+	}
+
 	public partial class BsnesCore
 	{
 		private MemoryDomainList _memoryDomains;
@@ -27,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 					_saveRam = data;
 					_saveRamSize = size;
 				}
-				mm.Add(new MemoryDomainIntPtrMonitor(Enum.GetName(typeof(BsnesApi.SNES_MEMORY), i)!.Replace('_', ' '), MemoryDomain.Endian.Little, data, size, true, wordSize, Api));
+				mm.Add(new BSNESMemoryDomainIntPtrMonitor(Api, i, Enum.GetName(typeof(BsnesApi.SNES_MEMORY), i)!.Replace('_', ' '), MemoryDomain.Endian.Little, data, size, true, wordSize, Api));
 			}
 
 			mm.Add(new MemoryDomainDelegate(
@@ -43,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				{
 					var data = Api.core.snes_get_sgb_memory_region(i, out var size);
 					if (data == IntPtr.Zero || size == 0) continue;
-					mm.Add(new MemoryDomainIntPtrMonitor("SGB " + Enum.GetName(typeof(BsnesApi.SGB_MEMORY), i), MemoryDomain.Endian.Little, data, size, true, 1, Api));
+					mm.Add(new BSNESMemoryDomainIntPtrMonitor(Api, i, "SGB " + Enum.GetName(typeof(BsnesApi.SGB_MEMORY), i), MemoryDomain.Endian.Little, data, size, true, 1, Api));
 				}
 
 				mm.Add(new MemoryDomainDelegate(
