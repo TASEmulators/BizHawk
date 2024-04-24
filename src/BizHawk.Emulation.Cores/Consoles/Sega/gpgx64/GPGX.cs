@@ -16,6 +16,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
 		[CoreConstructor(VSystemID.Raw.GEN)]
+		[CoreConstructor(VSystemID.Raw.SMS, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.GG, Priority = CorePriority.Low)]
+
 		public GPGX(CoreLoadParameters<GPGXSettings, GPGXSyncSettings> lp)
 		{
 			LoadCallback = new LibGPGX.load_archive_cb(load_archive);
