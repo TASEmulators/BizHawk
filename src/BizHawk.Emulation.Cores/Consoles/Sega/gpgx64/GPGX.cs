@@ -11,13 +11,14 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
-	[PortedCore(CoreNames.Gpgx, "Eke-Eke", "25a90c6", "https://github.com/ekeeke/Genesis-Plus-GX")]
+	[PortedCore(CoreNames.Gpgx, "Eke-Eke", "0c45a8a", "https://github.com/ekeeke/Genesis-Plus-GX")]
 	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
 		[CoreConstructor(VSystemID.Raw.GEN)]
-		[CoreConstructor(VSystemID.Raw.SMS, Priority = CorePriority.Low)]
-		[CoreConstructor(VSystemID.Raw.GG, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.SMS)]
+		[CoreConstructor(VSystemID.Raw.GG)]
+		[CoreConstructor(VSystemID.Raw.SG)]
 
 		public GPGX(CoreLoadParameters<GPGXSettings, GPGXSyncSettings> lp)
 		{
@@ -29,7 +30,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			ServiceProvider = new BasicServiceProvider(this);
 			// this can influence some things internally (autodetect romtype, etc)
+
 			string romextension = "GEN";
+			if (lp.Roms.FirstOrDefault()?.Game.System == VSystemID.Raw.SMS) romextension = "SMS";
+			if (lp.Roms.FirstOrDefault()?.Game.System == VSystemID.Raw.GG) romextension = "GG";
+			if (lp.Roms.FirstOrDefault()?.Game.System == VSystemID.Raw.SG) romextension = "SG";
 
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
