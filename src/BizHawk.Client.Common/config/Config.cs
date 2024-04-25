@@ -280,7 +280,7 @@ namespace BizHawk.Client.Common
 
 		/// <value>
 		/// volume level; interpreted as a percentage (i.e. scaled down to 0.0..1.0)
-		/// and passed to the platform audio implementation, which should use it as a simple multiplier on each sample;<br>
+		/// and passed to the platform audio implementation, which should use it as a simple multiplier on each sample;<br/>
 		/// so <c>0</c> is scale each sample by 0x (mute),<c>100</c> is scale each sample by 1x (preserve full volume),
 		/// <c>50</c> is scale each sample by 0.5x (≈ -3 dB), and <c>25</c> is scale each sample by 0.25x (≈ -6 dB)
 		/// </value>
