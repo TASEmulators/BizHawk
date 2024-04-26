@@ -705,7 +705,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	  case Nuked_YM3438:
 				OPN2_SetChipType(ym3438_mode_readmode);
 				config.ym3438 = 2;
-				break;
+					break;
 	}
 
 	/* system options */
