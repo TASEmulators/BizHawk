@@ -269,7 +269,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public bool loadBIOS { get; set; }
 
 			[DisplayName("[SMS/GG] FM Sound Chip Type")]
-			[Description("Sets the method used to emulate the FM synthesizer (main sound generator) of theSMS/GG.  'MAME' options are fast, and run full speed on most systems.  'Nuked' options are cycle accurate, very high quality, and have substantial CPU requirements.  The 'YM2612' chip is used by the original Model 1 Mega Drive/Genesis.  The 'YM3438' is used in later Mega Drive/Genesis revisions.")]
+			[Description("Sets the method used to emulate the FM synthesizer (main sound generator) of the SMS/GG.  'MAME' options are fast, and run full speed on most systems.  'Nuked' options are cycle accurate, very high quality, and have substantial CPU requirements.  The 'YM2413' chip is used by the original Sega Master System")]
 			[DefaultValue(LibGPGX.InitSettings.SMSFMSoundChipType.YM2413_MAME)]
 			public LibGPGX.InitSettings.SMSFMSoundChipType SMSFMSoundChip { get; set; }
 
