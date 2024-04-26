@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				Filename = "gpgx.wbx",
 				SbrkHeapSizeKB = 512,
 				SealedHeapSizeKB = 4 * 1024,
-				InvisibleHeapSizeKB = 2572 * 1024,
+				InvisibleHeapSizeKB = 4 * 1024,
 				PlainHeapSizeKB = 4 * 1024,
 				MmapHeapSizeKB = 1 * 1024,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
