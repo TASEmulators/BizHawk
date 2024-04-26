@@ -119,7 +119,7 @@ static uint8_t* cdStreamGetSector(cdStream* restrict stream, unsigned* offset)
 
 	if (!stream->sectors_cached[stream->current_sector])
 	{
-		cdd_readcallback(stream->current_sector, sector_cache, stream->sector_size == SECTOR_SUBCODE_SIZE);
+		cdd_readcallback(stream->current_sector, sector_cache, stream->sector_size == SECTOR_SUBCODE_SIZE, 0);
 		stream->sectors_cached[stream->current_sector] = 1;
 	}
 
@@ -166,6 +166,8 @@ size_t cdStreamRead(void* restrict buffer, size_t size, size_t count, cdStream* 
 		}
 	}
 
+	// signal that the read has finished and the drive light should be turned on
+	cdd_readcallback(0, NULL, 0, 1);
 	return ret;
 }
 

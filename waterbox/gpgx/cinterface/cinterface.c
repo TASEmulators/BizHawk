@@ -58,7 +58,7 @@ ECL_ENTRY void (*biz_execcb)(unsigned addr);
 ECL_ENTRY void (*biz_readcb)(unsigned addr);
 ECL_ENTRY void (*biz_writecb)(unsigned addr);
 CDCallback biz_cdcb = NULL;
-ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int subcode);
+ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int subcode, int drivelight);
 uint8 *tempsram;
 
 static void update_viewport(void)
@@ -136,7 +136,7 @@ GPGX_EX void gpgx_set_input_callback(ECL_ENTRY void (*fecb)(void))
 	input_callback_cb = fecb;
 }
 
-GPGX_EX void gpgx_set_cdd_callback(ECL_ENTRY void (*cddcb)(int lba, void *dest, int subcode))
+GPGX_EX void gpgx_set_cdd_callback(ECL_ENTRY void (*cddcb)(int lba, void *dest, int subcode, int drivelight))
 {
 	cdd_readcallback = cddcb;
 }
