@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 
 			// internally, the core caches disc sectors read into the invisible heap
-			var discBufferSize = lp.Discs.Sum(d => d.DiscData.Session1.LeadoutLBA * 2448 + d.DiscData.Session1.LeadoutLBA);
+			var discBufferSize = lp.Discs.Sum(d => d.DiscData.Session1.LeadoutLBA * (2352 + 96 + 2));
 			discBufferSize += 1024 - discBufferSize % 1024;
 
 			_elf = new WaterboxHost(new WaterboxOptions
