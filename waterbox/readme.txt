@@ -7,14 +7,13 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	Here are the supported alternatives:
 
 	PREPARE A WIN10 WORKSTATION:
-	Using the guidance at (https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel & https://docs.microsoft.com/en-us/windows/wsl/install-win10):
-	1. Install WSL2 
-	2. Install Ubuntu 22.04.2 LTS (https://apps.microsoft.com/store/detail/ubuntu-22042-lts/9PN20MSR04DW)
-	3. Clone the bizhawk repository. You can use it through /mnt or /home if you really like
-	4. The waterbox toolchain has a choice between gcc and clang. Currently, clang is the preferred compiler due to its generally superior performance all around.
-	4a. (Clang) Install build tools: sudo apt-get update && sudo apt-get install make cmake clang lld llvm zstd
-	4b. (GCC) Install build tools: sudo apt-get update && sudo apt-get install make cmake gcc-12 g++-12 llvm zstd
-	5. Currently, GCC 12 is required when using a gcc environment (older gcc versions fail at building libcxx), this may change in the future.
+	Using the guidance at (https://docs.microsoft.com/en-us/windows/wsl/install):
+	1. Install WSL2 with the Ubuntu distribution
+	2. Clone the bizhawk repository. You can use it through /mnt or /home if you really like
+	3. The waterbox toolchain has a choice between gcc and clang. Currently, clang is the preferred compiler due to its generally superior performance all around.
+	3a. (Clang) Install build tools: sudo apt-get update && sudo apt-get install make cmake clang lld llvm zstd
+	3b. (GCC) Install build tools: sudo apt-get update && sudo apt-get install make cmake gcc-13 g++-13 llvm zstd
+	4. Note that currently, clang 16+ or gcc 13 is required to successfully build libcxx. Those requirements may change in the future.
 
 	PREPARE A WIN10 VM:
 	1. Make sure the VM has "yo dawg" virtualization enabled on the guest. For example in VMWare Workstation, "Virtualize Intel VT-X/EPT or AMD-V/RVI"

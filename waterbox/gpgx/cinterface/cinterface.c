@@ -8,12 +8,15 @@
 #define snprintf _snprintf
 #endif
 
-#include "shared.h"
-#include "genesis.h"
-#include "md_ntsc.h"
-#include "sms_ntsc.h"
-#include "eeprom_i2c.h"
-#include "vdp_render.h"
+#include <shared.h>
+#include <genesis.h>
+#include <md_ntsc.h>
+#include <sms_ntsc.h>
+#include <eeprom_i2c.h>
+#include <vdp_render.h>
+#include <debug/cpuhook.h>
+
+struct config_t config;
 
 char GG_ROM[256] = "GG_ROM"; // game genie rom
 char AR_ROM[256] = "AR_ROM"; // actin replay rom
@@ -40,8 +43,6 @@ uint8 cinterface_custom_backdrop = 0;
 uint32 cinterface_custom_backdrop_color = 0xffff00ff; // pink
 extern uint8 border;
 
-int cinterface_force_sram = 0;
-
 #define GPGX_EX ECL_EXPORT
 
 static int vwidth;
@@ -58,8 +59,7 @@ static uint8_t brm_format[0x40] =
 ECL_ENTRY void (*biz_execcb)(unsigned addr);
 ECL_ENTRY void (*biz_readcb)(unsigned addr);
 ECL_ENTRY void (*biz_writecb)(unsigned addr);
-CDCallback biz_cdcallback = NULL;
-unsigned biz_lastpc = 0;
+CDCallback biz_cdcb = NULL;
 ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int audio);
 uint8 *tempsram;
 
@@ -216,8 +216,8 @@ typedef struct
 } vdpview_t;
 
 
-extern uint8 *bg_pattern_cache;
-extern uint32 pixel[];
+extern uint8 ALIGNED_(4) bg_pattern_cache[0x80000];
+uint32_t pixel[0x100];
 
 GPGX_EX void gpgx_get_vdp_view(vdpview_t *view)
 {
@@ -467,20 +467,20 @@ GPGX_EX void gpgx_write_m68k_bus(unsigned addr, unsigned data)
 {
 	cpu_memory_map m = m68k.memory_map[addr >> 16 & 0xff];
 	if (m.base && !m.write8)
-		m.base[addr & 0xffff ^ 1] = data;
+		m.base[(addr & 0xffff) ^ 1] = data;
 }
 
 GPGX_EX void gpgx_write_s68k_bus(unsigned addr, unsigned data)
 {
 	cpu_memory_map m = s68k.memory_map[addr >> 16 & 0xff];
 	if (m.base && !m.write8)
-		m.base[addr & 0xffff ^ 1] = data;
+		m.base[(addr & 0xffff) ^ 1] = data;
 }
 GPGX_EX unsigned gpgx_peek_m68k_bus(unsigned addr)
 {
 	cpu_memory_map m = m68k.memory_map[addr >> 16 & 0xff];
 	if (m.base && !m.read8)
-		return m.base[addr & 0xffff ^ 1];
+		return m.base[(addr & 0xffff) ^ 1];
 	else
 		return 0xff;
 }
@@ -488,10 +488,26 @@ GPGX_EX unsigned gpgx_peek_s68k_bus(unsigned addr)
 {
 	cpu_memory_map m = s68k.memory_map[addr >> 16 & 0xff];
 	if (m.base && !m.read8)
-		return m.base[addr & 0xffff ^ 1];
+		return m.base[(addr & 0xffff) ^ 1];
 	else
 		return 0xff;
 }
+
+enum SMSFMSoundChipType
+{
+	YM2413_DISABLED,
+	YM2413_MAME,
+	YM2413_NUKED
+};
+
+enum GenesisFMSoundChipType
+{
+	MAME_YM2612,
+	MAME_ASIC_YM3438,
+	MAME_Enhanced_YM3438,
+	Nuked_YM2612,
+	Nuked_YM3438
+};
 
 struct InitSettings
 {
@@ -508,7 +524,92 @@ struct InitSettings
 	char InputSystemB;
 	char SixButton;
 	char ForceSram;
+	uint8_t GenesisFMSoundChip;
+	uint8_t SpritesAlwaysOnTop;
 };
+
+
+#ifdef HOOK_CPU
+#ifdef USE_BIZHAWK_CALLBACKS
+
+void CDLog68k(uint addr, uint flags)
+{
+	addr &= 0x00FFFFFF;
+
+	//check for sram region first
+	if(sram.on)
+	{
+		if(addr >= sram.start && addr <= sram.end)
+		{
+			biz_cdcb(addr - sram.start, eCDLog_AddrType_SRAM, flags);
+			return;
+		}
+	}
+
+	if(addr < 0x400000)
+	{
+		uint block64k_rom;
+
+		//apply memory map to process rom address
+		unsigned char* block64k = m68k.memory_map[((addr)>>16)&0xff].base;
+		
+		//outside the ROM range. complex mapping logic/accessories; not sure how to handle any of this
+		if(block64k < cart.rom || block64k >= cart.rom + cart.romsize)
+			return;
+
+		block64k_rom = block64k - cart.rom;
+		addr = ((addr) & 0xffff) + block64k_rom;
+
+		//outside the ROM range somehow
+		if(addr >= cart.romsize)
+			return;
+
+		biz_cdcb(addr, eCDLog_AddrType_MDCART, flags);
+		return;
+	}
+
+	if(addr > 0xFF0000)
+	{
+		//no memory map needed
+		biz_cdcb(addr & 0xFFFF, eCDLog_AddrType_RAM68k, flags);
+		return;
+	}
+}
+
+void bk_cpu_hook(hook_type_t type, int width, unsigned int address, unsigned int value)
+{
+  switch(type)
+  {
+	case HOOK_M68K_E:
+	{
+		if (biz_execcb)
+			biz_execcb(address);
+
+		if(biz_cdcb)
+		{
+			CDLog68k(address, eCDLog_Flags_Exec68k);
+			CDLog68k(address + 1, eCDLog_Flags_Exec68k);
+		}
+	}
+	break;
+	case HOOK_M68K_R:
+	{
+		if (biz_readcb)
+			biz_readcb(address);
+	}
+	break;
+	case HOOK_M68K_W:
+	{
+		if (biz_writecb)
+			biz_writecb(address);
+	}
+	break;
+	default: break;
+  }
+}
+
+#endif // USE_BIZHAWK_CALLBACKS
+#endif // HOOK_CPU
 
 GPGX_EX int gpgx_init(const char* feromextension,
 	ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize),
@@ -516,7 +617,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 {
 	_debug_puts("Initializing GPGX native...");
 
-	cinterface_force_sram = settings->ForceSram;
+	force_sram = settings->ForceSram;
 
 	memset(&bitmap, 0, sizeof(bitmap));
 
@@ -525,53 +626,109 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 	load_archive_cb = feload_archive_cb;
 
-	bitmap.width = 1024;
+	bitmap.width  = 1024;
 	bitmap.height = 512;
-	bitmap.pitch = 1024 * 4;
-	bitmap.data = alloc_invisible(2 * 1024 * 1024);
-	tempsram = alloc_invisible(24 * 1024);
-	bg_pattern_cache = alloc_invisible(0x80000);
+	bitmap.pitch  = 1024 * 4;
+	bitmap.data   = alloc_plain(2 * 1024 * 1024);
+	tempsram      = alloc_plain(24 * 1024);
 
-	ext.md_cart.rom = alloc_plain(32 * 1024 * 1024);
-	SZHVC_add = alloc_sealed(131072);
-	SZHVC_sub = alloc_sealed(131072);
-	ym2612_lfo_pm_table = alloc_sealed(131072);
-	vdp_bp_lut = alloc_sealed(262144);
-	vdp_lut = alloc_sealed(6 * sizeof(*vdp_lut));
-	for (int i = 0; i < 6; i++)
-		vdp_lut[i] = alloc_sealed(65536);
+    // cd_hw/cd_cart.h
+
+	ext.cd_hw.cartridge.area = alloc_plain(SCD_CARTRIDGE_AREA_SIZE);
+
+    // Initializing ram deepfreeze list
+#ifdef USE_RAM_DEEPFREEZE
+	deepfreeze_list_size = 0;
+#endif
 
 	/* sound options */
-	config.psg_preamp  = 150;
-	config.fm_preamp= 100;
-	config.hq_fm = 1; /* high-quality resampling */
-	config.psgBoostNoise  = 1;
-	config.filter = settings->Filter; //0; /* no filter */
-	config.lp_range = settings->LowPassRange; //0x9999; /* 0.6 in 16.16 fixed point */
-	config.low_freq = settings->LowFreq; //880;
-	config.high_freq = settings->HighFreq; //5000;
-	config.lg = settings->LowGain; //100;
-	config.mg = settings->MidGain; //100;
-	config.hg = settings->HighGain; //100;
-	config.dac_bits = 14; /* MAX DEPTH */
-	config.ym2413= 2; /* AUTO */
-	config.mono  = 0; /* STEREO output */
+	config.psg_preamp            = 150;
+	config.fm_preamp             = 100;
+	config.cdda_volume           = 100;
+	config.pcm_volume            = 100;
+	config.hq_fm                 = 1;
+	config.hq_psg                = 1;
+	config.filter                = settings->Filter; //0; /* no filter */
+	config.lp_range              = settings->LowPassRange; //0x9999; /* 0.6 in 16.16 fixed point */
+	config.low_freq              = settings->LowFreq; //880;
+	config.high_freq             = settings->HighFreq; //5000;
+	config.lg                    = settings->LowGain; //100;
+	config.mg                    = settings->MidGain; //100;
+	config.hg                    = settings->HighGain; //100;
+	config.mono                  = 0;
+	config.ym3438                = 0;
+
+    // Selecting FM Sound chip to use for SMS / GG emulation. Using a default for now, until we also
+	// accept this core for SMS/GG emulation in BizHawk
+	int smsFMChipType = YM2413_NUKED;
+    switch (smsFMChipType)
+	{
+	  case YM2413_DISABLED: 
+	    config.opll = 0;
+		config.ym2413 = 0;
+        break;
+
+      case YM2413_MAME: 
+	    config.opll = 0;
+		config.ym2413 = 1;
+        break;
+
+	  case YM2413_NUKED: 
+	    config.opll = 1;
+		config.ym2413 = 0;
+        break;
+	}
+
+	// Selecting FM Sound chip to use for Genesis / Megadrive / CD emulation
+    switch (settings->GenesisFMSoundChip)
+	{
+	  case MAME_YM2612:
+		config.ym2612 = YM2612_DISCRETE;
+		YM2612Config(YM2612_DISCRETE);
+        break;
+
+	  case MAME_ASIC_YM3438:
+		config.ym2612 = YM2612_INTEGRATED;
+		YM2612Config(YM2612_INTEGRATED);
+        break;
+
+      case MAME_Enhanced_YM3438:
+		config.ym2612 = YM2612_ENHANCED;
+		YM2612Config(YM2612_ENHANCED);
+        break;
+
+	  case Nuked_YM2612:
+		OPN2_SetChipType(ym3438_mode_ym2612);
+		config.ym3438 = 1;
+        break;
+
+	  case Nuked_YM3438:
+		OPN2_SetChipType(ym3438_mode_readmode);
+		config.ym3438 = 2;
+        break;
+	}
 
 	/* system options */
-	config.system = 0; /* AUTO */
-	config.region_detect = settings->Region; // see loadrom.c
-	config.vdp_mode = 0; /* AUTO */
-	config.master_clock = 0; /* AUTO */
-	config.force_dtack = 0;
-	config.addr_error = 1;
-	config.bios = 0;
-	config.lock_on = 0;
+	config.system         = 0; /* = AUTO (or SYSTEM_SG, SYSTEM_SGII, SYSTEM_SGII_RAM_EXT, SYSTEM_MARKIII, SYSTEM_SMS, SYSTEM_SMS2, SYSTEM_GG, SYSTEM_MD) */
+	config.region_detect  = settings->Region; /* = AUTO (1 = USA, 2 = EUROPE, 3 = JAPAN/NTSC, 4 = JAPAN/PAL) */
+	config.vdp_mode       = 0; /* = AUTO (1 = NTSC, 2 = PAL) */
+	config.master_clock   = 0; /* = AUTO (1 = NTSC, 2 = PAL) */
+	config.force_dtack    = 0;
+	config.addr_error     = 1;
+	config.bios           = 0;
+	config.lock_on        = 0; /* = OFF (or TYPE_SK, TYPE_GG & TYPE_AR) */
+	config.add_on         = 0; /* = HW_ADDON_AUTO (or HW_ADDON_MEGACD, HW_ADDON_MEGASD & HW_ADDON_ONE) */
+	config.cd_latency     = 1;
 
-	/* video options */
-	config.overscan = 0;
-	config.gg_extra = 0;
-	config.ntsc = 0;
-	config.render = 1;
+	/* display options */
+	config.overscan               = 0;  /* 3 = all borders (0 = no borders , 1 = vertical borders only, 2 = horizontal borders only) */
+	config.gg_extra               = 0;  /* 1 = show extended Game Gear screen (256x192) */
+	config.render                 = 1;  /* 1 = double resolution output (only when interlaced mode 2 is enabled) */
+	config.ntsc                   = 0;
+	config.lcd                    = 0;  /* 0.8 fixed point */
+	config.enhanced_vscroll       = 0;
+	config.enhanced_vscroll_limit = 8;
+	config.sprites_always_on_top  = settings->SpritesAlwaysOnTop;
 
 	// set overall input system type
 	// usual is MD GAMEPAD or NONE
@@ -592,7 +749,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 			config.input[i].padtype = settings->SixButton ? DEVICE_PAD6B : DEVICE_PAD3B;
 	}
 
-	if (!load_rom("PRIMARY_ROM"))
+	if (!load_rom("PRIMARY_ROM", "PRIMARY_CD", "SECONDARY_CD"))
 		return 0;
 
 	audio_init(44100, 0);
@@ -607,6 +764,27 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	return 1;
 }
 
+#ifdef USE_RAM_DEEPFREEZE
+
+GPGX_EX int gpgx_add_deepfreeze_list_entry(const int address, const uint8_t value)
+{
+    // Prevent overflowing
+    if (deepfreeze_list_size == MAX_DEEP_FREEZE_ENTRIES) return -1;
+
+	deepfreeze_list[deepfreeze_list_size].address = address;
+	deepfreeze_list[deepfreeze_list_size].value = value;
+	deepfreeze_list_size++;
+
+	return 0;
+}
+
+GPGX_EX void gpgx_clear_deepfreeze_list()
+{
+	deepfreeze_list_size = 0;
+}
+
+#endif
+
 GPGX_EX void gpgx_reset(int hard)
 {
 	if (hard)
@@ -620,11 +798,13 @@ GPGX_EX void gpgx_set_mem_callback(ECL_ENTRY void (*read)(unsigned), ECL_ENTRY v
 	biz_readcb = read;
 	biz_writecb = write;
 	biz_execcb = exec;
+	set_cpu_hook((read || write || exec || biz_cdcb) ? bk_cpu_hook : NULL);
 }
 
 GPGX_EX void gpgx_set_cd_callback(CDCallback cdcallback)
 {
-	biz_cdcallback = cdcallback;
+	biz_cdcb = cdcallback;
+	set_cpu_hook((biz_readcb || biz_writecb || biz_execcb || biz_cdcb) ? bk_cpu_hook : NULL);
 }
 
 GPGX_EX void gpgx_set_draw_mask(int mask)
@@ -690,8 +870,6 @@ GPGX_EX int gpgx_getregs(gpregister_t *regs)
 	MAKEREG(ISP);
 	MAKEREG(IR);
 #undef MAKEREG
-
-	(regs-6)->value = biz_lastpc; // during read/write callbacks, PC runs away due to prefetch. restore it.
 
 	// 13
 #define MAKEREG(x) regs->name = "Z80 " #x; regs->value = Z80.x.d; regs++; ret++;

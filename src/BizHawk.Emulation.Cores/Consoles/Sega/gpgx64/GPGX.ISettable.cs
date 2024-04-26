@@ -263,6 +263,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue(LibGPGX.Region.Autodetect)]
 			public LibGPGX.Region Region { get; set; }
 
+			[DisplayName("FM Sound Chip Type")]
+			[Description("Sets the method used to emulate the FM synthesizer (main sound generator) of the Mega Drive/Genesis.  'MAME' options are fast, and run full speed on most systems.  'Nuked' options are cycle accurate, very high quality, and have substantial CPU requirements.  The 'YM2612' chip is used by the original Model 1 Mega Drive/Genesis.  The 'YM3438' is used in later Mega Drive/Genesis revisions.")]
+			[DefaultValue(LibGPGX.InitSettings.GenesisFMSoundChipType.MAME_YM2612)]
+			public LibGPGX.InitSettings.GenesisFMSoundChipType GenesisFMSoundChip { get; set; }
+
 			[DisplayName("Audio Filter")]
 			[DefaultValue(LibGPGX.InitSettings.FilterType.LowPass)]
 			public LibGPGX.InitSettings.FilterType Filter { get; set; }
@@ -303,6 +308,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue(0xffff00ff)]
 			public uint BackdropColor { get; set; }
 
+			[DisplayName("Sprites always on top")]
+			[Description("Forces sprites to always be displayed on top")]
+			[DefaultValue(false)]
+			public bool SpritesAlwaysOnTop { get; set; }
+
 			public LibGPGX.InitSettings GetNativeSettings(GameInfo game)
 			{
 				return new LibGPGX.InitSettings
@@ -320,6 +330,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					InputSystemB = SystemForSystem(ControlTypeRight),
 					Region = Region,
 					ForceSram = game["sram"],
+			        GenesisFMSoundChip = GenesisFMSoundChip,
+					SpritesAlwaysOnTop = SpritesAlwaysOnTop
 				};
 			}
 
