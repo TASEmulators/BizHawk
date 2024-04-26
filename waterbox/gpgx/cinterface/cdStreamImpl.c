@@ -35,14 +35,22 @@ ECL_INVISIBLE static int cache_is_allocated[256];
 	} \
 } while (0);
 
-static void cdStreamInit(cdStream* stream, int is_subcode)
+static void cdStreamInit(cdStream* stream, toc_t* toc, int is_subcode)
 {
 	stream->sector_size = is_subcode ? SECTOR_SUBCODE_SIZE : SECTOR_DATA_SIZE;
-	stream->num_sectors = cdd.toc.end; // should only be called with current CD
+	stream->num_sectors = toc->end;
 	stream->current_sector = 0;
 	stream->current_offset = 0;
 	stream->end_offset = stream->sector_size * (int64_t)stream->num_sectors;
 	ALLOC_CACHE(stream);
+
+	if (!is_subcode)
+	{
+		for (int i = 0; i < toc->last; i++)
+		{
+			toc->tracks[i].fd = stream;
+		}
+	}
 }
 
 cdStream* cdStreamOpen(const char* fname)
@@ -61,14 +69,14 @@ cdStream* cdStreamOpen(const char* fname)
 			if (load_archive("PRIMARY_CD", (unsigned char*)&cdd.toc, sizeof(toc_t), NULL))
 			{
 				cd_index = 0;
-				cdStreamInit(&cd_streams[0], 0);
+				cdStreamInit(&cd_streams[0], &cdd.toc, 0);
 				return &cd_streams[0];
 			}
 		}
 		else if (!strcmp(fname, "HOTSWAP_CD"))
 		{
 			memcpy(&cdd.toc, &hotswap_toc, sizeof(toc_t));
-			cdStreamInit(&cd_streams[cd_index], 0);
+			cdStreamInit(&cd_streams[cd_index], &cdd.toc, 0);
 			return &cd_streams[cd_index];
 		}
 	}
@@ -78,14 +86,14 @@ cdStream* cdStreamOpen(const char* fname)
 		if (load_archive("SECONDARY_CD", (unsigned char*)&cdd.toc, sizeof(toc_t), NULL))
 		{
 			cd_index = 0;
-			cdStreamInit(&cd_streams[0], 0);
+			cdStreamInit(&cd_streams[0], &cdd.toc, 0);
 			return &cd_streams[0];
 		}
 	}
 	else if (!strcmp(fext, ".sub"))
 	{
 		// separate stream for subcode
-		cdStreamInit(&subcode_streams[cd_index], 1);
+		cdStreamInit(&subcode_streams[cd_index], &cdd.toc, 1);
 		return &subcode_streams[cd_index];
 	}
 
