@@ -524,6 +524,7 @@ struct InitSettings
 	char InputSystemB;
 	char SixButton;
 	char ForceSram;
+	uint8_t SMSFMSoundChip;
 	uint8_t GenesisFMSoundChip;
 	uint8_t SpritesAlwaysOnTop;
 };
@@ -658,54 +659,53 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	config.mono                  = 0;
 	config.ym3438                = 0;
 
-    // Selecting FM Sound chip to use for SMS / GG emulation. Using a default for now, until we also
+ // Selecting FM Sound chip to use for SMS / GG emulation. Using a default for now, until we also
 	// accept this core for SMS/GG emulation in BizHawk
-	int smsFMChipType = YM2413_NUKED;
-    switch (smsFMChipType)
+ switch (settings->SMSFMSoundChip)
 	{
 	  case YM2413_DISABLED: 
-	    config.opll = 0;
-		config.ym2413 = 0;
-        break;
+	   config.opll = 0;
+		  config.ym2413 = 0;
+    break;
 
-      case YM2413_MAME: 
-	    config.opll = 0;
-		config.ym2413 = 1;
-        break;
+  case YM2413_MAME: 
+	   config.opll = 0;
+		  config.ym2413 = 1;
+    break;
 
 	  case YM2413_NUKED: 
-	    config.opll = 1;
-		config.ym2413 = 0;
-        break;
+	   config.opll = 1;
+		  config.ym2413 = 0;
+    break;
 	}
 
 	// Selecting FM Sound chip to use for Genesis / Megadrive / CD emulation
-    switch (settings->GenesisFMSoundChip)
+ switch (settings->GenesisFMSoundChip)
 	{
 	  case MAME_YM2612:
-		config.ym2612 = YM2612_DISCRETE;
-		YM2612Config(YM2612_DISCRETE);
-        break;
+				config.ym2612 = YM2612_DISCRETE;
+				YM2612Config(YM2612_DISCRETE);
+				break;
 
 	  case MAME_ASIC_YM3438:
-		config.ym2612 = YM2612_INTEGRATED;
-		YM2612Config(YM2612_INTEGRATED);
-        break;
+				config.ym2612 = YM2612_INTEGRATED;
+				YM2612Config(YM2612_INTEGRATED);
+				break;
 
-      case MAME_Enhanced_YM3438:
-		config.ym2612 = YM2612_ENHANCED;
-		YM2612Config(YM2612_ENHANCED);
-        break;
+			case MAME_Enhanced_YM3438:
+				config.ym2612 = YM2612_ENHANCED;
+				YM2612Config(YM2612_ENHANCED);
+				break;
 
 	  case Nuked_YM2612:
-		OPN2_SetChipType(ym3438_mode_ym2612);
-		config.ym3438 = 1;
-        break;
+				OPN2_SetChipType(ym3438_mode_ym2612);
+				config.ym3438 = 1;
+				break;
 
 	  case Nuked_YM3438:
-		OPN2_SetChipType(ym3438_mode_readmode);
-		config.ym3438 = 2;
-        break;
+				OPN2_SetChipType(ym3438_mode_readmode);
+				config.ym3438 = 2;
+				break;
 	}
 
 	/* system options */
@@ -741,6 +741,11 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 	cinterface_custom_backdrop_color = settings->BackdropColor;
 
+	if (!load_rom("PRIMARY_ROM", "PRIMARY_CD", "SECONDARY_CD"))
+		return 0;
+
+
+ // Default: Genesis
 	// apparently, the only part of config.input used is the padtype identifier,
 	// and that's used only for choosing pad type when system_md
 	{
@@ -749,8 +754,13 @@ GPGX_EX int gpgx_init(const char* feromextension,
 			config.input[i].padtype = settings->SixButton ? DEVICE_PAD6B : DEVICE_PAD3B;
 	}
 
-	if (!load_rom("PRIMARY_ROM", "PRIMARY_CD", "SECONDARY_CD"))
-		return 0;
+ // Hacky but effective. Setting the correct controller type here if this is sms or GG
+	if (system_hw == SYSTEM_SMS || system_hw == SYSTEM_SMS2 || system_hw == SYSTEM_GG || system_hw == SYSTEM_SG)
+		{
+		int i;
+		for (i = 0; i < MAX_INPUTS; i++)
+			config.input[i].padtype = DEVICE_PAD2B;
+	}
 
 	audio_init(44100, 0);
 	system_init();
