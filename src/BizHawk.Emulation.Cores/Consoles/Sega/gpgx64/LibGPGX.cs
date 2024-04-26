@@ -73,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public GenesisFMSoundChipType GenesisFMSoundChip;
 
 			public bool SpritesAlwaysOnTop;
+			public bool loadBIOS;
 		}
 
 		[BizImport(CallingConvention.Cdecl)]

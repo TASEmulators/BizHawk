@@ -161,8 +161,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private bool _prevDiskPressed;
 		private bool _nextDiskPressed;
 
-		private string consoleType;
-
 		private readonly byte[] _romfile;
 
 		private bool _disposed = false;
@@ -235,19 +233,24 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				// use fromtend firmware interface
 
+				string system = null;
 				string firmwareID = null;
 				switch (filename)
 				{
-					case "CD_BIOS_EU": firmwareID = "CD_BIOS_EU"; break;
-					case "CD_BIOS_JP": firmwareID = "CD_BIOS_JP"; break;
-					case "CD_BIOS_US": firmwareID = "CD_BIOS_US"; break;
+					case "CD_BIOS_EU": system = VSystemID.Raw.GEN; firmwareID = "CD_BIOS_EU"; break;
+					case "CD_BIOS_JP": system = VSystemID.Raw.GEN; firmwareID = "CD_BIOS_JP"; break;
+					case "CD_BIOS_US": system = VSystemID.Raw.GEN; firmwareID = "CD_BIOS_US"; break;
+					case "GG_BIOS":    system = VSystemID.Raw.SMS; firmwareID = "Japan";    break;
+					case "MS_BIOS_EU": system = VSystemID.Raw.SMS; firmwareID = "Export"; break;
+					case "MS_BIOS_JP": system = VSystemID.Raw.SMS; firmwareID = "Japan"; break;
+					case "MS_BIOS_US": system = VSystemID.Raw.SMS; firmwareID = "Export"; break;
 					default:
 						break;
 				}
 				if (firmwareID != null)
 				{
 					// this path will be the most common PEBKAC error, so be a bit more vocal about the problem
-					srcdata = CoreComm.CoreFileProvider.GetFirmware(new("GEN", firmwareID), "GPGX firmwares are usually required.");
+					srcdata = CoreComm.CoreFileProvider.GetFirmware(new(system, firmwareID), "GPGX firmwares are usually required.");
 					if (srcdata == null)
 					{
 						Console.WriteLine("Frontend couldn't satisfy firmware request GEN:{0}", firmwareID);

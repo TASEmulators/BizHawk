@@ -263,10 +263,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue(LibGPGX.Region.Autodetect)]
 			public LibGPGX.Region Region { get; set; }
 
+			[DisplayName("[SMS/GG] Load BIOS")]
+			[Description("Indicates whether to load the system BIOS rom.")]
+			[DefaultValue(false)]
+			public bool loadBIOS { get; set; }
+
 			[DisplayName("[SMS/GG] FM Sound Chip Type")]
 			[Description("Sets the method used to emulate the FM synthesizer (main sound generator) of theSMS/GG.  'MAME' options are fast, and run full speed on most systems.  'Nuked' options are cycle accurate, very high quality, and have substantial CPU requirements.  The 'YM2612' chip is used by the original Model 1 Mega Drive/Genesis.  The 'YM3438' is used in later Mega Drive/Genesis revisions.")]
 			[DefaultValue(LibGPGX.InitSettings.SMSFMSoundChipType.YM2413_MAME)]
-			public LibGPGX.InitSettings.GenesisFMSoundChipType SMSFMSoundChip { get; set; }
+			public LibGPGX.InitSettings.SMSFMSoundChipType SMSFMSoundChip { get; set; }
 
 			[DisplayName("[Genesis/CD] FM Sound Chip Type")]
 			[Description("Sets the method used to emulate the FM synthesizer (main sound generator) of the Mega Drive/Genesis.  'MAME' options are fast, and run full speed on most systems.  'Nuked' options are cycle accurate, very high quality, and have substantial CPU requirements.  The 'YM2612' chip is used by the original Model 1 Mega Drive/Genesis.  The 'YM3438' is used in later Mega Drive/Genesis revisions.")]
@@ -334,6 +339,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					InputSystemA = SystemForSystem(ControlTypeLeft),
 					InputSystemB = SystemForSystem(ControlTypeRight),
 					Region = Region,
+					loadBIOS = loadBIOS,
 					ForceSram = game["sram"],
 					SMSFMSoundChip = SMSFMSoundChip,
 					GenesisFMSoundChip = GenesisFMSoundChip,
