@@ -243,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[CoreSettings]
 		public class GPGXSyncSettings
 		{
-			[DisplayName("Use Six Button Controllers")]
+			[DisplayName("[Genesis/CD] Use Six Button Controllers")]
 			[Description("Controls the type of any attached normal controllers; six button controllers are used if true, otherwise three button controllers.  Some games don't work correctly with six button controllers.  Not relevant if other controller types are connected.")]
 			[DefaultValue(false)]
 			public bool UseSixButton { get; set; }
@@ -263,7 +263,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue(LibGPGX.Region.Autodetect)]
 			public LibGPGX.Region Region { get; set; }
 
-			[DisplayName("FM Sound Chip Type")]
+			[DisplayName("[SMS/GG] FM Sound Chip Type")]
+			[Description("Sets the method used to emulate the FM synthesizer (main sound generator) of theSMS/GG.  'MAME' options are fast, and run full speed on most systems.  'Nuked' options are cycle accurate, very high quality, and have substantial CPU requirements.  The 'YM2612' chip is used by the original Model 1 Mega Drive/Genesis.  The 'YM3438' is used in later Mega Drive/Genesis revisions.")]
+			[DefaultValue(LibGPGX.InitSettings.SMSFMSoundChipType.YM2413_MAME)]
+			public LibGPGX.InitSettings.GenesisFMSoundChipType SMSFMSoundChip { get; set; }
+
+			[DisplayName("[Genesis/CD] FM Sound Chip Type")]
 			[Description("Sets the method used to emulate the FM synthesizer (main sound generator) of the Mega Drive/Genesis.  'MAME' options are fast, and run full speed on most systems.  'Nuked' options are cycle accurate, very high quality, and have substantial CPU requirements.  The 'YM2612' chip is used by the original Model 1 Mega Drive/Genesis.  The 'YM3438' is used in later Mega Drive/Genesis revisions.")]
 			[DefaultValue(LibGPGX.InitSettings.GenesisFMSoundChipType.MAME_YM2612)]
 			public LibGPGX.InitSettings.GenesisFMSoundChipType GenesisFMSoundChip { get; set; }
@@ -330,7 +335,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					InputSystemB = SystemForSystem(ControlTypeRight),
 					Region = Region,
 					ForceSram = game["sram"],
-			        GenesisFMSoundChip = GenesisFMSoundChip,
+					SMSFMSoundChip = SMSFMSoundChip,
+					GenesisFMSoundChip = GenesisFMSoundChip,
 					SpritesAlwaysOnTop = SpritesAlwaysOnTop
 				};
 			}
