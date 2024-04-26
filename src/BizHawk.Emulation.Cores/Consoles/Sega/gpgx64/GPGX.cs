@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 
 			// internally, the core caches disc sectors read into the invisible heap
-			var discBufferSize = lp.Discs.Sum(d => d.DiscData.Session1.LeadoutLBA * 2448);
+			var discBufferSize = lp.Discs.Sum(d => d.DiscData.Session1.LeadoutLBA * 2448 + d.DiscData.Session1.LeadoutLBA);
 			discBufferSize += 1024 - discBufferSize % 1024;
 
 			_elf = new WaterboxHost(new WaterboxOptions
@@ -283,8 +283,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private readonly byte[] _sectorBuffer = new byte[2448];
 
-		private void CDRead(int lba, IntPtr dest, bool subcode)
+		private void CDRead(int lba, IntPtr dest, bool subcode, bool driveLight)
 		{
+			// the core does caching of CD reads, so it doesn't need to callback to read the disc that often
+			// however, it still needs to callback to signal the drive light to be turned on
+			if (driveLight)
+			{
+				_driveLight = true;
+				return;
+			}
+
 			if ((uint)_discIndex < _cds.Length)
 			{
 				if (subcode)
@@ -296,7 +304,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				{
 					_cdReaders[_discIndex].ReadLBA_2352(lba, _sectorBuffer, 0);
 					Marshal.Copy(_sectorBuffer, 0, dest, 2352);
-					_driveLight = true;
 				}
 			}
 		}
