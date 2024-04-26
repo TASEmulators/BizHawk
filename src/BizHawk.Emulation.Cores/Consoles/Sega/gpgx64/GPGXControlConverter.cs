@@ -21,6 +21,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 		}
 
+		private static readonly CName[] SMS2B =
+{
+			new CName("Up", LibGPGX.INPUT_KEYS.INPUT_UP),
+			new CName("Down", LibGPGX.INPUT_KEYS.INPUT_DOWN),
+			new CName("Left", LibGPGX.INPUT_KEYS.INPUT_LEFT),
+			new CName("Right", LibGPGX.INPUT_KEYS.INPUT_RIGHT),
+			new CName("B1", LibGPGX.INPUT_KEYS.INPUT_BUTTON1),
+			new CName("B2", LibGPGX.INPUT_KEYS.INPUT_BUTTON2)
+		};
+
+		private static readonly CName[] GameGear =
+{
+			new CName("Up", LibGPGX.INPUT_KEYS.INPUT_UP),
+			new CName("Down", LibGPGX.INPUT_KEYS.INPUT_DOWN),
+			new CName("Left", LibGPGX.INPUT_KEYS.INPUT_LEFT),
+			new CName("Right", LibGPGX.INPUT_KEYS.INPUT_RIGHT),
+			new CName("B1", LibGPGX.INPUT_KEYS.INPUT_BUTTON1),
+			new CName("B2", LibGPGX.INPUT_KEYS.INPUT_BUTTON2),
+			new CName("Start", LibGPGX.INPUT_KEYS.INPUT_START),
+		};
+
 		private static readonly CName[] Genesis3 =
 		{
 			new CName("Up", LibGPGX.INPUT_KEYS.INPUT_UP),
@@ -169,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			});
 		}
 
-		public GPGXControlConverter(LibGPGX.InputData input, bool cdButtons)
+		public GPGXControlConverter(LibGPGX.InputData input, string systemId, bool cdButtons)
 		{
 			Console.WriteLine("Genesis Controller report:");
 			foreach (var e in input.system)
@@ -215,10 +236,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						player++;
 						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_PAD2B:
+						if (systemId == VSystemID.Raw.SMS) AddToController(i, player, SMS2B);
+						if (systemId == VSystemID.Raw.GG) AddToController(i, player, GameGear);
+						player++;
+						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_PADDLE:
 					case LibGPGX.INPUT_DEVICE.DEVICE_SPORTSPAD:
 					case LibGPGX.INPUT_DEVICE.DEVICE_TEREBI:
-						throw new Exception("Master System only device?  Something went wrong.");
+						throw new Exception("Not implemented yet.");
 					case LibGPGX.INPUT_DEVICE.DEVICE_ACTIVATOR:
 						AddToController(i, player, Activator);
 						player++;

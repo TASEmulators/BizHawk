@@ -8,6 +8,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Common;
 using BizHawk.Emulation.DiscSystem;
 using System.Linq;
+using System.IO;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
@@ -31,11 +32,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ServiceProvider = new BasicServiceProvider(this);
 			// this can influence some things internally (autodetect romtype, etc)
 
-			string romextension = "GEN";
-			if (lp.Roms.FirstOrDefault()?.Game.System == VSystemID.Raw.SMS) romextension = "SMS";
-			if (lp.Roms.FirstOrDefault()?.Game.System == VSystemID.Raw.GG) romextension = "GG";
-			if (lp.Roms.FirstOrDefault()?.Game.System == VSystemID.Raw.SG) romextension = "SG";
+			// Determining system ID from the rom. If no rom provided, assume Genesis (Sega CD)
+			SystemId = lp.Roms.Any() ? lp.Roms[0].Game.System : VSystemID.Raw.GEN;
 
+			// We need to pass the exact file extension to GPGX for it to correctly interpret the console
+			string RomExtension = lp.Roms.Any() ? Path.GetExtension(lp.Roms[0].RomPath).Replace(".", "") : "";
+			
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
 
@@ -85,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LibGPGX.INPUT_SYSTEM system_a = SystemForSystem(_syncSettings.ControlTypeLeft);
 				LibGPGX.INPUT_SYSTEM system_b = SystemForSystem(_syncSettings.ControlTypeRight);
 
-				var initResult = Core.gpgx_init(romextension, LoadCallback, _syncSettings.GetNativeSettings(lp.Game));
+				var initResult = Core.gpgx_init(RomExtension, LoadCallback, _syncSettings.GetNativeSettings(lp.Game));
 
 				if (!initResult)
 					throw new Exception($"{nameof(Core.gpgx_init)}() failed");
@@ -158,6 +160,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private readonly DiscSectorReader[] _cdReaders;
 		private bool _prevDiskPressed;
 		private bool _nextDiskPressed;
+
+		private string consoleType;
 
 		private readonly byte[] _romfile;
 
@@ -373,7 +377,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			if (!Core.gpgx_get_control(input, inputsize))
 				throw new Exception($"{nameof(Core.gpgx_get_control)}() failed");
 
-			ControlConverter = new GPGXControlConverter(input, _cds != null);
+			ControlConverter = new GPGXControlConverter(input, SystemId, _cds != null);
 			ControllerDefinition = ControlConverter.ControllerDef;
 		}
 
