@@ -304,17 +304,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			var ret = new LibGPGX.CDData();
 
 			var ses = cd.Session1;
-			int ntrack = ses.InformationTrackCount;
+			var ntrack = ses.InformationTrackCount;
 
 			// bet you a dollar this is all wrong
-			//zero 07-jul-2015 - throws a dollar in the pile, since he probably messed it up worse
-			for (int i = 0; i < LibGPGX.CD_MAX_TRACKS; i++)
+			// zero 07-jul-2015 - throws a dollar in the pile, since he probably messed it up worse
+			for (var i = 0; i < LibGPGX.CD_MAX_TRACKS; i++)
 			{
+				ret.tracks[i].fd = IntPtr.Zero;
+				ret.tracks[i].loopEnabled = 0;
+				ret.tracks[i].loopOffset = 0;
+
 				if (i < ntrack)
 				{
-					ret.tracks[i].mode = ses.Tracks[i].Mode;
 					ret.tracks[i].start = ses.Tracks[i + 1].LBA;
 					ret.tracks[i].end = ses.Tracks[i + 2].LBA;
+					ret.tracks[i].mode = ses.Tracks[i].Mode;
 					if (i == ntrack - 1)
 					{
 						ret.end = ret.tracks[i].end;
@@ -323,25 +327,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 				else
 				{
-					ret.tracks[i].mode = 0;
 					ret.tracks[i].start = 0;
 					ret.tracks[i].end = 0;
+					ret.tracks[i].mode = 0;
 				}
 			}
 
+			ret.sub = IntPtr.Zero;
 			return ret;
 		}
 
 		public static unsafe byte[] GetCDData(Disc cd)
 		{
 			var ret = GetCDDataStruct(cd);
-			int size = Marshal.SizeOf(ret);
-			byte[] retdata = new byte[size];
+			var size = Marshal.SizeOf(ret);
+			var retdata = new byte[size];
 
-			fixed (byte* p = &retdata[0])
+			fixed (byte* p = retdata)
 			{
 				Marshal.StructureToPtr(ret, (IntPtr)p, false);
 			}
+
 			return retdata;
 		}
 

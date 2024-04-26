@@ -282,9 +282,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[StructLayout(LayoutKind.Sequential)]
 		public struct CDTrack
 		{
+			public IntPtr fd;
 			public int start;
 			public int end;
 			public int mode;
+			public int loopEnabled;
+			public int loopOffset;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -294,6 +297,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public int last;
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = CD_MAX_TRACKS)]
 			public readonly CDTrack[] tracks = new CDTrack[CD_MAX_TRACKS];
+			public IntPtr sub;
 		}
 
 		[BizImport(CallingConvention.Cdecl)]
