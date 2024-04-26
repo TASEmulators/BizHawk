@@ -722,8 +722,8 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	bitmap.width  = 1024;
 	bitmap.height = 512;
 	bitmap.pitch  = 1024 * 4;
-	bitmap.data   = alloc_plain(2 * 1024 * 1024);
-	tempsram      = alloc_plain(24 * 1024);
+	bitmap.data   = alloc_invisible(2 * 1024 * 1024);
+	tempsram      = alloc_invisible(0x100000 + 0x2000);
 
     // Initializing ram deepfreeze list
 #ifdef USE_RAM_DEEPFREEZE
