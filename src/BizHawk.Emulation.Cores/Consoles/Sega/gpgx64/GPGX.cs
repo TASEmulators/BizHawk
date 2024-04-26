@@ -37,13 +37,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				throw new InvalidOperationException("ROM too big!  Did you try to load a CD as a ROM?");
 			}
 
+			// internally, the core caches disc sectors read into the invisible heap
+			var discBufferSize = lp.Discs.Sum(d => d.DiscData.Session1.LeadoutLBA * 2448);
+			discBufferSize += 1024 - discBufferSize % 1024;
+
 			_elf = new WaterboxHost(new WaterboxOptions
 			{
 				Path = PathUtils.DllDirectoryPath,
 				Filename = "gpgx.wbx",
 				SbrkHeapSizeKB = 512,
 				SealedHeapSizeKB = 4 * 1024,
-				InvisibleHeapSizeKB = 4 * 1024,
+				InvisibleHeapSizeKB = 4 * 1024 + (uint)discBufferSize,
 				PlainHeapSizeKB = 48 * 1024,
 				MmapHeapSizeKB = 1 * 1024,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
