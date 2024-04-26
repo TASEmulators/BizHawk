@@ -741,6 +741,11 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 	cinterface_custom_backdrop_color = settings->BackdropColor;
 
+	if (!load_rom("PRIMARY_ROM", "PRIMARY_CD", "SECONDARY_CD"))
+		return 0;
+
+
+ // Default: Genesis
 	// apparently, the only part of config.input used is the padtype identifier,
 	// and that's used only for choosing pad type when system_md
 	{
@@ -749,8 +754,13 @@ GPGX_EX int gpgx_init(const char* feromextension,
 			config.input[i].padtype = settings->SixButton ? DEVICE_PAD6B : DEVICE_PAD3B;
 	}
 
-	if (!load_rom("PRIMARY_ROM", "PRIMARY_CD", "SECONDARY_CD"))
-		return 0;
+ // Hacky but effective. Setting the correct controller type here if this is sms or GG
+	if (system_hw == SYSTEM_SMS || system_hw == SYSTEM_SMS2 || system_hw == SYSTEM_GG || system_hw == SYSTEM_SG)
+		{
+		int i;
+		for (i = 0; i < MAX_INPUTS; i++)
+			config.input[i].padtype = DEVICE_PAD2B;
+	}
 
 	audio_init(44100, 0);
 	system_init();
