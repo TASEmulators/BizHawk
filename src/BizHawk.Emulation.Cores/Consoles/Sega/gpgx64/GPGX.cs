@@ -161,8 +161,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private bool _prevDiskPressed;
 		private bool _nextDiskPressed;
 
-		private string consoleType;
-
 		private readonly byte[] _romfile;
 
 		private bool _disposed = false;
