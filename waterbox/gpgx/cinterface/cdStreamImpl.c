@@ -16,24 +16,10 @@ struct cdStream_t
 	int64_t current_sector;
 	int64_t current_offset;
 	int64_t end_offset;
-	uint8_t* cache_buffer;
-	uint8_t* sectors_cached;
 };
 
 static cdStream cd_streams[128];
 static cdStream subcode_streams[128];
-ECL_INVISIBLE static int cache_is_allocated[256];
-
-#define ALLOC_CACHE(stream) do \
-{ \
-	if (UNLIKELY(!cache_is_allocated[(uint8)cd_index + stream->sector_size == SECTOR_SUBCODE_SIZE ? 128 : 0])) \
-	{ \
-		stream->cache_buffer = alloc_invisible(stream->end_offset); \
-		stream->sectors_cached = alloc_invisible(stream->num_sectors); \
-		memset(stream->sectors_cached, 0, stream->num_sectors); \
-		cache_is_allocated[(uint8)cd_index + stream->sector_size == SECTOR_SUBCODE_SIZE ? 128 : 0] = 1; \
-	} \
-} while (0);
 
 static void cdStreamInit(cdStream* stream, toc_t* toc, int is_subcode)
 {
@@ -42,7 +28,6 @@ static void cdStreamInit(cdStream* stream, toc_t* toc, int is_subcode)
 	stream->current_sector = 0;
 	stream->current_offset = 0;
 	stream->end_offset = stream->sector_size * (int64_t)stream->num_sectors;
-	ALLOC_CACHE(stream);
 
 	if (!is_subcode)
 	{
@@ -105,31 +90,21 @@ void cdStreamClose(cdStream* stream)
 	// nothing to do
 }
 
-static uint8_t* cdStreamGetSector(cdStream* restrict stream, unsigned* offset)
+static void cdStreamGetSector(cdStream* restrict stream, uint8_t sector[SECTOR_DATA_SIZE], unsigned* offset)
 {
 	if (stream->current_sector >= stream->num_sectors)
 	{
-		static uint8_t empty_sector[SECTOR_DATA_SIZE];
+		memset(sector, 0, SECTOR_DATA_SIZE);
 		*offset = 0;
-		return empty_sector;
+		return;
 	}
 
+	cdd_readcallback(stream->current_sector, sector, stream->sector_size == SECTOR_SUBCODE_SIZE);
 	*offset = stream->current_offset - (stream->current_sector * stream->sector_size);
-	uint8_t* sector_cache = &stream->cache_buffer[stream->current_offset - *offset];
-
-	if (!stream->sectors_cached[stream->current_sector])
-	{
-		cdd_readcallback(stream->current_sector, sector_cache, stream->sector_size == SECTOR_SUBCODE_SIZE, 0);
-		stream->sectors_cached[stream->current_sector] = 1;
-	}
-
-	return sector_cache;
 }
 
 size_t cdStreamRead(void* restrict buffer, size_t size, size_t count, cdStream* restrict stream)
 {
-	ALLOC_CACHE(stream);
-
 	size_t bytes_to_read = size * count; // in practice, this shouldn't ever overflow
 
 	// we'll 0 fill the bytes past EOF, although we'll still report the bytes actually read 
@@ -141,8 +116,9 @@ size_t cdStreamRead(void* restrict buffer, size_t size, size_t count, cdStream* 
 
 	while (bytes_to_read > 0)
 	{
+		uint8_t sector[SECTOR_DATA_SIZE];
 		unsigned offset;
-		uint8_t* sector = cdStreamGetSector(stream, &offset);
+		cdStreamGetSector(stream, sector, &offset);
 
 		unsigned bytes_to_copy = stream->sector_size - offset;
 		if (bytes_to_copy > bytes_to_read)
@@ -150,7 +126,7 @@ size_t cdStreamRead(void* restrict buffer, size_t size, size_t count, cdStream* 
 			bytes_to_copy = bytes_to_read;
 		}
 
-		memcpy(buffer, sector + offset, bytes_to_copy);
+		memcpy(buffer, &sector[offset], bytes_to_copy);
 		bytes_to_read -= bytes_to_copy;
 
 		stream->current_offset += bytes_to_copy;
@@ -166,8 +142,6 @@ size_t cdStreamRead(void* restrict buffer, size_t size, size_t count, cdStream* 
 		}
 	}
 
-	// signal that the read has finished and the drive light should be turned on
-	cdd_readcallback(0, NULL, 0, 1);
 	return ret;
 }
 

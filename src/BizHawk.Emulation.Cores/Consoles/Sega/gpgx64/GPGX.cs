@@ -37,18 +37,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				throw new InvalidOperationException("ROM too big!  Did you try to load a CD as a ROM?");
 			}
 
-			// internally, the core caches disc sectors read into the invisible heap
-			var discBufferSize = lp.Discs.Sum(d => d.DiscData.Session1.LeadoutLBA * (2352 + 96 + 2));
-			discBufferSize /= 1024;
-			discBufferSize++;
-
 			_elf = new WaterboxHost(new WaterboxOptions
 			{
 				Path = PathUtils.DllDirectoryPath,
 				Filename = "gpgx.wbx",
 				SbrkHeapSizeKB = 512,
 				SealedHeapSizeKB = 4 * 1024,
-				InvisibleHeapSizeKB = 4 * 1024 + (uint)discBufferSize,
+				InvisibleHeapSizeKB = 4 * 1024,
 				PlainHeapSizeKB = 48 * 1024,
 				MmapHeapSizeKB = 1 * 1024,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
@@ -284,16 +279,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private readonly byte[] _sectorBuffer = new byte[2448];
 
-		private void CDRead(int lba, IntPtr dest, bool subcode, bool driveLight)
+		private void CDRead(int lba, IntPtr dest, bool subcode)
 		{
-			// the core does caching of CD reads, so it doesn't need to callback to read the disc that often
-			// however, it still needs to callback to signal the drive light to be turned on
-			if (driveLight)
-			{
-				_driveLight = true;
-				return;
-			}
-
 			if ((uint)_discIndex < _cds.Length)
 			{
 				if (subcode)
@@ -305,6 +292,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				{
 					_cdReaders[_discIndex].ReadLBA_2352(lba, _sectorBuffer, 0);
 					Marshal.Copy(_sectorBuffer, 0, dest, 2352);
+					_driveLight = true;
 				}
 			}
 		}
