@@ -259,19 +259,21 @@ static int saveramsize(void)
 
 	if (!sram.on)
 		return 0;
+
 	switch (sram.custom)
 	{
-	case 0: // plain bus access saveram
-		break;
-	case 1: // i2c
-		return eeprom_i2c_get_size();
-	case 2: // spi
-		return sizeof(sram.sram); // it doesn't appear to mask anything internally
-	case 3: // 93c
-		return 128; // limited to 128 bytes (note: SMS only)
-	default:
-		return sizeof(sram.sram); // ???
+		case 0: // plain bus access saveram
+			break;
+		case 1: // i2c
+			return eeprom_i2c_get_size();
+		case 2: // spi
+			return sizeof(sram.sram); // it doesn't appear to mask anything internally
+		case 3: // 93c
+			return 128; // limited to 128 bytes (note: SMS only)
+		default:
+			return sizeof(sram.sram); // ???
 	}
+
 	// figure size for plain bus access saverams
 	{
 		int startaddr = sram.start / 8192;
@@ -671,34 +673,38 @@ void CDLog68k(uint addr, uint flags)
 
 void bk_cpu_hook(hook_type_t type, int width, unsigned int address, unsigned int value)
 {
-  switch(type)
-  {
-	case HOOK_M68K_E:
+	switch (type)
 	{
-		if (biz_execcb)
-			biz_execcb(address);
-
-		if(biz_cdcb)
+		case HOOK_M68K_E:
 		{
-			CDLog68k(address, eCDLog_Flags_Exec68k);
-			CDLog68k(address + 1, eCDLog_Flags_Exec68k);
+			if (biz_execcb)
+				biz_execcb(address);
+
+			if (biz_cdcb)
+			{
+				CDLog68k(address, eCDLog_Flags_Exec68k);
+				CDLog68k(address + 1, eCDLog_Flags_Exec68k);
+			}
+
+			break;
+		}
+
+		case HOOK_M68K_R:
+		{
+			if (biz_readcb)
+				biz_readcb(address);
+
+			break;
+		}
+
+		case HOOK_M68K_W:
+		{
+			if (biz_writecb)
+				biz_writecb(address);
+
+			break;
 		}
 	}
-	break;
-	case HOOK_M68K_R:
-	{
-		if (biz_readcb)
-			biz_readcb(address);
-	}
-	break;
-	case HOOK_M68K_W:
-	{
-		if (biz_writecb)
-			biz_writecb(address);
-	}
-	break;
-	default: break;
-  }
 }
 
 #endif // USE_BIZHAWK_CALLBACKS
@@ -725,7 +731,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	bitmap.data   = alloc_invisible(2 * 1024 * 1024);
 	tempsram      = alloc_invisible(0x100000 + 0x2000);
 
-    // Initializing ram deepfreeze list
+	// Initializing ram deepfreeze list
 #ifdef USE_RAM_DEEPFREEZE
 	deepfreeze_list_size = 0;
 #endif
@@ -747,54 +753,54 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	config.mono                  = 0;
 	config.ym3438                = 0;
 
-    // Selecting FM Sound chip to use for SMS / GG emulation. Using a default for now, until we also
+	// Selecting FM Sound chip to use for SMS / GG emulation. Using a default for now, until we also
 	// accept this core for SMS/GG emulation in BizHawk
 	int smsFMChipType = YM2413_NUKED;
-    switch (smsFMChipType)
+	switch (smsFMChipType)
 	{
-	  case YM2413_DISABLED: 
-	    config.opll = 0;
-		config.ym2413 = 0;
-        break;
+		case YM2413_DISABLED:
+			config.opll = 0;
+			config.ym2413 = 0;
+			break;
 
-      case YM2413_MAME: 
-	    config.opll = 0;
-		config.ym2413 = 1;
-        break;
+		case YM2413_MAME:
+			config.opll = 0;
+			config.ym2413 = 1;
+			break;
 
-	  case YM2413_NUKED: 
-	    config.opll = 1;
-		config.ym2413 = 0;
-        break;
+		case YM2413_NUKED:
+			config.opll = 1;
+			config.ym2413 = 0;
+			break;
 	}
 
 	// Selecting FM Sound chip to use for Genesis / Megadrive / CD emulation
-    switch (settings->GenesisFMSoundChip)
+	switch (settings->GenesisFMSoundChip)
 	{
-	  case MAME_YM2612:
-		config.ym2612 = YM2612_DISCRETE;
-		YM2612Config(YM2612_DISCRETE);
-        break;
+		case MAME_YM2612:
+			config.ym2612 = YM2612_DISCRETE;
+			YM2612Config(YM2612_DISCRETE);
+			break;
 
-	  case MAME_ASIC_YM3438:
-		config.ym2612 = YM2612_INTEGRATED;
-		YM2612Config(YM2612_INTEGRATED);
-        break;
+		case MAME_ASIC_YM3438:
+			config.ym2612 = YM2612_INTEGRATED;
+			YM2612Config(YM2612_INTEGRATED);
+			break;
 
-      case MAME_Enhanced_YM3438:
-		config.ym2612 = YM2612_ENHANCED;
-		YM2612Config(YM2612_ENHANCED);
-        break;
+		case MAME_Enhanced_YM3438:
+			config.ym2612 = YM2612_ENHANCED;
+			YM2612Config(YM2612_ENHANCED);
+			break;
 
-	  case Nuked_YM2612:
-		OPN2_SetChipType(ym3438_mode_ym2612);
-		config.ym3438 = 1;
-        break;
+		case Nuked_YM2612:
+			OPN2_SetChipType(ym3438_mode_ym2612);
+			config.ym3438 = 1;
+			break;
 
-	  case Nuked_YM3438:
-		OPN2_SetChipType(ym3438_mode_readmode);
-		config.ym3438 = 2;
-        break;
+		case Nuked_YM3438:
+			OPN2_SetChipType(ym3438_mode_readmode);
+			config.ym3438 = 2;
+			break;
 	}
 
 	/* system options */
@@ -839,7 +845,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	}
 
 	// first try to load our main CD
-    if (!load_rom("PRIMARY_CD"))
+	if (!load_rom("PRIMARY_CD"))
 	{
 		// otherwise, try to load our ROM
 		if (!load_rom("PRIMARY_ROM"))
@@ -864,8 +870,8 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 GPGX_EX int gpgx_add_deepfreeze_list_entry(const int address, const uint8_t value)
 {
-    // Prevent overflowing
-    if (deepfreeze_list_size == MAX_DEEP_FREEZE_ENTRIES) return -1;
+	// Prevent overflowing
+	if (deepfreeze_list_size == MAX_DEEP_FREEZE_ENTRIES) return -1;
 
 	deepfreeze_list[deepfreeze_list_size].address = address;
 	deepfreeze_list[deepfreeze_list_size].value = value;
@@ -894,7 +900,7 @@ GPGX_EX void gpgx_set_mem_callback(ECL_ENTRY void (*read)(unsigned), ECL_ENTRY v
 	biz_readcb = read;
 	biz_writecb = write;
 	biz_execcb = exec;
-	set_cpu_hook((read || write || exec || biz_cdcb) ? bk_cpu_hook : NULL);
+	set_cpu_hook((biz_readcb || biz_writecb || biz_execcb || biz_cdcb) ? bk_cpu_hook : NULL);
 }
 
 GPGX_EX void gpgx_set_cd_callback(CDCallback cdcallback)
@@ -1019,10 +1025,4 @@ GPGX_EX int gpgx_getregs(gpregister_t *regs)
 	}
 
 	return ret;
-}
-
-// at the moment, this dummy is not called
-int main(void)
-{
-	return 0;
 }
