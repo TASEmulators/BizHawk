@@ -16,7 +16,7 @@ void SetupMDFNGameInfo()
 namespace MDFN_IEN_PCFX
 {
 	extern uint8 BackupRAM[0x8000];
-	extern uint8 ExBackupRAM[0x8000];
+	extern uint8 ExBackupRAM[0x20000];
 	extern uint8 *BIOSROM; 	// 1MB
 	extern uint8 *RAM; 	// 2MB
 	extern uint8 *FXSCSIROM;	// 512KiB
