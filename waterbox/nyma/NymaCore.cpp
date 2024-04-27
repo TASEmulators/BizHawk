@@ -68,12 +68,13 @@ ECL_EXPORT bool InitRom(const InitData& data)
 		GameFile gf({
 			&NVFS,
 			"",
+			data.FileNameFull,
 			gamestream.get(),
 			data.FileNameExt,
 			data.FileNameBase,
-			&NVFS,
+			{&NVFS,
 			"",
-			data.FileNameBase
+			data.FileNameBase}
 		});
 
 		Game->Load(&gf);

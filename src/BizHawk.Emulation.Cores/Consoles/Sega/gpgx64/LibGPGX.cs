@@ -277,11 +277,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public const int CD_MAX_TRACKS = 100;
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void cd_read_cb(int lba, IntPtr dest, bool audio);
+		public delegate void cd_read_cb(int lba, IntPtr dest, [MarshalAs(UnmanagedType.Bool)] bool subcode);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct CDTrack
 		{
+			public IntPtr fd;
 			public int start;
 			public int end;
 			public int mode;
@@ -296,6 +297,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public int last;
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = CD_MAX_TRACKS)]
 			public readonly CDTrack[] tracks = new CDTrack[CD_MAX_TRACKS];
+			public IntPtr sub;
 		}
 
 		[BizImport(CallingConvention.Cdecl)]
