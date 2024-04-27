@@ -1,14 +1,11 @@
 #pragma once
 
-#ifdef _MSC_VER
-#include <stdio.h>
-typedef unsigned char bool;
-#define strncasecmp _strnicmp
-#endif
-
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "scrc32.h"
+#include "cdStream.h"
 
 #define MAX_INPUTS 8
 #define MAX_KEYS 8
@@ -93,7 +90,5 @@ extern char MS_BIOS_US[256];
 extern char MS_BIOS_EU[256];
 extern char MS_BIOS_JP[256];
 
-void osd_input_update(void);
-int load_archive(const char *filename, unsigned char *buffer, int maxsize, char *extension);
-void real_input_callback(void);
-
+extern void osd_input_update(void);
+extern int load_archive(const char *filename, unsigned char *buffer, int maxsize, char *extension);

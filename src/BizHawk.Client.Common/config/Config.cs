@@ -253,12 +253,57 @@ namespace BizHawk.Client.Common
 
 		// Sound options
 		public ESoundOutputMethod SoundOutputMethod { get; set; } = HostCapabilityDetector.HasDirectX ? ESoundOutputMethod.DirectSound : ESoundOutputMethod.OpenAL;
+
+		/// <value>iff <see langword="false"/>, cores may skip processing audio</value>
+		/// <seealso cref="SoundEnabledNormal"/>
+		/// <seealso cref="SoundEnabledRWFF"/>
+		/// <seealso cref="MuteFrameAdvance"/>
 		public bool SoundEnabled { get; set; } = true;
+
+		/// <value>whether to pass audio through to the host while emulating to normal throttle</value>
+		/// <remarks>separate from <see cref="SoundVolume"/> so that the config UI can "remember" the previous value</remarks>
+		/// <seealso cref="SoundVolume"/>
+		/// <seealso cref="SoundEnabled"/>
+		/// <seealso cref="SoundEnabledRWFF"/>
+		/// <seealso cref="MuteFrameAdvance"/>
 		public bool SoundEnabledNormal { get; set; } = true;
+
+		/// <value>whether to pass audio through to the host while rewinding or fast-forwarding</value>
+		/// <remarks>separate from <see cref="SoundVolumeRWFF"/> so that the config UI can "remember" the previous value</remarks>
+		/// <seealso cref="SoundVolumeRWFF"/>
+		/// <seealso cref="SoundEnabled"/>
+		/// <seealso cref="SoundEnabledNormal"/>
+		/// <seealso cref="MuteFrameAdvance"/>
 		public bool SoundEnabledRWFF { get; set; } = true;
+
+		/// <value>whether to pass audio through to the host when doing a frame advance while paused</value>
+		/// <remarks>
+		/// sets sample amplitude multiplier to 0x iff <see langword="true"/>,
+		/// otherwise the main <see cref="SoundVolume"/> has effect
+		/// </remarks>
+		/// <seealso cref="SoundEnabled"/>
+		/// <seealso cref="SoundEnabledNormal"/>
+		/// <seealso cref="SoundEnabledRWFF"/>
 		public bool MuteFrameAdvance { get; set; } = true;
-		public int SoundVolume { get; set; } = 100; // Range 0-100
-		public int SoundVolumeRWFF { get; set; } = 50; // Range 0-100
+
+		/// <value>
+		/// volume level; interpreted as a percentage (i.e. scaled down to 0.0..1.0)
+		/// and passed to the platform audio implementation, which should use it as a simple multiplier on each sample;<br/>
+		/// so <c>0</c> is scale each sample by 0x (mute),<c>100</c> is scale each sample by 1x (preserve full volume),
+		/// <c>50</c> is scale each sample by 0.5x (≈ -3 dB), and <c>25</c> is scale each sample by 0.25x (≈ -6 dB)
+		/// </value>
+		/// <seealso cref="SoundVolumeRWFF"/>
+		/// <seealso cref="SoundEnabledNormal"/>
+		public int SoundVolume { get; set; } = 100;
+
+		/// <value>
+		/// when rewinding or fast-forwarding, the sample amplitude multiplier is <i>multiplied by this value</i>
+		/// (after conversion from percentage), or in other words, <see cref="SoundVolume"/> remains in effect
+		/// </value>
+		/// <seealso cref="SoundVolume"/>
+		/// <seealso cref="SoundEnabledRWFF"/>
+		public int SoundVolumeRWFF { get; set; } = 50;
+
 		public bool SoundThrottle { get; set; }
 		public string SoundDevice { get; set; } = "";
 		public int SoundBufferSizeMs { get; set; } = 100;

@@ -23,11 +23,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public GPGX(CoreLoadParameters<GPGXSettings, GPGXSyncSettings> lp)
 		{
-			LoadCallback = new LibGPGX.load_archive_cb(load_archive);
-			_inputCallback = new LibGPGX.input_cb(input_callback);
+			LoadCallback = load_archive;
+			_inputCallback = input_callback;
 			InitMemCallbacks(); // ExecCallback, ReadCallback, WriteCallback
-			CDCallback = new LibGPGX.CDCallback(CDCallbackProc);
-			cd_callback_handle = new LibGPGX.cd_read_cb(CDRead);
+			CDCallback = CDCallbackProc;
+			cd_callback_handle = CDRead;
 
 			ServiceProvider = new BasicServiceProvider(this);
 			// this can influence some things internally (autodetect romtype, etc)
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				SbrkHeapSizeKB = 512,
 				SealedHeapSizeKB = 4 * 1024,
 				InvisibleHeapSizeKB = 4 * 1024,
-				PlainHeapSizeKB = 48 * 1024,
+				PlainHeapSizeKB = 4 * 1024,
 				MmapHeapSizeKB = 1 * 1024,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
@@ -78,6 +78,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				if (lp.Discs.Count > 0)
 				{
+					if (lp.Discs.Count > 128)
+					{
+						throw new("Too many discs loaded at once!");
+					}
+
 					_cds = lp.Discs.Select(d => d.DiscData).ToArray();
 					_cdReaders = _cds.Select(c => new DiscSectorReader(c)).ToArray();
 					Core.gpgx_set_cdd_callback(cd_callback_handle);
@@ -207,7 +212,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 				srcdata = _romfile;
 			}
-			else if (filename == "PRIMARY_CD" || filename == "SECONDARY_CD")
+			else if (filename is "PRIMARY_CD" or "SECONDARY_CD")
 			{
 				if (filename == "PRIMARY_CD" && _romfile != null)
 				{
@@ -287,30 +292,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private CoreComm CoreComm { get; }
 
-		private void CDRead(int lba, IntPtr dest, bool audio)
+		private readonly byte[] _sectorBuffer = new byte[2448];
+
+		private void CDRead(int lba, IntPtr dest, bool subcode)
 		{
 			if ((uint)_discIndex < _cds.Length)
 			{
-				if (audio)
+				if (subcode)
 				{
-					byte[] data = new byte[2352];
-					if (lba < _cds[_discIndex].Session1.LeadoutLBA)
-					{
-						_cdReaders[_discIndex].ReadLBA_2352(lba, data, 0);
-					}
-					else
-					{
-						// audio seems to read slightly past the end of disks; probably innoculous
-						// just send back 0s.
-						// Console.WriteLine("!!{0} >= {1}", lba, CD.LBACount);
-					}
-					Marshal.Copy(data, 0, dest, 2352);
+					_cdReaders[_discIndex].ReadLBA_2448(lba, _sectorBuffer, 0);
+					Marshal.Copy(_sectorBuffer, 2352, dest, 96);
 				}
 				else
 				{
-					byte[] data = new byte[2048];
-					_cdReaders[_discIndex].ReadLBA_2048(lba, data, 0);
-					Marshal.Copy(data, 0, dest, 2048);
+					_cdReaders[_discIndex].ReadLBA_2352(lba, _sectorBuffer, 0);
+					Marshal.Copy(_sectorBuffer, 0, dest, 2352);
 					_driveLight = true;
 				}
 			}
@@ -323,20 +319,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			var ret = new LibGPGX.CDData();
 
 			var ses = cd.Session1;
-			int ntrack = ses.InformationTrackCount;
+			var ntrack = ses.InformationTrackCount;
 
 			// bet you a dollar this is all wrong
-			//zero 07-jul-2015 - throws a dollar in the pile, since he probably messed it up worse
-			for (int i = 0; i < LibGPGX.CD_MAX_TRACKS; i++)
+			// zero 07-jul-2015 - throws a dollar in the pile, since he probably messed it up worse
+			for (var i = 0; i < LibGPGX.CD_MAX_TRACKS; i++)
 			{
+				ret.tracks[i].fd = IntPtr.Zero;
 				ret.tracks[i].loopEnabled = 0;
 				ret.tracks[i].loopOffset = 0;
-				
+
 				if (i < ntrack)
 				{
-					ret.tracks[i].mode = ses.Tracks[i].Mode;
 					ret.tracks[i].start = ses.Tracks[i + 1].LBA;
 					ret.tracks[i].end = ses.Tracks[i + 2].LBA;
+					ret.tracks[i].mode = ses.Tracks[i].Mode;
 					if (i == ntrack - 1)
 					{
 						ret.end = ret.tracks[i].end;
@@ -345,25 +342,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 				else
 				{
-					ret.tracks[i].mode = 0;
 					ret.tracks[i].start = 0;
 					ret.tracks[i].end = 0;
+					ret.tracks[i].mode = 0;
 				}
 			}
 
+			ret.sub = IntPtr.Zero;
 			return ret;
 		}
 
 		public static unsafe byte[] GetCDData(Disc cd)
 		{
 			var ret = GetCDDataStruct(cd);
-			int size = Marshal.SizeOf(ret);
-			byte[] retdata = new byte[size];
+			var size = Marshal.SizeOf(ret);
+			var retdata = new byte[size];
 
-			fixed (byte* p = &retdata[0])
+			fixed (byte* p = retdata)
 			{
 				Marshal.StructureToPtr(ret, (IntPtr)p, false);
 			}
+
 			return retdata;
 		}
 

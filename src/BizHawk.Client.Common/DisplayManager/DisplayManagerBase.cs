@@ -741,9 +741,11 @@ namespace BizHawk.Client.Common
 				if (job.ChainOutsize.Width == 0 || job.ChainOutsize.Height == 0)
 				{
 					// this has to be a NOP, because lots of stuff will malfunction on a 0-sized viewport
-					if (_currentFilterProgram != null)
+
+					if (job.Offscreen)
 					{
-						UpdateSourceDrawingWork(job); //but we still need to do this, because of vsync
+						// for offscreen rendering, OffscreenBb is expected to be non-null
+						job.OffscreenBb = new(new(1, 1));
 					}
 
 					return null;

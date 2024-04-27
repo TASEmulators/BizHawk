@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmwareOrThrow(new("GEN", "CD_BIOS_EU")), "cd.eu");
 				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmwareOrThrow(new("GEN", "CD_BIOS_US")), "cd.us");
 				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmwareOrThrow(new("GEN", "CD_BIOS_JP")), "cd.jp");
-				_exe.AddReadonlyFile(gpgx.GPGX.GetCDData(cd), "toc");
+				_exe.AddReadonlyFile(GetTOC(cd), "toc");
 				_cd = cd;
 				_cdReader = new DiscSectorReader(_cd);
 				_core.SetCDReadCallback(_cdcallback);
@@ -152,6 +152,46 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			}
 			DriveLightOn = false;
 			return new LibPicoDrive.FrameInfo { Buttons = b };
+		}
+
+		private static byte[] GetTOC(Disc cd)
+		{
+			var toc = new LibPicoDrive.TOC();
+
+			var ses = cd.Session1;
+			var ntrack = ses.InformationTrackCount;
+
+			for (var i = 0; i < LibPicoDrive.CD_MAX_TRACKS; i++)
+			{
+				if (i < ntrack)
+				{
+					toc.tracks[i].start = ses.Tracks[i + 1].LBA;
+					toc.tracks[i].end = ses.Tracks[i + 2].LBA;
+					if (i == ntrack - 1)
+					{
+						toc.end = toc.tracks[i].end;
+						toc.last = ntrack;
+					}
+				}
+				else
+				{
+					toc.tracks[i].start = 0;
+					toc.tracks[i].end = 0;
+				}
+			}
+
+			var size = Marshal.SizeOf(toc);
+			var ret = new byte[size];
+
+			unsafe
+			{
+				fixed (byte* p = ret)
+				{
+					Marshal.StructureToPtr(ret, (IntPtr)p, false);
+				}
+			}
+
+			return ret;
 		}
 
 		private void CDRead(int lba, IntPtr dest, bool audio)

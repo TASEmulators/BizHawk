@@ -19,7 +19,7 @@ stages:
   before_script:
   - nix-env -iA nixpkgs.cachix
   - cachix use $CACHIX_CACHE_NAME
-  image: nixos/nix:latest
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/nixos/nix:latest
   variables:
     CACHIX_CACHE_NAME: mono-for-bizhawk
 
@@ -70,7 +70,7 @@ build_ext_tools:
 
 build_nix_master:
 # extends: .with_cachix_mono
-  image: nixos/nix:latest
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/nixos/nix:latest
   needs: []
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
@@ -81,7 +81,7 @@ build_nix_master:
 
 build_nix_prev_release:
 # extends: .with_cachix_mono
-  image: nixos/nix:latest
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/nixos/nix:latest
   needs: []
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
@@ -129,7 +129,7 @@ check_style:
     name: "$CI_HAWK_ARTIFACT_NAME"
     paths:
     - "$CI_HAWK_ARTIFACT_NAME_TAR"
-  image: alpine:latest
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/alpine:latest
   needs:
   - build_asms_release
   - job: build_asms_debug
@@ -146,7 +146,7 @@ check_style:
     name: "$CI_HAWK_ARTIFACT_NAME"
     paths:
     - ./*
-  image: alpine:latest
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/alpine:latest
   needs:
   - build_asms_release
   - job: build_asms_debug
