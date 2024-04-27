@@ -311,6 +311,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			for (var i = 0; i < LibGPGX.CD_MAX_TRACKS; i++)
 			{
 				ret.tracks[i].fd = IntPtr.Zero;
+				ret.tracks[i].offset = 0;
 				ret.tracks[i].loopEnabled = 0;
 				ret.tracks[i].loopOffset = 0;
 

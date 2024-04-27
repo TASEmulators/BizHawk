@@ -283,6 +283,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public struct CDTrack
 		{
 			public IntPtr fd;
+			public int offset;
 			public int start;
 			public int end;
 			public int mode;
