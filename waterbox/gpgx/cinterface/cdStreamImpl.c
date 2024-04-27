@@ -19,6 +19,7 @@ struct cdStream_t
 };
 
 static cdStream cd_streams[128];
+static cdStream audio_streams[128];
 static cdStream subcode_streams[128];
 
 static void cdStreamInit(cdStream* stream, toc_t* toc, int is_subcode)
@@ -31,9 +32,15 @@ static void cdStreamInit(cdStream* stream, toc_t* toc, int is_subcode)
 
 	if (!is_subcode)
 	{
-		for (unsigned i = 0; i < toc->last; i++)
+		toc->tracks[0].fd = stream;
+
+		// audio tracks should be given a separate stream (to avoid conflicts for seeking)
+		cdStream* audio_stream = &audio_streams[cd_index];
+		memcpy(audio_stream, stream, sizeof(cdStream));
+
+		for (unsigned i = 1; i < toc->last; i++)
 		{
-			toc->tracks[i].fd = stream;
+			toc->tracks[i].fd = audio_stream;
 		}
 	}
 }
@@ -112,6 +119,7 @@ static void cdStreamGetSector(cdStream* restrict stream, uint8_t sector[SECTOR_D
 
 size_t cdStreamRead(void* restrict buffer, size_t size, size_t count, cdStream* restrict stream)
 {
+	uint8_t* restrict dest = buffer;
 	size_t bytes_to_read = size * count; // in practice, this shouldn't ever overflow
 
 	// we'll 0 fill the bytes past EOF, although we'll still report the bytes actually read 
@@ -133,7 +141,8 @@ size_t cdStreamRead(void* restrict buffer, size_t size, size_t count, cdStream* 
 			bytes_to_copy = bytes_to_read;
 		}
 
-		memcpy(buffer, &sector[offset], bytes_to_copy);
+		memcpy(dest, &sector[offset], bytes_to_copy);
+		dest += bytes_to_copy;
 		bytes_to_read -= bytes_to_copy;
 
 		stream->current_offset += bytes_to_copy;
