@@ -1,4 +1,4 @@
-name: Build and Run Tests
+name: Build Waterbox
 
 on:
   pull_request:
