@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-jobCount=`nprocs`
+jobCount=`nproc`
 
 make -f turbo.mak $1 -j${jobCount}
 make -f hyper.mak $1 -j${jobCount}

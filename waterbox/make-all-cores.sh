@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-jobCount=`nprocs`
+jobCount=`nproc`
 
 cd emulibc && make -f Makefile $1 -j${jobCount} && cd -
 cd libco && make -f Makefile $1 -j${jobCount} && cd -
