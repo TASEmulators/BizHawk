@@ -1378,11 +1378,13 @@ namespace BizHawk.Client.EmuHawk
 			if (e.KeyCode == Keys.Enter)
 			{
 				string consoleBeforeCall = OutputBox.Text;
-
+				var rawCommand = InputBox.Text;
+				InputBox.Clear();
+				InputBox.Refresh(); // if the command is something like `client.seekframe`, the Lua Console (and MainForm) will freeze until it finishes, so at least make it obvious that the Enter press was received
 				// TODO: Maybe make these try-catches more general
-				if (!string.IsNullOrWhiteSpace(InputBox.Text))
+				if (!string.IsNullOrWhiteSpace(rawCommand))
 				{
-					if (InputBox.Text.Contains("emu.frameadvance("))
+					if (rawCommand.Contains("emu.frameadvance("))
 					{
 						WriteLine("emu.frameadvance() can not be called from the console");
 						return;
@@ -1390,12 +1392,12 @@ namespace BizHawk.Client.EmuHawk
 
 					LuaSandbox.Sandbox(null, () =>
 					{
-						LuaImp.ExecuteString($"console.log({InputBox.Text})");
+						LuaImp.ExecuteString($"console.log({rawCommand})");
 					}, () =>
 					{
 						LuaSandbox.Sandbox(null, () =>
 						{
-							LuaImp.ExecuteString(InputBox.Text);
+							LuaImp.ExecuteString(rawCommand);
 
 							if (OutputBox.Text == consoleBeforeCall)
 							{
@@ -1405,9 +1407,8 @@ namespace BizHawk.Client.EmuHawk
 					});
 
 					_messageCount = 0;
-					_consoleCommandHistory.Insert(0, InputBox.Text);
+					_consoleCommandHistory.Insert(0, rawCommand);
 					_consoleCommandHistoryIndex = -1;
-					InputBox.Clear();
 				}
 			}
 			else if (e.KeyCode == Keys.Up)
