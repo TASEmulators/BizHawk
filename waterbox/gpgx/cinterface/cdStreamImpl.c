@@ -34,7 +34,6 @@ static void cdStreamInit(cdStream* stream, toc_t* toc, int is_subcode)
 		for (unsigned i = 0; i < toc->last; i++)
 		{
 			toc->tracks[i].fd = stream;
-			toc->tracks[i].offset = toc->tracks[i].start * SECTOR_DATA_SIZE;
 		}
 	}
 }
