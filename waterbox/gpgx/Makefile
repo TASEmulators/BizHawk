@@ -23,6 +23,7 @@ CCFLAGS := 	-Iutil \
 	-DUSE_32BPP_RENDERING \
 	-DHOOK_CPU \
 	-DINLINE=static\ __inline__ \
+	-DcdStream=cdStream \
 	-fcommon
 
 LDFLAGS :=
@@ -80,7 +81,7 @@ SRCS = $(GPGX_DIR)/core/sound/sound.c \
 	   $(GPGX_DIR)/core/cart_hw/megasd.c \
 	   $(GPGX_DIR)/core/debug/cpuhook.c \
 	   $(GPGX_DIR)/core/loadrom.c \
-	   cinterface/cddImpl.c \
+	   cinterface/cdStreamImpl.c \
 	   cinterface/cinterface.c \
 	   util/scrc32.c
 

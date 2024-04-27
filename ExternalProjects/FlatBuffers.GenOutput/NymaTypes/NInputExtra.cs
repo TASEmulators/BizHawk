@@ -45,4 +45,32 @@ public class NInputExtraUnion {
 }
 
 
+
+static public class NInputExtraVerify
+{
+  static public bool Verify(Google.FlatBuffers.Verifier verifier, byte typeId, uint tablePos)
+  {
+    bool result = true;
+    switch((NInputExtra)typeId)
+    {
+      case NInputExtra.Button:
+        result = NymaTypes.NButtonInfoVerify.Verify(verifier, tablePos);
+        break;
+      case NInputExtra.Axis:
+        result = NymaTypes.NAxisInfoVerify.Verify(verifier, tablePos);
+        break;
+      case NInputExtra.Switch:
+        result = NymaTypes.NSwitchInfoVerify.Verify(verifier, tablePos);
+        break;
+      case NInputExtra.Status:
+        result = NymaTypes.NStatusInfoVerify.Verify(verifier, tablePos);
+        break;
+      default: result = true;
+        break;
+    }
+    return result;
+  }
+}
+
+
 }

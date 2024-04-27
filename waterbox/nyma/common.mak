@@ -2,7 +2,7 @@
 
 MEDNAFLAGS := \
 	-Imednafen -Icommon -Imednafen/src/trio \
-	-DHAVE_CONFIG_H=1 -DMDFN_DISABLE_NO_OPT_ERRWARN=1 \
+	-DHAVE_CONFIG_H=1 -DMDFN_DISABLE_NO_OPT_ERRWARN=1 -DMDFN_PSS_STYLE=1 \
 	-fwrapv \
 	-fno-strict-aliasing \
 	-fomit-frame-pointer \

@@ -1,0 +1,132 @@
+{
+  "runtimeTarget": {
+    "name": ".NETStandard,Version=v2.0/",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETStandard,Version=v2.0": {},
+    ".NETStandard,Version=v2.0/": {
+      "FlatBuffers.GenOutput/1.0.0": {
+        "dependencies": {
+          "DotNetAnalyzers.DocumentationAnalyzers": "1.0.0-beta.59",
+          "Google.FlatBuffers": "23.5.26",
+          "Menees.Analyzers": "3.0.10",
+          "Meziantou.Analyzer": "2.0.33",
+          "NETStandard.Library": "2.0.3",
+          "Nullable": "1.3.1",
+          "StyleCop.Analyzers": "1.2.0-beta.435"
+        },
+        "runtime": {
+          "FlatBuffers.GenOutput.dll": {}
+        }
+      },
+      "DotNetAnalyzers.DocumentationAnalyzers/1.0.0-beta.59": {
+        "dependencies": {
+          "DotNetAnalyzers.DocumentationAnalyzers.Unstable": "1.0.0.59"
+        }
+      },
+      "DotNetAnalyzers.DocumentationAnalyzers.Unstable/1.0.0.59": {},
+      "Google.FlatBuffers/23.5.26": {
+        "runtime": {
+          "lib/netstandard2.0/Google.FlatBuffers.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Menees.Analyzers/3.0.10": {},
+      "Meziantou.Analyzer/2.0.33": {},
+      "Microsoft.NETCore.Platforms/1.1.0": {},
+      "NETStandard.Library/2.0.3": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0"
+        }
+      },
+      "Nullable/1.3.1": {},
+      "StyleCop.Analyzers/1.2.0-beta.435": {
+        "dependencies": {
+          "StyleCop.Analyzers.Unstable": "1.2.0.435"
+        }
+      },
+      "StyleCop.Analyzers.Unstable/1.2.0.435": {}
+    }
+  },
+  "libraries": {
+    "FlatBuffers.GenOutput/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DotNetAnalyzers.DocumentationAnalyzers/1.0.0-beta.59": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+cjn5bzar9cqDABF2SUsMEof8yoMXSNdHYdpCVNnj/M/cRACbKYHzYpgilSEvFlHGuolzJJ2WN++/EXwBzSsYQ==",
+      "path": "dotnetanalyzers.documentationanalyzers/1.0.0-beta.59",
+      "hashPath": "dotnetanalyzers.documentationanalyzers.1.0.0-beta.59.nupkg.sha512"
+    },
+    "DotNetAnalyzers.DocumentationAnalyzers.Unstable/1.0.0.59": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ekGYoPsAGTJs5cFbRdzfHKX2n2DzEATZyowGw3QJnozelzmhQ5tGCJhyolN5NWDq1p/GkBPKgRcQ5QGTKxaGrA==",
+      "path": "dotnetanalyzers.documentationanalyzers.unstable/1.0.0.59",
+      "hashPath": "dotnetanalyzers.documentationanalyzers.unstable.1.0.0.59.nupkg.sha512"
+    },
+    "Google.FlatBuffers/23.5.26": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pd/qgndhZl3B421wiffK09MvZ3c7sS2ZNusjzBJudpaJXGM9Gqfe2fYugYNAkN7c48BLo1E0Q4jefkOsaz1dfQ==",
+      "path": "google.flatbuffers/23.5.26",
+      "hashPath": "google.flatbuffers.23.5.26.nupkg.sha512"
+    },
+    "Menees.Analyzers/3.0.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ZaCxhd3KKxOqgtDv4YL0Tm6+dhlH+HtXyXrolb6zquAHBR8ONwywofNOb6d8UlafQaNiNdiqVQz8tG4+4NdLyw==",
+      "path": "menees.analyzers/3.0.10",
+      "hashPath": "menees.analyzers.3.0.10.nupkg.sha512"
+    },
+    "Meziantou.Analyzer/2.0.33": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LslJaY4cjxOjIM8X7JRMRHL2roG7E28m1ZPFxIcvNp4sfiGQJz0jsHCl9HsblRmXS/IX65eu3qZ15Q3FL2EsPg==",
+      "path": "meziantou.analyzer/2.0.33",
+      "hashPath": "meziantou.analyzer.2.0.33.nupkg.sha512"
+    },
+    "Microsoft.NETCore.Platforms/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A==",
+      "path": "microsoft.netcore.platforms/1.1.0",
+      "hashPath": "microsoft.netcore.platforms.1.1.0.nupkg.sha512"
+    },
+    "NETStandard.Library/2.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-st47PosZSHrjECdjeIzZQbzivYBJFv6P2nv4cj2ypdI204DO+vZ7l5raGMiX4eXMJ53RfOIg+/s4DHVZ54Nu2A==",
+      "path": "netstandard.library/2.0.3",
+      "hashPath": "netstandard.library.2.0.3.nupkg.sha512"
+    },
+    "Nullable/1.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Mk4ZVDfAORTjvckQprCSehi1XgOAAlk5ez06Va/acRYEloN9t6d6zpzJRn5MEq7+RnagyFIq9r+kbWzLGd+6QA==",
+      "path": "nullable/1.3.1",
+      "hashPath": "nullable.1.3.1.nupkg.sha512"
+    },
+    "StyleCop.Analyzers/1.2.0-beta.435": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TADk7vdGXtfTnYCV7GyleaaRTQjfoSfZXprQrVMm7cSJtJbFc1QIbWPyLvrgrfGdfHbGmUPvaN4ODKNxg2jgPQ==",
+      "path": "stylecop.analyzers/1.2.0-beta.435",
+      "hashPath": "stylecop.analyzers.1.2.0-beta.435.nupkg.sha512"
+    },
+    "StyleCop.Analyzers.Unstable/1.2.0.435": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ouwPWZxbOV3SmCZxIRqHvljkSzkCyi1tDoMzQtDb/bRP8ctASV/iRJr+A2Gdj0QLaLmWnqTWDrH82/iP+X80Lg==",
+      "path": "stylecop.analyzers.unstable/1.2.0.435",
+      "hashPath": "stylecop.analyzers.unstable.1.2.0.435.nupkg.sha512"
+    }
+  }
+}

@@ -4,10 +4,6 @@
 #include <emulibc.h>
 #include "callbacks.h"
 
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
-
 #include <shared.h>
 #include <genesis.h>
 #include <md_ntsc.h>
@@ -35,6 +31,8 @@ char romextension[4];
 static int16 soundbuffer[4096];
 static int nsamples;
 
+int cinterface_force_sram;
+
 int cinterface_render_bga = 1;
 int cinterface_render_bgb = 1;
 int cinterface_render_bgw = 1;
@@ -60,7 +58,7 @@ ECL_ENTRY void (*biz_execcb)(unsigned addr);
 ECL_ENTRY void (*biz_readcb)(unsigned addr);
 ECL_ENTRY void (*biz_writecb)(unsigned addr);
 CDCallback biz_cdcb = NULL;
-ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int audio);
+ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int subcode);
 uint8 *tempsram;
 
 static void update_viewport(void)
@@ -138,7 +136,7 @@ GPGX_EX void gpgx_set_input_callback(ECL_ENTRY void (*fecb)(void))
 	input_callback_cb = fecb;
 }
 
-GPGX_EX void gpgx_set_cdd_callback(ECL_ENTRY void (*cddcb)(int lba, void *dest, int audio))
+GPGX_EX void gpgx_set_cdd_callback(ECL_ENTRY void (*cddcb)(int lba, void *dest, int subcode))
 {
 	cdd_readcallback = cddcb;
 }
@@ -190,11 +188,27 @@ GPGX_EX void gpgx_advance(void)
 	nsamples = audio_update(soundbuffer);
 }
 
-GPGX_EX void gpgx_swap_disc(const toc_t* toc)
+extern toc_t pending_toc;
+extern int8 cd_index;
+
+GPGX_EX void gpgx_swap_disc(const toc_t* toc, int8 index)
 {
 	if (system_hw == SYSTEM_MCD)
 	{
-		cdd_hotswap(toc);
+		if (toc)
+		{
+			char header[0x210];
+			cd_index = index;
+			memcpy(&pending_toc, toc, sizeof(toc_t));
+			cdd_load("HOTSWAP_CD", header);
+		}
+		else
+		{
+			cd_index = -1;
+			cdd_unload();
+		}
+
+		cdd_reset();
 	}
 }
 
@@ -216,7 +230,7 @@ typedef struct
 } vdpview_t;
 
 
-extern uint8 ALIGNED_(4) bg_pattern_cache[0x80000];
+extern uint8 bg_pattern_cache[0x80000];
 uint32_t pixel[0x100];
 
 GPGX_EX void gpgx_get_vdp_view(vdpview_t *view)
@@ -235,10 +249,38 @@ GPGX_EX void gpgx_get_vdp_view(vdpview_t *view)
 	view->ntw.baseaddr = ntwb;
 }
 
+extern int eeprom_i2c_get_size(void);
+
 // internal: computes sram size (no brams)
-int saveramsize(void)
+static int saveramsize(void)
 {
-	return sram_get_actual_size();
+	// the variables in SRAM_T are all part of "configuration", so we don't have to save those.
+	// the only thing that needs to be saved is the SRAM itself and the SEEPROM struct (if applicable)
+
+	if (!sram.on)
+		return 0;
+
+	switch (sram.custom)
+	{
+		case 0: // plain bus access saveram
+			break;
+		case 1: // i2c
+			return eeprom_i2c_get_size();
+		case 2: // spi
+			return sizeof(sram.sram); // it doesn't appear to mask anything internally
+		case 3: // 93c
+			return 128; // limited to 128 bytes (note: SMS only)
+		default:
+			return sizeof(sram.sram); // ???
+	}
+
+	// figure size for plain bus access saverams
+	{
+		int startaddr = sram.start / 8192;
+		int endaddr = sram.end / 8192 + 1;
+		int size = (endaddr - startaddr) * 8192;
+		return size;
+	}
 }
 
 GPGX_EX void gpgx_clear_sram(void)
@@ -345,17 +387,70 @@ GPGX_EX int gpgx_put_sram(const uint8 *data, int size)
 
 GPGX_EX void gpgx_poke_cram(int addr, uint8 val)
 {
-	write_cram_byte(addr, val);
+	uint16 *p;
+	uint16 data;
+	int index;
+
+	p = (uint16 *)&cram[addr & 0x7E];
+	data = *p;
+	data = ((data & 0x1C0) << 3) | ((data & 0x038) << 2) | ((data & 0x007) << 1);
+
+	if (addr & 1)
+	{
+		data &= 0xFF00;
+		data |= val;
+	}
+	else
+	{
+		data &= 0x00FF;
+		data |= val << 8;
+	}
+
+	data = ((data & 0xE00) >> 3) | ((data & 0x0E0) >> 2) | ((data & 0x00E) >> 1);
+
+	if (*p != data)
+	{
+		index = (addr >> 1) & 0x3F;
+		*p = data;
+
+		if (index & 0x0F)
+		{
+			color_update_m5(index, data);
+		}
+
+		if (index == border)
+		{
+			color_update_m5(0x00, data);
+		}
+	}
 }
 
 GPGX_EX void gpgx_poke_vram(int addr, uint8 val)
 {
-	write_vram_byte(addr, val);
+	uint8 *p;
+	addr &= 0xFFFF;
+	p = &vram[addr];
+	if (*p != val)
+	{
+		int name;
+		*p = val;
+		// copy of MARK_BG_DIRTY(addr) (to avoid putting this code in vdp_ctrl.c)
+		name = (addr >> 5) & 0x7FF;
+		if (bg_name_dirty[name] == 0)
+		{
+			bg_name_list[bg_list_index++] = name;
+		}
+		bg_name_dirty[name] |= (1 << ((addr >> 2) & 7));
+	}
 }
 
 GPGX_EX void gpgx_flush_vram(void)
 {
-	flush_vram_cache();
+	if (bg_list_index)
+	{
+		update_bg_pattern_cache(bg_list_index);
+		bg_list_index = 0;
+	}
 }
 
 GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
@@ -578,34 +673,38 @@ void CDLog68k(uint addr, uint flags)
 
 void bk_cpu_hook(hook_type_t type, int width, unsigned int address, unsigned int value)
 {
-  switch(type)
-  {
-	case HOOK_M68K_E:
+	switch (type)
 	{
-		if (biz_execcb)
-			biz_execcb(address);
-
-		if(biz_cdcb)
+		case HOOK_M68K_E:
 		{
-			CDLog68k(address, eCDLog_Flags_Exec68k);
-			CDLog68k(address + 1, eCDLog_Flags_Exec68k);
+			if (biz_execcb)
+				biz_execcb(address);
+
+			if (biz_cdcb)
+			{
+				CDLog68k(address, eCDLog_Flags_Exec68k);
+				CDLog68k(address + 1, eCDLog_Flags_Exec68k);
+			}
+
+			break;
+		}
+
+		case HOOK_M68K_R:
+		{
+			if (biz_readcb)
+				biz_readcb(address);
+
+			break;
+		}
+
+		case HOOK_M68K_W:
+		{
+			if (biz_writecb)
+				biz_writecb(address);
+
+			break;
 		}
 	}
-	break;
-	case HOOK_M68K_R:
-	{
-		if (biz_readcb)
-			biz_readcb(address);
-	}
-	break;
-	case HOOK_M68K_W:
-	{
-		if (biz_writecb)
-			biz_writecb(address);
-	}
-	break;
-	default: break;
-  }
 }
 
 #endif // USE_BIZHAWK_CALLBACKS
@@ -615,9 +714,9 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize),
 	struct InitSettings *settings)
 {
-	_debug_puts("Initializing GPGX native...");
+	fprintf(stderr, "Initializing GPGX native...\n");
 
-	force_sram = settings->ForceSram;
+	cinterface_force_sram = settings->ForceSram;
 
 	memset(&bitmap, 0, sizeof(bitmap));
 
@@ -629,14 +728,10 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	bitmap.width  = 1024;
 	bitmap.height = 512;
 	bitmap.pitch  = 1024 * 4;
-	bitmap.data   = alloc_plain(2 * 1024 * 1024);
-	tempsram      = alloc_plain(24 * 1024);
+	bitmap.data   = alloc_invisible(2 * 1024 * 1024);
+	tempsram      = alloc_invisible(0x100000 + 0x2000);
 
-    // cd_hw/cd_cart.h
-
-	ext.cd_hw.cartridge.area = alloc_plain(SCD_CARTRIDGE_AREA_SIZE);
-
-    // Initializing ram deepfreeze list
+	// Initializing ram deepfreeze list
 #ifdef USE_RAM_DEEPFREEZE
 	deepfreeze_list_size = 0;
 #endif
@@ -658,54 +753,54 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	config.mono                  = 0;
 	config.ym3438                = 0;
 
-    // Selecting FM Sound chip to use for SMS / GG emulation. Using a default for now, until we also
+	// Selecting FM Sound chip to use for SMS / GG emulation. Using a default for now, until we also
 	// accept this core for SMS/GG emulation in BizHawk
 	int smsFMChipType = YM2413_NUKED;
-    switch (smsFMChipType)
+	switch (smsFMChipType)
 	{
-	  case YM2413_DISABLED: 
-	    config.opll = 0;
-		config.ym2413 = 0;
-        break;
+		case YM2413_DISABLED:
+			config.opll = 0;
+			config.ym2413 = 0;
+			break;
 
-      case YM2413_MAME: 
-	    config.opll = 0;
-		config.ym2413 = 1;
-        break;
+		case YM2413_MAME:
+			config.opll = 0;
+			config.ym2413 = 1;
+			break;
 
-	  case YM2413_NUKED: 
-	    config.opll = 1;
-		config.ym2413 = 0;
-        break;
+		case YM2413_NUKED:
+			config.opll = 1;
+			config.ym2413 = 0;
+			break;
 	}
 
 	// Selecting FM Sound chip to use for Genesis / Megadrive / CD emulation
-    switch (settings->GenesisFMSoundChip)
+	switch (settings->GenesisFMSoundChip)
 	{
-	  case MAME_YM2612:
-		config.ym2612 = YM2612_DISCRETE;
-		YM2612Config(YM2612_DISCRETE);
-        break;
+		case MAME_YM2612:
+			config.ym2612 = YM2612_DISCRETE;
+			YM2612Config(YM2612_DISCRETE);
+			break;
 
-	  case MAME_ASIC_YM3438:
-		config.ym2612 = YM2612_INTEGRATED;
-		YM2612Config(YM2612_INTEGRATED);
-        break;
+		case MAME_ASIC_YM3438:
+			config.ym2612 = YM2612_INTEGRATED;
+			YM2612Config(YM2612_INTEGRATED);
+			break;
 
-      case MAME_Enhanced_YM3438:
-		config.ym2612 = YM2612_ENHANCED;
-		YM2612Config(YM2612_ENHANCED);
-        break;
+		case MAME_Enhanced_YM3438:
+			config.ym2612 = YM2612_ENHANCED;
+			YM2612Config(YM2612_ENHANCED);
+			break;
 
-	  case Nuked_YM2612:
-		OPN2_SetChipType(ym3438_mode_ym2612);
-		config.ym3438 = 1;
-        break;
+		case Nuked_YM2612:
+			OPN2_SetChipType(ym3438_mode_ym2612);
+			config.ym3438 = 1;
+			break;
 
-	  case Nuked_YM3438:
-		OPN2_SetChipType(ym3438_mode_readmode);
-		config.ym3438 = 2;
-        break;
+		case Nuked_YM3438:
+			OPN2_SetChipType(ym3438_mode_readmode);
+			config.ym3438 = 2;
+			break;
 	}
 
 	/* system options */
@@ -749,8 +844,15 @@ GPGX_EX int gpgx_init(const char* feromextension,
 			config.input[i].padtype = settings->SixButton ? DEVICE_PAD6B : DEVICE_PAD3B;
 	}
 
-	if (!load_rom("PRIMARY_ROM", "PRIMARY_CD", "SECONDARY_CD"))
-		return 0;
+	// first try to load our main CD
+	if (!load_rom("PRIMARY_CD"))
+	{
+		// otherwise, try to load our ROM
+		if (!load_rom("PRIMARY_ROM"))
+		{
+			return 0;
+		}
+	}
 
 	audio_init(44100, 0);
 	system_init();
@@ -768,8 +870,8 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 GPGX_EX int gpgx_add_deepfreeze_list_entry(const int address, const uint8_t value)
 {
-    // Prevent overflowing
-    if (deepfreeze_list_size == MAX_DEEP_FREEZE_ENTRIES) return -1;
+	// Prevent overflowing
+	if (deepfreeze_list_size == MAX_DEEP_FREEZE_ENTRIES) return -1;
 
 	deepfreeze_list[deepfreeze_list_size].address = address;
 	deepfreeze_list[deepfreeze_list_size].value = value;
@@ -798,7 +900,7 @@ GPGX_EX void gpgx_set_mem_callback(ECL_ENTRY void (*read)(unsigned), ECL_ENTRY v
 	biz_readcb = read;
 	biz_writecb = write;
 	biz_execcb = exec;
-	set_cpu_hook((read || write || exec || biz_cdcb) ? bk_cpu_hook : NULL);
+	set_cpu_hook((biz_readcb || biz_writecb || biz_execcb || biz_cdcb) ? bk_cpu_hook : NULL);
 }
 
 GPGX_EX void gpgx_set_cd_callback(CDCallback cdcallback)
@@ -827,7 +929,12 @@ GPGX_EX void gpgx_set_sprite_limit_enabled(int enabled)
 
 GPGX_EX void gpgx_invalidate_pattern_cache(void)
 {
-	vdp_invalidate_full_cache();
+	bg_list_index = (reg[1] & 0x04) ? 0x800 : 0x200;
+	for (int i = 0; i < bg_list_index; i++)
+	{
+		bg_name_list[i] = i;
+		bg_name_dirty[i] = 0xFF;
+	}
 }
 
 typedef struct
@@ -918,10 +1025,4 @@ GPGX_EX int gpgx_getregs(gpregister_t *regs)
 	}
 
 	return ret;
-}
-
-// at the moment, this dummy is not called
-int main(void)
-{
-	return 0;
 }

@@ -13,7 +13,7 @@ public struct NPorts : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
   public static NPorts GetRootAsNPorts(ByteBuffer _bb) { return GetRootAsNPorts(_bb, new NPorts()); }
   public static NPorts GetRootAsNPorts(ByteBuffer _bb, NPorts obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -30,7 +30,7 @@ public struct NPorts : IFlatbufferObject
   }
 
   public static void StartNPorts(FlatBufferBuilder builder) { builder.StartTable(1); }
-  public static void AddValues(FlatBufferBuilder builder, VectorOffset ValuesOffset) { builder.AddOffset(0, ValuesOffset.Value, 0); }
+  public static void AddValues(FlatBufferBuilder builder, VectorOffset valuesOffset) { builder.AddOffset(0, valuesOffset.Value, 0); }
   public static VectorOffset CreateValuesVector(FlatBufferBuilder builder, Offset<NymaTypes.NPortInfo>[] data) { builder.StartVector(4, data.Length, 4); for (int i = data.Length - 1; i >= 0; i--) builder.AddOffset(data[i].Value); return builder.EndVector(); }
   public static VectorOffset CreateValuesVectorBlock(FlatBufferBuilder builder, Offset<NymaTypes.NPortInfo>[] data) { builder.StartVector(4, data.Length, 4); builder.Add(data); return builder.EndVector(); }
   public static VectorOffset CreateValuesVectorBlock(FlatBufferBuilder builder, ArraySegment<Offset<NymaTypes.NPortInfo>> data) { builder.StartVector(4, data.Count, 4); builder.Add(data); return builder.EndVector(); }
@@ -72,5 +72,15 @@ public class NPortsT
   }
 }
 
+
+static public class NPortsVerify
+{
+  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  {
+    return verifier.VerifyTableStart(tablePos)
+      && verifier.VerifyVectorOfTables(tablePos, 4 /*Values*/, NymaTypes.NPortInfoVerify.Verify, false)
+      && verifier.VerifyTableEnd(tablePos);
+  }
+}
 
 }

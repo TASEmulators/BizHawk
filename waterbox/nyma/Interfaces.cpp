@@ -204,8 +204,17 @@ namespace Mednafen
 	}
 	std::vector<uint64> MDFN_GetSettingMultiUI(const char *name)
 	{
-		// only used in some saturn debug code, not needed
+		// only used in some demo code it seems?
 		return std::vector<uint64>();
+	}
+	std::vector<int64> MDFN_GetSettingMultiI(const char *name)
+	{
+		// not used for anything it seems?
+		return std::vector<int64>();
+	}
+	uint64 MDFN_GetSettingMultiM(const char *name)
+	{
+		return MDFN_GetSettingUI(name);
 	}
 	void MDFNMP_Init(uint32 ps, uint32 numpages)
 	{}

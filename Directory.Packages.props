@@ -2,7 +2,7 @@
 	<ItemGroup>
 		<PackageVersion Include="Cyotek.Drawing.BitmapFont" Version="2.0.4" />
 		<PackageVersion Include="DotNetAnalyzers.DocumentationAnalyzers" Version="1.0.0-beta.59" />
-		<PackageVersion Include="Google.FlatBuffers" Version="22.9.24" />
+		<PackageVersion Include="Google.FlatBuffers" Version="23.5.26" />
 		<PackageVersion Include="JunitXml.TestLogger" Version="3.0.124" />
 		<PackageVersion Include="Magick.NET-Q8-AnyCPU" Version="13.6.0" />
 		<PackageVersion Include="Menees.Analyzers" Version="3.0.10" />
