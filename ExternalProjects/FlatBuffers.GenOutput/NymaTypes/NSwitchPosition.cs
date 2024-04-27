@@ -13,7 +13,7 @@ public struct NSwitchPosition : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
   public static NSwitchPosition GetRootAsNSwitchPosition(ByteBuffer _bb) { return GetRootAsNSwitchPosition(_bb, new NSwitchPosition()); }
   public static NSwitchPosition GetRootAsNSwitchPosition(ByteBuffer _bb, NSwitchPosition obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -53,9 +53,9 @@ public struct NSwitchPosition : IFlatbufferObject
   }
 
   public static void StartNSwitchPosition(FlatBufferBuilder builder) { builder.StartTable(3); }
-  public static void AddSettingName(FlatBufferBuilder builder, StringOffset SettingNameOffset) { builder.AddOffset(0, SettingNameOffset.Value, 0); }
-  public static void AddName(FlatBufferBuilder builder, StringOffset NameOffset) { builder.AddOffset(1, NameOffset.Value, 0); }
-  public static void AddDescription(FlatBufferBuilder builder, StringOffset DescriptionOffset) { builder.AddOffset(2, DescriptionOffset.Value, 0); }
+  public static void AddSettingName(FlatBufferBuilder builder, StringOffset settingNameOffset) { builder.AddOffset(0, settingNameOffset.Value, 0); }
+  public static void AddName(FlatBufferBuilder builder, StringOffset nameOffset) { builder.AddOffset(1, nameOffset.Value, 0); }
+  public static void AddDescription(FlatBufferBuilder builder, StringOffset descriptionOffset) { builder.AddOffset(2, descriptionOffset.Value, 0); }
   public static Offset<NymaTypes.NSwitchPosition> EndNSwitchPosition(FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<NymaTypes.NSwitchPosition>(o);
@@ -96,5 +96,17 @@ public class NSwitchPositionT
   }
 }
 
+
+static public class NSwitchPositionVerify
+{
+  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  {
+    return verifier.VerifyTableStart(tablePos)
+      && verifier.VerifyString(tablePos, 4 /*SettingName*/, false)
+      && verifier.VerifyString(tablePos, 6 /*Name*/, false)
+      && verifier.VerifyString(tablePos, 8 /*Description*/, false)
+      && verifier.VerifyTableEnd(tablePos);
+  }
+}
 
 }

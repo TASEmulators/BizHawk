@@ -13,7 +13,7 @@ public struct NDeviceInfo : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
   public static NDeviceInfo GetRootAsNDeviceInfo(ByteBuffer _bb) { return GetRootAsNDeviceInfo(_bb, new NDeviceInfo()); }
   public static NDeviceInfo GetRootAsNDeviceInfo(ByteBuffer _bb, NDeviceInfo obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -63,12 +63,12 @@ public struct NDeviceInfo : IFlatbufferObject
   }
 
   public static void StartNDeviceInfo(FlatBufferBuilder builder) { builder.StartTable(6); }
-  public static void AddShortName(FlatBufferBuilder builder, StringOffset ShortNameOffset) { builder.AddOffset(0, ShortNameOffset.Value, 0); }
-  public static void AddFullName(FlatBufferBuilder builder, StringOffset FullNameOffset) { builder.AddOffset(1, FullNameOffset.Value, 0); }
-  public static void AddDescription(FlatBufferBuilder builder, StringOffset DescriptionOffset) { builder.AddOffset(2, DescriptionOffset.Value, 0); }
-  public static void AddFlags(FlatBufferBuilder builder, NymaTypes.DeviceFlags Flags) { builder.AddByte(3, (byte)Flags, 0); }
-  public static void AddByteLength(FlatBufferBuilder builder, uint ByteLength) { builder.AddUint(4, ByteLength, 0); }
-  public static void AddInputs(FlatBufferBuilder builder, VectorOffset InputsOffset) { builder.AddOffset(5, InputsOffset.Value, 0); }
+  public static void AddShortName(FlatBufferBuilder builder, StringOffset shortNameOffset) { builder.AddOffset(0, shortNameOffset.Value, 0); }
+  public static void AddFullName(FlatBufferBuilder builder, StringOffset fullNameOffset) { builder.AddOffset(1, fullNameOffset.Value, 0); }
+  public static void AddDescription(FlatBufferBuilder builder, StringOffset descriptionOffset) { builder.AddOffset(2, descriptionOffset.Value, 0); }
+  public static void AddFlags(FlatBufferBuilder builder, NymaTypes.DeviceFlags flags) { builder.AddByte(3, (byte)flags, 0); }
+  public static void AddByteLength(FlatBufferBuilder builder, uint byteLength) { builder.AddUint(4, byteLength, 0); }
+  public static void AddInputs(FlatBufferBuilder builder, VectorOffset inputsOffset) { builder.AddOffset(5, inputsOffset.Value, 0); }
   public static VectorOffset CreateInputsVector(FlatBufferBuilder builder, Offset<NymaTypes.NInputInfo>[] data) { builder.StartVector(4, data.Length, 4); for (int i = data.Length - 1; i >= 0; i--) builder.AddOffset(data[i].Value); return builder.EndVector(); }
   public static VectorOffset CreateInputsVectorBlock(FlatBufferBuilder builder, Offset<NymaTypes.NInputInfo>[] data) { builder.StartVector(4, data.Length, 4); builder.Add(data); return builder.EndVector(); }
   public static VectorOffset CreateInputsVectorBlock(FlatBufferBuilder builder, ArraySegment<Offset<NymaTypes.NInputInfo>> data) { builder.StartVector(4, data.Count, 4); builder.Add(data); return builder.EndVector(); }
@@ -133,5 +133,20 @@ public class NDeviceInfoT
   }
 }
 
+
+static public class NDeviceInfoVerify
+{
+  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  {
+    return verifier.VerifyTableStart(tablePos)
+      && verifier.VerifyString(tablePos, 4 /*ShortName*/, false)
+      && verifier.VerifyString(tablePos, 6 /*FullName*/, false)
+      && verifier.VerifyString(tablePos, 8 /*Description*/, false)
+      && verifier.VerifyField(tablePos, 10 /*Flags*/, 1 /*NymaTypes.DeviceFlags*/, 1, false)
+      && verifier.VerifyField(tablePos, 12 /*ByteLength*/, 4 /*uint*/, 4, false)
+      && verifier.VerifyVectorOfTables(tablePos, 14 /*Inputs*/, NymaTypes.NInputInfoVerify.Verify, false)
+      && verifier.VerifyTableEnd(tablePos);
+  }
+}
 
 }

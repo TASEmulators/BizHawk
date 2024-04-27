@@ -2,7 +2,7 @@ namespace NymaTypes;
 
 enum SettingType: int32 {
 	/// (signed), int8, int16, int32, int64(saved as)
-	Int,
+	Int = 0,
 	/// uint8, uint16, uint32, uint64(saved as)
 	Uint,
 	/// 0 or 1
@@ -19,25 +19,25 @@ enum SettingType: int32 {
 }
 enum SettingsFlags: uint32 (bit_flags) {
 	/// TODO(cats)
-	Input = 8,
-	Sound = 9,
-	Video = 10,
+	Input = 0,
+	Sound = 1,
+	Video = 2,
 	/// User-configurable physical->virtual button/axes and hotkey mappings(driver-side code category mainly).
-	InputMapping = 11,
-	Path = 12,
+	InputMapping = 3,
+	Path = 4,
 	/// If the setting affects emulation from the point of view of the emulated program
-	EmuState = 17,
+	EmuState = 8,
 	/// If it's safe for an untrusted source to modify it, probably only used in conjunction with MDFNST_EX_EMU_STATE and network play
-	UntrustedSafe = 18,
+	UntrustedSafe = 9,
 	/// Suppress documentation generation for this setting.
-	SuppressDoc = 19,
+	SuppressDoc = 10,
 	/// Auto-generated common template setting(like nes.xscale, pce.xscale, vb.xscale, nes.enable, pce.enable, vb.enable)
-	CommonTemplate = 20,
+	CommonTemplate = 11,
 	/// Don't save setting in settings file.
-	NonPersistent = 21,
+	NonPersistent = 12,
 	/// TODO(in progress)
-	RequiresReload = 24,
-	RequiresRestart = 25,
+	RequiresReload = 14,
+	RequiresRestart = 15,
 }
 table EnumValue {
 	Name: string;
@@ -62,7 +62,8 @@ table Settings {
 
 
 enum InputType: uint8 {
-	Padding = 0,	// n-bit, zero
+	Padding0 = 0,	// n-bit, zero
+	Padding1,	// n-bit, one bits
 	Button,		// 1-bit
 	ButtonCanRapid, // 1-bit
 	Switch,		// ceil(log2(n))-bit
@@ -88,6 +89,10 @@ enum AxisFlags: uint8 (bit_flags) {
 }
 enum DeviceFlags: uint8 (bit_flags) {
 	Keyboard = 0,
+	Unique = 1,
+}
+enum PortFlags: uint8 (bit_flags) {
+	NoUserSelect = 0,
 }
 table NButtonInfo {
 	ExcludeName: string;
@@ -144,6 +149,7 @@ table NPortInfo {
 	ShortName: string;
 	FullName: string;
 	DefaultDeviceShortName: string;
+	Flags: PortFlags;
 	Devices: [NDeviceInfo];
 }
 table NPorts {

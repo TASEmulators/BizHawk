@@ -8,9 +8,9 @@
 
 // Ensure the included flatbuffers.h is the same version as when this file was
 // generated, otherwise it may not be compatible.
-static_assert(FLATBUFFERS_VERSION_MAJOR == 22 &&
-              FLATBUFFERS_VERSION_MINOR == 9 &&
-              FLATBUFFERS_VERSION_REVISION == 24,
+static_assert(FLATBUFFERS_VERSION_MAJOR == 23 &&
+              FLATBUFFERS_VERSION_MINOR == 5 &&
+              FLATBUFFERS_VERSION_REVISION == 26,
              "Non-compatible flatbuffers version included");
 
 namespace NymaTypes {
@@ -117,34 +117,34 @@ inline const char * const *EnumNamesSettingType() {
 }
 
 inline const char *EnumNameSettingType(SettingType e) {
-  if (flatbuffers::IsOutRange(e, SettingType_Int, SettingType_Alias)) return "";
+  if (::flatbuffers::IsOutRange(e, SettingType_Int, SettingType_Alias)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesSettingType()[index];
 }
 
 enum SettingsFlags : uint32_t {
   /// TODO(cats)
-  SettingsFlags_Input = 256,
-  SettingsFlags_Sound = 512,
-  SettingsFlags_Video = 1024,
+  SettingsFlags_Input = 1,
+  SettingsFlags_Sound = 2,
+  SettingsFlags_Video = 4,
   /// User-configurable physical->virtual button/axes and hotkey mappings(driver-side code category mainly).
-  SettingsFlags_InputMapping = 2048,
-  SettingsFlags_Path = 4096,
+  SettingsFlags_InputMapping = 8,
+  SettingsFlags_Path = 16,
   /// If the setting affects emulation from the point of view of the emulated program
-  SettingsFlags_EmuState = 131072,
+  SettingsFlags_EmuState = 256,
   /// If it's safe for an untrusted source to modify it, probably only used in conjunction with MDFNST_EX_EMU_STATE and network play
-  SettingsFlags_UntrustedSafe = 262144,
+  SettingsFlags_UntrustedSafe = 512,
   /// Suppress documentation generation for this setting.
-  SettingsFlags_SuppressDoc = 524288,
+  SettingsFlags_SuppressDoc = 1024,
   /// Auto-generated common template setting(like nes.xscale, pce.xscale, vb.xscale, nes.enable, pce.enable, vb.enable)
-  SettingsFlags_CommonTemplate = 1048576,
+  SettingsFlags_CommonTemplate = 2048,
   /// Don't save setting in settings file.
-  SettingsFlags_NonPersistent = 2097152,
+  SettingsFlags_NonPersistent = 4096,
   /// TODO(in progress)
-  SettingsFlags_RequiresReload = 16777216,
-  SettingsFlags_RequiresRestart = 33554432,
+  SettingsFlags_RequiresReload = 16384,
+  SettingsFlags_RequiresRestart = 32768,
   SettingsFlags_NONE = 0,
-  SettingsFlags_ANY = 54402816
+  SettingsFlags_ANY = 57119
 };
 
 inline const SettingsFlags (&EnumValuesSettingsFlags())[12] {
@@ -184,26 +184,28 @@ inline const char *EnumNameSettingsFlags(SettingsFlags e) {
 }
 
 enum InputType : uint8_t {
-  InputType_Padding = 0,
-  InputType_Button = 1,
-  InputType_ButtonCanRapid = 2,
-  InputType_Switch = 3,
-  InputType_Status = 4,
-  InputType_Axis = 5,
-  InputType_PointerX = 6,
-  InputType_PointerY = 7,
-  InputType_AxisRel = 8,
-  InputType_ByteSpecial = 9,
-  InputType_ResetButton = 10,
-  InputType_ButtonAnalog = 11,
-  InputType_Rumble = 12,
-  InputType_MIN = InputType_Padding,
+  InputType_Padding0 = 0,
+  InputType_Padding1 = 1,
+  InputType_Button = 2,
+  InputType_ButtonCanRapid = 3,
+  InputType_Switch = 4,
+  InputType_Status = 5,
+  InputType_Axis = 6,
+  InputType_PointerX = 7,
+  InputType_PointerY = 8,
+  InputType_AxisRel = 9,
+  InputType_ByteSpecial = 10,
+  InputType_ResetButton = 11,
+  InputType_ButtonAnalog = 12,
+  InputType_Rumble = 13,
+  InputType_MIN = InputType_Padding0,
   InputType_MAX = InputType_Rumble
 };
 
-inline const InputType (&EnumValuesInputType())[13] {
+inline const InputType (&EnumValuesInputType())[14] {
   static const InputType values[] = {
-    InputType_Padding,
+    InputType_Padding0,
+    InputType_Padding1,
     InputType_Button,
     InputType_ButtonCanRapid,
     InputType_Switch,
@@ -221,8 +223,9 @@ inline const InputType (&EnumValuesInputType())[13] {
 }
 
 inline const char * const *EnumNamesInputType() {
-  static const char * const names[14] = {
-    "Padding",
+  static const char * const names[15] = {
+    "Padding0",
+    "Padding1",
     "Button",
     "ButtonCanRapid",
     "Switch",
@@ -241,7 +244,7 @@ inline const char * const *EnumNamesInputType() {
 }
 
 inline const char *EnumNameInputType(InputType e) {
-  if (flatbuffers::IsOutRange(e, InputType_Padding, InputType_Rumble)) return "";
+  if (::flatbuffers::IsOutRange(e, InputType_Padding0, InputType_Rumble)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesInputType()[index];
 }
@@ -274,29 +277,59 @@ inline const char *EnumNameAxisFlags(AxisFlags e) {
 
 enum DeviceFlags : uint8_t {
   DeviceFlags_Keyboard = 1,
+  DeviceFlags_Unique = 2,
   DeviceFlags_NONE = 0,
-  DeviceFlags_ANY = 1
+  DeviceFlags_ANY = 3
 };
 
-inline const DeviceFlags (&EnumValuesDeviceFlags())[1] {
+inline const DeviceFlags (&EnumValuesDeviceFlags())[2] {
   static const DeviceFlags values[] = {
-    DeviceFlags_Keyboard
+    DeviceFlags_Keyboard,
+    DeviceFlags_Unique
   };
   return values;
 }
 
 inline const char * const *EnumNamesDeviceFlags() {
-  static const char * const names[2] = {
+  static const char * const names[3] = {
     "Keyboard",
+    "Unique",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameDeviceFlags(DeviceFlags e) {
-  if (flatbuffers::IsOutRange(e, DeviceFlags_Keyboard, DeviceFlags_Keyboard)) return "";
+  if (::flatbuffers::IsOutRange(e, DeviceFlags_Keyboard, DeviceFlags_Unique)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(DeviceFlags_Keyboard);
   return EnumNamesDeviceFlags()[index];
+}
+
+enum PortFlags : uint8_t {
+  PortFlags_NoUserSelect = 1,
+  PortFlags_NONE = 0,
+  PortFlags_ANY = 1
+};
+
+inline const PortFlags (&EnumValuesPortFlags())[1] {
+  static const PortFlags values[] = {
+    PortFlags_NoUserSelect
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesPortFlags() {
+  static const char * const names[2] = {
+    "NoUserSelect",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNamePortFlags(PortFlags e) {
+  if (::flatbuffers::IsOutRange(e, PortFlags_NoUserSelect, PortFlags_NoUserSelect)) return "";
+  const size_t index = static_cast<size_t>(e) - static_cast<size_t>(PortFlags_NoUserSelect);
+  return EnumNamesPortFlags()[index];
 }
 
 enum NInputExtra : uint8_t {
@@ -333,7 +366,7 @@ inline const char * const *EnumNamesNInputExtra() {
 }
 
 inline const char *EnumNameNInputExtra(NInputExtra e) {
-  if (flatbuffers::IsOutRange(e, NInputExtra_NONE, NInputExtra_Status)) return "";
+  if (::flatbuffers::IsOutRange(e, NInputExtra_NONE, NInputExtra_Status)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesNInputExtra()[index];
 }
@@ -405,8 +438,8 @@ struct NInputExtraUnion {
     }
   }
 
-  static void *UnPack(const void *obj, NInputExtra type, const flatbuffers::resolver_function_t *resolver);
-  flatbuffers::Offset<void> Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher = nullptr) const;
+  static void *UnPack(const void *obj, NInputExtra type, const ::flatbuffers::resolver_function_t *resolver);
+  ::flatbuffers::Offset<void> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr) const;
 
   NymaTypes::NButtonInfoT *AsButton() {
     return type == NInputExtra_Button ?
@@ -442,17 +475,17 @@ struct NInputExtraUnion {
   }
 };
 
-bool VerifyNInputExtra(flatbuffers::Verifier &verifier, const void *obj, NInputExtra type);
-bool VerifyNInputExtraVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types);
+bool VerifyNInputExtra(::flatbuffers::Verifier &verifier, const void *obj, NInputExtra type);
+bool VerifyNInputExtraVector(::flatbuffers::Verifier &verifier, const ::flatbuffers::Vector<::flatbuffers::Offset<void>> *values, const ::flatbuffers::Vector<uint8_t> *types);
 
-struct EnumValueT : public flatbuffers::NativeTable {
+struct EnumValueT : public ::flatbuffers::NativeTable {
   typedef EnumValue TableType;
   std::string Name{};
   std::string Description{};
   std::string Value{};
 };
 
-struct EnumValue FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct EnumValue FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef EnumValueT NativeTableType;
   typedef EnumValueBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
@@ -460,16 +493,16 @@ struct EnumValue FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_DESCRIPTION = 6,
     VT_VALUE = 8
   };
-  const flatbuffers::String *Name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *Name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
-  const flatbuffers::String *Description() const {
-    return GetPointer<const flatbuffers::String *>(VT_DESCRIPTION);
+  const ::flatbuffers::String *Description() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_DESCRIPTION);
   }
-  const flatbuffers::String *Value() const {
-    return GetPointer<const flatbuffers::String *>(VT_VALUE);
+  const ::flatbuffers::String *Value() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_VALUE);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(Name()) &&
@@ -479,40 +512,40 @@ struct EnumValue FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyString(Value()) &&
            verifier.EndTable();
   }
-  EnumValueT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(EnumValueT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<EnumValue> Pack(flatbuffers::FlatBufferBuilder &_fbb, const EnumValueT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  EnumValueT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(EnumValueT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<EnumValue> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const EnumValueT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct EnumValueBuilder {
   typedef EnumValue Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_Name(flatbuffers::Offset<flatbuffers::String> Name) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_Name(::flatbuffers::Offset<::flatbuffers::String> Name) {
     fbb_.AddOffset(EnumValue::VT_NAME, Name);
   }
-  void add_Description(flatbuffers::Offset<flatbuffers::String> Description) {
+  void add_Description(::flatbuffers::Offset<::flatbuffers::String> Description) {
     fbb_.AddOffset(EnumValue::VT_DESCRIPTION, Description);
   }
-  void add_Value(flatbuffers::Offset<flatbuffers::String> Value) {
+  void add_Value(::flatbuffers::Offset<::flatbuffers::String> Value) {
     fbb_.AddOffset(EnumValue::VT_VALUE, Value);
   }
-  explicit EnumValueBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit EnumValueBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<EnumValue> Finish() {
+  ::flatbuffers::Offset<EnumValue> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<EnumValue>(end);
+    auto o = ::flatbuffers::Offset<EnumValue>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<EnumValue> CreateEnumValue(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> Name = 0,
-    flatbuffers::Offset<flatbuffers::String> Description = 0,
-    flatbuffers::Offset<flatbuffers::String> Value = 0) {
+inline ::flatbuffers::Offset<EnumValue> CreateEnumValue(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> Name = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> Description = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> Value = 0) {
   EnumValueBuilder builder_(_fbb);
   builder_.add_Value(Value);
   builder_.add_Description(Description);
@@ -520,8 +553,8 @@ inline flatbuffers::Offset<EnumValue> CreateEnumValue(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<EnumValue> CreateEnumValueDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<EnumValue> CreateEnumValueDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *Name = nullptr,
     const char *Description = nullptr,
     const char *Value = nullptr) {
@@ -535,9 +568,9 @@ inline flatbuffers::Offset<EnumValue> CreateEnumValueDirect(
       Value__);
 }
 
-flatbuffers::Offset<EnumValue> CreateEnumValue(flatbuffers::FlatBufferBuilder &_fbb, const EnumValueT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<EnumValue> CreateEnumValue(::flatbuffers::FlatBufferBuilder &_fbb, const EnumValueT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct SettingT : public flatbuffers::NativeTable {
+struct SettingT : public ::flatbuffers::NativeTable {
   typedef Setting TableType;
   std::string Name{};
   std::string Description{};
@@ -554,7 +587,7 @@ struct SettingT : public flatbuffers::NativeTable {
   SettingT &operator=(SettingT o) FLATBUFFERS_NOEXCEPT;
 };
 
-struct Setting FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Setting FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef SettingT NativeTableType;
   typedef SettingBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
@@ -568,23 +601,23 @@ struct Setting FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_TYPE = 18,
     VT_SETTINGENUMS = 20
   };
-  const flatbuffers::String *Name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *Name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
-  const flatbuffers::String *Description() const {
-    return GetPointer<const flatbuffers::String *>(VT_DESCRIPTION);
+  const ::flatbuffers::String *Description() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_DESCRIPTION);
   }
-  const flatbuffers::String *SettingsKey() const {
-    return GetPointer<const flatbuffers::String *>(VT_SETTINGSKEY);
+  const ::flatbuffers::String *SettingsKey() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_SETTINGSKEY);
   }
-  const flatbuffers::String *DefaultValue() const {
-    return GetPointer<const flatbuffers::String *>(VT_DEFAULTVALUE);
+  const ::flatbuffers::String *DefaultValue() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_DEFAULTVALUE);
   }
-  const flatbuffers::String *Min() const {
-    return GetPointer<const flatbuffers::String *>(VT_MIN);
+  const ::flatbuffers::String *Min() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_MIN);
   }
-  const flatbuffers::String *Max() const {
-    return GetPointer<const flatbuffers::String *>(VT_MAX);
+  const ::flatbuffers::String *Max() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_MAX);
   }
   NymaTypes::SettingsFlags Flags() const {
     return static_cast<NymaTypes::SettingsFlags>(GetField<uint32_t>(VT_FLAGS, 0));
@@ -592,10 +625,10 @@ struct Setting FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   NymaTypes::SettingType Type() const {
     return static_cast<NymaTypes::SettingType>(GetField<int32_t>(VT_TYPE, 0));
   }
-  const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::EnumValue>> *SettingEnums() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::EnumValue>> *>(VT_SETTINGENUMS);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::EnumValue>> *SettingEnums() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::EnumValue>> *>(VT_SETTINGENUMS);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(Name()) &&
@@ -616,31 +649,31 @@ struct Setting FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVectorOfTables(SettingEnums()) &&
            verifier.EndTable();
   }
-  SettingT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(SettingT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<Setting> Pack(flatbuffers::FlatBufferBuilder &_fbb, const SettingT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  SettingT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(SettingT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<Setting> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const SettingT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct SettingBuilder {
   typedef Setting Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_Name(flatbuffers::Offset<flatbuffers::String> Name) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_Name(::flatbuffers::Offset<::flatbuffers::String> Name) {
     fbb_.AddOffset(Setting::VT_NAME, Name);
   }
-  void add_Description(flatbuffers::Offset<flatbuffers::String> Description) {
+  void add_Description(::flatbuffers::Offset<::flatbuffers::String> Description) {
     fbb_.AddOffset(Setting::VT_DESCRIPTION, Description);
   }
-  void add_SettingsKey(flatbuffers::Offset<flatbuffers::String> SettingsKey) {
+  void add_SettingsKey(::flatbuffers::Offset<::flatbuffers::String> SettingsKey) {
     fbb_.AddOffset(Setting::VT_SETTINGSKEY, SettingsKey);
   }
-  void add_DefaultValue(flatbuffers::Offset<flatbuffers::String> DefaultValue) {
+  void add_DefaultValue(::flatbuffers::Offset<::flatbuffers::String> DefaultValue) {
     fbb_.AddOffset(Setting::VT_DEFAULTVALUE, DefaultValue);
   }
-  void add_Min(flatbuffers::Offset<flatbuffers::String> Min) {
+  void add_Min(::flatbuffers::Offset<::flatbuffers::String> Min) {
     fbb_.AddOffset(Setting::VT_MIN, Min);
   }
-  void add_Max(flatbuffers::Offset<flatbuffers::String> Max) {
+  void add_Max(::flatbuffers::Offset<::flatbuffers::String> Max) {
     fbb_.AddOffset(Setting::VT_MAX, Max);
   }
   void add_Flags(NymaTypes::SettingsFlags Flags) {
@@ -649,31 +682,31 @@ struct SettingBuilder {
   void add_Type(NymaTypes::SettingType Type) {
     fbb_.AddElement<int32_t>(Setting::VT_TYPE, static_cast<int32_t>(Type), 0);
   }
-  void add_SettingEnums(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::EnumValue>>> SettingEnums) {
+  void add_SettingEnums(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::EnumValue>>> SettingEnums) {
     fbb_.AddOffset(Setting::VT_SETTINGENUMS, SettingEnums);
   }
-  explicit SettingBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit SettingBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<Setting> Finish() {
+  ::flatbuffers::Offset<Setting> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Setting>(end);
+    auto o = ::flatbuffers::Offset<Setting>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<Setting> CreateSetting(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> Name = 0,
-    flatbuffers::Offset<flatbuffers::String> Description = 0,
-    flatbuffers::Offset<flatbuffers::String> SettingsKey = 0,
-    flatbuffers::Offset<flatbuffers::String> DefaultValue = 0,
-    flatbuffers::Offset<flatbuffers::String> Min = 0,
-    flatbuffers::Offset<flatbuffers::String> Max = 0,
+inline ::flatbuffers::Offset<Setting> CreateSetting(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> Name = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> Description = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> SettingsKey = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> DefaultValue = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> Min = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> Max = 0,
     NymaTypes::SettingsFlags Flags = static_cast<NymaTypes::SettingsFlags>(0),
     NymaTypes::SettingType Type = NymaTypes::SettingType_Int,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::EnumValue>>> SettingEnums = 0) {
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::EnumValue>>> SettingEnums = 0) {
   SettingBuilder builder_(_fbb);
   builder_.add_SettingEnums(SettingEnums);
   builder_.add_Type(Type);
@@ -687,8 +720,8 @@ inline flatbuffers::Offset<Setting> CreateSetting(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Setting> CreateSettingDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Setting> CreateSettingDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *Name = nullptr,
     const char *Description = nullptr,
     const char *SettingsKey = nullptr,
@@ -697,14 +730,14 @@ inline flatbuffers::Offset<Setting> CreateSettingDirect(
     const char *Max = nullptr,
     NymaTypes::SettingsFlags Flags = static_cast<NymaTypes::SettingsFlags>(0),
     NymaTypes::SettingType Type = NymaTypes::SettingType_Int,
-    const std::vector<flatbuffers::Offset<NymaTypes::EnumValue>> *SettingEnums = nullptr) {
+    const std::vector<::flatbuffers::Offset<NymaTypes::EnumValue>> *SettingEnums = nullptr) {
   auto Name__ = Name ? _fbb.CreateString(Name) : 0;
   auto Description__ = Description ? _fbb.CreateString(Description) : 0;
   auto SettingsKey__ = SettingsKey ? _fbb.CreateString(SettingsKey) : 0;
   auto DefaultValue__ = DefaultValue ? _fbb.CreateString(DefaultValue) : 0;
   auto Min__ = Min ? _fbb.CreateString(Min) : 0;
   auto Max__ = Max ? _fbb.CreateString(Max) : 0;
-  auto SettingEnums__ = SettingEnums ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::EnumValue>>(*SettingEnums) : 0;
+  auto SettingEnums__ = SettingEnums ? _fbb.CreateVector<::flatbuffers::Offset<NymaTypes::EnumValue>>(*SettingEnums) : 0;
   return NymaTypes::CreateSetting(
       _fbb,
       Name__,
@@ -718,9 +751,9 @@ inline flatbuffers::Offset<Setting> CreateSettingDirect(
       SettingEnums__);
 }
 
-flatbuffers::Offset<Setting> CreateSetting(flatbuffers::FlatBufferBuilder &_fbb, const SettingT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<Setting> CreateSetting(::flatbuffers::FlatBufferBuilder &_fbb, const SettingT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct SettingsT : public flatbuffers::NativeTable {
+struct SettingsT : public ::flatbuffers::NativeTable {
   typedef Settings TableType;
   std::vector<std::unique_ptr<NymaTypes::SettingT>> Values{};
   SettingsT() = default;
@@ -729,117 +762,117 @@ struct SettingsT : public flatbuffers::NativeTable {
   SettingsT &operator=(SettingsT o) FLATBUFFERS_NOEXCEPT;
 };
 
-struct Settings FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Settings FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef SettingsT NativeTableType;
   typedef SettingsBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_VALUES = 4
   };
-  const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::Setting>> *Values() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::Setting>> *>(VT_VALUES);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::Setting>> *Values() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::Setting>> *>(VT_VALUES);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_VALUES) &&
            verifier.VerifyVector(Values()) &&
            verifier.VerifyVectorOfTables(Values()) &&
            verifier.EndTable();
   }
-  SettingsT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(SettingsT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<Settings> Pack(flatbuffers::FlatBufferBuilder &_fbb, const SettingsT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  SettingsT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(SettingsT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<Settings> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const SettingsT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct SettingsBuilder {
   typedef Settings Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_Values(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::Setting>>> Values) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_Values(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::Setting>>> Values) {
     fbb_.AddOffset(Settings::VT_VALUES, Values);
   }
-  explicit SettingsBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit SettingsBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<Settings> Finish() {
+  ::flatbuffers::Offset<Settings> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Settings>(end);
+    auto o = ::flatbuffers::Offset<Settings>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<Settings> CreateSettings(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::Setting>>> Values = 0) {
+inline ::flatbuffers::Offset<Settings> CreateSettings(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::Setting>>> Values = 0) {
   SettingsBuilder builder_(_fbb);
   builder_.add_Values(Values);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Settings> CreateSettingsDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<flatbuffers::Offset<NymaTypes::Setting>> *Values = nullptr) {
-  auto Values__ = Values ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::Setting>>(*Values) : 0;
+inline ::flatbuffers::Offset<Settings> CreateSettingsDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    const std::vector<::flatbuffers::Offset<NymaTypes::Setting>> *Values = nullptr) {
+  auto Values__ = Values ? _fbb.CreateVector<::flatbuffers::Offset<NymaTypes::Setting>>(*Values) : 0;
   return NymaTypes::CreateSettings(
       _fbb,
       Values__);
 }
 
-flatbuffers::Offset<Settings> CreateSettings(flatbuffers::FlatBufferBuilder &_fbb, const SettingsT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<Settings> CreateSettings(::flatbuffers::FlatBufferBuilder &_fbb, const SettingsT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct NButtonInfoT : public flatbuffers::NativeTable {
+struct NButtonInfoT : public ::flatbuffers::NativeTable {
   typedef NButtonInfo TableType;
   std::string ExcludeName{};
 };
 
-struct NButtonInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct NButtonInfo FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef NButtonInfoT NativeTableType;
   typedef NButtonInfoBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_EXCLUDENAME = 4
   };
-  const flatbuffers::String *ExcludeName() const {
-    return GetPointer<const flatbuffers::String *>(VT_EXCLUDENAME);
+  const ::flatbuffers::String *ExcludeName() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_EXCLUDENAME);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_EXCLUDENAME) &&
            verifier.VerifyString(ExcludeName()) &&
            verifier.EndTable();
   }
-  NButtonInfoT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(NButtonInfoT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<NButtonInfo> Pack(flatbuffers::FlatBufferBuilder &_fbb, const NButtonInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  NButtonInfoT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(NButtonInfoT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<NButtonInfo> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NButtonInfoT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct NButtonInfoBuilder {
   typedef NButtonInfo Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_ExcludeName(flatbuffers::Offset<flatbuffers::String> ExcludeName) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_ExcludeName(::flatbuffers::Offset<::flatbuffers::String> ExcludeName) {
     fbb_.AddOffset(NButtonInfo::VT_EXCLUDENAME, ExcludeName);
   }
-  explicit NButtonInfoBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit NButtonInfoBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<NButtonInfo> Finish() {
+  ::flatbuffers::Offset<NButtonInfo> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<NButtonInfo>(end);
+    auto o = ::flatbuffers::Offset<NButtonInfo>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<NButtonInfo> CreateNButtonInfo(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> ExcludeName = 0) {
+inline ::flatbuffers::Offset<NButtonInfo> CreateNButtonInfo(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> ExcludeName = 0) {
   NButtonInfoBuilder builder_(_fbb);
   builder_.add_ExcludeName(ExcludeName);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<NButtonInfo> CreateNButtonInfoDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<NButtonInfo> CreateNButtonInfoDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *ExcludeName = nullptr) {
   auto ExcludeName__ = ExcludeName ? _fbb.CreateString(ExcludeName) : 0;
   return NymaTypes::CreateNButtonInfo(
@@ -847,9 +880,9 @@ inline flatbuffers::Offset<NButtonInfo> CreateNButtonInfoDirect(
       ExcludeName__);
 }
 
-flatbuffers::Offset<NButtonInfo> CreateNButtonInfo(flatbuffers::FlatBufferBuilder &_fbb, const NButtonInfoT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<NButtonInfo> CreateNButtonInfo(::flatbuffers::FlatBufferBuilder &_fbb, const NButtonInfoT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct NAxisInfoT : public flatbuffers::NativeTable {
+struct NAxisInfoT : public ::flatbuffers::NativeTable {
   typedef NAxisInfo TableType;
   std::string SettingsNameNeg{};
   std::string SettingsNamePos{};
@@ -857,7 +890,7 @@ struct NAxisInfoT : public flatbuffers::NativeTable {
   std::string NamePos{};
 };
 
-struct NAxisInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct NAxisInfo FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef NAxisInfoT NativeTableType;
   typedef NAxisInfoBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
@@ -866,19 +899,19 @@ struct NAxisInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_NAMENEG = 8,
     VT_NAMEPOS = 10
   };
-  const flatbuffers::String *SettingsNameNeg() const {
-    return GetPointer<const flatbuffers::String *>(VT_SETTINGSNAMENEG);
+  const ::flatbuffers::String *SettingsNameNeg() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_SETTINGSNAMENEG);
   }
-  const flatbuffers::String *SettingsNamePos() const {
-    return GetPointer<const flatbuffers::String *>(VT_SETTINGSNAMEPOS);
+  const ::flatbuffers::String *SettingsNamePos() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_SETTINGSNAMEPOS);
   }
-  const flatbuffers::String *NameNeg() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAMENEG);
+  const ::flatbuffers::String *NameNeg() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAMENEG);
   }
-  const flatbuffers::String *NamePos() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAMEPOS);
+  const ::flatbuffers::String *NamePos() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAMEPOS);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_SETTINGSNAMENEG) &&
            verifier.VerifyString(SettingsNameNeg()) &&
@@ -890,44 +923,44 @@ struct NAxisInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyString(NamePos()) &&
            verifier.EndTable();
   }
-  NAxisInfoT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(NAxisInfoT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<NAxisInfo> Pack(flatbuffers::FlatBufferBuilder &_fbb, const NAxisInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  NAxisInfoT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(NAxisInfoT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<NAxisInfo> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NAxisInfoT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct NAxisInfoBuilder {
   typedef NAxisInfo Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_SettingsNameNeg(flatbuffers::Offset<flatbuffers::String> SettingsNameNeg) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_SettingsNameNeg(::flatbuffers::Offset<::flatbuffers::String> SettingsNameNeg) {
     fbb_.AddOffset(NAxisInfo::VT_SETTINGSNAMENEG, SettingsNameNeg);
   }
-  void add_SettingsNamePos(flatbuffers::Offset<flatbuffers::String> SettingsNamePos) {
+  void add_SettingsNamePos(::flatbuffers::Offset<::flatbuffers::String> SettingsNamePos) {
     fbb_.AddOffset(NAxisInfo::VT_SETTINGSNAMEPOS, SettingsNamePos);
   }
-  void add_NameNeg(flatbuffers::Offset<flatbuffers::String> NameNeg) {
+  void add_NameNeg(::flatbuffers::Offset<::flatbuffers::String> NameNeg) {
     fbb_.AddOffset(NAxisInfo::VT_NAMENEG, NameNeg);
   }
-  void add_NamePos(flatbuffers::Offset<flatbuffers::String> NamePos) {
+  void add_NamePos(::flatbuffers::Offset<::flatbuffers::String> NamePos) {
     fbb_.AddOffset(NAxisInfo::VT_NAMEPOS, NamePos);
   }
-  explicit NAxisInfoBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit NAxisInfoBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<NAxisInfo> Finish() {
+  ::flatbuffers::Offset<NAxisInfo> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<NAxisInfo>(end);
+    auto o = ::flatbuffers::Offset<NAxisInfo>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<NAxisInfo> CreateNAxisInfo(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> SettingsNameNeg = 0,
-    flatbuffers::Offset<flatbuffers::String> SettingsNamePos = 0,
-    flatbuffers::Offset<flatbuffers::String> NameNeg = 0,
-    flatbuffers::Offset<flatbuffers::String> NamePos = 0) {
+inline ::flatbuffers::Offset<NAxisInfo> CreateNAxisInfo(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> SettingsNameNeg = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> SettingsNamePos = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> NameNeg = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> NamePos = 0) {
   NAxisInfoBuilder builder_(_fbb);
   builder_.add_NamePos(NamePos);
   builder_.add_NameNeg(NameNeg);
@@ -936,8 +969,8 @@ inline flatbuffers::Offset<NAxisInfo> CreateNAxisInfo(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<NAxisInfo> CreateNAxisInfoDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<NAxisInfo> CreateNAxisInfoDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *SettingsNameNeg = nullptr,
     const char *SettingsNamePos = nullptr,
     const char *NameNeg = nullptr,
@@ -954,9 +987,9 @@ inline flatbuffers::Offset<NAxisInfo> CreateNAxisInfoDirect(
       NamePos__);
 }
 
-flatbuffers::Offset<NAxisInfo> CreateNAxisInfo(flatbuffers::FlatBufferBuilder &_fbb, const NAxisInfoT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<NAxisInfo> CreateNAxisInfo(::flatbuffers::FlatBufferBuilder &_fbb, const NAxisInfoT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct NSwitchInfoT : public flatbuffers::NativeTable {
+struct NSwitchInfoT : public ::flatbuffers::NativeTable {
   typedef NSwitchInfo TableType;
   uint32_t DefaultPosition = 0;
   std::vector<std::unique_ptr<NymaTypes::NSwitchPositionT>> Positions{};
@@ -966,7 +999,7 @@ struct NSwitchInfoT : public flatbuffers::NativeTable {
   NSwitchInfoT &operator=(NSwitchInfoT o) FLATBUFFERS_NOEXCEPT;
 };
 
-struct NSwitchInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct NSwitchInfo FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef NSwitchInfoT NativeTableType;
   typedef NSwitchInfoBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
@@ -976,10 +1009,10 @@ struct NSwitchInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t DefaultPosition() const {
     return GetField<uint32_t>(VT_DEFAULTPOSITION, 0);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NSwitchPosition>> *Positions() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NSwitchPosition>> *>(VT_POSITIONS);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NSwitchPosition>> *Positions() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NSwitchPosition>> *>(VT_POSITIONS);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_DEFAULTPOSITION, 4) &&
            VerifyOffset(verifier, VT_POSITIONS) &&
@@ -987,63 +1020,63 @@ struct NSwitchInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVectorOfTables(Positions()) &&
            verifier.EndTable();
   }
-  NSwitchInfoT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(NSwitchInfoT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<NSwitchInfo> Pack(flatbuffers::FlatBufferBuilder &_fbb, const NSwitchInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  NSwitchInfoT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(NSwitchInfoT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<NSwitchInfo> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NSwitchInfoT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct NSwitchInfoBuilder {
   typedef NSwitchInfo Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_DefaultPosition(uint32_t DefaultPosition) {
     fbb_.AddElement<uint32_t>(NSwitchInfo::VT_DEFAULTPOSITION, DefaultPosition, 0);
   }
-  void add_Positions(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NSwitchPosition>>> Positions) {
+  void add_Positions(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NSwitchPosition>>> Positions) {
     fbb_.AddOffset(NSwitchInfo::VT_POSITIONS, Positions);
   }
-  explicit NSwitchInfoBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit NSwitchInfoBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<NSwitchInfo> Finish() {
+  ::flatbuffers::Offset<NSwitchInfo> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<NSwitchInfo>(end);
+    auto o = ::flatbuffers::Offset<NSwitchInfo>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<NSwitchInfo> CreateNSwitchInfo(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<NSwitchInfo> CreateNSwitchInfo(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t DefaultPosition = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NSwitchPosition>>> Positions = 0) {
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NSwitchPosition>>> Positions = 0) {
   NSwitchInfoBuilder builder_(_fbb);
   builder_.add_Positions(Positions);
   builder_.add_DefaultPosition(DefaultPosition);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<NSwitchInfo> CreateNSwitchInfoDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<NSwitchInfo> CreateNSwitchInfoDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t DefaultPosition = 0,
-    const std::vector<flatbuffers::Offset<NymaTypes::NSwitchPosition>> *Positions = nullptr) {
-  auto Positions__ = Positions ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::NSwitchPosition>>(*Positions) : 0;
+    const std::vector<::flatbuffers::Offset<NymaTypes::NSwitchPosition>> *Positions = nullptr) {
+  auto Positions__ = Positions ? _fbb.CreateVector<::flatbuffers::Offset<NymaTypes::NSwitchPosition>>(*Positions) : 0;
   return NymaTypes::CreateNSwitchInfo(
       _fbb,
       DefaultPosition,
       Positions__);
 }
 
-flatbuffers::Offset<NSwitchInfo> CreateNSwitchInfo(flatbuffers::FlatBufferBuilder &_fbb, const NSwitchInfoT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<NSwitchInfo> CreateNSwitchInfo(::flatbuffers::FlatBufferBuilder &_fbb, const NSwitchInfoT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct NSwitchPositionT : public flatbuffers::NativeTable {
+struct NSwitchPositionT : public ::flatbuffers::NativeTable {
   typedef NSwitchPosition TableType;
   std::string SettingName{};
   std::string Name{};
   std::string Description{};
 };
 
-struct NSwitchPosition FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct NSwitchPosition FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef NSwitchPositionT NativeTableType;
   typedef NSwitchPositionBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
@@ -1051,16 +1084,16 @@ struct NSwitchPosition FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_NAME = 6,
     VT_DESCRIPTION = 8
   };
-  const flatbuffers::String *SettingName() const {
-    return GetPointer<const flatbuffers::String *>(VT_SETTINGNAME);
+  const ::flatbuffers::String *SettingName() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_SETTINGNAME);
   }
-  const flatbuffers::String *Name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *Name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
-  const flatbuffers::String *Description() const {
-    return GetPointer<const flatbuffers::String *>(VT_DESCRIPTION);
+  const ::flatbuffers::String *Description() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_DESCRIPTION);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_SETTINGNAME) &&
            verifier.VerifyString(SettingName()) &&
@@ -1070,40 +1103,40 @@ struct NSwitchPosition FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyString(Description()) &&
            verifier.EndTable();
   }
-  NSwitchPositionT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(NSwitchPositionT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<NSwitchPosition> Pack(flatbuffers::FlatBufferBuilder &_fbb, const NSwitchPositionT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  NSwitchPositionT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(NSwitchPositionT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<NSwitchPosition> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NSwitchPositionT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct NSwitchPositionBuilder {
   typedef NSwitchPosition Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_SettingName(flatbuffers::Offset<flatbuffers::String> SettingName) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_SettingName(::flatbuffers::Offset<::flatbuffers::String> SettingName) {
     fbb_.AddOffset(NSwitchPosition::VT_SETTINGNAME, SettingName);
   }
-  void add_Name(flatbuffers::Offset<flatbuffers::String> Name) {
+  void add_Name(::flatbuffers::Offset<::flatbuffers::String> Name) {
     fbb_.AddOffset(NSwitchPosition::VT_NAME, Name);
   }
-  void add_Description(flatbuffers::Offset<flatbuffers::String> Description) {
+  void add_Description(::flatbuffers::Offset<::flatbuffers::String> Description) {
     fbb_.AddOffset(NSwitchPosition::VT_DESCRIPTION, Description);
   }
-  explicit NSwitchPositionBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit NSwitchPositionBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<NSwitchPosition> Finish() {
+  ::flatbuffers::Offset<NSwitchPosition> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<NSwitchPosition>(end);
+    auto o = ::flatbuffers::Offset<NSwitchPosition>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<NSwitchPosition> CreateNSwitchPosition(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> SettingName = 0,
-    flatbuffers::Offset<flatbuffers::String> Name = 0,
-    flatbuffers::Offset<flatbuffers::String> Description = 0) {
+inline ::flatbuffers::Offset<NSwitchPosition> CreateNSwitchPosition(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> SettingName = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> Name = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> Description = 0) {
   NSwitchPositionBuilder builder_(_fbb);
   builder_.add_Description(Description);
   builder_.add_Name(Name);
@@ -1111,8 +1144,8 @@ inline flatbuffers::Offset<NSwitchPosition> CreateNSwitchPosition(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<NSwitchPosition> CreateNSwitchPositionDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<NSwitchPosition> CreateNSwitchPositionDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *SettingName = nullptr,
     const char *Name = nullptr,
     const char *Description = nullptr) {
@@ -1126,9 +1159,9 @@ inline flatbuffers::Offset<NSwitchPosition> CreateNSwitchPositionDirect(
       Description__);
 }
 
-flatbuffers::Offset<NSwitchPosition> CreateNSwitchPosition(flatbuffers::FlatBufferBuilder &_fbb, const NSwitchPositionT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<NSwitchPosition> CreateNSwitchPosition(::flatbuffers::FlatBufferBuilder &_fbb, const NSwitchPositionT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct NStatusInfoT : public flatbuffers::NativeTable {
+struct NStatusInfoT : public ::flatbuffers::NativeTable {
   typedef NStatusInfo TableType;
   std::vector<std::unique_ptr<NymaTypes::NStatusStateT>> States{};
   NStatusInfoT() = default;
@@ -1137,72 +1170,72 @@ struct NStatusInfoT : public flatbuffers::NativeTable {
   NStatusInfoT &operator=(NStatusInfoT o) FLATBUFFERS_NOEXCEPT;
 };
 
-struct NStatusInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct NStatusInfo FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef NStatusInfoT NativeTableType;
   typedef NStatusInfoBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_STATES = 4
   };
-  const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NStatusState>> *States() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NStatusState>> *>(VT_STATES);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NStatusState>> *States() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NStatusState>> *>(VT_STATES);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_STATES) &&
            verifier.VerifyVector(States()) &&
            verifier.VerifyVectorOfTables(States()) &&
            verifier.EndTable();
   }
-  NStatusInfoT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(NStatusInfoT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<NStatusInfo> Pack(flatbuffers::FlatBufferBuilder &_fbb, const NStatusInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  NStatusInfoT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(NStatusInfoT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<NStatusInfo> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NStatusInfoT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct NStatusInfoBuilder {
   typedef NStatusInfo Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_States(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NStatusState>>> States) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_States(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NStatusState>>> States) {
     fbb_.AddOffset(NStatusInfo::VT_STATES, States);
   }
-  explicit NStatusInfoBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit NStatusInfoBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<NStatusInfo> Finish() {
+  ::flatbuffers::Offset<NStatusInfo> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<NStatusInfo>(end);
+    auto o = ::flatbuffers::Offset<NStatusInfo>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<NStatusInfo> CreateNStatusInfo(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NStatusState>>> States = 0) {
+inline ::flatbuffers::Offset<NStatusInfo> CreateNStatusInfo(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NStatusState>>> States = 0) {
   NStatusInfoBuilder builder_(_fbb);
   builder_.add_States(States);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<NStatusInfo> CreateNStatusInfoDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<flatbuffers::Offset<NymaTypes::NStatusState>> *States = nullptr) {
-  auto States__ = States ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::NStatusState>>(*States) : 0;
+inline ::flatbuffers::Offset<NStatusInfo> CreateNStatusInfoDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    const std::vector<::flatbuffers::Offset<NymaTypes::NStatusState>> *States = nullptr) {
+  auto States__ = States ? _fbb.CreateVector<::flatbuffers::Offset<NymaTypes::NStatusState>>(*States) : 0;
   return NymaTypes::CreateNStatusInfo(
       _fbb,
       States__);
 }
 
-flatbuffers::Offset<NStatusInfo> CreateNStatusInfo(flatbuffers::FlatBufferBuilder &_fbb, const NStatusInfoT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<NStatusInfo> CreateNStatusInfo(::flatbuffers::FlatBufferBuilder &_fbb, const NStatusInfoT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct NStatusStateT : public flatbuffers::NativeTable {
+struct NStatusStateT : public ::flatbuffers::NativeTable {
   typedef NStatusState TableType;
   std::string ShortName{};
   std::string Name{};
   int32_t Color = 0;
 };
 
-struct NStatusState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct NStatusState FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef NStatusStateT NativeTableType;
   typedef NStatusStateBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
@@ -1210,16 +1243,16 @@ struct NStatusState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_NAME = 6,
     VT_COLOR = 8
   };
-  const flatbuffers::String *ShortName() const {
-    return GetPointer<const flatbuffers::String *>(VT_SHORTNAME);
+  const ::flatbuffers::String *ShortName() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_SHORTNAME);
   }
-  const flatbuffers::String *Name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *Name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
   int32_t Color() const {
     return GetField<int32_t>(VT_COLOR, 0);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_SHORTNAME) &&
            verifier.VerifyString(ShortName()) &&
@@ -1228,39 +1261,39 @@ struct NStatusState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int32_t>(verifier, VT_COLOR, 4) &&
            verifier.EndTable();
   }
-  NStatusStateT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(NStatusStateT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<NStatusState> Pack(flatbuffers::FlatBufferBuilder &_fbb, const NStatusStateT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  NStatusStateT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(NStatusStateT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<NStatusState> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NStatusStateT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct NStatusStateBuilder {
   typedef NStatusState Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_ShortName(flatbuffers::Offset<flatbuffers::String> ShortName) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_ShortName(::flatbuffers::Offset<::flatbuffers::String> ShortName) {
     fbb_.AddOffset(NStatusState::VT_SHORTNAME, ShortName);
   }
-  void add_Name(flatbuffers::Offset<flatbuffers::String> Name) {
+  void add_Name(::flatbuffers::Offset<::flatbuffers::String> Name) {
     fbb_.AddOffset(NStatusState::VT_NAME, Name);
   }
   void add_Color(int32_t Color) {
     fbb_.AddElement<int32_t>(NStatusState::VT_COLOR, Color, 0);
   }
-  explicit NStatusStateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit NStatusStateBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<NStatusState> Finish() {
+  ::flatbuffers::Offset<NStatusState> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<NStatusState>(end);
+    auto o = ::flatbuffers::Offset<NStatusState>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<NStatusState> CreateNStatusState(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> ShortName = 0,
-    flatbuffers::Offset<flatbuffers::String> Name = 0,
+inline ::flatbuffers::Offset<NStatusState> CreateNStatusState(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> ShortName = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> Name = 0,
     int32_t Color = 0) {
   NStatusStateBuilder builder_(_fbb);
   builder_.add_Color(Color);
@@ -1269,8 +1302,8 @@ inline flatbuffers::Offset<NStatusState> CreateNStatusState(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<NStatusState> CreateNStatusStateDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<NStatusState> CreateNStatusStateDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *ShortName = nullptr,
     const char *Name = nullptr,
     int32_t Color = 0) {
@@ -1283,21 +1316,21 @@ inline flatbuffers::Offset<NStatusState> CreateNStatusStateDirect(
       Color);
 }
 
-flatbuffers::Offset<NStatusState> CreateNStatusState(flatbuffers::FlatBufferBuilder &_fbb, const NStatusStateT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<NStatusState> CreateNStatusState(::flatbuffers::FlatBufferBuilder &_fbb, const NStatusStateT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct NInputInfoT : public flatbuffers::NativeTable {
+struct NInputInfoT : public ::flatbuffers::NativeTable {
   typedef NInputInfo TableType;
   std::string SettingName{};
   std::string Name{};
   int16_t ConfigOrder = 0;
   uint16_t BitOffset = 0;
-  NymaTypes::InputType Type = NymaTypes::InputType_Padding;
+  NymaTypes::InputType Type = NymaTypes::InputType_Padding0;
   NymaTypes::AxisFlags Flags = static_cast<NymaTypes::AxisFlags>(0);
   uint8_t BitSize = 0;
   NymaTypes::NInputExtraUnion Extra{};
 };
 
-struct NInputInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct NInputInfo FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef NInputInfoT NativeTableType;
   typedef NInputInfoBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
@@ -1311,11 +1344,11 @@ struct NInputInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_EXTRA_TYPE = 18,
     VT_EXTRA = 20
   };
-  const flatbuffers::String *SettingName() const {
-    return GetPointer<const flatbuffers::String *>(VT_SETTINGNAME);
+  const ::flatbuffers::String *SettingName() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_SETTINGNAME);
   }
-  const flatbuffers::String *Name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *Name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
   int16_t ConfigOrder() const {
     return GetField<int16_t>(VT_CONFIGORDER, 0);
@@ -1351,7 +1384,7 @@ struct NInputInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const NymaTypes::NStatusInfo *Extra_as_Status() const {
     return Extra_type() == NymaTypes::NInputExtra_Status ? static_cast<const NymaTypes::NStatusInfo *>(Extra()) : nullptr;
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_SETTINGNAME) &&
            verifier.VerifyString(SettingName()) &&
@@ -1367,9 +1400,9 @@ struct NInputInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyNInputExtra(verifier, Extra(), Extra_type()) &&
            verifier.EndTable();
   }
-  NInputInfoT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(NInputInfoT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<NInputInfo> Pack(flatbuffers::FlatBufferBuilder &_fbb, const NInputInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  NInputInfoT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(NInputInfoT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<NInputInfo> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NInputInfoT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 template<> inline const NymaTypes::NButtonInfo *NInputInfo::Extra_as<NymaTypes::NButtonInfo>() const {
@@ -1390,12 +1423,12 @@ template<> inline const NymaTypes::NStatusInfo *NInputInfo::Extra_as<NymaTypes::
 
 struct NInputInfoBuilder {
   typedef NInputInfo Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_SettingName(flatbuffers::Offset<flatbuffers::String> SettingName) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_SettingName(::flatbuffers::Offset<::flatbuffers::String> SettingName) {
     fbb_.AddOffset(NInputInfo::VT_SETTINGNAME, SettingName);
   }
-  void add_Name(flatbuffers::Offset<flatbuffers::String> Name) {
+  void add_Name(::flatbuffers::Offset<::flatbuffers::String> Name) {
     fbb_.AddOffset(NInputInfo::VT_NAME, Name);
   }
   void add_ConfigOrder(int16_t ConfigOrder) {
@@ -1416,31 +1449,31 @@ struct NInputInfoBuilder {
   void add_Extra_type(NymaTypes::NInputExtra Extra_type) {
     fbb_.AddElement<uint8_t>(NInputInfo::VT_EXTRA_TYPE, static_cast<uint8_t>(Extra_type), 0);
   }
-  void add_Extra(flatbuffers::Offset<void> Extra) {
+  void add_Extra(::flatbuffers::Offset<void> Extra) {
     fbb_.AddOffset(NInputInfo::VT_EXTRA, Extra);
   }
-  explicit NInputInfoBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit NInputInfoBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<NInputInfo> Finish() {
+  ::flatbuffers::Offset<NInputInfo> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<NInputInfo>(end);
+    auto o = ::flatbuffers::Offset<NInputInfo>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<NInputInfo> CreateNInputInfo(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> SettingName = 0,
-    flatbuffers::Offset<flatbuffers::String> Name = 0,
+inline ::flatbuffers::Offset<NInputInfo> CreateNInputInfo(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> SettingName = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> Name = 0,
     int16_t ConfigOrder = 0,
     uint16_t BitOffset = 0,
-    NymaTypes::InputType Type = NymaTypes::InputType_Padding,
+    NymaTypes::InputType Type = NymaTypes::InputType_Padding0,
     NymaTypes::AxisFlags Flags = static_cast<NymaTypes::AxisFlags>(0),
     uint8_t BitSize = 0,
     NymaTypes::NInputExtra Extra_type = NymaTypes::NInputExtra_NONE,
-    flatbuffers::Offset<void> Extra = 0) {
+    ::flatbuffers::Offset<void> Extra = 0) {
   NInputInfoBuilder builder_(_fbb);
   builder_.add_Extra(Extra);
   builder_.add_Name(Name);
@@ -1454,17 +1487,17 @@ inline flatbuffers::Offset<NInputInfo> CreateNInputInfo(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<NInputInfo> CreateNInputInfoDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<NInputInfo> CreateNInputInfoDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *SettingName = nullptr,
     const char *Name = nullptr,
     int16_t ConfigOrder = 0,
     uint16_t BitOffset = 0,
-    NymaTypes::InputType Type = NymaTypes::InputType_Padding,
+    NymaTypes::InputType Type = NymaTypes::InputType_Padding0,
     NymaTypes::AxisFlags Flags = static_cast<NymaTypes::AxisFlags>(0),
     uint8_t BitSize = 0,
     NymaTypes::NInputExtra Extra_type = NymaTypes::NInputExtra_NONE,
-    flatbuffers::Offset<void> Extra = 0) {
+    ::flatbuffers::Offset<void> Extra = 0) {
   auto SettingName__ = SettingName ? _fbb.CreateString(SettingName) : 0;
   auto Name__ = Name ? _fbb.CreateString(Name) : 0;
   return NymaTypes::CreateNInputInfo(
@@ -1480,9 +1513,9 @@ inline flatbuffers::Offset<NInputInfo> CreateNInputInfoDirect(
       Extra);
 }
 
-flatbuffers::Offset<NInputInfo> CreateNInputInfo(flatbuffers::FlatBufferBuilder &_fbb, const NInputInfoT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<NInputInfo> CreateNInputInfo(::flatbuffers::FlatBufferBuilder &_fbb, const NInputInfoT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct NDeviceInfoT : public flatbuffers::NativeTable {
+struct NDeviceInfoT : public ::flatbuffers::NativeTable {
   typedef NDeviceInfo TableType;
   std::string ShortName{};
   std::string FullName{};
@@ -1496,7 +1529,7 @@ struct NDeviceInfoT : public flatbuffers::NativeTable {
   NDeviceInfoT &operator=(NDeviceInfoT o) FLATBUFFERS_NOEXCEPT;
 };
 
-struct NDeviceInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct NDeviceInfo FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef NDeviceInfoT NativeTableType;
   typedef NDeviceInfoBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
@@ -1507,14 +1540,14 @@ struct NDeviceInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_BYTELENGTH = 12,
     VT_INPUTS = 14
   };
-  const flatbuffers::String *ShortName() const {
-    return GetPointer<const flatbuffers::String *>(VT_SHORTNAME);
+  const ::flatbuffers::String *ShortName() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_SHORTNAME);
   }
-  const flatbuffers::String *FullName() const {
-    return GetPointer<const flatbuffers::String *>(VT_FULLNAME);
+  const ::flatbuffers::String *FullName() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_FULLNAME);
   }
-  const flatbuffers::String *Description() const {
-    return GetPointer<const flatbuffers::String *>(VT_DESCRIPTION);
+  const ::flatbuffers::String *Description() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_DESCRIPTION);
   }
   NymaTypes::DeviceFlags Flags() const {
     return static_cast<NymaTypes::DeviceFlags>(GetField<uint8_t>(VT_FLAGS, 0));
@@ -1522,10 +1555,10 @@ struct NDeviceInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t ByteLength() const {
     return GetField<uint32_t>(VT_BYTELENGTH, 0);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NInputInfo>> *Inputs() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NInputInfo>> *>(VT_INPUTS);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NInputInfo>> *Inputs() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NInputInfo>> *>(VT_INPUTS);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_SHORTNAME) &&
            verifier.VerifyString(ShortName()) &&
@@ -1540,22 +1573,22 @@ struct NDeviceInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVectorOfTables(Inputs()) &&
            verifier.EndTable();
   }
-  NDeviceInfoT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(NDeviceInfoT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<NDeviceInfo> Pack(flatbuffers::FlatBufferBuilder &_fbb, const NDeviceInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  NDeviceInfoT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(NDeviceInfoT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<NDeviceInfo> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NDeviceInfoT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct NDeviceInfoBuilder {
   typedef NDeviceInfo Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_ShortName(flatbuffers::Offset<flatbuffers::String> ShortName) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_ShortName(::flatbuffers::Offset<::flatbuffers::String> ShortName) {
     fbb_.AddOffset(NDeviceInfo::VT_SHORTNAME, ShortName);
   }
-  void add_FullName(flatbuffers::Offset<flatbuffers::String> FullName) {
+  void add_FullName(::flatbuffers::Offset<::flatbuffers::String> FullName) {
     fbb_.AddOffset(NDeviceInfo::VT_FULLNAME, FullName);
   }
-  void add_Description(flatbuffers::Offset<flatbuffers::String> Description) {
+  void add_Description(::flatbuffers::Offset<::flatbuffers::String> Description) {
     fbb_.AddOffset(NDeviceInfo::VT_DESCRIPTION, Description);
   }
   void add_Flags(NymaTypes::DeviceFlags Flags) {
@@ -1564,28 +1597,28 @@ struct NDeviceInfoBuilder {
   void add_ByteLength(uint32_t ByteLength) {
     fbb_.AddElement<uint32_t>(NDeviceInfo::VT_BYTELENGTH, ByteLength, 0);
   }
-  void add_Inputs(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NInputInfo>>> Inputs) {
+  void add_Inputs(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NInputInfo>>> Inputs) {
     fbb_.AddOffset(NDeviceInfo::VT_INPUTS, Inputs);
   }
-  explicit NDeviceInfoBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit NDeviceInfoBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<NDeviceInfo> Finish() {
+  ::flatbuffers::Offset<NDeviceInfo> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<NDeviceInfo>(end);
+    auto o = ::flatbuffers::Offset<NDeviceInfo>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<NDeviceInfo> CreateNDeviceInfo(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> ShortName = 0,
-    flatbuffers::Offset<flatbuffers::String> FullName = 0,
-    flatbuffers::Offset<flatbuffers::String> Description = 0,
+inline ::flatbuffers::Offset<NDeviceInfo> CreateNDeviceInfo(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> ShortName = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> FullName = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> Description = 0,
     NymaTypes::DeviceFlags Flags = static_cast<NymaTypes::DeviceFlags>(0),
     uint32_t ByteLength = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NInputInfo>>> Inputs = 0) {
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NInputInfo>>> Inputs = 0) {
   NDeviceInfoBuilder builder_(_fbb);
   builder_.add_Inputs(Inputs);
   builder_.add_ByteLength(ByteLength);
@@ -1596,18 +1629,18 @@ inline flatbuffers::Offset<NDeviceInfo> CreateNDeviceInfo(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<NDeviceInfo> CreateNDeviceInfoDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<NDeviceInfo> CreateNDeviceInfoDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *ShortName = nullptr,
     const char *FullName = nullptr,
     const char *Description = nullptr,
     NymaTypes::DeviceFlags Flags = static_cast<NymaTypes::DeviceFlags>(0),
     uint32_t ByteLength = 0,
-    const std::vector<flatbuffers::Offset<NymaTypes::NInputInfo>> *Inputs = nullptr) {
+    const std::vector<::flatbuffers::Offset<NymaTypes::NInputInfo>> *Inputs = nullptr) {
   auto ShortName__ = ShortName ? _fbb.CreateString(ShortName) : 0;
   auto FullName__ = FullName ? _fbb.CreateString(FullName) : 0;
   auto Description__ = Description ? _fbb.CreateString(Description) : 0;
-  auto Inputs__ = Inputs ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::NInputInfo>>(*Inputs) : 0;
+  auto Inputs__ = Inputs ? _fbb.CreateVector<::flatbuffers::Offset<NymaTypes::NInputInfo>>(*Inputs) : 0;
   return NymaTypes::CreateNDeviceInfo(
       _fbb,
       ShortName__,
@@ -1618,13 +1651,14 @@ inline flatbuffers::Offset<NDeviceInfo> CreateNDeviceInfoDirect(
       Inputs__);
 }
 
-flatbuffers::Offset<NDeviceInfo> CreateNDeviceInfo(flatbuffers::FlatBufferBuilder &_fbb, const NDeviceInfoT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<NDeviceInfo> CreateNDeviceInfo(::flatbuffers::FlatBufferBuilder &_fbb, const NDeviceInfoT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct NPortInfoT : public flatbuffers::NativeTable {
+struct NPortInfoT : public ::flatbuffers::NativeTable {
   typedef NPortInfo TableType;
   std::string ShortName{};
   std::string FullName{};
   std::string DefaultDeviceShortName{};
+  NymaTypes::PortFlags Flags = static_cast<NymaTypes::PortFlags>(0);
   std::vector<std::unique_ptr<NymaTypes::NDeviceInfoT>> Devices{};
   NPortInfoT() = default;
   NPortInfoT(const NPortInfoT &o);
@@ -1632,28 +1666,32 @@ struct NPortInfoT : public flatbuffers::NativeTable {
   NPortInfoT &operator=(NPortInfoT o) FLATBUFFERS_NOEXCEPT;
 };
 
-struct NPortInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct NPortInfo FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef NPortInfoT NativeTableType;
   typedef NPortInfoBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_SHORTNAME = 4,
     VT_FULLNAME = 6,
     VT_DEFAULTDEVICESHORTNAME = 8,
-    VT_DEVICES = 10
+    VT_FLAGS = 10,
+    VT_DEVICES = 12
   };
-  const flatbuffers::String *ShortName() const {
-    return GetPointer<const flatbuffers::String *>(VT_SHORTNAME);
+  const ::flatbuffers::String *ShortName() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_SHORTNAME);
   }
-  const flatbuffers::String *FullName() const {
-    return GetPointer<const flatbuffers::String *>(VT_FULLNAME);
+  const ::flatbuffers::String *FullName() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_FULLNAME);
   }
-  const flatbuffers::String *DefaultDeviceShortName() const {
-    return GetPointer<const flatbuffers::String *>(VT_DEFAULTDEVICESHORTNAME);
+  const ::flatbuffers::String *DefaultDeviceShortName() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_DEFAULTDEVICESHORTNAME);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NDeviceInfo>> *Devices() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NDeviceInfo>> *>(VT_DEVICES);
+  NymaTypes::PortFlags Flags() const {
+    return static_cast<NymaTypes::PortFlags>(GetField<uint8_t>(VT_FLAGS, 0));
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  const ::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NDeviceInfo>> *Devices() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NDeviceInfo>> *>(VT_DEVICES);
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_SHORTNAME) &&
            verifier.VerifyString(ShortName()) &&
@@ -1661,78 +1699,86 @@ struct NPortInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyString(FullName()) &&
            VerifyOffset(verifier, VT_DEFAULTDEVICESHORTNAME) &&
            verifier.VerifyString(DefaultDeviceShortName()) &&
+           VerifyField<uint8_t>(verifier, VT_FLAGS, 1) &&
            VerifyOffset(verifier, VT_DEVICES) &&
            verifier.VerifyVector(Devices()) &&
            verifier.VerifyVectorOfTables(Devices()) &&
            verifier.EndTable();
   }
-  NPortInfoT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(NPortInfoT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<NPortInfo> Pack(flatbuffers::FlatBufferBuilder &_fbb, const NPortInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  NPortInfoT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(NPortInfoT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<NPortInfo> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NPortInfoT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct NPortInfoBuilder {
   typedef NPortInfo Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_ShortName(flatbuffers::Offset<flatbuffers::String> ShortName) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_ShortName(::flatbuffers::Offset<::flatbuffers::String> ShortName) {
     fbb_.AddOffset(NPortInfo::VT_SHORTNAME, ShortName);
   }
-  void add_FullName(flatbuffers::Offset<flatbuffers::String> FullName) {
+  void add_FullName(::flatbuffers::Offset<::flatbuffers::String> FullName) {
     fbb_.AddOffset(NPortInfo::VT_FULLNAME, FullName);
   }
-  void add_DefaultDeviceShortName(flatbuffers::Offset<flatbuffers::String> DefaultDeviceShortName) {
+  void add_DefaultDeviceShortName(::flatbuffers::Offset<::flatbuffers::String> DefaultDeviceShortName) {
     fbb_.AddOffset(NPortInfo::VT_DEFAULTDEVICESHORTNAME, DefaultDeviceShortName);
   }
-  void add_Devices(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NDeviceInfo>>> Devices) {
+  void add_Flags(NymaTypes::PortFlags Flags) {
+    fbb_.AddElement<uint8_t>(NPortInfo::VT_FLAGS, static_cast<uint8_t>(Flags), 0);
+  }
+  void add_Devices(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NDeviceInfo>>> Devices) {
     fbb_.AddOffset(NPortInfo::VT_DEVICES, Devices);
   }
-  explicit NPortInfoBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit NPortInfoBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<NPortInfo> Finish() {
+  ::flatbuffers::Offset<NPortInfo> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<NPortInfo>(end);
+    auto o = ::flatbuffers::Offset<NPortInfo>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<NPortInfo> CreateNPortInfo(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> ShortName = 0,
-    flatbuffers::Offset<flatbuffers::String> FullName = 0,
-    flatbuffers::Offset<flatbuffers::String> DefaultDeviceShortName = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NDeviceInfo>>> Devices = 0) {
+inline ::flatbuffers::Offset<NPortInfo> CreateNPortInfo(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> ShortName = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> FullName = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> DefaultDeviceShortName = 0,
+    NymaTypes::PortFlags Flags = static_cast<NymaTypes::PortFlags>(0),
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NDeviceInfo>>> Devices = 0) {
   NPortInfoBuilder builder_(_fbb);
   builder_.add_Devices(Devices);
   builder_.add_DefaultDeviceShortName(DefaultDeviceShortName);
   builder_.add_FullName(FullName);
   builder_.add_ShortName(ShortName);
+  builder_.add_Flags(Flags);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<NPortInfo> CreateNPortInfoDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<NPortInfo> CreateNPortInfoDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *ShortName = nullptr,
     const char *FullName = nullptr,
     const char *DefaultDeviceShortName = nullptr,
-    const std::vector<flatbuffers::Offset<NymaTypes::NDeviceInfo>> *Devices = nullptr) {
+    NymaTypes::PortFlags Flags = static_cast<NymaTypes::PortFlags>(0),
+    const std::vector<::flatbuffers::Offset<NymaTypes::NDeviceInfo>> *Devices = nullptr) {
   auto ShortName__ = ShortName ? _fbb.CreateString(ShortName) : 0;
   auto FullName__ = FullName ? _fbb.CreateString(FullName) : 0;
   auto DefaultDeviceShortName__ = DefaultDeviceShortName ? _fbb.CreateString(DefaultDeviceShortName) : 0;
-  auto Devices__ = Devices ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::NDeviceInfo>>(*Devices) : 0;
+  auto Devices__ = Devices ? _fbb.CreateVector<::flatbuffers::Offset<NymaTypes::NDeviceInfo>>(*Devices) : 0;
   return NymaTypes::CreateNPortInfo(
       _fbb,
       ShortName__,
       FullName__,
       DefaultDeviceShortName__,
+      Flags,
       Devices__);
 }
 
-flatbuffers::Offset<NPortInfo> CreateNPortInfo(flatbuffers::FlatBufferBuilder &_fbb, const NPortInfoT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<NPortInfo> CreateNPortInfo(::flatbuffers::FlatBufferBuilder &_fbb, const NPortInfoT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-struct NPortsT : public flatbuffers::NativeTable {
+struct NPortsT : public ::flatbuffers::NativeTable {
   typedef NPorts TableType;
   std::vector<std::unique_ptr<NymaTypes::NPortInfoT>> Values{};
   NPortsT() = default;
@@ -1741,71 +1787,71 @@ struct NPortsT : public flatbuffers::NativeTable {
   NPortsT &operator=(NPortsT o) FLATBUFFERS_NOEXCEPT;
 };
 
-struct NPorts FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct NPorts FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef NPortsT NativeTableType;
   typedef NPortsBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_VALUES = 4
   };
-  const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NPortInfo>> *Values() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NPortInfo>> *>(VT_VALUES);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NPortInfo>> *Values() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NPortInfo>> *>(VT_VALUES);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_VALUES) &&
            verifier.VerifyVector(Values()) &&
            verifier.VerifyVectorOfTables(Values()) &&
            verifier.EndTable();
   }
-  NPortsT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(NPortsT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<NPorts> Pack(flatbuffers::FlatBufferBuilder &_fbb, const NPortsT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  NPortsT *UnPack(const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(NPortsT *_o, const ::flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static ::flatbuffers::Offset<NPorts> Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NPortsT* _o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct NPortsBuilder {
   typedef NPorts Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_Values(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NPortInfo>>> Values) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_Values(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NPortInfo>>> Values) {
     fbb_.AddOffset(NPorts::VT_VALUES, Values);
   }
-  explicit NPortsBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit NPortsBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<NPorts> Finish() {
+  ::flatbuffers::Offset<NPorts> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<NPorts>(end);
+    auto o = ::flatbuffers::Offset<NPorts>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<NPorts> CreateNPorts(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::NPortInfo>>> Values = 0) {
+inline ::flatbuffers::Offset<NPorts> CreateNPorts(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<NymaTypes::NPortInfo>>> Values = 0) {
   NPortsBuilder builder_(_fbb);
   builder_.add_Values(Values);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<NPorts> CreateNPortsDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<flatbuffers::Offset<NymaTypes::NPortInfo>> *Values = nullptr) {
-  auto Values__ = Values ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::NPortInfo>>(*Values) : 0;
+inline ::flatbuffers::Offset<NPorts> CreateNPortsDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    const std::vector<::flatbuffers::Offset<NymaTypes::NPortInfo>> *Values = nullptr) {
+  auto Values__ = Values ? _fbb.CreateVector<::flatbuffers::Offset<NymaTypes::NPortInfo>>(*Values) : 0;
   return NymaTypes::CreateNPorts(
       _fbb,
       Values__);
 }
 
-flatbuffers::Offset<NPorts> CreateNPorts(flatbuffers::FlatBufferBuilder &_fbb, const NPortsT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+::flatbuffers::Offset<NPorts> CreateNPorts(::flatbuffers::FlatBufferBuilder &_fbb, const NPortsT *_o, const ::flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
-inline EnumValueT *EnumValue::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+inline EnumValueT *EnumValue::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<EnumValueT>(new EnumValueT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
 
-inline void EnumValue::UnPackTo(EnumValueT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline void EnumValue::UnPackTo(EnumValueT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = Name(); if (_e) _o->Name = _e->str(); }
@@ -1813,14 +1859,14 @@ inline void EnumValue::UnPackTo(EnumValueT *_o, const flatbuffers::resolver_func
   { auto _e = Value(); if (_e) _o->Value = _e->str(); }
 }
 
-inline flatbuffers::Offset<EnumValue> EnumValue::Pack(flatbuffers::FlatBufferBuilder &_fbb, const EnumValueT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<EnumValue> EnumValue::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const EnumValueT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateEnumValue(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<EnumValue> CreateEnumValue(flatbuffers::FlatBufferBuilder &_fbb, const EnumValueT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<EnumValue> CreateEnumValue(::flatbuffers::FlatBufferBuilder &_fbb, const EnumValueT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const EnumValueT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const EnumValueT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _Name = _o->Name.empty() ? 0 : _fbb.CreateString(_o->Name);
   auto _Description = _o->Description.empty() ? 0 : _fbb.CreateString(_o->Description);
   auto _Value = _o->Value.empty() ? 0 : _fbb.CreateString(_o->Value);
@@ -1857,13 +1903,13 @@ inline SettingT &SettingT::operator=(SettingT o) FLATBUFFERS_NOEXCEPT {
   return *this;
 }
 
-inline SettingT *Setting::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+inline SettingT *Setting::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<SettingT>(new SettingT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
 
-inline void Setting::UnPackTo(SettingT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline void Setting::UnPackTo(SettingT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = Name(); if (_e) _o->Name = _e->str(); }
@@ -1874,17 +1920,17 @@ inline void Setting::UnPackTo(SettingT *_o, const flatbuffers::resolver_function
   { auto _e = Max(); if (_e) _o->Max = _e->str(); }
   { auto _e = Flags(); _o->Flags = _e; }
   { auto _e = Type(); _o->Type = _e; }
-  { auto _e = SettingEnums(); if (_e) { _o->SettingEnums.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->SettingEnums[_i]) { _e->Get(_i)->UnPackTo(_o->SettingEnums[_i].get(), _resolver); } else { _o->SettingEnums[_i] = std::unique_ptr<NymaTypes::EnumValueT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->SettingEnums.resize(0); } }
+  { auto _e = SettingEnums(); if (_e) { _o->SettingEnums.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->SettingEnums[_i]) { _e->Get(_i)->UnPackTo(_o->SettingEnums[_i].get(), _resolver); } else { _o->SettingEnums[_i] = std::unique_ptr<NymaTypes::EnumValueT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->SettingEnums.resize(0); } }
 }
 
-inline flatbuffers::Offset<Setting> Setting::Pack(flatbuffers::FlatBufferBuilder &_fbb, const SettingT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<Setting> Setting::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const SettingT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateSetting(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<Setting> CreateSetting(flatbuffers::FlatBufferBuilder &_fbb, const SettingT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<Setting> CreateSetting(::flatbuffers::FlatBufferBuilder &_fbb, const SettingT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const SettingT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const SettingT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _Name = _o->Name.empty() ? 0 : _fbb.CreateString(_o->Name);
   auto _Description = _o->Description.empty() ? 0 : _fbb.CreateString(_o->Description);
   auto _SettingsKey = _o->SettingsKey.empty() ? 0 : _fbb.CreateString(_o->SettingsKey);
@@ -1893,7 +1939,7 @@ inline flatbuffers::Offset<Setting> CreateSetting(flatbuffers::FlatBufferBuilder
   auto _Max = _o->Max.empty() ? 0 : _fbb.CreateString(_o->Max);
   auto _Flags = _o->Flags;
   auto _Type = _o->Type;
-  auto _SettingEnums = _o->SettingEnums.size() ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::EnumValue>> (_o->SettingEnums.size(), [](size_t i, _VectorArgs *__va) { return CreateEnumValue(*__va->__fbb, __va->__o->SettingEnums[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _SettingEnums = _o->SettingEnums.size() ? _fbb.CreateVector<::flatbuffers::Offset<NymaTypes::EnumValue>> (_o->SettingEnums.size(), [](size_t i, _VectorArgs *__va) { return CreateEnumValue(*__va->__fbb, __va->__o->SettingEnums[i].get(), __va->__rehasher); }, &_va ) : 0;
   return NymaTypes::CreateSetting(
       _fbb,
       _Name,
@@ -1917,65 +1963,65 @@ inline SettingsT &SettingsT::operator=(SettingsT o) FLATBUFFERS_NOEXCEPT {
   return *this;
 }
 
-inline SettingsT *Settings::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+inline SettingsT *Settings::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<SettingsT>(new SettingsT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
 
-inline void Settings::UnPackTo(SettingsT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline void Settings::UnPackTo(SettingsT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = Values(); if (_e) { _o->Values.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Values[_i]) { _e->Get(_i)->UnPackTo(_o->Values[_i].get(), _resolver); } else { _o->Values[_i] = std::unique_ptr<NymaTypes::SettingT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Values.resize(0); } }
+  { auto _e = Values(); if (_e) { _o->Values.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Values[_i]) { _e->Get(_i)->UnPackTo(_o->Values[_i].get(), _resolver); } else { _o->Values[_i] = std::unique_ptr<NymaTypes::SettingT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Values.resize(0); } }
 }
 
-inline flatbuffers::Offset<Settings> Settings::Pack(flatbuffers::FlatBufferBuilder &_fbb, const SettingsT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<Settings> Settings::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const SettingsT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateSettings(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<Settings> CreateSettings(flatbuffers::FlatBufferBuilder &_fbb, const SettingsT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<Settings> CreateSettings(::flatbuffers::FlatBufferBuilder &_fbb, const SettingsT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const SettingsT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
-  auto _Values = _o->Values.size() ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::Setting>> (_o->Values.size(), [](size_t i, _VectorArgs *__va) { return CreateSetting(*__va->__fbb, __va->__o->Values[i].get(), __va->__rehasher); }, &_va ) : 0;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const SettingsT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  auto _Values = _o->Values.size() ? _fbb.CreateVector<::flatbuffers::Offset<NymaTypes::Setting>> (_o->Values.size(), [](size_t i, _VectorArgs *__va) { return CreateSetting(*__va->__fbb, __va->__o->Values[i].get(), __va->__rehasher); }, &_va ) : 0;
   return NymaTypes::CreateSettings(
       _fbb,
       _Values);
 }
 
-inline NButtonInfoT *NButtonInfo::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+inline NButtonInfoT *NButtonInfo::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<NButtonInfoT>(new NButtonInfoT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
 
-inline void NButtonInfo::UnPackTo(NButtonInfoT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline void NButtonInfo::UnPackTo(NButtonInfoT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = ExcludeName(); if (_e) _o->ExcludeName = _e->str(); }
 }
 
-inline flatbuffers::Offset<NButtonInfo> NButtonInfo::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NButtonInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NButtonInfo> NButtonInfo::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NButtonInfoT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateNButtonInfo(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<NButtonInfo> CreateNButtonInfo(flatbuffers::FlatBufferBuilder &_fbb, const NButtonInfoT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NButtonInfo> CreateNButtonInfo(::flatbuffers::FlatBufferBuilder &_fbb, const NButtonInfoT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const NButtonInfoT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const NButtonInfoT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _ExcludeName = _o->ExcludeName.empty() ? 0 : _fbb.CreateString(_o->ExcludeName);
   return NymaTypes::CreateNButtonInfo(
       _fbb,
       _ExcludeName);
 }
 
-inline NAxisInfoT *NAxisInfo::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+inline NAxisInfoT *NAxisInfo::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<NAxisInfoT>(new NAxisInfoT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
 
-inline void NAxisInfo::UnPackTo(NAxisInfoT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline void NAxisInfo::UnPackTo(NAxisInfoT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = SettingsNameNeg(); if (_e) _o->SettingsNameNeg = _e->str(); }
@@ -1984,14 +2030,14 @@ inline void NAxisInfo::UnPackTo(NAxisInfoT *_o, const flatbuffers::resolver_func
   { auto _e = NamePos(); if (_e) _o->NamePos = _e->str(); }
 }
 
-inline flatbuffers::Offset<NAxisInfo> NAxisInfo::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NAxisInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NAxisInfo> NAxisInfo::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NAxisInfoT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateNAxisInfo(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<NAxisInfo> CreateNAxisInfo(flatbuffers::FlatBufferBuilder &_fbb, const NAxisInfoT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NAxisInfo> CreateNAxisInfo(::flatbuffers::FlatBufferBuilder &_fbb, const NAxisInfoT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const NAxisInfoT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const NAxisInfoT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _SettingsNameNeg = _o->SettingsNameNeg.empty() ? 0 : _fbb.CreateString(_o->SettingsNameNeg);
   auto _SettingsNamePos = _o->SettingsNamePos.empty() ? 0 : _fbb.CreateString(_o->SettingsNamePos);
   auto _NameNeg = _o->NameNeg.empty() ? 0 : _fbb.CreateString(_o->NameNeg);
@@ -2016,42 +2062,42 @@ inline NSwitchInfoT &NSwitchInfoT::operator=(NSwitchInfoT o) FLATBUFFERS_NOEXCEP
   return *this;
 }
 
-inline NSwitchInfoT *NSwitchInfo::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+inline NSwitchInfoT *NSwitchInfo::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<NSwitchInfoT>(new NSwitchInfoT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
 
-inline void NSwitchInfo::UnPackTo(NSwitchInfoT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline void NSwitchInfo::UnPackTo(NSwitchInfoT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = DefaultPosition(); _o->DefaultPosition = _e; }
-  { auto _e = Positions(); if (_e) { _o->Positions.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Positions[_i]) { _e->Get(_i)->UnPackTo(_o->Positions[_i].get(), _resolver); } else { _o->Positions[_i] = std::unique_ptr<NymaTypes::NSwitchPositionT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Positions.resize(0); } }
+  { auto _e = Positions(); if (_e) { _o->Positions.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Positions[_i]) { _e->Get(_i)->UnPackTo(_o->Positions[_i].get(), _resolver); } else { _o->Positions[_i] = std::unique_ptr<NymaTypes::NSwitchPositionT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Positions.resize(0); } }
 }
 
-inline flatbuffers::Offset<NSwitchInfo> NSwitchInfo::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NSwitchInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NSwitchInfo> NSwitchInfo::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NSwitchInfoT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateNSwitchInfo(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<NSwitchInfo> CreateNSwitchInfo(flatbuffers::FlatBufferBuilder &_fbb, const NSwitchInfoT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NSwitchInfo> CreateNSwitchInfo(::flatbuffers::FlatBufferBuilder &_fbb, const NSwitchInfoT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const NSwitchInfoT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const NSwitchInfoT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _DefaultPosition = _o->DefaultPosition;
-  auto _Positions = _o->Positions.size() ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::NSwitchPosition>> (_o->Positions.size(), [](size_t i, _VectorArgs *__va) { return CreateNSwitchPosition(*__va->__fbb, __va->__o->Positions[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _Positions = _o->Positions.size() ? _fbb.CreateVector<::flatbuffers::Offset<NymaTypes::NSwitchPosition>> (_o->Positions.size(), [](size_t i, _VectorArgs *__va) { return CreateNSwitchPosition(*__va->__fbb, __va->__o->Positions[i].get(), __va->__rehasher); }, &_va ) : 0;
   return NymaTypes::CreateNSwitchInfo(
       _fbb,
       _DefaultPosition,
       _Positions);
 }
 
-inline NSwitchPositionT *NSwitchPosition::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+inline NSwitchPositionT *NSwitchPosition::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<NSwitchPositionT>(new NSwitchPositionT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
 
-inline void NSwitchPosition::UnPackTo(NSwitchPositionT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline void NSwitchPosition::UnPackTo(NSwitchPositionT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = SettingName(); if (_e) _o->SettingName = _e->str(); }
@@ -2059,14 +2105,14 @@ inline void NSwitchPosition::UnPackTo(NSwitchPositionT *_o, const flatbuffers::r
   { auto _e = Description(); if (_e) _o->Description = _e->str(); }
 }
 
-inline flatbuffers::Offset<NSwitchPosition> NSwitchPosition::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NSwitchPositionT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NSwitchPosition> NSwitchPosition::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NSwitchPositionT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateNSwitchPosition(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<NSwitchPosition> CreateNSwitchPosition(flatbuffers::FlatBufferBuilder &_fbb, const NSwitchPositionT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NSwitchPosition> CreateNSwitchPosition(::flatbuffers::FlatBufferBuilder &_fbb, const NSwitchPositionT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const NSwitchPositionT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const NSwitchPositionT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _SettingName = _o->SettingName.empty() ? 0 : _fbb.CreateString(_o->SettingName);
   auto _Name = _o->Name.empty() ? 0 : _fbb.CreateString(_o->Name);
   auto _Description = _o->Description.empty() ? 0 : _fbb.CreateString(_o->Description);
@@ -2087,39 +2133,39 @@ inline NStatusInfoT &NStatusInfoT::operator=(NStatusInfoT o) FLATBUFFERS_NOEXCEP
   return *this;
 }
 
-inline NStatusInfoT *NStatusInfo::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+inline NStatusInfoT *NStatusInfo::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<NStatusInfoT>(new NStatusInfoT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
 
-inline void NStatusInfo::UnPackTo(NStatusInfoT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline void NStatusInfo::UnPackTo(NStatusInfoT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = States(); if (_e) { _o->States.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->States[_i]) { _e->Get(_i)->UnPackTo(_o->States[_i].get(), _resolver); } else { _o->States[_i] = std::unique_ptr<NymaTypes::NStatusStateT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->States.resize(0); } }
+  { auto _e = States(); if (_e) { _o->States.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->States[_i]) { _e->Get(_i)->UnPackTo(_o->States[_i].get(), _resolver); } else { _o->States[_i] = std::unique_ptr<NymaTypes::NStatusStateT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->States.resize(0); } }
 }
 
-inline flatbuffers::Offset<NStatusInfo> NStatusInfo::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NStatusInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NStatusInfo> NStatusInfo::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NStatusInfoT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateNStatusInfo(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<NStatusInfo> CreateNStatusInfo(flatbuffers::FlatBufferBuilder &_fbb, const NStatusInfoT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NStatusInfo> CreateNStatusInfo(::flatbuffers::FlatBufferBuilder &_fbb, const NStatusInfoT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const NStatusInfoT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
-  auto _States = _o->States.size() ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::NStatusState>> (_o->States.size(), [](size_t i, _VectorArgs *__va) { return CreateNStatusState(*__va->__fbb, __va->__o->States[i].get(), __va->__rehasher); }, &_va ) : 0;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const NStatusInfoT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  auto _States = _o->States.size() ? _fbb.CreateVector<::flatbuffers::Offset<NymaTypes::NStatusState>> (_o->States.size(), [](size_t i, _VectorArgs *__va) { return CreateNStatusState(*__va->__fbb, __va->__o->States[i].get(), __va->__rehasher); }, &_va ) : 0;
   return NymaTypes::CreateNStatusInfo(
       _fbb,
       _States);
 }
 
-inline NStatusStateT *NStatusState::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+inline NStatusStateT *NStatusState::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<NStatusStateT>(new NStatusStateT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
 
-inline void NStatusState::UnPackTo(NStatusStateT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline void NStatusState::UnPackTo(NStatusStateT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = ShortName(); if (_e) _o->ShortName = _e->str(); }
@@ -2127,14 +2173,14 @@ inline void NStatusState::UnPackTo(NStatusStateT *_o, const flatbuffers::resolve
   { auto _e = Color(); _o->Color = _e; }
 }
 
-inline flatbuffers::Offset<NStatusState> NStatusState::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NStatusStateT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NStatusState> NStatusState::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NStatusStateT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateNStatusState(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<NStatusState> CreateNStatusState(flatbuffers::FlatBufferBuilder &_fbb, const NStatusStateT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NStatusState> CreateNStatusState(::flatbuffers::FlatBufferBuilder &_fbb, const NStatusStateT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const NStatusStateT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const NStatusStateT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _ShortName = _o->ShortName.empty() ? 0 : _fbb.CreateString(_o->ShortName);
   auto _Name = _o->Name.empty() ? 0 : _fbb.CreateString(_o->Name);
   auto _Color = _o->Color;
@@ -2145,13 +2191,13 @@ inline flatbuffers::Offset<NStatusState> CreateNStatusState(flatbuffers::FlatBuf
       _Color);
 }
 
-inline NInputInfoT *NInputInfo::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+inline NInputInfoT *NInputInfo::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<NInputInfoT>(new NInputInfoT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
 
-inline void NInputInfo::UnPackTo(NInputInfoT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline void NInputInfo::UnPackTo(NInputInfoT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = SettingName(); if (_e) _o->SettingName = _e->str(); }
@@ -2165,14 +2211,14 @@ inline void NInputInfo::UnPackTo(NInputInfoT *_o, const flatbuffers::resolver_fu
   { auto _e = Extra(); if (_e) _o->Extra.value = NymaTypes::NInputExtraUnion::UnPack(_e, Extra_type(), _resolver); }
 }
 
-inline flatbuffers::Offset<NInputInfo> NInputInfo::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NInputInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NInputInfo> NInputInfo::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NInputInfoT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateNInputInfo(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<NInputInfo> CreateNInputInfo(flatbuffers::FlatBufferBuilder &_fbb, const NInputInfoT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NInputInfo> CreateNInputInfo(::flatbuffers::FlatBufferBuilder &_fbb, const NInputInfoT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const NInputInfoT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const NInputInfoT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _SettingName = _o->SettingName.empty() ? 0 : _fbb.CreateString(_o->SettingName);
   auto _Name = _o->Name.empty() ? 0 : _fbb.CreateString(_o->Name);
   auto _ConfigOrder = _o->ConfigOrder;
@@ -2215,13 +2261,13 @@ inline NDeviceInfoT &NDeviceInfoT::operator=(NDeviceInfoT o) FLATBUFFERS_NOEXCEP
   return *this;
 }
 
-inline NDeviceInfoT *NDeviceInfo::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+inline NDeviceInfoT *NDeviceInfo::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<NDeviceInfoT>(new NDeviceInfoT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
 
-inline void NDeviceInfo::UnPackTo(NDeviceInfoT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline void NDeviceInfo::UnPackTo(NDeviceInfoT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = ShortName(); if (_e) _o->ShortName = _e->str(); }
@@ -2229,23 +2275,23 @@ inline void NDeviceInfo::UnPackTo(NDeviceInfoT *_o, const flatbuffers::resolver_
   { auto _e = Description(); if (_e) _o->Description = _e->str(); }
   { auto _e = Flags(); _o->Flags = _e; }
   { auto _e = ByteLength(); _o->ByteLength = _e; }
-  { auto _e = Inputs(); if (_e) { _o->Inputs.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Inputs[_i]) { _e->Get(_i)->UnPackTo(_o->Inputs[_i].get(), _resolver); } else { _o->Inputs[_i] = std::unique_ptr<NymaTypes::NInputInfoT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Inputs.resize(0); } }
+  { auto _e = Inputs(); if (_e) { _o->Inputs.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Inputs[_i]) { _e->Get(_i)->UnPackTo(_o->Inputs[_i].get(), _resolver); } else { _o->Inputs[_i] = std::unique_ptr<NymaTypes::NInputInfoT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Inputs.resize(0); } }
 }
 
-inline flatbuffers::Offset<NDeviceInfo> NDeviceInfo::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NDeviceInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NDeviceInfo> NDeviceInfo::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NDeviceInfoT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateNDeviceInfo(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<NDeviceInfo> CreateNDeviceInfo(flatbuffers::FlatBufferBuilder &_fbb, const NDeviceInfoT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NDeviceInfo> CreateNDeviceInfo(::flatbuffers::FlatBufferBuilder &_fbb, const NDeviceInfoT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const NDeviceInfoT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const NDeviceInfoT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _ShortName = _o->ShortName.empty() ? 0 : _fbb.CreateString(_o->ShortName);
   auto _FullName = _o->FullName.empty() ? 0 : _fbb.CreateString(_o->FullName);
   auto _Description = _o->Description.empty() ? 0 : _fbb.CreateString(_o->Description);
   auto _Flags = _o->Flags;
   auto _ByteLength = _o->ByteLength;
-  auto _Inputs = _o->Inputs.size() ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::NInputInfo>> (_o->Inputs.size(), [](size_t i, _VectorArgs *__va) { return CreateNInputInfo(*__va->__fbb, __va->__o->Inputs[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _Inputs = _o->Inputs.size() ? _fbb.CreateVector<::flatbuffers::Offset<NymaTypes::NInputInfo>> (_o->Inputs.size(), [](size_t i, _VectorArgs *__va) { return CreateNInputInfo(*__va->__fbb, __va->__o->Inputs[i].get(), __va->__rehasher); }, &_va ) : 0;
   return NymaTypes::CreateNDeviceInfo(
       _fbb,
       _ShortName,
@@ -2259,7 +2305,8 @@ inline flatbuffers::Offset<NDeviceInfo> CreateNDeviceInfo(flatbuffers::FlatBuffe
 inline NPortInfoT::NPortInfoT(const NPortInfoT &o)
       : ShortName(o.ShortName),
         FullName(o.FullName),
-        DefaultDeviceShortName(o.DefaultDeviceShortName) {
+        DefaultDeviceShortName(o.DefaultDeviceShortName),
+        Flags(o.Flags) {
   Devices.reserve(o.Devices.size());
   for (const auto &Devices_ : o.Devices) { Devices.emplace_back((Devices_) ? new NymaTypes::NDeviceInfoT(*Devices_) : nullptr); }
 }
@@ -2268,42 +2315,46 @@ inline NPortInfoT &NPortInfoT::operator=(NPortInfoT o) FLATBUFFERS_NOEXCEPT {
   std::swap(ShortName, o.ShortName);
   std::swap(FullName, o.FullName);
   std::swap(DefaultDeviceShortName, o.DefaultDeviceShortName);
+  std::swap(Flags, o.Flags);
   std::swap(Devices, o.Devices);
   return *this;
 }
 
-inline NPortInfoT *NPortInfo::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+inline NPortInfoT *NPortInfo::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<NPortInfoT>(new NPortInfoT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
 
-inline void NPortInfo::UnPackTo(NPortInfoT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline void NPortInfo::UnPackTo(NPortInfoT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = ShortName(); if (_e) _o->ShortName = _e->str(); }
   { auto _e = FullName(); if (_e) _o->FullName = _e->str(); }
   { auto _e = DefaultDeviceShortName(); if (_e) _o->DefaultDeviceShortName = _e->str(); }
-  { auto _e = Devices(); if (_e) { _o->Devices.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Devices[_i]) { _e->Get(_i)->UnPackTo(_o->Devices[_i].get(), _resolver); } else { _o->Devices[_i] = std::unique_ptr<NymaTypes::NDeviceInfoT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Devices.resize(0); } }
+  { auto _e = Flags(); _o->Flags = _e; }
+  { auto _e = Devices(); if (_e) { _o->Devices.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Devices[_i]) { _e->Get(_i)->UnPackTo(_o->Devices[_i].get(), _resolver); } else { _o->Devices[_i] = std::unique_ptr<NymaTypes::NDeviceInfoT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Devices.resize(0); } }
 }
 
-inline flatbuffers::Offset<NPortInfo> NPortInfo::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NPortInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NPortInfo> NPortInfo::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NPortInfoT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateNPortInfo(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<NPortInfo> CreateNPortInfo(flatbuffers::FlatBufferBuilder &_fbb, const NPortInfoT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NPortInfo> CreateNPortInfo(::flatbuffers::FlatBufferBuilder &_fbb, const NPortInfoT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const NPortInfoT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const NPortInfoT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _ShortName = _o->ShortName.empty() ? 0 : _fbb.CreateString(_o->ShortName);
   auto _FullName = _o->FullName.empty() ? 0 : _fbb.CreateString(_o->FullName);
   auto _DefaultDeviceShortName = _o->DefaultDeviceShortName.empty() ? 0 : _fbb.CreateString(_o->DefaultDeviceShortName);
-  auto _Devices = _o->Devices.size() ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::NDeviceInfo>> (_o->Devices.size(), [](size_t i, _VectorArgs *__va) { return CreateNDeviceInfo(*__va->__fbb, __va->__o->Devices[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _Flags = _o->Flags;
+  auto _Devices = _o->Devices.size() ? _fbb.CreateVector<::flatbuffers::Offset<NymaTypes::NDeviceInfo>> (_o->Devices.size(), [](size_t i, _VectorArgs *__va) { return CreateNDeviceInfo(*__va->__fbb, __va->__o->Devices[i].get(), __va->__rehasher); }, &_va ) : 0;
   return NymaTypes::CreateNPortInfo(
       _fbb,
       _ShortName,
       _FullName,
       _DefaultDeviceShortName,
+      _Flags,
       _Devices);
 }
 
@@ -2317,33 +2368,33 @@ inline NPortsT &NPortsT::operator=(NPortsT o) FLATBUFFERS_NOEXCEPT {
   return *this;
 }
 
-inline NPortsT *NPorts::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+inline NPortsT *NPorts::UnPack(const ::flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::unique_ptr<NPortsT>(new NPortsT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
 
-inline void NPorts::UnPackTo(NPortsT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline void NPorts::UnPackTo(NPortsT *_o, const ::flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = Values(); if (_e) { _o->Values.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Values[_i]) { _e->Get(_i)->UnPackTo(_o->Values[_i].get(), _resolver); } else { _o->Values[_i] = std::unique_ptr<NymaTypes::NPortInfoT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Values.resize(0); } }
+  { auto _e = Values(); if (_e) { _o->Values.resize(_e->size()); for (::flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Values[_i]) { _e->Get(_i)->UnPackTo(_o->Values[_i].get(), _resolver); } else { _o->Values[_i] = std::unique_ptr<NymaTypes::NPortInfoT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Values.resize(0); } }
 }
 
-inline flatbuffers::Offset<NPorts> NPorts::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NPortsT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NPorts> NPorts::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const NPortsT* _o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   return CreateNPorts(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<NPorts> CreateNPorts(flatbuffers::FlatBufferBuilder &_fbb, const NPortsT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline ::flatbuffers::Offset<NPorts> CreateNPorts(::flatbuffers::FlatBufferBuilder &_fbb, const NPortsT *_o, const ::flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const NPortsT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
-  auto _Values = _o->Values.size() ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::NPortInfo>> (_o->Values.size(), [](size_t i, _VectorArgs *__va) { return CreateNPortInfo(*__va->__fbb, __va->__o->Values[i].get(), __va->__rehasher); }, &_va ) : 0;
+  struct _VectorArgs { ::flatbuffers::FlatBufferBuilder *__fbb; const NPortsT* __o; const ::flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  auto _Values = _o->Values.size() ? _fbb.CreateVector<::flatbuffers::Offset<NymaTypes::NPortInfo>> (_o->Values.size(), [](size_t i, _VectorArgs *__va) { return CreateNPortInfo(*__va->__fbb, __va->__o->Values[i].get(), __va->__rehasher); }, &_va ) : 0;
   return NymaTypes::CreateNPorts(
       _fbb,
       _Values);
 }
 
-inline bool VerifyNInputExtra(flatbuffers::Verifier &verifier, const void *obj, NInputExtra type) {
+inline bool VerifyNInputExtra(::flatbuffers::Verifier &verifier, const void *obj, NInputExtra type) {
   switch (type) {
     case NInputExtra_NONE: {
       return true;
@@ -2368,10 +2419,10 @@ inline bool VerifyNInputExtra(flatbuffers::Verifier &verifier, const void *obj, 
   }
 }
 
-inline bool VerifyNInputExtraVector(flatbuffers::Verifier &verifier, const flatbuffers::Vector<flatbuffers::Offset<void>> *values, const flatbuffers::Vector<uint8_t> *types) {
+inline bool VerifyNInputExtraVector(::flatbuffers::Verifier &verifier, const ::flatbuffers::Vector<::flatbuffers::Offset<void>> *values, const ::flatbuffers::Vector<uint8_t> *types) {
   if (!values || !types) return !values && !types;
   if (values->size() != types->size()) return false;
-  for (flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
+  for (::flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
     if (!VerifyNInputExtra(
         verifier,  values->Get(i), types->GetEnum<NInputExtra>(i))) {
       return false;
@@ -2380,7 +2431,7 @@ inline bool VerifyNInputExtraVector(flatbuffers::Verifier &verifier, const flatb
   return true;
 }
 
-inline void *NInputExtraUnion::UnPack(const void *obj, NInputExtra type, const flatbuffers::resolver_function_t *resolver) {
+inline void *NInputExtraUnion::UnPack(const void *obj, NInputExtra type, const ::flatbuffers::resolver_function_t *resolver) {
   (void)resolver;
   switch (type) {
     case NInputExtra_Button: {
@@ -2403,7 +2454,7 @@ inline void *NInputExtraUnion::UnPack(const void *obj, NInputExtra type, const f
   }
 }
 
-inline flatbuffers::Offset<void> NInputExtraUnion::Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher) const {
+inline ::flatbuffers::Offset<void> NInputExtraUnion::Pack(::flatbuffers::FlatBufferBuilder &_fbb, const ::flatbuffers::rehasher_function_t *_rehasher) const {
   (void)_rehasher;
   switch (type) {
     case NInputExtra_Button: {

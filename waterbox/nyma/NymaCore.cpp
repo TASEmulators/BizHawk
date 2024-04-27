@@ -325,6 +325,7 @@ ECL_EXPORT void DumpInputs()
 		MAYBENULL(a->ShortName, x.ShortName);
 		MAYBENULL(a->FullName, x.FullName);
 		MAYBENULL(a->DefaultDeviceShortName, x.DefaultDevice);
+		a->Flags = (PortFlags)x.Flags;
 		for (auto& y: x.DeviceInfo)
 		{
 			std::unique_ptr<NDeviceInfoT> b(new NDeviceInfoT());

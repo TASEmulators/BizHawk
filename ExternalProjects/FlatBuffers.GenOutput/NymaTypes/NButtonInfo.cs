@@ -13,7 +13,7 @@ public struct NButtonInfo : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
   public static NButtonInfo GetRootAsNButtonInfo(ByteBuffer _bb) { return GetRootAsNButtonInfo(_bb, new NButtonInfo()); }
   public static NButtonInfo GetRootAsNButtonInfo(ByteBuffer _bb, NButtonInfo obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -35,7 +35,7 @@ public struct NButtonInfo : IFlatbufferObject
   }
 
   public static void StartNButtonInfo(FlatBufferBuilder builder) { builder.StartTable(1); }
-  public static void AddExcludeName(FlatBufferBuilder builder, StringOffset ExcludeNameOffset) { builder.AddOffset(0, ExcludeNameOffset.Value, 0); }
+  public static void AddExcludeName(FlatBufferBuilder builder, StringOffset excludeNameOffset) { builder.AddOffset(0, excludeNameOffset.Value, 0); }
   public static Offset<NymaTypes.NButtonInfo> EndNButtonInfo(FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<NymaTypes.NButtonInfo>(o);
@@ -66,5 +66,15 @@ public class NButtonInfoT
   }
 }
 
+
+static public class NButtonInfoVerify
+{
+  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  {
+    return verifier.VerifyTableStart(tablePos)
+      && verifier.VerifyString(tablePos, 4 /*ExcludeName*/, false)
+      && verifier.VerifyTableEnd(tablePos);
+  }
+}
 
 }
