@@ -269,7 +269,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public bool loadBIOS { get; set; }
 
 			[DisplayName("[SMS] FM Sound Chip Type")]
-			[Description("Sets the method used to emulate the FM synthesizer (main sound generator) of the SMS. 'MAME' is fast and runs full speed on most systems.'Nuked' is cycle accurate, very high quality, and have substantial CPU requirements.")]
+			[Description("Sets the method used to emulate the FM Sound Unit of the Sega Mark III/Master System. 'MAME' is fast and runs full speed on most systems.'Nuked' is cycle accurate, very high quality, and have substantial CPU requirements.")]
 			[DefaultValue(LibGPGX.InitSettings.SMSFMSoundChipType.YM2413_MAME)]
 			public LibGPGX.InitSettings.SMSFMSoundChipType SMSFMSoundChip { get; set; }
 
