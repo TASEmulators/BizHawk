@@ -13,7 +13,7 @@ public struct NAxisInfo : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
   public static NAxisInfo GetRootAsNAxisInfo(ByteBuffer _bb) { return GetRootAsNAxisInfo(_bb, new NAxisInfo()); }
   public static NAxisInfo GetRootAsNAxisInfo(ByteBuffer _bb, NAxisInfo obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -62,10 +62,10 @@ public struct NAxisInfo : IFlatbufferObject
   }
 
   public static void StartNAxisInfo(FlatBufferBuilder builder) { builder.StartTable(4); }
-  public static void AddSettingsNameNeg(FlatBufferBuilder builder, StringOffset SettingsNameNegOffset) { builder.AddOffset(0, SettingsNameNegOffset.Value, 0); }
-  public static void AddSettingsNamePos(FlatBufferBuilder builder, StringOffset SettingsNamePosOffset) { builder.AddOffset(1, SettingsNamePosOffset.Value, 0); }
-  public static void AddNameNeg(FlatBufferBuilder builder, StringOffset NameNegOffset) { builder.AddOffset(2, NameNegOffset.Value, 0); }
-  public static void AddNamePos(FlatBufferBuilder builder, StringOffset NamePosOffset) { builder.AddOffset(3, NamePosOffset.Value, 0); }
+  public static void AddSettingsNameNeg(FlatBufferBuilder builder, StringOffset settingsNameNegOffset) { builder.AddOffset(0, settingsNameNegOffset.Value, 0); }
+  public static void AddSettingsNamePos(FlatBufferBuilder builder, StringOffset settingsNamePosOffset) { builder.AddOffset(1, settingsNamePosOffset.Value, 0); }
+  public static void AddNameNeg(FlatBufferBuilder builder, StringOffset nameNegOffset) { builder.AddOffset(2, nameNegOffset.Value, 0); }
+  public static void AddNamePos(FlatBufferBuilder builder, StringOffset namePosOffset) { builder.AddOffset(3, namePosOffset.Value, 0); }
   public static Offset<NymaTypes.NAxisInfo> EndNAxisInfo(FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<NymaTypes.NAxisInfo>(o);
@@ -111,5 +111,18 @@ public class NAxisInfoT
   }
 }
 
+
+static public class NAxisInfoVerify
+{
+  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  {
+    return verifier.VerifyTableStart(tablePos)
+      && verifier.VerifyString(tablePos, 4 /*SettingsNameNeg*/, false)
+      && verifier.VerifyString(tablePos, 6 /*SettingsNamePos*/, false)
+      && verifier.VerifyString(tablePos, 8 /*NameNeg*/, false)
+      && verifier.VerifyString(tablePos, 10 /*NamePos*/, false)
+      && verifier.VerifyTableEnd(tablePos);
+  }
+}
 
 }

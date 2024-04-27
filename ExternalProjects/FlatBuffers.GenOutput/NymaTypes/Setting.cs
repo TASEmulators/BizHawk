@@ -13,7 +13,7 @@ public struct Setting : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
   public static Setting GetRootAsSetting(ByteBuffer _bb) { return GetRootAsSetting(_bb, new Setting()); }
   public static Setting GetRootAsSetting(ByteBuffer _bb, Setting obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -90,15 +90,15 @@ public struct Setting : IFlatbufferObject
   }
 
   public static void StartSetting(FlatBufferBuilder builder) { builder.StartTable(9); }
-  public static void AddName(FlatBufferBuilder builder, StringOffset NameOffset) { builder.AddOffset(0, NameOffset.Value, 0); }
-  public static void AddDescription(FlatBufferBuilder builder, StringOffset DescriptionOffset) { builder.AddOffset(1, DescriptionOffset.Value, 0); }
-  public static void AddSettingsKey(FlatBufferBuilder builder, StringOffset SettingsKeyOffset) { builder.AddOffset(2, SettingsKeyOffset.Value, 0); }
-  public static void AddDefaultValue(FlatBufferBuilder builder, StringOffset DefaultValueOffset) { builder.AddOffset(3, DefaultValueOffset.Value, 0); }
-  public static void AddMin(FlatBufferBuilder builder, StringOffset MinOffset) { builder.AddOffset(4, MinOffset.Value, 0); }
-  public static void AddMax(FlatBufferBuilder builder, StringOffset MaxOffset) { builder.AddOffset(5, MaxOffset.Value, 0); }
-  public static void AddFlags(FlatBufferBuilder builder, NymaTypes.SettingsFlags Flags) { builder.AddUint(6, (uint)Flags, 0); }
-  public static void AddType(FlatBufferBuilder builder, NymaTypes.SettingType Type) { builder.AddInt(7, (int)Type, 0); }
-  public static void AddSettingEnums(FlatBufferBuilder builder, VectorOffset SettingEnumsOffset) { builder.AddOffset(8, SettingEnumsOffset.Value, 0); }
+  public static void AddName(FlatBufferBuilder builder, StringOffset nameOffset) { builder.AddOffset(0, nameOffset.Value, 0); }
+  public static void AddDescription(FlatBufferBuilder builder, StringOffset descriptionOffset) { builder.AddOffset(1, descriptionOffset.Value, 0); }
+  public static void AddSettingsKey(FlatBufferBuilder builder, StringOffset settingsKeyOffset) { builder.AddOffset(2, settingsKeyOffset.Value, 0); }
+  public static void AddDefaultValue(FlatBufferBuilder builder, StringOffset defaultValueOffset) { builder.AddOffset(3, defaultValueOffset.Value, 0); }
+  public static void AddMin(FlatBufferBuilder builder, StringOffset minOffset) { builder.AddOffset(4, minOffset.Value, 0); }
+  public static void AddMax(FlatBufferBuilder builder, StringOffset maxOffset) { builder.AddOffset(5, maxOffset.Value, 0); }
+  public static void AddFlags(FlatBufferBuilder builder, NymaTypes.SettingsFlags flags) { builder.AddUint(6, (uint)flags, 0); }
+  public static void AddType(FlatBufferBuilder builder, NymaTypes.SettingType type) { builder.AddInt(7, (int)type, 0); }
+  public static void AddSettingEnums(FlatBufferBuilder builder, VectorOffset settingEnumsOffset) { builder.AddOffset(8, settingEnumsOffset.Value, 0); }
   public static VectorOffset CreateSettingEnumsVector(FlatBufferBuilder builder, Offset<NymaTypes.EnumValue>[] data) { builder.StartVector(4, data.Length, 4); for (int i = data.Length - 1; i >= 0; i--) builder.AddOffset(data[i].Value); return builder.EndVector(); }
   public static VectorOffset CreateSettingEnumsVectorBlock(FlatBufferBuilder builder, Offset<NymaTypes.EnumValue>[] data) { builder.StartVector(4, data.Length, 4); builder.Add(data); return builder.EndVector(); }
   public static VectorOffset CreateSettingEnumsVectorBlock(FlatBufferBuilder builder, ArraySegment<Offset<NymaTypes.EnumValue>> data) { builder.StartVector(4, data.Count, 4); builder.Add(data); return builder.EndVector(); }
@@ -178,5 +178,23 @@ public class SettingT
   }
 }
 
+
+static public class SettingVerify
+{
+  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  {
+    return verifier.VerifyTableStart(tablePos)
+      && verifier.VerifyString(tablePos, 4 /*Name*/, false)
+      && verifier.VerifyString(tablePos, 6 /*Description*/, false)
+      && verifier.VerifyString(tablePos, 8 /*SettingsKey*/, false)
+      && verifier.VerifyString(tablePos, 10 /*DefaultValue*/, false)
+      && verifier.VerifyString(tablePos, 12 /*Min*/, false)
+      && verifier.VerifyString(tablePos, 14 /*Max*/, false)
+      && verifier.VerifyField(tablePos, 16 /*Flags*/, 4 /*NymaTypes.SettingsFlags*/, 4, false)
+      && verifier.VerifyField(tablePos, 18 /*Type*/, 4 /*NymaTypes.SettingType*/, 4, false)
+      && verifier.VerifyVectorOfTables(tablePos, 20 /*SettingEnums*/, NymaTypes.EnumValueVerify.Verify, false)
+      && verifier.VerifyTableEnd(tablePos);
+  }
+}
 
 }

@@ -13,7 +13,7 @@ public struct NSwitchInfo : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
   public static NSwitchInfo GetRootAsNSwitchInfo(ByteBuffer _bb) { return GetRootAsNSwitchInfo(_bb, new NSwitchInfo()); }
   public static NSwitchInfo GetRootAsNSwitchInfo(ByteBuffer _bb, NSwitchInfo obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -33,8 +33,8 @@ public struct NSwitchInfo : IFlatbufferObject
   }
 
   public static void StartNSwitchInfo(FlatBufferBuilder builder) { builder.StartTable(2); }
-  public static void AddDefaultPosition(FlatBufferBuilder builder, uint DefaultPosition) { builder.AddUint(0, DefaultPosition, 0); }
-  public static void AddPositions(FlatBufferBuilder builder, VectorOffset PositionsOffset) { builder.AddOffset(1, PositionsOffset.Value, 0); }
+  public static void AddDefaultPosition(FlatBufferBuilder builder, uint defaultPosition) { builder.AddUint(0, defaultPosition, 0); }
+  public static void AddPositions(FlatBufferBuilder builder, VectorOffset positionsOffset) { builder.AddOffset(1, positionsOffset.Value, 0); }
   public static VectorOffset CreatePositionsVector(FlatBufferBuilder builder, Offset<NymaTypes.NSwitchPosition>[] data) { builder.StartVector(4, data.Length, 4); for (int i = data.Length - 1; i >= 0; i--) builder.AddOffset(data[i].Value); return builder.EndVector(); }
   public static VectorOffset CreatePositionsVectorBlock(FlatBufferBuilder builder, Offset<NymaTypes.NSwitchPosition>[] data) { builder.StartVector(4, data.Length, 4); builder.Add(data); return builder.EndVector(); }
   public static VectorOffset CreatePositionsVectorBlock(FlatBufferBuilder builder, ArraySegment<Offset<NymaTypes.NSwitchPosition>> data) { builder.StartVector(4, data.Count, 4); builder.Add(data); return builder.EndVector(); }
@@ -80,5 +80,16 @@ public class NSwitchInfoT
   }
 }
 
+
+static public class NSwitchInfoVerify
+{
+  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  {
+    return verifier.VerifyTableStart(tablePos)
+      && verifier.VerifyField(tablePos, 4 /*DefaultPosition*/, 4 /*uint*/, 4, false)
+      && verifier.VerifyVectorOfTables(tablePos, 6 /*Positions*/, NymaTypes.NSwitchPositionVerify.Verify, false)
+      && verifier.VerifyTableEnd(tablePos);
+  }
+}
 
 }

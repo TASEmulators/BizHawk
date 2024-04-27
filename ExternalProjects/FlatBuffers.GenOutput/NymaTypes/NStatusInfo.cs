@@ -13,7 +13,7 @@ public struct NStatusInfo : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
   public static NStatusInfo GetRootAsNStatusInfo(ByteBuffer _bb) { return GetRootAsNStatusInfo(_bb, new NStatusInfo()); }
   public static NStatusInfo GetRootAsNStatusInfo(ByteBuffer _bb, NStatusInfo obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -30,7 +30,7 @@ public struct NStatusInfo : IFlatbufferObject
   }
 
   public static void StartNStatusInfo(FlatBufferBuilder builder) { builder.StartTable(1); }
-  public static void AddStates(FlatBufferBuilder builder, VectorOffset StatesOffset) { builder.AddOffset(0, StatesOffset.Value, 0); }
+  public static void AddStates(FlatBufferBuilder builder, VectorOffset statesOffset) { builder.AddOffset(0, statesOffset.Value, 0); }
   public static VectorOffset CreateStatesVector(FlatBufferBuilder builder, Offset<NymaTypes.NStatusState>[] data) { builder.StartVector(4, data.Length, 4); for (int i = data.Length - 1; i >= 0; i--) builder.AddOffset(data[i].Value); return builder.EndVector(); }
   public static VectorOffset CreateStatesVectorBlock(FlatBufferBuilder builder, Offset<NymaTypes.NStatusState>[] data) { builder.StartVector(4, data.Length, 4); builder.Add(data); return builder.EndVector(); }
   public static VectorOffset CreateStatesVectorBlock(FlatBufferBuilder builder, ArraySegment<Offset<NymaTypes.NStatusState>> data) { builder.StartVector(4, data.Count, 4); builder.Add(data); return builder.EndVector(); }
@@ -72,5 +72,15 @@ public class NStatusInfoT
   }
 }
 
+
+static public class NStatusInfoVerify
+{
+  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  {
+    return verifier.VerifyTableStart(tablePos)
+      && verifier.VerifyVectorOfTables(tablePos, 4 /*States*/, NymaTypes.NStatusStateVerify.Verify, false)
+      && verifier.VerifyTableEnd(tablePos);
+  }
+}
 
 }
