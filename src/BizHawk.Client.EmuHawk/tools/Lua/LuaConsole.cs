@@ -1381,10 +1381,10 @@ namespace BizHawk.Client.EmuHawk
 				var rawCommand = InputBox.Text;
 				InputBox.Clear();
 				InputBox.Refresh(); // if the command is something like `client.seekframe`, the Lua Console (and MainForm) will freeze until it finishes, so at least make it obvious that the Enter press was received
-				// TODO: Maybe make these try-catches more general
+				// TODO: Maybe make these try-catches more general // what try-catches? LuaSandbox.Sandbox? --yoshi
 				if (!string.IsNullOrWhiteSpace(rawCommand))
 				{
-					if (rawCommand.Contains("emu.frameadvance("))
+					if (rawCommand.Contains("emu.frameadvance(")) //TODO this is pitiful; do it properly with a flag like the one we use for rom loads --yoshi
 					{
 						WriteLine("emu.frameadvance() can not be called from the console");
 						return;
