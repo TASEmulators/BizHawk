@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 					foreach (var input in inputs)
 					{
-						if (input.Type == InputType.Padding)
+						if (input.Type == InputType.Padding0)
 							continue;
 
 						var bitSize = (int)input.BitSize;
@@ -132,6 +132,27 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 						switch (input.Type)
 						{
+							case InputType.Padding1:
+							{
+								// padding with set bits
+								_thunks.Add((_, b) =>
+								{
+									var val = (byte)(1 << bitOffset);
+									var byteOffset = byteStart;
+									for (var i = 0; i < bitSize; i++)
+									{
+										b[byteOffset] |= val;
+										val <<= 1;
+										if (val == 0)
+										{
+											val = 1;
+											byteOffset++;
+										}
+									}
+								});
+
+								break;
+							}
 							case InputType.ResetButton:
 							case InputType.Button:
 							case InputType.ButtonCanRapid:

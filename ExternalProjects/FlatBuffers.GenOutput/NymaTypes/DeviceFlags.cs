@@ -9,6 +9,7 @@ namespace NymaTypes
 public enum DeviceFlags : byte
 {
   Keyboard = 1,
+  Unique = 2,
 };
 
 

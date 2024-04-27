@@ -188,7 +188,7 @@ GPGX_EX void gpgx_advance(void)
 	nsamples = audio_update(soundbuffer);
 }
 
-extern toc_t hotswap_toc;
+extern toc_t pending_toc;
 extern int8 cd_index;
 
 GPGX_EX void gpgx_swap_disc(const toc_t* toc, int8 index)
@@ -199,7 +199,7 @@ GPGX_EX void gpgx_swap_disc(const toc_t* toc, int8 index)
 		{
 			char header[0x210];
 			cd_index = index;
-			memcpy(&hotswap_toc, toc, sizeof(toc_t));
+			memcpy(&pending_toc, toc, sizeof(toc_t));
 			cdd_load("HOTSWAP_CD", header);
 		}
 		else
