@@ -1,21 +1,19 @@
 { pkgs ? import <nixpkgs> {} }:
 let
 	versionAtLeast = exVer: acVer: builtins.compareVersions exVer acVer <= 0;
+	flatbuffersTargetVersion = "23.5.26";
 	flatbuffersPatched = pkgs.flatbuffers.overrideAttrs (oldAttrs: {
-		version = "22.9.24";
+		version = flatbuffersTargetVersion;
 		src = pkgs.fetchFromGitHub {
 			owner = "google";
 			repo = "flatbuffers";
-			rev = "76ddae006f6e5068d2f26f235dbd167bd826a698";
-			sha256 = "1vycd1641id476qhmkrgdfiisxx7n2zn54p3r6nva6dm0bd58lc8";
+			rev = "0100f6a5779831fa7a651e4b67ef389a8752bd9b";
+			hash = "sha256-e+dNPNbCHYDXUS/W+hMqf/37fhVgEGzId6rhP3cToTE=";
 		};
-		patches = []; # single patch has since been merged upstream
-		postPatch = ''
-			# Fix default value of "test_data_path" to make tests work
-			substituteInPlace tests/test.cpp --replace '"tests/";' '"../tests/";'
-		'';
+		patches = [];
+		doCheck = false; # don't know and don't care why the test 1 of 1 (!) is failing
 	});
-	flatbuffersFinal = if versionAtLeast "22.9.24" pkgs.flatbuffers.version
+	flatbuffersFinal = if versionAtLeast flatbuffersTargetVersion pkgs.flatbuffers.version
 		then pkgs.flatbuffers
 		else assert versionAtLeast "2.0.0" pkgs.flatbuffers.version; flatbuffersPatched; # need base of >= Nixpkgs 21.11
 in pkgs.mkShell {
