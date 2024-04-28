@@ -23,6 +23,10 @@ jobs:
            chmod u+x llvm.sh;
            sudo ./llvm.sh 18;
            clang-18 --version;
+    - name: Getting submodule(s)
+      working-directory: ./waterbox/
+      run: git submodule init llvm-project musl;
+           git submodule update llvm-project musl
     - name: Building musl
       working-directory: ./waterbox/musl
       run: ./wbox_configure.sh;
@@ -58,7 +62,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: compiled-waterbox
-    - name: Getting GPGX submodule
+    - name: Getting submodule(s)
       working-directory: ./waterbox/gpgx
       run: git submodule init Genesis-Plus-GX;
            git submodule update Genesis-Plus-GX
