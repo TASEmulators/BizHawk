@@ -19,7 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Checking clang version
-      run: clang --version
+      run: clang-15 --version
     - name: Installing clang 18
       run: wget https://apt.llvm.org/llvm.sh;
            chmod u+x llvm.sh;
