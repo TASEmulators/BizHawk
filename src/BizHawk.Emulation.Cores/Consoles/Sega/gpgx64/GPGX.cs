@@ -6,6 +6,7 @@ using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.DiscSystem;
 using System.Linq;
 using System.IO;
@@ -245,27 +246,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				// use fromtend firmware interface
 
-				string system = null;
-				string firmwareID = null;
-				switch (filename)
-				{
-					case "CD_BIOS_EU": system = VSystemID.Raw.GEN; firmwareID = "CD_BIOS_EU"; break;
-					case "CD_BIOS_JP": system = VSystemID.Raw.GEN; firmwareID = "CD_BIOS_JP"; break;
-					case "CD_BIOS_US": system = VSystemID.Raw.GEN; firmwareID = "CD_BIOS_US"; break;
-					case "GG_BIOS":    system = VSystemID.Raw.SMS; firmwareID = "Japan";    break;
-					case "MS_BIOS_EU": system = VSystemID.Raw.SMS; firmwareID = "Export"; break;
-					case "MS_BIOS_JP": system = VSystemID.Raw.SMS; firmwareID = "Japan"; break;
-					case "MS_BIOS_US": system = VSystemID.Raw.SMS; firmwareID = "Export"; break;
-					default:
-						break;
-				}
+ 				FirmwareID? firmwareID = filename switch
+ 				{
+ 					"CD_BIOS_EU" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_EU"),
+ 					"CD_BIOS_JP" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_JP"),
+ 					"CD_BIOS_US" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_US"),
+ 					"GG_BIOS" => new(system: VSystemID.Raw.SMS, firmware: "Japan"),
+ 					"MS_BIOS_EU" => new(system: VSystemID.Raw.SMS, firmware: "Export"),
+ 					"MS_BIOS_JP" => new(system: VSystemID.Raw.SMS, firmware: "Japan"),
+ 					"MS_BIOS_US" => new(system: VSystemID.Raw.SMS, firmware: "Export"),
+ 					_ => null
+ 				};
+
 				if (firmwareID != null)
 				{
 					// this path will be the most common PEBKAC error, so be a bit more vocal about the problem
-					srcdata = CoreComm.CoreFileProvider.GetFirmware(new(system, firmwareID), "GPGX firmwares are usually required.");
+					srcdata = CoreComm.CoreFileProvider.GetFirmware((FirmwareID)firmwareID, "GPGX firmwares are usually required.");
 					if (srcdata == null)
 					{
-						Console.WriteLine("Frontend couldn't satisfy firmware request GEN:{0}", firmwareID);
+						Console.WriteLine($"Frontend couldn't satisfy firmware request {firmwareID}");
 						return 0;
 					}
 				}
