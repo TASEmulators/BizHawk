@@ -12,7 +12,6 @@ env:
 
 jobs:
 
-  # Build waterbox and cores
   build-waterbox:
     runs-on: ubuntu-latest
     steps:
