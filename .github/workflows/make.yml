@@ -41,6 +41,7 @@ jobs:
     - name: Uploading compiled waterbox
       uses: actions/upload-artifact@v4
       with:
+        working-directory: .
         name: compiled-waterbox
         path: |
           ./waterbox/libco/obj
