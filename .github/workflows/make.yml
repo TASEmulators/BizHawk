@@ -40,6 +40,24 @@ jobs:
     - name: Building nyma
       working-directory: ./waterbox/nyma
       run: ./build-and-install-zlib.sh
-    - name: Building all waterboxed cores
-      working-directory: ./waterbox
-      run: INCLUDE_MAME=1 ./make-all-cores.sh
+    - name: Uploading compiled waterbox
+      uses: actions/upload-artifact@v4
+      with:
+        name: compiled-waterbox
+        path: |
+          waterbox/libco/obj
+          waterbox/musl/obj
+          waterbox/emulibc/obj
+          waterbox/libcxx/build*
+          waterbox/sysroot
+
+  build-gpgx:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download compiled waterbox
+      uses: actions/download-artifact@v4
+      with:
+        name: compiled-waterbox
+    - name: Building GPGX core
+      working-directory: ./waterbox/gpgx
+      run: make -j${nproc}
