@@ -48,7 +48,24 @@ jobs:
           waterbox/emulibc/obj
           waterbox/libcxx/build*
           waterbox/sysroot
-    
+  
+  build-ares64:
+    runs-on: ubuntu-latest
+    needs: build-waterbox
+    steps:
+    - uses: actions/checkout@v4
+    - name: Download compiled waterbox
+      uses: actions/download-artifact@v4
+      with:
+        name: compiled-waterbox
+        path: waterbox
+    - name: Giving execution permission to compiler
+      working-directory: ./waterbox/sysroot
+      run: chmod u+x bin/*
+    - name: Building Ares64 core
+      working-directory: ./waterbox/ares64
+      run: ./make-both.sh
+
   build-gpgx:
     runs-on: ubuntu-latest
     needs: build-waterbox
