@@ -8,8 +8,8 @@ on:
     branches: [ "upstreamCI" ]
 
 env:
-  CC: clang-15
-  CXX: clang++-15
+  CC: clang-16
+  CXX: clang++-16
 
 jobs:
 
