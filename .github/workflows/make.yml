@@ -8,8 +8,8 @@ on:
     branches: [ "upstreamCI" ]
 
 env:
-  CC: clang-18
-  CXX: clang++-18
+  CC: clang-15
+  CXX: clang++-15
 
 jobs:
 
@@ -18,13 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Checking clang version
-      run: clang-15 --version
-    - name: Installing clang 18
-      run: wget https://apt.llvm.org/llvm.sh;
-           chmod u+x llvm.sh;
-           sudo ./llvm.sh 18;
-           clang-18 --version;
     - name: Getting submodule(s)
       working-directory: ./waterbox/
       run: git submodule init musl;
