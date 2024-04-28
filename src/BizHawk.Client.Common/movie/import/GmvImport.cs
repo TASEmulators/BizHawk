@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common.movie.import
 					: LibGPGX.INPUT_DEVICE.DEVICE_PAD3B;
 			}
 
-			var controlConverter = new GPGXControlConverter(input, false);
+			GPGXControlConverter controlConverter = new(input, systemId: VSystemID.Raw.GEN, cdButtons: false);
 			
 			SimpleController controller = new(controlConverter.ControllerDef);
 
