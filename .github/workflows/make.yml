@@ -1,4 +1,4 @@
-name: Build Waterbox
+name: Build Emulation Cores
 
 on:
   pull_request:
