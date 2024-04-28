@@ -6,6 +6,10 @@ on:
   push:
     branches: [ "master" ]
 
+env:
+  CC: clang-18
+  CXX: clang++-18
+
 jobs:
 
   # Build waterbox and cores
@@ -22,38 +26,20 @@ jobs:
            clang-18 --version;
     - name: Building musl
       working-directory: ./waterbox/musl
-      env:
-        CC: clang-18
-        CXX: clang++-18
       run: ./wbox_configure.sh;
            ./wbox_build.sh;
     - name: Building emulibc
       working-directory: ./waterbox/emulibc
-      env:
-        CC: clang-18
-        CXX: clang++-18
       run: make
     - name: Building libco
       working-directory: ./waterbox/libco
-      env:
-        CC: clang-18
-        CXX: clang++-18
       run: make
     - name: Building libcxx
       working-directory: ./waterbox/libcxx
-      env:
-        CC: clang-18
-        CXX: clang++-18
       run: ./do-everything.sh
     - name: Building nyma
       working-directory: ./waterbox/nyma
-      env:
-        CC: clang-18
-        CXX: clang++-18
       run: ./build-and-install-zlib.sh
     - name: Building all waterboxed cores
       working-directory: ./waterbox
-      env:
-        CC: clang-18
-        CXX: clang++-18
       run: INCLUDE_MAME=1 ./make-all-cores.sh
