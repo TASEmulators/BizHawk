@@ -43,10 +43,10 @@ jobs:
       with:
         name: compiled-waterbox
         path: |
-          waterbox/libco/obj
-          waterbox/musl/obj
-          waterbox/emulibc/obj
-          waterbox/libcxx/build*
+          waterbox/libco
+          waterbox/musl
+          waterbox/emulibc
+          waterbox/libcxx
           waterbox/sysroot
   
   build-ares64:
