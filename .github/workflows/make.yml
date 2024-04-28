@@ -43,11 +43,11 @@ jobs:
       with:
         name: compiled-waterbox
         path: |
-          ${{ github.workspace }}/waterbox/libco/obj
-          ${{ github.workspace }}/waterbox/musl/obj
-          ${{ github.workspace }}/waterbox/emulibc/obj
-          ${{ github.workspace }}/waterbox/libcxx/build*
-          ${{ github.workspace }}/waterbox/sysroot
+          waterbox/libco/obj
+          waterbox/musl/obj
+          waterbox/emulibc/obj
+          waterbox/libcxx/build*
+          waterbox/sysroot
 
   check-artifact:
     runs-on: ubuntu-latest
@@ -68,6 +68,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: compiled-waterbox
+        path: waterbox
     - name: Listing Files
       working-directory: ./waterbox/sysroot
       run: ls -laR
