@@ -53,6 +53,7 @@ jobs:
 
   build-gpgx:
     runs-on: ubuntu-latest
+    needs: build-waterbox
     steps:
     - name: Download compiled waterbox
       uses: actions/download-artifact@v4
