@@ -58,6 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-waterbox
     steps:
+    - uses: actions/checkout@v4
     - name: Download compiled waterbox
       uses: actions/download-artifact@v4
       with:
