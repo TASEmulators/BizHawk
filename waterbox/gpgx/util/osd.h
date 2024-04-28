@@ -92,3 +92,4 @@ extern char MS_BIOS_JP[256];
 
 extern void osd_input_update(void);
 extern int load_archive(const char *filename, unsigned char *buffer, int maxsize, char *extension);
+extern void real_input_callback(void);
