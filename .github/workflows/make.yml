@@ -49,6 +49,16 @@ jobs:
           waterbox/libcxx/build*
           waterbox/sysroot
 
+  check-artifact:
+    runs-on: ubuntu-latest
+    needs: build-waterbox
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: compiled-waterbox
+    - name: Display structure of downloaded files
+      run: ls -R
+    
   build-gpgx:
     runs-on: ubuntu-latest
     needs: build-waterbox
