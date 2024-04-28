@@ -77,3 +77,41 @@ jobs:
     - name: Building cores
       working-directory: ./waterbox/
       run: ./make-all-cores.sh
+
+  build-mame:
+        runs-on: ubuntu-latest
+        needs: build-waterbox
+        steps:
+        - uses: actions/checkout@v4
+        - name: Getting submodule(s)
+          working-directory: ./waterbox/
+          run: git submodule init mame-arcade/mame;
+               git submodule update mame-arcade/mame
+        - name: Download compiled waterbox
+          uses: actions/download-artifact@v4
+          with:
+            name: compiled-waterbox
+            path: waterbox
+        - name: Installing clang 18
+          run: wget https://apt.llvm.org/llvm.sh;
+                chmod u+x llvm.sh;
+                sudo ./llvm.sh 18;
+                clang-18 --version;        
+        - name: Giving execution permission to compiler
+          working-directory: ./waterbox/sysroot
+          run: chmod u+x bin/*
+        - name: Building MAME
+          working-directory: ./waterbox/mame-arcade
+          run: make -j${nproc}
+
+  build-quickernes:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Getting submodule(s)
+      working-directory: ./quicknes
+      run: git submodule init core;
+            git submodule update core
+    - name: Building QuickerNES core (Linux)
+      working-directory: ./quicknes/make
+      run: make -j${nproc}
