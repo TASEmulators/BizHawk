@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public int Frame { get; private set; }
 
-		public string SystemId => VSystemID.Raw.GEN;
+		public string SystemId { get; }
 
 		public bool DeterministicEmulation => true;
 
