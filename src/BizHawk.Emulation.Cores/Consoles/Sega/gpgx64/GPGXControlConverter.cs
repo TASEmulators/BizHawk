@@ -236,9 +236,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						player++;
 						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_PAD2B:
-						if (systemId == VSystemID.Raw.SMS) AddToController(i, player, SMS2B);
-						if (systemId == VSystemID.Raw.SG) AddToController(i, player, GameGear);
-						if (systemId == VSystemID.Raw.GG) AddToController(i, player, GameGear);
+						AddToController(i, player, systemId is VSystemID.Raw.SMS ? SMS2B : GameGear);
 						player++;
 						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_PADDLE:

@@ -12,7 +12,11 @@ using System.IO;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
-	[PortedCore(CoreNames.Gpgx, "Eke-Eke", "0c45a8a", "https://github.com/ekeeke/Genesis-Plus-GX")]
+	[PortedCore(
+		name: CoreNames.Gpgx,
+		author: "Eke-Eke",
+		portedVersion: "0c45a8a",
+		portedUrl: "https://github.com/ekeeke/Genesis-Plus-GX")]
 	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
@@ -33,10 +37,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			// this can influence some things internally (autodetect romtype, etc)
 
 			// Determining system ID from the rom. If no rom provided, assume Genesis (Sega CD)
-			SystemId = lp.Roms.Any() ? lp.Roms[0].Game.System : VSystemID.Raw.GEN;
-
-			// We need to pass the exact file extension to GPGX for it to correctly interpret the console
-			string RomExtension = lp.Roms.Any() ? Path.GetExtension(lp.Roms[0].RomPath).Replace(".", "") : "";
+			SystemId = VSystemID.Raw.GEN;
+			var RomExtension = string.Empty;
+			if (lp.Roms.Count >= 1)
+			{
+				SystemId = lp.Roms[0].Game.System;
+				// We need to pass the exact file extension to GPGX for it to correctly interpret the console
+				RomExtension = Path.GetExtension(lp.Roms[0].RomPath).RemovePrefix('.');
+			}
 			
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
@@ -380,7 +388,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			if (!Core.gpgx_get_control(input, inputsize))
 				throw new Exception($"{nameof(Core.gpgx_get_control)}() failed");
 
-			ControlConverter = new GPGXControlConverter(input, SystemId, _cds != null);
+			ControlConverter = new(input, systemId: SystemId, cdButtons: _cds is not null);
 			ControllerDefinition = ControlConverter.ControllerDef;
 		}
 
