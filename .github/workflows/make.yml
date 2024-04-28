@@ -25,8 +25,7 @@ jobs:
           clang-18 --version;    
     - name: Getting submodule(s)
       working-directory: ./waterbox/
-      run: git submodule init musl;
-           git submodule update musl
+      run: git submodule update --init --recursive musl
     - name: Building musl
       working-directory: ./waterbox/musl
       run: ./wbox_configure.sh;
@@ -59,8 +58,13 @@ jobs:
     needs: build-waterbox
     steps:
     - uses: actions/checkout@v4
-      with:
-        submodules: recursive
+    - name: Getting submodule(s)
+      working-directory: ./waterbox/
+      run: git submodule update --init --recursive snes9x;
+           git submodule update --init --recursive melon/melonDS;
+           git submodule update --init --recursive nyma/mednafen;
+           git submodule update --init --recursive ares64/ares/thirdparty/angrylion-rdp;
+           git submodule update --init --recursive gpgx/Genesis-Plus-GX;
     - name: Download compiled waterbox
       uses: actions/download-artifact@v4
       with:
@@ -85,8 +89,7 @@ jobs:
         - uses: actions/checkout@v4
         - name: Getting submodule(s)
           working-directory: ./waterbox/
-          run: git submodule init mame-arcade/mame;
-               git submodule update mame-arcade/mame
+          run: git submodule update --init --recursive mame-arcade/mame
         - name: Download compiled waterbox
           uses: actions/download-artifact@v4
           with:
