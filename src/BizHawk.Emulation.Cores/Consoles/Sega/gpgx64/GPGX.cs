@@ -24,7 +24,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[CoreConstructor(VSystemID.Raw.SMS)]
 		[CoreConstructor(VSystemID.Raw.GG)]
 		[CoreConstructor(VSystemID.Raw.SG)]
-
 		public GPGX(CoreLoadParameters<GPGXSettings, GPGXSyncSettings> lp)
 		{
 			LoadCallback = load_archive;
