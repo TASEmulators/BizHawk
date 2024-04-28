@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 				new[] { CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x }),
 			(new[] { VSystemID.Raw.GEN },
 				new[] { CoreNames.Gpgx, CoreNames.PicoDrive }),
-			(new[] { VSystemID.Raw.GG,VSystemID.Raw.SMS, VSystemID.Raw.SG },
+			(new[] { VSystemID.Raw.SMS, VSystemID.Raw.GG, VSystemID.Raw.SG },
 				new[] { CoreNames.Gpgx, CoreNames.SMSHawk }),
 			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX, VSystemID.Raw.SGXCD },
 				new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk }),
