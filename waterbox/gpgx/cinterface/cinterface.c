@@ -619,8 +619,10 @@ struct InitSettings
 	char InputSystemB;
 	char SixButton;
 	char ForceSram;
+	uint8_t SMSFMSoundChip;
 	uint8_t GenesisFMSoundChip;
 	uint8_t SpritesAlwaysOnTop;
+	uint8_t loadBios;
 };
 
 
@@ -704,6 +706,8 @@ void bk_cpu_hook(hook_type_t type, int width, unsigned int address, unsigned int
 
 			break;
 		}
+
+		default: break;
 	}
 }
 
@@ -755,8 +759,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 	// Selecting FM Sound chip to use for SMS / GG emulation. Using a default for now, until we also
 	// accept this core for SMS/GG emulation in BizHawk
-	int smsFMChipType = YM2413_NUKED;
-	switch (smsFMChipType)
+ switch (settings->SMSFMSoundChip)
 	{
 		case YM2413_DISABLED:
 			config.opll = 0;
@@ -770,7 +773,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 		case YM2413_NUKED:
 			config.opll = 1;
-			config.ym2413 = 0;
+			config.ym2413 = 1;
 			break;
 	}
 
@@ -810,7 +813,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	config.master_clock   = 0; /* = AUTO (1 = NTSC, 2 = PAL) */
 	config.force_dtack    = 0;
 	config.addr_error     = 1;
-	config.bios           = 0;
+	config.bios           = settings->loadBios;
 	config.lock_on        = 0; /* = OFF (or TYPE_SK, TYPE_GG & TYPE_AR) */
 	config.add_on         = 0; /* = HW_ADDON_AUTO (or HW_ADDON_MEGACD, HW_ADDON_MEGASD & HW_ADDON_ONE) */
 	config.cd_latency     = 1;
@@ -836,13 +839,16 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 	cinterface_custom_backdrop_color = settings->BackdropColor;
 
+ 	// Default: Genesis
 	// apparently, the only part of config.input used is the padtype identifier,
 	// and that's used only for choosing pad type when system_md
-	{
-		int i;
-		for (i = 0; i < MAX_INPUTS; i++)
-			config.input[i].padtype = settings->SixButton ? DEVICE_PAD6B : DEVICE_PAD3B;
-	}
+	for (int i = 0; i < MAX_INPUTS; i++)
+		config.input[i].padtype = settings->SixButton ? DEVICE_PAD6B : DEVICE_PAD3B;
+
+	 // Hacky but effective. Setting the correct controller type here if this is sms or GG
+	if (system_hw == SYSTEM_SMS || system_hw == SYSTEM_SMS2 || system_hw == SYSTEM_GG || system_hw == SYSTEM_SG)
+		for (int i = 0; i < MAX_INPUTS; i++)
+			config.input[i].padtype = DEVICE_PAD2B;
 
 	// first try to load our main CD
 	if (!load_rom("PRIMARY_CD"))
