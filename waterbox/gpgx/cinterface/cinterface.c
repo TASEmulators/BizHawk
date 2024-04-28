@@ -773,7 +773,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 		case YM2413_NUKED:
 			config.opll = 1;
-			config.ym2413 = 0;
+			config.ym2413 = 1;
 			break;
 	}
 
