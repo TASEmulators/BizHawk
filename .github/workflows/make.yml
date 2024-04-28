@@ -18,10 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Getting submodule(s)
-      working-directory: ./waterbox/
-      run: git submodule init musl;
-           git submodule update musl
+    - name: Installing clang 18
+      run: wget https://apt.llvm.org/llvm.sh;
+          chmod u+x llvm.sh;
+          sudo ./llvm.sh 18;
+          clang-18 --version;    
     - name: Building musl
       working-directory: ./waterbox/musl
       run: ./wbox_configure.sh;
