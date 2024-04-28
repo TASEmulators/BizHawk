@@ -43,11 +43,11 @@ jobs:
       with:
         name: compiled-waterbox
         path: |
-          waterbox/libco/obj
-          waterbox/musl/obj
-          waterbox/emulibc/obj
-          waterbox/libcxx/build*
-          waterbox/sysroot
+          ./waterbox/libco/obj
+          ./waterbox/musl/obj
+          ./waterbox/emulibc/obj
+          ./waterbox/libcxx/build*
+          ./waterbox/sysroot
 
   check-artifact:
     runs-on: ubuntu-latest
