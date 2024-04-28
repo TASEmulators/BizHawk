@@ -207,6 +207,13 @@ namespace BizHawk.Client.EmuHawk
 				button.MouseLeave += SlotStatusButtons_MouseLeave;
 			}
 
+			if (OSTailoredCode.IsUnixHost)
+			{
+				// workaround for https://github.com/mono/mono/issues/12644
+				MainFormContextMenu.Items.Insert(0, new ToolStripMenuItemEx { Text = "(Dismiss Menu)" }); // don't even need to attach any behaviour, since clicking anything will dismiss the menu first
+				MainFormContextMenu.Items.Insert(1, new ToolStripSeparatorEx());
+			}
+
 			// New version notification
 			UpdateChecker.CheckComplete += (s2, e2) =>
 			{
