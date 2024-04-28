@@ -51,13 +51,16 @@ jobs:
 
   build-gpgx:
     runs-on: ubuntu-latest
-    needs: build-waterbox
+    #needs: build-waterbox
     steps:
     - uses: actions/checkout@v4
     - name: Download compiled waterbox
       uses: actions/download-artifact@v4
       with:
         name: compiled-waterbox
+    - name: Listing Files
+      working-directory: ./waterbox/sysroot
+      run: ls -laR
     - name: Getting submodule(s)
       working-directory: ./waterbox/gpgx
       run: git submodule init Genesis-Plus-GX;
