@@ -61,7 +61,7 @@ jobs:
         path: waterbox
     - name: Giving execution permission to compiler
       working-directory: ./waterbox/sysroot
-      run: ls -laR
+      run: chmod u+x bin/*
     - name: Getting submodule(s)
       working-directory: ./waterbox/gpgx
       run: git submodule init Genesis-Plus-GX;
