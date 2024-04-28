@@ -104,7 +104,7 @@ jobs:
           run: chmod u+x bin/*
         - name: Building MAME
           working-directory: ./waterbox/mame-arcade
-          run: ./make.sh
+          run: make -j4
 
   build-quickernes:
     runs-on: ubuntu-latest
@@ -115,4 +115,4 @@ jobs:
       run: git submodule update --init --recursive core
     - name: Building QuickerNES core (Linux)
       working-directory: ./quicknes/make
-      run: make
+      run: make -j4
