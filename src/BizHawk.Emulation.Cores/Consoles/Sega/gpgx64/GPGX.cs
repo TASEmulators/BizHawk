@@ -6,16 +6,25 @@ using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.DiscSystem;
 using System.Linq;
+using System.IO;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
-	[PortedCore(CoreNames.Gpgx, "Eke-Eke", "25a90c6", "https://github.com/ekeeke/Genesis-Plus-GX")]
+	[PortedCore(
+		name: CoreNames.Gpgx,
+		author: "Eke-Eke",
+		portedVersion: "0c45a8a",
+		portedUrl: "https://github.com/ekeeke/Genesis-Plus-GX")]
 	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
 		[CoreConstructor(VSystemID.Raw.GEN)]
+		[CoreConstructor(VSystemID.Raw.SMS)]
+		[CoreConstructor(VSystemID.Raw.GG)]
+		[CoreConstructor(VSystemID.Raw.SG)]
 		public GPGX(CoreLoadParameters<GPGXSettings, GPGXSyncSettings> lp)
 		{
 			LoadCallback = load_archive;
@@ -26,8 +35,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			ServiceProvider = new BasicServiceProvider(this);
 			// this can influence some things internally (autodetect romtype, etc)
-			string romextension = "GEN";
 
+			// Determining system ID from the rom. If no rom provided, assume Genesis (Sega CD)
+			SystemId = VSystemID.Raw.GEN;
+			var RomExtension = string.Empty;
+			if (lp.Roms.Count >= 1)
+			{
+				SystemId = lp.Roms[0].Game.System;
+				// We need to pass the exact file extension to GPGX for it to correctly interpret the console
+				RomExtension = Path.GetExtension(lp.Roms[0].RomPath).RemovePrefix('.');
+			}
+			
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
 
@@ -82,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LibGPGX.INPUT_SYSTEM system_a = SystemForSystem(_syncSettings.ControlTypeLeft);
 				LibGPGX.INPUT_SYSTEM system_b = SystemForSystem(_syncSettings.ControlTypeRight);
 
-				var initResult = Core.gpgx_init(romextension, LoadCallback, _syncSettings.GetNativeSettings(lp.Game));
+				var initResult = Core.gpgx_init(RomExtension, LoadCallback, _syncSettings.GetNativeSettings(lp.Game));
 
 				if (!initResult)
 					throw new Exception($"{nameof(Core.gpgx_init)}() failed");
@@ -228,22 +246,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				// use fromtend firmware interface
 
-				string firmwareID = null;
-				switch (filename)
-				{
-					case "CD_BIOS_EU": firmwareID = "CD_BIOS_EU"; break;
-					case "CD_BIOS_JP": firmwareID = "CD_BIOS_JP"; break;
-					case "CD_BIOS_US": firmwareID = "CD_BIOS_US"; break;
-					default:
-						break;
-				}
+ 				FirmwareID? firmwareID = filename switch
+ 				{
+ 					"CD_BIOS_EU" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_EU"),
+ 					"CD_BIOS_JP" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_JP"),
+ 					"CD_BIOS_US" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_US"),
+ 					"GG_BIOS" => new(system: VSystemID.Raw.SMS, firmware: "Japan"),
+ 					"MS_BIOS_EU" => new(system: VSystemID.Raw.SMS, firmware: "Export"),
+ 					"MS_BIOS_JP" => new(system: VSystemID.Raw.SMS, firmware: "Japan"),
+ 					"MS_BIOS_US" => new(system: VSystemID.Raw.SMS, firmware: "Export"),
+ 					_ => null
+ 				};
+
 				if (firmwareID != null)
 				{
 					// this path will be the most common PEBKAC error, so be a bit more vocal about the problem
-					srcdata = CoreComm.CoreFileProvider.GetFirmware(new("GEN", firmwareID), "GPGX firmwares are usually required.");
+					srcdata = CoreComm.CoreFileProvider.GetFirmware(firmwareID.Value, "GPGX firmwares are usually required.");
 					if (srcdata == null)
 					{
-						Console.WriteLine("Frontend couldn't satisfy firmware request GEN:{0}", firmwareID);
+						Console.WriteLine($"Frontend couldn't satisfy firmware request {firmwareID}");
 						return 0;
 					}
 				}
@@ -365,7 +386,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			if (!Core.gpgx_get_control(input, inputsize))
 				throw new Exception($"{nameof(Core.gpgx_get_control)}() failed");
 
-			ControlConverter = new GPGXControlConverter(input, _cds != null);
+			ControlConverter = new(input, systemId: SystemId, cdButtons: _cds is not null);
 			ControllerDefinition = ControlConverter.ControllerDef;
 		}
 
