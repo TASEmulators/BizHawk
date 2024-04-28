@@ -8,8 +8,8 @@ on:
     branches: [ "upstreamCI" ]
 
 env:
-  CC: clang-16
-  CXX: clang++-16
+  CC: clang-18
+  CXX: clang++-18
 
 jobs:
 
@@ -49,40 +49,26 @@ jobs:
           waterbox/libcxx
           waterbox/sysroot
   
-  build-ares64:
+  build-waterboxed-cores:
     runs-on: ubuntu-latest
     needs: build-waterbox
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: recursive
     - name: Download compiled waterbox
       uses: actions/download-artifact@v4
       with:
         name: compiled-waterbox
         path: waterbox
+    - name: Installing clang 18
+      run: wget https://apt.llvm.org/llvm.sh;
+            chmod u+x llvm.sh;
+            sudo ./llvm.sh 18;
+            clang-18 --version;        
     - name: Giving execution permission to compiler
       working-directory: ./waterbox/sysroot
       run: chmod u+x bin/*
-    - name: Building Ares64 core
-      working-directory: ./waterbox/ares64
-      run: ./make-both.sh
-
-  build-gpgx:
-    runs-on: ubuntu-latest
-    needs: build-waterbox
-    steps:
-    - uses: actions/checkout@v4
-    - name: Download compiled waterbox
-      uses: actions/download-artifact@v4
-      with:
-        name: compiled-waterbox
-        path: waterbox
-    - name: Giving execution permission to compiler
-      working-directory: ./waterbox/sysroot
-      run: chmod u+x bin/*
-    - name: Getting submodule(s)
-      working-directory: ./waterbox/gpgx
-      run: git submodule init Genesis-Plus-GX;
-           git submodule update Genesis-Plus-GX
-    - name: Building GPGX core
-      working-directory: ./waterbox/gpgx
-      run: make -j${nproc}
+    - name: Building cores
+      working-directory: ./waterbox/
+      run: ./make-all-cores.sh
