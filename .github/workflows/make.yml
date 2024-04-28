@@ -110,8 +110,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Getting submodule(s)
       working-directory: ./quicknes
-      run: git submodule init core;
-            git submodule update core
+      run: git submodule update --init --recursive core
     - name: Building QuickerNES core (Linux)
       working-directory: ./quicknes/make
       run: make -j${nproc}
