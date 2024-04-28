@@ -23,6 +23,10 @@ jobs:
           chmod u+x llvm.sh;
           sudo ./llvm.sh 18;
           clang-18 --version;    
+    - name: Getting submodule(s)
+      working-directory: ./waterbox/
+      run: git submodule init musl;
+           git submodule update musl
     - name: Building musl
       working-directory: ./waterbox/musl
       run: ./wbox_configure.sh;
