@@ -2,9 +2,10 @@ name: Build Waterbox
 
 on:
   pull_request:
-    branches: [ "master" ]
+    #branches: [ "master" ]
   push:
-    branches: [ "master" ]
+    #branches: [ "master" ]
+    branches: [ "upstreamCI" ]
 
 env:
   CC: clang-18
@@ -17,8 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-      with:
-       submodules: recursive
     - name: Installing clang 18
       run: wget https://apt.llvm.org/llvm.sh;
            chmod u+x llvm.sh;
@@ -59,6 +58,10 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: compiled-waterbox
+    - name: Getting GPGX submodule
+      working-directory: ./waterbox/gpgx
+      run: git submodule init Genesis-Plus-GX;
+           git submodule update Genesis-Plus-GX
     - name: Building GPGX core
       working-directory: ./waterbox/gpgx
       run: make -j${nproc}
