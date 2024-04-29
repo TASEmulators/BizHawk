@@ -23,7 +23,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 		public PutSettingsDirtyBits PutSettings(A2600Settings o)
 		{
-
 			Settings = o;
 			return PutSettingsDirtyBits.None;
 		}

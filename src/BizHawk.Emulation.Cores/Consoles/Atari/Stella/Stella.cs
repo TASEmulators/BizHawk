@@ -23,6 +23,10 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		[CoreConstructor(VSystemID.Raw.A26)]
 		public Stella(GameInfo game, byte[] rom, Stella.A2600Settings settings, Stella.A2600SyncSettings syncSettings)
 		{
+			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
+			SyncSettings = syncSettings ?? new A2600SyncSettings();
+			_controllerDeck = new Atari2600ControllerDeck(SyncSettings.Port1, SyncSettings.Port2);
 		}
 
 		public string RomDetails { get; private set; }
