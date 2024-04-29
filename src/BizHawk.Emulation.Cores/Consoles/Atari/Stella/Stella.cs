@@ -4,12 +4,12 @@ using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Atari.Atari2600
+namespace BizHawk.Emulation.Cores.Atari.Stella
 {
-	[Core(CoreNames.Atari2600Hawk, "Micro500, Alyosha, adelikat, natt")]
+	[Core(CoreNames.Stella, "The Stella Team")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
-	public partial class Atari2600 : IEmulator, IDebuggable, IInputPollable, IBoardInfo, IRomInfo,
-		IRegionable, ICreateGameDBEntries, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
+	public partial class Stella : IEmulator, IDebuggable, IInputPollable, IRomInfo,
+		ICreateGameDBEntries, ISettable<Stella.A2600Settings, Stella.A2600SyncSettings>
 	{
 		internal static class RomChecksums
 		{
@@ -21,59 +21,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 		[CoreConstructor(VSystemID.Raw.A26)]
-		public Atari2600(GameInfo game, byte[] rom, Atari2600.A2600Settings settings, Atari2600.A2600SyncSettings syncSettings)
+		public Stella(GameInfo game, byte[] rom, Stella.A2600Settings settings, Stella.A2600SyncSettings syncSettings)
 		{
-			var ser = new BasicServiceProvider(this);
-			ServiceProvider = ser;
-
-			_ram = new byte[128];
-			Settings = settings ?? new A2600Settings();
-			SyncSettings = syncSettings ?? new A2600SyncSettings();
-
-			_controllerDeck = new Atari2600ControllerDeck(SyncSettings.Port1, SyncSettings.Port2);
-
-			_leftDifficultySwitchPressed = SyncSettings.LeftDifficulty;
-			_rightDifficultySwitchPressed = SyncSettings.RightDifficulty;
-
-			Rom = rom;
-			_game = game;
-
-#pragma warning disable MEN014 // could rewrite this to be 1 read + 0-1 writes, but nah --yoshi
-			if (!game.GetOptions().ContainsKey("m"))
-			{
-				game.AddOption("m", DetectMapper(rom));
-			}
-
-			var romHashSHA1 = SHA1Checksum.ComputePrefixedHex(Rom);
-			if (romHashSHA1 is RomChecksums.CongoBongo or RomChecksums.Tapper or RomChecksums.KangarooNotInGameDB)
-			{
-				game.RemoveOption("m");
-				game.AddOption("m", "F8_sega");
-			}
-
-			Console.WriteLine("Game uses mapper " + game.GetOptions()["m"]);
-#pragma warning restore MEN014
-			Console.WriteLine(romHashSHA1);
-			RebootCore();
-			SetupMemoryDomains();
-
-			Tracer = new TraceBuffer(Cpu.TraceHeader);
-
-			ser.Register<IDisassemblable>(Cpu);
-			ser.Register<ITraceable>(Tracer);
-			ser.Register<IVideoProvider>(_tia);
-			ser.Register<ISoundProvider>(_dcfilter);
-			ser.Register<IStatable>(new StateSerializer(SyncState));
 		}
 
 		public string RomDetails { get; private set; }
 
 		private readonly Atari2600ControllerDeck _controllerDeck;
 
-		// IRegionable
-		public DisplayType Region => _pal ? DisplayType.PAL : DisplayType.NTSC;
-
-		// ITraceable
 		private ITraceable Tracer { get; }
 
 		// ICreateGameDBEntries
@@ -81,50 +36,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			return new CompactGameInfo
 			{
-				Name = _game.Name,
-				System = VSystemID.Raw.A26,
-				MetaData = "m=" + _mapper.GetType().ToString().SubstringAfterLast('.'),
-				Hash = SHA1Checksum.ComputeDigestHex(Rom),
-				Region = _game.Region,
-				Status = RomStatus.Unknown
 			};
 		}
 
 		// IBoardInfo
-		public string BoardName => _mapper.GetType().Name;
-
 		private static bool DetectPal(GameInfo game, byte[] rom)
 		{
-			// force NTSC mode for the new core we instantiate
-			var newGame = game.Clone();
-			if (newGame["PAL"])
-			{
-				newGame.RemoveOption("PAL");
-			}
-
-			if (!newGame["NTSC"])
-			{
-				newGame.AddOption("NTSC", "");
-			}
-
-			// here we advance past start up irregularities to see how long a frame is based on calls to Vsync
-			// we run 72 frames, then run 270 scanlines worth of cycles.
-			// if we don't hit a new frame, we can be pretty confident we are in PAL
-			using var emu = new Atari2600(newGame, rom, null, null);
-			for (int i = 0; i < 72; i++)
-			{
-				emu.FrameAdvance(NullController.Instance, false, false);
-			}
-
-			for (int i = 0; i < 61560; i++)
-			{
-				emu.Cycle();
-			}
-
-			bool pal = !emu._tia.New_Frame;
-
-			Console.WriteLine("PAL Detection: {0}", pal);
-			return pal;
+			return true;
 		}
 	}
 }

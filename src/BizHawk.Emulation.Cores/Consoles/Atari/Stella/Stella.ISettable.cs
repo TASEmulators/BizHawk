@@ -7,9 +7,9 @@ using Newtonsoft.Json;
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Cores.Atari.Atari2600
+namespace BizHawk.Emulation.Cores.Atari.Stella
 {
-	public partial class Atari2600 : ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
+	public partial class Stella : ISettable<Stella.A2600Settings, Stella.A2600SyncSettings>
 	{
 		public A2600Settings GetSettings()
 		{
@@ -23,10 +23,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public PutSettingsDirtyBits PutSettings(A2600Settings o)
 		{
-			if (Settings == null || Settings.SECAMColors != o.SECAMColors)
-			{
-				_tia?.SetSecam(o.SECAMColors);
-			}
 
 			Settings = o;
 			return PutSettingsDirtyBits.None;

@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Atari.Atari2600
+namespace BizHawk.Emulation.Cores.Atari.Stella
 {
-	public partial class Atari2600 : IDebuggable
+	public partial class Stella : IDebuggable
 	{
-		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters() => Cpu.GetCpuFlagsAndRegisters();
+		IDictionary<string, RegisterValue> dummyGetCPUflags() { return new Dictionary<string, RegisterValue>(); }
+		void setCPURegister(string register, int value) { }
 
-		public void SetCpuRegister(string register, int value) => Cpu.SetCpuRegister(register, value);
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters() => dummyGetCPUflags();
+
+		public void SetCpuRegister(string register, int value) => setCPURegister(register, value);
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 
@@ -17,6 +20,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 
-		public long TotalExecutedCycles => Cpu.TotalExecutedCycles;
+		public long TotalExecutedCycles => 0;
 	}
 }

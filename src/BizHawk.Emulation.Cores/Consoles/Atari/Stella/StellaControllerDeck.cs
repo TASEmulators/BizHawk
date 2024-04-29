@@ -5,7 +5,7 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Atari.Atari2600
+namespace BizHawk.Emulation.Cores.Atari.Stella
 {
 	public class Atari2600ControllerDeck
 	{

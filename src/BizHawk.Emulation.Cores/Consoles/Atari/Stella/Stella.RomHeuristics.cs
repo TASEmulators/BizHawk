@@ -4,9 +4,9 @@ using System.Linq;
 
 using BizHawk.Common.BufferExtensions;
 
-namespace BizHawk.Emulation.Cores.Atari.Atari2600
+namespace BizHawk.Emulation.Cores.Atari.Stella
 {
-	public partial class Atari2600
+	public partial class Stella
 	{
 		// Heuristics logic based on Stella's logic
 		private static string DetectMapper(byte[] rom)

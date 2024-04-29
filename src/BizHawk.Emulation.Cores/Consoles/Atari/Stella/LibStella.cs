@@ -3,11 +3,11 @@ using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+namespace BizHawk.Emulation.Cores.Consoles.Atari.Stella
 {
 	public abstract class LibGPGX
 	{
-		public const string DllName = "libgenplusgx.dll";
+		public const string DllName = "libstella.dll";
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_get_video(out int w, out int h, out int pitch, ref IntPtr buffer);

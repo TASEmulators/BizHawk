@@ -1,8 +1,8 @@
 ﻿using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Atari.Atari2600
+namespace BizHawk.Emulation.Cores.Atari.Stella
 {
-	public partial class Atari2600 : IInputPollable
+	public partial class Stella : IInputPollable
 	{
 		public int LagCount
 		{
