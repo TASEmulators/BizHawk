@@ -7,24 +7,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class Gameboy : IDebuggable
 	{
-		public ushort GetMapper(string bank)
-		{
-			switch(bank)
-			{
-				case "ROM0 BANK":
-					return (ushort)LibGambatte.gambatte_getbank(GambatteState, LibGambatte.BankType.ROM0);
-				case "ROMX BANK":
-					return (ushort)LibGambatte.gambatte_getbank(GambatteState, LibGambatte.BankType.ROMX);
-				case "VRAM BANK":
-					return (byte)LibGambatte.gambatte_getbank(GambatteState, LibGambatte.BankType.VRAM);
-				case "SRAM BANK":
-					return (byte)LibGambatte.gambatte_getbank(GambatteState, LibGambatte.BankType.SRAM);
-				case "WRAM BANK":
-					return (byte)LibGambatte.gambatte_getbank(GambatteState, LibGambatte.BankType.WRAM);
-				default:
-					throw new NotImplementedException();
-			}
-		}
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			var data = new int[10];
