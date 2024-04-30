@@ -62,6 +62,10 @@ $(OBJ_DIR)/%.cpp.o: %.cpp
 	@echo cxx $<
 	@mkdir -p $(@D)
 	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_RELEASE) $(PER_FILE_FLAGS_$<)
+$(OBJ_DIR)/%.cxx.o: %.cxx
+	@echo cxx $<
+	@mkdir -p $(@D)
+	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_RELEASE) $(PER_FILE_FLAGS_$<)
 $(DOBJ_DIR)/%.c.o: %.c
 	@echo cc $<
 	@mkdir -p $(@D)
@@ -70,11 +74,19 @@ $(DOBJ_DIR)/%.cpp.o: %.cpp
 	@echo cxx $<
 	@mkdir -p $(@D)
 	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_DEBUG) $(PER_FILE_FLAGS_$<)
+$(DOBJ_DIR)/%.cxx.o: %.cxx
+	@echo cxx $<
+	@mkdir -p $(@D)
+	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_DEBUG) $(PER_FILE_FLAGS_$<)
 $(OBJ_DIR)/%.c.s: %.c
 	@echo cc -S $<
 	@mkdir -p $(@D)
 	@$(CC) -c -S -o $@ $< $(CCFLAGS) $(CCFLAGS_RELEASE_ASONLY) $(PER_FILE_FLAGS_$<)
 $(OBJ_DIR)/%.cpp.s: %.cpp
+	@echo cxx -S $<
+	@mkdir -p $(@D)
+	@$(CC) -c -S -o $@ $< $(CXXFLAGS) $(CXXFLAGS_RELEASE_ASONLY) $(PER_FILE_FLAGS_$<)
+$(OBJ_DIR)/%.cxx.s: %.cxx
 	@echo cxx -S $<
 	@mkdir -p $(@D)
 	@$(CC) -c -S -o $@ $< $(CXXFLAGS) $(CXXFLAGS_RELEASE_ASONLY) $(PER_FILE_FLAGS_$<)
