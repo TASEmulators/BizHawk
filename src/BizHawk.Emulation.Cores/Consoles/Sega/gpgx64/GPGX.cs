@@ -46,8 +46,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				{
 					VSystemID.Raw.GEN => "GEN",
 					VSystemID.Raw.SMS => "SMS",
-					VSystemID.Raw.GG => "GG",
-					VSystemID.Raw.SG => "SG",
+					VSystemID.Raw.GG => ".GG",
+					VSystemID.Raw.SG => ".SG",
 					_ => throw new InvalidOperationException("Invalid system id")
 				};
 			}
