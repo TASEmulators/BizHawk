@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DisplayName("[SMS/GG] Load BIOS")]
 			[Description("Indicates whether to load the system BIOS rom.")]
 			[DefaultValue(false)]
-			public bool loadBIOS { get; set; }
+			public bool LoadBIOS { get; set; }
 
 			[DisplayName("[SMS] FM Sound Chip Type")]
 			[Description("Sets the method used to emulate the FM Sound Unit of the Sega Mark III/Master System. 'MAME' is fast and runs full speed on most systems.'Nuked' is cycle accurate, very high quality, and have substantial CPU requirements.")]
@@ -339,7 +339,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					InputSystemA = SystemForSystem(ControlTypeLeft),
 					InputSystemB = SystemForSystem(ControlTypeRight),
 					Region = Region,
-					loadBIOS = loadBIOS,
+					LoadBIOS = LoadBIOS,
 					ForceSram = game["sram"],
 					SMSFMSoundChip = SMSFMSoundChip,
 					GenesisFMSoundChip = GenesisFMSoundChip,

@@ -38,14 +38,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			// Determining system ID from the rom. If no rom provided, assume Genesis (Sega CD)
 			SystemId = VSystemID.Raw.GEN;
-			var RomExtension = string.Empty;
+			var romExtension = "GEN";
 			if (lp.Roms.Count >= 1)
 			{
 				SystemId = lp.Roms[0].Game.System;
-				// We need to pass the exact file extension to GPGX for it to correctly interpret the console
-				RomExtension = Path.GetExtension(lp.Roms[0].RomPath).RemovePrefix('.');
+				romExtension = SystemId switch
+				{
+					VSystemID.Raw.GEN => "GEN",
+					VSystemID.Raw.SMS => "SMS",
+					VSystemID.Raw.GG => "GG",
+					VSystemID.Raw.SG => "SG",
+					_ => throw new InvalidOperationException("Invalid system id")
+				};
 			}
-			
+
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
 
@@ -97,18 +103,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					DriveLightEnabled = true;
 				}
 
-				LibGPGX.INPUT_SYSTEM system_a = SystemForSystem(_syncSettings.ControlTypeLeft);
-				LibGPGX.INPUT_SYSTEM system_b = SystemForSystem(_syncSettings.ControlTypeRight);
-
-				var initResult = Core.gpgx_init(RomExtension, LoadCallback, _syncSettings.GetNativeSettings(lp.Game));
+				var initSettings = _syncSettings.GetNativeSettings(lp.Game);
+				var initResult = Core.gpgx_init(romExtension, LoadCallback, ref initSettings);
 
 				if (!initResult)
+				{
 					throw new Exception($"{nameof(Core.gpgx_init)}() failed");
+				}
 
 				{
-					int fpsnum = 60;
-					int fpsden = 1;
-					Core.gpgx_get_fps(ref fpsnum, ref fpsden);
+					Core.gpgx_get_fps(out var fpsnum, out var fpsden);
 					VsyncNumerator = fpsnum;
 					VsyncDenominator = fpsden;
 					Region = VsyncNumerator / VsyncDenominator > 55 ? DisplayType.NTSC : DisplayType.PAL;
@@ -137,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				KillMemCallbacks();
 
 				_tracer = new GPGXTraceBuffer(this, _memoryDomains, this);
-				(ServiceProvider as BasicServiceProvider).Register<ITraceable>(_tracer);
+				((BasicServiceProvider)ServiceProvider).Register(_tracer);
 			}
 
 			_romfile = null;
@@ -261,12 +265,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (firmwareID != null)
 				{
 					// this path will be the most common PEBKAC error, so be a bit more vocal about the problem
-					srcdata = CoreComm.CoreFileProvider.GetFirmware(firmwareID.Value, "GPGX firmwares are usually required.");
-					if (srcdata == null)
-					{
-						Console.WriteLine($"Frontend couldn't satisfy firmware request {firmwareID}");
-						return 0;
-					}
+					srcdata = CoreComm.CoreFileProvider.GetFirmwareOrThrow(firmwareID.Value, "GPGX firmwares are required.");
 				}
 				else
 				{
@@ -384,7 +383,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			inputsize = Marshal.SizeOf(typeof(LibGPGX.InputData));
 			if (!Core.gpgx_get_control(input, inputsize))
+			{
 				throw new Exception($"{nameof(Core.gpgx_get_control)}() failed");
+			}
 
 			ControlConverter = new(input, systemId: SystemId, cdButtons: _cds is not null);
 			ControllerDefinition = ControlConverter.ControllerDef;
