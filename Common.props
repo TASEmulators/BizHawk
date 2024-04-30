@@ -11,6 +11,7 @@
 		<ContinuousIntegrationBuild Condition=" '$(GITLAB_CI)' != '' Or '$(APPVEYOR)' != '' ">true</ContinuousIntegrationBuild>
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>portable</DebugType>
+		<DefineConstants>$(DefineConstants);TRACE</DefineConstants>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<ErrorReport>prompt</ErrorReport>
 		<Features>strict</Features>
@@ -23,11 +24,10 @@
 		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
 		<Optimize>false</Optimize>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-		<DefineConstants>TRACE</DefineConstants>
 		<Optimize>true</Optimize>
 		<PathMap>$(MSBuildProjectDirectory)=${$(MSBuildProjectName)}/</PathMap>
 	</PropertyGroup>
