@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
+using BizHawk.Emulation.Cores.Consoles.Atari.Stella;
 
 namespace BizHawk.Emulation.Cores.Atari.Stella
 {
@@ -177,6 +178,15 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			[Description("On Super Charger carts, this will skip the BIOS intro")]
 			[DefaultValue(false)]
 			public bool FastScBios { get; set; }
+
+
+			public CInterface.InitSettings GetNativeSettings(GameInfo game)
+			{
+				return new CInterface.InitSettings
+				{
+					dummy = 1
+				};
+			}
 
 			public A2600SyncSettings Clone()
 			{

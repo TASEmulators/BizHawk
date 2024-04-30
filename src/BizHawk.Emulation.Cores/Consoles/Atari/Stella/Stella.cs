@@ -1,8 +1,11 @@
 ﻿using System;
-
+using System.Linq;
+using BizHawk.BizInvoke;
 using BizHawk.Common;
-using BizHawk.Common.StringExtensions;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Atari.Stella;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Atari.Stella
 {
@@ -21,13 +24,56 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		}
 
 		[CoreConstructor(VSystemID.Raw.A26)]
-		public Stella(GameInfo game, byte[] rom, Stella.A2600Settings settings, Stella.A2600SyncSettings syncSettings)
+		public Stella(CoreLoadParameters<Stella.A2600Settings, Stella.A2600SyncSettings> lp)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			SyncSettings = syncSettings ?? new A2600SyncSettings();
+			SyncSettings = lp.SyncSettings ?? new A2600SyncSettings();
+			Settings = lp.Settings ?? new A2600Settings();
 			_controllerDeck = new Atari2600ControllerDeck(SyncSettings.Port1, SyncSettings.Port2);
+
+			_elf = new WaterboxHost(new WaterboxOptions
+			{
+				Path = PathUtils.DllDirectoryPath,
+				Filename = "stella.wbx",
+				SbrkHeapSizeKB = 512,
+				SealedHeapSizeKB = 4 * 1024,
+				InvisibleHeapSizeKB = 4 * 1024,
+				PlainHeapSizeKB = 4 * 1024,
+				MmapHeapSizeKB = 1 * 1024,
+				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
+			});
+
+			var callingConventionAdapter = CallingConventionAdapters.MakeWaterbox(new Delegate[]
+			{
+				LoadCallback
+			}, _elf);
+
+			using (_elf.EnterExit())
+			{
+				Core = BizInvoker.GetInvoker<CInterface>(_elf, _elf, callingConventionAdapter);
+				SyncSettings = lp.SyncSettings ?? new A2600SyncSettings();
+				Settings = lp.Settings ?? new A2600Settings();
+
+				CoreComm = lp.Comm;
+
+				_romfile = lp.Roms.FirstOrDefault()?.RomData;
+
+				var initResult = Core.stella_init(LoadCallback, SyncSettings.GetNativeSettings(lp.Game));
+
+				if (!initResult) throw new Exception($"{nameof(Core.stella_init)}() failed");
+
+				_elf.Seal();
+			}
 		}
+
+		private CInterface.load_archive_cb LoadCallback;
+
+		private readonly byte[] _romfile;
+		private readonly CInterface Core;
+		private readonly WaterboxHost _elf;
+		private CoreComm CoreComm { get; }
 
 		public string RomDetails { get; private set; }
 
