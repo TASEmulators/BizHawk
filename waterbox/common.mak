@@ -46,8 +46,14 @@ CXXFLAGS_RELEASE := -O3 -flto -DNDEBUG
 CXXFLAGS_RELEASE_ASONLY := -O3
 
 EXTRA_LIBS := -L $(SYSROOT)/lib/linux -lclang_rt.builtins-x86_64 $(EXTRA_LIBS)
+CPP_EXTRA_LIBS := -lc++ -lc++abi -lunwind $(EXTRA_LIBS)
+
 ifneq ($(filter %.cpp,$(SRCS)),)
-EXTRA_LIBS := -lc++ -lc++abi -lunwind $(EXTRA_LIBS)
+EXTRA_LIBS += $(CPP_EXTRA_LIBS)
+endif
+
+ifneq ($(filter %.cxx,$(SRCS)),)
+EXTRA_LIBS += $(CPP_EXTRA_LIBS)
 endif
 
 _OBJS := $(addsuffix .o,$(abspath $(SRCS)))

@@ -17,7 +17,7 @@ CXXFLAGS := \
 	-DBSPF_UNIX \
 	-D_REENTRANT \
 	-D__USE_BIZHAWK \
-	-std=c++17 \
+	-std=gnu++17 \
 	-Wno-multichar \
 
 LDFLAGS := 
