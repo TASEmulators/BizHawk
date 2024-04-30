@@ -3,12 +3,12 @@ using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
 
+#pragma warning disable IDE1006
+
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public abstract class LibGPGX
 	{
-		public const string DllName = "libgenplusgx.dll";
-
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_get_video(out int w, out int h, out int pitch, ref IntPtr buffer);
 
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public class InitSettings
+		public struct InitSettings
 		{
 			public uint BackdropColor;
 			public Region Region;
@@ -73,17 +73,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public GenesisFMSoundChipType GenesisFMSoundChip;
 
 			public bool SpritesAlwaysOnTop;
-			public bool loadBIOS;
+			public bool LoadBIOS;
 		}
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract bool gpgx_init(
 			string feromextension,
 			load_archive_cb feload_archive_cb,
-			[In]InitSettings settings);
+			ref InitSettings settings);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void gpgx_get_fps(ref int num, ref int den);
+		public abstract void gpgx_get_fps(out int num, out int den);
 
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract bool gpgx_get_control([Out]InputData dest, int bytes);
