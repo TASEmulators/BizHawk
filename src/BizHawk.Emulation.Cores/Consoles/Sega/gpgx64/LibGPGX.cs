@@ -75,12 +75,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public bool SpritesAlwaysOnTop;
 			public bool LoadBIOS;
 
+			[Flags]
 			public enum OverscanType : byte
 			{
-				None,
-				Vertical,
-				Horizontal,
-				All
+				None = 0,
+				Vertical = 1 << 0,
+				Horizontal = 1 << 1,
+				All = Vertical | Horizontal,
 			}
 			public OverscanType Overscan;
 			public bool GGExtra;

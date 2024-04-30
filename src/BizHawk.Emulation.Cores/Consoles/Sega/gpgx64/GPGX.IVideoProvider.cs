@@ -1,4 +1,5 @@
 ﻿using System;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
 
@@ -8,9 +9,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	{
 		public int[] GetVideoBuffer() => _vidBuff;
 
-		public int VirtualWidth => 320;
+		public int VirtualWidth { get; private set; }
 
-		public int VirtualHeight => 224;
+		public int VirtualHeight { get; private set; }
 
 		public int BufferWidth => _vwidth;
 
@@ -22,19 +23,52 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public int VsyncDenominator { get; }
 
-		private int[] _vidBuff = new int[0];
+		private int[] _vidBuff = Array.Empty<int>();
 		private int _vwidth;
 		private int _vheight;
+
+		private void SetVirtualDimensions()
+		{
+			var widthHasOverscan = (_syncSettings.Overscan & LibGPGX.InitSettings.OverscanType.Horizontal) != 0;
+			var heightHasOverscan = (_syncSettings.Overscan & LibGPGX.InitSettings.OverscanType.Vertical) != 0;
+			var isPal = Region == DisplayType.PAL;
+
+			if (SystemId == VSystemID.Raw.GEN)
+			{
+				VirtualWidth = 320;
+				VirtualHeight = 224;
+				VirtualWidth += widthHasOverscan ? 28 : 0;
+				VirtualHeight += heightHasOverscan ? (isPal ? 48 : 0) + 16 : 0;
+			}
+			else
+			{
+				VirtualWidth = 256;
+				VirtualHeight = 192;
+
+				if (SystemId == VSystemID.Raw.GG && !_syncSettings.GGExtra)
+				{
+					VirtualWidth += widthHasOverscan ? 28 : -96;
+					VirtualHeight += heightHasOverscan ? (isPal ? 96 : 48) : -48;
+				}
+				else
+				{
+					VirtualWidth += widthHasOverscan ? 28 : 0;
+					VirtualHeight += heightHasOverscan ? (isPal ? 96 : 48) : 0;
+				}
+			}
+		}
 
 		private void UpdateVideoInitial()
 		{
 			// hack: you should call update_video() here, but that gives you 256x192 on frame 0
-			// and we know that we only use GPGX to emulate genesis games that will always be 320x224 immediately afterwards
+			// and we know that genesis games will almost always be 320x224 immediately afterwards
 
-			// so instead, just assume a 320x224 size now; if that happens to be wrong, it'll be fixed soon enough.
+			// we set more proper width/height fields in VirtualWidth/VirtualHeight
+			// so we'll just use them for the buffer width/height
+			// if that's wrong, it'll be fixed next frame
 
-			_vwidth = 320;
-			_vheight = 224;
+			_vwidth = VirtualWidth;
+			_vheight = VirtualHeight;
 			_vidBuff = new int[_vwidth * _vheight];
 			for (int i = 0; i < _vidBuff.Length; i++)
 			{
@@ -59,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				_vwidth = gpwidth;
 				_vheight = gpheight;
 
-				if (_settings.PadScreen320 && _vwidth == 256)
+				if (_settings.PadScreen320 && _vwidth < 320)
 					_vwidth = 320;
 
 				int xpad = (_vwidth - gpwidth) / 2;

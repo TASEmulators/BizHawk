@@ -116,6 +116,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					Region = VsyncNumerator / VsyncDenominator > 55 ? DisplayType.NTSC : DisplayType.PAL;
 				}
 
+				SetVirtualDimensions();
+
 				// when we call Seal, ANY pointer passed from managed code must be 0.
 				// this is so the initial state is clean
 				// the only two pointers set so far are LoadCallback, which the core zeroed itself,
