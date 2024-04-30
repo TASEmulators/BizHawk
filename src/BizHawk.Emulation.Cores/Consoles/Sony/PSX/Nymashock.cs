@@ -62,8 +62,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public Nymashock(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, VSystemID.Raw.PSX, "PSX Front Panel", lp.Settings, lp.SyncSettings)
 		{
-			if (lp.Roms.Count > 0)
-				throw new InvalidOperationException("To load a PSX game, please load the CUE file and not the BIN file.");
 			var firmwares = new Dictionary<string, FirmwareID>
 			{
 				{ "FIRMWARE:$J", new("PSX", "J") },
