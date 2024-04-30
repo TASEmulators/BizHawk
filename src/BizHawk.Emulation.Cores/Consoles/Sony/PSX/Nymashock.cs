@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{ "psx.input.port7.gun_chairs", new() { NonSync = true } },
 			{ "psx.input.port8.gun_chairs", new() { NonSync = true } },
 
-			{ "psx.dbg_exe_cdpath", new() { Hide = true } },
+			{ "psx.dbg_exe_cdpath", new() { Hide = true, Default = string.Empty } },
 
 			{ "psx.spu.resamp_quality", new() { NonSync = true } },
 			{ "psx.input.mouse_sensitivity", new() { Hide = true } },
