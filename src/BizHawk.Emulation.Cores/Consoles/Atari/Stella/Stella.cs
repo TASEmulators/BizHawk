@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
@@ -45,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
+			LoadCallback = load_archive;
 			var callingConventionAdapter = CallingConventionAdapters.MakeWaterbox(new Delegate[]
 			{
 				LoadCallback
@@ -93,6 +95,54 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		private static bool DetectPal(GameInfo game, byte[] rom)
 		{
 			return true;
+		}
+
+		/// <summary>
+		/// core callback for file loading
+		/// </summary>
+		/// <param name="filename">string identifying file to be loaded</param>
+		/// <param name="buffer">buffer to load file to</param>
+		/// <param name="maxsize">maximum length buffer can hold</param>
+		/// <returns>actual size loaded, or 0 on failure</returns>
+		private int load_archive(string filename, IntPtr buffer, int maxsize)
+		{
+			byte[] srcdata = null;
+
+			if (buffer == IntPtr.Zero)
+			{
+				Console.WriteLine("Couldn't satisfy firmware request {0} because buffer == NULL", filename);
+				return 0;
+			}
+
+			if (filename == "PRIMARY_ROM")
+			{
+				if (_romfile == null)
+				{
+					Console.WriteLine("Couldn't satisfy firmware request PRIMARY_ROM because none was provided.");
+					return 0;
+				}
+				srcdata = _romfile;
+			}
+
+			if (srcdata != null)
+			{
+				if (srcdata.Length > maxsize)
+				{
+					Console.WriteLine("Couldn't satisfy firmware request {0} because {1} > {2}", filename, srcdata.Length, maxsize);
+					return 0;
+				}
+				else
+				{
+					Marshal.Copy(srcdata, 0, buffer, srcdata.Length);
+					Console.WriteLine("Firmware request {0} satisfied at size {1}", filename, srcdata.Length);
+					return srcdata.Length;
+				}
+			}
+			else
+			{
+				throw new InvalidOperationException("Unknown error processing firmware");
+			}
+
 		}
 	}
 }
