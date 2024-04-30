@@ -607,7 +607,7 @@ enum GenesisFMSoundChipType
 struct InitSettings
 {
 	uint32_t BackdropColor;
-	int Region;
+	int32_t Region;
 	uint16_t LowPassRange;
 	int16_t LowFreq;
 	int16_t HighFreq;
@@ -615,14 +615,16 @@ struct InitSettings
 	int16_t MidGain;
 	int16_t HighGain;
 	uint8_t Filter;
-	char InputSystemA;
-	char InputSystemB;
-	char SixButton;
-	char ForceSram;
+	uint8_t InputSystemA;
+	uint8_t InputSystemB;
+	uint8_t SixButton;
+	uint8_t ForceSram;
 	uint8_t SMSFMSoundChip;
 	uint8_t GenesisFMSoundChip;
 	uint8_t SpritesAlwaysOnTop;
 	uint8_t LoadBios;
+	uint8_t Overscan;
+	uint8_t GGExtra;
 };
 
 
@@ -759,7 +761,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 	// Selecting FM Sound chip to use for SMS / GG emulation. Using a default for now, until we also
 	// accept this core for SMS/GG emulation in BizHawk
- switch (settings->SMSFMSoundChip)
+	switch (settings->SMSFMSoundChip)
 	{
 		case YM2413_DISABLED:
 			config.opll = 0;
@@ -819,8 +821,8 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	config.cd_latency     = 1;
 
 	/* display options */
-	config.overscan               = 0;  /* 3 = all borders (0 = no borders , 1 = vertical borders only, 2 = horizontal borders only) */
-	config.gg_extra               = 0;  /* 1 = show extended Game Gear screen (256x192) */
+	config.overscan               = settings->Overscan; /* 3 = all borders (0 = no borders , 1 = vertical borders only, 2 = horizontal borders only) */
+	config.gg_extra               = settings->GGExtra; /* 1 = show extended Game Gear screen (256x192) */
 	config.render                 = 1;  /* 1 = double resolution output (only when interlaced mode 2 is enabled) */
 	config.ntsc                   = 0;
 	config.lcd                    = 0;  /* 0.8 fixed point */

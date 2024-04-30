@@ -74,6 +74,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			public bool SpritesAlwaysOnTop;
 			public bool LoadBIOS;
+
+			public enum OverscanType : byte
+			{
+				None,
+				Vertical,
+				Horizontal,
+				All
+			}
+			public OverscanType Overscan;
+			public bool GGExtra;
 		}
 
 		[BizImport(CallingConvention.Cdecl)]
