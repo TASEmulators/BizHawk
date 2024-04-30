@@ -77,6 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			["C64"] = "C64",
 			["GEN"] = "Genesis",
 			["SMS"] = "Sega Master System",
+			["GG"] = "Sega Game Gear",
 			["PSX"] = "PlayStation",
 			["Jaguar"] = "Jaguar",
 			["Lynx"] = "Lynx",

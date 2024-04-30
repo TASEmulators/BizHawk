@@ -255,7 +255,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
  					"CD_BIOS_EU" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_EU"),
  					"CD_BIOS_JP" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_JP"),
  					"CD_BIOS_US" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_US"),
- 					"GG_BIOS" => new(system: VSystemID.Raw.SMS, firmware: "Japan"),
+					"GG_BIOS" => new(system: VSystemID.Raw.GG, firmware: "Majesco"),
  					"MS_BIOS_EU" => new(system: VSystemID.Raw.SMS, firmware: "Export"),
  					"MS_BIOS_JP" => new(system: VSystemID.Raw.SMS, firmware: "Japan"),
  					"MS_BIOS_US" => new(system: VSystemID.Raw.SMS, firmware: "Export"),
@@ -265,7 +265,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (firmwareID != null)
 				{
 					// this path will be the most common PEBKAC error, so be a bit more vocal about the problem
-					srcdata = CoreComm.CoreFileProvider.GetFirmwareOrThrow(firmwareID.Value, "GPGX firmwares are required.");
+					srcdata = CoreComm.CoreFileProvider.GetFirmware(firmwareID.Value, "GPGX firmwares are required.");
+					if (srcdata == null)
+					{
+						Console.WriteLine($"Frontend couldn't satisfy firmware request {firmwareID}");
+						return 0;
+					}
 				}
 				else
 				{
