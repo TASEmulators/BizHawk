@@ -77,6 +77,10 @@
 	path = waterbox/gpgx/Genesis-Plus-GX
 	url = https://github.com/TASEmulators/Genesis-Plus-GX.git
 	branch = tasvideos-2.1
+[submodule "ExternalProjects/libchdr/libchdr"]
+	path = ExternalProjects/libchdr/libchdr
+	url = https://github.com/rtissera/libchdr.git
 [submodule "waterbox/stella/core"]
 	path = waterbox/stella/core
 	url = https://github.com/TASEmulators/stella.git
+	branch = tasvideos-1

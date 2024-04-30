@@ -349,6 +349,9 @@ namespace BizHawk.Emulation.Common
 			Option("SMS", "Japan", in sms_jp_21);
 			Option("SMS", "Korea", in sms_kr);
 
+			// GG
+			FirmwareAndOption("914AA165E3D879F060BE77870D345B60CFEB4EDE", 1024, "GG", "Majesco", "GG_majesco.gg", "GG BIOS (USA/Majesco)");
+
 			// PSX
 			// http://forum.fobby.net/index.php?t=msg&goto=2763 [f]
 			// http://www.psxdev.net/forum/viewtopic.php?f=69&t=56 [p]

@@ -169,7 +169,7 @@ pub extern fn wbx_create_host(layout: &MemoryLayoutTemplate, module_name: *const
 pub extern fn wbx_destroy_host(obj: *mut WaterboxHost, ret: &mut Return<()>) {
 	let res = (|| {
 		unsafe {
-			Box::from_raw(obj);
+			drop(Box::from_raw(obj));
 			Ok(())
 		}
 	})();

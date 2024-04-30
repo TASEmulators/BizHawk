@@ -622,7 +622,7 @@ struct InitSettings
 	uint8_t SMSFMSoundChip;
 	uint8_t GenesisFMSoundChip;
 	uint8_t SpritesAlwaysOnTop;
-	uint8_t loadBios;
+	uint8_t LoadBios;
 };
 
 
@@ -813,7 +813,7 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	config.master_clock   = 0; /* = AUTO (1 = NTSC, 2 = PAL) */
 	config.force_dtack    = 0;
 	config.addr_error     = 1;
-	config.bios           = settings->loadBios;
+	config.bios           = settings->LoadBios ? 3 : 0; /* Load BIOS and do NOT unload cartridge (bit 0: load bios, bit 1: keep cartridge loaded) */
 	config.lock_on        = 0; /* = OFF (or TYPE_SK, TYPE_GG & TYPE_AR) */
 	config.add_on         = 0; /* = HW_ADDON_AUTO (or HW_ADDON_MEGACD, HW_ADDON_MEGASD & HW_ADDON_ONE) */
 	config.cd_latency     = 1;
