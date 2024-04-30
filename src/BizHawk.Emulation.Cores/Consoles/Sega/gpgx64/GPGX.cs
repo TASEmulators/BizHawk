@@ -6,10 +6,8 @@ using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Common;
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.DiscSystem;
 using System.Linq;
-using System.IO;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
