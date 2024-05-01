@@ -657,6 +657,13 @@ GPGX_EX void gpgx_write_z80_bus(unsigned addr, unsigned data)
 	z80_writemap[addr >> 10][addr & 0x3FF] = data;
 }
 
+GPGX_EX void gpgx_write_m68k_bus(unsigned addr, unsigned data)
+{
+	cpu_memory_map m = m68k.memory_map[addr >> 16 & 0xff];
+	if (m.base && !m.write8)
+		m.base[(addr & 0xffff) ^ 1] = data;
+}
+
 GPGX_EX void gpgx_write_s68k_bus(unsigned addr, unsigned data)
 {
 	cpu_memory_map m = s68k.memory_map[addr >> 16 & 0xff];
