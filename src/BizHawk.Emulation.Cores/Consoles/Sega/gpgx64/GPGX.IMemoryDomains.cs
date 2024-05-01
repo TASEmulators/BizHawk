@@ -29,8 +29,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					var oneByteWidth = name is "Z80 RAM" or "Main RAM" or "ROM" or "Cart (Volatile) RAM" or "SRAM";
 
 					var endian = oneByteWidth
-							? MemoryDomain.Endian.Little
-							: MemoryDomain.Endian.Big;
+						? MemoryDomain.Endian.Little
+						: MemoryDomain.Endian.Big;
 
 					if (name == "VRAM")
 					{
@@ -178,6 +178,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 							if (a > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 							Core.gpgx_write_z80_bus(a, val);
 						}, 1);
+
+					mm.Add(systemBus);
 				}
 
 				mm.Add(_elf.GetPagesDomain());
