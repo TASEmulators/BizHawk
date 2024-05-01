@@ -19,33 +19,33 @@ namespace BizHawk.Client.Common
 
 		/// <remarks>
 		/// <c>AppliesTo[0]</c> is used as the group label, and
-		/// <c>Config.PreferredCores[AppliesTo[0]]</c> (lookup on global <see cref="Config"/> instance) determines the currently selected option.
-		/// The tuples' order determines the order of menu items.
+		/// <c>Config.PreferredCores[AppliesTo[0]]</c> (lookup on global <see cref="Config"/> instance) determines which option is shown as checked.<br/>
+		/// The order within submenus and the order of the submenus themselves are determined by the declaration order here.
 		/// </remarks>
 		public static readonly IReadOnlyList<(string[] AppliesTo, string[] CoreNames)> CorePickerUIData = new List<(string[], string[])>
 		{
-			(new[] { VSystemID.Raw.NES },
-				new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
-			(new[] { VSystemID.Raw.SNES },
-				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes, CoreNames.Bsnes115, CoreNames.SubBsnes115 }),
-			(new[] { VSystemID.Raw.N64 },
-				new[] { CoreNames.Mupen64Plus, CoreNames.Ares64 }),
-			(new[] { VSystemID.Raw.SGB },
-				new[] { CoreNames.Gambatte, CoreNames.Bsnes, CoreNames.Bsnes115, CoreNames.SubBsnes115 }),
 			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC },
 				new[] { CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk }),
 			(new[] { VSystemID.Raw.GBL },
 				new[] { CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x }),
+			(new[] { VSystemID.Raw.SGB },
+				new[] { CoreNames.Gambatte, CoreNames.Bsnes115, CoreNames.SubBsnes115, CoreNames.Bsnes }),
 			(new[] { VSystemID.Raw.GEN },
 				new[] { CoreNames.Gpgx, CoreNames.PicoDrive }),
-			(new[] { VSystemID.Raw.SMS, VSystemID.Raw.GG, VSystemID.Raw.SG },
-				new[] { CoreNames.Gpgx, CoreNames.SMSHawk }),
+			(new[] { VSystemID.Raw.N64 },
+				new[] { CoreNames.Mupen64Plus, CoreNames.Ares64 }),
+			(new[] { VSystemID.Raw.NES },
+				new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
 			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX, VSystemID.Raw.SGXCD },
 				new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk }),
 			(new[] { VSystemID.Raw.PSX },
-				new[] { CoreNames.Octoshock, CoreNames.Nymashock }),
+				new[] { CoreNames.Nymashock, CoreNames.Octoshock }),
+			(new[] { VSystemID.Raw.SMS, VSystemID.Raw.GG, VSystemID.Raw.SG },
+				new[] { CoreNames.Gpgx, CoreNames.SMSHawk }),
+			(new[] { VSystemID.Raw.SNES },
+				new[] { CoreNames.Snes9X, CoreNames.Bsnes115, CoreNames.SubBsnes115, CoreNames.Faust, CoreNames.Bsnes }),
 			(new[] { VSystemID.Raw.TI83 },
-				new[] { CoreNames.TI83Hawk, CoreNames.Emu83 }),
+				new[] { CoreNames.Emu83, CoreNames.TI83Hawk }),
 		};
 
 		public Config()

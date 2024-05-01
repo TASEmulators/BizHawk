@@ -86,9 +86,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			WindowSizeSubMenu.DropDownItems.AddRange(CreateWindowSizeFactorSubmenus());
 
-			foreach (var (groupLabel, appliesTo, coreNames) in Config.CorePickerUIData.Select(static tuple => (GroupLabel: tuple.AppliesTo[0], tuple.AppliesTo, tuple.CoreNames))
-				.OrderBy(static tuple => tuple.GroupLabel))
+			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
 			{
+				var groupLabel = appliesTo[0];
 				var submenu = new ToolStripMenuItem { Text = groupLabel };
 				void ClickHandler(object clickSender, EventArgs clickArgs)
 				{
@@ -107,6 +107,13 @@ namespace BizHawk.Client.EmuHawk
 				submenu.DropDownOpened += (openedSender, _1) =>
 				{
 					_ = Config.PreferredCores.TryGetValue(groupLabel, out var preferred);
+					if (!coreNames.Contains(preferred))
+					{
+						// invalid --> default (doing this here rather than when reading config file to allow for hacked-in values, though I'm not sure if that could do anything at the moment --yoshi)
+						var defaultCore = coreNames[0];
+						Console.WriteLine($"setting preferred core for {groupLabel} etc. to {defaultCore} (was {preferred ?? "null"})");
+						Config.PreferredCores[groupLabel] = preferred = defaultCore;
+					}
 					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems) entry.Checked = entry.Text == preferred;
 				};
 				CoresSubMenu.DropDownItems.Add(submenu);
