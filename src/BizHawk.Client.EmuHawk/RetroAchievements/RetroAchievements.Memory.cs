@@ -421,14 +421,14 @@ namespace BizHawk.Client.EmuHawk
 					case ConsoleID.Sega32X:
 						mfs.Add(new(domains["68K RAM"], 0, domains["68K RAM"].Size, 1));
 						TryAddDomain("32X RAM", addressMangler: 1);
-						// our picodrive doesn't byteswap its SRAM, so...
-						TryAddDomain("SRAM", addressMangler: domains["SRAM"] is MemoryDomainIntPtrSwap16Monitor ? 1u : 0u);
+						TryAddDomain("SRAM");
 						break;
 					case ConsoleID.MasterSystem:
 					case ConsoleID.GameGear:
-						mfs.Add(new(domains["Main RAM"], 0, domains["Main RAM"].Size));
+						TryAddDomain("Main RAM", 0x2000);
 						TryAddDomain("Cart (Volatile) RAM");
 						TryAddDomain("Save RAM");
+						TryAddDomain("SRAM");
 						break;
 					case ConsoleID.SNES:
 						mfs.Add(new(domains["WRAM"], 0, domains["WRAM"].Size));
