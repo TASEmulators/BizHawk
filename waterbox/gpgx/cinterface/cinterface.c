@@ -969,6 +969,15 @@ GPGX_EX int gpgx_init(const char* feromextension,
 			// not fatal if this fails (unless we're recording a movie, which we handle elsewhere)
 			if (load_archive(MD_BIOS, boot_rom, sizeof(boot_rom), NULL) != 0)
 			{
+#ifdef LSB_FIRST
+				// gpgx also expects us to byteswap the boot rom
+				for (int i = 0; i < sizeof(boot_rom); i += 2)
+				{
+					uint8 temp = boot_rom[i];
+					boot_rom[i] = boot_rom[i+1];
+					boot_rom[i+1] = temp;
+				}
+#endif
 				system_bios |= SYSTEM_MD;
 			}
 		}
