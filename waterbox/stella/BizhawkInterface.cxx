@@ -25,6 +25,7 @@ struct InitSettings
 	uint32_t dummy;
 };
 
+std::unique_ptr<OSystem> _a2600;
 
 ECL_EXPORT int stella_init(
 	ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize),
@@ -34,6 +35,17 @@ ECL_EXPORT int stella_init(
 
 	load_archive_cb = NULL; // don't hold onto load_archive_cb for longer than we need it for
 
+	Settings::Options opts;
+	_a2600 = MediaFactory::createOSystem();
+	if(!_a2600->initialize(opts)) { fprintf(stderr, "ERROR: Couldn't create A2600 System\n"); return 0; }
+
+	const string romfile = "PRIMARY_ROM";
+	const FSNode romnode(romfile);
+
+	auto error = _a2600->createConsole(romnode);
+	if (error != "") { fprintf(stderr, "ERROR: Couldn't create A2600 Console. Reason: '%s'\n", error.c_str()); return 0; }
+
+ fprintf(stderr, "A2600 console created successfully");
 	return 1;
 }
 

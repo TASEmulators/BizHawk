@@ -15,34 +15,47 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#pragma once 
+#ifndef FB_BACKEND_BIZHAWK_HXX
+#define FB_BACKEND_BIZHAWK_HXX
+
+#include "SDL_lib.hxx"
 
 class OSystem;
+class FBSurfaceBIZHAWK;
 
 #include "bspf.hxx"
 #include "FBBackend.hxx"
 
 /**
-  This class implements a standard Bizhawk 2D, hardware accelerated framebuffer
+  This class implements a standard BIZHAWK 2D, hardware accelerated framebuffer
   backend.  Behind the scenes, it may be using Direct3D, OpenGL(ES), etc.
 
   @author  Stephen Anthony
 */
-class FBBackendBizhawk : public FBBackend
+class FBBackendBIZHAWK : public FBBackend
 {
   public:
     /**
-      Creates a new Bizhawk framebuffer
+      Creates a new BIZHAWK framebuffer
     */
-    explicit FBBackendBizhawk(OSystem& osystem);
-    ~FBBackendBizhawk() override;
+    explicit FBBackendBIZHAWK(OSystem& osystem);
+    ~FBBackendBIZHAWK() override;
 
   public:
+    /**
+      Get a pointer to the SDL renderer.
+     */
+    SDL_Renderer* renderer() { return myRenderer; }
 
     /**
       Is the renderer initialized?
      */
-    bool isInitialized() const { return true; }
+    bool isInitialized() const { return myRenderer != nullptr; }
+
+    /**
+      Get the SDL pixel format.
+     */
+    const SDL_PixelFormat& pixelFormat() const { return *myPixelFormat; }
 
     /**
       Does the renderer support render targets?
@@ -86,7 +99,7 @@ class FBBackendBizhawk : public FBBackend
       @param b      The blue component of the color
     */
     FORCE_INLINE void getRGB(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b) const override
-      {  }
+      { SDL_GetRGB(pixel, myPixelFormat, r, g, b); }
 
     /**
       This method is called to retrieve the R/G/B/A data from the given pixel.
@@ -98,7 +111,7 @@ class FBBackendBizhawk : public FBBackend
       @param a      The alpha component of the color.
     */
     FORCE_INLINE void getRGBA(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b, uInt8* a) const override
-      { }
+      { SDL_GetRGBA(pixel, myPixelFormat, r, g, b, a); }
 
     /**
       This method is called to map a given R/G/B triple to the screen palette.
@@ -108,7 +121,7 @@ class FBBackendBizhawk : public FBBackend
       @param b  The blue component of the color.
     */
     inline uInt32 mapRGB(uInt8 r, uInt8 g, uInt8 b) const override
-      { return 0; }
+      { return SDL_MapRGB(myPixelFormat, r, g, b); }
 
     /**
       This method is called to map a given R/G/B/A triple to the screen palette.
@@ -119,7 +132,7 @@ class FBBackendBizhawk : public FBBackend
       @param a  The alpha component of the color.
     */
     inline uInt32 mapRGBA(uInt8 r, uInt8 g, uInt8 b, uInt8 a) const override
-      { return 0; }
+      { return SDL_MapRGBA(myPixelFormat, r, g, b, a); }
 
     /**
       This method is called to get a copy of the specified ARGB data from the
@@ -234,6 +247,18 @@ class FBBackendBizhawk : public FBBackend
     int refreshRate() const override;
 
     /**
+      Checks if the display refresh rate should be adapted to game refresh
+      rate in (real) fullscreen mode.
+
+      @param displayIndex   The display which should be checked
+      @param adaptedSdlMode The best matching mode if the refresh rate
+                            should be changed
+
+      @return  True if the refresh rate should be changed
+    */
+    bool adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adaptedSdlMode);
+
+    /**
       After the renderer has been created, detect the features it supports.
      */
     void detectFeatures();
@@ -256,6 +281,13 @@ class FBBackendBizhawk : public FBBackend
   private:
     OSystem& myOSystem;
 
+    // The SDL video buffer
+    SDL_Window* myWindow{nullptr};
+    SDL_Renderer* myRenderer{nullptr};
+
+    // Used by mapRGB (when palettes are created)
+    SDL_PixelFormat* myPixelFormat{nullptr};
+
     // Center setting of current window
     bool myCenter{false};
 
@@ -273,9 +305,11 @@ class FBBackendBizhawk : public FBBackend
 
   private:
     // Following constructors and assignment operators not supported
-    FBBackendBizhawk() = delete;
-    FBBackendBizhawk(const FBBackendBizhawk&) = delete;
-    FBBackendBizhawk(FBBackendBizhawk&&) = delete;
-    FBBackendBizhawk& operator=(const FBBackendBizhawk&) = delete;
-    FBBackendBizhawk& operator=(FBBackendBizhawk&&) = delete;
+    FBBackendBIZHAWK() = delete;
+    FBBackendBIZHAWK(const FBBackendBIZHAWK&) = delete;
+    FBBackendBIZHAWK(FBBackendBIZHAWK&&) = delete;
+    FBBackendBIZHAWK& operator=(const FBBackendBIZHAWK&) = delete;
+    FBBackendBIZHAWK& operator=(FBBackendBIZHAWK&&) = delete;
 };
+
+#endif

@@ -1,7 +1,14 @@
+include Makefile.SDL
+
 STELLA_DIR := core
+
+CCFLAGS := \
+	-ISDL/include \
+	-ISDL/src
 
 CXXFLAGS := \
 	-I. \
+	-Iport \
 	-Icore/src/emucore \
 	-Icore/src/common \
 	-Icore/src/common/tv_filters \
@@ -13,8 +20,11 @@ CXXFLAGS := \
 	-Icore/src/gui \
 	-Icore/src/lib/httplib \
 	-Icore/src/lib/sqlite \
+	-ISDL/include/SDL2 \
+	-ISDL/include \
+	-ISDL/src \
 	-DUNIX \
-	-DBSPF_UNIX \
+ -DSDL_ENABLE_OLD_NAMES \
 	-D_REENTRANT \
 	-D__USE_BIZHAWK \
 	-std=gnu++17 \
@@ -25,9 +35,16 @@ LDFLAGS :=
 TARGET := stella.wbx
 
 SRCS = \
+ ${SDL_SRC} \
 	BizhawkInterface.cxx \
- EventHandlerBizhawk.cxx \
-	FBBackendBizhawk.cxx \
+ port/EventHandlerBizhawk.cxx \
+	port/FBBackendBizhawk.cxx \
+	port/FBSurfaceBizhawk.cxx \
+	port/FSNodeBizhawk.cxx \
+	port/OSystemBizhawk.cxx \
+	port/bk_blitter/BilinearBlitter.cxx \
+	port/bk_blitter/BlitterFactory.cxx \
+	port/bk_blitter/QisBlitter.cxx \
 	core/src/emucore/OSystem.cxx \
 	core/src/emucore/Switches.cxx \
 	core/src/emucore/FrameBuffer.cxx \
@@ -181,8 +198,6 @@ SRCS = \
 	core/src/emucore/Control.cxx \
 	core/src/emucore/AtariVox.cxx \
 	core/src/os/unix/SerialPortUNIX.cxx \
-	core/src/os/unix/FSNodePOSIX.cxx \
-	core/src/os/unix/OSystemUNIX.cxx \
 	core/src/lib/tinyexif/tinyexif.cxx \
 	core/src/lib/sqlite/sqlite3.c \
 	core/src/lib/nanojpeg/nanojpeg.c \

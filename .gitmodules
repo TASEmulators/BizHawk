@@ -84,3 +84,6 @@
 	path = waterbox/stella/core
 	url = https://github.com/TASEmulators/stella.git
 	branch = tasvideos-1
+[submodule "waterbox/stella/SDL"]
+	path = waterbox/stella/SDL
+	url = https://github.com/libsdl-org/SDL.git
