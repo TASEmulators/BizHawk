@@ -280,6 +280,8 @@ namespace BizHawk.Emulation.Common
 			var jp_mcd_beta = File("F30D109D1C2F7C9FEAF38600C65834261DB73D1F", 131072, "MCD_jp_beta.bin", "Mega CD JP (Beta)");
 			var eu_mcd_221 = File("9DE4EDA59F544DB2D5FD7E6514601F7B648D8EB4", 131072, "MCD_eu_221.bin", "Mega CD EU (v2.21)");
 
+			FirmwareAndOption("1C470A9A8D0B211C5FEEA1C1C2376AA1F7934B16", 4096, "GEN", "TMSS", "TMSS.md", "Mega Drive TMSS Boot Rom (Japan)");
+
 			Firmware("GEN", "CD_BIOS_EU", "Mega CD Bios (Europe)");
 			Firmware("GEN", "CD_BIOS_JP", "Mega CD Bios (Japan)");
 			Firmware("GEN", "CD_BIOS_US", "Sega CD Bios (USA)");

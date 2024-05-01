@@ -263,7 +263,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue(LibGPGX.Region.Autodetect)]
 			public LibGPGX.Region Region { get; set; }
 
-			[DisplayName("[SMS/GG] Load BIOS")]
+			[DisplayName("Load BIOS")]
 			[Description("Indicates whether to load the system BIOS rom.")]
 			[DefaultValue(false)]
 			public bool LoadBIOS { get; set; }
