@@ -12,6 +12,12 @@
 #include <vdp_render.h>
 #include <debug/cpuhook.h>
 
+// Functions added by us to peek at static structs
+// (this is much less invasive than not making them static FYI)
+extern int eeprom_i2c_get_size(void);
+extern int sms_cart_is_codies(void);
+extern int sms_cart_bootrom_size(void);
+
 struct config_t config;
 
 char GG_ROM[256] = "GG_ROM"; // game genie rom
@@ -22,6 +28,7 @@ char GG_BIOS[256] = "GG_BIOS"; // game gear bootrom
 char CD_BIOS_EU[256] = "CD_BIOS_EU"; // cd bioses
 char CD_BIOS_US[256] = "CD_BIOS_US";
 char CD_BIOS_JP[256] = "CD_BIOS_JP";
+char MD_BIOS[256] = "MD_BIOS"; // genesis tmss bootrom
 char MS_BIOS_US[256] = "MS_BIOS_US"; // master system bioses
 char MS_BIOS_EU[256] = "MS_BIOS_EU";
 char MS_BIOS_JP[256] = "MS_BIOS_JP";
@@ -249,8 +256,6 @@ GPGX_EX void gpgx_get_vdp_view(vdpview_t *view)
 	view->ntw.baseaddr = ntwb;
 }
 
-extern int eeprom_i2c_get_size(void);
-
 // internal: computes sram size (no brams)
 static int saveramsize(void)
 {
@@ -316,6 +321,13 @@ GPGX_EX void* gpgx_get_sram(int *size)
 {
 	if (sram.on)
 	{
+		// codies is not actually battery backed, don't expose it as SRAM
+		if (sms_cart_is_codies())
+		{
+			*size = 0;
+			return NULL;
+		}
+
 		*size = saveramsize();
 		return sram.sram;
 	}
@@ -393,7 +405,11 @@ GPGX_EX void gpgx_poke_cram(int addr, uint8 val)
 
 	p = (uint16 *)&cram[addr & 0x7E];
 	data = *p;
-	data = ((data & 0x1C0) << 3) | ((data & 0x038) << 2) | ((data & 0x007) << 1);
+
+	if ((system_hw & SYSTEM_PBC) == SYSTEM_MD)
+	{
+		data = ((data & 0x1C0) << 3) | ((data & 0x038) << 2) | ((data & 0x007) << 1);
+	}
 
 	if (addr & 1)
 	{
@@ -406,7 +422,10 @@ GPGX_EX void gpgx_poke_cram(int addr, uint8 val)
 		data |= val << 8;
 	}
 
-	data = ((data & 0xE00) >> 3) | ((data & 0x0E0) >> 2) | ((data & 0x00E) >> 1);
+	if ((system_hw & SYSTEM_PBC) == SYSTEM_MD)
+	{
+		data = ((data & 0xE00) >> 3) | ((data & 0x0E0) >> 2) | ((data & 0x00E) >> 1);
+	}
 
 	if (*p != data)
 	{
@@ -460,19 +479,51 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 	switch (which)
 	{
 	case 0:
-		*area = work_ram;
-		*size = 0x10000;
-		return "68K RAM";
+		if ((system_hw & SYSTEM_PBC) == SYSTEM_MD)
+		{
+			*area = work_ram;
+			*size = 0x10000;
+			return "68K RAM";
+		}
+		else if (system_hw == SYSTEM_SG)
+		{
+			*area = work_ram;
+			*size = 0x400;
+			return "Main RAM";
+		}
+		else if (system_hw == SYSTEM_SGII)
+		{
+			*area = work_ram;
+			*size = 0x800;
+			return "Main RAM";
+		}
+		else
+		{
+			*area = work_ram;
+			*size = 0x2000;
+			return "Main RAM";
+		}
 	case 1:
-		*area = zram;
-		*size = 0x2000;
-		return "Z80 RAM";
+		if ((system_hw & SYSTEM_PBC) == SYSTEM_MD)
+		{
+			*area = zram;
+			*size = 0x2000;
+			return "Z80 RAM";
+		}
+		else return NULL;
 	case 2:
 		if (!cdd.loaded)
 		{
 			*area = ext.md_cart.rom;
 			*size = ext.md_cart.romsize;
-			return "MD CART";
+			if ((system_hw & SYSTEM_PBC) == SYSTEM_MD)
+			{
+				return "MD CART";
+			}
+			else
+			{
+				return "ROM";
+			}
 		}
 		else if (scd.cartridge.id)
 		{
@@ -530,39 +581,80 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 		}
 		else return NULL;
 	case 9:
-		*area = boot_rom;
-		*size = 0x800;
-		return "BOOT ROM";
-	default:
-		return NULL;
+		if (system_bios & SYSTEM_MD)
+		{
+			*area = boot_rom;
+			*size = 0x800;
+			return "MD BOOT ROM";
+		}
+		else if (system_bios & (SYSTEM_SMS | SYSTEM_GG))
+		{
+			*area = &ext.md_cart.rom[0x400000];
+			*size = sms_cart_bootrom_size();
+			return "BOOT ROM";
+		}
+		else return NULL;
 	case 10:
+		// these should be mutually exclusive
 		if (sram.on)
 		{
 			*area = sram.sram;
 			*size = saveramsize();
+
+			// Codemasters mapper SRAM is only used by 1 game
+			// and that 1 game does not actually have a battery
+			// (this also mimics SMSHawk's behavior)
+			if (sms_cart_is_codies())
+			{
+				return "Cart (Volatile) RAM";
+			}
+
 			return "SRAM";
+		}
+		else if ((system_hw & SYSTEM_PBC) != SYSTEM_MD)
+		{
+			*area = &work_ram[0x2000];
+			*size = sms_cart_ram_size();
+			return "Cart (Volatile) RAM";
 		}
 		else return NULL;
 	case 11:
+		if ((system_hw & SYSTEM_PBC) == SYSTEM_MD)
+		{
+			// MD has more CRAM
+			*size = 0x80;
+		}
+		else
+		{
+			*size = 0x40;
+		}
 		*area = cram;
-		*size = 128;
 		return "CRAM";
 	case 12:
 		*area = vsram;
 		*size = 128;
 		return "VSRAM";
 	case 13:
+		if ((system_hw & SYSTEM_PBC) == SYSTEM_MD)
+		{
+			// MD has more VRAM
+			*size = 0x10000;
+		}
+		else
+		{
+			*size = 0x4000;
+		}
 		*area = vram;
-		*size = 65536;
 		return "VRAM";
+	default:
+		return NULL;
 	}
 }
 
-GPGX_EX void gpgx_write_m68k_bus(unsigned addr, unsigned data)
+GPGX_EX void gpgx_write_z80_bus(unsigned addr, unsigned data)
 {
-	cpu_memory_map m = m68k.memory_map[addr >> 16 & 0xff];
-	if (m.base && !m.write8)
-		m.base[(addr & 0xffff) ^ 1] = data;
+	// note: this is not valid for MD
+	z80_writemap[addr >> 10][addr & 0x3FF] = data;
 }
 
 GPGX_EX void gpgx_write_s68k_bus(unsigned addr, unsigned data)
@@ -571,6 +663,13 @@ GPGX_EX void gpgx_write_s68k_bus(unsigned addr, unsigned data)
 	if (m.base && !m.write8)
 		m.base[(addr & 0xffff) ^ 1] = data;
 }
+
+GPGX_EX unsigned gpgx_peek_z80_bus(unsigned addr)
+{
+	// note: this is not valid for MD
+	return z80_readmap[addr >> 10][addr & 0x3FF];
+}
+
 GPGX_EX unsigned gpgx_peek_m68k_bus(unsigned addr)
 {
 	cpu_memory_map m = m68k.memory_map[addr >> 16 & 0xff];
@@ -579,6 +678,7 @@ GPGX_EX unsigned gpgx_peek_m68k_bus(unsigned addr)
 	else
 		return 0xff;
 }
+
 GPGX_EX unsigned gpgx_peek_s68k_bus(unsigned addr)
 {
 	cpu_memory_map m = s68k.memory_map[addr >> 16 & 0xff];
@@ -847,10 +947,25 @@ GPGX_EX int gpgx_init(const char* feromextension,
 	for (int i = 0; i < MAX_INPUTS; i++)
 		config.input[i].padtype = settings->SixButton ? DEVICE_PAD6B : DEVICE_PAD3B;
 
-	 // Hacky but effective. Setting the correct controller type here if this is sms or GG
-	if (system_hw == SYSTEM_SMS || system_hw == SYSTEM_SMS2 || system_hw == SYSTEM_GG || system_hw == SYSTEM_SG)
+	// Hacky but effective. Setting the correct controller type here if this is sms or GG
+	// note that we can't use system_hw yet, that's set in load_rom
+	if (memcmp("GEN", &romextension[0], 3) != 0)
+	{
 		for (int i = 0; i < MAX_INPUTS; i++)
 			config.input[i].padtype = DEVICE_PAD2B;
+	}
+	else
+	{
+		// gpgx won't load the genesis bootrom itself, we have to do that manually
+		if (config.bios & 1)
+		{
+			// not fatal if this fails (unless we're recording a movie, which we handle elsewhere)
+			if (load_archive(MD_BIOS, boot_rom, sizeof(boot_rom), NULL) != 0)
+			{
+				system_bios |= SYSTEM_MD;
+			}
+		}
+	}
 
 	// first try to load our main CD
 	if (!load_rom("PRIMARY_CD"))
@@ -961,6 +1076,8 @@ GPGX_EX int gpgx_getregs(gpregister_t *regs)
 	int ret = 0;
 
 	// 22
+	if ((system_hw & SYSTEM_PBC) == SYSTEM_MD)
+	{
 #define MAKEREG(x) regs->name = "M68K " #x; regs->value = m68k_get_reg(M68K_REG_##x); regs++; ret++;
 	MAKEREG(D0);
 	MAKEREG(D1);
@@ -985,6 +1102,7 @@ GPGX_EX int gpgx_getregs(gpregister_t *regs)
 	MAKEREG(ISP);
 	MAKEREG(IR);
 #undef MAKEREG
+	}
 
 	// 13
 #define MAKEREG(x) regs->name = "Z80 " #x; regs->value = Z80.x.d; regs++; ret++;
