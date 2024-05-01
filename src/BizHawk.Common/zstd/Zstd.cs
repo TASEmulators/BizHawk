@@ -2,10 +2,9 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
-using BizHawk.BizInvoke;
-using BizHawk.Common;
+// ReSharper disable MemberCanBePrivate.Local
 
-namespace BizHawk.Emulation.Common
+namespace BizHawk.Common
 {
 	public sealed class Zstd : IDisposable
 	{
@@ -14,11 +13,11 @@ namespace BizHawk.Emulation.Common
 			public readonly IntPtr Zcs;
 
 			public readonly byte[] InputBuffer;
-			public readonly GCHandle InputHandle;
+			public GCHandle InputHandle;
 			public LibZstd.StreamBuffer Input;
 
 			public readonly byte[] OutputBuffer;
-			public readonly GCHandle OutputHandle;
+			public GCHandle OutputHandle;
 			public LibZstd.StreamBuffer Output;
 
 			// TODO: tweak these sizes
@@ -32,7 +31,7 @@ namespace BizHawk.Emulation.Common
 
 			public ZstdCompressionStreamContext()
 			{
-				Zcs = _lib.ZSTD_createCStream();
+				Zcs = LibZstd.CreateCStream();
 
 				InputBuffer = new byte[INPUT_BUFFER_SIZE];
 				InputHandle = GCHandle.Alloc(InputBuffer, GCHandleType.Pinned);
@@ -57,13 +56,13 @@ namespace BizHawk.Emulation.Common
 				InUse = false;
 			}
 
-			private bool _disposed = false;
+			private bool _disposed;
 
 			public void Dispose()
 			{
 				if (!_disposed)
 				{
-					_lib.ZSTD_freeCStream(Zcs);
+					LibZstd.FreeCStream(Zcs);
 					InputHandle.Free();
 					OutputHandle.Free();
 					_disposed = true;
@@ -77,7 +76,7 @@ namespace BizHawk.Emulation.Common
 					throw new InvalidOperationException("Cannot init context still in use!");
 				}
 
-				_lib.ZSTD_initCStream(Zcs, compressionLevel);
+				LibZstd.InitCStream(Zcs, compressionLevel);
 				Input.Size = Input.Pos = Output.Pos = 0;
 				InUse = true;
 			}
@@ -94,7 +93,7 @@ namespace BizHawk.Emulation.Common
 				_ctx = ctx;
 			}
 
-			private bool _disposed = false;
+			private bool _disposed;
 
 			protected override void Dispose(bool disposing)
 			{
@@ -103,7 +102,7 @@ namespace BizHawk.Emulation.Common
 					Flush();
 					while (true)
 					{
-						var n = _lib.ZSTD_endStream(_ctx.Zcs, ref _ctx.Output);
+						var n = LibZstd.EndStream(_ctx.Zcs, ref _ctx.Output);
 						CheckError(n);
 						InternalFlush();
 						if (n == 0)
@@ -146,7 +145,7 @@ namespace BizHawk.Emulation.Common
 			{
 				while (_ctx.Input.Pos < _ctx.Input.Size)
 				{
-					CheckError(_lib.ZSTD_compressStream(_ctx.Zcs, ref _ctx.Output, ref _ctx.Input));
+					CheckError(LibZstd.CompressStream(_ctx.Zcs, ref _ctx.Output, ref _ctx.Input));
 					while (true)
 					{
 						if (_ctx.Output.Pos == ZstdCompressionStreamContext.OUTPUT_BUFFER_SIZE)
@@ -154,7 +153,7 @@ namespace BizHawk.Emulation.Common
 							InternalFlush();
 						}
 
-						var n = _lib.ZSTD_flushStream(_ctx.Zcs, ref _ctx.Output);
+						var n = LibZstd.FlushStream(_ctx.Zcs, ref _ctx.Output);
 						CheckError(n);
 						if (n == 0)
 						{
@@ -188,7 +187,7 @@ namespace BizHawk.Emulation.Common
 					var n = Math.Min(count, (int)(ZstdCompressionStreamContext.INPUT_BUFFER_SIZE - _ctx.Input.Size));
 					Marshal.Copy(buffer, offset, _ctx.Input.Ptr + (int)_ctx.Input.Size, n);
 					offset += n;
-					_ctx.Input.Size += (ulong)n;
+					_ctx.Input.Size += (uint)n;
 					count -= n;
 				}
 			}
@@ -199,11 +198,11 @@ namespace BizHawk.Emulation.Common
 			public readonly IntPtr Zds;
 
 			public readonly byte[] InputBuffer;
-			public readonly GCHandle InputHandle;
+			public GCHandle InputHandle;
 			public LibZstd.StreamBuffer Input;
 
 			public readonly byte[] OutputBuffer;
-			public readonly GCHandle OutputHandle;
+			public GCHandle OutputHandle;
 			public LibZstd.StreamBuffer Output;
 
 			// TODO: tweak these sizes
@@ -217,7 +216,7 @@ namespace BizHawk.Emulation.Common
 
 			public ZstdDecompressionStreamContext()
 			{
-				Zds = _lib.ZSTD_createDStream();
+				Zds = LibZstd.CreateDStream();
 
 				InputBuffer = new byte[INPUT_BUFFER_SIZE];
 				InputHandle = GCHandle.Alloc(InputBuffer, GCHandleType.Pinned);
@@ -242,13 +241,13 @@ namespace BizHawk.Emulation.Common
 				InUse = false;
 			}
 
-			private bool _disposed = false;
+			private bool _disposed;
 
 			public void Dispose()
 			{
 				if (!_disposed)
 				{
-					_lib.ZSTD_freeDStream(Zds);
+					LibZstd.FreeDStream(Zds);
 					InputHandle.Free();
 					OutputHandle.Free();
 					_disposed = true;
@@ -262,7 +261,7 @@ namespace BizHawk.Emulation.Common
 					throw new InvalidOperationException("Cannot init context still in use!");
 				}
 
-				_lib.ZSTD_initDStream(Zds);
+				LibZstd.InitDStream(Zds);
 				Input.Size = Input.Pos = Output.Pos = 0;
 				InUse = true;
 			}
@@ -279,7 +278,7 @@ namespace BizHawk.Emulation.Common
 				_ctx = ctx;
 			}
 
-			private bool _disposed = false;
+			private bool _disposed;
 
 			protected override void Dispose(bool disposing)
 			{
@@ -313,7 +312,7 @@ namespace BizHawk.Emulation.Common
 			public override void Flush()
 				=> throw new NotImplementedException();
 
-			private ulong _outputConsumed = 0;
+			private ulong _outputConsumed;
 
 			public override int Read(byte[] buffer, int offset, int count)
 			{
@@ -322,12 +321,12 @@ namespace BizHawk.Emulation.Common
 				{
 					var inputConsumed = _baseStream.Read(_ctx.InputBuffer,
 						(int)_ctx.Input.Size, (int)(ZstdDecompressionStreamContext.INPUT_BUFFER_SIZE - _ctx.Input.Size));
-					_ctx.Input.Size += (ulong)inputConsumed;
+					_ctx.Input.Size += (uint)inputConsumed;
 					// avoid interop in case compression cannot be done
 					if (_ctx.Output.Pos < ZstdDecompressionStreamContext.OUTPUT_BUFFER_SIZE
 						&& _ctx.Input.Pos < _ctx.Input.Size)
 					{
-						CheckError(_lib.ZSTD_decompressStream(_ctx.Zds, ref _ctx.Output, ref _ctx.Input));
+						CheckError(LibZstd.DecompressStream(_ctx.Zds, ref _ctx.Output, ref _ctx.Input));
 					}
 					var outputToConsume = Math.Min(n, (int)(_ctx.Output.Pos - _outputConsumed));
 					Marshal.Copy(_ctx.Output.Ptr + (int)_outputConsumed, buffer, offset, outputToConsume);
@@ -338,7 +337,8 @@ namespace BizHawk.Emulation.Common
 					if (_outputConsumed == ZstdDecompressionStreamContext.OUTPUT_BUFFER_SIZE)
 					{
 						// all the buffer is consumed, kick these back to the beginning
-						_ctx.Output.Pos = _outputConsumed = 0;
+						_outputConsumed = 0;
+						_ctx.Output.Pos = 0;
 					}
 
 					if (_ctx.Input.Pos == ZstdDecompressionStreamContext.INPUT_BUFFER_SIZE)
@@ -368,26 +368,19 @@ namespace BizHawk.Emulation.Common
 				=> throw new NotImplementedException();
 		}
 
-		private static readonly LibZstd _lib;
-
 		public static int MinCompressionLevel { get; }
-
 		public static int MaxCompressionLevel { get; }
 
 		static Zstd()
 		{
-			var resolver = new DynamicLibraryImportResolver(
-				OSTailoredCode.IsUnixHost ? "libzstd.so.1" : "libzstd.dll", hasLimitedLifetime: false);
-			_lib = BizInvoker.GetInvoker<LibZstd>(resolver, CallingConventionAdapters.Native);
-
-			MinCompressionLevel = _lib.ZSTD_minCLevel();
-			MaxCompressionLevel = _lib.ZSTD_maxCLevel();
+			MinCompressionLevel = LibZstd.MinCLevel();
+			MaxCompressionLevel = LibZstd.MaxCLevel();
 		}
 
 		private ZstdCompressionStreamContext? _compressionStreamContext;
 		private ZstdDecompressionStreamContext? _decompressionStreamContext;
 
-		private bool _disposed = false;
+		private bool _disposed;
 
 		public void Dispose()
 		{
@@ -399,11 +392,11 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		private static void CheckError(ulong code)
+		private static void CheckError(nuint code)
 		{
-			if (_lib.ZSTD_isError(code) != 0)
+			if (LibZstd.IsError(code) != 0)
 			{
-				throw new Exception($"ZSTD ERROR: {Marshal.PtrToStringAnsi(_lib.ZSTD_getErrorName(code))}");
+				throw new Exception($"ZSTD ERROR: {Marshal.PtrToStringAnsi(LibZstd.GetErrorName(code))}");
 			}
 		}
 
