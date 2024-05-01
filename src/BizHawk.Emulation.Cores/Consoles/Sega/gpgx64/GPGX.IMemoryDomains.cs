@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					var name = Marshal.PtrToStringAnsi(pName)!;
 
 					// typically Genesis domains will be 2 bytes large (and thus big endian and byteswapped)
-					var oneByteWidth = name is "Z80 RAM" or "Main RAM" or "ROM" or "Cart (Volatile) RAM" or "SRAM";
+					var oneByteWidth = name is "Z80 RAM" or "Main RAM" or "ROM" or "BOOT ROM" or "Cart (Volatile) RAM" or "SRAM";
 
 					var endian = oneByteWidth
 						? MemoryDomain.Endian.Little

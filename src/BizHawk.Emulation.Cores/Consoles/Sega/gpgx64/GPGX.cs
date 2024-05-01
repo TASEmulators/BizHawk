@@ -148,8 +148,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				KillMemCallbacks();
 
-				_tracer = new GPGXTraceBuffer(this, _memoryDomains, this);
-				((BasicServiceProvider)ServiceProvider).Register(_tracer);
+				if (SystemId == VSystemID.Raw.GEN)
+				{
+					_tracer = new GPGXTraceBuffer(this, _memoryDomains, this);
+					((BasicServiceProvider)ServiceProvider).Register(_tracer);
+				}
 			}
 
 			_romfile = null;
@@ -261,7 +264,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
  				FirmwareID? firmwareID = filename switch
  				{
-					"MD_BIOS" => new(system: VSystemID.Raw.GEN, firmware: "TMSS"),
+					"MD_BIOS" => new(system: VSystemID.Raw.GEN, firmware: "Boot"),
  					"CD_BIOS_EU" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_EU"),
  					"CD_BIOS_JP" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_JP"),
  					"CD_BIOS_US" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_US"),
