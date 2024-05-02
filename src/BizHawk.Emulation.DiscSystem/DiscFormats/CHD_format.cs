@@ -1101,7 +1101,7 @@ namespace BizHawk.Emulation.DiscSystem
 			// we always have anything decoded return 0
 			// so we can be lazy here an define a somewhat bogus map which allows us to skip compression
 
-			bw.Write((byte)0x11); // makes command 0 take 1 bit (thus limits compression length to 31 bits if we want to keep a byte level stream)
+			bw.Write((byte)0x11); // makes command 0 take 1 bit
 
 			// 60 bits are now left to write for the huffman map, we'll want them all to be 0
 			// also, after the huffman map proceeds the compression type bits, which for us will just be a ton of 0 bits
