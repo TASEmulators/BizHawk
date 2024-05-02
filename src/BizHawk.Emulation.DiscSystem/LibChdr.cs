@@ -15,6 +15,28 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	public static class LibChdr
 	{
+		public const uint CHD_HEADER_VERSION = 5;
+		public const uint CHD_V5_HEADER_SIZE = 124;
+
+		public const int CHD_MD5_BYTES = 16;
+		public const int CHD_SHA1_BYTES = 20;
+
+		public const byte CHD_MDFLAGS_CHECKSUM = 0x01;
+
+		public const uint CHD_CODEC_ZSTD = 0x7A737464; // zstd
+		public const uint CHD_CODEC_CD_ZSTD = 0x63647A73; // cdzs
+
+		public const uint CDROM_OLD_METADATA_TAG = 0x43484344; // CHCD
+		public const uint CDROM_TRACK_METADATA_TAG = 0x43485452; // CHTR
+		public const uint CDROM_TRACK_METADATA2_TAG = 0x43485432; // CHT2
+
+		// these formats are more for sscanf, they aren't suitable for C#
+		public const string CDROM_TRACK_METADATA_FORMAT = "TRACK:%d TYPE:%s SUBTYPE:%s FRAMES:%d";
+		public const string CDROM_TRACK_METADATA2_FORMAT = "TRACK:%d TYPE:%s SUBTYPE:%s FRAMES:%d PREGAP:%d PGTYPE:%s PGSUB:%s POSTGAP:%d";
+
+		public const int CHD_OPEN_READ = 1;
+		public const int CHD_OPEN_READWRITE = 2;
+
 		public enum chd_error : int
 		{
 			CHDERR_NONE,
@@ -46,9 +68,6 @@ namespace BizHawk.Emulation.DiscSystem
 			CHDERR_NO_ASYNC_OPERATION,
 			CHDERR_UNSUPPORTED_FORMAT
 		}
-
-		public const int CHD_OPEN_READ = 1;
-		public const int CHD_OPEN_READWRITE = 2;
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct chd_core_file
@@ -191,9 +210,6 @@ namespace BizHawk.Emulation.DiscSystem
 		[DllImport("chdr")]
 		public static extern void chd_close(IntPtr chd);
 
-		public const int CHD_MD5_BYTES = 16;
-		public const int CHD_SHA1_BYTES = 20;
-
 		// extracted chd header (not the same as the one on disk, but rather an interpreted one by libchdr)
 		[StructLayout(LayoutKind.Sequential)]
 		public struct chd_header
@@ -228,14 +244,6 @@ namespace BizHawk.Emulation.DiscSystem
 
 		[DllImport("chdr")]
 		public static extern chd_error chd_read(IntPtr chd, uint hunknum, byte[] buffer);
-
-		public const uint CDROM_TRACK_METADATA2_TAG = 0x43485432; // CHT2
-		public const uint CDROM_TRACK_METADATA_TAG = 0x43485452; // CHTR
-		public const uint CDROM_OLD_METADATA_TAG = 0x43484344; // CHCD
-
-		// these formats are more for sscanf, they aren't suitable for C#
-		public const string CDROM_TRACK_METADATA2_FORMAT = "TRACK:%d TYPE:%s SUBTYPE:%s FRAMES:%d PREGAP:%d PGTYPE:%s PGSUB:%s POSTGAP:%d";
-		public const string CDROM_TRACK_METADATA_FORMAT = "TRACK:%d TYPE:%s SUBTYPE:%s FRAMES:%d";
 
 		public enum chd_track_type : uint
 		{

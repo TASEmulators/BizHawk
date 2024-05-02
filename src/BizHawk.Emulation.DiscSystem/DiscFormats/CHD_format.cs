@@ -3,13 +3,16 @@ using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+
 using BizHawk.Common;
 using BizHawk.Emulation.DiscSystem.CUE;
 
 #pragma warning disable BHI1005
 
-//MAME CHD images, using the standard libchdr for reading
+// MAME CHD images, using the standard libchdr for reading
+// helpful reference: https://problemkaputt.de/psxspx-cdrom-disk-images-chd-mame.htm
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -237,7 +240,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			if (ret.PregapInChd && ret.Pregap == 0)
 			{
-				throw new CHDParseException("Malformed CHD format: CHD track type indicate it contained pregap data, but no pregap data is present");
+				throw new CHDParseException("Malformed CHD format: CHD track type indicates it contained pregap data, but no pregap data is present");
 			}
 
 			ret.IsCDI = strs[1] == "CDI/2352";
@@ -384,7 +387,7 @@ namespace BizHawk.Emulation.DiscSystem
 						i, metadataOutput, (uint)metadataOutput.Length, out var resultLen, out _, out _);
 					if (err == LibChdr.chd_error.CHDERR_NONE)
 					{
-						var metadata = Encoding.ASCII.GetString(metadataOutput, 0,  (int)resultLen);
+						var metadata = Encoding.ASCII.GetString(metadataOutput, 0,  (int)resultLen).TrimEnd('\0');
 						chdf.CdMetadatas.Add(ParseMetadata2(metadata));
 						continue;
 					}
@@ -393,7 +396,7 @@ namespace BizHawk.Emulation.DiscSystem
 						i, metadataOutput, (uint)metadataOutput.Length, out resultLen, out _, out _);
 					if (err == LibChdr.chd_error.CHDERR_NONE)
 					{
-						var metadata = Encoding.ASCII.GetString(metadataOutput, 0,  (int)resultLen);
+						var metadata = Encoding.ASCII.GetString(metadataOutput, 0,  (int)resultLen).TrimEnd('\0');
 						chdf.CdMetadatas.Add(ParseMetadata(metadata));
 						continue;
 					}
@@ -443,9 +446,12 @@ namespace BizHawk.Emulation.DiscSystem
 					chdExpectedNumSectors += cdMetadata.Frames + cdMetadata.Padding;
 				}
 
-				var chdActualNumSectors = chdf.Header.hunkcount * (chdf.Header.hunkbytes / LibChdr.CD_FRAME_SIZE);
-				//if (chdExpectedNumSectors != chdActualNumSectors) // i see some chds with 4 extra sectors of padding in the end?
-				if (chdExpectedNumSectors > chdActualNumSectors)
+				// pad expected sectors up to the next hunk
+				var sectorsPerHunk = chdf.Header.hunkbytes / LibChdr.CD_FRAME_SIZE;
+				chdExpectedNumSectors = (chdExpectedNumSectors + sectorsPerHunk - 1) / sectorsPerHunk * sectorsPerHunk;
+
+				var chdActualNumSectors = chdf.Header.hunkcount * sectorsPerHunk;
+				if (chdExpectedNumSectors != chdActualNumSectors)
 				{
 					throw new CHDParseException("Malformed CHD format: Mismatch in expected and actual number of sectors present");
 				}
@@ -788,6 +794,419 @@ namespace BizHawk.Emulation.DiscSystem
 				disc.Dispose();
 				throw;
 			}
+		}
+
+		// crc16 table taken from https://github.com/mamedev/mame/blob/26b5eb211924acbe4b78f67da8d0ae3cbe77aa6d/src/lib/util/hashing.cpp#L400C1-L434C4
+		private static readonly ushort[] _crc16Table =
+		{
+			0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50A5, 0x60C6, 0x70E7,
+			0x8108, 0x9129, 0xA14A, 0xB16B, 0xC18C, 0xD1AD, 0xE1CE, 0xF1EF,
+			0x1231, 0x0210, 0x3273, 0x2252, 0x52B5, 0x4294, 0x72F7, 0x62D6,
+			0x9339, 0x8318, 0xB37B, 0xA35A, 0xD3BD, 0xC39C, 0xF3FF, 0xE3DE,
+			0x2462, 0x3443, 0x0420, 0x1401, 0x64E6, 0x74C7, 0x44A4, 0x5485,
+			0xA56A, 0xB54B, 0x8528, 0x9509, 0xE5EE, 0xF5CF, 0xC5AC, 0xD58D,
+			0x3653, 0x2672, 0x1611, 0x0630, 0x76D7, 0x66F6, 0x5695, 0x46B4,
+			0xB75B, 0xA77A, 0x9719, 0x8738, 0xF7DF, 0xE7FE, 0xD79D, 0xC7BC,
+			0x48C4, 0x58E5, 0x6886, 0x78A7, 0x0840, 0x1861, 0x2802, 0x3823,
+			0xC9CC, 0xD9ED, 0xE98E, 0xF9AF, 0x8948, 0x9969, 0xA90A, 0xB92B,
+			0x5AF5, 0x4AD4, 0x7AB7, 0x6A96, 0x1A71, 0x0A50, 0x3A33, 0x2A12,
+			0xDBFD, 0xCBDC, 0xFBBF, 0xEB9E, 0x9B79, 0x8B58, 0xBB3B, 0xAB1A,
+			0x6CA6, 0x7C87, 0x4CE4, 0x5CC5, 0x2C22, 0x3C03, 0x0C60, 0x1C41,
+			0xEDAE, 0xFD8F, 0xCDEC, 0xDDCD, 0xAD2A, 0xBD0B, 0x8D68, 0x9D49,
+			0x7E97, 0x6EB6, 0x5ED5, 0x4EF4, 0x3E13, 0x2E32, 0x1E51, 0x0E70,
+			0xFF9F, 0xEFBE, 0xDFDD, 0xCFFC, 0xBF1B, 0xAF3A, 0x9F59, 0x8F78,
+			0x9188, 0x81A9, 0xB1CA, 0xA1EB, 0xD10C, 0xC12D, 0xF14E, 0xE16F,
+			0x1080, 0x00A1, 0x30C2, 0x20E3, 0x5004, 0x4025, 0x7046, 0x6067,
+			0x83B9, 0x9398, 0xA3FB, 0xB3DA, 0xC33D, 0xD31C, 0xE37F, 0xF35E,
+			0x02B1, 0x1290, 0x22F3, 0x32D2, 0x4235, 0x5214, 0x6277, 0x7256,
+			0xB5EA, 0xA5CB, 0x95A8, 0x8589, 0xF56E, 0xE54F, 0xD52C, 0xC50D,
+			0x34E2, 0x24C3, 0x14A0, 0x0481, 0x7466, 0x6447, 0x5424, 0x4405,
+			0xA7DB, 0xB7FA, 0x8799, 0x97B8, 0xE75F, 0xF77E, 0xC71D, 0xD73C,
+			0x26D3, 0x36F2, 0x0691, 0x16B0, 0x6657, 0x7676, 0x4615, 0x5634,
+			0xD94C, 0xC96D, 0xF90E, 0xE92F, 0x99C8, 0x89E9, 0xB98A, 0xA9AB,
+			0x5844, 0x4865, 0x7806, 0x6827, 0x18C0, 0x08E1, 0x3882, 0x28A3,
+			0xCB7D, 0xDB5C, 0xEB3F, 0xFB1E, 0x8BF9, 0x9BD8, 0xABBB, 0xBB9A,
+			0x4A75, 0x5A54, 0x6A37, 0x7A16, 0x0AF1, 0x1AD0, 0x2AB3, 0x3A92,
+			0xFD2E, 0xED0F, 0xDD6C, 0xCD4D, 0xBDAA, 0xAD8B, 0x9DE8, 0x8DC9,
+			0x7C26, 0x6C07, 0x5C64, 0x4C45, 0x3CA2, 0x2C83, 0x1CE0, 0x0CC1,
+			0xEF1F, 0xFF3E, 0xCF5D, 0xDF7C, 0xAF9B, 0xBFBA, 0x8FD9, 0x9FF8,
+			0x6E17, 0x7E36, 0x4E55, 0x5E74, 0x2E93, 0x3EB2, 0x0ED1, 0x1EF0,
+		};
+
+		private static ushort CalcCrc16(ReadOnlySpan<byte> bytes)
+		{
+			ushort crc16 = 0xFFFF;
+			foreach (var b in bytes)
+			{
+				crc16 = (ushort)((crc16 << 8) ^ _crc16Table[(crc16 >> 8) ^ b]);
+			}
+
+			return crc16;
+		}
+
+		private class ChdHunkMapEntry
+		{
+			public uint CompressedLength;
+			public long HunkOffset;
+			public ushort Crc16;
+		}
+
+		private static readonly byte[] _chdTag = Encoding.ASCII.GetBytes("MComprHD");
+		// 8 frames is apparently the standard, but we can probably afford to go a little extra ;)
+		private const uint CD_FRAMES_PER_HUNK = 75; // 1 second
+
+		public static void Dump(Disc disc, string path)
+		{
+			// limited dumping support, v5 only with zstd compression
+			// however, this is a lot better than a lot of other dumps
+			// as the reference chdman can't easily dump subcode data
+			// this is important as chds don't have index info listed!
+
+			// check if we have a multisession disc (CHD doesn't support those)
+			if (disc.Sessions.Count > 2)
+			{
+				throw new NotSupportedException("CHD does not support multisession discs");
+			}
+
+			using var fs = File.OpenWrite(path);
+			using var bw = new BinaryWriter(fs);
+
+			// write header
+			// note CHD header has values in big endian, while BinaryWriter will write in little endian
+			bw.Write(_chdTag);
+			bw.Write(BinaryPrimitives.ReverseEndianness(LibChdr.CHD_V5_HEADER_SIZE));
+			bw.Write(BinaryPrimitives.ReverseEndianness(LibChdr.CHD_HEADER_VERSION));
+			// v5 chd allows for 4 different compression types
+			// we only have 1 implemented here
+			bw.Write(BinaryPrimitives.ReverseEndianness(LibChdr.CHD_CODEC_ZSTD));
+			bw.Write(0);
+			bw.Write(0);
+			bw.Write(0);
+			bw.Write(0L); // total size of all uncompressed data (written later)
+			bw.Write(0L); // offset to hunk map (written later)
+			bw.Write(0L); // offset to first metadata (written later)
+			bw.Write(BinaryPrimitives.ReverseEndianness(LibChdr.CD_FRAME_SIZE * CD_FRAMES_PER_HUNK)); // bytes per hunk
+			bw.Write(BinaryPrimitives.ReverseEndianness(LibChdr.CD_FRAME_SIZE)); // bytes per sector (always CD_FRAME_SIZE)
+			var blankSha1 = new byte[LibChdr.CHD_SHA1_BYTES];
+			bw.Write(blankSha1); // SHA1 of raw data (written later)
+			bw.Write(blankSha1); // SHA1 of raw data + metadata (written later)
+			bw.Write(blankSha1); // SHA1 of raw data + metadata for parent (N/A, always 0 for us)
+
+			// collect metadata
+			var cdMetadatas = new List<CHDCdMetadata>();
+			var session = disc.Session1;
+			for (var i = 1; i <= session.InformationTrackCount; i++)
+			{
+				var track = session.Tracks[i];
+				// frames includes the pregap, so we need to make sure to include the first pregap
+				// other pregaps can be included as part of the previous track
+				// not really so bad in practice, since we do full raw tracks
+				var firstIndexLba = track.Number == 1 ? 0 : track.LBA;
+
+				var cdMetadata = new CHDCdMetadata
+				{
+					Track = (uint)track.Number,
+					IsCDI = track.Mode == 2 && session.TOC.SessionFormat == SessionFormat.Type10_CDI,
+					TrackType = track.Mode switch
+					{
+						0 => LibChdr.chd_track_type.CD_TRACK_AUDIO,
+						1 => LibChdr.chd_track_type.CD_TRACK_MODE1_RAW,
+						2 => LibChdr.chd_track_type.CD_TRACK_MODE2_RAW,
+						_ => throw new InvalidOperationException(),
+					},
+					SubType = LibChdr.chd_sub_type.CD_SUB_RAW,
+					SectorSize = 2352,
+					SubSize = 96,
+					Frames = (uint)(track.NextTrack.LBA - firstIndexLba),
+					Pregap = (uint)(track.LBA - firstIndexLba),
+					PostGap = 0,
+				};
+
+				cdMetadata.PregapInChd = cdMetadata.Pregap > 0;
+				cdMetadata.Padding = (0 - cdMetadata.Frames) & 3;
+				cdMetadata.PregapTrackType = cdMetadata.TrackType;
+				cdMetadatas.Add(cdMetadata);
+			}
+
+			// we'll need to collect hunk locations for the hunk map
+			var hunkMapEntries = new List<ChdHunkMapEntry>();
+			// a "proper" CHD should have a SHA1 of the uncompressed contents
+			using var sha1Inc = IncrementalHash.CreateHash(HashAlgorithmName.SHA1);
+			using var zstd = new Zstd();
+			var dsr = new DiscSectorReader(disc) { Policy = { DeinterleavedSubcode = true, DeterministicClearBuffer = true } };
+			var sectorBuf = new byte[LibChdr.CD_FRAME_SIZE];
+			var cdLba = 0;
+			uint chdLba = 0, chdPos;
+			var curHunk = new byte[LibChdr.CD_FRAME_SIZE * CD_FRAMES_PER_HUNK];
+#if false // TODO: cdzs
+			const uint COMPRESSION_LEN_BYTES = LibChdr.CD_FRAME_SIZE * CD_FRAMES_PER_HUNK < 65536 ? 2 : 3;
+			const uint ECC_BYTES = (CD_FRAMES_PER_HUNK + 7) / 8;
+			var hunkHeader = new byte[COMPRESSION_LEN_BYTES + ECC_BYTES];
+#endif
+
+			void EndHunk(uint hashLen)
+			{
+				var hunkOffset = bw.BaseStream.Position;
+
+				// TODO: adjust compression level?
+				// note: it's fairly important a high compression level is chosen
+				// libchdr will assume a compressed hunk with not be larger than an uncompressed hunk
+				// but with low compression levels, this is not necessarily true
+				using (var cstream = zstd.CreateZstdCompressionStream(bw.BaseStream, Zstd.MaxCompressionLevel))
+				{
+					cstream.Write(curHunk, 0, curHunk.Length);
+				}
+
+				hunkMapEntries.Add(new()
+				{
+					CompressedLength = (uint)(bw.BaseStream.Position - hunkOffset),
+					HunkOffset = hunkOffset,
+					Crc16 = CalcCrc16(curHunk),
+				});
+
+				sha1Inc.AppendData(curHunk, 0, (int)hashLen);
+				Array.Clear(curHunk, 0, curHunk.Length);
+			}
+
+			foreach (var cdMetadata in cdMetadatas)
+			{
+				for (var i = 0; i < cdMetadata.Frames; i++)
+				{
+					dsr.ReadLBA_2448(cdLba, sectorBuf, 0);
+
+					// audio samples are byteswapped, so make sure to account for that
+					var trackType = i < cdMetadata.Pregap ? cdMetadata.PregapTrackType : cdMetadata.TrackType;
+					if (trackType == LibChdr.chd_track_type.CD_TRACK_AUDIO)
+					{
+						EndiannessUtils.MutatingByteSwap16(sectorBuf.AsSpan()[..2352]);
+					}
+
+					chdPos = chdLba % CD_FRAMES_PER_HUNK;
+#if false // TODO: cdzs
+					Buffer.BlockCopy(sectorBuf, 0, curHunk, (int)(2352U * chdPos), 2352);
+					Buffer.BlockCopy(sectorBuf, 2352, curHunk, (int)(2352U * CD_FRAMES_PER_HUNK + 96U * chdPos), 96);
+#else
+					Buffer.BlockCopy(sectorBuf, 0, curHunk, (int)(LibChdr.CD_FRAME_SIZE * chdPos), (int)LibChdr.CD_FRAME_SIZE);
+#endif
+					if (chdPos == CD_FRAMES_PER_HUNK - 1)
+					{
+						EndHunk(CD_FRAMES_PER_HUNK * LibChdr.CD_FRAME_SIZE);
+					}
+
+					cdLba++;
+					chdLba++;
+				}
+
+				for (var i = 0; i < cdMetadata.Padding; i++)
+				{
+					chdPos = chdLba % CD_FRAMES_PER_HUNK;
+					if (chdPos == CD_FRAMES_PER_HUNK - 1)
+					{
+						EndHunk(CD_FRAMES_PER_HUNK * LibChdr.CD_FRAME_SIZE);
+					}
+
+					chdLba++;
+				}
+			}
+
+			// make sure to write out any remaining pending hunk
+			chdPos = chdLba % CD_FRAMES_PER_HUNK;
+			if (chdPos != 0)
+			{
+				EndHunk(chdPos * LibChdr.CD_FRAME_SIZE);
+			}
+
+			static string TrackTypeStr(LibChdr.chd_track_type trackType, bool isCdi)
+			{
+				// ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+				return trackType switch
+				{
+					LibChdr.chd_track_type.CD_TRACK_AUDIO => "AUDIO",
+					LibChdr.chd_track_type.CD_TRACK_MODE1_RAW => "MODE1_RAW",
+					LibChdr.chd_track_type.CD_TRACK_MODE2_RAW when isCdi => "CDI/2352",
+					LibChdr.chd_track_type.CD_TRACK_MODE2_RAW => "MODE2_RAW",
+					_ => throw new InvalidOperationException(),
+				};
+			}
+
+			var metadataOffset = bw.BaseStream.Position;
+			var metadataHashes = new byte[cdMetadatas.Count][];
+			// write metadata
+			for (var i = 0; i < cdMetadatas.Count; i++)
+			{
+				var cdMetadata = cdMetadatas[i];
+				var trackType = TrackTypeStr(cdMetadata.TrackType, cdMetadata.IsCDI);
+				var pgTrackType = TrackTypeStr(cdMetadata.PregapTrackType, cdMetadata.IsCDI);
+				if (cdMetadata.PregapInChd)
+				{
+					pgTrackType = $"V{pgTrackType}";
+				}
+
+				var metadataStr = $"TRACK:{cdMetadata.Track} TYPE:{trackType} SUBTYPE:RW_RAW FRAMES:{cdMetadata.Frames} PREGAP:{cdMetadata.Pregap} PGTYPE:{pgTrackType} PGSUB:RW_RAW POSTGAP:0\0";
+				var metadataBytes = Encoding.ASCII.GetBytes(metadataStr);
+
+				bw.Write(BinaryPrimitives.ReverseEndianness(LibChdr.CDROM_TRACK_METADATA2_TAG));
+				bw.Write(LibChdr.CHD_MDFLAGS_CHECKSUM);
+				var chunkDataSize = new byte[3]; // 24 bit integer
+				chunkDataSize[0] = (byte)((metadataBytes.Length >> 16) & 0xFF);
+				chunkDataSize[1] = (byte)((metadataBytes.Length >> 8) & 0xFF);
+				chunkDataSize[2] = (byte)(metadataBytes.Length & 0xFF);
+				bw.Write(chunkDataSize);
+
+				bw.Write(i == cdMetadatas.Count - 1
+					? 0L
+					: BinaryPrimitives.ReverseEndianness(bw.BaseStream.Position + 8 + metadataBytes.Length)); // offset to next chunk
+
+				// last chunk
+				bw.Write(metadataBytes);
+
+				metadataHashes[i] = SHA1Checksum.Compute(metadataBytes);
+			}
+
+			var uncompressedHunkMap = new byte[hunkMapEntries.Count * 12];
+			// compute uncompressed hunk map
+			for (var i = 0; i < hunkMapEntries.Count; i++)
+			{
+				var hunkMapEntry = hunkMapEntries[i];
+				var mapEntryOffset = i * 12;
+				uncompressedHunkMap[mapEntryOffset + 0] = 0; // Codec 0
+				uncompressedHunkMap[mapEntryOffset + 1] = (byte)((hunkMapEntry.CompressedLength >> 16) & 0xFF);
+				uncompressedHunkMap[mapEntryOffset + 2] = (byte)((hunkMapEntry.CompressedLength >> 8) & 0xFF);
+				uncompressedHunkMap[mapEntryOffset + 3] = (byte)(hunkMapEntry.CompressedLength & 0xFF);
+				uncompressedHunkMap[mapEntryOffset + 4] = (byte)((hunkMapEntry.HunkOffset >> 40) & 0xFF);
+				uncompressedHunkMap[mapEntryOffset + 5] = (byte)((hunkMapEntry.HunkOffset >> 32) & 0xFF);
+				uncompressedHunkMap[mapEntryOffset + 6] = (byte)((hunkMapEntry.HunkOffset >> 24) & 0xFF);
+				uncompressedHunkMap[mapEntryOffset + 7] = (byte)((hunkMapEntry.HunkOffset >> 16) & 0xFF);
+				uncompressedHunkMap[mapEntryOffset + 8] = (byte)((hunkMapEntry.HunkOffset >> 8) & 0xFF);
+				uncompressedHunkMap[mapEntryOffset + 9] = (byte)(hunkMapEntry.HunkOffset & 0xFF);
+				uncompressedHunkMap[mapEntryOffset + 10] = (byte)((hunkMapEntry.Crc16 >> 8) & 0xFF);
+				uncompressedHunkMap[mapEntryOffset + 11] = (byte)(hunkMapEntry.Crc16 & 0xFF);
+			}
+
+			File.WriteAllBytes("rawmap_expected.bin", uncompressedHunkMap);
+			var hunkMapCrc16 = CalcCrc16(uncompressedHunkMap);
+			var hunkMapOffset = bw.BaseStream.Position;
+
+			var firstOffset = new byte[6];
+			// write hunk map header
+			bw.Write(0); // compressed map length (written later)
+			Buffer.BlockCopy(uncompressedHunkMap, 4, firstOffset, 0, 6);
+			bw.Write(firstOffset); // first hunk offset
+			bw.Write(BinaryPrimitives.ReverseEndianness(hunkMapCrc16)); // uncompressed map crc16
+			bw.Write((byte)24); // num bits used to stored compression length
+			bw.Write((byte)0); // num bits used to stored self refs (not used)
+			bw.Write((byte)0); // num bits used to stored parent unit refs (not used)
+			bw.Write((byte)0); // reserved (should just be 0)
+
+			// huffman map
+			// we always have anything decoded return 0
+			// so we can be lazy here an define a somewhat bogus map which allows us to skip compression
+
+			bw.Write((byte)0x11); // makes command 0 take 1 bit (thus limits compression length to 31 bits if we want to keep a byte level stream)
+
+			// 60 bits are now left to write for the huffman map, we'll want them all to be 0
+			// also, after the huffman map proceeds the compression type bits, which for us will just be a ton of 0 bits
+			// each hunk needing a bit set to 0 to indicate compression type 0
+
+			// basic bit writing code
+			byte curByte = 0;
+			var curBit = 60 + hunkMapEntries.Count;
+			while (curBit >= 8)
+			{
+				bw.Write((byte)0);
+				curBit -= 8;
+			}
+
+			void WriteByteBits(byte b)
+			{
+				for (var i = 0; i < 8; i++)
+				{
+					var bit = ((b >> (7 - i)) & 1) != 0;
+					if (bit)
+					{
+						curByte |= (byte)(1 << (7 - curBit));
+					}
+
+					curBit++;
+					if (curBit == 8)
+					{
+						bw.Write(curByte);
+						curBit = 0;
+						curByte = 0;
+					}
+				}
+			}
+
+			for (var i = 0; i < hunkMapEntries.Count; i++)
+			{
+				var mapEntryOffset = i * 12;
+				// length
+				WriteByteBits(uncompressedHunkMap[mapEntryOffset + 1]);
+				WriteByteBits(uncompressedHunkMap[mapEntryOffset + 2]);
+				WriteByteBits(uncompressedHunkMap[mapEntryOffset + 3]);
+				// crc16
+				WriteByteBits(uncompressedHunkMap[mapEntryOffset + 10]);
+				WriteByteBits(uncompressedHunkMap[mapEntryOffset + 11]);
+			}
+
+			// write final byte if present
+			if (curBit != 0)
+			{
+				bw.Write(curByte);
+			}
+
+			// finish everything up
+
+			var hunkMapEnd = bw.BaseStream.Position;
+			bw.BaseStream.Seek(hunkMapOffset, SeekOrigin.Begin);
+			// hunk map length sans header
+			bw.Write(BinaryPrimitives.ReverseEndianness((uint)(hunkMapEnd - hunkMapOffset - 16)));
+
+			bw.BaseStream.Seek(0x20, SeekOrigin.Begin);
+			bw.Write(BinaryPrimitives.ReverseEndianness(chdLba * (long)LibChdr.CD_FRAME_SIZE));
+			bw.Write(BinaryPrimitives.ReverseEndianness(hunkMapOffset));
+			bw.Write(BinaryPrimitives.ReverseEndianness(metadataOffset));
+
+			var rawSha1 = sha1Inc.GetHashAndReset();
+			// calc overall sha1 now (uses raw sha1 and metadata hashes)
+			sha1Inc.AppendData(rawSha1);
+			// apparently these are expected to be sorted with memcmp semantics
+			Array.Sort(metadataHashes, static (x, y) =>
+			{
+				for (var i = 0; i < x.Length; i++)
+				{
+					if (x[i] < y[i])
+					{
+						return -1;
+					}
+
+					if (x[i] > y[i])
+					{
+						return 1;
+					}
+				}
+
+				return 0;
+			});
+
+			// tag is hashed alongside the hash
+			// we use the same tag every time, so we can just reuse this array
+			var metadataTag = new byte[4];
+			metadataTag[0] = (byte)((LibChdr.CDROM_TRACK_METADATA2_TAG >> 24) & 0xFF);
+			metadataTag[1] = (byte)((LibChdr.CDROM_TRACK_METADATA2_TAG >> 16) & 0xFF);
+			metadataTag[2] = (byte)((LibChdr.CDROM_TRACK_METADATA2_TAG >> 8) & 0xFF);
+			metadataTag[3] = (byte)(LibChdr.CDROM_TRACK_METADATA2_TAG & 0xFF);
+			foreach (var metadataHash in metadataHashes)
+			{
+				sha1Inc.AppendData(metadataTag);
+				sha1Inc.AppendData(metadataHash);
+			}
+
+			var overallSha1 = sha1Inc.GetHashAndReset();
+
+			bw.BaseStream.Seek(0x40, SeekOrigin.Begin);
+			bw.Write(rawSha1);
+			bw.Write(overallSha1);
 		}
 	}
 }
