@@ -32,10 +32,8 @@
 FBBackendBIZHAWK::FBBackendBIZHAWK(OSystem& osystem)
   : myOSystem{osystem}
 {
-  printf("****************** Initializing BK backend\n"); fflush(stdout);
-  
-  // Initialize BIZHAWK context
-  if(SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
+  // Initialize SDL context
+  if(SDL_Init(0) < 0)
   {
     ostringstream buf;
     buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError();
@@ -43,7 +41,6 @@ FBBackendBIZHAWK::FBBackendBIZHAWK(OSystem& osystem)
   }
   Logger::debug("FBBackendBIZHAWK::FBBackendBIZHAWK SDL_Init()");
 
-  printf("****************** Initialized BK backend\n"); fflush(stdout);
   // We need a pixel format for palette value calculations
   // It's done this way (vs directly accessing a FBSurfaceBIZHAWK object)
   // since the structure may be needed before any FBSurface's have

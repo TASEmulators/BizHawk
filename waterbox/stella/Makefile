@@ -40,7 +40,6 @@ SRCS = \
  port/EventHandlerBizhawk.cxx \
 	port/FBBackendBizhawk.cxx \
 	port/FBSurfaceBizhawk.cxx \
-	port/FSNodeBizhawk.cxx \
 	port/OSystemBizhawk.cxx \
 	port/bk_blitter/BilinearBlitter.cxx \
 	port/bk_blitter/BlitterFactory.cxx \

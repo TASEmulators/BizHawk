@@ -37,11 +37,11 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			{
 				Path = PathUtils.DllDirectoryPath,
 				Filename = "stella.wbx",
-				SbrkHeapSizeKB = 512,
+				SbrkHeapSizeKB = 4 * 1024,
 				SealedHeapSizeKB = 4 * 1024,
 				InvisibleHeapSizeKB = 4 * 1024,
 				PlainHeapSizeKB = 4 * 1024,
-				MmapHeapSizeKB = 1 * 1024,
+				MmapHeapSizeKB = 4 * 1024,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			{
 				LoadCallback
 			}, _elf);
-
+			
 			using (_elf.EnterExit())
 			{
 				Core = BizInvoker.GetInvoker<CInterface>(_elf, _elf, callingConventionAdapter);
@@ -61,8 +61,9 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 				CoreComm = lp.Comm;
 
 				_romfile = lp.Roms.FirstOrDefault()?.RomData;
+                string romPath = lp.Roms.FirstOrDefault()?.RomPath;
 
-				var initResult = Core.stella_init(LoadCallback, SyncSettings.GetNativeSettings(lp.Game));
+				var initResult = Core.stella_init(romPath, LoadCallback, SyncSettings.GetNativeSettings(lp.Game));
 
 				if (!initResult) throw new Exception($"{nameof(Core.stella_init)}() failed");
 
