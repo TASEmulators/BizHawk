@@ -1054,10 +1054,9 @@ namespace BizHawk.Emulation.DiscSystem
 				bw.Write(chunkDataSize);
 
 				bw.Write(i == cdMetadatas.Count - 1
-					? 0L
+					? 0L // last chunk
 					: BinaryPrimitives.ReverseEndianness(bw.BaseStream.Position + 8 + metadataBytes.Length)); // offset to next chunk
 
-				// last chunk
 				bw.Write(metadataBytes);
 
 				metadataHashes[i] = SHA1Checksum.Compute(metadataBytes);
