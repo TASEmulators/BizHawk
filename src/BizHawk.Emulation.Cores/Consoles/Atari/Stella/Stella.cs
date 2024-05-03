@@ -134,6 +134,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 				}
 				else
 				{
+					Console.WriteLine("Copying Data from " + srcdata + " to " + buffer + " Size: " + srcdata.Length);
 					Marshal.Copy(srcdata, 0, buffer, srcdata.Length);
 					Console.WriteLine("Firmware request {0} satisfied at size {1}", filename, srcdata.Length);
 					return srcdata.Length;

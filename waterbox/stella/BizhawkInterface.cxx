@@ -20,6 +20,20 @@ struct InitSettings
 
 std::unique_ptr<OSystem> _a2600;
 
+void printRAM()
+{
+  printf("[] Ram Pointer: %p\n", _a2600->console().riot().getRAM());
+  printf("[] Memory Contents:\n");
+		for (int i = 0; i < 8; i++)
+		{
+			for (int j = 0; j < 16; j++)
+			{
+				printf("%02X ", _a2600->console().riot().getRAM()[i*16 + j]);
+			}
+			printf("\n");
+		}
+}
+
 ECL_EXPORT int stella_init(
 	const char* romFileName,
 	ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize),
@@ -31,14 +45,26 @@ ECL_EXPORT int stella_init(
 	_a2600 = MediaFactory::createOSystem();
 	if(!_a2600->initialize(opts)) { fprintf(stderr, "ERROR: Couldn't create A2600 System\n"); return 0; }
 
-	const string romfile = "PRIMARY_ROM";
-	const FSNode romnode(romFileName);
-	 feload_archive_cb("PRIMARY_ROM", romnode.getBuffer(), BUFFER_SIZE);
+	uint8_t* buf = (uint8_t*) calloc(1, BUFFER_SIZE);
+	int size = feload_archive_cb("PRIMARY_ROM", buf, BUFFER_SIZE);
+	const FSNode romnode(romFileName, buf, size);
+	printf("Romnode buffer: %p\n", romnode._buffer);
+
+	printf("***** Creating console\n"); fflush(stdout);
 
 	auto error = _a2600->createConsole(romnode);
 	if (error != "") { fprintf(stderr, "ERROR: Couldn't create A2600 Console. Reason: '%s'\n", error.c_str()); return 0; }
 
- fprintf(stderr, "A2600 console created successfully");
+ printf("A2600 console created successfully");
+
+ printf("Before Advance");
+ printRAM();
+ 
+ _a2600->dispatchEmulation();
+
+	printf("After Advance");
+ printRAM();
+
 	return 1;
 }
 
