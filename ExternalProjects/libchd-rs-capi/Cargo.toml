@@ -19,5 +19,8 @@ default = ["chd/max_perf"]
 chd_precache = []
 verify_block_crc = ["chd/verify_block_crc"]
 
+[profile.release]
+lto = true
+
 [dependencies]
 chd = { version = "0.3.1", git = "https://github.com/SnowflakePowered/chd-rs" }
