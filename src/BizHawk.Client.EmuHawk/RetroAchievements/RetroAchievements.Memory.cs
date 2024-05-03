@@ -451,8 +451,11 @@ namespace BizHawk.Client.EmuHawk
 							mfs.Add(new(domains["SGB WRAM"], 0, 0x1E00));
 							TryAddDomain("SGB OAM", 0xA0);
 							TryAddDomain("SGB System Bus", 0xE0);
-							TryAddDomain("SGB HRAM", 0x80);
-							TryAddDomain("SGB IE");
+							mfs.Add(new(domains["SGB HRAM"], 0, domains["SGB HRAM"].Size));
+							if (domains["SGB HRAM"].Size == 0x7F)
+							{
+								mfs.Add(new(domains["SGB IE"], 0, domains["SGB IE"].Size));
+							}
 							mfs.Add(new NullMemFunctions(0x6000));
 							if (domains.Has("SGB CARTRAM") && domains["SGB CARTRAM"].Size > 0x2000)
 							{
