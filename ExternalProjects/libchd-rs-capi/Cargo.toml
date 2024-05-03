@@ -15,7 +15,7 @@ doctest = false
 crate-type = ["cdylib"]
 
 [features]
-default = []
+default = ["chd/max_perf"]
 chd_precache = []
 verify_block_crc = ["chd/verify_block_crc"]
 
