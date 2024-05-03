@@ -440,9 +440,9 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case ConsoleID.GB:
 					case ConsoleID.GBC:
-						if (domains.Has("SGB CARTROM"))
+						if (domains.Has("SGB CARTROM")) // old/new BSNES
 						{
-							// old BSNES doesn't have as many domains
+							// old BSNES doesn't have as many domains (hence TryAddDomain use)
 							// but it should still suffice in practice
 							mfs.Add(new(domains["SGB CARTROM"], 0, 0x8000));
 							TryAddDomain("SGB VRAM", 0x2000);
@@ -453,6 +453,11 @@ namespace BizHawk.Client.EmuHawk
 							TryAddDomain("SGB System Bus", 0xE0);
 							TryAddDomain("SGB HRAM", 0x80);
 							TryAddDomain("SGB IE");
+							mfs.Add(new NullMemFunctions(0x6000));
+							if (domains.Has("SGB CARTRAM") && domains["SGB CARTRAM"].Size > 0x2000)
+							{
+								mfs.Add(new(domains["SGB CARTRAM"], 0x2000, domains["SGB CARTRAM"].Size - 0x2000));
+							}
 						}
 						else
 						{
@@ -475,7 +480,7 @@ namespace BizHawk.Client.EmuHawk
 								cartRam = "Cart RAM A";
 								wram = "Main RAM A";
 							}
-							else // Gambatte / GBHawk
+							else // Gambatte / GBHawk / SameBoy
 							{
 								sysBus = "System Bus";
 								cartRam = "CartRAM";
@@ -486,9 +491,12 @@ namespace BizHawk.Client.EmuHawk
 							TryAddDomain(cartRam, 0x2000);
 							mfs.Add(new(domains[wram], 0x0000, 0x2000));
 							mfs.Add(new(domains[sysBus], 0xE000, 0x2000));
-							if (domains[wram].Size == 0x8000)
+							mfs.Add(domains[wram].Size == 0x8000 
+								? new MemFunctions(domains[wram], 0x2000, 0x6000)
+								: new NullMemFunctions(0x6000));
+							if (domains.Has(cartRam) && domains[cartRam].Size > 0x2000)
 							{
-								mfs.Add(new(domains[wram], 0x2000, 0x6000));
+								mfs.Add(new(domains[cartRam], 0x2000, domains[cartRam].Size - 0x2000));
 							}
 						}
 						break;
