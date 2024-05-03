@@ -3,6 +3,7 @@ using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -11,7 +12,7 @@ using BizHawk.Emulation.DiscSystem.CUE;
 
 #pragma warning disable BHI1005
 
-// MAME CHD images, using the standard libchdr for reading
+// MAME CHD images, using chd-rs for reading
 // helpful reference: https://problemkaputt.de/psxspx-cdrom-disk-images-chd-mame.htm
 
 namespace BizHawk.Emulation.DiscSystem
@@ -20,24 +21,19 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		/// <summary>
 		/// Represents a CHD file.
-		/// This isn't particularly faithful to the format, but rather it just wraps libchdr's chd_file
+		/// This isn't particularly faithful to the format, but rather it just wraps a chd_file
 		/// </summary>
 		public class CHDFile
 		{
 			/// <summary>
-			/// Wrapper of a C# stream to a chd_core_file
-			/// </summary>
-			public LibChdr.CoreFileStreamWrapper CoreFile;
-
-			/// <summary>
-			/// chd_file* to be used for libchdr functions
+			/// chd_file* to be used for chd_ functions
 			/// </summary>
 			public IntPtr ChdFile;
 
 			/// <summary>
-			/// CHD header, interpreted by libchdr
+			/// CHD header, interpreted by chd-rs
 			/// </summary>
-			public LibChdr.chd_header Header;
+			public LibChd.chd_header Header;
 
 			/// <summary>
 			/// CHD CD metadata for each track
@@ -65,12 +61,12 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// Track type
 			/// </summary>
-			public LibChdr.chd_track_type TrackType;
+			public LibChd.chd_track_type TrackType;
 
 			/// <summary>
 			/// Subcode type
 			/// </summary>
-			public LibChdr.chd_sub_type SubType;
+			public LibChd.chd_sub_type SubType;
 
 			/// <summary>
 			/// Size of each sector
@@ -104,12 +100,12 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// Pregap track type
 			/// </summary>
-			public LibChdr.chd_track_type PregapTrackType;
+			public LibChd.chd_track_type PregapTrackType;
 
 			/// <summary>
 			/// Pregap subcode type
 			/// </summary>
-			public LibChdr.chd_sub_type PregapSubType;
+			public LibChd.chd_sub_type PregapSubType;
 
 			/// <summary>
 			/// Indicates whether pregap is in the CHD
@@ -129,30 +125,30 @@ namespace BizHawk.Emulation.DiscSystem
 			public CHDParseException(string message, Exception ex) : base(message, ex) { }
 		}
 
-		private static LibChdr.chd_track_type GetTrackType(string type)
+		private static LibChd.chd_track_type GetTrackType(string type)
 		{
 			return type switch
 			{
-				"MODE1" => LibChdr.chd_track_type.CD_TRACK_MODE1,
-				"MODE1/2048" => LibChdr.chd_track_type.CD_TRACK_MODE1,
-				"MODE1_RAW" => LibChdr.chd_track_type.CD_TRACK_MODE1_RAW,
-				"MODE1/2352" => LibChdr.chd_track_type.CD_TRACK_MODE1_RAW,
-				"MODE2" => LibChdr.chd_track_type.CD_TRACK_MODE2,
-				"MODE2/2336" => LibChdr.chd_track_type.CD_TRACK_MODE2,
-				"MODE2_FORM1" => LibChdr.chd_track_type.CD_TRACK_MODE2_FORM1,
-				"MODE2/2048" => LibChdr.chd_track_type.CD_TRACK_MODE2_FORM1,
-				"MODE2_FORM2" => LibChdr.chd_track_type.CD_TRACK_MODE2_FORM2,
-				"MODE2/2324" => LibChdr.chd_track_type.CD_TRACK_MODE2_FORM2,
-				"MODE2_FORM_MIX" => LibChdr.chd_track_type.CD_TRACK_MODE2_FORM_MIX,
-				"MODE2_RAW" => LibChdr.chd_track_type.CD_TRACK_MODE2_RAW,
-				"MODE2/2352" => LibChdr.chd_track_type.CD_TRACK_MODE2_RAW,
-				"CDI/2352" => LibChdr.chd_track_type.CD_TRACK_MODE2_RAW,
-				"AUDIO" => LibChdr.chd_track_type.CD_TRACK_AUDIO,
+				"MODE1" => LibChd.chd_track_type.CD_TRACK_MODE1,
+				"MODE1/2048" => LibChd.chd_track_type.CD_TRACK_MODE1,
+				"MODE1_RAW" => LibChd.chd_track_type.CD_TRACK_MODE1_RAW,
+				"MODE1/2352" => LibChd.chd_track_type.CD_TRACK_MODE1_RAW,
+				"MODE2" => LibChd.chd_track_type.CD_TRACK_MODE2,
+				"MODE2/2336" => LibChd.chd_track_type.CD_TRACK_MODE2,
+				"MODE2_FORM1" => LibChd.chd_track_type.CD_TRACK_MODE2_FORM1,
+				"MODE2/2048" => LibChd.chd_track_type.CD_TRACK_MODE2_FORM1,
+				"MODE2_FORM2" => LibChd.chd_track_type.CD_TRACK_MODE2_FORM2,
+				"MODE2/2324" => LibChd.chd_track_type.CD_TRACK_MODE2_FORM2,
+				"MODE2_FORM_MIX" => LibChd.chd_track_type.CD_TRACK_MODE2_FORM_MIX,
+				"MODE2_RAW" => LibChd.chd_track_type.CD_TRACK_MODE2_RAW,
+				"MODE2/2352" => LibChd.chd_track_type.CD_TRACK_MODE2_RAW,
+				"CDI/2352" => LibChd.chd_track_type.CD_TRACK_MODE2_RAW,
+				"AUDIO" => LibChd.chd_track_type.CD_TRACK_AUDIO,
 				_ => throw new CHDParseException("Malformed CHD format: Invalid track type!"),
 			};
 		}
 
-		private static (LibChdr.chd_track_type TrackType, bool ChdContainsPregap) GetTrackTypeForPregap(string type)
+		private static (LibChd.chd_track_type TrackType, bool ChdContainsPregap) GetTrackTypeForPregap(string type)
 		{
 			if (type.Length > 0 && type[0] == 'V')
 			{
@@ -162,40 +158,40 @@ namespace BizHawk.Emulation.DiscSystem
 			return (GetTrackType(type), false);
 		}
 
-		private static uint GetSectorSize(LibChdr.chd_track_type type)
+		private static uint GetSectorSize(LibChd.chd_track_type type)
 		{
 			return type switch
 			{
-				LibChdr.chd_track_type.CD_TRACK_MODE1 => 2048,
-				LibChdr.chd_track_type.CD_TRACK_MODE1_RAW => 2352,
-				LibChdr.chd_track_type.CD_TRACK_MODE2 => 2336,
-				LibChdr.chd_track_type.CD_TRACK_MODE2_FORM1 => 2048,
-				LibChdr.chd_track_type.CD_TRACK_MODE2_FORM2 => 2324,
-				LibChdr.chd_track_type.CD_TRACK_MODE2_FORM_MIX => 2336,
-				LibChdr.chd_track_type.CD_TRACK_MODE2_RAW => 2352,
-				LibChdr.chd_track_type.CD_TRACK_AUDIO => 2352,
+				LibChd.chd_track_type.CD_TRACK_MODE1 => 2048,
+				LibChd.chd_track_type.CD_TRACK_MODE1_RAW => 2352,
+				LibChd.chd_track_type.CD_TRACK_MODE2 => 2336,
+				LibChd.chd_track_type.CD_TRACK_MODE2_FORM1 => 2048,
+				LibChd.chd_track_type.CD_TRACK_MODE2_FORM2 => 2324,
+				LibChd.chd_track_type.CD_TRACK_MODE2_FORM_MIX => 2336,
+				LibChd.chd_track_type.CD_TRACK_MODE2_RAW => 2352,
+				LibChd.chd_track_type.CD_TRACK_AUDIO => 2352,
 				_ => throw new CHDParseException("Malformed CHD format: Invalid track type!"),
 			};
 		}
 
-		private static LibChdr.chd_sub_type GetSubType(string type)
+		private static LibChd.chd_sub_type GetSubType(string type)
 		{
 			return type switch
 			{
-				"RW" => LibChdr.chd_sub_type.CD_SUB_NORMAL,
-				"RW_RAW" => LibChdr.chd_sub_type.CD_SUB_RAW,
-				"NONE" => LibChdr.chd_sub_type.CD_SUB_NONE,
+				"RW" => LibChd.chd_sub_type.CD_SUB_NORMAL,
+				"RW_RAW" => LibChd.chd_sub_type.CD_SUB_RAW,
+				"NONE" => LibChd.chd_sub_type.CD_SUB_NONE,
 				_ => throw new CHDParseException("Malformed CHD format: Invalid sub type!"),
 			};
 		}
 
-		private static uint GetSubSize(LibChdr.chd_sub_type type)
+		private static uint GetSubSize(LibChd.chd_sub_type type)
 		{
 			return type switch
 			{
-				LibChdr.chd_sub_type.CD_SUB_NORMAL => 96,
-				LibChdr.chd_sub_type.CD_SUB_RAW => 96,
-				LibChdr.chd_sub_type.CD_SUB_NONE => 0,
+				LibChd.chd_sub_type.CD_SUB_NORMAL => 96,
+				LibChd.chd_sub_type.CD_SUB_RAW => 96,
+				LibChd.chd_sub_type.CD_SUB_NONE => 0,
 				_ => throw new CHDParseException("Malformed CHD format: Invalid sub type!"),
 			};
 		}
@@ -312,8 +308,8 @@ namespace BizHawk.Emulation.DiscSystem
 				};
 				if (bigEndian)
 				{
-					cdMetadata.TrackType = (LibChdr.chd_track_type)BinaryPrimitives.ReadUInt32BigEndian(track);
-					cdMetadata.SubType = (LibChdr.chd_sub_type)BinaryPrimitives.ReadUInt32BigEndian(track[..4]);
+					cdMetadata.TrackType = (LibChd.chd_track_type)BinaryPrimitives.ReadUInt32BigEndian(track);
+					cdMetadata.SubType = (LibChd.chd_sub_type)BinaryPrimitives.ReadUInt32BigEndian(track[..4]);
 					cdMetadata.SectorSize = BinaryPrimitives.ReadUInt32BigEndian(track[..8]);
 					cdMetadata.SubSize = BinaryPrimitives.ReadUInt32BigEndian(track[..12]);
 					cdMetadata.Frames = BinaryPrimitives.ReadUInt32BigEndian(track[..16]);
@@ -321,8 +317,8 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 				else
 				{
-					cdMetadata.TrackType = (LibChdr.chd_track_type)BinaryPrimitives.ReadUInt32LittleEndian(track);
-					cdMetadata.SubType = (LibChdr.chd_sub_type)BinaryPrimitives.ReadUInt32LittleEndian(track[..4]);
+					cdMetadata.TrackType = (LibChd.chd_track_type)BinaryPrimitives.ReadUInt32LittleEndian(track);
+					cdMetadata.SubType = (LibChd.chd_sub_type)BinaryPrimitives.ReadUInt32LittleEndian(track[..4]);
 					cdMetadata.SectorSize = BinaryPrimitives.ReadUInt32LittleEndian(track[..8]);
 					cdMetadata.SubSize = BinaryPrimitives.ReadUInt32LittleEndian(track[..12]);
 					cdMetadata.Frames = BinaryPrimitives.ReadUInt32LittleEndian(track[..16]);
@@ -350,32 +346,52 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <exception cref="CHDParseException">malformed chd format</exception>
-		public static CHDFile ParseFrom(Stream stream)
+		public static CHDFile ParseFrom(string path)
 		{
 			var chdf = new CHDFile();
 			try
 			{
-				chdf.CoreFile = new(stream);
-				var err = LibChdr.chd_open_core_file(chdf.CoreFile.CoreFile, LibChdr.CHD_OPEN_READ, IntPtr.Zero, out chdf.ChdFile);
-				if (err != LibChdr.chd_error.CHDERR_NONE)
+				// .NET Standard 2.0 doesn't have UnmanagedType.LPUTF8Str :(
+				// (although .NET Framework has it just fine along with modern .NET)
+				var nb = Encoding.UTF8.GetMaxByteCount(path.Length);
+				var ptr = Marshal.AllocCoTaskMem(checked(nb + 1));
+				try
 				{
-					throw new CHDParseException($"Malformed CHD format: Failed to open chd, got error {err}");
+					unsafe
+					{
+						fixed (char* c = path)
+						{
+							var pbMem = (byte*)ptr;
+							var nbWritten = Encoding.UTF8.GetBytes(c, path.Length, pbMem!, nb);
+							pbMem[nbWritten] = 0;
+						}
+					}
+
+					var err = LibChd.chd_open(ptr, LibChd.CHD_OPEN_READ, IntPtr.Zero, out chdf.ChdFile);
+					if (err != LibChd.chd_error.CHDERR_NONE)
+					{
+						throw new CHDParseException($"Malformed CHD format: Failed to open chd, got error {err}");
+					}
+
+					err = LibChd.chd_read_header(ptr, ref chdf.Header);
+					if (err != LibChd.chd_error.CHDERR_NONE)
+					{
+						throw new CHDParseException($"Malformed CHD format: Failed to read chd header, got error {err}");
+					}
+				}
+				finally
+				{
+					Marshal.FreeCoTaskMem(ptr);
 				}
 
-				unsafe
-				{
-					var header = (LibChdr.chd_header*)LibChdr.chd_get_header(chdf.ChdFile);
-					chdf.Header = *header;
-				}
-
-				if (chdf.Header.hunkbytes == 0 || chdf.Header.hunkbytes % LibChdr.CD_FRAME_SIZE != 0)
+				if (chdf.Header.hunkbytes == 0 || chdf.Header.hunkbytes % LibChd.CD_FRAME_SIZE != 0)
 				{
 					throw new CHDParseException("Malformed CHD format: Invalid hunk size");
 				}
 
-				// libchdr puts the correct value here for older versions of chds which don't have this
+				// chd-rs puts the correct value here for older versions of chds which don't have this
 				// for newer chds, it is left as is, which might be invalid
-				if (chdf.Header.unitbytes != LibChdr.CD_FRAME_SIZE)
+				if (chdf.Header.unitbytes != LibChd.CD_FRAME_SIZE)
 				{
 					throw new CHDParseException("Malformed CHD format: Invalid unit size");
 				}
@@ -383,18 +399,18 @@ namespace BizHawk.Emulation.DiscSystem
 				var metadataOutput = new byte[256];
 				for (uint i = 0; i < 99; i++)
 				{
-					err = LibChdr.chd_get_metadata(chdf.ChdFile, LibChdr.CDROM_TRACK_METADATA2_TAG,
+					var err = LibChd.chd_get_metadata(chdf.ChdFile, LibChd.CDROM_TRACK_METADATA2_TAG,
 						i, metadataOutput, (uint)metadataOutput.Length, out var resultLen, out _, out _);
-					if (err == LibChdr.chd_error.CHDERR_NONE)
+					if (err == LibChd.chd_error.CHDERR_NONE)
 					{
 						var metadata = Encoding.ASCII.GetString(metadataOutput, 0,  (int)resultLen).TrimEnd('\0');
 						chdf.CdMetadatas.Add(ParseMetadata2(metadata));
 						continue;
 					}
 
-					err = LibChdr.chd_get_metadata(chdf.ChdFile, LibChdr.CDROM_TRACK_METADATA_TAG,
+					err = LibChd.chd_get_metadata(chdf.ChdFile, LibChd.CDROM_TRACK_METADATA_TAG,
 						i, metadataOutput, (uint)metadataOutput.Length, out resultLen, out _, out _);
-					if (err == LibChdr.chd_error.CHDERR_NONE)
+					if (err == LibChd.chd_error.CHDERR_NONE)
 					{
 						var metadata = Encoding.ASCII.GetString(metadataOutput, 0,  (int)resultLen).TrimEnd('\0');
 						chdf.CdMetadatas.Add(ParseMetadata(metadata));
@@ -415,9 +431,9 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					// if no metadata was present, we might have "old" metadata instead (which has all track info stored in one entry)
 					metadataOutput = new byte[4 + 24 * 99];
-					err = LibChdr.chd_get_metadata(chdf.ChdFile, LibChdr.CDROM_OLD_METADATA_TAG,
+					var err = LibChd.chd_get_metadata(chdf.ChdFile, LibChd.CDROM_OLD_METADATA_TAG,
 						0, metadataOutput, (uint)metadataOutput.Length, out var resultLen, out _, out _);
-					if (err == LibChdr.chd_error.CHDERR_NONE)
+					if (err == LibChd.chd_error.CHDERR_NONE)
 					{
 						if (resultLen != metadataOutput.Length)
 						{
@@ -447,7 +463,7 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 
 				// pad expected sectors up to the next hunk
-				var sectorsPerHunk = chdf.Header.hunkbytes / LibChdr.CD_FRAME_SIZE;
+				var sectorsPerHunk = chdf.Header.hunkbytes / LibChd.CD_FRAME_SIZE;
 				chdExpectedNumSectors = (chdExpectedNumSectors + sectorsPerHunk - 1) / sectorsPerHunk * sectorsPerHunk;
 
 				var chdActualNumSectors = chdf.Header.hunkcount * sectorsPerHunk;
@@ -462,15 +478,9 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				if (chdf.ChdFile != IntPtr.Zero)
 				{
-					LibChdr.chd_close(chdf.ChdFile);
+					LibChd.chd_close(chdf.ChdFile);
 				}
 
-				if (chdf.CoreFile == null)
-				{
-					stream.Dispose();
-				}
-
-				chdf.CoreFile?.Dispose();
 				throw ex as CHDParseException ?? new("Malformed CHD format: An unknown exception was thrown while parsing", ex);
 			}
 		}
@@ -493,8 +503,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				if (!File.Exists(path)) throw new CHDParseException("Malformed CHD format: Nonexistent CHD file!");
 
-				var infCHD = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-				ret.ParsedCHDFile = ParseFrom(infCHD);
+				ret.ParsedCHDFile = ParseFrom(path);
 				ret.Valid = true;
 			}
 			catch (CHDParseException ex)
@@ -571,7 +580,7 @@ namespace BizHawk.Emulation.DiscSystem
 			try
 			{
 				var chdf = loadResults.ParsedCHDFile;
-				IBlob chdBlob = new Blob_CHD(chdf.CoreFile, chdf.ChdFile, chdf.Header.hunkbytes);
+				IBlob chdBlob = new Blob_CHD(chdf.ChdFile, chdf.Header.hunkbytes);
 				disc.DisposableResources.Add(chdBlob);
 
 				// chds only support 1 session
@@ -584,7 +593,7 @@ namespace BizHawk.Emulation.DiscSystem
 						var q = default(SubchannelQ);
 						//absent some kind of policy for how to set it, this is a safe assumption
 						const byte kADR = 1;
-						var control = cdMetadata.TrackType != LibChdr.chd_track_type.CD_TRACK_AUDIO
+						var control = cdMetadata.TrackType != LibChd.chd_track_type.CD_TRACK_AUDIO
 							? EControlQ.DATA
 							: EControlQ.None;
 						q.SetStatus(kADR, control);
@@ -597,36 +606,36 @@ namespace BizHawk.Emulation.DiscSystem
 						return new() { QData = q };
 					}
 
-					static SS_Base CreateSynth(LibChdr.chd_track_type trackType)
+					static SS_Base CreateSynth(LibChd.chd_track_type trackType)
 					{
 						return trackType switch
 						{
-							LibChdr.chd_track_type.CD_TRACK_MODE1 => new SS_Mode1_2048(),
-							LibChdr.chd_track_type.CD_TRACK_MODE1_RAW => new SS_2352(),
-							LibChdr.chd_track_type.CD_TRACK_MODE2 => new SS_Mode2_2336(),
-							LibChdr.chd_track_type.CD_TRACK_MODE2_FORM1 => new SS_Mode2_Form1_2048(),
-							LibChdr.chd_track_type.CD_TRACK_MODE2_FORM2 => new SS_Mode2_Form2_2324(),
-							LibChdr.chd_track_type.CD_TRACK_MODE2_FORM_MIX => new SS_Mode2_2336(),
-							LibChdr.chd_track_type.CD_TRACK_MODE2_RAW => new SS_2352(),
-							LibChdr.chd_track_type.CD_TRACK_AUDIO => new SS_CHD_Audio(),
+							LibChd.chd_track_type.CD_TRACK_MODE1 => new SS_Mode1_2048(),
+							LibChd.chd_track_type.CD_TRACK_MODE1_RAW => new SS_2352(),
+							LibChd.chd_track_type.CD_TRACK_MODE2 => new SS_Mode2_2336(),
+							LibChd.chd_track_type.CD_TRACK_MODE2_FORM1 => new SS_Mode2_Form1_2048(),
+							LibChd.chd_track_type.CD_TRACK_MODE2_FORM2 => new SS_Mode2_Form2_2324(),
+							LibChd.chd_track_type.CD_TRACK_MODE2_FORM_MIX => new SS_Mode2_2336(),
+							LibChd.chd_track_type.CD_TRACK_MODE2_RAW => new SS_2352(),
+							LibChd.chd_track_type.CD_TRACK_AUDIO => new SS_CHD_Audio(),
 							_ => throw new InvalidOperationException(),
 						};
 					}
 
-					static CueTrackType ToCueTrackType(LibChdr.chd_track_type chdTrackType, bool isCdi)
+					static CueTrackType ToCueTrackType(LibChd.chd_track_type chdTrackType, bool isCdi)
 					{
 						// rough matches, not too important if these are somewhat wrong (they're just used for generated gaps)
 						return chdTrackType switch
 						{
-							LibChdr.chd_track_type.CD_TRACK_MODE1 => CueTrackType.Mode1_2048,
-							LibChdr.chd_track_type.CD_TRACK_MODE1_RAW => CueTrackType.Mode1_2352,
-							LibChdr.chd_track_type.CD_TRACK_MODE2 => CueTrackType.Mode2_2336,
-							LibChdr.chd_track_type.CD_TRACK_MODE2_FORM1 => CueTrackType.Mode2_2336,
-							LibChdr.chd_track_type.CD_TRACK_MODE2_FORM2 => CueTrackType.Mode2_2336,
-							LibChdr.chd_track_type.CD_TRACK_MODE2_FORM_MIX => CueTrackType.Mode2_2336,
-							LibChdr.chd_track_type.CD_TRACK_MODE2_RAW when isCdi => CueTrackType.CDI_2352,
-							LibChdr.chd_track_type.CD_TRACK_MODE2_RAW => CueTrackType.Mode2_2352,
-							LibChdr.chd_track_type.CD_TRACK_AUDIO => CueTrackType.Audio,
+							LibChd.chd_track_type.CD_TRACK_MODE1 => CueTrackType.Mode1_2048,
+							LibChd.chd_track_type.CD_TRACK_MODE1_RAW => CueTrackType.Mode1_2352,
+							LibChd.chd_track_type.CD_TRACK_MODE2 => CueTrackType.Mode2_2336,
+							LibChd.chd_track_type.CD_TRACK_MODE2_FORM1 => CueTrackType.Mode2_2336,
+							LibChd.chd_track_type.CD_TRACK_MODE2_FORM2 => CueTrackType.Mode2_2336,
+							LibChd.chd_track_type.CD_TRACK_MODE2_FORM_MIX => CueTrackType.Mode2_2336,
+							LibChd.chd_track_type.CD_TRACK_MODE2_RAW when isCdi => CueTrackType.CDI_2352,
+							LibChd.chd_track_type.CD_TRACK_MODE2_RAW => CueTrackType.Mode2_2352,
+							LibChd.chd_track_type.CD_TRACK_AUDIO => CueTrackType.Audio,
 							_ => throw new InvalidOperationException(),
 						};
 					}
@@ -657,7 +666,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 						synth.Policy = IN_DiscMountPolicy;
 						const byte kADR = 1;
-						var control = cdMetadata.PregapTrackType != LibChdr.chd_track_type.CD_TRACK_AUDIO
+						var control = cdMetadata.PregapTrackType != LibChd.chd_track_type.CD_TRACK_AUDIO
 							? EControlQ.DATA
 							: EControlQ.None;
 						synth.sq.SetStatus(kADR, control);
@@ -676,14 +685,14 @@ namespace BizHawk.Emulation.DiscSystem
 							// wrap the base synth with our special synth if we have subcode in the chd
 							ISectorSynthJob2448 chdSynth = cdMetadata.PregapSubType switch
 							{
-								LibChdr.chd_sub_type.CD_SUB_NORMAL => new SS_CHD_Sub(synth, isInterleaved: true),
-								LibChdr.chd_sub_type.CD_SUB_RAW => new SS_CHD_Sub(synth, isInterleaved: false),
-								LibChdr.chd_sub_type.CD_SUB_NONE => synth,
+								LibChd.chd_sub_type.CD_SUB_NORMAL => new SS_CHD_Sub(synth, isInterleaved: true),
+								LibChd.chd_sub_type.CD_SUB_RAW => new SS_CHD_Sub(synth, isInterleaved: false),
+								LibChd.chd_sub_type.CD_SUB_NONE => synth,
 								_ => throw new InvalidOperationException(),
 							};
 
 							disc._Sectors.Add(chdSynth);
-							chdOffset += LibChdr.CD_FRAME_SIZE;
+							chdOffset += LibChd.CD_FRAME_SIZE;
 						}
 						else
 						{
@@ -708,7 +717,7 @@ namespace BizHawk.Emulation.DiscSystem
 						synth.BlobOffset = chdOffset;
 						synth.Policy = IN_DiscMountPolicy;
 						const byte kADR = 1;
-						var control = cdMetadata.TrackType != LibChdr.chd_track_type.CD_TRACK_AUDIO
+						var control = cdMetadata.TrackType != LibChd.chd_track_type.CD_TRACK_AUDIO
 							? EControlQ.DATA
 							: EControlQ.None;
 						synth.sq.SetStatus(kADR, control);
@@ -721,17 +730,17 @@ namespace BizHawk.Emulation.DiscSystem
 						synth.Pause = false;
 						ISectorSynthJob2448 chdSynth = cdMetadata.SubType switch
 						{
-							LibChdr.chd_sub_type.CD_SUB_NORMAL => new SS_CHD_Sub(synth, isInterleaved: true),
-							LibChdr.chd_sub_type.CD_SUB_RAW => new SS_CHD_Sub(synth, isInterleaved: false),
-							LibChdr.chd_sub_type.CD_SUB_NONE => synth,
+							LibChd.chd_sub_type.CD_SUB_NORMAL => new SS_CHD_Sub(synth, isInterleaved: true),
+							LibChd.chd_sub_type.CD_SUB_RAW => new SS_CHD_Sub(synth, isInterleaved: false),
+							LibChd.chd_sub_type.CD_SUB_NONE => synth,
 							_ => throw new InvalidOperationException(),
 						};
 						disc._Sectors.Add(chdSynth);
-						chdOffset += LibChdr.CD_FRAME_SIZE;
+						chdOffset += LibChd.CD_FRAME_SIZE;
 						relMSF++;
 					}
 
-					chdOffset += cdMetadata.Padding * LibChdr.CD_FRAME_SIZE;
+					chdOffset += cdMetadata.Padding * LibChd.CD_FRAME_SIZE;
 
 					for (var i = 0; i < cdMetadata.PostGap; i++)
 					{
@@ -741,7 +750,7 @@ namespace BizHawk.Emulation.DiscSystem
 							Policy = IN_DiscMountPolicy
 						};
 						const byte kADR = 1;
-						var control = cdMetadata.TrackType != LibChdr.chd_track_type.CD_TRACK_AUDIO
+						var control = cdMetadata.TrackType != LibChd.chd_track_type.CD_TRACK_AUDIO
 							? EControlQ.DATA
 							: EControlQ.None;
 						synth.sq.SetStatus(kADR, control);
@@ -766,11 +775,11 @@ namespace BizHawk.Emulation.DiscSystem
 							return SessionFormat.Type10_CDI;
 						}
 
-						if (cdMetadata.TrackType is LibChdr.chd_track_type.CD_TRACK_MODE2
-							or LibChdr.chd_track_type.CD_TRACK_MODE2_FORM1
-							or LibChdr.chd_track_type.CD_TRACK_MODE2_FORM2
-							or LibChdr.chd_track_type.CD_TRACK_MODE2_FORM_MIX
-							or LibChdr.chd_track_type.CD_TRACK_MODE2_RAW)
+						if (cdMetadata.TrackType is LibChd.chd_track_type.CD_TRACK_MODE2
+							or LibChd.chd_track_type.CD_TRACK_MODE2_FORM1
+							or LibChd.chd_track_type.CD_TRACK_MODE2_FORM2
+							or LibChd.chd_track_type.CD_TRACK_MODE2_FORM_MIX
+							or LibChd.chd_track_type.CD_TRACK_MODE2_RAW)
 						{
 							return SessionFormat.Type20_CDXA;
 						}
@@ -874,20 +883,20 @@ namespace BizHawk.Emulation.DiscSystem
 			// write header
 			// note CHD header has values in big endian, while BinaryWriter will write in little endian
 			bw.Write(_chdTag);
-			bw.Write(BinaryPrimitives.ReverseEndianness(LibChdr.CHD_V5_HEADER_SIZE));
-			bw.Write(BinaryPrimitives.ReverseEndianness(LibChdr.CHD_HEADER_VERSION));
+			bw.Write(BinaryPrimitives.ReverseEndianness(LibChd.CHD_V5_HEADER_SIZE));
+			bw.Write(BinaryPrimitives.ReverseEndianness(LibChd.CHD_HEADER_VERSION));
 			// v5 chd allows for 4 different compression types
 			// we only have 1 implemented here
-			bw.Write(BinaryPrimitives.ReverseEndianness(LibChdr.CHD_CODEC_ZSTD));
+			bw.Write(BinaryPrimitives.ReverseEndianness(LibChd.CHD_CODEC_ZSTD));
 			bw.Write(0);
 			bw.Write(0);
 			bw.Write(0);
 			bw.Write(0L); // total size of all uncompressed data (written later)
 			bw.Write(0L); // offset to hunk map (written later)
 			bw.Write(0L); // offset to first metadata (written later)
-			bw.Write(BinaryPrimitives.ReverseEndianness(LibChdr.CD_FRAME_SIZE * CD_FRAMES_PER_HUNK)); // bytes per hunk
-			bw.Write(BinaryPrimitives.ReverseEndianness(LibChdr.CD_FRAME_SIZE)); // bytes per sector (always CD_FRAME_SIZE)
-			var blankSha1 = new byte[LibChdr.CHD_SHA1_BYTES];
+			bw.Write(BinaryPrimitives.ReverseEndianness(LibChd.CD_FRAME_SIZE * CD_FRAMES_PER_HUNK)); // bytes per hunk
+			bw.Write(BinaryPrimitives.ReverseEndianness(LibChd.CD_FRAME_SIZE)); // bytes per sector (always CD_FRAME_SIZE)
+			var blankSha1 = new byte[LibChd.CHD_SHA1_BYTES];
 			bw.Write(blankSha1); // SHA1 of raw data (written later)
 			bw.Write(blankSha1); // SHA1 of raw data + metadata (written later)
 			bw.Write(blankSha1); // SHA1 of raw data + metadata for parent (N/A, always 0 for us)
@@ -909,12 +918,12 @@ namespace BizHawk.Emulation.DiscSystem
 					IsCDI = track.Mode == 2 && session.TOC.SessionFormat == SessionFormat.Type10_CDI,
 					TrackType = track.Mode switch
 					{
-						0 => LibChdr.chd_track_type.CD_TRACK_AUDIO,
-						1 => LibChdr.chd_track_type.CD_TRACK_MODE1_RAW,
-						2 => LibChdr.chd_track_type.CD_TRACK_MODE2_RAW,
+						0 => LibChd.chd_track_type.CD_TRACK_AUDIO,
+						1 => LibChd.chd_track_type.CD_TRACK_MODE1_RAW,
+						2 => LibChd.chd_track_type.CD_TRACK_MODE2_RAW,
 						_ => throw new InvalidOperationException(),
 					},
-					SubType = LibChdr.chd_sub_type.CD_SUB_RAW,
+					SubType = LibChd.chd_sub_type.CD_SUB_RAW,
 					SectorSize = 2352,
 					SubSize = 96,
 					Frames = (uint)(track.NextTrack.LBA - firstIndexLba),
@@ -934,12 +943,12 @@ namespace BizHawk.Emulation.DiscSystem
 			using var sha1Inc = IncrementalHash.CreateHash(HashAlgorithmName.SHA1);
 			using var zstd = new Zstd();
 			var dsr = new DiscSectorReader(disc) { Policy = { DeinterleavedSubcode = true, DeterministicClearBuffer = true } };
-			var sectorBuf = new byte[LibChdr.CD_FRAME_SIZE];
+			var sectorBuf = new byte[LibChd.CD_FRAME_SIZE];
 			var cdLba = 0;
 			uint chdLba = 0, chdPos;
-			var curHunk = new byte[LibChdr.CD_FRAME_SIZE * CD_FRAMES_PER_HUNK];
+			var curHunk = new byte[LibChd.CD_FRAME_SIZE * CD_FRAMES_PER_HUNK];
 #if false // TODO: cdzs
-			const uint COMPRESSION_LEN_BYTES = LibChdr.CD_FRAME_SIZE * CD_FRAMES_PER_HUNK < 65536 ? 2 : 3;
+			const uint COMPRESSION_LEN_BYTES = LibChd.CD_FRAME_SIZE * CD_FRAMES_PER_HUNK < 65536 ? 2 : 3;
 			const uint ECC_BYTES = (CD_FRAMES_PER_HUNK + 7) / 8;
 			var hunkHeader = new byte[COMPRESSION_LEN_BYTES + ECC_BYTES];
 #endif
@@ -949,9 +958,6 @@ namespace BizHawk.Emulation.DiscSystem
 				var hunkOffset = bw.BaseStream.Position;
 
 				// TODO: adjust compression level?
-				// note: it's fairly important a high compression level is chosen
-				// libchdr will assume a compressed hunk with not be larger than an uncompressed hunk
-				// but with low compression levels, this is not necessarily true
 				using (var cstream = zstd.CreateZstdCompressionStream(bw.BaseStream, Zstd.MaxCompressionLevel))
 				{
 					cstream.Write(curHunk, 0, curHunk.Length);
@@ -976,7 +982,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 					// audio samples are byteswapped, so make sure to account for that
 					var trackType = i < cdMetadata.Pregap ? cdMetadata.PregapTrackType : cdMetadata.TrackType;
-					if (trackType == LibChdr.chd_track_type.CD_TRACK_AUDIO)
+					if (trackType == LibChd.chd_track_type.CD_TRACK_AUDIO)
 					{
 						EndiannessUtils.MutatingByteSwap16(sectorBuf.AsSpan()[..2352]);
 					}
@@ -986,11 +992,11 @@ namespace BizHawk.Emulation.DiscSystem
 					Buffer.BlockCopy(sectorBuf, 0, curHunk, (int)(2352U * chdPos), 2352);
 					Buffer.BlockCopy(sectorBuf, 2352, curHunk, (int)(2352U * CD_FRAMES_PER_HUNK + 96U * chdPos), 96);
 #else
-					Buffer.BlockCopy(sectorBuf, 0, curHunk, (int)(LibChdr.CD_FRAME_SIZE * chdPos), (int)LibChdr.CD_FRAME_SIZE);
+					Buffer.BlockCopy(sectorBuf, 0, curHunk, (int)(LibChd.CD_FRAME_SIZE * chdPos), (int)LibChd.CD_FRAME_SIZE);
 #endif
 					if (chdPos == CD_FRAMES_PER_HUNK - 1)
 					{
-						EndHunk(CD_FRAMES_PER_HUNK * LibChdr.CD_FRAME_SIZE);
+						EndHunk(CD_FRAMES_PER_HUNK * LibChd.CD_FRAME_SIZE);
 					}
 
 					cdLba++;
@@ -1002,7 +1008,7 @@ namespace BizHawk.Emulation.DiscSystem
 					chdPos = chdLba % CD_FRAMES_PER_HUNK;
 					if (chdPos == CD_FRAMES_PER_HUNK - 1)
 					{
-						EndHunk(CD_FRAMES_PER_HUNK * LibChdr.CD_FRAME_SIZE);
+						EndHunk(CD_FRAMES_PER_HUNK * LibChd.CD_FRAME_SIZE);
 					}
 
 					chdLba++;
@@ -1013,18 +1019,18 @@ namespace BizHawk.Emulation.DiscSystem
 			chdPos = chdLba % CD_FRAMES_PER_HUNK;
 			if (chdPos != 0)
 			{
-				EndHunk(chdPos * LibChdr.CD_FRAME_SIZE);
+				EndHunk(chdPos * LibChd.CD_FRAME_SIZE);
 			}
 
-			static string TrackTypeStr(LibChdr.chd_track_type trackType, bool isCdi)
+			static string TrackTypeStr(LibChd.chd_track_type trackType, bool isCdi)
 			{
 				// ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
 				return trackType switch
 				{
-					LibChdr.chd_track_type.CD_TRACK_AUDIO => "AUDIO",
-					LibChdr.chd_track_type.CD_TRACK_MODE1_RAW => "MODE1_RAW",
-					LibChdr.chd_track_type.CD_TRACK_MODE2_RAW when isCdi => "CDI/2352",
-					LibChdr.chd_track_type.CD_TRACK_MODE2_RAW => "MODE2_RAW",
+					LibChd.chd_track_type.CD_TRACK_AUDIO => "AUDIO",
+					LibChd.chd_track_type.CD_TRACK_MODE1_RAW => "MODE1_RAW",
+					LibChd.chd_track_type.CD_TRACK_MODE2_RAW when isCdi => "CDI/2352",
+					LibChd.chd_track_type.CD_TRACK_MODE2_RAW => "MODE2_RAW",
 					_ => throw new InvalidOperationException(),
 				};
 			}
@@ -1045,8 +1051,8 @@ namespace BizHawk.Emulation.DiscSystem
 				var metadataStr = $"TRACK:{cdMetadata.Track} TYPE:{trackType} SUBTYPE:RW_RAW FRAMES:{cdMetadata.Frames} PREGAP:{cdMetadata.Pregap} PGTYPE:{pgTrackType} PGSUB:RW_RAW POSTGAP:0\0";
 				var metadataBytes = Encoding.ASCII.GetBytes(metadataStr);
 
-				bw.Write(BinaryPrimitives.ReverseEndianness(LibChdr.CDROM_TRACK_METADATA2_TAG));
-				bw.Write(LibChdr.CHD_MDFLAGS_CHECKSUM);
+				bw.Write(BinaryPrimitives.ReverseEndianness(LibChd.CDROM_TRACK_METADATA2_TAG));
+				bw.Write(LibChd.CHD_MDFLAGS_CHECKSUM);
 				var chunkDataSize = new byte[3]; // 24 bit integer
 				chunkDataSize[0] = (byte)((metadataBytes.Length >> 16) & 0xFF);
 				chunkDataSize[1] = (byte)((metadataBytes.Length >> 8) & 0xFF);
@@ -1162,7 +1168,7 @@ namespace BizHawk.Emulation.DiscSystem
 			bw.Write(BinaryPrimitives.ReverseEndianness((uint)(hunkMapEnd - hunkMapOffset - 16)));
 
 			bw.BaseStream.Seek(0x20, SeekOrigin.Begin);
-			bw.Write(BinaryPrimitives.ReverseEndianness(chdLba * (long)LibChdr.CD_FRAME_SIZE));
+			bw.Write(BinaryPrimitives.ReverseEndianness(chdLba * (long)LibChd.CD_FRAME_SIZE));
 			bw.Write(BinaryPrimitives.ReverseEndianness(hunkMapOffset));
 			bw.Write(BinaryPrimitives.ReverseEndianness(metadataOffset));
 
@@ -1191,10 +1197,10 @@ namespace BizHawk.Emulation.DiscSystem
 			// tag is hashed alongside the hash
 			// we use the same tag every time, so we can just reuse this array
 			var metadataTag = new byte[4];
-			metadataTag[0] = (byte)((LibChdr.CDROM_TRACK_METADATA2_TAG >> 24) & 0xFF);
-			metadataTag[1] = (byte)((LibChdr.CDROM_TRACK_METADATA2_TAG >> 16) & 0xFF);
-			metadataTag[2] = (byte)((LibChdr.CDROM_TRACK_METADATA2_TAG >> 8) & 0xFF);
-			metadataTag[3] = (byte)(LibChdr.CDROM_TRACK_METADATA2_TAG & 0xFF);
+			metadataTag[0] = (byte)((LibChd.CDROM_TRACK_METADATA2_TAG >> 24) & 0xFF);
+			metadataTag[1] = (byte)((LibChd.CDROM_TRACK_METADATA2_TAG >> 16) & 0xFF);
+			metadataTag[2] = (byte)((LibChd.CDROM_TRACK_METADATA2_TAG >> 8) & 0xFF);
+			metadataTag[3] = (byte)(LibChd.CDROM_TRACK_METADATA2_TAG & 0xFF);
 			foreach (var metadataHash in metadataHashes)
 			{
 				sha1Inc.AppendData(metadataTag);

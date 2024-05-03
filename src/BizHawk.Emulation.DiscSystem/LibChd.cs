@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Runtime.InteropServices;
 
 #pragma warning disable IDE1006
@@ -10,10 +9,11 @@ using System.Runtime.InteropServices;
 namespace BizHawk.Emulation.DiscSystem
 {
 	/// <summary>
-	/// libchdr bindings
+	/// Bindings matching libchdr's chd.h
+	/// In practice, we use chd-rs, whose c api matches libchdr's
 	/// TODO: should this be common-ized? chd isn't limited to discs, it could be used for hard disk images (e.g. for MAME)
 	/// </summary>
-	public static class LibChdr
+	public static class LibChd
 	{
 		public const uint CHD_HEADER_VERSION = 5;
 		public const uint CHD_V5_HEADER_SIZE = 124;
@@ -69,148 +69,7 @@ namespace BizHawk.Emulation.DiscSystem
 			CHDERR_UNSUPPORTED_FORMAT
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		public struct chd_core_file
-		{
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			public delegate ulong FSizeDelegate(IntPtr file);
-
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			public delegate nuint FReadDelegate(IntPtr buffer, nuint size, nuint count, IntPtr file);
-
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			public delegate int FCloseDelegate(IntPtr file);
-
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			public delegate int FSeekDelegate(IntPtr file, long offset, SeekOrigin origin);
-
-			public IntPtr argp;
-			[MarshalAs(UnmanagedType.FunctionPtr)]
-			public FSizeDelegate fsize;
-			[MarshalAs(UnmanagedType.FunctionPtr)]
-			public FReadDelegate fread;
-			[MarshalAs(UnmanagedType.FunctionPtr)]
-			public FCloseDelegate fclose;
-			[MarshalAs(UnmanagedType.FunctionPtr)]
-			public FSeekDelegate fseek;
-		}
-
-		/// <summary>
-		/// Convenience chd_core_file wrapper against a generic Stream
-		/// </summary>
-		public class CoreFileStreamWrapper : IDisposable
-		{
-			private const uint READ_BUFFER_LEN = 8 * CD_FRAME_SIZE; // 8 frames, usual uncompressed hunk size
-			private readonly byte[] _readBuffer = new byte[READ_BUFFER_LEN];
-
-			private Stream _s;
-
-			// ReSharper disable once MemberCanBePrivate.Global
-			private readonly chd_core_file _coreFile;
-			public readonly IntPtr CoreFile;
-
-			private ulong FSize(IntPtr file)
-			{
-				try
-				{
-					return (ulong)_s.Length;
-				}
-				catch (Exception e)
-				{
-					Console.Error.WriteLine(e);
-					return unchecked((ulong)-1);
-				}
-			}
-
-			private nuint FRead(IntPtr buffer, nuint size, nuint count, IntPtr file)
-			{
-				nuint ret = 0;
-				try
-				{
-					// note: size will always be 1, so this should never overflow
-					var numBytesToRead = (uint)Math.Min(size * (ulong)count, uint.MaxValue);
-					while (numBytesToRead > 0)
-					{
-						var numRead = _s.Read(_readBuffer, 0, (int)Math.Min(READ_BUFFER_LEN, numBytesToRead));
-						if (numRead == 0)
-						{
-							return ret;
-						}
-
-						Marshal.Copy(_readBuffer, 0, buffer, numRead);
-						buffer += numRead;
-						ret += (uint)numRead;
-						numBytesToRead -= (uint)numRead;
-					}
-
-					return ret;
-				}
-				catch (Exception e)
-				{
-					Console.Error.WriteLine(e);
-					return ret;
-				}
-			}
-
-			private int FClose(IntPtr file)
-			{
-				if (_s == null)
-				{
-					return -1;
-				}
-
-				_s.Dispose();
-				_s = null;
-				return 0;
-			}
-
-			private int FSeek(IntPtr file, long offset, SeekOrigin origin)
-			{
-				try
-				{
-					_s.Seek(offset, origin);
-					return 0;
-				}
-				catch (Exception ex)
-				{
-					Console.Error.WriteLine(ex);
-					return -1;
-				}
-			}
-
-			public CoreFileStreamWrapper(Stream s)
-			{
-				if (!s.CanRead || !s.CanSeek)
-				{
-					throw new NotSupportedException("The underlying CHD stream must support reading and seeking!");
-				}
-
-				_s = s;
-				_coreFile.fsize = FSize;
-				_coreFile.fread = FRead;
-				_coreFile.fclose = FClose;
-				_coreFile.fseek = FSeek;
-				// the pointer here must stay alloc'd on the unmanaged size
-				// as libchdr expects the memory to not move around
-				CoreFile = Marshal.AllocCoTaskMem(Marshal.SizeOf<chd_core_file>());
-				Marshal.StructureToPtr(_coreFile, CoreFile, fDeleteOld: false);
-			}
-
-			public void Dispose()
-			{
-				Marshal.DestroyStructure<chd_core_file>(CoreFile);
-				Marshal.FreeCoTaskMem(CoreFile);
-				_s?.Dispose();
-			}
-		}
-
-		[DllImport("chdr")]
-		public static extern chd_error chd_open_core_file(IntPtr file, int mode, IntPtr parent, out IntPtr chd);
-
-		[DllImport("chdr")]
-		public static extern void chd_close(IntPtr chd);
-
-		// extracted chd header (not the same as the one on disk, but rather an interpreted one by libchdr)
+		// extracted chd header (not the same as the one on disk, but rather an interpreted one by chd-rs)
 		[StructLayout(LayoutKind.Sequential)]
 		public struct chd_header
 		{
@@ -239,11 +98,17 @@ namespace BizHawk.Emulation.DiscSystem
 			public uint obsolete_hunksize;                       // obsolete field -- do not use!
 		}
 
-		[DllImport("chdr")]
-		public static extern IntPtr chd_get_header(IntPtr chd);
+		[DllImport("chd_capi")]
+		public static extern chd_error chd_open(IntPtr filename, int mode, IntPtr parent, out IntPtr chd);
 
-		[DllImport("chdr")]
+		[DllImport("chd_capi")]
+		public static extern void chd_close(IntPtr chd);
+
+		[DllImport("chd_capi")]
 		public static extern chd_error chd_read(IntPtr chd, uint hunknum, byte[] buffer);
+
+		[DllImport("chd_capi")]
+		public static extern chd_error chd_read_header(IntPtr filename, ref chd_header header);
 
 		public enum chd_track_type : uint
 		{
@@ -267,7 +132,7 @@ namespace BizHawk.Emulation.DiscSystem
 		// hunks should be a multiple of this for cd chds
 		public const uint CD_FRAME_SIZE = 2352 + 96;
 
-		[DllImport("chdr")]
+		[DllImport("chd_capi")]
 		public static extern chd_error chd_get_metadata(
 			IntPtr chd, uint searchtag, uint searchindex, byte[] output, uint outputlen, out uint resultlen, out uint resulttag, out byte resultflags);
 	}
