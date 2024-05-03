@@ -23,5 +23,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Atari.Stella
 			load_archive_cb feload_archive_cb,
 			[In]InitSettings settings);
 
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void stella_frame_advance(bool doRender);
+
 	}
 }

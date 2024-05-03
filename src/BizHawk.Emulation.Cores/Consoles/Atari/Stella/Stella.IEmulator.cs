@@ -11,6 +11,8 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
+			Core.stella_frame_advance(render);
+
 			return true;
 		}
 

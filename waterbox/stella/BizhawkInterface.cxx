@@ -34,6 +34,12 @@ void printRAM()
 		}
 }
 
+ECL_EXPORT void stella_frame_advance(bool doRender)
+{
+    // _a2600->dispatchEmulation(doRender);
+				//  printRAM();
+}
+
 ECL_EXPORT int stella_init(
 	const char* romFileName,
 	ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize),
@@ -60,7 +66,12 @@ ECL_EXPORT int stella_init(
  printf("Before Advance");
  printRAM();
  
- _a2600->dispatchEmulation();
+ _a2600->dispatchEmulation(false);
+
+	printf("After Advance");
+ printRAM();
+
+ _a2600->dispatchEmulation(false);
 
 	printf("After Advance");
  printRAM();
