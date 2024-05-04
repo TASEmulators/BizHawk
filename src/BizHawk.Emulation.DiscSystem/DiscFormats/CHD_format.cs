@@ -536,11 +536,13 @@ namespace BizHawk.Emulation.DiscSystem
 		private class SS_CHD_Sub : ISectorSynthJob2448
 		{
 			private readonly SS_Base _baseSynth;
+			private readonly uint _subOffset;
 			private readonly bool _isInterleaved;
 
-			public SS_CHD_Sub(SS_Base baseSynth, bool isInterleaved)
+			public SS_CHD_Sub(SS_Base baseSynth, uint subOffset, bool isInterleaved)
 			{
 				_baseSynth = baseSynth;
+				_subOffset = subOffset;
 				_isInterleaved = isInterleaved;
 			}
 
@@ -548,7 +550,8 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				if ((job.Parts & ESectorSynthPart.SubcodeAny) != 0)
 				{
-					_baseSynth.Blob.Read(_baseSynth.BlobOffset + 2352, job.DestBuffer2448, job.DestOffset + 2352, 96);
+					_baseSynth.Blob.Read(_baseSynth.BlobOffset + _subOffset, job.DestBuffer2448, job.DestOffset + 2352, 96);
+					job.Parts &= ~ESectorSynthPart.SubcodeAny;
 
 					if ((job.Parts & ESectorSynthPart.SubcodeDeinterleave) != 0 && _isInterleaved)
 					{
@@ -559,8 +562,6 @@ namespace BizHawk.Emulation.DiscSystem
 					{
 						SynthUtils.InterleaveSubcodeInplace(job.DestBuffer2448, job.DestOffset + 2352);
 					}
-
-					job.Parts &= ~ESectorSynthPart.SubcodeAny;
 				}
 
 				_baseSynth.Synth(job);
@@ -685,8 +686,8 @@ namespace BizHawk.Emulation.DiscSystem
 							// wrap the base synth with our special synth if we have subcode in the chd
 							ISectorSynthJob2448 chdSynth = cdMetadata.PregapSubType switch
 							{
-								LibChd.chd_sub_type.CD_SUB_NORMAL => new SS_CHD_Sub(synth, isInterleaved: true),
-								LibChd.chd_sub_type.CD_SUB_RAW => new SS_CHD_Sub(synth, isInterleaved: false),
+								LibChd.chd_sub_type.CD_SUB_NORMAL => new SS_CHD_Sub(synth, GetSectorSize(cdMetadata.PregapTrackType), isInterleaved: false),
+								LibChd.chd_sub_type.CD_SUB_RAW => new SS_CHD_Sub(synth, GetSectorSize(cdMetadata.PregapTrackType), isInterleaved: true),
 								LibChd.chd_sub_type.CD_SUB_NONE => synth,
 								_ => throw new InvalidOperationException(),
 							};
@@ -730,8 +731,8 @@ namespace BizHawk.Emulation.DiscSystem
 						synth.Pause = false;
 						ISectorSynthJob2448 chdSynth = cdMetadata.SubType switch
 						{
-							LibChd.chd_sub_type.CD_SUB_NORMAL => new SS_CHD_Sub(synth, isInterleaved: true),
-							LibChd.chd_sub_type.CD_SUB_RAW => new SS_CHD_Sub(synth, isInterleaved: false),
+							LibChd.chd_sub_type.CD_SUB_NORMAL => new SS_CHD_Sub(synth, cdMetadata.SectorSize, isInterleaved: false),
+							LibChd.chd_sub_type.CD_SUB_RAW => new SS_CHD_Sub(synth, cdMetadata.SectorSize, isInterleaved: true),
 							LibChd.chd_sub_type.CD_SUB_NONE => synth,
 							_ => throw new InvalidOperationException(),
 						};
@@ -1048,7 +1049,7 @@ namespace BizHawk.Emulation.DiscSystem
 					pgTrackType = $"V{pgTrackType}";
 				}
 
-				var metadataStr = $"TRACK:{cdMetadata.Track} TYPE:{trackType} SUBTYPE:RW_RAW FRAMES:{cdMetadata.Frames} PREGAP:{cdMetadata.Pregap} PGTYPE:{pgTrackType} PGSUB:RW_RAW POSTGAP:0\0";
+				var metadataStr = $"TRACK:{cdMetadata.Track} TYPE:{trackType} SUBTYPE:RW FRAMES:{cdMetadata.Frames} PREGAP:{cdMetadata.Pregap} PGTYPE:{pgTrackType} PGSUB:RW POSTGAP:0\0";
 				var metadataBytes = Encoding.ASCII.GetBytes(metadataStr);
 
 				bw.Write(BinaryPrimitives.ReverseEndianness(LibChd.CDROM_TRACK_METADATA2_TAG));
@@ -1088,7 +1089,6 @@ namespace BizHawk.Emulation.DiscSystem
 				uncompressedHunkMap[mapEntryOffset + 11] = (byte)(hunkMapEntry.Crc16 & 0xFF);
 			}
 
-			File.WriteAllBytes("rawmap_expected.bin", uncompressedHunkMap);
 			var hunkMapCrc16 = CalcCrc16(uncompressedHunkMap);
 			var hunkMapOffset = bw.BaseStream.Position;
 

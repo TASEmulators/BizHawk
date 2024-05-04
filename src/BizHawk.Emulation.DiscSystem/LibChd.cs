@@ -122,10 +122,13 @@ namespace BizHawk.Emulation.DiscSystem
 			CD_TRACK_AUDIO,          // redbook audio track 2352 bytes/sector (588 samples)
 		}
 
+		/// <summary>
+		/// These sub types seem to be intended to match up with how cdrdao defines .toc sub types
+		/// </summary>
 		public enum chd_sub_type : uint
 		{
-			CD_SUB_NORMAL = 0, // "cooked" 96 bytes per sector
-			CD_SUB_RAW,        // raw uninterleaved 96 bytes per sector
+			CD_SUB_NORMAL = 0, // raw deinterleaved R-W subcode with generated P-Q subcode, 96 bytes per sector
+			CD_SUB_RAW,        // raw interleaved P-W subcode, 96 bytes per sector
 			CD_SUB_NONE        // no subcode data stored
 		}
 
