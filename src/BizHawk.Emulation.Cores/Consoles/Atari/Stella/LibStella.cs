@@ -26,5 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Atari.Stella
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void stella_frame_advance(bool doRender);
 
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void stella_get_video(out int w, out int h, out int pitch, ref IntPtr buffer);
 	}
 }

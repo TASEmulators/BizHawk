@@ -42,35 +42,26 @@ class FBBackendBIZHAWK : public FBBackend
     ~FBBackendBIZHAWK() override;
 
   public:
-    /**
-      Get a pointer to the SDL renderer.
-     */
-    SDL_Renderer* renderer() { return myRenderer; }
 
     /**
       Is the renderer initialized?
      */
-    bool isInitialized() const { return myRenderer != nullptr; }
-
-    /**
-      Get the SDL pixel format.
-     */
-    const SDL_PixelFormat& pixelFormat() const { return *myPixelFormat; }
+    bool isInitialized() const { return true; }
 
     /**
       Does the renderer support render targets?
      */
-    bool hasRenderTargetSupport() const { return myRenderTargetSupport; }
+    bool hasRenderTargetSupport() const { return true;; }
 
     /**
       Transform from window to renderer coordinates, x direction
      */
-    int scaleX(int x) const override { return (x * myRenderW) / myWindowW; }
+    int scaleX(int x) const override { return 1; }
 
     /**
       Transform from window to renderer coordinates, y direction
      */
-    int scaleY(int y) const override { return (y * myRenderH) / myWindowH; }
+    int scaleY(int y) const override { return 1; }
 
   protected:
     /**
@@ -99,7 +90,7 @@ class FBBackendBIZHAWK : public FBBackend
       @param b      The blue component of the color
     */
     FORCE_INLINE void getRGB(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b) const override
-      { SDL_GetRGB(pixel, myPixelFormat, r, g, b); }
+      { }
 
     /**
       This method is called to retrieve the R/G/B/A data from the given pixel.
@@ -111,7 +102,7 @@ class FBBackendBIZHAWK : public FBBackend
       @param a      The alpha component of the color.
     */
     FORCE_INLINE void getRGBA(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b, uInt8* a) const override
-      { SDL_GetRGBA(pixel, myPixelFormat, r, g, b, a); }
+      { }
 
     /**
       This method is called to map a given R/G/B triple to the screen palette.
@@ -121,7 +112,7 @@ class FBBackendBIZHAWK : public FBBackend
       @param b  The blue component of the color.
     */
     inline uInt32 mapRGB(uInt8 r, uInt8 g, uInt8 b) const override
-      { return SDL_MapRGB(myPixelFormat, r, g, b); }
+      { return 0; }
 
     /**
       This method is called to map a given R/G/B/A triple to the screen palette.
@@ -132,7 +123,7 @@ class FBBackendBIZHAWK : public FBBackend
       @param a  The alpha component of the color.
     */
     inline uInt32 mapRGBA(uInt8 r, uInt8 g, uInt8 b, uInt8 a) const override
-      { return SDL_MapRGBA(myPixelFormat, r, g, b, a); }
+      { return 0; }
 
     /**
       This method is called to get a copy of the specified ARGB data from the
@@ -233,7 +224,7 @@ class FBBackendBIZHAWK : public FBBackend
 
       @return  False on any errors, else true
     */
-    bool createRenderer();
+    bool createRenderer(const VideoModeHandler::Mode& mode);
 
     /**
       This method must be called after all drawing is done, and indicates
@@ -281,27 +272,8 @@ class FBBackendBIZHAWK : public FBBackend
   private:
     OSystem& myOSystem;
 
-    // The SDL video buffer
-    SDL_Window* myWindow{nullptr};
-    SDL_Renderer* myRenderer{nullptr};
-
-    // Used by mapRGB (when palettes are created)
-    SDL_PixelFormat* myPixelFormat{nullptr};
-
     // Center setting of current window
     bool myCenter{false};
-
-    // Does the renderer support render targets?
-    bool myRenderTargetSupport{false};
-
-    // Title of the main window/screen
-    string myScreenTitle;
-
-    // Number of displays
-    int myNumDisplays{1};
-
-    // Window and renderer dimensions
-    int myWindowW{0}, myWindowH{0}, myRenderW{0}, myRenderH{0};
 
   private:
     // Following constructors and assignment operators not supported

@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 {
 	[Core(CoreNames.Stella, "The Stella Team")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
-	public partial class Stella : IEmulator, IDebuggable, IInputPollable, IRomInfo,
+	public partial class Stella : IEmulator, IVideoProvider, IDebuggable, IInputPollable, IRomInfo,
 		ICreateGameDBEntries, ISettable<Stella.A2600Settings, Stella.A2600SyncSettings>
 	{
 		internal static class RomChecksums

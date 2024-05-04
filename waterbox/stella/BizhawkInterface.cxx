@@ -34,10 +34,42 @@ void printRAM()
 		}
 }
 
+void printFrameBuffer()
+{
+	 auto frameBuffer = _a2600->console().tia().frameBuffer();
+		auto height =   _a2600->console().tia().height();
+		auto width =   _a2600->console().tia().width();
+
+  printf("[] Frame Buffer Pointer: %p\n", frameBuffer);
+  // printf("[] Frame Buffer Contents:\n");
+
+		uint64_t checkSum = 0;
+		for (int i = 0; i < height; i++)
+		{
+			for (int j = 0; j < width; j++)
+			{
+				// printf("%02X ", frameBuffer[i*height + j]);
+				checkSum += frameBuffer[i*height + j];
+			}
+			// printf("\n");
+		}
+
+		printf("[] Frame Buffer Checksum: 0x%lX\n", checkSum);
+}
+
+ECL_EXPORT void stella_get_video(int& w, int& h, int& pitch, uint8_t*& buffer)
+{
+	 w = _a2600->console().tia().width();
+		h = _a2600->console().tia().height();
+		buffer = _a2600->console().tia().frameBuffer();
+	 pitch =	_a2600->console().tia().width();
+}
+
 ECL_EXPORT void stella_frame_advance(bool doRender)
 {
-    // _a2600->dispatchEmulation(doRender);
+    _a2600->dispatchEmulation();
 				//  printRAM();
+				//printFrameBuffer();
 }
 
 ECL_EXPORT int stella_init(
@@ -62,19 +94,6 @@ ECL_EXPORT int stella_init(
 	if (error != "") { fprintf(stderr, "ERROR: Couldn't create A2600 Console. Reason: '%s'\n", error.c_str()); return 0; }
 
  printf("A2600 console created successfully");
-
- printf("Before Advance");
- printRAM();
- 
- _a2600->dispatchEmulation(false);
-
-	printf("After Advance");
- printRAM();
-
- _a2600->dispatchEmulation(false);
-
-	printf("After Advance");
- printRAM();
 
 	return 1;
 }

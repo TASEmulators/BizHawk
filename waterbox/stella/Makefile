@@ -41,9 +41,6 @@ SRCS = \
 	port/FBBackendBizhawk.cxx \
 	port/FBSurfaceBizhawk.cxx \
 	port/OSystemBizhawk.cxx \
-	port/bk_blitter/BilinearBlitter.cxx \
-	port/bk_blitter/BlitterFactory.cxx \
-	port/bk_blitter/QisBlitter.cxx \
 	core/src/emucore/OSystem.cxx \
 	core/src/emucore/Switches.cxx \
 	core/src/emucore/FrameBuffer.cxx \
