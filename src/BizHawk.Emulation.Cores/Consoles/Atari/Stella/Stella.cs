@@ -67,8 +67,16 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 				if (!initResult) throw new Exception($"{nameof(Core.stella_init)}() failed");
 
+				Core.stella_get_frame_rate(out int fps);
+				VsyncNumerator = fps;
+				VsyncDenominator = 1;
+
 				_elf.Seal();
 			}
+
+			// pull the default video size from the core
+			UpdateVideo();
+				
 		}
 
 		private CInterface.load_archive_cb LoadCallback;

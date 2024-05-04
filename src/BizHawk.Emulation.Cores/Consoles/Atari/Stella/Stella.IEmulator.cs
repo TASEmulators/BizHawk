@@ -13,6 +13,11 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		{
 			Core.stella_frame_advance(render);
 
+			if (render)
+				UpdateVideo();
+
+			_frame++;
+
 			return true;
 		}
 

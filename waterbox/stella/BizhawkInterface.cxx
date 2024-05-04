@@ -34,6 +34,11 @@ void printRAM()
 		}
 }
 
+ECL_EXPORT void stella_get_frame_rate(int& fps)
+{
+	 fps = _a2600->console().gameRefreshRate();
+}
+
 void printFrameBuffer()
 {
 	 auto frameBuffer = _a2600->console().tia().frameBuffer();
@@ -69,7 +74,7 @@ ECL_EXPORT void stella_frame_advance(bool doRender)
 {
     _a2600->dispatchEmulation();
 				//  printRAM();
-				//printFrameBuffer();
+				printFrameBuffer();
 }
 
 ECL_EXPORT int stella_init(
