@@ -63,7 +63,7 @@
 			// 
 			this.label1.Location = new System.Drawing.Point(12, 14);
 			this.label1.Name = "label1";
-			this.label1.Text = "ZX Spectrum Misc Non-Sync Settings";
+			this.label1.Text = "Amstrad CPC Misc Non-Sync Settings";
 			// 
 			// lblOSDVerbinfo
 			// 
