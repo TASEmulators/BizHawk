@@ -393,8 +393,6 @@ namespace BizHawk.Client.Common
 		// ReSharper disable once UnusedMember.Global
 		public string LastWrittenFromDetailed { get; set; } = VersionInfo.GetEmuVersion();
 
-		public EHostInputMethod HostInputMethod { get; set; } = HostCapabilityDetector.HasDirectX ? EHostInputMethod.DirectInput : EHostInputMethod.SDL2;
-
 		public bool UseStaticWindowTitles { get; set; }
 
 		public List<string> ModifierKeys { get; set; } = new();
