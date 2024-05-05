@@ -48,8 +48,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 		private unsafe void UpdateVideo()
 		{
-			Console.WriteLine("Updating video...");
-
 			if (Frame == 0)
 			{
 				UpdateVideoInitial();
@@ -60,9 +58,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			{
 				IntPtr src = IntPtr.Zero;
 
-                Console.WriteLine("Before calling stella_get_video");
 				Core.stella_get_video(out var width, out var height, out var pitch, ref src);
-				Console.WriteLine("After calling stella_get_video");
 
                 _vwidth = width;
 				_vheight = height;
@@ -72,22 +68,14 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 				if (_vidBuff.Length < _vwidth * _vheight)
 					_vidBuff = new int[_vwidth * _vheight];
 
-				Console.WriteLine("Writing to video buffer " + _vheight + " " + _vwidth);
-
-				for (int i = 0; i < _vidBuff.Length; i++)
-				{
-					_vidBuff[i] = NTSCPalette[buffer[i]];
-				//   int B = (int)(buffer[i] & (byte)0b00000011) >> 0;
-				//   int G = (int)(buffer[i] & (byte)0b00011100) >> 2;
-				//   int R = (int)(buffer[i] & (byte)0b11100000) >> 5;
-				//   _vidBuff[i] = 0;
-				//   _vidBuff[i] |= (TwoBitToEightBitTable[B]) << 0; 
-				//   _vidBuff[i] |= (ThreeBitToEightBitTable[G]) << 8;
-				//   _vidBuff[i] |= (ThreeBitToEightBitTable[R]) << 16;
-				//   _vidBuff[i] |= 128 << 24; // Alpha channel
-				}	
+                if (Region == DisplayType.NTSC)
+				 for (int i = 0; i < _vidBuff.Length; i++) _vidBuff[i] = NTSCPalette[buffer[i]];
 				
-				Console.WriteLine("wrote to buffer");
+				if (Region == DisplayType.PAL)
+				 for (int i = 0; i < _vidBuff.Length; i++) _vidBuff[i] = PALPalette[buffer[i]];
+
+				if (Region == DisplayType.SECAM)
+				 for (int i = 0; i < _vidBuff.Length; i++) _vidBuff[i] = SecamPalette[buffer[i]];
 			}
 		}
 

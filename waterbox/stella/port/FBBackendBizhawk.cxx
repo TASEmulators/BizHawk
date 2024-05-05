@@ -79,12 +79,6 @@ bool FBBackendBIZHAWK::setVideoMode(const VideoModeHandler::Mode& mode,
   return true;
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FBBackendBIZHAWK::adaptRefreshRate(Int32 displayIndex,
-                                     SDL_DisplayMode& adaptedSdlMode)
-{
-  return true;
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FBBackendBIZHAWK::createRenderer(const VideoModeHandler::Mode& mode)

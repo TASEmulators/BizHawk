@@ -18,6 +18,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Atari.Stella
 		}
 
 		[BizImport(CallingConvention.Cdecl)]
+		public abstract int stella_get_region();
+
+		[BizImport(CallingConvention.Cdecl)]
 		public abstract bool stella_init(
 			string fileName,
 			load_archive_cb feload_archive_cb,

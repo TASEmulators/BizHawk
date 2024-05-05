@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 {
 	[Core(CoreNames.Stella, "The Stella Team")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
-	public partial class Stella : IEmulator, IVideoProvider, IDebuggable, IInputPollable, IRomInfo,
+	public partial class Stella : IEmulator, IVideoProvider, IDebuggable, IInputPollable, IRomInfo, IRegionable,
 		ICreateGameDBEntries, ISettable<Stella.A2600Settings, Stella.A2600SyncSettings>
 	{
 		internal static class RomChecksums
@@ -68,6 +68,12 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 				if (!initResult) throw new Exception($"{nameof(Core.stella_init)}() failed");
 
 				Core.stella_get_frame_rate(out int fps);
+				
+				int regionId = Core.stella_get_region();
+				if (regionId == 0) _region = DisplayType.NTSC;
+				if (regionId == 1) _region = DisplayType.PAL;
+				if (regionId == 2) _region = DisplayType.SECAM;
+
 				VsyncNumerator = fps;
 				VsyncDenominator = 1;
 
@@ -78,6 +84,11 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			UpdateVideo();
 				
 		}
+
+		// IRegionable
+		public DisplayType Region => _region;
+
+		private DisplayType _region;
 
 		private CInterface.load_archive_cb LoadCallback;
 

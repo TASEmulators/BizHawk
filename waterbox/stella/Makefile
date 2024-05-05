@@ -1,5 +1,3 @@
-include Makefile.SDL
-
 STELLA_DIR := core
 
 CCFLAGS := \
@@ -35,7 +33,6 @@ LDFLAGS :=
 TARGET := stella.wbx
 
 SRCS = \
- ${SDL_SRC} \
 	BizhawkInterface.cxx \
  port/EventHandlerBizhawk.cxx \
 	port/FBBackendBizhawk.cxx \

@@ -21,7 +21,6 @@
 #include "bspf.hxx"
 #include "FBSurface.hxx"
 #include "FBBackendBizhawk.hxx"
-#include "sdl_blitter/Blitter.hxx"
 
 /**
   An FBSurface suitable for the BIZHAWK Render2D API, making use of hardware

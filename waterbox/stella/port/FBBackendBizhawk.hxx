@@ -18,8 +18,6 @@
 #ifndef FB_BACKEND_BIZHAWK_HXX
 #define FB_BACKEND_BIZHAWK_HXX
 
-#include "SDL_lib.hxx"
-
 class OSystem;
 class FBSurfaceBIZHAWK;
 
@@ -236,18 +234,6 @@ class FBBackendBIZHAWK : public FBBackend
       Retrieve the current display's refresh rate, or 0 if no window.
     */
     int refreshRate() const override;
-
-    /**
-      Checks if the display refresh rate should be adapted to game refresh
-      rate in (real) fullscreen mode.
-
-      @param displayIndex   The display which should be checked
-      @param adaptedSdlMode The best matching mode if the refresh rate
-                            should be changed
-
-      @return  True if the refresh rate should be changed
-    */
-    bool adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adaptedSdlMode);
 
     /**
       After the renderer has been created, detect the features it supports.

@@ -34,6 +34,24 @@ void printRAM()
 		}
 }
 
+enum regionType
+{
+   ntsc = 0,
+   pal = 1,
+			secam = 2
+};
+
+ECL_EXPORT int stella_get_region()
+{
+	const auto regionString = _a2600->console().getFormatString();
+
+		if (regionString == "NTSC" || regionString == "NTSC50") return regionType::ntsc;
+		if (regionString == "PAL" || regionString == "PAL60") return regionType::pal;
+		if (regionString == "SECAM" || regionString == "SECAM60") return regionType::secam;
+
+ 	return -1;
+}
+
 ECL_EXPORT void stella_get_frame_rate(int& fps)
 {
 	 fps = _a2600->console().gameRefreshRate();
