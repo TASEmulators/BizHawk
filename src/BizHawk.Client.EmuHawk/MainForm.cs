@@ -3312,6 +3312,28 @@ namespace BizHawk.Client.EmuHawk
 				UpdateToolsAfter();
 			}
 
+			// Mutes the game if EmuHawk is unfocused or minimized
+			// An option in the sound settings needs to be turned on for this to work.
+			if (Config.MuteInBG && (WindowState == FormWindowState.Minimized || Form.ActiveForm == null))
+			{
+				Sound.StopSound();
+			}
+			else
+			{
+				Sound.StartSound();
+			}
+
+			// Mutes the game if the current FPS reaches the threshold chosen by the user or lower
+			// An option in the sound settings needs to be turned on for this to work.
+			if (Config.MuteOnLag && _lastFps <= PlatformFrameRates.GetFrameRate(Emulator.SystemId, Emulator.HasRegions() && Emulator.AsRegionable().Region is DisplayType.PAL) * ((double)Config.FPSThresholdPercentage / 100))
+			{
+				Sound.StopSound();
+			}
+			else
+			{
+				Sound.StartSound();
+			}
+
 			Sound.UpdateSound(atten, DisableSecondaryThrottling);
 		}
 
