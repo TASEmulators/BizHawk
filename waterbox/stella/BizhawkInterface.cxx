@@ -12,6 +12,8 @@
 #include "M6532.hxx"
 #include "TIA.hxx"
 
+uint16_t soundbuffer[4096];
+int nsamples;
 
 struct InitSettings
 {
@@ -80,6 +82,15 @@ void printFrameBuffer()
 		printf("[] Frame Buffer Checksum: 0x%lX\n", checkSum);
 }
 
+
+ECL_EXPORT void stella_get_audio(int *n, void **buffer)
+{
+	if (n)
+		*n = nsamples;
+	if (buffer)
+		*buffer = soundbuffer;
+}
+
 ECL_EXPORT void stella_get_video(int& w, int& h, int& pitch, uint8_t*& buffer)
 {
 	 w = _a2600->console().tia().width();
@@ -87,7 +98,6 @@ ECL_EXPORT void stella_get_video(int& w, int& h, int& pitch, uint8_t*& buffer)
 		buffer = _a2600->console().tia().frameBuffer();
 	 pitch =	_a2600->console().tia().width();
 }
-
 
 ECL_EXPORT void stella_frame_advance(uint8_t port1, uint8_t port2, bool reset, bool power, bool leftDiffToggled, bool rightDiffToggled)
 {
@@ -108,6 +118,7 @@ ECL_EXPORT void stella_frame_advance(uint8_t port1, uint8_t port2, bool reset, b
 				_a2600->console().rightController().write(::Controller::DigitalPin::Four,  port2 & 0b10000000);  // Right
 				_a2600->console().rightController().write(::Controller::DigitalPin::Six,   port2 & 0b00001000);  // Button
 
+				nsamples = 0;
     _a2600->dispatchEmulation();
 				//  printRAM();
 				// printFrameBuffer();

@@ -22,6 +22,7 @@ CXXFLAGS := \
 	-ISDL/include \
 	-ISDL/src \
 	-DUNIX \
+	-DSOUND_SUPPORT \
  -DSDL_ENABLE_OLD_NAMES \
 	-D_REENTRANT \
 	-D__USE_BIZHAWK \
@@ -38,6 +39,7 @@ SRCS = \
 	port/FBBackendBizhawk.cxx \
 	port/FBSurfaceBizhawk.cxx \
 	port/OSystemBizhawk.cxx \
+	port/SoundBizhawk.cxx \
 	core/src/emucore/OSystem.cxx \
 	core/src/emucore/Switches.cxx \
 	core/src/emucore/FrameBuffer.cxx \

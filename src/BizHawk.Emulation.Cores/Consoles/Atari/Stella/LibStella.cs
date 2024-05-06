@@ -18,6 +18,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Atari.Stella
 		}
 
 		[BizImport(CallingConvention.Cdecl)]
+		public abstract void stella_get_audio(ref int n, ref IntPtr buffer);
+
+		[BizImport(CallingConvention.Cdecl)]
 		public abstract int stella_get_region();
 
 		[BizImport(CallingConvention.Cdecl)]
