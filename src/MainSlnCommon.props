@@ -15,6 +15,10 @@
 	<PropertyGroup Condition=" '$(MachineRunAnalyzersDuringBuild)' == '' ">
 		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
 	</PropertyGroup>
+	<PropertyGroup Condition=" '$(ExecProjTargetFrameworkOverride)' != '' AND '$(TargetFramework)' == 'net48' ">
+		<SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+		<TargetFramework>$(ExecProjTargetFrameworkOverride)</TargetFramework>
+	</PropertyGroup>
 	<ItemGroup>
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.ReflectionCache.dll" />
 	</ItemGroup>
