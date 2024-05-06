@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 
 			RefreshAspectRatioOptions();
 
-			if (!HostCapabilityDetector.HasDirectX)
+			if (!HostCapabilityDetector.HasD3D9)
 			{
 				rbD3D9.Enabled = false;
 				rbD3D9.AutoCheck = false;

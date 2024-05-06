@@ -220,7 +220,7 @@ namespace BizHawk.Client.Common
 
 		public int DispPrescale { get; set; } = 1;
 
-		public EDispMethod DispMethod { get; set; } = HostCapabilityDetector.HasDirectX && !OSTailoredCode.IsWine ? EDispMethod.D3D9 : EDispMethod.OpenGL;
+		public EDispMethod DispMethod { get; set; } = HostCapabilityDetector.HasD3D9 && !OSTailoredCode.IsWine ? EDispMethod.D3D9 : EDispMethod.OpenGL;
 
 		public int DispChromeFrameWindowed { get; set; } = 2;
 		public bool DispChromeStatusBarWindowed { get; set; } = true;
@@ -248,7 +248,7 @@ namespace BizHawk.Client.Common
 		public int DispCropBottom { get; set; } = 0;
 
 		// Sound options
-		public ESoundOutputMethod SoundOutputMethod { get; set; } = HostCapabilityDetector.HasDirectX ? ESoundOutputMethod.DirectSound : ESoundOutputMethod.OpenAL;
+		public ESoundOutputMethod SoundOutputMethod { get; set; } = HostCapabilityDetector.HasXAudio2 ? ESoundOutputMethod.XAudio2 : ESoundOutputMethod.OpenAL;
 
 		/// <value>iff <see langword="false"/>, cores may skip processing audio</value>
 		/// <seealso cref="SoundEnabledNormal"/>

@@ -2,7 +2,10 @@
 {
 	public enum ESoundOutputMethod
 	{
-		DirectSound, XAudio2, OpenAL, Dummy
+		LegacyDirectSound, // kept here to handle old configs
+		XAudio2,
+		OpenAL,
+		Dummy
 	}
 
 	public enum EDispManagerAR

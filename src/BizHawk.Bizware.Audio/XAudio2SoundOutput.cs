@@ -114,13 +114,12 @@ namespace BizHawk.Bizware.Audio
 		{
 			if (_deviceResetRequired)
 			{
-				_deviceResetRequired = false;
-
 				StopSound();
 				StopWav();
 				_masteringVoice.Dispose();
 				_device.Dispose();
 
+				_deviceResetRequired = false;
 				_device = XAudio2.XAudio2Create();
 				_device.CriticalError += (_, _) => _deviceResetRequired = true;
 				_masteringVoice = _device.CreateMasteringVoice(

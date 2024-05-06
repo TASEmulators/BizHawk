@@ -595,10 +595,10 @@ namespace BizHawk.Client.EmuHawk
 			InputManager.ResetMainControllers(_autofireNullControls);
 			InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
 			var savedOutputMethod = Config.SoundOutputMethod;
-			if (savedOutputMethod is ESoundOutputMethod.Dummy) Config.SoundOutputMethod = HostCapabilityDetector.HasDirectX ? ESoundOutputMethod.DirectSound : ESoundOutputMethod.OpenAL;
+			if (savedOutputMethod is ESoundOutputMethod.Dummy) Config.SoundOutputMethod = HostCapabilityDetector.HasXAudio2 ? ESoundOutputMethod.XAudio2 : ESoundOutputMethod.OpenAL;
 			try
 			{
-				Sound = new Sound(Handle, Config, () => Emulator.VsyncRate());
+				Sound = new Sound(Config, () => Emulator.VsyncRate());
 			}
 			catch
 			{
@@ -606,14 +606,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ShowMessageBox(
 						owner: null,
-						text: savedOutputMethod is ESoundOutputMethod.DirectSound
-							? "Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 44.1khz instead of 48khz in mmsys.cpl."
-							: "Couldn't initialize sound device! Try changing the output method in Sound config.",
+						text: "Couldn't initialize sound device! Try changing the output method in Sound config.",
 						caption: "Initialization Error",
 						EMsgBoxIcon.Error);
 				}
 				Config.SoundOutputMethod = ESoundOutputMethod.Dummy;
-				Sound = new Sound(Handle, Config, () => Emulator.VsyncRate());
+				Sound = new Sound(Config, () => Emulator.VsyncRate());
 			}
 
 			Sound.StartSound();
