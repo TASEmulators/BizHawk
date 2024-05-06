@@ -19,7 +19,12 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;
 
-		private const UnmanagedType STR_MARSHAL_HINT = UnmanagedType.LPUTF8Str;
+		private const UnmanagedType STR_MARSHAL_HINT
+#if NETSTANDARD2_1_OR_GREATER || NET47_OR_GREATER || NETCOREAPP1_1_OR_GREATER
+			= UnmanagedType.LPUTF8Str;
+#else
+			= UnmanagedType.LPStr; // presumably this will produce mojibake for non-ASCII text but is otherwise safe? CPP confirmed it was the right one so I'm trusting him --yoshi
+#endif
 
 		public enum rc_error_t : int
 		{

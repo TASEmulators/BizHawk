@@ -82,7 +82,12 @@ namespace BizHawk.BizInvoke
 		private static CustomAttributeBuilder GetAttributeBuilder(object o)
 		{
 			// anything more clever we can do here?
+#if NETSTANDARD2_1_OR_GREATER || NET471_OR_GREATER || NETCOREAPP2_0_OR_GREATER
 			if (o is OutAttribute or InAttribute or IsReadOnlyAttribute)
+#else
+			if (o is OutAttribute or InAttribute
+				|| o.GetType().FullName == "System.Runtime.CompilerServices.IsReadOnlyAttribute") // I think without this, you'd still only hit the below runtime assertion when this project targets e.g. netstandard2.0 but a core targets e.g. net8.0, so unlikely --yoshi
+#endif
 			{
 				return new(o.GetType().GetConstructor(Type.EmptyTypes)!, Array.Empty<object>());
 			}
