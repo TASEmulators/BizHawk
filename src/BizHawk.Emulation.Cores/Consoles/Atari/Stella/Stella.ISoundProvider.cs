@@ -43,6 +43,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		{
 			IntPtr src = IntPtr.Zero;
 			Core.stella_get_audio(ref _nsamp, ref src);
+
 			if (src != IntPtr.Zero)
 			{
 				using (_elf.EnterExit())

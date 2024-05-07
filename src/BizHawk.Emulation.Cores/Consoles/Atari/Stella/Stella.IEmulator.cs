@@ -31,6 +31,9 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			if (render)
 				UpdateVideo();
 
+			if (renderSound)
+				update_audio();
+
 			_frame++;
 
 			return true;
