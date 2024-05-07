@@ -124,6 +124,20 @@ ECL_EXPORT void stella_frame_advance(uint8_t port1, uint8_t port2, bool reset, b
 				// printFrameBuffer();
 }
 
+ECL_ENTRY void (*input_callback_cb)(void);
+
+void real_input_callback(void)
+{
+	if (input_callback_cb)
+		input_callback_cb();
+}
+
+ECL_EXPORT void stella_set_input_callback(ECL_ENTRY void (*fecb)(void))
+{
+	input_callback_cb = fecb;
+}
+
+
 ECL_EXPORT int stella_init(
 	const char* romFileName,
 	ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize),
@@ -145,7 +159,7 @@ ECL_EXPORT int stella_init(
 	auto error = _a2600->createConsole(romnode);
 	if (error != "") { fprintf(stderr, "ERROR: Couldn't create A2600 Console. Reason: '%s'\n", error.c_str()); return 0; }
 
- printf("A2600 console created successfully");
+ printf("A2600 console created successfully\n");
 
 	return 1;
 }
