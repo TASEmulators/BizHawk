@@ -47,9 +47,11 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			});
 
 			LoadCallback = load_archive;
+			_inputCallback = input_callback;
+
 			var callingConventionAdapter = CallingConventionAdapters.MakeWaterbox(new Delegate[]
 			{
-				LoadCallback
+				LoadCallback, _inputCallback
 			}, _elf);
 			
 			using (_elf.EnterExit())
@@ -76,6 +78,8 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 				VsyncNumerator = fps;
 				VsyncDenominator = 1;
+
+				Core.stella_set_input_callback(_inputCallback);
 
 				_elf.Seal();
 			}

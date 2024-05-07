@@ -1,24 +1,24 @@
 ﻿using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Atari.Stella;
 
 namespace BizHawk.Emulation.Cores.Atari.Stella
 {
 	public partial class Stella : IInputPollable
 	{
-		public int LagCount
+		public int LagCount { get; set; }
+
+		public bool IsLagFrame { get; set; }
+
+		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
+
+		private readonly CInterface.input_cb _inputCallback;
+
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		private void input_callback()
 		{
-			get => _lagCount;
-			set => _lagCount = value;
+			InputCallbacks.Call();
+			IsLagFrame = false;
 		}
-
-		public bool IsLagFrame
-		{
-			get => _islag;
-			set => _islag = value;
-		}
-
-		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
-
-		private bool _islag = true;
-		private int _lagCount;
 	}
 }

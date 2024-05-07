@@ -26,7 +26,12 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			if (controller.IsPressed("Toggle Left Difficulty"))	_leftDifficultyToggled = !_leftDifficultyToggled;
 			if (controller.IsPressed("Toggle Right Difficulty")) _rightDifficultyToggled = !_rightDifficultyToggled;
 
+			IsLagFrame = true;
+
 			Core.stella_frame_advance(port1, port2, resetPressed, powerPressed, _leftDifficultyToggled, _rightDifficultyToggled);
+
+			if (IsLagFrame)
+				LagCount++;
 
 			if (render)
 				UpdateVideo();
@@ -50,8 +55,8 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		public void ResetCounters()
 		{
 			_frame = 0;
-			_lagCount = 0;
-			_islag = false;
+			LagCount = 0;
+			IsLagFrame = false;
 		}
 
 		public void Dispose()

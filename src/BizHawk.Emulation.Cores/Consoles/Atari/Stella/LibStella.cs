@@ -37,5 +37,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Atari.Stella
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void stella_get_frame_rate(out int fps);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void input_cb();
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void stella_set_input_callback(input_cb cb);
 	}
 }
