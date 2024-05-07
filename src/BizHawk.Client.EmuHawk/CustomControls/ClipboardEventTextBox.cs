@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		{
 			const int WM_PASTE = 0x302;
 
-			if (m.Msg == WM_PASTE && !OSTailoredCode.IsUnixHost)
+			if (m.Msg is WM_PASTE && !OSTailoredCode.IsUnixHost)
 			{
 				if (OnPasteInternal())
 				{
@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		protected override bool ProcessCmdKey(ref Message m, Keys keyData)
 		{
-			if (OSTailoredCode.IsUnixHost && keyData is (Keys.Control | Keys.V) or (Keys.Shift | Keys.Insert) && !ReadOnly)
+			if (!ReadOnly && OSTailoredCode.IsUnixHost && keyData is (Keys.Control | Keys.V) or (Keys.Shift | Keys.Insert))
 			{
 				return OnPasteInternal();
 			}
@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			try
 			{
 				containsText = Clipboard.ContainsText();
-				text = containsText ? Clipboard.GetText() : "";
+				text = containsText ? Clipboard.GetText() : string.Empty;
 			}
 			catch (Exception)
 			{
@@ -66,16 +66,16 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		{
 			if (MaxLength > 0)
 			{
-				int availableLength = MaxLength - TextLength + SelectionLength;
+				var availableLength = MaxLength - TextLength + SelectionLength;
 				if (text.Length > availableLength)
 				{
-					text = text.Substring(0, availableLength);
+					text = text.Substring(startIndex: 0, length: availableLength);
 				}
 			}
 			Paste(text);
 		}
 
-		protected class PasteEventArgs : EventArgs
+		protected sealed class PasteEventArgs : EventArgs
 		{
 			public bool ContainsText { get; }
 			public string Text { get; }
