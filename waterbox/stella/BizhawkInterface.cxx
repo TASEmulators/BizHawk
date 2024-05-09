@@ -85,7 +85,6 @@ void printFrameBuffer()
 
 ECL_EXPORT const char* stella_get_cart_type()
 {
-	printf("Cart Type %s - ptr: %lu\n", _a2600->console().cartridge().detectedType().c_str(), (uint64_t)_a2600->console().cartridge().detectedType().c_str());
 	return _a2600->console().cartridge().detectedType().c_str();
 }
 
@@ -209,9 +208,6 @@ ECL_EXPORT int stella_init(
 	uint8_t* buf = (uint8_t*) calloc(1, BUFFER_SIZE);
 	int size = feload_archive_cb("PRIMARY_ROM", buf, BUFFER_SIZE);
 	const FSNode romnode(romFileName, buf, size);
-	printf("Romnode buffer: %p\n", romnode._buffer);
-
-	printf("***** Creating console\n"); fflush(stdout);
 
 	auto error = _a2600->createConsole(romnode);
 	if (error != "") { fprintf(stderr, "ERROR: Couldn't create A2600 Console. Reason: '%s'\n", error.c_str()); return 0; }
