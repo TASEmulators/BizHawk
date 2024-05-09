@@ -14,7 +14,6 @@
 		<PackageReference Include="Silk.NET.OpenAL.Extensions.EXT" />
 		<PackageReference Include="Vortice.MediaFoundation" />
 		<PackageReference Include="Vortice.XAudio2" />
-		<PackageReference Include="SharpDX.DirectSound" />
 		<PackageReference Include="ppy.SDL2-CS" ExcludeAssets="native;contentFiles" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 	</ItemGroup>

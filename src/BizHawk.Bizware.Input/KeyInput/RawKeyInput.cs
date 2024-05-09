@@ -209,11 +209,35 @@ namespace BizHawk.Bizware.Input
 			}
 		}
 
+		private static readonly RawKey[] _rawKeysNoTranslation =
+		{
+			RawKey.NUMPAD0,
+			RawKey.NUMPAD1,
+			RawKey.NUMPAD2,
+			RawKey.NUMPAD3,
+			RawKey.NUMPAD4,
+			RawKey.NUMPAD5,
+			RawKey.NUMPAD6,
+			RawKey.NUMPAD7,
+			RawKey.NUMPAD8,
+			RawKey.NUMPAD9,
+			RawKey.DECIMAL,
+			RawKey.NUMPADENTER,
+			RawKey.PAUSE,
+			RawKey.POWER,
+			RawKey.WAKE,
+			RawKey.INTL2,
+			RawKey.INTL3,
+			RawKey.INTL4,
+			RawKey.LANG3,
+			RawKey.LANG4
+		};
+
 		private static RawKey MapToRealKeyViaScanCode(RawKey key)
 		{
-			// Numpad Enter just gets mapped to the virtual Enter key
-			// Pause is special as it uses 0xE11D technically
-			if (key is RawKey.NUMPADENTER or RawKey.PAUSE)
+			// Some keys are special and don't have a proper translation
+			// for these keys just passthrough to our normal handling
+			if (Array.IndexOf(_rawKeysNoTranslation, key) != -1)
 			{
 				return key;
 			}

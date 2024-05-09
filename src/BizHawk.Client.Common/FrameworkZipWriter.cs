@@ -2,7 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 
-using BizHawk.Emulation.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.Common
 {

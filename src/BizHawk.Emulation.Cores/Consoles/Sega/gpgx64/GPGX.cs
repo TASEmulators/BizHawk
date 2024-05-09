@@ -104,6 +104,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				var initSettings = _syncSettings.GetNativeSettings(lp.Game);
 				var initResult = Core.gpgx_init(romExtension, LoadCallback, ref initSettings);
 
+				// if a firmware request failed and we're recording a movie, fail now
+				// we should do this as to enforce the sync settings of the movie
+				// init might still work fine, so don't throw for more casual users
+				if (_firmwareRequestFailed && lp.DeterministicEmulationRequested)
+				{
+					throw new MissingFirmwareException("A GPGX firmware request failed in deterministic mode.");
+				}
+
 				if (!initResult)
 				{
 					throw new Exception($"{nameof(Core.gpgx_init)}() failed");
@@ -115,6 +123,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					VsyncDenominator = fpsden;
 					Region = VsyncNumerator / VsyncDenominator > 55 ? DisplayType.NTSC : DisplayType.PAL;
 				}
+
+				SetVirtualDimensions();
 
 				// when we call Seal, ANY pointer passed from managed code must be 0.
 				// this is so the initial state is clean
@@ -138,8 +148,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				KillMemCallbacks();
 
-				_tracer = new GPGXTraceBuffer(this, _memoryDomains, this);
-				((BasicServiceProvider)ServiceProvider).Register(_tracer);
+				if (SystemId == VSystemID.Raw.GEN)
+				{
+					_tracer = new GPGXTraceBuffer(this, _memoryDomains, this);
+					((BasicServiceProvider)ServiceProvider).Register(_tracer);
+				}
 			}
 
 			_romfile = null;
@@ -181,6 +194,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private bool _disposed = false;
 
 		private LibGPGX.load_archive_cb LoadCallback;
+		private bool _firmwareRequestFailed;
 
 		private readonly LibGPGX.InputData input = new LibGPGX.InputData();
 
@@ -250,6 +264,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
  				FirmwareID? firmwareID = filename switch
  				{
+					"MD_BIOS" => new(system: VSystemID.Raw.GEN, firmware: "Boot"),
  					"CD_BIOS_EU" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_EU"),
  					"CD_BIOS_JP" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_JP"),
  					"CD_BIOS_US" => new(system: VSystemID.Raw.GEN, firmware: "CD_BIOS_US"),
@@ -266,6 +281,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					srcdata = CoreComm.CoreFileProvider.GetFirmware(firmwareID.Value, "GPGX firmwares are usually required.");
 					if (srcdata == null)
 					{
+						_firmwareRequestFailed = true;
 						Console.WriteLine($"Frontend couldn't satisfy firmware request {firmwareID}");
 						return 0;
 					}
@@ -405,7 +421,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			private readonly IMonitor _m;
 
-			public VDPView(LibGPGX.VDPView v, IMonitor m)
+			public VDPView(in LibGPGX.VDPView v, IMonitor m)
 			{
 				_m = m;
 				VRAM = v.VRAM;
@@ -437,12 +453,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public VDPView UpdateVDPViewContext()
 		{
-			var v = new LibGPGX.VDPView();
-			Core.gpgx_get_vdp_view(v);
+			Core.gpgx_get_vdp_view(out var v);
 			Core.gpgx_flush_vram(); // fully regenerate internal caches as needed
-			return new VDPView(v, _elf);
+			return new VDPView(in v, _elf);
 		}
-		
+
 		public int AddDeepFreezeValue(int address, byte value)
 		{
 			return Core.gpgx_add_deepfreeze_list_entry(address, value);

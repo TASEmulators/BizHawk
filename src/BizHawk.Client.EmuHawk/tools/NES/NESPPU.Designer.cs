@@ -204,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 			this.PaletteView.ContextMenuStrip = this.PaletteContext;
 			this.PaletteView.Location = new System.Drawing.Point(6, 19);
 			this.PaletteView.Name = "PaletteView";
-			this.PaletteView.Size = new System.Drawing.Size(192, 32);
+			this.PaletteView.Size = new System.Drawing.Size(256, 32);
 			this.PaletteView.TabIndex = 0;
 			this.PaletteView.Text = "Palettes";
 			this.PaletteView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseClick);

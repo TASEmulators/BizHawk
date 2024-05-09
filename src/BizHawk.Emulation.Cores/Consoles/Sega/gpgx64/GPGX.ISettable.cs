@@ -263,10 +263,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue(LibGPGX.Region.Autodetect)]
 			public LibGPGX.Region Region { get; set; }
 
-			[DisplayName("[SMS/GG] Load BIOS")]
+			[DisplayName("Load BIOS")]
 			[Description("Indicates whether to load the system BIOS rom.")]
 			[DefaultValue(false)]
 			public bool LoadBIOS { get; set; }
+
+			[DisplayName("Overscan")]
+			[Description("Sets overscan borders shown.")]
+			[DefaultValue(LibGPGX.InitSettings.OverscanType.None)]
+			public LibGPGX.InitSettings.OverscanType Overscan { get; set; }
+
+			[DisplayName("[GG] Display Extra Area")]
+			[Description("Enables displaying extended Game Gear screen (256x192).")]
+			[DefaultValue(false)]
+			public bool GGExtra { get; set; }
 
 			[DisplayName("[SMS] FM Sound Chip Type")]
 			[Description("Sets the method used to emulate the FM Sound Unit of the Sega Mark III/Master System. 'MAME' is fast and runs full speed on most systems.'Nuked' is cycle accurate, very high quality, and have substantial CPU requirements.")]
@@ -343,7 +353,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					ForceSram = game["sram"],
 					SMSFMSoundChip = SMSFMSoundChip,
 					GenesisFMSoundChip = GenesisFMSoundChip,
-					SpritesAlwaysOnTop = SpritesAlwaysOnTop
+					SpritesAlwaysOnTop = SpritesAlwaysOnTop,
+					Overscan = Overscan,
+					GGExtra = GGExtra,
 				};
 			}
 

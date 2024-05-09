@@ -39,13 +39,17 @@ namespace BizHawk.Client.DiscoHawk
 		{
 			lblMagicDragArea.AllowDrop = false;
 			Cursor = Cursors.WaitCursor;
+			var outputFormat = DiscoHawkLogic.HawkedFormats.CCD;
+			if (ccdOutputButton.Checked) outputFormat = DiscoHawkLogic.HawkedFormats.CCD;
+			if (chdOutputButton.Checked) outputFormat = DiscoHawkLogic.HawkedFormats.CHD;
 			try
 			{
 				foreach (var file in ValidateDrop(e.Data))
 				{
 					var success = DiscoHawkLogic.HawkAndWriteFile(
 						inputPath: file,
-						errorCallback: err => MessageBox.Show(err, "Error loading disc"));
+						errorCallback: err => MessageBox.Show(err, "Error loading disc"),
+						hawkedFormat: outputFormat);
 					if (!success) break;
 				}
 			}

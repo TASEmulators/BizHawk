@@ -74,6 +74,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			public bool SpritesAlwaysOnTop;
 			public bool LoadBIOS;
+
+			[Flags]
+			public enum OverscanType : byte
+			{
+				None = 0,
+				Vertical = 1 << 0,
+				Horizontal = 1 << 1,
+				All = Vertical | Horizontal,
+			}
+			public OverscanType Overscan;
+			public bool GGExtra;
 		}
 
 		[BizImport(CallingConvention.Cdecl)]
@@ -87,6 +98,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract bool gpgx_get_control([Out]InputData dest, int bytes);
+
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract bool gpgx_put_control([In]InputData src, int bytes);
 
@@ -320,7 +332,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public abstract void gpgx_set_cdd_callback(cd_read_cb cddcb);
 
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void gpgx_swap_disc(CDData toc);
+		public abstract void gpgx_swap_disc([In] CDData toc);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct VDPNameTable
@@ -331,7 +343,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public class VDPView
+		public struct VDPView
 		{
 			public IntPtr VRAM;
 			public IntPtr PatternCache;
@@ -341,8 +353,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public VDPNameTable NTW;
 		}
 
-		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void gpgx_get_vdp_view([Out] VDPView view);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void gpgx_get_vdp_view(out VDPView view);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_poke_cram(int addr, byte value);
@@ -372,8 +384,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract int gpgx_getmaxnumregs();
 
-		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract int gpgx_getregs([Out] RegisterInfo[] regs);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract int gpgx_getregs(RegisterInfo[] regs);
 
 		[Flags]
 		public enum DrawMask : int
@@ -387,15 +399,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_set_draw_mask(DrawMask mask);
+
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_set_sprite_limit_enabled(bool enabled);
 
 		[BizImport(CallingConvention.Cdecl)]
+		public abstract void gpgx_write_z80_bus(uint addr, byte data);
+
+		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_write_m68k_bus(uint addr, byte data);
+
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_write_s68k_bus(uint addr, byte data);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract byte gpgx_peek_z80_bus(uint addr);
+
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract byte gpgx_peek_m68k_bus(uint addr);
+
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract byte gpgx_peek_s68k_bus(uint addr);
 	}

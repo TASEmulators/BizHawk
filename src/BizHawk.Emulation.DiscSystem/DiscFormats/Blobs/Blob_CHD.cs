@@ -5,16 +5,14 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	internal class Blob_CHD : IBlob
 	{
-		private LibChdr.CoreFileStreamWrapper _coreFile;
 		private IntPtr _chdFile;
 
 		private readonly uint _hunkSize;
 		private readonly byte[] _hunkCache;
 		private int _currentHunk;
 
-		public Blob_CHD(LibChdr.CoreFileStreamWrapper coreFile, IntPtr chdFile, uint hunkSize)
+		public Blob_CHD(IntPtr chdFile, uint hunkSize)
 		{
-			_coreFile = coreFile;
 			_chdFile = chdFile;
 			_hunkSize = hunkSize;
 			_hunkCache = new byte[hunkSize];
@@ -25,12 +23,9 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			if (_chdFile != IntPtr.Zero)
 			{
-				LibChdr.chd_close(_chdFile);
+				LibChd.chd_close(_chdFile);
 				_chdFile = IntPtr.Zero;
 			}
-
-			_coreFile?.Dispose();
-			_coreFile = null;
 		}
 
 		public int Read(long byte_pos, byte[] buffer, int offset, int count)
@@ -41,8 +36,8 @@ namespace BizHawk.Emulation.DiscSystem
 				var targetHunk = (uint)(byte_pos / _hunkSize);
 				if (targetHunk != _currentHunk)
 				{
-					var err = LibChdr.chd_read(_chdFile, targetHunk, _hunkCache);
-					if (err != LibChdr.chd_error.CHDERR_NONE)
+					var err = LibChd.chd_read(_chdFile, targetHunk, _hunkCache);
+					if (err != LibChd.chd_error.CHDERR_NONE)
 					{
 						// shouldn't ever happen in practice, unless something has gone terribly wrong
 						throw new IOException($"CHD read failed with error {err}");
