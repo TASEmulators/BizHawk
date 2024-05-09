@@ -875,6 +875,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> A78 = new[] { "a78" };
 
+			public static readonly IReadOnlyCollection<string> Amiga = new[] { "adf", "adz", "dms", "fdi", "ipf", "lha" };
+
 			public static readonly IReadOnlyCollection<string> AppleII = new[] { "dsk", "do", "po" };
 
 			public static readonly IReadOnlyCollection<string> Arcade = new[] { "zip", "7z", "chd" };
@@ -934,6 +936,7 @@ namespace BizHawk.Client.Common
 			public static readonly IReadOnlyCollection<string> AutoloadFromArchive = Array.Empty<string>()
 				.Concat(A26)
 				.Concat(A78)
+				.Concat(Amiga)
 				.Concat(AppleII)
 				.Concat(C64)
 				.Concat(Coleco)
@@ -1004,6 +1007,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Vectrex", RomFileExtensions.VEC),
 			new FilesystemFilter("MSX", RomFileExtensions.MSX),
 			new FilesystemFilter("Arcade", RomFileExtensions.Arcade),
+			new FilesystemFilter("Amiga", RomFileExtensions.Amiga),
 			FilesystemFilter.EmuHawkSaveStates)
 		{
 			CombinedEntryDesc = "Everything",

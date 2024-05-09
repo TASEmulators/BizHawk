@@ -505,6 +505,30 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("10C4173C2A7EB09C6579818F72EF18FA0B6D32DE", 4 * 1024 * 1024, "N64DD", "IPL_DEV", "64DD_IPL_DEV.bin", "N64DD Development IPL");
 			FirmwareAndOption("3C5B93CA231550C68693A14F03CEA8D5DBD1BE9E", 4 * 1024 * 1024, "N64DD", "IPL_USA", "64DD_IPL_USA.bin", "N64DD Prototype USA IPL");
 
+			Firmware("Amiga", "A500", "A500 Kickstart");
+			Option("Amiga", "A500", File("891E9A547772FE0C6C19B610BAF8BC4EA7FCB785", 262144, "amiga-os-130.rom", "Kickstart v1.3 r34.005 (1987-12)(Commodore)(A500-A1000-A2000-CDTV)[!]"), FirmwareOptionStatus.Ideal);
+			Option("Amiga", "A500", File("11F9E62CF299F72184835B7B2A70A16333FC0D88", 262144, "amiga-os-120.rom", "Kickstart v1.2 r33.180 (1986-10)(Commodore)(A500-A1000-A2000)[!]"));
+			Option("Amiga", "A500", File("3B7F1493B27E212830F989F26CA76C02049F09CA", 524288, "amiga-os-310-a600.rom", "Kickstart v3.1 r40.063 (1993-07)(Commodore)(A500-A600-A2000)[!]"));
+
+			Firmware("Amiga", "A600", "A500+/A600/A600HD Kickstart");
+			Option("Amiga", "A600", File("02843C4253BBD29ABA535B0AA3BD9A85034ECDE4", 524288, "amiga-os-205-a600.rom", "Kickstart v2.05 r37.350 (1992-04)(Commodore)(A600HD)[!]"), FirmwareOptionStatus.Ideal);
+			Option("Amiga", "A600", File("C5839F5CB98A7A8947065C3ED2F14F5F42E334A1", 524288, "amiga-os-204.rom", "Kickstart v2.04 r37.175 (1991-05)(Commodore)(A500+)[!]"));
+			Option("Amiga", "A600", File("3B7F1493B27E212830F989F26CA76C02049F09CA", 524288, "amiga-os-310-a600.rom", "Kickstart v3.1 r40.063 (1993-07)(Commodore)(A500-A600-A2000)[!]"));
+			
+			Firmware("Amiga", "A1200", "A1200 Kickstart");
+			Option("Amiga", "A1200", File("E21545723FE8374E91342617604F1B3D703094F1", 524288, "amiga-os-310-a1200.rom", "Kickstart v3.1 r40.068 (1993-12)(Commodore)(A1200)[!]"), FirmwareOptionStatus.Ideal);
+			Option("Amiga", "A1200", File("70033828182FFFC7ED106E5373A8B89DDA76FAA5", 524288, "amiga-os-300-a1200.rom", "Kickstart v3.0 r39.106 (1992-09)(Commodore)(A1200)[!]"));
+			
+			Firmware("Amiga", "A4000", "A4000/A4000T Kickstart");
+			Option("Amiga", "A4000", File("5FE04842D04A489720F0F4BB0E46948199406F49", 524288, "amiga-os-310-a4000.rom", "Kickstart v3.1 r40.068 (1993-12)(Commodore)(A4000)[!]"), FirmwareOptionStatus.Ideal);
+			Option("Amiga", "A4000", File("F0B4E9E29E12218C2D5BD7020E4E785297D91FD7", 524288, "amiga-os-300-a4000.rom", "Kickstart v3.0 r39.106 (1992-09)(Commodore)(A4000)[!]"));
+			Option("Amiga", "A4000", File("B0EC8B84D6768321E01209F11E6248F2F5281A21", 524288, "amiga-os-310-a4000t.rom", "Kickstart v3.1 r40.070 (1994-02)(Commodore)(A4000T)[!]"));
+			
+			Firmware("Amiga", "CD32", "CD32 Kickstart");
+			Option("Amiga", "CD32", File("3525BE8887F79B5929E017B42380A79EDFEE542D", 524288, "amiga-os-310-cd32.rom", "Kickstart v3.1 r40.060 (1993-05)(Commodore)(CD32)[!].rom"), FirmwareOptionStatus.Ideal);
+			Firmware("Amiga", "CD32ext", "CD32 Extended ROM");
+			Option("Amiga", "CD32ext", File("5BEF3D628CE59CC02A66E6E4AE0DA48F60E78F7F", 524288, "amiga-os-310-cd32-ext.rom", "CD32 Extended-ROM r40.60 (1993)(Commodore)(CD32).rom"), FirmwareOptionStatus.Ideal);
+
 			/*Firmware("PS2", "BIOS", "PS2 Bios");
 			Option("PS2", "BIOS", File("FBD54BFC020AF34008B317DCB80B812DD29B3759", 4 * 1024 * 1024, "ps2-0230j-20080220.bin", "PS2 Bios"));
 			Option("PS2", "BIOS", File("8361D615CC895962E0F0838489337574DBDC9173", 4 * 1024 * 1024, "ps2-0220a-20060905.bin", "PS2 Bios"));

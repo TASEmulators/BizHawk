@@ -717,6 +717,19 @@ namespace BizHawk.Client.Common
 				["F11"] = '1',
 				["F12"] = '2',
 			},
+			[VSystemID.Raw.Amiga] = new()
+			{
+				["Joystick Up"] = 'U',
+				["Joystick Down"] = 'D',
+				["Joystick Left"] = 'L',
+				["Joystick Right"] = 'R',
+				["Joystick Button 1"] = '1',
+				["Joystick Button 2"] = '2',
+				["Joystick Button 3"] = '3',
+				["Mouse Left Button"] = 'l',
+				["Mouse Middle Button"] = 'm',
+				["Mouse Right Button"] = 'r',
+			}
 		};
 
 		private static readonly Dictionary<string, string> BaseAxisLookupTable = new Dictionary<string, string>

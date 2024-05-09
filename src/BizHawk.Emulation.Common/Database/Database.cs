@@ -401,6 +401,15 @@ namespace BizHawk.Emulation.Common
 					game.System = VSystemID.Raw.TIC80;
 					break;
 
+				case ".ADF":
+				case ".ADZ":
+				case ".DMS":
+				case ".IPF":
+				case ".FDI":
+				case ".LHA":
+					game.System = VSystemID.Raw.Amiga;
+					break;
+
 				case ".32X":
 					game.System = VSystemID.Raw.Sega32X;
 					game.AddOption("32X", "true");
