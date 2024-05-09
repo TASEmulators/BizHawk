@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Atari.Stella;
@@ -12,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 {
 	[Core(CoreNames.Stella, "The Stella Team")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
-	public partial class Stella : IEmulator, IVideoProvider, IDebuggable, IInputPollable, IRomInfo, IRegionable,
+	public partial class Stella : IEmulator, IVideoProvider, IInputPollable, IRomInfo, IRegionable,
 		ICreateGameDBEntries, ISettable<Stella.A2600Settings, Stella.A2600SyncSettings>
 	{
 		internal static class RomChecksums
@@ -53,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			{
 				LoadCallback, _inputCallback
 			}, _elf);
-			
+
 			using (_elf.EnterExit())
 			{
 				Core = BizInvoker.GetInvoker<CInterface>(_elf, _elf, callingConventionAdapter);
@@ -63,14 +65,14 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 				CoreComm = lp.Comm;
 
 				_romfile = lp.Roms.FirstOrDefault()?.RomData;
-                string romPath = lp.Roms.FirstOrDefault()?.RomPath;
+				string romPath = lp.Roms.FirstOrDefault()?.RomPath;
 
 				var initResult = Core.stella_init(romPath, LoadCallback, SyncSettings.GetNativeSettings(lp.Game));
 
 				if (!initResult) throw new Exception($"{nameof(Core.stella_init)}() failed");
 
 				Core.stella_get_frame_rate(out int fps);
-				
+
 				int regionId = Core.stella_get_region();
 				if (regionId == 0) _region = DisplayType.NTSC;
 				if (regionId == 1) _region = DisplayType.PAL;
@@ -81,12 +83,19 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 				Core.stella_set_input_callback(_inputCallback);
 
+				// Getting cartridge type
+				var ptr = Core.stella_get_cart_type();
+				string _cartType = Marshal.PtrToStringAnsi(ptr);
+				Console.WriteLine("[Stella] Cart type loaded: {0} (string size: {1}, ptr: {2})", _cartType, _cartType.Length, ptr);
+
 				_elf.Seal();
 			}
 
 			// pull the default video size from the core
 			UpdateVideo();
-				
+
+			// Registering memory domains
+			SetupMemoryDomains();
 		}
 
 		// IRegionable
@@ -99,6 +108,8 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		private readonly byte[] _romfile;
 		private readonly CInterface Core;
 		private readonly WaterboxHost _elf;
+		private string _cartType { get; }
+
 		private CoreComm CoreComm { get; }
 
 		public string RomDetails { get; private set; }

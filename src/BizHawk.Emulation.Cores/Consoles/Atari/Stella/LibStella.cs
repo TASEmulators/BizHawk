@@ -43,5 +43,39 @@ namespace BizHawk.Emulation.Cores.Consoles.Atari.Stella
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void stella_set_input_callback(input_cb cb);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract byte stella_peek_tia(uint addr);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void stella_poke_tia(uint addr, byte value);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract byte stella_peek_m6532(uint addr);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void stella_poke_m6532(uint addr, byte value);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract byte stella_peek_systembus(uint addr);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void stella_poke_systembus(uint addr, byte value);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract uint stella_get_cartram_size();
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract byte stella_peek_cartram(uint addr);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void stella_poke_cartram(uint addr, byte value);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void stella_get_mainram_ptr(ref IntPtr addr);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract IntPtr stella_get_cart_type();
+
 	}
 }
