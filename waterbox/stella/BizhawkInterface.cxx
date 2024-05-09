@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstdint>
+#include "Cart.hxx"
 #include "BizhawkInterface.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
@@ -82,6 +83,61 @@ void printFrameBuffer()
 		printf("[] Frame Buffer Checksum: 0x%lX\n", checkSum);
 }
 
+ECL_EXPORT const char* stella_get_cart_type()
+{
+	printf("Cart Type %s - ptr: %lu\n", _a2600->console().cartridge().detectedType().c_str(), (uint64_t)_a2600->console().cartridge().detectedType().c_str());
+	return _a2600->console().cartridge().detectedType().c_str();
+}
+
+ECL_EXPORT uint8_t stella_peek_tia(uint32_t address)
+{
+ return _a2600->console().tia().peek(address);
+}
+
+ECL_EXPORT void stella_poke_tia(uint32_t address, uint8_t value)
+{
+ _a2600->console().tia().poke(address, value);
+}
+
+ECL_EXPORT uint8_t stella_peek_m6532(uint32_t address)
+{
+ return _a2600->console().riot().peek(address);
+}
+
+ECL_EXPORT void stella_poke_m6532(uint32_t address, uint8_t value)
+{
+ _a2600->console().riot().poke(address, value);
+}
+
+ECL_EXPORT uint8_t stella_peek_systembus(uint32_t address)
+{
+ return _a2600->console().system().peek(address);
+}
+
+ECL_EXPORT void stella_poke_systembus(uint32_t address, uint8_t value)
+{
+ _a2600->console().system().poke(address, value);
+}
+
+ECL_EXPORT uint32_t stella_get_cartram_size()
+{
+	 return _a2600->console().cartridge().internalRamSize();
+}
+
+ECL_EXPORT uint8_t stella_peek_cartram(uint32_t address)
+{
+ return _a2600->console().cartridge().peek(address);
+}
+
+ECL_EXPORT void stella_poke_cartram(uint32_t address, uint8_t value)
+{
+ _a2600->console().cartridge().poke(address, value);
+}
+
+ECL_EXPORT void stella_get_mainram_ptr(void** ptr)
+{
+ *ptr = (void*) _a2600->console().riot().getRAM();
+}
 
 ECL_EXPORT void stella_get_audio(int *n, void **buffer)
 {
@@ -98,6 +154,7 @@ ECL_EXPORT void stella_get_video(int& w, int& h, int& pitch, uint8_t*& buffer)
 		buffer = _a2600->console().tia().frameBuffer();
 	 pitch =	_a2600->console().tia().width();
 }
+
 
 ECL_EXPORT void stella_frame_advance(uint8_t port1, uint8_t port2, bool reset, bool power, bool leftDiffToggled, bool rightDiffToggled)
 {
