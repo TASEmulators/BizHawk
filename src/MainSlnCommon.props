@@ -6,6 +6,7 @@
 		<DefineConstants>$(DefineConstants);AVI_SUPPORT</DefineConstants>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile> <!-- it would be nice to rename these to *.api_reference.xml or something, but it seems https://github.com/dotnet/standard/issues/614 was never fixed -->
 		<NoWarn>$(NoWarn);CS1573;CS1591;NU1702</NoWarn>
+		<OutputPath>$(MSBuildProjectDirectory)/../../output/dll</OutputPath>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(SolutionDir)' != '' ">
