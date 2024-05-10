@@ -1,12 +1,22 @@
 <Project>
 	<Import Project="MainSlnCommon.props" />
 	<PropertyGroup>
-		<OutputPath>$(MSBuildProjectDirectory)/../../output/</OutputPath>
+		<!-- Output path will contain the executable along with all its dependencies. We copy the executable up one directory up later on.
+		     This allows us to have the executable dependencies automagically copied over to our dll folder while still keeping the executable in the output folder. -->
+		<OutputPath>$(MSBuildProjectDirectory)/../../output/dll/</OutputPath>
+		<ExecFilesDest>$(MSBuildProjectDirectory)/../../output/</ExecFilesDest>
 		<!-- Setting TargetFileName does not change the AssemblyName (as setting TargetName would), but also does not change the output file name
 			 for the executable on build (as one would expect). So we still need to rename the executable file below. Using this method has the advantage
 			 of IDEs respecting the TargetFileName and expecting it. -->
 		<TargetFileName>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1)))).exe</TargetFileName>
+		<!-- This also doesn't actually change where the executable is output, rather it's just a hint to the IDE to know where the executable is (since we move it). -->
+		<TargetPath>$(ExecFilesDest)$(TargetFileName)</TargetPath>
 	</PropertyGroup>
+	<ItemGroup>
+		<!-- This is somewhat wasteful for DiscoHawk, but it still relies on some unmanaged libraries
+		     Note that LinkBase is simply something added to OutputPath, it doesn't replace it -->
+		<None Include="$(MSBuildProjectDirectory)/../../Assets/**/*.*" LinkBase=".." CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
@@ -15,12 +25,12 @@
 	</PropertyGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
-			<ExecFilesFromExecProj Include="$(OutputPath)$(MSBuildProjectName).*" /> <!-- doesn't include the .exe.config because those are automatically renamed??? -->
-			<NotExecFilesFromExecProj Include="$(OutputPath)*.dll;$(OutputPath)*.pdb;$(OutputPath)*.xml" Exclude="@(ExecFilesFromExecProj)" />
-			<NotExecFilesFromExecProj Remove="$(OutputPath)DiscoHawk.*;$(OutputPath)EmuHawk.*" /> <!-- otherwise one will move the other's to /output/dll -->
+			<ExecFilesFromExecProj Include="$(OutDir)$(MSBuildProjectName).*" /> <!-- doesn't include the .exe.config because those are automatically renamed??? -->
+			<ExecFilesFromExecProj Include="$(OutDir)$(TargetFileName).*" /> <!-- include the .exe.config files -->
 		</ItemGroup>
-		<Move SourceFiles="@(NotExecFilesFromExecProj)" DestinationFolder="$(OutputPath)dll/" />
+		<!-- Surely this can be done in one step, right? FIXME -->
 		<Move SourceFiles="@(ExecFilesFromExecProj)" DestinationFiles="@(ExecFilesFromExecProj->Replace('BizHawk.Client.', ''))" />
-		<MakeDir Directories="$(OutputPath)ExternalTools;$(OutputPath)Firmware;$(OutputPath)Tools" />
+		<Move SourceFiles="@(ExecFilesFromExecProj->Replace('BizHawk.Client.', ''))" DestinationFolder="$(ExecFilesDest)" />
+		<MakeDir Directories="$(ExecFilesDest)ExternalTools;$(ExecFilesDest)Firmware;$(ExecFilesDest)Tools" />
 	</Target>
 </Project>
