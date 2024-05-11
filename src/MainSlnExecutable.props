@@ -25,12 +25,13 @@
 	</PropertyGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
-			<ExecFilesFromExecProj Include="$(OutDir)$(MSBuildProjectName).*" /> <!-- doesn't include the .exe.config because those are automatically renamed??? -->
-			<ExecFilesFromExecProj Include="$(OutDir)$(TargetFileName).*" /> <!-- include the .exe.config files -->
+			<ExecFilesFromExecProj Include="$(OutputPath)$(MSBuildProjectName).*" /> <!-- doesn't include the .exe.config because those are automatically renamed??? -->
+			<ExecConfigFilesFromExecProj Include="$(OutputPath)$(TargetFileName).*" /> <!-- include the .exe.config files -->
 		</ItemGroup>
 		<!-- Surely this can be done in one step, right? FIXME -->
 		<Move SourceFiles="@(ExecFilesFromExecProj)" DestinationFiles="@(ExecFilesFromExecProj->Replace('BizHawk.Client.', ''))" />
 		<Move SourceFiles="@(ExecFilesFromExecProj->Replace('BizHawk.Client.', ''))" DestinationFolder="$(ExecFilesDest)" />
+		<Move SourceFiles="@(ExecConfigFilesFromExecProj)" DestinationFolder="$(ExecFilesDest)" />
 		<MakeDir Directories="$(ExecFilesDest)ExternalTools;$(ExecFilesDest)Firmware;$(ExecFilesDest)Tools" />
 	</Target>
 </Project>
