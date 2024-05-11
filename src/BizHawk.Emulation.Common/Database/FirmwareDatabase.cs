@@ -39,13 +39,16 @@ namespace BizHawk.Emulation.Common
 				string desc,
 				string additionalInfo = "",
 				bool isBad = false)
-					=> filesByHash[hash] = new(
-						hash: hash,
-						size: size,
-						recommendedName: recommendedName,
-						desc: desc,
-						additionalInfo: additionalInfo,
-						isBad: isBad);
+			{
+				FirmwareFile ff = new(
+					hash: hash,
+					size: size,
+					recommendedName: recommendedName,
+					desc: desc,
+					additionalInfo: additionalInfo,
+					isBad: isBad);
+				return filesByHash[ff.Hash/*may have been reformatted*/] = ff;
+			}
 
 			void Option(string systemId, string id, in FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 			{
