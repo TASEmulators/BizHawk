@@ -120,7 +120,7 @@ if(WIN32)
 		target_compile_options(usb PRIVATE -w)
 	endif()
 
-	set_target_properties(usb PROPERTIES VERSION 1.0.26)
+	set_target_properties(usb PROPERTIES VERSION 1.0.27)
 	target_include_directories(usb BEFORE
 		PUBLIC libusb/libusb
 		PRIVATE libusb/msvc
