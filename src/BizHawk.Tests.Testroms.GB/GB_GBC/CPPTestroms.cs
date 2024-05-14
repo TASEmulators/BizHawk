@@ -217,7 +217,12 @@ namespace BizHawk.Tests.Testroms.GB.CPPTestroms
 			if (!ImageUtils.SkipFileIO(state))
 			{
 				ImageUtils.SaveScreenshot(NormaliseGBScreenshot(actualUnnormalised, testCase.Setup), (SUITE_ID, caseStr));
-				Console.WriteLine($"should read: {string.Join("\n", testCase.ExpectedValue.Chunk(40).Select(static a => string.Concat(a)))}");
+				Console.WriteLine("should read: ");
+				const int STR_FOLD_COL = 40;
+				for (var iEx = 0; iEx < testCase.ExpectedValue.Length; iEx += STR_FOLD_COL)
+				{
+					Console.WriteLine(testCase.ExpectedValue.Substring(startIndex: iEx, length: STR_FOLD_COL));
+				}
 			}
 			switch (state)
 			{
