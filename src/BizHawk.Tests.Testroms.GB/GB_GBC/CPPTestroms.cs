@@ -86,11 +86,7 @@ namespace BizHawk.Tests.Testroms.GB.CPPTestroms
 			public static readonly IReadOnlyList<string> KnownFailures = new[]
 			{
 				"open-bus-ss-test on CGB_C in GBHawk",
-				"open-bus-ss-test on CGB_C in SameBoy",
-				"open-bus-ss-test on CGB_C in SameBoy (no BIOS)",
 				"open-bus-ss-test on DMG in GBHawk",
-				"open-bus-ss-test on DMG in SameBoy",
-				"open-bus-ss-test on DMG in SameBoy (no BIOS)",
 				"ramg-mbc3-test on CGB_C in GBHawk",
 				"ramg-mbc3-test on DMG in GBHawk",
 				"rtc-invalid-banks-test on CGB_C in GBHawk",
