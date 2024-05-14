@@ -1,9 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(APPVEYOR)' != '' ">
-		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../TestProjects.props" />
 	<PropertyGroup>
