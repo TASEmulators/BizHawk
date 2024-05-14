@@ -35,9 +35,21 @@ namespace BizHawk.Common.StringExtensions
 		public static string OnlyHex(this string? raw) => string.IsNullOrWhiteSpace(raw) ? string.Empty : string.Concat(raw.Where(IsHex)).ToUpperInvariant();
 
 		/// <returns>
-		/// A copy of <paramref name="raw"/> after removing <c>0x</c>/<c>$</c> prefixes and all whitespace.
+		/// A copy of <paramref name="raw"/> in uppercase after removing <c>0x</c>/<c>$</c> prefixes and all whitespace, or
+		/// <see cref="string.Empty"/> if <paramref name="raw"/> contains other non-hex characters.
 		/// </returns>
-		public static string CleanHex(this string? raw) => raw is null ? string.Empty : Regex.Replace(raw, @"^\s*(0x|\$)|\s+?", "");
+		public static string CleanHex(this string? raw)
+		{
+			if (raw is not null && CleanHexRegex.Match(raw) is { Success: true} match)
+			{
+				return match.Groups["hex"].Value.OnlyHex();
+			}
+			else
+			{
+				return string.Empty;
+			}
+		}
+		private static readonly Regex CleanHexRegex = new(@"^\s*(?:0x|\$)?(?<hex>[0-9A-Fa-f\s]+)\s*$");
 
 #if NET7_0_OR_GREATER
 		public static ushort ParseU16FromHex(ReadOnlySpan<char> str)
