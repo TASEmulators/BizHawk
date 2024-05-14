@@ -9,8 +9,9 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Silk.NET.OpenGL.Legacy" />
-		<PackageReference Include="SharpDX.Direct3D9" />
 		<PackageReference Include="ppy.SDL2-CS" ExcludeAssets="native;contentFiles" />
+		<PackageReference Include="Vortice.Direct3D11" />
+		<PackageReference Include="Vortice.D3DCompiler" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />
 	</ItemGroup>
 </Project>

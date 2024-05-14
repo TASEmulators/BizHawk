@@ -207,9 +207,9 @@ namespace BizHawk.Client.EmuHawk
 						// try to fallback on the faster option on Windows
 						// if we're on a Unix platform, there's only 1 fallback here...
 						1 when OSTailoredCode.IsUnixHost => (EDispMethod.GdiPlus, "GDI+"),
-						1 or 2 when !OSTailoredCode.IsUnixHost => dispMethod == EDispMethod.D3D9
+						1 or 2 when !OSTailoredCode.IsUnixHost => dispMethod == EDispMethod.D3D11
 							? (EDispMethod.OpenGL, "OpenGL")
-							: (EDispMethod.D3D9, "Direct3D9"),
+							: (EDispMethod.D3D11, "Direct3D11"),
 						_ => (EDispMethod.GdiPlus, "GDI+")
 					};
 
@@ -229,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 
 				switch (dispMethod)
 				{
-					case EDispMethod.D3D9:
+					case EDispMethod.D3D11:
 						if (OSTailoredCode.IsUnixHost || OSTailoredCode.IsWine)
 						{
 							// possibly sharing config w/ Windows, assume the user wants the not-slow method (but don't change the config)
@@ -237,12 +237,12 @@ namespace BizHawk.Client.EmuHawk
 						}
 						try
 						{
-							return CheckRenderer(new IGL_D3D9());
+							return CheckRenderer(new IGL_D3D11());
 						}
 						catch (Exception ex)
 						{
 							var (method, name) = ChooseFallback();
-							new ExceptionBox(new Exception($"Initialization of Direct3D9 Display Method failed; falling back to {name}", ex)).ShowDialog();
+							new ExceptionBox(new Exception($"Initialization of Direct3D11 Display Method failed; falling back to {name}", ex)).ShowDialog();
 							return TryInitIGL(initialConfig.DispMethod = method);
 						}
 					case EDispMethod.OpenGL:

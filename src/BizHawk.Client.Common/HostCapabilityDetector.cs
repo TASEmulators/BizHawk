@@ -6,10 +6,10 @@ namespace BizHawk.Client.Common
 {
 	public static class HostCapabilityDetector
 	{
-		private static readonly Lazy<bool> _hasD3D9 = new(() =>
+		private static readonly Lazy<bool> _hasD3D11 = new(() =>
 		{
 			if (OSTailoredCode.IsUnixHost) return false;
-			var p = OSTailoredCode.LinkedLibManager.LoadOrZero("d3dx9_43.dll");
+			var p = OSTailoredCode.LinkedLibManager.LoadOrZero("d3d11.dll");
 			if (p == IntPtr.Zero) return false;
 			OSTailoredCode.LinkedLibManager.FreeByPtr(p);
 			return true;
@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 			return false;
 		});
 
-		public static bool HasD3D9 => _hasD3D9.Value;
+		public static bool HasD3D11 => _hasD3D11.Value;
 		public static bool HasXAudio2 => _hasXAudio2.Value;
 	}
 }

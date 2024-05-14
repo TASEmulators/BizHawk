@@ -29,6 +29,12 @@ namespace BizHawk.Bizware.BizwareGL
 
 			if (!Pipeline.Available)
 			{
+				// make sure we release the vertex shader if it was compiled ok
+				if (vs.Available)
+				{
+					vs.Release();
+				}
+
 				Available = false;
 				return;
 			}

@@ -68,6 +68,11 @@ namespace BizHawk.Bizware.Graphics.Controls
 			}
 		}
 
+		public override void AllowTearing(bool state)
+		{
+			// not controllable
+		}
+
 		public override void SetVsync(bool state)
 		{
 			MakeContextCurrent();

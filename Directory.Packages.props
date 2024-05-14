@@ -18,7 +18,6 @@
 		<PackageVersion Include="PolySharp" Version="1.14.1" />
 		<PackageVersion Include="ppy.SDL2-CS" Version="1.0.630-alpha" /> <!-- last version with .NET Standard 2.0 support -->
 		<PackageVersion Include="SharpCompress" Version="0.31.0" /><!-- can't update any further or .gz stops being detected as archive -->
-		<PackageVersion Include="SharpDX.Direct3D9" Version="4.2.0" />
 		<PackageVersion Include="Silk.NET.OpenAL" Version="2.21.0" />
 		<PackageVersion Include="Silk.NET.OpenAL.Extensions.Creative" Version="2.21.0" />
 		<PackageVersion Include="Silk.NET.OpenAL.Extensions.Enumeration" Version="2.21.0" />
@@ -34,6 +33,8 @@
 		<PackageVersion Include="System.Reflection.Emit" Version="4.7.0" />
 		<PackageVersion Include="System.Resources.Extensions" Version="7.0.0" />
 		<PackageVersion Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+		<PackageVersion Include="Vortice.Direct3D11" Version="2.4.2" /> <!-- last version with .NET Standard 2.0 support -->
+		<PackageVersion Include="Vortice.D3DCompiler" Version="2.4.2" /> <!-- last version with .NET Standard 2.0 support -->
 		<PackageVersion Include="Vortice.MediaFoundation" Version="2.4.2" /> <!-- last version with .NET Standard 2.0 support -->
 		<PackageVersion Include="Vortice.XAudio2" Version="2.4.2" /> <!-- last version with .NET Standard 2.0 support -->
 	</ItemGroup>

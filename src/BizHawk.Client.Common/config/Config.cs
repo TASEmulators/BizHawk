@@ -186,9 +186,9 @@ namespace BizHawk.Client.Common
 		public bool VSync { get; set; }
 
 		/// <summary>
-		/// Tries to use an alternate vsync mechanism, for video cards that just can't do it right
+		/// Allows non-vsync'd video to tear, this is needed for VFR monitors reportedly
 		/// </summary>
-		public bool DispAlternateVsync { get; set; }
+		public bool DispAllowTearing { get; set; }
 
 		// Display options
 		public bool DisplayFps { get; set; }
@@ -220,7 +220,7 @@ namespace BizHawk.Client.Common
 
 		public int DispPrescale { get; set; } = 1;
 
-		public EDispMethod DispMethod { get; set; } = HostCapabilityDetector.HasD3D9 && !OSTailoredCode.IsWine ? EDispMethod.D3D9 : EDispMethod.OpenGL;
+		public EDispMethod DispMethod { get; set; } = HostCapabilityDetector.HasD3D11 && !OSTailoredCode.IsWine ? EDispMethod.D3D11 : EDispMethod.OpenGL;
 
 		public int DispChromeFrameWindowed { get; set; } = 2;
 		public bool DispChromeStatusBarWindowed { get; set; } = true;

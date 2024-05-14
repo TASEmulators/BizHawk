@@ -3,15 +3,15 @@ using System.Windows.Forms;
 
 namespace BizHawk.Bizware.Graphics.Controls
 {
-	internal sealed class D3D9Control : GraphicsControl
+	internal sealed class D3D11Control : GraphicsControl
 	{
-		private readonly Func<D3D9SwapChain.ControlParameters, D3D9SwapChain> _createSwapChain;
-		private D3D9SwapChain _swapChain;
-		private bool Vsync;
+		private readonly Func<D3D11SwapChain.ControlParameters, D3D11SwapChain> _createSwapChain;
+		private D3D11SwapChain _swapChain;
+		private bool Vsync, AllowsTearing;
 
-		private D3D9SwapChain.ControlParameters ControlParameters => new(Handle, Width, Height, Vsync);
+		private D3D11SwapChain.ControlParameters ControlParameters => new(Handle, Width, Height, Vsync, AllowsTearing);
 
-		public D3D9Control(Func<D3D9SwapChain.ControlParameters, D3D9SwapChain> createSwapChain)
+		public D3D11Control(Func<D3D11SwapChain.ControlParameters, D3D11SwapChain> createSwapChain)
 		{
 			_createSwapChain = createSwapChain;
 
@@ -41,14 +41,11 @@ namespace BizHawk.Bizware.Graphics.Controls
 			_swapChain.Refresh(ControlParameters);
 		}
 
+		public override void AllowTearing(bool state)
+			=> AllowsTearing = state;
+
 		public override void SetVsync(bool state)
-		{
-			if (Vsync != state)
-			{
-				Vsync = state;
-				_swapChain.Refresh(ControlParameters);
-			}
-		}
+			=> Vsync = state;
 
 		public override void Begin()
 			=> _swapChain.SetBackBuffer();

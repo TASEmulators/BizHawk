@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common.Filters
 			Passes = preset.Passes.ToArray();
 			Errors = string.Empty;
 
-			if (owner.API is not ("OPENGL" or "D3D9"))
+			if (owner.API is not ("OPENGL" or "D3D11"))
 			{
 				Errors = $"Unsupported API {owner.API}";
 				return;
@@ -70,7 +70,7 @@ namespace BizHawk.Client.Common.Filters
 						path = owner.API switch
 						{
 							"OPENGL" => Path.ChangeExtension(path, ".glsl"),
-							"D3D9" => Path.ChangeExtension(path, ".hlsl"),
+							"D3D11" => Path.ChangeExtension(path, ".hlsl"),
 							_ => throw new InvalidOperationException(),
 						};
 					}

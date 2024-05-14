@@ -57,8 +57,6 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateSourceDrawingWork(JobInfo job)
 		{
-			bool alternateVsync = false;
-
 			if (!job.Offscreen)
 			{
 				//apply the vsync setting (should probably try to avoid repeating this)
@@ -73,12 +71,9 @@ namespace BizHawk.Client.EmuHawk
 					vsync = false;
 
 				//for now, it's assumed that the presentation panel is the main window, but that may not always be true
-				if (vsync && GlobalConfig.DispAlternateVsync && GlobalConfig.VSyncThrottle && _gl.DispMethodEnum is EDispMethod.D3D9)
-				{
-					alternateVsync = true;
-					//unset normal vsync if we've chosen the alternate vsync
-					vsync = false;
-				}
+
+				// no cost currently to just always call this...
+				_graphicsControl.AllowTearing(GlobalConfig.DispAllowTearing);
 
 				//TODO - whats so hard about triple buffering anyway? just enable it always, and change api to SetVsync(enable,throttle)
 				//maybe even SetVsync(enable,throttlemethod) or just SetVsync(enable,throttle,advanced)
@@ -99,7 +94,6 @@ namespace BizHawk.Client.EmuHawk
 			// begin rendering on this context
 			// should this have been done earlier?
 			// do i need to check this on an intel video card to see if running excessively is a problem? (it used to be in the FinalTarget command below, shouldn't be a problem)
-			//GraphicsControl.Begin(); // CRITICAL POINT for yabause+GL
 
 			//TODO - auto-create and age these (and dispose when old)
 			int rtCounter = 0;
@@ -119,17 +113,11 @@ namespace BizHawk.Client.EmuHawk
 
 			Debug.Assert(inFinalTarget);
 
-			// wait for vsync to begin
-			if (alternateVsync) ((dynamic) _gl).AlternateVsyncPass(0);
-
 			// present and conclude drawing
 			_graphicsControl.SwapBuffers();
 
-			// wait for vsync to end
-			if (alternateVsync) ((dynamic) _gl).AlternateVsyncPass(1);
-
 			// nope. don't do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
-			// presentationPanel.GraphicsControl.End();
+			// _graphicsControl.End();
 		}
 	}
 }

@@ -53,6 +53,9 @@ namespace BizHawk.Client.EmuHawk
 			_graphicsControl.End();
 		}
 
+		public override void AllowTearing(bool state)
+			=> _graphicsControl.AllowTearing(state);
+
 		public override void SetVsync(bool state)
 			=> _graphicsControl.SetVsync(state);
 

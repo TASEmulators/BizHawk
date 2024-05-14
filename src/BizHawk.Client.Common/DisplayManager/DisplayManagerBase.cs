@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common
 				LoadCustomFont(fceux);
 			}
 
-			if (dispMethod is EDispMethod.OpenGL or EDispMethod.D3D9)
+			if (dispMethod is EDispMethod.OpenGL or EDispMethod.D3D11)
 			{
 				var fiHq2x = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk/hq2x.cgp"));
 				if (fiHq2x.Exists)
@@ -102,7 +102,7 @@ namespace BizHawk.Client.Common
 					using var stream = fiScanlines.OpenRead();
 					_shaderChainScanlines = new(_gl, new(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
-				var bicubicPath = dispMethod == EDispMethod.D3D9 ? "Shaders/BizHawk/bicubic-normal.cgp" : "Shaders/BizHawk/bicubic-fast.cgp";
+				var bicubicPath = dispMethod is EDispMethod.D3D11 ? "Shaders/BizHawk/bicubic-normal.cgp" : "Shaders/BizHawk/bicubic-fast.cgp";
 				var fiBicubic = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, bicubicPath));
 				if (fiBicubic.Exists)
 				{

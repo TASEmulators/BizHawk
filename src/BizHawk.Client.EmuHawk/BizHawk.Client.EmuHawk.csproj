@@ -263,7 +263,7 @@
 		<Compile Update="CustomControls/ViewportPanel.cs" SubType="Component" />
 		<Compile Update="GraphicsImplementations/GLControlWrapper_SlimDX9.cs" SubType="Component" />
 		<Compile Update="GraphicsImplementations/GraphicsControl_TK.cs" SubType="UserControl" />
-		<Compile Update="GraphicsImplementations/RetainedGraphicsControl.cs" SubType="UserControl" />
+		<Compile Update="GraphicsImplementations/RetainedGraphicsControl.cs" />
 		<Compile Update="LogWindow.cs" SubType="Form" />
 		<Compile Update="LogWindow.Designer.cs" DependentUpon="LogWindow.cs" />
 		<EmbeddedResource Update="LogWindow.resx" DependentUpon="LogWindow.cs" />

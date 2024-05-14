@@ -27,6 +27,11 @@ namespace BizHawk.Bizware.Graphics.Controls
 		/// </summary>
 		private GDIPlusRenderTarget RenderTarget { get; }
 
+		public override void AllowTearing(bool state)
+		{
+			// not controllable
+		}
+
 		public override void SetVsync(bool state)
 		{
 			// not really supported now...
