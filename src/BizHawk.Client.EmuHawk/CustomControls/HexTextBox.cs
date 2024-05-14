@@ -139,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.ContainsText)
 			{
-				string text = e.Text.Trim().RemovePrefix("0x").RemovePrefix('$');
+				string text = e.Text.CleanHex();
 				if (text.IsHex())
 				{
 					PasteWithMaxLength(text);

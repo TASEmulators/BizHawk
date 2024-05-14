@@ -437,7 +437,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Type == WatchDisplayType.Hex && e.ContainsText)
 			{
-				string text = e.Text.Trim().RemovePrefix("0x").RemovePrefix('$');
+				string text = e.Text.CleanHex();
 				if (text.IsHex())
 				{
 					PasteWithMaxLength(text);

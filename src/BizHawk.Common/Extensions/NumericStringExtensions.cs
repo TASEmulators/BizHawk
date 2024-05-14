@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BizHawk.Common.StringExtensions
 {
@@ -32,6 +33,11 @@ namespace BizHawk.Common.StringExtensions
 		/// That is, all chars of the copy will be hex digits (<c>[0-9A-F]</c>).
 		/// </returns>
 		public static string OnlyHex(this string? raw) => string.IsNullOrWhiteSpace(raw) ? string.Empty : string.Concat(raw.Where(IsHex)).ToUpperInvariant();
+
+		/// <returns>
+		/// A copy of <paramref name="raw"/> after removing <c>0x</c>/<c>$</c> prefixes and all whitespace.
+		/// </returns>
+		public static string CleanHex(this string? raw) => raw is null ? string.Empty : Regex.Replace(raw, @"^\s*(0x|\$)|\s+?", "");
 
 #if NET7_0_OR_GREATER
 		public static ushort ParseU16FromHex(ReadOnlySpan<char> str)
