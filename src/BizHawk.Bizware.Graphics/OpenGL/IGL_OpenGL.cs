@@ -102,12 +102,12 @@ namespace BizHawk.Bizware.Graphics
 
 		private class ShaderWrapper
 		{
-			public uint sid;
+			public uint SID;
 		}
 
 		private class PipelineWrapper
 		{
-			public uint pid;
+			public uint PID;
 			public BizShader FragmentShader, VertexShader;
 			public List<int> SamplerLocs;
 		}
@@ -136,8 +136,8 @@ namespace BizHawk.Bizware.Graphics
 			var fsw = (ShaderWrapper)fragmentShader.Opaque;
 
 			var pid = GL.CreateProgram();
-			GL.AttachShader(pid, vsw.sid);
-			GL.AttachShader(pid, fsw.sid);
+			GL.AttachShader(pid, vsw.SID);
+			GL.AttachShader(pid, fsw.SID);
 			_ = GL.GetError();
 
 			GL.LinkProgram(pid);
@@ -234,7 +234,7 @@ namespace BizHawk.Bizware.Graphics
 			if (!vertexShader.Available) success = false;
 			if (!fragmentShader.Available) success = false;
 
-			var pw = new PipelineWrapper { pid = pid, VertexShader = vertexShader, FragmentShader = fragmentShader, SamplerLocs = samplers };
+			var pw = new PipelineWrapper { PID = pid, VertexShader = vertexShader, FragmentShader = fragmentShader, SamplerLocs = samplers };
 
 			return new(this, pw, success, vertexLayout, uniforms, memo);
 		}
@@ -247,7 +247,7 @@ namespace BizHawk.Bizware.Graphics
 				return;
 			}
 
-			GL.DeleteProgram(pw.pid);
+			GL.DeleteProgram(pw.PID);
 
 			pw.FragmentShader.Release();
 			pw.VertexShader.Release();
@@ -256,7 +256,7 @@ namespace BizHawk.Bizware.Graphics
 		public void Internal_FreeShader(BizShader shader)
 		{
 			var sw = (ShaderWrapper)shader.Opaque;
-			GL.DeleteShader(sw.sid);
+			GL.DeleteShader(sw.SID);
 		}
 
 		/// <exception cref="InvalidOperationException"><paramref name="pipeline"/>.<see cref="Pipeline.Available"/> is <see langword="false"/></exception>
@@ -276,7 +276,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			var pw = (PipelineWrapper)pipeline.Opaque;
-			GL.UseProgram(pw.pid);
+			GL.UseProgram(pw.PID);
 
 			// this is dumb and confusing, but we have to bind physical sampler numbers to sampler variables.
 			for (var i = 0; i < pw.SamplerLocs.Count; i++)
@@ -287,18 +287,18 @@ namespace BizHawk.Bizware.Graphics
 
 		private class VertexLayoutWrapper
 		{
-			public uint vao;
-			public uint vbo;
-			public int bufferLen;
+			public uint VAO;
+			public uint VBO;
+			public int BufferLen;
 		}
 
 		public VertexLayout CreateVertexLayout()
 		{
-			var vlw = new VertexLayoutWrapper()
+			var vlw = new VertexLayoutWrapper
 			{
-				vao = GL.GenVertexArray(),
-				vbo = GL.GenBuffer(),
-				bufferLen = 0,
+				VAO = GL.GenVertexArray(),
+				VBO = GL.GenBuffer(),
+				BufferLen = 0,
 			};
 
 			return new(this, vlw);
@@ -307,8 +307,8 @@ namespace BizHawk.Bizware.Graphics
 		public void Internal_FreeVertexLayout(VertexLayout vl)
 		{
 			var vlw = (VertexLayoutWrapper)vl.Opaque;
-			GL.DeleteVertexArray(vlw.vao);
-			GL.DeleteBuffer(vlw.vbo);
+			GL.DeleteVertexArray(vlw.VAO);
+			GL.DeleteBuffer(vlw.VBO);
 		}
 
 		private void BindTexture2d(Texture2d tex)
@@ -394,8 +394,8 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			var vlw = (VertexLayoutWrapper)vertexLayout.Opaque;
-			GL.BindVertexArray(vlw.vao);
-			GL.BindBuffer(GLEnum.ArrayBuffer, vlw.vbo);
+			GL.BindVertexArray(vlw.VAO);
+			GL.BindBuffer(GLEnum.ArrayBuffer, vlw.VBO);
 
 			var stride = vertexLayout.Items[0].Stride;
 			Debug.Assert(vertexLayout.Items.All(i => i.Value.Stride == stride));
@@ -404,18 +404,16 @@ namespace BizHawk.Bizware.Graphics
 			{
 				var vertexes = new ReadOnlySpan<byte>(data.ToPointer(), count * stride);
 
-				// BufferData reallocs and BufferSubData doesn't, so only use the former if size changes
-				if (vertexes.Length != vlw.bufferLen)
+				// BufferData reallocs and BufferSubData doesn't, so only use the former if we need to grow the buffer
+				if (vertexes.Length > vlw.BufferLen)
 				{
 					GL.BufferData(GLEnum.ArrayBuffer, vertexes, GLEnum.DynamicDraw);
+					vlw.BufferLen = vertexes.Length;
 				}
 				else
 				{
-					// I tried to do a CRC check to avoid BufferSubData calls, actually hurts performance
 					GL.BufferSubData(GLEnum.ArrayBuffer, 0, vertexes);
 				}
-
-				vlw.bufferLen = vertexes.Length;
 
 				foreach (var (i, item) in vertexLayout.Items)
 				{
@@ -710,7 +708,7 @@ namespace BizHawk.Bizware.Graphics
 				Errors = info
 			};
 
-			sw.sid = sid;
+			sw.SID = sid;
 
 			return ret;
 		}
