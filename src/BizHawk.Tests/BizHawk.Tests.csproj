@@ -5,6 +5,7 @@
 	<Import Project="../TestProjects.props" />
 	<PropertyGroup>
 		<DefineConstants Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">$(DefineConstants);SKIP_PLATFORM_TESTS</DefineConstants>
+		<RunSettingsFilePath>$(MSBuildProjectDirectory)/../MainSln.runsettings</RunSettingsFilePath>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
