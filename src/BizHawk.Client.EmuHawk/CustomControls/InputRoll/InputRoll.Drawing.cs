@@ -448,7 +448,7 @@ namespace BizHawk.Client.EmuHawk
 		// Draw Gridlines and background colors using QueryItemBkColor.
 		private void DrawBg(List<RollColumn> visibleColumns, Rectangle rect, int firstVisibleRow, int lastVisibleRow)
 		{
-			if (QueryItemBkColor != null)
+			if (QueryItemBkColor is not null || QueryRowBkColor is not null)
 			{
 				DoBackGroundCallback(visibleColumns, rect, firstVisibleRow, lastVisibleRow);
 			}
