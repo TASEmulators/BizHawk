@@ -8,6 +8,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 	{
 		protected override void WndProc(ref Message m)
 		{
+			// WM_PASTE is also sent when pasting through the OS context menu, but doesn't work on Mono 
 			const int WM_PASTE = 0x302;
 
 			if (m.Msg is WM_PASTE && !OSTailoredCode.IsUnixHost)
@@ -31,6 +32,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			return base.ProcessCmdKey(ref m, keyData);
 		}
 
+		/// <returns><see langword="true"/> if regular paste handling should be prevented.</returns>
 		private bool OnPasteInternal()
 		{
 			bool containsText;
