@@ -41,6 +41,14 @@ namespace BizHawk.Client.EmuHawk
 						},
 						Text = "Firmware",
 					},
+					new ToolStripMenuItemEx
+					{
+						DropDownItems =
+						{
+							rcHashDebugItem,
+						},
+						Text = "RCheevos",
+					},
 					new ToolStripSeparatorEx(),
 					new DebugVSystemMenuItem(VSystemID.Raw.GB, VSystemID.Raw.GBC)
 					{
@@ -61,15 +69,6 @@ namespace BizHawk.Client.EmuHawk
 							new DebugVSystemChildItem(N64RomByteswapToolForm.TOOL_NAME, OpenTool<N64RomByteswapToolForm>) { RequiresLoadedRom = false },
 							new DebugVSystemChildItem(N64VideoSettingsFuzzToolForm.TOOL_NAME, OpenTool<N64VideoSettingsFuzzToolForm>),
 						},
-					},
-					new ToolStripSeparatorEx(),
-					new ToolStripMenuItemEx
-					{
-						DropDownItems =
-						{
-							rcHashDebugItem,
-						},
-						Text = "RCheevos",
 					},
 				},
 				Image = Resources.Bug,
