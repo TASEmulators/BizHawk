@@ -45,9 +45,9 @@ namespace BizHawk.Client.Common.Filters
 			Passes = preset.Passes.ToArray();
 			Errors = string.Empty;
 
-			if (owner.API is not ("OPENGL" or "D3D11"))
+			if (owner.DispMethodEnum is not (EDispMethod.OpenGL or EDispMethod.D3D11))
 			{
-				Errors = $"Unsupported API {owner.API}";
+				Errors = $"Unsupported Display Method {owner.DispMethodEnum}";
 				return;
 			}
 
@@ -67,11 +67,12 @@ namespace BizHawk.Client.Common.Filters
 
 					if (!File.Exists(path))
 					{
-						path = owner.API switch
+						// ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+						path = owner.DispMethodEnum switch
 						{
-							"OPENGL" => Path.ChangeExtension(path, ".glsl"),
-							"D3D11" => Path.ChangeExtension(path, ".hlsl"),
-							_ => throw new InvalidOperationException(),
+							EDispMethod.OpenGL => Path.ChangeExtension(path, ".glsl"),
+							EDispMethod.D3D11 => Path.ChangeExtension(path, ".hlsl"),
+							_ => throw new InvalidOperationException()
 						};
 					}
 				}

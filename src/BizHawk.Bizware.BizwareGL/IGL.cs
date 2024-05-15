@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Drawing;
 using System.Numerics;
 
@@ -14,7 +13,9 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public interface IGL : IDisposable
 	{
-		/// <remarks>HACK</remarks>
+		/// <summary>
+		/// Returns the display method represented by this IGL
+		/// </summary>
 		EDispMethod DispMethodEnum { get; }
 
 		/// <summary>
@@ -83,16 +84,6 @@ namespace BizHawk.Bizware.BizwareGL
 		void SetPipelineUniform(PipelineUniform uniform, bool value);
 
 		/// <summary>
-		/// Begins a rendering scene; use before doing any draw calls, as per normal
-		/// </summary>
-		void BeginScene();
-
-		/// <summary>
-		/// Indicates end of scene rendering; use after all draw calls as per normal
-		/// </summary>
-		void EndScene();
-
-		/// <summary>
 		/// Draws based on the currently set pipeline
 		/// data contains vertexes based on the pipeline's VertexLayout
 		/// count is the vertex count
@@ -122,7 +113,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		/// <summary>
 		/// Creates a texture with the specified dimensions
-		/// TODO - pass in specifications somehow
+		/// The texture will use a clamping address mode
 		/// </summary>
 		Texture2d CreateTexture(int width, int height);
 
@@ -136,8 +127,6 @@ namespace BizHawk.Bizware.BizwareGL
 		/// Sets the texture's filtering mode
 		/// The default is linear = false (i.e. nearest neighbor)
 		/// </summary>
-		/// <param name="texture"></param>
-		/// <param name="linear"></param>
 		public void SetTextureFilter(Texture2d texture, bool linear);
 
 		/// <summary>
@@ -146,83 +135,30 @@ namespace BizHawk.Bizware.BizwareGL
 		void LoadTextureData(Texture2d tex, BitmapBuffer bmp);
 
 		/// <summary>
-		/// Loads a texture from disk
-		/// </summary>
-		Texture2d LoadTexture(string path);
-
-		/// <summary>
-		/// Loads a texture from the stream
-		/// </summary>
-		Texture2d LoadTexture(Stream stream);
-
-		/// <summary>
-		/// Loads a texture from the BitmapBuffer
-		/// </summary>
-		Texture2d LoadTexture(BitmapBuffer buffer);
-
-		/// <summary>
-		/// Loads a texture from the System.Drawing.Bitmap
-		/// </summary>
-		Texture2d LoadTexture(Bitmap bitmap);
-
-		/// <summary>
 		/// sets the viewport (and scissor) according to the provided specifications
 		/// </summary>
 		void SetViewport(int x, int y, int width, int height);
 
 		/// <summary>
-		/// sets the viewport (and scissor) according to the provided specifications
-		/// </summary>
-		void SetViewport(int width, int height);
-
-#if false // Unused and WinForms unavailable on .NET Standard
-		/// <summary>
-		/// sets the viewport (and scissor) according to the client area of the provided control
-		/// </summary>
-		void SetViewport(System.Windows.Forms.Control control);
-#endif
-
-		/// <summary>
-		/// sets the viewport (and scissor) according to the provided specifications
-		/// </summary>
-		void SetViewport(Size size);
-
-		/// <summary>
 		/// generates a proper 2d othographic projection for the given destination size, suitable for use in a GUI
 		/// </summary>
-		Matrix4x4 CreateGuiProjectionMatrix(int w, int h);
-
-		/// <summary>
-		/// generates a proper 2d othographic projection for the given destination size, suitable for use in a GUI
-		/// </summary>
-		Matrix4x4 CreateGuiProjectionMatrix(Size dims);
+		Matrix4x4 CreateGuiProjectionMatrix(int width, int height);
 
 		/// <summary>
 		/// generates a proper view transform for a standard 2d ortho projection, including half-pixel jitter if necessary and
 		/// re-establishing of a normal 2d graphics top-left origin. suitable for use in a GUI
 		/// </summary>
-		Matrix4x4 CreateGuiViewMatrix(int w, int h, bool autoflip = true);
-
-		/// <summary>
-		/// generates a proper view transform for a standard 2d ortho projection, including half-pixel jitter if necessary and
-		/// re-establishing of a normal 2d graphics top-left origin. suitable for use in a GUI
-		/// </summary>
-		Matrix4x4 CreateGuiViewMatrix(Size dims, bool autoflip = true);
+		Matrix4x4 CreateGuiViewMatrix(int width, int height, bool autoflip = true);
 
 		/// <summary>
 		/// Creates a render target. Only includes a color buffer. Pixel format control TBD
 		/// </summary>
-		RenderTarget CreateRenderTarget(int w, int h);
+		RenderTarget CreateRenderTarget(int width, int height);
 
 		/// <summary>
 		/// Binds a RenderTarget for current rendering
 		/// </summary>
 		void BindRenderTarget(RenderTarget rt);
-
-		/// <summary>
-		/// Returns a string representing the API employed by this context
-		/// </summary>
-		string API { get; }
 
 		/// <summary>
 		/// Frees the provided render target. Same as disposing the resource.

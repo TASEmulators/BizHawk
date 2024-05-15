@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -23,8 +22,6 @@ namespace BizHawk.Bizware.Graphics
 
 		public void ClearColor(Color color)
 			=> GetCurrentGraphics().Clear(color);
-
-		public string API => "GDIPLUS";
 
 		public void FreeTexture(Texture2d tex)
 		{
@@ -116,21 +113,12 @@ namespace BizHawk.Bizware.Graphics
 		public void SetTextureFilter(Texture2d texture, bool linear)
 			=> ((GDIPlusTexture) texture.Opaque).LinearFiltering = linear;
 
-		public Texture2d LoadTexture(Bitmap bitmap)
-		{
-			var sdBitmap = (Bitmap)bitmap.Clone();
-			var gtex = new GDIPlusTexture { SDBitmap = sdBitmap };
-			return new(this, gtex, bitmap.Width, bitmap.Height);
-		}
-
-		public Texture2d LoadTexture(Stream stream)
-		{
-			using var bmp = new BitmapBuffer(stream, new());
-			return LoadTexture(bmp);
-		}
-
 		public Texture2d CreateTexture(int width, int height)
-			=> null;
+		{
+			var sdBitmap = new Bitmap(width, height);
+			var gtex = new GDIPlusTexture { SDBitmap = sdBitmap };
+			return new(this, gtex, width, height);
+		}
 
 		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
 		{
@@ -142,14 +130,6 @@ namespace BizHawk.Bizware.Graphics
 		{
 			var gtex = (GDIPlusTexture)tex.Opaque;
 			bmp.ToSysdrawingBitmap(gtex.SDBitmap);
-		}
-
-		public Texture2d LoadTexture(BitmapBuffer bmp)
-		{
-			// definitely needed (by TextureFrugalizer at least)
-			var sdBitmap = bmp.ToSysdrawingBitmap();
-			var gtex = new GDIPlusTexture { SDBitmap = sdBitmap };
-			return new(this, gtex, bmp.Width, bmp.Height);
 		}
 
 		public BitmapBuffer ResolveTexture2d(Texture2d tex)
@@ -164,29 +144,13 @@ namespace BizHawk.Bizware.Graphics
 			return bb;
 		}
 
-		public Texture2d LoadTexture(string path)
-		{
-			using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-			return LoadTexture(fs);
-		}
-
-		public Matrix4x4 CreateGuiProjectionMatrix(int w, int h)
-		{
-			return CreateGuiProjectionMatrix(new(w, h));
-		}
-
-		public Matrix4x4 CreateGuiViewMatrix(int w, int h, bool autoFlip)
-		{
-			return CreateGuiViewMatrix(new(w, h), autoFlip);
-		}
-
-		public Matrix4x4 CreateGuiProjectionMatrix(Size dims)
+		public Matrix4x4 CreateGuiProjectionMatrix(int width, int height)
 		{
 			// see CreateGuiViewMatrix for more
 			return Matrix4x4.Identity;
 		}
 
-		public Matrix4x4 CreateGuiViewMatrix(Size dims, bool autoFlip)
+		public Matrix4x4 CreateGuiViewMatrix(int width, int height, bool autoFlip)
 		{
 			// on account of gdi+ working internally with a default view exactly like we want, we don't need to setup a new one here
 			// furthermore, we _cant_, without inverting the GuiView and GuiProjection before drawing, to completely undo it
@@ -198,39 +162,19 @@ namespace BizHawk.Bizware.Graphics
 		{
 		}
 
-		public void SetViewport(int width, int height)
-		{
-		}
-
-		public void SetViewport(Size size)
-		{
-			SetViewport(size.Width, size.Height);
-		}
-
-		public void BeginScene()
-		{
-		}
-
-		public void EndScene()
-		{
-			// maybe an inconsistent semantic with other implementations..
-			// but accomplishes the needed goal of getting the current RT to render
-			BindRenderTarget(null);
-		}
-
 		public void FreeRenderTarget(RenderTarget rt)
 		{
 			var grt = (GDIPlusRenderTarget)rt.Opaque;
 			grt.Dispose();
 		}
 
-		public RenderTarget CreateRenderTarget(int w, int h)
+		public RenderTarget CreateRenderTarget(int width, int height)
 		{
 			var gtex = new GDIPlusTexture
 			{
-				SDBitmap = new(w, h, PixelFormat.Format32bppArgb)
+				SDBitmap = new(width, height, PixelFormat.Format32bppArgb)
 			};
-			var tex = new Texture2d(this, gtex, w, h);
+			var tex = new Texture2d(this, gtex, width, height);
 
 			var grt = new GDIPlusRenderTarget(() => BufferedGraphicsContext);
 			var rt = new RenderTarget(this, grt, tex);

@@ -91,18 +91,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			// begin rendering on this context
-			// should this have been done earlier?
-			// do i need to check this on an intel video card to see if running excessively is a problem? (it used to be in the FinalTarget command below, shouldn't be a problem)
-
 			//TODO - auto-create and age these (and dispose when old)
 			int rtCounter = 0;
-
 			_currentFilterProgram.RenderTargetProvider = new DisplayManagerRenderTargetProvider(size => _shaderChainFrugalizers[rtCounter++].Get(size));
 
-			_gl.BeginScene();
 			RunFilterChainSteps(ref rtCounter, out var rtCurr, out var inFinalTarget);
-			_gl.EndScene();
 
 			if (job.Offscreen)
 			{

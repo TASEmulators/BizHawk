@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Numerics;
 
@@ -38,8 +37,6 @@ namespace BizHawk.Bizware.Graphics
 		private Pipeline _currPipeline;
 		private RenderTarget _currRenderTarget;
 
-		public string API => "OPENGL";
-
 		// this IGL either requires at least OpenGL 3.0
 		public static bool Available => OpenGLVersion.SupportsVersion(3, 0);
 
@@ -51,14 +48,6 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			GL = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);
-		}
-
-		public void BeginScene()
-		{
-		}
-
-		public void EndScene()
-		{
 		}
 
 		public void Dispose()
@@ -491,34 +480,22 @@ namespace BizHawk.Bizware.Graphics
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)(linear ? TextureMagFilter.Linear : TextureMagFilter.Nearest));
 		}
 
-		public Texture2d LoadTexture(Bitmap bitmap)
+		public Texture2d CreateTexture(int width, int height)
 		{
-			using var bmp = new BitmapBuffer(bitmap, new());
-			return LoadTexture(bmp);
-		}
+			var texId = GL.GenTexture();
+			GL.BindTexture(TextureTarget.Texture2D, texId);
+			unsafe
+			{
+				GL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8, (uint)width, (uint)height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, null);
+			}
 
-		public Texture2d LoadTexture(Stream stream)
-		{
-			using var bmp = new BitmapBuffer(stream, new());
-			return LoadTexture(bmp);
-		}
-
-		private uint GenTexture()
-		{
-			var id = GL.GenTexture();
 			// sensible defaults
-			GL.BindTexture(TextureTarget.Texture2D, id);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
-			return id;
-		}
 
-		public Texture2d CreateTexture(int width, int height)
-		{
-			var id = GenTexture();
-			return new(this, id, width, height);
+			return new(this, texId, width, height);
 		}
 
 		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
@@ -545,13 +522,11 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		/// <exception cref="InvalidOperationException">framebuffer creation unsuccessful</exception>
-		public unsafe RenderTarget CreateRenderTarget(int w, int h)
+		public RenderTarget CreateRenderTarget(int width, int height)
 		{
 			// create a texture for it
-			var texId = GenTexture();
-			var tex = new Texture2d(this, texId, w, h);
-
-			GL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8, (uint)w, (uint)h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, null);
+			var tex = CreateTexture(width, height);
+			var texId = (uint)tex.Opaque;
 
 			// create the FBO
 			var fbId = GL.GenFramebuffer();
@@ -587,27 +562,6 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public unsafe Texture2d LoadTexture(BitmapBuffer bmp)
-		{
-			Texture2d ret;
-			var id = GenTexture();
-			try
-			{
-				ret = new(this, id, bmp.Width, bmp.Height);
-				GL.BindTexture(TextureTarget.Texture2D, id);
-				// picking a color order that matches doesnt seem to help, any. maybe my driver is accelerating it, or maybe it isnt a big deal. but its something to study on another day
-				GL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)bmp.Width, (uint)bmp.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero.ToPointer());
-				LoadTextureData(ret, bmp);
-			}
-			catch
-			{
-				GL.DeleteTexture(id);
-				throw;
-			}
-
-			return ret;
-		}
-
 		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
 			// note - this is dangerous since it changes the bound texture. could we save it?
@@ -619,36 +573,20 @@ namespace BizHawk.Bizware.Graphics
 			return bb;
 		}
 
-		public Texture2d LoadTexture(string path)
-		{
-			using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-			return LoadTexture(fs);
-		}
-
-		public Matrix4x4 CreateGuiProjectionMatrix(int w, int h)
-		{
-			return CreateGuiProjectionMatrix(new(w, h));
-		}
-
-		public Matrix4x4 CreateGuiViewMatrix(int w, int h, bool autoflip)
-		{
-			return CreateGuiViewMatrix(new(w, h), autoflip);
-		}
-
-		public Matrix4x4 CreateGuiProjectionMatrix(Size dims)
+		public Matrix4x4 CreateGuiProjectionMatrix(int width, int height)
 		{
 			var ret = Matrix4x4.Identity;
-			ret.M11 = 2.0f / dims.Width;
-			ret.M22 = 2.0f / dims.Height;
+			ret.M11 = 2.0f / width;
+			ret.M22 = 2.0f / height;
 			return ret;
 		}
 
-		public Matrix4x4 CreateGuiViewMatrix(Size dims, bool autoflip)
+		public Matrix4x4 CreateGuiViewMatrix(int width, int height, bool autoflip)
 		{
 			var ret = Matrix4x4.Identity;
 			ret.M22 = -1.0f;
-			ret.M41 = dims.Width * -0.5f;
-			ret.M42 = dims.Height * 0.5f;
+			ret.M41 = width * -0.5f;
+			ret.M42 = height * 0.5f;
 			if (autoflip && _currRenderTarget is not null) // flip as long as we're not a final render target
 			{
 				ret.M22 = 1.0f;
@@ -663,16 +601,6 @@ namespace BizHawk.Bizware.Graphics
 			GL.Viewport(x, y, (uint)width, (uint)height);
 			GL.Scissor(x, y, (uint)width, (uint)height); // hack for mupen[rice]+intel: at least the rice plugin leaves the scissor rectangle scrambled, and we're trying to run it in the main graphics context for intel
 			// BUT ALSO: new specifications.. viewport+scissor make sense together
-		}
-
-		public void SetViewport(int width, int height)
-		{
-			SetViewport(0, 0, width, height);
-		}
-
-		public void SetViewport(Size size)
-		{
-			SetViewport(size.Width, size.Height);
 		}
 
 		private BizShader CreateShader(ShaderType type, string source, bool required)

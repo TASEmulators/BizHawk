@@ -865,10 +865,8 @@ namespace BizHawk.Client.Common
 		public void Blank()
 		{
 			ActivateGraphicsControlContext();
-			_gl.BeginScene();
 			_gl.BindRenderTarget(null);
 			_gl.ClearColor(Color.Black);
-			_gl.EndScene();
 			SwapBuffersOfGraphicsControl();
 		}
 
@@ -876,19 +874,12 @@ namespace BizHawk.Client.Common
 		{
 			if (!job.Offscreen) throw new InvalidOperationException();
 
-			// begin rendering on this context
-			// should this have been done earlier?
-			// do i need to check this on an intel video card to see if running excessively is a problem? (it used to be in the FinalTarget command below, shouldn't be a problem)
-			//GraphicsControl.Begin(); // CRITICAL POINT for yabause+GL
-
 			//TODO - auto-create and age these (and dispose when old)
 			var rtCounter = 0;
 			// ReSharper disable once AccessToModifiedClosure
 			_currentFilterProgram.RenderTargetProvider = new DisplayManagerRenderTargetProvider(size => _shaderChainFrugalizers[rtCounter++].Get(size));
 
-			_gl.BeginScene();
 			RunFilterChainSteps(ref rtCounter, out var rtCurr, out _);
-			_gl.EndScene();
 
 			job.OffscreenBb = rtCurr.Texture2d.Resolve();
 			job.OffscreenBb.DiscardAlpha();

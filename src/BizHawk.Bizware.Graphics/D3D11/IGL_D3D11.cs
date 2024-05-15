@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Numerics;
@@ -16,7 +15,6 @@ using Vortice.Direct3D11;
 using Vortice.Direct3D11.Shader;
 using Vortice.DXGI;
 
-// todo - do a better job selecting shader model? base on caps somehow? try several and catch compilation exceptions (yuck, exceptions)
 namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>
@@ -158,8 +156,6 @@ namespace BizHawk.Bizware.Graphics
 		private readonly HashSet<Shader> _vertexShaders = new();
 		private readonly HashSet<Shader> _pixelShaders = new();
 		private readonly HashSet<Pipeline> _pipelines = new();
-
-		public string API => "D3D11";
 
 		public IGL_D3D11()
 		{
@@ -974,18 +970,6 @@ namespace BizHawk.Bizware.Graphics
 			tw.LinearFiltering = linear;
 		}
 
-		public Texture2d LoadTexture(Bitmap bitmap)
-		{
-			using var bmp = new BitmapBuffer(bitmap, new());
-			return LoadTexture(bmp);
-		}
-
-		public Texture2d LoadTexture(Stream stream)
-		{
-			using var bmp = new BitmapBuffer(stream, new());
-			return LoadTexture(bmp);
-		}
-
 		private ID3D11Texture2D CreateTextureForShader(int width, int height)
 		{
 			return Device.CreateTexture2D(
@@ -1015,7 +999,6 @@ namespace BizHawk.Bizware.Graphics
 			return null;
 		}
 
-		/// <exception cref="InvalidOperationException">GDI+ call returned unexpected data</exception>
 		public unsafe void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
 			if (bmp.Width != tex.IntWidth || bmp.Height != tex.IntHeight)
@@ -1055,13 +1038,6 @@ namespace BizHawk.Bizware.Graphics
 				Context.Unmap(tw.Texture, 0);
 				bmp.UnlockBits(bmpData);
 			}
-		}
-
-		public Texture2d LoadTexture(BitmapBuffer bmp)
-		{
-			var ret = CreateTexture(bmp.Width, bmp.Height);
-			LoadTextureData(ret, bmp);
-			return ret;
 		}
 
 		/// <exception cref="InvalidOperationException">Vortice call returned unexpected data</exception>
@@ -1111,32 +1087,20 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public Texture2d LoadTexture(string path)
-		{
-			using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-			return LoadTexture(fs);
-		}
-
-		public Matrix4x4 CreateGuiProjectionMatrix(int w, int h)
-			=> CreateGuiProjectionMatrix(new(w, h));
-
-		public Matrix4x4 CreateGuiViewMatrix(int w, int h, bool autoFlip)
-			=> CreateGuiViewMatrix(new(w, h), autoFlip);
-
-		public Matrix4x4 CreateGuiProjectionMatrix(Size dims)
+		public Matrix4x4 CreateGuiProjectionMatrix(int width, int height)
 		{
 			var ret = Matrix4x4.Identity;
-			ret.M11 = 2.0f / dims.Width;
-			ret.M22 = 2.0f / dims.Height;
+			ret.M11 = 2.0f / width;
+			ret.M22 = 2.0f / height;
 			return ret;
 		}
 
-		public Matrix4x4 CreateGuiViewMatrix(Size dims, bool autoFlip)
+		public Matrix4x4 CreateGuiViewMatrix(int width, int height, bool autoFlip)
 		{
 			var ret = Matrix4x4.Identity;
 			ret.M22 = -1.0f;
-			ret.M41 = -dims.Width * 0.5f;
-			ret.M42 = dims.Height * 0.5f;
+			ret.M41 = width * -0.5f;
+			ret.M42 = height * 0.5f;
 
 			// auto-flipping isn't needed on D3D
 			return ret;
@@ -1147,12 +1111,6 @@ namespace BizHawk.Bizware.Graphics
 			Context.RSSetViewport(x, y, width, height);
 			Context.RSSetScissorRect(x, y, width, height);
 		}
-
-		public void SetViewport(int width, int height)
-			=> SetViewport(0, 0, width, height);
-
-		public void SetViewport(Size size)
-			=> SetViewport(size.Width, size.Height);
 
 		public void FreeRenderTarget(RenderTarget rt)
 		{
@@ -1176,13 +1134,13 @@ namespace BizHawk.Bizware.Graphics
 				cpuAccessFlags: CpuAccessFlags.None);
 		}
 
-		public RenderTarget CreateRenderTarget(int w, int h)
+		public RenderTarget CreateRenderTarget(int width, int height)
 		{
-			var tex = CreateTextureForRenderTarget(w, h);
+			var tex = CreateTextureForRenderTarget(width, height);
 			var srvd = new ShaderResourceViewDescription(ShaderResourceViewDimension.Texture2D, Format.B8G8R8A8_UNorm, mostDetailedMip: 0, mipLevels: 1);
 			var srv = Device.CreateShaderResourceView(tex, srvd);
 			var tw = new TextureWrapper { Texture = tex, SRV = srv };
-			var tex2d = new Texture2d(this, tw, w, h);
+			var tex2d = new Texture2d(this, tw, width, height);
 
 			var rtvd = new RenderTargetViewDescription(RenderTargetViewDimension.Texture2D, Format.B8G8R8A8_UNorm);
 			var rw = new RenderTargetWrapper { RTV = Device.CreateRenderTargetView(tw.Texture, rtvd) };
@@ -1263,14 +1221,6 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			Context.Draw(count, 0);
-		}
-
-		public void BeginScene()
-		{
-		}
-
-		public void EndScene()
-		{
 		}
 	}
 }

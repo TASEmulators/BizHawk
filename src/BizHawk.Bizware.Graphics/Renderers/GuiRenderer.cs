@@ -31,13 +31,14 @@ namespace BizHawk.Bizware.Graphics
 
 			string psProgram, vsProgram;
 
-			switch (owner.API)
+			// ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+			switch (owner.DispMethodEnum)
 			{
-				case "D3D11":
+				case EDispMethod.D3D11:
 					vsProgram = DefaultShader_d3d9;
 					psProgram = DefaultShader_d3d9;
 					break;
-				case "OPENGL":
+				case EDispMethod.OpenGL:
 					vsProgram = DefaultVertexShader_gl;
 					psProgram = DefaultPixelShader_gl;
 					break;
