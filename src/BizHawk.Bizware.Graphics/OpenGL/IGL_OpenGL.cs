@@ -21,9 +21,6 @@ using Silk.NET.OpenGL.Legacy;
 
 using BizShader = BizHawk.Bizware.BizwareGL.Shader;
 
-using BizTextureMagFilter = BizHawk.Bizware.BizwareGL.TextureMagFilter;
-using BizTextureMinFilter = BizHawk.Bizware.BizwareGL.TextureMinFilter;
-
 using GLVertexAttribPointerType = Silk.NET.OpenGL.Legacy.VertexAttribPointerType;
 
 namespace BizHawk.Bizware.Graphics
@@ -316,15 +313,6 @@ namespace BizHawk.Bizware.Graphics
 			GL.BindTexture(TextureTarget.Texture2D, (uint)tex.Opaque);
 		}
 
-		public void SetTextureWrapMode(Texture2d tex, bool clamp)
-		{
-			BindTexture2d(tex);
-
-			var mode = clamp ? TextureWrapMode.ClampToEdge : TextureWrapMode.Repeat;
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)mode);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)mode);
-		}
-
 		private void LegacyBindArrayData(VertexLayout vertexLayout, IntPtr pData)
 		{
 			// DEPRECATED CRAP USED, NEEDED FOR ANCIENT SHADERS
@@ -496,16 +484,11 @@ namespace BizHawk.Bizware.Graphics
 			GL.BindTexture(TextureTarget.Texture2D, (uint)tex.Opaque);
 		}
 
-		public void SetMinFilter(Texture2d texture, BizTextureMinFilter minFilter)
+		public void SetTextureFilter(Texture2d texture, bool linear)
 		{
 			BindTexture2d(texture);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)minFilter);
-		}
-
-		public void SetMagFilter(Texture2d texture, BizTextureMagFilter magFilter)
-		{
-			BindTexture2d(texture);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)magFilter);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)(linear ? TextureMinFilter.Linear : TextureMinFilter.Nearest));
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)(linear ? TextureMagFilter.Linear : TextureMagFilter.Nearest));
 		}
 
 		public Texture2d LoadTexture(Bitmap bitmap)
@@ -520,16 +503,26 @@ namespace BizHawk.Bizware.Graphics
 			return LoadTexture(bmp);
 		}
 
-		public Texture2d CreateTexture(int width, int height)
+		private uint GenTexture()
 		{
 			var id = GL.GenTexture();
+			// sensible defaults
+			GL.BindTexture(TextureTarget.Texture2D, id);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+			return id;
+		}
+
+		public Texture2d CreateTexture(int width, int height)
+		{
+			var id = GenTexture();
 			return new(this, id, width, height);
 		}
 
 		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
-		{
-			return new(this, (uint)glTexId.ToInt32(), width, height) { IsUpsideDown = true };
-		}
+			=> new(this, (uint)glTexId.ToInt32(), width, height) { IsUpsideDown = true };
 
 		public unsafe void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
@@ -555,13 +548,10 @@ namespace BizHawk.Bizware.Graphics
 		public unsafe RenderTarget CreateRenderTarget(int w, int h)
 		{
 			// create a texture for it
-			var texId = GL.GenTexture();
+			var texId = GenTexture();
 			var tex = new Texture2d(this, texId, w, h);
 
-			GL.BindTexture(TextureTarget.Texture2D, texId);
 			GL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8, (uint)w, (uint)h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, null);
-			tex.SetMagFilter(BizTextureMagFilter.Nearest);
-			tex.SetMinFilter(BizTextureMinFilter.Nearest);
 
 			// create the FBO
 			var fbId = GL.GenFramebuffer();
@@ -600,7 +590,7 @@ namespace BizHawk.Bizware.Graphics
 		public unsafe Texture2d LoadTexture(BitmapBuffer bmp)
 		{
 			Texture2d ret;
-			var id = GL.GenTexture();
+			var id = GenTexture();
 			try
 			{
 				ret = new(this, id, bmp.Width, bmp.Height);
@@ -614,9 +604,6 @@ namespace BizHawk.Bizware.Graphics
 				GL.DeleteTexture(id);
 				throw;
 			}
-
-			// set default filtering... its safest to do this always
-			ret.SetFilterNearest();
 
 			return ret;
 		}

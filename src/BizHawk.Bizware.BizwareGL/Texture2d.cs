@@ -40,21 +40,9 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 		}
 
-		public void SetMinFilter(TextureMinFilter minFilter) => Owner.SetMinFilter(this, minFilter);
+		public void SetFilterLinear() => Owner.SetTextureFilter(this, true);
 
-		public void SetMagFilter(TextureMagFilter magFilter) => Owner.SetMagFilter(this, magFilter);
-
-		public void SetFilterLinear()
-		{
-			SetMinFilter(TextureMinFilter.Linear);
-			SetMagFilter(TextureMagFilter.Linear);
-		}
-
-		public void SetFilterNearest()
-		{
-			SetMinFilter(TextureMinFilter.Nearest);
-			SetMagFilter(TextureMagFilter.Nearest);
-		}
+		public void SetFilterNearest() => Owner.SetTextureFilter(this, false);
 
 		public IGL Owner { get; }
 		public object Opaque { get; private set; }

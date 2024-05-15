@@ -93,8 +93,6 @@ namespace BizHawk.Bizware.BizwareGL
 			var mat = Matrix4x4.Transpose(Modelview * Projection);
 			Pipeline["modelViewProj"].Set(mat, true);
 
-			Owner.SetTextureWrapMode(tex, true);
-
 			sampler0.Set(tex);
 			Owner.SetViewport(OutputSize);
 

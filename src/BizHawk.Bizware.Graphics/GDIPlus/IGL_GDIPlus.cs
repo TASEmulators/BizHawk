@@ -68,10 +68,6 @@ namespace BizHawk.Bizware.Graphics
 		{
 		}
 
-		public void SetTextureWrapMode(Texture2d tex, bool clamp)
-		{
-		}
-
 		public void Draw(IntPtr data, int count)
 		{
 		}
@@ -117,11 +113,8 @@ namespace BizHawk.Bizware.Graphics
 		{
 		}
 
-		public void SetMinFilter(Texture2d texture, TextureMinFilter minFilter)
-			=> ((GDIPlusTexture) texture.Opaque).MinFilter = minFilter;
-
-		public void SetMagFilter(Texture2d texture, TextureMagFilter magFilter)
-			=> ((GDIPlusTexture) texture.Opaque).MagFilter = magFilter;
+		public void SetTextureFilter(Texture2d texture, bool linear)
+			=> ((GDIPlusTexture) texture.Opaque).LinearFiltering = linear;
 
 		public Texture2d LoadTexture(Bitmap bitmap)
 		{

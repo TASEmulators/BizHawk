@@ -968,22 +968,10 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		// TODO: Remove this, we only use clamp ever anyways
-		public void SetTextureWrapMode(Texture2d tex, bool clamp)
-		{
-		}
-
-		// TODO: Merge these to one call (for Linear / Nearest)
-		public void SetMinFilter(Texture2d texture, TextureMinFilter minFilter)
+		public void SetTextureFilter(Texture2d texture, bool linear)
 		{
 			var tw = (TextureWrapper)texture.Opaque;
-			tw.LinearFiltering = minFilter == TextureMinFilter.Linear;
-		}
-
-		public void SetMagFilter(Texture2d texture, TextureMagFilter magFilter)
-		{
-			var tw = (TextureWrapper)texture.Opaque;
-			tw.LinearFiltering = magFilter == TextureMagFilter.Linear;
+			tw.LinearFiltering = linear;
 		}
 
 		public Texture2d LoadTexture(Bitmap bitmap)

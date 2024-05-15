@@ -214,19 +214,8 @@ namespace BizHawk.Bizware.Graphics
 		private static void PrepDraw(SDGraphics g, Texture2d tex)
 		{
 			var tw = (GDIPlusTexture)tex.Opaque;
-
 			// TODO - we can support bicubic for the final presentation...
-			if ((int)tw.MagFilter != (int)tw.MinFilter)
-			{
-				throw new InvalidOperationException($"{nameof(tw)}.{nameof(tw.MagFilter)} != {nameof(tw)}.{nameof(tw.MinFilter)}");
-			}
-
-			g.InterpolationMode = tw.MagFilter switch
-			{
-				TextureMagFilter.Linear => InterpolationMode.Bilinear,
-				TextureMagFilter.Nearest => InterpolationMode.NearestNeighbor,
-				_ => g.InterpolationMode
-			};
+			g.InterpolationMode = tw.LinearFiltering ? InterpolationMode.Bilinear : InterpolationMode.NearestNeighbor;
 		}
 
 		private void SetupMatrix(SDGraphics g)

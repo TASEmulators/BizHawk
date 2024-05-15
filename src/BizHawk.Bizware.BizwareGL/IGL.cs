@@ -5,7 +5,6 @@ using System.Numerics;
 
 namespace BizHawk.Bizware.BizwareGL
 {
-
 	/// <summary>
 	/// This is a wrapper over OpenGL and direct3d to give a uniform interface
 	/// TODO - This really needs to be split up into an internal and a user interface. so many of the functions are made to support the smart wrappers
@@ -106,10 +105,6 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		BitmapBuffer ResolveTexture2d(Texture2d texture);
 
-		void SetMinFilter(Texture2d texture, TextureMinFilter minFilter);
-
-		void SetMagFilter(Texture2d texture, TextureMagFilter magFilter);
-
 		/// <summary>
 		/// creates a vertex layout resource
 		/// </summary>
@@ -138,10 +133,12 @@ namespace BizHawk.Bizware.BizwareGL
 		Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height);
 
 		/// <summary>
-		/// Sets the clamp mode (for both uv) for the Texture2d.
-		/// The default is clamped=true.
+		/// Sets the texture's filtering mode
+		/// The default is linear = false (i.e. nearest neighbor)
 		/// </summary>
-		void SetTextureWrapMode(Texture2d tex, bool clamp);
+		/// <param name="texture"></param>
+		/// <param name="linear"></param>
+		public void SetTextureFilter(Texture2d texture, bool linear);
 
 		/// <summary>
 		/// Loads the texture with new data. This isn't supposed to be especially versatile, it just blasts a bitmap buffer into the texture
