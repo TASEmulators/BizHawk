@@ -15,13 +15,13 @@ namespace BizHawk.Tests.Common.StringExtensions
 			Assert.AreEqual("ABCDEF", " AB CD\nEF ".CleanHex());
 			Assert.AreEqual("ABCDEF", " 0xABCDEF ".CleanHex());
 
-			Assert.AreEqual("", (null as string).CleanHex());
-			Assert.AreEqual("", "".CleanHex());
-			Assert.AreEqual("", "0x$ABCDEF".CleanHex());
-			Assert.AreEqual("", "$0xABCDEF".CleanHex());
-			Assert.AreEqual("", "$$ABCDEF".CleanHex());
-			Assert.AreEqual("", "ABCDEF$".CleanHex());
-			Assert.AreEqual("", "A!B.C(DE)F".CleanHex());
+			Assert.AreEqual(string.Empty, (null as string).CleanHex());
+			Assert.AreEqual(string.Empty, "".CleanHex());
+			Assert.AreEqual(string.Empty, "0x$ABCDEF".CleanHex());
+			Assert.AreEqual(string.Empty, "$0xABCDEF".CleanHex());
+			Assert.AreEqual(string.Empty, "$$ABCDEF".CleanHex());
+			Assert.AreEqual(string.Empty, "ABCDEF$".CleanHex());
+			Assert.AreEqual(string.Empty, "A!B.C(DE)F".CleanHex());
 		}
 	}
 }
