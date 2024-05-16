@@ -188,7 +188,11 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <exception cref="MoviePlatformMismatchException"><paramref name="record"/> is <see langword="false"/> and <paramref name="movie"/>.<see cref="IBasicMovieInfo.SystemID"/> does not match <paramref name="systemId"/>.<see cref="IEmulator.SystemId"/></exception>
-		public void QueueNewMovie(IMovie movie, bool record, string systemId, IDictionary<string, string> preferredCores)
+		public void QueueNewMovie(
+			IMovie movie,
+			bool record,
+			string systemId,
+			IDictionary<string, string> preferredCores)
 		{
 			if (movie.IsActive() && movie.Changes)
 			{
