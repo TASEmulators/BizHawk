@@ -14,13 +14,19 @@ namespace BizHawk.Bizware.Graphics.Controls
 			RenderTarget = createControlRenderTarget(GetControlRenderContext);
 
 			SetStyle(ControlStyles.UserPaint, true);
-			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.UserMouse, true);
+			DoubleBuffered = true;
+			BackColor = Color.Black;
 		}
 
 		private (SDGraphics Graphics, Rectangle Rectangle) GetControlRenderContext()
-			=> (CreateGraphics(), ClientRectangle);
+		{
+			var graphics = CreateGraphics();
+			graphics.CompositingMode = CompositingMode.SourceCopy;
+			graphics.CompositingQuality = CompositingQuality.HighSpeed;
+			return (graphics, ClientRectangle);
+		}
 
 		/// <summary>
 		/// The render target for rendering to this control
@@ -38,10 +44,23 @@ namespace BizHawk.Bizware.Graphics.Controls
 		}
 
 		public override void Begin()
-			=> RenderTarget.CreateGraphics();
+		{
+		}
 
 		public override void End()
 		{
+		}
+
+		protected override void OnHandleCreated(EventArgs e)
+		{
+			base.OnHandleCreated(e);
+			RenderTarget.CreateGraphics();
+		}
+
+		protected override void OnHandleDestroyed(EventArgs e)
+		{
+			base.OnHandleDestroyed(e);
+			RenderTarget.Dispose();
 		}
 
 		protected override void OnResize(EventArgs e)
@@ -51,17 +70,6 @@ namespace BizHawk.Bizware.Graphics.Controls
 		}
 
 		public override void SwapBuffers()
-		{
-			if (RenderTarget.BufferedGraphics == null)
-			{
-				return;
-			}
-
-			using var g = CreateGraphics();
-			// not sure we had proof we needed this but it cant hurt
-			g.CompositingMode = CompositingMode.SourceCopy;
-			g.CompositingQuality = CompositingQuality.HighSpeed;
-			RenderTarget.BufferedGraphics.Render(g);
-		}
+			=> RenderTarget.BufferedGraphics?.Render(RenderTarget.CurGraphics);
 	}
 }

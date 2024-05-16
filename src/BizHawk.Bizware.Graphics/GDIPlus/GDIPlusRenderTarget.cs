@@ -19,9 +19,11 @@ namespace BizHawk.Bizware.Graphics
 			if (_getControlRenderContext != null)
 			{
 				CurGraphics?.Dispose();
+				CurGraphics = null;
 			}
 
 			BufferedGraphics?.Dispose();
+			BufferedGraphics = null;
 		}
 
 		private readonly Func<BufferedGraphicsContext> _getBufferedGraphicsContext;
