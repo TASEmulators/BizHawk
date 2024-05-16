@@ -543,7 +543,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("tastudio.ongreenzoneinvalidated( function( currentindex )\r\n\tconsole.log( \"Called whenever the greenzone is invalidated.\" );\r\nend );")]
-		[LuaMethod("ongreenzoneinvalidated", "Called whenever the greenzone is invalidated. Your callback can have 1 parameter, which will be the index of the first row that was invalidated.")]
+		[LuaMethod("ongreenzoneinvalidated", "Called whenever the greenzone is invalidated. Your callback can have 1 parameter, which will be the index of the last row before the invalidated ones.")]
 		public void OnGreenzoneInvalidated(LuaFunction luaf)
 		{
 			if (Engaged())

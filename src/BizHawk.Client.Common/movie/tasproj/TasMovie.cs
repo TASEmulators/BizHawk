@@ -135,7 +135,7 @@ namespace BizHawk.Client.Common
 		{
 			var anyLagInvalidated = LagLog.RemoveFrom(frame);
 			var anyStateInvalidated = TasStateManager.InvalidateAfter(frame);
-			GreenzoneInvalidated(frame + 1);
+			GreenzoneInvalidated(frame);
 			if (anyLagInvalidated || anyStateInvalidated)
 			{
 				Changes = true;
