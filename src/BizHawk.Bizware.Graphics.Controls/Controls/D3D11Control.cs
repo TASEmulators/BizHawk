@@ -48,10 +48,12 @@ namespace BizHawk.Bizware.Graphics.Controls
 			=> Vsync = state;
 
 		public override void Begin()
-			=> _swapChain.SetBackBuffer();
+		{
+		}
 
 		public override void End()
-			=> _swapChain.SetBackBuffer();
+		{
+		}
 
 		public override void SwapBuffers()
 			=> _swapChain.PresentBuffer(ControlParameters);

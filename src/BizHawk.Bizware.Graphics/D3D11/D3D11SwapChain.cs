@@ -31,9 +31,10 @@ namespace BizHawk.Bizware.Graphics
 		{
 			public ID3D11Device Device;
 			public ID3D11DeviceContext Context;
+			public ID3D11DeviceContext1 Context1;
 			public ID3D11Texture2D BackBufferTexture;
 			public ID3D11RenderTargetView RTV;
-			public IDXGISwapChain1 SwapChain;
+			public IDXGISwapChain SwapChain;
 			public bool AllowsTearing;
 
 			public void Dispose()
@@ -41,6 +42,8 @@ namespace BizHawk.Bizware.Graphics
 				// Device/Context not owned by this class
 				Device = null;
 				Context = null;
+				Context1?.Dispose();
+				Context1 = null;
 				RTV?.Dispose();
 				RTV = null;
 				BackBufferTexture?.Dispose();
@@ -57,9 +60,10 @@ namespace BizHawk.Bizware.Graphics
 
 		private ID3D11Device Device => _resources.Device;
 		private ID3D11DeviceContext Context => _resources.Context;
+		private ID3D11DeviceContext1 Context1 => _resources.Context1;
 		private ID3D11Texture2D BackBufferTexture => _resources.BackBufferTexture;
 		private ID3D11RenderTargetView RTV => _resources.RTV;
-		private IDXGISwapChain1 SwapChain => _resources.SwapChain;
+		private IDXGISwapChain SwapChain => _resources.SwapChain;
 		private bool AllowsTearing => _resources.AllowsTearing;
 
 		internal D3D11SwapChain(SwapChainResources resources, Action<ControlParameters> resetDeviceCallback)
@@ -71,12 +75,9 @@ namespace BizHawk.Bizware.Graphics
 		public void Dispose()
 			=> _resources.Dispose();
 
-		public void SetBackBuffer()
-			=> Context.OMSetRenderTargets(RTV);
-
 		public void PresentBuffer(ControlParameters cp)
 		{
-			SetBackBuffer();
+			Context.OMSetRenderTargets(RTV);
 
 			PresentFlags presentFlags;
 			if (cp.Vsync)
@@ -95,6 +96,9 @@ namespace BizHawk.Bizware.Graphics
 			{
 				_resetDeviceCallback(cp);
 			}
+
+			// optimization hint to the GPU (note: not always available, needs Win8+ or Win7 with the Platform Update)
+			Context1?.DiscardView(RTV);
 		}
 
 		public void Refresh(ControlParameters cp)

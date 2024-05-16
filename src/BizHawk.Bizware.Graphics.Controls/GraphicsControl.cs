@@ -16,7 +16,8 @@ namespace BizHawk.Bizware.Graphics.Controls
 		public abstract void SetVsync(bool state);
 
 		/// <summary>
-		/// Swaps the buffers for this control
+		/// Swaps the buffers for this control.
+		/// Be aware, the owner IGL's current render target is undefined after calling this
 		/// </summary>
 		public abstract void SwapBuffers();
 

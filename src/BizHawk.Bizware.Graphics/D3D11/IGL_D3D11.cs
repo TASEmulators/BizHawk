@@ -25,7 +25,8 @@ namespace BizHawk.Bizware.Graphics
 
 		private struct D3D11Resources : IDisposable
 		{
-			public IDXGIFactory2 Factory;
+			public IDXGIFactory1 Factory1;
+			public IDXGIFactory2 Factory2;
 			public ID3D11Device Device;
 			public ID3D11DeviceContext Context;
 			public ID3D11BlendState BlendEnableState;
@@ -40,8 +41,10 @@ namespace BizHawk.Bizware.Graphics
 			{
 				try
 				{
-					// we need IDXGIFactory2 for CreateSwapChainForHwnd
-					Factory = DXGI.CreateDXGIFactory1<IDXGIFactory2>();
+					Factory1 = DXGI.CreateDXGIFactory1<IDXGIFactory1>();
+					// we want IDXGIFactory2 for CreateSwapChainForHwnd
+					// however, it's not guaranteed to be available (only available in Win8+ or Win7 with the Platform Update)
+					Factory2 = Factory1.QueryInterfaceOrNull<IDXGIFactory2>();
 #if false
 					// use this to debug D3D11 calls
 					// note debug layer requires extra steps to use: https://learn.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-devices-layers#debug-layer
@@ -124,8 +127,11 @@ namespace BizHawk.Bizware.Graphics
 				Device?.Dispose();
 				Device = null;
 
-				Factory?.Dispose();
-				Factory = null;
+				Factory2?.Dispose();
+				Factory2 = null;
+
+				Factory1?.Dispose();
+				Factory1 = null;
 			}
 		}
 
@@ -133,7 +139,8 @@ namespace BizHawk.Bizware.Graphics
 		// these might need to be thrown out and recreated if the device is lost
 		private D3D11Resources _resources;
 
-		private IDXGIFactory2 Factory => _resources.Factory;
+		private IDXGIFactory1 Factory1 => _resources.Factory1;
+		private IDXGIFactory2 Factory2 => _resources.Factory2;
 		private ID3D11Device Device => _resources.Device;
 		private ID3D11DeviceContext Context => _resources.Context;
 		private ID3D11BlendState BlendEnableState => _resources.BlendEnableState;
@@ -166,37 +173,61 @@ namespace BizHawk.Bizware.Graphics
 			_resources.CreateResources();
 		}
 
-		private IDXGISwapChain1 CreateDXGISwapChain(D3D11SwapChain.ControlParameters cp)
+		private IDXGISwapChain CreateDXGISwapChain(D3D11SwapChain.ControlParameters cp)
 		{
-			// this is the optimal swapchain model
-			// note however it requires windows 10+
-			// a less optimal model will end up being used in case this fails
-			var sd = new SwapChainDescription1(
-				width: cp.Width,
-				height: cp.Height,
-				format: Format.B8G8R8A8_UNorm,
-				stereo: false,
-				swapEffect: SwapEffect.FlipDiscard,
-				bufferUsage: Usage.RenderTargetOutput,
-				bufferCount: 2,
-				scaling: Scaling.Stretch,
-				alphaMode: AlphaMode.Ignore,
-				flags: SwapChainFlags.AllowTearing);
+			IDXGISwapChain ret;
 
-			IDXGISwapChain1 ret;
-			try
+			if (Factory2 is null)
 			{
-				ret = Factory.CreateSwapChainForHwnd(Device, cp.Handle, sd);
-			}
-			catch
-			{
+				// no Factory2, probably on Windows 7 without the Platform Update
+				// we can assume a simple legacy format is needed here
+				var sd = default(SwapChainDescription);
+				sd.BufferDescription = new(
+					width: cp.Width,
+					height: cp.Height,
+					refreshRate: new(0, 0),
+					format: Format.B8G8R8A8_UNorm);
+				sd.SampleDescription = SampleDescription.Default;
+				sd.BufferUsage = Usage.RenderTargetOutput;
+				sd.BufferCount = 2;
+				sd.OutputWindow = cp.Handle;
+				sd.Windowed = true;
 				sd.SwapEffect = SwapEffect.Discard;
 				sd.Flags = SwapChainFlags.None;
-				ret = Factory.CreateSwapChainForHwnd(Device, cp.Handle, sd);
+
+				ret = Factory1.CreateSwapChain(Device, sd);
+			}
+			else
+			{
+				// this is the optimal swapchain model
+				// note however it requires windows 10+
+				// a less optimal model will end up being used in case this fails
+				var sd = new SwapChainDescription1(
+					width: cp.Width,
+					height: cp.Height,
+					format: Format.B8G8R8A8_UNorm,
+					stereo: false,
+					swapEffect: SwapEffect.FlipDiscard,
+					bufferUsage: Usage.RenderTargetOutput,
+					bufferCount: 2,
+					scaling: Scaling.Stretch,
+					alphaMode: AlphaMode.Ignore,
+					flags: SwapChainFlags.AllowTearing);
+
+				try
+				{
+					ret = Factory2.CreateSwapChainForHwnd(Device, cp.Handle, sd);
+				}
+				catch
+				{
+					sd.SwapEffect = SwapEffect.Discard;
+					sd.Flags = SwapChainFlags.None;
+					ret = Factory2.CreateSwapChainForHwnd(Device, cp.Handle, sd);
+				}
 			}
 
 			// don't allow DXGI to snoop alt+enter and such
-			using var parentFactory = ret.GetParent<IDXGIFactory2>();
+			using var parentFactory = ret.GetParent<IDXGIFactory>();
 			parentFactory.MakeWindowAssociation(cp.Handle, WindowAssociationFlags.IgnoreAll);
 			return ret;
 		}
@@ -330,10 +361,11 @@ namespace BizHawk.Bizware.Graphics
 
 			_controlSwapChain.Device = Device;
 			_controlSwapChain.Context = Context;
+			_controlSwapChain.Context1 = Context.QueryInterfaceOrNull<ID3D11DeviceContext1>();
 			_controlSwapChain.BackBufferTexture = bbTex;
 			_controlSwapChain.RTV = rtv;
 			_controlSwapChain.SwapChain = swapChain;
-			_controlSwapChain.AllowsTearing = (swapChain.Description1.Flags & SwapChainFlags.AllowTearing) != 0;
+			_controlSwapChain.AllowsTearing = (swapChain.Description.Flags & SwapChainFlags.AllowTearing) != 0;
 		}
 
 		public D3D11SwapChain CreateSwapChain(D3D11SwapChain.ControlParameters cp)
@@ -348,14 +380,15 @@ namespace BizHawk.Bizware.Graphics
 			var rtvd = new RenderTargetViewDescription(RenderTargetViewDimension.Texture2D, Format.B8G8R8A8_UNorm);
 			var rtv = Device.CreateRenderTargetView(bbTex, rtvd);
 
-			_controlSwapChain = new D3D11SwapChain.SwapChainResources
+			_controlSwapChain = new()
 			{
 				Device = Device,
 				Context = Context,
+				Context1 = Context.QueryInterfaceOrNull<ID3D11DeviceContext1>(),
 				BackBufferTexture = bbTex,
 				RTV = rtv,
 				SwapChain = swapChain,
-				AllowsTearing = (swapChain.Description1.Flags & SwapChainFlags.AllowTearing) != 0,
+				AllowsTearing = (swapChain.Description.Flags & SwapChainFlags.AllowTearing) != 0,
 			};
 
 			return new(_controlSwapChain, ResetDevice);
