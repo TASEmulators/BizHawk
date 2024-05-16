@@ -6,10 +6,12 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using System.IO;
+using System.Runtime.InteropServices;
 
-namespace BizHawk.Bizware.BizwareGL
+using SDGraphics = System.Drawing.Graphics;
+
+namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>
 	/// a software-based bitmap, way easier (and faster) to use than .net's built-in bitmap.
@@ -559,7 +561,7 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			if (WrappedBitmap != null)
 			{
-				using var g = Graphics.FromImage(bmp);
+				using var g = SDGraphics.FromImage(bmp);
 				g.CompositingMode = CompositingMode.SourceCopy;
 				g.CompositingQuality = CompositingQuality.HighSpeed;
 				g.DrawImageUnscaled(WrappedBitmap, 0, 0);

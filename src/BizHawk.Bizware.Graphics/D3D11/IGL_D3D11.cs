@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Numerics;
 
-using BizHawk.Bizware.BizwareGL;
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 

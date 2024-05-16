@@ -7,7 +7,7 @@ using System.Numerics;
 
 using BizHawk.Client.Common.Filters;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 
 namespace BizHawk.Client.Common.FilterManager
 {

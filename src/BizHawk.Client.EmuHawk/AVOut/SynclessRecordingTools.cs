@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 

@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>
 	/// A full-scale 2D texture, with mip levels and everything.

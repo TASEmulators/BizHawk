@@ -1,14 +1,14 @@
 using System;
+
 using BizHawk.Common;
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>
 	/// Represents a vertex layout, really a kind of a peer of the vertex and fragment shaders.
-	///	It isn't IDisposable because it'll be lifecycle-managed by the IGL (disposed when all dependent pipelines are disposed)
-	/// But if you want to be sure to save it for later, use AddRef
+	/// Only can be held by 1 pipeline at a time
 	/// </summary>
-	public class VertexLayout
+	public class VertexLayout : IDisposable
 	{
 		public VertexLayout(IGL owner, object opaque)
 		{
@@ -20,20 +20,9 @@ namespace BizHawk.Bizware.BizwareGL
 		public object Opaque { get; }
 		public IGL Owner { get; }
 
-		private int RefCount;
-
-		public void Release()
+		public void Dispose()
 		{
-			RefCount--;
-			if (RefCount <= 0)
-			{
-				Owner.Internal_FreeVertexLayout(this);
-			}
-		}
-
-		public void AddRef()
-		{
-			RefCount++;
+			Owner.Internal_FreeVertexLayout(this);
 		}
 
 		/// <exception cref="InvalidOperationException">already closed (by call to <see cref="Close"/>)</exception>
@@ -77,6 +66,5 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public LayoutItemWorkingDictionary Items { get; }
 		private bool Closed;
-
 	}
 }

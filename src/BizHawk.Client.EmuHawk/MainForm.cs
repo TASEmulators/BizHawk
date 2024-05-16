@@ -14,13 +14,14 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.IO.Pipes;
 
+using BizHawk.Bizware.Graphics;
+
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 
 using BizHawk.Client.Common;
-using BizHawk.Bizware.BizwareGL;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Base_Implementations;

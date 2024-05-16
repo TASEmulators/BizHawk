@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Bizware.Graphics
 {
 	public class BitmapLoadOptions
 	{

@@ -1,6 +1,6 @@
 using System;
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Bizware.Graphics
 {
 	public class RenderTarget : IDisposable
 	{

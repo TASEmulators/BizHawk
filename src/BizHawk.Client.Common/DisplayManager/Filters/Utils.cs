@@ -1,6 +1,6 @@
 using System.Drawing;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common.FilterManager;
 
 namespace BizHawk.Client.Common.Filters

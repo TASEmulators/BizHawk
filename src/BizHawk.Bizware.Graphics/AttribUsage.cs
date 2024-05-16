@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Bizware.BizwareGL
+﻿namespace BizHawk.Bizware.Graphics
 {
 	public enum AttribUsage
 	{

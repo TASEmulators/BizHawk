@@ -3,7 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.Filters;
 using BizHawk.Common;

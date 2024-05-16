@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace BizHawk.Bizware.BizwareGL.DrawingExtensions
+namespace BizHawk.Bizware.Graphics
 {
 	public static class DrawingExtensions
 	{

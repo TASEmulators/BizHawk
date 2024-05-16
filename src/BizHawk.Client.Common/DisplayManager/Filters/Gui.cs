@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Numerics;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common.FilterManager;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
@@ -464,7 +464,7 @@ namespace BizHawk.Client.Common.Filters
 			var outSize = FindOutput().SurfaceFormat.Size;
 			FilterProgram.GuiRenderer.Begin(outSize);
 			FilterProgram.GuiRenderer.DisableBlending();
-			FilterProgram.GuiRenderer.Modelview.Scale(Scale);
+			FilterProgram.GuiRenderer.ModelView.Scale(Scale);
 			FilterProgram.GuiRenderer.Draw(InputTexture);
 			FilterProgram.GuiRenderer.End();
 		}
@@ -519,7 +519,7 @@ namespace BizHawk.Client.Common.Filters
 		{
 			FilterProgram.GuiRenderer.Begin(OutputSize); // hope this didn't change
 			FilterProgram.GuiRenderer.DisableBlending();
-			FilterProgram.GuiRenderer.Modelview.Scale(XIS,YIS);
+			FilterProgram.GuiRenderer.ModelView.Scale(XIS,YIS);
 			FilterProgram.GuiRenderer.Draw(InputTexture);
 			FilterProgram.GuiRenderer.End();
 		}

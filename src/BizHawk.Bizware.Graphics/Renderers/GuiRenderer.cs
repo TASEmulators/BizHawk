@@ -4,17 +4,15 @@ using System;
 using System.Drawing;
 using System.Numerics;
 
-using BizHawk.Bizware.BizwareGL;
-
 namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>
 	/// A simple renderer useful for rendering GUI stuff.
 	/// When doing GUI rendering, run everything through here (if you need a GL feature not done through here, run it through here first)
-	/// Call Begin, then draw, then End, and don't use other Renderers or GL calls in the meantime, unless you know what you're doing.
+	/// Call Begin, then Draw, then End, and don't use other Renderers or GL calls in the meantime, unless you know what you're doing.
 	/// This can perform batching (well.. maybe not yet), which is occasionally necessary for drawing large quantities of things.
 	/// </summary>
-	public class GuiRenderer : IDisposable, IGuiRenderer
+	public class GuiRenderer : IGuiRenderer
 	{
 		public GuiRenderer(IGL owner)
 		{
@@ -26,8 +24,8 @@ namespace BizHawk.Bizware.Graphics
 			VertexLayout.DefineVertexAttribute("aColor", 2, 4, VertexAttribPointerType.Float, AttribUsage.Texcoord1, false, 32, 16);
 			VertexLayout.Close();
 
-			_Projection = new();
-			_Modelview = new();
+			_projection = new();
+			_modelView = new();
 
 			string psProgram, vsProgram;
 
@@ -61,15 +59,20 @@ namespace BizHawk.Bizware.Graphics
 
 		public void SetCornerColor(int which, Vector4 color)
 		{
-			Flush(); //don't really need to flush with current implementation. we might as well roll modulate color into it too.
+			Flush(); // don't really need to flush with current implementation. we might as well roll modulate color into it too.
 			CornerColors[which] = color;
 		}
 
 		/// <exception cref="ArgumentException"><paramref name="colors"/> does not have exactly <c>4</c> elements</exception>
 		public void SetCornerColors(Vector4[] colors)
 		{
-			Flush(); //don't really need to flush with current implementation. we might as well roll modulate color into it too.
-			if (colors.Length != 4) throw new ArgumentException("array must be size 4", nameof(colors));
+			Flush(); // don't really need to flush with current implementation. we might as well roll modulate color into it too.
+
+			if (colors.Length != 4)
+			{
+				throw new ArgumentException("array must be size 4", nameof(colors));
+			}
+
 			for (var i = 0; i < 4; i++)
 			{
 				CornerColors[i] = colors[i];
@@ -79,20 +82,23 @@ namespace BizHawk.Bizware.Graphics
 		public void Dispose()
 		{
 			DefaultPipeline.Dispose();
-			VertexLayout.Release();
+			VertexLayout.Dispose();
 		}
 
 		/// <exception cref="InvalidOperationException"><see cref="IsActive"/> is <see langword="true"/></exception>
 		public void SetPipeline(Pipeline pipeline)
 		{
 			if (IsActive)
+			{
 				throw new InvalidOperationException("Can't change pipeline while renderer is running!");
+			}
 
 			Flush();
 			CurrPipeline = pipeline;
 
 			// clobber state cache
 			sTexture = null;
+
 			// save the modulate color? user beware, I guess, for now.
 		}
 
@@ -124,43 +130,30 @@ namespace BizHawk.Bizware.Graphics
 			Owner.DisableBlending();
 		}
 
-		private MatrixStack _Projection, _Modelview;
+		private MatrixStack _projection, _modelView;
+
 		public MatrixStack Projection
 		{
-			get => _Projection;
+			get => _projection;
 			set
 			{
-				_Projection = value;
-				_Projection.IsDirty = true;
-			}
-		}
-		public MatrixStack Modelview
-		{
-			get => _Modelview;
-			set
-			{
-				_Modelview = value;
-				_Modelview.IsDirty = true;
+				_projection = value;
+				_projection.IsDirty = true;
 			}
 		}
 
-		public void Begin(Size size)
+		public MatrixStack ModelView
 		{
-			Begin(size.Width, size.Height);
-		}
-
-		public void Begin(int width, int height)
-		{
-			Begin();
-
-			Projection = Owner.CreateGuiViewMatrix(width, height) * Owner.CreateGuiProjectionMatrix(width, height);
-			Modelview.Clear();
-
-			Owner.SetViewport(width, height);
+			get => _modelView;
+			set
+			{
+				_modelView = value;
+				_modelView.IsDirty = true;
+			}
 		}
 
 		/// <exception cref="InvalidOperationException">no pipeline set (need to call <see cref="SetPipeline"/>)</exception>
-		public void Begin()
+		public void Begin(int width, int height)
 		{
 			// uhhmmm I want to throw an exception if its already active, but its annoying.
 
@@ -176,9 +169,14 @@ namespace BizHawk.Bizware.Graphics
 			//clear state cache
 			sTexture = null;
 			CurrPipeline["uSamplerEnable"].Set(false);
-			Modelview.Clear();
+			ModelView.Clear();
 			Projection.Clear();
 			SetModulateColorWhite();
+
+			Projection = Owner.CreateGuiViewMatrix(width, height) * Owner.CreateGuiProjectionMatrix(width, height);
+			ModelView.Clear();
+
+			Owner.SetViewport(width, height);
 		}
 
 		public void Flush()
@@ -197,113 +195,10 @@ namespace BizHawk.Bizware.Graphics
 			IsActive = false;
 		}
 
-		public void RectFill(float x, float y, float w, float h)
-		{
-			PrepDrawSubrectInternal(null);
-			EmitRectangleInternal(x, y, w, h, 0, 0, 0, 0);
-		}
-
-
 		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-			DrawSubrectInternal(tex, x, y, w, h, u0, v0, u1, v1);
-		}
-
-		public void Draw(Art art)
-		{
-			DrawInternal(art, 0, 0, art.Width, art.Height, false, false);
-		}
-
-		public void Draw(Art art, float x, float y)
-		{
-			DrawInternal(art, x, y, art.Width, art.Height, false, false);
-		}
-
-		public void Draw(Art art, float x, float y, float width, float height)
-		{
-			DrawInternal(art, x, y, width, height, false, false);
-		}
-
-		public void Draw(Art art, Vector2 pos)
-		{
-			DrawInternal(art, pos.X, pos.Y, art.Width, art.Height, false, false);
-		}
-
-		public void Draw(Texture2d tex)
-		{
-			DrawInternal(tex, 0, 0, tex.Width, tex.Height);
-		}
-
-		public void Draw(Texture2d tex, float x, float y)
-		{
-			DrawInternal(tex, x, y, tex.Width, tex.Height);
-		}
-
-		public void DrawFlipped(Art art, bool xflip, bool yflip)
-		{
-			DrawInternal(art, 0, 0, art.Width, art.Height, xflip, yflip);
-		}
-
-		public void Draw(Texture2d art, float x, float y, float width, float height)
-		{
-			DrawInternal(art, x, y, width, height);
-		}
-
-		private void DrawInternal(Texture2d tex, float x, float y, float w, float h)
-		{
-			var art = new Art((ArtManager)null)
-			{
-				Width = w,
-				Height = h
-			};
-
-			art.u0 = art.v0 = 0;
-			art.u1 = art.v1 = 1;
-			art.BaseTexture = tex;
-
-			DrawInternal(art, x, y, w, h, false, tex.IsUpsideDown);
-		}
-
-		private unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
-		{
-			float u0, v0, u1, v1;
-
-			if (fx)
-			{
-				u0 = art.u1;
-				u1 = art.u0;
-			}
-			else
-			{
-				u0 = art.u0;
-				u1 = art.u1;
-			}
-
-			if (fy)
-			{
-				v0 = art.v1;
-				v1 = art.v0;
-			}
-			else
-			{
-				v0 = art.v0;
-				v1 = art.v1;
-			}
-
-			var data = stackalloc float[32]
-			{
-				x, y, u0, v0,
-				CornerColors[0].X, CornerColors[0].Y, CornerColors[0].Z, CornerColors[0].W,
-				x + w, y, u1, v0,
-				CornerColors[1].X, CornerColors[1].Y, CornerColors[1].Z, CornerColors[1].W,
-				x, y + h, u0, v1,
-				CornerColors[2].X, CornerColors[2].Y, CornerColors[2].Z, CornerColors[2].W,
-				x + w, y + h, u1, v1,
-				CornerColors[3].X, CornerColors[3].Y, CornerColors[3].Z, CornerColors[3].W,
-			};
-
-			PrepDrawSubrectInternal(art.BaseTexture);
-			Owner.Draw(new(data), 4);
+			PrepDrawSubrectInternal(tex);
+			EmitRectangleInternal(x, y, w, h, u0, v0, u1, v1);
 		}
 
 		private void PrepDrawSubrectInternal(Texture2d tex)
@@ -315,15 +210,16 @@ namespace BizHawk.Bizware.Graphics
 				CurrPipeline["uSamplerEnable"].Set(tex != null);
 			}
 
-			if (_Projection.IsDirty)
+			if (_projection.IsDirty)
 			{
-				CurrPipeline["um44Projection"].Set(ref _Projection.Top);
-				_Projection.IsDirty = false;
+				CurrPipeline["um44Projection"].Set(ref _projection.Top);
+				_projection.IsDirty = false;
 			}
-			if (_Modelview.IsDirty)
+
+			if (_modelView.IsDirty)
 			{
-				CurrPipeline["um44Modelview"].Set(ref _Modelview.Top);
-				_Modelview.IsDirty = false;
+				CurrPipeline["um44Modelview"].Set(ref _modelView.Top);
+				_modelView.IsDirty = false;
 			}
 		}
 
@@ -366,14 +262,9 @@ namespace BizHawk.Bizware.Graphics
 			Owner.Draw(new(pData), 4);
 		}
 
-		private void DrawSubrectInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
-		{
-			PrepDrawSubrectInternal(tex);
-			EmitRectangleInternal(x, y, w, h, u0, v0, u1, v1);
-		}
-
 		public bool IsActive { get; private set; }
 		public IGL Owner { get; }
+
 
 		private readonly VertexLayout VertexLayout;
 		private Pipeline CurrPipeline;

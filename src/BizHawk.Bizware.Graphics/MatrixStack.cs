@@ -2,7 +2,7 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Bizware.Graphics
 {
 	// note: the sense of these matrices, as well as pre- and post- multiplying may be all mixed up.
 	// conceptually here is how we should be working, in the example of spinning a sprite in place

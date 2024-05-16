@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Numerics;
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>
 	/// This is a wrapper over OpenGL and direct3d to give a uniform interface

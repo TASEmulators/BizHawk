@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Collections.Generic;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 
 namespace BizHawk.Client.Common
 {

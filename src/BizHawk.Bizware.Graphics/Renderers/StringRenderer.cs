@@ -8,7 +8,7 @@ using System.IO;
 
 using Cyotek.Drawing.BitmapFont;
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Bizware.Graphics
 {
 	public class StringRenderer : IDisposable
 	{

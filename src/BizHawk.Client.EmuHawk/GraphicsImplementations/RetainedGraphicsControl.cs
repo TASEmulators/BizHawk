@@ -1,6 +1,5 @@
 using System.Windows.Forms;
 
-using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.Graphics;
 using BizHawk.Bizware.Graphics.Controls;
 

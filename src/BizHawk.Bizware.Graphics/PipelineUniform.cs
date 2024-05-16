@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>
-	/// represents a pipeline uniform...
+	/// Represents a pipeline uniform...
 	/// and one of those can represent multiple shader uniforms!!
 	/// </summary>
 	public class PipelineUniform
@@ -24,7 +24,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		private readonly List<UniformInfo> _uniformInfos = new();
 
-		/// <returns>the first and only <see cref="UniformInfo"/></returns>
+		/// <returns>The first and only <see cref="UniformInfo"/>, Only relevant for OpenGL</returns>
 		/// <exception cref="InvalidOperationException">more than one <see cref="UniformInfo"/> exists</exception>
 		public UniformInfo Sole
 		{

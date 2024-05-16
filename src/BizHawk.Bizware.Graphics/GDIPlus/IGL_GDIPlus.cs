@@ -4,8 +4,6 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Numerics;
 
-using BizHawk.Bizware.BizwareGL;
-
 using SDGraphics = System.Drawing.Graphics;
 
 //TODO - maybe a layer to cache Graphics parameters (notably, filtering) ?

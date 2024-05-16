@@ -9,8 +9,7 @@ using System.IO;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
-using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.DrawingExtensions;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common.FilterManager;
 using BizHawk.Client.Common.Filters;
 using BizHawk.Common.CollectionExtensions;

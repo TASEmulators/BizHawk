@@ -13,12 +13,11 @@ using System.Drawing;
 using System.Linq;
 using System.Numerics;
 
-using BizHawk.Bizware.BizwareGL;
 using BizHawk.Common;
 
 using Silk.NET.OpenGL.Legacy;
 
-using BizShader = BizHawk.Bizware.BizwareGL.Shader;
+using BizShader = BizHawk.Bizware.Graphics.Shader;
 
 using GLVertexAttribPointerType = Silk.NET.OpenGL.Legacy.VertexAttribPointerType;
 
@@ -179,17 +178,6 @@ namespace BizHawk.Bizware.Graphics
 
 			// set the program to active, in case we need to set sampler uniforms on it
 			GL.UseProgram(pid);
-
-#if false
-			//get all the attributes (not needed)
-			var attributes = new List<AttributeInfo>();
-			GL.GetProgram(pid, GLEnum.ActiveAttributes, out var nAttributes);
-			for (uint i = 0; i < nAttributes; i++)
-			{
-				GL.GetActiveAttrib(pid, i, 1024, out _, out _, out AttributeType _, out string name);
-				attributes.Add(new() { Handle = new(i), Name = name });
-			}
-#endif
 
 			// get all the uniforms
 			var uniforms = new List<UniformInfo>();

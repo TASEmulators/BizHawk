@@ -10,11 +10,11 @@ using System.IO;
 using System.Numerics;
 using System.Text.RegularExpressions;
 
-using BizHawk.Client.Common.FilterManager;
-
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
+
+using BizHawk.Client.Common.FilterManager;
 
 namespace BizHawk.Client.Common.Filters
 {

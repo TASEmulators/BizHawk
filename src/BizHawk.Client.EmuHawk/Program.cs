@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
@@ -108,7 +107,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					BizInvoke.ReflectionCache.AsmVersion,
 					Bizware.Audio.ReflectionCache.AsmVersion,
-					Bizware.BizwareGL.ReflectionCache.AsmVersion,
 					Bizware.Graphics.ReflectionCache.AsmVersion,
 					Bizware.Graphics.Controls.ReflectionCache.AsmVersion,
 					Bizware.Input.ReflectionCache.AsmVersion,

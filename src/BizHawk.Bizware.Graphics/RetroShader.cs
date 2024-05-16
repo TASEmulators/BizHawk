@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Numerics;
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>
 	/// Handles RetroArch's GLSL shader pass format
@@ -68,7 +68,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Dispose()
 		{
 			Pipeline.Dispose();
-			VertexLayout.Release();
+			VertexLayout.Dispose();
 		}
 
 		public void Bind()
