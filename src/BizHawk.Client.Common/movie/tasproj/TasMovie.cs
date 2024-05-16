@@ -149,6 +149,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void InvalidateEntireGreenzone()
+			=> InvalidateAfter(0);
 
 		private (int Frame, IMovieController Controller) _displayCache = (-1, new Bk2Controller("", NullController.Instance.Definition));
 

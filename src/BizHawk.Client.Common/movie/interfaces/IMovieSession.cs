@@ -81,6 +81,8 @@ namespace BizHawk.Client.Common
 			IMovie movie,
 			bool record,
 			string systemId,
+			string loadedRomHash,
+			PathEntryCollection pathEntries,
 			IDictionary<string, string> preferredCores);
 
 		/// <summary>
