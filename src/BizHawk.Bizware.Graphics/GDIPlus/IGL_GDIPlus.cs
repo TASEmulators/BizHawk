@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Numerics;
 
 using SDGraphics = System.Drawing.Graphics;
@@ -14,18 +13,10 @@ namespace BizHawk.Bizware.Graphics
 		public EDispMethod DispMethodEnum => EDispMethod.GdiPlus;
 
 		public void Dispose()
-		{
-			BufferedGraphicsContext.Dispose();
-		}
+			=> BufferedGraphicsContext.Dispose();
 
 		public void ClearColor(Color color)
 			=> GetCurrentGraphics().Clear(color);
-
-		public void FreeTexture(Texture2d tex)
-		{
-			var gtex = (GDIPlusTexture)tex.Opaque;
-			gtex.Dispose();
-		}
 
 		public Shader CreateFragmentShader(string source, string entry, bool required)
 			=> null;
@@ -48,9 +39,7 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
-		{
-			return null;
-		}
+			=> null;
 
 		public void FreePipeline(Pipeline pipeline)
 		{
@@ -104,57 +93,26 @@ namespace BizHawk.Bizware.Graphics
 		{
 		}
 
-		public void SetPipelineUniformSampler(PipelineUniform uniform, Texture2d tex)
+		public void SetPipelineUniformSampler(PipelineUniform uniform, ITexture2D tex)
 		{
 		}
 
-		public void SetTextureFilter(Texture2d texture, bool linear)
-			=> ((GDIPlusTexture) texture.Opaque).LinearFiltering = linear;
+		public ITexture2D CreateTexture(int width, int height)
+			=> new GDIPlusTexture2D(width, height);
 
-		public Texture2d CreateTexture(int width, int height)
-		{
-			var sdBitmap = new Bitmap(width, height);
-			var gtex = new GDIPlusTexture { SDBitmap = sdBitmap };
-			return new(this, gtex, width, height);
-		}
+		// only used for OpenGL
+		public ITexture2D WrapGLTexture2D(int glTexId, int width, int height)
+			=> null;
 
-		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
-		{
-			// only used for OpenGL
-			return null;
-		}
-
-		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
-		{
-			var gtex = (GDIPlusTexture)tex.Opaque;
-			bmp.ToSysdrawingBitmap(gtex.SDBitmap);
-		}
-
-		public BitmapBuffer ResolveTexture2d(Texture2d tex)
-		{
-			var gtex = (GDIPlusTexture)tex.Opaque;
-			var blow = new BitmapLoadOptions
-			{
-				AllowWrap = false // must be an independent resource
-			};
-
-			var bb = new BitmapBuffer(gtex.SDBitmap, blow);
-			return bb;
-		}
-
+		// see CreateGuiViewMatrix for more
 		public Matrix4x4 CreateGuiProjectionMatrix(int width, int height)
-		{
-			// see CreateGuiViewMatrix for more
-			return Matrix4x4.Identity;
-		}
+			=> Matrix4x4.Identity;
 
+		// on account of gdi+ working internally with a default view exactly like we want, we don't need to setup a new one here
+		// furthermore, we _cant_, without inverting the GuiView and GuiProjection before drawing, to completely undo it
+		// this might be feasible, but its kind of slow and annoying and worse, seemingly numerically unstable
 		public Matrix4x4 CreateGuiViewMatrix(int width, int height, bool autoFlip)
-		{
-			// on account of gdi+ working internally with a default view exactly like we want, we don't need to setup a new one here
-			// furthermore, we _cant_, without inverting the GuiView and GuiProjection before drawing, to completely undo it
-			// this might be feasible, but its kind of slow and annoying and worse, seemingly numerically unstable
-			return Matrix4x4.Identity;
-		}
+			=> Matrix4x4.Identity;
 
 		public void SetViewport(int x, int y, int width, int height)
 		{
@@ -168,14 +126,9 @@ namespace BizHawk.Bizware.Graphics
 
 		public RenderTarget CreateRenderTarget(int width, int height)
 		{
-			var gtex = new GDIPlusTexture
-			{
-				SDBitmap = new(width, height, PixelFormat.Format32bppArgb)
-			};
-			var tex = new Texture2d(this, gtex, width, height);
-
+			var tex2d = new GDIPlusTexture2D(width, height);
 			var grt = new GDIPlusRenderTarget(() => BufferedGraphicsContext);
-			var rt = new RenderTarget(this, grt, tex);
+			var rt = new RenderTarget(this, grt, tex2d);
 			grt.Target = rt;
 			return rt;
 		}
@@ -195,7 +148,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 			else
 			{
-				var gtex = (GDIPlusTexture)rt.Texture2d.Opaque;
+				var gtex = (GDIPlusTexture2D)rt.Texture2D;
 				CurrentRenderTarget = (GDIPlusRenderTarget)rt.Opaque;
 				_currOffscreenGraphics = SDGraphics.FromImage(gtex.SDBitmap);
 			}
@@ -217,9 +170,7 @@ namespace BizHawk.Bizware.Graphics
 		private SDGraphics _currOffscreenGraphics;
 
 		public SDGraphics GetCurrentGraphics()
-		{
-			return _currOffscreenGraphics ?? CurrentRenderTarget.BufferedGraphics.Graphics;
-		}
+			=> _currOffscreenGraphics ?? CurrentRenderTarget.BufferedGraphics.Graphics;
 
 		public GDIPlusRenderTarget CurrentRenderTarget;
 

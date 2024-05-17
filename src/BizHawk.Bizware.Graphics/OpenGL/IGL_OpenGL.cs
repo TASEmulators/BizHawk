@@ -50,9 +50,7 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public void Dispose()
-		{
-			GL.Dispose();
-		}
+			=> GL.Dispose();
 
 		public void ClearColor(Color color)
 		{
@@ -60,20 +58,11 @@ namespace BizHawk.Bizware.Graphics
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 		}
 
-		public void FreeTexture(Texture2d tex)
-		{
-			GL.DeleteTexture((uint)tex.Opaque);
-		}
+		public BizShader CreateVertexShader(string source, string entry, bool required)
+			=> CreateShader(ShaderType.VertexShader, source, required);
 
 		public BizShader CreateFragmentShader(string source, string entry, bool required)
-		{
-			return CreateShader(ShaderType.FragmentShader, source, required);
-		}
-
-		public BizShader CreateVertexShader(string source, string entry, bool required)
-		{
-			return CreateShader(ShaderType.VertexShader, source, required);
-		}
+			=> CreateShader(ShaderType.FragmentShader, source, required);
 
 		public void EnableBlending()
 		{
@@ -285,11 +274,6 @@ namespace BizHawk.Bizware.Graphics
 			GL.DeleteBuffer(vlw.VBO);
 		}
 
-		private void BindTexture2d(Texture2d tex)
-		{
-			GL.BindTexture(TextureTarget.Texture2D, (uint)tex.Opaque);
-		}
-
 		private void LegacyBindArrayData(VertexLayout vertexLayout, IntPtr pData)
 		{
 			// DEPRECATED CRAP USED, NEEDED FOR ANCIENT SHADERS
@@ -450,7 +434,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public void SetPipelineUniformSampler(PipelineUniform uniform, Texture2d tex)
+		public void SetPipelineUniformSampler(PipelineUniform uniform, ITexture2D tex)
 		{
 			var n = (int)uniform.Sole.Opaque >> 24;
 
@@ -458,54 +442,18 @@ namespace BizHawk.Bizware.Graphics
 			GL.ActiveTexture(TextureUnit.Texture0 + n);
 
 			// now bind the texture
-			GL.BindTexture(TextureTarget.Texture2D, (uint)tex.Opaque);
+			GL.BindTexture(TextureTarget.Texture2D, ((OpenGLTexture2D)tex).TexID);
 		}
 
-		public void SetTextureFilter(Texture2d texture, bool linear)
-		{
-			BindTexture2d(texture);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)(linear ? TextureMinFilter.Linear : TextureMinFilter.Nearest));
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)(linear ? TextureMagFilter.Linear : TextureMagFilter.Nearest));
-		}
+		public ITexture2D CreateTexture(int width, int height)
+			=> new OpenGLTexture2D(GL, width, height);
 
-		public Texture2d CreateTexture(int width, int height)
-		{
-			var texId = GL.GenTexture();
-			GL.BindTexture(TextureTarget.Texture2D, texId);
-			unsafe
-			{
-				GL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8, (uint)width, (uint)height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, null);
-			}
-
-			// sensible defaults
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
-
-			return new(this, texId, width, height);
-		}
-
-		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
-			=> new(this, (uint)glTexId.ToInt32(), width, height) { IsUpsideDown = true };
-
-		public unsafe void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
-		{
-			var bmpData = bmp.LockBits();
-			try
-			{
-				GL.BindTexture(TextureTarget.Texture2D, (uint)tex.Opaque);
-				GL.TexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, (uint)bmp.Width, (uint)bmp.Height, PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0.ToPointer());
-			}
-			finally
-			{
-				bmp.UnlockBits(bmpData);
-			}
-		}
+		public ITexture2D WrapGLTexture2D(int glTexId, int width, int height)
+			=> new OpenGLTexture2D(GL, (uint)glTexId, width, height);
 
 		public void FreeRenderTarget(RenderTarget rt)
 		{
-			rt.Texture2d.Dispose();
+			rt.Texture2D.Dispose();
 			GL.DeleteFramebuffer((uint)rt.Opaque);
 		}
 
@@ -513,15 +461,14 @@ namespace BizHawk.Bizware.Graphics
 		public RenderTarget CreateRenderTarget(int width, int height)
 		{
 			// create a texture for it
-			var tex = CreateTexture(width, height);
-			var texId = (uint)tex.Opaque;
+			var tex2d = new OpenGLTexture2D(GL, width, height);
 
 			// create the FBO
 			var fbId = GL.GenFramebuffer();
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbId);
 
 			// bind the tex to the FBO
-			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texId, 0);
+			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, tex2d.TexID, 0);
 
 			// do something, I guess say which color buffers are used by the framebuffer
 			GL.DrawBuffer(DrawBufferMode.ColorAttachment0);
@@ -534,7 +481,7 @@ namespace BizHawk.Bizware.Graphics
 			// since we're done configuring unbind this framebuffer, to return to the default
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
-			return new(this, fbId, tex);
+			return new(this, fbId, tex2d);
 		}
 
 		public void BindRenderTarget(RenderTarget rt)
@@ -548,17 +495,6 @@ namespace BizHawk.Bizware.Graphics
 			{
 				GL.BindFramebuffer(FramebufferTarget.Framebuffer, (uint)rt.Opaque);
 			}
-		}
-
-		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
-		{
-			// note - this is dangerous since it changes the bound texture. could we save it?
-			BindTexture2d(tex);
-			var bb = new BitmapBuffer(tex.IntWidth, tex.IntHeight);
-			var bmpdata = bb.LockBits();
-			GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bmpdata.Scan0.ToPointer());
-			bb.UnlockBits(bmpdata);
-			return bb;
 		}
 
 		public Matrix4x4 CreateGuiProjectionMatrix(int width, int height)

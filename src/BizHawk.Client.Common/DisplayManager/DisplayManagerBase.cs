@@ -795,13 +795,13 @@ namespace BizHawk.Client.Common
 			if (vh < 1) vh = 1;
 
 			BitmapBuffer bb = null;
-			Texture2d videoTexture = null;
+			ITexture2D videoTexture = null;
 			if (!simulate)
 			{
 				if (videoProvider is IGLTextureProvider glTextureProvider && _gl.DispMethodEnum == EDispMethod.OpenGL)
 				{
 					// FYI: this is a million years from happening on n64, since it's all geriatric non-FBO code
-					videoTexture = _gl.WrapGLTexture2d(new(glTextureProvider.GetGLTexture()), bufferWidth, bufferHeight);
+					videoTexture = _gl.WrapGLTexture2D(glTextureProvider.GetGLTexture(), bufferWidth, bufferHeight);
 				}
 				else
 				{
@@ -880,13 +880,13 @@ namespace BizHawk.Client.Common
 
 			RunFilterChainSteps(ref rtCounter, out var rtCurr, out _);
 
-			job.OffscreenBb = rtCurr.Texture2d.Resolve();
+			job.OffscreenBb = rtCurr.Texture2D.Resolve();
 			job.OffscreenBb.DiscardAlpha();
 		}
 
 		protected void RunFilterChainSteps(ref int rtCounter, out RenderTarget rtCurr, out bool inFinalTarget)
 		{
-			Texture2d texCurr = null;
+			ITexture2D texCurr = null;
 			rtCurr = null;
 			inFinalTarget = false;
 			foreach (var step in _currentFilterProgram.Program) switch (step.Type)
@@ -921,7 +921,7 @@ namespace BizHawk.Client.Common
 			try
 			{
 				var fontData = new byte[fontStream.Length];
-				fontStream.Read(fontData, 0, (int)fontStream.Length);
+				_ = fontStream.Read(fontData, 0, (int)fontStream.Length);
 				Marshal.Copy(fontData, 0, data, (int)fontStream.Length);
 				CustomFonts.AddMemoryFont(data, fontData.Length);
 			}

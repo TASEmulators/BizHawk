@@ -116,8 +116,8 @@ namespace BizHawk.Bizware.Graphics
 
 				// calculate texcoords (we shouldve already had this cached, but im speedcoding now)
 				var tex = TexturePages[bfc.TexturePage];
-				var w = tex.Width;
-				var h = tex.Height;
+				var w = (float)tex.Width;
+				var h = (float)tex.Height;
 				var bounds = new Rectangle(bfc.X, bfc.Y, bfc.Width, bfc.Height);
 				var u0 = bounds.Left / w;
 				var v0 = bounds.Top / h;
@@ -135,6 +135,6 @@ namespace BizHawk.Bizware.Graphics
 		public IGL Owner { get; }
 
 		private readonly BitmapFont FontInfo;
-		private List<Texture2d> TexturePages = new();
+		private List<ITexture2D> TexturePages = new();
 	}
 }

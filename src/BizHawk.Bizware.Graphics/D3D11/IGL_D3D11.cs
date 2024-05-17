@@ -23,121 +23,9 @@ namespace BizHawk.Bizware.Graphics
 	{
 		public EDispMethod DispMethodEnum => EDispMethod.D3D11;
 
-		private struct D3D11Resources : IDisposable
-		{
-			public IDXGIFactory1 Factory1;
-			public IDXGIFactory2 Factory2;
-			public ID3D11Device Device;
-			public ID3D11DeviceContext Context;
-			public ID3D11BlendState BlendEnableState;
-			public ID3D11BlendState BlendDisableState;
-			public ID3D11SamplerState PointSamplerState;
-			public ID3D11SamplerState LinearSamplerState;
-			public ID3D11RasterizerState RasterizerState;
-
-			public FeatureLevel DeviceFeatureLevel;
-
-			public void CreateResources()
-			{
-				try
-				{
-					Factory1 = DXGI.CreateDXGIFactory1<IDXGIFactory1>();
-					// we want IDXGIFactory2 for CreateSwapChainForHwnd
-					// however, it's not guaranteed to be available (only available in Win8+ or Win7 with the Platform Update)
-					Factory2 = Factory1.QueryInterfaceOrNull<IDXGIFactory2>();
-#if false
-					// use this to debug D3D11 calls
-					// note debug layer requires extra steps to use: https://learn.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-devices-layers#debug-layer
-					// also debug output will only be present with a "native debugger" attached (pure managed debugger can't see this output)
-					const DeviceCreationFlags creationFlags = DeviceCreationFlags.Singlethreaded | DeviceCreationFlags.BgraSupport | DeviceCreationFlags.Debug;
-#else
-					// IGL is not thread safe, so let's not bother making this implementation thread safe
-					const DeviceCreationFlags creationFlags = DeviceCreationFlags.Singlethreaded | DeviceCreationFlags.BgraSupport;
-#endif
-					D3D11.D3D11CreateDevice(
-						adapter: null,
-						DriverType.Hardware,
-						creationFlags,
-						null!, // this is safe to be null
-						out Device,
-						out Context).CheckError();
-
-					using var dxgiDevice = Device.QueryInterface<IDXGIDevice1>();
-					dxgiDevice.MaximumFrameLatency = 1;
-
-					var bd = default(BlendDescription);
-					bd.AlphaToCoverageEnable = false;
-					bd.IndependentBlendEnable = false;
-					bd.RenderTarget[0].BlendEnable = true;
-					bd.RenderTarget[0].SourceBlend = Blend.SourceAlpha;
-					bd.RenderTarget[0].DestinationBlend = Blend.InverseSourceAlpha;
-					bd.RenderTarget[0].BlendOperation = BlendOperation.Add;
-					bd.RenderTarget[0].SourceBlendAlpha = Blend.One;
-					bd.RenderTarget[0].DestinationBlendAlpha = Blend.Zero;
-					bd.RenderTarget[0].BlendOperationAlpha = BlendOperation.Add;
-					bd.RenderTarget[0].RenderTargetWriteMask = ColorWriteEnable.All;
-					BlendEnableState = Device.CreateBlendState(bd);
-
-					bd.RenderTarget[0].BlendEnable = false;
-					bd.RenderTarget[0].SourceBlend = Blend.One;
-					bd.RenderTarget[0].DestinationBlend = Blend.Zero;
-					BlendDisableState = Device.CreateBlendState(bd);
-
-					PointSamplerState = Device.CreateSamplerState(SamplerDescription.PointClamp);
-					LinearSamplerState = Device.CreateSamplerState(SamplerDescription.LinearClamp);
-
-					DeviceFeatureLevel = Device.FeatureLevel;
-
-					var rd = new RasterizerDescription
-					{
-						CullMode = CullMode.None,
-						FillMode = FillMode.Solid,
-						ScissorEnable = true,
-						DepthClipEnable = DeviceFeatureLevel is FeatureLevel.Level_9_1 or FeatureLevel.Level_9_2 or FeatureLevel.Level_9_3,
-					};
-
-					RasterizerState = Device.CreateRasterizerState(rd);
-
-					Context.IASetPrimitiveTopology(PrimitiveTopology.TriangleStrip);
-				}
-				catch
-				{
-					Dispose();
-					throw;
-				}
-			}
-
-			public void Dispose()
-			{
-				LinearSamplerState?.Dispose();
-				LinearSamplerState = null;
-				PointSamplerState?.Dispose();
-				PointSamplerState = null;
-
-				RasterizerState?.Dispose();
-				RasterizerState = null;
-
-				BlendEnableState?.Dispose();
-				BlendEnableState = null;
-				BlendDisableState?.Dispose();
-				BlendDisableState = null;
-
-				Context?.Dispose();
-				Context = null;
-				Device?.Dispose();
-				Device = null;
-
-				Factory2?.Dispose();
-				Factory2 = null;
-
-				Factory1?.Dispose();
-				Factory1 = null;
-			}
-		}
-
 		// D3D11 resources
 		// these might need to be thrown out and recreated if the device is lost
-		private D3D11Resources _resources;
+		private readonly D3D11Resources _resources;
 
 		private IDXGIFactory1 Factory1 => _resources.Factory1;
 		private IDXGIFactory2 Factory2 => _resources.Factory2;
@@ -156,13 +44,6 @@ namespace BizHawk.Bizware.Graphics
 		private RenderTarget _curRenderTarget;
 		private D3D11SwapChain.SwapChainResources _controlSwapChain;
 
-		// misc state
-		private readonly HashSet<RenderTarget> _renderTargets = new();
-		private readonly HashSet<Texture2d> _shaderTextures = new();
-		private readonly HashSet<Shader> _vertexShaders = new();
-		private readonly HashSet<Shader> _pixelShaders = new();
-		private readonly HashSet<Pipeline> _pipelines = new();
-
 		public IGL_D3D11()
 		{
 			if (OSTailoredCode.IsUnixHost)
@@ -170,6 +51,7 @@ namespace BizHawk.Bizware.Graphics
 				throw new NotSupportedException("D3D11 is Windows only");
 			}
 
+			_resources = new();
 			_resources.CreateResources();
 		}
 
@@ -237,7 +119,7 @@ namespace BizHawk.Bizware.Graphics
 			_controlSwapChain.Dispose();
 			Context.Flush(); // important to properly dispose of the swapchain
 
-			foreach (var pipeline in _pipelines)
+			foreach (var pipeline in _resources.Pipelines)
 			{
 				var pw = (PipelineWrapper)pipeline.Opaque;
 
@@ -257,75 +139,55 @@ namespace BizHawk.Bizware.Graphics
 				vlw.VertexBufferCount = 0;
 			}
 
-			foreach (var sw in _vertexShaders.Select(vertexShader => (ShaderWrapper)vertexShader.Opaque))
+			foreach (var sw in _resources.VertexShaders.Select(vertexShader => (ShaderWrapper)vertexShader.Opaque))
 			{
 				sw.VS.Dispose();
 				sw.VS = null;
 			}
 
-			foreach (var sw in _pixelShaders.Select(pixelShader => (ShaderWrapper)pixelShader.Opaque))
+			foreach (var sw in _resources.PixelShaders.Select(pixelShader => (ShaderWrapper)pixelShader.Opaque))
 			{
 				sw.PS.Dispose();
 				sw.PS = null;
 			}
 
-			foreach (var rt in _renderTargets)
+			foreach (var rw in _resources.RenderTargets.Select(rt => (RenderTargetWrapper)rt.Opaque))
 			{
-				var rw = (RenderTargetWrapper)rt.Opaque;
 				rw.RTV.Dispose();
 				rw.RTV = null;
-
-				var tw = (TextureWrapper)rt.Texture2d.Opaque;
-				tw.SRV.Dispose();
-				tw.SRV = null;
-				tw.Texture.Dispose();
-				tw.Texture = null;
 			}
 
-			foreach (var tw in _shaderTextures.Select(tex2d => (TextureWrapper)tex2d.Opaque))
+			foreach (var tex2d in _resources.ShaderTextures)
 			{
-				tw.SRV.Dispose();
-				tw.SRV = null;
-				tw.Texture.Dispose();
-				tw.Texture = null;
+				tex2d.DestroyTexture();
 			}
 
 			_resources.Dispose();
 			_resources.CreateResources();
 
-			foreach (var tex2d in _shaderTextures)
+			foreach (var tex2d in _resources.ShaderTextures)
 			{
-				var tw = (TextureWrapper)tex2d.Opaque;
-				tw.Texture = CreateTextureForShader(tex2d.IntWidth, tex2d.IntHeight);
-
-				var srvd = new ShaderResourceViewDescription(ShaderResourceViewDimension.Texture2D, Format.B8G8R8A8_UNorm, mostDetailedMip: 0, mipLevels: 1);
-				tw.SRV = Device.CreateShaderResourceView(tw.Texture, srvd);
+				tex2d.CreateTexture();
 			}
 
-			foreach (var rt in _renderTargets)
+			foreach (var rt in _resources.RenderTargets)
 			{
-				var tw = (TextureWrapper)rt.Texture2d.Opaque;
-				tw.Texture = CreateTextureForRenderTarget(rt.Texture2d.IntWidth, rt.Texture2d.IntHeight);
-
-				var srvd = new ShaderResourceViewDescription(ShaderResourceViewDimension.Texture2D, Format.B8G8R8A8_UNorm, mostDetailedMip: 0, mipLevels: 1);
-				tw.SRV = Device.CreateShaderResourceView(tw.Texture, srvd);
-
 				var rw = (RenderTargetWrapper)rt.Opaque;
 				var rtvd = new RenderTargetViewDescription(RenderTargetViewDimension.Texture2D, Format.B8G8R8A8_UNorm);
-				rw.RTV = Device.CreateRenderTargetView(tw.Texture, rtvd);
+				rw.RTV = Device.CreateRenderTargetView(((D3D11Texture2D)rt.Texture2D).Texture, rtvd);
 			}
 
-			foreach (var sw in _vertexShaders.Select(vertexShader => (ShaderWrapper)vertexShader.Opaque))
+			foreach (var sw in _resources.VertexShaders.Select(vertexShader => (ShaderWrapper)vertexShader.Opaque))
 			{
 				sw.VS = Device.CreateVertexShader(sw.Bytecode.Span);
 			}
 
-			foreach (var sw in _pixelShaders.Select(pixelShader => (ShaderWrapper)pixelShader.Opaque))
+			foreach (var sw in _resources.PixelShaders.Select(pixelShader => (ShaderWrapper)pixelShader.Opaque))
 			{
 				sw.PS = Device.CreatePixelShader(sw.Bytecode.Span);
 			}
 
-			foreach (var pipeline in _pipelines)
+			foreach (var pipeline in _resources.Pipelines)
 			{
 				var pw = (PipelineWrapper)pipeline.Opaque;
 				for (var i = 0; i < ID3D11DeviceContext.CommonShaderConstantBufferSlotCount; i++)
@@ -414,14 +276,6 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public void FreeTexture(Texture2d tex)
-		{
-			var tw = (TextureWrapper)tex.Opaque;
-			tw.SRV.Dispose();
-			tw.Texture.Dispose();
-			_shaderTextures.Remove(tex);
-		}
-
 		private class ShaderWrapper // Disposable fields cleaned up by Internal_FreeShader
 		{
 			public ReadOnlyMemory<byte> Bytecode;
@@ -460,7 +314,7 @@ namespace BizHawk.Bizware.Graphics
 
 				var s = new Shader(this, sw, true);
 				sw.IGLShader = s;
-				_vertexShaders.Add(s);
+				_resources.VertexShaders.Add(s);
 
 				return s;
 			}
@@ -504,7 +358,7 @@ namespace BizHawk.Bizware.Graphics
 
 				var s = new Shader(this, sw, true);
 				sw.IGLShader = s;
-				_pixelShaders.Add(s);
+				_resources.PixelShaders.Add(s);
 
 				return s;
 			}
@@ -676,7 +530,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			var ret = new Pipeline(this, pw, true, vertexLayout, uniforms, memo);
-			_pipelines.Add(ret);
+			_resources.Pipelines.Add(ret);
 			return ret;
 		}
 
@@ -706,7 +560,7 @@ namespace BizHawk.Bizware.Graphics
 			pw.VertexShader.IGLShader.Release();
 			pw.FragmentShader.IGLShader.Release();
 
-			_pipelines.Remove(pipeline);
+			_resources.Pipelines.Remove(pipeline);
 		}
 
 		public void Internal_FreeShader(Shader shader)
@@ -719,14 +573,14 @@ namespace BizHawk.Bizware.Graphics
 			{
 				sw.VS.Dispose();
 				sw.VS = null;
-				_vertexShaders.Remove(shader);
+				_resources.VertexShaders.Remove(shader);
 			}
 
 			if (sw.PS != null)
 			{
 				sw.PS.Dispose();
 				sw.PS = null;
-				_pixelShaders.Remove(shader);
+				_resources.PixelShaders.Remove(shader);
 			}
 		}
 
@@ -751,13 +605,6 @@ namespace BizHawk.Bizware.Graphics
 			public readonly ID3D11Buffer[] VSConstantBuffers = new ID3D11Buffer[ID3D11DeviceContext.CommonShaderConstantBufferSlotCount];
 			public readonly ID3D11Buffer[] PSConstantBuffers = new ID3D11Buffer[ID3D11DeviceContext.CommonShaderConstantBufferSlotCount];
 			public ShaderWrapper VertexShader, FragmentShader;
-		}
-
-		private class TextureWrapper
-		{
-			public ID3D11Texture2D Texture;
-			public ID3D11ShaderResourceView SRV;
-			public bool LinearFiltering;
 		}
 
 		private class RenderTargetWrapper
@@ -960,15 +807,15 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public void SetPipelineUniformSampler(PipelineUniform uniform, Texture2d tex)
+		public void SetPipelineUniformSampler(PipelineUniform uniform, ITexture2D tex)
 		{
 			if (uniform.Owner == null)
 			{
 				return; // uniform was optimized out
 			}
 
-			var tw = (TextureWrapper)tex.Opaque;
-			var sampler = tw.LinearFiltering ? LinearSamplerState : PointSamplerState;
+			var d3d11Tex = (D3D11Texture2D)tex;
+			var sampler = d3d11Tex.LinearFiltering ? LinearSamplerState : PointSamplerState;
 
 			foreach (var ui in uniform.UniformInfos)
 			{
@@ -985,139 +832,23 @@ namespace BizHawk.Bizware.Graphics
 						throw new InvalidOperationException("Feature level 9.1 does not support setting a shader resource in a vertex shader");
 					}
 
-					Context.VSSetShaderResource(ui.SamplerIndex, tw.SRV);
+					Context.VSSetShaderResource(ui.SamplerIndex, d3d11Tex.SRV);
 					Context.VSSetSampler(ui.SamplerIndex, sampler);
 				}
 				else
 				{
-					Context.PSSetShaderResource(ui.SamplerIndex, tw.SRV);
+					Context.PSSetShaderResource(ui.SamplerIndex, d3d11Tex.SRV);
 					Context.PSSetSampler(ui.SamplerIndex, sampler);
 				}
 			}
 		}
 
-		public void SetTextureFilter(Texture2d texture, bool linear)
-		{
-			var tw = (TextureWrapper)texture.Opaque;
-			tw.LinearFiltering = linear;
-		}
+		public ITexture2D CreateTexture(int width, int height)
+			=> new D3D11Texture2D(_resources, BindFlags.ShaderResource, ResourceUsage.Dynamic, CpuAccessFlags.Write, width, height);
 
-		private ID3D11Texture2D CreateTextureForShader(int width, int height)
-		{
-			return Device.CreateTexture2D(
-				Format.B8G8R8A8_UNorm,
-				width,
-				height,
-				mipLevels: 1,
-				bindFlags: BindFlags.ShaderResource,
-				usage: ResourceUsage.Dynamic,
-				cpuAccessFlags: CpuAccessFlags.Write);
-		}
-
-		public Texture2d CreateTexture(int width, int height)
-		{
-			var tex = CreateTextureForShader(width, height);
-			var srvd = new ShaderResourceViewDescription(ShaderResourceViewDimension.Texture2D, Format.B8G8R8A8_UNorm, mostDetailedMip: 0, mipLevels: 1);
-			var srv = Device.CreateShaderResourceView(tex, srvd);
-			var tw = new TextureWrapper { Texture = tex, SRV = srv };
-			var ret = new Texture2d(this, tw, width, height);
-			_shaderTextures.Add(ret);
-			return ret;
-		}
-
-		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
-		{
-			// not used for non-GL backends
-			return null;
-		}
-
-		public unsafe void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
-		{
-			if (bmp.Width != tex.IntWidth || bmp.Height != tex.IntHeight)
-			{
-				throw new InvalidOperationException();
-			}
-
-			var tw = (TextureWrapper)tex.Opaque;
-			var bmpData = bmp.LockBits();
-
-			try
-			{
-				var srcSpan = new ReadOnlySpan<byte>(bmpData.Scan0.ToPointer(), bmpData.Stride * bmp.Height);
-				var mappedTex = Context.Map<byte>(tw.Texture, 0, 0, MapMode.WriteDiscard);
-
-				if (srcSpan.Length == mappedTex.Length)
-				{
-					srcSpan.CopyTo(mappedTex);
-				}
-				else
-				{
-					// D3D11 sometimes has weird pitches (seen with 3DS)
-					int srcStart = 0, dstStart = 0;
-					int srcStride = bmpData.Stride, dstStride = mappedTex.Length / bmp.Height;
-					var height = bmp.Height;
-					for (var i = 0; i < height; i++)
-					{
-						srcSpan.Slice(srcStart, srcStride)
-							.CopyTo(mappedTex.Slice(dstStart, dstStride));
-						srcStart += srcStride;
-						dstStart += dstStride;
-					}
-				}
-			}
-			finally
-			{
-				Context.Unmap(tw.Texture, 0);
-				bmp.UnlockBits(bmpData);
-			}
-		}
-
-		/// <exception cref="InvalidOperationException">Vortice call returned unexpected data</exception>
-		public BitmapBuffer ResolveTexture2d(Texture2d tex)
-		{
-			using var target = Device.CreateTexture2D(
-				Format.B8G8R8A8_UNorm,
-				tex.IntWidth,
-				tex.IntHeight,
-				mipLevels: 1,
-				bindFlags: BindFlags.None,
-				usage: ResourceUsage.Staging,
-				cpuAccessFlags: CpuAccessFlags.Read);
-
-			var tw = (TextureWrapper)tex.Opaque;
-			Context.CopyResource(target, tw.Texture);
-
-			try
-			{
-				var srcSpan = Context.MapReadOnly<byte>(target);
-				var pixels = new int[tex.IntWidth * tex.IntHeight];
-				var dstSpan = MemoryMarshal.AsBytes(pixels.AsSpan());
-
-				if (srcSpan.Length == dstSpan.Length)
-				{
-					srcSpan.CopyTo(dstSpan);
-				}
-				else
-				{
-					int srcStart = 0, dstStart = 0;
-					int srcStride = srcSpan.Length / tex.IntHeight, dstStride = tex.IntWidth * sizeof(int);
-					var height = tex.IntHeight;
-					for (var i = 0; i < height; i++)
-					{
-						srcSpan.Slice(srcStart, dstStride)
-							.CopyTo(dstSpan.Slice(dstStart, dstStride));
-						srcStart += srcStride;
-						dstStart += dstStride;
-					}
-				}
-
-				return new(tex.IntWidth, tex.IntHeight, pixels);
-			}
-			finally
-			{
-				Context.Unmap(target, 0);
-			}
-		}
+		// not used for non-GL backends
+		public ITexture2D WrapGLTexture2D(int glTexId, int width, int height)
+			=> null;
 
 		public Matrix4x4 CreateGuiProjectionMatrix(int width, int height)
 		{
@@ -1148,36 +879,17 @@ namespace BizHawk.Bizware.Graphics
 		{
 			var rw = (RenderTargetWrapper)rt.Opaque;
 			rw.RTV.Dispose();
-			_renderTargets.Remove(rt);
-			var tw = (TextureWrapper)rt.Texture2d.Opaque;
-			tw.SRV.Dispose();
-			tw.Texture.Dispose();
-		}
-
-		private ID3D11Texture2D CreateTextureForRenderTarget(int width, int height)
-		{
-			return Device.CreateTexture2D(
-				Format.B8G8R8A8_UNorm,
-				width,
-				height,
-				mipLevels: 1,
-				bindFlags: BindFlags.RenderTarget | BindFlags.ShaderResource, // ack! need to also let this be bound to shaders
-				usage: ResourceUsage.Default,
-				cpuAccessFlags: CpuAccessFlags.None);
+			_resources.RenderTargets.Remove(rt);
+			rt.Texture2D.Dispose();
 		}
 
 		public RenderTarget CreateRenderTarget(int width, int height)
 		{
-			var tex = CreateTextureForRenderTarget(width, height);
-			var srvd = new ShaderResourceViewDescription(ShaderResourceViewDimension.Texture2D, Format.B8G8R8A8_UNorm, mostDetailedMip: 0, mipLevels: 1);
-			var srv = Device.CreateShaderResourceView(tex, srvd);
-			var tw = new TextureWrapper { Texture = tex, SRV = srv };
-			var tex2d = new Texture2d(this, tw, width, height);
-
+			var tex = new D3D11Texture2D(_resources, BindFlags.ShaderResource | BindFlags.RenderTarget, ResourceUsage.Default, CpuAccessFlags.None, width, height);
 			var rtvd = new RenderTargetViewDescription(RenderTargetViewDimension.Texture2D, Format.B8G8R8A8_UNorm);
-			var rw = new RenderTargetWrapper { RTV = Device.CreateRenderTargetView(tw.Texture, rtvd) };
-			var rt = new RenderTarget(this, rw, tex2d);
-			_renderTargets.Add(rt);
+			var rw = new RenderTargetWrapper { RTV = Device.CreateRenderTargetView(tex.Texture, rtvd) };
+			var rt = new RenderTarget(this, rw, tex);
+			_resources.RenderTargets.Add(rt);
 			return rt;
 		}
 

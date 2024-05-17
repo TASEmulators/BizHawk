@@ -6,7 +6,7 @@ namespace BizHawk.Bizware.Graphics
 {
 	public static class IGLExtensions
 	{
-		public static IGuiRenderer CreateRenderer(this IGL gl)
+		public static IGuiRenderer CreateGuiRenderer(this IGL gl)
 			=> gl is IGL_GDIPlus gdipImpl
 				? new GDIPlusGuiRenderer(gdipImpl)
 				: new GuiRenderer(gl);
@@ -14,7 +14,7 @@ namespace BizHawk.Bizware.Graphics
 		/// <summary>
 		/// Loads a texture from disk
 		/// </summary>
-		public static Texture2d LoadTexture(this IGL igl, string path)
+		public static ITexture2D LoadTexture(this IGL igl, string path)
 		{
 			using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 			return igl.LoadTexture(fs);
@@ -23,7 +23,7 @@ namespace BizHawk.Bizware.Graphics
 		/// <summary>
 		/// Loads a texture from the stream
 		/// </summary>
-		public static Texture2d LoadTexture(this IGL igl, Stream stream)
+		public static ITexture2D LoadTexture(this IGL igl, Stream stream)
 		{
 			using var bmp = new BitmapBuffer(stream, new());
 			return igl.LoadTexture(bmp);
@@ -32,7 +32,7 @@ namespace BizHawk.Bizware.Graphics
 		/// <summary>
 		/// Loads a texture from the System.Drawing.Bitmap
 		/// </summary>
-		public static Texture2d LoadTexture(this IGL igl, Bitmap bitmap)
+		public static ITexture2D LoadTexture(this IGL igl, Bitmap bitmap)
 		{
 			using var bmp = new BitmapBuffer(bitmap, new());
 			return igl.LoadTexture(bmp);
@@ -41,10 +41,10 @@ namespace BizHawk.Bizware.Graphics
 		/// <summary>
 		/// Loads a texture from the BitmapBuffer
 		/// </summary>
-		public static Texture2d LoadTexture(this IGL igl, BitmapBuffer buffer)
+		public static ITexture2D LoadTexture(this IGL igl, BitmapBuffer buffer)
 		{
 			var ret = igl.CreateTexture(buffer.Width, buffer.Height);
-			igl.LoadTextureData(ret, buffer);
+			ret.LoadFrom(buffer);
 			return ret;
 		}
 

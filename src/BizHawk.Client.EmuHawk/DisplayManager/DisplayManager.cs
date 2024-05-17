@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 			IGL gl,
 			PresentationPanel presentationPanel,
 			Func<bool> getIsSecondaryThrottlingDisabled)
-				: base(config, emulator, inputManager, movieSession, gl.DispMethodEnum, gl, gl.CreateRenderer())
+				: base(config, emulator, inputManager, movieSession, gl.DispMethodEnum, gl, gl.CreateGuiRenderer())
 		{
 			_presentationPanel = presentationPanel;
 			_getIsSecondaryThrottlingDisabled = getIsSecondaryThrottlingDisabled;
@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (job.Offscreen)
 			{
-				job.OffscreenBb = rtCurr.Texture2d.Resolve();
+				job.OffscreenBb = rtCurr.Texture2D.Resolve();
 				job.OffscreenBb.DiscardAlpha();
 				return;
 			}

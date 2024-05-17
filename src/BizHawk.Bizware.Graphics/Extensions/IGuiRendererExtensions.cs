@@ -13,19 +13,19 @@ namespace BizHawk.Bizware.Graphics
 		/// <summary>
 		/// Draws the specified texture2d resource.
 		/// </summary>
-		public static void Draw(this IGuiRenderer guiRenderer, Texture2d tex)
+		public static void Draw(this IGuiRenderer guiRenderer, ITexture2D tex)
 			=> guiRenderer.Draw(tex, 0, 0, tex.Width, tex.Height);
 
 		/// <summary>
 		/// Draws the specified texture2d resource with the specified offset.
 		/// </summary>
-		public static void Draw(this IGuiRenderer guiRenderer, Texture2d tex, float x, float y)
+		public static void Draw(this IGuiRenderer guiRenderer, ITexture2D tex, float x, float y)
 			=> guiRenderer.Draw(tex, x, y, tex.Width, tex.Height);
 
 		/// <summary>
 		/// Draws the specified Texture with the specified offset and the specified size. This could be tricky if youve applied other rotate or scale transforms first.
 		/// </summary>
-		public static void Draw(this IGuiRenderer guiRenderer, Texture2d tex, float x, float y, float width, float height)
+		public static void Draw(this IGuiRenderer guiRenderer, ITexture2D tex, float x, float y, float width, float height)
 		{
 			const float u0 = 0, u1 = 1;
 			float v0, v1;

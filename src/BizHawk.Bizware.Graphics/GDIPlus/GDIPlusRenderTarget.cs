@@ -50,10 +50,10 @@ namespace BizHawk.Bizware.Graphics
 			}
 			else
 			{
-				var gtex = (GDIPlusTexture)Target.Texture2d.Opaque;
+				var gtex = (GDIPlusTexture2D)Target.Texture2D;
 				CurGraphics?.Dispose();
 				CurGraphics = SDGraphics.FromImage(gtex.SDBitmap);
-				r = Target.Texture2d.Rectangle;
+				r = gtex.GetRectangle();
 			}
 
 			BufferedGraphics?.Dispose();

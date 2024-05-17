@@ -16,9 +16,9 @@ namespace BizHawk.Bizware.Graphics
 			Owner = owner;
 
 			VertexLayout = owner.CreateVertexLayout();
-			VertexLayout.DefineVertexAttribute("position", 0, 4, VertexAttribPointerType.Float, AttribUsage.Position, false, 40, 0);
-			VertexLayout.DefineVertexAttribute("color", 1, 4, VertexAttribPointerType.Float, AttribUsage.Color0, false, 40, 16); //just dead weight, i have no idea why this is here. but some old HLSL compilers (used in bizhawk for various reasons) will want it to exist here since it exists in the vertex shader
-			VertexLayout.DefineVertexAttribute("tex", 2, 2, VertexAttribPointerType.Float, AttribUsage.Texcoord0, false, 40, 32);
+			VertexLayout.DefineVertexAttribute("position", 0, 4, VertexAttribPointerType.Float, AttribUsage.Position, normalized: false, stride: 40, offset: 0);
+			VertexLayout.DefineVertexAttribute("color", 1, 4, VertexAttribPointerType.Float, AttribUsage.Color0, normalized: false, stride: 40, offset: 16); // just dead weight, i have no idea why this is here. but some old HLSL compilers (used in bizhawk for various reasons) will want it to exist here since it exists in the vertex shader
+			VertexLayout.DefineVertexAttribute("tex", 2, 2, VertexAttribPointerType.Float, AttribUsage.Texcoord0, normalized: false, stride: 40, offset: 32);
 			VertexLayout.Close();
 
 			var vsSource = $"#define VERTEX\r\n{source}";
@@ -77,7 +77,7 @@ namespace BizHawk.Bizware.Graphics
 			Owner.BindPipeline(Pipeline);
 		}
 
-		public unsafe void Run(Texture2d tex, Size InputSize, Size OutputSize, bool flip)
+		public unsafe void Run(ITexture2D tex, Size InputSize, Size OutputSize, bool flip)
 		{
 			// ack! make sure to set the pipeline before setting uniforms
 			Bind();

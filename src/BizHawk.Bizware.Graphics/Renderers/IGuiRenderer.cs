@@ -14,7 +14,7 @@ namespace BizHawk.Bizware.Graphics
 		/// <summary>
 		/// Draws a subrectangle from the provided texture. For advanced users only
 		/// </summary>
-		void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1);
+		void DrawSubrect(ITexture2D tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1);
 
 		/// <summary>
 		/// Ends rendering

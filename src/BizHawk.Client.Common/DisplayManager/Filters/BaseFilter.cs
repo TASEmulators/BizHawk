@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common.Filters
 			return point;
 		}
 
-		public void SetInput(Texture2d tex)
+		public void SetInput(ITexture2D tex)
 		{
 			InputTexture = tex;
 		}
@@ -83,18 +83,18 @@ namespace BizHawk.Client.Common.Filters
 		{
 		}
 
-		public Texture2d GetOutput()
+		public ITexture2D GetOutput()
 			=> _outputTexture;
 
 		// filter actions
-		protected void YieldOutput(Texture2d tex)
+		protected void YieldOutput(ITexture2D tex)
 		{
 			_outputTexture = tex;
 		}
 
 		protected FilterProgram FilterProgram;
-		protected Texture2d InputTexture;
-		private Texture2d _outputTexture;
+		protected ITexture2D InputTexture;
+		private ITexture2D _outputTexture;
 
 		/// <summary>
 		/// Indicate a 'RenderTarget' disposition if you want to draw directly to the input

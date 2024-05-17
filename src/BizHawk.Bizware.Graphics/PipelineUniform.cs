@@ -76,7 +76,7 @@ namespace BizHawk.Bizware.Graphics
 			Owner?.Owner.SetPipelineUniform(this, value);
 		}
 
-		public void Set(Texture2d tex)
+		public void Set(ITexture2D tex)
 		{
 			Owner?.Owner.SetPipelineUniformSampler(this, tex);
 		}

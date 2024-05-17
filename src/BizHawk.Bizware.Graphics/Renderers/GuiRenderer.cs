@@ -195,13 +195,13 @@ namespace BizHawk.Bizware.Graphics
 			IsActive = false;
 		}
 
-		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
+		public void DrawSubrect(ITexture2D tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
 			PrepDrawSubrectInternal(tex);
 			EmitRectangleInternal(x, y, w, h, u0, v0, u1, v1);
 		}
 
-		private void PrepDrawSubrectInternal(Texture2d tex)
+		private void PrepDrawSubrectInternal(ITexture2D tex)
 		{
 			if (sTexture != tex)
 			{
@@ -271,7 +271,7 @@ namespace BizHawk.Bizware.Graphics
 		private readonly Pipeline DefaultPipeline;
 
 		// state cache
-		private Texture2d sTexture;
+		private ITexture2D sTexture;
 
 		// shaders are hand-coded for each platform to make sure they stay as fast as possible
 

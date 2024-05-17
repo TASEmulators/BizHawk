@@ -44,12 +44,12 @@ namespace BizHawk.Client.Common
 		public RenderTarget Get(int width, int height)
 		{
 			//get the current entry
-			RenderTarget currentRenderTarget = _currentRenderTargets[0];
+			var currentRenderTarget = _currentRenderTargets[0];
 
 			//check if its rotten and needs recreating
 			if (currentRenderTarget == null
-				|| currentRenderTarget.Texture2d.IntWidth != width
-				|| currentRenderTarget.Texture2d.IntHeight != height)
+				|| currentRenderTarget.Texture2D.Width != width
+				|| currentRenderTarget.Texture2D.Height != height)
 			{
 				// needs recreating. be sure to kill the old one...
 				currentRenderTarget?.Dispose();

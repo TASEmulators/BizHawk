@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common.Filters
 
 		private readonly Size _size;
 
-		public Texture2d Texture { get; set; }
+		public ITexture2D Texture { get; set; }
 
 		public override void Run()
 		{
@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common.Filters
 
 		public override void Run()
 		{
-			YieldOutput(FilterProgram.CurrRenderTarget.Texture2d);
+			YieldOutput(FilterProgram.CurrRenderTarget.Texture2D);
 		}
 	}
 }

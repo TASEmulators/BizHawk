@@ -366,7 +366,7 @@ namespace BizHawk.Client.Common.Filters
 				InputTexture.SetFilterNearest();
 			}
 
-			_rsc.Shaders[_rsi].Run(input, input.Size, _outputSize, InputTexture.IsUpsideDown);
+			_rsc.Shaders[_rsi].Run(input, input.GetSize(), _outputSize, InputTexture.IsUpsideDown);
 
 			// maintain invariant.. i think.
 			InputTexture.SetFilterNearest();

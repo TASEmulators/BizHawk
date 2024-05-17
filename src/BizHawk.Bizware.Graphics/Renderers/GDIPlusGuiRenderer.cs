@@ -26,9 +26,7 @@ namespace BizHawk.Bizware.Graphics
 		};
 
 		public void SetCornerColor(int which, Vector4 color)
-		{
-			CornerColors[which] = color;
-		}
+			=> CornerColors[which] = color;
 
 		/// <exception cref="ArgumentException"><paramref name="colors"/> does not have exactly <c>4</c> elements</exception>
 		public void SetCornerColors(Vector4[] colors)
@@ -47,9 +45,7 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public void Dispose()
-		{
-			CurrentImageAttributes?.Dispose();
-		}
+			=> CurrentImageAttributes?.Dispose();
 
 		public void SetPipeline(Pipeline pipeline)
 		{
@@ -60,9 +56,7 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public void SetModulateColorWhite()
-		{
-			SetModulateColor(Color.White);
-		}
+			=> SetModulateColor(Color.White);
 
 		private ImageAttributes CurrentImageAttributes;
 
@@ -94,14 +88,10 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public void EnableBlending()
-		{
-			Owner.EnableBlending();
-		}
+			=> Owner.EnableBlending();
 
 		public void DisableBlending()
-		{ 
-			Owner.DisableBlending();
-		}
+			=> Owner.DisableBlending();
 
 		private MatrixStack _projection, _modelView;
 
@@ -158,13 +148,13 @@ namespace BizHawk.Bizware.Graphics
 			CurrentImageAttributes = null;
 		}
 
-		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
+		public void DrawSubrect(ITexture2D tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
 			var g = _gdi.GetCurrentGraphics();
 
-			var tw = (GDIPlusTexture)tex.Opaque;
+			var tex2d = (GDIPlusTexture2D)tex;
 			// TODO - we can support bicubic for the final presentation...
-			g.InterpolationMode = tw.LinearFiltering ? InterpolationMode.Bilinear : InterpolationMode.NearestNeighbor;
+			g.InterpolationMode = tex2d.LinearFiltering ? InterpolationMode.Bilinear : InterpolationMode.NearestNeighbor;
 
 			SetupMatrix(g);
 
@@ -180,9 +170,8 @@ namespace BizHawk.Bizware.Graphics
 			var x1 = u1 * tex.Width;
 			var y1 = v1 * tex.Height;
 
-			var gtex = (GDIPlusTexture)tex.Opaque;
 			g.PixelOffsetMode = PixelOffsetMode.Half;
-			g.DrawImage(gtex.SDBitmap, destPoints, new(x0, y0, x1 - x0, y1 - y0), GraphicsUnit.Pixel, CurrentImageAttributes);
+			g.DrawImage(tex2d.SDBitmap, destPoints, new(x0, y0, x1 - x0, y1 - y0), GraphicsUnit.Pixel, CurrentImageAttributes);
 			g.Transform = new(); // .Reset() doesnt work?
 		}
 

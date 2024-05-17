@@ -46,7 +46,7 @@ namespace BizHawk.Bizware.Graphics
 		/// <summary>
 		/// Sets a uniform sampler to use use the provided texture
 		/// </summary>
-		void SetPipelineUniformSampler(PipelineUniform uniform, Texture2d tex);
+		void SetPipelineUniformSampler(PipelineUniform uniform, ITexture2D tex);
 
 		/// <summary>
 		/// Sets a uniform value
@@ -92,11 +92,6 @@ namespace BizHawk.Bizware.Graphics
 		void Draw(IntPtr data, int count);
 
 		/// <summary>
-		/// resolves the texture into a new BitmapBuffer
-		/// </summary>
-		BitmapBuffer ResolveTexture2d(Texture2d texture);
-
-		/// <summary>
 		/// creates a vertex layout resource
 		/// </summary>
 		VertexLayout CreateVertexLayout();
@@ -113,26 +108,15 @@ namespace BizHawk.Bizware.Graphics
 
 		/// <summary>
 		/// Creates a texture with the specified dimensions
-		/// The texture will use a clamping address mode
+		/// The texture will use a clamping address mode and nearest neighbor filtering by default
 		/// </summary>
-		Texture2d CreateTexture(int width, int height);
+		ITexture2D CreateTexture(int width, int height);
 
 		/// <summary>
-		/// In case you already have the texture ID (from an opengl emulator gpu core) you can get a Texture2d with it this way.
+		/// In case you already have the texture ID (from an OpenGL emulator gpu core) you can get an ITexture2D with it this way.
 		/// Otherwise, if this isn't an OpenGL frontend implementation, the core is expected to readback the texture for GetVideoBuffer()
 		/// </summary>
-		Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height);
-
-		/// <summary>
-		/// Sets the texture's filtering mode
-		/// The default is linear = false (i.e. nearest neighbor)
-		/// </summary>
-		public void SetTextureFilter(Texture2d texture, bool linear);
-
-		/// <summary>
-		/// Loads the texture with new data. This isn't supposed to be especially versatile, it just blasts a bitmap buffer into the texture
-		/// </summary>
-		void LoadTextureData(Texture2d tex, BitmapBuffer bmp);
+		ITexture2D WrapGLTexture2D(int glTexId, int width, int height);
 
 		/// <summary>
 		/// sets the viewport (and scissor) according to the provided specifications
@@ -164,11 +148,6 @@ namespace BizHawk.Bizware.Graphics
 		/// Frees the provided render target. Same as disposing the resource.
 		/// </summary>
 		void FreeRenderTarget(RenderTarget rt);
-
-		/// <summary>
-		/// Frees the provided texture. Same as disposing the resource.
-		/// </summary>
-		void FreeTexture(Texture2d tex);
 
 		/// <summary>
 		/// Frees the provided pipeline. Same as disposing the resource.

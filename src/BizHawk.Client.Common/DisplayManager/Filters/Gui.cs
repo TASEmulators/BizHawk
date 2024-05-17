@@ -538,9 +538,9 @@ namespace BizHawk.Client.Common.Filters
 			DeclareOutput(state);
 		}
 
-		private Texture2d _texture;
+		private ITexture2D _texture;
 
-		public void SetTexture(Texture2d tex)
+		public void SetTexture(ITexture2D tex)
 		{
 			_texture = tex;
 		}

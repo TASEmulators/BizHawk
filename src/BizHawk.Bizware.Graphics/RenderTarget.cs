@@ -4,21 +4,21 @@ namespace BizHawk.Bizware.Graphics
 {
 	public class RenderTarget : IDisposable
 	{
-		public RenderTarget(IGL owner, object opaque, Texture2d tex)
+		public RenderTarget(IGL owner, object opaque, ITexture2D tex)
 		{
 			Owner = owner;
 			Opaque = opaque;
-			Texture2d = tex;
+			Texture2D = tex;
 		}
 
 		public override string ToString()
 		{
-			return $"GL RT: {Texture2d.Width}x{Texture2d.Height}";
+			return $"GL RT: {Texture2D.Width}x{Texture2D.Height}";
 		}
 
 		public object Opaque { get; }
 		public IGL Owner { get; }
-		public Texture2d Texture2d { get; }
+		public ITexture2D Texture2D { get; }
 
 		public void Unbind()
 		{

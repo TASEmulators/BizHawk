@@ -215,7 +215,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						using (gl.CreateRenderer()) return gl;
+						using (gl.CreateGuiRenderer()) return gl;
 					}
 					catch (Exception ex)
 					{
