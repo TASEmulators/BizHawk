@@ -34,7 +34,7 @@ namespace BizHawk.Bizware.Graphics
 
 		// rendering state
 		private Pipeline _currPipeline;
-		private RenderTarget _currRenderTarget;
+		internal bool DefaultRenderTargetBound;
 
 		// this IGL either requires at least OpenGL 3.0
 		public static bool Available => OpenGLVersion.SupportsVersion(3, 0);
@@ -451,50 +451,14 @@ namespace BizHawk.Bizware.Graphics
 		public ITexture2D WrapGLTexture2D(int glTexId, int width, int height)
 			=> new OpenGLTexture2D(GL, (uint)glTexId, width, height);
 
-		public void FreeRenderTarget(RenderTarget rt)
-		{
-			rt.Texture2D.Dispose();
-			GL.DeleteFramebuffer((uint)rt.Opaque);
-		}
-
 		/// <exception cref="InvalidOperationException">framebuffer creation unsuccessful</exception>
-		public RenderTarget CreateRenderTarget(int width, int height)
+		public IRenderTarget CreateRenderTarget(int width, int height)
+			=> new OpenGLRenderTarget(this, GL, width, height);
+
+		public void BindDefaultRenderTarget()
 		{
-			// create a texture for it
-			var tex2d = new OpenGLTexture2D(GL, width, height);
-
-			// create the FBO
-			var fbId = GL.GenFramebuffer();
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbId);
-
-			// bind the tex to the FBO
-			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, tex2d.TexID, 0);
-
-			// do something, I guess say which color buffers are used by the framebuffer
-			GL.DrawBuffer(DrawBufferMode.ColorAttachment0);
-
-			if ((FramebufferStatus)GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferStatus.Complete)
-			{
-				throw new InvalidOperationException($"Error creating framebuffer (at {nameof(GL.CheckFramebufferStatus)})");
-			}
-
-			// since we're done configuring unbind this framebuffer, to return to the default
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-
-			return new(this, fbId, tex2d);
-		}
-
-		public void BindRenderTarget(RenderTarget rt)
-		{
-			_currRenderTarget = rt;
-			if (rt == null)
-			{
-				GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-			}
-			else
-			{
-				GL.BindFramebuffer(FramebufferTarget.Framebuffer, (uint)rt.Opaque);
-			}
+			DefaultRenderTargetBound = true;
 		}
 
 		public Matrix4x4 CreateGuiProjectionMatrix(int width, int height)
@@ -511,7 +475,7 @@ namespace BizHawk.Bizware.Graphics
 			ret.M22 = -1.0f;
 			ret.M41 = width * -0.5f;
 			ret.M42 = height * 0.5f;
-			if (autoflip && _currRenderTarget is not null) // flip as long as we're not a final render target
+			if (autoflip && !DefaultRenderTargetBound) // flip as long as we're not a final render target
 			{
 				ret.M22 = 1.0f;
 				ret.M42 *= -1;

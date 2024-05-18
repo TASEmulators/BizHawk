@@ -32,14 +32,14 @@ namespace BizHawk.Client.Common
 
 		protected class DisplayManagerRenderTargetProvider : IRenderTargetProvider
 		{
-			private readonly Func<Size, RenderTarget> _callback;
+			private readonly Func<Size, IRenderTarget> _callback;
 
-			RenderTarget IRenderTargetProvider.Get(Size size)
+			public IRenderTarget Get(Size size)
 			{
 				return _callback(size);
 			}
 
-			public DisplayManagerRenderTargetProvider(Func<Size, RenderTarget> callback)
+			public DisplayManagerRenderTargetProvider(Func<Size, IRenderTarget> callback)
 			{
 				_callback = callback;
 			}
@@ -864,7 +864,7 @@ namespace BizHawk.Client.Common
 		public void Blank()
 		{
 			ActivateGraphicsControlContext();
-			_gl.BindRenderTarget(null);
+			_gl.BindDefaultRenderTarget();
 			_gl.ClearColor(Color.Black);
 			SwapBuffersOfGraphicsControl();
 		}
@@ -880,11 +880,11 @@ namespace BizHawk.Client.Common
 
 			RunFilterChainSteps(ref rtCounter, out var rtCurr, out _);
 
-			job.OffscreenBb = rtCurr.Texture2D.Resolve();
+			job.OffscreenBb = rtCurr.Resolve();
 			job.OffscreenBb.DiscardAlpha();
 		}
 
-		protected void RunFilterChainSteps(ref int rtCounter, out RenderTarget rtCurr, out bool inFinalTarget)
+		protected void RunFilterChainSteps(ref int rtCounter, out IRenderTarget rtCurr, out bool inFinalTarget)
 		{
 			ITexture2D texCurr = null;
 			rtCurr = null;
@@ -907,7 +907,7 @@ namespace BizHawk.Client.Common
 					break;
 				case FilterProgram.ProgramStepType.FinalTarget:
 					_currentFilterProgram.CurrRenderTarget = rtCurr = null;
-					_gl.BindRenderTarget(rtCurr);
+					_gl.BindDefaultRenderTarget();
 					inFinalTarget = true;
 					break;
 				default:

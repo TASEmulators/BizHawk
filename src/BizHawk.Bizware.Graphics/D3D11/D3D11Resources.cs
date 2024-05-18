@@ -26,8 +26,9 @@ namespace BizHawk.Bizware.Graphics
 
 		public FeatureLevel DeviceFeatureLevel;
 
-		public readonly HashSet<RenderTarget> RenderTargets = new();
-		public readonly HashSet<D3D11Texture2D> ShaderTextures = new();
+		public D3D11RenderTarget CurRenderTarget;
+
+		public readonly HashSet<D3D11Texture2D> Textures = new();
 		public readonly HashSet<Shader> VertexShaders = new();
 		public readonly HashSet<Shader> PixelShaders = new();
 		public readonly HashSet<Pipeline> Pipelines = new();
@@ -94,6 +95,11 @@ namespace BizHawk.Bizware.Graphics
 				RasterizerState = Device.CreateRasterizerState(rd);
 
 				Context.IASetPrimitiveTopology(PrimitiveTopology.TriangleStrip);
+
+				foreach (var tex2d in Textures)
+				{
+					tex2d.CreateTexture();
+				}
 			}
 			catch
 			{
@@ -102,8 +108,15 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public void Dispose()
+		public void DestroyResources()
 		{
+			foreach (var tex2d in Textures)
+			{
+				tex2d.DestroyTexture();
+			}
+
+			CurRenderTarget = null;
+
 			LinearSamplerState?.Dispose();
 			LinearSamplerState = null;
 			PointSamplerState?.Dispose();
@@ -127,6 +140,12 @@ namespace BizHawk.Bizware.Graphics
 
 			Factory1?.Dispose();
 			Factory1 = null;
+		}
+
+		public void Dispose()
+		{
+			DestroyResources();
+			Textures.Clear();
 		}
 	}
 }

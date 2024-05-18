@@ -111,7 +111,7 @@ namespace BizHawk.Client.Common.Filters
 		}
 
 		// TODO - why a different param order than DeclareOutput?
-		protected RenderTarget GetTempTarget(int width, int height)
+		protected IRenderTarget GetTempTarget(int width, int height)
 		{
 			return FilterProgram.GetTempTarget(width, height);
 		}

@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly IGL _gl;
 		private readonly GraphicsControl _graphicsControl;
-		private RenderTarget _rt;
+		private IRenderTarget _rt;
 		private readonly GuiRenderer _guiRenderer;
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_retain)
 			{
-				_rt.Unbind();
+				_gl.BindDefaultRenderTarget();
 			}
 
 			_graphicsControl.End();
@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			
 			// if we're retaining, then we cant draw until we unbind! its semantically a bit odd, but we expect users to call SwapBuffers() before end, so we cant unbind in End() even thoug hit makes a bit more sense.
-			_rt.Unbind();
+			_gl.BindDefaultRenderTarget();
 			Draw();
 		}
 
@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_guiRenderer.Begin(Width, Height);
 			_guiRenderer.DisableBlending();
-			_guiRenderer.Draw(_rt.Texture2D);
+			_guiRenderer.Draw(_rt);
 			_guiRenderer.End();
 			_graphicsControl.SwapBuffers();
 		}

@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common.FilterManager
 
 	public interface IRenderTargetProvider
 	{
-		RenderTarget Get(Size size);
+		IRenderTarget Get(Size size);
 	}
 
 	public class FilterProgram
@@ -69,9 +69,9 @@ namespace BizHawk.Client.Common.FilterManager
 		public IGL GL;
 		public IRenderTargetProvider RenderTargetProvider;
 
-		public RenderTarget CurrRenderTarget;
+		public IRenderTarget CurrRenderTarget;
 
-		public RenderTarget GetTempTarget(int width, int height)
+		public IRenderTarget GetTempTarget(int width, int height)
 		{
 			return RenderTargetProvider.Get(new(width, height));
 		}

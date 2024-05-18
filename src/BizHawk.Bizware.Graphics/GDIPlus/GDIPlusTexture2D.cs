@@ -3,7 +3,7 @@ using System.Drawing.Imaging;
 
 namespace BizHawk.Bizware.Graphics
 {
-	public class GDIPlusTexture2D : ITexture2D
+	internal class GDIPlusTexture2D : ITexture2D
 	{
 		public Bitmap SDBitmap;
 		public bool LinearFiltering;
@@ -19,7 +19,7 @@ namespace BizHawk.Bizware.Graphics
 			SDBitmap = new(width, height, PixelFormat.Format32bppArgb);
 		}
 
-		public void Dispose()
+		public virtual void Dispose()
 		{
 			SDBitmap?.Dispose();
 			SDBitmap = null;

@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common.Filters
 
 		public override void Run()
 		{
-			YieldOutput(FilterProgram.CurrRenderTarget.Texture2D);
+			YieldOutput(FilterProgram.CurrRenderTarget);
 		}
 	}
 }

@@ -5,15 +5,22 @@ using System.Numerics;
 
 using SDGraphics = System.Drawing.Graphics;
 
-//TODO - maybe a layer to cache Graphics parameters (notably, filtering) ?
 namespace BizHawk.Bizware.Graphics
 {
 	public class IGL_GDIPlus : IGL
 	{
+		private GDIPlusControlRenderTarget _controlRenderTarget;
+
+		internal GDIPlusRenderTarget CurRenderTarget;
+
 		public EDispMethod DispMethodEnum => EDispMethod.GdiPlus;
 
 		public void Dispose()
-			=> BufferedGraphicsContext.Dispose();
+		{
+		}
+
+		internal SDGraphics GetCurrentGraphics()
+			=> CurRenderTarget?.TextureGraphics ?? _controlRenderTarget.BufferedGraphics.Graphics;
 
 		public void ClearColor(Color color)
 			=> GetCurrentGraphics().Clear(color);
@@ -118,62 +125,21 @@ namespace BizHawk.Bizware.Graphics
 		{
 		}
 
-		public void FreeRenderTarget(RenderTarget rt)
-		{
-			var grt = (GDIPlusRenderTarget)rt.Opaque;
-			grt.Dispose();
-		}
+		public IRenderTarget CreateRenderTarget(int width, int height)
+			=> new GDIPlusRenderTarget(this, width, height);
 
-		public RenderTarget CreateRenderTarget(int width, int height)
-		{
-			var tex2d = new GDIPlusTexture2D(width, height);
-			var grt = new GDIPlusRenderTarget(() => BufferedGraphicsContext);
-			var rt = new RenderTarget(this, grt, tex2d);
-			grt.Target = rt;
-			return rt;
-		}
+		public void BindDefaultRenderTarget()
+			=> CurRenderTarget = null;
 
-		public void BindRenderTarget(RenderTarget rt)
-		{
-			if (_currOffscreenGraphics != null)
-			{
-				_currOffscreenGraphics.Dispose();
-				_currOffscreenGraphics = null;
-			}
-
-			if (rt == null)
-			{
-				// null means to use the default RT for the current control
-				CurrentRenderTarget = _controlRenderTarget;
-			}
-			else
-			{
-				var gtex = (GDIPlusTexture2D)rt.Texture2D;
-				CurrentRenderTarget = (GDIPlusRenderTarget)rt.Opaque;
-				_currOffscreenGraphics = SDGraphics.FromImage(gtex.SDBitmap);
-			}
-		}
-
-		private GDIPlusRenderTarget _controlRenderTarget;
-
-		public GDIPlusRenderTarget CreateControlRenderTarget(Func<(SDGraphics Graphics, Rectangle Rectangle)> getControlRenderContext)
+		public GDIPlusControlRenderTarget CreateControlRenderTarget(Func<(SDGraphics Graphics, Rectangle Rectangle)> getControlRenderContext)
 		{
 			if (_controlRenderTarget != null)
 			{
 				throw new InvalidOperationException($"{nameof(IGL_GDIPlus)} can only have one control render target");
 			}
 
-			_controlRenderTarget = new(() => BufferedGraphicsContext, getControlRenderContext);
+			_controlRenderTarget = new(getControlRenderContext);
 			return _controlRenderTarget;
 		}
-
-		private SDGraphics _currOffscreenGraphics;
-
-		public SDGraphics GetCurrentGraphics()
-			=> _currOffscreenGraphics ?? CurrentRenderTarget.BufferedGraphics.Graphics;
-
-		public GDIPlusRenderTarget CurrentRenderTarget;
-
-		public readonly BufferedGraphicsContext BufferedGraphicsContext = new();
 	}
 }

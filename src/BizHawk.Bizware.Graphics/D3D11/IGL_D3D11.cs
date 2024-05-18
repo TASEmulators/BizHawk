@@ -38,10 +38,10 @@ namespace BizHawk.Bizware.Graphics
 		private ID3D11RasterizerState RasterizerState => _resources.RasterizerState;
 
 		private FeatureLevel DeviceFeatureLevel => _resources.DeviceFeatureLevel;
+		private D3D11RenderTarget CurRenderTarget => _resources.CurRenderTarget;
 
 		// rendering state
 		private Pipeline _curPipeline;
-		private RenderTarget _curRenderTarget;
 		private D3D11SwapChain.SwapChainResources _controlSwapChain;
 
 		public IGL_D3D11()
@@ -151,31 +151,8 @@ namespace BizHawk.Bizware.Graphics
 				sw.PS = null;
 			}
 
-			foreach (var rw in _resources.RenderTargets.Select(rt => (RenderTargetWrapper)rt.Opaque))
-			{
-				rw.RTV.Dispose();
-				rw.RTV = null;
-			}
-
-			foreach (var tex2d in _resources.ShaderTextures)
-			{
-				tex2d.DestroyTexture();
-			}
-
-			_resources.Dispose();
+			_resources.DestroyResources();
 			_resources.CreateResources();
-
-			foreach (var tex2d in _resources.ShaderTextures)
-			{
-				tex2d.CreateTexture();
-			}
-
-			foreach (var rt in _resources.RenderTargets)
-			{
-				var rw = (RenderTargetWrapper)rt.Opaque;
-				var rtvd = new RenderTargetViewDescription(RenderTargetViewDimension.Texture2D, Format.B8G8R8A8_UNorm);
-				rw.RTV = Device.CreateRenderTargetView(((D3D11Texture2D)rt.Texture2D).Texture, rtvd);
-			}
 
 			foreach (var sw in _resources.VertexShaders.Select(vertexShader => (ShaderWrapper)vertexShader.Opaque))
 			{
@@ -264,17 +241,7 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public void ClearColor(Color color)
-		{
-			if (_curRenderTarget == null)
-			{
-				Context.ClearRenderTargetView(_controlSwapChain.RTV, new(color.R, color.B, color.G, color.A));
-			}
-			else
-			{
-				var rw = (RenderTargetWrapper)_curRenderTarget.Opaque;
-				Context.ClearRenderTargetView(rw.RTV, new(color.R, color.B, color.G, color.A));
-			}
-		}
+			=> Context.ClearRenderTargetView(CurRenderTarget?.RTV ?? _controlSwapChain.RTV, new(color.R, color.B, color.G, color.A));
 
 		private class ShaderWrapper // Disposable fields cleaned up by Internal_FreeShader
 		{
@@ -607,11 +574,6 @@ namespace BizHawk.Bizware.Graphics
 			public ShaderWrapper VertexShader, FragmentShader;
 		}
 
-		private class RenderTargetWrapper
-		{
-			public ID3D11RenderTargetView RTV;
-		}
-
 		private class VertexLayoutWrapper
 		{
 			public ID3D11InputLayout VertexInputLayout;
@@ -875,36 +837,13 @@ namespace BizHawk.Bizware.Graphics
 			Context.RSSetScissorRect(x, y, width, height);
 		}
 
-		public void FreeRenderTarget(RenderTarget rt)
+		public IRenderTarget CreateRenderTarget(int width, int height)
+			=> new D3D11RenderTarget(_resources, width, height);
+
+		public void BindDefaultRenderTarget()
 		{
-			var rw = (RenderTargetWrapper)rt.Opaque;
-			rw.RTV.Dispose();
-			_resources.RenderTargets.Remove(rt);
-			rt.Texture2D.Dispose();
-		}
-
-		public RenderTarget CreateRenderTarget(int width, int height)
-		{
-			var tex = new D3D11Texture2D(_resources, BindFlags.ShaderResource | BindFlags.RenderTarget, ResourceUsage.Default, CpuAccessFlags.None, width, height);
-			var rtvd = new RenderTargetViewDescription(RenderTargetViewDimension.Texture2D, Format.B8G8R8A8_UNorm);
-			var rw = new RenderTargetWrapper { RTV = Device.CreateRenderTargetView(tex.Texture, rtvd) };
-			var rt = new RenderTarget(this, rw, tex);
-			_resources.RenderTargets.Add(rt);
-			return rt;
-		}
-
-		public void BindRenderTarget(RenderTarget rt)
-		{
-			_curRenderTarget = rt;
-
-			if (rt == null)
-			{
-				Context.OMSetRenderTargets(_controlSwapChain.RTV);
-				return;
-			}
-
-			var rw = (RenderTargetWrapper)rt.Opaque;
-			Context.OMSetRenderTargets(rw.RTV);
+			_resources.CurRenderTarget = null;
+			Context.OMSetRenderTargets(_controlSwapChain.RTV);
 		}
 
 		public void Draw(IntPtr data, int count)

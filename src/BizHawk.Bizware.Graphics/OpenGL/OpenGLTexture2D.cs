@@ -44,7 +44,7 @@ namespace BizHawk.Bizware.Graphics
 			IsUpsideDown = true;
 		}
 
-		public void Dispose()
+		public virtual void Dispose()
 			=> GL.DeleteTexture(TexID);
 
 		public unsafe BitmapBuffer Resolve()

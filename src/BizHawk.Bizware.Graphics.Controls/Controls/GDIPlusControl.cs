@@ -9,15 +9,19 @@ namespace BizHawk.Bizware.Graphics.Controls
 {
 	internal sealed class GDIPlusControl : GraphicsControl
 	{
-		public GDIPlusControl(Func<Func<(SDGraphics Graphics, Rectangle Rectangle)>, GDIPlusRenderTarget> createControlRenderTarget)
+		/// <summary>
+		/// The render target for rendering to this control
+		/// </summary>
+		private readonly GDIPlusControlRenderTarget _renderTarget;
+
+		public GDIPlusControl(Func<Func<(SDGraphics Graphics, Rectangle Rectangle)>, GDIPlusControlRenderTarget> createControlRenderTarget)
 		{
-			RenderTarget = createControlRenderTarget(GetControlRenderContext);
+			_renderTarget = createControlRenderTarget(GetControlRenderContext);
 
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.UserMouse, true);
 			DoubleBuffered = true;
-			BackColor = Color.Black;
 		}
 
 		private (SDGraphics Graphics, Rectangle Rectangle) GetControlRenderContext()
@@ -27,11 +31,6 @@ namespace BizHawk.Bizware.Graphics.Controls
 			graphics.CompositingQuality = CompositingQuality.HighSpeed;
 			return (graphics, ClientRectangle);
 		}
-
-		/// <summary>
-		/// The render target for rendering to this control
-		/// </summary>
-		private GDIPlusRenderTarget RenderTarget { get; }
 
 		public override void AllowTearing(bool state)
 		{
@@ -54,22 +53,22 @@ namespace BizHawk.Bizware.Graphics.Controls
 		protected override void OnHandleCreated(EventArgs e)
 		{
 			base.OnHandleCreated(e);
-			RenderTarget.CreateGraphics();
+			_renderTarget.CreateGraphics();
 		}
 
 		protected override void OnHandleDestroyed(EventArgs e)
 		{
 			base.OnHandleDestroyed(e);
-			RenderTarget.Dispose();
+			_renderTarget.Dispose();
 		}
 
 		protected override void OnResize(EventArgs e)
 		{
 			base.OnResize(e);
-			RenderTarget.CreateGraphics();
+			_renderTarget.CreateGraphics();
 		}
 
 		public override void SwapBuffers()
-			=> RenderTarget.BufferedGraphics?.Render(RenderTarget.CurGraphics);
+			=> _renderTarget.BufferedGraphics?.Render(_renderTarget.ControlGraphics);
 	}
 }

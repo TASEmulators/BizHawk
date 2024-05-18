@@ -19,17 +19,17 @@ namespace BizHawk.Bizware.Graphics
 		EDispMethod DispMethodEnum { get; }
 
 		/// <summary>
-		/// Clears the color buffer with the specified color
+		/// Clears the currently bound render target with the specified color
 		/// </summary>
 		void ClearColor(Color color);
 
 		/// <summary>
-		/// compile a fragment shader. This is the simplified method. A more complex method may be added later which will accept multiple sources and preprocessor definitions independently
+		/// Compile a fragment shader. This is the simplified method. A more complex method may be added later which will accept multiple sources and preprocessor definitions independently
 		/// </summary>
 		Shader CreateFragmentShader(string source, string entry, bool required);
 
 		/// <summary>
-		/// compile a vertex shader. This is the simplified method. A more complex method may be added later which will accept multiple sources and preprocessor definitions independently
+		/// Compile a vertex shader. This is the simplified method. A more complex method may be added later which will accept multiple sources and preprocessor definitions independently
 		/// </summary>
 		Shader CreateVertexShader(string source, string entry, bool required);
 
@@ -59,40 +59,40 @@ namespace BizHawk.Bizware.Graphics
 		void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4x4 mat, bool transpose);
 
 		/// <summary>
-		/// sets a uniform value
+		/// Sets a uniform value
 		/// </summary>
 		void SetPipelineUniform(PipelineUniform uniform, Vector4 value);
 
 		/// <summary>
-		/// sets a uniform value
+		/// Sets a uniform value
 		/// </summary>
 		void SetPipelineUniform(PipelineUniform uniform, Vector2 value);
 
 		/// <summary>
-		/// sets a uniform value
+		/// Sets a uniform value
 		/// </summary>
 		void SetPipelineUniform(PipelineUniform uniform, float value);
 
 		/// <summary>
-		/// sets uniform values
+		/// Sets uniform values
 		/// </summary>
 		void SetPipelineUniform(PipelineUniform uniform, Vector4[] values);
 
 		/// <summary>
-		/// sets a uniform value
+		/// Sets a uniform value
 		/// </summary>
 		void SetPipelineUniform(PipelineUniform uniform, bool value);
 
 		/// <summary>
 		/// Draws based on the currently set pipeline
-		/// data contains vertexes based on the pipeline's VertexLayout
-		/// count is the vertex count
+		/// Data contains vertexes based on the pipeline's VertexLayout
+		/// Count is the vertex count
 		/// Vertexes must form triangle strips
 		/// </summary>
 		void Draw(IntPtr data, int count);
 
 		/// <summary>
-		/// creates a vertex layout resource
+		/// Creates a vertex layout resource
 		/// </summary>
 		VertexLayout CreateVertexLayout();
 
@@ -119,35 +119,32 @@ namespace BizHawk.Bizware.Graphics
 		ITexture2D WrapGLTexture2D(int glTexId, int width, int height);
 
 		/// <summary>
-		/// sets the viewport (and scissor) according to the provided specifications
+		/// Sets the viewport (and scissor) according to the provided specifications
 		/// </summary>
 		void SetViewport(int x, int y, int width, int height);
 
 		/// <summary>
-		/// generates a proper 2d othographic projection for the given destination size, suitable for use in a GUI
+		/// Generates a proper 2D othographic projection for the given destination size, suitable for use in a GUI
 		/// </summary>
 		Matrix4x4 CreateGuiProjectionMatrix(int width, int height);
 
 		/// <summary>
-		/// generates a proper view transform for a standard 2d ortho projection, including half-pixel jitter if necessary and
-		/// re-establishing of a normal 2d graphics top-left origin. suitable for use in a GUI
+		/// Generates a proper view transform for a standard 2D othographic projection, including half-pixel jitter if necessary
+		/// and re-establishing of a normal 2D graphics top-left origin. Suitable for use in a GUI
 		/// </summary>
 		Matrix4x4 CreateGuiViewMatrix(int width, int height, bool autoflip = true);
 
 		/// <summary>
-		/// Creates a render target. Only includes a color buffer. Pixel format control TBD
+		/// Creates a render target. Only includes a color buffer, and will always be in byte order BGRA (i.e. little endian ARGB)
+		/// This may unbind a previously bound render target
 		/// </summary>
-		RenderTarget CreateRenderTarget(int width, int height);
+		IRenderTarget CreateRenderTarget(int width, int height);
 
 		/// <summary>
-		/// Binds a RenderTarget for current rendering
+		/// Binds the IGL's default render target (i.e. to the IGL's control)
+		/// This implicitly unbinds any previously bound IRenderTarget
 		/// </summary>
-		void BindRenderTarget(RenderTarget rt);
-
-		/// <summary>
-		/// Frees the provided render target. Same as disposing the resource.
-		/// </summary>
-		void FreeRenderTarget(RenderTarget rt);
+		void BindDefaultRenderTarget();
 
 		/// <summary>
 		/// Frees the provided pipeline. Same as disposing the resource.

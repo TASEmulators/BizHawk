@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (job.Offscreen)
 			{
-				job.OffscreenBb = rtCurr.Texture2D.Resolve();
+				job.OffscreenBb = rtCurr.Resolve();
 				job.OffscreenBb.DiscardAlpha();
 				return;
 			}

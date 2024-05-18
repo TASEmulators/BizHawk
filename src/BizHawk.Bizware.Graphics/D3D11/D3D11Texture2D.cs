@@ -10,18 +10,18 @@ namespace BizHawk.Bizware.Graphics
 {
 	internal class D3D11Texture2D : ITexture2D
 	{
-		private readonly D3D11Resources _resources;
+		protected readonly D3D11Resources _resources;
 		private readonly BindFlags _bindFlags;
 		private readonly ResourceUsage _usage;
 		private readonly CpuAccessFlags _cpuAccessFlags;
 
-		private ID3D11Device Device => _resources.Device;
-		private ID3D11DeviceContext Context => _resources.Context;
-		private HashSet<D3D11Texture2D> ShaderTextures => _resources.ShaderTextures;
+		protected ID3D11Device Device => _resources.Device;
+		protected ID3D11DeviceContext Context => _resources.Context;
+		private HashSet<D3D11Texture2D> Textures => _resources.Textures;
 
 		private ID3D11Texture2D StagingTexture;
 
-		public ID3D11Texture2D Texture;
+		protected ID3D11Texture2D Texture;
 		public ID3D11ShaderResourceView SRV;
 		public bool LinearFiltering;
 
@@ -37,17 +37,18 @@ namespace BizHawk.Bizware.Graphics
 			_cpuAccessFlags = cpuAccessFlags;
 			Width = width;
 			Height = height;
+			// ReSharper disable once VirtualMemberCallInConstructor
 			CreateTexture();
-			ShaderTextures.Add(this);
+			Textures.Add(this);
 		}
 
 		public void Dispose()
 		{
 			DestroyTexture();
-			ShaderTextures.Remove(this);
+			Textures.Remove(this);
 		}
 
-		public void CreateTexture()
+		public virtual void CreateTexture()
 		{
 			Texture = Device.CreateTexture2D(
 				Format.B8G8R8A8_UNorm,
@@ -62,7 +63,7 @@ namespace BizHawk.Bizware.Graphics
 			SRV = Device.CreateShaderResourceView(Texture, srvd);
 		}
 
-		public void DestroyTexture()
+		public virtual void DestroyTexture()
 		{
 			SRV?.Dispose();
 			SRV = null;

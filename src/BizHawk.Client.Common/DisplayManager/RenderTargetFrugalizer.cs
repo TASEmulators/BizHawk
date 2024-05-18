@@ -30,26 +30,26 @@ namespace BizHawk.Client.Common
 
 		private void ResetList()
 		{
-			_currentRenderTargets = new List<RenderTarget> { null, null };
+			_currentRenderTargets = new List<IRenderTarget> { null, null };
 		}
 
 		private readonly IGL _gl;
-		private List<RenderTarget> _currentRenderTargets;
+		private List<IRenderTarget> _currentRenderTargets;
 
-		public RenderTarget Get(Size dimensions)
+		public IRenderTarget Get(Size dimensions)
 		{
 			return Get(dimensions.Width, dimensions.Height);
 		}
 
-		public RenderTarget Get(int width, int height)
+		public IRenderTarget Get(int width, int height)
 		{
 			//get the current entry
 			var currentRenderTarget = _currentRenderTargets[0];
 
 			//check if its rotten and needs recreating
 			if (currentRenderTarget == null
-				|| currentRenderTarget.Texture2D.Width != width
-				|| currentRenderTarget.Texture2D.Height != height)
+				|| currentRenderTarget.Width != width
+				|| currentRenderTarget.Height != height)
 			{
 				// needs recreating. be sure to kill the old one...
 				currentRenderTarget?.Dispose();
