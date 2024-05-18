@@ -24,6 +24,8 @@ namespace BizHawk.Client.Common
 		/// </remarks>
 		public static readonly IReadOnlyList<(string[] AppliesTo, string[] CoreNames)> CorePickerUIData = new List<(string[], string[])>
 		{
+			(new[] { VSystemID.Raw.A26 },
+				new[] { CoreNames.Stella, CoreNames.Atari2600Hawk }),
 			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC },
 				new[] { CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk }),
 			(new[] { VSystemID.Raw.GBL },

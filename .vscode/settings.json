@@ -1,7 +1,0 @@
-{
-	"editor.insertSpaces": false,
-	"editor.tabSize": 4,
-	"search.exclude": {
-		"waterbox/**": true
-	}
-}
