@@ -1,17 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Numerics;
 
 using BizHawk.Common;
-using BizHawk.Common.StringExtensions;
 
-using Vortice.D3DCompiler;
-using Vortice.Direct3D;
 using Vortice.Direct3D11;
-using Vortice.Direct3D11.Shader;
 using Vortice.DXGI;
 
 namespace BizHawk.Bizware.Graphics
@@ -39,6 +32,7 @@ namespace BizHawk.Bizware.Graphics
 		private D3D11Pipeline CurPipeline => _resources.CurPipeline;
 
 		private D3D11SwapChain.SwapChainResources _controlSwapChain;
+		private readonly D3D11GLInterop _glInterop;
 
 		public IGL_D3D11()
 		{
@@ -49,6 +43,11 @@ namespace BizHawk.Bizware.Graphics
 
 			_resources = new();
 			_resources.CreateResources();
+
+			if (D3D11GLInterop.IsAvailable)
+			{
+				_glInterop = new(_resources);
+			}
 		}
 
 		private IDXGISwapChain CreateDXGISwapChain(D3D11SwapChain.ControlParameters cp)
@@ -115,8 +114,10 @@ namespace BizHawk.Bizware.Graphics
 			_controlSwapChain.Dispose();
 			Context.Flush(); // important to immediately dispose of the swapchain (if it's still around, we can't recreate it)
 
+			_glInterop?.Dispose();
 			_resources.DestroyResources();
 			_resources.CreateResources();
+			_glInterop?.OpenInteropDevice();
 
 			var swapChain = CreateDXGISwapChain(cp);
 			var bbTex = swapChain.GetBuffer<ID3D11Texture2D>(0);
@@ -209,9 +210,8 @@ namespace BizHawk.Bizware.Graphics
 		public ITexture2D CreateTexture(int width, int height)
 			=> new D3D11Texture2D(_resources, BindFlags.ShaderResource, ResourceUsage.Dynamic, CpuAccessFlags.Write, width, height);
 
-		// not used for non-GL backends
 		public ITexture2D WrapGLTexture2D(int glTexId, int width, int height)
-			=> null;
+			=> _glInterop?.WrapGLTexture(glTexId, width, height);
 
 		public Matrix4x4 CreateGuiProjectionMatrix(int width, int height)
 		{

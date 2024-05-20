@@ -446,7 +446,7 @@
 			// 
 			this.label5.Location = new System.Drawing.Point(21, 123);
 			this.label5.Name = "label5";
-			this.label5.Text = " • May malfunction on some systems.\r\n • Will have increased performance for OpenGL" +
+			this.label5.Text = " • May malfunction on some systems.\r\n • May have increased performance for OpenGL" +
     "-based emulation cores.\r\n • May have reduced performance on some systems.\r\n";
 			// 
 			// tabControl1
@@ -667,7 +667,7 @@
 			// 
 			this.label8.Location = new System.Drawing.Point(21, 30);
 			this.label8.Name = "label8";
-			this.label8.Text = " • Best compatibility\r\n • Decreased performance for OpenGL-based cores (NDS, 3DS)\r\n";
+			this.label8.Text = " • Best compatibility\r\n • May have decreased performance for OpenGL-based cores (NDS, 3DS)\r\n";
 			// 
 			// rbD3D11
 			// 

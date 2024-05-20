@@ -21,15 +21,15 @@ namespace BizHawk.Bizware.Graphics
 
 		private ID3D11Texture2D StagingTexture;
 
-		protected ID3D11Texture2D Texture;
+		public ID3D11Texture2D Texture;
 		public ID3D11ShaderResourceView SRV;
 		public bool LinearFiltering;
 
 		public int Width { get; }
 		public int Height { get; }
-		public bool IsUpsideDown => false;
+		public bool IsUpsideDown { get; }
 
-		public D3D11Texture2D(D3D11Resources resources, BindFlags bindFlags, ResourceUsage usage, CpuAccessFlags cpuAccessFlags, int width, int height)
+		public D3D11Texture2D(D3D11Resources resources, BindFlags bindFlags, ResourceUsage usage, CpuAccessFlags cpuAccessFlags, int width, int height, bool wrapped = false)
 		{
 			_resources = resources;
 			_bindFlags = bindFlags;
@@ -37,6 +37,7 @@ namespace BizHawk.Bizware.Graphics
 			_cpuAccessFlags = cpuAccessFlags;
 			Width = width;
 			Height = height;
+			IsUpsideDown = wrapped;
 			// ReSharper disable once VirtualMemberCallInConstructor
 			CreateTexture();
 			Textures.Add(this);
@@ -50,8 +51,10 @@ namespace BizHawk.Bizware.Graphics
 
 		public virtual void CreateTexture()
 		{
+			// wrapped textures are R8G8B8A8 rather than B8G8R8A8...
+			var format = IsUpsideDown ? Format.R8G8B8A8_UNorm : Format.B8G8R8A8_UNorm;
 			Texture = Device.CreateTexture2D(
-				Format.B8G8R8A8_UNorm,
+				format,
 				Width,
 				Height,
 				mipLevels: 1,
@@ -59,7 +62,7 @@ namespace BizHawk.Bizware.Graphics
 				usage: _usage,
 				cpuAccessFlags: _cpuAccessFlags);
 
-			var srvd = new ShaderResourceViewDescription(ShaderResourceViewDimension.Texture2D, Format.B8G8R8A8_UNorm, mostDetailedMip: 0, mipLevels: 1);
+			var srvd = new ShaderResourceViewDescription(ShaderResourceViewDimension.Texture2D, format, mostDetailedMip: 0, mipLevels: 1);
 			SRV = Device.CreateShaderResourceView(Texture, srvd);
 		}
 

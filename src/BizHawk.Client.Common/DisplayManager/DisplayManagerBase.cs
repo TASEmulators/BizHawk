@@ -798,12 +798,13 @@ namespace BizHawk.Client.Common
 			ITexture2D videoTexture = null;
 			if (!simulate)
 			{
-				if (videoProvider is IGLTextureProvider glTextureProvider && _gl.DispMethodEnum == EDispMethod.OpenGL)
+				if (videoProvider is IGLTextureProvider glTextureProvider)
 				{
 					// FYI: this is a million years from happening on n64, since it's all geriatric non-FBO code
 					videoTexture = _gl.WrapGLTexture2D(glTextureProvider.GetGLTexture(), bufferWidth, bufferHeight);
 				}
-				else
+
+				if (videoTexture == null)
 				{
 					// wrap the VideoProvider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
 					bb = new(bufferWidth, bufferHeight, videoProvider.GetVideoBuffer());
@@ -811,9 +812,6 @@ namespace BizHawk.Client.Common
 
 					//now, acquire the data sent from the videoProvider into a texture
 					videoTexture = _videoTextureFrugalizer.Get(bb);
-
-					// lets not use this. lets define BizwareGL to make clamp by default (TBD: check opengl)
-					// _gl.SetTextureWrapMode(videoTexture, true);
 				}
 			}
 

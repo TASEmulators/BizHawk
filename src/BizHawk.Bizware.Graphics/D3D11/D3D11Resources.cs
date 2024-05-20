@@ -44,11 +44,18 @@ namespace BizHawk.Bizware.Graphics
 				// use this to debug D3D11 calls
 				// note debug layer requires extra steps to use: https://learn.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-devices-layers#debug-layer
 				// also debug output will only be present with a "native debugger" attached (pure managed debugger can't see this output)
-				const DeviceCreationFlags creationFlags = DeviceCreationFlags.Singlethreaded | DeviceCreationFlags.BgraSupport | DeviceCreationFlags.Debug;
+				var creationFlags = DeviceCreationFlags.Singlethreaded | DeviceCreationFlags.BgraSupport | DeviceCreationFlags.Debug;
 #else
 				// IGL is not thread safe, so let's not bother making this implementation thread safe
-				const DeviceCreationFlags creationFlags = DeviceCreationFlags.Singlethreaded | DeviceCreationFlags.BgraSupport;
+				var creationFlags = DeviceCreationFlags.Singlethreaded | DeviceCreationFlags.BgraSupport;
 #endif
+
+				// GL interop doesn't support the single threaded flag
+				if (D3D11GLInterop.IsAvailable)
+				{
+					creationFlags &= ~DeviceCreationFlags.Singlethreaded;
+				}
+
 				D3D11.D3D11CreateDevice(
 					adapter: null,
 					DriverType.Hardware,

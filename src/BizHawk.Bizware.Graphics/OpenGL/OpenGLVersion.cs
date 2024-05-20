@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
-using BizHawk.Common.CollectionExtensions;
 
 using Silk.NET.OpenGL;
 
-using static SDL2.SDL;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Bizware.Graphics
 {
@@ -13,22 +11,6 @@ namespace BizHawk.Bizware.Graphics
 	/// </summary>
 	public static class OpenGLVersion
 	{
-		private readonly ref struct SavedOpenGLContext
-		{
-			private readonly IntPtr _sdlWindow, _glContext;
-
-			public SavedOpenGLContext()
-			{
-				_sdlWindow = SDL_GL_GetCurrentWindow();
-				_glContext = SDL_GL_GetCurrentContext();
-			}
-
-			public void Dispose()
-			{
-				_ = SDL_GL_MakeCurrent(_sdlWindow, _glContext);
-			}
-		}
-
 		private static readonly IDictionary<int, bool> _glSupport = new Dictionary<int, bool>();
 
 		private static int PackGLVersion(int major, int minor)
