@@ -47,7 +47,7 @@ namespace BizHawk.Bizware.Graphics
 		public void Dispose()
 			=> CurrentImageAttributes?.Dispose();
 
-		public void SetPipeline(Pipeline pipeline)
+		public void SetPipeline(IPipeline pipeline)
 		{
 		}
 

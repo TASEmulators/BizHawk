@@ -22,7 +22,7 @@
 		<PackageVersion Include="Silk.NET.OpenAL.Extensions.Creative" Version="2.21.0" />
 		<PackageVersion Include="Silk.NET.OpenAL.Extensions.Enumeration" Version="2.21.0" />
 		<PackageVersion Include="Silk.NET.OpenAL.Extensions.EXT" Version="2.21.0" />
-		<PackageVersion Include="Silk.NET.OpenGL.Legacy" Version="2.21.0" />
+		<PackageVersion Include="Silk.NET.OpenGL" Version="2.21.0" />
 		<PackageVersion Include="SQLitePCLRaw.provider.e_sqlite3" Version="2.1.8" />
 		<PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.435" /><!-- don't forget to update .stylecop.json at the same time -->
 		<PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />

@@ -18,12 +18,6 @@ namespace BizHawk.Bizware.Graphics
 		{
 			Owner = owner;
 
-			VertexLayout = owner.CreateVertexLayout();
-			VertexLayout.DefineVertexAttribute("aPosition", 0, 2, VertexAttribPointerType.Float, AttribUsage.Position, false, 32);
-			VertexLayout.DefineVertexAttribute("aTexcoord", 1, 2, VertexAttribPointerType.Float, AttribUsage.Texcoord0, false, 32, 8);
-			VertexLayout.DefineVertexAttribute("aColor", 2, 4, VertexAttribPointerType.Float, AttribUsage.Texcoord1, false, 32, 16);
-			VertexLayout.Close();
-
 			_projection = new();
 			_modelView = new();
 
@@ -44,9 +38,17 @@ namespace BizHawk.Bizware.Graphics
 					throw new InvalidOperationException();
 			}
 
-			var vs = Owner.CreateVertexShader(vsProgram, "vsmain", true);
-			var ps = Owner.CreateFragmentShader(psProgram, "psmain", true);
-			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(VertexLayout, vs, ps, true, "xgui");
+			var vertexLayoutItems = new PipelineCompileArgs.VertexLayoutItem[3];
+			vertexLayoutItems[0] = new("aPosition", 2, 0, AttribUsage.Position);
+			vertexLayoutItems[1] = new("aTexcoord", 2, 8, AttribUsage.Texcoord0);
+			vertexLayoutItems[2] = new("aColor", 4, 16, AttribUsage.Texcoord1);
+
+			var compileArgs = new PipelineCompileArgs(
+				vertexLayoutItems,
+				vertexShaderArgs: new(vsProgram, "vsmain"),
+				fragmentShaderArgs: new(psProgram, "psmain"),
+				fragmentOutputName: "oColor");
+			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(compileArgs);
 		}
 
 		private readonly Vector4[] CornerColors =
@@ -80,13 +82,10 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public void Dispose()
-		{
-			DefaultPipeline.Dispose();
-			VertexLayout.Dispose();
-		}
+			=> DefaultPipeline.Dispose();
 
 		/// <exception cref="InvalidOperationException"><see cref="IsActive"/> is <see langword="true"/></exception>
-		public void SetPipeline(Pipeline pipeline)
+		public void SetPipeline(IPipeline pipeline)
 		{
 			if (IsActive)
 			{
@@ -115,7 +114,7 @@ namespace BizHawk.Bizware.Graphics
 		public void SetModulateColor(Color color)
 		{
 			Flush();
-			CurrPipeline["uModulateColor"].Set(new Vector4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f));
+			CurrPipeline.SetUniform("uModulateColor", new Vector4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f));
 		}
 
 		public void EnableBlending()
@@ -168,7 +167,7 @@ namespace BizHawk.Bizware.Graphics
 
 			//clear state cache
 			sTexture = null;
-			CurrPipeline["uSamplerEnable"].Set(false);
+			CurrPipeline.SetUniform("uSamplerEnable", false);
 			ModelView.Clear();
 			Projection.Clear();
 			SetModulateColorWhite();
@@ -206,19 +205,19 @@ namespace BizHawk.Bizware.Graphics
 			if (sTexture != tex)
 			{
 				sTexture = tex;
-				CurrPipeline["uSampler0"].Set(tex);
-				CurrPipeline["uSamplerEnable"].Set(tex != null);
+				CurrPipeline.SetUniformSampler("uSampler0", tex);
+				CurrPipeline.SetUniform("uSamplerEnable", tex != null);
 			}
 
 			if (_projection.IsDirty)
 			{
-				CurrPipeline["um44Projection"].Set(ref _projection.Top);
+				CurrPipeline.SetUniformMatrix("um44Projection", ref _projection.Top);
 				_projection.IsDirty = false;
 			}
 
 			if (_modelView.IsDirty)
 			{
-				CurrPipeline["um44Modelview"].Set(ref _modelView.Top);
+				CurrPipeline.SetUniformMatrix("um44Modelview", ref _modelView.Top);
 				_modelView.IsDirty = false;
 			}
 		}
@@ -265,10 +264,8 @@ namespace BizHawk.Bizware.Graphics
 		public bool IsActive { get; private set; }
 		public IGL Owner { get; }
 
-
-		private readonly VertexLayout VertexLayout;
-		private Pipeline CurrPipeline;
-		private readonly Pipeline DefaultPipeline;
+		private IPipeline CurrPipeline;
+		private readonly IPipeline DefaultPipeline;
 
 		// state cache
 		private ITexture2D sTexture;
@@ -327,17 +324,17 @@ float4 psmain(PS_INPUT src) : SV_Target
 ";
 
 		public const string DefaultVertexShader_gl = @"
-//opengl 2.0 ~ 2004
-#version 110
+//opengl 3.0
+#version 130
 uniform mat4 um44Modelview, um44Projection;
 uniform vec4 uModulateColor;
 
-attribute vec2 aPosition;
-attribute vec2 aTexcoord;
-attribute vec4 aColor;
+in vec2 aPosition;
+in vec2 aTexcoord;
+in vec4 aColor;
 
-varying vec2 vTexcoord0;
-varying vec4 vCornerColor;
+out vec2 vTexcoord0;
+out vec4 vCornerColor;
 
 void main()
 {
@@ -348,19 +345,21 @@ void main()
 }";
 
 		public const string DefaultPixelShader_gl = @"
-//opengl 2.0 ~ 2004
-#version 110
+//opengl 3.0
+#version 130
 uniform bool uSamplerEnable;
 uniform sampler2D uSampler0;
 
-varying vec2 vTexcoord0;
-varying vec4 vCornerColor;
+in vec2 vTexcoord0;
+in vec4 vCornerColor;
+
+out vec4 oColor;
 
 void main()
 {
 	vec4 temp = vCornerColor;
 	if(uSamplerEnable) temp *= texture2D(uSampler0,vTexcoord0);
-	gl_FragColor = temp;
+	oColor = temp;
 }";
 
 	}

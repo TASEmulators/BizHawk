@@ -4,7 +4,7 @@ using System;
 
 #if DEBUG_OPENGL
 using System.Runtime.InteropServices;
-using Silk.NET.OpenGL.Legacy;
+using Silk.NET.OpenGL;
 #endif
 
 using static SDL2.SDL;

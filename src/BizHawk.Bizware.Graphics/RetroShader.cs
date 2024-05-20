@@ -15,60 +15,64 @@ namespace BizHawk.Bizware.Graphics
 		{
 			Owner = owner;
 
-			VertexLayout = owner.CreateVertexLayout();
-			VertexLayout.DefineVertexAttribute("position", 0, 4, VertexAttribPointerType.Float, AttribUsage.Position, normalized: false, stride: 40, offset: 0);
-			VertexLayout.DefineVertexAttribute("color", 1, 4, VertexAttribPointerType.Float, AttribUsage.Color0, normalized: false, stride: 40, offset: 16); // just dead weight, i have no idea why this is here. but some old HLSL compilers (used in bizhawk for various reasons) will want it to exist here since it exists in the vertex shader
-			VertexLayout.DefineVertexAttribute("tex", 2, 2, VertexAttribPointerType.Float, AttribUsage.Texcoord0, normalized: false, stride: 40, offset: 32);
-			VertexLayout.Close();
+			var vertexLayoutItems = new PipelineCompileArgs.VertexLayoutItem[3];
+			vertexLayoutItems[0] = new("position", 4, 0, AttribUsage.Position);
+			vertexLayoutItems[1] = new("color", 4, 16, AttribUsage.Color0); // just dead weight, i have no idea why this is here. but some old HLSL compilers (used in bizhawk for various reasons) will want it to exist here since it exists in the vertex shader
+			vertexLayoutItems[2] = new("tex", 2, 32, AttribUsage.Texcoord0);
 
-			var vsSource = $"#define VERTEX\r\n{source}";
-			var psSource = $"#define FRAGMENT\r\n{source}";
-			var vs = owner.CreateVertexShader(vsSource, "main_vertex", debug);
-			var ps = owner.CreateFragmentShader(psSource, "main_fragment", debug);
-			Pipeline = Owner.CreatePipeline(VertexLayout, vs, ps, debug, "retro");
-
-			if (!Pipeline.Available)
+			string vsSource, psSource;
+			if (owner.DispMethodEnum == EDispMethod.OpenGL)
 			{
-				// make sure we release the vertex shader if it was compiled ok
-				if (vs.Available)
+				vsSource = "#version 130\r\n";
+				psSource = "#version 130\r\n";
+			}
+			else
+			{
+				vsSource = "";
+				psSource = "";
+			}
+
+			vsSource += $"#define VERTEX\r\n{source}";
+			psSource += $"#define FRAGMENT\r\n{source}";
+
+			var compileArgs = new PipelineCompileArgs(
+				vertexLayoutItems,
+				vertexShaderArgs: new(vsSource, "main_vertex"),
+				fragmentShaderArgs: new(psSource, "main_fragment"),
+				fragmentOutputName: "oColor");
+
+			try
+			{
+				Pipeline = Owner.CreatePipeline(compileArgs);
+			}
+			catch (Exception ex)
+			{
+				if (!debug)
 				{
-					vs.Release();
+					Errors = ex.Message;
+					return;
 				}
 
-				Available = false;
-				return;
+				throw;
 			}
 
 			// retroarch shaders will sometimes not have the right sampler name
 			// it's unclear whether we should bind to s_p or sampler0
 			// lets bind to sampler0 in case we don't have s_p
-			sampler0 = Pipeline.TryGetUniform("s_p");
-			if (sampler0 == null)
-			{
-				// sampler wasn't named correctly. this can happen on some retroarch shaders
-				foreach (var u in Pipeline.GetUniforms())
-				{
-					if (u.Sole.IsSampler && u.Sole.SamplerIndex == 0)
-					{
-						sampler0 = u;
-						break;
-					}
-				}
-			}
+			sampler0 = Pipeline.HasUniformSampler("s_p") ? "s_p" : Pipeline.GetUniformSamplerName(0);
 
 			// if a sampler isn't available, we can't do much, although this does interfere with debugging (shaders just returning colors will malfunction)
 			Available = sampler0 != null;
 		}
 
 		public bool Available { get; }
-		public string Errors => Pipeline.Errors;
+		public string Errors { get; }
 
-		private readonly PipelineUniform sampler0;
+		private readonly string sampler0;
 
 		public void Dispose()
 		{
 			Pipeline.Dispose();
-			VertexLayout.Dispose();
 		}
 
 		public void Bind()
@@ -82,22 +86,22 @@ namespace BizHawk.Bizware.Graphics
 			// ack! make sure to set the pipeline before setting uniforms
 			Bind();
 
-			Pipeline["IN.video_size"].Set(new Vector2(InputSize.Width, InputSize.Height));
-			Pipeline["IN.texture_size"].Set(new Vector2(tex.Width, tex.Height));
-			Pipeline["IN.output_size"].Set(new Vector2(OutputSize.Width, OutputSize.Height));
-			Pipeline["IN.frame_count"].Set(1); //todo
-			Pipeline["IN.frame_direction"].Set(1); //todo
+			Pipeline.SetUniform("IN.video_size", new Vector2(InputSize.Width, InputSize.Height));
+			Pipeline.SetUniform("IN.texture_size", new Vector2(tex.Width, tex.Height));
+			Pipeline.SetUniform("IN.output_size", new Vector2(OutputSize.Width, OutputSize.Height));
+			Pipeline.SetUniform("IN.frame_count", 1); //todo
+			Pipeline.SetUniform("IN.frame_direction", 1); //todo
 
 			var Projection = Owner.CreateGuiProjectionMatrix(OutputSize);
 			var Modelview = Owner.CreateGuiViewMatrix(OutputSize);
-			var mat = Matrix4x4.Transpose(Modelview * Projection);
-			Pipeline["modelViewProj"].Set(mat, true);
+			var mat = Modelview * Projection;
+			Pipeline.SetUniformMatrix("modelViewProj", mat);
 
-			sampler0.Set(tex);
+			Pipeline.SetUniformSampler(sampler0, tex);
 			Owner.SetViewport(OutputSize);
 
 			var time = DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000;
-			Pipeline["Time"].Set(time);
+			Pipeline.SetUniform("Time", time);
 
 			var w = OutputSize.Width;
 			var h = OutputSize.Height;
@@ -135,7 +139,6 @@ namespace BizHawk.Bizware.Graphics
 
 		public IGL Owner { get; }
 
-		private readonly VertexLayout VertexLayout;
-		public readonly Pipeline Pipeline;
+		public readonly IPipeline Pipeline;
 	}
 }

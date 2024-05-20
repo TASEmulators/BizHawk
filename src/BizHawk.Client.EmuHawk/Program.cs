@@ -251,12 +251,15 @@ namespace BizHawk.Client.EmuHawk
 							new ExceptionBox(new Exception($"Initialization of OpenGL Display Method failed; falling back to {name}")).ShowDialog();
 							return TryInitIGL(initialConfig.DispMethod = method);
 						}
-						var igl = new IGL_OpenGL();
 						// need to have a context active for checking renderer, will be disposed afterwards
-						using (new SDL2OpenGLContext(3, 0, false, false))
+						using (new SDL2OpenGLContext(3, 0, true, false))
 						{
-							return CheckRenderer(igl);
+							using var testIgl = new IGL_OpenGL();
+							_ = CheckRenderer(testIgl);
 						}
+
+						// don't return the same IGL, we don't want the test context to be part of this IGL
+						return new IGL_OpenGL();
 					default:
 					case EDispMethod.GdiPlus:
 						// if this fails, we're screwed

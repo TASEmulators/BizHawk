@@ -64,6 +64,6 @@ namespace BizHawk.Bizware.Graphics
 		/// Sets the pipeline for this GuiRenderer to use. We won't keep possession of it.
 		/// This pipeline must work in certain ways, which can be discerned by inspecting the built-in one
 		/// </summary>
-		void SetPipeline(Pipeline pipeline);
+		void SetPipeline(IPipeline pipeline);
 	}
 }

@@ -25,12 +25,6 @@ namespace BizHawk.Bizware.Graphics
 		public void ClearColor(Color color)
 			=> GetCurrentGraphics().Clear(color);
 
-		public Shader CreateFragmentShader(string source, string entry, bool required)
-			=> null;
-
-		public Shader CreateVertexShader(string source, string entry, bool required)
-			=> null;
-
 		public void EnableBlending()
 		{
 			var g = GetCurrentGraphics();
@@ -45,62 +39,14 @@ namespace BizHawk.Bizware.Graphics
 			g.CompositingQuality = CompositingQuality.HighSpeed;
 		}
 
-		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
-			=> null;
+		public IPipeline CreatePipeline(PipelineCompileArgs compileArgs)
+			=> throw new NotSupportedException("GDI+ does not support pipelines");
 
-		public void FreePipeline(Pipeline pipeline)
-		{
-		}
-
-		public VertexLayout CreateVertexLayout()
-			=> new(this, null);
-
-		public void Internal_FreeVertexLayout(VertexLayout layout)
+		public void BindPipeline(IPipeline pipeline)
 		{
 		}
 
 		public void Draw(IntPtr data, int count)
-		{
-		}
-
-		public void BindPipeline(Pipeline pipeline)
-		{
-
-		}
-
-		public void Internal_FreeShader(Shader shader)
-		{
-		}
-
-		public void SetPipelineUniform(PipelineUniform uniform, bool value)
-		{
-		}
-
-		public void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4x4 mat, bool transpose)
-		{
-		}
-
-		public void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4x4 mat, bool transpose)
-		{
-		}
-
-		public void SetPipelineUniform(PipelineUniform uniform, Vector4 value)
-		{
-		}
-
-		public void SetPipelineUniform(PipelineUniform uniform, Vector2 value)
-		{
-		}
-
-		public void SetPipelineUniform(PipelineUniform uniform, float value)
-		{
-		}
-
-		public void SetPipelineUniform(PipelineUniform uniform, Vector4[] values)
-		{
-		}
-
-		public void SetPipelineUniformSampler(PipelineUniform uniform, ITexture2D tex)
 		{
 		}
 

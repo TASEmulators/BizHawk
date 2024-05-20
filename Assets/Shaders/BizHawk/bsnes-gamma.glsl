@@ -10,10 +10,15 @@
 #ifdef VERTEX
 uniform mat4 modelViewProj;
 
+in vec4 position;
+in vec2 tex;
+
+out vec2 vTex;
+
 void main()
 {
-	gl_Position = modelViewProj * gl_Vertex;
-	gl_TexCoord[0] = gl_MultiTexCoord0;
+	gl_Position = modelViewProj * position;
+	vTex = tex;
 }
 
 #endif
@@ -21,6 +26,10 @@ void main()
 #ifdef FRAGMENT
 
 uniform sampler2D s_p;
+
+in vec2 vTex;
+
+out vec4 oColor;
 
 // Tweakables.
 #define saturation 1.0
@@ -38,10 +47,10 @@ vec3 grayscale(vec3 col)
 
 void main()
 {
-	vec3 res = texture2D(s_p,gl_TexCoord[0].xy).xyz;
+	vec3 res = texture2D(s_p,vTex).xyz;
 	res = mix(grayscale(res), res, saturation); // Apply saturation
 	res = pow(res, vec3(gamma,gamma,gamma)); // Apply gamma
-	gl_FragColor = vec4(clamp(res * luminance,0.0,1.0), 1.0);
+	oColor = vec4(clamp(res * luminance,0.0,1.0), 1.0);
 }
 
 #endif

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using BizHawk.Common.CollectionExtensions;
 
-using Silk.NET.OpenGL.Legacy;
+using Silk.NET.OpenGL;
 
 using static SDL2.SDL;
 

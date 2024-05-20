@@ -351,7 +351,7 @@ namespace BizHawk.Client.Common.Filters
 				{
 					if (v is float value)
 					{
-						shader.Pipeline[k].Set(value);
+						shader.Pipeline.SetUniform(k, value);
 					}
 				}
 			}

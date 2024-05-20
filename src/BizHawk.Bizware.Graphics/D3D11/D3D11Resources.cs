@@ -27,11 +27,10 @@ namespace BizHawk.Bizware.Graphics
 		public FeatureLevel DeviceFeatureLevel;
 
 		public D3D11RenderTarget CurRenderTarget;
+		public D3D11Pipeline CurPipeline;
 
 		public readonly HashSet<D3D11Texture2D> Textures = new();
-		public readonly HashSet<Shader> VertexShaders = new();
-		public readonly HashSet<Shader> PixelShaders = new();
-		public readonly HashSet<Pipeline> Pipelines = new();
+		public readonly HashSet<D3D11Pipeline> Pipelines = new();
 
 		public void CreateResources()
 		{
@@ -115,7 +114,13 @@ namespace BizHawk.Bizware.Graphics
 				tex2d.DestroyTexture();
 			}
 
+			foreach (var pipeline in Pipelines)
+			{
+				pipeline.DestroyPipeline();
+			}
+
 			CurRenderTarget = null;
+			CurPipeline = null;
 
 			LinearSamplerState?.Dispose();
 			LinearSamplerState = null;
@@ -146,6 +151,13 @@ namespace BizHawk.Bizware.Graphics
 		{
 			DestroyResources();
 			Textures.Clear();
+
+			foreach (var pipeline in Pipelines)
+			{
+				pipeline.DestroyPendingBuffers();
+			}
+
+			Pipelines.Clear();
 		}
 	}
 }

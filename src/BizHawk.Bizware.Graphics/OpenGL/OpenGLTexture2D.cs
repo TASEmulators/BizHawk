@@ -1,6 +1,6 @@
 using System;
 
-using Silk.NET.OpenGL.Legacy;
+using Silk.NET.OpenGL;
 
 namespace BizHawk.Bizware.Graphics
 {

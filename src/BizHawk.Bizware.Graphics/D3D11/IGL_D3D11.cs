@@ -33,15 +33,11 @@ namespace BizHawk.Bizware.Graphics
 		private ID3D11DeviceContext Context => _resources.Context;
 		private ID3D11BlendState BlendEnableState => _resources.BlendEnableState;
 		private ID3D11BlendState BlendDisableState => _resources.BlendDisableState;
-		private ID3D11SamplerState PointSamplerState => _resources.PointSamplerState;
-		private ID3D11SamplerState LinearSamplerState => _resources.LinearSamplerState;
 		private ID3D11RasterizerState RasterizerState => _resources.RasterizerState;
 
-		private FeatureLevel DeviceFeatureLevel => _resources.DeviceFeatureLevel;
 		private D3D11RenderTarget CurRenderTarget => _resources.CurRenderTarget;
+		private D3D11Pipeline CurPipeline => _resources.CurPipeline;
 
-		// rendering state
-		private Pipeline _curPipeline;
 		private D3D11SwapChain.SwapChainResources _controlSwapChain;
 
 		public IGL_D3D11()
@@ -117,81 +113,10 @@ namespace BizHawk.Bizware.Graphics
 		private void ResetDevice(D3D11SwapChain.ControlParameters cp)
 		{
 			_controlSwapChain.Dispose();
-			Context.Flush(); // important to properly dispose of the swapchain
-
-			foreach (var pipeline in _resources.Pipelines)
-			{
-				var pw = (PipelineWrapper)pipeline.Opaque;
-
-				for (var i = 0; i < ID3D11DeviceContext.CommonShaderConstantBufferSlotCount; i++)
-				{
-					pw.VSConstantBuffers[i]?.Dispose();
-					pw.VSConstantBuffers[i] = null;
-					pw.PSConstantBuffers[i]?.Dispose();
-					pw.PSConstantBuffers[i] = null;
-				}
-
-				var vlw = (VertexLayoutWrapper)pipeline.VertexLayout.Opaque;
-				vlw.VertexInputLayout.Dispose();
-				vlw.VertexInputLayout = null;
-				vlw.VertexBuffer.Dispose();
-				vlw.VertexBuffer = null;
-				vlw.VertexBufferCount = 0;
-			}
-
-			foreach (var sw in _resources.VertexShaders.Select(vertexShader => (ShaderWrapper)vertexShader.Opaque))
-			{
-				sw.VS.Dispose();
-				sw.VS = null;
-			}
-
-			foreach (var sw in _resources.PixelShaders.Select(pixelShader => (ShaderWrapper)pixelShader.Opaque))
-			{
-				sw.PS.Dispose();
-				sw.PS = null;
-			}
+			Context.Flush(); // important to immediately dispose of the swapchain (if it's still around, we can't recreate it)
 
 			_resources.DestroyResources();
 			_resources.CreateResources();
-
-			foreach (var sw in _resources.VertexShaders.Select(vertexShader => (ShaderWrapper)vertexShader.Opaque))
-			{
-				sw.VS = Device.CreateVertexShader(sw.Bytecode.Span);
-			}
-
-			foreach (var sw in _resources.PixelShaders.Select(pixelShader => (ShaderWrapper)pixelShader.Opaque))
-			{
-				sw.PS = Device.CreatePixelShader(sw.Bytecode.Span);
-			}
-
-			foreach (var pipeline in _resources.Pipelines)
-			{
-				var pw = (PipelineWrapper)pipeline.Opaque;
-				for (var i = 0; i < ID3D11DeviceContext.CommonShaderConstantBufferSlotCount; i++)
-				{
-					var cbw = pw.PendingBuffers[i];
-					if (cbw == null)
-					{
-						break;
-					}
-
-					if (cbw.VSBufferSize > 0)
-					{
-						var bd = new BufferDescription(cbw.VSBufferSize, BindFlags.ConstantBuffer, ResourceUsage.Dynamic, CpuAccessFlags.Write);
-						pw.VSConstantBuffers[i] = Device.CreateBuffer(bd);
-						cbw.VSBufferDirty = true;
-					}
-
-					if (cbw.PSBufferSize > 0)
-					{
-						var bd = new BufferDescription(cbw.PSBufferSize, BindFlags.ConstantBuffer, ResourceUsage.Dynamic, CpuAccessFlags.Write);
-						pw.PSConstantBuffers[i] = Device.CreateBuffer(bd);
-						cbw.PSBufferDirty = true;
-					}
-				}
-
-				CreateInputLayout(pipeline.VertexLayout, pw.VertexShader);
-			}
 
 			var swapChain = CreateDXGISwapChain(cp);
 			var bbTex = swapChain.GetBuffer<ID3D11Texture2D>(0);
@@ -236,109 +161,11 @@ namespace BizHawk.Bizware.Graphics
 		public void Dispose()
 		{
 			_controlSwapChain.Dispose();
-			Context.Flush();
 			_resources.Dispose();
 		}
 
 		public void ClearColor(Color color)
 			=> Context.ClearRenderTargetView(CurRenderTarget?.RTV ?? _controlSwapChain.RTV, new(color.R, color.B, color.G, color.A));
-
-		private class ShaderWrapper // Disposable fields cleaned up by Internal_FreeShader
-		{
-			public ReadOnlyMemory<byte> Bytecode;
-			public ID3D11ShaderReflection Reflection;
-			public ID3D11VertexShader VS;
-			public ID3D11PixelShader PS;
-			public Shader IGLShader;
-		}
-
-		/// <exception cref="InvalidOperationException"><paramref name="required"/> is <see langword="true"/> and compilation error occurred</exception>
-		public Shader CreateVertexShader(string source, string entry, bool required)
-		{
-			try
-			{
-				var sw = new ShaderWrapper();
-
-				var profile = DeviceFeatureLevel switch
-				{
-					FeatureLevel.Level_9_1 or FeatureLevel.Level_9_2 => "vs_4_0_level_9_1",
-					FeatureLevel.Level_9_3 => "vs_4_0_level_9_3",
-					_ => "vs_4_0",
-				};
-
-				// note: we use D3D9-like shaders for legacy reasons, so we need the backwards compat flag
-				// TODO: remove D3D9 syntax from shaders
-				var result = Compiler.Compile(
-					shaderSource: source,
-					entryPoint: entry,
-					sourceName: null!, // this is safe to be null
-					profile: profile,
-					shaderFlags: ShaderFlags.OptimizationLevel3 | ShaderFlags.EnableBackwardsCompatibility);
-
-				sw.VS = Device.CreateVertexShader(result.Span);
-				sw.Reflection = Compiler.Reflect<ID3D11ShaderReflection>(result.Span);
-				sw.Bytecode = result;
-
-				var s = new Shader(this, sw, true);
-				sw.IGLShader = s;
-				_resources.VertexShaders.Add(s);
-
-				return s;
-			}
-			catch (Exception ex)
-			{
-				if (required)
-				{
-					throw;
-				}
-
-				return new(this, null, false) { Errors = ex.ToString() };
-			}
-		}
-
-		/// <exception cref="InvalidOperationException"><paramref name="required"/> is <see langword="true"/> and compilation error occurred</exception>
-		public Shader CreateFragmentShader(string source, string entry, bool required)
-		{
-			try
-			{
-				var sw = new ShaderWrapper();
-
-				var profile = DeviceFeatureLevel switch
-				{
-					FeatureLevel.Level_9_1 or FeatureLevel.Level_9_2 => "ps_4_0_level_9_1",
-					FeatureLevel.Level_9_3 => "ps_4_0_level_9_3",
-					_ => "ps_4_0",
-				};
-
-				// note: we use D3D9-like shaders for legacy reasons, so we need the backwards compat flag
-				// TODO: remove D3D9 syntax from shaders
-				var result = Compiler.Compile(
-					shaderSource: source,
-					entryPoint: entry,
-					sourceName: null!, // this is safe to be null
-					profile: profile,
-					shaderFlags: ShaderFlags.OptimizationLevel3 | ShaderFlags.EnableBackwardsCompatibility);
-
-				sw.PS = Device.CreatePixelShader(result.Span);
-				sw.Reflection = Compiler.Reflect<ID3D11ShaderReflection>(result.Span);
-				sw.Bytecode = result;
-
-				var s = new Shader(this, sw, true);
-				sw.IGLShader = s;
-				_resources.PixelShaders.Add(s);
-
-				return s;
-			}
-			catch (Exception ex)
-			{
-				if (required)
-				{
-					throw;
-				}
-
-				return new(this, null, false) { Errors = ex.ToString() };
-			}
-		}
 
 		public void EnableBlending()
 			=> Context.OMSetBlendState(BlendEnableState);
@@ -346,463 +173,37 @@ namespace BizHawk.Bizware.Graphics
 		public void DisableBlending()
 			=> Context.OMSetBlendState(BlendDisableState);
 
-		private void CreateInputLayout(VertexLayout vertexLayout, ShaderWrapper vertexShader)
+		public IPipeline CreatePipeline(PipelineCompileArgs compileArgs)
+			=> new D3D11Pipeline(_resources, compileArgs);
+
+		public void BindPipeline(IPipeline pipeline)
 		{
-			var ves = new InputElementDescription[vertexLayout.Items.Count];
-			var stride = 0;
-			foreach (var (i, item) in vertexLayout.Items)
-			{
-				if (item.AttribType != VertexAttribPointerType.Float)
-				{
-					throw new NotSupportedException();
-				}
+			var d3d11Pipeline = (D3D11Pipeline)pipeline;
+			_resources.CurPipeline = d3d11Pipeline;
 
-				var semanticName = item.Usage switch
-				{
-					AttribUsage.Position => "POSITION",
-					AttribUsage.Color0 => "COLOR",
-					AttribUsage.Texcoord0 or AttribUsage.Texcoord1 => "TEXCOORD",
-					_ => throw new InvalidOperationException()
-				};
-
-				var format = item.Components switch
-				{
-					1 => Format.R32_Float,
-					2 => Format.R32G32_Float,
-					3 => Format.R32G32B32_Float,
-					4 => Format.R32G32B32A32_Float,
-					_ => throw new InvalidOperationException()
-				};
-
-				ves[i] = new(semanticName, item.Usage == AttribUsage.Texcoord1 ? 1 : 0, format, item.Offset, 0);
-				stride += 4 * item.Components;
-			}
-
-			var vlw = (VertexLayoutWrapper)vertexLayout.Opaque;
-			var bc = vertexShader.Bytecode.Span;
-			vlw.VertexInputLayout = Device.CreateInputLayout(ves, bc);
-			vlw.VertexStride = stride;
-		}
-
-		/// <exception cref="InvalidOperationException">
-		/// <paramref name="required"/> is <see langword="true"/> and either <paramref name="vertexShader"/> or <paramref name="fragmentShader"/> is unavailable (their <see cref="Shader.Available"/> property is <see langword="false"/>), or
-		/// one of <paramref name="vertexLayout"/>'s items has an unsupported value in <see cref="VertexLayout.LayoutItem.AttribType"/>, <see cref="VertexLayout.LayoutItem.Components"/>, or <see cref="VertexLayout.LayoutItem.Usage"/>
-		/// </exception>
-		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
-		{
-			if (!vertexShader.Available || !fragmentShader.Available)
-			{
-				var errors = $"Vertex Shader:\r\n {vertexShader.Errors} \r\n-------\r\nFragment Shader:\r\n{fragmentShader.Errors}";
-				if (required)
-				{
-					throw new InvalidOperationException($"Couldn't build required D3D11 pipeline:\r\n{errors}");
-				}
-
-				return new(this, null, false, null, null, null) { Errors = errors };
-			}
-
-			var pw = new PipelineWrapper
-			{
-				VertexShader = (ShaderWrapper)vertexShader.Opaque,
-				FragmentShader = (ShaderWrapper)fragmentShader.Opaque,
-			};
-
-			CreateInputLayout(vertexLayout, pw.VertexShader);
-
-			// scan uniforms from reflection
-			var uniforms = new List<UniformInfo>();
-			var vsrefl = pw.VertexShader.Reflection;
-			var psrefl = pw.FragmentShader.Reflection;
-			foreach (var refl in new[] { vsrefl, psrefl })
-			{
-				var isVs = refl == vsrefl;
-				var reflCbs = refl.ConstantBuffers;
-				var todo = new Queue<(string, PendingBufferWrapper, string, int, ID3D11ShaderReflectionType)>();
-				for (var i = 0; i < reflCbs.Length; i++)
-				{
-					var cbDesc = reflCbs[i].Description;
-					var bd = new BufferDescription((cbDesc.Size + 15) & ~15, BindFlags.ConstantBuffer, ResourceUsage.Dynamic, CpuAccessFlags.Write);
-					var constantBuffer = Device.CreateBuffer(bd);
-					var pendingBuffer = Marshal.AllocCoTaskMem(cbDesc.Size);
-					pw.PendingBuffers[i] ??= new();
-					if (isVs)
-					{
-						pw.VSConstantBuffers[i] = constantBuffer;
-						pw.PendingBuffers[i].VSPendingBuffer = pendingBuffer;
-						pw.PendingBuffers[i].VSBufferSize = cbDesc.Size;
-					}
-					else
-					{
-						pw.PSConstantBuffers[i] = constantBuffer;
-						pw.PendingBuffers[i].PSPendingBuffer = pendingBuffer;
-						pw.PendingBuffers[i].PSBufferSize = cbDesc.Size;
-					}
-
-					var prefix = cbDesc.Name.RemovePrefix('$');
-					prefix = prefix is "Params" or "Globals" ? "" : $"{prefix}.";
-					foreach (var reflVari in reflCbs[i].Variables)
-					{
-						var reflVariDesc = reflVari.Description;
-						todo.Enqueue((prefix, pw.PendingBuffers[i], reflVariDesc.Name, reflVariDesc.StartOffset, reflVari.VariableType));
-					}
-				}
-
-				while (todo.Count != 0)
-				{
-					var (prefix, pbw, reflVariName, reflVariOffset, reflVariType) = todo.Dequeue();
-					var reflVariTypeDesc = reflVariType.Description;
-					if (reflVariTypeDesc.MemberCount > 0)
-					{
-						prefix = $"{prefix}{reflVariName}.";
-						for (var i = 0; i < reflVariTypeDesc.MemberCount; i++)
-						{
-							var memberName = reflVariType.GetMemberTypeName(i);
-							var memberType = reflVariType.GetMemberTypeByIndex(i);
-							var memberOffset = memberType.Description.Offset;
-							todo.Enqueue((prefix, pbw, memberName, reflVariOffset + memberOffset, memberType));
-						}
-
-						continue;
-					}
-
-					if (reflVariTypeDesc.Type is not (ShaderVariableType.Bool or ShaderVariableType.Float))
-					{
-						// unsupported type
-						continue;
-					}
-
-					var reflVariSize = 4 * reflVariTypeDesc.ColumnCount * reflVariTypeDesc.RowCount;
-					uniforms.Add(new()
-					{
-						Name = $"{prefix}{reflVariName}",
-						Opaque = new UniformWrapper
-						{
-							PBW = pbw,
-							VariableStartOffset = reflVariOffset,
-							VariableSize = reflVariSize,
-							VS = isVs
-						}
-					});
-				}
-
-				uniforms.AddRange(refl.BoundResources
-					.Where(resource => resource.Type == ShaderInputType.Sampler)
-					.Select(resource => new UniformInfo
-					{
-						IsSampler = true,
-						Name = resource.Name.RemovePrefix('$'),
-						Opaque = new UniformWrapper { VS = isVs },
-						SamplerIndex = resource.BindPoint
-					}));
-			}
-
-			var ret = new Pipeline(this, pw, true, vertexLayout, uniforms, memo);
-			_resources.Pipelines.Add(ret);
-			return ret;
-		}
-
-		public void FreePipeline(Pipeline pipeline)
-		{
-			// unavailable pipelines will have no opaque
-			if (pipeline.Opaque is not PipelineWrapper pw)
-			{
-				return;
-			}
-
-			for (var i = 0; i < ID3D11DeviceContext.CommonShaderConstantBufferSlotCount; i++)
-			{
-				if (pw.PendingBuffers[i] != null)
-				{
-					Marshal.FreeCoTaskMem(pw.PendingBuffers[i].VSPendingBuffer);
-					Marshal.FreeCoTaskMem(pw.PendingBuffers[i].PSPendingBuffer);
-					pw.PendingBuffers[i] = null;
-				}
-
-				pw.VSConstantBuffers[i]?.Dispose();
-				pw.VSConstantBuffers[i] = null;
-				pw.PSConstantBuffers[i]?.Dispose();
-				pw.PSConstantBuffers[i] = null;
-			}
-
-			pw.VertexShader.IGLShader.Release();
-			pw.FragmentShader.IGLShader.Release();
-
-			_resources.Pipelines.Remove(pipeline);
-		}
-
-		public void Internal_FreeShader(Shader shader)
-		{
-			var sw = (ShaderWrapper)shader.Opaque;
-			sw.Reflection?.Dispose();
-			sw.Reflection = null;
-
-			if (sw.VS != null)
-			{
-				sw.VS.Dispose();
-				sw.VS = null;
-				_resources.VertexShaders.Remove(shader);
-			}
-
-			if (sw.PS != null)
-			{
-				sw.PS.Dispose();
-				sw.PS = null;
-				_resources.PixelShaders.Remove(shader);
-			}
-		}
-
-		private class UniformWrapper
-		{
-			public PendingBufferWrapper PBW;
-			public int VariableStartOffset;
-			public int VariableSize;
-			public bool VS;
-		}
-
-		private class PendingBufferWrapper
-		{
-			public IntPtr VSPendingBuffer, PSPendingBuffer;
-			public int VSBufferSize, PSBufferSize;
-			public bool VSBufferDirty, PSBufferDirty; 
-		}
-
-		private class PipelineWrapper // Disposable fields cleaned up by FreePipeline
-		{
-			public readonly PendingBufferWrapper[] PendingBuffers = new PendingBufferWrapper[ID3D11DeviceContext.CommonShaderConstantBufferSlotCount];
-			public readonly ID3D11Buffer[] VSConstantBuffers = new ID3D11Buffer[ID3D11DeviceContext.CommonShaderConstantBufferSlotCount];
-			public readonly ID3D11Buffer[] PSConstantBuffers = new ID3D11Buffer[ID3D11DeviceContext.CommonShaderConstantBufferSlotCount];
-			public ShaderWrapper VertexShader, FragmentShader;
-		}
-
-		private class VertexLayoutWrapper
-		{
-			public ID3D11InputLayout VertexInputLayout;
-			public int VertexStride;
-
-			public ID3D11Buffer VertexBuffer;
-			public int VertexBufferCount;
-		}
-
-		public VertexLayout CreateVertexLayout()
-			=> new(this, new VertexLayoutWrapper());
-
-		public void Internal_FreeVertexLayout(VertexLayout layout)
-		{
-			var vlw = (VertexLayoutWrapper)layout.Opaque;
-			vlw.VertexInputLayout?.Dispose();
-			vlw.VertexInputLayout = null;
-			vlw.VertexBuffer?.Dispose();
-			vlw.VertexBuffer = null;
-		}
-
-		public void BindPipeline(Pipeline pipeline)
-		{
-			_curPipeline = pipeline;
-
-			if (pipeline == null)
+			if (d3d11Pipeline == null)
 			{
 				// unbind? i don't know
 				return;
 			}
 
-			var pw = (PipelineWrapper)pipeline.Opaque;
-			Context.VSSetShader(pw.VertexShader.VS);
-			Context.PSSetShader(pw.FragmentShader.PS);
+			Context.VSSetShader(d3d11Pipeline.VS);
+			Context.PSSetShader(d3d11Pipeline.PS);
 
-			Context.VSSetConstantBuffers(0, pw.VSConstantBuffers);
-			Context.PSSetConstantBuffers(0, pw.PSConstantBuffers);
+			Context.VSSetConstantBuffers(0, d3d11Pipeline.VSConstantBuffers);
+			Context.PSSetConstantBuffers(0, d3d11Pipeline.PSConstantBuffers);
 
-			var vlw = (VertexLayoutWrapper)pipeline.VertexLayout.Opaque;
-			Context.IASetInputLayout(vlw.VertexInputLayout);
-			Context.IASetVertexBuffer(0, vlw.VertexBuffer, vlw.VertexStride);
+			Context.VSUnsetSamplers(0, ID3D11DeviceContext.CommonShaderSamplerSlotCount);
+			Context.VSUnsetShaderResources(0, ID3D11DeviceContext.CommonShaderSamplerSlotCount);
+			Context.PSUnsetSamplers(0, ID3D11DeviceContext.CommonShaderSamplerSlotCount);
+			Context.PSUnsetShaderResources(0, ID3D11DeviceContext.CommonShaderSamplerSlotCount);
+
+			Context.IASetInputLayout(d3d11Pipeline.VertexInputLayout);
+			Context.IASetVertexBuffer(0, d3d11Pipeline.VertexBuffer, d3d11Pipeline.VertexStride);
 
 			// not sure if this applies to the current pipeline or all pipelines
 			// just set it every time to be safe
 			Context.RSSetState(RasterizerState);
-		}
-
-		public void SetPipelineUniform(PipelineUniform uniform, bool value)
-		{
-			foreach (var ui in uniform.UniformInfos)
-			{
-				var uw = (UniformWrapper)ui.Opaque;
-				var pendingBuffer = uw.VS ? uw.PBW.VSPendingBuffer : uw.PBW.PSPendingBuffer;
-				unsafe
-				{
-					// note: HLSL bool is 4 bytes large
-					var b = value ? 1 : 0;
-					var variablePtr = (void*)(pendingBuffer + uw.VariableStartOffset);
-					Buffer.MemoryCopy(&b, variablePtr, uw.VariableSize, sizeof(int));
-				}
-
-				if (uw.VS)
-				{
-					uw.PBW.VSBufferDirty = true;
-				}
-				else
-				{
-					uw.PBW.PSBufferDirty = true;
-				}
-			}
-		}
-
-		public void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4x4 mat, bool transpose)
-			=> SetPipelineUniformMatrix(uniform, ref mat, transpose);
-
-		public void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4x4 mat, bool transpose)
-		{
-			foreach (var ui in uniform.UniformInfos)
-			{
-				var uw = (UniformWrapper)ui.Opaque;
-				var pendingBuffer = uw.VS ? uw.PBW.VSPendingBuffer : uw.PBW.PSPendingBuffer;
-				unsafe
-				{
-					// transpose logic is inversed
-					var m = transpose ? Matrix4x4.Transpose(mat) : mat;
-					var variablePtr = (void*)(pendingBuffer + uw.VariableStartOffset);
-					Buffer.MemoryCopy(&m, variablePtr, uw.VariableSize, sizeof(Matrix4x4));
-				}
-
-				if (uw.VS)
-				{
-					uw.PBW.VSBufferDirty = true;
-				}
-				else
-				{
-					uw.PBW.PSBufferDirty = true;
-				}
-			}
-		}
-
-		public void SetPipelineUniform(PipelineUniform uniform, Vector4 value)
-		{
-			foreach (var ui in uniform.UniformInfos)
-			{
-				var uw = (UniformWrapper)ui.Opaque;
-				var pendingBuffer = uw.VS ? uw.PBW.VSPendingBuffer : uw.PBW.PSPendingBuffer;
-				unsafe
-				{
-					var variablePtr = (void*)(pendingBuffer + uw.VariableStartOffset);
-					Buffer.MemoryCopy(&value, variablePtr, uw.VariableSize, sizeof(Vector4));
-				}
-
-				if (uw.VS)
-				{
-					uw.PBW.VSBufferDirty = true;
-				}
-				else
-				{
-					uw.PBW.PSBufferDirty = true;
-				}
-			}
-		}
-
-		public void SetPipelineUniform(PipelineUniform uniform, Vector2 value)
-		{
-			foreach (var ui in uniform.UniformInfos)
-			{
-				var uw = (UniformWrapper)ui.Opaque;
-				var pendingBuffer = uw.VS ? uw.PBW.VSPendingBuffer : uw.PBW.PSPendingBuffer;
-				unsafe
-				{
-					var variablePtr = (void*)(pendingBuffer + uw.VariableStartOffset);
-					Buffer.MemoryCopy(&value, variablePtr, uw.VariableSize, sizeof(Vector2));
-				}
-
-				if (uw.VS)
-				{
-					uw.PBW.VSBufferDirty = true;
-				}
-				else
-				{
-					uw.PBW.PSBufferDirty = true;
-				}
-			}
-		}
-
-		public void SetPipelineUniform(PipelineUniform uniform, float value)
-		{
-			foreach (var ui in uniform.UniformInfos)
-			{
-				var uw = (UniformWrapper)ui.Opaque;
-				var pendingBuffer = uw.VS ? uw.PBW.VSPendingBuffer : uw.PBW.PSPendingBuffer;
-				unsafe
-				{
-					var variablePtr = (void*)(pendingBuffer + uw.VariableStartOffset);
-					Buffer.MemoryCopy(&value, variablePtr, uw.VariableSize, sizeof(float));
-				}
-
-				if (uw.VS)
-				{
-					uw.PBW.VSBufferDirty = true;
-				}
-				else
-				{
-					uw.PBW.PSBufferDirty = true;
-				}
-			}
-		}
-
-		public void SetPipelineUniform(PipelineUniform uniform, Vector4[] values)
-		{
-			foreach (var ui in uniform.UniformInfos)
-			{
-				var uw = (UniformWrapper)ui.Opaque;
-				var pendingBuffer = uw.VS ? uw.PBW.VSPendingBuffer : uw.PBW.PSPendingBuffer;
-				unsafe
-				{
-					fixed (Vector4* v = values)
-					{
-						var variablePtr = (void*)(pendingBuffer + uw.VariableStartOffset);
-						Buffer.MemoryCopy(v, variablePtr, uw.VariableSize, values.Length * sizeof(Vector4));
-					}
-				}
-
-				if (uw.VS)
-				{
-					uw.PBW.VSBufferDirty = true;
-				}
-				else
-				{
-					uw.PBW.PSBufferDirty = true;
-				}
-			}
-		}
-
-		public void SetPipelineUniformSampler(PipelineUniform uniform, ITexture2D tex)
-		{
-			if (uniform.Owner == null)
-			{
-				return; // uniform was optimized out
-			}
-
-			var d3d11Tex = (D3D11Texture2D)tex;
-			var sampler = d3d11Tex.LinearFiltering ? LinearSamplerState : PointSamplerState;
-
-			foreach (var ui in uniform.UniformInfos)
-			{
-				if (!ui.IsSampler)
-				{
-					throw new InvalidOperationException("Uniform was not a texture/sampler");
-				}
-
-				var uw = (UniformWrapper)ui.Opaque;
-				if (uw.VS)
-				{
-					if (DeviceFeatureLevel == FeatureLevel.Level_9_1)
-					{
-						throw new InvalidOperationException("Feature level 9.1 does not support setting a shader resource in a vertex shader");
-					}
-
-					Context.VSSetShaderResource(ui.SamplerIndex, d3d11Tex.SRV);
-					Context.VSSetSampler(ui.SamplerIndex, sampler);
-				}
-				else
-				{
-					Context.PSSetShaderResource(ui.SamplerIndex, d3d11Tex.SRV);
-					Context.PSSetSampler(ui.SamplerIndex, sampler);
-				}
-			}
 		}
 
 		public ITexture2D CreateTexture(int width, int height)
@@ -848,57 +249,56 @@ namespace BizHawk.Bizware.Graphics
 
 		public void Draw(IntPtr data, int count)
 		{
-			var vlw = (VertexLayoutWrapper)_curPipeline.VertexLayout.Opaque;
-			var stride = vlw.VertexStride;
+			var pipeline = CurPipeline;
+			var stride = pipeline.VertexStride;
 
-			if (vlw.VertexBufferCount < count)
+			if (pipeline.VertexBufferCount < count)
 			{
-				vlw.VertexBuffer?.Dispose();
+				pipeline.VertexBuffer?.Dispose();
 				var bd = new BufferDescription(stride * count, BindFlags.VertexBuffer, ResourceUsage.Dynamic, CpuAccessFlags.Write);
-				vlw.VertexBuffer = Device.CreateBuffer(in bd, data);
-				vlw.VertexBufferCount = count;
+				pipeline.VertexBuffer = Device.CreateBuffer(in bd, data);
+				pipeline.VertexBufferCount = count;
 			}
 			else
 			{
-				var mappedVb = Context.Map(vlw.VertexBuffer, MapMode.WriteDiscard);
+				var mappedVb = Context.Map(pipeline.VertexBuffer, MapMode.WriteDiscard);
 				try
 				{
 					unsafe
 					{
-						Buffer.MemoryCopy((void*)data, (void*)mappedVb.DataPointer, stride * vlw.VertexBufferCount, stride * count);
+						Buffer.MemoryCopy((void*)data, (void*)mappedVb.DataPointer, stride * pipeline.VertexBufferCount, stride * count);
 					}
 				}
 				finally
 				{
-					Context.Unmap(vlw.VertexBuffer);
+					Context.Unmap(pipeline.VertexBuffer);
 				}
 			}
 
 			unsafe
 			{
-				var pw = (PipelineWrapper)_curPipeline.Opaque;
 				for (var i = 0; i < ID3D11DeviceContext.CommonShaderConstantBufferSlotCount; i++)
 				{
-					var pbw = pw.PendingBuffers[i];
-					if (pbw == null)
+					var pb = pipeline.PendingBuffers[i];
+					if (pb == null)
 					{
 						break;
 					}
 
-					if (pbw.VSBufferDirty)
+					if (pb.VSBufferDirty)
 					{
-						var vsCb = Context.Map(pw.VSConstantBuffers[i], MapMode.WriteDiscard);
-						Buffer.MemoryCopy((void*)pbw.VSPendingBuffer, (void*)vsCb.DataPointer, pbw.VSBufferSize, pbw.VSBufferSize);
-						Context.Unmap(pw.VSConstantBuffers[i]);
-						pbw.VSBufferDirty = false;
+						var vsCb = Context.Map(pipeline.VSConstantBuffers[i], MapMode.WriteDiscard);
+						Buffer.MemoryCopy((void*)pb.VSPendingBuffer, (void*)vsCb.DataPointer, pb.VSBufferSize, pb.VSBufferSize);
+						Context.Unmap(pipeline.VSConstantBuffers[i]);
+						pb.VSBufferDirty = false;
 					}
 
-					if (pbw.PSBufferDirty)
+					if (pb.PSBufferDirty)
 					{
-						var psCb = Context.Map(pw.PSConstantBuffers[i], MapMode.WriteDiscard);
-						Buffer.MemoryCopy((void*)pbw.PSPendingBuffer, (void*)psCb.DataPointer, pbw.PSBufferSize, pbw.PSBufferSize);
-						Context.Unmap(pw.PSConstantBuffers[i]);
-						pbw.PSBufferDirty = false;
+						var psCb = Context.Map(pipeline.PSConstantBuffers[i], MapMode.WriteDiscard);
+						Buffer.MemoryCopy((void*)pb.PSPendingBuffer, (void*)psCb.DataPointer, pb.PSBufferSize, pb.PSBufferSize);
+						Context.Unmap(pipeline.PSConstantBuffers[i]);
+						pb.PSBufferDirty = false;
 					}
 				}
 			}
