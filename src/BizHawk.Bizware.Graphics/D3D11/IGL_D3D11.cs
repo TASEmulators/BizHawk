@@ -20,10 +20,10 @@ namespace BizHawk.Bizware.Graphics
 		// these might need to be thrown out and recreated if the device is lost
 		private readonly D3D11Resources _resources;
 
-		private IDXGIFactory1 Factory1 => _resources.Factory1;
-		private IDXGIFactory2 Factory2 => _resources.Factory2;
 		private ID3D11Device Device => _resources.Device;
 		private ID3D11DeviceContext Context => _resources.Context;
+		private IDXGIFactory1 Factory1 => _resources.Factory1;
+		private IDXGIFactory2 Factory2 => _resources.Factory2;
 		private ID3D11BlendState BlendEnableState => _resources.BlendEnableState;
 		private ID3D11BlendState BlendDisableState => _resources.BlendDisableState;
 		private ID3D11RasterizerState RasterizerState => _resources.RasterizerState;

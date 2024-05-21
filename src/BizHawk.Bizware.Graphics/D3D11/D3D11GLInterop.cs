@@ -58,7 +58,7 @@ namespace BizHawk.Bizware.Graphics
 						return;
 					}
 
-					// note: Silk.NET's WGL.IsExtensionPresent function seemed to be bugged and just result in NREs...
+					// note: Silk.NET's WGL.IsExtensionPresent function seems to be bugged and just results in NREs...
 					NVDXInterop = new(new LamdaNativeContext(SDL2OpenGLContext.GetGLProcAddress));
 					if (NVDXInterop.CurrentVTable.Load("wglDXOpenDeviceNV") == IntPtr.Zero
 						|| NVDXInterop.CurrentVTable.Load("wglDXCloseDeviceNV") == IntPtr.Zero
@@ -122,6 +122,7 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		private readonly D3D11Resources _resources;
+		private ID3D11Device Device => _resources.Device;
 
 		private IntPtr _dxInteropDevice;
 		private IntPtr _lastGLContext;
@@ -131,18 +132,15 @@ namespace BizHawk.Bizware.Graphics
 
 		public D3D11GLInterop(D3D11Resources resources)
 		{
-			using (new SavedOpenGLContext())
+			_resources = resources;
+			try
 			{
-				_resources = resources;
-				try
-				{
-					OpenInteropDevice();
-				}
-				catch
-				{
-					Dispose();
-					throw;
-				}
+				OpenInteropDevice();
+			}
+			catch
+			{
+				Dispose();
+				throw;
 			}
 		}
 
@@ -150,7 +148,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			unsafe
 			{
-				_dxInteropDevice = NVDXInterop.DxopenDevice((void*)_resources.Device.NativePointer);
+				_dxInteropDevice = NVDXInterop.DxopenDevice((void*)Device.NativePointer);
 			}
 
 			if (_dxInteropDevice == IntPtr.Zero)
