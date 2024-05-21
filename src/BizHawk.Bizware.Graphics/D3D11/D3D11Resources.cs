@@ -25,6 +25,7 @@ namespace BizHawk.Bizware.Graphics
 		public ID3D11RasterizerState RasterizerState;
 
 		public FeatureLevel DeviceFeatureLevel;
+		public bool PresentAllowTearing;
 
 		public D3D11RenderTarget CurRenderTarget;
 		public D3D11Pipeline CurPipeline;
@@ -68,6 +69,9 @@ namespace BizHawk.Bizware.Graphics
 				// we want IDXGIFactory2 for CreateSwapChainForHwnd
 				// however, it's not guaranteed to be available (only available in Win8+ or Win7 with the Platform Update)
 				Factory2 = Factory1.QueryInterfaceOrNull<IDXGIFactory2>();
+
+				using var factory5 = Factory1.QueryInterfaceOrNull<IDXGIFactory5>();
+				PresentAllowTearing = factory5?.PresentAllowTearing ?? false;
 
 				var bd = default(BlendDescription);
 				bd.AlphaToCoverageEnable = false;

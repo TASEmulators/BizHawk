@@ -35,6 +35,7 @@ namespace BizHawk.Bizware.Graphics
 			public ID3D11Texture2D BackBufferTexture;
 			public ID3D11RenderTargetView RTV;
 			public IDXGISwapChain SwapChain;
+			public bool HasFlipModel;
 			public bool AllowsTearing;
 
 			public void Dispose()
@@ -64,6 +65,7 @@ namespace BizHawk.Bizware.Graphics
 		private ID3D11Texture2D BackBufferTexture => _resources.BackBufferTexture;
 		private ID3D11RenderTargetView RTV => _resources.RTV;
 		private IDXGISwapChain SwapChain => _resources.SwapChain;
+		private bool HasFlipModel => _resources.HasFlipModel;
 		private bool AllowsTearing => _resources.AllowsTearing;
 
 		internal D3D11SwapChain(SwapChainResources resources, Action<ControlParameters> resetDeviceCallback)
@@ -80,7 +82,7 @@ namespace BizHawk.Bizware.Graphics
 			Context.OMSetRenderTargets(RTV);
 
 			PresentFlags presentFlags;
-			if (cp.Vsync)
+			if (cp.Vsync || !HasFlipModel)
 			{
 				presentFlags = PresentFlags.None;
 			}

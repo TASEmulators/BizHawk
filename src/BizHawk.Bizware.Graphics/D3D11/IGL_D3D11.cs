@@ -28,6 +28,8 @@ namespace BizHawk.Bizware.Graphics
 		private ID3D11BlendState BlendDisableState => _resources.BlendDisableState;
 		private ID3D11RasterizerState RasterizerState => _resources.RasterizerState;
 
+		private bool PresentAllowTearing => _resources.PresentAllowTearing;
+
 		private D3D11RenderTarget CurRenderTarget => _resources.CurRenderTarget;
 		private D3D11Pipeline CurPipeline => _resources.CurPipeline;
 
@@ -89,7 +91,7 @@ namespace BizHawk.Bizware.Graphics
 					bufferCount: 2,
 					scaling: Scaling.Stretch,
 					alphaMode: AlphaMode.Ignore,
-					flags: SwapChainFlags.AllowTearing);
+					flags: PresentAllowTearing ? SwapChainFlags.AllowTearing : SwapChainFlags.None);
 
 				try
 				{
@@ -97,9 +99,18 @@ namespace BizHawk.Bizware.Graphics
 				}
 				catch
 				{
-					sd.SwapEffect = SwapEffect.Discard;
-					sd.Flags = SwapChainFlags.None;
-					ret = Factory2.CreateSwapChainForHwnd(Device, cp.Handle, sd);
+					try
+					{
+						// FlipSequential is supported on Win8+
+						sd.SwapEffect = SwapEffect.FlipSequential;
+						ret = Factory2.CreateSwapChainForHwnd(Device, cp.Handle, sd);
+					}
+					catch
+					{
+						sd.SwapEffect = SwapEffect.Discard;
+						sd.Flags = SwapChainFlags.None;
+						ret = Factory2.CreateSwapChainForHwnd(Device, cp.Handle, sd);
+					}
 				}
 			}
 
@@ -123,6 +134,7 @@ namespace BizHawk.Bizware.Graphics
 			var bbTex = swapChain.GetBuffer<ID3D11Texture2D>(0);
 			var bbRtvd = new RenderTargetViewDescription(RenderTargetViewDimension.Texture2D, Format.B8G8R8A8_UNorm);
 			var rtv = Device.CreateRenderTargetView(bbTex, bbRtvd);
+			var swapChainDesc = swapChain.Description;
 
 			_controlSwapChain.Device = Device;
 			_controlSwapChain.Context = Context;
@@ -130,7 +142,8 @@ namespace BizHawk.Bizware.Graphics
 			_controlSwapChain.BackBufferTexture = bbTex;
 			_controlSwapChain.RTV = rtv;
 			_controlSwapChain.SwapChain = swapChain;
-			_controlSwapChain.AllowsTearing = (swapChain.Description.Flags & SwapChainFlags.AllowTearing) != 0;
+			_controlSwapChain.HasFlipModel = swapChainDesc.SwapEffect is SwapEffect.FlipSequential or SwapEffect.FlipDiscard;
+			_controlSwapChain.AllowsTearing = (swapChainDesc.Flags & SwapChainFlags.AllowTearing) != 0;
 		}
 
 		public D3D11SwapChain CreateSwapChain(D3D11SwapChain.ControlParameters cp)
@@ -144,6 +157,7 @@ namespace BizHawk.Bizware.Graphics
 			var bbTex = swapChain.GetBuffer<ID3D11Texture2D>(0);
 			var rtvd = new RenderTargetViewDescription(RenderTargetViewDimension.Texture2D, Format.B8G8R8A8_UNorm);
 			var rtv = Device.CreateRenderTargetView(bbTex, rtvd);
+			var swapChainDesc = swapChain.Description;
 
 			_controlSwapChain = new()
 			{
@@ -153,7 +167,8 @@ namespace BizHawk.Bizware.Graphics
 				BackBufferTexture = bbTex,
 				RTV = rtv,
 				SwapChain = swapChain,
-				AllowsTearing = (swapChain.Description.Flags & SwapChainFlags.AllowTearing) != 0,
+				HasFlipModel = swapChainDesc.SwapEffect is SwapEffect.FlipSequential or SwapEffect.FlipDiscard,
+				AllowsTearing = (swapChainDesc.Flags & SwapChainFlags.AllowTearing) != 0,
 			};
 
 			return new(_controlSwapChain, ResetDevice);
