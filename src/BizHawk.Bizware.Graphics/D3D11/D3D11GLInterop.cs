@@ -58,7 +58,7 @@ namespace BizHawk.Bizware.Graphics
 						return;
 					}
 
-					// note: Silk.NET's WGL.TryGetExtension function seemed to be bugged and just result in NREs...
+					// note: Silk.NET's WGL.IsExtensionPresent function seemed to be bugged and just result in NREs...
 					NVDXInterop = new(new LamdaNativeContext(SDL2OpenGLContext.GetGLProcAddress));
 					if (NVDXInterop.CurrentVTable.Load("wglDXOpenDeviceNV") == IntPtr.Zero
 						|| NVDXInterop.CurrentVTable.Load("wglDXCloseDeviceNV") == IntPtr.Zero
@@ -69,6 +69,11 @@ namespace BizHawk.Bizware.Graphics
 					{
 						return;
 					}
+
+					// using these NVDXInterop functions shouldn't need a context active (see above Kronos comment)
+					// however, some buggy drivers will end up failing if we don't have a context
+					// explicitly make no context active to catch these buggy drivers
+					SDL2OpenGLContext.MakeNoneCurrent();
 
 					ID3D11Device device = null;
 					var dxInteropDevice = IntPtr.Zero;
@@ -109,9 +114,9 @@ namespace BizHawk.Bizware.Graphics
 						}
 					}
 				}
-				catch (Exception ex)
+				catch
 				{
-					Console.WriteLine(ex);
+					// ignored
 				}
 			}
 		}

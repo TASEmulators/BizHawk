@@ -14,10 +14,10 @@ namespace BizHawk.Bizware.Graphics
 	/// </summary>
 	internal sealed class D3D11Resources : IDisposable
 	{
-		public IDXGIFactory1 Factory1;
-		public IDXGIFactory2 Factory2;
 		public ID3D11Device Device;
 		public ID3D11DeviceContext Context;
+		public IDXGIFactory1 Factory1;
+		public IDXGIFactory2 Factory2;
 		public ID3D11BlendState BlendEnableState;
 		public ID3D11BlendState BlendDisableState;
 		public ID3D11SamplerState PointSamplerState;
@@ -36,13 +36,9 @@ namespace BizHawk.Bizware.Graphics
 		{
 			try
 			{
-				Factory1 = DXGI.CreateDXGIFactory1<IDXGIFactory1>();
-				// we want IDXGIFactory2 for CreateSwapChainForHwnd
-				// however, it's not guaranteed to be available (only available in Win8+ or Win7 with the Platform Update)
-				Factory2 = Factory1.QueryInterfaceOrNull<IDXGIFactory2>();
 #if false
 				// use this to debug D3D11 calls
-				// note debug layer requires extra steps to use: https://learn.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-devices-layers#debug-layer
+				// note the debug layer requires extra steps to use: https://learn.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-devices-layers#debug-layer
 				// also debug output will only be present with a "native debugger" attached (pure managed debugger can't see this output)
 				var creationFlags = DeviceCreationFlags.Singlethreaded | DeviceCreationFlags.BgraSupport | DeviceCreationFlags.Debug;
 #else
@@ -66,6 +62,12 @@ namespace BizHawk.Bizware.Graphics
 
 				using var dxgiDevice = Device.QueryInterface<IDXGIDevice1>();
 				dxgiDevice.MaximumFrameLatency = 1;
+
+				using var adapter = dxgiDevice.GetAdapter();
+				Factory1 = adapter.GetParent<IDXGIFactory1>();
+				// we want IDXGIFactory2 for CreateSwapChainForHwnd
+				// however, it's not guaranteed to be available (only available in Win8+ or Win7 with the Platform Update)
+				Factory2 = Factory1.QueryInterfaceOrNull<IDXGIFactory2>();
 
 				var bd = default(BlendDescription);
 				bd.AlphaToCoverageEnable = false;
