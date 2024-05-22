@@ -135,12 +135,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				if (!OSTailoredCode.IsUnixHost) MotWHack.RemoveMOTW(fileName);
-#if DEBUG
 				var externalToolFile = Assembly.LoadFrom(fileName);
-#else
-				var asmBytes = File.ReadAllBytes(fileName);
-				var externalToolFile = Assembly.Load(asmBytes);
-#endif
 				if (!externalToolFile.GetReferencedAssemblies().Any(static name => name.Name.StartsWithOrdinal("BizHawk.")))
 				{
 					return Fail("it doesn't reference a BizHawk assembly");
@@ -154,9 +149,15 @@ namespace BizHawk.Client.EmuHawk
 				if (applicabilityAttrs.Count > 1) throw new ExternalToolApplicabilityAttributeBase.DuplicateException();
 
 				var toolAttribute = allAttrs.OfType<ExternalToolAttribute>().First();
+				item.Text = toolAttribute.Name;
 				if (toolAttribute.LoadAssemblyFiles != null)
 				{
-					foreach (var depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"{_config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path}/{depFilename}");
+					foreach (var depFilename in toolAttribute.LoadAssemblyFiles)
+					{
+						var depFilePath = $"{_config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path}/{depFilename}";
+						Console.WriteLine($"preloading assembly {depFilePath} requested by ext. tool {toolAttribute.Name}");
+						Assembly.LoadFrom(depFilePath);
+					}
 				}
 
 				item.Image = null; // no errors, remove error icon
@@ -166,13 +167,12 @@ namespace BizHawk.Client.EmuHawk
 					var rawIcon = externalToolFile.GetManifestResourceStream(embeddedIconAttr.ResourcePath);
 					if (rawIcon != null) item.Image = new Bitmap(rawIcon);
 				}
-				item.Text = toolAttribute.Name;
 				MenuItemInfo menuItemInfo = new(
 					this,
 #if DEBUG
 					asmChecksum: string.Empty,
 #else
-					asmChecksum: SHA1Checksum.ComputePrefixedHex(asmBytes),
+					asmChecksum: SHA1Checksum.ComputePrefixedHex(File.ReadAllBytes(fileName)),
 #endif
 					asmFilename: fileName,
 					entryPointTypeName: entryPoint.FullName);
