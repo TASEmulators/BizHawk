@@ -591,7 +591,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				string target = Path.Combine(basePath, fi.Name);
-				if (new FileInfo(target).Exists)
+				if (File.Exists(target))
 				{
 					// compare the files, if they're the same. don't do anything
 					if (File.ReadAllBytes(target).SequenceEqual(File.ReadAllBytes(f)))

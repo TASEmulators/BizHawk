@@ -242,7 +242,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(CurrentFileName))
 				{
-					new FileInfo(CurrentFileName).Delete();
+					File.Delete(CurrentFileName);
 					_config.Recent.Remove(CurrentFileName);
 				}
 			}
