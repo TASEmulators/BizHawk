@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				case ControlType.None:
 					return LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 				case ControlType.Normal:
-					return LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD;
+					return LibGPGX.INPUT_SYSTEM.SYSTEM_GAMEPAD;
 				case ControlType.Xea1p:
 					return LibGPGX.INPUT_SYSTEM.SYSTEM_XE_A1P;
 				case ControlType.Activator:

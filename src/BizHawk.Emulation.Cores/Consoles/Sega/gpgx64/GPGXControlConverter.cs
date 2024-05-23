@@ -242,7 +242,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					case LibGPGX.INPUT_DEVICE.DEVICE_PADDLE:
 					case LibGPGX.INPUT_DEVICE.DEVICE_SPORTSPAD:
 					case LibGPGX.INPUT_DEVICE.DEVICE_TEREBI:
-						throw new Exception("Not implemented yet.");
+						throw new NotImplementedException();
 					case LibGPGX.INPUT_DEVICE.DEVICE_ACTIVATOR:
 						AddToController(i, player, Activator);
 						player++;
