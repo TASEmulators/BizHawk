@@ -177,6 +177,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					return LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY;
 				case ControlType.Mouse:
 					return LibGPGX.INPUT_SYSTEM.SYSTEM_MOUSE;
+				case ControlType.Paddle:
+					return LibGPGX.INPUT_SYSTEM.SYSTEM_PADDLE;
 			}
 		}
 
@@ -206,7 +208,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Activator,
 			Teamplayer,
 			Wayplay,
-			Mouse
+			Mouse,
+			Paddle,
 		}
 
 
