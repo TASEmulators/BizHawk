@@ -99,9 +99,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private void RefreshMemCallbacks()
 		{
 			Core.gpgx_set_mem_callback(
-				MemoryCallbacks.HasReads ? ReadCallback : null,
-				MemoryCallbacks.HasWrites ? WriteCallback : null,
-				MemoryCallbacks.HasExecutes ? ExecCallback : null);
+				_memoryCallbacks.HasReads ? ReadCallback : null,
+				_memoryCallbacks.HasWrites ? WriteCallback : null,
+				_memoryCallbacks.HasExecutes ? ExecCallback : null);
 		}
 
 		private void KillMemCallbacks()
