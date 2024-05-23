@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 			float y = position.Anchor.IsTop()
 				? position.Y
 				: g.ClipBounds.Height - position.Y - size.Height;
-			
+
 
 			return new PointF(x, y);
 		}
@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common
 
 				return sb.ToString();
 			}
-			
+
 			return _emulator.Frame.ToString();
 		}
 
@@ -176,12 +176,12 @@ namespace BizHawk.Client.Common
 
 		public string InputStrMovie()
 		{
-			return MakeStringFor(_movieSession.MovieController, cache: true);
+			return MakeStringFor(_movieSession.MovieController);
 		}
 
 		public string InputStrImmediate()
 		{
-			return MakeStringFor(_inputManager.AutofireStickyXorAdapter, cache: true);
+			return MakeStringFor(_inputManager.AutofireStickyXorAdapter);
 		}
 
 		public string InputPrevious()
@@ -203,15 +203,9 @@ namespace BizHawk.Client.Common
 				? MakeStringFor(_inputManager.AutofireStickyXorAdapter.Or(_movieSession.Movie.GetInputState(_emulator.Frame - 1)))
 				: InputStrImmediate();
 
-		private string MakeStringFor(IController controller, bool cache = false)
+		private string MakeStringFor(IController controller)
 		{
-			var idg = controller.InputDisplayGenerator;
-			if (idg is null)
-			{
-				idg = new Bk2InputDisplayGenerator(_emulator.SystemId, controller);
-				if (cache) controller.InputDisplayGenerator = idg;
-			}
-			return idg.Generate();
+			return _inputManager.InputDisplayGenerator.Generate(controller);
 		}
 
 		public string MakeIntersectImmediatePrevious()
@@ -301,7 +295,7 @@ namespace BizHawk.Client.Common
 					// in order to achieve this we want to avoid drawing anything pink that isn't actually held down right now
 					// so we make an AND adapter and combine it using immediate & sticky
 					// (adapter creation moved to InputManager)
-					var autoString = MakeStringFor(_inputManager.WeirdStickyControllerForInputDisplay, cache: true);
+					var autoString = MakeStringFor(_inputManager.WeirdStickyControllerForInputDisplay);
 					g.DrawString(autoString, autoColor, point.X, point.Y);
 
 					//recolor everything that's changed from the previous input
