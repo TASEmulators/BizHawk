@@ -205,8 +205,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CallSaveStateEvent(string name)
 		{
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
-
 			try
 			{
 				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_SAVESTATE).ToList())
@@ -222,8 +220,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CallLoadStateEvent(string name)
 		{
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
-
 			try
 			{
 				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_LOADSTATE).ToList())
@@ -240,8 +236,6 @@ namespace BizHawk.Client.EmuHawk
 		public void CallFrameBeforeEvent()
 		{
 			if (IsUpdateSupressed) return;
-
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
 
 			try
 			{
@@ -260,8 +254,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (IsUpdateSupressed) return;
 
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
-
 			try
 			{
 				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_POSTFRAME).ToList())
@@ -277,8 +269,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CallExitEvent(LuaFile lf)
 		{
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
-
 			foreach (var exitCallback in RegisteredFunctions
 				.Where(l => l.Event == NamedLuaFunction.EVENT_TYPE_ENGINESTOP
 					&& (l.LuaFile.Path == lf.Path || ReferenceEquals(l.LuaFile.Thread, lf.Thread)))
@@ -340,7 +330,6 @@ namespace BizHawk.Client.EmuHawk
 		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
 		{
 			_currThread = lf.Thread;
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
 
 			try
 			{

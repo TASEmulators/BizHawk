@@ -70,12 +70,17 @@ namespace BizHawk.Bizware.Graphics
 		void SetViewport(int x, int y, int width, int height);
 
 		/// <summary>
-		/// Draws based on the currently set pipeline
-		/// Data contains vertexes based on the pipeline's VertexLayout
-		/// Count is the vertex count
+		/// Non-indexed drawing for the currently set pipeline/render target
 		/// Vertexes must form triangle strips
 		/// </summary>
-		void Draw(IntPtr data, int count);
+		void Draw(int vertexCount);
+
+		/// <summary>
+		/// Indexed drawing for the currently set pipeline/render target
+		/// Indexes must be 16 bits each
+		/// Vertexes must form triangle lists
+		/// </summary>
+		void DrawIndexed(int indexCount, int indexStart, int vertexStart);
 
 		/// <summary>
 		/// Generates a proper 2D othographic projection for the given destination size, suitable for use in a GUI

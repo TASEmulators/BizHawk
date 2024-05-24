@@ -525,9 +525,13 @@ namespace BizHawk.Client.Common.Filters
 		}
 	}
 
-	/// <remarks>More accurately, ApiHawkLayer, since the <c>gui</c> Lua library is delegated.</remarks>
-	public class LuaLayer : BaseFilter
+	public class ApiHawkLayer : BaseFilter
 	{
+		private readonly I2DRenderer _renderer;
+
+		public ApiHawkLayer(I2DRenderer renderer)
+			=> _renderer = renderer;
+
 		public override void Initialize()
 		{
 			DeclareInput(SurfaceDisposition.RenderTarget);
@@ -538,19 +542,26 @@ namespace BizHawk.Client.Common.Filters
 			DeclareOutput(state);
 		}
 
-		private ITexture2D _texture;
-
-		public void SetTexture(ITexture2D tex)
-		{
-			_texture = tex;
-		}
-
 		public override void Run()
 		{
 			var outSize = FindOutput().SurfaceFormat.Size;
+
+			var output = _renderer.Render(outSize.Width, outSize.Height);
+
+			// render target might have changed when rendering, rebind the filter chain's target
+			var rt = FilterProgram.CurrRenderTarget;
+			if (rt == null)
+			{
+				FilterProgram.GL.BindDefaultRenderTarget();
+			}
+			else
+			{
+				rt.Bind();
+			}
+
 			FilterProgram.GuiRenderer.Begin(outSize);
 			FilterProgram.GuiRenderer.EnableBlending();
-			FilterProgram.GuiRenderer.Draw(_texture);
+			FilterProgram.GuiRenderer.Draw(output);
 			FilterProgram.GuiRenderer.End();
 		}
 	}

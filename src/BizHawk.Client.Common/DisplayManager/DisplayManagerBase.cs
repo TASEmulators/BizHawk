@@ -12,7 +12,6 @@ using System.Runtime.InteropServices;
 using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common.FilterManager;
 using BizHawk.Client.Common.Filters;
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
@@ -28,8 +27,6 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public abstract class DisplayManagerBase : IDisposable
 	{
-		private static DisplaySurface CreateDisplaySurface(int w, int h) => new(w, h);
-
 		protected class DisplayManagerRenderTargetProvider : IRenderTargetProvider
 		{
 			private readonly Func<Size, IRenderTarget> _callback;
@@ -65,9 +62,6 @@ namespace BizHawk.Client.Common
 			OSD = new(config, emulator, inputManager, movieSession);
 			_gl = gl;
 			_renderer = renderer;
-
-			// it's sort of important for these to be initialized to something nonzero
-			_currEmuWidth = _currEmuHeight = 1;
 
 			_videoTextureFrugalizer = new(_gl);
 
@@ -110,10 +104,9 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			_apiHawkSurfaceSets[DisplaySurfaceID.EmuCore] = new(CreateDisplaySurface);
-			_apiHawkSurfaceSets[DisplaySurfaceID.Client] = new(CreateDisplaySurface);
-			_apiHawkSurfaceFrugalizers[DisplaySurfaceID.EmuCore] = new(_gl);
-			_apiHawkSurfaceFrugalizers[DisplaySurfaceID.Client] = new(_gl);
+			_imGuiResourceCache = new ImGuiResourceCache(_gl);
+			_apiHawkIDTo2DRenderer.Add(DisplaySurfaceID.EmuCore, _gl.Create2DRenderer(_imGuiResourceCache));
+			_apiHawkIDTo2DRenderer.Add(DisplaySurfaceID.Client, _gl.Create2DRenderer(_imGuiResourceCache));
 
 			RefreshUserShader();
 		}
@@ -140,10 +133,13 @@ namespace BizHawk.Client.Common
 			ActivateOpenGLContext();
 
 			_videoTextureFrugalizer.Dispose();
-			foreach (var f in _apiHawkSurfaceFrugalizers.Values)
+
+			foreach (var r in _apiHawkIDTo2DRenderer.Values)
 			{
-				f.Dispose();
+				r.Dispose();
 			}
+
+			_imGuiResourceCache.Dispose();
 
 			foreach (var f in _shaderChainFrugalizers)
 			{
@@ -170,12 +166,6 @@ namespace BizHawk.Client.Common
 		protected FilterProgram _currentFilterProgram;
 
 		/// <summary>
-		/// these variables will track the dimensions of the last frame's (or the next frame? this is confusing) emulator native output size
-		/// THIS IS OLD JUNK. I should get rid of it, I think. complex results from the last filter ingestion should be saved instead.
-		/// </summary>
-		private int _currEmuWidth, _currEmuHeight;
-
-		/// <summary>
 		/// additional pixels added at the unscaled level for the use of lua drawing. essentially increases the input video provider dimensions
 		/// </summary>
 		public (int Left, int Top, int Right, int Bottom) GameExtraPadding { get; set; }
@@ -191,8 +181,6 @@ namespace BizHawk.Client.Common
 		public PrivateFontCollection CustomFonts { get; } = new();
 
 		private readonly TextureFrugalizer _videoTextureFrugalizer;
-
-		private readonly Dictionary<DisplaySurfaceID, TextureFrugalizer> _apiHawkSurfaceFrugalizers = new();
 
 		protected readonly RenderTargetFrugalizer[] _shaderChainFrugalizers;
 
@@ -402,16 +390,9 @@ namespace BizHawk.Client.Common
 
 		private void AppendApiHawkLayer(FilterProgram chain, DisplaySurfaceID surfaceID)
 		{
-			var luaNativeSurface = _apiHawkSurfaceSets[surfaceID].GetCurrent();
-			if (luaNativeSurface == null)
-			{
-				return;
-			}
-
-			var luaNativeTexture = _apiHawkSurfaceFrugalizers[surfaceID].Get(luaNativeSurface);
-			var fLuaLayer = new LuaLayer();
-			fLuaLayer.SetTexture(luaNativeTexture);
-			chain.AddFilter(fLuaLayer, surfaceID.GetName());
+			var apiHawkRenderer = _apiHawkIDTo2DRenderer[surfaceID];
+			var fApiHawkLayer = new ApiHawkLayer(apiHawkRenderer);
+			chain.AddFilter(fApiHawkLayer, surfaceID.GetName());
 		}
 
 		protected abstract Point GraphicsControlPointToClient(Point p);
@@ -815,10 +796,6 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			// record the size of what we received, since lua and stuff is gonna want to draw onto it
-			_currEmuWidth = bufferWidth;
-			_currEmuHeight = bufferHeight;
-
 			//build the default filter chain and set it up with services filters will need
 			var chainInsize = new Size(bufferWidth, bufferHeight);
 
@@ -930,87 +907,23 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private readonly Dictionary<DisplaySurfaceID, IDisplaySurface> _apiHawkIDToSurface = new();
-
-		/// <remarks>Can't this just be a prop of <see cref="IDisplaySurface"/>? --yoshi</remarks>
-		private readonly Dictionary<IDisplaySurface, DisplaySurfaceID> _apiHawkSurfaceToID = new();
-
-		private readonly Dictionary<DisplaySurfaceID, SwappableDisplaySurfaceSet<DisplaySurface>> _apiHawkSurfaceSets = new();
+		private readonly ImGuiResourceCache _imGuiResourceCache;
+		private readonly Dictionary<DisplaySurfaceID, I2DRenderer> _apiHawkIDTo2DRenderer = new();
 
 		/// <summary>
-		/// Peeks a locked lua surface, or returns null if it isn't locked
+		/// Gets an ApiHawk 2D renderer, suitable for drawing with Gui/lua apis and such
+		/// The size of this surface might change between different calls
+		/// Implicitly, if the size changes the surface will be cleared
 		/// </summary>
-		public IDisplaySurface PeekApiHawkLockedSurface(DisplaySurfaceID surfaceID)
-			=> _apiHawkIDToSurface.TryGetValue(surfaceID, out var surface) ? surface : null;
-
-		public IDisplaySurface LockApiHawkSurface(DisplaySurfaceID surfaceID, bool clear)
-		{
-			if (_apiHawkIDToSurface.ContainsKey(surfaceID))
-			{
-				throw new InvalidOperationException($"ApiHawk/Lua surface is already locked: {surfaceID.GetName()}");
-			}
-
-			var sdss = _apiHawkSurfaceSets.GetValueOrPut(surfaceID, static _ => new(CreateDisplaySurface));
-
-			// placeholder logic for more abstracted surface definitions from filter chain
-			var (currNativeWidth, currNativeHeight) = GetPanelNativeSize();
-			currNativeWidth += ClientExtraPadding.Left + ClientExtraPadding.Right;
-			currNativeHeight += ClientExtraPadding.Top + ClientExtraPadding.Bottom;
-
-			var (width, height) = surfaceID switch
-			{
-				DisplaySurfaceID.EmuCore => (GameExtraPadding.Left + _currEmuWidth + GameExtraPadding.Right, GameExtraPadding.Top + _currEmuHeight + GameExtraPadding.Bottom),
-				DisplaySurfaceID.Client => (currNativeWidth, currNativeHeight),
-				_ => throw new InvalidOperationException()
-			};
-
-			IDisplaySurface ret = sdss.AllocateSurface(width, height, clear);
-			_apiHawkIDToSurface[surfaceID] = ret;
-			_apiHawkSurfaceToID[ret] = surfaceID;
-			return ret;
-		}
+		public I2DRenderer GetApiHawk2DRenderer(DisplaySurfaceID surfaceID)
+			=> _apiHawkIDTo2DRenderer[surfaceID];
 
 		public void ClearApiHawkSurfaces()
 		{
-			foreach (var kvp in _apiHawkSurfaceSets)
+			foreach (var renderer in _apiHawkIDTo2DRenderer.Values)
 			{
-				try
-				{
-					if (PeekApiHawkLockedSurface(kvp.Key) == null)
-					{
-						var surfLocked = LockApiHawkSurface(kvp.Key, true);
-						if (surfLocked != null)
-						{
-							UnlockApiHawkSurface(surfLocked);
-						}
-					}
-
-					_apiHawkSurfaceSets[kvp.Key].SetPending(null);
-				}
-				catch (InvalidOperationException)
-				{
-					// ignored
-				}
+				renderer.Clear();
 			}
-		}
-
-		/// <summary>unlocks this IDisplaySurface which had better have been locked as a lua surface</summary>
-		/// <exception cref="InvalidOperationException">already unlocked</exception>
-		public void UnlockApiHawkSurface(IDisplaySurface surface)
-		{
-			if (surface is not DisplaySurface dispSurfaceImpl)
-			{
-				throw new ArgumentException("don't mix " + nameof(IDisplaySurface) + " implementations!", nameof(surface));
-			}
-
-			if (!_apiHawkSurfaceToID.TryGetValue(dispSurfaceImpl, out var surfaceID))
-			{
-				throw new InvalidOperationException("Surface was not locked as a lua surface");
-			}
-
-			_apiHawkSurfaceToID.Remove(dispSurfaceImpl);
-			_apiHawkIDToSurface.Remove(surfaceID);
-			_apiHawkSurfaceSets[surfaceID].SetPending(dispSurfaceImpl);
 		}
 	}
 }

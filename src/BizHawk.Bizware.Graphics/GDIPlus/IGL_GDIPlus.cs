@@ -46,7 +46,11 @@ namespace BizHawk.Bizware.Graphics
 		{
 		}
 
-		public void Draw(IntPtr data, int count)
+		public void Draw(int vertexCount)
+		{
+		}
+
+		public void DrawIndexed(int indexCount, int indexStart, int vertexStart)
 		{
 		}
 

@@ -9,7 +9,7 @@ project(SDL2-BizHawk C CXX)
 # set(SDL_ATOMIC ON) # Used in HIDAPI (and disabling it just makes it emulate atomics rather than use intrinsics)
 set(SDL_AUDIO OFF)
 set(SDL_VIDEO ON) # Used in mupen64plus + OpenGL/D3D9 display methods
-set(SDL_RENDER OFF)
+set(SDL_RENDER ON) # We use the software renderer for GDI+ImGui 2D rendering
 set(SDL_EVENTS ON) # Implied by SDL_VIDEO and SDL_JOYSTICK
 set(SDL_JOYSTICK ON) # Used for our SDL2 input adapter
 set(SDL_HAPTIC OFF)
@@ -69,6 +69,7 @@ set(SDL_DIRECTFB OFF)
 set(SDL_DUMMYVIDEO OFF)
 set(SDL_RPI OFF)
 set(SDL_RENDER_D3D OFF)
+set(SDL_RENDER_METAL OFF)
 set(SDL_VIVANTE OFF)
 set(SDL_VULKAN OFF)
 set(SDL_KMSDRM OFF)

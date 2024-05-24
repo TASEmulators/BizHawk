@@ -19,6 +19,9 @@ namespace BizHawk.Bizware.Graphics
 		public readonly int VertexStride;
 		public int VertexBufferLen;
 
+		public readonly uint IBO;
+		public int IndexBufferLen;
+
 		public readonly uint VertexSID;
 		public readonly uint FragmentSID;
 
@@ -81,6 +84,8 @@ namespace BizHawk.Bizware.Graphics
 				VBO = GL.GenBuffer();
 				VertexStride = compileArgs.VertexLayoutStride;
 
+				IBO = GL.GenBuffer();
+
 				_ = GL.GetError();
 				VertexSID = CompileShader(compileArgs.VertexShaderArgs.Source, ShaderType.VertexShader);
 				FragmentSID = CompileShader(compileArgs.FragmentShaderArgs.Source, ShaderType.FragmentShader);
@@ -101,9 +106,9 @@ namespace BizHawk.Bizware.Graphics
 						GL.EnableVertexAttribArray(attribIndex);
 						GL.VertexAttribPointer(
 							attribIndex,
-							item.Components,
-							VertexAttribPointerType.Float,
-							normalized: false,
+							item.Integer ? (int)GLEnum.Bgra : item.Components,
+							item.Integer ? VertexAttribPointerType.UnsignedByte : VertexAttribPointerType.Float,
+							normalized: item.Integer,
 							(uint)VertexStride,
 							(void*)item.Offset);
 					}
@@ -205,6 +210,37 @@ namespace BizHawk.Bizware.Graphics
 			GL.DeleteBuffer(VBO);
 		}
 
+		public unsafe void SetVertexData(IntPtr data, int count)
+		{
+			var vertexes = new ReadOnlySpan<byte>((void*)data, count * VertexStride);
+
+			// BufferData reallocs and BufferSubData doesn't, so only use the former if we need to grow the buffer
+			if (vertexes.Length > VertexBufferLen)
+			{
+				GL.BufferData(GLEnum.ArrayBuffer, vertexes, GLEnum.DynamicDraw);
+				VertexBufferLen = vertexes.Length;
+			}
+			else
+			{
+				GL.BufferSubData(GLEnum.ArrayBuffer, 0, vertexes);
+			}
+		}
+
+		public unsafe void SetIndexData(IntPtr data, int count)
+		{
+			var indexes = new ReadOnlySpan<byte>((void*)data, count * 2);
+
+			if (indexes.Length > IndexBufferLen)
+			{
+				GL.BufferData(GLEnum.ElementArrayBuffer, indexes, GLEnum.DynamicDraw);
+				IndexBufferLen = indexes.Length;
+			}
+			else
+			{
+				GL.BufferSubData(GLEnum.ElementArrayBuffer, 0, indexes);
+			}
+		}
+
 		public bool HasUniformSampler(string name)
 			=> _samplers.ContainsKey(name);
 
@@ -216,6 +252,11 @@ namespace BizHawk.Bizware.Graphics
 
 		public void SetUniformSampler(string name, ITexture2D tex)
 		{
+			if (tex == null)
+			{
+				return;
+			}
+
 			if (_samplers.TryGetValue(name, out var sampler))
 			{
 				var oglTex = (OpenGLTexture2D)tex;

@@ -81,7 +81,7 @@ namespace BizHawk.Bizware.Graphics
 				bd.RenderTarget[0].DestinationBlend = Blend.InverseSourceAlpha;
 				bd.RenderTarget[0].BlendOperation = BlendOperation.Add;
 				bd.RenderTarget[0].SourceBlendAlpha = Blend.One;
-				bd.RenderTarget[0].DestinationBlendAlpha = Blend.Zero;
+				bd.RenderTarget[0].DestinationBlendAlpha = Blend.InverseSourceAlpha;
 				bd.RenderTarget[0].BlendOperationAlpha = BlendOperation.Add;
 				bd.RenderTarget[0].RenderTargetWriteMask = ColorWriteEnable.All;
 				BlendEnableState = Device.CreateBlendState(bd);
@@ -105,8 +105,6 @@ namespace BizHawk.Bizware.Graphics
 				};
 
 				RasterizerState = Device.CreateRasterizerState(rd);
-
-				Context.IASetPrimitiveTopology(PrimitiveTopology.TriangleStrip);
 
 				foreach (var tex2d in Textures)
 				{

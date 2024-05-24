@@ -133,8 +133,10 @@ namespace BizHawk.Bizware.Graphics
 			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; //useless color
 			pData[i++] = 1; pData[i] = v1;
 
+			Pipeline.SetVertexData(new(pData), 4);
+
 			Owner.DisableBlending();
-			Owner.Draw(new(pData), 4);
+			Owner.Draw(4);
 		}
 
 		public IGL Owner { get; }

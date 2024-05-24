@@ -2,10 +2,11 @@ using System;
 using System.Drawing;
 using System.Numerics;
 
-using BizHawk.Common;
-
+using Vortice.Direct3D;
 using Vortice.Direct3D11;
 using Vortice.DXGI;
+
+using BizHawk.Common;
 
 namespace BizHawk.Bizware.Graphics
 {
@@ -216,6 +217,7 @@ namespace BizHawk.Bizware.Graphics
 
 			Context.IASetInputLayout(d3d11Pipeline.VertexInputLayout);
 			Context.IASetVertexBuffer(0, d3d11Pipeline.VertexBuffer, d3d11Pipeline.VertexStride);
+			Context.IASetIndexBuffer(d3d11Pipeline.IndexBuffer, Format.R16_UInt, 0);
 
 			// not sure if this applies to the current pipeline or all pipelines
 			// just set it every time to be safe
@@ -262,63 +264,46 @@ namespace BizHawk.Bizware.Graphics
 			Context.OMSetRenderTargets(_controlSwapChain.RTV);
 		}
 
-		public void Draw(IntPtr data, int count)
+		private unsafe void UpdateConstantBuffers()
 		{
-			var pipeline = CurPipeline;
-			var stride = pipeline.VertexStride;
-
-			if (pipeline.VertexBufferCount < count)
+			for (var i = 0; i < ID3D11DeviceContext.CommonShaderConstantBufferSlotCount; i++)
 			{
-				pipeline.VertexBuffer?.Dispose();
-				var bd = new BufferDescription(stride * count, BindFlags.VertexBuffer, ResourceUsage.Dynamic, CpuAccessFlags.Write);
-				pipeline.VertexBuffer = Device.CreateBuffer(in bd, data);
-				pipeline.VertexBufferCount = count;
-			}
-			else
-			{
-				var mappedVb = Context.Map(pipeline.VertexBuffer, MapMode.WriteDiscard);
-				try
+				var pb = CurPipeline.PendingBuffers[i];
+				if (pb == null)
 				{
-					unsafe
-					{
-						Buffer.MemoryCopy((void*)data, (void*)mappedVb.DataPointer, stride * pipeline.VertexBufferCount, stride * count);
-					}
+					break;
 				}
-				finally
+
+				if (pb.VSBufferDirty)
 				{
-					Context.Unmap(pipeline.VertexBuffer);
+					var vsCb = Context.Map(CurPipeline.VSConstantBuffers[i], MapMode.WriteDiscard);
+					Buffer.MemoryCopy((void*)pb.VSPendingBuffer, (void*)vsCb.DataPointer, pb.VSBufferSize, pb.VSBufferSize);
+					Context.Unmap(CurPipeline.VSConstantBuffers[i]);
+					pb.VSBufferDirty = false;
 				}
-			}
 
-			unsafe
-			{
-				for (var i = 0; i < ID3D11DeviceContext.CommonShaderConstantBufferSlotCount; i++)
+				if (pb.PSBufferDirty)
 				{
-					var pb = pipeline.PendingBuffers[i];
-					if (pb == null)
-					{
-						break;
-					}
-
-					if (pb.VSBufferDirty)
-					{
-						var vsCb = Context.Map(pipeline.VSConstantBuffers[i], MapMode.WriteDiscard);
-						Buffer.MemoryCopy((void*)pb.VSPendingBuffer, (void*)vsCb.DataPointer, pb.VSBufferSize, pb.VSBufferSize);
-						Context.Unmap(pipeline.VSConstantBuffers[i]);
-						pb.VSBufferDirty = false;
-					}
-
-					if (pb.PSBufferDirty)
-					{
-						var psCb = Context.Map(pipeline.PSConstantBuffers[i], MapMode.WriteDiscard);
-						Buffer.MemoryCopy((void*)pb.PSPendingBuffer, (void*)psCb.DataPointer, pb.PSBufferSize, pb.PSBufferSize);
-						Context.Unmap(pipeline.PSConstantBuffers[i]);
-						pb.PSBufferDirty = false;
-					}
+					var psCb = Context.Map(CurPipeline.PSConstantBuffers[i], MapMode.WriteDiscard);
+					Buffer.MemoryCopy((void*)pb.PSPendingBuffer, (void*)psCb.DataPointer, pb.PSBufferSize, pb.PSBufferSize);
+					Context.Unmap(CurPipeline.PSConstantBuffers[i]);
+					pb.PSBufferDirty = false;
 				}
 			}
+		}
 
-			Context.Draw(count, 0);
+		public void Draw(int vertexCount)
+		{
+			UpdateConstantBuffers();
+			Context.IASetPrimitiveTopology(PrimitiveTopology.TriangleStrip);
+			Context.Draw(vertexCount, 0);
+		}
+
+		public void DrawIndexed(int indexCount, int indexStart, int vertexStart)
+		{
+			UpdateConstantBuffers();
+			Context.IASetPrimitiveTopology(PrimitiveTopology.TriangleList);
+			Context.DrawIndexed(indexCount, indexStart, vertexStart);
 		}
 	}
 }

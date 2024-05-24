@@ -19,8 +19,8 @@ namespace BizHawk.Bizware.Graphics
 		private OpenGLPipeline _curPipeline;
 		internal bool DefaultRenderTargetBound;
 
-		// this IGL either requires at least OpenGL 3.0
-		public static bool Available => OpenGLVersion.SupportsVersion(3, 0);
+		// this IGL either requires at least OpenGL 3.2
+		public static bool Available => OpenGLVersion.SupportsVersion(3, 2);
 
 		public IGL_OpenGL()
 		{
@@ -45,7 +45,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			GL.Enable(EnableCap.Blend);
 			GL.BlendEquation(GLEnum.FuncAdd);
-			GL.BlendFuncSeparate(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha, BlendingFactor.One, BlendingFactor.Zero);
+			GL.BlendFuncSeparate(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha, BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
 		}
 
 		public void DisableBlending()
@@ -71,6 +71,7 @@ namespace BizHawk.Bizware.Graphics
 			{
 				GL.BindVertexArray(0);
 				GL.BindBuffer(GLEnum.ArrayBuffer, 0);
+				GL.BindBuffer(GLEnum.ElementArrayBuffer, 0);
 				GL.UseProgram(0);
 				_curPipeline = null;
 				return;
@@ -78,34 +79,15 @@ namespace BizHawk.Bizware.Graphics
 
 			GL.BindVertexArray(_curPipeline.VAO);
 			GL.BindBuffer(GLEnum.ArrayBuffer, _curPipeline.VBO);
+			GL.BindBuffer(GLEnum.ElementArrayBuffer, _curPipeline.IBO);
 			GL.UseProgram(_curPipeline.PID);
 		}
 
-		public void Draw(IntPtr data, int count)
-		{
-			if (_curPipeline == null)
-			{
-				throw new InvalidOperationException($"Tried to {nameof(Draw)} without pipeline!");
-			}
+		public void Draw(int vertexCount)
+			=> GL.DrawArrays(PrimitiveType.TriangleStrip, 0, (uint)vertexCount);
 
-			unsafe
-			{
-				var vertexes = new ReadOnlySpan<byte>((void*)data, count * _curPipeline.VertexStride);
-
-				// BufferData reallocs and BufferSubData doesn't, so only use the former if we need to grow the buffer
-				if (vertexes.Length > _curPipeline.VertexBufferLen)
-				{
-					GL.BufferData(GLEnum.ArrayBuffer, vertexes, GLEnum.DynamicDraw);
-					_curPipeline.VertexBufferLen = vertexes.Length;
-				}
-				else
-				{
-					GL.BufferSubData(GLEnum.ArrayBuffer, 0, vertexes);
-				}
-			}
-
-			GL.DrawArrays(PrimitiveType.TriangleStrip, 0, (uint)count);
-		}
+		public unsafe void DrawIndexed(int indexCount, int indexStart, int vertexStart)
+			=> GL.DrawElementsBaseVertex(PrimitiveType.Triangles, (uint)indexCount, DrawElementsType.UnsignedShort, (void*)indexStart, vertexStart);
 
 		public ITexture2D CreateTexture(int width, int height)
 			=> new OpenGLTexture2D(GL, width, height);

@@ -31,6 +31,9 @@ namespace BizHawk.Bizware.Graphics
 		public ID3D11Buffer VertexBuffer;
 		public int VertexBufferCount;
 
+		public ID3D11Buffer IndexBuffer;
+		public int IndexBufferCount;
+
 		private readonly record struct D3D11Uniform(IntPtr VariablePointer, int VariableSize, D3D11PendingBuffer PB);
 
 		private readonly Dictionary<string, D3D11Uniform> _vsUniforms = new();
@@ -99,7 +102,7 @@ namespace BizHawk.Bizware.Graphics
 						1 => Format.R32_Float,
 						2 => Format.R32G32_Float,
 						3 => Format.R32G32B32_Float,
-						4 => Format.R32G32B32A32_Float,
+						4 => item.Integer ? Format.B8G8R8A8_UNorm : Format.R32G32B32A32_Float,
 						_ => throw new InvalidOperationException()
 					};
 
@@ -253,6 +256,9 @@ namespace BizHawk.Bizware.Graphics
 			VertexBuffer?.Dispose();
 			VertexBuffer = null;
 			VertexBufferCount = 0;
+			IndexBuffer?.Dispose();
+			IndexBuffer = null;
+			IndexBufferCount = 0;
 
 			for (var i = 0; i < ID3D11DeviceContext.CommonShaderConstantBufferSlotCount; i++)
 			{
@@ -283,6 +289,62 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
+		public void SetVertexData(IntPtr data, int count)
+		{
+			if (VertexBufferCount < count)
+			{
+				VertexBuffer?.Dispose();
+				var bd = new BufferDescription( count * VertexStride, BindFlags.VertexBuffer, ResourceUsage.Dynamic, CpuAccessFlags.Write);
+				VertexBuffer = Device.CreateBuffer(in bd, data);
+				VertexBufferCount = count;
+				Context.IASetVertexBuffer(0, VertexBuffer, VertexStride);
+			}
+			else
+			{
+				var mappedVb = Context.Map(VertexBuffer, MapMode.WriteDiscard);
+				try
+				{
+					unsafe
+					{
+						Buffer.MemoryCopy((void*)data, (void*)mappedVb.DataPointer,
+							VertexBufferCount * VertexStride, count * VertexStride);
+					}
+				}
+				finally
+				{
+					Context.Unmap(VertexBuffer);
+				}
+			}
+		}
+
+		public void SetIndexData(IntPtr data, int count)
+		{
+			if (IndexBufferCount < count)
+			{
+				IndexBuffer?.Dispose();
+				var bd = new BufferDescription(count * 2, BindFlags.IndexBuffer, ResourceUsage.Dynamic, CpuAccessFlags.Write);
+				IndexBuffer = Device.CreateBuffer(in bd, data);
+				IndexBufferCount = count;
+				Context.IASetIndexBuffer(IndexBuffer, Format.R16_UInt, 0);
+			}
+			else
+			{
+				var mappedIb = Context.Map(IndexBuffer, MapMode.WriteDiscard);
+				try
+				{
+					unsafe
+					{
+						Buffer.MemoryCopy((void*)data, (void*)mappedIb.DataPointer,
+							IndexBufferCount * 2, count * 2);
+					}
+				}
+				finally
+				{
+					Context.Unmap(IndexBuffer);
+				}
+			}
+		}
+
 		public bool HasUniformSampler(string name)
 		{
 			return _vsSamplers.ContainsKey(name)
@@ -299,6 +361,11 @@ namespace BizHawk.Bizware.Graphics
 
 		public void SetUniformSampler(string name, ITexture2D tex)
 		{
+			if (tex == null)
+			{
+				return;
+			}
+
 			var d3d11Tex = (D3D11Texture2D)tex;
 			var sampler = d3d11Tex.LinearFiltering ? LinearSamplerState : PointSamplerState;
 

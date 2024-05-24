@@ -5,6 +5,16 @@ namespace BizHawk.Bizware.Graphics
 {
 	public interface IPipeline : IDisposable
 	{
+		/// <summary>
+		/// Sets vertex data for this pipeline
+		/// </summary>
+		void SetVertexData(IntPtr data, int count);
+
+		/// <summary>
+		/// Sets index data for this pipeline
+		/// </summary>
+		void SetIndexData(IntPtr data, int count);
+
 		bool HasUniformSampler(string name);
 
 		string GetUniformSamplerName(int index);

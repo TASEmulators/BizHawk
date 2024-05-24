@@ -258,7 +258,8 @@ namespace BizHawk.Bizware.Graphics
 			pData[30] = CornerColors[3].Z;
 			pData[31] = CornerColors[3].W;
 
-			Owner.Draw(new(pData), 4);
+			CurrPipeline.SetVertexData(new(pData), 4);
+			Owner.Draw(4);
 		}
 
 		public bool IsActive { get; private set; }

@@ -6,7 +6,7 @@ using BizHawk.Bizware.Graphics;
 namespace BizHawk.Client.Common
 {
 	/// <summary>
-	/// Recycles a pair of temporary textures (in case double-buffering helps any) to contain a BitmapBuffer's or DisplaySurface's contents, as long as the dimensions match.
+	/// Recycles a pair of temporary textures (in case double-buffering helps any) to contain a BitmapBuffer's contents, as long as the dimensions match.
 	/// When the dimensions don't match, a new one will be allocated
 	/// </summary>
 	public class TextureFrugalizer : IDisposable
@@ -34,12 +34,6 @@ namespace BizHawk.Client.Common
 
 		private readonly IGL _gl;
 		private List<ITexture2D> _currentTextures;
-
-		public ITexture2D Get(IDisplaySurface ds)
-		{
-			using var bb = new BitmapBuffer(ds.PeekBitmap(), new());
-			return Get(bb);
-		}
 
 		public ITexture2D Get(BitmapBuffer bb)
 		{

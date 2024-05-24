@@ -21,6 +21,7 @@ namespace BizHawk.Client.Common
 			=> DisplaySurfaceIDParser.Parse(surfaceName) ?? _rememberedSurfaceID;
 
 #pragma warning disable CS0612
+#pragma warning disable CS0618
 		[LuaDeprecatedMethod]
 		[LuaMethod("DrawNew", "Changes drawing target to the specified lua surface name. This may clobber any previous drawing to this surface (pass false if you don't want it to)")]
 		public void DrawNew(string name, bool? clear = true)
@@ -31,6 +32,7 @@ namespace BizHawk.Client.Common
 		public void DrawFinish()
 			=> APIs.Gui.DrawFinish();
 #pragma warning restore CS0612
+#pragma warning restore CS0618
 
 		[LuaMethodExample("gui.addmessage( \"Some message\" );")]
 		[LuaMethod("addmessage", "Adds a message to the OSD's message area")]
@@ -92,7 +94,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (Exception)
 			{
-				return;
+				// ignored
 			}
 		}
 
@@ -232,7 +234,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (Exception)
 			{
-				return;
+				// ignored
 			}
 		}
 
@@ -313,7 +315,7 @@ namespace BizHawk.Client.Common
 			[LuaColorParam] object backcolor = null,
 			string fontfamily = null,
 			string surfaceName = null)
-				=> APIs.Gui.PixelText(x, y, message, _th.SafeParseColor(forecolor), _th.SafeParseColor(backcolor) ?? APIs.Gui.GetDefaultTextBackground().Value, fontfamily, surfaceID: UseOrFallback(surfaceName));
+				=> APIs.Gui.PixelText(x, y, message, _th.SafeParseColor(forecolor), _th.SafeParseColor(backcolor) ?? APIs.Gui.GetDefaultTextBackground(), fontfamily, surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.text( 16, 32, \"Some message\", 0x7F0000FF, \"bottomleft\" );")]
 		[LuaMethod("text", "Displays the given text on the screen at the given coordinates. Optional Foreground color. The optional anchor flag anchors the text to one of the four corners. Anchor flag parameters: topleft, topright, bottomleft, bottomright")]

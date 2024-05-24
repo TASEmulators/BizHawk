@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Numerics;
 
 namespace BizHawk.Bizware.Graphics
 {
@@ -9,5 +10,8 @@ namespace BizHawk.Bizware.Graphics
 			width = size.Width;
 			height = size.Height;
 		}
+
+		public static Vector2 ToVector(this Point point)
+			=> new(point.X, point.Y);
 	}
 }

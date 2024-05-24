@@ -41,7 +41,7 @@ namespace BizHawk.Bizware.Graphics.Controls
 		protected override void OnHandleCreated(EventArgs e)
 		{
 			base.OnHandleCreated(e);
-			Context = new(Handle, 3, 0, true, false);
+			Context = new(Handle, 3, 2, true, false);
 		}
 
 		protected override void OnHandleDestroyed(EventArgs e)
