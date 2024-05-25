@@ -357,12 +357,32 @@ namespace BizHawk.Bizware.Graphics
 
 		public void DrawRectangle(Color color, int x, int y, int width, int height)
 		{
-			_imGuiDrawList.AddRect(
-				p_min: new(x, y),
-				p_max: new(x + width, y + height),
-				col: (uint)color.ToArgb(),
-				rounding: 0,
-				flags: ImDrawFlags.None,
+			// we don't use AddRect as we want to avoid double drawing at the corners
+			// as that produces artifacts with alpha blending
+			var col = (uint)color.ToArgb();
+			// top left to top right
+			_imGuiDrawList.AddLine(
+				p1: new(x, y),
+				p2: new(x + width, y),
+				col: col,
+				thickness: RenderThickness);
+			// top right (and 1 pixel down) to bottom right
+			_imGuiDrawList.AddLine(
+				p1: new(x + width - 0.5f, y + 1),
+				p2: new(x + width - 0.5f, y + height),
+				col: col,
+				thickness: RenderThickness);
+			// bottom right (and 1 pixel left) to bottom left
+			_imGuiDrawList.AddLine(
+				p1: new(x + width - 1.5f, y + height - 0.5f),
+				p2: new(x, y + height - 0.5f),
+				col: col,
+				thickness: RenderThickness);
+			// bottom left (and 1 pixel up) to top left (and 1 pixel down)
+			_imGuiDrawList.AddLine(
+				p1: new(x, y + height - 1.5f),
+				p2: new(x, y + 1),
+				col: col,
 				thickness: RenderThickness);
 		}
 
