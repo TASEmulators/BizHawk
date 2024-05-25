@@ -18,7 +18,8 @@ namespace BizHawk.Bizware.Graphics
 		public ID3D11DeviceContext Context;
 		public IDXGIFactory1 Factory1;
 		public IDXGIFactory2 Factory2;
-		public ID3D11BlendState BlendEnableState;
+		public ID3D11BlendState BlendNormalState;
+		public ID3D11BlendState BlendAlphaState;
 		public ID3D11BlendState BlendDisableState;
 		public ID3D11SamplerState PointSamplerState;
 		public ID3D11SamplerState LinearSamplerState;
@@ -84,11 +85,13 @@ namespace BizHawk.Bizware.Graphics
 				bd.RenderTarget[0].DestinationBlendAlpha = Blend.InverseSourceAlpha;
 				bd.RenderTarget[0].BlendOperationAlpha = BlendOperation.Add;
 				bd.RenderTarget[0].RenderTargetWriteMask = ColorWriteEnable.All;
-				BlendEnableState = Device.CreateBlendState(bd);
+				BlendNormalState = Device.CreateBlendState(bd);
 
-				bd.RenderTarget[0].BlendEnable = false;
 				bd.RenderTarget[0].SourceBlend = Blend.One;
 				bd.RenderTarget[0].DestinationBlend = Blend.Zero;
+				BlendAlphaState = Device.CreateBlendState(bd);
+
+				bd.RenderTarget[0].BlendEnable = false;
 				BlendDisableState = Device.CreateBlendState(bd);
 
 				PointSamplerState = Device.CreateSamplerState(SamplerDescription.PointClamp);
@@ -141,8 +144,10 @@ namespace BizHawk.Bizware.Graphics
 			RasterizerState?.Dispose();
 			RasterizerState = null;
 
-			BlendEnableState?.Dispose();
-			BlendEnableState = null;
+			BlendNormalState?.Dispose();
+			BlendNormalState = null;
+			BlendAlphaState?.Dispose();
+			BlendAlphaState = null;
 			BlendDisableState?.Dispose();
 			BlendDisableState = null;
 

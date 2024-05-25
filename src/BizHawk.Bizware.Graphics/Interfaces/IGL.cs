@@ -57,7 +57,13 @@ namespace BizHawk.Bizware.Graphics
 		/// <summary>
 		/// Enables normal (non-premultiplied) alpha blending.
 		/// </summary>
-		void EnableBlending();
+		void EnableBlendNormal();
+
+		/// <summary>
+		/// Enables alpha blending (non-alpha values are copied from the source fragment).
+		/// This mimics GDI+ blending
+		/// </summary>
+		void EnableBlendAlpha();
 
 		/// <summary>
 		/// Disables blending (alpha values are copied from the source fragment)

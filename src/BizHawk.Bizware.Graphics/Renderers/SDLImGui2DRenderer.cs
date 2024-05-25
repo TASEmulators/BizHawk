@@ -165,7 +165,8 @@ namespace BizHawk.Bizware.Graphics
 						case DrawCallbackId.DisableBlending:
 							_ = SDL_SetRenderDrawBlendMode(sdlRenderer, SDL_BlendMode.SDL_BLENDMODE_NONE);
 							break;
-						case DrawCallbackId.EnableBlending:
+						case DrawCallbackId.EnableBlendAlpha:
+						case DrawCallbackId.EnableBlendNormal:
 							_ = SDL_SetRenderDrawBlendMode(sdlRenderer, SDL_BlendMode.SDL_BLENDMODE_BLEND);
 							break;
 						case DrawCallbackId.DrawString:

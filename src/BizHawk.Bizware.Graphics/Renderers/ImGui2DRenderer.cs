@@ -153,7 +153,8 @@ namespace BizHawk.Bizware.Graphics
 		{
 			None,
 			DisableBlending,
-			EnableBlending,
+			EnableBlendAlpha,
+			EnableBlendNormal,
 			DrawString,
 		}
 
@@ -161,7 +162,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			if (EnableBlending)
 			{
-				_igl.EnableBlending();
+				_igl.EnableBlendAlpha();
 			}
 			else
 			{
@@ -223,8 +224,11 @@ namespace BizHawk.Bizware.Graphics
 					case DrawCallbackId.DisableBlending:
 						_igl.DisableBlending();
 						break;
-					case DrawCallbackId.EnableBlending:
-						_igl.EnableBlending();
+					case DrawCallbackId.EnableBlendAlpha:
+						_igl.EnableBlendAlpha();
+						break;
+					case DrawCallbackId.EnableBlendNormal:
+						_igl.EnableBlendNormal();
 						break;
 					case DrawCallbackId.DrawString:
 					{
@@ -277,7 +281,7 @@ namespace BizHawk.Bizware.Graphics
 				{
 					ClearStringOutput();
 					// synthesize an add image command for our string bitmap
-					_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlending, IntPtr.Zero);
+					_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlendNormal, IntPtr.Zero);
 					DrawImage(_stringOutput, 0, 0);
 				}
 
@@ -311,7 +315,7 @@ namespace BizHawk.Bizware.Graphics
 						break;
 					// CompositingMode.SourceOver means enable blending
 					case false when value == CompositingMode.SourceOver:
-						_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlending, IntPtr.Zero);
+						_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlendAlpha, IntPtr.Zero);
 						_pendingBlendEnable = true;
 						break;
 				}

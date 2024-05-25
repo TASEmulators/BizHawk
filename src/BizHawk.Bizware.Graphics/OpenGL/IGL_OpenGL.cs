@@ -41,11 +41,18 @@ namespace BizHawk.Bizware.Graphics
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 		}
 
-		public void EnableBlending()
+		public void EnableBlendNormal()
 		{
 			GL.Enable(EnableCap.Blend);
 			GL.BlendEquation(GLEnum.FuncAdd);
 			GL.BlendFuncSeparate(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha, BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
+		}
+
+		public void EnableBlendAlpha()
+		{
+			GL.Enable(EnableCap.Blend);
+			GL.BlendEquation(GLEnum.FuncAdd);
+			GL.BlendFuncSeparate(BlendingFactor.One, BlendingFactor.Zero, BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
 		}
 
 		public void DisableBlending()

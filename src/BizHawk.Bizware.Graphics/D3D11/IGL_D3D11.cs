@@ -25,7 +25,8 @@ namespace BizHawk.Bizware.Graphics
 		private ID3D11DeviceContext Context => _resources.Context;
 		private IDXGIFactory1 Factory1 => _resources.Factory1;
 		private IDXGIFactory2 Factory2 => _resources.Factory2;
-		private ID3D11BlendState BlendEnableState => _resources.BlendEnableState;
+		private ID3D11BlendState BlendNormalState => _resources.BlendNormalState;
+		private ID3D11BlendState BlendAlphaState => _resources.BlendAlphaState;
 		private ID3D11BlendState BlendDisableState => _resources.BlendDisableState;
 		private ID3D11RasterizerState RasterizerState => _resources.RasterizerState;
 
@@ -184,8 +185,11 @@ namespace BizHawk.Bizware.Graphics
 		public void ClearColor(Color color)
 			=> Context.ClearRenderTargetView(CurRenderTarget?.RTV ?? _controlSwapChain.RTV, new(color.R, color.B, color.G, color.A));
 
-		public void EnableBlending()
-			=> Context.OMSetBlendState(BlendEnableState);
+		public void EnableBlendNormal()
+			=> Context.OMSetBlendState(BlendNormalState);
+
+		public void EnableBlendAlpha()
+			=> Context.OMSetBlendState(BlendAlphaState);
 
 		public void DisableBlending()
 			=> Context.OMSetBlendState(BlendDisableState);

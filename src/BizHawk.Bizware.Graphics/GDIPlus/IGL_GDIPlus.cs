@@ -25,7 +25,14 @@ namespace BizHawk.Bizware.Graphics
 		public void ClearColor(Color color)
 			=> GetCurrentGraphics().Clear(color);
 
-		public void EnableBlending()
+		public void EnableBlendNormal()
+		{
+			var g = GetCurrentGraphics();
+			g.CompositingMode = CompositingMode.SourceOver;
+			g.CompositingQuality = CompositingQuality.Default;
+		}
+
+		public void EnableBlendAlpha()
 		{
 			var g = GetCurrentGraphics();
 			g.CompositingMode = CompositingMode.SourceOver;
