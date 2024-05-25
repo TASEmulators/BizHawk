@@ -342,7 +342,7 @@ namespace BizHawk.Client.Common
 			try
 			{
 				var r = Get2DRenderer(surfaceID);
-				r.DrawLine(color ?? _defaultForeground, x, y, x + 1, y);
+				r.DrawLine(color ?? _defaultForeground, x, y, x, y);
 			}
 			catch (Exception)
 			{
