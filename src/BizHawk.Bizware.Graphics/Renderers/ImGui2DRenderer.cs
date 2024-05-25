@@ -281,6 +281,7 @@ namespace BizHawk.Bizware.Graphics
 					DrawImage(_stringOutput, 0, 0);
 				}
 
+				_imGuiDrawList._PopUnusedDrawCmd();
 				RenderInternal(width, height);
 				ResetDrawList();
 			}

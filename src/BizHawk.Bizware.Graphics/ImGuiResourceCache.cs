@@ -164,7 +164,7 @@ void main()
 		public const string ImGuiPixelShader_gl = @"
 //opengl 3.0
 #version 130
-bool uSamplerEnable;
+uniform bool uSamplerEnable;
 uniform sampler2D uSampler0;
 
 in vec2 vTexcoord0;
