@@ -448,19 +448,30 @@ namespace BizHawk.Bizware.Graphics
 
 		public void DrawLine(Color color, int x1, int y1, int x2, int y2)
 		{
-			if (x1 > x2)
+			var p1 = new Vector2(x1, y1);
+			var p2 = new Vector2(x2, y2);
+
+			if (p1.X > p2.X)
 			{
-				(x2, x1) = (x1, x2);
+				p1.X += 0.5f;
+			}
+			else if (p2.X > p1.X)
+			{
+				p2.X += 0.5f;
 			}
 
-			if (y1 > y2)
+			if (p1.Y > p2.Y)
 			{
-				(y2, y1) = (y1, y2);
+				p1.Y += 0.5f;
+			}
+			else if (p2.Y > p1.Y)
+			{
+				p2.Y += 0.5f;
 			}
 
 			_imGuiDrawList.AddLine(
-				p1: new(x1, y1),
-				p2: new(x2, y2 + 0.5f),
+				p1: p1,
+				p2: p2,
 				col: (uint)color.ToArgb(),
 				thickness: RenderThickness);
 		}
