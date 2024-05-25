@@ -448,6 +448,16 @@ namespace BizHawk.Bizware.Graphics
 
 		public void DrawLine(Color color, int x1, int y1, int x2, int y2)
 		{
+			if (x1 > x2)
+			{
+				(x2, x1) = (x1, x2);
+			}
+
+			if (y1 > y2)
+			{
+				(y2, y1) = (y1, y2);
+			}
+
 			_imGuiDrawList.AddLine(
 				p1: new(x1, y1),
 				p2: new(x2, y2 + 0.5f),
