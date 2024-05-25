@@ -106,8 +106,9 @@ namespace BizHawk.Bizware.Graphics
 				switch (gcHandle.Target)
 				{
 					case ImGuiUserTexture userTexture:
-						// avoid disposing our string output bitmap here
-						if (userTexture.Bitmap != _stringOutput)
+						// only dispose anything not cached somewhere
+						if (userTexture.Bitmap != _stringOutput
+							&& !_resourceCache.TextureCache.ContainsKey(userTexture.Bitmap))
 						{
 							userTexture.Bitmap.Dispose();
 						}
