@@ -169,28 +169,19 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				int w;
-				if (x < x2)
+				if (x > x2)
 				{
-					w = x2 - x;
+					(x, x2) = (x2, x);
 				}
-				else
+
+				if (y > y2)
 				{
-					x2 = x - x2;
-					x -= x2;
-					w = Math.Max(x2, 1);
+					(y, y2) = (y2, y);
 				}
-				int h;
-				if (y < y2)
-				{
-					h = y2 - y;
-				}
-				else
-				{
-					y2 = y - y2;
-					y -= y2;
-					h = Math.Max(y2, 1);
-				}
+
+				var w = x2 - x + 1;
+				var h = y2 - y + 1;
+
 				var r = Get2DRenderer(surfaceID);
 				r.CompositingMode = _compositingMode;
 				r.DrawRectangle(line ?? _defaultForeground, x, y, w, h);
