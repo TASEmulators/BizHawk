@@ -87,7 +87,7 @@ namespace BizHawk.Bizware.Graphics
 			=> GL.DrawArrays(PrimitiveType.TriangleStrip, 0, (uint)vertexCount);
 
 		public unsafe void DrawIndexed(int indexCount, int indexStart, int vertexStart)
-			=> GL.DrawElementsBaseVertex(PrimitiveType.Triangles, (uint)indexCount, DrawElementsType.UnsignedShort, (void*)indexStart, vertexStart);
+			=> GL.DrawElementsBaseVertex(PrimitiveType.Triangles, (uint)indexCount, DrawElementsType.UnsignedShort, (void*)(indexStart * 2), vertexStart);
 
 		public ITexture2D CreateTexture(int width, int height)
 			=> new OpenGLTexture2D(GL, width, height);
