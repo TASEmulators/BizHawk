@@ -135,7 +135,6 @@ namespace BizHawk.Bizware.Graphics
 		protected class ImGuiUserTexture
 		{
 			public Bitmap Bitmap;
-			public ITexture2D CachedTexture;
 			public bool WantCache;
 		}
 
@@ -196,9 +195,9 @@ namespace BizHawk.Bizware.Graphics
 						if (texId != IntPtr.Zero)
 						{
 							var userTex = (ImGuiUserTexture)GCHandle.FromIntPtr(texId).Target!;
-							if (userTex.CachedTexture != null)
+							if (userTex.WantCache && _resourceCache.TextureCache.TryGetValue(userTex.Bitmap, out var cachedTexture))
 							{
-								_resourceCache.SetTexture(userTex.CachedTexture);
+								_resourceCache.SetTexture(cachedTexture);
 							}
 							else
 							{
@@ -207,7 +206,6 @@ namespace BizHawk.Bizware.Graphics
 								if (userTex.WantCache)
 								{
 									_resourceCache.TextureCache.Add(userTex.Bitmap, tempTex);
-									userTex.CachedTexture = tempTex;
 									tempTex = null;
 								}
 							}
@@ -429,11 +427,6 @@ namespace BizHawk.Bizware.Graphics
 		public void DrawImage(Bitmap image, Rectangle destRect, int srcX, int srcY, int srcWidth, int srcHeight, bool cache)
 		{
 			var texture = new ImGuiUserTexture { Bitmap = image, WantCache = cache };
-			if (cache && _resourceCache.TextureCache.TryGetValue(image, out var cachedTexture))
-			{
-				texture.CachedTexture = cachedTexture;
-			}
-
 			var handle = GCHandle.Alloc(texture, GCHandleType.Normal);
 			_gcHandles.Add(handle);
 			var imgWidth = (float)image.Width;
