@@ -76,9 +76,10 @@ namespace BizHawk.Bizware.Graphics
 
 		public void Dispose()
 		{
-			foreach (var cachedTexture in TextureCache.Values)
+			foreach (var cache in TextureCache)
 			{
-				cachedTexture.Dispose();
+				cache.Key.Dispose();
+				cache.Value.Dispose();
 			}
 
 			foreach (var cachedBrush in BrushCache.Values)
