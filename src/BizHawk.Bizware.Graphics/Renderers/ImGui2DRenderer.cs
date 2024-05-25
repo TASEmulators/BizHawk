@@ -450,7 +450,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			_imGuiDrawList.AddLine(
 				p1: new(x1, y1),
-				p2: new(x2, y2),
+				p2: new(x2 + 0.5f, y2 + 0.5f),
 				col: (uint)color.ToArgb(),
 				thickness: RenderThickness);
 		}
