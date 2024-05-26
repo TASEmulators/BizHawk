@@ -280,7 +280,11 @@ namespace BizHawk.Bizware.Graphics
 				{
 					ClearStringOutput();
 					// synthesize an add image command for our string bitmap
-					_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlendNormal, IntPtr.Zero);
+					if (!_pendingBlendEnable)
+					{
+						// always normal blend the string (it covers the entire image, if it was alpha that'd obscure everything else)
+						_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlendNormal, IntPtr.Zero);
+					}
 					DrawImage(_stringOutput, 0, 0);
 				}
 
@@ -405,6 +409,12 @@ namespace BizHawk.Bizware.Graphics
 
 		public void DrawImage(Bitmap image, int x, int y)
 		{
+			// use normal blending for images
+			if (_pendingBlendEnable)
+			{
+				_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlendNormal, IntPtr.Zero);
+			}
+
 			var texture = new ImGuiUserTexture { Bitmap = image, WantCache = false };
 			var handle = GCHandle.Alloc(texture, GCHandleType.Normal);
 			_gcHandles.Add(handle);
@@ -412,10 +422,21 @@ namespace BizHawk.Bizware.Graphics
 				user_texture_id: GCHandle.ToIntPtr(handle),
 				p_min: new(x, y),
 				p_max: new(x + image.Width, y + image.Height));
+
+			if (_pendingBlendEnable)
+			{
+				_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlendAlpha, IntPtr.Zero);
+			}
 		}
 
 		public void DrawImage(Bitmap image, Rectangle destRect, int srcX, int srcY, int srcWidth, int srcHeight, bool cache)
 		{
+			// use normal blending for images
+			if (_pendingBlendEnable)
+			{
+				_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlendNormal, IntPtr.Zero);
+			}
+
 			var texture = new ImGuiUserTexture { Bitmap = image, WantCache = cache };
 			var handle = GCHandle.Alloc(texture, GCHandleType.Normal);
 			_gcHandles.Add(handle);
@@ -427,6 +448,11 @@ namespace BizHawk.Bizware.Graphics
 				p_max: new(destRect.Right, destRect.Bottom),
 				uv_min: new(srcX / imgWidth, srcY / imgHeight),
 				uv_max: new((srcX + srcWidth) / imgWidth, (srcY + srcHeight) / imgHeight));
+
+			if (_pendingBlendEnable)
+			{
+				_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlendAlpha, IntPtr.Zero);
+			}
 		}
 
 		public void DrawLine(Color color, int x1, int y1, int x2, int y2)
