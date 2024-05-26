@@ -358,31 +358,20 @@ namespace BizHawk.Bizware.Graphics
 		{
 			// we don't use AddRect as we want to avoid double drawing at the corners
 			// as that produces artifacts with alpha blending
-			var col = (uint)color.ToArgb();
+
+			// keep in mind width/height include the beginning pixel
+			// e.g. a 1x1 rect has the same coordinate for all corners, so you don't + 1, you + 1 - 1
+			var right = x + width - 1;
+			var bottom = y + height - 1;
+
 			// top left to top right
-			_imGuiDrawList.AddLine(
-				p1: new(x, y),
-				p2: new(x + width, y),
-				col: col,
-				thickness: RenderThickness);
+			DrawLine(color, x, y, right, y);
 			// top right (and 1 pixel down) to bottom right
-			_imGuiDrawList.AddLine(
-				p1: new(x + width - 0.5f, y + 1),
-				p2: new(x + width - 0.5f, y + height),
-				col: col,
-				thickness: RenderThickness);
+			DrawLine(color, right, y + 1, right, bottom);
 			// bottom right (and 1 pixel left) to bottom left
-			_imGuiDrawList.AddLine(
-				p1: new(x + width - 1.5f, y + height - 0.5f),
-				p2: new(x, y + height - 0.5f),
-				col: col,
-				thickness: RenderThickness);
+			DrawLine(color, right - 1, bottom, x, bottom);
 			// bottom left (and 1 pixel up) to top left (and 1 pixel down)
-			_imGuiDrawList.AddLine(
-				p1: new(x, y + height - 1.5f),
-				p2: new(x, y + 1),
-				col: col,
-				thickness: RenderThickness);
+			DrawLine(color, x, bottom - 1, x, y + 1);
 		}
 
 		public void FillRectangle(Color color, int x, int y, int width, int height)
@@ -449,7 +438,7 @@ namespace BizHawk.Bizware.Graphics
 			{
 				p1.X += 0.5f;
 			}
-			else if (p2.X > p1.X)
+			else
 			{
 				p2.X += 0.5f;
 			}
@@ -458,7 +447,7 @@ namespace BizHawk.Bizware.Graphics
 			{
 				p1.Y += 0.5f;
 			}
-			else if (p2.Y > p1.Y)
+			else
 			{
 				p2.Y += 0.5f;
 			}
