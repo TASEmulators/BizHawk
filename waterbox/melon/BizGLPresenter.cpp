@@ -10,6 +10,8 @@
 
 namespace Frontend
 {
+	extern float TouchMtx[6];
+	extern bool BotEnable;
 	extern void M23_Transform(float* m, float& x, float& y);
 }
 
@@ -323,10 +325,18 @@ ECL_EXPORT void SetScreenSettings(const ScreenSettings* screenSettings, u32* wid
 
 ECL_EXPORT void GetTouchCoords(int* x, int* y)
 {
-	if (!Frontend::GetTouchCoords(*x, *y, true))
+	float vx = *x;
+	float vy = *y;
+
+	Frontend::M23_Transform(Frontend::TouchMtx, vx, vy);
+
+	*x = vx;
+	*y = vy;
+
+	if (!Frontend::BotEnable)
 	{
-		*x = 0;
-		*y = 0;
+		// top screen only, offset y to account for that
+		*y -= 192;
 	}
 }
 
@@ -342,9 +352,18 @@ ECL_EXPORT void GetScreenCoords(float* x, float* y)
 		}
 	}
 
-	// bottom screen not visible
-	*x = 0;
-	*y = 0;
+	// top screen only, offset y to account for that
+	*y += 192;
+
+	for (int i = 0; i < NumScreens; i++)
+	{
+		// top screen
+		if (ScreenKinds[i] == 0)
+		{
+			Frontend::M23_Transform(&ScreenMatrix[i * 6], *x, *y);
+			return;
+		}
+	}
 }
 
 }

@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			else
 			{
 				// no GL context, so nothing fancy can be applied
-				y = Math.Max(0, y - 192);
+				y -= 192;
 			}
 
 			return new(x, y);
@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			else
 			{
 				// no GL context, so nothing fancy can be applied
-				y = Math.Min(256, y + 192);
+				y += 192;
 			}
 
 			return new(x, y);
