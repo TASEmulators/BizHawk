@@ -106,7 +106,7 @@ install: $(TARGET_RELEASE)
 
 install-debug: $(TARGET_DEBUG)
 	@cp -f $< $(OUTPUTDLL_DIR)
-	@zstd --stdout --ultra -22 --threads=0 $< > $(OUTPUTDLL_DIR)/$(TARGET).zst
+	@zstd --stdout -1 --threads=0 $< > $(OUTPUTDLL_DIR)/$(TARGET).zst
 	@cp $(OUTPUTDLL_DIR)/$(TARGET).zst $(OUTPUTDLLCOPY_DIR)/$(TARGET).zst 2> /dev/null || true
 	@echo Debug build of $(TARGET) installed.
 

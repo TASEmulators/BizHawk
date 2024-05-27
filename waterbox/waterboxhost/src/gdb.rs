@@ -90,5 +90,5 @@ pub unsafe fn deregister(data: &[u8]) {
 	__jit_debug_descriptor.action_flag = JIT_UNREGISTER_FN;
 	__jit_debug_register_code();
 
-	Box::from_raw(entry);
+	drop(Box::from_raw(entry));
 }

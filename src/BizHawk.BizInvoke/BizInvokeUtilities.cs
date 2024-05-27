@@ -82,19 +82,23 @@ namespace BizHawk.BizInvoke
 		private static CustomAttributeBuilder GetAttributeBuilder(object o)
 		{
 			// anything more clever we can do here?
-			var t = o.GetType();
-
-			if (t == typeof(OutAttribute) || t == typeof(InAttribute) || t == typeof(IsReadOnlyAttribute))
+#if NETSTANDARD2_1_OR_GREATER || NET471_OR_GREATER || NETCOREAPP2_0_OR_GREATER
+			if (o is OutAttribute or InAttribute or IsReadOnlyAttribute)
+#else
+			if (o is OutAttribute or InAttribute
+				|| o.GetType().FullName == "System.Runtime.CompilerServices.IsReadOnlyAttribute") // I think without this, you'd still only hit the below runtime assertion when this project targets e.g. netstandard2.0 but a core targets e.g. net8.0, so unlikely --yoshi
+#endif
 			{
-				return new(t.GetConstructor(Type.EmptyTypes)!, Array.Empty<object>());
+				return new(o.GetType().GetConstructor(Type.EmptyTypes)!, Array.Empty<object>());
 			}
-
-			if (t == typeof(MarshalAsAttribute))
+			if (o is MarshalAsAttribute marshalAsAttr)
 			{
-				return new(t.GetConstructor(new[] { typeof(UnmanagedType) })!, new object[] { ((MarshalAsAttribute)o).Value });
+				return new(
+					typeof(MarshalAsAttribute).GetConstructor(new[] { typeof(UnmanagedType) })!,
+					new object[] { marshalAsAttr.Value }
+				);
 			}
-
-			throw new InvalidOperationException($"Unknown parameter attribute {t.Name}");
+			throw new InvalidOperationException($"parameter of a BizInvoke method had unknown attribute {o.GetType().FullName}");
 		}
 	}
 }

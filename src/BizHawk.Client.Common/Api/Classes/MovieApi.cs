@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 			if (!string.IsNullOrEmpty(filename))
 			{
 				filename += $".{_movieSession.Movie.PreferredExtension}";
-				if (new FileInfo(filename).Exists)
+				if (File.Exists(filename))
 				{
 					LogCallback($"File {filename} already exists, will not overwrite");
 					return;

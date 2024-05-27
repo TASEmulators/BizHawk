@@ -28,6 +28,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="System.Memory" />
+		<PackageReference Include="System.Memory" />
 	</ItemGroup>
 </Project>

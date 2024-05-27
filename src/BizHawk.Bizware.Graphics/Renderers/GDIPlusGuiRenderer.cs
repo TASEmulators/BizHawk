@@ -6,8 +6,6 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Numerics;
 
-using BizHawk.Bizware.BizwareGL;
-
 using SDGraphics = System.Drawing.Graphics;
 
 namespace BizHawk.Bizware.Graphics
@@ -28,9 +26,7 @@ namespace BizHawk.Bizware.Graphics
 		};
 
 		public void SetCornerColor(int which, Vector4 color)
-		{
-			CornerColors[which] = color;
-		}
+			=> CornerColors[which] = color;
 
 		/// <exception cref="ArgumentException"><paramref name="colors"/> does not have exactly <c>4</c> elements</exception>
 		public void SetCornerColors(Vector4[] colors)
@@ -49,11 +45,9 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public void Dispose()
-		{
-			CurrentImageAttributes?.Dispose();
-		}
+			=> CurrentImageAttributes?.Dispose();
 
-		public void SetPipeline(Pipeline pipeline)
+		public void SetPipeline(IPipeline pipeline)
 		{
 		}
 
@@ -62,9 +56,7 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public void SetModulateColorWhite()
-		{
-			SetModulateColor(Color.White);
-		}
+			=> SetModulateColor(Color.White);
 
 		private ImageAttributes CurrentImageAttributes;
 
@@ -96,51 +88,34 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public void EnableBlending()
-		{
-			Owner.EnableBlending();
-		}
+			=> Owner.EnableBlendNormal();
 
 		public void DisableBlending()
-		{ 
-			Owner.DisableBlending();
-		}
+			=> Owner.DisableBlending();
 
-		private MatrixStack _Projection, _Modelview;
+		private MatrixStack _projection, _modelView;
 
 		public MatrixStack Projection
 		{
-			get => _Projection;
+			get => _projection;
 			set
 			{
-				_Projection = value;
-				_Projection.IsDirty = true;
+				_projection = value;
+				_projection.IsDirty = true;
 			}
 		}
 
-		public MatrixStack Modelview
+		public MatrixStack ModelView
 		{
-			get => _Modelview;
+			get => _modelView;
 			set
 			{
-				_Modelview = value;
-				_Modelview.IsDirty = true;
+				_modelView = value;
+				_modelView.IsDirty = true;
 			}
-		}
-
-		public void Begin(Size size)
-		{
-			Begin(size.Width, size.Height);
 		}
 
 		public void Begin(int width, int height)
-		{
-			Begin();
-
-			Projection = Owner.CreateGuiProjectionMatrix(width, height);
-			Modelview = Owner.CreateGuiViewMatrix(width, height);
-		}
-
-		public void Begin()
 		{
 			// uhhmmm I want to throw an exception if its already active, but its annoying.
 			IsActive = true;
@@ -148,8 +123,11 @@ namespace BizHawk.Bizware.Graphics
 
 			CurrentImageAttributes?.Dispose();
 			CurrentImageAttributes = new();
-			Modelview?.Clear();
+			ModelView?.Clear();
 			Projection?.Clear();
+
+			Projection = Owner.CreateGuiProjectionMatrix(width, height);
+			ModelView = Owner.CreateGuiViewMatrix(width, height);
 		}
 
 		public void Flush()
@@ -170,22 +148,15 @@ namespace BizHawk.Bizware.Graphics
 			CurrentImageAttributes = null;
 		}
 
-		public void RectFill(float x, float y, float w, float h)
+		public void DrawSubrect(ITexture2D tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-		}
-
-		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
-		{
-			var gtex = (GDIPlusTexture)tex.Opaque;
 			var g = _gdi.GetCurrentGraphics();
 
-			PrepDraw(g, tex);
-			SetupMatrix(g);
+			var tex2d = (GDIPlusTexture2D)tex;
+			// TODO - we can support bicubic for the final presentation...
+			g.InterpolationMode = tex2d.LinearFiltering ? InterpolationMode.Bilinear : InterpolationMode.NearestNeighbor;
 
-			var x0 = u0 * tex.Width;
-			var y0 = v0 * tex.Height;
-			var x1 = u1 * tex.Width;
-			var y1 = v1 * tex.Height;
+			SetupMatrix(g);
 
 			PointF[] destPoints =
 			{
@@ -194,88 +165,22 @@ namespace BizHawk.Bizware.Graphics
 				new(x, y + h),
 			};
 
-			g.DrawImage(gtex.SDBitmap, destPoints, new(x0, y0, x1 - x0, y1 - y0), GraphicsUnit.Pixel, CurrentImageAttributes);
+			var x0 = u0 * tex.Width;
+			var y0 = v0 * tex.Height;
+			var x1 = u1 * tex.Width;
+			var y1 = v1 * tex.Height;
+
+			g.PixelOffsetMode = PixelOffsetMode.Half;
+			g.DrawImage(tex2d.SDBitmap, destPoints, new(x0, y0, x1 - x0, y1 - y0), GraphicsUnit.Pixel, CurrentImageAttributes);
 			g.Transform = new(); // .Reset() doesnt work?
-		}
-
-		public void Draw(Art art) { DrawInternal(art, 0, 0, art.Width, art.Height, false, false); }
-		public void Draw(Art art, float x, float y) { DrawInternal(art, x, y, art.Width, art.Height, false, false); }
-		public void Draw(Art art, float x, float y, float width, float height) { DrawInternal(art, x, y, width, height, false, false); }
-		public void Draw(Art art, Vector2 pos) { DrawInternal(art, pos.X, pos.Y, art.Width, art.Height, false, false); }
-		public void Draw(Texture2d tex) { DrawInternal(tex, 0, 0, tex.Width, tex.Height); }
-		public void Draw(Texture2d tex, float x, float y) { DrawInternal(tex, x, y, tex.Width, tex.Height); }
-		public void DrawFlipped(Art art, bool xflip, bool yflip) { DrawInternal(art, 0, 0, art.Width, art.Height, xflip, yflip); }
-
-		public void Draw(Texture2d art, float x, float y, float width, float height)
-		{
-			DrawInternal(art, x, y, width, height);
-		}
-
-		private static void PrepDraw(SDGraphics g, Texture2d tex)
-		{
-			var tw = (GDIPlusTexture)tex.Opaque;
-
-			// TODO - we can support bicubic for the final presentation...
-			if ((int)tw.MagFilter != (int)tw.MinFilter)
-			{
-				throw new InvalidOperationException($"{nameof(tw)}.{nameof(tw.MagFilter)} != {nameof(tw)}.{nameof(tw.MinFilter)}");
-			}
-
-			g.InterpolationMode = tw.MagFilter switch
-			{
-				TextureMagFilter.Linear => InterpolationMode.Bilinear,
-				TextureMagFilter.Nearest => InterpolationMode.NearestNeighbor,
-				_ => g.InterpolationMode
-			};
 		}
 
 		private void SetupMatrix(SDGraphics g)
 		{
 			// projection is always identity, so who cares i guess
 			// var mat = Projection.Top * Modelview.Top;
-			var mat = Modelview.Top;
+			var mat = ModelView.Top;
 			g.Transform = new(mat.M11, mat.M12, mat.M21, mat.M22, mat.M41, mat.M42);
-		}
-
-		private void DrawInternal(Art art, float x, float y, float w, float h)
-		{
-			DrawInternal(art.BaseTexture, x, y, w, h, art.u0, art.v0, art.u1, art.v1);
-		}
-
-		private void DrawInternal(Texture2d tex, float x, float y, float w, float h)
-		{
-			DrawInternal(tex, x, y, w, h, 0, 0, 1, 1);
-		}
-
-		private void DrawInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
-		{
-			var g = _gdi.GetCurrentGraphics();
-			PrepDraw(g, tex);
-
-			SetupMatrix(g);
-
-			PointF[] destPoints =
-			{
-				new(x, y),
-				new(x+w, y),
-				new(x, y+h),
-			};
-
-			var sx = tex.Width * u0;
-			var sy = tex.Height * v0;
-			var sx2 = tex.Width * u1;
-			var sy2 = tex.Height * v1;
-			var sw = sx2 - sx;
-			var sh = sy2 - sy;
-
-			var gtex = (GDIPlusTexture)tex.Opaque;
-			g.PixelOffsetMode = PixelOffsetMode.Half;
-			g.DrawImage(gtex.SDBitmap, destPoints, new(sx, sy, sw, sh), GraphicsUnit.Pixel, CurrentImageAttributes);
-			g.Transform = new(); // .Reset() doesn't work ? ?
-		}
-
-		private static void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
-		{
 		}
 
 		public bool IsActive { get; private set; }

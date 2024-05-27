@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../TestProjects.props" />
 	<PropertyGroup>
@@ -17,11 +17,20 @@
 	</PropertyGroup>
 	<!-- BIZHAWKTEST_SAVE_IMAGES=none => no extra defines -->
 	<ItemGroup>
-		<PackageReference Include="Magick.NET-Q8-AnyCPU" />
+		<PackageReference Include="Magick.NET-Q8-AnyCPU" GeneratePathProperty="true" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 		<EmbeddedResource Include="res/**/*" />
 		<Content Include="$(ProjectDir)../../Assets/gamedb/**/*" LinkBase="gamedb" CopyToOutputDirectory="PreserveNewest" />
-		<RuntimeHostConfigurationOption Include="System.Drawing.EnableUnixSupport" Value="true" />
 	</ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(OS)' != 'WINDOWS_NT' ">
+		<!-- ExcludeAssets="runtime" didn't work, making this necessary, and might as well do everything here -->
+		<!-- may be able to simplify copy in future, see https://github.com/dlemstra/Magick.NET/pull/1633, but would still want delete probably? -->
+		<ItemGroup>
+			<ToDelete Include="$(OutputPath)Magick.Native-*.dll" />
+			<ToCopy Include="$(PkgMagick_NET-Q8-AnyCPU)/runtimes/linux-x64/native/*.dll.so" />
+		</ItemGroup>
+		<Delete Files="@(ToDelete)" />
+		<Copy SourceFiles="@(ToCopy)" DestinationFiles="@(ToCopy->'$(OutputPath)lib%(Filename)%(Extension)')" /> <!-- not sure why they're using `*.dll.so` without the `lib*` part -->
+	</Target>
 </Project>

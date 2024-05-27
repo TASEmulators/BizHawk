@@ -3,12 +3,12 @@ using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
 
+#pragma warning disable IDE1006
+
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public abstract class LibGPGX
 	{
-		public const string DllName = "libgenplusgx.dll";
-
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_get_video(out int w, out int h, out int pitch, ref IntPtr buffer);
 
@@ -30,11 +30,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Japan_PAL = 4
 		}
 
+		public enum ForceVDP : int
+		{
+			Disabled = 0,
+			NTSC = 1,
+			PAL = 2
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
-		public class InitSettings
+		public struct InitSettings
 		{
 			public uint BackdropColor;
 			public Region Region;
+			public ForceVDP ForceVDP;
 			public ushort LowPassRange;
 			public short LowFreq;
 			public short HighFreq;
@@ -73,20 +81,32 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public GenesisFMSoundChipType GenesisFMSoundChip;
 
 			public bool SpritesAlwaysOnTop;
-			public bool loadBIOS;
+			public bool LoadBIOS;
+
+			[Flags]
+			public enum OverscanType : byte
+			{
+				None = 0,
+				Vertical = 1 << 0,
+				Horizontal = 1 << 1,
+				All = Vertical | Horizontal,
+			}
+			public OverscanType Overscan;
+			public bool GGExtra;
 		}
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract bool gpgx_init(
 			string feromextension,
 			load_archive_cb feload_archive_cb,
-			[In]InitSettings settings);
+			ref InitSettings settings);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void gpgx_get_fps(ref int num, ref int den);
+		public abstract void gpgx_get_fps(out int num, out int den);
 
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract bool gpgx_get_control([Out]InputData dest, int bytes);
+
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract bool gpgx_put_control([In]InputData src, int bytes);
 
@@ -114,19 +134,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public enum INPUT_SYSTEM : byte
 		{
-			SYSTEM_NONE = 0,        // unconnected port	
-			SYSTEM_MD_GAMEPAD = 1,  // single 3-buttons or 6-buttons Control Pad 	
-			SYSTEM_MOUSE = 2,       // Sega Mouse 	
-			SYSTEM_MENACER = 3,     // Sega Menacer -- port B only
-			SYSTEM_JUSTIFIER = 4,   // Konami Justifiers -- port B only
-			SYSTEM_XE_A1P = 5,      // XE-A1P analog controller -- port A only
-			SYSTEM_ACTIVATOR = 6,   // Sega Activator 	
-			SYSTEM_MS_GAMEPAD = 7,  // single 2-buttons Control Pad -- Master System
-			SYSTEM_LIGHTPHASER = 8, // Sega Light Phaser -- Master System
-			SYSTEM_PADDLE = 9,      // Sega Paddle Control -- Master System
-			SYSTEM_SPORTSPAD = 10,  // Sega Sports Pad -- Master System
-			SYSTEM_TEAMPLAYER = 11, // Multi Tap -- Sega TeamPlayer 	
-			SYSTEM_WAYPLAY = 12,    // Multi Tap -- EA 4-Way Play -- use both ports
+			SYSTEM_NONE = 0,          // unconnected port
+			SYSTEM_GAMEPAD = 1,	      // single 2-buttons, 3-buttons or 6-buttons Control Pad
+			SYSTEM_MOUSE = 2,         // Sega Mouse
+			SYSTEM_MENACER = 3,       // Sega Menacer -- port B only
+			SYSTEM_JUSTIFIER = 4,     // Konami Justifiers -- port B only
+			SYSTEM_XE_A1P = 5,        // XE-A1P analog controller -- port A only
+			SYSTEM_ACTIVATOR = 6,     // Sega Activator
+			SYSTEM_LIGHTPHASER = 7,   // Sega Light Phaser -- Master System
+			SYSTEM_PADDLE = 8,        // Sega Paddle Control -- Master System
+			SYSTEM_SPORTSPAD = 9,     // Sega Sports Pad -- Master System
+			SYSTEM_GRAPHIC_BOARD = 10,// Sega Graphic Board
+			SYSTEM_MASTERTAP = 11,    // Multi Tap -- Furrtek's Master Tap (unofficial)
+			SYSTEM_TEAMPLAYER = 12,   // Multi Tap -- Sega TeamPlayer
+			SYSTEM_WAYPLAY = 13,      // Multi Tap -- EA 4-Way Play -- use both ports
 		}
 
 		public enum INPUT_DEVICE : byte
@@ -320,7 +341,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public abstract void gpgx_set_cdd_callback(cd_read_cb cddcb);
 
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void gpgx_swap_disc(CDData toc);
+		public abstract void gpgx_swap_disc([In] CDData toc);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct VDPNameTable
@@ -331,7 +352,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public class VDPView
+		public struct VDPView
 		{
 			public IntPtr VRAM;
 			public IntPtr PatternCache;
@@ -341,8 +362,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public VDPNameTable NTW;
 		}
 
-		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void gpgx_get_vdp_view([Out] VDPView view);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void gpgx_get_vdp_view(out VDPView view);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_poke_cram(int addr, byte value);
@@ -372,8 +393,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract int gpgx_getmaxnumregs();
 
-		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract int gpgx_getregs([Out] RegisterInfo[] regs);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract int gpgx_getregs(RegisterInfo[] regs);
 
 		[Flags]
 		public enum DrawMask : int
@@ -387,15 +408,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_set_draw_mask(DrawMask mask);
+
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_set_sprite_limit_enabled(bool enabled);
 
 		[BizImport(CallingConvention.Cdecl)]
+		public abstract void gpgx_write_z80_bus(uint addr, byte data);
+
+		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_write_m68k_bus(uint addr, byte data);
+
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_write_s68k_bus(uint addr, byte data);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract byte gpgx_peek_z80_bus(uint addr);
+
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract byte gpgx_peek_m68k_bus(uint addr);
+
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract byte gpgx_peek_s68k_bus(uint addr);
 	}

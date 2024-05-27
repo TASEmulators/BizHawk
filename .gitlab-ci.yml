@@ -201,8 +201,7 @@ run_tests:
   - job: build_asms_release
     artifacts: false
   script:
-  - Dist/BuildDebug.sh # populate output
-  - Dist/BuildTestRelease.sh -v normal
+  - Dist/BuildTestRelease.sh -v normal -p:TestProjTargetFrameworkOverride=net8.0
   stage: test
 
 .disabled_job_sast:

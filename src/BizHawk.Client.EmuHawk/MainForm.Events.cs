@@ -885,7 +885,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			static IEnumerable<string> GetDeviceNamesCallback(ESoundOutputMethod outputMethod) => outputMethod switch
 			{
-				ESoundOutputMethod.DirectSound => DirectSoundSoundOutput.GetDeviceNames(),
 				ESoundOutputMethod.XAudio2 => XAudio2SoundOutput.GetDeviceNames(),
 				ESoundOutputMethod.OpenAL => OpenALSoundOutput.GetDeviceNames(),
 				_ => Enumerable.Empty<string>()
@@ -903,7 +902,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				Sound.Dispose();
-				Sound = new Sound(Handle, Config, () => Emulator.VsyncRate());
+				Sound = new Sound(Config, () => Emulator.VsyncRate());
 			}
 			Sound.StartSound();
 			RewireSound();

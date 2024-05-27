@@ -19,6 +19,13 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;
 
+		private const UnmanagedType STR_MARSHAL_HINT
+#if NETSTANDARD2_1_OR_GREATER || NET47_OR_GREATER || NETCOREAPP1_1_OR_GREATER
+			= UnmanagedType.LPUTF8Str;
+#else
+			= UnmanagedType.LPStr; // presumably this will produce mojibake for non-ASCII text but is otherwise safe? CPP confirmed it was the right one so I'm trusting him --yoshi
+#endif
+
 		public enum rc_error_t : int
 		{
 			RC_OK = 0,
@@ -150,9 +157,9 @@ namespace BizHawk.Client.EmuHawk
 		[StructLayout(LayoutKind.Sequential)]
 		public readonly record struct rc_api_fetch_user_unlocks_request_t(string username, string api_token, uint game_id, bool hardcore)
 		{
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string username = username;
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string api_token = api_token;
 			public readonly uint game_id = game_id;
 			[MarshalAs(UnmanagedType.Bool)]
@@ -162,23 +169,23 @@ namespace BizHawk.Client.EmuHawk
 		[StructLayout(LayoutKind.Sequential)]
 		public readonly record struct rc_api_login_request_t(string username, string api_token, string password)
 		{
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string username = username;
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string api_token = api_token;
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string password = password;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public readonly record struct rc_api_start_session_request_t(string username, string api_token, uint game_id, string game_hash, bool hardcore)
 		{
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string username = username;
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string api_token = api_token;
 			public readonly uint game_id = game_id;
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string game_hash = game_hash;
 			[MarshalAs(UnmanagedType.Bool)]
 			public readonly bool hardcore = hardcore;
@@ -235,23 +242,23 @@ namespace BizHawk.Client.EmuHawk
 		[StructLayout(LayoutKind.Sequential)]
 		public readonly record struct rc_api_award_achievement_request_t(string username, string api_token, uint achievement_id, bool hardcore, string game_hash)
 		{
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string username = username;
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string api_token = api_token;
 			public readonly uint achievement_id = achievement_id;
 			[MarshalAs(UnmanagedType.Bool)]
 			public readonly bool hardcore = hardcore;
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string game_hash = game_hash;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public readonly record struct rc_api_fetch_game_data_request_t(string username, string api_token, uint game_id)
 		{
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string username = username;
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string api_token = api_token;
 			public readonly uint game_id = game_id;
 		}
@@ -259,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 		[StructLayout(LayoutKind.Sequential)]
 		public readonly record struct rc_api_fetch_image_request_t(string image_name, rc_api_image_type_t image_type)
 		{
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string image_name = image_name;
 			public readonly rc_api_image_type_t image_type = image_type;
 		}
@@ -267,14 +274,14 @@ namespace BizHawk.Client.EmuHawk
 		[StructLayout(LayoutKind.Sequential)]
 		public readonly record struct rc_api_ping_request_t(string username, string api_token, uint game_id, string rich_presence, string game_hash, bool hardcore)
 		{
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string username = username;
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string api_token = api_token;
 			public readonly uint game_id = game_id;
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string rich_presence = rich_presence;
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string game_hash = game_hash;
 			[MarshalAs(UnmanagedType.Bool)]
 			public readonly bool hardcore = hardcore;
@@ -283,24 +290,24 @@ namespace BizHawk.Client.EmuHawk
 		[StructLayout(LayoutKind.Sequential)]
 		public readonly record struct rc_api_resolve_hash_request_t(string username, string api_token, string game_hash)
 		{
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string username = username; // note: not actually used
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string api_token = api_token; // note: not actually used
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string game_hash = game_hash;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public readonly record struct rc_api_submit_lboard_entry_request_t(string username, string api_token, uint leaderboard_id, int score, string game_hash)
 		{
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string username = username;
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string api_token = api_token;
 			public readonly uint leaderboard_id = leaderboard_id;
 			public readonly int score = score;
-			[MarshalAs(UnmanagedType.LPUTF8Str)]
+			[MarshalAs(STR_MARSHAL_HINT)]
 			public readonly string game_hash = game_hash;
 		}
 
@@ -313,7 +320,7 @@ namespace BizHawk.Client.EmuHawk
 			rc_hash_filereader.rc_hash_filereader_close_file_handler close)
 		{
 			[UnmanagedFunctionPointer(cc)]
-			public delegate IntPtr rc_hash_filereader_open_file_handler([MarshalAs(UnmanagedType.LPUTF8Str)] string path_utf8);
+			public delegate IntPtr rc_hash_filereader_open_file_handler([MarshalAs(STR_MARSHAL_HINT)] string path_utf8);
 
 			[UnmanagedFunctionPointer(cc)]
 			public delegate void rc_hash_filereader_seek_handler(IntPtr file_handle, long offset, SeekOrigin origin);
@@ -336,7 +343,7 @@ namespace BizHawk.Client.EmuHawk
 			rc_hash_cdreader.rc_hash_cdreader_first_track_sector_handler first_track_sector)
 		{
 			[UnmanagedFunctionPointer(cc)]
-			public delegate IntPtr rc_hash_cdreader_open_track_handler([MarshalAs(UnmanagedType.LPUTF8Str)] string path, int track);
+			public delegate IntPtr rc_hash_cdreader_open_track_handler([MarshalAs(STR_MARSHAL_HINT)] string path, int track);
 
 			[UnmanagedFunctionPointer(cc)]
 			public delegate nuint rc_hash_cdreader_read_sector_handler(IntPtr track_handle, uint sector, IntPtr buffer, nuint requested_bytes);
@@ -359,7 +366,7 @@ namespace BizHawk.Client.EmuHawk
 		public delegate bool rc_runtime_validate_address_t(uint address);
 
 		[UnmanagedFunctionPointer(cc)]
-		public delegate void rc_hash_message_callback([MarshalAs(UnmanagedType.LPUTF8Str)] string message);
+		public delegate void rc_hash_message_callback([MarshalAs(STR_MARSHAL_HINT)] string message);
 
 		[UnmanagedFunctionPointer(cc)]
 		[return: MarshalAs(UnmanagedType.Bool)]

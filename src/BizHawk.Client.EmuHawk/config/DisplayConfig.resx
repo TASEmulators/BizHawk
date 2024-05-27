@@ -121,9 +121,9 @@
     <value>17, 17</value>
   </metadata>
   <data name="label13.Text" xml:space="preserve">
-    <value>Alternate VSync Method: Some GPUs have problems VSyncing. It seems
-to manifest on full-screen windows. There will be hiccups when throttling
-to VSync. Use this to try and solve it (busy loop; burns major CPU)</value>
+    <value>Allow Tearing: Allows fullscreen to tear when VSync is disabled.
+This is required for variable frame rate (VFR) monitors to properly work.
+Fast forward performance might decrease with tearing allowed.</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>For Windows operating systems &gt;= Vista, with

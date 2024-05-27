@@ -14,13 +14,14 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.IO.Pipes;
 
+using BizHawk.Bizware.Graphics;
+
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 
 using BizHawk.Client.Common;
-using BizHawk.Bizware.BizwareGL;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Base_Implementations;
@@ -86,9 +87,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			WindowSizeSubMenu.DropDownItems.AddRange(CreateWindowSizeFactorSubmenus());
 
-			foreach (var (groupLabel, appliesTo, coreNames) in Config.CorePickerUIData.Select(static tuple => (GroupLabel: tuple.AppliesTo[0], tuple.AppliesTo, tuple.CoreNames))
-				.OrderBy(static tuple => tuple.GroupLabel))
+			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
 			{
+				var groupLabel = appliesTo[0];
 				var submenu = new ToolStripMenuItem { Text = groupLabel };
 				void ClickHandler(object clickSender, EventArgs clickArgs)
 				{
@@ -107,6 +108,13 @@ namespace BizHawk.Client.EmuHawk
 				submenu.DropDownOpened += (openedSender, _1) =>
 				{
 					_ = Config.PreferredCores.TryGetValue(groupLabel, out var preferred);
+					if (!coreNames.Contains(preferred))
+					{
+						// invalid --> default (doing this here rather than when reading config file to allow for hacked-in values, though I'm not sure if that could do anything at the moment --yoshi)
+						var defaultCore = coreNames[0];
+						Console.WriteLine($"setting preferred core for {groupLabel} etc. to {defaultCore} (was {preferred ?? "null"})");
+						Config.PreferredCores[groupLabel] = preferred = defaultCore;
+					}
 					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems) entry.Checked = entry.Text == preferred;
 				};
 				CoresSubMenu.DropDownItems.Add(submenu);
@@ -588,10 +596,10 @@ namespace BizHawk.Client.EmuHawk
 			InputManager.ResetMainControllers(_autofireNullControls);
 			InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
 			var savedOutputMethod = Config.SoundOutputMethod;
-			if (savedOutputMethod is ESoundOutputMethod.Dummy) Config.SoundOutputMethod = HostCapabilityDetector.HasDirectX ? ESoundOutputMethod.DirectSound : ESoundOutputMethod.OpenAL;
+			if (savedOutputMethod is ESoundOutputMethod.Dummy) Config.SoundOutputMethod = HostCapabilityDetector.HasXAudio2 ? ESoundOutputMethod.XAudio2 : ESoundOutputMethod.OpenAL;
 			try
 			{
-				Sound = new Sound(Handle, Config, () => Emulator.VsyncRate());
+				Sound = new Sound(Config, () => Emulator.VsyncRate());
 			}
 			catch
 			{
@@ -599,14 +607,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ShowMessageBox(
 						owner: null,
-						text: savedOutputMethod is ESoundOutputMethod.DirectSound
-							? "Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 44.1khz instead of 48khz in mmsys.cpl."
-							: "Couldn't initialize sound device! Try changing the output method in Sound config.",
+						text: "Couldn't initialize sound device! Try changing the output method in Sound config.",
 						caption: "Initialization Error",
 						EMsgBoxIcon.Error);
 				}
 				Config.SoundOutputMethod = ESoundOutputMethod.Dummy;
-				Sound = new Sound(Handle, Config, () => Emulator.VsyncRate());
+				Sound = new Sound(Config, () => Emulator.VsyncRate());
 			}
 
 			Sound.StartSound();
@@ -3980,6 +3986,9 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
+					CurrentlyOpenRom = oaOpenrom?.Path ?? openAdvancedArgs;
+					CurrentlyOpenRomArgs = args;
+
 					Tools.Restart(Config, Emulator, Game);
 
 					if (Config.Cheats.LoadFileByGame && Emulator.HasMemoryDomains())
@@ -3995,8 +4004,6 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					CurrentlyOpenRom = oaOpenrom?.Path ?? openAdvancedArgs;
-					CurrentlyOpenRomArgs = args;
 					OnRomChanged();
 					DisplayManager.UpdateGlobals(Config, Emulator);
 					DisplayManager.Blank();

@@ -557,6 +557,20 @@ namespace BizHawk.Client.Common
 			game = rom.GameInfo;
 		}
 
+		// HACK due to MAME wanting CHDs as hard drives / handling it on its own (bad design, I know!)
+		// only matters for XML, as CHDs are never the "main" rom for MAME
+		// (in general, this is kind of bad as CHD hard drives might be useful for other future cores?)
+		private static bool IsDiscForXML(string system, string path)
+		{
+			var ext = Path.GetExtension(path);
+			if (system == VSystemID.Raw.Arcade && ext.ToLowerInvariant() == ".chd")
+			{
+				return false;
+			}
+
+			return Disc.IsValidExtension(ext);
+		}
+
 		private bool LoadXML(string path, CoreComm nextComm, HawkFile file, string forcedCoreName, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)
 		{
 			nextEmulator = null;
@@ -573,7 +587,7 @@ namespace BizHawk.Client.Common
 					Comm = nextComm,
 					Game = game,
 					Roms = xmlGame.Assets
-						.Where(kvp => !Disc.IsValidExtension(Path.GetExtension(kvp.Key)))
+						.Where(kvp => !IsDiscForXML(system, kvp.Key))
 						.Select(kvp => (IRomAsset)new RomAsset
 						{
 							RomData = kvp.Value,
@@ -584,7 +598,7 @@ namespace BizHawk.Client.Common
 						})
 						.ToList(),
 					Discs = xmlGame.AssetFullPaths
-						.Where(p => Disc.IsValidExtension(Path.GetExtension(p)))
+						.Where(p => IsDiscForXML(system, p))
 						.Select(discPath => (p: discPath, d: DiscExtensions.CreateAnyType(discPath, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError))))
 						.Where(a => a.d != null)
 						.Select(a => (IDiscAsset)new DiscAsset

@@ -118,6 +118,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			new CName("XE E2", LibGPGX.INPUT_KEYS.INPUT_XE_E2),
 		};
 
+		private static readonly CName[] Paddle =
+		{
+			new("B1", LibGPGX.INPUT_KEYS.INPUT_BUTTON1)
+		};
+
 		private LibGPGX.InputData _target;
 		private IController _source;
 
@@ -190,6 +195,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			});
 		}
 
+		private void DoPaddleAnalog(int idx, int player)
+		{
+			ControllerDef.AddAxis($"P{player} Paddle", 0.RangeTo(255), 128);
+
+			_converts.Add(() =>
+			{
+				_target.analog[2 * idx] = (byte)_source.AxisValue($"P{player} Paddle");
+			});
+		}
+
 		public GPGXControlConverter(LibGPGX.InputData input, string systemId, bool cdButtons)
 		{
 			Console.WriteLine("Genesis Controller report:");
@@ -240,9 +255,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						player++;
 						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_PADDLE:
+						AddToController(i, player, Paddle);
+						DoPaddleAnalog(i, player);
+						player++;
+						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_SPORTSPAD:
 					case LibGPGX.INPUT_DEVICE.DEVICE_TEREBI:
-						throw new Exception("Not implemented yet.");
+						throw new NotImplementedException();
 					case LibGPGX.INPUT_DEVICE.DEVICE_ACTIVATOR:
 						AddToController(i, player, Activator);
 						player++;

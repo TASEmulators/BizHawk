@@ -2,6 +2,10 @@ using System;
 using System.IO;
 using System.Reflection;
 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+[assembly: Parallelize(Scope = ExecutionScope.MethodLevel)]
+
 namespace BizHawk.Tests
 {
 	public static class EmbeddedData

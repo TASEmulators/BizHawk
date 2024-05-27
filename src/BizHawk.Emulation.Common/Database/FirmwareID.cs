@@ -22,8 +22,8 @@ namespace BizHawk.Emulation.Common
 			static bool IsAllowedCharacter(char c)
 				=> c is '-' or (>= '0' and <= '9') or (>= 'A' and <= 'Z') or '_' or (>= 'a' and <= 'z');
 			const string ERR_MSG_INVALID_CHAR = "FWIDs must match /[-0-9A-Z_a-z]+/";
-			if (!system.All(IsAllowedCharacter)) throw new ArgumentOutOfRangeException(paramName: system, actualValue: system, message: ERR_MSG_INVALID_CHAR);
-			if (!firmware.All(IsAllowedCharacter)) throw new ArgumentOutOfRangeException(paramName: firmware, actualValue: firmware, message: ERR_MSG_INVALID_CHAR);
+			if (!system.All(IsAllowedCharacter)) throw new ArgumentOutOfRangeException(paramName: nameof(system), actualValue: system, message: ERR_MSG_INVALID_CHAR);
+			if (!firmware.All(IsAllowedCharacter)) throw new ArgumentOutOfRangeException(paramName: nameof(firmware), actualValue: firmware, message: ERR_MSG_INVALID_CHAR);
 			System = system;
 			Firmware = firmware;
 		}

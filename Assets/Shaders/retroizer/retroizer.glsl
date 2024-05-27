@@ -6,17 +6,19 @@
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 
-//Yeah, I'm sorry this uses really old non-generic attributes
-//that's just how old this code is; support on ancient graphics cards is helpful
-
 #ifdef VERTEX
 
 uniform mat4 modelViewProj;
 
+in vec4 position;
+in vec2 tex;
+
+out vec2 vTexcoord;
+
 void main()
 {
-	gl_Position = modelViewProj * gl_Vertex;
-	gl_TexCoord[0] = gl_MultiTexCoord0;
+	gl_Position = modelViewProj * position;
+	vTexcoord = tex;
 }
 
 #endif //VERTEX
@@ -33,6 +35,10 @@ uniform struct
 uniform float Time;
 
 uniform sampler2D s_p;
+
+in vec2 vTexcoord;
+
+out vec4 oColor;
 
 float saturate(float x)
 {
@@ -211,8 +217,8 @@ vec3 TVEffect(vec2 in_Position, vec2 FakeResolution, float Time) {
 void main()
 {
 	vec4 color = vec4(1.0f,1.0f,1.0f,1.0f);
-	color.xyz = TVEffect(gl_TexCoord[0].xy, IN.texture_size, Time);
-	gl_FragColor = color;
+	color.xyz = TVEffect(vTexcoord, IN.texture_size, Time);
+	oColor = color;
 }
 
 #endif

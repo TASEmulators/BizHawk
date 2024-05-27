@@ -77,6 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			["C64"] = "C64",
 			["GEN"] = "Genesis",
 			["SMS"] = "Sega Master System",
+			["GG"] = "Sega Game Gear",
 			["PSX"] = "PlayStation",
 			["Jaguar"] = "Jaguar",
 			["Lynx"] = "Lynx",
@@ -590,7 +591,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				string target = Path.Combine(basePath, fi.Name);
-				if (new FileInfo(target).Exists)
+				if (File.Exists(target))
 				{
 					// compare the files, if they're the same. don't do anything
 					if (File.ReadAllBytes(target).SequenceEqual(File.ReadAllBytes(f)))

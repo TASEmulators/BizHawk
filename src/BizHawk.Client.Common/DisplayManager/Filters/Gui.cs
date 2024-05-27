@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Numerics;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common.FilterManager;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
@@ -464,7 +464,7 @@ namespace BizHawk.Client.Common.Filters
 			var outSize = FindOutput().SurfaceFormat.Size;
 			FilterProgram.GuiRenderer.Begin(outSize);
 			FilterProgram.GuiRenderer.DisableBlending();
-			FilterProgram.GuiRenderer.Modelview.Scale(Scale);
+			FilterProgram.GuiRenderer.ModelView.Scale(Scale);
 			FilterProgram.GuiRenderer.Draw(InputTexture);
 			FilterProgram.GuiRenderer.End();
 		}
@@ -519,15 +519,19 @@ namespace BizHawk.Client.Common.Filters
 		{
 			FilterProgram.GuiRenderer.Begin(OutputSize); // hope this didn't change
 			FilterProgram.GuiRenderer.DisableBlending();
-			FilterProgram.GuiRenderer.Modelview.Scale(XIS,YIS);
+			FilterProgram.GuiRenderer.ModelView.Scale(XIS,YIS);
 			FilterProgram.GuiRenderer.Draw(InputTexture);
 			FilterProgram.GuiRenderer.End();
 		}
 	}
 
-	/// <remarks>More accurately, ApiHawkLayer, since the <c>gui</c> Lua library is delegated.</remarks>
-	public class LuaLayer : BaseFilter
+	public class ApiHawkLayer : BaseFilter
 	{
+		private readonly I2DRenderer _renderer;
+
+		public ApiHawkLayer(I2DRenderer renderer)
+			=> _renderer = renderer;
+
 		public override void Initialize()
 		{
 			DeclareInput(SurfaceDisposition.RenderTarget);
@@ -538,19 +542,26 @@ namespace BizHawk.Client.Common.Filters
 			DeclareOutput(state);
 		}
 
-		private Texture2d _texture;
-
-		public void SetTexture(Texture2d tex)
-		{
-			_texture = tex;
-		}
-
 		public override void Run()
 		{
 			var outSize = FindOutput().SurfaceFormat.Size;
+
+			var output = _renderer.Render(outSize.Width, outSize.Height);
+
+			// render target might have changed when rendering, rebind the filter chain's target
+			var rt = FilterProgram.CurrRenderTarget;
+			if (rt == null)
+			{
+				FilterProgram.GL.BindDefaultRenderTarget();
+			}
+			else
+			{
+				rt.Bind();
+			}
+
 			FilterProgram.GuiRenderer.Begin(outSize);
 			FilterProgram.GuiRenderer.EnableBlending();
-			FilterProgram.GuiRenderer.Draw(_texture);
+			FilterProgram.GuiRenderer.Draw(output);
 			FilterProgram.GuiRenderer.End();
 		}
 	}

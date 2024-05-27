@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int ConfigBufferSizeMs => Config.SoundBufferSizeMs;
 
-		public Sound(IntPtr mainWindowHandle, Config config, Func<double> getCoreVsyncRateCallback)
+		public Sound(Config config, Func<double> getCoreVsyncRateCallback)
 		{
 			BlockAlign = BytesPerSample * ChannelCount;
 
@@ -40,9 +40,14 @@ namespace BizHawk.Client.EmuHawk
 			_outputProvider = new SoundOutputProvider(_getCoreVsyncRateCallback);
 			Config = config;
 
+			if (config.SoundOutputMethod == ESoundOutputMethod.LegacyDirectSound)
+			{
+				config.SoundOutputMethod = HostCapabilityDetector.HasXAudio2 ? ESoundOutputMethod.XAudio2 : ESoundOutputMethod.OpenAL;
+			}
+
 			if (OSTailoredCode.IsUnixHost)
 			{
-				// if DirectSound or XAudio is chosen, use OpenAL, otherwise comply with the user's choice
+				// if XAudio is chosen, use OpenAL, otherwise comply with the user's choice
 				_outputDevice = config.SoundOutputMethod == ESoundOutputMethod.Dummy
 					? new DummySoundOutput(this)
 					: new OpenALSoundOutput(this, config.SoundDevice);
@@ -51,7 +56,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_outputDevice = config.SoundOutputMethod switch
 				{
-					ESoundOutputMethod.DirectSound => new DirectSoundSoundOutput(this, mainWindowHandle, config.SoundDevice),
 					ESoundOutputMethod.XAudio2 => new XAudio2SoundOutput(this, config.SoundDevice),
 					ESoundOutputMethod.OpenAL => new OpenALSoundOutput(this, config.SoundDevice),
 					_ => new DummySoundOutput(this)

@@ -171,6 +171,7 @@ namespace BizHawk.Common
 			while (len > 0)
 			{
 				var done = br.Read(ret, ofs, len);
+				if (done is 0) _ = br.ReadByte(); // triggers an EndOfStreamException (as there's otherwise no way to indicate this failure state to the caller)
 				ofs += done;
 				len -= done;
 			}

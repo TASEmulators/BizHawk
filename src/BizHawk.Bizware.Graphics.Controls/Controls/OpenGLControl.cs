@@ -41,7 +41,7 @@ namespace BizHawk.Bizware.Graphics.Controls
 		protected override void OnHandleCreated(EventArgs e)
 		{
 			base.OnHandleCreated(e);
-			Context = new(Handle, 3, 0, false, false);
+			Context = new(Handle, 3, 2, true, false);
 		}
 
 		protected override void OnHandleDestroyed(EventArgs e)
@@ -66,6 +66,11 @@ namespace BizHawk.Bizware.Graphics.Controls
 			{
 				Context.MakeContextCurrent();
 			}
+		}
+
+		public override void AllowTearing(bool state)
+		{
+			// not controllable
 		}
 
 		public override void SetVsync(bool state)

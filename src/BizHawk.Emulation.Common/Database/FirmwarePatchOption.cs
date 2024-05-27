@@ -15,6 +15,8 @@ namespace BizHawk.Emulation.Common
 
 		public FirmwarePatchOption(string baseHash, IReadOnlyList<FirmwarePatchData> patches, string targetHash)
 		{
+			FirmwareFile.CheckChecksumStrIsHex(ref baseHash);
+			FirmwareFile.CheckChecksumStrIsHex(ref targetHash);
 			BaseHash = baseHash;
 			Patches = patches;
 			TargetHash = targetHash;

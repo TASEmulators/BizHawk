@@ -42,8 +42,8 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.radioButton2 = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.checkEnableOutput = new System.Windows.Forms.CheckBox();
-			this.radioButton4 = new System.Windows.Forms.RadioButton();
+			this.ccdOutputButton = new System.Windows.Forms.RadioButton();
+			this.chdOutputButton = new System.Windows.Forms.RadioButton();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.lvCompareTargets = new System.Windows.Forms.ListView();
@@ -69,7 +69,7 @@
 			this.lblMagicDragArea.AllowDrop = true;
 			this.lblMagicDragArea.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.lblMagicDragArea.Controls.Add(this.label1);
-			this.lblMagicDragArea.Location = new System.Drawing.Point(286, 31);
+			this.lblMagicDragArea.Location = new System.Drawing.Point(290, 31);
 			this.lblMagicDragArea.Name = "lblMagicDragArea";
 			this.lblMagicDragArea.Size = new System.Drawing.Size(223, 109);
 			this.lblMagicDragArea.TabIndex = 1;
@@ -82,14 +82,14 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(166, 47);
 			this.label1.TabIndex = 0;
-			this.label1.Text = "Drag here to HAWK your disc - dump it out as a clean CCD";
+			this.label1.Text = "Drag here to HAWK your disc - dump it out as a clean CCD/CHD";
 			// 
 			// lblMp3ExtractMagicArea
 			// 
 			this.lblMp3ExtractMagicArea.AllowDrop = true;
 			this.lblMp3ExtractMagicArea.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.lblMp3ExtractMagicArea.Controls.Add(this.label2);
-			this.lblMp3ExtractMagicArea.Location = new System.Drawing.Point(286, 146);
+			this.lblMp3ExtractMagicArea.Location = new System.Drawing.Point(290, 146);
 			this.lblMp3ExtractMagicArea.Name = "lblMp3ExtractMagicArea";
 			this.lblMp3ExtractMagicArea.Size = new System.Drawing.Size(223, 100);
 			this.lblMp3ExtractMagicArea.TabIndex = 2;
@@ -132,10 +132,10 @@
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.radioButton2);
 			this.groupBox1.Controls.Add(this.radioButton1);
-			this.groupBox1.Enabled = false;
+			this.groupBox1.Enabled = true;
 			this.groupBox1.Location = new System.Drawing.Point(9, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(271, 234);
+			this.groupBox1.Size = new System.Drawing.Size(276, 234);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Disc Reading Engine";
@@ -152,13 +152,14 @@
 			// 
 			this.label3.Location = new System.Drawing.Point(20, 39);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(235, 33);
+			this.label3.Size = new System.Drawing.Size(253, 33);
 			this.label3.TabIndex = 7;
-			this.label3.Text = "- Uses FFMPEG for audio decoding\r\n- Loads ISO, CUE, CCD, CDI, MDS, and NRG";
+			this.label3.Text = "- Uses FFMPEG for audio decoding\r\n- Loads ISO, CUE, CCD, CDI, CHD, MDS, and NRG";
 			// 
 			// radioButton2
 			// 
 			this.radioButton2.AutoSize = true;
+			this.radioButton2.Enabled = false;
 			this.radioButton2.Location = new System.Drawing.Point(6, 75);
 			this.radioButton2.Name = "radioButton2";
 			this.radioButton2.Size = new System.Drawing.Size(73, 17);
@@ -168,9 +169,9 @@
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Controls.Add(this.checkEnableOutput);
-			this.groupBox2.Controls.Add(this.radioButton4);
-			this.groupBox2.Enabled = false;
+			this.groupBox2.Controls.Add(this.ccdOutputButton);
+			this.groupBox2.Controls.Add(this.chdOutputButton);
+			this.groupBox2.Enabled = true;
 			this.groupBox2.Location = new System.Drawing.Point(9, 252);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(271, 69);
@@ -178,29 +179,29 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Output Format";
 			// 
-			// checkEnableOutput
+			// ccdOutputButton
 			// 
-			this.checkEnableOutput.AutoSize = true;
-			this.checkEnableOutput.Checked = true;
-			this.checkEnableOutput.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkEnableOutput.Location = new System.Drawing.Point(177, 19);
-			this.checkEnableOutput.Name = "checkEnableOutput";
-			this.checkEnableOutput.Size = new System.Drawing.Size(59, 17);
-			this.checkEnableOutput.TabIndex = 7;
-			this.checkEnableOutput.Text = "Enable";
-			this.checkEnableOutput.UseVisualStyleBackColor = true;
+			this.ccdOutputButton.AutoSize = true;
+			this.ccdOutputButton.Checked = true;
+			this.ccdOutputButton.Location = new System.Drawing.Point(12, 19);
+			this.ccdOutputButton.Name = "ccdOutputButton";
+			this.ccdOutputButton.Size = new System.Drawing.Size(47, 17);
+			this.ccdOutputButton.TabIndex = 5;
+			this.ccdOutputButton.TabStop = true;
+			this.ccdOutputButton.Text = "CCD";
+			this.ccdOutputButton.UseVisualStyleBackColor = true;
 			// 
-			// radioButton4
+			// chdOutputButton
 			// 
-			this.radioButton4.AutoSize = true;
-			this.radioButton4.Checked = true;
-			this.radioButton4.Location = new System.Drawing.Point(12, 19);
-			this.radioButton4.Name = "radioButton4";
-			this.radioButton4.Size = new System.Drawing.Size(47, 17);
-			this.radioButton4.TabIndex = 5;
-			this.radioButton4.TabStop = true;
-			this.radioButton4.Text = "CCD";
-			this.radioButton4.UseVisualStyleBackColor = true;
+			this.chdOutputButton.AutoSize = true;
+			this.chdOutputButton.Checked = false;
+			this.chdOutputButton.Location = new System.Drawing.Point(65, 19);
+			this.chdOutputButton.Name = "chdOutputButton";
+			this.chdOutputButton.Size = new System.Drawing.Size(47, 17);
+			this.chdOutputButton.TabIndex = 6;
+			this.chdOutputButton.TabStop = true;
+			this.chdOutputButton.Text = "CHD";
+			this.chdOutputButton.UseVisualStyleBackColor = true;
 			// 
 			// label6
 			// 
@@ -283,9 +284,9 @@
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.RadioButton radioButton4;
+		private System.Windows.Forms.RadioButton ccdOutputButton;
+		private System.Windows.Forms.RadioButton chdOutputButton;
 		private System.Windows.Forms.ListView lvCompareTargets;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
-		private System.Windows.Forms.CheckBox checkEnableOutput;
 	}
 }

@@ -33,35 +33,32 @@ http://www.gnu.org/copyleft/gpl.html
 /* Default Vertex shader */
 void main_vertex
 (
- float4 position	: POSITION,
- //float4 color	: COLOR,
- float2 texCoord1 : TEXCOORD0,
+	float4 position : POSITION,
+	float2 texCoord1 : TEXCOORD0,
 
- uniform float4x4 modelViewProj,
+	uniform float4x4 modelViewProj,
 
- out float4 oPosition : POSITION,
- //out float4 oColor    : COLOR,
- out float2 otexCoord : TEXCOORD
- )
+	out float4 oPosition : POSITION,
+	out float2 otexCoord : TEXCOORD
+)
 {
-   oPosition = mul(modelViewProj, position);
-   //oColor = color;
-   otexCoord = texCoord1;
+	oPosition = mul(modelViewProj, position);
+	otexCoord = texCoord1;
 }
 
 struct output
 {
-   float4 color : COLOR;
+	float4 color : COLOR;
 };
 
 struct input
 {
-  float2 video_size;
-  float2 texture_size;
-  float2 output_size;
-  float frame_count;
-  float frame_direction;
-  float frame_rotation;
+	float2 video_size;
+	float2 texture_size;
+	float2 output_size;
+	float frame_count;
+	float frame_direction;
+	float frame_rotation;
 };
 
 float weight(float x)
@@ -123,11 +120,11 @@ float3 line_run(float ypos, float4 xpos, float4 linetaps, uniform sampler2D s_p)
 }
 
 
-output main_fragment (float2 tex : TEXCOORD0, uniform input IN, uniform sampler2D s_p : TEXUNIT0)
+output main_fragment (in float4 vpos : POSITION, float2 tex : TEXCOORD0, uniform input IN, uniform sampler2D s_p : TEXUNIT0)
 {	
-        float2 stepxy = float2(1.0/IN.texture_size.x, 1.0/IN.texture_size.y);
-        float2 pos = tex.xy + stepxy * 0.5;
-        float2 f = frac(pos / stepxy);
+	float2 stepxy = float2(1.0/IN.texture_size.x, 1.0/IN.texture_size.y);
+	float2 pos = tex.xy + stepxy * 0.5;
+	float2 f = frac(pos / stepxy);
 		
 	float4 linetaps   = weight4(1.0 - f.x);
 	float4 columntaps = weight4(1.0 - f.y);
@@ -140,12 +137,11 @@ output main_fragment (float2 tex : TEXCOORD0, uniform input IN, uniform sampler2
 	float4 xpos = float4(xystart.x, xystart.x + stepxy.x, xystart.x + stepxy.x * 2.0, xystart.x + stepxy.x * 3.0);
 
 
-// final sum and weight normalization
-   output OUT;
-   OUT.color = float4(line_run(xystart.y                 , xpos, linetaps, s_p) * columntaps.r +
-                      line_run(xystart.y + stepxy.y      , xpos, linetaps, s_p) * columntaps.g +
-                      line_run(xystart.y + stepxy.y * 2.0, xpos, linetaps, s_p) * columntaps.b +
-                      line_run(xystart.y + stepxy.y * 3.0, xpos, linetaps, s_p) * columntaps.a,1);
+    // final sum and weight normalization
+	output OUT;
+	OUT.color = float4(line_run(xystart.y                 , xpos, linetaps, s_p) * columntaps.r +
+	                   line_run(xystart.y + stepxy.y      , xpos, linetaps, s_p) * columntaps.g +
+	                   line_run(xystart.y + stepxy.y * 2.0, xpos, linetaps, s_p) * columntaps.b +
+	                   line_run(xystart.y + stepxy.y * 3.0, xpos, linetaps, s_p) * columntaps.a,1);
    return OUT;
 }
-

@@ -263,10 +263,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue(LibGPGX.Region.Autodetect)]
 			public LibGPGX.Region Region { get; set; }
 
-			[DisplayName("[SMS/GG] Load BIOS")]
+			[DisplayName("Force VDP Mode")]
+			[Description("Overrides the VDP mode to force it to run at either 60Hz (NTSC) or 50Hz (PAL), regardless of system region.")]
+			[DefaultValue(LibGPGX.ForceVDP.Disabled)]
+			public LibGPGX.ForceVDP ForceVDP { get; set; }
+
+			[DisplayName("Load BIOS")]
 			[Description("Indicates whether to load the system BIOS rom.")]
 			[DefaultValue(false)]
-			public bool loadBIOS { get; set; }
+			public bool LoadBIOS { get; set; }
+
+			[DisplayName("Overscan")]
+			[Description("Sets overscan borders shown.")]
+			[DefaultValue(LibGPGX.InitSettings.OverscanType.None)]
+			public LibGPGX.InitSettings.OverscanType Overscan { get; set; }
+
+			[DisplayName("[GG] Display Extra Area")]
+			[Description("Enables displaying extended Game Gear screen (256x192).")]
+			[DefaultValue(false)]
+			public bool GGExtra { get; set; }
 
 			[DisplayName("[SMS] FM Sound Chip Type")]
 			[Description("Sets the method used to emulate the FM Sound Unit of the Sega Mark III/Master System. 'MAME' is fast and runs full speed on most systems.'Nuked' is cycle accurate, very high quality, and have substantial CPU requirements.")]
@@ -339,11 +354,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					InputSystemA = SystemForSystem(ControlTypeLeft),
 					InputSystemB = SystemForSystem(ControlTypeRight),
 					Region = Region,
-					loadBIOS = loadBIOS,
+					ForceVDP = ForceVDP,
+					LoadBIOS = LoadBIOS,
 					ForceSram = game["sram"],
 					SMSFMSoundChip = SMSFMSoundChip,
 					GenesisFMSoundChip = GenesisFMSoundChip,
-					SpritesAlwaysOnTop = SpritesAlwaysOnTop
+					SpritesAlwaysOnTop = SpritesAlwaysOnTop,
+					Overscan = Overscan,
+					GGExtra = GGExtra,
 				};
 			}
 

@@ -9,16 +9,17 @@
 
 void main_vertex
 (
-   float4 position : POSITION,
-   out float4 oPosition : POSITION,
-   uniform float4x4 modelViewProj,
+	float4 position : POSITION,
+	float2 tex : TEXCOORD,
 
-   float2 tex : TEXCOORD,
-   out float2 oTex : TEXCOORD
+	uniform float4x4 modelViewProj,
+
+	out float4 oPosition : POSITION,
+	out float2 oTex : TEXCOORD
 )
 {
-   oPosition = mul(modelViewProj, position);
-   oTex = tex;
+	oPosition = mul(modelViewProj, position);
+	oTex = tex;
 }
 
 // Tweakables.
@@ -34,7 +35,7 @@ float3 grayscale(float3 col)
 	return float3(v,v,v);
 }
 
-float4 main_fragment(float2 tex : TEXCOORD, uniform sampler2D s0 : TEXUNIT0) : COLOR
+float4 main_fragment(in float4 vpos : POSITION, in float2 tex : TEXCOORD, uniform sampler2D s0 : TEXUNIT0) : COLOR
 {
 	float3 res = tex2D(s0, tex).xyz;
 	res = lerp(grayscale(res), res, saturation); // Apply saturation

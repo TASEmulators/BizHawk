@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Common
 
 		public FirmwareOption(FirmwareID id, string hash, long size, FirmwareOptionStatus status)
 		{
+			FirmwareFile.CheckChecksumStrIsHex(ref hash);
 			Hash = hash;
 			ID = id;
 			Size = size;
