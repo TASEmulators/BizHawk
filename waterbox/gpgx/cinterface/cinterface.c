@@ -715,6 +715,7 @@ struct InitSettings
 {
 	uint32_t BackdropColor;
 	int32_t Region;
+	int32_t ForceVDP;
 	uint16_t LowPassRange;
 	int16_t LowFreq;
 	int16_t HighFreq;
@@ -917,8 +918,8 @@ GPGX_EX int gpgx_init(const char* feromextension,
 
 	/* system options */
 	config.system         = 0; /* = AUTO (or SYSTEM_SG, SYSTEM_SGII, SYSTEM_SGII_RAM_EXT, SYSTEM_MARKIII, SYSTEM_SMS, SYSTEM_SMS2, SYSTEM_GG, SYSTEM_MD) */
-	config.region_detect  = settings->Region; /* = AUTO (1 = USA, 2 = EUROPE, 3 = JAPAN/NTSC, 4 = JAPAN/PAL) */
-	config.vdp_mode       = 0; /* = AUTO (1 = NTSC, 2 = PAL) */
+	config.region_detect  = settings->Region; /* 0 = AUTO, 1 = USA, 2 = EUROPE, 3 = JAPAN/NTSC, 4 = JAPAN/PAL */
+	config.vdp_mode       = settings->ForceVDP; /* 0 = AUTO, 1 = NTSC, 2 = PAL */
 	config.master_clock   = 0; /* = AUTO (1 = NTSC, 2 = PAL) */
 	config.force_dtack    = 0;
 	config.addr_error     = 1;

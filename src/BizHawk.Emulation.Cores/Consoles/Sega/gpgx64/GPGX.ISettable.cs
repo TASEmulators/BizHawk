@@ -263,6 +263,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue(LibGPGX.Region.Autodetect)]
 			public LibGPGX.Region Region { get; set; }
 
+			[DisplayName("Force VDP Mode")]
+			[Description("Overrides the VDP mode to force it to run at either 60Hz (NTSC) or 50Hz (PAL), regardless of system region.")]
+			[DefaultValue(LibGPGX.ForceVDP.Disabled)]
+			public LibGPGX.ForceVDP ForceVDP { get; set; }
+
 			[DisplayName("Load BIOS")]
 			[Description("Indicates whether to load the system BIOS rom.")]
 			[DefaultValue(false)]
@@ -349,6 +354,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					InputSystemA = SystemForSystem(ControlTypeLeft),
 					InputSystemB = SystemForSystem(ControlTypeRight),
 					Region = Region,
+					ForceVDP = ForceVDP,
 					LoadBIOS = LoadBIOS,
 					ForceSram = game["sram"],
 					SMSFMSoundChip = SMSFMSoundChip,

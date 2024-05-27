@@ -30,11 +30,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Japan_PAL = 4
 		}
 
+		public enum ForceVDP : int
+		{
+			Disabled = 0,
+			NTSC = 1,
+			PAL = 2
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct InitSettings
 		{
 			public uint BackdropColor;
 			public Region Region;
+			public ForceVDP ForceVDP;
 			public ushort LowPassRange;
 			public short LowFreq;
 			public short HighFreq;
