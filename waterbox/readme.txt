@@ -25,8 +25,8 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	2. For older Debian/Ubuntu based distros, the package manager might not provide a recent enough compiler for the waterbox toolchain. In these cases, it is recommended to obtain clang and other llvm tools from llvm's apt repository: https://apt.llvm.org/
 
 2. Clone bizhawk sources
-	* Make sure git's core.autocrlf is set to false, as the alternatives cause git to modify the line endings in .sh-looking files which WILL break the build process, from the very first step.
-	* This is NOT git's default. You will need to change it!! Go ahead and set it false globally permanently, since do you really want git modifying files?
+	* Make sure git's core.autocrlf is not set to true, as otherwise git will modify the line endings in all text files, including .sh files, which WILL break the build process, from the very first step.
+	* This is NOT git's default. You will need to change it! We recommend changing this setting to false globally to prevent git from unexpectedly modifying files.
 	* Make sure you have initialized and updated the needed submodules in the waterbox directory, a listing of these is here:
 		* waterbox/musl (required for the entire waterbox toolchain)
 		* waterbox/ares64/ares/thirdparty/angrylion-rdp (required for ares64)
@@ -35,6 +35,8 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 		* waterbox/melon/melonDS (required for melonDS)
 		* waterbox/nyma/mednafen (required for all Nyma cores)
 		* waterbox/snes9x (required for Snes9x)
+		* waterbox/gpgx/Genesis-Plus-GX (required for gpgx)
+	* none of these submodules need to be cloned recursively
 
 3. Consider whether it is time to update your build environment (i.e. sudo apt-get upgrade). Build environment tools are generally best kept at the latest version, to ensure top performance for our users.
 
