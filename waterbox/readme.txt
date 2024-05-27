@@ -35,7 +35,6 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 		* waterbox/melon/melonDS (required for melonDS)
 		* waterbox/nyma/mednafen (required for all Nyma cores)
 		* waterbox/snes9x (required for Snes9x)
-	* waterbox/llvm-project is needed for the entire waterbox toolchain, but initializing and updating this is handled automatically by later scripts, so you do not need to do anything about this
 
 3. Consider whether it is time to update your build environment (i.e. sudo apt-get upgrade). Build environment tools are generally best kept at the latest version, to ensure top performance for our users.
 
@@ -51,7 +50,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	./do-everything.sh
 	cd ..
 
-4a. At ./wbox_configure, you may need to specify the compiler used. By default, it will try to use clang without a version suffix. If this is not present, it falls on the user to specify a CC variable (e.g. `CC=gcc-12 ./wbox_configure`). This is the only stage which the build tool may need to be manually specified, all future steps will remember this specification and thus need no manual input.
+4a. At ./wbox_configure, you may need to specify the compiler used. By default, it will try to use clang without a version suffix. If this is not present, it falls on the user to specify a CC variable (e.g. `CC=gcc-13 ./wbox_configure`). This is the only stage which the build tool may need to be manually specified, all future steps will remember this specification and thus need no manual input.
 
 4b. If errors happen in the libcxx part, it can be due to musl mismatching your current build environment. This happens when your build environment is updated; musl does not track its build dependencies correctly. do `make clean` on musl (and delete the non-checkedin directories just to be safe) and try again from the musl step.
 
