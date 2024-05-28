@@ -316,7 +316,7 @@ namespace BizHawk.Client.Common
 		public bool Load(IMemoryDomains domains, string path, bool append)
 		{
 			var file = new FileInfo(path);
-			if (file.Exists == false)
+			if (!file.Exists)
 			{
 				return false;
 			}

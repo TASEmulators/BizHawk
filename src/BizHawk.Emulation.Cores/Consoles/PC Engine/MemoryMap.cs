@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			if (addr >= 0x1EE000 && addr <= 0x1EE7FF)   // BRAM
 			{
-				if (BramEnabled && BramLocked == false)
+				if (BramEnabled && !BramLocked)
 					return BRAM[addr & 0x7FF];
 				return 0xFF;
 			}
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 			else if (addr >= 0x1EE000 && addr <= 0x1EE7FF) // BRAM
 			{
-				if (BramEnabled && BramLocked == false)
+				if (BramEnabled && !BramLocked)
 				{
 					BRAM[addr & 0x7FF] = value;
 					SaveRamModified = true;

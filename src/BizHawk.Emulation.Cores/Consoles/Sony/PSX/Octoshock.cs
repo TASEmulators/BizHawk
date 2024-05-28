@@ -811,7 +811,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				LagCount++;
 
 			//what happens to sound in this case?
-			if (render == false) 
+			if (!render)
 			{
 				Frame++;
 				return true;

@@ -353,7 +353,7 @@ namespace BizHawk.Client.EmuHawk
 				GoToAddress(found);
 				_findStr = search;
 			}
-			else if (wrap == false)
+			else if (!wrap)
 			{
 				FindPrev(value, true); // Search the opposite direction if not found
 			}
@@ -400,7 +400,7 @@ namespace BizHawk.Client.EmuHawk
 				GoToAddress(found);
 				_findStr = search;
 			}
-			else if (wrap == false)
+			else if (!wrap)
 			{
 				FindPrev(value, true); // Search the opposite direction if not found
 			}

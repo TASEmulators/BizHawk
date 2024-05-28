@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// Don't do this from browse
 				if (movie.Hash == _game.Hash
-					|| _config.PlayMovieMatchHash == false || force)
+					|| !_config.PlayMovieMatchHash || force)
 				{
 					return movie;
 				}

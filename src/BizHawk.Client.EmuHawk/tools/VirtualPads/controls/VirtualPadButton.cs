@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InputManager.AutofireStickyXorAdapter.SetSticky(Name, Checked);
 
-				if (Checked == false)
+				if (!Checked)
 				{
 					Clear();
 				}
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InputManager.StickyXorAdapter.SetSticky(Name, Checked);
 
-				if (Checked == false)
+				if (!Checked)
 				{
 					Clear();
 				}

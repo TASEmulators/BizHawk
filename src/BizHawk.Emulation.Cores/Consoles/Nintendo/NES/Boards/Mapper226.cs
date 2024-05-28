@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			int baseAddr = resetSwitchMode && resetFlag ? 0x80000 : 0;
 
-			if (prg_mode == false)
+			if (!prg_mode)
 			{
 				return Rom[baseAddr + (( ((prg_page >> 1) & prg_mask_32k) << 15) + (addr & 0x7FFF))];
 			}

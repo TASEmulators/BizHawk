@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (now == false && _emu.Frame % RefreshRate.Value != 0)
+			if (!now && _emu.Frame % RefreshRate.Value != 0)
 			{
 				return;
 			}

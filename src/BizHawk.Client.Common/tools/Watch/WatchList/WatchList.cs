@@ -376,7 +376,7 @@ namespace BizHawk.Client.Common
 		private bool LoadFile(string path, bool append)
 		{
 			var file = new FileInfo(path);
-			if (file.Exists == false)
+			if (!file.Exists)
 			{
 				return false;
 			}

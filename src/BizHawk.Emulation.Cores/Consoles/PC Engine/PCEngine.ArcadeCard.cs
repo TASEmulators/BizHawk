@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private void WriteArcadeCard(int addr, byte value)
 		{
-			if (ArcadeCard == false)
+			if (!ArcadeCard)
 			{
 				return;
 			}
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private byte ReadArcadeCard(int addr)
 		{
-			if (ArcadeCard == false) return 0xFF;
+			if (!ArcadeCard) return 0xFF;
 			var page = ArcadePage[(addr >> 4) & 3];
 			switch (addr & 0x0F)
 			{
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			ser.Sync(nameof(ShiftAmount), ref ShiftAmount);
 			ser.Sync(nameof(RotateAmount), ref RotateAmount);
 
-			if (ArcadeCardRewindHack == false || ser.IsText)
+			if (!ArcadeCardRewindHack || ser.IsText)
 			{
 				ser.Sync("ArcadeRAM", ref ArcadeRam, false);
 			}

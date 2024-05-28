@@ -24,7 +24,7 @@ namespace BizHawk.Common
 
 		public static void EnableDomain(string domain)
 		{
-			if (EnabledLogDomains.Contains(domain) == false)
+			if (!EnabledLogDomains.Contains(domain))
 			{
 				EnabledLogDomains.Add(domain);
 			}

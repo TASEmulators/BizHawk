@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPrg(int addr)
 		{
-			if (prg_mode == false)
+			if (!prg_mode)
 			{
 				int bank = (prg_reg >> 1) & prg_bank_mask_32k;
 				return Rom[(bank * 0x8000) + addr + chip_offset];

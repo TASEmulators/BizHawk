@@ -850,7 +850,7 @@ namespace BizHawk.Client.EmuHawk
 			var path = _config.PathEntries.CheatsAbsolutePath(_game.System);
 
 			var f = new FileInfo(path);
-			if (f.Directory != null && f.Directory.Exists == false)
+			if (f.Directory != null && !f.Directory.Exists)
 			{
 				f.Directory.Create();
 			}

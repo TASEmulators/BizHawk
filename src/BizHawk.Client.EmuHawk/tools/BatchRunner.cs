@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (result == false)
+			if (!result)
 			{
 				_current.Status = Result.EStatus.FalseOnLoad;
 				_results.Add(_current);

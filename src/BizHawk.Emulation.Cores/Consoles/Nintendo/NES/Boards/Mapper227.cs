@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//maybe only the multicarts do it, to keep the game from clobbering vram on accident
 			//vram_protected = o;
 
-			if (o && S == false)	
+			if (o && !S)
 			{
 				_prgBanks16K[0] = (byte)(p);
 				_prgBanks16K[1] = (byte)(p);
@@ -74,22 +74,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				_prgBanks16K[0] = (byte)((p & ~1));
 				_prgBanks16K[1] = (byte)((p & ~1) + 1);
 			}
-			if (o == false && S == false && L == false)
+			if (!o && !S && !L)
 			{
 				_prgBanks16K[0] = (byte)p;
 				_prgBanks16K[1] = (byte)(p & 0x38);
 			}
-			if (o == false && S && L == false)
+			if (!o && S && !L)
 			{
 				_prgBanks16K[0] = (byte)(p & 0x3E);
 				_prgBanks16K[1] = (byte)(p & 0x38);
 			}
-			if (o == false && S == false && L)
+			if (!o && !S && L)
 			{
 				_prgBanks16K[0] = (byte)p;
 				_prgBanks16K[1] = (byte)(p | 0x07);
 			}
-			if (o == false && S && L)
+			if (!o && S && L)
 			{
 				_prgBanks16K[0] = (byte)(p & 0x3E);
 				_prgBanks16K[1] = (byte)(p | 0x07);

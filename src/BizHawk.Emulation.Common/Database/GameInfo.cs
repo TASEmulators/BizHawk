@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Common
 				return;
 			}
 
-			var options = metaData.Split(';').Where(opt => string.IsNullOrEmpty(opt) == false).ToArray();
+			var options = metaData.Split(';').Where(opt => !string.IsNullOrEmpty(opt)).ToArray();
 
 			foreach (var opt in options)
 			{
