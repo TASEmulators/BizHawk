@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common.Filters
 		{
 		}
 
-		public Dictionary<string, object> Parameters = new();
+		public KeyValuePair<string, float>[] Parameters { get; set; }
 
 		public bool IsNop { get; protected set; }
 

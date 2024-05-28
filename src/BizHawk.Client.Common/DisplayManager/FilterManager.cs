@@ -45,8 +45,8 @@ namespace BizHawk.Client.Common.FilterManager
 	{
 		private readonly Dictionary<string, BaseFilter> _filterNameIndex = new();
 
-		public readonly IList<BaseFilter> Filters = new List<BaseFilter>();
-		public readonly IList<ProgramStep> Program = new List<ProgramStep>();
+		public readonly List<BaseFilter> Filters = new();
+		public readonly List<ProgramStep> Program = new();
 
 		public BaseFilter this[string name]
 		{

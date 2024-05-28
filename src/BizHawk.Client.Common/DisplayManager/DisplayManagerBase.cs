@@ -250,7 +250,7 @@ namespace BizHawk.Client.Common
 		private FilterProgram BuildDefaultChain(Size chainInSize, Size chainOutSize, bool includeOSD, bool includeUserFilters)
 		{
 			// select user special FX shader chain
-			var selectedChainProperties = new Dictionary<string, object>();
+			KeyValuePair<string, float>[] selectedChainProperties = null;
 			RetroShaderChain selectedChain = null;
 			switch (GlobalConfig.TargetDisplayFilter)
 			{
@@ -259,7 +259,7 @@ namespace BizHawk.Client.Common
 					break;
 				case 2 when _shaderChainScanlines is { Available: true }:
 					selectedChain = _shaderChainScanlines;
-					selectedChainProperties["uIntensity"] = 1.0f - GlobalConfig.TargetScanlineFilterIntensity / 256.0f;
+					selectedChainProperties = [new("uIntensity", 1.0f - GlobalConfig.TargetScanlineFilterIntensity / 256.0f)];
 					break;
 				case 3 when _shaderChainUser is { Available: true }:
 					selectedChain = _shaderChainUser;
@@ -377,7 +377,7 @@ namespace BizHawk.Client.Common
 			return chain;
 		}
 
-		private static void AppendRetroShaderChain(FilterProgram program, string name, RetroShaderChain retroChain, Dictionary<string, object> properties)
+		private static void AppendRetroShaderChain(FilterProgram program, string name, RetroShaderChain retroChain, KeyValuePair<string, float>[] properties)
 		{
 			for (var i = 0; i < retroChain.Passes.Length; i++)
 			{

@@ -347,12 +347,9 @@ namespace BizHawk.Client.Common.Filters
 			// apply all parameters to this shader.. even if it was meant for other shaders. kind of lame.
 			if (Parameters != null)
 			{
-				foreach (var (k, v) in Parameters)
+				foreach (var (k, value) in Parameters)
 				{
-					if (v is float value)
-					{
-						shader.Pipeline.SetUniform(k, value);
-					}
+					shader.Pipeline.SetUniform(k, value);
 				}
 			}
 
