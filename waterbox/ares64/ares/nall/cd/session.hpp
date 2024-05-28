@@ -268,7 +268,9 @@ struct Session {
           q[0] = track.control << 4 | 1;
           q[1] = BCD::encode(trackID);
           q[2] = BCD::encode(indexID);
-          auto msf = MSF(lba - track.indices[1].lba);
+          auto msf = indexID == 0
+          ? MSF(track.indices[0].end - lba)
+          : MSF(lba - track.indices[1].lba);
           q[3] = BCD::encode(msf.minute);
           q[4] = BCD::encode(msf.second);
           q[5] = BCD::encode(msf.frame);

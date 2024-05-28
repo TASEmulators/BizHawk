@@ -90,7 +90,7 @@ static int add3(sljit_sw a, sljit_sw b, sljit_sw c)<br>
     func3_t func;<br>
    <br>
     /* Create a SLJIT compiler */<br>
-    struct sljit_compiler *C = sljit_create_compiler();<br>
+    struct sljit_compiler *C = sljit_create_compiler(NULL, NULL);<br>
    <br>
     /* Start a context(function entry), has 3 arguments, discuss later */<br>
     sljit_emit_enter(C, 0, SLJIT_ARGS3(W, W, W, W), 1, 3, 0, 0, 0);<br>
@@ -121,7 +121,7 @@ static int add3(sljit_sw a, sljit_sw b, sljit_sw c)<br>
    <br>
     /* Clean up */<br>
     sljit_free_compiler(C);<br>
-    sljit_free_code(code);<br>
+    sljit_free_code(code, NULL);<br>
     return 0;<br>
    </ul>
 }<br>
@@ -212,7 +212,7 @@ static int branch(sljit_sw a, sljit_sw b, sljit_sw c)<br>
     struct sljit_jump *out;<br>
    <br>
     /* Create a SLJIT compiler */<br>
-    struct sljit_compiler *C = sljit_create_compiler();<br>
+    struct sljit_compiler *C = sljit_create_compiler(NULL, NULL);<br>
    <br>
     /* 3 arg, 1 temp reg, 3 save reg */<br>
     sljit_emit_enter(C, 0, SLJIT_ARGS3(W, W, W, W), 1, 3, 0, 0, 0);<br>
@@ -253,7 +253,7 @@ static int branch(sljit_sw a, sljit_sw b, sljit_sw c)<br>
    <br>
     /* Clean up */<br>
     sljit_free_compiler(C);<br>
-    sljit_free_code(code);<br>
+    sljit_free_code(code, NULL);<br>
     return 0;<br>
 </ul>
 }<br>

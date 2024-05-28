@@ -29,18 +29,17 @@ NALL_HEADER_INLINE auto unmap(void* target, u32 size) -> void {
   #endif
 }
 
-NALL_HEADER_INLINE auto protect(void* target, u32 size, bool executable) -> void {
+NALL_HEADER_INLINE auto protect(void* target, u32 size, bool executable) -> bool {
   #if defined(API_WINDOWS)
   DWORD protect = executable ? PAGE_EXECUTE_READWRITE : PAGE_READWRITE;
   DWORD oldProtect;
-  VirtualProtect(target, size, protect, &oldProtect);
+  return VirtualProtect(target, size, protect, &oldProtect);
   #elif defined(API_POSIX)
   int prot = PROT_READ | PROT_WRITE;
   if(executable) {
     prot |= PROT_EXEC;
   }
-  int ret = mprotect(target, size, prot);
-  assert(ret == 0);
+  return !mprotect(target, size, prot);
   #endif
 }
 

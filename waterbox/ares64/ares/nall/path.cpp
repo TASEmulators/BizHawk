@@ -2,6 +2,8 @@
 
 #if defined(PLATFORM_WINDOWS)
   #include <shlobj.h>
+#elif defined(PLATFORM_MACOS)
+  #include <CoreFoundation/CFBundle.h>
 #endif
 
 namespace nall::Path {
@@ -14,10 +16,32 @@ NALL_HEADER_INLINE auto program() -> string {
   result.transform("\\", "/");
   return Path::real(result);
   #else
+  #if defined(PLATFORM_MACOS)
+  if (CFBundleRef bundle = CFBundleGetMainBundle()) {
+    char path[PATH_MAX] = "";
+    CFURLRef url = CFBundleCopyBundleURL(bundle);
+    CFURLGetFileSystemRepresentation(url, true, reinterpret_cast<UInt8*>(path), sizeof(path));
+    CFRelease(url);
+    return Path::real(path);
+  }
+  #endif
   Dl_info info;
   dladdr((void*)&program, &info);
   return Path::real(info.dli_fname);
   #endif
+}
+
+NALL_HEADER_INLINE auto resources() -> string {
+  #if defined(PLATFORM_MACOS)
+  if (CFBundleRef bundle = CFBundleGetMainBundle()) {
+    char path[PATH_MAX] = "";
+    CFURLRef url = CFBundleCopyBundleURL(bundle);
+    CFURLGetFileSystemRepresentation(url, true, reinterpret_cast<UInt8*>(path), sizeof(path));
+    CFRelease(url);
+    return string(path).append("/Contents/Resources/");
+  }
+  #endif
+  return program();
 }
 
 NALL_HEADER_INLINE auto root() -> string {

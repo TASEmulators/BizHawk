@@ -1,5 +1,5 @@
 auto PI::ioRead(u32 address) -> u32 {
-  address = (address & 0xfffff) >> 2;
+  address = (address & 0x3f) >> 2;
   n32 data;
 
   if(address == 0) {
@@ -70,12 +70,20 @@ auto PI::ioRead(u32 address) -> u32 {
     data.bit(0,7) = bsd2.releaseDuration;
   }
 
+  if(address == 13) {
+    data.bit(0,31) = io.busLatch;
+  }
+
+  if(address == 14) {
+    data.bit(0,31) = io.busLatch;
+  }
+
   debugger.io(Read, address, data);
   return data;
 }
 
 auto PI::ioWrite(u32 address, u32 data_) -> void {
-  address = (address & 0xfffff) >> 2;
+  address = (address & 0x3f) >> 2;
   n32 data = data_;
 
   //only PI_STATUS can be written while PI is busy
@@ -98,6 +106,7 @@ auto PI::ioWrite(u32 address, u32 data_) -> void {
     //PI_READ_LENGTH
     io.readLength = n24(data);
     io.dmaBusy = 1;
+    io.originPc = cpu.ipu.pc;
     queue.insert(Queue::PI_DMA_Read, dmaDuration(true));
     dmaRead();
   }
@@ -106,6 +115,7 @@ auto PI::ioWrite(u32 address, u32 data_) -> void {
     //PI_WRITE_LENGTH
     io.writeLength = n24(data);
     io.dmaBusy = 1;
+    io.originPc = cpu.ipu.pc;
     queue.insert(Queue::PI_DMA_Write, dmaDuration(false));
     dmaWrite();
   }

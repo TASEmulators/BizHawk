@@ -3,11 +3,11 @@ auto RSP::readWord(u32 address, Thread& thread) -> u32 {
     if(address & 0x1000) return imem.read<Word>(address);
     else                 return dmem.read<Word>(address);
   }
-  return ioRead(address);
+  return ioRead(address, thread);
 }
 
-auto RSP::ioRead(u32 address) -> u32 {
-  address = (address & 0x3ffff) >> 2;
+auto RSP::ioRead(u32 address, Thread &thread) -> u32 {
+  address = (address & 0x1f) >> 2;
   n32 data;
 
   if(address == 0) {
@@ -72,12 +72,11 @@ auto RSP::writeWord(u32 address, u32 data, Thread& thread) -> void {
     if(address & 0x1000) return recompiler.invalidate(address & 0xfff), imem.write<Word>(address, data);
     else                 return dmem.write<Word>(address, data);
   }
-  return ioWrite(address, data);
+  return ioWrite(address, data, thread);
 }
 
-auto RSP::ioWrite(u32 address, u32 data_) -> void {
-
-  address = (address & 0x3ffff) >> 2;
+auto RSP::ioWrite(u32 address, u32 data_, Thread& thread) -> void {
+  address = (address & 0x1f) >> 2;
   n32 data = data_;
 
   if(address == 0) {
@@ -96,8 +95,11 @@ auto RSP::ioWrite(u32 address, u32 data_) -> void {
     dma.pending.length.bit(3,11) = data.bit( 3,11);
     dma.pending.count            = data.bit(12,19);
     dma.pending.skip.bit(3,11)   = data.bit(23,31);
+    dma.pending.originCpu = &thread != this;
+    dma.pending.originPc = dma.pending.originCpu ? cpu.ipu.pc : (u64)rsp.ipu.r[31].u32;
     dma.full.read  = 1;
     dma.full.write = 0;
+    // printf("RSP DMA Read: %08x => %08x %08x\n", dma.pending.dramAddress, dma.pending.pbusAddress, dma.pending.length);
     dmaTransferStart();
   }
 
@@ -106,6 +108,8 @@ auto RSP::ioWrite(u32 address, u32 data_) -> void {
     dma.pending.length.bit(3,11) = data.bit( 3,11);
     dma.pending.count            = data.bit(12,19);
     dma.pending.skip.bit(3,11)   = data.bit(23,31);
+    dma.pending.originCpu = &thread != this;
+    dma.pending.originPc = dma.pending.originCpu ? cpu.ipu.pc : (u64)rsp.ipu.r[31].u32;
     dma.full.write = 1;
     dma.full.read  = 0;
     dmaTransferStart();
@@ -157,7 +161,7 @@ auto RSP::ioWrite(u32 address, u32 data_) -> void {
 }
 
 auto RSP::Status::readWord(u32 address, Thread& thread) -> u32 {
-  address = (address & 0x7ffff) >> 2;
+  address = (address & 0x1f) >> 2;
   n32 data;
 
   if(address == 0) {
@@ -178,7 +182,7 @@ auto RSP::Status::readWord(u32 address, Thread& thread) -> u32 {
 }
 
 auto RSP::Status::writeWord(u32 address, u32 data_, Thread& thread) -> void {
-  address = (address & 0x7ffff) >> 2;
+  address = (address & 0x1f) >> 2;
   n32 data = data_;
 
   if(address == 0) {

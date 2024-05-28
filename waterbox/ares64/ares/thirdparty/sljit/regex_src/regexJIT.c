@@ -980,7 +980,7 @@ static int generate_transitions(struct compiler_common *compiler_common)
 	struct stack_item *item;
 
 	stack_init(depth);
-	compiler_common->dfa_transitions = SLJIT_MALLOC(sizeof(struct stack_item) * compiler_common->dfa_size, NULL);
+	compiler_common->dfa_transitions = (struct stack_item *)SLJIT_MALLOC(sizeof(struct stack_item) * compiler_common->dfa_size, NULL);
 	if (!compiler_common->dfa_transitions)
 		return REGEX_MEMORY_ERROR;
 
@@ -1174,7 +1174,7 @@ static int generate_search_states(struct compiler_common *compiler_common)
 
 	compiler_common->terms_size = !(compiler_common->flags & REGEX_FAKE_MATCH_END) ? 1 : 2;
 	compiler_common->longest_range_size = 0;
-	compiler_common->search_states = SLJIT_MALLOC(sizeof(struct stack_item) * compiler_common->dfa_size, NULL);
+	compiler_common->search_states = (struct stack_item *)SLJIT_MALLOC(sizeof(struct stack_item) * compiler_common->dfa_size, NULL);
 	if (!compiler_common->search_states)
 		return REGEX_MEMORY_ERROR;
 
@@ -1966,7 +1966,7 @@ struct regex_machine* regex_compile(const regex_char_t *regex_string, int length
 	}
 
 	/* Step 4.1: Generate entry. */
-	CHECK(sljit_emit_enter(compiler_common.compiler, 0, SLJIT_ARGS3(VOID, P, P, 32), 5, 5, 0, 0, 0));
+	CHECK(sljit_emit_enter(compiler_common.compiler, 0, SLJIT_ARGS3V(P, P, 32), 5, 5, 0, 0, 0));
 
 	/* Copy arguments to their place. */
 	EMIT_OP1(SLJIT_MOV, R_REGEX_MATCH, 0, SLJIT_S0, 0);

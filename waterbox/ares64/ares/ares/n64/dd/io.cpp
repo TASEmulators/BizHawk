@@ -20,7 +20,7 @@ auto DD::readHalf(u32 address) -> u16 {
     data.bit(4) = io.status.spindleMotorStopped;
     data.bit(6) = io.status.resetState;
     data.bit(7) = io.status.busyState;
-    data.bit(8) = (bool)disk; //disk present
+    data.bit(8) = io.status.diskPresent;
     data.bit(9) = irq.mecha.line;
     data.bit(10) = irq.bm.line;
     data.bit(11) = io.bm.error;
@@ -57,7 +57,7 @@ auto DD::readHalf(u32 address) -> u16 {
     data.bit(0,7) = io.error.sector;
     data.bit(8) = io.error.selfStop;
     data.bit(9) = io.error.clockUnlock;
-    data.bit(10) = ~(bool)disk; //no disk
+    data.bit(10) = ~io.status.diskPresent; //no disk
     data.bit(11) = io.error.offTrack;
     data.bit(12) = io.error.overrun;
     data.bit(13) = io.error.spindle;
@@ -123,7 +123,6 @@ auto DD::readHalf(u32 address) -> u16 {
   if(address == 36) {
   }
 
-  debugger.io(Read, address, data);
   return data;
 }
 
@@ -195,7 +194,7 @@ auto DD::writeHalf(u32 address, u16 data_) -> void {
 
   //ASIC_HARD_RESET
   if(address == 16) {
-    if((data >> 16) == 0xAAAA) {
+    if(data == 0xAAAA) {
       power(true);
     }
   }
@@ -242,18 +241,20 @@ auto DD::writeHalf(u32 address, u16 data_) -> void {
   //ASIC_TEST_PIN_SEL
   if(address == 36) {
   }
-
-  debugger.io(Write, address, data);
 }
 
 auto DD::readWord(u32 address) -> u32 {
+  address = (address & 0x7f);
   n32 data;
   data.bit(16,31) = readHalf(address + 0);
   data.bit( 0,15) = readHalf(address + 2);
+  debugger.io(Read, address >> 2, data);
   return (u32)data;
 }
 
 auto DD::writeWord(u32 address, u32 data) -> void {
+  address = (address & 0x7f);
   writeHalf(address + 0, data >> 16);
   writeHalf(address + 2, data & 0xffff);
+  debugger.io(Write, address >> 2, data);
 }

@@ -1,5 +1,5 @@
 auto RDP::readWord(u32 address, Thread& thread) -> u32 {
-  address = (address & 0xfffff) >> 2;
+  address = (address & 0x1f) >> 2;
   n32 data;
 
   if(address == 0) {
@@ -57,7 +57,7 @@ auto RDP::readWord(u32 address, Thread& thread) -> u32 {
 }
 
 auto RDP::writeWord(u32 address, u32 data_, Thread& thread) -> void {
-  address = (address & 0xfffff) >> 2;
+  address = (address & 0x1f) >> 2;
   n32 data = data_;
 
   if(address == 0) {

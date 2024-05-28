@@ -25,6 +25,12 @@ inline auto benchmark(const function<void ()>& f, u64 times = 1) -> void {
   print("[chrono::benchmark] ", (double)(end - start) / 1'000'000'000.0, "s\n");
 }
 
+inline auto daysInMonth(u32 month, u32 year) -> u8 {
+  u32 days = 30 + ((month + (month >> 3)) & 1);
+  if (month == 2) days -= (year % 4 == 0) ? 1 : 2;
+  return days;
+}
+
 //exact date/time functions (from system epoch)
 
 struct timeinfo {

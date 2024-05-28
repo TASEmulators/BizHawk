@@ -31,7 +31,7 @@ struct CHD {
   };
 
   auto load(const string& location) -> bool;
-  auto read(u32 sector) -> vector<u8>;
+  auto read(u32 sector) const -> vector<u8>;
   auto sectorCount() const -> u32;
 
   vector<Track> tracks;
@@ -40,10 +40,10 @@ private:
 #if false
   chd_file* chd = nullptr;
 #endif
-  const int chd_sector_size = 2352 + 96;
+  static constexpr int chd_sector_size = 2352 + 96;
   size_t chd_hunk_size;
-  vector<u8> chd_hunk_buffer;
-  int chd_current_hunk = -1;
+  mutable vector<u8> chd_hunk_buffer;
+  mutable int chd_current_hunk = -1;
 };
 
 inline CHD::~CHD() {
@@ -123,11 +123,10 @@ inline auto CHD::load(const string& location) -> bool {
       return false;
     }
 
-    // Ensure two second pregap is present
     const bool pregap_in_file = (pregap_frames > 0 && pgtype[0] == 'V');
-    if (pregap_frames <= 0 && typeStr != "AUDIO") {
-      pregap_frames = 2 * 75;
-    }
+
+    // First track should have 2 second pregap as standard
+    if(track_no == 1 && !pregap_in_file) pregap_frames = 2 * 75;
 
     // Add the new track
     Track track;
@@ -136,7 +135,7 @@ inline auto CHD::load(const string& location) -> bool {
     track.pregap = pregap_frames;
     track.postgap = postgap_frames;
 
-    // Pregap
+    // index0 = Pregap
     if (pregap_frames > 0) {
       Index index;
       index.number = 0;
@@ -190,7 +189,7 @@ inline auto CHD::load(const string& location) -> bool {
 #endif
 }
 
-inline auto CHD::read(u32 sector) -> vector<u8> {
+inline auto CHD::read(u32 sector) const -> vector<u8> {
   // Convert LBA in CD-ROM to LBA in CHD
 #if false
   for(auto& track : tracks) {

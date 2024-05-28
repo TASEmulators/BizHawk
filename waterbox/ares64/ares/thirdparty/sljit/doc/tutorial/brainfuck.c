@@ -111,7 +111,7 @@ static int loop_pop(struct sljit_label **loop_start, struct sljit_jump **loop_en
 	return 0;
 }
 
-static void *SLJIT_FUNC my_alloc(long size, long n)
+static void *SLJIT_FUNC my_alloc(size_t size, size_t n)
 {
 	return calloc(size, n);
 }
@@ -148,9 +148,11 @@ static void *compile(FILE *src, unsigned long *lcode)
 	int SP = SLJIT_S0;			/* bf SP */
 	int CELLS = SLJIT_S1;		/* bf array */
 
-	sljit_emit_enter(C, 0, SLJIT_ARGS2(VOID, W, W), 2, 2, 0, 0, 0);								/* opt arg R  S  FR FS local_size */
+	sljit_emit_enter(C, 0, SLJIT_ARGS2V(W, W), 2, 2, 0, 0, 0);
+	/*                  opt arg                R  S  FR FS local_size */
 
-	sljit_emit_op2(C, SLJIT_XOR, SP, 0, SP, 0, SP, 0);						/* SP = 0 */
+	/* SP = 0 */
+	sljit_emit_op2(C, SLJIT_XOR, SP, 0, SP, 0, SP, 0);
 
 	sljit_emit_op1(C, SLJIT_MOV, SLJIT_R0, 0, SLJIT_IMM, BF_CELL_SIZE);
 	sljit_emit_op1(C, SLJIT_MOV, SLJIT_R1, 0, SLJIT_IMM, 1);

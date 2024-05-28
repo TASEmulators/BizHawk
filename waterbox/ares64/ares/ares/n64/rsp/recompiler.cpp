@@ -61,9 +61,7 @@ auto RSP::Recompiler::block(u12 address) -> Block* {
 auto RSP::Recompiler::emit(u12 address) -> Block* {
   if(unlikely(allocator.available() < 1_MiB)) {
     print("RSP allocator flush\n");
-    memory::jitprotect(false);
-    allocator.release(bump_allocator::zero_fill);
-    memory::jitprotect(true);
+    allocator.release();
     reset();
   }
 
@@ -75,19 +73,27 @@ auto RSP::Recompiler::emit(u12 address) -> Block* {
   u12 start = address;
   bool hasBranched = 0;
   while(true) {
-    pipeline.begin();
     u32 instruction = self.imem.read<Word>(address);
+    if(callInstructionPrologue) {
+      mov32(reg(1), imm(instruction));
+      call(&RSP::instructionPrologue);
+    }
+    pipeline.begin();
     OpInfo op0 = self.decoderEXECUTE(instruction);
     pipeline.issue(op0);
     bool branched = emitEXECUTE(instruction);
 
     if(!pipeline.singleIssue && !branched && u12(address + 4) != start) {
-      u32 instruction = self.imem.read<Word>(address + 4);  
+      u32 instruction = self.imem.read<Word>(address + 4);
       OpInfo op1 = self.decoderEXECUTE(instruction);
 
       if(RSP::canDualIssue(op0, op1)) {
         mov32(reg(1), imm(0));
         call(&RSP::instructionEpilogue);
+        if(callInstructionPrologue) {
+          mov32(reg(1), imm(instruction));
+          call(&RSP::instructionPrologue);
+        }
         address += 4;
         pipeline.issue(op1);
         branched = emitEXECUTE(instruction);

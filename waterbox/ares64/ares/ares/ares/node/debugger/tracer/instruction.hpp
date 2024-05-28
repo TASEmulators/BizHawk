@@ -71,9 +71,7 @@ struct Instruction : Tracer {
     if(!enabled()) return;
 
     if(_omitted) {
-      PlatformLog({
-        "[Omitted: ", _omitted, "]\n"}
-      );
+      PlatformLog(shared(), {"[Omitted: ", _omitted, "]"});
       _omitted = 0;
     }
 
@@ -84,7 +82,7 @@ struct Instruction : Tracer {
       context, "  ",
       extra
     };
-    PlatformLog({output.strip(), "\n"});
+    PlatformLog(shared(), {output.strip()});
   }
 
   auto serialize(string& output, string depth) -> void override {

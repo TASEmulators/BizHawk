@@ -26,6 +26,7 @@ auto VI::load(Node::Object parent) -> void {
   #endif
   screen = node->append<Node::Video::Screen>("Screen", width, height);
   screen->setRefresh({&VI::refresh, this});
+  screen->refreshRateHint(Region::PAL() ? 50 : 60); // TODO: More accurate refresh rate hint
   screen->colors((1 << 24) + (1 << 15), [&](n32 color) -> n64 {
     if(color < (1 << 24)) {
       u64 a = 65535;
@@ -159,7 +160,7 @@ auto VI::refresh() -> void {
         auto line = screen->pixels(1).data() + (dy - vscan_start) * hscan_len;
         u32 x0 = vi.io.xsubpixel + vi.io.xscale * (dx0 - vi.io.hstart);
         for(i32 dx = dx0; dx < dx1; dx++) {
-          u16 data = rdram.ram.read<Half>(address + (x0 >> 10) * 2);
+          u16 data = rdram.ram.read<Half>(address + (x0 >> 10) * 2, "VI");
           line[dx - hscan_start] = 1 << 24 | data >> 1;
           x0 += vi.io.xscale;
         }
@@ -177,7 +178,7 @@ auto VI::refresh() -> void {
         auto line = screen->pixels(1).data() + (dy - vscan_start) * hscan_len;
         u32 x0 = vi.io.xsubpixel + vi.io.xscale * (dx0 - vi.io.hstart);
         for(i32 dx = dx0; dx < dx1; dx++) {
-          u32 data = rdram.ram.read<Word>(address + (x0 >> 10) * 4);
+          u32 data = rdram.ram.read<Word>(address + (x0 >> 10) * 4, "VI");
           line[dx - hscan_start] = data >> 8;
           x0 += vi.io.xscale;
         }

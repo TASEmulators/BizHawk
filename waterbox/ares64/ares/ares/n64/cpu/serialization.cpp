@@ -117,6 +117,7 @@ auto CPU::serialize(serializer& s) -> void {
   s(scc.epcError);
   s(scc.latch);
   s(scc.nmiPending);
+  s(scc.sysadFrozen);
 
   for(auto& r : fpu.r) s(r.u64);
   s(fpu.csr.roundMode);

@@ -17,7 +17,7 @@ struct Input {
 private:
   string _name;
   s16 _value = 0;
-  friend class Group;
+  friend struct Group;
 };
 
 struct Group : vector<Input> {
@@ -36,7 +36,7 @@ struct Group : vector<Input> {
 
 private:
   string _name;
-  friend class Device;
+  friend struct Device;
 };
 
 struct Device : vector<Group> {

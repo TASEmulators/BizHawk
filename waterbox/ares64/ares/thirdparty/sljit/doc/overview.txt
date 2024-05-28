@@ -9,7 +9,7 @@ with SLJIT. Further details can be found in sljitLir.h.
 SLJIT is a platform independent assembler which
   - provides access to common CPU features
   - can be easily ported to wide-spread CPU
-    architectures (e.g. x86, ARM, POWER, MIPS, SPARC, s390x)
+    architectures (e.g. x86, ARM, POWER, MIPS, s390x, LoongArch)
 
 The key challenge of this project is finding a common
 subset of CPU features which
@@ -49,9 +49,9 @@ is a valid instruction sequence:
     sljit_emit_op1(compiler, SLJIT_MOV32,
         SLJIT_R0, 0, SLJIT_MEM1(SLJIT_R1), 0);
     // An int32_t value is loaded into SLJIT_R0
-    sljit_emit_op1(compiler, SLJIT_NOT32,
+    sljit_emit_op1(compiler, SLJIT_REV32,
         SLJIT_R0, 0, SLJIT_R0, 0);
-    // the int32_t value in SLJIT_R0 is bit inverted
+    // the int32_t value in SLJIT_R0 is byte swapped
     // and the type of the result is still int32_t
 
 The next code snippet is not allowed:
@@ -59,14 +59,14 @@ The next code snippet is not allowed:
     sljit_emit_op1(compiler, SLJIT_MOV,
         SLJIT_R0, 0, SLJIT_MEM1(SLJIT_R1), 0);
     // An intptr_t value is loaded into SLJIT_R0
-    sljit_emit_op1(compiler, SLJIT_NOT32,
+    sljit_emit_op1(compiler, SLJIT_REV32,
         SLJIT_R0, 0, SLJIT_R0, 0);
-    // The result of SLJIT_NOT instruction
-    // is undefined. Even crash is possible
+    // The result of the instruction is undefined.
+    // Even crash is possible for some instructions
     // (e.g. on MIPS-64).
 
 However, it is always allowed to overwrite a
-register regardless its previous value:
+register regardless of its previous value:
 
     sljit_emit_op1(compiler, SLJIT_MOV,
         SLJIT_R0, 0, SLJIT_MEM1(SLJIT_R1), 0);
@@ -127,7 +127,7 @@ following rules were introduced:
   - Status flags cannot be controlled directly
     (there are no set/clear/invert operations)
 
-The last two rules allows efficent mapping of status flags.
+The last two rules allows efficient mapping of status flags.
 For example the arithmetic and multiply overflow flag is
 mapped to the same overflow flag bit on x86. This is allowed,
 since no instruction can set both of these flags. When

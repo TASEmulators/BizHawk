@@ -1,6 +1,7 @@
 #include <nall/main.hpp>
 
 #if defined(PLATFORM_WINDOWS)
+  #include <nall/windows/windows.hpp>
   #include <objbase.h>
   #include <shellapi.h>
   #include <winsock2.h>

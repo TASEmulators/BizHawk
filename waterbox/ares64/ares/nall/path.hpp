@@ -26,6 +26,10 @@ inline auto real(string_view name) -> string {
 
 auto program() -> string;
 
+// program()
+// ./ares.app/Contents/Resources/
+auto resources() -> string;
+
 // /
 // c:/
 auto root() -> string;
