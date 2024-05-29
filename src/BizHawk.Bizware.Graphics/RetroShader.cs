@@ -16,15 +16,18 @@ namespace BizHawk.Bizware.Graphics
 			Owner = owner;
 
 			var vertexLayoutItems = new PipelineCompileArgs.VertexLayoutItem[3];
-			vertexLayoutItems[0] = new("position", 4, 0, AttribUsage.Position);
-			vertexLayoutItems[1] = new("color", 4, 16, AttribUsage.Color0); // just dead weight, i have no idea why this is here. but some old HLSL compilers (used in bizhawk for various reasons) will want it to exist here since it exists in the vertex shader
-			vertexLayoutItems[2] = new("tex", 2, 32, AttribUsage.Texcoord0);
+			// note: vertex input names don't matter for HLSL, only for GLSL do they matter
+			// inversely, semantic usage doesn't matter for GLSL, only for HLSL do they matter
+			vertexLayoutItems[0] = new("VertexCoord", 4, 0, AttribUsage.Position);
+			vertexLayoutItems[1] = new("COLOR", 4, 16, AttribUsage.Color0); // just dead weight, i have no idea why this is here. but some old HLSL compilers (used in bizhawk for various reasons) will want it to exist here since it exists in the vertex shader
+			vertexLayoutItems[2] = new("TexCoord", 2, 32, AttribUsage.Texcoord0);
 
 			string vsSource, psSource;
 			if (owner.DispMethodEnum == EDispMethod.OpenGL)
 			{
-				vsSource = "#version 130\r\n";
-				psSource = "#version 130\r\n";
+				// versions must be specified first, even before defines
+				vsSource = "#version 150\r\n";
+				psSource = "#version 150\r\n";
 			}
 			else
 			{
@@ -39,7 +42,7 @@ namespace BizHawk.Bizware.Graphics
 				vertexLayoutItems,
 				vertexShaderArgs: new(vsSource, "main_vertex"),
 				fragmentShaderArgs: new(psSource, "main_fragment"),
-				fragmentOutputName: "oColor");
+				fragmentOutputName: "FragColor");
 
 			try
 			{
@@ -86,16 +89,31 @@ namespace BizHawk.Bizware.Graphics
 			// ack! make sure to set the pipeline before setting uniforms
 			Bind();
 
-			Pipeline.SetUniform("IN.video_size", new Vector2(InputSize.Width, InputSize.Height));
-			Pipeline.SetUniform("IN.texture_size", new Vector2(tex.Width, tex.Height));
-			Pipeline.SetUniform("IN.output_size", new Vector2(OutputSize.Width, OutputSize.Height));
+			var videoSize = new Vector2(InputSize.Width, InputSize.Height);
+			var texSize = new Vector2(tex.Width, tex.Height);
+			var outputSize = new Vector2(OutputSize.Width, OutputSize.Height);
+
+			// cg struct based IN
+			Pipeline.SetUniform("IN.video_size", videoSize);
+			Pipeline.SetUniform("IN.texture_size", texSize);
+			Pipeline.SetUniform("IN.output_size", outputSize);
 			Pipeline.SetUniform("IN.frame_count", 1); //todo
 			Pipeline.SetUniform("IN.frame_direction", 1); //todo
 
-			var Projection = Owner.CreateGuiProjectionMatrix(OutputSize);
-			var Modelview = Owner.CreateGuiViewMatrix(OutputSize);
-			var mat = Modelview * Projection;
-			Pipeline.SetUniformMatrix("modelViewProj", mat);
+			// cg2glsl based IN
+			Pipeline.SetUniform("VideoSize", videoSize);
+			Pipeline.SetUniform("TextureSize", texSize);
+			Pipeline.SetUniform("OutputSize", outputSize);
+			Pipeline.SetUniform("FrameCount", 1); //todo
+			Pipeline.SetUniform("FrameDirection", 1); //todo
+
+			var projection = Owner.CreateGuiProjectionMatrix(OutputSize);
+			var modelView = Owner.CreateGuiViewMatrix(OutputSize);
+			var mat = modelView * projection;
+			// cg based projection matrix
+			Pipeline.SetUniformMatrix("modelViewProj", ref mat);
+			// cg2glsl based projection matrix
+			Pipeline.SetUniformMatrix("MVPMatrix", ref mat);
 
 			Pipeline.SetUniformSampler(sampler0, tex);
 			Owner.SetViewport(OutputSize);

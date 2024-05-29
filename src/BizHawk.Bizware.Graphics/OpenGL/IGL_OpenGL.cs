@@ -26,7 +26,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			if (!Available)
 			{
-				throw new InvalidOperationException("OpenGL 3.0 is required and unavailable");
+				throw new InvalidOperationException("OpenGL 3.2 is required and unavailable");
 			}
 
 			GL = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);

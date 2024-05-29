@@ -1,15 +1,15 @@
 #ifdef VERTEX
-uniform mat4 modelViewProj;
+uniform mat4 MVPMatrix;
 
-in vec4 position;
-in vec2 tex;
+in vec4 VertexCoord;
+in vec2 TexCoord;
 
 out vec2 vTex;
 
 void main()
 {
-	gl_Position = modelViewProj * position;
-	vTex = tex;
+	gl_Position = MVPMatrix * VertexCoord;
+	vTex = TexCoord;
 }
 
 #endif
@@ -21,14 +21,14 @@ uniform sampler2D s_p;
 
 in vec2 vTex;
 
-out vec4 oColor;
+out vec4 FragColor;
 
 void main()
 {
-	vec4 temp = texture2D(s_p,vTex);
+	vec4 temp = texture(s_p,vTex);
 	vec2 wpos = gl_FragCoord.xy;
 	if(floor(wpos.y/2.0) != floor(wpos.y)/2.0) temp.rgb *= uIntensity;
-	oColor = temp; 
+	FragColor = temp; 
 }
 
 #endif

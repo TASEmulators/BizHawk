@@ -1,9 +1,6 @@
 using System.Windows.Forms;
 
-using BizHawk.Bizware.Graphics;
-using BizHawk.Bizware.Graphics.Controls;
-
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Bizware.Graphics.Controls
 {
 	/// <summary>
 	/// Adapts a GraphicsControl to gain the power of remembering what was drawn to it, and keeping it presented in response to Paint events
@@ -15,6 +12,20 @@ namespace BizHawk.Client.EmuHawk
 			_gl = gl;
 			_graphicsControl = GraphicsControlFactory.CreateGraphicsControl(gl);
 			_guiRenderer = new(gl);
+
+			SetStyle(ControlStyles.Opaque, true);
+			SetStyle(ControlStyles.UserPaint, true);
+			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			SetStyle(ControlStyles.UserMouse, true);
+
+			_graphicsControl.Dock = DockStyle.Fill;
+			_graphicsControl.MouseDoubleClick += (_, e) => OnMouseDoubleClick(e);
+			_graphicsControl.MouseClick += (_, e) => OnMouseClick(e);
+			_graphicsControl.MouseEnter += (_, e) => OnMouseEnter(e);
+			_graphicsControl.MouseLeave += (_, e) => OnMouseLeave(e);
+			_graphicsControl.MouseMove += (_, e) => OnMouseMove(e);
+			_graphicsControl.Paint += (_, e) => OnPaint(e);
+			Controls.Add(_graphicsControl);
 		}
 
 		/// <summary>

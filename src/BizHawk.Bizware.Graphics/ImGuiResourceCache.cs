@@ -48,7 +48,7 @@ namespace BizHawk.Bizware.Graphics
 					vertexLayoutItems,
 					vertexShaderArgs: new(vsProgram, "vsmain"),
 					fragmentShaderArgs: new(psProgram, "psmain"),
-					fragmentOutputName: "oColor");
+					fragmentOutputName: "FragColor");
 				Pipeline = igl.CreatePipeline(compileArgs);
 
 				igl.BindPipeline(Pipeline);
@@ -143,8 +143,8 @@ float4 psmain(PS_INPUT src) : SV_Target
 ";
 
 		public const string ImGuiVertexShader_gl = @"
-//opengl 3.0
-#version 130
+//opengl 3.2
+#version 150
 uniform mat4 um44Projection;
 
 in vec2 aPosition;
@@ -163,21 +163,21 @@ void main()
 }";
 
 		public const string ImGuiPixelShader_gl = @"
-//opengl 3.0
-#version 130
+//opengl 3.2
+#version 150
 uniform bool uSamplerEnable;
 uniform sampler2D uSampler0;
 
 in vec2 vTexcoord0;
 in vec4 vColor0;
 
-out vec4 oColor;
+out vec4 FragColor;
 
 void main()
 {
 	vec4 temp = vColor0;
-	if(uSamplerEnable) temp *= texture2D(uSampler0, vTexcoord0);
-	oColor = temp;
+	if(uSamplerEnable) temp *= texture(uSampler0, vTexcoord0);
+	FragColor = temp;
 }";
 	}
 }
