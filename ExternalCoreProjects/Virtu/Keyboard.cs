@@ -244,8 +244,10 @@ namespace Jellyfish.Virtu
 			return ret;
 		}
 
+#pragma warning disable CA2211 // public field
 		public static bool WhiteAppleDown;
 		public static bool BlackAppleDown;
+#pragma warning restore CA2211
 
 		/// <summary>
 		/// Call this at 60hz with all of the currently pressed keys
