@@ -4,7 +4,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 
-using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Common.IOExtensions;
