@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					int p = 0;
 					for (int i = 0; i < _numCores; i++)
 					{
-						if (isSgb(i))
+						if (IsSgb(i))
 						{
 							for (int j = 1; j <= 4; j++)
 							{
@@ -128,9 +128,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 										{
 											Array.Copy(FrameBuffer, (i * 160) + (j * Pitch), VideoBuffer, (i * 160) + (j * Pitch), 160);
 										}
-										if (isAnySgb)
+										if (IsAnySgb)
 										{
-											if (isSgb(i)) // all SGB borders will be displayed when any of them has the option enabled
+											if (IsSgb(i)) // all SGB borders will be displayed when any of them has the option enabled
 											{
 												if (LibGambatte.gambatte_updatescreenborder(_linkedCores[i].GambatteState, svbuff + (i * 256), sgbPitch) != 0)
 												{

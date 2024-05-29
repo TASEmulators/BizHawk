@@ -4,13 +4,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class GambatteLink : IVideoProvider
 	{
-		public int VirtualWidth => (showAnyBorder() ? 256 : 160) * _numCores;
+		public int VirtualWidth => (ShowAnyBorder() ? 256 : 160) * _numCores;
 
-		public int VirtualHeight => showAnyBorder() ? 224 : 144;
+		public int VirtualHeight => ShowAnyBorder() ? 224 : 144;
 
-		public int BufferWidth => (showAnyBorder() ? 256 : 160) * _numCores;
+		public int BufferWidth => (ShowAnyBorder() ? 256 : 160) * _numCores;
 
-		public int BufferHeight => showAnyBorder() ? 224 : 144;
+		public int BufferHeight => ShowAnyBorder() ? 224 : 144;
 
 		public int VsyncNumerator => _linkedCores[P1].VsyncNumerator;
 
@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public int[] GetVideoBuffer()
 		{
-			return showAnyBorder() ? SgbVideoBuffer : VideoBuffer;
+			return ShowAnyBorder() ? SgbVideoBuffer : VideoBuffer;
 		}
 
 		private readonly int[] VideoBuffer;
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private int[] CreateSGBVideoBuffer()
 		{
-			if (isAnySgb)
+			if (IsAnySgb)
 			{
 				return new int[256 * _numCores * 224];
 			}

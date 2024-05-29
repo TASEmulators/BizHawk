@@ -50,8 +50,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				_linkedCores[i] = new Gameboy(lp.Comm, lp.Roms[i].Game, lp.Roms[i].RomData, _settings._linkedSettings[i], _syncSettings._linkedSyncSettings[i], lp.DeterministicEmulationRequested);
 				_linkedCores[i].ConnectInputCallbackSystem(_inputCallbacks);
 				_linkedCores[i].ConnectMemoryCallbackSystem(_memoryCallbacks, i);
-				isAnySgb = isAnySgb || isSgb(i);
-				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: isSgb(i), sub: false, tilt: false, rumble: false, remote: false));
+				IsAnySgb = IsAnySgb || IsSgb(i);
+				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: IsSgb(i), sub: false, tilt: false, rumble: false, remote: false));
 				_linkedBlips[i] = new BlipBuffer(1024);
 				_linkedBlips[i].SetRates(2097152 * 2, 44100);
 				_linkedOverflow[i] = 0;
@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				ret.BoolButtons.AddRange(
 						new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Power" }
 							.Select(s => $"P{p} {s}"));
-				if (isSgb(i)) // one Player tab per SNES controller for SGB; SNES power button on the first Player tab
+				if (IsSgb(i)) // one Player tab per SNES controller for SGB; SNES power button on the first Player tab
 				{
 					for (int j = 1; j < 4; j++)
 					{
@@ -174,22 +174,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return ret.MakeImmutable();
 		}
 
-		private bool isSgb(int i)
+		private bool IsSgb(int i)
 		{
 			return _linkedCores[i].IsSgb;
 		}
 
+		public bool IsAnySgb { get; set; }
 
-		public bool isAnySgb { get; set; }
-
-		private bool showBorder(int i)
+		private bool ShowBorder(int i)
 		{
-			return isSgb(i) && _settings._linkedSettings[i].ShowBorder;
+			return IsSgb(i) && _settings._linkedSettings[i].ShowBorder;
 		}
 
-		public bool showAnyBorder()
+		public bool ShowAnyBorder()
 		{
-			return Enumerable.Range(0, _numCores).Any(showBorder);
+			return Enumerable.Range(0, _numCores).Any(ShowBorder);
 		}
 
 		private const int P1 = 0;
