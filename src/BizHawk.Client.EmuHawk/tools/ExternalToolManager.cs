@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ToolStripMenuItem/*?*/ Fail(string reason)
 			{
-				Console.WriteLine($"ignoring <exttools>/{fileName.MakeRelativeTo(DirectoryMonitor.Path).RemovePrefix("./")} as {reason}");
+				Console.WriteLine($"ignoring <exttools>/{fileName.MakeRelativeTo(Path.GetFullPath(DirectoryMonitor.Path)).RemovePrefix("./")} as {reason}");
 				return null;
 			}
 			if (fileName == null) throw new Exception();
