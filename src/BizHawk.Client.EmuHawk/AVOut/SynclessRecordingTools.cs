@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -50,13 +51,9 @@ namespace BizHawk.Client.EmuHawk
 			string framesDir = "";
 			foreach (var line in lines)
 			{
-				int idx = line.IndexOf('=');
-				string key = line[..idx];
-				string value = line[(idx + 1)..];
-				if (key == "framesdir")
-				{
-					framesDir = value;
-				}
+				const string KEY = "framesdir=";
+				if (line.StartsWithOrdinal(KEY)) framesDir = line.Substring(startIndex: KEY.Length);
+				// and continue
 			}
 
 			_mFramesDirectory = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_mSynclessConfigFile)), framesDir);

@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					{
 						string dis = DisassembleExt(
 							0,
-							out int unused,
+							out _,
 							addr => md.PeekByte(addr + i),
 							addr => md.PeekUshort(addr + i, bigEndian: false));
 						w.WriteLine("0x{0:x8}: {1}", i, dis);

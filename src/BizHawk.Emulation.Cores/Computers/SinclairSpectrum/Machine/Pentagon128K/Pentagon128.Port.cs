@@ -46,9 +46,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // if this is detected just return the kempston byte
             if (lowByte == 0x1f)
             {
-                if (LocateUniqueJoystick(JoystickType.Kempston) != null)
-                    return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston)).JoyLine;
-
+                //TODO lines swapped?
+                if (LocateUniqueJoystick(JoystickType.Kempston) is KempstonJoystick j) return (byte) j.JoyLine;
                 InputRead = true;
             }
             else

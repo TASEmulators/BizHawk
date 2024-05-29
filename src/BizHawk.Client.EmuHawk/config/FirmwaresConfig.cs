@@ -184,7 +184,7 @@ namespace BizHawk.Client.EmuHawk
 				lvFirmwares.Groups.Add(
 					key: sysID,
 					headerText: SystemGroupNames.TryGetValue(sysID, out var name) ? name : "FIX ME (FirmwaresConfig.cs)");
-				return lvFirmwares.Groups[^1];
+				return lvFirmwares.Groups[lvFirmwares.Groups.Count - 1];
 			}
 
 			// we'll use this font for displaying the hash, so they don't look all jagged in a long list

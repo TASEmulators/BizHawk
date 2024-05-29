@@ -449,17 +449,16 @@ namespace BizHawk.Client.EmuHawk
 				BoolPatterns[i] = new AutoPatternBool(1, 1);
 			}
 
-			BoolPatterns[^2] = new AutoPatternBool(1, 0);
-			BoolPatterns[^1] = new AutoPatternBool(
-				Config.AutofireOn, Config.AutofireOff);
+			BoolPatterns[BoolPatterns.Length - 2] = new(1, 0);
+			BoolPatterns[BoolPatterns.Length - 1] = new(Config.AutofireOn, Config.AutofireOff);
 
 			for (int i = fStart; i < AxisPatterns.Length - 2; i++)
 			{
 				AxisPatterns[i] = new AutoPatternAxis(new[] { 1 });
 			}
 
-			AxisPatterns[^2] = new AutoPatternAxis(new[] { 1 });
-			AxisPatterns[^1] = new AutoPatternAxis(1, Config.AutofireOn, 0, Config.AutofireOff);
+			AxisPatterns[AxisPatterns.Length - 2] = new([ 1 ]);
+			AxisPatterns[AxisPatterns.Length - 1] = new(1, Config.AutofireOn, 0, Config.AutofireOff);
 
 			SetUpToolStripColumns();
 		}

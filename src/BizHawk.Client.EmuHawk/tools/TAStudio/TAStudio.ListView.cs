@@ -1313,7 +1313,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
 			{
 				_axisTypedValue = _axisTypedValue.StartsWith('-')
-					? _axisTypedValue[1..]
+					? _axisTypedValue.Substring(startIndex: 1)
 					: $"-{_axisTypedValue}";
 			}
 			else if (e.KeyCode == Keys.Back)
@@ -1323,7 +1323,7 @@ namespace BizHawk.Client.EmuHawk
 					_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 				}
 
-				_axisTypedValue = _axisTypedValue[..^1];
+				_axisTypedValue = _axisTypedValue.Substring(startIndex: 0, length: _axisTypedValue.Length - 1); // drop last char
 				if (_axisTypedValue == "" || _axisTypedValue == "-")
 				{
 					value = 0f;

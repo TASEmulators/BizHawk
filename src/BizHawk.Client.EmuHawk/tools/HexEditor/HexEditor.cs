@@ -1395,10 +1395,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// and add HighlightedAddress if present
-			if (_highlightedAddress.HasValue)
-			{
-				addresses[^1] = _highlightedAddress.Value;
-			}
+			if (_highlightedAddress is long l) addresses[addresses.Length - 1] = l;
 
 			// these need to be sorted. it's not just for HighlightedAddress, _secondaryHighlightedAddresses can even be jumbled
 			Array.Sort(addresses);

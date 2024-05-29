@@ -928,7 +928,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var indices = SelectedIndices.ToList();
 			if (indices.Count == 0
-				|| indices[^1] == _watches.Count - 1) // at end already
+				|| indices[indices.Count - 1] == _watches.Count - 1) // at end already
 			{
 				return;
 			}

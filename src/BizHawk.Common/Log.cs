@@ -39,7 +39,9 @@ namespace BizHawk.Common
 		}
 
 		// -------------- Logging Action Configuration --------------
-		public static readonly Action<string> LogAction = DefaultLogger;
+#pragma warning disable CA2211 // public field
+		public static Action<string> LogAction = DefaultLogger;
+#pragma warning restore CA2211
 
 		// NOTEs are only logged if the domain is enabled.
 		// ERRORs are logged regardless.

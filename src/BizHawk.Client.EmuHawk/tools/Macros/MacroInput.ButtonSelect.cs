@@ -58,10 +58,7 @@ namespace BizHawk.Client.EmuHawk
 					key = key.Replace($"{box.Text}|", "");
 				}
 			}
-
-			key = key[..^1];
-
-			SelectedZone.InputKey = key;
+			SelectedZone.InputKey = key.Substring(startIndex: 0, length: key.Length - 1); // drop final char
 		}
 
 		private void PositionBoxes()

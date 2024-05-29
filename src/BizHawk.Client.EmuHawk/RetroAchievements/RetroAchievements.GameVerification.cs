@@ -124,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 							// end of the path has ;
 							var end = exePath.IndexOf(';');
 							if (end < 0) break;
-							exePath = exePath[index..end];
+							exePath = exePath.Substring(startIndex: index, length: end - index);
 						}
 
 						buffer.AddRange(Encoding.ASCII.GetBytes(exePath));

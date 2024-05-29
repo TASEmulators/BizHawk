@@ -27,7 +27,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly HashSet<Control> _wantingMouseFocus = new HashSet<Control>();
 
-		public static Input Instance { get; set; }
+#pragma warning disable CA2211 // public field
+		public static Input Instance;
+#pragma warning restore CA2211
 
 		private readonly Thread _updateThread;
 
