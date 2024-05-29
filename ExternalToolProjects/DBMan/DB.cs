@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using BizHawk.Common.StringExtensions;
 using Community.CsharpSqlite.SQLiteClient;
 
 namespace BizHawk.DBManTool
@@ -45,7 +45,7 @@ namespace BizHawk.DBManTool
 		{
 			get
 			{
-				if (!Name.EndsWith(", The")) return Name;
+				if (!Name.EndsWithOrdinal(", The")) return Name;
 				return "The "+Name.Substring(0, Name.Length-5);
 			}
 		}
@@ -110,11 +110,11 @@ namespace BizHawk.DBManTool
 
 	public static class DB
 	{
-		public static List<Rom> Roms = new List<Rom>();
-		public static List<Game> Games = new List<Game>();
-		public static Dictionary<string, Game> GameMap = new Dictionary<string, Game>();
+		public static List<Rom> Roms { get; private set; } = new List<Rom>();
+		public static List<Game> Games { get; } = new List<Game>();
+		public static Dictionary<string, Game> GameMap { get; } = new Dictionary<string, Game>();
 
-		public static SqliteConnection Con;
+		public static SqliteConnection Con { get; set; }
 
 		public static void LoadDbForSystem(string system)
 		{

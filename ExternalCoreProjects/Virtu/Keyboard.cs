@@ -244,8 +244,8 @@ namespace Jellyfish.Virtu
 			return ret;
 		}
 
-		public static bool WhiteAppleDown;
-		public static bool BlackAppleDown;
+		public static bool WhiteAppleDown { get; private set; }
+		public static bool BlackAppleDown { get; private set; }
 
 		/// <summary>
 		/// Call this at 60hz with all of the currently pressed keys

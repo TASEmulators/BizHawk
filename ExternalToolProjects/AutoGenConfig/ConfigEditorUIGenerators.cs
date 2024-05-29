@@ -373,7 +373,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 
 			protected override string SerializeTValue(string? v) => v == null ? NULL_SERIALIZATION : $"\"{v}\"";
 
-			protected override bool TValueEquality(string? a, string? b) => string.Equals(a, b) || string.IsNullOrEmpty(a) && string.IsNullOrEmpty(b);
+			protected override bool TValueEquality(string? a, string? b) => a == b || string.IsNullOrEmpty(a) && string.IsNullOrEmpty(b);
 		}
 
 		public sealed class UnrepresentablePropEditorUIGen : ConfigPropEditorUIGen<GroupBox, object?>

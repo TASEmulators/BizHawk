@@ -3,15 +3,11 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Xml;
 using System.Xml.Linq;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 
 using BizHawk.Common;
-using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.DBManTool
 {
@@ -61,8 +57,7 @@ namespace BizHawk.DBManTool
 			Console.WriteLine("merging");
 			foreach (var rr in rdpsx.Records)
 			{
-				HashRecord hr;
-				if (!hashes.TryGetValue(rr.crc, out hr))
+				if (!hashes.TryGetValue(rr.crc, out var hr))
 					continue;
 				hr.matched = true;
 				//correct name to redump current
@@ -109,8 +104,8 @@ namespace BizHawk.DBManTool
 				CRC32 spec_crc_calc = new() { Current = 0 }; //TODO is the current usage (invert initial state, don't invert final state) equivalent to only inverting the final state? --yoshi
 				foreach (var rom in game.Elements("rom"))
 				{
-					var ext = Path.GetExtension(rom.Attribute("name").Value).ToLower();
-					if (ext == ".cue") continue;
+					var ext = Path.GetExtension(rom.Attribute("name").Value);
+					if (ext.Equals(".cue", StringComparison.OrdinalIgnoreCase)) continue;
 					uint onecrc = uint.Parse(rom.Attribute("crc").Value, NumberStyles.HexNumber);
 					int size = int.Parse(rom.Attribute("size").Value);
 					spec_crc_calc.Incorporate(onecrc, size);

@@ -53,13 +53,13 @@ namespace BizHawk.DATTool
 			{
 				// hash
 				sb.Append(d.HASH);
-				sb.Append("\t");
+				sb.Append('\t');
 				// status
 				sb.Append(d.Status);
-				sb.Append("\t");
+				sb.Append('\t');
 				// name
 				sb.Append(d.Name);
-				sb.Append("\t");
+				sb.Append('\t');
 				// system
 				sb.Append(d.System);
 
@@ -89,37 +89,37 @@ namespace BizHawk.DATTool
 				// notes
 				if (d.Notes != null)
 				{
-					sb.Append("\t");
+					sb.Append('\t');
 					sb.Append(d.Notes);
 				}
 				else if (cnt++ <= last)
 				{
-					sb.Append("\t");
+					sb.Append('\t');
 				}
 				// metadata
 				if (d.MetaData != null)
 				{
-					sb.Append("\t");
+					sb.Append('\t');
 					sb.Append(d.MetaData);
 				}
 				else if (cnt++ <= last)
 				{
-					sb.Append("\t");
+					sb.Append('\t');
 				}
 				// region
 				if (d.Region != null)
 				{
-					sb.Append("\t");
+					sb.Append('\t');
 					sb.Append(d.Region);
 				}
 				else if (cnt++ <= last)
 				{
-					sb.Append("\t");
+					sb.Append('\t');
 				}
 				// force core
 				if (d.ForcedCore != null)
 				{
-					sb.Append("\t");
+					sb.Append('\t');
 					sb.Append(d.ForcedCore);
 				}
 
