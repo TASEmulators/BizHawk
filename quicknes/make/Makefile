@@ -2,18 +2,9 @@ CXX = g++
 RM = rm
 CP = cp
 
-MACHINE = $(shell $(CXX) -dumpmachine)
-ifneq (,$(findstring i686,$(MACHINE)))
-	$(error 32 bit build no longer supported)
-else ifneq (,$(findstring x86_64,$(MACHINE)))
-	ARCH = 64
-else
-	$(error Unknown arch)
-endif
-
-CXXFLAGS_32 = -march=pentium4 -mtune=core2
-CXXFLAGS_64 =
-CXXFLAGS = -Wall -I../core/source/quickerNES/core/ -I../core/extern/jaffarCommon/include -D__INLINE__=inline -O3 -Wfatal-errors -Werror -fomit-frame-pointer -flto -D_GNU_SOURCE -D_QUICKERNES_DETECT_JOYPAD_READS -D_QUICKERNES_ENABLE_TRACEBACK_SUPPORT $(CXXFLAGS_$(ARCH))
+CXXFLAGS = -I../core/source/quickerNES/core/ -I../core/extern/jaffarCommon/include -Wall -Wfatal-errors -Werror \
+	-std=c++20 -O3 -fomit-frame-pointer -flto -fvisibility=internal -fvisibility-inlines-hidden \
+	-D_GNU_SOURCE -D__INLINE__=inline -D_QUICKERNES_DETECT_JOYPAD_READS -D_QUICKERNES_ENABLE_TRACEBACK_SUPPORT
 
 # TODO: include these as options in the Makefile
 # -fprofile-generate
@@ -26,12 +17,10 @@ else
 	TARGET = libquicknes.dll
 endif
 
-LDFLAGS_32 = -static -static-libgcc -static-libstdc++
-LDFLAGS_64 =
-LDFLAGS = -shared $(LDFLAGS_$(ARCH)) $(CXXFLAGS)
+LDFLAGS = -shared -s $(CXXFLAGS)
 
-DEST_64 = ../../Assets/dll
-DESTCOPY_64 = ../../output/dll
+DEST = ../../Assets/dll
+DESTCOPY = ../../output/dll
 
 SRCS = \
 	../core/source/quickerNES/core/apu/vrc7/emu2413_state.cpp \
@@ -70,7 +59,7 @@ clean:
 	$(RM) -f $(TARGET)
 	
 install:
-	$(CP) $(TARGET) $(DEST_$(ARCH))
-ifneq ("$(wildcard $(DESTCOPY_$(ARCH)))", "")
-	$(CP) $(TARGET) $(DESTCOPY_$(ARCH))
+	$(CP) $(TARGET) $(DEST)
+ifneq ("$(wildcard $(DESTCOPY))", "")
+	$(CP) $(TARGET) $(DESTCOPY)
 endif

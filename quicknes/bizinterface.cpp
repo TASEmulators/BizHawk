@@ -5,12 +5,10 @@
 #include <jaffarCommon/serializers/contiguous.hpp>
 #include <jaffarCommon/deserializers/contiguous.hpp>
 
-#ifdef _MSC_VER
-#define EXPORT extern "C" __declspec(dllexport)
-#elif __MINGW32__
-#define EXPORT extern "C" __declspec(dllexport) __attribute__((force_align_arg_pointer))
+#ifdef _WIN32
+#define QN_EXPORT extern "C" __declspec(dllexport)
 #else
-#define EXPORT extern "C" __attribute__((force_align_arg_pointer))
+#define QN_EXPORT extern "C" __attribute__((visibility("default")))
 #endif
 
 // Relevant defines for video output
@@ -19,44 +17,45 @@
 #define DEFAULT_HEIGHT 240
 
 
-EXPORT quickerNES::Emu *qn_new()
+QN_EXPORT quickerNES::Emu *qn_new()
 {
-  // Zero intialized emulator to make super sure no side effects from previous data remains
-  auto ptr = calloc(1, sizeof(quickerNES::Emu));
-  auto e = new (ptr) quickerNES::Emu();
+	// Zero intialized emulator to make super sure no side effects from previous data remains
+	auto ptr = calloc(1, sizeof(quickerNES::Emu));
+	auto e = new (ptr) quickerNES::Emu();
 
-  // Creating video buffer
-  auto videoBuffer = (uint8_t *) malloc(VIDEO_BUFFER_SIZE);
-  e->set_pixels(videoBuffer, DEFAULT_WIDTH + 8);
+	// Creating video buffer
+	auto videoBuffer = (uint8_t *) malloc(VIDEO_BUFFER_SIZE);
+	e->set_pixels(videoBuffer, DEFAULT_WIDTH + 8);
 
-  return e;
+	return e;
 }
 
-EXPORT void qn_delete(quickerNES::Emu *e)
+QN_EXPORT void qn_delete(quickerNES::Emu *e)
 { 
-  free(e->get_pixels_base_ptr());
-  free(e);
+	free(e->get_pixels_base_ptr());
+	e->~Emu(); // make sure to explicitly call the dtor
+	free(e);
 }
 
-EXPORT const char *qn_loadines(quickerNES::Emu *e, const void *data, int length)
+QN_EXPORT const char *qn_loadines(quickerNES::Emu *e, const void *data, int length)
 {
-   e->load_ines((const uint8_t*)data);
-   return 0;
+	e->load_ines((const uint8_t*)data);
+	return 0;
 }
 
-EXPORT const char *qn_set_sample_rate(quickerNES::Emu *e, int rate)
+QN_EXPORT const char *qn_set_sample_rate(quickerNES::Emu *e, int rate)
 {
 	const char *ret = e->set_sample_rate(rate);
 	if (!ret) e->set_equalizer(quickerNES::Emu::nes_eq);
 	return ret;
 }
 
-EXPORT const char *qn_emulate_frame(quickerNES::Emu *e, int pad1, int pad2)
+QN_EXPORT const char *qn_emulate_frame(quickerNES::Emu *e, int pad1, int pad2)
 {
 	return e->emulate_frame((uint32_t)pad1, (uint32_t)pad2);
 }
 
-EXPORT void qn_blit(quickerNES::Emu *e, int32_t *dest, const int32_t *colors, int cropleft, int croptop, int cropright, int cropbottom)
+QN_EXPORT void qn_blit(quickerNES::Emu *e, int32_t *dest, const int32_t *colors, int cropleft, int croptop, int cropright, int cropbottom)
 {
 	// what is the point of the 256 color bitmap and the dynamic color allocation to it?
 	// why not just render directly to a 512 color bitmap with static palette positions?
@@ -81,17 +80,17 @@ EXPORT void qn_blit(quickerNES::Emu *e, int32_t *dest, const int32_t *colors, in
 	}
 }
 
-EXPORT const quickerNES::Emu::rgb_t *qn_get_default_colors()
+QN_EXPORT const quickerNES::Emu::rgb_t *qn_get_default_colors()
 {
 	return quickerNES::Emu::nes_colors;
 }
 
-EXPORT int qn_get_joypad_read_count(quickerNES::Emu *e)
+QN_EXPORT int qn_get_joypad_read_count(quickerNES::Emu *e)
 {
 	return e->get_joypad_read_count();
 }
 
-EXPORT void qn_get_audio_info(quickerNES::Emu *e, int *sample_count, int *chan_count)
+QN_EXPORT void qn_get_audio_info(quickerNES::Emu *e, int *sample_count, int *chan_count)
 {
 	if (sample_count)
 		*sample_count = e->frame().sample_count;
@@ -99,17 +98,17 @@ EXPORT void qn_get_audio_info(quickerNES::Emu *e, int *sample_count, int *chan_c
 		*chan_count = e->frame().chan_count;
 }
 
-EXPORT int qn_read_audio(quickerNES::Emu *e, short *dest, int max_samples)
+QN_EXPORT int qn_read_audio(quickerNES::Emu *e, short *dest, int max_samples)
 {
 	return e->read_samples(dest, max_samples);
 }
 
-EXPORT void qn_reset(quickerNES::Emu *e, int hard)
+QN_EXPORT void qn_reset(quickerNES::Emu *e, int hard)
 {
 	e->reset(hard);
 }
 
-EXPORT const char *qn_state_size(quickerNES::Emu *e, int *size)
+QN_EXPORT const char *qn_state_size(quickerNES::Emu *e, int *size)
 {
 	jaffarCommon::serializer::Contiguous s;
 	e->serializeState(s);
@@ -117,44 +116,44 @@ EXPORT const char *qn_state_size(quickerNES::Emu *e, int *size)
 	return 0;
 }
 
-EXPORT const char *qn_state_save(quickerNES::Emu *e, void *dest, int size)
+QN_EXPORT const char *qn_state_save(quickerNES::Emu *e, void *dest, int size)
 {
 	jaffarCommon::serializer::Contiguous s(dest, size);
 	e->serializeState(s);
 	return 0;
 }
 
-EXPORT const char *qn_state_load(quickerNES::Emu *e, const void *src, int size)
+QN_EXPORT const char *qn_state_load(quickerNES::Emu *e, const void *src, int size)
 {
 	jaffarCommon::deserializer::Contiguous d(src, size);
 	e->deserializeState(d);
 	return 0;
 }
 
-EXPORT int qn_has_battery_ram(quickerNES::Emu *e)
+QN_EXPORT int qn_has_battery_ram(quickerNES::Emu *e)
 {
 	return e->has_battery_ram();
 }
 
-EXPORT const char *qn_battery_ram_size(quickerNES::Emu *e, int *size)
+QN_EXPORT const char *qn_battery_ram_size(quickerNES::Emu *e, int *size)
 {
 	*size = e->get_high_mem_size();
 	return 0;
 }
 
-EXPORT const char *qn_battery_ram_save(quickerNES::Emu *e, void *dest, int size)
+QN_EXPORT const char *qn_battery_ram_save(quickerNES::Emu *e, void *dest, int size)
 {
 	memcpy(dest, e->high_mem(), size);
 	return 0;
 }
 
-EXPORT const char *qn_battery_ram_load(quickerNES::Emu *e, const void *src, int size)
+QN_EXPORT const char *qn_battery_ram_load(quickerNES::Emu *e, const void *src, int size)
 {
 	memcpy(e->high_mem(), src, size);
 	return 0;
 }
 
-EXPORT const char *qn_battery_ram_clear(quickerNES::Emu *e)
+QN_EXPORT const char *qn_battery_ram_clear(quickerNES::Emu *e)
 {
 	int size = 0;
 	qn_battery_ram_size(e, &size);
@@ -162,12 +161,12 @@ EXPORT const char *qn_battery_ram_clear(quickerNES::Emu *e)
 	return 0;
 }
 
-EXPORT void qn_set_sprite_limit(quickerNES::Emu *e, int n)
+QN_EXPORT void qn_set_sprite_limit(quickerNES::Emu *e, int n)
 {
 	e->set_sprite_mode((quickerNES::Emu::sprite_mode_t)n);
 }
 
-EXPORT int qn_get_memory_area(quickerNES::Emu *e, int which, const void **data, int *size, int *writable, const char **name)
+QN_EXPORT int qn_get_memory_area(quickerNES::Emu *e, int which, const void **data, int *size, int *writable, const char **name)
 {
 	if (!data || !size || !writable || !name)
 		return 0;
@@ -226,22 +225,22 @@ EXPORT int qn_get_memory_area(quickerNES::Emu *e, int which, const void **data, 
 	}
 }
 
-EXPORT unsigned char qn_peek_prgbus(quickerNES::Emu *e, int addr)
+QN_EXPORT unsigned char qn_peek_prgbus(quickerNES::Emu *e, int addr)
 {
 	return e->peek_prg(addr & 0xffff);
 }
 
-EXPORT void qn_poke_prgbus(quickerNES::Emu *e, int addr, unsigned char val)
+QN_EXPORT void qn_poke_prgbus(quickerNES::Emu *e, int addr, unsigned char val)
 {
 	e->poke_prg(addr & 0xffff, val);
 }
 
-EXPORT void qn_get_cpuregs(quickerNES::Emu *e, unsigned int *dest)
+QN_EXPORT void qn_get_cpuregs(quickerNES::Emu *e, unsigned int *dest)
 {
 	e->get_regs(dest);
 }
 
-EXPORT const char *qn_get_mapper(quickerNES::Emu *e, int *number)
+QN_EXPORT const char *qn_get_mapper(quickerNES::Emu *e, int *number)
 {
 	int m = e->cart()->mapper_code();
 	if (number)
@@ -306,33 +305,33 @@ EXPORT const char *qn_get_mapper(quickerNES::Emu *e, int *number)
 	}
 }
 
-EXPORT uint8_t qn_get_reg2000(quickerNES::Emu *e)
+QN_EXPORT uint8_t qn_get_reg2000(quickerNES::Emu *e)
 {
 	return e->get_ppu2000();
 }
 
-EXPORT uint8_t *qn_get_palmem(quickerNES::Emu *e)
+QN_EXPORT uint8_t *qn_get_palmem(quickerNES::Emu *e)
 {
 	return e->pal_mem();
 }
 
-EXPORT uint8_t *qn_get_oammem(quickerNES::Emu *e)
+QN_EXPORT uint8_t *qn_get_oammem(quickerNES::Emu *e)
 {
 	return e->pal_mem();
 }
 
-EXPORT uint8_t qn_peek_ppu(quickerNES::Emu *e, int addr)
+QN_EXPORT uint8_t qn_peek_ppu(quickerNES::Emu *e, int addr)
 {
 	return e->peek_ppu(addr);
 }
 
-EXPORT void qn_peek_ppubus(quickerNES::Emu *e, uint8_t *dest)
+QN_EXPORT void qn_peek_ppubus(quickerNES::Emu *e, uint8_t *dest)
 {
 	for (int i = 0; i < 0x3000; i++)
 		dest[i] = e->peek_ppu(i);
 }
 
-EXPORT void qn_set_tracecb(quickerNES::Emu *e, void (*cb)(unsigned int *dest))
+QN_EXPORT void qn_set_tracecb(quickerNES::Emu *e, void (*cb)(unsigned int *dest))
 {
 	e->set_tracecb(cb);
 }
