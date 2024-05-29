@@ -16,9 +16,10 @@
 		<ErrorReport>prompt</ErrorReport>
 		<Features>strict</Features>
 		<IsTargetingNetFramework>$(TargetFramework.StartsWith("net4"))</IsTargetingNetFramework>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile> <!-- it would be nice to rename these to *.api_reference.xml or something, but it seems https://github.com/dotnet/standard/issues/614 was never fixed -->
 		<LangVersion>10.0</LangVersion>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-		<NoWarn>SA0001</NoWarn>
+		<NoWarn>$(NoWarn);CS1591;SA0001</NoWarn>
 		<Nullable>enable</Nullable>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
