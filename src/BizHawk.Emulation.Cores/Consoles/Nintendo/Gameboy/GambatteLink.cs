@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				_linkedCores[i] = new Gameboy(lp.Comm, lp.Roms[i].Game, lp.Roms[i].RomData, _settings._linkedSettings[i], _syncSettings._linkedSyncSettings[i], lp.DeterministicEmulationRequested);
 				_linkedCores[i].ConnectInputCallbackSystem(_inputCallbacks);
 				_linkedCores[i].ConnectMemoryCallbackSystem(_memoryCallbacks, i);
-				IsAnySgb = IsAnySgb || IsSgb(i);
+				IsAnySgb |= IsSgb(i);
 				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: IsSgb(i), sub: false, tilt: false, rumble: false, remote: false));
 				_linkedBlips[i] = new BlipBuffer(1024);
 				_linkedBlips[i].SetRates(2097152 * 2, 44100);
@@ -174,20 +174,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		private bool IsSgb(int i)
-		{
-			return _linkedCores[i].IsSgb;
-		}
+			=> _linkedCores[i].IsSgb;
 
-		public bool IsAnySgb { get; set; }
+		public bool IsAnySgb { get; private set; }
 
 		private bool ShowBorder(int i)
-		{
-			return IsSgb(i) && _settings._linkedSettings[i].ShowBorder;
-		}
+			=> IsSgb(i) && _settings._linkedSettings[i].ShowBorder;
 
 		public bool ShowAnyBorder()
 		{
-			return Enumerable.Range(0, _numCores).Any(ShowBorder);
+			for (var i = 0; i < _numCores; i++) if (ShowBorder(i)) return true;
+			return false;
 		}
 
 		private const int P1 = 0;

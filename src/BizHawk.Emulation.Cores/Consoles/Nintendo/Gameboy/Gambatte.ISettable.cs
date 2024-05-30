@@ -111,11 +111,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				GB,
 				GBC,
 				GBA,
-				SGB2
+				SGB2,
 			}
 
 			[DisplayName("Console Mode")]
-			[Description("Pick which console to run, 'Auto' chooses from ROM header; 'GB', 'GBC', 'GBA', and 'SGB2' chooses the respective system.")]
+			[Description("Which console to emulate ('Auto' picks based on the rom header)")]
 			[DefaultValue(ConsoleModeType.Auto)]
 			public ConsoleModeType ConsoleMode { get; set; }
 

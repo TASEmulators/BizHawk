@@ -482,8 +482,9 @@ namespace BizHawk.Client.Common
 						);
 						return;
 					}
-
-					if (_config.PreferredCores[game.System] is CoreNames.Bsnes or CoreNames.Bsnes115 or CoreNames.SubBsnes115)
+					static bool IsPreferredCoreSGB(Config config)
+						=> config.PreferredCores[VSystemID.Raw.GB] is CoreNames.Bsnes or CoreNames.Bsnes115 or CoreNames.SubBsnes115;
+					if (IsPreferredCoreSGB(_config))
 					{
 						game.System = VSystemID.Raw.SGB;
 					}
