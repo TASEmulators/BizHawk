@@ -146,23 +146,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private ControllerDefinition CreateControllerDefinition()
 		{
-			ControllerDefinition ret = new($"GB Link {_numCores}x Controller");
-			int p = 0;
-			for (int i = 0; i < _numCores; i++)
+			static void AddGBButtonsForPlayer(int p, ControllerDefinition ret)
 			{
-				p += 1;
-				ret.BoolButtons.AddRange(
-						new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Power" }
-							.Select(s => $"P{p} {s}"));
-				if (IsSgb(i)) // one Player tab per SNES controller for SGB; SNES power button on the first Player tab
+				var pfx = $"P{p} ";
+				ret.BoolButtons.AddRange(new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" }
+					.Select(s => pfx + s));
+			}
+			ControllerDefinition ret = new($"GB Link {_numCores}x Controller");
+			for (int i = 0, p = 1; i < _numCores; i++)
+			{
+				AddGBButtonsForPlayer(p, ret);
+				ret.BoolButtons.Add($"P{p} Power");
+				p++;
+				if (IsSgb(i))
 				{
-					for (int j = 1; j < 4; j++)
-					{
-						p += 1;
-						ret.BoolButtons.AddRange(
-						new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" }
-							.Select(s => $"P{p} {s}"));
-					}
+					// add 3 more gamepads without a Power button
+					for (int e = p + 3; p < e; p++) AddGBButtonsForPlayer(p, ret);
 				}
 			}
 			ret.BoolButtons.Add("Toggle Link Connection");

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
@@ -19,39 +21,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			foreach (var s in GBLinkController.BoolButtons)
 			{
-				if (controller.IsPressed(s))
+				if (!controller.IsPressed(s)) continue;
+				Debug.Assert(s[0] is 'P');
+				var iSpace = s.IndexOf(' ');
+				var playerNum = int.Parse(s.Substring(startIndex: 1, length: iSpace - 1));
+				var consoleNum = 0;
+				var isSGB = false;
+				while (consoleNum < _numCores)
 				{
-					int p = 0;
-					for (int i = 0; i < _numCores; i++)
-					{
-						if (IsSgb(i))
-						{
-							for (int j = 1; j <= 4; j++)
-							{
-								p += 1;
-								if (s.Contains($"P{p} "))
-								{
-									if (s.Contains($"Power"))
-									{
-										_linkedConts[i].Set(s.Replace($"P{p} ", ""));
-									}
-									else
-									{
-										_linkedConts[i].Set(s.Replace($"P{p} ", $"P{j} "));
-									}
-								}
-							}
-						}
-						else
-						{
-							p += 1;
-							if (s.Contains($"P{p} "))
-							{
-								_linkedConts[i].Set(s.Replace($"P{p} ", ""));
-							}
-						}
-					}
+					isSGB = IsSgb(consoleNum);
+					var playersForConsole = isSGB ? 4 : 1;
+					if (playerNum <= playersForConsole) break;
+					playerNum -= playersForConsole;
+					consoleNum++;
 				}
+				//TODO rather than this string manipulation, could construct a lookup ahead of time
+				_linkedConts[consoleNum].Set(s.EndsWithOrdinal("Power")
+					? "Power"
+					: isSGB
+						? $"P{playerNum} {s.Substring(startIndex: iSpace + 1)}"
+						: s.Substring(startIndex: iSpace + 1));
 			}
 
 			bool linkDiscoSignalNew = controller.IsPressed("Toggle Link Connection");
