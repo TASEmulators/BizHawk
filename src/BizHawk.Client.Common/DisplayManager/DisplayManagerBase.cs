@@ -259,7 +259,7 @@ namespace BizHawk.Client.Common
 					break;
 				case 2 when _shaderChainScanlines is { Available: true }:
 					selectedChain = _shaderChainScanlines;
-					selectedChainProperties = [new("uIntensity", 1.0f - GlobalConfig.TargetScanlineFilterIntensity / 256.0f)];
+					selectedChainProperties = [ new("uIntensity", 1.0f - GlobalConfig.TargetScanlineFilterIntensity / 256.0f) ];
 					break;
 				case 3 when _shaderChainUser is { Available: true }:
 					selectedChain = _shaderChainUser;
