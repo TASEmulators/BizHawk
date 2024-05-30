@@ -6,7 +6,6 @@
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<LangVersion>12</LangVersion>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 </Project>
