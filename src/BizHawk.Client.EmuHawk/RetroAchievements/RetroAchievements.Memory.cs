@@ -355,24 +355,24 @@ namespace BizHawk.Client.EmuHawk
 
 		// these consoles will use the entire system bus
 		private static readonly ConsoleID[] UseFullSysBus =
-		{
+		[
 			ConsoleID.NES, ConsoleID.C64, ConsoleID.AmstradCPC, ConsoleID.Atari7800,
-		};
+		];
 
 		// these consoles will use the entire main memory domain
 		private static readonly ConsoleID[] UseFullMainMem =
-		{
-			ConsoleID.PlayStation, ConsoleID.Lynx, ConsoleID.NeoGeoPocket, ConsoleID.Jaguar,
+		[
+			ConsoleID.Lynx, ConsoleID.NeoGeoPocket, ConsoleID.Jaguar,
 			ConsoleID.JaguarCD, ConsoleID.DS, ConsoleID.DSi, ConsoleID.AppleII,
 			ConsoleID.Vectrex, ConsoleID.Tic80, ConsoleID.PCEngine, ConsoleID.Uzebox,
 			ConsoleID.Nintendo3DS,
-		};
+		];
 
 		// these consoles will use part of the system bus at an offset
 		private static readonly Dictionary<ConsoleID, (uint Start, uint Size)[]> UsePartialSysBus = new()
 		{
-			[ConsoleID.Colecovision] = new[] { (0x6000u, 0x400u) },
-			[ConsoleID.SG1000] = new[] { (0xC000u, 0x2000u), (0x2000u, 0x2000u), (0x8000u, 0x2000u) },
+			[ConsoleID.Colecovision] = [ (0x6000u, 0x400u) ],
+			[ConsoleID.SG1000] = [ (0xC000u, 0x2000u), (0x2000u, 0x2000u), (0x8000u, 0x2000u) ],
 		};
 
 		// anything more complicated will be handled accordingly
@@ -429,6 +429,10 @@ namespace BizHawk.Client.EmuHawk
 						TryAddDomain("Cart (Volatile) RAM");
 						TryAddDomain("Save RAM");
 						TryAddDomain("SRAM");
+						break;
+					case ConsoleID.PlayStation:
+						mfs.Add(new(domains["MainRAM"], 0, domains["MainRAM"].Size));
+						mfs.Add(new(domains["DCache"], 0, domains["DCache"].Size));
 						break;
 					case ConsoleID.SNES:
 						mfs.Add(new(domains["WRAM"], 0, domains["WRAM"].Size));
