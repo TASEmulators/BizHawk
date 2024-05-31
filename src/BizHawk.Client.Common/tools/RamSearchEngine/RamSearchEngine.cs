@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				default:
 				case WatchSize.Byte:
-					for (int i = 0; i < domain.Size; i++)
+					for (var i = 0; i < _watchList.Length; i++)
 					{
 						if (_settings.IsDetailed())
 						{
@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					}
 					break;
 				case WatchSize.Word:
-					for (int i = 0; i < listSize; i++)
+					for (var i = 0; i < _watchList.Length; i++)
 					{
 						if (_settings.IsDetailed())
 						{
@@ -95,7 +95,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					}
 					break;
 				case WatchSize.DWord:
-					for (int i = 0; i < listSize; i++)
+					for (var i = 0; i < _watchList.Length; i++)
 					{
 						if (_settings.IsDetailed())
 						{
