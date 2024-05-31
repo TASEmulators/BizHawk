@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace BizHawk.Tests.Client.Common.Lua
 {
 #if !SKIP_PLATFORM_TESTS
+	[DoNotParallelize]
 	[TestClass]
 #endif
 	public class LuaTests

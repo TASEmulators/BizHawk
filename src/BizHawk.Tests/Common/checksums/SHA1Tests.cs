@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BizHawk.Tests.Common.checksums
 {
+	[DoNotParallelize]
 	[TestClass]
 	public sealed class SHA1Tests
 	{
