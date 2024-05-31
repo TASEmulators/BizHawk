@@ -2,8 +2,7 @@
 
 using System;
 using System.IO;
-
-using Newtonsoft.Json;
+using System.Text.Json;
 
 using BizHawk.Emulation.Common;
 
@@ -16,12 +15,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public void SaveStateText(TextWriter writer)
 		{
 			var s = SaveState();
-			_ser.Serialize(writer, s);
+			writer.Write(JsonSerializer.Serialize(s, _options));
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
-			var s = (TextState<TextStateData>)_ser.Deserialize(reader, typeof(TextState<TextStateData>));
+			var s = JsonSerializer.Deserialize<TextState<TextStateData>>(reader.ReadToEnd(), _options);
 			LoadState(s);
 			reader.ReadToEnd();
 		}
@@ -95,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			=> _stateBuf = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
 #endif
 
-		private readonly JsonSerializer _ser = new() { Formatting = Formatting.Indented };
+		private readonly JsonSerializerOptions _options = new() { WriteIndented = true };
 
 		// other data in the text state besides core
 		internal class TextStateData

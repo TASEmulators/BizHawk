@@ -1,5 +1,5 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;

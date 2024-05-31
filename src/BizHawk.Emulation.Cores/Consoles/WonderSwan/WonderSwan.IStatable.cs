@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
-
-using Newtonsoft.Json;
+using System.Text.Json;
 
 using BizHawk.Emulation.Common;
 
@@ -13,7 +12,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		private void InitIStatable()
 			=> savebuff = new byte[BizSwan.bizswan_binstatesize(Core)];
 
-		private readonly JsonSerializer ser = new() { Formatting = Formatting.Indented };
+		private readonly JsonSerializerOptions _options = new() { WriteIndented = true };
 
 		[StructLayout(LayoutKind.Sequential)]
 		private class TextStateData
@@ -44,12 +43,12 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			var ff = s.GetFunctionPointersSave();
 			BizSwan.bizswan_txtstatesave(Core, ref ff);
 			SaveTextStateData(s.ExtraData);
-			ser.Serialize(writer, s);
+			writer.Write(JsonSerializer.Serialize(s, _options));
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
-			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
+			var s = JsonSerializer.Deserialize<TextState<TextStateData>>(reader.ReadToEnd(), _options);
 			if (s is not null)
 			{
 				s.Prepare();

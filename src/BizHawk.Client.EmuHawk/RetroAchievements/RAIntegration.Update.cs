@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-
-using Newtonsoft.Json;
+using System.Text.Json;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
@@ -63,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var http = new HttpCommunication(null, "https://retroachievements.org/dorequest.php?r=latestintegration", null);
-				var info = JsonConvert.DeserializeObject<Dictionary<string, object>>(http.ExecGet());
+				var info = JsonSerializer.Deserialize<Dictionary<string, object>>(http.ExecGet());
 				if (info.TryGetValue("Success", out var success) && (bool)success)
 				{
 					var lastestVer = new Version((string)info["LatestVersion"]);
