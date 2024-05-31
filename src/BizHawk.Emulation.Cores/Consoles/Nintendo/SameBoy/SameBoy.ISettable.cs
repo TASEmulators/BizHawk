@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -62,6 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				CUSTOM,
 			}
 
+			[JsonInclude]
 			private int[] _customPal;
 
 			[DisplayName("GB Mono Palette")]
@@ -94,7 +94,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ColorCorrectionMode ColorCorrection { get; set; }
 
-			[JsonIgnore]
 			private int _lighttemperature;
 
 			[DisplayName("Ambient Light Temperature")]
@@ -127,7 +126,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HighPassFilterMode HighPassFilter { get; set; }
 
-			[JsonIgnore]
 			private int _interferencevolume;
 
 			[DisplayName("Audio Interference Volume")]

@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json.Serialization;
 
 using BizHawk.Common.StringExtensions;
-
-using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
