@@ -202,7 +202,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public ComparisonOperator Operator { get; set; }
 
-		// zero 07-sep-2014 - this isn't ideal. but don't bother changing it (to a long, for instance) until it can support floats. maybe store it as a double here.
+		/// <remarks>
+		/// zero 07-sep-2014 - this isn't ideal. but don't bother changing it (to a long, for instance) until it can support floats. maybe store it as a double here.<br/>
+		/// it already supported floats by way of reinterpret-cast, it just wasn't implemented correctly on this side --yoshi
+		/// </remarks>
 		public int? DifferentBy { get; set; }
 
 		public void Update()
@@ -389,19 +392,34 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				case ComparisonOperator.Equal:
 					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)).HawkFloatEquality(ReinterpretAsF32(w.Previous)));
 				case ComparisonOperator.NotEqual:
-					return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) != SignExtendAsNeeded(w.Previous));
+					return watchList.Where(w => !ReinterpretAsF32(GetValue(w.Address)).HawkFloatEquality(ReinterpretAsF32(w.Previous)));
 				case ComparisonOperator.GreaterThan:
 					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) > ReinterpretAsF32(w.Previous));
 				case ComparisonOperator.GreaterThanEqual:
-					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) >= ReinterpretAsF32(w.Previous));
+					return watchList.Where(w =>
+					{
+						var val = ReinterpretAsF32(GetValue(w.Address));
+						var prev = ReinterpretAsF32(w.Previous);
+						return val > prev || val.HawkFloatEquality(prev);
+					});
 				case ComparisonOperator.LessThan:
 					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) < ReinterpretAsF32(w.Previous));
 				case ComparisonOperator.LessThanEqual:
-					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) <= ReinterpretAsF32(w.Previous));
+					return watchList.Where(w =>
+					{
+						var val = ReinterpretAsF32(GetValue(w.Address));
+						var prev = ReinterpretAsF32(w.Previous);
+						return val < prev || val.HawkFloatEquality(prev);
+					});
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy is not int differentBy) throw new InvalidOperationException();
-					return watchList.Where(w => (ReinterpretAsF32(GetValue(w.Address)) + differentBy).HawkFloatEquality(ReinterpretAsF32(w.Previous))
-						|| (ReinterpretAsF32(GetValue(w.Address)) - differentBy).HawkFloatEquality(ReinterpretAsF32(w.Previous)));
+					var differentByF = ReinterpretAsF32(differentBy);
+					return watchList.Where(w =>
+					{
+						var val = ReinterpretAsF32(GetValue(w.Address));
+						var prev = ReinterpretAsF32(w.Previous);
+						return (val + differentByF).HawkFloatEquality(prev) || (val - differentByF).HawkFloatEquality(prev);
+					});
 			}
 		}
 
@@ -431,25 +449,38 @@ namespace BizHawk.Client.Common.RamSearchEngine
 							|| SignExtendAsNeeded(GetValue(w.Address)) - differentBy == compareValue);
 				}
 			}
+			var compareValueF = ReinterpretAsF32(compareValue);
 			switch (Operator)
 			{
 				default:
 				case ComparisonOperator.Equal:
-					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)).HawkFloatEquality(ReinterpretAsF32(compareValue)));
+					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)).HawkFloatEquality(compareValueF));
 				case ComparisonOperator.NotEqual:
-					return watchList.Where(w => !ReinterpretAsF32(GetValue(w.Address)).HawkFloatEquality(ReinterpretAsF32(compareValue)));
+					return watchList.Where(w => !ReinterpretAsF32(GetValue(w.Address)).HawkFloatEquality(compareValueF));
 				case ComparisonOperator.GreaterThan:
-					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) > ReinterpretAsF32(compareValue));
+					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) > compareValueF);
 				case ComparisonOperator.GreaterThanEqual:
-					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) >= ReinterpretAsF32(compareValue));
+					return watchList.Where(w =>
+					{
+						var val = ReinterpretAsF32(GetValue(w.Address));
+						return val > compareValueF || val.HawkFloatEquality(compareValueF);
+					});
 				case ComparisonOperator.LessThan:
-					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) < ReinterpretAsF32(compareValue));
+					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) < compareValueF);
 				case ComparisonOperator.LessThanEqual:
-					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) <= ReinterpretAsF32(compareValue));
+					return watchList.Where(w =>
+					{
+						var val = ReinterpretAsF32(GetValue(w.Address));
+						return val < compareValueF || val.HawkFloatEquality(compareValueF);
+					});
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy is not int differentBy) throw new InvalidOperationException();
-					return watchList.Where(w => (ReinterpretAsF32(GetValue(w.Address)) + differentBy).HawkFloatEquality(compareValue)
-						|| (ReinterpretAsF32(GetValue(w.Address)) - differentBy).HawkFloatEquality(compareValue));
+					var differentByF = ReinterpretAsF32(differentBy);
+					return watchList.Where(w =>
+					{
+						var val = ReinterpretAsF32(GetValue(w.Address));
+						return (val + differentByF).HawkFloatEquality(compareValueF) || (val - differentByF).HawkFloatEquality(compareValueF);
+					});
 			}
 		}
 
@@ -544,25 +575,38 @@ namespace BizHawk.Client.Common.RamSearchEngine
 							|| SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) - differentBy == compareValue);
 				}
 			}
+			var compareValueF = ReinterpretAsF32(compareValue);
 			switch (Operator)
 			{
 				default:
 				case ComparisonOperator.Equal:
-					return watchList.Where(w => (ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous)).HawkFloatEquality(compareValue));
+					return watchList.Where(w => (ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous)).HawkFloatEquality(compareValueF));
 				case ComparisonOperator.NotEqual:
-					return watchList.Where(w => !(ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous)).HawkFloatEquality(compareValue));
+					return watchList.Where(w => !(ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous)).HawkFloatEquality(compareValueF));
 				case ComparisonOperator.GreaterThan:
-					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) > compareValue);
+					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) > compareValueF);
 				case ComparisonOperator.GreaterThanEqual:
-					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) >= compareValue);
+					return watchList.Where(w =>
+					{
+						var diff = ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous);
+						return diff > compareValueF || diff.HawkFloatEquality(compareValueF);
+					});
 				case ComparisonOperator.LessThan:
-					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) < compareValue);
+					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) < compareValueF);
 				case ComparisonOperator.LessThanEqual:
-					return watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) <= compareValue);
+					return watchList.Where(w =>
+					{
+						var diff = ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous);
+						return diff < compareValueF || diff.HawkFloatEquality(compareValueF);
+					});
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy is not int differentBy) throw new InvalidOperationException();
-					return watchList.Where(w => (ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) + differentBy).HawkFloatEquality(compareValue)
-						|| (ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) - differentBy).HawkFloatEquality(w.Previous));
+					var differentByF = ReinterpretAsF32(differentBy);
+					return watchList.Where(w =>
+					{
+						var diff = ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous);
+						return (diff + differentByF).HawkFloatEquality(compareValueF) || (diff - differentByF).HawkFloatEquality(compareValueF);
+					});
 			}
 		}
 
