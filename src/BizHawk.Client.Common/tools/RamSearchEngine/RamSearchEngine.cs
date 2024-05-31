@@ -64,55 +64,49 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			long listSize = domain.Size / stepSize - (int)_settings.Size + stepSize;
 
 			_watchList = new IMiniWatch[listSize];
-
-			using (Domain.EnterExit())
+			using var @lock = Domain.EnterExit();
+			switch (_settings.Size)
 			{
-				switch (_settings.Size)
-				{
-					default:
-					case WatchSize.Byte:
-						for (int i = 0; i < domain.Size; i++)
+				default:
+				case WatchSize.Byte:
+					for (int i = 0; i < domain.Size; i++)
+					{
+						if (_settings.IsDetailed())
 						{
-							if (_settings.IsDetailed())
-							{
-								_watchList[i] = new MiniByteWatchDetailed(domain, i);
-							}
-							else
-							{
-								_watchList[i] = new MiniByteWatch(domain, i);
-							}
+							_watchList[i] = new MiniByteWatchDetailed(domain, i);
 						}
-
-						break;
-					case WatchSize.Word:
-						for (int i = 0; i < listSize; i++)
+						else
 						{
-							if (_settings.IsDetailed())
-							{
-								_watchList[i] = new MiniWordWatchDetailed(domain, i * stepSize, _settings.BigEndian);
-							}
-							else
-							{
-								_watchList[i] = new MiniWordWatch(domain, i * stepSize, _settings.BigEndian);
-							}
+							_watchList[i] = new MiniByteWatch(domain, i);
 						}
-
-						break;
-					case WatchSize.DWord:
-						for (int i = 0; i < listSize; i++)
+					}
+					break;
+				case WatchSize.Word:
+					for (int i = 0; i < listSize; i++)
+					{
+						if (_settings.IsDetailed())
 						{
-							if (_settings.IsDetailed())
-							{
-								_watchList[i] = new MiniDWordWatchDetailed(domain, i * stepSize, _settings.BigEndian);
-							}
-							else
-							{
-								_watchList[i] = new MiniDWordWatch(domain, i * stepSize, _settings.BigEndian);
-							}
+							_watchList[i] = new MiniWordWatchDetailed(domain, i * stepSize, _settings.BigEndian);
 						}
-
-						break;
-				}
+						else
+						{
+							_watchList[i] = new MiniWordWatch(domain, i * stepSize, _settings.BigEndian);
+						}
+					}
+					break;
+				case WatchSize.DWord:
+					for (int i = 0; i < listSize; i++)
+					{
+						if (_settings.IsDetailed())
+						{
+							_watchList[i] = new MiniDWordWatchDetailed(domain, i * stepSize, _settings.BigEndian);
+						}
+						else
+						{
+							_watchList[i] = new MiniDWordWatch(domain, i * stepSize, _settings.BigEndian);
+						}
+					}
+					break;
 			}
 		}
 
@@ -210,15 +204,11 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void Update()
 		{
-			if (_settings.IsDetailed())
+			if (!_settings.IsDetailed()) return;
+			using var @lock = _settings.Domain.EnterExit();
+			foreach (IMiniWatchDetails watch in _watchList)
 			{
-				using (_settings.Domain.EnterExit())
-				{
-					foreach (IMiniWatchDetails watch in _watchList)
-					{
-						watch.Update(_settings.PreviousType, _settings.Domain, _settings.BigEndian);
-					}
-				}
+				watch.Update(_settings.PreviousType, _settings.Domain, _settings.BigEndian);
 			}
 		}
 
@@ -244,12 +234,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void ClearChangeCounts()
 		{
-			if (_settings.IsDetailed())
+			if (!_settings.IsDetailed()) return;
+			foreach (var watch in _watchList.Cast<IMiniWatchDetails>())
 			{
-				foreach (var watch in _watchList.Cast<IMiniWatchDetails>())
-				{
-					watch.ClearChangeCount();
-				}
+				watch.ClearChangeCount();
 			}
 		}
 
@@ -313,15 +301,12 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					_watchList = _watchList.OrderBy(w => w.Previous, reverse).ToArray();
 					break;
 				case WatchList.ChangesCol:
-					if (_settings.IsDetailed())
-					{
-						_watchList = _watchList
-							.Cast<IMiniWatchDetails>()
-							.OrderBy(w => w.ChangeCount, reverse)
-							.Cast<IMiniWatch>()
-							.ToArray();
-					}
-
+					if (!_settings.IsDetailed()) break;
+					_watchList = _watchList
+						.Cast<IMiniWatchDetails>()
+						.OrderBy(w => w.ChangeCount, reverse)
+						.Cast<IMiniWatch>()
+						.ToArray();
 					break;
 				case WatchList.Diff:
 					_watchList = _watchList.OrderBy(w => GetValue(w.Address) - w.Previous, reverse).ToArray();
@@ -384,7 +369,6 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					return _settings.Type == WatchDisplayType.Float
 						? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) >= ReinterpretAsF32(w.Previous))
 						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) >= SignExtendAsNeeded(w.Previous));
-
 				case ComparisonOperator.LessThan:
 					return _settings.Type == WatchDisplayType.Float
 						? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) < ReinterpretAsF32(w.Previous))
@@ -394,220 +378,171 @@ namespace BizHawk.Client.Common.RamSearchEngine
 						? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) <= ReinterpretAsF32(w.Previous))
 						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) <= SignExtendAsNeeded(w.Previous));
 				case ComparisonOperator.DifferentBy:
-					if (DifferentBy.HasValue)
+					if (DifferentBy is not int differentBy) throw new InvalidOperationException();
+					if (_settings.Type == WatchDisplayType.Float)
 					{
-						var differentBy = DifferentBy.Value;
-						if (_settings.Type == WatchDisplayType.Float)
-						{
-							return watchList.Where(w => (ReinterpretAsF32(GetValue(w.Address)) + differentBy).HawkFloatEquality(ReinterpretAsF32(w.Previous))
-								|| (ReinterpretAsF32(GetValue(w.Address)) - differentBy).HawkFloatEquality(ReinterpretAsF32(w.Previous)));
-						}
-
-						return watchList.Where(w =>
-						{
-							long val = SignExtendAsNeeded(GetValue(w.Address));
-							long prev = SignExtendAsNeeded(w.Previous);
-							return val + differentBy == prev
-								|| val - differentBy == prev;
-						});
+						return watchList.Where(w => (ReinterpretAsF32(GetValue(w.Address)) + differentBy).HawkFloatEquality(ReinterpretAsF32(w.Previous))
+							|| (ReinterpretAsF32(GetValue(w.Address)) - differentBy).HawkFloatEquality(ReinterpretAsF32(w.Previous)));
 					}
-					else
+					return watchList.Where(w =>
 					{
-						throw new InvalidOperationException();
-					}
+						long val = SignExtendAsNeeded(GetValue(w.Address));
+						long prev = SignExtendAsNeeded(w.Previous);
+						return val + differentBy == prev
+							|| val - differentBy == prev;
+					});
 			}
 		}
 
 		private IEnumerable<IMiniWatch> CompareSpecificValue(IEnumerable<IMiniWatch> watchList)
 		{
-			if (CompareValue.HasValue)
+			if (CompareValue is not long compareValue) throw new InvalidOperationException();
+			switch (Operator)
 			{
-				var compareValue = CompareValue.Value;
-				switch (Operator)
-				{
-					default:
-					case ComparisonOperator.Equal:
-						return _settings.Type == WatchDisplayType.Float
-							? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)).HawkFloatEquality(ReinterpretAsF32(compareValue)))
-							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) == SignExtendAsNeeded(compareValue));
-					case ComparisonOperator.NotEqual:
-						return _settings.Type == WatchDisplayType.Float
-							? watchList.Where(w => !ReinterpretAsF32(GetValue(w.Address)).HawkFloatEquality(ReinterpretAsF32(compareValue)))
-							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) != SignExtendAsNeeded(compareValue));
-					case ComparisonOperator.GreaterThan:
-						return _settings.Type == WatchDisplayType.Float
-							? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) > ReinterpretAsF32(compareValue))
-							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) > SignExtendAsNeeded(compareValue));
-					case ComparisonOperator.GreaterThanEqual:
-						return _settings.Type == WatchDisplayType.Float
-							? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) >= ReinterpretAsF32(compareValue))
-							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) >= SignExtendAsNeeded(compareValue));
-					case ComparisonOperator.LessThan:
-						return _settings.Type == WatchDisplayType.Float
-							? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) < ReinterpretAsF32(compareValue))
-							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) < SignExtendAsNeeded(compareValue));
-
-					case ComparisonOperator.LessThanEqual:
-						return _settings.Type == WatchDisplayType.Float
-							? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) <= ReinterpretAsF32(compareValue))
-							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) <= SignExtendAsNeeded(compareValue));
-
-					case ComparisonOperator.DifferentBy:
-						if (DifferentBy.HasValue)
-						{
-							var differentBy = DifferentBy.Value;
-							if (_settings.Type == WatchDisplayType.Float)
-							{
-								return watchList.Where(w => (ReinterpretAsF32(GetValue(w.Address)) + differentBy).HawkFloatEquality(compareValue)
-									|| (ReinterpretAsF32(GetValue(w.Address)) - differentBy).HawkFloatEquality(compareValue));
-							}
-
-							return watchList.Where(w
-								=> SignExtendAsNeeded(GetValue(w.Address)) + differentBy == compareValue
-								|| SignExtendAsNeeded(GetValue(w.Address)) - differentBy == compareValue);
-						}
-
-						throw new InvalidOperationException();
-				}
+				default:
+				case ComparisonOperator.Equal:
+					return _settings.Type == WatchDisplayType.Float
+						? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)).HawkFloatEquality(ReinterpretAsF32(compareValue)))
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) == SignExtendAsNeeded(compareValue));
+				case ComparisonOperator.NotEqual:
+					return _settings.Type == WatchDisplayType.Float
+						? watchList.Where(w => !ReinterpretAsF32(GetValue(w.Address)).HawkFloatEquality(ReinterpretAsF32(compareValue)))
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) != SignExtendAsNeeded(compareValue));
+				case ComparisonOperator.GreaterThan:
+					return _settings.Type == WatchDisplayType.Float
+						? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) > ReinterpretAsF32(compareValue))
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) > SignExtendAsNeeded(compareValue));
+				case ComparisonOperator.GreaterThanEqual:
+					return _settings.Type == WatchDisplayType.Float
+						? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) >= ReinterpretAsF32(compareValue))
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) >= SignExtendAsNeeded(compareValue));
+				case ComparisonOperator.LessThan:
+					return _settings.Type == WatchDisplayType.Float
+						? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) < ReinterpretAsF32(compareValue))
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) < SignExtendAsNeeded(compareValue));
+				case ComparisonOperator.LessThanEqual:
+					return _settings.Type == WatchDisplayType.Float
+						? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) <= ReinterpretAsF32(compareValue))
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) <= SignExtendAsNeeded(compareValue));
+				case ComparisonOperator.DifferentBy:
+					if (DifferentBy is not int differentBy) throw new InvalidOperationException();
+					if (_settings.Type == WatchDisplayType.Float)
+					{
+						return watchList.Where(w => (ReinterpretAsF32(GetValue(w.Address)) + differentBy).HawkFloatEquality(compareValue)
+							|| (ReinterpretAsF32(GetValue(w.Address)) - differentBy).HawkFloatEquality(compareValue));
+					}
+					return watchList.Where(w
+						=> SignExtendAsNeeded(GetValue(w.Address)) + differentBy == compareValue
+						|| SignExtendAsNeeded(GetValue(w.Address)) - differentBy == compareValue);
 			}
-
-			throw new InvalidOperationException();
 		}
 
 		private IEnumerable<IMiniWatch> CompareSpecificAddress(IEnumerable<IMiniWatch> watchList)
 		{
-			if (CompareValue.HasValue)
+			if (CompareValue is not long compareValue) throw new InvalidOperationException();
+			switch (Operator)
 			{
-				var compareValue = CompareValue.Value;
-				switch (Operator)
-				{
-					default:
-					case ComparisonOperator.Equal:
-						return watchList.Where(w => w.Address == compareValue);
-					case ComparisonOperator.NotEqual:
-						return watchList.Where(w => w.Address != compareValue);
-					case ComparisonOperator.GreaterThan:
-						return watchList.Where(w => w.Address > compareValue);
-					case ComparisonOperator.GreaterThanEqual:
-						return watchList.Where(w => w.Address >= compareValue);
-					case ComparisonOperator.LessThan:
-						return watchList.Where(w => w.Address < compareValue);
-					case ComparisonOperator.LessThanEqual:
-						return watchList.Where(w => w.Address <= compareValue);
-					case ComparisonOperator.DifferentBy:
-						if (DifferentBy.HasValue)
-						{
-							return watchList.Where(w => w.Address + DifferentBy.Value == compareValue
-								|| w.Address - DifferentBy.Value == compareValue);
-						}
-
-						throw new InvalidOperationException();
-				}
+				default:
+				case ComparisonOperator.Equal:
+					return watchList.Where(w => w.Address == compareValue);
+				case ComparisonOperator.NotEqual:
+					return watchList.Where(w => w.Address != compareValue);
+				case ComparisonOperator.GreaterThan:
+					return watchList.Where(w => w.Address > compareValue);
+				case ComparisonOperator.GreaterThanEqual:
+					return watchList.Where(w => w.Address >= compareValue);
+				case ComparisonOperator.LessThan:
+					return watchList.Where(w => w.Address < compareValue);
+				case ComparisonOperator.LessThanEqual:
+					return watchList.Where(w => w.Address <= compareValue);
+				case ComparisonOperator.DifferentBy:
+					if (DifferentBy is not int differentBy) throw new InvalidOperationException();
+					return watchList.Where(w => w.Address + differentBy == compareValue
+						|| w.Address - differentBy == compareValue);
 			}
-
-			throw new InvalidOperationException();
 		}
 
 		private IEnumerable<IMiniWatch> CompareChanges(IEnumerable<IMiniWatch> watchList)
 		{
-			if (_settings.IsDetailed() && CompareValue.HasValue)
+			if (!_settings.IsDetailed()) throw new InvalidCastException(); //TODO matches previous behaviour; was this intended to skip processing? --yoshi
+			if (CompareValue is not long compareValue) throw new InvalidCastException(); //TODO typo for IOE?
+			switch (Operator)
 			{
-				var compareValue = CompareValue.Value;
-				switch (Operator)
-				{
-					default:
-					case ComparisonOperator.Equal:
-						return watchList
-							.Cast<IMiniWatchDetails>()
-							.Where(w => w.ChangeCount == compareValue);
-					case ComparisonOperator.NotEqual:
-						return watchList
-							.Cast<IMiniWatchDetails>()
-							.Where(w => w.ChangeCount != compareValue);
-					case ComparisonOperator.GreaterThan:
-						return watchList
-							.Cast<IMiniWatchDetails>()
-							.Where(w => w.ChangeCount > compareValue);
-					case ComparisonOperator.GreaterThanEqual:
-						return watchList
-							.Cast<IMiniWatchDetails>()
-							.Where(w => w.ChangeCount >= compareValue);
-					case ComparisonOperator.LessThan:
-						return watchList
-							.Cast<IMiniWatchDetails>()
-							.Where(w => w.ChangeCount < compareValue);
-					case ComparisonOperator.LessThanEqual:
-						return watchList
-							.Cast<IMiniWatchDetails>()
-							.Where(w => w.ChangeCount <= compareValue);
-					case ComparisonOperator.DifferentBy:
-						if (DifferentBy.HasValue)
-						{
-							return watchList
-								.Cast<IMiniWatchDetails>()
-								.Where(w => w.ChangeCount + DifferentBy.Value == compareValue
-									|| w.ChangeCount - DifferentBy.Value == compareValue);
-						}
-
-						throw new InvalidOperationException();
-				}
+				default:
+				case ComparisonOperator.Equal:
+					return watchList
+						.Cast<IMiniWatchDetails>()
+						.Where(w => w.ChangeCount == compareValue);
+				case ComparisonOperator.NotEqual:
+					return watchList
+						.Cast<IMiniWatchDetails>()
+						.Where(w => w.ChangeCount != compareValue);
+				case ComparisonOperator.GreaterThan:
+					return watchList
+						.Cast<IMiniWatchDetails>()
+						.Where(w => w.ChangeCount > compareValue);
+				case ComparisonOperator.GreaterThanEqual:
+					return watchList
+						.Cast<IMiniWatchDetails>()
+						.Where(w => w.ChangeCount >= compareValue);
+				case ComparisonOperator.LessThan:
+					return watchList
+						.Cast<IMiniWatchDetails>()
+						.Where(w => w.ChangeCount < compareValue);
+				case ComparisonOperator.LessThanEqual:
+					return watchList
+						.Cast<IMiniWatchDetails>()
+						.Where(w => w.ChangeCount <= compareValue);
+				case ComparisonOperator.DifferentBy:
+					if (DifferentBy is not int differentBy) throw new InvalidOperationException();
+					return watchList
+						.Cast<IMiniWatchDetails>()
+						.Where(w => w.ChangeCount + differentBy == compareValue
+							|| w.ChangeCount - differentBy == compareValue);
 			}
-
-			throw new InvalidCastException();
 		}
 
 		private IEnumerable<IMiniWatch> CompareDifference(IEnumerable<IMiniWatch> watchList)
 		{
-			if (CompareValue.HasValue)
+			if (CompareValue is not long compareValue) throw new InvalidCastException(); //TODO typo for IOE?
+			switch (Operator)
 			{
-				var compareValue = CompareValue.Value;
-				switch (Operator)
-				{
-					default:
-					case ComparisonOperator.Equal:
-						return _settings.Type == WatchDisplayType.Float
-							? watchList.Where(w => (ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous)).HawkFloatEquality(compareValue))
-							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) == compareValue);
-					case ComparisonOperator.NotEqual:
-						return _settings.Type == WatchDisplayType.Float
-							? watchList.Where(w => !(ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous)).HawkFloatEquality(compareValue))
-							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) != compareValue);
-					case ComparisonOperator.GreaterThan:
-						return _settings.Type == WatchDisplayType.Float
-							? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) > compareValue)
-							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) > compareValue);
-					case ComparisonOperator.GreaterThanEqual:
-						return _settings.Type == WatchDisplayType.Float
-							? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) >= compareValue)
-							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) >= compareValue);
-					case ComparisonOperator.LessThan:
-						return _settings.Type == WatchDisplayType.Float
-							? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) < compareValue)
-							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) < compareValue);
-					case ComparisonOperator.LessThanEqual:
-						return _settings.Type == WatchDisplayType.Float
-							? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) <= compareValue)
-							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) <= compareValue);
-					case ComparisonOperator.DifferentBy:
-						if (DifferentBy.HasValue)
-						{
-							var differentBy = DifferentBy.Value;
-							if (_settings.Type == WatchDisplayType.Float)
-							{
-								return watchList.Where(w => (ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) + differentBy).HawkFloatEquality(compareValue)
-									|| (ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) - differentBy).HawkFloatEquality(w.Previous));
-							}
-
-							return watchList.Where(w
-								=> SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) + differentBy == compareValue
-								|| SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) - differentBy == compareValue);
-						}
-
-						throw new InvalidOperationException();
-				}
+				default:
+				case ComparisonOperator.Equal:
+					return _settings.Type == WatchDisplayType.Float
+						? watchList.Where(w => (ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous)).HawkFloatEquality(compareValue))
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) == compareValue);
+				case ComparisonOperator.NotEqual:
+					return _settings.Type == WatchDisplayType.Float
+						? watchList.Where(w => !(ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous)).HawkFloatEquality(compareValue))
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) != compareValue);
+				case ComparisonOperator.GreaterThan:
+					return _settings.Type == WatchDisplayType.Float
+						? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) > compareValue)
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) > compareValue);
+				case ComparisonOperator.GreaterThanEqual:
+					return _settings.Type == WatchDisplayType.Float
+						? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) >= compareValue)
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) >= compareValue);
+				case ComparisonOperator.LessThan:
+					return _settings.Type == WatchDisplayType.Float
+						? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) < compareValue)
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) < compareValue);
+				case ComparisonOperator.LessThanEqual:
+					return _settings.Type == WatchDisplayType.Float
+						? watchList.Where(w => ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) <= compareValue)
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) <= compareValue);
+				case ComparisonOperator.DifferentBy:
+					if (DifferentBy is not int differentBy) throw new InvalidOperationException();
+					if (_settings.Type == WatchDisplayType.Float)
+					{
+						return watchList.Where(w => (ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) + differentBy).HawkFloatEquality(compareValue)
+							|| (ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) - differentBy).HawkFloatEquality(w.Previous));
+					}
+					return watchList.Where(w
+						=> SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) + differentBy == compareValue
+						|| SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) - differentBy == compareValue);
 			}
-
-			throw new InvalidCastException();
 		}
 
 		private long SignExtendAsNeeded(long val)
