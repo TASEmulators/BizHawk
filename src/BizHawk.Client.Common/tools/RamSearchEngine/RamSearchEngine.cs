@@ -445,8 +445,12 @@ namespace BizHawk.Client.Common.RamSearchEngine
 						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) <= SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.DifferentBy:
 						if (DifferentBy is not int differentBy) throw new InvalidOperationException();
-						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) + differentBy == compareValue
-							|| SignExtendAsNeeded(GetValue(w.Address)) - differentBy == compareValue);
+						return watchList.Where(w =>
+						{
+							var val = SignExtendAsNeeded(GetValue(w.Address));
+							var pivot = SignExtendAsNeeded(compareValue);
+							return val + differentBy == pivot || val - differentBy == pivot;
+						});
 				}
 			}
 			var compareValueF = ReinterpretAsF32(compareValue);
