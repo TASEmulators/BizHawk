@@ -5,7 +5,7 @@
 		<PackageVersion Include="Google.FlatBuffers" Version="23.5.26" /> <!-- last version with .NET Standard 2.0 support -->
 		<PackageVersion Include="ImGui.NET" Version="1.90.6.1" />
 		<PackageVersion Include="JunitXml.TestLogger" Version="3.0.124" />
-		<PackageVersion Include="Magick.NET-Q8-AnyCPU" Version="13.6.0" />
+		<PackageVersion Include="Magick.NET-Q8-AnyCPU" Version="13.9.0" />
 		<PackageVersion Include="Menees.Analyzers" Version="3.0.10" />
 		<PackageVersion Include="Meziantou.Analyzer" Version="2.0.33" />
 		<PackageVersion Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
