@@ -392,6 +392,7 @@ namespace BizHawk.Emulation.Common
 			var psone_r5e = File("DBC7339E5D85827C095764FC077B41F78FD2ECAE", 524288, "PSX_4.5(E).bin", "PSX BIOS (Version 4.5 05/25/00 E)", "Used on PSone SCPH-102 [g]. This is for Rev C PSone hardware [w].");
 			var ps2_50j = File("D7D6BE084F51354BC951D8FA2D8D912AA70ABC5E", 4194304, "PSX_5.0(J).bin", "PSX BIOS (Version 5.0 10/27/00 J)", "Found on a PS2 [p]. May be known as SCPH18000.BIN.");
 			var ps_dtl_h2000 = File("1A8D6F9453111B1D317BB7DAE300495FBF54600C", 524288, "PSX_DTLH2000.bin", "DTL-H2000 Devkit [t]");
+			var psxOnPSP = File("96880D1CA92A016FF054BE5159BB06FE03CB4E14", 524288, "PSXONPSP660.BIN", "PSX on PSP", "From PSP. Allegedly based on PSone v4.5 BIOS.");
 			var ps_ps3 = File("C40146361EB8CF670B19FDC9759190257803CAB7", 524288, "PSX_rom.bin", "PSX BIOS (Version 5.0 06/23/03 A)", "Found on a PS3. [t]");
 			Firmware("PSX", "U", "BIOS (U)");
 			Firmware("PSX", "J", "BIOS (J)");
@@ -428,6 +429,9 @@ namespace BizHawk.Emulation.Common
 			Option("PSX", "J", in ps2_50j, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "J", in ps_22jv, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "U", in ps_41aw, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", in psxOnPSP, FirmwareOptionStatus.Acceptable);
+			Option("PSX", "E", in psxOnPSP, FirmwareOptionStatus.Unacceptable); // doesn't work w/ PAL titles
+			Option("PSX", "J", in psxOnPSP, FirmwareOptionStatus.Acceptable);
 			Option("PSX", "U", in ps_ps3, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "U", in ps_dtl_h2000, FirmwareOptionStatus.Unacceptable); //not really sure what to do with this one, let's just call it region free
 			Option("PSX", "E", in ps_dtl_h2000, FirmwareOptionStatus.Unacceptable);
