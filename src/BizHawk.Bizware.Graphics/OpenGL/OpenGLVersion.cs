@@ -22,7 +22,7 @@ namespace BizHawk.Bizware.Graphics
 			{
 				try
 				{
-					using (new SDL2OpenGLContext(requestedMajor, requestedMinor, true, false))
+					using (new SDL2OpenGLContext(requestedMajor, requestedMinor, true))
 					{
 						using var gl = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);
 						var versionString = gl.GetStringS(StringName.Version);

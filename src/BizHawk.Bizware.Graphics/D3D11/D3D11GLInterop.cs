@@ -48,7 +48,7 @@ namespace BizHawk.Bizware.Graphics
 					// All rendering contexts of a given pixel format share the same extension function addresses."
 
 					var (majorVersion, minorVersion) = OpenGLVersion.SupportsVersion(4, 3) ? (4, 3) : (2, 1);
-					using var glContext = new SDL2OpenGLContext(majorVersion, minorVersion, true, false);
+					using var glContext = new SDL2OpenGLContext(majorVersion, minorVersion, true);
 
 					GL = GL.GetApi(GetGLProcAddress);
 					if (GL.CurrentVTable.Load("glCopyImageSubData") == IntPtr.Zero
