@@ -512,7 +512,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public unsafe void DrawPolygon(Color color, Point[] points)
 		{
-			var vectorPoints = Array.ConvertAll(points, static p => p.ToVector());
+			var vectorPoints = Array.ConvertAll(points, static p => new Vector2(p.X + 0.5f, p.Y + 0.5f));
 			fixed (Vector2* p = vectorPoints)
 			{
 				_imGuiDrawList.AddPolyline(
@@ -526,7 +526,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public unsafe void FillPolygon(Color color, Point[] points)
 		{
-			var vectorPoints = Array.ConvertAll(points, static p => p.ToVector());
+			var vectorPoints = Array.ConvertAll(points, static p => new Vector2(p.X + 0.5f, p.Y + 0.5f));
 			fixed (Vector2* p = vectorPoints)
 			{
 				_imGuiDrawList.AddConcavePolyFilled(
