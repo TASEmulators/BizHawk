@@ -396,9 +396,9 @@ namespace BizHawk.Emulation.Common
 			Firmware("PSX", "U", "BIOS (U)");
 			Firmware("PSX", "J", "BIOS (J)");
 			Firmware("PSX", "E", "BIOS (E)");
-			Option("PSX", "U", in ps_30a);
-			Option("PSX", "J", in ps_30j);
-			Option("PSX", "E", in ps_30e);
+			Option("PSX", "U", in ps_30a, FirmwareOptionStatus.Ideal);
+			Option("PSX", "J", in ps_30j, FirmwareOptionStatus.Ideal);
+			Option("PSX", "E", in ps_30e, FirmwareOptionStatus.Ideal);
 			// in general, alternates aren't allowed.. their quality isn't known.
 			// we have this comment from fobby.net: "SCPH7502 works fine for European games" (TBD)
 			// however, we're sticking with the 3.0 series.
