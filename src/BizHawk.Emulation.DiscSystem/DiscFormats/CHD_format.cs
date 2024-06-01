@@ -878,7 +878,7 @@ namespace BizHawk.Emulation.DiscSystem
 				throw new NotSupportedException("CHD does not support multisession discs");
 			}
 
-			using var fs = File.OpenWrite(path);
+			using var fs = File.Create(path);
 			using var bw = new BinaryWriter(fs);
 
 			// write header
