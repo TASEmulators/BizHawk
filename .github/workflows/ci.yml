@@ -45,3 +45,34 @@ jobs:
       - name: Test
         run: dotnet test BizHawk.sln -c Release -p:ContinuousIntegrationBuild=true
         shell: pwsh
+
+  package:
+    name: Build and package output
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8"
+
+      - name: Build solution
+        run: Dist/BuildRelease.sh
+
+      - name: Package (Linux)
+        run: Dist/Package.sh
+      - name: Upload Linux dev build
+        uses: actions/upload-artifact@v4
+        with:
+          name: BizHawk-dev-${{ github.sha }}-linux
+          path: packaged_output
+
+      - name: Package (Windows)
+        run: Dist/Package.sh windows-x64
+      - name: Upload Windows dev build
+        uses: actions/upload-artifact@v4
+        with:
+          name: BizHawk-dev-${{ github.sha }}-windows
+          path: packaged_output
