@@ -26,13 +26,14 @@ namespace BizHawk.Bizware.Graphics
 		public ID3D11RasterizerState RasterizerState;
 
 		public FeatureLevel DeviceFeatureLevel;
+		public int MaxTextureDimension;
 		public bool PresentAllowTearing;
 
 		public D3D11RenderTarget CurRenderTarget;
 		public D3D11Pipeline CurPipeline;
 
-		public readonly HashSet<D3D11Texture2D> Textures = new();
-		public readonly HashSet<D3D11Pipeline> Pipelines = new();
+		public readonly HashSet<D3D11Texture2D> Textures = [ ];
+		public readonly HashSet<D3D11Pipeline> Pipelines = [ ];
 
 		public void CreateResources()
 		{
@@ -98,6 +99,14 @@ namespace BizHawk.Bizware.Graphics
 				LinearSamplerState = Device.CreateSamplerState(SamplerDescription.LinearClamp);
 
 				DeviceFeatureLevel = Device.FeatureLevel;
+
+				MaxTextureDimension = DeviceFeatureLevel switch
+				{
+					FeatureLevel.Level_9_1 or FeatureLevel.Level_9_2 => 2048,
+					FeatureLevel.Level_9_3 => 4096,
+					FeatureLevel.Level_10_0 or FeatureLevel.Level_10_1 => 8192,
+					_ => ID3D11Resource.MaximumTexture2DSize,
+				};
 
 				var rd = new RasterizerDescription
 				{

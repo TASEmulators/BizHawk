@@ -452,9 +452,22 @@ namespace BizHawk.Client.Common.Filters
 
 		public override void SetInputFormat(string channel, SurfaceState state)
 		{
-			var outputSize = state.SurfaceFormat.Size;
-			outputSize.Width *= Scale;
-			outputSize.Height *= Scale;
+			var inputSize = state.SurfaceFormat.Size;
+			var outputSize = new Size(inputSize.Width * Scale, inputSize.Height * Scale);
+			var maxTexDimension = FilterProgram.GL.MaxTextureDimension;
+			while (outputSize.Width > maxTexDimension || outputSize.Height > maxTexDimension)
+			{
+				outputSize.Width -= inputSize.Width;
+				outputSize.Height -= inputSize.Height;
+				Scale--;
+			}
+
+			// this hopefully never happens
+			if (outputSize.Width == 0 || outputSize.Height == 0)
+			{
+				throw new InvalidOperationException("Prescale input was too large for a texture");
+			}
+
 			var ss = new SurfaceState(new(outputSize), SurfaceDisposition.RenderTarget);
 			DeclareOutput(ss, channel);
 		}

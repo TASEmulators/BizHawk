@@ -35,6 +35,22 @@ namespace BizHawk.Bizware.Graphics
 		public void Dispose()
 			=> GL.Dispose();
 
+		/// <summary>
+		/// Should be called once the GL context is created
+		/// </summary>
+		public void InitGLState()
+		{
+			GL.GetInteger(GetPName.MaxTextureSize, out var maxTextureDimension);
+			if (maxTextureDimension == 0)
+			{
+				throw new($"Failed to get max texture size, GL error: {GL.GetError()}");
+			}
+
+			MaxTextureDimension = maxTextureDimension;
+		}
+
+		public int MaxTextureDimension { get; private set; }
+
 		public void ClearColor(Color color)
 		{
 			GL.ClearColor(color);

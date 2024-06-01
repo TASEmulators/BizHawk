@@ -304,6 +304,10 @@ namespace BizHawk.Client.Common
 				if (size.Width < 1) size.Width = 1;
 				if (size.Height < 1) size.Height = 1;
 
+				// if either of the dimensions exceed the maximum size of a texture, we need to constrain them
+				size.Width = Math.Min(size.Width, _gl.MaxTextureDimension);
+				size.Height = Math.Min(size.Height, _gl.MaxTextureDimension);
+
 				var fPadding = new FinalPresentation(size);
 				chain.AddFilter(fPadding, "padding");
 				fPadding.Config_PadOnly = true;
@@ -771,9 +775,13 @@ namespace BizHawk.Client.Common
 			vw += padding.Horizontal;
 			vh += padding.Vertical;
 
-			//in case the user requested so much padding that the dimensions are now negative, just turn it to something small.
+			// in case the user requested so much padding that the dimensions are now negative, just turn it to something small.
 			if (vw < 1) vw = 1;
 			if (vh < 1) vh = 1;
+
+			// if either of the dimensions exceed the maximum size of a texture, we need to constrain them
+			vw = Math.Min(vw, _gl.MaxTextureDimension);
+			vh = Math.Min(vh, _gl.MaxTextureDimension);
 
 			BitmapBuffer bb = null;
 			ITexture2D videoTexture = null;

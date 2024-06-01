@@ -182,6 +182,8 @@ namespace BizHawk.Bizware.Graphics
 			_resources.Dispose();
 		}
 
+		public int MaxTextureDimension => _resources.MaxTextureDimension;
+
 		public void ClearColor(Color color)
 			=> Context.ClearRenderTargetView(CurRenderTarget?.RTV ?? _controlSwapChain.RTV, new(color.R, color.B, color.G, color.A));
 

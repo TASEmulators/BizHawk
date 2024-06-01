@@ -254,8 +254,9 @@ namespace BizHawk.Client.EmuHawk
 						// need to have a context active for checking renderer, will be disposed afterwards
 						using (new SDL2OpenGLContext(3, 2, true))
 						{
-							using var testIgl = new IGL_OpenGL();
-							_ = CheckRenderer(testIgl);
+							using var testOpenGL = new IGL_OpenGL();
+							testOpenGL.InitGLState();
+							_ = CheckRenderer(testOpenGL);
 						}
 
 						// don't return the same IGL, we don't want the test context to be part of this IGL

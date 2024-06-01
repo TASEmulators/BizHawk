@@ -19,6 +19,9 @@ namespace BizHawk.Bizware.Graphics
 		{
 		}
 
+		// maximum bitmap size doesn't seem to be well defined... we'll just use D3D11's maximum size
+		public int MaxTextureDimension => 16384;
+
 		internal SDGraphics GetCurrentGraphics()
 			=> CurRenderTarget?.TextureGraphics ?? _controlRenderTarget.BufferedGraphics.Graphics;
 

@@ -11,7 +11,7 @@ namespace BizHawk.Bizware.Graphics.Controls
 		{
 			GraphicsControl ret = gl switch
 			{
-				IGL_OpenGL => new OpenGLControl(),
+				IGL_OpenGL openGL => new OpenGLControl(openGL.InitGLState),
 				IGL_D3D11 d3d11 => new D3D11Control(d3d11.CreateSwapChain),
 				IGL_GDIPlus gdiPlus => new GDIPlusControl(gdiPlus.CreateControlRenderTarget),
 				_ => throw new InvalidOperationException()

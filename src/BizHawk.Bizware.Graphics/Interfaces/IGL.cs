@@ -16,6 +16,12 @@ namespace BizHawk.Bizware.Graphics
 		EDispMethod DispMethodEnum { get; }
 
 		/// <summary>
+		/// Returns the maximum size any dimension of a texture may have
+		/// This should be set on init, and therefore shouldn't need a graphics context active...
+		/// </summary>
+		int MaxTextureDimension { get; }
+
+		/// <summary>
 		/// Creates a texture with the specified dimensions
 		/// The texture will use a clamping address mode and nearest neighbor filtering by default
 		/// </summary>
