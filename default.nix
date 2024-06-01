@@ -1,7 +1,7 @@
 { system ? builtins.currentSystem
 , pkgs ? import (fetchTarball {
-	url = "https://github.com/NixOS/nixpkgs/archive/23.11.tar.gz";
-	sha256 = "1ndiv385w1qyb3b18vw13991fzb9wg4cl21wglk89grsfsnra41k";
+	url = "https://github.com/NixOS/nixpkgs/archive/24.05.tar.gz";
+	sha256 = "1lr1h35prqkd1mkmzriwlpvxcb34kmhc9dnr48gkm8hh089hifmx";
 }) { inherit system; }
 , lib ? pkgs.lib
 , stdenv ? pkgs.stdenvNoCC
