@@ -132,7 +132,7 @@
 			'' else ""}Dist/BuildTest${finalAttrs.buildType}.sh ${finalAttrs.extraDotnetBuildFlags}
 
 			# can't build w/ extra Analyzers, it fails to restore :(
-#			Dist/Build${finalAttrs.buildType}.sh -p:MachineRunAnalyzersDuringBuild=true ${finalAttrs.extraDotnetBuildFlags}
+			Dist/Build${finalAttrs.buildType}.sh -p:MachineRunAnalyzersDuringBuild=true ${finalAttrs.extraDotnetBuildFlags}
 
 			runHook postCheck
 		'';
