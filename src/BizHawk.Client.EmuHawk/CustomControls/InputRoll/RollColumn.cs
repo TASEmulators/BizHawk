@@ -1,4 +1,6 @@
-﻿﻿#nullable enable
+﻿#nullable enable
+
+using System.Text.Json.Serialization;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -28,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public bool Rotatable { get; set; }
 
-//		[JsonConstructor]
+		[JsonConstructor]
 		private RollColumn()
 		{
 			Name = default!;
