@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 
 		public void DoFrameAdvance()
 		{
-			_mainForm.FrameAdvance();
+			_mainForm.FrameAdvance(discardApiHawkSurfaces: false); // we're rendering, so we don't want to discard
 			_mainForm.StepRunLoop_Throttle();
 			_mainForm.Render();
 		}

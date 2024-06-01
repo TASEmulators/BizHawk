@@ -29,6 +29,12 @@ namespace BizHawk.Bizware.Graphics
 		/// </summary>
 		void Clear();
 
+		/// <summary>
+		/// Discards any pending draw calls.
+		/// Similar to Clear(), except this won't insert a command to clear the target texture
+		/// </summary>
+		void Discard();
+
 		CompositingMode CompositingMode { set; }
 
 		void DrawBezier(Color color, Point pt1, Point pt2, Point pt3, Point pt4);

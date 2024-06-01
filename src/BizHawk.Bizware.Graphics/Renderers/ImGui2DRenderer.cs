@@ -302,6 +302,9 @@ namespace BizHawk.Bizware.Graphics
 			_hasClearPending = true;
 		}
 
+		public void Discard()
+			=> ResetDrawList();
+
 		protected bool EnableBlending { get; private set; }
 		private bool _pendingBlendEnable;
 

@@ -933,5 +933,13 @@ namespace BizHawk.Client.Common
 				renderer.Clear();
 			}
 		}
+
+		public void DiscardApiHawkSurfaces()
+		{
+			foreach (var renderer in _apiHawkIDTo2DRenderer.Values)
+			{
+				renderer.Discard();
+			}
+		}
 	}
 }

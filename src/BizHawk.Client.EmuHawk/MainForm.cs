@@ -2477,6 +2477,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Config.DispSpeedupFeatures == 0)
 			{
+				DisplayManager.DiscardApiHawkSurfaces();
 				return;
 			}
 
@@ -3069,16 +3070,21 @@ namespace BizHawk.Client.EmuHawk
 			_throttle.Step(Config, Sound, allowSleep: true, forceFrameSkip: -1);
 		}
 
-		public void FrameAdvance()
+		public void FrameAdvance(bool discardApiHawkSurfaces)
 		{
 			PressFrameAdvance = true;
 			StepRunLoop_Core(true);
+			if (discardApiHawkSurfaces)
+			{
+				DisplayManager.DiscardApiHawkSurfaces();
+			}
 		}
 
 		public void SeekFrameAdvance()
 		{
 			PressFrameAdvance = true;
 			StepRunLoop_Core(true);
+			DisplayManager.DiscardApiHawkSurfaces();
 			PressFrameAdvance = false;
 		}
 
