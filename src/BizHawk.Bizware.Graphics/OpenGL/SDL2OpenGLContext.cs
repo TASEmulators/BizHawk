@@ -30,17 +30,6 @@ namespace BizHawk.Bizware.Graphics
 				throw new($"Could not load default OpenGL library! SDL Error: {SDL_GetError()}");
 			}
 
-			// set some sensible defaults
-			SDL_GL_ResetAttributes();
-			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_RED_SIZE, 8) is not 0
-				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_GREEN_SIZE, 8) is not 0
-				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BLUE_SIZE, 8) is not 0
-				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_ALPHA_SIZE, 0) is not 0
-				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DOUBLEBUFFER, 1) is not 0)
-			{
-				throw new($"Could not set GL attributes! SDL Error: {SDL_GetError()}");
-			}
-
 			// we will be turning a foreign window into an SDL window
 			// we need this so it knows that it is capable of using OpenGL functions
 			SDL_SetHint(SDL_HINT_VIDEO_FOREIGN_WINDOW_OPENGL, "1");
@@ -58,8 +47,19 @@ namespace BizHawk.Bizware.Graphics
 		private IntPtr _sdlWindow;
 		private IntPtr _glContext;
 
-		private void CreateContext(int majorVersion, int minorVersion, bool coreProfile, bool forwardCompatible)
+		private void CreateContext(int majorVersion, int minorVersion, bool coreProfile)
 		{
+			// set some sensible defaults
+			SDL_GL_ResetAttributes();
+			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_RED_SIZE, 8) is not 0
+				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_GREEN_SIZE, 8) is not 0
+				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BLUE_SIZE, 8) is not 0
+				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_ALPHA_SIZE, 0) is not 0
+				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DOUBLEBUFFER, 1) is not 0)
+			{
+				throw new($"Could not set GL attributes! SDL Error: {SDL_GetError()}");
+			}
+
 			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, majorVersion) != 0)
 			{
 				throw new($"Could not set GL Major Version! SDL Error: {SDL_GetError()}");
@@ -68,13 +68,6 @@ namespace BizHawk.Bizware.Graphics
 			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, minorVersion) != 0)
 			{
 				throw new($"Could not set GL Minor Version! SDL Error: {SDL_GetError()}");
-			}
-
-			// TODO: Debug flag / debug callback with DEBUG build
-			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, forwardCompatible 
-					? (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG : 0) != 0)
-			{
-				throw new($"Could not set GL Context Flags! SDL Error: {SDL_GetError()}");
 			}
 
 #if DEBUG_OPENGL
@@ -111,7 +104,7 @@ namespace BizHawk.Bizware.Graphics
 #endif
 		}
 
-		public SDL2OpenGLContext(IntPtr nativeWindowhandle, int majorVersion, int minorVersion, bool coreProfile, bool forwardCompatible)
+		public SDL2OpenGLContext(IntPtr nativeWindowhandle, int majorVersion, int minorVersion, bool coreProfile)
 		{
 			_sdlWindow = SDL_CreateWindowFrom(nativeWindowhandle);
 			if (_sdlWindow == IntPtr.Zero)
@@ -125,10 +118,10 @@ namespace BizHawk.Bizware.Graphics
 				throw new($"Could not set share context attribute! SDL Error: {SDL_GetError()}");
 			}
 
-			CreateContext(majorVersion, minorVersion, coreProfile, forwardCompatible);
+			CreateContext(majorVersion, minorVersion, coreProfile);
 		}
 
-		public SDL2OpenGLContext(int majorVersion, int minorVersion, bool coreProfile, bool forwardCompatible)
+		public SDL2OpenGLContext(int majorVersion, int minorVersion, bool coreProfile)
 		{
 			_sdlWindow = SDL_CreateWindow(null, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1, 1,
 				SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL_WindowFlags.SDL_WINDOW_HIDDEN);
@@ -144,7 +137,7 @@ namespace BizHawk.Bizware.Graphics
 				throw new($"Could not set share context attribute! SDL Error: {SDL_GetError()}");
 			}
 
-			CreateContext(majorVersion, minorVersion, coreProfile, forwardCompatible);
+			CreateContext(majorVersion, minorVersion, coreProfile);
 		}
 
 		public void Dispose()

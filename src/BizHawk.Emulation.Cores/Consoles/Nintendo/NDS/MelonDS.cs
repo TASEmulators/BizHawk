@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				}
 				else
 				{
-					_glContext = _openGLProvider.RequestGLContext(majorGlVersion, minorGlVersion, true, false);
+					_glContext = _openGLProvider.RequestGLContext(majorGlVersion, minorGlVersion, true);
 				}
 			}
 
@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				}
 				else
 				{
-					_glContext = _openGLProvider.RequestGLContext(3, 1, true, false);
+					_glContext = _openGLProvider.RequestGLContext(3, 1, true);
 				}
 			}
 
