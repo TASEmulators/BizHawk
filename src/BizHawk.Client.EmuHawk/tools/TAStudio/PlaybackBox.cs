@@ -70,6 +70,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
+			if (OSTailoredCode.IsUnixHost)
+			{
+				// glyph missing from default Mono WinForms font
+				PauseButton.Text = "> ||";
+			}
 
 			TurboSeekCheckbox.Checked = Tastudio.Config?.TurboSeek ?? false;
 			AutoRestoreCheckbox.Checked = Tastudio.Settings.AutoRestoreLastPosition;
