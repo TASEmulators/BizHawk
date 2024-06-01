@@ -87,7 +87,8 @@
 		outputs = [ "out" "assets" "extraUnmanagedDeps" "waterboxCores" ];
 		propagatedBuildOutputs = []; # without this, other outputs depend on `out`
 		strictDeps = true;
-		nativeBuildInputs = lib.optional finalAttrs.isLocalBuild git;
+		nativeBuildInputs = lib.optional finalAttrs.doCheck finalAttrs.mono
+			++ lib.optional finalAttrs.isLocalBuild git;
 		buildInputs = genDepsHostTargetFor {
 			inherit hawkSourceInfo;
 			mono' = finalAttrs.mono;
@@ -122,7 +123,7 @@
 
 			runHook postBuild
 		'';
-		checkNativeInputs = finalAttrs.buildInputs;
+		checkNativeInputs = finalAttrs.buildInputs; # doesn't work???
 		checkPhase = ''
 			runHook preCheck
 
