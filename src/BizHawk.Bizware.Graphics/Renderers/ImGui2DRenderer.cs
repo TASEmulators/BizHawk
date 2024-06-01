@@ -529,7 +529,7 @@ namespace BizHawk.Bizware.Graphics
 			var vectorPoints = Array.ConvertAll(points, static p => p.ToVector());
 			fixed (Vector2* p = vectorPoints)
 			{
-				_imGuiDrawList.AddConvexPolyFilled(
+				_imGuiDrawList.AddConcavePolyFilled(
 					points: ref *p,
 					num_points: vectorPoints.Length,
 					col: (uint)color.ToArgb());
