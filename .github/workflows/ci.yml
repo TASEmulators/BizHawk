@@ -19,10 +19,10 @@ jobs:
           dotnet-version: "8"
 
       - name: Debug build with analyzers
-        run: dotnet build -p:RunAnalyzersDuringBuild=true -c Debug -warnaserror BizHawk.sln
+        run: Dist/BuildDebug.sh -v normal -warnaserror -p:RunAnalyzersDuringBuild=true
 
       - name: Release build with analyzers
-        run: dotnet build -p:RunAnalyzersDuringBuild=true -c Release -warnaserror BizHawk.sln
+        run: Dist/BuildRelease.sh -v normal -warnaserror -p:RunAnalyzersDuringBuild=true
 
   test:
     name: Test
