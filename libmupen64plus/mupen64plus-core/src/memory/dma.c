@@ -205,7 +205,7 @@ void dma_pi_write(void)
             unsigned long rdram_address2 = pi_register.pi_dram_addr_reg+i+0xa0000000;
 
             ((unsigned char*)rdram)[MASK_ADDR_U8((pi_register.pi_dram_addr_reg+i)^S8, rdram)]=
-                rom[MASK_ADDR_U8((((pi_register.pi_cart_addr_reg-0x10000000)&0x3FFFFFF)+i)^S8, rom)];
+                rom[((((pi_register.pi_cart_addr_reg-0x10000000)&0x3FFFFFF)+i)^S8) & (rom_size - 1)];
 
             if (!invalid_code[rdram_address1>>12])
             {
