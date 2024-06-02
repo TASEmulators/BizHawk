@@ -438,10 +438,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Type is WatchDisplayType.Hex && e.ContainsText)
 			{
 				string text = e.Text.CleanHex();
-				if (text.IsHex())
-				{
-					PasteWithMaxLength(text);
-				}
+				PasteWithMaxLength(text);
 				e.Handled = true;
 			}
 

@@ -140,10 +140,7 @@ namespace BizHawk.Client.EmuHawk
 			if (e.ContainsText)
 			{
 				string text = e.Text.CleanHex();
-				if (text.IsHex())
-				{
-					PasteWithMaxLength(text);
-				}
+				PasteWithMaxLength(text);
 				e.Handled = true;
 			}
 
