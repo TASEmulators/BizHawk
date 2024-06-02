@@ -8,7 +8,7 @@ CXXFLAGS := -DMELONDS_VERSION="" -DOGLRENDERER_ENABLED \
 	-Wno-sign-compare -Wno-deprecated-declarations \
 	-Wno-missing-braces -Wno-bitwise-instead-of-logical \
 	-Wno-unused-private-field -Wno-logical-op-parentheses \
-	-fno-strict-aliasing -std=c++17
+	-fno-strict-aliasing -fwrapv -std=c++17
 
 TARGET = melonDS.wbx
 
