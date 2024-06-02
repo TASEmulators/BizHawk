@@ -58,7 +58,6 @@ out vec4 oColor;
 void main()
 {
 	vec4 pixel = texture(ScreenTex, fTexcoord);
-
 	oColor = vec4(pixel.bgr, 1.0);
 }
 )";
@@ -135,9 +134,9 @@ void Init(u32 scale)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, NDS_WIDTH, paddedHeight, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, nullptr);
-	static u8 zeroData[NDS_WIDTH * 4 * 4]{};
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, NDS_HEIGHT / 2, NDS_WIDTH, 2, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, zeroData);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, NDS_WIDTH, paddedHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, nullptr);
+	static u32 zeroData[NDS_WIDTH * 2]{};
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, NDS_HEIGHT / 2, NDS_WIDTH, 2, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, zeroData);
 
 	glGenBuffers(1, &OutputPboID);
 
@@ -285,7 +284,7 @@ ECL_EXPORT void SetScreenSettings(const ScreenSettings* screenSettings, u32* wid
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, nullptr);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, Width, Height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, nullptr);
 
 		glDeleteFramebuffers(1, &OutputFboID);
 		glGenFramebuffers(1, &OutputFboID);
