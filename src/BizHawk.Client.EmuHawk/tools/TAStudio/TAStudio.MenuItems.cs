@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 				_initializing = true; // Starting a new movie causes a core reboot
 				WantsToControlReboot = false;
 				_engaged = false;
-				MainForm.StartNewMovie(MovieSession.Get(filename), false);
+				if (!MainForm.StartNewMovie(MovieSession.Get(filename), record: false)) return false;
 				ConvertCurrentMovieToTasproj();
 				_initializing = false;
 				var success = StartNewMovieWrapper(CurrentTasMovie);
