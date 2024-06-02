@@ -111,7 +111,8 @@
 		buildType = buildConfig; #TODO move debug symbols to `!debug`?
 		extraDotnetBuildFlags = let
 			s = lib.optionalString (extraDefines != "") "-p:MachineExtraCompilationFlag=${extraDefines} ";
-		in "-maxcpucount:$NIX_BUILD_CORES -p:BuildInParallel=true --no-restore -v normal -p:ContinuousIntegrationBuild=true ${s}${extraDotnetBuildFlags}";
+		in "-maxcpucount:$NIX_BUILD_CORES -p:BuildInParallel=true --no-restore -v normal -p:ContinuousIntegrationBuild=true"
+			+ " -p:DebugType=portable ${s}${extraDotnetBuildFlags}";
 		buildPhase = ''
 			runHook preBuild
 
