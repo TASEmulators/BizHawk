@@ -200,6 +200,8 @@ namespace BizHawk.Client.Common
 			{
 				var r = Get2DRenderer(surfaceID);
 				var bg = background ?? _defaultBackground;
+				// GDI+ had an off by one here, we increment width and height to preserve backwards compatibility
+				width++; height++;
 				if (bg != null) r.FillEllipse(bg.Value, x, y, width, height);
 				r.CompositingMode = _compositingMode;
 				r.DrawEllipse(line ?? _defaultForeground, x, y, width, height);
@@ -333,6 +335,8 @@ namespace BizHawk.Client.Common
 			var r = Get2DRenderer(surfaceID);
 			r.CompositingMode = _compositingMode;
 			var bg = background ?? _defaultBackground;
+			// GDI+ had an off by one here, we increment width and height to preserve backwards compatibility
+			width++; height++;
 			if (bg != null) r.FillPie(bg.Value, x, y, width, height, startangle, sweepangle);
 			r.DrawPie(line ?? _defaultForeground, x + 1, y + 1, width - 1, height - 1, startangle, sweepangle);
 		}
