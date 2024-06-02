@@ -16,7 +16,7 @@ namespace BizHawk.Tests.Common.StringExtensions
 			Assert.AreEqual("ABCDEF", " 0xABCDEF ".CleanHex());
 
 			Assert.AreEqual(string.Empty, (null as string).CleanHex());
-			Assert.AreEqual(string.Empty, "".CleanHex());
+			Assert.AreEqual(string.Empty, string.Empty.CleanHex());
 			Assert.AreEqual(string.Empty, "0x$ABCDEF".CleanHex());
 			Assert.AreEqual(string.Empty, "$0xABCDEF".CleanHex());
 			Assert.AreEqual(string.Empty, "$$ABCDEF".CleanHex());

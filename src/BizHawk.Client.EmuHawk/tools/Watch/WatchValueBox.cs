@@ -435,7 +435,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnPaste(PasteEventArgs e)
 		{
-			if (Type == WatchDisplayType.Hex && e.ContainsText)
+			if (Type is WatchDisplayType.Hex && e.ContainsText)
 			{
 				string text = e.Text.CleanHex();
 				if (text.IsHex())
