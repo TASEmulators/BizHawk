@@ -1,5 +1,5 @@
 { system ? builtins.currentSystem
-, pkgs ? import (fetchTarball {
+, pkgs ? import (builtins.fetchTarball {
 	url = "https://github.com/NixOS/nixpkgs/archive/24.05.tar.gz";
 	sha256 = "1lr1h35prqkd1mkmzriwlpvxcb34kmhc9dnr48gkm8hh089hifmx";
 }) { inherit system; }
@@ -31,9 +31,9 @@ in {
 , dotnet-sdk_6 ? pkgs.dotnet-sdk_6
 , dotnet-sdk_5 ? let result = builtins.tryEval pkgs.dotnet-sdk_5; in if result.success
 	then result.value
-	else (import (fetchTarball {
-		url = "https://github.com/NixOS/nixpkgs/archive/5234f4ce9340fffb705b908fff4896faeddb8a12^.tar.gz";
-		sha256 = "0glawbqvvvbiz1gn7i1skhaqw96ilgdds6gzq7mj29kfk4vkzng1";
+	else (import (fetchzip {
+		url = "https://github.com/NixOS/nixpkgs/archive/a8f575995434695a10b574d35ca51b0f26ae9049.tar.gz"; # commit immediately before .NET 5 was removed
+		hash = "sha512-3ysJjKK1lYV1r/zLohyuD1fiK+8TD3MMA3TrX9fb42nKqzfGGW62Aom7ltiyyxbVbBYOCXUy41Z5Y0j2VOxRKw==";
 	}) { inherit system; }).dotnet-sdk_5
 , git ? pkgs.gitMinimal # only when building from-CWD (`-local`)
 # rundeps
@@ -42,9 +42,9 @@ in {
 , libGL ? pkgs.libGL
 , lua ? pkgs.lua54Packages.lua
 , mono ? null
-, nixGLChannel ? (pkgs.nixgl or import (fetchTarball {
+, nixGLChannel ? (pkgs.nixgl or import (fetchzip {
 	url = "https://github.com/guibou/nixGL/archive/489d6b095ab9d289fe11af0219a9ff00fe87c7c5.tar.gz";
-	sha256 = "03kwsz8mf0p1v1clz42zx8cmy6hxka0cqfbfasimbj858lyd930k";
+	hash = "sha512-GvV707ftLvE0MCTfMJb/M86S2Nxf3vai+HPwq0QvJylmMBwliqYx/nW8X2ja2ruOHzaw3MXXmAxjnv5MMUn07w==";
 }) { inherit system; })
 , nixGL ? nixGLChannel.auto.nixGLDefault
 #, nixVulkan ? nixGLChannel.auto.nixVulkanNvidia
@@ -110,14 +110,14 @@ in {
 			else if isVersionAtLeast "6.12.0.151" pkgs.mono.version
 				then pkgs.mono
 				else lib.trace "provided Mono too old, using Mono from Nixpkgs 23.05"
-					(import (fetchTarball {
+					(import (fetchzip {
 						url = "https://github.com/NixOS/nixpkgs/archive/23.05.tar.gz";
-						sha256 = "10wn0l08j9lgqcw8177nh2ljrnxdrpri7bp0g7nvrsn9rkawvlbf";
+						hash = "sha512-REPJ9fRKxTefvh1d25MloT4bXJIfxI+1EvfVWq644Tzv+nuq2BmiGMiBNmBkyN9UT5fl2tdjqGliye3gZGaIGg==";
 					}) { inherit system; }).mono;
 		monoBasic = fetchzip {
 			url = "https://download.mono-project.com/repo/debian/pool/main/m/mono-basic/libmono-microsoft-visualbasic10.0-cil_4.7-0xamarin3+debian9b1_all.deb";
 			nativeBuildInputs = [ dpkg ];
-			hash = "sha256-2m1FwpDxzqVXR6GUB3oFuTqIXCde/msb+tg8v6lIN6s=";
+			hash = "sha512-bPXbsVrViHAJz6PWuryo9HA6Nlv0bNqgc72pNKM/MUQM7JTUcfM0VDUzkz8vzXSqp/nt2LlAOIqIsS5D5iBIvQ==";
 			# tried and failed building from source, following https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=mono-basic
 		};
 	};
