@@ -3,10 +3,10 @@ name: Build Emulation Cores
 on:
   pull_request:
     branches: [ "master" ]
-    paths: [ "waterbox/*" ]
+    paths: [ "waterbox/**" ]
   push:
     branches: [ "master" ]
-    paths: [ "waterbox/*" ]
+    paths: [ "waterbox/**" ]
   workflow_dispatch:
 
 concurrency:
