@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public override bool AskSaveChanges()
 		{
-			if (_suppressAskSave)
+			if (_suppressAskSave || IsDisposed)
 			{
 				return true;
 			}
