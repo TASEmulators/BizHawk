@@ -1088,6 +1088,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public readonly ToolManager Tools;
 
+		private IControlMainform ToolControllingSavestates => Tools.FirstOrNull<IControlMainform>(tool => tool.WantsToControlSavestates);
+		private IControlMainform ToolControllingRewind => Tools.FirstOrNull<IControlMainform>(tool => tool.WantsToControlRewind);
+		private IControlMainform ToolControllingReboot => Tools.FirstOrNull<IControlMainform>(tool => tool.WantsToControlReboot);
+		private IControlMainform ToolControllingStopMovie => Tools.FirstOrNull<IControlMainform>(tool => tool.WantsToControlStopMovie);
+		private IControlMainform ToolControllingRestartMovie => Tools.FirstOrNull<IControlMainform>(tool => tool.WantsToControlRestartMovie);
+		private IControlMainform ToolControllingReadOnly => Tools.FirstOrNull<IControlMainform>(tool => tool.WantsToControlReadOnly);
+
 		private DisplayManager DisplayManager;
 
 		private OSDManager OSD => DisplayManager.OSD;
@@ -1115,6 +1122,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CreateRewinder()
 		{
+			if (ToolControllingRewind is not null) return;
+
 			Rewinder?.Dispose();
 			Rewinder = Emulator.HasSavestates() && Config.Rewind.Enabled && (!Emulator.AsStatable().AvoidRewind || Config.Rewind.AllowSlowStates)
 				? Config.Rewind.UseDelta
@@ -1273,9 +1282,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool RebootCore()
 		{
-			if (IsSlave && Master.WantsToControlReboot)
+			if (ToolControllingReboot is { } tool)
 			{
-				Master.RebootCore();
+				tool.RebootCore();
 				return true;
 			}
 			else
@@ -3252,7 +3261,7 @@ namespace BizHawk.Client.EmuHawk
 					MovieSession.Movie.SwitchToRecord();
 				}
 
-				if (isRewinding && !IsRewindSlave && MovieSession.Movie.IsRecording())
+				if (isRewinding && ToolControllingRewind is null && MovieSession.Movie.IsRecording())
 				{
 					MovieSession.Movie.Truncate(Emulator.Frame);
 				}
@@ -4170,7 +4179,6 @@ namespace BizHawk.Client.EmuHawk
 				Emulator.Dispose();
 				Emulator = new NullEmulator();
 				Game = GameInfo.NullInstance;
-				CreateRewinder();
 				Tools.Restart(Config, Emulator, Game);
 				RewireSound();
 				ClearHolds();
@@ -4243,25 +4251,6 @@ namespace BizHawk.Client.EmuHawk
 			Rewinder = null;
 		}
 
-		// TODO: move me
-		public IControlMainform Master { get; private set; }
-
-		private bool IsSlave => Master != null;
-
-		private bool IsSavestateSlave => IsSlave && Master.WantsToControlSavestates;
-
-		private bool IsRewindSlave => IsSlave && Master.WantsToControlRewind;
-
-		public void RelinquishControl(IControlMainform master)
-		{
-			Master = master;
-		}
-
-		public void TakeBackControl()
-		{
-			Master = null;
-		}
-
 		private int SlotToInt(string slot)
 		{
 			return int.Parse(slot.Substring(slot.Length - 1, 1));
@@ -4277,7 +4266,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool LoadState(string path, string userFriendlyStateName, bool suppressOSD = false) // Move to client.common
 		{
 			if (!Emulator.HasSavestates()) return false;
-			if (IsSavestateSlave) return Master.LoadState();
+			if (ToolControllingSavestates is { } tool) return tool.LoadState();
 
 			if (!new SavestateFile(Emulator, MovieSession, MovieSession.UserBag).Load(path, this))
 			{
@@ -4306,7 +4295,7 @@ namespace BizHawk.Client.EmuHawk
 
 			//we don't want to analyze how to intermix movies, rewinding, and states
 			//so purge rewind history when loading a state while doing a movie
-			if (!IsRewindSlave && MovieSession.Movie.IsActive())
+			if (ToolControllingRewind is null && MovieSession.Movie.IsActive())
 			{
 				Rewinder?.Clear();
 			}
@@ -4332,7 +4321,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (handled) return true; // not sure
 
-			if (IsSavestateSlave) return Master.LoadQuickSave(SlotToInt(quickSlotName));
+			if (ToolControllingSavestates is { } tool) return tool.LoadQuickSave(SlotToInt(quickSlotName));
 
 			var path = $"{SaveStatePrefix()}.{quickSlotName}.State";
 			if (!File.Exists(path))
@@ -4351,9 +4340,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (IsSavestateSlave)
+			if (ToolControllingSavestates is { } tool)
 			{
-				Master.SaveState();
+				tool.SaveState();
 				return;
 			}
 
@@ -4404,9 +4393,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (IsSavestateSlave)
+			if (ToolControllingSavestates is { } tool)
 			{
-				Master.SaveQuickSave(SlotToInt(quickSlotName));
+				tool.SaveQuickSave(SlotToInt(quickSlotName));
 				return;
 			}
 
@@ -4477,9 +4466,9 @@ namespace BizHawk.Client.EmuHawk
 				Tools.TAStudio.NamedStatePending = true;
 			}
 
-			if (IsSavestateSlave)
+			if (ToolControllingSavestates is { } tool)
 			{
-				Master.SaveStateAs();
+				tool.SaveStateAs();
 				return;
 			}
 
@@ -4507,7 +4496,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool LoadStateAs()
 		{
 			if (!Emulator.HasSavestates()) return false;
-			if (IsSavestateSlave) return Master.LoadStateAs();
+			if (ToolControllingSavestates is { } tool) return tool.LoadStateAs();
 
 			var result = this.ShowFileOpenDialog(
 				discardCWDChange: true,
@@ -4520,9 +4509,9 @@ namespace BizHawk.Client.EmuHawk
 		private void SelectSlot(int slot)
 		{
 			if (!Emulator.HasSavestates()) return;
-			if (IsSavestateSlave)
+			if (ToolControllingSavestates is { } tool)
 			{
-				var handled = Master.SelectSlot(slot);
+				bool handled = tool.SelectSlot(slot);
 				if (handled) return;
 			}
 			Config.SaveSlot = slot;
@@ -4533,9 +4522,9 @@ namespace BizHawk.Client.EmuHawk
 		private void PreviousSlot()
 		{
 			if (!Emulator.HasSavestates()) return;
-			if (IsSavestateSlave)
+			if (ToolControllingSavestates is { } tool)
 			{
-				var handled = Master.PreviousSlot();
+				bool handled = tool.PreviousSlot();
 				if (handled) return;
 			}
 			Config.SaveSlot--;
@@ -4547,9 +4536,9 @@ namespace BizHawk.Client.EmuHawk
 		private void NextSlot()
 		{
 			if (!Emulator.HasSavestates()) return;
-			if (IsSavestateSlave)
+			if (ToolControllingSavestates is { } tool)
 			{
-				var handled = Master.NextSlot();
+				bool handled = tool.NextSlot();
 				if (handled) return;
 			}
 			Config.SaveSlot++;
@@ -4560,9 +4549,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CaptureRewind(bool suppressCaptureRewind)
 		{
-			if (IsRewindSlave)
+			if (ToolControllingRewind is { } tool)
 			{
-				Master.CaptureRewind();
+				tool.CaptureRewind();
 			}
 			else if (!suppressCaptureRewind && Rewinder?.Active == true)
 			{
@@ -4576,7 +4565,7 @@ namespace BizHawk.Client.EmuHawk
 
 			returnToRecording = false;
 
-			if (IsRewindSlave)
+			if (ToolControllingRewind is { } rewindTool)
 			{
 				if (InputManager.ClientControls["Rewind"] || PressRewind)
 				{
@@ -4615,7 +4604,7 @@ namespace BizHawk.Client.EmuHawk
 					if (isRewinding)
 					{
 						runFrame = Emulator.Frame > 1; // TODO: the master should be deciding this!
-						Master.Rewind();
+						rewindTool.Rewind();
 					}
 				}
 				else
