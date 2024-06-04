@@ -616,9 +616,7 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
-			return _tools
-				.Select(tool => tool.AskSaveChanges())
-				.All(result => result);
+			return _tools.TrueForAll(tool => !tool.IsActive || tool.AskSaveChanges());
 		}
 
 		/// <summary>
