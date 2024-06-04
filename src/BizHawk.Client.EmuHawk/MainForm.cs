@@ -4917,6 +4917,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private IRetroAchievements RA { get; set; }
 
+		private void DownloadCoresMenuItemClick(object sender, EventArgs e)
+		{
+			CoreDownloaderForm coreDownloaderForm = new CoreDownloaderForm();
+			coreDownloaderForm.Show();
+		}
+
 		private void OpenRetroAchievements()
 		{
 			RA = RetroAchievements.CreateImpl(
