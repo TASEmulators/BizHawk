@@ -540,8 +540,8 @@ namespace BizHawk.Client.EmuHawk
 				var movie = _movieSession.Get(_movieList[MovieView.SelectedIndices[0]].Filename);
 				movie.Load();
 				// TODO movie should be disposed if movie is ITasMovie
-				using EditSubtitlesForm s = new(DialogController, movie, _config.PathEntries, readOnly: true);
-				s.Show();
+				var form = new EditSubtitlesForm(DialogController, movie, _config.PathEntries, readOnly: true);
+				form.Show();
 			}
 		}
 
