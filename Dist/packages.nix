@@ -228,6 +228,7 @@
 #					(p.isWindows // p.isx86_64)
 				];
 				badPlatforms = [ p.isDarwin p.isAarch64 p.isx86_32 ];
+				mainProgram = exeName;
 			};
 		};
 	buildInstallable' =
