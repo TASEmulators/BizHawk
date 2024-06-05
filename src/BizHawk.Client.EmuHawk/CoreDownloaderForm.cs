@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		// TODO edit
 		private static readonly string BaseUrl = $"https://github.com/Morilli/BizHawk-extra/raw/{VersionInfo.MainVersion}/";
-		private static readonly string OutputPath = Path.Combine(PathUtils.DataDirectoryPath, "dll");
+		private static readonly string OutputPath = PathUtils.DllDirectoryPath;
 
 		private static readonly string Encore = OSTailoredCode.IsUnixHost ? "libencore.so" : "encore.dll";
 
