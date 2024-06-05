@@ -223,19 +223,6 @@ namespace BizHawk.Client.Common
 
 				Subtitles.Sort();
 			});
-
-			bl.GetLump(BinaryStateLump.Subtitles, abort: false, tr =>
-			{
-				while (tr.ReadLine() is string line)
-				{
-					if (!string.IsNullOrWhiteSpace(line))
-					{
-						Subtitles.AddFromString(line);
-					}
-				}
-
-				Subtitles.Sort();
-			});
 		}
 
 		private void LoadFramecount(ZipStateLoader bl)
