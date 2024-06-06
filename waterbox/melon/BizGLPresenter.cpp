@@ -12,7 +12,10 @@
 namespace Frontend
 {
 	extern float TouchMtx[6];
+	extern float HybTouchMtx[6];
 	extern bool BotEnable;
+	extern bool HybEnable;
+	extern int HybScreen;
 	extern void M23_Transform(float* m, float& x, float& y);
 }
 
@@ -69,8 +72,8 @@ ECL_INVISIBLE static GLuint ScreenShaderTransformULoc, ScreenShaderSizeULoc;
 
 ECL_INVISIBLE static GLuint VertexBuffer, VertexArray;
 
-ECL_INVISIBLE static float ScreenMatrix[2 * 6];
-ECL_INVISIBLE static int ScreenKinds[2];
+ECL_INVISIBLE static float ScreenMatrix[3 * 6];
+ECL_INVISIBLE static int ScreenKinds[3];
 ECL_INVISIBLE static int NumScreens;
 
 ECL_INVISIBLE static u32 Width, Height;
@@ -254,6 +257,10 @@ static std::pair<u32, u32> GetScreenSize(const ScreenSettings* screenSettings, u
 			return isHori
 				? std::make_pair(h * 2 + gap, w)
 				: std::make_pair(w * 2 + gap, h);
+		case Frontend::screenLayout_Hybrid:
+			return isHori
+				? std::make_pair(h * 2 + gap, w * 3 + (int)ceil(gap * 4 / 3.0))
+				: std::make_pair(w * 3 + (int)ceil(gap * 4 / 3.0), h * 2 + gap);
 		default:
 			__builtin_unreachable();
 	}
@@ -318,7 +325,14 @@ ECL_EXPORT void GetTouchCoords(int* x, int* y)
 	float vx = *x;
 	float vy = *y;
 
-	Frontend::M23_Transform(Frontend::TouchMtx, vx, vy);
+	if (Frontend::HybEnable && Frontend::HybScreen == 1)
+	{
+		Frontend::M23_Transform(Frontend::HybTouchMtx, vx, vy);
+	}
+	else
+	{
+		Frontend::M23_Transform(Frontend::TouchMtx, vx, vy);
+	}
 
 	*x = vx;
 	*y = vy;
@@ -332,7 +346,7 @@ ECL_EXPORT void GetTouchCoords(int* x, int* y)
 
 ECL_EXPORT void GetScreenCoords(float* x, float* y)
 {
-	for (int i = 0; i < NumScreens; i++)
+	for (int i = NumScreens - 1; i >= 0; i--)
 	{
 		// bottom screen
 		if (ScreenKinds[i] == 1)

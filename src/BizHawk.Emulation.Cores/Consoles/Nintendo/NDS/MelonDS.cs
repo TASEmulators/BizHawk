@@ -77,8 +77,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				DefaultWidth = 256,
 				DefaultHeight = 384,
-				MaxWidth = 256 * 16,
-				MaxHeight = (384 + 128) * 16,
+				MaxWidth = (256 * 16) * 3 + ((128 * 16) * 4 / 3) + 1,
+				MaxHeight = (384 / 2 * 16) * 2 + (128 * 16),
 				MaxSamples = 1024,
 				DefaultFpsNumerator = 33513982,
 				DefaultFpsDenominator = 560190,
@@ -251,7 +251,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				consoleCreationArgs.SkipFW = _activeSyncSettings.SkipFirmware;
 
 				consoleCreationArgs.BitDepth = _settings.AudioBitDepth;
-				consoleCreationArgs.Interpolation = NDSSettings.AudioInterpolationType.None;
+				consoleCreationArgs.Interpolation = _settings.AudioInterpolation;
 
 				consoleCreationArgs.ThreeDeeRenderer = _activeSyncSettings.ThreeDeeRenderer;
 				consoleCreationArgs.Threaded3D = _activeSyncSettings.ThreadedRendering;
@@ -560,6 +560,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				throw new InvalidOperationException("_frameThreadPtr mismatch");
 			}
+
+			_core.SetSoundConfig(_console, _settings.AudioBitDepth, _settings.AudioInterpolation);
 		}
 
 		// omega hack

@@ -166,3 +166,9 @@ ECL_EXPORT u32 GetCallbackCycleOffset(melonDS::NDS* nds)
 {
 	return RunningFrame ? nds->GetSysClockCycles(2) : 0;
 }
+
+ECL_EXPORT void SetSoundConfig(melonDS::NDS* nds, int bitDepth, int interpolation)
+{
+	nds->SPU.SetDegrade10Bit(static_cast<melonDS::AudioBitDepth>(bitDepth));
+	nds->SPU.SetInterpolation(static_cast<melonDS::AudioInterpolation>(interpolation));
+}

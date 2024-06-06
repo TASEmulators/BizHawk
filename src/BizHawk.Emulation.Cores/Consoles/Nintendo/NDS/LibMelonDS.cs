@@ -219,8 +219,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			Natural,
 			Vertical,
 			Horizontal,
-			// TODO? do we want this?
-			// Hybrid,
+			Hybrid,
 		}
 
 		public enum ScreenRotation : int
@@ -250,6 +249,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract void SetScreenSettings(IntPtr console, ref ScreenSettings screenSettings, out int width, out int height, out int vwidth, out int vheight);
+
+		[BizImport(CC)]
+		public abstract void SetSoundConfig(IntPtr console, NDS.NDSSettings.AudioBitDepthType bitDepth NDS.NDSSettings.AudioInterpolationType interpolation);
 
 		[BizImport(CC)]
 		public abstract void GetTouchCoords(ref int x, ref int y);

@@ -138,9 +138,18 @@ static void SetFirmwareSettings(melonDS::Firmware::UserData& userData, FirmwareS
 
 		if (!((1 << static_cast<u8>(userData.ExtendedSettings.ExtendedLanguage)) & userData.ExtendedSettings.SupportedLanguageMask))
 		{
-			userData.ExtendedSettings.ExtendedLanguage = melonDS::Firmware::Language::English;
+			// Use the first supported language
+			for (int i = 0; i <= melonDS::Firmware::Language::Reserved; i++)
+			{
+				if ((1 << i) & userData.ExtendedSettings.SupportedLanguageMask)
+				{
+					userData.ExtendedSettings.ExtendedLanguage = static_cast<melonDS::Firmware::Language>(i);
+					break;
+				}
+			}
+
 			userData.Settings &= ~melonDS::Firmware::Language::Reserved;
-			userData.Settings |= melonDS::Firmware::Language::English;
+			userData.Settings |= userData.ExtendedSettings.ExtendedLanguage;
 		}
 	}
 	else
@@ -267,6 +276,24 @@ static void SanitizeNandSettings(melonDS::DSi_NAND::DSiFirmwareSystemSettings& s
 	memset(settings.ParentalControlsSecretAnswer, 0, sizeof(settings.ParentalControlsSecretAnswer));
 }
 
+static void ClearNandSavs(melonDS::DSi_NAND::NANDMount& mount, u32 category)
+{
+	std::vector<u32> titlelist;
+	mount.ListTitles(category, titlelist);
+
+	char fname[128];
+	for (auto& title : titlelist)
+	{
+		snprintf(fname, sizeof(fname), "0:/title/%08x/%08x/data/public.sav", category, title);
+		mount.RemoveFile(fname);
+		snprintf(fname, sizeof(fname), "0:/title/%08x/%08x/data/private.sav", category, title);
+		mount.RemoveFile(fname);
+		snprintf(fname, sizeof(fname), "0:/title/%08x/%08x/data/banner.sav", category, title);
+		mount.RemoveFile(fname);
+	}
+}
+
+
 static melonDS::DSi_NAND::NANDImage CreateNandImage(
 	u8* nandData, u32 nandLength, std::unique_ptr<melonDS::DSiBIOSImage>& arm7Bios,
 	FirmwareSettings& fwSettings, bool clearNand,
@@ -312,8 +339,15 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 
 			if (!((1 << static_cast<u8>(settings.Language)) & serialData.SupportedLanguages))
 			{
-				// English is valid among all NANDs
-				settings.Language = melonDS::Firmware::Language::English;
+				// Use the first supported language
+				for (int i = 0; i <= melonDS::Firmware::Language::Reserved; i++)
+				{
+					if ((1 << i) & serialData.SupportedLanguages)
+					{
+						settings.Language = static_cast<melonDS::Firmware::Language>(i);
+						break;
+					}
+				}
 			}
 		}
 
@@ -345,6 +379,21 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 			{
 				mount.DeleteTitle(DSIWARE_CATEGORY, title);
 			}
+
+			// clear out .sav files of builtin apps / title management / system menu
+			constexpr u32 BUILTIN_APP_CATEGORY = 0x00030005;
+			constexpr u32 TITLE_MANAGEMENT_CATEGORY = 0x00030015;
+			constexpr u32 SYSTEM_MENU_CATEGORY = 0x00030017;
+
+			ClearNandSavs(mount, BUILTIN_APP_CATEGORY);
+			ClearNandSavs(mount, TITLE_MANAGEMENT_CATEGORY);
+			ClearNandSavs(mount, SYSTEM_MENU_CATEGORY);
+
+			// clear out some other misc files
+			mount.RemoveFile("0:/shared2/launcher/wrap.bin");
+			mount.RemoveFile("0:/shared2/0000");
+			mount.RemoveFile("0:/sys/log/product.log");
+			mount.RemoveFile("0:/sys/log/sysmenu.log");
 		}
 
 		if (dsiWareData)

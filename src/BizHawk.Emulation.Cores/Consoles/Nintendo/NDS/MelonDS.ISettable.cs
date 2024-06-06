@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			Natural,
 			Vertical,
 			Horizontal,
+			Hybrid,
 			[Display(Name = "Top Only")]
 			Top,
 			[Display(Name = "Bottom Only")]
@@ -91,7 +92,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public enum AudioInterpolationType : int
 			{
 				None,
+				Linear,
+				Cosine,
+				Cubic,
+				[Display(Name = "Gaussian (SNES)")]
+				SNESGaussian,
 			}
+
+			[DisplayName("Audio Interpolation")]
+			[Description("Audio enhancement (original hardware has no audio interpolation).")]
+			[DefaultValue(AudioInterpolationType.None)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public AudioInterpolationType AudioInterpolation { get; set; }
 
 			[DisplayName("Alt Lag")]
 			[Description("If true, touch screen polling and ARM7 key polling will be considered for lag frames. Otherwise, only ARM9 key polling will be considered.")]
@@ -441,6 +453,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					ScreenLayoutKind.Natural => LibMelonDS.ScreenLayout.Natural,
 					ScreenLayoutKind.Vertical => LibMelonDS.ScreenLayout.Vertical,
 					ScreenLayoutKind.Horizontal => LibMelonDS.ScreenLayout.Horizontal,
+					ScreenLayoutKind.Hybrid => LibMelonDS.ScreenLayout.Hybrid,
 					_ => LibMelonDS.ScreenLayout.Natural,
 				},
 				ScreenRotation = settings.ScreenRotation switch
@@ -481,6 +494,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				RefreshScreenSettings(o);
 			}
+
+			_core.SetSoundConfig(_console, o.AudioBitDepth, o.AudioInterpolation);
 
 			_settings = o;
 			return ret ? PutSettingsDirtyBits.ScreenLayoutChanged : PutSettingsDirtyBits.None;
