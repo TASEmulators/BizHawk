@@ -1,4 +1,8 @@
 <Project>
+	<PropertyGroup Condition=" '$(ExecProjTargetFrameworkOverride)' != '' AND '$(TargetFramework)' == 'net48' ">
+		<SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+		<TargetFramework>$(ExecProjTargetFrameworkOverride)</TargetFramework>
+	</PropertyGroup>
 	<Import Project="../Common.props" />
 	<PropertyGroup>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -12,10 +16,6 @@
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(MachineRunAnalyzersDuringBuild)' == '' ">
 		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(ExecProjTargetFrameworkOverride)' != '' AND '$(TargetFramework)' == 'net48' ">
-		<SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
-		<TargetFramework>$(ExecProjTargetFrameworkOverride)</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.ReflectionCache.dll" />
