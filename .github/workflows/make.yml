@@ -121,6 +121,9 @@ jobs:
     - name: Giving execution permission to compiler
       working-directory: ./waterbox/sysroot
       run: chmod u+x bin/*
+    - name: Build emulibc
+      working-directory: ./waterbox/emulibc
+      run: make -j4
     - name: Building MAME
       working-directory: ./waterbox/mame-arcade
       run: make -j4 install
