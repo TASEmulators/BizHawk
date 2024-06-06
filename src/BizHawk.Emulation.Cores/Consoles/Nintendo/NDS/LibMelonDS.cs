@@ -251,7 +251,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public abstract void SetScreenSettings(IntPtr console, ref ScreenSettings screenSettings, out int width, out int height, out int vwidth, out int vheight);
 
 		[BizImport(CC)]
-		public abstract void SetSoundConfig(IntPtr console, NDS.NDSSettings.AudioBitDepthType bitDepth NDS.NDSSettings.AudioInterpolationType interpolation);
+		public abstract void SetSoundConfig(IntPtr console, NDS.NDSSettings.AudioBitDepthType bitDepth, NDS.NDSSettings.AudioInterpolationType interpolation);
 
 		[BizImport(CC)]
 		public abstract void GetTouchCoords(ref int x, ref int y);
