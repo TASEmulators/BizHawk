@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,8 +11,7 @@ using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
-	[JsonObject]
-	public class PathEntryCollection : IEnumerable<PathEntry>
+	public class PathEntryCollection
 	{
 		private static readonly string COMBINED_SYSIDS_GB = string.Join("_", VSystemID.Raw.GB, VSystemID.Raw.GBC, VSystemID.Raw.SGB);
 
@@ -119,9 +117,6 @@ namespace BizHawk.Client.Common
 
 		public bool UseRecentForRoms { get; set; }
 		public string LastRomPath { get; set; } = ".";
-
-		public IEnumerator<PathEntry> GetEnumerator() => Paths.GetEnumerator();
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		public PathEntry this[string system, string type]
 			=> Paths.Find(p => p.IsSystem(system) && p.Type == type) ?? TryGetDebugPath(system, type);
