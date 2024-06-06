@@ -97,7 +97,13 @@ namespace BizHawk.Client.Common
 
 		public bool StackOSDMessages { get; set; } = true;
 
-		private Dictionary<string, int> TargetZoomFactors { get; set; } = new();
+		private Dictionary<string, int> TargetZoomFactors { get; set; } = new()
+		{
+			[VSystemID.Raw.GB] = 3,
+			[VSystemID.Raw.GBA] = 3,
+			[VSystemID.Raw.GBC] = 3,
+			[VSystemID.Raw.N64] = 1,
+		};
 
 		public int GetWindowScaleFor(string sysID)
 			=> TargetZoomFactors.GetValueOrPut(sysID, static _ => 2);
