@@ -128,8 +128,8 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 			public TIC80Gamepad P3Gamepad;
 			public TIC80Gamepad P4Gamepad;
 
-			public sbyte MouseX;
-			public sbyte MouseY;
+			public byte MouseX;
+			public byte MouseY;
 			public ushort MouseButtons;
 
 			public TIC80Keys Key1;
