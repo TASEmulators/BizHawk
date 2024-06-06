@@ -248,6 +248,14 @@ namespace BizHawk.Client.EmuHawk
 				else Console.WriteLine($"requested ext. tool dll {requestedExtToolDll} could not be loaded");
 			}
 
+			// this would theoretically work on unix, but downloading to `PathUtils.DllDirectoryPath` is problematic
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				var downloadCoresMenuItem = new ToolStripMenuItem("Download cores");
+				downloadCoresMenuItem.Click += DownloadCoresMenuItemClick;
+				this.ToolsSubMenu.DropDownItems.Add(downloadCoresMenuItem);
+			}
+
 #if DEBUG
 			AddDebugMenu();
 #endif
