@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			var regs = new uint[2 * 16];
-			_core.GetRegs(regs);
+			_core.GetRegs(_console, regs);
 
 			var ret = new Dictionary<string, RegisterValue>();
 			for (var i = 0; i < 2; i++)
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				throw new InvalidOperationException("Invalid Reg Index???");
 			}
-			_core.SetReg(ncpu == 9 ? 0 : 1, index, value);
+			_core.SetReg(_console, ncpu == 9 ? 0 : 1, index, value);
 		}
 
 		public bool CanStep(StepType type) => false;
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 
-		public long TotalExecutedCycles => CycleCount + _core.GetCallbackCycleOffset();
+		public long TotalExecutedCycles => CycleCount + _core.GetCallbackCycleOffset(_console);
 
 		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 

@@ -1,3 +1,4 @@
+#include "NDS.h"
 #include "GPU.h"
 #include "OpenGLSupport.h"
 #include "frontend/FrontendUtil.h"
@@ -58,11 +59,12 @@ out vec4 oColor;
 void main()
 {
 	vec4 pixel = texture(ScreenTex, fTexcoord);
+
 	oColor = vec4(pixel.bgr, 1.0);
 }
 )";
 
-ECL_INVISIBLE static GLuint ScreenShaderProgram[3];
+ECL_INVISIBLE static GLuint ScreenShaderProgram;
 ECL_INVISIBLE static GLuint ScreenShaderTransformULoc, ScreenShaderSizeULoc;
 
 ECL_INVISIBLE static GLuint VertexBuffer, VertexArray;
@@ -81,20 +83,18 @@ ECL_INVISIBLE static GLuint OutputPboID;
 
 void Init(u32 scale)
 {
-	OpenGL::BuildShaderProgram(ScreenVS, ScreenFS, ScreenShaderProgram, "GLPresenterShader");
+	Frontend::OpenGL::CompileVertexFragmentProgram(
+		ScreenShaderProgram,
+		ScreenVS, ScreenFS,
+		"GLPresenterShader",
+		{{"vPosition", 0}, {"vTexcoord", 1}},
+		{{"oColor", 0}});
 
-	GLuint pid = ScreenShaderProgram[2];
-	glBindAttribLocation(pid, 0, "vPosition");
-	glBindAttribLocation(pid, 1, "vTexcoord");
-	glBindFragDataLocation(pid, 0, "oColor");
+	glUseProgram(ScreenShaderProgram);
+	glUniform1i(glGetUniformLocation(ScreenShaderProgram, "ScreenTex"), 0);
 
-	OpenGL::LinkShaderProgram(ScreenShaderProgram);
-
-	glUseProgram(pid);
-	glUniform1i(glGetUniformLocation(pid, "ScreenTex"), 0);
-
-	ScreenShaderSizeULoc = glGetUniformLocation(pid, "uScreenSize");
-	ScreenShaderTransformULoc = glGetUniformLocation(pid, "uScreenTransform");
+	ScreenShaderSizeULoc = glGetUniformLocation(ScreenShaderProgram, "uScreenSize");
+	ScreenShaderTransformULoc = glGetUniformLocation(ScreenShaderProgram, "uScreenTransform");
 
 	constexpr int paddedHeight = NDS_HEIGHT + 2;
 	constexpr float padPixels = 1.f / paddedHeight;
@@ -143,7 +143,7 @@ void Init(u32 scale)
 	GLScale = scale;
 }
 
-std::pair<u32, u32> Present()
+std::pair<u32, u32> Present(melonDS::GPU& gpu)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, OutputFboID);
 	glDisable(GL_DEPTH_TEST);
@@ -155,20 +155,21 @@ std::pair<u32, u32> Present()
 
 	glViewport(0, 0, Width, Height);
 
-	glUseProgram(ScreenShaderProgram[2]);
+	glUseProgram(ScreenShaderProgram);
 	glUniform2f(ScreenShaderSizeULoc, Width, Height);
 
 	glActiveTexture(GL_TEXTURE0);
 
-	if (GPU3D::CurrentRenderer->Accelerated)
+	auto& renderer3d = gpu.GetRenderer3D();
+	if (renderer3d.Accelerated)
 	{
-		GPU::CurGLCompositor->BindOutputTexture(GPU::FrontBuffer);
+		renderer3d.BindOutputTexture(gpu.FrontBuffer);
 	}
 	else
 	{
 		glBindTexture(GL_TEXTURE_2D, InputTextureID);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, NDS_WIDTH, NDS_HEIGHT / 2, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, GPU::Framebuffer[GPU::FrontBuffer][0]);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, NDS_HEIGHT / 2 + 2, NDS_WIDTH, NDS_HEIGHT / 2, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, GPU::Framebuffer[GPU::FrontBuffer][1]);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, NDS_WIDTH, NDS_HEIGHT / 2, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, gpu.Framebuffer[gpu.FrontBuffer][0].get());
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, NDS_HEIGHT / 2 + 2, NDS_WIDTH, NDS_HEIGHT / 2, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, gpu.Framebuffer[gpu.FrontBuffer][1].get());
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
@@ -182,14 +183,9 @@ std::pair<u32, u32> Present()
 
 	glFlush();
 
-	GLint oldPbo;
-	glGetIntegerv(GL_PIXEL_PACK_BUFFER_BINDING, &oldPbo);
-
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, OutputPboID);
 	glBufferData(GL_PIXEL_PACK_BUFFER, Width * Height * sizeof(u32), nullptr, GL_STREAM_READ);
 	glReadPixels(0, 0, Width, Height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, (void*)(0));
-
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, oldPbo);
 
 	return std::make_pair(Width, Height);
 }
@@ -201,9 +197,6 @@ ECL_EXPORT u32 GetGLTexture()
 
 ECL_EXPORT void ReadFrameBuffer(u32* buffer)
 {
-	GLint oldPbo;
-	glGetIntegerv(GL_PIXEL_PACK_BUFFER_BINDING, &oldPbo);
-
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, OutputPboID);
 	const auto p = static_cast<const u32*>(glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY));
 	if (p)
@@ -219,8 +212,6 @@ ECL_EXPORT void ReadFrameBuffer(u32* buffer)
 
 		glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 	}
-
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, oldPbo);
 }
 
 struct ScreenSettings
@@ -268,7 +259,7 @@ static std::pair<u32, u32> GetScreenSize(const ScreenSettings* screenSettings, u
 	}
 }
 
-ECL_EXPORT void SetScreenSettings(const ScreenSettings* screenSettings, u32* width, u32* height, u32* vwidth, u32* vheight)
+ECL_EXPORT void SetScreenSettings(melonDS::NDS* nds, const ScreenSettings* screenSettings, u32* width, u32* height, u32* vwidth, u32* vheight)
 {
 	auto [w, h] = GetScreenSize(screenSettings, GLScale);
 	if (w != Width || h != Height)
@@ -304,7 +295,7 @@ ECL_EXPORT void SetScreenSettings(const ScreenSettings* screenSettings, u32* wid
 
 	NumScreens = Frontend::GetScreenTransforms(ScreenMatrix, ScreenKinds);
 
-	Present();
+	Present(nds->GPU);
 
 	*width = w;
 	*height = h;

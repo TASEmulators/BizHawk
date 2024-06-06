@@ -1,6 +1,6 @@
 #include "Platform.h"
 
-namespace Platform
+namespace melonDS::Platform
 {
 
 void Init(int argc, char** argv)

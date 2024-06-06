@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 
 using BizHawk.BizInvoke;
@@ -22,29 +23,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	public partial class NDS : WaterboxCore
 	{
 		private readonly LibMelonDS _core;
+		private readonly IntPtr _console;
 		private readonly NDSDisassembler _disassembler;
-
-		private readonly Dictionary<string, byte[]> _coreFiles = new();
-		private readonly LibMelonDS.FileCallbackInterface _fileCallbackInterface;
-
-		private int GetFileLengthCallback(string path)
-			=> _coreFiles.TryGetValue(path, out var file) ? file.Length : 0;
-
-		private void GetFileDataCallback(string path, IntPtr buffer)
-		{
-			var file = _coreFiles[path];
-			Marshal.Copy(file, 0, buffer, file.Length);
-		}
-
-		private void AddCoreFile(string path, byte[] file)
-		{
-			if (file.Length == 0)
-			{
-				throw new InvalidOperationException($"Tried to add 0-sized core file to {path}");
-			}
-
-			_coreFiles.Add(path, file);
-		}
 
 		private readonly LibMelonDS.LogCallback _logCallback;
 
@@ -105,238 +85,266 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				SystemId = VSystemID.Raw.NDS,
 			})
 		{
-			_syncSettings = lp.SyncSettings ?? new();
-			_settings = lp.Settings ?? new();
-
-			_activeSyncSettings = _syncSettings.Clone();
-
-			IsDSi = _activeSyncSettings.UseDSi;
-
-			var roms = lp.Roms.Select(r => r.RomData).ToList();
-			
-			DSiTitleId = GetDSiTitleId(roms[0]);
-			IsDSi |= IsDSiWare;
-
-			if (roms.Count > (IsDSi ? 1 : 2))
+			try
 			{
-				throw new InvalidOperationException("Wrong number of ROMs!");
-			}
+				_syncSettings = lp.SyncSettings ?? new();
+				_settings = lp.Settings ?? new();
 
-			InitMemoryCallbacks();
+				_activeSyncSettings = _syncSettings.Clone();
 
-			_traceCallback = MakeTrace;
-			_threadStartCallback = ThreadStartCallback;
+				IsDSi = _activeSyncSettings.UseDSi;
 
-			_configCallbackInterface.GetBoolean = GetBooleanSettingCallback;
-			_configCallbackInterface.GetInteger = GetIntegerSettingCallback;
-			_configCallbackInterface.GetString = GetStringSettingCallback;
-			_configCallbackInterface.GetArray = GetArraySettingCallback;
+				var roms = lp.Roms.Select(r => r.RomData).ToList();
 
-			_fileCallbackInterface.GetLength = GetFileLengthCallback;
-			_fileCallbackInterface.GetData = GetFileDataCallback;
+				DSiTitleId = GetDSiTitleId(roms[0]);
+				IsDSi |= IsDSiWare;
 
-			_logCallback = LogCallback;
-
-			_openGLProvider = CoreComm.OpenGLProvider;
-			_getGLProcAddressCallback = GetGLProcAddressCallback;
-
-			if (lp.DeterministicEmulationRequested)
-			{
-				_activeSyncSettings.ThreeDeeRenderer = NDSSyncSettings.ThreeDeeRendererType.Software;
-			}
-
-			if (_activeSyncSettings.ThreeDeeRenderer != NDSSyncSettings.ThreeDeeRendererType.Software)
-			{
-				// ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
-				var (majorGlVersion, minorGlVersion) = _activeSyncSettings.ThreeDeeRenderer switch
+				if (roms.Count > (IsDSi ? 1 : 2))
 				{
-					NDSSyncSettings.ThreeDeeRendererType.OpenGL_Classic => (3, 2),
-					// NDSSyncSettings.ThreeDeeRendererType.OpenGL_Compute => (4, 3),
-					_ => throw new InvalidOperationException($"Invalid {nameof(NDSSyncSettings.ThreeDeeRenderer)}")
-				};
+					throw new InvalidOperationException("Wrong number of ROMs!");
+				}
 
-				if (!_openGLProvider.SupportsGLVersion(majorGlVersion, minorGlVersion))
+				InitMemoryCallbacks();
+
+				_traceCallback = MakeTrace;
+				_threadStartCallback = ThreadStartCallback;
+
+				_logCallback = LogCallback;
+
+				_openGLProvider = CoreComm.OpenGLProvider;
+				_getGLProcAddressCallback = GetGLProcAddressCallback;
+
+				if (lp.DeterministicEmulationRequested)
 				{
-					lp.Comm.Notify($"OpenGL {majorGlVersion}.{minorGlVersion} is not supported on this machine, falling back to software renderer", null);
 					_activeSyncSettings.ThreeDeeRenderer = NDSSyncSettings.ThreeDeeRendererType.Software;
 				}
+
+				if (_activeSyncSettings.ThreeDeeRenderer != NDSSyncSettings.ThreeDeeRendererType.Software)
+				{
+					// ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+					var (majorGlVersion, minorGlVersion) = _activeSyncSettings.ThreeDeeRenderer switch
+					{
+						NDSSyncSettings.ThreeDeeRendererType.OpenGL_Classic => (3, 2),
+						NDSSyncSettings.ThreeDeeRendererType.OpenGL_Compute => (4, 3),
+						_ => throw new InvalidOperationException($"Invalid {nameof(NDSSyncSettings.ThreeDeeRenderer)}")
+					};
+
+					if (!_openGLProvider.SupportsGLVersion(majorGlVersion, minorGlVersion))
+					{
+						lp.Comm.Notify($"OpenGL {majorGlVersion}.{minorGlVersion} is not supported on this machine, falling back to software renderer", null);
+						_activeSyncSettings.ThreeDeeRenderer = NDSSyncSettings.ThreeDeeRendererType.Software;
+					}
+					else
+					{
+						_glContext = _openGLProvider.RequestGLContext(majorGlVersion, minorGlVersion, true);
+					}
+				}
+
+				if (_activeSyncSettings.ThreeDeeRenderer == NDSSyncSettings.ThreeDeeRendererType.Software)
+				{
+					if (!_openGLProvider.SupportsGLVersion(3, 1))
+					{
+						lp.Comm.Notify("OpenGL 3.1 is not supported on this machine, screen control options will not work.", null);
+					}
+					else
+					{
+						_glContext = _openGLProvider.RequestGLContext(3, 1, true);
+					}
+				}
+
+				_core = PreInit<LibMelonDS>(new()
+				{
+					Filename = "melonDS.wbx",
+					SbrkHeapSizeKB = 2 * 1024,
+					SealedHeapSizeKB = 4,
+					InvisibleHeapSizeKB = 16 * 1024,
+					PlainHeapSizeKB = 4,
+					MmapHeapSizeKB = 1024 * 1024,
+					SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+					SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
+				}, new Delegate[]
+				{
+					_readCallback, _writeCallback, _execCallback, _traceCallback,
+					_threadStartCallback, _logCallback, _getGLProcAddressCallback
+				});
+
+				_core.SetLogCallback(_logCallback);
+
+				if (_glContext != null)
+				{
+					var error = _core.InitGL(_getGLProcAddressCallback, _activeSyncSettings.ThreeDeeRenderer, _activeSyncSettings.GLScaleFactor, !OSTailoredCode.IsUnixHost);
+					if (error != IntPtr.Zero)
+					{
+						using (_exe.EnterExit())
+						{
+							throw new InvalidOperationException(Marshal.PtrToStringAnsi(error));
+						}
+					}
+				}
+
+				_activeSyncSettings.UseRealBIOS |= IsDSi;
+
+				byte[] bios9 = null, bios7 = null, firmware = null;
+				if (_activeSyncSettings.UseRealBIOS)
+				{
+					bios9 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9"));
+					bios7 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"));
+					firmware = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", IsDSi ? "firmwarei" : "firmware"));
+
+					if (firmware.Length is not (0x20000 or 0x40000 or 0x80000))
+					{
+						throw new InvalidOperationException("Invalid firmware length");
+					}
+
+					NDSFirmware.MaybeWarnIfBadFw(firmware, CoreComm.ShowMessage);
+				}
+
+				byte[] bios9i = null, bios7i = null, nand = null;
+				if (IsDSi)
+				{
+					bios9i = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9i"));
+					bios7i = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7i"));
+					nand = DecideNAND(CoreComm.CoreFileProvider, (DSiTitleId.Upper & ~0xFF) == 0x00030000, roms[0][0x1B0]);
+				}
+
+				byte[] ndsRom = null, gbaRom = null, dsiWare = null, tmd = null;
+				if (IsDSiWare)
+				{
+					tmd = GetTMDData(DSiTitleId.Full);
+					dsiWare = roms[0];
+				}
 				else
 				{
-					_glContext = _openGLProvider.RequestGLContext(majorGlVersion, minorGlVersion, true);
+					ndsRom = roms[0];
+					if (roms.Count == 2)
+					{
+						gbaRom = roms[1];
+					}
 				}
-			}
 
-			if (_activeSyncSettings.ThreeDeeRenderer == NDSSyncSettings.ThreeDeeRendererType.Software)
-			{
-				if (!_openGLProvider.SupportsGLVersion(3, 1))
+				_activeSyncSettings.FirmwareOverride |= !_activeSyncSettings.UseRealBIOS || lp.DeterministicEmulationRequested;
+
+				// ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
+				if (!IsDSi && _activeSyncSettings.FirmwareStartUp == NDSSyncSettings.StartUp.AutoBoot)
 				{
-					lp.Comm.Notify("OpenGL 3.1 is not supported on this machine, screen control options will not work.", null);
+					_activeSyncSettings.FirmwareLanguage |= (NDSSyncSettings.Language)0x40;
 				}
-				else
+
+				_activeSyncSettings.UseRealTime &= !lp.DeterministicEmulationRequested;
+				var startTime = _activeSyncSettings.UseRealTime ? DateTime.Now : _activeSyncSettings.InitialTime;
+
+				LibMelonDS.ConsoleCreationArgs consoleCreationArgs;
+
+				consoleCreationArgs.NdsRomLength = ndsRom?.Length ?? 0;
+				consoleCreationArgs.GbaRomLength = gbaRom?.Length ?? 0;
+				consoleCreationArgs.Arm9BiosLength = bios9?.Length ?? 0;
+				consoleCreationArgs.Arm7BiosLength = bios7?.Length ?? 0;
+				consoleCreationArgs.FirmwareLength = firmware?.Length ?? 0;
+				consoleCreationArgs.Arm9iBiosLength = bios9i?.Length ?? 0;
+				consoleCreationArgs.Arm7iBiosLength = bios7i?.Length ?? 0;
+				consoleCreationArgs.NandLength = nand?.Length ?? 0;
+				consoleCreationArgs.DsiWareLength = dsiWare?.Length ?? 0;
+				consoleCreationArgs.TmdLength = tmd?.Length ?? 0;
+
+				consoleCreationArgs.DSi = IsDSi;
+				consoleCreationArgs.ClearNAND = _activeSyncSettings.ClearNAND || lp.DeterministicEmulationRequested;
+				consoleCreationArgs.SkipFW = _activeSyncSettings.SkipFirmware;
+
+				consoleCreationArgs.BitDepth = _settings.AudioBitDepth;
+				consoleCreationArgs.Interpolation = NDSSettings.AudioInterpolationType.None;
+
+				consoleCreationArgs.ThreeDeeRenderer = _activeSyncSettings.ThreeDeeRenderer;
+				consoleCreationArgs.Threaded3D = _activeSyncSettings.ThreadedRendering;
+				consoleCreationArgs.ScaleFactor = _activeSyncSettings.GLScaleFactor;
+				consoleCreationArgs.BetterPolygons = _activeSyncSettings.GLBetterPolygons;
+				consoleCreationArgs.HiResCoordinates = _activeSyncSettings.GLHiResCoordinates;
+
+				consoleCreationArgs.StartYear = startTime.Year % 100;
+				consoleCreationArgs.StartMonth = startTime.Month;
+				consoleCreationArgs.StartDay = startTime.Day;
+				consoleCreationArgs.StartHour = startTime.Hour;
+				consoleCreationArgs.StartMinute = startTime.Minute;
+				consoleCreationArgs.StartSecond = startTime.Second;
+
+				_activeSyncSettings.GetFirmwareSettings(out consoleCreationArgs.FwSettings);
+
+				var errorBuffer = new byte[1024];
+				unsafe
 				{
-					_glContext = _openGLProvider.RequestGLContext(3, 1, true);
+					fixed (byte*
+						ndsRomPtr = ndsRom,
+						gbaRomPtr = gbaRom,
+						bios9Ptr = bios9,
+						bios7Ptr = bios7,
+						firmwarePtr = firmware,
+						bios9iPtr = bios9i,
+						bios7iPtr = bios7i,
+						nandPtr = nand,
+						dsiWarePtr = dsiWare,
+						tmdPtr = tmd)
+					{
+						consoleCreationArgs.NdsRomData = (IntPtr)ndsRomPtr;
+						consoleCreationArgs.GbaRomData = (IntPtr)gbaRomPtr;
+						consoleCreationArgs.Arm9BiosData = (IntPtr)bios9Ptr;
+						consoleCreationArgs.Arm7BiosData = (IntPtr)bios7Ptr;
+						consoleCreationArgs.FirmwareData = (IntPtr)firmwarePtr;
+						consoleCreationArgs.Arm9iBiosData = (IntPtr)bios9iPtr;
+						consoleCreationArgs.Arm7iBiosData = (IntPtr)bios7iPtr;
+						consoleCreationArgs.NandData = (IntPtr)nandPtr;
+						consoleCreationArgs.DsiWareData = (IntPtr)dsiWarePtr;
+						consoleCreationArgs.TmdData = (IntPtr)tmdPtr;
+						_console = _core.CreateConsole(ref consoleCreationArgs, errorBuffer);
+					}
 				}
-			}
 
-			_core = PreInit<LibMelonDS>(new()
-			{
-				Filename = "melonDS.wbx",
-				SbrkHeapSizeKB = 2 * 1024,
-				SealedHeapSizeKB = 4,
-				InvisibleHeapSizeKB = 4 * 1024,
-				PlainHeapSizeKB = 4,
-				MmapHeapSizeKB = 1920 * 1024,
-				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[]
-			{
-				_readCallback, _writeCallback, _execCallback, _traceCallback, _threadStartCallback,
-				_configCallbackInterface.GetBoolean, _configCallbackInterface.GetInteger,
-				_configCallbackInterface.GetString, _configCallbackInterface.GetArray,
-				_fileCallbackInterface.GetLength, _fileCallbackInterface.GetData,
-				_logCallback, _getGLProcAddressCallback
-			});
-
-			_activeSyncSettings.UseRealBIOS |= IsDSi;
-
-			if (_activeSyncSettings.UseRealBIOS)
-			{
-				AddCoreFile("bios7.bin", CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7")));
-				AddCoreFile("bios9.bin", CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9")));
-				AddCoreFile("firmware.bin", CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", IsDSi ? "firmwarei" : "firmware")));
-			}
-
-			if (IsDSi)
-			{
-				AddCoreFile("bios7i.bin", CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7i")));
-				AddCoreFile("bios9i.bin", CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9i")));
-				AddCoreFile("nand.bin", DecideNAND(CoreComm.CoreFileProvider, (DSiTitleId.Upper & ~0xFF) == 0x00030000, roms[0][0x1B0]));
-			}
-
-			if (IsDSiWare)
-			{
-				AddCoreFile("tmd.rom", GetTMDData(DSiTitleId.Full));
-				AddCoreFile("dsiware.rom", roms[0]);
-			}
-			else
-			{
-				AddCoreFile("nds.rom", roms[0]);
-				if (roms.Count == 2)
+				if (_console == IntPtr.Zero)
 				{
-					AddCoreFile("gba.rom", roms[1]);
+					var errorStr = Encoding.ASCII.GetString(errorBuffer).TrimEnd('\0');
+					throw new InvalidOperationException(errorStr);
 				}
-			}
 
-			_activeSyncSettings.FirmwareOverride |= !_activeSyncSettings.UseRealBIOS || lp.DeterministicEmulationRequested;
-
-			// ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-			if (!IsDSi && _activeSyncSettings.FirmwareStartUp == NDSSyncSettings.StartUp.AutoBoot)
-			{
-				_activeSyncSettings.FirmwareLanguage |= (NDSSyncSettings.Language)0x40;
-			}
-
-			_activeSyncSettings.UseRealTime &= !lp.DeterministicEmulationRequested;
-			var startTime = _activeSyncSettings.UseRealTime ? DateTime.Now : _activeSyncSettings.InitialTime;
-
-			LibMelonDS.InitConfig initConfig;
-			initConfig.SkipFW = _activeSyncSettings.SkipFirmware;
-			initConfig.HasGBACart = roms.Count == 2;
-			initConfig.DSi = IsDSi;
-			initConfig.ClearNAND = _activeSyncSettings.ClearNAND || lp.DeterministicEmulationRequested;
-			initConfig.LoadDSiWare = IsDSiWare;
-			initConfig.IsWinApi = !OSTailoredCode.IsUnixHost;
-			initConfig.ThreeDeeRenderer = _activeSyncSettings.ThreeDeeRenderer;
-			initConfig.RenderSettings.SoftThreaded = _activeSyncSettings.ThreadedRendering;
-			initConfig.RenderSettings.GLScaleFactor = _activeSyncSettings.GLScaleFactor;
-			initConfig.RenderSettings.GLBetterPolygons = _activeSyncSettings.GLBetterPolygons;
-			initConfig.StartTime.Year = startTime.Year % 100;
-			initConfig.StartTime.Month = startTime.Month;
-			initConfig.StartTime.Day = startTime.Day;
-			initConfig.StartTime.Hour = startTime.Hour;
-			initConfig.StartTime.Minute = startTime.Minute;
-			initConfig.StartTime.Second = startTime.Second;
-			_activeSyncSettings.GetFirmwareSettings(out initConfig.FirmwareSettings);
-
-			if (_activeSyncSettings.UseRealBIOS)
-			{
-				var fw = _coreFiles["firmware.bin"];
-
-				if (fw.Length is not (0x20000 or 0x40000 or 0x80000))
+				if (IsDSiWare)
 				{
-					throw new InvalidOperationException("Invalid firmware length");
+					_core.DSiWareSavsLength(_console, DSiTitleId.Lower, out PublicSavSize, out PrivateSavSize, out BannerSavSize);
+					DSiWareSaveLength = PublicSavSize + PrivateSavSize + BannerSavSize;
 				}
 
-				NDSFirmware.MaybeWarnIfBadFw(fw, CoreComm.ShowMessage);
-			}
+				PostInit();
 
-			var error = _core.Init(
-				ref initConfig,
-				_configCallbackInterface.AllCallbacksInArray(_adapter),
-				_fileCallbackInterface.AllCallbacksInArray(_adapter),
-				_logCallback,
-				_glContext != null ? _getGLProcAddressCallback : null);
+				((MemoryDomainList)this.AsMemoryDomains()).SystemBus = new NDSSystemBus(this.AsMemoryDomains()["ARM9 System Bus"], this.AsMemoryDomains()["ARM7 System Bus"]);
 
-			if (error != IntPtr.Zero)
-			{
-				using (_exe.EnterExit())
+				DeterministicEmulation = lp.DeterministicEmulationRequested || !_activeSyncSettings.UseRealTime;
+
+				_frameThreadPtr = _core.GetFrameThreadProc();
+				if (_frameThreadPtr != IntPtr.Zero)
 				{
-					throw new InvalidOperationException(Marshal.PtrToStringAnsi(error));
+					Console.WriteLine($"Setting up waterbox thread for 0x{(ulong)_frameThreadPtr:X16}");
+					_frameThread = new(FrameThreadProc) { IsBackground = true };
+					_frameThread.Start();
+					_frameThreadAction = CallingConventionAdapters
+						.GetWaterboxUnsafeUnwrapped()
+						.GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
+					_core.SetThreadStartCallback(_threadStartCallback);
+				}
+
+				_disassembler = new(_core);
+				_serviceProvider.Register<IDisassemblable>(_disassembler);
+
+				const string TRACE_HEADER = "ARM9+ARM7: Opcode address, opcode, registers (r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, SP, LR, PC, Cy, CpuMode)";
+				Tracer = new TraceBuffer(TRACE_HEADER);
+				_serviceProvider.Register(Tracer);
+
+				if (_glContext != null)
+				{
+					_glTextureProvider = new(this, _core, () => _openGLProvider.ActivateGLContext(_glContext));
+					_serviceProvider.Register<IVideoProvider>(_glTextureProvider);
+					RefreshScreenSettings(_settings);
 				}
 			}
-
-			// add DSiWare sav files to the core files, so we can import/export for SaveRAM
-			if (IsDSiWare)
+			catch
 			{
-				_core.DSiWareSavsLength(DSiTitleId.Lower, out var publicSavSize, out var privateSavSize, out var bannerSavSize);
-
-				if (publicSavSize != 0)
-				{
-					AddCoreFile("public.sav", new byte[publicSavSize]);
-				}
-
-				if (privateSavSize != 0)
-				{
-					AddCoreFile("private.sav", new byte[privateSavSize]);
-				}
-
-				if (bannerSavSize != 0)
-				{
-					AddCoreFile("banner.sav", new byte[bannerSavSize]);
-				}
-
-				DSiWareSaveLength = publicSavSize + privateSavSize + bannerSavSize;
-			}
-
-			PostInit();
-
-			((MemoryDomainList)this.AsMemoryDomains()).SystemBus = new NDSSystemBus(this.AsMemoryDomains()["ARM9 System Bus"], this.AsMemoryDomains()["ARM7 System Bus"]);
-
-			DeterministicEmulation = lp.DeterministicEmulationRequested || !_activeSyncSettings.UseRealTime;
-
-			_frameThreadPtr = _core.GetFrameThreadProc();
-			if (_frameThreadPtr != IntPtr.Zero)
-			{
-				Console.WriteLine($"Setting up waterbox thread for 0x{(ulong)_frameThreadPtr:X16}");
-				_frameThread = new(FrameThreadProc) { IsBackground = true };
-				_frameThread.Start();
-				_frameThreadAction = CallingConventionAdapters
-					.GetWaterboxUnsafeUnwrapped()
-					.GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
-				_core.SetThreadStartCallback(_threadStartCallback);
-			}
-
-			_disassembler = new(_core);
-			_serviceProvider.Register<IDisassemblable>(_disassembler);
-
-			const string TRACE_HEADER = "ARM9+ARM7: Opcode address, opcode, registers (r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, SP, LR, PC, Cy, CpuMode)";
-			Tracer = new TraceBuffer(TRACE_HEADER);
-			_serviceProvider.Register(Tracer);
-
-			if (_glContext != null)
-			{
-				_glTextureProvider = new(this, _core, () => _openGLProvider.ActivateGLContext(_glContext));
-				_serviceProvider.Register<IVideoProvider>(_glTextureProvider);
-				RefreshScreenSettings(_settings);
+				Dispose();
+				throw;
 			}
 		}
 
@@ -385,12 +393,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		// todo: wire this up w/ frontend
 		public byte[] GetNAND()
 		{
-			var length = _core.GetNANDSize();
+			var length = _core.GetNANDSize(_console);
 
 			if (length > 0)
 			{
 				var ret = new byte[length];
-				_core.GetNANDData(ret);
+				_core.GetNANDData(_console, ret);
 				return ret;
 			}
 
@@ -449,8 +457,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				b |= LibMelonDS.Buttons.LIDCLOSE;
 			if (c.IsPressed("Touch"))
 				b |= LibMelonDS.Buttons.TOUCH;
-			if (c.IsPressed("Power"))
-				b |= LibMelonDS.Buttons.POWER;
 
 			return b;
 		}
@@ -464,14 +470,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			_core.SetTraceCallback(Tracer.IsEnabled() ? _traceCallback : null, _settings.GetTraceMask());
 
+			if (controller.IsPressed("Power"))
+			{
+				_core.ResetConsole(_console, _activeSyncSettings.SkipFirmware, DSiTitleId.Full);
+			}
+
 			return new LibMelonDS.FrameInfo
 			{
+				Console = _console,
 				Keys = GetButtons(controller),
 				TouchX = (byte)controller.AxisValue("Touch X"),
 				TouchY = (byte)controller.AxisValue("Touch Y"),
 				MicVolume = (byte)controller.AxisValue("Mic Volume"),
 				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
-				ConsiderAltLag = _settings.ConsiderAltLag,
+				ConsiderAltLag = (byte)(_settings.ConsiderAltLag ? 1 : 0),
 			};
 		}
 

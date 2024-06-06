@@ -19,69 +19,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private NDSSyncSettings _syncSettings;
 
 		private readonly NDSSyncSettings _activeSyncSettings;
-		private readonly LibMelonDS.ConfigCallbackInterface _configCallbackInterface;
-
-		private bool GetBooleanSettingCallback(LibMelonDS.ConfigEntry configEntry) => configEntry switch
-		{
-			LibMelonDS.ConfigEntry.ExternalBIOSEnable => _activeSyncSettings.UseRealBIOS,
-			LibMelonDS.ConfigEntry.DLDI_Enable => false, // TODO
-			LibMelonDS.ConfigEntry.DLDI_ReadOnly => false, // TODO
-			LibMelonDS.ConfigEntry.DLDI_FolderSync => false, // TODO
-			LibMelonDS.ConfigEntry.DSiSD_Enable => false, // TODO
-			LibMelonDS.ConfigEntry.DSiSD_ReadOnly => false, // TODO
-			LibMelonDS.ConfigEntry.DSiSD_FolderSync => false, // TODO
-			LibMelonDS.ConfigEntry.DSi_FullBIOSBoot => false, // TODO
-			_ => throw new InvalidOperationException()
-		};
-
-		private int GetIntegerSettingCallback(LibMelonDS.ConfigEntry configEntry) => configEntry switch
-		{
-			LibMelonDS.ConfigEntry.DLDI_ImageSize => 0, // TODO
-			LibMelonDS.ConfigEntry.DSiSD_ImageSize => 0, // TODO
-			LibMelonDS.ConfigEntry.AudioBitDepth => (int)_settings.AudioBitDepth,
-			_ => throw new InvalidOperationException()
-		};
-
-		private static void GetStringSettingCallback(LibMelonDS.ConfigEntry configEntry, IntPtr buffer, int bufferSize)
-		{
-			// none of these are actually implemented yet
-			var ret = configEntry switch
-			{
-				LibMelonDS.ConfigEntry.DLDI_ImagePath => "dldi.bin",
-				LibMelonDS.ConfigEntry.DLDI_FolderPath => "dldi",
-				LibMelonDS.ConfigEntry.DSiSD_ImagePath => "sd.bin",
-				LibMelonDS.ConfigEntry.DSiSD_FolderPath => "sd",
-				LibMelonDS.ConfigEntry.WifiSettingsPath => "wfcsettings.bin",
-				_ => throw new InvalidOperationException()
-			};
-
-			if (string.IsNullOrEmpty(ret))
-			{
-				Marshal.WriteByte(buffer, 0, 0);
-				return;
-			}
-
-			var bytes = Encoding.UTF8.GetBytes(ret);
-			var numToCopy = Math.Min(bytes.Length, bufferSize - 1);
-			Marshal.Copy(bytes, 0, buffer, numToCopy);
-			Marshal.WriteByte(buffer, numToCopy, 0);
-		}
-
-		private static void GetArraySettingCallback(LibMelonDS.ConfigEntry configEntry, IntPtr buffer)
-		{
-			if (configEntry != LibMelonDS.ConfigEntry.Firm_MAC)
-			{
-				throw new InvalidOperationException();
-			}
-
-			// TODO make MAC configurable
-			Marshal.WriteByte(buffer, 0, 0x00);
-			Marshal.WriteByte(buffer, 1, 0x09);
-			Marshal.WriteByte(buffer, 2, 0xBF);
-			Marshal.WriteByte(buffer, 3, 0x0E);
-			Marshal.WriteByte(buffer, 4, 0x49);
-			Marshal.WriteByte(buffer, 5, 0x16);
-		}
 
 		public enum ScreenLayoutKind
 		{
@@ -153,6 +90,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public AudioBitDepthType AudioBitDepth { get; set; }
 
+			public enum AudioInterpolationType : int
+			{
+				None,
+			}
+
 			[DisplayName("Alt Lag")]
 			[Description("If true, touch screen polling and ARM7 key polling will be considered for lag frames. Otherwise, only ARM9 key polling will be considered.")]
 			[DefaultValue(false)]
@@ -219,13 +161,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				Software,
 				[Display(Name = "OpenGL Classic")]
 				OpenGL_Classic,
-				// [Display(Name = "OpenGL Compute")]
-				//OpenGL_Compute,
+				[Display(Name = "OpenGL Compute")]
+				OpenGL_Compute,
 			}
 
 			[DisplayName("3D Renderer")]
-			// [Description("Renderer used for 3D. OpenGL Classic requires at least OpenGL 3.2, OpenGL Compute requires at least OpenGL 4.3. Forced to Software when recording a movie.")]
-			[Description("Renderer used for 3D. OpenGL Classic requires at least OpenGL 3.2. Forced to Software when recording a movie.")]
+			[Description("Renderer used for 3D. OpenGL Classic requires at least OpenGL 3.2, OpenGL Compute requires at least OpenGL 4.3. Forced to Software when recording a movie.")]
 			[DefaultValue(ThreeDeeRendererType.Software)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ThreeDeeRendererType ThreeDeeRenderer { get; set; }
@@ -248,9 +189,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 
 			[DisplayName("OpenGL Better Polygons")]
-			[Description("Enhances polygon quality with OpenGL. Not used for the software renderer.")]
+			[Description("Enhances polygon quality with OpenGL Classic. Not used for the software nor OpenGL Compute renderer.")]
 			[DefaultValue(false)]
 			public bool GLBetterPolygons { get; set; }
+
+			[DisplayName("OpenGL Hi Res Coordinates")]
+			[Description("Uses high resolution coordinates with OpenGL Compute. Not used for the software nor OpenGL Classic renderer.")]
+			[DefaultValue(false)]
+			public bool GLHiResCoordinates { get; set; }
 
 			[JsonIgnore]
 			private DateTime _initaltime;
@@ -462,6 +408,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 						.Slice(0, fwSettings.MessageLength)
 						.CopyTo(message);
 				}
+
+				// TODO make MAC configurable
+				fwSettings.MacAddress[0] = 0x00;
+				fwSettings.MacAddress[1] = 0x09;
+				fwSettings.MacAddress[2] = 0xBF;
+				fwSettings.MacAddress[3] = 0x0E;
+				fwSettings.MacAddress[4] = 0x49;
+				fwSettings.MacAddress[5] = 0x16;
 			}
 
 			public NDSSyncSettings Clone()
@@ -510,7 +464,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			};
 
 			_openGLProvider.ActivateGLContext(_glContext); // SetScreenSettings will re-present the frame, so needs OpenGL context active
-			_core.SetScreenSettings(ref screenSettings, out var w , out var h, out var vw, out var vh);
+			_core.SetScreenSettings(_console, ref screenSettings, out var w , out var h, out var vw, out var vh);
 
 			BufferWidth = w;
 			BufferHeight = h;
