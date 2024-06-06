@@ -82,7 +82,7 @@ namespace BizHawk.Common
 		}
 
 #if NETCOREAPP3_0_OR_GREATER
-		public static string DescribeIsNull<T>(T? obj, [CallerArgumentExpression("obj")] string? expr = default)
+		public static string DescribeIsNull<T>(T? obj, [CallerArgumentExpression(nameof(obj))] string? expr = default)
 #else
 		public static string DescribeIsNull<T>(T? obj, string expr)
 #endif
@@ -90,7 +90,7 @@ namespace BizHawk.Common
 			=> $"{expr} is {(obj is null ? "null" : "not null")}";
 
 #if NETCOREAPP3_0_OR_GREATER
-		public static string DescribeIsNullValT<T>(T? boxed, [CallerArgumentExpression("boxed")] string? expr = default)
+		public static string DescribeIsNullValT<T>(T? boxed, [CallerArgumentExpression(nameof(boxed))] string? expr = default)
 #else
 		public static string DescribeIsNullValT<T>(T? boxed, string expr)
 #endif
