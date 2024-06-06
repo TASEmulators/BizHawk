@@ -124,6 +124,9 @@ jobs:
     - name: Build emulibc
       working-directory: ./waterbox/emulibc
       run: make -j4
+    - name: Build libco
+      working-directory: ./waterbox/libco
+      run: make -j4
     - name: Building MAME
       working-directory: ./waterbox/mame-arcade
       run: make -j4 install
