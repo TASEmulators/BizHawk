@@ -692,15 +692,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			var windowScale = Config.GetWindowScaleFor(Emulator.SystemId);
 			foreach (ToolStripMenuItem item in WindowSizeSubMenu.DropDownItems)
 			{
-				item.Checked = Config.TargetZoomFactors[Emulator.SystemId] == (int) item.Tag;
+				item.Checked = (int) item.Tag == windowScale;
 			}
 		}
 
 		private void WindowSize_Click(object sender, EventArgs e)
 		{
-			Config.TargetZoomFactors[Emulator.SystemId] = (int) ((ToolStripMenuItem) sender).Tag;
+			Config.SetWindowScaleFor(Emulator.SystemId, (int) ((ToolStripMenuItem) sender).Tag);
 			FrameBufferResized();
 		}
 

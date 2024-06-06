@@ -4,6 +4,7 @@ using System.IO;
 
 using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
@@ -96,7 +97,13 @@ namespace BizHawk.Client.Common
 
 		public bool StackOSDMessages { get; set; } = true;
 
-		public ZoomFactors TargetZoomFactors { get; set; } = new ZoomFactors();
+		private Dictionary<string, int> TargetZoomFactors { get; set; } = new();
+
+		public int GetWindowScaleFor(string sysID)
+			=> TargetZoomFactors.GetValueOrPut(sysID, static _ => 2);
+
+		public void SetWindowScaleFor(string sysID, int windowScale)
+			=> TargetZoomFactors[sysID] = windowScale;
 
 		// choose between 0 and 256
 		public int TargetScanlineFilterIntensity { get; set; } = 128;

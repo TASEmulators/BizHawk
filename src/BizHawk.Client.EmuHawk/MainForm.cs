@@ -1381,7 +1381,7 @@ namespace BizHawk.Client.EmuHawk
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
 			for (int i = 0; i < 2; i++)
 			{
-				int zoom = Config.TargetZoomFactors[Emulator.SystemId];
+				int zoom = Config.GetWindowScaleFor(Emulator.SystemId);
 				var area = Screen.FromControl(this).WorkingArea;
 
 				int borderWidth = Size.Width - _presentationPanel.Control.Size.Width;
@@ -2788,21 +2788,25 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncreaseWindowSize()
 		{
-			if (Config.TargetZoomFactors[Emulator.SystemId] < WINDOW_SCALE_MAX)
+			var windowScale = Config.GetWindowScaleFor(Emulator.SystemId);
+			if (windowScale < WINDOW_SCALE_MAX)
 			{
-				Config.TargetZoomFactors[Emulator.SystemId]++;
+				windowScale++;
+				Config.SetWindowScaleFor(Emulator.SystemId, windowScale);
 			}
-			AddOnScreenMessage($"Screensize set to {Config.TargetZoomFactors[Emulator.SystemId]}x");
+			AddOnScreenMessage($"Screensize set to {windowScale}x");
 			FrameBufferResized();
 		}
 
 		private void DecreaseWindowSize()
 		{
-			if (Config.TargetZoomFactors[Emulator.SystemId] > 1)
+			var windowScale = Config.GetWindowScaleFor(Emulator.SystemId);
+			if (windowScale > 1)
 			{
-				Config.TargetZoomFactors[Emulator.SystemId]--;
+				windowScale--;
+				Config.SetWindowScaleFor(Emulator.SystemId, windowScale);
 			}
-			AddOnScreenMessage($"Screensize set to {Config.TargetZoomFactors[Emulator.SystemId]}x");
+			AddOnScreenMessage($"Screensize set to {windowScale}x");
 			FrameBufferResized();
 		}
 

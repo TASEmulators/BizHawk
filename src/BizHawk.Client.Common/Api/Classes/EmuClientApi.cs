@@ -121,7 +121,8 @@ namespace BizHawk.Client.Common
 
 		public int GetTargetScanlineIntensity() => _config.TargetScanlineFilterIntensity;
 
-		public int GetWindowSize() => _config.TargetZoomFactors[Emulator.SystemId];
+		public int GetWindowSize()
+			=> _config.GetWindowScaleFor(Emulator.SystemId);
 
 		public void InvisibleEmulation(bool invisible) => _mainForm.InvisibleEmulation = invisible;
 
@@ -194,7 +195,7 @@ namespace BizHawk.Client.Common
 		{
 			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 			{
-				_config.TargetZoomFactors[Emulator.SystemId] = size;
+				_config.SetWindowScaleFor(Emulator.SystemId, size);
 				_mainForm.FrameBufferResized();
 				_displayManager.OSD.AddMessage($"Window size set to {size}x");
 			}
