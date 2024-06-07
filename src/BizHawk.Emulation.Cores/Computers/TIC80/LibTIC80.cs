@@ -143,5 +143,8 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 
 		[BizImport(CC)]
 		public abstract void SetInputs(ref TIC80Inputs inputs);
+
+		[BizImport(CC)]
+		public abstract bool IsMouseRelative();
 	}
 }

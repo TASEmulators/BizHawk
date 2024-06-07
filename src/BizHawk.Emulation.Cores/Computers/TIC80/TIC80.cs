@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 			_core = PreInit<LibTIC80>(new WaterboxOptions
 			{
 				Filename = "tic80.wbx",
-				SbrkHeapSizeKB = 2 * 1024,
+				SbrkHeapSizeKB = 64 * 1024,
 				SealedHeapSizeKB = 4,
 				InvisibleHeapSizeKB = 4,
 				PlainHeapSizeKB = 4,
@@ -111,12 +111,11 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 
 			if (inputsActive[4])
 			{
-				ret.AddXYPair("Mouse Position {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128);
+				ret.AddXYPair("Mouse Position {0}", AxisPairOrientation.RightAndDown, (-128).RangeTo(127), 0);
 				ret.BoolButtons.Add("Mouse Left Click");
 				ret.BoolButtons.Add("Mouse Middle Click");
 				ret.BoolButtons.Add("Mouse Right Click");
 				ret.AddXYPair("Mouse Scroll {0}", AxisPairOrientation.RightAndUp, (-32).RangeTo(31), 0);
-				ret.BoolButtons.Add("Mouse Relative Toggle");
 
 				foreach (var n in ret.BoolButtons)
 				{
@@ -197,11 +196,6 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 			var y = (ushort)((sbyte)controller.AxisValue("Mouse Scroll Y") + 32);
 			ret |= (ushort)(y << (3 + 6));
 
-			if (controller.IsPressed("Mouse Relative Toggle"))
-			{
-				ret |= 0x8000;
-			}
-
 			return ret;
 		}
 
@@ -231,16 +225,25 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 		{
 			var inputs = new LibTIC80.TIC80Inputs
 			{
-				MouseX = (byte)controller.AxisValue("Mouse Position X"),
-				MouseY = (byte)controller.AxisValue("Mouse Position Y"),
+				MouseX = (byte)(sbyte)controller.AxisValue("Mouse Position X"),
+				MouseY = (byte)(sbyte)controller.AxisValue("Mouse Position Y"),
 				MouseButtons = GetMouseButtons(controller),
 			};
 
-			if (controller.IsPressed("Mouse Relative Toggle"))
+			// a reset will unset relative mode, but we won't know that until the reset actually happens
+			if (_core.IsMouseRelative() && !controller.IsPressed("Reset"))
 			{
-				// turn (0, 255) to (-128, 127)
-				inputs.MouseX -= 128;
-				inputs.MouseY -= 128;
+				inputs.MouseButtons |= 0x8000;
+			}
+			else
+			{
+				// convert (-128, 127) to (0, 255)
+				inputs.MouseX += 128;
+				inputs.MouseY += 128;
+
+				// mouse Y is supposed to be contrained to 0-143 (i.e. screen height range)
+				// mouse X has the full range regardless (since screen width is 256)
+				inputs.MouseY = (byte)(inputs.MouseY * 143 / 255);
 			}
 
 			GetGamepads(controller, ref inputs);
