@@ -145,11 +145,17 @@ Further Memory (not mapped to ARM9/ARM7 bus)
 
 */
 
-template<bool arm9>
+template <bool arm9>
 static bool SafeToPeek(u32 addr)
 {
 	if (arm9)
 	{
+		// dsp io reads are not safe
+		if ((addr & 0xFFFFFF00) == 0x04004200)
+		{
+			return false;
+		}
+
 		switch (addr)
 		{
 			case 0x04000130:
