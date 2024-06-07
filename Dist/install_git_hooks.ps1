@@ -4,16 +4,21 @@ if (Test-Path $targetDir -PathType Container) { # is Git repo
 	$PSCommandFilename = Split-Path $PSCommandPath -Leaf
 	foreach ($f in Get-ChildItem "$PSScriptRoot/git_hooks") {
 		$target = Join-Path $targetDir $f.Name
-		if ($(Get-FileHash $target).Hash -ne $(Get-FileHash $f.FullName).Hash) {
-			$head = Get-Content $target -TotalCount 3
-			if ($magicHeader -in $head) {
-				echo "[$PSCommandFilename] updating existing Git hook $($f.Name)"
-				Copy-Item $f $target
-			} else {
-				echo "[$PSCommandFilename] found existing Git hook $($f.Name), please resolve conflict manually"
-				# should probably make the scripts extensible then...
-				exit 1
+		if (Test-Path $target -PathType Leaf) { # target file exists
+			if ($(Get-FileHash $target).Hash -ne $(Get-FileHash $f.FullName).Hash) { # files differ
+				$head = Get-Content $target -TotalCount 3
+				if ($magicHeader -in $head) {
+					echo "[$PSCommandFilename] updating existing Git hook $($f.Name)"
+					Copy-Item $f $target
+				} else {
+					echo "[$PSCommandFilename] found existing Git hook $($f.Name), please resolve conflict manually"
+					# should probably make the scripts extensible then...
+					exit 1
+				}
 			}
+		} else {
+			echo "[$PSCommandFilename] creating Git hook $($f.Name)"
+			Copy-Item $f $target
 		}
 	}
 }
