@@ -16,4 +16,7 @@
 	<ItemGroup>
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.VersionInfo.dll" />
 	</ItemGroup>
+	<Target Name="InstallGitHooks" BeforeTargets="PreBuildEvent">
+		<Exec Command="dotnet pwsh $(MSBuildProjectDirectory)/../../Dist/install_git_hooks.ps1" />
+	</Target>
 </Project>
