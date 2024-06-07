@@ -52,9 +52,4 @@
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="all" />
 		<PackageReference Include="System.Resources.Extensions" PrivateAssets="all" />
 	</ItemGroup>
-	<Target Name="RestoreTools" BeforeTargets="PreBuildEvent">
-		<!-- why is this not the default behaviour -->
-		<Exec Command="dotnet tool restore"
-			StandardOutputImportance="low" /> <!-- this parameter has almost no documentation, hooray -->
-	</Target>
 </Project>
