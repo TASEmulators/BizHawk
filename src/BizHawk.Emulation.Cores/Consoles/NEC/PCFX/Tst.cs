@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 {
-	[PortedCore(CoreNames.TST, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
+	[PortedCore(CoreNames.TST, "Mednafen Team", "1.32.1", "https://mednafen.github.io/releases/")]
 	public class Tst : NymaCore
 	{
 		private Tst(CoreComm comm)

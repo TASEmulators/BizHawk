@@ -8,7 +8,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
-	[PortedCore(CoreNames.Nymashock, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
+	[PortedCore(CoreNames.Nymashock, "Mednafen Team", "1.32.1", "https://mednafen.github.io/releases/")]
 	public class Nymashock : NymaCore, IRegionable, ICycleTiming, IRedumpDiscChecksumInfo
 	{
 		public string RomDetails { get; }
