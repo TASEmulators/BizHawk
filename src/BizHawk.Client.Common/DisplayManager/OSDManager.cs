@@ -43,12 +43,12 @@ namespace BizHawk.Client.Common
 		{
 			var size = g.MeasureString(message);
 			var x = position.Anchor.IsLeft()
-				? position.X
-				: g.ClipBounds.Width - position.X - size.Width;
+				? position.X * g.Scale
+				: g.ClipBounds.Width - position.X * g.Scale - size.Width;
 
 			var y = position.Anchor.IsTop()
-				? position.Y
-				: g.ClipBounds.Height - position.Y - size.Height;
+				? position.Y * g.Scale
+				: g.ClipBounds.Height - position.Y * g.Scale - size.Height;
 
 			return new PointF(x, y);
 		}
