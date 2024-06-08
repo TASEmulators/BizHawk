@@ -1,13 +1,11 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 
 using System;
 using System.Collections.Generic;
-using static BizHawk.Emulation.Cores.Computers.Amiga.PUAE;
 
 namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
@@ -169,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			if (settings.FastMemory != FASTMEM_AUTO)
 			{
-				args.AddRange(new List<string> { "-s", "fastmem_size=" + (int)settings.FastMemory });
+				args.AddRange(new List<string> { "-s", "fastmem_size=" + settings.FastMemory });
 			}
 
 			return args;

@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			public struct KeyBuffer
 			{
 				public unsafe fixed byte Buffer[LibPUAE.KEY_COUNT];
-			};
+			}
 		}
 
 		[Flags]
