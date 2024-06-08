@@ -1,0 +1,12 @@
+@{a="\"} >$null # " 2>/dev/null || true #" >NUL 2>&1 || TYPE NUL & ECHO OFF
+
+echo \" <<'BATCH_SCRIPT' >/dev/null ">NUL "\"
+dotnet pwsh .\Dist\git_hooks\commit-msg.ps1 %*
+GOTO :eof
+BATCH_SCRIPT
+# else this is BASH
+# heredoc trick for polyglot taken from https://github.com/llamasoft/polyshell#how-it-works -- this script is basically that sans PowerShell support (since that's not the shell on Windows)
+# improved Batch `ECHO OFF` taken from https://github.com/tingstad/polyscript#explanation
+
+dotnet pwsh "./Dist/git_hooks/$(basename "$0").ps1" "$@"
+exit $?
