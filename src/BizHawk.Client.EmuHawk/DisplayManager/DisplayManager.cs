@@ -51,6 +51,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public override Size GetPanelNativeSize() => _presentationPanel.NativeSize;
 
+		protected override int GetGraphicsControlDpi() => _graphicsControl.DeviceDpi;
+
 		protected override Point GraphicsControlPointToClient(Point p) => _graphicsControl.PointToClient(p);
 
 		protected override void SwapBuffersOfGraphicsControl() => _graphicsControl.SwapBuffers();

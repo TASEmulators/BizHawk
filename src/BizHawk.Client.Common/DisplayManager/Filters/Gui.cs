@@ -613,9 +613,10 @@ namespace BizHawk.Client.Common.Filters
 			}
 
 			var size = FindInput().SurfaceFormat.Size;
-			
+
 			FilterProgram.GuiRenderer.Begin(size.Width, size.Height);
-			var blitter = new OSDBlitter(_font, FilterProgram.GuiRenderer, new(0, 0, size.Width, size.Height));
+			var scale = (int)Math.Round(FilterProgram.ControlDpi / 96.0f);
+			var blitter = new OSDBlitter(_font, FilterProgram.GuiRenderer, new(0, 0, size.Width, size.Height), scale);
 			FilterProgram.GuiRenderer.EnableBlending();
 			_manager.DrawScreenInfo(blitter);
 			_manager.DrawMessages(blitter);
@@ -627,24 +628,27 @@ namespace BizHawk.Client.Common.Filters
 			private readonly StringRenderer _font;
 			private readonly IGuiRenderer _renderer;
 
-			public OSDBlitter(StringRenderer font, IGuiRenderer renderer, Rectangle clipBounds)
+			public OSDBlitter(StringRenderer font, IGuiRenderer renderer, Rectangle clipBounds, int scale)
 			{
 				_font = font;
 				_renderer = renderer;
 				ClipBounds = clipBounds;
+				Scale = scale;
 			}
 
 			public void DrawString(string s, Color color, float x, float y)
 			{
 				_renderer.SetModulateColor(color);
-				_font.RenderString(_renderer, x, y, s);
+				_font.RenderString(_renderer, x, y, s, Scale);
 				_renderer.SetModulateColorWhite();
 			}
 
 			public SizeF MeasureString(string s)
-				=> _font.Measure(s);
+				=> _font.Measure(s, Scale);
 
 			public Rectangle ClipBounds { get; }
+
+			public int Scale { get; }
 		}
 	}
 }

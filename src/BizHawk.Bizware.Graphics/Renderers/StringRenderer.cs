@@ -1,5 +1,5 @@
-//http://www.angelcode.com/products/bmfont/
-//http://cyotek.com/blog/angelcode-bitmap-font-parsing-using-csharp
+// https://www.angelcode.com/products/bmfont/
+// https://devblog.cyotek.com/post/angelcode-bitmap-font-parsing-using-csharp
 
 using System;
 using System.Collections.Generic;
@@ -19,9 +19,23 @@ namespace BizHawk.Bizware.Graphics
 			FontInfo.LoadXml(xml);
 			
 			// load textures
-			for (var i=0; i<FontInfo.Pages.Length; i++)
+			for (var i = 0; i < FontInfo.Pages.Length; i++)
 			{
 				TexturePages.Add(owner.LoadTexture(textures[i]));
+			}
+
+			// precalc texcoords
+			foreach (var bfc in FontInfo)
+			{
+				var tex = TexturePages[bfc.TexturePage];
+				var w = (float)tex.Width;
+				var h = (float)tex.Height;
+				var bounds = new Rectangle(bfc.X, bfc.Y, bfc.Width, bfc.Height);
+				var u0 = bounds.Left / w;
+				var v0 = bounds.Top / h;
+				var u1 = bounds.Right / w;
+				var v1 = bounds.Bottom / h;
+				CharTexCoords.Add(bfc.Char, new(u0, v0, u1, v1));
 			}
 		}
 
@@ -35,10 +49,10 @@ namespace BizHawk.Bizware.Graphics
 			TexturePages = null;
 		}
 
-		public SizeF Measure(string str)
+		public SizeF Measure(string str, int scale)
 		{
 			float x = 0;
-			float y = FontInfo.LineHeight;
+			float y = FontInfo.LineHeight * scale;
 			var ox = x;
 			var len = str.Length;
 
@@ -67,18 +81,18 @@ namespace BizHawk.Bizware.Graphics
 					}
 
 					x = 0;
-					y += FontInfo.LineHeight;
+					y += FontInfo.LineHeight * scale;
 					continue;
 				}
 
 				var bfc = FontInfo[c];
-				x += bfc.XAdvance;
+				x += bfc.XAdvance * scale;
 			}
 
 			return new(Math.Max(x, ox), y);
 		}
 
-		public void RenderString(IGuiRenderer renderer, float x, float y, string str)
+		public void RenderString(IGuiRenderer renderer, float x, float y, string str, int scale)
 		{
 			if (Owner != renderer.Owner)
 			{
@@ -108,33 +122,28 @@ namespace BizHawk.Bizware.Graphics
 				if (c == '\n')
 				{
 					x = ox;
-					y += FontInfo.LineHeight;
+					y += FontInfo.LineHeight * scale;
 					continue;
 				}
 
 				var bfc = FontInfo[c];
-
-				// calculate texcoords (we shouldve already had this cached, but im speedcoding now)
 				var tex = TexturePages[bfc.TexturePage];
-				var w = (float)tex.Width;
-				var h = (float)tex.Height;
-				var bounds = new Rectangle(bfc.X, bfc.Y, bfc.Width, bfc.Height);
-				var u0 = bounds.Left / w;
-				var v0 = bounds.Top / h;
-				var u1 = bounds.Right / w;
-				var v1 = bounds.Bottom / h;
+				var gx = x + bfc.XOffset * scale;
+				var gy = y + bfc.YOffset * scale;
+				var charTexCoords = CharTexCoords[bfc.Char];
+				renderer.DrawSubrect(tex, gx, gy, bfc.Width * scale, bfc.Height * scale,
+					charTexCoords.U0, charTexCoords.V0, charTexCoords.U1, charTexCoords.V1);
 
-				var gx = x + bfc.XOffset;
-				var gy = y + bfc.YOffset;
-				renderer.DrawSubrect(tex, gx, gy, bfc.Width, bfc.Height, u0, v0, u1, v1);
-
-				x += bfc.XAdvance;
+				x += bfc.XAdvance * scale;
 			}
 		}
 
 		public IGL Owner { get; }
 
 		private readonly BitmapFont FontInfo;
-		private List<ITexture2D> TexturePages = new();
+		private List<ITexture2D> TexturePages = [ ];
+		private readonly Dictionary<char, TexCoords> CharTexCoords = [ ];
+
+		private record TexCoords(float U0, float V0, float U1, float V1);
 	}
 }

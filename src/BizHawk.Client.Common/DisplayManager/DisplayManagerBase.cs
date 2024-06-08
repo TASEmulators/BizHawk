@@ -440,6 +440,8 @@ namespace BizHawk.Client.Common
 
 		protected abstract Size GetGraphicsControlSize();
 
+		protected abstract int GetGraphicsControlDpi();
+
 		/// <summary>
 		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
 		/// Then it will stuff it into the bound PresentationPanel.
@@ -810,6 +812,8 @@ namespace BizHawk.Client.Common
 			var filterProgram = BuildDefaultChain(chainInsize, chainOutsize, job.IncludeOSD, job.IncludeUserFilters);
 			filterProgram.GuiRenderer = _renderer;
 			filterProgram.GL = _gl;
+
+			filterProgram.ControlDpi = GetGraphicsControlDpi();
 
 			//setup the source image filter
 			var fInput = (SourceImage)filterProgram["input"];
