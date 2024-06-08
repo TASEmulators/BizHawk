@@ -932,7 +932,7 @@ namespace BizHawk.Client.EmuHawk
 			var closestState = GetPriorStateForFramebuffer(frame);
 			if (closestState.Value.Length > 0 && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
 			{
-				LoadState(closestState);
+				LoadState(closestState, true);
 			}
 			closestState.Value.Dispose();
 
@@ -980,7 +980,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void LoadState(KeyValuePair<int, Stream> state)
+		public void LoadState(KeyValuePair<int, Stream> state, bool discardApiHawkSurfaces = false)
 		{
 			StatableEmulator.LoadStateBinary(new BinaryReader(state.Value));
 
@@ -990,6 +990,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateTools();
+			if (discardApiHawkSurfaces)
+			{
+				DisplayManager.DiscardApiHawkSurfaces();
+			}
 		}
 
 		public void AddBranchExternal() => BookMarkControl.AddBranchExternal();
