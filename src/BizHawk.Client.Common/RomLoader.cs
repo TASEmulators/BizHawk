@@ -347,7 +347,7 @@ namespace BizHawk.Client.Common
 			var discs = m3u.Entries
 				.Select(e => e.Path)
 				.Where(p => Disc.IsValidExtension(Path.GetExtension(p)))
-				.Select(path => (p: path, d: DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError))))
+				.Select(p => (p, d: DiscExtensions.CreateAnyType(p, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError))))
 				.Where(a => a.d != null)
 				.Select(a => (IDiscAsset)new DiscAsset
 				{
@@ -356,7 +356,7 @@ namespace BizHawk.Client.Common
 					DiscName = Path.GetFileNameWithoutExtension(a.p)
 				})
 				.ToList();
-			if (m3u.Entries.Count == 0)
+			if (discs.Count == 0)
 				throw new InvalidOperationException("Couldn't load any contents of the M3U as discs");
 
 			game = MakeGameFromDisc(discs[0].DiscData, Path.GetExtension(m3u.Entries[0].Path), discs[0].DiscName);
