@@ -16,12 +16,8 @@
 	<ItemGroup>
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.VersionInfo.dll" />
 	</ItemGroup>
-	<Target Name="RestoreTools" BeforeTargets="PreBuildEvent">
-		<!-- why is this not the default behaviour -->
-		<Exec Command="dotnet tool restore"
-			StandardOutputImportance="low" /> <!-- this parameter has almost no documentation, hooray -->
-	</Target>
 	<Target Name="InstallGitHooks" AfterTargets="PreBuildEvent">
-		<Exec Command="dotnet pwsh $(MSBuildProjectDirectory)/../../Dist/install_git_hooks.ps1" />
+		<Exec Command="$(MSBuildProjectDirectory)/../../Dist/install_git_hooks.ps1"
+			IgnoreExitCode="true" /> <!-- i.e. may fail... though it was actually using the exit code properly, but oh well -->
 	</Target>
 </Project>

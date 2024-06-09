@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 $targetDir = "$PSScriptRoot/../.git/hooks"
 if (Test-Path $targetDir -PathType Container) { # is Git repo
 	$PSCommandFilename = Split-Path $PSCommandPath -Leaf

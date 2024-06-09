@@ -5,6 +5,7 @@
 , git-cola ? pkgs.git-cola
 , git ? pkgs.gitMinimal
 , nano ? pkgs.nano
+, powershell ? pkgs.powershell
 , debugDotnetHostCrashes ? false # forwarded to Dist/launch-scripts.nix
 , debugPInvokes ? false # forwarded to Dist/launch-scripts.nix
 , forNixOS ? true
@@ -15,7 +16,7 @@
 	# thinking of exposing pre-configured IDEs from `default.nix` so they're available here
 	avail = import ./. { inherit debugDotnetHostCrashes debugPInvokes forNixOS system; };
 	f = drv: mkShell {
-		packages = [ git ]
+		packages = [ git powershell ]
 			++ lib.optionals useNanoAndCola [ git-cola nano ]
 			++ lib.optionals useKate [] #TODO
 			++ lib.optionals useVSCode [] #TODO https://devblogs.microsoft.com/dotnet/csharp-dev-kit-now-generally-available/ https://learn.microsoft.com/en-us/training/modules/implement-visual-studio-code-debugging-tools/

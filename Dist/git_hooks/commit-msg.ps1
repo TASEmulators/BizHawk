@@ -1,4 +1,4 @@
-#!/usr/bin/env -S dotnet pwsh
+#!/usr/bin/env -S pwsh
 $msg = Get-Content $args[0] -TotalCount 1 # this commit hook is always passed the commit message scratch file's path, so read the first line of that
 if ($msg -Match "^fix(?:ed|es)? #\d+$") {
 	echo "An issue reference alone is not a suitable commit message. Vetoed."
