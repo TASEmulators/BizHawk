@@ -33,11 +33,14 @@
 			fi
 			alias discohawk-monort-local='${avail.launchScriptsForLocalBuild.discohawk}'
 			alias emuhawk-monort-local='${avail.launchScriptsForLocalBuild.emuhawk}'
-			pfx="$(realpath --relative-to="$PWD" "$BIZHAWKBUILD_HOME")/"
-			if [ "$pfx" = "./" ]; then pfx=""; fi
-			printf "%s\n%s\n" \
-				"Run ''${pfx}Dist/Build{Debug,Release}.sh to build the solution. You may need to clean up with ''${pfx}Dist/CleanupBuildOutputDirs.sh." \
-				"Once built, running {discohawk,emuhawk}-monort-local will pull from ''${pfx}output/* and use Mono from Nixpkgs."
+			case "$-" in *i*)
+				pfx="$(realpath --relative-to="$PWD" "$BIZHAWKBUILD_HOME")/"
+				if [ "$pfx" = "./" ]; then pfx=""; fi
+				printf "%s\n%s\n" \
+					"Run ''${pfx}Dist/Build{Debug,Release}.sh to build the solution. You may need to clean up with ''${pfx}Dist/CleanupBuildOutputDirs.sh." \
+					"Once built, running {discohawk,emuhawk}-monort-local will pull from ''${pfx}output/* and use Mono from Nixpkgs."
+				;;
+			esac
 		'';
 	};
 	shells = lib.pipe avail [
