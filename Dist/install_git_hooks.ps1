@@ -1,7 +1,9 @@
 #!/usr/bin/env pwsh
+$PSCommandFilename = Split-Path $PSCommandPath -Leaf
+echo "[$PSCommandFilename] hello world"
 $targetDir = "$PSScriptRoot/../.git/hooks"
 if (Test-Path $targetDir -PathType Container) { # is Git repo
-	$PSCommandFilename = Split-Path $PSCommandPath -Leaf
+	echo "[$PSCommandFilename] looks like a Git repo"
 	foreach ($f in Get-ChildItem "$PSScriptRoot/git_hooks") {
 		$target = Join-Path $targetDir (Split-Path $f -LeafBase)
 		if (!(Test-Path $target -PathType Leaf)) { # target file doesn't exist
