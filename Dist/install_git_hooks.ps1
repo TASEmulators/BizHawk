@@ -10,7 +10,6 @@ if (Test-Path $targetDir -PathType Container) { # is Git repo
 		} elseif ($(Get-FileHash $target).Hash -ne $(Get-FileHash $f.FullName).Hash) { # files differ
 			$head = Get-Content $target -TotalCount 3
 			echo "[$PSCommandFilename] found existing Git hook $($f.Name), please resolve conflict manually"
-			#TODO should REALLY make the scripts extensible then...
 			exit 1
 		}
 		# else no-op
