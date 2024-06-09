@@ -54,7 +54,6 @@ namespace BizHawk.Client.Common
 		public string GenerateLogKey()
 		{
 			var sb = new StringBuilder();
-			sb.Append("LogKey:");
 
 			foreach (var group in _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0))
 			{
