@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public int VsyncDenominator { get; }
 
-		private int[] _vidBuff = Array.Empty<int>();
+		private int[] _vidBuff = [ ];
 		private int _vwidth;
 		private int _vheight;
 
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			_vwidth = VirtualWidth;
 			_vheight = VirtualHeight;
 			_vidBuff = new int[_vwidth * _vheight];
-			for (int i = 0; i < _vidBuff.Length; i++)
+			for (var i = 0; i < _vidBuff.Length; i++)
 			{
 				_vidBuff[i] = unchecked((int)0xff000000);
 			}
@@ -86,8 +86,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			using (_elf.EnterExit())
 			{
-				IntPtr src = IntPtr.Zero;
-
+				var src = IntPtr.Zero;
 				Core.gpgx_get_video(out var gpwidth, out var gpheight, out var gppitch, ref src);
 
 				_vwidth = gpwidth;
@@ -96,31 +95,41 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (_settings.PadScreen320 && _vwidth < 320)
 					_vwidth = 320;
 
-				int xpad = (_vwidth - gpwidth) / 2;
-				int xpad2 = _vwidth - gpwidth - xpad;
+				var xpad = (_vwidth - gpwidth) / 2;
+				var xpad2 = _vwidth - gpwidth - xpad;
 
 				if (_vidBuff.Length < _vwidth * _vheight)
+				{
 					_vidBuff = new int[_vwidth * _vheight];
+				}
 
-				int rinc = (gppitch / 4) - gpwidth;
+				var rinc = (gppitch / 4) - gpwidth;
 				fixed (int* pdst_ = _vidBuff)
 				{
-					int* pdst = pdst_;
-					int* psrc = (int*)src;
+					var pdst = pdst_;
+					var psrc = (int*)src;
 
-					for (int j = 0; j < gpheight; j++)
+					for (var j = 0; j < gpheight; j++)
 					{
-						for (int i = 0; i < xpad; i++)
+						for (var i = 0; i < xpad; i++)
+						{
 							*pdst++ = unchecked((int)0xff000000);
-						for (int i = 0; i < gpwidth; i++)
+						}
+
+						for (var i = 0; i < gpwidth; i++)
+						{
 							*pdst++ = *psrc++;
-						for (int i = 0; i < xpad2; i++)
+						}
+
+						for (var i = 0; i < xpad2; i++)
+						{
 							*pdst++ = unchecked((int)0xff000000);
+						}
+
 						psrc += rinc;
 					}
 				}
 			}
 		}
-
 	}
 }

@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 
 #pragma warning disable IDE1006
+#pragma warning disable CA1069
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
@@ -49,12 +50,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public short LowGain;
 			public short MidGain;
 			public short HighGain;
+
 			public enum FilterType : byte
 			{
 				None = 0,
 				LowPass = 1,
 				ThreeBand = 2
 			}
+
 			public FilterType Filter;
 
 			public INPUT_SYSTEM InputSystemA;
@@ -68,6 +71,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				YM2413_MAME,
 				YM2413_NUKED
 			}
+
 			public SMSFMSoundChipType SMSFMSoundChip;
 
 			public enum GenesisFMSoundChipType : byte
@@ -78,6 +82,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				Nuked_YM2612,
 				Nuked_YM3438
 			}
+
 			public GenesisFMSoundChipType GenesisFMSoundChip;
 
 			public bool SpritesAlwaysOnTop;
@@ -91,6 +96,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				Horizontal = 1 << 1,
 				All = Vertical | Horizontal,
 			}
+
 			public OverscanType Overscan;
 			public bool GGExtra;
 		}
@@ -166,7 +172,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			DEVICE_ACTIVATOR = 0x0a,// Activator
 		}
 
-
 		public enum CDLog_AddrType
 		{
 			MDCART, RAM68k, RAMZ80, SRAM,
@@ -182,7 +187,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			DataZ80 = 0x20,
 			DMASource = 0x40,
 		}
-
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void input_cb();
@@ -276,22 +280,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
 			public readonly INPUT_SYSTEM[] system = new INPUT_SYSTEM[2];
+
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = MAX_DEVICES)]
 			public readonly INPUT_DEVICE[] dev = new INPUT_DEVICE[MAX_DEVICES];
+
 			/// <summary>
 			/// digital inputs
 			/// </summary>
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = MAX_DEVICES)]
 			public readonly INPUT_KEYS[] pad = new INPUT_KEYS[MAX_DEVICES];
+
 			/// <summary>
 			/// analog (x/y)
 			/// </summary>
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = MAX_DEVICES * 2)]
 			public readonly short[] analog = new short[MAX_DEVICES * 2];
+
 			/// <summary>
 			/// gun horizontal offset
 			/// </summary>
 			public int x_offset;
+
 			/// <summary>
 			/// gun vertical offset
 			/// </summary>
@@ -299,8 +308,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			public void ClearAllBools()
 			{
-				for (int i = 0; i < pad.Length; i++)
+				for (var i = 0; i < pad.Length; i++)
+				{
 					pad[i] = 0;
+				}
 			}
 		}
 

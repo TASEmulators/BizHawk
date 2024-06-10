@@ -22,7 +22,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					var size = 0;
 					var pName = Core.gpgx_get_memdom(i, ref area, ref size);
 					if (area == IntPtr.Zero || pName == IntPtr.Zero || size == 0)
+					{
 						continue;
+					}
+
 					var name = Marshal.PtrToStringAnsi(pName)!;
 
 					// typically Genesis domains will be 2 bytes large (and thus big endian and byteswapped)
@@ -32,96 +35,108 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						? MemoryDomain.Endian.Little
 						: MemoryDomain.Endian.Big;
 
-					if (name == "VRAM")
+					switch (name)
 					{
-						// vram pokes need to go through hook which invalidates cached tiles
-						var p = (byte*)area;
-						if (SystemId == VSystemID.Raw.GEN)
+						case "VRAM":
 						{
-							// Genesis has more VRAM, and GPGX byteswaps it
-							mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Big,
-								addr =>
-								{
-									if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-									using (_elf.EnterExit())
-										return p![addr ^ 1];
-								},
-								(addr, val) =>
-								{
-									if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-									Core.gpgx_poke_vram((int)addr ^ 1, val);
-								},
-								wordSize: 1));
-						}
-						else
-						{
-							mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Big,
-								addr =>
-								{
-									if (addr is < 0 or > 0x3FFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-									using (_elf.EnterExit())
-										return p![addr];
-								},
-								(addr, val) =>
-								{
-									if (addr is < 0 or > 0x3FFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-									Core.gpgx_poke_vram((int)addr, val);
-								},
-								wordSize: 1));
-						}
-					}
-					else if (name == "CRAM")
-					{
-						var p = (byte*)area;
-						if (SystemId == VSystemID.Raw.GEN)
-						{
-							// CRAM for Genesis in the core is internally a different format than what it is natively
-							// this internal format isn't really useful, so let's convert it back
-							mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Big,
-								addr =>
-								{
-									if (addr is < 0 or > 0x7F) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-									using (_elf.EnterExit())
+							// vram pokes need to go through hook which invalidates cached tiles
+							var p = (byte*)area;
+							if (SystemId == VSystemID.Raw.GEN)
+							{
+								// Genesis has more VRAM, and GPGX byteswaps it
+								mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Big,
+									addr =>
 									{
-										var c = *(ushort*)&p![addr & ~1];
-										c = (ushort)(((c & 0x1C0) << 3) | ((c & 0x038) << 2) | ((c & 0x007) << 1));
-										return (byte)((addr & 1) != 0 ? c & 0xFF : c >> 8);
-									}
-								},
-								(addr, val) =>
-								{
-									if (addr is < 0 or > 0x7F) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-									Core.gpgx_poke_cram((int)addr, val);
-								},
-								wordSize: 2));
-						}
-						else
-						{
-							mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Big,
-								addr =>
-								{
-									if (addr is < 0 or > 0x3F) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-									using (_elf.EnterExit())
+										if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+										using (_elf.EnterExit())
+											return p![addr ^ 1];
+									},
+									(addr, val) =>
 									{
-										var c = *(ushort*)&p![addr & ~1];
-										return (byte)((addr & 1) != 0 ? c & 0xFF : c >> 8);
-									}
-								},
-								(addr, val) =>
-								{
-									if (addr is < 0 or > 0x3F) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-									Core.gpgx_poke_cram((int)addr, val);
-								},
-								wordSize: 2));
+										if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+										Core.gpgx_poke_vram((int)addr ^ 1, val);
+									},
+									wordSize: 1));
+							}
+							else
+							{
+								mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Big,
+									addr =>
+									{
+										if (addr is < 0 or > 0x3FFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+										using (_elf.EnterExit())
+											return p![addr];
+									},
+									(addr, val) =>
+									{
+										if (addr is < 0 or > 0x3FFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+										Core.gpgx_poke_vram((int)addr, val);
+									},
+									wordSize: 1));
+							}
+
+							break;
 						}
-					}
-					else if (oneByteWidth)
-					{
-						mm.Add(new MemoryDomainIntPtrMonitor(name, endian, area, size, true, 1, _elf));
-					}
-					else
-					{
-						mm.Add(new MemoryDomainIntPtrSwap16Monitor(name, endian, area, size, true, _elf));
+						case "CRAM":
+						{
+							var p = (byte*)area;
+							if (SystemId == VSystemID.Raw.GEN)
+							{
+								// CRAM for Genesis in the core is internally a different format than what it is natively
+								// this internal format isn't really useful, so let's convert it back
+								mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Big,
+									addr =>
+									{
+										if (addr is < 0 or > 0x7F) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+										using (_elf.EnterExit())
+										{
+											var c = *(ushort*)&p![addr & ~1];
+											c = (ushort)(((c & 0x1C0) << 3) | ((c & 0x038) << 2) | ((c & 0x007) << 1));
+											return (byte)((addr & 1) != 0 ? c & 0xFF : c >> 8);
+										}
+									},
+									(addr, val) =>
+									{
+										if (addr is < 0 or > 0x7F) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+										Core.gpgx_poke_cram((int)addr, val);
+									},
+									wordSize: 2));
+							}
+							else
+							{
+								mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Big,
+									addr =>
+									{
+										if (addr is < 0 or > 0x3F) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+										using (_elf.EnterExit())
+										{
+											var c = *(ushort*)&p![addr & ~1];
+											return (byte)((addr & 1) != 0 ? c & 0xFF : c >> 8);
+										}
+									},
+									(addr, val) =>
+									{
+										if (addr is < 0 or > 0x3F) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+										Core.gpgx_poke_cram((int)addr, val);
+									},
+									wordSize: 2));
+							}
+
+							break;
+						}
+						default:
+						{
+							if (oneByteWidth)
+							{
+								mm.Add(new MemoryDomainIntPtrMonitor(name, endian, area, size, true, 1, _elf));
+							}
+							else
+							{
+								mm.Add(new MemoryDomainIntPtrSwap16Monitor(name, endian, area, size, true, _elf));
+							}
+
+							break;
+						}
 					}
 				}
 

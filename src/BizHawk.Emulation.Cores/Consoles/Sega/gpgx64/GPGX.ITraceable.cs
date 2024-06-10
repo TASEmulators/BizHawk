@@ -9,17 +9,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	{
 		private readonly ITraceable _tracer;
 
-		public class GPGXTraceBuffer : CallbackBasedTraceBuffer
+		public class GPGXTraceBuffer(
+			IDebuggable debuggableCore,
+			IMemoryDomains memoryDomains,
+			IDisassemblable disassembler)
+			: CallbackBasedTraceBuffer(debuggableCore, memoryDomains, disassembler, TRACE_HEADER)
 		{
 			private const string TRACE_HEADER = "M68K: PC, machine code, mnemonic, operands, registers (D0-D7, A0-A7, SR, USP), flags (XNZVC)";
-
-			public GPGXTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler)
-				: base(debuggableCore, memoryDomains, disassembler, TRACE_HEADER) {}
 
 			protected override void TraceFromCallback(uint addr, uint value, uint flags)
 			{
 				var regs = DebuggableCore.GetCpuFlagsAndRegisters();
-				uint pc = (uint)regs["M68K PC"].Value;
+				var pc = (uint)regs["M68K PC"].Value;
 				var disasm = Disassembler.Disassemble(MemoryDomains.SystemBus, pc & 0xFFFFFF, out _);
 
 				var sb = new StringBuilder();
@@ -36,6 +37,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						}
 					}
 				}
+
 				var sr = regs["M68K SR"].Value;
 				sb.Append(string.Concat(
 					(sr & 16) > 0 ? "X" : "x",
