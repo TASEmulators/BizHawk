@@ -49,6 +49,17 @@ namespace BizHawk.Client.Common
 				[ CoreNames.Emu83, CoreNames.TI83Hawk ]),
 		};
 
+		public static Dictionary<string, string> GenDefaultCorePreferences()
+		{
+			Dictionary<string, string> dict = new();
+			foreach (var (appliesTo, coreNames) in CorePickerUIData)
+			{
+				var defaultCore = coreNames[0];
+				foreach (var sysID in appliesTo) dict[sysID] = defaultCore;
+			}
+			return dict;
+		}
+
 		public Config()
 		{
 			if (AllTrollers.Count == 0
@@ -381,26 +392,7 @@ namespace BizHawk.Client.Common
 		public bool GbAsSgb { get; set; }
 		public string LibretroCore { get; set; }
 
-		public Dictionary<string, string> PreferredCores = new()
-		{
-			[VSystemID.Raw.GB] = CoreNames.Gambatte,
-			[VSystemID.Raw.GBC] = CoreNames.Gambatte,
-			[VSystemID.Raw.GBL] = CoreNames.GambatteLink,
-			[VSystemID.Raw.SGB] = CoreNames.Gambatte,
-			[VSystemID.Raw.GEN] = CoreNames.Gpgx,
-			[VSystemID.Raw.N64] = CoreNames.Mupen64Plus,
-			[VSystemID.Raw.NES] = CoreNames.QuickNes,
-			[VSystemID.Raw.PCE] = CoreNames.TurboNyma,
-			[VSystemID.Raw.PCECD] = CoreNames.TurboNyma,
-			[VSystemID.Raw.SGX] = CoreNames.TurboNyma,
-			[VSystemID.Raw.SGXCD] = CoreNames.TurboNyma,
-			[VSystemID.Raw.PSX] = CoreNames.Nymashock,
-			[VSystemID.Raw.SMS] = CoreNames.Gpgx, 
-			[VSystemID.Raw.GG] = CoreNames.Gpgx,
-			[VSystemID.Raw.SG] = CoreNames.Gpgx,
-			[VSystemID.Raw.SNES] = CoreNames.Snes9X,
-			[VSystemID.Raw.TI83] = CoreNames.Emu83,
-		};
+		public Dictionary<string, string> PreferredCores = GenDefaultCorePreferences();
 
 		public bool DontTryOtherCores { get; set; }
 
