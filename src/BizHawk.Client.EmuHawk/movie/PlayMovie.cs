@@ -525,8 +525,7 @@ namespace BizHawk.Client.EmuHawk
 				// TODO this will allocate unnecessary memory when this movie is a TasMovie due to TasStateManager
 				var movie = _movieSession.Get(_movieList[MovieView.SelectedIndices[0]].Filename);
 				movie.Load();
-				// TODO movie should be disposed if movie is ITasMovie
-				var form = new EditCommentsForm(movie, _movieSession.ReadOnly);
+				var form = new EditCommentsForm(movie, readOnly: false, disposeOnClose: true);
 				form.Show();
 			}
 		}
@@ -539,8 +538,7 @@ namespace BizHawk.Client.EmuHawk
 				// TODO this will allocate unnecessary memory when this movie is a TasMovie due to TasStateManager
 				var movie = _movieSession.Get(_movieList[MovieView.SelectedIndices[0]].Filename);
 				movie.Load();
-				// TODO movie should be disposed if movie is ITasMovie
-				var form = new EditSubtitlesForm(DialogController, movie, _config.PathEntries, readOnly: true);
+				var form = new EditSubtitlesForm(DialogController, movie, _config.PathEntries, readOnly: false, disposeOnClose: true);
 				form.Show();
 			}
 		}
