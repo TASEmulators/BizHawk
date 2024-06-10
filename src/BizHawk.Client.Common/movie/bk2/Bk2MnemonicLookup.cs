@@ -210,6 +210,7 @@ namespace BizHawk.Client.Common
 				["Cursor"] = 'c',
 				["Turbo"] = 't',
 				["Toggle Multitap"] = 't',
+				["Offscreen"] = 'o',
 
 				["B0"] = '0',
 				["B1"] = '1',
