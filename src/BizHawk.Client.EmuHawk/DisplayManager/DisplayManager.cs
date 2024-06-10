@@ -5,6 +5,7 @@ using System.Drawing;
 using BizHawk.Bizware.Graphics;
 using BizHawk.Bizware.Graphics.Controls;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -51,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override Size GetPanelNativeSize() => _presentationPanel.NativeSize;
 
-		protected override int GetGraphicsControlDpi() => _graphicsControl.DeviceDpi;
+		protected override int GetGraphicsControlDpi() => OSTailoredCode.IsUnixHost ? 96 : _graphicsControl.DeviceDpi;
 
 		protected override Point GraphicsControlPointToClient(Point p) => _graphicsControl.PointToClient(p);
 
