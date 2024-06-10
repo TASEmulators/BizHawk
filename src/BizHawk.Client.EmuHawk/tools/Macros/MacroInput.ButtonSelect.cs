@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class MacroInputTool
@@ -47,8 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			s.Refresh();
 
 			// Update the selected zone's key
-			var lg = MovieSession.Movie.LogGeneratorInstance(MovieSession.MovieController);
-			string key = lg.GenerateLogKey();
+			string key = Bk2LogEntryGenerator.GenerateLogKey(MovieSession.MovieController.Definition);
 			key = key.Replace("#", "");
 
 			foreach (var box in _buttonBoxes)

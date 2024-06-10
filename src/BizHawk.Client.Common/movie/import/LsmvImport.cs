@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common.movie.import
 			_controller = new SimpleController(controllerDefinition);
 			_playerCount = controllerDefinition.PlayerCount;
 
-			Result.Movie.LogKey = new Bk2LogEntryGenerator(VSystemID.Raw.SNES, new Bk2Controller(controllerDefinition)).GenerateLogKey();
+			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(controllerDefinition);
 
 			foreach (var item in zip.Entries)
 			{
