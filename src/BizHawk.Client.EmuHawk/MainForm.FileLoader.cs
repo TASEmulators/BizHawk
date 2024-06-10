@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			return Tools.IsLoaded<TAStudio>()
 				? Tools.TAStudio.LoadMovieFile(filename)
-				: StartNewMovie(MovieSession.Get(filename), false);
+				: StartNewMovie(MovieSession.Get(filename, true), false);
 		}
 
 		private bool LoadRom(string filename, string archive = null)

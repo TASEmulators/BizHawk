@@ -29,7 +29,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					MovieSession.QueueNewMovie(
 						movie,
-						record: record,
 						systemId: Emulator.SystemId,
 						loadedRomHash: Game.Hash,
 						Config.PathEntries,
