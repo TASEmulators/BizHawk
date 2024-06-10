@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using BizHawk.Client.Common;
 
 using BizHawk.Client.Common;
 
