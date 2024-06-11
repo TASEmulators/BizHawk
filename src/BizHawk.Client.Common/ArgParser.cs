@@ -25,6 +25,8 @@ namespace BizHawk.Client.Common
 
 		private static readonly Argument<string?> ArgumentRomFilePath = new("rom", () => null);
 
+		private static readonly IReadOnlyList<Option> GeneratedOptions;
+
 		private static readonly BespokeOption<string?> OptionAVDumpAudioSync = new(name: "--audiosync", description: "bool; `true` is the only truthy value, all else falsey; if not set, uses remembered state from config");
 
 		private static readonly BespokeOption<int?> OptionAVDumpEndAtFrame = new("--dump-length");
@@ -112,7 +114,7 @@ namespace BizHawk.Client.Common
 
 			Parser = new CommandLineBuilder(root)
 //				.UseVersionOption() // "cannot be combined with other arguments" which is fair enough but `--config` is crucial on NixOS
-//				.UseHelp() //TODO
+				.UseHelp()
 //				.UseEnvironmentVariableDirective() // useless
 				.UseParseDirective()
 				.UseSuggestDirective()
@@ -122,10 +124,16 @@ namespace BizHawk.Client.Common
 //				.UseExceptionHandler() // we're only using the parser, so nothing should be throwing
 //				.CancelOnProcessTermination() // we're only using the parser, so there's not really anything to cancel
 				.Build();
+			GeneratedOptions = root.Options.Where(static o =>
+			{
+				var t = o.GetType();
+				return !t.IsGenericType || t.GetGenericTypeDefinition() != typeof(BespokeOption<>); // no there is no simpler way to do this
+			}).ToArray();
 		}
 
+		/// <return>exit code, or <see langword="null"/> if should not exit</return>
 		/// <exception cref="ArgParserException">parsing failure, or invariant broken</exception>
-		public static void ParseArguments(out ParsedCLIFlags parsed, string[] args)
+		public static int? ParseArguments(out ParsedCLIFlags parsed, string[] args)
 		{
 			parsed = default;
 			var result = Parser.Parse(args);
@@ -135,6 +143,18 @@ namespace BizHawk.Client.Common
 				Console.WriteLine("failed to parse command-line arguments:");
 				foreach (var error in result.Errors) Console.WriteLine(error.Message);
 				throw new ArgParserException($"failed to parse command-line arguments: {result.Errors[0].Message}");
+			}
+			var triggeredGeneratedOption = GeneratedOptions.FirstOrDefault(o => result.FindResultFor(o) is not null);
+			if (triggeredGeneratedOption is not null)
+			{
+				// means e.g. `./EmuHawkMono.sh --help` was passed, run whatever behaviour it normally has...
+				var exitCode = result.Invoke();
+				// ...and maybe exit
+				if (exitCode is not 0
+					|| triggeredGeneratedOption.Name is "help") // `Name` may be localised meaning this won't work? I can't grok the source for `HelpOption`
+				{
+					return exitCode;
+				}
 			}
 
 			var autoDumpLength = result.GetValueForOption(OptionAVDumpEndAtFrame);
@@ -202,6 +222,7 @@ namespace BizHawk.Client.Common
 				userdataUnparsedPairs: userdataUnparsedPairs,
 				cmdRom: result.GetValueForArgument(ArgumentRomFilePath)
 			);
+			return null;
 		}
 
 		public sealed class ArgParserException : Exception
