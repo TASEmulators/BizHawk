@@ -32,7 +32,8 @@ CCFLAGS += $(INCFLAGS) \
 	-DHAVE_ZLIB \
 	-DHAVE_7ZIP \
 	-D_7ZIP_ST \
-	-DWATERBOX
+	-DWATERBOX \
+	-DWITH_MPEG2
 
 #CCFLAGS += \
 	-DPICASSO96_SUPPORTED \
@@ -208,19 +209,16 @@ SOURCES_C += \
 	$(EMU)/archivers/lha/util.c \
 	$(EMU)/archivers/mp2/kjmp2.c
 
-ifeq ($(HAVE_MPEG2), 1)
-    CFLAGS += -DWITH_MPEG2
-    SOURCES_C += \
-        $(DEPS_DIR)/libmpeg2/src/convert/rgb.c \
-        $(DEPS_DIR)/libmpeg2/src/cpu_accel.c \
-        $(DEPS_DIR)/libmpeg2/src/cpu_state.c \
-        $(DEPS_DIR)/libmpeg2/src/alloc.c \
-        $(DEPS_DIR)/libmpeg2/src/decode.c \
-        $(DEPS_DIR)/libmpeg2/src/header.c \
-        $(DEPS_DIR)/libmpeg2/src/idct.c \
-        $(DEPS_DIR)/libmpeg2/src/motion_comp.c \
-        $(DEPS_DIR)/libmpeg2/src/slice.c
-endif
+SOURCES_C += \
+	$(DEPS_DIR)/libmpeg2/src/convert/rgb.c \
+	$(DEPS_DIR)/libmpeg2/src/cpu_accel.c \
+	$(DEPS_DIR)/libmpeg2/src/cpu_state.c \
+	$(DEPS_DIR)/libmpeg2/src/alloc.c \
+	$(DEPS_DIR)/libmpeg2/src/decode.c \
+	$(DEPS_DIR)/libmpeg2/src/header.c \
+	$(DEPS_DIR)/libmpeg2/src/idct.c \
+	$(DEPS_DIR)/libmpeg2/src/motion_comp.c \
+	$(DEPS_DIR)/libmpeg2/src/slice.c
 
 ifneq ($(STATIC_LINKING), 1)
 SOURCES_C += \
