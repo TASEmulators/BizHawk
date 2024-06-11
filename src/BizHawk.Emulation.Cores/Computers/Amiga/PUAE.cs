@@ -83,6 +83,10 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			{
 				"puae"
 				, "-0", "romfile"
+				, "-s", "cpu_compatible=true"
+				, "-s", "cpu_cycle_exact=true"
+				, "-s", "cpu_memory_cycle_exact=true"
+				, "-s", "blitter_cycle_exact=true"
 			};
 
 			switch(settings.MachineConfig)
