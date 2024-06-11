@@ -84,15 +84,10 @@ namespace BizHawk.Client.Common
 				else if (argDowncased.StartsWithOrdinal("--dump-frames="))
 				{
 					string list = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
-					string[] items = list.Split(',');
-					currAviWriterFrameList = new HashSet<int>();
-					foreach (string item in items)
-					{
-						currAviWriterFrameList.Add(int.Parse(item));
-					}
-
+					currAviWriterFrameList = new();
+					currAviWriterFrameList.AddRange(list.Split(',').Select(int.Parse));
 					// automatically set dump length to maximum frame
-					autoDumpLength = currAviWriterFrameList.Order().Last();
+					autoDumpLength = currAviWriterFrameList.Max();
 				}
 				else if (argDowncased.StartsWithOrdinal("--version"))
 				{
