@@ -59,6 +59,7 @@ jobs:
            git submodule update --init ares64/ares/thirdparty/angrylion-rdp;
            git submodule update --init gpgx/Genesis-Plus-GX;
            git submodule update --init ../submodules/sameboy/libsameboy
+           git submodule update --init uae/libretro-uae
     - name: Download compiled waterbox
       uses: actions/download-artifact@v4
       with:
@@ -91,6 +92,7 @@ jobs:
           Assets/dll/ngp.wbx.zst
           Assets/dll/pcfx.wbx.zst
           Assets/dll/picodrive.wbx.zst
+          Assets/dll/puae.wbx.zst
           Assets/dll/shock.wbx.zst
           Assets/dll/snes9x.wbx.zst
           Assets/dll/ss.wbx.zst
