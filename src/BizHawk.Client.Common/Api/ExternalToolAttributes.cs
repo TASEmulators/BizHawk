@@ -95,8 +95,6 @@ namespace BizHawk.Client.Common
 
 	public abstract class ExternalToolApplicabilityAttributeBase : Attribute
 	{
-		protected static readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new();
-
 		public abstract bool NotApplicableTo(string sysID);
 
 		public abstract bool NotApplicableTo(string romHash, string? sysID);
