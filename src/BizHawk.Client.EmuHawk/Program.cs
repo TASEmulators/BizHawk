@@ -150,11 +150,12 @@ namespace BizHawk.Client.EmuHawk
 			ParsedCLIFlags cliFlags = default;
 			try
 			{
-				ArgParser.ParseArguments(out cliFlags, args);
+				if (ArgParser.ParseArguments(out cliFlags, args) is int exitCode1) return exitCode1;
 			}
 			catch (ArgParser.ArgParserException e)
 			{
 				new ExceptionBox(e.Message).ShowDialog();
+				return 1;
 			}
 
 			var configPath = cliFlags.cmdConfigFile ?? Path.Combine(PathUtils.ExeDirectoryPath, "config.ini");
