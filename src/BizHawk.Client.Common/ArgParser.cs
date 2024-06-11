@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 			bool? startFullscreen = null;
 			string? luaScript = null;
 			bool? luaConsole = null;
-			int? socketPort = null;
+			ushort? socketPort = null;
 			string? socketIP = null;
 			string? mmfFilename = null;
 			string? urlGet = null;
@@ -131,7 +131,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (argDowncased.StartsWithOrdinal("--socket_port="))
 				{
-					var port = int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out var i1) ? i1 : default;
+					var port = ushort.TryParse(arg.Substring(14), out var i1) ? i1 : (ushort) 0;
 					if (port > 0) socketPort = port;
 				}
 				else if (argDowncased.StartsWithOrdinal("--socket_ip="))
@@ -184,7 +184,7 @@ namespace BizHawk.Client.Common
 			var httpAddresses = urlGet == null && urlPost == null
 				? ((string?, string?)?) null // don't bother
 				: (urlGet, urlPost);
-			(string, int)? socketAddress;
+			(string, ushort)? socketAddress;
 			if (socketIP == null && socketPort == null)
 			{
 				socketAddress = null; // don't bother

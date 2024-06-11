@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Func<byte[]> _takeScreenshotCallback;
 
-		private (string HostIP, int Port) _targetAddr;
+		private (string HostIP, ushort Port) _targetAddr;
 
 		public bool Connected { get; private set; }
 
@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public int Port
+		public ushort Port
 		{
 			get => _targetAddr.Port;
 			set
@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public (string HostIP, int Port) TargetAddress
+		public (string HostIP, ushort Port) TargetAddress
 		{
 			get => _targetAddr;
 			set
@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 
 		public bool Successful { get; private set; }
 
-		public SocketServer(Func<byte[]> takeScreenshotCallback, ProtocolType protocol, string ip, int port)
+		public SocketServer(Func<byte[]> takeScreenshotCallback, ProtocolType protocol, string ip, ushort port)
 		{
 			_protocol = protocol;
 			ReinitSocket(out _soc);
