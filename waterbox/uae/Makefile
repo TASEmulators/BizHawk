@@ -220,7 +220,6 @@ SOURCES_C += \
 	$(DEPS_DIR)/libmpeg2/src/motion_comp.c \
 	$(DEPS_DIR)/libmpeg2/src/slice.c
 
-ifneq ($(STATIC_LINKING), 1)
 SOURCES_C += \
 	$(DEPS_DIR)/libz/adler32.c \
 	$(DEPS_DIR)/libz/crc32.c \
@@ -265,7 +264,6 @@ SOURCES_C += \
 	$(LIBRETRO_COMM_DIR)/string/stdstring.c \
 	$(LIBRETRO_COMM_DIR)/time/rtime.c \
 	$(LIBRETRO_COMM_DIR)/vfs/vfs_implementation.c
-endif
 
 SRCS = $(SOURCES_C)
 
