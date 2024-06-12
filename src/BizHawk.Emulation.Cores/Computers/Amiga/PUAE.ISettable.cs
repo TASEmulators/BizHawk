@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -111,6 +112,33 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			MB_1_5 = 6,
 			Auto
 		}
+
+		private void AppendSetting(List<string> settings)
+		{
+			foreach (var s in settings)
+			{
+				AppendSetting(s);
+			}
+		}
+
+		private void AppendSetting(string setting)
+		{
+			_args.AddRange(new List<string>
+			{
+				"-s", setting
+			});
+		}
+
+		private void EnableCycleExact()
+		{
+			AppendSetting(new List<string>
+			{
+				"cpu_compatible=true",
+				"cpu_cycle_exact=true",
+				"cpu_memory_cycle_exact=true",
+				"blitter_cycle_exact=true",
+			});
+		}
 		
 		public object GetSettings() => null;
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
@@ -165,11 +193,18 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			public SlowMemory SlowMemory { get; set; }
 
 			[DisplayName("Fast memory")]
-			[Description("Size in megabytes of fast-memory. -1 means Auto.")]
+			[Description("Size in megabytes of fast-memory.  -1 means Auto.")]
 			[Range(FASTMEM_AUTO, 512)]
 			[DefaultValue(FASTMEM_AUTO)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int FastMemory { get; set; }
+
+			[DisplayName("Mouse speed")]
+			[Description("Mouse speed in percents (1% - 1000%).  Adjust if there's mismatch between emulated and host mouse movement.  Note that maximum mouse movement is still 127 pixels due to Amiga hardware limitations.")]
+			[Range(1, 1000)]
+			[DefaultValue(100)]
+			[TypeConverter(typeof(ConstrainedIntConverter))]
+			public int MouseSpeed { get; set; }
 
 			public PUAESyncSettings()
 				=> SettingsUtil.SetDefaultValues(this);

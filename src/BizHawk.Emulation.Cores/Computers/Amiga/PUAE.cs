@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 	public partial class PUAE : WaterboxCore
 	{
 		private LibPUAE _puae;
+		private List<string> _args;
 		private static string _chipsetCompatible = "";
 
 		[CoreConstructor(VSystemID.Raw.Amiga)]
@@ -48,7 +49,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			});
 
 			var filesToRemove = new List<string>();
-			var args = CreateArguments(_syncSettings);
+			
+			CreateArguments(_syncSettings);
 
 			_exe.AddReadonlyFile(lp.Roms[0].FileData, "romfile");
 			filesToRemove.Add("romfile");
@@ -58,14 +60,14 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				"Firmware files are usually required and may stop your game from loading");
 			_exe.AddReadonlyFile(kickstartData, kickstartInfo.Name);
 			filesToRemove.Add(kickstartInfo.Name);
-			args.AddRange(new List<string>
+			_args.AddRange(new List<string>
 			{
 				"-r", kickstartInfo.Name
 			});
 
 			ControllerDefinition = InitInput();
 
-			if (!_puae.Init(args.Count, args.ToArray()))
+			if (!_puae.Init(_args.Count, _args.ToArray()))
 				throw new InvalidOperationException("Core rejected the rom!");
 
 			foreach (var s in filesToRemove)
@@ -76,105 +78,108 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			PostInit();
 		}
 
-		private static List<string> CreateArguments(PUAESyncSettings settings)
+		private void CreateArguments(PUAESyncSettings settings)
 		{
-
-			var args = new List<string>
+			_args = new List<string>
 			{
-				"puae"
-				, "-0", "romfile"
-				, "-s", "cpu_compatible=true"
-				, "-s", "cpu_cycle_exact=true"
-				, "-s", "cpu_memory_cycle_exact=true"
-				, "-s", "blitter_cycle_exact=true"
+				"puae",
+				"-0", "romfile",
 			};
 
 			switch(settings.MachineConfig)
 			{
 				case MachineConfig.A500_OCS_130_512K_512K:
 					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A500);
-					args.AddRange(new List<string>
+					AppendSetting(new List<string>
 					{
-						  "-s", "cpu_model=" + (int)CpuModel._68000
-						, "-s", "chipset=" + Chipset.OCS
-						, "-s", "chipset_compatible=" + _chipsetCompatible
-						, "-s", "chipmem_size=" + (int)ChipMemory.KB_512
-						, "-s", "bogomem_size=" + (int)SlowMemory.KB_512
-						, "-s", "fastmem_size=0"
+						"cpu_model=" + (int)CpuModel._68000,
+						"chipset=" + Chipset.OCS,
+						"chipset_compatible=" + _chipsetCompatible,
+						"chipmem_size=" + (int)ChipMemory.KB_512,
+						"bogomem_size=" + (int)SlowMemory.KB_512,
+						"fastmem_size=0",
 					});
+					EnableCycleExact();
 					break;
 				case MachineConfig.A600_ECS_205_2M:
 					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A600);
-					args.AddRange(new List<string>
+					AppendSetting(new List<string>
 					{
-						  "-s", "cpu_model=" + (int)CpuModel._68000
-						, "-s", "chipset=" + Chipset.ECS
-						, "-s", "chipset_compatible=" + _chipsetCompatible
-						, "-s", "chipmem_size=" + (int)ChipMemory.MB_2
-						, "-s", "bogomem_size=" + (int)SlowMemory.KB_0
-						, "-s", "fastmem_size=0"
+						"cpu_model=" + (int)CpuModel._68000,
+						"chipset=" + Chipset.ECS,
+						"chipset_compatible=" + _chipsetCompatible,
+						"chipmem_size=" + (int)ChipMemory.MB_2,
+						"bogomem_size=" + (int)SlowMemory.KB_0,
+						"fastmem_size=0",
 					});
+					EnableCycleExact();
 					break;
 				case MachineConfig.A1200_AGA_310_2M_8M:
 					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A1200);
-					args.AddRange(new List<string>
+					AppendSetting(new List<string>
 					{
-						  "-s", "cpu_model=" + (int)CpuModel._68020
-						, "-s", "chipset=" + Chipset.AGA
-						, "-s", "chipset_compatible=" + _chipsetCompatible
-						, "-s", "chipmem_size=" + (int)ChipMemory.MB_2
-						, "-s", "bogomem_size=" + (int)SlowMemory.KB_0
-						, "-s", "fastmem_size=8"
+						"cpu_model=" + (int)CpuModel._68020,
+						"chipset=" + Chipset.AGA,
+						"chipset_compatible=" + _chipsetCompatible,
+						"chipmem_size=" + (int)ChipMemory.MB_2,
+						"bogomem_size=" + (int)SlowMemory.KB_0,
+						"fastmem_size=8",
 					});
+					EnableCycleExact();
 					break;
 				case MachineConfig.A4000_AGA_310_2M_8M:
 					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A4000);
-					args.AddRange(new List<string>
+					AppendSetting(new List<string>
 					{
-						  "-s", "cpu_model=" + (int)CpuModel._68040
-						, "-s", "fpu_model=68040"
-						, "-s", "mmu_model=68040"
-						, "-s", "chipset=" + Chipset.AGA
-						, "-s", "chipset_compatible=" + _chipsetCompatible
-						, "-s", "chipmem_size=" + (int)ChipMemory.MB_2
-						, "-s", "bogomem_size=" + (int)SlowMemory.KB_0
-						, "-s", "fastmem_size=8"
+						"cpu_model=" + (int)CpuModel._68040,
+						"fpu_model=68040",
+						"mmu_model=68040",
+						"chipset=" + Chipset.AGA,
+						"chipset_compatible=" + _chipsetCompatible,
+						"chipmem_size=" + (int)ChipMemory.MB_2,
+						"bogomem_size=" + (int)SlowMemory.KB_0,
+						"fastmem_size=8",
 					});
 					break;
 			}
 
 			if (settings.CpuModel != CpuModel.Auto)
 			{
-				args.AddRange(new List<string> { "-s", "cpu_model=" + (int)settings.CpuModel });
+				AppendSetting("cpu_model=" + (int)settings.CpuModel);
+
+				if (settings.CpuModel < CpuModel._68030)
+				{
+					EnableCycleExact();
+				}
 			}
 
 			if (settings.Chipset != Chipset.Auto)
 			{
-				args.AddRange(new List<string> { "-s", "chipset=" + (int)settings.Chipset });
+				AppendSetting("chipset=" + (int)settings.Chipset);
 			}
 
 			if (settings.ChipsetCompatible != ChipsetCompatible.Auto)
 			{
-				args.AddRange(new List<string> { "-s", "chipset_compatible="
-					+ Enum.GetName(typeof(ChipsetCompatible), settings.ChipsetCompatible) });
+				AppendSetting("chipset_compatible="
+					+ Enum.GetName(typeof(ChipsetCompatible), settings.ChipsetCompatible));
 			}
 
 			if (settings.ChipMemory != ChipMemory.Auto)
 			{
-				args.AddRange(new List<string> { "-s", "chipmem_size=" + (int)settings.ChipMemory });
+				AppendSetting("chipmem_size=" + (int)settings.ChipMemory);
 			}
 
 			if (settings.SlowMemory != SlowMemory.Auto)
 			{
-				args.AddRange(new List<string> { "-s", "bogomem_size=" + (int)settings.SlowMemory });
+				AppendSetting("bogomem_size=" + (int)settings.SlowMemory);
 			}
 
 			if (settings.FastMemory != FASTMEM_AUTO)
 			{
-				args.AddRange(new List<string> { "-s", "fastmem_size=" + settings.FastMemory });
+				AppendSetting("fastmem_size=" + settings.FastMemory);
 			}
 
-			return args;
+			AppendSetting("input.mouse_speed=" + settings.MouseSpeed);
 		}
 
 		private static ControllerDefinition InitInput()
