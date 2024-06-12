@@ -113,6 +113,111 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			Auto
 		}
 
+		private void CreateArguments(PUAESyncSettings settings)
+		{
+			_args = new List<string>
+			{
+				"puae",
+				"-0", "romfile",
+			};
+
+			switch(settings.MachineConfig)
+			{
+				case MachineConfig.A500_OCS_130_512K_512K:
+					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A500);
+					AppendSetting(new List<string>
+					{
+						"cpu_model=" + (int)CpuModel._68000,
+						"chipset=" + Chipset.OCS,
+						"chipset_compatible=" + _chipsetCompatible,
+						"chipmem_size=" + (int)ChipMemory.KB_512,
+						"bogomem_size=" + (int)SlowMemory.KB_512,
+						"fastmem_size=0",
+					});
+					EnableCycleExact();
+					break;
+				case MachineConfig.A600_ECS_205_2M:
+					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A600);
+					AppendSetting(new List<string>
+					{
+						"cpu_model=" + (int)CpuModel._68000,
+						"chipset=" + Chipset.ECS,
+						"chipset_compatible=" + _chipsetCompatible,
+						"chipmem_size=" + (int)ChipMemory.MB_2,
+						"bogomem_size=" + (int)SlowMemory.KB_0,
+						"fastmem_size=0",
+					});
+					EnableCycleExact();
+					break;
+				case MachineConfig.A1200_AGA_310_2M_8M:
+					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A1200);
+					AppendSetting(new List<string>
+					{
+						"cpu_model=" + (int)CpuModel._68020,
+						"chipset=" + Chipset.AGA,
+						"chipset_compatible=" + _chipsetCompatible,
+						"chipmem_size=" + (int)ChipMemory.MB_2,
+						"bogomem_size=" + (int)SlowMemory.KB_0,
+						"fastmem_size=8",
+					});
+					EnableCycleExact();
+					break;
+				case MachineConfig.A4000_AGA_310_2M_8M:
+					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A4000);
+					AppendSetting(new List<string>
+					{
+						"cpu_model=" + (int)CpuModel._68040,
+						"fpu_model=68040",
+						"mmu_model=68040",
+						"chipset=" + Chipset.AGA,
+						"chipset_compatible=" + _chipsetCompatible,
+						"chipmem_size=" + (int)ChipMemory.MB_2,
+						"bogomem_size=" + (int)SlowMemory.KB_0,
+						"fastmem_size=8",
+					});
+					break;
+			}
+
+			if (settings.CpuModel != CpuModel.Auto)
+			{
+				AppendSetting("cpu_model=" + (int)settings.CpuModel);
+
+				if (settings.CpuModel < CpuModel._68030)
+				{
+					EnableCycleExact();
+				}
+			}
+
+			if (settings.Chipset != Chipset.Auto)
+			{
+				AppendSetting("chipset=" + (int)settings.Chipset);
+			}
+
+			if (settings.ChipsetCompatible != ChipsetCompatible.Auto)
+			{
+				AppendSetting("chipset_compatible="
+					+ Enum.GetName(typeof(ChipsetCompatible), settings.ChipsetCompatible));
+			}
+
+			if (settings.ChipMemory != ChipMemory.Auto)
+			{
+				AppendSetting("chipmem_size=" + (int)settings.ChipMemory);
+			}
+
+			if (settings.SlowMemory != SlowMemory.Auto)
+			{
+				AppendSetting("bogomem_size=" + (int)settings.SlowMemory);
+			}
+
+			if (settings.FastMemory != FASTMEM_AUTO)
+			{
+				AppendSetting("fastmem_size=" + settings.FastMemory);
+			}
+
+			AppendSetting("input.mouse_speed=" + settings.MouseSpeed);
+			AppendSetting("sound_stereo_separation=" + settings.StereoSeparation / 10);
+		}
+
 		private void AppendSetting(List<string> settings)
 		{
 			foreach (var s in settings)
