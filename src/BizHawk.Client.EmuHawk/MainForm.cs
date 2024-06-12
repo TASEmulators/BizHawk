@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			ToolStripMenuItemEx consolesCoreSettingsSubmenu = new() { Text = "For Consoles" };
 			ToolStripMenuItemEx handheldsCoreSettingsSubmenu = new() { Text = "For Handhelds" };
-			ToolStripMenuItemEx pcsCoreSettingsSubmenu = new() { Text = "For PCs" };
+			ToolStripMenuItemEx pcsCoreSettingsSubmenu = new() { Text = "For Computers" };
 			ToolStripMenuItemEx otherCoreSettingsSubmenu = new() { Text = "Other" };
 			foreach (var submenu in CreateCoreSettingsSubmenus(includeDupes: true).OrderBy(submenu => submenu.Text))
 			{
