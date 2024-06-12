@@ -329,6 +329,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int StereoSeparation { get; set; }
 
+			[DisplayName("Floppy disk drives")]
+			[Description("How many floppy disk drives to emulate (0 - 4).")]
+			[Range(0, 4)]
+			[DefaultValue(1)]
+			[TypeConverter(typeof(ConstrainedIntConverter))]
+			public int FloppyDrives { get; set; }
+
 			public PUAESyncSettings()
 				=> SettingsUtil.SetDefaultValues(this);
 

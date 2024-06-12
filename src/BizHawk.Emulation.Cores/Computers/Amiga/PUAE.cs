@@ -58,7 +58,11 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
-			for (var index = 0; index < MAX_FLOPPIES && index < lp.Roms.Count; index++)
+			for (var index = 0; index < Math.Min(Math.Min(
+				lp.Roms.Count,
+				MAX_FLOPPIES),
+				_syncSettings.FloppyDrives
+			); index++)
 			{
 				_exe.AddReadonlyFile(lp.Roms[index].FileData, "disk" + index);
 				filesToRemove.Add("disk" + index);
