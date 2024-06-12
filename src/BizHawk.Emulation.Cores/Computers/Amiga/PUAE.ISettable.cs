@@ -206,6 +206,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int MouseSpeed { get; set; }
 
+			[DisplayName("Stereo separation")]
+			[Description("Stereo separation in percents.  100% is full separation, 0% is mono mode.")]
+			[Range(0, 100)]
+			[DefaultValue(70)]
+			[TypeConverter(typeof(ConstrainedIntConverter))]
+			public int StereoSeparation { get; set; }
+
 			public PUAESyncSettings()
 				=> SettingsUtil.SetDefaultValues(this);
 

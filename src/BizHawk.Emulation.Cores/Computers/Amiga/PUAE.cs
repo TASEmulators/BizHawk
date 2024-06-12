@@ -180,6 +180,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			}
 
 			AppendSetting("input.mouse_speed=" + settings.MouseSpeed);
+			AppendSetting("sound_stereo_separation=" + settings.StereoSeparation / 10);
 		}
 
 		private static ControllerDefinition InitInput()
