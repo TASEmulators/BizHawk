@@ -66,7 +66,7 @@ jobs:
       - name: Upload Linux dev build
         uses: actions/upload-artifact@v4
         with:
-          name: BizHawk-dev-${{ github.sha }}-linux
+          name: BizHawk-dev-linux
           path: packaged_output
 
       - name: Package (Windows)
@@ -74,5 +74,5 @@ jobs:
       - name: Upload Windows dev build
         uses: actions/upload-artifact@v4
         with:
-          name: BizHawk-dev-${{ github.sha }}-windows
+          name: BizHawk-dev-windows
           path: packaged_output
