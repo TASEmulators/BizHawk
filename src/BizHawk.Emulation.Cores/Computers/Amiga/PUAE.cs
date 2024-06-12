@@ -19,15 +19,22 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		private LibPUAE _puae;
 		private List<string> _args;
 		private static string _chipsetCompatible = "";
+		
+		public const int PAL_WIDTH   = 720;
+		public const int PAL_HEIGHT  = 576;
+		public const int NTSC_WIDTH  = 720;
+		public const int NTSC_HEIGHT = 480;
+		public const int FASTMEM_AUTO = -1;
+		public const int MAX_FLOPPIES = 4;
 
 		[CoreConstructor(VSystemID.Raw.Amiga)]
 		public PUAE(CoreLoadParameters<object, PUAESyncSettings> lp)
 			: base(lp.Comm, new Configuration
 			{
-				DefaultWidth          = LibPUAE.PAL_WIDTH,
-				DefaultHeight         = LibPUAE.PAL_HEIGHT,
-				MaxWidth              = LibPUAE.PAL_WIDTH,
-				MaxHeight             = LibPUAE.PAL_HEIGHT,
+				DefaultWidth          = PAL_WIDTH,
+				DefaultHeight         = PAL_HEIGHT,
+				MaxWidth              = PAL_WIDTH,
+				MaxHeight             = PAL_HEIGHT,
 				MaxSamples            = 2 * 1024,
 				SystemId              = VSystemID.Raw.Amiga,
 				DefaultFpsNumerator   = 50,
@@ -35,6 +42,9 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			})
 		{
 			_syncSettings = lp.SyncSettings ?? new();
+			var filesToRemove = new List<string>();
+			CreateArguments(_syncSettings);
+			ControllerDefinition = InitInput();
 
 			_puae = PreInit<LibPUAE>(new WaterboxOptions
 			{
@@ -48,12 +58,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
-			var filesToRemove = new List<string>();
-			
-			CreateArguments(_syncSettings);
-
-			_exe.AddReadonlyFile(lp.Roms[0].FileData, "romfile");
-			filesToRemove.Add("romfile");
+			for (var index = 0; index < MAX_FLOPPIES && index < lp.Roms.Count; index++)
+			{
+				_exe.AddReadonlyFile(lp.Roms[index].FileData, "disk" + index);
+				filesToRemove.Add("disk" + index);
+				AppendSetting($"floppy{ index }=disk{ index }");
+				AppendSetting($"floppy{ index }type={ (int)DriveType.DRV_35_DD }");
+			}
 
 			var (kickstartData, kickstartInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(
 				new(VSystemID.Raw.Amiga, _chipsetCompatible),
@@ -64,8 +75,6 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			{
 				"-r", kickstartInfo.Name
 			});
-
-			ControllerDefinition = InitInput();
 
 			if (!_puae.Init(_args.Count, _args.ToArray()))
 				throw new InvalidOperationException("Core rejected the rom!");
@@ -95,8 +104,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			});
 
 			controller
-				.AddAxis("Mouse X", (0).RangeTo(LibPUAE.PAL_WIDTH),  LibPUAE.PAL_WIDTH  / 2)
-				.AddAxis("Mouse Y", (0).RangeTo(LibPUAE.PAL_HEIGHT), LibPUAE.PAL_HEIGHT / 2);
+				.AddAxis("Mouse X", (0).RangeTo(PAL_WIDTH),  PAL_WIDTH  / 2)
+				.AddAxis("Mouse Y", (0).RangeTo(PAL_HEIGHT), PAL_HEIGHT / 2);
 
 			foreach (var b in controller.BoolButtons)
 			{

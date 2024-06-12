@@ -10,8 +10,6 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
 	public partial class PUAE : ISettable<object, PUAE.PUAESyncSettings>
 	{
-		public const int FASTMEM_AUTO = -1;
-
 		public enum MachineConfig
 		{
 			[Display(Name = "A500 OCS KS1.3 512K 512K")]
@@ -113,12 +111,25 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			Auto
 		}
 
+		public enum DriveType
+		{
+			DRV_NONE = -1,
+			DRV_35_DD = 0,
+			DRV_35_HD,
+			DRV_525_SD,
+			DRV_35_DD_ESCOM,
+			DRV_PC_525_ONLY_40,
+			DRV_PC_35_ONLY_80,
+			DRV_PC_525_40_80,
+			DRV_525_DD,
+			DRV_FB
+		}
+
 		private void CreateArguments(PUAESyncSettings settings)
 		{
 			_args = new List<string>
 			{
 				"puae",
-				"-0", "romfile",
 			};
 
 			switch(settings.MachineConfig)

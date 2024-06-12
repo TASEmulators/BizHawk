@@ -8,11 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
 	public abstract class LibPUAE : LibWaterboxCore
 	{
-		public const int PAL_WIDTH   = 720;
-		public const int PAL_HEIGHT  = 576;
-		public const int NTSC_WIDTH  = 720;
-		public const int NTSC_HEIGHT = 480;
-		public const int KEY_COUNT   = 0x68;
+		public const int KEY_COUNT = 0x68;
 
 		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init(int argc, string[] argv);
