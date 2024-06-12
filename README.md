@@ -10,6 +10,9 @@ A7800Hawk, Atari2600Hawk, C64Hawk, ColecoHawk, GBHawk, IntelliHawk, NesHawk, O2H
 [![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/-/pipelines/master/latest)
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/issues)
 
+[![latest dev build (windows) | GitHub CI](https://img.shields.io/badge/latest_dev_build_(windows)-GitHub_CI-green?logo=github)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-windows.zip)
+[![latest dev build (linux) | GitHub CI](https://img.shields.io/badge/latest_dev_build_(linux)-GitHub_CI-green?logo=github)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-linux.zip)
+
 [![built with nix](https://builtwithnix.org/badge.svg)](#nixnixos)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/5365/badge)](https://bestpractices.coreinfrastructure.org/projects/5365)
 
