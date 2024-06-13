@@ -3,7 +3,7 @@ using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
-using BizHawk.Emulation.DiscSystem;
+//using BizHawk.Emulation.DiscSystem;
 
 using System;
 using System.Collections.Generic;
