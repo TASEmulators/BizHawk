@@ -20,12 +20,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 	{
 		internal CoreComm _comm { get; }
 		private readonly List<IRomAsset> _roms;
-		private readonly List<IDiscAsset> _discs;
+		//private readonly List<IDiscAsset> _discs;
 		private LibPUAE _puae;
 		private List<string> _args;
-		private static string _chipsetCompatible = "";
-		private static int _currentDrive = 0;
-		private static int _currentSlot = 0;
+		private string _chipsetCompatible = "";
+		private int _currentDrive = 0;
+		private int _currentSlot = 0;
+		private byte[] _currentRom;
 		private bool _nextSlotPressed = false;
 		private bool _nextDrivePressed = false;
 
@@ -45,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		{
 			_comm = lp.Comm;
 			_roms = lp.Roms;
-			_discs = lp.Discs;
+			//_discs = lp.Discs;
 			_syncSettings = lp.SyncSettings ?? new();
 			var filesToRemove = new List<string>();
 			CreateArguments(_syncSettings);
@@ -168,41 +169,22 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				if (!_nextSlotPressed)
 				{
 					_currentSlot++;
-					_currentSlot %= _roms.Count + _discs.Count;
-
-					string selectedFile;
-					if (_currentSlot < _roms.Count)
-					{
-						selectedFile = _roms[_currentSlot].Game.Name;
-					}
-					else
-					{
-						selectedFile = _discs[_currentSlot - _roms.Count].DiscName;
-					}
-					_comm.Notify(selectedFile, null);
+					_currentSlot %= _roms.Count;
+					var selectedFile = _roms[_currentSlot];
+					_currentRom = selectedFile.FileData;
+					_comm.Notify(selectedFile.Game.Name, null);
 				}
 			}
-			_nextSlotPressed = controller.IsPressed(Inputs.NS);
-
 			if (controller.IsPressed(Inputs.ND))
 			{
 				if (!_nextDrivePressed)
 				{
 					_currentDrive++;
-					_currentDrive %= _syncSettings.FloppyDrives + (_discs.Count > 0 ? 1 : 0);
-
-					string selectedDrive;
-					if (_currentDrive < _syncSettings.FloppyDrives)
-					{
-						selectedDrive = "FD" + _currentDrive;
-					}
-					else
-					{
-						selectedDrive = "CD";
-					}
-					_comm.Notify(selectedDrive, null);
+					_currentDrive %= _syncSettings.FloppyDrives;
+					_comm.Notify($"Selected FD{ _currentDrive } Drive", null);
 				}
 			}
+			_nextSlotPressed  = controller.IsPressed(Inputs.NS);
 			_nextDrivePressed = controller.IsPressed(Inputs.ND);
 
 			fi.MouseX = controller.AxisValue(Inputs.X);
@@ -224,24 +206,14 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			return fi;
 		}
 
-		public void SaveStateBinary(BinaryWriter writer)
+		protected override void SaveStateBinaryInternal(BinaryWriter writer)
 		{
-			using (_exe.EnterExit())
-			{
-				_exe.SaveStateBinary(writer);
-			}
-
 			writer.Write(_nextSlotPressed);
 			writer.Write(_nextDrivePressed);
 		}
 
-		public void LoadStateBinary(BinaryReader reader)
+		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
-			using (_exe.EnterExit())
-			{
-				_exe.LoadStateBinary(reader);
-			}
-
 			_nextSlotPressed = reader.ReadBoolean();
 			_nextDrivePressed = reader.ReadBoolean();
 		}
