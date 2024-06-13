@@ -83,10 +83,10 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				"Firmware files are required!");
 			_exe.AddReadonlyFile(kickstartData, kickstartInfo.Name);
 			filesToRemove.Add(kickstartInfo.Name);
-			_args.AddRange(new List<string>
-			{
+			_args.AddRange(
+			[
 				"-r", kickstartInfo.Name
-			});
+			]);
 
 			if (!_puae.Init(_args.Count, _args.ToArray()))
 				throw new InvalidOperationException("Core rejected the rom!");
@@ -110,10 +110,10 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				controller.CategoryLabels[name] = "Joystick";
 			}
 
-			controller.BoolButtons.AddRange(new List<string>
-			{
+			controller.BoolButtons.AddRange(
+			[
 				Inputs.MLB, Inputs.MMB, Inputs.MRB
-			});
+			]);
 
 			controller
 				.AddAxis(Inputs.X, (0).RangeTo(LibPUAE.PAL_WIDTH),  LibPUAE.PAL_WIDTH  / 2)
@@ -127,10 +127,10 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				}
 			}
 
-			controller.BoolButtons.AddRange(new List<string>
-			{
+			controller.BoolButtons.AddRange(
+			[
 				Inputs.Eject, Inputs.Insert, Inputs.NextDrive, Inputs.NextSlot
-			});
+			]);
 
 			foreach (var b in Enum.GetValues(typeof(LibPUAE.PUAEKeyboard)))
 			{
