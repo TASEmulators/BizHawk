@@ -21,6 +21,7 @@
 
 #include "libretro/libretro-core.h"
 
+static const int FILENAME_MAXLENGTH = 4;
 static const int KEY_COUNT = 0x68;
 
 int16_t* sound_buffer = NULL;
@@ -38,6 +39,8 @@ extern int umain(int argc, char **argv);
 extern int m68k_go(int may_quit, int resume);
 extern void init_output_audio_buffer(int32_t capacity);
 extern void upload_output_audio_buffer();
+extern void disk_eject(int num);
+extern void disk_insert_force (int num, const TCHAR *name, bool forcedwriteprotect);
 
 enum Axis
 {
@@ -77,6 +80,13 @@ enum AudioChannels
 	AUDIO_STEREO
 };
 
+enum DriveAction
+{
+	ACTION_NONE,
+	ACTION_EJECT,
+	ACTION_INSERT
+};
+
 typedef union
 {
     struct
@@ -100,6 +110,9 @@ typedef struct
 	int MouseX;
 	int MouseY;
 	char Keys[KEY_COUNT];
+	int CurrentDrive;
+	int Action;
+	char FileName[FILENAME_MAXLENGTH];
 } MyFrameInfo;
 
 size_t biz_audio_cb(const int16_t *data, size_t frames)

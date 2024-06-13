@@ -8,6 +8,7 @@ using BizHawk.Emulation.DiscSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
@@ -27,6 +28,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		private int _currentDrive = 0;
 		private int _currentSlot = 0;
 		private byte[] _currentRom;
+		private bool _ejectPressed = false;
+		private bool _insertPressed = false;
 		private bool _nextSlotPressed = false;
 		private bool _nextDrivePressed = false;
 
@@ -64,12 +67,15 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
-			for (var index = 0; index < Math.Min(Math.Min(
-				lp.Roms.Count, LibPUAE.MAX_FLOPPIES), _syncSettings.FloppyDrives); index++)
+			for (var index = 0; index < lp.Roms.Count; index++)
 			{
 				_exe.AddReadonlyFile(lp.Roms[index].FileData, FileNames.FD + index);
-				AppendSetting($"floppy{ index }={ FileNames.FD }{ index }");
-				AppendSetting($"floppy{ index }type={ (int)DriveType.DRV_35_DD }");
+
+				if (index < Math.Min(LibPUAE.MAX_FLOPPIES, _syncSettings.FloppyDrives))
+				{
+					AppendSetting($"floppy{index}={FileNames.FD}{index}");
+					AppendSetting($"floppy{index}type={(int)DriveType.DRV_35_DD}");
+				}
 			}
 
 			var (kickstartData, kickstartInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(
@@ -123,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			controller.BoolButtons.AddRange(new List<string>
 			{
-				Inputs.EJ, Inputs.INS, Inputs.ND, Inputs.NS
+				Inputs.Eject, Inputs.Insert, Inputs.NextDrive, Inputs.NextSlot
 			});
 
 			foreach (var b in Enum.GetValues(typeof(LibPUAE.PUAEKeyboard)))
@@ -140,7 +146,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		{
 			var fi = new LibPUAE.FrameInfo
 			{
-				MouseButtons = 0
+				MouseButtons = 0,
+				Action = LibPUAE.DriveAction.NONE
 			};
 
 			foreach (var b in Enum.GetValues(typeof(LibPUAE.PUAEJoystick)))
@@ -164,7 +171,30 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				fi.MouseButtons |= 1 << 2;
 			}
 
-			if (controller.IsPressed(Inputs.NS))
+			if (controller.IsPressed(Inputs.Eject))
+			{
+				if (!_ejectPressed)
+				{
+					fi.Action = LibPUAE.DriveAction.EJECT;
+				}
+			}
+			else if (controller.IsPressed(Inputs.Insert))
+			{
+				if (!_insertPressed)
+				{
+					fi.Action = LibPUAE.DriveAction.INSERT;
+					unsafe
+					{
+						string str = FileNames.FD + _currentSlot;
+						fixed(char* filename = str)
+						fixed (byte* buffer = fi.Name.Buffer)
+						{
+							Encoding.ASCII.GetBytes(filename, str.Length, buffer, LibPUAE.FILENAME_MAXLENGTH);
+						}
+					}
+				}
+			}
+			if (controller.IsPressed(Inputs.NextSlot))
 			{
 				if (!_nextSlotPressed)
 				{
@@ -175,7 +205,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					_comm.Notify(selectedFile.Game.Name, null);
 				}
 			}
-			if (controller.IsPressed(Inputs.ND))
+			if (controller.IsPressed(Inputs.NextDrive))
 			{
 				if (!_nextDrivePressed)
 				{
@@ -184,8 +214,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					_comm.Notify($"Selected FD{ _currentDrive } Drive", null);
 				}
 			}
-			_nextSlotPressed  = controller.IsPressed(Inputs.NS);
-			_nextDrivePressed = controller.IsPressed(Inputs.ND);
+			_ejectPressed     = controller.IsPressed(Inputs.Eject);
+			_insertPressed    = controller.IsPressed(Inputs.Insert);
+			_nextSlotPressed  = controller.IsPressed(Inputs.NextSlot);
+			_nextDrivePressed = controller.IsPressed(Inputs.NextDrive);
+			
+			fi.CurrentDrive = _currentDrive;
 
 			fi.MouseX = controller.AxisValue(Inputs.X);
 			fi.MouseY = controller.AxisValue(Inputs.Y);
@@ -208,12 +242,16 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
 		{
+			writer.Write(_ejectPressed);
+			writer.Write(_insertPressed);
 			writer.Write(_nextSlotPressed);
 			writer.Write(_nextDrivePressed);
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
+			_ejectPressed = reader.ReadBoolean();
+			_insertPressed = reader.ReadBoolean();
 			_nextSlotPressed = reader.ReadBoolean();
 			_nextDrivePressed = reader.ReadBoolean();
 		}
@@ -230,12 +268,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			public const string MLB = "Mouse Left Button";
 			public const string MRB = "Mouse Right Button";
 			public const string MMB = "Mouse Middle Button";
-			public const string X   = "Mouse X";
-			public const string Y   = "Mouse Y";
-			public const string EJ  = "Eject";
-			public const string INS = "Insert";
-			public const string ND  = "Next Drive";
-			public const string NS  = "Next Slot";
+			public const string X = "Mouse X";
+			public const string Y = "Mouse Y";
+			public const string Eject = "Eject";
+			public const string Insert = "Insert";
+			public const string NextDrive = "Next Drive";
+			public const string NextSlot = "Next Slot";
 		}
 	}
 }

@@ -48,13 +48,20 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	setmousestate(      PORT_0, AXIS_VERTICAL,   f->MouseY - last_mouse_y, MOUSE_RELATIVE);
 
 	for (int i = 0; i < KEY_COUNT; i++)
-	{
 		if (f->Keys[i] != last_key_state[i])
-		{
 			inputdevice_do_keyboard(i, f->Keys[i]);
-		}
-	}
 	memcpy(last_key_state, f->Keys, KEY_COUNT);
+
+	if (f->Action == ACTION_EJECT)
+	{
+		disk_eject(f->CurrentDrive);
+		log_cb(RETRO_LOG_INFO, "EJECTED FD%d\n", f->CurrentDrive);
+	}
+	else if (f->Action == ACTION_INSERT)
+	{
+		disk_insert_force(f->CurrentDrive, f->FileName, true);
+		log_cb(RETRO_LOG_INFO, "INSERTED FD%d: \"%s\"\n", f->CurrentDrive, f->FileName);
+	}
 
 	m68k_go(1, 1);
 	upload_output_audio_buffer();
