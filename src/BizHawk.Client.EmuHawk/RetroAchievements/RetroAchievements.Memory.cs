@@ -362,7 +362,7 @@ namespace BizHawk.Client.EmuHawk
 		// these consoles will use the entire main memory domain
 		private static readonly ConsoleID[] UseFullMainMem =
 		[
-			ConsoleID.Lynx, ConsoleID.NeoGeoPocket, ConsoleID.Jaguar,
+			ConsoleID.Amiga, ConsoleID.Lynx, ConsoleID.NeoGeoPocket, ConsoleID.Jaguar,
 			ConsoleID.JaguarCD, ConsoleID.DS, ConsoleID.DSi, ConsoleID.AppleII,
 			ConsoleID.Vectrex, ConsoleID.Tic80, ConsoleID.PCEngine, ConsoleID.Uzebox,
 			ConsoleID.Nintendo3DS,
