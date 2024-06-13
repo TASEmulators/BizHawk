@@ -8,7 +8,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
 	public abstract class LibPUAE : LibWaterboxCore
 	{
-		public const int KEY_COUNT = 0x68;
+		public const int PAL_WIDTH    = 720;
+		public const int PAL_HEIGHT   = 576;
+		public const int NTSC_WIDTH   = 720;
+		public const int NTSC_HEIGHT  = 480;
+		public const int FASTMEM_AUTO = -1;
+		public const int MAX_FLOPPIES = 4;
+		public const int KEY_COUNT    = 0x68;
 
 		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init(int argc, string[] argv);
@@ -38,6 +44,23 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			Joystick_Button_1 = 1 << 4,
 			Joystick_Button_2 = 1 << 5,
 			Joystick_Button_3 = 1 << 6
+		}
+
+		public enum DiscAction
+		{
+			Eject,
+			Insert
+		}
+
+		[Flags]
+		public enum DiskControl : byte
+		{
+			FloppyDrive0 = 1 << 0,
+			FloppyDrive1 = 1 << 1,
+			FloppyDrive2 = 1 << 2,
+			FloppyDrive3 = 1 << 3,
+			CdDrive      = 1 << 4,
+			Trigger      = 1 << 5
 		}
 
 		// https://wiki.amigaos.net/wiki/Keymap_Library

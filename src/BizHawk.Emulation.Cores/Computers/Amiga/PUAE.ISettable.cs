@@ -220,7 +220,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				AppendSetting("bogomem_size=" + (int)settings.SlowMemory);
 			}
 
-			if (settings.FastMemory != FASTMEM_AUTO)
+			if (settings.FastMemory != LibPUAE.FASTMEM_AUTO)
 			{
 				AppendSetting("fastmem_size=" + settings.FastMemory);
 			}
@@ -310,8 +310,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			[DisplayName("Fast memory")]
 			[Description("Size in megabytes of fast-memory.  -1 means Auto.")]
-			[Range(FASTMEM_AUTO, 512)]
-			[DefaultValue(FASTMEM_AUTO)]
+			[Range(LibPUAE.FASTMEM_AUTO, 512)]
+			[DefaultValue(LibPUAE.FASTMEM_AUTO)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int FastMemory { get; set; }
 
