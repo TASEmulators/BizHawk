@@ -112,12 +112,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			controller.BoolButtons.AddRange(
 			[
-				Inputs.MLB, Inputs.MMB, Inputs.MRB
+				Inputs.MouseLeftButton, Inputs.MouseMIddleButton, Inputs.MouseRightButton
 			]);
 
 			controller
-				.AddAxis(Inputs.X, (0).RangeTo(LibPUAE.PAL_WIDTH),  LibPUAE.PAL_WIDTH  / 2)
-				.AddAxis(Inputs.Y, (0).RangeTo(LibPUAE.PAL_HEIGHT), LibPUAE.PAL_HEIGHT / 2);
+				.AddAxis(Inputs.MouseX, (0).RangeTo(LibPUAE.PAL_WIDTH),  LibPUAE.PAL_WIDTH  / 2)
+				.AddAxis(Inputs.MouseY, (0).RangeTo(LibPUAE.PAL_HEIGHT), LibPUAE.PAL_HEIGHT / 2);
 
 			foreach (var b in controller.BoolButtons)
 			{
@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			controller.BoolButtons.AddRange(
 			[
-				Inputs.Eject, Inputs.Insert, Inputs.NextDrive, Inputs.NextSlot
+				Inputs.NextDrive, Inputs.NextSlot, Inputs.Insert, Inputs.Eject
 			]);
 
 			foreach (var b in Enum.GetValues(typeof(LibPUAE.PUAEKeyboard)))
@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			var fi = new LibPUAE.FrameInfo
 			{
 				MouseButtons = 0,
-				Action = LibPUAE.DriveAction.NONE
+				Action = LibPUAE.DriveAction.None
 			};
 
 			foreach (var b in Enum.GetValues(typeof(LibPUAE.PUAEJoystick)))
@@ -158,31 +158,33 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				}
 			}
 			
-			if (controller.IsPressed(Inputs.MLB))
+			if (controller.IsPressed(Inputs.MouseLeftButton))
 			{
-				fi.MouseButtons |= 1 << 0;
+				fi.MouseButtons |= LibPUAE.b00000001;
 			}
-			if (controller.IsPressed(Inputs.MRB))
+			if (controller.IsPressed(Inputs.MouseRightButton))
 			{
-				fi.MouseButtons |= 1 << 1;
+				fi.MouseButtons |= LibPUAE.b00000010;
 			}
-			if (controller.IsPressed(Inputs.MMB))
+			if (controller.IsPressed(Inputs.MouseMIddleButton))
 			{
-				fi.MouseButtons |= 1 << 2;
+				fi.MouseButtons |= LibPUAE.b00000100;
 			}
+			fi.MouseX = controller.AxisValue(Inputs.MouseX);
+			fi.MouseY = controller.AxisValue(Inputs.MouseY);
 
 			if (controller.IsPressed(Inputs.Eject))
 			{
 				if (!_ejectPressed)
 				{
-					fi.Action = LibPUAE.DriveAction.EJECT;
+					fi.Action = LibPUAE.DriveAction.Eject;
 				}
 			}
 			else if (controller.IsPressed(Inputs.Insert))
 			{
 				if (!_insertPressed)
 				{
-					fi.Action = LibPUAE.DriveAction.INSERT;
+					fi.Action = LibPUAE.DriveAction.Insert;
 					unsafe
 					{
 						string str = FileNames.FD + _currentSlot;
@@ -211,18 +213,14 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				{
 					_currentDrive++;
 					_currentDrive %= _syncSettings.FloppyDrives;
-					_comm.Notify($"Selected FD{ _currentDrive } Drive", null);
+					_comm.Notify($"Selected FD{ _currentDrive }: Drive", null);
 				}
 			}
 			_ejectPressed     = controller.IsPressed(Inputs.Eject);
 			_insertPressed    = controller.IsPressed(Inputs.Insert);
 			_nextSlotPressed  = controller.IsPressed(Inputs.NextSlot);
-			_nextDrivePressed = controller.IsPressed(Inputs.NextDrive);
-			
+			_nextDrivePressed = controller.IsPressed(Inputs.NextDrive);			
 			fi.CurrentDrive = _currentDrive;
-
-			fi.MouseX = controller.AxisValue(Inputs.X);
-			fi.MouseY = controller.AxisValue(Inputs.Y);
 			
 			foreach (var b in Enum.GetValues(typeof(LibPUAE.PUAEKeyboard)))
 			{
@@ -265,11 +263,11 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 		private static class Inputs
 		{
-			public const string MLB = "Mouse Left Button";
-			public const string MRB = "Mouse Right Button";
-			public const string MMB = "Mouse Middle Button";
-			public const string X = "Mouse X";
-			public const string Y = "Mouse Y";
+			public const string MouseLeftButton = "Mouse Left Button";
+			public const string MouseRightButton = "Mouse Right Button";
+			public const string MouseMIddleButton = "Mouse Middle Button";
+			public const string MouseX = "Mouse X";
+			public const string MouseY = "Mouse Y";
 			public const string Eject = "Eject";
 			public const string Insert = "Insert";
 			public const string NextDrive = "Next Drive";

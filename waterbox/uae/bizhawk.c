@@ -59,6 +59,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	}
 	else if (f->Action == ACTION_INSERT)
 	{
+		disk_eject(f->CurrentDrive);
 		disk_insert_force(f->CurrentDrive, f->FileName, true);
 		log_cb(RETRO_LOG_INFO, "INSERTED FD%d: \"%s\"\n", f->CurrentDrive, f->FileName);
 	}

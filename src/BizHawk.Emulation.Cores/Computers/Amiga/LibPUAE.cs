@@ -16,6 +16,14 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		public const int MAX_FLOPPIES = 4;
 		public const int FILENAME_MAXLENGTH = 64;
 		public const int KEY_COUNT = 0x68;
+		public const byte b00000001 = 1 << 0;
+		public const byte b00000010 = 1 << 1;
+		public const byte b00000100 = 1 << 2;
+		public const byte b00001000 = 1 << 3;
+		public const byte b00010000 = 1 << 4;
+		public const byte b00100000 = 1 << 5;
+		public const byte b01000000 = 1 << 6;
+		public const byte b10000000 = 1 << 7;
 
 		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init(int argc, string[] argv);
@@ -43,21 +51,21 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 		public enum DriveAction : int
 		{
-			NONE,
-			EJECT,
-			INSERT
+			None,
+			Eject,
+			Insert
 		}
 
 		[Flags]
 		public enum PUAEJoystick : byte
 		{
-			Joystick_Up       = 1 << 0,
-			Joystick_Down     = 1 << 1,
-			Joystick_Left     = 1 << 2,
-			Joystick_Right    = 1 << 3,
-			Joystick_Button_1 = 1 << 4,
-			Joystick_Button_2 = 1 << 5,
-			Joystick_Button_3 = 1 << 6
+			Joystick_Up       = b00000001,
+			Joystick_Down     = b00000010,
+			Joystick_Left     = b00000100,
+			Joystick_Right    = b00001000,
+			Joystick_Button_1 = b00010000,
+			Joystick_Button_2 = b00100000,
+			Joystick_Button_3 = b01000000
 		}
 
 		// https://wiki.amigaos.net/wiki/Keymap_Library
