@@ -49,7 +49,7 @@ namespace BizHawk.Bizware.Graphics
 			TexturePages = null;
 		}
 
-		public SizeF Measure(string str, int scale)
+		public SizeF Measure(string str, float scale)
 		{
 			float x = 0;
 			float y = FontInfo.LineHeight * scale;
@@ -92,7 +92,7 @@ namespace BizHawk.Bizware.Graphics
 			return new(Math.Max(x, ox), y);
 		}
 
-		public void RenderString(IGuiRenderer renderer, float x, float y, string str, int scale)
+		public void RenderString(IGuiRenderer renderer, float x, float y, string str, float scale)
 		{
 			if (Owner != renderer.Owner)
 			{

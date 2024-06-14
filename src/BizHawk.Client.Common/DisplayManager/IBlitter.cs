@@ -15,6 +15,6 @@ namespace BizHawk.Client.Common
 
 		Rectangle ClipBounds { get; }
 
-		public int Scale { get; }
+		public float Scale { get; }
 	}
 }

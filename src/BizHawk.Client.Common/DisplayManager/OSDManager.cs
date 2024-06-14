@@ -141,7 +141,7 @@ namespace BizHawk.Client.Common
 					var line = 1;
 					for (var i = _messages.Count - 1; i >= 0; i--, line++)
 					{
-						var yOffset = (line - 1) * 18 * g.Scale;
+						var yOffset = (int)Math.Round((line - 1) * 18 * g.Scale);
 						if (!_config.Messages.Anchor.IsTop())
 						{
 							yOffset = 0 - yOffset;

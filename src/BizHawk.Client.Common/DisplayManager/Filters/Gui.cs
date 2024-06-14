@@ -615,7 +615,7 @@ namespace BizHawk.Client.Common.Filters
 			var size = FindInput().SurfaceFormat.Size;
 
 			FilterProgram.GuiRenderer.Begin(size.Width, size.Height);
-			var scale = (int)Math.Round(FilterProgram.ControlDpi / 96.0f);
+			var scale = FilterProgram.ControlDpi / 96.0F;
 			var blitter = new OSDBlitter(_font, FilterProgram.GuiRenderer, new(0, 0, size.Width, size.Height), scale);
 			FilterProgram.GuiRenderer.EnableBlending();
 			_manager.DrawScreenInfo(blitter);
@@ -628,7 +628,7 @@ namespace BizHawk.Client.Common.Filters
 			private readonly StringRenderer _font;
 			private readonly IGuiRenderer _renderer;
 
-			public OSDBlitter(StringRenderer font, IGuiRenderer renderer, Rectangle clipBounds, int scale)
+			public OSDBlitter(StringRenderer font, IGuiRenderer renderer, Rectangle clipBounds, float scale)
 			{
 				_font = font;
 				_renderer = renderer;
@@ -648,7 +648,7 @@ namespace BizHawk.Client.Common.Filters
 
 			public Rectangle ClipBounds { get; }
 
-			public int Scale { get; }
+			public float Scale { get; }
 		}
 	}
 }
