@@ -371,7 +371,6 @@ namespace BizHawk.Client.EmuHawk
 		// these consoles will use part of the system bus at an offset
 		private static readonly Dictionary<ConsoleID, (uint Start, uint Size)[]> UsePartialSysBus = new()
 		{
-			[ConsoleID.Colecovision] = [ (0x6000u, 0x400u) ],
 			[ConsoleID.SG1000] = [ (0xC000u, 0x2000u), (0x2000u, 0x2000u), (0x8000u, 0x2000u) ],
 		};
 
@@ -541,6 +540,11 @@ namespace BizHawk.Client.EmuHawk
 						// todo: add System Bus so this isn't needed
 						mfs.Add(new(domains["Work Ram Low"], 0, domains["Work Ram Low"].Size, 1));
 						mfs.Add(new(domains["Work Ram High"], 0, domains["Work Ram High"].Size, 1));
+						break;
+					case ConsoleID.Colecovision:
+						mfs.Add(new(domains["Main RAM"], 0, domains["Main RAM"].Size));
+						TryAddDomain("SGM Low RAM");
+						TryAddDomain("SGM High RAM");
 						break;
 					case ConsoleID.Intellivision:
 						// special case
