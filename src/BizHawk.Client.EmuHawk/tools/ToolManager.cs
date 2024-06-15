@@ -477,7 +477,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var tool in _tools)
 			{
-				if (tool is T specialTool && condition(specialTool))
+				if (tool.IsActive && tool is T specialTool && condition(specialTool))
 				{
 					return specialTool;
 				}
