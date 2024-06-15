@@ -305,6 +305,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
+			if (!IsHandleCreated) return;
+
 			_settings = new SearchEngineSettings(MemoryDomains, Settings.UseUndoHistory);
 			_searches = new RamSearchEngine(_settings, MemoryDomains);
 			MessageLabel.Text = "Search restarted";
