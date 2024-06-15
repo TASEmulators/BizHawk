@@ -53,8 +53,9 @@ EmuHawk's features (common across all cores) are:
 * a comprehensive input mapper for the emulated gamepads and other peripherals
 * programmatic control over core and frontend with Lua or C#.NET
 
-![OoT screencap](https://user-images.githubusercontent.com/13409956/230675214-4ef0b14c-9de2-4b19-9690-371380bd79e2.png)
-![SMW screencap](https://user-images.githubusercontent.com/13409956/230675202-6e400a7a-5b77-453d-b2bd-be6fe099d866.png)
+![OoT screencap](https://github.com/TASEmulators/BizHawk/assets/7092625/6b368ddd-618a-4a75-be47-c6def7bef5a4)
+![SMW screencap](https://github.com/TASEmulators/BizHawk/assets/7092625/9c19fd87-f184-4acf-9a99-258e1938ed61)
+
 
 Supported consoles and computers:
 
