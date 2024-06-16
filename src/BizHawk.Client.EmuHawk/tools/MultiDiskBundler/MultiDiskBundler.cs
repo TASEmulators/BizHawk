@@ -8,6 +8,7 @@ using System.Xml.Linq;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -59,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			AddButton_Click(null, null);
 			AddButton_Click(null, null);
 
-			if (!Game.IsNullInstance() && !MainForm.CurrentlyOpenRom.EndsWithOrdinal(".xml"))
+			if (!Game.IsNullInstance())
 			{
 				if (MainForm.CurrentlyOpenRom.Contains("|"))
 				{
@@ -69,10 +70,19 @@ namespace BizHawk.Client.EmuHawk
 					var filename = Path.ChangeExtension(pieces[1], ".xml");
 
 					NameBox.Text = Path.Combine(directory, filename);
+					FileSelectors.First().Path = MainForm.CurrentlyOpenRom;
 				}
 				else
 				{
 					NameBox.Text = Path.ChangeExtension(MainForm.CurrentlyOpenRom, ".xml");
+					if (MainForm.CurrentlyOpenRom.EndsWithOrdinal(".xml"))
+					{
+						PopulateFromXmlFile(MainForm.CurrentlyOpenRom);
+					}
+					else
+					{
+						FileSelectors.First().Path = MainForm.CurrentlyOpenRom;
+					}
 				}
 
 				if (SystemDropDown.Items.Contains(Emulator.SystemId))
@@ -83,8 +93,28 @@ namespace BizHawk.Client.EmuHawk
 				{
 					SystemDropDown.SelectedItem = VSystemID.Raw.GGL;
 				}
+			}
+		}
 
-				FileSelectors.First().Path = MainForm.CurrentlyOpenRom;
+		private void PopulateFromXmlFile(string xmlPath)
+		{
+			try
+			{
+				var xmlGame = XmlGame.Create(new HawkFile(xmlPath));
+				for (int i = FileSelectorPanel.Controls.Count; i < xmlGame.AssetFullPaths.Count; i++)
+				{
+					AddButton_Click(null, null);
+				}
+
+				var fileSelectors = FileSelectors.ToArray();
+				for (int i = 0; i < xmlGame.AssetFullPaths.Count; i++)
+				{
+					fileSelectors[i].Path = xmlGame.AssetFullPaths[i];
+				}
+			}
+			catch
+			{
+				// something went wrong while parsing the given xml path... just don't populate anything then
 			}
 		}
 
