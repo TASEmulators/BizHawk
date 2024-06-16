@@ -198,16 +198,7 @@ EmuHawk takes some command-line options which aren't well-documented; you might 
 
 On Windows 8.1/10, it's easiest to use PowerShell for this. For example, to pass `--lua=C:\path\to\script.lua` as the first argument and `C:\path\to\rom.n64` as the second, navigate to the BizHawk install folder and run:
 ```pwsh
-(New-Object System.Diagnostics.Process -Property @{StartInfo=(New-Object System.Diagnostics.ProcessStartInfo -Property @{FileName="$PWD\EmuHawk.exe";Arguments='"--lua=C:\path\to\script.lua" "C:\path\to\rom.n64"'})}).Start()
-```
-Note: PowerShell's `cd` doesn't seem to change the CWD of child processes. Just open a shell from the install folder. Don't @ me.
-
-For char escaping tips you're on your own. It might help to split up the command so you can identify syntax errors:
-```pwsh
-$s = '"--lua=C:\path\to\script.lua" "C:\path\to\rom.n64"'
-$startInfo = New-Object System.Diagnostics.ProcessStartInfo -Property @{FileName="$PWD\EmuHawk.exe";Arguments=$s}
-$proc = New-Object System.Diagnostics.Process -Property @{StartInfo=$startInfo}
-$proc.Start()
+./EmuHawk.exe '--lua=C:\path\to\script.lua' 'C:\path\to\rom.n64'
 ```
 
 On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono`. (You can also `export` env. vars.) All the arguments work as on Windows, with some caveats:
