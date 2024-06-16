@@ -219,12 +219,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearAllToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ClearAll(true);
+			ClearAll(false);
 		}
 
 		private void ClearCurrentTabToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ClearAll(false);
+			ClearAll(true);
 		}
 
 		private void RestoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
