@@ -214,21 +214,32 @@ namespace BizHawk.Client.EmuHawk
 						throw new Exception("System Id can not be blank");
 					}
 
-					var basePath = Path.GetDirectoryName(name.SubstringBefore('|'));
-					if (string.IsNullOrEmpty(basePath))
-					{
-						var fileInfo = new FileInfo(name);
-						basePath = Path.GetDirectoryName(fileInfo.FullName);
-					}
+					var basePath = Path.GetDirectoryName(Path.GetFullPath(name.SubstringBefore('|')));
 
 					_currentXml = new XElement("BizHawk-XMLGame",
 						new XAttribute("System", system),
 						new XAttribute("Name", Path.GetFileNameWithoutExtension(name)),
 						new XElement("LoadAssets",
-							names.Select(n => new XElement(
-								"Asset",
-								new XAttribute("FileName", PathExtensions.GetRelativePath(basePath, n))
-							))
+							names.Select(n =>
+							{
+								string currentRomPath = Path.GetFullPath(n);
+								string fileName;
+
+								try
+								{
+									fileName = PathExtensions.GetRelativePath(basePath, currentRomPath)!;
+								}
+								catch (ArgumentException)
+								{
+									// if a relative path cannot be constructed, use an absolute path
+									fileName = currentRomPath;
+								}
+
+								return new XElement(
+									"Asset",
+									new XAttribute("FileName", fileName)
+								);
+							})
 						)
 					);
 
