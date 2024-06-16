@@ -191,23 +191,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnRemove_Click(object sender, EventArgs e)
 		{
-			//ToDo:
-			//Make this better?
-			//We need to have i at 1 and not zero because Controls Count doesn't start at zero (sort of)
-			var i = 1;
-			//For Each Control box we have, loop
-			foreach (Control ctrl in FileSelectorPanel.Controls)
+			if (FileSelectorPanel.Controls.Count > 0)
 			{
-				//if we are at the last box, then remove it.
-				if ((i == FileSelectorPanel.Controls.Count))
-				{
-					ctrl.Dispose();
-				}
-				//One to our looper
-				i++;
+				FileSelectorPanel.Controls[^1].Dispose();
+				Recalculate();
 			}
-
-			Recalculate();
 		}
 
 		private void FileSelector_NameChanged(object sender, EventArgs e)
