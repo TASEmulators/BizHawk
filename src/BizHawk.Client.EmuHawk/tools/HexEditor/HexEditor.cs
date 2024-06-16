@@ -854,6 +854,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			var cheats = new List<Cheat>();
 			if (_highlightedAddress >= 0)
 			{
 				var watch = Watch.GenerateWatch(
@@ -863,14 +864,13 @@ namespace BizHawk.Client.EmuHawk
 					Common.WatchDisplayType.Hex,
 					BigEndian);
 
-				MainForm.CheatList.Add(new Cheat(
+				cheats.Add(new Cheat(
 					watch,
 					watch.Value));
 			}
 
 			if (_secondaryHighlightedAddresses.Any())
 			{
-				var cheats = new List<Cheat>();
 				foreach (var address in _secondaryHighlightedAddresses)
 				{
 					var watch = Watch.GenerateWatch(
@@ -884,9 +884,9 @@ namespace BizHawk.Client.EmuHawk
 						watch,
 						watch.Value));
 				}
-
-				MainForm.CheatList.AddRange(cheats);
 			}
+
+			MainForm.CheatList.AddRange(cheats);
 
 			MemoryViewerBox.Refresh();
 		}
