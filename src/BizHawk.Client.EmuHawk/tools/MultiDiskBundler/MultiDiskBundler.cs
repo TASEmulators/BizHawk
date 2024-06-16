@@ -53,8 +53,6 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		private void MultiGameCreator_Load(object sender, EventArgs e) => Restart();
-
 		public override void Restart()
 		{
 			FileSelectorPanel.Controls.Clear();
@@ -87,7 +85,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				FileSelectors.First().Path = MainForm.CurrentlyOpenRom;
-				Recalculate();
 			}
 		}
 
