@@ -151,26 +151,23 @@ namespace BizHawk.Client.EmuHawk
 			HotkeyTabControl.ResumeLayout();
 		}
 
-		private void Defaults()
+		private void Defaults(bool currentTabOnly)
 		{
-			foreach (var w in InputWidgets) w.Bindings = HotkeyInfo.AllHotkeys[w.WidgetName].DefaultBinding;
+			var widgets = currentTabOnly ? HotkeyTabControl.SelectedTab.Controls.OfType<InputCompositeWidget>() : InputWidgets;
+
+			foreach (var w in widgets)
+			{
+				w.Bindings = HotkeyInfo.AllHotkeys[w.WidgetName].DefaultBinding;
+			}
 		}
 
 		private void ClearAll(bool currentTabOnly)
 		{
-			if (currentTabOnly)
+			var widgets = currentTabOnly ? HotkeyTabControl.SelectedTab.Controls.OfType<InputCompositeWidget>() : InputWidgets;
+
+			foreach (var w in widgets)
 			{
-				foreach (var w in InputWidgets)
-				{
-					w.Clear();
-				}
-			}
-			else
-			{
-				foreach (var w in HotkeyTabControl.SelectedTab.Controls.OfType<InputCompositeWidget>())
-				{
-					w.Clear();
-				}
+				w.Clear();
 			}
 		}
 
@@ -232,7 +229,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RestoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Defaults();
+			Defaults(false);
+		}
+
+		private void RestoreDefaultsCurrentTabToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Defaults(true);
 		}
 	}
 }
