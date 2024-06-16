@@ -406,6 +406,7 @@ namespace BizHawk.Emulation.Common
 				case ".DMS":
 				case ".IPF":
 				case ".FDI":
+				case ".HDF":
 				case ".LHA":
 					game.System = VSystemID.Raw.Amiga;
 					break;

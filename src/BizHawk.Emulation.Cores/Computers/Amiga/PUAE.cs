@@ -69,14 +69,23 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			for (var index = 0; index < lp.Roms.Count; index++)
 			{
-				_exe.AddReadonlyFile(lp.Roms[index].FileData, FileNames.FD + index);
-
-				if (index < Math.Min(LibPUAE.MAX_FLOPPIES, _syncSettings.FloppyDrives))
+				if (lp.Roms[index].Extension.ToLower() == ".hdf")
 				{
-					AppendSetting($"floppy{index}={FileNames.FD}{index}");
-					AppendSetting($"floppy{index}type={(int)DriveType.DRV_35_DD}");
+					_exe.AddReadonlyFile(lp.Roms[index].FileData, FileNames.HD + index);
+					AppendSetting($"hardfile2=ro,DH0:\"{FileNames.HD + index}\",32,1,2,512,0,,uae0");
+				}
+				else
+				{
+					_exe.AddReadonlyFile(lp.Roms[index].FileData, FileNames.FD + index);
+					if (index < Math.Min(LibPUAE.MAX_FLOPPIES, _syncSettings.FloppyDrives))
+					{
+						AppendSetting($"floppy{index}={FileNames.FD}{index}");
+						AppendSetting($"floppy{index}type={(int)DriveType.DRV_35_DD}");
+					}
 				}
 			}
+
+			//AppendSetting("filesystem2=ro,DH0:data:Floppy/,0");
 
 			var (kickstartData, kickstartInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(
 				new(VSystemID.Raw.Amiga, _chipsetCompatible),
@@ -87,6 +96,11 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			[
 				"-r", kickstartInfo.Name
 			]);
+
+			var s = string.Join(" ", _args);
+			Console.WriteLine();
+			Console.WriteLine(s);
+			Console.WriteLine();
 
 			if (!_puae.Init(_args.Count, _args.ToArray()))
 				throw new InvalidOperationException("Core rejected the rom!");
