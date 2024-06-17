@@ -4,7 +4,6 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 {
 	[Core(CoreNames.SubNesHawk, "")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class SubNESHawk : IEmulator, IStatable, IInputPollable,
 		ISettable<NES.NES.NESSettings, NES.NES.NESSyncSettings>, ICycleTiming
 	{
@@ -36,6 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			ser.Register(_nesCore.ServiceProvider.GetService<IDebuggable>());
 			ser.Register(_nesCore.ServiceProvider.GetService<IRegionable>());
 			ser.Register(_nesCore.ServiceProvider.GetService<ICodeDataLogger>());
+			ser.Register(_nesCore.ServiceProvider.GetService<IDriveLight>());
 
 			const string TRACE_HEADER = "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR), CPU Cycle, PPU Cycle";
 			_tracer = new TraceBuffer(TRACE_HEADER);
