@@ -342,12 +342,12 @@ namespace BizHawk.Client.Common
 
 		private void HandlePlaybackEnd()
 		{
-			if (Movie.IsAtEnd() && (Movie.Emulator is ICycleTiming cycleCore))
+			if (Movie.IsAtEnd() && Movie.Emulator.HasCycleTiming())
 			{
-				long coreValue = cycleCore.CycleCount;
-				bool movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out string movieValueStr);
+				var coreValue = Movie.Emulator.AsCycleTiming().CycleCount;
+				var movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out var movieValueStr);
 
-				long movieValue = movieHasValue ? Convert.ToInt64(movieValueStr) : 0;
+				var movieValue = movieHasValue ? Convert.ToInt64(movieValueStr) : 0;
 				var valuesMatch = movieValue == coreValue;
 
 				if (!movieHasValue || !valuesMatch)

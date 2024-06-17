@@ -354,6 +354,12 @@ namespace BizHawk.Emulation.Common
 			return core.VsyncNumerator() / (double)core.VsyncDenominator();
 		}
 
+		public static bool HasCycleTiming(this IEmulator core)
+			=> core != null && core.ServiceProvider.HasService<ICycleTiming>();
+
+		public static ICycleTiming AsCycleTiming(this IEmulator core)
+			=> core.ServiceProvider.GetService<ICycleTiming>();
+
 		public static bool IsImplemented(this MethodInfo info)
 		{
 			return !info.GetCustomAttributes(false).Any(a => a is FeatureNotImplementedAttribute);

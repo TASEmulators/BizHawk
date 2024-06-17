@@ -54,7 +54,8 @@ namespace BizHawk.Client.Common
 			// The saved cycle value will only be valid if the end of the movie has been emulated.
 			if (this.IsAtEnd())
 			{
-				if (Emulator is ICycleTiming cycleCore)
+				var cycleCore = Emulator.AsCycleTiming();
+				if (cycleCore != null)
 				{
 					Header[HeaderKeys.CycleCount] = cycleCore.CycleCount.ToString();
 					Header[HeaderKeys.ClockRate] = cycleCore.ClockRate.ToString(CultureInfo.InvariantCulture);
