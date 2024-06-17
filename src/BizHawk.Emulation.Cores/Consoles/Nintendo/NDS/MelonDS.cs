@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				DefaultHeight = 384,
 				MaxWidth = (256 * 16) * 3 + ((128 * 16) * 4 / 3) + 1,
 				MaxHeight = (384 / 2 * 16) * 2 + (128 * 16),
-				MaxSamples = 1024,
+				MaxSamples = 4096, // rather large max samples is intentional, see comment in ThreadStartCallback
 				DefaultFpsNumerator = 33513982,
 				DefaultFpsDenominator = 560190,
 				SystemId = VSystemID.Raw.NDS,
