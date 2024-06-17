@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			for (var index = 0; index < lp.Roms.Count; index++)
 			{
-				if (lp.Roms[index].Extension.ToLower() == ".hdf")
+				if (lp.Roms[index].Extension.ToLowerInvariant() == ".hdf")
 				{
 					_exe.AddReadonlyFile(lp.Roms[index].FileData, FileNames.HD + index);
 					AppendSetting($"hardfile2=ro,DH0:\"{FileNames.HD + index}\",32,1,2,512,0,,uae0");
