@@ -23,6 +23,7 @@ public class ConversionTests
 	}
 
 	[TestMethod]
+	[DoNotParallelize] // old implementation is not thread safe
 	[DataRow(0, 0)]
 	[DataRow(1, 1.401298E-45F)]
 	[DataRow(1109917696, 42)]
