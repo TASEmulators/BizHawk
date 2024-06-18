@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
@@ -13,14 +13,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 {
 	public class RamSearchEngine
 	{
-		[ThreadStatic]
-		private static byte[] ScratchSpace = new byte[8];
-
 		/// <remarks>TODO move to BizHawk.Common</remarks>
 		private static float ReinterpretAsF32(long l)
 		{
-			BinaryPrimitives.WriteInt64LittleEndian(ScratchSpace, l);
-			return BitConverter.ToSingle(ScratchSpace, startIndex: 0); //TODO uses host endianness... so I've assumed the endianness for the previous call too. `BinaryPrimitives.ReadSingle*` isn't available --yoshi
+			return Unsafe.As<long, float>(ref l);
 		}
 
 		private Compare _compareTo = Compare.Previous;
