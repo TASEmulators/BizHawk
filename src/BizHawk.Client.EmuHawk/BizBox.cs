@@ -38,23 +38,9 @@ namespace BizHawk.Client.EmuHawk
 		private void BizBox_Load(object sender, EventArgs e)
 		{
 			DeveloperBuildLabel.Visible = VersionInfo.DeveloperBuild;
-
-#if true //TODO prepare for re-adding x86 and adding ARM/RISC-V
-			const string targetArch = "x64";
-#else
-			var targetArch = IntPtr.Size is 8 ? "x64" : "x86";
-#endif
-#if DEBUG
-			const string buildConfig = "Debug";
-#else
-			const string buildConfig = "Release";
-#endif
-			VersionLabel.Text = $"Version {VersionInfo.MainVersion}";
-			VersionLabel.Text += VersionInfo.DeveloperBuild
-				? $" — dev build ({buildConfig}, {targetArch})"
-				: $" ({targetArch})";
+			VersionLabel.Text = VersionInfo.GetFullVersionDetails();
 			DateLabel.Text = VersionInfo.ReleaseDate;
-
+			(linkLabel2.Text, linkLabel2.Tag) = VersionInfo.GetGitCommitLink();
 			foreach (var core in CoreInventory.Instance.SystemsFlat.Where(core => core.CoreAttr.Released)
 				.OrderByDescending(core => core.Name.ToLowerInvariant()))
 			{
@@ -63,17 +49,13 @@ namespace BizHawk.Client.EmuHawk
 					Dock = DockStyle.Top
 				});
 			}
-
-			linkLabel2.Text = $"Commit :{VersionInfo.GIT_BRANCH}@{VersionInfo.GIT_SHORTHASH}";
 		}
 
 		private void BizBox_Shown(object sender, EventArgs e)
 			=> _playWavFileCallback(_bizBoxSound);
 
 		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			Process.Start($"https://github.com/TASEmulators/BizHawk/commit/{VersionInfo.GIT_SHORTHASH}");
-		}
+			=> Process.Start((string) ((Control) sender).Tag);
 
 		private void btnCopyHash_Click(object sender, EventArgs e)
 		{
@@ -81,8 +63,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			Process.Start("https://github.com/TASEmulators/BizHawk/graphs/contributors");
-		}
+			=> Process.Start(VersionInfo.BizHawkContributorsListURI);
 	}
 }

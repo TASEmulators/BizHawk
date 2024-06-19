@@ -21,6 +21,8 @@ namespace BizHawk.Common
 
 		public static readonly string? CustomBuildString;
 
+		public static readonly string BizHawkContributorsListURI = "https://github.com/TASEmulators/BizHawk/graphs/contributors";
+
 		static VersionInfo()
 		{
 			var path = Path.Combine(
@@ -38,8 +40,25 @@ namespace BizHawk.Common
 			}
 		}
 
+		public static (string Label, string TargetURI) GetGitCommitLink()
+			=> ($"Commit :{GIT_BRANCH}@{GIT_SHORTHASH}", $"https://github.com/TASEmulators/BizHawk/commit/{GIT_SHORTHASH}");
+
+		public static string GetFullVersionDetails()
+		{
+			//TODO prepare for AArch64/RISC-V
+			var targetArch = UIntPtr.Size is 8 ? "x64" : "x86";
+#if DEBUG
+			const string buildConfig = "Debug";
+#else
+			const string buildConfig = "Release";
+#endif
+			return DeveloperBuild
+				? $"Version {MainVersion} — dev build ({buildConfig}, {targetArch})"
+				: $"Version {MainVersion} ({targetArch})";
+		}
+
 		public static string GetEmuVersion()
-			=> DeveloperBuild ? $"GIT {GIT_BRANCH}#{GIT_SHORTHASH}" : $"Version {MainVersion}";
+			=> DeveloperBuild ? $"GIT {GIT_BRANCH}#{GIT_SHORTHASH}" : $"Version {MainVersion}"; // intentionally leaving '#' here to differentiate it from the "proper" one in `Help` > `About...` --yoshi
 
 		/// <summary>"2.5.1" => 0x02050100</summary>
 		public static uint VersionStrToInt(string s)
