@@ -7,9 +7,12 @@ EmuHawk is a multi-system emulator written in C#. As well as quality-of-life fea
 A7800Hawk, Atari2600Hawk, C64Hawk, ColecoHawk, GBHawk, IntelliHawk, NesHawk, O2Hawk, PCEHawk, SMSHawk, TI83Hawk, VectrexHawk, and ZXHawk are bespoke emulation cores written in C#. MSXHawk is a bespoke emulation core written in C++. More info [below](#cores).
 
 [![(latest) release | GitHub](https://img.shields.io/github/release/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&sort=semver&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
-[![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/-/pipelines/master/latest)
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/issues)
 
+[![latest dev build (windows) | GitHub CI](https://img.shields.io/badge/latest_dev_build_(windows)-GitHub_CI-green?logo=github)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-windows.zip)
+[![latest dev build (linux) | GitHub CI](https://img.shields.io/badge/latest_dev_build_(linux)-GitHub_CI-green?logo=github)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-linux.zip)
+
+[![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/-/pipelines/master/latest)
 [![built with nix](https://builtwithnix.org/badge.svg)](#nixnixos)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/5365/badge)](https://bestpractices.coreinfrastructure.org/projects/5365)
 
@@ -50,8 +53,9 @@ EmuHawk's features (common across all cores) are:
 * a comprehensive input mapper for the emulated gamepads and other peripherals
 * programmatic control over core and frontend with Lua or C#.NET
 
-![OoT screencap](https://user-images.githubusercontent.com/13409956/230675214-4ef0b14c-9de2-4b19-9690-371380bd79e2.png)
-![SMW screencap](https://user-images.githubusercontent.com/13409956/230675202-6e400a7a-5b77-453d-b2bd-be6fe099d866.png)
+![OoT screencap](https://github.com/TASEmulators/BizHawk/assets/7092625/6b368ddd-618a-4a75-be47-c6def7bef5a4)
+![SMW screencap](https://github.com/TASEmulators/BizHawk/assets/7092625/9c19fd87-f184-4acf-9a99-258e1938ed61)
+
 
 Supported consoles and computers:
 
@@ -165,16 +169,16 @@ If you use a non-NixOS distro with Nix installed, you just need to add one argum
 
 Development builds are made automatically whenever someone contributes. Because of this, we recommend using a release for work that requires stability (such as TASing), and only switching to a dev build if there's a specific change or addition you need.
 
+[![latest dev build (windows) | GitHub CI](https://img.shields.io/badge/latest_dev_build_(windows)-GitHub_CI-green?logo=github)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-windows.zip)
+[![latest dev build (linux) | GitHub CI](https://img.shields.io/badge/latest_dev_build_(linux)-GitHub_CI-green?logo=github)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-linux.zip)
+
 [![recent dev builds | GitLab CI](https://img.shields.io/badge/recent_dev_builds-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/-/pipelines)
 [![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/-/pipelines/master/latest)
 
-> Note: Due to recent changes by AppVeyor, artifact downloads are no longer available. Use the GitLab CI artifacts.
-
 Click one of the buttons above to download a dev build (they're also at the top of this readme). AppVeyor uses Windows and GitLab CI uses Linux, but they work all the same.
-* ~~On the AppVeyor page for a Build, click "Artifacts", then `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.~~
 * On the GitLab CI page for a Pipeline, click "Jobs", then the download button on the right under the heading "Package". (On the Pipelines list page, there's also a download button on each Pipeline—choose `package_devbuild_*:archive` there.)
 
-To find the dev builds for a specific commit, you can click the green checkmark next to it (in the [commit history](https://github.com/TASEmulators/BizHawk/commits/master), for example) for a dropdown, then click either "Details" link to go to AppVeyor/GitLab.
+To find the dev builds for a specific commit, you can click the green checkmark next to it (in the [commit history](https://github.com/TASEmulators/BizHawk/commits/master), for example) for a dropdown, then click either "Details" link to go to GitHub/GitLab.
 
 ## Building
 
@@ -194,16 +198,7 @@ EmuHawk takes some command-line options which aren't well-documented; you might 
 
 On Windows 8.1/10, it's easiest to use PowerShell for this. For example, to pass `--lua=C:\path\to\script.lua` as the first argument and `C:\path\to\rom.n64` as the second, navigate to the BizHawk install folder and run:
 ```pwsh
-(New-Object System.Diagnostics.Process -Property @{StartInfo=(New-Object System.Diagnostics.ProcessStartInfo -Property @{FileName="$PWD\EmuHawk.exe";Arguments='"--lua=C:\path\to\script.lua" "C:\path\to\rom.n64"'})}).Start()
-```
-Note: PowerShell's `cd` doesn't seem to change the CWD of child processes. Just open a shell from the install folder. Don't @ me.
-
-For char escaping tips you're on your own. It might help to split up the command so you can identify syntax errors:
-```pwsh
-$s = '"--lua=C:\path\to\script.lua" "C:\path\to\rom.n64"'
-$startInfo = New-Object System.Diagnostics.ProcessStartInfo -Property @{FileName="$PWD\EmuHawk.exe";Arguments=$s}
-$proc = New-Object System.Diagnostics.Process -Property @{StartInfo=$startInfo}
-$proc.Start()
+./EmuHawk.exe '--lua=C:\path\to\script.lua' 'C:\path\to\rom.n64'
 ```
 
 On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono`. (You can also `export` env. vars.) All the arguments work as on Windows, with some caveats:
@@ -352,7 +347,7 @@ Please don't bother core devs about these WIPs unless you're looking to contribu
 ## Support and troubleshooting
 
 A short [FAQ](https://tasvideos.org/Bizhawk/FAQ) is provided on the TASVideos wiki. If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASEmulators/BizHawk/issues?q=is%3Aissue+PUT_ISSUE_KEYWORDS_HERE), you can try:
-- `#emulation` on [the TASVideos Discord](https://discordapp.com/invite/GySG2b6)
+- `#bizhawk` on [the TASVideos Discord](https://discordapp.com/invite/GySG2b6)
 	- Also the more specialised channels `#tas-production` and `#scripting` (for Lua) on that server
 	- For the .NET API, [the ApiHawk server](https://discord.gg/UPhN4um3px)
 - The [TASVideos forum for BizHawk](https://tasvideos.org/Forum/Subforum/64)

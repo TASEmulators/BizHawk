@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,8 +11,7 @@ using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
-	[JsonObject]
-	public class PathEntryCollection : IEnumerable<PathEntry>
+	public class PathEntryCollection
 	{
 		private static readonly string COMBINED_SYSIDS_GB = string.Join("_", VSystemID.Raw.GB, VSystemID.Raw.GBC, VSystemID.Raw.SGB);
 
@@ -24,6 +22,7 @@ namespace BizHawk.Client.Common
 		private static readonly Dictionary<string, string> _displayNameLookup = new()
 		{
 			[GLOBAL] = "Global",
+			[VSystemID.Raw.Amiga] = "Amiga",
 			[VSystemID.Raw.Arcade] = "Arcade",
 			[VSystemID.Raw.INTV] = "Intellivision",
 			[VSystemID.Raw.NES] = "NES",
@@ -120,9 +119,6 @@ namespace BizHawk.Client.Common
 		public bool UseRecentForRoms { get; set; }
 		public string LastRomPath { get; set; } = ".";
 
-		public IEnumerator<PathEntry> GetEnumerator() => Paths.GetEnumerator();
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
 		public PathEntry this[string system, string type]
 			=> Paths.Find(p => p.IsSystem(system) && p.Type == type) ?? TryGetDebugPath(system, type);
 
@@ -197,6 +193,8 @@ namespace BizHawk.Client.Common
 			},
 
 			CommonEntriesFor(VSystemID.Raw.Sega32X, basePath: Path.Combine(".", "32X")),
+
+			CommonEntriesFor(VSystemID.Raw.Amiga, basePath: Path.Combine(".", "Amiga")),
 
 			CommonEntriesFor(VSystemID.Raw.A26, basePath: Path.Combine(".", "Atari 2600"), omitSaveRAM: true),
 

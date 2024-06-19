@@ -8,6 +8,32 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BizHawk.Tests.Client.Common.Movie
 {
+#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
+	internal static class Extensions
+	{
+		public static void NextBytes(this Random rng, Span<byte> buf)
+		{
+			var a = buf.ToArray();
+			rng.NextBytes(a);
+			a.CopyTo(buf);
+		}
+
+		public static int Read(this BinaryReader br, Span<byte> buf)
+		{
+			var a = buf.ToArray();
+			var result = br.Read(a, index: 0, count: a.Length);
+			a.CopyTo(buf);
+			return result;
+		}
+
+		public static void Write(this BinaryWriter bw, ReadOnlySpan<byte> buf)
+			=> bw.Write(buf.ToArray());
+
+		public static void Write(this Stream stream, ReadOnlySpan<byte> buf)
+			=> stream.Write(buf.ToArray(), offset: 0, count: buf.Length);
+	}
+#endif
+
 	[TestClass]
 	public class ZwinderStateManagerTests
 	{

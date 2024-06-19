@@ -100,23 +100,13 @@ namespace BizHawk.Client.Common
 
 			if (GetClientSettingsOnLoad != null)
 			{
-				string clientSettings = "";
 				bl.GetLump(BinaryStateLump.ClientSettings, abort: false, tr =>
 				{
-					string line;
-					while ((line = tr.ReadLine()) != null)
-					{
-						if (!string.IsNullOrWhiteSpace(line))
-						{
-							clientSettings = line;
-						}
-					}
-				});
+					string clientSettings = tr.ReadToEnd();
 
-				if (!string.IsNullOrWhiteSpace(clientSettings))
-				{
-					GetClientSettingsOnLoad(clientSettings);
-				}
+					if (!string.IsNullOrEmpty(clientSettings))
+						GetClientSettingsOnLoad(clientSettings);
+				});
 			}
 
 			bl.GetLump(BinaryStateLump.VerificationLog, abort: false, tr =>

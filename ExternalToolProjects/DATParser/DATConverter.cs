@@ -6,9 +6,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 
-using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk;
-
 namespace BizHawk.DATTool
 {
 	public partial class DATConverter : Form

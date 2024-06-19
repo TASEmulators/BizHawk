@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using Newtonsoft.Json;
-using BizHawk.Bizware.BizwareGL;
+
+using BizHawk.Bizware.Graphics;
 using BizHawk.Common.IOExtensions;
 
 namespace BizHawk.Client.Common

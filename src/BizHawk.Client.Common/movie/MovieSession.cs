@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
@@ -57,11 +59,6 @@ namespace BizHawk.Client.Common
 		{
 			// TODO: expose Movie.LogKey and pass in here
 			return new Bk2Controller("", definition ?? MovieController.Definition);
-		}
-
-		public void SetMovieController(ControllerDefinition definition)
-		{
-			MovieController = GenerateMovieController(definition);
 		}
 
 		public void HandleFrameBefore()
@@ -187,50 +184,49 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		/// <exception cref="MoviePlatformMismatchException"><paramref name="record"/> is <see langword="false"/> and <paramref name="movie"/>.<see cref="IBasicMovieInfo.SystemID"/> does not match <paramref name="systemId"/>.<see cref="IEmulator.SystemId"/></exception>
-		public void QueueNewMovie(IMovie movie, bool record, string systemId, IDictionary<string, string> preferredCores)
+		/// <exception cref="MoviePlatformMismatchException"><paramref name="movie"/>.<see cref="IBasicMovieInfo.SystemID"/> does not match <paramref name="systemId"/>.<see cref="IEmulator.SystemId"/></exception>
+		public void QueueNewMovie(
+			IMovie movie,
+			string systemId,
+			string loadedRomHash,
+			PathEntryCollection pathEntries,
+			IDictionary<string, string> preferredCores)
 		{
-			if (movie.IsActive() && movie.Changes)
+			if (movie.SystemID != systemId)
 			{
-				movie.Save();
+				throw new MoviePlatformMismatchException(
+					$"Movie system Id ({movie.SystemID}) does not match the currently loaded platform ({systemId}), unable to load");
 			}
 
-			if (!record) // The semantics of record is that we are starting a new movie, and even wiping a pre-existing movie with the same path, but non-record means we are loading an existing movie into playback mode
+			if (!(string.IsNullOrEmpty(movie.Hash) || loadedRomHash.Equals(movie.Hash, StringComparison.Ordinal))
+				&& movie is TasMovie tasproj)
 			{
-				movie.Load();
-				
-				if (movie.SystemID != systemId)
+				var result = _dialogParent.ModalMessageBox2(
+					caption: "Discard GreenZone?",
+					text: $"The TAStudio project {movie.Filename.MakeRelativeTo(pathEntries.MovieAbsolutePath())} appears to be for a different game than the one that's loaded.\n"
+						+ "Choose \"No\" to continue anyway, which may lead to an invalid savestate being loaded.\n"
+						+ "Choose \"Yes\" to discard the GreenZone (savestate history). This is safer, and at worst you'll only need to watch through the whole movie.");
+				//TODO add abort option
+				if (result)
 				{
-					throw new MoviePlatformMismatchException(
-						$"Movie system Id ({movie.SystemID}) does not match the currently loaded platform ({systemId}), unable to load");
+					tasproj.TasSession.UpdateValues(frame: 0, currentBranch: tasproj.TasSession.CurrentBranch); // wtf is this API --yoshi
+					tasproj.InvalidateEntireGreenzone();
 				}
 			}
 
-			if (!record)
+			if (string.IsNullOrWhiteSpace(movie.Core))
 			{
-				if (string.IsNullOrWhiteSpace(movie.Core))
-				{
-					PopupMessage(preferredCores.TryGetValue(systemId, out var coreName)
-						? $"No core specified in the movie file, using the preferred core {coreName} instead."
-						: "No core specified in the movie file, using the default core instead.");
-				}
-				else
-				{
-					var keys = preferredCores.Keys.ToList();
-					foreach (var k in keys)
-					{
-						preferredCores[k] = movie.Core;
-					}
-				}
-			}
-
-			if (record) // This is a hack really, we need to set the movie to its proper state so that it will be considered active later
-			{
-				movie.SwitchToRecord();
+				PopupMessage(preferredCores.TryGetValue(systemId, out var coreName)
+					? $"No core specified in the movie file, using the preferred core {coreName} instead."
+					: "No core specified in the movie file, using the default core instead.");
 			}
 			else
 			{
-				movie.SwitchToPlay();
+				var keys = preferredCores.Keys.ToList();
+				foreach (var k in keys)
+				{
+					preferredCores[k] = movie.Core;
+				}
 			}
 
 			_queuedMovie = movie;
@@ -307,15 +303,17 @@ namespace BizHawk.Client.Common
 			Movie.SwitchToPlay();
 		}
 
-		public IMovie Get(string path)
+		public IMovie Get(string path, bool loadMovie)
 		{
 			// TODO: change IMovies to take HawkFiles only and not path
-			if (Path.GetExtension(path)?.EndsWithOrdinal("tasproj") ?? false)
-			{
-				return new TasMovie(this, path);
-			}
+			IMovie movie = Path.GetExtension(path)?.EndsWithOrdinal("tasproj") is true
+				? new TasMovie(this, path)
+				: new Bk2Movie(this, path);
 
-			return new Bk2Movie(this, path);
+			if (loadMovie)
+				movie.Load();
+
+			return movie;
 		}
 
 		public void PopupMessage(string message) => _dialogParent.ModalMessageBox(message, "Warning", EMsgBoxIcon.Warning);
@@ -344,12 +342,12 @@ namespace BizHawk.Client.Common
 
 		private void HandlePlaybackEnd()
 		{
-			if (Movie.IsAtEnd() && (Movie.Emulator is ICycleTiming cycleCore))
+			if (Movie.IsAtEnd() && Movie.Emulator.HasCycleTiming())
 			{
-				long coreValue = cycleCore.CycleCount;
-				bool movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out string movieValueStr);
+				var coreValue = Movie.Emulator.AsCycleTiming().CycleCount;
+				var movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out var movieValueStr);
 
-				long movieValue = movieHasValue ? Convert.ToInt64(movieValueStr) : 0;
+				var movieValue = movieHasValue ? Convert.ToInt64(movieValueStr) : 0;
 				var valuesMatch = movieValue == coreValue;
 
 				if (!movieHasValue || !valuesMatch)

@@ -1,4 +1,5 @@
 ﻿using System;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
@@ -12,32 +13,47 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
 			if (controller.IsPressed("Reset"))
+			{
 				Core.gpgx_reset(false);
+			}
+
 			if (controller.IsPressed("Power"))
+			{
 				Core.gpgx_reset(true);
+			}
+
 			if (_cds != null)
 			{
 				var prev = controller.IsPressed("Previous Disk");
 				var next = controller.IsPressed("Next Disk");
-				int newDisk = _discIndex;
+				var newDisk = _discIndex;
 				if (prev && !_prevDiskPressed)
+				{
 					newDisk--;
+				}
+
 				if (next && !_nextDiskPressed)
+				{
 					newDisk++;
+				}
 
 				_prevDiskPressed = prev;
 				_nextDiskPressed = next;
 
 				if (newDisk < -1)
+				{
 					newDisk = -1;
+				}
+
 				if (newDisk >= _cds.Length)
+				{
 					newDisk = _cds.Length - 1;
+				}
 
 				if (newDisk != _discIndex)
 				{
 					_discIndex = newDisk;
 					Core.gpgx_swap_disc(_discIndex == -1 ? null : GetCDDataStruct(_cds[_discIndex]));
-					Console.WriteLine("IMMA CHANGING MAH DISKS");
 				}
 			}
 
@@ -47,10 +63,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			ControlConverter.ScreenWidth = _vwidth;
 			ControlConverter.ScreenHeight = _vheight;
-			ControlConverter.Convert(controller, input);
+			ControlConverter.Convert(controller, _input);
 
-			if (!Core.gpgx_put_control(input, inputsize))
+			if (controller.IsPressed("Pause"))
+			{
+				_input.pad[0] |= LibGPGX.INPUT_KEYS.INPUT_START;
+			}
+
+			if (!Core.gpgx_put_control(_input, _inputSize))
+			{
 				throw new Exception($"{nameof(Core.gpgx_put_control)}() failed!");
+			}
 
 			IsLagFrame = true;
 
@@ -59,16 +82,24 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Core.gpgx_advance();
 
 			if (render)
+			{
 				UpdateVideo();
+			}
 
 			if (renderSound)
-				update_audio();
+			{
+				UpdateAudio();
+			}
 
 			if (IsLagFrame)
+			{
 				LagCount++;
+			}
 
 			if (_cds != null)
+			{
 				DriveLightOn = _driveLight;
+			}
 
 			Frame++;
 
@@ -93,9 +124,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			if (!_disposed)
 			{
 				_elf?.Dispose();
+
 				if (_cds != null)
+				{
 					foreach (var cd in _cds)
+					{
 						cd.Dispose();
+					}
+				}
+
 				_disposed = true;
 			}
 		}

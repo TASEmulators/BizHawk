@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 					Emulator.Frame, StatableEmulator.CloneSavestate());
 
 				MainForm.PauseEmulator();
-				LoadFile(new FileInfo(newProject.Filename), true);
+				LoadMovie(newProject, true);
 			}
 		}
 
@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 				GoToFrame(TasView.AnyRowsSelected ? TasView.FirstSelectedRowIndex : 0);
 				var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(saveRam);
 				MainForm.PauseEmulator();
-				LoadFile(new FileInfo(newProject.Filename), true);
+				LoadMovie(newProject, true);
 			}
 		}
 
@@ -100,8 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			if (askToSave && !AskSaveChanges()) return false;
 			if (filename.EndsWithOrdinal(MovieService.TasMovieExtension))
 			{
-				LoadFileWithFallback(filename);
-				return true; //TODO should this return false if it fell back to a new project?
+				return LoadFileWithFallback(filename);
 			}
 			if (filename.EndsWithOrdinal(MovieService.StandardMovieExtension))
 			{
@@ -113,18 +112,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return false;
 				}
-				_initializing = true; // Starting a new movie causes a core reboot
-				WantsToControlReboot = false;
-				_engaged = false;
-				MainForm.StartNewMovie(MovieSession.Get(filename), false);
-				ConvertCurrentMovieToTasproj();
-				_initializing = false;
-				var success = StartNewMovieWrapper(CurrentTasMovie);
-				_engaged = true;
-				WantsToControlReboot = true;
-				SetUpColumns();
-				UpdateWindowTitle();
-				return success; //TODO is this correct?
+
+				return LoadFileWithFallback(filename);
 			}
 			DialogController.ShowMessageBox(
 				caption: "Movie load error",
@@ -468,7 +457,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							_tasClipboard.Clear();
 							int linesToPaste = lines.Length;
-							if (lines[^1] == "") linesToPaste--;
+							if (lines[lines.Length - 1].Length is 0) linesToPaste--;
 							for (int i = 0; i < linesToPaste; i++)
 							{
 								var line = ControllerFromMnemonicStr(lines[i]);
@@ -510,7 +499,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							_tasClipboard.Clear();
 							int linesToPaste = lines.Length;
-							if (lines[^1] == "") linesToPaste--;
+							if (lines[lines.Length - 1].Length is 0) linesToPaste--;
 							for (int i = 0; i < linesToPaste; i++)
 							{
 								var line = ControllerFromMnemonicStr(lines[i]);

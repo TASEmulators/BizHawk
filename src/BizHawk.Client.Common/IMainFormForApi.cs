@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 		bool FlushSaveRAM(bool autosave = false);
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
-		void FrameAdvance();
+		void FrameAdvance(bool discardApiHawkSurfaces = true);
 
 		void FrameBufferResized();
 

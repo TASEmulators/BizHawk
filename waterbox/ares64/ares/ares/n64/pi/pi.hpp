@@ -51,6 +51,7 @@ struct PI : Memory::RCP<PI> {
     n32 readLength;
     n32 writeLength;
     n32 busLatch;
+    u64 originPc;
   } io;
 
   struct BSD {

@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		protected override int Get_PRGBank_8K(int addr)
 		{
 			int bank_8k = mmc3.Get_PRGBank_8K(addr);
-			if (prg_mode_mapper == false) return bank_8k;
+			if (!prg_mode_mapper) return bank_8k;
 			else if (addr < 0x2000)
 			{
 				return prg_page*4;

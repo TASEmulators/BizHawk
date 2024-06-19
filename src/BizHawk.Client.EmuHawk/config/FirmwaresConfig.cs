@@ -62,6 +62,7 @@ namespace BizHawk.Client.EmuHawk
 		// Redundant with SystemLookup? Not so fast. That data drives things. This is one step abstracted. Don't be such a smart guy. Keep this redundant list up to date.
 		private static readonly Dictionary<string, string> SystemGroupNames = new Dictionary<string, string>
 		{
+			["Amiga"] = "Amiga",
 			["NES"] = "NES",
 			["SNES"] = "SNES",
 			["BSX"] = "SNES+Satellaview",
@@ -77,6 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			["C64"] = "C64",
 			["GEN"] = "Genesis",
 			["SMS"] = "Sega Master System",
+			["GG"] = "Sega Game Gear",
 			["PSX"] = "PlayStation",
 			["Jaguar"] = "Jaguar",
 			["Lynx"] = "Lynx",
@@ -183,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 				lvFirmwares.Groups.Add(
 					key: sysID,
 					headerText: SystemGroupNames.TryGetValue(sysID, out var name) ? name : "FIX ME (FirmwaresConfig.cs)");
-				return lvFirmwares.Groups[^1];
+				return lvFirmwares.Groups[lvFirmwares.Groups.Count - 1];
 			}
 
 			// we'll use this font for displaying the hash, so they don't look all jagged in a long list
@@ -590,7 +592,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				string target = Path.Combine(basePath, fi.Name);
-				if (new FileInfo(target).Exists)
+				if (File.Exists(target))
 				{
 					// compare the files, if they're the same. don't do anything
 					if (File.ReadAllBytes(target).SequenceEqual(File.ReadAllBytes(f)))

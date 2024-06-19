@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 			// assume we have a header of that size. Otherwise, assume it's just all rom.
 			// Other 'recognized' header sizes may need to be added.
 			int headerOffset = fileLength % BankSize;
-			if (headerOffset.In(0, 128, 512) == false)
+			if (!headerOffset.In(0, 128, 512))
 			{
 				Console.WriteLine("ROM was not a multiple of 1024 bytes, and not a recognized header size: {0}. Assume it's purely ROM data.", headerOffset);
 				headerOffset = 0;

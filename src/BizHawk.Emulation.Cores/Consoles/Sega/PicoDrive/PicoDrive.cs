@@ -1,15 +1,16 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System;
+using System.ComponentModel;
+using System.IO;
+using System.Runtime.InteropServices;
+
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
-using System;
-using System.Runtime.InteropServices;
-using System.IO;
-using BizHawk.Common;
-using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 {
-	[PortedCore(CoreNames.PicoDrive, "notaz", "0e352905c7aa80b166933970abbcecfce96ad64e", "https://github.com/notaz/picodrive")]
+	[PortedCore(CoreNames.PicoDrive, "notaz", "0e35290", "https://github.com/notaz/picodrive")]
 	public class PicoDrive : WaterboxCore, IDriveLight, IRegionable, ISettable<object, PicoDrive.SyncSettings>
 	{
 		private readonly LibPicoDrive _core;

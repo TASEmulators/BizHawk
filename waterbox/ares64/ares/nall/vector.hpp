@@ -124,6 +124,7 @@ struct vector_base {
   auto find(const function<bool (const T& lhs)>& comparator) -> maybe<u64>;
   auto find(const T& value) const -> maybe<u64>;
   auto findSorted(const T& value) const -> maybe<u64>;
+  auto contains(const T& value) const -> bool;
   auto foreach(const function<void (const T&)>& callback) -> void;
   auto foreach(const function<void (u64, const T&)>& callback) -> void;
 

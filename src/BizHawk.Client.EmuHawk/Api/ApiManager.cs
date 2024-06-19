@@ -97,7 +97,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_luaContainer?.Dispose();
 			_luaContainer = Register(serviceProvider, logCallback, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game);
-			((GuiApi) _luaContainer.Gui).EnableLuaAutolockHack = true;
 			return _luaContainer;
 		}
 	}

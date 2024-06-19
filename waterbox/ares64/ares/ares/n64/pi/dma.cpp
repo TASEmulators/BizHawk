@@ -1,49 +1,52 @@
 auto PI::dmaRead() -> void {
   io.readLength = (io.readLength | 1) + 1;
+
+  u32 lastCacheline = 0xffff'ffff;
   for(u32 address = 0; address < io.readLength; address += 2) {
-    u16 data = rdram.ram.read<Half>(io.dramAddress + address);
+    u16 data = rdram.ram.read<Half>(io.dramAddress + address, "PI DMA");
     busWrite<Half>(io.pbusAddress + address, data);
   }
 }
 
 auto PI::dmaWrite() -> void {
   u8 mem[128];
-  bool first_block = true;
   i32 length = io.writeLength+1;
+  i32 maxBlockSize = 128;
+  bool firstBlock = true;
 
-  io.writeLength = 0x7F;
-  if (length <= 8) io.writeLength -= io.dramAddress&7;
+  if constexpr(Accuracy::CPU::Recompiler) {
+    cpu.recompiler.invalidateRange(io.dramAddress, (length + 1) & ~1);
+  }
 
   while (length > 0) {
-    u32 dest = io.dramAddress & 0x7FFFFE;
-    i32 misalign = dest & 7;
-    i32 block_len = 128 - misalign;
-    i32 cur_len = min(length, block_len);
+    i32 misalign = io.dramAddress & 7;
+    i32 distEndOfRow = 0x800-(io.dramAddress&0x7ff);
+    i32 blockLen = min(maxBlockSize-misalign, distEndOfRow);
+    i32 curLen = min(length, blockLen);
 
-    length -= cur_len;
-    if (length.bit(0)) length += 1;
-
-    i32 rom_len = (cur_len + 1) & ~1;
-    for (u32 i = 0; i < rom_len; i += 2) {
+    for (int i=0; i<curLen; i+=2) {
       u16 data = busRead<Half>(io.pbusAddress);
-      mem[i + 0] = data >> 8;
-      mem[i + 1] = data & 0xFF;
+      mem[i+0] = data >> 8;
+      mem[i+1] = data >> 0;
       io.pbusAddress += 2;
+      length -= 2;
     }
 
-    if (first_block) {
-      if (cur_len == block_len-1) cur_len++;
-      cur_len = max(cur_len-misalign, 0);
+    if (firstBlock && curLen < 127-misalign) {
+      for (i32 i = 0; i < curLen-misalign; i++) {
+        rdram.ram.write<Byte>(io.dramAddress++, mem[i], "PI DMA");
+      }
+    } else {
+      for (i32 i = 0; i < curLen-misalign; i+=2) {
+        rdram.ram.write<Byte>(io.dramAddress++, mem[i+0], "PI DMA");
+        rdram.ram.write<Byte>(io.dramAddress++, mem[i+1], "PI DMA");
+      }
     }
 
-    if constexpr(Accuracy::CPU::Recompiler) {
-      cpu.recompiler.invalidateRange(io.dramAddress, cur_len);
-    }
-    for (u32 i = 0; i < cur_len; i++)
-      rdram.ram.write<Byte>(io.dramAddress++, mem[i]);
     io.dramAddress = (io.dramAddress + 7) & ~7;
-
-    first_block = false;
+    io.writeLength = curLen <= 8 ? 127-misalign : 127;
+    firstBlock = false;
+    maxBlockSize = distEndOfRow < 8 ? 128-misalign : 128;
   }
 }
 

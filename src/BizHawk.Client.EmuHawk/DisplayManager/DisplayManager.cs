@@ -2,9 +2,10 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Bizware.Graphics.Controls;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -31,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			IGL gl,
 			PresentationPanel presentationPanel,
 			Func<bool> getIsSecondaryThrottlingDisabled)
-				: base(config, emulator, inputManager, movieSession, gl.DispMethodEnum, gl, gl.CreateRenderer())
+				: base(config, emulator, inputManager, movieSession, gl.DispMethodEnum, gl, gl.CreateGuiRenderer())
 		{
 			_presentationPanel = presentationPanel;
 			_getIsSecondaryThrottlingDisabled = getIsSecondaryThrottlingDisabled;
@@ -51,14 +52,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public override Size GetPanelNativeSize() => _presentationPanel.NativeSize;
 
+		protected override int GetGraphicsControlDpi() => OSTailoredCode.IsUnixHost ? 96 : GraphicsControlDpi;
+
+		// DeviceDpi is not available under mono, so we need to have this access wrapped in a separate function
+		private int GraphicsControlDpi => _graphicsControl.DeviceDpi;
+
 		protected override Point GraphicsControlPointToClient(Point p) => _graphicsControl.PointToClient(p);
 
 		protected override void SwapBuffersOfGraphicsControl() => _graphicsControl.SwapBuffers();
 
 		protected override void UpdateSourceDrawingWork(JobInfo job)
 		{
-			bool alternateVsync = false;
-
 			if (!job.Offscreen)
 			{
 				//apply the vsync setting (should probably try to avoid repeating this)
@@ -73,12 +77,9 @@ namespace BizHawk.Client.EmuHawk
 					vsync = false;
 
 				//for now, it's assumed that the presentation panel is the main window, but that may not always be true
-				if (vsync && GlobalConfig.DispAlternateVsync && GlobalConfig.VSyncThrottle && _gl.DispMethodEnum is EDispMethod.D3D9)
-				{
-					alternateVsync = true;
-					//unset normal vsync if we've chosen the alternate vsync
-					vsync = false;
-				}
+
+				// no cost currently to just always call this...
+				_graphicsControl.AllowTearing(GlobalConfig.DispAllowTearing);
 
 				//TODO - whats so hard about triple buffering anyway? just enable it always, and change api to SetVsync(enable,throttle)
 				//maybe even SetVsync(enable,throttlemethod) or just SetVsync(enable,throttle,advanced)
@@ -96,40 +97,26 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			// begin rendering on this context
-			// should this have been done earlier?
-			// do i need to check this on an intel video card to see if running excessively is a problem? (it used to be in the FinalTarget command below, shouldn't be a problem)
-			//GraphicsControl.Begin(); // CRITICAL POINT for yabause+GL
-
 			//TODO - auto-create and age these (and dispose when old)
 			int rtCounter = 0;
-
 			_currentFilterProgram.RenderTargetProvider = new DisplayManagerRenderTargetProvider(size => _shaderChainFrugalizers[rtCounter++].Get(size));
 
-			_gl.BeginScene();
 			RunFilterChainSteps(ref rtCounter, out var rtCurr, out var inFinalTarget);
-			_gl.EndScene();
 
 			if (job.Offscreen)
 			{
-				job.OffscreenBb = rtCurr.Texture2d.Resolve();
+				job.OffscreenBb = rtCurr.Resolve();
 				job.OffscreenBb.DiscardAlpha();
 				return;
 			}
 
 			Debug.Assert(inFinalTarget);
 
-			// wait for vsync to begin
-			if (alternateVsync) ((dynamic) _gl).AlternateVsyncPass(0);
-
 			// present and conclude drawing
 			_graphicsControl.SwapBuffers();
 
-			// wait for vsync to end
-			if (alternateVsync) ((dynamic) _gl).AlternateVsyncPass(1);
-
 			// nope. don't do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
-			// presentationPanel.GraphicsControl.End();
+			// _graphicsControl.End();
 		}
 	}
 }

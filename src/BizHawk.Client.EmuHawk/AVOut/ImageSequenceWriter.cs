@@ -2,7 +2,7 @@
 using System.IO;
 using System.Drawing.Imaging;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;

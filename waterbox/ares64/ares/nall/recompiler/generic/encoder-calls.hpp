@@ -44,7 +44,7 @@
   template<typename C, typename R, typename... P, typename P0>
   alwaysinline auto call(auto (C::*function)(P...) -> R, C* object, P0 p0) {
     sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R0, 0, SLJIT_IMM, imm64{object}.data);
-    sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R1, 0, SLJIT_IMM, imm64{p0}.data);
+    sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R1, 0, SLJIT_IMM, imm64(p0).data);
     sljit_s32 type = SLJIT_ARG_VALUE(SLJIT_ARG_TYPE_W, 1)
                    | SLJIT_ARG_VALUE(SLJIT_ARG_TYPE_W, 2);
     if constexpr(!std::is_void_v<R>) type |= SLJIT_ARG_RETURN(SLJIT_ARG_TYPE_W);
@@ -54,8 +54,8 @@
   template<typename C, typename R, typename... P, typename P0, typename P1>
   alwaysinline auto call(auto (C::*function)(P...) -> R, C* object, P0 p0, P1 p1) {
     sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R0, 0, SLJIT_IMM, imm64{object}.data);
-    sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R1, 0, SLJIT_IMM, imm64{p0}.data);
-    sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R2, 0, SLJIT_IMM, imm64{p1}.data);
+    sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R1, 0, SLJIT_IMM, imm64(p0).data);
+    sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R2, 0, SLJIT_IMM, imm64(p1).data);
     sljit_s32 type = SLJIT_ARG_VALUE(SLJIT_ARG_TYPE_W, 1)
                    | SLJIT_ARG_VALUE(SLJIT_ARG_TYPE_W, 2)
                    | SLJIT_ARG_VALUE(SLJIT_ARG_TYPE_W, 3);
@@ -66,9 +66,9 @@
   template<typename C, typename R, typename... P, typename P0, typename P1, typename P2>
   alwaysinline auto call(auto (C::*function)(P...) -> R, C* object, P0 p0, P1 p1, P2 p2) {
     sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R0, 0, SLJIT_IMM, imm64{object}.data);
-    sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R1, 0, SLJIT_IMM, imm64{p0}.data);
-    sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R2, 0, SLJIT_IMM, imm64{p1}.data);
-    sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R3, 0, SLJIT_IMM, imm64{p2}.data);
+    sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R1, 0, SLJIT_IMM, imm64(p0).data);
+    sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R2, 0, SLJIT_IMM, imm64(p1).data);
+    sljit_emit_op1(compiler, SLJIT_MOV, SLJIT_R3, 0, SLJIT_IMM, imm64(p2).data);
     sljit_s32 type = SLJIT_ARG_VALUE(SLJIT_ARG_TYPE_W, 1)
                    | SLJIT_ARG_VALUE(SLJIT_ARG_TYPE_W, 2)
                    | SLJIT_ARG_VALUE(SLJIT_ARG_TYPE_W, 3)

@@ -39,28 +39,6 @@ extern "C" {
 */
 
 /* --------------------------------------------------------------------- */
-/*  Architecture                                                         */
-/* --------------------------------------------------------------------- */
-
-/* Architecture selection. */
-/* #define SLJIT_CONFIG_X86_32 1 */
-/* #define SLJIT_CONFIG_X86_64 1 */
-/* #define SLJIT_CONFIG_ARM_V5 1 */
-/* #define SLJIT_CONFIG_ARM_V7 1 */
-/* #define SLJIT_CONFIG_ARM_THUMB2 1 */
-/* #define SLJIT_CONFIG_ARM_64 1 */
-/* #define SLJIT_CONFIG_PPC_32 1 */
-/* #define SLJIT_CONFIG_PPC_64 1 */
-/* #define SLJIT_CONFIG_MIPS_32 1 */
-/* #define SLJIT_CONFIG_MIPS_64 1 */
-/* #define SLJIT_CONFIG_RISCV_32 1 */
-/* #define SLJIT_CONFIG_RISCV_64 1 */
-/* #define SLJIT_CONFIG_S390X 1 */
-
-/* #define SLJIT_CONFIG_AUTO 1 */
-/* #define SLJIT_CONFIG_UNSUPPORTED 1 */
-
-/* --------------------------------------------------------------------- */
 /*  Utilities                                                            */
 /* --------------------------------------------------------------------- */
 

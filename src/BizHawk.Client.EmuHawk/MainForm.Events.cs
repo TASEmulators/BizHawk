@@ -22,6 +22,7 @@ using BizHawk.Emulation.Cores.Atari.Lynx;
 using BizHawk.Emulation.Cores.Calculators.Emu83;
 using BizHawk.Emulation.Cores.Calculators.TI83;
 using BizHawk.Emulation.Cores.ColecoVision;
+using BizHawk.Emulation.Cores.Computers.Amiga;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
@@ -239,7 +240,7 @@ namespace BizHawk.Client.EmuHawk
 			// Record movie dialog should not be opened while in need of a reboot,
 			// Otherwise the wrong sync settings could be set for the recording movie and cause crashes
 			RecordMovieMenuItem.Enabled = !Tools.IsLoaded<TAStudio>()
-				&& RebootStatusBarIcon.Visible == false;
+				&& !RebootStatusBarIcon.Visible;
 
 			PlayFromBeginningMenuItem.Enabled = MovieSession.Movie.IsActive() && !Tools.IsLoaded<TAStudio>();
 		}
@@ -692,15 +693,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			var windowScale = Config.GetWindowScaleFor(Emulator.SystemId);
 			foreach (ToolStripMenuItem item in WindowSizeSubMenu.DropDownItems)
 			{
-				item.Checked = Config.TargetZoomFactors[Emulator.SystemId] == (int) item.Tag;
+				item.Checked = (int) item.Tag == windowScale;
 			}
 		}
 
 		private void WindowSize_Click(object sender, EventArgs e)
 		{
-			Config.TargetZoomFactors[Emulator.SystemId] = (int) ((ToolStripMenuItem) sender).Tag;
+			Config.SetWindowScaleFor(Emulator.SystemId, (int) ((ToolStripMenuItem) sender).Tag);
 			FrameBufferResized();
 		}
 
@@ -885,7 +887,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			static IEnumerable<string> GetDeviceNamesCallback(ESoundOutputMethod outputMethod) => outputMethod switch
 			{
-				ESoundOutputMethod.DirectSound => DirectSoundSoundOutput.GetDeviceNames(),
 				ESoundOutputMethod.XAudio2 => XAudio2SoundOutput.GetDeviceNames(),
 				ESoundOutputMethod.OpenAL => OpenALSoundOutput.GetDeviceNames(),
 				_ => Enumerable.Empty<string>()
@@ -903,7 +904,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				Sound.Dispose();
-				Sound = new Sound(Handle, Config, () => Emulator.VsyncRate());
+				Sound = new Sound(Config, () => Emulator.VsyncRate());
 			}
 			Sound.StartSound();
 			RewireSound();
@@ -2927,6 +2928,9 @@ namespace BizHawk.Client.EmuHawk
 
 			// PicoDrive
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.PicoDrive, CreateGenericCoreConfigItem<PicoDrive>(CoreNames.PicoDrive)));
+
+			// PUAE
+			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.PUAE, CreateGenericCoreConfigItem<PUAE>(CoreNames.PUAE)));
 
 			// QuickNes
 			var quickNesGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenQuickNesGamepadSettingsDialog(GetSettingsAdapterFor<QuickNES>()));

@@ -25,17 +25,9 @@ namespace BizHawk.Common
 
 		public /*static readonly*/const string Zero = "0000000000000000000000000000000000000000";
 
-#if NET6_0
+#if NET5_0_OR_GREATER
 		public static byte[] Compute(ReadOnlySpan<byte> data)
 			=> SHA1.HashData(data);
-
-		public static byte[] ComputeConcat(ReadOnlySpan<byte> dataA, ReadOnlySpan<byte> dataB)
-		{
-			using var impl = IncrementalHash.CreateHash(HashAlgorithmName.SHA1);
-			impl.AppendData(dataA);
-			impl.AppendData(dataB);
-			return impl.GetHashAndReset();
-		}
 #else
 		private static unsafe byte[] UnmanagedImpl(byte[] buffer)
 		{
@@ -88,7 +80,17 @@ namespace BizHawk.Common
 
 		public static byte[] Compute(ReadOnlySpan<byte> data)
 			=> Compute(data.ToArray());
+#endif
 
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+		public static byte[] ComputeConcat(ReadOnlySpan<byte> dataA, ReadOnlySpan<byte> dataB)
+		{
+			using var impl = IncrementalHash.CreateHash(HashAlgorithmName.SHA1);
+			impl.AppendData(dataA);
+			impl.AppendData(dataB);
+			return impl.GetHashAndReset();
+		}
+#else
 		public static byte[] ComputeConcat(ReadOnlySpan<byte> dataA, ReadOnlySpan<byte> dataB)
 			=> ComputeConcat(dataA.ToArray(), dataB.ToArray());
 #endif

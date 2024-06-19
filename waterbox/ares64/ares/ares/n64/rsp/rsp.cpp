@@ -43,12 +43,11 @@ auto RSP::instruction() -> void {
   }
 
   if constexpr(Accuracy::RSP::Interpreter) {
+    u32 instruction = imem.read<Word>(ipu.pc);
+    instructionPrologue(instruction);
     pipeline.begin();
-    pipeline.address = ipu.pc;
-    pipeline.instruction = imem.read<Word>(pipeline.address);
-    OpInfo op0 = decoderEXECUTE(pipeline.instruction);
+    OpInfo op0 = decoderEXECUTE(instruction);
     pipeline.issue(op0);
-    debugger.instruction();
     interpreterEXECUTE();
 
     if(!pipeline.singleIssue && !op0.branch()) {
@@ -57,10 +56,8 @@ auto RSP::instruction() -> void {
 
       if(canDualIssue(op0, op1)) {
         instructionEpilogue(0);
-        pipeline.address = ipu.pc;
-        pipeline.instruction = instruction;
+        instructionPrologue(instruction);
         pipeline.issue(op1);
-        debugger.instruction();
         interpreterEXECUTE();
       }
     }
@@ -72,6 +69,12 @@ auto RSP::instruction() -> void {
   //this handles all stepping for the interpreter
   //with the recompiler, it only steps for taken branch stalls
   step(pipeline.clocks);
+}
+
+auto RSP::instructionPrologue(u32 instruction) -> void {
+  pipeline.address = ipu.pc;
+  pipeline.instruction = instruction;
+  debugger.instruction();
 }
 
 auto RSP::instructionEpilogue(u32 clocks) -> s32 {
@@ -142,9 +145,7 @@ auto RSP::power(bool reset) -> void {
 
   if constexpr(Accuracy::RSP::Recompiler) {
     auto buffer = ares::Memory::FixedAllocator::get().tryAcquire(4_MiB);
-    memory::jitprotect(false);
-    recompiler.allocator.resize(4_MiB, bump_allocator::executable | bump_allocator::zero_fill, buffer);
-    memory::jitprotect(true);
+    recompiler.allocator.resize(64_MiB, bump_allocator::executable, buffer);
     recompiler.reset();
   }
 

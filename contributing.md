@@ -68,17 +68,17 @@ It's probably a good idea to get the .NET SDK, even if you're not working on a .
 ## For any: .NET project
 
 - Linux
-	- Install the .NET 6 SDK (package name is usually `dotnet-sdk-6.0`, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/linux)).
+	- Install the .NET 8 SDK (package name is usually `dotnet-sdk-8.0`, see [full instructions](https://learn.microsoft.com/en-gb/dotnet/core/install/linux)).
 	- VS Community isn't available for Linux, but Rider and VS Code are.
 - macOS
 	- Note that EmuHawk does not currently support macOS.
-	- Install the .NET 6 SDK [manually](https://docs.microsoft.com/en-gb/dotnet/core/install/macos) or with Homebrew.
-	- VS Community isn't available for macOS, but Rider, VS Code, and VS for Mac are.
+	- Install the .NET 8 SDK [manually](https://learn.microsoft.com/en-gb/dotnet/core/install/macos) or with Homebrew.
+	- VS Community isn't available for macOS, but Rider and VS Code are, and [for now](https://learn.microsoft.com/en-us/visualstudio/mac/what-happened-to-vs-for-mac) so is VS for Mac.
 - Windows
-	- The .NET 6 SDK comes with [VS Community 2022](https://visualstudio.microsoft.com/vs/community) (and it can be manually installed beside VS2019, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/windows)).
+	- The .NET 8 SDK comes with [VS Community 2022](https://visualstudio.microsoft.com/vs/community) (see [full instructions](https://learn.microsoft.com/en-gb/dotnet/core/install/windows)).
 	- You can also use Rider, VS Code, or something else instead of VS Community.
 
-For EmuHawk and libraries in the main solution, which do not target .NET 6, we have [this page](https://github.com/TASEmulators/BizHawk/wiki/Available-C%23-and-.NET-features) documenting which features are actually available to use.
+For EmuHawk and libraries in the main solution, which do not target .NET 8, we have [this page](https://github.com/TASEmulators/BizHawk/wiki/Available-C%23-and-.NET-features) documenting which features are actually available to use.
 
 
 

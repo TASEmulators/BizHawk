@@ -81,9 +81,9 @@
 			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.label13 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.cbAlternateVsync = new System.Windows.Forms.CheckBox();
+			this.cbAllowTearing = new System.Windows.Forms.CheckBox();
 			this.label8 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.rbD3D9 = new System.Windows.Forms.RadioButton();
+			this.rbD3D11 = new System.Windows.Forms.RadioButton();
 			this.label7 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.rbGDIPlus = new System.Windows.Forms.RadioButton();
 			this.tpMisc = new System.Windows.Forms.TabPage();
@@ -633,9 +633,9 @@
 			// groupBox3
 			// 
 			this.groupBox3.Controls.Add(this.label13);
-			this.groupBox3.Controls.Add(this.cbAlternateVsync);
+			this.groupBox3.Controls.Add(this.cbAllowTearing);
 			this.groupBox3.Controls.Add(this.label8);
-			this.groupBox3.Controls.Add(this.rbD3D9);
+			this.groupBox3.Controls.Add(this.rbD3D11);
 			this.groupBox3.Controls.Add(this.label7);
 			this.groupBox3.Controls.Add(this.rbGDIPlus);
 			this.groupBox3.Controls.Add(this.label5);
@@ -654,32 +654,32 @@
 			this.label13.Click += new System.EventHandler(this.Label13_Click);
 			this.label13.DoubleClick += new System.EventHandler(this.Label13_Click);
 			// 
-			// cbAlternateVsync
+			// cbAllowTearing
 			// 
-			this.cbAlternateVsync.AutoSize = true;
-			this.cbAlternateVsync.Location = new System.Drawing.Point(28, 60);
-			this.cbAlternateVsync.Name = "cbAlternateVsync";
-			this.cbAlternateVsync.Size = new System.Drawing.Size(15, 14);
-			this.cbAlternateVsync.TabIndex = 21;
-			this.cbAlternateVsync.UseVisualStyleBackColor = true;
+			this.cbAllowTearing.AutoSize = true;
+			this.cbAllowTearing.Location = new System.Drawing.Point(28, 60);
+			this.cbAllowTearing.Name = "cbAllowTearing";
+			this.cbAllowTearing.Size = new System.Drawing.Size(15, 14);
+			this.cbAllowTearing.TabIndex = 21;
+			this.cbAllowTearing.UseVisualStyleBackColor = true;
 			// 
 			// label8
 			// 
 			this.label8.Location = new System.Drawing.Point(21, 30);
 			this.label8.Name = "label8";
-			this.label8.Text = " • Best compatibility\r\n • May have trouble with OpenGL-based cores (N64)\r\n";
+			this.label8.Text = " • Best compatibility\r\n • May have decreased performance for OpenGL-based cores (NDS, 3DS)\r\n";
 			// 
-			// rbD3D9
+			// rbD3D11
 			// 
-			this.rbD3D9.AutoSize = true;
-			this.rbD3D9.Checked = true;
-			this.rbD3D9.Location = new System.Drawing.Point(6, 10);
-			this.rbD3D9.Name = "rbD3D9";
-			this.rbD3D9.Size = new System.Drawing.Size(73, 17);
-			this.rbD3D9.TabIndex = 19;
-			this.rbD3D9.TabStop = true;
-			this.rbD3D9.Text = "Direct3D9";
-			this.rbD3D9.UseVisualStyleBackColor = true;
+			this.rbD3D11.AutoSize = true;
+			this.rbD3D11.Checked = true;
+			this.rbD3D11.Location = new System.Drawing.Point(6, 10);
+			this.rbD3D11.Name = "rbD3D11";
+			this.rbD3D11.Size = new System.Drawing.Size(73, 17);
+			this.rbD3D11.TabIndex = 19;
+			this.rbD3D11.TabStop = true;
+			this.rbD3D11.Text = "Direct3D11";
+			this.rbD3D11.UseVisualStyleBackColor = true;
 			// 
 			// label7
 			// 
@@ -1050,7 +1050,7 @@
 		private System.Windows.Forms.RadioButton rbGDIPlus;
 		private System.Windows.Forms.TabPage tpMisc;
 		private BizHawk.WinForms.Controls.LocLabelEx label8;
-		private System.Windows.Forms.RadioButton rbD3D9;
+		private System.Windows.Forms.RadioButton rbD3D11;
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.CheckBox cbStatusBarWindowed;
 		private BizHawk.WinForms.Controls.LocLabelEx label9;
@@ -1078,7 +1078,7 @@
 		private System.Windows.Forms.TextBox txtCustomARX;
 		private System.Windows.Forms.CheckBox cbAutoPrescale;
 		private BizHawk.WinForms.Controls.LocLabelEx label13;
-		private System.Windows.Forms.CheckBox cbAlternateVsync;
+		private System.Windows.Forms.CheckBox cbAllowTearing;
 		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.CheckBox cbFullscreenHacks;
 		private System.Windows.Forms.Button btnDefaults;

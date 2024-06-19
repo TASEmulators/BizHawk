@@ -127,7 +127,7 @@ void add_interupt_event(int type, unsigned int delay)
    
     if (get_event(type)) {
         DebugMessage(M64MSG_WARNING, "two events of type 0x%x in interrupt queue", type);
-		return;
+        return;
     }
    
     if (q == NULL)
@@ -384,7 +384,7 @@ void gen_interupt(void)
 #ifdef WITH_LIRC
             lircCheckInput();
 #endif
-            SDL_PumpEvents();
+            //SDL_PumpEvents();
 
             refresh_stat();
 
@@ -397,7 +397,7 @@ void gen_interupt(void)
             //    {
                     //SDL_Delay(10);
 
-                    SDL_PumpEvents();
+                    //SDL_PumpEvents();
 #ifdef WITH_LIRC
                     lircCheckInput();
 #endif //WITH_LIRC
@@ -405,7 +405,7 @@ void gen_interupt(void)
             //}
 
             new_vi();
-			WaitForSingleObject(rompausesem, INFINITE);
+            WaitForSingleObject(rompausesem, INFINITE);
             if (vi_register.vi_v_sync == 0) vi_register.vi_delay = 500000;
             else vi_register.vi_delay = ((vi_register.vi_v_sync + 1)*1500);
             next_vi += vi_register.vi_delay;
@@ -443,7 +443,7 @@ void gen_interupt(void)
 #ifdef WITH_LIRC
             lircCheckInput();
 #endif //WITH_LIRC
-            SDL_PumpEvents();
+            //SDL_PumpEvents();
             PIF_RAMb[0x3F] = 0x0;
             remove_interupt_event();
             MI_register.mi_intr_reg |= 0x02;

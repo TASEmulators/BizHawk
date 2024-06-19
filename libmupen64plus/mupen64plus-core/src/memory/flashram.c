@@ -135,7 +135,7 @@ void flashram_command(unsigned int command)
             unsigned int i;
             for (i=flashram_info.erase_offset; i<(flashram_info.erase_offset+128); i++)
             {
-                flashram[i^S8] = 0xff;
+                flashram[MASK_ADDR_U8(i^S8, flashram)] = 0xff;
             }
             flashram_write_file();
         }
@@ -145,8 +145,8 @@ void flashram_command(unsigned int command)
             int i;
             for (i=0; i<128; i++)
             {
-                flashram[(flashram_info.erase_offset+i)^S8]=
-                    ((unsigned char*)rdram)[(flashram_info.write_pointer+i)^S8];
+                flashram[MASK_ADDR_U8((flashram_info.erase_offset+i)^S8, flashram)]=
+                    ((unsigned char*)rdram)[MASK_ADDR_U8((flashram_info.write_pointer+i)^S8, rdram)];
             }
             flashram_write_file();
         }
@@ -180,14 +180,14 @@ void dma_read_flashram(void)
     switch (flashram_info.mode)
     {
     case STATUS_MODE:
-        rdram[pi_register.pi_dram_addr_reg/4] = (unsigned int)(flashram_info.status >> 32);
-        rdram[pi_register.pi_dram_addr_reg/4+1] = (unsigned int)(flashram_info.status);
+        rdram[MASK_ADDR_U32(pi_register.pi_dram_addr_reg/4, rdram)] = (unsigned int)(flashram_info.status >> 32);
+        rdram[MASK_ADDR_U32(pi_register.pi_dram_addr_reg/4+1, rdram)] = (unsigned int)(flashram_info.status);
         break;
     case READ_MODE:
         for (i=0; i<(pi_register.pi_wr_len_reg & 0x0FFFFFF)+1; i++)
         {
-            ((unsigned char*)rdram)[(pi_register.pi_dram_addr_reg+i)^S8]=
-                flashram[(((pi_register.pi_cart_addr_reg-0x08000000)&0xFFFF)*2+i)^S8];
+            ((unsigned char*)rdram)[MASK_ADDR_U8((pi_register.pi_dram_addr_reg+i)^S8, rdram)]=
+                flashram[MASK_ADDR_U8((((pi_register.pi_cart_addr_reg-0x08000000)&0xFFFF)*2+i)^S8, rdram)];
         }
         break;
     default:

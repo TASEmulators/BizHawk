@@ -12,4 +12,4 @@ Note that firmware does not need to be copied here. They are taken from `../BizH
 
 > This test suite is huge and takes a **really long time** to run. Like several hours.
 
-Summary of `BIZHAWKTEST_RUN_KNOWN_FAILURES=1 ./run_tests_release.sh` should read 22425 passed / 2550 skipped / 0 failed.
+Summary of `BIZHAWKTEST_RUN_KNOWN_FAILURES=1 ./run_tests_release.sh` should read 22479 passed / 2496 skipped / 0 failed.

@@ -1,5 +1,38 @@
 This file is the short summary of the API changes:
 
+21.02.2024 - Non-backward compatible
+    The sljit_set_put_label() function is renamed
+    to sljit_emit_mov_addr() and sljit_put_label
+    is merged into sljit_jump and removed.
+
+01.11.2023 - Non-backward compatible
+    The SLJIT_ARG_TYPE_VOID definition is changed
+    to SLJIT_ARG_TYPE_RET_VOID to improve Windows
+    compatibility.
+
+05.09.2023 - Non-backward compatible
+    Turn SLJIT_IMM from a flag to a single value.
+
+10.08.2023 - Non-backward compatible
+    Rename SLJIT_INT_REGISTER to SLJIT_GP_REGISTER.
+
+01.08.2023 - Non-backward compatible
+    A type argument is added to sljit_get_register_index
+    and sljit_get_float_register_index is removed.
+
+19.07.2023 - Non-backward compatible
+    SLJIT_MEM_UNALIGNED_16/32 options are renamed
+    to SLJIT_MEM_ALIGNED_16/32 and a type argument
+    is added to sljit_get_float_register_index.
+
+16.02.2022 - Non-backward compatible
+    The sljit_emit_cmov operation is replaced
+    by sljit_emit_select.
+
+11.02.2022 - Non-backward compatible
+    All floating point comparisons are supported,
+    sljit_cmp_info return value is changed.
+
 02.02.2022 - Backward compatible
     All SLJIT_SET_* constants are
     even numbers.

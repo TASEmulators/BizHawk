@@ -4,32 +4,34 @@
 
 #include <stdarg.h>
 
-namespace Platform
+namespace melonDS::Platform
 {
-
-struct FileCallbackInterface
-{
-	int (*GetLength)(const char* path);
-	void (*GetData)(const char* path, u8* buffer);
-};
-
-ECL_INVISIBLE static FileCallbackInterface FileCallbacks;
-
-void SetFileCallbacks(FileCallbackInterface& fileCallbackInterface)
-{
-	FileCallbacks = fileCallbackInterface;
-}
 
 struct FileHandle
 {
 public:
-	FileHandle(std::shared_ptr<u8[]> data_, size_t size_, FileMode mode_)
-		: data(data_)
+	virtual ~FileHandle() = default;
+	virtual bool IsEndOfFile() = 0;
+	virtual bool ReadLine(char* str, int count) = 0;
+	virtual bool Seek(s64 offset, FileSeekOrigin origin) = 0;
+	virtual void Rewind() = 0;
+	virtual size_t Read(void* data, u64 count) = 0;
+	virtual bool Flush() = 0;
+	virtual size_t Write(const void* data, u64 count) = 0;
+	virtual size_t Length() = 0;
+};
+
+struct MemoryFile final : FileHandle
+{
+public:
+	MemoryFile(std::unique_ptr<u8[]> data_, size_t size_)
+		: data(std::move(data_))
 		, pos(0)
 		, size(size_)
-		, mode(mode_)
 	{
 	}
+
+	~MemoryFile() = default;
 
 	bool IsEndOfFile()
 	{
@@ -38,11 +40,6 @@ public:
 
 	bool ReadLine(char* str, int count)
 	{
-		if (!Readable())
-		{
-			return false;
-		}
-
 		if (count < 1)
 		{
 			return false;
@@ -91,24 +88,19 @@ public:
 
 	size_t Read(void* data_, u64 count)
 	{
-		if (!Readable())
-		{
-			return 0;
-		}
-
 		count = std::min(count, (u64)(size - pos));
 		memcpy(data_, &data[pos], count);
 		pos += count;
 		return count;
 	}
 
+	bool Flush()
+	{
+		return true;
+	}
+
 	size_t Write(const void* data_, u64 count)
 	{
-		if (!Writable())
-		{
-			return 0;
-		}
-
 		count = std::min(count, (u64)(size - pos));
 		memcpy(&data[pos], data_, count);
 		pos += count;
@@ -121,46 +113,115 @@ public:
 	}
 
 private:
-	std::shared_ptr<u8[]> data;
+	std::unique_ptr<u8[]> data;
 	size_t pos, size;
-	FileMode mode;
-
-	bool Readable()
-	{
-		return (mode & FileMode::Read) == FileMode::Read;
-	}
-
-	bool Writable()
-	{
-		return (mode & FileMode::Write) == FileMode::Write;
-	}
 };
 
-static std::unordered_map<std::string, std::pair<std::shared_ptr<u8[]>, size_t>> FileBufferCache;
+// private memory file creation API
+FileHandle* CreateMemoryFile(u8* fileData, u32 fileLength)
+{
+	std::unique_ptr<u8[]> data(new u8[fileLength]);
+	memcpy(data.get(), fileData, fileLength);
+	return new MemoryFile(std::move(data), fileLength);
+}
 
+struct CFile final : FileHandle
+{
+public:
+	CFile(FILE* file_)
+		: file(file_)
+	{
+	}
+
+	~CFile()
+	{
+		fclose(file);
+	}
+
+	bool IsEndOfFile()
+	{
+		return feof(file) != 0;
+	}
+
+	bool ReadLine(char* str, int count)
+	{
+		return fgets(str, count, file) != nullptr;
+	}
+
+	bool Seek(s64 offset, FileSeekOrigin origin)
+	{
+		int forigin;
+		switch (origin)
+		{
+			case FileSeekOrigin::Start:
+				forigin = SEEK_SET;
+				break;
+			case FileSeekOrigin::Current:
+				forigin = SEEK_CUR;
+				break;
+			case FileSeekOrigin::End:
+				forigin = SEEK_END;
+				break;
+			default:
+				return false;
+		}
+
+		return fseek(file, offset, forigin) == 0;
+	}
+
+	void Rewind()
+	{
+		rewind(file);
+	}
+
+	size_t Read(void* data, u64 count)
+	{
+		return fread(data, 1, count, file);
+	}
+
+	bool Flush()
+	{
+		return fflush(file) == 0;
+	}
+
+	size_t Write(const void* data, u64 count)
+	{
+		return fwrite(data, 1, count, file);
+	}
+
+	size_t Length()
+	{
+		long pos = ftell(file);
+		fseek(file, 0, SEEK_END);
+		long len = ftell(file);
+		fseek(file, pos, SEEK_SET);
+		return len;
+	}
+
+private:
+	FILE* file;
+};
+
+// public APIs open C files
 FileHandle* OpenFile(const std::string& path, FileMode mode)
 {
-	if ((mode & FileMode::ReadWrite) == FileMode::None)
+	const char* fmode;
+	if (mode & FileMode::Write)
 	{
-		// something went wrong here
+		fmode = "rb+";
+	}
+	else
+	{
+		fmode = "rb";
+	}
+
+	FILE* f = fopen(path.c_str(), fmode);
+	if (!f)
+	{
 		return nullptr;
 	}
 
-	if (auto cache = FileBufferCache.find(path); cache != FileBufferCache.end())
-	{
-		return new FileHandle(cache->second.first, cache->second.second, mode);
-	}
-
-	size_t size = FileCallbacks.GetLength(path.c_str());
-	if (size == 0)
-	{
-		return nullptr;
-	}
-
-	std::shared_ptr<u8[]> data(new u8[size]);
-	FileCallbacks.GetData(path.c_str(), data.get());
-	FileBufferCache.emplace(path, std::make_pair(data, size));
-	return new FileHandle(data, size, mode);
+	return new CFile(f);
 }
 
 FileHandle* OpenLocalFile(const std::string& path, FileMode mode)
@@ -170,12 +231,10 @@ FileHandle* OpenLocalFile(const std::string& path, FileMode mode)
 
 bool FileExists(const std::string& name)
 {
-	if (auto cache = FileBufferCache.find(name); cache != FileBufferCache.end())
-	{
-		return true;
-	}
-
-	return FileCallbacks.GetLength(name.c_str()) > 0;
+	FILE* f = fopen(name.c_str(), "rb");
+	bool exists = f != nullptr;
+	fclose(f);
+	return exists;
 }
 
 bool LocalFileExists(const std::string& name)
@@ -216,7 +275,7 @@ u64 FileRead(void* data, u64 size, u64 count, FileHandle* file)
 
 bool FileFlush(FileHandle* file)
 {
-	return true;
+	return file->Flush();
 }
 
 u64 FileWrite(const void* data, u64 size, u64 count, FileHandle* file)
@@ -224,26 +283,10 @@ u64 FileWrite(const void* data, u64 size, u64 count, FileHandle* file)
 	return file->Write(data, size * count);
 }
 
+// only used for FATStorage (i.e. SD cards), not supported
 u64 FileWriteFormatted(FileHandle* file, const char* fmt, ...)
 {
-	va_list args;
-
-	va_start(args, fmt);
-	size_t bufferSize = vsnprintf(nullptr, 0, fmt, args);
-	va_end(args);
-
-	if ((int)bufferSize < 0)
-	{
-		return 0;
-	}
-
-	auto buffer = std::make_unique<char[]>(bufferSize + 1);
-
-	va_start(args, fmt);
-	vsnprintf(buffer.get(), bufferSize + 1, fmt, args);
-	va_end(args);
-
-	return file->Write(buffer.get(), bufferSize);
+	return 0;
 }
 
 u64 FileLength(FileHandle* file)

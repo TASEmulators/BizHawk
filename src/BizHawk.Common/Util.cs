@@ -5,7 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-#if NET6_0
+#if NETCOREAPP3_0_OR_GREATER
 using System.Runtime.CompilerServices;
 #endif
 using System.Threading;
@@ -81,16 +81,16 @@ namespace BizHawk.Common
 			return a.All(kvp => b.TryGetValue(kvp.Key, out var bVal) && comparer.Equals(kvp.Value, bVal));
 		}
 
-#if NET6_0
-		public static string DescribeIsNull<T>(T? obj, [CallerArgumentExpression("obj")] string? expr = default)
+#if NETCOREAPP3_0_OR_GREATER
+		public static string DescribeIsNull<T>(T? obj, [CallerArgumentExpression(nameof(obj))] string? expr = default)
 #else
 		public static string DescribeIsNull<T>(T? obj, string expr)
 #endif
 			where T : class
 			=> $"{expr} is {(obj is null ? "null" : "not null")}";
 
-#if NET6_0
-		public static string DescribeIsNullValT<T>(T? boxed, [CallerArgumentExpression("boxed")] string? expr = default)
+#if NETCOREAPP3_0_OR_GREATER
+		public static string DescribeIsNullValT<T>(T? boxed, [CallerArgumentExpression(nameof(boxed))] string? expr = default)
 #else
 		public static string DescribeIsNullValT<T>(T? boxed, string expr)
 #endif
@@ -171,6 +171,7 @@ namespace BizHawk.Common
 			while (len > 0)
 			{
 				var done = br.Read(ret, ofs, len);
+				if (done is 0) _ = br.ReadByte(); // triggers an EndOfStreamException (as there's otherwise no way to indicate this failure state to the caller)
 				ofs += done;
 				len -= done;
 			}

@@ -1,6 +1,8 @@
 struct System {
   Node::System node;
   VFS::Pak pak;
+  bool homebrewMode = false;
+  bool expansionPak = true;
 
   enum class Region : u32 { NTSC, PAL };
 
@@ -30,6 +32,8 @@ private:
     u32 videoFrequency = 48'681'812;
     bool dd = false;
   } information;
+
+  auto initDebugHooks() -> void;
 
   //serialization.cpp
   auto serialize(serializer&, bool synchronize) -> void;

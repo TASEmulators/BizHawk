@@ -12,9 +12,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private readonly LibGPGX.input_cb _inputCallback;
 
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		private readonly InputCallbackSystem _inputCallbacks = [ ];
 
-		private void input_callback()
+		private void InputCallback()
 		{
 			InputCallbacks.Call();
 			IsLagFrame = false;

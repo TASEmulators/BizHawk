@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../TestProjects.props" />
 	<PropertyGroup>
@@ -16,12 +16,14 @@
 		<DefineConstants>$(DefineConstants);SAVE_IMAGES_ON_FAIL;SAVE_IMAGES_ON_PASS</DefineConstants>
 	</PropertyGroup>
 	<!-- BIZHAWKTEST_SAVE_IMAGES=none => no extra defines -->
+	<PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+		<MagickCopyNativeLinux>true</MagickCopyNativeLinux>
+	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Magick.NET-Q8-AnyCPU" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 		<EmbeddedResource Include="res/**/*" />
 		<Content Include="$(ProjectDir)../../Assets/gamedb/**/*" LinkBase="gamedb" CopyToOutputDirectory="PreserveNewest" />
-		<RuntimeHostConfigurationOption Include="System.Drawing.EnableUnixSupport" Value="true" />
 	</ItemGroup>
 </Project>

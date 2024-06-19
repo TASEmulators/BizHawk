@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 using System.Text;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Common.PathExtensions;
 

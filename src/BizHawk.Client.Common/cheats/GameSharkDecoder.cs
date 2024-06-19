@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common.cheats
 			{
 				// Problem: I don't know what the Non-FF Style codes are.
 				// TODO: Fix that.
-				if (code.StartsWithOrdinal("FF") == false)
+				if (!code.StartsWithOrdinal("FF"))
 				{
 					return new InvalidCheatCode("This Action Replay Code, is not yet supported.");
 				}

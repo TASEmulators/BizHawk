@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IEmulatorServiceProvider"/>
 	public class BasicServiceProvider : IEmulatorServiceProvider
 	{
-		private readonly Dictionary<Type, object> _services = new Dictionary<Type, object>();
+		private readonly Dictionary<Type, object> _services = [ ];
 
 		public BasicServiceProvider(IEmulator core)
 		{
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Common
 			// find the field), but we're going to keep such logic out of the basic provider.  anything the passed
 			// core doesn't implement directly needs to be added with Register()
 			// this also fully allows services that are not IEmulatorService
-			Type coreType = core.GetType();
+			var coreType = core.GetType();
 
 			foreach (var service in coreType.GetInterfaces().Where(static t => typeof(IEmulatorService).IsAssignableFrom(t)
 				&& t != typeof(IEmulatorService) && t != typeof(ISpecializedEmulatorService)))
@@ -45,30 +45,32 @@ namespace BizHawk.Emulation.Common
 		/// <exception cref="ArgumentNullException"><paramref name="provider"/> is null</exception>
 		public void Register<T>(T provider)
 			where T : class, IEmulatorService
-		{
-			_services[typeof(T)] = provider;
-		}
+			=> _services[typeof(T)] = provider;
+
+		/// <summary>
+		/// the core can call this to unregister an existing service
+		/// this is particularly useful wrt the auto-registration of services
+		/// in case the core has some condition which renders a service unusable
+		/// </summary>
+		/// <typeparam name="T">The <see cref="IEmulatorService"/> to unregister</typeparam>
+		public void Unregister<T>()
+			where T : class, IEmulatorService
+			=> _services.Remove(typeof(T));
 
 		public T GetService<T>()
 			where T : IEmulatorService
 			=> (T) GetService(typeof(T))!;
 
 		public object? GetService(Type t)
-		{
-			return _services.TryGetValue(t, out var service) ? service : null;
-		}
+			=> _services.TryGetValue(t, out var service) ? service : null;
 
 		public bool HasService<T>()
 			where T : IEmulatorService
-		{
-			return HasService(typeof(T));
-		}
+			=> HasService(typeof(T));
 
 		public bool HasService(Type t)
-		{
-			return _services.ContainsKey(t);
-		}
+			=> _services.ContainsKey(t);
 
-		public IEnumerable<Type> AvailableServices =>_services.Select(d => d.Key);
+		public IEnumerable<Type> AvailableServices => _services.Select(d => d.Key);
 	}
 }

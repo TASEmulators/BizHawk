@@ -5,7 +5,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 {
-	[PortedCore(CoreNames.VirtualBoyee, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
+	[PortedCore(CoreNames.VirtualBoyee, "Mednafen Team", "1.32.1", "https://mednafen.github.io/releases/")]
 	public class VirtualBoyee : NymaCore
 	{
 		private VirtualBoyee(CoreComm comm)

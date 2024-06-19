@@ -173,7 +173,7 @@
 
 		private byte ReadPort0()
 		{
-			if (IsGameGear_C == false)
+			if (!IsGameGear_C)
 			{
 				return 0xFF;
 			}

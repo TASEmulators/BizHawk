@@ -204,11 +204,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadMostRecentOrStartNew()
 		{
-			if (!LoadFile(new(Settings.RecentTas.MostRecent)))
-			{
-				TasView.AllColumns.Clear();
-				StartNewTasMovie();
-			}
+			LoadFileWithFallback(Settings.RecentTas.MostRecent);
 		}
 
 		private bool Engage()
@@ -255,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 			// Start Scenario 2: A tasproj is already active
 			else if (MovieSession.Movie.IsActive() && MovieSession.Movie is ITasMovie)
 			{
-				bool result = LoadFile(new FileInfo(CurrentTasMovie.Filename), gotoFrame: Emulator.Frame);
+				bool result = LoadMovie(CurrentTasMovie, gotoFrame: Emulator.Frame);
 				if (!result)
 				{
 					TasView.AllColumns.Clear();
@@ -449,17 +445,16 @@ namespace BizHawk.Client.EmuHawk
 				BoolPatterns[i] = new AutoPatternBool(1, 1);
 			}
 
-			BoolPatterns[^2] = new AutoPatternBool(1, 0);
-			BoolPatterns[^1] = new AutoPatternBool(
-				Config.AutofireOn, Config.AutofireOff);
+			BoolPatterns[BoolPatterns.Length - 2] = new(1, 0);
+			BoolPatterns[BoolPatterns.Length - 1] = new(Config.AutofireOn, Config.AutofireOff);
 
 			for (int i = fStart; i < AxisPatterns.Length - 2; i++)
 			{
 				AxisPatterns[i] = new AutoPatternAxis(new[] { 1 });
 			}
 
-			AxisPatterns[^2] = new AutoPatternAxis(new[] { 1 });
-			AxisPatterns[^1] = new AutoPatternAxis(1, Config.AutofireOn, 0, Config.AutofireOff);
+			AxisPatterns[AxisPatterns.Length - 2] = new([ 1 ]);
+			AxisPatterns[AxisPatterns.Length - 1] = new(1, Config.AutofireOn, 0, Config.AutofireOff);
 
 			SetUpToolStripColumns();
 		}
@@ -521,26 +516,18 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 		}
 
-		private bool LoadFile(FileInfo file, bool startsFromSavestate = false, int gotoFrame = 0)
+		private bool LoadMovie(ITasMovie tasMovie, bool startsFromSavestate = false, int gotoFrame = 0)
 		{
-			if (!file.Exists)
-			{
-				Settings.RecentTas.HandleLoadError(MainForm, file.FullName);
-				return false;
-			}
-
 			_engaged = false;
-			var newMovie = (ITasMovie)MovieSession.Get(file.FullName);
-			newMovie.BindMarkersToInput = Settings.BindMarkersToInput;
-			newMovie.GreenzoneInvalidated = GreenzoneInvalidated;
+			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
+			tasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 
-			if (!HandleMovieLoadStuff(newMovie))
+			if (!HandleMovieLoadStuff(tasMovie))
 			{
 				return false;
 			}
 
 			_engaged = true;
-			Settings.RecentTas.Add(newMovie.Filename); // only add if it did load
 
 			if (startsFromSavestate)
 			{
@@ -603,14 +590,8 @@ namespace BizHawk.Client.EmuHawk
 				Config.DefaultAuthor);
 
 			SetTasMovieCallbacks(tasMovie);
-			MovieSession.SetMovieController(Emulator.ControllerDefinition); // hack, see interface comment
-			tasMovie.ClearChanges(); // Don't ask to save changes here.
-			tasMovie.Save();
+			tasMovie.ClearChanges();
 			_ = HandleMovieLoadStuff(tasMovie);
-			// let's not keep this longer than we actually need
-			// the user will be prompted to enter a proper name
-			// when they want to save
-			File.Delete(tasMovie.Filename);
 
 			// clear all selections
 			TasView.DeselectAll();
@@ -624,7 +605,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool HandleMovieLoadStuff(ITasMovie movie)
 		{
 			WantsToControlStopMovie = false;
-			WantsToControlReboot = false;
 			var result = StartNewMovieWrapper(movie);
 
 			if (!result)
@@ -633,10 +613,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			WantsToControlStopMovie = true;
-			WantsToControlReboot = true;
 
 			CurrentTasMovie.ChangeLog.Clear();
-			CurrentTasMovie.ClearChanges();
 
 			UpdateWindowTitle();
 			MessageStatusLabel.Text = $"{Path.GetFileName(CurrentTasMovie.Filename)} loaded.";
@@ -651,7 +629,9 @@ namespace BizHawk.Client.EmuHawk
 			SetTasMovieCallbacks(movie);
 
 			SuspendLayout();
+			WantsToControlReboot = false;
 			bool result = MainForm.StartNewMovie(movie, false);
+			WantsToControlReboot = true;
 			ResumeLayout();
 			if (result)
 			{
@@ -673,16 +653,31 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LoadFileWithFallback(string path)
+		private bool LoadFileWithFallback(string path)
 		{
-			var result = LoadFile(new FileInfo(path));
-			if (!result)
+			bool movieLoadSucceeded = false;
+
+			if (!File.Exists(path))
+			{
+				Settings.RecentTas.HandleLoadError(MainForm, path);
+			}
+			else
+			{
+				var movie = MovieSession.Get(path, true);
+
+				var tasMovie = movie as ITasMovie ?? movie.ToTasMovie();
+				movieLoadSucceeded = LoadMovie(tasMovie);
+			}
+
+			if (!movieLoadSucceeded)
 			{
 				TasView.AllColumns.Clear();
 				WantsToControlReboot = false;
 				StartNewTasMovie();
 				_engaged = true;
 			}
+
+			return movieLoadSucceeded;
 		}
 
 		private void DummyLoadMacro(string path)
@@ -933,14 +928,14 @@ namespace BizHawk.Client.EmuHawk
 			var closestState = GetPriorStateForFramebuffer(frame);
 			if (closestState.Value.Length > 0 && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
 			{
-				LoadState(closestState);
+				LoadState(closestState, true);
 			}
 			closestState.Value.Dispose();
 
 			if (fromLua)
 			{
 				bool wasPaused = MainForm.EmulatorPaused;
-				
+
 				// why not use this? because I'm not letting the form freely run. it all has to be under this loop.
 				// i could use this and then poll StepRunLoop_Core() repeatedly, but.. that's basically what I'm doing
 				// PauseOnFrame = frame;
@@ -981,7 +976,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void LoadState(KeyValuePair<int, Stream> state)
+		public void LoadState(KeyValuePair<int, Stream> state, bool discardApiHawkSurfaces = false)
 		{
 			StatableEmulator.LoadStateBinary(new BinaryReader(state.Value));
 
@@ -991,6 +986,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateTools();
+			if (discardApiHawkSurfaces)
+			{
+				DisplayManager.DiscardApiHawkSurfaces();
+			}
 		}
 
 		public void AddBranchExternal() => BookMarkControl.AddBranchExternal();
@@ -1092,7 +1091,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					CurrentTasMovie.ClearFrame(i);
 				}
-				
+
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(beginningFrame);

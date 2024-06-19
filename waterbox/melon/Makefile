@@ -1,6 +1,6 @@
 CCFLAGS := -Wno-incompatible-pointer-types-discards-qualifiers -Wno-pointer-sign
 
-CXXFLAGS := -DMELONDS_VERSION="" -DOGLRENDERER_ENABLED \
+CXXFLAGS := -DOGLRENDERER_ENABLED \
 	-I. -I./melonDS/src -I./melonDS/src/teakra/include \
 	-Wall -Wextra -Werror=int-to-pointer-cast \
 	-Wfatal-errors -Wno-unused-parameter -Wno-unused-variable \
@@ -8,11 +8,13 @@ CXXFLAGS := -DMELONDS_VERSION="" -DOGLRENDERER_ENABLED \
 	-Wno-sign-compare -Wno-deprecated-declarations \
 	-Wno-missing-braces -Wno-bitwise-instead-of-logical \
 	-Wno-unused-private-field -Wno-logical-op-parentheses \
-	-fno-strict-aliasing -std=c++17
+	-Wno-mismatched-tags -Wno-reorder-ctor \
+	-fno-strict-aliasing -fwrapv -std=c++17
 
 TARGET = melonDS.wbx
 
 CORE_SRCS = \
+	ARCodeFile.cpp \
 	AREngine.cpp \
 	ARM.cpp \
 	ARMInterpreter.cpp \
@@ -42,20 +44,25 @@ CORE_SRCS = \
 	GPU2D_Soft.cpp \
 	GPU3D.cpp \
 	GPU3D_Soft.cpp \
+	GPU3D_Texcache.cpp \
 	NDS.cpp \
 	NDSCart.cpp \
+	NDSCartR4.cpp \
 	ROMList.cpp \
 	RTC.cpp \
 	Savestate.cpp \
 	SPI.cpp \
 	SPI_Firmware.cpp \
 	SPU.cpp \
+	Utils.cpp \
 	Wifi.cpp \
 	WifiAP.cpp
 
 CORE_GL_SRCS = \
 	GPU_OpenGL.cpp \
 	GPU3D_OpenGL.cpp \
+	GPU3D_Compute.cpp \
+	GPU3D_TexcacheOpenGL.cpp \
 	OpenGLSupport.cpp \
 	frontend/Util_Video.cpp
 
@@ -82,7 +89,6 @@ MISC_SRCS = \
 	blip_buf/blip_buf.c \
 
 BIZPLATFORM_SRCS = \
-	BizPlatform/BizConfig.cpp \
 	BizPlatform/BizFile.cpp \
 	BizPlatform/BizLog.cpp \
 	BizPlatform/BizOGL.cpp \
@@ -97,8 +103,8 @@ SRCS = \
 	$(addprefix melonDS/src/fatfs/,$(FATFS_SRCS)) \
 	$(addprefix melonDS/src/,$(MISC_SRCS)) \
 	$(BIZPLATFORM_SRCS) \
+	BizConsoleCreator.cpp \
 	BizDebugging.cpp \
-	BizFileManager.cpp \
 	BizGLPresenter.cpp \
 	BizInterface.cpp \
 	dthumb.c

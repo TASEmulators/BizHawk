@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private unsafe void SettingsQuery(string name, IntPtr dest)
 		{
 			var val = SettingsQuery(name);
-			var bytes = Encoding.UTF8.GetBytes(val);
+			var bytes = val is null ? Array.Empty<byte>() : Encoding.UTF8.GetBytes(val);
 			if (bytes.Length > 255)
 			{
 				throw new InvalidOperationException($"Value {val} for setting {name} was too long");

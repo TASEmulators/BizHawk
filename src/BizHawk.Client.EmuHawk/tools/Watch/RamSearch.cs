@@ -305,6 +305,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
+			if (!IsHandleCreated) return;
+
 			_settings = new SearchEngineSettings(MemoryDomains, Settings.UseUndoHistory);
 			_searches = new RamSearchEngine(_settings, MemoryDomains);
 			MessageLabel.Text = "Search restarted";
@@ -1635,7 +1637,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
-			var column = e.Column;
+			var column = e.Column!;
 			if (column.Name != _sortedColumn)
 			{
 				_sortReverse = false;

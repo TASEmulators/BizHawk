@@ -14,10 +14,10 @@
 		<Compile Update="DATConverter.cs" SubType="Form" />
 		<Compile Update="DATConverter.Designer.cs" DependentUpon="DATConverter.cs" />
 		<Compile Update="Properties/Settings.Designer.cs" AutoGen="true" DependentUpon="Settings.settings" DesignTime="true">
-		  <DesignTimeSharedInput>True</DesignTimeSharedInput>
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
 		</Compile>
 		<None Update="Properties/Settings.settings" LastGenOutput="Settings.Designer.cs">
-		  <Generator>SettingsSingleFileGenerator</Generator>
+			<Generator>SettingsSingleFileGenerator</Generator>
 		</None>
 	</ItemGroup>
 </Project>

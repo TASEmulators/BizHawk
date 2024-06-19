@@ -5,7 +5,7 @@
 #include "DSi_NAND.h"
 #include "Platform.h"
 
-namespace Platform
+namespace melonDS::Platform
 {
 
 constexpr u32 DSIWARE_CATEGORY = 0x00030004;
@@ -13,47 +13,47 @@ constexpr u32 DSIWARE_CATEGORY = 0x00030004;
 static bool NdsSaveRamIsDirty = false;
 static bool GbaSaveRamIsDirty = false;
 
-ECL_EXPORT void PutSaveRam(u8* data, u32 len)
+ECL_EXPORT void PutSaveRam(melonDS::NDS* nds, u8* data, u32 len)
 {
-	const u32 ndsSaveLen = NDSCart::GetSaveMemoryLength();
-	const u32 gbaSaveLen = GBACart::GetSaveMemoryLength();
+	const u32 ndsSaveLen = nds->GetNDSSaveLength();
+	const u32 gbaSaveLen = nds->GetGBASaveLength();
 
 	if (len >= ndsSaveLen)
 	{
-		NDS::LoadSave(data, len);
+		nds->SetNDSSave(data, len);
 		NdsSaveRamIsDirty = false;
 
 		if (gbaSaveLen && len >= (ndsSaveLen + gbaSaveLen))
 		{
-			// don't use GBACart::LoadSave! it will re-allocate the save buffer (bad!)
-			// NDS::LoadSave is fine (and should be used)
-			memcpy(GBACart::GetSaveMemory(), data + ndsSaveLen, gbaSaveLen);
+			// don't use SetGBASave! it will re-allocate the save buffer (bad!)
+			// SetNDSSave is fine (and should be used)
+			memcpy(nds->GetGBASave(), data + ndsSaveLen, gbaSaveLen);
 			GbaSaveRamIsDirty = false;
 		}
 	}
 }
 
-ECL_EXPORT void GetSaveRam(u8* data)
+ECL_EXPORT void GetSaveRam(melonDS::NDS* nds, u8* data)
 {
-	const u32 ndsSaveLen = NDSCart::GetSaveMemoryLength();
-	const u32 gbaSaveLen = GBACart::GetSaveMemoryLength();
+	const u32 ndsSaveLen = nds->GetNDSSaveLength();
+	const u32 gbaSaveLen = nds->GetGBASaveLength();
 
 	if (ndsSaveLen)
 	{
-		memcpy(data, NDSCart::GetSaveMemory(), ndsSaveLen);
+		memcpy(data, nds->GetNDSSave(), ndsSaveLen);
 		NdsSaveRamIsDirty = false;
 	}
 
 	if (gbaSaveLen)
 	{
-		memcpy(data + ndsSaveLen, GBACart::GetSaveMemory(), gbaSaveLen);
+		memcpy(data + ndsSaveLen, nds->GetGBASave(), gbaSaveLen);
 		GbaSaveRamIsDirty = false;
 	}
 }
 
-ECL_EXPORT u32 GetSaveRamLength()
+ECL_EXPORT u32 GetSaveRamLength(melonDS::NDS* nds)
 {
-	return NDSCart::GetSaveMemoryLength() + GBACart::GetSaveMemoryLength();
+	return nds->GetNDSSaveLength() + nds->GetGBASaveLength();
 }
 
 ECL_EXPORT bool SaveRamIsDirty()
@@ -61,73 +61,42 @@ ECL_EXPORT bool SaveRamIsDirty()
 	return NdsSaveRamIsDirty || GbaSaveRamIsDirty;
 }
 
-static void ImportTitleData(DSi_NAND::NANDMount& mount, u32 titleId, int which, const char* path, u8** in)
+ECL_EXPORT void ImportDSiWareSavs(melonDS::DSi* dsi, u32 titleId)
 {
-	if (auto file = Platform::OpenFile(path, Platform::FileMode::Write))
+	if (auto& nand = dsi->GetNAND())
 	{
-		auto len = Platform::FileLength(file);
-		Platform::FileRewind(file);
-		Platform::FileWrite(*in, len, 1, file);
-		Platform::CloseFile(file);
-		*in += len;
-	}
-
-	mount.ImportTitleData(DSIWARE_CATEGORY, titleId, which, path);
-}
-
-ECL_EXPORT void ImportDSiWareSavs(u32 titleId, u8* data)
-{
-	auto& nand = DSi::NANDImage;
-	if (nand && *nand)
-	{
-		if (auto mount = DSi_NAND::NANDMount(*nand))
+		if (auto mount = melonDS::DSi_NAND::NANDMount(nand))
 		{
-			ImportTitleData(mount, titleId, DSi_NAND::TitleData_PublicSav, "public.sav", &data);
-			ImportTitleData(mount, titleId, DSi_NAND::TitleData_PrivateSav, "private.sav", &data);
-			ImportTitleData(mount, titleId, DSi_NAND::TitleData_BannerSav, "banner.sav", &data);
+			mount.ImportTitleData(DSIWARE_CATEGORY, titleId, melonDS::DSi_NAND::TitleData_PublicSav, "public.sav");
+			mount.ImportTitleData(DSIWARE_CATEGORY, titleId, melonDS::DSi_NAND::TitleData_PrivateSav, "private.sav");
+			mount.ImportTitleData(DSIWARE_CATEGORY, titleId, melonDS::DSi_NAND::TitleData_BannerSav, "banner.sav");
 		}
 	}
 }
 
-static void ExportTitleData(DSi_NAND::NANDMount& mount, u32 titleId, int which, const char* path, u8** out)
+ECL_EXPORT void ExportDSiWareSavs(melonDS::DSi* dsi, u32 titleId)
 {
-	mount.ExportTitleData(DSIWARE_CATEGORY, titleId, which, path);
-
-	if (auto file = Platform::OpenFile(path, Platform::FileMode::Read))
+	if (auto& nand = dsi->GetNAND())
 	{
-		auto len = Platform::FileLength(file);
-		Platform::FileRewind(file);
-		Platform::FileRead(*out, len, 1, file);
-		Platform::CloseFile(file);
-		*out += len;
-	}
-}
-
-ECL_EXPORT void ExportDSiWareSavs(u32 titleId, u8* data)
-{
-	auto& nand = DSi::NANDImage;
-	if (nand && *nand)
-	{
-		if (auto mount = DSi_NAND::NANDMount(*nand))
+		if (auto mount = melonDS::DSi_NAND::NANDMount(nand))
 		{
-			ExportTitleData(mount, titleId, DSi_NAND::TitleData_PublicSav, "public.sav", &data);
-			ExportTitleData(mount, titleId, DSi_NAND::TitleData_PrivateSav, "private.sav", &data);
-			ExportTitleData(mount, titleId, DSi_NAND::TitleData_BannerSav, "banner.sav", &data);
+			mount.ExportTitleData(DSIWARE_CATEGORY, titleId, melonDS::DSi_NAND::TitleData_PublicSav, "public.sav");
+			mount.ExportTitleData(DSIWARE_CATEGORY, titleId, melonDS::DSi_NAND::TitleData_PrivateSav, "private.sav");
+			mount.ExportTitleData(DSIWARE_CATEGORY, titleId, melonDS::DSi_NAND::TitleData_BannerSav, "banner.sav");
 		}
 	}
 }
 
-ECL_EXPORT void DSiWareSavsLength(u32 titleId, u32* publicSavSize, u32* privateSavSize, u32* bannerSavSize)
+ECL_EXPORT void DSiWareSavsLength(melonDS::DSi* dsi, u32 titleId, u32* publicSavSize, u32* privateSavSize, u32* bannerSavSize)
 {
 	*publicSavSize = *privateSavSize = *bannerSavSize = 0;
 
-	auto& nand = DSi::NANDImage;
-	if (nand && *nand)
+	if (auto& nand = dsi->GetNAND())
 	{
-		if (auto mount = DSi_NAND::NANDMount(*nand))
+		if (auto mount = melonDS::DSi_NAND::NANDMount(nand))
 		{
 			u32 version;
-			NDSHeader header{};
+			melonDS::NDSHeader header{};
 
 			mount.GetTitleInfo(DSIWARE_CATEGORY, titleId, version, &header, nullptr);
 			*publicSavSize = header.DSiPublicSavSize;
@@ -141,26 +110,24 @@ ECL_EXPORT void DSiWareSavsLength(u32 titleId, u32* publicSavSize, u32* privateS
 // Perhaps instead it would be better to use FileFlush to write to disk
 // (guarded by frontend determinism switch, of course) 
 
-ECL_EXPORT u32 GetNANDSize()
+ECL_EXPORT u32 GetNANDSize(melonDS::DSi* dsi)
 {
-	auto& nand = DSi::NANDImage;
-	if (nand && *nand)
+	if (auto& nand = dsi->GetNAND())
 	{
-		return nand->GetLength();
+		return nand.GetLength();
 	}
 
 	return 0;
 }
 
-ECL_EXPORT void GetNANDData(u8* buf)
+ECL_EXPORT void GetNANDData(melonDS::DSi* dsi, u8* buf)
 {
-	auto& nand = DSi::NANDImage;
-	if (nand && *nand)
+	if (auto& nand = dsi->GetNAND())
 	{
-		auto len = nand->GetLength();
-		auto file = nand->GetFile();
-		Platform::FileRewind(file);
-		Platform::FileRead(buf, 1, len, file);
+		auto len = nand.GetLength();
+		auto file = nand.GetFile();
+		melonDS::Platform::FileRewind(file);
+		melonDS::Platform::FileRead(buf, 1, len, file);
 	}
 }
 
@@ -174,8 +141,8 @@ void WriteGBASave(const u8* savedata, u32 savelen, u32 writeoffset, u32 writelen
 	GbaSaveRamIsDirty = true;
 }
 
-void WriteFirmware(const SPI_Firmware::Firmware& firmware, u32 writeoffset, u32 writelen)
-{	
+void WriteFirmware(const melonDS::Firmware& firmware, u32 writeoffset, u32 writelen)
+{
 }
 
 void WriteDateTime(int year, int month, int day, int hour, int minute, int second)

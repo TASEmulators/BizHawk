@@ -8,6 +8,7 @@ using System.Xml.Linq;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -34,6 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			Icon = ToolIcon;
 			SystemDropDown.Items.AddRange(new[]
 			{
+				VSystemID.Raw.Amiga,
 				VSystemID.Raw.AmstradCPC,
 				VSystemID.Raw.AppleII,
 				VSystemID.Raw.Arcade,
@@ -52,15 +54,13 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		private void MultiGameCreator_Load(object sender, EventArgs e) => Restart();
-
 		public override void Restart()
 		{
 			FileSelectorPanel.Controls.Clear();
 			AddButton_Click(null, null);
 			AddButton_Click(null, null);
 
-			if (!Game.IsNullInstance() && !MainForm.CurrentlyOpenRom.EndsWithOrdinal(".xml"))
+			if (!Game.IsNullInstance())
 			{
 				if (MainForm.CurrentlyOpenRom.Contains("|"))
 				{
@@ -70,10 +70,19 @@ namespace BizHawk.Client.EmuHawk
 					var filename = Path.ChangeExtension(pieces[1], ".xml");
 
 					NameBox.Text = Path.Combine(directory, filename);
+					FileSelectors.First().Path = MainForm.CurrentlyOpenRom;
 				}
 				else
 				{
 					NameBox.Text = Path.ChangeExtension(MainForm.CurrentlyOpenRom, ".xml");
+					if (MainForm.CurrentlyOpenRom.EndsWithOrdinal(".xml"))
+					{
+						PopulateFromXmlFile(MainForm.CurrentlyOpenRom);
+					}
+					else
+					{
+						FileSelectors.First().Path = MainForm.CurrentlyOpenRom;
+					}
 				}
 
 				if (SystemDropDown.Items.Contains(Emulator.SystemId))
@@ -84,9 +93,28 @@ namespace BizHawk.Client.EmuHawk
 				{
 					SystemDropDown.SelectedItem = VSystemID.Raw.GGL;
 				}
+			}
+		}
 
-				FileSelectors.First().Path = MainForm.CurrentlyOpenRom;
-				Recalculate();
+		private void PopulateFromXmlFile(string xmlPath)
+		{
+			try
+			{
+				var xmlGame = XmlGame.Create(new HawkFile(xmlPath));
+				for (int i = FileSelectorPanel.Controls.Count; i < xmlGame.AssetFullPaths.Count; i++)
+				{
+					AddButton_Click(null, null);
+				}
+
+				var fileSelectors = FileSelectors.ToArray();
+				for (int i = 0; i < xmlGame.AssetFullPaths.Count; i++)
+				{
+					fileSelectors[i].Path = xmlGame.AssetFullPaths[i];
+				}
+			}
+			catch
+			{
+				// something went wrong while parsing the given xml path... just don't populate anything then
 			}
 		}
 
@@ -163,23 +191,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnRemove_Click(object sender, EventArgs e)
 		{
-			//ToDo:
-			//Make this better?
-			//We need to have i at 1 and not zero because Controls Count doesn't start at zero (sort of)
-			var i = 1;
-			//For Each Control box we have, loop
-			foreach (Control ctrl in FileSelectorPanel.Controls)
+			if (FileSelectorPanel.Controls.Count > 0)
 			{
-				//if we are at the last box, then remove it.
-				if ((i == FileSelectorPanel.Controls.Count))
-				{
-					ctrl.Dispose();
-				}
-				//One to our looper
-				i++;
+				FileSelectorPanel.Controls[^1].Dispose();
+				Recalculate();
 			}
-
-			Recalculate();
 		}
 
 		private void FileSelector_NameChanged(object sender, EventArgs e)
@@ -216,21 +232,32 @@ namespace BizHawk.Client.EmuHawk
 						throw new Exception("System Id can not be blank");
 					}
 
-					var basePath = Path.GetDirectoryName(name.SubstringBefore('|'));
-					if (string.IsNullOrEmpty(basePath))
-					{
-						var fileInfo = new FileInfo(name);
-						basePath = Path.GetDirectoryName(fileInfo.FullName);
-					}
+					var basePath = Path.GetDirectoryName(Path.GetFullPath(name.SubstringBefore('|')));
 
 					_currentXml = new XElement("BizHawk-XMLGame",
 						new XAttribute("System", system),
 						new XAttribute("Name", Path.GetFileNameWithoutExtension(name)),
 						new XElement("LoadAssets",
-							names.Select(n => new XElement(
-								"Asset",
-								new XAttribute("FileName", PathExtensions.GetRelativePath(basePath, n))
-							))
+							names.Select(n =>
+							{
+								string currentRomPath = Path.GetFullPath(n);
+								string fileName;
+
+								try
+								{
+									fileName = PathExtensions.GetRelativePath(basePath, currentRomPath)!;
+								}
+								catch (ArgumentException)
+								{
+									// if a relative path cannot be constructed, use an absolute path
+									fileName = currentRomPath;
+								}
+
+								return new XElement(
+									"Asset",
+									new XAttribute("FileName", fileName)
+								);
+							})
 						)
 					);
 

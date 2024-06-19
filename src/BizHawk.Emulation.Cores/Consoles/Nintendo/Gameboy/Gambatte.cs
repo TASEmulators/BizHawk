@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C++ libgambatte
 	/// </summary>
-	[PortedCore(CoreNames.Gambatte, "", "Gambatte-Speedrun r717+", "https://github.com/pokemon-speedrunning/gambatte-speedrun")]
+	[PortedCore(CoreNames.Gambatte, "sinamas/PSR org", "r830", "https://github.com/pokemon-speedrunning/gambatte-core")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Gameboy : IInputPollable, IRomInfo, IGameboyCommon, ICycleTiming, ILinkable
 	{
@@ -195,15 +195,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				InitMemoryDomains();
 
-				var mbcBuf = new byte[32];
+				var mbcBuf = new byte[32 + 1];
 				LibGambatte.gambatte_pakinfo(GambatteState, mbcBuf, out var rambanks, out var rombanks, out var crc, out var headerchecksumok);
 
-				var romNameBuf = new byte[32];
+				var romNameBuf = new byte[16 + 1];
 				LibGambatte.gambatte_romtitle(GambatteState, romNameBuf);
-				var romname = Encoding.ASCII.GetString(romNameBuf).TrimEnd();
+				var romname = Encoding.ASCII.GetString(romNameBuf).TrimEnd('\0');
 
 				RomDetails = $"{game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(file)}\r\n{MD5Checksum.ComputePrefixedHex(file)}\r\n\r\n";
-				BoardName = Encoding.ASCII.GetString(mbcBuf).TrimEnd();
+				BoardName = Encoding.ASCII.GetString(mbcBuf).TrimEnd('\0');
 
 				RomDetails += $"Core reported Header Name: {romname}\r\n";
 				RomDetails += $"Core reported RAM Banks: {rambanks}\r\n";

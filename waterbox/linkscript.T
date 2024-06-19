@@ -204,7 +204,7 @@ SECTIONS
     *(.lbss .lbss.* .gnu.linkonce.lb.*)
     *(LARGE_COMMON)
   }
-  . = ALIGN(64 / 4);
+  . = ALIGN(64);
   . = SEGMENT_START("ldata-segment", .);
   .lrodata   ALIGN(CONSTANT (MAXPAGESIZE)) + (. & (CONSTANT (MAXPAGESIZE) - 1)) :
   {

@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (ScanLine >= FrameHeight)
 				return;
 			
-			if (DisplayOn == false)
+			if (!DisplayOn)
 			{
 				for (int x = 0; x < 256; x++)
 					FrameBuffer[(ScanLine * 256) + x] = Palette[BackdropColor];
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				if (VFlip)
 					yOfs = 7 - yOfs;
 
-				if (HFlip == false)
+				if (!HFlip)
 				{
 					FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 0] + PaletteBase] : Palette[BackdropColor];
 					FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 1] + PaletteBase] : Palette[BackdropColor];
@@ -288,7 +288,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		internal void ProcessOverscan()
 		{
-			if (Sms.Settings.DisplayOverscan == false)
+			if (!Sms.Settings.DisplayOverscan)
 				return;
 
 			if (OverscanFrameBuffer == null)
@@ -346,7 +346,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (mode != VdpMode.GameGear)
 				return;
 
-			if (Sms.Settings.ShowClippedRegions == false)
+			if (!Sms.Settings.ShowClippedRegions)
 			{
 				int yStart = (FrameHeight - 144) / 2;
 				for (int y = 0; y < 144; y++)

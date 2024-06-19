@@ -381,7 +381,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			long cycles = cpuCycle - _lastCycle;
 
 			// check whether tape is actually playing
-			if (tapeMotor == false)
+			if (!tapeMotor)
 			{
 				// it's not playing. Update lastCycle and return
 				_lastCycle = cpuCycle;

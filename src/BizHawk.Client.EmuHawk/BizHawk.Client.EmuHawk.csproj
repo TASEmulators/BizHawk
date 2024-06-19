@@ -9,10 +9,10 @@
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<Nullable>disable</Nullable>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="System.Net.Http" />
-		<Reference Include="System.Windows.Forms" />
 		<Reference Include="System.IO.Compression" />
 	</ItemGroup>
 	<ItemGroup>
@@ -40,7 +40,6 @@
 		<EmbeddedResource Remove="images/sms-icon.png" />
 		<EmbeddedResource Remove="images/tastudio/ts_h_piano_*.png" />
 		<EmbeddedResource Remove="images/tastudio/ts_v_piano_*.png" />
-		<None Include="$(ProjectDir)../../Assets/**/*.*" CopyToOutputDirectory="PreserveNewest" />
 		<None Remove="packages.config" />
 		<None Remove="Properties/Resources.resources" />
 	</ItemGroup>
@@ -262,8 +261,6 @@
 		<Compile Update="CustomControls/ScreenshotForm.cs" SubType="Form" />
 		<Compile Update="CustomControls/TransparentTrackbar.cs" SubType="Component" />
 		<Compile Update="CustomControls/ViewportPanel.cs" SubType="Component" />
-		<Compile Update="GraphicsImplementations/GLControlWrapper_SlimDX9.cs" SubType="Component" />
-		<Compile Update="GraphicsImplementations/GraphicsControl_TK.cs" SubType="UserControl" />
 		<Compile Update="GraphicsImplementations/RetainedGraphicsControl.cs" SubType="UserControl" />
 		<Compile Update="LogWindow.cs" SubType="Form" />
 		<Compile Update="LogWindow.Designer.cs" DependentUpon="LogWindow.cs" />

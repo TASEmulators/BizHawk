@@ -71,6 +71,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
+			// only the subframe core should have ICycleTiming registered
+			if (!subframe)
+			{
+				ser.Unregister<ICycleTiming>();
+			}
+
 			ResetControllerDefinition(subframe);
 		}
 

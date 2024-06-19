@@ -27,7 +27,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly HashSet<Control> _wantingMouseFocus = new HashSet<Control>();
 
-		public static Input Instance { get; set; }
+#pragma warning disable CA2211 // public field
+		public static Input Instance;
+#pragma warning restore CA2211
 
 		private readonly Thread _updateThread;
 
@@ -45,13 +47,7 @@ namespace BizHawk.Client.EmuHawk
 
 			MainFormInputAllowedCallback = mainFormInputAllowedCallback;
 
-			Adapter = _currentConfig.HostInputMethod switch
-			{
-				EHostInputMethod.SDL2 => new SDL2InputAdapter(),
-				_ when OSTailoredCode.IsUnixHost => new SDL2InputAdapter(),
-				EHostInputMethod.DirectInput => new DirectInputAdapter(),
-				_ => throw new InvalidOperationException()
-			};
+			Adapter = new SDL2InputAdapter();
 			Console.WriteLine($"Using {Adapter.Desc} for host input (keyboard + gamepads)");
 			Adapter.UpdateConfig(_currentConfig);
 			Adapter.FirstInitAll(mainFormHandle);

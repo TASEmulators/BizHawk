@@ -100,7 +100,7 @@ namespace BizHawk.Client.Common
 					else if (key.IsAxis)
 					{
 						var commaIndex = mnemonic.IndexOf(',', iterator);
-#if NET6_0_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 						var val = int.Parse(mnemonic.AsSpan(start: iterator, length: commaIndex - iterator));
 #else
 						var axisValueString = mnemonic.Substring(startIndex: iterator, length: commaIndex - iterator);

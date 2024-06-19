@@ -1,3 +1,4 @@
+#include "NDS.h"
 #include "GPU.h"
 #include "OpenGLSupport.h"
 #include "frontend/FrontendUtil.h"
@@ -10,6 +11,11 @@
 
 namespace Frontend
 {
+	extern float TouchMtx[6];
+	extern float HybTouchMtx[6];
+	extern bool BotEnable;
+	extern bool HybEnable;
+	extern int HybScreen;
 	extern void M23_Transform(float* m, float& x, float& y);
 }
 
@@ -61,13 +67,13 @@ void main()
 }
 )";
 
-ECL_INVISIBLE static GLuint ScreenShaderProgram[3];
+ECL_INVISIBLE static GLuint ScreenShaderProgram;
 ECL_INVISIBLE static GLuint ScreenShaderTransformULoc, ScreenShaderSizeULoc;
 
 ECL_INVISIBLE static GLuint VertexBuffer, VertexArray;
 
-ECL_INVISIBLE static float ScreenMatrix[2 * 6];
-ECL_INVISIBLE static int ScreenKinds[2];
+ECL_INVISIBLE static float ScreenMatrix[3 * 6];
+ECL_INVISIBLE static int ScreenKinds[3];
 ECL_INVISIBLE static int NumScreens;
 
 ECL_INVISIBLE static u32 Width, Height;
@@ -80,20 +86,18 @@ ECL_INVISIBLE static GLuint OutputPboID;
 
 void Init(u32 scale)
 {
-	OpenGL::BuildShaderProgram(ScreenVS, ScreenFS, ScreenShaderProgram, "GLPresenterShader");
+	Frontend::OpenGL::CompileVertexFragmentProgram(
+		ScreenShaderProgram,
+		ScreenVS, ScreenFS,
+		"GLPresenterShader",
+		{{"vPosition", 0}, {"vTexcoord", 1}},
+		{{"oColor", 0}});
 
-	GLuint pid = ScreenShaderProgram[2];
-	glBindAttribLocation(pid, 0, "vPosition");
-	glBindAttribLocation(pid, 1, "vTexcoord");
-	glBindFragDataLocation(pid, 0, "oColor");
+	glUseProgram(ScreenShaderProgram);
+	glUniform1i(glGetUniformLocation(ScreenShaderProgram, "ScreenTex"), 0);
 
-	OpenGL::LinkShaderProgram(ScreenShaderProgram);
-
-	glUseProgram(pid);
-	glUniform1i(glGetUniformLocation(pid, "ScreenTex"), 0);
-
-	ScreenShaderSizeULoc = glGetUniformLocation(pid, "uScreenSize");
-	ScreenShaderTransformULoc = glGetUniformLocation(pid, "uScreenTransform");
+	ScreenShaderSizeULoc = glGetUniformLocation(ScreenShaderProgram, "uScreenSize");
+	ScreenShaderTransformULoc = glGetUniformLocation(ScreenShaderProgram, "uScreenTransform");
 
 	constexpr int paddedHeight = NDS_HEIGHT + 2;
 	constexpr float padPixels = 1.f / paddedHeight;
@@ -133,16 +137,16 @@ void Init(u32 scale)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, NDS_WIDTH, paddedHeight, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, nullptr);
-	static u8 zeroData[NDS_WIDTH * 4 * 4]{};
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, NDS_HEIGHT / 2, NDS_WIDTH, 2, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, zeroData);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, NDS_WIDTH, paddedHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, nullptr);
+	static u32 zeroData[NDS_WIDTH * 2]{};
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, NDS_HEIGHT / 2, NDS_WIDTH, 2, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, zeroData);
 
 	glGenBuffers(1, &OutputPboID);
 
 	GLScale = scale;
 }
 
-std::pair<u32, u32> Present()
+std::pair<u32, u32> Present(melonDS::GPU& gpu)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, OutputFboID);
 	glDisable(GL_DEPTH_TEST);
@@ -154,20 +158,21 @@ std::pair<u32, u32> Present()
 
 	glViewport(0, 0, Width, Height);
 
-	glUseProgram(ScreenShaderProgram[2]);
+	glUseProgram(ScreenShaderProgram);
 	glUniform2f(ScreenShaderSizeULoc, Width, Height);
 
 	glActiveTexture(GL_TEXTURE0);
 
-	if (GPU3D::CurrentRenderer->Accelerated)
+	auto& renderer3d = gpu.GetRenderer3D();
+	if (renderer3d.Accelerated)
 	{
-		GPU::CurGLCompositor->BindOutputTexture(GPU::FrontBuffer);
+		renderer3d.BindOutputTexture(gpu.FrontBuffer);
 	}
 	else
 	{
 		glBindTexture(GL_TEXTURE_2D, InputTextureID);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, NDS_WIDTH, NDS_HEIGHT / 2, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, GPU::Framebuffer[GPU::FrontBuffer][0]);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, NDS_HEIGHT / 2 + 2, NDS_WIDTH, NDS_HEIGHT / 2, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, GPU::Framebuffer[GPU::FrontBuffer][1]);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, NDS_WIDTH, NDS_HEIGHT / 2, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, gpu.Framebuffer[gpu.FrontBuffer][0].get());
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, NDS_HEIGHT / 2 + 2, NDS_WIDTH, NDS_HEIGHT / 2, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, gpu.Framebuffer[gpu.FrontBuffer][1].get());
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
@@ -181,14 +186,9 @@ std::pair<u32, u32> Present()
 
 	glFlush();
 
-	GLint oldPbo;
-	glGetIntegerv(GL_PIXEL_PACK_BUFFER_BINDING, &oldPbo);
-
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, OutputPboID);
 	glBufferData(GL_PIXEL_PACK_BUFFER, Width * Height * sizeof(u32), nullptr, GL_STREAM_READ);
 	glReadPixels(0, 0, Width, Height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, (void*)(0));
-
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, oldPbo);
 
 	return std::make_pair(Width, Height);
 }
@@ -200,9 +200,6 @@ ECL_EXPORT u32 GetGLTexture()
 
 ECL_EXPORT void ReadFrameBuffer(u32* buffer)
 {
-	GLint oldPbo;
-	glGetIntegerv(GL_PIXEL_PACK_BUFFER_BINDING, &oldPbo);
-
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, OutputPboID);
 	const auto p = static_cast<const u32*>(glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY));
 	if (p)
@@ -218,8 +215,6 @@ ECL_EXPORT void ReadFrameBuffer(u32* buffer)
 
 		glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 	}
-
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, oldPbo);
 }
 
 struct ScreenSettings
@@ -262,12 +257,16 @@ static std::pair<u32, u32> GetScreenSize(const ScreenSettings* screenSettings, u
 			return isHori
 				? std::make_pair(h * 2 + gap, w)
 				: std::make_pair(w * 2 + gap, h);
+		case Frontend::screenLayout_Hybrid:
+			return isHori
+				? std::make_pair(h * 2 + gap, w * 3 + (int)ceil(gap * 4 / 3.0))
+				: std::make_pair(w * 3 + (int)ceil(gap * 4 / 3.0), h * 2 + gap);
 		default:
 			__builtin_unreachable();
 	}
 }
 
-ECL_EXPORT void SetScreenSettings(const ScreenSettings* screenSettings, u32* width, u32* height, u32* vwidth, u32* vheight)
+ECL_EXPORT void SetScreenSettings(melonDS::NDS* nds, const ScreenSettings* screenSettings, u32* width, u32* height, u32* vwidth, u32* vheight)
 {
 	auto [w, h] = GetScreenSize(screenSettings, GLScale);
 	if (w != Width || h != Height)
@@ -283,7 +282,7 @@ ECL_EXPORT void SetScreenSettings(const ScreenSettings* screenSettings, u32* wid
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, nullptr);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, Width, Height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, nullptr);
 
 		glDeleteFramebuffers(1, &OutputFboID);
 		glGenFramebuffers(1, &OutputFboID);
@@ -303,7 +302,7 @@ ECL_EXPORT void SetScreenSettings(const ScreenSettings* screenSettings, u32* wid
 
 	NumScreens = Frontend::GetScreenTransforms(ScreenMatrix, ScreenKinds);
 
-	Present();
+	Present(nds->GPU);
 
 	*width = w;
 	*height = h;
@@ -323,16 +322,31 @@ ECL_EXPORT void SetScreenSettings(const ScreenSettings* screenSettings, u32* wid
 
 ECL_EXPORT void GetTouchCoords(int* x, int* y)
 {
-	if (!Frontend::GetTouchCoords(*x, *y, true))
+	float vx = *x;
+	float vy = *y;
+
+	if (Frontend::HybEnable && Frontend::HybScreen == 1)
 	{
-		*x = 0;
-		*y = 0;
+		Frontend::M23_Transform(Frontend::HybTouchMtx, vx, vy);
+	}
+	else
+	{
+		Frontend::M23_Transform(Frontend::TouchMtx, vx, vy);
+	}
+
+	*x = vx;
+	*y = vy;
+
+	if (!Frontend::BotEnable)
+	{
+		// top screen only, offset y to account for that
+		*y -= 192;
 	}
 }
 
 ECL_EXPORT void GetScreenCoords(float* x, float* y)
 {
-	for (int i = 0; i < NumScreens; i++)
+	for (int i = NumScreens - 1; i >= 0; i--)
 	{
 		// bottom screen
 		if (ScreenKinds[i] == 1)
@@ -342,9 +356,18 @@ ECL_EXPORT void GetScreenCoords(float* x, float* y)
 		}
 	}
 
-	// bottom screen not visible
-	*x = 0;
-	*y = 0;
+	// top screen only, offset y to account for that
+	*y += 192;
+
+	for (int i = 0; i < NumScreens; i++)
+	{
+		// top screen
+		if (ScreenKinds[i] == 0)
+		{
+			Frontend::M23_Transform(&ScreenMatrix[i * 6], *x, *y);
+			return;
+		}
+	}
 }
 
 }

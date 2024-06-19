@@ -6,12 +6,7 @@ struct Notification : Tracer {
 
   auto notify(const string& message = {}) -> void {
     if(!enabled()) return;
-
-    if(message) {
-      PlatformLog({_component, " ", _name, ": ", message, "\n"});
-    } else {
-      PlatformLog({_component, " ", _name, "\n"});
-    }
+    PlatformLog(shared(), message);
   }
 
 protected:

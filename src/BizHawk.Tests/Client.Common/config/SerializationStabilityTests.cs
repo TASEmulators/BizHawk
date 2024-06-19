@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 
 using BizHawk.Client.Common;
-
+using BizHawk.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Newtonsoft.Json;
@@ -20,7 +20,7 @@ namespace BizHawk.Tests.Client.Common.config
 
 		private const string ZWINDER_SER = @"{""CurrentUseCompression"":false,""CurrentBufferSize"":256,""CurrentTargetFrameLength"":500,""CurrentStoreType"":0,""RecentUseCompression"":false,""RecentBufferSize"":128,""RecentTargetFrameLength"":2000,""RecentStoreType"":0,""GapsUseCompression"":false,""GapsBufferSize"":64,""GapsTargetFrameLength"":125,""GapsStoreType"":0,""AncientStateInterval"":5000,""AncientStoreType"":0}";
 
-#if NET6_0
+#if NET5_0_OR_GREATER
 		private static readonly IReadOnlySet<Type> KnownGoodFromStdlib = new HashSet<Type>
 #else
 		private static readonly ICollection<Type> KnownGoodFromStdlib = new HashSet<Type>
@@ -52,7 +52,6 @@ namespace BizHawk.Tests.Client.Common.config
 			[typeof(RewindConfig)] = @"{""UseCompression"":false,""UseDelta"":false,""Enabled"":true,""AllowSlowStates"":false,""BufferSize"":512,""UseFixedRewindInterval"":false,""TargetFrameLength"":600,""TargetRewindInterval"":5,""AllowOutOfOrderStates"":true,""BackingStore"":0}",
 			[typeof(SaveStateConfig)] = @"{""Type"":0,""CompressionLevelNormal"":1,""CompressionLevelRewind"":0,""MakeBackups"":true,""SaveScreenshot"":true,""BigScreenshotSize"":131072,""NoLowResLargeScreenshots"":false}",
 			[typeof(ToolDialogSettings)] = @"{""_wndx"":52,""_wndy"":44,""Width"":796,""Height"":455,""SaveWindowPosition"":true,""TopMost"":false,""FloatingWindow"":true,""AutoLoad"":false}",
-			[typeof(ZoomFactors)] = @"{""NULL"":2,""GB"":3}",
 			[typeof(ZwinderStateManagerSettings)] = ZWINDER_SER,
 		};
 

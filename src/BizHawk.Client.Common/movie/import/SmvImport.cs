@@ -190,9 +190,10 @@ namespace BizHawk.Client.Common.movie.import
 				Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 			}
 
-			var _controllers = new Snes9xControllers(ss);
-			Result.Movie.LogKey = new Bk2LogEntryGenerator("SNES", new Bk2Controller(_controllers.ControllerDefinition)).GenerateLogKey();
-			SimpleController controllers = new(_controllers.ControllerDefinition);
+			ControllerDefinition definition = new Snes9xControllers(ss).ControllerDefinition;
+			SimpleController controllers = new(definition);
+
+			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(definition);
 
 			r.BaseStream.Position = firstFrameOffset;
 			/*

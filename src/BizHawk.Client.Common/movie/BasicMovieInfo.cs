@@ -146,8 +146,7 @@ namespace BizHawk.Client.Common
 
 		public bool Load()
 		{
-			var file = new FileInfo(Filename);
-			if (!file.Exists)
+			if (!File.Exists(Filename))
 			{
 				return false;
 			}
@@ -209,19 +208,6 @@ namespace BizHawk.Client.Common
 						Comments.Add(line);
 					}
 				}
-			});
-
-			bl.GetLump(BinaryStateLump.Subtitles, abort: false, tr =>
-			{
-				while (tr.ReadLine() is string line)
-				{
-					if (!string.IsNullOrWhiteSpace(line))
-					{
-						Subtitles.AddFromString(line);
-					}
-				}
-
-				Subtitles.Sort();
 			});
 
 			bl.GetLump(BinaryStateLump.Subtitles, abort: false, tr =>

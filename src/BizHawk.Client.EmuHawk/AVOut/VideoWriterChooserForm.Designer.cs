@@ -228,6 +228,7 @@
 			this.lblResolutionWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblResolutionWarning.Location = new System.Drawing.Point(4, 4);
 			this.lblResolutionWarning.Name = "lblResolutionWarning";
+			this.lblResolutionWarning.MaximumSize = new System.Drawing.Size(162, 0);
 			this.lblResolutionWarning.Text = "Resolution is not a multiple of 4! Odd or non-x4 resolutions breaks many codecs. " +
     "Check your output carefully and adjust the window size or codec settings if need" +
     "ed.";

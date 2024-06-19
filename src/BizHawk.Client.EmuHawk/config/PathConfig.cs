@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentForROMs.Checked = _pathEntries.UseRecentForRoms;
 
-			DoTabs(_pathEntries.ToList(), _sysID);
+			DoTabs(_pathEntries.Paths, focusTabOfSystem: _sysID);
 			DoRomToggle();
 		}
 
@@ -135,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 			tcMain.Visible = false;
 
 			PathTabControl.TabPages.Clear();
-			var systems = _pathEntries.Select(e => e.System).Distinct() // group entries by "system" (intentionally using instance field here, not parameter)
+			var systems = _pathEntries.Paths.Select(static e => e.System).Distinct() // group entries by "system" (intentionally using instance field here, not parameter)
 				.Select(sys => (SysGroup: sys, DisplayName: PathEntryCollection.GetDisplayNameFor(sys)))
 				.OrderBy(tuple => tuple.DisplayName)
 				.ToList();
@@ -218,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var t in AllPathControls.OfType<TextBox>())
 			{
-				var pathEntry = _pathEntries.First(p => p.System == t.Parent.Name && p.Type == t.Name);
+				var pathEntry = _pathEntries.Paths.First(p => p.System == t.Parent.Name && p.Type == t.Name);
 				pathEntry.Path = t.Text;
 			}
 

@@ -1,15 +1,18 @@
-#include "BizLog.h"
+#include "Platform.h"
 
 #include <emulibc.h>
 
 #include <stdarg.h>
 
-namespace Platform
+namespace melonDS::Platform
 {
 
-ECL_INVISIBLE static LogCallback_t LogCallback;
+using LogCallback_t = void (*)(LogLevel level, const char* message);
 
-void SetLogCallback(LogCallback_t logCallback)
+ECL_INVISIBLE static LogCallback_t LogCallback;
+ECL_INVISIBLE static char LogBuffer[1 << 16];
+
+ECL_EXPORT void SetLogCallback(LogCallback_t logCallback)
 {
 	LogCallback = logCallback;
 }
@@ -17,23 +20,16 @@ void SetLogCallback(LogCallback_t logCallback)
 void Log(LogLevel level, const char* fmt, ...)
 {
 	va_list args;
-
 	va_start(args, fmt);
-	size_t bufferSize = vsnprintf(nullptr, 0, fmt, args);
+	int bufferSize = vsnprintf(LogBuffer, sizeof(LogBuffer), fmt, args);
 	va_end(args);
 
-	if ((int)bufferSize < 0)
+	if (bufferSize < 0)
 	{
 		return;
 	}
 
-	auto buffer = std::make_unique<char[]>(bufferSize + 1);
-
-	va_start(args, fmt);
-	vsnprintf(buffer.get(), bufferSize + 1, fmt, args);
-	va_end(args);
-
-	LogCallback(level, buffer.get());
+	LogCallback(level, LogBuffer);
 }
 
 }

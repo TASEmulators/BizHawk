@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
-	[JsonObject]
-	public class RecentFiles : IEnumerable<string>
+	public class RecentFiles
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private List<string> recentlist;
@@ -43,7 +41,6 @@ namespace BizHawk.Client.Common
 		public string this[int index] => recentlist.Any() ? recentlist[index] : "";
 
 		public IEnumerator<string> GetEnumerator() => recentlist.GetEnumerator();
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		public void Clear()
 		{

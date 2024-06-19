@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Cpu.TraceCallback = null;
 			}
 
-			if (IsGameGear_C == false)
+			if (!IsGameGear_C)
 			{
 				Cpu.NonMaskableInterrupt = controller.IsPressed("Pause");
 			}

@@ -22,6 +22,7 @@ namespace Math {
 #include <atomic>
 #include <limits>
 #include <mutex>
+#include <condition_variable>
 #include <utility>
 
 #include <assert.h>

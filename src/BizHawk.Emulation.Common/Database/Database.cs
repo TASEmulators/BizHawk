@@ -100,9 +100,8 @@ namespace BizHawk.Emulation.Common
 			if (!inUser) _expected.Remove(Path.GetFileName(path));
 			//reminder: this COULD be done on several threads, if it takes even longer
 			using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
-			while (reader.EndOfStream == false)
+			while (reader.ReadLine() is string line)
 			{
-				var line = reader.ReadLine() ?? "";
 				try
 				{
 					if (line.StartsWith(';')) continue; // comment
@@ -400,6 +399,16 @@ namespace BizHawk.Emulation.Common
 
 				case ".TIC":
 					game.System = VSystemID.Raw.TIC80;
+					break;
+
+				case ".ADF":
+				case ".ADZ":
+				case ".DMS":
+				case ".IPF":
+				case ".FDI":
+				case ".HDF":
+				case ".LHA":
+					game.System = VSystemID.Raw.Amiga;
 					break;
 
 				case ".32X":

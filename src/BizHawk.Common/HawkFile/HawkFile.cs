@@ -90,7 +90,7 @@ namespace BizHawk.Common
 			var split1 = SplitArchiveMemberPath(path);
 			if (split1 != null) (path, autobind) = split1.Value;
 			FullPathWithoutMember = path;
-			Exists = _rootExists = !string.IsNullOrEmpty(path) && new FileInfo(path).Exists;
+			Exists = _rootExists = File.Exists(path);
 			if (!_rootExists) return;
 
 			if (DearchivalMethod != null && allowArchives)

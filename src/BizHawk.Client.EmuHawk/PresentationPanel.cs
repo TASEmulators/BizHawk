@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Bizware.Graphics.Controls;
 
 namespace BizHawk.Client.EmuHawk

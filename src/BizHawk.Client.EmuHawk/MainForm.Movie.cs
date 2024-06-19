@@ -27,7 +27,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					MovieSession.QueueNewMovie(movie, record, Emulator.SystemId, Config.PreferredCores);
+					MovieSession.QueueNewMovie(
+						movie,
+						systemId: Emulator.SystemId,
+						loadedRomHash: Game.Hash,
+						Config.PathEntries,
+						Config.PreferredCores);
 				}
 				catch (MoviePlatformMismatchException ex)
 				{
@@ -54,6 +59,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SetMainformMovieInfo();
 
+			// turns out this was too late for .tasproj autoloading and restoring playback position (loads savestate but wasn't checking game match)
 			if (string.IsNullOrEmpty(MovieSession.Movie.Hash))
 			{
 				AddOnScreenMessage("Movie is missing hash, skipping hash check");

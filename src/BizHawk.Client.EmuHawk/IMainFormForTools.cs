@@ -1,6 +1,6 @@
 using System;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 		bool EnsureCoreIsAccurate();
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
-		void FrameAdvance();
+		void FrameAdvance(bool discardApiHawkSurfaces = true);
 
 		/// <remarks>only referenced from <see cref="LuaConsole"/></remarks>
 		void FrameBufferResized();

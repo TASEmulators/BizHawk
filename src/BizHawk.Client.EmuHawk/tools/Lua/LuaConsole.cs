@@ -386,7 +386,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			while (LuaImp.ScriptList.Count > 0)
 			{
-				RemoveLuaFile(LuaImp.ScriptList[^1]);
+				RemoveLuaFile(LuaImp.ScriptList[LuaImp.ScriptList.Count - 1]);
 			}
 		}
 
@@ -1028,7 +1028,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var indices = LuaListView.SelectedRows.ToList();
 			if (indices.Count == 0
-				|| indices[^1] == LuaImp.ScriptList.Count - 1) // at end already
+				|| indices[indices.Count - 1] == LuaImp.ScriptList.Count - 1) // at end already
 			{
 				return;
 			}
@@ -1318,7 +1318,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void LuaListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
-			var columnToSort = e.Column.Name;
+			var columnToSort = e.Column!.Name;
 			var luaListTemp = new List<LuaFile>();
 			if (columnToSort != _lastColumnSorted)
 			{
@@ -1333,7 +1333,7 @@ namespace BizHawk.Client.EmuHawk
 				var split = words[0].Split(Path.DirectorySeparatorChar);
 
 				luaListTemp.Add(LuaImp.ScriptList[i]);
-				luaListTemp[i].Name = split[^1];
+				luaListTemp[i].Name = split[split.Length - 1];
 			}
 
 			// Script, Path

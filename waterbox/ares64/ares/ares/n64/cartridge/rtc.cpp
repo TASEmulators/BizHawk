@@ -1,4 +1,3 @@
-
 auto Cartridge::RTC::power(bool reset) -> void {
   if(present) run(!status.bit(7));
 }
@@ -11,8 +10,16 @@ auto Cartridge::RTC::load() -> void {
     present = 1;
     n64 timestamp = ram.read<Dual>(24);
     if(!~timestamp) {
-      ram.fill(0);
-      ram.write<Byte>(21, 1);
+      time_t t = (time_t)0;
+      struct tm tmm = *gmtime(&t);
+      ram.write<Byte>(16, BCD::encode(tmm.tm_sec));
+      ram.write<Byte>(17, BCD::encode(tmm.tm_min));
+      ram.write<Byte>(18, BCD::encode(tmm.tm_hour) | 0x80);
+      ram.write<Byte>(19, BCD::encode(tmm.tm_mday));
+      ram.write<Byte>(20, BCD::encode(tmm.tm_wday));
+      ram.write<Byte>(21, BCD::encode(tmm.tm_mon + 1));
+      ram.write<Byte>(22, BCD::encode(tmm.tm_year % 100));
+      ram.write<Byte>(23, BCD::encode(tmm.tm_year / 100));
     }
 
     timestamp = platform->time() - timestamp;
@@ -45,26 +52,42 @@ auto Cartridge::RTC::running() -> bool {
 }
 
 auto Cartridge::RTC::advance(int nsec) -> void {
-  struct tm tmm = {};
-  tmm.tm_sec = BCD::decode(ram.read<Byte>(16));
-  tmm.tm_min = BCD::decode(ram.read<Byte>(17));
-  tmm.tm_hour = BCD::decode(ram.read<Byte>(18) & 0x7f);
-  tmm.tm_mday = BCD::decode(ram.read<Byte>(19));
-  tmm.tm_mon = BCD::decode(ram.read<Byte>(21)) - 1;
-  tmm.tm_year = BCD::decode(ram.read<Byte>(22)) + 100 * BCD::decode(ram.read<Byte>(23));
-  time_t t = mktime(&tmm);
+  auto seconds = BCD::decode(ram.read<Byte>(16));
+  auto minutes = BCD::decode(ram.read<Byte>(17));
+  auto hours   = BCD::decode(ram.read<Byte>(18) & 0x7f);
+  auto day     = BCD::decode(ram.read<Byte>(19));
+  auto wday    = BCD::decode(ram.read<Byte>(20));
+  auto month   = BCD::decode(ram.read<Byte>(21));
+  auto year    = BCD::decode(ram.read<Byte>(22)) + 100 * BCD::decode(ram.read<Byte>(23));
 
-  t += nsec;
+  while(nsec--) {
+    if(++seconds == 60) {
+      seconds = 0;
+      if(++minutes == 60) {
+        minutes = 0;
+        if(++hours == 24) {
+          hours = 0;
+          if(++wday == 7) wday = 0;
+          if(++day > chrono::daysInMonth(month, year)) {
+            day = 1;
+            if(++month == 13) {
+              month = 1;
+              year++;
+            }
+          }
+        }
+      }
+    }
+  }
 
-  tmm = *localtime(&t);
-  ram.write<Byte>(16, BCD::encode(tmm.tm_sec));
-  ram.write<Byte>(17, BCD::encode(tmm.tm_min));
-  ram.write<Byte>(18, BCD::encode(tmm.tm_hour) | 0x80);
-  ram.write<Byte>(19, BCD::encode(tmm.tm_mday));
-  ram.write<Byte>(20, BCD::encode(tmm.tm_wday));
-  ram.write<Byte>(21, BCD::encode(tmm.tm_mon + 1));
-  ram.write<Byte>(22, BCD::encode(tmm.tm_year % 100));
-  ram.write<Byte>(23, BCD::encode(tmm.tm_year / 100));
+  ram.write<Byte>(16, BCD::encode(seconds));
+  ram.write<Byte>(17, BCD::encode(minutes));
+  ram.write<Byte>(18, BCD::encode(hours) | 0x80);
+  ram.write<Byte>(19, BCD::encode(day));
+  ram.write<Byte>(20, BCD::encode(wday));
+  ram.write<Byte>(21, BCD::encode(month));
+  ram.write<Byte>(22, BCD::encode(year % 100));
+  ram.write<Byte>(23, BCD::encode(year / 100));
 }
 
 auto Cartridge::RTC::read(u2 block, n8* data) -> void {

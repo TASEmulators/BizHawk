@@ -1,9 +1,10 @@
-﻿using BizHawk.Common;
-using BizHawk.BizInvoke;
-using BizHawk.Emulation.Common;
-using System;
+﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
+
+using BizHawk.Common;
+using BizHawk.BizInvoke;
+using BizHawk.Emulation.Common;
 
 using static BizHawk.Emulation.Cores.Waterbox.WaterboxHostNative;
 

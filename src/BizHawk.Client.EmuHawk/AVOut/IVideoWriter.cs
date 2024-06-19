@@ -101,38 +101,24 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
-	public sealed class VideoWriterAttribute : Attribute
+	public sealed class VideoWriterAttribute(string shortName, string name, string description) : Attribute
 	{
-		public string ShortName { get; }
-		public string Name { get; }
-		public string Description { get; }
-
-		public VideoWriterAttribute(string shortName, string name, string description)
-		{
-			ShortName = shortName;
-			Name = name;
-			Description = description;
-		}
+		public string ShortName { get; } = shortName;
+		public string Name { get; } = name;
+		public string Description { get; } = description;
 	}
 
-	public class VideoWriterInfo
+	public class VideoWriterInfo(VideoWriterAttribute attribs, Type type)
 	{
-		private static readonly Type[] CTOR_TYPES_A = { typeof(IDialogParent) };
+		private static readonly Type[] CTOR_TYPES_A = [ typeof(IDialogParent) ];
 
-		public VideoWriterAttribute Attribs { get; }
-		private readonly Type _type;
-
-		public VideoWriterInfo(VideoWriterAttribute attribs, Type type)
-		{
-			_type = type;
-			Attribs = attribs;
-		}
+		public VideoWriterAttribute Attribs { get; } = attribs;
 
 		/// <param name="dialogParent">parent for if the user is shown config dialog</param>
 		public IVideoWriter Create(IDialogParent dialogParent) => (IVideoWriter) (
-			_type.GetConstructor(CTOR_TYPES_A)
-				?.Invoke(new object[] { dialogParent })
-				?? Activator.CreateInstance(_type));
+			type.GetConstructor(CTOR_TYPES_A)
+				?.Invoke([ dialogParent ])
+				?? Activator.CreateInstance(type));
 
 		public override string ToString() => Attribs.Name;
 	}
@@ -142,11 +128,12 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public static class VideoWriterInventory
 	{
-		private static readonly Dictionary<string, VideoWriterInfo> VideoWriters = new Dictionary<string, VideoWriterInfo>();
+		private static readonly Dictionary<string, VideoWriterInfo> VideoWriters = [ ];
+		private static readonly VideoWriterInfo[] VideoWritersOrdered;
 
 		static VideoWriterInventory()
 		{
-			foreach (var t in EmuHawk.ReflectionCache.Types)
+			foreach (var t in ReflectionCache.Types)
 			{
 				if (!t.IsInterface
 					&& typeof(IVideoWriter).IsAssignableFrom(t)
@@ -157,9 +144,24 @@ namespace BizHawk.Client.EmuHawk
 					VideoWriters.Add(a.ShortName, new VideoWriterInfo(a, t));
 				}
 			}
+
+			// we want to keep the FFmpeg writer as the first item
+			var ffmpegShortName = typeof(FFmpegWriter)
+				.GetCustomAttributes(typeof(VideoWriterAttribute), false)
+				.Cast<VideoWriterAttribute>()
+				.First()
+				.ShortName;
+
+			var videoWriters = VideoWriters.Values.ToList();
+			var ffmpegWriter = videoWriters.Find(vwi => vwi.Attribs.ShortName == ffmpegShortName);
+			videoWriters.Remove(ffmpegWriter);
+			VideoWritersOrdered = videoWriters
+				.OrderBy(vwi => vwi.Attribs.Name)
+				.Prepend(ffmpegWriter)
+				.ToArray();
 		}
 
-		public static IEnumerable<VideoWriterInfo> GetAllWriters() => VideoWriters.Values;
+		public static IEnumerable<VideoWriterInfo> GetAllWriters() => VideoWritersOrdered;
 
 		/// <summary>
 		/// find an IVideoWriter by its short name

@@ -14,13 +14,14 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.IO.Pipes;
 
+using BizHawk.Bizware.Graphics;
+
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 
 using BizHawk.Client.Common;
-using BizHawk.Bizware.BizwareGL;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Base_Implementations;
@@ -86,9 +87,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			WindowSizeSubMenu.DropDownItems.AddRange(CreateWindowSizeFactorSubmenus());
 
-			foreach (var (groupLabel, appliesTo, coreNames) in Config.CorePickerUIData.Select(static tuple => (GroupLabel: tuple.AppliesTo[0], tuple.AppliesTo, tuple.CoreNames))
-				.OrderBy(static tuple => tuple.GroupLabel))
+			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
 			{
+				var groupLabel = appliesTo[0];
 				var submenu = new ToolStripMenuItem { Text = groupLabel };
 				void ClickHandler(object clickSender, EventArgs clickArgs)
 				{
@@ -107,6 +108,14 @@ namespace BizHawk.Client.EmuHawk
 				submenu.DropDownOpened += (openedSender, _1) =>
 				{
 					_ = Config.PreferredCores.TryGetValue(groupLabel, out var preferred);
+					if (!coreNames.Contains(preferred))
+					{
+						// invalid --> default (doing this here rather than when reading config file to allow for hacked-in values, though I'm not sure if that could do anything at the moment --yoshi)
+						var defaultCore = coreNames[0];
+						Console.WriteLine($"setting preferred core for {groupLabel} etc. to {defaultCore} (was {preferred ?? "null"})");
+						preferred = defaultCore;
+						foreach (var sysID in appliesTo) Config.PreferredCores[sysID] = preferred;
+					}
 					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems) entry.Checked = entry.Text == preferred;
 				};
 				CoresSubMenu.DropDownItems.Add(submenu);
@@ -135,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			ToolStripMenuItemEx consolesCoreSettingsSubmenu = new() { Text = "For Consoles" };
 			ToolStripMenuItemEx handheldsCoreSettingsSubmenu = new() { Text = "For Handhelds" };
-			ToolStripMenuItemEx pcsCoreSettingsSubmenu = new() { Text = "For PCs" };
+			ToolStripMenuItemEx pcsCoreSettingsSubmenu = new() { Text = "For Computers" };
 			ToolStripMenuItemEx otherCoreSettingsSubmenu = new() { Text = "Other" };
 			foreach (var submenu in CreateCoreSettingsSubmenus(includeDupes: true).OrderBy(submenu => submenu.Text))
 			{
@@ -588,10 +597,10 @@ namespace BizHawk.Client.EmuHawk
 			InputManager.ResetMainControllers(_autofireNullControls);
 			InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
 			var savedOutputMethod = Config.SoundOutputMethod;
-			if (savedOutputMethod is ESoundOutputMethod.Dummy) Config.SoundOutputMethod = HostCapabilityDetector.HasDirectX ? ESoundOutputMethod.DirectSound : ESoundOutputMethod.OpenAL;
+			if (savedOutputMethod is ESoundOutputMethod.Dummy) Config.SoundOutputMethod = HostCapabilityDetector.HasXAudio2 ? ESoundOutputMethod.XAudio2 : ESoundOutputMethod.OpenAL;
 			try
 			{
-				Sound = new Sound(Handle, Config, () => Emulator.VsyncRate());
+				Sound = new Sound(Config, () => Emulator.VsyncRate());
 			}
 			catch
 			{
@@ -599,14 +608,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ShowMessageBox(
 						owner: null,
-						text: savedOutputMethod is ESoundOutputMethod.DirectSound
-							? "Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 44.1khz instead of 48khz in mmsys.cpl."
-							: "Couldn't initialize sound device! Try changing the output method in Sound config.",
+						text: "Couldn't initialize sound device! Try changing the output method in Sound config.",
 						caption: "Initialization Error",
 						EMsgBoxIcon.Error);
 				}
 				Config.SoundOutputMethod = ESoundOutputMethod.Dummy;
-				Sound = new Sound(Handle, Config, () => Emulator.VsyncRate());
+				Sound = new Sound(Config, () => Emulator.VsyncRate());
 			}
 
 			Sound.StartSound();
@@ -662,7 +669,7 @@ namespace BizHawk.Client.EmuHawk
 				// If user picked a game, then do the commandline logic
 				if (!Game.IsNullInstance())
 				{
-					var movie = MovieSession.Get(_argParser.cmdMovie);
+					var movie = MovieSession.Get(_argParser.cmdMovie, true);
 					MovieSession.ReadOnly = true;
 
 					// if user is dumping and didn't supply dump length, make it as long as the loaded movie
@@ -697,7 +704,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (File.Exists(Config.RecentMovies.MostRecent))
 					{
-						StartNewMovie(MovieSession.Get(Config.RecentMovies.MostRecent), false);
+						StartNewMovie(MovieSession.Get(Config.RecentMovies.MostRecent, true), false);
 					}
 					else
 					{
@@ -1375,7 +1382,7 @@ namespace BizHawk.Client.EmuHawk
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
 			for (int i = 0; i < 2; i++)
 			{
-				int zoom = Config.TargetZoomFactors[Emulator.SystemId];
+				int zoom = Config.GetWindowScaleFor(Emulator.SystemId);
 				var area = Screen.FromControl(this).WorkingArea;
 
 				int borderWidth = Size.Width - _presentationPanel.Control.Size.Width;
@@ -2278,7 +2285,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (File.Exists(path))
 			{
-				var movie = MovieSession.Get(path);
+				var movie = MovieSession.Get(path, true);
 				MovieSession.ReadOnly = true;
 				StartNewMovie(movie, false);
 			}
@@ -2471,6 +2478,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Config.DispSpeedupFeatures == 0)
 			{
+				DisplayManager.DiscardApiHawkSurfaces();
 				return;
 			}
 
@@ -2781,21 +2789,25 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncreaseWindowSize()
 		{
-			if (Config.TargetZoomFactors[Emulator.SystemId] < WINDOW_SCALE_MAX)
+			var windowScale = Config.GetWindowScaleFor(Emulator.SystemId);
+			if (windowScale < WINDOW_SCALE_MAX)
 			{
-				Config.TargetZoomFactors[Emulator.SystemId]++;
+				windowScale++;
+				Config.SetWindowScaleFor(Emulator.SystemId, windowScale);
 			}
-			AddOnScreenMessage($"Screensize set to {Config.TargetZoomFactors[Emulator.SystemId]}x");
+			AddOnScreenMessage($"Screensize set to {windowScale}x");
 			FrameBufferResized();
 		}
 
 		private void DecreaseWindowSize()
 		{
-			if (Config.TargetZoomFactors[Emulator.SystemId] > 1)
+			var windowScale = Config.GetWindowScaleFor(Emulator.SystemId);
+			if (windowScale > 1)
 			{
-				Config.TargetZoomFactors[Emulator.SystemId]--;
+				windowScale--;
+				Config.SetWindowScaleFor(Emulator.SystemId, windowScale);
 			}
-			AddOnScreenMessage($"Screensize set to {Config.TargetZoomFactors[Emulator.SystemId]}x");
+			AddOnScreenMessage($"Screensize set to {windowScale}x");
 			FrameBufferResized();
 		}
 
@@ -3063,16 +3075,21 @@ namespace BizHawk.Client.EmuHawk
 			_throttle.Step(Config, Sound, allowSleep: true, forceFrameSkip: -1);
 		}
 
-		public void FrameAdvance()
+		public void FrameAdvance(bool discardApiHawkSurfaces)
 		{
 			PressFrameAdvance = true;
 			StepRunLoop_Core(true);
+			if (discardApiHawkSurfaces)
+			{
+				DisplayManager.DiscardApiHawkSurfaces();
+			}
 		}
 
 		public void SeekFrameAdvance()
 		{
 			PressFrameAdvance = true;
 			StepRunLoop_Core(true);
+			DisplayManager.DiscardApiHawkSurfaces();
 			PressFrameAdvance = false;
 		}
 
@@ -3980,6 +3997,9 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
+					CurrentlyOpenRom = oaOpenrom?.Path ?? openAdvancedArgs;
+					CurrentlyOpenRomArgs = args;
+
 					Tools.Restart(Config, Emulator, Game);
 
 					if (Config.Cheats.LoadFileByGame && Emulator.HasMemoryDomains())
@@ -3995,8 +4015,6 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					CurrentlyOpenRom = oaOpenrom?.Path ?? openAdvancedArgs;
-					CurrentlyOpenRomArgs = args;
 					OnRomChanged();
 					DisplayManager.UpdateGlobals(Config, Emulator);
 					DisplayManager.Blank();

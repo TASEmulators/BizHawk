@@ -283,7 +283,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var buffer = new byte[(int)size];
 				_lib.rc_runtime_serialize_progress(buffer, _runtime, IntPtr.Zero);
-				using var file = File.OpenWrite(path + ".rap");
+				using var file = File.Create(path + ".rap");
 				file.Write(buffer, 0, buffer.Length);
 			}
 		}

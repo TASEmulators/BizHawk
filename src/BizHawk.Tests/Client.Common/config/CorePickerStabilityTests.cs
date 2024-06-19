@@ -2,6 +2,7 @@
 using System.Linq;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Cores;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -27,7 +28,9 @@ namespace BizHawk.Tests.Client.Common.config
 			{
 				Assert.IsTrue(
 					appliesTo.Any(multiCoreSystems.Contains),
-					$"core picker has submenu for {appliesTo[0]} ({string.Join('/', appliesTo)}), but {(appliesTo.Length == 1 ? "that system doesn't have" : "none of those systems have")} alternate cores");
+					appliesTo.Length is 1
+						? $"core picker has submenu for {appliesTo[0]}, but that system doesn't have alternate cores"
+						: $"core picker has submenu for {appliesTo[0]} ({string.Join("/", appliesTo)}), but none of those systems have alternate cores");
 			}
 		}
 

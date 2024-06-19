@@ -9,7 +9,7 @@ auto SI::readWord(u32 address, Thread& thread) -> u32 {
 }
 
 auto SI::ioRead(u32 address) -> u32 {
-  address = (address & 0xfffff) >> 2;
+  address = (address & 0x1f) >> 2;
   n32 data;
 
   if(address == 0) {

@@ -29,8 +29,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Bizware.Graphics", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Bizware.Graphics.Controls", "src\BizHawk.Bizware.Graphics.Controls\BizHawk.Bizware.Graphics.Controls.csproj", "{3D050D35-B57D-4D14-BE0F-FD63552DADB0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Bizware.BizwareGL", "src\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj", "{658BB7AA-74A1-496F-A6AA-B7D3DD9C7CBE}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.BizInvoke", "src\BizHawk.BizInvoke\BizHawk.BizInvoke.csproj", "{E5D76DC1-84A8-47AF-BE25-E76F06D2FBBC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.WinForms.Controls", "src\BizHawk.WinForms.Controls\BizHawk.WinForms.Controls.csproj", "{B5A2214B-3CB0-48C4-8DB1-98B38D48AC4A}"
@@ -89,10 +87,6 @@ Global
 		{3D050D35-B57D-4D14-BE0F-FD63552DADB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D050D35-B57D-4D14-BE0F-FD63552DADB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D050D35-B57D-4D14-BE0F-FD63552DADB0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{658BB7AA-74A1-496F-A6AA-B7D3DD9C7CBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{658BB7AA-74A1-496F-A6AA-B7D3DD9C7CBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{658BB7AA-74A1-496F-A6AA-B7D3DD9C7CBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{658BB7AA-74A1-496F-A6AA-B7D3DD9C7CBE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E5D76DC1-84A8-47AF-BE25-E76F06D2FBBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E5D76DC1-84A8-47AF-BE25-E76F06D2FBBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5D76DC1-84A8-47AF-BE25-E76F06D2FBBC}.Release|Any CPU.ActiveCfg = Release|Any CPU

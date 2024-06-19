@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private void RenderBackgroundM0(int scanLine)
 		{
-			if (DisplayOn == false)
+			if (!DisplayOn)
 			{
 				Array.Clear(FrameBuffer, scanLine * 256, 256);
 				return;
@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private void RenderBackgroundM1(int scanLine)
 		{
-			if (DisplayOn == false)
+			if (!DisplayOn)
 			{
 				Array.Clear(FrameBuffer, scanLine * 256, 256);
 				return;
@@ -237,7 +237,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private void RenderBackgroundM2(int scanLine)
 		{
-			if (DisplayOn == false)
+			if (!DisplayOn)
 			{
 				Array.Clear(FrameBuffer, scanLine * 256, 256);
 				return;
@@ -274,7 +274,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private void RenderBackgroundM3(int scanLine)
 		{
-			if (DisplayOn == false)
+			if (!DisplayOn)
 			{
 				Array.Clear(FrameBuffer, scanLine * 256, 256);
 				return;
@@ -312,19 +312,15 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private void RenderTmsSprites(int scanLine)
 		{
-			if (EnableDoubledSprites == false)
-			{
-				RenderTmsSpritesStandard(scanLine);
-			}
-			else
-			{
+			if (EnableDoubledSprites)
 				RenderTmsSpritesDouble(scanLine);
-			}
+			else
+				RenderTmsSpritesStandard(scanLine);
 		}
 
 		private void RenderTmsSpritesStandard(int scanLine)
 		{
-			if (DisplayOn == false) return;
+			if (!DisplayOn) return;
 
 			Array.Clear(ScanlinePriorityBuffer, 0, 256);
 			Array.Clear(SpriteCollisionBuffer, 0, 256);
@@ -391,7 +387,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private void RenderTmsSpritesDouble(int scanLine)
 		{
-			if (DisplayOn == false) return;
+			if (!DisplayOn) return;
 
 			Array.Clear(ScanlinePriorityBuffer, 0, 256);
 			Array.Clear(SpriteCollisionBuffer, 0, 256);

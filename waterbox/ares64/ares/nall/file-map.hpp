@@ -50,8 +50,8 @@ private:
 
   #if defined(API_WINDOWS)
 
-  HANDLE _file = INVALID_HANDLE_VALUE;
-  HANDLE _map  = INVALID_HANDLE_VALUE;
+  HANDLE _file = nullptr;
+  HANDLE _map  = nullptr;
 
 public:
   auto operator=(file_map&& source) -> file_map& {
@@ -67,8 +67,8 @@ public:
     source._open = false;
     source._data = nullptr;
     source._size = 0;
-    source._file = INVALID_HANDLE_VALUE;
-    source._map = INVALID_HANDLE_VALUE;
+    source._file = nullptr;
+    source._map = nullptr;
 
     return *this;
   }

@@ -22,14 +22,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // if this is detected just return the kempston byte
             if (lowByte == 0x1f)
             {
-                if (LocateUniqueJoystick(JoystickType.Kempston) != null)
-				{
-					InputRead = true;
-					return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston)).JoyLine;
-				}
-
                 // not a lag frame
                 InputRead = true;
+                if (LocateUniqueJoystick(JoystickType.Kempston) is KempstonJoystick j) return (byte) j.JoyLine;
             }
             // Even ports always address the ULA
             else if (lowBitReset)

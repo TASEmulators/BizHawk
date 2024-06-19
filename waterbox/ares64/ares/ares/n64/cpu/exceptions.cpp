@@ -1,6 +1,11 @@
 auto CPU::Exception::trigger(u32 code, u32 coprocessor, bool tlbMiss) -> void {
   self.debugger.exception(code);
 
+  if(code != 0) {
+    auto sig = (code == 2 || code == 3) ? GDB::Signal::SEGV : GDB::Signal::TRAP;
+    GDB::server.reportSignal(sig, self.ipu.pc); 
+  }
+
   u64 vectorBase = !self.scc.status.vectorLocation ? (s32)0x8000'0000 : (s32)0xbfc0'0200;
 
   u16 vectorOffset = 0x0180;

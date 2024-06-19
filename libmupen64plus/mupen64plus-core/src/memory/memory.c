@@ -139,7 +139,7 @@ void (*traceCB)(void) = NULL;
 //#define COUNT_WRITE_RDRAM_CALLS 1
 
 #if defined( COUNT_WRITE_RDRAM_CALLS )
-	int writerdram_count = 1;
+    int writerdram_count = 1;
 #endif
 
 int init_memory(int DoByteSwap)
@@ -1765,8 +1765,8 @@ void read_rdramFBd(void)
 void write_rdram(void)
 {
 #if defined( COUNT_WRITE_RDRAM_CALLS )
-	printf( "write_rdram, word=%i, count: %i", word, writerdram_count );
-	writerdram_count++;
+    printf( "write_rdram, word=%i, count: %i", word, writerdram_count );
+    writerdram_count++;
 #endif
     *((unsigned int *)(rdramb + (address & 0xFFFFFF))) = word;
 }
@@ -1908,13 +1908,13 @@ void write_rdramregd(void)
 void read_rsp_mem(void)
 {
     if (*address_low < 0x1000)
-	{
+    {
         *rdword = *((unsigned int *)(SP_DMEMb + (*address_low)));
-	}
+    }
     else if (*address_low < 0x2000)
-	{
+    {
         *rdword = *((unsigned int *)(SP_IMEMb + (*address_low&0xFFF)));
-	}
+    }
     else
         read_nomem();
 }
@@ -1922,13 +1922,13 @@ void read_rsp_mem(void)
 void read_rsp_memb(void)
 {
     if (*address_low < 0x1000)
-	{
+    {
         *rdword = *(SP_DMEMb + (*address_low^S8));
-	}
+    }
     else if (*address_low < 0x2000)
-	{
+    {
         *rdword = *(SP_IMEMb + ((*address_low&0xFFF)^S8));
-	}
+    }
     else
         read_nomemb();
 }
@@ -1936,13 +1936,13 @@ void read_rsp_memb(void)
 void read_rsp_memh(void)
 {
     if (*address_low < 0x1000)
-	{
+    {
         *rdword = *((unsigned short *)(SP_DMEMb + (*address_low^S16)));
-	}
+    }
     else if (*address_low < 0x2000)
-	{
+    {
         *rdword = *((unsigned short *)(SP_IMEMb + ((*address_low&0xFFF)^S16)));
-	}
+    }
     else
         read_nomemh();
 }
@@ -1966,13 +1966,13 @@ void read_rsp_memd(void)
 void write_rsp_mem(void)
 {
     if (*address_low < 0x1000)
-	{
+    {
         *((unsigned int *)(SP_DMEMb + (*address_low))) = word;
-	}
+    }
     else if (*address_low < 0x2000)
-	{
+    {
         *((unsigned int *)(SP_IMEMb + (*address_low&0xFFF))) = word;
-	}
+    }
     else
         write_nomem();
 }
@@ -1980,13 +1980,13 @@ void write_rsp_mem(void)
 void write_rsp_memb(void)
 {
     if (*address_low < 0x1000)
-	{
+    {
         *(SP_DMEMb + (*address_low^S8)) = cpu_byte;
-	}
+    }
     else if (*address_low < 0x2000)
-	{
+    {
         *(SP_IMEMb + ((*address_low&0xFFF)^S8)) = cpu_byte;
-	}
+    }
     else
         write_nomemb();
 }
@@ -1994,13 +1994,13 @@ void write_rsp_memb(void)
 void write_rsp_memh(void)
 {
     if (*address_low < 0x1000)
-	{
+    {
         *((unsigned short *)(SP_DMEMb + (*address_low^S16))) = hword;
-	}
+    }
     else if (*address_low < 0x2000)
-	{
+    {
         *((unsigned short *)(SP_IMEMb + ((*address_low&0xFFF)^S16))) = hword;
-	}
+    }
     else
         write_nomemh();
 }
@@ -3665,7 +3665,7 @@ void write_pif(void)
 
 void write_pifb(void)
 {
-	if ((*address_low > 0x7FF) || (*address_low < 0x7C0))
+    if ((*address_low > 0x7FF) || (*address_low < 0x7C0))
     {
         DebugMessage(M64MSG_ERROR, "writing a byte in PIF at invalid address 0x%x", address);
         return;
@@ -3741,14 +3741,13 @@ unsigned int *fast_mem_access(unsigned int address)
         address = virtual_to_physical_address(address, 2);
 
     if ((address & 0x1FFFFFFF) >= 0x10000000)
-		{
-			unsigned int ofs = ((address & 0x1FFFFFFF) - 0x10000000)/4;
-			if(ofs < rom_size/4)
-        return (unsigned int *)rom + ofs;
-			else {
-				return NULL;
-			}
-		}
+    {
+        unsigned int ofs = ((address & 0x1FFFFFFF) - 0x10000000)/4;
+        if (ofs < rom_size/4)
+            return (unsigned int *)rom + ofs;
+        else
+            return NULL;
+    }
     else if ((address & 0x1FFFFFFF) < 0x800000)
         return (unsigned int *)rdram + (address & 0x1FFFFFFF)/4;
     else if (address >= 0xa4000000 && address <= 0xa4001000)
@@ -3761,5 +3760,5 @@ unsigned int *fast_mem_access(unsigned int address)
 
 EXPORT void CALL SetTraceCallback(void (*CB)(void))
 {
-	traceCB = CB;
+    traceCB = CB;
 }

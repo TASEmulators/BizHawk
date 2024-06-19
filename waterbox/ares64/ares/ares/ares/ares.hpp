@@ -2,7 +2,6 @@
 
 #include <emulibc.h>
 #include <libco.h>
-
 #include <sljit.h>
 
 #include <nall/platform.hpp>
@@ -42,16 +41,14 @@ using namespace nall;
 using namespace nall::primitives;
 
 namespace ares {
-  static const string Name       = "ares";
-  static const string Version    = "133";
-  static const string Copyright  = "ares team, Near";
-  static const string License    = "ISC";
-  static const string LicenseURI = "https://opensource.org/licenses/ISC";
-  static const string Website    = "ares-emu.net";
-  static const string WebsiteURI = "https://ares-emu.net/";
-
-  //incremented only when serialization format changes
-  static const u32    SerializerSignature = 0x31545342;  //"BST1" (little-endian)
+  extern const string Name;
+  extern const string Version;
+  extern const string Copyright;
+  extern const string License;
+  extern const string LicenseURI;
+  extern const string Website;
+  extern const string WebsiteURI;
+  extern const u32 SerializerSignature;
 
   namespace VFS {
     using Pak = shared_pointer<vfs::directory>;

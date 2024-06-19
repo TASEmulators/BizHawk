@@ -242,7 +242,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(CurrentFileName))
 				{
-					new FileInfo(CurrentFileName).Delete();
+					File.Delete(CurrentFileName);
 					_config.Recent.Remove(CurrentFileName);
 				}
 			}
@@ -316,7 +316,7 @@ namespace BizHawk.Client.Common
 		public bool Load(IMemoryDomains domains, string path, bool append)
 		{
 			var file = new FileInfo(path);
-			if (file.Exists == false)
+			if (!file.Exists)
 			{
 				return false;
 			}

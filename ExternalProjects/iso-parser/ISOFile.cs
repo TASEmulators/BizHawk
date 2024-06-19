@@ -89,6 +89,7 @@ namespace ISOParser
 		/// </summary>
 		/// <param name="s">The stream which we are using to parse the image. 
 		/// Should already be located at the start of the image.</param>
+		/// <param name="startSector">will seek forward this number of sectors before reading</param>
 		public bool Parse(Stream s, int startSector = 16)
 		{
 			this.VolumeDescriptors = new List<ISOVolumeDescriptor>();

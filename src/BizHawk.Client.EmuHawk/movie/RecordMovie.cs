@@ -267,7 +267,6 @@ namespace BizHawk.Client.EmuHawk
 					_game,
 					_firmwareManager,
 					AuthorBox.Text ?? _config.DefaultAuthor);
-				movieToRecord.Save();
 				_mainForm.StartNewMovie(movieToRecord, true);
 
 				_config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;

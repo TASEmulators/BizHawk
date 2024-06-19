@@ -93,7 +93,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethod("socketServerSetPort", "sets the port of the Lua socket server")]
-		public void SocketServerSetPort(int port)
+		public void SocketServerSetPort(ushort port)
 		{
 			CheckSocketServer();
 			APIs.Comm.Sockets.Port = port;

@@ -28,7 +28,12 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 
 		public DebugVSystemMenuItem(string sysID, params string[] extraSysIDs)
 		{
-			SysIDs = new[] { sysID }.Concat(extraSysIDs).ToHashSet();
+			SysIDs = new[] { sysID }.Concat(extraSysIDs)
+#if NET472_OR_GREATER || NETCOREAPP2_0_OR_GREATER
+				.ToHashSet();
+#else // Meziantou.Polyfill covers `IEnumerable<>.ToHashSet` but we're not using that at time of writing --yoshi
+				.ToArray();
+#endif
 			Text = sysID;
 		}
 	}

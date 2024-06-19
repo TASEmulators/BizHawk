@@ -616,9 +616,7 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
-			return _tools
-				.Select(tool => tool.AskSaveChanges())
-				.All(result => result);
+			return _tools.TrueForAll(tool => !tool.IsActive || tool.AskSaveChanges());
 		}
 
 		/// <summary>
@@ -850,7 +848,7 @@ namespace BizHawk.Client.EmuHawk
 			var path = _config.PathEntries.CheatsAbsolutePath(_game.System);
 
 			var f = new FileInfo(path);
-			if (f.Directory != null && f.Directory.Exists == false)
+			if (f.Directory != null && !f.Directory.Exists)
 			{
 				f.Directory.Create();
 			}

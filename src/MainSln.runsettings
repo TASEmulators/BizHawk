@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+	<RunConfiguration>
+		<TestSessionTimeout>300000</TestSessionTimeout> <!-- milliseconds (300k = 5 min) -->
+		<TreatNoTestsAsError>true</TreatNoTestsAsError> <!-- there's an error message either way, but this makes it `exit(1)` -->
+	</RunConfiguration>
+</RunSettings>

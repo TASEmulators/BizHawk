@@ -295,7 +295,7 @@ namespace BizHawk.Client.Common
 				movie.HeaderEntries.Add(HeaderKeys.VsyncAttoseconds, mame.VsyncAttoseconds.ToString());
 			}
 
-			if (emulator is ICycleTiming)
+			if (emulator.HasCycleTiming())
 			{
 				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
 				movie.HeaderEntries.Add(HeaderKeys.ClockRate, "0");

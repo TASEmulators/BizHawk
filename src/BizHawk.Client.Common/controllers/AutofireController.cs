@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 			{
 				foreach (var boundBtn in v)
 				{
-					if (_buttons[k] == false && controller.IsPressed(boundBtn))
+					if (!_buttons[k] && controller.IsPressed(boundBtn))
 					{
 						_buttonStarts[k] = _emulator.Frame;
 					}

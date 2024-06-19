@@ -1,13 +1,14 @@
 ﻿using System;
+using System.ComponentModel;
+using System.IO;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
-using System.IO;
-using System.ComponentModel;
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
-	[PortedCore(CoreNames.Snes9X, "", "e49165c5607011f4d95adcb7b5983140ab5a75f1", "https://github.com/snes9xgit/snes9x")]
+	[PortedCore(CoreNames.Snes9X, "", "e49165c", "https://github.com/snes9xgit/snes9x")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public class Snes9x : WaterboxCore,
 		ISettable<Snes9x.Settings, Snes9x.SyncSettings>, IRegionable

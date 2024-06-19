@@ -146,7 +146,7 @@ namespace BizHawk.Common.CollectionExtensions
 				? countable.Count == n
 				: collection.Take(n + 1).Count() == n;
 
-#if !NET6_0
+#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER)
 		/// <summary>
 		/// Returns the value at <paramref name="key"/>.
 		/// If the key is not present, returns default(TValue).

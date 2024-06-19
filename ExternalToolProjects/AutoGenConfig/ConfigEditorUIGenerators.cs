@@ -171,6 +171,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 
 			public readonly ComparisonColors ComparisonColors;
 
+			/// <param name="cache">global cache</param>
 			/// <param name="colors">default of <see langword="null"/> uses <see cref="ConfigEditorUIGenerators.ComparisonColors.Defaults"/></param>
 			public ConfigEditorMetadata(ConfigEditorCache cache, ComparisonColors? colors = null)
 			{
@@ -209,7 +210,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 
 			/// <remarks>
 			/// Default implementation didn't play nice with <see langword="null"/>, so multiple behaviours are available for custom generators:
-			/// inherit from <see cref="ConfigPropEditorUIGenRefT"/> or <see cref="ConfigPropEditorUIGenValT"/> instead.
+			/// inherit from <see cref="ConfigPropEditorUIGenRefT{T,T}"/> or <see cref="ConfigPropEditorUIGenValT{T,T}"/> instead.
 			/// </remarks>
 			protected abstract bool MatchesBaseline(TListed c, ConfigEditorMetadata metadata);
 
@@ -273,12 +274,12 @@ namespace BizHawk.Experiment.AutoGenConfig
 			where TValue : class
 		{
 			/// <remarks>
-			/// Checked in <see cref="MatchesBaseline"/> in the case where the baseline value is <see cref="null"/>.
-			/// If its implementation returns <see cref="false"/>, an exception will be thrown, otherwise <see cref="TValueEquality"/>' implementation will be called with <see cref="null"/>.
+			/// Checked in <see cref="MatchesBaseline"/> in the case where the baseline value is <see langword="null"/>.
+			/// If its implementation returns <see langword="false"/>, an exception will be thrown, otherwise <see cref="ConfigPropEditorUIGen{T,T}.TValueEquality"/>' implementation will be called with <see langword="null"/>.
 			/// </remarks>
 			protected abstract bool AllowNull { get; }
 
-			/// <inheritdoc cref="ConfigPropEditorUIGen.MatchesBaseline"/>
+			/// <inheritdoc cref="ConfigPropEditorUIGen{T,T}.MatchesBaseline"/>
 			protected override bool MatchesBaseline(TListed c, ConfigEditorMetadata metadata)
 				=> metadata.BaselineValues[c.Name] is TValue v
 					? TValueEquality(GetTValue(c), v)
@@ -289,7 +290,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 			where TListed : Control
 			where TValue : struct
 		{
-			/// <inheritdoc cref="ConfigPropEditorUIGen.MatchesBaseline"/>
+			/// <inheritdoc cref="ConfigPropEditorUIGen{T,T}.MatchesBaseline"/>
 			protected override bool MatchesBaseline(TListed c, ConfigEditorMetadata metadata)
 				=> metadata.BaselineValues[c.Name] is TValue v ? TValueEquality(GetTValue(c), v) : throw new Exception();
 		}
@@ -373,7 +374,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 
 			protected override string SerializeTValue(string? v) => v == null ? NULL_SERIALIZATION : $"\"{v}\"";
 
-			protected override bool TValueEquality(string? a, string? b) => string.Equals(a, b) || string.IsNullOrEmpty(a) && string.IsNullOrEmpty(b);
+			protected override bool TValueEquality(string? a, string? b) => a == b || string.IsNullOrEmpty(a) && string.IsNullOrEmpty(b);
 		}
 
 		public sealed class UnrepresentablePropEditorUIGen : ConfigPropEditorUIGen<GroupBox, object?>

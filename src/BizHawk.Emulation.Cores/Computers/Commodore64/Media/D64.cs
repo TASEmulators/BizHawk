@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 			writer.Write(syncBytes40); // sync
 			writer.Write(EncodeGcr(new byte[] { (byte)(errorType == ErrorType.DataNotFound ? 0x00 : 0x08), headerChecksum, sectorNo, trackNo, formatA, formatB, 0x0F, 0x0F })); // header
-			writer.Write(new byte[] { 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55 }); // gap
+			writer.Write("UUUUUUUUU"u8.ToArray()); // gap
 			writer.Write(syncBytes40); // sync
 			writer.Write(EncodeGcr(writtenData)); // data
 			writer.Write(Enumerable.Repeat((byte)0x55, gapLength).ToArray()); // gap

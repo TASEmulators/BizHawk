@@ -94,7 +94,7 @@ namespace ares::Core {
   // <ares/platform.hpp> forward declarations
   static auto PlatformAttach(Node::Object) -> void;
   static auto PlatformDetach(Node::Object) -> void;
-  static auto PlatformLog(string_view) -> void;
+  static auto PlatformLog(Node::Debugger::Tracer::Tracer tracer, string_view) -> void;
 
   #include <ares/node/attribute.hpp>
   #include <ares/node/class.hpp>

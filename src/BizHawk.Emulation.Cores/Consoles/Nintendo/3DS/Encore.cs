@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		private IntPtr RequestGLContextCallback()
 		{
-			var context = _openGLProvider.RequestGLContext(4, 3, true, false);
+			var context = _openGLProvider.RequestGLContext(4, 3, true);
 			_glContexts.Add(context);
 			var handle = GCHandle.Alloc(context, GCHandleType.Weak);
 			return GCHandle.ToIntPtr(handle);
