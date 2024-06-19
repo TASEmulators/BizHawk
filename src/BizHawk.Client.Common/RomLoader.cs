@@ -482,12 +482,6 @@ namespace BizHawk.Client.Common
 						);
 						return;
 					}
-					static bool IsPreferredCoreSGB(Config config)
-						=> config.PreferredCores[VSystemID.Raw.GB] is CoreNames.Bsnes or CoreNames.Bsnes115 or CoreNames.SubBsnes115;
-					if (IsPreferredCoreSGB(_config))
-					{
-						game.System = VSystemID.Raw.SGB;
-					}
 					break;
 				case VSystemID.Raw.PSX when ext is ".bin":
 					const string FILE_EXT_CUE = ".cue";
@@ -852,11 +846,6 @@ namespace BizHawk.Client.Common
 			if (ex is MissingFirmwareException)
 			{
 				DoLoadErrorCallback(ex.Message, system, path, Deterministic, LoadErrorType.MissingFirmware);
-			}
-			else if (ex is CGBNotSupportedException)
-			{
-				// failed to load SGB bios or game does not support SGB mode.
-				DoLoadErrorCallback("Failed to load a GB rom in SGB mode.  You might try disabling SGB Mode.", system);
 			}
 			else if (ex is NoAvailableCoreException)
 			{
