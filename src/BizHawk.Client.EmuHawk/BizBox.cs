@@ -58,9 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			=> Process.Start((string) ((Control) sender).Tag);
 
 		private void btnCopyHash_Click(object sender, EventArgs e)
-		{
-			Clipboard.SetText(VersionInfo.GIT_SHORTHASH);
-		}
+			=> Clipboard.SetText(VersionInfo.GIT_HASH);
 
 		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 			=> Process.Start(VersionInfo.BizHawkContributorsListURI);

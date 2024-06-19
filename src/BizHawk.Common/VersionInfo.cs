@@ -41,7 +41,7 @@ namespace BizHawk.Common
 		}
 
 		public static (string Label, string TargetURI) GetGitCommitLink()
-			=> ($"Commit :{GIT_BRANCH}@{GIT_SHORTHASH}", $"https://github.com/TASEmulators/BizHawk/commit/{GIT_SHORTHASH}");
+			=> ($"Commit :{GIT_BRANCH}@{GIT_SHORTHASH}", $"https://github.com/TASEmulators/BizHawk/commit/{GIT_HASH}");
 
 		public static string GetFullVersionDetails()
 		{

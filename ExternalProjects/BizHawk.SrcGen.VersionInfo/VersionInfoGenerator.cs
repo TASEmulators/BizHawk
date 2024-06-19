@@ -49,7 +49,7 @@ public class VersionInfoGenerator : ISourceGenerator
 
 		var rev = ExecuteGitWithArguments($"-C {projectDir} rev-list HEAD --count") ?? string.Empty;
 		var branch = ExecuteGitWithArguments($"-C {projectDir} rev-parse --abbrev-ref HEAD") ?? "master";
-		var shortHash = ExecuteGitWithArguments($"-C {projectDir} log -1 --format=\"%h\"") ?? "000000000";
+		var hash = ExecuteGitWithArguments($"-C {projectDir} log -1 --format=\"%H\"") ?? "0000000000000000000000000000000000000000";
 
 		// Generated source code
 		string source = $@"namespace BizHawk.Common
@@ -58,7 +58,8 @@ public class VersionInfoGenerator : ISourceGenerator
 	{{
 		public const string SVN_REV = ""{rev}"";
 		public const string GIT_BRANCH = ""{branch}"";
-		public const string GIT_SHORTHASH = ""{shortHash}"";
+		public const string GIT_HASH = ""{hash}"";
+		public const string GIT_SHORTHASH = ""{hash.Substring(startIndex: 0, length: 9)}"";
 	}}
 }}
 ";
