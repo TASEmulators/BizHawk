@@ -141,53 +141,6 @@ void Cartridge::power() {
   bus.mmio[0xff50] = this;
 }
 
-uint16_t Cartridge::GetRom0Bank()
-{
-  switch(info.mapper) { default:
-    case Mapper::MBC0:  return 0;
-    case Mapper::MBC1:  return 0;
-    case Mapper::MBC2:  return 0;
-    case Mapper::MBC3:  return 0;
-    case Mapper::MBC5:  return 0;
-    case Mapper::MMM01: return 0;
-    case Mapper::HuC1:  return 0;
-    case Mapper::HuC3:  return 0;
-  }
-}
-
-uint16_t Cartridge::GetRomXBank()
-{
-  switch(info.mapper) { default:
-    case Mapper::MBC0:  return 0;
-    case Mapper::MBC1:  return mbc1.rom_select;
-    case Mapper::MBC2:  return mbc2.rom_select;
-    case Mapper::MBC3:  return mbc3.rom_select;
-    case Mapper::MBC5:  return mbc5.rom_select;
-    case Mapper::MMM01: return mmm01.rom_select;
-    case Mapper::HuC1:  return huc1.rom_select;
-    case Mapper::HuC3:  return huc3.rom_select;
-  }
-}
-
-uint16_t Cartridge::GetCartRamBank()
-{
-  switch(info.mapper) { default:
-    case Mapper::MBC0:  return 0;
-    case Mapper::MBC1:  return mbc1.ram_select;
-    case Mapper::MBC2:  return 0;
-    case Mapper::MBC3:  return mbc3.ram_select;
-    case Mapper::MBC5:  return mbc5.ram_select;
-    case Mapper::MMM01: return mmm01.ram_select;
-    case Mapper::HuC1:  return huc1.ram_select;
-    case Mapper::HuC3:  return huc3.ram_select;
-  }
-}
-
-Cartridge::Mapper Cartridge::GetCartMapper()
-{
-  return info.mapper;
-}
-
 Cartridge::Cartridge() {
   loaded = false;
   romdata = 0;

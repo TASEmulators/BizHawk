@@ -31,8 +31,6 @@
 			eMessage_QUERY_peek_logical_register,
 			eMessage_QUERY_peek_cpu_regs,
 			eMessage_QUERY_set_cdl,
-			eMessage_QUERY_peek_gb_banks,
-			eMessage_QUERY_get_gb_mapper,
 			eMessage_QUERY_LAST,
 
 			eMessage_CMD_FIRST,
@@ -213,19 +211,6 @@
 			BSCHIROM = 8,
 			BSXROM = 9,
 			STROM = 10
-		}
-
-		public enum GameBoy_MAPPER : uint
-		{
-			MBC0 = 0,
-			MBC1 = 1,
-			MBC2 = 2,
-			MBC3 = 3,
-			MBC5 = 4,
-			MMM01 = 5,
-			HuC1 = 6,
-			HuC3 = 7,
-			Unknown = 8,
 		}
 
 		public enum SNES_REGION : uint

@@ -43,20 +43,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			};
 		}
 
-		public IDictionary<string, uint> GetBanks()
-		{
-			Api.QUERY_peek_gb_banks(out var banks);
-
-			return new Dictionary<string, uint>
-			{
-				["ROM0 BANK"] = banks.rom0,
-				["ROMX BANK"] = banks.romx,
-				["VRAM BANK"] = banks.vram,
-				["SRAM BANK"] = banks.sram,
-				["WRAM BANK"] = banks.wram
-			};
-		}
-
 		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
