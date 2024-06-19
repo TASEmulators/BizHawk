@@ -180,7 +180,6 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "About EmuHawk";
 			this.Load += new System.EventHandler(this.BizBox_Load);
-			this.Shown += new System.EventHandler(this.BizBox_Shown);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();

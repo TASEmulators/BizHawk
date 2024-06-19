@@ -5,23 +5,19 @@ using System.Windows.Forms;
 
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common;
-using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class BizBox : Form
 	{
-		private static readonly byte[] _bizBoxSound = ReflectionCache.EmbeddedResourceStream("Resources.nothawk.wav").ReadAllBytes();
-		private readonly Action<byte[]> _playWavFileCallback;
-
-		public BizBox(Action<byte[]> playWavFileCallback)
+		public BizBox(Action/*?*/ playNotHawkCallSFX = null)
 		{
 			InitializeComponent();
 			Icon = Resources.Logo;
 			pictureBox1.Image = Resources.CorpHawk;
 			btnCopyHash.Image = Resources.Duplicate;
-			_playWavFileCallback = playWavFileCallback;
+			if (playNotHawkCallSFX is not null) Shown += (_, _) => playNotHawkCallSFX();
 		}
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -50,9 +46,6 @@ namespace BizHawk.Client.EmuHawk
 				});
 			}
 		}
-
-		private void BizBox_Shown(object sender, EventArgs e)
-			=> _playWavFileCallback(_bizBoxSound);
 
 		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 			=> Process.Start((string) ((Control) sender).Tag);
