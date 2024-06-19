@@ -151,6 +151,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
+		public void QUERY_peek_gb_banks(out MemoryBanksComm ret)
+		{
+			using (_exe.EnterExit())
+			{
+				_core.Message(eMessage.eMessage_QUERY_peek_gb_banks);
+				ret = _comm->memorybanks;
+			}
+		}
+
+		public void QUERY_get_gb_mapper(out GameBoy_MAPPER ret)
+		{
+			using (_exe.EnterExit())
+			{
+				_core.Message(eMessage.eMessage_QUERY_get_gb_mapper);
+				ret = _comm->gameboy_mapper;
+			}
+		}
+
 		public void QUERY_set_cdl(ICodeDataLog cdl)
 		{
 			if (_exe == null)

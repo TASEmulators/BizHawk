@@ -58,6 +58,8 @@ enum eMessage : int32
 	eMessage_QUERY_peek_logical_register,
 	eMessage_QUERY_peek_cpu_regs,
 	eMessage_QUERY_set_cdl,
+	eMessage_QUERY_peek_gb_banks,
+	eMessage_QUERY_get_gb_mapper,
 	eMessage_QUERY_LAST,
 
 	eMessage_CMD_FIRST,
@@ -121,6 +123,22 @@ __attribute__((__packed__))
 #pragma pack(pop)
 #endif
 
+//watch it! the size of this struct is important!
+#ifdef _MSC_VER
+#pragma pack(push,1)
+#endif
+struct MemoryBanksComm {
+	u16 rom0, romx, sram;
+	u8 wram, vram;
+}
+#ifndef _MSC_VER
+__attribute__((__packed__))
+#endif
+;
+#ifdef _MSC_VER
+#pragma pack(pop)
+#endif
+
 struct LayerEnablesComm
 {
 	u8 BG1_Prio0, BG1_Prio1;
@@ -169,9 +187,12 @@ struct CommStruct
 	CPURegsComm cpuregs;
 	LayerEnablesComm layerEnables;
 
+	MemoryBanksComm memorybanks;
+
 	//static configuration-type information which can be grabbed off the core at any time without even needing a QUERY command
 	uint32 region;
 	uint32 mapper;
+	uint32 gameboy_mapper;
 	uint32 BLANKO;
 
 	//===========================================================
@@ -538,7 +559,28 @@ void QUERY_peek_set_cdl() {
 		cdlInfo.blockSizes[i] = comm.cdl_size[i];
 	}
 }
+void QUERY_peek_gb_banks() {
+	if(SNES::cartridge.mode() == SNES::Cartridge::Mode::SuperGameBoy)
+	{
+		comm.memorybanks.rom0 = GameBoy::cartridge.GetRom0Bank();
+		comm.memorybanks.romx = GameBoy::cartridge.GetRomXBank();
+		comm.memorybanks.sram = GameBoy::cartridge.GetCartRamBank();
 
+		comm.memorybanks.vram = ((GameBoy::lcd.status.vram_bank) ? 1 : 0);
+		comm.memorybanks.wram = GameBoy::cpu.status.wram_bank;
+	}
+	else
+	{
+		comm.memorybanks.rom0 = 0;
+		comm.memorybanks.romx = 0;
+		comm.memorybanks.sram = 0;
+		comm.memorybanks.sram = 0;
+		comm.memorybanks.vram = 0;
+	}
+}
+void QUERY_get_gb_mapper() {
+	comm.gameboy_mapper = GameBoy::cartridge.GetCartMapper();
+}
 const Action kHandlers_CMD[] = {
 	CMD_init,
 	snes_power,
@@ -575,6 +617,8 @@ const Action kHandlers_QUERY[] = {
 	QUERY_peek_logical_register, //eMessage_QUERY_peek_logical_register
 	QUERY_peek_cpu_regs, //eMessage_QUERY_peek_cpu_regs
 	QUERY_peek_set_cdl, //eMessage_QUERY_set_cdl
+	QUERY_peek_gb_banks, //eMessage_QUERY_peek_gb_banks
+	QUERY_get_gb_mapper, //eMessage_QUERY_get_gb_mapper
 };
 
 //all this does is run commands on the emulation thread infinitely forever
@@ -617,11 +661,13 @@ ECL_EXPORT void* DllInit()
 	T(cdl_size, 256);
 	T(cpuregs, 320);
 	T(layerEnables, 344);
-	T(region, 356);
-	T(mapper, 360);
-	T(BLANKO, 364);
+	T(memorybanks, 356);
+	T(region, 364);
+	T(mapper, 368);
+	T(gameboy_mapper, 372);
+	T(BLANKO, 376);
 	// start of private stuff
-	T(privbuf, 368);
+	T(privbuf, 384);
 	#undef T
 
 	memset(&comm, 0, sizeof(comm));

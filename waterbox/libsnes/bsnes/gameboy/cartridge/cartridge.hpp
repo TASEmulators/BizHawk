@@ -58,6 +58,12 @@ struct Cartridge : MMIO, property<Cartridge> {
 
   void power();
 
+  uint16_t GetRom0Bank();
+  uint16_t GetRomXBank();
+  uint16_t GetCartRamBank();
+  
+  Cartridge::Mapper GetCartMapper();
+  
   Cartridge();
   ~Cartridge();
 };
