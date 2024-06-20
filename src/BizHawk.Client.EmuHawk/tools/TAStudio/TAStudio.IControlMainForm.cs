@@ -68,7 +68,7 @@
 			}
 		}
 
-		public bool WantsToControlRewind => true;
+		public bool WantsToControlRewind { get; private set; } = true;
 
 		public void CaptureRewind()
 		{
