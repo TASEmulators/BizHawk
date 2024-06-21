@@ -104,6 +104,13 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.Input,
 					tw =>
 					{
+						// TODO: this should not happen and no exception should be thrown here.
+						// Just make this noisy for now until the issue is fixed.
+						if (_movieSession.Movie.FrameCount < _emulator.Frame)
+						{
+							throw new InvalidOperationException(
+								$"Tried to create a savestate at frame {_emulator.Frame}, but only got a log of length {_movieSession.Movie.FrameCount}!");
+						}
 						// this never should have been a core's responsibility
 						tw.WriteLine("Frame {0}", _emulator.Frame);
 						_movieSession.HandleSaveState(tw);
