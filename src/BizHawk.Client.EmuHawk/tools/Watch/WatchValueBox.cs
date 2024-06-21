@@ -56,10 +56,10 @@ namespace BizHawk.Client.EmuHawk
 			get => _type;
 			set
 			{
-				var val = ToRawInt();
+				var val = ToRawUInt();
 				_type = value;
 				SetMaxLength();
-				SetFromRawInt(val);
+				SetFromRawUInt(val);
 			}
 		}
 
@@ -197,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					default:
 					case WatchDisplayType.Signed:
-						int val = ToRawInt() ?? 0;
+						int val = (int)(ToRawUInt() ?? 0);
 						if (val == MaxSignedInt)
 						{
 							val = MinSignedInt;
@@ -210,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = val.ToString();
 						break;
 					case WatchDisplayType.Unsigned:
-						var uval = (uint)(ToRawInt() ?? 0);
+						var uval = ToRawUInt() ?? 0;
 						if (uval == MaxUnsignedInt)
 						{
 							uval = 0;
@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = uval.ToString();
 						break;
 					case WatchDisplayType.Binary:
-						var bVal = (uint)(ToRawInt() ?? 0);
+						var bVal = ToRawUInt() ?? 0;
 						if (bVal == MaxUnsignedInt)
 						{
 							bVal = 0;
@@ -237,7 +237,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = Convert.ToString(bVal, 2).PadLeft(numBits, '0');
 						break;
 					case WatchDisplayType.Hex:
-						var hexVal = (uint)(ToRawInt() ?? 0);
+						var hexVal = ToRawUInt() ?? 0;
 						if (hexVal == MaxUnsignedInt)
 						{
 							hexVal = 0;
@@ -309,7 +309,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					default:
 					case WatchDisplayType.Signed:
-						int val = ToRawInt() ?? 0;
+						int val = (int)(ToRawUInt() ?? 0);
 						if (val == MinSignedInt)
 						{
 							val = MaxSignedInt;
@@ -322,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = val.ToString();
 						break;
 					case WatchDisplayType.Unsigned:
-						var uval = (uint)(ToRawInt() ?? 0);
+						var uval = ToRawUInt() ?? 0;
 						if (uval == 0)
 						{
 							uval = MaxUnsignedInt;
@@ -335,7 +335,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = uval.ToString();
 						break;
 					case WatchDisplayType.Binary:
-						var bVal = (uint)(ToRawInt() ?? 0);
+						var bVal = ToRawUInt() ?? 0;
 						if (bVal == 0)
 						{
 							bVal = MaxUnsignedInt;
@@ -349,7 +349,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = Convert.ToString(bVal, 2).PadLeft(numBits, '0');
 						break;
 					case WatchDisplayType.Hex:
-						var hexVal = (uint)(ToRawInt() ?? 0);
+						var hexVal = ToRawUInt() ?? 0;
 						if (hexVal == 0)
 						{
 							hexVal = MaxUnsignedInt;
@@ -445,21 +445,21 @@ namespace BizHawk.Client.EmuHawk
 			base.OnPaste(e);
 		}
 
-		public int? ToRawInt()
+		public uint? ToRawUInt()
 		{
 			try
 			{
 				return _type switch
 				{
-					WatchDisplayType.Signed => int.Parse(Text),
-					WatchDisplayType.Unsigned => (int)uint.Parse(Text),
-					WatchDisplayType.Binary => Convert.ToInt32(Text, 2),
-					WatchDisplayType.Hex => int.Parse(Text, NumberStyles.HexNumber),
-					WatchDisplayType.FixedPoint_12_4 => (int)(double.Parse(Text, NumberFormatInfo.InvariantInfo) * 16.0),
-					WatchDisplayType.FixedPoint_20_12 => (int)(double.Parse(Text, NumberFormatInfo.InvariantInfo) * 4096.0),
-					WatchDisplayType.FixedPoint_16_16 => (int)(double.Parse(Text, NumberFormatInfo.InvariantInfo) * 65536.0),
-					WatchDisplayType.Float => BitConverter.ToInt32(BitConverter.GetBytes(float.Parse(Text, NumberFormatInfo.InvariantInfo)), 0),
-					_ => int.Parse(Text)
+					WatchDisplayType.Signed => (uint)int.Parse(Text),
+					WatchDisplayType.Unsigned => uint.Parse(Text),
+					WatchDisplayType.Binary => Convert.ToUInt32(Text, 2),
+					WatchDisplayType.Hex => uint.Parse(Text, NumberStyles.HexNumber),
+					WatchDisplayType.FixedPoint_12_4 => (uint)(double.Parse(Text, NumberFormatInfo.InvariantInfo) * 16.0),
+					WatchDisplayType.FixedPoint_20_12 => (uint)(double.Parse(Text, NumberFormatInfo.InvariantInfo) * 4096.0),
+					WatchDisplayType.FixedPoint_16_16 => (uint)(double.Parse(Text, NumberFormatInfo.InvariantInfo) * 65536.0),
+					WatchDisplayType.Float => NumberExtensions.ReinterpretAsUInt32(float.Parse(Text, NumberFormatInfo.InvariantInfo)),
+					_ => uint.Parse(Text)
 				};
 			}
 			catch
@@ -470,7 +470,7 @@ namespace BizHawk.Client.EmuHawk
 			return Nullable ? null : 0;
 		}
 
-		public void SetFromRawInt(int? val)
+		public void SetFromRawUInt(uint? val)
 		{
 			if (val.HasValue)
 			{
@@ -481,11 +481,11 @@ namespace BizHawk.Client.EmuHawk
 						Text = val.Value.ToString();
 						break;
 					case WatchDisplayType.Unsigned:
-						var uval = (uint)val.Value;
+						var uval = val.Value;
 						Text = uval.ToString();
 						break;
 					case WatchDisplayType.Binary:
-						var bVal = (uint)val.Value;
+						var bVal = val.Value;
 						var numBits = ((int)ByteSize) * 8;
 						Text = Convert.ToString(bVal, 2).PadLeft(numBits, '0');
 						break;
@@ -502,8 +502,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = (val.Value / 65536.0).ToString("F5", NumberFormatInfo.InvariantInfo);
 						break;
 					case WatchDisplayType.Float:
-						var bytes = BitConverter.GetBytes(val.Value);
-						float _float = BitConverter.ToSingle(bytes, 0);
+						float _float = NumberExtensions.ReinterpretAsF32(val.Value);
 						Text = _float.ToString("F6", NumberFormatInfo.InvariantInfo);
 						break;
 				}

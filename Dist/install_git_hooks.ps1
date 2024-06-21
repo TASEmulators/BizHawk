@@ -12,7 +12,7 @@ if (Test-Path $targetDir -PathType Container) { # is Git repo
 			#TODO use symlinks on Linux
 		} elseif ((Get-FileHash $target).Hash -ne $shimChecksum) { # files differ
 			$head = Get-Content $target -TotalCount 3
-			echo "[$PSCommandFilename] found existing Git hook $hook, please resolve conflict manually"
+			echo "[$PSCommandFilename] found existing Git hook $hook, please resolve conflict manually (ignore if checking out older commits)"
 			exit 1
 		}
 		# else no-op

@@ -11,8 +11,8 @@ namespace BizHawk.Client.EmuHawk
 	public interface INumberBox
 	{
 		bool Nullable { get; }
-		int? ToRawInt();
-		void SetFromRawInt(int? rawInt);
+		uint? ToRawUInt();
+		void SetFromRawUInt(uint? rawUInt);
 	}
 
 	public class HexTextBox : ClipboardEventTextBox, INumberBox
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Text.IsHex() && !string.IsNullOrEmpty(_addressFormatStr))
 				{
-					var val = (uint)ToRawInt();
+					var val = ToRawUInt();
 
 					if (val == GetMax())
 					{
@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Text.IsHex() && !string.IsNullOrEmpty(_addressFormatStr))
 				{
-					var val = (uint)ToRawInt();
+					var val = ToRawUInt();
 					if (val == 0)
 					{
 						val = (uint)GetMax(); // int to long todo
@@ -147,7 +147,7 @@ namespace BizHawk.Client.EmuHawk
 			base.OnPaste(e);
 		}
 
-		public int? ToRawInt()
+		public uint? ToRawUInt()
 		{
 			if (string.IsNullOrWhiteSpace(Text))
 			{
@@ -159,10 +159,10 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			return int.Parse(Text, NumberStyles.HexNumber);
+			return uint.Parse(Text, NumberStyles.HexNumber);
 		}
 
-		public void SetFromRawInt(int? val)
+		public void SetFromRawUInt(uint? val)
 		{
 			Text = val.HasValue ? string.Format(_addressFormatStr, val) : "";
 		}
@@ -231,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Text.IsHex())
 				{
-					var val = (uint)ToRawInt();
+					var val = ToRawUInt().Value;
 					if (val == uint.MaxValue)
 					{
 						val = 0;
@@ -248,7 +248,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Text.IsHex())
 				{
-					var val = (uint)ToRawInt();
+					var val = ToRawUInt().Value;
 
 					if (val == 0)
 					{
@@ -280,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 			base.OnTextChanged(e);
 		}
 
-		public int? ToRawInt()
+		public uint? ToRawUInt()
 		{
 			if (string.IsNullOrWhiteSpace(Text) || !Text.IsHex())
 			{
@@ -292,10 +292,10 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			return (int)uint.Parse(Text);
+			return uint.Parse(Text);
 		}
 
-		public void SetFromRawInt(int? val)
+		public void SetFromRawUInt(uint? val)
 		{
 			Text = val?.ToString() ?? "";
 		}
