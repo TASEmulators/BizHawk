@@ -79,17 +79,11 @@ namespace BizHawk.Client.EmuHawk
 		bool BlockFrameAdvance { get; set; }
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
-		void RelinquishControl(IControlMainform master);
-
-		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
 		void SeekFrameAdvance();
 
 		void SetMainformMovieInfo();
 
 		bool StartNewMovie(IMovie movie, bool record);
-
-		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
-		void TakeBackControl();
 
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
 		void Throttle();

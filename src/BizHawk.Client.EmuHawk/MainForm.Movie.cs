@@ -100,9 +100,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StopMovie(bool saveChanges = true)
 		{
-			if (IsSlave && Master.WantsToControlStopMovie)
+			if (ToolControllingStopMovie is { } tool)
 			{
-				Master.StopMovie(!saveChanges);
+				tool.StopMovie(!saveChanges);
 			}
 			else
 			{
@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool RestartMovie()
 		{
-			if (IsSlave && Master.WantsToControlRestartMovie) return Master.RestartMovie();
+			if (ToolControllingRestartMovie is { } tool) return tool.RestartMovie();
 			if (!MovieSession.Movie.IsActive()) return false;
 			var success = StartNewMovie(MovieSession.Movie, false);
 			if (success) AddOnScreenMessage("Replaying movie file in read-only mode");
@@ -122,9 +122,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleReadOnly()
 		{
-			if (IsSlave && Master.WantsToControlReadOnly)
+			if (ToolControllingReadOnly is { } tool)
 			{
-				Master.ToggleReadOnly();
+				tool.ToggleReadOnly();
 			}
 			else
 			{

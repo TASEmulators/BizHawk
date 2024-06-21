@@ -474,6 +474,25 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
+		/// Returns the first tool of type <typeparamref name="T"/> that fulfills the given condition
+		/// </summary>
+		/// <param name="condition">The condition to check for</param>
+		/// <typeparam name="T">Type of tools to check</typeparam>
+		/// <returns></returns>
+		public T FirstOrNull<T>(Predicate<T> condition) where T : class
+		{
+			foreach (var tool in _tools)
+			{
+				if (tool.IsActive && tool is T specialTool && condition(specialTool))
+				{
+					return specialTool;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
 		/// returns the instance of <paramref name="toolType"/>, regardless of whether it's loaded,<br/>
 		/// but doesn't create and load a new instance if it's not found
 		/// </summary>
@@ -482,7 +501,7 @@ namespace BizHawk.Client.EmuHawk
 		/// you may pass any class or interface
 		/// </remarks>
 		public IToolForm/*?*/ LazyGet(Type toolType)
-			=> _tools.Find(t => toolType.IsAssignableFrom(t.GetType()));
+			=> _tools.Find(toolType.IsInstanceOfType);
 
 		internal static readonly IDictionary<Type, (Image/*?*/ Icon, string Name)> IconAndNameCache = new Dictionary<Type, (Image/*?*/ Icon, string Name)>
 		{

@@ -281,7 +281,6 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.AddOnScreenMessage("TAStudio engaged");
 			SetTasMovieCallbacks(CurrentTasMovie);
 			UpdateWindowTitle();
-			MainForm.RelinquishControl(this);
 			_originalEndAction = Config.Movies.MovieEndAction;
 			MainForm.DisableRewind();
 			Config.Movies.MovieEndAction = MovieEndAction.Record;
@@ -732,8 +731,8 @@ namespace BizHawk.Client.EmuHawk
 			_engaged = false;
 			MainForm.PauseOnFrame = null;
 			MainForm.AddOnScreenMessage("TAStudio disengaged");
-			MainForm.TakeBackControl();
 			Config.Movies.MovieEndAction = _originalEndAction;
+			WantsToControlRewind = false;
 			MainForm.EnableRewind(true);
 			MainForm.SetMainformMovieInfo();
 		}

@@ -71,7 +71,6 @@ namespace BizHawk.Client.EmuHawk
 			this.DisplayTypeSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.DefinePreviousValueSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.Previous_LastSearchMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PreviousFrameMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.Previous_OriginalMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.Previous_LastChangeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -397,17 +396,11 @@ namespace BizHawk.Client.EmuHawk
 			// DefinePreviousValueSubMenu
 			// 
 			this.DefinePreviousValueSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.Previous_LastSearchMenuItem,
             this.PreviousFrameMenuItem,
             this.Previous_OriginalMenuItem,
             this.Previous_LastChangeMenuItem});
 			this.DefinePreviousValueSubMenu.Text = "Define Previous Value";
 			this.DefinePreviousValueSubMenu.DropDownOpened += new System.EventHandler(this.DefinePreviousValueSubMenu_DropDownOpened);
-			// 
-			// Previous_LastSearchMenuItem
-			// 
-			this.Previous_LastSearchMenuItem.Text = "Last &Search";
-			this.Previous_LastSearchMenuItem.Click += new System.EventHandler(this.Previous_LastSearchMenuItem_Click);
 			// 
 			// PreviousFrameMenuItem
 			// 
@@ -1132,7 +1125,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator8;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DefinePreviousValueSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PreviousFrameMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Previous_LastSearchMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Previous_OriginalMenuItem;
 		private System.Windows.Forms.GroupBox CompareToBox;
 		private System.Windows.Forms.RadioButton DifferenceRadio;

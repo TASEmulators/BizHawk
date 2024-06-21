@@ -6,6 +6,9 @@ using Silk.NET.WGL.Extensions.NV;
 
 using Vortice.Direct3D;
 using Vortice.Direct3D11;
+using Vortice.DXGI;
+
+using BizHawk.Common.StringExtensions;
 
 using static SDL2.SDL;
 
@@ -32,6 +35,14 @@ namespace BizHawk.Bizware.Graphics
 
 		private static readonly GL GL;
 		private static readonly NVDXInterop NVDXInterop;
+
+		private enum Vendor
+		{
+			Nvida,
+			Amd,
+			Intel,
+			Unknown
+		}
 
 		static D3D11GLInterop()
 		{
@@ -70,6 +81,27 @@ namespace BizHawk.Bizware.Graphics
 						return;
 					}
 
+					var glVendor = GL.GetStringS(StringName.Vendor);
+					var vendor = Vendor.Unknown;
+					switch (glVendor)
+					{
+						case "NVIDIA Corporation":
+							vendor = Vendor.Nvida;
+							break;
+						case "ATI Technologies Inc." or "Advanced Micro Devices, Inc.":
+							vendor = Vendor.Amd;
+							break;
+						default:
+						{
+							if (glVendor.Contains("Intel", StringComparison.Ordinal))
+							{
+								vendor = Vendor.Intel;
+							}
+
+							break;
+						}
+					}
+
 					// using these NVDXInterop functions shouldn't need a context active (see above Kronos comment)
 					// however, some buggy drivers will end up failing if we don't have a context
 					// explicitly make no context active to catch these buggy drivers
@@ -88,9 +120,28 @@ namespace BizHawk.Bizware.Graphics
 							out var context).CheckError();
 						context.Dispose();
 
+						// try to not use this extension if the D3D11 device is using different GPUs
+						// some buggy drivers will end up crashing if these mismatch
+						// presumingly hybrid GPU PCs just have an Intel card and an AMD or NVIDIA card
+						// so just checking if vendors match should suffice
+						using var dxgiDevice = device.QueryInterface<IDXGIDevice>();
+						using var adapter = dxgiDevice.GetAdapter();
+						var vendorId = adapter.Description.VendorId;
+						switch (vendorId)
+						{
+							// match against vendor ids
+							case 0x10DE when vendor == Vendor.Nvida:
+							case 0x1002 when vendor == Vendor.Amd:
+							case 0x8086 when vendor == Vendor.Intel:
+								break;
+							// for now, don't even try for unknown vendors
+							default:
+								return;
+						}
+
 						unsafe
 						{
-							dxInteropDevice = NVDXInterop.DxopenDevice((void*)device!.NativePointer);
+							dxInteropDevice = NVDXInterop.DxopenDevice((void*)device.NativePointer);
 						}
 
 						// TODO: test interop harder?
