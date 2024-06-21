@@ -33,8 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			Icon = ToolIcon;
-			SystemDropDown.Items.AddRange(new[]
-			{
+			SystemDropDown.Items.AddRange([
 				VSystemID.Raw.Amiga,
 				VSystemID.Raw.AmstradCPC,
 				VSystemID.Raw.AppleII,
@@ -51,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.SAT,
 				VSystemID.Raw.TI83,
 				VSystemID.Raw.ZXSpectrum,
-			});
+			]);
 		}
 
 		public override void Restart()
@@ -101,20 +100,29 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var xmlGame = XmlGame.Create(new HawkFile(xmlPath));
-				for (int i = FileSelectorPanel.Controls.Count; i < xmlGame.AssetFullPaths.Count; i++)
-				{
-					AddButton_Click(null, null);
-				}
-
-				var fileSelectors = FileSelectors.ToArray();
-				for (int i = 0; i < xmlGame.AssetFullPaths.Count; i++)
-				{
-					fileSelectors[i].Path = xmlGame.AssetFullPaths[i];
-				}
+				AddFiles(xmlGame.AssetFullPaths);
 			}
 			catch
 			{
 				// something went wrong while parsing the given xml path... just don't populate anything then
+			}
+		}
+
+		private void AddFiles(IList<string> filePaths)
+		{
+			var existingEmptyControls = FileSelectors.Count(fileSelector => string.IsNullOrEmpty(fileSelector.Path));
+			for (int i = existingEmptyControls; i < filePaths.Count; i++)
+			{
+				AddButton_Click(null, null);
+			}
+
+			var fileSelectors = FileSelectors.ToArray();
+			int currentFileSelector = 0;
+			foreach (string filePath in filePaths)
+			{
+				while (currentFileSelector < fileSelectors.Length && !string.IsNullOrEmpty(fileSelectors[currentFileSelector].Path))
+					currentFileSelector++;
+				fileSelectors[currentFileSelector].Path = filePath;
 			}
 		}
 
@@ -310,6 +318,27 @@ namespace BizHawk.Client.EmuHawk
 		private void SystemDropDown_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			Recalculate();
+		}
+
+		private void OnDragDrop(object sender, DragEventArgs e)
+		{
+			string[] droppedFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+			if (droppedFiles is null) return;
+
+			string xmlPath = droppedFiles.FirstOrDefault(path => path.EndsWith(".xml", StringComparison.OrdinalIgnoreCase));
+			if (xmlPath is not null)
+			{
+				PopulateFromXmlFile(xmlPath);
+			}
+			else
+			{
+				AddFiles(droppedFiles);
+			}
+		}
+
+		private void OnDragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 	}
 }
