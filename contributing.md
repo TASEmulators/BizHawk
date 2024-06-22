@@ -54,10 +54,10 @@ git branch --set-upstream-to=upstream/master master
 
 Before touching the code, create a new branch off `master` with a descriptive name.
 
-After touching the code, commit your changes. Try to group your changes into many smaller commits with a clear purpose to each—committing early and often can help. Bonus points if each commit can build and run.  
-If you made the branch a while ago, pull `master` and *rebase, not merge*. Then push to your fork, and you can submit a pull request at any time on GitHub.  
-Your commit message summary [should be written](https://www.git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project#_commit_guidelines) in the *imperative* tense (imagine "This commit will ..." comes before it). GitHub wraps at 70 chars.  
-The description should include any non-obvious effects the changes will have. If you feel you need to explain what the code does, consider using code comments instead. It's okay to leave the description blank for simple commits.  
+After touching the code, commit your changes. Try to group your changes into many smaller commits with a clear purpose to each—committing early and often can help. Bonus points if each commit can build and run.
+If you made the branch a while ago, pull `master` and *rebase, not merge*. Then push to your fork, and you can submit a pull request at any time on GitHub.
+Your commit message summary [should be written](https://www.git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project#_commit_guidelines) in the *imperative* tense (imagine "This commit will ..." comes before it). GitHub wraps at 70 chars.
+The description should include any non-obvious effects the changes will have. If you feel you need to explain what the code does, consider using code comments instead. It's okay to leave the description blank for simple commits.
 You can use limited Markdown in the summary and description, including monospace, commit/Issue links, and, in the description, bullet points.
 In the description, link to related commits and Issues with a short-hash (`abc123def`) or ID (`#1234`), respectively. If your commit fixes an Issue, put it in the summary and use a [closing keyword](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/using-keywords-in-issues-and-pull-requests#linking-a-pull-request-to-an-issue).
 
@@ -120,7 +120,7 @@ The source for EmuHawk, plus DiscoHawk and the supporting libraries, is in `/src
 EmuHawk's project file `/src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj` includes the other projects [in a tree](https://gitlab.com/TASVideos/BizHawk/snippets/1886666), and they're all included in `/BizHawk.sln`.
 
 In VS2022, open `BizHawk.sln`, then select the "BizHawk.Client.EmuHawk | Release" configuration to build and run.
-On the command-line, from root of the repo run `Dist/BuildRelease.sh` (Unix) or `Dist\QuickTestBuildAndPackage_Release.bat` (Windows). Run EmuHawk from `output` in the repo's root.
+To build from the command-line, simply run `dotnet build BizHawk.sln` from the repository's root. Alternatively, you can run one of the existing build scripts that apply additional checks and configurations, see `Dist/BuildRelease.sh` (Unix) or `Dist\QuickTestBuildAndPackage_Release.bat` (Windows). Run EmuHawk from `output` in the repo's root.
 
 There are 2 build configurations. Besides `Release` there is `Debug`, which *does not run* bytecode optimisations, *does not remove* debugging symbols, *enables* additional logging and assertions, and *enables* some features. On Windows, a `Debug` executable will spawn a console window for stdout. Note there is also a "stronger" release build in the form of `VersionInfo.DeveloperBuild == false`, which is only used by GitLab CI for preparing a release (during `Dist/UpdateVersionInfoForRelease.sh`).
 
