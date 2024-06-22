@@ -246,9 +246,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_autosaveTimer.Stop();
 			
-			if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk
-				|| Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy
-				|| Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk)
+			if (Emulator.HasCycleTiming())
 			{
 				DialogController.ShowMessageBox("This core requires emulation to be on the last frame when writing the movie, otherwise movie length will appear incorrect.\nTAStudio can't handle this, so Export BK2, play it to the end, and then Save Movie.", "Warning", EMsgBoxIcon.Warning);
 			}
