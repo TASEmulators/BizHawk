@@ -321,5 +321,5 @@ See [Waterbox readme](https://github.com/TASEmulators/BizHawk/tree/master/waterb
 By contributing, you declare that any additions or changes either:
 - were authored by you and you are willing to license your contributions to us under the [project's license](https://github.com/TASEmulators/BizHawk/tree/master/LICENSE); or
 - were copied from a compatibly open-source, publicly-licensed source and are properly attributed, including licensing info.
-> **Important**
+> [!IMPORTANT]
 > We will **not** accept any contributions "authored" by GitHub Copilot or similar ML tools.
