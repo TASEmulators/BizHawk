@@ -348,17 +348,51 @@ namespace BizHawk.Client.Common
 #endif
 			if (Movie.IsAtEnd() && Movie.Emulator.HasCycleTiming())
 			{
+				const string WINDOW_TITLE_MISMATCH = "Cycle count mismatch";
+				const string WINDOW_TITLE_MISSING = "Cycle count not yet saved";
+				const string PFX_MISSING = "The cycle count (running time) hasn't been saved into this movie yet.\n";
+				const string ERR_MSG_MISSING_READONLY = PFX_MISSING + "The movie was loaded in read-only mode. To add the cycle count, load it in read-write mode and play to the end again.";
+				const string ERR_MSG_MISSING_CONFIRM = PFX_MISSING + "Add it now?";
+				const string PFX_MISMATCH = "The cycle count (running time) saved into this movie ({0}) doesn't match the measured count ({1}) here at the end.\n";
+				const string ERR_FMT_STR_MISMATCH_READONLY = PFX_MISMATCH + "The movie was loaded in read-only mode. To correct the cycle count, load it in read-write mode and play to the end again.";
+				const string ERR_FMT_STR_MISMATCH_CONFIRM = PFX_MISMATCH + "Correct it now?";
 				var coreValue = Movie.Emulator.AsCycleTiming().CycleCount;
 				if (!Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out var movieValueStr)
 					|| !long.TryParse(movieValueStr, out var movieValue))
 				{
-					//TODO ideally this would just save indiscriminately, maybe skip if read-only, but I don't think we should be bothering the user in this case --yoshi
-					PopupMessage("The cycle count (running time) hasn't been saved into this movie yet.\nEnsure you've paused at the end, then save the movie again to add the cycle count.");
+					if (ReadOnly)
+					{
+						//TODO this would be annoying to encounter; detect the missing field when playback starts instead --yoshi
+						_dialogParent.ModalMessageBox(
+							caption: WINDOW_TITLE_MISSING,
+							text: ERR_MSG_MISSING_READONLY,
+							icon: EMsgBoxIcon.Info);
+					}
+					else if (_dialogParent.ModalMessageBox2(
+						caption: WINDOW_TITLE_MISSING,
+						text: ERR_MSG_MISSING_CONFIRM,
+						icon: EMsgBoxIcon.Question))
+					{
+						Movie.SetCycleValues();
+					}
 				}
 				else if (coreValue != movieValue)
 				{
-					// TODO: Ideally, this would be a Yes/No MessageBox that saves when "Yes" is pressed.
-					PopupMessage($"The cycle count (running time) saved into this movie ({movieValue}) doesn't match the measured count ({coreValue}) here at the end.\nEnsure you've paused at the end, then save the movie again to update the cycle count.");
+					if (ReadOnly)
+					{
+						//TODO this would be annoying to encounter; detect the missing field when playback starts instead --yoshi
+						_dialogParent.ModalMessageBox(
+							caption: WINDOW_TITLE_MISMATCH,
+							text: string.Format(ERR_FMT_STR_MISMATCH_READONLY, movieValue, coreValue),
+							icon: EMsgBoxIcon.Warning);
+					}
+					else if (_dialogParent.ModalMessageBox2(
+						caption: WINDOW_TITLE_MISMATCH,
+						text: string.Format(ERR_FMT_STR_MISMATCH_CONFIRM, movieValue, coreValue),
+						icon: EMsgBoxIcon.Question))
+					{
+						Movie.SetCycleValues();
+					}
 				}
 			}
 			switch (Settings.MovieEndAction)

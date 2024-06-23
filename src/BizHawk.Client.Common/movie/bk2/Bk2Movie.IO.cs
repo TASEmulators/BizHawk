@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private void SetCycleValues()
+		public void SetCycleValues() //TODO IEmulator should not be an instance prop of movies, it should be passed in to every call (i.e. from MovieService) --yoshi
 		{
 			// The saved cycle value will only be valid if the end of the movie has been emulated.
 			if (this.IsAtEnd())

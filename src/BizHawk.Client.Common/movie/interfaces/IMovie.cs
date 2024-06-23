@@ -84,6 +84,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		void Save();
 
+		/// <summary>updates the <see cref="HeaderKeys.CycleCount"/> and <see cref="HeaderKeys.ClockRate"/> headers from the currently loaded core</summary>
+		void SetCycleValues();
+
 		/// <summary>
 		/// Writes the input log directly to the stream, bypassing the need to load it all into ram as a string
 		/// </summary>
