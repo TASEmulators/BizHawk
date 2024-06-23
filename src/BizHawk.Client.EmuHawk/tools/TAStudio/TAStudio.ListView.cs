@@ -936,10 +936,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
 		{
-			// TODO: If NewCell is null, it indicates that there was a mouse leave scenario, we may want to account for that
-			// For now return if a null because this happens OnEnter which doesn't have any of the below behaviors yet
-			if (e.OldCell?.Column == null || e.OldCell?.RowIndex == null
-				|| e.NewCell?.Column == null || e.NewCell?.RowIndex == null)
+			if (e.NewCell.RowIndex is null)
 			{
 				return;
 			}
@@ -951,7 +948,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_paintingMinFrame >= 0)
 			{
-				_paintingMinFrame = Math.Min(_paintingMinFrame, e.NewCell?.RowIndex ?? 0);
+				_paintingMinFrame = Math.Min(_paintingMinFrame, e.NewCell.RowIndex.Value);
 			}
 
 			// skip rerecord counting on drawing entirely, mouse down is enough
@@ -961,7 +958,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int startVal, endVal;
 			int frame = e.NewCell.RowIndex.Value;
-			if (e.OldCell.RowIndex.Value < e.NewCell.RowIndex.Value)
+			if (e.OldCell.RowIndex < e.NewCell.RowIndex)
 			{
 				startVal = e.OldCell.RowIndex.Value;
 				endVal = e.NewCell.RowIndex.Value;
@@ -973,7 +970,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				startVal = e.NewCell.RowIndex.Value;
-				endVal = e.OldCell.RowIndex.Value;
+				endVal = e.OldCell.RowIndex ?? e.NewCell.RowIndex.Value;
 				if(_patternPaint)
 				{
 					endVal = _startRow;
