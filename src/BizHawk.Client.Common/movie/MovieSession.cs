@@ -342,25 +342,25 @@ namespace BizHawk.Client.Common
 
 		private void HandlePlaybackEnd()
 		{
+#if false // invariants given by single call-site
+			Debug.Assert(Movie.IsPlaying());
+			Debug.Assert(Movie.Emulator.Frame >= Movie.InputLogLength);
+#endif
 			if (Movie.IsAtEnd() && Movie.Emulator.HasCycleTiming())
 			{
 				var coreValue = Movie.Emulator.AsCycleTiming().CycleCount;
-				var movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out var movieValueStr);
-
-				var movieValue = movieHasValue ? Convert.ToInt64(movieValueStr) : 0;
-				var valuesMatch = movieValue == coreValue;
-
-				if (!movieHasValue || !valuesMatch)
+				if (!Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out var movieValueStr)
+					|| !long.TryParse(movieValueStr, out var movieValue))
 				{
-					var previousState = !movieHasValue
-						? $"The movie is currently missing a cycle count."
-						: $"The cycle count in the movie ({movieValue}) doesn't match the current value.";
+					//TODO ideally this would just save indiscriminately, maybe skip if read-only, but I don't think we should be bothering the user in this case --yoshi
+					PopupMessage("The cycle count (running time) hasn't been saved into this movie yet.\nEnsure you've paused at the end, then save the movie again to add the cycle count.");
+				}
+				else if (coreValue != movieValue)
+				{
 					// TODO: Ideally, this would be a Yes/No MessageBox that saves when "Yes" is pressed.
-					PopupMessage($"The end of the movie has been reached.\n\n{previousState}\n\nSave the movie to update to the current cycle count ({coreValue}).");
+					PopupMessage($"The cycle count (running time) saved into this movie ({movieValue}) doesn't match the measured count ({coreValue}) here at the end.\nEnsure you've paused at the end, then save the movie again to update the cycle count.");
 				}
 			}
-
-			// TODO: mainform callback to update on mode change
 			switch (Settings.MovieEndAction)
 			{
 				case MovieEndAction.Stop:
