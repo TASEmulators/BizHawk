@@ -373,6 +373,7 @@ namespace BizHawk.Client.EmuHawk
 			this.ShowMenuContextMenuSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ShowMenuContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
+			this.toolStripSeparator25 = new System.Windows.Forms.ToolStripSeparator();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -724,10 +725,11 @@ namespace BizHawk.Client.EmuHawk
             this.PlayMovieMenuItem,
             this.StopMovieMenuItem,
             this.PlayFromBeginningMenuItem,
-            this.ImportMoviesMenuItem,
             this.SaveMovieMenuItem,
             this.SaveMovieAsMenuItem,
             this.StopMovieWithoutSavingMenuItem,
+            this.toolStripSeparator25,
+            this.ImportMoviesMenuItem,
             this.toolStripSeparator14,
             this.AutomaticallyBackupMoviesMenuItem,
             this.FullMovieLoadstatesMenuItem,
@@ -2377,6 +2379,11 @@ namespace BizHawk.Client.EmuHawk
 			this.timerMouseIdle.Interval = 2000;
 			this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
 			// 
+			// toolStripSeparator25
+			// 
+			this.toolStripSeparator25.Name = "toolStripSeparator25";
+			this.toolStripSeparator25.Size = new System.Drawing.Size(228, 6);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -2759,5 +2766,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem CaptureLuaMenuItem;
 		private ToolStripSeparatorEx toolStripSeparator24;
 		private ToolStripMenuItemEx AutosaveLastSlotMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator25;
 	}
 }
