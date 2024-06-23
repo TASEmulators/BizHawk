@@ -988,7 +988,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (var i = startVal; i <= endVal; i++)
 				{
-					TasView.SelectRow(i, _selectionDragState);
+					if (!TasView.IsRowSelected(i))
+						TasView.SelectRow(i, _selectionDragState);
 					if (AxisEditingMode && (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift))
 					{
 						if (_selectionDragState)
