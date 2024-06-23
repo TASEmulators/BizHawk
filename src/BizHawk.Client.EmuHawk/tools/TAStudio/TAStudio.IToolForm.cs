@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (CurrentTasMovie != null)
 			{
-				if (Game.Hash != CurrentTasMovie.Hash)
+				if (Game.Hash != CurrentTasMovie.Hash || CurrentTasMovie.Filename != Settings.RecentTas.MostRecent)
 				{
 					TastudioStopMovie();
 					TasView.AllColumns.Clear();
