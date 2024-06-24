@@ -312,7 +312,7 @@ namespace BizHawk.Client.Common
 
 			if (BindMarkersToInput) // pretty critical not to erase them
 			{
-				Markers = branch.Markers;
+				Markers = branch.Markers.DeepClone();
 			}
 
 			Changes = true;
