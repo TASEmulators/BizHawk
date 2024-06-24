@@ -22,9 +22,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ToBk2MenuItem.Enabled = !string.IsNullOrWhiteSpace(CurrentTasMovie.Filename)
-				&& CurrentTasMovie.Filename != DefaultTasProjName();
-
 			saveSelectionToMacroToolStripMenuItem.Enabled =
 				placeMacroAtSelectionToolStripMenuItem.Enabled =
 				recentMacrosToolStripMenuItem.Enabled =
@@ -244,46 +241,45 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToBk2MenuItem_Click(object sender, EventArgs e)
 		{
+			// TODO: can we deduplicate this logic somehow? The same code with minimal changes is copy pasted like 4 times
 			_autosaveTimer.Stop();
-			
+
 			if (Emulator.HasCycleTiming())
 			{
 				DialogController.ShowMessageBox("This core requires emulation to be on the last frame when writing the movie, otherwise movie length will appear incorrect.\nTAStudio can't handle this, so Export BK2, play it to the end, and then Save Movie.", "Warning", EMsgBoxIcon.Warning);
 			}
 
-			var bk2 = CurrentTasMovie.ToBk2();
-			MessageStatusLabel.Text = "Exporting to .bk2...";
-			Cursor = Cursors.WaitCursor;
-			Update();
-			string exportResult = " not exported.";
-			var file = new FileInfo(bk2.Filename);
-			if (file.Exists)
+			string filename = CurrentTasMovie.Filename;
+			if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
 			{
-				var result = MainForm.DoWithTempMute(() => MessageBox.Show(
-					"Overwrite Existing File?",
-					"Tastudio",
-					MessageBoxButtons.YesNoCancel,
-					MessageBoxIcon.Question,
-					MessageBoxDefaultButton.Button3));
-				if (result == DialogResult.Yes)
-				{
-					bk2.Save();
-					exportResult = " exported.";
-				}
+				filename = SuggestedTasProjName();
+			}
+
+			var fileInfo = new FileInfo(Path.ChangeExtension(filename, Bk2Movie.Extension));
+			if (fileInfo.Exists)
+			{
+				fileInfo = SaveFileDialog(currentFile: fileInfo.Name, path: Config!.PathEntries.MovieAbsolutePath(), new FilesystemFilterSet(FilesystemFilter.BizHawkMovies), this);
+			}
+
+			if (fileInfo is not null)
+			{
+				MessageStatusLabel.Text = "Exporting to .bk2...";
+				Cursor = Cursors.WaitCursor;
+				var bk2 = CurrentTasMovie.ToBk2();
+				bk2.Filename = fileInfo.FullName;
+				bk2.Save();
+				MessageStatusLabel.Text = $"{bk2.Name} exported.";
+				Cursor = Cursors.Default;
 			}
 			else
 			{
-				bk2.Save();
-				exportResult = " exported.";
+				MessageStatusLabel.Text = "bk2 export cancelled.";
 			}
 
 			if (Settings.AutosaveInterval > 0)
 			{
 				_autosaveTimer.Start();
 			}
-
-			MessageStatusLabel.Text = bk2.Name + exportResult;
-			Cursor = Cursors.Default;
 		}
 
 		private void EditSubMenu_DropDownOpened(object sender, EventArgs e)
