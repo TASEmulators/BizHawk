@@ -569,10 +569,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			private readonly MemoryDomain Arm9Bus;
 			private readonly MemoryDomain Arm7Bus;
+			private bool _useArm9;
 
 			public NDSSystemBus(MemoryDomain arm9, MemoryDomain arm7)
 			{
-				Name = "System Bus";
 				Size = 1L << 32;
 				WordSize = 4;
 				EndianType = Endian.Little;
@@ -580,9 +580,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 				Arm9Bus = arm9;
 				Arm7Bus = arm7;
+
+				UseArm9 = true; // important to set the initial name correctly
 			}
 
-			public bool UseArm9 { get; set; } = true;
+			public bool UseArm9
+			{
+				get => _useArm9;
+				set
+				{
+					_useArm9 = value;
+					Name = _useArm9 ? "ARM9 System Bus" : "ARM7 System Bus";
+				}
+			}
 
 			public override byte PeekByte(long addr) => UseArm9 ? Arm9Bus.PeekByte(addr) : Arm7Bus.PeekByte(addr);
 
