@@ -576,7 +576,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				Size = 1L << 32;
 				WordSize = 4;
 				EndianType = Endian.Little;
-				Writable = false;
+				Writable = true;
 
 				Arm9Bus = arm9;
 				Arm7Bus = arm7;
@@ -596,7 +596,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			public override byte PeekByte(long addr) => UseArm9 ? Arm9Bus.PeekByte(addr) : Arm7Bus.PeekByte(addr);
 
-			public override void PokeByte(long addr, byte val) => throw new InvalidOperationException();
+			public override void PokeByte(long addr, byte val)
+			{
+				if (UseArm9)
+				{
+					Arm9Bus.PokeByte(addr, val);
+				}
+				else
+				{
+					Arm7Bus.PokeByte(addr, val);
+				}
+			}
 		}
 	}
 }
