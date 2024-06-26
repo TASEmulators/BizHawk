@@ -880,9 +880,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				StepRunLoop_Core();
-				StepRunLoop_Throttle();
-
 				Render();
+				StepRunLoop_Throttle();
 
 				// HACK: RAIntegration might peek at memory during messages
 				// we need this to allow memory access here, otherwise it will deadlock
