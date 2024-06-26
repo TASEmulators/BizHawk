@@ -266,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 				} //lock(this)
 
 				//arbitrary selection of polling frequency:
-				Thread.Sleep(10);
+				Thread.Sleep(2);
 			}
 		}
 
