@@ -82,12 +82,14 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets or sets a value indicating whether or not the control will respond to right-click events with a context menu
 		/// </summary>
 		[Category("Behavior")]
+		[DefaultValue(true)]
 		public bool AllowRightClickSelection { get; set; } = true;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether or not Home and End will navigate to the beginning or end of the list
 		/// </summary>
 		[Category("Behavior")]
+		[DefaultValue(true)]
 		public bool AllowMassNavigationShortcuts { get; set; } = true;
 
 		[Category("Behavior")]
@@ -208,14 +210,14 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		[DefaultValue(3)]
 		[Category("Behavior")]
-		public int CellWidthPadding { get; set; }
+		public int CellWidthPadding { get; set; } = 3;
 
 		/// <summary>
 		/// Gets or sets the amount of top and bottom padding on the text inside a cell
 		/// </summary>
 		[DefaultValue(1)]
 		[Category("Behavior")]
-		public int CellHeightPadding { get; set; }
+		public int CellHeightPadding { get; set; } = 1;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether grid lines are displayed around cells
@@ -381,7 +383,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets or sets a value indicating whether pressing page up/down will cause
 		/// the current selection to change
 		/// </summary>
-		[DefaultValue(false)]
+		[DefaultValue(true)]
 		[Category("Behavior")]
 		public bool ChangeSelectionWhenPaging { get; set; } = true;
 
