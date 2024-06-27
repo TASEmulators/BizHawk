@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 	public partial class Bk2Movie : BasicMovieInfo, IMovie
 	{
 		private Bk2Controller _adapter;
-		//private Bk2LogEntryGenerator _logGenerator;
+
 		public Bk2Movie(IMovieSession session, string filename) : base(filename)
 		{
 			Session = session;
@@ -32,18 +32,6 @@ namespace BizHawk.Client.Common
 		public virtual bool Changes { get; protected set; }
 		public bool IsCountingRerecords { get; set; } = true;
 
-		public Bk2LogEntryGenerator LogGeneratorInstance(IController source)
-		{
-			// Hack because initial movie loading is a mess, and you will immediate create a file with an undefined controller
-			//if (!source.Definition.Any())
-			{
-				return new Bk2LogEntryGenerator(Emulator?.SystemId ?? SystemID, source);
-			}
-
-			//_logGenerator ??= new Bk2LogEntryGenerator(Emulator?.SystemId ?? SystemID, source);
-			//return _logGenerator;
-		}
-
 		public override int FrameCount => Log.Count;
 		public int InputLogLength => Log.Count;
 
@@ -60,8 +48,7 @@ namespace BizHawk.Client.Common
 
 		public void AppendFrame(IController source)
 		{
-			var lg = LogGeneratorInstance(source);
-			Log.Add(lg.GenerateLogEntry());
+			Log.Add(Bk2LogEntryGenerator.GenerateLogEntry(source));
 			Changes = true;
 		}
 
@@ -75,8 +62,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			var lg = LogGeneratorInstance(source);
-			SetFrameAt(frame, lg.GenerateLogEntry());
+			SetFrameAt(frame, Bk2LogEntryGenerator.GenerateLogEntry(source));
 
 			Changes = true;
 		}
@@ -94,8 +80,8 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < FrameCount && frame >= -1)
 			{
-				_adapter ??= new Bk2Controller(LogKey, Session.MovieController.Definition);
-				_adapter.SetFromMnemonic(frame >= 0 ? Log[frame] : Session.Movie.LogGeneratorInstance(Session.MovieController).EmptyEntry);
+				_adapter ??= new Bk2Controller(Session.MovieController.Definition, LogKey);
+				_adapter.SetFromMnemonic(frame >= 0 ? Log[frame] : Bk2LogEntryGenerator.EmptyEntry(_adapter));
 				return _adapter;
 			}
 
@@ -104,8 +90,7 @@ namespace BizHawk.Client.Common
 
 		public virtual void PokeFrame(int frame, IController source)
 		{
-			var lg = LogGeneratorInstance(source);
-			SetFrameAt(frame, lg.GenerateLogEntry());
+			SetFrameAt(frame, Bk2LogEntryGenerator.GenerateLogEntry(source));
 			Changes = true;
 		}
 

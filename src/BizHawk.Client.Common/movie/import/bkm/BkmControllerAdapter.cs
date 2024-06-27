@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -8,8 +7,6 @@ namespace BizHawk.Client.Common
 {
 	internal class BkmControllerAdapter : IController
 	{
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
 		public BkmControllerAdapter(ControllerDefinition definition, string systemId)
 		{
 			// We do need to map the definition name to the legacy
@@ -35,6 +32,7 @@ namespace BizHawk.Client.Common
 				_ => "Null Controller",
 			};
 			Definition = new(copyFrom: definition, withName: name);
+			Definition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(systemId));
 		}
 
 		public ControllerDefinition Definition { get; set; }
