@@ -153,6 +153,13 @@ namespace BizHawk.Client.EmuHawk
 			BookMarkControl.SavedCallback = BranchSaved;
 			BookMarkControl.RemovedCallback = BranchRemoved;
 			TasView.MouseLeave += TAStudio_MouseLeave;
+			TasView.CellHovered += (_, e) =>
+			{
+				if (e.NewCell.RowIndex is null)
+				{
+					toolTip1.Show(e.NewCell.Column!.Name, TasView, PointToClient(Cursor.Position));
+				}
+			};
 		}
 
 		private void Tastudio_Load(object sender, EventArgs e)
@@ -1146,6 +1153,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudio_MouseLeave(object sender, EventArgs e)
 		{
+			toolTip1.SetToolTip(TasView, null);
 			DoTriggeredAutoRestoreIfNeeded();
 		}
 

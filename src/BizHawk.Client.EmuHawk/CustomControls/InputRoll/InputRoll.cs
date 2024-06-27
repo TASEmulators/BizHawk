@@ -1604,7 +1604,7 @@ namespace BizHawk.Client.EmuHawk
 				PointedCellChanged(this, new CellEventArgs(_lastCell, CurrentCell));
 			}
 
-			if (CurrentCell?.Column != null && CurrentCell.RowIndex.HasValue)
+			if (CurrentCell?.Column is not null)
 			{
 				_hoverTimer.Start();
 			}

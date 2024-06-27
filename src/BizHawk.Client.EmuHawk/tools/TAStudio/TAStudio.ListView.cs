@@ -936,6 +936,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
 		{
+			toolTip1.SetToolTip(TasView, null);
+
 			if (e.NewCell.RowIndex is null)
 			{
 				return;
