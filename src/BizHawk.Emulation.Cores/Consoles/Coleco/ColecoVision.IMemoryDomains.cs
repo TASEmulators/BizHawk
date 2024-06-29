@@ -29,15 +29,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				}, 1)
 			};
 
-			if (use_SGM)
-			{
-				var SGMLRam = new MemoryDomainByteArray("SGM Low RAM", MemoryDomain.Endian.Little, SGM_low_RAM, true, 1);
-				domains.Add(SGMLRam);
-
-				var SGMHRam = new MemoryDomainByteArray("SGM High RAM", MemoryDomain.Endian.Little, SGM_high_RAM, true, 1);
-				domains.Add(SGMHRam);
-			}
-
 			SyncAllByteArrayDomains();
 
 			_memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
@@ -50,6 +41,12 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			SyncByteArrayDomain("Main RAM", _ram);
 			SyncByteArrayDomain("Video RAM", _vdp.VRAM);
+
+			if (use_SGM)
+			{
+				SyncByteArrayDomain("SGM Low RAM", SGM_low_RAM);
+				SyncByteArrayDomain("SGM High RAM", SGM_high_RAM);
+			}
 		}
 
 		private void SyncByteArrayDomain(string name, byte[] data)
