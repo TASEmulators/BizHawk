@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 		/// </remarks>
 		public static readonly IReadOnlyList<(string[] AppliesTo, string[] CoreNames)> CorePickerUIData = new List<(string[], string[])>
 		{
-			([ VSystemID.Raw.GB, VSystemID.Raw.GBC, VSystemID.Raw.SGB ],
+			([ VSystemID.Raw.GB, VSystemID.Raw.GBC ],
 				[ CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk, CoreNames.Bsnes, CoreNames.Bsnes115, CoreNames.SubBsnes115 ]),
 			([ VSystemID.Raw.GBL ],
 				[ CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x ]),
