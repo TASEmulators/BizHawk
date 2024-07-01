@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
@@ -14,9 +15,13 @@ namespace BizHawk.Emulation.Cores
 	public class CoreInventory
 	{
 		private readonly Dictionary<string, List<Core>> _systems = new Dictionary<string, List<Core>>();
+		private readonly List<(List<string>, List<string>)> _systemGroups = [ ];
 
 		/// <summary>keys are system IDs; values are core/ctor info for all that system's cores</summary>
 		public IReadOnlyDictionary<string, List<Core>> AllCores => _systems;
+
+		// list of system ids groups; each system id in the group shares the same core choices
+		public IReadOnlyList<(List<string> SystemIds, List<string> CoreNames)> SystemGroups => _systemGroups;
 
 		public readonly IReadOnlyCollection<Core> SystemsFlat;
 
@@ -187,6 +192,23 @@ namespace BizHawk.Emulation.Cores
 					}
 				}
 			}
+			foreach (var (systemId, cores) in _systems)
+			{
+				var coreNames = cores.Select(core => core.Name).ToList();
+				bool found = false;
+				foreach (var (systemIds, existingCores) in _systemGroups)
+				{
+					if (existingCores.SequenceEqual(coreNames))
+					{
+						systemIds.Add(systemId);
+						found = true;
+						break;
+					}
+				}
+
+				if (!found)
+					_systemGroups.Add(([ systemId ], coreNames));
+			}
 			SystemsFlat = systemsFlat.Values;
 		}
 
@@ -205,9 +227,9 @@ namespace BizHawk.Emulation.Cores
 		UserPreference = -200,
 
 		/// <summary>
-		/// A very good core that should be preferred over normal cores.  Don't use this?
+		/// The default core for a system when no other preferences exist. Must be set once per system
 		/// </summary>
-		High = -100,
+		DefaultPreference = -100,
 
 		/// <summary>
 		/// Most cores should use this
