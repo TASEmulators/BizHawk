@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
-
-using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
@@ -165,7 +164,6 @@ namespace BizHawk.Client.Common
 		[JsonIgnore]
 		public string FirmwaresPathFragment => this[GLOBAL, "Firmware"].Path;
 
-		[JsonIgnore]
 		internal string TempFilesFragment => this[GLOBAL, "Temp Files"].Path;
 
 		public static readonly Lazy<IReadOnlyList<PathEntry>> Defaults = new(() => new[]

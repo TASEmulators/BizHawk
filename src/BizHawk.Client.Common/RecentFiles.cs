@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace BizHawk.Client.Common
 {
 	public class RecentFiles
 	{
+		[JsonInclude]
+		[JsonPropertyOrder(-1)]
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private List<string> recentlist;
 

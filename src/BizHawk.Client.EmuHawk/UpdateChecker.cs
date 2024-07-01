@@ -1,12 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Text.Json.Nodes;
 using System.Threading;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
-
-using Newtonsoft.Json.Linq;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -74,9 +73,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				JObject response = JObject.Parse(DownloadURLAsString(_latestVersionInfoURL));
+				var response = JsonNode.Parse(DownloadURLAsString(_latestVersionInfoURL));
 
-				LatestVersion = ValidateVersionNumberString((string)response["name"]);
+				LatestVersion = ValidateVersionNumberString(response["name"].GetValue<string>());
 			}
 			catch
 			{
