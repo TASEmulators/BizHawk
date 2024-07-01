@@ -1,3 +1,5 @@
+using SDL2;
+
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
@@ -40,5 +42,13 @@ namespace BizHawk.Emulation.Common
 		/// The user must make a context active before using this
 		/// </summary>
 		IntPtr GetGLProcAddress(string? proc);
+
+		/// <summary>
+		/// Gets the current value for <paramref name="attribute"/> in the current OpenGL context
+		/// </summary>
+		/// <param name="attribute">The attribute to check</param>
+		int GLGetAttribute(SDL.SDL_GLattr attribute);
+
+		void SwapBuffers(object context);
 	}
 }
