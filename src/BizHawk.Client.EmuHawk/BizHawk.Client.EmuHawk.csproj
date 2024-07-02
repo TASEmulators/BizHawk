@@ -267,10 +267,10 @@
 		<EmbeddedResource Update="LogWindow.resx" DependentUpon="LogWindow.cs" />
 		<Compile Update="MainForm.cs" SubType="Form" />
 		<Compile Update="MainForm.Designer.cs" DependentUpon="MainForm.cs" />
-		<Compile Update="MainForm.Events.cs" DependentUpon="MainForm.cs" SubType="Form" />
+		<Compile Update="MainForm.Events.cs" DependentUpon="MainForm.cs" />
 		<Compile Update="MainForm.FileLoader.cs" DependentUpon="MainForm.cs" SubType="Form" />
-		<Compile Update="MainForm.Hotkey.cs" DependentUpon="MainForm.cs" SubType="Form" />
-		<Compile Update="MainForm.Movie.cs" DependentUpon="MainForm.cs" SubType="Form" />
+		<Compile Update="MainForm.Hotkey.cs" DependentUpon="MainForm.cs" />
+		<Compile Update="MainForm.Movie.cs" DependentUpon="MainForm.cs" />
 		<EmbeddedResource Update="MainForm.resx" DependentUpon="MainForm.cs" SubType="Designer" />
 		<Compile Update="movie/EditCommentsForm.cs" SubType="Form" />
 		<Compile Update="movie/EditCommentsForm.Designer.cs" DependentUpon="EditCommentsForm.cs" />
@@ -299,6 +299,7 @@
 		<Compile Update="RetroAchievements/RAIntegrationDownloaderForm.cs" SubType="Form" />
 		<Compile Update="RetroAchievements/RAIntegrationDownloaderForm.Designer.cs" DependentUpon="RAIntegrationDownloaderForm.cs" />
 		<EmbeddedResource Update="RetroAchievements/RAIntegrationDownloaderForm.resx" DependentUpon="RAIntegrationDownloaderForm.cs" />
+		<Compile Update="CoreDownloaderForm.Designer.cs" DependentUpon="CoreDownloaderForm.cs" />
 		<Compile Update="RetroAchievements/RCheevos.*.cs" DependentUpon="RCheevos.cs" />
 		<Compile Update="RetroAchievements/RetroAchievements.*.cs" DependentUpon="RetroAchievements.cs" />
 		<Compile Update="RomStatusPicker.cs" SubType="Form" />
@@ -330,9 +331,9 @@
 		<EmbeddedResource Update="tools/Debugger/BreakpointControl.resx" DependentUpon="BreakpointControl.cs" />
 		<Compile Update="tools/Debugger/GenericDebugger.cs" SubType="Form" />
 		<Compile Update="tools/Debugger/GenericDebugger.Designer.cs" DependentUpon="GenericDebugger.cs" />
-		<Compile Update="tools/Debugger/GenericDebugger.Disassembler.cs" DependentUpon="GenericDebugger.cs" SubType="Form" />
-		<Compile Update="tools/Debugger/GenericDebugger.IControlMainform.cs" DependentUpon="GenericDebugger.cs" SubType="Form" />
-		<Compile Update="tools/Debugger/GenericDebugger.IToolForm.cs" DependentUpon="GenericDebugger.cs" SubType="Form" />
+		<Compile Update="tools/Debugger/GenericDebugger.Disassembler.cs" DependentUpon="GenericDebugger.cs" />
+		<Compile Update="tools/Debugger/GenericDebugger.IControlMainform.cs" DependentUpon="GenericDebugger.cs" />
+		<Compile Update="tools/Debugger/GenericDebugger.IToolForm.cs" DependentUpon="GenericDebugger.cs" />
 		<EmbeddedResource Update="tools/Debugger/GenericDebugger.resx" DependentUpon="GenericDebugger.cs" />
 		<Compile Update="tools/Debugger/RegisterBoxControl.cs" SubType="UserControl" />
 		<Compile Update="tools/Debugger/RegisterBoxControl.Designer.cs" DependentUpon="RegisterBoxControl.cs" />
