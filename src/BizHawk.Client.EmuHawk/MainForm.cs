@@ -91,18 +91,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var groupLabel = appliesTo[0];
 				var submenu = new ToolStripMenuItem { Text = groupLabel };
-				void ClickHandler(object clickSender, EventArgs clickArgs)
-				{
-					var coreName = ((ToolStripMenuItem) clickSender).Text;
-					foreach (var system in appliesTo)
-					{
-						if (Emulator.SystemId == system && Emulator.Attributes().CoreName != coreName) FlagNeedsReboot();
-						Config.PreferredCores[system] = coreName;
-					}
-				}
 				submenu.DropDownItems.AddRange(coreNames.Select(coreName => {
 					var entry = new ToolStripMenuItem { Text = coreName };
-					entry.Click += ClickHandler;
+					entry.Click += (_, _) =>
+					{
+						string currentCoreName = Emulator.Attributes().CoreName;
+						if (coreName != currentCoreName && coreNames.Contains(currentCoreName)) FlagNeedsReboot();
+						foreach (string system in appliesTo)
+							Config.PreferredCores[system] = coreName;
+					};
 					return (ToolStripItem) entry;
 				}).ToArray());
 				submenu.DropDownOpened += (openedSender, _1) =>
