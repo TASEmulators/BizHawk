@@ -129,7 +129,7 @@ A "backport" release, [1.13.2](https://github.com/TASEmulators/BizHawk/releases/
 
 Install the listed package with your package manager (some buttons are links to the relevant package). The changelog can be found [over on TASVideos](https://tasvideos.org/Bizhawk/ReleaseHistory).
 
-[![Arch Linux | bizhawk-monort (AUR)](https://img.shields.io/badge/Arch_Linux-bizhawk--bin_(AUR)-%231793D1.svg?logo=archlinux&style=popout)](https://aur.archlinux.org/packages/bizhawk-bin)
+[![Arch Linux | bizhawk-bin (AUR)](https://img.shields.io/badge/Arch_Linux-bizhawk--bin_(AUR)-%231793D1.svg?logo=archlinux&style=popout)](https://aur.archlinux.org/packages/bizhawk-bin)
 
 No package for your distro? Install via Nix (see below), or install manually by grabbing the latest release here on GitHub:
 
