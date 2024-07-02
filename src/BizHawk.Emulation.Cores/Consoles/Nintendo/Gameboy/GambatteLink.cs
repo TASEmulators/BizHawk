@@ -50,7 +50,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				_linkedCores[i] = new Gameboy(lp.Comm, lp.Roms[i].Game, lp.Roms[i].RomData, _settings._linkedSettings[i], _syncSettings._linkedSyncSettings[i], lp.DeterministicEmulationRequested);
 				_linkedCores[i].ConnectInputCallbackSystem(_inputCallbacks);
 				_linkedCores[i].ConnectMemoryCallbackSystem(_memoryCallbacks, i);
-				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: false, sub: false, tilt: false, rumble: false, remote: false));
+				IsAnySgb |= IsSgb(i);
+				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: IsSgb(i), sub: false, tilt: false, rumble: false, remote: false));
 				_linkedBlips[i] = new BlipBuffer(1024);
 				_linkedBlips[i].SetRates(2097152 * 2, 44100);
 				_linkedOverflow[i] = 0;
@@ -68,6 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			FrameBuffer = CreateVideoBuffer();
 			VideoBuffer = CreateVideoBuffer();
+			SgbVideoBuffer = CreateSGBVideoBuffer();
 
 			GBLinkController = CreateControllerDefinition();
 
@@ -144,12 +146,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private ControllerDefinition CreateControllerDefinition()
 		{
-			ControllerDefinition ret = new($"GB Link {_numCores}x Controller");
-			for (int i = 0; i < _numCores; i++)
+			static void AddGBButtonsForPlayer(int p, ControllerDefinition ret)
 			{
-				ret.BoolButtons.AddRange(
-					new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Power" }
-						.Select(s => $"P{i + 1} {s}"));
+				var pfx = $"P{p} ";
+				ret.BoolButtons.AddRange(new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" }
+					.Select(s => pfx + s));
+			}
+			ControllerDefinition ret = new($"GB Link {_numCores}x Controller");
+			for (int i = 0, p = 1; i < _numCores; i++)
+			{
+				AddGBButtonsForPlayer(p, ret);
+				ret.BoolButtons.Add($"P{p} Power");
+				p++;
+				if (IsSgb(i))
+				{
+					// add 3 more gamepads without a Power button
+					for (int e = p + 3; p < e; p++) AddGBButtonsForPlayer(p, ret);
+				}
 			}
 			ret.BoolButtons.Add("Toggle Link Connection");
 			if (_numCores > 2)
@@ -158,6 +171,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				ret.BoolButtons.Add("Toggle Link Spacing");
 			}
 			return ret.MakeImmutable();
+		}
+
+		private bool IsSgb(int i)
+			=> _linkedCores[i].IsSgb;
+
+		public bool IsAnySgb { get; private set; }
+
+		private bool ShowBorder(int i)
+			=> IsSgb(i) && _settings._linkedSettings[i].ShowBorder;
+
+		public bool ShowAnyBorder()
+		{
+			for (var i = 0; i < _numCores; i++) if (ShowBorder(i)) return true;
+			return false;
 		}
 
 		private const int P1 = 0;

@@ -8,8 +8,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public class SubBsnesCore : IEmulator, ICycleTiming
 	{
+		[CoreConstructor(VSystemID.Raw.GB)]
+		[CoreConstructor(VSystemID.Raw.GBC)]
 		[CoreConstructor(VSystemID.Raw.Satellaview)]
-		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
 		public SubBsnesCore(CoreLoadParameters<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings> loadParameters)
 		{
