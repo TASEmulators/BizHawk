@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			foreach (var s in GBLinkController.BoolButtons)
 			{
 				if (!controller.IsPressed(s)) continue;
-				Debug.Assert(s[0] is 'P');
+				if (s[0] is not 'P') continue;
 				var iSpace = s.IndexOf(' ');
 				var playerNum = int.Parse(s.Substring(startIndex: 1, length: iSpace - 1));
 				var consoleNum = 0;
