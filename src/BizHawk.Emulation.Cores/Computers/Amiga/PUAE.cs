@@ -103,11 +103,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				}
 				else
 				{
-					_exe.AddReadonlyFile(lp.Roms[index].FileData, FileNames.FD + index);
+					_exe.AddTransientFile(lp.Roms[index].FileData, FileNames.FD + index);
 					if (index < Math.Min(LibPUAE.MAX_FLOPPIES, _syncSettings.FloppyDrives))
 					{
 						AppendSetting($"floppy{index}={FileNames.FD}{index}");
 						AppendSetting($"floppy{index}type={(int)DriveType.DRV_35_DD}");
+						AppendSetting($"floppy_write_protect=no");
 					}
 				}
 			}
