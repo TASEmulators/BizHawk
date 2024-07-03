@@ -7,8 +7,6 @@ using System.Reflection;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 
 namespace BizHawk.Tests.Testroms.GB.CPPTestroms

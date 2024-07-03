@@ -6,8 +6,6 @@ using System.Reflection;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Cores;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 
 namespace BizHawk.Tests.Testroms.GB

@@ -3,7 +3,6 @@ using System.Reflection;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

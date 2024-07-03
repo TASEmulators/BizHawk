@@ -1,8 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using PE = BizHawk.Common.PathExtensions.PathExtensions;
 
 namespace BizHawk.Tests.Common.PathExtensions

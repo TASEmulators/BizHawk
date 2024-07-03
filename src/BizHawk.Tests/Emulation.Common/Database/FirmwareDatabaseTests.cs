@@ -1,5 +1,3 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 

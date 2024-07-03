@@ -4,8 +4,6 @@ using System.Linq;
 
 using BizHawk.Common.CollectionExtensions;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using CE = BizHawk.Common.CollectionExtensions.CollectionExtensions;
 
 namespace BizHawk.Tests.Common.CollectionExtensions

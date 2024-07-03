@@ -10,8 +10,6 @@ using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 
 namespace BizHawk.Tests.Testroms.GB

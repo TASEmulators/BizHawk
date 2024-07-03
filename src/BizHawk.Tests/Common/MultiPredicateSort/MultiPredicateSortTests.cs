@@ -3,8 +3,6 @@ using System.Linq;
 
 using BizHawk.Common;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace BizHawk.Tests.Common.MultiPredicateSort
 {
 	[TestClass]

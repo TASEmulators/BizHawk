@@ -6,8 +6,6 @@ using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace BizHawk.Tests.Client.Common.Api
 {
 	[TestClass]

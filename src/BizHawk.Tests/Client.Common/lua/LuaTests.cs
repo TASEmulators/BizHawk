@@ -4,8 +4,6 @@ using System.Linq;
 
 using BizHawk.Client.Common;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace BizHawk.Tests.Client.Common.Lua
 {
 #if !SKIP_PLATFORM_TESTS

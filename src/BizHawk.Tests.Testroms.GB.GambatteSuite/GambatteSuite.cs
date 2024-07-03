@@ -9,8 +9,6 @@ using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Common.StringExtensions;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 
 namespace BizHawk.Tests.Testroms.GB.GambatteSuite

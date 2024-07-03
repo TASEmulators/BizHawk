@@ -3,7 +3,6 @@ using System.Linq;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BizHawk.Tests.Client.Common.Movie
 {

@@ -7,8 +7,6 @@ using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace BizHawk.Tests.Testroms.GB
 {
 	public static class TestUtils
