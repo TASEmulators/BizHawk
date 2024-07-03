@@ -2,6 +2,7 @@
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
+#pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
 {
 	public class GameSharkDecoder
@@ -143,3 +144,4 @@ namespace BizHawk.Client.Common.cheats
 		}
 	}
 }
+#pragma warning restore MA0089

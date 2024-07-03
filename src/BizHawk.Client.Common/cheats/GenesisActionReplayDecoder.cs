@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
+#pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
 {
 	// TODO: validate string and throw
@@ -51,3 +52,4 @@ namespace BizHawk.Client.Common.cheats
 		}
 	}
 }
+#pragma warning restore MA0089

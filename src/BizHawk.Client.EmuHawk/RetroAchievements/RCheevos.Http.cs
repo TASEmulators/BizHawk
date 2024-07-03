@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 					? HttpPost(request.URL, request.PostData, request.ContentType)
 					: HttpGet(request.URL);
 
-				apiTask.ContinueWith(async t =>
+				_ = apiTask.ContinueWith(async t =>
 				{
 					var result = await t;
 					if (result is null) // likely a timeout
