@@ -8,6 +8,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+#pragma warning disable MA0057 // oops, should have called these `*Attribute`, too late now --yoshi
 	public static class ExternalToolApplicability
 	{
 		/// <remarks>This class is not deprecated, do not remove it.</remarks>
@@ -100,6 +101,7 @@ namespace BizHawk.Client.Common
 
 		public class DuplicateException : Exception {}
 	}
+#pragma warning disable MA0057
 
 	[AttributeUsage(AttributeTargets.Class)]
 	public sealed class ExternalToolAttribute : Attribute
