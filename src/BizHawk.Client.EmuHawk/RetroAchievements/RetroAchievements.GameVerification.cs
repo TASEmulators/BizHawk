@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -432,7 +433,8 @@ namespace BizHawk.Client.EmuHawk
 				Marshal.Copy(optional_program_id, programIdBytes, 0, 8);
 				var programId = BitConverter.ToUInt64(programIdBytes, 0);
 
-				using var seeddb = new BinaryReader(GetFirmware(new("3DS", "seeddb")));
+				FirmwareID seeddbFWID = new("3DS", "seeddb");
+				using BinaryReader seeddb = new(GetFirmware(seeddbFWID));
 				var count = seeddb.ReadUInt32();
 				seeddb.BaseStream.Seek(12, SeekOrigin.Current); // apparently some padding bytes before actual seeds
 				for (long i = 0; i < count; i++)
@@ -446,7 +448,8 @@ namespace BizHawk.Client.EmuHawk
 
 					var sha256Input = new byte[32];
 					Marshal.Copy(primary_key_y, sha256Input, 0, 16);
-					seeddb.BaseStream.Read(sha256Input, 16, 16);
+					var bytesRead = seeddb.BaseStream.Read(sha256Input, offset: 16, count: 16);
+					Debug.Assert(bytesRead is 16, $"reached end-of-file while reading {seeddbFWID} firmware");
 					var sha256Digest = SHA256Checksum.Compute(sha256Input);
 
 					var secondaryKeyYBytes = new byte[17];

@@ -55,7 +55,8 @@ namespace BizHawk.Common
 			if (src.Read(tmp, 0, 2) != 2) throw new InvalidOperationException("Unexpected end of stream");
 			if (tmp[0] != 0x1F || tmp[1] != 0x8B) throw new InvalidOperationException("GZIP header not present");
 			src.Seek(-4, SeekOrigin.End);
-			src.Read(tmp, 0, 4);
+			var bytesRead = src.Read(tmp, offset: 0, count: tmp.Length);
+			Debug.Assert(bytesRead == tmp.Length);
 			src.Seek(0, SeekOrigin.Begin);
 			using var gs = new GZipStream(src, CompressionMode.Decompress, true);
 			var data = new byte[BitConverter.ToInt32(tmp, 0)];

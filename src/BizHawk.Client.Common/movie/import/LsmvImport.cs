@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -35,7 +36,8 @@ namespace BizHawk.Client.Common.movie.import
 			using var fs = new FileStream(SourceFile.FullName, FileMode.Open, FileAccess.Read);
 			{
 				byte[] data = new byte[4];
-				fs.Read(data, 0, 4);
+				var bytesRead = fs.Read(data, offset: 0, count: data.Length);
+				Debug.Assert(bytesRead == data.Length, "reached end-of-file while reading header");
 				if (!data.SequenceEqual(Zipheader))
 				{
 					Result.Errors.Add("This is not a zip file.");

@@ -4,6 +4,7 @@ using System.Linq;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 
 using Silk.NET.Core.Native;
 using Silk.NET.OpenAL;
@@ -208,9 +209,7 @@ namespace BizHawk.Bizware.Audio
 			_wavSourceID = _al.GenSource();
 			_wavBufferID = _al.GenBuffer();
 
-			var tempBuffer = new byte[wavStream.Length];
-			wavStream.Read(tempBuffer);
-
+			var tempBuffer = wavStream.ReadAllBytes();
 			if (wavStream.Format == SDL2WavStream.AudioFormat.S16MSB)
 			{
 				EndiannessUtils.MutatingByteSwap16(tempBuffer);
