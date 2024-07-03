@@ -4045,7 +4045,7 @@ namespace BizHawk.Client.EmuHawk
 
 					ExtToolManager.BuildToolStrip();
 
-					RomLoaded?.Invoke(null, EventArgs.Empty);
+					RomLoaded?.Invoke(this, EventArgs.Empty);
 					return true;
 				}
 				else if (Emulator.IsNull())
@@ -4059,7 +4059,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					// The ROM has been loaded by a recursive invocation of the LoadROM method.
-					RomLoaded?.Invoke(null, EventArgs.Empty);
+					RomLoaded?.Invoke(this, EventArgs.Empty);
 					return true;
 				}
 			}

@@ -55,6 +55,7 @@ namespace BizHawk.Client.Common
 
 		public int BufferWidth() => VideoProvider.BufferWidth;
 
+#pragma warning disable MA0091 // passing through `sender` is intentional
 		private void CallBeforeQuickLoad(object sender, BeforeQuickLoadEventArgs args)
 			=> BeforeQuickLoad?.Invoke(sender, args);
  
@@ -69,6 +70,7 @@ namespace BizHawk.Client.Common
  
 		private void CallStateSaved(object sender, StateSavedEventArgs args)
 			=> StateSaved?.Invoke(sender, args);
+#pragma warning restore MA0091
 
 		public void ClearAutohold() => _mainForm.ClearHolds();
 
