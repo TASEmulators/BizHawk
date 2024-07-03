@@ -98,7 +98,6 @@ namespace BizHawk.Emulation.Cores.Components.ARM
 			if (Str(d, s, false))
 				return null;
 			string[] ret = Encoding.ASCII.GetString(s.total, 0, Array.IndexOf(s.total, (byte)0))
-				.ToString()
 				.Split(new string[] {" "}, 2, StringSplitOptions.None);
 			return ret[0].PadRight(8) + (ret.Length > 1 ? ret[1] : "");
 		}
