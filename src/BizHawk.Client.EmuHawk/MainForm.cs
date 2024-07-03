@@ -491,7 +491,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateKeyPriorityIcon();
 
 			// TODO GL - a lot of disorganized wiring-up here
-			// installed separately on Unix (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
 			_presentationPanel = new(
 				Config,
 				GL,
