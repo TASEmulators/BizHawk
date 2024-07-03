@@ -98,6 +98,9 @@ namespace BizHawk.Tests.Testroms.GB
 
 			public override void ActivateOpenGLContext() {}
 
+			protected override int GetGraphicsControlDpi()
+				=> DisplayManagerBase.DEFAULT_DPI;
+
 			protected override Size GetGraphicsControlSize()
 				=> throw new NotImplementedException();
 

@@ -42,6 +42,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public const int DEFAULT_DPI = 96;
+
 		public OSDManager OSD { get; }
 
 		protected Config GlobalConfig;
