@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.DiscSystem;
@@ -310,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			static string ResolvePath(string path)
 			{
-				if (path.IndexOf('|') == -1 && Disc.IsValidExtension(Path.GetExtension(path)))
+				if (!path.ContainsOrdinal('|') && Disc.IsValidExtension(Path.GetExtension(path)))
 				{
 					return path; // nothing to do in this case
 				}
@@ -342,7 +343,7 @@ namespace BizHawk.Client.EmuHawk
 
 			static ConsoleID IdentifyConsole(string path)
 			{
-				if (path.IndexOf('|') == -1 && Disc.IsValidExtension(Path.GetExtension(path)))
+				if (!path.ContainsOrdinal('|') && Disc.IsValidExtension(Path.GetExtension(path)))
 				{
 					using var disc = DiscExtensions.CreateAnyType(path, Console.WriteLine);
 					if (disc is null)

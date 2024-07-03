@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!Game.IsNullInstance())
 			{
-				if (MainForm.CurrentlyOpenRom.Contains("|"))
+				if (MainForm.CurrentlyOpenRom.ContainsOrdinal('|'))
 				{
 					var pieces = MainForm.CurrentlyOpenRom.Split('|');
 

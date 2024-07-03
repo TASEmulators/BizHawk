@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.Z80A
@@ -13,11 +14,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			//n immediate succeeds the opcode and the displacement (if present)
 			//nn immediately succeeds the opcode and the displacement (if present)
 
-			if (format.IndexOf("nn", StringComparison.Ordinal) != -1) format = format.Replace("nn", $"{read(addr++) + (read(addr++) << 8):X4}h"); // LSB is read first
-			if (format.IndexOf("n", StringComparison.Ordinal) != -1) format = format.Replace("n", $"{read(addr++):X2}h");
+			if (format.ContainsOrdinal("nn")) format = format.Replace("nn", $"{read(addr++) + (read(addr++) << 8):X4}h"); // LSB is read first
+			if (format.ContainsOrdinal('n')) format = format.Replace("n", $"{read(addr++):X2}h");
 
-			if (format.IndexOf("+d", StringComparison.Ordinal) != -1) format = format.Replace("+d", "d");
-			if (format.IndexOf("d", StringComparison.Ordinal) != -1)
+			format = format.Replace("+d", "d");
+			if (format.ContainsOrdinal('d'))
 			{
 				var b = unchecked ((sbyte) read(addr++));
 				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{(b < 0 ? -b : b):X2}h");

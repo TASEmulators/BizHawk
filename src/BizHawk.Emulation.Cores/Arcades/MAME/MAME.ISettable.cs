@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					}
 					else
 					{
-						if (hashdata.Contains("^"))
+						if (hashdata.EndsWithOrdinal('^'))
 						{
 							hashdata = hashdata.RemoveSuffix("^");
 							name += " (BAD DUMP)";
