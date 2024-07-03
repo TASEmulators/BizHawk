@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	// there is a coincident timer increment, there will be an additional increment along with this write.
 	// not sure it effects all models or of exact details, see test tac_set_timer_disabled.gbc
 
-	public class Timer
+	public sealed class GBTimer
 	{
 		public GBHawk Core { get; set; }
 
