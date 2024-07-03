@@ -5,7 +5,7 @@
 	<Import Project="../../Common.props" />
 	<PropertyGroup>
 		<EnableMSTestRunner>true</EnableMSTestRunner>
-		<NoWarn>$(NoWarn);IDE0065;SA1200</NoWarn> <!-- IDE0065 and SA1200 want imports before a namespace statement -->
+		<NoWarn>$(NoWarn);MA0136;IDE0065;SA1200</NoWarn> <!-- MA0136 is the CRLF in "raw strings" warning; IDE0065 and SA1200 want imports before a namespace statement -->
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 	<ItemGroup>
