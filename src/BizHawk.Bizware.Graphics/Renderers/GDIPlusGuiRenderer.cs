@@ -1,6 +1,5 @@
 // this is full of bugs probably, related to state from old rendering sessions being all messed up. its only barely good enough to work at all
 
-using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;

@@ -1,4 +1,3 @@
-using System;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Components.I8048

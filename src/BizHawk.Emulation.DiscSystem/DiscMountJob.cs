@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.DiscSystem.CUE;

@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// MOS technology 6526 "CIA"

@@ -1,6 +1,5 @@
 #nullable enable
 
-using System;
 using System.Drawing;
 
 using BizHawk.Bizware.Graphics;

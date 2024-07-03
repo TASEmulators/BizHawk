@@ -1,5 +1,3 @@
-using System;
-
 namespace BizHawk.Emulation.Cores.Components.Z80A
 {
 	public partial class Z80A

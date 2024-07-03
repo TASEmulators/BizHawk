@@ -1,5 +1,3 @@
-using System;
-
 using static SDL2.SDL;
 
 namespace BizHawk.Bizware.Graphics

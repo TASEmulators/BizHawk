@@ -1,6 +1,5 @@
 ﻿#if AVI_SUPPORT
 #pragma warning disable SA1129
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Globalization;
 using System.Windows.Forms;
 using BizHawk.Client.EmuHawk.CustomControls;

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Globalization;
 
 #pragma warning disable MA0089

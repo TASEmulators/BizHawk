@@ -1,5 +1,3 @@
-using System;
-
 //I have an ff9 disc which is truncated
 
 namespace BizHawk.Emulation.DiscSystem

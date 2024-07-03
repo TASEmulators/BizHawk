@@ -1,5 +1,3 @@
-using System;
-
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common

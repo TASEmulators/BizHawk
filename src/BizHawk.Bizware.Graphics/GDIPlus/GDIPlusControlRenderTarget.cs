@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 
 using SDGraphics = System.Drawing.Graphics;

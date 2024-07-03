@@ -5,7 +5,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 //using BizHawk.Emulation.DiscSystem;
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;

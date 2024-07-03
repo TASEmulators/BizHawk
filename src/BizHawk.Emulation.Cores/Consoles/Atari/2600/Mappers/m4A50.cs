@@ -1,4 +1,3 @@
-﻿using System;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600

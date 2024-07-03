@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using BizHawk.Common;
-using System;
+
 using System.Collections.Generic;
 using BizHawk.Common.StringExtensions;
 

@@ -1,5 +1,3 @@
-﻿using System;
-
 using NLua;
 
 namespace BizHawk.Client.Common

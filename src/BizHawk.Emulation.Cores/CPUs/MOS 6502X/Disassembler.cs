@@ -1,4 +1,3 @@
-using System;
 using BizHawk.Emulation.Common;
 using System.Collections.Generic;
 

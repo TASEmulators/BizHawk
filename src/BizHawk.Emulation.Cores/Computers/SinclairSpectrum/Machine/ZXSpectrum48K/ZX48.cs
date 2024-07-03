@@ -1,5 +1,5 @@
 ﻿using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
+
 using System.Collections.Generic;
 using BizHawk.Emulation.Cores.Sound;
 

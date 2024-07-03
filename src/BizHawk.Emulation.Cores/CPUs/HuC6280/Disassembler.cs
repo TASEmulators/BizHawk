@@ -1,5 +1,3 @@
-using System;
-
 namespace BizHawk.Emulation.Cores.Components.H6280
 {
 	public partial class HuC6280

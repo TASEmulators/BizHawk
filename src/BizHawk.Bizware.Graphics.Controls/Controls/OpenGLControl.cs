@@ -1,4 +1,3 @@
-using System;
 using System.Windows.Forms;
 
 using BizHawk.Common;

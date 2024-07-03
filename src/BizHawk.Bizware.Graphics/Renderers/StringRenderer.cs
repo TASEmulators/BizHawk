@@ -1,7 +1,6 @@
 // https://www.angelcode.com/products/bmfont/
 // https://devblog.cyotek.com/post/angelcode-bitmap-font-parsing-using-csharp
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;

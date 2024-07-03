@@ -1,5 +1,3 @@
-using System;
-
 using Silk.NET.Core.Contexts;
 using Silk.NET.OpenGL;
 using Silk.NET.WGL.Extensions.NV;

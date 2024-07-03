@@ -22,7 +22,6 @@
 //hiding the tab control headers.. once this design gets solid, ill get rid of them
 //http://www.mostthingsweb.com/2011/01/hiding-tab-headers-on-a-tabcontrol-in-c/
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;

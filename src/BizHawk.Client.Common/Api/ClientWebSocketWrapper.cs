@@ -1,6 +1,5 @@
 #nullable enable
 
-using System;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
