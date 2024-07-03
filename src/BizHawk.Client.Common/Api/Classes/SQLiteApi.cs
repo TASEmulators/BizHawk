@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 			return "Database Opened Successfully";
 		}
 
-		public string WriteCommand(string query = null)
+		public string WriteCommand(string query)
 		{
 			if (string.IsNullOrWhiteSpace(query)) return "query is empty";
 			if (_dbConnection == null) return "Database not open.";
@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 			return result;
 		}
 
-		public object ReadCommand(string query = null)
+		public object ReadCommand(string query)
 		{
 			if (string.IsNullOrWhiteSpace(query)) return "query is empty";
 			if (_dbConnection == null) return "Database not open.";

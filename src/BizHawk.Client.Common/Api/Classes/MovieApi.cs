@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 			return lg.GenerateLogEntry();
 		}
 
-		public void Save(string filename = null)
+		public void Save(string filename)
 		{
 			if (_movieSession.Movie.NotActive())
 			{

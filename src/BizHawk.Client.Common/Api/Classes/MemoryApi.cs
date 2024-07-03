@@ -188,7 +188,8 @@ namespace BizHawk.Client.Common
 		public IReadOnlyCollection<string> GetMemoryDomainList()
 			=> DomainList.Select(static domain => domain.Name).ToList();
 
-		public uint GetMemoryDomainSize(string name = null) => (uint) NamedDomainOrCurrent(name).Size;
+		public uint GetMemoryDomainSize(string name)
+			=> (uint) NamedDomainOrCurrent(name).Size;
 
 		public string GetCurrentMemoryDomain() => Domain.Name;
 
