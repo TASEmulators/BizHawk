@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 
 			[DisplayName("Console Mode")]
-			[Description("Which console to emulate ('Auto' picks based on the rom header)")]
+			[Description("Picks which console to emulate.")]
 			[DefaultValue(ConsoleModeType.Auto)]
 			public ConsoleModeType ConsoleMode { get; set; }
 
