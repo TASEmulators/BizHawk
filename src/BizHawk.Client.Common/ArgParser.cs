@@ -23,47 +23,47 @@ namespace BizHawk.Client.Common
 				: base(name: name, description: description) {}
 		}
 
-		private static readonly Argument<string?> ArgumentRomFilePath = new("rom", () => null);
+		private static readonly Argument<string?> ArgumentRomFilePath = new(name: "rom", () => null, description: "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`");
 
 		private static readonly IReadOnlyList<Option> GeneratedOptions;
 
 		private static readonly BespokeOption<string?> OptionAVDumpAudioSync = new(name: "--audiosync", description: "bool; `true` is the only truthy value, all else falsey; if not set, uses remembered state from config");
 
-		private static readonly BespokeOption<int?> OptionAVDumpEndAtFrame = new("--dump-length");
+		private static readonly BespokeOption<int?> OptionAVDumpEndAtFrame = new(name: "--dump-length", description: "int; frame index at which to stop A/V dumping (encoding)");
 
 		private static readonly BespokeOption<string?> OptionAVDumpFrameList = new("--dump-frames"); // desc added in static ctor
 
 		private static readonly BespokeOption<string?> OptionAVDumpName = new("--dump-name"); // desc added in static ctor
 
-		private static readonly BespokeOption<bool> OptionAVDumpQuitWhenDone = new("--dump-close");
+		private static readonly BespokeOption<bool> OptionAVDumpQuitWhenDone = new(name: "--dump-close", description: "pass to quit completely after A/V dumping (encoding) finishes");
 
 		private static readonly BespokeOption<string?> OptionAVDumpType = new("--dump-type"); // desc added in static ctor
 
-		private static readonly BespokeOption<string?> OptionConfigFilePath = new("--config");
+		private static readonly BespokeOption<string?> OptionConfigFilePath = new(name: "--config", description: "path of config file to use");
 
-		private static readonly BespokeOption<string?> OptionHTTPClientURIGET = new("--url_get");
+		private static readonly BespokeOption<string?> OptionHTTPClientURIGET = new(name: "--url_get", description: "string; URI to use for HTTP 'GET' IPC (Lua `comm.http*Get*`)");
 
-		private static readonly BespokeOption<string?> OptionHTTPClientURIPOST = new("--url_post");
+		private static readonly BespokeOption<string?> OptionHTTPClientURIPOST = new(name: "--url_post", description: "string; URI to use for HTTP 'POST' IPC (Lua `comm.http*Post*`)");
 
-		private static readonly BespokeOption<bool> OptionLaunchChromeless = new(name: "--chromeless", description: "chrome is never shown, even in windowed mode");
+		private static readonly BespokeOption<bool> OptionLaunchChromeless = new(name: "--chromeless", description: "pass and the 'chrome' (a.k.a. GUI) will never be shown, not even in windowed mode");
 
-		private static readonly BespokeOption<bool> OptionLaunchFullscreen = new("--fullscreen");
+		private static readonly BespokeOption<bool> OptionLaunchFullscreen = new(name: "--fullscreen", description: "pass to launch in fullscreen");
 
-		private static readonly BespokeOption<int?> OptionLoadQuicksaveSlot = new("--load-slot");
+		private static readonly BespokeOption<int?> OptionLoadQuicksaveSlot = new(name: "--load-slot", description: "int; quicksave slot which should be loaded on launch");
 
-		private static readonly BespokeOption<string?> OptionLoadSavestateFilePath = new("--load-state");
+		private static readonly BespokeOption<string?> OptionLoadSavestateFilePath = new("--load-state"); // desc added in static ctor
 
 		private static readonly BespokeOption<string?> OptionLuaFilePath = new("--lua"); // desc added in static ctor
 
-		private static readonly BespokeOption<string?> OptionMMFPath = new("--mmf");
+		private static readonly BespokeOption<string?> OptionMMFPath = new(name: "--mmf", description: "path of file to use for 'memory-mapped file' IPC (Lua `comm.mmf*`)");
 
-		private static readonly BespokeOption<string?> OptionMovieFilePath = new("--movie");
+		private static readonly BespokeOption<string?> OptionMovieFilePath = new(name: "--movie", description: "path; input movie which should be loaded on launch");
 
 		private static readonly BespokeOption<string?> OptionOpenExternalTool = new(name: "--open-ext-tool-dll", description: "the first ext. tool from ExternalToolManager.ToolStripMenu which satisfies both of these will be opened: 1) available (no load errors, correct system/rom, etc.) and 2) dll path matches given string; or dll filename matches given string with or without `.dll`");
 
-		private static readonly BespokeOption<bool> OptionOpenLuaConsole = new("--luaconsole");
+		private static readonly BespokeOption<bool> OptionOpenLuaConsole = new(name: "--luaconsole", description: "pass to open the Lua Console");
 
-		private static readonly BespokeOption<bool> OptionQueryAppVersion = new("--version");
+		private static readonly BespokeOption<bool> OptionQueryAppVersion = new(name: "--version", description: "pass to print version information and immediately quit");
 
 		private static readonly BespokeOption<string?> OptionSocketServerIP = new("--socket_ip"); // desc added in static ctor
 
@@ -80,10 +80,11 @@ namespace BizHawk.Client.Common
 			OptionAVDumpFrameList.Description = $"comma-separated list of integers, indices of frames which should be included in the A/V dump (encoding); implies `--{OptionAVDumpEndAtFrame.Name}=<end>` where `<end>` is the highest frame listed";
 			OptionAVDumpName.Description = $"ignored unless `--{OptionAVDumpType.Name}` also passed";
 			OptionAVDumpType.Description = $"ignored unless `--{OptionAVDumpName.Name}` also passed";
+			OptionLoadSavestateFilePath.Description = "path; savestate which should be loaded on launch; this takes precedence over `--{OptionLoadQuicksaveSlot.Name}`";
 			OptionLuaFilePath.Description = $"implies `--{OptionOpenLuaConsole.Name}`";
-			OptionSocketServerIP.Description = $"must be paired with `--{OptionSocketServerPort.Name}`";
-			OptionSocketServerPort.Description = $"must be paired with `--{OptionSocketServerIP.Name}`";
-			OptionSocketServerUseUDP.Description = $"ignored unless `--{OptionSocketServerIP.Name} --{OptionSocketServerPort.Name}` also passed";
+			OptionSocketServerIP.Description = $"string; IP address for Unix socket IPC (Lua `comm.socket*`); must be paired with `--{OptionSocketServerPort.Name}`";
+			OptionSocketServerPort.Description = $"int; port for Unix socket IPC (Lua `comm.socket*`); must be paired with `--{OptionSocketServerIP.Name}`";
+			OptionSocketServerUseUDP.Description = $"pass to use UDP instead of TCP for Unix socket IPC (Lua `comm.socket*`); ignored unless `--{OptionSocketServerIP.Name} --{OptionSocketServerPort.Name}` also passed";
 
 			RootCommand root = new();
 			root.Add(ArgumentRomFilePath);
