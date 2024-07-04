@@ -1,7 +1,7 @@
-﻿using System;
 using System.Globalization;
 using System.Linq;
 
+#pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
 {
 	// TODO:
@@ -95,3 +95,4 @@ namespace BizHawk.Client.Common.cheats
 		}
 	}
 }
+#pragma warning restore MA0089

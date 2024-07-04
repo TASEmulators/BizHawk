@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -79,7 +78,7 @@ namespace BizHawk.Client.Common
 			using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
 			{
 				byte[] data = new byte[4];
-				fs.Read(data, 0, 4);
+				_ = fs.Read(data, offset: 0, count: data.Length); // if stream is too short, the next check will catch it
 				if (!data.SequenceEqual(Zipheader))
 				{
 					return null;

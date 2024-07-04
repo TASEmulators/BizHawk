@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.LR35902;
@@ -122,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public LR35902 cpu;
 		public PPU ppu;
-		public Timer timer;
+		public readonly GBTimer timer;
 		public Audio audio;
 		public SerialPort serialport;
 
@@ -147,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				SetIntRegs = SetIntRegs
 			};
 			
-			timer = new Timer();
+			timer = new();
 			audio = new Audio();
 			serialport = new SerialPort();
 

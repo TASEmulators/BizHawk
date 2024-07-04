@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Emulation.Cores.Components.x86
 {
 	public partial class x86<TCpu> where TCpu : struct, x86CpuType

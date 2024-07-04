@@ -1,5 +1,4 @@
 ﻿using BizHawk.Common.NumberExtensions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BizHawk.Tests.Common;
 

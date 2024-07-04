@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System;
 using System.Runtime.InteropServices;
 
 using static SDL2.SDL;

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -61,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!Game.IsNullInstance())
 			{
-				if (MainForm.CurrentlyOpenRom.Contains("|"))
+				if (HawkFile.PathContainsPipe(MainForm.CurrentlyOpenRom))
 				{
 					var pieces = MainForm.CurrentlyOpenRom.Split('|');
 

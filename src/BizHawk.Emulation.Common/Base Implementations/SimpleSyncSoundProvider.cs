@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Emulation.Common.Base_Implementations
 {
 	/// <summary>

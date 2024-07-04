@@ -1,6 +1,5 @@
 #nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -41,7 +40,7 @@ namespace BizHawk.Client.Common
 			// looking for magic bytes
 			fs.Seek(0x101, SeekOrigin.Begin);
 			var buffer = new byte[8];
-			fs.Read(buffer, 0, 8);
+			_ = fs.Read(buffer, offset: 0, count: buffer.Length); // if stream is too short, the next check will catch it
 			var s = buffer.BytesToHexString();
 			if (s == "7573746172003030" || s == "7573746172202000") return true; // "ustar\000" (libarchive's bsdtar) or "ustar  \0" (GNU Tar)
 
@@ -70,7 +69,7 @@ namespace BizHawk.Client.Common
 			var seekPos = fileStream.Position;
 			fileStream.Seek(0x101, SeekOrigin.Begin);
 			var buffer = new byte[8];
-			fileStream.Read(buffer, 0, 8);
+			_ = fileStream.Read(buffer, offset: 0, count: buffer.Length); // if stream is too short, the next check will catch it
 			fileStream.Seek(seekPos, SeekOrigin.Begin);
 			var s = buffer.BytesToHexString();
 			if (s == "7573746172003030" || s == "7573746172202000") return true; // "ustar\000" (libarchive's bsdtar) or "ustar  \0" (GNU Tar)

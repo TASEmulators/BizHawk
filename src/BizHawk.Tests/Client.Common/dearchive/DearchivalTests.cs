@@ -1,12 +1,9 @@
-﻿using System;
 using System.IO;
 using System.Linq;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BizHawk.Tests.Client.Common.Dearchive
 {

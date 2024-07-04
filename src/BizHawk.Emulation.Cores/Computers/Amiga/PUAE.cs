@@ -5,7 +5,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 //using BizHawk.Emulation.DiscSystem;
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -71,16 +70,44 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			{
 				if (lp.Roms[index].Extension.ToLowerInvariant() == ".hdf")
 				{
-					_exe.AddReadonlyFile(lp.Roms[index].FileData, FileNames.HD + index);
-					AppendSetting($"hardfile2=ro,DH0:\"{FileNames.HD + index}\",32,1,2,512,0,,uae0");
+					var access = "ro";
+					var device_name = "DH0";
+					var volume_name = FileNames.HD + index;
+					var blocks_per_track = 32;
+					var surfaces = 1;
+					var reserved = 2;
+					var block_size = 512;
+					var boot_priority = 0;
+					var filesys_path = "";
+					var controller_unit = "uae0";
+
+					if (Encoding.ASCII.GetString(lp.Roms[index].RomData, 0, 3) == "RDS")
+					{
+						blocks_per_track = 0;
+						surfaces = 0;
+						reserved = 0;
+					}
+					_exe.AddReadonlyFile(lp.Roms[index].FileData, volume_name);
+						AppendSetting($"hardfile2=" +
+							$"{access}," +
+							$"{device_name}:" +
+							$"\"{volume_name}\"," +
+							$"{blocks_per_track}," +
+							$"{surfaces}," +
+							$"{reserved}," +
+							$"{block_size}," +
+							$"{boot_priority}," +
+							$"{filesys_path}," +
+							$"{controller_unit}");
 				}
 				else
 				{
-					_exe.AddReadonlyFile(lp.Roms[index].FileData, FileNames.FD + index);
+					_exe.AddTransientFile(lp.Roms[index].FileData, FileNames.FD + index);
 					if (index < Math.Min(LibPUAE.MAX_FLOPPIES, _syncSettings.FloppyDrives))
 					{
 						AppendSetting($"floppy{index}={FileNames.FD}{index}");
 						AppendSetting($"floppy{index}type={(int)DriveType.DRV_35_DD}");
+						AppendSetting($"floppy_write_protect=no");
 					}
 				}
 			}

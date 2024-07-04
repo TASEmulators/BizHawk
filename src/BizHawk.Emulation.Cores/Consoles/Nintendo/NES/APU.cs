@@ -10,7 +10,6 @@
 
 // TODO - refactor length counter to be separate component
 
-using System;
 using System.Runtime.CompilerServices;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;

@@ -19,6 +19,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.ReflectionCache.dll" />
+		<Using Include="System" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(Configuration)' != 'Debug' ">
 		<Compile Remove="$(MSBuildProjectDirectory)/debug/**/*" />

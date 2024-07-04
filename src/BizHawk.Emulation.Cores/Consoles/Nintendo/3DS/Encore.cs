@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -46,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		[CoreConstructor(VSystemID.Raw.N3DS)]
 		public Encore(CoreLoadParameters<EncoreSettings, EncoreSyncSettings> lp)
 		{
-			if (lp.Roms.Exists(r => r.RomPath.Contains("|")))
+			if (lp.Roms.Exists(static r => HawkFile.PathContainsPipe(r.RomPath)))
 			{
 				throw new InvalidOperationException("3DS does not support compressed ROMs");
 			}

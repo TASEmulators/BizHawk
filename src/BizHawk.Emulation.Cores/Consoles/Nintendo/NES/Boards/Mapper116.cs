@@ -1,6 +1,5 @@
 ﻿//TODO - emulation of mirroring is all bolloxed.
 
-using System;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 

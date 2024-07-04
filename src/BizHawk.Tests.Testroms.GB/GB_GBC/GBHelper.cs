@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -8,8 +7,6 @@ using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.Sameboy;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static BizHawk.Emulation.Cores.Nintendo.Gameboy.Gameboy;
 using static BizHawk.Emulation.Cores.Nintendo.GBHawk.GBHawk;

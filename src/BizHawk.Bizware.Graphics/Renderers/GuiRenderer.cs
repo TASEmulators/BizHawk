@@ -1,6 +1,5 @@
 //http://stackoverflow.com/questions/6893302/decode-rgb-value-to-single-float-without-bit-shift-in-glsl
 
-using System;
 using System.Drawing;
 using System.Numerics;
 

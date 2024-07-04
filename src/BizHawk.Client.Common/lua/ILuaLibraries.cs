@@ -1,5 +1,3 @@
-using System;
-
 using NLua;
 
 using BizHawk.Emulation.Common;

@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common.movie.import
 			using var fs = new FileStream(SourceFile.FullName, FileMode.Open, FileAccess.Read);
 			{
 				byte[] data = new byte[4];
-				fs.Read(data, 0, 4);
+				_ = fs.Read(data, offset: 0, count: data.Length); // if stream is too short, the next check will catch it
 				if (!data.SequenceEqual(Zipheader))
 				{
 					Result.Errors.Add("This is not a zip file.");

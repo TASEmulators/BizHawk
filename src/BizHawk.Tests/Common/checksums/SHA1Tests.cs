@@ -1,9 +1,6 @@
-using System;
 using System.Linq;
 using System.Text;
 using BizHawk.Common;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BizHawk.Tests.Common.checksums
 {

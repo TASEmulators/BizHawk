@@ -1,6 +1,5 @@
 //http://nesdev.parodius.com/6502_cpu.txt
 
-using System;
 using System.Runtime.CompilerServices;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;

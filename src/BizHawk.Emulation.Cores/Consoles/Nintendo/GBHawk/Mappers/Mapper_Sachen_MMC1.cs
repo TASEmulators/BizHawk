@@ -1,5 +1,4 @@
 ﻿using BizHawk.Common;
-using System;
 
 using BizHawk.Emulation.Cores.Components.LR35902;
 

@@ -1,5 +1,5 @@
 ﻿using BizHawk.Common.NumberExtensions;
-using System;
+
 using System.Collections;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC

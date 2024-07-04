@@ -1,5 +1,3 @@
-﻿using System;
-
 // TODO - kill this file (or renew the concept as distinct from the LuaSandbox?)
 namespace BizHawk.Client.Common
 {

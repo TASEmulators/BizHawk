@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -1336,10 +1335,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+#pragma warning disable MA0091 // passing through `sender` is intentional
 		private void DoRightMouseScroll(object sender, MouseEventArgs e)
 		{
 			RightMouseScrolled?.Invoke(sender, e);
 		}
+#pragma warning restore MA0091
 
 		private void ColumnClickEvent(RollColumn/*?*/ column)
 		{
@@ -1621,6 +1622,7 @@ namespace BizHawk.Client.EmuHawk
 				Refresh();
 			}
 
+#pragma warning disable MA0091 // unorthodox, but I think this is sound --yoshi
 			if (_horizontalOrientation)
 			{
 				ColumnScroll?.Invoke(_hBar, e);
@@ -1629,6 +1631,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				RowScroll?.Invoke(_vBar, e);
 			}
+#pragma warning restore MA0091
 		}
 
 		private void HorizontalBar_ValueChanged(object sender, EventArgs e)
@@ -1638,6 +1641,7 @@ namespace BizHawk.Client.EmuHawk
 				Refresh();
 			}
 
+#pragma warning disable MA0091 // unorthodox, but I think this is sound --yoshi
 			if (_horizontalOrientation)
 			{
 				RowScroll?.Invoke(_hBar, e);
@@ -1646,6 +1650,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ColumnScroll?.Invoke(_vBar, e);
 			}
+#pragma warning restore MA0091
 		}
 
 		private void ColumnChangedCallback()

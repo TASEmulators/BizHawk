@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;

@@ -2,7 +2,6 @@
 // https://github.com/Themaister/Emulator-Shader-Pack/blob/master/Cg/README
 // https://github.com/libretro/common-shaders/
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;

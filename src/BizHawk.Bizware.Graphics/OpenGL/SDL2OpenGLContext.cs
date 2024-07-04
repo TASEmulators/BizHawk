@@ -1,7 +1,5 @@
 // #define DEBUG_OPENGL
 
-using System;
-
 #if DEBUG_OPENGL
 using System.Runtime.InteropServices;
 using Silk.NET.OpenGL;

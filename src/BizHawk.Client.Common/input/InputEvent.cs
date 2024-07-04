@@ -1,6 +1,5 @@
 #nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -62,7 +61,8 @@ namespace BizHawk.Client.Common
 
 		public override readonly bool Equals(object? obj) => obj is not null && (LogicalButton) obj == this; //TODO safe type check?
 
-		public override readonly int GetHashCode() => Button.GetHashCode() ^ Modifiers.GetHashCode();
+		public override readonly int GetHashCode()
+			=> HashCode.Combine(Button, Modifiers);
 
 		public override readonly string ToString()
 		{

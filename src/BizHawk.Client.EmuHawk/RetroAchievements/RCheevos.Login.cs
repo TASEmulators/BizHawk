@@ -1,5 +1,3 @@
-using System;
-
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RCheevos

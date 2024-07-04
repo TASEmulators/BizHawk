@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -169,13 +168,10 @@ namespace BizHawk.Client.EmuHawk
 							 */
 							var dearchivalMethod = SharpCompressDearchivalMethod.Instance;
 
+#if false // making this run always to restore the default behavior where unrecognized files are treated like roms --adelikat
 							if (string.IsNullOrEmpty(archive) && dearchivalMethod.CheckSignature(file, out _, out _))
+#endif
 							{
-								sortedFiles[LoadOrdering.Rom].Add(fileInformation);
-							}
-							else
-							{
-								// This is hack is to ensure that unrecognized files are treated like ROMs
 								sortedFiles[LoadOrdering.Rom].Add(fileInformation);
 							}
 

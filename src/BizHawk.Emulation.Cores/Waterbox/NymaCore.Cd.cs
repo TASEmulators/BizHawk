@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;

@@ -1,10 +1,8 @@
-using System;
 using System.IO;
 using System.Linq;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BizHawk.Tests.Client.Common.Movie
 {
@@ -513,7 +511,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			Assert.AreEqual(0, state.Frame);
 			Assert.AreEqual(4, state.Size);
 			var bb = new byte[2];
-			state.GetReadStream().Read(bb, 0, 2);
+			_ = state.GetReadStream().Read(bb, offset: 0, count: bb.Length);
 			Assert.AreEqual(1, bb[0]);
 			Assert.AreEqual(2, bb[1]);
 		}

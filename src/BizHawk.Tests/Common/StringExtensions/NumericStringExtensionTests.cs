@@ -1,4 +1,3 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Tests.Common.StringExtensions

@@ -1,7 +1,6 @@
 ﻿// TODO - introduce Trim for ArtManager
 // TODO - add a small buffer reuse manager.. small images can be stored in larger buffers which we happen to have held. use a timer to wait to free it until some time has passed
 
-using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;

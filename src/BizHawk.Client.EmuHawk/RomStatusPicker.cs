@@ -1,4 +1,3 @@
-﻿using System;
 using System.Windows.Forms;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Emulation.Common;

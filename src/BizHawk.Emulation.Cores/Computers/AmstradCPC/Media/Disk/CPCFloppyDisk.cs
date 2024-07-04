@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using BizHawk.Common;
 using System.Collections.Generic;
-using System;
+
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC

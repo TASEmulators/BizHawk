@@ -1,6 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
-using System;
 
 using BizHawk.Common;
 

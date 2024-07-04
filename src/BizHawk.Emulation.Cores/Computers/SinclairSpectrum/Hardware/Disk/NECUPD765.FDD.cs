@@ -1,6 +1,5 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using System;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {

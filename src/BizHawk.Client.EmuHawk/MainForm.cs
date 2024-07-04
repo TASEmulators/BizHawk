@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -91,18 +90,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var groupLabel = appliesTo[0];
 				var submenu = new ToolStripMenuItem { Text = groupLabel };
-				void ClickHandler(object clickSender, EventArgs clickArgs)
-				{
-					var coreName = ((ToolStripMenuItem) clickSender).Text;
-					foreach (var system in appliesTo)
-					{
-						if (Emulator.SystemId == system && Emulator.Attributes().CoreName != coreName) FlagNeedsReboot();
-						Config.PreferredCores[system] = coreName;
-					}
-				}
 				submenu.DropDownItems.AddRange(coreNames.Select(coreName => {
 					var entry = new ToolStripMenuItem { Text = coreName };
-					entry.Click += ClickHandler;
+					entry.Click += (_, _) =>
+					{
+						string currentCoreName = Emulator.Attributes().CoreName;
+						if (coreName != currentCoreName && coreNames.Contains(currentCoreName)) FlagNeedsReboot();
+						foreach (string system in appliesTo)
+							Config.PreferredCores[system] = coreName;
+					};
 					return (ToolStripItem) entry;
 				}).ToArray());
 				submenu.DropDownOpened += (openedSender, _1) =>
@@ -486,7 +482,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateKeyPriorityIcon();
 
 			// TODO GL - a lot of disorganized wiring-up here
-			// installed separately on Unix (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
 			_presentationPanel = new(
 				Config,
 				GL,
@@ -787,7 +782,7 @@ namespace BizHawk.Client.EmuHawk
 					OSTailoredCode.WindowsVersion._11 => null,
 					OSTailoredCode.WindowsVersion._10 when win10PlusVersion! < new Version(10, 0, 19044) => $"Quick reminder: Your copy of Windows 10 (build {win10PlusVersion.Build}) is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please update to at least 21H2 for increased security.",
 					OSTailoredCode.WindowsVersion._10 => null,
-					_ => $"Quick reminder: Windows {winVersion.ToString().RemovePrefix('_').Replace("_", ".")} is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please get a new operating system for increased security (either Windows 10+ or a GNU+Linux distro)."
+					_ => $"Quick reminder: Windows {winVersion.ToString().RemovePrefix('_').Replace('_', '.')} is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please get a new operating system for increased security (either Windows 10+ or a GNU+Linux distro)."
 				};
 				if (message is not null)
 				{
@@ -4042,7 +4037,7 @@ namespace BizHawk.Client.EmuHawk
 
 					ExtToolManager.BuildToolStrip();
 
-					RomLoaded?.Invoke(null, EventArgs.Empty);
+					RomLoaded?.Invoke(this, EventArgs.Empty);
 					return true;
 				}
 				else if (Emulator.IsNull())
@@ -4056,7 +4051,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					// The ROM has been loaded by a recursive invocation of the LoadROM method.
-					RomLoaded?.Invoke(null, EventArgs.Empty);
+					RomLoaded?.Invoke(this, EventArgs.Empty);
 					return true;
 				}
 			}

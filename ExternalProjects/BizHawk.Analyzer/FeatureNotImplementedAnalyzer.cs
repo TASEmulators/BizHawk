@@ -88,7 +88,9 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 							else
 							{
 								if (IncludesFNIAttribute(pds.AttributeLists)) Wat(pds.GetLocation());
+#if false // accessors will be checked separately
 								else foreach (var accessor in pds.AccessorList!.Accessors) CheckAccessor(accessor);
+#endif
 							}
 							break;
 					}

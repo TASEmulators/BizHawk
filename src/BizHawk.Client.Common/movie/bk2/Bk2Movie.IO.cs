@@ -1,4 +1,3 @@
-﻿using System;
 using System.Globalization;
 using System.IO;
 
@@ -23,7 +22,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var backupName = Filename;
-			backupName = backupName.Insert(Filename.LastIndexOf(".", StringComparison.Ordinal), $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}");
+			backupName = backupName.Insert(Filename.LastIndexOf('.'), $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}");
 			backupName = Path.Combine(Session.BackupDirectory, Path.GetFileName(backupName));
 
 			Write(backupName, isBackup: true);

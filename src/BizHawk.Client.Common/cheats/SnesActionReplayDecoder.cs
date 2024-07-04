@@ -1,4 +1,3 @@
-﻿using System;
 using System.Globalization;
 
 namespace BizHawk.Client.Common.cheats

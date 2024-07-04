@@ -17,7 +17,6 @@
 //PREGAP commands are special : at the moment it is received, emit flat records with a different pregap structure
 //POSTGAP commands are special : TBD
 
-using System;
 using System.IO;
 using System.Collections.Generic;
 using BizHawk.Common;

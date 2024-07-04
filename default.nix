@@ -38,6 +38,12 @@ in {
 , git ? pkgs.gitMinimal # only when building from-CWD (`-local`)
 # rundeps
 , coreutils ? pkgs.coreutils
+, kate ? pkgs.kate.overrideAttrs (oldAttrs: {
+	patches = (oldAttrs.patches or []) ++ [ (fetchpatch {
+		url = "https://invent.kde.org/utilities/kate/-/commit/9ddf4f0c9eb3c26a0ab33c862d2b161bcbdc6a6e.patch"; # Fix name of OmniSharp LSP binary
+		hash = "sha256-a2KqoxuuVhfAQUJA3/yEQb1QCoa1JCvLz7BZZnSLnzI=";
+	}) ];
+})
 , libgdiplus ? pkgs.libgdiplus
 , libGL ? pkgs.libGL
 , lua ? pkgs.lua54Packages.lua
@@ -47,6 +53,7 @@ in {
 	hash = "sha512-GvV707ftLvE0MCTfMJb/M86S2Nxf3vai+HPwq0QvJylmMBwliqYx/nW8X2ja2ruOHzaw3MXXmAxjnv5MMUn07w==";
 }) { inherit system; })
 , nixGL ? nixGLChannel.auto.nixGLDefault
+, omnisharp-roslyn ? pkgs.omnisharp-roslyn
 #, nixVulkan ? nixGLChannel.auto.nixVulkanNvidia
 , openal ? pkgs.openal
 , SDL2 ? pkgs.SDL2
@@ -172,6 +179,9 @@ in {
 			bizhawkAssemblies = asmsFromReleaseArtifacts."bizhawkAssemblies-${latestVersionFrag}-bin";
 		};
 		emuhawk = emuhawk-local;
+		IDEs = {
+			kate = [ kate omnisharp-roslyn ];
+		};
 		launchScriptsForLocalBuild = launchScriptsFor emuhawk-local.assemblies true;
 	};
 in combined // lib.listToAttrs (lib.concatLists (builtins.map

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,6 +7,7 @@ using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.BizInvoke
 {
@@ -534,7 +534,7 @@ namespace BizHawk.BizInvoke
 					throw new NotImplementedException("Multidimensional arrays are not supported!");
 				}
 
-				if (type.Name.Contains('*'))
+				if (type.Name.ContainsOrdinal('*'))
 				{
 					throw new NotImplementedException("Only 0-based 1-dimensional arrays are supported!");
 				}

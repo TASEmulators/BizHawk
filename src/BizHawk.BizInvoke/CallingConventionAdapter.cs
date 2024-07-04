@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,7 +25,7 @@ namespace BizHawk.BizInvoke
 		/// back into host code.
 		/// </summary>
 		/// <returns></returns>
-		IntPtr GetArrivalFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime);
+		IntPtr GetArrivalFunctionPointer(IntPtr p, InvokerParameterInfo pp, object lifetime);
 
 		/// <summary>
 		/// Like Marshal.GetDelegateForFunctionPointer(), but wraps a thunk around the passed native pointer
@@ -45,7 +44,7 @@ namespace BizHawk.BizInvoke
 		/// <param name="pp"></param>
 		/// <param name="lifetime"></param>
 		/// <returns></returns>
-		IntPtr GetDepartureFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime);
+		IntPtr GetDepartureFunctionPointer(IntPtr p, InvokerParameterInfo pp, object lifetime);
 	}
 
 	public static class CallingConventionAdapterExtensions
@@ -55,19 +54,19 @@ namespace BizHawk.BizInvoke
 			=> (T) a.GetDelegateForFunctionPointer(p, typeof(T));
 	}
 
-	public class ParameterInfo
+	public sealed class InvokerParameterInfo
 	{
 		public Type ReturnType { get; }
 		public IReadOnlyList<Type> ParameterTypes { get; }
 
-		public ParameterInfo(Type returnType, IEnumerable<Type> parameterTypes)
+		public InvokerParameterInfo(Type returnType, IEnumerable<Type> parameterTypes)
 		{
 			ReturnType = returnType;
 			ParameterTypes = parameterTypes.ToList().AsReadOnly();
 		}
 
 		/// <exception cref="InvalidOperationException"><paramref name="delegateType"/> does not inherit <see cref="Delegate"/></exception>
-		public ParameterInfo(Type delegateType)
+		public InvokerParameterInfo(Type delegateType)
 		{
 			if (!typeof(Delegate).IsAssignableFrom(delegateType))
 			{
@@ -101,13 +100,13 @@ namespace BizHawk.BizInvoke
 	{
 		private class NativeConvention : ICallingConventionAdapter
 		{
-			public IntPtr GetArrivalFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime)
+			public IntPtr GetArrivalFunctionPointer(IntPtr p, InvokerParameterInfo pp, object lifetime)
 				=> p;
 
 			public Delegate GetDelegateForFunctionPointer(IntPtr p, Type delegateType)
 				=> Marshal.GetDelegateForFunctionPointer(p, delegateType);
 
-			public IntPtr GetDepartureFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime)
+			public IntPtr GetDepartureFunctionPointer(IntPtr p, InvokerParameterInfo pp, object lifetime)
 				=> p;
 
 			public IntPtr GetFunctionPointerForDelegate(Delegate d)
@@ -174,7 +173,7 @@ namespace BizHawk.BizInvoke
 				_waterboxHost = waterboxHost;
 			}
 
-			public IntPtr GetArrivalFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime)
+			public IntPtr GetArrivalFunctionPointer(IntPtr p, InvokerParameterInfo pp, object lifetime)
 			{
 				if (_slots == null)
 				{
@@ -200,7 +199,7 @@ namespace BizHawk.BizInvoke
 				return WaterboxWrapper.GetDelegateForFunctionPointer(p, delegateType);
 			}
 
-			public IntPtr GetDepartureFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime)
+			public IntPtr GetDepartureFunctionPointer(IntPtr p, InvokerParameterInfo pp, object lifetime)
 			{
 				p = _waterboxHost.GetCallinProcAddr(p);
 				return WaterboxWrapper.GetDepartureFunctionPointer(p, pp, lifetime);
@@ -289,7 +288,7 @@ namespace BizHawk.BizInvoke
 				throw new NotSupportedException($"Unknown type {type}. Possibly supported?");
 			}
 
-			private static int VerifyDelegateSignature(ParameterInfo pp)
+			private static int VerifyDelegateSignature(InvokerParameterInfo pp)
 			{
 				VerifyParameter(pp.ReturnType);
 				foreach (var ppp in pp.ParameterTypes)
@@ -366,7 +365,7 @@ namespace BizHawk.BizInvoke
 				}
 			}
 
-			public IntPtr GetArrivalFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime)
+			public IntPtr GetArrivalFunctionPointer(IntPtr p, InvokerParameterInfo pp, object lifetime)
 			{
 				lock (_sync)
 				{
@@ -391,7 +390,7 @@ namespace BizHawk.BizInvoke
 				}
 			}
 
-			public IntPtr GetDepartureFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime)
+			public IntPtr GetDepartureFunctionPointer(IntPtr p, InvokerParameterInfo pp, object lifetime)
 			{
 				lock (_sync)
 				{
