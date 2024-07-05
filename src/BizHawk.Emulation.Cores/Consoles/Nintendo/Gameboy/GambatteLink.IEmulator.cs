@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
