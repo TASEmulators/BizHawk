@@ -49,7 +49,7 @@ There are a few parameters you can tweak without writing a full Nix expression:
 - `--argstr buildConfig Debug` builds the BizHawk solution in Debug configuration.
 - `--argstr extraDefines "CoolFeatureFlag"` adds to `<DefineConstants/>`.
 - `--arg initConfig {}` can be used to set up keybinds and such, though you probably won't want to use `--arg` for that.
-- Check the source for the full list.
+- Check [the source](default.nix) for the full list.
 
 Every installable can also be used with `nix-shell`. Omitting `-A` is the same as `nix-shell -A emuhawk-latest`.
 <!-- TODO haven't implemented LSPs
@@ -86,3 +86,28 @@ emuhawk-monort-local # = `cd output && mono EmuHawk.exe`
 # if deps (besides NuGet packages) have changed, may need to do this instead, but it will do a slow copy of the repo to the Nix store
 nix-shell -A emuhawk
 ```
+
+## IDE setup
+
+### Kate
+
+Syntax highlighting is built-in, and autocomplete, static analysis, and navigation are provided by OmniSharp (LSP).
+Build/test configurations aren't set up.
+
+```sh
+nix-shell --arg useKate true
+Dist/BuildDebug.sh # populate build cache
+kate src/BizHawk.Common/VersionInfo.cs &
+```
+
+Some of our source files are long and our projects are large, so the LSP client can be slow at times.
+
+The scroll position for the syntax highlighting can become desynced from that of the text, leading to syntax getting multiple and/or incorrect colours.
+
+Kate is not a .NET IDE and doesn't understand the Solution/Project structure or any MSBuild metadata; it sees only C# source files, and shows every file in the Git repo.
+
+### VS Code / Codium
+
+Not yet implemented.
+
+There is a `.vs` dir in the repo, but it's outdated.

@@ -162,6 +162,8 @@ Dev builds and a few recent releases can be built with Nix, either by cloning th
 See the [dedicated Nix usage readme](Dist/nix_expr_usage_docs.md) for what attributes are exposed.
 If you use a non-NixOS distro with Nix installed, you just need to add one argument and your host graphics drivers will be picked up thanks to nixGL.
 
+You can also quickly get a development setup, including the .NET SDK and an IDE, with the provided `shell.nix`. See the [Nix-specific docs](Dist/nix_expr_usage_docs.md#ide-setup) for details.
+
 [to top](#bizhawk)
 
 ### Development builds

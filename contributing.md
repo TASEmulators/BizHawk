@@ -70,6 +70,7 @@ It's probably a good idea to get the .NET SDK, even if you're not working on a .
 - Linux
 	- Install the .NET 8 SDK (package name is usually `dotnet-sdk-8.0`, see [full instructions](https://learn.microsoft.com/en-gb/dotnet/core/install/linux)).
 	- VS Community isn't available for Linux, but Rider and VS Code are.
+	- Nix/NixOS users can get the .NET SDK ephemerally with the provided `shell.nix`. For IDE setup and more, see the [Nix-specific docs](Dist/nix_expr_usage_docs.md#ide-setup).
 - macOS
 	- Note that EmuHawk does not currently support macOS.
 	- Install the .NET 8 SDK [manually](https://learn.microsoft.com/en-gb/dotnet/core/install/macos) or with Homebrew.

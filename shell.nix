@@ -13,7 +13,6 @@
 , useNanoAndCola ? false
 , useVSCode ? false
 }: let
-	# thinking of exposing pre-configured IDEs from `default.nix` so they're available here
 	avail = import ./. { inherit debugDotnetHostCrashes debugPInvokes forNixOS system; };
 	f = drv: mkShell {
 		packages = [ git powershell ]
