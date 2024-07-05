@@ -7,9 +7,11 @@ EmuHawk is a multi-system emulator written in C#. As well as quality-of-life fea
 A7800Hawk, Atari2600Hawk, C64Hawk, ColecoHawk, GBHawk, IntelliHawk, NesHawk, O2Hawk, PCEHawk, SMSHawk, TI83Hawk, VectrexHawk, and ZXHawk are bespoke emulation cores written in C#. MSXHawk is a bespoke emulation core written in C++. More info [below](#cores).
 
 [![(latest) release | GitHub](https://img.shields.io/github/release/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&sort=semver&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
+[![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/issues)
+
+[![Build and test main solution](https://github.com/TASEmulators/BizHawk/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/TASEmulators/BizHawk/actions/workflows/ci.yml)
 [![latest dev build (Windows) | GitHub Actions](https://img.shields.io/badge/latest_dev_build_(Windows)-GitHub_Actions-8250DF?logo=github&logoColor=333333&style=popout)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-windows.zip)
 [![latest dev build (Linux) | GitHub Actions](https://img.shields.io/badge/latest_dev_build_(Linux)-GitHub_Actions-8250DF?logo=github&logoColor=333333&style=popout)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-linux.zip)
-[![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/issues)
 
 [![built with nix](https://builtwithnix.org/badge.svg)](#nixnixos)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/5365/badge)](https://bestpractices.coreinfrastructure.org/projects/5365)
@@ -166,6 +168,7 @@ If you use a non-NixOS distro with Nix installed, you just need to add one argum
 
 Development builds are made automatically whenever someone contributes. Because of this, we recommend using a release for work that requires stability (such as TASing), and only switching to a dev build if there's a specific change or addition you need.
 
+[![recent dev builds | GitHub Actions](https://img.shields.io/badge/recent_dev_builds-GitHub_Actions-8250DF?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/actions/workflows/ci.yml)
 [![latest dev build (Windows) | GitHub Actions](https://img.shields.io/badge/latest_dev_build_(Windows)-GitHub_Actions-8250DF?logo=github&logoColor=333333&style=popout)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-windows.zip)
 [![latest dev build (Linux) | GitHub Actions](https://img.shields.io/badge/latest_dev_build_(Linux)-GitHub_Actions-8250DF?logo=github&logoColor=333333&style=popout)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-linux.zip)
 
