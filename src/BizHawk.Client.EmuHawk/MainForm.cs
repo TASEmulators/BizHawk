@@ -899,11 +899,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					break;
 				}
-
-				if (Config.DispSpeedupFeatures != 0)
-				{
-					Thread.Sleep(0);
-				}
 			}
 
 			Shutdown();
