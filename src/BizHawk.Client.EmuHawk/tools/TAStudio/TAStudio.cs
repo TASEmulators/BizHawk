@@ -668,8 +668,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var movie = MovieSession.Get(path, true);
+				var movie = MovieSession.Get(path, loadMovie: false);
+				// we can't load the movie yet, we need to set the callbacks first...
+				if (movie is ITasMovie pendingTasMovie)
+				{
+					SetTasMovieCallbacks(pendingTasMovie);
+				}
 
+				movie.Load();
 				var tasMovie = movie as ITasMovie ?? movie.ToTasMovie();
 				movieLoadSucceeded = LoadMovie(tasMovie);
 			}

@@ -141,7 +141,7 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			ZwinderStateManagerSettings settings = new ZwinderStateManagerSettings();
+			var settings = new ZwinderStateManagerSettings();
 			bl.GetLump(BinaryStateLump.StateHistorySettings, abort: false, tr =>
 			{
 				var json = tr.ReadToEnd();
@@ -155,11 +155,11 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			bl.GetLump(BinaryStateLump.StateHistory, abort: false, br =>
+			TasStateManager?.Dispose();
+			var hasHistory = bl.GetLump(BinaryStateLump.StateHistory, abort: false, br =>
 			{
 				try
 				{
-					TasStateManager?.Dispose();
 					TasStateManager = ZwinderStateManager.Create(br, settings, IsReserved);
 				}
 				catch
@@ -173,6 +173,20 @@ namespace BizHawk.Client.Common
 					Session.PopupMessage("State history was corrupted, clearing and working with a fresh history.");
 				}
 			});
+
+			if (!hasHistory)
+			{
+				try
+				{
+					TasStateManager = new ZwinderStateManager(settings, IsReserved);
+				}
+				catch
+				{
+					TasStateManager = new ZwinderStateManager(
+						Session.Settings.DefaultTasStateManagerSettings,
+						IsReserved);
+				}
+			}
 		}
 	}
 }
