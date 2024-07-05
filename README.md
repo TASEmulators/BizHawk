@@ -172,10 +172,13 @@ Development builds are made automatically whenever someone contributes. Because 
 [![recent dev builds | GitLab CI](https://img.shields.io/badge/recent_dev_builds-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/-/pipelines)
 [![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/-/pipelines/master/latest)
 
-Click one of the buttons above to download a dev build (they're also at the top of this readme). AppVeyor uses Windows and GitLab CI uses Linux, but they work all the same.
-* On the GitLab CI page for a Pipeline, click "Jobs", then the download button on the right under the heading "Package". (On the Pipelines list page, there's also a download button on each Pipeline—choose `package_devbuild_*:archive` there.)
+Click one of the buttons above to download a dev build (they're also at the top of this readme).
+- On the GitHub Actions page for a workflow run or job, click "Summary", then on the relevant download button under the "Artifacts" heading.
+- On the GitLab CI page for a Pipeline, click "Jobs", then on the download button for the relevant `package_devbuild_*` job. (On the Pipelines list page, there's also a download button on each Pipeline. On a Job page, the download button is on the right.)
 
-To find the dev builds for a specific commit, you can click the green checkmark next to it (in the [commit history](https://github.com/TASEmulators/BizHawk/commits/master), for example) for a dropdown, then click either "Details" link to go to GitHub/GitLab.
+To find the dev builds for a specific commit, you can click the green checkmark next to it (in the [commit history](https://github.com/TASEmulators/BizHawk/commits/master), for example)
+for a dropdown, then click the link for any GitHub Actions workflow.
+(GitLab has a similar feature, but its Pipelines don't appear in GitHub's UI.)
 
 ## Building
 
