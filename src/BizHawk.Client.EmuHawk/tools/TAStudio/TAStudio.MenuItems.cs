@@ -65,13 +65,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 			=> RecentSubMenu.ReplaceDropDownItems(Settings.RecentTas.RecentMenu(this, DummyLoadProject, "Project"));
 
-		private void NewTasMenuItem_Click(object sender, EventArgs e)
-		{
-			var prev = WantsToControlReboot;
-			WantsToControlReboot = false;
-			StartNewTasMovie();
-			WantsToControlReboot = prev;
-		}
+		private void NewTasMenuItem_Click(object sender, EventArgs e) => StartNewTasMovie();
 
 		private void OpenTasMenuItem_Click(object sender, EventArgs e)
 		{

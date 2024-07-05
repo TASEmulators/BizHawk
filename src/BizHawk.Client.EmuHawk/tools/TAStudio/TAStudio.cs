@@ -634,9 +634,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTasMovieCallbacks(movie);
 
 			SuspendLayout();
-			WantsToControlReboot = false;
 			bool result = MainForm.StartNewMovie(movie, false);
-			WantsToControlReboot = true;
 			ResumeLayout();
 			if (result)
 			{
@@ -683,7 +681,6 @@ namespace BizHawk.Client.EmuHawk
 			if (!movieLoadSucceeded)
 			{
 				TasView.AllColumns.Clear();
-				WantsToControlReboot = false;
 				StartNewTasMovie();
 				_engaged = true;
 			}
