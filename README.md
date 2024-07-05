@@ -7,12 +7,10 @@ EmuHawk is a multi-system emulator written in C#. As well as quality-of-life fea
 A7800Hawk, Atari2600Hawk, C64Hawk, ColecoHawk, GBHawk, IntelliHawk, NesHawk, O2Hawk, PCEHawk, SMSHawk, TI83Hawk, VectrexHawk, and ZXHawk are bespoke emulation cores written in C#. MSXHawk is a bespoke emulation core written in C++. More info [below](#cores).
 
 [![(latest) release | GitHub](https://img.shields.io/github/release/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&sort=semver&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
+[![latest dev build (Windows) | GitHub Actions](https://img.shields.io/badge/latest_dev_build_(Windows)-GitHub_Actions-8250DF?logo=github&logoColor=333333&style=popout)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-windows.zip)
+[![latest dev build (Linux) | GitHub Actions](https://img.shields.io/badge/latest_dev_build_(Linux)-GitHub_Actions-8250DF?logo=github&logoColor=333333&style=popout)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-linux.zip)
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/issues)
 
-[![latest dev build (windows) | GitHub CI](https://img.shields.io/badge/latest_dev_build_(windows)-GitHub_CI-green?logo=github)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-windows.zip)
-[![latest dev build (linux) | GitHub CI](https://img.shields.io/badge/latest_dev_build_(linux)-GitHub_CI-green?logo=github)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-linux.zip)
-
-[![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/-/pipelines/master/latest)
 [![built with nix](https://builtwithnix.org/badge.svg)](#nixnixos)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/5365/badge)](https://bestpractices.coreinfrastructure.org/projects/5365)
 
@@ -168,8 +166,8 @@ If you use a non-NixOS distro with Nix installed, you just need to add one argum
 
 Development builds are made automatically whenever someone contributes. Because of this, we recommend using a release for work that requires stability (such as TASing), and only switching to a dev build if there's a specific change or addition you need.
 
-[![latest dev build (windows) | GitHub CI](https://img.shields.io/badge/latest_dev_build_(windows)-GitHub_CI-green?logo=github)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-windows.zip)
-[![latest dev build (linux) | GitHub CI](https://img.shields.io/badge/latest_dev_build_(linux)-GitHub_CI-green?logo=github)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-linux.zip)
+[![latest dev build (Windows) | GitHub Actions](https://img.shields.io/badge/latest_dev_build_(Windows)-GitHub_Actions-8250DF?logo=github&logoColor=333333&style=popout)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-windows.zip)
+[![latest dev build (Linux) | GitHub Actions](https://img.shields.io/badge/latest_dev_build_(Linux)-GitHub_Actions-8250DF?logo=github&logoColor=333333&style=popout)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-linux.zip)
 
 [![recent dev builds | GitLab CI](https://img.shields.io/badge/recent_dev_builds-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/-/pipelines)
 [![latest dev build | GitLab CI](https://img.shields.io/badge/latest_dev_build-GitLab_CI-orange.svg?logo=gitlab&style=popout)](https://gitlab.com/TASVideos/BizHawk/-/pipelines/master/latest)
