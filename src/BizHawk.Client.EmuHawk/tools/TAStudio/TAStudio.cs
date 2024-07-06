@@ -680,7 +680,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!movieLoadSucceeded)
 			{
-				TasView.AllColumns.Clear();
 				StartNewTasMovie();
 				_engaged = true;
 			}
