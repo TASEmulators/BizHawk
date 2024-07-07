@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 
 using BizHawk.Common.ReflectionExtensions;
@@ -35,7 +34,7 @@ namespace BizHawk.Client.Common
 		/// Feeds the target its required Apis.
 		/// </summary>
 		/// <returns>false if update failed</returns>
-		public static bool UpdateApis(IExternalApiProvider source, object target)
+		public static bool UpdateApis(Func<IExternalApiProvider> getProvider, object target)
 		{
 			Type targetType = target.GetType();
 			object[] tmp = new object[1];
@@ -44,12 +43,14 @@ namespace BizHawk.Client.Common
 				.Where(static pi => pi.PropertyType == typeof(ApiContainer))
 				.Select(static pi => pi.SetMethod))
 			{
-				mi?.Invoke(target, new object[] { source.Container });
+				if (mi is null) continue;
+				tmp[0] ??= getProvider().Container;
+				mi.Invoke(target, tmp);
 			}
 
 			foreach (var propinfo in targetType.GetPropertiesWithAttrib(typeof(RequiredApiAttribute)))
 			{
-				tmp[0] = source.GetApi(propinfo.PropertyType);
+				tmp[0] = getProvider().GetApi(propinfo.PropertyType);
 				if (tmp[0] == null)
 				{
 					return false;
@@ -60,7 +61,7 @@ namespace BizHawk.Client.Common
 
 			foreach (var propinfo in targetType.GetPropertiesWithAttrib(typeof(OptionalApiAttribute)))
 			{
-				tmp[0] = source.GetApi(propinfo.PropertyType);
+				tmp[0] = getProvider().GetApi(propinfo.PropertyType);
 				propinfo.GetSetMethod(true).Invoke(target, tmp);
 			}
 
@@ -71,11 +72,10 @@ namespace BizHawk.Client.Common
 		/// Determines whether a target is available, considering its dependencies
 		/// and the Apis provided by the emulator core.
 		/// </summary>
-		public static bool IsAvailable(IExternalApiProvider source, Type targetType)
+		public static bool IsAvailable(Func<IExternalApiProvider> getProvider, Type targetType)
 		{
 			return targetType.GetPropertiesWithAttrib(typeof(RequiredApiAttribute))
-				.Select(pi => pi.PropertyType)
-				.All(source.HasApi);
+				.All(pi => getProvider().HasApi(pi.PropertyType));
 		}
 	}
 

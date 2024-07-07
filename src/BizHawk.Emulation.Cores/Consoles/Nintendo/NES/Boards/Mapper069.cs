@@ -270,7 +270,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = CalcWRAMAddress(addr, prg_bank_mask_8k);
 				return Rom[addr];
 			}
-			else if (!wram_ram_enabled)
+			else if (!wram_ram_enabled || Wram is null)
 				return 0xFF; //empty bus
 			else
 			{
@@ -282,7 +282,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WriteWram(int addr, byte value)
 		{
 			if (!wram_ram_selected) return;
-			else if (!wram_ram_enabled)
+			else if (!wram_ram_enabled || Wram is null)
 				return; //empty bus
 			else
 			{

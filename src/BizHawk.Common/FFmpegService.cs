@@ -1,4 +1,3 @@
-﻿using System;
 using System.Threading;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,6 +6,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Threading.Tasks;
+using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Common
 {
@@ -18,7 +19,7 @@ namespace BizHawk.Common
 
 		private const string VERSION = "ffmpeg version 4.4.1";
 
-		public static string FFmpegPath = string.Empty; // always updated in DiscoHawk.Program/EmuHawk.Program
+		public static string FFmpegPath => Path.Combine(PathUtils.DataDirectoryPath, "dll", OSTailoredCode.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
 
 		public static readonly string Url = OSTailoredCode.IsUnixHost ? BIN_HOST_URI_LINUX_X64 : BIN_HOST_URI_WIN_X64;
 
@@ -28,9 +29,7 @@ namespace BizHawk.Common
 		}
 
 		private static string[] Escape(IEnumerable<string> args)
-		{
-			return args.Select(s => s.Contains(" ") ? $"\"{s}\"" : s).ToArray();
-		}
+			=> args.Select(static s => s.ContainsOrdinal(' ') ? $"\"{s}\"" : s).ToArray();
 
 		//note: accepts . or : in the stream stream/substream separator in the stream ID format, since that changed at some point in FFMPEG history
 		//if someone has a better idea how to make the determination of whether an audio stream is available, I'm all ears

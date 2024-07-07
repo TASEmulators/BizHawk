@@ -1,5 +1,6 @@
-﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace BizHawk.Common.BufferExtensions
@@ -50,19 +51,18 @@ namespace BizHawk.Common.BufferExtensions
 			}
 		}
 
-		/// <summary>
-		/// Converts bytes to an uppercase string of hex numbers in upper case without any spacing or anything
-		/// </summary>
-		public static string BytesToHexString(this byte[] bytes)
+		/// <summary>Creates a string containing the hexadecimal representation of <paramref name="bytes"/></summary>
+		/// <remarks>Output format is all-uppercase, no spaces, padded to an even number of nybbles, no prefix</remarks>
+		public static string BytesToHexString(this ReadOnlySpan<byte> bytes)
 		{
-			var sb = new StringBuilder();
-			foreach (var b in bytes)
-			{
-				sb.AppendFormat("{0:X2}", b);
-			}
-
+			StringBuilder sb = new(capacity: 2 * bytes.Length, maxCapacity: 2 * bytes.Length);
+			for (var i = 0; i < bytes.Length; i++) sb.AppendFormat("{0:X2}", bytes[i]);
 			return sb.ToString();
 		}
+
+		/// <inheritdoc cref="BytesToHexString(ReadOnlySpan{byte})"/>
+		public static string BytesToHexString(this IReadOnlyList<byte> bytes)
+			=> BytesToHexString(bytes is byte[] a ? a.AsSpan() : bytes.ToArray());
 
 		public static bool FindBytes(this byte[] array, byte[] pattern)
 		{

@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int chr_reg;
 		public int chip_offset;
 		public bool cheetahmen = false;
-		private byte[] eRAM = new byte[4];
+		private byte[] eRAM = new byte[1 << 3];
 		private int chr_bank_mask_8k, prg_bank_mask_16k, prg_bank_mask_32k;
 
 		public override bool Configure(EDetectionOrigin origin)
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPrg(int addr)
 		{
-			if (prg_mode == false)
+			if (!prg_mode)
 			{
 				int bank = (prg_reg >> 1) & prg_bank_mask_32k;
 				return Rom[(bank * 0x8000) + addr + chip_offset];

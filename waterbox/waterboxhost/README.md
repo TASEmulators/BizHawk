@@ -35,7 +35,7 @@ Some more advanced features:
 
 ## Building
 
-Standard rust build infrastructure is used and can be installed with `rustup`.  At the moment, we're using the `nightly-x86_64-pc-windows-gnu`
+Standard rust build infrastructure is used and can be installed with `rustup`.  At the moment, we're using the `nightly-x86_64-pc-windows-msvc`
 chain on Windows, and the `nightly-x86_64-unknown-linux-gnu` chain on linux.  I don't know much about crosspiling, but presumably that will work.
 The linux chain works fine in WSL, anyway.  When used in a Windows environment with the right default chain, `build-release.bat` will build
 waterboxhost.dll and copy it to the right place.  When used in a Linux (or WSL) environment with the right default chain, `build-release.sh`

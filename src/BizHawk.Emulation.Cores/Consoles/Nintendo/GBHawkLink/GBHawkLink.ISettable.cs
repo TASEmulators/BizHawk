@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel;
 
 using Newtonsoft.Json;
@@ -30,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		private GBLinkSettings linkSettings = new GBLinkSettings();
 		public GBLinkSyncSettings linkSyncSettings = new GBLinkSyncSettings();
 
+		[CoreSettings]
 		public class GBLinkSettings
 		{
 			[DisplayName("Color Mode")]
@@ -71,6 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			public GBLinkSettings() => SettingsUtil.SetDefaultValues(this);
 		}
 
+		[CoreSettings]
 		public class GBLinkSyncSettings
 		{
 			[DisplayName("Console Mode L")]

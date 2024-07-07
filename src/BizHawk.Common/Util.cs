@@ -1,10 +1,12 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+#if NETCOREAPP3_0_OR_GREATER
+using System.Runtime.CompilerServices;
+#endif
 using System.Threading;
 
 namespace BizHawk.Common
@@ -53,7 +55,8 @@ namespace BizHawk.Common
 			if (src.Read(tmp, 0, 2) != 2) throw new InvalidOperationException("Unexpected end of stream");
 			if (tmp[0] != 0x1F || tmp[1] != 0x8B) throw new InvalidOperationException("GZIP header not present");
 			src.Seek(-4, SeekOrigin.End);
-			src.Read(tmp, 0, 4);
+			var bytesRead = src.Read(tmp, offset: 0, count: tmp.Length);
+			Debug.Assert(bytesRead == tmp.Length);
 			src.Seek(0, SeekOrigin.Begin);
 			using var gs = new GZipStream(src, CompressionMode.Decompress, true);
 			var data = new byte[BitConverter.ToInt32(tmp, 0)];
@@ -78,16 +81,16 @@ namespace BizHawk.Common
 			return a.All(kvp => b.TryGetValue(kvp.Key, out var bVal) && comparer.Equals(kvp.Value, bVal));
 		}
 
-#if NET6_0
-		public static string DescribeIsNull<T>(T? obj, [CallerArgumentExpression("obj")] string expr = default)
+#if NETCOREAPP3_0_OR_GREATER
+		public static string DescribeIsNull<T>(T? obj, [CallerArgumentExpression(nameof(obj))] string? expr = default)
 #else
 		public static string DescribeIsNull<T>(T? obj, string expr)
 #endif
 			where T : class
 			=> $"{expr} is {(obj is null ? "null" : "not null")}";
 
-#if NET6_0
-		public static string DescribeIsNullValT<T>(T? boxed, [CallerArgumentExpression("boxed")] string expr = default)
+#if NETCOREAPP3_0_OR_GREATER
+		public static string DescribeIsNullValT<T>(T? boxed, [CallerArgumentExpression(nameof(boxed))] string? expr = default)
 #else
 		public static string DescribeIsNullValT<T>(T? boxed, string expr)
 #endif
@@ -108,7 +111,7 @@ namespace BizHawk.Common
 		/// <returns>all <see cref="Type">Types</see> with the name <paramref name="className"/></returns>
 		/// <remarks>adapted from https://stackoverflow.com/a/13727044/7467292</remarks>
 		public static IList<Type> GetTypeByName(string className) => AppDomain.CurrentDomain.GetAssemblies()
-			.SelectMany(asm => asm.GetTypesWithoutLoadErrors().Where(type => className.Equals(type.Name, StringComparison.InvariantCultureIgnoreCase))).ToList();
+			.SelectMany(asm => asm.GetTypesWithoutLoadErrors().Where(type => className.Equals(type.Name, StringComparison.OrdinalIgnoreCase))).ToList();
 
 		/// <remarks>TODO replace this with GetTypes (i.e. the try block) when VB.NET dep is properly removed</remarks>
 		public static IEnumerable<Type> GetTypesWithoutLoadErrors(this Assembly assembly)
@@ -168,6 +171,7 @@ namespace BizHawk.Common
 			while (len > 0)
 			{
 				var done = br.Read(ret, ofs, len);
+				if (done is 0) _ = br.ReadByte(); // triggers an EndOfStreamException (as there's otherwise no way to indicate this failure state to the caller)
 				ofs += done;
 				len -= done;
 			}

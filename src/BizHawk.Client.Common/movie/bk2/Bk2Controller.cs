@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,8 +8,8 @@ namespace BizHawk.Client.Common
 {
 	internal class Bk2Controller : IMovieController
 	{
-		private readonly WorkingDictionary<string, bool> _myBoolButtons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, int> _myAxisControls = new WorkingDictionary<string, int>();
+		private readonly WorkingDictionary<string, bool> _myBoolButtons = new();
+		private readonly WorkingDictionary<string, int> _myAxisControls = new();
 
 		private readonly Bk2ControllerDefinition _type;
 
@@ -42,6 +41,10 @@ namespace BizHawk.Client.Common
 		public Bk2Controller(ControllerDefinition definition)
 		{
 			_type = new Bk2ControllerDefinition(definition);
+			foreach ((string axisName, AxisSpec range) in definition.Axes)
+			{
+				_myAxisControls[axisName] = range.Neutral;
+			}
 		}
 
 		public ControllerDefinition Definition => _type;
@@ -55,8 +58,9 @@ namespace BizHawk.Client.Common
 
 		public void SetFrom(IController source)
 		{
-			foreach (var button in Definition.BoolButtons)
+			for (int index = 0; index < Definition.BoolButtons.Count; index++)
 			{
+				string button = Definition.BoolButtons[index];
 				_myBoolButtons[button] = source.IsPressed(button);
 			}
 
@@ -81,24 +85,29 @@ namespace BizHawk.Client.Common
 		{
 			if (!string.IsNullOrWhiteSpace(mnemonic))
 			{
-				var trimmed = mnemonic.Replace("|", "");
 				var iterator = 0;
 
 				foreach (var key in ControlsOrdered)
 				{
+					while (mnemonic[iterator] == '|') iterator++;
+
 					if (key.IsBool)
 					{
-						_myBoolButtons[key.Name] = trimmed[iterator] != '.';
+						_myBoolButtons[key.Name] = mnemonic[iterator] != '.';
 						iterator++;
 					}
 					else if (key.IsAxis)
 					{
-						var commaIndex = trimmed.Substring(iterator).IndexOf(',');
-						var temp = trimmed.Substring(iterator, commaIndex);
-						var val = int.Parse(temp.Trim());
+						var commaIndex = mnemonic.IndexOf(',', iterator);
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+						var val = int.Parse(mnemonic.AsSpan(start: iterator, length: commaIndex - iterator));
+#else
+						var axisValueString = mnemonic.Substring(startIndex: iterator, length: commaIndex - iterator);
+						var val = int.Parse(axisValueString);
+#endif
 						_myAxisControls[key.Name] = val;
 
-						iterator += commaIndex + 1;
+						iterator = commaIndex + 1;
 					}
 				}
 			}

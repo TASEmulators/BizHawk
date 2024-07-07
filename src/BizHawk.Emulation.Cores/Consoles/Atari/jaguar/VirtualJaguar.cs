@@ -1,9 +1,9 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
@@ -259,9 +259,9 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			{
 				Padding0 = 0,
 				Padding1 = 0,
-				NumSessions = (byte)nsessions,
 				MinTrack = (byte)_cd.TOC.FirstRecordedTrackNumber,
 				MaxTrack = (byte)_cd.Sessions[nsessions].TOC.LastRecordedTrackNumber,
+				NumSessions = (byte)nsessions,
 				LastLeadOutMins = lastLeadOutTs.MIN,
 				LastLeadOutSecs = lastLeadOutTs.SEC,
 				LastLeadOutFrames = lastLeadOutTs.FRAC,

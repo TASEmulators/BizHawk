@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 using BizHawk.Common;
@@ -172,8 +171,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 					break;
 				case LibsnesApi.SNES_MAPPER.SUPERFXROM:
-					if ((bank >= 0x40 && bank <= 0x5f) || (bank >= 0xc0 && bank <= 0xdf) ||
-						(low >= 0x8000 && ((bank >= 0x00 && bank <= 0x3f) || (bank >= 0x80 && bank <= 0xbf))))
+					if (bank is (>= 0x40 and <= 0x5F) or (>= 0xC0 and <= 0xDF)
+						|| (low >= 0x8000 && bank is (>= 0x00 and <= 0x3F) or (>= 0x80 and <= 0xBF)))
 					{
 						return Api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
 					}
@@ -194,17 +193,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 					break;
 				case LibsnesApi.SNES_MAPPER.BSCHIROM:
-					if ((bank >= 0x40 && bank <= 0x5f) || (bank >= 0xc0 && bank <= 0xdf) ||
-						(low >= 0x8000 && ((bank >= 0x00 && bank <= 0x1f) || (bank >= 0x80 && bank <= 0x9f))))
+					if (bank is (>= 0x40 and <= 0x5F) or (>= 0xC0 and <= 0xDF)
+						|| (low >= 0x8000 && bank is (>= 0x00 and <= 0x1F) or (>= 0x80 and <= 0x9F)))
 					{
 						return Api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
 					}
 
 					break;
 				case LibsnesApi.SNES_MAPPER.BSXROM:
-					if ((bank >= 0x40 && bank <= 0x7f) || bank >= 0xc0 ||
-						(low >= 0x8000 && ((bank >= 0x00 && bank <= 0x3f) || (bank >= 0x80 && bank <= 0xbf))) ||
-						(low >= 0x6000 && low <= 0x7fff && (bank >= 0x20 && bank <= 0x3f)))
+					if (bank is (>= 0x40 and <= 0x7F) or >= 0xC0
+						|| (low >= 0x8000 && bank is (>= 0x00 and <= 0x3F) or (>= 0x80 and <= 0xBF))
+						|| (low is >= 0x6000 and <= 0x7FFF && bank is >= 0x20 and <= 0x3F))
 					{
 						return Api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
 					}

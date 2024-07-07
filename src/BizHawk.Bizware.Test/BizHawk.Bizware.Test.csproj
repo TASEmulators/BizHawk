@@ -2,15 +2,21 @@
 	<PropertyGroup>
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
-	<Import Project="../MainSlnExecutable.props" />
+	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
-		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
 		<OutputPath>$(ProjectDir)bin<!--/$(Configuration)/$(TargetFramework)--></OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System.Windows.Forms" />
-		<PackageReference Include="OpenTK" Version="3.3.3" PrivateAssets="all" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics.Controls/BizHawk.Bizware.Graphics.Controls.csproj" />
 		<EmbeddedResource Include="TestImages/**/*" />
+		<None Include="$(ProjectDir)../../Assets/dll/*SDL2*" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 </Project>

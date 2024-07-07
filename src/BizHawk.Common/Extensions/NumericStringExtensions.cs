@@ -1,4 +1,6 @@
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BizHawk.Common.StringExtensions
 {
@@ -30,6 +32,43 @@ namespace BizHawk.Common.StringExtensions
 		/// That is, all chars of the copy will be hex digits (<c>[0-9A-F]</c>).
 		/// </returns>
 		public static string OnlyHex(this string? raw) => string.IsNullOrWhiteSpace(raw) ? string.Empty : string.Concat(raw.Where(IsHex)).ToUpperInvariant();
+
+		/// <returns>
+		/// A copy of <paramref name="raw"/> in uppercase after removing <c>0x</c>/<c>$</c> prefixes and all whitespace, or
+		/// <see cref="string.Empty"/> if <paramref name="raw"/> contains other non-hex characters.
+		/// </returns>
+		public static string CleanHex(this string? raw)
+		{
+			if (raw is not null && CleanHexRegex.Match(raw) is { Success: true} match)
+			{
+				return match.Groups["hex"].Value.OnlyHex();
+			}
+			else
+			{
+				return string.Empty;
+			}
+		}
+		private static readonly Regex CleanHexRegex = new(@"^\s*(?:0x|\$)?(?<hex>[0-9A-Fa-f\s]+)\s*$");
+
+#if NET7_0_OR_GREATER
+		public static ushort ParseU16FromHex(ReadOnlySpan<char> str)
+			=> ushort.Parse(str, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+
+		public static byte ParseU8FromHex(ReadOnlySpan<char> str)
+			=> byte.Parse(str, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+#else
+		public static ushort ParseU16FromHex(ReadOnlySpan<char> str)
+			=> ParseU16FromHex(str.ToString());
+
+		public static ushort ParseU16FromHex(string str)
+			=> ushort.Parse(str, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+
+		public static byte ParseU8FromHex(ReadOnlySpan<char> str)
+			=> ParseU8FromHex(str.ToString());
+
+		public static byte ParseU8FromHex(string str)
+			=> byte.Parse(str, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+#endif
 
 		/// <returns><see langword="true"/> iff <paramref name="str"/> is not <see langword="null"/> and all chars of <paramref name="str"/> are digits</returns>
 		public static bool IsUnsigned(this string? str) => !string.IsNullOrWhiteSpace(str) && str.All(IsUnsigned);

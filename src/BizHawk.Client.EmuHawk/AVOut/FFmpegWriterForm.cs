@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
@@ -51,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 						"-c:a pcm_s16le -c:v utvideo -pred median -pix_fmt gbrp -f avi", false, "avi"),
 					new FormatPreset("AVI Lossless FFV1", "Lossless FFV1 video and uncompressed audio in an AVI container. Compatible with AVISource(), if ffmpeg based decoder is installed. Slow, but high compression.",
 						"-c:a pcm_s16le -c:v ffv1 -pix_fmt bgr0 -level 1 -g 1 -coder 1 -context 1 -f avi", false, "avi"),
-					new FormatPreset("AVI Lossless AVC", "Lossless AVC video and uncompressed audio in an AVI container. High speed and compression, compatible with AVISource(). Seeking may be unstable.",
+					new FormatPreset("AVI Lossless AVC", "Lossless AVC video and uncompressed audio in an AVI container. High speed and compression, compatible with AVISource() if x264vfw or ffmpeg based decoder is installed. Seeking may be unstable.",
 						"-c:a pcm_s16le -c:v libx264rgb -qp 0 -preset ultrafast -g 10 -pix_fmt rgb24 -f avi", false, "avi"),
 					new FormatPreset("AVI Uncompressed", "Uncompressed video and audio in an AVI container. Very large, don't use!",
 						"-c:a pcm_s16le -c:v rawvideo -f avi", false, "avi"),
@@ -109,8 +108,15 @@ namespace BizHawk.Client.EmuHawk
 
 			public void DeduceFormat(string commandline)
 			{
-				string formatKey = "-f ";
-				Extension = commandline.Substring(commandline.IndexOf(formatKey) + formatKey.Length);
+				var splitCommandLine = commandline.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+				for (int index = 0; index < splitCommandLine.Length - 1; index++)
+				{
+					if (splitCommandLine[index] == "-f")
+					{
+						Extension = splitCommandLine[index + 1];
+						break;
+					}
+				}
 
 				// are there other formats that don't match their file extensions?
 				if (Extension == "matroska")

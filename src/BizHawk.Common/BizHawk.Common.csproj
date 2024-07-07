@@ -7,13 +7,17 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
-		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-		<PackageReference Include="System.Memory" Version="4.5.5" />
-		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" PrivateAssets="all" />
-		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Bcl.HashCode" />
+		<PackageReference Include="PolySharp" />
+		<PackageReference Include="System.ComponentModel.Annotations" />
+		<PackageReference Include="System.Memory" />
+		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
 	</ItemGroup>
 	<ItemGroup>
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.VersionInfo.dll" />
 	</ItemGroup>
+	<Target Name="InstallGitHooks" AfterTargets="PreBuildEvent">
+		<Exec Command="pwsh $(MSBuildProjectDirectory)/../../Dist/install_git_hooks.ps1"
+			IgnoreExitCode="true" /> <!-- i.e. may fail... though it was actually using the exit code properly, but oh well -->
+	</Target>
 </Project>

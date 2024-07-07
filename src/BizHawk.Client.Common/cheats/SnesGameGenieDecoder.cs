@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 namespace BizHawk.Client.Common.cheats
@@ -55,53 +54,53 @@ namespace BizHawk.Client.Common.cheats
 			// Value
 			if (code.Length > 0)
 			{
-				SNESGameGenieTable.TryGetValue(code[0], out x);
+				_ = SNESGameGenieTable.TryGetValue(code[0], out x);
 				result.Value = x << 4;
 			}
 
 			if (code.Length > 1)
 			{
-				SNESGameGenieTable.TryGetValue(code[1], out x);
+				_ = SNESGameGenieTable.TryGetValue(code[1], out x);
 				result.Value |= x;
 			}
 
 			// Address
 			if (code.Length > 2)
 			{
-				SNESGameGenieTable.TryGetValue(code[2], out x);
+				_ = SNESGameGenieTable.TryGetValue(code[2], out x);
 				result.Address = x << 12;
 			}
 
 			if (code.Length > 3)
 			{
-				SNESGameGenieTable.TryGetValue(code[3], out x);
+				_ = SNESGameGenieTable.TryGetValue(code[3], out x);
 				result.Address |= x << 4;
 			}
 
 			if (code.Length > 4)
 			{
-				SNESGameGenieTable.TryGetValue(code[4], out x);
+				_ = SNESGameGenieTable.TryGetValue(code[4], out x);
 				result.Address |= (x & 0xC) << 6;
 				result.Address |= (x & 0x3) << 22;
 			}
 
 			if (code.Length > 5)
 			{
-				SNESGameGenieTable.TryGetValue(code[5], out x);
+				_ = SNESGameGenieTable.TryGetValue(code[5], out x);
 				result.Address |= (x & 0xC) << 18;
 				result.Address |= (x & 0x3) << 2;
 			}
 
 			if (code.Length > 6)
 			{
-				SNESGameGenieTable.TryGetValue(code[6], out x);
+				_ = SNESGameGenieTable.TryGetValue(code[6], out x);
 				result.Address |= (x & 0xC) >> 2;
 				result.Address |= (x & 0x3) << 18;
 			}
 
 			if (code.Length > 7)
 			{
-				SNESGameGenieTable.TryGetValue(code[7], out x);
+				_ = SNESGameGenieTable.TryGetValue(code[7], out x);
 				result.Address |= (x & 0xC) << 14;
 				result.Address |= (x & 0x3) << 10;
 			}

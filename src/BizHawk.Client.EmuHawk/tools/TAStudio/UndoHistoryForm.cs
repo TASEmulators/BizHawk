@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
@@ -23,11 +22,8 @@ namespace BizHawk.Client.EmuHawk
 			HistoryView.QueryItemBkColor += HistoryView_QueryItemBkColor;
 
 			HistoryView.AllColumns.Clear();
-			HistoryView.AllColumns.AddRange(new[]
-			{
-				new RollColumn { Name = IdColumnName, Text = IdColumnName, UnscaledWidth = 40, Type = ColumnType.Text },
-				new RollColumn { Name = UndoColumnName, Text = UndoColumnName, UnscaledWidth = 280, Type = ColumnType.Text }
-			});
+			HistoryView.AllColumns.Add(new(name: IdColumnName, widthUnscaled: 40, text: IdColumnName));
+			HistoryView.AllColumns.Add(new(name: UndoColumnName, widthUnscaled: 280, text: UndoColumnName));
 
 			MaxStepsNum.Value = Log.MaxSteps;
 		}

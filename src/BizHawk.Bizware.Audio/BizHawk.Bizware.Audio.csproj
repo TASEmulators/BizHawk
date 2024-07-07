@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+	<Import Project="../MainSlnCommon.props" />
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Silk.NET.OpenAL" />
+		<PackageReference Include="Silk.NET.OpenAL.Extensions.Creative" />
+		<PackageReference Include="Silk.NET.OpenAL.Extensions.Enumeration" />
+		<PackageReference Include="Silk.NET.OpenAL.Extensions.EXT" />
+		<PackageReference Include="Vortice.MediaFoundation" />
+		<PackageReference Include="Vortice.XAudio2" />
+		<PackageReference Include="ppy.SDL2-CS" ExcludeAssets="native;contentFiles" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+	</ItemGroup>
+</Project>

@@ -3,7 +3,6 @@
 //TODO - make a background thread to validate the EDC. be sure to terminate thread when the Blob disposes
 //remember: may need another stream for that. the IBlob architecture doesn't demand multi-threading support
 
-using System;
 using System.IO;
 using System.Collections.Generic;
 

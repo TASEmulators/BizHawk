@@ -1,7 +1,5 @@
 using System.Drawing;
 
-using BizHawk.Bizware.BizwareGL;
-
 namespace BizHawk.Client.Common
 {
 	/// <summary>
@@ -11,9 +9,12 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public interface IBlitter
 	{
-		StringRenderer GetFontType(string fontType);
-		void DrawString(string s, StringRenderer font, Color color, float x, float y);
-		SizeF MeasureString(string s, StringRenderer font);
-		Rectangle ClipBounds { get; set; }
+		void DrawString(string s, Color color, float x, float y);
+
+		SizeF MeasureString(string s);
+
+		Rectangle ClipBounds { get; }
+
+		public float Scale { get; }
 	}
 }

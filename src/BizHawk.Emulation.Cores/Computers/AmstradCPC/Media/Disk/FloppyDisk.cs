@@ -1,8 +1,9 @@
 ﻿using BizHawk.Common;
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -125,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							// deterministic 'random' implementation
 							int n = origData[i] + m + 1;
 							if (n > 0xff)
-								n = n - 0xff;
+								n -= 0xff;
 							else if (n < 0)
 								n = 0xff + n;
 
@@ -188,31 +189,35 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				return false;
 
 			var zeroSecs = DiskTracks[0].Sectors;
-			if (zeroSecs[0].SectorID != 65 ||
-				zeroSecs[1].SectorID != 66 ||
-				zeroSecs[2].SectorID != 67 ||
-				zeroSecs[3].SectorID != 68 ||
-				zeroSecs[4].SectorID != 69 ||
-				zeroSecs[5].SectorID != 70 ||
-				zeroSecs[6].SectorID != 71 ||
-				zeroSecs[7].SectorID != 72 ||
-				zeroSecs[8].SectorID != 73)
+			if (zeroSecs[0].SectorID is not 65
+				|| zeroSecs[1].SectorID is not 66
+				|| zeroSecs[2].SectorID is not 67
+				|| zeroSecs[3].SectorID is not 68
+				|| zeroSecs[4].SectorID is not 69
+				|| zeroSecs[5].SectorID is not 70
+				|| zeroSecs[6].SectorID is not 71
+				|| zeroSecs[7].SectorID is not 72
+				|| zeroSecs[8].SectorID is not 73)
+			{
 				return false;
+			}
 
 			var oneSecs = DiskTracks[1].Sectors;
 
 			if (oneSecs.Length != 8)
 				return false;
 
-			if (oneSecs[0].SectorID != 17 ||
-				oneSecs[1].SectorID != 18 ||
-				oneSecs[2].SectorID != 19 ||
-				oneSecs[3].SectorID != 20 ||
-				oneSecs[4].SectorID != 21 ||
-				oneSecs[5].SectorID != 22 ||
-				oneSecs[6].SectorID != 23 ||
-				oneSecs[7].SectorID != 24)
+			if (oneSecs[0].SectorID is not 17
+				|| oneSecs[1].SectorID is not 18
+				|| oneSecs[2].SectorID is not 19
+				|| oneSecs[3].SectorID is not 20
+				|| oneSecs[4].SectorID is not 21
+				|| oneSecs[5].SectorID is not 22
+				|| oneSecs[6].SectorID is not 23
+				|| oneSecs[7].SectorID is not 24)
+			{
 				return false;
+			}
 
 			return true;
 		}
@@ -235,21 +240,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// check for SPEEDLOCK ident in sector 0
 			string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[0].SectorData, 0, DiskTracks[0].Sectors[0].SectorData.Length);
-			if (!ident.ToUpper().Contains("SPEEDLOCK"))
+			if (!ident.Contains("SPEEDLOCK", StringComparison.OrdinalIgnoreCase))
 				return false;
 
 			// check for correct sector 0 lengths
-			if (DiskTracks[0].Sectors[0].SectorSize != 2 ||
-				DiskTracks[0].Sectors[0].SectorData.Length < 0x200)
-				return false;
+			if (DiskTracks[0].Sectors[0] is not { SectorSize: 2, SectorData.Length: >= 0x200 }) return false;
 
 			// sector[1] (SectorID 2) contains the weak sectors
-			Sector sec = DiskTracks[0].Sectors[1];
-
 			// check for correct sector 1 lengths
-			if (sec.SectorSize != 2 ||
-				sec.SectorData.Length < 0x200)
-				return false;
+			if (DiskTracks[0].Sectors[1] is not { SectorSize: 2, SectorData.Length: >= 0x200 } sec) return false;
 
 			// secID 2 needs a CRC error
 			//if (!(sec.Status1.Bit(5) || sec.Status2.Bit(5)))
@@ -297,7 +296,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// check for ALKATRAZ ident in sector 0
 			string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[0].SectorData, 0, DiskTracks[0].Sectors[0].SectorData.Length);
-			if (!ident.ToUpper().Contains("ALKATRAZ PROTECTION SYSTEM"))
+			if (!ident.Contains("ALKATRAZ PROTECTION SYSTEM", StringComparison.OrdinalIgnoreCase))
 				return false;
 
 			// ALKATRAZ NOTES (-asni 2018-05-01)
@@ -338,7 +337,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// check for PAUL OWENS ident in sector 2
 			string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[2].SectorData, 0, DiskTracks[0].Sectors[2].SectorData.Length);
-			if (!ident.ToUpper().Contains("PAUL OWENS"))
+			if (!ident.Contains("PAUL OWENS", StringComparison.OrdinalIgnoreCase))
 				return false;
 
 			// Paul Owens Disk Protection Notes (-asni 2018-05-01)
@@ -380,7 +379,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// check for Hexagon ident in sector 8
 			string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[8].SectorData, 0, DiskTracks[0].Sectors[8].SectorData.Length);
-			if (ident.ToUpper().Contains("GON DISK PROT"))
+			if (ident.Contains("GON DISK PROT", StringComparison.OrdinalIgnoreCase))
 				return true;
 
 			// hexagon protection may not be labelled as such

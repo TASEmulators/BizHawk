@@ -1,7 +1,4 @@
-﻿using BizHawk.Emulation.Common;
-using System;
-
-// This RAM state has been verified by TiKevin83 and CasualPokeplayer on various GBA consoles
+﻿// This RAM state has been verified by TiKevin83 and CasualPokeplayer on various GBA consoles
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {

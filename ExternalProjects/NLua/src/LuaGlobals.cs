@@ -10,15 +10,15 @@ namespace NLua
 		/// <summary>
 		/// Type at time of registration.
 		/// </summary>
-		public Type Type { get; private set; }
+		public Type Type { get; }
 
-		public string Path { get; private set; }
+		public string Path { get; }
 
 		/// <summary>
 		/// List of global properties 'owned' by this entry.
 		/// If this entry is removed all these globals should be removed as well.
 		/// </summary>
-		public List<string> linkedGlobals = new List<string>();
+		public readonly List<string> linkedGlobals = new();
 
 		public LuaGlobalEntry(Type type, string path)
 		{
@@ -29,10 +29,10 @@ namespace NLua
 
 	public class LuaGlobals
 	{
-		private List<string> _globals = new List<string>();
-		private List<LuaGlobalEntry> _knownTypes = new List<LuaGlobalEntry>();
+		private readonly List<string> _globals = new();
+		private readonly List<LuaGlobalEntry> _knownTypes = new();
 
-		public bool _globalsSorted = false;
+		public bool _globalsSorted;
 
 		public int MaximumRecursion { get; set; } = 2;
 
@@ -52,9 +52,7 @@ namespace NLua
 		}
 
 		public bool Contains(string fullPath)
-		{
-			return _globals.Contains(fullPath);
-		}
+			=> _globals.Contains(fullPath);
 
 		public void RemoveGlobal(string path)
 		{
@@ -72,16 +70,14 @@ namespace NLua
 		}
 
 		private LuaGlobalEntry GetKnownType(string path)
-		{
-			return _knownTypes.Find(x => x.Path.Equals(path));
-		}
+			=> _knownTypes.Find(x => x.Path.Equals(path, StringComparison.Ordinal));
 
 		public void RegisterGlobal(string path, Type type, int recursionCounter)
 		{
 			var knownType = GetKnownType(path);
 			if (knownType != null)
 			{
-				if (type.Equals(knownType.Type))
+				if (type == knownType.Type)
 				{
 					// Object is set to same value so no need to update
 					return;
@@ -119,48 +115,37 @@ namespace NLua
 		{
 			// Format for easy method invocation
 			_globals.Add(path + "(");
-
-			if (entry != null)
-			{
-				entry.linkedGlobals.Add(path);
-			}
+			entry?.linkedGlobals.Add(path);
 		}
 
 		private void RegisterPrimitive(string path, LuaGlobalEntry entry = null)
 		{
 			_globals.Add(path);
-			if (entry != null)
-			{
-				entry.linkedGlobals.Add(path);
-			}
+			entry?.linkedGlobals.Add(path);
 		}
 
 		private void RegisterClassOrInterface(string path, Type type, int recursionCounter, LuaGlobalEntry entry = null)
 		{
 			if (entry == null)
 			{
-				entry = new LuaGlobalEntry(type, path);
+				entry = new(type, path);
 				_knownTypes.Add(entry);
 			}
 
 			foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
 			{
-				string name = method.Name;
-				if (
-					// Check that the LuaHideAttribute and LuaGlobalAttribute were not applied
-					(!method.GetCustomAttributes(typeof(LuaHideAttribute), false).Any()) &&
-					(!method.GetCustomAttributes(typeof(LuaGlobalAttribute), false).Any()) &&
-					// Exclude some generic .NET methods that wouldn't be very usefull in Lua
-					name != "GetType" && name != "GetHashCode" && name != "Equals" &&
-					name != "ToString" && name != "Clone" && name != "Dispose" &&
-					name != "GetEnumerator" && name != "CopyTo" &&
-					!name.StartsWith("get_", StringComparison.Ordinal) &&
-					!name.StartsWith("set_", StringComparison.Ordinal) &&
-					!name.StartsWith("add_", StringComparison.Ordinal) &&
-					!name.StartsWith("remove_", StringComparison.Ordinal))
+				var name = method.Name;
+				// Exclude some generic .NET methods that wouldn't be very useful in Lua
+				if (name != "GetType" && name != "GetHashCode" && name != "Equals" &&
+				    name != "ToString" && name != "Clone" && name != "Dispose" &&
+				    name != "GetEnumerator" && name != "CopyTo" &&
+				    !name.StartsWith("get_", StringComparison.Ordinal) &&
+				    !name.StartsWith("set_", StringComparison.Ordinal) &&
+				    !name.StartsWith("add_", StringComparison.Ordinal) &&
+				    !name.StartsWith("remove_", StringComparison.Ordinal))
 				{
 					// Format for easy method invocation
-					string command = path + ":" + name + "(";
+					var command = path + ":" + name + "(";
 
 					if (method.GetParameters().Length == 0)
 						command += ")";
@@ -172,24 +157,14 @@ namespace NLua
 
 			foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
 			{
-				if (
-					// Check that the LuaHideAttribute and LuaGlobalAttribute were not applied
-					(!field.GetCustomAttributes(typeof(LuaHideAttribute), false).Any()) &&
-					(!field.GetCustomAttributes(typeof(LuaGlobalAttribute), false).Any()))
-				{
-					// Go into recursion for members
-					RegisterPath(path + "." + field.Name, field.FieldType, recursionCounter + 1, entry);
-				}
+				// Go into recursion for members
+				RegisterPath(path + "." + field.Name, field.FieldType, recursionCounter + 1, entry);
 			}
 
 			foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
 			{
-				if (
-					// Check that the LuaHideAttribute and LuaGlobalAttribute were not applied
-					(!property.GetCustomAttributes(typeof(LuaHideAttribute), false).Any()) &&
-					(!property.GetCustomAttributes(typeof(LuaGlobalAttribute), false).Any())
-					// Exclude some generic .NET properties that wouldn't be very useful in Lua
-					&& property.Name != "Item")
+				// Exclude some generic .NET properties that wouldn't be very useful in Lua
+				if (property.Name != "Item")
 				{
 					// Go into recursion for members
 					RegisterPath(path + "." + property.Name, property.PropertyType, recursionCounter + 1, entry);

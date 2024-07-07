@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -162,7 +161,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Cheats_Load(object sender, EventArgs e)
 		{
-			if (Settings.Columns.Exists(static c => string.IsNullOrWhiteSpace(c.Text))) Settings = new(); //HACK for previous config settings
 			CheatEditor.MemoryDomains = Core;
 			LoadConfigSettings();
 			CheatsMenu.Items.Add(CheatListView.ToColumnsMenu(ColumnToggleCallback));
@@ -567,7 +565,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
-			var column = e.Column;
+			var column = e.Column!;
 			if (column.Name != _sortedColumn)
 			{
 				_sortReverse = false;
@@ -627,15 +625,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Columns = new List<RollColumn>
 				{
-					new RollColumn { Text = "Names", Name = NameColumn, Visible = true, UnscaledWidth = 128, Type = ColumnType.Text },
-					new RollColumn { Text = "Address", Name = AddressColumn, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Value", Name = ValueColumn, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Compare", Name = CompareColumn, Visible = true, UnscaledWidth = 63, Type = ColumnType.Text },
-					new RollColumn { Text = "Compare Type", Name = ComparisonTypeColumn, Visible = true, UnscaledWidth = 98, Type = ColumnType.Text },
-					new RollColumn { Text = "On", Name = OnColumn, Visible = false, UnscaledWidth = 28, Type = ColumnType.Text },
-					new RollColumn { Text = "Size", Name = SizeColumn, Visible = true, UnscaledWidth = 55, Type = ColumnType.Text },
-					new RollColumn { Text = "Endian", Name = EndianColumn, Visible = false, UnscaledWidth = 55, Type = ColumnType.Text },
-					new RollColumn { Text = "Display Type", Name = TypeColumn, Visible = false, UnscaledWidth = 88, Type = ColumnType.Text }
+					new(name: NameColumn, widthUnscaled: 128, text: "Names"),
+					new(name: AddressColumn, widthUnscaled: 60, text: "Address"),
+					new(name: ValueColumn, widthUnscaled: 59, text: "Value"),
+					new(name: CompareColumn, widthUnscaled: 63, text: "Compare"),
+					new(name: ComparisonTypeColumn, widthUnscaled: 98, text: "Compare Type"),
+					new(name: OnColumn, widthUnscaled: 28, text: "On") { Visible = false },
+					new(name: SizeColumn, widthUnscaled: 55, text: "Size"),
+					new(name: EndianColumn, widthUnscaled: 55, text: "Endian") { Visible = false },
+					new(name: TypeColumn, widthUnscaled: 88, text: "Display Type") { Visible = false },
 				};
 			}
 

@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using System;
 using System.Threading;
 
 namespace BizHawk.Client.Common

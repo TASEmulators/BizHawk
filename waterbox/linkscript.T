@@ -64,6 +64,15 @@ SECTIONS
     /* .gnu.warning sections are handled specially by elf.em.  */
     *(.gnu.warning)
   }
+  .ltext           :
+  {
+    *(.ltext.unlikely .ltext.*_unlikely .ltext.unlikely.*)
+    *(.ltext.exit .ltext.exit.*)
+    *(.ltext.startup .ltext.startup.*)
+    *(.ltext.hot .ltext.hot.*)
+    *(SORT(.ltext.sorted.*))
+    *(.ltext .stub .ltext.*)
+  }
   .fini           :
   {
     KEEP (*(SORT_NONE(.fini)))
@@ -163,10 +172,10 @@ SECTIONS
   /* waterbox sections that are eventually RO at runtime */
   . = ALIGN(CONSTANT (MAXPAGESIZE));
   .wbxsyscall : { *(.wbxsyscall) }
-  .sealed : { *(.sealed) }
+  .sealed : { *(.ldata.sealed) }
   . = ALIGN(CONSTANT (MAXPAGESIZE));
   /* Put the invisible section by itself */
-  .invis : { *(.invis) }
+  .invis : { *(.ldata.invis) }
   . = ALIGN(CONSTANT (MAXPAGESIZE));
   .data           :
   {
@@ -187,7 +196,7 @@ SECTIONS
       .bss section disappears because there are no input sections.
       FIXME: Why do we need it? When there is no .bss section, we do not
       pad the .data section.  */
-   . = ALIGN(. != 0 ? 64 / 8 : 1);
+   . = ALIGN(. != 0 ? 64 / 4 : 1);
   }
   .lbss   :
   {
@@ -195,18 +204,19 @@ SECTIONS
     *(.lbss .lbss.* .gnu.linkonce.lb.*)
     *(LARGE_COMMON)
   }
-  . = ALIGN(64 / 8);
+  . = ALIGN(64);
   . = SEGMENT_START("ldata-segment", .);
   .lrodata   ALIGN(CONSTANT (MAXPAGESIZE)) + (. & (CONSTANT (MAXPAGESIZE) - 1)) :
   {
     *(.lrodata .lrodata.* .gnu.linkonce.lr.*)
   }
+  . = ALIGN(64 / 4);
   .ldata   ALIGN(CONSTANT (MAXPAGESIZE)) + (. & (CONSTANT (MAXPAGESIZE) - 1)) :
   {
     *(.ldata .ldata.* .gnu.linkonce.l.*)
-    . = ALIGN(. != 0 ? 64 / 8 : 1);
+    . = ALIGN(. != 0 ? 64 / 4 : 1);
   }
-  . = ALIGN(64 / 8);
+  . = ALIGN(64 / 4);
   _end = .; PROVIDE (end = .);
   . = DATA_SEGMENT_END (.);
   /* Stabs debugging sections.  */
@@ -246,9 +256,15 @@ SECTIONS
   /* DWARF 3 */
   .debug_pubtypes 0 : { *(.debug_pubtypes) }
   .debug_ranges   0 : { *(.debug_ranges) }
-  /* DWARF Extension.  */
-  .debug_macro    0 : { *(.debug_macro) }
+  /* DWARF 5.  */
   .debug_addr     0 : { *(.debug_addr) }
+  .debug_line_str 0 : { *(.debug_line_str) }
+  .debug_loclists 0 : { *(.debug_loclists) }
+  .debug_macro    0 : { *(.debug_macro) }
+  .debug_names    0 : { *(.debug_names) }
+  .debug_rnglists 0 : { *(.debug_rnglists) }
+  .debug_str_offsets 0 : { *(.debug_str_offsets) }
+  .debug_sup      0 : { *(.debug_sup) }
   .gnu.attributes 0 : { KEEP (*(.gnu.attributes)) }
   /DISCARD/ : { *(.note.GNU-stack) *(.gnu_debuglink) *(.gnu.lto_*) }
 }

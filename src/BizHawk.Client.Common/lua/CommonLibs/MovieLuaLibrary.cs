@@ -1,4 +1,4 @@
-﻿using System;
+using System.Collections.Generic;
 
 using NLua;
 
@@ -30,7 +30,9 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local nlmovget = movie.getinput( 500 );")]
 		[LuaMethod("getinput", "Returns a table of buttons pressed on a given frame of the loaded movie")]
 		public LuaTable GetInput(int frame, int? controller = null)
-			=> _th.DictToTable(APIs.Movie.GetInput(frame, controller));
+			=> APIs.Movie.GetInput(frame, controller) is IReadOnlyDictionary<string, object> dict
+   				? _th.DictToTable(dict)
+	   			: null;
 
 		[LuaMethodExample("local stmovget = movie.getinputasmnemonic( 500 );")]
 		[LuaMethod("getinputasmnemonic", "Returns the input of a given frame of the loaded movie in a raw inputlog string")]
@@ -71,6 +73,11 @@ namespace BizHawk.Client.Common
 		[LuaMethod("play_from_start", "Resets the core to frame 0 with the currently loaded movie in playback mode. If a path to a movie is specified, attempts to load it, then continues with playback if it was successful. Returns true iff successful.")]
 		public bool PlayFromStart(string path = "")
 		{
+			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			{
+				throw new InvalidOperationException("movie.play_from_start() is not allowed during input/memory callbacks");
+			}
+
 			_luaLibsImpl.IsRebootingCore = true;
 			var success = APIs.Movie.PlayFromStart(path);
 			_luaLibsImpl.IsRebootingCore = false;

@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -40,6 +39,9 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
+				DirectoryInfo parentDir = new(Path.GetDirectoryName(FFmpegService.FFmpegPath)!);
+				if (!parentDir.Exists) parentDir.Create();
+				using var fs = File.Create(FFmpegService.FFmpegPath); // check writable before bothering with the download
 				using (var evt = new ManualResetEvent(false))
 				{
 					using (var client = new System.Net.WebClient())
@@ -83,15 +85,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					using (var exe = OSTailoredCode.IsUnixHost ? hf.BindArchiveMember("ffmpeg") : hf.BindFirstOf(".exe"))
 					{
-						var data = exe!.ReadAllBytes();
-
 						//last chance. exiting, don't dump the new ffmpeg file
 						if (exiting)
 							return;
-
-						DirectoryInfo parentDir = new(Path.GetDirectoryName(FFmpegService.FFmpegPath)!);
-						if (!parentDir.Exists) parentDir.Create();
-						File.WriteAllBytes(FFmpegService.FFmpegPath, data);
+						exe!.GetStream().CopyTo(fs);
+						fs.Dispose();
 						if (OSTailoredCode.IsUnixHost)
 						{
 							OSTailoredCode.ConstructSubshell("chmod", $"+x {FFmpegService.FFmpegPath}", checkStdout: false).Start();
@@ -105,9 +103,10 @@ namespace BizHawk.Client.EmuHawk
 
 				succeeded = true;
 			}
-			catch
+			catch (Exception e)
 			{
 				failed = true;
+				Util.DebugWriteLine($"FFmpeg download failed with:\n{e}");
 			}
 			finally
 			{

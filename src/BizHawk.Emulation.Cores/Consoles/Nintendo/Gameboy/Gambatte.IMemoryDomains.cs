@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
@@ -7,17 +6,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class Gameboy
 	{
-		private readonly List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
+		private readonly List<MemoryDomain> _memoryDomains = new();
 		internal IMemoryDomains MemoryDomains { get; private set; }
 
 		private void CreateMemoryDomain(LibGambatte.MemoryAreas which, string name)
 		{
-			IntPtr data = IntPtr.Zero;
-			int length = 0;
+			var data = IntPtr.Zero;
+			var length = 0;
 
 			if (!LibGambatte.gambatte_getmemoryarea(GambatteState, which, ref data, ref length))
 			{
-				throw new Exception($"{nameof(LibGambatte.gambatte_getmemoryarea)}() failed!");
+				throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_getmemoryarea)}() failed!");
 			}
 
 			// if length == 0, it's an empty block; (usually rambank on some carts); that's ok
@@ -51,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			CreateMemoryDomain(LibGambatte.MemoryAreas.cartram, "CartRAM");
 
 			MemoryDomains = new MemoryDomainList(_memoryDomains);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
+			_serviceProvider.Register(MemoryDomains);
 		}
 	}
 }

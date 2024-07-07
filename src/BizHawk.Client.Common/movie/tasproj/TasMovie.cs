@@ -1,9 +1,10 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -16,10 +17,10 @@ namespace BizHawk.Client.Common
 		public const double CurrentVersion = 1.1;
 
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
-		internal TasMovie(IMovieSession session, string path, IQuickBmpFile quickBmpFile)
+		internal TasMovie(IMovieSession session, string path)
 			: base(session, path)
 		{
-			Branches = new TasBranchCollection(this, quickBmpFile);
+			Branches = new TasBranchCollection(this);
 			ChangeLog = new TasMovieChangeLog(this);
 			Header[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{CurrentVersion.ToString(CultureInfo.InvariantCulture)}";
 			Markers = new TasMovieMarkerList(this);
@@ -133,7 +134,7 @@ namespace BizHawk.Client.Common
 		{
 			var anyLagInvalidated = LagLog.RemoveFrom(frame);
 			var anyStateInvalidated = TasStateManager.InvalidateAfter(frame);
-			GreenzoneInvalidated(frame + 1);
+			GreenzoneInvalidated(frame);
 			if (anyLagInvalidated || anyStateInvalidated)
 			{
 				Changes = true;
@@ -147,6 +148,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void InvalidateEntireGreenzone()
+			=> InvalidateAfter(0);
 
 		private (int Frame, IMovieController Controller) _displayCache = (-1, new Bk2Controller("", NullController.Instance.Definition));
 
@@ -226,7 +229,7 @@ namespace BizHawk.Client.Common
 			string line;
 			while ((line = reader.ReadLine()) != null)
 			{
-				if (line.StartsWith("|"))
+				if (line.StartsWith('|'))
 				{
 					newLog.Add(line);
 					if (!timelineBranchFrame.HasValue && counter < Log.Count && line != Log[counter])
@@ -236,7 +239,7 @@ namespace BizHawk.Client.Common
 
 					counter++;
 				}
-				else if (line.StartsWith("Frame "))
+				else if (line.StartsWithOrdinal("Frame "))
 				{
 					var split = line.Split(' ');
 					try
@@ -249,7 +252,7 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 				}
-				else if (line.StartsWith("LogKey:"))
+				else if (line.StartsWithOrdinal("LogKey:"))
 				{
 					LogKey = line.Replace("LogKey:", "");
 				}
@@ -308,7 +311,7 @@ namespace BizHawk.Client.Common
 
 			if (BindMarkersToInput) // pretty critical not to erase them
 			{
-				Markers = branch.Markers;
+				Markers = branch.Markers.DeepClone();
 			}
 
 			Changes = true;
@@ -325,7 +328,7 @@ namespace BizHawk.Client.Common
 				if (_changes != value)
 				{
 					_changes = value;
-					OnPropertyChanged("Changes");
+					OnPropertyChanged(nameof(Changes));
 				}
 			}
 		}

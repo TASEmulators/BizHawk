@@ -41,14 +41,17 @@ NALL_HEADER_INLINE auto file_map::open(const string& filename, u32 mode_) -> boo
 
   _file = CreateFileW(utf16_t(filename), desiredAccess, FILE_SHARE_READ, nullptr,
     creationDisposition, FILE_ATTRIBUTE_NORMAL, nullptr);
-  if(_file == INVALID_HANDLE_VALUE) return false;
+  if(_file == INVALID_HANDLE_VALUE) {
+    _file = nullptr;
+    return false;
+  }
 
   _size = GetFileSize(_file, nullptr);
 
   _map = CreateFileMapping(_file, nullptr, protection, 0, _size, nullptr);
-  if(_map == INVALID_HANDLE_VALUE) {
+  if(_map == nullptr) {
     CloseHandle(_file);
-    _file = INVALID_HANDLE_VALUE;
+    _file = nullptr;
     return false;
   }
 
@@ -62,14 +65,14 @@ NALL_HEADER_INLINE auto file_map::close() -> void {
     _data = nullptr;
   }
 
-  if(_map != INVALID_HANDLE_VALUE) {
+  if(_map != nullptr) {
     CloseHandle(_map);
-    _map = INVALID_HANDLE_VALUE;
+    _map = nullptr;
   }
 
-  if(_file != INVALID_HANDLE_VALUE) {
+  if(_file != nullptr) {
     CloseHandle(_file);
-    _file = INVALID_HANDLE_VALUE;
+    _file = nullptr;
   }
 
   _open = false;

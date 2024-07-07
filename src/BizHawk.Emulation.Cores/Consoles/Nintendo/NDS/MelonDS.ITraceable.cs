@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
@@ -8,10 +7,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	public partial class NDS
 	{
 		private ITraceable Tracer { get; }
-		private readonly LibMelonDS.TraceCallback _tracecb;
+		private readonly LibMelonDS.TraceCallback _traceCallback;
 
 		private unsafe void MakeTrace(LibMelonDS.TraceMask type, uint opcode, IntPtr r, IntPtr disasm, uint cyclesOff)
 		{
+			// ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
 			var cpu = type switch
 			{
 				LibMelonDS.TraceMask.ARM7_THUMB => "ARM7 (Thumb)",

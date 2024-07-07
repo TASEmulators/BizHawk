@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -24,7 +23,7 @@ namespace BizHawk.Common
 
 		public static void EnableDomain(string domain)
 		{
-			if (EnabledLogDomains.Contains(domain) == false)
+			if (!EnabledLogDomains.Contains(domain))
 			{
 				EnabledLogDomains.Add(domain);
 			}
@@ -39,7 +38,9 @@ namespace BizHawk.Common
 		}
 
 		// -------------- Logging Action Configuration --------------
+#pragma warning disable CA2211 // public field
 		public static Action<string> LogAction = DefaultLogger;
+#pragma warning restore CA2211
 
 		// NOTEs are only logged if the domain is enabled.
 		// ERRORs are logged regardless.
@@ -58,8 +59,6 @@ namespace BizHawk.Common
 		}
 
 		// -------------- Default Logger Action --------------
-		public static Stream? HACK_LOG_STREAM;
-
 		private static readonly bool LogToConsole = false;
 		private static readonly bool LogToFile = false;
 

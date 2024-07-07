@@ -1,4 +1,3 @@
-﻿using System;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
@@ -58,8 +57,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GuiOptions_Load(object sender, EventArgs e)
 		{
-			rbInputMethodDirectInput.Enabled = HostCapabilityDetector.HasDirectX;
-
 			StartFullScreenCheckbox.Checked = _config.StartFullscreen;
 			StartPausedCheckbox.Checked = _config.StartPaused;
 			PauseWhenMenuActivatedCheckbox.Checked = _config.PauseWhenMenuActivated;
@@ -82,18 +79,6 @@ namespace BizHawk.Client.EmuHawk
 			cbMoviesOnDisk.Checked = _config.Movies.MoviesOnDisk;
 			cbSkipWaterboxIntegrityChecks.Checked = _config.SkipWaterboxIntegrityChecks;
 			NoMixedKeyPriorityCheckBox.Checked = _config.NoMixedInputHokeyOverride;
-
-			switch (_config.HostInputMethod)
-			{
-				case EHostInputMethod.OpenTK:
-					rbInputMethodOpenTK.Checked = true;
-					break;
-				case EHostInputMethod.DirectInput:
-					rbInputMethodDirectInput.Checked = true;
-					break;
-				default:
-					throw new InvalidOperationException();
-			}
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
@@ -122,8 +107,6 @@ namespace BizHawk.Client.EmuHawk
 			_config.SuppressAskSave = NeverAskSaveCheckbox.Checked;
 			_config.MergeLAndRModifierKeys = cbMergeLAndRModifierKeys.Checked;
 			_config.SingleInstanceMode = SingleInstanceModeCheckbox.Checked;
-			if(rbInputMethodDirectInput.Checked) _config.HostInputMethod =  EHostInputMethod.DirectInput;
-			if(rbInputMethodOpenTK.Checked) _config.HostInputMethod = EHostInputMethod.OpenTK;
 
 			_config.BackupSaveram = BackupSRamCheckbox.Checked;
 			_config.AutosaveSaveRAM = AutosaveSRAMCheckbox.Checked;

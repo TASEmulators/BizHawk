@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
@@ -8,6 +7,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
 using System.Linq;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
@@ -44,6 +44,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract byte snes_bus_read(uint address);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_bus_write(uint address, byte value);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract byte snes_read_oam(ushort address);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_write_oam(ushort address, byte value);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract IntPtr snes_get_sgb_memory_region(int id, out int size);
 		[BizImport(CallingConvention.Cdecl)]
@@ -199,7 +203,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public delegate void snes_write_hook_t(uint address, byte value);
 		public delegate void snes_exec_hook_t(uint address);
 		public delegate long snes_time_t();
-		public delegate void snes_msu_open_t(ushort track_id);
+		public delegate bool snes_msu_open_t(ushort track_id);
 		public delegate void snes_msu_seek_t(long offset, bool relative);
 		public delegate byte snes_msu_read_t();
 		public delegate bool snes_msu_end_t();
@@ -284,15 +288,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public void Seal()
 		{
 			exe.Seal();
-			foreach (string s in _readonlyFiles.Where(s => !s.StartsWith("msu1/")))
+			foreach (string s in _readonlyFiles.Where(s => !s.StartsWithOrdinal("msu1/")))
 			{
 				exe.RemoveReadonlyFile(s);
 			}
 
-			_readonlyFiles.RemoveAll(s => !s.StartsWith("msu1/"));
+			_readonlyFiles.RemoveAll(s => !s.StartsWithOrdinal("msu1/"));
 		}
 
 		// private int serializedSize;
+
+		public bool AvoidRewind => false;
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{

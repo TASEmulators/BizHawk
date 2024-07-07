@@ -25,7 +25,6 @@ namespace nall {
     static constexpr bool GCC       = 0;
     static constexpr bool Microsoft = 0;
   };
-  #pragma clang diagnostic error   "-Wc++20-extensions"
   #pragma clang diagnostic error   "-Wgnu-case-range"
   #pragma clang diagnostic error   "-Wgnu-statement-expression"
   #pragma clang diagnostic error   "-Wvla"
@@ -64,6 +63,10 @@ namespace nall {
     static constexpr bool GCC       = 0;
     static constexpr bool Microsoft = 1;
   };
+  #pragma warning(disable:4146)  //unary minus operator applied to unsigned type, result still unsigned
+  #pragma warning(disable:4244)  //conversion from 'type1' to 'type2', possible loss of data
+  #pragma warning(disable:4804)  //unsafe use of type 'bool' in operation
+  #pragma warning(disable:4805)  //unsafe mix of type 'bool' and type 'type' in operation
   #pragma warning(disable:4996)  //libc "deprecation" warnings
 #else
   #error "unable to detect compiler"
@@ -188,6 +191,8 @@ namespace nall {
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 0;
     static constexpr bool ppc32 = 0;
+    static constexpr bool rv64  = 0;
+    static constexpr bool rv32  = 0;
   };
 #elif defined(__amd64__) || defined(_M_AMD64)
   #define ARCHITECTURE_AMD64
@@ -201,6 +206,8 @@ namespace nall {
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 0;
     static constexpr bool ppc32 = 0;
+    static constexpr bool rv64  = 0;
+    static constexpr bool rv32  = 0;
   };
 #elif defined(__aarch64__) || defined(_M_ARM64)
   #define ARCHITECTURE_ARM64
@@ -214,6 +221,8 @@ namespace nall {
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 0;
     static constexpr bool ppc32 = 0;
+    static constexpr bool rv64  = 0;
+    static constexpr bool rv32  = 0;
   };
 #elif defined(__arm__)
   #define ARCHITECTURE_ARM32
@@ -224,6 +233,8 @@ namespace nall {
     static constexpr bool arm32 = 1;
     static constexpr bool ppc64 = 0;
     static constexpr bool ppc32 = 0;
+    static constexpr bool rv64  = 0;
+    static constexpr bool rv32  = 0;
   };
 #elif defined(__ppc64__) || defined(_ARCH_PPC64)
   #define ARCHITECTURE_PPC64
@@ -234,6 +245,8 @@ namespace nall {
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 1;
     static constexpr bool ppc32 = 0;
+    static constexpr bool rv64  = 0;
+    static constexpr bool rv32  = 0;
   };
 #elif defined(__ppc__) || defined(_ARCH_PPC) || defined(_M_PPC)
   #define ARCHITECTURE_PPC32
@@ -244,6 +257,32 @@ namespace nall {
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 0;
     static constexpr bool ppc32 = 1;
+    static constexpr bool rv64  = 0;
+    static constexpr bool rv32  = 0;
+  };
+#elif defined(__riscv) && __riscv_xlen == 64
+  #define ARCHITECTURE_RV64
+  struct Architecture {
+    static constexpr bool x86   = 0;
+    static constexpr bool amd64 = 0;
+    static constexpr bool arm64 = 0;
+    static constexpr bool arm32 = 0;
+    static constexpr bool ppc64 = 0;
+    static constexpr bool ppc32 = 0;
+    static constexpr bool rv64  = 1;
+    static constexpr bool rv32  = 0;
+  };
+#elif defined(__riscv) && __riscv_xlen == 32
+  #define ARCHITECTURE_RV32
+  struct Architecture {
+    static constexpr bool x86   = 0;
+    static constexpr bool amd64 = 0;
+    static constexpr bool arm64 = 0;
+    static constexpr bool arm32 = 0;
+    static constexpr bool ppc64 = 0;
+    static constexpr bool ppc32 = 0;
+    static constexpr bool rv64  = 0;
+    static constexpr bool rv32  = 1;
   };
 #else
   #error "unable to detect architecture"

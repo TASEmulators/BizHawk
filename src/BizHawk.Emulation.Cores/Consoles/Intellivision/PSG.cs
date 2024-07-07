@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
@@ -146,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			if (addr >= 0x01F0 && addr <= 0x01FF)
 			{
-				return (ushort)(Register[addr - 0x01F0]);
+				return Register[addr - 0x01F0];
 			}
 
 			return null;

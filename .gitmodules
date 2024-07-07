@@ -28,10 +28,6 @@
 [submodule "submodules/gambatte"]
 	path = submodules/gambatte
 	url = https://github.com/pokemon-speedrunning/gambatte-core.git
-[submodule "waterbox/llvm-project"]
-	path = waterbox/llvm-project
-	url = https://github.com/llvm/llvm-project.git
-	branch = llvmorg-16.0.0
 [submodule "submodules/libdarm"]
 	path = submodules/libdarm
 	url = https://github.com/jbremer/darm.git
@@ -59,3 +55,26 @@
 [submodule "ExternalProjects/librcheevos/rcheevos"]
 	path = ExternalProjects/librcheevos/rcheevos
 	url = https://github.com/RetroAchievements/rcheevos.git
+[submodule "encore/encore"]
+	path = encore/encore
+	url = https://github.com/CasualPokePlayer/encore.git
+	branch = headless
+[submodule "ExternalProjects/SDL2/SDL"]
+	path = ExternalProjects/SDL2/SDL
+	url = https://github.com/libsdl-org/SDL.git
+	branch = SDL2
+[submodule "ExternalProjects/SDL2/libusb"]
+	path = ExternalProjects/SDL2/libusb
+	url = https://github.com/libusb/libusb.git
+[submodule "quicknes/core"]
+	path = quicknes/core
+	url = https://github.com/TASEmulators/quickerNES.git
+	branch = main
+[submodule "waterbox/gpgx/Genesis-Plus-GX"]
+	path = waterbox/gpgx/Genesis-Plus-GX
+	url = https://github.com/TASEmulators/Genesis-Plus-GX.git
+	branch = tasvideos-2.1
+[submodule "waterbox/uae/libretro-uae"]
+	path = waterbox/uae/libretro-uae
+	url = https://github.com/TASEmulators/libretro-uae.git
+	branch = wbx

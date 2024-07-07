@@ -11,86 +11,112 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\bizinterface.cpp" />
-    <ClCompile Include="..\fex\blargg_common.cpp" />
-    <ClCompile Include="..\fex\blargg_errors.cpp" />
-    <ClCompile Include="..\fex\Data_Reader.cpp" />
-    <ClCompile Include="..\nes_emu\abstract_file.cpp" />
-    <ClCompile Include="..\nes_emu\apu_state.cpp" />
-    <ClCompile Include="..\nes_emu\Blip_Buffer.cpp" />
-    <ClCompile Include="..\nes_emu\Effects_Buffer.cpp" />
-    <ClCompile Include="..\nes_emu\Mapper_Fme7.cpp" />
-    <ClCompile Include="..\nes_emu\Mapper_Mmc5.cpp" />
-    <ClCompile Include="..\nes_emu\Mapper_Namco106.cpp" />
-    <ClCompile Include="..\nes_emu\Mapper_Vrc6.cpp" />
-    <ClCompile Include="..\nes_emu\misc_mappers.cpp" />
-    <ClCompile Include="..\nes_emu\Mmc24.cpp" />
-    <ClCompile Include="..\nes_emu\Multi_Buffer.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Apu.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Buffer.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Cart.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Core.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Cpu.cpp" />
-    <ClCompile Include="..\nes_emu\nes_data.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Effects_Buffer.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Emu.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_File.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Fme7_Apu.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Mapper.cpp" />
-    <ClCompile Include="..\nes_emu\nes_mappers.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Mmc1.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Mmc3.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Namco_Apu.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Oscs.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Ppu.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Ppu_Impl.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Ppu_Rendering.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_State.cpp" />
-    <ClCompile Include="..\nes_emu\nes_util.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Vrc6_Apu.cpp" />
+    <ClInclude Include="..\core\extern\jaffarCommon\include\jaffarCommon\file.hpp" />
+    <ClInclude Include="..\core\extern\jaffarCommon\include\jaffarCommon\deserializers\contiguous.hpp" />
+    <ClInclude Include="..\core\extern\jaffarCommon\include\jaffarCommon\deserializers\base.hpp" />
+    <ClInclude Include="..\core\extern\jaffarCommon\include\jaffarCommon\serializers\contiguous.hpp" />
+    <ClInclude Include="..\core\extern\jaffarCommon\include\jaffarCommon\serializers\base.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\apu\vrc7\emu2413_state.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\apu\vrc7\apu.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\apu\vrc7\emu2413.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\apu\fme7\apu.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\apu\namco\apu.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\apu\vrc6\apu.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\apu\multiBuffer.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\apu\apu.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\apu\buffer.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\apu\blipBuffer.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\apu\effectsBuffer.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\apu\oscs.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\apu\NESEffectsBuffer.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\emu.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper015.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper140.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper010.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper089.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper024.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper085.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper244.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper022.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper032.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper241.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper033.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper152.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper004.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper094.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper113.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper240.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper232.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper207.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper001.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper075.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper206.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper156.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper000.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper071.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper034.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper011.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper073.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper009.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper079.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper021.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper154.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper180.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper184.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper002.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper030.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper005.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper025.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper070.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper093.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper023.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper086.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper003.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper246.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper097.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper078.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper060.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper019.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper190.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper193.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper026.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper069.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper007.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper088.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper066.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\mappers\mapper087.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\cart.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\cpu.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\core.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\ppu\ppuImpl.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\ppu\ppuRendering.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\ppu\ppuSprites.hpp" />
+    <ClInclude Include="..\core\source\quickerNES\core\ppu\ppu.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\fex\blargg_common.h" />
-    <ClInclude Include="..\fex\blargg_config.h" />
-    <ClInclude Include="..\fex\blargg_endian.h" />
-    <ClInclude Include="..\fex\blargg_errors.h" />
-    <ClInclude Include="..\fex\blargg_source.h" />
-    <ClInclude Include="..\fex\Data_Reader.h" />
-    <ClInclude Include="..\nes_emu\abstract_file.h" />
-    <ClInclude Include="..\nes_emu\apu_state.h" />
-    <ClInclude Include="..\nes_emu\blargg_common.h" />
-    <ClInclude Include="..\nes_emu\blargg_config.h" />
-    <ClInclude Include="..\nes_emu\blargg_endian.h" />
-    <ClInclude Include="..\nes_emu\blargg_source.h" />
-    <ClInclude Include="..\nes_emu\Blip_Buffer.h" />
-    <ClInclude Include="..\nes_emu\Blip_Synth.h" />
-    <ClInclude Include="..\nes_emu\Effects_Buffer.h" />
-    <ClInclude Include="..\nes_emu\Mmc24.h" />
-    <ClInclude Include="..\nes_emu\Multi_Buffer.h" />
-    <ClInclude Include="..\nes_emu\Nes_Apu.h" />
-    <ClInclude Include="..\nes_emu\Nes_Buffer.h" />
-    <ClInclude Include="..\nes_emu\Nes_Cart.h" />
-    <ClInclude Include="..\nes_emu\Nes_Core.h" />
-    <ClInclude Include="..\nes_emu\Nes_Cpu.h" />
-    <ClInclude Include="..\nes_emu\nes_cpu_io.h" />
-    <ClInclude Include="..\nes_emu\nes_data.h" />
-    <ClInclude Include="..\nes_emu\Nes_Effects_Buffer.h" />
-    <ClInclude Include="..\nes_emu\Nes_Emu.h" />
-    <ClInclude Include="..\nes_emu\Nes_File.h" />
-    <ClInclude Include="..\nes_emu\Nes_Fme7_Apu.h" />
-    <ClInclude Include="..\nes_emu\Nes_Mapper.h" />
-    <ClInclude Include="..\nes_emu\Nes_Namco_Apu.h" />
-    <ClInclude Include="..\nes_emu\nes_ntsc.h" />
-    <ClInclude Include="..\nes_emu\nes_ntsc_impl.h" />
-    <ClInclude Include="..\nes_emu\Nes_Oscs.h" />
-    <ClInclude Include="..\nes_emu\Nes_Ppu.h" />
-    <ClInclude Include="..\nes_emu\Nes_Ppu_Bg.h" />
-    <ClInclude Include="..\nes_emu\Nes_Ppu_Impl.h" />
-    <ClInclude Include="..\nes_emu\Nes_Ppu_Rendering.h" />
-    <ClInclude Include="..\nes_emu\Nes_Ppu_Sprites.h" />
-    <ClInclude Include="..\nes_emu\Nes_State.h" />
-    <ClInclude Include="..\nes_emu\nes_util.h" />
-    <ClInclude Include="..\nes_emu\Nes_Vrc6_Apu.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\core\source\quickerNES\core\apu\apu.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\apu\fme7\apu_fme7.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\apu\namco\apu_namco.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\apu\vrc6\apu_vrc6.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\apu\vrc7\apu_vrc7.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\apu\vrc7\emu2413_state.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\apu\vrc7\emu2413.cpp " />
+    <ClCompile Include="..\core\source\quickerNES\core\apu\effectsBuffer.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\apu\blipBuffer.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\apu\NESEffectsBuffer.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\apu\oscs.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\apu\buffer.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\apu\multiBuffer.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\emu.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\mappers\mapper.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\cpu.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\ppu\ppu.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\ppu\ppuRendering.cpp" />
+    <ClCompile Include="..\core\source\quickerNES\core\ppu\ppuImpl.cpp" />
+    <ClCompile Include="..\bizinterface.cpp " />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F07F76D3-08E6-4EBC-82F9-53FF90ABD9A9}</ProjectGuid>
@@ -102,14 +128,14 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -121,14 +147,21 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>..\core\source\quickerNES\core;..\core\extern\jaffarCommon\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>..\core\source\quickerNES\core;..\core\extern\jaffarCommon\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);DISABLE_AUTO_FILE;__LIBRETRO__</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);_QUICKERNES_DETECT_JOYPAD_READS;_QUICKERNES_ENABLE_TRACEBACK_SUPPORT;</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -146,8 +179,9 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);DISABLE_AUTO_FILE;__LIBRETRO__;NDEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);_QUICKERNES_DETECT_JOYPAD_READS;_QUICKERNES_ENABLE_TRACEBACK_SUPPORT;</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

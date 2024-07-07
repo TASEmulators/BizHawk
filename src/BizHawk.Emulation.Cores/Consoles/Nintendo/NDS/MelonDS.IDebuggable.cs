@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
@@ -10,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			var regs = new uint[2 * 16];
-			_core.GetRegs(regs);
+			_core.GetRegs(_console, regs);
 
 			var ret = new Dictionary<string, RegisterValue>();
 			for (var i = 0; i < 2; i++)
@@ -26,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public void SetCpuRegister(string register, int value)
 		{
-			if (register.Length != 7 && register.Length != 8)
+			if (register.Length is not (7 or 8))
 			{
 				throw new InvalidOperationException("Wrong String Length???");
 			}
@@ -40,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				throw new InvalidOperationException("Invalid Reg Index???");
 			}
-			_core.SetReg(ncpu == 9 ? 0 : 1, index, value);
+			_core.SetReg(_console, ncpu == 9 ? 0 : 1, index, value);
 		}
 
 		public bool CanStep(StepType type) => false;
@@ -48,15 +47,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 
-		public long TotalExecutedCycles => CycleCount + _core.GetCallbackCycleOffset();
+		public long TotalExecutedCycles => CycleCount + _core.GetCallbackCycleOffset(_console);
 
-		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
+		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 
-		private readonly MemoryCallbackSystem _memorycallbacks = new(new[] { "System Bus" });
+		// FIXME: internally the code actually just does this for either bus (probably don't want to bother adding support)
+		private readonly MemoryCallbackSystem _memoryCallbacks = new([ "ARM9 System Bus" ]);
 
-		private LibMelonDS.MemoryCallback _readcb;
-		private LibMelonDS.MemoryCallback _writecb;
-		private LibMelonDS.MemoryCallback _execcb;
+		private LibMelonDS.MemoryCallback _readCallback;
+		private LibMelonDS.MemoryCallback _writeCallback;
+		private LibMelonDS.MemoryCallback _execCallback;
 
 		private void InitMemoryCallbacks()
 		{
@@ -67,23 +67,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				{
 					if (getHasCBOfType())
 					{
-						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, "System Bus");
+						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, "ARM9 System Bus");
 					}
 				};
 			}
 
-			_readcb = CreateCallback(MemoryCallbackFlags.AccessRead, () => MemoryCallbacks.HasReads);
-			_writecb = CreateCallback(MemoryCallbackFlags.AccessWrite, () => MemoryCallbacks.HasWrites);
-			_execcb = CreateCallback(MemoryCallbackFlags.AccessExecute, () => MemoryCallbacks.HasExecutes);
+			_readCallback = CreateCallback(MemoryCallbackFlags.AccessRead, () => MemoryCallbacks.HasReads);
+			_writeCallback = CreateCallback(MemoryCallbackFlags.AccessWrite, () => MemoryCallbacks.HasWrites);
+			_execCallback = CreateCallback(MemoryCallbackFlags.AccessExecute, () => MemoryCallbacks.HasExecutes);
 
-			_memorycallbacks.ActiveChanged += SetMemoryCallbacks;
+			_memoryCallbacks.ActiveChanged += SetMemoryCallbacks;
 		}
 
 		private void SetMemoryCallbacks()
 		{
-			_core.SetMemoryCallback(0, MemoryCallbacks.HasReads ? _readcb : null);
-			_core.SetMemoryCallback(1, MemoryCallbacks.HasWrites ? _writecb : null);
-			_core.SetMemoryCallback(2, MemoryCallbacks.HasExecutes ? _execcb : null);
+			_core.SetMemoryCallback(0, MemoryCallbacks.HasReads ? _readCallback : null);
+			_core.SetMemoryCallback(1, MemoryCallbacks.HasWrites ? _writeCallback : null);
+			_core.SetMemoryCallback(2, MemoryCallbacks.HasExecutes ? _execCallback : null);
 		}
 	}
 }

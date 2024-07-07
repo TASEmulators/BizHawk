@@ -22,7 +22,6 @@
 //hiding the tab control headers.. once this design gets solid, ill get rid of them
 //http://www.mostthingsweb.com/2011/01/hiding-tab-headers-on-a-tabcontrol-in-c/
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -868,7 +867,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			groupFreeze.SuspendLayout();
 
-			Win32Imports.SendMessage(groupFreeze.Handle, 11, (IntPtr)0, IntPtr.Zero); //WM_SETREDRAW false
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				// WM_SETREDRAW false
+				WmImports.SendMessageW(groupFreeze.Handle, 11, (IntPtr)0, IntPtr.Zero);
+			}
 
 			var tp = tabctrlDetails.SelectedTab;
 
@@ -886,7 +889,12 @@ namespace BizHawk.Client.EmuHawk
 
 			groupFreeze.ResumeLayout();
 
-			Win32Imports.SendMessage(groupFreeze.Handle, 11, (IntPtr)1, IntPtr.Zero); //WM_SETREDRAW true
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				// WM_SETREDRAW true
+				WmImports.SendMessageW(groupFreeze.Handle, 11, (IntPtr)1, IntPtr.Zero);
+			}
+
 			groupFreeze.Refresh();
 		}
 

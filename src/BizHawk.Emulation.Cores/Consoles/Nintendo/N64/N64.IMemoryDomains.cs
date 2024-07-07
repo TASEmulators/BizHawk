@@ -1,9 +1,10 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
+
+using static BizHawk.Emulation.Cores.Nintendo.N64.N64SyncSettings.N64ControllerSettings;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
@@ -76,26 +77,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			MakeMemoryDomain("SRAM", mupen64plusApi.N64_MEMORY.SRAM, MemoryDomain.Endian.Big, true);
 			MakeMemoryDomain("FlashRAM", mupen64plusApi.N64_MEMORY.FLASHRAM, MemoryDomain.Endian.Big, true);
 
-			if (_syncSettings.Controllers[0].IsConnected &&
-				_syncSettings.Controllers[0].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
+			if (_syncSettings.Controllers[0] is { IsConnected: true, PakType: N64ControllerPakType.MEMORY_CARD })
 			{
 				MakeMemoryDomain("Mempak 1", mupen64plusApi.N64_MEMORY.MEMPAK1, MemoryDomain.Endian.Big, true);
 			}
-
-			if (_syncSettings.Controllers[1].IsConnected &&
-				_syncSettings.Controllers[1].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
+			if (_syncSettings.Controllers[1] is { IsConnected: true, PakType: N64ControllerPakType.MEMORY_CARD })
 			{
 				MakeMemoryDomain("Mempak 2", mupen64plusApi.N64_MEMORY.MEMPAK2, MemoryDomain.Endian.Big, true);
 			}
-
-			if (_syncSettings.Controllers[2].IsConnected &&
-				_syncSettings.Controllers[2].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
+			if (_syncSettings.Controllers[2] is { IsConnected: true, PakType: N64ControllerPakType.MEMORY_CARD })
 			{
 				MakeMemoryDomain("Mempak 3", mupen64plusApi.N64_MEMORY.MEMPAK3, MemoryDomain.Endian.Big, true);
 			}
-
-			if (_syncSettings.Controllers[3].IsConnected &&
-				_syncSettings.Controllers[3].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
+			if (_syncSettings.Controllers[3] is { IsConnected: true, PakType: N64ControllerPakType.MEMORY_CARD })
 			{
 				MakeMemoryDomain("Mempak 4", mupen64plusApi.N64_MEMORY.MEMPAK4, MemoryDomain.Endian.Big, true);
 			}

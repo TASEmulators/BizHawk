@@ -1,7 +1,7 @@
-﻿using System;
 using System.Globalization;
 using System.Linq;
 
+#pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
 {
 	// TODO:
@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common.cheats
 				code = Decrypt(code);
 			}
 
-			if (code.IndexOf(" ") != 8 || code.Length != 17) // not a redundant length check, `code` was overwritten
+			if (code.IndexOf(" ", StringComparison.Ordinal) != 8 || code.Length != 17) // not a redundant length check, `code` was overwritten
 			{
 				return new InvalidCheatCode("All GBA GameShark Codes need to be 17 characters in length with a space after the first eight.");
 			}
@@ -95,3 +95,4 @@ namespace BizHawk.Client.Common.cheats
 		}
 	}
 }
+#pragma warning restore MA0089

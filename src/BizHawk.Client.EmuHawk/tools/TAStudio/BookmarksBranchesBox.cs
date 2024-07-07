@@ -1,5 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -73,30 +71,9 @@ namespace BizHawk.Client.EmuHawk
 		private void SetupColumns()
 		{
 			BranchView.AllColumns.Clear();
-			BranchView.AllColumns.AddRange(new[]
-			{
-				new RollColumn
-				{
-					Name = BranchNumberColumnName,
-					Text = "#",
-					UnscaledWidth = 30,
-					Type = ColumnType.Text
-				},
-				new RollColumn
-				{
-					Name = FrameColumnName,
-					Text = "Frame",
-					UnscaledWidth = 64,
-					Type = ColumnType.Text
-				},
-				new RollColumn
-				{
-					Name = UserTextColumnName,
-					Text = "UserText",
-					UnscaledWidth = 90,
-					Type = ColumnType.Text
-				}
-			});
+			BranchView.AllColumns.Add(new(name: BranchNumberColumnName, widthUnscaled: 30, text: "#"));
+			BranchView.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 64, text: "Frame"));
+			BranchView.AllColumns.Add(new(name: UserTextColumnName, widthUnscaled: 90, text: "UserText"));
 		}
 
 		private void QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
@@ -143,13 +120,29 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Highlight the branch cell a little, if hovering over it
-			if (BranchView.CurrentCell.IsDataCell()
-				&& BranchView.CurrentCell.Column.Name == BranchNumberColumnName &&
-				column.Name == BranchNumberColumnName &&
-				index == BranchView.CurrentCell.RowIndex)
+			if (BranchView.CurrentCell is { RowIndex: int targetRow, Column.Name: BranchNumberColumnName }
+				&& index == targetRow && column.Name is BranchNumberColumnName)
 			{
 				color = Color.FromArgb((byte)(color.A - 24), (byte)(color.R - 24), (byte)(color.G - 24), (byte)(color.B - 24));
 			}
+		}
+
+		// used to capture a reserved state immediately on branch creation
+		// while also not doing a double state
+		private class BufferedStatable : IStatable
+		{
+			private readonly byte[] _bufferedState;
+
+			public BufferedStatable(byte[] state)
+				=> _bufferedState = state;
+
+			public bool AvoidRewind => true;
+
+			public void SaveStateBinary(BinaryWriter writer)
+				=> writer.Write(_bufferedState);
+
+			public void LoadStateBinary(BinaryReader reader)
+				=> throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -163,6 +156,7 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.RowCount = Branches.Count;
 			Branches.Current = Branches.Count - 1;
 			Movie.TasSession.UpdateValues(Tastudio.Emulator.Frame, Branches.Current);
+			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, new BufferedStatable(branch.CoreData));
 			BranchView.ScrollToIndex(Branches.Current);
 			BranchView.DeselectAll();
 			Select(Branches.Current, true);
@@ -176,14 +170,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private TasBranch CreateBranch()
 		{
-			return new TasBranch
+			return new()
 			{
 				Frame = Tastudio.Emulator.Frame,
-				CoreData = Tastudio.StatableEmulator.CloneSavestate(),
+				CoreData = Tastudio.Emulator.AsStatable().CloneSavestate(),
 				InputLog = Movie.GetLogEntries().Clone(),
 				CoreFrameBuffer = MainForm.MakeScreenshotImage(),
 				OSDFrameBuffer = MainForm.CaptureOSD(),
-				ChangeLog = new TasMovieChangeLog(Movie),
+				ChangeLog = new(Movie),
 				TimeStamp = DateTime.Now,
 				Markers = Movie.Markers.DeepClone(),
 				UserText = Movie.Branches.NewBranchText
@@ -199,9 +193,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Movie.LoadBranch(branch);
-			Tastudio.LoadState(new KeyValuePair<int, Stream>(branch.Frame, new MemoryStream(branch.CoreData, false)));
+			Tastudio.LoadState(new(branch.Frame, new MemoryStream(branch.CoreData, false)));
+			// set the controller state to the previous frame for input display purposes
+			int previousFrame = Movie.Emulator.Frame - 1;
+			Tastudio.MovieSession.MovieController.SetFrom(Movie.GetInputState(previousFrame));
+
 			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, Tastudio.Emulator.AsStatable());
-			Tastudio.MainForm.QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), Tastudio.VideoProvider);
+			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), Tastudio.VideoProvider);
 
 			if (Tastudio.Settings.OldControlSchemeForBranches && Tastudio.TasPlaybackBox.RecordingMode)
 				Movie.Truncate(branch.Frame);
@@ -288,7 +286,9 @@ namespace BizHawk.Client.EmuHawk
 			_branchUndo = BranchUndo.Update;
 
 			BranchView.ScrollToIndex(Branches.Current);
-			Branches.Replace(SelectedBranch, CreateBranch());
+			var branch = CreateBranch();
+			Branches.Replace(SelectedBranch, branch);
+			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, new BufferedStatable(branch.CoreData));
 			Tastudio.RefreshDialog();
 			SavedCallback?.Invoke(Branches.Current);
 			Tastudio.MainForm.AddOnScreenMessage($"Saved branch {Branches.Current + 1}");
@@ -592,8 +592,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				if (BranchView.CurrentCell.IsDataCell()
-					&& BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
+				if (BranchView.CurrentCell is { RowIndex: not null, Column.Name: BranchNumberColumnName })
 				{
 					BranchView.DragCurrentCell();
 				}
@@ -652,25 +651,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.NewCell?.RowIndex != null && e.NewCell.Column != null && e.NewCell.RowIndex < Branches.Count)
 			{
-				if (BranchView.CurrentCell.Column.Name == BranchNumberColumnName &&
-					BranchView.CurrentCell.RowIndex.HasValue &&
-					BranchView.CurrentCell.RowIndex < Branches.Count)
+				if (BranchView.CurrentCell is { RowIndex: int targetRow, Column.Name: BranchNumberColumnName }
+					&& targetRow < Branches.Count)
 				{
-					var branch = Branches[BranchView.CurrentCell.RowIndex.Value];
+					var branch = Branches[targetRow];
+					var bb = branch.OSDFrameBuffer;
+					var width = bb.Width;
 					Point location = PointToScreen(Location);
-					int width = branch.OSDFrameBuffer.Width;
-					int height = branch.OSDFrameBuffer.Height;
 					location.Offset(-width, 0);
 
 					if (location.X < 0)
 					{
 						location.Offset(width + Width, 0);
 					}
-
-					_screenshot.UpdateValues(branch, location, width, height,
-						(int)Graphics.FromHwnd(Handle).MeasureString(
-							branch.UserText, _screenshot.Font, width).Height);
-
+					_screenshot.UpdateValues(
+						bb,
+						branch.UserText,
+						location,
+						width: width,
+						height: bb.Height,
+						Graphics.FromHwnd(Handle).MeasureString);
 					_screenshot.FadeIn();
 				}
 				else

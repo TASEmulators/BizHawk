@@ -1,8 +1,7 @@
-﻿using System;
 using System.IO;
 using System.Drawing.Imaging;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
@@ -50,11 +49,11 @@ namespace BizHawk.Client.EmuHawk
 			var name = Path.Combine(dir!, $"{fileNoExt}_{_frame}{ext}");
 			BitmapBuffer bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
 			using var bmp = bb.ToSysdrawingBitmap();
-			if (ext.ToUpper() == ".PNG")
+			if (ext.ToUpperInvariant() == ".PNG")
 			{
 				bmp.Save(name, ImageFormat.Png);
 			}
-			else if (ext.ToUpper() == ".JPG")
+			else if (ext.ToUpperInvariant() == ".JPG")
 			{
 				bmp.Save(name, ImageFormat.Jpeg);
 			}

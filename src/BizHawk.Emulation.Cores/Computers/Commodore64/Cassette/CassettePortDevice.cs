@@ -1,4 +1,3 @@
-using System;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette

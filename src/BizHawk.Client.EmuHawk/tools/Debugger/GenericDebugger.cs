@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -36,23 +35,8 @@ namespace BizHawk.Client.EmuHawk
 			DisassemblerView.QueryItemText += DisassemblerView_QueryItemText;
 			DisassemblerView.QueryItemBkColor += DisassemblerView_QueryItemBkColor;
 			DisassemblerView.AllColumns.Clear();
-			DisassemblerView.AllColumns.AddRange(new[]
-			{
-				new RollColumn
-				{
-					Name = AddressColumnName,
-					Text = AddressColumnName,
-					UnscaledWidth = 94,
-					Type = ColumnType.Text
-				},
-				new RollColumn
-				{
-					Name = InstructionColumnName,
-					Text = InstructionColumnName,
-					UnscaledWidth = 291,
-					Type = ColumnType.Text
-				}
-			});
+			DisassemblerView.AllColumns.Add(new(name: AddressColumnName, widthUnscaled: 94, text: AddressColumnName));
+			DisassemblerView.AllColumns.Add(new(name: InstructionColumnName, widthUnscaled: 291, text: InstructionColumnName));
 		}
 
 		private void EngageDebugger()
@@ -134,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 				var pc = PCRegister;
 				SeekToBox.Nullable = false;
 				SeekToBox.SetHexProperties((long)Math.Pow(2, pc.BitSize));
-				SeekToBox.SetFromRawInt(0);
+				SeekToBox.SetFromRawUInt(0);
 			}
 			else
 			{
@@ -279,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SeekToBtn_Click(object sender, EventArgs e)
 		{
 			CancelSeekBtn.Enabled = true;
-			var pcVal = (uint)(SeekToBox.ToRawInt() ?? 0);
+			var pcVal = SeekToBox.ToRawUInt() ?? 0;
 			var pcBitSize = PCRegister.BitSize;
 
 			BreakPointControl1.RemoveCurrentSeek();

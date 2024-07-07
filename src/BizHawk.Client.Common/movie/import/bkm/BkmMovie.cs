@@ -1,7 +1,7 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common
 		{
 			var file = new FileInfo(Filename);
 
-			if (file.Exists == false)
+			if (!file.Exists)
 			{
 				Loaded = false;
 				return false;
@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common
 					else if (Header.ParseLineFromFile(line))
 					{
 					}
-					else if (line.StartsWith("|"))
+					else if (line.StartsWith('|'))
 					{
 						_log.Add(line);
 					}

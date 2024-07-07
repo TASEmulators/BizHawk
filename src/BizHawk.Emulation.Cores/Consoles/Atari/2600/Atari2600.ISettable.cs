@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 
@@ -42,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		internal A2600Settings Settings { get; private set; }
 		internal A2600SyncSettings SyncSettings { get; private set; }
 
+		[CoreSettings]
 		public class A2600Settings
 		{
 			[JsonIgnore]
@@ -147,6 +147,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
+		[CoreSettings]
 		public class A2600SyncSettings
 		{
 			[DefaultValue(Atari2600ControllerTypes.Joystick)]

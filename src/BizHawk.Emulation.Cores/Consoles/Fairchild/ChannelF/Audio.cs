@@ -1,4 +1,3 @@
-﻿using System;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
@@ -34,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		{
 			Period = 1.0 / SampleRate;
 			SamplesPerFrame = (int)(SampleRate / refreshRate);
-			CyclesPerSample = (double)ClockPerFrame / (double)SamplesPerFrame;
+			CyclesPerSample = ClockPerFrame / (double)SamplesPerFrame;
 			SampleBuffer = new short[SamplesPerFrame];
 			_blip = new BlipBuffer(SamplesPerFrame);
 			_blip.SetRates(ClockPerFrame * refreshRate, SampleRate);
@@ -49,16 +48,16 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			else
 			{
 				int SamplesPerWave = (int)(SampleRate / tone_freqs[tone]);
-				double RadPerSample = (Math.PI * 2) / (double) SamplesPerWave;
+				double RadPerSample = (Math.PI * 2) / SamplesPerWave;
 				double SinVal = 0;
 
-				int NumSamples = (int)(((double)FrameClock - (double)lastCycle) / CyclesPerSample);
+				int NumSamples = (int)((FrameClock - (double)lastCycle) / CyclesPerSample);
 
 				int startPos = lastCycle;
 
 				for (int i = 0; i < NumSamples; i++)
 				{
-					SinVal = Math.Sin(RadPerSample * (double) (i * SamplesPerWave));
+					SinVal = Math.Sin(RadPerSample * (i * SamplesPerWave));
 					_blip.AddDelta((uint)startPos, (int) (Math.Floor(SinVal * 127) + 128) * 1024);
 					startPos += (int)CyclesPerSample;
 				}

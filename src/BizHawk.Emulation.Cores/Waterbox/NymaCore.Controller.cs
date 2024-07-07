@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using NymaTypes;
 
@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 					foreach (var input in inputs)
 					{
-						if (input.Type == InputType.Padding)
+						if (input.Type == InputType.Padding0)
 							continue;
 
 						var bitSize = (int)input.BitSize;
@@ -131,6 +131,27 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 						switch (input.Type)
 						{
+							case InputType.Padding1:
+							{
+								// padding with set bits
+								_thunks.Add((_, b) =>
+								{
+									var val = (byte)(1 << bitOffset);
+									var byteOffset = byteStart;
+									for (var i = 0; i < bitSize; i++)
+									{
+										b[byteOffset] |= val;
+										val <<= 1;
+										if (val == 0)
+										{
+											val = 1;
+											byteOffset++;
+										}
+									}
+								});
+
+								break;
+							}
 							case InputType.ResetButton:
 							case InputType.Button:
 							case InputType.ButtonCanRapid:
@@ -165,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								switchPreviousFrame.Add(0);
 
 								var names = data.Positions.Select(p => $"{name}: Set {p.Name}").ToArray();
-								if (!input.Name.StartsWith("AF ") && !input.Name.EndsWith(" AF") && !input.Name.StartsWith("Autofire ")) // hack: don't support some devices
+								if (!input.Name.StartsWithOrdinal("AF ") && !input.Name.EndsWithOrdinal(" AF") && !input.Name.StartsWithOrdinal("Autofire ")) // hack: don't support some devices
 								{
 									foreach (var n in names)
 									{
@@ -327,6 +348,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 
 			private const ulong MAGIC = 9569546739673486731;
+
+			public bool AvoidRewind => false;
 
 			public void SaveStateBinary(BinaryWriter writer)
 			{

@@ -1,42 +1,57 @@
 auto CPU::Recompiler::pool(u32 address) -> Pool* {
   auto& pool = pools[address >> 8 & 0x1fffff];
-  if(!pool) pool = (Pool*)allocator.acquire(sizeof(Pool));
+  if(!pool) {
+    pool = (Pool*)allocator.acquire(sizeof(Pool));
+    memory::jitprotect(false);
+    *pool = {};
+    memory::jitprotect(true);
+  }
   return pool;
 }
 
-auto CPU::Recompiler::block(u32 address) -> Block* {
+auto CPU::Recompiler::block(u32 vaddr, u32 address, bool singleInstruction) -> Block* {
   if(auto block = pool(address)->blocks[address >> 2 & 0x3f]) return block;
-  auto block = emit(address);
+  auto block = emit(vaddr, address, singleInstruction);
   pool(address)->blocks[address >> 2 & 0x3f] = block;
   memory::jitprotect(true);
   return block;
 }
 
-auto CPU::Recompiler::emit(u32 address) -> Block* {
+auto CPU::Recompiler::fastFetchBlock(u32 address) -> Block* {
+  auto& pool = pools[address >> 8 & 0x1fffff];
+  if(pool) return pool->blocks[address >> 2 & 0x3f];
+  return nullptr;
+}
+
+auto CPU::Recompiler::emit(u32 vaddr, u32 address, bool singleInstruction) -> Block* {
   if(unlikely(allocator.available() < 1_MiB)) {
     print("CPU allocator flush\n");
-    memory::jitprotect(false);
-    allocator.release(bump_allocator::zero_fill);
-    memory::jitprotect(true);
+    allocator.release();
     reset();
   }
 
   auto block = (Block*)allocator.acquire(sizeof(Block));
   beginFunction(3);
 
-  u32 memCycles;
+  Thread thread;
   bool hasBranched = 0;
   while(true) {
-    u32 instruction = bus.read<Word>(address, memCycles);
+    u32 instruction = bus.read<Word>(address, thread, "Ares Recompiler");
+    if(callInstructionPrologue) {
+      mov32(reg(1), imm(instruction));
+      call(&CPU::instructionPrologue);
+    }
     bool branched = emitEXECUTE(instruction);
-    if(unlikely(instruction == 0x1000'ffff)) {
+    if(unlikely(instruction == 0x1000'ffff  //beq 0,0,<pc>
+             || instruction == (2 << 26 | vaddr >> 2 & 0x3ff'ffff))) {  //j <pc>
       //accelerate idle loops
-      mov32(reg(1), imm(64));
+      mov32(reg(1), imm(64 * 2));
       call(&CPU::step);
     }
     call(&CPU::instructionEpilogue);
+    vaddr += 4;
     address += 4;
-    if(hasBranched || (address & 0xfc) == 0) break;  //block boundary
+    if(hasBranched || (address & 0xfc) == 0 || singleInstruction) break;  //block boundary
     hasBranched = branched;
     testJumpEpilog();
   }

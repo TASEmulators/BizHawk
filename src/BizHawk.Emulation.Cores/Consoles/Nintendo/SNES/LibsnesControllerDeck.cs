@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -303,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				default:
 					return 0;
 				case 0:
-					var x = (int)controller.AxisValue("0Mouse X");
+					var x = controller.AxisValue("0Mouse X");
 					if (LimitAnalogChangeSensitivity)
 					{
 						x = x.Clamp(-10, 10);
@@ -311,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 					return (short)x;
 				case 1:
-					var y = (int)controller.AxisValue("0Mouse Y");
+					var y = controller.AxisValue("0Mouse Y");
 					if (LimitAnalogChangeSensitivity)
 					{
 						y = y.Clamp(-10, 10);

@@ -1,5 +1,6 @@
 #![cfg(test)]
 
+use core::arch::asm;
 use std::mem::transmute;
 use super::*;
 

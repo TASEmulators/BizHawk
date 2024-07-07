@@ -1,5 +1,3 @@
-using System;
-
 using NLua;
 
 using BizHawk.Emulation.Common;
@@ -16,6 +14,9 @@ namespace BizHawk.Client.Common
 		bool IsRebootingCore { get; set; }
 
 		bool IsUpdateSupressed { get; set; }
+
+		/// <remarks>not really sure if this is the right place to put it, multiple different places need this...</remarks>
+		bool IsInInputOrMemoryCallback { get; set; }
 
 		LuaFunctionList RegisteredFunctions { get; }
 

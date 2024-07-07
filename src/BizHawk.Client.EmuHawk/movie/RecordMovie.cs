@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -267,7 +266,6 @@ namespace BizHawk.Client.EmuHawk
 					_game,
 					_firmwareManager,
 					AuthorBox.Text ?? _config.DefaultAuthor);
-				movieToRecord.Save();
 				_mainForm.StartNewMovie(movieToRecord, true);
 
 				_config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;

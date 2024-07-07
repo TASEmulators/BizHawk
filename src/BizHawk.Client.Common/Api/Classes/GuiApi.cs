@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -6,6 +5,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
 
+using BizHawk.Bizware.Graphics;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
@@ -13,6 +13,11 @@ namespace BizHawk.Client.Common
 {
 	public sealed class GuiApi : IGuiApi
 	{
+		private static readonly StringFormat PixelTextFormat = new(StringFormat.GenericTypographic)
+		{
+			FormatFlags = StringFormatFlags.MeasureTrailingSpaces,
+		};
+
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
@@ -20,15 +25,9 @@ namespace BizHawk.Client.Common
 
 		private readonly DisplayManagerBase _displayManager;
 
-		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
+		private readonly Dictionary<string, Bitmap> _imageCache = new();
 
-		private readonly Bitmap _nullGraphicsBitmap = new Bitmap(1, 1);
-
-		private readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
-
-		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
-
-		private ImageAttributes _attributes = new ImageAttributes();
+		private readonly Bitmap _nullGraphicsBitmap = new(1, 1);
 
 		private CompositingMode _compositingMode = CompositingMode.SourceOver;
 
@@ -38,19 +37,12 @@ namespace BizHawk.Client.Common
 
 		private int _defaultPixelFont = 1; // = "gens"
 
-		private Color? _defaultTextBackground = Color.FromArgb(128, 0, 0, 0);
-
-		private IDisplaySurface _clientSurface;
-
-		private IDisplaySurface _GUISurface;
+		private Color _defaultTextBackground = Color.FromArgb(128, 0, 0, 0);
 
 		private (int Left, int Top, int Right, int Bottom) _padding = (0, 0, 0, 0);
 
-		private DisplaySurfaceID? _usingSurfaceID = null;
-
-		public bool EnableLuaAutolockHack = false;
-
-		public bool HasGUISurface => _GUISurface != null;
+		private DisplaySurfaceID? _usingSurfaceID;
+		public bool HasGUISurface => true;
 
 		public GuiApi(Action<string> logCallback, DisplayManagerBase displayManager)
 		{
@@ -58,90 +50,23 @@ namespace BizHawk.Client.Common
 			_displayManager = displayManager;
 		}
 
-		private SolidBrush GetBrush(Color color)
-			=> _solidBrushes.GetValueOrPutNew1(color);
-
-		private Pen GetPen(Color color)
-			=> _pens.GetValueOrPutNew1(color);
-
-		private Graphics GetGraphics(DisplaySurfaceID? surfaceID)
+		private I2DRenderer Get2DRenderer(DisplaySurfaceID? surfaceID)
 		{
-			var g = GetRelevantSurface(surfaceID)?.GetGraphics() ?? Graphics.FromImage(_nullGraphicsBitmap);
-			return g;
+			var nnID = surfaceID ?? _usingSurfaceID ?? throw new Exception();
+			return _displayManager.GetApiHawk2DRenderer(nnID);
 		}
 
 		public void ToggleCompositingMode()
 			=> _compositingMode = (CompositingMode) (1 - (int) _compositingMode); // enum has two members, 0 and 1
 
-		public ImageAttributes GetAttributes() => _attributes;
+		public ImageAttributes GetAttributes() => null;
 
-		public void SetAttributes(ImageAttributes a) => _attributes = a;
-
-		private IDisplaySurface GetRelevantSurface(DisplaySurfaceID? surfaceID)
+		public void SetAttributes(ImageAttributes a)
 		{
-			var nnID = surfaceID ?? _usingSurfaceID ?? throw new Exception();
-			void ThisIsTheLuaAutolockHack()
-			{
-				try
-				{
-					UnlockSurface(nnID);
-					LockSurface(nnID);
-				}
-				catch (InvalidOperationException ex)
-				{
-					LogCallback(ex.ToString());
-				}
-			}
-			switch (nnID)
-			{
-				case DisplaySurfaceID.EmuCore:
-					if (_GUISurface == null && EnableLuaAutolockHack) ThisIsTheLuaAutolockHack();
-					return _GUISurface;
-				case DisplaySurfaceID.Client:
-					if (_clientSurface == null && EnableLuaAutolockHack) ThisIsTheLuaAutolockHack();
-					return _clientSurface;
-				default:
-					throw new Exception();
-			}
-		}
-
-		private void LockSurface(DisplaySurfaceID surfaceID)
-		{
-			switch (surfaceID)
-			{
-				case DisplaySurfaceID.EmuCore:
-					if (_GUISurface != null) throw new InvalidOperationException("attempt to lock surface without unlocking previous");
-					_GUISurface = _displayManager.LockApiHawkSurface(surfaceID, clear: true);
-					break;
-				case DisplaySurfaceID.Client:
-					if (_clientSurface != null) throw new InvalidOperationException("attempt to lock surface without unlocking previous");
-					_clientSurface = _displayManager.LockApiHawkSurface(surfaceID, clear: true);
-					break;
-				default:
-					throw new ArgumentException(message: "not a valid enum member", paramName: nameof(surfaceID));
-			}
-		}
-
-		private void UnlockSurface(DisplaySurfaceID surfaceID)
-		{
-			switch (surfaceID)
-			{
-				case DisplaySurfaceID.EmuCore:
-					if (_GUISurface != null) _displayManager.UnlockApiHawkSurface(_GUISurface);
-					_GUISurface = null;
-					break;
-				case DisplaySurfaceID.Client:
-					if (_clientSurface != null) _displayManager.UnlockApiHawkSurface(_clientSurface);
-					_clientSurface = null;
-					break;
-				default:
-					throw new ArgumentException(message: "not a valid enum member", paramName: nameof(surfaceID));
-			}
 		}
 
 		public void WithSurface(DisplaySurfaceID surfaceID, Action drawingCallsFunc)
 		{
-			LockSurface(surfaceID);
 			_usingSurfaceID = surfaceID;
 			try
 			{
@@ -150,26 +75,8 @@ namespace BizHawk.Client.Common
 			finally
 			{
 				_usingSurfaceID = null;
-				UnlockSurface(surfaceID);
 			}
 		}
-
-		public readonly ref struct LuaAutoUnlockHack
-		{
-			private readonly GuiApi _guiApi;
-
-			internal LuaAutoUnlockHack(GuiApi guiApi)
-				=> _guiApi = guiApi;
-
-			public void Dispose()
-			{
-				_guiApi.UnlockSurface(DisplaySurfaceID.EmuCore);
-				_guiApi.UnlockSurface(DisplaySurfaceID.Client);
-			}
-		}
-
-		public LuaAutoUnlockHack ThisIsTheLuaAutoUnlockHack()
-			=> new(this);
 
 		public void DrawNew(string name, bool clear)
 		{
@@ -199,7 +106,7 @@ namespace BizHawk.Client.Common
 		public void AddMessage(string message, int? duration = null)
 			=> _displayManager.OSD.AddMessage(message, duration);
 
-		public void ClearGraphics(DisplaySurfaceID? surfaceID = null) => GetRelevantSurface(surfaceID).Clear();
+		public void ClearGraphics(DisplaySurfaceID? surfaceID = null) => Get2DRenderer(surfaceID).Clear();
 
 		public void ClearText() => _displayManager.OSD.ClearGuiText();
 
@@ -207,7 +114,7 @@ namespace BizHawk.Client.Common
 
 		public void SetDefaultBackgroundColor(Color color) => _defaultBackground = color;
 
-		public Color? GetDefaultTextBackground() => _defaultTextBackground;
+		public Color GetDefaultTextBackground() => _defaultTextBackground;
 
 		public void SetDefaultTextBackground(Color color) => _defaultTextBackground = color;
 
@@ -233,9 +140,9 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				using var g = GetGraphics(surfaceID);
-				g.CompositingMode = _compositingMode;
-				g.DrawBezier(GetPen(color ?? _defaultForeground), p1, p2, p3, p4);
+				var r = Get2DRenderer(surfaceID);
+				r.CompositingMode = _compositingMode;
+				r.DrawBezier(color ?? _defaultForeground, p1, p2, p3, p4);
 			}
 			catch (Exception)
 			{
@@ -247,9 +154,9 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				using var g = GetGraphics(surfaceID);
-				g.CompositingMode = _compositingMode;
-				g.DrawBeziers(GetPen(color ?? _defaultForeground), points);
+				var r = Get2DRenderer(surfaceID);
+				r.CompositingMode = _compositingMode;
+				r.DrawBeziers(color ?? _defaultForeground, points);
 			}
 			catch (Exception)
 			{
@@ -261,33 +168,24 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				float w;
-				if (x < x2)
+				if (x > x2)
 				{
-					w = x2 - x;
+					(x, x2) = (x2, x);
 				}
-				else
+
+				if (y > y2)
 				{
-					x2 = x - x2;
-					x -= x2;
-					w = Math.Max(x2, 0.1f);
+					(y, y2) = (y2, y);
 				}
-				float h;
-				if (y < y2)
-				{
-					h = y2 - y;
-				}
-				else
-				{
-					y2 = y - y2;
-					y -= y2;
-					h = Math.Max(y2, 0.1f);
-				}
-				using var g = GetGraphics(surfaceID);
-				g.CompositingMode = _compositingMode;
-				g.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, w, h);
+
+				var w = x2 - x + 1;
+				var h = y2 - y + 1;
+
+				var r = Get2DRenderer(surfaceID);
+				r.CompositingMode = _compositingMode;
+				r.DrawRectangle(line ?? _defaultForeground, x, y, w, h);
 				var bg = background ?? _defaultBackground;
-				if (bg != null) g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, Math.Max(w - 1, 0), Math.Max(h - 1, 0));
+				if (bg != null) r.FillRectangle(bg.Value, x + 1, y + 1, Math.Max(w - 2, 0), Math.Max(h - 2, 0));
 			}
 			catch (Exception)
 			{
@@ -299,11 +197,13 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				using var g = GetGraphics(surfaceID);
+				var r = Get2DRenderer(surfaceID);
 				var bg = background ?? _defaultBackground;
-				if (bg != null) g.FillEllipse(GetBrush(bg.Value), x, y, width, height);
-				g.CompositingMode = _compositingMode;
-				g.DrawEllipse(GetPen(line ?? _defaultForeground), x, y, width, height);
+				// GDI+ had an off by one here, we increment width and height to preserve backwards compatibility
+				width++; height++;
+				if (bg != null) r.FillEllipse(bg.Value, x, y, width, height);
+				r.CompositingMode = _compositingMode;
+				r.DrawEllipse(line ?? _defaultForeground, x, y, width, height);
 			}
 			catch (Exception)
 			{
@@ -320,15 +220,14 @@ namespace BizHawk.Client.Common
 					AddMessage($"File not found: {path}");
 					return;
 				}
-				using var g = GetGraphics(surfaceID);
-				g.CompositingMode = _compositingMode;
-				g.DrawIcon(
-					width != null && height != null
-						? new Icon(path, width.Value, height.Value)
-						: new Icon(path),
-					x,
-					y
-				);
+
+				var icon = width != null && height != null
+					? new Icon(path, width.Value, height.Value)
+					: new Icon(path);
+
+				var r = Get2DRenderer(surfaceID);
+				r.CompositingMode = _compositingMode;
+				r.DrawImage(icon.ToBitmap(), x, y);
 			}
 			catch (Exception)
 			{
@@ -338,19 +237,19 @@ namespace BizHawk.Client.Common
 
 		public void DrawImage(Image img, int x, int y, int? width = null, int? height = null, bool cache = true, DisplaySurfaceID? surfaceID = null)
 		{
-			using var g = GetGraphics(surfaceID);
-			g.CompositingMode = _compositingMode;
-			g.DrawImage(
-				img,
+			var r = Get2DRenderer(surfaceID);
+			r.CompositingMode = _compositingMode;
+			r.DrawImage(
+				new(img),
 				new Rectangle(x, y, width ?? img.Width, height ?? img.Height),
 				0,
 				0,
 				img.Width,
 				img.Height,
-				GraphicsUnit.Pixel,
-				_attributes
+				cache: false // caching is meaningless here
 			);
 		}
+
 		public void DrawImage(string path, int x, int y, int? width = null, int? height = null, bool cache = true, DisplaySurfaceID? surfaceID = null)
 		{
 			if (!File.Exists(path))
@@ -358,44 +257,41 @@ namespace BizHawk.Client.Common
 				LogCallback($"File not found: {path}");
 				return;
 			}
-			using var g = GetGraphics(surfaceID);
+
 			if (!_imageCache.TryGetValue(path, out var img))
 			{
-				img = Image.FromFile(path);
+				img = new(Image.FromFile(path));
 				if (cache) _imageCache[path] = img;
 			}
-			g.CompositingMode = _compositingMode;
-			g.DrawImage(
+
+			var r = Get2DRenderer(surfaceID);
+			r.CompositingMode = _compositingMode;
+			r.DrawImage(
 				img,
 				new Rectangle(x, y, width ?? img.Width, height ?? img.Height),
 				0,
 				0,
 				img.Width,
 				img.Height,
-				GraphicsUnit.Pixel,
-				_attributes
+				cache
 			);
 		}
 
 		public void ClearImageCache()
-		{
-			foreach (var image in _imageCache) image.Value.Dispose();
-			_imageCache.Clear();
-		}
+			=> _imageCache.Clear();
 
 		public void DrawImageRegion(Image img, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null, DisplaySurfaceID? surfaceID = null)
 		{
-			using var g = GetGraphics(surfaceID);
-			g.CompositingMode = _compositingMode;
-			g.DrawImage(
-				img,
+			var r = Get2DRenderer(surfaceID);
+			r.CompositingMode = _compositingMode;
+			r.DrawImage(
+				new(img),
 				new Rectangle(dest_x, dest_y, dest_width ?? source_width, dest_height ?? source_height),
 				source_x,
 				source_y,
 				source_width,
 				source_height,
-				GraphicsUnit.Pixel,
-				_attributes
+				cache: false
 			);
 		}
 
@@ -406,25 +302,25 @@ namespace BizHawk.Client.Common
 				LogCallback($"File not found: {path}");
 				return;
 			}
-			using var g = GetGraphics(surfaceID);
-			g.CompositingMode = _compositingMode;
-			g.DrawImage(
-				_imageCache.GetValueOrPut(path, Image.FromFile),
+
+			var r = Get2DRenderer(surfaceID);
+			r.CompositingMode = _compositingMode;
+			r.DrawImage(
+				_imageCache.GetValueOrPut(path, static i => new(Image.FromFile(i))),
 				new Rectangle(dest_x, dest_y, dest_width ?? source_width, dest_height ?? source_height),
 				source_x,
 				source_y,
 				source_width,
 				source_height,
-				GraphicsUnit.Pixel,
-				_attributes
+				cache: true
 			);
 		}
 
 		public void DrawLine(int x1, int y1, int x2, int y2, Color? color = null, DisplaySurfaceID? surfaceID = null)
 		{
-			using var g = GetGraphics(surfaceID);
-			g.CompositingMode = _compositingMode;
-			g.DrawLine(GetPen(color ?? _defaultForeground), x1, y1, x2, y2);
+			var r = Get2DRenderer(surfaceID);
+			r.CompositingMode = _compositingMode;
+			r.DrawLine(color ?? _defaultForeground, x1, y1, x2, y2);
 		}
 
 		public void DrawAxis(int x, int y, int size, Color? color = null, DisplaySurfaceID? surfaceID = null)
@@ -435,19 +331,21 @@ namespace BizHawk.Client.Common
 
 		public void DrawPie(int x, int y, int width, int height, int startangle, int sweepangle, Color? line = null, Color? background = null, DisplaySurfaceID? surfaceID = null)
 		{
-			using var g = GetGraphics(surfaceID);
-			g.CompositingMode = _compositingMode;
+			var r = Get2DRenderer(surfaceID);
+			r.CompositingMode = _compositingMode;
 			var bg = background ?? _defaultBackground;
-			if (bg != null) g.FillPie(GetBrush(bg.Value), x, y, width, height, startangle, sweepangle);
-			g.DrawPie(GetPen(line ?? _defaultForeground), x + 1, y + 1, width - 1, height - 1, startangle, sweepangle);
+			// GDI+ had an off by one here, we increment width and height to preserve backwards compatibility
+			width++; height++;
+			if (bg != null) r.FillPie(bg.Value, x, y, width, height, startangle, sweepangle);
+			r.DrawPie(line ?? _defaultForeground, x + 1, y + 1, width - 1, height - 1, startangle, sweepangle);
 		}
 
 		public void DrawPixel(int x, int y, Color? color = null, DisplaySurfaceID? surfaceID = null)
 		{
 			try
 			{
-				using var g = GetGraphics(surfaceID);
-				g.DrawLine(GetPen(color ?? _defaultForeground), x, y, x + 0.1F, y);
+				var r = Get2DRenderer(surfaceID);
+				r.DrawLine(color ?? _defaultForeground, x, y, x, y);
 			}
 			catch (Exception)
 			{
@@ -459,10 +357,10 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				using var g = GetGraphics(surfaceID);
-				g.DrawPolygon(GetPen(line ?? _defaultForeground), points);
+				var r = Get2DRenderer(surfaceID);
+				r.DrawPolygon(line ?? _defaultForeground, points);
 				var bg = background ?? _defaultBackground;
-				if (bg != null) g.FillPolygon(GetBrush(bg.Value), points);
+				if (bg != null) r.FillPolygon(bg.Value, points);
 			}
 			catch (Exception)
 			{
@@ -472,12 +370,14 @@ namespace BizHawk.Client.Common
 
 		public void DrawRectangle(int x, int y, int width, int height, Color? line = null, Color? background = null, DisplaySurfaceID? surfaceID = null)
 		{
-			using var g = GetGraphics(surfaceID);
-			var w = Math.Max(width, 0.1F);
-			var h = Math.Max(height, 0.1F);
-			g.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, w, h);
+			var r = Get2DRenderer(surfaceID);
+			var w = Math.Max(width, 1);
+			var h = Math.Max(height, 1);
+			// GDI+ had an off by one here, we increment width and height to preserve backwards compatibility
+			w++; h++;
+			r.DrawRectangle(line ?? _defaultForeground, x, y, w, h);
 			var bg = background ?? _defaultBackground;
-			if (bg != null) g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, Math.Max(w - 1, 0), Math.Max(h - 1, 0));
+			if (bg != null) r.FillRectangle(bg.Value, x + 1, y + 1, Math.Max(w - 2, 0), Math.Max(h - 2, 0));
 		}
 
 		public void DrawString(int x, int y, string message, Color? forecolor = null, Color? backcolor = null, int? fontsize = null, string fontfamily = null, string fontstyle = null, string horizalign = null, string vertalign = null, DisplaySurfaceID? surfaceID = null)
@@ -486,7 +386,7 @@ namespace BizHawk.Client.Common
 			{
 				var family = fontfamily != null ? new FontFamily(fontfamily) : FontFamily.GenericMonospace;
 
-				var fstyle = fontstyle?.ToLower() switch
+				var fstyle = fontstyle?.ToLowerInvariant() switch
 				{
 					"bold" => FontStyle.Bold,
 					"italic" => FontStyle.Italic,
@@ -495,14 +395,14 @@ namespace BizHawk.Client.Common
 					_ => FontStyle.Regular
 				};
 
-				using var g = GetGraphics(surfaceID);
+				using var g = Graphics.FromImage(_nullGraphicsBitmap);
 
 				// The text isn't written out using GenericTypographic, so measuring it using GenericTypographic seemed to make it worse.
 				// And writing it out with GenericTypographic just made it uglier. :p
 				var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
 				var sizeOfText = g.MeasureString(message, font, 0, new StringFormat(StringFormat.GenericDefault)).ToSize();
 
-				switch (horizalign?.ToLower())
+				switch (horizalign?.ToLowerInvariant())
 				{
 					default:
 					case "left":
@@ -516,7 +416,7 @@ namespace BizHawk.Client.Common
 						break;
 				}
 
-				switch (vertalign?.ToLower())
+				switch (vertalign?.ToLowerInvariant())
 				{
 					default:
 					case "top":
@@ -530,17 +430,17 @@ namespace BizHawk.Client.Common
 						break;
 				}
 
+				var r = Get2DRenderer(surfaceID);
 				var bg = backcolor ?? _defaultBackground;
 				if (bg != null)
 				{
-					var brush = GetBrush(bg.Value);
 					for (var xd = -1; xd <= 1; xd++) for (var yd = -1; yd <= 1; yd++)
 					{
-						g.DrawString(message, font, brush, x + xd, y + yd);
+						r.DrawString(message, font, bg.Value, x + xd, y + yd);
 					}
 				}
-				g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
-				g.DrawString(message, font, GetBrush(forecolor ?? _defaultForeground), x, y);
+
+				r.DrawString(message, font, forecolor ?? _defaultForeground, x, y, textRenderingHint: TextRenderingHint.SingleBitPerPixelGridFit);
 			}
 			catch (Exception)
 			{
@@ -589,17 +489,14 @@ namespace BizHawk.Client.Common
 						index = _defaultPixelFont;
 						break;
 				}
-				using var g = GetGraphics(surfaceID);
+
+				using var g = Graphics.FromImage(_nullGraphicsBitmap);
 				var font = new Font(_displayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
-				var sizeOfText = g.MeasureString(
-					message,
-					font,
-					0,
-					new StringFormat(StringFormat.GenericTypographic) { FormatFlags = StringFormatFlags.MeasureTrailingSpaces }
-				).ToSize();
-				if (backcolor.HasValue) g.FillRectangle(GetBrush(backcolor.Value), new Rectangle(new Point(x, y), sizeOfText + new Size(1, 0)));
-				g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
-				g.DrawString(message, font, GetBrush(forecolor ?? _defaultForeground), x, y);
+				var sizeOfText = g.MeasureString(message, font, width: 0, PixelTextFormat).ToSize();
+
+				var r = Get2DRenderer(surfaceID);
+				if (backcolor.HasValue) r.FillRectangle(backcolor.Value, x, y, sizeOfText.Width + 2, sizeOfText.Height);
+				r.DrawString(message, font, forecolor ?? _defaultForeground, x + 1, y, PixelTextFormat, TextRenderingHint.SingleBitPerPixelGridFit);
 			}
 			catch (Exception)
 			{
@@ -632,16 +529,11 @@ namespace BizHawk.Client.Common
 				y -= oy;
 			}
 
-			var pos = new MessagePosition{ X = x, Y = y, Anchor = (MessagePosition.AnchorType)a };
+			var pos = new MessagePosition { X = x, Y = y, Anchor = (MessagePosition.AnchorType)a };
 			_displayManager.OSD.AddGuiText(message,  pos, Color.Black, forecolor ?? Color.White);
 		}
 
 		public void Dispose()
-		{
-			UnlockSurface(DisplaySurfaceID.EmuCore);
-			UnlockSurface(DisplaySurfaceID.Client);
-			foreach (var brush in _solidBrushes.Values) brush.Dispose();
-			foreach (var brush in _pens.Values) brush.Dispose();
-		}
+			=> ClearImageCache();
 	}
 }

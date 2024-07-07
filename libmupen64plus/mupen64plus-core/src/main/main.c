@@ -28,6 +28,7 @@
  * if you want to implement an interface, you should look here
  */
 
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -842,7 +843,7 @@ void main_stop(void)
     if (!g_EmulatorRunning)	
         return;
 
-    DebugMessage(M64MSG_STATUS, "Stopping emulation.");
+    //DebugMessage(M64MSG_STATUS, "Stopping emulation.");
     if(l_msgPause)
     {
         osd_delete_message(l_msgPause);

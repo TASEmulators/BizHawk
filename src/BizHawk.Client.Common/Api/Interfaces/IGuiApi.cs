@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -7,18 +6,21 @@ namespace BizHawk.Client.Common
 	public interface IGuiApi : IDisposable, IExternalApi
 	{
 		void ToggleCompositingMode();
+
+		[Obsolete("No longer supported, returns null always.")]
 		ImageAttributes GetAttributes();
+		[Obsolete("No longer supported, no-op.")]
 		void SetAttributes(ImageAttributes a);
 
 		void WithSurface(DisplaySurfaceID surfaceID, Action drawingCallsFunc);
 
-		[Obsolete]
+		[Obsolete("No longer supported, no-op.")]
 		void DrawNew(string name, bool clear = true);
 
-		[Obsolete]
+		[Obsolete("No longer supported, no-op.")]
 		void DrawFinish();
 
-		[Obsolete]
+		[Obsolete("Always true")]
 		bool HasGUISurface { get; }
 
 		void SetPadding(int all);
@@ -32,7 +34,7 @@ namespace BizHawk.Client.Common
 		void ClearText();
 		void SetDefaultForegroundColor(Color color);
 		void SetDefaultBackgroundColor(Color color);
-		Color? GetDefaultTextBackground();
+		Color GetDefaultTextBackground();
 		void SetDefaultTextBackground(Color color);
 		void SetDefaultPixelFont(string fontfamily);
 		void DrawBezier(Point p1, Point p2, Point p3, Point p4, Color? color = null, DisplaySurfaceID? surfaceID = null);

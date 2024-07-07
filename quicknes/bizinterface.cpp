@@ -1,80 +1,61 @@
 #include <cstdlib>
 #include <cstring>
-#include "nes_emu/Nes_Emu.h"
+#include <emu.hpp>
+#include <jaffarCommon/file.hpp>
+#include <jaffarCommon/serializers/contiguous.hpp>
+#include <jaffarCommon/deserializers/contiguous.hpp>
 
-// simulate the write so we'll know how long the buffer needs to be
-class Sim_Writer : public Data_Writer
-{
-	long size_;
-public:
-	Sim_Writer():size_(0) { }
-	error_t write(const void *, long size)
-	{
-		size_ += size;
-		return 0;
-	}
-	long size() const { return size_; }
-};
-
-// 0 filled new just for kicks
-void *operator new(std::size_t n)
-{
-	if (!n)
-		n = 1;
-	void *p = std::malloc(n);
-	std::memset(p, 0, n);
-	return p;
-}
-
-void operator delete(void *p)
-{
-	std::free(p);
-}
-
-#ifdef _MSC_VER
-#define EXPORT extern "C" __declspec(dllexport)
-#elif __MINGW32__
-#define EXPORT extern "C" __declspec(dllexport) __attribute__((force_align_arg_pointer))
+#ifdef _WIN32
+#define QN_EXPORT extern "C" __declspec(dllexport)
 #else
-#define EXPORT extern "C" __attribute__((force_align_arg_pointer))
+#define QN_EXPORT extern "C" __attribute__((visibility("default")))
 #endif
 
-EXPORT void qn_setup_mappers()
+// Relevant defines for video output
+#define VIDEO_BUFFER_SIZE 65536
+#define DEFAULT_WIDTH 256
+#define DEFAULT_HEIGHT 240
+
+
+QN_EXPORT quickerNES::Emu *qn_new()
 {
-	register_optional_mappers();
+	// Zero intialized emulator to make super sure no side effects from previous data remains
+	auto ptr = calloc(1, sizeof(quickerNES::Emu));
+	auto e = new (ptr) quickerNES::Emu();
+
+	// Creating video buffer
+	auto videoBuffer = (uint8_t *) malloc(VIDEO_BUFFER_SIZE);
+	e->set_pixels(videoBuffer, DEFAULT_WIDTH + 8);
+
+	return e;
 }
 
-EXPORT Nes_Emu *qn_new()
-{
-	return new Nes_Emu();
+QN_EXPORT void qn_delete(quickerNES::Emu *e)
+{ 
+	free(e->get_pixels_base_ptr());
+	e->~Emu(); // make sure to explicitly call the dtor
+	free(e);
 }
 
-EXPORT void qn_delete(Nes_Emu *e)
+QN_EXPORT const char *qn_loadines(quickerNES::Emu *e, const void *data, int length)
 {
-	delete e;
+	e->load_ines((const uint8_t*)data);
+	return 0;
 }
 
-EXPORT const char *qn_loadines(Nes_Emu *e, const void *data, int length)
-{
-	Mem_File_Reader r(data, length);
-	Auto_File_Reader a(r);
-	return e->load_ines(a);
-}
-
-EXPORT const char *qn_set_sample_rate(Nes_Emu *e, int rate)
+QN_EXPORT const char *qn_set_sample_rate(quickerNES::Emu *e, int rate)
 {
 	const char *ret = e->set_sample_rate(rate);
-	if (!ret)
-		e->set_equalizer(Nes_Emu::nes_eq);
+	if (!ret) e->set_equalizer(quickerNES::Emu::nes_eq);
 	return ret;
 }
 
-EXPORT const char *qn_emulate_frame(Nes_Emu *e, int pad1, int pad2)
+QN_EXPORT const char *qn_emulate_frame(quickerNES::Emu *e, int pad1, int pad2)
 {
-	return e->emulate_frame(pad1, pad2);
+	return e->emulate_frame((uint32_t)pad1, (uint32_t)pad2);
 }
 
-EXPORT void qn_blit(Nes_Emu *e, int32_t *dest, const int32_t *colors, int cropleft, int croptop, int cropright, int cropbottom)
+QN_EXPORT void qn_blit(quickerNES::Emu *e, int32_t *dest, const int32_t *colors, int cropleft, int croptop, int cropright, int cropbottom)
 {
 	// what is the point of the 256 color bitmap and the dynamic color allocation to it?
 	// why not just render directly to a 512 color bitmap with static palette positions?
@@ -99,17 +80,17 @@ EXPORT void qn_blit(Nes_Emu *e, int32_t *dest, const int32_t *colors, int crople
 	}
 }
 
-EXPORT const Nes_Emu::rgb_t *qn_get_default_colors()
+QN_EXPORT const quickerNES::Emu::rgb_t *qn_get_default_colors()
 {
-	return Nes_Emu::nes_colors;
+	return quickerNES::Emu::nes_colors;
 }
 
-EXPORT int qn_get_joypad_read_count(Nes_Emu *e)
+QN_EXPORT int qn_get_joypad_read_count(quickerNES::Emu *e)
 {
-	return e->frame().joypad_read_count;
+	return e->get_joypad_read_count();
 }
 
-EXPORT void qn_get_audio_info(Nes_Emu *e, int *sample_count, int *chan_count)
+QN_EXPORT void qn_get_audio_info(quickerNES::Emu *e, int *sample_count, int *chan_count)
 {
 	if (sample_count)
 		*sample_count = e->frame().sample_count;
@@ -117,96 +98,75 @@ EXPORT void qn_get_audio_info(Nes_Emu *e, int *sample_count, int *chan_count)
 		*chan_count = e->frame().chan_count;
 }
 
-EXPORT int qn_read_audio(Nes_Emu *e, short *dest, int max_samples)
+QN_EXPORT int qn_read_audio(quickerNES::Emu *e, short *dest, int max_samples)
 {
 	return e->read_samples(dest, max_samples);
 }
 
-EXPORT void qn_reset(Nes_Emu *e, int hard)
+QN_EXPORT void qn_reset(quickerNES::Emu *e, int hard)
 {
 	e->reset(hard);
 }
 
-EXPORT const char *qn_state_size(Nes_Emu *e, int *size)
+QN_EXPORT const char *qn_state_size(quickerNES::Emu *e, int *size)
 {
-	Sim_Writer w;
-	Auto_File_Writer a(w);
-	const char *ret = e->save_state(a);
-	if (size)
-		*size = w.size();
-	return ret;
+	jaffarCommon::serializer::Contiguous s;
+	e->serializeState(s);
+	*size = s.getOutputSize();
+	return 0;
 }
 
-EXPORT const char *qn_state_save(Nes_Emu *e, void *dest, int size)
+QN_EXPORT const char *qn_state_save(quickerNES::Emu *e, void *dest, int size)
 {
-	Mem_Writer w(dest, size, 0);
-	Auto_File_Writer a(w);
-	const char *ret = e->save_state(a);
-	if (!ret && w.size() != size)
-		return "Buffer Underrun!";
-	return ret;
+	jaffarCommon::serializer::Contiguous s(dest, size);
+	e->serializeState(s);
+	return 0;
 }
 
-EXPORT const char *qn_state_load(Nes_Emu *e, const void *src, int size)
+QN_EXPORT const char *qn_state_load(quickerNES::Emu *e, const void *src, int size)
 {
-	Mem_File_Reader r(src, size);
-	Auto_File_Reader a(r);
-	return e->load_state(a);
+	jaffarCommon::deserializer::Contiguous d(src, size);
+	e->deserializeState(d);
+	return 0;
 }
 
-EXPORT int qn_has_battery_ram(Nes_Emu *e)
+QN_EXPORT int qn_has_battery_ram(quickerNES::Emu *e)
 {
 	return e->has_battery_ram();
 }
 
-EXPORT const char *qn_battery_ram_size(Nes_Emu *e, int *size)
+QN_EXPORT const char *qn_battery_ram_size(quickerNES::Emu *e, int *size)
 {
-	Sim_Writer w;
-	Auto_File_Writer a(w);
-	const char *ret = e->save_battery_ram(a);
-	if (size)
-		*size = w.size();
-	return ret;
+	*size = e->get_high_mem_size();
+	return 0;
 }
 
-EXPORT const char *qn_battery_ram_save(Nes_Emu *e, void *dest, int size)
+QN_EXPORT const char *qn_battery_ram_save(quickerNES::Emu *e, void *dest, int size)
 {
-	Mem_Writer w(dest, size, 0);
-	Auto_File_Writer a(w);
-	const char *ret = e->save_battery_ram(a);
-	if (!ret && w.size() != size)
-		return "Buffer Underrun!";
-	return ret;
+	memcpy(dest, e->high_mem(), size);
+	return 0;
 }
 
-EXPORT const char *qn_battery_ram_load(Nes_Emu *e, const void *src, int size)
+QN_EXPORT const char *qn_battery_ram_load(quickerNES::Emu *e, const void *src, int size)
 {
-	Mem_File_Reader r(src, size);
-	Auto_File_Reader a(r);
-	return e->load_battery_ram(a);
+	memcpy(e->high_mem(), src, size);
+	return 0;
 }
 
-EXPORT const char *qn_battery_ram_clear(Nes_Emu *e)
+QN_EXPORT const char *qn_battery_ram_clear(quickerNES::Emu *e)
 {
 	int size = 0;
-	const char *ret = qn_battery_ram_size(e, &size);
-	if (ret)
-		return ret;
-	void *data = std::malloc(size);
-	if (!data)
-		return "Out of Memory!";
-	std::memset(data, 0xff, size);
-	ret = qn_battery_ram_load(e, data, size);
-	std::free(data);
-	return ret;
+	qn_battery_ram_size(e, &size);
+	std::memset(e->high_mem(), 0xff, size);
+	return 0;
 }
 
-EXPORT void qn_set_sprite_limit(Nes_Emu *e, int n)
+QN_EXPORT void qn_set_sprite_limit(quickerNES::Emu *e, int n)
 {
-	e->set_sprite_mode((Nes_Emu::sprite_mode_t)n);
+	e->set_sprite_mode((quickerNES::Emu::sprite_mode_t)n);
 }
 
-EXPORT int qn_get_memory_area(Nes_Emu *e, int which, const void **data, int *size, int *writable, const char **name)
+QN_EXPORT int qn_get_memory_area(quickerNES::Emu *e, int which, const void **data, int *size, int *writable, const char **name)
 {
 	if (!data || !size || !writable || !name)
 		return 0;
@@ -215,7 +175,7 @@ EXPORT int qn_get_memory_area(Nes_Emu *e, int which, const void **data, int *siz
 	default:
 		return 0;
 	case 0:
-		*data = e->low_mem();
+		*data = e->get_low_mem();
 		*size = e->low_mem_size;
 		*writable = 1;
 		*name = "RAM";
@@ -229,58 +189,58 @@ EXPORT int qn_get_memory_area(Nes_Emu *e, int which, const void **data, int *siz
 	case 2:
 		*data = e->chr_mem();
 		*size = e->chr_size();
-		*writable = 0;
+		*writable = 1;
 		*name = "CHR";
 		return 1;
 	case 3:
 		*data = e->nametable_mem();
 		*size = e->nametable_size();
-		*writable = 0;
+		*writable = 1;
 		*name = "CIRAM (nametables)";
 		return 1;
 	case 4:
 		*data = e->cart()->prg();
 		*size = e->cart()->prg_size();
-		*writable = 0;
+		*writable = 1;
 		*name = "PRG ROM";
 		return 1;
 	case 5:
 		*data = e->cart()->chr();
 		*size = e->cart()->chr_size();
-		*writable = 0;
+		*writable = 1;
 		*name = "CHR VROM";
 		return 1;
 	case 6:
 		*data = e->pal_mem();
-		*size = 32;
+		*size = e->pal_mem_size();
 		*writable = 1;
 		*name = "PALRAM";
 		return 1;
 	case 7:
-		*data = e->oam_mem();
-		*size = 256;
+	    *data = e->spr_mem();
+		*size = e->spr_mem_size();
 		*writable = 1;
 		*name = "OAM";
 		return 1;
 	}
 }
 
-EXPORT unsigned char qn_peek_prgbus(Nes_Emu *e, int addr)
+QN_EXPORT unsigned char qn_peek_prgbus(quickerNES::Emu *e, int addr)
 {
 	return e->peek_prg(addr & 0xffff);
 }
 
-EXPORT void qn_poke_prgbus(Nes_Emu *e, int addr, unsigned char val)
+QN_EXPORT void qn_poke_prgbus(quickerNES::Emu *e, int addr, unsigned char val)
 {
 	e->poke_prg(addr & 0xffff, val);
 }
 
-EXPORT void qn_get_cpuregs(Nes_Emu *e, unsigned int *dest)
+QN_EXPORT void qn_get_cpuregs(quickerNES::Emu *e, unsigned int *dest)
 {
 	e->get_regs(dest);
 }
 
-EXPORT const char *qn_get_mapper(Nes_Emu *e, int *number)
+QN_EXPORT const char *qn_get_mapper(quickerNES::Emu *e, int *number)
 {
 	int m = e->cart()->mapper_code();
 	if (number)
@@ -288,54 +248,90 @@ EXPORT const char *qn_get_mapper(Nes_Emu *e, int *number)
 	switch (m)
 	{
 	default: return "unknown";
-	case 0: return "nrom";
-	case 1: return "mmc1";
-	case 2: return "unrom";
-	case 3: return "cnrom";
-	case 4: return "mmc3";
-	case 7: return "aorom";
-	case 69: return "fme7";
-	case 5: return "mmc5";
-	case 19: return "namco106";
-	case 24: return "vrc6a";
-	case 26: return "vrc6b";
-	case 11: return "color_dreams";
-	case 34: return "nina1";
-	case 66: return "gnrom";
-	case 87: return "mapper_87";
+	case   0: return "nrom";
+	case   1: return "mmc1";
+	case   2: return "unrom";
+	case   3: return "cnrom";
+	case   4: return "mmc3";
+	case   5: return "mmc5";
+	case   7: return "aorom";
+	case   9: return "mmc2";
+	case  10: return "mmc4";
+	case  11: return "color_dreams";
+	case  15: return "k1029/30P";
+	case  19: return "namco106";
+	case  21: return "vrc2,vrc4(21)";
+	case  22: return "vrc2,vrc4(22)";
+	case  23: return "vrc2,vrc4(23)";
+	case  24: return "vrc6a";
+	case  25: return "vrc2,vrc4(25)";
+	case  26: return "vrc6b";
+	case  30: return "Unrom512";
+	case  32: return "Irem_G101";
+	case  33: return "TaitoTC0190";
+	case  34: return "nina1";
+	case  60: return "NROM-128";
+	case  66: return "gnrom";
+	case  69: return "fme7";
+	case  70: return "74x161x162x32(70)";
+	case  71: return "camerica";
+	case  73: return "vrc3";
+	case  75: return "vrc1";
+	case  78: return "mapper_78";
+	case  79: return "nina03,nina06(79)";
+	case  85: return "vrc7";
+	case  86: return "mapper_86";
+	case  87: return "mapper_87";
+	case  88: return "namco34(88)";
+	case  89: return "sunsoft2b";
+	case  93: return "sunsoft2a";
+	case  94: return "Un1rom";
+    case  97: return "irem_tam_s1";
+	case 113: return "nina03,nina06(113)";
+	case 140: return "jaleco_jf11";
+	case 152: return "74x161x162x32(152)";
+	case 154: return "namco34(154)";
+	case 156: return "dis23c01_daou";
+	case 180: return "uxrom(inverted)";
+	case 184: return "sunsoft1";
+	case 190: return "magickidgoogoo";
+	case 193: return "tc112";
+	case 206: return "namco34(206)";
+	case 207: return "taitox1005";
 	case 232: return "quattro";
-	case 9: return "mmc2";
-	case 10: return "mmc4";
+	case 240: return "mapper_240";
+	case 241: return "mapper_241";
+	case 246: return "mapper_246";
 	}
 }
 
-EXPORT byte qn_get_reg2000(Nes_Emu *e)
+QN_EXPORT uint8_t qn_get_reg2000(quickerNES::Emu *e)
 {
 	return e->get_ppu2000();
 }
 
-EXPORT byte *qn_get_palmem(Nes_Emu *e)
+QN_EXPORT uint8_t *qn_get_palmem(quickerNES::Emu *e)
 {
 	return e->pal_mem();
 }
 
-EXPORT byte *qn_get_oammem(Nes_Emu *e)
+QN_EXPORT uint8_t *qn_get_oammem(quickerNES::Emu *e)
 {
-	return e->oam_mem();
+	return e->pal_mem();
 }
 
-EXPORT byte qn_peek_ppu(Nes_Emu *e, int addr)
+QN_EXPORT uint8_t qn_peek_ppu(quickerNES::Emu *e, int addr)
 {
 	return e->peek_ppu(addr);
 }
 
-EXPORT void qn_peek_ppubus(Nes_Emu *e, byte *dest)
+QN_EXPORT void qn_peek_ppubus(quickerNES::Emu *e, uint8_t *dest)
 {
 	for (int i = 0; i < 0x3000; i++)
 		dest[i] = e->peek_ppu(i);
 }
 
-EXPORT void qn_set_tracecb(Nes_Emu *e, void (*cb)(unsigned int *dest))
+QN_EXPORT void qn_set_tracecb(quickerNES::Emu *e, void (*cb)(unsigned int *dest))
 {
 	e->set_tracecb(cb);
 }

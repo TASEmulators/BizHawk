@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
@@ -27,8 +25,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ServiceProvider = ser;
 
 			_ram = new byte[128];
-			Settings = (A2600Settings)settings ?? new A2600Settings();
-			SyncSettings = (A2600SyncSettings)syncSettings ?? new A2600SyncSettings();
+			Settings = settings ?? new A2600Settings();
+			SyncSettings = syncSettings ?? new A2600SyncSettings();
 
 			_controllerDeck = new Atari2600ControllerDeck(SyncSettings.Port1, SyncSettings.Port2);
 

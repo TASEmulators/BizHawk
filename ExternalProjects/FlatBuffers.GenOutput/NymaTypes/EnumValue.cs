@@ -13,7 +13,7 @@ public struct EnumValue : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
   public static EnumValue GetRootAsEnumValue(ByteBuffer _bb) { return GetRootAsEnumValue(_bb, new EnumValue()); }
   public static EnumValue GetRootAsEnumValue(ByteBuffer _bb, EnumValue obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -53,9 +53,9 @@ public struct EnumValue : IFlatbufferObject
   }
 
   public static void StartEnumValue(FlatBufferBuilder builder) { builder.StartTable(3); }
-  public static void AddName(FlatBufferBuilder builder, StringOffset NameOffset) { builder.AddOffset(0, NameOffset.Value, 0); }
-  public static void AddDescription(FlatBufferBuilder builder, StringOffset DescriptionOffset) { builder.AddOffset(1, DescriptionOffset.Value, 0); }
-  public static void AddValue(FlatBufferBuilder builder, StringOffset ValueOffset) { builder.AddOffset(2, ValueOffset.Value, 0); }
+  public static void AddName(FlatBufferBuilder builder, StringOffset nameOffset) { builder.AddOffset(0, nameOffset.Value, 0); }
+  public static void AddDescription(FlatBufferBuilder builder, StringOffset descriptionOffset) { builder.AddOffset(1, descriptionOffset.Value, 0); }
+  public static void AddValue(FlatBufferBuilder builder, StringOffset valueOffset) { builder.AddOffset(2, valueOffset.Value, 0); }
   public static Offset<NymaTypes.EnumValue> EndEnumValue(FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<NymaTypes.EnumValue>(o);
@@ -96,5 +96,17 @@ public class EnumValueT
   }
 }
 
+
+static public class EnumValueVerify
+{
+  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  {
+    return verifier.VerifyTableStart(tablePos)
+      && verifier.VerifyString(tablePos, 4 /*Name*/, false)
+      && verifier.VerifyString(tablePos, 6 /*Description*/, false)
+      && verifier.VerifyString(tablePos, 8 /*Value*/, false)
+      && verifier.VerifyTableEnd(tablePos);
+  }
+}
 
 }

@@ -1,4 +1,4 @@
-auto SI::readWord(u32 address, u32& cycles) -> u32 {
+auto SI::readWord(u32 address, Thread& thread) -> u32 {
   if(address <= 0x048f'ffff) return ioRead(address);
 
   if (unlikely(io.ioBusy)) {
@@ -9,7 +9,7 @@ auto SI::readWord(u32 address, u32& cycles) -> u32 {
 }
 
 auto SI::ioRead(u32 address) -> u32 {
-  address = (address & 0xfffff) >> 2;
+  address = (address & 0x1f) >> 2;
   n32 data;
 
   if(address == 0) {
@@ -54,7 +54,7 @@ auto SI::ioRead(u32 address) -> u32 {
   return data;
 }
 
-auto SI::writeWord(u32 address, u32 data, u32& cycles) -> void {
+auto SI::writeWord(u32 address, u32 data, Thread& thread) -> void {
   if(address <= 0x048f'ffff) return ioWrite(address, data);
 
   if(io.ioBusy) return;

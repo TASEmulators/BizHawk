@@ -1,4 +1,3 @@
-﻿using System;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
@@ -10,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private mupen64plusVideoApi api;
 		private readonly mupen64plusApi coreAPI;
 
-		public bool IsVIFrame;
+		public bool FrameFinished;
 
 		/// <summary>
 		/// Creates N64 Video system with mupen64plus backend
@@ -29,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			coreAPI = core;
 			coreAPI.BeforeRender += DoVideoFrame;
-			coreAPI.BeforeRender += () => { IsVIFrame = true; };
+			coreAPI.FrameFinished += () => { FrameFinished = true; };
 		}
 
 		public int[] GetVideoBuffer() => frameBuffer;

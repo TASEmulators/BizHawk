@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -94,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 			CheckFormState();
 			if (!_cheat.Compare.HasValue)
 			{
-				CompareBox.Text = ""; // Necessary hack until WatchValueBox.ToRawInt() becomes nullable
+				CompareBox.Text = ""; // Necessary hack until WatchValueBox.ToRawUInt() becomes nullable
 			}
 
 			_loading = false;
@@ -133,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTypeSelected(WatchDisplayType.Hex);
 
 			CheckFormState();
-			CompareBox.Text = ""; // TODO: A needed hack until WatchValueBox.ToRawInt() becomes nullable
+			CompareBox.Text = ""; // TODO: A needed hack until WatchValueBox.ToRawUInt() becomes nullable
 			_loading = false;
 		}
 
@@ -180,6 +179,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PopulateTypeDropdown()
 		{
+			var wasSelected = DisplayTypeDropDown.SelectedItem?.ToString() ?? string.Empty;
+			bool Reselect()
+			{
+				for (var i = 0; i < DisplayTypeDropDown.Items.Count; i++)
+				{
+					if (DisplayTypeDropDown.Items[i].ToString() == wasSelected)
+					{
+						DisplayTypeDropDown.SelectedIndex = i;
+						return true;
+					}
+				}
+				return false;
+			}
 			DisplayTypeDropDown.Items.Clear();
 			switch (SizeDropDown.SelectedIndex)
 			{
@@ -206,8 +218,10 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 			}
-
-			DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items[0];
+			DisplayTypeDropDown.SelectedIndex = 0;
+			if (Reselect()) return;
+			wasSelected = Watch.DisplayTypeToString(WatchDisplayType.Hex);
+			_ = Reselect();
 		}
 
 		private void CheckFormState()
@@ -254,9 +268,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayTypeDropDown_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			ValueBox.Type =
-				CompareBox.Type =
-				Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());
+			var newDisp = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()); //TODO use Tag or Index
+			ValueBox.Type = CompareBox.Type = newDisp;
+			ValueHexIndLabel.Text = CompareHexIndLabel.Text = newDisp is WatchDisplayType.Hex ? HexInd : string.Empty; //TODO "0b" for binary
+			// NOT writing to `_cheat`, the "Override" button handles that
 		}
 
 		private void AddButton_Click(object sender, EventArgs e)
@@ -295,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 		public Cheat GetCheat()
 		{
 			var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()]!;
-			var address = AddressBox.ToRawInt().Value;
+			var address = AddressBox.ToRawUInt().Value;
 			if (address < domain.Size)
 			{
 				var watch = Watch.GenerateWatch(
@@ -318,11 +333,11 @@ namespace BizHawk.Client.EmuHawk
 					_ => Cheat.CompareType.None
 				};
 
-				var compare = CompareBox.ToRawInt();
+				var compare = CompareBox.ToRawUInt();
 				return new Cheat(
 					watch,
-					value: ValueBox.ToRawInt().Value,
-					compare: compare,
+					value: (int)ValueBox.ToRawUInt().Value,
+					compare: (int?)compare,
 					enabled: true,
 					comparisonType);
 			}

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -9,8 +8,6 @@ using System.Text.RegularExpressions;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Common.StringExtensions;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 
@@ -33,8 +30,8 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 					.Select(static testCase => new object?[] { testCase });
 			}
 
-			public string GetDisplayName(MethodInfo methodInfo, object?[] data)
-				=> $"{methodInfo.Name}({((GambatteHexStrTestCase) data[0]!).DisplayName()})";
+			public string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
+				=> $"{methodInfo.Name}(\"{((GambatteHexStrTestCase) data![0]!).DisplayName()}\")";
 		}
 
 		[AttributeUsage(AttributeTargets.Method)]
@@ -50,8 +47,8 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 					.Select(static testCase => new object?[] { testCase });
 			}
 
-			public string GetDisplayName(MethodInfo methodInfo, object?[] data)
-				=> $"{methodInfo.Name}({((GambatteRefImageTestCase) data[0]!).DisplayName()})";
+			public string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
+				=> $"{methodInfo.Name}(\"{((GambatteRefImageTestCase) data![0]!).DisplayName()}\")";
 		}
 
 		private static readonly byte[,] GLYPHS = {

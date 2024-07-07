@@ -1,5 +1,7 @@
 #pragma once
 
+#include <nall/string.hpp>
+
 namespace nall::Decode {
 
 //returns empty string on malformed content

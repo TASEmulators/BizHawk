@@ -1,4 +1,3 @@
-﻿using System;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
@@ -352,8 +351,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				with output pins on the peripheral ports.
 			*/
 
-			if ((_pcrCa1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Ca1 && !_ca1L) ||
-				(_pcrCa1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Ca1 && _ca1L))
+			if ((_pcrCa1IntControl is PCR_INT_CONTROL_POSITIVE_EDGE && Ca1 && !_ca1L)
+				|| (_pcrCa1IntControl is PCR_INT_CONTROL_NEGATIVE_EDGE && !Ca1 && _ca1L))
 			{
 				if (_acrPaLatchEnable && (_ifr & 0x02) == 0)
 					_paLatch = _port.ReadExternalPra();
@@ -367,8 +366,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 output. As with the PA port, the processor always reads the input latches.
             */
 
-			if ((_pcrCb1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Cb1 && !_cb1L) ||
-				(_pcrCb1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Cb1 && _cb1L))
+			if ((_pcrCb1IntControl is PCR_INT_CONTROL_POSITIVE_EDGE && Cb1 && !_cb1L)
+				|| (_pcrCb1IntControl is PCR_INT_CONTROL_NEGATIVE_EDGE && !Cb1 && _cb1L))
 			{
 				if (_acrPbLatchEnable && (_ifr & 0x10) == 0)
 					_pbLatch = _port.ReadPrb(_prb, _ddrb);

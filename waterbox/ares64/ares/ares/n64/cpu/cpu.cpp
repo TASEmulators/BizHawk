@@ -1,4 +1,5 @@
 #include <n64/n64.hpp>
+#include <nall/gdb/server.hpp>
 
 namespace ares::Nintendo64 {
 
@@ -30,16 +31,16 @@ auto CPU::unload() -> void {
 }
 
 auto CPU::main() -> void {
-  instruction();
-  synchronize();
-}
+  while(!vi.refreshed) {
+    instruction();
+    synchronize();
+  }
 
-auto CPU::step(u32 clocks) -> void {
-  Thread::clock += clocks;
+  vi.refreshed = false;
 }
 
 auto CPU::synchronize() -> void {
-  auto clocks = Thread::clock * 2;
+  auto clocks = Thread::clock;
   Thread::clock = 0;
 
    vi.clock -= clocks;
@@ -47,11 +48,11 @@ auto CPU::synchronize() -> void {
   rsp.clock -= clocks;
   rdp.clock -= clocks;
   pif.clock -= clocks;
-  while( vi.clock < 0)  vi.main();
-  while( ai.clock < 0)  ai.main();
-  while(rsp.clock < 0) rsp.main();
-  while(rdp.clock < 0) rdp.main();
-  while(pif.clock < 0) pif.main();
+  vi.main();
+  ai.main();
+  rsp.main();
+  rdp.main();
+  pif.main();
 
   queue.step(clocks, [](u32 event) {
     switch(event) {
@@ -63,7 +64,7 @@ auto CPU::synchronize() -> void {
     case Queue::SI_DMA_Write:  return si.dmaWrite();
     case Queue::SI_BUS_Write:  return si.writeFinished();
     case Queue::RTC_Tick:      return cartridge.rtc.tick();
-    case Queue::DD_Clock_Tick:  return dd.rtcTickClock();
+    case Queue::DD_Clock_Tick:  return dd.rtc.tickClock();
     case Queue::DD_MECHA_Response:  return dd.mechaResponse();
     case Queue::DD_BM_Request:  return dd.bmRequest();
     case Queue::DD_Motor_Mode:  return dd.motorChange();
@@ -81,37 +82,57 @@ auto CPU::instruction() -> void {
   if(auto interrupts = scc.cause.interruptPending & scc.status.interruptMask) {
     if(scc.status.interruptEnable && !scc.status.exceptionLevel && !scc.status.errorLevel) {
       debugger.interrupt(scc.cause.interruptPending);
-      step(1);
+      step(1 * 2);
       return exception.interrupt();
     }
   }
   if (scc.nmiPending) {
     debugger.nmi();
-    step(1);
+    step(1 * 2);
     return exception.nmi();
+  }
+  if (scc.sysadFrozen) {
+    step(1 * 2);
+    return;
   }
 
   if constexpr(Accuracy::CPU::Recompiler) {
+    // Fast path: attempt to lookup previously compiled blocks with devirtualizeFast
+    // and fastFetchBlock, this skips exception handling, error checking, and
+    // code emitting pathways for maximum lookup performance.
+    // As memory writes cause recompiler block invalidation, this shouldn't be detectable.
+    if (auto address = devirtualizeFast(ipu.pc)) {
+      if(auto block = recompiler.fastFetchBlock(address)) {
+        block->execute(*this);
+        return;
+      }
+    }
+
     if (auto address = devirtualize(ipu.pc)) {
-      auto block = recompiler.block(*address);
+      auto block = recompiler.block(ipu.pc, *address, false);
       block->execute(*this);
     }
   }
 
   if constexpr(Accuracy::CPU::Interpreter) {
-    pipeline.address = ipu.pc;
     auto data = fetch(ipu.pc);
     if (!data) return;
-    pipeline.instruction = *data;
-    debugger.instruction();
+    instructionPrologue(*data);
     decoderEXECUTE();
     instructionEpilogue();
   }
 }
 
+auto CPU::instructionPrologue(u32 instruction) -> void {
+  pipeline.address = ipu.pc;
+  pipeline.instruction = instruction;
+  debugger.instruction();
+}
+
 auto CPU::instructionEpilogue() -> s32 {
   if constexpr(Accuracy::CPU::Recompiler) {
-    icache.step(ipu.pc);  //simulates timings without performing actual icache loads
+    //simulates timings without performing actual icache loads
+    icache.step(ipu.pc, devirtualizeFast(ipu.pc));
   }
 
   ipu.r[0].u64 = 0;
@@ -156,7 +177,7 @@ auto CPU::power(bool reset) -> void {
 
   if constexpr(Accuracy::CPU::Recompiler) {
     auto buffer = ares::Memory::FixedAllocator::get().tryAcquire(4_MiB);
-    recompiler.allocator.resize(4_MiB, bump_allocator::executable | bump_allocator::zero_fill, buffer);
+    recompiler.allocator.resize(4_MiB, bump_allocator::executable, buffer);
     recompiler.reset();
   }
 }

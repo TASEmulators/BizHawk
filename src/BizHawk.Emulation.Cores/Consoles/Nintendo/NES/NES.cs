@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
@@ -28,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				fdsBios = tmp;
 			}
 
-			SyncSettings = (NESSyncSettings)syncSettings ?? new NESSyncSettings();
+			SyncSettings = syncSettings ?? new NESSyncSettings();
 			ControllerSettings = SyncSettings.Controls;
 
 			videoProvider = new MyVideoProvider(this);
@@ -41,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// expects this to be set.
 				RomStatus = game.Status;
 			}
-			PutSettings((NESSettings)settings ?? new NESSettings());
+			PutSettings(settings ?? new NESSettings());
 
 			// we need to put this here because the line directly above will overwrite palette intialization anywhere else
 			// TODO: What if settings are later loaded?
@@ -69,6 +68,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					ser.Register(reader);
 				}
+			}
+
+			// only the subframe core should have ICycleTiming registered
+			if (!subframe)
+			{
+				ser.Unregister<ICycleTiming>();
 			}
 
 			ResetControllerDefinition(subframe);

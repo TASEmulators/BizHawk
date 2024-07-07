@@ -1,11 +1,11 @@
-using System;
 using System.Collections.Generic;
-using BizHawk.Bizware.BizwareGL;
+
+using BizHawk.Bizware.Graphics;
 
 namespace BizHawk.Client.Common
 {
 	/// <summary>
-	/// Recycles a pair of temporary textures (in case double-buffering helps any) to contain a BitmapBuffer's or DisplaySurface's contents, as long as the dimensions match.
+	/// Recycles a pair of temporary textures (in case double-buffering helps any) to contain a BitmapBuffer's contents, as long as the dimensions match.
 	/// When the dimensions don't match, a new one will be allocated
 	/// </summary>
 	public class TextureFrugalizer : IDisposable
@@ -28,27 +28,22 @@ namespace BizHawk.Client.Common
 
 		private void ResetList()
 		{
-			_currentTextures = new List<Texture2d> { null, null };
+			_currentTextures = new List<ITexture2D> { null, null };
 		}
 
 		private readonly IGL _gl;
-		private List<Texture2d> _currentTextures;
+		private List<ITexture2D> _currentTextures;
 
-		public Texture2d Get(IDisplaySurface ds)
-		{
-			using var bb = new BitmapBuffer(ds.PeekBitmap(), new BitmapLoadOptions());
-			return Get(bb);
-		}
-		public Texture2d Get(BitmapBuffer bb)
+		public ITexture2D Get(BitmapBuffer bb)
 		{
 			//get the current entry
-			Texture2d currentTexture = _currentTextures[0];
+			var currentTexture = _currentTextures[0];
 
 			// TODO - its a bit cruddy here that we don't respect the current texture HasAlpha condition (in fact, there's no such concept)
 			// we might need to deal with that in the future to fix some bugs.
 
 			//check if its rotten and needs recreating
-			if (currentTexture == null || currentTexture.IntWidth != bb.Width || currentTexture.IntHeight != bb.Height)
+			if (currentTexture == null || currentTexture.Width != bb.Width || currentTexture.Height != bb.Height)
 			{
 				//needs recreating. be sure to kill the old one...
 				currentTexture?.Dispose();
@@ -58,7 +53,7 @@ namespace BizHawk.Client.Common
 			else
 			{
 				//its good! just load in the data
-				_gl.LoadTextureData(currentTexture, bb);
+				currentTexture.LoadFrom(bb);
 			}
 
 			//now shuffle the buffers

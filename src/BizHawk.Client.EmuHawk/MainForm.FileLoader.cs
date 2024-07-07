@@ -1,6 +1,4 @@
-﻿using System;
 using System.IO;
-using System.Windows.Forms;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -40,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private readonly string[] _nonArchive = { ".ISO", ".CUE", ".CCD" };
+		private readonly string[] _nonArchive = { ".ISO", ".CUE", ".CCD", ".CDI", ".MDS", ".NRG" };
 
 		private void LoadCdl(string filename, string archive = null)
 		{
@@ -96,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			return Tools.IsLoaded<TAStudio>()
 				? Tools.TAStudio.LoadMovieFile(filename)
-				: StartNewMovie(MovieSession.Get(filename), false);
+				: StartNewMovie(MovieSession.Get(filename, true), false);
 		}
 
 		private bool LoadRom(string filename, string archive = null)
@@ -170,13 +168,10 @@ namespace BizHawk.Client.EmuHawk
 							 */
 							var dearchivalMethod = SharpCompressDearchivalMethod.Instance;
 
+#if false // making this run always to restore the default behavior where unrecognized files are treated like roms --adelikat
 							if (string.IsNullOrEmpty(archive) && dearchivalMethod.CheckSignature(file, out _, out _))
+#endif
 							{
-								sortedFiles[LoadOrdering.Rom].Add(fileInformation);
-							}
-							else
-							{
-								// This is hack is to ensure that unrecognized files are treated like ROMs
 								sortedFiles[LoadOrdering.Rom].Add(fileInformation);
 							}
 

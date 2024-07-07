@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -283,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 			var fStyle = FontStyle.Regular;
 			if (fontStyle != null)
 			{
-				switch (fontStyle.ToLower())
+				switch (fontStyle.ToLowerInvariant())
 				{
 					default:
 					case "regular":
@@ -311,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (horizAlign != null)
 			{
-				switch (horizAlign.ToLower())
+				switch (horizAlign.ToLowerInvariant())
 				{
 					default:
 					case "left":
@@ -328,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (vertAlign != null)
 			{
-				switch (vertAlign.ToLower())
+				switch (vertAlign.ToLowerInvariant())
 				{
 					default:
 					case "top":

@@ -113,8 +113,8 @@ auto WDC65816::instructionIndexedIndirectRead8(alu8 op) -> void {
   U.l = fetch();
   idle2();
   idle();
-  V.l = readDirect(U.l + X.w + 0);
-  V.h = readDirect(U.l + X.w + 1);
+  V.l = readDirectX(U.l + X.w, 0);
+  V.h = readDirectX(U.l + X.w, 1);
 L W.l = readBank(V.w + 0);
   alu(W.l);
 }
@@ -123,8 +123,8 @@ auto WDC65816::instructionIndexedIndirectRead16(alu16 op) -> void {
   U.l = fetch();
   idle2();
   idle();
-  V.l = readDirect(U.l + X.w + 0);
-  V.h = readDirect(U.l + X.w + 1);
+  V.l = readDirectX(U.l + X.w, 0);
+  V.h = readDirectX(U.l + X.w, 1);
   W.l = readBank(V.w + 0);
 L W.h = readBank(V.w + 1);
   alu(W.w);

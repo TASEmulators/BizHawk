@@ -1,7 +1,7 @@
-﻿using System;
-using BizHawk.Emulation.Common;
 using System.Runtime.InteropServices;
+
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
@@ -20,9 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 		public void DiscardSamples()
-		{
-			_nsamp = 0;
-		}
+			=> _nsamp = 0;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -30,23 +28,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				throw new NotSupportedException("Async mode is not supported.");
 			}
-
 		}
+
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
+			=> throw new InvalidOperationException("Async mode is not supported.");
 
-		private void update_audio()
+		private void UpdateAudio()
 		{
-			IntPtr src = IntPtr.Zero;
+			var src = IntPtr.Zero;
 			Core.gpgx_get_audio(ref _nsamp, ref src);
 			if (src != IntPtr.Zero)
 			{
 				using (_elf.EnterExit())
+				{
 					Marshal.Copy(src, _samples, 0, _nsamp * 2);
+				}
 			}
 		}
 	}

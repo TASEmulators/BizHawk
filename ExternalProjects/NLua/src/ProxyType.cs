@@ -3,13 +3,11 @@ using System.Reflection;
 
 namespace NLua
 {
-	public class ProxyType
+	internal class ProxyType
 	{
-		private readonly Type _proxy;
-
 		public ProxyType(Type proxy)
 		{
-			_proxy = proxy;
+			UnderlyingSystemType = proxy;
 		}
 
 		/// <summary>
@@ -17,34 +15,24 @@ namespace NLua
 		/// </summary>
 		/// <returns></returns>
 		public override string ToString()
-		{
-			return "ProxyType(" + UnderlyingSystemType + ")";
-		}
+			=> "ProxyType(" + UnderlyingSystemType + ")";
 
-		public Type UnderlyingSystemType => _proxy;
+		public Type UnderlyingSystemType { get; }
 
-		public override bool Equals(object obj)
+		public override bool Equals(object obj) => obj switch
 		{
-			if (obj is Type)
-				return _proxy == (Type)obj;
-			if (obj is ProxyType)
-				return _proxy == ((ProxyType)obj).UnderlyingSystemType;
-			return _proxy.Equals(obj);
-		}
+			Type type => UnderlyingSystemType == type,
+			ProxyType type => UnderlyingSystemType == type.UnderlyingSystemType,
+			_ => UnderlyingSystemType.Equals(obj)
+		};
 
 		public override int GetHashCode()
-		{
-			return _proxy.GetHashCode();
-		}
+			=> UnderlyingSystemType.GetHashCode();
 
 		public MemberInfo[] GetMember(string name, BindingFlags bindingAttr)
-		{
-			return _proxy.GetMember(name, bindingAttr);
-		}
+			=> UnderlyingSystemType.GetMember(name, bindingAttr);
 
 		public MethodInfo GetMethod(string name, BindingFlags bindingAttr, Type[] signature)
-		{
-			return _proxy.GetMethod(name, bindingAttr, null, signature, null);
-		}
+			=> UnderlyingSystemType.GetMethod(name, bindingAttr, null, signature, null);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using BizHawk.Common.NumberExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
@@ -8,33 +9,35 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	{
 		private readonly ITraceable _tracer;
 
-		public class GPGXTraceBuffer : CallbackBasedTraceBuffer
+		public class GPGXTraceBuffer(
+			IDebuggable debuggableCore,
+			IMemoryDomains memoryDomains,
+			IDisassemblable disassembler)
+			: CallbackBasedTraceBuffer(debuggableCore, memoryDomains, disassembler, TRACE_HEADER)
 		{
 			private const string TRACE_HEADER = "M68K: PC, machine code, mnemonic, operands, registers (D0-D7, A0-A7, SR, USP), flags (XNZVC)";
-
-			public GPGXTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler)
-				: base(debuggableCore, memoryDomains, disassembler, TRACE_HEADER) {}
 
 			protected override void TraceFromCallback(uint addr, uint value, uint flags)
 			{
 				var regs = DebuggableCore.GetCpuFlagsAndRegisters();
-				uint pc = (uint)regs["M68K PC"].Value;
+				var pc = (uint)regs["M68K PC"].Value;
 				var disasm = Disassembler.Disassemble(MemoryDomains.SystemBus, pc & 0xFFFFFF, out _);
 
 				var sb = new StringBuilder();
 
 				foreach (var r in regs)
 				{
-					if (r.Key.StartsWith("M68K")) // drop Z80 regs until it has its own debugger/tracer
+					if (r.Key.StartsWithOrdinal("M68K")) // drop Z80 regs until it has its own debugger/tracer
 					{
-						if (r.Key != "M68K SP" && r.Key != "M68K ISP" && // copies of a7
-							r.Key != "M68K PC" && // already present in every line start
-							r.Key != "M68K IR") // copy of last opcode, already shown in raw bytes
+						if (r.Key is not ("M68K SP" or "M68K ISP" // copies of a7
+							or "M68K PC" // already present in every line start
+							or "M68K IR")) // copy of last opcode, already shown in raw bytes
 						{
 							sb.Append($"{r.Key.Replace("M68K", "").Trim()}:{r.Value.Value.ToHexString(r.Value.BitSize / 4)} ");
 						}
 					}
 				}
+
 				var sr = regs["M68K SR"].Value;
 				sb.Append(string.Concat(
 					(sr & 16) > 0 ? "X" : "x",

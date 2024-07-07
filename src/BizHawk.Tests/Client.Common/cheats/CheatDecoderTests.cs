@@ -1,9 +1,6 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.cheats;
@@ -46,6 +43,13 @@ namespace BizHawk.Tests.Client.Common.cheats
 
 		private static readonly IEnumerable<object?[]> RealData = new[]
 		{
+			new object?[] { VSystemID.Raw.GB, "0A1-B9F", 0x01B9, 0x0A, NO_COMPARE, WatchSize.Byte },
+			new object?[] { VSystemID.Raw.GB, "068-5FF-E66", 0x085F, 0x06, 0x03, WatchSize.Byte },
+			new object?[] { VSystemID.Raw.GB, "05D-49C-E62", 0x3D49, 0x05, 0x02, WatchSize.Byte },
+			new object?[] { VSystemID.Raw.GB, "418-50B-91B", 0x4850, 0x41, 0x5C, WatchSize.Byte },
+			new object?[] { VSystemID.Raw.GB, "508-4FB-800", 0x484F, 0x50, 0x9A, WatchSize.Byte },
+			new object?[] { VSystemID.Raw.GB, "048-4EB-F76", 0x484E, 0x04, 0x07, WatchSize.Byte },
+			new object?[] { VSystemID.Raw.GB, "BE0-37B-08C", 0x4037, 0xBE, 0xB9, WatchSize.Byte },
 			new object?[] { VSystemID.Raw.GBA, "4012F5B7 3B7801A6", 0x00000006, 0xB7, NO_COMPARE, WatchSize.Byte },
 			new object?[] { VSystemID.Raw.GBA, "686D7FC3 24B5B832", 0x00000032, 0x7FC3, NO_COMPARE, WatchSize.Word },
 		};
@@ -55,7 +59,7 @@ namespace BizHawk.Tests.Client.Common.cheats
 		public void TestCheatcodeParsing(string systemID, string code, int address, int value, int? compare, WatchSize size)
 		{
 			var result = new GameSharkDecoder(null, systemID).Decode(code);
-			Assert.IsTrue(result.IsValid(out var valid), "failed to parse");
+			if (!result.IsValid(out var valid)) Assert.Fail($"failed to parse: {((InvalidCheatCode) result).Error}");
 			Assert.AreEqual(address, valid.Address, "wrong addr");
 			Assert.AreEqual(size, valid.Size, "wrong size");
 			Assert.AreEqual(

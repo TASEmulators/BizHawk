@@ -22,14 +22,15 @@ struct PI : Memory::RCP<PI> {
   auto dmaRead() -> void;
   auto dmaWrite() -> void;
   auto dmaFinished() -> void;
+  auto dmaDuration(bool read) -> u32;
 
   //io.cpp
   auto ioRead(u32 address) -> u32;
   auto ioWrite(u32 address, u32 data) -> void;
 
   //bus.hpp
-  auto readWord(u32 address, u32& cycles) -> u32;
-  auto writeWord(u32 address, u32 data, u32& cycles) -> void;
+  auto readWord(u32 address, Thread& thread) -> u32;
+  auto writeWord(u32 address, u32 data, Thread& thread) -> void;
   auto writeFinished() -> void;
   auto writeForceFinish() -> u32;
   template <u32 Size>
@@ -50,13 +51,14 @@ struct PI : Memory::RCP<PI> {
     n32 readLength;
     n32 writeLength;
     n32 busLatch;
+    u64 originPc;
   } io;
 
   struct BSD {
     n8 latency;
     n8 pulseWidth;
-    n8 pageSize;
-    n8 releaseDuration;
+    n4 pageSize;
+    n2 releaseDuration;
   } bsd1, bsd2;
 };
 

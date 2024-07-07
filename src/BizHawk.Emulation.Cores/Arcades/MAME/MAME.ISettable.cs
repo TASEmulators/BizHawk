@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -29,6 +28,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		[CoreSettings]
 		public class MAMERTCSettings
 		{
 			[DisplayName("Initial Time")]
@@ -165,10 +165,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					}
 					else
 					{
-						if (hashdata.Contains("^"))
+						if (hashdata.EndsWithOrdinal('^'))
 						{
 							hashdata = hashdata.RemoveSuffix("^");
-							name = name + " (BAD DUMP)";
+							name += " (BAD DUMP)";
 						}
 
 						hashdata = hashdata.Replace("R", "CRC:").Replace("S", " SHA:");
@@ -184,6 +184,35 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					setting.DefaultValue = tempDefault;
 				}
 
+				CurrentDriverSettings.Add(setting);
+			}
+		}
+
+		private void GetViewsInfo()
+		{
+			var ViewsInfo = MameGetString(MAMELuaCommand.GetViewsInfo);
+			var Views = ViewsInfo.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+			var setting = new DriverSetting
+			{
+				Name = "View",
+				GameName = _gameShortName,
+				LuaCode = LibMAME.VIEW_LUA_CODE,
+				Type = SettingType.VIEW,
+				DefaultValue = MameGetString(MAMELuaCommand.GetViewName("1"))
+			};
+
+			foreach (var View in Views)
+			{
+				if (View != string.Empty)
+				{
+					var substrings = View.Split(',');
+					setting.Options.Add(substrings[1], substrings[1]);
+				}
+			}
+
+			if (setting.Options.Count > 0)
+			{
 				CurrentDriverSettings.Add(setting);
 			}
 		}
@@ -209,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public enum SettingType
 		{
-			DIPSWITCH, BIOS
+			DIPSWITCH, BIOS, VIEW
 		}
 	}
 }

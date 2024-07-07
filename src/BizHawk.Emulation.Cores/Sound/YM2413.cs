@@ -4,7 +4,7 @@
 
 // TODO The savestate support here is very simplistic and incomplete. However, this does not result in desyncs as the YM2413 is write-only.
 // TODO This should eventually be replaced, due to 1) uncertain licensing terms 2) This is not a native C# implementation, but a naive port.
-using System;
+
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Components
@@ -334,7 +334,7 @@ namespace BizHawk.Emulation.Cores.Components
 		{
 			for (int i = 0; i < DB_MUTE + DB_MUTE; i++)
 			{
-				DB2LIN_TABLE[i] = (short)((double)((1 << DB2LIN_AMP_BITS) - 1) * Math.Pow(10, -(double)i * DB_STEP / 20));
+				DB2LIN_TABLE[i] = (short)(((1 << DB2LIN_AMP_BITS) - 1) * Math.Pow(10, -(double)i * DB_STEP / 20));
 				if (i >= DB_MUTE) DB2LIN_TABLE[i] = 0;
 				DB2LIN_TABLE[i + DB_MUTE + DB_MUTE] = (short)(-DB2LIN_TABLE[i]);
 			}
@@ -390,14 +390,14 @@ namespace BizHawk.Emulation.Cores.Components
 		private static void makePmTable()
 		{
 			for (int i = 0; i < PM_PG_WIDTH; i++)
-				pmtable[i] = (int)((double)PM_AMP * Math.Pow(2, (double)PM_DEPTH * saw(2.0 * Math.PI * i / PM_PG_WIDTH) / 1200));
+				pmtable[i] = (int)(PM_AMP * Math.Pow(2, PM_DEPTH * saw(2.0 * Math.PI * i / PM_PG_WIDTH) / 1200));
 		}
 
 		/* Table for Amp Modulator */
 		private static void makeAmTable()
 		{
 			for (int i = 0; i < AM_PG_WIDTH; i++)
-				amtable[i] = (int)((double)AM_DEPTH / 2 / DB_STEP * (1.0 + saw(2.0 * Math.PI * i / PM_PG_WIDTH)));
+				amtable[i] = (int)(AM_DEPTH / 2 / DB_STEP * (1.0 + saw(2.0 * Math.PI * i / PM_PG_WIDTH)));
 		}
 
 		/* Phase increment counter table */
@@ -910,8 +910,8 @@ namespace BizHawk.Emulation.Cores.Components
 			makeDphaseTable();
 			makeDphaseARTable();
 			makeDphaseDRTable();
-			pm_dphase = (uint)RATE_ADJUST(PM_SPEED * PM_DP_WIDTH / (clk / 72));
-			am_dphase = (uint)RATE_ADJUST(AM_SPEED * AM_DP_WIDTH / (clk / 72));
+			pm_dphase = RATE_ADJUST(PM_SPEED * PM_DP_WIDTH / (clk / 72));
+			am_dphase = RATE_ADJUST(AM_SPEED * AM_DP_WIDTH / (clk / 72));
 		}
 
 		private static void maketables(uint c, uint r)
@@ -1079,7 +1079,7 @@ namespace BizHawk.Emulation.Cores.Components
 		/* Update AM, PM unit */
 		private static void update_ampm(OPLL opll)
 		{
-			opll.pm_phase = (uint)((opll.pm_phase + pm_dphase) & (PM_DP_WIDTH - 1));
+			opll.pm_phase = (opll.pm_phase + pm_dphase) & (PM_DP_WIDTH - 1);
 			opll.am_phase = (int)((opll.am_phase + am_dphase) & (AM_DP_WIDTH - 1));
 			opll.lfo_am = amtable[HIGHBITS((uint)opll.am_phase, AM_DP_BITS - AM_PG_BITS)];
 			opll.lfo_pm = pmtable[HIGHBITS(opll.pm_phase, PM_DP_BITS - PM_PG_BITS)];
@@ -1093,7 +1093,7 @@ namespace BizHawk.Emulation.Cores.Components
 			else
 				slot.phase += slot.dphase;
 
-			slot.phase &= unchecked((uint)(DP_WIDTH - 1));
+			slot.phase &= unchecked(DP_WIDTH - 1);
 
 			slot.pgout = HIGHBITS(slot.phase, DP_BASE_BITS);
 		}
@@ -1436,8 +1436,8 @@ namespace BizHawk.Emulation.Cores.Components
 		{
 			int i, v, ch;
 
-			data = data & 0xff;
-			reg = reg & 0x3f;
+			data &= 0xff;
+			reg &= 0x3f;
 			opll.reg[reg] = (byte)data;
 
 			switch (reg)

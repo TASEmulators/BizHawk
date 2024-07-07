@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -128,8 +127,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var control in ControllerPanel.Controls)
 			{
-				var vp = control as VirtualPad;
-				if (vp == null)
+				if (control is not VirtualPad vp)
 				{
 					continue;
 				}

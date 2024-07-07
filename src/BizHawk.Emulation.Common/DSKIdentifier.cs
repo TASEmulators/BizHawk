@@ -1,8 +1,8 @@
 ﻿#nullable disable
 
-using System;
 using System.Linq;
 using System.Text;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Common
 
 		private void ParseDskImage()
 		{
-			string ident = Encoding.ASCII.GetString(_data, 0, 16).ToUpper();
+			string ident = Encoding.ASCII.GetString(_data, 0, 16).ToUpperInvariant();
 			if (ident.Contains("MV - CPC"))
 			{
 				ParseDsk();
@@ -81,8 +81,8 @@ namespace BizHawk.Emulation.Common
 					if (s.SectorData == null || s.SectorData.Length == 0)
 						continue;
 
-					string str = Encoding.ASCII.GetString(s.SectorData, 0, s.SectorData.Length).ToUpper();
-					if (str.Contains("PLUS3DOS"))
+					string str = Encoding.ASCII.GetString(s.SectorData, 0, s.SectorData.Length);
+					if (str.Contains("PLUS3DOS", StringComparison.OrdinalIgnoreCase))
 					{
 						IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 						return;
@@ -206,9 +206,9 @@ namespace BizHawk.Emulation.Common
 						}
 					}
 
-					if (trk.Sectors[0].SectorData[7] == 3 &&
-						trk.Sectors[0].SectorData[9] == 23 &&
-						trk.Sectors[0].SectorData[2] == 40)
+					if (trk.Sectors[0].SectorData[7] is 3
+						&& trk.Sectors[0].SectorData[9] is 23
+						&& trk.Sectors[0].SectorData[2] is 40)
 					{
 						IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 						return;

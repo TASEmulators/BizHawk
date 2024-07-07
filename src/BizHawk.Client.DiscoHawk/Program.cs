@@ -1,80 +1,82 @@
-﻿using System;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
 using BizHawk.Common;
-using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.DiscSystem;
-
-using OSTC = EXE_PROJECT.OSTailoredCode;
 
 namespace BizHawk.Client.DiscoHawk
 {
 	internal static class Program
 	{
+		// Declared here instead of a more usual place to avoid dependencies on the more usual place
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool SetDllDirectoryW(string lpPathName);
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool DeleteFileW(string lpFileName);
+
 		static Program()
 		{
-			if (OSTC.IsUnixHost)
+			// in case assembly resolution fails, such as if we moved them into the dll subdirectory, this event handler can reroute to them
+			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+
+			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			{
-				// for Unix, skip everything else and just wire up the event handler
-				AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+				// Windows needs extra considerations for the dll directory
+				// we can skip all this on non-Windows platforms
 				return;
 			}
 
 			// http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 			// this will look in subdirectory "dll" to load pinvoked stuff
-			string dllDir = Path.Combine(GetExeDirectoryAbsolute(), "dll");
-			SetDllDirectory(dllDir);
+			var dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
+			SetDllDirectoryW(dllDir);
 
-			// in case assembly resolution fails, such as if we moved them into the dll subdirectory, this event handler can reroute to them
-			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-
-			// but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
-			// otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
-			// some people are getting MOTW through a combination of browser used to download BizHawk, and program used to dearchive it
-			static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
-			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
-			while (todo.Count != 0)
+			try
 			{
-				var di = todo.Dequeue();
-				foreach (var diSub in di.GetDirectories()) todo.Enqueue(diSub);
-				foreach (var fi in di.GetFiles("*.dll")) RemoveMOTW(fi.FullName);
-				foreach (var fi in di.GetFiles("*.exe")) RemoveMOTW(fi.FullName);
+				// but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
+				// otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
+				// some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
+				static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
+				var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
+				while (todo.Count != 0)
+				{
+					var di = todo.Dequeue();
+					foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
+					foreach (var fi in di.GetFiles("*.dll")) RemoveMOTW(fi.FullName);
+					foreach (var fi in di.GetFiles("*.exe")) RemoveMOTW(fi.FullName);
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"MotW remover failed: {e}");
 			}
 		}
 
 		[STAThread]
 		private static void Main(string[] args)
 		{
-			SubMain(args);
-		}
-
-		// NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which haven't been setup by the resolver yet... or something like that
-		[DllImport("user32.dll", SetLastError = true)]
-		public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
-
-		private static void SubMain(string[] args)
-		{
-			if (!OSTC.IsUnixHost)
+			if (!OSTailoredCode.IsUnixHost)
 			{
 				// MICROSOFT BROKE DRAG AND DROP IN WINDOWS 7. IT DOESN'T WORK ANYMORE
 				// WELL, OBVIOUSLY IT DOES SOMETIMES. I DON'T REMEMBER THE DETAILS OR WHY WE HAD TO DO THIS SHIT
-				// BUT THE FUNCTION WE NEED DOESN'T EXIST UNTIL WINDOWS 7, CONVENIENTLY
-				// SO CHECK FOR IT
-				IntPtr lib = OSTC.LinkedLibManager.LoadOrThrow("user32.dll");
-				IntPtr proc = OSTC.LinkedLibManager.GetProcAddrOrZero(lib, "ChangeWindowMessageFilterEx");
-				if (proc != IntPtr.Zero)
-				{
-					ChangeWindowMessageFilter(WM_DROPFILES, ChangeWindowMessageFilterFlags.Add);
-					ChangeWindowMessageFilter(WM_COPYDATA, ChangeWindowMessageFilterFlags.Add);
-					ChangeWindowMessageFilter(0x0049, ChangeWindowMessageFilterFlags.Add);
-				}
-				OSTC.LinkedLibManager.FreeByPtr(lib);
+				const uint WM_DROPFILES = 0x0233;
+				const uint WM_COPYDATA = 0x004A;
+				const uint WM_COPYGLOBALDATA = 0x0049;
+				WmImports.ChangeWindowMessageFilter(WM_DROPFILES, WmImports.ChangeWindowMessageFilterFlags.Add);
+				WmImports.ChangeWindowMessageFilter(WM_COPYDATA, WmImports.ChangeWindowMessageFilterFlags.Add);
+				WmImports.ChangeWindowMessageFilter(WM_COPYGLOBALDATA, WmImports.ChangeWindowMessageFilterFlags.Add);
 			}
 
-			FFmpegService.FFmpegPath = Path.Combine(PathUtils.DataDirectoryPath, "dll", OSTC.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
+			// Do something for visuals, I guess
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
 
 			if (args.Length == 0)
 			{
@@ -93,61 +95,26 @@ namespace BizHawk.Client.DiscoHawk
 			}
 		}
 
-
-		public static string GetExeDirectoryAbsolute()
-		{
-			return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-		}
-
+		/// <remarks>http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips</remarks>
 		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
+			var requested = args.Name;
+
 			lock (AppDomain.CurrentDomain)
 			{
-				var asms = AppDomain.CurrentDomain.GetAssemblies();
-				foreach (var asm in asms)
-					if (asm.FullName == args.Name)
-						return asm;
+				var firstAsm = Array.Find(AppDomain.CurrentDomain.GetAssemblies(), asm => asm.FullName == requested);
+				if (firstAsm != null)
+				{
+					return firstAsm;
+				}
 
-				//load missing assemblies by trying to find them in the dll directory
-				string dllName = $"{new AssemblyName(args.Name).Name}.dll";
-				string directory = Path.Combine(GetExeDirectoryAbsolute(), "dll");
-				string fname = Path.Combine(directory, dllName);
-				return File.Exists(fname) ? Assembly.LoadFile(fname) : null;
-
+				// load missing assemblies by trying to find them in the dll directory
+				var dllname = $"{new AssemblyName(requested).Name}.dll";
+				var directory = Path.Combine(AppContext.BaseDirectory, "dll");
+				var fname = Path.Combine(directory, dllname);
 				// it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unmanaged) assemblies can't load
+				return File.Exists(fname) ? Assembly.LoadFile(fname) : null;
 			}
-		}
-
-		//declared here instead of a more usual place to avoid dependencies on the more usual place
-		[DllImport("kernel32.dll", SetLastError = true)]
-		private static extern bool SetDllDirectory(string lpPathName);
-
-		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
-		private static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
-
-		private const uint WM_DROPFILES = 0x0233;
-		private const uint WM_COPYDATA = 0x004A;
-		[DllImport("user32")]
-		public static extern bool ChangeWindowMessageFilter(uint msg, ChangeWindowMessageFilterFlags flags);
-		public enum ChangeWindowMessageFilterFlags : uint
-		{
-			Add = 1, Remove = 2
-		}
-		public enum MessageFilterInfo : uint
-		{
-			None = 0, AlreadyAllowed = 1, AlreadyDisAllowed = 2, AllowedHigher = 3
-		}
-
-		public enum ChangeWindowMessageFilterExAction : uint
-		{
-			Reset = 0, Allow = 1, DisAllow = 2
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct CHANGEFILTERSTRUCT
-		{
-			public uint size;
-			public MessageFilterInfo info;
 		}
 	}
 }

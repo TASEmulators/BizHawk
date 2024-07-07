@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -108,6 +107,7 @@ namespace BizHawk.Client.EmuHawk
 		/// min + (max - i) == max - (i - min) == min + max - i
 		/// </remarks>
 		private int MaybeReversedInX(int i) => _reverseX ? _rangeX.Start + _rangeX.EndInclusive - i : i;
+
 		/// <inheritdoc cref="MaybeReversedInX"/>
 		private int MaybeReversedInY(int i) => _reverseY ? i : _rangeY.Start + _rangeY.EndInclusive - i;
 
@@ -170,8 +170,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetAnalog()
 		{
-			_stickyXorAdapter.SetAxis(XName, HasValue ? X : (int?)null);
-			_stickyXorAdapter.SetAxis(YName, HasValue ? Y : (int?)null);
+			_stickyXorAdapter.SetAxis(XName, HasValue ? X : null);
+			_stickyXorAdapter.SetAxis(YName, HasValue ? Y : null);
 			Refresh();
 		}
 

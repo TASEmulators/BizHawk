@@ -102,7 +102,7 @@
 			WRAM,
 			APURAM,
 			VRAM,
-			OBJECTS,
+			OAM,
 			CGRAM,
 		}
 

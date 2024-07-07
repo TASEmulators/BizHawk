@@ -10,13 +10,11 @@
 //perhaps moving the slider is meaningless if the disc is ejected--it only affects what disc is inserted when the disc gets inserted!! yeah! this might could save us!
 //not exactly user friendly but maybe we can build it from there with a custom UI.. a disk-changer? dunno if that would help
 
-using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Newtonsoft.Json;
 
@@ -30,7 +28,9 @@ using BizHawk.Emulation.DiscSystem;
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
 	[PortedCore(CoreNames.Octoshock, "Mednafen Team")]
-	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable, IRomInfo
+	public unsafe partial class Octoshock : IEmulator, IInputPollable, IRegionable, ISaveRam,
+		ISettable<Octoshock.Settings, Octoshock.SyncSettings>, ISoundProvider, IStatable, IVideoProvider,
+		IDriveLight, IRedumpDiscChecksumInfo
 	{
 		public Octoshock(CoreComm comm, PSF psf, Octoshock.Settings settings, Octoshock.SyncSettings syncSettings)
 		{
@@ -44,45 +44,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		[CoreConstructor(VSystemID.Raw.PSX)]
 		public Octoshock(CoreLoadParameters<Octoshock.Settings, Octoshock.SyncSettings> lp)
 		{
-			string romDetails;
-			if (lp.Discs.Count > 0)
-			{
-				string DiscHashWarningText(GameInfo game, string discHash)
-				{
-					if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
-					{
-						return "Disc could not be identified as known-good. Look for a better rip.";
-					}
-					else
-					{
-						return $"Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{discHash}\n"
-							+ "Nonetheless it could be an unrecognized romhack or patched version.\n"
-							+ $"According to redump.org, the ideal hash for entire disc is: CRC32:{game.GetStringValue("dh")}\n"
-							+ "The file you loaded hasn't been hashed entirely (it would take too long)\n"
-							+ "Compare it with the full hash calculated by the PSX menu's Hash Discs tool";
-					}
-				}
-
-				var sw = new StringWriter();
-				foreach (var d in lp.Discs)
-				{
-					var discHash = new DiscHasher(d.DiscData).Calculate_PSX_BizIDHash();
-					sw.WriteLine(Path.GetFileName(d.DiscName));
-					sw.WriteLine(DiscHashWarningText(Database.CheckDatabase(discHash), discHash));
-					sw.WriteLine("-------------------------");
-				}
-				romDetails = sw.ToString();
-			}
-			else
-			{
-				romDetails = "PSX exe";
-			}
-
 			Load(
 				lp.Comm,
 				lp.Discs.Select(d => d.DiscData).ToList(),
 				lp.Discs.Select(d => d.DiscName).ToList(),
-				lp.Roms.FirstOrDefault()?.RomData, lp.Settings, lp.SyncSettings, null, romDetails);
+				lp.Roms.FirstOrDefault()?.RomData,
+				lp.Settings,
+				lp.SyncSettings,
+				null,
+				DiscChecksumUtils.GenQuickRomDetails(lp.Discs));
 			OctoshockDll.shock_PowerOn(psx);
 		}
 
@@ -94,8 +64,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			ConnectTracer();
 			DriveLightEnabled = true;
 
-			_Settings = (Settings)settings ?? new Settings();
-			_SyncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
+			_Settings = settings ?? new Settings();
+			_SyncSettings = syncSettings ?? new SyncSettings();
 
 			Discs = discs;
 
@@ -498,21 +468,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		public string CalculateDiscHashes()
-		{
-			var sb = new StringBuilder();
-			try
-			{
-				foreach (var disc in Discs)
-				{
-					sb.Append($"{new DiscHasher(disc).Calculate_PSX_RedumpHash():X8} {disc.Name}\r\n");
-				}
-			}
-			catch
-			{
-				// ignored
-			}
-			return sb.ToString();
-		}
+			=> DiscChecksumUtils.CalculateDiscHashesImpl(Discs);
 
 		public void ResetCounters()
 		{
@@ -754,7 +710,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			//change the disc if needed, and valid
 			//also if frame is 0, we need to set a disc no matter what
-			int requestedDisc = (int)_controller.AxisValue("Disc Select");
+			int requestedDisc = _controller.AxisValue("Disc Select");
 			if (requestedDisc != CurrentDiscIndexMounted && CurrentTrayOpen
 				|| Frame == 0
 				)
@@ -854,7 +810,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				LagCount++;
 
 			//what happens to sound in this case?
-			if (render == false) 
+			if (!render)
 			{
 				Frame++;
 				return true;
@@ -1038,6 +994,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			savebuff = new byte[size];
 		}
 
+		public bool AvoidRewind => false;
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			fixed (byte* psavebuff = savebuff)
@@ -1140,6 +1098,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			BobOffset
 		}
 
+		[CoreSettings]
 		public class Settings
 		{
 			[DisplayName("Determine Lag from GPU Frames")]

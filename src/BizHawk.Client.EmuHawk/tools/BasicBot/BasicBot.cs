@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -59,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _dataSize;
 
 		private Dictionary<string, double> _cachedControlProbabilities;
-		private ILogEntryGenerator _logGenerator;
+		private Bk2LogEntryGenerator _logGenerator;
 		
 		private bool _previousDisplayMessage;
 		private bool _previousInvisibleEmulation;

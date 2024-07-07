@@ -1,4 +1,3 @@
-﻿using System;
 using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
@@ -58,9 +57,9 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		{
 			public byte Padding0;
 			public byte Padding1;
-			public byte NumSessions;
 			public byte MinTrack;
 			public byte MaxTrack;
+			public byte NumSessions;
 			public byte LastLeadOutMins;
 			public byte LastLeadOutSecs;
 			public byte LastLeadOutFrames;

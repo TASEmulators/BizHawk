@@ -1,11 +1,9 @@
-﻿using System;
 using System.Threading.Tasks;
 using System.IO;
-using BizHawk.Emulation.DiscSystem;
 
 using BizHawk.Common;
 
-namespace BizHawk.Client.DiscoHawk
+namespace BizHawk.Emulation.DiscSystem
 {
 	public static class AudioExtractor
 	{

@@ -1,10 +1,9 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 using BizHawk.Common;
-
+using BizHawk.Common.StringExtensions;
 using ISOParser;
 
 //disc type identification logic
@@ -412,6 +411,14 @@ namespace BizHawk.Emulation.DiscSystem
 						return true;
 					}
 				}
+				
+				// special case, Caves of Fear has the header 27 sectors in
+				_dsr.ReadLBA_2352(_disc.Sessions[2].Tracks[1].LBA + 27, data, 0);
+				var ss = Encoding.ASCII.GetString(data);
+				if (ss.Contains("ATARI APPROVED DATA HEADER ATRI") || ss.Contains("TARA IPARPVODED TA AEHDAREA RT"))
+				{
+					return true;
+				}
 			}
 
 			return false;
@@ -446,7 +453,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private bool SectorContains(string s, int lba = 0)
 		{
 			var data = ReadDataSectorCached(lba);
-			return data != null && Encoding.ASCII.GetString(data).ToLower().Contains(s.ToLower());
+			return data != null && Encoding.ASCII.GetString(data).Contains(s, StringComparison.OrdinalIgnoreCase);
 		}
 	}
 }

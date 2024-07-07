@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -107,7 +106,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			// 020 16-byte md5sum of the ROM used
 			byte[] md5 = r.ReadBytes(16);
-			Result.Movie.HeaderEntries[Md5] = md5.BytesToHexString().ToLower();
+			Result.Movie.HeaderEntries[HeaderKeys.Md5] = md5.BytesToHexString().ToLowerInvariant();
 
 			// 030 4-byte little-endian unsigned int: version of the emulator used
 			uint emuVersion = r.ReadUInt32();

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
@@ -18,7 +17,7 @@ namespace BizHawk.Client.Common
 		/// See <see cref="DistinctKey"/> for keyboard key names, though some are overridden by <see cref="DistinctKeyNameOverrides"/> (check the source).
 		/// </remarks>
 		/// <seealso cref="GetPressedButtons"/>
-		[Obsolete]
+		[Obsolete($"consider using {nameof(GetPressedButtons)}/{nameof(GetPressedAxes)}/{nameof(GetMouse)}")]
 		Dictionary<string, bool> Get();
 
 		/// <returns>

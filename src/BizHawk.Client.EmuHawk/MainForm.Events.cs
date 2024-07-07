@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -6,8 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Bizware.DirectX;
-using BizHawk.Bizware.OpenTK3;
+using BizHawk.Bizware.Audio;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -23,6 +21,7 @@ using BizHawk.Emulation.Cores.Atari.Lynx;
 using BizHawk.Emulation.Cores.Calculators.Emu83;
 using BizHawk.Emulation.Cores.Calculators.TI83;
 using BizHawk.Emulation.Cores.ColecoVision;
+using BizHawk.Emulation.Cores.Computers.Amiga;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
@@ -35,6 +34,7 @@ using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Faust;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.VB;
@@ -99,9 +99,7 @@ namespace BizHawk.Client.EmuHawk
 			OpenRomMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Open ROM"];
 			CloseRomMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Close ROM"];
 
-			MovieSubMenu.Enabled =
-				CloseRomMenuItem.Enabled =
-				!Emulator.IsNull();
+			CloseRomMenuItem.Enabled = !Emulator.IsNull();
 
 			var hasSaveRam = Emulator.HasSaveRam();
 			bool needBold = hasSaveRam && Emulator.AsSaveRam().SaveRamModified;
@@ -232,14 +230,13 @@ namespace BizHawk.Client.EmuHawk
 			SaveMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save Movie"];
 
 			PlayMovieMenuItem.Enabled
-				= ImportMoviesMenuItem.Enabled
+				= RecordMovieMenuItem.Enabled
 				= RecentMovieSubMenu.Enabled
-					= !Tools.IsLoaded<TAStudio>();
+					= !Emulator.IsNull() && !Tools.IsLoaded<TAStudio>();
 
 			// Record movie dialog should not be opened while in need of a reboot,
 			// Otherwise the wrong sync settings could be set for the recording movie and cause crashes
-			RecordMovieMenuItem.Enabled = !Tools.IsLoaded<TAStudio>()
-				&& RebootStatusBarIcon.Visible == false;
+			RecordMovieMenuItem.Enabled &= !RebootStatusBarIcon.Visible;
 
 			PlayFromBeginningMenuItem.Enabled = MovieSession.Movie.IsActive() && !Tools.IsLoaded<TAStudio>();
 		}
@@ -692,44 +689,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			x1MenuItem.Checked =
-				x2MenuItem.Checked =
-				x3MenuItem.Checked =
-				x4MenuItem.Checked =
-				x5MenuItem.Checked = false;
-
-			switch (Config.TargetZoomFactors[Emulator.SystemId])
+			var windowScale = Config.GetWindowScaleFor(Emulator.SystemId);
+			foreach (ToolStripMenuItem item in WindowSizeSubMenu.DropDownItems)
 			{
-				case 1:
-					x1MenuItem.Checked = true;
-					break;
-				case 2:
-					x2MenuItem.Checked = true;
-					break;
-				case 3:
-					x3MenuItem.Checked = true;
-					break;
-				case 4:
-					x4MenuItem.Checked = true;
-					break;
-				case 5:
-					x5MenuItem.Checked = true;
-					break;
-				case 10:
-					mzMenuItem.Checked = true;
-					break;
+				item.Checked = (int) item.Tag == windowScale;
 			}
 		}
 
 		private void WindowSize_Click(object sender, EventArgs e)
 		{
-			if (sender == x1MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 1;
-			if (sender == x2MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 2;
-			if (sender == x3MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 3;
-			if (sender == x4MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 4;
-			if (sender == x5MenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 5;
-			if (sender == mzMenuItem) Config.TargetZoomFactors[Emulator.SystemId] = 10;
-
+			Config.SetWindowScaleFor(Emulator.SystemId, (int) ((ToolStripMenuItem) sender).Tag);
 			FrameBufferResized();
 		}
 
@@ -914,8 +883,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			static IEnumerable<string> GetDeviceNamesCallback(ESoundOutputMethod outputMethod) => outputMethod switch
 			{
-				ESoundOutputMethod.DirectSound => IndirectX.GetDSSinkNames(),
-				ESoundOutputMethod.XAudio2 => IndirectX.GetXAudio2SinkNames(),
+				ESoundOutputMethod.XAudio2 => XAudio2SoundOutput.GetDeviceNames(),
 				ESoundOutputMethod.OpenAL => OpenALSoundOutput.GetDeviceNames(),
 				_ => Enumerable.Empty<string>()
 			};
@@ -932,7 +900,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				Sound.Dispose();
-				Sound = new Sound(Handle, Config, () => Emulator.VsyncRate());
+				Sound = new Sound(Config, () => Emulator.VsyncRate());
 			}
 			Sound.StartSound();
 			RewireSound();
@@ -1185,12 +1153,12 @@ namespace BizHawk.Client.EmuHawk
 			ExternalToolMenuItem.DropDownItems.AddRange(ExtToolManager.ToolStripItems.ToArray());
 			if (ExternalToolMenuItem.DropDownItems.Count == 0)
 			{
-				ExternalToolMenuItem.DropDownItems.Add("None");
+				ExternalToolMenuItem.DropDownItems.Add(new ToolStripMenuItemEx { Enabled = false, Text = "(none)" });
 			}
 			if (Config.TrustedExtTools.Count is 0) return;
 
 			ExternalToolMenuItem.DropDownItems.Add(new ToolStripSeparatorEx());
-			ToolStripMenuItemEx forgetTrustedItem = new() { Text = "Forget trusted tools" };
+			ToolStripMenuItemEx forgetTrustedItem = new() { Text = "Forget Trusted Tools" };
 			forgetTrustedItem.Click += (_, _) =>
 			{
 				if (this.ModalMessageBox2(
@@ -1454,7 +1422,7 @@ namespace BizHawk.Client.EmuHawk
 			=> GenericCoreConfig.DoDialogFor(
 				this,
 				settable,
-				"QuickNES Controller Settings",
+				CoreNames.QuickNes + " Controller Settings",
 				isMovieActive: MovieSession.Movie.IsActive(),
 				ignoreSettings: true);
 
@@ -1581,6 +1549,9 @@ namespace BizHawk.Client.EmuHawk
 		private DialogResult OpenSameBoySettingsDialog()
 			=> OpenGenericCoreConfigFor<Sameboy>(CoreNames.Sameboy + " Settings");
 
+		private DialogResult OpenSubGBHawkSettingsDialog()
+			=> OpenGenericCoreConfigFor<SubGBHawk>(CoreNames.SubGbHawk + " Settings");
+
 		private void GbCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			_ = Emulator switch
@@ -1588,6 +1559,7 @@ namespace BizHawk.Client.EmuHawk
 				Gameboy => OpenGambatteSettingsDialog(GetSettingsAdapterForLoadedCore<Gameboy>()),
 				GBHawk => OpenGBHawkSettingsDialog(),
 				Sameboy => OpenSameBoySettingsDialog(),
+				SubGBHawk => OpenSubGBHawkSettingsDialog(),
 				_ => DialogResult.None
 			};
 		}
@@ -1657,8 +1629,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PsxHashDiscsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is not Octoshock psx) return;
-			using PSXHashDiscs form = new(psx);
+			if (Emulator is not IRedumpDiscChecksumInfo psx) return;
+			using PSXHashDiscs form = new() { _psx = psx };
 			this.ShowDialogWithTempMute(form);
 		}
 
@@ -1813,7 +1785,7 @@ namespace BizHawk.Client.EmuHawk
 			Config.N64UseCircularAnalogConstraint ^= true;
 		}
 
-		private void Mupen64PlusSetNonVILagFrames(bool newValue, ISettingsAdapter settable)
+		private static void Mupen64PlusSetMupenStyleLag(bool newValue, ISettingsAdapter settable)
 		{
 			var s = (N64Settings) settable.GetSettings();
 			s.UseMupenStyleLag = newValue;
@@ -1821,7 +1793,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MupenStyleLagMenuItem_Click(object sender, EventArgs e)
-			=> Mupen64PlusSetNonVILagFrames(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<N64>());
+			=> Mupen64PlusSetMupenStyleLag(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<N64>());
 
 		private void Mupen64PlusSetUseExpansionSlot(bool newValue, ISettingsAdapter settable)
 		{
@@ -2282,7 +2254,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AboutMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new BizBox();
+			using BizBox form = new(() => Sound.PlayWavFile(Properties.Resources.GetNotHawkCallSFX(), atten: 1.0f));
 			this.ShowDialogWithTempMute(form);
 		}
 
@@ -2496,6 +2468,43 @@ namespace BizHawk.Client.EmuHawk
 				((LogWindow) Tools.Get<LogWindow>()).ShowReport("Dump Status Report", details);
 			}
 		}
+
+		private readonly ScreenshotForm _screenshotTooltip = new();
+
+		private void SlotStatusButtons_MouseEnter(object/*?*/ sender, EventArgs e)
+		{
+			var slot = 10;
+			if (sender == Slot1StatusButton) slot = 1;
+			else if (sender == Slot2StatusButton) slot = 2;
+			else if (sender == Slot3StatusButton) slot = 3;
+			else if (sender == Slot4StatusButton) slot = 4;
+			else if (sender == Slot5StatusButton) slot = 5;
+			else if (sender == Slot6StatusButton) slot = 6;
+			else if (sender == Slot7StatusButton) slot = 7;
+			else if (sender == Slot8StatusButton) slot = 8;
+			else if (sender == Slot9StatusButton) slot = 9;
+			//TODO just put the slot number in Control.Tag already
+			if (!(HasSlot(slot) && ReadScreenshotFromSavestate(slot: slot) is {} bb))
+			{
+				_screenshotTooltip.FadeOut();
+				return;
+			}
+			var width = bb.Width;
+			var height = bb.Height;
+			var location = PointToScreen(MainStatusBar.Location);
+			location.Offset(((e as MouseEventArgs)?.X ?? 50) - width/2, -height);
+			_screenshotTooltip.UpdateValues(
+				bb,
+				captionText: string.Empty,
+				location,
+				width: width,
+				height: height,
+				Graphics.FromHwnd(Handle).MeasureString);
+			_screenshotTooltip.FadeIn();
+		}
+
+		private void SlotStatusButtons_MouseLeave(object/*?*/ sender, EventArgs e)
+			=> _screenshotTooltip.FadeOut();
 
 		private void SlotStatusButtons_MouseUp(object sender, MouseEventArgs e)
 		{
@@ -2741,6 +2750,9 @@ namespace BizHawk.Client.EmuHawk
 			// ChannelFHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.ChannelFHawk, CreateGenericCoreConfigItem<ChannelF>(CoreNames.ChannelFHawk)));
 
+			// Encore
+			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Encore, CreateGenericCoreConfigItem<Encore>(CoreNames.Encore)));
+
 			// ColecoHawk
 			var colecoHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenColecoHawkGamepadSettingsDialog(GetSettingsAdapterFor<ColecoVision>()));
 			var colecoHawkSkipBIOSItem = CreateSettingsItem("Skip BIOS intro (When Applicable)", (sender, _) => ColecoHawkSetSkipBIOSIntro(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<ColecoVision>()));
@@ -2834,9 +2846,9 @@ namespace BizHawk.Client.EmuHawk
 			var mupen64PlusGraphicsSettingsItem = CreateSettingsItem("Video Plugins...", N64PluginSettingsMenuItem_Click);
 			var mupen64PlusGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenMupen64PlusGamepadSettingsDialog(GetSettingsAdapterFor<N64>()));
 			var mupen64PlusAnalogConstraintItem = CreateSettingsItem("Circular Analog Range", N64CircularAnalogRangeMenuItem_Click);
-			var mupen64PlusNonVILagFramesItem = CreateSettingsItem("Non-VI Lag Frames", (sender, _) => Mupen64PlusSetNonVILagFrames(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<N64>()));
+			var mupen64PlusMupenStyleLagFramesItem = CreateSettingsItem("Mupen Style Lag Frames", (sender, _) => Mupen64PlusSetMupenStyleLag(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<N64>()));
 			var mupen64PlusUseExpansionSlotItem = CreateSettingsItem("Use Expansion Slot", (sender, _) => Mupen64PlusSetUseExpansionSlot(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<N64>()));
-			var mupen64PlusSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Mupen64Plus, mupen64PlusGraphicsSettingsItem, mupen64PlusGamepadSettingsItem, mupen64PlusAnalogConstraintItem, mupen64PlusNonVILagFramesItem, mupen64PlusUseExpansionSlotItem);
+			var mupen64PlusSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Mupen64Plus, mupen64PlusGraphicsSettingsItem, mupen64PlusGamepadSettingsItem, mupen64PlusAnalogConstraintItem, mupen64PlusMupenStyleLagFramesItem, mupen64PlusUseExpansionSlotItem);
 			mupen64PlusSubmenu.DropDownOpened += (_, _) =>
 			{
 				var settable = GetSettingsAdapterFor<N64>();
@@ -2847,7 +2859,7 @@ namespace BizHawk.Client.EmuHawk
 				mupen64PlusGraphicsSettingsItem.Enabled = !loadedCoreIsMupen64Plus || !isMovieActive;
 				mupen64PlusGamepadSettingsItem.Enabled = !loadedCoreIsMupen64Plus || !isMovieActive;
 				mupen64PlusAnalogConstraintItem.Checked = Config.N64UseCircularAnalogConstraint;
-				mupen64PlusNonVILagFramesItem.Checked = s.UseMupenStyleLag;
+				mupen64PlusMupenStyleLagFramesItem.Checked = s.UseMupenStyleLag;
 				if (loadedCoreIsMupen64Plus)
 				{
 					mupen64PlusUseExpansionSlotItem.Checked = mupen64Plus.UsingExpansionSlot;
@@ -2913,6 +2925,9 @@ namespace BizHawk.Client.EmuHawk
 			// PicoDrive
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.PicoDrive, CreateGenericCoreConfigItem<PicoDrive>(CoreNames.PicoDrive)));
 
+			// PUAE
+			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.PUAE, CreateGenericCoreConfigItem<PUAE>(CoreNames.PUAE)));
+
 			// QuickNes
 			var quickNesGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenQuickNesGamepadSettingsDialog(GetSettingsAdapterFor<QuickNES>()));
 			var quickNesSubmenu = CreateCoreSubmenu(
@@ -2941,7 +2956,7 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Snes9X, CreateGenericCoreConfigItem<Snes9x>(CoreNames.Snes9X)));
 
 			// SubGBHawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.SubGbHawk, CreateGenericCoreConfigItem<SubGBHawk>(CoreNames.SubGbHawk)));
+			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.SubGbHawk, CreateSettingsItem("Settings...", (_, _) => OpenSubGBHawkSettingsDialog())));
 
 			// SubNESHawk
 			var subNESHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterFor<SubNESHawk>()));

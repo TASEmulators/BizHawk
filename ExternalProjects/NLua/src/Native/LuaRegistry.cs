@@ -1,4 +1,4 @@
-﻿namespace NLua
+﻿namespace NLua.Native
 {
 	/// <summary>
 	/// Enum for pseudo-index used by registry table

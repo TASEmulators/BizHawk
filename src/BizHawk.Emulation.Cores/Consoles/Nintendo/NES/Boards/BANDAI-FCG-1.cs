@@ -354,7 +354,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			bank_16k = prg_banks_16k[bank_16k];
 			addr = (bank_16k << 14) | ofs;
 			if (jump2)
-				addr = addr + (jump2_outer_bank << 18);
+				addr += (jump2_outer_bank << 18);
 			return Rom[addr];
 		}
 

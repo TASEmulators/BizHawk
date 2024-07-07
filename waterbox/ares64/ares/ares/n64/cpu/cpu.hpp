@@ -33,10 +33,10 @@ struct CPU : Thread {
   auto unload() -> void;
 
   auto main() -> void;
-  auto step(u32 clocks) -> void;
   auto synchronize() -> void;
 
   auto instruction() -> void;
+  auto instructionPrologue(u32 instruction) -> void;
   auto instructionEpilogue() -> s32;
 
   auto power(bool reset) -> void;
@@ -106,27 +106,27 @@ struct CPU : Thread {
   struct InstructionCache {
     CPU& self;
     struct Line;
-    auto line(u32 address) -> Line& { return lines[address >> 5 & 0x1ff]; }
+    auto line(u32 vaddr) -> Line& { return lines[vaddr >> 5 & 0x1ff]; }
 
     //used by the recompiler to simulate instruction cache fetch timing
-    auto step(u32 address) -> void {
-      auto& line = this->line(address);
+    auto step(u32 vaddr, u32 address) -> void {
+      auto& line = this->line(vaddr);
       if(!line.hit(address)) {
-        self.step(48);
+        self.step(48 * 2);
         line.valid = 1;
         line.tag   = address & ~0x0000'0fff;
       } else {
-        self.step(2);
+        self.step(1 * 2);
       }
     }
 
     //used by the interpreter to fully emulate the instruction cache
-    auto fetch(u32 address, CPU& cpu) -> u32 {
-      auto& line = this->line(address);
+    auto fetch(u32 vaddr, u32 address, CPU& cpu) -> u32 {
+      auto& line = this->line(vaddr);
       if(!line.hit(address)) {
         line.fill(address, cpu);
       } else {
-        cpu.step(2);
+        cpu.step(1 * 2);
       }
       return line.read(address);
     }
@@ -145,29 +145,15 @@ struct CPU : Thread {
     struct Line {
       auto hit(u32 address) const -> bool { return valid && tag == (address & ~0x0000'0fff); }
       auto fill(u32 address, CPU& cpu) -> void {
-        cpu.step(48);
+        cpu.step(48 * 2);
         valid = 1;
         tag   = address & ~0x0000'0fff;
-        words[0] = cpu.busRead<Word>(tag | index | 0x00);
-        words[1] = cpu.busRead<Word>(tag | index | 0x04);
-        words[2] = cpu.busRead<Word>(tag | index | 0x08);
-        words[3] = cpu.busRead<Word>(tag | index | 0x0c);
-        words[4] = cpu.busRead<Word>(tag | index | 0x10);
-        words[5] = cpu.busRead<Word>(tag | index | 0x14);
-        words[6] = cpu.busRead<Word>(tag | index | 0x18);
-        words[7] = cpu.busRead<Word>(tag | index | 0x1c);
+        cpu.busReadBurst<ICache>(tag | index, words);
       }
 
       auto writeBack(CPU& cpu) -> void {
-        cpu.step(48);
-        cpu.busWrite<Word>(tag | index | 0x00, words[0]);
-        cpu.busWrite<Word>(tag | index | 0x04, words[1]);
-        cpu.busWrite<Word>(tag | index | 0x08, words[2]);
-        cpu.busWrite<Word>(tag | index | 0x0c, words[3]);
-        cpu.busWrite<Word>(tag | index | 0x10, words[4]);
-        cpu.busWrite<Word>(tag | index | 0x14, words[5]);
-        cpu.busWrite<Word>(tag | index | 0x18, words[6]);
-        cpu.busWrite<Word>(tag | index | 0x1c, words[7]);
+        cpu.step(48 * 2);
+        cpu.busWriteBurst<ICache>(tag | index, words);
       }
 
       auto read(u32 address) const -> u32 { return words[address >> 2 & 7]; }
@@ -182,24 +168,27 @@ struct CPU : Thread {
   //dcache.cpp
   struct DataCache {
     struct Line;
-    auto line(u32 address) -> Line&;
-    template<u32 Size> auto read(u32 address) -> u64;
-    template<u32 Size> auto write(u32 address, u64 data) -> void;
+    auto line(u32 vaddr) -> Line&;
+    template<u32 Size> auto read(u32 vaddr, u32 address) -> u64;
+    template<u32 Size> auto write(u32 vaddr, u32 address, u64 data) -> void;
     auto power(bool reset) -> void;
+
+    auto readDebug(u32 vaddr, u32 address) -> u8;
 
     //8KB
     struct Line {
       auto hit(u32 address) const -> bool;
-      template<u32 Size> auto fill(u32 address, u64 data) -> void;
       auto fill(u32 address) -> void;
       auto writeBack() -> void;
       template<u32 Size> auto read(u32 address) const -> u64;
       template<u32 Size> auto write(u32 address, u64 data) -> void;
 
       bool valid;
-      bool dirty;
+      u16  dirty;
       u32  tag;
       u16  index;
+      u64  fillPc;
+      u64  dirtyPc;
       union {
         u8  bytes[16];
         u16 halfs[8];
@@ -222,10 +211,6 @@ struct CPU : Thread {
       u32  address;
     };
 
-    //tlb.cpp
-    auto load(u64 vaddr) -> Match;
-    auto store(u64 vaddr) -> Match;
-
     struct Entry {
       //scc-tlb.cpp
       auto synchronize() -> void;
@@ -239,12 +224,49 @@ struct CPU : Thread {
       n40 virtualAddress;
       n8  addressSpaceID;
       n2  region;
-    //internal:
+      //internal:
       n1  globals;
       n40 addressMaskHi;
       n40 addressMaskLo;
       n40 addressSelect;
     } entry[TLB::Entries];
+
+    //tlb.cpp
+    auto load(u64 vaddr, bool noExceptions = false) -> Match;
+    auto load(u64 vaddr, const Entry& entry, bool noExceptions = false) -> maybe<Match>;
+    
+    auto loadFast(u64 vaddr) -> Match;
+    auto store(u64 vaddr) -> Match;
+    auto store(u64 vaddr, const Entry& entry) -> maybe<Match>;
+
+    struct TlbCache { ;
+      static constexpr int entries = 4;
+
+      struct CachedTlbEntry {
+        const Entry *entry;
+        int frequency;
+      } entry[entries];
+
+      void insert(const Entry& entry) {
+        this->entry[refresh()].entry = &entry;
+      }
+
+      int refresh() {
+        CachedTlbEntry* leastUsed = &entry[0];
+        int index = 0;
+
+        for(auto n = 0; n < entries; n++) {
+          if(entry[n].frequency < leastUsed->frequency) {
+            index = n;
+            leastUsed = &entry[n];
+          }
+        }
+
+        leastUsed->entry = nullptr;
+        leastUsed->frequency = 0;
+        return index;
+      }
+    } tlbCache;
 
     u32 physicalAddress;
   } tlb{*this};
@@ -260,13 +282,20 @@ struct CPU : Thread {
 
   auto segment(u64 vaddr) -> Context::Segment;
   auto devirtualize(u64 vaddr) -> maybe<u64>;
+  alwaysinline auto devirtualizeFast(u64 vaddr) -> u64;
+  auto devirtualizeDebug(u64 vaddr) -> u64;
+
   auto fetch(u64 vaddr) -> maybe<u32>;
   template<u32 Size> auto busWrite(u32 address, u64 data) -> void;
   template<u32 Size> auto busRead(u32 address) -> u64;
+  template<u32 Size> auto busWriteBurst(u32 address, u32 *data) -> void;
+  template<u32 Size> auto busReadBurst(u32 address, u32 *data) -> void;
   template<u32 Size> auto read(u64 vaddr) -> maybe<u64>;
-  template<u32 Size> auto write(u64 vaddr, u64 data) -> bool;
+  template<u32 Size> auto write(u64 vaddr, u64 data, bool alignedError=true) -> bool;
   template<u32 Size> auto vaddrAlignedError(u64 vaddr, bool write) -> bool;
   auto addressException(u64 vaddr) -> void;
+
+  auto readDebug(u64 vaddr) -> u8;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;
@@ -598,6 +627,7 @@ struct CPU : Thread {
     //other
     n64 latch;
     n1 nmiPending;
+    n1 sysadFrozen;
   } scc;
 
   //interpreter-scc.cpp
@@ -622,7 +652,7 @@ struct CPU : Thread {
 
     struct Coprocessor {
       static constexpr u8 revision = 0x00;
-      static constexpr u8 implementation = 0x0b;
+      static constexpr u8 implementation = 0x0a;
     } coprocessor;
 
     struct ControlStatus {
@@ -657,7 +687,9 @@ struct CPU : Thread {
   //interpreter-fpu.cpp
   float_env fenv;
 
-  template<typename T> auto fgr(u32) -> T&;
+  template<typename T> auto fgr_t(u32) -> T&;
+  template<typename T> auto fgr_s(u32) -> T&;
+  template<typename T> auto fgr_d(u32) -> T&;
   auto getControlRegisterFPU(n5) -> u32;
   auto setControlRegisterFPU(n5, n32) -> void;
   template<bool CVT> auto checkFPUExceptions() -> bool;
@@ -668,8 +700,10 @@ struct CPU : Thread {
   auto fpeInvalidOperation() -> bool;
   auto fpeUnimplemented() -> bool;
   auto fpuCheckStart() -> bool;
-  auto fpuCheckInput(f32& f) -> bool;
-  auto fpuCheckInput(f64& f) -> bool;
+  template <typename T>
+  auto fpuCheckInput(T& f) -> bool;
+  template <typename T>
+  auto fpuCheckInputs(T& f1, T& f2) -> bool;
   auto fpuCheckOutput(f32& f) -> bool;
   auto fpuCheckOutput(f64& f) -> bool;
   auto fpuClearCause() -> void;
@@ -861,9 +895,10 @@ struct CPU : Thread {
     }
 
     auto pool(u32 address) -> Pool*;
-    auto block(u32 address) -> Block*;
+    auto block(u32 vaddr, u32 address, bool singleInstruction = false) -> Block*;
+    auto fastFetchBlock(u32 address) -> Block*;
 
-    auto emit(u32 address) -> Block*;
+    auto emit(u32 vaddr, u32 address, bool singleInstruction = false) -> Block*;
     auto emitEXECUTE(u32 instruction) -> bool;
     auto emitSPECIAL(u32 instruction) -> bool;
     auto emitREGIMM(u32 instruction) -> bool;
@@ -871,6 +906,7 @@ struct CPU : Thread {
     auto emitFPU(u32 instruction) -> bool;
     auto emitCOP2(u32 instruction) -> bool;
 
+    bool callInstructionPrologue = false;
     bump_allocator allocator;
     Pool* pools[1 << 21];  //2_MiB * sizeof(void*) == 16_MiB
   } recompiler{*this};
@@ -906,6 +942,11 @@ struct CPU : Thread {
     u32 address;
     u32 instruction;
   } disassembler{*this};
+
+  struct DevirtualizeCache {
+    uint64_t vbase;
+    uint64_t pbase;
+  } devirtualizeCache;
 };
 
 extern CPU cpu;

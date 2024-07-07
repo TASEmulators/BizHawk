@@ -1,4 +1,3 @@
-﻿using System;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common;
 
@@ -46,12 +45,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public int DMA_phase = 0;
 		public int DMA_phase_counter;
 
-		public static int DMA_START_UP = 0;
-		public static int DMA_HEADER = 1;
-		public static int DMA_GRAPHICS = 2;
-		public static int DMA_CHAR_MAP = 3;
-		public static int DMA_SHUTDOWN_OTHER = 4;
-		public static int DMA_SHUTDOWN_LAST = 5;
+		public const int DMA_START_UP = 0;
+		public const int DMA_HEADER = 1;
+		public const int DMA_GRAPHICS = 2;
+		public const int DMA_CHAR_MAP = 3;
+		public const int DMA_SHUTDOWN_OTHER = 4;
+		public const int DMA_SHUTDOWN_LAST = 5;
 
 		public int header_read_time = 8; // default for 4 byte headers (10 for 5 bytes ones)
 		public int graphics_read_time = 3; // depends on content of graphics header
@@ -359,7 +358,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								global_write_mode = temp.Bit(7);
 								GFX_Objects[header_counter].ind_mode = temp.Bit(5);
 								header_pointer++;
-								temp = (byte)(ReadMemory((ushort)(current_DLL_addr + header_pointer)));
+								temp = ReadMemory((ushort)(current_DLL_addr + header_pointer));
 								GFX_Objects[header_counter].addr |= (ushort)(temp << 8);
 								header_pointer++;
 								temp = ReadMemory((ushort)(current_DLL_addr + header_pointer));
@@ -372,7 +371,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								}
 								else
 								{
-									temp_w = (temp_w - 1);
+									temp_w--;
 									temp_w = (0x1F - temp_w);
 									GFX_Objects[header_counter].width = (byte)(temp_w & 0x1F);
 								}
@@ -390,13 +389,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						else
 						{
 							int temp_w = (temp & 0x1F); // this is the 2's complement of width (for reasons that escape me)
-							temp_w = (temp_w - 1);
+							temp_w--;
 							temp_w = (0x1F - temp_w);
 							GFX_Objects[header_counter].width = (byte)(temp_w & 0x1F);
 
 							GFX_Objects[header_counter].palette = (byte)((temp & 0xE0) >> 5);
 							header_pointer++;
-							temp = (byte)(ReadMemory((ushort)(current_DLL_addr + header_pointer)));
+							temp = ReadMemory((ushort)(current_DLL_addr + header_pointer));
 							GFX_Objects[header_counter].addr |= (ushort)(temp << 8);
 							header_pointer++;
 							GFX_Objects[header_counter].h_pos = ReadMemory((ushort)(current_DLL_addr + header_pointer));

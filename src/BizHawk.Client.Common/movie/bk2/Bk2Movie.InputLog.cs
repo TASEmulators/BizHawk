@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -12,15 +13,8 @@ namespace BizHawk.Client.Common
 		public void WriteInputLog(TextWriter writer)
 		{
 			writer.WriteLine("[Input]");
-			if (string.IsNullOrEmpty(LogKey))
-			{
-				var lg = LogGeneratorInstance(Session.MovieController);
-				writer.WriteLine(lg.GenerateLogKey());
-			}
-			else
-			{
-				writer.WriteLine($"LogKey:{LogKey}");
-			}
+			writer.Write("LogKey:");
+			writer.WriteLine(string.IsNullOrEmpty(LogKey) ? Bk2LogEntryGenerator.GenerateLogKey(Session.MovieController.Definition) : LogKey);
 
 			foreach (var record in Log)
 			{
@@ -53,11 +47,11 @@ namespace BizHawk.Client.Common
 			string line;
 			while ((line = reader.ReadLine()) != null)
 			{
-				if (line.StartsWith("|"))
+				if (line.StartsWith('|'))
 				{
 					Log.Add(line);
 				}
-				else if (line.StartsWith("Frame "))
+				else if (line.StartsWithOrdinal("Frame "))
 				{
 					var strs = line.Split(' ');
 					try
@@ -70,7 +64,7 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 				}
-				else if (line.StartsWith("LogKey:"))
+				else if (line.StartsWithOrdinal("LogKey:"))
 				{
 					LogKey = line.Replace("LogKey:", "");
 				}
@@ -117,11 +111,11 @@ namespace BizHawk.Client.Common
 			string line;
 			while ((line = reader.ReadLine()) != null)
 			{
-				if (line.StartsWith("|"))
+				if (line.StartsWith('|'))
 				{
 					newLog.Add(line);
 				}
-				else if (line.StartsWith("Frame "))
+				else if (line.StartsWithOrdinal("Frame "))
 				{
 					var strs = line.Split(' ');
 					try
@@ -139,6 +133,12 @@ namespace BizHawk.Client.Common
 			if (stateFrame == 0)
 			{
 				stateFrame = newLog.Count;  // In case the frame count failed to parse, revert to using the entire state input log
+			}
+
+			if (stateFrame > newLog.Count)
+			{
+				errorMessage = $"Savestate has invalid frame number {stateFrame} (expected maximum {newLog.Count})";
+				return false;
 			}
 
 			if (Log.Count < stateFrame)

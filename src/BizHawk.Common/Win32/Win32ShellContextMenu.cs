@@ -1,283 +1,293 @@
-﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
+
+// ReSharper disable UnusedMember.Local
 
 namespace BizHawk.Common
 {
-	public class Win32ShellContextMenu
+	public unsafe class Win32ShellContextMenu : IDisposable
 	{
-		[ComImport]
-		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-		[Guid("43826d1e-e718-42ee-bc55-a1e261c37bfe")]
-		public interface IShellItem
+		[StructLayout(LayoutKind.Sequential)]
+		private struct IShellItem
 		{
-			IntPtr BindToHandler(IntPtr pbc,
-				[MarshalAs(UnmanagedType.LPStruct)] Guid bhid,
-				[MarshalAs(UnmanagedType.LPStruct)] Guid riid);
+			public static readonly Guid Guid = new("43826d1e-e718-42ee-bc55-a1e261c37bfe");
 
-			[PreserveSig]
-			int GetParent(out IShellItem ppsi);
-
-			IntPtr GetDisplayName(uint sigdnName);
-
-			uint GetAttributes(uint sfgaoMask);
-
-			int Compare(IShellItem psi, uint hint);
-		}
-
-
-		[ComImport]
-		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-		[Guid("000214F2-0000-0000-C000-000000000046")]
-		public interface IEnumIDList
-		{
-			[PreserveSig]
-			int Next(uint celt, out IntPtr rgelt, out uint pceltFetched);
-
-			[PreserveSig]
-			int Skip(uint celt);
-
-			[PreserveSig]
-			int Reset();
-
-			IEnumIDList Clone();
-		}
-
-		[ComImport]
-		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-		[Guid("000214E6-0000-0000-C000-000000000046")]
-		public interface IShellFolder
-		{
-			void ParseDisplayName(
-				[In] IntPtr hwnd,
-				[In] IntPtr pbc,
-				[In, MarshalAs(UnmanagedType.LPWStr)] string pszDisplayName,
-				[Out] out uint pchEaten,
-				[Out] out IntPtr ppidl,
-				[In, Out] ref uint pdwAttributes);
-
-			[PreserveSig]
-			int EnumObjects(
-				[In] IntPtr hwnd,
-				[In] SHCONTF grfFlags,
-				[Out] out IEnumIDList ppenumIDList);
-
-			void BindToObject(IntPtr pidl, IntPtr pbc,
-							  [MarshalAs(UnmanagedType.LPStruct)] Guid riid,
-							  out IntPtr ppv);
-
-			void BindToStorage(IntPtr pidl, IntPtr pbc,
-							   [MarshalAs(UnmanagedType.LPStruct)] Guid riid,
-							   out IntPtr ppv);
-
-			[PreserveSig]
-			short CompareIDs(uint lParam, IntPtr pidl1, IntPtr pidl2);
-
-			IntPtr CreateViewObject(IntPtr hwndOwner,
-				[MarshalAs(UnmanagedType.LPStruct)] Guid riid);
-
-			void GetAttributesOf(uint cidl,
-				[MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] IntPtr[] apidl,
-				ref uint rgfInOut);
-
-			void GetUIObjectOf(IntPtr hwndOwner, uint cidl,
-				[MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] IntPtr[] apidl,
-				[MarshalAs(UnmanagedType.LPStruct)] Guid riid,
-				uint rgfReserved,
-				out IntPtr ppv);
-
-			void GetDisplayNameOf(IntPtr pidl, int uFlags, out STRRET pName);
-
-			void SetNameOf(IntPtr hwnd, IntPtr pidl, string pszName, SHCONTF uFlags, out IntPtr ppidlOut);
-
-			public enum SHCONTF
+			[StructLayout(LayoutKind.Sequential)]
+			public struct IShellItemVtbl
 			{
-				FOLDERS = 0x0020,
-				NONFOLDERS = 0x0040,
-				INCLUDEHIDDEN = 0x0080,
-				INIT_ON_FIRST_NEXT = 0x0100,
-				NETPRINTERSRCH = 0x0200,
-				SHAREABLE = 0x0400,
-				STORAGE = 0x0800
+				// IUnknown functions
+				public delegate* unmanaged[Stdcall]<IShellItem*, in Guid, out IntPtr, int> QueryInterface;
+				public delegate* unmanaged[Stdcall]<IShellItem*, uint> AddRef;
+				public delegate* unmanaged[Stdcall]<IShellItem*, uint> Release;
+				// IShellItem functions
+				public delegate* unmanaged[Stdcall]<IShellItem*, IntPtr, in Guid, in Guid, out IntPtr, int> BindToHandler;
+				public delegate* unmanaged[Stdcall]<IShellItem*, out IShellItem*, int> GetParent;
+				public delegate* unmanaged[Stdcall]<IShellItem*, int, out IntPtr, int> GetDisplayName;
+				public delegate* unmanaged[Stdcall]<IShellItem*, uint, out uint, int> GetAttributes;
+				public delegate* unmanaged[Stdcall]<IShellItem*, IShellItem*, uint, out int, int> Compare;
 			}
 
-			[StructLayout(LayoutKind.Explicit, Size = 264)]
-			public struct STRRET
+			public IShellItemVtbl* lpVtbl;
+
+			public void BindToHandler(IntPtr pbc, Guid bhid, Guid riid, out IntPtr ppv)
 			{
-				[FieldOffset(0)]
-				public uint uType;
-				[FieldOffset(4)]
-				public IntPtr pOleStr;
-				[FieldOffset(4)]
-				public IntPtr pStr;
-				[FieldOffset(4)]
-				public uint uOffset;
-				[FieldOffset(4)]
-				public IntPtr cStr;
+				var hr = lpVtbl->BindToHandler((IShellItem*)Unsafe.AsPointer(ref this), pbc, in bhid, in riid, out ppv);
+				Marshal.ThrowExceptionForHR(hr);
+			}
+
+			public void GetParent(out IShellItem* ppsi)
+			{
+				var hr = lpVtbl->GetParent((IShellItem*)Unsafe.AsPointer(ref this), out ppsi);
+				Marshal.ThrowExceptionForHR(hr);
 			}
 		}
 
-		[Flags]
-		public enum TPM
+		[StructLayout(LayoutKind.Sequential)]
+		private struct IShellFolder
 		{
-			TPM_LEFTBUTTON = 0x0000,
-			TPM_RIGHTBUTTON = 0x0002,
-			TPM_LEFTALIGN = 0x0000,
-			TPM_CENTERALIGN = 0x000,
-			TPM_RIGHTALIGN = 0x000,
-			TPM_TOPALIGN = 0x0000,
-			TPM_VCENTERALIGN = 0x0010,
-			TPM_BOTTOMALIGN = 0x0020,
-			TPM_HORIZONTAL = 0x0000,
-			TPM_VERTICAL = 0x0040,
-			TPM_NONOTIFY = 0x0080,
-			TPM_RETURNCMD = 0x0100,
-			TPM_RECURSE = 0x0001,
-			TPM_HORPOSANIMATION = 0x0400,
-			TPM_HORNEGANIMATION = 0x0800,
-			TPM_VERPOSANIMATION = 0x1000,
-			TPM_VERNEGANIMATION = 0x2000,
-			TPM_NOANIMATION = 0x4000,
-			TPM_LAYOUTRTL = 0x8000,
+			public static readonly Guid Guid = new("000214E6-0000-0000-C000-000000000046");
+
+			[StructLayout(LayoutKind.Sequential)]
+			public struct IShellFolderVtbl
+			{
+				// IUnknown functions
+				public delegate* unmanaged[Stdcall]<IShellFolder*, in Guid, out IntPtr, int> QueryInterface;
+				public delegate* unmanaged[Stdcall]<IShellFolder*, uint> AddRef;
+				public delegate* unmanaged[Stdcall]<IShellFolder*, uint> Release;
+				// IShellFolder functions
+				public delegate* unmanaged[Stdcall]<IShellFolder*, IntPtr, IntPtr, IntPtr, uint*, out IntPtr, uint*, int> ParseDisplayName;
+				public delegate* unmanaged[Stdcall]<IShellFolder*, IntPtr, uint, out IntPtr, int> EnumObjects;
+				public delegate* unmanaged[Stdcall]<IShellFolder*, IntPtr, IntPtr, in Guid, out IntPtr, int> BindToObject;
+				public delegate* unmanaged[Stdcall]<IShellFolder*, IntPtr, IntPtr, in Guid, out IntPtr, int> BindToStorage;
+				public delegate* unmanaged[Stdcall]<IShellFolder*, IntPtr, IntPtr, IntPtr, int> CompareIDs;
+				public delegate* unmanaged[Stdcall]<IShellFolder*, IntPtr, in Guid, out IntPtr, int> CreateViewObject;
+				public delegate* unmanaged[Stdcall]<IShellFolder*, uint, IntPtr*, ref uint, int> GetAttributesOf;
+				public delegate* unmanaged[Stdcall]<IShellFolder*, IntPtr, uint, IntPtr*, in Guid, uint*, out IntPtr, int> GetUIObjectOf;
+				public delegate* unmanaged[Stdcall]<IShellFolder*, IntPtr, uint, IntPtr, int> GetDisplayNameOf;
+				public delegate* unmanaged[Stdcall]<IShellFolder*, IntPtr, IntPtr, IntPtr, uint, out IntPtr, int> SetNameOf;
+			}
+
+			public IShellFolderVtbl* lpVtbl;
+
+			public void GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr* apidl, Guid riid, out IntPtr ppv)
+			{
+				var hr = lpVtbl->GetUIObjectOf((IShellFolder*)Unsafe.AsPointer(ref this), hwndOwner, cidl, apidl, in riid, null, out ppv);
+				Marshal.ThrowExceptionForHR(hr);
+			}
 		}
 
-		[Flags]
-		public enum CMF : uint
+		[StructLayout(LayoutKind.Sequential)]
+		private struct IContextMenu
 		{
-			NORMAL = 0x00000000,
-			DEFAULTONLY = 0x00000001,
-			VERBSONLY = 0x00000002,
-			EXPLORE = 0x00000004,
-			NOVERBS = 0x00000008,
-			CANRENAME = 0x00000010,
-			NODEFAULT = 0x00000020,
-			INCLUDESTATIC = 0x00000040,
-			EXTENDEDVERBS = 0x00000100,
-			RESERVED = 0xffff0000,
+			public static readonly Guid Guid = new("000214e4-0000-0000-c000-000000000046");
+
+			[Flags]
+			public enum CMF : uint
+			{
+				NORMAL = 0x00000000,
+				DEFAULTONLY = 0x00000001,
+				VERBSONLY = 0x00000002,
+				EXPLORE = 0x00000004,
+				NOVERBS = 0x00000008,
+				CANRENAME = 0x00000010,
+				NODEFAULT = 0x00000020,
+				INCLUDESTATIC = 0x00000040,
+				EXTENDEDVERBS = 0x00000100,
+				RESERVED = 0xffff0000,
+			}
+
+			[StructLayout(LayoutKind.Sequential)]
+			public struct CMINVOKECOMMANDINFO
+			{
+				public uint cbSize;
+				public uint fMask;
+				public IntPtr hwnd;
+				public IntPtr lpVerb;
+				public IntPtr lpParameters;
+				public IntPtr lpDirectory;
+				public int nShow;
+				public uint dwHotKey;
+				public IntPtr hIcon;
+			}
+
+			[StructLayout(LayoutKind.Sequential)]
+			public struct IContextMenuVtbl
+			{
+				// IUnknown functions
+				public delegate* unmanaged[Stdcall]<IContextMenu*, in Guid, out IntPtr, int> QueryInterface;
+				public delegate* unmanaged[Stdcall]<IContextMenu*, uint> AddRef;
+				public delegate* unmanaged[Stdcall]<IContextMenu*, uint> Release;
+				// IContextMenu functions
+				public delegate* unmanaged[Stdcall]<IContextMenu*, IntPtr, uint, uint, uint, CMF, int> QueryContextMenu;
+				public delegate* unmanaged[Stdcall]<IContextMenu*, CMINVOKECOMMANDINFO*, int> InvokeCommand;
+				public delegate* unmanaged[Stdcall]<IContextMenu*, UIntPtr, uint, uint*, IntPtr, uint, int> GetCommandString;
+			}
+
+			public IContextMenuVtbl* lpVtbl;
+
+			public void QueryContextMenu(IntPtr hmenu, uint indexMenu, uint idCmdFirst, uint idCmdLast, CMF uFlags)
+			{
+				var hr = lpVtbl->QueryContextMenu((IContextMenu*)Unsafe.AsPointer(ref this), hmenu, indexMenu, idCmdFirst, idCmdLast, uFlags);
+				Marshal.ThrowExceptionForHR(hr);
+			}
 		}
 
-		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-		public struct CMINVOKECOMMANDINFO
+		[StructLayout(LayoutKind.Sequential)]
+		private struct IContextMenu2
 		{
-			public int cbSize;
-			public int fMask;
-			public IntPtr hwnd;
-			public string lpVerb;
-			public string lpParameters;
-			public string lpDirectory;
-			public int nShow;
-			public int dwHotKey;
-			public IntPtr hIcon;
+			public static readonly Guid Guid = new("000214f4-0000-0000-c000-000000000046");
+
+			[StructLayout(LayoutKind.Sequential)]
+			public struct IContextMenu2Vtbl
+			{
+				// IUnknown functions
+				public delegate* unmanaged[Stdcall]<IContextMenu2*, in Guid, out IntPtr, int> QueryInterface;
+				public delegate* unmanaged[Stdcall]<IContextMenu2*, uint> AddRef;
+				public delegate* unmanaged[Stdcall]<IContextMenu2*, uint> Release;
+				// IContextMenu functions
+				public delegate* unmanaged[Stdcall]<IContextMenu2*, IntPtr, uint, uint, uint, IContextMenu.CMF, int> QueryContextMenu;
+				public delegate* unmanaged[Stdcall]<IContextMenu2*, IContextMenu.CMINVOKECOMMANDINFO*, int> InvokeCommand;
+				public delegate* unmanaged[Stdcall]<IContextMenu2*, UIntPtr, uint, uint*, IntPtr, uint, int> GetCommandString;
+				// IContextMenu2 functions
+				public delegate* unmanaged[Stdcall]<IContextMenu2*, uint, IntPtr, IntPtr, int> HandleMenuMsg;
+			}
+
+			public IContextMenu2Vtbl* lpVtbl;
+
+			public void InvokeCommand(IContextMenu.CMINVOKECOMMANDINFO* pici)
+			{
+				var hr = lpVtbl->InvokeCommand((IContextMenu2*)Unsafe.AsPointer(ref this), pici);
+				Marshal.ThrowExceptionForHR(hr);
+			}
 		}
 
-		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-		public struct CMINVOKECOMMANDINFO_ByIndex
-		{
-			public int cbSize;
-			public int fMask;
-			public IntPtr hwnd;
-			public int iVerb;
-			public string lpParameters;
-			public string lpDirectory;
-			public int nShow;
-			public int dwHotKey;
-			public IntPtr hIcon;
-		}
+		private IContextMenu* CMI;
+		private IContextMenu2* CM2I;
 
-		[ComImport]
-		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-		[Guid("000214e4-0000-0000-c000-000000000046")]
-		public interface IContextMenu
-		{
-			[PreserveSig]
-			int QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst, int idCmdLast, CMF uFlags);
-
-			void InvokeCommand(ref CMINVOKECOMMANDINFO pici);
-
-			[PreserveSig]
-			int GetCommandString(int idcmd, uint uflags, int reserved,
-				[MarshalAs(UnmanagedType.LPStr)] StringBuilder commandstring,
-				int cch);
-		}
-
-		[ComImport]
-		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-		[Guid("000214f4-0000-0000-c000-000000000046")]
-		public interface IContextMenu2 : IContextMenu
-		{
-			[PreserveSig]
-			new int QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst, int idCmdLast, CMF uFlags);
-
-			void InvokeCommand(ref CMINVOKECOMMANDINFO_ByIndex pici);
-
-			[PreserveSig]
-			new int GetCommandString(int idcmd, uint uflags, int reserved,
-				[MarshalAs(UnmanagedType.LPStr)] StringBuilder commandstring,
-				int cch);
-
-			[PreserveSig]
-			int HandleMenuMsg(int uMsg, IntPtr wParam, IntPtr lParam);
-		}
-
-		[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
-		public static extern IShellItem SHCreateItemFromParsingName(
-			[In] string pszPath,
-			[In] IntPtr pbc,
-			[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
-
-		[DllImport("shell32.dll", PreserveSig = false)]
-		public static extern IntPtr SHGetIDListFromObject([In, MarshalAs(UnmanagedType.IUnknown)] object punk);
-
-		[DllImport("shell32.dll", EntryPoint = "#16")]
-		public static extern IntPtr ILFindLastID(IntPtr pidl);
-
-		[DllImport("user32.dll")]
-		public static extern int TrackPopupMenuEx(IntPtr hmenu, TPM fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
-
-		private IContextMenu ComInterface { get; }
-		private IContextMenu2 ComInterface2 { get; }
-
-		private static Guid SFObject = new("3981e224-f559-11d3-8e3a-00c04f6837d5");
+		private static readonly Guid SFObject = new("3981e224-f559-11d3-8e3a-00c04f6837d5");
 
 		private Win32ShellContextMenu(string path)
 		{
 			var uri = new Uri(path);
 
-			// gongshell supported shell schemes, although that seems complicated to support and very edge case, so not bothering for now --cpp
+			// this should be the only scheme used in practice
 			if (uri.Scheme != "file")
 			{
 				throw new NotSupportedException("Non-file Uri schemes are unsupported");
 			}
 
-			var shellItem = SHCreateItemFromParsingName(uri.LocalPath, IntPtr.Zero, typeof(IShellItem).GUID);
+			var hr = Shell32Imports.SHCreateItemFromParsingName(uri.LocalPath, IntPtr.Zero, IShellItem.Guid, out var psi);
+			Marshal.ThrowExceptionForHR(hr);
+			var sii = (IShellItem*)psi;
 
-			var pidls = new IntPtr[1];
-			pidls[0] = ILFindLastID(SHGetIDListFromObject(shellItem));
-			shellItem.GetParent(out var parent);
+			IntPtr pidls;
+			IShellItem* psii;
+			try
+			{
+				hr = Shell32Imports.SHGetIDListFromObject(psi, out var ppidl);
+				Marshal.ThrowExceptionForHR(hr);
 
-			var result = parent.BindToHandler(IntPtr.Zero, SFObject, typeof(IShellFolder).GUID);
+				pidls = Shell32Imports.ILFindLastID(ppidl);
+				sii->GetParent(out psii);
+			}
+			finally
+			{
+				sii->lpVtbl->Release(sii);
+			}
 
-			var shellFolder = (IShellFolder)Marshal.GetObjectForIUnknown(result);
-			shellFolder.GetUIObjectOf(IntPtr.Zero, 1, pidls, typeof(IContextMenu).GUID, 0, out result);
+			IShellFolder* sfi;
+			try
+			{
+				psii->BindToHandler(IntPtr.Zero, SFObject, IShellFolder.Guid, out var psf);
+				sfi = (IShellFolder*)psf;
+			}
+			finally
+			{
+				psii->lpVtbl->Release(psii);
+			}
 
-			ComInterface = (IContextMenu)Marshal.GetObjectForIUnknown(result);
-			ComInterface2 = (IContextMenu2)ComInterface;
+			IContextMenu* cmi;
+			try
+			{
+				sfi->GetUIObjectOf(IntPtr.Zero, 1, &pidls, IContextMenu.Guid, out var pcm);
+				cmi = (IContextMenu*)pcm;
+			}
+			finally
+			{
+				sfi->lpVtbl->Release(sfi);
+			}
+
+			IContextMenu2* cm2i;
+			try
+			{
+				cmi->lpVtbl->QueryInterface(cmi, in IContextMenu2.Guid, out var pcm2);
+				cm2i = (IContextMenu2*)pcm2;
+			}
+			catch
+			{
+				cmi->lpVtbl->Release(cmi);
+				throw;
+			}
+
+			CMI = cmi;
+			CM2I = cm2i;
 		}
 
-		public static void ShowContextMenu(string path, IntPtr handle, IntPtr hwnd, int x, int y)
+		public void Dispose()
 		{
-			var ctxMenu = new Win32ShellContextMenu(path);
+			if (CM2I != null)
+			{
+				CM2I->lpVtbl->Release(CM2I);
+				CM2I = null;
+			}
+
+			if (CMI != null)
+			{
+				CMI->lpVtbl->Release(CMI);
+				CMI = null;
+			}
+		}
+
+		private ref struct TempMenu
+		{
+			public IntPtr Handle { get; private set; }
+
+			public TempMenu()
+			{
+				Handle = Win32Imports.CreatePopupMenu();
+				if (Handle == IntPtr.Zero)
+				{
+					throw new InvalidOperationException($"{nameof(Win32Imports.CreatePopupMenu)} returned NULL!");
+				}
+			}
+
+			public void Dispose()
+			{
+				if (Handle != IntPtr.Zero)
+				{
+					_ = Win32Imports.DestroyMenu(Handle);
+					Handle = IntPtr.Zero;
+				}
+			}
+		}
+
+		public static void ShowContextMenu(string path, IntPtr parentWindow, int x, int y)
+		{
+			using var ctxMenu = new Win32ShellContextMenu(path);
+			using var menu = new TempMenu();
+
 			const int CmdFirst = 0x8000;
-			ctxMenu.ComInterface.QueryContextMenu(handle, 0, CmdFirst, int.MaxValue, CMF.EXPLORE);
-			int command = TrackPopupMenuEx(handle, TPM.TPM_RETURNCMD, x, y, hwnd, IntPtr.Zero);
+			ctxMenu.CMI->QueryContextMenu(menu.Handle, 0, CmdFirst, uint.MaxValue, IContextMenu.CMF.EXPLORE);
+
+			var command = Win32Imports.TrackPopupMenuEx(menu.Handle, Win32Imports.TPM.RETURNCMD, x, y, parentWindow, IntPtr.Zero);
 			if (command > 0)
 			{
 				const int SW_SHOWNORMAL = 1;
-				CMINVOKECOMMANDINFO_ByIndex invoke = default;
-				invoke.cbSize = Marshal.SizeOf(invoke);
-				invoke.iVerb = command - CmdFirst;
+				IContextMenu.CMINVOKECOMMANDINFO invoke = default;
+				invoke.cbSize = (uint)Marshal.SizeOf<IContextMenu.CMINVOKECOMMANDINFO>();
+				invoke.lpVerb = new(command - CmdFirst);
 				invoke.nShow = SW_SHOWNORMAL;
-				ctxMenu.ComInterface2.InvokeCommand(ref invoke);
+				ctxMenu.CM2I->InvokeCommand(&invoke);
 			}
 		}
 	}

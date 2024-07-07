@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -76,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			for (int i = 0; i < origPeriods; i++)
 			{
 				int orig = db.DataPeriods[i];
-				int np = (int)((double)orig * multiplier);
+				int np = (int)(orig * multiplier);
 				int nnp = ClockAdjust(orig);
 				tb.DataPeriods.Add(np);
 			}

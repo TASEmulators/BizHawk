@@ -1,10 +1,4 @@
-﻿
-using BizHawk.Common;
-using BizHawk.Common.NumberExtensions;
-using System;
-using System.Collections;
-
-namespace BizHawk.Emulation.Cores.Consoles.ChannelF
+﻿namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	/// <summary>
 	/// ChannelF Cartridge that utilises 2102 SRAM over IO

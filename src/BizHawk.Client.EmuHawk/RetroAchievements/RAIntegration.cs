@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -15,16 +14,17 @@ namespace BizHawk.Client.EmuHawk
 	public partial class RAIntegration : RetroAchievements
 	{
 		private readonly RAInterface RA;
-		
+
 		static RAIntegration()
 		{
+			if (OSTailoredCode.IsUnixHost)
+			{
+				// RAIntegration is Windows only
+				return;
+			}
+
 			try
 			{
-				if (OSTailoredCode.IsUnixHost)
-				{
-					throw new NotSupportedException("RAIntegration is Windows only!");
-				}
-
 				AttachDll();
 			}
 			catch
@@ -56,25 +56,24 @@ namespace BizHawk.Client.EmuHawk
 		private void RebuildMenu()
 		{
 			var numItems = RA.GetPopupMenuItems(_menuItems);
-			var tsmiddi = _raDropDownItems;
-			tsmiddi.Clear();
+			_raDropDownItems.Clear();
 			{
 				var tsi = new ToolStripMenuItem("Shutdown RetroAchievements");
 				tsi.Click += (_, _) => _shutdownRACallback();
-				tsmiddi.Add(tsi);
+				_raDropDownItems.Add(tsi);
 
-				tsi = new ToolStripMenuItem("Autostart RetroAchievements")
+				tsi = new("Autostart RetroAchievements")
 				{
 					Checked = _getConfig().RAAutostart,
 					CheckOnClick = true,
 				};
 				tsi.CheckedChanged += (_, _) => _getConfig().RAAutostart ^= true;
-				tsmiddi.Add(tsi);
+				_raDropDownItems.Add(tsi);
 
 				var tss = new ToolStripSeparator();
-				tsmiddi.Add(tss);
+				_raDropDownItems.Add(tss);
 			}
-			for (int i = 0; i < numItems; i++)
+			for (var i = 0; i < numItems; i++)
 			{
 				if (_menuItems[i].Label != IntPtr.Zero)
 				{
@@ -88,38 +87,46 @@ namespace BizHawk.Client.EmuHawk
 						RA.InvokeDialog(id);
 						_mainForm.UpdateWindowTitle();
 					};
-					tsmiddi.Add(tsi);
+					_raDropDownItems.Add(tsi);
 				}
 				else
 				{
 					var tss = new ToolStripSeparator();
-					tsmiddi.Add(tss);
+					_raDropDownItems.Add(tss);
 				}
 			}
 		}
 
 		protected override void HandleHardcoreModeDisable(string reason)
 		{
-			_mainForm.ShowMessageBox(null, $"{reason} Disabling hardcore mode.", "Warning", EMsgBoxIcon.Warning);
+			_dialogParent.ModalMessageBox(
+				caption: "Warning",
+				icon: EMsgBoxIcon.Warning,
+				text: $"{reason} Disabling hardcore mode.");
 			RA.WarnDisableHardcore(null);
 		}
 
-		protected override int IdentifyHash(string hash)
+		protected override uint IdentifyHash(string hash)
 			=> RA.IdentifyHash(hash);
 
-		protected override int IdentifyRom(byte[] rom)
+		protected override uint IdentifyRom(byte[] rom)
 			=> RA.IdentifyRom(rom, rom.Length);
 
-		public RAIntegration(IMainFormForRetroAchievements mainForm, InputManager inputManager, ToolManager tools,
-			Func<Config> getConfig, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
-			: base(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback)
+		public RAIntegration(
+			MainForm mainForm,
+			InputManager inputManager,
+			ToolManager tools,
+			Func<Config> getConfig,
+			ToolStripItemCollection raDropDownItems,
+			Action shutdownRACallback)
+				: base(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback)
 		{
 			_memGuard = new(_memLock, _memSema, _memSync);
 			_memAccess = new(_memLock, _memSema, _memSync);
 			
 			RA = BizInvoker.GetInvoker<RAInterface>(_resolver, _memAccess, CallingConventionAdapters.Native);
 
-			RA.InitClient(_mainForm.Handle, "BizHawk", VersionInfo.GetEmuVersion());
+			RA.InitClient(mainForm.AsWinFormsHandle().Handle, "BizHawk", VersionInfo.GetEmuVersion());
 
 			_isActive = () => !Emu.IsNull();
 			_unpause = _mainForm.UnpauseEmulator;
@@ -142,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RA?.Shutdown();
 			_memGuard.Dispose();
-			_mainForm.EmuClient.BeforeQuickLoad -= QuickLoadCallback;
+			_mainForm.QuicksaveLoad -= QuickLoadCallback;
 		}
 
 		public override void OnSaveState(string path)
@@ -205,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 				for (var i = 0; i < _memFunctions.Count; i++)
 				{
 					_memFunctions[i].MemGuard = _memGuard;
-					RA.InstallMemoryBank(i, _memFunctions[i].ReadFunc, _memFunctions[i].WriteFunc, _memFunctions[i].BankSize);
+					RA.InstallMemoryBank(i, _memFunctions[i].ReadFunc, _memFunctions[i].WriteFunc, (int)_memFunctions[i].BankSize);
 					RA.InstallMemoryBankBlockReader(i, _memFunctions[i].ReadBlockFunc);
 				}
 			}
@@ -216,9 +223,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var ids = GetRAGameIds(_mainForm.CurrentlyOpenRomArgs.OpenAdvanced, consoleId);
 
-				AllGamesVerified = !ids.Contains(0);
+				AllGamesVerified = !ids.Contains(0u);
 
-				RA.ActivateGame(ids.Count > 0 ? ids[0] : 0);
+				RA.ActivateGame(ids.Count > 0 ? ids[0] : 0u);
 			}
 			else
 			{
@@ -232,8 +239,10 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm.UpdateWindowTitle();
 
 			// note: this can only catch quicksaves (probably only case of accidential use from hotkeys)
-			_mainForm.EmuClient.BeforeQuickLoad += QuickLoadCallback;
+			_mainForm.QuicksaveLoad += QuickLoadCallback;
 		}
+
+		public bool OverlayActive => RA.IsOverlayFullyVisible();
 
 		public override void Update()
 		{
@@ -247,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 				RA.SetPaused(true);
 			}
 
-			if (!RA.IsOverlayFullyVisible()) return;
+			if (!OverlayActive) return;
 
 			var ci = new RAInterface.ControllerInput
 			{
@@ -263,6 +272,7 @@ namespace BizHawk.Client.EmuHawk
 			RA.NavigateOverlay(ref ci);
 
 			// todo: suppress user inputs with overlay active?
+			// cpp: well this happens now if hotkeys override controller inputs
 		}
 
 		public override void OnFrameAdvance()

@@ -1,4 +1,3 @@
-﻿using System;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
@@ -187,9 +186,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return nes.Board.PeekPPU(addr);
 		}
 
-		public static int PPU_PHASE_VBL = 0;
-		public static int PPU_PHASE_BG = 1;
-		public static int PPU_PHASE_OBJ = 2;
+		public const int PPU_PHASE_VBL = 0;
+		public const int PPU_PHASE_BG = 1;
+		public const int PPU_PHASE_OBJ = 2;
 
 		public int ppuphase;
 
@@ -199,16 +198,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			this.nes = nes;
 
 			OAM = new byte[0x100];
-			PALRAM = new byte[0x20];
 
 			//power-up palette verified by blargg's power_up_palette test.
 			//he speculates that these may differ depending on the system tested..
 			//and I don't see why the ppu would waste any effort setting these.. 
 			//but for the sake of uniformity, we'll do it.
-			Array.Copy(new byte[] {
+			PALRAM = new byte[] {
 				0x09,0x01,0x00,0x01,0x00,0x02,0x02,0x0D,0x08,0x10,0x08,0x24,0x00,0x00,0x04,0x2C,
 				0x09,0x01,0x34,0x03,0x00,0x04,0x00,0x14,0x08,0x3A,0x00,0x02,0x00,0x20,0x2C,0x08
-			}, PALRAM, 0x20);
+			};
 
 			Reset();
 		}

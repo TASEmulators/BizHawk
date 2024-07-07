@@ -38,6 +38,7 @@ auto RSP::Recompiler::block(u12 address) -> Block* {
 
   auto size = measure(address);
   auto hashcode = hash(address, size);
+  hashcode ^= self.pipeline.hash();
 
   BlockHashPair pair;
   pair.hashcode = hashcode;
@@ -60,11 +61,11 @@ auto RSP::Recompiler::block(u12 address) -> Block* {
 auto RSP::Recompiler::emit(u12 address) -> Block* {
   if(unlikely(allocator.available() < 1_MiB)) {
     print("RSP allocator flush\n");
-    memory::jitprotect(false);
-    allocator.release(bump_allocator::zero_fill);
-    memory::jitprotect(true);
+    allocator.release();
     reset();
   }
+
+  pipeline = self.pipeline;
 
   auto block = (Block*)allocator.acquire(sizeof(Block));
   beginFunction(3);
@@ -73,7 +74,34 @@ auto RSP::Recompiler::emit(u12 address) -> Block* {
   bool hasBranched = 0;
   while(true) {
     u32 instruction = self.imem.read<Word>(address);
+    if(callInstructionPrologue) {
+      mov32(reg(1), imm(instruction));
+      call(&RSP::instructionPrologue);
+    }
+    pipeline.begin();
+    OpInfo op0 = self.decoderEXECUTE(instruction);
+    pipeline.issue(op0);
     bool branched = emitEXECUTE(instruction);
+
+    if(!pipeline.singleIssue && !branched && u12(address + 4) != start) {
+      u32 instruction = self.imem.read<Word>(address + 4);
+      OpInfo op1 = self.decoderEXECUTE(instruction);
+
+      if(RSP::canDualIssue(op0, op1)) {
+        mov32(reg(1), imm(0));
+        call(&RSP::instructionEpilogue);
+        if(callInstructionPrologue) {
+          mov32(reg(1), imm(instruction));
+          call(&RSP::instructionPrologue);
+        }
+        address += 4;
+        pipeline.issue(op1);
+        branched = emitEXECUTE(instruction);
+      }
+    }
+
+    pipeline.end();
+    mov32(reg(1), imm(pipeline.clocks));
     call(&RSP::instructionEpilogue);
     address += 4;
     if(hasBranched || address == start) break;
@@ -82,9 +110,13 @@ auto RSP::Recompiler::emit(u12 address) -> Block* {
   }
   jumpEpilog();
 
+  //reset clocks to zero every time block is executed
+  pipeline.clocks = 0;
+
   memory::jitprotect(false);
   block->code = endFunction();
   block->size = address - start;
+  block->pipeline = pipeline;
 
 //print(hex(PC, 8L), " ", instructions, " ", size(), "\n");
   return block;

@@ -1,7 +1,7 @@
 using System.Drawing;
-using BizHawk.Client.Common.FilterManager;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
+using BizHawk.Client.Common.FilterManager;
 
 namespace BizHawk.Client.Common.Filters
 {
@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common.Filters
 
 		private readonly Size _size;
 
-		public Texture2d Texture { get; set; }
+		public ITexture2D Texture { get; set; }
 
 		public override void Run()
 		{
@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common.Filters
 
 		public override void Initialize()
 		{
-			DeclareOutput(new SurfaceState(new SurfaceFormat(_size), SurfaceDisposition.Texture));
+			DeclareOutput(new SurfaceState(new(_size), SurfaceDisposition.Texture));
 		}
 
 		public override void SetInputFormat(string channel, SurfaceState format)
@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common.Filters
 		{
 			var renderer = FilterProgram.GuiRenderer;
 			renderer.Begin(FindOutput().SurfaceFormat.Size);
-			renderer.SetBlendState(FilterProgram.GL.BlendNoneCopy);
+			renderer.DisableBlending();
 			renderer.Draw(InputTexture);
 			renderer.End();
 		}
@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common.Filters
 
 		public override void Run()
 		{
-			YieldOutput(FilterProgram.GetRenderTarget().Texture2d);
+			YieldOutput(FilterProgram.CurrRenderTarget);
 		}
 	}
 }

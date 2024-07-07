@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,8 +9,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.Sameboy;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 
@@ -26,7 +23,6 @@ namespace BizHawk.Tests.Testroms.GB
 
 			public static readonly IReadOnlyList<string> KnownFailures = new[]
 			{
-				"m2_win_en_toggle on CGB_C in SameBoy (no BIOS)",
 				"m3_bgp_change on CGB_C in Gambatte", // Gambatte's GBC emulation matches CGB D variant
 				"m3_bgp_change on CGB_C in Gambatte (no BIOS)", // Gambatte's GBC emulation matches CGB D variant
 				"m3_bgp_change on CGB_C in GBHawk",
@@ -37,8 +33,6 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_bgp_change_sprites on CGB_C in Gambatte", // Gambatte's GBC emulation matches CGB D variant
 				"m3_bgp_change_sprites on CGB_C in Gambatte (no BIOS)", // Gambatte's GBC emulation matches CGB D variant
 				"m3_bgp_change_sprites on CGB_C in GBHawk",
-				"m3_bgp_change_sprites on CGB_C in SameBoy",
-				"m3_bgp_change_sprites on CGB_C in SameBoy (no BIOS)",
 				"m3_bgp_change_sprites on CGB_D in GBHawk",
 				"m3_bgp_change_sprites on DMG in Gambatte",
 				"m3_bgp_change_sprites on DMG in Gambatte (no BIOS)",
@@ -60,8 +54,6 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_lcdc_bg_map_change on CGB_C in GBHawk",
 				"m3_lcdc_bg_map_change on DMG in GBHawk",
 				"m3_lcdc_bg_map_change2 on CGB_C in GBHawk",
-				"m3_lcdc_bg_map_change2 on CGB_C in SameBoy",
-				"m3_lcdc_bg_map_change2 on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_obj_en_change on CGB_C in SameBoy",
 				"m3_lcdc_obj_en_change on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_obj_en_change on DMG in Gambatte",
@@ -73,24 +65,18 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_lcdc_obj_en_change_variant on CGB_C in SameBoy",
 				"m3_lcdc_obj_en_change_variant on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_obj_en_change_variant on CGB_D in GBHawk",
-				"m3_lcdc_obj_en_change_variant on CGB_D in SameBoy",
-				"m3_lcdc_obj_en_change_variant on CGB_D in SameBoy (no BIOS)",
 				"m3_lcdc_obj_en_change_variant on DMG in Gambatte",
 				"m3_lcdc_obj_en_change_variant on DMG in Gambatte (no BIOS)",
 				"m3_lcdc_obj_en_change_variant on DMG in GBHawk",
 				"m3_lcdc_obj_en_change_variant on DMG in SameBoy", // SameBoy emulates DMG-B, but there's no DMG-B-specific expect image for this test, so it should be the same on all DMG revisions?
 				"m3_lcdc_obj_en_change_variant on DMG in SameBoy (no BIOS)", // SameBoy emulates DMG-B, but there's no DMG-B-specific expect image for this test, so it should be the same on all DMG revisions?
 				"m3_lcdc_obj_size_change on CGB_C in GBHawk",
-				"m3_lcdc_obj_size_change on CGB_C in SameBoy",
-				"m3_lcdc_obj_size_change on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_obj_size_change on DMG in Gambatte",
 				"m3_lcdc_obj_size_change on DMG in Gambatte (no BIOS)",
 				"m3_lcdc_obj_size_change on DMG in GBHawk",
 				"m3_lcdc_obj_size_change on DMG in SameBoy",
 				"m3_lcdc_obj_size_change on DMG in SameBoy (no BIOS)",
 				"m3_lcdc_obj_size_change_scx on CGB_C in GBHawk",
-				"m3_lcdc_obj_size_change_scx on CGB_C in SameBoy",
-				"m3_lcdc_obj_size_change_scx on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_obj_size_change_scx on DMG in Gambatte",
 				"m3_lcdc_obj_size_change_scx on DMG in Gambatte (no BIOS)",
 				"m3_lcdc_obj_size_change_scx on DMG in GBHawk",
@@ -99,10 +85,13 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_lcdc_tile_sel_change on CGB_C in Gambatte",
 				"m3_lcdc_tile_sel_change on CGB_C in Gambatte (no BIOS)",
 				"m3_lcdc_tile_sel_change on CGB_C in GBHawk",
+				"m3_lcdc_tile_sel_change on CGB_C in SameBoy",
+				"m3_lcdc_tile_sel_change on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_tile_sel_change on DMG in GBHawk",
 				"m3_lcdc_tile_sel_change2 on CGB_C in Gambatte",
 				"m3_lcdc_tile_sel_change2 on CGB_C in Gambatte (no BIOS)",
 				"m3_lcdc_tile_sel_change2 on CGB_C in GBHawk",
+				"m3_lcdc_tile_sel_change2 on CGB_C in SameBoy",
 				"m3_lcdc_tile_sel_change2 on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_tile_sel_win_change on CGB_C in Gambatte",
 				"m3_lcdc_tile_sel_win_change on CGB_C in Gambatte (no BIOS)",
@@ -113,10 +102,9 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_lcdc_tile_sel_win_change2 on CGB_C in Gambatte",
 				"m3_lcdc_tile_sel_win_change2 on CGB_C in Gambatte (no BIOS)",
 				"m3_lcdc_tile_sel_win_change2 on CGB_C in GBHawk",
+				"m3_lcdc_tile_sel_win_change2 on CGB_C in SameBoy",
 				"m3_lcdc_tile_sel_win_change2 on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_win_en_change_multiple on CGB_C in GBHawk",
-				"m3_lcdc_win_en_change_multiple on CGB_C in SameBoy",
-				"m3_lcdc_win_en_change_multiple on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_win_en_change_multiple on DMG in GBHawk",
 				"m3_lcdc_win_en_change_multiple_wx on DMG in Gambatte",
 				"m3_lcdc_win_en_change_multiple_wx on DMG in Gambatte (no BIOS)",
@@ -126,13 +114,9 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_lcdc_win_en_change_multiple_wx on DMG_B in Gambatte",
 				"m3_lcdc_win_en_change_multiple_wx on DMG_B in Gambatte (no BIOS)",
 				"m3_lcdc_win_en_change_multiple_wx on DMG_B in GBHawk",
-				"m3_lcdc_win_en_change_multiple_wx on DMG_B in SameBoy",
-				"m3_lcdc_win_en_change_multiple_wx on DMG_B in SameBoy (no BIOS)",
 				"m3_lcdc_win_map_change on CGB_C in GBHawk",
 				"m3_lcdc_win_map_change on DMG in GBHawk",
 				"m3_lcdc_win_map_change2 on CGB_C in GBHawk",
-				"m3_lcdc_win_map_change2 on CGB_C in SameBoy",
-				"m3_lcdc_win_map_change2 on CGB_C in SameBoy (no BIOS)",
 				"m3_obp0_change on CGB_C in Gambatte", // Gambatte's GBC emulation matches CGB D variant
 				"m3_obp0_change on CGB_C in Gambatte (no BIOS)", // Gambatte's GBC emulation matches CGB D variant
 				"m3_obp0_change on CGB_C in GBHawk",
@@ -147,11 +131,7 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_scx_high_5_bits_change2 on CGB_C in GBHawk",
 				"m3_scx_high_5_bits_change2 on CGB_C in SameBoy",
 				"m3_scx_high_5_bits_change2 on CGB_C in SameBoy (no BIOS)",
-				"m3_scx_low_3_bits on CGB_C in SameBoy",
-				"m3_scx_low_3_bits on CGB_C in SameBoy (no BIOS)",
 				"m3_scy_change on CGB_C in GBHawk",
-				"m3_scy_change on CGB_C in SameBoy",
-				"m3_scy_change on CGB_C in SameBoy (no BIOS)",
 				"m3_scy_change on CGB_D in Gambatte", // Gambatte's GBC emulation matches CGB C variant
 				"m3_scy_change on CGB_D in Gambatte (no BIOS)", // Gambatte's GBC emulation matches CGB C variant
 				"m3_scy_change on CGB_D in GBHawk",
@@ -159,8 +139,6 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_scy_change on CGB_D in SameBoy (no BIOS)",
 				"m3_scy_change on DMG in GBHawk",
 				"m3_scy_change2 on CGB_C in GBHawk",
-				"m3_scy_change2 on CGB_C in SameBoy",
-				"m3_scy_change2 on CGB_C in SameBoy (no BIOS)",
 				"m3_window_timing on CGB_C in Gambatte", // Gambatte's GBC emulation matches CGB D variant
 				"m3_window_timing on CGB_C in Gambatte (no BIOS)", // Gambatte's GBC emulation matches CGB D variant
 				"m3_window_timing on CGB_C in GBHawk",
@@ -169,8 +147,6 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_window_timing_wx_0 on CGB_C in Gambatte",
 				"m3_window_timing_wx_0 on CGB_C in Gambatte (no BIOS)",
 				"m3_window_timing_wx_0 on CGB_C in GBHawk",
-				"m3_window_timing_wx_0 on CGB_C in SameBoy",
-				"m3_window_timing_wx_0 on CGB_C in SameBoy (no BIOS)",
 				"m3_window_timing_wx_0 on CGB_D in Gambatte",
 				"m3_window_timing_wx_0 on CGB_D in Gambatte (no BIOS)",
 				"m3_window_timing_wx_0 on CGB_D in GBHawk",
@@ -245,8 +221,8 @@ namespace BizHawk.Tests.Testroms.GB
 					.Select(static testCase => new object?[] { testCase });
 			}
 
-			public string GetDisplayName(MethodInfo methodInfo, object?[] data)
-				=> $"{methodInfo.Name}({((MealybugTestCase) data[0]!).DisplayName()})";
+			public string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
+				=> $"{methodInfo.Name}(\"{((MealybugTestCase) data![0]!).DisplayName()}\")";
 		}
 
 		private const string SUITE_ID = "Mealybug";

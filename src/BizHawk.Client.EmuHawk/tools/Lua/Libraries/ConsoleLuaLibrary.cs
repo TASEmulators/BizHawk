@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 using System.Text;
 
@@ -103,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (outputs == null || outputs.Length == 0 || (outputs.Length == 1 && outputs[0] is null))
 			{
-				sb.Append($"(no return){terminator}");
+				Tools.LuaConsole.WriteToOutputWindow($"(no return){terminator}");
 				return;
 			}
 

@@ -1,26 +1,22 @@
-﻿using System;
+using System.ComponentModel;
+using System.IO;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
-using System.IO;
-using System.ComponentModel;
-using BizHawk.Common;
-using System.Collections.Generic;
-using System.Linq;
-
-using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
-	[PortedCore(CoreNames.Snes9X, "", "5e0319ab3ef9611250efb18255186d0dc0d7e125", "https://github.com/snes9xgit/snes9x")]
+	[PortedCore(CoreNames.Snes9X, "", "e49165c", "https://github.com/snes9xgit/snes9x")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public class Snes9x : WaterboxCore, 
+	public class Snes9x : WaterboxCore,
 		ISettable<Snes9x.Settings, Snes9x.SyncSettings>, IRegionable
 	{
 		private readonly LibSnes9x _core;
 
 		[CoreConstructor(VSystemID.Raw.SNES)]
-		public Snes9x(CoreComm comm, byte[] rom, Settings settings, SyncSettings syncSettings)
-			:base(comm, new Configuration
+		public Snes9x(CoreLoadParameters<Settings, SyncSettings> loadParameters)
+			:base(loadParameters.Comm, new Configuration
 			{
 				DefaultWidth = 256,
 				DefaultHeight = 224,
@@ -30,23 +26,40 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				SystemId = VSystemID.Raw.SNES,
 			})
 		{
-			settings ??= new Settings();
-			syncSettings ??= new SyncSettings();
+			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath, null);
+			this._currentMsuTrack = new ProxiedFile();
 
+			LibSnes9x.OpenAudio openAudioCb = MsuOpenAudio;
+			LibSnes9x.SeekAudio seekAudioCb = _currentMsuTrack.Seek;
+			LibSnes9x.ReadAudio readAudioCb = _currentMsuTrack.ReadByte;
+			LibSnes9x.AudioEnd audioEndCb = _currentMsuTrack.AtEnd;
 			_core = PreInit<LibSnes9x>(new WaterboxOptions
 			{
 				Filename = "snes9x.wbx",
 				SbrkHeapSizeKB = 1024,
-				SealedHeapSizeKB = 12 * 1024,
-				InvisibleHeapSizeKB = 6 * 1024,
-				PlainHeapSizeKB = 12 * 1024,
-				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			});
+				InvisibleHeapSizeKB = 5 * 1024,
+				MmapHeapSizeKB = 1024,
+				PlainHeapSizeKB = 13 * 1024,
+				SkipCoreConsistencyCheck = loadParameters.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = loadParameters.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
+			}, new Delegate[] { openAudioCb, seekAudioCb, readAudioCb, audioEndCb });
 
 			if (!_core.biz_init())
 				throw new InvalidOperationException("Init() failed");
-			if (!_core.biz_load_rom(rom, rom.Length))
+
+			// add msu data file if it exists
+			try
+			{
+				// "msu1.rom" is hardcoded in the core
+				_exe.AddReadonlyFile(File.ReadAllBytes($"{_romPath}.msu"), "msu1.rom");
+			}
+			catch
+			{
+				// ignored
+			}
+			_core.SetMsu1Callbacks(openAudioCb, seekAudioCb, readAudioCb, audioEndCb);
+
+			if (!_core.biz_load_rom(loadParameters.Roms[0].RomData, loadParameters.Roms[0].RomData.Length))
 				throw new InvalidOperationException("LoadRom() failed");
 
 			PostInit();
@@ -66,173 +79,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				Region = DisplayType.PAL;
 			}
 
-			_syncSettings = syncSettings;
+			_syncSettings = loadParameters.SyncSettings ?? new SyncSettings();
 			InitControllers();
-			PutSettings(settings);
+			PutSettings(loadParameters.Settings ?? new Settings());
 		}
 
-		private readonly short[] _inputState = new short[16 * 8];
-		private List<ControlDefUnMerger> _cdums;
-		private readonly List<IControlDevice> _controllers = new List<IControlDevice>();
+		private readonly ProxiedFile _currentMsuTrack;
+		private bool _disposed;
+
+		private bool MsuOpenAudio(ushort trackId) => _currentMsuTrack.OpenMsuTrack(_romPath, trackId);
+
+		public override void Dispose()
+		{
+			if (_disposed) return;
+
+			_disposed = true;
+			_currentMsuTrack?.Dispose();
+			base.Dispose();
+		}
 
 		private void InitControllers()
 		{
 			_core.biz_set_port_devices(_syncSettings.LeftPort, _syncSettings.RightPort);
 
-			switch (_syncSettings.LeftPort)
-			{
-				case LibSnes9x.LeftPortDevice.Joypad:
-					_controllers.Add(new Joypad());
-					break;
-			}
-			switch (_syncSettings.RightPort)
-			{
-				case LibSnes9x.RightPortDevice.Joypad:
-					_controllers.Add(new Joypad());
-					break;
-				case LibSnes9x.RightPortDevice.Multitap:
-					_controllers.Add(new Joypad());
-					_controllers.Add(new Joypad());
-					_controllers.Add(new Joypad());
-					_controllers.Add(new Joypad());
-					break;
-				case LibSnes9x.RightPortDevice.Mouse:
-					_controllers.Add(new Mouse());
-					break;
-				case LibSnes9x.RightPortDevice.SuperScope:
-					_controllers.Add(new SuperScope());
-					break;
-				case LibSnes9x.RightPortDevice.Justifier:
-					_controllers.Add(new Justifier());
-					break;
-			}
-
-			_controllerDefinition = ControllerDefinitionMerger.GetMerged(
-				"SNES Controller",
-				_controllers.Select(c => c.Definition),
-				out _cdums);
-
-			// add buttons that the core itself will handle
-			_controllerDefinition.BoolButtons.Add("Reset");
-			_controllerDefinition.BoolButtons.Add("Power");
-
-			_controllerDefinition.MakeImmutable();
+			_controllers = new Snes9xControllers(_syncSettings);
 		}
 
-		private void UpdateControls(IController c)
-		{
-			Array.Clear(_inputState, 0, 16 * 8);
-			for (int i = 0, offset = 0; i < _controllers.Count; i++, offset += 16)
-			{
-				_controllers[i].ApplyState(_cdums[i].UnMerge(c), _inputState, offset);
-			}
-		}
+		private Snes9xControllers _controllers;
 
-		private interface IControlDevice
-		{
-			ControllerDefinition Definition { get; }
-			void ApplyState(IController controller, short[] input, int offset);
-		}
-
-		private class Joypad : IControlDevice
-		{
-			private static readonly string[] Buttons =
-			{
-				"0B",
-				"0Y",
-				"0Select",
-				"0Start",
-				"0Up",
-				"0Down",
-				"0Left",
-				"0Right",
-				"0A",
-				"0X",
-				"0L",
-				"0R"
-			};
-
-			private static int ButtonOrder(string btn)
-			{
-				var order = new Dictionary<string, int>
-				{
-					["0Up"] = 0,
-					["0Down"] = 1,
-					["0Left"] = 2,
-					["0Right"] = 3,
-
-					["0Select"] = 4,
-					["0Start"] = 5,
-
-					["0Y"] = 6,
-					["0B"] = 7,
-
-					["0X"] = 8,
-					["0A"] = 9,
-
-					["0L"] = 10,
-					["0R"] = 11
-				};
-
-				return order[btn];
-			}
-
-			private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)")
-			{
-				BoolButtons = Buttons.OrderBy(ButtonOrder).ToList()
-			};
-
-			public ControllerDefinition Definition { get; } = _definition;
-
-			public void ApplyState(IController controller, short[] input, int offset)
-			{
-				for (int i = 0; i < Buttons.Length; i++)
-					input[offset + i] = (short)(controller.IsPressed(Buttons[i]) ? 1 : 0);
-			}
-		}
-
-		private abstract class Analog : IControlDevice
-		{
-			public abstract ControllerDefinition Definition { get; }
-
-			public void ApplyState(IController controller, short[] input, int offset)
-			{
-				foreach (var s in Definition.Axes.Keys)
-					input[offset++] = (short)controller.AxisValue(s);
-				foreach (var s in Definition.BoolButtons)
-					input[offset++] = (short)(controller.IsPressed(s) ? 1 : 0);
-			}
-		}
-
-		private class Mouse : Analog
-		{
-			private static readonly ControllerDefinition _definition
-				= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Mouse Left", "0Mouse Right" } }
-					.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, (-127).RangeTo(127), 0); //TODO verify direction against hardware
-
-			public override ControllerDefinition Definition => _definition;
-		}
-
-		private class SuperScope : Analog
-		{
-			private static readonly ControllerDefinition _definition
-				= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause", "0Offscreen" } }
-					.AddLightGun("0Scope {0}");
-
-			public override ControllerDefinition Definition => _definition;
-		}
-
-		private class Justifier : Analog
-		{
-			private static readonly ControllerDefinition _definition
-				= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Trigger", "0Start", "0Offscreen" } }
-					.AddLightGun("0Justifier {0}");
-
-			public override ControllerDefinition Definition => _definition;
-		}
-
-		private ControllerDefinition _controllerDefinition;
-		public override ControllerDefinition ControllerDefinition => _controllerDefinition;
+		public override ControllerDefinition ControllerDefinition => _controllers.ControllerDefinition;
 
 		public DisplayType Region { get; }
 
@@ -242,8 +117,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				_core.biz_hard_reset();
 			else if (controller.IsPressed("Reset"))
 				_core.biz_soft_reset();
-			UpdateControls(controller);
-			_core.SetButtons(_inputState);
+			_controllers.UpdateControls(controller);
+			_core.SetButtons(_controllers.inputState);
 
 			return new LibWaterboxCore.FrameInfo();
 		}
@@ -258,6 +133,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		private Settings _settings;
 		private SyncSettings _syncSettings;
+		private readonly string _romPath;
 
 		public Settings GetSettings()
 		{
@@ -305,6 +181,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		[CoreSettings]
 		public class Settings
 		{
 			[DefaultValue(true)]
@@ -390,6 +267,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			}
 		}
 
+		[CoreSettings]
 		public class SyncSettings
 		{
 			[DefaultValue(LibSnes9x.LeftPortDevice.Joypad)]

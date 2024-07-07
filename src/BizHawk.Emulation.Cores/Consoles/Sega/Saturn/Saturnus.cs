@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
@@ -6,9 +5,11 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
-	[PortedCore(CoreNames.Saturnus, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
-	public class Saturnus : NymaCore, IRegionable
+	[PortedCore(CoreNames.Saturnus, "Mednafen Team", "1.32.1", "https://mednafen.github.io/releases/")]
+	public class Saturnus : NymaCore, IRegionable, ISaveRam
 	{
+		private readonly LibSaturnus _saturnus;
+
 		private Saturnus(CoreComm comm)
 			: base(comm, VSystemID.Raw.NULL, null, null, null)
 		{
@@ -42,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				{ "FIRMWARE:$ULTRA", new("SAT", "ULTRAMAN") },
 				// { "FIRMWARE:$SATAR", new("SAT", "AR") }, // action replay garbage
 			};
-			DoInit<LibNymaCore>(lp, "ss.wbx", firmwares);
+			_saturnus = DoInit<LibSaturnus>(lp, "ss.wbx", firmwares);
 
 			_cachedSettingsInfo ??= SettingsInfo.Clone();
 		}
@@ -99,5 +100,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			}
 			return ret;
 		}
+
+		public new bool SaveRamModified => true;
+
+		public new byte[] CloneSaveRam()
+		{
+			var data = new byte[_saturnus.GetSaveRamLength()];
+			_saturnus.GetSaveRam(data);
+			return data;
+		}
+
+		public new void StoreSaveRam(byte[] data)
+			=> _saturnus.PutSaveRam(data, data.Length);
 	}
 }

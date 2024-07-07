@@ -37,7 +37,7 @@ auto SA1::read(uint address) -> uint8 {
   }
 
   if((address & 0x40e000) == 0x006000  //00-3f,80-bf:6000-7fff
-  || (address & 0xf00000) == 0x400000  //40-4f:0000-ffff
+  || (address & 0xe00000) == 0x400000  //40-5f:0000-ffff
   || (address & 0xf00000) == 0x600000  //60-6f:0000-ffff
   ) {
     step();
@@ -81,7 +81,7 @@ auto SA1::write(uint address, uint8 data) -> void {
   }
 
   if((address & 0x40e000) == 0x006000  //00-3f,80-bf:6000-7fff
-  || (address & 0xf00000) == 0x400000  //40-4f:0000-ffff
+  || (address & 0xe00000) == 0x400000  //40-5f:0000-ffff
   || (address & 0xf00000) == 0x600000  //60-6f:0000-ffff
   ) {
     step();

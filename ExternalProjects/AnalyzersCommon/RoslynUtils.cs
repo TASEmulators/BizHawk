@@ -26,4 +26,16 @@ public static class RoslynUtils
 
 	public static bool Matches(this ISymbol expected, ISymbol? actual)
 		=> SymbolEqualityComparer.Default.Equals(expected, actual);
+
+#if false // easier to just `.OriginalDefinition` always
+	public static bool Matches(this INamedTypeSymbol expected, INamedTypeSymbol? actual, bool degenericise)
+	{
+		if (degenericise)
+		{
+			if (expected.IsGenericType && !expected.IsUnboundGenericType) return expected.OriginalDefinition.Matches(actual, degenericise: true);
+			if (actual is not null && actual.IsGenericType && !actual.IsUnboundGenericType) return expected.Matches(actual.OriginalDefinition, degenericise: true);
+		}
+		return expected.Matches(actual as ISymbol);
+	}
+#endif
 }

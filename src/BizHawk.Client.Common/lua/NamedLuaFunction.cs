@@ -1,4 +1,3 @@
-﻿using System;
 using NLua;
 
 using BizHawk.Emulation.Common;
@@ -31,12 +30,14 @@ namespace BizHawk.Client.Common
 
 		private readonly LuaFunction _function;
 
-		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, Func<LuaThread> createThreadCallback, string name = null)
+		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile,
+			Func<LuaThread> createThreadCallback, ILuaLibraries luaLibraries, string name = null)
 		{
 			_function = function;
 			Name = name ?? "Anonymous";
 			Event = theEvent;
 			CreateThreadCallback = createThreadCallback;
+			LuaLibraries = luaLibraries;
 
 			// When would a file be null?
 			// When a script is loaded with a callback, but no infinite loop so it closes
@@ -66,8 +67,30 @@ namespace BizHawk.Client.Common
 					logCallback($"error running function attached by the event {Event}\nError message: {ex.Message}");
 				}
 			};
-			InputCallback = () => Callback(Array.Empty<object>());
-			MemCallback = (addr, val, flags) => Callback(new object[] { addr, val, flags });
+			InputCallback = () =>
+			{
+				LuaLibraries.IsInInputOrMemoryCallback = true;
+				try
+				{
+					Callback(Array.Empty<object>());
+				}
+				finally
+				{
+					LuaLibraries.IsInInputOrMemoryCallback = false;
+				}
+			};
+			MemCallback = (addr, val, flags) =>
+			{
+				LuaLibraries.IsInInputOrMemoryCallback = true;
+				try
+				{
+					Callback(new object[] { addr, val, flags });
+				}
+				finally
+				{
+					LuaLibraries.IsInInputOrMemoryCallback = false;
+				}
+			};
 		}
 
 		public void DetachFromScript()
@@ -86,6 +109,11 @@ namespace BizHawk.Client.Common
 		public string Name { get; }
 
 		public LuaFile LuaFile { get; private set; }
+
+		/// <summary>
+		/// HACK
+		/// </summary>
+		private ILuaLibraries LuaLibraries { get; }
 
 		private Func<LuaThread> CreateThreadCallback { get; }
 

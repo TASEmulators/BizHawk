@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
@@ -37,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateCoreAssociation()
 		{
-			if (!(_ownerEmulator is Octoshock psx))
+			if (_ownerEmulator is not Octoshock psx)
 			{
 				return;
 			}

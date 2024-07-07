@@ -1,18 +1,19 @@
-﻿using System;
-using System.Windows.Forms;
-
-using BizHawk.Emulation.Cores.Sony.PSX;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class PSXHashDiscs : Form
+	[SpecializedTool("Hash Discs")] // puts this in Nymashock's VSystem menu (the generic one), though when opened that way it's not modal
+	public partial class PSXHashDiscs : ToolFormBase
 	{
-		private readonly Octoshock _psx;
+		[RequiredService]
+		public IRedumpDiscChecksumInfo _psx { get; set; }
 
-		public PSXHashDiscs(Octoshock psx)
+		protected override string WindowTitleStatic { get; } = "PSX Disc Hasher";
+
+		public PSXHashDiscs()
 		{
-			_psx = psx;
 			InitializeComponent();
+			btnClose.Click += (_, _) => Close();
 		}
 
 		private void BtnHash_Click(object sender, EventArgs e)

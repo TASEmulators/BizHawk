@@ -1,6 +1,8 @@
 ﻿using System;
 
-namespace NLua
+using NLua.Native;
+
+namespace NLua.GenerateEventAssembly
 {
 	internal class DelegateGenerator
 	{
@@ -14,8 +16,6 @@ namespace NLua
 		}
 
 		public object ExtractGenerated(LuaState luaState, int stackPos)
-		{
-			return CodeGeneration.Instance.GetDelegate(_delegateType, _translator.GetFunction(luaState, stackPos));
-		}
+			=> CodeGeneration.Instance.GetDelegate(_delegateType, _translator.GetFunction(luaState, stackPos));
 	}
 }

@@ -93,7 +93,6 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "PSXHashDiscs";
-			this.Text = "PSX Disc Hasher";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

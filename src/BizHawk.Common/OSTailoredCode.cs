@@ -1,23 +1,42 @@
-#nullable enable
-
-using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common.StringExtensions;
 
-#if EXE_PROJECT
-namespace EXE_PROJECT // Use a different namespace so the executable can still use this class' members without an implicit dependency on the BizHawk.Common library, and without resorting to code duplication.
-#else
+using static BizHawk.Common.LoaderApiImports;
+
 namespace BizHawk.Common
-#endif
 {
 	public static class OSTailoredCode
 	{
-		/// <remarks>macOS doesn't use <see cref="PlatformID.MacOSX">PlatformID.MacOSX</see></remarks>
-		public static readonly DistinctOS CurrentOS = Environment.OSVersion.Platform == PlatformID.Unix
-			? SimpleSubshell("uname", "-s", "Can't determine OS") == "Darwin" ? DistinctOS.macOS : DistinctOS.Linux
-			: DistinctOS.Windows;
+		public static readonly DistinctOS CurrentOS;
+		public static readonly bool IsUnixHost;
+
+		static OSTailoredCode()
+		{
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+			{
+				CurrentOS = DistinctOS.Linux;
+			}
+			else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+			{
+				CurrentOS = DistinctOS.macOS;
+			}
+			else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				CurrentOS = DistinctOS.Windows;
+			}
+			else if (RuntimeInformation.OSDescription.ToUpperInvariant().Contains("BSD", StringComparison.Ordinal))
+			{
+				CurrentOS = DistinctOS.BSD;
+			}
+			else
+			{
+				CurrentOS = DistinctOS.Unknown;
+			}
+
+			IsUnixHost = CurrentOS != DistinctOS.Windows;
+		}
 
 		private static readonly Lazy<(WindowsVersion, Version?)?> _HostWindowsVersion = new(() =>
 		{
@@ -63,15 +82,35 @@ namespace BizHawk.Common
 
 		public static (WindowsVersion Version, Version? Win10PlusVersion)? HostWindowsVersion => _HostWindowsVersion.Value;
 
-		public static readonly bool IsUnixHost = CurrentOS != DistinctOS.Windows;
-
 		public static bool IsWSL => _isWSL.Value;
 
-		private static readonly Lazy<ILinkedLibManager> _LinkedLibManager = new Lazy<ILinkedLibManager>(() => CurrentOS switch
+		private static readonly Lazy<bool> _isWine = new(() =>
 		{
-			DistinctOS.Linux => new UnixMonoLLManager(),
-			DistinctOS.macOS => new UnixMonoLLManager(),
+			if (IsUnixHost)
+			{
+				return false;
+			}
+
+			var ntdll = LinkedLibManager.LoadOrZero("ntdll.dll");
+			if (ntdll == IntPtr.Zero)
+			{
+				return false;
+			}
+
+			var isWine = LinkedLibManager.GetProcAddrOrZero(ntdll, "wine_get_version") != IntPtr.Zero;
+			LinkedLibManager.FreeByPtr(ntdll);
+			return isWine;
+		});
+
+		public static bool IsWine => _isWine.Value;
+
+		private static readonly Lazy<ILinkedLibManager> _LinkedLibManager = new(() => CurrentOS switch
+		{
+			DistinctOS.Linux => new LinuxLLManager(),
+			DistinctOS.macOS => new PosixLLManager(),
 			DistinctOS.Windows => new WindowsLLManager(),
+			DistinctOS.BSD => new PosixLLManager(),
+			DistinctOS.Unknown => throw new NotSupportedException("Cannot link libraries with Unknown OS"),
 			_ => throw new InvalidOperationException()
 		});
 
@@ -95,79 +134,72 @@ namespace BizHawk.Common
 			string GetErrorMessage();
 		}
 
-		private class UnixMonoLLManager : ILinkedLibManager
+		private class LinuxLLManager : ILinkedLibManager
 		{
-			[DllImport("libdl.so.2")]
-			private static extern int dlclose(IntPtr handle);
+			public int FreeByPtr(IntPtr hModule) => LinuxDlfcnImports.dlclose(hModule);
 
-			[DllImport("libdl.so.2")]
-			private static extern IntPtr dlerror();
-
-			[DllImport("libdl.so.2")]
-			private static extern IntPtr dlopen(string fileName, int flags);
-
-			[DllImport("libdl.so.2")]
-			private static extern IntPtr dlsym(IntPtr handle, string symbol);
-
-			public int FreeByPtr(IntPtr hModule) => dlclose(hModule);
-
-			public IntPtr GetProcAddrOrZero(IntPtr hModule, string procName) => dlsym(hModule, procName);
+			public IntPtr GetProcAddrOrZero(IntPtr hModule, string procName) => LinuxDlfcnImports.dlsym(hModule, procName);
 
 			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName)
 			{
-				_ = dlerror(); // the Internet said to do this
+				_ = LinuxDlfcnImports.dlerror(); // the Internet said to do this
 				var p = GetProcAddrOrZero(hModule, procName);
 				if (p != IntPtr.Zero) return p;
-				var errCharPtr = dlerror();
-				throw new InvalidOperationException($"error in {nameof(dlsym)}{(errCharPtr == IntPtr.Zero ? string.Empty : $": {Marshal.PtrToStringAnsi(errCharPtr)}")}");
+				throw new InvalidOperationException($"error in dlsym: {GetErrorMessage()}");
 			}
 
-			public IntPtr LoadOrZero(string dllToLoad) => dlopen(dllToLoad, RTLD_NOW);
+			public IntPtr LoadOrZero(string dllToLoad) => LinuxDlfcnImports.dlopen(dllToLoad, LinuxDlfcnImports.RTLD_NOW);
 
 			public IntPtr LoadOrThrow(string dllToLoad)
 			{
 				var ret = LoadOrZero(dllToLoad);
-				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(dlopen)}, error: {Marshal.PtrToStringAnsi(dlerror())}");
+				return ret != IntPtr.Zero
+					? ret
+					: throw new InvalidOperationException($"got null pointer from dlopen, error: {GetErrorMessage()}");
 			}
 
 			public string GetErrorMessage()
 			{
-				var errCharPtr = dlerror();
-				return errCharPtr == IntPtr.Zero ? "No error present" : Marshal.PtrToStringAnsi(errCharPtr);
+				var errCharPtr = LinuxDlfcnImports.dlerror();
+				return errCharPtr == IntPtr.Zero ? "dlerror reported no error" : Marshal.PtrToStringAnsi(errCharPtr)!;
+			}
+		}
+
+		// this is just a copy paste of LinuxLLManager using PosixDlfcnImports instead of LinuxDlfcnImports
+		// TODO: probably could do some OOP magic so there isn't just a copy paste here
+		private class PosixLLManager : ILinkedLibManager
+		{
+			public int FreeByPtr(IntPtr hModule) => PosixDlfcnImports.dlclose(hModule);
+
+			public IntPtr GetProcAddrOrZero(IntPtr hModule, string procName) => PosixDlfcnImports.dlsym(hModule, procName);
+
+			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName)
+			{
+				_ = PosixDlfcnImports.dlerror(); // the Internet said to do this
+				var p = GetProcAddrOrZero(hModule, procName);
+				if (p != IntPtr.Zero) return p;
+				throw new InvalidOperationException($"error in dlsym: {GetErrorMessage()}");
 			}
 
-			private const int RTLD_NOW = 2;
+			public IntPtr LoadOrZero(string dllToLoad) => PosixDlfcnImports.dlopen(dllToLoad, PosixDlfcnImports.RTLD_NOW);
+
+			public IntPtr LoadOrThrow(string dllToLoad)
+			{
+				var ret = LoadOrZero(dllToLoad);
+				return ret != IntPtr.Zero
+					? ret
+					: throw new InvalidOperationException($"got null pointer from dlopen, error: {GetErrorMessage()}");
+			}
+
+			public string GetErrorMessage()
+			{
+				var errCharPtr = PosixDlfcnImports.dlerror();
+				return errCharPtr == IntPtr.Zero ? "dlerror reported no error" : Marshal.PtrToStringAnsi(errCharPtr)!;
+			}
 		}
 
 		private class WindowsLLManager : ILinkedLibManager
 		{
-			// comments reference extern functions removed from SevenZip.NativeMethods
-
-			[DllImport("kernel32.dll")]
-			private static extern bool FreeLibrary(IntPtr hModule); // return type was annotated MarshalAs(UnmanagedType.Bool)
-
-			[DllImport("kernel32.dll")]
-			private static extern uint GetLastError();
-
-			private enum FORMAT_MESSAGE : uint
-			{
-				ALLOCATE_BUFFER = 0x00000100,
-				IGNORE_INSERTS = 0x00000200,
-				FROM_SYSTEM = 0x00001000,
-			}
-
-			[DllImport("kernel32.dll")]
-			private static extern int FormatMessageA(FORMAT_MESSAGE flags, IntPtr source, uint messageId, uint languageId, out IntPtr outMsg, int size, IntPtr args);
-
-			[DllImport("kernel32.dll")]
-			private static extern IntPtr LocalFree(IntPtr hMem); // use this to free a message from FORMAT_MESSAGE.ALLOCATE_BUFFER
-
-			[DllImport("kernel32.dll", SetLastError = true)] // had BestFitMapping = false, ThrowOnUnmappableChar = true
-			private static extern IntPtr GetProcAddress(IntPtr hModule, string procName); // param procName was annotated `[MarshalAs(UnmanagedType.LPStr)]`
-
-			[DllImport("kernel32.dll", SetLastError = true)] // had BestFitMapping = false, ThrowOnUnmappableChar = true
-			private static extern IntPtr LoadLibrary(string dllToLoad); // param dllToLoad was annotated `[MarshalAs(UnmanagedType.LPStr)]`
-
 			public int FreeByPtr(IntPtr hModule) => FreeLibrary(hModule) ? 0 : 1;
 
 			public IntPtr GetProcAddrOrZero(IntPtr hModule, string procName) => GetProcAddress(hModule, procName);
@@ -175,25 +207,24 @@ namespace BizHawk.Common
 			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName)
 			{
 				var ret = GetProcAddrOrZero(hModule, procName);
-				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)}, error code: {GetLastError()}");
+				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)}, {GetErrorMessage()}");
 			}
 
-			public IntPtr LoadOrZero(string dllToLoad) => LoadLibrary(dllToLoad);
+			public IntPtr LoadOrZero(string dllToLoad) => LoadLibraryW(dllToLoad);
 
 			public IntPtr LoadOrThrow(string dllToLoad)
 			{
 				var ret = LoadOrZero(dllToLoad);
-				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(LoadLibrary)}, error code: {GetLastError()}");
+				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(LoadLibraryW)} while trying to load {dllToLoad}, {GetErrorMessage()}");
 			}
 
-			public string GetErrorMessage()
+			public unsafe string GetErrorMessage()
 			{
-				var errCode = GetLastError();
-				var sz = FormatMessageA(FORMAT_MESSAGE.ALLOCATE_BUFFER | FORMAT_MESSAGE.FROM_SYSTEM | FORMAT_MESSAGE.IGNORE_INSERTS,
-					IntPtr.Zero, errCode, 0, out var buffer, 1024, IntPtr.Zero);
-				var ret = Marshal.PtrToStringAnsi(buffer, sz);
-				_ = LocalFree(buffer);
-				return ret;
+				var errCode = Win32Imports.GetLastError();
+				var buffer = stackalloc char[1024];
+				const int FORMAT_MESSAGE_FROM_SYSTEM = 0x1000;
+				var sz = Win32Imports.FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM, IntPtr.Zero, errCode, 0, buffer, 1024, IntPtr.Zero);
+				return $"error code: 0x{errCode:X8}, error message: {new string(buffer, 0, sz)}";
 			}
 		}
 
@@ -201,7 +232,9 @@ namespace BizHawk.Common
 		{
 			Linux,
 			macOS,
-			Windows
+			Windows,
+			BSD, // covering all the *BSDs
+			Unknown,
 		}
 
 		public enum WindowsVersion
@@ -221,8 +254,10 @@ namespace BizHawk.Common
 		/// <param name="checkStderr">stderr is discarded if false</param>
 		/// <remarks>OS is implicit and needs to be checked at callsite. Returned <see cref="Process"/> has not been started.</remarks>
 		public static Process ConstructSubshell(string cmd, string args, bool checkStdout = true, bool checkStderr = false)
-			=> new Process {
-				StartInfo = new ProcessStartInfo {
+			=> new()
+			{
+				StartInfo = new()
+				{
 					Arguments = args,
 					CreateNoWindow = true,
 					FileName = cmd,
@@ -244,7 +279,7 @@ namespace BizHawk.Common
 			using var proc = ConstructSubshell(cmd, args);
 			proc.Start();
 			var stdout = proc.StandardOutput;
-			if (stdout.EndOfStream) throw new Exception($"{noOutputMsg} ({cmd} wrote nothing to stdout)");
+			if (stdout.EndOfStream) throw new($"{noOutputMsg} ({cmd} wrote nothing to stdout)");
 			return stdout.ReadLine()!;
 		}
 	}

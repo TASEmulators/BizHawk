@@ -7,10 +7,8 @@ CXXFLAGS := -std=c++17 \
 	-Wno-unqualified-std-cast-call -Wno-mismatched-tags -Wno-overloaded-virtual -Wno-bitwise-instead-of-logical \
 	-fno-threadsafe-statics -fno-strict-aliasing -fwrapv
 
-CCFLAGS := -std=c11 -DGB_INTERNAL -DGB_DISABLE_DEBUGGER -DGB_DISABLE_CHEATS -D_GNU_SOURCE -DGB_VERSION= \
-	-Werror \
-	-Wall -Wno-multichar -Wno-int-in-bool-context \
-	-fno-strict-aliasing
+CCFLAGS := -std=c11 -DGB_INTERNAL -DGB_DISABLE_DEBUGGER -DGB_DISABLE_CHEATS -DGB_DISABLE_TIMEKEEPING -DGB_DISABLE_REWIND -D_GNU_SOURCE -DGB_VERSION= \
+	-Wall -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-missing-braces -Wno-missing-field-initializers
 
 TARGET = bsnes.wbx
 
@@ -33,11 +31,9 @@ SRCS_GB = \
 	$(ROOT_DIR)/bsnes/gb/Core/memory.c \
 	$(ROOT_DIR)/bsnes/gb/Core/printer.c \
 	$(ROOT_DIR)/bsnes/gb/Core/random.c \
-	$(ROOT_DIR)/bsnes/gb/Core/rewind.c \
 	$(ROOT_DIR)/bsnes/gb/Core/save_state.c \
 	$(ROOT_DIR)/bsnes/gb/Core/sgb.c \
 	$(ROOT_DIR)/bsnes/gb/Core/sm83_cpu.c \
-	$(ROOT_DIR)/bsnes/gb/Core/symbol_hash.c \
 	$(ROOT_DIR)/bsnes/gb/Core/timing.c
 
 SRCS_SFC = \

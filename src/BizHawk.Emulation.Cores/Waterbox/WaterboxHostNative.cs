@@ -1,26 +1,23 @@
-using System;
-using System.IO;
 using System.Runtime.InteropServices;
+
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	public unsafe abstract class WaterboxHostNative
+	public abstract class WaterboxHostNative
 	{
-		[StructLayout(LayoutKind.Explicit)]
-		public class ReturnData
+		[StructLayout(LayoutKind.Sequential)]
+		public unsafe struct ReturnData
 		{
-			[FieldOffset(0)]
-			public byte ErrorMessageStart;
-			[FieldOffset(1024)]
+			public fixed byte ErrorMessage[1024];
 			public IntPtr Data;
 
 			public IntPtr GetDataOrThrow()
 			{
-				if (ErrorMessageStart != 0)
+				if (ErrorMessage[0] != 0)
 				{
-					fixed(byte* p = &ErrorMessageStart)
+					fixed (byte* p = ErrorMessage)
 						throw new InvalidOperationException(Mershul.PtrToStringUtf8((IntPtr)p));
 				}
 				return Data;
@@ -73,40 +70,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		// public delegate UIntPtr /*MissingFileResult*/ FileCallback(IntPtr userdata, UIntPtr /*string*/ name);
 
-		public static WriteCallback MakeCallbackForWriter(Stream s)
-		{
-			var ss = SpanStream.GetOrBuild(s);
-			return (_unused, data, size) =>
-			{
-				try
-				{
-					var count = (int)size;
-					ss.Write(new ReadOnlySpan<byte>((void*)data, (int)size));
-					return 0;
-				}
-				catch
-				{
-					return -1;
-				}
-			};
-		}
-		public static ReadCallback MakeCallbackForReader(Stream s)
-		{
-			var ss = SpanStream.GetOrBuild(s);
-			return (_unused, data, size) =>
-			{
-				try
-				{
-					var count = (int)size;
-					var n = ss.Read(new Span<byte>((void*)data, count));
-					return Z.SS(n);
-				}
-				catch
-				{
-					return Z.SS(-1);
-				}
-			};
-		}
 		// [StructLayout(LayoutKind.Sequential)]
 		// public class MissingFileCallback
 		// {
@@ -124,13 +87,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// which will not be used after this call.
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_create_host(MemoryLayoutTemplate layout, string moduleName, ReadCallback wbx, IntPtr userdata, ReturnData /*WaterboxHost*/ ret);
+		public abstract void wbx_create_host(MemoryLayoutTemplate layout, string moduleName, ReadCallback wbx, IntPtr userdata, out ReturnData /*WaterboxHost*/ ret);
 
 		/// <summary>
 		/// Tear down a host environment.  If called while the environment is active, will deactivate it first.
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_destroy_host(IntPtr /*WaterboxHost*/ obj, ReturnData /*void*/ ret);
+		public abstract void wbx_destroy_host(IntPtr /*WaterboxHost*/ obj, out ReturnData /*void*/ ret);
 
 		/// <summary>
 		/// Activate a host environment.  This swaps it into memory and makes it available for use.
@@ -139,21 +102,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// Ignored if host is already active.
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_activate_host(IntPtr /*WaterboxHost*/ obj, ReturnData /*void*/ ret);
+		public abstract void wbx_activate_host(IntPtr /*WaterboxHost*/ obj, out ReturnData /*void*/ ret);
 
 		/// <summary>
 		/// Deactivates a host environment, and releases the mutex.
 		/// Ignored if host is not active
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_deactivate_host(IntPtr /*WaterboxHost*/ obj, ReturnData /*void*/ ret);
+		public abstract void wbx_deactivate_host(IntPtr /*WaterboxHost*/ obj, out ReturnData /*void*/ ret);
 		/// <summary>
 		/// Returns a thunk suitable for calling an exported function from the guest executable.  This pointer is only valid
 		/// while the host is active.  A missing proc is not an error and simply returns 0.  The guest function must be,
 		/// and the returned callback will be, sysv abi, and will only pass up to 6 int/ptr args and no other arg types.
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_get_proc_addr(IntPtr /*WaterboxHost*/ obj, string name, ReturnData /*UIntPtr*/ ret);
+		public abstract void wbx_get_proc_addr(IntPtr /*WaterboxHost*/ obj, string name, out ReturnData /*UIntPtr*/ ret);
 		/// <summary>
 		/// Returns a thunk suitable for calling an arbitrary entry point into the guest executable.  This pointer is only valid
 		/// while the host is active.  wbx_get_proc_addr already calls this internally on pointers it returns, so this call is
@@ -161,14 +124,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// a pointer to another function).
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_get_callin_addr(IntPtr /*WaterboxHost*/ obj, IntPtr ptr, ReturnData /*UIntPtr*/ ret);
+		public abstract void wbx_get_callin_addr(IntPtr /*WaterboxHost*/ obj, IntPtr ptr, out ReturnData /*UIntPtr*/ ret);
 		/// <summary>
 		/// Returns the raw address of a function exported from the guest.  `wbx_get_proc_addr()` is equivalent to
 		/// `wbx_get_callin_addr(wbx_get_proc_addr_raw()).  Most things should not use this directly, as the returned
 		/// pointer will not have proper stack hygiene and will crash on syscalls from the guest.
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_get_proc_addr_raw(IntPtr /*WaterboxHost*/ obj, string name, ReturnData /*UIntPtr*/ ret);
+		public abstract void wbx_get_proc_addr_raw(IntPtr /*WaterboxHost*/ obj, string name, out ReturnData /*UIntPtr*/ ret);
 		/// <summary>
 		/// Returns a function pointer suitable for passing to the guest to allow it to call back while active.
 		/// Slot number is an integer that is used to keep pointers consistent across runs:  If the host is loaded
@@ -177,12 +140,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// The returned thunk will be, and the callback must be, sysv abi and will only pass up to 6 int/ptr args and no other arg types.
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_get_callback_addr(IntPtr /*WaterboxHost*/ obj, IntPtr callback, int slot, ReturnData /*UIntPtr*/ ret);
+		public abstract void wbx_get_callback_addr(IntPtr /*WaterboxHost*/ obj, IntPtr callback, int slot, out ReturnData /*UIntPtr*/ ret);
 		/// <summary>
 		/// Calls the seal operation, which is a one time action that prepares the host to save states.
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_seal(IntPtr /*WaterboxHost*/ obj, ReturnData /*void*/ ret);
+		public abstract void wbx_seal(IntPtr /*WaterboxHost*/ obj, out ReturnData /*void*/ ret);
 
 		/// <summary>
 		/// Mounts a file in the environment.  All data will be immediately consumed from the reader, which will not be used after this call.
@@ -190,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// in every savestate, or never appear in any savestates.  All savestateable files must be added in the same order for every run.
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_mount_file(IntPtr /*WaterboxHost*/ obj, string name, ReadCallback reader, IntPtr userdata, bool writable, ReturnData /*void*/ ret);
+		public abstract void wbx_mount_file(IntPtr /*WaterboxHost*/ obj, string name, ReadCallback reader, IntPtr userdata, bool writable, out ReturnData /*void*/ ret);
 
 		/// <summary>
 		/// Remove a file previously added.  Writer is optional; if provided, the contents of the file at time of removal will be dumped to it.
@@ -198,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// If the file has been used in savestates, it does not make sense to remove it here, but nothing will stop you.
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_unmount_file(IntPtr /*WaterboxHost*/ obj, string name, WriteCallback writer, IntPtr userdata, ReturnData /*void*/ ret);
+		public abstract void wbx_unmount_file(IntPtr /*WaterboxHost*/ obj, string name, WriteCallback writer, IntPtr userdata, out ReturnData /*void*/ ret);
 
 #if false
 		/// <summary>
@@ -217,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// Must always be called with the same sequence and contents of readonly files.
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_save_state(IntPtr /*WaterboxHost*/ obj, WriteCallback writer, IntPtr userdata, ReturnData /*void*/ ret);
+		public abstract void wbx_save_state(IntPtr /*WaterboxHost*/ obj, WriteCallback writer, IntPtr userdata, out ReturnData /*void*/ ret);
 
 		/// <summary>
 		/// Load state.  Must not be called before seal.  Must not be called with any writable files mounted.
@@ -226,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// Errors generally poison the environment; sorry!
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_load_state(IntPtr /*WaterboxHost*/ obj, ReadCallback reader, IntPtr userdata, ReturnData /*void*/ ret);
+		public abstract void wbx_load_state(IntPtr /*WaterboxHost*/ obj, ReadCallback reader, IntPtr userdata, out ReturnData /*void*/ ret);
 
 		/// <summary>
 		/// Control whether the host automatically evicts blocks from memory when they are not active.  For the best performance,
@@ -240,7 +203,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// Retrieve the number of pages of guest memory that this host is tracking
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_get_page_len(IntPtr /*WaterboxHost*/ obj, ReturnData /*UIntPtr*/ ret);
+		public abstract void wbx_get_page_len(IntPtr /*WaterboxHost*/ obj, out ReturnData /*UIntPtr*/ ret);
 
 		/// <summary>
 		/// Retrieve basic information for a tracked guest page.  Index should be in 0..wbx_get_page_len().
@@ -253,6 +216,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// 0x80 - dirty
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_get_page_data(IntPtr /*WaterboxHost*/ obj, UIntPtr index, ReturnData /*byte*/ ret);
+		public abstract void wbx_get_page_data(IntPtr /*WaterboxHost*/ obj, UIntPtr index, out ReturnData /*byte*/ ret);
 	}
 }

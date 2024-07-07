@@ -1,4 +1,3 @@
-﻿using System;
 using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
@@ -57,9 +56,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Returns currently used sampling rate
 		/// </summary>
-		public uint GetSamplingRate()
+		public int GetSamplingRate()
 		{
-			return (uint)dllGetAudioRate();
+			return dllGetAudioRate();
 		}
 
 		/// <summary>

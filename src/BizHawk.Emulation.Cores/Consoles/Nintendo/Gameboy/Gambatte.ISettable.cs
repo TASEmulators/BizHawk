@@ -1,8 +1,5 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-
-using Newtonsoft.Json;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -100,6 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
+		[CoreSettings]
 		public class GambatteSyncSettings
 		{
 			[DisplayName("Use official Nintendo BootROM")]

@@ -1,6 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
@@ -9,15 +7,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 	[Core(CoreNames.SubGbHawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class SubGBHawk : IEmulator, IStatable, IInputPollable,
-		ISettable<GBHawk.GBHawk.GBSettings, GBHawk.GBHawk.GBSyncSettings>, IDebuggable, ICycleTiming
+		ISettable<GBHawk.GBHawk.GBSettings, GBHawk.GBHawk.GBSyncSettings>, IDebuggable, ICycleTiming, IGameboyCommon
 	{
 		[CoreConstructor(VSystemID.Raw.GB, Priority = CorePriority.SuperLow)]
 		[CoreConstructor(VSystemID.Raw.GBC, Priority = CorePriority.SuperLow)]
 		public SubGBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ GBHawk.GBHawk.GBSettings settings, GBHawk.GBHawk.GBSyncSettings syncSettings)
 		{
 			
-			var subGBSettings = (GBHawk.GBHawk.GBSettings)settings ?? new GBHawk.GBHawk.GBSettings();
-			var subGBSyncSettings = (GBHawk.GBHawk.GBSyncSettings)syncSettings ?? new GBHawk.GBHawk.GBSyncSettings();
+			var subGBSettings = settings ?? new GBHawk.GBHawk.GBSettings();
+			var subGBSyncSettings = syncSettings ?? new GBHawk.GBHawk.GBSyncSettings();
 
 			_GBCore = new GBHawk.GBHawk(comm, game, rom, subGBSettings, subGBSyncSettings, true);
 
@@ -37,7 +35,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			ser.Register(_GBCore.ServiceProvider.GetService<ISaveRam>());
 			ser.Register(_GBCore.ServiceProvider.GetService<IRegionable>());
 			ser.Register(_GBCore.ServiceProvider.GetService<ICodeDataLogger>());
-			ser.Register(_GBCore.ServiceProvider.GetService<IGameboyCommon>());
 
 			_tracer = new TraceBuffer(_GBCore.cpu.TraceHeader);
 			ser.Register(_tracer);
@@ -79,5 +76,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 		public void Step(StepType type) => throw new NotImplementedException();
 
 		public long TotalExecutedCycles => _cycleCount;
+
+		public bool IsCGBMode => _GBCore.IsCGBMode;
+		public bool IsCGBDMGMode => _GBCore.IsCGBDMGMode;
+		public IGPUMemoryAreas LockGPU() => _GBCore.LockGPU();
+		public void SetScanlineCallback(ScanlineCallback callback, int line)
+			=> _GBCore.SetScanlineCallback(callback, line);
+		public void SetPrinterCallback(PrinterCallback callback)
+			=> _GBCore.SetPrinterCallback(callback);
 	}
 }

@@ -1,6 +1,4 @@
-﻿using BizHawk.Client.Common;
-
-namespace BizHawk.Client.EmuHawk
+﻿namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : IControlMainform
 	{
@@ -54,14 +52,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ToggleReadOnly()
 		{
-			if (CurrentTasMovie.IsPlayingOrFinished())
-			{
-				TastudioRecordMode();
-			}
-			else if (CurrentTasMovie.IsRecording())
-			{
-				TastudioPlayMode();
-			}
+			TastudioToggleReadOnly();
 		}
 
 		public bool WantsToControlStopMovie { get; private set; }
@@ -77,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool WantsToControlRewind => true;
+		public bool WantsToControlRewind { get; private set; } = true;
 
 		public void CaptureRewind()
 		{
@@ -122,13 +113,7 @@ namespace BizHawk.Client.EmuHawk
 			return success;
 		}
 
-		public bool WantsToControlReboot { get; private set; } = true;
-
-		public void RebootCore()
-		{
-			WantsToControlReboot = false;
-			NewTasMenuItem_Click(null, null);
-			WantsToControlReboot = true;
-		}
+		public bool WantsToControlReboot => false;
+		public void RebootCore() => throw new NotSupportedException("This should never be called");
 	}
 }

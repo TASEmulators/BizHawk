@@ -10,6 +10,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 		private readonly IStatable _lStates;
 		private readonly IStatable _rStates;
 
+		public bool AvoidRewind => _lStates.AvoidRewind || _rStates.AvoidRewind;
+
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			_lStates.SaveStateBinary(bw);

@@ -15,6 +15,9 @@ namespace BizHawk.Client.Common
 		public const string StartsFromSaveram = "StartsFromSaveRam";
 		public const string SavestateBinaryBase64Blob = "SavestateBinaryBase64Blob"; // this string will not contain base64: ; it's implicit (this is to avoid another big string op to dice off the base64: substring)
 		public const string Sha1 = "SHA1"; // misleading name; either CRC32, MD5, or SHA1, hex-encoded, unprefixed
+		public const string Sha256 = "SHA256";
+		public const string Md5 = "MD5";
+		public const string Crc32 = "CRC32";
 		public const string FirmwareSha1 = "FirmwareSHA1";
 		public const string Pal = "PAL";
 		public const string BoardName = "BoardName";

@@ -18,9 +18,9 @@
 				_selectedController = 0;
 			}
 
-			if (Clr == false && prevSel == false && Sel)
+			if (!Clr && !prevSel && Sel)
 			{
-				_selectedController = _selectedController + 1;
+				_selectedController++;
 			}
 		}
 
@@ -43,7 +43,7 @@
 				value |= 0x40;
 			}
 
-			if (Type != NecSystemType.TurboCD && BramEnabled == false)
+			if (Type != NecSystemType.TurboCD && !BramEnabled)
 			{
 				value |= 0x80;
 			}

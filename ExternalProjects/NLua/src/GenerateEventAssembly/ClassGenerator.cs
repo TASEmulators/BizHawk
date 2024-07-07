@@ -1,6 +1,8 @@
 ﻿using System;
 
-namespace NLua
+using NLua.Native;
+
+namespace NLua.GenerateEventAssembly
 {
 	internal class ClassGenerator
 	{
@@ -14,8 +16,6 @@ namespace NLua
 		}
 
 		public object ExtractGenerated(LuaState luaState, int stackPos)
-		{
-			return CodeGeneration.Instance.GetClassInstance(_klass, _translator.GetTable(luaState, stackPos));
-		}
+			=> CodeGeneration.Instance.GetClassInstance(_klass, _translator.GetTable(luaState, stackPos));
 	}
 }

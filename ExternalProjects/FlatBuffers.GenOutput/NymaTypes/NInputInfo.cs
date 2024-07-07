@@ -13,7 +13,7 @@ public struct NInputInfo : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
   public static NInputInfo GetRootAsNInputInfo(ByteBuffer _bb) { return GetRootAsNInputInfo(_bb, new NInputInfo()); }
   public static NInputInfo GetRootAsNInputInfo(ByteBuffer _bb, NInputInfo obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -35,7 +35,7 @@ public struct NInputInfo : IFlatbufferObject
   public byte[] GetNameArray() { return __p.__vector_as_array<byte>(6); }
   public short ConfigOrder { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetShort(o + __p.bb_pos) : (short)0; } }
   public ushort BitOffset { get { int o = __p.__offset(10); return o != 0 ? __p.bb.GetUshort(o + __p.bb_pos) : (ushort)0; } }
-  public NymaTypes.InputType Type { get { int o = __p.__offset(12); return o != 0 ? (NymaTypes.InputType)__p.bb.Get(o + __p.bb_pos) : NymaTypes.InputType.Padding; } }
+  public NymaTypes.InputType Type { get { int o = __p.__offset(12); return o != 0 ? (NymaTypes.InputType)__p.bb.Get(o + __p.bb_pos) : NymaTypes.InputType.Padding0; } }
   public NymaTypes.AxisFlags Flags { get { int o = __p.__offset(14); return o != 0 ? (NymaTypes.AxisFlags)__p.bb.Get(o + __p.bb_pos) : 0; } }
   public byte BitSize { get { int o = __p.__offset(16); return o != 0 ? __p.bb.Get(o + __p.bb_pos) : (byte)0; } }
   public NymaTypes.NInputExtra ExtraType { get { int o = __p.__offset(18); return o != 0 ? (NymaTypes.NInputExtra)__p.bb.Get(o + __p.bb_pos) : NymaTypes.NInputExtra.NONE; } }
@@ -50,7 +50,7 @@ public struct NInputInfo : IFlatbufferObject
       StringOffset NameOffset = default(StringOffset),
       short ConfigOrder = 0,
       ushort BitOffset = 0,
-      NymaTypes.InputType Type = NymaTypes.InputType.Padding,
+      NymaTypes.InputType Type = NymaTypes.InputType.Padding0,
       NymaTypes.AxisFlags Flags = 0,
       byte BitSize = 0,
       NymaTypes.NInputExtra Extra_type = NymaTypes.NInputExtra.NONE,
@@ -69,15 +69,15 @@ public struct NInputInfo : IFlatbufferObject
   }
 
   public static void StartNInputInfo(FlatBufferBuilder builder) { builder.StartTable(9); }
-  public static void AddSettingName(FlatBufferBuilder builder, StringOffset SettingNameOffset) { builder.AddOffset(0, SettingNameOffset.Value, 0); }
-  public static void AddName(FlatBufferBuilder builder, StringOffset NameOffset) { builder.AddOffset(1, NameOffset.Value, 0); }
-  public static void AddConfigOrder(FlatBufferBuilder builder, short ConfigOrder) { builder.AddShort(2, ConfigOrder, 0); }
-  public static void AddBitOffset(FlatBufferBuilder builder, ushort BitOffset) { builder.AddUshort(3, BitOffset, 0); }
-  public static void AddType(FlatBufferBuilder builder, NymaTypes.InputType Type) { builder.AddByte(4, (byte)Type, 0); }
-  public static void AddFlags(FlatBufferBuilder builder, NymaTypes.AxisFlags Flags) { builder.AddByte(5, (byte)Flags, 0); }
-  public static void AddBitSize(FlatBufferBuilder builder, byte BitSize) { builder.AddByte(6, BitSize, 0); }
-  public static void AddExtraType(FlatBufferBuilder builder, NymaTypes.NInputExtra ExtraType) { builder.AddByte(7, (byte)ExtraType, 0); }
-  public static void AddExtra(FlatBufferBuilder builder, int ExtraOffset) { builder.AddOffset(8, ExtraOffset, 0); }
+  public static void AddSettingName(FlatBufferBuilder builder, StringOffset settingNameOffset) { builder.AddOffset(0, settingNameOffset.Value, 0); }
+  public static void AddName(FlatBufferBuilder builder, StringOffset nameOffset) { builder.AddOffset(1, nameOffset.Value, 0); }
+  public static void AddConfigOrder(FlatBufferBuilder builder, short configOrder) { builder.AddShort(2, configOrder, 0); }
+  public static void AddBitOffset(FlatBufferBuilder builder, ushort bitOffset) { builder.AddUshort(3, bitOffset, 0); }
+  public static void AddType(FlatBufferBuilder builder, NymaTypes.InputType type) { builder.AddByte(4, (byte)type, 0); }
+  public static void AddFlags(FlatBufferBuilder builder, NymaTypes.AxisFlags flags) { builder.AddByte(5, (byte)flags, 0); }
+  public static void AddBitSize(FlatBufferBuilder builder, byte bitSize) { builder.AddByte(6, bitSize, 0); }
+  public static void AddExtraType(FlatBufferBuilder builder, NymaTypes.NInputExtra extraType) { builder.AddByte(7, (byte)extraType, 0); }
+  public static void AddExtra(FlatBufferBuilder builder, int extraOffset) { builder.AddOffset(8, extraOffset, 0); }
   public static Offset<NymaTypes.NInputInfo> EndNInputInfo(FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<NymaTypes.NInputInfo>(o);
@@ -149,12 +149,30 @@ public class NInputInfoT
     this.Name = null;
     this.ConfigOrder = 0;
     this.BitOffset = 0;
-    this.Type = NymaTypes.InputType.Padding;
+    this.Type = NymaTypes.InputType.Padding0;
     this.Flags = 0;
     this.BitSize = 0;
     this.Extra = null;
   }
 }
 
+
+static public class NInputInfoVerify
+{
+  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  {
+    return verifier.VerifyTableStart(tablePos)
+      && verifier.VerifyString(tablePos, 4 /*SettingName*/, false)
+      && verifier.VerifyString(tablePos, 6 /*Name*/, false)
+      && verifier.VerifyField(tablePos, 8 /*ConfigOrder*/, 2 /*short*/, 2, false)
+      && verifier.VerifyField(tablePos, 10 /*BitOffset*/, 2 /*ushort*/, 2, false)
+      && verifier.VerifyField(tablePos, 12 /*Type*/, 1 /*NymaTypes.InputType*/, 1, false)
+      && verifier.VerifyField(tablePos, 14 /*Flags*/, 1 /*NymaTypes.AxisFlags*/, 1, false)
+      && verifier.VerifyField(tablePos, 16 /*BitSize*/, 1 /*byte*/, 1, false)
+      && verifier.VerifyField(tablePos, 18 /*ExtraType*/, 1 /*NymaTypes.NInputExtra*/, 1, false)
+      && verifier.VerifyUnion(tablePos, 18, 20 /*Extra*/, NymaTypes.NInputExtraVerify.Verify, false)
+      && verifier.VerifyTableEnd(tablePos);
+  }
+}
 
 }

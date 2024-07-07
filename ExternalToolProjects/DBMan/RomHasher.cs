@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.DBManTool
@@ -48,7 +49,7 @@ namespace BizHawk.DBManTool
 
 			// Parse the filename to guess things about the rom
 			var name = Path.GetFileNameWithoutExtension(fileInfo.Name);
-			if (name.StartsWith("[BIOS] ")) 
+			if (name.StartsWithOrdinal("[BIOS] "))
 				name = name.Replace("[BIOS] ","") + " [BIOS]";
 
 			string modifiers = "";
@@ -62,7 +63,7 @@ namespace BizHawk.DBManTool
 
 			// parse out modifiers
 			var mods = new List<string>();
-			modifiers = modifiers.Replace(")", ";").Replace("]",";");
+			modifiers = modifiers.Replace(')', ';').Replace(']', ';');
 			modifiers = modifiers.Replace("(", "").Replace("[", "");
 			var m_ = modifiers.Split(';');
 			foreach (var mi in m_)
@@ -78,7 +79,7 @@ namespace BizHawk.DBManTool
 				if (info.VersionTags.Length != 0)
 					info.VersionTags += ";";
 				
-				switch (mi.ToLower())
+				switch (mi.ToLowerInvariant())
 				{
 					case "j":
 					case "jp":

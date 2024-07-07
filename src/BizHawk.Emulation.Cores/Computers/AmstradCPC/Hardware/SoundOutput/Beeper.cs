@@ -1,6 +1,5 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {

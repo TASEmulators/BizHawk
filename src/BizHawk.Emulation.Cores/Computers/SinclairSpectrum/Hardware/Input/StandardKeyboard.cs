@@ -1,5 +1,5 @@
 ﻿using BizHawk.Common;
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 
@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					lineIndex++;
 					lines >>= 1;
 				}
-				var result = (byte)status;
+				var result = status;
 
 				return result;
 			}
@@ -248,10 +248,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			// mask out lower 4 bits
-			result = result & 0x1f;
+			result &= 0x1f;
 
 			// set bit 5 & 7 to 1
-			result = result | 0xa0;
+			result |= 0xa0;
 
 			return true;
 		}

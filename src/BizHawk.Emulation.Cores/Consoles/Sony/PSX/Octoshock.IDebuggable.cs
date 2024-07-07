@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
@@ -147,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			mmd.Add(new MemoryDomainIntPtr("DCache", MemoryDomain.Endian.Little, ptr, size, true, 4));
 
 			mmd.Add(new MemoryDomainDelegate("System Bus", 0x1_0000_0000, MemoryDomain.Endian.Little,
-				(a) => { byte v; OctoshockDll.shock_PeekMemory(psx, (uint)a, out v); return v; },
+				(a) => { OctoshockDll.shock_PeekMemory(psx, (uint)a, out byte v); return v; },
 				(a, v) => { OctoshockDll.shock_PokeMemory(psx, (uint)a, v); },
 				4));
 

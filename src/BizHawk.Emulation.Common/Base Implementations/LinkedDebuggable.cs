@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -10,36 +10,37 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IDebuggable" />
 	public class LinkedDebuggable : IDebuggable
 	{
-		private readonly IEmulator[] _linkedCores;
+		private readonly IDebuggable[] _linkedCores;
+
 		private readonly int _numCores;
 
-		public LinkedDebuggable(IEmulator[] linkedCores, int numCores, MemoryCallbackSystem memoryCallbacks)
+		public LinkedDebuggable(IEnumerable<IEmulator> linkedCores, int numCores, MemoryCallbackSystem memoryCallbacks)
 		{
-			_linkedCores = linkedCores;
-			_numCores = numCores;
+			_linkedCores = linkedCores.Take(numCores).Select(static core => core.AsDebuggable()).ToArray();
+			_numCores = numCores; // why though?
 			MemoryCallbacks = memoryCallbacks;
 		}
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			var ret = new List<KeyValuePair<string, RegisterValue>>();
-
+			Dictionary<string, RegisterValue> dict = new();
 			for (int i = 0; i < _numCores; i++)
 			{
-				ret.AddRange(_linkedCores[i].AsDebuggable().GetCpuFlagsAndRegisters()
-					.Select(reg => new KeyValuePair<string, RegisterValue>($"P{i + 1} " + reg.Key, reg.Value)).ToList());
+				var pfx = $"P{i + 1} ";
+				foreach (var reg in _linkedCores[i].GetCpuFlagsAndRegisters()) dict[pfx + reg.Key] = reg.Value;
 			}
-
-			return ret.ToDictionary(pair => pair.Key, pair => pair.Value);
+			return dict;
 		}
 
 		public void SetCpuRegister(string register, int value)
 		{
 			for (int i = 0; i < _numCores; i++)
 			{
-				if (register.StartsWith($"P{i + 1} "))
+				var pfx = $"P{i + 1} ";
+				if (register.StartsWithOrdinal(pfx))
 				{
-					_linkedCores[i].AsDebuggable().SetCpuRegister(register.Replace($"P{i + 1} ", ""), value);
+					_linkedCores[i].SetCpuRegister(register.Substring(pfx.Length), value);
+					return;
 				}
 			}
 		}

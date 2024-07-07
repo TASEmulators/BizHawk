@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 
 using Newtonsoft.Json;
@@ -9,6 +8,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class GambatteLink : ITextStatable
 	{
+		public bool AvoidRewind
+		{
+			get
+			{
+				var ret = false;
+				for (var i = 0; i < _numCores; i++)
+				{
+					ret |= _linkedCores[i].AvoidRewind;
+				}
+
+				return ret;
+			}
+		}
+
 		public void SaveStateText(TextWriter writer)
 		{
 			ser.Serialize(writer, new GBLSerialized(this));

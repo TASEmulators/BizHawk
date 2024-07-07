@@ -7,13 +7,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 	{
 		public enum LeftPortDevice : uint
 		{
-			//None = 0, // something in the libretro spaghetti input goes wonky with None
-			Joypad = 1
+			None = 0,
+			Joypad = 1,
+			Multitap = 2
 		}
 
 		public enum RightPortDevice : uint
 		{
-			//None = 0, // something in the libretro spaghetti input goes wonky with None
+			None = 0,
 			Joypad = 1,
 			Multitap = 2,
 			Mouse = 3,
@@ -21,6 +22,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			Justifier = 5
 		}
 
+		public delegate bool OpenAudio(ushort trackId);
+		public delegate void SeekAudio(long offset, bool relative);
+		public delegate byte ReadAudio();
+		public delegate bool AudioEnd();
+
+		[BizImport(CC)]
+		public abstract void SetMsu1Callbacks(OpenAudio openAudio, SeekAudio seekAudio, ReadAudio readAudio, AudioEnd audioEnd);
 		[BizImport(CC)]
 		public abstract void SetButtons(short[] buttons);
 		[BizImport(CC)]

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
@@ -29,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public void SetCpuRegister(string register, int value)
 		{
-			LibSameboy.sameboy_setreg(SameboyState, register.ToUpper() switch
+			LibSameboy.sameboy_setreg(SameboyState, register.ToUpperInvariant() switch
 			{
 				"PC" => 0,
 				"A" => 1,

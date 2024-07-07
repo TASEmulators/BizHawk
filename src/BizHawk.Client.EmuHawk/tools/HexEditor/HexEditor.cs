@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -17,12 +16,36 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
 	// int to long TODO: 32 bit domains have more digits than the hex editor can account for and the address covers up the 0 column
 	public partial class HexEditor : ToolFormBase, IToolFormAutoConfig
 	{
+		private sealed class N64MatrixDisplayDialog : Form
+		{
+			public N64MatrixDisplayDialog(IReadOnlyList<IReadOnlyList<string>> strings)
+			{
+				TableLayoutPanel tlp = new() { Size = new(352, 104) };
+				const int SIZE = 4;
+				for (var y = 0; y < SIZE; y++) tlp.RowStyles.Add(new());
+				for (var x = 0; x < SIZE; x++) tlp.ColumnStyles.Add(new());
+				for (var y = 0; y < SIZE; y++) for (var x = 0; x < SIZE; x++) tlp.Controls.Add(
+					new SzTextBoxEx { ReadOnly = true, Size = new(80, 23), Text = strings[y][x] },
+					row: y,
+					column: x);
+				SzButtonEx btnCopyTSV = new() { Size = new(128, 23), Text = ".tsv --> Clipboard" };
+				btnCopyTSV.Click += (_, _) => Clipboard.SetText(string.Join(
+					"\n",
+					strings.Select(static l => string.Join("\t", l))));
+				ClientSize = new(352, 144);
+				SuspendLayout();
+				Controls.Add(new SingleColumnFLP { Controls = { tlp, btnCopyTSV } });
+				ResumeLayout();
+			}
+		}
+
 		private class NullMemoryDomain : MemoryDomain
 		{
 			public override byte PeekByte(long addr) => 0;
@@ -281,7 +304,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			long found = -1;
 
-			var search = value.Replace(" ", "").ToUpper();
+			var search = value.Replace(" ", "").ToUpperInvariant();
 			if (string.IsNullOrEmpty(search))
 			{
 				return;
@@ -329,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 				GoToAddress(found);
 				_findStr = search;
 			}
-			else if (wrap == false)
+			else if (!wrap)
 			{
 				FindPrev(value, true); // Search the opposite direction if not found
 			}
@@ -341,7 +364,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			long found = -1;
 
-			var search = value.Replace(" ", "").ToUpper();
+			var search = value.Replace(" ", "").ToUpperInvariant();
 			if (string.IsNullOrEmpty(search))
 			{
 				return;
@@ -376,7 +399,7 @@ namespace BizHawk.Client.EmuHawk
 				GoToAddress(found);
 				_findStr = search;
 			}
-			else if (wrap == false)
+			else if (!wrap)
 			{
 				FindPrev(value, true); // Search the opposite direction if not found
 			}
@@ -830,6 +853,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			var cheats = new List<Cheat>();
 			if (_highlightedAddress >= 0)
 			{
 				var watch = Watch.GenerateWatch(
@@ -839,14 +863,13 @@ namespace BizHawk.Client.EmuHawk
 					Common.WatchDisplayType.Hex,
 					BigEndian);
 
-				MainForm.CheatList.Add(new Cheat(
+				cheats.Add(new Cheat(
 					watch,
 					watch.Value));
 			}
 
 			if (_secondaryHighlightedAddresses.Any())
 			{
-				var cheats = new List<Cheat>();
 				foreach (var address in _secondaryHighlightedAddresses)
 				{
 					var watch = Watch.GenerateWatch(
@@ -860,9 +883,9 @@ namespace BizHawk.Client.EmuHawk
 						watch,
 						watch.Value));
 				}
-
-				MainForm.CheatList.AddRange(cheats);
 			}
+
+			MainForm.CheatList.AddRange(cheats);
 
 			MemoryViewerBox.Refresh();
 		}
@@ -882,9 +905,8 @@ namespace BizHawk.Client.EmuHawk
 			if (_secondaryHighlightedAddresses.Any())
 			{
 				MainForm.CheatList.RemoveRange(
-					MainForm.CheatList.Where(
-						cheat => !cheat.IsSeparator && cheat.Domain == _domain &&
-							_secondaryHighlightedAddresses.Contains(cheat.Address ?? 0)));
+					MainForm.CheatList.Where(cheat => !cheat.IsSeparator && cheat.Domain == _domain
+						&& _secondaryHighlightedAddresses.Contains(cheat.Address ?? 0)));
 			}
 
 			MemoryViewerBox.Refresh();
@@ -1372,10 +1394,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// and add HighlightedAddress if present
-			if (_highlightedAddress.HasValue)
-			{
-				addresses[addresses.Length - 1] = _highlightedAddress.Value;
-			}
+			if (_highlightedAddress is long l) addresses[addresses.Length - 1] = l;
 
 			// these need to be sorted. it's not just for HighlightedAddress, _secondaryHighlightedAddresses can even be jumbled
 			Array.Sort(addresses);
@@ -1515,10 +1534,8 @@ namespace BizHawk.Client.EmuHawk
 			AddToRamWatchMenuItem.Enabled =
 				_highlightedAddress.HasValue;
 
-			PokeAddressMenuItem.Enabled =
-				FreezeAddressMenuItem.Enabled =
-				_highlightedAddress.HasValue &&
-				_domain.Writable;
+			PokeAddressMenuItem.Enabled = FreezeAddressMenuItem.Enabled
+				= _highlightedAddress is not null && _domain.Writable;
 		}
 
 		private void MemoryDomainsMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1942,25 +1959,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var data = Clipboard.GetDataObject();
 
-			CopyContextItem.Visible =
-				AddToRamWatchContextItem.Visible =
-				_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any();
+			var selectionNotEmpty = _highlightedAddress is not null || _secondaryHighlightedAddresses.Any();
+			CopyContextItem.Visible = AddToRamWatchContextItem.Visible = selectionNotEmpty;
 
-			FreezeContextItem.Visible =
-				PokeContextItem.Visible =
-				IncrementContextItem.Visible =
-				DecrementContextItem.Visible =
-				ContextSeparator2.Visible =
-				(_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
-				_domain.Writable;
+			FreezeContextItem.Visible = PokeContextItem.Visible
+				= IncrementContextItem.Visible
+				= DecrementContextItem.Visible
+				= ContextSeparator2.Visible
+					= selectionNotEmpty && _domain.Writable;
 
 			UnfreezeAllContextItem.Visible = MainForm.CheatList.AnyActive;
 			PasteContextItem.Visible = _domain.Writable && data != null && data.GetDataPresent(DataFormats.Text);
 
-			ContextSeparator1.Visible =
-				_highlightedAddress.HasValue ||
-				_secondaryHighlightedAddresses.Any() ||
-				(data != null && data.GetDataPresent(DataFormats.Text));
+			ContextSeparator1.Visible = selectionNotEmpty || data?.GetDataPresent(DataFormats.Text) is true;
 
 			if (_highlightedAddress.HasValue && IsFrozen(_highlightedAddress.Value))
 			{
@@ -1973,8 +1984,9 @@ namespace BizHawk.Client.EmuHawk
 				FreezeContextItem.Image = Resources.Freeze;
 			}
 
-
-			toolStripMenuItem1.Visible = viewN64MatrixToolStripMenuItem.Visible = DataSize == 4;
+			var shouldShowN64Matrix = _highlightedAddress is not null && Emulator.SystemId is VSystemID.Raw.N64;
+			toolStripMenuItem1.Visible = viewN64MatrixToolStripMenuItem.Visible = shouldShowN64Matrix;
+			viewN64MatrixToolStripMenuItem.Enabled = shouldShowN64Matrix && (_highlightedAddress.Value & 0b11) is 0;
 		}
 
 		private void IncrementContextItem_Click(object sender, EventArgs e)
@@ -2207,44 +2219,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void viewN64MatrixToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!_highlightedAddress.HasValue)
+			static double Wat(uint n)
+				=> unchecked((int) n) / 65536.0;
+			if (_highlightedAddress is null) return;
+			var addr = _highlightedAddress.Value & ~0b11L;
+			const int SIZE = 4;
+			var raw = new ushort[2 * SIZE * SIZE];
+			_domain.BulkPeekUshort(addr.RangeTo(addr + (SIZE * SIZE * sizeof(float) - 1)), bigEndian: true, raw);
+			List<List<string>> strings = new();
+			for (var y = 0; y < SIZE; y++)
 			{
-				return;
+				strings.Add(new());
+				for (var x = 0; x < SIZE; x++)
+				{
+					var i = y * SIZE + x;
+					uint n = raw[i];
+					n <<= 16;
+					n |= raw[SIZE * SIZE + i];
+					strings[y].Add(((float) Wat(n)).ToString(CultureInfo.InvariantCulture)); // was going to right-pad, as the previous code did (poorly), but I realised that's not necessary and not really helpful, as well as being hard to get right --yoshi
+				}
 			}
-
-			bool bigEndian = true;
-			long addr = _highlightedAddress.Value;
-			//ushort  = _domain.PeekWord(addr, bigEndian);
-
-			float[,] matVals = new float[4,4];
-
-			for (int i = 0; i < 4; i++)
-			{
-					for (int j = 0; j < 4; j++)
-					{
-						ushort hi = _domain.PeekUshort(((addr+(i<<3)+(j<<1)     )^0x0), bigEndian);
-						ushort lo = _domain.PeekUshort(((addr+(i<<3)+(j<<1) + 32)^0x0), bigEndian);
-						matVals[i,j] = (int)(((hi << 16) | lo)) / 65536.0f;
-					}
-			}
-
-#if false // if needed
-			DialogController.ShowMessageBox(new SlimDX.Matrix {
-				M11 = matVals[0, 0], M12 = matVals[0, 1], M13 = matVals[0, 2], M14 = matVals[0, 3],
-				M21 = matVals[1, 0], M22 = matVals[1, 1], M23 = matVals[1, 2], M24 = matVals[1, 3],
-				M31 = matVals[2, 0], M32 = matVals[2, 1], M33 = matVals[2, 2], M34 = matVals[2, 3],
-				M41 = matVals[3, 0], M42 = matVals[3, 1], M43 = matVals[3, 2], M44 = matVals[3, 3]
-			}.ToString());
-#endif
-
-			using var sw = new StringWriter();
-			for (int i = 0; i < 4; i++)
-			{
-				sw.WriteLine("{0,18:0.00000} {1,18:0.00000} {2,18:0.00000} {3,18:0.00000}", matVals[i, 0], matVals[i, 1], matVals[i, 2], matVals[i, 3]);
-			}
-
-			var str = sw.ToString();
-			DialogController.ShowMessageBox(str);
+			using N64MatrixDisplayDialog dialog = new(strings);
+			this.ShowDialogAsChild(dialog);
 		}
 	}
 }

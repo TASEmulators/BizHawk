@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
@@ -161,6 +160,14 @@ namespace BizHawk.Client.EmuHawk
 				case "Toggle Messages":
 					Config.DisplayMessages ^= true;
 					break;
+				case "Toggle Display Nothing":
+					// TODO: account for 1 when implemented
+					Config.DispSpeedupFeatures = Config.DispSpeedupFeatures == 0 ? 2 : 0;
+					break;
+				case "Accept Background Input":
+					Config.AcceptBackgroundInput ^= true;
+					AddOnScreenMessage($"Accept Background Input toggled {(Config.AcceptBackgroundInput ? "On" : "Off")}");
+					break;
 
 				// Save States
 				case "Save State 1":
@@ -302,6 +309,12 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Lua Console":
 					OpenLuaConsole();
+					break;
+				case "Toggle Last Lua Script":
+					if (Tools.IsLoaded<LuaConsole>())
+					{
+						Tools.LuaConsole.ToggleLastLuaScript();
+					}
 					break;
 				case "Cheats":
 					Tools.Load<Cheats>();
@@ -593,6 +606,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Rewind":
 				case "Fast Forward":
 				case "Open RA Overlay":
+					return true;
 				case "RA Up":
 				case "RA Down":
 				case "RA Left":
@@ -600,7 +614,8 @@ namespace BizHawk.Client.EmuHawk
 				case "RA Confirm":
 				case "RA Cancel":
 				case "RA Quit":
-					return true;
+					// don't consider these keys outside of RAIntegration overlay being active
+					return RA is RAIntegration { OverlayActive: true };
 			}
 		}
 	}

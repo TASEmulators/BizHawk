@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
@@ -9,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			int[] data = new int[10];
+			var data = new int[10];
 			LibGambatte.gambatte_getregs(GambatteState, data);
 
 			return new Dictionary<string, RegisterValue>
@@ -38,14 +37,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			if (register.Length == 9 && register.Substring(4, 5).ToUpperInvariant() == " BANK")
 			{
-				LibGambatte.BankType type = (LibGambatte.BankType)Enum.Parse(typeof(LibGambatte.BankType), register.Substring(0, 4).ToUpperInvariant());
+				var type = (LibGambatte.BankType)Enum.Parse(typeof(LibGambatte.BankType), register.Substring(0, 4).ToUpperInvariant());
 				LibGambatte.gambatte_setbank(GambatteState, type, value);
 			}
 			else
 			{
-				int[] data = new int[10];
+				var data = new int[10];
 				LibGambatte.gambatte_getregs(GambatteState, data);
-				LibGambatte.RegIndices index = (LibGambatte.RegIndices)Enum.Parse(typeof(LibGambatte.RegIndices), register.ToUpperInvariant());
+				var index = (LibGambatte.RegIndices)Enum.Parse(typeof(LibGambatte.RegIndices), register.ToUpperInvariant());
 				data[(int)index] = value & (index <= LibGambatte.RegIndices.SP ? 0xffff : 0xff);
 				LibGambatte.gambatte_setregs(GambatteState, data);
 			}
@@ -58,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public long TotalExecutedCycles => Math.Max((long)_cycleCount, (long)callbackCycleCount);
 
-		private MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus", "ROM", "VRAM", "SRAM", "WRAM", "OAM", "HRAM" });
+		private MemoryCallbackSystem _memorycallbacks = new(new[] { "System Bus", "ROM", "VRAM", "SRAM", "WRAM", "OAM", "HRAM" });
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 
 		private LibGambatte.MemoryCallback _readcb;
@@ -87,75 +86,80 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "System Bus");
 					var bank = LibGambatte.gambatte_getaddrbank(GambatteState, (ushort)address);
-					if (address < 0x4000u) // usually rom bank 0 for most mbcs, some mbcs might have this at a different rom bank
+					switch (address)
 					{
-						address += (uint)(bank * 0x4000);
-						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "ROM");
-					}
-					else if (address < 0x8000u) // rom bank x
-					{
-						address += (uint)(bank * 0x4000);
-						address -= 0x4000u;
-						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "ROM");
-					}
-					else if (address < 0xA000u) // vram (may be banked on CGB in CGB enhanced mode)
-					{
-						if (IsCGBMode && !IsCGBDMGMode)
+						// usually rom bank 0 for most mbcs, some mbcs might have this at a different rom bank
+						case < 0x4000u:
+							address += (uint)(bank * 0x4000);
+							MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "ROM");
+							break;
+						// rom bank x
+						case < 0x8000u:
+							address += (uint)(bank * 0x4000);
+							address -= 0x4000u;
+							MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "ROM");
+							break;
+						// vram (may be banked on CGB in CGB enhanced mode)
+						case < 0xA000u:
 						{
+							if (IsCGBMode && !IsCGBDMGMode)
+							{
+								address += (uint)(bank * 0x2000);
+							}
+							address -= 0x8000u;
+							MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "VRAM");
+							break;
+						}
+						// sram (may be banked)
+						case < 0xC000u:
 							address += (uint)(bank * 0x2000);
-						}
-						address -= 0x8000u;
-						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "VRAM");
-					}
-					else if (address < 0xC000u) // sram (may be banked)
-					{
-						address += (uint)(bank * 0x2000);
-						address -= 0xA000u;
-						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "SRAM");
-					}
-					else if (address < 0xD000u) // wram bank 0
-					{
-						address -= 0xC000u;
-						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "WRAM");
-					}
-					else if (address < 0xE000u) // wram bank x (always one for dmg/cgb in dmg mode)
-					{
-						if (IsCGBMode && !IsCGBDMGMode)
+							address -= 0xA000u;
+							MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "SRAM");
+							break;
+						// wram bank 0
+						case < 0xD000u:
+							address -= 0xC000u;
+							MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "WRAM");
+							break;
+						// wram bank x (always one for dmg/cgb in dmg mode)
+						case < 0xE000u:
 						{
-							address += (uint)(bank * 0x1000);
+							if (IsCGBMode && !IsCGBDMGMode)
+							{
+								address += (uint)(bank * 0x1000);
+							}
+							address -= 0xD000u;
+							MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "WRAM");
+							break;
 						}
-						address -= 0xD000u;
-						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "WRAM");
-					}
-					else if (address < 0xFE00u) // echo ram
-					{
-						// do we do something here?
-					}
-					else if (address < 0xFEA0u) // oam
-					{
-						address -= 0xFE00u;
-						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "OAM");
-					}
-					else if (address < 0xFF00u) // "extra" oam
-					{
-						// do we do something here?
-					}
-					else if (address < 0xFF80u) // mmio
-					{
-						// do we do something here?
-					}
-					else if (address < 0xFFFF) // hram
-					{
-						address -= 0xFF80u;
-						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "HRAM");
-					}
-					else if (address == 0xFFFF) // ie reg
-					{
-						// do we do something here?
-					}
-					else
-					{
-						throw new InvalidOperationException("Core accessed invalid address???");
+						// echo ram
+						case < 0xFE00u:
+							// do we do something here?
+							break;
+						// oam
+						case < 0xFEA0u:
+							address -= 0xFE00u;
+							MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "OAM");
+							break;
+						// "extra" oam
+						case < 0xFF00u:
+							// do we do something here?
+							break;
+						// mmio
+						case < 0xFF80u:
+							// do we do something here?
+							break;
+						// hram
+						case < 0xFFFF:
+							address -= 0xFF80u;
+							MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "HRAM");
+							break;
+						// ie reg
+						case 0xFFFF:
+							// do we do something here?
+							break;
+						default:
+							throw new InvalidOperationException("Core accessed invalid address???");
 					}
 				}
 			};

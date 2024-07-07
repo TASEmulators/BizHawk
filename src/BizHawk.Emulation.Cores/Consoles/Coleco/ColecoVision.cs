@@ -1,6 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
@@ -15,7 +14,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			_syncSettings = (ColecoSyncSettings)syncSettings ?? new ColecoSyncSettings();
+			_syncSettings = syncSettings ?? new ColecoSyncSettings();
 			bool skipBios = _syncSettings.SkipBiosIntro;
 
 			_cpu = new Z80A

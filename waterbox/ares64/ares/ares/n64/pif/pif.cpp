@@ -24,7 +24,9 @@ auto PIF::unload() -> void {
 }
 
 auto PIF::main() -> void {
+  while(Thread::clock < 0) {
     mainHLE();
+  }
 }
 
 auto PIF::power(bool reset) -> void {

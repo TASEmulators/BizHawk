@@ -1,180 +1,192 @@
-# THIS IS A WORK IN PROGRESS!
-# To save you having to build Mono locally, install the Cachix client (`nix-env -iA nixpkgs.cachix`) and run `cachix use mono-for-bizhawk` (both commands only need to run once ever). See https://docs.cachix.org for more info.
-
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/21.11.tar.gz") {}
-# infrastructure
+{ system ? builtins.currentSystem
+, pkgs ? import (builtins.fetchTarball {
+	url = "https://github.com/NixOS/nixpkgs/archive/24.05.tar.gz";
+	sha256 = "1lr1h35prqkd1mkmzriwlpvxcb34kmhc9dnr48gkm8hh089hifmx";
+}) { inherit system; }
+, lib ? pkgs.lib
 , stdenv ? pkgs.stdenvNoCC
+# infrastructure
 , buildDotnetModule ? pkgs.buildDotnetModule
+, dpkg ? pkgs.dpkg
 , fetchFromGitHub ? pkgs.fetchFromGitHub
-#, makeDesktopItem ? pkgs.makeDesktopItem
-, makeWrapper ? pkgs.makeWrapper
+, fetchFromGitLab ? pkgs.fetchFromGitLab
+, fetchpatch ? pkgs.fetchpatch
+, fetchzip ? pkgs.fetchzip
+, makeDesktopItem ? pkgs.makeDesktopItem
+, mkNugetDeps ? pkgs.mkNugetDeps
+, runCommand ? pkgs.runCommand
+, symlinkJoin ? pkgs.symlinkJoin
+, writeShellScript ? pkgs.writeShellScript
+, writeShellScriptBin ? pkgs.writeShellScriptBin
+, writeText ? pkgs.writeText
 # source
-, useCWDAsSource ? false # deprecated
-, hawkSourceInfoDev ? rec {
-	version = "2.8.1-local"; # distinguishes parallel installs' config and other data
-	shorthash = "000000000"; # this and the branch name are written into movies and savestates, written to config to detect in-place upgrades (N/A to Nix), and of course also shown in the About dialog
-	branch = "master"; # must be regex-escaped (interpolated as `sed "s/.../${branch}/"`)
-	drv = builtins.path { path = ./.; name = "BizHawk-${version}"; }; # did have filter here for speed, but it wasn't faster and it wasn't correct and it couldn't be made correct and I'm mad
+, hawkSourceInfoDevBuild ? let # called "dev build", but you could pass whatever branch and commit you want here
+	version = "2.9.2-local"; # used in default value of `BIZHAWK_DATA_HOME`, which distinguishes parallel installs' config and other data
+in {
+	inherit version;
+	src = builtins.path { path = ./.; name = "BizHawk-${version}"; }; # source derivation; did have filter here for speed, but it wasn't faster and it wasn't correct and it couldn't be made correct and I'm mad
 }
 # makedeps
-, dotnet-sdk_5 ? pkgs.dotnetCorePackages.sdk_5_0
-, dotnet-sdk_6 ? pkgs.dotnetCorePackages.sdk_6_0
-# rundeps for NixOS hosts
-#, gtk2-x11 ? pkgs.gtk2-x11
-# rundeps for all Linux hosts
-, mesa ? pkgs.mesa
+, dotnet-sdk_8 ? pkgs.dotnet-sdk_8
+, dotnet-sdk_6 ? pkgs.dotnet-sdk_6
+, dotnet-sdk_5 ? let result = builtins.tryEval pkgs.dotnet-sdk_5; in if result.success
+	then result.value
+	else (import (fetchzip {
+		url = "https://github.com/NixOS/nixpkgs/archive/a8f575995434695a10b574d35ca51b0f26ae9049.tar.gz"; # commit immediately before .NET 5 was removed
+		hash = "sha512-3ysJjKK1lYV1r/zLohyuD1fiK+8TD3MMA3TrX9fb42nKqzfGGW62Aom7ltiyyxbVbBYOCXUy41Z5Y0j2VOxRKw==";
+	}) { inherit system; }).dotnet-sdk_5
+, git ? pkgs.gitMinimal # only when building from-CWD (`-local`)
+# rundeps
+, coreutils ? pkgs.coreutils
+, kate ? pkgs.kate.overrideAttrs (oldAttrs: {
+	patches = (oldAttrs.patches or []) ++ [ (fetchpatch {
+		url = "https://invent.kde.org/utilities/kate/-/commit/9ddf4f0c9eb3c26a0ab33c862d2b161bcbdc6a6e.patch"; # Fix name of OmniSharp LSP binary
+		hash = "sha256-a2KqoxuuVhfAQUJA3/yEQb1QCoa1JCvLz7BZZnSLnzI=";
+	}) ];
+})
+, libgdiplus ? pkgs.libgdiplus
+, libGL ? pkgs.libGL
+, lua ? pkgs.lua54Packages.lua
 , mono ? null
+, nixGLChannel ? (pkgs.nixgl or import (fetchzip {
+	url = "https://github.com/guibou/nixGL/archive/489d6b095ab9d289fe11af0219a9ff00fe87c7c5.tar.gz";
+	hash = "sha512-GvV707ftLvE0MCTfMJb/M86S2Nxf3vai+HPwq0QvJylmMBwliqYx/nW8X2ja2ruOHzaw3MXXmAxjnv5MMUn07w==";
+}) { inherit system; })
+, nixGL ? nixGLChannel.auto.nixGLDefault
+, omnisharp-roslyn ? pkgs.omnisharp-roslyn
+#, nixVulkan ? nixGLChannel.auto.nixVulkanNvidia
 , openal ? pkgs.openal
-, uname ? stdenv
+, SDL2 ? pkgs.SDL2
+, udev ? pkgs.udev
 , zstd ? pkgs.zstd
 # other parameters
 , buildConfig ? "Release" # "Debug"/"Release"
-, debugPInvokes ? false # forwarded to Dist/wrapper-scripts.nix
-, doCheck ? false # runs `Dist/BuildTest${buildConfig}.sh`
-, forNixOS ? false
-, initConfig ? {} # forwarded to Dist/wrapper-scripts.nix (see docs there)
-}:
-let
-	lib = pkgs.lib;
-	commentUnless = b: lib.optionalString (!b) "# ";
-	versionAtLeast = exVer: acVer: builtins.compareVersions exVer acVer <= 0;
-	monoFinal = if mono != null
-		then mono
-		else if versionAtLeast "6.12.0.151" pkgs.mono.version
-			then pkgs.mono
-			else pkgs.callPackage Dist/mono-6.12.0.151.nix {}; # not actually reproducible :( https://github.com/NixOS/nixpkgs/issues/143110#issuecomment-984251253
-	buildAssembliesFor = hawkSourceInfo: buildDotnetModule rec {
-		pname = "BizHawk";
-		version = hawkSourceInfo.version;
-		src = hawkSourceInfo.drv;
-		outputs = [ "bin" "out" ];
-		dotnet-sdk = if hawkSourceInfo ? dotnet-sdk then hawkSourceInfo.dotnet-sdk else dotnet-sdk_6;
-		nativeBuildInputs = [ zstd ];
-		buildInputs = [ mesa monoFinal openal uname zstd ];# ++ lib.optionals (forNixOS) [ gtk2-x11 ];
-		projectFile = "BizHawk.sln";
-		nugetDeps = if hawkSourceInfo ? nugetDeps then hawkSourceInfo.nugetDeps else Dist/deps.nix;
-		extraDotnetBuildFlags = "-maxcpucount:$NIX_BUILD_CORES -p:BuildInParallel=true --no-restore";
-		postPatch = ''
-			# confused? '$(...)' is literal here
-			# these scripts invoke Git in subshells and we want to run them now, at compile time, without Git
-			sed -i 's/$(git rev-parse --verify HEAD)/${hawkSourceInfo.shorthash}/' Dist/.InvokeCLIOnMainSln.sh
-			sed -i -e 's/$(git rev-parse --abbrev-ref HEAD)/${hawkSourceInfo.branch}/' -e 's/$(git log -1 --format="%h")/${hawkSourceInfo.shorthash}/' Build/standin.sh
-			sed -i 's/$(git rev-list HEAD --count)//' Build/standin.sh # const field is unused
-
-			# stop MSBuild from copying Assets, we'll do that later
-			sed -i '/Assets\/\*\*/d' src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj
-			sed -i '/mkdir "packaged_output\/Firmware/d' Dist/Package.sh # and we don't need this
+, debugPInvokes ? false # forwarded to Dist/launch-scripts.nix
+, debugDotnetHostCrashes ? false # forwarded to Dist/launch-scripts.nix
+, doCheck ? true # runs `Dist/BuildTest${buildConfig}.sh`
+, emuhawkBuildFlavour ? "NixHawk"
+, extraDefines ? "" # added to `<DefineConstants/>`, so ';'-separated
+, extraDotnetBuildFlags ? "" # currently passed to EVERY `dotnet build` and `dotnet test` invocation (and does not replace the flags for parallel compilation added by default)
+, forNixOS ? true
+, initConfig ? {} # forwarded to Dist/launch-scripts.nix (see docs there)
+}: let
+	isVersionAtLeast = lib.flip lib.versionAtLeast; # I stand by this being the more useful param order w.r.t. currying
+	replaceDotWithUnderscore = s: lib.replaceStrings [ "." ] [ "_" ] s;
+	/** you can't actually make hard links in the sandbox, so this just copies, and we'll rely on Nix' automatic deduping */
+	hardLinkJoin =
+		{ name
+		, paths
+		, preferLocalBuild ? true
+		, allowSubstitutes ? false
+		, __contentAddressed ? false
+		}: runCommand name {
+			inherit __contentAddressed allowSubstitutes paths preferLocalBuild;
+			passAsFile = [ "paths" ];
+		} ''
+			mkdir -p $out
+			for d in $(cat $pathsPath); do
+				cd "$d"
+				find . -type d -exec mkdir -p "$out/{}" \;
+				for f in $(find . -type f); do cp -T "$(realpath "$f")" "$out/$f"; done
+			done
 		'';
-		buildPhase = ''
-			cd src/BizHawk.Version
-			dotnet build ${extraDotnetBuildFlags}
-			cd ../..
-			Dist/Build${buildConfig}.sh ${extraDotnetBuildFlags}
-			printf "NixHawk" >output/dll/custombuild.txt
-			Dist/Package.sh linux-x64
-		'';
-		inherit doCheck;
-		checkPhase = ''
-			export GITLAB_CI=1 # pretend to be in GitLab CI -- platform-specific tests don't run in CI because they assume an Arch filesystem (on Linux hosts)
-			# from 2.7.1, use standard -p:ContinuousIntegrationBuild=true instead
-			export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${lib.makeLibraryPath [ zstd ]}"
-			Dist/BuildTest${buildConfig}.sh ${extraDotnetBuildFlags}
-
-			# can't build w/ extra Analyzers, it fails to restore :(
-#			Dist/Build${buildConfig}.sh -p:MachineRunAnalyzersDuringBuild=true ${extraDotnetBuildFlags}
-		'';
-		installPhase = ''
-			cp -avT packaged_output $bin
-			cp -avt $bin Assets/defctrl.json && rm Assets/defctrl.json
-			cp -avt $bin/dll Assets/dll/* && rm -r Assets/dll
-			rm Assets/EmuHawkMono.sh # replaced w/ scripts from wrapperScripts
-			cp -avt $bin Assets/gamedb && rm -r Assets/gamedb
-			cp -avt $bin Assets/Shaders && rm -r Assets/Shaders
-			cp -avT Assets $out
-		'';
-		dontPatchELF = true;
+	inherit (import Dist/historical.nix {
+		inherit lib
+			isVersionAtLeast replaceDotWithUnderscore
+			fetchFromGitHub fetchFromGitLab mkNugetDeps
+			dotnet-sdk_5 dotnet-sdk_6 dotnet-sdk_8;
+	}) depsForHistoricalRelease populateHawkSourceInfo releaseArtifactInfos releaseFrags releaseTagSourceInfos;
+	launchScriptsFor = bizhawkAssemblies: isManualLocalBuild: import Dist/launch-scripts.nix {
+		inherit lib
+			writeShellScript writeText
+			bizhawkAssemblies nixGL
+			debugPInvokes debugDotnetHostCrashes initConfig isManualLocalBuild;
+		mkfifo = coreutils;
+		mktemp = coreutils;
 	};
-	wrapperScriptsFor = { hawkSourceInfo, bizhawkAssemblies }: import Dist/wrapper-scripts.nix {
-		inherit (pkgs) lib writeShellScriptBin writeText;
-		inherit commentUnless versionAtLeast mesa openal zstd debugPInvokes initConfig;
-		bizhawk = bizhawkAssemblies;
-		hawkVersion = hawkSourceInfo.version;
-		mono = monoFinal;
-	};
-	mkWrapperWrapper = { hawkSourceInfo, bizhawkAssemblies, pname, innerWrapper, desktopName }: stdenv.mkDerivation rec {
-		inherit pname;
-		version = hawkSourceInfo.version;
-		exeName = "${pname}-${version}";
-		nativeBuildInputs = [ makeWrapper ];
-		buildInputs = [ bizhawkAssemblies ];
-		# there must be a helper for this somewhere...
-		dontUnpack = true;
-		dontPatch = true;
-		dontConfigure = true;
-		dontBuild = true;
-		installPhase = ''
-			mkdir -p $out/bin
-			makeWrapper ${innerWrapper} $out/bin/${exeName} \
-				--set BIZHAWK_HOME ${bizhawkAssemblies}
-		'';
-		dontFixup = true;
-#		desktopItems = [ (makeDesktopItem {
-#			name = "${pname}-${version}"; # actually filename
-#			exec = "${exeName}";
-#			inherit desktopName; # actually Name
-#		}) ];
-	};
-	buildDiscoHawkWrapperFor = { hawkSourceInfo, bizhawkAssemblies ? buildAssembliesFor hawkSourceInfo }: let
-		wrapperScripts = wrapperScriptsFor { inherit hawkSourceInfo bizhawkAssemblies; };
-	in mkWrapperWrapper {
-		inherit hawkSourceInfo bizhawkAssemblies;
-		pname = "discohawk-monort";
-		innerWrapper = "${wrapperScripts.discoWrapper}/bin/discohawk-wrapper";
-		desktopName = "DiscoHawk (Mono Runtime)";
-	};
-	buildEmuHawkWrapperFor = { hawkSourceInfo, bizhawkAssemblies ? buildAssembliesFor hawkSourceInfo }: let
-		wrapperScripts = wrapperScriptsFor { inherit hawkSourceInfo bizhawkAssemblies; };
-	in mkWrapperWrapper {
-		inherit hawkSourceInfo bizhawkAssemblies;
-		pname = "emuhawk-monort";
-		innerWrapper = if forNixOS
-			then "${wrapperScripts.wrapperScript}/bin/emuhawk-wrapper"
-			else "${wrapperScripts.wrapperScriptNonNixOS}/bin/emuhawk-wrapper-non-nixos";
-		desktopName = "EmuHawk (Mono Runtime)";
-	};
-in rec {
-	bizhawkAssemblies = buildAssembliesFor hawkSourceInfoDev; # assemblies and dependencies, and some other immutable things like the gamedb, are in the `bin` output; the rest of the "assets" (bundled scripts, palettes, etc.) are in the `out` output
-	discohawk = buildDiscoHawkWrapperFor { inherit bizhawkAssemblies; hawkSourceInfo = hawkSourceInfoDev; };
-	emuhawk-2_7 = buildEmuHawkWrapperFor {
-		hawkSourceInfo = {
-			version = "2.7";
-			shorthash = "dbaf25956";
-			branch = "master";
-			drv = fetchFromGitHub {
-				owner = "TASEmulators";
-				repo = "BizHawk";
-				rev = "dbaf2595625f79093eeec37d2d4a7a9a4d37f370";
-				hash = "sha256-KXe69svPIIFaXgT9t+02pwdQ6WWqdqgUdtaE2S4/YxA=";
-			};
-			dotnet-sdk = dotnet-sdk_5;
-			nugetDeps = Dist/deps-2_7.nix;
+	pp = import Dist/packages.nix {
+		inherit lib stdenv
+			populateHawkSourceInfo replaceDotWithUnderscore
+			buildDotnetModule fetchpatch fetchzip hardLinkJoin launchScriptsFor makeDesktopItem
+				releaseTagSourceInfos runCommand symlinkJoin writeShellScriptBin
+			git
+			libgdiplus libGL lua openal SDL2 udev zstd
+			buildConfig doCheck emuhawkBuildFlavour extraDefines extraDotnetBuildFlags;
+		mono = if mono != null
+			then mono # allow older Mono if set explicitly
+			else if isVersionAtLeast "6.12.0.151" pkgs.mono.version
+				then pkgs.mono
+				else lib.trace "provided Mono too old, using Mono from Nixpkgs 23.05"
+					(import (fetchzip {
+						url = "https://github.com/NixOS/nixpkgs/archive/23.05.tar.gz";
+						hash = "sha512-REPJ9fRKxTefvh1d25MloT4bXJIfxI+1EvfVWq644Tzv+nuq2BmiGMiBNmBkyN9UT5fl2tdjqGliye3gZGaIGg==";
+					}) { inherit system; }).mono;
+		monoBasic = fetchzip {
+			url = "https://download.mono-project.com/repo/debian/pool/main/m/mono-basic/libmono-microsoft-visualbasic10.0-cil_4.7-0xamarin3+debian9b1_all.deb";
+			nativeBuildInputs = [ dpkg ];
+			hash = "sha512-bPXbsVrViHAJz6PWuryo9HA6Nlv0bNqgc72pNKM/MUQM7JTUcfM0VDUzkz8vzXSqp/nt2LlAOIqIsS5D5iBIvQ==";
+			# tried and failed building from source, following https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=mono-basic
 		};
 	};
-	emuhawk-2_8 = buildEmuHawkWrapperFor {
-		hawkSourceInfo = {
-			version = "2.8";
-			shorthash = "e731e0f32";
-			branch = "master";
-			drv = fetchFromGitHub {
-				owner = "TASEmulators";
-				repo = "BizHawk";
-				rev = "e731e0f32903cd40b83ed75bba3b1e3753105ce2";
-				hash = "sha256-kP6zvTbhctqGCmjDOtQgBGII1T0xIyN5keq7d/lfWVM=";
-			};
-			nugetDeps = Dist/deps-2_8.nix;
-		};
+	emuhawk-local = pp.buildEmuHawkInstallableFor {
+		inherit forNixOS;
+		hawkSourceInfo = hawkSourceInfoDevBuild;
 	};
-	emuhawk = buildEmuHawkWrapperFor { inherit bizhawkAssemblies; hawkSourceInfo = hawkSourceInfoDev; };
-	emuhawkWrapperScriptNonNixOS = (wrapperScriptsFor { inherit bizhawkAssemblies; hawkSourceInfo = hawkSourceInfoDev; }).wrapperScriptNonNixOS;
-	mono = monoFinal;
-}
+	fillTargetOSDifferences = hawkSourceInfo: lib.optionalAttrs forNixOS { needsLibGLVND = true; } // hawkSourceInfo; # don't like this, but the alternative is including `forNixOS` in `hawkSourceInfo` directly
+	asmsFromReleaseArtifacts = lib.mapAttrs
+		(_: a: pp.splitReleaseArtifact (a // { hawkSourceInfo = fillTargetOSDifferences a.hawkSourceInfo; }))
+		releaseArtifactInfos;
+	# the asms for from-CWD and latest release from-source are exposed below as `bizhawkAssemblies` and `bizhawkAssemblies-latest`, respectively
+	# apart from that, no `asmsFromSource`, since if you're only after the assets you might as well use the release artifact
+	releasesEmuHawkInstallables = lib.pipe releaseFrags [
+		(builtins.map (versionFrag: [
+			({
+				name = "emuhawk-${versionFrag}";
+				value = pp.buildEmuHawkInstallableFor {
+					inherit forNixOS;
+					hawkSourceInfo = releaseTagSourceInfos."info-${versionFrag}";
+				};
+			})
+			({
+				name = "emuhawk-${versionFrag}-bin";
+				value = pp.buildEmuHawkInstallableFor {
+					inherit forNixOS;
+					bizhawkAssemblies = asmsFromReleaseArtifacts."bizhawkAssemblies-${versionFrag}-bin";
+				};
+			})
+		]))
+		lib.concatLists
+		lib.listToAttrs
+		(lib.filterAttrs (name: value: lib.hasSuffix "-bin" name
+			|| isVersionAtLeast "2.6" value.hawkSourceInfo.version))
+	];
+	latestVersionFrag = lib.head releaseFrags;
+	combined = pp // asmsFromReleaseArtifacts // releasesEmuHawkInstallables // {
+		inherit depsForHistoricalRelease releaseTagSourceInfos;
+		bizhawkAssemblies = pp.buildAssembliesFor (fillTargetOSDifferences hawkSourceInfoDevBuild);
+		"bizhawkAssemblies-${latestVersionFrag}" = pp.buildAssembliesFor
+			(fillTargetOSDifferences releaseTagSourceInfos."info-${latestVersionFrag}");
+		discohawk = pp.buildDiscoHawkInstallableFor {
+			inherit forNixOS;
+			hawkSourceInfo = hawkSourceInfoDevBuild;
+		};
+		"discohawk-${latestVersionFrag}" = pp.buildDiscoHawkInstallableFor {
+			inherit forNixOS;
+			hawkSourceInfo = releaseTagSourceInfos."info-${latestVersionFrag}";
+		};
+		"discohawk-${latestVersionFrag}-bin" = pp.buildDiscoHawkInstallableFor {
+			inherit forNixOS;
+			bizhawkAssemblies = asmsFromReleaseArtifacts."bizhawkAssemblies-${latestVersionFrag}-bin";
+		};
+		emuhawk = emuhawk-local;
+		IDEs = {
+			kate = [ kate omnisharp-roslyn ];
+		};
+		launchScriptsForLocalBuild = launchScriptsFor emuhawk-local.assemblies true;
+	};
+in combined // lib.listToAttrs (lib.concatLists (builtins.map
+	(f: [
+		{ name = f "latest-bin"; value = combined.${f "${latestVersionFrag}-bin"}; }
+		{ name = f "latest"; value = combined.${f latestVersionFrag}; }
+	])
+	[ (s: "bizhawkAssemblies-${s}") (s: "emuhawk-${s}") (s: "discohawk-${s}") ]))

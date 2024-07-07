@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -443,6 +442,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -474,6 +474,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -506,6 +507,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -538,6 +540,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -570,6 +573,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -602,6 +606,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -642,6 +647,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -682,6 +688,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -724,6 +731,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -767,6 +775,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -798,6 +807,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -844,6 +854,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -876,6 +887,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -908,6 +920,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -949,6 +962,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -991,6 +1005,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -1023,6 +1038,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -1062,6 +1078,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -1103,6 +1120,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -1147,6 +1165,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -1191,6 +1210,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -1223,6 +1243,7 @@ namespace BizHawk.Client.EmuHawk
 						return 0;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return default;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -1256,6 +1277,7 @@ namespace BizHawk.Client.EmuHawk
 						return 0;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is null) return default;
 					if (match is not LuaPictureBox control)
 					{
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
@@ -1456,7 +1478,7 @@ namespace BizHawk.Client.EmuHawk
 			textbox.Multiline = multiline;
 			if (scrollbars != null)
 			{
-				switch (scrollbars.ToUpper())
+				switch (scrollbars.ToUpperInvariant())
 				{
 					case "VERTICAL":
 						textbox.ScrollBars = ScrollBars.Vertical;
@@ -1489,7 +1511,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (boxtype != null)
 			{
-				switch (boxtype.ToUpper())
+				switch (boxtype.ToUpperInvariant())
 				{
 					case "HEX":
 					case "HEXADECIMAL":

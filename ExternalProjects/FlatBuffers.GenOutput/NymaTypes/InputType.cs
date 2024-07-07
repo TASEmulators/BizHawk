@@ -7,19 +7,20 @@ namespace NymaTypes
 
 public enum InputType : byte
 {
-  Padding = 0,
-  Button = 1,
-  ButtonCanRapid = 2,
-  Switch = 3,
-  Status = 4,
-  Axis = 5,
-  PointerX = 6,
-  PointerY = 7,
-  AxisRel = 8,
-  ByteSpecial = 9,
-  ResetButton = 10,
-  ButtonAnalog = 11,
-  Rumble = 12,
+  Padding0 = 0,
+  Padding1 = 1,
+  Button = 2,
+  ButtonCanRapid = 3,
+  Switch = 4,
+  Status = 5,
+  Axis = 6,
+  PointerX = 7,
+  PointerY = 8,
+  AxisRel = 9,
+  ByteSpecial = 10,
+  ResetButton = 11,
+  ButtonAnalog = 12,
+  Rumble = 13,
 };
 
 

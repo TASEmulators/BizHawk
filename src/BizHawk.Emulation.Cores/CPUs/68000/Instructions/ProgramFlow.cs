@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Emulation.Cores.Components.M68000
 {
 	partial class MC68000
@@ -58,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			sbyte displacement8 = (sbyte)op;
 			int cond = (op >> 8) & 0x0F;
 
-			if (TestCondition(cond) == true)
+			if (TestCondition(cond))
 			{
 				if (displacement8 != 0)
 				{
@@ -169,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private void DBcc()
 		{
-			if (TestCondition((op >> 8) & 0x0F) == true)
+			if (TestCondition((op >> 8) & 0x0F))
 			{
 				PC += 2; // condition met, break out of loop
 				PendingCycles -= 12;
@@ -712,7 +710,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int mode = (op >> 3) & 7;
 			int reg = (op >> 0) & 7;
 
-			if (TestCondition(cond) == true)
+			if (TestCondition(cond))
 			{
 				WriteValueB(mode, reg, -1);
 				if (mode == 0) PendingCycles -= 6;

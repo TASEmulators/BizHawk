@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System;
 using System.IO;
 using BizHawk.Common;
 
@@ -27,6 +26,8 @@ namespace BizHawk.Emulation.Common
 		/// If provided, will be called after a loadstate call
 		/// </summary>
 		public Action LoadStateCallback { get; set; }
+
+		public bool AvoidRewind => false;
 
 		public void SaveStateText(TextWriter writer)
 		{

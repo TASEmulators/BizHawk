@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -34,9 +33,8 @@ namespace BizHawk.Client.EmuHawk
 			cbEnableRWFF.Checked = _config.SoundEnabledRWFF;
 			cbMuteFrameAdvance.Checked = _config.MuteFrameAdvance;
 
-			rbOutputMethodDirectSound.Enabled = rbOutputMethodXAudio2.Enabled = HostCapabilityDetector.HasDirectX;
+			rbOutputMethodXAudio2.Enabled = HostCapabilityDetector.HasXAudio2;
 
-			rbOutputMethodDirectSound.Checked = _config.SoundOutputMethod == ESoundOutputMethod.DirectSound;
 			rbOutputMethodXAudio2.Checked = _config.SoundOutputMethod == ESoundOutputMethod.XAudio2;
 			rbOutputMethodOpenAL.Checked = _config.SoundOutputMethod == ESoundOutputMethod.OpenAL;
 			BufferSizeNumeric.Value = _config.SoundBufferSizeMs;
@@ -53,7 +51,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!OSTailoredCode.IsUnixHost)
 			{
-				if (rbOutputMethodDirectSound.Checked) return ESoundOutputMethod.DirectSound;
 				if (rbOutputMethodXAudio2.Checked) return ESoundOutputMethod.XAudio2;
 			}
 			if (rbOutputMethodOpenAL.Checked) return ESoundOutputMethod.OpenAL;
@@ -62,11 +59,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
-			if (rbOutputMethodDirectSound.Checked && (int)BufferSizeNumeric.Value < 60)
-			{
-				DialogController.ShowMessageBox("Buffer size must be at least 60 milliseconds for DirectSound.", "Error", EMsgBoxIcon.Error);
-				return;
-			}
 			_config.SoundEnabled = cbEnableMaster.Checked;
 			_config.SoundEnabledNormal = cbEnableNormal.Checked;
 			_config.SoundEnabledRWFF = cbEnableRWFF.Checked;

@@ -1,6 +1,5 @@
 //TODO - make sure msvc builds with 32bit enums and get rid of the extra marshalling fluff here
 
-using System;
 using System.Runtime.InteropServices;
 using System.Text;
 

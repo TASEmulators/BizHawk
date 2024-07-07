@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
@@ -10,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	[Core(CoreNames.A7800Hawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISettable<,>) })]
 	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable,
-		IRegionable, IBoardInfo, ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
+		IRegionable, IBoardInfo, ISettable<object, A7800Hawk.A7800SyncSettings>
 	{
 		internal static class RomChecksums
 		{
@@ -76,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		}
 
 		[CoreConstructor(VSystemID.Raw.A78)]
-		public A7800Hawk(CoreComm comm, byte[] rom, A7800Hawk.A7800Settings settings, A7800Hawk.A7800SyncSettings syncSettings)
+		public A7800Hawk(CoreComm comm, byte[] rom, A7800SyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 
@@ -94,8 +92,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			_blip.SetRates(1789773, 44100);
 
-			_settings = (A7800Settings)settings ?? new A7800Settings();
-			_syncSettings = (A7800SyncSettings)syncSettings ?? new A7800SyncSettings();
+			_syncSettings = syncSettings ?? new A7800SyncSettings();
 			_controllerDeck = new A7800HawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
 			var highscoreBios = comm.CoreFileProvider.GetFirmware(new("A78", "Bios_HSC"), "Some functions may not work without the high score BIOS.");

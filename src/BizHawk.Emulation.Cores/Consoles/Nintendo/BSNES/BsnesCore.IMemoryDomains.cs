@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
@@ -14,6 +13,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			foreach (int i in Enum.GetValues(typeof(BsnesApi.SNES_MEMORY)))
 			{
 				var data = Api.core.snes_get_memory_region(i, out var size, out var wordSize);
+				if (i == (int)BsnesApi.SNES_MEMORY.OAM)
+				{
+					mm.Add(new MemoryDomainDelegate("OAM", size, MemoryDomain.Endian.Little,
+						address => Api.core.snes_read_oam((ushort)address),
+						(address, value) => Api.core.snes_write_oam((ushort)address, value), wordSize));
+					continue;
+				}
 				if (data == IntPtr.Zero) continue;
 				if (i == (int) BsnesApi.SNES_MEMORY.CARTRAM)
 				{

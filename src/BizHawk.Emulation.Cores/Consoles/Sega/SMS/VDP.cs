@@ -1,7 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
@@ -240,7 +239,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		private void CheckVideoMode()
 		{
-			if (Mode4Bit == false) // check old TMS modes
+			if (!Mode4Bit) // check old TMS modes
 			{
 				if (Mode1Bit) TmsMode = 1;
 				else if (Mode2Bit) TmsMode = 2;

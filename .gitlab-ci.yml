@@ -6,6 +6,10 @@ variables:
   CI_HAWK_ARTIFACT_NAME_TAR: "$CI_HAWK_ARTIFACT_NAME.tar"
   CI_HAWK_TMPARTIFACT_NAME: "BizHawk_tempbuild_${CI_COMMIT_REF_SLUG}_${CI_COMMIT_SHORT_SHA}"
 
+workflow:
+  auto_cancel:
+    on_job_failure: all
+
 stages:
 - build
 - test
@@ -15,7 +19,7 @@ stages:
   before_script:
   - nix-env -iA nixpkgs.cachix
   - cachix use $CACHIX_CACHE_NAME
-  image: nixos/nix:latest
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/nixos/nix:latest
   variables:
     CACHIX_CACHE_NAME: mono-for-bizhawk
 
@@ -25,9 +29,9 @@ build_asms_debug:
     name: "$CI_HAWK_TMPARTIFACT_NAME"
     paths:
       - output
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:8.0
   script:
-    - Dist/BuildDebug.sh
+    - Dist/BuildDebug.sh -v normal
   stage: build
 
 build_asms_release:
@@ -36,58 +40,58 @@ build_asms_release:
     name: "$CI_HAWK_TMPARTIFACT_NAME"
     paths:
     - output
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:8.0
   script:
   - if [ "$CI_COMMIT_REF_SLUG" == "release" ]; then Dist/UpdateVersionInfoForRelease.sh; fi
-  - Dist/BuildRelease.sh
+  - Dist/BuildRelease.sh -v normal
   stage: build
 
 build_ext_projs:
   allow_failure: true
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:8.0
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
     when: always
   script:
-  - for d in $CI_PROJECT_DIR/ExternalProjects/*; do if [ -e "$d/build_release.sh" ]; then cd "$d" && file -bi *.csproj && ./build_release.sh; fi; done
+  - for d in $CI_PROJECT_DIR/ExternalProjects/*; do if [ -e "$d/build_release.sh" -a "$(find "$d" -maxdepth 1 -name '*.csproj' -print -quit)" ]; then cd "$d"; ./build_release.sh -v normal || exit $?; fi; done
   stage: test
 
 build_ext_tools:
   allow_failure: true
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:8.0
   needs:
   - build_asms_release
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
     when: always
   script:
-  - for d in $CI_PROJECT_DIR/ExternalToolProjects/*; do if [ -d "$d" ]; then cd "$d" && ./build_release.sh; fi; done
+  - for d in $CI_PROJECT_DIR/ExternalToolProjects/*; do if [ -d "$d" ]; then cd "$d" && ./build_release.sh -v normal; fi; done
   stage: test
 
 build_nix_master:
-  allow_failure: true
-  extends: .with_cachix_mono
+# extends: .with_cachix_mono
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/nixos/nix:latest
   needs: []
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
     when: always
   script:
-  - nix-build --pure -A emuhawk --arg doCheck true
+  - nix-build --pure -A emuhawk
   stage: test
 
 build_nix_prev_release:
-  allow_failure: true
-  extends: .with_cachix_mono
+# extends: .with_cachix_mono
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/nixos/nix:latest
   needs: []
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
     when: always
   script:
-  - nix-build --pure -A emuhawk-2_8 --arg doCheck true
+  - nix-build --pure -A emuhawk-latest
   stage: test
 
 check_style:
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:8.0
   needs:
   - job: build_asms_release
     artifacts: false
@@ -99,7 +103,7 @@ check_style:
     when: always
     allow_failure: false
   script:
-  - Dist/BuildRelease.sh -p:RunAnalyzersDuringBuild=true
+  - Dist/BuildRelease.sh -v normal -p:RunAnalyzersDuringBuild=true
   stage: test
 
 .disabled_job_infersharp:
@@ -125,7 +129,7 @@ check_style:
     name: "$CI_HAWK_ARTIFACT_NAME"
     paths:
     - "$CI_HAWK_ARTIFACT_NAME_TAR"
-  image: alpine:latest
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/alpine:latest
   needs:
   - build_asms_release
   - job: build_asms_debug
@@ -142,7 +146,7 @@ check_style:
     name: "$CI_HAWK_ARTIFACT_NAME"
     paths:
     - ./*
-  image: alpine:latest
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/alpine:latest
   needs:
   - build_asms_release
   - job: build_asms_debug
@@ -192,13 +196,12 @@ run_tests:
     reports:
       junit:
       - test_output/*.coverage.xml
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:8.0
   needs:
   - job: build_asms_release
     artifacts: false
   script:
-  - Dist/BuildDebug.sh # populate output
-  - Dist/BuildTestRelease.sh
+  - Dist/BuildTestRelease.sh -v normal -p:TestProjTargetFrameworkOverride=net8.0
   stage: test
 
 .disabled_job_sast:

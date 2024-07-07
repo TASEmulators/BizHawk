@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -114,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 			// check to make sure that the settings object has all of the appropriate bool buttons
 			foreach (var button in controllerButtons)
 			{
-				if (!settings.Keys.Contains(button))
+				if (!settings.ContainsKey(button))
 				{
 					settings[button] = defaultValue;
 				}
@@ -267,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetControllerPicture(string controlName)
 		{
-			ControllerImages.TryGetValue(controlName, out var lazyBmp);
+			_ = ControllerImages.TryGetValue(controlName, out var lazyBmp);
 			if (lazyBmp != null)
 			{
 				var bmp = lazyBmp.Value;

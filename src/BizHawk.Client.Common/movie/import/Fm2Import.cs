@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
@@ -44,7 +42,7 @@ namespace BizHawk.Client.Common
 				{
 					ImportInputFrame(line);
 				}
-				else if (line.ToLower().StartsWith("sub"))
+				else if (line.StartsWith("sub", StringComparison.OrdinalIgnoreCase))
 				{
 					var subtitle = ImportTextSubtitle(line);
 
@@ -53,11 +51,11 @@ namespace BizHawk.Client.Common
 						Result.Movie.Subtitles.AddFromString(subtitle);
 					}
 				}
-				else if (line.ToLower().StartsWith("emuversion"))
+				else if (line.StartsWith("emuversion", StringComparison.OrdinalIgnoreCase))
 				{
 					Result.Movie.Comments.Add($"{EmulationOrigin} {emulator} version {ParseHeader(line, "emuVersion")}");
 				}
-				else if (line.ToLower().StartsWith("version"))
+				else if (line.StartsWith("version", StringComparison.OrdinalIgnoreCase))
 				{
 					string version = ParseHeader(line, "version");
 
@@ -70,40 +68,40 @@ namespace BizHawk.Client.Common
 						Result.Movie.Comments.Add($"{MovieOrigin} .fm2 version 3");
 					}
 				}
-				else if (line.ToLower().StartsWith("romfilename"))
+				else if (line.StartsWith("romfilename", StringComparison.OrdinalIgnoreCase))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "romFilename");
 				}
-				else if (line.ToLower().StartsWith("cdgamename"))
+				else if (line.StartsWith("cdgamename", StringComparison.OrdinalIgnoreCase))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "cdGameName");
 				}
-				else if (line.ToLower().StartsWith("romchecksum"))
+				else if (line.StartsWith("romchecksum", StringComparison.OrdinalIgnoreCase))
 				{
 					string blob = ParseHeader(line, "romChecksum");
 					byte[] md5 = DecodeBlob(blob);
 					if (md5 != null && md5.Length == 16)
 					{
-						Result.Movie.HeaderEntries[Md5] = md5.BytesToHexString().ToLower();
+						Result.Movie.HeaderEntries[HeaderKeys.Md5] = md5.BytesToHexString().ToLowerInvariant();
 					}
 					else
 					{
 						Result.Warnings.Add("Bad ROM checksum.");
 					}
 				}
-				else if (line.ToLower().StartsWith("comment author"))
+				else if (line.StartsWith("comment author", StringComparison.OrdinalIgnoreCase))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.Author] = ParseHeader(line, "comment author");
 				}
-				else if (line.ToLower().StartsWith("rerecordcount"))
+				else if (line.StartsWith("rerecordcount", StringComparison.OrdinalIgnoreCase))
 				{
 					Result.Movie.Rerecords = (ulong) (int.TryParse(ParseHeader(line, "rerecordCount"), out var rerecordCount) ? rerecordCount : default);
 				}
-				else if (line.ToLower().StartsWith("guid"))
+				else if (line.StartsWith("guid", StringComparison.OrdinalIgnoreCase))
 				{
 					// We no longer care to keep this info
 				}
-				else if (line.ToLower().StartsWith("startsfromsavestate"))
+				else if (line.StartsWith("startsfromsavestate", StringComparison.OrdinalIgnoreCase))
 				{
 					// If this movie starts from a savestate, we can't support it.
 					if (ParseHeader(line, "StartsFromSavestate") == "1")
@@ -112,11 +110,11 @@ namespace BizHawk.Client.Common
 						break;
 					}
 				}
-				else if (line.ToLower().StartsWith("palflag"))
+				else if (line.StartsWith("palflag", StringComparison.OrdinalIgnoreCase))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.Pal] = ParseHeader(line, "palFlag");
 				}
-				else if (line.ToLower().StartsWith("port0"))
+				else if (line.StartsWith("port0", StringComparison.OrdinalIgnoreCase))
 				{
 					if (ParseHeader(line, "port0") == "1")
 					{
@@ -124,7 +122,7 @@ namespace BizHawk.Client.Common
 						_deck = controllerSettings.Instantiate((x, y) => false).AddSystemToControllerDef();
 					}
 				}
-				else if (line.ToLower().StartsWith("port1"))
+				else if (line.StartsWith("port1", StringComparison.OrdinalIgnoreCase))
 				{
 					if (ParseHeader(line, "port1") == "1")
 					{
@@ -132,14 +130,14 @@ namespace BizHawk.Client.Common
 						_deck = controllerSettings.Instantiate((x, y) => false).AddSystemToControllerDef();
 					}
 				}
-				else if (line.ToLower().StartsWith("port2"))
+				else if (line.StartsWith("port2", StringComparison.OrdinalIgnoreCase))
 				{
 					if (ParseHeader(line, "port2") == "1")
 					{
 						Result.Warnings.Add("Famicom port detected but not yet supported, ignoring");
 					}
 				}
-				else if (line.ToLower().StartsWith("fourscore"))
+				else if (line.StartsWith("fourscore", StringComparison.OrdinalIgnoreCase))
 				{
 					bool fourscore = ParseHeader(line, "fourscore") == "1";
 					if (fourscore)
@@ -162,7 +160,7 @@ namespace BizHawk.Client.Common
 		}
 
 		private IControllerDeck _deck;
-		
+
 		private readonly string[] _buttons = { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
 		private void ImportInputFrame(string line)
 		{
@@ -244,7 +242,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// base64
-			if (!blob.ToLower().StartsWith("base64:"))
+			if (!blob.StartsWith("base64:", StringComparison.OrdinalIgnoreCase))
 			{
 				return null;
 			}

@@ -52,7 +52,7 @@ public sealed class UseNameofOperatorAnalyzer : DiagnosticAnalyzer
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoToStringOnType, toes.GetLocation(), toes.Type.GetText(), " in string interpolation"));
 						break;
 					case MemberAccessExpressionSyntax maes1:
-						var accessed = snac.SemanticModel.GetSymbolInfo(maes1.Name).Symbol;
+						var accessed = snac.SemanticModel.GetSymbolInfo(maes1.Name, snac.CancellationToken).Symbol;
 						if (memberInfoDotNameSym.Matches(accessed))
 						{
 							snac.ReportDiagnostic(Diagnostic.Create(DiagUseNameof, maes1.GetLocation(), toes.Type.GetText()));

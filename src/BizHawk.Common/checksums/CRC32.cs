@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
@@ -17,10 +16,32 @@ namespace BizHawk.Common
 
 		private static readonly uint[] COMBINER_INIT_STATE;
 
+		private static readonly uint[]? CRC32Table;
+
 		static CRC32()
 		{
 			// for Add (CRC32 computation):
-			_calcCRC = Marshal.GetDelegateForFunctionPointer<LibBizHash.CalcCRC>(LibBizHash.BizCalcCrcFunc());
+			if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+			{
+				_calcCRC = Marshal.GetDelegateForFunctionPointer<LibBizHash.CalcCRC>(LibBizHash.BizCalcCrcFunc());
+			}
+			else
+			{
+				CRC32Table = new uint[256];
+				for (var i = 0U; i < 256U; i++)
+				{
+					var crc = i;
+					for (var j = 0; j < 8; j++)
+					{
+						var xor = (crc & 1U) == 1U;
+						crc >>= 1;
+						if (xor) crc ^= POLYNOMIAL_CONST;
+					}
+					CRC32Table[i] = crc;
+				}
+
+				_calcCRC = CrcFuncAnyCpu;
+			}
 
 			// for Incorporate:
 			var combinerState = (COMBINER_INIT_STATE = new uint[64]).AsSpan();
@@ -41,6 +62,16 @@ namespace BizHawk.Common
 			CRC32 crc32 = new();
 			crc32.Add(data);
 			return crc32.Result;
+		}
+
+		public static unsafe uint CrcFuncAnyCpu(uint current, IntPtr buffer, int len)
+		{
+			for (var i = 0; i < len; i++)
+			{
+				current = CRC32Table![(current ^ ((byte*)buffer)[i]) & 0xFF] ^ (current >> 8);
+			}
+
+			return current;
 		}
 
 		private static void gf2_matrix_square(Span<uint> square, ReadOnlySpan<uint> mat)
@@ -76,7 +107,7 @@ namespace BizHawk.Common
 
 		public unsafe void Add(ReadOnlySpan<byte> data)
 		{
-			fixed (byte* d = &data.GetPinnableReference())
+			fixed (byte* d = data)
 			{
 				_current = _calcCRC(_current, (IntPtr) d, data.Length);
 			}

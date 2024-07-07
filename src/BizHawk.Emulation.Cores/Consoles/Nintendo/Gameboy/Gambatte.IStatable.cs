@@ -1,6 +1,5 @@
 ﻿//#define USE_UPSTREAM_STATES // really more for testing due to needing to use these anyways for initial state code. could potentially be used outright for states
 
-using System;
 using System.IO;
 
 using Newtonsoft.Json;
@@ -11,15 +10,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class Gameboy : IStatable, ITextStatable
 	{
+		public bool AvoidRewind => false;
+
 		public void SaveStateText(TextWriter writer)
 		{
 			var s = SaveState();
-			ser.Serialize(writer, s);
+			_ser.Serialize(writer, s);
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
-			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
+			var s = (TextState<TextStateData>)_ser.Deserialize(reader, typeof(TextState<TextStateData>));
 			LoadState(s);
 			reader.ReadToEnd();
 		}
@@ -35,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 #else
 			if (!LibGambatte.gambatte_newstatesave(GambatteState, _stateBuf, _stateBuf.Length))
 			{
-				throw new Exception($"{nameof(LibGambatte.gambatte_newstatesave)}() returned false");
+				throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_newstatesave)}() returned false");
 			}
 #endif
 
@@ -54,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			int length = reader.ReadInt32();
+			var length = reader.ReadInt32();
 			if (length != _stateBuf.Length)
 			{
 				throw new InvalidOperationException("Savestate buffer size mismatch!");
@@ -65,12 +66,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 #if USE_UPSTREAM_STATES
 			if (!LibGambatte.gambatte_loadstate(GambatteState, _stateBuf, _stateBuf.Length))
 			{
-				throw new Exception($"{nameof(LibGambatte.gambatte_loadstate)}() returned false");
+				throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadstate)}() returned false");
 			}
 #else
 			if (!LibGambatte.gambatte_newstateload(GambatteState, _stateBuf, _stateBuf.Length))
 			{
-				throw new Exception($"{nameof(LibGambatte.gambatte_newstateload)}() returned false");
+				throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_newstateload)}() returned false");
 			}
 #endif
 
@@ -87,15 +88,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private byte[] _stateBuf;
 
 		private void NewSaveCoreSetBuff()
-		{
 #if USE_UPSTREAM_STATES
-			_stateBuf = new byte[LibGambatte.gambatte_savestate(GambatteState, null, 160, null)];
+			=> _stateBuf = new byte[LibGambatte.gambatte_savestate(GambatteState, null, 160, null)];
 #else
-			_stateBuf = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
+			=> _stateBuf = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
 #endif
-		}
 
-		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
+		private readonly JsonSerializer _ser = new() { Formatting = Formatting.Indented };
 
 		// other data in the text state besides core
 		internal class TextStateData

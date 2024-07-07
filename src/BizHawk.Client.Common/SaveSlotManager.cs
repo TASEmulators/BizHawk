@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 
 using BizHawk.Common;
@@ -32,7 +31,7 @@ namespace BizHawk.Client.Common
 				else
 				{
 					var file = new FileInfo($"{saveStatePrefix}.QuickSave{i % 10}.State");
-					if (file.Directory != null && file.Directory.Exists == false)
+					if (file.Directory != null && !file.Directory.Exists)
 					{
 						file.Directory.Create();
 					}

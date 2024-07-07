@@ -33,6 +33,7 @@
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.cbMergeLAndRModifierKeys = new System.Windows.Forms.CheckBox();
 			this.HandleAlternateKeyboardLayoutsCheckBox = new System.Windows.Forms.CheckBox();
 			this.NeverAskSaveCheckbox = new System.Windows.Forms.CheckBox();
 			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -42,10 +43,8 @@
 			this.RunInBackgroundCheckbox = new System.Windows.Forms.CheckBox();
 			this.EnableContextMenuCheckbox = new System.Windows.Forms.CheckBox();
 			this.PauseWhenMenuActivatedCheckbox = new System.Windows.Forms.CheckBox();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.rbInputMethodOpenTK = new System.Windows.Forms.RadioButton();
-			this.rbInputMethodDirectInput = new System.Windows.Forms.RadioButton();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.locLabelEx1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.StartPausedCheckbox = new System.Windows.Forms.CheckBox();
 			this.label14 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.StartFullScreenCheckbox = new System.Windows.Forms.CheckBox();
@@ -72,11 +71,8 @@
 			this.FrameAdvSkipLagCheckbox = new System.Windows.Forms.CheckBox();
 			this.BackupSRamCheckbox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.locLabelEx1 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.cbMergeLAndRModifierKeys = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
-			this.groupBox3.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.tabPage3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -86,7 +82,7 @@
 			// OkBtn
 			// 
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OkBtn.Location = new System.Drawing.Point(280, 440);
+			this.OkBtn.Location = new System.Drawing.Point(280, 371);
 			this.OkBtn.Name = "OkBtn";
 			this.OkBtn.Size = new System.Drawing.Size(60, 23);
 			this.OkBtn.TabIndex = 0;
@@ -98,7 +94,7 @@
 			// 
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(346, 440);
+			this.CancelBtn.Location = new System.Drawing.Point(346, 371);
 			this.CancelBtn.Name = "CancelBtn";
 			this.CancelBtn.Size = new System.Drawing.Size(60, 23);
 			this.CancelBtn.TabIndex = 1;
@@ -113,10 +109,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabControl1.Controls.Add(this.tabPage1);
 			this.tabControl1.Controls.Add(this.tabPage3);
-			this.tabControl1.Location = new System.Drawing.Point(12, 12);
+			this.tabControl1.Location = new System.Drawing.Point(9, 12);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(394, 417);
+			this.tabControl1.Size = new System.Drawing.Size(400, 354);
 			this.tabControl1.TabIndex = 2;
 			// 
 			// tabPage1
@@ -131,20 +127,29 @@
 			this.tabPage1.Controls.Add(this.RunInBackgroundCheckbox);
 			this.tabPage1.Controls.Add(this.EnableContextMenuCheckbox);
 			this.tabPage1.Controls.Add(this.PauseWhenMenuActivatedCheckbox);
-			this.tabPage1.Controls.Add(this.groupBox3);
 			this.tabPage1.Controls.Add(this.groupBox1);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(386, 391);
+			this.tabPage1.Size = new System.Drawing.Size(392, 328);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "General";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
+			// cbMergeLAndRModifierKeys
+			// 
+			this.cbMergeLAndRModifierKeys.AutoSize = true;
+			this.cbMergeLAndRModifierKeys.Location = new System.Drawing.Point(7, 168);
+			this.cbMergeLAndRModifierKeys.Name = "cbMergeLAndRModifierKeys";
+			this.cbMergeLAndRModifierKeys.Size = new System.Drawing.Size(320, 17);
+			this.cbMergeLAndRModifierKeys.TabIndex = 29;
+			this.cbMergeLAndRModifierKeys.Text = "Merge L+R modifier keys e.g. Shift instead of LShift and RShift";
+			this.cbMergeLAndRModifierKeys.UseVisualStyleBackColor = true;
+			// 
 			// HandleAlternateKeyboardLayoutsCheckBox
 			// 
 			this.HandleAlternateKeyboardLayoutsCheckBox.AutoSize = true;
-			this.HandleAlternateKeyboardLayoutsCheckBox.Location = new System.Drawing.Point(7, 128);
+			this.HandleAlternateKeyboardLayoutsCheckBox.Location = new System.Drawing.Point(7, 145);
 			this.HandleAlternateKeyboardLayoutsCheckBox.Name = "HandleAlternateKeyboardLayoutsCheckBox";
 			this.HandleAlternateKeyboardLayoutsCheckBox.Size = new System.Drawing.Size(320, 17);
 			this.HandleAlternateKeyboardLayoutsCheckBox.TabIndex = 26;
@@ -156,16 +161,17 @@
 			this.NeverAskSaveCheckbox.AutoSize = true;
 			this.NeverAskSaveCheckbox.Location = new System.Drawing.Point(6, 29);
 			this.NeverAskSaveCheckbox.Name = "NeverAskSaveCheckbox";
-			this.NeverAskSaveCheckbox.Size = new System.Drawing.Size(184, 17);
+			this.NeverAskSaveCheckbox.Size = new System.Drawing.Size(390, 17);
 			this.NeverAskSaveCheckbox.TabIndex = 20;
-			this.NeverAskSaveCheckbox.Text = "Never be asked to save changes";
+			this.NeverAskSaveCheckbox.Text = "When EmuHawk is closing, skip \"unsaved changes\" prompts and discard all.";
 			this.NeverAskSaveCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label2
 			// 
 			this.label2.Location = new System.Drawing.Point(26, 112);
+			this.label2.MaximumSize = new System.Drawing.Size(380, 0);
 			this.label2.Name = "label2";
-			this.label2.Text = "When this is set, the client will receive user input even when focus is lost";
+			this.label2.Text = "\"Eavesdrops\" on keyboard and gamepad input while other programs are focused.";
 			// 
 			// AcceptBackgroundInputCheckbox
 			// 
@@ -193,7 +199,7 @@
 			// 
 			this.label1.Location = new System.Drawing.Point(26, 72);
 			this.label1.Name = "label1";
-			this.label1.Text = "When this is set, the client will continue to run when it loses focus";
+			this.label1.Text = "When this is set, the client will continue to run when it loses focus.";
 			// 
 			// RunInBackgroundCheckbox
 			// 
@@ -225,39 +231,6 @@
 			this.PauseWhenMenuActivatedCheckbox.Text = "Pause when menu activated";
 			this.PauseWhenMenuActivatedCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// groupBox3
-			// 
-			this.groupBox3.Controls.Add(this.rbInputMethodOpenTK);
-			this.groupBox3.Controls.Add(this.rbInputMethodDirectInput);
-			this.groupBox3.Location = new System.Drawing.Point(6, 151);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(369, 48);
-			this.groupBox3.TabIndex = 16;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Input Method (requires restart)";
-			// 
-			// rbInputMethodOpenTK
-			// 
-			this.rbInputMethodOpenTK.AutoSize = true;
-			this.rbInputMethodOpenTK.Location = new System.Drawing.Point(136, 19);
-			this.rbInputMethodOpenTK.Name = "rbInputMethodOpenTK";
-			this.rbInputMethodOpenTK.Size = new System.Drawing.Size(65, 17);
-			this.rbInputMethodOpenTK.TabIndex = 1;
-			this.rbInputMethodOpenTK.TabStop = true;
-			this.rbInputMethodOpenTK.Text = "OpenTK";
-			this.rbInputMethodOpenTK.UseVisualStyleBackColor = true;
-			// 
-			// rbInputMethodDirectInput
-			// 
-			this.rbInputMethodDirectInput.AutoSize = true;
-			this.rbInputMethodDirectInput.Location = new System.Drawing.Point(7, 20);
-			this.rbInputMethodDirectInput.Name = "rbInputMethodDirectInput";
-			this.rbInputMethodDirectInput.Size = new System.Drawing.Size(114, 17);
-			this.rbInputMethodDirectInput.TabIndex = 0;
-			this.rbInputMethodDirectInput.TabStop = true;
-			this.rbInputMethodDirectInput.Text = "DirectInput+XInput";
-			this.rbInputMethodDirectInput.UseVisualStyleBackColor = true;
-			// 
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.locLabelEx1);
@@ -266,12 +239,18 @@
 			this.groupBox1.Controls.Add(this.StartFullScreenCheckbox);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.SingleInstanceModeCheckbox);
-			this.groupBox1.Location = new System.Drawing.Point(6, 221);
+			this.groupBox1.Location = new System.Drawing.Point(6, 191);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(369, 133);
 			this.groupBox1.TabIndex = 15;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Startup Options";
+			// 
+			// locLabelEx1
+			// 
+			this.locLabelEx1.Location = new System.Drawing.Point(26, 112);
+			this.locLabelEx1.Name = "locLabelEx1";
+			this.locLabelEx1.Text = "Note: Only a tiny subset of commandline args work (incl. rom path)";
 			// 
 			// StartPausedCheckbox
 			// 
@@ -331,7 +310,7 @@
 			this.tabPage3.Controls.Add(this.BackupSRamCheckbox);
 			this.tabPage3.Location = new System.Drawing.Point(4, 22);
 			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(386, 391);
+			this.tabPage3.Size = new System.Drawing.Size(392, 322);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Advanced";
 			this.tabPage3.UseVisualStyleBackColor = true;
@@ -441,7 +420,7 @@
 			this.label6.Location = new System.Drawing.Point(27, 243);
 			this.label6.Name = "label6";
 			this.label6.Text = "Skips some integrity check exceptions in waterbox cores.\r\nUseful for romhackers. " +
-    "Reboot core after changing.\r\nDon't bother reporting bugs if checked.\r\n";
+    "Reboot core after changing.\r\nDon\'t bother reporting bugs if checked.\r\n";
 			// 
 			// cbSkipWaterboxIntegrityChecks
 			// 
@@ -512,29 +491,13 @@
 			this.BackupSRamCheckbox.Text = "Backup SaveRAM to .SaveRAM.bak";
 			this.BackupSRamCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// locLabelEx1
-			// 
-			this.locLabelEx1.Location = new System.Drawing.Point(26, 112);
-			this.locLabelEx1.Name = "locLabelEx1";
-			this.locLabelEx1.Text = "Note: Only a tiny subset of commandline args work (incl. rom path)";
-			// 
-			// cbMergeLAndRModifierKeys
-			// 
-			this.cbMergeLAndRModifierKeys.AutoSize = true;
-			this.cbMergeLAndRModifierKeys.Location = new System.Drawing.Point(7, 202);
-			this.cbMergeLAndRModifierKeys.Name = "cbMergeLAndRModifierKeys";
-			this.cbMergeLAndRModifierKeys.Size = new System.Drawing.Size(320, 17);
-			this.cbMergeLAndRModifierKeys.TabIndex = 29;
-			this.cbMergeLAndRModifierKeys.Text = "Merge L+R modifier keys e.g. Shift instead of LShift and RShift";
-			this.cbMergeLAndRModifierKeys.UseVisualStyleBackColor = true;
-			// 
 			// EmuHawkOptions
 			// 
 			this.AcceptButton = this.OkBtn;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.CancelBtn;
-			this.ClientSize = new System.Drawing.Size(418, 470);
+			this.ClientSize = new System.Drawing.Size(418, 401);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
@@ -546,8 +509,6 @@
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage1.PerformLayout();
-			this.groupBox3.ResumeLayout(false);
-			this.groupBox3.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
@@ -594,9 +555,6 @@
 		private System.Windows.Forms.CheckBox RunInBackgroundCheckbox;
 		private System.Windows.Forms.CheckBox EnableContextMenuCheckbox;
 		private System.Windows.Forms.CheckBox PauseWhenMenuActivatedCheckbox;
-		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.RadioButton rbInputMethodOpenTK;
-		private System.Windows.Forms.RadioButton rbInputMethodDirectInput;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.CheckBox StartPausedCheckbox;
 		private BizHawk.WinForms.Controls.LocLabelEx label14;

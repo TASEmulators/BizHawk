@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 
 //NSF ROM and general approaches are heavily derived from FCEUX. the general ideas:
@@ -359,10 +357,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//patch in vector reading
 			if (Patch_Vectors)
 			{
-				if (addr == 0x7FFA) return (byte)(NMI_VECTOR & 0xFF);
-				else if (addr == 0x7FFB) return (byte)((NMI_VECTOR >> 8) & 0xFF);
-				else if (addr == 0x7FFC) return (byte)(RESET_VECTOR & 0xFF);
-				else if (addr == 0x7FFD) { return (byte)((RESET_VECTOR >> 8) & 0xFF); }
+				if (addr == 0x7FFA) return NMI_VECTOR & 0xFF;
+				else if (addr == 0x7FFB) return (NMI_VECTOR >> 8) & 0xFF;
+				else if (addr == 0x7FFC) return RESET_VECTOR & 0xFF;
+				else if (addr == 0x7FFD) { return (RESET_VECTOR >> 8) & 0xFF; }
 				return NES.DB;
 			}
 			else

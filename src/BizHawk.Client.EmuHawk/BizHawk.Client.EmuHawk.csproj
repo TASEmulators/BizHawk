@@ -9,10 +9,10 @@
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<Nullable>disable</Nullable>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="System.Net.Http" Version="4.3.4" />
-		<Reference Include="System.Windows.Forms" />
+		<PackageReference Include="System.Net.Http" />
 		<Reference Include="System.IO.Compression" />
 	</ItemGroup>
 	<ItemGroup>
@@ -20,7 +20,10 @@
 		<Reference Include="NLua, Version=1.4.1.0, Culture=neutral, PublicKeyToken=null, processorArchitecture=MSIL" SpecificVersion="false" HintPath="$(ProjectDir)../../References/NLua.dll" Private="true" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.DirectX/BizHawk.Bizware.DirectX.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Audio/BizHawk.Bizware.Audio.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Input/BizHawk.Bizware.Input.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics.Controls/BizHawk.Bizware.Graphics.Controls.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.WinForms.Controls/BizHawk.WinForms.Controls.csproj" />
 		<Compile Remove="Properties/Settings.Designer.cs" />
 		<Content Include="images/logo.ico" />
@@ -37,7 +40,6 @@
 		<EmbeddedResource Remove="images/sms-icon.png" />
 		<EmbeddedResource Remove="images/tastudio/ts_h_piano_*.png" />
 		<EmbeddedResource Remove="images/tastudio/ts_v_piano_*.png" />
-		<None Include="$(ProjectDir)../../Assets/**/*.*" CopyToOutputDirectory="PreserveNewest" />
 		<None Remove="packages.config" />
 		<None Remove="Properties/Resources.resources" />
 	</ItemGroup>
@@ -256,12 +258,9 @@
 		<Compile Update="CustomControls/MsgBox.designer.cs" DependentUpon="MsgBox.cs" />
 		<EmbeddedResource Update="CustomControls/MsgBox.resx" DependentUpon="MsgBox.cs" />
 		<Compile Update="CustomControls/RepeatButton.cs" SubType="Component" />
+		<Compile Update="CustomControls/ScreenshotForm.cs" SubType="Form" />
 		<Compile Update="CustomControls/TransparentTrackbar.cs" SubType="Component" />
 		<Compile Update="CustomControls/ViewportPanel.cs" SubType="Component" />
-		<Compile Update="GraphicsImplementations/GLControlWrapper_GdiPlus.cs" SubType="Component" />
-		<Compile Update="GraphicsImplementations/GLControlWrapper_SlimDX9.cs" SubType="Component" />
-		<Compile Update="GraphicsImplementations/GraphicsControl.cs" SubType="UserControl" />
-		<Compile Update="GraphicsImplementations/GraphicsControl_TK.cs" SubType="UserControl" />
 		<Compile Update="GraphicsImplementations/RetainedGraphicsControl.cs" SubType="UserControl" />
 		<Compile Update="LogWindow.cs" SubType="Form" />
 		<Compile Update="LogWindow.Designer.cs" DependentUpon="LogWindow.cs" />
@@ -455,9 +454,6 @@
 		<Compile Update="tools/TAStudio/PlaybackBox.cs" SubType="UserControl" />
 		<Compile Update="tools/TAStudio/PlaybackBox.Designer.cs" DependentUpon="PlaybackBox.cs" />
 		<EmbeddedResource Update="tools/TAStudio/PlaybackBox.resx" DependentUpon="PlaybackBox.cs" />
-		<Compile Update="tools/TAStudio/ScreenshotForm.cs" SubType="Form" />
-		<Compile Update="tools/TAStudio/ScreenshotForm.Designer.cs" DependentUpon="ScreenshotForm.cs" />
-		<EmbeddedResource Update="tools/TAStudio/ScreenshotForm.resx" DependentUpon="ScreenshotForm.cs" />
 		<Compile Update="tools/TAStudio/TAStudio.Callbacks.cs" DependentUpon="TAStudio.cs" SubType="Form" />
 		<Compile Update="tools/TAStudio/TAStudio.cs" SubType="Form" />
 		<Compile Update="tools/TAStudio/TAStudio.Designer.cs" DependentUpon="TAStudio.cs" />

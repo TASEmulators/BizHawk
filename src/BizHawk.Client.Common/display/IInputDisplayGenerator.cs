@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +12,7 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class Bk2InputDisplayGenerator : IInputDisplayGenerator
 	{
+		/// <remarks>either <c>Range</c> or <c>Mnemonic</c> is always non-null</remarks>
 		private readonly IReadOnlyList<(string Name, AxisSpec? Range, char? Mnemonic)> _cachedInputSpecs;
 
 		private readonly IController _source;
@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 				else
 				{
 					sb.Append(_source.IsPressed(button)
-						? mnemonicChar
+						? mnemonicChar.Value
 						: ' ');
 				}
 			}

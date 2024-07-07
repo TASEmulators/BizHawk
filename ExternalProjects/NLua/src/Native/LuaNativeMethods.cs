@@ -1,407 +1,435 @@
-﻿// ReSharper disable IdentifierTypo
+﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
-
-using BizHawk.BizInvoke;
+using System.Text;
 
 using charptr_t = System.IntPtr;
-using lua_Alloc = System.IntPtr;
 using lua_CFunction = System.IntPtr;
-using lua_Debug = System.IntPtr;
-using lua_Hook = System.IntPtr;
 using lua_Integer = System.Int64;
 using lua_KContext = System.IntPtr;
 using lua_KFunction = System.IntPtr;
 using lua_Number = System.Double;
-using lua_Number_ptr = System.IntPtr;
-using lua_Reader = System.IntPtr;
 using lua_State = System.IntPtr;
-using lua_WarnFunction = System.IntPtr;
-using lua_Writer = System.IntPtr;
 using size_t = System.UIntPtr;
 using voidptr_t = System.IntPtr;
 
 #pragma warning disable SA1121 // Use built-in type alias
 
-namespace NLua
+namespace NLua.Native
 {
 	[SuppressUnmanagedCodeSecurity]
-	public abstract class LuaNativeMethods
+	internal unsafe class LuaNativeMethods
 	{
-		protected const CallingConvention cc = CallingConvention.Cdecl;
+		// TODO: Get rid of this once we're .NET Core/.NET
+		private static class Mershul
+		{
+			public static charptr_t StringToCoTaskMemUTF8(string s)
+			{
+				if (s == null)
+				{
+					return charptr_t.Zero;
+				}
 
-		[BizImport(cc)]
-		public abstract int lua_absindex(lua_State luaState, int idx);
+				var nb = Encoding.UTF8.GetMaxByteCount(s.Length);
+				var ptr = Marshal.AllocCoTaskMem(checked(nb + 1));
 
-		[BizImport(cc)]
-		public abstract void lua_arith(lua_State luaState, int op);
+				fixed (char* c = s)
+				{
+					var pbMem = (byte*)ptr;
+					var nbWritten = Encoding.UTF8.GetBytes(c, s.Length, pbMem!, nb);
+					pbMem[nbWritten] = 0;
+				}
 
-		[BizImport(cc)]
-		public abstract lua_CFunction lua_atpanic(lua_State luaState, lua_CFunction panicf);
+				return ptr;
+			}
+		}
 
-		[BizImport(cc)]
-		public abstract void lua_callk(lua_State luaState, int nargs, int nresults, lua_KContext ctx, lua_KFunction k);
+		internal bool IsLua53;
 
-		[BizImport(cc)]
-		public abstract int lua_checkstack(lua_State luaState, int extra);
+		internal delegate* unmanaged[Cdecl]<lua_State, lua_CFunction, lua_CFunction> lua_atpanic;
 
-		[BizImport(cc)]
-		public abstract void lua_close(lua_State luaState);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public lua_CFunction AtPanic(lua_State luaState, lua_CFunction panicf) => lua_atpanic(luaState, panicf);
 
-		[BizImport(cc)]
-		public abstract int lua_compare(lua_State luaState, int index1, int index2, int op);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int> lua_checkstack;
 
-		[BizImport(cc)]
-		public abstract void lua_concat(lua_State luaState, int n);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int CheckStack(lua_State luaState, int extra) => lua_checkstack(luaState, extra);
 
-		[BizImport(cc)]
-		public abstract void lua_copy(lua_State luaState, int fromIndex, int toIndex);
+		internal delegate* unmanaged[Cdecl]<lua_State, void> lua_close;
 
-		[BizImport(cc)]
-		public abstract void lua_createtable(lua_State luaState, int elements, int records);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Close(lua_State luaState) => lua_close(luaState);
 
-		[BizImport(cc)]
-		public abstract int lua_dump(lua_State luaState, lua_Writer writer, voidptr_t data, int strip);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int, int, int> lua_compare;
 
-		[BizImport(cc)]
-		public abstract int lua_error(lua_State luaState);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int Compare(lua_State luaState, int index1, int index2, int op) => lua_compare(luaState, index1, index2, op);
 
-		[BizImport(cc)]
-		public abstract lua_Alloc lua_getallocf(lua_State luaState, ref voidptr_t ud);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int, void> lua_createtable;
 
-		[BizImport(cc)]
-		public abstract int lua_getfield(lua_State luaState, int index, string k);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void CreateTable(lua_State luaState, int elements, int records) => lua_createtable(luaState, elements, records);
 
-		[BizImport(cc)]
-		public abstract int lua_getglobal(lua_State luaState, string name);
+		internal delegate* unmanaged[Cdecl]<lua_State, int> lua_error;
 
-		[BizImport(cc)]
-		public abstract int lua_geti(lua_State luaState, int index, long i);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int Error(lua_State luaState) => lua_error(luaState);
 
-		[BizImport(cc)]
-		public abstract int lua_getmetatable(lua_State luaState, int index);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, charptr_t, int> lua_getfield;
 
-		[BizImport(cc)]
-		public abstract int lua_gettable(lua_State luaState, int index);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int GetField(lua_State luaState, int index, string k)
+		{
+			var _k = Mershul.StringToCoTaskMemUTF8(k);
+			try
+			{
+				return lua_getfield(luaState, index, _k);
+			}
+			finally
+			{
+				Marshal.FreeCoTaskMem(_k);
+			}
+		}
 
-		[BizImport(cc)]
-		public abstract int lua_gettop(lua_State luaState);
+		internal delegate* unmanaged[Cdecl]<lua_State, charptr_t, int> lua_getglobal;
 
-		[BizImport(cc)]
-		public abstract charptr_t lua_getupvalue(lua_State luaState, int funcIndex, int n);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int GetGlobal(lua_State luaState, string name)
+		{
+			var _name = Mershul.StringToCoTaskMemUTF8(name);
+			try
+			{
+				return lua_getglobal(luaState, _name);
+			}
+			finally
+			{
+				Marshal.FreeCoTaskMem(_name);
+			}
+		}
 
-		[BizImport(cc)]
-		public abstract int lua_iscfunction(lua_State luaState, int index);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int> lua_getmetatable;
 
-		[BizImport(cc)]
-		public abstract int lua_isinteger(lua_State luaState, int index);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int GetMetaTable(lua_State luaState, int index) => lua_getmetatable(luaState, index);
 
-		[BizImport(cc)]
-		public abstract int lua_isnumber(lua_State luaState, int index);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int> lua_gettable;
 
-		[BizImport(cc)]
-		public abstract int lua_isstring(lua_State luaState, int index);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int GetTable(lua_State luaState, int index) => lua_gettable(luaState, index);
 
-		[BizImport(cc)]
-		public abstract int lua_isuserdata(lua_State luaState, int index);
+		internal delegate* unmanaged[Cdecl]<lua_State, int> lua_gettop;
 
-		[BizImport(cc)]
-		public abstract int lua_isyieldable(lua_State luaState);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int GetTop(lua_State luaState) => lua_gettop(luaState);
 
-		[BizImport(cc)]
-		public abstract void lua_len(lua_State luaState, int index);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int> lua_isinteger;
 
-		[BizImport(cc)]
-		public abstract int lua_load
-			(lua_State luaState,
-			lua_Reader reader,
-			voidptr_t data,
-			string chunkName,
-			string mode);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int IsInteger(lua_State luaState, int index) => lua_isinteger(luaState, index);
 
-		[BizImport(cc)]
-		public abstract lua_State lua_newstate(lua_Alloc allocFunction, voidptr_t ud);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int> lua_isnumber;
 
-		[BizImport(cc)]
-		public abstract lua_State lua_newthread(lua_State luaState);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int IsNumber(lua_State luaState, int index) => lua_isnumber(luaState, index);
 
-		[BizImport(cc)]
-		public abstract int lua_next(lua_State luaState, int index);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int> lua_isstring;
 
-		[BizImport(cc)]
-		public abstract int lua_pcallk
-			(lua_State luaState,
-			int nargs,
-			int nresults,
-			int errorfunc,
-			lua_KContext ctx,
-			lua_KFunction k);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int IsString(lua_State luaState, int index) => lua_isstring(luaState, index);
 
-		[BizImport(cc)]
-		public abstract void lua_pushboolean(lua_State luaState, int value);
+		internal delegate* unmanaged[Cdecl]<lua_State, lua_State> lua_newthread;
 
-		[BizImport(cc)]
-		public abstract void lua_pushcclosure(lua_State luaState, lua_CFunction f, int n);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public lua_State NewThread(lua_State luaState) => lua_newthread(luaState);
 
-		[BizImport(cc)]
-		public abstract void lua_pushinteger(lua_State luaState, lua_Integer n);
+		internal delegate* unmanaged[Cdecl]<lua_State, size_t, int, voidptr_t> lua_newuserdatauv;
+		internal delegate* unmanaged[Cdecl]<lua_State, size_t, voidptr_t> lua_newuserdata;
 
-		[BizImport(cc)]
-		public abstract void lua_pushlightuserdata(lua_State luaState, voidptr_t udata);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public voidptr_t NewUserData(lua_State luaState, size_t size) => lua_newuserdatauv != null
+			? lua_newuserdatauv(luaState, size, 1)
+			: lua_newuserdata(luaState, size);
 
-		[BizImport(cc)]
-		public abstract charptr_t lua_pushlstring(lua_State luaState, byte[] s, size_t len);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int> lua_next;
 
-		[BizImport(cc)]
-		public abstract void lua_pushnil(lua_State luaState);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int Next(lua_State luaState, int index) => lua_next(luaState, index);
 
-		[BizImport(cc)]
-		public abstract void lua_pushnumber(lua_State luaState, lua_Number number);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int, int, lua_KContext, lua_KFunction, int> lua_pcallk;
 
-		[BizImport(cc)]
-		public abstract int lua_pushthread(lua_State luaState);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int PCallK(lua_State luaState, int nargs, int nresults, int errorfunc, lua_KContext ctx, lua_KFunction k) => lua_pcallk(luaState, nargs, nresults, errorfunc, ctx, k);
 
-		[BizImport(cc)]
-		public abstract void lua_pushvalue(lua_State luaState, int index);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, void> lua_pushboolean;
 
-		[BizImport(cc)]
-		public abstract int lua_rawequal(lua_State luaState, int index1, int index2);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void PushBoolean(lua_State luaState, int value) => lua_pushboolean(luaState, value);
 
-		[BizImport(cc)]
-		public abstract int lua_rawget(lua_State luaState, int index);
+		internal delegate* unmanaged[Cdecl]<lua_State, lua_CFunction, int, void> lua_pushcclosure;
 
-		[BizImport(cc)]
-		public abstract int lua_rawgeti(lua_State luaState, int index, lua_Integer n);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void PushCClosure(lua_State luaState, lua_CFunction f, int n) => lua_pushcclosure(luaState, f, n);
 
-		[BizImport(cc)]
-		public abstract int lua_rawgetp(lua_State luaState, int index, voidptr_t p);
+		internal delegate* unmanaged[Cdecl]<lua_State, lua_Integer, void> lua_pushinteger;
 
-		[BizImport(cc)]
-		public abstract size_t lua_rawlen(lua_State luaState, int index);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void PushInteger(lua_State luaState, lua_Integer n) => lua_pushinteger(luaState, n);
 
-		[BizImport(cc)]
-		public abstract void lua_rawset(lua_State luaState, int index);
+		internal delegate* unmanaged[Cdecl]<lua_State, voidptr_t, void> lua_pushlightuserdata;
 
-		[BizImport(cc)]
-		public abstract void lua_rawseti(lua_State luaState, int index, lua_Integer i);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void PushLightUserData(lua_State luaState, voidptr_t udata) => lua_pushlightuserdata(luaState, udata);
 
-		[BizImport(cc)]
-		public abstract void lua_rawsetp(lua_State luaState, int index, voidptr_t p);
+		internal delegate* unmanaged[Cdecl]<lua_State, charptr_t, size_t, charptr_t> lua_pushlstring;
 
-		[BizImport(cc)]
-		public abstract void lua_rotate(lua_State luaState, int index, int n);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public charptr_t PushLString(lua_State luaState, ReadOnlySpan<byte> s, size_t len)
+		{
+			fixed (byte* _s = s)
+			{
+				return lua_pushlstring(luaState, (charptr_t)_s, len);
+			}
+		}
 
-		[BizImport(cc)]
-		public abstract void lua_setallocf(lua_State luaState, lua_Alloc f, voidptr_t ud);
+		internal delegate* unmanaged[Cdecl]<lua_State, void> lua_pushnil;
 
-		[BizImport(cc)]
-		public abstract void lua_setfield(lua_State luaState, int index, string key);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void PushNil(lua_State luaState) => lua_pushnil(luaState);
 
-		[BizImport(cc)]
-		public abstract void lua_setglobal(lua_State luaState, string key);
+		internal delegate* unmanaged[Cdecl]<lua_State, lua_Number, void> lua_pushnumber;
 
-		[BizImport(cc)]
-		public abstract void lua_seti(lua_State luaState, int index, long n);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void PushNumber(lua_State luaState, lua_Number number) => lua_pushnumber(luaState, number);
 
-		[BizImport(cc)]
-		public abstract void lua_setmetatable(lua_State luaState, int objIndex);
+		internal delegate* unmanaged[Cdecl]<lua_State, int> lua_pushthread;
 
-		[BizImport(cc)]
-		public abstract void lua_settable(lua_State luaState, int index);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int PushThread(lua_State luaState) => lua_pushthread(luaState);
 
-		[BizImport(cc)]
-		public abstract void lua_settop(lua_State luaState, int newTop);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, void> lua_pushvalue;
 
-		[BizImport(cc)]
-		public abstract charptr_t lua_setupvalue(lua_State luaState, int funcIndex, int n);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void PushValue(lua_State luaState, int index) => lua_pushvalue(luaState, index);
 
-		[BizImport(cc)]
-		public abstract int lua_status(lua_State luaState);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int, int> lua_rawequal;
 
-		[BizImport(cc)]
-		public abstract size_t lua_stringtonumber(lua_State luaState, string s);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int RawEqual(lua_State luaState, int index1, int index2) => lua_rawequal(luaState, index1, index2);
 
-		[BizImport(cc)]
-		public abstract int lua_toboolean(lua_State luaState, int index);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int> lua_rawget;
 
-		[BizImport(cc)]
-		public abstract lua_CFunction lua_tocfunction(lua_State luaState, int index);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int RawGet(lua_State luaState, int index) => lua_rawget(luaState, index);
 
-		[BizImport(cc)]
-		public abstract lua_Integer lua_tointegerx(lua_State luaState, int index, out int isNum);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, lua_Integer, int> lua_rawgeti;
 
-		[BizImport(cc)]
-		public abstract charptr_t lua_tolstring(lua_State luaState, int index, out size_t strLen);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int RawGetI(lua_State luaState, int index, lua_Integer n) => lua_rawgeti(luaState, index, n);
 
-		[BizImport(cc)]
-		public abstract lua_Number lua_tonumberx(lua_State luaState, int index, out int isNum);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, void> lua_rawset;
 
-		[BizImport(cc)]
-		public abstract voidptr_t lua_topointer(lua_State luaState, int index);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void RawSet(lua_State luaState, int index) => lua_rawset(luaState, index);
 
-		[BizImport(cc)]
-		public abstract lua_State lua_tothread(lua_State luaState, int index);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, lua_Integer, void> lua_rawseti;
 
-		[BizImport(cc)]
-		public abstract voidptr_t lua_touserdata(lua_State luaState, int index);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void RawSetI(lua_State luaState, int index, lua_Integer i) => lua_rawseti(luaState, index, i);
 
-		[BizImport(cc)]
-		public abstract int lua_type(lua_State luaState, int index);
+		internal delegate* unmanaged[Cdecl]<lua_State, lua_State, int, out int, int> lua_resume_54;
+		internal delegate* unmanaged[Cdecl]<lua_State, lua_State, int, int> lua_resume_53;
 
-		[BizImport(cc)]
-		public abstract charptr_t lua_typename(lua_State luaState, int type);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int Resume(lua_State luaState, lua_State from, int nargs) => lua_resume_54 != null
+			? lua_resume_54(luaState, from, nargs, out _)
+			: lua_resume_53(luaState, from, nargs);
 
-		[BizImport(cc)]
-		public abstract voidptr_t lua_upvalueid(lua_State luaState, int funcIndex, int n);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int, void> lua_rotate;
 
-		[BizImport(cc)]
-		public abstract void lua_upvaluejoin(lua_State luaState, int funcIndex1, int n1, int funcIndex2, int n2);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Rotate(lua_State luaState, int index, int n) => lua_rotate(luaState, index, n);
 
-		[BizImport(cc)]
-		public abstract void lua_xmove(lua_State from, lua_State to, int n);
+		internal delegate* unmanaged[Cdecl]<lua_State, charptr_t, void> lua_setglobal;
 
-		[BizImport(cc)]
-		public abstract int lua_yieldk(lua_State luaState,
-			int nresults,
-			lua_KContext ctx,
-			lua_KFunction k);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void SetGlobal(lua_State luaState, string key)
+		{
+			var _key = Mershul.StringToCoTaskMemUTF8(key);
+			try
+			{
+				lua_setglobal(luaState, _key);
+			}
+			finally
+			{
+				Marshal.FreeCoTaskMem(_key);
+			}
+		}
 
-		[BizImport(cc)]
-		public abstract int luaL_argerror(lua_State luaState, int arg, string message);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, void> lua_setmetatable;
 
-		[BizImport(cc)]
-		public abstract int luaL_callmeta(lua_State luaState, int obj, string e);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void SetMetaTable(lua_State luaState, int objIndex) => lua_setmetatable(luaState, objIndex);
 
-		[BizImport(cc)]
-		public abstract void luaL_checkany(lua_State luaState, int arg);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, void> lua_settable;
 
-		[BizImport(cc)]
-		public abstract lua_Integer luaL_checkinteger(lua_State luaState, int arg);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void SetTable(lua_State luaState, int index) => lua_settable(luaState, index);
 
-		[BizImport(cc)]
-		public abstract charptr_t luaL_checklstring(lua_State luaState, int arg, out size_t len);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, void> lua_settop;
 
-		[BizImport(cc)]
-		public abstract lua_Number luaL_checknumber(lua_State luaState, int arg);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void SetTop(lua_State luaState, int newTop) => lua_settop(luaState, newTop);
 
-		[BizImport(cc, Compatibility = true)]
-		public abstract int luaL_checkoption(lua_State luaState, int arg, string def, string[] list);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int> lua_toboolean;
 
-		[BizImport(cc)]
-		public abstract void luaL_checkstack(lua_State luaState, int sz, string message);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int ToBoolean(lua_State luaState, int index) => lua_toboolean(luaState, index);
 
-		[BizImport(cc)]
-		public abstract void luaL_checktype(lua_State luaState, int arg, int type);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, out int, lua_Integer> lua_tointegerx;
 
-		[BizImport(cc)]
-		public abstract voidptr_t luaL_checkudata(lua_State luaState, int arg, string tName);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public lua_Integer ToIntegerX(lua_State luaState, int index, out int isNum) => lua_tointegerx(luaState, index, out isNum);
 
-		[BizImport(cc)]
-		public abstract void luaL_checkversion_(lua_State luaState, lua_Number ver, size_t sz);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, out size_t, charptr_t> lua_tolstring;
 
-		[BizImport(cc)]
-		public abstract int luaL_error(lua_State luaState, string message);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public charptr_t ToLString(lua_State luaState, int index, out size_t strLen) => lua_tolstring(luaState, index, out strLen);
 
-		[BizImport(cc)]
-		public abstract int luaL_execresult(lua_State luaState, int stat);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, out int, lua_Number> lua_tonumberx;
 
-		[BizImport(cc)]
-		public abstract int luaL_fileresult(lua_State luaState, int stat, string fileName);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public lua_Number ToNumberX(lua_State luaState, int index, out int isNum) => lua_tonumberx(luaState, index, out isNum);
 
-		[BizImport(cc)]
-		public abstract int luaL_getmetafield(lua_State luaState, int obj, string e);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, lua_State> lua_tothread;
 
-		[BizImport(cc)]
-		public abstract int luaL_getsubtable(lua_State luaState, int index, string name);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public lua_State ToThread(lua_State luaState, int index) => lua_tothread(luaState, index);
 
-		[BizImport(cc)]
-		public abstract lua_Integer luaL_len(lua_State luaState, int index);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, voidptr_t> lua_touserdata;
 
-		[BizImport(cc)]
-		public abstract int luaL_loadbufferx
-			(lua_State luaState,
-			byte[] buff,
-			size_t sz,
-			string name,
-			string mode);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public voidptr_t ToUserData(lua_State luaState, int index) => lua_touserdata(luaState, index);
 
-		[BizImport(cc)]
-		public abstract int luaL_loadfilex(lua_State luaState, string name, string mode);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int> lua_type;
 
-		[BizImport(cc)]
-		public abstract int luaL_newmetatable(lua_State luaState, string name);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int Type(lua_State luaState, int index) => lua_type(luaState, index);
 
-		[BizImport(cc)]
-		public abstract lua_State luaL_newstate();
+		internal delegate* unmanaged[Cdecl]<lua_State, lua_State, int, void> lua_xmove;
 
-		[BizImport(cc)]
-		public abstract void luaL_openlibs(lua_State luaState);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void XMove(lua_State from, lua_State to, int n) => lua_xmove(from, to, n);
 
-		[BizImport(cc)]
-		public abstract lua_Integer luaL_optinteger(lua_State luaState, int arg, lua_Integer d);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, lua_KContext, lua_KFunction, int> lua_yieldk;
 
-		[BizImport(cc)]
-		public abstract lua_Number luaL_optnumber(lua_State luaState, int arg, lua_Number d);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int YieldK(lua_State luaState, int nresults, lua_KContext ctx, lua_KFunction k) => lua_yieldk(luaState, nresults, ctx, k);
 
-		[BizImport(cc)]
-		public abstract int luaL_ref(lua_State luaState, int registryIndex);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, charptr_t, int> luaL_getmetafield;
 
-		[BizImport(cc)]
-		public abstract void luaL_requiref(lua_State luaState, string moduleName, lua_CFunction openFunction, int global);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int LGetMetaField(lua_State luaState, int obj, string e)
+		{
+			var _e = Mershul.StringToCoTaskMemUTF8(e);
+			try
+			{
+				return luaL_getmetafield(luaState, obj, _e);
+			}
+			finally
+			{
+				Marshal.FreeCoTaskMem(_e);
+			}
+		}
 
-		[BizImport(cc, Compatibility = true)]
-		public abstract void luaL_setfuncs(lua_State luaState, [In] LuaRegister[] luaReg, int numUp);
+		internal delegate* unmanaged[Cdecl]<lua_State, charptr_t, size_t, charptr_t, charptr_t, int> luaL_loadbufferx;
 
-		[BizImport(cc)]
-		public abstract void luaL_setmetatable(lua_State luaState, string tName);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int LLoadBufferX(lua_State luaState, byte[] buff, size_t sz, string name, string mode)
+		{
+			fixed (byte* _buff = buff)
+			{
+				var _name = charptr_t.Zero;
+				var _mode = charptr_t.Zero;
+				try
+				{
+					_name = Mershul.StringToCoTaskMemUTF8(name);
+					_mode = Mershul.StringToCoTaskMemUTF8(mode);
+					return luaL_loadbufferx(luaState, (charptr_t)_buff, sz, _name, _mode);
+				}
+				finally
+				{
+					Marshal.FreeCoTaskMem(_name);
+					Marshal.FreeCoTaskMem(_mode);
+				}
+			}
+		}
 
-		[BizImport(cc)]
-		public abstract voidptr_t luaL_testudata(lua_State luaState, int arg, string tName);
+		internal delegate* unmanaged[Cdecl]<lua_State, charptr_t, charptr_t, int> luaL_loadfilex;
 
-		[BizImport(cc)]
-		public abstract charptr_t luaL_tolstring(lua_State luaState, int index, out size_t len);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int LLoadFileX(lua_State luaState, string name, string mode)
+		{
+			var _name = charptr_t.Zero;
+			var _mode = charptr_t.Zero;
+			try
+			{
+				_name = Mershul.StringToCoTaskMemUTF8(name);
+				_mode = Mershul.StringToCoTaskMemUTF8(mode);
+				return luaL_loadfilex(luaState, _name, _mode);
+			}
+			finally
+			{
+				Marshal.FreeCoTaskMem(_name);
+				Marshal.FreeCoTaskMem(_mode);
+			}
+		}
 
-		[BizImport(cc)]
-		public abstract charptr_t luaL_traceback
-			(lua_State luaState,
-			lua_State luaState2,
-			string message,
-			int level);
+		internal delegate* unmanaged[Cdecl]<lua_State, charptr_t, int> luaL_newmetatable;
 
-		[BizImport(cc)]
-		public abstract void luaL_unref(lua_State luaState, int registryIndex, int reference);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int LNewMetaTable(lua_State luaState, string name)
+		{
+			var _name = Mershul.StringToCoTaskMemUTF8(name);
+			try
+			{
+				return luaL_newmetatable(luaState, _name);
+			}
+			finally
+			{
+				Marshal.FreeCoTaskMem(_name);
+			}
+		}
 
-		[BizImport(cc)]
-		public abstract void luaL_where(lua_State luaState, int level);
-	}
+		internal delegate* unmanaged[Cdecl]<lua_State> luaL_newstate;
 
-	public abstract class Lua54NativeMethods : LuaNativeMethods
-	{
-		[BizImport(cc)]
-		public abstract int lua_resume(lua_State luaState, lua_State from, int nargs, out int results);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public lua_State LNewState() => luaL_newstate();
 
-		[BizImport(cc)]
-		public abstract voidptr_t lua_newuserdatauv(lua_State luaState, size_t size, int nuvalue);
+		internal delegate* unmanaged[Cdecl]<lua_State, void> luaL_openlibs;
 
-		[BizImport(cc)]
-		public abstract void lua_setiuservalue(lua_State luaState, int index, int n);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void LOpenLibs(lua_State luaState) => luaL_openlibs(luaState);
 
-		[BizImport(cc)]
-		public abstract int lua_getiuservalue(lua_State luaState, int idx, int n);
-	}
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int> luaL_ref;
 
-	public abstract class Lua53NativeMethods : LuaNativeMethods
-	{
-		[BizImport(cc)]
-		public abstract int lua_resume(lua_State luaState, lua_State from, int nargs);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int LRef(lua_State luaState, int registryIndex) => luaL_ref(luaState, registryIndex);
 
-		[BizImport(cc)]
-		public abstract voidptr_t lua_newuserdata(lua_State luaState, size_t size);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, out size_t, charptr_t> luaL_tolstring;
 
-		[BizImport(cc)]
-		public abstract void lua_setuservalue(lua_State luaState, int index);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public charptr_t LToLString(lua_State luaState, int index, out size_t len) => luaL_tolstring(luaState, index, out len);
 
-		[BizImport(cc)]
-		public abstract int lua_getuservalue(lua_State luaState, int idx);
+		internal delegate* unmanaged[Cdecl]<lua_State, int, int, void> luaL_unref;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void LUnref(lua_State luaState, int registryIndex, int reference) => luaL_unref(luaState, registryIndex, reference);
+
+		internal delegate* unmanaged[Cdecl]<lua_State, int, void> luaL_where;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void LWhere(lua_State luaState, int level) => luaL_where(luaState, level);
 	}
 }

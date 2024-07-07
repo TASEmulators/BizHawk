@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Common
 			public const string Libretro = "Libretro";
 			public const string Lynx = "Lynx";
 			public const string MSX = "MSX";
+			public const string N3DS = "3DS";
 			public const string N64 = "N64";
 			public const string NDS = "NDS";
 			public const string NeoGeoCD = "NeoGeoCD";

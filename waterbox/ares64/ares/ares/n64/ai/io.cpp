@@ -1,5 +1,5 @@
-auto AI::readWord(u32 address, u32& cycles) -> u32 {
-  address = (address & 0xfffff) >> 2;
+auto AI::readWord(u32 address, Thread& thread) -> u32 {
+  address = (address & 0x1f) >> 2;
   n32 data;
 
   if(address != 3) {
@@ -21,8 +21,8 @@ auto AI::readWord(u32 address, u32& cycles) -> u32 {
   return data;
 }
 
-auto AI::writeWord(u32 address, u32 data_, u32& cycles) -> void {
-  address = (address & 0xfffff) >> 2;
+auto AI::writeWord(u32 address, u32 data_, Thread& thread) -> void {
+  address = (address & 0x1f) >> 2;
   n32 data = data_;
 
   if(address == 0) {
@@ -38,6 +38,7 @@ auto AI::writeWord(u32 address, u32 data_, u32& cycles) -> void {
     if(io.dmaCount < 2) {
       if(io.dmaCount == 0) mi.raise(MI::IRQ::AI);
       io.dmaLength[io.dmaCount] = length;
+      io.dmaOriginPc[io.dmaCount] = cpu.ipu.pc;
       io.dmaCount++;
     }
   }
@@ -56,7 +57,7 @@ auto AI::writeWord(u32 address, u32 data_, u32& cycles) -> void {
     //AI_DACRATE
     auto frequency = dac.frequency;
     io.dacRate = data.bit(0,13);
-    dac.frequency = max(1, system.frequency() / 4 / (io.dacRate + 1)) * 1.037;
+    dac.frequency = max(1, system.videoFrequency() / (io.dacRate + 1));
     dac.period = system.frequency() / dac.frequency;
     if(frequency != dac.frequency) stream->setFrequency(dac.frequency);
   }

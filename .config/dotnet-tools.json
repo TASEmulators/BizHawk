@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "powershell": {
+      "version": "7.4.2",
+      "commands": [
+        "pwsh"
+      ],
+      "rollForward": false
+    }
+  }
+}

@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80A;
@@ -26,8 +24,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			Settings = (SmsSettings)settings ?? new SmsSettings();
-			SyncSettings = (SmsSyncSettings)syncSettings ?? new SmsSyncSettings();
+			Settings = settings ?? new SmsSettings();
+			SyncSettings = syncSettings ?? new SmsSyncSettings();
 
 			IsGameGear = game.System == VSystemID.Raw.GG;
 			IsGameGear_C = game.System == VSystemID.Raw.GG;
@@ -293,17 +291,17 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			if (gameRegion == null)
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("USA") >= 0)
+			if (gameRegion.IndexOf("USA", StringComparison.Ordinal) >= 0)
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("Europe") >= 0)
+			if (gameRegion.IndexOf("Europe", StringComparison.Ordinal) >= 0)
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("World") >= 0)
+			if (gameRegion.IndexOf("World", StringComparison.Ordinal) >= 0)
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("Brazil") >= 0)
+			if (gameRegion.IndexOf("Brazil", StringComparison.Ordinal) >= 0)
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("Australia") >= 0)
+			if (gameRegion.IndexOf("Australia", StringComparison.Ordinal) >= 0)
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("Korea") >= 0)
+			if (gameRegion.IndexOf("Korea", StringComparison.Ordinal) >= 0)
 				return SmsSyncSettings.Regions.Korea;
 			return SmsSyncSettings.Regions.Japan;
 		}

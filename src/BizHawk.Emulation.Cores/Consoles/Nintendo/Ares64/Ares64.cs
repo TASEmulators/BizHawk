@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Linq;
 
@@ -9,7 +8,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
-	[PortedCore(CoreNames.Ares64, "ares team, Near", "v130.1", "https://ares-emu.net/")]
+	[PortedCore(CoreNames.Ares64, "ares team, Near", "v138", "https://ares-emu.net/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), })]
 	public partial class Ares64 : WaterboxCore, IRegionable
 	{
@@ -110,9 +109,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			{
 				ipl = _syncSettings.IPLVersion switch
 				{
-					LibAres64.IplVer.Japan => lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("N64DD", "IPL JPN")),
-					LibAres64.IplVer.Dev => lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("N64DD", "IPL DEV")),
-					LibAres64.IplVer.USA => lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("N64DD", "IPL USA")),
+					LibAres64.IplVer.Japan => lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("N64DD", "IPL_JPN")),
+					LibAres64.IplVer.Dev => lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("N64DD", "IPL_DEV")),
+					LibAres64.IplVer.USA => lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("N64DD", "IPL_USA")),
 					_ => throw new InvalidOperationException(),
 				};
 			}

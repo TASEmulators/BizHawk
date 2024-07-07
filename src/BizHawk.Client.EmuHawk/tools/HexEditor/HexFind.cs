@@ -1,7 +1,7 @@
-﻿using System;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
+
+using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -47,25 +47,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetFindBoxChars()
 		{
-			if (string.IsNullOrWhiteSpace(FindBox.Text))
-			{
-				return "";
-			}
-			
-			if (HexRadio.Checked)
-			{
-				return FindBox.Text;
-			}
-
-			var bytes = _hexEditor.ConvertTextToBytes(FindBox.Text);
-
-			var byteString = new StringBuilder();
-			foreach (var b in bytes)
-			{
-				byteString.Append($"{b:X2}");
-			}
-
-			return byteString.ToString();
+			var text = FindBox.Text;
+			if (string.IsNullOrWhiteSpace(text)) return string.Empty;
+			if (HexRadio.Checked) return text;
+			return _hexEditor.ConvertTextToBytes(text).BytesToHexString();
 		}
 
 		private void Find_Prev_Click(object sender, EventArgs e)

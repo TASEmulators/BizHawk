@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public O2Settings _settings = new O2Settings();
 		public O2SyncSettings _syncSettings = new O2SyncSettings();
 
+		[CoreSettings]
 		public class O2Settings
 		{
 			[DisplayName("Display Characters")]
@@ -70,6 +71,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 		}
 
+		[CoreSettings]
 		public class O2SyncSettings
 		{
 			[DisplayName("Use G7400 Enhanemants")]

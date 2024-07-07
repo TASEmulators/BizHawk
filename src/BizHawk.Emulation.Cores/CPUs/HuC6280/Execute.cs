@@ -1,4 +1,4 @@
-using System;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 // Do not modify this file directly! This is GENERATED code.
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			{
 				int lastCycles = PendingCycles;
 
-				if (IRQ1Assert && FlagI == false && LagIFlag == false && (IRQControlByte & IRQ1Selector) == 0 && InBlockTransfer == false)
+				if (IRQ1Assert && !FlagI && !LagIFlag && (IRQControlByte & IRQ1Selector) == 0 && !InBlockTransfer)
 				{
 					WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));
 					WriteMemory((ushort)(S-- + 0x2100), (byte)PC);
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					PendingCycles -= 8;
 				}
 
-				if (TimerAssert && FlagI == false && LagIFlag == false && (IRQControlByte & TimerSelector) == 0 && InBlockTransfer == false)
+				if (TimerAssert && !FlagI && !LagIFlag && (IRQControlByte & TimerSelector) == 0 && !InBlockTransfer)
 				{
 					WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));
 					WriteMemory((ushort)(S-- + 0x2100), (byte)PC);
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					PendingCycles -= 8;
 				}
 
-				if (IRQ2Assert && FlagI == false && LagIFlag == false && (IRQControlByte & IRQ2Selector) == 0 && InBlockTransfer == false)
+				if (IRQ2Assert && !FlagI && !LagIFlag && (IRQControlByte & IRQ2Selector) == 0 && !InBlockTransfer)
 				{
 					WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));
 					WriteMemory((ushort)(S-- + 0x2100), (byte)PC);
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x01: // ORA (addr,X)
 						value8 = ReadMemory(ReadWordPageWrap((ushort)((byte)(ReadMemory(PC++) + X) + 0x2000)));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A |= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x05: // ORA zp
 						value8 = ReadMemory((ushort)(ReadMemory(PC++) + 0x2000));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A |= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x09: // ORA #nn
 						value8 = ReadMemory(PC++);
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A |= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -192,7 +192,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x0D: // ORA addr
 						value8 = ReadMemory(ReadWord(PC)); PC += 2;
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A |= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -229,7 +229,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x10: // BPL +/-rel
 						rel8 = (sbyte)ReadMemory(PC++);
 						value16 = (ushort)(PC + rel8);
-						if (FlagN == false)
+						if (!FlagN)
 						{
 							PendingCycles -= 2;
 							PC = value16;
@@ -239,7 +239,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x11: // ORA (addr),Y
 						temp16 = ReadWordPageWrap((ushort)(ReadMemory(PC++) + 0x2000));
 						value8 = ReadMemory((ushort)(temp16 + Y));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A |= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -256,7 +256,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x12: // ORA (addr)
 						value8 = ReadMemory(ReadWordPageWrap((ushort)(ReadMemory(PC++) + 0x2000)));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A |= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -287,7 +287,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x15: // ORA zp,X
 						value8 = ReadMemory((ushort)(((ReadMemory(PC++) + X) & 0xFF) + 0x2000));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A |= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -325,7 +325,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x19: // ORA addr,Y
 						value8 = ReadMemory((ushort)(ReadWord(PC) + Y));
 						PC += 2;
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A |= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -356,7 +356,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x1D: // ORA addr,X
 						value8 = ReadMemory((ushort)(ReadWord(PC) + X));
 						PC += 2;
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A |= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -400,7 +400,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x21: // AND (addr,X)
 						value8 = ReadMemory(ReadWordPageWrap((ushort)((byte)(ReadMemory(PC++) + X) + 0x2000)));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A &= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -435,7 +435,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x25: // AND zp
 						value8 = ReadMemory((ushort)(ReadMemory(PC++) + 0x2000));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A &= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -472,7 +472,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						goto AfterClearTFlag;
 					case 0x29: // AND #nn
 						value8 = ReadMemory(PC++);
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A &= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -503,7 +503,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x2D: // AND addr
 						value8 = ReadMemory(ReadWord(PC)); PC += 2;
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A &= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -540,7 +540,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x30: // BMI +/-rel
 						rel8 = (sbyte)ReadMemory(PC++);
 						value16 = (ushort)(PC + rel8);
-						if (FlagN == true)
+						if (FlagN)
 						{
 							PendingCycles -= 2;
 							PC = value16;
@@ -550,7 +550,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x31: // AND (addr),Y
 						temp16 = ReadWordPageWrap((ushort)(ReadMemory(PC++) + 0x2000));
 						value8 = ReadMemory((ushort)(temp16 + Y));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A &= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -567,7 +567,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x32: // AND (addr)
 						value8 = ReadMemory(ReadWordPageWrap((ushort)(ReadMemory(PC++) + 0x2000)));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A &= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -591,7 +591,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x35: // AND zp,X
 						value8 = ReadMemory((ushort)(((ReadMemory(PC++) + X) & 0xFF) + 0x2000));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A &= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -629,7 +629,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x39: // AND addr,Y
 						value8 = ReadMemory((ushort)(ReadWord(PC) + Y));
 						PC += 2;
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A &= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -659,7 +659,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x3D: // AND addr,X
 						value8 = ReadMemory((ushort)(ReadWord(PC) + X));
 						PC += 2;
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A &= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -702,7 +702,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						goto AfterClearTFlag;
 					case 0x41: // EOR (addr,X)
 						value8 = ReadMemory(ReadWordPageWrap((ushort)((byte)(ReadMemory(PC++) + X) + 0x2000)));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A ^= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -746,7 +746,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x45: // EOR zp
 						value8 = ReadMemory((ushort)(ReadMemory(PC++) + 0x2000));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A ^= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -783,7 +783,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x49: // EOR #nn
 						value8 = ReadMemory(PC++);
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A ^= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -810,7 +810,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x4D: // EOR addr
 						value8 = ReadMemory(ReadWord(PC)); PC += 2;
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A ^= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -847,7 +847,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x50: // BVC +/-rel
 						rel8 = (sbyte)ReadMemory(PC++);
 						value16 = (ushort)(PC + rel8);
-						if (FlagV == false)
+						if (!FlagV)
 						{
 							PendingCycles -= 2;
 							PC = value16;
@@ -857,7 +857,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x51: // EOR (addr),Y
 						temp16 = ReadWordPageWrap((ushort)(ReadMemory(PC++) + 0x2000));
 						value8 = ReadMemory((ushort)(temp16 + Y));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A ^= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -874,7 +874,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x52: // EOR (addr)
 						value8 = ReadMemory(ReadWordPageWrap((ushort)(ReadMemory(PC++) + 0x2000)));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A ^= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -904,7 +904,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						break;
 					case 0x55: // EOR zp,X
 						value8 = ReadMemory((ushort)(((ReadMemory(PC++) + X) & 0xFF) + 0x2000));
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A ^= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -942,7 +942,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x59: // EOR addr,Y
 						value8 = ReadMemory((ushort)(ReadWord(PC) + Y));
 						PC += 2;
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A ^= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -964,7 +964,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x5D: // EOR addr,X
 						value8 = ReadMemory((ushort)(ReadWord(PC) + X));
 						PC += 2;
-						if (FlagT == false)
+						if (!FlagT)
 						{
 							A ^= value8;
 							P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -1031,7 +1031,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 							FlagC = temp > 0xFF;
 							source8 = (byte)temp;
 						}
-						if (FlagT == false)
+						if (!FlagT)
 							A = source8;
 						else
 						{
@@ -1076,7 +1076,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 							FlagC = temp > 0xFF;
 							source8 = (byte)temp;
 						}
-						if (FlagT == false)
+						if (!FlagT)
 							A = source8;
 						else
 						{
@@ -1133,7 +1133,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 							FlagC = temp > 0xFF;
 							source8 = (byte)temp;
 						}
-						if (FlagT == false)
+						if (!FlagT)
 							A = source8;
 						else
 						{
@@ -1180,7 +1180,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 							FlagC = temp > 0xFF;
 							source8 = (byte)temp;
 						}
-						if (FlagT == false)
+						if (!FlagT)
 							A = source8;
 						else
 						{
@@ -1212,7 +1212,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x70: // BVS +/-rel
 						rel8 = (sbyte)ReadMemory(PC++);
 						value16 = (ushort)(PC + rel8);
-						if (FlagV == true)
+						if (FlagV)
 						{
 							PendingCycles -= 2;
 							PC = value16;
@@ -1246,7 +1246,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 							FlagC = temp > 0xFF;
 							source8 = (byte)temp;
 						}
-						if (FlagT == false)
+						if (!FlagT)
 							A = source8;
 						else
 						{
@@ -1282,7 +1282,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 							FlagC = temp > 0xFF;
 							source8 = (byte)temp;
 						}
-						if (FlagT == false)
+						if (!FlagT)
 							A = source8;
 						else
 						{
@@ -1293,7 +1293,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						PendingCycles -= 7;
 						break;
 					case 0x73: // TII src, dest, len
-						if (InBlockTransfer == false)
+						if (!InBlockTransfer)
 						{
 							InBlockTransfer = true;
 							btFrom = ReadWord(PC); PC += 2;
@@ -1347,7 +1347,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 							FlagC = temp > 0xFF;
 							source8 = (byte)temp;
 						}
-						if (FlagT == false)
+						if (!FlagT)
 							A = source8;
 						else
 						{
@@ -1404,7 +1404,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 							FlagC = temp > 0xFF;
 							source8 = (byte)temp;
 						}
-						if (FlagT == false)
+						if (!FlagT)
 							A = source8;
 						else
 						{
@@ -1450,7 +1450,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 							FlagC = temp > 0xFF;
 							source8 = (byte)temp;
 						}
-						if (FlagT == false)
+						if (!FlagT)
 							A = source8;
 						else
 						{
@@ -1568,7 +1568,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x90: // BCC +/-rel
 						rel8 = (sbyte)ReadMemory(PC++);
 						value16 = (ushort)(PC + rel8);
-						if (FlagC == false)
+						if (!FlagC)
 						{
 							PendingCycles -= 2;
 							PC = value16;
@@ -1746,7 +1746,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0xB0: // BCS +/-rel
 						rel8 = (sbyte)ReadMemory(PC++);
 						value16 = (ushort)(PC + rel8);
-						if (FlagC == true)
+						if (FlagC)
 						{
 							PendingCycles -= 2;
 							PC = value16;
@@ -1857,7 +1857,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						PendingCycles -= 2;
 						break;
 					case 0xC3: // TDD src, dest, len
-						if (InBlockTransfer == false)
+						if (!InBlockTransfer)
 						{
 							InBlockTransfer = true;
 							btFrom = ReadWord(PC); PC += 2;
@@ -1957,7 +1957,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0xD0: // BNE +/-rel
 						rel8 = (sbyte)ReadMemory(PC++);
 						value16 = (ushort)(PC + rel8);
-						if (FlagZ == false)
+						if (!FlagZ)
 						{
 							PendingCycles -= 2;
 							PC = value16;
@@ -1980,7 +1980,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						PendingCycles -= 7;
 						break;
 					case 0xD3: // TIN src, dest, len
-						if (InBlockTransfer == false)
+						if (!InBlockTransfer)
 						{
 							InBlockTransfer = true;
 							btFrom = ReadWord(PC); PC += 2;
@@ -2102,7 +2102,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						PendingCycles -= 7;
 						break;
 					case 0xE3: // TIA src, dest, len
-						if (InBlockTransfer == false)
+						if (!InBlockTransfer)
 						{
 							InBlockTransfer = true;
 							btFrom = ReadWord(PC); PC += 2;
@@ -2254,7 +2254,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0xF0: // BEQ +/-rel
 						rel8 = (sbyte)ReadMemory(PC++);
 						value16 = (ushort)(PC + rel8);
-						if (FlagZ == true)
+						if (FlagZ)
 						{
 							PendingCycles -= 2;
 							PC = value16;
@@ -2311,7 +2311,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						PendingCycles -= 7;
 						break;
 					case 0xF3: // TAI src, dest, len
-						if (InBlockTransfer == false)
+						if (!InBlockTransfer)
 						{
 							InBlockTransfer = true;
 							btFrom = ReadWord(PC); PC += 2;
@@ -2339,7 +2339,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0xF4: // SET
 						int a; // TODO remove these extra checks
 						string b = Disassemble(PC, out a);
-						if (b.StartsWith("ADC") == false && b.StartsWith("EOR") == false && b.StartsWith("AND") == false && b.StartsWith("ORA") == false)
+						if (!b.StartsWithOrdinal("ADC") && !b.StartsWithOrdinal("EOR") && !b.StartsWithOrdinal("AND") && !b.StartsWithOrdinal("ORA"))
 							Console.WriteLine("SETTING T FLAG, NEXT INSTRUCTION IS UNHANDLED:  {0}", b);
 						FlagT = true;
 						PendingCycles -= 2;

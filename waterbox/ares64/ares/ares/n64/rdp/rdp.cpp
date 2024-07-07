@@ -31,11 +31,11 @@ auto RDP::crash(const char *reason) -> void {
 }
 
 auto RDP::main() -> void {
-  step(system.frequency());
-}
-
-auto RDP::step(u32 clocks) -> void {
-  Thread::clock += clocks;
+  const u32 clocks = system.frequency();
+  while(Thread::clock < 0) {
+    step(clocks);
+    command.clock += clocks / 3;
+  }
 }
 
 auto RDP::power(bool reset) -> void {

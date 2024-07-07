@@ -1,4 +1,3 @@
-﻿using System;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
@@ -183,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				case END:
 					OnExecFetch?.Invoke(RegPC0);
 					TraceCallback?.Invoke(State());
-					opcode = (byte)Regs[DB];
+					opcode = Regs[DB];
 					instr_pntr = 0;
 					FetchInstruction();
 					break;
@@ -600,13 +599,13 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				// Place the high order byte of DC0 on the data bus
 				// CYCLE LENGTH: L
 				case ROMC_06:
-					Regs[DB] = (byte)Regs[DC0h];
+					Regs[DB] = Regs[DC0h];
 					break;
 
 				// Place the high order byte of PC1 on the data bus
 				// CYCLE LENGTH: L
 				case ROMC_07:
-					Regs[DB] = (byte)Regs[PC1h];
+					Regs[DB] = Regs[PC1h];
 					break;
 
 				// All devices copy the contents of PC0 into PC1. The CPU outputs zero on the data bus in this ROMC state.
@@ -622,7 +621,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				// The device whose address space includes the contents of the DC0 register must place the low order byte of DC0 onto the data bus
 				// CYCLE LENGTH: L
 				case ROMC_09:
-					Regs[DB] = (byte)Regs[DC0l];
+					Regs[DB] = Regs[DC0l];
 					break;
 
 				// All devices add the 8-bit value on the data bus, treated as a signed binary number, to the data counter
@@ -635,7 +634,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				// The device whose address space includes the value in PC1 must place the low order byte of PC1 on the data bus
 				// CYCLE LENGTH: L
 				case ROMC_0B:
-					Regs[DB] = (byte)Regs[PC1l];
+					Regs[DB] = Regs[PC1l];
 					break;
 
 				// The device whose address space includes the contents of the PC0 register must place the contents of the memory word addressed by PC0
@@ -765,13 +764,13 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				// The device whose address space includes the contents of PC0 must place the low order byte of PC0 onto the data bus
 				// CYCLE LENGTH: L
 				case ROMC_1E:
-					Regs[DB] = (byte)Regs[PC0l];
+					Regs[DB] = Regs[PC0l];
 					break;
 
 				// The device whose address space includes the contents of PC0 must place the high order byte of PC0 onto the data bus
 				// CYCLE LENGTH: L
 				case ROMC_1F:
-					Regs[DB] = (byte)Regs[PC0h];
+					Regs[DB] = Regs[PC0h];
 					break;
 			}
 

@@ -4,7 +4,7 @@ namespace BizHawk.Client.Common
 {
 	internal static class BkmMnemonicConstants
 	{
-		public static readonly Dictionary<string, Dictionary<string, string>> Buttons = new Dictionary<string, Dictionary<string, string>>
+		public static readonly IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> Buttons = new Dictionary<string, IReadOnlyDictionary<string, string>>
 		{
 			["Gameboy Controller"] = new Dictionary<string, string>
 			{
@@ -95,12 +95,12 @@ namespace BizHawk.Client.Common
 			}
 		};
 
-		public static readonly Dictionary<string, Dictionary<string, string>> Analogs = new Dictionary<string, Dictionary<string, string>>
+		public static readonly IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> Analogs = new Dictionary<string, IReadOnlyDictionary<string, string>>
 		{
 			["Nintendo 64 Controller"] = new Dictionary<string, string> { ["X Axis"] = "X" , ["Y Axis"] = "Y" }
 		};
 
-		public static readonly Dictionary<string, Dictionary<string, string>> Commands = new Dictionary<string, Dictionary<string, string>>
+		public static readonly IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> Commands = new Dictionary<string, IReadOnlyDictionary<string, string>>
 		{
 			["Atari 2600 Basic Controller"] = new Dictionary<string, string> { ["Reset"] = "r", ["Select"] = "s" },
 			["Atari 7800 ProLine Joystick Controller"] = new Dictionary<string, string> { ["Reset"] = "r", ["Select"] = "s" },
@@ -118,7 +118,7 @@ namespace BizHawk.Client.Common
 			["GPGX 3-Button Controller"] = new Dictionary<string, string> { ["Power"] = "P", ["Reset"] = "r" }
 		};
 
-		public static readonly Dictionary<string, int> Players = new Dictionary<string, int>
+		public static readonly IReadOnlyDictionary<string, int> Players = new Dictionary<string, int>
 		{
 			["Gameboy Controller"] = 1,
 			["GBA Controller"] = 1,

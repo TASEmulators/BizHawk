@@ -1,4 +1,3 @@
-﻿using System;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Components.M68000
@@ -396,8 +395,8 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			{
 				if ((registers & 0x8000) != 0) // current bit
 				{
-					if ((registers & 0x10000) != 0 && // last bit
-						(registers & 0x4000) != 0) // next bit
+					if ((registers & 0x10000) is not 0 // last bit
+						&& (registers & 0x4000) is not 0) // next bit
 					{
 						if (!snip)
 						{
@@ -419,8 +418,8 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			{
 				if ((registers & 0x8000) != 0) // current bit
 				{
-					if ((registers & 0x10000) != 0 && // last bit
-						(registers & 0x4000) != 0) // next bit
+					if ((registers & 0x10000) is not 0 // last bit
+						&& (registers & 0x4000) is not 0) // next bit
 					{
 						if (!snip)
 						{
@@ -451,8 +450,8 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			{
 				if ((registers & 0x10000) != 0)
 				{
-					if ((registers & 0x8000) != 0 && // last bit
-						(registers & 0x20000) != 0) // next bit
+					if ((registers & 0x8000) is not 0 // last bit
+						&& (registers & 0x20000) is not 0) // next bit
 					{
 						if (!snip)
 						{
@@ -474,8 +473,8 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			{
 				if ((registers & 0x10000) != 0)
 				{
-					if ((registers & 0x8000) != 0 && // last bit
-						(registers & 0x20000) != 0) // next bit
+					if ((registers & 0x8000) is not 0 // last bit
+						&& (registers & 0x20000) is not 0) // next bit
 					{
 						if (!snip)
 						{
@@ -508,7 +507,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			string address = DisassembleAddress(mode, reg, ref pc);
 
 			info.Mnemonic = size == 0 ? "movem.w" : "movem.l";
-			info.Args = DisassembleRegisterList0((uint)registers) + ", " + address;
+			info.Args = DisassembleRegisterList0(registers) + ", " + address;
 			info.Length = pc - info.PC;
 		}
 

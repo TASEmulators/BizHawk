@@ -1,7 +1,7 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
-using System;
+
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -587,8 +587,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			mult_const = ((_chipFrequency / 8) << 14) / _machine.ULADevice.ClockSpeed;
 
-			var aytickspercputick = (double)_machine.ULADevice.ClockSpeed / (double)_chipFrequency;
-			int ayCyclesPerSample = (int)((double)_tStatesPerSample * (double)aytickspercputick);
+			var aytickspercputick = _machine.ULADevice.ClockSpeed / (double)_chipFrequency;
+			int ayCyclesPerSample = (int)(_tStatesPerSample * (double)aytickspercputick);
 		}
 
 		/// <summary>

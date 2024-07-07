@@ -1,9 +1,8 @@
 using BizHawk.Common;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace BizHawk.Tests.Common.checksums
 {
+	[DoNotParallelize] // I only noticed problems w/ SHA1, but better safe than sorry --yoshi
 	[TestClass]
 	public sealed class CRC32Tests
 	{

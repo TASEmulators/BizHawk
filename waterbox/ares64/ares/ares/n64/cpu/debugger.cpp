@@ -2,6 +2,12 @@ auto CPU::Debugger::load(Node::Object parent) -> void {
   tracer.instruction = parent->append<Node::Debugger::Tracer::Instruction>("Instruction", "CPU");
   tracer.instruction->setAddressBits(64, 2);
   tracer.instruction->setDepth(64);
+  if constexpr(Accuracy::CPU::Recompiler) {
+    tracer.instruction->setToggle([&] {
+      cpu.recompiler.reset();
+      cpu.recompiler.callInstructionPrologue = tracer.instruction->enabled();
+    });
+  }
 
   tracer.exception = parent->append<Node::Debugger::Tracer::Notification>("Exception", "CPU");
   tracer.interrupt = parent->append<Node::Debugger::Tracer::Notification>("Interrupt", "CPU");

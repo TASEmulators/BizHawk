@@ -1,7 +1,6 @@
-﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using System.IO;
 using BizHawk.Common;
 
@@ -17,7 +16,8 @@ namespace BizHawk.Client.Common
 			{
 				byte[] bytes = new byte[_streams[key].Length];
 				_streams[key].Seek(0, SeekOrigin.Begin);
-				_streams[key].Read(bytes, 0, bytes.Length);
+				var bytesRead = _streams[key].Read(bytes, offset: 0, count: bytes.Length);
+				Debug.Assert(bytesRead == bytes.Length, "reached end-of-file while reading state");
 				return bytes;
 			}
 			set => SetState(key, new MemoryStream(value));

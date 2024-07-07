@@ -1,6 +1,6 @@
-﻿using System;
 using System.Collections.Generic;
 
+#pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
 {
 	public static class GenesisGameGenieDecoder
@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common.cheats
 				throw new ArgumentNullException(nameof(code));
 			}
 
-			if (code.IndexOf("-") != 4)
+			if (code.IndexOf("-", StringComparison.Ordinal) != 4)
 			{
 				return new InvalidCheatCode("Game Genie Codes need to contain a dash after the fourth character");
 			}
@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common.cheats
 			foreach (var t in code)
 			{
 				hexCode <<= 5;
-				GameGenieTable.TryGetValue(t, out var y);
+				_ = GameGenieTable.TryGetValue(t, out var y);
 				hexCode |= y;
 			}
 
@@ -85,3 +85,4 @@ namespace BizHawk.Client.Common.cheats
 		}
 	}
 }
+#pragma warning restore MA0089

@@ -1,7 +1,7 @@
 CXX = g++
 
 CFLAGS = -Wall -Wextra -Wno-unknown-pragmas -Wno-unused-parameter -Wno-unused-value -Wno-type-limits -O3 -flto -fvisibility=internal
-LFLAGS = -shared
+LFLAGS = -shared -s
 
 SRCS = $(wildcard MSXHawk/*.cpp)
 

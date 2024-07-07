@@ -4,7 +4,7 @@ namespace BizHawk.Client.Common
 {
 	public interface IUserDataApi : IExternalApi
 	{
-#if NET6_0
+#if NET5_0_OR_GREATER
 		IReadOnlySet<string> Keys { get; }
 #else
 		IReadOnlyCollection<string> Keys { get; }

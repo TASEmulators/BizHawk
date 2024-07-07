@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -23,9 +22,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private Bitmap _unlockedBadge, _lockedBadge;
 		private readonly RCheevos.Cheevo _cheevo;
-		private readonly Func<int, string> _getCheevoProgress;
+		private readonly Func<uint, string> _getCheevoProgress;
 
-		public RCheevosAchievementForm(RCheevos.Cheevo cheevo, Func<int, string> getCheevoProgress)
+		public RCheevosAchievementForm(RCheevos.Cheevo cheevo, Func<uint, string> getCheevoProgress)
 		{
 			InitializeComponent();
 			titleBox.Text = cheevo.Title;

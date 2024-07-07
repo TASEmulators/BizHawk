@@ -1,5 +1,7 @@
-﻿using BizHawk.Emulation.Common;
+using BizHawk.Common.StringExtensions;
+using BizHawk.Emulation.Common;
 
+#pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
 {
 	public class GameSharkDecoder
@@ -50,7 +52,8 @@ namespace BizHawk.Client.Common.cheats
 		private static IDecodeResult GameBoy(string code)
 		{
 			// Game Genie
-			if (code.LastIndexOf("-") == 7 && code.IndexOf("-") == 3)
+			if ((code.Length is 11 && code[3] is '-' && code[7] is '-')
+				|| (code.Length is 7 && code[3] is '-'))
 			{
 				return GbGgGameGenieDecoder.Decode(code);
 			}
@@ -87,7 +90,7 @@ namespace BizHawk.Client.Common.cheats
 			{
 				// Problem: I don't know what the Non-FF Style codes are.
 				// TODO: Fix that.
-				if (code.StartsWith("FF") == false)
+				if (!code.StartsWithOrdinal("FF"))
 				{
 					return new InvalidCheatCode("This Action Replay Code, is not yet supported.");
 				}
@@ -109,13 +112,13 @@ namespace BizHawk.Client.Common.cheats
 		private static IDecodeResult Sms(string code)
 		{
 			// Game Genie
-			if (code.LastIndexOf("-") == 7 && code.IndexOf("-") == 3)
+			if (code.LastIndexOf("-", StringComparison.Ordinal) == 7 && code.IndexOf("-", StringComparison.Ordinal) == 3)
 			{
 				return GbGgGameGenieDecoder.Decode(code);
 			}
 
 			// Action Replay
-			if (code.IndexOf("-") == 3 && code.Length == 9)
+			if (code.IndexOf("-", StringComparison.Ordinal) == 3 && code.Length == 9)
 			{
 				return SmsActionReplayDecoder.Decode(code);
 			}
@@ -140,3 +143,4 @@ namespace BizHawk.Client.Common.cheats
 		}
 	}
 }
+#pragma warning restore MA0089

@@ -1,29 +1,34 @@
 <Project>
 	<PropertyGroup>
-		<AnalysisLevel>5</AnalysisLevel>
-		<CodeAnalysisRuleSet>$(MSBuildProjectDirectory)/../../Common.ruleset</CodeAnalysisRuleSet>
+		<AnalysisLevel>6</AnalysisLevel>
+		<AnalysisModeGlobalization>Recommended</AnalysisModeGlobalization>
+		<AnalysisModeMaintainability>Recommended</AnalysisModeMaintainability>
+		<AnalysisModeReliability>Recommended</AnalysisModeReliability>
+		<AnalysisModePerformance>Recommended</AnalysisModePerformance>
+		<AnalysisModeUsage>Recommended</AnalysisModeUsage>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 		<ContinuousIntegrationBuild Condition=" '$(GITLAB_CI)' != '' Or '$(APPVEYOR)' != '' ">true</ContinuousIntegrationBuild>
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>portable</DebugType>
+		<DefineConstants>$(DefineConstants);TRACE</DefineConstants>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<ErrorReport>prompt</ErrorReport>
 		<Features>strict</Features>
 		<IsTargetingNetFramework>$(TargetFramework.StartsWith("net4"))</IsTargetingNetFramework>
-		<LangVersion>10.0</LangVersion>
-		<NoWarn>SA0001</NoWarn>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile> <!-- it would be nice to rename these to *.api_reference.xml or something, but it seems https://github.com/dotnet/standard/issues/614 was never fixed -->
+		<LangVersion>12.0</LangVersion>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+		<NoWarn>$(NoWarn);CS1591;SA0001</NoWarn>
 		<Nullable>enable</Nullable>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
-		<RunCodeAnalysis>false</RunCodeAnalysis>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-		<DebugSymbols>true</DebugSymbols>
-		<DebugType>portable</DebugType>
-		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
 		<Optimize>false</Optimize>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-		<DebugSymbols>false</DebugSymbols>
-		<DebugType>portable</DebugType>
-		<DefineConstants>TRACE</DefineConstants>
 		<Optimize>true</Optimize>
 		<PathMap>$(MSBuildProjectDirectory)=${$(MSBuildProjectName)}/</PathMap>
 	</PropertyGroup>
@@ -31,19 +36,20 @@
 		<DefineConstants>$(DefineConstants);$(MachineExtraCompilationFlag)</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="DotNetAnalyzers.DocumentationAnalyzers" Version="1.0.0-beta.59" PrivateAssets="all" />
-		<PackageReference Include="Menees.Analyzers" Version="3.0.10" PrivateAssets="all" />
-		<PackageReference Include="Meziantou.Analyzer" Version="2.0.33" PrivateAssets="all" />
-		<PackageReference Include="Nullable" Version="1.3.1" PrivateAssets="all" />
-		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435" PrivateAssets="all" /><!-- don't forget to update .stylecop.json at the same time -->
+		<PackageReference Include="DotNetAnalyzers.DocumentationAnalyzers" PrivateAssets="all" />
+		<PackageReference Include="Menees.Analyzers" PrivateAssets="all" />
+		<PackageReference Include="Meziantou.Analyzer" PrivateAssets="all" />
+		<PackageReference Include="Nullable" PrivateAssets="all" />
+		<PackageReference Include="StyleCop.Analyzers" PrivateAssets="all" />
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.Analyzer.dll" />
+		<GlobalAnalyzerConfigFiles Include="$(MSBuildProjectDirectory)/../../.global.editorconfig.ini" />
 		<AdditionalFiles Include="$(MSBuildProjectDirectory)/../../.stylecop.json" />
 	</ItemGroup>
 	<PropertyGroup Condition=" $(IsTargetingNetFramework) ">
 		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
 	</PropertyGroup>
 	<ItemGroup Condition=" $(IsTargetingNetFramework) ">
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
-		<PackageReference Include="System.Resources.Extensions" Version="7.0.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="all" />
+		<PackageReference Include="System.Resources.Extensions" PrivateAssets="all" />
 	</ItemGroup>
 </Project>

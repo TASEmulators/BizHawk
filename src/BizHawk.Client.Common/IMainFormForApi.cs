@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 		bool FlushSaveRAM(bool autosave = false);
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
-		void FrameAdvance();
+		void FrameAdvance(bool discardApiHawkSurfaces = true);
 
 		void FrameBufferResized();
 
@@ -117,5 +117,15 @@ namespace BizHawk.Client.Common
 		void ToggleSound();
 
 		void UnpauseEmulator();
+
+		event BeforeQuickLoadEventHandler QuicksaveLoad;
+
+		event BeforeQuickSaveEventHandler QuicksaveSave;
+
+		event EventHandler RomLoaded;
+
+		event StateLoadedEventHandler SavestateLoaded;
+
+		event StateSavedEventHandler SavestateSaved;
 	}
 }

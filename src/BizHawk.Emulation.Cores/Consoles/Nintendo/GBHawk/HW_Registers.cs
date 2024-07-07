@@ -1,4 +1,3 @@
-﻿using System;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
@@ -281,10 +280,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					
 					// check for interrupts
 					// if an interrupt is triggered, it is delayed by 4 cycles
-					if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
-						((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
-						((contr_prev & 2) > 0) && ((input_register & 2) == 0) ||
-						((contr_prev & 1) > 0) && ((input_register & 1) == 0))
+					if (((contr_prev & 0b1000) is not 0 && (input_register & 0b1000) is 0)
+						|| ((contr_prev & 0b100) is not 0 && (input_register & 0b100) is 0)
+						|| ((contr_prev & 0b10) is not 0 && (input_register & 0b10) is 0)
+						|| ((contr_prev & 0b1) is not 0 && (input_register & 0b1) is 0))
 					{
 						controller_delay_cd = 4; delays_to_process = true;
 					}

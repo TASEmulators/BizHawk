@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -18,7 +17,7 @@ namespace BizHawk.Client.Common
 
 		public static bool IsValidMovieExtension(string ext)
 		{
-			return MovieExtensions.Contains(ext.ToLower().Replace(".", ""));
+			return MovieExtensions.Contains(ext.Replace(".", ""), StringComparer.OrdinalIgnoreCase);
 		}
 
 		public static bool IsCurrentTasVersion(string movieVersion)
@@ -35,7 +34,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var split = movieVersion
-				.ToLower()
+				.ToLowerInvariant()
 				.Split(new[] {"tasproj"}, StringSplitOptions.RemoveEmptyEntries);
 
 			if (split.Length == 1)

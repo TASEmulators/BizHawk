@@ -1,6 +1,5 @@
 
 
-using System;
 using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
@@ -168,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if ((ulong)addr < (ulong)Size)
 			{
 				byte ret = 0;
-				_access.Access((IntPtr)(byte*)&ret, addr, 1, false);
+				_access.Access((IntPtr)(&ret), addr, 1, false);
 				return ret;
 			}
 
@@ -181,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				if ((ulong)addr < (ulong)Size)
 				{
-					_access.Access((IntPtr)(byte*)&val, addr, 1, true);
+					_access.Access((IntPtr)(&val), addr, 1, true);
 				}
 				else
 				{

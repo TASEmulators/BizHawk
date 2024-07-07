@@ -19,12 +19,11 @@ struct AI : Thread, Memory::RCP<AI> {
   auto unload() -> void;
   auto main() -> void;
   auto sample(f64& left, f64& right) -> void;
-  auto step(u32 clocks) -> void;
   auto power(bool reset) -> void;
 
   //io.cpp
-  auto readWord(u32 address, u32& cycles) -> u32;
-  auto writeWord(u32 address, u32 data, u32& cycles) -> void;
+  auto readWord(u32 address, Thread& thread) -> u32;
+  auto writeWord(u32 address, u32 data, Thread& thread) -> void;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;
@@ -39,6 +38,7 @@ struct AI : Thread, Memory::RCP<AI> {
     n1  dmaAddressCarry;
     n18 dmaLength[2];
     n2  dmaCount;
+    u64 dmaOriginPc[2];
     n14 dacRate;
     n4  bitRate;
   } io;

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -22,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: only show add to game db when this is a Rom details dialog
 		// Let user decide what type (instead of always adding it as a good dump)
 		private readonly List<string> _lines = new List<string>();
-		private LogStream _logStream;
+		private LogWriter _logWriter;
 
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -48,10 +47,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Attach()
 		{
-			_logStream = new LogStream();
-			Log.HACK_LOG_STREAM = _logStream;
-			Console.SetOut(new StreamWriter(_logStream) { AutoFlush = true });
-			_logStream.Emit = appendInvoked;
+			_logWriter = new LogWriter();
+			Console.SetOut(_logWriter);
+			_logWriter.Emit = appendInvoked;
 		}
 
 		private void Detach()
@@ -60,9 +58,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AutoFlush = true
 			});
-			_logStream.Close();
-			_logStream = null;
-			Log.HACK_LOG_STREAM = null;
+			_logWriter.Close();
+			_logWriter = null;
 		}
 
 		public void ShowReport(string title, string report)
@@ -94,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 						if (invoked)
 						{
 							//basically an easy way to post an update message which should hopefully happen before anything else happens (redraw or user interaction)
-							BeginInvoke((Action)doUpdateListSize);
+							BeginInvoke(doUpdateListSize);
 						}
 						else
 							doUpdateListSize();
@@ -208,47 +205,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class LogStream : Stream
+		private class LogWriter : TextWriter
 		{
-			public override bool CanRead => false;
-			public override bool CanSeek => false;
-			public override bool CanWrite => true;
-
-			public override void Flush()
+			public override void Write(char[] buffer, int offset, int count)
 			{
-				//TODO - maybe this will help with decoding
+				Emit(new string(buffer, offset, count));
 			}
 
-			public override long Length => throw new NotImplementedException();
-
-			public override long Position
-			{
-				get => throw new NotImplementedException();
-				set => throw new NotImplementedException();
-			}
-
-			public override int Read(byte[] buffer, int offset, int count)
-			{
-				throw new NotImplementedException();
-			}
-
-			public override long Seek(long offset, SeekOrigin origin)
-			{
-				throw new NotImplementedException();
-			}
-
-			public override void SetLength(long value)
-			{
-				throw new NotImplementedException();
-			}
-
-			public override void Write(byte[] buffer, int offset, int count)
-			{
-				// TODO - buffer undecoded characters (this may be important)
-				//(use decoder = System.Text.Encoding.Unicode.GetDecoder())
-				string str = Encoding.ASCII.GetString(buffer, offset, count);
-				Emit(str);
-			}
+			public override Encoding Encoding => Encoding.Unicode;
 
 			public Action<string> Emit;
 		}

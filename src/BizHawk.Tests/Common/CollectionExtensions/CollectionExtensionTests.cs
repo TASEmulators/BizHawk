@@ -1,11 +1,8 @@
-﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common.CollectionExtensions;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using CE = BizHawk.Common.CollectionExtensions.CollectionExtensions;
 
@@ -73,6 +70,33 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 			Assert.AreSame(a123, a123.ConcatArray(Array.Empty<int>()));
 			Assert.AreSame(a456, Array.Empty<int>().ConcatArray(a456));
 			Assert.AreEqual(0, Array.Empty<int>().ConcatArray(Array.Empty<int>()).Length);
+		}
+
+		[TestMethod]
+		public void TestLowerBoundBinarySearch()
+		{
+			List<string> a = new(new[] { "a", "abc", "abcde", "abcdef", "abcdefg" });
+			Assert.AreEqual(-1, a.LowerBoundBinarySearch(static s => s.Length, 0), "length 0");
+			Assert.AreEqual(0, a.LowerBoundBinarySearch(static s => s.Length, 1), "length 1");
+			Assert.AreEqual(1, a.LowerBoundBinarySearch(static s => s.Length, 4), "length 4");
+			Assert.AreEqual(2, a.LowerBoundBinarySearch(static s => s.Length, 5), "length 5");
+			Assert.AreEqual(4, a.LowerBoundBinarySearch(static s => s.Length, 7), "length 7");
+			Assert.AreEqual(4, a.LowerBoundBinarySearch(static s => s.Length, 8), "length 8");
+
+			List<int> emptyList = new List<int>();
+			Assert.AreEqual(-1, emptyList.LowerBoundBinarySearch(static i => i, 13));
+		}
+
+		[TestMethod]
+		public void TestBinarySearchExtension()
+		{
+			List<string> testList = new(new[] { "a", "abc", "abcdef" });
+			Assert.ThrowsException<InvalidOperationException>(() => testList.BinarySearch(static s => s.Length, 4));
+			Assert.ThrowsException<InvalidOperationException>(() => testList.BinarySearch(static s => s.Length, 7));
+			Assert.AreEqual("abc", testList.BinarySearch(static s => s.Length, 3));
+
+			List<int> emptyList = new List<int>();
+			Assert.ThrowsException<InvalidOperationException>(() => emptyList.BinarySearch(i => i, 15));
 		}
 
 		[TestMethod]

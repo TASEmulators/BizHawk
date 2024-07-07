@@ -1,4 +1,3 @@
-﻿using System;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
@@ -48,10 +47,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			bool changed =
-				_settings.OSDMessageVerbosity.ToString() != osdMessageVerbositycomboBox1.SelectedItem.ToString() ||
-				_settings.BackgroundColor != _bgColor ||
-				_settings.UseCoreBorderForBackground != checkBoxShowCoreBrdColor.Checked;
+			var changed = checkBoxShowCoreBrdColor.Checked != _settings.UseCoreBorderForBackground
+				|| _bgColor != _settings.BackgroundColor
+				|| osdMessageVerbositycomboBox1.SelectedItem.ToString() != _settings.OSDMessageVerbosity.ToString();
 
 			if (changed)
 			{

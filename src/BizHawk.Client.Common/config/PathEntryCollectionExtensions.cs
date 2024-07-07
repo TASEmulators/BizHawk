@@ -1,7 +1,7 @@
-﻿using System;
 using System.IO;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -89,12 +89,12 @@ namespace BizHawk.Client.Common
 
 			if (path == "%recent%") return PathUtils.SpecialRecentsDir;
 
-			if (path.StartsWith("%exe%"))
+			if (path.StartsWithOrdinal("%exe%"))
 			{
 				return PathUtils.ExeDirectoryPath + path.Substring(5);
 			}
 
-			if (path.StartsWith("%rom%"))
+			if (path.StartsWithOrdinal("%rom%"))
 			{
 				return collection.LastRomPath + path.Substring(5);
 			}
@@ -293,6 +293,11 @@ namespace BizHawk.Client.Common
 			return collection.AbsolutePathFor(collection[systemId, "Palettes"].Path, systemId);
 		}
 
+		public static string UserAbsolutePathFor(this PathEntryCollection collection, string systemId)
+		{
+			return collection.AbsolutePathFor(collection[systemId, "User"].Path, systemId);
+		}
+
 		/// <summary>
 		/// Takes an absolute path and attempts to convert it to a relative, based on the system,
 		/// or global base if no system is supplied, if it is not a subfolder of the base, it will return the path unaltered
@@ -316,10 +321,7 @@ namespace BizHawk.Client.Common
 
 		private static string ResolveToolsPath(this PathEntryCollection collection, string subPath)
 		{
-			if (Path.IsPathRooted(subPath) || subPath.StartsWith("%"))
-			{
-				return subPath;
-			}
+			if (Path.IsPathRooted(subPath) || subPath.StartsWith('%')) return subPath;
 
 			var toolsPath = collection[PathEntryCollection.GLOBAL, "Tools"].Path;
 

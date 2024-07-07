@@ -1,5 +1,5 @@
 ﻿using BizHawk.Common.NumberExtensions;
-using System;
+
 using System.Collections.Generic;
 using System.Text;
 
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			int majorVer = data[8];
 			int minorVer = data[9];
 
-			if (ident.ToUpper() != "PZXT")
+			if (ident.ToUpperInvariant() != "PZXT")
 			{
 				// this is not a valid PZX format file
 				return false;
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// check whether this is a valid pzx format file by looking at the identifier in the header block
 			string ident = Encoding.ASCII.GetString(data, 0, 4);
 
-			if (ident.ToUpper() != "PZXT")
+			if (ident.ToUpperInvariant() != "PZXT")
 			{
 				// this is not a valid TZX format file
 				throw new Exception($"{nameof(PzxConverter)}: This is not a valid PZX format file");
@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							t.InitialPulseLevel = initPulseLevel == 1;
 							bool bLevel = !t.InitialPulseLevel;
 
-							dCount = (int)(dCount & 0x7FFFFFFF);
+							dCount &= 0x7FFFFFFF;
 							pos += 4;
 
 							tail = GetWordValue(b, pos);
@@ -277,11 +277,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							{
 								for (int i = 7; i >= 0; i--)
 								{
-									if (by.Bit(i) == true)
+									if (by.Bit(i))
 									{
 										foreach (var pu in s1)
 										{
-											t.DataPeriods.Add((int)pu);
+											t.DataPeriods.Add(pu);
 											bLevel = !bLevel;
 											t.DataLevels.Add(bLevel);
 										}
@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 									{
 										foreach (var pu in s0)
 										{
-											t.DataPeriods.Add((int)pu);
+											t.DataPeriods.Add(pu);
 											bLevel = !bLevel;
 											t.DataLevels.Add(bLevel);
 										}

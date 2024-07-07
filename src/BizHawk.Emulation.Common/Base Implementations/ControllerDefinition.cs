@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -8,6 +7,7 @@ using System.Text.RegularExpressions;
 
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -51,7 +51,8 @@ namespace BizHawk.Emulation.Common
 			foreach (var kvp in copyFrom.Axes) Axes.Add(kvp);
 			HapticsChannels.AddRange(copyFrom.HapticsChannels);
 			CategoryLabels = copyFrom.CategoryLabels;
-			_orderedControls = copyFrom._orderedControls;
+			// Do not clone _orderedControls, as GenOrderedControls may be overridden by the derived class
+			// _orderedControls = copyFrom._orderedControls;
 			MakeImmutable();
 		}
 
@@ -147,7 +148,7 @@ namespace BizHawk.Emulation.Common
 				}
 
 				// Hack for things like gameboy/ti-83 as opposed to genesis with no controllers plugged in
-				return allNames.Exists(static b => b.StartsWith("Up")) ? 1 : 0;
+				return allNames.Exists(static b => b.StartsWithOrdinal("Up")) ? 1 : 0;
 			}
 		}
 

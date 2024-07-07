@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
@@ -6,7 +5,7 @@ using BizHawk.Emulation.Cores.Components.M68000;
 
 namespace BizHawk.Emulation.Cores.Atari.Jaguar
 {
-	public partial class JaguarDisassembler : VerifiedDisassembler
+	public class JaguarDisassembler : VerifiedDisassembler
 	{
 		private readonly MC68000 _m68kDisassembler = new();
 
@@ -17,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			_m68kDisassembler.ReadLong = a => (int)m.PeekUint(a, true);
 			var info = _m68kDisassembler.Disassemble((int)(addr & 0xFFFFFF));
 			length = info.Length;
-			return $"{info.RawBytes.Substring(0, 4):X4}  {info.Mnemonic,-7} {info.Args}";
+			return $"{info.RawBytes.Substring(0, 4)}  {info.Mnemonic,-7} {info.Args}";
 		}
 
 		// TOM and JERRY RISC processors are mostly similar, only 6 instructions differ

@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,6 +8,7 @@ using System.Text;
 using System.Threading;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -99,17 +99,13 @@ namespace BizHawk.Emulation.Common
 			if (!inUser) _expected.Remove(Path.GetFileName(path));
 			//reminder: this COULD be done on several threads, if it takes even longer
 			using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
-			while (reader.EndOfStream == false)
+			while (reader.ReadLine() is string line)
 			{
-				var line = reader.ReadLine() ?? "";
 				try
 				{
-					if (line.StartsWith(";"))
-					{
-						continue; // comment
-					}
+					if (line.StartsWith(';')) continue; // comment
 
-					if (line.StartsWith("#"))
+					if (line.StartsWith('#'))
 					{
 						LoadDatabase_Escape(line, inUser: inUser, silent: silent);
 						continue;
@@ -194,7 +190,7 @@ namespace BizHawk.Emulation.Common
 			_acquire.WaitOne();
 
 			var hashFormatted = FormatHash(hash);
-			DB.TryGetValue(hashFormatted, out var cgi);
+			_ = DB.TryGetValue(hashFormatted, out var cgi);
 			if (cgi == null)
 			{
 				Console.WriteLine($"DB: hash {hash} not in game database.");
@@ -404,6 +400,16 @@ namespace BizHawk.Emulation.Common
 					game.System = VSystemID.Raw.TIC80;
 					break;
 
+				case ".ADF":
+				case ".ADZ":
+				case ".DMS":
+				case ".IPF":
+				case ".FDI":
+				case ".HDF":
+				case ".LHA":
+					game.System = VSystemID.Raw.Amiga;
+					break;
+
 				case ".32X":
 					game.System = VSystemID.Raw.Sega32X;
 					game.AddOption("32X", "true");
@@ -425,7 +431,7 @@ namespace BizHawk.Emulation.Common
 			// If filename is all-caps, then attempt to proper-case the title.
 			if (!string.IsNullOrWhiteSpace(game.Name) && game.Name == game.Name.ToUpperInvariant())
 			{
-				game.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(game.Name.ToLower());
+				game.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(game.Name.ToLowerInvariant());
 			}
 
 			return game;

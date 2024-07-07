@@ -1,6 +1,5 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -30,9 +29,9 @@ namespace BizHawk.Client.Common
 
 		public void SetHapticChannelStrength(string name, int strength) => throw new NotImplementedException(); // no idea --yoshi
 
-		public IEnumerable<string> Overrides => _overrides.Select(kvp => kvp.Key);
+		public IEnumerable<string> Overrides => _overrides.Keys;
 
-		public IEnumerable<string> AxisOverrides => _axisOverrides.Select(kvp => kvp.Key);
+		public IEnumerable<string> AxisOverrides => _axisOverrides.Keys;
 
 		public IEnumerable<string> InversedButtons => _inverses;
 

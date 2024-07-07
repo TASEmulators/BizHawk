@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -86,6 +85,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						NotesBox.Text = Watches[0].Notes;
+						NotesBox.Select();
 						AddressBox.SetFromLong(Watches[0].Address);
 					}
 
@@ -275,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 
 					Watches[i] = Watch.GenerateWatch(
 						Watches[i].Domain,
-						Watches.Count == 1 ? AddressBox.ToRawInt() ?? 0 : Watches[i].Address,
+						Watches.Count == 1 ? AddressBox.ToRawUInt() ?? 0 : Watches[i].Address,
 						size,
 						_changedDisplayType ? displayType : Watches[i].Type,
 						Watches[i].BigEndian,

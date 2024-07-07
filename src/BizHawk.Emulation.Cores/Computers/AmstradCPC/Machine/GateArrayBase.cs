@@ -1,7 +1,7 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
+
 using System.Collections;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC

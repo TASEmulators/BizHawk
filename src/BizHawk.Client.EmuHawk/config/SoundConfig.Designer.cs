@@ -47,7 +47,6 @@
 			this.grpOutputMethod = new System.Windows.Forms.GroupBox();
 			this.rbOutputMethodOpenAL = new System.Windows.Forms.RadioButton();
 			this.rbOutputMethodXAudio2 = new System.Windows.Forms.RadioButton();
-			this.rbOutputMethodDirectSound = new System.Windows.Forms.RadioButton();
 			this.cbMuteFrameAdvance = new System.Windows.Forms.CheckBox();
 			this.cbEnableMaster = new System.Windows.Forms.CheckBox();
 			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -117,11 +116,7 @@
 			this.nudRWFF.Name = "nudRWFF";
 			this.nudRWFF.Size = new System.Drawing.Size(45, 20);
 			this.nudRWFF.TabIndex = 7;
-			this.nudRWFF.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
+			this.nudRWFF.Value = new decimal(new int[] { 100, 0, 0, 0 });
 			this.nudRWFF.ValueChanged += new System.EventHandler(this.nudRWFF_ValueChanged);
 			// 
 			// cbEnableRWFF
@@ -141,7 +136,7 @@
 			this.tbRWFF.Maximum = 100;
 			this.tbRWFF.Name = "tbRWFF";
 			this.tbRWFF.Orientation = System.Windows.Forms.Orientation.Vertical;
-			this.tbRWFF.Size = new System.Drawing.Size(42, 164);
+			this.tbRWFF.Size = new System.Drawing.Size(45, 164);
 			this.tbRWFF.TabIndex = 6;
 			this.tbRWFF.TickFrequency = 10;
 			this.tbRWFF.Scroll += new System.EventHandler(this.TbRwff_Scroll);
@@ -167,7 +162,7 @@
 			this.tbNormal.Maximum = 100;
 			this.tbNormal.Name = "tbNormal";
 			this.tbNormal.Orientation = System.Windows.Forms.Orientation.Vertical;
-			this.tbNormal.Size = new System.Drawing.Size(42, 164);
+			this.tbNormal.Size = new System.Drawing.Size(45, 164);
 			this.tbNormal.TabIndex = 2;
 			this.tbNormal.TickFrequency = 10;
 			this.tbNormal.Scroll += new System.EventHandler(this.TrackBar1_Scroll);
@@ -178,18 +173,12 @@
 			this.nudNormal.Name = "nudNormal";
 			this.nudNormal.Size = new System.Drawing.Size(45, 20);
 			this.nudNormal.TabIndex = 3;
-			this.nudNormal.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
+			this.nudNormal.Value = new decimal(new int[] { 100, 0, 0, 0 });
 			this.nudNormal.ValueChanged += new System.EventHandler(this.SoundVolNumeric_ValueChanged);
 			// 
 			// listBoxSoundDevices
 			// 
-			this.listBoxSoundDevices.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.listBoxSoundDevices.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
 			this.listBoxSoundDevices.FormattingEnabled = true;
 			this.listBoxSoundDevices.Location = new System.Drawing.Point(138, 110);
 			this.listBoxSoundDevices.Name = "listBoxSoundDevices";
@@ -213,24 +202,12 @@
 			// 
 			this.BufferSizeNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.BufferSizeNumeric.Location = new System.Drawing.Point(202, 208);
-			this.BufferSizeNumeric.Maximum = new decimal(new int[] {
-            250,
-            0,
-            0,
-            0});
-			this.BufferSizeNumeric.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
+			this.BufferSizeNumeric.Maximum = new decimal(new int[] { 250, 0, 0, 0 });
+			this.BufferSizeNumeric.Minimum = new decimal(new int[] { 30, 0, 0, 0 });
 			this.BufferSizeNumeric.Name = "BufferSizeNumeric";
 			this.BufferSizeNumeric.Size = new System.Drawing.Size(59, 20);
 			this.BufferSizeNumeric.TabIndex = 10;
-			this.BufferSizeNumeric.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
+			this.BufferSizeNumeric.Value = new decimal(new int[] { 100, 0, 0, 0 });
 			// 
 			// BufferSizeUnitsLabel
 			// 
@@ -243,10 +220,9 @@
 			// 
 			this.grpOutputMethod.Controls.Add(this.rbOutputMethodOpenAL);
 			this.grpOutputMethod.Controls.Add(this.rbOutputMethodXAudio2);
-			this.grpOutputMethod.Controls.Add(this.rbOutputMethodDirectSound);
 			this.grpOutputMethod.Location = new System.Drawing.Point(292, 12);
 			this.grpOutputMethod.Name = "grpOutputMethod";
-			this.grpOutputMethod.Size = new System.Drawing.Size(100, 90);
+			this.grpOutputMethod.Size = new System.Drawing.Size(100, 73);
 			this.grpOutputMethod.TabIndex = 12;
 			this.grpOutputMethod.TabStop = false;
 			this.grpOutputMethod.Text = "Output Method";
@@ -254,7 +230,7 @@
 			// rbOutputMethodOpenAL
 			// 
 			this.rbOutputMethodOpenAL.AutoSize = true;
-			this.rbOutputMethodOpenAL.Location = new System.Drawing.Point(6, 65);
+			this.rbOutputMethodOpenAL.Location = new System.Drawing.Point(6, 43);
 			this.rbOutputMethodOpenAL.Name = "rbOutputMethodOpenAL";
 			this.rbOutputMethodOpenAL.Size = new System.Drawing.Size(64, 17);
 			this.rbOutputMethodOpenAL.TabIndex = 2;
@@ -266,7 +242,7 @@
 			// rbOutputMethodXAudio2
 			// 
 			this.rbOutputMethodXAudio2.AutoSize = true;
-			this.rbOutputMethodXAudio2.Location = new System.Drawing.Point(6, 42);
+			this.rbOutputMethodXAudio2.Location = new System.Drawing.Point(6, 20);
 			this.rbOutputMethodXAudio2.Name = "rbOutputMethodXAudio2";
 			this.rbOutputMethodXAudio2.Size = new System.Drawing.Size(65, 17);
 			this.rbOutputMethodXAudio2.TabIndex = 1;
@@ -274,18 +250,6 @@
 			this.rbOutputMethodXAudio2.Text = "XAudio2";
 			this.rbOutputMethodXAudio2.UseVisualStyleBackColor = true;
 			this.rbOutputMethodXAudio2.CheckedChanged += new System.EventHandler(this.OutputMethodRadioButtons_CheckedChanged);
-			// 
-			// rbOutputMethodDirectSound
-			// 
-			this.rbOutputMethodDirectSound.AutoSize = true;
-			this.rbOutputMethodDirectSound.Location = new System.Drawing.Point(6, 19);
-			this.rbOutputMethodDirectSound.Name = "rbOutputMethodDirectSound";
-			this.rbOutputMethodDirectSound.Size = new System.Drawing.Size(84, 17);
-			this.rbOutputMethodDirectSound.TabIndex = 0;
-			this.rbOutputMethodDirectSound.TabStop = true;
-			this.rbOutputMethodDirectSound.Text = "DirectSound";
-			this.rbOutputMethodDirectSound.UseVisualStyleBackColor = true;
-			this.rbOutputMethodDirectSound.CheckedChanged += new System.EventHandler(this.OutputMethodRadioButtons_CheckedChanged);
 			// 
 			// cbMuteFrameAdvance
 			// 
@@ -352,7 +316,6 @@
 			this.grpOutputMethod.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
-
 		}
 
 		#endregion
@@ -370,7 +333,6 @@
 		private BizHawk.WinForms.Controls.LocLabelEx BufferSizeUnitsLabel;
 		private System.Windows.Forms.GroupBox grpOutputMethod;
 		private System.Windows.Forms.RadioButton rbOutputMethodXAudio2;
-		private System.Windows.Forms.RadioButton rbOutputMethodDirectSound;
 		private System.Windows.Forms.RadioButton rbOutputMethodOpenAL;
 		private System.Windows.Forms.NumericUpDown nudRWFF;
 		private System.Windows.Forms.CheckBox cbEnableRWFF;

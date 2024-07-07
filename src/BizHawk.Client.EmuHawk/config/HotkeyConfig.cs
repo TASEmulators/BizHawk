@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -151,26 +150,23 @@ namespace BizHawk.Client.EmuHawk
 			HotkeyTabControl.ResumeLayout();
 		}
 
-		private void Defaults()
+		private void Defaults(bool currentTabOnly)
 		{
-			foreach (var w in InputWidgets) w.Bindings = HotkeyInfo.AllHotkeys[w.WidgetName].DefaultBinding;
+			var widgets = currentTabOnly ? HotkeyTabControl.SelectedTab.Controls.OfType<InputCompositeWidget>() : InputWidgets;
+
+			foreach (var w in widgets)
+			{
+				w.Bindings = HotkeyInfo.AllHotkeys[w.WidgetName].DefaultBinding;
+			}
 		}
 
 		private void ClearAll(bool currentTabOnly)
 		{
-			if (currentTabOnly)
+			var widgets = currentTabOnly ? HotkeyTabControl.SelectedTab.Controls.OfType<InputCompositeWidget>() : InputWidgets;
+
+			foreach (var w in widgets)
 			{
-				foreach (var w in InputWidgets)
-				{
-					w.Clear();
-				}
-			}
-			else
-			{
-				foreach (var w in HotkeyTabControl.SelectedTab.Controls.OfType<InputCompositeWidget>())
-				{
-					w.Clear();
-				}
+				w.Clear();
 			}
 		}
 
@@ -203,7 +199,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.IsPressed(Keys.Enter) || e.IsPressed(Keys.Tab))
 			{
-				var k = HotkeyInfo.AllHotkeys.FirstOrNull(kvp => string.Compare(kvp.Value.DisplayName, SearchBox.Text, true) is 0)?.Key;
+				var k = HotkeyInfo.AllHotkeys.FirstOrNull(kvp => string.Compare(kvp.Value.DisplayName, SearchBox.Text, StringComparison.OrdinalIgnoreCase) is 0)?.Key;
 
 				// Found
 				if (k is not null)
@@ -222,17 +218,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearAllToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ClearAll(true);
+			ClearAll(false);
 		}
 
 		private void ClearCurrentTabToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ClearAll(false);
+			ClearAll(true);
 		}
 
 		private void RestoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Defaults();
+			Defaults(false);
+		}
+
+		private void RestoreDefaultsCurrentTabToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Defaults(true);
 		}
 	}
 }

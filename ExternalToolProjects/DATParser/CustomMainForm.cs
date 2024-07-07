@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Common;
 using BizHawk.Client.EmuHawk;
 
 namespace BizHawk.DATTool

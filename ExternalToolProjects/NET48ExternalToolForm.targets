@@ -7,7 +7,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System.Windows.Forms" />
-		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
 		<Reference Include="BizHawk.Client.Common"
 			HintPath="$(MSBuildProjectDirectory)/../../output/dll/BizHawk.Client.Common.dll"
 			Private="true" />
@@ -31,7 +31,7 @@
 			Private="true" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Copy SourceFiles="$(OutputPath)$(MSBuildProjectName).dll" DestinationFolder="$(BIZHAWK_DATA_HOME)ExternalTools" />
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BIZHAWK_DATA_HOME)ExternalTools" />
 		<Copy SourceFiles="@(NET48ExternalToolFormDependency)" DestinationFolder="$(BIZHAWK_DATA_HOME)ExternalTools" />
 	</Target>
 </Project>

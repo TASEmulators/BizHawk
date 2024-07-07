@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 
 using BizHawk.Emulation.Common;
@@ -44,10 +43,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			bool op1_neg = ((op1 & 0x8000) != 0);
 			bool op2_neg = ((op2 & 0x8000) != 0);
 			bool result_neg = ((result & 0x8000) != 0);
-			FlagO = (
-				(op1_neg && op2_neg && !result_neg) ||
-				(!op1_neg && !op2_neg && result_neg)
-			);
+			FlagO = (op1_neg && op2_neg && !result_neg) || (!op1_neg && !op2_neg && result_neg);
 		}
 
 		private void Calc_FlagO_Sub(int op1, int op2, int result)
@@ -55,10 +51,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			bool op1_neg = ((op1 & 0x8000) != 0);
 			bool op2_neg = ((op2 & 0x8000) != 0);
 			bool result_neg = ((result & 0x8000) != 0);
-			FlagO = (
-				(op1_neg && !op2_neg && !result_neg) ||
-				(!op1_neg && op2_neg && result_neg)
-			);
+			FlagO = (op1_neg && !op2_neg && !result_neg) || (!op1_neg && op2_neg && result_neg);
 		}
 
 		private void Calc_FlagS(int result)

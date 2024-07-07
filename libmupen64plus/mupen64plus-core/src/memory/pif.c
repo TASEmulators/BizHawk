@@ -91,7 +91,7 @@ static void eeprom_write_file(void)
 
     free(filename);*/
 
-	saveramModified = 1;
+    saveramModified = 1;
 }
 
 /*static char *get_mempack_path(void)
@@ -169,7 +169,7 @@ static void mempack_write_file(void)
 
     free(filename);*/
 
-	saveramModified = 1;
+    saveramModified = 1;
 }
 
 //#define DEBUG_PIF
@@ -302,15 +302,17 @@ static unsigned char mempack_crc(unsigned char *data)
     return CRC;
 }
 
-static void internal_ReadController(int Control, unsigned char *Command)
+static void internal_ReadController(int Control, unsigned char *Command, unsigned int Remaining)
 {
+    if (Remaining <= 2) return;
+
     switch (Command[2])
     {
     case 1:
 #ifdef DEBUG_PIF
         DebugMessage(M64MSG_INFO, "internal_ReadController() Channel %i Command 1 read buttons", Control);
 #endif
-        if (Controls[Control].Present)
+        if (Controls[Control].Present && Remaining > 6)
         {
             BUTTONS Keys;
             input.getKeys(Control, &Keys);
@@ -324,7 +326,7 @@ static void internal_ReadController(int Control, unsigned char *Command)
 #ifdef DEBUG_PIF
         DebugMessage(M64MSG_INFO, "internal_ReadController() Channel %i Command 2 read controller pack (in Input plugin)", Control);
 #endif
-        if (Controls[Control].Present)
+        if (Controls[Control].Present && Remaining > 37)
         {
             if (Controls[Control].Plugin == PLUGIN_RAW)
                 if (input.readController)
@@ -335,7 +337,7 @@ static void internal_ReadController(int Control, unsigned char *Command)
 #ifdef DEBUG_PIF
         DebugMessage(M64MSG_INFO, "internal_ReadController() Channel %i Command 3 write controller pack (in Input plugin)", Control);
 #endif
-        if (Controls[Control].Present)
+        if (Controls[Control].Present && Remaining > 37)
         {
             if (Controls[Control].Plugin == PLUGIN_RAW)
                 if (input.readController)
@@ -345,8 +347,10 @@ static void internal_ReadController(int Control, unsigned char *Command)
     }
 }
 
-static void internal_ControllerCommand(int Control, unsigned char *Command)
+static void internal_ControllerCommand(int Control, unsigned char *Command, unsigned int Remaining)
 {
+    if (Remaining <= 2) return;
+
     switch (Command[2])
     {
     case 0x00: // read status
@@ -356,7 +360,7 @@ static void internal_ControllerCommand(int Control, unsigned char *Command)
 #ifdef DEBUG_PIF
         DebugMessage(M64MSG_INFO, "internal_ControllerCommand() Channel %i Command %02x check pack present", Control, Command[2]);
 #endif
-        if (Controls[Control].Present)
+        if (Controls[Control].Present && Remaining > 5)
         {
             Command[3] = 0x05;
             Command[4] = 0x00;
@@ -384,7 +388,7 @@ static void internal_ControllerCommand(int Control, unsigned char *Command)
             Command[1] |= 0x80;
         break;
     case 0x02: // read controller pack
-        if (Controls[Control].Present)
+        if (Controls[Control].Present && Remaining > 0x25)
         {
             switch (Controls[Control].Plugin)
             {
@@ -434,7 +438,7 @@ static void internal_ControllerCommand(int Control, unsigned char *Command)
             Command[1] |= 0x80;
         break;
     case 0x03: // write controller pack
-        if (Controls[Control].Present)
+        if (Controls[Control].Present && Remaining > 0x25)
         {
             switch (Controls[Control].Plugin)
             {
@@ -539,7 +543,7 @@ void update_pif_write(void)
                             Controls[channel].RawData)
                         input.controllerCommand(channel, &PIF_RAMb[i]);
                     else
-                        internal_ControllerCommand(channel, &PIF_RAMb[i]);
+                        internal_ControllerCommand(channel, &PIF_RAMb[i], 0x40 - i);
                 }
                 else if (channel == 4)
                     EepromCommand(&PIF_RAMb[i]);
@@ -583,10 +587,33 @@ void update_pif_read(void)
                 if (channel < 4)
                 {
                     if (Controls[channel].Present &&
-                            Controls[channel].RawData)
-                        input.readController(channel, &PIF_RAMb[i]);
+                        Controls[channel].RawData)
+                    {
+                        unsigned int remaining = 0x40 - i;
+                        unsigned int needed = 3;
+                        if (remaining > 2)
+                        {
+                            switch (PIF_RAMb[i + 2])
+                            {
+                            case 0x00:
+                            case 0xFF:
+                                needed = 6;
+                                break;
+                            case 0x01:
+                                needed = 7;
+                                break;
+                            case 0x02:
+                            case 0x03:
+                                needed = 38;
+                                break;
+                            }
+                        }
+
+                        if (remaining >= needed)
+                            input.readController(channel, &PIF_RAMb[i]);
+                    }
                     else
-                        internal_ReadController(channel, &PIF_RAMb[i]);
+                        internal_ReadController(channel, &PIF_RAMb[i], 0x40 - i);
                 }
                 i += PIF_RAMb[i] + (PIF_RAMb[(i+1)] & 0x3F) + 1;
                 channel++;
@@ -601,27 +628,27 @@ void update_pif_read(void)
 
 EXPORT void CALL init_saveram(void)
 {
-	eeprom_format();
-	mempack_format();
-	saveramModified = 0;
+    eeprom_format();
+    mempack_format();
+    saveramModified = 0;
 
-	flashram_format();
+    flashram_format();
 
-	sram_format();
+    sram_format();
 }
 
 EXPORT void CALL save_saveram(unsigned char * dest)
 {
-	memcpy(dest, eeprom, 0x800);
-	memcpy(dest + 0x800, mempack, 4 * 0x8000);
-	memcpy(dest + (0x800 + 4 * 0x8000), flashram, 0x20000);
-	memcpy(dest + (0x800 + 4 * 0x8000 + 0x20000), sram, 0x8000);
+    memcpy(dest, eeprom, 0x800);
+    memcpy(dest + 0x800, mempack, 4 * 0x8000);
+    memcpy(dest + (0x800 + 4 * 0x8000), flashram, 0x20000);
+    memcpy(dest + (0x800 + 4 * 0x8000 + 0x20000), sram, 0x8000);
 }
 
 EXPORT void CALL load_saveram(unsigned char * src)
 {
-	memcpy(eeprom, src, 0x800);
-	memcpy(mempack, src + 0x800, 4 * 0x8000);
-	memcpy(flashram, src + (0x800 + 4 * 0x8000), 0x20000);
-	memcpy(sram, src + (0x800 + 4 * 0x8000 + 0x20000), 0x8000);
+    memcpy(eeprom, src, 0x800);
+    memcpy(mempack, src + 0x800, 4 * 0x8000);
+    memcpy(flashram, src + (0x800 + 4 * 0x8000), 0x20000);
+    memcpy(sram, src + (0x800 + 4 * 0x8000 + 0x20000), 0x8000);
 }

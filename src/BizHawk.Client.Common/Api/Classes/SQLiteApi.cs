@@ -1,23 +1,30 @@
-﻿using System.Collections.Generic;
-using System.Data;
-using System.Data.SQLite;
+using System.Collections.Generic;
+using System.IO;
+
+using Microsoft.Data.Sqlite;
 
 namespace BizHawk.Client.Common
 {
 	public sealed class SQLiteApi : ISQLiteApi
 	{
-		private SQLiteConnection _dbConnection;
+		static SQLiteApi()
+		{
+			SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
+		}
+
+		private SqliteConnection _dbConnection;
 
 		public string CreateDatabase(string name)
 		{
 			try
 			{
-				SQLiteConnection.CreateFile(name);
+				File.Create(name).Dispose();
 			}
-			catch (SQLiteException sqlEx)
+			catch (Exception ex)
 			{
-				return sqlEx.Message;
+				return ex.Message;
 			}
+
 			return "Database Created Successfully";
 		}
 
@@ -25,18 +32,18 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				_dbConnection = new SQLiteConnection(
-					new SQLiteConnectionStringBuilder {
-						DataSource = name,
-						Version = 3,
-						JournalMode = SQLiteJournalModeEnum.Wal, // Allows for reads and writes to happen at the same time
-						DefaultIsolationLevel = IsolationLevel.ReadCommitted, // This only helps make the database lock left. May be pointless now
-						SyncMode = SynchronizationModes.Off // This shortens the delay for do synchronous calls.
-					}.ToString()
-				);
+				_dbConnection?.Dispose();
+				_dbConnection = new(new SqliteConnectionStringBuilder { DataSource = name }.ToString());
 				_dbConnection.Open();
+				using var initCmds = new SqliteCommand(null, _dbConnection);
+				// Allows for reads and writes to happen at the same time
+				initCmds.CommandText = "PRAGMA journal_mode = 'wal'";
+				initCmds.ExecuteNonQuery();
+				// This shortens the delay for do synchronous calls
+				initCmds.CommandText = "PRAGMA synchronous = 'off'";
+				initCmds.ExecuteNonQuery();
 			}
-			catch (SQLiteException sqlEx)
+			catch (SqliteException sqlEx)
 			{
 				return sqlEx.Message;
 			}
@@ -44,7 +51,7 @@ namespace BizHawk.Client.Common
 			return "Database Opened Successfully";
 		}
 
-		public string WriteCommand(string query = null)
+		public string WriteCommand(string query)
 		{
 			if (string.IsNullOrWhiteSpace(query)) return "query is empty";
 			if (_dbConnection == null) return "Database not open.";
@@ -52,10 +59,11 @@ namespace BizHawk.Client.Common
 			try
 			{
 				_dbConnection.Open();
-				new SQLiteCommand(query, _dbConnection).ExecuteNonQuery();
+				using var cmd = new SqliteCommand(query, _dbConnection);
+				cmd.ExecuteNonQuery();
 				result = "Command ran successfully";
 			}
-			catch (SQLiteException sqlEx)
+			catch (SqliteException sqlEx)
 			{
 				result = sqlEx.Message;
 			}
@@ -63,7 +71,7 @@ namespace BizHawk.Client.Common
 			return result;
 		}
 
-		public object ReadCommand(string query = null)
+		public object ReadCommand(string query)
 		{
 			if (string.IsNullOrWhiteSpace(query)) return "query is empty";
 			if (_dbConnection == null) return "Database not open.";
@@ -71,7 +79,7 @@ namespace BizHawk.Client.Common
 			try
 			{
 				_dbConnection.Open();
-				using var command = new SQLiteCommand($"PRAGMA read_uncommitted =1;{query}", _dbConnection);
+				using var command = new SqliteCommand($"PRAGMA read_uncommitted =1;{query}", _dbConnection);
 				using var reader = command.ExecuteReader();
 				if (reader.HasRows)
 				{
@@ -92,7 +100,7 @@ namespace BizHawk.Client.Common
 					result = "No rows found";
 				}
 			}
-			catch (SQLiteException sqlEx)
+			catch (SqliteException sqlEx)
 			{
 				result = sqlEx.Message;
 			}

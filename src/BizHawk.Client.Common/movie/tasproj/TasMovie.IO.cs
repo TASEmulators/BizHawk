@@ -1,6 +1,8 @@
-﻿using System;
 using System.IO;
 using System.Linq;
+
+using BizHawk.Common.StringExtensions;
+
 using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
@@ -74,6 +76,9 @@ namespace BizHawk.Client.Common
 				Session.PopupMessage("The current .tasproj is not compatible with this version of BizHawk! .tasproj features failed to load.");
 				Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
 			}
+
+			ChangeLog.Clear();
+			Changes = false;
 		}
 		
 		private void LoadTasprojExtras(ZipStateLoader bl)
@@ -94,23 +99,13 @@ namespace BizHawk.Client.Common
 
 			if (GetClientSettingsOnLoad != null)
 			{
-				string clientSettings = "";
 				bl.GetLump(BinaryStateLump.ClientSettings, abort: false, tr =>
 				{
-					string line;
-					while ((line = tr.ReadLine()) != null)
-					{
-						if (!string.IsNullOrWhiteSpace(line))
-						{
-							clientSettings = line;
-						}
-					}
-				});
+					string clientSettings = tr.ReadToEnd();
 
-				if (!string.IsNullOrWhiteSpace(clientSettings))
-				{
-					GetClientSettingsOnLoad(clientSettings);
-				}
+					if (!string.IsNullOrEmpty(clientSettings))
+						GetClientSettingsOnLoad(clientSettings);
+				});
 			}
 
 			bl.GetLump(BinaryStateLump.VerificationLog, abort: false, tr =>
@@ -124,7 +119,7 @@ namespace BizHawk.Client.Common
 						break;
 					}
 
-					if (line.StartsWith("|"))
+					if (line.StartsWith('|'))
 					{
 						VerificationLog.Add(line);
 					}
@@ -146,7 +141,7 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			ZwinderStateManagerSettings settings = new ZwinderStateManagerSettings();
+			var settings = new ZwinderStateManagerSettings();
 			bl.GetLump(BinaryStateLump.StateHistorySettings, abort: false, tr =>
 			{
 				var json = tr.ReadToEnd();
@@ -160,11 +155,11 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			bl.GetLump(BinaryStateLump.StateHistory, abort: false, br =>
+			TasStateManager?.Dispose();
+			var hasHistory = bl.GetLump(BinaryStateLump.StateHistory, abort: false, br =>
 			{
 				try
 				{
-					TasStateManager?.Dispose();
 					TasStateManager = ZwinderStateManager.Create(br, settings, IsReserved);
 				}
 				catch
@@ -178,6 +173,20 @@ namespace BizHawk.Client.Common
 					Session.PopupMessage("State history was corrupted, clearing and working with a fresh history.");
 				}
 			});
+
+			if (!hasHistory)
+			{
+				try
+				{
+					TasStateManager = new ZwinderStateManager(settings, IsReserved);
+				}
+				catch
+				{
+					TasStateManager = new ZwinderStateManager(
+						Session.Settings.DefaultTasStateManagerSettings,
+						IsReserved);
+				}
+			}
 		}
 	}
 }

@@ -108,8 +108,16 @@ auto SA1::writeIOCPU(uint address, uint8 data) -> void {
   //(CCNT) SA-1 control
   case 0x2200: {
     if(mmio.sa1_resb && !(data & 0x20)) {
-      //reset SA-1 CPU (PC bank set to 0x00)
+      //reset SA-1 CPU (PC bank and data bank set to 0x00, clear STP status)
       r.pc.d = mmio.crv;
+      r.b    = 0x00;
+      r.stp  = false;
+      //todo: probably needs a SA-1 CPU reset
+      //reset r.s, r.e, r.wai ...
+
+      //reset io status
+      //todo: reset timing is unknown, CIWP is set to 0 at reset
+      mmio.ciwp = 0x00;
     }
 
     mmio.sa1_irq  = (data & 0x80);

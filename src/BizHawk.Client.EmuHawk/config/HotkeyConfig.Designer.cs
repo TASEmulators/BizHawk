@@ -42,10 +42,11 @@
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.MiscButton = new BizHawk.Client.EmuHawk.MenuButton();
 			this.clearBtnContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.restoreDefaultsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.restoreDefaultsForCurrentTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.clearAllToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.clearCurrentTabToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.restoreDefaultsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.HotkeyTabControl.SuspendLayout();
 			this.clearBtnContextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -163,11 +164,24 @@
 			// 
 			this.clearBtnContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.restoreDefaultsToolStripMenuItem,
+            this.restoreDefaultsForCurrentTabToolStripMenuItem,
             this.toolStripSeparator1,
             this.clearAllToolStripMenuItem,
             this.clearCurrentTabToolStripMenuItem});
 			this.clearBtnContextMenu.Name = "clearBtnContextMenu";
-			this.clearBtnContextMenu.Size = new System.Drawing.Size(168, 76);
+			this.clearBtnContextMenu.Size = new System.Drawing.Size(224, 98);
+			// 
+			// restoreDefaultsToolStripMenuItem
+			// 
+			this.restoreDefaultsToolStripMenuItem.Text = "Restore Defaults";
+			this.restoreDefaultsToolStripMenuItem.Click += new System.EventHandler(this.RestoreDefaultsToolStripMenuItem_Click);
+			// 
+			// restoreDefaultsForCurrentTabToolStripMenuItem
+			// 
+			this.restoreDefaultsForCurrentTabToolStripMenuItem.Name = "restoreDefaultsForCurrentTabToolStripMenuItem";
+			this.restoreDefaultsForCurrentTabToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+			this.restoreDefaultsForCurrentTabToolStripMenuItem.Text = "Restore Current Tab Defaults";
+			this.restoreDefaultsForCurrentTabToolStripMenuItem.Click += new System.EventHandler(this.RestoreDefaultsCurrentTabToolStripMenuItem_Click);
 			// 
 			// clearAllToolStripMenuItem
 			// 
@@ -178,11 +192,6 @@
 			// 
 			this.clearCurrentTabToolStripMenuItem.Text = "Clear Current Tab";
 			this.clearCurrentTabToolStripMenuItem.Click += new System.EventHandler(this.ClearCurrentTabToolStripMenuItem_Click);
-			// 
-			// restoreDefaultsToolStripMenuItem
-			// 
-			this.restoreDefaultsToolStripMenuItem.Text = "Restore Defaults";
-			this.restoreDefaultsToolStripMenuItem.Click += new System.EventHandler(this.RestoreDefaultsToolStripMenuItem_Click);
 			// 
 			// HotkeyConfig
 			// 
@@ -225,11 +234,12 @@
 				private BizHawk.WinForms.Controls.LocLabelEx label2;
 				private BizHawk.WinForms.Controls.LocLabelEx label3;
 				private System.Windows.Forms.ToolTip toolTip1;
-				private MenuButton MiscButton;
+				private BizHawk.Client.EmuHawk.MenuButton MiscButton;
 				private System.Windows.Forms.ContextMenuStrip clearBtnContextMenu;
 				private BizHawk.WinForms.Controls.ToolStripMenuItemEx clearAllToolStripMenuItem;
 				private BizHawk.WinForms.Controls.ToolStripMenuItemEx clearCurrentTabToolStripMenuItem;
 				private BizHawk.WinForms.Controls.ToolStripMenuItemEx restoreDefaultsToolStripMenuItem;
 				private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem restoreDefaultsForCurrentTabToolStripMenuItem;
 	}
 }

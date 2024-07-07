@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public static class Chip6522

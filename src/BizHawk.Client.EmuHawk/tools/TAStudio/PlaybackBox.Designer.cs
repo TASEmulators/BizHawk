@@ -137,7 +137,7 @@
 			this.PauseButton.Name = "PauseButton";
 			this.PauseButton.Size = new System.Drawing.Size(38, 23);
 			this.PauseButton.TabIndex = 2;
-			this.PauseButton.Text = "| |";
+			this.PauseButton.Text = "> ||";
 			this.toolTip1.SetToolTip(this.PauseButton, "Middle Mouse Button");
 			this.PauseButton.UseVisualStyleBackColor = true;
 			this.PauseButton.Click += new System.EventHandler(this.PauseButton_Click);

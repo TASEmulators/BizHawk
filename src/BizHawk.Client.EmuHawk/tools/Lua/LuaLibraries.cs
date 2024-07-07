@@ -1,23 +1,23 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 
 using NLua;
+using NLua.Native;
 
+using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public class LuaLibraries : ILuaLibraries
 	{
+		public static readonly bool IsAvailable = LuaNativeMethodLoader.EnsureNativeMethodsLoaded();
+
 		public LuaLibraries(
 			LuaFileList scriptList,
 			LuaFunctionList registeredFuncList,
@@ -29,6 +29,11 @@ namespace BizHawk.Client.EmuHawk
 			IEmulator emulator,
 			IGameInfo game)
 		{
+			if (!IsAvailable)
+			{
+				throw new InvalidOperationException("The Lua dynamic library was not able to be loaded");
+			}
+
 			void EnumerateLuaFunctions(string name, Type type, LuaLibraryBase instance)
 			{
 				if (instance != null) _lua.NewTable(name);
@@ -159,6 +164,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsUpdateSupressed { get; set; }
 
+		public bool IsInInputOrMemoryCallback { get; set; }
+
 		private readonly IDictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
 
 		private EventWaitHandle LuaWait;
@@ -182,7 +189,11 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var lib in Libraries.Values)
 			{
 				lib.APIs = _apiContainer;
-				Debug.Assert(ServiceInjector.UpdateServices(newServiceProvider, lib, mayCache: true));
+				if (!ServiceInjector.UpdateServices(newServiceProvider, lib, mayCache: true))
+				{
+					throw new("Lua lib has required service(s) that can't be fulfilled");
+				}
+
 				lib.Restarted();
 			}
 		}
@@ -193,8 +204,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CallSaveStateEvent(string name)
 		{
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
-
 			try
 			{
 				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_SAVESTATE).ToList())
@@ -210,8 +219,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CallLoadStateEvent(string name)
 		{
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
-
 			try
 			{
 				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_LOADSTATE).ToList())
@@ -228,8 +235,6 @@ namespace BizHawk.Client.EmuHawk
 		public void CallFrameBeforeEvent()
 		{
 			if (IsUpdateSupressed) return;
-
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
 
 			try
 			{
@@ -248,8 +253,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (IsUpdateSupressed) return;
 
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
-
 			try
 			{
 				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_POSTFRAME).ToList())
@@ -265,8 +268,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CallExitEvent(LuaFile lf)
 		{
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
-
 			foreach (var exitCallback in RegisteredFunctions
 				.Where(l => l.Event == NamedLuaFunction.EVENT_TYPE_ENGINESTOP
 					&& (l.LuaFile.Path == lf.Path || ReferenceEquals(l.LuaFile.Thread, lf.Thread)))
@@ -299,8 +300,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaFile luaFile,
 			string name = null)
 		{
-			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile,
-				() => { _lua.NewThread(out var thread); return thread; }, name);
+			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, () => _lua.NewThread(), this, name);
 			RegisteredFunctions.Add(nlf);
 			return nlf;
 		}
@@ -317,8 +317,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var content = File.ReadAllText(file);
 			var main = _lua.LoadString(content, "main");
-			_lua.NewThread(main, out var ret);
-			return ret;
+			return _lua.NewThread(main);
 		}
 
 		public void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)
@@ -330,7 +329,6 @@ namespace BizHawk.Client.EmuHawk
 		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
 		{
 			_currThread = lf.Thread;
-			using var luaAutoUnlockHack = GuiAPI.ThisIsTheLuaAutoUnlockHack();
 
 			try
 			{

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,6 +10,7 @@ using System.Text;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -38,26 +38,27 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				var text = info.Replace(". ", "\n").Replace("\n\n", "\n");
 				lp.Comm.Notify(text, 4 * Regex.Matches(text, "\n").Count);
 				RomDetails =
-					$"Full Name:    { _gameFullName }\r\n" +
-					$"Short Name:   { _gameShortName }\r\n" +
-					$"Resolution:   { BufferWidth }x{ BufferHeight }\r\n" +
-					$"Aspect Ratio: { _wAspect }:{ _hAspect }\r\n" +
-					$"Framerate:    { (float)VsyncNumerator / VsyncDenominator } " +
-					$"({ VsyncNumerator } / { VsyncDenominator })\r\n\r\n" +
+					$"Full Name:          { _gameFullName }\r\n" +
+					$"Short Name:         { _gameShortName }\r\n" +
+					$"Resolution:         { BufferWidth }x{ BufferHeight }\r\n" +
+					$"Aspect Ratio:       { _wAspect }:{ _hAspect }\r\n" +
+					$"Framerate:          { (float)VsyncNumerator / VsyncDenominator } " +
+					$"({ VsyncNumerator } / { VsyncDenominator })\r\n" +
+					$"Driver Source File: { _driverSourceFile.RemovePrefix("src")}\r\n\r\n" +
 					text + (text == "" ? "" : "\r\n") +
 					string.Join("\r\n", _romHashes.Select(static r => $"{r.Value} - {r.Key}"));
 
-				if (text.ToLower().Contains("imperfect"))
+				if (text.Contains("imperfect", StringComparison.OrdinalIgnoreCase))
 				{
 					lp.Game.Status = RomStatus.Imperfect;
 				}
 
-				if (text.ToLower().Contains("unemulated"))
+				if (text.Contains("unemulated", StringComparison.OrdinalIgnoreCase))
 				{
 					lp.Game.Status = RomStatus.Unimplemented;
 				}
 
-				if (text.ToLower().Contains("doesn't work"))
+				if (text.Contains("doesn't work", StringComparison.OrdinalIgnoreCase))
 				{
 					lp.Game.Status = RomStatus.NotWorking;
 				}
@@ -67,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_exe = new(new()
 			{
 				Filename = "libmamearcade.wbx",
-				Path = lp.Comm.CoreFileProvider.DllPath(),
+				Path = PathUtils.DllDirectoryPath,
 				SbrkHeapSizeKB = 512 * 1024,
 				InvisibleHeapSizeKB = 4,
 				MmapHeapSizeKB = 1024 * 1024,
@@ -94,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			var hashes = string.Concat(_romHashes.Values
 				.Where(static s => s.Contains("SHA:"))
 				.Select(static s => s.Split(' ')
-				.First(static s => s.StartsWith("SHA:"))
+				.First(static s => s.StartsWithOrdinal("SHA:"))
 				.RemovePrefix("SHA:")));
 
 			lp.Game.Name = _gameFullName;
@@ -133,6 +134,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private readonly string _gameFileName;
 		private string _gameFullName = "Arcade";
 		private string _gameShortName = "arcade";
+		private string _driverSourceFile = "";
 		private string _loadFailure = string.Empty;
 		private readonly SortedList<string, string> _romHashes = new();
 
@@ -204,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-update_in_pause"                    // ^ including frame-advancing
 				, "-rompath",                       ""  // mame doesn't load roms from full paths, only from dirs to scan
 				, "-joystick_contradictory"             // allow L+R/U+D on digital joystick
-				, "-nvram_directory",               ""  // path to nvram from
+				, "-nvram_directory",               ""  // path to nvram
 				, "-artpath",                       ""  // path to artwork
 				, "-diff_directory",                ""  // path to hdd diffs
 				, "-cfg_directory",                 ""  // path to config
@@ -221,22 +223,30 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			if (_syncSettings.DriverSettings.TryGetValue(
 				MAMELuaCommand.MakeLookupKey(gameName, LibMAME.BIOS_LUA_CODE),
-				out var value))
+				out var biosValue))
 			{
-				args.AddRange(new[] { "-bios", value });
+				args.AddRange(new[] { "-bios", biosValue });
+			}
+
+			if (_syncSettings.DriverSettings.TryGetValue(
+				MAMELuaCommand.MakeLookupKey(gameName, LibMAME.VIEW_LUA_CODE),
+				out var viewValue))
+			{
+				args.AddRange(new[] { "-snapview", viewValue });
 			}
 
 			if (_core.mame_launch(args.Count, args.ToArray()) == 0)
 			{
 				CheckVersions();
 				UpdateGameName();
-				UpdateVideo();
 				UpdateAspect();
+				UpdateVideo();
 				UpdateFramerate();
 				InitMemoryDomains();
 				GetNVRAMFilenames();
 				GetInputFields();
 				GetROMsInfo();
+				GetViewsInfo();
 				FetchDefaultGameSettings();
 				OverrideGameSettings();
 
@@ -279,6 +289,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			_gameFullName = MameGetString(MAMELuaCommand.GetGameFullName);
 			_gameShortName = MameGetString(MAMELuaCommand.GetGameShortName);
+			_driverSourceFile = MameGetString(MAMELuaCommand.GetDriverSourceFile);
 		}
 
 		private void CheckVersions()
@@ -326,12 +337,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string Step = "emu.step()";
 			public const string Pause = "emu.pause()";
 			public const string Unpause = "emu.unpause()";
+			public const string Reset = "manager.machine:soft_reset()";
 			public const string Exit = "manager.machine:exit()";
 
 			// getters
 			public const string GetVersion = "return emu.app_version()";
 			public const string GetGameShortName = "return manager.machine.system.name";
 			public const string GetGameFullName = "return manager.machine.system.description";
+			public const string GetDriverSourceFile = "return manager.machine.system.source_file";
 			public const string GetWidth = "return (select(1, manager.machine.video:snapshot_size()))";
 			public const string GetHeight = "return (select(2, manager.machine.video:snapshot_size()))";
 			public const string GetPixels = "return manager.machine.video:snapshot_pixels()";
@@ -357,11 +370,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					"return v.refresh_attoseconds " +
 				"end";
 			public const string GetBoundX =
-				"local b = manager.machine.render.ui_target.current_view.bounds " +
-				"return b.x1-b.x0";
+				"return manager.machine.video.snapshot_target.current_view.bounds.width";
 			public const string GetBoundY =
-				"local b = manager.machine.render.ui_target.current_view.bounds " +
-				"return b.y1-b.y0";
+				"return manager.machine.video.snapshot_target.current_view.bounds.height";
 			public const string GetROMsInfo =
 				"local final = {} " +
 				"for __, r in pairs(manager.machine.devices[\":\"].roms) do " +
@@ -407,6 +418,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"end " +
 				"table.sort(final) " +
 				"return table.concat(final)";
+			public const string GetViewsInfo =
+				"local final = {} " +
+				"for index, name in pairs(manager.machine.video.snapshot_target.view_names) do " +
+					"table.insert(final, string.format(\"%s,%s;\", index, name)) " +
+				"end " +
+				"table.sort(final) " +
+				"return table.concat(final)";
 
 			public static string GetFramerateDenominator(int frequency) =>
 				"for k,v in pairs(manager.machine.screens) do " +
@@ -432,6 +450,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"end " +
 				"table.sort(final) " +
 				"return table.concat(final)";
+			public static string GetViewName(string index) =>
+				$"return manager.machine.video.snapshot_target.view_names[{ index }]";
 		}
 	}
 }

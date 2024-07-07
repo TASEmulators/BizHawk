@@ -1,5 +1,6 @@
-﻿using System;
 using System.Collections.Generic;
+
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.FairchildF8
@@ -15,17 +16,16 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			//n immediate succeeds the opcode and the displacement (if present)
 			//nn immediately succeeds the opcode and the displacement (if present)
 
-			if (format.IndexOf("nn") != -1)
+			if (format.ContainsOrdinal("nn"))
 			{
 				format = format.Replace("nn", read(addr++)
 					.ToString("X2") + read(addr++)
 					.ToString("X2") + "h"); // MSB is read first
 			}
+			if (format.ContainsOrdinal('n')) format = format.Replace("n", $"{read(addr++):X2}h");
 
-			if (format.IndexOf("n") != -1) format = format.Replace("n", $"{read(addr++):X2}h");
-
-			if (format.IndexOf("+d") != -1) format = format.Replace("+d", "d");
-			if (format.IndexOf("d") != -1)
+			format = format.Replace("+d", "d");
+			if (format.ContainsOrdinal('d'))
 			{
 				var b = unchecked((sbyte)read(addr++));
 				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{(b < 0 ? -b : b):X2}h");

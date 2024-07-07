@@ -25,10 +25,12 @@ auto AI::unload() -> void {
 }
 
 auto AI::main() -> void {
-  f64 left = 0, right = 0;
-  sample(left, right);
-  stream->frame(left, right);
-  step(dac.period);
+  while(Thread::clock < 0) {
+    f64 left = 0, right = 0;
+    sample(left, right);
+    stream->frame(left, right);
+    step(dac.period);
+  }
 }
 
 auto AI::sample(f64& left, f64& right) -> void {
@@ -36,7 +38,7 @@ auto AI::sample(f64& left, f64& right) -> void {
 
   if(io.dmaLength[0] && io.dmaEnable) {
     io.dmaAddress[0].bit(13,23) += io.dmaAddressCarry;
-    auto data  = rdram.ram.read<Word>(io.dmaAddress[0]);
+    auto data  = rdram.ram.read<Word>(io.dmaAddress[0], "AI");
     auto l     = s16(data >> 16);
     auto r     = s16(data >>  0);
     left       = l / 32768.0;
@@ -48,15 +50,12 @@ auto AI::sample(f64& left, f64& right) -> void {
   }
   if(!io.dmaLength[0]) {
     if(--io.dmaCount) {
-      io.dmaAddress[0] = io.dmaAddress[1];
-      io.dmaLength [0] = io.dmaLength [1];
+      io.dmaAddress[0]  = io.dmaAddress[1];
+      io.dmaLength [0]  = io.dmaLength [1];
+      io.dmaOriginPc[0] = io.dmaOriginPc[1];
       mi.raise(MI::IRQ::AI);
     }
   }
-}
-
-auto AI::step(u32 clocks) -> void {
-  Thread::clock += clocks;
 }
 
 auto AI::power(bool reset) -> void {

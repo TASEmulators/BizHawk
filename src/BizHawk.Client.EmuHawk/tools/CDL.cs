@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -87,21 +86,21 @@ namespace BizHawk.Client.EmuHawk
 			tsbViewStyle.SelectedIndex = 0;
 
 			lvCDL.AllColumns.Clear();
-			lvCDL.AllColumns.AddRange(new[]
+			lvCDL.AllColumns.AddRange(new RollColumn[]
 			{
-				new RollColumn { Name = "CDLFile", Text = "CDL File @", UnscaledWidth = 107, Type = ColumnType.Text  },
-				new RollColumn { Name = "Domain", Text = "Domain", UnscaledWidth = 126, Type = ColumnType.Text  },
-				new RollColumn { Name = "Percent", Text = "%", UnscaledWidth = 58, Type = ColumnType.Text  },
-				new RollColumn { Name = "Mapped", Text = "Mapped", UnscaledWidth = 64, Type = ColumnType.Text  },
-				new RollColumn { Name = "Size", Text = "Size", UnscaledWidth = 112, Type = ColumnType.Text  },
-				new RollColumn { Name = "0x01", Text = "0x01", UnscaledWidth = 56, Type = ColumnType.Text  },
-				new RollColumn { Name = "0x02", Text = "0x02", UnscaledWidth = 56, Type = ColumnType.Text  },
-				new RollColumn { Name = "0x04", Text = "0x04", UnscaledWidth = 56, Type = ColumnType.Text  },
-				new RollColumn { Name = "0x08", Text = "0x08", UnscaledWidth = 56, Type = ColumnType.Text  },
-				new RollColumn { Name = "0x10", Text = "0x10", UnscaledWidth = 56, Type = ColumnType.Text  },
-				new RollColumn { Name = "0x20", Text = "0x20", UnscaledWidth = 56, Type = ColumnType.Text  },
-				new RollColumn { Name = "0x40", Text = "0x40", UnscaledWidth = 56, Type = ColumnType.Text  },
-				new RollColumn { Name = "0x80", Text = "0x80", UnscaledWidth = 56, Type = ColumnType.Text  }
+				new(name: "CDLFile", widthUnscaled: 107, text: "CDL File @"),
+				new(name: "Domain", widthUnscaled: 126, text: "Domain"),
+				new(name: "Percent", widthUnscaled: 58, text: "%"),
+				new(name: "Mapped", widthUnscaled: 64, text: "Mapped"),
+				new(name: "Size", widthUnscaled: 112, text: "Size"),
+				new(name: "0x01", widthUnscaled: 56, text: "0x01"),
+				new(name: "0x02", widthUnscaled: 56, text: "0x02"),
+				new(name: "0x04", widthUnscaled: 56, text: "0x04"),
+				new(name: "0x08", widthUnscaled: 56, text: "0x08"),
+				new(name: "0x10", widthUnscaled: 56, text: "0x10"),
+				new(name: "0x20", widthUnscaled: 56, text: "0x20"),
+				new(name: "0x40", widthUnscaled: 56, text: "0x40"),
+				new(name: "0x80", widthUnscaled: 56, text: "0x80"),
 			});
 		}
 

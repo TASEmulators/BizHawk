@@ -1,5 +1,3 @@
-using System;
-
 namespace BizHawk.Emulation.DiscSystem.CUE
 {
 	internal abstract class SS_Base : ISectorSynthJob2448
@@ -39,11 +37,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			}
 
 			//subcode has been generated deinterleaved; we may still need to interleave it
-			if((job.Parts & ESectorSynthPart.SubcodeAny) != 0)
-				if ((job.Parts & (ESectorSynthPart.SubcodeDeinterleave)) == 0)
-				{
-					SynthUtils.InterleaveSubcodeInplace(job.DestBuffer2448, job.DestOffset + 2352);
-				}
+			if ((job.Parts & ESectorSynthPart.SubcodeAny) != 0 && (job.Parts & ESectorSynthPart.SubcodeDeinterleave) == 0)
+			{
+				SynthUtils.InterleaveSubcodeInplace(job.DestBuffer2448, job.DestOffset + 2352);
+			}
 		}
 	}
 
@@ -54,15 +51,23 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	{
 		public override void Synth(SectorSynthJob job)
 		{
+			var ecm = (job.Parts & ESectorSynthPart.ECMAny) != 0;
+			if (ecm)
+			{
+				// ecm needs these parts for synth
+				job.Parts |= ESectorSynthPart.User2048;
+				job.Parts |= ESectorSynthPart.Header16;
+			}
+
 			//read the sector user data
-			if((job.Parts & ESectorSynthPart.User2048) != 0)
+			if ((job.Parts & ESectorSynthPart.User2048) != 0)
 				Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset + 16, 2048);
 
 			if ((job.Parts & ESectorSynthPart.Header16) != 0)
 				SynthUtils.SectorHeader(job.DestBuffer2448, job.DestOffset + 0, job.LBA, 1);
 
-			if ((job.Parts & ESectorSynthPart.ECMAny) != 0)
-				SynthUtils.ECM_Mode1(job.DestBuffer2448, job.DestOffset + 0, job.LBA);
+			if (ecm)
+				SynthUtils.ECM_Mode1(job.DestBuffer2448, job.DestOffset + 0);
 
 			SynthSubchannelAsNeed(job);
 		}
@@ -75,8 +80,9 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	{
 		public override void Synth(SectorSynthJob job)
 		{
-			//read the sector user data
-			Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset + 16, 2336);
+			//read the sector sector user data + ECM data
+			if ((job.Parts & ESectorSynthPart.User2336) != 0)
+				Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset + 16, 2336);
 
 			if ((job.Parts & ESectorSynthPart.Header16) != 0)
 				SynthUtils.SectorHeader(job.DestBuffer2448, job.DestOffset + 0, job.LBA, 2);
@@ -94,7 +100,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		public override void Synth(SectorSynthJob job)
 		{
 			//read the sector user data
-			Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset, 2352);
+			if ((job.Parts & ESectorSynthPart.User2352) != 0)
+				Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset, 2352);
 
 			//if subcode is needed, synthesize it
 			SynthSubchannelAsNeed(job);
@@ -159,7 +166,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				case 1:
 				{
 					if ((job.Parts & ESectorSynthPart.ECMAny) != 0)
-						SynthUtils.ECM_Mode1(job.DestBuffer2448, job.DestOffset + 0, job.LBA);
+						SynthUtils.ECM_Mode1(job.DestBuffer2448, job.DestOffset + 0);
 					break;
 				}
 				case 2 when form == 2:
@@ -170,6 +177,4 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			SynthSubchannelAsNeed(job);
 		}
 	}
-
-
 }

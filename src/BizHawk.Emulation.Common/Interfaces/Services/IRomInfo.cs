@@ -12,4 +12,9 @@
 		/// </summary>
 		string? RomDetails { get; }
 	}
+
+	public interface IRedumpDiscChecksumInfo : IRomInfo
+	{
+		string CalculateDiscHashes();
+	}
 }

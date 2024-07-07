@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
@@ -38,7 +37,7 @@ namespace BizHawk.Emulation.Common
 			int len = 0;
 			for (int i = 0; i < _numCores; i++)
 			{
-				linkedBuffers.Add(_linkedCores[i].AsSaveRam().CloneSaveRam()!);
+				linkedBuffers.Add(_linkedCores[i].AsSaveRam().CloneSaveRam() ?? Array.Empty<byte>());
 				len += linkedBuffers[i].Length;
 			}
 			byte[] ret = new byte[len];
@@ -56,7 +55,9 @@ namespace BizHawk.Emulation.Common
 			int pos = 0;
 			for (int i = 0; i < _numCores; i++)
 			{
-				var b = new byte[_linkedCores[i].AsSaveRam().CloneSaveRam()!.Length];
+				var toCopy = _linkedCores[i].AsSaveRam().CloneSaveRam(); // wait CloneSaveRam is already a copy, why are we copying it again
+				if (toCopy is null) continue;
+				var b = new byte[toCopy.Length];
 				Buffer.BlockCopy(data, pos, b, 0, b.Length);
 				pos += b.Length;
 				_linkedCores[i].AsSaveRam().StoreSaveRam(b);

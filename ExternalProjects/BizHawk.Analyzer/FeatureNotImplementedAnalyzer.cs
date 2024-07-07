@@ -50,7 +50,8 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 						// else correct usage, do not flag
 					}
 					bool IncludesFNIAttribute(SyntaxList<AttributeListSyntax> mds)
-						=> mds.SelectMany(static als => als.Attributes).Any(aSyn => featureNotImplementedAttrSym.Matches(snac.SemanticModel.GetTypeInfo(aSyn).Type));
+						=> mds.SelectMany(static als => als.Attributes)
+							.Any(aSyn => featureNotImplementedAttrSym.Matches(snac.SemanticModel.GetTypeInfo(aSyn, snac.CancellationToken).Type));
 					void CheckBlockBody(BlockSyntax bs, Location location)
 					{
 						if (bs.Statements.Count is not 1) snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_DOES_NOT_THROW));
@@ -88,7 +89,9 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 							else
 							{
 								if (IncludesFNIAttribute(pds.AttributeLists)) Wat(pds.GetLocation());
+#if false // accessors will be checked separately
 								else foreach (var accessor in pds.AccessorList!.Accessors) CheckAccessor(accessor);
+#endif
 							}
 							break;
 					}

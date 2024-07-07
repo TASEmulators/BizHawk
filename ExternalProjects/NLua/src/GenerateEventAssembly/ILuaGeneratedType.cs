@@ -1,4 +1,4 @@
-namespace NLua
+namespace NLua.GenerateEventAssembly
 {
 	/// <summary>
 	/// Common interface for types generated from tables. The method

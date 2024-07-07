@@ -1,9 +1,7 @@
 ﻿#nullable disable
 
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 using BizHawk.Common;
 
@@ -72,7 +70,7 @@ namespace BizHawk.Emulation.Common
 
 			foreach (var k in Definition.Axes.Keys)
 			{
-				if (_buttons.Keys.Contains(k))
+				if (_buttons.ContainsKey(k))
 				{
 					throw new Exception("name collision between bool and float lists!");
 				}

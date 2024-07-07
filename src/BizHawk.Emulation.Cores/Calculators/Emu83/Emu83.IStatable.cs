@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 
 using BizHawk.Emulation.Common;
@@ -8,6 +7,8 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 	public partial class Emu83 : IStatable
 	{
 		private readonly byte[] _stateBuf = new byte[LibEmu83.TI83_GetStateSize()];
+
+		public bool AvoidRewind => false;
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{

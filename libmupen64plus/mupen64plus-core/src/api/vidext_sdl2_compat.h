@@ -516,93 +516,6 @@ SDL_ResizeVideoMode(int width, int height, int bpp, Uint32 flags)
     return 0;
 }
 
-static int
-SDL_CompatEventFilter(void *userdata, SDL_Event * event)
-{
-    SDL_Event fake;
-
-    switch (event->type) {
-    case SDL_WINDOWEVENT:
-        switch (event->window.event) {
-        case SDL_WINDOWEVENT_CLOSE:
-            fake.type = SDL_QUIT;
-            SDL_PushEvent(&fake);
-            break;
-        }
-    case SDL_KEYDOWN:
-    case SDL_KEYUP:
-        {
-            Uint32 unicode = 0;
-            if (event->key.type == SDL_KEYDOWN && event->key.keysym.sym < 256) {
-                unicode = event->key.keysym.sym;
-                if (unicode >= 'a' && unicode <= 'z') {
-                    int shifted = !!(event->key.keysym.mod & KMOD_SHIFT);
-                    int capslock = !!(event->key.keysym.mod & KMOD_CAPS);
-                    if ((shifted ^ capslock) != 0) {
-                        unicode = SDL_toupper(unicode);
-                    }
-                }
-            }
-            if (unicode) {
-                event->key.keysym.unicode = unicode;
-            }
-            break;
-        }
-    case SDL_TEXTINPUT:
-        {
-            /* FIXME: Generate an old style key repeat event if needed */
-            //printf("TEXTINPUT: '%s'\n", event->text.text);
-            break;
-        }
-    case SDL_MOUSEMOTION:
-        {
-            event->motion.x -= SDL_VideoViewport.x;
-            event->motion.y -= SDL_VideoViewport.y;
-            break;
-        }
-    case SDL_MOUSEBUTTONDOWN:
-    case SDL_MOUSEBUTTONUP:
-        {
-            event->button.x -= SDL_VideoViewport.x;
-            event->button.y -= SDL_VideoViewport.y;
-            break;
-        }
-    case SDL_MOUSEWHEEL:
-        {
-            Uint8 button;
-            int x, y;
-
-            if (event->wheel.y == 0) {
-                break;
-            }
-
-            SDL_GetMouseState(&x, &y);
-
-            if (event->wheel.y > 0) {
-                button = SDL_BUTTON_WHEELUP;
-            } else {
-                button = SDL_BUTTON_WHEELDOWN;
-            }
-
-            fake.button.button = button;
-            fake.button.x = x;
-            fake.button.y = y;
-            fake.button.windowID = event->wheel.windowID;
-
-            fake.type = SDL_MOUSEBUTTONDOWN;
-            fake.button.state = SDL_PRESSED;
-            SDL_PushEvent(&fake);
-
-            fake.type = SDL_MOUSEBUTTONUP;
-            fake.button.state = SDL_RELEASED;
-            SDL_PushEvent(&fake);
-            break;
-        }
-
-    }
-    return 1;
-}
-
 static void
 GetEnvironmentWindowPosition(int w, int h, int *x, int *y)
 {
@@ -636,7 +549,7 @@ SDL_SetVideoMode(int width, int height, int bpp, Uint32 flags)
     Uint32 surface_flags;
 
     if (!initialized_video) {
-        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) < 0) {
+        if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             return NULL;
         }
         initialized_video = 1;
@@ -681,13 +594,8 @@ SDL_SetVideoMode(int width, int height, int bpp, Uint32 flags)
         SDL_DestroyWindow(SDL_VideoWindow);
     }
 
-    /* Set up the event filter */
-    if (!SDL_GetEventFilter(NULL, NULL)) {
-        SDL_SetEventFilter(SDL_CompatEventFilter, NULL);
-    }
-
     /* Create a new window */
-    window_flags = SDL_WINDOW_SHOWN;
+    window_flags = SDL_WINDOW_HIDDEN;
     if (flags & SDL_FULLSCREEN) {
         window_flags |= SDL_WINDOW_FULLSCREEN;
     }
@@ -728,6 +636,11 @@ SDL_SetVideoMode(int width, int height, int bpp, Uint32 flags)
 
     /* If we're in OpenGL mode, just create a stub surface and we're done! */
     if (flags & SDL_OPENGL) {
+        // make sure to set version/flag attributes, those might have been changed from the defaults
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0);
         SDL_VideoContext = SDL_GL_CreateContext(SDL_VideoWindow);
         if (!SDL_VideoContext) {
             return NULL;

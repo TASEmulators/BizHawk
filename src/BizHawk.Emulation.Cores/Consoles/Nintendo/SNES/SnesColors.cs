@@ -10,7 +10,7 @@
 		public static void BsnesColor(out int or, out int og, out int ob, int l, int r, int g, int b)
 		{
 			// bizhawk through r3808, from bsnes
-			double luma = (double)l / 15.0;
+			double luma = l / 15.0;
 			int ar = (int)(luma * r + 0.5);
 			int ag = (int)(luma * g + 0.5);
 			int ab = (int)(luma * b + 0.5);
@@ -85,17 +85,17 @@
 
 		public static class BIZCOLOR
 		{
-			public static int[] palette = GenLUT(ColorType.BizHawk);
+			public static readonly int[] palette = GenLUT(ColorType.BizHawk);
 		}
 
 		public static class SNES9XCOLOR
 		{
-			public static int[] palette = GenLUT(ColorType.Snes9x);
+			public static readonly int[] palette = GenLUT(ColorType.Snes9x);
 		}
 
 		public static class BSNESCOLOR
 		{
-			public static int[] palette = GenLUT(ColorType.BSNES);
+			public static readonly int[] palette = GenLUT(ColorType.BSNES);
 		}
 
 		public static int[] GetLUT(ColorType t)

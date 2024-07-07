@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -140,6 +139,22 @@ namespace BizHawk.Client.Common
 		public void Insert(int index, Watch watch)
 		{
 			_watchList.Insert(index, watch);
+			Changes = true;
+		}
+
+		/// <param name="index">
+		/// <c>0</c> to prepend, <see cref="Count"/> to append, anything in-between to insert there
+		/// (the first elem of <paramref name="collection"/> will end up at <paramref name="index"/>)
+		/// </param>
+		public void InsertRange(int index, IEnumerable<Watch> collection)
+		{
+#if NET6_0_OR_GREATER
+			if (collection.TryGetNonEnumeratedCount(out var n) && n is 0) return;
+#else
+			if (collection is ICollection<Watch> hasCount && hasCount.Count is 0) return;
+#endif
+			_watchList.InsertRange(index, collection);
+			Changes = true;
 		}
 
 		/// <summary>
@@ -360,7 +375,7 @@ namespace BizHawk.Client.Common
 		private bool LoadFile(string path, bool append)
 		{
 			var file = new FileInfo(path);
-			if (file.Exists == false)
+			if (!file.Exists)
 			{
 				return false;
 			}

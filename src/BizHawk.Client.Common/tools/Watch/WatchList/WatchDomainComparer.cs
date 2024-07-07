@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 					return 0;
 				}
 
-				if (x.Domain.Name.Equals(y.Domain.Name))
+				if (x.Domain.Name.Equals(y.Domain.Name, System.StringComparison.Ordinal))
 				{
 					if (x.Address.Equals(y.Address))
 					{
@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 					return x.Address.CompareTo(y.Address);
 				}
 
-				return x.Domain.Name.CompareTo(y.Domain.Name);
+				return string.CompareOrdinal(x.Domain.Name, y.Domain.Name);
 			}
 		}
 	}

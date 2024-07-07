@@ -1,5 +1,5 @@
-using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace BizHawk.Common.StringExtensions
 {
@@ -12,14 +12,36 @@ namespace BizHawk.Common.StringExtensions
 			return new(a);
 		}
 
+#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
+		public static bool Contains(this string haystack, char needle)
+			=> haystack.IndexOf(needle) >= 0;
+#endif
+
 		public static bool Contains(this string haystack, string needle, StringComparison comparisonType)
 			=> haystack.IndexOf(needle, comparisonType) != -1;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool ContainsOrdinal(this string haystack, char needle)
+			=> haystack.Contains(needle); // already ordinal
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool ContainsOrdinal(this string haystack, string needle)
+			=> haystack.Contains(needle); // already ordinal
+
+#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
+		public static bool EndsWith(this string haystack, char needle)
+			=> haystack.Length >= 1 && haystack[^1] == needle;
+#endif
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool EndsWithOrdinal(this string haystack, char needle)
+			=> haystack.EndsWith(needle); // already ordinal
 
 		/// <returns>
 		/// <see langword="true"/> if <paramref name="str"/> appears in <paramref name="options"/> (case-insensitive)
 		/// </returns>
 		public static bool In(this string str, params string[] options) =>
-			options.Any(opt => string.Equals(opt, str, StringComparison.InvariantCultureIgnoreCase));
+			options.Any(opt => string.Equals(opt, str, StringComparison.OrdinalIgnoreCase));
 
 		/// <returns>
 		/// <paramref name="str"/> with the first char removed, or
@@ -31,7 +53,8 @@ namespace BizHawk.Common.StringExtensions
 		/// <paramref name="str"/> with the first char removed, or
 		/// <paramref name="notFoundValue"/> if the first char of <paramref name="str"/> is not <paramref name="prefix"/>
 		/// </returns>
-		public static string RemovePrefix(this string str, char prefix, string notFoundValue) => str.Length != 0 && str[0] == prefix ? str.Substring(1, str.Length - 1) : notFoundValue;
+		public static string RemovePrefix(this string str, char prefix, string notFoundValue)
+			=> str.StartsWith(prefix) ? str.Substring(1) : notFoundValue;
 
 		/// <returns>
 		/// <paramref name="str"/> with the leading substring <paramref name="prefix"/> removed, or
@@ -43,7 +66,7 @@ namespace BizHawk.Common.StringExtensions
 		/// <paramref name="str"/> with the leading substring <paramref name="prefix"/> removed, or
 		/// <paramref name="notFoundValue"/> if <paramref name="str"/> does not start with <paramref name="prefix"/>
 		/// </returns>
-		public static string RemovePrefix(this string str, string prefix, string notFoundValue) => str.StartsWith(prefix) ? str.Substring(prefix.Length, str.Length - prefix.Length) : notFoundValue;
+		public static string RemovePrefix(this string str, string prefix, string notFoundValue) => str.StartsWith(prefix, StringComparison.Ordinal) ? str.Substring(prefix.Length, str.Length - prefix.Length) : notFoundValue;
 
 		/// <returns>
 		/// <paramref name="str"/> with the last char removed, or
@@ -64,7 +87,15 @@ namespace BizHawk.Common.StringExtensions
 		/// <paramref name="str"/> with the trailing substring <paramref name="suffix"/> removed, or
 		/// <paramref name="notFoundValue"/> if <paramref name="str"/> does not end with <paramref name="suffix"/>
 		/// </returns>
-		public static string RemoveSuffix(this string str, string suffix, string notFoundValue) => str.EndsWith(suffix) ? str.Substring(0, str.Length - suffix.Length) : notFoundValue;
+		public static string RemoveSuffix(this string str, string suffix, string notFoundValue) => str.EndsWith(suffix, StringComparison.Ordinal) ? str.Substring(0, str.Length - suffix.Length) : notFoundValue;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool StartsWith(this ReadOnlySpan<char> str, char c)
+			=> str.Length >= 1 && str[0] == c;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool StartsWith(this string str, char c)
+			=> str.Length >= 1 && str[0] == c;
 
 		/// <returns>
 		/// the substring of <paramref name="str"/> after the first occurrence of <paramref name="delimiter"/>, or
@@ -78,7 +109,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </returns>
 		public static string SubstringAfter(this string str, string delimiter, string notFoundValue)
 		{
-			var index = str.IndexOf(delimiter);
+			var index = str.IndexOf(delimiter, StringComparison.Ordinal);
 			return index < 0 ? notFoundValue : str.Substring(index + delimiter.Length, str.Length - index - delimiter.Length);
 		}
 
@@ -137,7 +168,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </returns>
 		public static string? SubstringBeforeOrNull(this string str, string delimiter)
 		{
-			var index = str.IndexOf(delimiter);
+			var index = str.IndexOf(delimiter, StringComparison.Ordinal);
 			return index < 0 ? null : str.Substring(0, index);
 		}
 
@@ -155,5 +186,9 @@ namespace BizHawk.Common.StringExtensions
 		/// <remarks><c>"abc,def,ghi".TransformFields(',', s => s.Reverse()) == "cba,fed,ihg"</c></remarks>
 		public static string TransformFields(this string str, char delimiter, Func<string, string> transform)
 			=> string.Join(delimiter.ToString(), str.Split(delimiter).Select(transform));
+
+		public static bool StartsWithOrdinal(this string str, string value) => str.StartsWith(value, StringComparison.Ordinal);
+
+		public static bool EndsWithOrdinal(this string str, string value) => str.EndsWith(value, StringComparison.Ordinal);
 	}
 }

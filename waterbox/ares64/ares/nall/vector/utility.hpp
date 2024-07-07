@@ -36,6 +36,13 @@ template<typename T> auto vector<T>::findSorted(const T& value) const -> maybe<u
   return nothing;
 }
 
+template<typename T> auto vector<T>::contains(const T& value) const -> bool {
+  for(const auto &v : *this) {
+    if(v == value) return true;
+  }
+  return false;
+}
+
 template<typename T> auto vector<T>::foreach(const function<void (const T&)>& callback) -> void {
   for(u64 n : range(size())) callback(_pool[n]);
 }

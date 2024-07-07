@@ -13,6 +13,8 @@ namespace BizHawk.Client.Common.movie.import
 
 			for (var i = 0; i < bkm.InputLogLength; i++)
 			{
+				// TODO: this is currently broken because Result.Movie.Emulator is no longer getting set,
+				// however using that was sketchy anyway because it relied on the currently loaded core for import
 				var input = bkm.GetInputState(i, Result.Movie.Emulator.ControllerDefinition, bkm.Header[HeaderKeys.Platform]);
 				Result.Movie.AppendFrame(input);
 			}

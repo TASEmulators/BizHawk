@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Text;
 
@@ -43,12 +42,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				throw new FormatException($"Not supported RIFF type: '{Encoding.ASCII.GetString(BitConverter.GetBytes(riffType))}'");
 			}
-			int chunkId;
-			int chunkSize;
 			while (stream.Position < stream.Length)
 			{
-				StreamHelper.Read(stream, out chunkId);
-				StreamHelper.Read(stream, out chunkSize);
+				StreamHelper.Read(stream, out int chunkId);
+				StreamHelper.Read(stream, out int chunkSize);
 				string strChunkId = Encoding.ASCII.GetString(
 					BitConverter.GetBytes(chunkId));
 				if (strChunkId == "fmt ")

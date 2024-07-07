@@ -1,5 +1,6 @@
 ﻿namespace BizHawk.Analyzers;
 
+using System;
 using System.Collections.Immutable;
 
 using Microsoft.CodeAnalysis;
@@ -10,6 +11,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class HawkSourceAnalyzer : DiagnosticAnalyzer
 {
+	private const string ERR_MSG_LIST_EXPR_EMPTY = "Empty collection expression should be `[ ]`";
+
+	private const string ERR_MSG_LIST_EXPR_END = "Collection expression should end with ` ]`";
+
+	private const string ERR_MSG_LIST_EXPR_START = "Collection expression should start with `[ `";
+
 	private const string ERR_MSG_SWITCH_THROWS_UNKNOWN = "Indeterminable exception type in default switch branch, should be InvalidOperationException/SwitchExpressionException";
 
 	private const string ERR_MSG_SWITCH_THROWS_WRONG_TYPE = "Incorrect exception type in default switch branch, should be InvalidOperationException/SwitchExpressionException";
@@ -20,6 +27,14 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 		messageFormat: "Swap @ and $ on interpolated string",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Error,
+		isEnabledByDefault: true);
+
+	private static readonly DiagnosticDescriptor DiagListExprSpacing = new(
+		id: "BHI1110",
+		title: "Brackets of collection expression should be separated with spaces",
+		messageFormat: "{0}",
+		category: "Usage",
+		defaultSeverity: DiagnosticSeverity.Warning,
 		isEnabledByDefault: true);
 
 	private static readonly DiagnosticDescriptor DiagNoAnonClasses = new(
@@ -64,6 +79,7 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
 		DiagInterpStringIsDollarAt,
+		DiagListExprSpacing,
 		DiagNoAnonClasses,
 		DiagNoAnonDelegates,
 		DiagNoDiscardingLocals,
@@ -72,6 +88,24 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 
 	public override void Initialize(AnalysisContext context)
 	{
+		static string? CheckSpacingInList<T>(
+			SeparatedSyntaxList<T> listContents,
+			SyntaxToken openBracketToken,
+			Func<string> serialiseOuter)
+				where T : SyntaxNode
+		{
+			if (listContents.Count is 0) return serialiseOuter() is "[ ]" ? null : ERR_MSG_LIST_EXPR_EMPTY;
+			var contentsWithTrivia = listContents.ToFullString();
+			if (contentsWithTrivia.Contains("\n")) return null; // don't need to police spaces for multi-line expressions
+			if (contentsWithTrivia.Length > 1
+				? (contentsWithTrivia[contentsWithTrivia.Length - 1] is not ' '
+					|| contentsWithTrivia[contentsWithTrivia.Length - 2] is ' ' or '\t')
+				: contentsWithTrivia[0] is not ' ')
+			{
+				return ERR_MSG_LIST_EXPR_END;
+			}
+			return openBracketToken.TrailingTrivia.ToFullString() is " " ? null : ERR_MSG_LIST_EXPR_START;
+		}
 		static bool IsDiscard(AssignmentExpressionSyntax aes)
 			=> aes.OperatorToken.RawKind is (int) SyntaxKind.EqualsToken && aes.Left is IdentifierNameSyntax { Identifier.Text: "_" };
 		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
@@ -94,11 +128,21 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 					case AnonymousObjectCreationExpressionSyntax:
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoAnonClasses, snac.Node.GetLocation()));
 						break;
-					case AssignmentExpressionSyntax aes when IsDiscard(aes) && snac.SemanticModel.GetSymbolInfo(aes.Right).Symbol?.Kind is SymbolKind.Local:
+					case AssignmentExpressionSyntax aes:
+						if (!IsDiscard(aes)) break;
+						if (snac.SemanticModel.GetSymbolInfo(aes.Right, snac.CancellationToken).Symbol?.Kind is not SymbolKind.Local) break;
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoDiscardingLocals, snac.Node.GetLocation()));
+						break;
+					case CollectionExpressionSyntax ces:
+						var cesError = CheckSpacingInList(ces.Elements, ces.OpenBracketToken, ces.ToFullString);
+						if (cesError is not null) snac.ReportDiagnostic(Diagnostic.Create(DiagListExprSpacing, ces.GetLocation(), cesError));
 						break;
 					case InterpolatedStringExpressionSyntax ises:
 						if (ises.StringStartToken.Text[0] is '@') snac.ReportDiagnostic(Diagnostic.Create(DiagInterpStringIsDollarAt, ises.GetLocation()));
+						break;
+					case ListPatternSyntax lps:
+						var lpsError = CheckSpacingInList(lps.Patterns, lps.OpenBracketToken, lps.ToFullString);
+						if (lpsError is not null) snac.ReportDiagnostic(Diagnostic.Create(DiagListExprSpacing, lps.GetLocation(), lpsError));
 						break;
 					case QueryExpressionSyntax:
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoQueryExpression, snac.Node.GetLocation()));
@@ -125,7 +169,9 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 			},
 			SyntaxKind.AnonymousObjectCreationExpression,
 			SyntaxKind.AnonymousMethodExpression,
+			SyntaxKind.CollectionExpression,
 			SyntaxKind.InterpolatedStringExpression,
+			SyntaxKind.ListPattern,
 			SyntaxKind.QueryExpression,
 			SyntaxKind.SimpleAssignmentExpression,
 			SyntaxKind.SwitchExpressionArm);

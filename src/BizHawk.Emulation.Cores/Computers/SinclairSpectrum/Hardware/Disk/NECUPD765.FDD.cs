@@ -1,6 +1,5 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using System;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -84,14 +83,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// or the index hole being passed twice
 			while (iHole <= 2)
 			{
+				var next = trk.Sectors[index];
 				// does the requested sector match the current sector
-				if (trk.Sectors[index].SectorIDInfo.C == ActiveCommandParams.Cylinder &&
-					trk.Sectors[index].SectorIDInfo.H == ActiveCommandParams.Head &&
-					trk.Sectors[index].SectorIDInfo.R == ActiveCommandParams.Sector &&
-					trk.Sectors[index].SectorIDInfo.N == ActiveCommandParams.SectorSize)
+				if (next.SectorIDInfo.C == ActiveCommandParams.Cylinder
+					&& next.SectorIDInfo.H == ActiveCommandParams.Head
+					&& next.SectorIDInfo.R == ActiveCommandParams.Sector
+					&& next.SectorIDInfo.N == ActiveCommandParams.SectorSize)
 				{
 					// sector has been found
-					sector = trk.Sectors[index];
+					sector = next;
 
 					UnSetBit(SR2_BC, ref Status2);
 					UnSetBit(SR2_WC, ref Status2);
@@ -99,12 +99,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// check for bad cylinder
-				if (trk.Sectors[index].SectorIDInfo.C == 255)
+				if (next.SectorIDInfo.C is 255)
 				{
 					SetBit(SR2_BC, ref Status2);
 				}
 				// check for no cylinder
-				else if (trk.Sectors[index].SectorIDInfo.C != ActiveCommandParams.Cylinder)
+				else if (next.SectorIDInfo.C != ActiveCommandParams.Cylinder)
 				{
 					SetBit(SR2_WC, ref Status2);
 				}

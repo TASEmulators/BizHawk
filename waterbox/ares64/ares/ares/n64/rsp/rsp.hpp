@@ -2,7 +2,36 @@
 
 struct RSP : Thread, Memory::RCP<RSP> {
   Node::Object node;
-  Memory::Writable dmem;
+  struct Writable : public Memory::Writable {
+    RSP& self;
+
+    Writable(RSP& self) : self(self) {}
+
+    template<u32 Size>
+    auto read(u32 address) -> u64 {
+      if (system.homebrewMode) self.debugger.dmemReadWord(address, Size, "RSP");
+      return Memory::Writable::read<Size>(address);
+    }
+
+    template<u32 Size>
+    auto readUnaligned(u32 address) -> u64 {
+      if (system.homebrewMode) self.debugger.dmemReadUnalignedWord(address, Size, "RSP");
+      return Memory::Writable::readUnaligned<Size>(address);
+    }
+
+    template<u32 Size>
+    auto write(u32 address, u64 value) -> void {
+      if (system.homebrewMode) self.debugger.dmemWriteWord(address, Size, value);
+      Memory::Writable::write<Size>(address, value);
+    }
+    
+    template<u32 Size>
+    auto writeUnaligned(u32 address, u64 value) -> void {
+      if (system.homebrewMode) self.debugger.dmemWriteUnalignedWord(address, Size, value);
+      Memory::Writable::writeUnaligned<Size>(address, value);
+    }
+
+  } dmem{*this};
   Memory::Writable imem;
 
   struct Debugger {
@@ -13,6 +42,23 @@ struct RSP : Thread, Memory::RCP<RSP> {
     auto instruction() -> void;
     auto ioSCC(bool mode, u32 address, u32 data) -> void;
     auto ioStatus(bool mode, u32 address, u32 data) -> void;
+
+    auto dmaReadWord(u32 rdramAddress, u32 pbusRegion, u32 pbusAddress) -> void;
+    auto dmemReadWord(u12 address, int size, const char *peripheral) -> void;
+    auto dmemWriteWord(u12 address, int size, u64 value) -> void;
+    auto dmemReadUnalignedWord(u12 address, int size, const char *peripheral) -> void;
+    auto dmemWriteUnalignedWord(u12 address, int size, u64 value) -> void;
+
+    struct TaintMask {
+      struct TaintWord {
+        u8  dirty;
+        u32 ctxDmaRdramAddress;
+        u64 ctxDmaOriginPc;
+        u1  ctxDmaOriginCpu;
+        u64 ctxCacheFillPc;
+        u64 ctxCacheDirtyPc;
+      } dmem[512], imem[512];
+    } taintMask;
 
     struct Memory {
       Node::Debugger::Memory dmem;
@@ -30,16 +76,133 @@ struct RSP : Thread, Memory::RCP<RSP> {
   auto unload() -> void;
 
   auto main() -> void;
-  auto step(u32 clocks) -> void;
 
   auto instruction() -> void;
-  auto instructionEpilogue() -> s32;
+  auto instructionPrologue(u32 instruction) -> void;
+  auto instructionEpilogue(u32 clocks) -> s32;
 
   auto power(bool reset) -> void;
+
+  struct OpInfo {
+    enum : u32 {
+      Load      = 1 << 0,
+      Store     = 1 << 1,
+      Branch    = 1 << 2,
+      Vector    = 1 << 3,
+      VNopGroup = 1 << 4,  //dual issue conflicts with VNOP
+    };
+
+    u32 flags;
+    u32 vfake;  //only affects dual issue logic
+    struct {
+      u32 use, def;
+    } r, v, vc;
+
+    auto load() const -> bool { return flags & Load; }
+    auto store() const -> bool { return flags & Store; }
+    auto branch() const -> bool { return flags & Branch; }
+    auto vector() const -> bool { return flags & Vector; }
+  };
+
+  static auto canDualIssue(const OpInfo& op0, const OpInfo& op1) -> bool {
+    return op0.vector() != op1.vector()             //must be one SU and one VU
+      && !(op0.v.def & (op1.v.use | op1.v.def))     //second op cannot read/write vector registers written by the first
+      && !(op0.vc.def & (op1.vc.use | op1.vc.def))  //the same logic applies to vector control registers
+      //certain instructions conflict due to "fake" uses from misinterpreted fields
+      //such false conflicts only occur with VNOP if the preceding instruction is MTC2 or LTV
+      && !(((op0.flags | ~op1.flags) & OpInfo::VNopGroup) && (op0.v.def & op1.vfake));
+  }
 
   struct Pipeline {
     u32 address;
     u32 instruction;
+    u32 clocks;
+    u1 singleIssue;
+
+    struct Stage {
+      u1 load;
+      u32 rWrite;
+      u32 vWrite;
+    } previous[3];
+
+    struct : Stage {
+      u1 store;
+      u1 branch;
+      u32 rRead;
+      u32 vRead;
+    } current;
+
+    auto hash() const -> u32 {
+      Hash::CRC32 hash;
+      hash.input(u8(singleIssue));
+      for(auto& p : previous) {
+        hash.input(u8(p.load));
+        for(auto n : range(4)) hash.input(u8(p.rWrite >> n * 8));
+        for(auto n : range(4)) hash.input(u8(p.vWrite >> n * 8));
+      }
+      return hash.value();
+    }
+
+    auto begin() -> void {
+      clocks = 0;
+    }
+
+    auto end() -> void {
+      readGPR(current.rRead);
+      readVR(current.vRead);
+      if(current.store) store();
+      singleIssue = current.branch;
+
+      previous[2] = previous[1];
+      previous[1] = previous[0];
+      previous[0] = current;
+      current = {};
+      clocks += 3;
+    }
+
+    auto stall() -> void {
+      previous[2] = previous[1];
+      previous[1] = previous[0];
+      previous[0] = {};
+      clocks += 3;
+    }
+
+    auto issue(const OpInfo& op) -> void {
+      current.rRead |= op.r.use;
+      current.rWrite |= op.r.def & ~1;  //zero register can't be written
+      current.vRead |= op.v.use;
+      current.vWrite |= op.v.def;
+      current.load |= op.load();
+      current.store |= op.store();
+      current.branch |= op.branch();
+    }
+
+  private:
+    auto readGPR(u32 mask) -> Pipeline& {
+      if(mask & previous[0].rWrite) {
+        stall(), stall();
+      } else if(mask & previous[1].rWrite) {
+        stall();
+      }
+      return *this;
+    }
+
+    auto readVR(u32 mask) -> Pipeline& {
+      if(mask & previous[0].vWrite) {
+        stall(), stall(), stall();
+      } else if(mask & previous[1].vWrite) {
+        stall(), stall();
+      } else if(mask & previous[2].vWrite) {
+        stall();
+      }
+      return *this;
+    }
+
+    auto store() -> void {
+      while(previous[1].load) {
+        stall();
+      }
+    }
   } pipeline;
 
   //dma.cpp
@@ -47,10 +210,10 @@ struct RSP : Thread, Memory::RCP<RSP> {
   auto dmaTransferStep() -> void;
 
   //io.cpp
-  auto readWord(u32 address, u32& cycles) -> u32;
-  auto writeWord(u32 address, u32 data, u32& cycles) -> void;
-  auto ioRead(u32 address) -> u32;
-  auto ioWrite(u32 address, u32 data) -> void;
+  auto readWord(u32 address, Thread& thread) -> u32;
+  auto writeWord(u32 address, u32 data, Thread& thread) -> void;
+  auto ioRead(u32 address, Thread& thread) -> u32;
+  auto ioWrite(u32 address, u32 data, Thread& thread) -> void;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;
@@ -63,7 +226,9 @@ struct RSP : Thread, Memory::RCP<RSP> {
       n12 length;
       n12 skip;
       n8  count;
-      
+      n64 originPc;
+      n1  originCpu;
+
       auto serialize(serializer&) -> void;
     } pending, current;
 
@@ -80,8 +245,8 @@ struct RSP : Thread, Memory::RCP<RSP> {
     Status(RSP& self) : self(self) {}
 
     //io.cpp
-    auto readWord(u32 address, u32& cycles) -> u32;
-    auto writeWord(u32 address, u32 data, u32& cycles) -> void;
+    auto readWord(u32 address, Thread& thread) -> u32;
+    auto writeWord(u32 address, u32 data, Thread& thread) -> void;
 
     n1 semaphore;
     n1 halted = 1;
@@ -316,13 +481,22 @@ struct RSP : Thread, Memory::RCP<RSP> {
   u16 inverseSquareRoots[512];
 
   //decoder.cpp
-  auto decoderEXECUTE() -> void;
-  auto decoderSPECIAL() -> void;
-  auto decoderREGIMM() -> void;
-  auto decoderSCC() -> void;
-  auto decoderVU() -> void;
-  auto decoderLWC2() -> void;
-  auto decoderSWC2() -> void;
+  auto decoderEXECUTE(u32 instruction) const -> OpInfo;
+  auto decoderSPECIAL(u32 instruction) const -> OpInfo;
+  auto decoderREGIMM(u32 instruction) const -> OpInfo;
+  auto decoderSCC(u32 instruction) const -> OpInfo;
+  auto decoderVU(u32 instruction) const -> OpInfo;
+  auto decoderLWC2(u32 instruction) const -> OpInfo;
+  auto decoderSWC2(u32 instruction) const -> OpInfo;
+
+  //interpreter.cpp
+  auto interpreterEXECUTE() -> void;
+  auto interpreterSPECIAL() -> void;
+  auto interpreterREGIMM() -> void;
+  auto interpreterSCC() -> void;
+  auto interpreterVU() -> void;
+  auto interpreterLWC2() -> void;
+  auto interpreterSWC2() -> void;
 
   auto INVALID() -> void;
 
@@ -333,11 +507,13 @@ struct RSP : Thread, Memory::RCP<RSP> {
 
     struct Block {
       auto execute(RSP& self) -> void {
+        self.pipeline = pipeline;  //must be updated first so instructionEpilog() can handle taken branch
         ((void (*)(RSP*, IPU*, VU*))code)(&self, &self.ipu, &self.vpu);
       }
 
       u8* code;
       u12 size;
+      Pipeline pipeline;  //state at *end* of block excepting taken branch stall
     };
 
     struct BlockHashPair {
@@ -385,6 +561,8 @@ struct RSP : Thread, Memory::RCP<RSP> {
       return s <= e ? smask & emask : smask | emask;
     }
 
+    bool callInstructionPrologue = false;
+    Pipeline pipeline;
     bump_allocator allocator;
     array<Block*[1024]> context;
     hashset<BlockHashPair> blocks;

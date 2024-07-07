@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -43,23 +42,8 @@ namespace BizHawk.Client.EmuHawk
 		private void SetupColumns()
 		{
 			MarkerView.AllColumns.Clear();
-			MarkerView.AllColumns.AddRange(new[]
-			{
-				new RollColumn
-				{
-					Name = "FrameColumn",
-					Text = "Frame",
-					UnscaledWidth = 52,
-					Type = ColumnType.Text
-				},
-				new RollColumn
-				{
-					Name = "LabelColumn",
-					Text = "",
-					UnscaledWidth = 125,
-					Type = ColumnType.Text
-				}
-			});
+			MarkerView.AllColumns.Add(new(name: "FrameColumn", widthUnscaled: 52, text: "Frame"));
+			MarkerView.AllColumns.Add(new(name: "LabelColumn", widthUnscaled: 125, text: string.Empty));
 		}
 
 		public InputRoll MarkerInputRoll => MarkerView;
@@ -67,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MarkerView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			// This could happen if the control is told to redraw while Tastudio is rebooting, as we would not have a TasMovie just yet
-			if (Tastudio.CurrentTasMovie == null)
+			if (Tastudio.CurrentTasMovie is null)
 			{
 				return;
 			}
@@ -82,11 +66,11 @@ namespace BizHawk.Client.EmuHawk
 			else if (index < Markers.Count)
 			{
 				var marker = Markers[index];
-				var record = Tastudio.CurrentTasMovie[marker.Frame];
+				bool? lagged = Tastudio.CurrentTasMovie.LagLog[marker.Frame + 1];
 
-				if (record.Lagged.HasValue)
+				if (lagged.HasValue)
 				{
-					if (record.Lagged.Value)
+					if (lagged.Value)
 					{
 						color = column.Name == "FrameColumn"
 							? Tastudio.Palette.LagZone_FrameCol

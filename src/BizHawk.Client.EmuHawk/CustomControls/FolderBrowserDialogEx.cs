@@ -1,11 +1,11 @@
-﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
 using BizHawk.Common;
+
+using static BizHawk.Common.Shell32Imports;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -21,8 +21,8 @@ namespace BizHawk.Client.EmuHawk
 	/// </remarks>
 	public sealed class FolderBrowserEx : Component
 	{
-		/// <remarks>is this supposed to be public? we're obviously not using it at callsites at the moment --yoshi</remarks>
-		private readonly Win32Imports.BROWSEINFO.FLAGS publicOptions = Win32Imports.BROWSEINFO.FLAGS.RestrictToFilesystem | Win32Imports.BROWSEINFO.FLAGS.RestrictToDomain;
+		private const BROWSEINFOW.FLAGS BrowseOptions = BROWSEINFOW.FLAGS.RestrictToFilesystem | BROWSEINFOW.FLAGS.RestrictToDomain |
+			BROWSEINFOW.FLAGS.NewDialogStyle | BROWSEINFOW.FLAGS.ShowTextBox;
 
 		public string Description = "Please select a folder below:";
 
@@ -31,54 +31,74 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>Shows the folder browser dialog box with the specified owner window.</summary>
 		public DialogResult ShowDialog(IWin32Window owner = null)
 		{
-			const Win32Imports.BROWSEINFO.FLAGS privateOptions = Win32Imports.BROWSEINFO.FLAGS.NewDialogStyle | Win32Imports.BROWSEINFO.FLAGS.ShowTextBox;
 			const int startLocation = 0; // = Desktop CSIDL
 			int Callback(IntPtr hwnd, uint uMsg, IntPtr lParam, IntPtr lpData)
 			{
-				if (uMsg == 1)
+				if (uMsg == BFFM_INITIALIZED)
 				{
 					var str = Marshal.StringToHGlobalUni(SelectedPath);
-					Win32Imports.SendMessage(hwnd, 0x400 + 103, (IntPtr) 1, str);
-					Marshal.FreeHGlobal(str);
+					try
+					{
+						WmImports.SendMessageW(hwnd, BFFM_SETSELECTIONW, new(1), str);
+					}
+					finally
+					{
+						Marshal.FreeHGlobal(str);
+					}
 				}
+
 				return 0;
 			}
 
-			var hWndOwner = owner?.Handle ?? Win32Imports.GetActiveWindow();
-			_ = Win32Imports.SHGetSpecialFolderLocation(hWndOwner, startLocation, out var pidlRoot);
-			if (pidlRoot == IntPtr.Zero) return DialogResult.Cancel;
-			var mergedOptions = publicOptions | privateOptions;
-			if ((mergedOptions & Win32Imports.BROWSEINFO.FLAGS.NewDialogStyle) != 0 && ApartmentState.MTA == Application.OleRequired())
+			var hWndOwner = owner?.Handle ?? WmImports.GetActiveWindow();
+			_ = SHGetSpecialFolderLocation(hWndOwner, startLocation, out var pidlRoot);
+			if (pidlRoot == IntPtr.Zero)
 			{
-				mergedOptions &= ~Win32Imports.BROWSEINFO.FLAGS.NewDialogStyle;
+				return DialogResult.Cancel;
 			}
 
-			IntPtr pidlRet = default;
+			var pidlRet = IntPtr.Zero;
+			var pszDisplayName = IntPtr.Zero;
 			try
 			{
-				var buffer = Marshal.AllocHGlobal(Win32Imports.MAX_PATH);
-				var bi = new Win32Imports.BROWSEINFO
+				var browseOptions = BrowseOptions;
+				if (ApartmentState.MTA == Application.OleRequired())
+				{
+					browseOptions &= ~BROWSEINFOW.FLAGS.NewDialogStyle;
+				}
+
+				pszDisplayName = Marshal.AllocCoTaskMem(Win32Imports.MAX_PATH * sizeof(char));
+				var bi = new BROWSEINFOW
 				{
 					hwndOwner = hWndOwner,
 					pidlRoot = pidlRoot,
-					pszDisplayName = buffer,
+					pszDisplayName = pszDisplayName,
 					lpszTitle = Description,
-					ulFlags = mergedOptions,
+					ulFlags = browseOptions,
 					lpfn = Callback
 				};
-				pidlRet = Win32Imports.SHBrowseForFolder(ref bi);
-				Marshal.FreeHGlobal(buffer);
-				if (pidlRet == IntPtr.Zero) return DialogResult.Cancel; // user clicked Cancel
-				var sb = new StringBuilder(Win32Imports.MAX_PATH);
-				if (Win32Imports.SHGetPathFromIDList(pidlRet, sb) == 0) return DialogResult.Cancel;
-				SelectedPath = sb.ToString();
+
+				pidlRet = SHBrowseForFolderW(ref bi);
+				if (pidlRet == IntPtr.Zero)
+				{
+					return DialogResult.Cancel; // user clicked Cancel
+				}
+
+				var path = new char[Win32Imports.MAX_PATH];
+				if (SHGetPathFromIDListW(pidlRet, path) == 0)
+				{
+					return DialogResult.Cancel;
+				}
+
+				SelectedPath = new string(path).TrimEnd('\0');
 			}
 			finally
 			{
-				_ = Win32Imports.SHGetMalloc(out var malloc);
-				malloc.Free(pidlRoot);
-				if (pidlRet != IntPtr.Zero) malloc.Free(pidlRet);
+				Marshal.FreeCoTaskMem(pidlRoot);
+				Marshal.FreeCoTaskMem(pidlRet);
+				Marshal.FreeCoTaskMem(pszDisplayName);
 			}
+
 			return DialogResult.OK;
 		}
 	}

@@ -1,5 +1,5 @@
-using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk.Properties
@@ -211,5 +211,8 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap YellowLeft = ReadEmbeddedBitmap("YellowLeft");
 		internal static readonly Bitmap YellowRight = ReadEmbeddedBitmap("YellowRight");
 		internal static readonly Bitmap YellowUp = ReadEmbeddedBitmap("YellowUp");
+
+		internal static Stream GetNotHawkCallSFX()
+			=> EmuHawk.ReflectionCache.EmbeddedResourceStream("Resources.nothawk.wav");
 	}
 }

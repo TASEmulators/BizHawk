@@ -290,7 +290,7 @@ namespace BizHawk.Client.Common
 				.Replace("Uint", "uint ")
 				.Replace("Nullable`1[DrawingColor]", "Color? ")
 				.Replace("DrawingColor", "Color ")
-				.ToLower();
+				.ToLowerInvariant();
 		}
 
 		public string ReturnType

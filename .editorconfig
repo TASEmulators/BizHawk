@@ -11,3 +11,110 @@ csharp_new_line_before_finally = true
 csharp_indent_switch_labels = true
 csharp_indent_case_contents = true
 csharp_indent_labels = one_less_than_current
+
+# Style rules
+# Can't be in .globalconfig because dotnet format doesn't respect that https://github.com/dotnet/format/issues/1643
+
+# Remove unnecessary cast
+dotnet_diagnostic.IDE0004.severity = warning
+# Remove unnecessary import
+dotnet_diagnostic.IDE0005.severity = warning
+# Use var instead of explicit type
+dotnet_diagnostic.IDE0007.severity = suggestion
+# Use explicit type instead of var
+dotnet_diagnostic.IDE0008.severity = suggestion
+# Inline variable declaration
+dotnet_diagnostic.IDE0018.severity = warning
+# Use pattern matching to avoid as followed by a null check
+dotnet_diagnostic.IDE0019.severity = warning
+# Use pattern matching to avoid is check followed by a cast (with variable)
+dotnet_diagnostic.IDE0020.severity = warning
+# Use expression body for methods
+dotnet_diagnostic.IDE0022.severity = suggestion
+# Use expression body for properties
+dotnet_diagnostic.IDE0025.severity = suggestion
+# Use expression body for indexers
+dotnet_diagnostic.IDE0026.severity = suggestion
+# Use expression body for accessors
+dotnet_diagnostic.IDE0027.severity = suggestion
+# Null check can be simplified
+dotnet_diagnostic.IDE0029.severity = warning
+# Null check can be simplified
+dotnet_diagnostic.IDE0030.severity = warning
+# Use null propagation
+dotnet_diagnostic.IDE0031.severity = warning
+# Use auto property
+dotnet_diagnostic.IDE0032.severity = suggestion
+# Simplify default expression
+dotnet_diagnostic.IDE0034.severity = suggestion
+# Use pattern matching to avoid is check followed by a cast (without variable)
+dotnet_diagnostic.IDE0038.severity = warning
+# Use is null check
+dotnet_diagnostic.IDE0041.severity = warning
+# Deconstruct variable declaration
+dotnet_diagnostic.IDE0042.severity = suggestion
+# dotnet_diagnostic.IDE0049.severity = error # see SA1121
+# Remove unused private member
+dotnet_diagnostic.IDE0051.severity = suggestion
+# Remove unread private member
+dotnet_diagnostic.IDE0052.severity = silent # TODO: should be warning imo, but there's too much violation currently
+# Use compound assignment
+dotnet_diagnostic.IDE0054.severity = warning
+# Use index operator
+dotnet_diagnostic.IDE0056.severity = suggestion
+# Use range operator
+dotnet_diagnostic.IDE0057.severity = suggestion
+# Use simple using statement
+dotnet_diagnostic.IDE0063.severity = suggestion
+# Make struct fields writable
+dotnet_diagnostic.IDE0064.severity = error
+# using directive placement
+dotnet_diagnostic.IDE0065.severity = error
+# Use switch expression
+dotnet_diagnostic.IDE0066.severity = suggestion
+# Use System.HashCode.Combine
+dotnet_diagnostic.IDE0070.severity = warning
+# Simplify interpolation
+dotnet_diagnostic.IDE0071.severity = suggestion
+# Use coalesce compound assignment
+dotnet_diagnostic.IDE0074.severity = suggestion
+# Use pattern matching
+dotnet_diagnostic.IDE0078.severity = suggestion
+# Convert typeof to nameof
+dotnet_diagnostic.IDE0082.severity = warning
+# Use pattern matching (not operator)
+dotnet_diagnostic.IDE0083.severity = warning
+# Simplify new expression
+dotnet_diagnostic.IDE0090.severity = suggestion
+# Remove unnecessary equality operator
+dotnet_diagnostic.IDE0100.severity = warning
+# Remove unnecessary discard
+dotnet_diagnostic.IDE0110.severity = warning
+# Simplify LINQ expression
+dotnet_diagnostic.IDE0120.severity = error
+# Namespace does not match folder structure
+dotnet_diagnostic.IDE0130.severity = silent # should be warning imo
+# Use tuple to swap values
+dotnet_diagnostic.IDE0180.severity = suggestion
+# Use UTF-8 string literal
+dotnet_diagnostic.IDE0230.severity = warning
+# Nullable directive is redundant
+dotnet_diagnostic.IDE0240.severity = warning
+# Nullable directive is unnecessary
+dotnet_diagnostic.IDE0241.severity = warning
+# Struct can be made 'readonly'
+dotnet_diagnostic.IDE0250.severity = suggestion
+# Use pattern matching
+dotnet_diagnostic.IDE0260.severity = suggestion
+# Use nameof
+dotnet_diagnostic.IDE0280.severity = error
+# Collection initialization can be simplified
+dotnet_diagnostic.IDE0305.severity = silent
+
+csharp_style_var_when_type_is_apparent = true
+csharp_style_var_elsewhere = true
+
+csharp_style_expression_bodied_methods = when_on_single_line
+csharp_style_expression_bodied_properties = when_on_single_line
+csharp_style_expression_bodied_indexers = when_on_single_line
+csharp_style_expression_bodied_accessors = when_on_single_line

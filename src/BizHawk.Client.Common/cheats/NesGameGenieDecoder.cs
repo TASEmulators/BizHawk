@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 namespace BizHawk.Client.Common.cheats
@@ -47,26 +46,26 @@ namespace BizHawk.Client.Common.cheats
 				result.Value = 0;
 				result.Address = 0x8000;
 
-				GameGenieTable.TryGetValue(code[0], out var x);
+				_ = GameGenieTable.TryGetValue(code[0], out var x);
 				result.Value |= x & 0x07;
 				result.Value |= (x & 0x08) << 4;
 
-				GameGenieTable.TryGetValue(code[1], out x);
+				_ = GameGenieTable.TryGetValue(code[1], out x);
 				result.Value |= (x & 0x07) << 4;
 				result.Address |= (x & 0x08) << 4;
 
-				GameGenieTable.TryGetValue(code[2], out x);
+				_ = GameGenieTable.TryGetValue(code[2], out x);
 				result.Address |= (x & 0x07) << 4;
 
-				GameGenieTable.TryGetValue(code[3], out x);
+				_ = GameGenieTable.TryGetValue(code[3], out x);
 				result.Address |= (x & 0x07) << 12;
 				result.Address |= x & 0x08;
 
-				GameGenieTable.TryGetValue(code[4], out x);
+				_ = GameGenieTable.TryGetValue(code[4], out x);
 				result.Address |= x & 0x07;
 				result.Address |= (x & 0x08) << 8;
 
-				GameGenieTable.TryGetValue(code[5], out x);
+				_ = GameGenieTable.TryGetValue(code[5], out x);
 				result.Address |= (x & 0x07) << 8;
 				result.Value |= x & 0x08;
 			}
@@ -79,34 +78,34 @@ namespace BizHawk.Client.Common.cheats
 				result.Address = 0x8000;
 				result.Compare = 0;
 
-				GameGenieTable.TryGetValue(code[0], out var x);
+				_ = GameGenieTable.TryGetValue(code[0], out var x);
 				result.Value |= x & 0x07;
 				result.Value |= (x & 0x08) << 4;
 
-				GameGenieTable.TryGetValue(code[1], out x);
+				_ = GameGenieTable.TryGetValue(code[1], out x);
 				result.Value |= (x & 0x07) << 4;
 				result.Address |= (x & 0x08) << 4;
 
-				GameGenieTable.TryGetValue(code[2], out x);
+				_ = GameGenieTable.TryGetValue(code[2], out x);
 				result.Address |= (x & 0x07) << 4;
 
-				GameGenieTable.TryGetValue(code[3], out x);
+				_ = GameGenieTable.TryGetValue(code[3], out x);
 				result.Address |= (x & 0x07) << 12;
 				result.Address |= x & 0x08;
 
-				GameGenieTable.TryGetValue(code[4], out x);
+				_ = GameGenieTable.TryGetValue(code[4], out x);
 				result.Address |= x & 0x07;
 				result.Address |= (x & 0x08) << 8;
 
-				GameGenieTable.TryGetValue(code[5], out x);
+				_ = GameGenieTable.TryGetValue(code[5], out x);
 				result.Address |= (x & 0x07) << 8;
 				result.Compare |= x & 0x08;
 
-				GameGenieTable.TryGetValue(code[6], out x);
+				_ = GameGenieTable.TryGetValue(code[6], out x);
 				result.Compare |= x & 0x07;
 				result.Compare |= (x & 0x08) << 4;
 
-				GameGenieTable.TryGetValue(code[7], out x);
+				_ = GameGenieTable.TryGetValue(code[7], out x);
 				result.Compare |= (x & 0x07) << 4;
 				result.Value |= x & 0x08;
 			}

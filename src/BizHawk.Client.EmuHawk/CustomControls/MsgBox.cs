@@ -1,8 +1,5 @@
-﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-
-using BizHawk.Common;
 
 // http://www.codeproject.com/Articles/154680/A-customizable-NET-WinForms-Message-Box
 namespace BizHawk.Client.EmuHawk.CustomControls

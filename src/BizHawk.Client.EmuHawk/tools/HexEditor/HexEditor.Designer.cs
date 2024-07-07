@@ -429,6 +429,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.HexScrollBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.HexScrollBar.Dock = System.Windows.Forms.DockStyle.Right;
 			this.HexScrollBar.LargeChange = 16;
 			this.HexScrollBar.Location = new System.Drawing.Point(544, 16);
 			this.HexScrollBar.Name = "HexScrollBar";

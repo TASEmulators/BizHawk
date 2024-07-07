@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Cores.Components;
@@ -90,12 +88,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static VRC6()
 		{
 			int idx = 0;
-			byte bank, mask, a10;
 			for (int b003 = 0; b003 < 16; b003++)
 			{
 				for (int banknum = 0; banknum < 16; banknum++)
 				{
-					GetBankByte(b003, banknum, out bank, out mask, out a10);
+					GetBankByte(b003, banknum, out byte bank, out byte mask, out byte a10);
 					Banks[idx] = bank;
 					Masks[idx] = mask;
 					A10s[idx] = a10;

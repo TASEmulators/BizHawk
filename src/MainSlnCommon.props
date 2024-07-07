@@ -1,13 +1,14 @@
 <Project>
+	<PropertyGroup Condition=" '$(ExecProjTargetFrameworkOverride)' != '' AND '$(TargetFramework)' == 'net48' ">
+		<SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+		<TargetFramework>$(ExecProjTargetFrameworkOverride)</TargetFramework>
+	</PropertyGroup>
 	<Import Project="../Common.props" />
 	<PropertyGroup>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<DebugType>embedded</DebugType>
 		<DefineConstants>$(DefineConstants);AVI_SUPPORT</DefineConstants>
-		<DocumentationFile>$(MSBuildProjectDirectory)/bin/doc_comments.xml</DocumentationFile>
-		<LangVersion>9.0</LangVersion>
-		<MSBuildWarningsAsMessages>NU1702</MSBuildWarningsAsMessages>
-		<NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>
-		<OutputPath>$(MSBuildProjectDirectory)/../../output/dll</OutputPath>
+		<NoWarn>$(NoWarn);CS1573;NU1702</NoWarn>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(SolutionDir)' != '' ">
@@ -18,6 +19,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.ReflectionCache.dll" />
+		<Using Include="System" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(Configuration)' != 'Debug' ">
 		<Compile Remove="$(MSBuildProjectDirectory)/debug/**/*" />

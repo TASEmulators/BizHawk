@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using BizHawk.BizInvoke;
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -161,12 +158,14 @@ namespace BizHawk.Client.Common
 		{
 			long targetSize = settings.BufferSize * 1024 * 1024;
 			long size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
-			return Size == size &&
-				_useCompression == settings.UseCompression &&
-				_fixedRewindInterval == settings.UseFixedRewindInterval &&
-				(_fixedRewindInterval ? _targetRewindInterval == settings.TargetRewindInterval : _targetFrameLength == settings.TargetFrameLength) &&
-				_allowOutOfOrderStates == settings.AllowOutOfOrderStates &&
-				_backingStoreType == settings.BackingStore;
+			return Size == size
+				&& _useCompression == settings.UseCompression
+				&& _fixedRewindInterval == settings.UseFixedRewindInterval
+				&& (_fixedRewindInterval
+					? _targetRewindInterval == settings.TargetRewindInterval
+					: _targetFrameLength == settings.TargetFrameLength)
+				&& _allowOutOfOrderStates == settings.AllowOutOfOrderStates
+				&& _backingStoreType == settings.BackingStore;
 		}
 
 		private bool ShouldCaptureForFrameDiff(int frameDiff)
@@ -324,16 +323,15 @@ namespace BizHawk.Client.Common
 			{
 				var startByte = _states[_firstStateIndex].Start;
 				var endByte = (_states[HeadStateIndex].Start + _states[HeadStateIndex].Size) & _sizeMask;
-				var destStream = SpanStream.GetOrBuild(writer.BaseStream);
 				if (startByte > endByte)
 				{
 					_backingStore.Position = startByte;
-					WaterboxUtils.CopySome(_backingStore, writer.BaseStream, Size - startByte);
+					MemoryBlockUtils.CopySome(_backingStore, writer.BaseStream, Size - startByte);
 					startByte = 0;
 				}
 				{
 					_backingStore.Position = startByte;
-					WaterboxUtils.CopySome(_backingStore, writer.BaseStream, endByte - startByte);
+					MemoryBlockUtils.CopySome(_backingStore, writer.BaseStream, endByte - startByte);
 				}
 			}
 		}
@@ -351,7 +349,7 @@ namespace BizHawk.Client.Common
 				nextByte += _states[i].Size;
 			}
 			_backingStore.Position = 0;
-			WaterboxUtils.CopySome(reader.BaseStream, _backingStore, nextByte);
+			MemoryBlockUtils.CopySome(reader.BaseStream, _backingStore, nextByte);
 		}
 
 		public static ZwinderBuffer Create(BinaryReader reader, RewindConfig rewindConfig, bool hackyV0 = false)

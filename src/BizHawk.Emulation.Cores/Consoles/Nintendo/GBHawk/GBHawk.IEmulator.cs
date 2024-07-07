@@ -1,7 +1,5 @@
 ﻿using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
-using System;
-using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -259,11 +257,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				input_register |= 0xF;
 			}
 
-			// check for interrupts			
-			if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
-				((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
-				((contr_prev & 2) > 0) && ((input_register & 2) == 0) ||
-				((contr_prev & 1) > 0) && ((input_register & 1) == 0))
+			// check for interrupts
+			if (((contr_prev & 0b1000) is not 0 && (input_register & 0b1000) is 0)
+				|| ((contr_prev & 0b100) is not 0 && (input_register & 0b100) is 0)
+				|| ((contr_prev & 0b10) is not 0 && (input_register & 0b10) is 0)
+				|| ((contr_prev & 0b1) is not 0 && (input_register & 0b1) is 0))
 			{
 				if (REG_FFFF.Bit(4)) { cpu.FlagI = true; }
 				REG_FF0F |= 0x10;
@@ -382,7 +380,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			if (is_GBC)
 			{
-				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)(frame_buffer[j] | (0x30303 << (clear_counter * 2))); }
+				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = frame_buffer[j] | (0x30303 << (clear_counter * 2)); }
 
 				clear_counter++;
 				if (clear_counter == 4)

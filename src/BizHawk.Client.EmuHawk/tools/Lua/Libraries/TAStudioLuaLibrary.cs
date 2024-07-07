@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -139,6 +138,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
+				if (_luaLibsImpl.IsInInputOrMemoryCallback)
+				{
+					throw new InvalidOperationException("tastudio.setplayback() is not allowed during input/memory callbacks");
+				}
+
 				_luaLibsImpl.IsUpdateSupressed = true;
 
 				int f;
@@ -298,6 +302,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
+				if (_luaLibsImpl.IsInInputOrMemoryCallback)
+				{
+					throw new InvalidOperationException("tastudio.applyinputchanges() is not allowed during input/memory callbacks");
+				}
+
 				_luaLibsImpl.IsUpdateSupressed = true;
 
 				if (_changeList.Count > 0)
@@ -353,10 +362,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("addcolumn", "")]
 		public void AddColumn(string name, string text, int width)
 		{
-			if (Engaged())
-			{
-				Tastudio.AddColumn(name, text, width, ColumnType.Text);
-			}
+			if (Engaged()) Tastudio.AddColumn(name: name, widthUnscaled: width, text: text);
 		}
 
 		[LuaMethodExample("tastudio.setbranchtext( \"Some text\", 1 );")]
@@ -424,6 +430,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
+				if (_luaLibsImpl.IsInInputOrMemoryCallback)
+				{
+					throw new InvalidOperationException("tastudio.loadbranch() is not allowed during input/memory callbacks");
+				}
+
 				_luaLibsImpl.IsUpdateSupressed = true;
 
 				Tastudio.LoadBranchByIndex(index);
@@ -499,11 +510,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.QueryItemTextCallback = (index, name) =>
-				{
-					var result = luaf.Call(index, name);
-					return result?[0]?.ToString();
-				};
+				Tastudio.QueryItemTextCallback = (index, name) => luaf.Call(index, name)?.FirstOrDefault()?.ToString();
 			}
 		}
 
@@ -535,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("tastudio.ongreenzoneinvalidated( function( currentindex )\r\n\tconsole.log( \"Called whenever the greenzone is invalidated.\" );\r\nend );")]
-		[LuaMethod("ongreenzoneinvalidated", "Called whenever the greenzone is invalidated. Your callback can have 1 parameter, which will be the index of the first row that was invalidated.")]
+		[LuaMethod("ongreenzoneinvalidated", "Called whenever the greenzone is invalidated. Your callback can have 1 parameter, which will be the index of the last row before the invalidated ones.")]
 		public void OnGreenzoneInvalidated(LuaFunction luaf)
 		{
 			if (Engaged())

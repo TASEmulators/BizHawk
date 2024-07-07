@@ -150,7 +150,7 @@ auto RSP::CTC2(cr32& rt, u8 rd) -> void {
 
   if constexpr(Accuracy::RSP::SIMD) {
     #if ARCHITECTURE_SUPPORTS_SSE4_1
-    static const v128 mask = _mm_set_epi16(0x0101, 0x0202, 0x0404, 0x0808, 0x1010, 0x2020, 0x4040, 0x8080);
+    static const v128 mask = _mm_set_epi16(0x0101, 0x0202, 0x0404, 0x0808, 0x1010, 0x2020, 0x4040, 0x8080u);
     lo->v128 = _mm_cmpeq_epi8(_mm_and_si128(_mm_set1_epi8(~rt.u32 >> 0), mask), zero);
     hi->v128 = _mm_cmpeq_epi8(_mm_and_si128(_mm_set1_epi8(~rt.u32 >> 8), mask), zero);
     #endif

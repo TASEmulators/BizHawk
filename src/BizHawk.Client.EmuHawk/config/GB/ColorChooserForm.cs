@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -192,7 +191,9 @@ namespace BizHawk.Client.EmuHawk
 
 				try
 				{
-					lines.Add(line.Substring(0, i), int.Parse(line.Substring(i + 1)));
+					lines.Add(
+						line.Substring(startIndex: 0, length: i),
+						int.Parse(line.Substring(startIndex: i + 1)));
 				}
 				catch (FormatException)
 				{

@@ -1,12 +1,12 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Net.Sockets;
 
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 			bool? startFullscreen = null;
 			string? luaScript = null;
 			bool? luaConsole = null;
-			int? socketPort = null;
+			ushort? socketPort = null;
 			string? socketIP = null;
 			string? mmfFilename = null;
 			string? urlGet = null;
@@ -59,112 +59,107 @@ namespace BizHawk.Client.Common
 					continue;
 				}
 
-				var argDowncased = arg.ToLower();
-				if (argDowncased.StartsWith("--load-slot="))
+				var argDowncased = arg.ToLowerInvariant();
+				if (argDowncased.StartsWithOrdinal("--load-slot="))
 				{
 					cmdLoadSlot = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
 				}
-				else if (argDowncased.StartsWith("--load-state="))
+				else if (argDowncased.StartsWithOrdinal("--load-state="))
 				{
 					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
 				}
-				else if (argDowncased.StartsWith("--config="))
+				else if (argDowncased.StartsWithOrdinal("--config="))
 				{
 					cmdConfigFile = arg.Substring(arg.IndexOf('=') + 1);
 				}
-				else if (argDowncased.StartsWith("--movie="))
+				else if (argDowncased.StartsWithOrdinal("--movie="))
 				{
 					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
 				}
-				else if (argDowncased.StartsWith("--dump-type="))
+				else if (argDowncased.StartsWithOrdinal("--dump-type="))
 				{
 					cmdDumpType = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
 				}
-				else if (argDowncased.StartsWith("--dump-frames="))
+				else if (argDowncased.StartsWithOrdinal("--dump-frames="))
 				{
 					string list = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
-					string[] items = list.Split(',');
-					currAviWriterFrameList = new HashSet<int>();
-					foreach (string item in items)
-					{
-						currAviWriterFrameList.Add(int.Parse(item));
-					}
-
+					currAviWriterFrameList = new();
+					currAviWriterFrameList.AddRange(list.Split(',').Select(int.Parse));
 					// automatically set dump length to maximum frame
-					autoDumpLength = currAviWriterFrameList.Order().Last();
+					autoDumpLength = currAviWriterFrameList.Max();
 				}
-				else if (argDowncased.StartsWith("--version"))
+				else if (argDowncased.StartsWithOrdinal("--version"))
 				{
 					printVersion = true;
 				}
-				else if (argDowncased.StartsWith("--dump-name="))
+				else if (argDowncased.StartsWithOrdinal("--dump-name="))
 				{
 					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
 				}
-				else if (argDowncased.StartsWith("--dump-length="))
+				else if (argDowncased.StartsWithOrdinal("--dump-length="))
 				{
 					var len = int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out var i1) ? i1 : default;
 					autoDumpLength = len;
 				}
-				else if (argDowncased.StartsWith("--dump-close"))
+				else if (argDowncased.StartsWithOrdinal("--dump-close"))
 				{
 					autoCloseOnDump = true;
 				}
-				else if (argDowncased.StartsWith("--chromeless"))
+				else if (argDowncased.StartsWithOrdinal("--chromeless"))
 				{
 					// chrome is never shown, even in windowed mode
 					chromeless = true;
 				}
-				else if (argDowncased.StartsWith("--fullscreen"))
+				else if (argDowncased.StartsWithOrdinal("--fullscreen"))
 				{
 					startFullscreen = true;
 				}
-				else if (argDowncased.StartsWith("--lua="))
+				else if (argDowncased.StartsWithOrdinal("--lua="))
 				{
 					luaScript = arg.Substring(arg.IndexOf('=') + 1);
 					luaConsole = true;
 				}
-				else if (argDowncased.StartsWith("--luaconsole"))
+				else if (argDowncased.StartsWithOrdinal("--luaconsole"))
 				{
 					luaConsole = true;
 				}
-				else if (argDowncased.StartsWith("--socket_port="))
+				else if (argDowncased.StartsWithOrdinal("--socket_port="))
 				{
-					var port = int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out var i1) ? i1 : default;
+					var port = ushort.TryParse(arg.Substring(14), out var i1) ? i1 : (ushort) 0;
 					if (port > 0) socketPort = port;
 				}
-				else if (argDowncased.StartsWith("--socket_ip="))
+				else if (argDowncased.StartsWithOrdinal("--socket_ip="))
 				{
 					socketIP = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
 				}
-				else if (argDowncased.StartsWith("--socket_udp"))
+				else if (argDowncased.StartsWithOrdinal("--socket_udp"))
 				{
 					socketProtocol = ProtocolType.Udp;
 				}
-				else if (argDowncased.StartsWith("--mmf="))
+				else if (argDowncased.StartsWithOrdinal("--mmf="))
 				{
 					mmfFilename = arg.Substring(arg.IndexOf('=') + 1);
 				}
-				else if (argDowncased.StartsWith("--url_get="))
+				else if (argDowncased.StartsWithOrdinal("--url_get="))
 				{
 					urlGet = arg.Substring(arg.IndexOf('=') + 1);
 				}
-				else if (argDowncased.StartsWith("--url_post="))
+				else if (argDowncased.StartsWithOrdinal("--url_post="))
 				{
 					urlPost = arg.Substring(arg.IndexOf('=') + 1);
 				}
-				else if (argDowncased.StartsWith("--audiosync="))
+				else if (argDowncased.StartsWithOrdinal("--audiosync="))
 				{
 					audiosync = argDowncased.Substring(argDowncased.IndexOf('=') + 1) == "true";
 				}
-				else if (argDowncased.StartsWith("--open-ext-tool-dll="))
+				else if (argDowncased.StartsWithOrdinal("--open-ext-tool-dll="))
 				{
 					// the first ext. tool from ExternalToolManager.ToolStripMenu which satisfies both of these will be opened:
 					// - available (no load errors, correct system/rom, etc.)
 					// - dll path matches given string; or dll filename matches given string with or without `.dll`
 					openExtToolDll = arg.Substring(20);
 				}
-				else if (argDowncased.StartsWith("--userdata="))
+				else if (argDowncased.StartsWithOrdinal("--userdata="))
 				{
 					userdataUnparsedPairs = new();
 					foreach (var s in arg.Substring(11).Split(';'))
@@ -183,7 +178,7 @@ namespace BizHawk.Client.Common
 			var httpAddresses = urlGet == null && urlPost == null
 				? ((string?, string?)?) null // don't bother
 				: (urlGet, urlPost);
-			(string, int)? socketAddress;
+			(string, ushort)? socketAddress;
 			if (socketIP == null && socketPort == null)
 			{
 				socketAddress = null; // don't bother

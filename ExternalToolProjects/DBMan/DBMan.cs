@@ -1,13 +1,8 @@
 ﻿#nullable disable
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.DBManTool
@@ -157,7 +152,7 @@ namespace BizHawk.DBManTool
 		void saveButton_Click(object sender, EventArgs e)
 		{
 			// Check if any changes were made
-			if (SelectedRom.New == false && RomChangesMade() == false)
+			if (!SelectedRom.New && !RomChangesMade())
 				return;
 			
 			int saveMode = 0;
@@ -197,7 +192,7 @@ namespace BizHawk.DBManTool
 			if (romListView.SelectedItems.Count > 0)
 			{
 				// Update the side listing
-				var romListItem = (ListViewItem)romListView.SelectedItems[0];
+				var romListItem = romListView.SelectedItems[0];
 				romListItem.SubItems[0] = new ListViewItem.ListViewSubItem(romListItem, SelectedRom.DisplayName);
 				romListItem.SubItems[1] = new ListViewItem.ListViewSubItem(romListItem, SelectedRom.Region);
 				romListItem.SubItems[2] = new ListViewItem.ListViewSubItem(romListItem, SelectedRom.VersionTags);
@@ -303,14 +298,14 @@ namespace BizHawk.DBManTool
 				string regionStr = "";
 				if (rom.Region != null)
 				{
-					if (rom.Region.IndexOf("Japan") >= 0) regionStr += "J";
-					if (rom.Region.IndexOf("USA") >= 0) regionStr += "U";
-					if (rom.Region.IndexOf("Europe") >= 0) regionStr += "E";
-					if (rom.Region.IndexOf("Brazil") >= 0) regionStr += "B";
-					if (rom.Region.IndexOf("Taiwan") >= 0) regionStr += "T";
-					if (rom.Region.IndexOf("Korea") >= 0) regionStr += "K";
-					if (rom.Region.IndexOf("Australia") >= 0) regionStr += "Aus";
-					if (rom.Region.IndexOf("World") >= 0) regionStr += "W";
+					if (rom.Region.Contains("Japan")) regionStr += "J";
+					if (rom.Region.Contains("USA")) regionStr += "U";
+					if (rom.Region.Contains("Europe")) regionStr += "E";
+					if (rom.Region.Contains("Brazil")) regionStr += "B";
+					if (rom.Region.Contains("Taiwan")) regionStr += "T";
+					if (rom.Region.Contains("Korea")) regionStr += "K";
+					if (rom.Region.Contains("Australia")) regionStr += "Aus";
+					if (rom.Region.Contains("World")) regionStr += "W";
 				}
 
 				string romName = rom.NameWithTheFlipped;

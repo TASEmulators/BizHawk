@@ -1,7 +1,8 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -43,26 +44,21 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				double dblSeconds;
+				double numSeconds;
 
 				if (Header.TryGetValue(HeaderKeys.CycleCount, out var numCyclesStr) && Header.TryGetValue(HeaderKeys.ClockRate, out var clockRateStr))
 				{
 					var numCycles = Convert.ToUInt64(numCyclesStr);
 					var clockRate = Convert.ToDouble(clockRateStr, CultureInfo.InvariantCulture);
-					dblSeconds = numCycles / clockRate;
+					numSeconds = numCycles / clockRate;
 				}
 				else
 				{
 					var numFrames = (ulong)FrameCount;
-					dblSeconds = numFrames / FrameRate;
+					numSeconds = numFrames / FrameRate;
 				}
 
-				var seconds = (int)(dblSeconds % 60);
-				var days = seconds / 86400;
-				var hours = seconds / 3600;
-				var minutes = (seconds / 60) % 60;
-				var milliseconds = (int)((dblSeconds - seconds) * 1000);
-				return new TimeSpan(days, hours, minutes, seconds, milliseconds);
+				return TimeSpan.FromSeconds(numSeconds);
 			}
 		}
 
@@ -149,8 +145,7 @@ namespace BizHawk.Client.Common
 
 		public bool Load()
 		{
-			var file = new FileInfo(Filename);
-			if (!file.Exists)
+			if (!File.Exists(Filename))
 			{
 				return false;
 			}
@@ -226,19 +221,6 @@ namespace BizHawk.Client.Common
 
 				Subtitles.Sort();
 			});
-
-			bl.GetLump(BinaryStateLump.Subtitles, abort: false, tr =>
-			{
-				while (tr.ReadLine() is string line)
-				{
-					if (!string.IsNullOrWhiteSpace(line))
-					{
-						Subtitles.AddFromString(line);
-					}
-				}
-
-				Subtitles.Sort();
-			});
 		}
 
 		private void LoadFramecount(ZipStateLoader bl)
@@ -247,13 +229,7 @@ namespace BizHawk.Client.Common
 			{
 				// just skim through the input log and count input lines
 				// FIXME: this is potentially expensive and shouldn't be necessary for something as simple as frame count
-				while (tr.ReadLine() is string line)
-				{
-					if (line.Length > 0 && line[0] == '|')
-					{
-						FrameCount++;
-					}
-				}
+				while (tr.ReadLine() is string line) if (line.StartsWith('|')) FrameCount++;
 			});
 		}
 	}

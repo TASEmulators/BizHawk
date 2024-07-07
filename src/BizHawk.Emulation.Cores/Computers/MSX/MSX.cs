@@ -1,4 +1,3 @@
-﻿using System;
 using System.Text;
 using System.Linq;
 
@@ -29,8 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			// look up game in db before transforming ROM
 			var hash_md5 = MD5Checksum.ComputePrefixedHex(rom.RomData);
 			var gi = Database.CheckDatabase(hash_md5);
-			var dict = (gi != null) ? gi.GetOptions() : null;
-			string s_mapper;
+			var dict = gi?.GetOptions();
 
 			Array.Copy(rom.RomData, RomData, RomData.Length);
 
@@ -56,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 					mapper_1 = 3;
 					Console.WriteLine("Using Ascii 8 KB Mapper");
 				}
-				else if (!dict.TryGetValue("mapper", out s_mapper))
+				else if (!dict.TryGetValue("mapper", out string s_mapper))
 				{
 					mapper_1 = 3;
 					Console.WriteLine("Using Ascii 8 KB Mapper");
@@ -171,15 +169,15 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		private IntPtr MSX_Pntr { get; set; } = IntPtr.Zero;
 		private byte[] MSX_core = new byte[0x28000];
-		public static byte[] Bios = null;
-		public static byte[] Basic;
+		private static byte[] Bios = null;
+		private static byte[] Basic;
 
 		// Constants
 		private const int BankSize = 16384;
 
 		// ROM
-		public static byte[] RomData;
-		public static byte[] RomData2;
+		private static byte[] RomData;
+		private static byte[] RomData2;
 
 		// Machine resources
 		private IController _controller = NullController.Instance;

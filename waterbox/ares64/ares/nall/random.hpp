@@ -57,7 +57,7 @@ private:
   static const u64 crc64 = 0xc96c'5795'd787'0f42;
   u64 lfsr = crc64;
 
-  friend class RNG<LFSR>;
+  friend struct RNG<LFSR>;
 };
 
 struct PCG : RNG<PCG> {
@@ -91,7 +91,7 @@ private:
   u64 state = 0;
   u64 increment = 0;
 
-  friend class RNG<PCG>;
+  friend struct RNG<PCG>;
 };
 
 }
@@ -121,7 +121,7 @@ private:
   Cipher::XChaCha20 context{0, 0};
   u32 counter = 0;
 
-  friend class RNG<XChaCha20>;
+  friend struct RNG<XChaCha20>;
 };
 
 }

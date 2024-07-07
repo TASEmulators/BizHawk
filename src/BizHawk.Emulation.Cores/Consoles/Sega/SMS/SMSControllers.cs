@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 
 using BizHawk.Common;
@@ -223,7 +222,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (c.IsPressed("P1 Right"))
 				paddle1Pos = 255;
 			else
-				paddle1Pos = (int)c.AxisValue("P1 Paddle");
+				paddle1Pos = c.AxisValue("P1 Paddle");
 
 			if (pin)
 			{
@@ -256,7 +255,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (c.IsPressed("P2 Right"))
 				paddle2Pos = 255;
 			else
-				paddle2Pos = (int)c.AxisValue("P2 Paddle");
+				paddle2Pos = c.AxisValue("P2 Paddle");
 
 			if (pin)
 			{
@@ -289,7 +288,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (c.IsPressed("P2 Right"))
 				paddle2Pos = 255;
 			else
-				paddle2Pos = (int)c.AxisValue("P2 Paddle");
+				paddle2Pos = c.AxisValue("P2 Paddle");
 
 			if (pin)
 			{
@@ -361,7 +360,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (c.IsPressed("P1 Right"))
 				p1X = SportsPadMax;
 			else
-				p1X = (int)c.AxisValue("P1 X");
+				p1X = c.AxisValue("P1 X");
 
 			int p1Y;
 			if (c.IsPressed("P1 Up"))
@@ -369,7 +368,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (c.IsPressed("P1 Down"))
 				p1Y = SportsPadMax;
 			else
-				p1Y = (int)c.AxisValue("P1 Y");
+				p1Y = c.AxisValue("P1 Y");
 
 			if (is_JPN)
 			{
@@ -455,7 +454,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (c.IsPressed("P2 Right"))
 				p2X = SportsPadMax;
 			else
-				p2X = (int)c.AxisValue("P2 X");
+				p2X = c.AxisValue("P2 X");
 
 			int p2Y;
 			if (c.IsPressed("P2 Up"))
@@ -463,7 +462,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (c.IsPressed("P2 Down"))
 				p2Y = SportsPadMax;
 			else
-				p2Y = (int)c.AxisValue("P2 Y");
+				p2Y = c.AxisValue("P2 Y");
 
 			if (is_JPN)
 			{
@@ -531,7 +530,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (c.IsPressed("P2 Right"))
 				p2X = SportsPadMax;
 			else
-				p2X = (int)c.AxisValue("P2 X");
+				p2X = c.AxisValue("P2 X");
 
 			int p2Y;
 			if (c.IsPressed("P2 Down"))
@@ -539,7 +538,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (c.IsPressed("P2 Up"))
 				p2Y = SportsPadMax;
 			else
-				p2Y = (int)c.AxisValue("P2 Y");
+				p2Y = c.AxisValue("P2 Y");
 
 			if (is_JPN)
 			{

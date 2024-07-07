@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using BizHawk.Common.StringExtensions;
+
 namespace BizHawk.Client.Common
 {
 	internal class BkmHeader : Dictionary<string, string>
@@ -54,15 +56,15 @@ namespace BizHawk.Client.Common
 				{
 					Add(splitLine[0], splitLine[1]);
 				}
-				else if (line.StartsWith("subtitle") || line.StartsWith("sub"))
+				else if (line.StartsWithOrdinal("subtitle") || line.StartsWithOrdinal("sub"))
 				{
 					Subtitles.AddFromString(line);
 				}
-				else if (line.StartsWith("comment"))
+				else if (line.StartsWithOrdinal("comment"))
 				{
 					Comments.Add(line.Substring(8, line.Length - 8));
 				}
-				else if (line.StartsWith("|"))
+				else if (line.StartsWith('|'))
 				{
 					return false;
 				}

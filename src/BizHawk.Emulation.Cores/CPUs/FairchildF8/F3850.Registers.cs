@@ -1,5 +1,5 @@
-﻿using System;
 using System.Collections.Generic;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.FairchildF8
@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		public bool IRQRequest
 		{
 			get => Regs[IRQR] > 0;
-			set => Regs[IRQR] = value == true ? (byte)1 : (byte)0;
+			set => Regs[IRQR] = value ? (byte)1 : (byte)0;
 		}
 
 		/// <summary>
@@ -274,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		public void SetCpuRegister(string register, int value)
 		{
-			if (register.StartsWith("SPR"))
+			if (register.StartsWithOrdinal("SPR"))
 			{
 				var reg = Convert.ToInt32(register.Replace("SPR", ""));
 

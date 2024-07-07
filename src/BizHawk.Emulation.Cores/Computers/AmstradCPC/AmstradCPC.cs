@@ -1,11 +1,11 @@
-﻿using BizHawk.Common;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components.Z80A;
-using BizHawk.Emulation.Cores.Properties;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Properties;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -30,21 +30,21 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			var settings = lp.Settings ?? new AmstradCPCSettings();
 			var syncSettings = lp.SyncSettings ?? new AmstradCPCSyncSettings();
 
-			PutSyncSettings((AmstradCPCSyncSettings)syncSettings);
-			PutSettings((AmstradCPCSettings)settings);
+			PutSyncSettings(syncSettings);
+			PutSettings(settings);
 
-			DeterministicEmulation = ((AmstradCPCSyncSettings)syncSettings).DeterministicEmulation;
+			DeterministicEmulation = syncSettings.DeterministicEmulation;
 
 			switch (SyncSettings.MachineType)
 			{
 				case MachineType.CPC464:
 					ControllerDefinition = AmstradCPCControllerDefinition;
-					Init(MachineType.CPC464, _files, ((AmstradCPCSyncSettings)syncSettings).AutoStartStopTape,
-						((AmstradCPCSyncSettings)syncSettings).BorderType);
+					Init(MachineType.CPC464, _files, syncSettings.AutoStartStopTape,
+						syncSettings.BorderType);
 					break;
 				case MachineType.CPC6128:
 					ControllerDefinition = AmstradCPCControllerDefinition;
-					Init(MachineType.CPC6128, _files, ((AmstradCPCSyncSettings)syncSettings).AutoStartStopTape, ((AmstradCPCSyncSettings)syncSettings).BorderType);
+					Init(MachineType.CPC6128, _files, syncSettings.AutoStartStopTape, syncSettings.BorderType);
 					break;
 				default:
 					throw new InvalidOperationException("Machine not yet emulated");
@@ -70,20 +70,20 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 
 			// initialize sound mixer and attach the various ISoundProvider devices
-			SoundMixer = new SoundProviderMixer((int)(32767 / 10), "Tape Audio", (ISoundProvider)_machine.TapeBuzzer);
+			SoundMixer = new SoundProviderMixer(32767 / 10, "Tape Audio", (ISoundProvider)_machine.TapeBuzzer);
 			if (_machine.AYDevice != null)
 				SoundMixer.AddSource(_machine.AYDevice, "AY-3-3912");
 
 			// set audio device settings
 			if (_machine.AYDevice != null && _machine.AYDevice.GetType() == typeof(AY38912))
 			{
-				((AY38912)_machine.AYDevice).PanningConfiguration = ((AmstradCPCSettings)settings).AYPanConfig;
-				_machine.AYDevice.Volume = ((AmstradCPCSettings)settings).AYVolume;
+				((AY38912)_machine.AYDevice).PanningConfiguration = settings.AYPanConfig;
+				_machine.AYDevice.Volume = settings.AYVolume;
 			}
 
 			if (_machine.TapeBuzzer != null)
 			{
-				((Beeper)_machine.TapeBuzzer).Volume = ((AmstradCPCSettings)settings).TapeVolume;
+				((Beeper)_machine.TapeBuzzer).Volume = settings.TapeVolume;
 			}
 
 			ser.Register<ISoundProvider>(SoundMixer);

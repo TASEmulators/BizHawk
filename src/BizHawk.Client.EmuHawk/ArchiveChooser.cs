@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 				lvi.Text = item.Name;
 				long size = item.Size;
 				var extension = Path.GetExtension(item.Name);
-				if (extension != null && size % 1024 == 16 && extension.ToUpper() == ".NES")
+				if (extension != null && size % 1024 == 16 && extension.ToUpperInvariant() == ".NES")
 					size -= 16;
 				lvi.SubItems[1].Text = Util.FormatFileSize(size);
 				_archiveItems.Add(lvi);
@@ -136,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 			catch (ArgumentException ex)
 			{
 				string errMsg = ex.Message;
-				errMsg = errMsg.Substring(errMsg.IndexOf('-') + 2);
+				errMsg = errMsg.Substring(startIndex: errMsg.IndexOf('-') + 2);
 
 				// Balloon is bugged on first invocation
 				_errorBalloon.Show($"Error parsing RegEx: {errMsg}", tb);
@@ -206,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 			public string[] Keys { get; set; }
 			public bool Matches(ListViewItem value)
 			{
-				string searchedStr = value.Text.ToLower();
+				string searchedStr = value.Text.ToLowerInvariant();
 				foreach (string key in Keys)
 				{
 					if (!searchedStr.Contains(key))
@@ -234,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return new SimpleMatcher
 				{
-					Keys = searchKey.ToLower().Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries) // splits on all whitespace chars
+					Keys = searchKey.ToLowerInvariant().Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries) // splits on all whitespace chars
 				};
 			}
 			else

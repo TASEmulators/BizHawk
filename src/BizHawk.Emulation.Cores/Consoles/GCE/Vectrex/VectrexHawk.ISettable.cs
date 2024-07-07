@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		private object _settings = new object();
 		public VectrexSyncSettings _syncSettings = new VectrexSyncSettings();
 
+		[CoreSettings]
 		public class VectrexSyncSettings
 		{
 			[JsonIgnore]

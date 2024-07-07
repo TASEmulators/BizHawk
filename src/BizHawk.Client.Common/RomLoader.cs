@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -347,7 +346,7 @@ namespace BizHawk.Client.Common
 			var discs = m3u.Entries
 				.Select(e => e.Path)
 				.Where(p => Disc.IsValidExtension(Path.GetExtension(p)))
-				.Select(path => (p: path, d: DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError))))
+				.Select(p => (p, d: DiscExtensions.CreateAnyType(p, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError))))
 				.Where(a => a.d != null)
 				.Select(a => (IDiscAsset)new DiscAsset
 				{
@@ -356,7 +355,7 @@ namespace BizHawk.Client.Common
 					DiscName = Path.GetFileNameWithoutExtension(a.p)
 				})
 				.ToList();
-			if (m3u.Entries.Count == 0)
+			if (discs.Count == 0)
 				throw new InvalidOperationException("Couldn't load any contents of the M3U as discs");
 
 			game = MakeGameFromDisc(discs[0].DiscData, Path.GetExtension(m3u.Entries[0].Path), discs[0].DiscName);
@@ -379,7 +378,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				_config.PreferredCores.TryGetValue(cip.Game.System, out var preferredCore);
+				_ = _config.PreferredCores.TryGetValue(cip.Game.System, out var preferredCore);
 				var dbForcedCoreName = cip.Game.ForcedCore;
 				cores = CoreInventory.Instance.GetCores(cip.Game.System)
 					.OrderBy(c =>
@@ -389,7 +388,7 @@ namespace BizHawk.Client.Common
 							return (int)CorePriority.UserPreference;
 						}
 
-						if (string.Equals(c.Name, dbForcedCoreName, StringComparison.InvariantCultureIgnoreCase))
+						if (string.Equals(c.Name, dbForcedCoreName, StringComparison.OrdinalIgnoreCase))
 						{
 							return (int)CorePriority.GameDbPreference;
 						}
@@ -557,6 +556,20 @@ namespace BizHawk.Client.Common
 			game = rom.GameInfo;
 		}
 
+		// HACK due to MAME wanting CHDs as hard drives / handling it on its own (bad design, I know!)
+		// only matters for XML, as CHDs are never the "main" rom for MAME
+		// (in general, this is kind of bad as CHD hard drives might be useful for other future cores?)
+		private static bool IsDiscForXML(string system, string path)
+		{
+			var ext = Path.GetExtension(path);
+			if (system == VSystemID.Raw.Arcade && ext.ToLowerInvariant() == ".chd")
+			{
+				return false;
+			}
+
+			return Disc.IsValidExtension(ext);
+		}
+
 		private bool LoadXML(string path, CoreComm nextComm, HawkFile file, string forcedCoreName, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)
 		{
 			nextEmulator = null;
@@ -573,19 +586,19 @@ namespace BizHawk.Client.Common
 					Comm = nextComm,
 					Game = game,
 					Roms = xmlGame.Assets
-						.Where(kvp => !Disc.IsValidExtension(Path.GetExtension(kvp.Key)))
+						.Where(kvp => !IsDiscForXML(system, kvp.Key))
 						.Select(kvp => (IRomAsset)new RomAsset
 						{
 							RomData = kvp.Value,
 							FileData = kvp.Value, // TODO: Hope no one needed anything special here
 							Extension = Path.GetExtension(kvp.Key),
-							RomPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path.SubstringBefore('|')), kvp.Key)),
+							RomPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path.SubstringBefore('|'))!, kvp.Key!)),
 							Game = Database.GetGameInfo(kvp.Value, Path.GetFileName(kvp.Key))
 						})
 						.ToList(),
 					Discs = xmlGame.AssetFullPaths
-						.Where(p => Disc.IsValidExtension(Path.GetExtension(p)))
-						.Select(path => (p: path, d: DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError))))
+						.Where(p => IsDiscForXML(system, p))
+						.Select(discPath => (p: discPath, d: DiscExtensions.CreateAnyType(discPath, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError))))
 						.Where(a => a.d != null)
 						.Select(a => (IDiscAsset)new DiscAsset
 						{
@@ -861,6 +874,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> A78 = new[] { "a78" };
 
+			public static readonly IReadOnlyCollection<string> Amiga = new[] { "adf", "adz", "dms", "fdi", "hdf", "ipf", "lha" };
+
 			public static readonly IReadOnlyCollection<string> AppleII = new[] { "dsk", "do", "po" };
 
 			public static readonly IReadOnlyCollection<string> Arcade = new[] { "zip", "7z", "chd" };
@@ -882,6 +897,8 @@ namespace BizHawk.Client.Common
 			public static readonly IReadOnlyCollection<string> Lynx = new[] { "lnx" };
 
 			public static readonly IReadOnlyCollection<string> MSX = new[] { "cas", "dsk", "mx1", "rom" };
+
+			public static readonly IReadOnlyCollection<string> N3DS = new[] { "3ds", "3dsx", "axf", "cci", "cxi", "app", "elf", "cia" };
 
 			public static readonly IReadOnlyCollection<string> N64 = new[] { "z64", "v64", "n64" };
 
@@ -918,6 +935,7 @@ namespace BizHawk.Client.Common
 			public static readonly IReadOnlyCollection<string> AutoloadFromArchive = Array.Empty<string>()
 				.Concat(A26)
 				.Concat(A78)
+				.Concat(Amiga)
 				.Concat(AppleII)
 				.Concat(C64)
 				.Concat(Coleco)
@@ -951,19 +969,20 @@ namespace BizHawk.Client.Common
 		/// <remarks>TODO add and handle <see cref="FilesystemFilter.LuaScripts"/> (you can drag-and-drop scripts and there are already non-rom things in this list, so why not?)</remarks>
 		public static readonly FilesystemFilterSet RomFilter = new(
 			new FilesystemFilter("Music Files", Array.Empty<string>(), devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf", "gbs" }),
-			new FilesystemFilter("Disc Images", new[] { "cue", "ccd", "cdi", "mds", "m3u" }),
+			new FilesystemFilter("Disc Images", FilesystemFilter.DiscExtensions),
 			new FilesystemFilter("NES", RomFileExtensions.NES.Concat(new[] { "nsf" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Super NES", RomFileExtensions.SNES, addArchiveExts: true),
-			new FilesystemFilter("PlayStation", new[] { "bin", "cue", "ccd", "mds", "m3u" }),
+			new FilesystemFilter("PlayStation", FilesystemFilter.DiscExtensions),
 			new FilesystemFilter("PSX Executables (experimental)", Array.Empty<string>(), devBuildExtraExts: new[] { "exe" }),
 			new FilesystemFilter("PSF Playstation Sound File", new[] { "psf", "minipsf" }),
 			new FilesystemFilter("Nintendo 64", RomFileExtensions.N64),
 			new FilesystemFilter("Nintendo 64 Disk Drive", RomFileExtensions.N64DD),
 			new FilesystemFilter("Gameboy", RomFileExtensions.GB.Concat(new[] { "gbs" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Gameboy Advance", RomFileExtensions.GBA, addArchiveExts: true),
+			new FilesystemFilter("Nintendo 3DS", RomFileExtensions.N3DS),
 			new FilesystemFilter("Nintendo DS", RomFileExtensions.NDS),
 			new FilesystemFilter("Master System", RomFileExtensions.SMS, addArchiveExts: true),
-			new FilesystemFilter("PC Engine", RomFileExtensions.PCE.Concat(new[] { "cue", "ccd", "mds" }).ToList(), addArchiveExts: true),
+			new FilesystemFilter("PC Engine", RomFileExtensions.PCE.Concat(FilesystemFilter.DiscExtensions).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Atari 2600", RomFileExtensions.A26, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
 			new FilesystemFilter("Atari 7800", RomFileExtensions.A78, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
 			new FilesystemFilter("Atari Jaguar", RomFileExtensions.Jaguar, addArchiveExts: true),
@@ -973,7 +992,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("TI-83", RomFileExtensions.TI83, addArchiveExts: true),
 			new FilesystemFilter("TIC-80", RomFileExtensions.TIC80, addArchiveExts: true),
 			FilesystemFilter.Archives,
-			new FilesystemFilter("Genesis", RomFileExtensions.GEN.Concat(new[] { "bin", "cue", "ccd" }).ToList(), addArchiveExts: true),
+			new FilesystemFilter("Genesis", RomFileExtensions.GEN.Concat(FilesystemFilter.DiscExtensions).ToList(), addArchiveExts: true),
 			new FilesystemFilter("SID Commodore 64 Music File", Array.Empty<string>(), devBuildExtraExts: new[] { "sid" }, devBuildAddArchiveExts: true),
 			new FilesystemFilter("WonderSwan", RomFileExtensions.WSWAN, addArchiveExts: true),
 			new FilesystemFilter("Apple II", RomFileExtensions.AppleII, addArchiveExts: true),
@@ -987,6 +1006,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Vectrex", RomFileExtensions.VEC),
 			new FilesystemFilter("MSX", RomFileExtensions.MSX),
 			new FilesystemFilter("Arcade", RomFileExtensions.Arcade),
+			new FilesystemFilter("Amiga", RomFileExtensions.Amiga),
 			FilesystemFilter.EmuHawkSaveStates)
 		{
 			CombinedEntryDesc = "Everything",

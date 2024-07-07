@@ -30,11 +30,6 @@ auto PIF::descramble(n4 *buf, int size) -> void {
   for(int i=size-1; i>0; i--) buf[i] -= buf[i-1] + 1;
 }
 
-auto PIF::step(u32 clocks) -> void {
-  Thread::clock += clocks;
-  if(intram.bootTimeout > 0) intram.bootTimeout -= clocks;
-}
-
 auto PIF::ramReadCommand() -> u8 {
   return ram.read<Byte>(0x3f);
 }
@@ -264,7 +259,9 @@ auto PIF::challenge() -> void {
 }
 
 auto PIF::mainHLE() -> void {
-  step(10240*8);
+  constexpr u32 clocks = 10240 * 8;
+  step(clocks);
+  if(intram.bootTimeout > 0) intram.bootTimeout -= clocks;
 
   if(likely(state == Run)) {
     //cicCompare()

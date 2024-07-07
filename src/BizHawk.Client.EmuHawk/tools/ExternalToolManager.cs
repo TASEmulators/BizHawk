@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -8,6 +7,8 @@ using System.Reflection;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -35,7 +36,11 @@ namespace BizHawk.Client.EmuHawk
 				_asmChecksum = asmChecksum;
 				_entryPointTypeName = entryPointTypeName;
 				_extToolMan = extToolMan;
+#if DEBUG
+				_skipExtToolWarning = true;
+#else
 				_skipExtToolWarning = _extToolMan._config.TrustedExtTools.TryGetValue(asmFilename, out var s) && s == _asmChecksum;
+#endif
 				AsmFilename = asmFilename;
 			}
 
@@ -47,7 +52,9 @@ namespace BizHawk.Client.EmuHawk
 					/*skipExtToolWarning:*/ _skipExtToolWarning);
 				if (!success || _skipExtToolWarning) return;
 				_skipExtToolWarning = true;
+#if !DEBUG
 				_extToolMan._config.TrustedExtTools[AsmFilename] = _asmChecksum;
+#endif
 			}
 		}
 
@@ -103,13 +110,21 @@ namespace BizHawk.Client.EmuHawk
 			if (DirectoryMonitor == null) return;
 			DirectoryInfo di = new(DirectoryMonitor.Path);
 			if (!di.Exists) return;
-			foreach (var fi in di.GetFiles("*.dll")) MenuItems.Add(GenerateToolTipFromFileName(fi.FullName));
+			foreach (var fi in di.GetFiles("*.dll")) Process(fi.FullName);
 		}
 
 		/// <summary>Generates a <see cref="ToolStripMenuItem"/> from an assembly at <paramref name="fileName"/> containing an external tool.</summary>
-		/// <returns>a <see cref="ToolStripMenuItem"/> with its <see cref="ToolStripItem.Tag"/> containing a <see cref="MenuItemInfo"/></returns>
-		private ToolStripMenuItem GenerateToolTipFromFileName(string fileName)
+		/// <returns>
+		/// a <see cref="ToolStripMenuItem"/> with its <see cref="ToolStripItem.Tag"/> containing a <see cref="MenuItemInfo"/>, or
+		/// <see langword="null"/> if the file is not a .NET assembly or does not reference a BizHawk assembly
+		/// </returns>
+		private ToolStripMenuItem/*?*/ GenerateToolTipFromFileName(string fileName)
 		{
+			ToolStripMenuItem/*?*/ Fail(string reason)
+			{
+				Console.WriteLine($"ignoring <exttools>/{fileName.MakeRelativeTo(Path.GetFullPath(DirectoryMonitor.Path)).RemovePrefix("./")} as {reason}");
+				return null;
+			}
 			if (fileName == null) throw new Exception();
 			var item = new ToolStripMenuItem(Path.GetFileName(fileName))
 			{
@@ -119,8 +134,11 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				if (!OSTailoredCode.IsUnixHost) MotWHack.RemoveMOTW(fileName);
-				var asmBytes = File.ReadAllBytes(fileName);
-				var externalToolFile = Assembly.Load(asmBytes);
+				var externalToolFile = Assembly.LoadFrom(fileName);
+				if (!externalToolFile.GetReferencedAssemblies().Any(static name => name.Name.StartsWithOrdinal("BizHawk.")))
+				{
+					return Fail("it doesn't reference a BizHawk assembly");
+				}
 				var entryPoint = externalToolFile.GetTypes()
 					.SingleOrDefault(t => typeof(IExternalToolForm).IsAssignableFrom(t) && t.GetCustomAttributes().OfType<ExternalToolAttribute>().Any());
 				if (entryPoint == null) throw new ExternalToolAttribute.MissingException();
@@ -130,9 +148,15 @@ namespace BizHawk.Client.EmuHawk
 				if (applicabilityAttrs.Count > 1) throw new ExternalToolApplicabilityAttributeBase.DuplicateException();
 
 				var toolAttribute = allAttrs.OfType<ExternalToolAttribute>().First();
+				item.Text = toolAttribute.Name;
 				if (toolAttribute.LoadAssemblyFiles != null)
 				{
-					foreach (var depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"{_config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path}/{depFilename}");
+					foreach (var depFilename in toolAttribute.LoadAssemblyFiles)
+					{
+						var depFilePath = $"{_config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path}/{depFilename}";
+						Console.WriteLine($"preloading assembly {depFilePath} requested by ext. tool {toolAttribute.Name}");
+						Assembly.LoadFrom(depFilePath);
+					}
 				}
 
 				item.Image = null; // no errors, remove error icon
@@ -142,10 +166,13 @@ namespace BizHawk.Client.EmuHawk
 					var rawIcon = externalToolFile.GetManifestResourceStream(embeddedIconAttr.ResourcePath);
 					if (rawIcon != null) item.Image = new Bitmap(rawIcon);
 				}
-				item.Text = toolAttribute.Name;
 				MenuItemInfo menuItemInfo = new(
 					this,
-					asmChecksum: SHA1Checksum.ComputePrefixedHex(asmBytes),
+#if DEBUG
+					asmChecksum: string.Empty,
+#else
+					asmChecksum: SHA1Checksum.ComputePrefixedHex(File.ReadAllBytes(fileName)),
+#endif
 					asmFilename: fileName,
 					entryPointTypeName: entryPoint.FullName);
 				item.Tag = menuItemInfo;
@@ -172,6 +199,10 @@ namespace BizHawk.Client.EmuHawk
 				if (!string.IsNullOrWhiteSpace(toolAttribute.Description)) item.ToolTipText = toolAttribute.Description;
 				return item;
 			}
+			catch (BadImageFormatException)
+			{
+				return Fail("it doesn't seem to be an assembly (are you not targeting `net48`?)");
+			}
 			catch (Exception e)
 			{
 #if DEBUG
@@ -182,7 +213,6 @@ namespace BizHawk.Client.EmuHawk
 #endif
 				item.ToolTipText = e switch
 				{
-					BadImageFormatException => "This assembly can't be loaded, probably because it's corrupt or targets an incompatible .NET runtime.",
 					ExternalToolApplicabilityAttributeBase.DuplicateException => "The IExternalToolForm has conflicting applicability attributes.",
 					ExternalToolAttribute.MissingException => "The assembly doesn't contain a class implementing IExternalToolForm and annotated with [ExternalTool].",
 					ReflectionTypeLoadException => "Something went wrong while trying to load the assembly.",
@@ -200,8 +230,12 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="sender">Object that raised the event</param>
 		/// <param name="e">Event arguments</param>
 		private void DirectoryMonitor_Created(object sender, FileSystemEventArgs e)
+			=> Process(e.FullPath);
+
+		private void Process(string fileName)
 		{
-			MenuItems.Add(GenerateToolTipFromFileName(e.FullPath));
+			var item = GenerateToolTipFromFileName(fileName);
+			if (item is not null) MenuItems.Add(item);
 		}
 
 		public IReadOnlyCollection<ToolStripItem> ToolStripItems

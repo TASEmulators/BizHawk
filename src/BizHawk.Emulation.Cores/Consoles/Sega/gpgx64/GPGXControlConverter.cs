@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 using BizHawk.Common;
@@ -10,97 +9,118 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	{
 		// this isn't all done
 
-		private struct CName
+		private readonly struct CName(string name, LibGPGX.INPUT_KEYS key)
 		{
-			public readonly string Name;
-			public readonly LibGPGX.INPUT_KEYS Key;
-			public CName(string name, LibGPGX.INPUT_KEYS key)
-			{
-				Name = name;
-				Key = key;
-			}
+			public readonly string Name = name;
+			public readonly LibGPGX.INPUT_KEYS Key = key;
 		}
 
+		private static readonly CName[] SMS2B =
+		[
+			new("Up", LibGPGX.INPUT_KEYS.INPUT_UP),
+			new("Down", LibGPGX.INPUT_KEYS.INPUT_DOWN),
+			new("Left", LibGPGX.INPUT_KEYS.INPUT_LEFT),
+			new("Right", LibGPGX.INPUT_KEYS.INPUT_RIGHT),
+			new("B1", LibGPGX.INPUT_KEYS.INPUT_BUTTON1),
+			new("B2", LibGPGX.INPUT_KEYS.INPUT_BUTTON2),
+		];
+
+		private static readonly CName[] GameGear =
+		[
+			new("Up", LibGPGX.INPUT_KEYS.INPUT_UP),
+			new("Down", LibGPGX.INPUT_KEYS.INPUT_DOWN),
+			new("Left", LibGPGX.INPUT_KEYS.INPUT_LEFT),
+			new("Right", LibGPGX.INPUT_KEYS.INPUT_RIGHT),
+			new("B1", LibGPGX.INPUT_KEYS.INPUT_BUTTON1),
+			new("B2", LibGPGX.INPUT_KEYS.INPUT_BUTTON2),
+			new("Start", LibGPGX.INPUT_KEYS.INPUT_START),
+		];
+
 		private static readonly CName[] Genesis3 =
-		{
-			new CName("Up", LibGPGX.INPUT_KEYS.INPUT_UP),
-			new CName("Down", LibGPGX.INPUT_KEYS.INPUT_DOWN),
-			new CName("Left", LibGPGX.INPUT_KEYS.INPUT_LEFT),
-			new CName("Right", LibGPGX.INPUT_KEYS.INPUT_RIGHT),
-			new CName("A", LibGPGX.INPUT_KEYS.INPUT_A),
-			new CName("B", LibGPGX.INPUT_KEYS.INPUT_B),
-			new CName("C", LibGPGX.INPUT_KEYS.INPUT_C),
-			new CName("Start", LibGPGX.INPUT_KEYS.INPUT_START),
-		};
+		[
+			new("Up", LibGPGX.INPUT_KEYS.INPUT_UP),
+			new("Down", LibGPGX.INPUT_KEYS.INPUT_DOWN),
+			new("Left", LibGPGX.INPUT_KEYS.INPUT_LEFT),
+			new("Right", LibGPGX.INPUT_KEYS.INPUT_RIGHT),
+			new("A", LibGPGX.INPUT_KEYS.INPUT_A),
+			new("B", LibGPGX.INPUT_KEYS.INPUT_B),
+			new("C", LibGPGX.INPUT_KEYS.INPUT_C),
+			new("Start", LibGPGX.INPUT_KEYS.INPUT_START),
+		];
 
 		private static readonly CName[] Genesis6 = 
-		{
-			new CName("Up", LibGPGX.INPUT_KEYS.INPUT_UP),
-			new CName("Down", LibGPGX.INPUT_KEYS.INPUT_DOWN),
-			new CName("Left", LibGPGX.INPUT_KEYS.INPUT_LEFT),
-			new CName("Right", LibGPGX.INPUT_KEYS.INPUT_RIGHT),
-			new CName("A", LibGPGX.INPUT_KEYS.INPUT_A),
-			new CName("B", LibGPGX.INPUT_KEYS.INPUT_B),
-			new CName("C", LibGPGX.INPUT_KEYS.INPUT_C),
-			new CName("Start", LibGPGX.INPUT_KEYS.INPUT_START),
-			new CName("X", LibGPGX.INPUT_KEYS.INPUT_X),
-			new CName("Y", LibGPGX.INPUT_KEYS.INPUT_Y),
-			new CName("Z", LibGPGX.INPUT_KEYS.INPUT_Z),
-			new CName("Mode", LibGPGX.INPUT_KEYS.INPUT_MODE),
-		};
+		[
+			new("Up", LibGPGX.INPUT_KEYS.INPUT_UP),
+			new("Down", LibGPGX.INPUT_KEYS.INPUT_DOWN),
+			new("Left", LibGPGX.INPUT_KEYS.INPUT_LEFT),
+			new("Right", LibGPGX.INPUT_KEYS.INPUT_RIGHT),
+			new("A", LibGPGX.INPUT_KEYS.INPUT_A),
+			new("B", LibGPGX.INPUT_KEYS.INPUT_B),
+			new("C", LibGPGX.INPUT_KEYS.INPUT_C),
+			new("Start", LibGPGX.INPUT_KEYS.INPUT_START),
+			new("X", LibGPGX.INPUT_KEYS.INPUT_X),
+			new("Y", LibGPGX.INPUT_KEYS.INPUT_Y),
+			new("Z", LibGPGX.INPUT_KEYS.INPUT_Z),
+			new("Mode", LibGPGX.INPUT_KEYS.INPUT_MODE),
+		];
 
 		private static readonly CName[] Mouse =
-		{
-			new CName("Mouse Left", LibGPGX.INPUT_KEYS.INPUT_MOUSE_LEFT),
-			new CName("Mouse Center", LibGPGX.INPUT_KEYS.INPUT_MOUSE_CENTER),
-			new CName("Mouse Right", LibGPGX.INPUT_KEYS.INPUT_MOUSE_RIGHT),
-			new CName("Mouse Start", LibGPGX.INPUT_KEYS.INPUT_MOUSE_START),
-		};
+		[
+			new("Mouse Left", LibGPGX.INPUT_KEYS.INPUT_MOUSE_LEFT),
+			new("Mouse Center", LibGPGX.INPUT_KEYS.INPUT_MOUSE_CENTER),
+			new("Mouse Right", LibGPGX.INPUT_KEYS.INPUT_MOUSE_RIGHT),
+			new("Mouse Start", LibGPGX.INPUT_KEYS.INPUT_MOUSE_START),
+		];
 
 		private static readonly CName[] Lightgun =
-		{
-			new CName("Lightgun Trigger", LibGPGX.INPUT_KEYS.INPUT_MENACER_TRIGGER),
-			new CName("Lightgun Start", LibGPGX.INPUT_KEYS.INPUT_MENACER_START),
-			new CName("Lightgun B", LibGPGX.INPUT_KEYS.INPUT_MENACER_B),
-			new CName("Lightgun C", LibGPGX.INPUT_KEYS.INPUT_MENACER_C),
-		};
+		[
+			new("Lightgun Trigger", LibGPGX.INPUT_KEYS.INPUT_MENACER_TRIGGER),
+			new("Lightgun Start", LibGPGX.INPUT_KEYS.INPUT_MENACER_START),
+			new("Lightgun B", LibGPGX.INPUT_KEYS.INPUT_MENACER_B),
+			new("Lightgun C", LibGPGX.INPUT_KEYS.INPUT_MENACER_C),
+		];
 
 		private static readonly CName[] Activator = 
-		{
-			new CName("1L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_1L),
-			new CName("1U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_1U),
-			new CName("2L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_2L),
-			new CName("2U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_2U),
-			new CName("3L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_3L),
-			new CName("3U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_3U),
-			new CName("4L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_4L),
-			new CName("4U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_4U),
-			new CName("5L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_5L),
-			new CName("5U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_5U),
-			new CName("6L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_6L),
-			new CName("6U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_6U),
-			new CName("7L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_7L),
-			new CName("7U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_7U),
-			new CName("8L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_8L),
-			new CName("8U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_8U),
-		};
+		[
+			new("1L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_1L),
+			new("1U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_1U),
+			new("2L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_2L),
+			new("2U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_2U),
+			new("3L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_3L),
+			new("3U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_3U),
+			new("4L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_4L),
+			new("4U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_4U),
+			new("5L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_5L),
+			new("5U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_5U),
+			new("6L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_6L),
+			new("6U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_6U),
+			new("7L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_7L),
+			new("7U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_7U),
+			new("8L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_8L),
+			new("8U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_8U),
+		];
 
 		private static readonly CName[] Xea1P =
-		{
-			new CName("XE A", LibGPGX.INPUT_KEYS.INPUT_XE_A),
-			new CName("XE B", LibGPGX.INPUT_KEYS.INPUT_XE_B),
-			new CName("XE C", LibGPGX.INPUT_KEYS.INPUT_XE_C),
-			new CName("XE D", LibGPGX.INPUT_KEYS.INPUT_XE_D),
-			new CName("XE Start", LibGPGX.INPUT_KEYS.INPUT_XE_START),
-			new CName("XE Select", LibGPGX.INPUT_KEYS.INPUT_XE_SELECT),
-			new CName("XE E1", LibGPGX.INPUT_KEYS.INPUT_XE_E1),
-			new CName("XE E2", LibGPGX.INPUT_KEYS.INPUT_XE_E2),
-		};
+		[
+			new("XE A", LibGPGX.INPUT_KEYS.INPUT_XE_A),
+			new("XE B", LibGPGX.INPUT_KEYS.INPUT_XE_B),
+			new("XE C", LibGPGX.INPUT_KEYS.INPUT_XE_C),
+			new("XE D", LibGPGX.INPUT_KEYS.INPUT_XE_D),
+			new("XE Start", LibGPGX.INPUT_KEYS.INPUT_XE_START),
+			new("XE Select", LibGPGX.INPUT_KEYS.INPUT_XE_SELECT),
+			new("XE E1", LibGPGX.INPUT_KEYS.INPUT_XE_E1),
+			new("XE E2", LibGPGX.INPUT_KEYS.INPUT_XE_E2),
+		];
+
+		private static readonly CName[] Paddle =
+		[
+			new("B1", LibGPGX.INPUT_KEYS.INPUT_BUTTON1)
+		];
 
 		private LibGPGX.InputData _target;
 		private IController _source;
 
-		private readonly List<Action> _converts = new List<Action>();
+		private readonly List<Action> _converts = [ ];
 
 		public ControllerDefinition ControllerDef { get; }
 
@@ -108,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			foreach (var button in buttons)
 			{
-				string name = $"P{player} {button.Name}";
+				var name = $"P{player} {button.Name}";
 				ControllerDef.BoolButtons.Add(name);
 				var buttonFlag = button.Key;
 				_converts.Add(() =>
@@ -169,27 +189,49 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			});
 		}
 
-		public GPGXControlConverter(LibGPGX.InputData input, bool cdButtons)
+		private void DoPaddleAnalog(int idx, int player)
 		{
-			Console.WriteLine("Genesis Controller report:");
+			ControllerDef.AddAxis($"P{player} Paddle", 0.RangeTo(255), 128);
+
+			_converts.Add(() =>
+			{
+				_target.analog[2 * idx] = (byte)_source.AxisValue($"P{player} Paddle");
+			});
+		}
+
+		public GPGXControlConverter(LibGPGX.InputData input, string systemId, bool cdButtons)
+		{
+			Console.WriteLine("GPGX Controller report:");
 			foreach (var e in input.system)
 				Console.WriteLine("  S:{0}", e);
 			foreach (var e in input.dev)
 				Console.WriteLine("  D:{0}", e);
 
-			int player = 1;
+			var player = 1;
 
-			ControllerDef = new("GPGX Genesis Controller");
+			ControllerDef = new(systemId switch
+			{
+				VSystemID.Raw.SMS or VSystemID.Raw.SG => "SMS Controller",
+				VSystemID.Raw.GG => "GG Controller",
+				VSystemID.Raw.GEN => "GPGX Genesis Controller", // GPGX in controller def name is more for backwards compat sake
+				_ => throw new InvalidOperationException(),
+			});
 
 			ControllerDef.BoolButtons.Add("Power");
 			ControllerDef.BoolButtons.Add("Reset");
+
+			if (systemId is VSystemID.Raw.SMS or VSystemID.Raw.SG)
+			{
+				ControllerDef.BoolButtons.Add("Pause");
+			}
+
 			if (cdButtons)
 			{
 				ControllerDef.BoolButtons.Add("Previous Disk");
 				ControllerDef.BoolButtons.Add("Next Disk");
 			}
 
-			for (int i = 0; i < LibGPGX.MAX_DEVICES; i++)
+			for (var i = 0; i < LibGPGX.MAX_DEVICES; i++)
 			{
 				switch (input.dev[i])
 				{
@@ -215,10 +257,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						player++;
 						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_PAD2B:
+						AddToController(i, player, systemId is VSystemID.Raw.SMS ? SMS2B : GameGear);
+						player++;
+						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_PADDLE:
+						AddToController(i, player, Paddle);
+						DoPaddleAnalog(i, player);
+						player++;
+						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_SPORTSPAD:
 					case LibGPGX.INPUT_DEVICE.DEVICE_TEREBI:
-						throw new Exception("Master System only device?  Something went wrong.");
+						throw new NotImplementedException();
 					case LibGPGX.INPUT_DEVICE.DEVICE_ACTIVATOR:
 						AddToController(i, player, Activator);
 						player++;
@@ -232,7 +281,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						// PICO isn't finished on the unmanaged side either
 						throw new Exception("Sega PICO not implemented yet!");
 					default:
-						throw new Exception("Unknown Genesis control device!  Something went wrong.");
+						throw new Exception("Unknown GPGX control device!  Something went wrong.");
 				}
 			}
 
@@ -256,6 +305,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		/// must be set for proper lightgun operation
 		/// </summary>
 		public int ScreenWidth { get; set; }
+
 		/// <summary>
 		/// must be set for proper lightgun operation
 		/// </summary>

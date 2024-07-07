@@ -6,6 +6,8 @@
 /test_output
 **/ipch/**
 /Assets/dll/*.wbx
+Backup/
+UpgradeLog.htm
 
 *.ilk
 *.il
@@ -17,6 +19,7 @@
 *.opendb
 
 /Dist/*.zip
+/Dist/git_hooks/*.local.ps1
 
 # mupen64plus-win32-deps is a submodule, so ignores should be in that repo
 /libmupen64plus/mupen64plus-win32-deps/SDL-1.2.14/docs

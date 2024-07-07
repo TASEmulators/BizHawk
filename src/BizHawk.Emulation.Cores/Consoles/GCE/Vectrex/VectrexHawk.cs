@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.MC6809;
@@ -51,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			serialport = new SerialPort();
 
 			_settings = new object(); // TODO: wtf is this
-			_syncSettings = (VectrexSyncSettings)syncSettings ?? new VectrexSyncSettings();
+			_syncSettings = syncSettings ?? new VectrexSyncSettings();
 			_controllerDeck = new VectrexHawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
 			/*var Bios =*/ _bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("VEC", "Bios"), "BIOS Not Found, Cannot Load");
@@ -106,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ServiceProvider = ser;
 
 			_settings = new object(); // TODO: wtf is this
-			_syncSettings = (VectrexSyncSettings)syncSettings ?? new VectrexSyncSettings();
+			_syncSettings = syncSettings ?? new VectrexSyncSettings();
 
 			_tracer = new TraceBuffer(cpu.TraceHeader);
 			ser.Register<ITraceable>(_tracer);

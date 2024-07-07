@@ -1,11 +1,9 @@
-﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
 
-using BizHawk.Bizware.DirectX;
-using BizHawk.Bizware.OpenTK3;
+using BizHawk.Bizware.Input;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common.CollectionExtensions;
@@ -28,7 +26,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly HashSet<Control> _wantingMouseFocus = new HashSet<Control>();
 
+#pragma warning disable CA2211 // public field
 		public static Input Instance;
+#pragma warning restore CA2211
 
 		private readonly Thread _updateThread;
 
@@ -46,13 +46,7 @@ namespace BizHawk.Client.EmuHawk
 
 			MainFormInputAllowedCallback = mainFormInputAllowedCallback;
 
-			Adapter = _currentConfig.HostInputMethod switch
-			{
-				EHostInputMethod.OpenTK => new OpenTKInputAdapter(),
-				_ when OSTailoredCode.IsUnixHost => new OpenTKInputAdapter(),
-				EHostInputMethod.DirectInput => new DirectInputAdapter(),
-				_ => throw new InvalidOperationException()
-			};
+			Adapter = new SDL2InputAdapter();
 			Console.WriteLine($"Using {Adapter.Desc} for host input (keyboard + gamepads)");
 			Adapter.UpdateConfig(_currentConfig);
 			Adapter.FirstInitAll(mainFormHandle);
@@ -138,6 +132,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandleAxis(string axis, int newValue)
 		{
+			if (ShouldSwallow(MainFormInputAllowedCallback(false), ClientInputFocus.Pad))
+				return;
+
 			if (_trackDeltas) _axisDeltas[axis] += Math.Abs(newValue - _axisValues[axis]);
 			_axisValues[axis] = newValue;
 		}
@@ -172,13 +169,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IDictionary<string, int> GetAxisValues()
+		public KeyValuePair<string, int>[] GetAxisValues()
 		{
 			lock (_axisValues)
 			{
-				return _axisValues.ToDictionary(d => d.Key, d => d.Value);
+				return _axisValues.ToArray();
 			}
-			
 		}
 
 		/// <summary>
@@ -256,9 +252,9 @@ namespace BizHawk.Client.EmuHawk
 						foreach (var ie in _newEvents)
 						{
 							//events are swallowed in some cases:
-							if ((ie.LogicalButton.Modifiers & LogicalButton.MASK_ALT) is not 0U && ShouldSwallow(MainFormInputAllowedCallback(true), ie))
+							if ((ie.LogicalButton.Modifiers & LogicalButton.MASK_ALT) is not 0U && ShouldSwallow(MainFormInputAllowedCallback(true), ie.Source))
 								continue;
-							if (ie.EventType == InputEventType.Press && ShouldSwallow(allowInput, ie))
+							if (ie.EventType == InputEventType.Press && ShouldSwallow(allowInput, ie.Source))
 								continue;
 
 							EnqueueEvent(ie);
@@ -269,13 +265,13 @@ namespace BizHawk.Client.EmuHawk
 				} //lock(this)
 
 				//arbitrary selection of polling frequency:
-				Thread.Sleep(10);
+				Thread.Sleep(2);
 			}
 		}
 
-		private static bool ShouldSwallow(AllowInput allowInput, InputEvent inputEvent)
+		private static bool ShouldSwallow(AllowInput allowInput, ClientInputFocus inputFocus)
 		{
-			return allowInput == AllowInput.None || (allowInput == AllowInput.OnlyController && inputEvent.Source != ClientInputFocus.Pad);
+			return allowInput == AllowInput.None || (allowInput == AllowInput.OnlyController && inputFocus != ClientInputFocus.Pad);
 		}
 
 		public void StartListeningForAxisEvents()
@@ -332,7 +328,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					InputEvent ie = DequeueEvent();
 
-					if (ShouldSwallow(allowInput, ie)) continue;
+					if (ShouldSwallow(allowInput, ie.Source)) continue;
 
 					if (ie.EventType == InputEventType.Press)
 					{

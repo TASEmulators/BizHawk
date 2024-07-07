@@ -9,7 +9,7 @@
 #define ONCE(op)            if (first) { first = 0; op; }
 #define XOR_INITIAL(where)  ONCE(where = _mm512_xor_si512(where, zmm_initial))
 
-__attribute__((target("sse4.1", "pclmul", "avx512f", "vpclmulqdq")))
+__attribute__((target("sse4.1,pclmul,avx512f,vpclmulqdq")))
 uint64_t fold_16_vpclmulqdq(__m128i *xmm_crc0, __m128i *xmm_crc1,
 	__m128i *xmm_crc2, __m128i *xmm_crc3, const uint8_t *src, uint64_t len,
 	__m128i init_crc, int32_t first) {

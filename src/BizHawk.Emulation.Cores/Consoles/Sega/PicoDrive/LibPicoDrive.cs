@@ -1,6 +1,6 @@
 ﻿using BizHawk.BizInvoke;
 using BizHawk.Emulation.Cores.Waterbox;
-using System;
+
 using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
@@ -29,7 +29,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		/// <param name="_32xPreinit">If TRUE, preallocate 32X data structures.  When set to false,
 		///		32X games will still run, but will not have memory domains</param>
 		[BizImport(CC)]
-		public abstract bool Init(bool cd, bool _32xPreinit, Region regionAutoOrder,  Region regionOverride);
+		public abstract bool Init(bool cd, bool _32xPreinit, Region regionAutoOrder, Region regionOverride);
+
+		public const int CD_MAX_TRACKS = 100;
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct Track
+		{
+			public int start;
+			public int end;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public class TOC
+		{
+			public int end;
+			public int last;
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = CD_MAX_TRACKS)]
+			public readonly Track[] tracks = new Track[CD_MAX_TRACKS];
+		}
 
 		[BizImport(CC)]
 		public abstract void SetCDReadCallback(CDReadCallback callback);

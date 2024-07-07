@@ -40,7 +40,7 @@ protected:
   auto _lookup(const string& path) const -> Node;
   auto _create(const string& path) -> Node;
 
-  friend class Node;
+  friend struct Node;
 };
 
 struct Node {

@@ -1,6 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+	<Import Project="../LibCommon.props" />
+	<PropertyGroup>
 		<RootNamespace>NLua</RootNamespace>
 		<AssemblyName>NLua</AssemblyName>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -18,13 +21,13 @@
 		<WarningsAsErrors />
 	</PropertyGroup>
 
-	<ItemGroup>
-		<Reference Include="BizHawk.BizInvoke" HintPath="../../output/dll/BizHawk.BizInvoke.dll" />
-		<Reference Include="BizHawk.Common" HintPath="../../output/dll/BizHawk.Common.dll" />
-	</ItemGroup>
-
-	<Import Project="../LibCommon.props" />
 	<PropertyGroup>
+		<NoWarn>$(NoWarn);IDE0005;SA1514</NoWarn>
 		<Nullable>disable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Memory" />
+	</ItemGroup>
 </Project>

@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 
 using BizHawk.Emulation.Common;
@@ -8,6 +7,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 	public partial class Sameboy : IStatable
 	{
 		private readonly byte[] _stateBuf;
+
+		public bool AvoidRewind => false;
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{

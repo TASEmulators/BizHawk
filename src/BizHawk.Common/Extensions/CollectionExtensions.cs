@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +6,9 @@ using System.Runtime.CompilerServices;
 
 namespace BizHawk.Common.CollectionExtensions
 {
+#pragma warning disable MA0104 // unlikely to conflict with System.Collections.Generic.CollectionExtensions
 	public static class CollectionExtensions
+#pragma warning restore MA0104
 	{
 		public static IOrderedEnumerable<TSource> OrderBy<TSource, TKey>(
 			this IEnumerable<TSource> source,
@@ -17,18 +18,26 @@ namespace BizHawk.Common.CollectionExtensions
 			return desc ? source.OrderByDescending(keySelector) : source.OrderBy(keySelector);
 		}
 
+		/// <summary>Implements an indirected binary search.</summary>
+		/// <return>
+		/// The index of the element whose key matches <paramref name="key"/>;
+		/// or if none match, the index of the element whose key is closest and lower;
+		/// or if all elements' keys are higher, <c>-1</c>.<br/>
+		/// (Equivalently: If none match, 1 less than the index where inserting an element with the given <paramref name="key"/> would keep the list sorted)
+		/// </return>
+		/// <remarks>The returned index may not be accurate if <paramref name="list"/> is not sorted in ascending order with respect to <paramref name="keySelector"/>.</remarks>
 		public static int LowerBoundBinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key)
 			where TKey : IComparable<TKey>
 		{
+			if (list.Count is 0) return -1;
+
 			int min = 0;
-			int max = list.Count;
-			int mid;
-			TKey midKey;
+			int max = list.Count - 1;
 			while (min < max)
 			{
-				mid = (max + min) / 2;
+				int mid = (max + min) / 2;
 				T midItem = list[mid];
-				midKey = keySelector(midItem);
+				var midKey = keySelector(midItem);
 				int comp = midKey.CompareTo(key);
 				if (comp < 0)
 				{
@@ -44,32 +53,16 @@ namespace BizHawk.Common.CollectionExtensions
 				}
 			}
 
-			// did we find it exactly?
-			if (min == max && keySelector(list[min]).CompareTo(key) == 0)
+			int compareResult = keySelector(list[min]).CompareTo(key);
+
+			// return something corresponding to lower_bound semantics
+			// if min is higher than key, return min - 1. Otherwise, when min is <=key, return min directly.
+			if (compareResult > 0)
 			{
-				return min;
+				return min - 1;
 			}
 
-			mid = min;
-
-			// we didn't find it. return something corresponding to lower_bound semantics
-			if (mid == list.Count)
-			{
-				return max; // had to go all the way to max before giving up; lower bound is max
-			}
-
-			if (mid == 0)
-			{
-				return -1; // had to go all the way to min before giving up; lower bound is min
-			}
-
-			midKey = keySelector(list[mid]);
-			if (midKey.CompareTo(key) >= 0)
-			{
-				return mid - 1;
-			}
-
-			return mid;
+			return min;
 		}
 
 		/// <exception cref="InvalidOperationException"><paramref name="key"/> not found after mapping <paramref name="keySelector"/> over <paramref name="list"/></exception>
@@ -78,7 +71,7 @@ namespace BizHawk.Common.CollectionExtensions
 			where TKey : IComparable<TKey>
 		{
 			int min = 0;
-			int max = list.Count;
+			int max = list.Count - 1;
 			while (min < max)
 			{
 				int mid = (max + min) / 2;
@@ -98,13 +91,7 @@ namespace BizHawk.Common.CollectionExtensions
 					return midItem;
 				}
 			}
-
-			if (min == max &&
-				keySelector(list[min]).CompareTo(key) == 0)
-			{
-				return list[min];
-			}
-
+			if (min == max && keySelector(list[min]).CompareTo(key) is 0) return list[min];
 			throw new InvalidOperationException("Item not found");
 		}
 
@@ -159,6 +146,24 @@ namespace BizHawk.Common.CollectionExtensions
 			=> collection is ICollection countable
 				? countable.Count == n
 				: collection.Take(n + 1).Count() == n;
+
+#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER)
+		/// <summary>
+		/// Returns the value at <paramref name="key"/>.
+		/// If the key is not present, returns default(TValue).
+		/// backported from .NET Core 2.0
+		/// </summary>
+		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
+			=> dictionary.TryGetValue(key, out var found) ? found : default;
+
+		/// <summary>
+		/// Returns the value at <paramref name="key"/>.
+		/// If the key is not present, returns <paramref name="defaultValue"/>.
+		/// backported from .NET Core 2.0
+		/// </summary>
+		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
+#endif
 
 		/// <summary>
 		/// Returns the value at <paramref name="key"/>.
@@ -224,9 +229,9 @@ namespace BizHawk.Common.CollectionExtensions
 		/// (This is an extension method which reimplements <see cref="List{T}.RemoveAll"/> for other <see cref="ICollection{T}">collections</see>.
 		/// It defers to the existing <see cref="List{T}.RemoveAll">RemoveAll</see> if the receiver's type is <see cref="List{T}"/> or a subclass.)
 		/// </remarks>
-		public static int RemoveAll<T>(this ICollection<T> list, Predicate<T> match)
+		public static int RemoveAll<T>(this ICollection<T> list, Func<T, bool> match)
 		{
-			if (list is List<T> listImpl) return listImpl.RemoveAll(match);
+			if (list is List<T> listImpl) return listImpl.RemoveAll(item => match(item)); // can't simply cast to Predicate<T>, but thankfully we only need to allocate 1 extra delegate
 			var c = list.Count;
 			if (list is IList<T> iList)
 			{
@@ -237,8 +242,8 @@ namespace BizHawk.Common.CollectionExtensions
 			}
 			else
 			{
-				foreach (var item in list.Where(item => match(item)) // can't simply cast to Func<T, bool>
-					.ToList()) // very important
+				foreach (var item in list.Where(match)
+							.ToArray()) // very important
 				{
 					list.Remove(item);
 				}
@@ -264,6 +269,10 @@ namespace BizHawk.Common.CollectionExtensions
 			}
 			return true;
 		}
+
+		/// <summary>shallow clone</summary>
+		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> list)
+			=> list.ToDictionary(static kvp => kvp.Key, static kvp => kvp.Value);
 
 		public static bool IsSortedAsc<T>(this IReadOnlyList<T> list)
 			where T : IComparable<T>

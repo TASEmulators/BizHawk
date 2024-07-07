@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common.BufferExtensions;
@@ -20,10 +20,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return "2K";
 			}
 			
-			if (rom.Length == 2048 || // If 2k or the same 2k twice...Why would a rom be that way? Overdump?
-				(rom.Length == 4096 
-					&& rom.Take(2048).SequenceEqual(rom.Skip(2048).Take(2048))))
+			if (rom.Length is 2048
+				|| (rom.Length is 4096
+					&& rom.AsSpan(start: 0, length: 2048).SequenceEqual(rom.AsSpan(start: 2048, length: 2048))))
 			{
+				// If 2k or the same 2k twice...Why would a rom be that way? Overdump?
 				return IsProablyCV(rom) ? "CV" : "2K";
 			}
 			
@@ -283,9 +284,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			// Program starts at $1Fxx with NOP $6Exx or NOP $6Fxx?
-			if (((rom[0xFFFD] & 0x1F) == 0x1F) &&
-				(rom[rom[0xFFFD] * 256 + rom[0xFFFC]] == 0x0C) &&
-				((rom[rom[0xFFFD] * 256 + rom[0xFFFC] + 2] & 0xFE) == 0x6E))
+			if ((rom[0xFFFD] & 0x1F) is 0x1F
+				&& rom[rom[0xFFFD] * 256 + rom[0xFFFC]] is 0x0C
+				&& (rom[rom[0xFFFD] * 256 + rom[0xFFFC] + 2] & 0xFE) is 0x6E)
 			{
 				return true;
 			}
@@ -401,8 +402,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// These signatures are attributed to the MESS project
 			return ContainsAny(rom, new List<byte[]>
 			{
-				new byte[] { 0x44, 0x50, 0x43, 0x2B },
-				new byte[] { 0x44, 0x50, 0x43, 0x2B },
+				// why is this checking the same value twice? ...
+				"DPC+"u8.ToArray(),
+				"DPC+"u8.ToArray(),
 			});
 		}
 

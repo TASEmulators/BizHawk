@@ -1,7 +1,5 @@
-﻿using System;
-
+using BizHawk.Bizware.Graphics;
 using BizHawk.Emulation.Common;
-using BizHawk.Bizware.BizwareGL;
 
 namespace BizHawk.Client.Common
 {

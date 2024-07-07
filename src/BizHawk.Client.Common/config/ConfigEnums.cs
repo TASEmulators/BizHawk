@@ -2,7 +2,10 @@
 {
 	public enum ESoundOutputMethod
 	{
-		DirectSound, XAudio2, OpenAL, Dummy
+		LegacyDirectSound, // kept here to handle old configs
+		XAudio2,
+		OpenAL,
+		Dummy
 	}
 
 	public enum EDispManagerAR
@@ -25,12 +28,6 @@
 		Longplay = 2,
 		Tas = 3,
 		N64Tas = 4
-	}
-
-	public enum EHostInputMethod
-	{
-		OpenTK = 0,
-		DirectInput = 1
 	}
 
 	public enum OpposingDirPolicy

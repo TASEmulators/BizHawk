@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel;
 
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
@@ -41,10 +40,10 @@ namespace BizHawk.Client.Common
 		public int GetScreenGap()
 			=> Settings.ScreenGap;
 
-		[LuaMethodExample("if ( nds.getaudiobitrate( ) ) then\r\n\tconsole.log( \"Returns the audio bitrate setting\" );\r\nend;")]
-		[LuaMethod("getaudiobitrate", "Returns the audio bitrate setting")]
-		public string GetAudioBitrate()
-			=> Settings.AudioBitrate.ToString();
+		[LuaMethodExample("if ( nds.getaudiobitdepth( ) ) then\r\n\tconsole.log( \"Returns the audio bitdepth setting\" );\r\nend;")]
+		[LuaMethod("getaudiobitdepth", "Returns the audio bitdepth setting")]
+		public string GetAudioBitDepth()
+			=> Settings.AudioBitDepth.ToString();
 
 		[LuaMethodExample("nds.setscreenlayout( \"Vertical\" );")]
 		[LuaMethod("setscreenlayout", "Sets which screen layout is active")]
@@ -82,12 +81,12 @@ namespace BizHawk.Client.Common
 			Settings = s;
 		}
 
-		[LuaMethodExample("nds.setaudiobitrate( \"Auto\" );")]
-		[LuaMethod("setaudiobitrate", "Sets the audio bitrate setting")]
-		public void SetAudioBitrate(string value)
+		[LuaMethodExample("nds.setaudiobitdepth( \"Auto\" );")]
+		[LuaMethod("setaudiobitdepth", "Sets the audio bitdepth setting")]
+		public void SetAudioBitDepth(string value)
 		{
 			var s = Settings;
-			s.AudioBitrate = (NDS.NDSSettings.AudioBitrateType)Enum.Parse(typeof(NDS.NDSSettings.AudioBitrateType), value, true);
+			s.AudioBitDepth = (NDS.NDSSettings.AudioBitDepthType)Enum.Parse(typeof(NDS.NDSSettings.AudioBitDepthType), value, true);
 			Settings = s;
 		}
 	}

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 using System.ComponentModel;
 
@@ -115,8 +114,9 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				if (DebuggableCore != null && DebuggableCore.MemoryCallbacksAvailable() &&
-					DebuggableCore.MemoryCallbacks.ExecuteCallbacksAvailable)
+				if (DebuggableCore is not null
+					&& DebuggableCore.MemoryCallbacksAvailable()
+					&& DebuggableCore.MemoryCallbacks.ExecuteCallbacksAvailable)
 				{
 					if (!HasScope(scope))
 					{

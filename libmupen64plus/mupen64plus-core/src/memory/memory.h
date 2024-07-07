@@ -26,6 +26,9 @@
 
 #define TRACECB() if (traceCB) traceCB()
 
+#define MASK_ADDR_U8(x, m) (x) & (sizeof(m) - 1)
+#define MASK_ADDR_U32(x, m) (x) & (sizeof(m) / 4 - 1)
+
 int init_memory(int DoByteSwap);
 void free_memory(void);
 #define read_word_in_memory() readmem[address>>16]()

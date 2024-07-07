@@ -1,45 +1,49 @@
-using System;
-using System.IO;
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	public partial class NDS : ISaveRam
 	{
-		public new bool SaveRamModified => IsDSiWare || _core.SaveRamIsDirty();
+		private readonly int PublicSavSize, PrivateSavSize, BannerSavSize;
+		private readonly int DSiWareSaveLength;
+
+		public new bool SaveRamModified => IsDSiWare ? DSiWareSaveLength != 0 : _core.SaveRamIsDirty();
 
 		public new byte[] CloneSaveRam()
 		{
 			if (IsDSiWare)
 			{
-				_core.DSiWareSavsLength(DSiTitleId.Lower, out var publicSavSize, out var privateSavSize, out var bannerSavSize);
-				if (publicSavSize + privateSavSize + bannerSavSize == 0) return null;
-				_exe.AddTransientFile(Array.Empty<byte>(), "public.sav");
-				_exe.AddTransientFile(Array.Empty<byte>(), "private.sav");
-				_exe.AddTransientFile(Array.Empty<byte>(), "banner.sav");
-				_core.ExportDSiWareSavs(DSiTitleId.Lower);
+				if (DSiWareSaveLength == 0)
+				{
+					return null;
+				}
+
+				_exe.AddTransientFile([ ], "public.sav");
+				_exe.AddTransientFile([ ], "private.sav");
+				_exe.AddTransientFile([ ], "banner.sav");
+				_core.ExportDSiWareSavs(_console, DSiTitleId.Lower);
+
 				var publicSav = _exe.RemoveTransientFile("public.sav");
 				var privateSav = _exe.RemoveTransientFile("private.sav");
 				var bannerSav = _exe.RemoveTransientFile("banner.sav");
-				if (publicSav.Length != publicSavSize || privateSav.Length != privateSavSize ||
-					bannerSav.Length != bannerSavSize)
+				if (publicSav.Length != PublicSavSize || privateSav.Length != PrivateSavSize || bannerSav.Length != BannerSavSize)
 				{
 					throw new InvalidOperationException("Unexpected size difference in DSiWare sav files!");
 				}
-				var ret = new byte[publicSavSize + privateSavSize + bannerSavSize];
-				publicSav.AsSpan().CopyTo(ret.AsSpan().Slice(0, publicSavSize));
-				privateSav.AsSpan().CopyTo(ret.AsSpan().Slice(publicSavSize, privateSavSize));
-				bannerSav.AsSpan().CopyTo(ret.AsSpan().Slice(publicSavSize + privateSavSize, bannerSavSize));
+
+				var ret = new byte[DSiWareSaveLength];
+				publicSav.AsSpan().CopyTo(ret.AsSpan().Slice(0, PublicSavSize));
+				privateSav.AsSpan().CopyTo(ret.AsSpan().Slice(PublicSavSize, PrivateSavSize));
+				bannerSav.AsSpan().CopyTo(ret.AsSpan().Slice(PublicSavSize + PrivateSavSize, BannerSavSize));
 				return ret;
 			}
 
-			var length = _core.GetSaveRamLength();
+			var length = _core.GetSaveRamLength(_console);
 
 			if (length > 0)
 			{
 				var ret = new byte[length];
-				_core.GetSaveRam(ret);
+				_core.GetSaveRam(_console, ret);
 				return ret;
 			}
 
@@ -50,21 +54,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			if (IsDSiWare)
 			{
-				_core.DSiWareSavsLength(DSiTitleId.Lower, out var publicSavSize, out var privateSavSize, out var bannerSavSize);
-				if (data.Length == publicSavSize + privateSavSize + bannerSavSize)
+				if (data.Length == DSiWareSaveLength)
 				{
-					if (publicSavSize > 0) _exe.AddReadonlyFile(data.AsSpan().Slice(0, publicSavSize).ToArray(), "public.sav");
-					if (privateSavSize > 0) _exe.AddReadonlyFile(data.AsSpan().Slice(publicSavSize, privateSavSize).ToArray(), "private.sav");
-					if (bannerSavSize > 0) _exe.AddReadonlyFile(data.AsSpan().Slice(publicSavSize + privateSavSize, bannerSavSize).ToArray(), "banner.sav");
-					_core.ImportDSiWareSavs(DSiTitleId.Lower);
-					if (publicSavSize > 0) _exe.RemoveReadonlyFile("public.sav");
-					if (privateSavSize > 0) _exe.RemoveReadonlyFile("private.sav");
-					if (bannerSavSize > 0) _exe.RemoveReadonlyFile("banner.sav");
+					if (PublicSavSize > 0) _exe.AddReadonlyFile(data.AsSpan().Slice(0, PublicSavSize).ToArray(), "public.sav");
+					if (PrivateSavSize > 0) _exe.AddReadonlyFile(data.AsSpan().Slice(PublicSavSize, PrivateSavSize).ToArray(), "private.sav");
+					if (BannerSavSize > 0) _exe.AddReadonlyFile(data.AsSpan().Slice(PublicSavSize + PrivateSavSize, BannerSavSize).ToArray(), "banner.sav");
+
+					_core.ImportDSiWareSavs(_console, DSiTitleId.Lower);
+
+					if (PublicSavSize > 0) _exe.RemoveReadonlyFile("public.sav");
+					if (PrivateSavSize > 0) _exe.RemoveReadonlyFile("private.sav");
+					if (BannerSavSize > 0) _exe.RemoveReadonlyFile("banner.sav");
 				}
 			}
 			else if (data.Length > 0)
 			{
-				_core.PutSaveRam(data, (uint)data.Length);
+				_core.PutSaveRam(_console, data, (uint)data.Length);
 			}
 		}
 	}

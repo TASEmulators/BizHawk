@@ -72,6 +72,30 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <summary>
+		/// Synthesizes a Mode2 sector subheader
+		/// </summary>
+		public static void SectorSubHeader(byte[] buffer8, int offset, byte form)
+		{
+			// see mirage_sector_generate_subheader
+			for (var i = 0; i < 8; i++) buffer8[offset + i] = 0;
+			if (form == 2)
+			{
+				// these are just 0 in form 1
+				buffer8[offset + 2] = 0x20;
+				buffer8[offset + 5] = 0x20;
+			}
+		}
+
+		/// <summary>
+		/// Synthesizes the EDC checksum for a Mode 1 data sector (and puts it in place)
+		/// </summary>
+		public static void EDC_Mode1(byte[] buf2352, int offset)
+		{
+			var edc = ECM.EDC_Calc(buf2352, offset, 2064);
+			ECM.PokeUint(buf2352, offset + 2064, edc);
+		}
+
+		/// <summary>
 		/// Synthesizes the EDC checksum for a Mode 2 Form 1 data sector (and puts it in place)
 		/// </summary>
 		public static void EDC_Mode2_Form1(byte[] buf2352, int offset)
@@ -92,19 +116,49 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// Synthesizes the complete ECM data (EDC + ECC) for a Mode 1 data sector (and puts it in place)
-		/// Make sure everything else in the sector userdata is done before calling this
+		/// Make sure everything else in the sector header and userdata is done before calling this
 		/// </summary>
-		public static void ECM_Mode1(byte[] buf2352, int offset, int LBA)
+		public static void ECM_Mode1(byte[] buf2352, int offset)
 		{
 			//EDC
-			var edc = ECM.EDC_Calc(buf2352, offset, 2064);
-			ECM.PokeUint(buf2352, offset + 2064, edc);
+			EDC_Mode1(buf2352, offset);
 
 			//reserved, zero
 			for (var i = 0; i < 8; i++) buf2352[offset + 2068 + i] = 0;
 
 			//ECC
 			ECM.ECC_Populate(buf2352, offset, buf2352, offset, false);
+		}
+
+		/// <summary>
+		/// Synthesizes the complete ECM data (Subheader + EDC + ECC) for a Mode 2 Form 1 data sector (and puts it in place)
+		/// Make sure everything else in the sector header and userdata is done before calling this
+		/// </summary>
+		public static void ECM_Mode2_Form1(byte[] buf2352, int offset)
+		{
+			//Subheader
+			SectorSubHeader(buf2352, offset + 16, 1);
+
+			//EDC
+			EDC_Mode2_Form1(buf2352, offset);
+
+			//ECC
+			ECM.ECC_Populate(buf2352, offset, buf2352, offset, false);
+		}
+
+		/// <summary>
+		/// Synthesizes the complete ECM data (Subheader + EDC) for a Mode 2 Form 2 data sector (and puts it in place)
+		/// Make sure everything else in the userdata is done before calling this
+		/// </summary>
+		public static void ECM_Mode2_Form2(byte[] buf2352, int offset)
+		{
+			//Subheader
+			SectorSubHeader(buf2352, offset + 16, 2);
+
+			//EDC
+			EDC_Mode2_Form2(buf2352, offset);
+
+			//note that Mode 2 Form 2 does not have ECC
 		}
 
 		/// <summary>

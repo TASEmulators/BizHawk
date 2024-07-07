@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 
 using BizHawk.Emulation.Common;
@@ -8,6 +7,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public partial class N64 : IStatable
 	{
+		public bool AvoidRewind => false;
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			byte[] data = SaveStatePrivateBuff;

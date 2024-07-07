@@ -435,10 +435,7 @@ namespace PcxFileTypePlugin.Quantize
 						// Loop through children looking for leaves
 						for (int index = 0; index < 8; index++)
 						{
-							if (null != _children[index])
-							{
-								_children[index].ConstructPalette(palette, ref paletteIndex);
-							}
+							_children[index]?.ConstructPalette(palette, ref paletteIndex);
 						}
 					}
 				}

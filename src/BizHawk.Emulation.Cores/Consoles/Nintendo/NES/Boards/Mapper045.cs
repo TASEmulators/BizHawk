@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int CHR_OR()
 		{
 			int temp = regs[2] >> 4;
-			temp = temp << 8;
+			temp <<= 8;
 
 			int x = regs[0] | (temp);
 			return x;

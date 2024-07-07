@@ -1,4 +1,3 @@
-﻿using System;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
@@ -16,24 +15,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <summary>
 		/// Buffer for audio data
 		/// </summary>
-		private short[] audioBuffer = new short[0];
-		private uint _samplingRate = 0;
+		private short[] audioBuffer = Array.Empty<short>();
+
+		private int _samplingRate;
+
 		/// <summary>
 		/// Currently active sampling rate
 		/// </summary>
-		public uint SamplingRate
+		public int SamplingRate
 		{
 			get => _samplingRate;
 			private set
 			{
 				_samplingRate = value;
-				Resampler.ChangeRate(_samplingRate, 44100, _samplingRate, 44100);
+				Resampler.ChangeRate(_samplingRate, 44100);
 			}
 		}
+
 		/// <summary>
 		/// Resampler for audio output
 		/// </summary>
-		public SpeexResampler Resampler { get; private set; }
+		public SDLResampler Resampler { get; private set; }
+
 		public bool RenderSound { get; set; }
 
 		/// <summary>
@@ -44,8 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			this.api = new mupen64plusAudioApi(core);
 
 			_samplingRate = api.GetSamplingRate();
-			Resampler = new SpeexResampler((SpeexResampler.Quality)6, SamplingRate, 44100,
-				SamplingRate, 44100);
+			Resampler = new(SamplingRate, 44100);
 
 			coreAPI = core;
 			coreAPI.VInterrupt += DoAudioFrame;
@@ -57,19 +59,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// </summary>
 		public void DoAudioFrame()
 		{
-			uint m64pSamplingRate = api.GetSamplingRate();
+			var m64pSamplingRate = api.GetSamplingRate();
 			if (m64pSamplingRate != SamplingRate)
+			{
 				SamplingRate = m64pSamplingRate;
+			}
 
-			int audioBufferSize = api.GetAudioBufferSize();
+			var audioBufferSize = api.GetAudioBufferSize();
 			if (audioBuffer.Length < audioBufferSize)
+			{
 				audioBuffer = new short[audioBufferSize];
+			}
 
 			if (audioBufferSize > 0)
 			{
 				api.GetAudioBuffer(audioBuffer);
 				if (RenderSound)
+				{
 					Resampler.EnqueueSamples(audioBuffer, audioBufferSize / 2);
+				}
 			}
 		}
 

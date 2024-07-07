@@ -1,5 +1,4 @@
 ﻿using BizHawk.Emulation.Common;
-using System;
 
 /*
 	$FFFF          Interrupt Enable Flag

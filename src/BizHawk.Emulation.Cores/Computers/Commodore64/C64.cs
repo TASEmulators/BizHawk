@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,8 +14,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		[CoreConstructor(VSystemID.Raw.C64)]
 		public C64(CoreLoadParameters<C64Settings, C64SyncSettings> lp)
 		{
-			PutSyncSettings((C64SyncSettings)lp.SyncSettings ?? new C64SyncSettings());
-			PutSettings((C64Settings)lp.Settings ?? new C64Settings());
+			PutSyncSettings(lp.SyncSettings ?? new C64SyncSettings());
+			PutSettings(lp.Settings ?? new C64Settings());
 
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;

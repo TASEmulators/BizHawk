@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-using BizHawk.Emulation.Common;
-
 namespace BizHawk.Emulation.Common
 {
 	public abstract class PadSchemaControl
@@ -96,7 +94,7 @@ namespace BizHawk.Emulation.Common
 
 		public AnalogSchema(int x, int y, string nameX)
 			: base(new Point(x, y), nameX)
-			=> SecondaryName = nameX.Replace("X", "Y");
+			=> SecondaryName = nameX.Replace('X', 'Y');
 	}
 
 	/// <summary>An (X, Y) pair intended to be a screen coordinate (for zappers, mouse, stylus, etc.)</summary>
@@ -113,9 +111,7 @@ namespace BizHawk.Emulation.Common
 		/// <remarks>Using this ctor, the valid ranges for the X and Y axes are taken to be <c>(0..TargetSize.Width)</c> and <c>(0..TargetSize.Height)</c>.</remarks>
 		public TargetedPairSchema(int x, int y, string nameX)
 			: base(new Point(x, y), nameX)
-		{
-			SecondaryName = nameX.Replace("X", "Y");
-		}
+			=> SecondaryName = nameX.Replace('X', 'Y');
 
 		/// <remarks>Using this ctor, the valid ranges for the X and Y axes are taken to be <c>(0..maxX)</c> and <c>(0..maxY)</c>.</remarks>
 		public TargetedPairSchema(int x, int y, string nameX, int maxX, int maxY)

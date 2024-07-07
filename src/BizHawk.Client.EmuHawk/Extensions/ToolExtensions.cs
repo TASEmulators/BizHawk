@@ -1,9 +1,10 @@
-﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Forms;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
@@ -40,7 +41,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					//sentinel for newer format OpenAdvanced type code
 					if (romLoading)
 					{
-						if (filename.StartsWith("*"))
+						if (filename.StartsWith('*'))
 						{
 							var oa = OpenAdvancedSerializer.ParseWithLegacy(filename);
 							caption = oa.DisplayName;
@@ -75,7 +76,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 						{
 							//make a menuitem to show the last modified timestamp
 							var timestamp = File.GetLastWriteTime(hf.FullPathWithoutMember);
-							var tsmiTimestamp = new ToolStripLabel { Text = timestamp.ToString() };
+							var tsmiTimestamp = new ToolStripLabel { Text = timestamp.ToString(DateTimeFormatInfo.InvariantInfo) };
 
 							tsdd.Items.Add(tsmiTimestamp);
 							tsdd.Items.Add(new ToolStripSeparator());
@@ -125,12 +126,9 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 								var tsmiTest = new ToolStripMenuItem { Text = "&Shell Context Menu" };
 								tsmiTest.Click += (o, ev) =>
 								{
-									var tsddi = o as ToolStripDropDownItem;
+									var tsddi = (ToolStripDropDownItem)o;
 									tsddi.Owner.Update();
-									using var menu = new ContextMenu();
-									using var dummy = new Control();
-									Win32ShellContextMenu.ShowContextMenu(
-										hf.FullPathWithoutMember, menu.Handle, dummy.Handle, tsddi.Owner.Location.X, tsddi.Owner.Location.Y);
+									Win32ShellContextMenu.ShowContextMenu(hf.FullPathWithoutMember, tsddi.Owner.Handle, tsddi.Owner.Location.X, tsddi.Owner.Location.Y);
 								};
 								tsdd.Items.Add(tsmiTest);
 							}

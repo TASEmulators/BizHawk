@@ -5,19 +5,11 @@ namespace NLua.Method
 {
 	internal class MethodCache
 	{
-		public MethodCache()
-		{
-			args = Array.Empty<object>();
-			argTypes = Array.Empty<MethodArgs>();
-			outList = Array.Empty<int>();
-		}
 		private MethodBase _cachedMethod;
 
-		public MethodBase cachedMethod {
-			get
-			{
-				return _cachedMethod;
-			}
+		public MethodBase CachedMethod
+		{
+			get => _cachedMethod;
 			set
 			{
 				_cachedMethod = value;
@@ -31,11 +23,8 @@ namespace NLua.Method
 		}
 
 		public bool IsReturnVoid;
-		// List or arguments
-		public object[] args;
-		// Positions of out parameters
-		public int[] outList;
-		// Types of parameters
-		public MethodArgs[] argTypes;
+		public object[] args = Array.Empty<object>(); // List or arguments
+		public int[] outList = Array.Empty<int>(); // Positions of out parameters
+		public MethodArgs[] argTypes = Array.Empty<MethodArgs>(); // Types of parameters
 	}
 }

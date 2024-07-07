@@ -85,7 +85,8 @@ auto Cartridge::Flash::writeWord(u32 address, u64 data) -> void {
     }
     if(mode == Mode::Write) {
       for(u32 index = 0; index < 128; index += 2) {
-        u16 half = rdram.ram.read<Half>(source + index);
+        // FIXME: this is obviously wrong, the flash can't access RDRAM
+        u16 half = rdram.ram.read<Half>(source + index, "Flash");
         Memory::Writable::write<Half>(offset + index, half);
       }
     }

@@ -1,11 +1,12 @@
 #nullable enable
 
-using System;
 using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
 	/// <remarks>this was easier than trying to make static classes instantiable...</remarks>
+	/// TODO: Reconsider if we want to hand over the main form handle
+	/// This is only used in DirectInput, and it would work just as fine if a hidden window was created internally in its place
 	public interface IHostInputAdapter
 	{
 		string Desc { get; }

@@ -199,6 +199,7 @@
 			this.Name = "EditSubtitlesForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Subtitles";
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnClosed);
 			this.Load += new System.EventHandler(this.EditSubtitlesForm_Load);
 			((System.ComponentModel.ISupportInitialize)(this.SubGrid)).EndInit();
 			this.ResumeLayout(false);

@@ -1,8 +1,5 @@
 // NOTE: to match Mesen timings, set idleSynch to true at power on, and set start_up_offset to -3
 
-using System;
-using System.Linq;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
@@ -11,7 +8,7 @@ using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES : IEmulator, ISoundProvider/*, ICycleTiming*/
+	public partial class NES : IEmulator, ISoundProvider, ICycleTiming
 	{
 		internal static class RomChecksums
 		{
@@ -227,11 +224,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// apu has some specific power up bahaviour that we will emulate here
 			apu.NESHardReset();
 
-			if (SyncSettings.InitialWRamStatePattern != null && SyncSettings.InitialWRamStatePattern.Any())
+			var initWRAMPattern = SyncSettings.InitialWRamStatePattern;
+			if (initWRAMPattern.Length is not 0)
 			{
 				for (int i = 0; i < 0x800; i++)
 				{
-					ram[i] = SyncSettings.InitialWRamStatePattern[i % SyncSettings.InitialWRamStatePattern.Count];
+					ram[i] = initWRAMPattern[i % initWRAMPattern.Length];
 				}
 			}
 			else
@@ -896,7 +894,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					int r = pal[c, 0];
 					int g = pal[c, 1];
 					int b = pal[c, 2];
-					palette_compiled[c] = (int)unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
+					palette_compiled[c] = unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
 				}
 			}
 			else
@@ -910,7 +908,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					int g = pal[c, 1];
 					int b = pal[c, 2];
 					Palettes.ApplyDeemphasis(ref r, ref g, ref b, d);
-					palette_compiled[i] = (int)unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
+					palette_compiled[i] = unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
 				}
 			}
 		}
@@ -1017,7 +1015,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							{ 
 								ret = cheat_value[i]; 
 							}
-							else if ((cheat_compare_type[i] == 1) && ((int)ret == cheat_compare_val[i]))
+							else if ((cheat_compare_type[i] == 1) && (ret == cheat_compare_val[i]))
 							{
 								ret = cheat_value[i];
 							}					

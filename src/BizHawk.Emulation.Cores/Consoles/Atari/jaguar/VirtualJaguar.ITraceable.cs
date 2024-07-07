@@ -1,5 +1,4 @@
-﻿using System;
-
+using System.Text;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Jaguar
@@ -13,59 +12,59 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		private unsafe void MakeCPUTrace(IntPtr r)
 		{
-			uint* regs = (uint*)r;
-			var pc = regs[16] & 0xFFFFFF;
+			var regs = (uint*)r;
+			var pc = regs![16] & 0xFFFFFF;
 			var disasm = _disassembler.DisassembleM68K(this.AsMemoryDomains().SystemBus, pc, out _);
-			var regInfo = string.Empty;
-			for (int i = 0; i < 8; i++)
+			var regInfo = new StringBuilder(216);
+			for (var i = 0; i < 8; i++)
 			{
-				regInfo += $"D{i}:{regs[i]:X8} ";
+				regInfo.Append($"D{i}:{regs[i]:X8} ");
 			}
-			for (int i = 0; i < 8; i++)
+			for (var i = 0; i < 8; i++)
 			{
-				regInfo += $"A{i}:{regs[i + 8]:X8} ";
+				regInfo.Append($"A{i}:{regs[i + 8]:X8} ");
 			}
-			regInfo += $"SR:{regs[17]:X8} ";
+			regInfo.Append($"SR:{regs[17]:X8} ");
 			var sr = regs[17];
-			regInfo += string.Concat(
+			regInfo.Append(string.Concat(
 				(sr & 16) > 0 ? "X" : "x",
 				(sr & 8) > 0 ? "N" : "n",
 				(sr & 4) > 0 ? "Z" : "z",
 				(sr & 2) > 0 ? "V" : "v",
-				(sr & 1) > 0 ? "C" : "c");
-			regInfo += " (M68K)";
+				(sr & 1) > 0 ? "C" : "c"));
+			regInfo.Append(" (M68K)");
 
-			Tracer.Put(new(disassembly: $"{pc:X6}:  {disasm}".PadRight(50), registerInfo: regInfo));
+			Tracer.Put(new(disassembly: $"{pc:X6}:  {disasm}".PadRight(50), registerInfo: regInfo.ToString()));
 		}
 
 		private unsafe void MakeGPUTrace(uint pc, IntPtr r)
 		{
-			uint* regs = (uint*)r;
+			var regs = (uint*)r;
 			pc &= 0xFFFFFF;
 			var disasm = _disassembler.DisassembleRISC(true, this.AsMemoryDomains().SystemBus, pc, out _);
-			var regInfo = string.Empty;
-			for (int i = 0; i < 32; i++)
+			var regInfo = new StringBuilder(411);
+			for (var i = 0; i < 32; i++)
 			{
-				regInfo += $"r{i}:{regs[i]:X8} ";
+				regInfo.Append($"r{i}:{regs![i]:X8} ");
 			}
-			regInfo += "(GPU)";
+			regInfo.Append("(GPU)");
 
-			Tracer.Put(new(disassembly: $"{pc:X6}:  {disasm}".PadRight(50), registerInfo: regInfo));
+			Tracer.Put(new(disassembly: $"{pc:X6}:  {disasm}".PadRight(50), registerInfo: regInfo.ToString()));
 		}
 
 		private unsafe void MakeDSPTrace(uint pc, IntPtr r)
 		{
-			uint* regs = (uint*)r;
+			var regs = (uint*)r;
 			pc &= 0xFFFFFF;
 			var disasm = _disassembler.DisassembleRISC(false, this.AsMemoryDomains().SystemBus, pc, out _);
-			var regInfo = string.Empty;
-			for (int i = 0; i < 32; i++)
+			var regInfo = new StringBuilder(411);
+			for (var i = 0; i < 32; i++)
 			{
-				regInfo += $"r{i}:{regs[i]:X8} ";
+				regInfo.Append($"r{i}:{regs![i]:X8} ");
 			}
-			regInfo += "(DSP)";
+			regInfo.Append("(DSP)");
 
-			Tracer.Put(new(disassembly: $"{pc:X6}:  {disasm}".PadRight(50), registerInfo: regInfo));
+			Tracer.Put(new(disassembly: $"{pc:X6}:  {disasm}".PadRight(50), registerInfo: regInfo.ToString()));
 		}
 	}
 }

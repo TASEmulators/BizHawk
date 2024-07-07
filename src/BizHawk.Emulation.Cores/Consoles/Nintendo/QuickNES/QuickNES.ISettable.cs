@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
@@ -50,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// </summary>
 		private QuickNESSyncSettings _syncSettingsNext;
 
+		[CoreSettings]
 		public class QuickNESSettings
 		{
 			[DefaultValue(8)]
@@ -123,10 +123,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				else
 				{
 					// use quickNES's deemph calculator
-					for (int c = 0; c < 64; c++)
+					for (int c = 0; c < 64 * 8; c++)
 					{
 						int a = c & 63;
-						byte[] inp = { (byte)pal[a, 0], (byte)pal[a, 1], (byte)pal[a, 2] };
+						byte[] inp = { pal[a, 0], pal[a, 1], pal[a, 2] };
 						byte[] outp = new byte[3];
 						Nes_NTSC_Colors.Emphasis(inp, outp, c);
 						_Palette[c * 3] = outp[0];
@@ -150,17 +150,32 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
+		public enum Port1PeripheralOption : byte
+		{
+			Unplugged = 0x0,
+			Gamepad = 0x1,
+			FourScore = 0x2,
+			//FourScore2 = 0x3, // not available for port 1
+		}
+
+		public enum Port2PeripheralOption : byte
+		{
+			Unplugged = 0x0,
+			Gamepad = 0x1,
+			//FourScore = 0x2, // not available for port 2
+			FourScore2 = 0x3,
+		}
+
+		[CoreSettings]
 		public class QuickNESSyncSettings
 		{
-			[DefaultValue(true)]
-			[DisplayName("Left Port Connected")]
-			[Description("Specifies whether or not the Left (Player 1) Controller is connected")]
-			public bool LeftPortConnected { get; set; }
+			[DefaultValue(Port1PeripheralOption.Gamepad)]
+			[DisplayName("Left Port Peripheral")]
+			public Port1PeripheralOption Port1 { get; set; } = Port1PeripheralOption.Gamepad;
 
-			[DefaultValue(false)]
-			[DisplayName("Right Port Connected")]
-			[Description("Specifies whether or not the Right (Player 2) Controller is connected")]
-			public bool RightPortConnected { get; set; }
+			[DefaultValue(Port2PeripheralOption.Unplugged)]
+			[DisplayName("Right Port Peripheral")]
+			public Port2PeripheralOption Port2 { get; set; } = Port2PeripheralOption.Unplugged;
 
 			public QuickNESSyncSettings()
 			{

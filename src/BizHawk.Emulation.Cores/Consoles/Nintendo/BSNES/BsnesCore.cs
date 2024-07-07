@@ -1,11 +1,13 @@
-using System;
 using System.IO;
 using System.Runtime.InteropServices;
+
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Components.W65816;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Waterbox;
 
 // http://wiki.superfamicom.org/snes/show/Backgrounds
 
@@ -29,6 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			_syncSettings = loadParameters.SyncSettings ?? new SnesSyncSettings();
 			SystemId = loadParameters.Game.System;
 			_isSGB = SystemId == VSystemID.Raw.SGB;
+			_currentMsuTrack = new ProxiedFile();
 
 			byte[] sgbRomData = null;
 			if (_isSGB)
@@ -57,13 +60,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				writeHookCb = WriteHook,
 				execHookCb = ExecHook,
 				timeCb = snes_time,
-				msuOpenCb = msu_open,
-				msuSeekCb = msu_seek,
-				msuReadCb = msu_read,
-				msuEndCb = msu_end
+				msuOpenCb = MsuOpenAudio,
+				msuSeekCb = _currentMsuTrack.Seek,
+				msuReadCb = _currentMsuTrack.ReadByte,
+				msuEndCb = _currentMsuTrack.AtEnd
 			};
 
-			Api = new BsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm, callbacks.AllDelegatesInMemoryOrder());
+			Api = new(PathUtils.DllDirectoryPath, CoreComm, callbacks.AllDelegatesInMemoryOrder());
 
 			_controllers = new BsnesControllers(_syncSettings, subframe);
 
@@ -149,6 +152,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		private readonly BsnesControllers _controllers;
 		private readonly ITraceable _tracer;
+		private readonly ProxiedFile _currentMsuTrack;
 
 		private IController _controller;
 		private SimpleSyncSoundProvider _soundProvider;
@@ -361,35 +365,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 		}
 
-		private long snes_time()
-			=> DeterministicEmulation ? _clockTime : (long)(DateTime.Now - _epoch).TotalSeconds;
+		private bool MsuOpenAudio(ushort trackId) => _currentMsuTrack.OpenMsuTrack(_romPath, trackId);
 
-		private FileStream _currentMsuTrack;
-
-		private void msu_seek(long offset, bool relative)
-		{
-			_currentMsuTrack?.Seek(offset, relative ? SeekOrigin.Current : SeekOrigin.Begin);
-		}
-		private byte msu_read()
-		{
-			return (byte) (_currentMsuTrack?.ReadByte() ?? 0);
-		}
-
-		private void msu_open(ushort trackId)
-		{
-			_currentMsuTrack?.Dispose();
-			try
-			{
-				_currentMsuTrack = File.OpenRead($"{_romPath}-{trackId}.pcm");
-			}
-			catch
-			{
-				_currentMsuTrack = null;
-			}
-		}
-		private bool msu_end()
-		{
-			return _currentMsuTrack.Position == _currentMsuTrack.Length;
-		}
+		private long snes_time() => DeterministicEmulation ? _clockTime : (long)(DateTime.Now - _epoch).TotalSeconds;
 	}
 }

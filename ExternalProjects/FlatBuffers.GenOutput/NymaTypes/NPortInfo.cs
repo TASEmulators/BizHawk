@@ -13,7 +13,7 @@ public struct NPortInfo : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
   public static NPortInfo GetRootAsNPortInfo(ByteBuffer _bb) { return GetRootAsNPortInfo(_bb, new NPortInfo()); }
   public static NPortInfo GetRootAsNPortInfo(ByteBuffer _bb, NPortInfo obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -40,27 +40,31 @@ public struct NPortInfo : IFlatbufferObject
   public ArraySegment<byte>? GetDefaultDeviceShortNameBytes() { return __p.__vector_as_arraysegment(8); }
 #endif
   public byte[] GetDefaultDeviceShortNameArray() { return __p.__vector_as_array<byte>(8); }
-  public NymaTypes.NDeviceInfo? Devices(int j) { int o = __p.__offset(10); return o != 0 ? (NymaTypes.NDeviceInfo?)(new NymaTypes.NDeviceInfo()).__assign(__p.__indirect(__p.__vector(o) + j * 4), __p.bb) : null; }
-  public int DevicesLength { get { int o = __p.__offset(10); return o != 0 ? __p.__vector_len(o) : 0; } }
+  public NymaTypes.PortFlags Flags { get { int o = __p.__offset(10); return o != 0 ? (NymaTypes.PortFlags)__p.bb.Get(o + __p.bb_pos) : 0; } }
+  public NymaTypes.NDeviceInfo? Devices(int j) { int o = __p.__offset(12); return o != 0 ? (NymaTypes.NDeviceInfo?)(new NymaTypes.NDeviceInfo()).__assign(__p.__indirect(__p.__vector(o) + j * 4), __p.bb) : null; }
+  public int DevicesLength { get { int o = __p.__offset(12); return o != 0 ? __p.__vector_len(o) : 0; } }
 
   public static Offset<NymaTypes.NPortInfo> CreateNPortInfo(FlatBufferBuilder builder,
       StringOffset ShortNameOffset = default(StringOffset),
       StringOffset FullNameOffset = default(StringOffset),
       StringOffset DefaultDeviceShortNameOffset = default(StringOffset),
+      NymaTypes.PortFlags Flags = 0,
       VectorOffset DevicesOffset = default(VectorOffset)) {
-    builder.StartTable(4);
+    builder.StartTable(5);
     NPortInfo.AddDevices(builder, DevicesOffset);
     NPortInfo.AddDefaultDeviceShortName(builder, DefaultDeviceShortNameOffset);
     NPortInfo.AddFullName(builder, FullNameOffset);
     NPortInfo.AddShortName(builder, ShortNameOffset);
+    NPortInfo.AddFlags(builder, Flags);
     return NPortInfo.EndNPortInfo(builder);
   }
 
-  public static void StartNPortInfo(FlatBufferBuilder builder) { builder.StartTable(4); }
-  public static void AddShortName(FlatBufferBuilder builder, StringOffset ShortNameOffset) { builder.AddOffset(0, ShortNameOffset.Value, 0); }
-  public static void AddFullName(FlatBufferBuilder builder, StringOffset FullNameOffset) { builder.AddOffset(1, FullNameOffset.Value, 0); }
-  public static void AddDefaultDeviceShortName(FlatBufferBuilder builder, StringOffset DefaultDeviceShortNameOffset) { builder.AddOffset(2, DefaultDeviceShortNameOffset.Value, 0); }
-  public static void AddDevices(FlatBufferBuilder builder, VectorOffset DevicesOffset) { builder.AddOffset(3, DevicesOffset.Value, 0); }
+  public static void StartNPortInfo(FlatBufferBuilder builder) { builder.StartTable(5); }
+  public static void AddShortName(FlatBufferBuilder builder, StringOffset shortNameOffset) { builder.AddOffset(0, shortNameOffset.Value, 0); }
+  public static void AddFullName(FlatBufferBuilder builder, StringOffset fullNameOffset) { builder.AddOffset(1, fullNameOffset.Value, 0); }
+  public static void AddDefaultDeviceShortName(FlatBufferBuilder builder, StringOffset defaultDeviceShortNameOffset) { builder.AddOffset(2, defaultDeviceShortNameOffset.Value, 0); }
+  public static void AddFlags(FlatBufferBuilder builder, NymaTypes.PortFlags flags) { builder.AddByte(3, (byte)flags, 0); }
+  public static void AddDevices(FlatBufferBuilder builder, VectorOffset devicesOffset) { builder.AddOffset(4, devicesOffset.Value, 0); }
   public static VectorOffset CreateDevicesVector(FlatBufferBuilder builder, Offset<NymaTypes.NDeviceInfo>[] data) { builder.StartVector(4, data.Length, 4); for (int i = data.Length - 1; i >= 0; i--) builder.AddOffset(data[i].Value); return builder.EndVector(); }
   public static VectorOffset CreateDevicesVectorBlock(FlatBufferBuilder builder, Offset<NymaTypes.NDeviceInfo>[] data) { builder.StartVector(4, data.Length, 4); builder.Add(data); return builder.EndVector(); }
   public static VectorOffset CreateDevicesVectorBlock(FlatBufferBuilder builder, ArraySegment<Offset<NymaTypes.NDeviceInfo>> data) { builder.StartVector(4, data.Count, 4); builder.Add(data); return builder.EndVector(); }
@@ -79,6 +83,7 @@ public struct NPortInfo : IFlatbufferObject
     _o.ShortName = this.ShortName;
     _o.FullName = this.FullName;
     _o.DefaultDeviceShortName = this.DefaultDeviceShortName;
+    _o.Flags = this.Flags;
     _o.Devices = new List<NymaTypes.NDeviceInfoT>();
     for (var _j = 0; _j < this.DevicesLength; ++_j) {_o.Devices.Add(this.Devices(_j).HasValue ? this.Devices(_j).Value.UnPack() : null);}
   }
@@ -98,6 +103,7 @@ public struct NPortInfo : IFlatbufferObject
       _ShortName,
       _FullName,
       _DefaultDeviceShortName,
+      _o.Flags,
       _Devices);
   }
 }
@@ -107,15 +113,31 @@ public class NPortInfoT
   public string ShortName { get; set; }
   public string FullName { get; set; }
   public string DefaultDeviceShortName { get; set; }
+  public NymaTypes.PortFlags Flags { get; set; }
   public List<NymaTypes.NDeviceInfoT> Devices { get; set; }
 
   public NPortInfoT() {
     this.ShortName = null;
     this.FullName = null;
     this.DefaultDeviceShortName = null;
+    this.Flags = 0;
     this.Devices = null;
   }
 }
 
+
+static public class NPortInfoVerify
+{
+  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  {
+    return verifier.VerifyTableStart(tablePos)
+      && verifier.VerifyString(tablePos, 4 /*ShortName*/, false)
+      && verifier.VerifyString(tablePos, 6 /*FullName*/, false)
+      && verifier.VerifyString(tablePos, 8 /*DefaultDeviceShortName*/, false)
+      && verifier.VerifyField(tablePos, 10 /*Flags*/, 1 /*NymaTypes.PortFlags*/, 1, false)
+      && verifier.VerifyVectorOfTables(tablePos, 12 /*Devices*/, NymaTypes.NDeviceInfoVerify.Verify, false)
+      && verifier.VerifyTableEnd(tablePos);
+  }
+}
 
 }

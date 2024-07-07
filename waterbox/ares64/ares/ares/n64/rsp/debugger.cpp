@@ -22,8 +22,23 @@ auto RSP::Debugger::load(Node::Object parent) -> void {
   tracer.instruction = parent->append<Node::Debugger::Tracer::Instruction>("Instruction", "RSP");
   tracer.instruction->setAddressBits(12, 2);
   tracer.instruction->setDepth(64);
+  if constexpr(Accuracy::RSP::Recompiler) {
+    tracer.instruction->setToggle([&] {
+      rsp.recompiler.reset();
+      rsp.recompiler.callInstructionPrologue = tracer.instruction->enabled();
+    });
+  }
 
   tracer.io = parent->append<Node::Debugger::Tracer::Notification>("I/O", "RSP");
+
+  if (system.homebrewMode) {
+    for (auto& taintWord : taintMask.dmem) {
+      taintWord = {};
+    }
+    for (auto& taintWord : taintMask.imem) {
+      taintWord = {};
+    }
+  }
 }
 
 auto RSP::Debugger::unload() -> void {
@@ -86,6 +101,83 @@ auto RSP::Debugger::ioStatus(bool mode, u32 address, u32 data) -> void {
       message = {name.split("|").last(), " <= ", hex(data, 8L)};
     }
     tracer.io->notify(message);
+  }
+}
+
+auto RSP::Debugger::dmaReadWord(u32 rdramAddress, u32 pbusRegion, u32 pbusAddress) -> void {
+  if (system.homebrewMode) {
+    auto& line = cpu.dcache.line(rdramAddress);
+    u16 dmaMask = 0xff << (rdramAddress & 0xF);
+    auto& tm = !pbusRegion ? taintMask.dmem : taintMask.imem;
+    auto& taintWord = tm[pbusAddress >> 3];
+    if (line.hit(rdramAddress) && (line.dirty & dmaMask)) {
+      taintWord.dirty              = (line.dirty & dmaMask) >> (rdramAddress & 0x8);
+      taintWord.ctxDmaRdramAddress = rdramAddress & ~0x7;
+      taintWord.ctxDmaOriginPc     = rsp.dma.current.originPc;
+      taintWord.ctxDmaOriginCpu    = rsp.dma.current.originCpu;
+      taintWord.ctxCacheFillPc     = line.fillPc;
+      taintWord.ctxCacheDirtyPc    = line.dirtyPc;
+    } else {
+      taintWord.dirty = 0;
+    }
+  }
+}
+
+auto RSP::Debugger::dmemReadWord(u12 address, int size, const char *peripheral) -> void {
+  if (system.homebrewMode) {
+    u8 readMask = ((1 << size) - 1) << (address & 0x7);
+    auto& taintWord = taintMask.dmem[address >> 3];
+    if (taintWord.dirty & readMask) {
+      u32 rdramAddress = taintWord.ctxDmaRdramAddress + (address & 0x7);
+      string msg = { peripheral, " reading from DMEM address 0x", hex(address), " which contains a value which is not cache coherent\n"};
+      msg.append(string{ "\tCurrent RSP PC: 0x", hex(rsp.ipu.pc, 3L), "\n" });
+      msg.append(string{ "\tThe value read was previously written by RSP DMA from RDRAM address 0x", hex(rdramAddress, 8L), "\n" });
+      if(taintWord.ctxDmaOriginCpu) {
+        msg.append(string{ "\tRSP DMA started at CPU PC: 0x", hex(taintWord.ctxDmaOriginPc, 16L), "\n" });
+      } else {
+        msg.append(string{ "\tRSP DMA started at RSP PC: 0x", hex(taintWord.ctxDmaOriginPc,  3L), "\n" });
+      }
+      msg.append(string{ "\tThe relative CPU cacheline was dirty (missing cache writeback?)\n" });
+      msg.append(string{ "\tCacheline was last written at CPU PC: 0x", hex(taintWord.ctxCacheDirtyPc, 16L), "\n" });
+      msg.append(string{ "\tCacheline was loaded at CPU PC: 0x", hex(taintWord.ctxCacheFillPc, 16L), "\n" });
+      debug(unusual, msg);
+      taintWord.dirty = 0;
+    }
+  }
+}
+
+auto RSP::Debugger::dmemReadUnalignedWord(u12 address, int size, const char *peripheral) -> void {
+  if (system.homebrewMode) {
+    u32 addressAlignedStart = address            & ~7;
+    u32 addressAlignedEnd   = address + size - 1 & ~7;
+    if(addressAlignedStart == addressAlignedEnd) {
+      dmemReadWord(address, size, "RSP");
+    } else {
+      int sizeStart = addressAlignedEnd - address;
+      dmemReadWord(address,             sizeStart,        "RSP");
+      dmemReadWord(address + sizeStart, size - sizeStart, "RSP");
+    }
+  }
+}
+
+auto RSP::Debugger::dmemWriteWord(u12 address, int size, u64 value) -> void {
+  if (system.homebrewMode) {
+    auto& taintWord = taintMask.dmem[address >> 3];
+    taintWord.dirty &= ~(((1 << size) - 1) << (address & 0x7));
+  }
+}
+
+auto RSP::Debugger::dmemWriteUnalignedWord(u12 address, int size, u64 value) -> void {
+  if (system.homebrewMode) {
+    u32 addressAlignedStart = address            & ~7;
+    u32 addressAlignedEnd   = address + size - 1 & ~7;
+    if(addressAlignedStart == addressAlignedEnd) {
+      dmemWriteWord(address, size, value);
+    } else {
+      int sizeStart = addressAlignedEnd - address;
+      dmemWriteWord(address,             sizeStart,        value);
+      dmemWriteWord(address + sizeStart, size - sizeStart, value);
+    }
   }
 }
 

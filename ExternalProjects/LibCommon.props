@@ -7,6 +7,6 @@
 		<None Remove="*.sh" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Copy SourceFiles="$(OutputPath)$(MSBuildProjectName).dll" DestinationFolder="$(MSBuildProjectDirectory)/../../References/" />
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(MSBuildProjectDirectory)/../../References/" />
 	</Target>
 </Project>

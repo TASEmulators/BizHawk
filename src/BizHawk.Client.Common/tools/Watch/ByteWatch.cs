@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using BizHawk.Emulation.Common;
@@ -141,7 +140,7 @@ namespace BizHawk.Client.Common
 		/// Get a string representation of difference
 		/// between current value and the previous one
 		/// </summary>
-		public override string Diff => $"{_value - (short)_previous:+#;-#;0}";
+		public override string Diff => $"{_value - _previous:+#;-#;0}";
 
 		/// <summary>
 		/// Returns true if the Watch is valid, false otherwise

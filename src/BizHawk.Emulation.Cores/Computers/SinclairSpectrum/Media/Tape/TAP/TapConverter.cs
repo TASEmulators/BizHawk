@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -339,7 +338,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// add the last byte
-				for (byte c = 0x80; c != (byte)(0x80 >> BIT_COUNT_IN_LAST); c >>= 1)
+				for (byte c = 0x80; c != 0x80 >> BIT_COUNT_IN_LAST; c >>= 1)
 				{
 					if ((blockdata[pos] & c) != 0)
 					{

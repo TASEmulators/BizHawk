@@ -1,11 +1,8 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 using BizHawk.Common.IOExtensions;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 
@@ -26,8 +23,8 @@ namespace BizHawk.Tests.Testroms.GB
 					.Select(static setup => new object?[] { setup });
 			}
 
-			public string GetDisplayName(MethodInfo methodInfo, object?[] data)
-				=> $"{methodInfo.Name}({(CoreSetup) data[0]!})";
+			public string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
+				=> $"{methodInfo.Name}(\"{(CoreSetup) data![0]!}\")";
 		}
 
 		private const string ROM_EMBED_PATH = "res.BullyGB_artifact.bully.gb";

@@ -1,14 +1,14 @@
-﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
+using BizHawk.Bizware.Graphics.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
-	/// Thinly wraps a BizwareGL.GraphicsControl for EmuHawk's needs
+	/// Thinly wraps a GraphicsControl for EmuHawk's needs
 	/// </summary>
 	public class PresentationPanel
 	{
@@ -28,11 +28,9 @@ namespace BizHawk.Client.EmuHawk
 
 			_fullscreenToggleCallback = fullscreenToggleCallback;
 
-			GraphicsControl = new GraphicsControl(gl)
-			{
-				Dock = DockStyle.Fill,
-				BackColor = Color.Black
-			};
+			GraphicsControl = GraphicsControlFactory.CreateGraphicsControl(gl);
+			GraphicsControl.Dock = DockStyle.Fill;
+			GraphicsControl.BackColor = Color.Black;
 
 			// pass through these events to the form. we might need a more scalable solution for mousedown etc. for zapper and whatnot.
 			// http://stackoverflow.com/questions/547172/pass-through-mouse-events-to-parent-control (HTTRANSPARENT)
@@ -43,15 +41,20 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private bool _isDisposed;
+
 		public void Dispose()
 		{
-			if (_isDisposed) return;
+			if (_isDisposed)
+			{
+				return;
+			}
+
 			_isDisposed = true;
 			GraphicsControl.Dispose();
 		}
 
-		//graphics resources
-		public GraphicsControl GraphicsControl;
+		// graphics resources
+		public readonly GraphicsControl GraphicsControl;
 
 		public Control Control => GraphicsControl;
 		public static implicit operator Control(PresentationPanel self) { return self.GraphicsControl; }
@@ -61,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			if (e.Button == MouseButtons.Left)
 			{
 				// allow suppression of the toggle.. but if shift is pressed, always do the toggle
-				bool allowSuppress = Control.ModifierKeys != Keys.Shift;
+				var allowSuppress = Control.ModifierKeys != Keys.Shift;
 				if (_config.DispChromeAllowDoubleClickFullscreen || !allowSuppress)
 				{
 					_fullscreenToggleCallback(allowSuppress);

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 using BizHawk.Common;
@@ -38,7 +37,7 @@ namespace BizHawk.Emulation.Common
 
 			private const int OFFSET_REVISION = 0x2B; // 1 octet
 
-			private const int OFFSET_SELFDESTRUCT = 0x24; // 2 octets, but the lower 10 bits are always 0, so effectively 1 octet
+			private const int OFFSET_SELFDESTRUCT = 0x25; // 1 octet; technically 2 octets LE at 0x24, but the least-significant 10 bits are always 0
 
 			private const int OFFSET_SPEED = 0x28; // 1 octet
 

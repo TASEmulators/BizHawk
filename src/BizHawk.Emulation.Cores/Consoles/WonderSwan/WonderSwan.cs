@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,8 +14,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public WonderSwan(byte[] file, bool deterministic, WonderSwan.Settings settings, WonderSwan.SyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			_settings = (Settings)settings ?? new Settings();
-			_syncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
+			_settings = settings ?? new Settings();
+			_syncSettings = syncSettings ?? new SyncSettings();
 			
 			DeterministicEmulation = deterministic; // when true, remember to force the RTC flag!
 			Core = BizSwan.bizswan_new();

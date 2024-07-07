@@ -1,5 +1,5 @@
-auto VI::readWord(u32 address, u32& cycles) -> u32 {
-  address = (address & 0xfffff) >> 2;
+auto VI::readWord(u32 address, Thread& thread) -> u32 {
+  address = (address & 0x3f) >> 2;
   n32 data;
 
   if(address == 0) {
@@ -96,8 +96,8 @@ auto VI::readWord(u32 address, u32& cycles) -> u32 {
   return data;
 }
 
-auto VI::writeWord(u32 address, u32 data_, u32& cycles) -> void {
-  address = (address & 0xfffff) >> 2;
+auto VI::writeWord(u32 address, u32 data_, Thread& thread) -> void {
+  address = (address & 0x3f) >> 2;
   n32 data = data_;
 
   #if defined(VULKAN)

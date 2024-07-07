@@ -1919,9 +1919,8 @@ static MDFN_COLD void LoadEXE(const uint8 *data, const uint32 size, bool ignore_
  uint32 TextStart;
  uint32 TextSize;
 
- //TODO ERROR HANDLING
- //if(size < 0x800)
- // throw(MDFN_Error(0, "PS-EXE is too small."));
+ if(size < 0x800)
+  throw(MDFN_Error(0, "PS-EXE is too small."));
 
  PC = MDFN_de32lsb<false>(&data[0x10]);
  SP = MDFN_de32lsb<false>(&data[0x30]);
@@ -1937,16 +1936,14 @@ static MDFN_COLD void LoadEXE(const uint8 *data, const uint32 size, bool ignore_
 
  if(TextSize > 2048 * 1024)
  {
-	 //TODO ERROR HANDLING
-  //throw(MDFN_Error(0, "Text section too large"));
+  throw(MDFN_Error(0, "Text section too large"));
  }
 
- //TODO ERROR HANDLING
- /*if(TextSize > (size - 0x800))
+ if(TextSize > (size - 0x800))
   throw(MDFN_Error(0, "Text section recorded size is larger than data available in file.  Header=0x%08x, Available=0x%08x", TextSize, size - 0x800));
 
  if(TextSize < (size - 0x800))
-  throw(MDFN_Error(0, "Text section recorded size is smaller than data available in file.  Header=0x%08x, Available=0x%08x", TextSize, size - 0x800));*/
+  throw(MDFN_Error(0, "Text section recorded size is smaller than data available in file.  Header=0x%08x, Available=0x%08x", TextSize, size - 0x800));
 
  if(!TextMem.size())
  {

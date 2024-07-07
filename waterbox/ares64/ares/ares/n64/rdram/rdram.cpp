@@ -10,11 +10,15 @@ RDRAM rdram;
 auto RDRAM::load(Node::Object parent) -> void {
   node = parent->append<Node::Object>("RDRAM");
 
-  //4_MiB internal
-  //4_MiB expansion pak
-  ram.allocate(4_MiB + 4_MiB);
-
-  debugger.load(node);
+  if(!system.expansionPak) {
+    //4MB internal
+    ram.allocate(4_MiB); 
+  } else {
+    //4MB internal + 4MB expansion pak
+    ram.allocate(4_MiB + 4_MiB);
+  }
+  
+  debugger.load(node);                                                                                            
 }
 
 auto RDRAM::unload() -> void {

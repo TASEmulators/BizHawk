@@ -106,8 +106,8 @@ void dma_pi_read(void)
         {
             for (i=0; i < (pi_register.pi_rd_len_reg & 0xFFFFFF)+1; i++)
             {
-                sram[((pi_register.pi_cart_addr_reg-0x08000000)+i)^S8] =
-                    ((unsigned char*)rdram)[(pi_register.pi_dram_addr_reg+i)^S8];
+                sram[MASK_ADDR_U8(((pi_register.pi_cart_addr_reg-0x08000000)+i)^S8, sram)] =
+                    ((unsigned char*)rdram)[MASK_ADDR_U8((pi_register.pi_dram_addr_reg+i)^S8, rdram)];
             }
 
             sram_write_file();
@@ -145,8 +145,8 @@ void dma_pi_write(void)
 
                 for (i=0; i<(int)(pi_register.pi_wr_len_reg & 0xFFFFFF)+1; i++)
                 {
-                    ((unsigned char*)rdram)[(pi_register.pi_dram_addr_reg+i)^S8]=
-                        sram[(((pi_register.pi_cart_addr_reg-0x08000000)&0xFFFF)+i)^S8];
+                    ((unsigned char*)rdram)[MASK_ADDR_U8((pi_register.pi_dram_addr_reg+i)^S8, rdram)]=
+                        sram[MASK_ADDR_U8((((pi_register.pi_cart_addr_reg-0x08000000)&0xFFFF)+i)^S8, sram)];
                 }
 
                 flashram_info.use_flashram = -1;
@@ -204,8 +204,8 @@ void dma_pi_write(void)
             unsigned long rdram_address1 = pi_register.pi_dram_addr_reg+i+0x80000000;
             unsigned long rdram_address2 = pi_register.pi_dram_addr_reg+i+0xa0000000;
 
-            ((unsigned char*)rdram)[(pi_register.pi_dram_addr_reg+i)^S8]=
-                rom[(((pi_register.pi_cart_addr_reg-0x10000000)&0x3FFFFFF)+i)^S8];
+            ((unsigned char*)rdram)[MASK_ADDR_U8((pi_register.pi_dram_addr_reg+i)^S8, rdram)]=
+                rom[((((pi_register.pi_cart_addr_reg-0x10000000)&0x3FFFFFF)+i)^S8) & (rom_size - 1)];
 
             if (!invalid_code[rdram_address1>>12])
             {
@@ -234,8 +234,8 @@ void dma_pi_write(void)
     {
         for (i=0; i<(int)longueur; i++)
         {
-            ((unsigned char*)rdram)[(pi_register.pi_dram_addr_reg+i)^S8]=
-                rom[(((pi_register.pi_cart_addr_reg-0x10000000)&0x3FFFFFF)+i)^S8];
+            ((unsigned char*)rdram)[MASK_ADDR_U8((pi_register.pi_dram_addr_reg+i)^S8, rdram)]=
+                rom[MASK_ADDR_U8((((pi_register.pi_cart_addr_reg-0x10000000)&0x3FFFFFF)+i)^S8, rom)];
         }
     }
 
@@ -300,7 +300,7 @@ void dma_sp_write(void)
 
     for(j=0; j<count; j++) {
         for(i=0; i<length; i++) {
-            spmem[memaddr^S8] = dram[dramaddr^S8];
+            spmem[MASK_ADDR_U8(memaddr^S8, SP_DMEM)] = dram[MASK_ADDR_U8(dramaddr^S8, rdram)];
             memaddr++;
             dramaddr++;
         }
@@ -326,7 +326,7 @@ void dma_sp_read(void)
 
     for(j=0; j<count; j++) {
         for(i=0; i<length; i++) {
-            dram[dramaddr^S8] = spmem[memaddr^S8];
+            dram[MASK_ADDR_U8(dramaddr^S8, rdram)] = spmem[MASK_ADDR_U8(memaddr^S8, SP_DMEM)];
             memaddr++;
             dramaddr++;
         }
@@ -345,7 +345,7 @@ void dma_si_write(void)
 
     for (i=0; i<(64/4); i++)
     {
-        PIF_RAM[i] = sl(rdram[si_register.si_dram_addr/4+i]);
+        PIF_RAM[i] = sl(rdram[MASK_ADDR_U32(si_register.si_dram_addr/4+i, rdram)]);
     }
 
     update_pif_write();
@@ -366,7 +366,7 @@ void dma_si_read(void)
 
     for (i=0; i<(64/4); i++)
     {
-        rdram[si_register.si_dram_addr/4+i] = sl(PIF_RAM[i]);
+        rdram[MASK_ADDR_U32(si_register.si_dram_addr/4+i, rdram)] = sl(PIF_RAM[i]);
     }
 
     update_count();

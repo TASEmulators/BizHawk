@@ -2,17 +2,14 @@ using System;
 
 namespace NLua.Method
 {
+	// ReSharper disable once ClassNeverInstantiated.Global
 	public class LuaDelegate
 	{
 		public LuaFunction Function;
 		public Type[] ReturnTypes;
 
-		public LuaDelegate()
-		{
-			Function = null;
-			ReturnTypes = null;
-		}
-
+		// ReSharper disable once UnusedMember.Global
+		// ReSharper disable once ParameterTypeCanBeEnumerable.Global
 		public object CallFunction(object[] args, object[] inArgs, int[] outArgs)
 		{
 			// args is the return array of arguments, inArgs is the actual array
@@ -20,7 +17,7 @@ namespace NLua.Method
 			// has the positions of out parameters
 			object returnValue;
 			int iRefArgs;
-			object[] returnValues = Function.Call(inArgs, ReturnTypes);
+			var returnValues = Function.Call(inArgs, ReturnTypes);
 
 			if (ReturnTypes[0] == typeof(void))
 			{
@@ -35,9 +32,9 @@ namespace NLua.Method
 
 			// Sets the value of out and ref parameters (from
 			// the values returned by the Lua function).
-			for (int i = 0; i < outArgs.Length; i++)
+			foreach (var t in outArgs)
 			{
-				args[outArgs[i]] = returnValues[iRefArgs];
+				args[t] = returnValues[iRefArgs];
 				iRefArgs++;
 			}
 

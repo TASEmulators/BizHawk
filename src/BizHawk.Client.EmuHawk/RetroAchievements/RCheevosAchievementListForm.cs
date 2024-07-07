@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -32,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void Restart(IEnumerable<RCheevos.Cheevo> cheevos, Func<int, string> getCheevoProgress)
+		public void Restart(IEnumerable<RCheevos.Cheevo> cheevos, Func<uint, string> getCheevoProgress)
 		{
 			flowLayoutPanel1.Controls.Clear();
 			DisposeCheevoForms();
@@ -52,14 +51,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_updateCooldown = 5;
 
-				for (int i = 0; i < _cheevoForms.Length; i++)
+				foreach (var form in _cheevoForms)
 				{
-					_cheevoForms[i].OnFrameAdvance(hardcore);
+					form.OnFrameAdvance(hardcore);
 				}
 
 				var reorderedForms = _cheevoForms.OrderByDescending(f => f.OrderByKey()).ToArray();
 
-				for (int i = 0; i < _cheevoForms.Length; i++)
+				for (var i = 0; i < _cheevoForms.Length; i++)
 				{
 					if (_cheevoForms[i] != reorderedForms[i])
 					{

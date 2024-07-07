@@ -1,8 +1,8 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -126,7 +126,7 @@ namespace BizHawk.Client.Common
 
 		public void Add(TasMovieMarker item, bool skipHistory)
 		{
-			var existingItem = this.FirstOrDefault(m => m.Frame == item.Frame);
+			var existingItem = Find(m => m.Frame == item.Frame);
 			if (existingItem != null)
 			{
 				if (existingItem.Message != item.Message)
@@ -296,18 +296,14 @@ namespace BizHawk.Client.Common
 
 		public TasMovieMarker Previous(int currentFrame)
 		{
-			return this
-				.Where(m => m.Frame < currentFrame)
-				.OrderBy(m => m.Frame)
-				.LastOrDefault();
+			return PreviousOrCurrent(currentFrame - 1);
 		}
 
 		public TasMovieMarker PreviousOrCurrent(int currentFrame)
 		{
-			return this
-				.Where(m => m.Frame <= currentFrame)
-				.OrderBy(m => m.Frame)
-				.LastOrDefault();
+			int lowerBoundIndex = this.LowerBoundBinarySearch(static m => m.Frame, currentFrame);
+
+			return lowerBoundIndex < 0 ? null : this[lowerBoundIndex];
 		}
 
 		public TasMovieMarker Next(int currentFrame)
@@ -325,12 +321,20 @@ namespace BizHawk.Client.Common
 
 		public bool IsMarker(int frame)
 		{
-			return this.Any(m => m == frame);
+			// TODO: could use a BinarySearch here, but CollectionExtensions.BinarySearch currently throws
+			// an exception on failure, which is probably so expensive it nullifies any performance benefits
+			foreach (var marker in this)
+			{
+				if (marker.Frame > frame) return false;
+				if (marker.Frame == frame) return true;
+			}
+
+			return false;
 		}
 
 		public TasMovieMarker Get(int frame)
 		{
-			return this.FirstOrDefault(m => m == frame);
+			return Find(m => m == frame);
 		}
 		
 		public void ShiftAt(int frame, int offset)

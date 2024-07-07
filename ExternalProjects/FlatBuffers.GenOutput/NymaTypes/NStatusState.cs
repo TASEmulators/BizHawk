@@ -13,7 +13,7 @@ public struct NStatusState : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_23_5_26(); }
   public static NStatusState GetRootAsNStatusState(ByteBuffer _bb) { return GetRootAsNStatusState(_bb, new NStatusState()); }
   public static NStatusState GetRootAsNStatusState(ByteBuffer _bb, NStatusState obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -47,9 +47,9 @@ public struct NStatusState : IFlatbufferObject
   }
 
   public static void StartNStatusState(FlatBufferBuilder builder) { builder.StartTable(3); }
-  public static void AddShortName(FlatBufferBuilder builder, StringOffset ShortNameOffset) { builder.AddOffset(0, ShortNameOffset.Value, 0); }
-  public static void AddName(FlatBufferBuilder builder, StringOffset NameOffset) { builder.AddOffset(1, NameOffset.Value, 0); }
-  public static void AddColor(FlatBufferBuilder builder, int Color) { builder.AddInt(2, Color, 0); }
+  public static void AddShortName(FlatBufferBuilder builder, StringOffset shortNameOffset) { builder.AddOffset(0, shortNameOffset.Value, 0); }
+  public static void AddName(FlatBufferBuilder builder, StringOffset nameOffset) { builder.AddOffset(1, nameOffset.Value, 0); }
+  public static void AddColor(FlatBufferBuilder builder, int color) { builder.AddInt(2, color, 0); }
   public static Offset<NymaTypes.NStatusState> EndNStatusState(FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<NymaTypes.NStatusState>(o);
@@ -89,5 +89,17 @@ public class NStatusStateT
   }
 }
 
+
+static public class NStatusStateVerify
+{
+  static public bool Verify(Google.FlatBuffers.Verifier verifier, uint tablePos)
+  {
+    return verifier.VerifyTableStart(tablePos)
+      && verifier.VerifyString(tablePos, 4 /*ShortName*/, false)
+      && verifier.VerifyString(tablePos, 6 /*Name*/, false)
+      && verifier.VerifyField(tablePos, 8 /*Color*/, 4 /*int*/, 4, false)
+      && verifier.VerifyTableEnd(tablePos);
+  }
+}
 
 }

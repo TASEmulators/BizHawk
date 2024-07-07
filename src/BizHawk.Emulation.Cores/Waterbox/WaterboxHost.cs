@@ -1,8 +1,10 @@
-﻿using BizHawk.Common;
+using System.IO;
+using System.Runtime.InteropServices;
+
+using BizHawk.Common;
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
-using System;
-using System.IO;
+
 using static BizHawk.Emulation.Cores.Waterbox.WaterboxHostNative;
 
 namespace BizHawk.Emulation.Cores.Waterbox
@@ -68,7 +70,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	{
 		private IntPtr _nativeHost;
 		private int _enterCount;
-		private object _keepAliveDelegate;
 
 		private static readonly WaterboxHostNative NativeImpl;
 		static WaterboxHost()
@@ -81,18 +82,75 @@ namespace BizHawk.Emulation.Cores.Waterbox
 #endif
 		}
 
-		private ReadCallback Reader(Stream s)
+		private class ReadWriteWrapper : IDisposable
 		{
-			var ret = MakeCallbackForReader(s);
-			_keepAliveDelegate = ret;
-			return ret;
+			private GCHandle _handle;
+			private readonly ISpanStream _backingSpanStream;
+			private readonly Stream _backingStream;
+			private readonly bool _disposeStreamAfterUse;
+
+			public IntPtr WaterboxHandle => GCHandle.ToIntPtr(_handle);
+
+			public ReadWriteWrapper(Stream backingStream, bool disposeStreamAfterUse = true)
+			{
+				_backingStream = backingStream;
+				_disposeStreamAfterUse = disposeStreamAfterUse;
+				_backingSpanStream = SpanStream.GetOrBuild(_backingStream);
+				_handle = GCHandle.Alloc(this, GCHandleType.Weak);
+			}
+
+			public unsafe IntPtr Read(IntPtr data, UIntPtr size)
+			{
+				try
+				{
+					var count = (int)size;
+					var n = _backingSpanStream.Read(new((void*)data, count));
+					return Z.SS(n);
+				}
+				catch
+				{
+					return Z.SS(-1);
+				}
+			}
+
+			public unsafe int Write(IntPtr data, UIntPtr size)
+			{
+				try
+				{
+					var count = (int)size;
+					_backingSpanStream.Write(new((void*)data, count));
+					return 0;
+				}
+				catch
+				{
+					return -1;
+				}
+			}
+
+			public void Dispose()
+			{
+				if (_disposeStreamAfterUse) _backingStream.Dispose();
+				_handle.Free();
+			}
 		}
-		private WriteCallback Writer(Stream s)
+
+		private static IntPtr ReadCallback(IntPtr userdata, IntPtr data, UIntPtr size)
 		{
-			var ret = MakeCallbackForWriter(s);
-			_keepAliveDelegate = ret;
-			return ret;
+			var handle = GCHandle.FromIntPtr(userdata);
+			var reader = (ReadWriteWrapper)handle.Target;
+			return reader.Read(data, size);
 		}
+
+		private static int WriteCallback(IntPtr userdata, IntPtr data, UIntPtr size)
+		{
+			var handle = GCHandle.FromIntPtr(userdata);
+			var writer = (ReadWriteWrapper)handle.Target;
+			return writer.Write(data, size);
+		}
+
+		// cache these delegates so they aren't GC'd
+		private static readonly ReadCallback _readCallback = ReadCallback;
+		private static readonly WriteCallback _writeCallback = WriteCallback;
 
 		public WaterboxHost(WaterboxOptions opt)
 		{
@@ -109,26 +167,25 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			var path = Path.Combine(opt.Path, moduleName);
 			var zstpath = path + ".zst";
-			byte[] data;
 			if (File.Exists(zstpath))
 			{
+				using var zstd = new Zstd();
 				using var fs = new FileStream(zstpath, FileMode.Open, FileAccess.Read);
-				data = Zstd.DecompressZstdStream(fs).ToArray();
+				using var reader = new ReadWriteWrapper(zstd.CreateZstdDecompressionStream(fs));
+				NativeImpl.wbx_create_host(nativeOpts, opt.Filename, _readCallback, reader.WaterboxHandle, out var retobj);
+				_nativeHost = retobj.GetDataOrThrow();
 			}
 			else
 			{
-				data = File.ReadAllBytes(path);
+				using var reader = new ReadWriteWrapper(new FileStream(path, FileMode.Open, FileAccess.Read));
+				NativeImpl.wbx_create_host(nativeOpts, opt.Filename, _readCallback, reader.WaterboxHandle, out var retobj);
+				_nativeHost = retobj.GetDataOrThrow();
 			}
-
-			var retobj = new ReturnData();
-			NativeImpl.wbx_create_host(nativeOpts, opt.Filename, Reader(new MemoryStream(data, false)), IntPtr.Zero, retobj);
-			_nativeHost = retobj.GetDataOrThrow();
 		}
 
 		public IntPtr GetProcAddrOrZero(string entryPoint)
 		{
-			var retobj = new ReturnData();
-			NativeImpl.wbx_get_proc_addr_raw(_nativeHost, entryPoint, retobj);
+			NativeImpl.wbx_get_proc_addr_raw(_nativeHost, entryPoint, out var retobj);
 			return retobj.GetDataOrThrow();
 		}
 
@@ -147,22 +204,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public IntPtr GetCallbackProcAddr(IntPtr exitPoint, int slot)
 		{
-			var retobj = new ReturnData();
-			NativeImpl.wbx_get_callback_addr(_nativeHost, exitPoint, slot, retobj);
+			NativeImpl.wbx_get_callback_addr(_nativeHost, exitPoint, slot, out var retobj);
 			return retobj.GetDataOrThrow();
 		}
 
 		public IntPtr GetCallinProcAddr(IntPtr entryPoint)
 		{
-			var retobj = new ReturnData();
-			NativeImpl.wbx_get_callin_addr(_nativeHost, entryPoint, retobj);
+			NativeImpl.wbx_get_callin_addr(_nativeHost, entryPoint, out var retobj);
 			return retobj.GetDataOrThrow();
 		}
 
 		public void Seal()
 		{
-			var retobj = new ReturnData();
-			NativeImpl.wbx_seal(_nativeHost, retobj);
+			NativeImpl.wbx_seal(_nativeHost, out var retobj);
 			retobj.GetDataOrThrow();
 			Console.WriteLine("WaterboxHost Sealed!");
 		}
@@ -174,8 +228,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <param name="name">the filename that the unmanaged core will access the file by</param>
 		public void AddReadonlyFile(byte[] data, string name)
 		{
-			var retobj = new ReturnData();
-			NativeImpl.wbx_mount_file(_nativeHost, name, Reader(new MemoryStream(data, false)), IntPtr.Zero, false, retobj);
+			using var reader = new ReadWriteWrapper(new MemoryStream(data, false));
+			NativeImpl.wbx_mount_file(_nativeHost, name, _readCallback, reader.WaterboxHandle, false, out var retobj);
 			retobj.GetDataOrThrow();
 		}
 
@@ -185,8 +239,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public void RemoveReadonlyFile(string name)
 		{
-			var retobj = new ReturnData();
-			NativeImpl.wbx_unmount_file(_nativeHost, name, null, IntPtr.Zero, retobj);
+			NativeImpl.wbx_unmount_file(_nativeHost, name, null, IntPtr.Zero, out var retobj);
 			retobj.GetDataOrThrow();
 		}
 
@@ -196,8 +249,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public void AddTransientFile(byte[] data, string name)
 		{
-			var retobj = new ReturnData();
-			NativeImpl.wbx_mount_file(_nativeHost, name, Reader(new MemoryStream(data, false)), IntPtr.Zero, true, retobj);
+			using var reader = new ReadWriteWrapper(new MemoryStream(data, false));
+			NativeImpl.wbx_mount_file(_nativeHost, name, _readCallback, reader.WaterboxHandle, true, out var retobj);
 			retobj.GetDataOrThrow();
 		}
 
@@ -207,9 +260,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <returns>The state of the file when it was removed</returns>
 		public byte[] RemoveTransientFile(string name)
 		{
-			var retobj = new ReturnData();
 			var ms = new MemoryStream();
-			NativeImpl.wbx_unmount_file(_nativeHost, name, Writer(ms), IntPtr.Zero, retobj);
+			using var writer = new ReadWriteWrapper(ms);
+			NativeImpl.wbx_unmount_file(_nativeHost, name, _writeCallback, writer.WaterboxHandle, out var retobj);
 			retobj.GetDataOrThrow();
 			return ms.ToArray();
 		}
@@ -262,13 +315,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private class WaterboxPagesDomain : MemoryDomain
 		{
-			protected readonly WaterboxHost _host;
+			private readonly WaterboxHost _host;
+
 			public WaterboxPagesDomain(WaterboxHost host)
 			{
 				_host = host;
 
-				var retobj = new ReturnData();
-				NativeImpl.wbx_get_page_len(_host._nativeHost, retobj);
+				NativeImpl.wbx_get_page_len(_host._nativeHost, out var retobj);
 
 				Name = "Waterbox PageData";
 				Size = (long)retobj.GetDataOrThrow();
@@ -279,8 +332,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			public override byte PeekByte(long addr)
 			{
-				var retobj = new ReturnData();
-				NativeImpl.wbx_get_page_data(_host._nativeHost, Z.SU(addr), retobj);
+				NativeImpl.wbx_get_page_data(_host._nativeHost, Z.SU(addr), out var retobj);
 				return (byte)retobj.GetDataOrThrow();
 			}
 
@@ -290,17 +342,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
+		public bool AvoidRewind => false;
+
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			var retobj = new ReturnData();
-			NativeImpl.wbx_save_state(_nativeHost, Writer(bw.BaseStream), IntPtr.Zero, retobj);
+			using var writer = new ReadWriteWrapper(bw.BaseStream, false);
+			NativeImpl.wbx_save_state(_nativeHost, _writeCallback, writer.WaterboxHandle, out var retobj);
 			retobj.GetDataOrThrow();
 		}
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			var retobj = new ReturnData();
-			NativeImpl.wbx_load_state(_nativeHost, Reader(br.BaseStream), IntPtr.Zero, retobj);
+			using var reader = new ReadWriteWrapper(br.BaseStream, false);
+			NativeImpl.wbx_load_state(_nativeHost, _readCallback, reader.WaterboxHandle, out var retobj);
 			retobj.GetDataOrThrow();
 		}
 
@@ -308,8 +362,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			if (_enterCount == 0)
 			{
-				var retobj = new ReturnData();
-				NativeImpl.wbx_activate_host(_nativeHost, retobj);
+				NativeImpl.wbx_activate_host(_nativeHost, out var retobj);
 				retobj.GetDataOrThrow();
 			}
 			_enterCount++;
@@ -317,16 +370,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public void Exit()
 		{
-			if (_enterCount <= 0)
+			switch (_enterCount)
 			{
-				throw new InvalidOperationException();
+				case <= 0:
+					throw new InvalidOperationException();
+				case 1:
+					NativeImpl.wbx_deactivate_host(_nativeHost, out var retobj);
+					retobj.GetDataOrThrow();
+					break;
 			}
-			else if (_enterCount == 1)
-			{
-				var retobj = new ReturnData();
-				NativeImpl.wbx_deactivate_host(_nativeHost, retobj);
-				retobj.GetDataOrThrow();
-			}
+
 			_enterCount--;
 		}
 
@@ -334,13 +387,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			if (_nativeHost != IntPtr.Zero)
 			{
-				var retobj = new ReturnData();
 				if (_enterCount != 0)
 				{
-					NativeImpl.wbx_deactivate_host(_nativeHost, retobj);
+					NativeImpl.wbx_deactivate_host(_nativeHost, out _);
 					Console.Error.WriteLine("Warn: Disposed of WaterboxHost which was active");
 				}
-				NativeImpl.wbx_destroy_host(_nativeHost, retobj);
+				NativeImpl.wbx_destroy_host(_nativeHost, out _);
 				_enterCount = 0;
 				_nativeHost = IntPtr.Zero;
 				GC.SuppressFinalize(this);

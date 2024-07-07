@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System;
+
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -33,22 +33,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private static readonly int[] ULAPalette =
 		{
 			Colors.ARGB(0x00, 0x00, 0x00), // Black
-            Colors.ARGB(0x00, 0x00, 0xD7), // Blue
-            Colors.ARGB(0xD7, 0x00, 0x00), // Red
-            Colors.ARGB(0xD7, 0x00, 0xD7), // Magenta
-            Colors.ARGB(0x00, 0xD7, 0x00), // Green
-            Colors.ARGB(0x00, 0xD7, 0xD7), // Cyan
-            Colors.ARGB(0xD7, 0xD7, 0x00), // Yellow
-            Colors.ARGB(0xD7, 0xD7, 0xD7), // White
-            Colors.ARGB(0x00, 0x00, 0x00), // Bright Black
-            Colors.ARGB(0x00, 0x00, 0xFF), // Bright Blue
-            Colors.ARGB(0xFF, 0x00, 0x00), // Bright Red
-            Colors.ARGB(0xFF, 0x00, 0xFF), // Bright Magenta
-            Colors.ARGB(0x00, 0xFF, 0x00), // Bright Green
-            Colors.ARGB(0x00, 0xFF, 0xFF), // Bright Cyan
-            Colors.ARGB(0xFF, 0xFF, 0x00), // Bright Yellow
-            Colors.ARGB(0xFF, 0xFF, 0xFF), // Bright White
-        };
+			Colors.ARGB(0x00, 0x00, 0xD7), // Blue
+			Colors.ARGB(0xD7, 0x00, 0x00), // Red
+			Colors.ARGB(0xD7, 0x00, 0xD7), // Magenta
+			Colors.ARGB(0x00, 0xD7, 0x00), // Green
+			Colors.ARGB(0x00, 0xD7, 0xD7), // Cyan
+			Colors.ARGB(0xD7, 0xD7, 0x00), // Yellow
+			Colors.ARGB(0xD7, 0xD7, 0xD7), // White
+			Colors.ARGB(0x00, 0x00, 0x00), // Bright Black
+			Colors.ARGB(0x00, 0x00, 0xFF), // Bright Blue
+			Colors.ARGB(0xFF, 0x00, 0x00), // Bright Red
+			Colors.ARGB(0xFF, 0x00, 0xFF), // Bright Magenta
+			Colors.ARGB(0x00, 0xFF, 0x00), // Bright Green
+			Colors.ARGB(0x00, 0xFF, 0xFF), // Bright Cyan
+			Colors.ARGB(0xFF, 0xFF, 0x00), // Bright Yellow
+			Colors.ARGB(0xFF, 0xFF, 0xFF), // Bright White
+		};
 
 		/// <summary>
 		/// The CPU speed
@@ -309,46 +309,46 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				int scrPix = pix - _ula.FirstPaperTState;
 				int scrLin = line - _ula.FirstPaperLine;
 
-				if ((line >= (_ula.FirstPaperLine - _ula.BorderTopHeight)) && (line < (_ula.FirstPaperLine + 192 + _ula.BorderBottomHeight)) &&
-					(pix >= (_ula.FirstPaperTState - _ula.BorderLeftTime)) && (pix < (_ula.FirstPaperTState + 128 + _ula.BorderRightTime)))
+				if (_ula.FirstPaperLine - _ula.BorderTopHeight <= line && line < _ula.FirstPaperLine + 192 + _ula.BorderBottomHeight
+					&& _ula.FirstPaperTState - _ula.BorderLeftTime <= pix && pix < _ula.FirstPaperTState + 128 + _ula.BorderRightTime)
 				{
 					// visibleArea (vertical)
-					if ((line >= _ula.FirstPaperLine) && (line < (_ula.FirstPaperLine + 192)) &&
-						(pix >= _ula.FirstPaperTState) && (pix < (_ula.FirstPaperTState + 128)))
+					if (_ula.FirstPaperLine <= line && line < _ula.FirstPaperLine + 192
+						&& _ula.FirstPaperTState <= pix && pix < _ula.FirstPaperTState + 128)
 					{
 						// pixel area
 						switch (scrPix & 7)
 						{
 							case 0:
-								Renderer[item].RAction = RenderAction.Shift1AndFetchByte2;   // shift 1 + fetch B2
-																							 // +4 = prefetch!
+								Renderer[item].RAction = RenderAction.Shift1AndFetchByte2; // shift 1 + fetch B2
+								// +4 = prefetch!
 								Renderer[item].ByteAddress = CalculateByteAddress(scrPix + 4, scrLin);
 								break;
 							case 1:
-								Renderer[item].RAction = RenderAction.Shift1AndFetchAttribute2;   // shift 1 + fetch A2
-																								  // +3 = prefetch!
+								Renderer[item].RAction = RenderAction.Shift1AndFetchAttribute2; // shift 1 + fetch A2
+								// +3 = prefetch!
 								Renderer[item].AttributeAddress = CalculateAttributeAddress(scrPix + 3, scrLin);
 								break;
 							case 2:
-								Renderer[item].RAction = RenderAction.Shift1;   // shift 1
+								Renderer[item].RAction = RenderAction.Shift1; // shift 1
 								break;
 							case 3:
-								Renderer[item].RAction = RenderAction.Shift1Last;   // shift 1 (last)
+								Renderer[item].RAction = RenderAction.Shift1Last; // shift 1 (last)
 								break;
 							case 4:
-								Renderer[item].RAction = RenderAction.Shift2;   // shift 2
+								Renderer[item].RAction = RenderAction.Shift2; // shift 2
 								break;
 							case 5:
-								Renderer[item].RAction = RenderAction.Shift2;   // shift 2
+								Renderer[item].RAction = RenderAction.Shift2; // shift 2
 								break;
 							case 6:
 								if (pix < (_ula.FirstPaperTState + 128 - 2))
 								{
-									Renderer[item].RAction = RenderAction.Shift2AndFetchByte1;   // shift 2 + fetch B2
+									Renderer[item].RAction = RenderAction.Shift2AndFetchByte1; // shift 2 + fetch B2
 								}
 								else
 								{
-									Renderer[item].RAction = RenderAction.Shift2;             // shift 2
+									Renderer[item].RAction = RenderAction.Shift2; // shift 2
 								}
 
 								// +2 = prefetch!
@@ -358,11 +358,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 								if (pix < (_ula.FirstPaperTState + 128 - 2))
 								{
 									//???
-									Renderer[item].RAction = RenderAction.Shift2AndFetchAttribute1;   // shift 2 + fetch A2
+									Renderer[item].RAction = RenderAction.Shift2AndFetchAttribute1; // shift 2 + fetch A2
 								}
 								else
 								{
-									Renderer[item].RAction = RenderAction.Shift2;             // shift 2
+									Renderer[item].RAction = RenderAction.Shift2; // shift 2
 								}
 
 								// +1 = prefetch!
@@ -370,18 +370,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 								break;
 						}
 					}
-					else if ((line >= _ula.FirstPaperLine) && (line < (_ula.FirstPaperLine + 192)) &&
-							 (pix == (_ula.FirstPaperTState - 2)))  // border & fetch B1
+					else if (_ula.FirstPaperLine <= line && line < _ula.FirstPaperLine + 192
+						&& pix == _ula.FirstPaperTState - 2) // border & fetch B1
 					{
 						Renderer[item].RAction = RenderAction.BorderAndFetchByte1; // border & fetch B1
-																				   // +2 = prefetch!
+						// +2 = prefetch!
 						Renderer[item].ByteAddress = CalculateByteAddress(scrPix + 2, scrLin);
 					}
-					else if ((line >= _ula.FirstPaperLine) && (line < (_ula.FirstPaperLine + 192)) &&
-							 (pix == (_ula.FirstPaperTState - 1)))  // border & fetch A1
+					else if (_ula.FirstPaperLine <= line && line < _ula.FirstPaperLine + 192
+						&& pix == _ula.FirstPaperTState - 1) // border & fetch A1
 					{
 						Renderer[item].RAction = RenderAction.BorderAndFetchAttribute1; // border & fetch A1
-																						// +1 = prefetch!
+						// +1 = prefetch!
 						Renderer[item].AttributeAddress = CalculateAttributeAddress(scrPix + 1, scrLin);
 					}
 					else
@@ -807,7 +807,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public int VsyncNumerator
 		{
-			get => ClockSpeed * 50;  // ClockSpeed; }
+			get => ClockSpeed * 50; // ClockSpeed;
 			set { }
 		}
 

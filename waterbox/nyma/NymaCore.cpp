@@ -35,6 +35,11 @@ ECL_EXPORT void PreInit()
 	SetupMDFNGameInfo();
 }
 
+ECL_EXPORT void SetInitialTime(int64_t initialTime)
+{
+	FrontendTime = initialTime;
+}
+
 static void Setup()
 {
 	pixels = (uint32_t*)alloc_invisible(Game->fb_width * Game->fb_height * sizeof(*pixels));
@@ -63,12 +68,13 @@ ECL_EXPORT bool InitRom(const InitData& data)
 		GameFile gf({
 			&NVFS,
 			"",
+			data.FileNameFull,
 			gamestream.get(),
 			data.FileNameExt,
 			data.FileNameBase,
-			&NVFS,
+			{&NVFS,
 			"",
-			data.FileNameBase
+			data.FileNameBase}
 		});
 
 		Game->Load(&gf);
@@ -319,6 +325,7 @@ ECL_EXPORT void DumpInputs()
 		MAYBENULL(a->ShortName, x.ShortName);
 		MAYBENULL(a->FullName, x.FullName);
 		MAYBENULL(a->DefaultDeviceShortName, x.DefaultDevice);
+		a->Flags = (PortFlags)x.Flags;
 		for (auto& y: x.DeviceInfo)
 		{
 			std::unique_ptr<NDeviceInfoT> b(new NDeviceInfoT());

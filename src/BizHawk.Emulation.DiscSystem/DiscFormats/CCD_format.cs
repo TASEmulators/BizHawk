@@ -1,9 +1,9 @@
-﻿using System;
 using System.IO;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 //check out ccd2iso linux program?
 //https://wiki.archlinux.org/index.php/CD_Burning#TOC.2FCUE.2FBIN_for_mixed-mode_disks advice here
@@ -189,11 +189,11 @@ namespace BizHawk.Emulation.DiscSystem
 				var line = sr.ReadLine();
 				if (line is null) break;
 				if (line == string.Empty) continue;
-				if (line.StartsWith("["))
+				if (line.StartsWith('['))
 				{
 					currSection = new()
 					{
-						Name = line.Trim('[', ']').ToUpper()
+						Name = line.Trim('[', ']').ToUpperInvariant()
 					};
 					sections.Add(currSection);
 				}
@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.DiscSystem
 					var parts = line.Split('=');
 					if (parts.Length != 2)
 						throw new CCDParseException("Malformed or unexpected CCD format: parsing item into two parts");
-					if (parts[0].ToUpper() == "FLAGS")
+					if (parts[0].ToUpperInvariant() == "FLAGS")
 					{
 						// flags are a space-separated collection of symbolic constants:
 						// https://www.gnu.org/software/ccd2cue/manual/html_node/FLAGS-_0028Compact-Disc-fields_0029.html#FLAGS-_0028Compact-Disc-fields_0029
@@ -212,11 +212,11 @@ namespace BizHawk.Emulation.DiscSystem
 						continue;
 					}
 					int val;
-					if (parts[1].StartsWith("0x") || parts[1].StartsWith("0X"))
+					if (parts[1].StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 						val = int.Parse(parts[1].Substring(2), NumberStyles.HexNumber);
 					else
 						val = int.Parse(parts[1]);
-					currSection[parts[0].ToUpper()] = val;
+					currSection[parts[0].ToUpperInvariant()] = val;
 				}
 			}
 
@@ -267,7 +267,7 @@ namespace BizHawk.Emulation.DiscSystem
 			for (var i = 2; i < sections.Count; i++)
 			{
 				var section = sections[i];
-				if (section.Name.StartsWith("SESSION"))
+				if (section.Name.StartsWithOrdinal("SESSION"))
 				{
 					var sesnum = int.Parse(section.Name.Split(' ')[1]);
 					var session = new CCDSession(sesnum);
@@ -277,7 +277,7 @@ namespace BizHawk.Emulation.DiscSystem
 					session.PregapMode = section.FetchOrDefault(0, "PREGAPMODE");
 					session.PregapSubcode = section.FetchOrDefault(0, "PREGAPSUBC");
 				}
-				else if (section.Name.StartsWith("ENTRY"))
+				else if (section.Name.StartsWithOrdinal("ENTRY"))
 				{
 					var entryNum = int.Parse(section.Name.Split(' ')[1]);
 					var entry = new CCDTocEntry(entryNum);
@@ -304,7 +304,7 @@ namespace BizHawk.Emulation.DiscSystem
 					if (new Timestamp(entry.PMin, entry.PSec, entry.PFrame).Sector != entry.PLBA + 150)
 						throw new CCDParseException("Warning: inconsistency in CCD PLBA vs computed P MSF");
 				}
-				else if (section.Name.StartsWith("TRACK"))
+				else if (section.Name.StartsWithOrdinal("TRACK"))
 				{
 					var entryNum = int.Parse(section.Name.Split(' ')[1]);
 					var track = new CCDTrack(entryNum);
@@ -313,7 +313,7 @@ namespace BizHawk.Emulation.DiscSystem
 					foreach (var (k, v) in section)
 					{
 						if (k == "MODE") track.Mode = v;
-						else if (k.StartsWith("INDEX")) track.Indexes[int.Parse(k.Split(' ')[1])] = v;
+						else if (k.StartsWithOrdinal("INDEX")) track.Indexes[int.Parse(k.Split(' ')[1])] = v;
 					}
 				}
 			}
@@ -417,7 +417,7 @@ namespace BizHawk.Emulation.DiscSystem
 					//but in order to make a high quality CCD which can be inspected by various other tools, we need it
 					//now, regarding the indexes.. theyre truly useless. having indexes written out with the tracks is bad news.
 					//index information is only truly stored in subQ
-					for (var tnum = session.FirstInformationTrack.Number; tnum <= session.LastInformationTrack.Number; tnum++)
+					for (var tnum = 1; tnum <= session.InformationTrackCount; tnum++)
 					{
 						var track = session.Tracks[tnum];
 						sw.WriteLine("[TRACK {0}]", track.Number);
@@ -437,8 +437,8 @@ namespace BizHawk.Emulation.DiscSystem
 			var buf2448 = new byte[2448];
 			var dsr = new DiscSectorReader(disc);
 
-			using var imgFile = File.OpenWrite(imgPath);
-			using var subFile = File.OpenWrite(subPath);
+			using var imgFile = File.Create(imgPath);
+			using var subFile = File.Create(subPath);
 			var nLBA = disc.Sessions[disc.Sessions.Count - 1].LeadoutLBA;
 			for (var lba = 0; lba < nLBA; lba++)
 			{

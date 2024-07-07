@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -10,44 +8,38 @@ namespace BizHawk.Client.EmuHawk
 		private readonly RCheevosLeaderboardListForm _lboardListForm = new();
 #endif
 
-		private class LboardTriggerTask
+		private sealed class LboardTriggerRequest : RCheevoHttpRequest
 		{
-			private LibRCheevos.rc_api_submit_lboard_entry_request_t _apiParams;
-			public Task Task { get; private set; }
-			public bool Success { get; private set; }
+			private readonly LibRCheevos.rc_api_submit_lboard_entry_request_t _apiParams;
 
-			private void LboardTriggerTaskCallback(byte[] serv_resp)
+			protected override void ResponseCallback(byte[] serv_resp)
 			{
 				var res = _lib.rc_api_process_submit_lboard_entry_response(out var resp, serv_resp);
 				_lib.rc_api_destroy_submit_lboard_entry_response(ref resp);
-				Success = res == LibRCheevos.rc_error_t.RC_OK;
+				if (res != LibRCheevos.rc_error_t.RC_OK)
+				{
+					Console.WriteLine($"LboardTriggerRequest failed in ResponseCallback with {res}");
+				}
 			}
 
-			public void DoRequest()
+			public override void DoRequest()
 			{
-				var res = _lib.rc_api_init_submit_lboard_entry_request(out var api_req, ref _apiParams);
-				Task = SendAPIRequestIfOK(res, ref api_req, LboardTriggerTaskCallback);
+				var apiParamsResult = _lib.rc_api_init_submit_lboard_entry_request(out var api_req, in _apiParams);
+				InternalDoRequest(apiParamsResult, ref api_req);
 			}
 
-			public LboardTriggerTask(string username, string api_token, int id, int value, string hash)
+			public LboardTriggerRequest(string username, string api_token, uint id, int value, string hash)
 			{
 				_apiParams = new(username, api_token, id, value, hash);
-				DoRequest();
 			}
 		}
 
-		// keep a list of all cheevo unlock trigger tasks that have been queued
-		// on Dispose(), we wait for all these to complete
-		// on Update(), we clear out successfully completed tasks, any not completed will be resent
-		private readonly List<LboardTriggerTask> _queuedLboardTriggerTasks = new();
-
 		private bool LBoardsActive { get; set; }
-
 		private LBoard CurrentLboard { get; set; }
 
 		public class LBoard
 		{
-			public int ID { get; }
+			public uint ID { get; }
 			public int Format { get; }
 			public string Title { get; }
 			public string Description { get; }

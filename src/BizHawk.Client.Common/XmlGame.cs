@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,7 +14,7 @@ namespace BizHawk.Client.Common
 	public class XmlGame
 	{
 		public XmlDocument Xml { get; set; }
-		public GameInfo GI { get; } = new GameInfo();
+		public GameInfo GI { get; } = new();
 		public IList<KeyValuePair<string, byte[]>> Assets { get; } = new List<KeyValuePair<string, byte[]>>();
 		public IList<string> AssetFullPaths { get; } = new List<string>(); // TODO: Hack work around, to avoid having to refactor Assets into a object array, should be refactored!
 
@@ -36,13 +35,13 @@ namespace BizHawk.Client.Common
 				{
 					GI =
 					{
-						System = y.Attributes["System"].Value,
+						System = y.Attributes!["System"].Value,
 						Name = y.Attributes["Name"].Value,
 						Status = RomStatus.Unknown
 					},
 					Xml = x
 				};
-				string fullPath = "";
+				var fullPath = "";
 
 				var n = y.SelectSingleNode("./LoadAssets");
 				if (n != null)
@@ -52,7 +51,7 @@ namespace BizHawk.Client.Common
 
 					foreach (XmlNode a in n.ChildNodes)
 					{
-						string filename = a.Attributes["FileName"].Value;
+						var filename = a.Attributes!["FileName"].Value;
 						byte[] data;
 						if (filename[0] == '|')
 						{
@@ -67,7 +66,7 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								throw new Exception($"Couldn't load XMLGame Asset \"{filename}\"");
+								throw new($"Couldn't load XMLGame Asset \"{filename}\"");
 							}
 						}
 						else
@@ -89,16 +88,19 @@ namespace BizHawk.Client.Common
 								}
 								else
 								{
-									data = File.ReadAllBytes(fullPath.SubstringBefore('|'));
+									var path = fullPath.SubstringBefore('|');
+									data = RomGame.Is3DSRom(Path.GetExtension(path).ToUpperInvariant())
+										? Array.Empty<byte>()
+										: File.ReadAllBytes(path);
 								}
 							}
 							catch (Exception e)
 							{
-								throw new Exception($"Couldn't load XMLGame LoadAsset \"{filename}\"", e);
+								throw new($"Couldn't load XMLGame LoadAsset \"{filename}\"", e);
 							}
 						}
 
-						ret.Assets.Add(new KeyValuePair<string, byte[]>(filename, data));
+						ret.Assets.Add(new(filename, data));
 						ret.AssetFullPaths.Add(fullPath);
 						var sha1 = SHA1Checksum.Compute(data);
 						hashStream.Write(sha1, 0, sha1.Length);

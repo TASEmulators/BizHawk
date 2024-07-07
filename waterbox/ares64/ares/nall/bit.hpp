@@ -78,6 +78,14 @@ namespace bit {
     return first;
   }
 
+  //return index of the last bit set (or zero of no bits are set)
+  //last(0b11000) == 4
+  constexpr inline auto last(u64 x) -> u32 {
+    u32 i = 0;
+    while(x) { x >>= 1; i++; }
+    return i > 0 ? --i : i;
+  }
+
   //round up to next highest single bit:
   //round(15) == 16, round(16) == 16, round(17) == 32
   constexpr inline auto round(u64 x) -> u64 {

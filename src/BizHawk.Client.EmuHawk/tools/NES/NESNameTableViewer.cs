@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
@@ -163,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (now == false && _emu.Frame % RefreshRate.Value != 0)
+			if (!now && _emu.Frame % RefreshRate.Value != 0)
 			{
 				return;
 			}

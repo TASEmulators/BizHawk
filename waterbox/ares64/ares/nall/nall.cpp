@@ -10,7 +10,6 @@
 #include <nall/dl.cpp>
 #include <nall/file-map.cpp>
 #include <nall/inode.cpp>
-//#include <nall/main.cpp>
 #include <nall/memory.cpp>
 #include <nall/path.cpp>
 #include <nall/platform.cpp>
@@ -18,6 +17,8 @@
 #include <nall/run.cpp>
 #include <nall/terminal.cpp>
 #include <nall/thread.cpp>
+#include <nall/tcptext/tcp-socket.cpp>
+#include <nall/tcptext/tcptext-server.cpp>
 //currently unused by ares
 //#include <nall/smtp.cpp>
 //#include <nall/http/client.cpp>

@@ -8,7 +8,7 @@ OBJ_DIR := $(OUT_DIR)/release
 DOBJ_DIR := $(OUT_DIR)/debug
 
 CC := gcc
-CCFLAGS := -I$(CORE_DIR) -Wall -Wextra -std=gnu11 -fomit-frame-pointer -Wno-strict-aliasing \
+CCFLAGS := -I$(CORE_DIR) -Wall -Wextra -std=gnu11 -Wno-strict-aliasing \
 	-Wno-multichar -Wno-implicit-fallthrough -Wno-sign-compare -Wno-unused-parameter \
 	-Wno-int-in-bool-context -Wno-missing-field-initializers -Wno-overflow -Wno-unused-result \
 	-D_GNU_SOURCE -D_USE_MATH_DEFINES -DNDEBUG -DGB_INTERNAL -DGB_DISABLE_DEBUGGER \
@@ -18,6 +18,7 @@ ifeq ($(OS),Windows_NT)
 TARGET := libsameboy.dll
 else
 TARGET := libsameboy.so
+CCFLAGS := $(CCFLAGS) -fPIC
 endif
 
 SRCS := \
@@ -42,7 +43,7 @@ LDFLAGS := -shared -Wno-attributes
 CCFLAGS_DEBUG := -O0 -g
 CCFLAGS_RELEASE := -O3 -flto
 LDFLAGS_DEBUG :=
-LDFLAGS_RELEASE := -s
+LDFLAGS_RELEASE := -s -Wno-lto-type-mismatch
 
 _OBJS := $(addsuffix .o,$(realpath $(SRCS)))
 OBJS := $(patsubst $(ROOT_DIR)%,$(OBJ_DIR)%,$(_OBJS))

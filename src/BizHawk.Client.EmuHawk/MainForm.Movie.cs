@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -27,7 +26,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					MovieSession.QueueNewMovie(movie, record, Emulator.SystemId, Config.PreferredCores);
+					MovieSession.QueueNewMovie(
+						movie,
+						systemId: Emulator.SystemId,
+						loadedRomHash: Game.Hash,
+						Config.PathEntries,
+						Config.PreferredCores);
 				}
 				catch (MoviePlatformMismatchException ex)
 				{
@@ -54,7 +58,12 @@ namespace BizHawk.Client.EmuHawk
 
 			SetMainformMovieInfo();
 
-			if (MovieSession.Movie.Hash != Game.Hash)
+			// turns out this was too late for .tasproj autoloading and restoring playback position (loads savestate but wasn't checking game match)
+			if (string.IsNullOrEmpty(MovieSession.Movie.Hash))
+			{
+				AddOnScreenMessage("Movie is missing hash, skipping hash check");
+			}
+			else if (MovieSession.Movie.Hash != Game.Hash)
 			{
 				AddOnScreenMessage("Warning: Movie hash does not match the ROM");
 			}
@@ -90,9 +99,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StopMovie(bool saveChanges = true)
 		{
-			if (IsSlave && Master.WantsToControlStopMovie)
+			if (ToolControllingStopMovie is { } tool)
 			{
-				Master.StopMovie(!saveChanges);
+				tool.StopMovie(!saveChanges);
 			}
 			else
 			{
@@ -103,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool RestartMovie()
 		{
-			if (IsSlave && Master.WantsToControlRestartMovie) return Master.RestartMovie();
+			if (ToolControllingRestartMovie is { } tool) return tool.RestartMovie();
 			if (!MovieSession.Movie.IsActive()) return false;
 			var success = StartNewMovie(MovieSession.Movie, false);
 			if (success) AddOnScreenMessage("Replaying movie file in read-only mode");
@@ -112,9 +121,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleReadOnly()
 		{
-			if (IsSlave && Master.WantsToControlReadOnly)
+			if (ToolControllingReadOnly is { } tool)
 			{
-				Master.ToggleReadOnly();
+				tool.ToggleReadOnly();
 			}
 			else
 			{

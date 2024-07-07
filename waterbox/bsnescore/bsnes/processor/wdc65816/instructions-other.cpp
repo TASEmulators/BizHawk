@@ -205,9 +205,10 @@ E S.h = 0x01;
 auto WDC65816::instructionPullB() -> void {
   idle();
   idle();
-L B = pull();
+L B = pullN();
   ZF = B == 0;
   NF = B & 0x80;
+E S.h = 0x01;
 }
 
 auto WDC65816::instructionPullP() -> void {

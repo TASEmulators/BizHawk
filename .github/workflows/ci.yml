@@ -1,0 +1,78 @@
+on: [push, pull_request, workflow_dispatch]
+name: Build and test main solution
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyzer-build:
+    name: Build solution with analyzers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8"
+
+      - name: Debug build with analyzers
+        run: Dist/BuildDebug.sh -warnaserror -p:RunAnalyzersDuringBuild=true
+
+      - name: Release build with analyzers
+        run: Dist/BuildRelease.sh -warnaserror -p:RunAnalyzersDuringBuild=true
+
+  test:
+    name: Test
+    runs-on: ${{matrix.os.fullname}}
+    strategy:
+       fail-fast: false
+       matrix:
+          os:
+            - { prettyname: Windows, fullname: windows-latest }
+            - { prettyname: Linux, fullname: ubuntu-latest }
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8"
+
+      - name: Test
+        run: dotnet test BizHawk.sln -c Release -p:ContinuousIntegrationBuild=true
+        shell: pwsh
+
+  package:
+    name: Build and package output
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8"
+
+      - name: Build solution
+        run: Dist/BuildRelease.sh
+
+      - name: Package (Linux)
+        run: Dist/Package.sh
+      - name: Upload Linux dev build
+        uses: actions/upload-artifact@v4
+        with:
+          name: BizHawk-dev-linux
+          path: packaged_output
+
+      - name: Package (Windows)
+        run: Dist/Package.sh windows-x64
+      - name: Upload Windows dev build
+        uses: actions/upload-artifact@v4
+        with:
+          name: BizHawk-dev-windows
+          path: packaged_output

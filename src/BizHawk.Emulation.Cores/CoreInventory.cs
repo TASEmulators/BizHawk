@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -151,7 +150,7 @@ namespace BizHawk.Emulation.Cores
 
 		public IEnumerable<Core> GetCores(string system)
 		{
-			_systems.TryGetValue(system, out var cores);
+			_ = _systems.TryGetValue(system, out var cores);
 			return cores ?? Enumerable.Empty<Core>();
 		}
 

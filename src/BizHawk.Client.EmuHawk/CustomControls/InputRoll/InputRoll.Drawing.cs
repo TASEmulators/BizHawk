@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -14,8 +13,8 @@ namespace BizHawk.Client.EmuHawk
 			using (_renderer.LockGraphics(e.Graphics))
 			{
 				// White Background
-				_renderer.SetBrush(Color.White);
-				_renderer.SetSolidPen(Color.White);
+				_renderer.SetBrush(_backColor);
+				_renderer.SetSolidPen(_backColor);
 				_renderer.FillRectangle(e.ClipRectangle);
 
 				// Lag frame calculations
@@ -88,11 +87,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				RollColumn col = visibleColumns[j];
 				int height = CellHeight;
-				if (col.Rotatable && col.RotatedHeight != null)
-				{
-					height = Math.Max(height, col.RotatedHeight.Value);
-				}
-				else if (col.Rotatable)
+				if (col.Rotatable)
 				{
 					int strOffsetX = 0;
 					int strOffsetY = 0;
@@ -108,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawColumnDrag(List<RollColumn> visibleColumns)
 		{
-			if (!(_columnDown?.Width > 0)
+			if (_columnDown is not { Width: > 0 }
 				|| !_columnDownMoved
 				|| !_currentX.HasValue
 				|| !_currentY.HasValue
@@ -143,28 +138,27 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawCellDrag(List<RollColumn> visibleColumns)
 		{
-			if (_draggingCell?.RowIndex != null
-				&& _draggingCell.Column.Width > 0
+			if (_draggingCell is { RowIndex: int targetRow, Column: { Width: > 0 } targetCol }
 				&& _currentX.HasValue
 				&& _currentY.HasValue)
 			{
 				var text = "";
 				int offsetX = 0;
 				int offsetY = 0;
-				QueryItemText?.Invoke(_draggingCell.RowIndex.Value, _draggingCell.Column, out text, ref offsetX, ref offsetY);
+				QueryItemText?.Invoke(targetRow, targetCol, out text, ref offsetX, ref offsetY);
 
 				Color bgColor = _backColor;
-				QueryItemBkColor?.Invoke(_draggingCell.RowIndex.Value, _draggingCell.Column, ref bgColor);
+				QueryItemBkColor?.Invoke(targetRow, targetCol, ref bgColor);
 
 				int columnHeight = CellHeight;
 				if (HorizontalOrientation)
 				{
-					int columnIndex = visibleColumns.IndexOf(_draggingCell.Column);
+					var columnIndex = visibleColumns.IndexOf(targetCol);
 					columnHeight = GetHColHeight(columnIndex);
 				}
-				int x1 = _currentX.Value - (_draggingCell.Column.Width / 2);
+				var x1 = _currentX.Value - targetCol.Width / 2;
 				int y1 = _currentY.Value - (columnHeight / 2);
-				int x2 = x1 + _draggingCell.Column.Width;
+				var x2 = x1 + targetCol.Width;
 				int y2 = y1 + columnHeight;
 
 				_renderer.SetBrush(bgColor);
@@ -290,16 +284,15 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				int xPadding = CellWidthPadding + 1 - _hBar.Value;
+				var currentCell = new Cell();
 				for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 				{
 					f += _lagFrames[i];
 					foreach (var column in visibleColumns)
 					{
-						RollColumn col = column;
-
 						int strOffsetX = 0;
 						int strOffsetY = 0;
-						Point point = new Point(col.Left + xPadding, RowsToPixels(i) + CellHeightPadding);
+						Point point = new Point(column.Left + xPadding, RowsToPixels(i) + CellHeightPadding);
 
 						Bitmap image = null;
 						int bitmapOffsetX = 0;
@@ -315,13 +308,15 @@ namespace BizHawk.Client.EmuHawk
 						QueryItemText(f + startRow, column, out var text, ref strOffsetX, ref strOffsetY);
 
 						bool rePrep = false;
-						if (_selectedItems.Contains(new Cell { Column = column, RowIndex = f + startRow }))
+						currentCell.Column = column;
+						currentCell.RowIndex = f + startRow;
+						if (_selectedItems.Contains(currentCell))
 						{
 							_renderer.PrepDrawString(Font, SystemColors.HighlightText);
 							rePrep = true;
 						}
 
-						DrawString(text, new Rectangle(point.X + strOffsetX, point.Y + strOffsetY, col.Width, ColumnHeight));
+						DrawString(text, new Rectangle(point.X + strOffsetX, point.Y + strOffsetY, column.Width, ColumnHeight));
 
 						if (rePrep)
 						{
@@ -413,7 +408,7 @@ namespace BizHawk.Client.EmuHawk
 						int top = GetHColTop(i) - _vBar.Value;
 						int height = GetHColHeight(i);
 
-						_renderer.SetBrush(CurrentCell.Column.Emphasis
+						_renderer.SetBrush(CurrentCell.Column!.Emphasis
 							? SystemColors.Highlight.Add(0x00222222)
 							: SystemColors.Highlight);
 
@@ -436,7 +431,7 @@ namespace BizHawk.Client.EmuHawk
 							int left = column.Left - _hBar.Value;
 							int width = column.Right - _hBar.Value - left;
 
-							_renderer.SetBrush(CurrentCell.Column.Emphasis
+							_renderer.SetBrush(CurrentCell.Column!.Emphasis
 								? SystemColors.Highlight.Add(0x00550000)
 								: SystemColors.Highlight);
 
@@ -451,7 +446,7 @@ namespace BizHawk.Client.EmuHawk
 		// Draw Gridlines and background colors using QueryItemBkColor.
 		private void DrawBg(List<RollColumn> visibleColumns, Rectangle rect, int firstVisibleRow, int lastVisibleRow)
 		{
-			if (QueryItemBkColor != null)
+			if (QueryItemBkColor is not null || QueryRowBkColor is not null)
 			{
 				DoBackGroundCallback(visibleColumns, rect, firstVisibleRow, lastVisibleRow);
 			}
@@ -510,7 +505,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoSelectionBG(List<RollColumn> visibleColumns, Rectangle rect)
 		{
-			Color rowColor = Color.White;
 			var visibleRows = FirstVisibleRow.RangeTo(LastVisibleRow);
 			int lastRow = -1;
 			foreach (Cell cell in _selectedItems)
@@ -527,6 +521,7 @@ namespace BizHawk.Client.EmuHawk
 				};
 				relativeCell.RowIndex -= CountLagFramesAbsolute(relativeCell.RowIndex.Value);
 
+				var rowColor = _backColor;
 				if (QueryRowBkColor != null && lastRow != cell.RowIndex.Value)
 				{
 					QueryRowBkColor(cell.RowIndex.Value, ref rowColor);
@@ -567,7 +562,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				int columnIndex = visibleColumns.IndexOf(cell.Column);
+				var columnIndex = visibleColumns.IndexOf(cell.Column!);
 				w = CellWidth - 1;
 				y = GetHColTop(columnIndex) - _vBar.Value + 1;
 				h = GetHColHeight(columnIndex) - 1;
@@ -580,7 +575,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				x = cell.Column.Left - _hBar.Value + 1;
+				x = cell.Column!.Left - _hBar.Value + 1;
 				w = cell.Column.Width - 1;
 				h = CellHeight - 1;
 			}
@@ -600,37 +595,29 @@ namespace BizHawk.Client.EmuHawk
 			int startIndex = firstVisibleRow;
 			int range = Math.Min(lastVisibleRow, RowCount - 1) - startIndex + 1;
 
+			var currentCell = new Cell();
 			for (int i = 0, f = 0; f < range; i++, f++)
 			{
 				f += _lagFrames[i];
-				Color rowColor = Color.White;
+				var rowColor = _backColor;
 				QueryRowBkColor?.Invoke(f + startIndex, ref rowColor);
 
 				foreach (var column in visibleColumns)
 				{
-					Color itemColor = Color.White;
+					var itemColor = rowColor;
 					QueryItemBkColor?.Invoke(f + startIndex, column, ref itemColor);
-
-					if (itemColor == Color.White)
-					{
-						itemColor = rowColor;
-					}
-					else if (itemColor.A != 255 && itemColor.A != 0)
+					if (itemColor.A is not (0 or 255))
 					{
 						float alpha = (float)itemColor.A / 255;
 						itemColor = Color.FromArgb(rowColor.R - (int)((rowColor.R - itemColor.R) * alpha),
 							rowColor.G - (int)((rowColor.G - itemColor.G) * alpha),
 							rowColor.B - (int)((rowColor.B - itemColor.B) * alpha));
 					}
-
-					if (itemColor != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
+					if (itemColor != _backColor) // An easy optimization, don't draw unless the user specified something other than the default
 					{
-						var cell = new Cell
-						{
-							Column = column,
-							RowIndex = i
-						};
-						DrawCellBG(itemColor, cell, visibleColumns, rect);
+						currentCell.Column = column;
+						currentCell.RowIndex = i;
+						DrawCellBG(itemColor, currentCell, visibleColumns, rect);
 					}
 				}
 			}

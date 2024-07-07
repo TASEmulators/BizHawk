@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
@@ -9,9 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public bool CanProvideAsync => false;
 
 		public void DiscardSamples()
-		{
-			_soundoutbuffcontains = 0;
-		}
+			=> _soundoutbuffcontains = 0;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
@@ -30,9 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
+			=> throw new InvalidOperationException("Async mode is not supported.");
 
 		internal bool Muted => _settings.Muted;
 
@@ -41,18 +35,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private readonly short[] _sgbsoundbuff = new short[2048 * 2];
 		private readonly short[] _mbcsoundbuff = new short[(35112 + 2064) * 2];
 
-		private int _soundoutbuffcontains = 0;
+		private int _soundoutbuffcontains;
 
 		private readonly short[] _soundoutbuff = new short[2048];
 
-		private int _latchL = 0;
-		private int _latchR = 0;
-
-		private int _sgbLatchL = 0;
-		private int _sgbLatchR = 0;
-
-		private int _mbcLatchL = 0;
-		private int _mbcLatchR = 0;
+		private int _latchL, _latchR;
+		private int _sgbLatchL, _sgbLatchR;
+		private int _mbcLatchL, _mbcLatchR;
 
 		private BlipBuffer _blipL, _blipR;
 		private uint _blipAccumulate;
@@ -65,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				if (curr != _latchL)
 				{
-					int diff = _latchL - curr;
+					var diff = _latchL - curr;
 					_latchL = curr;
 					_blipL.AddDelta(_blipAccumulate, diff >> 1);
 				}
@@ -74,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				if (curr != _latchR)
 				{
-					int diff = _latchR - curr;
+					var diff = _latchR - curr;
 					_latchR = curr;
 					_blipR.AddDelta(_blipAccumulate, diff >> 1);
 				}
@@ -83,18 +72,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
-		private void ProcessSgbSound(int nsamp, bool processSound)
+		private void ProcessSgbSound(bool processSound)
 		{
-			int remainder = LibGambatte.gambatte_generatesgbsamples(GambatteState, _sgbsoundbuff, out uint samples);
+			var remainder = LibGambatte.gambatte_generatesgbsamples(GambatteState, _sgbsoundbuff, out var samples);
 			if (remainder < 0)
 			{
 				throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_generatesgbsamples)}() returned negative (spc error???)");
 			}
-			uint t = 65 - (uint)remainder;
-			for (int i = 0; i < samples; i++, t += 65)
+			var t = 65 - (uint)remainder;
+			for (var i = 0; i < samples; i++, t += 65)
 			{
-				int ls = _sgbsoundbuff[i * 2] - _sgbLatchL;
-				int rs = _sgbsoundbuff[(i * 2) + 1] - _sgbLatchR;
+				var ls = _sgbsoundbuff[i * 2] - _sgbLatchL;
+				var rs = _sgbsoundbuff[i * 2 + 1] - _sgbLatchR;
 				if (ls != 0 && processSound)
 				{
 					_blipL.AddDelta(t, ls);
@@ -104,13 +93,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					_blipR.AddDelta(t, rs);
 				}
 				_sgbLatchL = _sgbsoundbuff[i * 2];
-				_sgbLatchR = _sgbsoundbuff[(i * 2) + 1];
+				_sgbLatchR = _sgbsoundbuff[i * 2 + 1];
 			}
 		}
 
 		private void ProcessMbcSound(bool processSound)
 		{
-			int nsamp = LibGambatte.gambatte_generatembcsamples(GambatteState, _mbcsoundbuff);
+			var nsamp = LibGambatte.gambatte_generatembcsamples(GambatteState, _mbcsoundbuff);
 			if (nsamp == 0)
 			{
 				return;
@@ -118,8 +107,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			for (uint i = 0; i < nsamp; i++)
 			{
-				int ls = _mbcsoundbuff[i * 2] - _mbcLatchL;
-				int rs = _mbcsoundbuff[(i * 2) + 1] - _mbcLatchR;
+				var ls = _mbcsoundbuff[i * 2] - _mbcLatchL;
+				var rs = _mbcsoundbuff[i * 2 + 1] - _mbcLatchR;
 				if (ls != 0 && processSound)
 				{
 					_blipL.AddDelta(i, ls);
@@ -151,9 +140,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private void InitSound()
 		{
-			_blipL = new BlipBuffer(1024);
+			_blipL = new(1024);
 			_blipL.SetRates(TICKSPERSECOND, 44100);
-			_blipR = new BlipBuffer(1024);
+			_blipR = new(1024);
 			_blipR.SetRates(TICKSPERSECOND, 44100);
 		}
 

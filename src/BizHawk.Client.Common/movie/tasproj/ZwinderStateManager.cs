@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -327,6 +326,12 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
+			// avoid capturing in this case
+			if (source.AvoidRewind)
+			{
+				return;
+			}
+
 			// We use the gap buffer for forced capture to avoid crowding the "current" buffer and thus reducing it's actual span of covered frames.
 			if (NeedsGap(frame) || force)
 			{
@@ -372,8 +377,7 @@ namespace BizHawk.Client.Common
 								AddToReserved(state2);
 							}
 						});
-				},
-				force);
+				});
 		}
 
 		// Returns whether or not a frame has a reserved state within the frame interval on either side of it
@@ -462,9 +466,7 @@ namespace BizHawk.Client.Common
 			_gapFiller.InvalidateEnd(0);
 			StateCache.Clear();
 			AddStateCache(0);
-			_reserved = _reserved
-				.Where(kvp => kvp.Key == 0)
-				.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+			_reserved = _reserved.Where(static kvp => kvp.Key is 0).ToDictionary(); //TODO clone needed?
 		}
 
 		public KeyValuePair<int, Stream> GetStateClosestToFrame(int frame)
@@ -521,10 +523,7 @@ namespace BizHawk.Client.Common
 		private bool InvalidateReserved(int frame)
 		{
 			var origCount = _reserved.Count;
-			_reserved = _reserved
-				.Where(kvp => kvp.Key <= frame)
-				.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
+			_reserved = _reserved.Where(kvp => kvp.Key <= frame).ToDictionary(); //TODO clone needed?
 			return _reserved.Count < origCount;
 		}
 

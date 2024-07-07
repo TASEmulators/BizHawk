@@ -63,9 +63,9 @@ struct Track {
 struct TOC {
 	uint8_t padding_0;
 	uint8_t padding_1;
-	uint8_t num_sessions;
 	uint8_t min_track_num;
 	uint8_t max_track_num;
+	uint8_t num_sessions;
 	uint8_t last_lead_out_mins;
 	uint8_t last_lead_out_secs;
 	uint8_t last_lead_out_frames;
@@ -239,7 +239,8 @@ void CDHLEReset(void)
 			}
 		}
 
-		cd_read_addr_start = dstStart;
+		//eh not sure why I did this?
+		//cd_read_addr_start = dstStart;
 
 		SET32(jaguarMainRAM, 4, cd_boot_addr);
 		SET16(jaguarMainRAM, 0x3004, 0x0403); // BIOS VER
@@ -642,6 +643,24 @@ static void CD_uread(void)
 static void CD_setup(void)
 {
 	// probaby don't really care about this
+	// but to be safe, let's just reset everything
+	cd_initm = false;
+	cd_muted = false;
+	cd_paused = false;
+	cd_jerry = false;
+	cd_mode = 0;
+	cd_osamp = 0;
+
+	cd_is_reading = false;
+	cd_read_orig_addr_start = 0;
+	cd_read_addr_start = 0;
+	cd_read_addr_end = 0;
+	cd_read_lba = 0;
+	memset(cd_buf2352, 0, sizeof(cd_buf2352));
+	cd_buf_pos = 0;
+	cd_buf_rm = 0;
+	cd_buf_circular_size = 0;
+
 	cd_setup = true;
 }
 
@@ -660,6 +679,12 @@ static void CD_osamp(void)
 static void CD_getoc(void)
 {
 	// this is for debugging only, retail games will not call this
+	// although some homebrew games seem to call it?
+	uint32_t addr = m68k_get_reg(M68K_REG_A0);
+	for (uint32_t i = 0; i < sizeof(TOC); i++)
+	{
+		JaguarWriteByte(addr + i, ((uint8_t*)&toc)[i], M68K);
+	}
 }
 
 static void CD_initm(void)

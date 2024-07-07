@@ -1,10 +1,8 @@
-using System;
 using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Collections.Generic;
 
-using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -34,27 +32,22 @@ namespace BizHawk.Client.Common
 		}
 
 		public string Fps { get; set; }
-		public StringRenderer MessageFont;
-
-		public void Begin(IBlitter blitter)
-		{
-			MessageFont = blitter.GetFontType(nameof(MessageFont));
-		}
 
 		public Color FixedMessagesColor => Color.FromArgb(_config.MessagesColor);
 		public Color FixedAlertMessageColor => Color.FromArgb(_config.AlertMessageColor);
 
-		private PointF GetCoordinates(IBlitter g, MessagePosition position, string message)
-		{
-			var size = g.MeasureString(message, MessageFont);
-			float x = position.Anchor.IsLeft()
-				? position.X
-				: g.ClipBounds.Width - position.X - size.Width;
 
-			float y = position.Anchor.IsTop()
-				? position.Y
-				: g.ClipBounds.Height - position.Y - size.Height;
-			
+
+		private static PointF GetCoordinates(IBlitter g, MessagePosition position, string message)
+		{
+			var size = g.MeasureString(message);
+			var x = position.Anchor.IsLeft()
+				? position.X * g.Scale
+				: g.ClipBounds.Width - position.X * g.Scale - size.Width;
+
+			var y = position.Anchor.IsTop()
+				? position.Y * g.Scale
+				: g.ClipBounds.Height - position.Y * g.Scale - size.Height;
 
 			return new PointF(x, y);
 		}
@@ -86,9 +79,9 @@ namespace BizHawk.Client.Common
 			return _emulator.Frame.ToString();
 		}
 
-		private readonly List<UIMessage> _messages = new List<UIMessage>(5);
-		private readonly List<UIDisplay> _guiTextList = new List<UIDisplay>();
-		private readonly List<UIDisplay> _ramWatchList = new List<UIDisplay>();
+		private readonly List<UIMessage> _messages = new(5);
+		private readonly List<UIDisplay> _guiTextList = [ ];
+		private readonly List<UIDisplay> _ramWatchList = [ ];
 
 		public void AddMessage(string message, int? duration = null)
 			=> _messages.Add(new() {
@@ -97,9 +90,7 @@ namespace BizHawk.Client.Common
 			});
 
 		public void ClearRamWatches()
-		{
-			_ramWatchList.Clear();
-		}
+			=> _ramWatchList.Clear();
 
 		public void AddRamWatch(string message, MessagePosition pos, Color backGround, Color foreColor)
 		{
@@ -124,15 +115,13 @@ namespace BizHawk.Client.Common
 		}
 
 		public void ClearGuiText()
-		{
-			_guiTextList.Clear();
-		}
+			=> _guiTextList.Clear();
 
 		private void DrawMessage(IBlitter g, UIMessage message, int yOffset)
 		{
 			var point = GetCoordinates(g, _config.Messages, message.Message);
 			var y = point.Y + yOffset; // TODO: clean me up
-			g.DrawString(message.Message, MessageFont, FixedMessagesColor, point.X, y);
+			g.DrawString(message.Message, FixedMessagesColor, point.X, y);
 		}
 
 		public void DrawMessages(IBlitter g)
@@ -148,10 +137,10 @@ namespace BizHawk.Client.Common
 			{
 				if (_config.StackOSDMessages)
 				{
-					int line = 1;
-					for (int i = _messages.Count - 1; i >= 0; i--, line++)
+					var line = 1;
+					for (var i = _messages.Count - 1; i >= 0; i--, line++)
 					{
-						int yOffset = (line - 1) * 18;
+						var yOffset = (int)Math.Round((line - 1) * 18 * g.Scale);
 						if (!_config.Messages.Anchor.IsTop())
 						{
 							yOffset = 0 - yOffset;
@@ -162,7 +151,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					var message = _messages[_messages.Count - 1];
+					var message = _messages[^1];
 					DrawMessage(g, message, 0);
 				}
 			}
@@ -173,7 +162,7 @@ namespace BizHawk.Client.Common
 				{
 					var point = GetCoordinates(g, text.Position, text.Message);
 					if (point.Y >= g.ClipBounds.Height) continue; // simple optimisation; don't bother drawing off-screen
-					g.DrawString(text.Message, MessageFont, text.ForeColor, point.X, point.Y);
+					g.DrawString(text.Message, text.ForeColor, point.X, point.Y);
 				}
 				catch (Exception)
 				{
@@ -183,14 +172,10 @@ namespace BizHawk.Client.Common
 		}
 
 		public string InputStrMovie()
-		{
-			return MakeStringFor(_movieSession.MovieController, cache: true);
-		}
+			=> MakeStringFor(_movieSession.MovieController, cache: true);
 
 		public string InputStrImmediate()
-		{
-			return MakeStringFor(_inputManager.AutofireStickyXorAdapter, cache: true);
-		}
+			=> MakeStringFor(_inputManager.AutofireStickyXorAdapter, cache: true);
 
 		public string InputPrevious()
 		{
@@ -243,10 +228,8 @@ namespace BizHawk.Client.Common
 				: "";
 		}
 
-		private void DrawOsdMessage(IBlitter g, string message, Color color, float x, float y)
-		{
-			g.DrawString(message, MessageFont, color, x, y);
-		}
+		private static void DrawOsdMessage(IBlitter g, string message, Color color, float x, float y)
+			=> g.DrawString(message, color, x, y);
 
 		/// <summary>
 		/// Display all screen info objects like fps, frame counter, lag counter, and input display
@@ -255,7 +238,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_config.DisplayFrameCounter && !_emulator.IsNull())
 			{
-				string message = MakeFrameCounter();
+				var message = MakeFrameCounter();
 				var point = GetCoordinates(g, _config.FrameCounter, message);
 				DrawOsdMessage(g, message, Color.FromArgb(_config.MessagesColor), point.X, point.Y);
 
@@ -274,14 +257,14 @@ namespace BizHawk.Client.Common
 				{
 					var input = InputStrMovie();
 					var point = GetCoordinates(g, _config.InputDisplay, input);
-					Color c = Color.FromArgb(_config.MovieInput);
-					g.DrawString(input, MessageFont, c, point.X, point.Y);
+					var c = Color.FromArgb(_config.MovieInput);
+					g.DrawString(input, c, point.X, point.Y);
 				}
 
 				if (!moviePlaying) // TODO: message config -- allow setting of "mixed", and "auto"
 				{
 					var previousColor = Color.FromArgb(_config.LastInputColor);
-					Color immediateColor = Color.FromArgb(_config.MessagesColor);
+					var immediateColor = Color.FromArgb(_config.MessagesColor);
 					var autoColor = Color.Pink;
 					var changedColor = Color.PeachPuff;
 
@@ -294,14 +277,14 @@ namespace BizHawk.Client.Common
 					// first display previous frame's input.
 					// note: that's only available in case we're working on a movie
 					var previousStr = InputPrevious();
-					g.DrawString(previousStr, MessageFont, previousColor, point.X, point.Y);
+					g.DrawString(previousStr, previousColor, point.X, point.Y);
 
 					// next, draw the immediate input.
 					// that is, whatever is being held down interactively right this moment even if the game is paused
 					// this includes things held down due to autohold or autofire
 					// I know, this is all really confusing
 					var immediate = InputStrImmediate();
-					g.DrawString(immediate, MessageFont, immediateColor, point.X, point.Y);
+					g.DrawString(immediate, immediateColor, point.X, point.Y);
 
 					// next draw anything that's pressed because it's sticky.
 					// this applies to autofire and autohold both. somehow. I don't understand it.
@@ -310,11 +293,11 @@ namespace BizHawk.Client.Common
 					// so we make an AND adapter and combine it using immediate & sticky
 					// (adapter creation moved to InputManager)
 					var autoString = MakeStringFor(_inputManager.WeirdStickyControllerForInputDisplay, cache: true);
-					g.DrawString(autoString, MessageFont, autoColor, point.X, point.Y);
+					g.DrawString(autoString, autoColor, point.X, point.Y);
 
 					//recolor everything that's changed from the previous input
 					var immediateOverlay = MakeIntersectImmediatePrevious();
-					g.DrawString(immediateOverlay, MessageFont, changedColor, point.X, point.Y);
+					g.DrawString(immediateOverlay, changedColor, point.X, point.Y);
 				}
 			}
 
@@ -333,7 +316,7 @@ namespace BizHawk.Client.Common
 
 			if (_config.DisplayRerecordCount)
 			{
-				string rerecordCount = MakeRerecordCount();
+				var rerecordCount = MakeRerecordCount();
 				var point = GetCoordinates(g, _config.ReRecordCounter, rerecordCount);
 				DrawOsdMessage(g, rerecordCount, FixedMessagesColor, point.X, point.Y);
 			}
@@ -342,12 +325,12 @@ namespace BizHawk.Client.Common
 			{
 				var sb = new StringBuilder("Held: ");
 
-				foreach (string sticky in _inputManager.StickyXorAdapter.CurrentStickies)
+				foreach (var sticky in _inputManager.StickyXorAdapter.CurrentStickies)
 				{
 					sb.Append(sticky).Append(' ');
 				}
 
-				foreach (string autoSticky in _inputManager.AutofireStickyXorAdapter.CurrentStickies)
+				foreach (var autoSticky in _inputManager.AutofireStickyXorAdapter.CurrentStickies)
 				{
 					sb
 						.Append("Auto-")
@@ -357,7 +340,7 @@ namespace BizHawk.Client.Common
 
 				var message = sb.ToString();
 				var point = GetCoordinates(g, _config.Autohold, message);
-				g.DrawString(message, MessageFont, Color.White, point.X, point.Y);
+				g.DrawString(message, Color.White, point.X, point.Y);
 			}
 
 			if (_movieSession.Movie.IsActive() && _config.DisplaySubtitles)

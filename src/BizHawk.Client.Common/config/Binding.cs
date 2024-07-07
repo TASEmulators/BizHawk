@@ -2,7 +2,6 @@
 using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -65,6 +64,8 @@ namespace BizHawk.Client.Common
 			Bind("General", "Toggle Key Priority");
 			Bind("General", "Frame Inch");
 			Bind("General", "Toggle Messages");
+			Bind("General", "Toggle Display Nothing");
+			Bind("General", "Accept Background Input");
 
 			Bind("Save States", "Save State 1", "Shift+F1");
 			Bind("Save States", "Save State 2", "Shift+F2");
@@ -173,6 +174,7 @@ namespace BizHawk.Client.Common
 			Bind("Analog", "X Down Large", toolTip: "For Virtual Pad");
 
 			Bind("Tools", "Toggle All Cheats");
+			Bind("Tools", "Toggle Last Lua Script");
 
 			Bind("NDS", "Next Screen Layout");
 			Bind("NDS", "Previous Screen Layout");
@@ -193,8 +195,8 @@ namespace BizHawk.Client.Common
 
 		public static void ResolveWithDefaults(IDictionary<string, string> dict)
 		{
+			foreach (var k in dict.Keys.Where(static k => !AllHotkeys.ContainsKey(k)).ToArray()) dict.Remove(k); // remove extraneous
 			foreach (var (k, v) in AllHotkeys) if (!dict.ContainsKey(k)) dict[k] = v.DefaultBinding; // add missing
-			dict.RemoveAll(static kvp => !AllHotkeys.ContainsKey(kvp.Key)); // remove extraneous
 		}
 
 		public readonly string DefaultBinding;

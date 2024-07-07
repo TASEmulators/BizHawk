@@ -1,6 +1,4 @@
-using System;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using static BizHawk.Emulation.Cores.Nintendo.BSNES.BsnesApi.SNES_REGISTER;
 using static BizHawk.Emulation.Cores.Nintendo.SNES.SNESGraphicsDecoder;
@@ -9,23 +7,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	public sealed unsafe class SNESGraphicsDecoder : ISNESGraphicsDecoder
 	{
-		[StructLayout(LayoutKind.Sequential)]
-		public struct Object // size: 10 bytes; equivalent to the c++ version
-		{
-			public readonly ushort x;
-			public readonly byte y;
-			public readonly byte character;
-			public readonly bool nameSelect;
-			public readonly bool vflip;
-			public readonly bool hflip;
-			public readonly byte priority;
-			public readonly byte palette;
-			public readonly bool size;
-		}
-
 		private readonly BsnesApi _api;
 		private readonly byte* vram; // waterbox pointer, ALWAYS access with EnterExit()
-		private readonly Object* objects; // waterbox pointer, ALWAYS access with EnterExit()
 		private readonly ushort* cgram; // waterbox pointer, ALWAYS access with EnterExit()
 		private readonly byte[][] cachedTiles = new byte[5][];
 		private readonly int[] bppArrayIndex = { 0, 0, 0, 0, 1, 0, 0, 0, 2 };
@@ -66,7 +49,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		{
 			_api = api;
 			vram = (byte*)api.core.snes_get_memory_region((int)BsnesApi.SNES_MEMORY.VRAM, out _, out _);
-			objects = (Object*)api.core.snes_get_memory_region((int)BsnesApi.SNES_MEMORY.OBJECTS, out _, out _);
 			cgram = (ushort*)api.core.snes_get_memory_region((int)BsnesApi.SNES_MEMORY.CGRAM, out _, out _);
 			generate_palette();
 			generate_directColorTable();
@@ -131,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			cachedTiles[3] ??= new byte[pixelCount];
 
 			for (int i = 0; i < pixelCount; i++)
-				cachedTiles[3][i] = vram[2*i + 1];
+				cachedTiles[3][i] = vram[2 * i + 1];
 		}
 
 		private void CacheTilesMode7ExtBg()
@@ -157,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 		}
 
-		public ISNESGraphicsDecoder.OAMInfo CreateOAMInfo(ScreenInfo si, int num) => new OAMInfo(objects, si, num);
+		public ISNESGraphicsDecoder.OAMInfo CreateOAMInfo(ScreenInfo si, int num) => new OAMInfo(_api.core.snes_read_oam, si, num);
 
 		public void DecodeBG(
 			int* screen,
@@ -255,7 +237,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public TileEntry[] FetchMode7Tilemap()
 		{
-			var buf = new TileEntry[128*128];
+			var buf = new TileEntry[128 * 128];
 			for (int tidx = 0; tidx < 128 * 128; tidx++)
 			{
 				buf[tidx].address = tidx * 2;
@@ -270,7 +252,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			Dimensions blockDimensions = SizeInBlocksForBGSize(size);
 			int realWidth = blockDimensions.Width * 32;
 			int realHeight = blockDimensions.Height * 32;
-			TileEntry[] buf = new TileEntry[realWidth*realHeight];
+			TileEntry[] buf = new TileEntry[realWidth * realHeight];
 
 			for (int by = 0; by < blockDimensions.Height; by++)
 			for (int bx = 0; bx < blockDimensions.Width; bx++)
@@ -343,38 +325,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			int destx,
 			int desty, ScreenInfo si,
 			int spritenum,
-			ISNESGraphicsDecoder.OAMInfo oam,
+			ISNESGraphicsDecoder.OAMInfo oamInfo,
 			int xlimit,
 			int ylimit,
 			byte[,] spriteMap)
 		{
-			oam ??= new OAMInfo(objects, si, spritenum);
-			Size dim = ObjSizes[si.OBSEL_Size, oam.Size ? 1 : 0];
+			oamInfo ??= new OAMInfo(_api.core.snes_read_oam, si, spritenum);
+			Size dim = ObjSizes[si.OBSEL_Size, oamInfo.Size ? 1 : 0];
 
 			byte[] cachedTileBuffer = cachedTiles[bppArrayIndex[4]];
 
-			int baseaddr = oam.Table ? si.OBJTable1Addr : si.OBJTable0Addr;
+			int baseaddr = oamInfo.Table ? si.OBJTable1Addr : si.OBJTable0Addr;
 
 			//TODO - flips of 'undocumented' rectangular oam settings are wrong. probably easy to do right, but we need a test
 
-			int bcol = oam.Tile & 0xF;
-			int brow = (oam.Tile >> 4) & 0xF;
-			for(int oy=0;oy<dim.Height;oy++)
+			int bcol = oamInfo.Tile & 0xF;
+			int brow = (oamInfo.Tile >> 4) & 0xF;
+			for (int oy = 0; oy < dim.Height; oy++)
 			for (int ox = 0; ox < dim.Width; ox++)
 			{
 				int dy, dx;
 
-				if (oam.HFlip)
+				if (oamInfo.HFlip)
 					dx = dim.Width - 1 - ox;
 				else dx = ox;
-				if (oam.VFlip)
+				if (oamInfo.VFlip)
 					dy = dim.Height - 1 - oy;
 				else dy = oy;
 
 				dx += destx;
 				dy += desty;
 
-				if(dx>=xlimit || dy>=ylimit || dx<0 || dy<0)
+				if (dx >= xlimit || dy >= ylimit || dx < 0 || dy < 0)
 					continue;
 
 				int col = (bcol + (ox >> 3)) & 0xF;
@@ -382,10 +364,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				int sx = ox & 0x7;
 				int sy = oy & 0x7;
 
-				int addr = baseaddr*2 + (row * 16 + col) * 64;
+				int addr = baseaddr * 2 + (row * 16 + col) * 64;
 				addr += sy * 8 + sx;
 
-				int dofs = stride*dy+dx;
+				int dofs = stride * dy + dx;
 				int color = cachedTileBuffer[addr];
 				if (spriteMap != null && color == 0)
 				{
@@ -394,7 +376,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				else
 				{
 					screen[dofs] = color;
-					Paletteize(screen, dofs, oam.Palette * 16 + 128, 1);
+					Paletteize(screen, dofs, oamInfo.Palette * 16 + 128, 1);
 					Colorize(screen, dofs, 1);
 					if (spriteMap != null) spriteMap[dx, dy] = (byte)spritenum;
 				}
@@ -473,7 +455,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				M7SEL_VFLIP = _api.core.snes_peek_logical_register(M7SEL_VFLIP) == 1
 			};
 
-			screenInfo.ObjSizeBounds = ObjSizes[screenInfo.OBSEL_Size,1];
+			screenInfo.ObjSizeBounds = ObjSizes[screenInfo.OBSEL_Size, 1];
 			int square = Math.Max(screenInfo.ObjSizeBounds.Width, screenInfo.ObjSizeBounds.Height);
 			screenInfo.ObjSizeBoundsSquare = new Size(square, square);
 
@@ -623,17 +605,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public bool Size { get; }
 		public int Address { get; }
 
-		public unsafe OAMInfo(SNESGraphicsDecoder.Object* objects, ScreenInfo si, int index)
+		public OAMInfo(Func<ushort, byte> readOam, ScreenInfo si, int index)
 		{
-			X = objects[index].x;
-			Y = objects[index].y;
-			Table = objects[index].nameSelect;
-			Palette = objects[index].palette;
-			Priority = objects[index].priority;
-			HFlip = objects[index].hflip;
-			VFlip = objects[index].vflip;
-			Size = objects[index].size;
-			byte character = objects[index].character;
+			ushort lowaddr = (ushort)(index * 4);
+			X = readOam(lowaddr++);
+			Y = readOam(lowaddr++);
+			byte character = readOam(lowaddr++);
+			Table = (readOam(lowaddr) & 1) == 1;
+			Palette = (readOam(lowaddr) >> 1) & 7;
+			Priority = (byte)((readOam(lowaddr) >> 4) & 3);
+			HFlip = ((readOam(lowaddr) >> 6) & 1) == 1;
+			VFlip = ((readOam(lowaddr) >> 7) & 1) == 1;
+
+			int highaddr = index / 4;
+			int shift = (index % 4) * 2;
+			byte high = readOam((ushort)(512 + highaddr));
+
+			bool highX = (high & (1 << shift++)) != 0;
+			Size = (high & (1 << shift)) != 0;
+			if (highX) X += 256;
+
 			Tile = character + (Table ? 256 : 0);
 			Address = character * 32 + (Table ? si.OBJTable1Addr : si.OBJTable0Addr);
 			Address &= 0xFFFF;

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 using BizHawk.Common;
@@ -68,16 +67,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			var deviceName = MameGetString(MAMELuaCommand.GetMainCPUName);
 			//var addrSize = (size * 2).ToString();
 
-			var endian = MemoryDomain.Endian.Unknown;
-
-			if (endianString == "little")
+			var endian = endianString switch
 			{
-				endian = MemoryDomain.Endian.Little;
-			}
-			else if (endianString == "big")
-			{
-				endian = MemoryDomain.Endian.Big;
-			}
+				"little" => MemoryDomain.Endian.Little,
+				"big" => MemoryDomain.Endian.Big,
+				_ => MemoryDomain.Endian.Unknown
+			};
 
 			var mapCount = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceMapCount);
 
@@ -86,23 +81,33 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				var read = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].read.handlertype");
 				var write = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].write.handlertype");
 
-				if (read == "ram" && write == "ram" || read == "rom")
+				if (read is "ram" or "rom")
 				{
 					var firstOffset = _core.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].address_start");
 					var lastOffset = _core.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].address_end");
 					var name = $"{ deviceName } : { read } : 0x{ firstOffset:X}-0x{ lastOffset:X}";
 
 					domains.Add(new MAMEMemoryDomain(name, lastOffset - firstOffset + 1, endian,
-						dataWidth, read != "rom", _core, _exe, firstOffset, systemBusAddressShift, size));
+						dataWidth, write == "ram", _core, _exe, firstOffset, systemBusAddressShift, size));
 				}
 			}
 
-			domains.Add(new MAMEMemoryDomain(deviceName + " : System Bus", size, endian, dataWidth, false, _core, _exe, 0, systemBusAddressShift, size));
+			// don't allow raw system bus to be added if we want deterministic emulation (as many regions have side effects)
+			// (regions without side effects are covered in other domains anyways)
+			if (!DeterministicEmulation)
+			{
+				domains.Add(new MAMEMemoryDomain(deviceName + " : System Bus", size, endian, dataWidth, false, _core, _exe, 0, systemBusAddressShift, size));
+			}
+
 			domains.Add(_exe.GetPagesDomain());
 
 			_memoryDomains = new(domains);
-			_memoryDomains.SystemBus = _memoryDomains[deviceName + " : System Bus"];
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+			if (!DeterministicEmulation)
+			{
+				_memoryDomains.SystemBus = _memoryDomains[deviceName + " : System Bus"]!;
+			}
+
+			((BasicServiceProvider)ServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 		}
 	}
 }

@@ -7,6 +7,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
 	public partial class AppleII : ITextStatable
 	{
+		public bool AvoidRewind => false;
+
 		public void SaveStateText(TextWriter writer)
 		{
 			SyncState(new AppleSerializer(writer));

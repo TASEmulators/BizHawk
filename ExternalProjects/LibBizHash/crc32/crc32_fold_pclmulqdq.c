@@ -32,7 +32,7 @@ extern uint64_t fold_16_vpclmulqdq(__m128i *xmm_crc0, __m128i *xmm_crc1,
 extern uint64_t fold_16_vpclmulqdq_copy(__m128i *xmm_crc0, __m128i *xmm_crc1,
 	__m128i *xmm_crc2, __m128i *xmm_crc3, uint8_t *dst, const uint8_t *src, uint64_t len);
 
-__attribute__((target("sse4.1", "pclmul")))
+__attribute__((target("sse4.1,pclmul")))
 static void fold_1(__m128i *xmm_crc0, __m128i *xmm_crc1, __m128i *xmm_crc2, __m128i *xmm_crc3) {
 	const __m128i xmm_fold4 = _mm_set_epi32(0x00000001, 0x54442bd4, 0x00000001, 0xc6e41596);
 	__m128i x_tmp3;
@@ -53,7 +53,7 @@ static void fold_1(__m128i *xmm_crc0, __m128i *xmm_crc1, __m128i *xmm_crc2, __m1
 	*xmm_crc3 = _mm_castps_si128(ps_res);
 }
 
-__attribute__((target("sse4.1", "pclmul")))
+__attribute__((target("sse4.1,pclmul")))
 static void fold_2(__m128i *xmm_crc0, __m128i *xmm_crc1, __m128i *xmm_crc2, __m128i *xmm_crc3) {
 	const __m128i xmm_fold4 = _mm_set_epi32(0x00000001, 0x54442bd4, 0x00000001, 0xc6e41596);
 	__m128i x_tmp3, x_tmp2;
@@ -82,7 +82,7 @@ static void fold_2(__m128i *xmm_crc0, __m128i *xmm_crc1, __m128i *xmm_crc2, __m1
 	*xmm_crc3 = _mm_castps_si128(ps_res31);
 }
 
-__attribute__((target("sse4.1", "pclmul")))
+__attribute__((target("sse4.1,pclmul")))
 static void fold_3(__m128i *xmm_crc0, __m128i *xmm_crc1, __m128i *xmm_crc2, __m128i *xmm_crc3) {
 	const __m128i xmm_fold4 = _mm_set_epi32(0x00000001, 0x54442bd4, 0x00000001, 0xc6e41596);
 	__m128i x_tmp3;
@@ -117,7 +117,7 @@ static void fold_3(__m128i *xmm_crc0, __m128i *xmm_crc1, __m128i *xmm_crc2, __m1
 	*xmm_crc3 = _mm_castps_si128(ps_res32);
 }
 
-__attribute__((target("sse4.1", "pclmul")))
+__attribute__((target("sse4.1,pclmul")))
 static void fold_4(__m128i *xmm_crc0, __m128i *xmm_crc1, __m128i *xmm_crc2, __m128i *xmm_crc3) {
 	const __m128i xmm_fold4 = _mm_set_epi32(0x00000001, 0x54442bd4, 0x00000001, 0xc6e41596);
 	__m128i x_tmp0, x_tmp1, x_tmp2, x_tmp3;
@@ -178,7 +178,7 @@ static const unsigned _Alignas(32) pshufb_shf_table[60] = {
 	0x0201008f, 0x06050403, 0x0a090807, 0x0e0d0c0b  /* shl  1 (16 -15)/shr15*/
 };
 
-__attribute__((target("sse4.1", "pclmul")))
+__attribute__((target("sse4.1,pclmul")))
 static void partial_fold(const size_t len, __m128i *xmm_crc0, __m128i *xmm_crc1, __m128i *xmm_crc2,
                          __m128i *xmm_crc3, __m128i *xmm_crc_part) {
 
@@ -224,7 +224,7 @@ static void partial_fold(const size_t len, __m128i *xmm_crc0, __m128i *xmm_crc1,
 	*xmm_crc3 = _mm_castps_si128(ps_res);
 }
 
-__attribute__((target("sse4.1", "pclmul")))
+__attribute__((target("sse4.1,pclmul")))
 static inline void crc32_fold_load(__m128i *fold, __m128i *fold0, __m128i *fold1, __m128i *fold2, __m128i *fold3) {
 	*fold0 = _mm_load_si128(fold + 0);
 	*fold1 = _mm_load_si128(fold + 1);
@@ -232,7 +232,7 @@ static inline void crc32_fold_load(__m128i *fold, __m128i *fold0, __m128i *fold1
 	*fold3 = _mm_load_si128(fold + 3);
 }
 
-__attribute__((target("sse4.1", "pclmul")))
+__attribute__((target("sse4.1,pclmul")))
 static inline void crc32_fold_save(__m128i *fold, __m128i fold0, __m128i fold1, __m128i fold2, __m128i fold3) {
 	_mm_storeu_si128(fold + 0, fold0);
 	_mm_storeu_si128(fold + 1, fold1);
@@ -240,7 +240,7 @@ static inline void crc32_fold_save(__m128i *fold, __m128i fold0, __m128i fold1, 
 	_mm_storeu_si128(fold + 3, fold3);
 }
 
-__attribute__((target("sse4.1", "pclmul")))
+__attribute__((target("sse4.1,pclmul")))
 static uint32_t crc32_fold_pclmulqdq_reset(crc32_fold *crc) {
 	__m128i xmm_crc0 = _mm_cvtsi32_si128(0x9db42487);
 	__m128i xmm_zero = _mm_setzero_si128();
@@ -251,7 +251,7 @@ static uint32_t crc32_fold_pclmulqdq_reset(crc32_fold *crc) {
 #define ONCE(op)            if (first) { first = 0; op; }
 #define XOR_INITIAL(where)  ONCE(where = _mm_xor_si128(where, xmm_initial))
 
-__attribute__((target("sse4.1", "pclmul")))
+__attribute__((target("sse4.1,pclmul")))
 void crc32_fold_pclmulqdq(crc32_fold *crc, const uint8_t *src, uint64_t len, uint32_t init_crc) {
 	size_t algn_diff;
 	__m128i xmm_t0, xmm_t1, xmm_t2, xmm_t3;
@@ -376,7 +376,7 @@ static const unsigned _Alignas(16) crc_mask2[4] = {
 	0x00000000, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF
 };
 
-__attribute__((target("sse4.1", "pclmul")))
+__attribute__((target("sse4.1,pclmul")))
 static uint32_t crc32_fold_pclmulqdq_final(crc32_fold *crc) {
 	const __m128i xmm_mask  = _mm_load_si128((__m128i *)crc_mask);
 	const __m128i xmm_mask2 = _mm_load_si128((__m128i *)crc_mask2);
@@ -436,7 +436,8 @@ static uint32_t crc32_fold_pclmulqdq_final(crc32_fold *crc) {
 	return crc->value;
 }
 
-__attribute__((target("sse4.1", "pclmul"))) __attribute__((visibility("hidden")))
+__attribute__((target("sse4.1,pclmul")))
+__attribute__((visibility("hidden")))
 uint32_t crc32_pclmulqdq(uint32_t crc32, const uint8_t *buf, uint32_t len) {
 	// For lens < 64, crc32_braid method is faster.
 	if (len < 64)

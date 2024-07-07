@@ -1,5 +1,3 @@
-﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,8 +10,7 @@ using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
-	[JsonObject]
-	public class PathEntryCollection : IEnumerable<PathEntry>
+	public class PathEntryCollection
 	{
 		private static readonly string COMBINED_SYSIDS_GB = string.Join("_", VSystemID.Raw.GB, VSystemID.Raw.GBC, VSystemID.Raw.SGB);
 
@@ -24,6 +21,7 @@ namespace BizHawk.Client.Common
 		private static readonly Dictionary<string, string> _displayNameLookup = new()
 		{
 			[GLOBAL] = "Global",
+			[VSystemID.Raw.Amiga] = "Amiga",
 			[VSystemID.Raw.Arcade] = "Arcade",
 			[VSystemID.Raw.INTV] = "Intellivision",
 			[VSystemID.Raw.NES] = "NES",
@@ -63,7 +61,8 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.NDS] = "NDS",
 			[VSystemID.Raw.Sega32X] = "Sega 32X",
 			[VSystemID.Raw.GGL] = "Dual Game Gear",
-			[VSystemID.Raw.Satellaview] = "Satellaview"
+			[VSystemID.Raw.Satellaview] = "Satellaview",
+			[VSystemID.Raw.N3DS] = "3DS"
 		};
 
 		private static PathEntry BaseEntryFor(string sysID, string path)
@@ -103,6 +102,9 @@ namespace BizHawk.Client.Common
 		private static PathEntry ScreenshotsEntryFor(string sysID)
 			=> new(sysID, "Screenshots", Path.Combine(".", "Screenshots"));
 
+		private static PathEntry UserEntryFor(string sysID)
+			=> new(sysID, "User", Path.Combine(".", "User"));
+
 		public List<PathEntry> Paths { get; }
 
 		[JsonConstructor]
@@ -115,9 +117,6 @@ namespace BizHawk.Client.Common
 
 		public bool UseRecentForRoms { get; set; }
 		public string LastRomPath { get; set; } = ".";
-
-		public IEnumerator<PathEntry> GetEnumerator() => Paths.GetEnumerator();
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		public PathEntry this[string system, string type]
 			=> Paths.Find(p => p.IsSystem(system) && p.Type == type) ?? TryGetDebugPath(system, type);
@@ -168,7 +167,7 @@ namespace BizHawk.Client.Common
 		[JsonIgnore]
 		internal string TempFilesFragment => this[GLOBAL, "Temp Files"].Path;
 
-		public static Lazy<IReadOnlyList<PathEntry>> Defaults = new(() => new[]
+		public static readonly Lazy<IReadOnlyList<PathEntry>> Defaults = new(() => new[]
 		{
 			new[] {
 				BaseEntryFor(GLOBAL, "."),
@@ -187,7 +186,14 @@ namespace BizHawk.Client.Common
 				new(GLOBAL, "Temp Files", ""),
 			},
 
+			CommonEntriesFor(VSystemID.Raw.N3DS, basePath: Path.Combine(".", "3DS"), omitSaveRAM: true),
+			new[] {
+				UserEntryFor(VSystemID.Raw.N3DS),
+			},
+
 			CommonEntriesFor(VSystemID.Raw.Sega32X, basePath: Path.Combine(".", "32X")),
+
+			CommonEntriesFor(VSystemID.Raw.Amiga, basePath: Path.Combine(".", "Amiga")),
 
 			CommonEntriesFor(VSystemID.Raw.A26, basePath: Path.Combine(".", "Atari 2600"), omitSaveRAM: true),
 

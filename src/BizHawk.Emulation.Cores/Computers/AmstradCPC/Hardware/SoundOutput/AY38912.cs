@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System;
+
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
@@ -583,7 +583,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_tStatesPerFrame = frameTactCount;
 			_samplesPerFrame = sampleRate / 50; //882
 
-			_tStatesPerSample = (double)frameTactCount / (double)_samplesPerFrame; // 90; //(int)Math.Round(((double)_tStatesPerFrame * 50D) / 
+			_tStatesPerSample = frameTactCount / (double)_samplesPerFrame; // 90; //(int)Math.Round(((double)_tStatesPerFrame * 50D) / 
 																				   //(16D * (double)_sampleRate),
 																				   //MidpointRounding.AwayFromZero);
 			_audioBuffer = new short[_samplesPerFrame * 2];
@@ -609,7 +609,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// get the current length of the audiobuffer
 			int bufferLength = _samplesPerFrame; // _audioBuffer.Length;
 
-			double toEnd = ((double)(bufferLength * cycle) / (double)_tStatesPerFrame);
+			double toEnd = (bufferLength * cycle / (double)_tStatesPerFrame);
 
 			// loop through the number of samples we need to render
 			while (_audioBufferIndex < toEnd)

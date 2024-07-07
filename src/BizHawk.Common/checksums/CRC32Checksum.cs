@@ -1,5 +1,3 @@
-using System;
-
 using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Common

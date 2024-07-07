@@ -5,12 +5,13 @@
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<NoWarn>$(NoWarn);CA1806;CA1825;CA2214;MA0084;SA1100;SA1120;SA1129;SA1137;SA1205;SA1208;SA1400</NoWarn>
+		<NoWarn>$(NoWarn);CA1806;CA1825;CA2214;MA0060;MA0084;MA0090;MA0140;SA1100;SA1120;SA1129;SA1137;SA1205;SA1208;SA1400;SA1514</NoWarn>
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-		<PackageReference Include="Google.FlatBuffers" Version="22.9.24" Private="true" />
+		<PackageReference Include="Microsoft.CSharp" />
+		<PackageReference Include="Google.FlatBuffers" Private="true" />
+		<Analyzer Include="$(ProjectDir)../../References/BizHawk.SrcGen.SettingsUtil.dll" Private="true" />
 		<Reference Include="FlatBuffers.GenOutput" HintPath="$(ProjectDir)../../References/FlatBuffers.GenOutput.dll" Private="true" />
 		<Reference Include="Virtu" HintPath="$(ProjectDir)../../References/Virtu.dll" Private="true" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />

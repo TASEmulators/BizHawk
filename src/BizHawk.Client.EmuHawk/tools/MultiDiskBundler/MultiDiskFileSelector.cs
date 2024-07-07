@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Windows.Forms;
 
@@ -27,11 +26,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public event EventHandler NameChanged;
 
-		private void HandleLabelTextChanged(object sender, EventArgs e)
-		{
-			OnNameChanged(EventArgs.Empty);
-		}
-
 		public MultiDiskFileSelector(IDialogController dialogController, PathEntryCollection pathEntries,
 			Func<string> getLoadedRomNameCallback, Func<string> getSystemNameCallback)
 		{
@@ -40,7 +34,6 @@ namespace BizHawk.Client.EmuHawk
 			_getLoadedRomNameCallback = getLoadedRomNameCallback;
 			_getSystemNameCallback = getSystemNameCallback;
 			InitializeComponent();
-			PathBox.TextChanged += HandleLabelTextChanged;
 		}
 
 		protected virtual void OnNameChanged(EventArgs e)
@@ -50,8 +43,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PathBox_DragEnter(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent(DataFormats.FileDrop) &&
-				((string[])e.Data.GetData(DataFormats.FileDrop)).Length == 1)
+			if (e.Data.GetDataPresent(DataFormats.FileDrop)
+				&& ((string[]) e.Data.GetData(DataFormats.FileDrop)).Length is 1)
 			{
 				e.Effect = DragDropEffects.Copy;
 			}

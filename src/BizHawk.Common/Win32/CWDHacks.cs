@@ -1,38 +1,59 @@
-using System;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace BizHawk.Common
 {
 	/// <summary>Gets/Sets the current working directory while bypassing the security checks triggered by the public API (<see cref="Environment.CurrentDirectory"/>).</summary>
-	public static unsafe class CWDHacks
+	public static class CWDHacks
 	{
-		private const uint BUFFER_LEN = 0x200U;
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+		private static extern unsafe int GetCurrentDirectoryW(int nBufferLength, char* lpBuffer);
 
-		private static readonly byte[] BUFFER = new byte[BUFFER_LEN];
-
-		[DllImport("kernel32.dll", SetLastError = true)]
-		private static extern uint GetCurrentDirectoryW(uint nBufferLength, byte* pBuffer);
-
-		[DllImport("kernel32.dll", SetLastError = true)]
-		private static extern bool SetCurrentDirectoryW(byte* lpPathName);
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+		private static extern bool SetCurrentDirectoryW(string lpPathName);
 
 		public static bool Set(string newCWD)
-		{
-			fixed (byte* pstr = &Encoding.Unicode.GetBytes($"{newCWD}\0")[0])
-				return SetCurrentDirectoryW(pstr);
-		}
+			=> SetCurrentDirectoryW(newCWD);
 
-		public static string Get()
+		public static unsafe string Get()
 		{
-			uint result;
-			fixed (byte* pBuf = &BUFFER[0]) result = GetCurrentDirectoryW(BUFFER_LEN, pBuf);
-			if (result <= BUFFER_LEN && result is not 0U) return Encoding.Unicode.GetString(BUFFER, 0, (int) (2U * result));
-			var buf = new byte[result];
-			uint result1;
-			fixed (byte* pBuf = &buf[0]) result1 = GetCurrentDirectoryW(BUFFER_LEN, pBuf);
-			if (result1 == result) return Encoding.Unicode.GetString(buf, 0, (int) (2U * result));
-			throw new Exception();
+			static Exception GetExceptionForFailure()
+			{
+				var ex = Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error())
+					?? new("Marshal.GetExceptionForHR returned null?");
+				return new InvalidOperationException("GetCurrentDirectoryW returned 0!", ex);
+			}
+
+			const int STARTING_BUF_SIZE = Win32Imports.MAX_PATH + 1;
+			var startingBuffer = stackalloc char[STARTING_BUF_SIZE];
+			var ret = GetCurrentDirectoryW(STARTING_BUF_SIZE, startingBuffer);
+			switch (ret)
+			{
+				case 0:
+					throw GetExceptionForFailure();
+				case < STARTING_BUF_SIZE: // ret should be smaller than the buffer, as ret doesn't include null terminator
+					return new(startingBuffer, 0, ret);
+			}
+
+			// since current directory could suddenly grow (due to it being global / modifiable by other threads), a while true loop is used here
+			// although it's fairly unlikely we'll even reach this point, MAX_PATH can only be bypassed under certain circumstances
+			while (true)
+			{
+				var bufSize = ret;
+				var buffer = new char[bufSize];
+				fixed (char* p = buffer)
+				{
+					ret = GetCurrentDirectoryW(bufSize, p);
+					if (ret == 0)
+					{
+						throw GetExceptionForFailure();
+					}
+
+					if (ret < bufSize)
+					{
+						return new(p, 0, ret);
+					}
+				}
+			}
 		}
 	}
 }

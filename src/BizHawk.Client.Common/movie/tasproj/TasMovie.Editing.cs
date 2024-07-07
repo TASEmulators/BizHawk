@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,7 +31,7 @@ namespace BizHawk.Client.Common
 			if (this.IsRecording())
 			{
 				TasStateManager.InvalidateAfter(frame);
-				GreenzoneInvalidated(frame + 1);
+				GreenzoneInvalidated(frame);
 			}
 
 			if (frame != 0)

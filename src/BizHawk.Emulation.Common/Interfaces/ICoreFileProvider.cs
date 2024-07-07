@@ -6,11 +6,6 @@
 	public interface ICoreFileProvider
 	{
 		/// <summary>
-		/// produces a path that contains emulation related DLL and exe files
-		/// </summary>
-		string DllPath();
-
-		/// <summary>
 		/// produces a path that contains saveram... because libretro cores need it
 		/// </summary>
 		string GetRetroSaveRAMDirectory(IGameInfo game);
@@ -19,6 +14,12 @@
 		/// produces a path for use as a libretro system path (different for each core)
 		/// </summary>
 		string GetRetroSystemPath(IGameInfo game);
+
+		/// <summary>
+		/// produces a 'user' path for a given system id
+		/// can produce an empty temp folder, suitable for movies
+		/// </summary>
+		string GetUserPath(string sysID, bool temp);
 
 		/// <param name="msg">warning message to show on failure</param>
 		/// <returns><see langword="null"/> iff failed</returns>

@@ -1,9 +1,8 @@
-﻿using System;
 using System.Drawing;
 
 namespace BizHawk.Client.Common
 {
-	public interface IEmuClientApi : IExternalApi
+	public interface IEmuClientApi : IDisposable, IExternalApi
 	{
 		/// <summary>
 		/// Occurs before a quickload is done (just after user has pressed the shortcut button
@@ -90,41 +89,6 @@ namespace BizHawk.Client.Common
 		/// <param name="name">Savestate friendly name</param>
 		/// <returns><see langword="true"/> iff succeeded</returns>
 		bool LoadState(string name);
-
-		/// <summary>
-		/// Raised before a quickload is done (just after pressing shortcut button)
-		/// </summary>
-		/// <param name="sender">Object who raised the event</param>
-		/// <param name="quickSaveSlotName">Slot used for quickload</param>
-		/// <param name="eventHandled">A boolean that can be set if users want to handle save themselves; if so, BizHawk won't do anything</param>
-		void OnBeforeQuickLoad(object sender, string quickSaveSlotName, out bool eventHandled);
-
-		/// <summary>
-		/// Raised before a quicksave is done (just after pressing shortcut button)
-		/// </summary>
-		/// <param name="sender">Object who raised the event</param>
-		/// <param name="quickSaveSlotName">Slot used for quicksave</param>
-		/// <param name="eventHandled">A boolean that can be set if users want to handle save themselves; if so, BizHawk won't do anything</param>
-		void OnBeforeQuickSave(object sender, string quickSaveSlotName, out bool eventHandled);
-
-		/// <summary>
-		/// Raise when a rom is successfully Loaded
-		/// </summary>
-		void OnRomLoaded();
-
-		/// <summary>
-		/// Raise when a state is loaded
-		/// </summary>
-		/// <param name="sender">Object who raised the event</param>
-		/// <param name="stateName">User friendly name for saved state</param>
-		void OnStateLoaded(object sender, string stateName);
-
-		/// <summary>
-		/// Raise when a state is saved
-		/// </summary>
-		/// <param name="sender">Object who raised the event</param>
-		/// <param name="stateName">User friendly name for saved state</param>
-		void OnStateSaved(object sender, string stateName);
 
 		bool OpenRom(string path);
 

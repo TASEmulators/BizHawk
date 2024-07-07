@@ -1,9 +1,10 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Common
 {
@@ -21,6 +22,10 @@ namespace BizHawk.Common
 	/// </remarks>
 	public sealed class HawkFile : IDisposable
 	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool PathContainsPipe(string s)
+			=> s.ContainsOrdinal('|');
+
 		private readonly List<HawkArchiveFileItem>? _archiveItems;
 
 		private Stream? _boundStream;
@@ -90,7 +95,7 @@ namespace BizHawk.Common
 			var split1 = SplitArchiveMemberPath(path);
 			if (split1 != null) (path, autobind) = split1.Value;
 			FullPathWithoutMember = path;
-			Exists = _rootExists = !string.IsNullOrEmpty(path) && new FileInfo(path).Exists;
+			Exists = _rootExists = File.Exists(path);
 			if (!_rootExists) return;
 
 			if (DearchivalMethod != null && allowArchives)
@@ -142,7 +147,7 @@ namespace BizHawk.Common
 					}
 					for (int i = 0, l = scanResults.Count; i < l; i++)
 					{
-						if (string.Equals(scanResults[i].Name, autobind, StringComparison.InvariantCultureIgnoreCase))
+						if (string.Equals(scanResults[i].Name, autobind, StringComparison.OrdinalIgnoreCase))
 						{
 							BindArchiveMember(i);
 							return;
@@ -285,7 +290,7 @@ namespace BizHawk.Common
 		}
 
 		/// <summary>Set this with an instance which can construct archive handlers as necessary for archive handling.</summary>
-		public static IFileDearchivalMethod<IHawkArchiveFile>? DearchivalMethod;
+		public static IFileDearchivalMethod<IHawkArchiveFile>? DearchivalMethod { get; set; }
 
 		[return: HawkFilePath]
 		private static string MakeCanonicalName(string root, string? member) => member == null ? root : $"{root}|{member}";
@@ -297,7 +302,7 @@ namespace BizHawk.Common
 #if DEBUG
 			if (path.IndexOf('|') != i) Console.WriteLine($"{nameof(HawkFile)} path contains multiple '|'");
 #endif
-			return i == -1 ? ((string, string)?) null : (path.Substring(0, i), path.Substring(i + 1));
+			return i == -1 ? null : (path.Substring(0, i), path.Substring(i + 1));
 		}
 	}
 }

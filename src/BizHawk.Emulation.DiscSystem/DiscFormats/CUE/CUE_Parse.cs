@@ -3,6 +3,8 @@
 using System.Text.RegularExpressions;
 using System.IO;
 
+using BizHawk.Common.StringExtensions;
+
 //http://digitalx.org/cue-sheet/index.html "all cue sheet information is a straight 1:1 copy from the cdrwin helpfile"
 //http://www.gnu.org/software/libcdio/libcdio.html#Sectors
 //this is actually a great reference. they use LSN instead of LBA.. maybe a good idea for us
@@ -155,9 +157,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					}
 				}
 
-				bool startsWithSemicolon = key.StartsWith(";");
-
-				if (startsWithSemicolon)
+				if (key.StartsWith(';'))
 				{
 					clp.EOF = true;
 					OUT_CueFile.Commands.Add(new CUE_File.Command.COMMENT(line));
@@ -312,7 +312,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							// cues don't support multiple sessions themselves, but it is common for rips to put SESSION # in REM fields
 							// so, if we have such a REM, we'll check if the comment starts with SESSION, and interpret that as a session "command"
 							var trimmed = comment.Trim();
-							if (trimmed.ToUpperInvariant().StartsWith("SESSION ") && int.TryParse(trimmed.Substring(8), out var number) && number > 0)
+							if (trimmed.StartsWith("SESSION ", StringComparison.OrdinalIgnoreCase) && int.TryParse(trimmed.Substring(8), out var number) && number > 0)
 							{
 								OUT_CueFile.Commands.Add(new CUE_File.Command.SESSION(number));
 								break;
@@ -374,7 +374,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				if (!clp.EOF)
 				{
 					var remainder = clp.ReadLine();
-					if (remainder.TrimStart().StartsWith(";"))
+					if (remainder.TrimStart().StartsWith(';'))
 					{
 						//add a comment
 						OUT_CueFile.Commands.Add(new CUE_File.Command.COMMENT(remainder));

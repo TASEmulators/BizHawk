@@ -1,6 +1,6 @@
-﻿using System;
 using System.ComponentModel;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 // ReSharper disable UnusedMember.Global
@@ -15,12 +15,15 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "genesis";
 
+		[RequiredService]
+		private GPGX gpgx { get; set; }
+
 		private GPGX.GPGXSettings Settings
 		{
 			get => APIs.Emulation.GetSettings() as GPGX.GPGXSettings ?? new GPGX.GPGXSettings();
 			set => APIs.Emulation.PutSettings(value);
 		}
-
+	
 		[LuaMethodExample("if ( genesis.getlayer_bga( ) ) then\r\n\tconsole.log( \"Returns whether the bg layer A is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bga", "Returns whether the bg layer A is displayed")]
 		public bool GetLayerBgA()
@@ -61,6 +64,20 @@ namespace BizHawk.Client.Common
 			var s = Settings;
 			s.DrawBGW = value;
 			Settings = s;
+		}
+
+		[LuaMethodExample("genesis.add_deepfreeze_value( 0xFF00, 0x01 );")]
+		[LuaMethod("add_deepfreeze_value", "Adds an address to deepfreeze to a given value. The value will not change at any point during emulation.")]
+		public int AddDeepFreezeValue(int address, byte value)
+		{
+			return gpgx.AddDeepFreezeValue(address, value);
+		}
+
+		[LuaMethodExample("genesis.clear_deepfreeze_list();")]
+		[LuaMethod("clear_deepfreeze_list", "Clears the list of deep frozen variables")]
+		public void ClearDeepFreezeList()
+		{
+			gpgx.ClearDeepFreezeList();
 		}
 	}
 }

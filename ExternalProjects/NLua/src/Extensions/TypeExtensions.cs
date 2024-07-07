@@ -15,93 +15,58 @@ namespace NLua.Extensions
 		}
 
 		public static bool HasAdditionOperator(this Type t)
-		{
-			if (t.IsPrimitive)
-				return true;
-
-			return t.HasMethod("op_Addition");
-		}
+			=> t.IsPrimitive || t.HasMethod("op_Addition");
 
 		public static bool HasSubtractionOperator(this Type t)
-		{
-			if (t.IsPrimitive)
-				return true;
-
-			return t.HasMethod("op_Subtraction");
-		}
+			=> t.IsPrimitive || t.HasMethod("op_Subtraction");
 
 		public static bool HasMultiplyOperator(this Type t)
-		{
-			if (t.IsPrimitive)
-				return true;
-
-			return t.HasMethod("op_Multiply");
-		}
+			=> t.IsPrimitive || t.HasMethod("op_Multiply");
 
 		public static bool HasDivisionOperator(this Type t)
-		{
-			if (t.IsPrimitive)
-				return true;
-
-			return t.HasMethod("op_Division");
-		}
+			=> t.IsPrimitive || t.HasMethod("op_Division");
 
 		public static bool HasModulusOperator(this Type t)
-		{
-			if (t.IsPrimitive)
-				return true;
-
-			return t.HasMethod("op_Modulus");
-		}
+			=> t.IsPrimitive || t.HasMethod("op_Modulus");
 
 		public static bool HasUnaryNegationOperator(this Type t)
 		{
 			if (t.IsPrimitive)
+			{
 				return true;
+			}
+
 			// Unary - will always have only one version.
 			var op = t.GetMethod("op_UnaryNegation", BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
 			return op != null;
 		}
 
 		public static bool HasEqualityOperator(this Type t)
-		{
-			if (t.IsPrimitive)
-				return true;
-			return t.HasMethod("op_Equality");
-		}
+			=> t.IsPrimitive || t.HasMethod("op_Equality");
 
 		public static bool HasLessThanOperator(this Type t)
-		{
-			if (t.IsPrimitive)
-				return true;
-
-			return t.HasMethod("op_LessThan");
-		}
+			=> t.IsPrimitive || t.HasMethod("op_LessThan");
 
 		public static bool HasLessThanOrEqualOperator(this Type t)
-		{
-			if (t.IsPrimitive)
-				return true;
-			return t.HasMethod("op_LessThanOrEqual");
-		}
+			=> t.IsPrimitive || t.HasMethod("op_LessThanOrEqual");
 
 		public static MethodInfo[] GetMethods(this Type t, string name, BindingFlags flags)
-		{
-			return t.GetMethods(flags).Where(m => m.Name == name).ToArray();
-		}
+			=> t.GetMethods(flags).Where(m => m.Name == name).ToArray();
 
 		public static MethodInfo[] GetExtensionMethods(this Type type, string name, IEnumerable<Assembly> assemblies = null)
 		{
 			var types = new List<Type>();
-
 			types.AddRange(type.Assembly.GetTypes().Where(t => t.IsPublic));
 
 			if (assemblies != null)
 			{
-				foreach (Assembly item in assemblies)
+				foreach (var item in assemblies)
 				{
 					if (item == type.Assembly)
+					{
 						continue;
+					}
+
 					types.AddRange(item.GetTypes().Where(t => t.IsPublic && t.IsClass && t.IsSealed && t.IsAbstract && !t.IsNested));
 				}
 			}
@@ -133,10 +98,8 @@ namespace NLua.Extensions
 		/// <returns></returns>
 		public static MethodInfo GetExtensionMethod(this Type t, string name, IEnumerable<Assembly> assemblies = null)
 		{
-			var mi = t.GetExtensionMethods(name, assemblies).ToArray();
-			if (mi.Length == 0)
-				return null;
-			return mi[0];
+			var mi = t.GetExtensionMethods(name, assemblies);
+			return mi.Length == 0 ? null : mi[0];
 		}
 	}
 }

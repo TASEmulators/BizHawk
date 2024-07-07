@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
@@ -12,13 +11,15 @@ namespace BizHawk.Client.EmuHawk
 		private readonly bool _readOnly;
 		private string _lastHeaderClicked;
 		private bool _sortReverse;
+		private readonly bool _dispose;
 
-		public EditCommentsForm(IMovie movie, bool readOnly)
+		public EditCommentsForm(IMovie movie, bool readOnly, bool disposeOnClose = false)
 		{
 			_movie = movie;
 			_readOnly = readOnly;
 			_lastHeaderClicked = "";
 			_sortReverse = false;
+			_dispose = disposeOnClose;
 
 			InitializeComponent();
 			Icon = Properties.Resources.TAStudioIcon;
@@ -98,6 +99,14 @@ namespace BizHawk.Client.EmuHawk
 			_lastHeaderClicked = column.Name;
 			_sortReverse = !_sortReverse;
 			CommentGrid.Refresh();
+		}
+
+		private void OnClosed(object sender, FormClosedEventArgs e)
+		{
+			if (_dispose && _movie is ITasMovie tasMovie)
+			{
+				tasMovie.Dispose();
+			}
 		}
 	}
 }

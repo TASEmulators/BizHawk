@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
@@ -29,11 +28,8 @@ namespace BizHawk.Emulation.DiscSystem
 			Result.TOCItems[0].Control = 0;
 			Result.TOCItems[0].Exists = false;
 
-			//just in case this doesn't get set...
-			Result.FirstRecordedTrackNumber = 0;
-			Result.LastRecordedTrackNumber = 0;
-
-			var maxFoundTrack = 0;
+			var minFoundTrack = 100;
+			var maxFoundTrack = 1;
 
 			foreach (var te in Entries)
 			{
@@ -50,6 +46,7 @@ namespace BizHawk.Emulation.DiscSystem
 					case 255:
 						throw new InvalidOperationException("point == 255");
 					case <= 99:
+						minFoundTrack = Math.Min(minFoundTrack, point);
 						maxFoundTrack = Math.Max(maxFoundTrack, point);
 						Result.TOCItems[point].LBA = q.AP_Timestamp - 150; //RawTOCEntries contained an absolute time
 						Result.TOCItems[point].Control = q.CONTROL;
@@ -96,8 +93,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			//this is speculative:
-			//well, nothing to be done here..
-//			if (ret.FirstRecordedTrackNumber == -1) { }
+			if (Result.FirstRecordedTrackNumber == -1) { Result.FirstRecordedTrackNumber = minFoundTrack == 100 ? 1 : minFoundTrack; }
 			if (Result.LastRecordedTrackNumber == -1) { Result.LastRecordedTrackNumber = maxFoundTrack; }
 			if (Result.SessionFormat == SessionFormat.None) Result.SessionFormat = SessionFormat.Type00_CDROM_CDDA;
 

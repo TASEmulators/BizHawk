@@ -1,6 +1,4 @@
-﻿using System;
 using System.Runtime.InteropServices;
-using System.Text;
 
 using BizHawk.BizInvoke;
 
@@ -23,6 +21,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public const int BIOS_INDEX = 24;
 		public const int BIOS_FIRST = 1;
 		public const string BIOS_LUA_CODE = "bios";
+		public const string VIEW_LUA_CODE = "manager.machine.video.snapshot_target.view_names[]";
 
 		// main launcher
 		[BizImport(cc, Compatibility = true)]

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 // ARCHITECTURE NOTE:
@@ -122,6 +121,6 @@ namespace BizHawk.Emulation.DiscSystem
 		{}
 
 		public static bool IsValidExtension(string extension)
-			=> extension.ToLowerInvariant() is ".ccd" or ".cdi" or ".cue" or ".iso" or ".mds";
+			=> extension.ToLowerInvariant() is ".ccd" or ".cdi" or ".chd" or ".cue" or ".iso" or ".toc" or ".mds" or ".nrg";
 	}
 }

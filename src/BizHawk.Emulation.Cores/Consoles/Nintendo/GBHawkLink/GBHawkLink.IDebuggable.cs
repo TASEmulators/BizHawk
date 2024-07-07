@@ -1,33 +1,28 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 {
 	public partial class GBHawkLink : IDebuggable
 	{
+		private const string PFX_L = "Left ";
+
+		private const string PFX_R = "Right ";
+
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			var left = L.GetCpuFlagsAndRegisters()
-				.Select(reg => new KeyValuePair<string, RegisterValue>("Left " + reg.Key, reg.Value));
-
-			var right = R.GetCpuFlagsAndRegisters()
-				.Select(reg => new KeyValuePair<string, RegisterValue>("Right " + reg.Key, reg.Value));
-
-			return left.Union(right).ToDictionary(pair => pair.Key, pair => pair.Value);
+			Dictionary<string, RegisterValue> dict = new();
+			foreach (var reg in L.GetCpuFlagsAndRegisters()) dict[PFX_L + reg.Key] = reg.Value;
+			foreach (var reg in R.GetCpuFlagsAndRegisters()) dict[PFX_R + reg.Key] = reg.Value;
+			return dict;
 		}
 
 		public void SetCpuRegister(string register, int value)
 		{
-			if (register.StartsWith("Left "))
-			{
-				L.SetCpuRegister(register.Replace("Left ", ""), value);
-			}
-			else if (register.StartsWith("Right "))
-			{
-				R.SetCpuRegister(register.Replace("Right ", ""), value);
-			}
+			if (register.StartsWithOrdinal(PFX_L)) L.SetCpuRegister(register.Substring(PFX_L.Length), value);
+			else if (register.StartsWithOrdinal(PFX_R)) R.SetCpuRegister(register.Substring(PFX_R.Length), value);
 		}
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });

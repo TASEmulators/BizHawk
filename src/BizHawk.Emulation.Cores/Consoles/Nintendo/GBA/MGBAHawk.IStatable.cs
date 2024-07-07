@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 
 using BizHawk.Emulation.Common;
@@ -8,6 +7,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	public partial class MGBAHawk : IStatable
 	{
 		private byte[] _savebuff = Array.Empty<byte>();
+
+		public bool AvoidRewind => false;
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{

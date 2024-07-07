@@ -1,5 +1,3 @@
-using System;
-
 namespace BizHawk.Emulation.DiscSystem
 {
 	/// <summary>
@@ -27,8 +25,23 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// encapsulates a 2 digit BCD number as used various places in the CD specs
 	/// </summary>
-	public struct BCD2
+	public struct BCD2 : IEquatable<BCD2>
 	{
+		public bool Equals(BCD2 other)
+		{
+			return BCDValue == other.BCDValue;
+		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is BCD2 other && Equals(other);
+		}
+
+		public override int GetHashCode()
+		{
+			return BCDValue.GetHashCode();
+		}
+
 		/// <summary>
 		/// The raw BCD value. you can't do math on this number! but you may be asked to supply it to a game program.
 		/// The largest number it can logically contain is 99
@@ -67,6 +80,13 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public override string ToString()
 			=> BCDValue.ToString("X2");
+
+		public static bool operator ==(BCD2 lhs, BCD2 rhs) => lhs.BCDValue == rhs.BCDValue;
+		public static bool operator !=(BCD2 lhs, BCD2 rhs) => lhs.BCDValue != rhs.BCDValue;
+		public static bool operator <(BCD2 lhs, BCD2 rhs) => lhs.BCDValue < rhs.BCDValue;
+		public static bool operator >(BCD2 lhs, BCD2 rhs) => lhs.BCDValue > rhs.BCDValue;
+		public static bool operator <=(BCD2 lhs, BCD2 rhs) => lhs.BCDValue <= rhs.BCDValue;
+		public static bool operator >=(BCD2 lhs, BCD2 rhs) => lhs.BCDValue >= rhs.BCDValue;
 	}
 
 	public static class MSF

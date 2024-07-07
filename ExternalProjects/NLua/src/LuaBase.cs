@@ -43,21 +43,26 @@ namespace NLua
 		internal void DisposeLuaReference(bool finalized)
 		{
 			if (_lua == null)
+			{
 				return;
-			Lua lua;
-			if (!TryGet(out lua))
+			}
+
+			if (!TryGet(out var lua))
+			{
 				return;
+			}
 
 			lua.DisposeInternal(_Reference, finalized);
 		}
 
-		public virtual void Dispose(bool disposeManagedResources)
+		protected void Dispose(bool disposeManagedResources)
 		{
 			if (_disposed)
+			{
 				return;
+			}
 
-			bool finalized = !disposeManagedResources;
-
+			var finalized = !disposeManagedResources;
 			if (_Reference != 0)
 			{
 				DisposeLuaReference(finalized);
@@ -69,20 +74,15 @@ namespace NLua
 
 		public override bool Equals(object o)
 		{
-			var reference = o as LuaBase;
-			if (reference == null)
+			if (o is not LuaBase reference)
+			{
 				return false;
+			}
 
-			Lua lua;
-			if (!TryGet(out lua))
-				return false;
-
-			return lua.CompareRef(reference._Reference, _Reference);
+			return TryGet(out var lua) && lua.CompareRef(reference._Reference, _Reference);
 		}
 
 		public override int GetHashCode()
-		{
-			return _Reference;
-		}
+			=> _Reference;
 	}
 }

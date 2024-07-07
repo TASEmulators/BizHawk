@@ -1,15 +1,15 @@
-﻿using BizHawk.Emulation.Common;
+using System.ComponentModel;
+using System.IO;
+using System.Runtime.InteropServices;
+
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
-using System;
-using System.Runtime.InteropServices;
-using System.IO;
-using BizHawk.Common;
-using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 {
-	[PortedCore(CoreNames.PicoDrive, "notaz", "0e352905c7aa80b166933970abbcecfce96ad64e", "https://github.com/notaz/picodrive")]
+	[PortedCore(CoreNames.PicoDrive, "notaz", "0e35290", "https://github.com/notaz/picodrive")]
 	public class PicoDrive : WaterboxCore, IDriveLight, IRegionable, ISettable<object, PicoDrive.SyncSettings>
 	{
 		private readonly LibPicoDrive _core;
@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmwareOrThrow(new("GEN", "CD_BIOS_EU")), "cd.eu");
 				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmwareOrThrow(new("GEN", "CD_BIOS_US")), "cd.us");
 				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmwareOrThrow(new("GEN", "CD_BIOS_JP")), "cd.jp");
-				_exe.AddReadonlyFile(gpgx.GPGX.GetCDData(cd), "toc");
+				_exe.AddReadonlyFile(GetTOC(cd), "toc");
 				_cd = cd;
 				_cdReader = new DiscSectorReader(_cd);
 				_core.SetCDReadCallback(_cdcallback);
@@ -154,6 +154,46 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			return new LibPicoDrive.FrameInfo { Buttons = b };
 		}
 
+		private static byte[] GetTOC(Disc cd)
+		{
+			var toc = new LibPicoDrive.TOC();
+
+			var ses = cd.Session1;
+			var ntrack = ses.InformationTrackCount;
+
+			for (var i = 0; i < LibPicoDrive.CD_MAX_TRACKS; i++)
+			{
+				if (i < ntrack)
+				{
+					toc.tracks[i].start = ses.Tracks[i + 1].LBA;
+					toc.tracks[i].end = ses.Tracks[i + 2].LBA;
+					if (i == ntrack - 1)
+					{
+						toc.end = toc.tracks[i].end;
+						toc.last = ntrack;
+					}
+				}
+				else
+				{
+					toc.tracks[i].start = 0;
+					toc.tracks[i].end = 0;
+				}
+			}
+
+			var size = Marshal.SizeOf(toc);
+			var ret = new byte[size];
+
+			unsafe
+			{
+				fixed (byte* p = ret)
+				{
+					Marshal.StructureToPtr(ret, (IntPtr)p, false);
+				}
+			}
+
+			return ret;
+		}
+
 		private void CDRead(int lba, IntPtr dest, bool audio)
 		{
 			if (audio)
@@ -179,6 +219,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			_core.SetCDReadCallback(_cdcallback);
 		}
 
+		[CoreSettings]
 		public class SyncSettings
 		{
 			[DefaultValue(LibPicoDrive.Region.Auto)]

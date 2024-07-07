@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 			Shown += (_, _) => IsShown = true;
 		}
 
-		public void Restart(string gameTitle, int totalPoints, string richPresence)
+		public void Restart(string gameTitle, long totalPoints, string richPresence)
 		{
 			titleTextBox.Text = gameTitle;
 			totalPointsBox.Text = totalPoints.ToString();
@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			_iconLoaded = false;
 		}
 
-		public void OnFrameAdvance(Bitmap gameIcon, int totalPoints, string lboardStr, string richPresence)
+		public void OnFrameAdvance(Bitmap gameIcon, long totalPoints, string lboardStr, string richPresence)
 		{
 			// probably bad idea to set this every frame, so
 			if (!_iconLoaded && gameIcon is not null)

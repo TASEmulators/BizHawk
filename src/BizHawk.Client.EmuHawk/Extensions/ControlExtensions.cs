@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -10,10 +9,13 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
+
+using static BizHawk.Common.CommctrlImports;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -183,32 +185,42 @@ namespace BizHawk.Client.EmuHawk
 		/// <exception cref="Win32Exception">unmanaged call failed</exception>
 		public static void SetSortIcon(this ListView listViewControl, int columnIndex, SortOrder order)
 		{
-			if (OSTailoredCode.IsUnixHost) return;
+			if (OSTailoredCode.IsUnixHost)
+			{
+				return;
+			}
 
-			const int LVM_GETHEADER = 4127;
-			const int HDM_GETITEM = 4619;
-			const int HDM_SETITEM = 4620;
-			var columnHeader = Win32Imports.SendMessage(listViewControl.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
+			var columnHeader = WmImports.SendMessageW(listViewControl.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
 			for (int columnNumber = 0, l = listViewControl.Columns.Count; columnNumber < l; columnNumber++)
 			{
 				var columnPtr = new IntPtr(columnNumber);
-				var item = new Win32Imports.HDITEM { mask = Win32Imports.HDITEM.Mask.Format };
-				if (Win32Imports.SendMessage(columnHeader, HDM_GETITEM, columnPtr, ref item) == IntPtr.Zero) throw new Win32Exception();
+				var item = new HDITEMW { mask = HDITEMW.Mask.Format };
+				if (SendMessageW(columnHeader, HDM_GETITEMW, columnPtr, ref item) == IntPtr.Zero)
+				{
+					throw new Win32Exception();
+				}
+
 				if (columnNumber != columnIndex || order == SortOrder.None)
 				{
-					item.fmt &= ~Win32Imports.HDITEM.Format.SortDown & ~Win32Imports.HDITEM.Format.SortUp;
+					item.fmt &= ~HDITEMW.Format.SortDown & ~HDITEMW.Format.SortUp;
 				}
-				else if (order == SortOrder.Ascending)
+				// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+				else switch (order)
 				{
-					item.fmt &= ~Win32Imports.HDITEM.Format.SortDown;
-					item.fmt |= Win32Imports.HDITEM.Format.SortUp;
+					case SortOrder.Ascending:
+						item.fmt &= ~HDITEMW.Format.SortDown;
+						item.fmt |= HDITEMW.Format.SortUp;
+						break;
+					case SortOrder.Descending:
+						item.fmt &= ~HDITEMW.Format.SortUp;
+						item.fmt |= HDITEMW.Format.SortDown;
+						break;
 				}
-				else if (order == SortOrder.Descending)
+
+				if (SendMessageW(columnHeader, HDM_SETITEMW, columnPtr, ref item) == IntPtr.Zero)
 				{
-					item.fmt &= ~Win32Imports.HDITEM.Format.SortUp;
-					item.fmt |= Win32Imports.HDITEM.Format.SortDown;
+					throw new Win32Exception();
 				}
-				if (Win32Imports.SendMessage(columnHeader, HDM_SETITEM, columnPtr, ref item) == IntPtr.Zero) throw new Win32Exception();
 			}
 		}
 
@@ -250,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 				initFileName: $"{game.FilesystemSafeName()}-{suffix}");
 			if (result is null) return;
 			FileInfo file = new(result);
-			string extension = file.Extension.ToUpper();
+			string extension = file.Extension.ToUpperInvariant();
 			ImageFormat i = extension switch
 			{
 				".BMP" => ImageFormat.Bmp,

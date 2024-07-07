@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Drawing;
-using BizHawk.Client.Common.FilterManager;
+using System.Numerics;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
+using BizHawk.Client.Common.FilterManager;
 
 // Here's how to make a filter:
 // 1. Reset your state entirely in Initialize().
@@ -19,13 +20,30 @@ namespace BizHawk.Client.Common.Filters
 	public class BaseFilter
 	{
 		// initialization stuff
-		public void BeginInitialization(FilterProgram program) { _ioSurfaceInfos.Clear(); FilterProgram = program; }
-		public virtual void Initialize() { }
-		public virtual Size PresizeInput(string channel, Size size) => size;
-		public virtual Size PresizeOutput(string channel, Size size) => size;
-		public virtual void SetInputFormat(string channel, SurfaceState state) { } //TODO - why a different param order than DeclareOutput?
-		public Dictionary<string, object> Parameters = new Dictionary<string, object>();
-		public bool IsNop { get; set; }
+		public void BeginInitialization(FilterProgram program)
+		{
+			_ioSurfaceInfos.Clear();
+			FilterProgram = program;
+		}
+
+		public virtual void Initialize()
+		{
+		}
+
+		public virtual Size PresizeInput(string channel, Size size)
+			=> size;
+
+		public virtual Size PresizeOutput(string channel, Size size)
+			=> size;
+
+		// TODO - why a different param order than DeclareOutput?
+		public virtual void SetInputFormat(string channel, SurfaceState state)
+		{
+		}
+
+		public KeyValuePair<string, float>[] Parameters { get; set; }
+
+		public bool IsNop { get; protected set; }
 
 		// runtime signals
 		public virtual Vector2 UntransformPoint(string channel, Vector2 point)
@@ -38,6 +56,7 @@ namespace BizHawk.Client.Common.Filters
 				point.X *= input.SurfaceFormat.Size.Width / (float)output.SurfaceFormat.Size.Width;
 				point.Y *= input.SurfaceFormat.Size.Height / (float)output.SurfaceFormat.Size.Height;
 			}
+
 			return point;
 		}
 
@@ -51,25 +70,31 @@ namespace BizHawk.Client.Common.Filters
 				point.X *= output.SurfaceFormat.Size.Width / (float)input.SurfaceFormat.Size.Width;
 				point.Y *= output.SurfaceFormat.Size.Height / (float)input.SurfaceFormat.Size.Height;
 			}
+
 			return point;
 		}
 
-		public void SetInput(Texture2d tex)
+		public void SetInput(ITexture2D tex)
 		{
 			InputTexture = tex;
 		}
-		public virtual void Run() { }
-		public Texture2d GetOutput() => _outputTexture;
+
+		public virtual void Run()
+		{
+		}
+
+		public ITexture2D GetOutput()
+			=> _outputTexture;
 
 		// filter actions
-		protected void YieldOutput(Texture2d tex)
+		protected void YieldOutput(ITexture2D tex)
 		{
 			_outputTexture = tex;
 		}
 
 		protected FilterProgram FilterProgram;
-		protected Texture2d InputTexture;
-		private Texture2d _outputTexture;
+		protected ITexture2D InputTexture;
+		private ITexture2D _outputTexture;
 
 		/// <summary>
 		/// Indicate a 'RenderTarget' disposition if you want to draw directly to the input
@@ -86,7 +111,7 @@ namespace BizHawk.Client.Common.Filters
 		}
 
 		// TODO - why a different param order than DeclareOutput?
-		protected RenderTarget GetTempTarget(int width, int height)
+		protected IRenderTarget GetTempTarget(int width, int height)
 		{
 			return FilterProgram.GetTempTarget(width, height);
 		}
@@ -121,17 +146,16 @@ namespace BizHawk.Client.Common.Filters
 			return iosi;
 		}
 
-		private readonly List<IOSurfaceInfo> _ioSurfaceInfos = new List<IOSurfaceInfo>();
+		private readonly List<IOSurfaceInfo> _ioSurfaceInfos = new();
 
 
 		private IOSurfaceInfo FindIOSurfaceInfo(string channel, SurfaceDirection direction)
 		{
+			// intentionally not using List.Find for perf
 			foreach (var iosi in _ioSurfaceInfos)
 			{
 				if (iosi.Channel == channel && iosi.SurfaceDirection == direction)
-				{
 					return iosi;
-				}
 			}
 
 			return null;

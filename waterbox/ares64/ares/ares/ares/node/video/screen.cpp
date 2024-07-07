@@ -25,11 +25,15 @@ Screen::~Screen() {
 
 auto Screen::main(uintptr_t) -> void {
   while(!_kill) {
-    usleep(1);
-    if(_frame) {
+    unique_lock<mutex> lock(_frameMutex);
+
+    auto timeout = std::chrono::milliseconds(10);
+    if(_frameCondition.wait_for(lock, timeout, [&] { return _frame.load(); })) {
       refresh();
       _frame = false;
     }
+
+    if(_kill) break;
   }
 }
 
@@ -68,12 +72,26 @@ auto Screen::setRefresh(function<void ()> refresh) -> void {
   _refresh = refresh;
 }
 
+auto Screen::refreshRateHint(double pixelFrequency, int dotsPerLine, int linesPerFrame) -> void {
+  refreshRateHint(1.0f / ((double)(dotsPerLine * linesPerFrame) / pixelFrequency));
+}
+
+auto Screen::refreshRateHint(double refreshRate) -> void {
+  lock_guard<recursive_mutex> lock(_mutex);
+  platform->refreshRateHint(refreshRate);
+}
+
 auto Screen::setViewport(u32 x, u32 y, u32 width, u32 height) -> void {
   lock_guard<recursive_mutex> lock(_mutex);
   _viewportX = x;
   _viewportY = y;
   _viewportWidth  = width;
   _viewportHeight = height;
+}
+
+auto Screen::setOverscan(bool overscan) -> void {
+  lock_guard<recursive_mutex> lock(_mutex);
+  _overscan = overscan;
 }
 
 auto Screen::setSize(u32 width, u32 height) -> void {
@@ -171,10 +189,12 @@ auto Screen::frame() -> void {
 
   lock_guard<recursive_mutex> lock(_mutex);
   _inputA.swap(_inputB);
-  _frame = true;
   if constexpr(!ares::Video::Threaded) {
     refresh();
     _frame = false;
+  } else {
+    _frame = true;
+    _frameCondition.notify_one();
   }
 }
 
@@ -228,14 +248,18 @@ auto Screen::refresh() -> void {
     }
   }
 
-  if(_colorBleed) {
+  if (_colorBleed) {
     n32 mask = 1 << 24 | 1 << 16 | 1 << 8 | 1 << 0;
-    for(u32 y : range(height)) {
+    for (u32 y : range(height)) {
       auto target = output + y * width;
-      for(u32 x : range(width)) {
-        auto a = target[x];
-        auto b = target[x + (x != width - 1)];
-        target[x] = (a + b - ((a ^ b) & mask)) >> 1;
+      for (u32 x : range(0, width, _colorBleedWidth)) {
+        for (u32 offset = 0; offset < _colorBleedWidth && (x + offset) < width; ++offset) {
+          u32 next = x + _colorBleedWidth;
+          if (next + offset >= width) next = x;
+          auto a = target[x + offset];
+          auto b = target[next + offset];
+          target[x + offset] = (a + b - ((a ^ b) & mask)) >> 1;
+        }
       }
     }
   }
