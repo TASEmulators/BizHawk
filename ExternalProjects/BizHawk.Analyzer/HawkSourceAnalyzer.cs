@@ -128,7 +128,9 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 					case AnonymousObjectCreationExpressionSyntax:
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoAnonClasses, snac.Node.GetLocation()));
 						break;
-					case AssignmentExpressionSyntax aes when IsDiscard(aes) && snac.SemanticModel.GetSymbolInfo(aes.Right).Symbol?.Kind is SymbolKind.Local:
+					case AssignmentExpressionSyntax aes:
+						if (!IsDiscard(aes)) break;
+						if (snac.SemanticModel.GetSymbolInfo(aes.Right, snac.CancellationToken).Symbol?.Kind is not SymbolKind.Local) break;
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoDiscardingLocals, snac.Node.GetLocation()));
 						break;
 					case CollectionExpressionSyntax ces:

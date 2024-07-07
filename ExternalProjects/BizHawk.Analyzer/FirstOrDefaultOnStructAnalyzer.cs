@@ -43,7 +43,9 @@ public sealed class FirstOrDefaultOnStructAnalyzer : DiagnosticAnalyzer
 					var operation = (IInvocationOperation) oac.Operation;
 					var calledSym = operation.TargetMethod.ConstructedFrom;
 					if (!(firstOrDefaultWithPredSym!.Matches(calledSym) || firstOrDefaultNoPredSym!.Matches(calledSym))) return;
-					var receiverExprType = operation.SemanticModel!.GetTypeInfo((CSharpSyntaxNode) operation.Arguments[0].Syntax).ConvertedType!;
+					var receiverExprType = operation.SemanticModel!.GetTypeInfo(
+						(CSharpSyntaxNode) operation.Arguments[0].Syntax,
+						oac.CancellationToken).ConvertedType!;
 					var collectionElemType = receiverExprType switch
 					{
 						INamedTypeSymbol nts => nts.TypeArguments[0],
