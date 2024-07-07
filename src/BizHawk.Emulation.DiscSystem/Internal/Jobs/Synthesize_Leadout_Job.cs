@@ -1,9 +1,6 @@
-
-
-//TODO - generate correct Q subchannel CRC
-
 namespace BizHawk.Emulation.DiscSystem
 {
+	//TODO - generate correct Q subchannel CRC
 
 	/// <summary>
 	/// generates lead-out sectors according to very crude approximations

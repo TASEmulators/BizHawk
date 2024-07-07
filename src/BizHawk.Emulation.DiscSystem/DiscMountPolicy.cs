@@ -1,4 +1,3 @@
-
 namespace BizHawk.Emulation.DiscSystem
 {
 	/// <summary>

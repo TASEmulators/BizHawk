@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
