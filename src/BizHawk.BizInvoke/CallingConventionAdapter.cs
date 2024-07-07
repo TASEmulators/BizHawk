@@ -24,16 +24,12 @@ namespace BizHawk.BizInvoke
 		/// managed wrapper involved.  Called "arrival" because it is to be used when the foreign code is calling
 		/// back into host code.
 		/// </summary>
-		/// <returns></returns>
 		IntPtr GetArrivalFunctionPointer(IntPtr p, InvokerParameterInfo pp, object lifetime);
 
 		/// <summary>
 		/// Like Marshal.GetDelegateForFunctionPointer(), but wraps a thunk around the passed native pointer
 		/// to adjust the calling convention appropriately
 		/// </summary>
-		/// <param name="p"></param>
-		/// <param name="delegateType"></param>
-		/// <returns></returns>
 		Delegate GetDelegateForFunctionPointer(IntPtr p, Type delegateType);
 
 		/// <summary>
@@ -41,10 +37,6 @@ namespace BizHawk.BizInvoke
 		/// managed wrapper involved.static  Called "departure" beause it is to be used when first leaving host
 		/// code for foreign code.
 		/// </summary>
-		/// <param name="p"></param>
-		/// <param name="pp"></param>
-		/// <param name="lifetime"></param>
-		/// <returns></returns>
 		IntPtr GetDepartureFunctionPointer(IntPtr p, InvokerParameterInfo pp, object lifetime);
 	}
 
@@ -137,7 +129,6 @@ namespace BizHawk.BizInvoke
 		/// This is very unsafe; any attempts by the guest to call syscalls will crash, and stack hygiene will be all wrong.
 		/// DO NOT USE THIS.
 		/// </summary>
-		/// <returns></returns>
 		public static ICallingConventionAdapter GetWaterboxUnsafeUnwrapped()
 			=> WaterboxAdapter.WaterboxWrapper;
 

@@ -26,8 +26,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// Helper method moving from IO pins to accumulator
 		/// (complement and flags set)
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void LR_A_IO_Func(byte dest, byte src)
 		{
 			// overflow and carry unconditionally reset
@@ -46,8 +44,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// Helper method moving from accumulator to IO pins 
 		/// (complement)
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void OUT_Func(byte dest, byte src)
 		{
 			// data is complemented between accumulator and I/O pins (because PINs are active-low)
@@ -66,8 +62,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// <summary>
 		/// Helper function for transferring data between registers
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void LR_Func(byte dest, byte src)
 		{
 			if (dest == DB)
@@ -94,8 +88,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// <summary>
 		/// Right shift 'src' 'shift' positions (zero fill)
 		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="shift"></param>
 		public void SR_Func(byte src, byte shift)
 		{
 			// overflow and carry unconditionally reset
@@ -111,8 +103,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// <summary>
 		/// Left shift 'src' 'shift' positions (zero fill)
 		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="shift"></param>
 		public void SL_Func(byte src, byte shift)
 		{
 			// overflow and carry unconditionally reset
@@ -130,8 +120,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// Statuses modified: OVF, ZERO, CARRY, SIGN 
 		/// Statuses unaffected: ICB
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void ADD_Func(byte dest, byte src, byte src2 = ZERO)
 		{
 			ushort res = (ushort)(Regs[dest] + Regs[src] + Regs[src2]);
@@ -152,8 +140,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// Decimal Add
 		/// http://www.bitsavers.org/components/fairchild/f8/67095664_F8_Guide_To_Programming_1976.pdf - page 40
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void ADDD_Func(byte dest, byte src)
 		{
 			// The accumulator and the memory location addressed by the DCO registers are assumed to contain two BCD digits.
@@ -237,8 +223,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// <summary>
 		/// Logical AND regs[dest] with regs[src] and store the result in regs[dest]
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void AND_Func(byte dest, byte src)
 		{
 			// overflow and carry unconditionally reset
@@ -254,8 +238,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// <summary>
 		/// Logical OR regs[dest] with regs[src] and store the result in regs[dest]
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void OR_Func(byte dest, byte src)
 		{
 			// overflow and carry unconditionally reset
@@ -271,8 +253,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// <summary>
 		/// The destination (regs[dest]) is XORed with (regs[src]).
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void XOR_Func(byte dest, byte src)
 		{
 			// overflow and carry unconditionally reset

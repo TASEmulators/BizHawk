@@ -477,7 +477,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="condition">The condition to check for</param>
 		/// <typeparam name="T">Type of tools to check</typeparam>
-		/// <returns></returns>
 		public T FirstOrNull<T>(Predicate<T> condition) where T : class
 		{
 			foreach (var tool in _tools)

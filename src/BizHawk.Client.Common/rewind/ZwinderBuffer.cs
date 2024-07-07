@@ -85,10 +85,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public int Count => (_nextStateIndex - _firstStateIndex) & STATEMASK;
 
-		/// <summary>
-		/// total number of bytes used
-		/// </summary>
-		/// <value></value>
+		/// <value>total number of bytes used</value>
 		public long Used => Count == 0
 			? 0
 			: (_states[HeadStateIndex].Start
@@ -96,10 +93,7 @@ namespace BizHawk.Client.Common
 				- _states[_firstStateIndex].Start
 			) & _sizeMask;
 
-		/// <summary>
-		/// Total size of the _buffer
-		/// </summary>
-		/// <value></value>
+		/// <value>Total size of the buffer</value>
 		public long Size { get; }
 
 		private readonly long _sizeMask;
@@ -282,8 +276,6 @@ namespace BizHawk.Client.Common
 		/// Retrieve information about a state from 0..Count - 1.
 		/// The information contained within is valid only until the collection is modified.
 		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
 		public StateInformation GetState(int index)
 		{
 			if ((uint) index >= (uint) Count) throw new ArgumentOutOfRangeException(paramName: nameof(index), index, message: "index out of range");
@@ -293,7 +285,6 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Invalidate states from GetState(index) on to the end of the buffer, so that Count == index afterwards
 		/// </summary>
-		/// <param name="index"></param>
 		public void InvalidateEnd(int index)
 		{
 			if ((uint) index > (uint) Count) // intentionally allows index == Count (e.g. clearing an empty buffer)
