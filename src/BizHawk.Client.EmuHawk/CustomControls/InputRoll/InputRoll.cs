@@ -988,7 +988,7 @@ namespace BizHawk.Client.EmuHawk
 					ShortcutKeyDisplayString = RotateHotkeyStr
 				};
 
-				rotate.Click += (o, ev) => { HorizontalOrientation ^= true; };
+				rotate.Click += (_, _) => HorizontalOrientation = !HorizontalOrientation;
 
 				yield return rotate;
 			}
@@ -1372,10 +1372,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (e.IsCtrlShift(Keys.F))
 				{
-					if (Rotatable)
-					{
-						HorizontalOrientation ^= true;
-					}
+					if (Rotatable) HorizontalOrientation = !HorizontalOrientation;
 				}
 				// Scroll
 				else if (e.IsPressed(Keys.PageUp))

@@ -868,9 +868,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void CopyIncludesFrameNoMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.CopyIncludesFrameNo ^= true;
-		}
+			=> Settings.CopyIncludesFrameNo = !Settings.CopyIncludesFrameNo;
 
 		private void SetAutosaveIntervalMenuItem_Click(object sender, EventArgs e)
 		{
@@ -895,19 +893,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void AutosaveAsBk2MenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.AutosaveAsBk2 ^= true;
-		}
+			=> Settings.AutosaveAsBk2 = !Settings.AutosaveAsBk2;
 
 		private void AutosaveAsBackupFileMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.AutosaveAsBackupFile ^= true;
-		}
+			=> Settings.AutosaveAsBackupFile = !Settings.AutosaveAsBackupFile;
 
 		private void BackupPerFileSaveMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.BackupPerFileSave ^= true;
-		}
+			=> Settings.BackupPerFileSave = !Settings.BackupPerFileSave;
 
 		private void ApplyPatternToPaintedInputMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
@@ -915,9 +907,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void SingleClickAxisEditMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.SingleClickAxisEdit ^= true;
-		}
+			=> Settings.SingleClickAxisEdit = !Settings.SingleClickAxisEdit;
 
 		private void BindMarkersToInputMenuItem_Click(object sender, EventArgs e)
 		{
@@ -925,14 +915,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void EmptyNewMarkerNotesMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.EmptyMarkers ^= true;
-		}
+			=> Settings.EmptyMarkers = !Settings.EmptyMarkers;
 
 		private void AutoPauseAtEndMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.AutoPause ^= true;
-		}
+			=> Settings.AutoPause = !Settings.AutoPause;
 
 		private void AutoHoldMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
@@ -985,14 +971,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void OldControlSchemeForBranchesMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.OldControlSchemeForBranches ^= true;
-		}
+			=> Settings.OldControlSchemeForBranches = !Settings.OldControlSchemeForBranches;
 
 		private void LoadBranchOnDoubleClickMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.LoadBranchOnDoubleClick ^= true;
-		}
+			=> Settings.LoadBranchOnDoubleClick = !Settings.LoadBranchOnDoubleClick;
 
 		private void HeaderMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1090,7 +1072,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RotateMenuItem_Click(object sender, EventArgs e)
 		{
-			TasView.HorizontalOrientation ^= true;
+			TasView.HorizontalOrientation = !TasView.HorizontalOrientation;
 			CurrentTasMovie.FlagChanges();
 		}
 
@@ -1102,9 +1084,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void HideWasLagFramesMenuItem_Click(object sender, EventArgs e)
-		{
-			TasView.HideWasLagFrames ^= true;
-		}
+			=> TasView.HideWasLagFrames = !TasView.HideWasLagFrames;
 		
 		private void AlwaysScrollMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1287,7 +1267,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						foreach (ToolStripMenuItem menuItem in dummyObject1.DropDownItems)
 						{
-							menuItem.Checked ^= true;
+							menuItem.Checked = !menuItem.Checked;
 						}
 
 						CurrentTasMovie.FlagChanges();

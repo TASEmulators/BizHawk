@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 					if (!ReadOnly)
 					{
 						RightClicked = true;
-						Checked ^= true;
+						Checked = !Checked;
 					}
 					return;
 				case 0x0205: // WM_RBUTTONUP

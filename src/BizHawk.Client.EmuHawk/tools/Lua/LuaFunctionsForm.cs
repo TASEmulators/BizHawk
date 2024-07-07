@@ -99,11 +99,7 @@ namespace BizHawk.Client.EmuHawk
 				get => _column;
 				set
 				{
-					if (_column == value)
-					{
-						Descending ^= true;
-					}
-
+					if (_column == value) Descending = !Descending;
 					_column = value;
 				}
 			}

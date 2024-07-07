@@ -804,9 +804,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly byte[] _chrRomCache = new byte[8192];
 
 		private void ChrROMTileViewerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ChrRomView ^= true;
-		}
+			=> ChrRomView = !ChrRomView;
 
 		private void CalculateFormSize()
 		{

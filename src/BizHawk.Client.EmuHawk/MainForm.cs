@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 			var GBInSGBMenuItem = new ToolStripMenuItem { Text = "GB in SGB" };
 			GBInSGBMenuItem.Click += (_, _) =>
 			{
-				Config.GbAsSgb ^= true;
+				Config.GbAsSgb = !Config.GbAsSgb;
 				if (Emulator.SystemId is VSystemID.Raw.GB or VSystemID.Raw.GBC or VSystemID.Raw.SGB) FlagNeedsReboot();
 			};
 			CoresSubMenu.DropDownItems.Add(GBInSGBMenuItem);
@@ -1298,7 +1298,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TogglePause()
 		{
-			EmulatorPaused ^= true;
+			EmulatorPaused = !EmulatorPaused;
 			SetPauseStatusBarIcon();
 
 			// TODO: have tastudio set a pause status change callback, or take control over pause
@@ -1626,16 +1626,16 @@ namespace BizHawk.Client.EmuHawk
 					switch (layer)
 					{
 						case 1:
-							result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
+							result = s.ShowBG1_0 = s.ShowBG1_1 = !s.ShowBG1_1;
 							break;
 						case 2:
-							result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
+							result = s.ShowBG2_0 = s.ShowBG2_1 = !s.ShowBG2_1;
 							break;
 						case 3:
-							result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
+							result = s.ShowBG3_0 = s.ShowBG3_1 = !s.ShowBG3_1;
 							break;
 						case 4:
-							result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
+							result = s.ShowBG4_0 = s.ShowBG4_1 = !s.ShowBG4_1;
 							break;
 					}
 
@@ -1648,16 +1648,16 @@ namespace BizHawk.Client.EmuHawk
 					switch (layer)
 					{
 						case 1:
-							result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
+							result = s.ShowBG1_0 = s.ShowBG1_1 = !s.ShowBG1_1;
 							break;
 						case 2:
-							result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
+							result = s.ShowBG2_0 = s.ShowBG2_1 = !s.ShowBG2_1;
 							break;
 						case 3:
-							result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
+							result = s.ShowBG3_0 = s.ShowBG3_1 = !s.ShowBG3_1;
 							break;
 						case 4:
-							result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
+							result = s.ShowBG4_0 = s.ShowBG4_1 = !s.ShowBG4_1;
 							break;
 					}
 
@@ -1670,16 +1670,16 @@ namespace BizHawk.Client.EmuHawk
 					switch (layer)
 					{
 						case 1:
-							result = s.ShowBg0 ^= true;
+							result = s.ShowBg0 = !s.ShowBg0;
 							break;
 						case 2:
-							result = s.ShowBg1 ^= true;
+							result = s.ShowBg1 = !s.ShowBg1;
 							break;
 						case 3:
-							result = s.ShowBg2 ^= true;
+							result = s.ShowBg2 = !s.ShowBg2;
 							break;
 						case 4:
-							result = s.ShowBg3 ^= true;
+							result = s.ShowBg3 = !s.ShowBg3;
 							break;
 					}
 
@@ -1704,10 +1704,10 @@ namespace BizHawk.Client.EmuHawk
 				var s = bsnes.GetSettings();
 				result = layer switch
 				{
-					1 => (s.ShowOBJ_0 ^= true),
-					2 => (s.ShowOBJ_1 ^= true),
-					3 => (s.ShowOBJ_2 ^= true),
-					4 => (s.ShowOBJ_3 ^= true),
+					1 => s.ShowOBJ_0 = !s.ShowOBJ_0,
+					2 => s.ShowOBJ_1 = !s.ShowOBJ_1,
+					3 => s.ShowOBJ_2 = !s.ShowOBJ_2,
+					4 => s.ShowOBJ_3 = !s.ShowOBJ_3,
 					_ => result
 				};
 
@@ -1719,10 +1719,10 @@ namespace BizHawk.Client.EmuHawk
 				var s = snes9X.GetSettings();
 				result = layer switch
 				{
-					1 => (s.ShowSprites0 ^= true),
-					2 => (s.ShowSprites1 ^= true),
-					3 => (s.ShowSprites2 ^= true),
-					4 => (s.ShowSprites3 ^= true),
+					1 => s.ShowSprites0 = !s.ShowSprites0,
+					2 => s.ShowSprites1 = !s.ShowSprites1,
+					3 => s.ShowSprites2 = !s.ShowSprites2,
+					4 => s.ShowSprites3 = !s.ShowSprites3,
 					_ => result
 				};
 
@@ -2646,28 +2646,20 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ToggleFps()
-		{
-			Config.DisplayFps ^= true;
-		}
+			=> Config.DisplayFps = !Config.DisplayFps;
 
 		private void ToggleFrameCounter()
-		{
-			Config.DisplayFrameCounter ^= true;
-		}
+			=> Config.DisplayFrameCounter = !Config.DisplayFrameCounter;
 
 		private void ToggleLagCounter()
-		{
-			Config.DisplayLagCounter ^= true;
-		}
+			=> Config.DisplayLagCounter = !Config.DisplayLagCounter;
 
 		private void ToggleInputDisplay()
-		{
-			Config.DisplayInput ^= true;
-		}
+			=> Config.DisplayInput = !Config.DisplayInput;
 
 		public void ToggleSound()
 		{
-			Config.SoundEnabled ^= true;
+			Config.SoundEnabled = !Config.SoundEnabled;
 			Sound.StopSound();
 			Sound.StartSound();
 		}
@@ -2945,7 +2937,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleBackgroundInput()
 		{
-			Config.AcceptBackgroundInput ^= true;
+			Config.AcceptBackgroundInput = !Config.AcceptBackgroundInput;
 			AddOnScreenMessage($"Background Input {(Config.AcceptBackgroundInput ? "enabled" : "disabled")}");
 		}
 

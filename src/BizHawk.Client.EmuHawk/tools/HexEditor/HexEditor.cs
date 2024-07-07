@@ -1574,7 +1574,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BigEndianMenuItem_Click(object sender, EventArgs e)
 		{
-			BigEndian ^= true;
+			BigEndian = !BigEndian;
 			GeneralUpdate();
 		}
 

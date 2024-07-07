@@ -218,11 +218,7 @@ namespace BizHawk.Client.EmuHawk
 				var items = EditableItems.ToList();
 				if (items.Any())
 				{
-					foreach (var item in items)
-					{
-						item.Active ^= true;
-					}
-
+					foreach (var item in items) item.Active = !item.Active;
 					BreakpointView.VirtualListSize = _breakpoints.Count;
 					UpdateBreakpointRemoveButton();
 					UpdateStatsLabel();
@@ -245,11 +241,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleButton_Click(object sender, EventArgs e)
 		{
-			foreach (var item in SelectedItems)
-			{
-				item.Active ^= true;
-			}
-
+			foreach (var item in SelectedItems) item.Active = !item.Active;
 			BreakpointView.VirtualListSize = _breakpoints.Count;
 			UpdateStatsLabel();
 		}

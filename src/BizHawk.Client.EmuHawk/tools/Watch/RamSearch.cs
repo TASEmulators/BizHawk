@@ -1125,7 +1125,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheckMisalignedMenuItem_Click(object sender, EventArgs e)
 		{
-			_settings.CheckMisAligned ^= true;
+			_settings.CheckMisAligned = !_settings.CheckMisAligned;
 			SetReboot(true);
 		}
 
@@ -1146,7 +1146,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BigEndianMenuItem_Click(object sender, EventArgs e)
 		{
-			_settings.BigEndian ^= true;
+			_settings.BigEndian = !_settings.BigEndian;
 			_searches.SetEndian(_settings.BigEndian);
 		}
 
@@ -1268,13 +1268,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void PreviewModeMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.PreviewMode ^= true;
-		}
+			=> Settings.PreviewMode = !Settings.PreviewMode;
 
 		private void AutoSearchMenuItem_Click(object sender, EventArgs e)
 		{
-			_autoSearch ^= true;
+			_autoSearch = !_autoSearch;
 			AutoSearchCheckBox.Checked = _autoSearch;
 			DoSearchToolButton.Enabled =
 				SearchButton.Enabled =
@@ -1282,13 +1280,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void AutoSearchAccountForLagMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.AutoSearchTakeLagFramesIntoAccount ^= true;
-		}
+			=> Settings.AutoSearchTakeLagFramesIntoAccount = !Settings.AutoSearchTakeLagFramesIntoAccount;
 
 		private void ExcludeRamWatchMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.AlwaysExcludeRamWatch ^= true;
+			Settings.AlwaysExcludeRamWatch = !Settings.AlwaysExcludeRamWatch;
 			if (Settings.AlwaysExcludeRamWatch)
 			{
 				RemoveRamWatchesFromList();
@@ -1297,7 +1293,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UseUndoHistoryMenuItem_Click(object sender, EventArgs e)
 		{
-			_searches.UndoEnabled ^= true;
+			_searches.UndoEnabled = !_searches.UndoEnabled;
 			Settings.UseUndoHistory = _searches.UndoEnabled;
 		}
 
@@ -1626,7 +1622,7 @@ namespace BizHawk.Client.EmuHawk
 			_searches.Sort(column.Name, _sortReverse);
 
 			_sortedColumn = column.Name;
-			_sortReverse ^= true;
+			_sortReverse = !_sortReverse;
 			WatchListView.Refresh();
 		}
 

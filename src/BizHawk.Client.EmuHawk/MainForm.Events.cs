@@ -359,13 +359,10 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadNamedStateMenuItem_Click(object sender, EventArgs e) => LoadStateAs();
 
 		private void AutoloadLastSlotMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.AutoLoadLastSaveSlot ^= true;
-		}
+			=> Config.AutoLoadLastSaveSlot = !Config.AutoLoadLastSaveSlot;
+
 		private void AutosaveLastSlotMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.AutoSaveLastSaveSlot ^= true;
-		}
+			=> Config.AutoSaveLastSaveSlot = !Config.AutoSaveLastSaveSlot;
 
 		private void SelectSlotMenuItems_Click(object sender, EventArgs e)
 		{
@@ -510,14 +507,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void AutomaticMovieBackupMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Movies.EnableBackupMovies ^= true;
-		}
+			=> Config.Movies.EnableBackupMovies = !Config.Movies.EnableBackupMovies;
 
 		private void FullMovieLoadstatesMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Movies.VBAStyleMovieLoadState ^= true;
-		}
+			=> Config.Movies.VBAStyleMovieLoadState = !Config.Movies.VBAStyleMovieLoadState;
 
 		private void MovieEndFinishMenuItem_Click(object sender, EventArgs e)
 		{
@@ -601,9 +594,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ScreenshotCaptureOSDMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.ScreenshotCaptureOsd ^= true;
-		}
+			=> Config.ScreenshotCaptureOsd = !Config.ScreenshotCaptureOsd;
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
@@ -728,25 +719,19 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void DisplayRerecordsMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.DisplayRerecordCount ^= true;
-		}
+			=> Config.DisplayRerecordCount = !Config.DisplayRerecordCount;
 
 		private void DisplaySubtitlesMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.DisplaySubtitles ^= true;
-		}
+			=> Config.DisplaySubtitles = !Config.DisplaySubtitles;
 
 		private void DisplayStatusBarMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.DispChromeStatusBarWindowed ^= true;
+			Config.DispChromeStatusBarWindowed = !Config.DispChromeStatusBarWindowed;
 			SetStatusBar();
 		}
 
 		private void DisplayMessagesMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.DisplayMessages ^= true;
-		}
+			=> Config.DisplayMessages = !Config.DisplayMessages;
 
 		private void DisplayLogWindowMenuItem_Click(object sender, EventArgs e)
 		{
@@ -959,7 +944,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClockThrottleMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.ClockThrottle ^= true;
+			Config.ClockThrottle = !Config.ClockThrottle;
 			if (Config.ClockThrottle)
 			{
 				var old = Config.SoundThrottle;
@@ -982,7 +967,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AudioThrottleMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.SoundThrottle ^= true;
+			Config.SoundThrottle = !Config.SoundThrottle;
 			RewireSound();
 			if (Config.SoundThrottle)
 			{
@@ -1000,7 +985,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VsyncThrottleMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.VSyncThrottle ^= true;
+			Config.VSyncThrottle = !Config.VSyncThrottle;
 			_presentationPanel.Resized = true;
 			if (Config.VSyncThrottle)
 			{
@@ -1024,7 +1009,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VsyncEnabledMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.VSync ^= true;
+			Config.VSync = !Config.VSync;
 			if (!Config.VSyncThrottle) // when vsync throttle is on, vsync is forced to on, so no change to make here
 			{
 				_presentationPanel.Resized = true;
@@ -1038,14 +1023,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleUnthrottled()
 		{
-			Config.Unthrottled ^= true;
+			Config.Unthrottled = !Config.Unthrottled;
 			ThrottleMessage();
 		}
 
 		private void MinimizeSkippingMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.AutoMinimizeSkipping ^= true;
-		}
+			=> Config.AutoMinimizeSkipping = !Config.AutoMinimizeSkipping;
 
 		private void NeverSkipMenuItem_Click(object sender, EventArgs e) { Config.FrameSkip = 0; FrameSkipMessage(); }
 		private void Frameskip1MenuItem_Click(object sender, EventArgs e) { Config.FrameSkip = 1; FrameSkipMessage(); }
@@ -1781,9 +1764,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void N64CircularAnalogRangeMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.N64UseCircularAnalogConstraint ^= true;
-		}
+			=> Config.N64UseCircularAnalogConstraint = !Config.N64UseCircularAnalogConstraint;
 
 		private static void Mupen64PlusSetMupenStyleLag(bool newValue, ISettingsAdapter settable)
 		{
@@ -2450,7 +2431,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ShowMenuContextMenuItem_Click(object sender, EventArgs e)
 		{
-			MainMenuStrip.Visible ^= true;
+			MainMenuStrip.Visible = !MainMenuStrip.Visible;
 			FrameBufferResized();
 		}
 
@@ -2558,8 +2539,9 @@ namespace BizHawk.Client.EmuHawk
 			// toggle Link status (only outside of a movie session)
 			if (!MovieSession.Movie.IsPlaying())
 			{
-				Emulator.AsLinkable().LinkConnected ^= true;
-				Console.WriteLine("Cable connect status to {0}", Emulator.AsLinkable().LinkConnected);
+				var core = Emulator.AsLinkable();
+				core.LinkConnected = !core.LinkConnected;
+				Console.WriteLine($"Cable connect status to {core.LinkConnected}");
 			}
 		}
 

@@ -151,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 					RebootCore();
 					break;
 				case "Toggle Skip Lag Frame":
-					Config.SkipLagFrame ^= true;
+					Config.SkipLagFrame = !Config.SkipLagFrame;
 					AddOnScreenMessage($"Skip Lag Frames toggled {(Config.SkipLagFrame ? "On" : "Off")}");
 					break;
 				case "Toggle Key Priority":
@@ -382,15 +382,18 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Toggle Follow Cursor":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.TasPlaybackBox.FollowCursor ^= true;
+					var playbackBox = Tools.TAStudio.TasPlaybackBox;
+					playbackBox.FollowCursor = !playbackBox.FollowCursor;
 					break;
 				case "Toggle Auto-Restore":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.TasPlaybackBox.AutoRestore ^= true;
+					var playbackBox1 = Tools.TAStudio.TasPlaybackBox;
+					playbackBox1.AutoRestore = !playbackBox1.AutoRestore;
 					break;
 				case "Toggle Turbo Seek":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.TasPlaybackBox.TurboSeek ^= true;
+					var playbackBox2 = Tools.TAStudio.TasPlaybackBox;
+					playbackBox2.TurboSeek = !playbackBox2.TurboSeek;
 					break;
 				case "Undo":
 					if (!Tools.IsLoaded<TAStudio>()) return false;

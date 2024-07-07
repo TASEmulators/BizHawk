@@ -224,9 +224,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void StickyMenuItem_Click(object sender, EventArgs e)
-		{
-			StickyPads ^= true;
-		}
+			=> StickyPads = !StickyPads;
 
 		private void PadBoxContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -244,8 +242,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ClearClearsAnalogInputMenuItem_Click(object sender, EventArgs e)
-		{
-			ClearAlsoClearsAnalog ^= true;
-		}
+			=> ClearAlsoClearsAnalog = !ClearAlsoClearsAnalog;
 	}
 }

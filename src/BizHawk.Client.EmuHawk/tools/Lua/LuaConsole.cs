@@ -1094,19 +1094,14 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void DisableScriptsOnLoadMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.DisableLuaScriptsOnLoad ^= true;
-		}
+			=> Settings.DisableLuaScriptsOnLoad = !Settings.DisableLuaScriptsOnLoad;
 
 		private void ToggleAllIfNoneSelectedMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.ToggleAllIfNoneSelected ^= true;
-		}
+			=> Settings.ToggleAllIfNoneSelected = !Settings.ToggleAllIfNoneSelected;
 
 		private void ReloadWhenScriptFileChangesMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.ReloadOnScriptFileChange ^= true;
-
+			Settings.ReloadOnScriptFileChange = !Settings.ReloadOnScriptFileChange;
 			if (Settings.ReloadOnScriptFileChange)
 			{
 				AddFileWatches();

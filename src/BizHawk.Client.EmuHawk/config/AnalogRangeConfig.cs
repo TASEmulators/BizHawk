@@ -121,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.Button == MouseButtons.Right)
 			{
-				Radial ^= true;
+				Radial = !Radial;
 			}
 
 			base.OnMouseDown(e);

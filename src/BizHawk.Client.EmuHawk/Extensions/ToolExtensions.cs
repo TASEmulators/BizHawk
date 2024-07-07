@@ -189,7 +189,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 				Text = recent.Frozen ? "&Unfreeze" : "&Freeze",
 				Image = recent.Frozen ? Properties.Resources.Unfreeze : Properties.Resources.Freeze
 			};
-			freezeItem.Click += (o, ev) => recent.Frozen ^= true;
+			freezeItem.Click += (_, _) => recent.Frozen = !recent.Frozen;
 			items.Add(freezeItem);
 
 			if (!noAutoload)

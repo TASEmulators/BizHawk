@@ -74,8 +74,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public void ToggleAutoLoad()
-		{
-			AutoLoad ^= true;
-		}
+			=> AutoLoad = !AutoLoad;
 	}
 }

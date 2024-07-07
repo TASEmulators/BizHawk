@@ -580,7 +580,7 @@ namespace BizHawk.Client.EmuHawk
 			_watches.OrderWatches(column.Name, _sortReverse);
 
 			_sortedColumn = column.Name;
-			_sortReverse ^= true;
+			_sortReverse = !_sortReverse;
 			WatchListView.Refresh();
 		}
 
@@ -1041,8 +1041,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchesOnScreenMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.DisplayRamWatch ^= true;
-
+			Config.DisplayRamWatch = !Config.DisplayRamWatch;
 			if (!Config.DisplayRamWatch)
 			{
 				DisplayManager.OSD.ClearRamWatches();

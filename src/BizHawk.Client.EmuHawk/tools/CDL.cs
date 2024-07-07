@@ -575,18 +575,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MiAutoSave_Click(object sender, EventArgs e)
-		{
-			CDLAutoSave ^= true;
-		}
+			=> CDLAutoSave = !CDLAutoSave;
 
 		private void MiAutoStart_Click(object sender, EventArgs e)
-		{
-			CDLAutoStart ^= true;
-		}
+			=> CDLAutoStart = !CDLAutoStart;
 
 		private void MiAutoResume_Click(object sender, EventArgs e)
-		{
-			CDLAutoResume ^= true;
-		}
+			=> CDLAutoResume = !CDLAutoResume;
 	}
 }

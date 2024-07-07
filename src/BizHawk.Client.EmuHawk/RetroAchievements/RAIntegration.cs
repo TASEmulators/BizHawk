@@ -67,7 +67,11 @@ namespace BizHawk.Client.EmuHawk
 					Checked = _getConfig().RAAutostart,
 					CheckOnClick = true,
 				};
-				tsi.CheckedChanged += (_, _) => _getConfig().RAAutostart ^= true;
+				tsi.CheckedChanged += (_, _) =>
+				{
+					var config = _getConfig();
+					config.RAAutostart = !config.RAAutostart;
+				};
 				_raDropDownItems.Add(tsi);
 
 				var tss = new ToolStripSeparator();

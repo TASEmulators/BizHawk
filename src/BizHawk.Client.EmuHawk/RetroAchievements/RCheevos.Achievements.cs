@@ -147,14 +147,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_gameData.GameID == 0)
 			{
-				AllowUnofficialCheevos ^= true;
+				AllowUnofficialCheevos = !AllowUnofficialCheevos;
 				return;
 			}
 
 			_activeModeUnlocksRequest.Wait();
 
 			DeactivateCheevos(HardcoreMode);
-			AllowUnofficialCheevos ^= true;
+			AllowUnofficialCheevos = !AllowUnofficialCheevos;
 			ActivateCheevos(HardcoreMode);
 		}
 

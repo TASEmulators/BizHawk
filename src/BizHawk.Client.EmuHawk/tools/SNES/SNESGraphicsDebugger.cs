@@ -1376,14 +1376,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void lblEnPrio2_Click(object sender, EventArgs e)
-		{
-			checkEN2_OBJ.Checked ^= true;
-		}
+			=> checkEN2_OBJ.Checked = !checkEN2_OBJ.Checked;
 
 		private void lblEnPrio3_Click(object sender, EventArgs e)
-		{
-			checkEN3_OBJ.Checked ^= true;
-		}
+			=> checkEN3_OBJ.Checked = !checkEN3_OBJ.Checked;
 
 	} //class SNESGraphicsDebugger
 } //namespace BizHawk.Client.EmuHawk

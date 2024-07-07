@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (MovieSession.Movie.IsActive())
 				{
-					MovieSession.ReadOnly ^= true;
+					MovieSession.ReadOnly = !MovieSession.ReadOnly;
 					AddOnScreenMessage(MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
 				}
 				else
