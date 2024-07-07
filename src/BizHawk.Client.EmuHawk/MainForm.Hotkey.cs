@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 					ToggleBackgroundInput();
 					break;
 				case "Toggle Menu":
-					MainMenuStrip.Visible ^= true;
+					ShowMenuContextMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Volume Up":
 					VolumeUp();
@@ -158,15 +158,14 @@ namespace BizHawk.Client.EmuHawk
 					ToggleKeyPriority();
 					break;
 				case "Toggle Messages":
-					Config.DisplayMessages ^= true;
+					DisplayMessagesMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Toggle Display Nothing":
 					// TODO: account for 1 when implemented
 					Config.DispSpeedupFeatures = Config.DispSpeedupFeatures == 0 ? 2 : 0;
 					break;
 				case "Accept Background Input":
-					Config.AcceptBackgroundInput ^= true;
-					AddOnScreenMessage($"Accept Background Input toggled {(Config.AcceptBackgroundInput ? "On" : "Off")}");
+					ToggleBackgroundInput();
 					break;
 
 				// Save States
@@ -296,16 +295,16 @@ namespace BizHawk.Client.EmuHawk
 
 				// Tools
 				case "RAM Watch":
-					Tools.LoadRamWatch(true);
+					RamWatchMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "RAM Search":
-					Tools.Load<RamSearch>();
+					RamSearchMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Hex Editor":
-					Tools.Load<HexEditor>();
+					HexEditorMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Trace Logger":
-					Tools.Load<TraceLogger>();
+					TraceLoggerMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Lua Console":
 					OpenLuaConsole();
@@ -317,7 +316,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					break;
 				case "Cheats":
-					Tools.Load<Cheats>();
+					CheatsMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Toggle All Cheats":
 					var cheats = CheatList.Where(static c => !c.IsSeparator).ToList();
@@ -335,10 +334,10 @@ namespace BizHawk.Client.EmuHawk
 					TAStudioMenuItem_Click(null, null);
 					break;
 				case "ToolBox":
-					Tools.Load<ToolBox>();
+					ToolBoxMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Virtual Pad":
-					Tools.Load<VirtualpadTool>();
+					VirtualPadMenuItem_Click(this, EventArgs.Empty);
 					break;
 
 				// RAM Search
