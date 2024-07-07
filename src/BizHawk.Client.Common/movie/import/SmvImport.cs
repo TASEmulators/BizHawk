@@ -8,7 +8,6 @@ using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 namespace BizHawk.Client.Common.movie.import
 {
-	// ReSharper disable once UnusedMember.Global
 	/// <summary>For Snes9x's <see href="https://tasvideos.org/EmulatorResources/Snes9x/SMV"><c>.smv</c> format</see></summary>
 	[ImporterFor("Snes9x", ".smv")]
 	internal class SmvImport : MovieImporter

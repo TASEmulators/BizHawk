@@ -490,6 +490,7 @@ namespace BizHawk.Client.Common
 			UpdateSourceInternal(job);
 			return job.OffscreenBb;
 		}
+
 		/// <summary>
 		/// Does the display process to an offscreen buffer, suitable for a Lua-inclusive movie.
 		/// </summary>

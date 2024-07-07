@@ -35,6 +35,7 @@ namespace BizHawk.BizInvoke
 		/// <param name="delegateType"></param>
 		/// <returns></returns>
 		Delegate GetDelegateForFunctionPointer(IntPtr p, Type delegateType);
+
 		/// <summary>
 		/// Like Marshal.GetDelegateForFunctionPointer(), but only the unmanaged thunk-to-thunk part, with no
 		/// managed wrapper involved.static  Called "departure" beause it is to be used when first leaving host
@@ -90,6 +91,7 @@ namespace BizHawk.BizInvoke
 		/// any meaning to CallingConvention Adapter; it's just a unique key associated with the callback.
 		/// </summary>
 		IntPtr GetCallbackProcAddr(IntPtr exitPoint, int slot);
+
 		/// <summary>
 		/// Returns a thunk over a departure point.
 		/// </summary>

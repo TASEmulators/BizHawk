@@ -28,12 +28,14 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		bool UsesVideo { get; }
 
-		// why no OpenFile(IEnumerator<string>) ?
-		// different video writers may have different ideas of how and why splitting is to occur
 		/// <summary>
 		/// opens a recording stream
 		/// set a video codec token first.
 		/// </summary>
+		/// <remarks>
+		/// why no <c>OpenFile(IEnumerator&lt;string>)</c>?
+		/// different video writers may have different ideas of how and why splitting is to occur
+		/// </remarks>
 		void OpenFile(string baseName);
 
 		/// <summary>

@@ -9,10 +9,12 @@
 		/// General usage, works even with null emulator
 		/// </summary>
 		Global = 0,
+
 		/// <summary>
 		/// Specific to an emulator (NES,SNES,etc...)
 		/// </summary>
 		EmulatorSpecific = 1,
+
 		/// <summary>
 		/// Specific to a Game
 		/// </summary>

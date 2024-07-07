@@ -5,7 +5,6 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.Common.movie.import
 {
-	// ReSharper disable once UnusedMember.Global
 	/// <summary>For Dega's <see href="https://tasvideos.org/EmulatorResources/MMV"><c>.mmv</c> format</see></summary>
 	[ImporterFor("Dega", ".mmv")]
 	internal class MmvImport : MovieImporter

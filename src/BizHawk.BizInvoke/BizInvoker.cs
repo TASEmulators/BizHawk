@@ -83,10 +83,12 @@ namespace BizHawk.BizInvoke
 		/// How far into a class pointer the first field is.  Different on mono and fw.
 		/// </summary>
 		private static readonly int ClassFieldOffset;
+
 		/// <summary>
 		/// How far into a string pointer the first chair is.
 		/// </summary>
 		private static readonly int StringOffset;
+
 		/// <summary>
 		/// How far into a value array type element 0 is.
 		/// </summary>

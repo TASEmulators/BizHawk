@@ -107,6 +107,7 @@ namespace BizHawk.Client.EmuHawk
 		/// min + (max - i) == max - (i - min) == min + max - i
 		/// </remarks>
 		private int MaybeReversedInX(int i) => _reverseX ? _rangeX.Start + _rangeX.EndInclusive - i : i;
+
 		/// <inheritdoc cref="MaybeReversedInX"/>
 		private int MaybeReversedInY(int i) => _reverseY ? i : _rangeY.Start + _rangeY.EndInclusive - i;
 
