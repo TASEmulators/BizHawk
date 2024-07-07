@@ -21,6 +21,12 @@ namespace BizHawk.Client.Common
 
 			public BespokeOption(string name, string description)
 				: base(name: name, description: description) {}
+
+			public BespokeOption(string[] aliases)
+				: base(aliases) {}
+
+			public BespokeOption(string[] aliases, string description)
+				: base(aliases, description) {}
 		}
 
 		private static readonly Argument<string?> ArgumentRomFilePath = new(name: "rom", () => null, description: "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`");
@@ -41,9 +47,9 @@ namespace BizHawk.Client.Common
 
 		private static readonly BespokeOption<string?> OptionConfigFilePath = new(name: "--config", description: "path of config file to use");
 
-		private static readonly BespokeOption<string?> OptionHTTPClientURIGET = new(name: "--url_get", description: "string; URI to use for HTTP 'GET' IPC (Lua `comm.http*Get*`)");
+		private static readonly BespokeOption<string?> OptionHTTPClientURIGET = new(aliases: [ "--url-get", "--url_get" ], description: "string; URI to use for HTTP 'GET' IPC (Lua `comm.http*Get*`)");
 
-		private static readonly BespokeOption<string?> OptionHTTPClientURIPOST = new(name: "--url_post", description: "string; URI to use for HTTP 'POST' IPC (Lua `comm.http*Post*`)");
+		private static readonly BespokeOption<string?> OptionHTTPClientURIPOST = new(aliases: [ "--url-post", "--url_post" ], description: "string; URI to use for HTTP 'POST' IPC (Lua `comm.http*Post*`)");
 
 		private static readonly BespokeOption<bool> OptionLaunchChromeless = new(name: "--chromeless", description: "pass and the 'chrome' (a.k.a. GUI) will never be shown, not even in windowed mode");
 
@@ -65,11 +71,11 @@ namespace BizHawk.Client.Common
 
 		private static readonly BespokeOption<bool> OptionQueryAppVersion = new(name: "--version", description: "pass to print version information and immediately quit");
 
-		private static readonly BespokeOption<string?> OptionSocketServerIP = new("--socket_ip"); // desc added in static ctor
+		private static readonly BespokeOption<string?> OptionSocketServerIP = new(aliases: [ "--socket-ip", "--socket_ip" ]); // desc added in static ctor
 
-		private static readonly BespokeOption<ushort?> OptionSocketServerPort = new("--socket_port"); // desc added in static ctor
+		private static readonly BespokeOption<ushort?> OptionSocketServerPort = new(aliases: [ "--socket-port", "--socket_port" ]); // desc added in static ctor
 
-		private static readonly BespokeOption<bool> OptionSocketServerUseUDP = new("--socket_udp"); // desc added in static ctor
+		private static readonly BespokeOption<bool> OptionSocketServerUseUDP = new(aliases: [ "--socket-udp", "--socket_udp" ]); // desc added in static ctor
 
 		private static readonly BespokeOption<string?> OptionUserdataUnparsedPairs = new(name: "--userdata", description: "pairs in the format `k1:v1;k2:v2` (mind your shell escape sequences); if the value is `true`/`false` it's interpreted as a boolean, if it's a valid 32-bit signed integer e.g. `-1234` it's interpreted as such, if it's a valid 32-bit float e.g. `12.34` it's interpreted as such, else it's interpreted as a string");
 
@@ -105,11 +111,11 @@ namespace BizHawk.Client.Common
 			root.Add(/* --mmf */ OptionMMFPath);
 			root.Add(/* --movie */ OptionMovieFilePath);
 			root.Add(/* --open-ext-tool-dll */ OptionOpenExternalTool);
-			root.Add(/* --socket_ip */ OptionSocketServerIP);
-			root.Add(/* --socket_port */ OptionSocketServerPort);
-			root.Add(/* --socket_udp */ OptionSocketServerUseUDP);
-			root.Add(/* --url_get */ OptionHTTPClientURIGET);
-			root.Add(/* --url_post */ OptionHTTPClientURIPOST);
+			root.Add(/* --socket-ip */ OptionSocketServerIP);
+			root.Add(/* --socket-port */ OptionSocketServerPort);
+			root.Add(/* --socket-udp */ OptionSocketServerUseUDP);
+			root.Add(/* --url-get */ OptionHTTPClientURIGET);
+			root.Add(/* --url-post */ OptionHTTPClientURIPOST);
 			root.Add(/* --userdata */ OptionUserdataUnparsedPairs);
 			root.Add(/* --version */ OptionQueryAppVersion);
 
