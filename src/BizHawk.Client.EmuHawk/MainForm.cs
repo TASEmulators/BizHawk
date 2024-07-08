@@ -88,8 +88,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
 			{
-				var groupLabel = appliesTo[0];
-				var submenu = new ToolStripMenuItem { Text = groupLabel };
+				var submenu = new ToolStripMenuItem { Text = string.Join(" | ", appliesTo) };
 				submenu.DropDownItems.AddRange(coreNames.Select(coreName => {
 					var entry = new ToolStripMenuItem { Text = coreName };
 					entry.Click += (_, _) =>
@@ -103,14 +102,13 @@ namespace BizHawk.Client.EmuHawk
 				}).ToArray());
 				submenu.DropDownOpened += (openedSender, _1) =>
 				{
-					_ = Config.PreferredCores.TryGetValue(groupLabel, out var preferred);
+					_ = Config.PreferredCores.TryGetValue(appliesTo[0], out var preferred);
 					if (!coreNames.Contains(preferred))
 					{
 						// invalid --> default (doing this here rather than when reading config file to allow for hacked-in values, though I'm not sure if that could do anything at the moment --yoshi)
 						var defaultCore = coreNames[0];
-						Console.WriteLine($"setting preferred core for {groupLabel} etc. to {defaultCore} (was {preferred ?? "null"})");
-						preferred = defaultCore;
-						foreach (var sysID in appliesTo) Config.PreferredCores[sysID] = preferred;
+						Console.WriteLine($"setting preferred core for {appliesTo[0]} etc. to {defaultCore} (was {preferred ?? "null"})");
+						Config.PreferredCores[appliesTo[0]] = preferred = defaultCore;
 					}
 					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems) entry.Checked = entry.Text == preferred;
 				};
