@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public const string Tapper = "SHA1:E986E1818E747BEB9B33CE4DFF1CDC6B55BDB620";
 		}
 
-		[CoreConstructor(VSystemID.Raw.A26)]
+		[CoreConstructor(VSystemID.Raw.A26, Priority = CorePriority.DefaultPreference)]
 		public Atari2600(GameInfo game, byte[] rom, Atari2600.A2600Settings settings, Atari2600.A2600SyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);

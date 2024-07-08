@@ -36,10 +36,10 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		private readonly LibTurboNyma _turboNyma;
 		private readonly bool _hasCds;
 
-		[CoreConstructor(VSystemID.Raw.PCE)]
-		[CoreConstructor(VSystemID.Raw.SGX)]
-		[CoreConstructor(VSystemID.Raw.PCECD)]
-		[CoreConstructor(VSystemID.Raw.SGXCD)]
+		[CoreConstructor(VSystemID.Raw.PCE, Priority = CorePriority.DefaultPreference)]
+		[CoreConstructor(VSystemID.Raw.SGX, Priority = CorePriority.DefaultPreference)]
+		[CoreConstructor(VSystemID.Raw.PCECD, Priority = CorePriority.DefaultPreference)]
+		[CoreConstructor(VSystemID.Raw.SGXCD, Priority = CorePriority.DefaultPreference)]
 		public TurboNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, VSystemID.Raw.PCE, "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{
