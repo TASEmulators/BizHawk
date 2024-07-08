@@ -2458,7 +2458,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public BitmapBuffer MakeScreenshotImage()
 		{
-			var ret = new BitmapBuffer(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBuffer().ToArray());
+			var ret = new BitmapBuffer(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBufferCopy());
 			ret.DiscardAlpha();
 			return ret;
 		}

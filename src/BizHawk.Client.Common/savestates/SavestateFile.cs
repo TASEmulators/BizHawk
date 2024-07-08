@@ -70,31 +70,19 @@ namespace BizHawk.Client.Common
 
 			if (config.SaveScreenshot && _videoProvider != null)
 			{
-				var buff = _videoProvider.GetVideoBuffer();
-				if (buff.Length == 1)
+				var outWidth = _videoProvider.BufferWidth;
+				var outHeight = _videoProvider.BufferHeight;
+
+				// if buffer is too big, scale down screenshot
+				if (!config.NoLowResLargeScreenshots && outWidth * outHeight >= config.BigScreenshotSize)
 				{
-					// is a hacky opengl texture ID. can't handle this now!
-					// need to discuss options
-					// 1. cores must be able to provide a pixels VideoProvider in addition to a texture ID, on command (not very hard overall but interface changing and work per core)
-					// 2. SavestateManager must be setup with a mechanism for resolving texture IDs (even less work, but sloppy)
-					// There are additional problems with AVWriting. They depend on VideoProvider providing pixels.
+					outWidth /= 2;
+					outHeight /= 2;
 				}
-				else
+
+				using (new SimpleTime("Save Framebuffer"))
 				{
-					int outWidth = _videoProvider.BufferWidth;
-					int outHeight = _videoProvider.BufferHeight;
-
-					// if buffer is too big, scale down screenshot
-					if (!config.NoLowResLargeScreenshots && buff.Length >= config.BigScreenshotSize)
-					{
-						outWidth /= 2;
-						outHeight /= 2;
-					}
-
-					using (new SimpleTime("Save Framebuffer"))
-					{
-						bs.PutLump(BinaryStateLump.Framebuffer, s => QuickBmpFile.Save(_videoProvider, s, outWidth, outHeight));
-					}
+					bs.PutLump(BinaryStateLump.Framebuffer, s => QuickBmpFile.Save(_videoProvider, s, outWidth, outHeight));
 				}
 			}
 
@@ -222,13 +210,13 @@ namespace BizHawk.Client.Common
 			}
 			catch
 			{
-				var buff = videoProvider.GetVideoBuffer();
+				var vb = videoProvider.GetVideoBuffer();
+				var vbLen = videoProvider.BufferWidth * videoProvider.BufferHeight;
 				try
 				{
-					for (int i = 0; i < buff.Length; i++)
+					for (var i = 0; i < vbLen; i++)
 					{
-						int j = br.ReadInt32();
-						buff[i] = j;
+						vb[i] = br.ReadInt32();
 					}
 				}
 				catch (EndOfStreamException)

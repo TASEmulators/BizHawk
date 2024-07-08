@@ -250,7 +250,7 @@ namespace BizHawk.Client.EmuHawk
 					movieToRecord.SavestateFramebuffer = Array.Empty<int>();
 					if (_emulator.HasVideoProvider())
 					{
-						movieToRecord.SavestateFramebuffer = (int[])_emulator.AsVideoProvider().GetVideoBuffer().Clone();
+						movieToRecord.SavestateFramebuffer = _emulator.AsVideoProvider().GetVideoBufferCopy();
 					}
 				}
 				else if (StartFromCombo.SelectedItem.ToString() is START_FROM_SAVERAM && _emulator.HasSaveRam())
