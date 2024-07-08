@@ -270,7 +270,7 @@ namespace Jellyfish.Virtu
 			bool caps = keys.HasFlag(Keys.CapsLock);
 			if (caps && !_currentCapsLockState) // leading edge: toggle CapsLock
 			{
-				CapsActive ^= true;
+				CapsActive = !CapsActive;
 			}
 			_currentCapsLockState = caps;
 			shift ^= CapsActive;
