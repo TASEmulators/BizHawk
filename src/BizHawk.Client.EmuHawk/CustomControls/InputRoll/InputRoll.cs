@@ -1952,13 +1952,11 @@ namespace BizHawk.Client.EmuHawk
 		// The height of a column cell in Vertical Orientation.
 		private int ColumnHeight => CellHeight + 2;
 
-		// The width of a cell in Horizontal Orientation. Only can be changed by changing the Font or CellPadding.
-		private int CellWidth { get; set; }
+		// The width of a cell in Horizontal Orientation.
+		private int CellWidth => (int)_charSize.Width + CellWidthPadding * 4; // Double the padding for horizontal because it looks better
 
-		/// <summary>
-		/// Gets or sets a value indicating the height of a cell in Vertical Orientation. Only can be changed by changing the Font or CellPadding.
-		/// </summary>
-		private int CellHeight { get; set; } = 8;
+		// The height of a cell in Vertical Orientation.
+		private int CellHeight => (int)_charSize.Height + CellHeightPadding * 2;
 
 		/// <summary>
 		/// Call when _charSize, MaxCharactersInHorizontal, or CellPadding is changed.
@@ -1971,12 +1969,8 @@ namespace BizHawk.Client.EmuHawk
 				// Measure width change to ignore extra padding at start/end
 				var size1 = _renderer.MeasureString("A", Font);
 				var size2 = _renderer.MeasureString("AA", Font);
-				_charSize = new SizeF(size2.Width - size1.Width, size1.Height); // TODO make this a property so changing it updates other values.
+				_charSize = new SizeF(size2.Width - size1.Width, size1.Height);
 			}
-
-			// TODO: Should we round instead of truncate?
-			CellHeight = (int)_charSize.Height + (CellHeightPadding * 2);
-			CellWidth = (int)_charSize.Width + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
 			
 			if (_columns.VisibleColumns.Any())
 			{
