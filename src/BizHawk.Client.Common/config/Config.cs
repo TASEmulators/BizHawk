@@ -18,7 +18,8 @@ namespace BizHawk.Client.Common
 		public static string ControlDefaultPath => Path.Combine(PathUtils.ExeDirectoryPath, "defctrl.json");
 
 		/// <remarks>
-		/// All SystemIDs in <c>AppliesTo</c> are used as group label, and
+		/// <c>CoreNames[0]</c> is the default (out-of-the-box) core.<br/>
+		/// <c>AppliesTo</c> are concatenated to make the submenu's label, and
 		/// <c>Config.PreferredCores[AppliesTo[0]]</c> (lookup on global <see cref="Config"/> instance) determines which option is shown as checked.<br/>
 		/// The order within submenus and the order of the submenus themselves are determined by the declaration order here.
 		/// </remarks>
