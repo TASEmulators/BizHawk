@@ -107,8 +107,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						// invalid --> default (doing this here rather than when reading config file to allow for hacked-in values, though I'm not sure if that could do anything at the moment --yoshi)
 						var defaultCore = coreNames[0];
-						Console.WriteLine($"setting preferred core for {appliesTo[0]} etc. to {defaultCore} (was {preferred ?? "null"})");
-						Config.PreferredCores[appliesTo[0]] = preferred = defaultCore;
+						Console.WriteLine($"setting preferred core for {submenu.Text} to {defaultCore} (was {preferred ?? "null"})");
+						preferred = defaultCore;
+						foreach (var sysID in appliesTo) Config.PreferredCores[sysID] = preferred;
 					}
 					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems) entry.Checked = entry.Text == preferred;
 				};
