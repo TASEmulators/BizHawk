@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public virtual void BulkPeekByte(Range<long> addresses, byte[] values)
+		public virtual void BulkPeekByte(Int64Interval addresses, byte[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public virtual void BulkPeekUshort(Range<long> addresses,  bool bigEndian, ushort[] values)
+		public virtual void BulkPeekUshort(Int64Interval addresses,  bool bigEndian, ushort[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public virtual void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
+		public virtual void BulkPeekUint(Int64Interval addresses, bool bigEndian, uint[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
