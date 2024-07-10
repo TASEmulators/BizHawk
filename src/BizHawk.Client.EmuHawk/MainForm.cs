@@ -4331,6 +4331,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (MovieSession.Movie.IsFinished())
+			{
+				OSD.AddMessage("Cannot savestate after movie end!");
+				return;
+			}
+
 			try
 			{
 				new SavestateFile(Emulator, MovieSession, MovieSession.UserBag).Create(path, Config.Savestates);
