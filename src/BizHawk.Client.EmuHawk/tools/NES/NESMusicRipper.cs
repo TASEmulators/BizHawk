@@ -8,7 +8,6 @@ using System.Xml.XPath;
 using System.Xml.Linq;
 
 using BizHawk.Client.Common;
-using BizHawk.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Common;
 
@@ -63,11 +62,7 @@ namespace BizHawk.Client.EmuHawk
 				float a = FreqTable[i - 1];
 				float b = FreqTable[i];
 				float c = FreqTable[i + 1];
-				var range = ((a + b) / 2).RangeTo((b + c) / 2);
-				if (range.Contains(freq))
-				{
-					return i - 1;
-				}
+				if ((a + b) / 2 <= freq && freq <= (b + c) / 2) return i - 1;
 			}
 
 			return 95; // I guess?
