@@ -2,7 +2,6 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common.PathExtensions;
