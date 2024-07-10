@@ -32,8 +32,8 @@ namespace BizHawk.Common
 	}
 
 	/// <summary>
-	/// represents a closed interval (a.k.a. range) of <see cref="long"><c>s64</c>s</see>
-	/// (class invariant: <see cref="Start"/> ≤ <see cref="EndInclusive"/>)
+	/// represents a half-open interval (a.k.a. range) of <see cref="long"><c>s64</c>s</see>
+	/// (class invariant: <see cref="Start"/> &lt; <see cref="EndExclusive"/>)
 	/// </summary>
 	public sealed class Int64Interval
 	{
@@ -41,31 +41,33 @@ namespace BizHawk.Common
 
 		public readonly long Start;
 
-		public readonly long EndInclusive;
+		public readonly long EndExclusive;
 
-		/// <inheritdoc cref="Int32Interval(int,int)"/>
-		internal Int64Interval(long start, long endInclusive)
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="endExclusive"/> ≤ <paramref name="start"/></exception>
+		internal Int64Interval(long start, long endExclusive)
 		{
-			if (endInclusive < start) throw new ArgumentOutOfRangeException(paramName: nameof(endInclusive), actualValue: endInclusive, message: "interval end < start");
+			if (endExclusive <= start) throw new ArgumentOutOfRangeException(paramName: nameof(endExclusive), actualValue: endExclusive, message: "interval end <= start");
 			Start = start;
-			EndInclusive = endInclusive;
+			EndExclusive = endExclusive;
 		}
 
 		/// <inheritdoc cref="Int32Interval.Contains"/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public bool Contains(long value)
-			=> Start <= value && value <= EndInclusive;
+			=> Start <= value && value < EndExclusive;
 
 		/// <inheritdoc cref="Int32Interval.Count"/>
 		public ulong Count()
-			=> (Contains(0L)
-				? (Start == long.MinValue ? MIN_LONG_NEGATION_AS_ULONG : (ulong) -Start) + (ulong) EndInclusive
-				: (ulong) (EndInclusive - Start)
-			) + 1UL;
+			=> Contains(0L)
+				? (Start == long.MinValue ? MIN_LONG_NEGATION_AS_ULONG : (ulong) -Start) + (ulong) EndExclusive
+				: (ulong) (EndExclusive - Start);
 	}
 
 	public static class RangeExtensions
 	{
+		private static ArithmeticException ExclusiveRangeMaxValExc
+			=> new("inclusive range end is max. value of integral type");
+
 		private static ArithmeticException ExclusiveRangeMinValExc
 			=> new("exclusive range end is min value of integral type");
 
@@ -81,10 +83,13 @@ namespace BizHawk.Common
 		public static Int32Interval RangeTo(this int start, int endInclusive)
 			=> new(start: start, endInclusive: endInclusive);
 
-		/// <inheritdoc cref="Int64Interval(long,long)"/>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="endInclusive"/> &lt; <paramref name="start"/></exception>
+		/// <exception cref="ArithmeticException"><paramref name="endInclusive"/> is max. value of integral type (therefore <c>endExclusive</c> is unrepresentable)</exception>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Int64Interval RangeTo(this long start, long endInclusive)
-			=> new(start: start, endInclusive: endInclusive);
+			=> endInclusive == long.MaxValue
+				? throw ExclusiveRangeMaxValExc
+				: new(start: start, endExclusive: endInclusive + 1L);
 
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="endExclusive"/> ≤ <paramref name="start"/> (empty ranges where <paramref name="start"/> = <paramref name="endExclusive"/> are not permitted)</exception>
 		/// <exception cref="ArithmeticException"><paramref name="endExclusive"/> is min value of integral type (therefore <paramref name="endExclusive"/> ≤ <paramref name="start"/>)</exception>
@@ -99,7 +104,7 @@ namespace BizHawk.Common
 		public static Int64Interval RangeToExclusive(this long start, long endExclusive)
 			=> endExclusive == long.MinValue
 				? throw ExclusiveRangeMinValExc
-				: new(start: start, endInclusive: endExclusive - 1L);
+				: new(start: start, endExclusive: endExclusive);
 
 		/// <returns>true iff <paramref name="value"/> is strictly contained in <paramref name="range"/> (<paramref name="value"/> is considered to be OUTSIDE the range if it's exactly equal to either bound)</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
