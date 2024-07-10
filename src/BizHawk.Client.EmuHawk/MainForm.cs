@@ -2404,7 +2404,7 @@ namespace BizHawk.Client.EmuHawk
 			// only check window messages a maximum of once per millisecond
 			// this check is irrelvant for the 99% of cases where fps are <1k
 			// but gives a slight fps boost in those scenarios
-			if ((currentTime - _lastMessageCheck).Milliseconds > 0)
+			if ((uint)(currentTime - _lastMessageCheck).Milliseconds > 0)
 			{
 				_lastMessageCheck = currentTime;
 				Application.DoEvents();
