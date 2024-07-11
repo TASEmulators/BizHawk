@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.Input,
 					tw =>
 					{
-						Debug.Assert(_movieSession.Movie.FrameCount >= _emulator.Frame);
+						Debug.Assert(_movieSession.Movie.FrameCount >= _emulator.Frame, $"Tried to create a savestate at frame {_emulator.Frame}, but only got a log of length {_movieSession.Movie.FrameCount}!");
 						// this never should have been a core's responsibility
 						tw.WriteLine("Frame {0}", _emulator.Frame);
 						_movieSession.HandleSaveState(tw);
