@@ -322,10 +322,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		public string PCRegisterName => "PC";
 
-		public IEnumerable<string> AvailableCpus
-		{
-			get { yield return "F3850"; }
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "F3850" ];
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{

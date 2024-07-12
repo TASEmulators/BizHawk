@@ -439,10 +439,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		public string PCRegisterName => "PC";
 
-		public IEnumerable<string> AvailableCpus
-		{
-			get { yield return "Z80"; }
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "Z80" ];
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{

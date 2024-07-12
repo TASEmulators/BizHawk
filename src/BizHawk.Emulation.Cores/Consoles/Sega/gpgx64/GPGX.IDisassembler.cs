@@ -17,10 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public string PCRegisterName => "M68K PC";
 
-		public IEnumerable<string> AvailableCpus
-		{
-			get { yield return "M68000"; }
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "M68000" ];
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
