@@ -1,5 +1,5 @@
+using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
@@ -82,15 +82,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 			public byte[] GetBytes()
 			{
-				return GetBytesEnumerable().ToArray();
-			}
-
-			private IEnumerable<byte> GetBytesEnumerable()
-			{
-				yield return unchecked((byte)(Data >> 24));
-				yield return unchecked((byte)(Data >> 16));
-				yield return unchecked((byte)(Data >> 8));
-				yield return unchecked((byte)Data);
+				var buf = new byte[sizeof(int)];
+				BinaryPrimitives.WriteInt32BigEndian(buf, Data);
+				return buf;
 			}
 
 			public IEnumerable<bool> Entries
