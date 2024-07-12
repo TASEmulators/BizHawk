@@ -977,8 +977,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEnumerable<ToolStripItem> GenerateContextMenuItems()
 		{
-			if (!Rotatable) yield break;
-			yield return new ToolStripSeparator();
+			if (!Rotatable) return [ ];
 			var rotate = new ToolStripMenuItem
 			{
 				Name = "RotateMenuItem",
@@ -986,7 +985,7 @@ namespace BizHawk.Client.EmuHawk
 				ShortcutKeyDisplayString = RotateHotkeyStr
 			};
 			rotate.Click += (_, _) => HorizontalOrientation = !HorizontalOrientation;
-			yield return rotate;
+			return [ new ToolStripSeparator(), rotate ];
 		}
 
 		public string RotateHotkeyStr => "Ctrl+Shift+F";
