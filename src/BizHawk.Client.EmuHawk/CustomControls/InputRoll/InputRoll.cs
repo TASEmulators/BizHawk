@@ -977,21 +977,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEnumerable<ToolStripItem> GenerateContextMenuItems()
 		{
-			if (Rotatable)
+			if (!Rotatable) yield break;
+			yield return new ToolStripSeparator();
+			var rotate = new ToolStripMenuItem
 			{
-				yield return new ToolStripSeparator();
-
-				var rotate = new ToolStripMenuItem
-				{
-					Name = "RotateMenuItem",
-					Text = "Rotate",
-					ShortcutKeyDisplayString = RotateHotkeyStr
-				};
-
-				rotate.Click += (_, _) => HorizontalOrientation = !HorizontalOrientation;
-
-				yield return rotate;
-			}
+				Name = "RotateMenuItem",
+				Text = "Rotate",
+				ShortcutKeyDisplayString = RotateHotkeyStr
+			};
+			rotate.Click += (_, _) => HorizontalOrientation = !HorizontalOrientation;
+			yield return rotate;
 		}
 
 		public string RotateHotkeyStr => "Ctrl+Shift+F";
