@@ -29,7 +29,6 @@ using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.Cores.Calculators.TI83;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
-using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.SNK;
@@ -4434,13 +4433,17 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
-			return Emulator switch
+			var currentCoreName = Emulator.Attributes().CoreName;
+			var recommendedCore = currentCoreName switch
 			{
-				Snes9x => PromptToSwitchCore(CoreNames.Snes9X, CoreNames.Bsnes115, () => Config.PreferredCores[VSystemID.Raw.SNES] = CoreNames.Bsnes115),
-				QuickNES => PromptToSwitchCore(CoreNames.QuickNes, CoreNames.NesHawk, () => Config.PreferredCores[VSystemID.Raw.NES] = CoreNames.NesHawk),
-				HyperNyma => PromptToSwitchCore(CoreNames.HyperNyma, CoreNames.TurboNyma, () => Config.PreferredCores[VSystemID.Raw.PCE] = CoreNames.TurboNyma),
-				_ => true
+				CoreNames.Snes9X => CoreNames.Bsnes115,
+				CoreNames.QuickNes => CoreNames.NesHawk,
+				CoreNames.HyperNyma => CoreNames.TurboNyma,
+				_ => null
 			};
+			return recommendedCore is null
+				? true
+				: PromptToSwitchCore(currentCoreName, recommendedCore, () => Config.PreferredCores[Emulator.SystemId] = recommendedCore);
 		}
 
 		private void SaveStateAs()
