@@ -218,40 +218,10 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public IEnumerator<IMemoryCallback> GetEnumerator()
-		{
-			foreach (var imc in _reads)
-			{
-				yield return imc;
-			}
-
-			foreach (var imc in _writes)
-			{
-				yield return imc;
-			}
-
-			foreach (var imc in _execs)
-			{
-				yield return imc;
-			}
-		}
+			=> _reads.Concat(_writes).Concat(_execs).GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			foreach (var imc in _reads)
-			{
-				yield return imc;
-			}
-
-			foreach (var imc in _writes)
-			{
-				yield return imc;
-			}
-
-			foreach (var imc in _execs)
-			{
-				yield return imc;
-			}
-		}
+			=> GetEnumerator();
 	}
 
 	public class MemoryCallback : IMemoryCallback

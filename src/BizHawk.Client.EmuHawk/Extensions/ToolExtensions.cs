@@ -1,6 +1,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Common;
@@ -238,8 +239,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 		}
 
 		public static IEnumerable<ToolStripItem> MenuItems(this IMemoryDomains domains, Action<string> setCallback, string selected = "", int? maxSize = null)
-		{
-			foreach (var domain in domains)
+			=> domains.Select(domain =>
 			{
 				var name = domain.Name;
 				var item = new ToolStripMenuItem
@@ -249,9 +249,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					Checked = name == selected
 				};
 				item.Click += (o, ev) => setCallback(name);
-
-				yield return item;
-			}
-		}
+				return item;
+			});
 	}
 }

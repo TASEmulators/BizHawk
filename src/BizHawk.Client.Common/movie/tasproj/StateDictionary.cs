@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using BizHawk.Common;
 
 namespace BizHawk.Client.Common
@@ -86,10 +87,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public IEnumerator<KeyValuePair<int, byte[]>> GetEnumerator()
-		{
-			foreach (var kvp in _streams)
-				yield return new KeyValuePair<int, byte[]>(kvp.Key, this[kvp.Key]);
-		}
+			=> _streams.Select(kvp => new KeyValuePair<int, byte[]>(kvp.Key, this[kvp.Key])).GetEnumerator();
 
 		public bool Remove(int key)
 		{
