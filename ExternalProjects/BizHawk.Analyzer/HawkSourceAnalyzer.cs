@@ -134,14 +134,14 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoDiscardingLocals, snac.Node.GetLocation()));
 						break;
 					case CollectionExpressionSyntax ces:
-						var cesError = CheckSpacingInList(ces.Elements, ces.OpenBracketToken, ces.ToFullString);
+						var cesError = CheckSpacingInList(ces.Elements, ces.OpenBracketToken, ces.ToString);
 						if (cesError is not null) snac.ReportDiagnostic(Diagnostic.Create(DiagListExprSpacing, ces.GetLocation(), cesError));
 						break;
 					case InterpolatedStringExpressionSyntax ises:
 						if (ises.StringStartToken.Text[0] is '@') snac.ReportDiagnostic(Diagnostic.Create(DiagInterpStringIsDollarAt, ises.GetLocation()));
 						break;
 					case ListPatternSyntax lps:
-						var lpsError = CheckSpacingInList(lps.Patterns, lps.OpenBracketToken, lps.ToFullString);
+						var lpsError = CheckSpacingInList(lps.Patterns, lps.OpenBracketToken, lps.ToString);
 						if (lpsError is not null) snac.ReportDiagnostic(Diagnostic.Create(DiagListExprSpacing, lps.GetLocation(), lpsError));
 						break;
 					case QueryExpressionSyntax:
