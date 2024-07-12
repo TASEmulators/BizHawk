@@ -480,8 +480,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedBranch == null)
 			{
-				Select(Branches.Current, true);
-				BranchView.Refresh();
+				if (Branches.Current != -1)
+				{
+					Select(Branches.Current, true);
+					BranchView.Refresh();
+				}
 				return;
 			}
 
