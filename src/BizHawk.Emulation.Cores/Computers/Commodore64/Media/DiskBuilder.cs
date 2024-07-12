@@ -87,10 +87,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				return buf;
 			}
 
+#if false
 			public IEnumerable<bool> Entries
 			{
 				get
 				{
+//					return Enumerable.Range(start: 0, count: Sectors).Select(i => (Data & (1 << (24 - i))) is not 0);
+					// ^ simpler implementation, probably has an off-by-one error --yoshi
 					var d = Data;
 					for (var i = 0; i < Sectors; i++)
 					{
@@ -99,6 +102,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 					}
 				}
 			}
+#endif
 		}
 
 		protected class LocatedEntry
