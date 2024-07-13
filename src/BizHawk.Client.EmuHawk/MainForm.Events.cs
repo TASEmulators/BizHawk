@@ -1817,21 +1817,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AppleDisksSubMenu.DropDownItems.Clear();
 			if (Emulator is not AppleII appleII) return;
+			EventHandler clickHandler = (clickSender, _) =>
+			{
+				if (!object.ReferenceEquals(appleII, Emulator)) return;
+				appleII.SetDisk((int) ((Control) clickSender).Tag);
+			};
+			var selected = appleII.CurrentDisk;
 			for (int i = 0; i < appleII.DiskCount; i++)
 			{
-				var menuItem = new ToolStripMenuItem
+				ToolStripMenuItem menuItem = new()
 				{
-					Name = $"Disk{i + 1}",
+					Checked = i == selected,
+					Tag = i,
 					Text = $"Disk{i + 1}",
-					Checked = appleII.CurrentDisk == i
 				};
-
-				int dummy = i;
-				menuItem.Click += (o, ev) =>
-				{
-					appleII.SetDisk(dummy);
-				};
-
+				menuItem.Click += clickHandler;
 				AppleDisksSubMenu.DropDownItems.Add(menuItem);
 			}
 		}
@@ -1846,21 +1846,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			C64DisksSubMenu.DropDownItems.Clear();
 			if (Emulator is not C64 c64) return;
+			EventHandler clickHandler = (clickSender, _) =>
+			{
+				if (!object.ReferenceEquals(c64, Emulator)) return;
+				c64.SetDisk((int) ((Control) clickSender).Tag);
+			};
+			var selected = c64.CurrentDisk;
 			for (int i = 0; i < c64.DiskCount; i++)
 			{
-				var menuItem = new ToolStripMenuItem
+				ToolStripMenuItem menuItem = new()
 				{
-					Name = $"Disk{i + 1}",
+					Checked = i == selected,
+					Tag = i,
 					Text = $"Disk{i + 1}",
-					Checked = c64.CurrentDisk == i
 				};
-
-				int dummy = i;
-				menuItem.Click += (o, ev) =>
-				{
-					c64.SetDisk(dummy);
-				};
-
+				menuItem.Click += clickHandler;
 				C64DisksSubMenu.DropDownItems.Add(menuItem);
 			}
 		}
@@ -1968,58 +1968,46 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ZXSpectrumTapesSubMenu.DropDownItems.Clear();
 			if (Emulator is not ZXSpectrum speccy) return;
-			List<ToolStripItem> items = new();
+			EventHandler clickHandler = (clickSender, _) =>
+			{
+				if (!object.ReferenceEquals(speccy, Emulator)) return;
+				speccy._machine.TapeMediaIndex = (int) ((Control) clickSender).Tag;
+			};
 			var tapeMediaIndex = speccy._machine.TapeMediaIndex;
-
 			for (int i = 0; i < speccy._tapeInfo.Count; i++)
 			{
-				string name = speccy._tapeInfo[i].Name;
-
-				var menuItem = new ToolStripMenuItem
+				ToolStripMenuItem menuItem = new()
 				{
-					Name = $"{i}_{name}",
-					Text = $"{i}: {name}",
-					Checked = tapeMediaIndex == i
+					Checked = i == tapeMediaIndex,
+					Tag = i,
+					Text = $"{i}: {speccy._tapeInfo[i].Name}",
 				};
-
-				int dummy = i;
-				menuItem.Click += (o, ev) =>
-				{
-					speccy._machine.TapeMediaIndex = dummy;
-				};
-
-				items.Add(menuItem);
+				menuItem.Click += clickHandler;
+				ZXSpectrumTapesSubMenu.DropDownItems.Add(menuItem);
 			}
-			ZXSpectrumTapesSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
 		private void ZXSpectrumDisksSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ZXSpectrumDisksSubMenu.DropDownItems.Clear();
 			if (Emulator is not ZXSpectrum speccy) return;
-			List<ToolStripItem> items = new();
+			EventHandler clickHandler = (clickSender, _) =>
+			{
+				if (!object.ReferenceEquals(speccy, Emulator)) return;
+				speccy._machine.DiskMediaIndex = (int) ((Control) clickSender).Tag;
+			};
 			var diskMediaIndex = speccy._machine.DiskMediaIndex;
-
 			for (int i = 0; i < speccy._diskInfo.Count; i++)
 			{
-				string name = speccy._diskInfo[i].Name;
-
-				var menuItem = new ToolStripMenuItem
+				ToolStripMenuItem menuItem = new()
 				{
-					Name = $"{i}_{name}",
-					Text = $"{i}: {name}",
-					Checked = diskMediaIndex == i
+					Checked = i == diskMediaIndex,
+					Tag = i,
+					Text = $"{i}: {speccy._diskInfo[i].Name}",
 				};
-
-				int dummy = i;
-				menuItem.Click += (o, ev) =>
-				{
-					speccy._machine.DiskMediaIndex = dummy;
-				};
-
-				items.Add(menuItem);
+				menuItem.Click += clickHandler;
+				ZXSpectrumDisksSubMenu.DropDownItems.Add(menuItem);
 			}
-			ZXSpectrumDisksSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
 		private void ZXSpectrumExportSnapshotMenuItemMenuItem_Click(object sender, EventArgs e)
@@ -2087,58 +2075,46 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AmstradCPCTapesSubMenu.DropDownItems.Clear();
 			if (Emulator is not AmstradCPC ams) return;
-			List<ToolStripItem> items = new();
+			EventHandler clickHandler = (clickSender, _) =>
+			{
+				if (!object.ReferenceEquals(ams, Emulator)) return;
+				ams._machine.TapeMediaIndex = (int) ((Control) clickSender).Tag;
+			};
 			var tapeMediaIndex = ams._machine.TapeMediaIndex;
-
 			for (int i = 0; i < ams._tapeInfo.Count; i++)
 			{
-				string name = ams._tapeInfo[i].Name;
-
-				var menuItem = new ToolStripMenuItem
+				ToolStripMenuItem menuItem = new()
 				{
-					Name = $"{i}_{name}",
-					Text = $"{i}: {name}",
-					Checked = tapeMediaIndex == i
+					Checked = i == tapeMediaIndex,
+					Tag = i,
+					Text = $"{i}: {ams._tapeInfo[i].Name}",
 				};
-
-				int dummy = i;
-				menuItem.Click += (o, ev) =>
-				{
-					ams._machine.TapeMediaIndex = dummy;
-				};
-
-				items.Add(menuItem);
+				menuItem.Click += clickHandler;
+				AmstradCPCTapesSubMenu.DropDownItems.Add(menuItem);
 			}
-			AmstradCPCTapesSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
 		private void AmstradCpcDisksSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AmstradCPCDisksSubMenu.DropDownItems.Clear();
 			if (Emulator is not AmstradCPC ams) return;
-			List<ToolStripItem> items = new();
+			EventHandler clickHandler = (clickSender, _) =>
+			{
+				if (!object.ReferenceEquals(ams, Emulator)) return;
+				ams._machine.DiskMediaIndex = (int) ((Control) clickSender).Tag;
+			};
 			var diskMediaIndex = ams._machine.DiskMediaIndex;
-
 			for (int i = 0; i < ams._diskInfo.Count; i++)
 			{
-				string name = ams._diskInfo[i].Name;
-
-				var menuItem = new ToolStripMenuItem
+				ToolStripMenuItem menuItem = new()
 				{
-					Name = $"{i}_{name}",
-					Text = $"{i}: {name}",
-					Checked = diskMediaIndex == i
+					Checked = i == diskMediaIndex,
+					Tag = i,
+					Text = $"{i}: {ams._diskInfo[i].Name}",
 				};
-
-				int dummy = i;
-				menuItem.Click += (o, ev) =>
-				{
-					ams._machine.DiskMediaIndex = dummy;
-				};
-
-				items.Add(menuItem);
+				menuItem.Click += clickHandler;
+				AmstradCPCDisksSubMenu.DropDownItems.Add(menuItem);
 			}
-			AmstradCPCDisksSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
 		private DialogResult OpenCPCHawkSettingsDialog(ISettingsAdapter settable)
