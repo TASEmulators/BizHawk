@@ -26,21 +26,14 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Arcades.MAME;
-using BizHawk.Emulation.Cores.Calculators.TI83;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.SNK;
-using BizHawk.Emulation.Cores.Nintendo.BSNES;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.Nintendo.SNES9X;
-using BizHawk.Emulation.Cores.Sony.PSX;
 
 using BizHawk.Emulation.DiscSystem;
 
@@ -1607,126 +1600,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SNES_ToggleBg(int layer)
-		{
-			if (layer is < 1 or > 4) return; // should this throw?
-			bool result = false;
-			switch (Emulator)
-			{
-				case BsnesCore or SubBsnesCore:
-				{
-					var settingsProvider = Emulator.ServiceProvider.GetService<ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>>();
-					var s = settingsProvider.GetSettings();
-					switch (layer)
-					{
-						case 1:
-							result = s.ShowBG1_0 = s.ShowBG1_1 = !s.ShowBG1_1;
-							break;
-						case 2:
-							result = s.ShowBG2_0 = s.ShowBG2_1 = !s.ShowBG2_1;
-							break;
-						case 3:
-							result = s.ShowBG3_0 = s.ShowBG3_1 = !s.ShowBG3_1;
-							break;
-						case 4:
-							result = s.ShowBG4_0 = s.ShowBG4_1 = !s.ShowBG4_1;
-							break;
-					}
-
-					settingsProvider.PutSettings(s);
-					break;
-				}
-				case LibsnesCore libsnes:
-				{
-					var s = libsnes.GetSettings();
-					switch (layer)
-					{
-						case 1:
-							result = s.ShowBG1_0 = s.ShowBG1_1 = !s.ShowBG1_1;
-							break;
-						case 2:
-							result = s.ShowBG2_0 = s.ShowBG2_1 = !s.ShowBG2_1;
-							break;
-						case 3:
-							result = s.ShowBG3_0 = s.ShowBG3_1 = !s.ShowBG3_1;
-							break;
-						case 4:
-							result = s.ShowBG4_0 = s.ShowBG4_1 = !s.ShowBG4_1;
-							break;
-					}
-
-					libsnes.PutSettings(s);
-					break;
-				}
-				case Snes9x snes9X:
-				{
-					var s = snes9X.GetSettings();
-					switch (layer)
-					{
-						case 1:
-							result = s.ShowBg0 = !s.ShowBg0;
-							break;
-						case 2:
-							result = s.ShowBg1 = !s.ShowBg1;
-							break;
-						case 3:
-							result = s.ShowBg2 = !s.ShowBg2;
-							break;
-						case 4:
-							result = s.ShowBg3 = !s.ShowBg3;
-							break;
-					}
-
-					snes9X.PutSettings(s);
-					break;
-				}
-				default:
-					return;
-			}
-
-			AddOnScreenMessage($"BG {layer} Layer {(result ? "On" : "Off")}");
-		}
-
-		private void SNES_ToggleObj(int layer)
-		{
-			if (layer is < 1 or > 4) return; // should this throw?
-			bool result = false;
-			if (Emulator is LibsnesCore bsnes)
-			{
-				var s = bsnes.GetSettings();
-				result = layer switch
-				{
-					1 => s.ShowOBJ_0 = !s.ShowOBJ_0,
-					2 => s.ShowOBJ_1 = !s.ShowOBJ_1,
-					3 => s.ShowOBJ_2 = !s.ShowOBJ_2,
-					4 => s.ShowOBJ_3 = !s.ShowOBJ_3,
-					_ => result
-				};
-
-				bsnes.PutSettings(s);
-				AddOnScreenMessage($"Obj {layer} Layer {(result ? "On" : "Off")}");
-			}
-			else if (Emulator is Snes9x snes9X)
-			{
-				var s = snes9X.GetSettings();
-				result = layer switch
-				{
-					1 => s.ShowSprites0 = !s.ShowSprites0,
-					2 => s.ShowSprites1 = !s.ShowSprites1,
-					3 => s.ShowSprites2 = !s.ShowSprites2,
-					4 => s.ShowSprites3 = !s.ShowSprites3,
-					_ => result
-				};
-
-				snes9X.PutSettings(s);
-				AddOnScreenMessage($"Sprite {layer} Layer {(result ? "On" : "Off")}");
-			}
-			else
-			{
-				return;
-			}
-		}
-
 		public bool RunLibretroCoreChooser()
 		{
 			string initFileName = null;
@@ -2105,95 +1978,6 @@ namespace BizHawk.Client.EmuHawk
 				bool useAsyncMode = _currentSoundProvider.CanProvideAsync && !Config.SoundThrottle;
 				_currentSoundProvider.SetSyncMode(useAsyncMode ? SyncSoundMode.Async : SyncSoundMode.Sync);
 				Sound.SetInputPin(_currentSoundProvider);
-			}
-		}
-
-		private void HandlePlatformMenus()
-		{
-			if (GenericCoreSubMenu.Visible)
-			{
-				var i = GenericCoreSubMenu.Text.IndexOf('&');
-				if (i != -1) AvailableAccelerators.Add(GenericCoreSubMenu.Text[i + 1]);
-			}
-			GenericCoreSubMenu.Visible = false;
-			TI83SubMenu.Visible = false;
-			NESSubMenu.Visible = false;
-			GBSubMenu.Visible = false;
-			A7800SubMenu.Visible = false;
-			SNESSubMenu.Visible = false;
-			PSXSubMenu.Visible = false;
-			ColecoSubMenu.Visible = false;
-			N64SubMenu.Visible = false;
-			Ares64SubMenu.Visible = false;
-			GBLSubMenu.Visible = false;
-			AppleSubMenu.Visible = false;
-			C64SubMenu.Visible = false;
-			IntvSubMenu.Visible = false;
-			zXSpectrumToolStripMenuItem.Visible = false;
-			amstradCPCToolStripMenuItem.Visible = false;
-
-			var sysID = Emulator.SystemId;
-			switch (sysID)
-			{
-				case VSystemID.Raw.NULL:
-					break;
-				case VSystemID.Raw.A78:
-					A7800SubMenu.Visible = true;
-					break;
-				case VSystemID.Raw.AmstradCPC:
-					amstradCPCToolStripMenuItem.Visible = true;
-					break;
-				case VSystemID.Raw.AppleII:
-					AppleSubMenu.Visible = true;
-					break;
-				case VSystemID.Raw.C64:
-					C64SubMenu.Visible = true;
-					break;
-				case VSystemID.Raw.Coleco:
-					ColecoSubMenu.Visible = true;
-					break;
-				case VSystemID.Raw.INTV:
-					IntvSubMenu.Visible = true;
-					break;
-				case VSystemID.Raw.N64 when Emulator is N64:
-					N64SubMenu.Visible = true;
-					break;
-				case VSystemID.Raw.N64 when Emulator is Ares64:
-					Ares64SubMenu.Visible = true;
-					break;
-				case VSystemID.Raw.NES:
-					NESSubMenu.Visible = true;
-					break;
-				case VSystemID.Raw.PSX when Emulator is Octoshock:
-					PSXSubMenu.Visible = true;
-					break;
-				case VSystemID.Raw.TI83:
-					TI83SubMenu.Visible = true;
-					LoadTIFileMenuItem.Visible = Emulator is TI83;
-					break;
-				case VSystemID.Raw.ZXSpectrum:
-					zXSpectrumToolStripMenuItem.Visible = true;
-					break;
-				case VSystemID.Raw.GBL when Emulator is GambatteLink:
-					GBLSubMenu.Visible = true;
-					break;
-				case VSystemID.Raw.GB:
-				case VSystemID.Raw.GBC:
-				case VSystemID.Raw.SGB when Emulator is Gameboy:
-					GBSubMenu.Visible = true;
-					SameBoyColorChooserMenuItem.Visible = Emulator is Sameboy { IsCGBMode: false }; // palette config only works in DMG mode
-					break;
-				case VSystemID.Raw.SNES when Emulator is LibsnesCore oldBSNES: // doesn't use "SGB" sysID, always "SNES"
-					SNESSubMenu.Text = oldBSNES.IsSGB ? "&SGB" : "&SNES";
-					SNESSubMenu.Visible = true;
-					break;
-				case var _ when Emulator is BsnesCore or SubBsnesCore:
-					SNESSubMenu.Text = $"&{sysID}";
-					SNESSubMenu.Visible = true;
-					break;
-				default:
-					DisplayDefaultCoreMenu();
-					break;
 			}
 		}
 

@@ -1,9 +1,6 @@
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -521,78 +518,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return true;
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void GB_ToggleGambatteSyncSetting(
-			string name,
-			Func<Gameboy.GambatteSyncSettings, bool> getter,
-			Action<Gameboy.GambatteSyncSettings, bool> setter)
-		{
-			if (Emulator is not Gameboy gb) return;
-			if (gb.DeterministicEmulation)
-			{
-				AddOnScreenMessage($"{name} cannot be toggled during movie recording.");
-				return;
-			}
-			var ss = gb.GetSyncSettings();
-			var newState = !getter(ss);
-			setter(ss, newState);
-			gb.PutSyncSettings(ss);
-			AddOnScreenMessage($"{name} toggled {(newState ? "on" : "off")}");
-		}
-
-		private void GB_ToggleBackgroundLayer()
-			=> GB_ToggleGambatteSyncSetting(
-				"BG",
-				static ss => ss.DisplayBG,
-				static (ss, newState) => ss.DisplayBG = newState);
-
-		private void GB_ToggleObjectLayer()
-			=> GB_ToggleGambatteSyncSetting(
-				"OBJ",
-				static ss => ss.DisplayOBJ,
-				static (ss, newState) => ss.DisplayOBJ = newState);
-
-		private void GB_ToggleWindowLayer()
-			=> GB_ToggleGambatteSyncSetting(
-				"WIN",
-				static ss => ss.DisplayWindow,
-				static (ss, newState) => ss.DisplayWindow = newState);
-
-		private void NDS_IncrementScreenRotate()
-		{
-			if (Emulator is not NDS ds) return;
-
-			var settings = ds.GetSettings();
-			var next = settings.ScreenRotation switch
-			{
-				NDS.ScreenRotationKind.Rotate0 => NDS.ScreenRotationKind.Rotate90,
-				NDS.ScreenRotationKind.Rotate90 => NDS.ScreenRotationKind.Rotate180,
-				NDS.ScreenRotationKind.Rotate180 => NDS.ScreenRotationKind.Rotate270,
-				NDS.ScreenRotationKind.Rotate270 => NDS.ScreenRotationKind.Rotate0,
-				_ => settings.ScreenRotation
-			};
-			settings.ScreenRotation = next;
-			ds.PutSettings(settings);
-			AddOnScreenMessage($"Screen rotation to {next}");
-			FrameBufferResized();
-		}
-
-		private void NDS_IncrementLayout(int delta)
-		{
-			if (Emulator is not NDS ds) return;
-
-			var settings = ds.GetSettings();
-			var t = typeof(NDS.ScreenLayoutKind);
-			//TODO WTF is this --yoshi
-			var next = (NDS.ScreenLayoutKind) Enum.Parse(t, ((int) settings.ScreenLayout + delta).ToString());
-			if (!t.IsEnumDefined(next)) return;
-
-			settings.ScreenLayout = next;
-			ds.PutSettings(settings);
-			AddOnScreenMessage($"Screen layout to {next}");
-			FrameBufferResized();
 		}
 
 		// Determines if the value is a hotkey  that would be handled outside of the CheckHotkey method
