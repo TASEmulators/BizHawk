@@ -1288,19 +1288,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void NesPpuViewerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<NesPPU>();
-		}
+			=> Tools.Load<NesPPU>();
 
 		private void NesNametableViewerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<NESNameTableViewer>();
-		}
+			=> Tools.Load<NESNameTableViewer>();
 
 		private void MusicRipperMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<NESMusicRipper>();
-		}
+			=> Tools.Load<NESMusicRipper>();
 
 		private DialogResult OpenNesHawkGraphicsSettingsDialog(ISettingsAdapter settable)
 		{
@@ -1315,20 +1309,16 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void NesGraphicSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				NES => OpenNesHawkGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<NES>()),
 				SubNESHawk => OpenNesHawkGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>()),
 				QuickNES => OpenQuickNesGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<QuickNES>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private void NesSoundChannelsMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<NESSoundConfig>();
-		}
+			=> Tools.Load<NESSoundConfig>();
 
 		private DialogResult OpenNesHawkVSSettingsDialog(ISettingsAdapter settable)
 		{
@@ -1337,14 +1327,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void VsSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				NES { IsVS: true } => OpenNesHawkVSSettingsDialog(GetSettingsAdapterForLoadedCore<NES>()),
 				SubNESHawk { IsVs: true } => OpenNesHawkVSSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private void FdsEjectDiskMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1389,15 +1377,13 @@ namespace BizHawk.Client.EmuHawk
 				ignoreSettings: true);
 
 		private void NesControllerSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				NES => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<NES>()),
 				SubNESHawk => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>()),
 				QuickNES => OpenQuickNesGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<QuickNES>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private DialogResult OpenNesHawkAdvancedSettingsDialog(ISettingsAdapter settable, bool hasMapperProperties)
 		{
@@ -1406,24 +1392,18 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MovieSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				NES nesHawk => OpenNesHawkAdvancedSettingsDialog(GetSettingsAdapterForLoadedCore<NES>(), nesHawk.HasMapperProperties),
 				SubNESHawk subNESHawk => OpenNesHawkAdvancedSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>(), subNESHawk.HasMapperProperties),
 				_ => DialogResult.None
 			};
-		}
 
 		private void BarcodeReaderMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<BarcodeEntry>();
-		}
+			=> Tools.Load<BarcodeEntry>();
 
 		private void Ti83KeypadMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<TI83KeyPad>();
-		}
+			=> Tools.Load<TI83KeyPad>();
 
 		private void Ti83LoadTIFileMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1436,16 +1416,21 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				ti83.LinkPort.SendFileToCalc(File.OpenRead(result), true);
+				return;
 			}
 			catch (IOException ex)
 			{
-				var message =
-					$"Invalid file format. Reason: {ex.Message} \nForce transfer? This may cause the calculator to crash.";
-				if (this.ShowMessageBox3(owner: null, message, "Upload Failed", EMsgBoxIcon.Question) == true)
+				if (this.ShowMessageBox3(
+					owner: null,
+					icon: EMsgBoxIcon.Question,
+					caption: "Upload Failed",
+					text: $"Invalid file format. Reason: {ex.Message} \nForce transfer? This may cause the calculator to crash.")
+						is not true)
 				{
-					ti83.LinkPort.SendFileToCalc(File.OpenRead(result), false);
+					return;
 				}
 			}
+			ti83.LinkPort.SendFileToCalc(File.OpenRead(result), false);
 		}
 
 		private DialogResult OpenTI83PaletteSettingsDialog(ISettingsAdapter settable)
@@ -1466,11 +1451,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void A7800SubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			A7800ControllerSettingsMenuItem.Enabled
-				= A7800FilterSettingsMenuItem.Enabled
+			=> A7800ControllerSettingsMenuItem.Enabled = A7800FilterSettingsMenuItem.Enabled
 				= MovieSession.Movie.NotActive();
-		}
 
 		private DialogResult OpenA7800HawkGamepadSettingsDialog(ISettingsAdapter settable)
 		{
@@ -1479,13 +1461,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void A7800ControllerSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				A7800Hawk => OpenA7800HawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<A7800Hawk>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private DialogResult OpenA7800HawkFilterSettingsDialog(ISettingsAdapter settable)
 		{
@@ -1494,13 +1474,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void A7800FilterSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				A7800Hawk => OpenA7800HawkFilterSettingsDialog(GetSettingsAdapterForLoadedCore<A7800Hawk>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private DialogResult OpenGambatteSettingsDialog(ISettingsAdapter settable)
 			=> GBPrefs.DoGBPrefsDialog(Config, this, Game, MovieSession, settable);
@@ -1515,8 +1493,7 @@ namespace BizHawk.Client.EmuHawk
 			=> OpenGenericCoreConfigFor<SubGBHawk>(CoreNames.SubGbHawk + " Settings");
 
 		private void GbCoreSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				Gameboy => OpenGambatteSettingsDialog(GetSettingsAdapterForLoadedCore<Gameboy>()),
 				GBHawk => OpenGBHawkSettingsDialog(),
@@ -1524,7 +1501,6 @@ namespace BizHawk.Client.EmuHawk
 				SubGBHawk => OpenSubGBHawkSettingsDialog(),
 				_ => DialogResult.None
 			};
-		}
 
 		private DialogResult OpenSameBoyPaletteSettingsDialog(ISettingsAdapter settable)
 		{
@@ -1533,28 +1509,20 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void SameboyColorChooserMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				Sameboy => OpenSameBoyPaletteSettingsDialog(GetSettingsAdapterForLoadedCore<Sameboy>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private void GbGpuViewerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<GbGpuView>();
-		}
+			=> Tools.Load<GbGpuView>();
 
 		private void GbPrinterViewerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<GBPrinterView>();
-		}
+			=> Tools.Load<GBPrinterView>();
 
 		private void PsxSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			PSXControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
-		}
+			=> PSXControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
 
 		private DialogResult OpenOctoshockGamepadSettingsDialog(ISettingsAdapter settable)
 		{
@@ -1563,13 +1531,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void PsxControllerSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				Octoshock => OpenOctoshockGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<Octoshock>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private DialogResult OpenOctoshockSettingsDialog(ISettingsAdapter settable, OctoshockDll.eVidStandard vidStandard, Size vidSize)
 			=> PSXOptions.DoSettingsDialog(Config, this, settable, vidStandard, vidSize);
@@ -1585,9 +1551,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void PsxDiscControlsMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<VirtualpadTool>().ScrollToPadSchema("Console");
-		}
+			=> Tools.Load<VirtualpadTool>().ScrollToPadSchema("Console");
 
 		private void PsxHashDiscsMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1597,9 +1561,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void SnesSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			SNESControllerConfigurationMenuItem.Enabled = MovieSession.Movie.NotActive();
-		}
+			=> SNESControllerConfigurationMenuItem.Enabled = MovieSession.Movie.NotActive();
 
 		private DialogResult OpenOldBSNESGamepadSettingsDialog(ISettingsAdapter settable)
 		{
@@ -1614,20 +1576,16 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				LibsnesCore => OpenOldBSNESGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<LibsnesCore>()),
 				BsnesCore => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<BsnesCore>()),
 				SubBsnesCore => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<SubBsnesCore>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<SNESGraphicsDebugger>();
-		}
+			=> Tools.Load<SNESGraphicsDebugger>();
 
 		private DialogResult OpenOldBSNESSettingsDialog(ISettingsAdapter settable)
 			=> SNESOptions.DoSettingsDialog(this, settable);
@@ -1636,15 +1594,13 @@ namespace BizHawk.Client.EmuHawk
 			=> BSNESOptions.DoSettingsDialog(this, settable);
 
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				LibsnesCore => OpenOldBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<LibsnesCore>()),
 				BsnesCore => OpenBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<BsnesCore>()),
 				SubBsnesCore => OpenBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<SubBsnesCore>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private void ColecoSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1686,28 +1642,23 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ColecoControllerSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				ColecoVision => OpenColecoHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<ColecoVision>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private void N64SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			N64PluginSettingsMenuItem.Enabled =
-				N64ControllerSettingsMenuItem.Enabled =
-				N64ExpansionSlotMenuItem.Enabled =
-				MovieSession.Movie.NotActive();
-
+			N64PluginSettingsMenuItem.Enabled = N64ControllerSettingsMenuItem.Enabled
+				= N64ExpansionSlotMenuItem.Enabled
+				= MovieSession.Movie.NotActive();
 			N64CircularAnalogRangeMenuItem.Checked = Config.N64UseCircularAnalogConstraint;
-
-			var s = ((N64)Emulator).GetSettings();
+			var mupen = (N64) Emulator;
+			var s = mupen.GetSettings();
 			MupenStyleLagMenuItem.Checked = s.UseMupenStyleLag;
-
-			N64ExpansionSlotMenuItem.Checked = ((N64)Emulator).UsingExpansionSlot;
-			N64ExpansionSlotMenuItem.Enabled = !((N64)Emulator).IsOverridingUserExpansionSlotSetting;
+			N64ExpansionSlotMenuItem.Checked = mupen.UsingExpansionSlot;
+			N64ExpansionSlotMenuItem.Enabled = !mupen.IsOverridingUserExpansionSlotSetting;
 		}
 
 		private DialogResult OpenMupen64PlusGraphicsSettingsDialog(ISettingsAdapter settable)
@@ -1732,13 +1683,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void N64ControllerSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				N64 => OpenMupen64PlusGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<N64>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private void N64CircularAnalogRangeMenuItem_Click(object sender, EventArgs e)
 			=> Config.N64UseCircularAnalogConstraint = !Config.N64UseCircularAnalogConstraint;
@@ -1777,13 +1726,11 @@ namespace BizHawk.Client.EmuHawk
 			=> GBLPrefs.DoGBLPrefsDialog(Config, this, Game, MovieSession, settable);
 
 		private void GblSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				GambatteLink => OpenGambatteLinkSettingsDialog(GetSettingsAdapterForLoadedCore<GambatteLink>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private DialogResult OpenGenericCoreConfigFor<T>(string title)
 			where T : IEmulator
@@ -1799,13 +1746,11 @@ namespace BizHawk.Client.EmuHawk
 			=> OpenGenericCoreConfigFor<AppleII>(CoreNames.Virtu + " Settings");
 
 		private void AppleIISettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				AppleII => OpenVirtuSettingsDialog(),
 				_ => DialogResult.None
 			};
-		}
 
 		private void AppleSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1869,13 +1814,11 @@ namespace BizHawk.Client.EmuHawk
 			=> OpenGenericCoreConfigFor<C64>(CoreNames.C64Hawk + " Settings");
 
 		private void C64SettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				C64 => OpenC64HawkSettingsDialog(),
 				_ => DialogResult.None
 			};
-		}
 
 		private void IntVSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1889,13 +1832,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void IntVControllerSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				Intellivision => OpenIntelliHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<Intellivision>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private DialogResult OpenZXHawkGamepadSettingsDialog(ISettingsAdapter settable)
 		{
@@ -1904,13 +1845,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				ZXSpectrum => OpenZXHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private DialogResult OpenZXHawkSyncSettingsDialog(ISettingsAdapter settable)
 		{
@@ -1919,13 +1858,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ZXSpectrumCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				ZXSpectrum => OpenZXHawkSyncSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private DialogResult OpenZXHawkSettingsDialog(ISettingsAdapter settable)
 		{
@@ -1934,13 +1871,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ZXSpectrumNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				ZXSpectrum => OpenZXHawkSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private DialogResult OpenZXHawkAudioSettingsDialog(ISettingsAdapter settable)
 		{
@@ -1949,13 +1884,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ZXSpectrumAudioSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				ZXSpectrum => OpenZXHawkAudioSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private void ZXSpectrumMediaMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
@@ -2029,6 +1962,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception)
 			{
+				// ignored
 			}
 		}
 
@@ -2039,13 +1973,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void AmstradCpcCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				AmstradCPC => OpenCPCHawkSyncSettingsDialog(GetSettingsAdapterForLoadedCore<AmstradCPC>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private DialogResult OpenCPCHawkAudioSettingsDialog(ISettingsAdapter settable)
 		{
@@ -2054,13 +1986,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void AmstradCpcAudioSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				AmstradCPC => OpenCPCHawkAudioSettingsDialog(GetSettingsAdapterForLoadedCore<AmstradCPC>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private void AmstradCpcMediaMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
@@ -2124,13 +2054,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void AmstradCpcNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
+			=> _ = Emulator switch
 			{
 				AmstradCPC => OpenCPCHawkSettingsDialog(GetSettingsAdapterForLoadedCore<AmstradCPC>()),
 				_ => DialogResult.None
 			};
-		}
 
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{

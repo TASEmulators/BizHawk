@@ -1609,11 +1609,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNES_ToggleBg(int layer)
 		{
-			if (Emulator is not (BsnesCore or SubBsnesCore or LibsnesCore or Snes9x) || !1.RangeTo(4).Contains(layer))
-			{
-				return;
-			}
-
+			if (layer is < 1 or > 4) return; // should this throw?
 			bool result = false;
 			switch (Emulator)
 			{
@@ -1684,6 +1680,8 @@ namespace BizHawk.Client.EmuHawk
 					snes9X.PutSettings(s);
 					break;
 				}
+				default:
+					return;
 			}
 
 			AddOnScreenMessage($"BG {layer} Layer {(result ? "On" : "Off")}");
@@ -1691,11 +1689,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNES_ToggleObj(int layer)
 		{
-			if (!(Emulator is LibsnesCore || Emulator is Snes9x) || !1.RangeTo(4).Contains(layer))
-			{
-				return;
-			}
-
+			if (layer is < 1 or > 4) return; // should this throw?
 			bool result = false;
 			if (Emulator is LibsnesCore bsnes)
 			{
@@ -1726,6 +1720,10 @@ namespace BizHawk.Client.EmuHawk
 
 				snes9X.PutSettings(s);
 				AddOnScreenMessage($"Sprite {layer} Layer {(result ? "On" : "Off")}");
+			}
+			else
+			{
+				return;
 			}
 		}
 
