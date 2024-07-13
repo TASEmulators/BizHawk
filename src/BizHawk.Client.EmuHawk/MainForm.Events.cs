@@ -89,6 +89,10 @@ namespace BizHawk.Client.EmuHawk
 			AppendAllFilesEntry = false,
 		};
 
+		/// <remarks>should this not be a separate sysID? --yoshi</remarks>
+		private bool LoadedCoreIsNesHawkInVSMode
+			=> Emulator is NES { IsVS: true } or SubNESHawk { IsVs: true };
+
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveStateSubMenu.Enabled =
@@ -1254,12 +1258,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var boardName = Emulator.HasBoardInfo() ? Emulator.AsBoardInfo().BoardName : null;
 			FDSControlsMenuItem.Enabled = boardName == "FDS";
-
-			VSControlsMenuItem.Enabled =
-			VSSettingsMenuItem.Enabled =
-				(Emulator is NES nes && nes.IsVS)
-				|| (Emulator is SubNESHawk sub && sub.IsVs);
-
+			VSControlsMenuItem.Enabled = VSSettingsMenuItem.Enabled = LoadedCoreIsNesHawkInVSMode;
 			NESSoundChannelsMenuItem.Enabled = Tools.IsAvailable<NESSoundConfig>();
 			MovieSettingsMenuItem.Enabled = Emulator is NES or SubNESHawk && MovieSession.Movie.NotActive();
 
@@ -1358,8 +1357,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VsInsertCoinP1MenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES nes && nes.IsVS
-			|| Emulator is SubNESHawk sub && sub.IsVs)
+			if (LoadedCoreIsNesHawkInVSMode)
 			{
 				if (!MovieSession.Movie.IsPlaying())
 				{
@@ -1371,8 +1369,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VsInsertCoinP2MenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES nes && nes.IsVS
-				|| Emulator is SubNESHawk sub && sub.IsVs)
+			if (LoadedCoreIsNesHawkInVSMode)
 			{
 				if (!MovieSession.Movie.IsPlaying())
 				{
@@ -1384,8 +1381,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VsServiceSwitchMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES nes && nes.IsVS
-				|| Emulator is SubNESHawk sub && sub.IsVs)
+			if (LoadedCoreIsNesHawkInVSMode)
 			{
 				if (!MovieSession.Movie.IsPlaying())
 				{
