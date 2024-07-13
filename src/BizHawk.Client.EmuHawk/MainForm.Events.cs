@@ -1348,47 +1348,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FdsEjectDiskMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!MovieSession.Movie.IsPlaying())
-			{
-				InputManager.ClickyVirtualPadController.Click("FDS Eject");
-				AddOnScreenMessage("FDS disk ejected.");
-			}
+			if (MovieSession.Movie.IsPlaying()) return;
+			InputManager.ClickyVirtualPadController.Click("FDS Eject");
+			AddOnScreenMessage("FDS disk ejected.");
 		}
 
 		private void VsInsertCoinP1MenuItem_Click(object sender, EventArgs e)
 		{
-			if (LoadedCoreIsNesHawkInVSMode)
-			{
-				if (!MovieSession.Movie.IsPlaying())
-				{
-					InputManager.ClickyVirtualPadController.Click("Insert Coin P1");
-					AddOnScreenMessage("P1 Coin Inserted");
-				}
-			}
+			if (MovieSession.Movie.IsPlaying() || !LoadedCoreIsNesHawkInVSMode) return;
+			InputManager.ClickyVirtualPadController.Click("Insert Coin P1");
+			AddOnScreenMessage("P1 Coin Inserted");
 		}
 
 		private void VsInsertCoinP2MenuItem_Click(object sender, EventArgs e)
 		{
-			if (LoadedCoreIsNesHawkInVSMode)
-			{
-				if (!MovieSession.Movie.IsPlaying())
-				{
-					InputManager.ClickyVirtualPadController.Click("Insert Coin P2");
-					AddOnScreenMessage("P2 Coin Inserted");
-				}
-			}
+			if (MovieSession.Movie.IsPlaying() || !LoadedCoreIsNesHawkInVSMode) return;
+			InputManager.ClickyVirtualPadController.Click("Insert Coin P2");
+			AddOnScreenMessage("P2 Coin Inserted");
 		}
 
 		private void VsServiceSwitchMenuItem_Click(object sender, EventArgs e)
 		{
-			if (LoadedCoreIsNesHawkInVSMode)
-			{
-				if (!MovieSession.Movie.IsPlaying())
-				{
-					InputManager.ClickyVirtualPadController.Click("Service Switch");
-					AddOnScreenMessage("Service Switch Pressed");
-				}
-			}
+			if (MovieSession.Movie.IsPlaying() || !LoadedCoreIsNesHawkInVSMode) return;
+			InputManager.ClickyVirtualPadController.Click("Service Switch");
+			AddOnScreenMessage("Service Switch Pressed");
 		}
 
 		private DialogResult OpenNesHawkGamepadSettingsDialog(ISettingsAdapter settable)
@@ -1665,13 +1648,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColecoSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Emulator is ColecoVision coleco)
-			{
-				var ss = coleco.GetSyncSettings();
-				ColecoSkipBiosMenuItem.Checked = ss.SkipBiosIntro;
-				ColecoUseSGMMenuItem.Checked = ss.UseSGM;
-				ColecoControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
-			}
+			if (Emulator is not ColecoVision coleco) return;
+			var ss = coleco.GetSyncSettings();
+			ColecoSkipBiosMenuItem.Checked = ss.SkipBiosIntro;
+			ColecoUseSGMMenuItem.Checked = ss.UseSGM;
+			ColecoControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
 		}
 
 		private void ColecoHawkSetSkipBIOSIntro(bool newValue, ISettingsAdapter settable)
@@ -1781,11 +1762,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64ExpansionSlotMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is N64)
-			{
-				Mupen64PlusSetUseExpansionSlot(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<N64>());
-				FlagNeedsReboot();
-			}
+			if (Emulator is not N64) return;
+			Mupen64PlusSetUseExpansionSlot(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<N64>());
+			FlagNeedsReboot();
 		}
 
 		private void Ares64SubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1830,69 +1809,59 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AppleSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Emulator is AppleII a)
-			{
-				AppleDisksSubMenu.Enabled = a.DiskCount > 1;
-			}
+			if (Emulator is not AppleII a) return;
+			AppleDisksSubMenu.Enabled = a.DiskCount > 1;
 		}
 
 		private void AppleDisksSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AppleDisksSubMenu.DropDownItems.Clear();
-
-			if (Emulator is AppleII appleII)
+			if (Emulator is not AppleII appleII) return;
+			for (int i = 0; i < appleII.DiskCount; i++)
 			{
-				for (int i = 0; i < appleII.DiskCount; i++)
+				var menuItem = new ToolStripMenuItem
 				{
-					var menuItem = new ToolStripMenuItem
-					{
-						Name = $"Disk{i + 1}",
-						Text = $"Disk{i + 1}",
-						Checked = appleII.CurrentDisk == i
-					};
+					Name = $"Disk{i + 1}",
+					Text = $"Disk{i + 1}",
+					Checked = appleII.CurrentDisk == i
+				};
 
-					int dummy = i;
-					menuItem.Click += (o, ev) =>
-					{
-						appleII.SetDisk(dummy);
-					};
+				int dummy = i;
+				menuItem.Click += (o, ev) =>
+				{
+					appleII.SetDisk(dummy);
+				};
 
-					AppleDisksSubMenu.DropDownItems.Add(menuItem);
-				}
+				AppleDisksSubMenu.DropDownItems.Add(menuItem);
 			}
 		}
 
 		private void C64SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Emulator is C64 c64)
-			{
-				C64DisksSubMenu.Enabled = c64.DiskCount > 1;
-			}
+			if (Emulator is not C64 c64) return;
+			C64DisksSubMenu.Enabled = c64.DiskCount > 1;
 		}
 
 		private void C64DisksSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			C64DisksSubMenu.DropDownItems.Clear();
-
-			if (Emulator is C64 c64)
+			if (Emulator is not C64 c64) return;
+			for (int i = 0; i < c64.DiskCount; i++)
 			{
-				for (int i = 0; i < c64.DiskCount; i++)
+				var menuItem = new ToolStripMenuItem
 				{
-					var menuItem = new ToolStripMenuItem
-					{
-						Name = $"Disk{i + 1}",
-						Text = $"Disk{i + 1}",
-						Checked = c64.CurrentDisk == i
-					};
+					Name = $"Disk{i + 1}",
+					Text = $"Disk{i + 1}",
+					Checked = c64.CurrentDisk == i
+				};
 
-					int dummy = i;
-					menuItem.Click += (o, ev) =>
-					{
-						c64.SetDisk(dummy);
-					};
+				int dummy = i;
+				menuItem.Click += (o, ev) =>
+				{
+					c64.SetDisk(dummy);
+				};
 
-					C64DisksSubMenu.DropDownItems.Add(menuItem);
-				}
+				C64DisksSubMenu.DropDownItems.Add(menuItem);
 			}
 		}
 
@@ -1990,78 +1959,66 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ZXSpectrumMediaMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Emulator is ZXSpectrum speccy)
-			{
-				ZXSpectrumTapesSubMenu.Enabled = speccy._tapeInfo.Count > 0;
-				ZXSpectrumDisksSubMenu.Enabled = speccy._diskInfo.Count > 0;
-			}
+			if (Emulator is not ZXSpectrum speccy) return;
+			ZXSpectrumTapesSubMenu.Enabled = speccy._tapeInfo.Count > 0;
+			ZXSpectrumDisksSubMenu.Enabled = speccy._diskInfo.Count > 0;
 		}
 
 		private void ZXSpectrumTapesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ZXSpectrumTapesSubMenu.DropDownItems.Clear();
-
+			if (Emulator is not ZXSpectrum speccy) return;
 			List<ToolStripItem> items = new();
+			var tapeMediaIndex = speccy._machine.TapeMediaIndex;
 
-			if (Emulator is ZXSpectrum speccy)
+			for (int i = 0; i < speccy._tapeInfo.Count; i++)
 			{
-				var tapeMediaIndex = speccy._machine.TapeMediaIndex;
+				string name = speccy._tapeInfo[i].Name;
 
-				for (int i = 0; i < speccy._tapeInfo.Count; i++)
+				var menuItem = new ToolStripMenuItem
 				{
-					string name = speccy._tapeInfo[i].Name;
+					Name = $"{i}_{name}",
+					Text = $"{i}: {name}",
+					Checked = tapeMediaIndex == i
+				};
 
-					var menuItem = new ToolStripMenuItem
-					{
-						Name = $"{i}_{name}",
-						Text = $"{i}: {name}",
-						Checked = tapeMediaIndex == i
-					};
+				int dummy = i;
+				menuItem.Click += (o, ev) =>
+				{
+					speccy._machine.TapeMediaIndex = dummy;
+				};
 
-					int dummy = i;
-					menuItem.Click += (o, ev) =>
-					{
-						speccy._machine.TapeMediaIndex = dummy;
-					};
-
-					items.Add(menuItem);
-				}
+				items.Add(menuItem);
 			}
-
 			ZXSpectrumTapesSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
 		private void ZXSpectrumDisksSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ZXSpectrumDisksSubMenu.DropDownItems.Clear();
-
+			if (Emulator is not ZXSpectrum speccy) return;
 			List<ToolStripItem> items = new();
+			var diskMediaIndex = speccy._machine.DiskMediaIndex;
 
-			if (Emulator is ZXSpectrum speccy)
+			for (int i = 0; i < speccy._diskInfo.Count; i++)
 			{
-				var diskMediaIndex = speccy._machine.DiskMediaIndex;
+				string name = speccy._diskInfo[i].Name;
 
-				for (int i = 0; i < speccy._diskInfo.Count; i++)
+				var menuItem = new ToolStripMenuItem
 				{
-					string name = speccy._diskInfo[i].Name;
+					Name = $"{i}_{name}",
+					Text = $"{i}: {name}",
+					Checked = diskMediaIndex == i
+				};
 
-					var menuItem = new ToolStripMenuItem
-					{
-						Name = $"{i}_{name}",
-						Text = $"{i}: {name}",
-						Checked = diskMediaIndex == i
-					};
+				int dummy = i;
+				menuItem.Click += (o, ev) =>
+				{
+					speccy._machine.DiskMediaIndex = dummy;
+				};
 
-					int dummy = i;
-					menuItem.Click += (o, ev) =>
-					{
-						speccy._machine.DiskMediaIndex = dummy;
-					};
-
-					items.Add(menuItem);
-				}
+				items.Add(menuItem);
 			}
-
 			ZXSpectrumDisksSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
@@ -2129,68 +2086,58 @@ namespace BizHawk.Client.EmuHawk
 		private void AmstradCpcTapesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AmstradCPCTapesSubMenu.DropDownItems.Clear();
-
+			if (Emulator is not AmstradCPC ams) return;
 			List<ToolStripItem> items = new();
+			var tapeMediaIndex = ams._machine.TapeMediaIndex;
 
-			if (Emulator is AmstradCPC ams)
+			for (int i = 0; i < ams._tapeInfo.Count; i++)
 			{
-				var tapeMediaIndex = ams._machine.TapeMediaIndex;
+				string name = ams._tapeInfo[i].Name;
 
-				for (int i = 0; i < ams._tapeInfo.Count; i++)
+				var menuItem = new ToolStripMenuItem
 				{
-					string name = ams._tapeInfo[i].Name;
+					Name = $"{i}_{name}",
+					Text = $"{i}: {name}",
+					Checked = tapeMediaIndex == i
+				};
 
-					var menuItem = new ToolStripMenuItem
-					{
-						Name = $"{i}_{name}",
-						Text = $"{i}: {name}",
-						Checked = tapeMediaIndex == i
-					};
+				int dummy = i;
+				menuItem.Click += (o, ev) =>
+				{
+					ams._machine.TapeMediaIndex = dummy;
+				};
 
-					int dummy = i;
-					menuItem.Click += (o, ev) =>
-					{
-						ams._machine.TapeMediaIndex = dummy;
-					};
-
-					items.Add(menuItem);
-				}
+				items.Add(menuItem);
 			}
-
 			AmstradCPCTapesSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
 		private void AmstradCpcDisksSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AmstradCPCDisksSubMenu.DropDownItems.Clear();
-
+			if (Emulator is not AmstradCPC ams) return;
 			List<ToolStripItem> items = new();
+			var diskMediaIndex = ams._machine.DiskMediaIndex;
 
-			if (Emulator is AmstradCPC ams)
+			for (int i = 0; i < ams._diskInfo.Count; i++)
 			{
-				var diskMediaIndex = ams._machine.DiskMediaIndex;
+				string name = ams._diskInfo[i].Name;
 
-				for (int i = 0; i < ams._diskInfo.Count; i++)
+				var menuItem = new ToolStripMenuItem
 				{
-					string name = ams._diskInfo[i].Name;
+					Name = $"{i}_{name}",
+					Text = $"{i}: {name}",
+					Checked = diskMediaIndex == i
+				};
 
-					var menuItem = new ToolStripMenuItem
-					{
-						Name = $"{i}_{name}",
-						Text = $"{i}: {name}",
-						Checked = diskMediaIndex == i
-					};
+				int dummy = i;
+				menuItem.Click += (o, ev) =>
+				{
+					ams._machine.DiskMediaIndex = dummy;
+				};
 
-					int dummy = i;
-					menuItem.Click += (o, ev) =>
-					{
-						ams._machine.DiskMediaIndex = dummy;
-					};
-
-					items.Add(menuItem);
-				}
+				items.Add(menuItem);
 			}
-
 			AmstradCPCDisksSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
