@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -10,25 +11,23 @@ public partial class Mupen64 : ISettable<object, Mupen64.SyncSettings>
 
 	public enum CoreType
 	{
-		[Description("Pure Interpreter")]
+		[Display(Name = "Pure Interpreter")]
 		PureInterpreter = 0,
-
-		[Description("Cached Interpreter")]
+		[Display(Name = "Cached Interpreter")]
 		CachedInterpreter = 1,
-
-		[Description("Dynamic Recompiler (DynaRec)")]
+		[Display(Name = "Dynamic Recompiler (DynaRec)")]
 		Dynarec = 2,
 	}
 
 	public enum N64ControllerPakType
 	{
-		[Description("None")]
+		[Display(Name = "None")]
 		NoPak,
-		[Description("Memory Card")]
+		[Display(Name = "Memory Card")]
 		MemoryCard,
-		[Description("Rumble Pak")]
+		[Display(Name = "Rumble Pak")]
 		RumblePak,
-		[Description("Transfer Pak")]
+		[Display(Name = "Transfer Pak")]
 		TransferPak,
 	}
 

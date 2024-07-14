@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Mupen64;
 
 public partial class Mupen64 : ISaveRam
 {
-	public byte[] CloneSaveRam()
+	public byte[] CloneSaveRam(bool clearDirty)
 	{
 		int saveRamSize = 0;
 		Mupen64Api.GetSaveRamSize(ref saveRamSize);
