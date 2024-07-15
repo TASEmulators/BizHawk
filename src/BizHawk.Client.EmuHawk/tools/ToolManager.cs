@@ -662,8 +662,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Close()
 		{
-			_tools.ForEach(t => t.Close());
+			var toolsCopy = _tools.ToArray();
 			_tools.Clear();
+			foreach (var t in toolsCopy)
+			{
+				try
+				{
+					t.Close();
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine($"caught while calling Form.Close on tool: {e}");
+				}
+			}
 		}
 
 		/// <summary>
