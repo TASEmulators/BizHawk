@@ -4,9 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-#if NETCOREAPP3_0_OR_GREATER
 using System.Runtime.CompilerServices;
-#endif
 using System.Threading;
 
 namespace BizHawk.Common
@@ -378,6 +376,31 @@ namespace BizHawk.Common
 			catch
 			{
 				return false; // this will be hit in the unlikely event that something else wrote to the backup path after we checked it was okay
+			}
+		}
+
+		/// <summary>creates span over <paramref name="length"/> octets starting at <paramref name="ptr"/></summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Span<byte> UnsafeSpanFromPointer(IntPtr ptr, int length)
+		{
+			unsafe
+			{
+				return new(pointer: ptr.ToPointer(), length: length);
+			}
+		}
+
+		/// <summary>
+		/// creates span over <paramref name="count"/><c> * sizeof(</c><typeparamref name="T"/><c>)</c> octets
+		/// starting at <paramref name="ptr"/>
+		/// </summary>
+		/// <remarks>uses native endianness</remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Span<T> UnsafeSpanFromPointer<T>(IntPtr ptr, int count)
+			where T : unmanaged
+		{
+			unsafe
+			{
+				return new(pointer: ptr.ToPointer(), length: count * sizeof(T));
 			}
 		}
 

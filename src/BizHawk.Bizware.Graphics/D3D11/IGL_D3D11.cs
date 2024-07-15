@@ -269,7 +269,7 @@ namespace BizHawk.Bizware.Graphics
 			Context.OMSetRenderTargets(_controlSwapChain.RTV);
 		}
 
-		private unsafe void UpdateConstantBuffers()
+		private void UpdateConstantBuffers()
 		{
 			for (var i = 0; i < ID3D11DeviceContext.CommonShaderConstantBufferSlotCount; i++)
 			{
@@ -282,7 +282,8 @@ namespace BizHawk.Bizware.Graphics
 				if (pb.VSBufferDirty)
 				{
 					var vsCb = Context.Map(CurPipeline.VSConstantBuffers[i], MapMode.WriteDiscard);
-					Buffer.MemoryCopy((void*)pb.VSPendingBuffer, (void*)vsCb.DataPointer, pb.VSBufferSize, pb.VSBufferSize);
+					Util.UnsafeSpanFromPointer(ptr: pb.VSPendingBuffer, length: pb.VSBufferSize)
+						.CopyTo(Util.UnsafeSpanFromPointer(ptr: vsCb.DataPointer, length: pb.VSBufferSize));
 					Context.Unmap(CurPipeline.VSConstantBuffers[i]);
 					pb.VSBufferDirty = false;
 				}
@@ -290,7 +291,8 @@ namespace BizHawk.Bizware.Graphics
 				if (pb.PSBufferDirty)
 				{
 					var psCb = Context.Map(CurPipeline.PSConstantBuffers[i], MapMode.WriteDiscard);
-					Buffer.MemoryCopy((void*)pb.PSPendingBuffer, (void*)psCb.DataPointer, pb.PSBufferSize, pb.PSBufferSize);
+					Util.UnsafeSpanFromPointer(ptr: pb.PSPendingBuffer, length: pb.PSBufferSize)
+						.CopyTo(Util.UnsafeSpanFromPointer(ptr: psCb.DataPointer, length: pb.PSBufferSize));
 					Context.Unmap(CurPipeline.PSConstantBuffers[i]);
 					pb.PSBufferDirty = false;
 				}

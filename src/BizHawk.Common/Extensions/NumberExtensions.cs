@@ -121,6 +121,17 @@ namespace BizHawk.Common.NumberExtensions
 			return val;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static IntPtr Plus(this IntPtr p, int offset)
+			=> p + offset;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static IntPtr Plus(this IntPtr p, uint offset)
+		{
+			var half = unchecked((int) offset >> 1);
+			return p + half + unchecked((int) (offset - half));
+		}
+
 		public static void RotateRightU8(ref byte b, int shift)
 		{
 			byte temp = b;

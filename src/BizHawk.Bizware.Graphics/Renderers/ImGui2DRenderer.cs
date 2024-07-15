@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 
 using ImGuiNET;
 
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 
 using SDGraphics = System.Drawing.Graphics;
@@ -91,10 +92,10 @@ namespace BizHawk.Bizware.Graphics
 			_imGuiDrawList = IntPtr.Zero;
 		}
 
-		private unsafe void ClearStringOutput()
+		private void ClearStringOutput()
 		{
 			var bmpData = _stringOutput.LockBits(new(0, 0, _stringOutput.Width, _stringOutput.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-			new Span<byte>((void*)bmpData.Scan0, bmpData.Stride * bmpData.Height).Clear();
+			Util.UnsafeSpanFromPointer(ptr: bmpData.Scan0, length: bmpData.Stride * bmpData.Height).Clear();
 			_stringOutput.UnlockBits(bmpData);
 		}
 

@@ -4,6 +4,7 @@ using System.Numerics;
 
 using Silk.NET.OpenGL;
 
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Bizware.Graphics
@@ -209,10 +210,9 @@ namespace BizHawk.Bizware.Graphics
 			GL.DeleteBuffer(VBO);
 		}
 
-		public unsafe void SetVertexData(IntPtr data, int count)
+		public void SetVertexData(IntPtr data, int count)
 		{
-			var vertexes = new ReadOnlySpan<byte>((void*)data, count * VertexStride);
-
+			ReadOnlySpan<byte> vertexes = Util.UnsafeSpanFromPointer(ptr: data, length: count * VertexStride);
 			// BufferData reallocs and BufferSubData doesn't, so only use the former if we need to grow the buffer
 			if (vertexes.Length > VertexBufferLen)
 			{
@@ -225,10 +225,9 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public unsafe void SetIndexData(IntPtr data, int count)
+		public void SetIndexData(IntPtr data, int count)
 		{
-			var indexes = new ReadOnlySpan<byte>((void*)data, count * 2);
-
+			ReadOnlySpan<byte> indexes = Util.UnsafeSpanFromPointer(ptr: data, length: count * 2);
 			if (indexes.Length > IndexBufferLen)
 			{
 				GL.BufferData(GLEnum.ElementArrayBuffer, indexes, GLEnum.DynamicDraw);
