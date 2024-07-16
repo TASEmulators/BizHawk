@@ -130,8 +130,8 @@ function Collision()
 	local wy1    = ToSigned16(getr("M68K D5") & 0xFFFF) - ycam
 	local wx2    = ToSigned16(getr("M68K D6") & 0xFFFF) - xcam
 	local wy2    = ToSigned16(getr("M68K D7") & 0xFFFF) - ycam
-	local damage = rw(a6 + 0x12)
 	local id     = rw(a6 + 2)
+	local damage = rw(a6 + 0x12)
 --	text(wx2 + 2, wy1 + 1, string.format("%X",a6))
 	if (damage == 0) then
 		damage = rw(a0 + 0x34)
@@ -214,7 +214,7 @@ function Objects()
 		local ysub = rb (base+0x44)
 		local hp   = rw (base+0x52)
 		local ptr2 = rl (ptr1+0x2A)
-		local code = rw (ptr2)
+	--	local code = rw (ptr2)
 		if base > 0 then
 			if ptr2 == 0x27DEE -- helicopter black
 			or ptr2 == 0x27F9C -- helicopter red
@@ -295,7 +295,7 @@ function ItemPrediction()
 	local RNG  = RNGroll(RNG1, RNG2)
 	local RNG  = RNGroll(RNG[1], RNG[2])
 	local item = PredictItem(RNG[1])
-	gui.text(0, 70, string.format("%2X", item),"yellow")
+	gui.text(0, 170, string.format("%2X", item),"yellow")
 end
 
 function Main()
@@ -328,7 +328,7 @@ function Main()
 	PlayerPos()
 	Objects()
 	if rb(0xFFFFF6) == 50 then
-		line( 34,  42, SpawnX, SpawnY, 0x00FF00 + SpawnOpac << 24)
+		line( 34,  42, SpawnX, SpawnY, 0x00FF00 + (SpawnOpac << 24))
 		text(  4,  35, string.format("Obj: %d", SpawnCount),"green")
 		text(  4,  43, string.format("%d %d %d", Enemies, Items, Hearts/2))
 	end
