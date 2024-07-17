@@ -134,6 +134,7 @@ namespace BizHawk.Client.Common
 				try
 				{
 					TasSession = JsonConvert.DeserializeObject<TasSession>(json);
+					Branches.Current = TasSession.CurrentBranch;
 				}
 				catch
 				{
