@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override string Name => "tastudio";
 
-		private TAStudio Tastudio => Tools.Get<TAStudio>() as TAStudio;
+		private TAStudio Tastudio => Tools.TAStudio;
 
 		private struct PendingChanges
 		{
@@ -340,7 +340,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 					_changeList.Clear();
-					Tastudio.Refresh();
+					Tastudio.RefreshDialog();
 					Tastudio.JumpToGreenzone();
 					Tastudio.DoAutoRestore();
 				}
