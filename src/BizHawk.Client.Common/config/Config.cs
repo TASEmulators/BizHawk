@@ -116,6 +116,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.GBA] = 3,
 			[VSystemID.Raw.GBC] = 3,
 			[VSystemID.Raw.N64] = 1,
+			[VSystemID.Raw.WSWAN] = 3,
 		};
 
 		public int GetWindowScaleFor(string sysID)
