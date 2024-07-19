@@ -10,7 +10,6 @@ assignees: ''
 [//]: # "This description supports Markdown syntax. There's a cheatsheet here: https://guides.github.com/features/mastering-markdown/"
 [//]: # "These lines are comments, for letting you know what you should be writing. You can delete them or leave them in."
 [//]: # "Also, please don't waste your time writing until you've checked for similar Issues. Remember to check closed Issues too!"
-[//]: # "One more thing: if you're on Linux, please comment on #1430 instead of opening an issue so we don't annoy the other devs."
 
 ### Summary
 [//]: # "Briefly describe what's broken. Include relevant details: loaded core, loaded rom's hash, open tools, running scripts... You can embed a screenshot if it's easier to show the bug, but if you need more than one please put them at the end."
