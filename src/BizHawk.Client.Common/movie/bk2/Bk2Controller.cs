@@ -79,32 +79,30 @@ namespace BizHawk.Client.Common
 
 		public void SetFromMnemonic(string mnemonic)
 		{
-			if (!string.IsNullOrWhiteSpace(mnemonic))
+			if (string.IsNullOrWhiteSpace(mnemonic)) return;
+			var iterator = 0;
+
+			foreach (var key in ControlsOrdered)
 			{
-				var iterator = 0;
+				while (mnemonic[iterator] == '|') iterator++;
 
-				foreach (var key in ControlsOrdered)
+				if (key.IsBool)
 				{
-					while (mnemonic[iterator] == '|') iterator++;
-
-					if (key.IsBool)
-					{
-						_myBoolButtons[key.Name] = mnemonic[iterator] != '.';
-						iterator++;
-					}
-					else if (key.IsAxis)
-					{
-						var commaIndex = mnemonic.IndexOf(',', iterator);
+					_myBoolButtons[key.Name] = mnemonic[iterator] != '.';
+					iterator++;
+				}
+				else if (key.IsAxis)
+				{
+					var commaIndex = mnemonic.IndexOf(',', iterator);
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
-						var val = int.Parse(mnemonic.AsSpan(start: iterator, length: commaIndex - iterator));
+					var val = int.Parse(mnemonic.AsSpan(start: iterator, length: commaIndex - iterator));
 #else
-						var axisValueString = mnemonic.Substring(startIndex: iterator, length: commaIndex - iterator);
-						var val = int.Parse(axisValueString);
+					var axisValueString = mnemonic.Substring(startIndex: iterator, length: commaIndex - iterator);
+					var val = int.Parse(axisValueString);
 #endif
-						_myAxisControls[key.Name] = val;
+					_myAxisControls[key.Name] = val;
 
-						iterator = commaIndex + 1;
-					}
+					iterator = commaIndex + 1;
 				}
 			}
 		}
