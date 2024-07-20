@@ -886,6 +886,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void RefreshForInputChange(int firstChangedFrame)
+		{
+			if (TasView.IsPartiallyVisible(firstChangedFrame) || firstChangedFrame < TasView.FirstVisibleRow)
+			{
+				RefreshDialog();
+			}
+		}
+
 		private void SetTasViewRowCount()
 		{
 			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
@@ -1061,7 +1069,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					RefreshDialog();
+					RefreshForInputChange(insertionFrame);
 				}
 			}
 		}
@@ -1082,7 +1090,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					RefreshDialog();
+					RefreshForInputChange(beginningFrame);
 				}
 			}
 		}
@@ -1105,7 +1113,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					RefreshDialog();
+					RefreshForInputChange(beginningFrame);
 				}
 			}
 		}
