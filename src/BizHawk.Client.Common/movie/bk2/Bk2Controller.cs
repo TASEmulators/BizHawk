@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using BizHawk.Common;
@@ -16,12 +17,7 @@ namespace BizHawk.Client.Common
 		private IList<ControlMap> _controlsOrdered;
 
 		private IList<ControlMap> ControlsOrdered => _controlsOrdered ??= _type.OrderedControlsFlat
-			.Select(c => new ControlMap
-			{
-				Name = c,
-				IsBool = _type.BoolButtons.Contains(c),
-				IsAxis = _type.Axes.ContainsKey(c)
-			})
+			.Select(name => new ControlMap(name, _type))
 			.ToList();
 
 		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
@@ -123,11 +119,27 @@ namespace BizHawk.Client.Common
 			_myAxisControls[buttonName] = value;
 		}
 
-		private class ControlMap
+		private readonly struct ControlMap
 		{
-			public string Name { get; set; }
-			public bool IsBool { get; set; }
-			public bool IsAxis { get; set; }
+			public readonly bool IsAxis;
+
+			public readonly bool IsBool;
+
+			public readonly string Name;
+
+			public ControlMap(string name, bool isButton, bool isAxis)
+			{
+				Debug.Assert(isButton ^ isAxis, "axis conflicts with button of the same name?");
+				Name = name;
+				IsBool = isButton;
+				IsAxis = isAxis;
+			}
+
+			public ControlMap(string name, ControllerDefinition def)
+				: this(
+					name: name,
+					isButton: def.BoolButtons.Contains(name),
+					isAxis: def.Axes.ContainsKey(name)) {}
 		}
 
 		private class Bk2ControllerDefinition : ControllerDefinition
