@@ -106,9 +106,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (CurrentTasMovie != null)
 			{
+				bool loadRecent = Game.Hash == CurrentTasMovie.Hash && CurrentTasMovie.Filename == Settings.RecentTas.MostRecent;
 				TastudioStopMovie();
 				// try to load the most recent movie if it matches the currently loaded movie
-				if (Game.Hash == CurrentTasMovie.Hash && CurrentTasMovie.Filename == Settings.RecentTas.MostRecent)
+				if (loadRecent)
 				{
 					LoadMostRecentOrStartNew();
 				}
