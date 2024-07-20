@@ -14,11 +14,11 @@ namespace BizHawk.Client.Common
 
 		private readonly Bk2ControllerDefinition _type;
 
-		private IList<ControlMap> _controlsOrdered;
+		private IReadOnlyList<ControlMap> _controlsOrdered;
 
-		private IList<ControlMap> ControlsOrdered => _controlsOrdered ??= _type.OrderedControlsFlat
-			.Select(name => new ControlMap(name, _type))
-			.ToList();
+		private IReadOnlyList<ControlMap> ControlsOrdered
+			=> _controlsOrdered
+				??= _type.OrderedControlsFlat.Select(name => new ControlMap(name, _type)).ToArray();
 
 		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
