@@ -797,7 +797,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					// Small jump, more accurate
-					var range = 0.RangeTo(_lagFrames[VisibleRows - halfRow]);
 					int lastVisible = LastFullyVisibleRow;
 					do
 					{
@@ -813,7 +812,7 @@ namespace BizHawk.Client.EmuHawk
 						SetLagFramesArray();
 						lastVisible = LastFullyVisibleRow;
 					}
-					while (!range.Contains(lastVisible - value) && FirstVisibleRow != 0);
+					while ((lastVisible - value < 0 || _lagFrames[VisibleRows - halfRow] < lastVisible - value) && FirstVisibleRow != 0);
 				}
 				_programmaticallyChangingRow = false;
 				PointMouseToNewCell();
