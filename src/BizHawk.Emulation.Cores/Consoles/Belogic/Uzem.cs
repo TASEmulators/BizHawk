@@ -21,8 +21,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 				MaxHeight = 224,
 				MaxSamples = 4096,
 				SystemId = VSystemID.Raw.UZE,
-				DefaultFpsNumerator = 28618182,
-				DefaultFpsDenominator = 476840
+				DefaultFpsNumerator = 1125000,
+				DefaultFpsDenominator = 18733,
 			})
 		{
 			_uze = PreInit<LibUzem>(new WaterboxOptions
