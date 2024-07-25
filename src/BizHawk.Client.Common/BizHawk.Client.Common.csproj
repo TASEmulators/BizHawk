@@ -12,6 +12,7 @@
 		<PackageReference Include="Microsoft.Data.Sqlite.Core" />
 		<PackageReference Include="SharpCompress" />
 		<PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" />
+		<PackageReference Include="System.CommandLine" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
 		<EmbeddedResource Include="Resources/**/*" />

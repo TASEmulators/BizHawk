@@ -59,6 +59,7 @@
   (fetchNuGet { pname = "System.Buffers"; version = "4.4.0"; sha256 = "183f8063w8zqn99pv0ni0nnwh7fgx46qzxamwnans55hhs2l0g19"; })
   (fetchNuGet { pname = "System.Buffers"; version = "4.5.1"; sha256 = "04kb1mdrlcixj9zh1xdi5as0k0qi8byr5mi3p3jcxx72qz93s2y3"; })
   (fetchNuGet { pname = "System.Collections.Immutable"; version = "8.0.0"; sha256 = "0z53a42zjd59zdkszcm7pvij4ri5xbb8jly9hzaad9khlf69bcqp"; })
+  (fetchNuGet { pname = "System.CommandLine"; version = "2.0.0-beta4.22272.1"; sha256 = "1iy5hwwgvx911g3yq65p4zsgpy08w4qz9j3h0igcf7yci44vw8yd"; })
   (fetchNuGet { pname = "System.ComponentModel.Annotations"; version = "5.0.0"; sha256 = "021h7x98lblq9avm1bgpa4i31c2kgsa7zn4sqhxf39g087ar756j"; })
   (fetchNuGet { pname = "System.Diagnostics.DiagnosticSource"; version = "5.0.0"; sha256 = "0phd2qizshjvglhzws1jd0cq4m54gscz4ychzr3x6wbgl4vvfrga"; })
   (fetchNuGet { pname = "System.Drawing.Common"; version = "6.0.0"; sha256 = "02n8rzm58dac2np8b3xw8ychbvylja4nh6938l5k2fhyn40imlgz"; })
