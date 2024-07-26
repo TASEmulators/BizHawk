@@ -65,6 +65,19 @@ namespace BizHawk.Client.Common
 		{
 		}
 
+		public void WithSurface(DisplaySurfaceID surfaceID, Action<IGuiApi> drawingCallsFunc)
+		{
+			_usingSurfaceID = surfaceID;
+			try
+			{
+				drawingCallsFunc(this);
+			}
+			finally
+			{
+				_usingSurfaceID = null;
+			}
+		}
+
 		public void WithSurface(DisplaySurfaceID surfaceID, Action drawingCallsFunc)
 		{
 			_usingSurfaceID = surfaceID;
