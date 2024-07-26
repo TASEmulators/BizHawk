@@ -69,7 +69,7 @@ See `packages.nix` for more detail and help with overriding.
 As per the above table:
 ```sh
 nix-build --pure -A emuhawk
-result/bin/emuhawk-* --mono-no-redirect
+result/bin/emuhawk-*
 
 # may need to run this first if the checked-in copy of `Dist/deps.nix` hasn't been updated:
 nix-build --pure -A emuhawk.fetch-deps && ./result
