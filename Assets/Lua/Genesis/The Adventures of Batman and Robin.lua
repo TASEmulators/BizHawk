@@ -2,18 +2,18 @@
 -- 2013-2024, feos and r57shell
 
 -- GLOBALS --
-MsgTable  = {}
-MsgTime   = 30
-MsgOffs   = 16
-MsgCutoff = 60
-RNGcount  = 0
-SpawnCount= 0
-SpawnOpac = 192
-SpawnX    = 0
-SpawnY    = 0
-Enemies   = 0
-Items     = 0
-Hearts    = 0
+MsgTable    = {}
+MsgTime     = 16
+MsgOffs     = 24
+MsgCutoff   = 60
+RNGcount    = 0
+SpawnCount  = 0
+SpawnDelay  = 0
+SpawnX      = 0
+SpawnY      = 0
+Enemies     = 0
+Items       = 0
+Hearts      = 0
 
 -- SHORTCUTS --
 rb  = memory.read_u8
@@ -29,6 +29,8 @@ text= gui.pixelText
 line= gui.drawLine
 
 memory.usememorydomain("M68K BUS")
+userdata.set("SpawnCount", 0)
+userdata.set("SpawnOpac", 192)
 
 function ToSigned16(num) 
 	if num > 32768 then
@@ -82,22 +84,24 @@ end
 
 function HandleMsgTable(clear)
 	for i = 1, #MsgTable do
-		if (clear) then
+		if clear then
 			MsgTable[i] = nil
 		end		
-		if (MsgTable[i]) then
+		if MsgTable[i] then
 			GetCam()
-			if (MsgTable[i].y_ > MsgCutoff) then
+			if MsgTable[i].y_ > MsgCutoff then
 				MsgY1 = 0
 				MsgY2 = 6
 			else
 				MsgY1 = 203
 				MsgY2 = 203				
 			end
-			local opacity = ((MsgTable[i].timer_ - emu.framecount() + 2)*7 & 0xFF) << 24
-			line(i * MsgOffs + 3, MsgY2, MsgTable[i].x_ - xcam, MsgTable[i].y_, 0xFF0000+opacity)
+			line(i * MsgOffs + 3, MsgY2,
+				MsgTable[i].x_ - xcam, MsgTable[i].y_,
+				0xFF0000 + (MsgTable[i].timer_ << 28))
 			text(i * MsgOffs    , MsgY1, MsgTable[i].damage_, "red")
-			if (MsgTable[i].timer_ < emu.framecount()) then
+			MsgTable[i].timer_ = MsgTable[i].timer_ - 1
+			if MsgTable[i].timer_ <= 0 then
 				MsgTable[i] = nil
 			end
 		end
@@ -107,12 +111,13 @@ end
 function HandleDamage()
 	local damage = getr("M68K D0") &   0xFFFF
 	local base   = getr("M68K A2") & 0xFFFFFF
+--	print(string.format("%X", getr("M68K PC")))
 	EnemyPos(base)
 	unit = {
-		timer_ = emu.framecount() + MsgTime,
+		timer_  = MsgTime,
 		damage_ = damage,
-		x_ = x1 + xcam,
-		y_ = y1
+		x_      = x1 + xcam,
+		y_      = y1
 	}
 	for i = 1, 200 do
 		if MsgTable[i] == nil then
@@ -133,10 +138,10 @@ function Collision()
 	local id     = rw(a6 + 2)
 	local damage = rw(a6 + 0x12)
 --	text(wx2 + 2, wy1 + 1, string.format("%X",a6))
-	if (damage == 0) then
+	if damage == 0 then
 		damage = rw(a0 + 0x34)
 	end
-	if (DamageHitbox) then
+	if DamageHitbox then
 		box(wx1, wy1, wx2, wy2, 0xFFFF0000)
 		text(wx1 + 2, wy1 + 1, damage)
 	else
@@ -146,7 +151,7 @@ function Collision()
 end
 
 function InRange(var, num1, num2)
-	if (var >=  num1) and (var <= num2)
+	if var >=  num1 and var <= num2
 	then return true
 	end
 end
@@ -174,33 +179,34 @@ function Hitbox(address)
 	local base = rw(address)	
 	while (base ~= 0) do
 		base = base + 0xFF0000
-		if (rw(base + 2) == 0) then break end
+		if rw(base + 2) == 0 then break end
 		EnemyPos(base)
-		if (address == 0xFFDEB2) then
+		if address == 0xFFDEB2 then
 			box(x1, y1, x2, y2, 0xFF00FF00)
-		elseif (address == 0xFFDEBA) then
+		elseif address == 0xFFDEBA then
 			box(x1, y1, x2, y2, 0xFF00FFFF)
 			text(FitX(x1, hp) + 2, FitY(y1) + 1, hp, 0xFFFF00FF)
-		--	if (x2 <    0) then text(x1 + 2, y2 - 7, "x:" .. x1      ) end
-		--	if (x1 >= 320) then text(x1 + 2, y2 - 7, "x:" .. x1 - 320) end
-		--	if (y2 <    0) then text(x2 + 2, y2 - 7, "y:" .. y2      ) end
+		--	if x2 <    0 then text(x1 + 2, y2 - 7, "x:" .. x1      ) end
+		--	if x1 >= 320 then text(x1 + 2, y2 - 7, "x:" .. x1 - 320) end
+		--	if y2 <    0 then text(x2 + 2, y2 - 7, "y:" .. y2      ) end
 			local offtext = ""
-			if (x2 <    0) then offtext = offtext .. "x:" .. x1       end
-			if (x1 >= 320) then offtext = offtext .. "x:" .. x1 - 320 end
-			if (y2 <    0) then offtext = offtext .. "y:" .. y2       end
-			if (y2 >= 224) then offtext = offtext .. "y:" .. y2 - 224 end
+			if x2 <    0 then offtext = offtext .. "x:" .. x1       end
+			if x1 >= 320 then offtext = offtext .. "x:" .. x1 - 320 end
+			if y2 <    0 then offtext = offtext .. "y:" .. y2       end
+			if y2 >= 224 then offtext = offtext .. "y:" .. y2 - 224 end
 			if offtext ~= "" then
 				text(FitX(x1, offtext), FitY(y1) - 7, offtext)
 			end
 		end
 		base = rw(base + 2)
 		i = i + 1
-		if (i > 400) then break end
+		if i > 400 then break end
 	end
 end
 
 function Objects()
-	if rb(0xFFFFF6) ~= 50 then return end
+	local level = rw(0xFFFFF5)
+	if level ~= 818 and level ~= 1026 then return end
 	Enemies = 0
 	Items   = 0
 	GetCam()
@@ -208,12 +214,13 @@ function Objects()
 	for i=0,100 do
 		local link = rw (base+   6)
 		local ptr1 = rw (base+0x0A)+0xFF0000
+		local ptr2 = rl (ptr1+0x2A)
+		local delay = rl(base+0x2E) >> 8
 		local x    = rws(base+0x3E)
 		local xsub = rb (base+0x40)
 		local y    = rws(base+0x42)
 		local ysub = rb (base+0x44)
 		local hp   = rw (base+0x52)
-		local ptr2 = rl (ptr1+0x2A)
 	--	local code = rw (ptr2)
 		if base > 0 then
 			if ptr2 == 0x27DEE -- helicopter black
@@ -233,28 +240,49 @@ function Objects()
 			else
 			--	text(x - xcam, y - ycam, string.format("%X", ptr2), "green")
 			end
+			if delay > 0 and delay < 1000 then
+				SpawnDelay = delay
+			--	print(string.format("%X: %X", base+0x2E, delay))
+			end
 		end
 		base = link + 0xFF0000
-		local a5   = rl (base)
+		local a5 = rl(base)
 		if a5 == 0x88BE then return end
 	end
 end
 
 function Spawns()
-	if rb(0xFFFFF6) ~= 50 then return end
+	local level = rw(0xFFFFF5)
+	if level ~= 818 and level ~= 1026 then return end
 	local base = getr("M68K A6") & 0xFFFFFF
 	local ptr1 = rw(base+0x0A) + 0xFF0000
 	local ptr2 = rl(ptr1+0x2A)
 	local code = rw(ptr2)
+	local text = ""
 	SpawnX = rws(base+0x3E) - xcam
 	SpawnY = rws(base+0x42) - ycam
+	
+	if     ptr2 == 0x3A6E2 then text = "HOMING"
+	elseif ptr2 == 0x3A5C6 then text = "SCROLLING"
+	elseif ptr2 == 0x3A81E then text = "LONG 1"
+	elseif ptr2 == 0x3A778 then text = "LONG 2"
+	else                        text = "UNKNOWN"
+	end
+	
 	if  code ~= 0xAE6  -- drone
 	and code ~= 0xAF2  -- mini-missile
 	and code ~= 0x2384 -- item
 	then
-		SpawnOpac  = 192
-		SpawnCount = SpawnCount + 1
+		userdata.set("SpawnOpac", 192)
+		userdata.set("SpawnCount", userdata.get("SpawnCount") + 1)
+	--	print(string.format("%02d - %X - %s", userdata.get("SpawnCount"), ptr2, text))
 	end
+end
+
+function CalculateDelay()
+	local d0 = getr("M68K D0") >> 8
+	local d1 = getr("M68K D1") >> 8
+	print(string.format("Random spawn delay: %d + %d", d1, d0))
 end
 
 function PredictItem(rng)
@@ -306,6 +334,7 @@ function Main()
 	local base2      = 0xFFADAE
 --	local hp1        = rw (0xFFF654)
 --	local life1      = rw (0xFFF644)
+	local level      = rw (0xFFFFF5)
 	local X1         = rw (base1 + 0x3E)
 	local X1sub      = rb (base1 + 0x40)
 	local Y1         = rws(base1 + 0x42)
@@ -320,27 +349,30 @@ function Main()
 	local Weapon2    = rb (0xFFF6BB)
 	local Charge1    = (rw(0xFFF658) - 0x2800) / -0x80
 	local Charge2    = (rw(0xFFF698) - 0x2800) / -0x80
-	local ScreenLock = rw(0xFFDFC0)
-	if Charge1 <= 0 then Charge1 = 0; color1 = "red" end
-	if Charge2 <= 0 then Charge2 = 0; color2 = "red" end
-	if RNGcount > 1 then              color0 = "red" end
+	local ScreenLock = rw (0xFFDFC0)
+	if Charge1 <= 0 then Charge1 = 0 color1 = "red" end
+	if Charge2 <= 0 then Charge2 = 0 color2 = "red" end
+	if RNGcount > 1 then             color0 = "red" end
 	HandleMsgTable()
 	PlayerPos()
 	Objects()
-	if rb(0xFFFFF6) == 50 then
-		line( 34,  42, SpawnX, SpawnY, 0x00FF00 + (SpawnOpac << 24))
-		text(  4,  35, string.format("Obj: %d", SpawnCount),"green")
-		text(  4,  43, string.format("%d %d %d", Enemies, Items, Hearts/2))
+	if level == 818 or level == 1026 then
+		line(30, 42, SpawnX, SpawnY, 0x00FF00 + (userdata.get("SpawnOpac") << 24))
+		text( 0, 35, string.format("Obj: %d", userdata.get("SpawnCount")), 0xFF00FF00)
+		text( 0, 49, string.format("%d %d %s", Enemies, Items, Hearts/2))
+		if SpawnDelay > 0 and SpawnDelay < 1000 then
+			text(0, 42, string.format("Del: %d", SpawnDelay), "yellow")
+		end
 	end
-	text( 80,  22, string.format("%2.0f"  , Charge1),    color1)
---	text(235,  20, string.format("%2.0f"  , Charge2),    color2)
-	text(  1, 217, string.format("RNG:%X" , RNG1))
-	text( 40, 217, string.format("Lock:%d", ScreenLock))
-	text( 34, 217, string.format("%d"     , RNGcount),   color0)
-	text(180, 217, string.format("%2d"    , Weapon1+1), "yellow")
---	text(300, 217, string.format("%2d"    , Weapon2+1), "yellow")
+	text(  1, 217, string.format("RNG:%X"               , RNG1))
+	text( 40, 217, string.format("Lock:%d"              , ScreenLock))
 	text( 81, 210, string.format("Pos: %d.%d\nSpd: %.5f", X1, X1sub, p1speedx))
 	text(137, 210, string.format("/ %d.%d\n/ %.5f"      , Y1, Y1sub, p1speedy))
+	text( 80,  22, string.format("%2.0f"                , Charge1),                 color1)
+--	text(235,  20, string.format("%2.0f"                , Charge2),                 color2)
+	text( 34, 217, string.format("%d"                   , RNGcount),                color0)
+	text(180, 217, string.format("%2d"                  , Weapon1+1),             "yellow")
+--	text(300, 217, string.format("%2d"                  , Weapon2+1),             "yellow")
 --	text(203, 210, string.format("Pos: %d.%d\nSpd: %.5f", X2, X2sub, p2speedx), 0xFF00FF00)
 --	text(260, 210, string.format("/ %d.%d\n/ %.5f"      , Y2, Y2sub, p2speedy), 0xFF00FF00)
 	Hitbox(0xFFDEB2)
@@ -359,22 +391,24 @@ function Main()
 end
 
 event.onframeend(function()
-	SpawnOpac = SpawnOpac - 4
-	if SpawnOpac < 0 then SpawnOpac = 0 end
+	local spawnOpac = userdata.get("SpawnOpac") - 4
+	if spawnOpac < 0 then spawnOpac = 0 end
+	userdata.set("SpawnOpac", spawnOpac)
 	Main()
 end)
 
 event.onframestart(function()
-	Hearts = 0
+	SpawnDelay1 = 0
+	SpawnDelay2 = 0
+	Hearts      = 0
 	ItemPrediction()
 end)
 
 event.onloadstate(function()
-	SpawnCount = 0
-	SpawnOpac  = 192
 	Enemies    = 0
 	Items      = 0
 	Hearts     = 0
+	SpawnCount = 0
 	return HandleMsgTable(1)
 end)
 
@@ -384,6 +418,7 @@ rex(function() DamageHitbox = false end   , 0x3768, "DamageHitbox-")
 rex(function() DamageHitbox = true  end   , 0x376C, "DamageHitbox+")
 rex(function() DamageHitbox = false end   , 0x65C4, "DamageHitbox-")
 rex(function() DamageHitbox = true  end   , 0x65C8, "DamageHitbox+")
+rex(CalculateDelay                        , 0x6ADE,         "Delay")
 rex(function() RNGcount = RNGcount + 1 end, 0x995C,    "RNGcount++")
 rex(Item                                  , 0x4738,          "Item")
 rex(Item                                  , 0x4534,          "Item")
