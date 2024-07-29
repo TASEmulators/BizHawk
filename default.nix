@@ -161,7 +161,7 @@ in {
 	];
 	latestVersionFrag = lib.head releaseFrags;
 	combined = pp // asmsFromReleaseArtifacts // releasesEmuHawkInstallables // {
-		inherit depsForHistoricalRelease releaseTagSourceInfos;
+		inherit depsForHistoricalRelease populateHawkSourceInfo releaseTagSourceInfos;
 		bizhawkAssemblies = pp.buildAssembliesFor (fillTargetOSDifferences hawkSourceInfoDevBuild);
 		"bizhawkAssemblies-${latestVersionFrag}" = pp.buildAssembliesFor
 			(fillTargetOSDifferences releaseTagSourceInfos."info-${latestVersionFrag}");

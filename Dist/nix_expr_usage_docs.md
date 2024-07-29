@@ -39,7 +39,9 @@ Nix functions and data:
 - `buildExtraManagedDepsFor`
 - `buildUnmanagedDepsFor`
 - `depsForHistoricalRelease`
+- `IDEs`
 - `launchScriptsForLocalBuild`
+- `populateHawkSourceInfo`
 - `releaseTagSourceInfos`
 - `splitReleaseArtifact`
 <!-- MARKER_FOR_HELPER_SCRIPT_END -->
