@@ -64,7 +64,6 @@ in {
 , debugPInvokes ? false # forwarded to Dist/launch-scripts.nix
 , debugDotnetHostCrashes ? false # forwarded to Dist/launch-scripts.nix
 , doCheck ? true # runs `Dist/BuildTest${buildConfig}.sh`
-, emuhawkBuildFlavour ? "NixHawk"
 , extraDefines ? "" # added to `<DefineConstants/>`, so ';'-separated
 , extraDotnetBuildFlags ? "" # currently passed to EVERY `dotnet build` and `dotnet test` invocation (and does not replace the flags for parallel compilation added by default)
 , forNixOS ? true
@@ -111,7 +110,7 @@ in {
 				releaseTagSourceInfos runCommand symlinkJoin writeShellScriptBin
 			git
 			libgdiplus libGL lua openal SDL2 udev zstd
-			buildConfig doCheck emuhawkBuildFlavour extraDefines extraDotnetBuildFlags;
+			buildConfig doCheck extraDefines extraDotnetBuildFlags;
 		mono = if mono != null
 			then mono # allow older Mono if set explicitly
 			else if isVersionAtLeast "6.12.0.151" pkgs.mono.version

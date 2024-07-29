@@ -28,7 +28,6 @@
 # other parameters
 , buildConfig
 , doCheck
-, emuhawkBuildFlavour
 , extraDefines
 , extraDotnetBuildFlags
 }: let
@@ -163,7 +162,7 @@
 			'' else ""}mkdir -p $out; cp -avt $out packaged_output/*.exe* packaged_output/dll
 			mv -t $out/dll $assets/dll/*
 			mv -t $out $assets/defctrl.json $assets/gamedb $assets/Shaders
-			printf '${emuhawkBuildFlavour}' >$out/dll/custombuild.txt
+			printf '${hawkSourceInfo.frontendPackageFlavour}' >$out/dll/custombuild.txt
 
 			runHook postInstall
 		'';
@@ -290,7 +289,7 @@ in {
 			${if hawkSourceInfo'.releaseArtifactNeedsVBDotnetReference then ''cp -t $out/dll '${lib.getOutput "out" monoBasic}/usr/lib/mono/4.5/Microsoft.VisualBasic.dll'
 			'' else ""}${if hawkSourceInfo'.releaseArtifactNeedsLowercaseAsms then ''(cd $out/dll; for s in Client.Common Emulation.Cores; do cp BizHawk.$s.dll Bizhawk.$s.dll; done)
 			'' else ""}${if hawkSourceInfo'.releaseArtifactNeedsOTKAsmConfig then ''cp -t $out/dll '${releaseTagSourceInfos.info-2_6.src}/Assets/dll/OpenTK.dll.config'
-			'' else ""}printf '${emuhawkBuildFlavour}' >$out/dll/custombuild.txt
+			'' else ""}printf '${hawkSourceInfo'.frontendPackageFlavour}' >$out/dll/custombuild.txt
 
 			mkdir -p $extraUnmanagedDeps/lib; mv -t $extraUnmanagedDeps/lib $out/dll/*.so*
 			mkdir -p $waterboxCores/dll; mv -t $waterboxCores/dll $out/dll/*.wbx*
