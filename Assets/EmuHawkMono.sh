@@ -18,7 +18,6 @@ fi
 export LD_LIBRARY_PATH="$PWD/dll:$PWD:$libpath"
 export MONO_CRASH_NOFILE=1
 export MONO_WINFORMS_XIM_STYLE=disabled # see https://bugzilla.xamarin.com/show_bug.cgi?id=28047#c9
-export BIZHAWK_INT_SYSLIB_PATH="$libpath"
 if [ "$1" = "--mono-no-redirect" ]; then
 #	printf "(passing --mono-no-redirect is no longer necessary)\n" #TODO uncomment later
 	shift
