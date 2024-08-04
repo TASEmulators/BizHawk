@@ -10,11 +10,10 @@ namespace BizHawk.Bizware.Graphics
 	public sealed class ImGuiResourceCache
 	{
 		private readonly IGL _igl;
-		private ITexture2D _lastTexture;
 
 		internal readonly IPipeline Pipeline;
-		internal readonly Dictionary<Bitmap, ITexture2D> TextureCache = new();
-		internal readonly Dictionary<Color, SolidBrush> BrushCache = new();
+		internal readonly Dictionary<Bitmap, ITexture2D> TextureCache = [ ];
+		internal readonly Dictionary<Color, SolidBrush> BrushCache = [ ];
 
 		public ImGuiResourceCache(IGL igl)
 		{
@@ -51,8 +50,7 @@ namespace BizHawk.Bizware.Graphics
 				Pipeline = igl.CreatePipeline(compileArgs);
 
 				igl.BindPipeline(Pipeline);
-				Pipeline.SetUniform("uSamplerEnable", false);
-				Pipeline.SetUniformSampler("uSampler0", null);
+				SetTexture(null);
 				igl.BindPipeline(null);
 			}
 		}
@@ -65,20 +63,15 @@ namespace BizHawk.Bizware.Graphics
 
 		internal void SetTexture(ITexture2D texture2D)
 		{
-			if (_lastTexture != texture2D)
-			{
-				Pipeline.SetUniform("uSamplerEnable", texture2D != null);
-				Pipeline.SetUniformSampler("uSampler0", texture2D);
-				_lastTexture = texture2D;
-			}
+			Pipeline.SetUniform("uSamplerEnable", texture2D != null);
+			Pipeline.SetUniformSampler("uSampler0", texture2D);
 		}
 
 		public void Dispose()
 		{
-			foreach (var cache in TextureCache)
+			foreach (var cachedTex in TextureCache.Values)
 			{
-				cache.Key.Dispose();
-				cache.Value.Dispose();
+				cachedTex.Dispose();
 			}
 
 			foreach (var cachedBrush in BrushCache.Values)
@@ -89,6 +82,16 @@ namespace BizHawk.Bizware.Graphics
 			TextureCache.Clear();
 			BrushCache.Clear();
 			Pipeline?.Dispose();
+		}
+
+		public void ClearTextureCache()
+		{
+			foreach (var cachedTex in TextureCache.Values)
+			{
+				cachedTex.Dispose();
+			}
+
+			TextureCache.Clear();
 		}
 
 		public const string ImGuiVertexShader_d3d11 = @"

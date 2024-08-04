@@ -131,6 +131,7 @@ namespace BizHawk.Client.EmuHawk
 					Settings.Columns = LuaListView.AllColumns;
 					
 					DisplayManager.ClearApiHawkSurfaces();
+					DisplayManager.ClearApiHawkTextureCache();
 					ResetDrawSurfacePadding();
 					ClearFileWatches();
 					LuaImp?.Close();
@@ -948,6 +949,7 @@ namespace BizHawk.Client.EmuHawk
 
 				UpdateDialog();
 				DisplayManager.ClearApiHawkSurfaces();
+				DisplayManager.ClearApiHawkTextureCache();
 				DisplayManager.OSD.ClearGuiText();
 				if (!LuaImp.ScriptList.Any(static lf => !lf.IsSeparator)) ResetDrawSurfacePadding(); // just removed last script, reset padding
 			}

@@ -52,7 +52,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		private readonly HashSet<GCHandle> _gcHandles = new();
+		private readonly HashSet<GCHandle> _gcHandles = [ ];
 
 		protected virtual float RenderThickness => 1;
 
@@ -105,6 +105,9 @@ namespace BizHawk.Bizware.Graphics
 			{
 				switch (gcHandle.Target)
 				{
+					// we can't actually dispose this, as the bitmap might still be cached within GuiApi
+					// it doesn't matter too much, as the finalizer would also dispose this, so no memory leaks will occur
+#if false
 					case ImGuiUserTexture userTexture:
 						// only dispose anything not cached somewhere
 						if (userTexture.Bitmap != _stringOutput
@@ -113,6 +116,7 @@ namespace BizHawk.Bizware.Graphics
 							userTexture.Bitmap.Dispose();
 						}
 						break;
+#endif
 					case DrawStringArgs args:
 						args.Font.Dispose();
 						break;

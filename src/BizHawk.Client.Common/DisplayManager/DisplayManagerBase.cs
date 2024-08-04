@@ -947,5 +947,8 @@ namespace BizHawk.Client.Common
 				renderer.Discard();
 			}
 		}
+
+		public void ClearApiHawkTextureCache()
+			=> _imGuiResourceCache.ClearTextureCache();
 	}
 }

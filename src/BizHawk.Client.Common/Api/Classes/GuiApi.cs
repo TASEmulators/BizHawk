@@ -291,7 +291,10 @@ namespace BizHawk.Client.Common
 		}
 
 		public void ClearImageCache()
-			=> _imageCache.Clear();
+		{
+			_imageCache.Clear();
+			_displayManager.ClearApiHawkTextureCache();
+		}
 
 		public void DrawImageRegion(Image img, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null, DisplaySurfaceID? surfaceID = null)
 		{
