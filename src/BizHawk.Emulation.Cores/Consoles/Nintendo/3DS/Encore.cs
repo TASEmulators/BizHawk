@@ -10,8 +10,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
-	[PortedCore(CoreNames.Encore, "", "nightly-2104", "https://github.com/CasualPokePlayer/encore", singleInstance: true, isReleased: false)]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
+	[PortedCore(CoreNames.Encore, "", "nightly-2104", "https://github.com/CasualPokePlayer/encore", singleInstance: true)]
+	[ServiceNotApplicable([ typeof(IDriveLight), typeof(IRegionable) ])]
 	public partial class Encore
 	{
 		private static DynamicLibraryImportResolver _resolver;
