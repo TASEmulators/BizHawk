@@ -29,7 +29,7 @@ public sealed class FakeTemporalAAToolForm: ToolFormBase, IExternalToolForm
 		=> _ = _maybeVideoProvider; // used via ToolFormBase.MainForm
 
 	private void ClearDrawingSurface()
-		=> APIs.Gui.WithSurface(DisplaySurfaceID.EmuCore, g => g.ClearGraphics(DisplaySurfaceID.EmuCore));
+		=> _maybeAPIContainer?.Gui?.WithSurface(DisplaySurfaceID.EmuCore, g => g.ClearGraphics(DisplaySurfaceID.EmuCore));
 
 	protected override void Dispose(bool disposing)
 	{
