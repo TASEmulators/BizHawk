@@ -479,7 +479,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <typeparam name="T">Type of tools to check</typeparam>
 		public T FirstOrNull<T>(Predicate<T> condition) where T : class
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools) // not bothering to copy here since `condition` is expected to have no side-effects
 			{
 				if (tool.IsActive && tool is T specialTool && condition(specialTool))
 				{
@@ -594,7 +594,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var unavailable = new List<IToolForm>();
 
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				SetBaseProperties(tool);
 				if (ServiceInjector.UpdateServices(_emulator.ServiceProvider, tool)
@@ -748,7 +748,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateToolsBefore()
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				if (tool.IsActive)
 				{
@@ -759,7 +759,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateToolsAfter()
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				if (tool.IsActive)
 				{
@@ -770,7 +770,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdateBefore()
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				if (tool.IsActive)
 				{
@@ -781,7 +781,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdateAfter()
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				if (tool.IsActive)
 				{
