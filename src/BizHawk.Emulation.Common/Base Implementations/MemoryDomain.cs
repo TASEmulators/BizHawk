@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Common
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
-			if ((long) addresses.Count() != values.Length)
+			if ((long) addresses.Count() > values.Length)
 			{
 				throw new InvalidOperationException("Invalid length of values array");
 			}
