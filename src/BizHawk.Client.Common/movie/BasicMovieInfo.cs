@@ -101,7 +101,7 @@ namespace BizHawk.Client.Common
 
 		public virtual string Hash
 		{
-			get => Header[HeaderKeys.Sha1];
+			get => Header[HeaderKeys.Sha1].ToUpperInvariant();
 			set => Header[HeaderKeys.Sha1] = value;
 		}
 
@@ -137,7 +137,7 @@ namespace BizHawk.Client.Common
 
 		public virtual string FirmwareHash
 		{
-			get => Header[HeaderKeys.FirmwareSha1];
+			get => Header[HeaderKeys.FirmwareSha1].ToUpperInvariant();
 			set => Header[HeaderKeys.FirmwareSha1] = value;
 		}
 
