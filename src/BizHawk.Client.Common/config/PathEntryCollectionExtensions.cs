@@ -180,6 +180,12 @@ namespace BizHawk.Client.Common
 			return collection.AbsolutePathFor(path, null);
 		}
 
+		public static string ExternalToolsAbsolutePath(this PathEntryCollection collection)
+		{
+			var path = collection[PathEntryCollection.GLOBAL, "External Tools"].Path;
+			return collection.AbsolutePathFor(path, null);
+		}
+
 		public static string MultiDiskAbsolutePath(this PathEntryCollection collection)
 		{
 			var path = collection.ResolveToolsPath(collection[PathEntryCollection.GLOBAL, "Multi-Disk Bundles"].Path);
