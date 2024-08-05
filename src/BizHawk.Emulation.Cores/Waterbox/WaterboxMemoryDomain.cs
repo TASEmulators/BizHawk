@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public override void BulkPeekByte(Range<long> addresses, byte[] values)
+		public override void BulkPeekByte(Int64Interval addresses, byte[] values)
 		{
 			if (_addressMangler != 0)
 			{
@@ -189,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public override void BulkPeekByte(Range<long> addresses, byte[] values)
+		public override void BulkPeekByte(Int64Interval addresses, byte[] values)
 		{
 			if (_addressMangler != 0)
 			{

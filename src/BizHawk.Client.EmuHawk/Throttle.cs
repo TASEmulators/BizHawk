@@ -230,8 +230,7 @@ namespace BizHawk.Client.EmuHawk
 			// reset way-out-of-range values
 			if (diff > 1.0f)
 				diff = 1.0f;
-			if (!(-1.0f).RangeTo(1.0f).Contains(error))
-				error = 0.0f;
+			if (Math.Abs(error) > 1.0f) error = 0.0f;
 			if (diffUnthrottled > 1.0f)
 				diffUnthrottled = desiredspf;
 
