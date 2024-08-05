@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores
 					{
 						TargetSize = new Size(226, 69),
 						MinValue = 0,
-						MaxValue = 320
+						MaxValue = 240
 					}
 				]
 			};
