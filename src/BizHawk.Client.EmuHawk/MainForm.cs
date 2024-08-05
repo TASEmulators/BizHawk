@@ -3091,6 +3091,10 @@ namespace BizHawk.Client.EmuHawk
 				// Tools will want to be updated after rewind (load state), but we only need to manually do this if we did not frame advance.
 				UpdateToolsAfter();
 			}
+			else
+			{
+				Tools.GeneralUpdate();
+			}
 
 			Sound.UpdateSound(atten, DisableSecondaryThrottling);
 		}
