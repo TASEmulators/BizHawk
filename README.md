@@ -10,13 +10,11 @@ A7800Hawk, Atari2600Hawk, C64Hawk, ColecoHawk, GBHawk, IntelliHawk, NesHawk, O2H
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/issues)
 
 [![latest dev build (Windows) | GitHub Actions](https://img.shields.io/badge/latest_dev_build_(Windows)-GitHub_Actions-8250DF?logo=github&logoColor=333333&style=popout)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-windows.zip)
-[![latest dev build (Linux) | GitHub Actions](https://img.shields.io/badge/latest_dev_build_(Linux)-GitHub_Actions-8250DF?logo=github&logoColor=333333&style=popout)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-linux.zip)
-
+[![latest dev build (Linux) | GitHub Actions](https://img.shields.io/badge/latest_dev_build_(Linux)-GitHub_Actions-8250DF?logo=github&logoColor=333333&style=popout)](https://nightly.link/TASEmulators/BizHawk/workflows/ci/master/BizHawk-dev-linux.zip)  
 [![Build and test main solution](https://github.com/TASEmulators/BizHawk/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/TASEmulators/BizHawk/actions/workflows/ci.yml)
+
+[![reproducible via | Nix](https://img.shields.io/badge/reproducible_via-Nix-5277C3?logo=nixos&logoColor=7EBAE4&style=popout)](#nixnixos)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/5365/badge)](https://bestpractices.coreinfrastructure.org/projects/5365)
-
-[![built with nix](https://builtwithnix.org/badge.svg)](#nixnixos)
-
 
 ---
 
