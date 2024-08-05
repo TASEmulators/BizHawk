@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 				DirectoryMonitor.Created -= DirectoryMonitor_Created;
 				DirectoryMonitor.Dispose();
 			}
-			var path = _config.PathEntries.AbsolutePathFor(_config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path, null);
+			var path = _config.PathEntries.ExternalToolsAbsolutePath();
 			if (Directory.Exists(path))
 			{
 				DirectoryMonitor = new FileSystemWatcher(path, "*.dll")
