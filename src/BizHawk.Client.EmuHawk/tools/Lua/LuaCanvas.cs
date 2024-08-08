@@ -211,11 +211,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample(
-			"LuaCanvas.DrawIcon( \"C:\\icon.ico\", 16, 32, 18, 24 );")]
+		[LuaMethodExample("""
+			canvas.DrawIcon("C:\\icon.ico", 16, 32, 18, 24);
+		""")]
 		[LuaMethod(
-			"DrawIcon",
-			"draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
+			name: "DrawIcon",
+			description: "Draws the image in the given .ico file to the referenced canvas."
+				+ " The image will be positioned such that its top-left corner will be at (x, y) on the canvas."
+				+ " If width and height are both nil/unset, the image will be drawn at full size (100%). If both are specified, the image will be stretched to that size.")]
 		public void DrawIcon(string path, int x, int y, int? width = null, int? height = null)
 		{
 			try
@@ -234,11 +237,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample(
-			"LuaCanvas.DrawImage( \"C:\\image.bmp\", 16, 32, 18, 24, false );")]
+		[LuaMethodExample("""
+			canvas.DrawImage("C:\\image.png", 16, 32, 18, 24, false);
+		""")]
 		[LuaMethod(
-			"DrawImage",
-			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
+			name: "DrawImage",
+			description: "Draws the image in the given file (.bmp, .gif, .jpg, .png, or .tif) to the referenced canvas."
+				+ " The image will be positioned such that its top-left corner will be at (x, y) on the canvas."
+				+ " If width and height are both nil/unset, the image will be drawn at full size (100%). If both are specified, the image will be stretched to that size." // technically width or height can be specified w/o the other but let's leave that as UB
+				+ " If true is passed for the cache parameter, or if it's omitted, the file contents will be cached and re-used next time this function is called with the same path on this canvas. The canvas' cache can be cleared with ClearImageCache.")]
 		public void DrawImage(
 			string path,
 			int x,
@@ -266,11 +273,14 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.ClearImageCache();
 		}
 
-		[LuaMethodExample(
-			"LuaCanvas.DrawImageRegion( \"C:\\image.png\", 11, 22, 33, 44, 21, 43, 34, 45 );")]
+		[LuaMethodExample("""
+			canvas.DrawImageRegion("C:\\image.png", 11, 22, 33, 44, 21, 43, 34, 45);
+		""")]
 		[LuaMethod(
-			"DrawImageRegion",
-			"draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
+			name: "DrawImageRegion",
+			description: "Draws part of the image in the given file (.bmp, .gif, .jpg, .png, or .tif) to the referenced."
+				+ " Consult this diagram to see its usage (renders embedded on the TASVideos Wiki): [https://user-images.githubusercontent.com/13409956/198868522-55dc1e5f-ae67-4ebb-a75f-558656cb4468.png|alt=Diagram showing how to use forms.drawImageRegion]"
+				+ " The file contents will be cached and re-used next time this function is called with the same path on this canvas. The canvas' cache can be cleared with ClearImageCache.")]
 		public void DrawImageRegion(
 			string path,
 			int sourceX,
@@ -364,11 +374,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample(
-			"LuaCanvas.DrawPolygon( { 10, 0x007F00FF, 0x7F7F7FFF );")]
+		[LuaMethodExample("""
+			canvas.DrawPolygon({ { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 10, 30, 0x007F00FF, 0x7F7F7FFF);
+		""")]
 		[LuaMethod(
-			"DrawPolygon",
-			"Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). Line is the color of the polygon. Background is the optional fill color")]
+			name: "DrawPolygon",
+			description: "Draws a polygon (cyclic polyline) to the referenced canvas."
+				+ " The polygon must be given as a list of length-2 lists (co-ordinate pairs). Each pair is interpreted as the absolute co-ordinates of one of the vertices, and these are joined together in sequence to form a polygon. The last is connected to the first; you DON'T need to end with a copy of the first to close the cycle."
+				+ " If the x and y parameters are both specified, the whole polygon will be offset by that amount." // technically x or y can be specified w/o the other but let's leave that as UB
+				+ " If a value is passed for the line parameter, the polygon's edges are drawn in that color (i.e. the stroke color)."
+				+ " If a value is passed for the background parameter, the polygon's face is filled in that color.")]
 		public void DrawPolygon(
 			LuaTable points,
 			int? x = null,
