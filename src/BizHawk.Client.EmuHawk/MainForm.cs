@@ -629,9 +629,9 @@ namespace BizHawk.Client.EmuHawk
 			if (_argParser.cmdRom != null)
 			{
 				// Commandline should always override auto-load
-				OpenAdvanced_OpenRom ioa = new() { Path = _argParser.cmdRom };
-				if (ioa is OpenAdvanced_OpenRom oaor) ioa = new OpenAdvanced_OpenRom { Path = oaor.Path.MakeAbsolute() }; // fixes #3224; should this be done for all the IOpenAdvanced types? --yoshi
-				_ = LoadRom(ioa.SimplePath, new LoadRomArgs { OpenAdvanced = ioa });
+				OpenAdvanced_OpenRom ioa = new(_argParser.cmdRom);
+				if (ioa is OpenAdvanced_OpenRom oaor) ioa = new(oaor.Path.MakeAbsolute()); // fixes #3224; should this be done for all the IOpenAdvanced types? --yoshi
+				_ = LoadRom(ioa.SimplePath, new LoadRomArgs(ioa));
 				if (Game.IsNullInstance())
 				{
 					ShowMessageBox(owner: null, $"Failed to load {_argParser.cmdRom} specified on commandline");
@@ -2077,15 +2077,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ioa = OpenAdvancedSerializer.ParseWithLegacy(rom);
 
-			var args = new LoadRomArgs
-			{
-				OpenAdvanced = ioa
-			};
-
 			// if(ioa is this or that) - for more complex behaviour
 			string romPath = ioa.SimplePath;
 
-			if (!LoadRom(romPath, args, out var failureIsFromAskSave))
+			if (!LoadRom(romPath, new LoadRomArgs(ioa), out var failureIsFromAskSave))
 			{
 				if (failureIsFromAskSave) AddOnScreenMessage("ROM loading cancelled; a tool had unsaved changes");
 				else if (ioa is OpenAdvanced_LibretroNoGame || File.Exists(romPath)) AddOnScreenMessage("ROM loading failed");
@@ -2320,7 +2315,7 @@ namespace BizHawk.Client.EmuHawk
 				initDir: Config.PathEntries.RomAbsolutePath(Emulator.SystemId));
 			if (result is null) return;
 			var filePath = new FileInfo(result).FullName;
-			_ = LoadRom(filePath, new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = filePath } });
+			_ = LoadRom(filePath, new LoadRomArgs(new OpenAdvanced_OpenRom(filePath)));
 		}
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)

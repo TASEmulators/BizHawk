@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common
 		{
 			return text.StartsWith('*')
 				? Deserialize(text.Substring(1))
-				: new OpenAdvanced_OpenRom { Path = text };
+				: new OpenAdvanced_OpenRom(text);
 		}
 
 		private static IOpenAdvanced Deserialize(string text)
@@ -150,6 +150,12 @@ namespace BizHawk.Client.Common
 		public string TypeName => "OpenRom";
 		public string DisplayName => Path;
 		public string SimplePath => Path;
+
+		public OpenAdvanced_OpenRom() {}
+
+		public OpenAdvanced_OpenRom(string path)
+			: this()
+			=> Path = path;
 
 		public void Deserialize(string str)
 		{
