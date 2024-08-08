@@ -629,7 +629,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_argParser.cmdRom != null)
 			{
 				// Commandline should always override auto-load
-				var ioa = OpenAdvancedSerializer.ParseWithLegacy(_argParser.cmdRom);
+				OpenAdvanced_OpenRom ioa = new() { Path = _argParser.cmdRom };
 				if (ioa is OpenAdvanced_OpenRom oaor) ioa = new OpenAdvanced_OpenRom { Path = oaor.Path.MakeAbsolute() }; // fixes #3224; should this be done for all the IOpenAdvanced types? --yoshi
 				_ = LoadRom(ioa.SimplePath, new LoadRomArgs { OpenAdvanced = ioa });
 				if (Game.IsNullInstance())
