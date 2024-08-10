@@ -235,20 +235,22 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_rom = GetRomBytes();
 				_romDomain = new MemoryDomainByteArray(ROM_DOMAIN_NAME, MemoryDomain.Endian.Little, _rom, writable: true, wordSize: 1);
-
-				if (_domain.Name == _romDomain.Name)
-				{
-					_domain = _romDomain;
-				}
 			}
 			else
 			{
 				_romDomain = null;
 			}
-			
-			_domain = MemoryDomains.Any(x => x.Name == _domain.Name)
-				? MemoryDomains[_domain.Name]
-				: MemoryDomains.MainMemory;
+
+			if (_domain.Name == ROM_DOMAIN_NAME && _romDomain is not null)
+			{
+				_domain = _romDomain;
+			}
+			else
+			{ 
+				_domain = MemoryDomains.Any(x => x.Name == _domain.Name)
+					? MemoryDomains[_domain.Name]
+					: MemoryDomains.MainMemory;
+			}
 
 			BigEndian = _domain.EndianType == MemoryDomain.Endian.Big;
 
