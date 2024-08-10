@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
-using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
@@ -458,23 +457,16 @@ namespace BizHawk.Client.EmuHawk
 			var path = MainForm.CurrentlyOpenRomArgs.OpenAdvanced.SimplePath;
 			if (string.IsNullOrEmpty(path))
 			{
-				return new byte[] { 0xFF };
-			}
-
-			using var file = new HawkFile(path);
-
-			if (!file.Exists)
-			{
 				return null;
 			}
 
-			if (file.IsArchive)
+			using var file = new HawkFile(path);
+			if (file.Exists)
 			{
-				var stream = file.GetStream();
-				return stream.ReadAllBytes();
+				return file.ReadAllBytes();
 			}
 
-			return File.ReadAllBytes(path);
+			return null;
 		}
 
 		private static int GetNumDigits(long i)
