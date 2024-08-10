@@ -110,7 +110,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private string _findStr = "";
 		private bool _mouseIsDown;
-		private byte[] _rom;
 		private MemoryDomain _romDomain;
 		private HexFind _hexFind;
 		private string _lastRom = "";
@@ -233,8 +232,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator.SystemId is not VSystemID.Raw.Arcade)
 			{
-				_rom = GetRomBytes();
-				_romDomain = new MemoryDomainByteArray(ROM_DOMAIN_NAME, MemoryDomain.Endian.Little, _rom, writable: true, wordSize: 1);
+				var rom = GetRomBytes();
+				_romDomain = new MemoryDomainByteArray(ROM_DOMAIN_NAME, MemoryDomain.Endian.Little, rom, writable: true, wordSize: 1);
 			}
 			else
 			{
