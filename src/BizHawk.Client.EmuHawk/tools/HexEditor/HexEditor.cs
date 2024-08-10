@@ -230,14 +230,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
+			_romDomain = null;
 			if (Emulator.SystemId is not VSystemID.Raw.Arcade)
 			{
 				var rom = GetRomBytes();
-				_romDomain = new MemoryDomainByteArray(ROM_DOMAIN_NAME, MemoryDomain.Endian.Little, rom, writable: true, wordSize: 1);
-			}
-			else
-			{
-				_romDomain = null;
+				if (rom is not null)
+				{
+					_romDomain = new MemoryDomainByteArray(ROM_DOMAIN_NAME, MemoryDomain.Endian.Little, rom, writable: true, wordSize: 1);
+				}
 			}
 
 			if (_domain.Name == ROM_DOMAIN_NAME && _romDomain is not null)
