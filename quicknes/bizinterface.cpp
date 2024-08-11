@@ -53,6 +53,8 @@ QN_EXPORT const char *qn_set_sample_rate(quickerNES::Emu *e, int rate)
 
 QN_EXPORT const char *qn_emulate_frame(quickerNES::Emu *e, int pad1, int pad2, int arkanoidPosition, int arkanoidFire, int controllerType)
 {
+	e->setControllerType((quickerNES::Core::controllerType_t)controllerType);
+
 	uint32_t arkanoidLatch = 0;
 
 	if ((quickerNES::Core::controllerType_t) controllerType == quickerNES::Core::controllerType_t::arkanoidNES_t ||
