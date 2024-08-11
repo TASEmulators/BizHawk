@@ -82,21 +82,40 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private void SetControllerDefinition()
 		{
 			ControllerDefinition def = new("NES Controller");
+
 			void AddButtons(IEnumerable<(string PrefixedName, uint Bitmask)> entries)
 				=> def.BoolButtons.AddRange(entries.Select(static p => p.PrefixedName));
-			AddButtons(_syncSettings.Port1 switch
+
+			if (_syncSettings.Port1 == Port1PeripheralOption.ArkanoidNES || _syncSettings.Port1 == Port1PeripheralOption.ArkanoidFamicom)
 			{
-				Port1PeripheralOption.Gamepad => GamepadButtons[0],
-				Port1PeripheralOption.FourScore => FourScoreButtons[0],
-				_ => Enumerable.Empty<(string PrefixedName, uint Bitmask)>()
-			});
-			AddButtons(_syncSettings.Port2 switch
+				def.AddAxis("Paddle", 0.RangeTo(160), 80);
+				def.BoolButtons.Add("Fire");
+			}
+
+			if (_syncSettings.Port1 == Port1PeripheralOption.Gamepad || _syncSettings.Port1 == Port1PeripheralOption.FourScore || _syncSettings.Port1 == Port1PeripheralOption.ArkanoidFamicom)
 			{
-				Port2PeripheralOption.Gamepad => GamepadButtons[1],
-				Port2PeripheralOption.FourScore2 => FourScoreButtons[1],
-				_ => Enumerable.Empty<(string PrefixedName, uint Bitmask)>()
-			});
+				AddButtons(_syncSettings.Port1 switch
+				{
+					Port1PeripheralOption.Gamepad => GamepadButtons[0],
+					Port1PeripheralOption.ArkanoidFamicom => GamepadButtons[0],
+					Port1PeripheralOption.FourScore => FourScoreButtons[0],
+					_ => Enumerable.Empty<(string PrefixedName, uint Bitmask)>()
+				});
+			}
+
+			if (_syncSettings.Port2 == Port2PeripheralOption.Gamepad || _syncSettings.Port2 == Port2PeripheralOption.FourScore2)
+			{
+				AddButtons(_syncSettings.Port2 switch
+				{
+					Port2PeripheralOption.Gamepad => GamepadButtons[1],
+					Port2PeripheralOption.FourScore2 => FourScoreButtons[1],
+					_ => Enumerable.Empty<(string PrefixedName, uint Bitmask)>()
+				});
+			}
+
 			def.BoolButtons.AddRange(new[] { "Reset", "Power" }); // console buttons
+																  //ControllerDefinition = def.MakeImmutable();
+
 			ControllerDefinition = def.MakeImmutable();
 		}
 
