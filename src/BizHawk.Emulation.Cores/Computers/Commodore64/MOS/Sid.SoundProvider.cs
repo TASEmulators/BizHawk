@@ -1,4 +1,3 @@
-﻿using System;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS

@@ -16,4 +16,8 @@
 	<ItemGroup>
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.VersionInfo.dll" />
 	</ItemGroup>
+	<Target Name="InstallGitHooks" AfterTargets="PreBuildEvent">
+		<Exec Command="pwsh $(MSBuildProjectDirectory)/../../Dist/install_git_hooks.ps1"
+			IgnoreExitCode="true" /> <!-- i.e. may fail... though it was actually using the exit code properly, but oh well -->
+	</Target>
 </Project>

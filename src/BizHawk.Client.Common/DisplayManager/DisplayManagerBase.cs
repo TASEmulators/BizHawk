@@ -1,7 +1,6 @@
 ﻿// TODO
 // we could flag textures as 'actually' render targets (keep a reference to the render target?) which could allow us to convert between them more quickly in some cases
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
@@ -9,11 +8,9 @@ using System.IO;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
-using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.DrawingExtensions;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common.FilterManager;
 using BizHawk.Client.Common.Filters;
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
@@ -29,22 +26,22 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public abstract class DisplayManagerBase : IDisposable
 	{
-		private static DisplaySurface CreateDisplaySurface(int w, int h) => new(w, h);
-
 		protected class DisplayManagerRenderTargetProvider : IRenderTargetProvider
 		{
-			private readonly Func<Size, RenderTarget> _callback;
+			private readonly Func<Size, IRenderTarget> _callback;
 
-			RenderTarget IRenderTargetProvider.Get(Size size)
+			public IRenderTarget Get(Size size)
 			{
 				return _callback(size);
 			}
 
-			public DisplayManagerRenderTargetProvider(Func<Size, RenderTarget> callback)
+			public DisplayManagerRenderTargetProvider(Func<Size, IRenderTarget> callback)
 			{
 				_callback = callback;
 			}
 		}
+
+		public const int DEFAULT_DPI = 96;
 
 		public OSDManager OSD { get; }
 
@@ -67,9 +64,6 @@ namespace BizHawk.Client.Common
 			_gl = gl;
 			_renderer = renderer;
 
-			// it's sort of important for these to be initialized to something nonzero
-			_currEmuWidth = _currEmuHeight = 1;
-
 			_videoTextureFrugalizer = new(_gl);
 
 			_shaderChainFrugalizers = new RenderTargetFrugalizer[16]; // hacky hardcoded limit.. need some other way to manage these
@@ -88,7 +82,7 @@ namespace BizHawk.Client.Common
 				LoadCustomFont(fceux);
 			}
 
-			if (dispMethod is EDispMethod.OpenGL or EDispMethod.D3D9)
+			if (dispMethod is EDispMethod.OpenGL or EDispMethod.D3D11)
 			{
 				var fiHq2x = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk/hq2x.cgp"));
 				if (fiHq2x.Exists)
@@ -102,7 +96,7 @@ namespace BizHawk.Client.Common
 					using var stream = fiScanlines.OpenRead();
 					_shaderChainScanlines = new(_gl, new(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
-				var bicubicPath = dispMethod == EDispMethod.D3D9 ? "Shaders/BizHawk/bicubic-normal.cgp" : "Shaders/BizHawk/bicubic-fast.cgp";
+				var bicubicPath = dispMethod is EDispMethod.D3D11 ? "Shaders/BizHawk/bicubic-normal.cgp" : "Shaders/BizHawk/bicubic-fast.cgp";
 				var fiBicubic = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, bicubicPath));
 				if (fiBicubic.Exists)
 				{
@@ -111,10 +105,9 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			_apiHawkSurfaceSets[DisplaySurfaceID.EmuCore] = new(CreateDisplaySurface);
-			_apiHawkSurfaceSets[DisplaySurfaceID.Client] = new(CreateDisplaySurface);
-			_apiHawkSurfaceFrugalizers[DisplaySurfaceID.EmuCore] = new(_gl);
-			_apiHawkSurfaceFrugalizers[DisplaySurfaceID.Client] = new(_gl);
+			_imGuiResourceCache = new ImGuiResourceCache(_gl);
+			_apiHawkIDTo2DRenderer.Add(DisplaySurfaceID.EmuCore, _gl.Create2DRenderer(_imGuiResourceCache));
+			_apiHawkIDTo2DRenderer.Add(DisplaySurfaceID.Client, _gl.Create2DRenderer(_imGuiResourceCache));
 
 			RefreshUserShader();
 		}
@@ -141,10 +134,13 @@ namespace BizHawk.Client.Common
 			ActivateOpenGLContext();
 
 			_videoTextureFrugalizer.Dispose();
-			foreach (var f in _apiHawkSurfaceFrugalizers.Values)
+
+			foreach (var r in _apiHawkIDTo2DRenderer.Values)
 			{
-				f.Dispose();
+				r.Dispose();
 			}
+
+			_imGuiResourceCache.Dispose();
 
 			foreach (var f in _shaderChainFrugalizers)
 			{
@@ -171,12 +167,6 @@ namespace BizHawk.Client.Common
 		protected FilterProgram _currentFilterProgram;
 
 		/// <summary>
-		/// these variables will track the dimensions of the last frame's (or the next frame? this is confusing) emulator native output size
-		/// THIS IS OLD JUNK. I should get rid of it, I think. complex results from the last filter ingestion should be saved instead.
-		/// </summary>
-		private int _currEmuWidth, _currEmuHeight;
-
-		/// <summary>
 		/// additional pixels added at the unscaled level for the use of lua drawing. essentially increases the input video provider dimensions
 		/// </summary>
 		public (int Left, int Top, int Right, int Bottom) GameExtraPadding { get; set; }
@@ -192,8 +182,6 @@ namespace BizHawk.Client.Common
 		public PrivateFontCollection CustomFonts { get; } = new();
 
 		private readonly TextureFrugalizer _videoTextureFrugalizer;
-
-		private readonly Dictionary<DisplaySurfaceID, TextureFrugalizer> _apiHawkSurfaceFrugalizers = new();
 
 		protected readonly RenderTargetFrugalizer[] _shaderChainFrugalizers;
 
@@ -263,7 +251,7 @@ namespace BizHawk.Client.Common
 		private FilterProgram BuildDefaultChain(Size chainInSize, Size chainOutSize, bool includeOSD, bool includeUserFilters)
 		{
 			// select user special FX shader chain
-			var selectedChainProperties = new Dictionary<string, object>();
+			KeyValuePair<string, float>[] selectedChainProperties = null;
 			RetroShaderChain selectedChain = null;
 			switch (GlobalConfig.TargetDisplayFilter)
 			{
@@ -272,7 +260,7 @@ namespace BizHawk.Client.Common
 					break;
 				case 2 when _shaderChainScanlines is { Available: true }:
 					selectedChain = _shaderChainScanlines;
-					selectedChainProperties["uIntensity"] = 1.0f - GlobalConfig.TargetScanlineFilterIntensity / 256.0f;
+					selectedChainProperties = [ new("uIntensity", 1.0f - GlobalConfig.TargetScanlineFilterIntensity / 256.0f) ];
 					break;
 				case 3 when _shaderChainUser is { Available: true }:
 					selectedChain = _shaderChainUser;
@@ -316,6 +304,10 @@ namespace BizHawk.Client.Common
 				// in case the user requested so much padding that the dimensions are now negative, just turn it to something small
 				if (size.Width < 1) size.Width = 1;
 				if (size.Height < 1) size.Height = 1;
+
+				// if either of the dimensions exceed the maximum size of a texture, we need to constrain them
+				size.Width = Math.Min(size.Width, _gl.MaxTextureDimension);
+				size.Height = Math.Min(size.Height, _gl.MaxTextureDimension);
 
 				var fPadding = new FinalPresentation(size);
 				chain.AddFilter(fPadding, "padding");
@@ -390,7 +382,7 @@ namespace BizHawk.Client.Common
 			return chain;
 		}
 
-		private static void AppendRetroShaderChain(FilterProgram program, string name, RetroShaderChain retroChain, Dictionary<string, object> properties)
+		private static void AppendRetroShaderChain(FilterProgram program, string name, RetroShaderChain retroChain, KeyValuePair<string, float>[] properties)
 		{
 			for (var i = 0; i < retroChain.Passes.Length; i++)
 			{
@@ -403,16 +395,9 @@ namespace BizHawk.Client.Common
 
 		private void AppendApiHawkLayer(FilterProgram chain, DisplaySurfaceID surfaceID)
 		{
-			var luaNativeSurface = _apiHawkSurfaceSets[surfaceID].GetCurrent();
-			if (luaNativeSurface == null)
-			{
-				return;
-			}
-
-			var luaNativeTexture = _apiHawkSurfaceFrugalizers[surfaceID].Get(luaNativeSurface);
-			var fLuaLayer = new LuaLayer();
-			fLuaLayer.SetTexture(luaNativeTexture);
-			chain.AddFilter(fLuaLayer, surfaceID.GetName());
+			var apiHawkRenderer = _apiHawkIDTo2DRenderer[surfaceID];
+			var fApiHawkLayer = new ApiHawkLayer(apiHawkRenderer);
+			chain.AddFilter(fApiHawkLayer, surfaceID.GetName());
 		}
 
 		protected abstract Point GraphicsControlPointToClient(Point p);
@@ -455,6 +440,8 @@ namespace BizHawk.Client.Common
 		public abstract Size GetPanelNativeSize();
 
 		protected abstract Size GetGraphicsControlSize();
+
+		protected abstract int GetGraphicsControlDpi();
 
 		/// <summary>
 		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
@@ -503,6 +490,7 @@ namespace BizHawk.Client.Common
 			UpdateSourceInternal(job);
 			return job.OffscreenBb;
 		}
+
 		/// <summary>
 		/// Does the display process to an offscreen buffer, suitable for a Lua-inclusive movie.
 		/// </summary>
@@ -791,20 +779,25 @@ namespace BizHawk.Client.Common
 			vw += padding.Horizontal;
 			vh += padding.Vertical;
 
-			//in case the user requested so much padding that the dimensions are now negative, just turn it to something small.
+			// in case the user requested so much padding that the dimensions are now negative, just turn it to something small.
 			if (vw < 1) vw = 1;
 			if (vh < 1) vh = 1;
 
+			// if either of the dimensions exceed the maximum size of a texture, we need to constrain them
+			vw = Math.Min(vw, _gl.MaxTextureDimension);
+			vh = Math.Min(vh, _gl.MaxTextureDimension);
+
 			BitmapBuffer bb = null;
-			Texture2d videoTexture = null;
+			ITexture2D videoTexture = null;
 			if (!simulate)
 			{
-				if (videoProvider is IGLTextureProvider glTextureProvider && _gl.DispMethodEnum == EDispMethod.OpenGL)
+				if (videoProvider is IGLTextureProvider glTextureProvider)
 				{
 					// FYI: this is a million years from happening on n64, since it's all geriatric non-FBO code
-					videoTexture = _gl.WrapGLTexture2d(new(glTextureProvider.GetGLTexture()), bufferWidth, bufferHeight);
+					videoTexture = _gl.WrapGLTexture2D(glTextureProvider.GetGLTexture(), bufferWidth, bufferHeight);
 				}
-				else
+
+				if (videoTexture == null)
 				{
 					// wrap the VideoProvider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
 					bb = new(bufferWidth, bufferHeight, videoProvider.GetVideoBuffer());
@@ -812,15 +805,8 @@ namespace BizHawk.Client.Common
 
 					//now, acquire the data sent from the videoProvider into a texture
 					videoTexture = _videoTextureFrugalizer.Get(bb);
-
-					// lets not use this. lets define BizwareGL to make clamp by default (TBD: check opengl)
-					// _gl.SetTextureWrapMode(videoTexture, true);
 				}
 			}
-
-			// record the size of what we received, since lua and stuff is gonna want to draw onto it
-			_currEmuWidth = bufferWidth;
-			_currEmuHeight = bufferHeight;
 
 			//build the default filter chain and set it up with services filters will need
 			var chainInsize = new Size(bufferWidth, bufferHeight);
@@ -828,6 +814,8 @@ namespace BizHawk.Client.Common
 			var filterProgram = BuildDefaultChain(chainInsize, chainOutsize, job.IncludeOSD, job.IncludeUserFilters);
 			filterProgram.GuiRenderer = _renderer;
 			filterProgram.GL = _gl;
+
+			filterProgram.ControlDpi = GetGraphicsControlDpi();
 
 			//setup the source image filter
 			var fInput = (SourceImage)filterProgram["input"];
@@ -865,10 +853,8 @@ namespace BizHawk.Client.Common
 		public void Blank()
 		{
 			ActivateGraphicsControlContext();
-			_gl.BeginScene();
-			_gl.BindRenderTarget(null);
+			_gl.BindDefaultRenderTarget();
 			_gl.ClearColor(Color.Black);
-			_gl.EndScene();
 			SwapBuffersOfGraphicsControl();
 		}
 
@@ -876,27 +862,20 @@ namespace BizHawk.Client.Common
 		{
 			if (!job.Offscreen) throw new InvalidOperationException();
 
-			// begin rendering on this context
-			// should this have been done earlier?
-			// do i need to check this on an intel video card to see if running excessively is a problem? (it used to be in the FinalTarget command below, shouldn't be a problem)
-			//GraphicsControl.Begin(); // CRITICAL POINT for yabause+GL
-
 			//TODO - auto-create and age these (and dispose when old)
 			var rtCounter = 0;
 			// ReSharper disable once AccessToModifiedClosure
 			_currentFilterProgram.RenderTargetProvider = new DisplayManagerRenderTargetProvider(size => _shaderChainFrugalizers[rtCounter++].Get(size));
 
-			_gl.BeginScene();
 			RunFilterChainSteps(ref rtCounter, out var rtCurr, out _);
-			_gl.EndScene();
 
-			job.OffscreenBb = rtCurr.Texture2d.Resolve();
+			job.OffscreenBb = rtCurr.Resolve();
 			job.OffscreenBb.DiscardAlpha();
 		}
 
-		protected void RunFilterChainSteps(ref int rtCounter, out RenderTarget rtCurr, out bool inFinalTarget)
+		protected void RunFilterChainSteps(ref int rtCounter, out IRenderTarget rtCurr, out bool inFinalTarget)
 		{
-			Texture2d texCurr = null;
+			ITexture2D texCurr = null;
 			rtCurr = null;
 			inFinalTarget = false;
 			foreach (var step in _currentFilterProgram.Program) switch (step.Type)
@@ -917,7 +896,7 @@ namespace BizHawk.Client.Common
 					break;
 				case FilterProgram.ProgramStepType.FinalTarget:
 					_currentFilterProgram.CurrRenderTarget = rtCurr = null;
-					_gl.BindRenderTarget(rtCurr);
+					_gl.BindDefaultRenderTarget();
 					inFinalTarget = true;
 					break;
 				default:
@@ -931,7 +910,7 @@ namespace BizHawk.Client.Common
 			try
 			{
 				var fontData = new byte[fontStream.Length];
-				fontStream.Read(fontData, 0, (int)fontStream.Length);
+				_ = fontStream.Read(fontData, 0, (int)fontStream.Length);
 				Marshal.Copy(fontData, 0, data, (int)fontStream.Length);
 				CustomFonts.AddMemoryFont(data, fontData.Length);
 			}
@@ -942,87 +921,34 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private readonly Dictionary<DisplaySurfaceID, IDisplaySurface> _apiHawkIDToSurface = new();
-
-		/// <remarks>Can't this just be a prop of <see cref="IDisplaySurface"/>? --yoshi</remarks>
-		private readonly Dictionary<IDisplaySurface, DisplaySurfaceID> _apiHawkSurfaceToID = new();
-
-		private readonly Dictionary<DisplaySurfaceID, SwappableDisplaySurfaceSet<DisplaySurface>> _apiHawkSurfaceSets = new();
+		private readonly ImGuiResourceCache _imGuiResourceCache;
+		private readonly Dictionary<DisplaySurfaceID, I2DRenderer> _apiHawkIDTo2DRenderer = new();
 
 		/// <summary>
-		/// Peeks a locked lua surface, or returns null if it isn't locked
+		/// Gets an ApiHawk 2D renderer, suitable for drawing with Gui/lua apis and such
+		/// The size of this surface might change between different calls
+		/// Implicitly, if the size changes the surface will be cleared
 		/// </summary>
-		public IDisplaySurface PeekApiHawkLockedSurface(DisplaySurfaceID surfaceID)
-			=> _apiHawkIDToSurface.TryGetValue(surfaceID, out var surface) ? surface : null;
-
-		public IDisplaySurface LockApiHawkSurface(DisplaySurfaceID surfaceID, bool clear)
-		{
-			if (_apiHawkIDToSurface.ContainsKey(surfaceID))
-			{
-				throw new InvalidOperationException($"ApiHawk/Lua surface is already locked: {surfaceID.GetName()}");
-			}
-
-			var sdss = _apiHawkSurfaceSets.GetValueOrPut(surfaceID, static _ => new(CreateDisplaySurface));
-
-			// placeholder logic for more abstracted surface definitions from filter chain
-			var (currNativeWidth, currNativeHeight) = GetPanelNativeSize();
-			currNativeWidth += ClientExtraPadding.Left + ClientExtraPadding.Right;
-			currNativeHeight += ClientExtraPadding.Top + ClientExtraPadding.Bottom;
-
-			var (width, height) = surfaceID switch
-			{
-				DisplaySurfaceID.EmuCore => (GameExtraPadding.Left + _currEmuWidth + GameExtraPadding.Right, GameExtraPadding.Top + _currEmuHeight + GameExtraPadding.Bottom),
-				DisplaySurfaceID.Client => (currNativeWidth, currNativeHeight),
-				_ => throw new InvalidOperationException()
-			};
-
-			IDisplaySurface ret = sdss.AllocateSurface(width, height, clear);
-			_apiHawkIDToSurface[surfaceID] = ret;
-			_apiHawkSurfaceToID[ret] = surfaceID;
-			return ret;
-		}
+		public I2DRenderer GetApiHawk2DRenderer(DisplaySurfaceID surfaceID)
+			=> _apiHawkIDTo2DRenderer[surfaceID];
 
 		public void ClearApiHawkSurfaces()
 		{
-			foreach (var kvp in _apiHawkSurfaceSets)
+			foreach (var renderer in _apiHawkIDTo2DRenderer.Values)
 			{
-				try
-				{
-					if (PeekApiHawkLockedSurface(kvp.Key) == null)
-					{
-						var surfLocked = LockApiHawkSurface(kvp.Key, true);
-						if (surfLocked != null)
-						{
-							UnlockApiHawkSurface(surfLocked);
-						}
-					}
-
-					_apiHawkSurfaceSets[kvp.Key].SetPending(null);
-				}
-				catch (InvalidOperationException)
-				{
-					// ignored
-				}
+				renderer.Clear();
 			}
 		}
 
-		/// <summary>unlocks this IDisplaySurface which had better have been locked as a lua surface</summary>
-		/// <exception cref="InvalidOperationException">already unlocked</exception>
-		public void UnlockApiHawkSurface(IDisplaySurface surface)
+		public void DiscardApiHawkSurfaces()
 		{
-			if (surface is not DisplaySurface dispSurfaceImpl)
+			foreach (var renderer in _apiHawkIDTo2DRenderer.Values)
 			{
-				throw new ArgumentException("don't mix " + nameof(IDisplaySurface) + " implementations!", nameof(surface));
+				renderer.Discard();
 			}
-
-			if (!_apiHawkSurfaceToID.TryGetValue(dispSurfaceImpl, out var surfaceID))
-			{
-				throw new InvalidOperationException("Surface was not locked as a lua surface");
-			}
-
-			_apiHawkSurfaceToID.Remove(dispSurfaceImpl);
-			_apiHawkIDToSurface.Remove(surfaceID);
-			_apiHawkSurfaceSets[surfaceID].SetPending(dispSurfaceImpl);
 		}
+
+		public void ClearApiHawkTextureCache()
+			=> _imGuiResourceCache.ClearTextureCache();
 	}
 }

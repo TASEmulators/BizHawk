@@ -10,7 +10,6 @@
 
 // TODO - refactor length counter to be separate component
 
-using System;
 using System.Runtime.CompilerServices;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
@@ -1408,7 +1407,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// since the units run concurrently, the APU frame sequencer is ran last because
 			// it can change the output values of the pulse/triangle channels
 			// we want the changes to affect it on the *next* cycle.
-			if (sequencer_irq_flag == false)
+			if (!sequencer_irq_flag)
 				sequencer_irq = false;
 
 			if (DebugCallbackDivider != 0)

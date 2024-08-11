@@ -229,10 +229,10 @@ private:
 
   auto bufferSynchronize() -> void {
     if(!fileHandle) return;
-    if(bufferOffset == (fileOffset & ~(buffer.size() - 1))) return;
+    if(bufferOffset == (fileOffset & ~u64(buffer.size() - 1))) return;
 
     bufferFlush();
-    bufferOffset = fileOffset & ~(buffer.size() - 1);
+    bufferOffset = fileOffset & ~u64(buffer.size() - 1);
     fseek(fileHandle, bufferOffset, SEEK_SET);
     u64 length = bufferOffset + buffer.size() <= fileSize ? buffer.size() : fileSize & buffer.size() - 1;
     if(length) (void)fread(buffer.data(), 1, length, fileHandle);

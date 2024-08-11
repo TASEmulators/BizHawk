@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
@@ -28,12 +26,12 @@ namespace BizHawk.Emulation.Common
 		public ICoreFileProvider CoreFileProvider { get; }
 
 		/// <summary>
-		/// Gets a message to show. reasonably annoying (dialog box), shouldn't be used most of the time
+		/// Gets a message to show. Reasonably annoying (dialog box), shouldn't be used most of the time
 		/// </summary>
 		public Action<string> ShowMessage { get; }
 
 		/// <summary>
-		/// Gets a message to show. less annoying (OSD message). Should be used for ignorable helpful messages
+		/// Gets a message to show for optional duration in seconds. Less annoying (OSD message). Should be used for ignorable helpful messages
 		/// </summary>
 		public Action<string, int?> Notify { get; }
 

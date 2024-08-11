@@ -746,7 +746,7 @@ static u8 PeekFunc(u64 address)
 	}
 
 	ares::Nintendo64::Thread unused;
-	return ares::Nintendo64::bus.read<ares::Nintendo64::Byte>(addr, unused);
+	return ares::Nintendo64::bus.read<ares::Nintendo64::Byte>(addr, unused, nullptr);
 }
 
 static void SysBusAccess(u8* buffer, u64 address, u64 count, bool write)
@@ -755,7 +755,7 @@ static void SysBusAccess(u8* buffer, u64 address, u64 count, bool write)
 	{
 		ares::Nintendo64::Thread unused;
 		while (count--)
-			ares::Nintendo64::bus.write<ares::Nintendo64::Byte>(address++, *buffer++, unused);
+			ares::Nintendo64::bus.write<ares::Nintendo64::Byte>(address++, *buffer++, unused, nullptr);
 	}
 	else
 	{

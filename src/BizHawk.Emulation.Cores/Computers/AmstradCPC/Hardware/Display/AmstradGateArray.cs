@@ -2,7 +2,7 @@
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -1224,14 +1224,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public class CharacterLine
 		{
+#if false
 			/// <summary>
 			/// Screenmode is defined at each HSYNC (start of a new character line)
 			/// Therefore we pass the mode in via constructor
 			/// </summary>
-			//public CharacterLine(int screenMode)
-			//{
-			//ScreenMode = screenMode;
-			//}
+			public CharacterLine(int screenMode)
+			=> ScreenMode = screenMode;
+#endif
 
 			public int ScreenMode = 1;
 			public List<Phase> Phases = new List<Phase>();

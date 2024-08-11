@@ -46,5 +46,5 @@ protected:
   u64 _scalar = 0;
   u64 _clock = 0;
 
-  friend class Scheduler;
+  friend struct Scheduler;
 };

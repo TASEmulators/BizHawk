@@ -8,6 +8,11 @@ auto Cartridge::ISViewer::readWord(u32 address) -> u32 {
   return ram.read<Word>(address);
 }
 
+auto Cartridge::ISViewer::messageChar(char c) -> void {
+  if(!tracer->enabled()) return;
+  tracer->notify(c);
+}
+
 auto Cartridge::ISViewer::writeHalf(u32 address, u16 data) -> void {
   address = (address & 0xffff);
 
@@ -23,7 +28,7 @@ auto Cartridge::ISViewer::writeHalf(u32 address, u16 data) -> void {
     // functional.
     for(auto address : range(data)) {
       char c = ram.read<Byte>(0x20 + address);
-      fputc(c, stdout);
+      messageChar(c);
     }
     return;
   }

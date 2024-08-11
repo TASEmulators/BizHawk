@@ -1,7 +1,7 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 using BizHawk.Common;
 
@@ -96,8 +96,8 @@ namespace BizHawk.Client.Common
 				using var rom = new HawkFile(result);
 				if (rom.IsArchive) rom.BindFirst();
 				var romData = (ReadOnlySpan<byte>) rom.ReadAllBytes();
-				if (romData.Length % 1024 == 512)
-					romData = romData.Slice(512, romData.Length - 512);
+				int headerBytes = romData.Length % 1024; // assume that all roms have sizes divisible by 1024, and any rest is header
+				romData = romData[headerBytes..];
 				if (matchesMovieHash(romData))
 					return SHA1Checksum.ComputeDigestHex(romData);
 
@@ -122,22 +122,11 @@ namespace BizHawk.Client.Common
 			return str.Trim();
 		}
 
+		private static readonly Regex WhitespacePattern = new(@"\s+");
+
 		// Reduce all whitespace to single spaces.
 		protected static string SingleSpaces(string line)
-		{
-			line = line.Replace("\t", " ");
-			line = line.Replace("\n", " ");
-			line = line.Replace("\r", " ");
-			line = line.Replace("\r\n", " ");
-			string prev;
-			do
-			{
-				prev = line;
-				line = line.Replace("  ", " ");
-			}
-			while (prev != line);
-			return line;
-		}
+			=> WhitespacePattern.Replace(line, " ");
 
 		// Ends the string where a NULL character is found.
 		protected static string NullTerminated(string str)

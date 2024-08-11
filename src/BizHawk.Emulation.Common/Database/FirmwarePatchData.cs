@@ -1,13 +1,13 @@
-
-using System;
-
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// Represents a binary patch, to be applied to a byte array. Patches must be contiguous; multiple instances can be used to for non-contiguous patches.
 	/// Patches usually contain data which needs to be XOR'd with a base file, but with <see cref="Overwrite"/> set to <see langword="true"/>, this struct can represent data which should replace part of a base file.
 	/// </summary>
-	/// <remarks>TODO no mechanism to change length, would that be useful? --yoshi</remarks>
+	/// <remarks>
+	/// TODO no mechanism to change length, would that be useful? --yoshi<br/>
+	/// upon further reflection, I'm heading towards what is effectively a worse .bps, so maybe just use that --a later yoshi
+	/// </remarks>
 	public readonly struct FirmwarePatchData
 	{
 		public readonly byte[] Contents;

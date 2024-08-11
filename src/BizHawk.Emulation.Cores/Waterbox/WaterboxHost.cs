@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -100,12 +99,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_handle = GCHandle.Alloc(this, GCHandleType.Weak);
 			}
 
-			public unsafe IntPtr Read(IntPtr data, UIntPtr size)
+			public IntPtr Read(IntPtr data, UIntPtr size)
 			{
+				var count = checked((int) size);
 				try
 				{
-					var count = (int)size;
-					var n = _backingSpanStream.Read(new((void*)data, count));
+					var n = _backingSpanStream.Read(Util.UnsafeSpanFromPointer(ptr: data, length: count));
 					return Z.SS(n);
 				}
 				catch
@@ -114,12 +113,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 			}
 
-			public unsafe int Write(IntPtr data, UIntPtr size)
+			public int Write(IntPtr data, UIntPtr size)
 			{
+				var count = checked((int) size);
 				try
 				{
-					var count = (int)size;
-					_backingSpanStream.Write(new((void*)data, count));
+					_backingSpanStream.Write(Util.UnsafeSpanFromPointer(ptr: data, length: count));
 					return 0;
 				}
 				catch

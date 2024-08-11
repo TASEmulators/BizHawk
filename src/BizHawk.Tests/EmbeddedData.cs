@@ -1,6 +1,7 @@
-using System;
 using System.IO;
 using System.Reflection;
+
+[assembly: Parallelize(Scope = ExecutionScope.MethodLevel)]
 
 namespace BizHawk.Tests
 {

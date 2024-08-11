@@ -1,6 +1,6 @@
-﻿using System;
 using System.Collections.Generic;
 
+#pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
 {
 	public static class GenesisGameGenieDecoder
@@ -85,3 +85,4 @@ namespace BizHawk.Client.Common.cheats
 		}
 	}
 }
+#pragma warning restore MA0089

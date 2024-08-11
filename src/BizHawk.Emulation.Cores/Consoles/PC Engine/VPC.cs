@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.H6280;
@@ -228,10 +226,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				CPU.Execute(455 - VDC1.HBlankCycles - 2);
 
-				if (InActiveDisplay == false && VDC1.DmaRequested)
+				if (!InActiveDisplay && VDC1.DmaRequested)
 					VDC1.RunDmaForScanline();
 
-				if (InActiveDisplay == false && VDC2.DmaRequested)
+				if (!InActiveDisplay && VDC2.DmaRequested)
 					VDC2.RunDmaForScanline();
 
 				VDC1.RCRCounter++;
@@ -280,7 +278,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private unsafe void RenderBackgroundScanline(VDC vdc, byte priority, bool show)
 		{
-			if (vdc.BackgroundEnabled == false)
+			if (!vdc.BackgroundEnabled)
 				return;
 
 			// per-line parameters
@@ -351,7 +349,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private void RenderSpritesScanline(VDC vdc, byte lowPriority, byte highPriority, bool show)
 		{
-			if (vdc.SpritesEnabled == false)
+			if (!vdc.SpritesEnabled)
 				return;
 
 			// clear inter-sprite priority buffer
@@ -378,7 +376,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					patternNo &= 0x1FE;
 
 				int yofs;
-				if (vflip == false)
+				if (!vflip)
 				{
 					yofs = (vdc.ActiveLine - y) & 15;
 					if (height == 32)
@@ -442,7 +440,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						}
 					}
 				}
-				if (hflip == false)
+				if (!hflip)
 				{
 					if (x + width > 0 && y + height > 0)
 					{

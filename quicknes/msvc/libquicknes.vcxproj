@@ -161,6 +161,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);_QUICKERNES_DETECT_JOYPAD_READS;_QUICKERNES_ENABLE_TRACEBACK_SUPPORT;</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -180,6 +181,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);_QUICKERNES_DETECT_JOYPAD_READS;_QUICKERNES_ENABLE_TRACEBACK_SUPPORT;</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

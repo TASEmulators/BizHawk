@@ -6,17 +6,19 @@
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 
-//Yeah, I'm sorry this uses really old non-generic attributes
-//that's just how old this code is; support on ancient graphics cards is helpful
-
 #ifdef VERTEX
 
-uniform mat4 modelViewProj;
+uniform mat4 MVPMatrix;
+
+in vec4 VertexCoord;
+in vec2 TexCoord;
+
+out vec2 vTexcoord;
 
 void main()
 {
-	gl_Position = modelViewProj * gl_Vertex;
-	gl_TexCoord[0] = gl_MultiTexCoord0;
+	gl_Position = MVPMatrix * VertexCoord;
+	vTexcoord = TexCoord;
 }
 
 #endif //VERTEX
@@ -33,6 +35,10 @@ uniform struct
 uniform float Time;
 
 uniform sampler2D s_p;
+
+in vec2 vTexcoord;
+
+out vec4 FragColor;
 
 float saturate(float x)
 {
@@ -122,13 +128,13 @@ float expow(vec2 value, float exponent) {
 // MultiSampling for ghosting effect
 vec3 GhostSample(vec2 t, float latency) {
 
-	vec3 Out = texture2D(s_p,t).rgb;
+	vec3 Out = texture(s_p,t).rgb;
 	float Weight = 1.0f;
 	vec2 Direction = vec2(-latency,0.0f);
 	for(int i=1; i < GhostNumSamples; i++) {
 		float curweight = pow(1.0f-(float(i)/GhostNumSamples),1.0f/SignalLatencyAttenuation);
 
-		Out += GhostLatencyIntensity * curweight * texture2D(s_p,saturate(t+(1.0f-curweight)*Direction)).xyz;
+		Out += GhostLatencyIntensity * curweight * texture(s_p,saturate(t+(1.0f-curweight)*Direction)).xyz;
 		Weight += GhostLatencyIntensity * curweight;
 	}
 	return Out/Weight;
@@ -142,7 +148,7 @@ vec3 Bloom(vec2 t, vec2 r) {
 		for(int i = 0; i < 5; i++)
 		{
 			vec2 offset = vec2(BloomPositions[i],BloomPositions[j]) / r;
-			Out += texture2D(s_p, t + offset).rgb * BloomWeights[i*5+j];
+			Out += texture(s_p, t + offset).rgb * BloomWeights[i*5+j];
 		}
 	return pow(Out, vec3(BloomExponent,BloomExponent,BloomExponent)) * BloomIntensity;
 }
@@ -160,7 +166,7 @@ vec3 TVEffect(vec2 in_Position, vec2 FakeResolution, float Time) {
 	#ifdef GHOST_SAMPLING 
 		vec3 latencyweight = vec3(0.0f,0.0f,0.0f);
 		for(int i=1; i < GhostNumSamples; i++) {
-			latencyweight += texture2D(s_p, ScreenPos + vec2(1.0f/FakeResolution.x,0.0f)).xyz;
+			latencyweight += texture(s_p, ScreenPos + vec2(1.0f/FakeResolution.x,0.0f)).xyz;
 		}	
 		vec3 LatencyRGB = SignalLatencyRGB * (1.0-(latencyweight/GhostNumSamples));
 
@@ -168,9 +174,9 @@ vec3 TVEffect(vec2 in_Position, vec2 FakeResolution, float Time) {
 		vec3 SMP_Green = GhostSample((ScreenPos) + ((vec2(ColorFringeIntensity,0.0f))/FakeResolution),LatencyRGB.y).xyz;
 		vec3 SMP_Blue = GhostSample((ScreenPos) + ((vec2(ColorFringeIntensity*2.0f,0.0f))/FakeResolution),LatencyRGB.z).xyz;
 	#else
-		vec3 SMP_Red = texture2D(s_p, (ScreenPos)).xyz;
-		vec3 SMP_Green = texture2D(s_p, (ScreenPos) + ((vec2(ColorFringeIntensity,0.0f))/FakeResolution)).xyz;
-		vec3 SMP_Blue = texture2D(s_p, (ScreenPos) + ((vec2(ColorFringeIntensity*2.0f,0.0f))/FakeResolution)).xyz;
+		vec3 SMP_Red = texture(s_p, (ScreenPos)).xyz;
+		vec3 SMP_Green = texture(s_p, (ScreenPos) + ((vec2(ColorFringeIntensity,0.0f))/FakeResolution)).xyz;
+		vec3 SMP_Blue = texture(s_p, (ScreenPos) + ((vec2(ColorFringeIntensity*2.0f,0.0f))/FakeResolution)).xyz;
 	#endif
 
 	#ifdef BLOOM
@@ -203,7 +209,7 @@ vec3 TVEffect(vec2 in_Position, vec2 FakeResolution, float Time) {
 								);
 
 	// Non-Pixelated Image
-	vec3 ImageRGB = texture2D(s_p, ScreenPos).xyz;
+	vec3 ImageRGB = texture(s_p, ScreenPos).xyz;
 	return mix(ImageRGB, PixelRGB, FakePixelEffectBlend) * mask;
 
 }
@@ -211,8 +217,8 @@ vec3 TVEffect(vec2 in_Position, vec2 FakeResolution, float Time) {
 void main()
 {
 	vec4 color = vec4(1.0f,1.0f,1.0f,1.0f);
-	color.xyz = TVEffect(gl_TexCoord[0].xy, IN.texture_size, Time);
-	gl_FragColor = color;
+	color.xyz = TVEffect(vTexcoord, IN.texture_size, Time);
+	FragColor = color;
 }
 
 #endif

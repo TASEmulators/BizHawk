@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -481,8 +480,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedBranch == null)
 			{
-				Select(Branches.Current, true);
-				BranchView.Refresh();
+				if (Branches.Current != -1)
+				{
+					Select(Branches.Current, true);
+					BranchView.Refresh();
+				}
 				return;
 			}
 
@@ -593,8 +595,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				if (BranchView.CurrentCell.IsDataCell()
-					&& BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
+				if (BranchView.CurrentCell is { RowIndex: not null, Column.Name: BranchNumberColumnName })
 				{
 					BranchView.DragCurrentCell();
 				}

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -74,8 +73,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void label4_Click(object sender, EventArgs e)
-		{
-			AlwaysCheckbox.Checked ^= true;
-		}
+			=> AlwaysCheckbox.Checked = !AlwaysCheckbox.Checked;
 	}
 }

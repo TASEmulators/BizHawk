@@ -2,7 +2,6 @@
 // https://github.com/Themaister/Emulator-Shader-Pack/blob/master/Cg/README
 // https://github.com/libretro/common-shaders/
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -10,11 +9,11 @@ using System.IO;
 using System.Numerics;
 using System.Text.RegularExpressions;
 
-using BizHawk.Client.Common.FilterManager;
-
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
+
+using BizHawk.Client.Common.FilterManager;
 
 namespace BizHawk.Client.Common.Filters
 {
@@ -45,9 +44,9 @@ namespace BizHawk.Client.Common.Filters
 			Passes = preset.Passes.ToArray();
 			Errors = string.Empty;
 
-			if (owner.API is not ("OPENGL" or "D3D9"))
+			if (owner.DispMethodEnum is not (EDispMethod.OpenGL or EDispMethod.D3D11))
 			{
-				Errors = $"Unsupported API {owner.API}";
+				Errors = $"Unsupported Display Method {owner.DispMethodEnum}";
 				return;
 			}
 
@@ -67,11 +66,12 @@ namespace BizHawk.Client.Common.Filters
 
 					if (!File.Exists(path))
 					{
-						path = owner.API switch
+						// ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+						path = owner.DispMethodEnum switch
 						{
-							"OPENGL" => Path.ChangeExtension(path, ".glsl"),
-							"D3D9" => Path.ChangeExtension(path, ".hlsl"),
-							_ => throw new InvalidOperationException(),
+							EDispMethod.OpenGL => Path.ChangeExtension(path, ".glsl"),
+							EDispMethod.D3D11 => Path.ChangeExtension(path, ".hlsl"),
+							_ => throw new InvalidOperationException()
 						};
 					}
 				}
@@ -346,12 +346,9 @@ namespace BizHawk.Client.Common.Filters
 			// apply all parameters to this shader.. even if it was meant for other shaders. kind of lame.
 			if (Parameters != null)
 			{
-				foreach (var (k, v) in Parameters)
+				foreach (var (k, value) in Parameters)
 				{
-					if (v is float value)
-					{
-						shader.Pipeline[k].Set(value);
-					}
+					shader.Pipeline.SetUniform(k, value);
 				}
 			}
 
@@ -365,7 +362,7 @@ namespace BizHawk.Client.Common.Filters
 				InputTexture.SetFilterNearest();
 			}
 
-			_rsc.Shaders[_rsi].Run(input, input.Size, _outputSize, InputTexture.IsUpsideDown);
+			_rsc.Shaders[_rsi].Run(input, input.GetSize(), _outputSize, InputTexture.IsUpsideDown);
 
 			// maintain invariant.. i think.
 			InputTexture.SetFilterNearest();

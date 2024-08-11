@@ -65,7 +65,7 @@
 		public void ToggleOutput()
 		{
 			UpdateCycles();
-			_isHigh ^= true;
+			_isHigh = !_isHigh;
 		}
 
 		private void FlushOutputEvent()

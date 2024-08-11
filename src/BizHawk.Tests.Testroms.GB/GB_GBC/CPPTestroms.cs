@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -7,8 +6,6 @@ using System.Reflection;
 
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 
@@ -86,11 +83,7 @@ namespace BizHawk.Tests.Testroms.GB.CPPTestroms
 			public static readonly IReadOnlyList<string> KnownFailures = new[]
 			{
 				"open-bus-ss-test on CGB_C in GBHawk",
-				"open-bus-ss-test on CGB_C in SameBoy",
-				"open-bus-ss-test on CGB_C in SameBoy (no BIOS)",
 				"open-bus-ss-test on DMG in GBHawk",
-				"open-bus-ss-test on DMG in SameBoy",
-				"open-bus-ss-test on DMG in SameBoy (no BIOS)",
 				"ramg-mbc3-test on CGB_C in GBHawk",
 				"ramg-mbc3-test on DMG in GBHawk",
 				"rtc-invalid-banks-test on CGB_C in GBHawk",
@@ -221,7 +214,12 @@ namespace BizHawk.Tests.Testroms.GB.CPPTestroms
 			if (!ImageUtils.SkipFileIO(state))
 			{
 				ImageUtils.SaveScreenshot(NormaliseGBScreenshot(actualUnnormalised, testCase.Setup), (SUITE_ID, caseStr));
-				Console.WriteLine($"should read: {string.Join("\n", testCase.ExpectedValue.Chunk(40).Select(static a => string.Concat(a)))}");
+				Console.WriteLine("should read: ");
+				const int STR_FOLD_COL = 40;
+				for (var iEx = 0; iEx < testCase.ExpectedValue.Length; iEx += STR_FOLD_COL)
+				{
+					Console.WriteLine(testCase.ExpectedValue.Substring(startIndex: iEx, length: STR_FOLD_COL));
+				}
 			}
 			switch (state)
 			{

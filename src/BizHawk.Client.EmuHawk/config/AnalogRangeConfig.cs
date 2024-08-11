@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -122,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.Button == MouseButtons.Right)
 			{
-				Radial ^= true;
+				Radial = !Radial;
 			}
 
 			base.OnMouseDown(e);

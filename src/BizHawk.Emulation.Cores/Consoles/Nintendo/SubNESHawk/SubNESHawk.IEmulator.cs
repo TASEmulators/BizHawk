@@ -1,5 +1,5 @@
-﻿using System;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 {
@@ -34,6 +34,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 			reset_cycle = controller.AxisValue("Reset Cycle");
 			reset_cycle_int = (int)Math.Floor(reset_cycle);
+
+			if (_nesCore.Board is FDS fds)
+			{
+				if (controller.IsPressed("FDS Eject"))
+				{
+					fds.Eject();
+				}
+
+				for (var i = 0; i < fds.NumSides; i++)
+				{
+					if (controller.IsPressed("FDS Insert " + i))
+					{
+						fds.InsertSide(i);
+					}
+				}
+			}
+
+			if (_nesCore.IsVS)
+			{
+				_nesCore.VS_service = (byte)(controller.IsPressed("Service Switch") ? 1 : 0);
+
+				if (controller.IsPressed("Insert Coin P1"))
+				{
+					_nesCore.VS_coin_inserted |= 1;
+				}
+				else
+				{
+					_nesCore.VS_coin_inserted &= 2;
+				}
+
+				if (controller.IsPressed("Insert Coin P2"))
+				{
+					_nesCore.VS_coin_inserted |= 2;
+				}
+				else
+				{
+					_nesCore.VS_coin_inserted &= 1;
+				}
+			}
 
 			_nesCore.lagged = true;
 

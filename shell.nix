@@ -5,6 +5,7 @@
 , git-cola ? pkgs.git-cola
 , git ? pkgs.gitMinimal
 , nano ? pkgs.nano
+, powershell ? pkgs.powershell
 , debugDotnetHostCrashes ? false # forwarded to Dist/launch-scripts.nix
 , debugPInvokes ? false # forwarded to Dist/launch-scripts.nix
 , forNixOS ? true
@@ -12,18 +13,17 @@
 , useNanoAndCola ? false
 , useVSCode ? false
 }: let
-	# thinking of exposing pre-configured IDEs from `default.nix` so they're available here
 	avail = import ./. { inherit debugDotnetHostCrashes debugPInvokes forNixOS system; };
 	f = drv: mkShell {
-		packages = [ git ]
+		packages = [ git powershell ]
 			++ lib.optionals useNanoAndCola [ git-cola nano ]
-			++ lib.optionals useKate [] #TODO
+			++ lib.optionals useKate avail.IDEs.kate
 			++ lib.optionals useVSCode [] #TODO https://devblogs.microsoft.com/dotnet/csharp-dev-kit-now-generally-available/ https://learn.microsoft.com/en-us/training/modules/implement-visual-studio-code-debugging-tools/
 			;
 		inputsFrom = [ drv ];
 		shellHook = ''
 			export BIZHAWKBUILD_HOME='${builtins.toString ./.}'
-			export BIZHAWK_HOME="$BIZHAWKBUILD_HOME/output"
+			export BIZHAWK_HOME="$BIZHAWKBUILD_HOME/output/"
 			ldLibPath='${lib.makeLibraryPath drv.buildInputs}' # for running tests
 			if [ -z "$LD_LIBRARY_PATH" ]; then
 				export LD_LIBRARY_PATH="$ldLibPath"
@@ -32,11 +32,14 @@
 			fi
 			alias discohawk-monort-local='${avail.launchScriptsForLocalBuild.discohawk}'
 			alias emuhawk-monort-local='${avail.launchScriptsForLocalBuild.emuhawk}'
-			pfx="$(realpath --relative-to="$PWD" "$BIZHAWKBUILD_HOME")/"
-			if [ "$pfx" = "./" ]; then pfx=""; fi
-			printf "%s\n%s\n" \
-				"Run ''${pfx}Dist/Build{Debug,Release}.sh to build the solution. You may need to clean up with ''${pfx}Dist/CleanupBuildOutputDirs.sh." \
-				"Once built, running {discohawk,emuhawk}-monort-local will pull from ''${pfx}output/* and use Mono from Nixpkgs."
+			case "$-" in *i*)
+				pfx="$(realpath --relative-to="$PWD" "$BIZHAWKBUILD_HOME")/"
+				if [ "$pfx" = "./" ]; then pfx=""; fi
+				printf "%s\n%s\n" \
+					"Run ''${pfx}Dist/Build{Debug,Release}.sh to build the solution. You may need to clean up with ''${pfx}Dist/CleanupBuildOutputDirs.sh." \
+					"Once built, running {discohawk,emuhawk}-monort-local will pull from ''${pfx}output/* and use Mono from Nixpkgs."
+				;;
+			esac
 		'';
 	};
 	shells = lib.pipe avail [

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -51,12 +50,11 @@ namespace BizHawk.Client.Common
 		/// documentation of the meaning of the mnemonics and not to be used to
 		/// enforce the mnemonic values
 		/// </summary>
-		public string GenerateLogKey()
+		public static string GenerateLogKey(ControllerDefinition definition)
 		{
 			var sb = new StringBuilder();
-			sb.Append("LogKey:");
 
-			foreach (var group in _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0))
+			foreach (var group in definition.ControlsOrdered.Where(static c => c.Count is not 0))
 			{
 				sb.Append('#');
 				foreach (var button in group)

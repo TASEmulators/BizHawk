@@ -5,9 +5,12 @@
 #include "ARM.h"
 #include "SPI.h"
 
+#include "BizTypes.h"
 #include "dthumb.h"
 
 #include <waterboxcore.h>
+
+melonDS::NDS* CurrentNDS;
 
 void (*InputCallback)() = nullptr;
 
@@ -56,7 +59,7 @@ ECL_EXPORT void GetDisassembly(TraceMask_t type, u32 opcode, char* ret)
 	memcpy(ret, disasm, DTHUMB_STRING_LENGTH);
 }
 
-void TraceTrampoline(TraceMask_t type, u32* regs, u32 opcode)
+void TraceTrampoline(TraceMask_t type, u32* regs, u32 opcode, u32 cycleOffset)
 {
 	static char disasm[DTHUMB_STRING_LENGTH];
 
@@ -70,31 +73,31 @@ void TraceTrampoline(TraceMask_t type, u32* regs, u32 opcode)
 		default: __builtin_unreachable();
 	}
 
-	TraceCallback(type, opcode, regs, disasm, NDS::GetSysClockCycles(2));
+	TraceCallback(type, opcode, regs, disasm, cycleOffset);
 }
 
-ECL_EXPORT void GetRegs(u32* regs)
+ECL_EXPORT void GetRegs(melonDS::NDS* nds, u32* regs)
 {
 	for (int i = 0; i < 16; i++)
 	{
-		*regs++ = NDS::ARM9->R[i];
+		*regs++ = nds->ARM9.R[i];
 	}
 
 	for (int i = 0; i < 16; i++)
 	{
-		*regs++ = NDS::ARM7->R[i];
+		*regs++ = nds->ARM7.R[i];
 	}
 }
 
-ECL_EXPORT void SetReg(s32 ncpu, s32 index, s32 val)
+ECL_EXPORT void SetReg(melonDS::NDS* nds, s32 ncpu, s32 index, s32 val)
 {
 	if (ncpu)
 	{
-		NDS::ARM7->R[index] = val;
+		nds->ARM7.R[index] = val;
 	}
 	else
 	{
-		NDS::ARM9->R[index] = val;
+		nds->ARM9.R[index] = val;
 	}
 }
 
@@ -142,11 +145,17 @@ Further Memory (not mapped to ARM9/ARM7 bus)
 
 */
 
-template<bool arm9>
+template <bool arm9>
 static bool SafeToPeek(u32 addr)
 {
 	if (arm9)
 	{
+		// dsp io reads are not safe
+		if ((addr & 0xFFFFFF00) == 0x04004200)
+		{
+			return false;
+		}
+
 		switch (addr)
 		{
 			case 0x04000130:
@@ -176,42 +185,44 @@ static void ARM9Access(u8* buffer, s64 address, s64 count, bool write)
 {
 	if (write)
 	{
-		void (*Write)(u32, u8) = NDS::ConsoleType == 1 ? DSi::ARM9Write8 : NDS::ARM9Write8;
 		while (count--)
 		{
-			if (address < NDS::ARM9->ITCMSize)
+			if (address < CurrentNDS->ARM9.ITCMSize)
 			{
-				NDS::ARM9->ITCM[address++ & (ITCMPhysicalSize - 1)] = *buffer++;
+				CurrentNDS->ARM9.ITCM[address & (melonDS::ITCMPhysicalSize - 1)] = *buffer;
 			}
-			else if ((address & NDS::ARM9->DTCMMask) == NDS::ARM9->DTCMBase)
+			else if ((address & CurrentNDS->ARM9.DTCMMask) == CurrentNDS->ARM9.DTCMBase)
 			{
-				NDS::ARM9->DTCM[address++ & (DTCMPhysicalSize - 1)] = *buffer++;
+				CurrentNDS->ARM9.DTCM[address & (melonDS::DTCMPhysicalSize - 1)] = *buffer;
 			}
 			else
 			{
-				Write(address++, *buffer++);
+				CurrentNDS->ARM9Write8(address, *buffer);
 			}
+
+			address++;
+			buffer++;
 		}
 	}
 	else
 	{
-		u8 (*Read)(u32) = NDS::ConsoleType == 1 ? DSi::ARM9Read8 : NDS::ARM9Read8;
 		while (count--)
 		{
-			if (address < NDS::ARM9->ITCMSize)
+			if (address < CurrentNDS->ARM9.ITCMSize)
 			{
-				*buffer++ = NDS::ARM9->ITCM[address & (ITCMPhysicalSize - 1)];
+				*buffer = CurrentNDS->ARM9.ITCM[address & (melonDS::ITCMPhysicalSize - 1)];
 			}
-			else if ((address & NDS::ARM9->DTCMMask) == NDS::ARM9->DTCMBase)
+			else if ((address & CurrentNDS->ARM9.DTCMMask) == CurrentNDS->ARM9.DTCMBase)
 			{
-				*buffer++ = NDS::ARM9->DTCM[address & (DTCMPhysicalSize - 1)];
+				*buffer = CurrentNDS->ARM9.DTCM[address & (melonDS::DTCMPhysicalSize - 1)];
 			}
 			else
 			{
-				*buffer++ = SafeToPeek<true>(address) ? Read(address) : 0;
+				*buffer = SafeToPeek<true>(address) ? CurrentNDS->ARM9Read8(address) : 0;
 			}
 
 			address++;
+			buffer++;
 		}
 	}
 }
@@ -220,15 +231,23 @@ static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
 {
 	if (write)
 	{
-		void (*Write)(u32, u8) = NDS::ConsoleType == 1 ? DSi::ARM7Write8 : NDS::ARM7Write8;
 		while (count--)
-			Write(address++, *buffer++);
+		{
+			CurrentNDS->ARM7Write8(address, *buffer);
+
+			address++;
+			buffer++;
+		}
 	}
 	else
 	{
-		u8 (*Read)(u32) = NDS::ConsoleType == 1 ? DSi::ARM7Read8 : NDS::ARM7Read8;
 		while (count--)
-			*buffer++ = SafeToPeek<true>(address) ? Read(address) : 0, address++;
+		{
+			*buffer = SafeToPeek<false>(address) ? CurrentNDS->ARM7Read8(address) : 0;
+
+			address++;
+			buffer++;
+		}
 	}
 }
 
@@ -237,41 +256,43 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 	int i = 0;
 	#define ADD_MEMORY_DOMAIN(name, data, size, flags) do \
 	{ \
-		m[i].Data = (void*)data; \
+		m[i].Data = reinterpret_cast<void*>(data); \
 		m[i].Name = name; \
 		m[i].Size = size; \
 		m[i].Flags = flags; \
 		i++; \
 	} while (0)
 
-	ADD_MEMORY_DOMAIN("Main RAM", NDS::MainRAM, NDS::ConsoleType == 1 ? NDS::MainRAMMaxSize : NDS::MainRAMMaxSize / 4, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY);
-	ADD_MEMORY_DOMAIN("Shared WRAM", NDS::SharedWRAM, NDS::SharedWRAMSize, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
-	ADD_MEMORY_DOMAIN("ARM7 WRAM", NDS::ARM7WRAM, NDS::ARM7WRAMSize, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
+	const auto mainRamSize = CurrentNDS->ConsoleType == 1 ? melonDS::MainRAMMaxSize : melonDS::MainRAMMaxSize / 4;
+	ADD_MEMORY_DOMAIN("Main RAM", CurrentNDS->MainRAM, mainRamSize, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY);
+	ADD_MEMORY_DOMAIN("Shared WRAM", CurrentNDS->SharedWRAM, melonDS::SharedWRAMSize, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
+	ADD_MEMORY_DOMAIN("ARM7 WRAM", CurrentNDS->ARM7WRAM, melonDS::ARM7WRAMSize, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
 
-	if (NDSCart::Cart)
+	if (auto* ndsCart = CurrentNDS->GetNDSCart())
 	{
-		ADD_MEMORY_DOMAIN("SRAM", NDSCart::GetSaveMemory(), NDSCart::GetSaveMemoryLength(), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
-		ADD_MEMORY_DOMAIN("ROM", NDSCart::Cart->GetROM(), NDSCart::Cart->GetROMLength(), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
+		ADD_MEMORY_DOMAIN("SRAM", CurrentNDS->GetNDSSave(), CurrentNDS->GetNDSSaveLength(), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
+		ADD_MEMORY_DOMAIN("ROM", const_cast<u8*>(ndsCart->GetROM()), ndsCart->GetROMLength(), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
 	}
 
-	if (GBACart::Cart)
+	if (auto* gbaCart = CurrentNDS->GetGBACart())
 	{
-		ADD_MEMORY_DOMAIN("GBA SRAM", GBACart::GetSaveMemory(), GBACart::GetSaveMemoryLength(), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
-		ADD_MEMORY_DOMAIN("GBA ROM", GBACart::Cart->GetROM(), GBACart::Cart->GetROMLength(), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
+		ADD_MEMORY_DOMAIN("GBA SRAM", CurrentNDS->GetGBASave(), CurrentNDS->GetGBASaveLength(), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
+		ADD_MEMORY_DOMAIN("GBA ROM", const_cast<u8*>(gbaCart->GetROM()), gbaCart->GetROMLength(), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
 	}
 
-	ADD_MEMORY_DOMAIN("Instruction TCM", NDS::ARM9->ITCM, ITCMPhysicalSize, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
-	ADD_MEMORY_DOMAIN("Data TCM", NDS::ARM9->DTCM, DTCMPhysicalSize, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
+	ADD_MEMORY_DOMAIN("Instruction TCM", CurrentNDS->ARM9.ITCM, melonDS::ITCMPhysicalSize, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
+	ADD_MEMORY_DOMAIN("Data TCM", CurrentNDS->ARM9.DTCM, melonDS::DTCMPhysicalSize, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
 
-	ADD_MEMORY_DOMAIN("ARM9 BIOS", NDS::ARM9BIOS, sizeof(NDS::ARM9BIOS), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
-	ADD_MEMORY_DOMAIN("ARM7 BIOS", NDS::ARM7BIOS, sizeof(NDS::ARM7BIOS), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
+	ADD_MEMORY_DOMAIN("ARM9 BIOS", const_cast<u8*>(CurrentNDS->GetARM9BIOS().data()), melonDS::ARM9BIOSSize, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
+	ADD_MEMORY_DOMAIN("ARM7 BIOS", const_cast<u8*>(CurrentNDS->GetARM7BIOS().data()), melonDS::ARM7BIOSSize, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
 
-	ADD_MEMORY_DOMAIN("Firmware", SPI_Firmware::GetFirmware()->Buffer(), SPI_Firmware::GetFirmware()->Length(), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
+	ADD_MEMORY_DOMAIN("Firmware", CurrentNDS->GetFirmware().Buffer(), CurrentNDS->GetFirmware().Length(), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
 
-	if (NDS::ConsoleType == 1)
+	if (CurrentNDS->ConsoleType == 1)
 	{
-		ADD_MEMORY_DOMAIN("ARM9i BIOS", DSi::ARM9iBIOS, sizeof(DSi::ARM9iBIOS), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
-		ADD_MEMORY_DOMAIN("ARM7i BIOS", DSi::ARM7iBIOS, sizeof(DSi::ARM7iBIOS), MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
+		auto* dsi = static_cast<melonDS::DSi*>(CurrentNDS);
+		ADD_MEMORY_DOMAIN("ARM9i BIOS", dsi->ARM9iBIOS.data(), melonDS::DSiBIOSSize, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
+		ADD_MEMORY_DOMAIN("ARM7i BIOS", dsi->ARM7iBIOS.data(), melonDS::DSiBIOSSize, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
 	}
 
 	ADD_MEMORY_DOMAIN("ARM9 System Bus", ARM9Access, 1ull << 32, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK);

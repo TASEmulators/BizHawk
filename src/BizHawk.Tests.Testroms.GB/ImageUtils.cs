@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -43,7 +42,7 @@ namespace BizHawk.Tests.Testroms.GB
 
 		public static void PrintPalette(Image imgA, string labelA, Image imgB, string labelB)
 		{
-			static IReadOnlySet<int> CollectPalette(Image img)
+			static HashSet<int> CollectPalette(Image img)
 			{
 				var b = img.AsBitmap();
 				HashSet<int> paletteE = new();

@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 
 using static BizHawk.Common.MemoryBlock;
@@ -15,7 +14,6 @@ namespace BizHawk.Common
 		/// <summary>
 		/// Map some bytes
 		/// </summary>
-		/// <param name="size"></param>
 		/// <exception cref="InvalidOperationException">
 		/// failed to mmap
 		/// </exception>

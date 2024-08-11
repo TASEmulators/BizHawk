@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -40,8 +39,6 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Returns the core settings for a core
 		/// </summary>
-		/// <param name="config"></param>
-		/// <param name="coreType"></param>
 		/// <returns>null if no settings were saved, or there was an error deserializing</returns>
 		public static object GetCoreSettings(this Config config, Type coreType, Type settingsType)
 		{
@@ -62,9 +59,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// saves the core settings for a core
 		/// </summary>
-		/// <param name="config"></param>
 		/// <param name="o">null to remove settings for that core instead</param>
-		/// <param name="coreType"></param>
 		public static void PutCoreSettings(this Config config, object o, Type coreType)
 		{
 			if (o != null)
@@ -80,8 +75,6 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Returns the core syncsettings for a core
 		/// </summary>
-		/// <param name="config"></param>
-		/// <param name="coreType"></param>
 		/// <returns>null if no settings were saved, or there was an error deserializing</returns>
 		public static object GetCoreSyncSettings(this Config config, Type coreType, Type syncSettingsType)
 		{
@@ -102,9 +95,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// saves the core syncsettings for a core
 		/// </summary>
-		/// <param name="config"></param>
 		/// <param name="o">null to remove settings for that core instead</param>
-		/// <param name="coreType"></param>
 		public static void PutCoreSyncSettings(this Config config, object o, Type coreType)
 		{
 			if (o != null)

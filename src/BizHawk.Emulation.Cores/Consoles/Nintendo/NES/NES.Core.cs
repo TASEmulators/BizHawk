@@ -1,7 +1,5 @@
 // NOTE: to match Mesen timings, set idleSynch to true at power on, and set start_up_offset to -3
 
-using System;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
@@ -10,7 +8,7 @@ using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES : IEmulator, ISoundProvider/*, ICycleTiming*/
+	public partial class NES : IEmulator, ISoundProvider, ICycleTiming
 	{
 		internal static class RomChecksums
 		{

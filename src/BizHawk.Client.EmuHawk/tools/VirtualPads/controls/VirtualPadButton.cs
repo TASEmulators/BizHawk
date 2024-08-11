@@ -1,4 +1,3 @@
-﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
 
@@ -83,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 					if (!ReadOnly)
 					{
 						RightClicked = true;
-						Checked ^= true;
+						Checked = !Checked;
 					}
 					return;
 				case 0x0205: // WM_RBUTTONUP
@@ -136,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InputManager.AutofireStickyXorAdapter.SetSticky(Name, Checked);
 
-				if (Checked == false)
+				if (!Checked)
 				{
 					Clear();
 				}
@@ -145,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InputManager.StickyXorAdapter.SetSticky(Name, Checked);
 
-				if (Checked == false)
+				if (!Checked)
 				{
 					Clear();
 				}

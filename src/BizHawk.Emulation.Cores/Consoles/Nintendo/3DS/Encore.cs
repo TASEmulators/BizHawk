@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -11,8 +10,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
-	[PortedCore(CoreNames.Encore, "", "nightly-2104", "https://github.com/CasualPokePlayer/encore", singleInstance: true, isReleased: false)]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
+	[PortedCore(CoreNames.Encore, "", "nightly-2104", "https://github.com/CasualPokePlayer/encore", singleInstance: true)]
+	[ServiceNotApplicable([ typeof(IDriveLight), typeof(IRegionable) ])]
 	public partial class Encore
 	{
 		private static DynamicLibraryImportResolver _resolver;
@@ -46,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		[CoreConstructor(VSystemID.Raw.N3DS)]
 		public Encore(CoreLoadParameters<EncoreSettings, EncoreSyncSettings> lp)
 		{
-			if (lp.Roms.Exists(r => r.RomPath.Contains("|")))
+			if (lp.Roms.Exists(static r => HawkFile.PathContainsPipe(r.RomPath)))
 			{
 				throw new InvalidOperationException("3DS does not support compressed ROMs");
 			}
@@ -169,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		private IntPtr RequestGLContextCallback()
 		{
-			var context = _openGLProvider.RequestGLContext(4, 3, true, false);
+			var context = _openGLProvider.RequestGLContext(4, 3, true);
 			_glContexts.Add(context);
 			var handle = GCHandle.Alloc(context, GCHandleType.Weak);
 			return GCHandle.ToIntPtr(handle);

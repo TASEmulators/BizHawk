@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -14,11 +13,7 @@ namespace BizHawk.Common
 	}
 	public static class SpanStream
 	{
-		/// <summary>
-		/// Returns a stream in spanstream mode, or creates a wrapper that provides that functionality
-		/// </summary>
-		/// <param name="s"></param>
-		/// <returns></returns>
+		/// <returns>a stream in spanstream mode, or a newly-created wrapper which provides that functionality</returns>
 		public static ISpanStream GetOrBuild(Stream s)
 		{
 			return s as ISpanStream

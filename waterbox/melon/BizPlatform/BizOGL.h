@@ -64,6 +64,11 @@ public:
 		return glProc == proc;
 	}
 
+	bool operator!=(const std::nullptr_t& nullptr_) const
+	{
+		return glProc != nullptr_;
+	}
+
 private:
 	GLFunc glProc = nullptr;
 };

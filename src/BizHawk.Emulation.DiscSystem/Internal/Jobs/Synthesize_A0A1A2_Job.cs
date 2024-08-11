@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 //TODO - generate correct Q subchannel CRC

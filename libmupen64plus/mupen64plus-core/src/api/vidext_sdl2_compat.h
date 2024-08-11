@@ -636,6 +636,11 @@ SDL_SetVideoMode(int width, int height, int bpp, Uint32 flags)
 
     /* If we're in OpenGL mode, just create a stub surface and we're done! */
     if (flags & SDL_OPENGL) {
+        // make sure to set version/flag attributes, those might have been changed from the defaults
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0);
         SDL_VideoContext = SDL_GL_CreateContext(SDL_VideoWindow);
         if (!SDL_VideoContext) {
             return NULL;

@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -381,7 +381,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			long cycles = cpuCycle - _lastCycle;
 
 			// check whether tape is actually playing
-			if (tapeMotor == false)
+			if (!tapeMotor)
 			{
 				// it's not playing. Update lastCycle and return
 				_lastCycle = cpuCycle;

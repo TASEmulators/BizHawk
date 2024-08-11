@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -581,7 +580,7 @@ namespace BizHawk.Client.EmuHawk
 			_watches.OrderWatches(column.Name, _sortReverse);
 
 			_sortedColumn = column.Name;
-			_sortReverse ^= true;
+			_sortReverse = !_sortReverse;
 			WatchListView.Refresh();
 		}
 
@@ -928,7 +927,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var indices = SelectedIndices.ToList();
 			if (indices.Count == 0
-				|| indices[^1] == _watches.Count - 1) // at end already
+				|| indices[indices.Count - 1] == _watches.Count - 1) // at end already
 			{
 				return;
 			}
@@ -1042,8 +1041,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchesOnScreenMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.DisplayRamWatch ^= true;
-
+			Config.DisplayRamWatch = !Config.DisplayRamWatch;
 			if (!Config.DisplayRamWatch)
 			{
 				DisplayManager.OSD.ClearRamWatches();
@@ -1252,9 +1250,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void WatchListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
-		{
-			OrderColumn(e.Column);
-		}
+			=> OrderColumn(e.Column!);
 
 		private void ErrorIconButton_Click(object sender, EventArgs e)
 		{

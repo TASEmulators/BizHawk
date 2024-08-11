@@ -1,4 +1,3 @@
-﻿using System;
 using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
@@ -411,7 +410,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// Pakinfo of currently loaded ROM image.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="mbc">enough room for 25 ascii chars plus terminator</param>
+		/// <param name="mbc">enough room for 32 ascii chars plus terminator</param>
 		/// <param name="rambanks">number of rambanks</param>
 		/// <param name="rombanks">number of rombanks</param>
 		/// <param name="crc">core reported crc32</param>

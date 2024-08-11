@@ -1,8 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using PE = BizHawk.Common.PathExtensions.PathExtensions;
 
 namespace BizHawk.Tests.Common.PathExtensions
@@ -37,8 +35,10 @@ namespace BizHawk.Tests.Common.PathExtensions
 		[DataRow(true, "/usr", "/usr")]
 		[DataRow(true, "/usr", "/usr/")]
 		[DataRow(false, "/etc/rmdir", "/etc/rm")] // not naive StartsWith; these don't exist but the implementation uses `realpath -m` so they will be classed as two real and distinct dirs
+#if false // don't work on NixOS and probably other distros, presumably all 32-bit distros
 		[DataRow(true, "/usr/lib64", "/usr/lib")] // symlink to same dir
 		[DataRow(true, "/usr/lib64/gconv", "/usr/lib")] // same symlink, checking child
+#endif
 		public void TestIsSubfolderOfUnix(bool expectedIsSubfolder, string childPath, string parentPath)
 		{
 			PlatformTestUtils.OnlyRunOnRealUnix();

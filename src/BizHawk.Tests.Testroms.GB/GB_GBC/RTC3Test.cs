@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -6,8 +5,6 @@ using System.Reflection;
 
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Cores;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 

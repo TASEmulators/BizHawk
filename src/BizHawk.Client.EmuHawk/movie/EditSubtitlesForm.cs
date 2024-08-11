@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -17,14 +16,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly IMovie _selectedMovie;
 		private readonly bool _readOnly;
+		private readonly bool _dispose;
 
 		public IDialogController DialogController { get; }
 
-		public EditSubtitlesForm(IDialogController dialogController, IMovie movie, PathEntryCollection pathEntries, bool readOnly)
+		public EditSubtitlesForm(IDialogController dialogController, IMovie movie, PathEntryCollection pathEntries, bool readOnly, bool disposeOnClose = false)
 		{
 			_pathEntries = pathEntries;
 			_selectedMovie = movie;
 			_readOnly = readOnly;
+			_dispose = disposeOnClose;
 			DialogController = dialogController;
 			InitializeComponent();
 			Icon = Properties.Resources.TAStudioIcon;
@@ -269,6 +270,14 @@ namespace BizHawk.Client.EmuHawk
 					SubGrid[e.ColumnIndex, e.RowIndex].Style.BackColor = picker.Color;
 					SubGrid.RefreshEdit();
 				}
+			}
+		}
+
+		private void OnClosed(object sender, FormClosedEventArgs e)
+		{
+			if (_dispose && _selectedMovie is ITasMovie tasMovie)
+			{
+				tasMovie.Dispose();
 			}
 		}
 	}

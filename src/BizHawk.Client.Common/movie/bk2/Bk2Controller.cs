@@ -1,5 +1,5 @@
-﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using BizHawk.Common;
@@ -14,16 +14,11 @@ namespace BizHawk.Client.Common
 
 		private readonly Bk2ControllerDefinition _type;
 
-		private IList<ControlMap> _controlsOrdered;
+		private IReadOnlyList<ControlMap> _controlsOrdered;
 
-		private IList<ControlMap> ControlsOrdered => _controlsOrdered ??= _type.OrderedControlsFlat
-			.Select(c => new ControlMap
-			{
-				Name = c,
-				IsBool = _type.BoolButtons.Contains(c),
-				IsAxis = _type.Axes.ContainsKey(c)
-			})
-			.ToList();
+		private IReadOnlyList<ControlMap> ControlsOrdered
+			=> _controlsOrdered
+				??= _type.OrderedControlsFlat.Select(name => new ControlMap(name, _type)).ToArray();
 
 		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
@@ -84,32 +79,30 @@ namespace BizHawk.Client.Common
 
 		public void SetFromMnemonic(string mnemonic)
 		{
-			if (!string.IsNullOrWhiteSpace(mnemonic))
+			if (string.IsNullOrWhiteSpace(mnemonic)) return;
+			var iterator = 0;
+
+			foreach (var key in ControlsOrdered)
 			{
-				var iterator = 0;
+				while (mnemonic[iterator] == '|') iterator++;
 
-				foreach (var key in ControlsOrdered)
+				if (key.IsBool)
 				{
-					while (mnemonic[iterator] == '|') iterator++;
-
-					if (key.IsBool)
-					{
-						_myBoolButtons[key.Name] = mnemonic[iterator] != '.';
-						iterator++;
-					}
-					else if (key.IsAxis)
-					{
-						var commaIndex = mnemonic.IndexOf(',', iterator);
-#if NET6_0_OR_GREATER
-						var val = int.Parse(mnemonic.AsSpan(start: iterator, length: commaIndex - iterator));
+					_myBoolButtons[key.Name] = mnemonic[iterator] != '.';
+					iterator++;
+				}
+				else if (key.IsAxis)
+				{
+					var commaIndex = mnemonic.IndexOf(',', iterator);
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+					var val = int.Parse(mnemonic.AsSpan(start: iterator, length: commaIndex - iterator));
 #else
-						var axisValueString = mnemonic.Substring(startIndex: iterator, length: commaIndex - iterator);
-						var val = int.Parse(axisValueString);
+					var axisValueString = mnemonic.Substring(startIndex: iterator, length: commaIndex - iterator);
+					var val = int.Parse(axisValueString);
 #endif
-						_myAxisControls[key.Name] = val;
+					_myAxisControls[key.Name] = val;
 
-						iterator = commaIndex + 1;
-					}
+					iterator = commaIndex + 1;
 				}
 			}
 		}
@@ -124,11 +117,27 @@ namespace BizHawk.Client.Common
 			_myAxisControls[buttonName] = value;
 		}
 
-		private class ControlMap
+		private readonly struct ControlMap
 		{
-			public string Name { get; set; }
-			public bool IsBool { get; set; }
-			public bool IsAxis { get; set; }
+			public readonly bool IsAxis;
+
+			public readonly bool IsBool;
+
+			public readonly string Name;
+
+			public ControlMap(string name, bool isButton, bool isAxis)
+			{
+				Debug.Assert(isButton ^ isAxis, "axis conflicts with button of the same name?");
+				Name = name;
+				IsBool = isButton;
+				IsAxis = isAxis;
+			}
+
+			public ControlMap(string name, ControllerDefinition def)
+				: this(
+					name: name,
+					isButton: def.BoolButtons.Contains(name),
+					isAxis: def.Axes.ContainsKey(name)) {}
 		}
 
 		private class Bk2ControllerDefinition : ControllerDefinition

@@ -1,20 +1,16 @@
 #nullable disable
 
 using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 
-using BizHawk.Common;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.DBManTool
 {
 	class DiscHash
 	{
-
 		static List<string> FindExtensionsRecurse(string dir, string extUppercaseWithDot)
 		{
 			List<string> ret = new List<string>();
@@ -44,7 +40,6 @@ namespace BizHawk.DBManTool
 
 		public void Run(string[] args)
 		{
-
 			string indir = null;
 			string dpTemp = null;
 			string fpOutfile = null;
@@ -109,10 +104,10 @@ namespace BizHawk.DBManTool
 							progress++;
 							Console.WriteLine("{0}/{1} [{2}] {3}", progress, todo.Count, bizHashId, Path.GetFileNameWithoutExtension(fiCue));
 							outf.WriteLine("bizhash:{0} datahash:{1:X8} //{2}", bizHashId, redumpHash, name);
-							if (FoundHashes.ContainsKey(bizHashId))
+							if (FoundHashes.TryGetValue(bizHashId, out string foundBizHashId))
 							{
-								Console.WriteLine("--> COLLISION WITH: {0}", FoundHashes[bizHashId]);
-								outf.WriteLine("--> COLLISION WITH: {0}", FoundHashes[bizHashId]);
+								Console.WriteLine("--> COLLISION WITH: {0}", foundBizHashId);
+								outf.WriteLine("--> COLLISION WITH: {0}", foundBizHashId);
 							}
 							else
 								FoundHashes[bizHashId] = name;

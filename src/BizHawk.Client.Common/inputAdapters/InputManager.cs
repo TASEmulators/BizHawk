@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -11,7 +10,9 @@ namespace BizHawk.Client.Common
 	// user -> Input -> ActiveController -> UDLR -> StickyXORPlayerInputAdapter -> TurboAdapter(TBD) -> Lua(?TBD?) -> ..
 	// .. -> MovieInputSourceAdapter -> (MovieSession) -> MovieOutputAdapter -> ControllerOutput(1) -> Game
 	// (1)->Input Display
+#pragma warning disable MA0104 // unlikely to conflict with System.Windows.Input.InputManager
 	public class InputManager
+#pragma warning restore MA0104
 	{
 		// the original source controller, bound to the user, sort of the "input" port for the chain, i think
 		public Controller ActiveController { get; private set; }

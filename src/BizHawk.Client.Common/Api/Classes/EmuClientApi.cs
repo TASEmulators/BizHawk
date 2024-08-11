@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.IO;
 using BizHawk.Emulation.Common;
@@ -56,6 +55,7 @@ namespace BizHawk.Client.Common
 
 		public int BufferWidth() => VideoProvider.BufferWidth;
 
+#pragma warning disable MA0091 // passing through `sender` is intentional
 		private void CallBeforeQuickLoad(object sender, BeforeQuickLoadEventArgs args)
 			=> BeforeQuickLoad?.Invoke(sender, args);
  
@@ -70,6 +70,7 @@ namespace BizHawk.Client.Common
  
 		private void CallStateSaved(object sender, StateSavedEventArgs args)
 			=> StateSaved?.Invoke(sender, args);
+#pragma warning restore MA0091
 
 		public void ClearAutohold() => _mainForm.ClearHolds();
 
@@ -90,7 +91,7 @@ namespace BizHawk.Client.Common
 
 		public void DoFrameAdvance()
 		{
-			_mainForm.FrameAdvance();
+			_mainForm.FrameAdvance(discardApiHawkSurfaces: false); // we're rendering, so we don't want to discard
 			_mainForm.StepRunLoop_Throttle();
 			_mainForm.Render();
 		}
@@ -121,7 +122,8 @@ namespace BizHawk.Client.Common
 
 		public int GetTargetScanlineIntensity() => _config.TargetScanlineFilterIntensity;
 
-		public int GetWindowSize() => _config.TargetZoomFactors[Emulator.SystemId];
+		public int GetWindowSize()
+			=> _config.GetWindowScaleFor(Emulator.SystemId);
 
 		public void InvisibleEmulation(bool invisible) => _mainForm.InvisibleEmulation = invisible;
 
@@ -138,7 +140,7 @@ namespace BizHawk.Client.Common
 				suppressOSD: false);
 
 		public bool OpenRom(string path)
-			=> _mainForm.LoadRom(path, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
+			=> _mainForm.LoadRom(path, new LoadRomArgs(new OpenAdvanced_OpenRom(path)));
 
 		public void Pause() => _mainForm.PauseEmulator();
 
@@ -194,7 +196,7 @@ namespace BizHawk.Client.Common
 		{
 			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 			{
-				_config.TargetZoomFactors[Emulator.SystemId] = size;
+				_config.SetWindowScaleFor(Emulator.SystemId, size);
 				_mainForm.FrameBufferResized();
 				_displayManager.OSD.AddMessage($"Window size set to {size}x");
 			}

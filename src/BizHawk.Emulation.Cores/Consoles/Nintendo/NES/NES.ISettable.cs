@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -62,24 +61,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public NESControlSettings Controls = new NESControlSettings();
 
-			[JsonConverter(typeof(U8ArrayAsNormalJSONListConverter))] // this preserves the old behaviour of e,g, 0x1234ABCD --> [18,52,171,205]; omitting it will use base64 e.g. "EjSrzQ=="
-			[JsonProperty(PropertyName = nameof(InitialWRamStatePattern))]
-			private byte[]/*?*/ _initialWRamStatePattern = null;
-
 			[JsonIgnore]
+			private byte[]/*?*/ _initialWRamStatePattern;
+
+			[JsonConverter(typeof(U8ArrayAsNormalJSONListConverter))] // this preserves the old behaviour of e,g, 0x1234ABCD --> [18,52,171,205]; omitting it will use base64 e.g. "EjSrzQ=="
 			public byte[] InitialWRamStatePattern
 			{
-				get
-				{
-					if (_initialWRamStatePattern is null) return Array.Empty<byte>();
-					if (_initialWRamStatePattern.Length is 0)
-					{
-						_initialWRamStatePattern = null;
-						return Array.Empty<byte>();
-					}
-					return _initialWRamStatePattern;
-				}
-				set => _initialWRamStatePattern = value.Length is 0 ? null : value;
+				get => _initialWRamStatePattern ?? [ ];
+				set => _initialWRamStatePattern = value;
 			}
 
 			public NESSyncSettings Clone()

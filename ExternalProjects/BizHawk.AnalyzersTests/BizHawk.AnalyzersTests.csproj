@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
+	<Import Project="../../Common.props" />
+	<PropertyGroup>
+		<EnableMSTestRunner>true</EnableMSTestRunner>
+		<NoWarn>$(NoWarn);MA0136;IDE0065;SA1200</NoWarn> <!-- MA0136 is the CRLF in "raw strings" warning; IDE0065 and SA1200 want imports before a namespace statement -->
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" PrivateAssets="all" />
+		<PackageReference Include="MSTest" PrivateAssets="all" />
+		<PackageReference Include="JunitXml.TestLogger" PrivateAssets="all" />
+		<ProjectReference Include="$(MSBuildProjectDirectory)/../BizHawk.Analyzer/BizHawk.Analyzer.csproj" />
+		<None Remove="*.sh" />
+	</ItemGroup>
+	<Target Name="DontUpdatePrebuiltAssemblies" AfterTargets="PostBuildEvent">
+		<Exec Command="git restore $(MSBuildProjectDirectory)/../../References" />
+	</Target>
+</Project>

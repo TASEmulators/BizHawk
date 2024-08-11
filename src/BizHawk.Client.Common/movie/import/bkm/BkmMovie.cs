@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -43,7 +42,7 @@ namespace BizHawk.Client.Common
 		{
 			var file = new FileInfo(Filename);
 
-			if (file.Exists == false)
+			if (!file.Exists)
 			{
 				Loaded = false;
 				return false;

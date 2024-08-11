@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using BizHawk.Emulation.Common;
@@ -36,16 +35,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets an enumeration of <see cref="WatchDisplayType"/> that are valid for a <see cref="ByteWatch"/>
 		/// </summary>
-		public static IEnumerable<WatchDisplayType> ValidTypes
-		{
-			get
-			{
-				yield return WatchDisplayType.Unsigned;
-				yield return WatchDisplayType.Signed;
-				yield return WatchDisplayType.Hex;
-				yield return WatchDisplayType.Binary;
-			}
-		}
+		public static IEnumerable<WatchDisplayType> ValidTypes { get; } = [
+			WatchDisplayType.Unsigned,
+			WatchDisplayType.Signed,
+			WatchDisplayType.Hex,
+			WatchDisplayType.Binary,
+		];
 
 		/// <summary>
 		/// Get a list a <see cref="WatchDisplayType"/> that can be used for this <see cref="ByteWatch"/>

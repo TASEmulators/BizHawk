@@ -14,5 +14,7 @@ namespace BizHawk.Client.Common
 		SizeF MeasureString(string s);
 
 		Rectangle ClipBounds { get; }
+
+		public float Scale { get; }
 	}
 }

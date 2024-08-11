@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 
 using BizHawk.Common.StringExtensions;
@@ -154,7 +153,7 @@ namespace BizHawk.Common.PathExtensions
 
 		public static (string? Dir, string FileNoExt, string? FileExt) SplitPathToDirFileAndExt(this string path)
 			=> (
-				Path.GetDirectoryName(path),
+				string.IsNullOrEmpty(path) ? null : Path.GetDirectoryName(path),
 				Path.GetFileNameWithoutExtension(path),
 				Path.GetExtension(path) is { Length: not 0 } ext
 					? ext

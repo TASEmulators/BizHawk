@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,11 +7,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class RollColumns : List<RollColumn>
 	{
-		public RollColumn this[string name] => this.SingleOrDefault(column => column.Name == name);
+		public RollColumn? this[string name]
+			=> this.SingleOrDefault(column => column.Name == name);
 
 		public IEnumerable<RollColumn> VisibleColumns => this.Where(c => c.Visible);
 
-		public Action ChangedCallback { get; set; }
+		public Action? ChangedCallback { get; set; } = null;
 
 		// TODO: this shouldn't be exposed.  But in order to not expose it, each RollColumn must have a change callback, and all property changes must call it, it is quicker and easier to just call this when needed
 		public void ColumnsChanged()

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +6,9 @@ using System.Runtime.CompilerServices;
 
 namespace BizHawk.Common.CollectionExtensions
 {
+#pragma warning disable MA0104 // unlikely to conflict with System.Collections.Generic.CollectionExtensions
 	public static class CollectionExtensions
+#pragma warning restore MA0104
 	{
 		public static IOrderedEnumerable<TSource> OrderBy<TSource, TKey>(
 			this IEnumerable<TSource> source,
@@ -146,7 +147,7 @@ namespace BizHawk.Common.CollectionExtensions
 				? countable.Count == n
 				: collection.Take(n + 1).Count() == n;
 
-#if !NET6_0
+#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER)
 		/// <summary>
 		/// Returns the value at <paramref name="key"/>.
 		/// If the key is not present, returns default(TValue).

@@ -1,7 +1,7 @@
-﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Common;
@@ -190,7 +190,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 				Text = recent.Frozen ? "&Unfreeze" : "&Freeze",
 				Image = recent.Frozen ? Properties.Resources.Unfreeze : Properties.Resources.Freeze
 			};
-			freezeItem.Click += (o, ev) => recent.Frozen ^= true;
+			freezeItem.Click += (_, _) => recent.Frozen = !recent.Frozen;
 			items.Add(freezeItem);
 
 			if (!noAutoload)
@@ -239,8 +239,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 		}
 
 		public static IEnumerable<ToolStripItem> MenuItems(this IMemoryDomains domains, Action<string> setCallback, string selected = "", int? maxSize = null)
-		{
-			foreach (var domain in domains)
+			=> domains.Select(domain =>
 			{
 				var name = domain.Name;
 				var item = new ToolStripMenuItem
@@ -250,9 +249,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					Checked = name == selected
 				};
 				item.Click += (o, ev) => setCallback(name);
-
-				yield return item;
-			}
-		}
+				return item;
+			});
 	}
 }

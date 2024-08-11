@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using System;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
@@ -101,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 				_inputManager.StickyXorAdapter,
 				name,
 				RangeX,
-				!string.IsNullOrEmpty(secondaryName) ? secondaryName : Name.Replace("X", "Y"),
+				string.IsNullOrEmpty(secondaryName) ? Name.Replace('X', 'Y') : secondaryName,
 				RangeY
 			);
 

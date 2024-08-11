@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_bank_16k = (byte)(value & 7);
 			SyncPRG();
 
-			if (value.Bit(3) == false)
+			if (!value.Bit(3))
 			{
 				if (holydiver)
 					SetMirrorType(EMirrorType.Horizontal);

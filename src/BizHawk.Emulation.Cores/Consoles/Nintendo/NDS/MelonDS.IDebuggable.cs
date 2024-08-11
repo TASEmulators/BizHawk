@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
@@ -10,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			var regs = new uint[2 * 16];
-			_core.GetRegs(regs);
+			_core.GetRegs(_console, regs);
 
 			var ret = new Dictionary<string, RegisterValue>();
 			for (var i = 0; i < 2; i++)
@@ -40,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				throw new InvalidOperationException("Invalid Reg Index???");
 			}
-			_core.SetReg(ncpu == 9 ? 0 : 1, index, value);
+			_core.SetReg(_console, ncpu == 9 ? 0 : 1, index, value);
 		}
 
 		public bool CanStep(StepType type) => false;
@@ -48,11 +47,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 
-		public long TotalExecutedCycles => CycleCount + _core.GetCallbackCycleOffset();
+		public long TotalExecutedCycles => CycleCount + _core.GetCallbackCycleOffset(_console);
 
 		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 
-		private readonly MemoryCallbackSystem _memoryCallbacks = new(new[] { "System Bus" });
+		// FIXME: internally the code actually just does this for either bus (probably don't want to bother adding support)
+		private readonly MemoryCallbackSystem _memoryCallbacks = new([ "ARM9 System Bus" ]);
 
 		private LibMelonDS.MemoryCallback _readCallback;
 		private LibMelonDS.MemoryCallback _writeCallback;
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				{
 					if (getHasCBOfType())
 					{
-						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, "System Bus");
+						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, "ARM9 System Bus");
 					}
 				};
 			}

@@ -11,8 +11,6 @@
 		/// <summary>
 		/// Simulates reading a byte of data from the address space
 		/// </summary>
-		/// <param name="addr"></param>
-		/// <returns></returns>
 		public byte ReadBus(ushort addr)
 		{
 			if (addr < 0x400)
@@ -36,7 +34,6 @@
 		/// Simulates writing a byte of data to the address space (in its default configuration, there is no writeable RAM in the
 		/// Channel F addressable through the address space)
 		/// </summary>
-		/// <param name="addr"></param>
 		public void WriteBus(ushort addr, byte value)
 		{
 			Cartridge.WriteBus(addr, value);

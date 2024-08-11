@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,6 +16,7 @@ namespace BizHawk.Emulation.Common
 		/// <remarks>need to think about e.g. Genesis / Mega Drive using one sysID but having a different display name depending on the BIOS region --yoshi</remarks>
 		public static readonly IReadOnlyDictionary<string, string> SystemIDDisplayNames = new Dictionary<string, string>
 		{
+			[VSystemID.Raw.Amiga] = "Amiga",
 			[VSystemID.Raw.A26] = "Atari 2600",
 			[VSystemID.Raw.A78] = "Atari 7800",
 			[VSystemID.Raw.AmstradCPC] = "Amstrad CPC",
@@ -352,6 +352,12 @@ namespace BizHawk.Emulation.Common
 		{
 			return core.VsyncNumerator() / (double)core.VsyncDenominator();
 		}
+
+		public static bool HasCycleTiming(this IEmulator core)
+			=> core != null && core.ServiceProvider.HasService<ICycleTiming>();
+
+		public static ICycleTiming AsCycleTiming(this IEmulator core)
+			=> core.ServiceProvider.GetService<ICycleTiming>();
 
 		public static bool IsImplemented(this MethodInfo info)
 		{

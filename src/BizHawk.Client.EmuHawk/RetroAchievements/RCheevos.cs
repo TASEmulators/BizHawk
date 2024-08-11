@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -73,7 +72,11 @@ namespace BizHawk.Client.EmuHawk
 				Checked = _getConfig().RAAutostart,
 				CheckOnClick = true,
 			};
-			autoStartRAItem.CheckedChanged += (_, _) => _getConfig().RAAutostart ^= true;
+			autoStartRAItem.CheckedChanged += (_, _) =>
+			{
+				var config = _getConfig();
+				config.RAAutostart = !config.RAAutostart;
+			};
 			raDropDownItems.Add(autoStartRAItem);
 
 			var loginItem = new ToolStripMenuItem("Login")
@@ -111,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 				Checked = CheevosActive,
 				CheckOnClick = true
 			};
-			enableCheevosItem.CheckedChanged += (_, _) => CheevosActive ^= true;
+			enableCheevosItem.CheckedChanged += (_, _) => CheevosActive = !CheevosActive;
 			raDropDownItems.Add(enableCheevosItem);
 
 			var enableLboardsItem = new ToolStripMenuItem("Enable Leaderboards")
@@ -120,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 				CheckOnClick = true,
 				Enabled = HardcoreMode
 			};
-			enableLboardsItem.CheckedChanged += (_, _) => LBoardsActive ^= true;
+			enableLboardsItem.CheckedChanged += (_, _) => LBoardsActive = !LBoardsActive;
 			raDropDownItems.Add(enableLboardsItem);
 
 			var enableRichPresenceItem = new ToolStripMenuItem("Enable Rich Presence")
@@ -128,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 				Checked = RichPresenceActive,
 				CheckOnClick = true
 			};
-			enableRichPresenceItem.CheckedChanged += (_, _) => RichPresenceActive ^= true;
+			enableRichPresenceItem.CheckedChanged += (_, _) => RichPresenceActive = !RichPresenceActive;
 			raDropDownItems.Add(enableRichPresenceItem);
 
 			var enableHardcoreItem = new ToolStripMenuItem("Enable Hardcore Mode")
@@ -138,8 +141,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			enableHardcoreItem.CheckedChanged += (_, _) =>
 			{
-				_hardcoreMode ^= true;
-
+				_hardcoreMode = !_hardcoreMode;
 				if (HardcoreMode)
 				{
 					_hardcoreMode = _mainForm.RebootCore(); // unset hardcore mode if we fail to reboot core somehow
@@ -160,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 				Checked = EnableSoundEffects,
 				CheckOnClick = true
 			};
-			enableSoundEffectsItem.CheckedChanged += (_, _) => EnableSoundEffects ^= true;
+			enableSoundEffectsItem.CheckedChanged += (_, _) => EnableSoundEffects = !EnableSoundEffects;
 			raDropDownItems.Add(enableSoundEffectsItem);
 
 			var enableUnofficialCheevosItem = new ToolStripMenuItem("Test Unofficial Achievements")
@@ -283,7 +285,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var buffer = new byte[(int)size];
 				_lib.rc_runtime_serialize_progress(buffer, _runtime, IntPtr.Zero);
-				using var file = File.OpenWrite(path + ".rap");
+				using var file = File.Create(path + ".rap");
 				file.Write(buffer, 0, buffer.Length);
 			}
 		}

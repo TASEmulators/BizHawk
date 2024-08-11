@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
@@ -12,6 +10,9 @@ namespace BizHawk.Emulation.Common
 	{
 		/// <summary>
 		/// Returns a frame buffer of the current video content
+		/// This might be a reference to a stored frame buffer
+		/// Only <see cref="BufferWidth"/> * <see cref="BufferHeight"/> pixels valid
+		/// (The buffer might be larger than such, so don't rely on <see cref="Array.Length"/>
 		/// </summary>
 		int[] GetVideoBuffer();
 
@@ -82,6 +83,20 @@ namespace BizHawk.Emulation.Common
 			{
 				b2[i] = b1[i];
 			}
+		}
+
+		/// <summary>
+		/// Obtains a copy of the video buffer
+		/// <see cref="IVideoProvider.GetVideoBuffer" /> may return a reference
+		/// and might be much larger than the reported <see cref="IVideoProvider.BufferWidth"/> * <see cref="IVideoProvider.BufferHeight"/> (to account for differing frame sizes)
+		/// so this should be used to get an explicit copy
+		/// </summary>
+		public static int[] GetVideoBufferCopy(this IVideoProvider videoProvider)
+		{
+			var vb = videoProvider.GetVideoBuffer();
+			var ret = new int[videoProvider.BufferWidth * videoProvider.BufferHeight];
+			vb.AsSpan(0, ret.Length).CopyTo(ret);
+			return ret;
 		}
 	}
 }

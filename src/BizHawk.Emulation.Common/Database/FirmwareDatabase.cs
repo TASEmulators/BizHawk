@@ -39,13 +39,16 @@ namespace BizHawk.Emulation.Common
 				string desc,
 				string additionalInfo = "",
 				bool isBad = false)
-					=> filesByHash[hash] = new(
-						hash: hash,
-						size: size,
-						recommendedName: recommendedName,
-						desc: desc,
-						additionalInfo: additionalInfo,
-						isBad: isBad);
+			{
+				FirmwareFile ff = new(
+					hash: hash,
+					size: size,
+					recommendedName: recommendedName,
+					desc: desc,
+					additionalInfo: additionalInfo,
+					isBad: isBad);
+				return filesByHash[ff.Hash/*may have been reformatted*/] = ff;
+			}
 
 			void Option(string systemId, string id, in FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 			{
@@ -123,8 +126,8 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("45BEDC4CBDEAC66C7DF59E9E599195C778D86A92", 8192, "Coleco", "Bios", "Coleco_Bios.bin", "Bios");
 
-			FirmwareAndOption("B9BBF5BB0EAC52D039A4A993A2D8064B862C9E28", 4096, "VEC", "Bios", "Vectrex_Bios.bin", "Bios");
-			FirmwareAndOption("65D07426B520DDD3115D40F255511E0FD2E20AE7", 8192, "VEC", "Minestorm", "Vectrex_Minestorm.vec", "Game");
+			FirmwareAndOption("B9BBF5BB0EAC52D039A4A993A2D8064B862C9E28", 4096, "VEC", "Bios", "VEC_Bios.bin", "Bios");
+			FirmwareAndOption("65D07426B520DDD3115D40F255511E0FD2E20AE7", 8192, "VEC", "Minestorm", "VEC_Minestorm.vec", "Game");
 
 			var gbaNormal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "GBA_bios.rom", "Bios (World)");
 			var gbaJDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "GBA_bios_Debug-(J).rom", "Bios (J Debug)");
@@ -170,7 +173,7 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption(SHA1Checksum.Dummy, 0, "3DS", "aes_keys", "aes_keys.txt", "AES Keys");
 			FirmwareAndOption(SHA1Checksum.Dummy, 0, "3DS", "seeddb", "seeddb.bin", "SEEDDB");
 
-			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "LYNX_boot.img", "Boot Rom");
+			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "Atari_LYNX_boot.img", "Boot Rom");
 
 			FirmwareAndOption("5A65B922B562CB1F57DAB51B73151283F0E20C7A", 8192, "INTV", "EROM", "INTV_EROM.bin", "Executive Rom");
 			FirmwareAndOption("F9608BB4AD1CFE3640D02844C7AD8E0BCD974917", 2048, "INTV", "GROM", "INTV_GROM.bin", "Graphics Rom");
@@ -190,7 +193,7 @@ namespace BizHawk.Emulation.Common
 			//FirmwareAndOption("E998F0C441F4F1800EF44E42CD1659150206CF79", 16384, "MSX", "bios_pal", "MSX_8020-20bios.rom", "MSX BIOS (Philips VG-8020)");
 			//FirmwareAndOption("DF48902F5F12AF8867AE1A87F255145F0E5E0774", 16384, "MSX", "bios_jp", "MSX_4000bios.rom", "MSX BIOS (FS-4000)");
 			FirmwareAndOption("409E82ADAC40F6BDD18EB6C84E8B2FBDC7FB5498", 32768, "MSX", "bios_basic_usa", "MSX.rom", "MSX BIOS and BASIC");
-			FirmwareAndOption("3656BB3BBC17D280D2016FE4F6FF3CDED3082A41", 32768, "MSX", "bios_basic_usa", "MSX.rom", "MSX 1.0 BIOS and BASIC");
+			FirmwareAndOption("3656BB3BBC17D280D2016FE4F6FF3CDED3082A41", 32768, "MSX", "bios_basic_usa", "MSX_1.0.rom", "MSX 1.0 BIOS and BASIC");
 			FirmwareAndOption("302AFB5D8BE26C758309CA3DF611AE69CCED2821", 32768, "MSX", "bios_basic_jpn", "MSX_jpn.rom", "MSX 1.0 JPN BIOS and BASIC");
 
 			// Channel F
@@ -389,13 +392,14 @@ namespace BizHawk.Emulation.Common
 			var psone_r5e = File("DBC7339E5D85827C095764FC077B41F78FD2ECAE", 524288, "PSX_4.5(E).bin", "PSX BIOS (Version 4.5 05/25/00 E)", "Used on PSone SCPH-102 [g]. This is for Rev C PSone hardware [w].");
 			var ps2_50j = File("D7D6BE084F51354BC951D8FA2D8D912AA70ABC5E", 4194304, "PSX_5.0(J).bin", "PSX BIOS (Version 5.0 10/27/00 J)", "Found on a PS2 [p]. May be known as SCPH18000.BIN.");
 			var ps_dtl_h2000 = File("1A8D6F9453111B1D317BB7DAE300495FBF54600C", 524288, "PSX_DTLH2000.bin", "DTL-H2000 Devkit [t]");
+			var psxOnPSP = File("96880D1CA92A016FF054BE5159BB06FE03CB4E14", 524288, "PSXONPSP660.BIN", "PSX on PSP", "From PSP. Allegedly based on PSone v4.5 BIOS.");
 			var ps_ps3 = File("C40146361EB8CF670B19FDC9759190257803CAB7", 524288, "PSX_rom.bin", "PSX BIOS (Version 5.0 06/23/03 A)", "Found on a PS3. [t]");
 			Firmware("PSX", "U", "BIOS (U)");
 			Firmware("PSX", "J", "BIOS (J)");
 			Firmware("PSX", "E", "BIOS (E)");
-			Option("PSX", "U", in ps_30a);
-			Option("PSX", "J", in ps_30j);
-			Option("PSX", "E", in ps_30e);
+			Option("PSX", "U", in ps_30a, FirmwareOptionStatus.Ideal);
+			Option("PSX", "J", in ps_30j, FirmwareOptionStatus.Ideal);
+			Option("PSX", "E", in ps_30e, FirmwareOptionStatus.Ideal);
 			// in general, alternates aren't allowed.. their quality isn't known.
 			// we have this comment from fobby.net: "SCPH7502 works fine for European games" (TBD)
 			// however, we're sticking with the 3.0 series.
@@ -425,6 +429,9 @@ namespace BizHawk.Emulation.Common
 			Option("PSX", "J", in ps2_50j, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "J", in ps_22jv, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "U", in ps_41aw, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", in psxOnPSP, FirmwareOptionStatus.Acceptable);
+			Option("PSX", "E", in psxOnPSP, FirmwareOptionStatus.Unacceptable); // doesn't work w/ PAL titles
+			Option("PSX", "J", in psxOnPSP, FirmwareOptionStatus.Acceptable);
 			Option("PSX", "U", in ps_ps3, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "U", in ps_dtl_h2000, FirmwareOptionStatus.Unacceptable); //not really sure what to do with this one, let's just call it region free
 			Option("PSX", "E", in ps_dtl_h2000, FirmwareOptionStatus.Unacceptable);
@@ -439,13 +446,13 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("B2E1955D957A475DE2411770452EFF4EA19F4CEE", 1024, "O2", "BIOS-O2", "O2_Odyssey2.bin", "Odyssey 2 Bios");
 			FirmwareAndOption("A6120AED50831C9C0D95DBDF707820F601D9452E", 1024, "O2", "BIOS-C52", "O2_PhillipsC52.bin", "Phillips C52 Bios");
-			FirmwareAndOption("5130243429B40B01A14E1304D0394B8459A6FBAE", 1024, "O2", "BIOS-G7400", "G7400_bios.bin", "G7400 Bios");
+			FirmwareAndOption("5130243429B40B01A14E1304D0394B8459A6FBAE", 1024, "O2", "BIOS-G7400", "O2_G7400_bios.bin", "G7400 Bios");
 
 			Firmware("GB", "World", "Game Boy Boot Rom");
-			Option("GB", "World", File("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "dmg.bin", "Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
+			Option("GB", "World", File("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "GB_dmg.bin", "Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
 			// Early revisions of GB/C boot ROMs are not well-supported because the corresponding CPU differences are not emulated.
-			Option("GB", "World", File("8BD501E31921E9601788316DBD3CE9833A97BCBC", 256, "dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Unacceptable);
-			Option("GB", "World", File("4E68F9DA03C310E84C523654B9026E51F26CE7F0", 256, "mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
+			Option("GB", "World", File("8BD501E31921E9601788316DBD3CE9833A97BCBC", 256, "GB_dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Unacceptable);
+			Option("GB", "World", File("4E68F9DA03C310E84C523654B9026E51F26CE7F0", 256, "GB_mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
 			FirmwarePatchData gbCommonPatchAt0xFD = new(0xFD, new byte[] { 0xFE }); // 2 pairs, all have either 0x01 or 0xFF at this octet
 			AddPatchAndMaybeReverse(new(
 				"4ED31EC6B0B175BB109C0EB5FD3D193DA823339F",
@@ -455,25 +462,25 @@ namespace BizHawk.Emulation.Common
 			// these are only used for supported SGB cores
 			// placed in GB as these are within the Game Boy side rather than the SNES side
 			Firmware("GB", "SGB", "Super Game Boy Boot Rom");
-			Option("GB", "SGB", File("AA2F50A77DFB4823DA96BA99309085A3C6278515", 256, "sgb.bin", "Super Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
+			Option("GB", "SGB", File("AA2F50A77DFB4823DA96BA99309085A3C6278515", 256, "GB_sgb.bin", "Super Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
 			Firmware("GB", "SGB2", "Super Game Boy 2 Boot Rom");
-			Option("GB", "SGB2", File("93407EA10D2F30AB96A314D8ECA44FE160AEA734", 256, "sgb2.bin", "Super Game Boy 2 Boot Rom"), FirmwareOptionStatus.Ideal);
+			Option("GB", "SGB2", File("93407EA10D2F30AB96A314D8ECA44FE160AEA734", 256, "GB_sgb2.bin", "Super Game Boy 2 Boot Rom"), FirmwareOptionStatus.Ideal);
 			AddPatchAndMaybeReverse(new(
 				"AA2F50A77DFB4823DA96BA99309085A3C6278515",
 				gbCommonPatchAt0xFD,
 				"93407EA10D2F30AB96A314D8ECA44FE160AEA734"));
 
 			Firmware("GBC", "World", "Game Boy Color Boot Rom");
-			Option("GBC", "World", File("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
+			Option("GBC", "World", File("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "GBC_cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
 			// CGB E models have the logo reading TOCTOU patched (only relevant for bootlegs that logo swap)
-			Option("GBC", "World", File("F5F33729A956131D9C44310F0AE3BB0599E9EC3E", 2304, "cgbE.bin", "Game Boy Color Boot Rom (Late Revision)"));
-			Option("GBC", "World", File("DF5A0D2D49DE38FBD31CC2AAB8E62C8550E655C0", 2304, "cgb0.bin", "Game Boy Color Boot Rom (Early Revision)"), FirmwareOptionStatus.Unacceptable);
+			Option("GBC", "World", File("F5F33729A956131D9C44310F0AE3BB0599E9EC3E", 2304, "GBC_cgbE.bin", "Game Boy Color Boot Rom (Late Revision)"));
+			Option("GBC", "World", File("DF5A0D2D49DE38FBD31CC2AAB8E62C8550E655C0", 2304, "GBC_cgb0.bin", "Game Boy Color Boot Rom (Early Revision)"), FirmwareOptionStatus.Unacceptable);
 			Firmware("GBC", "AGB", "Game Boy Color Boot Rom (GBA)");
-			Option("GBC", "AGB", File("FA5287E24B0FA533B3B5EF2B28A81245346C1A0F", 2304, "agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
+			Option("GBC", "AGB", File("FA5287E24B0FA533B3B5EF2B28A81245346C1A0F", 2304, "GBC_agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
 			// early GBAs did not patch the logo reading TOCTOU (only relevant for bootlegs that logo swap)
-			Option("GBC", "AGB", File("0DAAC31ACB6CB346FC954368ACB02ACB3ADCC3AB", 2304, "agb0.bin", "Game Boy Color Boot Rom (GBA, Early Revision)"));
+			Option("GBC", "AGB", File("0DAAC31ACB6CB346FC954368ACB02ACB3ADCC3AB", 2304, "GBC_agb0.bin", "Game Boy Color Boot Rom (GBA, Early Revision)"));
 			// functionally equal to agb0.bin (no TOCTOU patch)
-			Option("GBC", "AGB", File("1ECAFA77AB3172193F3305486A857F443E28EBD9", 2304, "agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
+			Option("GBC", "AGB", File("1ECAFA77AB3172193F3305486A857F443E28EBD9", 2304, "GBC_agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
 			AddPatchAndMaybeReverse(new(
 				"1293D68BF9643BC4F36954C1E80E38F39864528D",
 				new FirmwarePatchData(0xF3, new byte[] { 0x03, 0x00, 0xCD, 0x1D, 0xD5, 0xAA, 0x4F, 0x90, 0x74 }),
@@ -497,6 +504,30 @@ namespace BizHawk.Emulation.Common
 			Option("N64DD", "IPL_JPN", in ddv12, FirmwareOptionStatus.Ideal);
 			FirmwareAndOption("10C4173C2A7EB09C6579818F72EF18FA0B6D32DE", 4 * 1024 * 1024, "N64DD", "IPL_DEV", "64DD_IPL_DEV.bin", "N64DD Development IPL");
 			FirmwareAndOption("3C5B93CA231550C68693A14F03CEA8D5DBD1BE9E", 4 * 1024 * 1024, "N64DD", "IPL_USA", "64DD_IPL_USA.bin", "N64DD Prototype USA IPL");
+
+			Firmware("Amiga", "A500", "A500 Kickstart");
+			Option("Amiga", "A500", File("891E9A547772FE0C6C19B610BAF8BC4EA7FCB785", 262144, "amiga-os-130.rom", "Kickstart v1.3 r34.005 (1987-12)(Commodore)(A500-A1000-A2000-CDTV)[!]"), FirmwareOptionStatus.Ideal);
+			Option("Amiga", "A500", File("11F9E62CF299F72184835B7B2A70A16333FC0D88", 262144, "amiga-os-120.rom", "Kickstart v1.2 r33.180 (1986-10)(Commodore)(A500-A1000-A2000)[!]"));
+			Option("Amiga", "A500", File("3B7F1493B27E212830F989F26CA76C02049F09CA", 524288, "amiga-os-310-a600.rom", "Kickstart v3.1 r40.063 (1993-07)(Commodore)(A500-A600-A2000)[!]"));
+
+			Firmware("Amiga", "A600", "A500+/A600/A600HD Kickstart");
+			Option("Amiga", "A600", File("02843C4253BBD29ABA535B0AA3BD9A85034ECDE4", 524288, "amiga-os-205-a600.rom", "Kickstart v2.05 r37.350 (1992-04)(Commodore)(A600HD)[!]"), FirmwareOptionStatus.Ideal);
+			Option("Amiga", "A600", File("C5839F5CB98A7A8947065C3ED2F14F5F42E334A1", 524288, "amiga-os-204.rom", "Kickstart v2.04 r37.175 (1991-05)(Commodore)(A500+)[!]"));
+			Option("Amiga", "A600", File("3B7F1493B27E212830F989F26CA76C02049F09CA", 524288, "amiga-os-310-a600.rom", "Kickstart v3.1 r40.063 (1993-07)(Commodore)(A500-A600-A2000)[!]"));
+			
+			Firmware("Amiga", "A1200", "A1200 Kickstart");
+			Option("Amiga", "A1200", File("E21545723FE8374E91342617604F1B3D703094F1", 524288, "amiga-os-310-a1200.rom", "Kickstart v3.1 r40.068 (1993-12)(Commodore)(A1200)[!]"), FirmwareOptionStatus.Ideal);
+			Option("Amiga", "A1200", File("70033828182FFFC7ED106E5373A8B89DDA76FAA5", 524288, "amiga-os-300-a1200.rom", "Kickstart v3.0 r39.106 (1992-09)(Commodore)(A1200)[!]"));
+			
+			Firmware("Amiga", "A4000", "A4000/A4000T Kickstart");
+			Option("Amiga", "A4000", File("5FE04842D04A489720F0F4BB0E46948199406F49", 524288, "amiga-os-310-a4000.rom", "Kickstart v3.1 r40.068 (1993-12)(Commodore)(A4000)[!]"), FirmwareOptionStatus.Ideal);
+			Option("Amiga", "A4000", File("F0B4E9E29E12218C2D5BD7020E4E785297D91FD7", 524288, "amiga-os-300-a4000.rom", "Kickstart v3.0 r39.106 (1992-09)(Commodore)(A4000)[!]"));
+			Option("Amiga", "A4000", File("B0EC8B84D6768321E01209F11E6248F2F5281A21", 524288, "amiga-os-310-a4000t.rom", "Kickstart v3.1 r40.070 (1994-02)(Commodore)(A4000T)[!]"));
+			
+			Firmware("Amiga", "CD32", "CD32 Kickstart");
+			Option("Amiga", "CD32", File("3525BE8887F79B5929E017B42380A79EDFEE542D", 524288, "amiga-os-310-cd32.rom", "Kickstart v3.1 r40.060 (1993-05)(Commodore)(CD32)[!].rom"), FirmwareOptionStatus.Ideal);
+			Firmware("Amiga", "CD32ext", "CD32 Extended ROM");
+			Option("Amiga", "CD32ext", File("5BEF3D628CE59CC02A66E6E4AE0DA48F60E78F7F", 524288, "amiga-os-310-cd32-ext.rom", "CD32 Extended-ROM r40.60 (1993)(Commodore)(CD32).rom"), FirmwareOptionStatus.Ideal);
 
 			/*Firmware("PS2", "BIOS", "PS2 Bios");
 			Option("PS2", "BIOS", File("FBD54BFC020AF34008B317DCB80B812DD29B3759", 4 * 1024 * 1024, "ps2-0230j-20080220.bin", "PS2 Bios"));

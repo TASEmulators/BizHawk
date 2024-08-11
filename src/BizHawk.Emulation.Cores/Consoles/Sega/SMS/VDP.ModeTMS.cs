@@ -1,5 +1,4 @@
 ﻿// Contains rendering functions for legacy TMS9918 modes.
-using System;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
@@ -30,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (ScanLine >= FrameHeight)
 				return;
 
-			if (DisplayOn == false)
+			if (!DisplayOn)
 			{
 				Array.Clear(FrameBuffer, ScanLine * 256, 256);
 				return;
@@ -68,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (ScanLine >= FrameHeight)
 				return;
 
-			if (DisplayOn == false)
+			if (!DisplayOn)
 			{
 				Array.Clear(FrameBuffer, ScanLine * 256, 256);
 				return;
@@ -105,13 +104,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		private void RenderTmsSprites(bool show)
 		{
-			if (ScanLine >= FrameHeight || DisplayOn == false)
+			if (ScanLine >= FrameHeight || !DisplayOn)
 				return;
 
-			if (EnableDoubledSprites == false)
-				RenderTmsSpritesStandard(show);
-			else
+			if (EnableDoubledSprites)
 				RenderTmsSpritesDouble(show);
+			else
+				RenderTmsSpritesStandard(show);
 		}
 
 		private void RenderTmsSpritesStandard(bool show)

@@ -1,4 +1,3 @@
-using System;
 using System.Windows.Forms;
 
 using BizHawk.Common;
@@ -7,10 +6,13 @@ namespace BizHawk.Bizware.Graphics.Controls
 {
 	internal sealed class OpenGLControl : GraphicsControl
 	{
-		public SDL2OpenGLContext Context { get; private set; }
+		private readonly Action _initGLState;
+		private SDL2OpenGLContext _context;
 
-		public OpenGLControl()
+		public OpenGLControl(Action initGLState)
 		{
+			_initGLState = initGLState;
+
 			// according to OpenTK, these are the styles we want to set
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.UserPaint, true);
@@ -41,14 +43,15 @@ namespace BizHawk.Bizware.Graphics.Controls
 		protected override void OnHandleCreated(EventArgs e)
 		{
 			base.OnHandleCreated(e);
-			Context = new(Handle, 3, 0, false, false);
+			_context = new(Handle, 3, 2, true);
+			_initGLState();
 		}
 
 		protected override void OnHandleDestroyed(EventArgs e)
 		{
 			base.OnHandleDestroyed(e);
-			Context.Dispose();
-			Context = null;
+			_context.Dispose();
+			_context = null;
 		}
 
 		private void MakeContextCurrent()
@@ -58,36 +61,37 @@ namespace BizHawk.Bizware.Graphics.Controls
 				throw new ObjectDisposedException(nameof(OpenGLControl));
 			}
 
-			if (Context is null)
+			if (_context is null)
 			{
 				CreateControl();
 			}
 			else
 			{
-				Context.MakeContextCurrent();
+				_context.MakeContextCurrent();
 			}
+		}
+
+		public override void AllowTearing(bool state)
+		{
+			// not controllable
 		}
 
 		public override void SetVsync(bool state)
 		{
 			MakeContextCurrent();
-			Context.SetVsync(state);
+			_context.SetVsync(state);
 		}
 
 		public override void Begin()
-		{
-			MakeContextCurrent();
-		}
+			=> MakeContextCurrent();
 
 		public override void End()
-		{
-			SDL2OpenGLContext.MakeNoneCurrent();
-		}
+			=> SDL2OpenGLContext.MakeNoneCurrent();
 
 		public override void SwapBuffers()
 		{
 			MakeContextCurrent();
-			Context.SwapBuffers();
+			_context.SwapBuffers();
 		}
 	}
 }

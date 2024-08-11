@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 
 using BizHawk.Client.Common;
@@ -115,8 +114,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ShowHotkeysMenuItem_Click(object sender, EventArgs e)
 		{
-			TI83ToolTips ^= true;
-
+			TI83ToolTips = !TI83ToolTips;
 			if (TI83ToolTips)
 			{
 				SetToolTips();

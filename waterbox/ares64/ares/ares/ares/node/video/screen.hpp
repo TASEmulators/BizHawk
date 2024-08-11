@@ -16,6 +16,7 @@ struct Screen : Video {
   auto scaleY() const -> f64 { return _scaleY; }
   auto aspectX() const -> f64 { return _aspectX; }
   auto aspectY() const -> f64 { return _aspectY; }
+  auto overscan() const -> bool { return _overscan; }
   auto colors() const -> u32 { return _colors; }
   auto pixels(bool frame = 0) -> array_span<u32>;
 
@@ -33,10 +34,13 @@ struct Screen : Video {
 
   auto setRefresh(function<void ()> refresh) -> void;
   auto setViewport(u32 x, u32 y, u32 width, u32 height) -> void;
+  auto refreshRateHint(double refreshRate) -> void;
+  auto refreshRateHint(double pixelFrequency, int dotsPerLine, int linesPerFrame) -> void;
 
   auto setSize(u32 width, u32 height) -> void;
   auto setScale(f64 scaleX, f64 scaleY) -> void;
   auto setAspect(f64 aspectX, f64 aspectY) -> void;
+  auto setOverscan(bool overscan) -> void;
 
   auto setSaturation(f64 saturation) -> void;
   auto setGamma(f64 gamma) -> void;
@@ -44,6 +48,7 @@ struct Screen : Video {
 
   auto setFillColor(u32 fillColor) -> void;
   auto setColorBleed(bool colorBleed) -> void;
+  auto setColorBleedWidth(u32 width) -> void;
   auto setInterframeBlending(bool interframeBlending) -> void;
   auto setRotation(u32 rotation) -> void;
 
@@ -78,7 +83,9 @@ protected:
   f64  _luminance = 1.0;
   u32  _fillColor = 0;
   bool _colorBleed = false;
+  bool _colorBleedWidth = 1;
   bool _interframeBlending = false;
+  bool _overscan = true;
   u32  _rotation = 0;  //counter-clockwise (90 = left, 270 = right)
 
   function<n64 (n32)> _color;
@@ -92,6 +99,8 @@ protected:
 //unserialized:
   nall::thread _thread;
   recursive_mutex _mutex;
+  mutex _frameMutex;
+  condition_variable _frameCondition;
   atomic<bool> _kill = false;
   atomic<bool> _frame = false;
   function<void ()> _refresh;

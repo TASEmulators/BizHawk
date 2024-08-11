@@ -144,22 +144,22 @@ auto DD::command(n16 command) -> void {
       }
     } break;
     case Command::SetRTCYearMonth: {
-      rtc.write<Half>(0, io.data);
+      rtc.ram.write<Half>(0, io.data);
     } break;
     case Command::SetRTCDayHour: {
-      rtc.write<Half>(2, io.data);
+      rtc.ram.write<Half>(2, io.data);
     } break;
     case Command::SetRTCMinuteSecond: {
-      rtc.write<Half>(4, io.data);
+      rtc.ram.write<Half>(4, io.data);
     } break;
     case Command::GetRTCYearMonth: {
-      io.data = rtc.read<Half>(0);
+      io.data = rtc.ram.read<Half>(0);
       } break;
     case Command::GetRTCDayHour: {
-      io.data = rtc.read<Half>(2);
+      io.data = rtc.ram.read<Half>(2);
       } break;
     case Command::GetRTCMinuteSecond: {
-      io.data = rtc.read<Half>(4);
+      io.data = rtc.ram.read<Half>(4);
       } break;
     case Command::SetLEDBlinkRate: {
       if (io.data.bit(24,31) != 0) ctl.ledOnTime = io.data.bit(24,31);
@@ -187,7 +187,11 @@ auto DD::command(n16 command) -> void {
 auto DD::mechaResponse() -> void {
   if(state.seek) {
     state.seek = 0;
-    motorActive();
+    if (io.status.diskPresent) {
+      motorActive();
+    } else {
+      motorStop();
+    }
   }
   io.status.busyState = 0;
   raise(IRQ::MECHA);

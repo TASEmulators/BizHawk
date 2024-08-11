@@ -109,6 +109,7 @@
 			this.Name = "EditCommentsForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Comments";
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnClosed);
 			this.Load += new System.EventHandler(this.EditCommentsForm_Load);
 			((System.ComponentModel.ISupportInitialize)(this.CommentGrid)).EndInit();
 			this.ResumeLayout(false);

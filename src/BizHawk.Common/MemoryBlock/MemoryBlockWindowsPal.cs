@@ -1,5 +1,3 @@
-﻿using System;
-
 using static BizHawk.Common.MemoryApiImports;
 using static BizHawk.Common.MemoryBlock;
 

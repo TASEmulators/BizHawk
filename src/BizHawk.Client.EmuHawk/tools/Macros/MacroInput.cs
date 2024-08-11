@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -97,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override bool AskSaveChanges()
 		{
-			if (_unsavedZones.Count == 0 || IsDisposed)
+			if (_unsavedZones.Count == 0)
 			{
 				return true;
 			}

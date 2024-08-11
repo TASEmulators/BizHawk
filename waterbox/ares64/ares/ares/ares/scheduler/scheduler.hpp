@@ -41,7 +41,7 @@ private:
   vector<Thread*> _threads;
   bool _synchronize = false;
 
-  friend class Thread;
+  friend struct Thread;
 };
 
 extern Scheduler scheduler;

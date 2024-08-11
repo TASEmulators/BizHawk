@@ -104,13 +104,15 @@
 			// 
 			// tabControl1
 			// 
-			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabControl1.Controls.Add(this.tabPage1);
 			this.tabControl1.Controls.Add(this.tabPage3);
-			this.tabControl1.Location = new System.Drawing.Point(12, 12);
+			this.tabControl1.Location = new System.Drawing.Point(9, 12);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(394, 348);
+			this.tabControl1.Size = new System.Drawing.Size(400, 354);
 			this.tabControl1.TabIndex = 2;
 			// 
 			// tabPage1
@@ -129,7 +131,7 @@
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(386, 322);
+			this.tabPage1.Size = new System.Drawing.Size(392, 328);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "General";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -137,7 +139,7 @@
 			// cbMergeLAndRModifierKeys
 			// 
 			this.cbMergeLAndRModifierKeys.AutoSize = true;
-			this.cbMergeLAndRModifierKeys.Location = new System.Drawing.Point(7, 151);
+			this.cbMergeLAndRModifierKeys.Location = new System.Drawing.Point(7, 168);
 			this.cbMergeLAndRModifierKeys.Name = "cbMergeLAndRModifierKeys";
 			this.cbMergeLAndRModifierKeys.Size = new System.Drawing.Size(320, 17);
 			this.cbMergeLAndRModifierKeys.TabIndex = 29;
@@ -147,7 +149,7 @@
 			// HandleAlternateKeyboardLayoutsCheckBox
 			// 
 			this.HandleAlternateKeyboardLayoutsCheckBox.AutoSize = true;
-			this.HandleAlternateKeyboardLayoutsCheckBox.Location = new System.Drawing.Point(7, 128);
+			this.HandleAlternateKeyboardLayoutsCheckBox.Location = new System.Drawing.Point(7, 145);
 			this.HandleAlternateKeyboardLayoutsCheckBox.Name = "HandleAlternateKeyboardLayoutsCheckBox";
 			this.HandleAlternateKeyboardLayoutsCheckBox.Size = new System.Drawing.Size(320, 17);
 			this.HandleAlternateKeyboardLayoutsCheckBox.TabIndex = 26;
@@ -159,14 +161,15 @@
 			this.NeverAskSaveCheckbox.AutoSize = true;
 			this.NeverAskSaveCheckbox.Location = new System.Drawing.Point(6, 29);
 			this.NeverAskSaveCheckbox.Name = "NeverAskSaveCheckbox";
-			this.NeverAskSaveCheckbox.Size = new System.Drawing.Size(387, 17);
+			this.NeverAskSaveCheckbox.Size = new System.Drawing.Size(390, 17);
 			this.NeverAskSaveCheckbox.TabIndex = 20;
-			this.NeverAskSaveCheckbox.Text = "When EmuHawk is closing, skip \"unsaved changes\" prompts and discard all";
+			this.NeverAskSaveCheckbox.Text = "When EmuHawk is closing, skip \"unsaved changes\" prompts and discard all.";
 			this.NeverAskSaveCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label2
 			// 
 			this.label2.Location = new System.Drawing.Point(26, 112);
+			this.label2.MaximumSize = new System.Drawing.Size(380, 0);
 			this.label2.Name = "label2";
 			this.label2.Text = "\"Eavesdrops\" on keyboard and gamepad input while other programs are focused.";
 			// 
@@ -196,7 +199,7 @@
 			// 
 			this.label1.Location = new System.Drawing.Point(26, 72);
 			this.label1.Name = "label1";
-			this.label1.Text = "When this is set, the client will continue to run when it loses focus";
+			this.label1.Text = "When this is set, the client will continue to run when it loses focus.";
 			// 
 			// RunInBackgroundCheckbox
 			// 
@@ -236,7 +239,7 @@
 			this.groupBox1.Controls.Add(this.StartFullScreenCheckbox);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.SingleInstanceModeCheckbox);
-			this.groupBox1.Location = new System.Drawing.Point(6, 174);
+			this.groupBox1.Location = new System.Drawing.Point(6, 191);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(369, 133);
 			this.groupBox1.TabIndex = 15;
@@ -307,7 +310,7 @@
 			this.tabPage3.Controls.Add(this.BackupSRamCheckbox);
 			this.tabPage3.Location = new System.Drawing.Point(4, 22);
 			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(386, 322);
+			this.tabPage3.Size = new System.Drawing.Size(392, 322);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Advanced";
 			this.tabPage3.UseVisualStyleBackColor = true;
@@ -354,7 +357,11 @@
 			// AutosaveSRAMtextBox
 			// 
 			this.AutosaveSRAMtextBox.Location = new System.Drawing.Point(151, 33);
-			this.AutosaveSRAMtextBox.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
+			this.AutosaveSRAMtextBox.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
 			this.AutosaveSRAMtextBox.Name = "AutosaveSRAMtextBox";
 			this.AutosaveSRAMtextBox.Size = new System.Drawing.Size(50, 20);
 			this.AutosaveSRAMtextBox.TabIndex = 5;
@@ -412,7 +419,8 @@
 			// 
 			this.label6.Location = new System.Drawing.Point(27, 243);
 			this.label6.Name = "label6";
-			this.label6.Text = "Skips some integrity check exceptions in waterbox cores.\r\nUseful for romhackers. " + "Reboot core after changing.\r\nDon\'t bother reporting bugs if checked.\r\n";
+			this.label6.Text = "Skips some integrity check exceptions in waterbox cores.\r\nUseful for romhackers. " +
+    "Reboot core after changing.\r\nDon\'t bother reporting bugs if checked.\r\n";
 			// 
 			// cbSkipWaterboxIntegrityChecks
 			// 
@@ -428,7 +436,8 @@
 			// 
 			this.label5.Location = new System.Drawing.Point(27, 194);
 			this.label5.Name = "label5";
-			this.label5.Text = "Will prevent many Out Of Memory crashes during long movies.\r\nYou must restart the" + " program after changing this.";
+			this.label5.Text = "Will prevent many Out Of Memory crashes during long movies.\r\nYou must restart the" +
+    " program after changing this.";
 			// 
 			// cbMoviesOnDisk
 			// 
@@ -508,6 +517,7 @@
 			this.groupBox2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.AutosaveSRAMtextBox)).EndInit();
 			this.ResumeLayout(false);
+
 		}
 
 		#endregion

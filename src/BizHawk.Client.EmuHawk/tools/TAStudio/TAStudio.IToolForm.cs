@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
-			if (!IsHandleCreated || IsDisposed)
+			if (!IsActive)
 			{
 				return;
 			}
@@ -106,18 +106,16 @@ namespace BizHawk.Client.EmuHawk
 
 			if (CurrentTasMovie != null)
 			{
-				if (Game.Hash != CurrentTasMovie.Hash)
+				bool loadRecent = Game.Hash == CurrentTasMovie.Hash && CurrentTasMovie.Filename == Settings.RecentTas.MostRecent;
+				TastudioStopMovie();
+				// try to load the most recent movie if it matches the currently loaded movie
+				if (loadRecent)
 				{
-					TastudioStopMovie();
-					TasView.AllColumns.Clear();
-					StartNewTasMovie();
-					SetUpColumns();
-					TasView.Refresh();
+					LoadMostRecentOrStartNew();
 				}
 				else
 				{
-					TastudioStopMovie();
-					LoadMostRecentOrStartNew();
+					StartNewTasMovie();
 				}
 			}
 		}

@@ -1,9 +1,9 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
@@ -18,37 +18,52 @@ namespace BizHawk.Client.Common
 		public static string ControlDefaultPath => Path.Combine(PathUtils.ExeDirectoryPath, "defctrl.json");
 
 		/// <remarks>
-		/// <c>AppliesTo[0]</c> is used as the group label, and
+		/// <c>CoreNames[0]</c> is the default (out-of-the-box) core.<br/>
+		/// <c>AppliesTo</c> are concatenated to make the submenu's label, and
 		/// <c>Config.PreferredCores[AppliesTo[0]]</c> (lookup on global <see cref="Config"/> instance) determines which option is shown as checked.<br/>
 		/// The order within submenus and the order of the submenus themselves are determined by the declaration order here.
 		/// </remarks>
 		public static readonly IReadOnlyList<(string[] AppliesTo, string[] CoreNames)> CorePickerUIData = new List<(string[], string[])>
 		{
-			(new[] { VSystemID.Raw.A26 },
-				new[] { CoreNames.Stella, CoreNames.Atari2600Hawk }),
-			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC },
-				new[] { CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk }),
-			(new[] { VSystemID.Raw.GBL },
-				new[] { CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x }),
-			(new[] { VSystemID.Raw.SGB },
-				new[] { CoreNames.Gambatte, CoreNames.Bsnes115, CoreNames.SubBsnes115, CoreNames.Bsnes }),
-			(new[] { VSystemID.Raw.GEN },
-				new[] { CoreNames.Gpgx, CoreNames.PicoDrive }),
-			(new[] { VSystemID.Raw.N64 },
-				new[] { CoreNames.Mupen64Plus, CoreNames.Ares64 }),
-			(new[] { VSystemID.Raw.NES },
-				new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
-			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX, VSystemID.Raw.SGXCD },
-				new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk }),
-			(new[] { VSystemID.Raw.PSX },
-				new[] { CoreNames.Nymashock, CoreNames.Octoshock }),
-			(new[] { VSystemID.Raw.SMS, VSystemID.Raw.GG, VSystemID.Raw.SG },
-				new[] { CoreNames.Gpgx, CoreNames.SMSHawk }),
-			(new[] { VSystemID.Raw.SNES },
-				new[] { CoreNames.Snes9X, CoreNames.Bsnes115, CoreNames.SubBsnes115, CoreNames.Faust, CoreNames.Bsnes }),
-			(new[] { VSystemID.Raw.TI83 },
-				new[] { CoreNames.Emu83, CoreNames.TI83Hawk }),
+     	([ VSystemID.Raw.A26  ],
+				[ CoreNames.Stella, CoreNames.Atari2600Hawk ]),
+			([ VSystemID.Raw.Satellaview ],
+				[ CoreNames.Bsnes115, CoreNames.SubBsnes115 ]),
+			([ VSystemID.Raw.GB, VSystemID.Raw.GBC ],
+				[ CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk ]),
+			([ VSystemID.Raw.GBL ],
+				[ CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x ]),
+			([ VSystemID.Raw.SGB ],
+				[ CoreNames.Gambatte, CoreNames.Bsnes115, CoreNames.SubBsnes115, CoreNames.Bsnes ]),
+			([ VSystemID.Raw.GEN ],
+				[ CoreNames.Gpgx, CoreNames.PicoDrive ]),
+			([ VSystemID.Raw.N64 ],
+				[ CoreNames.Mupen64Plus, CoreNames.Ares64 ]),
+			([ VSystemID.Raw.NES ],
+				[ CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk ]),
+			([ VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX, VSystemID.Raw.SGXCD ],
+				[ CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk ]),
+			([ VSystemID.Raw.PSX ],
+				[ CoreNames.Nymashock, CoreNames.Octoshock ]),
+			([ VSystemID.Raw.SMS, VSystemID.Raw.GG, VSystemID.Raw.SG ],
+				[ CoreNames.Gpgx, CoreNames.SMSHawk ]),
+			([ VSystemID.Raw.SNES ],
+				[ CoreNames.Snes9X, CoreNames.Bsnes115, CoreNames.SubBsnes115, CoreNames.Faust, CoreNames.Bsnes ]),
+			([ VSystemID.Raw.TI83 ],
+				[ CoreNames.Emu83, CoreNames.TI83Hawk ]),
+
 		};
+
+		public static Dictionary<string, string> GenDefaultCorePreferences()
+		{
+			Dictionary<string, string> dict = new();
+			foreach (var (appliesTo, coreNames) in CorePickerUIData)
+			{
+				var defaultCore = coreNames[0];
+				foreach (var sysID in appliesTo) dict[sysID] = defaultCore;
+			}
+			return dict;
+		}
 
 		public Config()
 		{
@@ -98,7 +113,20 @@ namespace BizHawk.Client.Common
 
 		public bool StackOSDMessages { get; set; } = true;
 
-		public ZoomFactors TargetZoomFactors { get; set; } = new ZoomFactors();
+		private Dictionary<string, int> TargetZoomFactors { get; set; } = new()
+		{
+			[VSystemID.Raw.GB] = 3,
+			[VSystemID.Raw.GBA] = 3,
+			[VSystemID.Raw.GBC] = 3,
+			[VSystemID.Raw.N64] = 1,
+			[VSystemID.Raw.WSWAN] = 3,
+		};
+
+		public int GetWindowScaleFor(string sysID)
+			=> TargetZoomFactors.GetValueOrPut(sysID, static _ => 2);
+
+		public void SetWindowScaleFor(string sysID, int windowScale)
+			=> TargetZoomFactors[sysID] = windowScale;
 
 		// choose between 0 and 256
 		public int TargetScanlineFilterIntensity { get; set; } = 128;
@@ -188,9 +216,9 @@ namespace BizHawk.Client.Common
 		public bool VSync { get; set; }
 
 		/// <summary>
-		/// Tries to use an alternate vsync mechanism, for video cards that just can't do it right
+		/// Allows non-vsync'd video to tear, this is needed for VFR monitors reportedly
 		/// </summary>
-		public bool DispAlternateVsync { get; set; }
+		public bool DispAllowTearing { get; set; }
 
 		// Display options
 		public bool DisplayFps { get; set; }
@@ -222,7 +250,7 @@ namespace BizHawk.Client.Common
 
 		public int DispPrescale { get; set; } = 1;
 
-		public EDispMethod DispMethod { get; set; } = HostCapabilityDetector.HasD3D9 && !OSTailoredCode.IsWine ? EDispMethod.D3D9 : EDispMethod.OpenGL;
+		public EDispMethod DispMethod { get; set; } = HostCapabilityDetector.HasD3D11 && !OSTailoredCode.IsWine ? EDispMethod.D3D11 : EDispMethod.OpenGL;
 
 		public int DispChromeFrameWindowed { get; set; } = 2;
 		public bool DispChromeStatusBarWindowed { get; set; } = true;
@@ -370,22 +398,7 @@ namespace BizHawk.Client.Common
 		public bool GbAsSgb { get; set; }
 		public string LibretroCore { get; set; }
 
-		public Dictionary<string, string> PreferredCores = new()
-		{
-			[VSystemID.Raw.NES] = CoreNames.QuickNes,
-			[VSystemID.Raw.SNES] = CoreNames.Snes9X,
-			[VSystemID.Raw.N64] = CoreNames.Mupen64Plus,
-			[VSystemID.Raw.GB] = CoreNames.Gambatte,
-			[VSystemID.Raw.GBC] = CoreNames.Gambatte,
-			[VSystemID.Raw.GBL] = CoreNames.GambatteLink,
-			[VSystemID.Raw.SGB] = CoreNames.Gambatte,
-			[VSystemID.Raw.PCE] = CoreNames.TurboNyma,
-			[VSystemID.Raw.PCECD] = CoreNames.TurboNyma,
-			[VSystemID.Raw.SGX] = CoreNames.TurboNyma,
-			[VSystemID.Raw.SGXCD] = CoreNames.TurboNyma,
-			[VSystemID.Raw.PSX] = CoreNames.Nymashock,
-			[VSystemID.Raw.TI83] = CoreNames.Emu83,
-		};
+		public Dictionary<string, string> PreferredCores = GenDefaultCorePreferences();
 
 		public bool DontTryOtherCores { get; set; }
 

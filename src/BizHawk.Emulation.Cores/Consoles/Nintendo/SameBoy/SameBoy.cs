@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Text;
 
@@ -13,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C libsameboy
 	/// </summary>
-	[PortedCore(CoreNames.Sameboy, "LIJI32", "0.15.6", "https://github.com/LIJI32/SameBoy")]
+	[PortedCore(CoreNames.Sameboy, "LIJI32", "0.16.3", "https://github.com/LIJI32/SameBoy")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Sameboy : ICycleTiming, IInputPollable, ILinkable, IRomInfo, IBoardInfo, IGameboyCommon
 	{

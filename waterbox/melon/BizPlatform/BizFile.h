@@ -3,11 +3,10 @@
 
 #include "Platform.h"
 
-namespace Platform
+namespace melonDS::Platform
 {
 
-struct FileCallbackInterface;
-void SetFileCallbacks(FileCallbackInterface& fileCallbackInterface);
+FileHandle* CreateMemoryFile(u8* fileData, u32 fileLength);
 
 }
 

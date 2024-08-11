@@ -43,11 +43,14 @@ public sealed class FirstOrDefaultOnStructAnalyzer : DiagnosticAnalyzer
 					var operation = (IInvocationOperation) oac.Operation;
 					var calledSym = operation.TargetMethod.ConstructedFrom;
 					if (!(firstOrDefaultWithPredSym!.Matches(calledSym) || firstOrDefaultNoPredSym!.Matches(calledSym))) return;
-					var receiverExprType = operation.SemanticModel!.GetTypeInfo((CSharpSyntaxNode) operation.Arguments[0].Syntax).ConvertedType!;
-					var collectionElemType = receiverExprType switch {
+					var receiverExprType = operation.SemanticModel!.GetTypeInfo(
+						(CSharpSyntaxNode) operation.Arguments[0].Syntax,
+						oac.CancellationToken).ConvertedType!;
+					var collectionElemType = receiverExprType switch
+					{
 						INamedTypeSymbol nts => nts.TypeArguments[0],
 						IArrayTypeSymbol ats => ats.ElementType,
-						_ => throw new InvalidOperationException($"receiver parameter's effective type was of an unexpected kind (neither class/struct nor array): {receiverExprType}")
+						_ => throw new InvalidOperationException($"receiver parameter's effective type was of an unexpected kind (neither class/struct nor array): {receiverExprType.GetType().FullName}")
 					};
 					if (collectionElemType.IsValueType) oac.ReportDiagnostic(Diagnostic.Create(DiagUseFirstOrNull, operation.Syntax.GetLocation()));
 				},

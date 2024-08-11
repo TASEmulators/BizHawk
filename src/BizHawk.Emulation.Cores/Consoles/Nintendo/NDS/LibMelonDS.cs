@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
@@ -27,37 +25,74 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			TOUCH = 0x1000,
 			LIDOPEN = 0x2000,
 			LIDCLOSE = 0x4000,
-			POWER = 0x8000,
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
+			public IntPtr Console;
 			public Buttons Keys;
 			public byte TouchX;
 			public byte TouchY;
 			public byte MicVolume;
 			public byte GBALightSensor;
-			public bool ConsiderAltLag;
+			public byte ConsiderAltLag;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct RenderSettings
+		public struct ConsoleCreationArgs
 		{
-			public bool SoftThreaded;
-			public int GLScaleFactor;
-			public bool GLBetterPolygons;
-		}
+			public IntPtr NdsRomData;
+			public int NdsRomLength;
 
-		[StructLayout(LayoutKind.Sequential)]
-		public struct NDSTime
-		{
-			public int Year;
-			public int Month;
-			public int Day;
-			public int Hour;
-			public int Minute;
-			public int Second;
+			public IntPtr GbaRomData;
+			public int GbaRomLength;
+
+			public IntPtr Arm9BiosData;
+			public int Arm9BiosLength;
+
+			public IntPtr Arm7BiosData;
+			public int Arm7BiosLength;
+
+			public IntPtr FirmwareData;
+			public int FirmwareLength;
+
+			public IntPtr Arm9iBiosData;
+			public int Arm9iBiosLength;
+
+			public IntPtr Arm7iBiosData;
+			public int Arm7iBiosLength;
+
+			public IntPtr NandData;
+			public int NandLength;
+
+			public IntPtr DsiWareData;
+			public int DsiWareLength;
+
+			public IntPtr TmdData;
+			public int TmdLength;
+
+			public bool DSi;
+			public bool ClearNAND;
+			public bool SkipFW;
+
+			public NDS.NDSSettings.AudioBitDepthType BitDepth;
+			public NDS.NDSSettings.AudioInterpolationType Interpolation;
+
+			public NDS.NDSSyncSettings.ThreeDeeRendererType ThreeDeeRenderer;
+			public bool Threaded3D;
+			public int ScaleFactor;
+			public bool BetterPolygons;
+			public bool HiResCoordinates;
+
+			public int StartYear;
+			public int StartMonth;
+			public int StartDay;
+			public int StartHour;
+			public int StartMinute;
+			public int StartSecond;
+
+			public FirmwareSettings FwSettings;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -72,100 +107,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public NDS.NDSSyncSettings.Color Color;
 			public int MessageLength;
 			public fixed char Message[26];
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct InitConfig
-		{
-			public bool SkipFW;
-			public bool HasGBACart;
-			public bool DSi;
-			public bool ClearNAND;
-			public bool LoadDSiWare;
-			public bool IsWinApi;
-			public NDS.NDSSyncSettings.ThreeDeeRendererType ThreeDeeRenderer;
-			public RenderSettings RenderSettings;
-			public NDSTime StartTime;
-			public FirmwareSettings FirmwareSettings;
-		}
-
-		public enum ConfigEntry
-		{
-			// JIT_ENABLED define would add 5 entries here
-			// it is currently not (and unlikely ever to be) defined
-
-			ExternalBIOSEnable,
-
-			DLDI_Enable,
-			DLDI_ImagePath,
-			DLDI_ImageSize,
-			DLDI_ReadOnly,
-			DLDI_FolderSync,
-			DLDI_FolderPath,
-
-			DSiSD_Enable,
-			DSiSD_ImagePath,
-			DSiSD_ImageSize,
-			DSiSD_ReadOnly,
-			DSiSD_FolderSync,
-			DSiSD_FolderPath,
-
-			Firm_MAC,
-
-			WifiSettingsPath,
-
-			AudioBitDepth,
-
-			DSi_FullBIOSBoot,
-
-			// GDBSTUB_ENABLED define would add 5 entries here
-			// it will not be defined for our purposes
-		}
-
-		[UnmanagedFunctionPointer(CC)]
-		public delegate bool GetBooleanSettingCallback(ConfigEntry configEntry);
-
-		[UnmanagedFunctionPointer(CC)]
-		public delegate int GetIntegerSettingCallback(ConfigEntry configEntry);
-
-		[UnmanagedFunctionPointer(CC)]
-		public delegate void GetStringSettingCallback(ConfigEntry configEntry, IntPtr buffer, int bufferSize);
-
-		[UnmanagedFunctionPointer(CC)]
-		public delegate void GetArraySettingCallback(ConfigEntry configEntry, IntPtr buffer);
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct ConfigCallbackInterface
-		{
-			public GetBooleanSettingCallback GetBoolean;
-			public GetIntegerSettingCallback GetInteger;
-			public GetStringSettingCallback GetString;
-			public GetArraySettingCallback GetArray;
-
-			public IntPtr[] AllCallbacksInArray(ICallingConventionAdapter adapter)
-			{
-				return new Delegate[] { GetBoolean, GetInteger, GetString, GetArray }
-					.Select(adapter.GetFunctionPointerForDelegate).ToArray();
-			}
-		}
-
-		[UnmanagedFunctionPointer(CC)]
-		public delegate int GetFileLengthCallback(string path);
-
-		[UnmanagedFunctionPointer(CC)]
-		public delegate void GetFileDataCallback(string path, IntPtr buffer);
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct FileCallbackInterface
-		{
-			public GetFileLengthCallback GetLength;
-			public GetFileDataCallback GetData;
-
-			public IntPtr[] AllCallbacksInArray(ICallingConventionAdapter adapter)
-			{
-				return new Delegate[] { GetLength, GetData }
-					.Select(adapter.GetFunctionPointerForDelegate).ToArray();
-			}
+			public fixed byte MacAddress[6];
 		}
 
 		[UnmanagedFunctionPointer(CC)]
@@ -183,42 +125,47 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public delegate void LogCallback(LogLevel level, string message);
 
 		[BizImport(CC)]
-		public abstract IntPtr Init(
-			ref InitConfig loadData,
-			IntPtr[] configCallbackInterface, /* ref ConfigCallbackInterface */
-			IntPtr[] fileCallbackInterface, /* ref FileCallbackInterface */
-			LogCallback logCallback,
-			GetGLProcAddressCallback getGLProcAddressCallback);
+		public abstract void SetLogCallback(LogCallback logCallback);
 
 		[BizImport(CC)]
-		public abstract void PutSaveRam(byte[] data, uint len);
+		public abstract IntPtr InitGL(GetGLProcAddressCallback getGLProcAddressCallback,
+			NDS.NDSSyncSettings.ThreeDeeRendererType threeDeeRenderer, int scaleFactor, bool isWinApi);
 
 		[BizImport(CC)]
-		public abstract void GetSaveRam(byte[] data);
+		public abstract IntPtr CreateConsole(ref ConsoleCreationArgs args, byte[] error);
 
 		[BizImport(CC)]
-		public abstract int GetSaveRamLength();
+		public abstract void ResetConsole(IntPtr console, bool skipFw, ulong dsiTitleId);
+
+		[BizImport(CC)]
+		public abstract void PutSaveRam(IntPtr console, byte[] data, uint len);
+
+		[BizImport(CC)]
+		public abstract void GetSaveRam(IntPtr console, byte[] data);
+
+		[BizImport(CC)]
+		public abstract int GetSaveRamLength(IntPtr console);
 
 		[BizImport(CC)]
 		public abstract bool SaveRamIsDirty();
 
 		[BizImport(CC)]
-		public abstract void ImportDSiWareSavs(uint titleId, byte[] data);
+		public abstract void ImportDSiWareSavs(IntPtr console, uint titleId);
 
 		[BizImport(CC)]
-		public abstract void ExportDSiWareSavs(uint titleId, byte[] data);
+		public abstract void ExportDSiWareSavs(IntPtr console, uint titleId);
 
 		[BizImport(CC)]
-		public abstract void DSiWareSavsLength(uint titleId, out int publicSavSize, out int privateSavSize, out int bannerSavSize);
+		public abstract void DSiWareSavsLength(IntPtr console, uint titleId, out int publicSavSize, out int privateSavSize, out int bannerSavSize);
 
 		[BizImport(CC)]
-		public abstract void GetRegs(uint[] regs);
+		public abstract void GetRegs(IntPtr console, uint[] regs);
 
 		[BizImport(CC)]
-		public abstract void SetReg(int ncpu, int index, int val);
+		public abstract void SetReg(IntPtr console, int ncpu, int index, int val);
 
 		[BizImport(CC)]
-		public abstract int GetCallbackCycleOffset();
+		public abstract int GetCallbackCycleOffset(IntPtr console);
 
 		[UnmanagedFunctionPointer(CC)]
 		public delegate void MemoryCallback(uint addr);
@@ -255,10 +202,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public abstract void SetThreadStartCallback(ThreadStartCallback callback);
 
 		[BizImport(CC)]
-		public abstract int GetNANDSize();
+		public abstract int GetNANDSize(IntPtr console);
 
 		[BizImport(CC)]
-		public abstract void GetNANDData(byte[] buf);
+		public abstract void GetNANDData(IntPtr console, byte[] buf);
 
 		[BizImport(CC)]
 		public abstract int GetGLTexture();
@@ -271,8 +218,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			Natural,
 			Vertical,
 			Horizontal,
-			// TODO? do we want this?
-			// Hybrid,
+			Hybrid,
 		}
 
 		public enum ScreenRotation : int
@@ -301,7 +247,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		[BizImport(CC)]
-		public abstract void SetScreenSettings(ref ScreenSettings screenSettings, out int width, out int height, out int vwidth, out int vheight);
+		public abstract void SetScreenSettings(IntPtr console, ref ScreenSettings screenSettings, out int width, out int height, out int vwidth, out int vheight);
+
+		[BizImport(CC)]
+		public abstract void SetSoundConfig(IntPtr console, NDS.NDSSettings.AudioBitDepthType bitDepth, NDS.NDSSettings.AudioInterpolationType interpolation);
 
 		[BizImport(CC)]
 		public abstract void GetTouchCoords(ref int x, ref int y);

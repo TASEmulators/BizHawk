@@ -1,6 +1,5 @@
 #nullable disable
 
-using System;
 using System.Runtime.InteropServices;
 
 // ReSharper disable StyleCop.SA1300

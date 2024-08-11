@@ -1,4 +1,6 @@
 auto DD::serialize(serializer& s) -> void {
+  s(rtc);
+
   s(irq.bm.line);
   s(irq.bm.mask);
   s(irq.mecha.line);

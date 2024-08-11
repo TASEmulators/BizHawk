@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
@@ -302,7 +301,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (p[i] == lastValue)
 					{
-						_counts[^1]++;
+						_counts[_counts.Count - 1]++;
 					}
 					else
 					{
@@ -335,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (p[i] == lastValue)
 					{
-						_counts[^1]++;
+						_counts[_counts.Count - 1]++;
 					}
 					else
 					{

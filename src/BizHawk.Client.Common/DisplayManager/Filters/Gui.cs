@@ -1,8 +1,7 @@
-using System;
 using System.Drawing;
 using System.Numerics;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common.FilterManager;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
@@ -452,9 +451,22 @@ namespace BizHawk.Client.Common.Filters
 
 		public override void SetInputFormat(string channel, SurfaceState state)
 		{
-			var outputSize = state.SurfaceFormat.Size;
-			outputSize.Width *= Scale;
-			outputSize.Height *= Scale;
+			var inputSize = state.SurfaceFormat.Size;
+			var outputSize = new Size(inputSize.Width * Scale, inputSize.Height * Scale);
+			var maxTexDimension = FilterProgram.GL.MaxTextureDimension;
+			while (outputSize.Width > maxTexDimension || outputSize.Height > maxTexDimension)
+			{
+				outputSize.Width -= inputSize.Width;
+				outputSize.Height -= inputSize.Height;
+				Scale--;
+			}
+
+			// this hopefully never happens
+			if (outputSize.Width == 0 || outputSize.Height == 0)
+			{
+				throw new InvalidOperationException("Prescale input was too large for a texture");
+			}
+
 			var ss = new SurfaceState(new(outputSize), SurfaceDisposition.RenderTarget);
 			DeclareOutput(ss, channel);
 		}
@@ -464,7 +476,7 @@ namespace BizHawk.Client.Common.Filters
 			var outSize = FindOutput().SurfaceFormat.Size;
 			FilterProgram.GuiRenderer.Begin(outSize);
 			FilterProgram.GuiRenderer.DisableBlending();
-			FilterProgram.GuiRenderer.Modelview.Scale(Scale);
+			FilterProgram.GuiRenderer.ModelView.Scale(Scale);
 			FilterProgram.GuiRenderer.Draw(InputTexture);
 			FilterProgram.GuiRenderer.End();
 		}
@@ -519,15 +531,19 @@ namespace BizHawk.Client.Common.Filters
 		{
 			FilterProgram.GuiRenderer.Begin(OutputSize); // hope this didn't change
 			FilterProgram.GuiRenderer.DisableBlending();
-			FilterProgram.GuiRenderer.Modelview.Scale(XIS,YIS);
+			FilterProgram.GuiRenderer.ModelView.Scale(XIS,YIS);
 			FilterProgram.GuiRenderer.Draw(InputTexture);
 			FilterProgram.GuiRenderer.End();
 		}
 	}
 
-	/// <remarks>More accurately, ApiHawkLayer, since the <c>gui</c> Lua library is delegated.</remarks>
-	public class LuaLayer : BaseFilter
+	public class ApiHawkLayer : BaseFilter
 	{
+		private readonly I2DRenderer _renderer;
+
+		public ApiHawkLayer(I2DRenderer renderer)
+			=> _renderer = renderer;
+
 		public override void Initialize()
 		{
 			DeclareInput(SurfaceDisposition.RenderTarget);
@@ -538,19 +554,26 @@ namespace BizHawk.Client.Common.Filters
 			DeclareOutput(state);
 		}
 
-		private Texture2d _texture;
-
-		public void SetTexture(Texture2d tex)
-		{
-			_texture = tex;
-		}
-
 		public override void Run()
 		{
 			var outSize = FindOutput().SurfaceFormat.Size;
+
+			var output = _renderer.Render(outSize.Width, outSize.Height);
+
+			// render target might have changed when rendering, rebind the filter chain's target
+			var rt = FilterProgram.CurrRenderTarget;
+			if (rt == null)
+			{
+				FilterProgram.GL.BindDefaultRenderTarget();
+			}
+			else
+			{
+				rt.Bind();
+			}
+
 			FilterProgram.GuiRenderer.Begin(outSize);
 			FilterProgram.GuiRenderer.EnableBlending();
-			FilterProgram.GuiRenderer.Draw(_texture);
+			FilterProgram.GuiRenderer.Draw(output);
 			FilterProgram.GuiRenderer.End();
 		}
 	}
@@ -589,9 +612,10 @@ namespace BizHawk.Client.Common.Filters
 			}
 
 			var size = FindInput().SurfaceFormat.Size;
-			
+
 			FilterProgram.GuiRenderer.Begin(size.Width, size.Height);
-			var blitter = new OSDBlitter(_font, FilterProgram.GuiRenderer, new(0, 0, size.Width, size.Height));
+			var scale = FilterProgram.ControlDpi / 96.0F;
+			var blitter = new OSDBlitter(_font, FilterProgram.GuiRenderer, new(0, 0, size.Width, size.Height), scale);
 			FilterProgram.GuiRenderer.EnableBlending();
 			_manager.DrawScreenInfo(blitter);
 			_manager.DrawMessages(blitter);
@@ -603,24 +627,27 @@ namespace BizHawk.Client.Common.Filters
 			private readonly StringRenderer _font;
 			private readonly IGuiRenderer _renderer;
 
-			public OSDBlitter(StringRenderer font, IGuiRenderer renderer, Rectangle clipBounds)
+			public OSDBlitter(StringRenderer font, IGuiRenderer renderer, Rectangle clipBounds, float scale)
 			{
 				_font = font;
 				_renderer = renderer;
 				ClipBounds = clipBounds;
+				Scale = scale;
 			}
 
 			public void DrawString(string s, Color color, float x, float y)
 			{
 				_renderer.SetModulateColor(color);
-				_font.RenderString(_renderer, x, y, s);
+				_font.RenderString(_renderer, x, y, s, Scale);
 				_renderer.SetModulateColorWhite();
 			}
 
 			public SizeF MeasureString(string s)
-				=> _font.Measure(s);
+				=> _font.Measure(s, Scale);
 
 			public Rectangle ClipBounds { get; }
+
+			public float Scale { get; }
 		}
 	}
 }

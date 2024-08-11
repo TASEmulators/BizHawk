@@ -1,6 +1,7 @@
-﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -47,9 +48,8 @@ namespace BizHawk.Client.EmuHawk
 			s.Refresh();
 
 			// Update the selected zone's key
-			var lg = MovieSession.Movie.LogGeneratorInstance(MovieSession.MovieController);
-			string key = lg.GenerateLogKey();
-			key = key.Replace("LogKey:", "").Replace("#", "");
+			string key = Bk2LogEntryGenerator.GenerateLogKey(MovieSession.MovieController.Definition);
+			key = key.Replace("#", "");
 
 			foreach (var box in _buttonBoxes)
 			{
@@ -58,10 +58,7 @@ namespace BizHawk.Client.EmuHawk
 					key = key.Replace($"{box.Text}|", "");
 				}
 			}
-
-			key = key[..^1];
-
-			SelectedZone.InputKey = key;
+			SelectedZone.InputKey = key.Substring(startIndex: 0, length: key.Length - 1); // drop final char
 		}
 
 		private void PositionBoxes()

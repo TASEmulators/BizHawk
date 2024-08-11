@@ -33,7 +33,7 @@ struct string_pascal {
 
   explicit operator bool() const { return _data; }
   operator const char*() const { return _data ? _data + sizeof(u32) : nullptr; }
-  operator string() const { return _data ? string{_data + sizeof(u32)} : ""; }
+  operator string() const { return _data ? string{_data + sizeof(u32)} : ""_s; }
 
   auto operator=(const string_pascal& source) -> type& {
     if(this == &source) return *this;

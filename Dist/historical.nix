@@ -78,7 +78,7 @@
 				sed 's/$(git rev-parse --verify HEAD || printf "0000000000000000000000000000000000000000")/'"$shortHash"'/' \
 					-i $out/Dist/.InvokeCLIOnMainSln.sh
 			'';
-			hashPostPatching = "sha256-g6U0B+wY5uosP5WyNFKylBRX9kq+zM6H+f05egYqcAQ=";
+			hashPostPatching = "sha512-7/uvlkR+OxwxErrp0BK+B7ZURp58p8B581lv5iAZgO3Lr6e92kTptypLt7pmqZdZrrsSmuCphNuRfHu0BZeg0A==";
 			dotnet-sdk = dotnet-sdk_6;
 		};
 		info-2_9 = {
@@ -87,7 +87,7 @@
 			postFetch = ''
 				commitCount=20208
 			'' + pre-2_9_1-no-git-patch + from-2_6_2-through-2_9-no-git-patch;
-			hashPostPatching = "sha256-gDLStqpRGxTlXip+FKWj/O7sQElBNjQK8HpjZbXsrC0=";
+			hashPostPatching = "sha512-KJvzpLyzoqLbQsGvWeC2gTWg7871jUToAVMLkI1zm2Ju5+5K5sqhrzwjK/Oxwg8HMCegqIvM9qeM2TdYYuwc6g==";
 			dotnet-sdk = dotnet-sdk_6;
 		};
 		info-2_8 = {
@@ -96,7 +96,7 @@
 			postFetch = ''
 				commitCount=19337
 			'' + pre-2_9_1-no-git-patch + from-2_6_2-through-2_9-no-git-patch;
-			hashPostPatching = "sha256-TfxAA8QkyImau0MxCdbTWFKneXZwpXYPIB+iN9z+Unk=";
+			hashPostPatching = "sha512-kumq3rM86vDT/4W9GioOJ6j2SAEAnyNB7eH2TcPoQGSyxkCmngIyG/yRRY4zYzRLukgEcqM/PiTzBuZxJTNKcQ==";
 			dotnet-sdk = dotnet-sdk_6;
 		};
 		info-2_7 = {
@@ -105,7 +105,7 @@
 			postFetch = ''
 				commitCount=19020
 			'' + pre-2_9_1-no-git-patch + from-2_6_2-through-2_9-no-git-patch;
-			hashPostPatching = "sha256-IX8WmNU+gEY8Vh6OAC3XogiGSmAfdAks4HPJVt4K/4w=";
+			hashPostPatching = "sha512-24/2zMd+Y02jO5XqQLqIZG5pAqO1TC+1ZMuhsO6xYQRTcDFHu2Rq6k0fiCiaoMpac1ymwOS/5bY/x/2e8Eqc/A==";
 			dotnet-sdk = dotnet-sdk_5;
 		};
 		info-2_6_3 = {
@@ -114,7 +114,7 @@
 			postFetch = ''
 				commitCount=18925
 			'' + pre-2_9_1-no-git-patch + from-2_6_2-through-2_9-no-git-patch;
-			hashPostPatching = "sha256-2+r35rVDNYQ1sKffjSph+bsSWRtz1v3jgDqAi5WrhKo=";
+			hashPostPatching = "sha512-oSxazA8cjN6CkVahye3SExEiV+yvkhskDNJA+++fTQcRWaiPlbBb1LtLjH+YuyCyLqgJ25Wi38VgyPwhO4QKOA==";
 			dotnet-sdk = dotnet-sdk_5;
 		};
 		info-2_6_2 = {
@@ -123,7 +123,7 @@
 			postFetch = ''
 				commitCount=18704
 			'' + pre-2_9_1-no-git-patch + from-2_6_2-through-2_9-no-git-patch;
-			hashPostPatching = "sha256-TPf2lFI4PrswoPFQAKrr9vQPHQ9Qi5afgPSyJEErKuo=";
+			hashPostPatching = "sha512-W79FBXhboUPwUreeIiTJ38grdcNuphzMFDKvV5StPj8kwwf/RoSw7kyK+/hXN5wFcobd48TnbRFVm36Upfuvmg==";
 			dotnet-sdk = dotnet-sdk_5;
 		};
 		info-2_6_1 = {
@@ -132,7 +132,7 @@
 			postFetch = ''
 				commitCount=18467
 			'' + pre-2_9_1-no-git-patch;
-			hashPostPatching = "sha256-2+zIlHIENzakZGxjSGfA0owFRr5K2u5EagxTbnKeVsw=";
+			hashPostPatching = "sha512-qZjdISAxXmOSUQ3h7NVOvA2N7ezC7io8NGUWPNpoUVM+YzkHa/aBdxN5VniWid2N7m/nmfeQA69nmJi7HtkY+w==";
 			dotnet-sdk = dotnet-sdk_5;
 		};
 		info-2_6 = {
@@ -141,7 +141,7 @@
 			postFetch = ''
 				commitCount=18376
 			'' + pre-2_9_1-no-git-patch;
-			hashPostPatching = "sha256-kswmNENYxumQlJdUKRQcb5Ni5+aXUqKxEnJ8jX5OHQ0=";
+			hashPostPatching = "sha512-K1XafghDr64MW0fnw5uujsHLrJhxNMcj4Ptin4HT4+cEHg6WN59oNcI5Hsml6xn5u6cRBqHmcugIfYXEK1/g5g==";
 			dotnet-sdk = dotnet-sdk_5;
 		};
 		# if you want to get these building from source, start by changing `releasesEmuHawkInstallables` in `default.nix` so the attrs are actually exposed
@@ -210,6 +210,7 @@ in {
 		hasAssetsInOutput = !isVersionAtLeast "2.6.1" version;
 		hasFFmpegPatch_e68a49aa5 = isVersionAtLeast "2.9.2" version; # with e68a49aa5, downloading *and running* FFmpeg finally works; TODO use FFmpeg from Nixpkgs since it's a stable version (4.4.1)
 		hasMiscTypeCheckerPatch_6afb3be98 = isVersionAtLeast "2.6.2" version;
+		mainAppFilename = "EmuHawk.exe"; # for emuhawk-mono-wrapper launch script
 		neededExtraManagedDeps = neededExtraManagedDepsApprox;
 		needsLibGLVND = false; # true iff not using nixGL (i.e. on NixOS) AND using the OpenGL renderer (the default option)
 		needsSDL = isVersionAtLeast "2.9.2" version;
@@ -224,7 +225,11 @@ in {
 		testProjectNeedsCIEnvVar = !isVersionAtLeast "2.8" version; # platform-specific tests don't run "in CI" because they assume Arch filesystem conventions (on Linux)--before 908d4519c, `-p:ContinuousIntegrationBuild=true` wasn't respected but `GITLAB_CI` was
 		versionProjNeedsDoubleBuild = !isVersionAtLeast "2.9.1" version;
 		#TODO warn about missing/broken features when eval'ing older releases
-	} // hawkSourceInfo;
+	} // hawkSourceInfo // {
+		frontendPackageFlavour = if (hawkSourceInfo.frontendPackageFlavour or null) == null
+			then "NixHawk"
+			else hawkSourceInfo.frontendPackageFlavour;
+	};
 	/** to be passed to `splitReleaseArtifact` */
 	releaseArtifactInfos = lib.mapAttrs'
 		(releaseFrag: value: {
@@ -243,55 +248,55 @@ in {
 		{
 			"2_9_1" = {
 				stripRoot = false;
-				hashPrePatching = "sha256-5aKUbNStQ89hnfaxv7MTQ+1qDfy+QNMyLS5WUTdhue4=";
+				hashPrePatching = "sha512-VX+TlQoCWCNj76HpCXmDsS7SQly+/QeYCnu170+8kF6Y6cZkjMmILQxaC9XfTchVb/zFGMr/8gfgcZToOFZUeQ=="; # NAR checksum; gzip archive is SHA512:BEC7E558963416B3749EF558BC682D1A874A43DF8FE3083224EC7C4C0326CDFEA662EF5C604EEA7C1743D2EEB13656CCF749F0CDB3A413F4985C4B305A95E742
 			};
 			"2_9" = {
-				hashPrePatching = "sha256-gE0iu2L2yvC6dxBcv9Facm8RKPp9dseD7fAH3fnaZsY=";
+				hashPrePatching = "sha512-hywOvKqygQM4CTER4DFftXuND1eNsux46KuG/QWcEEwzJZ50MSOFHDj59YR+MalWAZ6CvtK4YG5JVENlpXWEdA=="; # NAR checksum; gzip archive is SHA512:A501F7A7DF2B75B00AD242D2DD8246B3B6CC165A2F903A7F1345DD900B30F3C6E0E9DA09DF2565402E8B1F34F3DBC432D3B4569282394C72C46AA348D0D439C2
 			};
 			"2_8" = {
 				stripRoot = false;
-				hashPrePatching = "sha256-IRbhI22l30OPn8zJ4HPemjWUohUvZStlEYKnV7RArFA=";
+				hashPrePatching = "sha512-T1snCNq0Zfp2yKjoIH1nQJWxA1Ve5AWYWl7izPJNG3BesxIvrTsPMwqtCFdqmss9jjE3aKnPVdjceu1xXDNUYw=="; # NAR checksum; gzip archive is SHA512:A9FFBCD914CA1843372F50DE7C022107E65B8DED3BC61F04D584A7C5342AD83321A22B9F066A8872431181BCC8DE605827911B0C67511C5A2D4E75910C85D1A6
 			};
 			"2_7" = {
-				hashPrePatching = "sha256-rc9Tk5Pc4p6YR33cowB9W01iRl8FYgAI/V1CHc+pL5E=";
+				hashPrePatching = "sha512-tvldUoaZNV2LaudrGmSLy6VJEuGWLJjRjEYNTuYz8AgLY6006YmaRAjXRIceC04kkPblRGbJ7o4NqAcFdoJ5aQ=="; # NAR checksum; gzip archive is SHA512:9436264AA9CF44AE580A14570EE5B7C39A252A76363118633942D410EE2E5B47F81E1BF5F16030651F9EF63EE503F58AB8F434997F9A43669DFE30D0BD215F47
 			};
 			"2_6_3" = {
 				stripRoot = false;
-				hashPrePatching = "sha256-gCHySfNOjqazbQDqk5lKJIYmPI6onqcaVDwuY8Ud2ns=";
+				hashPrePatching = "sha512-X4fyit9A9r172lyBtFGjfR2gFQIKU1oRhyupSKuGQnUujk9hYAhUfL6uuQIRu+08oJ7/pQGwlKojMBbC3QaEMg=="; # NAR checksum; gzip archive is SHA512:E16289170DC6013456EB8BCA82B6B911A92732F8DD06B096023B90B4902AA0B99606DD7F652164D5746914414D4C7A9CCE54C2888226BF77CC9887A39BA0D08D
 			};
 			"2_6_2" = {
-				hashPrePatching = "sha256-tlnF/ZQOkLMbiEV2BqhxzQ/KixGZ30+LgOUoHvpv13s=";
+				hashPrePatching = "sha512-nfNCoAa1buug4pvltayzMEC8btjtx80sZZ1275L4Bqy3N9r1ZEGnx6p1M/UZPbpNtUd0jdU0ZawlAdTnxaMvVg=="; # NAR checksum; zip archive is SHA512:8751A2229D9E500A3F3A283CE24AE62F8F911507F5FDBE25AA41F31AC5026CF89433C89DC766864439A17531543829E4B43BC4D3B311F5A80B4DF0605BBD9627
 			};
 			"2_6_1" = {
-				hashPrePatching = "sha256-Ou4NbRo7Gh0HWviXSEHtp0PpsGDdYsN8yhR0/gQy3rY=";
+				hashPrePatching = "sha512-8VDjpfBHPIz18T+YymrqQkQUw25mvyUdUSQAwlsLS4ZDkg3F3qQPvSzTIavakv31gJeIweZN8Pcnw0cAkWFytw=="; # NAR checksum; zip archive is SHA512:84F0D14F8BA3AEFFE1E8A8F34BA3955629C12C6B39D34E939B14A1A30362B1BE8C7C3A29E3C75072A2D1661926607C058364ECC4E7C8F2D25EDB110182BA901C
 			};
 			"2_6" = {
-				hashPrePatching = "sha256-AHP1mgedC9wUq+YAJD0gM4Lrl0H0UkrWyifEDC9KLog=";
+				hashPrePatching = "sha512-DsDkIOhsYz/XHIMCol0cLg8aPDLxo5twBfEFhkpsDVSY2dhqp+VZ5wExkz7tbypaqO52KePQlaVtGmE7mPkI9g=="; # NAR checksum; zip archive is SHA512:6F3760E71103681A0F05845D0ADADD7B55C10A57D0AC44606A5B2B88E0435DAE70129F3FFCEF9AC3794FB471196ADE78CCEE7E304DF6447EFC0D271D51ED10AB
 			};
 			"2_5_2" = {
-				hashPrePatching = "sha256-vurAHOSWwpHZ96cLnRvb6wR+6dvTVKgoqUvlU4Qyp3g=";
+				hashPrePatching = "sha512-YTGC1xK7fYhyIcoF/4wqlossfRmNgQyGlXxqzn67zpTiqiidQcW5N+XXB6maZ7Yv2TOArZJmBlRpQNIPxAildg=="; # NAR checksum; zip archive is SHA512:9E4CDF5E2E311CA5AD5750B91EA5163D8E727813F9A88200D80013657C45B33B0A51112FD5816DEBE264B99B1244B8555C0F8B9ECCFC6F87C45E67BBD1C28B06
 			};
 			"2_5_1" = {
-				hashPrePatching = "sha256-tB6UXQPFHPIhV5bERkv/kAktyMn3dnlI4nzIwXO9imQ=";
+				hashPrePatching = "sha512-DStLgwHDaHpe3ddKSHChU6i70gfZiVaAYm+aRrov7BvLndGamYGD2AM77sV9uSgQ0DJlfYTH2TTrp2uhD7uPkg=="; # NAR checksum; zip archive is SHA512:8DDE88D72704027AD810E1B41AB6950AA5BF4A2FA93AAB7F06CDFF878CC65EE7673E1691AFEB8385F37D2035DFCBC686674EB7AF4AC279F934C46131DA56F721
 			};
 			"2_5" = {
 				url = "https://github.com/TASEmulators/BizHawk/releases/download/2.5/BizHawk-2.5.0.zip";
-				hashPrePatching = "sha256-OPuNxgHWYBCw6gkkllir0U9z+ZF3K8K2o24W00MWgLk=";
+				hashPrePatching = "sha512-+lMzqhCZHk3SqLeXGXvbuDURrn5nwnw9p79kqH2ywxb4t6KVJPcSvoPi90ByeUgxmoog1H2pWAkufJPN5c6kQw=="; # NAR checksum; zip archive is SHA512:CB35924402932F13F3ED7159BD5991C58790287C856DB6958F41B631A36C345C5DDEA5249D75560AE608C2900C939579FB395989939F99BF11B4B3B9E2E671AE
 			};
 			"2_4_2" = {
-				hashPrePatching = "sha256-0ZunzBTO4O+B89N5PI0+AeVFBhe9shEtCANsYJBVdaY=";
+				hashPrePatching = "sha512-waqbTSdE4sjDtZc0h61CgzlJ9AUj5RxvkpPnhgJm8V/RYuWkaE6Kvg0i7ul1q46sFTn3nI/+cfWt9Af0s44EzA=="; # NAR checksum; zip archive is SHA512:EA4B8451E461B11BFC1962333ABE7FBB38F3D10CBE0BBF30AB250798FC281CC2C43807AEFFD352AB61DCF889B761AC8394BD095F37F5F22506B634FA529E4DE0
 			};
 			"2_4_1" = {
-				hashPrePatching = "sha256-uORUDsPh7ePRzB69wqKW65Cch35Fjg34Q0aa7Vcf+dA=";
+				hashPrePatching = "sha512-q8Ot2oTSU3adweTBBDZrWEre5FFEKMdWRRG39MbicJFN5zR1gpg3duRgE+AW36PUL8KXtNDeLypDnHQjxWmkLA=="; # NAR checksum; zip archive is SHA512:B0DEB73C155D60487F6E77F29B247B15F441E01782820DD42D22916CCF24F73B5AA95AF6A1BFED9B982984CDD06E83AEC2A21D61584EDADF4E8C8B763CD8BD27
 			};
 			"2_4" = {
-				hashPrePatching = "sha256-vgocYt0Wo5LSLxHF5W1aFi2xqkklMYhZP4zHOIFbCb0=";
+				hashPrePatching = "sha512-Uq+0zzMT8WbgZeriMOfQriWX5JYw2u7yycze/h6mE3Ofc31+vbhrIBXZrkK/ZDXRl5bGEpiBTdItswFSez6IGQ=="; # NAR checksum; zip archive is SHA512:34CB1E7FB300391341BA9C0BDEB87FCE93800A5B90EC971850F88B72C408E0C97AC62BD12DC1BAFBF7A5A15566BEA6726445C167832987477654BB535B69F408
 			};
 			"2_3_3" = {
-				hashPrePatching = "sha256-kLPNpnggnrc7TgA6NCC0P/tkFiUgTHVyKPdUz0UX1EE=";
+				hashPrePatching = "sha512-V2yYsjGsUkCdLTJ6qdsmCbe1MmgkjdA3yIzb9JE1Cahn9A32Kek/t5cqDwmSA82chpffsBXk3qMLfUfsRTaLgg=="; # NAR checksum; zip archive is SHA512:CF83E1357EEFB8BDF1542850D66D8007D620E4050B5715DC83F4A921D36CE9CE47D0D13C5D85F2B0FF8318D2877EEC2F63B931BD47417A81A538327AF927DA3E
 			};
 			"2_3_2" = {
-				hashPrePatching = "sha256-x2DwrzBkPAGhlov/eU/VwXuHVP/Rv0o7pZptmsSQLJU=";
+				hashPrePatching = "sha512-WQpoK0M+ew44JE688w7O8gUfYdzTisJhy2dn7o31mNLA6+CmPnFY5h91fpipB50ZOLzfJLSSEH5v1lbujK3nZA=="; # NAR checksum; zip archive is SHA512:67E8C7E57E735E7319647A35FB09C504240D7BC885EB8D753554FC3E4A2A61AF6A91C07DCF8BF45006F5044DF6E98A8073BA61F14B4C7BCB1B25D5A9B630D817
 			};
 			# older releases won't pass prereq checker w/o WINE libs, relevant change was https://github.com/TASEmulators/BizHawk/commit/27a4062ea22e5cb4a81628580ce47fec7a2709a5#diff-aff17d6fcf6169cad48e9c8d08145b0de360e874aa8ffee0ea66e636cccda39f
 		};

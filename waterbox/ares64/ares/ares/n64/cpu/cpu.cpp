@@ -1,4 +1,5 @@
 #include <n64/n64.hpp>
+#include <nall/gdb/server.hpp>
 
 namespace ares::Nintendo64 {
 
@@ -63,7 +64,7 @@ auto CPU::synchronize() -> void {
     case Queue::SI_DMA_Write:  return si.dmaWrite();
     case Queue::SI_BUS_Write:  return si.writeFinished();
     case Queue::RTC_Tick:      return cartridge.rtc.tick();
-    case Queue::DD_Clock_Tick:  return dd.rtcTickClock();
+    case Queue::DD_Clock_Tick:  return dd.rtc.tickClock();
     case Queue::DD_MECHA_Response:  return dd.mechaResponse();
     case Queue::DD_BM_Request:  return dd.bmRequest();
     case Queue::DD_Motor_Mode:  return dd.motorChange();
@@ -90,6 +91,10 @@ auto CPU::instruction() -> void {
     step(1 * 2);
     return exception.nmi();
   }
+  if (scc.sysadFrozen) {
+    step(1 * 2);
+    return;
+  }
 
   if constexpr(Accuracy::CPU::Recompiler) {
     // Fast path: attempt to lookup previously compiled blocks with devirtualizeFast
@@ -104,26 +109,30 @@ auto CPU::instruction() -> void {
     }
 
     if (auto address = devirtualize(ipu.pc)) {
-      auto block = recompiler.block(ipu.pc, *address);
+      auto block = recompiler.block(ipu.pc, *address, false);
       block->execute(*this);
     }
   }
 
   if constexpr(Accuracy::CPU::Interpreter) {
-    pipeline.address = ipu.pc;
     auto data = fetch(ipu.pc);
     if (!data) return;
-    pipeline.instruction = *data;
-    debugger.instruction();
+    instructionPrologue(*data);
     decoderEXECUTE();
     instructionEpilogue();
   }
 }
 
+auto CPU::instructionPrologue(u32 instruction) -> void {
+  pipeline.address = ipu.pc;
+  pipeline.instruction = instruction;
+  debugger.instruction();
+}
+
 auto CPU::instructionEpilogue() -> s32 {
   if constexpr(Accuracy::CPU::Recompiler) {
     //simulates timings without performing actual icache loads
-	icache.step(ipu.pc, devirtualizeFast(ipu.pc));
+    icache.step(ipu.pc, devirtualizeFast(ipu.pc));
   }
 
   ipu.r[0].u64 = 0;
@@ -168,9 +177,7 @@ auto CPU::power(bool reset) -> void {
 
   if constexpr(Accuracy::CPU::Recompiler) {
     auto buffer = ares::Memory::FixedAllocator::get().tryAcquire(4_MiB);
-    memory::jitprotect(false);
-    recompiler.allocator.resize(4_MiB, bump_allocator::executable | bump_allocator::zero_fill, buffer);
-    memory::jitprotect(true);
+    recompiler.allocator.resize(4_MiB, bump_allocator::executable, buffer);
     recompiler.reset();
   }
 }

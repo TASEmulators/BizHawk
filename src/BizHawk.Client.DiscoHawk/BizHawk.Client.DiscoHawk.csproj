@@ -6,9 +6,9 @@
 	<PropertyGroup>
 		<ApplicationIcon>discohawk.ico</ApplicationIcon>
 		<Nullable>disable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
 	<ItemGroup>
-		<Reference Include="System.Windows.Forms" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
 		<Content Include="discohawk.ico" />
 		<EmbeddedResource Include="discohawk.ico" />

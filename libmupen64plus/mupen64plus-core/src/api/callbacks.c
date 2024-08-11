@@ -61,7 +61,7 @@ void DebugMessage(int level, const char *message, ...)
     if(level == M64MSG_ERROR)
     {
         //trigger a vsync just to get out of frame advance
-        new_vi();		
+        new_vi();
         WaitForSingleObject(rompausesem, INFINITE);
     }
 

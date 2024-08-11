@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -347,7 +346,7 @@ namespace BizHawk.Client.Common
 			var discs = m3u.Entries
 				.Select(e => e.Path)
 				.Where(p => Disc.IsValidExtension(Path.GetExtension(p)))
-				.Select(path => (p: path, d: DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError))))
+				.Select(p => (p, d: DiscExtensions.CreateAnyType(p, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError))))
 				.Where(a => a.d != null)
 				.Select(a => (IDiscAsset)new DiscAsset
 				{
@@ -356,7 +355,7 @@ namespace BizHawk.Client.Common
 					DiscName = Path.GetFileNameWithoutExtension(a.p)
 				})
 				.ToList();
-			if (m3u.Entries.Count == 0)
+			if (discs.Count == 0)
 				throw new InvalidOperationException("Couldn't load any contents of the M3U as discs");
 
 			game = MakeGameFromDisc(discs[0].DiscData, Path.GetExtension(m3u.Entries[0].Path), discs[0].DiscName);
@@ -875,6 +874,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> A78 = new[] { "a78" };
 
+			public static readonly IReadOnlyCollection<string> Amiga = new[] { "adf", "adz", "dms", "fdi", "hdf", "ipf", "lha" };
+
 			public static readonly IReadOnlyCollection<string> AppleII = new[] { "dsk", "do", "po" };
 
 			public static readonly IReadOnlyCollection<string> Arcade = new[] { "zip", "7z", "chd" };
@@ -934,6 +935,7 @@ namespace BizHawk.Client.Common
 			public static readonly IReadOnlyCollection<string> AutoloadFromArchive = Array.Empty<string>()
 				.Concat(A26)
 				.Concat(A78)
+				.Concat(Amiga)
 				.Concat(AppleII)
 				.Concat(C64)
 				.Concat(Coleco)
@@ -1004,6 +1006,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Vectrex", RomFileExtensions.VEC),
 			new FilesystemFilter("MSX", RomFileExtensions.MSX),
 			new FilesystemFilter("Arcade", RomFileExtensions.Arcade),
+			new FilesystemFilter("Amiga", RomFileExtensions.Amiga),
 			FilesystemFilter.EmuHawkSaveStates)
 		{
 			CombinedEntryDesc = "Everything",

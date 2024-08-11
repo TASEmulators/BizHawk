@@ -33,15 +33,18 @@
    On non-macOS systems, returns MAP_JIT if it is defined.
 */
 #include <TargetConditionals.h>
-#if TARGET_OS_OSX
-#if defined SLJIT_CONFIG_X86 && SLJIT_CONFIG_X86
+
+#if (defined(TARGET_OS_OSX) && TARGET_OS_OSX) || (TARGET_OS_MAC && !TARGET_OS_IPHONE)
+
+#if defined(SLJIT_CONFIG_X86) && SLJIT_CONFIG_X86
+
 #include <sys/utsname.h>
 #include <stdlib.h>
 
 #define SLJIT_MAP_JIT	(get_map_jit_flag())
 #define SLJIT_UPDATE_WX_FLAGS(from, to, enable_exec)
 
-static SLJIT_INLINE int get_map_jit_flag()
+static SLJIT_INLINE int get_map_jit_flag(void)
 {
 	size_t page_size;
 	void *ptr;
@@ -67,10 +70,8 @@ static SLJIT_INLINE int get_map_jit_flag()
 	}
 	return map_jit_flag;
 }
-#else /* !SLJIT_CONFIG_X86 */
-#if !(defined SLJIT_CONFIG_ARM && SLJIT_CONFIG_ARM)
-#error "Unsupported architecture"
-#endif /* SLJIT_CONFIG_ARM */
+
+#elif defined(SLJIT_CONFIG_ARM) && SLJIT_CONFIG_ARM
 
 #include <AvailabilityMacros.h>
 #include <pthread.h>
@@ -81,15 +82,29 @@ static SLJIT_INLINE int get_map_jit_flag()
 
 static SLJIT_INLINE void apple_update_wx_flags(sljit_s32 enable_exec)
 {
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= 110000
-	pthread_jit_write_protect_np(enable_exec);
-#else
-#error "Must target Big Sur or newer"
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 110000
+	if (__builtin_available(macos 11, *))
 #endif /* BigSur */
+	pthread_jit_write_protect_np(enable_exec);
 }
-#endif /* SLJIT_CONFIG_X86 */
+
+#elif defined(SLJIT_CONFIG_PPC) && SLJIT_CONFIG_PPC
+
+#define SLJIT_MAP_JIT	(0)
+#define SLJIT_UPDATE_WX_FLAGS(from, to, enable_exec)
+
+#else
+#error "Unsupported architecture"
+#endif /* SLJIT_CONFIG */
+
 #else /* !TARGET_OS_OSX */
+
+#ifdef MAP_JIT
 #define SLJIT_MAP_JIT	(MAP_JIT)
+#else
+#define SLJIT_MAP_JIT	(0)
+#endif
+
 #endif /* TARGET_OS_OSX */
 
 static SLJIT_INLINE void* alloc_chunk(sljit_uw size)

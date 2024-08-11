@@ -10,7 +10,6 @@
 //perhaps moving the slider is meaningless if the disc is ejected--it only affects what disc is inserted when the disc gets inserted!! yeah! this might could save us!
 //not exactly user friendly but maybe we can build it from there with a custom UI.. a disk-changer? dunno if that would help
 
-using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.IO;
@@ -811,7 +810,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				LagCount++;
 
 			//what happens to sound in this case?
-			if (render == false) 
+			if (!render)
 			{
 				Frame++;
 				return true;

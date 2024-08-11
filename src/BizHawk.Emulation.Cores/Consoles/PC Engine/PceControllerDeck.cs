@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 
 using BizHawk.Emulation.Common;
@@ -125,7 +124,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			byte result = 0x3F;
 
-			if (sel == false)
+			if (!sel)
 			{
 				if (c.IsPressed($"P{PortNum} B1")) result &= 0xFE;
 				if (c.IsPressed($"P{PortNum} B2")) result &= 0xFD;

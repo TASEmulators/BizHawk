@@ -2,7 +2,7 @@
 
 #include <emulibc.h>
 
-namespace Platform
+namespace melonDS::Platform
 {
 
 static uintptr_t FrameThreadProc = 0;

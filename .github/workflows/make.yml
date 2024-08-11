@@ -1,0 +1,157 @@
+name: Build Emulation Cores
+
+on:
+  pull_request:
+    branches: [ "master" ]
+    paths: [ "waterbox/**" ]
+  push:
+    branches: [ "master" ]
+    paths: [ "waterbox/**" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CC: clang-18
+
+jobs:
+
+  build-waterbox:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Installing clang 18
+      run: wget https://apt.llvm.org/llvm.sh;
+          chmod u+x llvm.sh;
+          sudo ./llvm.sh 18;
+          clang-18 --version;
+    - name: Getting submodule(s)
+      working-directory: ./waterbox/
+      run: git submodule update --init musl
+    - name: Building musl
+      working-directory: ./waterbox/musl
+      run: ./wbox_configure.sh;
+           ./wbox_build.sh;
+    - name: Building libcxx
+      working-directory: ./waterbox/libcxx
+      run: ./do-everything.sh
+    - name: Building nyma
+      working-directory: ./waterbox/nyma
+      run: ./build-and-install-zlib.sh
+    - name: Uploading compiled waterbox
+      uses: actions/upload-artifact@v4
+      with:
+        name: compiled-waterbox
+        path: waterbox/sysroot
+
+  build-waterboxed-cores:
+    runs-on: ubuntu-latest
+    needs: build-waterbox
+    steps:
+    - uses: actions/checkout@v4
+    - name: Getting submodule(s)
+      working-directory: ./waterbox/
+      run: git submodule update --init snes9x;
+           git submodule update --init melon/melonDS;
+           git submodule update --init nyma/mednafen;
+           git submodule update --init ares64/ares/thirdparty/angrylion-rdp;
+           git submodule update --init gpgx/Genesis-Plus-GX;
+           git submodule update --init ../submodules/sameboy/libsameboy;
+           git submodule update --init uae/libretro-uae;
+    - name: Download compiled waterbox
+      uses: actions/download-artifact@v4
+      with:
+        name: compiled-waterbox
+        path: waterbox/sysroot
+    - name: Installing clang 18
+      run: wget https://apt.llvm.org/llvm.sh;
+            chmod u+x llvm.sh;
+            sudo ./llvm.sh 18;
+            clang-18 --version;
+    - name: Giving execution permission to compiler
+      working-directory: ./waterbox/sysroot
+      run: chmod u+x bin/*
+    - name: Building cores
+      working-directory: ./waterbox/
+      run: ./make-all-cores.sh install
+    - name: Upload waterbox cores
+      uses: actions/upload-artifact@v4
+      with:
+        name: waterbox-cores
+        path: |
+          Assets/dll/ares64_interpreter.wbx.zst
+          Assets/dll/ares64_recompiler.wbx.zst
+          Assets/dll/bsnes.wbx.zst
+          Assets/dll/faust.wbx.zst
+          Assets/dll/gpgx.wbx.zst
+          Assets/dll/hyper.wbx.zst
+          Assets/dll/libsnes.wbx.zst
+          Assets/dll/melonDS.wbx.zst
+          Assets/dll/ngp.wbx.zst
+          Assets/dll/pcfx.wbx.zst
+          Assets/dll/picodrive.wbx.zst
+          Assets/dll/puae.wbx.zst
+          Assets/dll/shock.wbx.zst
+          Assets/dll/snes9x.wbx.zst
+          Assets/dll/ss.wbx.zst
+          Assets/dll/tic80.wbx.zst
+          Assets/dll/turbo.wbx.zst
+          Assets/dll/uzem.wbx.zst
+          Assets/dll/vb.wbx.zst
+          Assets/dll/virtualjaguar.wbx.zst
+
+  build-mame:
+    runs-on: ubuntu-latest
+    needs: build-waterbox
+    steps:
+    - uses: actions/checkout@v4
+    - name: Getting submodule(s)
+      working-directory: ./waterbox/
+      run: git submodule update --init mame-arcade/mame
+    - name: Download compiled waterbox
+      uses: actions/download-artifact@v4
+      with:
+        name: compiled-waterbox
+        path: waterbox/sysroot
+    - name: Installing clang 18
+      run: wget https://apt.llvm.org/llvm.sh;
+            chmod u+x llvm.sh;
+            sudo ./llvm.sh 18;
+            clang-18 --version;
+    - name: Giving execution permission to compiler
+      working-directory: ./waterbox/sysroot
+      run: chmod u+x bin/*
+    - name: Build emulibc
+      working-directory: ./waterbox/emulibc
+      run: make -j4
+    - name: Build libco
+      working-directory: ./waterbox/libco
+      run: make -j4
+    - name: Building MAME
+      working-directory: ./waterbox/mame-arcade
+      run: make -j4 install
+    - name: Upload mame core
+      uses: actions/upload-artifact@v4
+      with:
+        name: mame-core
+        path: |
+          Assets/dll/libmamearcade.wbx.zst
+
+  build-quickernes:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Getting submodule(s)
+      working-directory: ./quicknes
+      run: git submodule update --recursive --init core
+    - name: Building QuickerNES core (Linux)
+      working-directory: ./quicknes/make
+      run: make -j4; make install
+    - name: Upload quicknes core
+      uses: actions/upload-artifact@v4
+      with:
+        name: quicknes-core
+        path: |
+          Assets/dll/libquicknes.so

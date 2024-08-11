@@ -3,8 +3,11 @@
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../MainSlnCommon.props" />
+	<PropertyGroup>
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
 	<ItemGroup>
-		<Reference Include="System.Windows.Forms" />
+		<PackageReference Include="System.Drawing.Common" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
 </Project>

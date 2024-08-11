@@ -66,8 +66,9 @@
 	in writeShellScript "emuhawk-mono-wrapper" ''
 		set -e
 
-		if [ ! -e "$BIZHAWK_HOME/EmuHawk.exe" ]; then
-			printf "no such file: %s\n" "$BIZHAWK_HOME/EmuHawk.exe"
+		mainAppPath="$BIZHAWK_HOME/${bizhawkAssemblies.hawkSourceInfo.mainAppFilename}"
+		if [ ! -e "$mainAppPath" ]; then
+			printf "no such file: %s\n" "$mainAppPath"
 			exit 1
 		fi
 
@@ -87,8 +88,7 @@
 		fi
 		printf "(capturing output in %s/EmuHawkMono_last*.txt)\n" "$PWD" >&2
 		exec '${redirectOutputToFiles}' EmuHawkMono_laststdout.txt EmuHawkMono_laststderr.txt \
-			'${lib.getBin bizhawkAssemblies.mono}/bin/mono' \
-				"$BIZHAWK_HOME/EmuHawk.exe" --config=config.json "$@"
+			'${lib.getBin bizhawkAssemblies.mono}/bin/mono' "$mainAppPath" --config=config.json "$@"
 	'';
 in {
 	inherit emuhawk;

@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				if (prg_mode == false)
+				if (!prg_mode)
 				{
 					return Rom[((prg_page >> 1) * 0x8000) + addr + chip1_offset];
 				}

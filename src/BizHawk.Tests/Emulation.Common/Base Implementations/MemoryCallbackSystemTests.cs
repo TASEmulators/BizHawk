@@ -2,8 +2,6 @@
 using System.Linq;
 using BizHawk.Emulation.Common;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace BizHawk.Tests.Emulation.Common
 {
 	[TestClass]

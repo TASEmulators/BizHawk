@@ -396,7 +396,6 @@
 		/// Statuses reset: OVF, CARRY 
 		/// Statuses unaffected: ICB
 		/// </summary>
-		/// <param name="index"></param>
 		private void SR(byte index)
 		{
 			PopulateCURINSTR(
@@ -414,7 +413,6 @@
 		/// Statuses reset: OVF, CARRY
 		/// Statuses unaffected: ICB
 		/// </summary>
-		/// <param name="index"></param>
 		private void SL(byte index)
 		{
 			PopulateCURINSTR(
@@ -998,7 +996,6 @@
 		/// Statuses modified: OVF, ZERO, CARRY, SIGN
 		/// Statuses unaffected: ICB
 		/// </summary>
-		/// <param name="rIndex"></param>
 		private void DS(byte rIndex)
 		{
 			// only scratch registers 0-16
@@ -1190,7 +1187,6 @@
 		/// A 3-bit value provided by the LlSU instruction operand is loaded into the three most significant bits of the ISAR. The three least significant bits of the ISAR are not altered. 
 		/// No status bits are affected. 
 		/// </summary>
-		/// <param name="octal"></param>
 		private void LISU(byte octal)
 		{
 			PopulateCURINSTR(
@@ -1206,7 +1202,6 @@
 		/// A 3-bit value provided by the USL instruction operand is loaded into the three least significant bits of the ISAR. The three most significant bits of the ISAR are not altered.
 		/// No status bits are modified. 
 		/// </summary>
-		/// <param name="octal"></param>
 		private void LISL(byte octal)
 		{
 			PopulateCURINSTR(
@@ -1223,7 +1218,6 @@
 		/// The most significant four bits of the accumulator are set to "0".
 		/// No status bits are modified. 
 		/// </summary>
-		/// <param name="index"></param>
 		private void LIS(byte index)
 		{
 			PopulateCURINSTR(
@@ -1448,7 +1442,6 @@
 		/// Statuses reset: OVF, CARRY
 		/// Statuses unaffected: ICB
 		/// </summary>
-		/// <param name="index"></param>
 		private void INS_0(byte index)
 		{
 			Regs[IO] = index;               // latch port index early
@@ -1474,7 +1467,6 @@
 		/// Statuses reset: OVF, CARRY
 		/// Statuses unaffected: ICB
 		/// </summary>
-		/// <param name="index"></param>
 		private void INS_1(byte index)
 		{
 			Regs[IO] = index;				// latch port index early
@@ -1507,7 +1499,6 @@
 		/// I/O ports with addresses from 0 to 1 may be accessed by this instruction. (Outs O or 1 is CPU port only.)
 		/// No status bits are modified. 
 		/// </summary>
-		/// <param name="index"></param>
 		private void OUTS_0(byte index)
 		{
 			Regs[IO] = index;               // latch port index early
@@ -1531,7 +1522,6 @@
 		/// I/O ports with addresses from 3 to 15 may be accessed by this instruction.
 		/// No status bits are modified. 
 		/// </summary>
-		/// <param name="index"></param>
 		private void OUTS_1(byte index)
 		{
 			Regs[IO] = index;               // latch port index early
@@ -1566,7 +1556,6 @@
 		/// Statuses modified: OVF, ZERO, CARRY, SIGN
 		/// Statuses unaffected: ICB 
 		/// </summary>
-		/// <param name="rIndex"></param>
 		private void AS(byte rIndex)
 		{
 			// only scratch registers 0-15
@@ -1641,7 +1630,6 @@
 		/// Statuses not significant: OVF, SIGN
 		/// Statuses unaffected: ICB
 		/// </summary>
-		/// <param name="rIndex"></param>
 		private void ASD(byte rIndex)
 		{
 			// only scratch registers 0-15
@@ -1738,7 +1726,6 @@
 		/// Statuses reset: OVF, CARRY 
 		/// Statuses unaffected: ICB
 		/// </summary>
-		/// <param name="rIndex"></param>
 		private void XS(byte rIndex)
 		{
 			// only scratch registers 0-15
@@ -1813,7 +1800,6 @@
 		/// Statuses modified: ZERO, SIGN
 		/// Statuses unaffected: ICB
 		/// </summary>
-		/// <param name="rIndex"></param>
 		private void NS(byte rIndex)
 		{
 			// only scratch registers 0-15

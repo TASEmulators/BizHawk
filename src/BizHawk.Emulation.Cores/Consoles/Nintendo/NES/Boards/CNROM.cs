@@ -1,4 +1,3 @@
-using System;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
@@ -136,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPpu(int addr)
 		{
-			if (chr_enabled == false)
+			if (!chr_enabled)
 			{
 				return 0x12;
 			}

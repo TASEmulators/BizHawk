@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System;
 using System.Linq;
 using System.Text;
 using BizHawk.Common.StringExtensions;

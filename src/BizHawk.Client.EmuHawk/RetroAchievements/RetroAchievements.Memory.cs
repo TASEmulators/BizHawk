@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -355,24 +354,23 @@ namespace BizHawk.Client.EmuHawk
 
 		// these consoles will use the entire system bus
 		private static readonly ConsoleID[] UseFullSysBus =
-		{
+		[
 			ConsoleID.NES, ConsoleID.C64, ConsoleID.AmstradCPC, ConsoleID.Atari7800,
-		};
+		];
 
 		// these consoles will use the entire main memory domain
 		private static readonly ConsoleID[] UseFullMainMem =
-		{
-			ConsoleID.PlayStation, ConsoleID.Lynx, ConsoleID.NeoGeoPocket, ConsoleID.Jaguar,
+		[
+			ConsoleID.Amiga, ConsoleID.Lynx, ConsoleID.NeoGeoPocket, ConsoleID.Jaguar,
 			ConsoleID.JaguarCD, ConsoleID.DS, ConsoleID.DSi, ConsoleID.AppleII,
 			ConsoleID.Vectrex, ConsoleID.Tic80, ConsoleID.PCEngine, ConsoleID.Uzebox,
 			ConsoleID.Nintendo3DS,
-		};
+		];
 
 		// these consoles will use part of the system bus at an offset
 		private static readonly Dictionary<ConsoleID, (uint Start, uint Size)[]> UsePartialSysBus = new()
 		{
-			[ConsoleID.Colecovision] = new[] { (0x6000u, 0x400u) },
-			[ConsoleID.SG1000] = new[] { (0xC000u, 0x2000u), (0x2000u, 0x2000u), (0x8000u, 0x2000u) },
+			[ConsoleID.SG1000] = [ (0xC000u, 0x2000u), (0x2000u, 0x2000u), (0x8000u, 0x2000u) ],
 		};
 
 		// anything more complicated will be handled accordingly
@@ -429,6 +427,10 @@ namespace BizHawk.Client.EmuHawk
 						TryAddDomain("Cart (Volatile) RAM");
 						TryAddDomain("Save RAM");
 						TryAddDomain("SRAM");
+						break;
+					case ConsoleID.PlayStation:
+						mfs.Add(new(domains["MainRAM"], 0, domains["MainRAM"].Size));
+						mfs.Add(new(domains["DCache"], 0, domains["DCache"].Size));
 						break;
 					case ConsoleID.SNES:
 						mfs.Add(new(domains["WRAM"], 0, domains["WRAM"].Size));
@@ -537,6 +539,11 @@ namespace BizHawk.Client.EmuHawk
 						// todo: add System Bus so this isn't needed
 						mfs.Add(new(domains["Work Ram Low"], 0, domains["Work Ram Low"].Size, 1));
 						mfs.Add(new(domains["Work Ram High"], 0, domains["Work Ram High"].Size, 1));
+						break;
+					case ConsoleID.Colecovision:
+						mfs.Add(new(domains["Main RAM"], 0, domains["Main RAM"].Size));
+						TryAddDomain("SGM Low RAM");
+						TryAddDomain("SGM High RAM");
 						break;
 					case ConsoleID.Intellivision:
 						// special case

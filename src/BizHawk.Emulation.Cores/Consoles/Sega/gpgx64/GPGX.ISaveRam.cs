@@ -1,5 +1,5 @@
-﻿using System;
 using System.Runtime.InteropServices;
+
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -9,14 +9,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	{
 		public byte[] CloneSaveRam()
 		{
-			int size = 0;
-			IntPtr area = Core.gpgx_get_sram(ref size);
+			var size = 0;
+			var area = Core.gpgx_get_sram(ref size);
 			if (size == 0 || area == IntPtr.Zero)
+			{
 				return null;
+			}
 
-			byte[] ret = new byte[size];
+			var ret = new byte[size];
 			using (_elf.EnterExit())
+			{
 				Marshal.Copy(area, ret, 0, size);
+			}
+
 			return ret;
 		}
 
@@ -27,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				// not sure how this is happening, but reject them
 				return;
 			}
+
 			if (!Core.gpgx_put_sram(data, data.Length))
 			{
 				throw new Exception("Core rejected saveram");
@@ -37,8 +43,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			get
 			{
-				int size = 0;
-				IntPtr area = Core.gpgx_get_sram(ref size);
+				var size = 0;
+				var area = Core.gpgx_get_sram(ref size);
 				return size > 0 && area != IntPtr.Zero;
 			}
 		}

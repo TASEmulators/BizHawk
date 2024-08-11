@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,6 +7,7 @@ using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.BizInvoke
 {
@@ -83,10 +83,12 @@ namespace BizHawk.BizInvoke
 		/// How far into a class pointer the first field is.  Different on mono and fw.
 		/// </summary>
 		private static readonly int ClassFieldOffset;
+
 		/// <summary>
 		/// How far into a string pointer the first chair is.
 		/// </summary>
 		private static readonly int StringOffset;
+
 		/// <summary>
 		/// How far into a value array type element 0 is.
 		/// </summary>
@@ -534,7 +536,7 @@ namespace BizHawk.BizInvoke
 					throw new NotImplementedException("Multidimensional arrays are not supported!");
 				}
 
-				if (type.Name.Contains('*'))
+				if (type.Name.ContainsOrdinal('*'))
 				{
 					throw new NotImplementedException("Only 0-based 1-dimensional arrays are supported!");
 				}

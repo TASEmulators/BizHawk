@@ -1,33 +1,16 @@
-﻿using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 
-using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.Graphics;
-using BizHawk.Client.EmuHawk;
+using BizHawk.Bizware.Graphics.Controls;
 
 namespace BizHawk.Bizware.Test
 {
 	public static class Program
 	{
-		static Program()
-		{
-			AppDomain.CurrentDomain.AssemblyResolve += (_, args) =>
-			{
-				lock (AppDomain.CurrentDomain)
-				{
-					var firstAsm = Array.Find(AppDomain.CurrentDomain.GetAssemblies(), asm => asm.FullName == args.Name);
-					if (firstAsm is not null) return firstAsm;
-					var guessFilename = Path.Combine(AppContext.BaseDirectory, "dll", $"{new AssemblyName(args.Name).Name}.dll");
-					return File.Exists(guessFilename) ? Assembly.LoadFile(guessFilename) : null;
-				}
-			};
-		}
-
 		public static void Main() => RunTest();
 
 		private sealed class TestForm : Form
@@ -46,13 +29,14 @@ namespace BizHawk.Bizware.Test
 
 		private static void RunTest()
 		{
-			IGL igl = new IGL_OpenGL(2, 0, false);
-			ArtManager am = new(igl);
-			var testArts = typeof(Program).Assembly.GetManifestResourceNames().Where(s => s.Contains("flame"))
-				.Select(s => am.LoadArt(ReflectionCache.EmbeddedResourceStream(s.Substring(21)))) // ReflectionCache adds back the prefix
+			IGL igl = new IGL_OpenGL();
+			// graphics control must be made right away to create the OpenGL context
+			RetainedGraphicsControl? c = new(igl) { Dock = DockStyle.Fill, BackColor = Color.Black };
+
+			var testTexs = typeof(Program).Assembly.GetManifestResourceNames().Where(s => s.Contains("flame"))
+				.Select(s => igl.LoadTexture(ReflectionCache.EmbeddedResourceStream(s[21..]))) // ReflectionCache adds back the prefix
 				.ToList();
-			var smile = am.LoadArt(ReflectionCache.EmbeddedResourceStream("TestImages.smile.png"));
-			am.Close();
+			var smile = igl.LoadTexture(ReflectionCache.EmbeddedResourceStream("TestImages.smile.png"))!;
 			StringRenderer sr;
 			using (var xml = ReflectionCache.EmbeddedResourceStream("TestImages.courier16px.fnt"))
 			using (var tex = ReflectionCache.EmbeddedResourceStream("TestImages.courier16px_0.png"))
@@ -61,8 +45,6 @@ namespace BizHawk.Bizware.Test
 			}
 
 			GuiRenderer gr = new(igl);
-
-			RetainedGraphicsControl? c = new(igl) { Dock = DockStyle.Fill };
 			TestForm tf = new() { Controls = { c } };
 			tf.FormClosing += (_, _) =>
 			{
@@ -81,26 +63,24 @@ namespace BizHawk.Bizware.Test
 			// create a render target
 			var rt = igl.CreateRenderTarget(60, 60);
 			rt.Bind();
-			igl.SetClearColor(Color.Blue);
-			igl.Clear(ClearBufferMask.ColorBufferBit);
+			igl.ClearColor(Color.Blue);
 			gr.Begin(60, 60);
 			gr.Draw(smile);
 			gr.End();
-			rt.Unbind();
+			igl.BindDefaultRenderTarget();
 
-			var rttex2d = igl.LoadTexture(rt.Texture2d.Resolve());
+			var rttex2d = igl.LoadTexture(rt.Resolve())!;
 
 			// test retroarch shader
 			var rt2 = igl.CreateRenderTarget(240, 240);
 			rt2.Bind();
-			igl.SetClearColor(Color.CornflowerBlue);
-			igl.Clear(ClearBufferMask.ColorBufferBit);
+			igl.ClearColor(Color.CornflowerBlue);
 			RetroShader shader;
 			using (var stream = ReflectionCache.EmbeddedResourceStream("TestImages.4xSoft.glsl"))
 			{
 				shader = new(igl, new StreamReader(stream).ReadToEnd());
 			}
-			igl.SetBlendState(igl.BlendNoneCopy);
+			igl.DisableBlending();
 			shader.Run(rttex2d, new Size(60, 60), new Size(240, 240), true);
 
 			var running = true;
@@ -118,38 +98,37 @@ namespace BizHawk.Bizware.Test
 				{
 					c.Begin();
 
-					igl.SetClearColor(Color.Red);
-					igl.Clear(ClearBufferMask.ColorBufferBit);
+					igl.ClearColor(Color.Red);
 
-					var frame = (int) (DateTime.Now - start).TotalSeconds % testArts.Count;
+					var frame = (int) (DateTime.Now - start).TotalSeconds % testTexs.Count;
 
 					gr.Begin(c.ClientSize.Width, c.ClientSize.Height);
-					gr.SetBlendState(igl.BlendNormal);
+					gr.EnableBlending();
 
 					gr.SetModulateColor(Color.Green);
-					gr.RectFill(250, 0, 16, 16);
+					gr.DrawSubrect(null, 250, 0, 16, 16, 0, 0, 1, 1);
 
-					gr.SetBlendState(igl.BlendNoneCopy);
+					gr.DisableBlending();
 					gr.Draw(rttex2d, 0, 20);
-					gr.SetBlendState(igl.BlendNormal);
+					gr.EnableBlending();
 
 					sr.RenderString(gr, 0, 0, "?? fps");
 					gr.SetModulateColor(Color.FromArgb(255, 255, 255, 255));
 					gr.SetCornerColor(0, new(1.0f, 0.0f, 0.0f, 1.0f));
-					gr.Draw(rt2.Texture2d, 0, 0);
+					gr.Draw(rt2, 0, 0);
 					gr.SetCornerColor(0, new(1.0f, 1.0f, 1.0f, 1.0f));
 					gr.SetModulateColorWhite();
-					gr.Modelview.Translate((float) Math.Sin(wobble / 360.0f) * 50, 0);
-					gr.Modelview.Translate(100, 100);
-					gr.Modelview.Push();
-					gr.Modelview.Translate(testArts[frame].Width, 0);
-					gr.Modelview.Scale(-1, 1);
+					gr.ModelView.Translate((float) Math.Sin(wobble / 360.0f) * 50, 0);
+					gr.ModelView.Translate(100, 100);
+					gr.ModelView.Push();
+					gr.ModelView.Translate(testTexs[frame].Width, 0);
+					gr.ModelView.Scale(-1, 1);
 					wobble++;
 					gr.SetModulateColor(Color.Yellow);
-					gr.DrawFlipped(testArts[frame], true, false);
+					gr.DrawSubrect(testTexs[frame], 0, 0, testTexs[frame].Width, testTexs[frame].Height, 1, 0, 0, 1);
 					gr.SetModulateColorWhite();
-					gr.Modelview.Pop();
-					gr.SetBlendState(igl.BlendNormal);
+					gr.ModelView.Pop();
+					gr.EnableBlending();
 					gr.Draw(smile);
 
 					gr.End();

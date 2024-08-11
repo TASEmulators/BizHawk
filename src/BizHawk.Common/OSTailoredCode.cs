@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -216,7 +215,7 @@ namespace BizHawk.Common
 			public IntPtr LoadOrThrow(string dllToLoad)
 			{
 				var ret = LoadOrZero(dllToLoad);
-				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(LoadLibraryW)}, {GetErrorMessage()}");
+				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(LoadLibraryW)} while trying to load {dllToLoad}, {GetErrorMessage()}");
 			}
 
 			public unsafe string GetErrorMessage()

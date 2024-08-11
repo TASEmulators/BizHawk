@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -136,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 			catch (ArgumentException ex)
 			{
 				string errMsg = ex.Message;
-				errMsg = errMsg[(errMsg.IndexOf('-') + 2)..];
+				errMsg = errMsg.Substring(startIndex: errMsg.IndexOf('-') + 2);
 
 				// Balloon is bugged on first invocation
 				_errorBalloon.Show($"Error parsing RegEx: {errMsg}", tb);

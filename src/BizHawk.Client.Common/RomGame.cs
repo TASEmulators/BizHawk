@@ -1,4 +1,4 @@
-﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 			// assume we have a header of that size. Otherwise, assume it's just all rom.
 			// Other 'recognized' header sizes may need to be added.
 			int headerOffset = fileLength % BankSize;
-			if (headerOffset.In(0, 128, 512) == false)
+			if (!headerOffset.In(0, 128, 512))
 			{
 				Console.WriteLine("ROM was not a multiple of 1024 bytes, and not a recognized header size: {0}. Assume it's purely ROM data.", headerOffset);
 				headerOffset = 0;
@@ -94,7 +94,8 @@ namespace BizHawk.Client.Common
 			// read the entire file into FileData.
 			FileData = new byte[fileLength];
 			stream.Position = 0;
-			stream.Read(FileData, 0, fileLength);
+			var bytesRead = stream.Read(FileData, offset: 0, count: fileLength);
+			Debug.Assert(bytesRead == fileLength, "failed to read whole rom stream");
 
 			string SHA1_check = SHA1Checksum.ComputePrefixedHex(FileData);
 

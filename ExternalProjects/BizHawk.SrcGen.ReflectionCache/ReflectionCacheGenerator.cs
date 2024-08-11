@@ -77,7 +77,7 @@ namespace {nSpace}
 	{{
 		private const string EMBED_PREFIX = ""{nSpace}."";
 
-		private static Type[]? _types;
+		private static Type[]? _types = null;
 
 		private static readonly Assembly Asm = typeof({nSpace}.ReflectionCache).Assembly;
 
@@ -88,17 +88,19 @@ namespace {nSpace}
 		public static IEnumerable<string> EmbeddedResourceList(string extraPrefix)
 		{{
 			var fullPrefix = EMBED_PREFIX + extraPrefix;
-			return Asm.GetManifestResourceNames().Where(s => s.StartsWith(fullPrefix, StringComparison.Ordinal)).Select(s => s.RemovePrefix(fullPrefix));
+			return Asm.GetManifestResourceNames().Where(s => s.StartsWithOrdinal(fullPrefix)) // seems redundant with `RemovePrefix`, but we only want these in the final list
+				.Select(s => s.RemovePrefix(fullPrefix));
 		}}
 
 		public static IEnumerable<string> EmbeddedResourceList()
-			=> EmbeddedResourceList(string.Empty);
+			=> EmbeddedResourceList(string.Empty); // can't be simplified to `Asm.GetManifestResourceNames` call
 
 		/// <exception cref=""ArgumentException"">not found</exception>
 		public static Stream EmbeddedResourceStream(string embedPath)
 		{{
 			var fullPath = EMBED_PREFIX + embedPath;
-			return Asm.GetManifestResourceStream(fullPath) ?? throw new ArgumentException($""resource at {{fullPath}} not found"", nameof(embedPath));
+			return Asm.GetManifestResourceStream(fullPath)
+				?? throw new ArgumentException(paramName: nameof(embedPath), message: $""resource at {{fullPath}} not found"");
 		}}
 	}}
 }}

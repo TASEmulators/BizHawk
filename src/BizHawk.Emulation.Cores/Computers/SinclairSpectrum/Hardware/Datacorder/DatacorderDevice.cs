@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -418,7 +418,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			bool is48k = _machine.IsIn48kMode();
 
 			// check whether tape is actually playing
-			if (_tapeIsPlaying == false)
+			if (!_tapeIsPlaying)
 			{
 				// it's not playing. Update lastCycle and return
 				_lastCycle = cpuCycle;

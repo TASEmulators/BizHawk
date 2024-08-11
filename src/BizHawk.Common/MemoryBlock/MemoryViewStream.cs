@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 
 namespace BizHawk.Common
@@ -60,7 +59,7 @@ namespace BizHawk.Common
 		private byte* CurrentPointer()
 			=> (byte*)Z.SS(_ptr + _pos);
 
-#if NET6_0
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 		public override int Read(Span<byte> buffer)
 #else
 		public int Read(Span<byte> buffer)
@@ -110,7 +109,7 @@ namespace BizHawk.Common
 		public override void SetLength(long value)
 			=> throw new IOException();
 
-#if NET6_0
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 		public override void Write(ReadOnlySpan<byte> buffer)
 #else
 		public void Write(ReadOnlySpan<byte> buffer)

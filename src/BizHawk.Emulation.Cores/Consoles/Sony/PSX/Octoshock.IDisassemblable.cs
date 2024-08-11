@@ -12,13 +12,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			set { }
 		}
 
-		public IEnumerable<string> AvailableCpus
-		{
-			get
-			{
-				yield return "R3000A";
-			}
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "R3000A" ];
 
 		public string PCRegisterName => "pc";
 

@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
@@ -33,7 +31,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		/// Acquire GPU memory for inspection.  The returned object must be disposed as soon as the frontend
 		/// tool is done inspecting it, and the pointers become invalid once it is disposed.
 		/// </summary>
-		/// <returns></returns>
 		IGPUMemoryAreas LockGPU();
 
 		/// <summary>

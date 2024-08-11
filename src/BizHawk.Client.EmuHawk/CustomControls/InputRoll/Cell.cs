@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+
 using System.Diagnostics;
 
 using BizHawk.Common;
@@ -11,8 +12,9 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public sealed class Cell : IComparable<Cell>, IEquatable<Cell>
 	{
-		public RollColumn Column { get; internal set; }
-		public int? RowIndex { get; internal set; }
+		public RollColumn? Column { get; internal set; } = null;
+
+		public int? RowIndex { get; internal set; } = null;
 
 		public Cell() { }
 
@@ -25,30 +27,30 @@ namespace BizHawk.Client.EmuHawk
 		public int CompareTo(Cell other)
 			=> SortCell.Compare(this, other);
 
-		public bool Equals(Cell other)
+		public bool Equals(Cell? other)
 			=> other is not null && Column?.Name == other.Column?.Name && RowIndex == other.RowIndex;
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 			=> obj is Cell other && Equals(other);
 
 		public override int GetHashCode()
 		{
-			return Column.GetHashCode() + RowIndex.GetHashCode();
+			return Column!.GetHashCode() + RowIndex.GetHashCode();
 		}
 
 		public override string ToString()
 			=> $"Cell(r: {RowIndex?.ToString() ?? "null"}, c: \"{Column?.Name ?? "(no column)"}\")";
 
-		public static bool operator ==(Cell a, Cell b)
+		public static bool operator ==(Cell? a, Cell? b)
 			=> a is null ? b is null : a.Equals(b);
 
-		public static bool operator !=(Cell a, Cell b)
+		public static bool operator !=(Cell? a, Cell? b)
 			=> a is null ? b is not null : !a.Equals(b);
 	}
 
 	internal static class SortCell
 	{
-		public static int Compare(Cell c1, Cell c2)
+		public static int Compare(Cell? c1, Cell? c2)
 		{
 			if (c1 is null && c2 is null)
 			{
@@ -65,9 +67,9 @@ namespace BizHawk.Client.EmuHawk
 				return -1;
 			}
 
-			if (c1.RowIndex.HasValue)
+			if (c1.RowIndex is not null)
 			{
-				if (c2.RowIndex.HasValue)
+				if (c2.RowIndex is not null)
 				{
 					int row = c1.RowIndex.Value.CompareTo(c2.RowIndex.Value);
 					return row == 0
@@ -78,12 +80,12 @@ namespace BizHawk.Client.EmuHawk
 				return 1;
 			}
 
-			if (c2.RowIndex.HasValue)
+			if (c2.RowIndex is not null)
 			{
 				return -1;
 			}
 
-			return string.CompareOrdinal(c1.Column.Name, c2.Column.Name);
+			return string.CompareOrdinal(c1.Column!.Name, c2.Column!.Name);
 		}
 	}
 
@@ -119,9 +121,7 @@ namespace BizHawk.Client.EmuHawk
 
 	public static class CellExtensions
 	{
-		public static bool IsDataCell(this Cell cell)
-		{
-			return cell != null && cell.RowIndex != null && cell.Column != null;
-		}
+		public static bool IsDataCell(this Cell? cell)
+			=> cell is { RowIndex: not null, Column: not null };
 	}
 }

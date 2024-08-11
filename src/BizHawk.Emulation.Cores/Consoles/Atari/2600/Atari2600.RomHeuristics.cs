@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -403,8 +402,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// These signatures are attributed to the MESS project
 			return ContainsAny(rom, new List<byte[]>
 			{
-				new byte[] { 0x44, 0x50, 0x43, 0x2B },
-				new byte[] { 0x44, 0x50, 0x43, 0x2B },
+				// why is this checking the same value twice? ...
+				"DPC+"u8.ToArray(),
+				"DPC+"u8.ToArray(),
 			});
 		}
 

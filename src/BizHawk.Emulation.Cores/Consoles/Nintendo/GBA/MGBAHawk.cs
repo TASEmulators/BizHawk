@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;

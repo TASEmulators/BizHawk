@@ -62,7 +62,7 @@
             this.toolStripSeparator1,
             this.RemoveMarkerToolStripMenuItem});
 			this.MarkerContextMenu.Name = "MarkerContextMenu";
-			this.MarkerContextMenu.Size = new System.Drawing.Size(119, 120);
+			this.MarkerContextMenu.Size = new System.Drawing.Size(196, 142);
 			this.MarkerContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.MarkerContextMenu_Opening);
 			// 
 			// JumpToMarkerToolStripMenuItem
@@ -181,14 +181,11 @@
 			// 
 			this.MarkerView.AllowColumnReorder = false;
 			this.MarkerView.AllowColumnResize = false;
-			this.MarkerView.AllowMassNavigationShortcuts = true;
-			this.MarkerView.AllowRightClickSelection = true;
 			this.MarkerView.AlwaysScroll = false;
 			this.MarkerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.MarkerView.CellHeightPadding = 0;
-			this.MarkerView.ChangeSelectionWhenPaging = true;
 			this.MarkerView.ContextMenuStrip = this.MarkerContextMenu;
 			this.MarkerView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MarkerView.FullRowSelect = true;

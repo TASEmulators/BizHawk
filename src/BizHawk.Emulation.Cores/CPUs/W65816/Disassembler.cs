@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,10 +11,7 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 
 		private readonly W65816 disassemblerCpu = new W65816();
 		
-		public IEnumerable<string> AvailableCpus
-		{
-			get { yield return "W65816"; }
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "W65816" ];
 
 		public string PCRegisterName => "PC";
 

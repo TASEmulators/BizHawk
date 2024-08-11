@@ -108,6 +108,12 @@ template<typename T> inline auto hex(T value, long precision, char padchar) -> s
   return buffer;
 }
 
+// ~3x faster than method above with larger payloads of single individual bytes
+inline auto hexByte(char* out, u8 value) -> void {
+  out[0] = "0123456789ABCDEF"[value >> 4];
+  out[1] = "0123456789ABCDEF"[value & 0xF];
+}
+
 template<typename T> inline auto octal(T value, long precision, char padchar) -> string {
   string buffer;
   buffer.resize(sizeof(T) * 3);

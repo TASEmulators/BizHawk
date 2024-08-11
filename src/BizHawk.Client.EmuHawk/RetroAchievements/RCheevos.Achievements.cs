@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
@@ -148,14 +147,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_gameData.GameID == 0)
 			{
-				AllowUnofficialCheevos ^= true;
+				AllowUnofficialCheevos = !AllowUnofficialCheevos;
 				return;
 			}
 
 			_activeModeUnlocksRequest.Wait();
 
 			DeactivateCheevos(HardcoreMode);
-			AllowUnofficialCheevos ^= true;
+			AllowUnofficialCheevos = !AllowUnofficialCheevos;
 			ActivateCheevos(HardcoreMode);
 		}
 

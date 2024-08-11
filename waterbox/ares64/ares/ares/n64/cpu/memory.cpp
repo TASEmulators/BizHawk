@@ -140,14 +140,28 @@ auto CPU::devirtualizeFast(u64 vaddr) -> u64 {
   return devirtualizeCache.pbase = 0;
 }
 
+auto CPU::devirtualizeDebug(u64 vaddr) -> u64 {
+  return devirtualizeFast(vaddr); // this wrapper preserves the inlining of 'devirtualizeFast'
+}
+
 template<u32 Size>
 inline auto CPU::busWrite(u32 address, u64 data) -> void {
-  bus.write<Size>(address, data, *this);
+  bus.write<Size>(address, data, *this, "CPU");
+}
+
+template<u32 Size>
+inline auto CPU::busWriteBurst(u32 address, u32 *data) -> void {
+  bus.writeBurst<Size>(address, data, *this);
 }
 
 template<u32 Size>
 inline auto CPU::busRead(u32 address) -> u64 {
-  return bus.read<Size>(address, *this);
+  return bus.read<Size>(address, *this, "CPU");
+}
+
+template<u32 Size>
+inline auto CPU::busReadBurst(u32 address, u32 *data) -> void {
+  return bus.readBurst<Size>(address, data, *this);
 }
 
 auto CPU::fetch(u64 vaddr) -> maybe<u32> {
@@ -185,6 +199,8 @@ auto CPU::fetch(u64 vaddr) -> maybe<u32> {
 template<u32 Size>
 auto CPU::read(u64 vaddr) -> maybe<u64> {
   if(vaddrAlignedError<Size>(vaddr, false)) return nothing;
+  GDB::server.reportMemRead(vaddr, Size);
+  
   switch(segment(vaddr)) {
   case Context::Segment::Unused:
     step(1 * 2);
@@ -215,10 +231,37 @@ auto CPU::read(u64 vaddr) -> maybe<u64> {
   unreachable;
 }
 
+auto CPU::readDebug(u64 vaddr) -> u8 {
+  Thread dummyThread{};
+
+  switch(segment(vaddr)) {
+    case Context::Segment::Unused: return 0;
+    case Context::Segment::Mapped:
+      if(auto match = tlb.load(vaddr, true)) {
+        if(match.cache) return dcache.readDebug(vaddr, match.address & context.physMask);
+        return bus.read<Byte>(match.address & context.physMask, dummyThread, "Ares Debugger");
+      }
+      return 0;
+    case Context::Segment::Cached:
+      return dcache.readDebug(vaddr, vaddr & 0x1fff'ffff);
+    case Context::Segment::Cached32:
+      return dcache.readDebug(vaddr, vaddr & 0xffff'ffff);
+    case Context::Segment::Direct:
+      return bus.read<Byte>(vaddr & 0x1fff'ffff, dummyThread, "Ares Debugger");
+    case Context::Segment::Direct32:
+      return bus.read<Byte>(vaddr & 0xffff'ffff, dummyThread, "Ares Debugger");
+  }
+
+  unreachable;
+}
+
 template<u32 Size>
 auto CPU::write(u64 vaddr0, u64 data, bool alignedError) -> bool {
   if(alignedError && vaddrAlignedError<Size>(vaddr0, true)) return false;
   u64 vaddr = vaddr0 & ~((u64)Size - 1);
+
+  GDB::server.reportMemWrite(vaddr0, Size);
+
   switch(segment(vaddr)) {
   case Context::Segment::Unused:
     step(1 * 2);

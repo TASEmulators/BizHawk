@@ -8,7 +8,7 @@ Gamepad::Gamepad(Node::Port parent) {
   port->setAllocate([&](auto name) { return allocate(name); });
   port->setConnect([&] { return connect(); });
   port->setDisconnect([&] { return disconnect(); });
-  port->setSupported({"Controller Pak", "Rumble Pak"});
+  port->setSupported({"Controller Pak", "Rumble Pak", "Transfer Pak"});
 
   x           = node->append<Node::Input::Axis>  ("X-Axis");
   y           = node->append<Node::Input::Axis>  ("Y-Axis");
@@ -166,9 +166,7 @@ auto Gamepad::comm(n8 send, n8 recv, n8 input[], n8 output[]) -> n2 {
     if(transferPak) {
       u16 address = (input[1] << 8 | input[2] << 0) & ~31;
       if(pif.addressCRC(address) == (n5)input[2]) {
-        for(u32 index : range(recv - 1)) {
-          output[index] = transferPak.read(address++);
-        }
+        for(u32 index : range(recv - 1)) output[index] = transferPak.read(address++);
         output[recv - 1] = pif.dataCRC({&output[0], recv - 1u});
         valid = 1;
       }

@@ -1,4 +1,3 @@
-using System;
 using System.Numerics;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
@@ -6,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 	public class _3DSMotionEmu
 	{
 		// update per frame
-		private const float UPDATE_PERIOD = (float)(4481136.0 / 268111856.0);
+		private const float UPDATE_PERIOD = (float)(268111856.0 / 4481136.0);
 
 		// todo: make these adjustable
 		private const float SENSITIVITY = 0.01f;

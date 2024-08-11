@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -162,7 +161,9 @@ namespace BizHawk.Client.EmuHawk
 
 				try
 				{
-					lines.Add(line[..i], int.Parse(line[(i + 1)..]));
+					lines.Add(
+						line.Substring(startIndex: 0, length: i),
+						int.Parse(line.Substring(startIndex: i + 1)));
 				}
 				catch (FormatException)
 				{
@@ -264,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				filter: FilesystemFilterSet.Palettes,
-				initDir: _config.PathEntries.ScreenshotAbsolutePathFor(VSystemID.Raw.GB));
+				initDir: _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.GB));
 			if (result is not null) LoadColorFile(result, alert: true);
 		}
 

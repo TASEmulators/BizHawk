@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 					var lastState = GetPriorStateForFramebuffer(frame);
 					if (lastState.Key > Emulator.Frame)
 					{
-						LoadState(lastState);
+						LoadState(lastState, true);
 					}
 
 					StartSeeking(frame);

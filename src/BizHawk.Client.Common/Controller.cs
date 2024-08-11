@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -148,10 +147,7 @@ namespace BizHawk.Client.Common
 				_axes[button] = controller.AxisValue(button);
 			}
 
-			foreach (var button in controller.InversedButtons)
-			{
-				_buttons[button] ^= true;
-			}
+			foreach (var button in controller.InversedButtons) _buttons[button] = !_buttons[button];
 		}
 
 		public void BindMulti(string button, string controlString)

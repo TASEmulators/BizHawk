@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -37,7 +36,7 @@ namespace BizHawk.Client.Common
 			bool? startFullscreen = null;
 			string? luaScript = null;
 			bool? luaConsole = null;
-			int? socketPort = null;
+			ushort? socketPort = null;
 			string? socketIP = null;
 			string? mmfFilename = null;
 			string? urlGet = null;
@@ -79,20 +78,17 @@ namespace BizHawk.Client.Common
 				}
 				else if (argDowncased.StartsWithOrdinal("--dump-type="))
 				{
+					// ignored unless `--dump-name` also passed
 					cmdDumpType = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
 				}
 				else if (argDowncased.StartsWithOrdinal("--dump-frames="))
 				{
+					// comma-separated list of integers, indices of frames which should be included in the A/V dump (encoding)
 					string list = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
-					string[] items = list.Split(',');
-					currAviWriterFrameList = new HashSet<int>();
-					foreach (string item in items)
-					{
-						currAviWriterFrameList.Add(int.Parse(item));
-					}
-
+					currAviWriterFrameList = new();
+					currAviWriterFrameList.AddRange(list.Split(',').Select(int.Parse));
 					// automatically set dump length to maximum frame
-					autoDumpLength = currAviWriterFrameList.Order().Last();
+					autoDumpLength = currAviWriterFrameList.Max();
 				}
 				else if (argDowncased.StartsWithOrdinal("--version"))
 				{
@@ -100,6 +96,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (argDowncased.StartsWithOrdinal("--dump-name="))
 				{
+					// ignored unless `--dump-type` also passed
 					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
 				}
 				else if (argDowncased.StartsWithOrdinal("--dump-length="))
@@ -123,6 +120,7 @@ namespace BizHawk.Client.Common
 				else if (argDowncased.StartsWithOrdinal("--lua="))
 				{
 					luaScript = arg.Substring(arg.IndexOf('=') + 1);
+					// implies `--luaconsole`
 					luaConsole = true;
 				}
 				else if (argDowncased.StartsWithOrdinal("--luaconsole"))
@@ -131,15 +129,18 @@ namespace BizHawk.Client.Common
 				}
 				else if (argDowncased.StartsWithOrdinal("--socket_port="))
 				{
-					var port = int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out var i1) ? i1 : default;
+					// must be paired with `--socket_ip`
+					var port = ushort.TryParse(arg.Substring(14), out var i1) ? i1 : (ushort) 0;
 					if (port > 0) socketPort = port;
 				}
 				else if (argDowncased.StartsWithOrdinal("--socket_ip="))
 				{
+					// must be paired with `--socket_port`
 					socketIP = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
 				}
 				else if (argDowncased.StartsWithOrdinal("--socket_udp"))
 				{
+					// ignored unless `--socket_ip --socket_port` also passed
 					socketProtocol = ProtocolType.Udp;
 				}
 				else if (argDowncased.StartsWithOrdinal("--mmf="))
@@ -156,6 +157,8 @@ namespace BizHawk.Client.Common
 				}
 				else if (argDowncased.StartsWithOrdinal("--audiosync="))
 				{
+					// `true` is the only truthy value, all else falsey
+					// if not set, uses remembered state from config
 					audiosync = argDowncased.Substring(argDowncased.IndexOf('=') + 1) == "true";
 				}
 				else if (argDowncased.StartsWithOrdinal("--open-ext-tool-dll="))
@@ -167,6 +170,10 @@ namespace BizHawk.Client.Common
 				}
 				else if (argDowncased.StartsWithOrdinal("--userdata="))
 				{
+					// pairs in the format `k1:v1;k2:v2` (mind your shell escape sequences)
+					// if the value is `true`/`false` it's interpreted as a boolean,
+					// if it's a valid 32-bit signed integer e.g. `-1234` it's interpreted as such, if it's a valid 32-bit float e.g. `12.34` it's interpreted as such,
+					// else it's interpreted as a string
 					userdataUnparsedPairs = new();
 					foreach (var s in arg.Substring(11).Split(';'))
 					{
@@ -184,7 +191,7 @@ namespace BizHawk.Client.Common
 			var httpAddresses = urlGet == null && urlPost == null
 				? ((string?, string?)?) null // don't bother
 				: (urlGet, urlPost);
-			(string, int)? socketAddress;
+			(string, ushort)? socketAddress;
 			if (socketIP == null && socketPort == null)
 			{
 				socketAddress = null; // don't bother

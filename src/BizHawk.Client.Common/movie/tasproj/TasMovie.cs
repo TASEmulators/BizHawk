@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -135,7 +134,7 @@ namespace BizHawk.Client.Common
 		{
 			var anyLagInvalidated = LagLog.RemoveFrom(frame);
 			var anyStateInvalidated = TasStateManager.InvalidateAfter(frame);
-			GreenzoneInvalidated(frame + 1);
+			GreenzoneInvalidated(frame);
 			if (anyLagInvalidated || anyStateInvalidated)
 			{
 				Changes = true;
@@ -149,6 +148,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void InvalidateEntireGreenzone()
+			=> InvalidateAfter(0);
 
 		private (int Frame, IMovieController Controller) _displayCache = (-1, new Bk2Controller("", NullController.Instance.Definition));
 
@@ -310,7 +311,7 @@ namespace BizHawk.Client.Common
 
 			if (BindMarkersToInput) // pretty critical not to erase them
 			{
-				Markers = branch.Markers;
+				Markers = branch.Markers.DeepClone();
 			}
 
 			Changes = true;

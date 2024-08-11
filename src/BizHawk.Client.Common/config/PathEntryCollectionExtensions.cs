@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
@@ -178,6 +177,12 @@ namespace BizHawk.Client.Common
 		public static string ToolsAbsolutePath(this PathEntryCollection collection)
 		{
 			var path = collection[PathEntryCollection.GLOBAL, "Tools"].Path;
+			return collection.AbsolutePathFor(path, null);
+		}
+
+		public static string ExternalToolsAbsolutePath(this PathEntryCollection collection)
+		{
+			var path = collection[PathEntryCollection.GLOBAL, "External Tools"].Path;
 			return collection.AbsolutePathFor(path, null);
 		}
 

@@ -8,9 +8,15 @@
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Silk.NET.OpenGL.Legacy" />
-		<PackageReference Include="SharpDX.Direct3D9" />
+		<PackageReference Include="Cyotek.Drawing.BitmapFont" />
+		<PackageReference Include="ImGui.NET" ExcludeAssets="native" />
+		<PackageReference Include="System.Drawing.Common" PrivateAssets="all" />
+		<PackageReference Include="System.Drawing.Primitives" />
+		<PackageReference Include="Silk.NET.OpenGL" />
+		<PackageReference Include="Silk.NET.WGL.Extensions.NV" />
 		<PackageReference Include="ppy.SDL2-CS" ExcludeAssets="native;contentFiles" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />
+		<PackageReference Include="Vortice.Direct3D11" />
+		<PackageReference Include="Vortice.D3DCompiler" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
 </Project>

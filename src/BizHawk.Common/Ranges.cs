@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -68,7 +67,8 @@ namespace BizHawk.Common
 	{
 		private const ulong MIN_LONG_NEGATION_AS_ULONG = 9223372036854775808UL;
 
-		private static readonly ArithmeticException ExclusiveRangeMinValExc = new ArithmeticException("exclusive range end is min value of integral type");
+		private static ArithmeticException ExclusiveRangeMinValExc
+			=> new("exclusive range end is min value of integral type");
 
 		/// <returns><paramref name="value"/> if it's contained in <paramref name="range"/>, or else whichever bound of <paramref name="range"/> is closest to <paramref name="value"/></returns>
 		public static T ConstrainWithin<T>(this T value, Range<T> range) where T : unmanaged, IComparable<T> => value.CompareTo(range.Start) < 0

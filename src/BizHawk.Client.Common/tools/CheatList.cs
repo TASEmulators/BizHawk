@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -242,7 +241,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(CurrentFileName))
 				{
-					new FileInfo(CurrentFileName).Delete();
+					File.Delete(CurrentFileName);
 					_config.Recent.Remove(CurrentFileName);
 				}
 			}
@@ -286,13 +285,13 @@ namespace BizHawk.Client.Common
 						sb
 							.Append(cheat.AddressStr).Append('\t')
 							.Append(cheat.ValueStr).Append('\t')
-							.Append(cheat.Compare?.ToString() ?? "N").Append('\t')
+							.Append(cheat.Compare is null ? "N" : cheat.CompareStr).Append('\t')
 							.Append(cheat.Domain != null ? cheat.Domain.Name : "").Append('\t')
 							.Append(cheat.Enabled ? '1' : '0').Append('\t')
 							.Append(cheat.Name).Append('\t')
 							.Append(cheat.SizeAsChar).Append('\t')
 							.Append(cheat.TypeAsChar).Append('\t')
-							.Append((cheat.BigEndian ?? false) ? '1' : '0').Append('\t')
+							.Append(cheat.BigEndian is true ? '1' : '0').Append('\t')
 							.Append(cheat.ComparisonType).Append('\t')
 							.AppendLine();
 
@@ -316,7 +315,7 @@ namespace BizHawk.Client.Common
 		public bool Load(IMemoryDomains domains, string path, bool append)
 		{
 			var file = new FileInfo(path);
-			if (file.Exists == false)
+			if (!file.Exists)
 			{
 				return false;
 			}

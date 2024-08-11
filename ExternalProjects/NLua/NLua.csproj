@@ -22,12 +22,12 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<NoWarn>$(NoWarn);IDE0005</NoWarn>
+		<NoWarn>$(NoWarn);IDE0005;SA1514;SA1614;SA1616</NoWarn>
 		<Nullable>disable</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="System.Memory" />
+		<PackageReference Include="System.Memory" />
 	</ItemGroup>
 </Project>

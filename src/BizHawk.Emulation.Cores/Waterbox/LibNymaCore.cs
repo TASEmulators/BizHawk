@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 
@@ -182,7 +181,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// Set a callback to be called whenever the core calls MDFN_MakeFName for a firmware, so that we can load firmwares on demand
 		/// </summary>
-		/// <param name="cb"></param>
 		[BizImport(CC)]
 		public abstract void SetFrontendFirmwareNotify(FrontendFirmwareNotify cb);
 
@@ -208,7 +206,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// Callback to receive a disk TOC
 		/// </summary>
-		/// <param name="disk"></param>
 		/// <param name="dest">Deposit a LibNymaCore.TOC here</param>
 		[UnmanagedFunctionPointer(CC)]
 		public delegate void CDTOCCallback(int disk, IntPtr dest);

@@ -5,8 +5,12 @@
 		<OutputPath>$(ProjectDir)../../test_output</OutputPath>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
+	<PropertyGroup Condition=" '$(TestProjTargetFrameworkOverride)' != '' AND '$(TargetFramework)' == 'net48' ">
+		<TargetFramework>$(TestProjTargetFrameworkOverride)</TargetFramework>
+	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="MSTest" PrivateAssets="all" />
 		<PackageReference Include="JunitXml.TestLogger" PrivateAssets="all" />
+		<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
 	</ItemGroup>
 </Project>

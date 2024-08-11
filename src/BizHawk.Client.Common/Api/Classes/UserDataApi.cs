@@ -1,6 +1,11 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+#if NET5_0_OR_GREATER
+using KeyCollectionType = System.Collections.Generic.IReadOnlySet<string>;
+#else
+using KeyCollectionType = System.Collections.Generic.IReadOnlyCollection<string>;
+#endif
 
 namespace BizHawk.Client.Common
 {
@@ -8,13 +13,14 @@ namespace BizHawk.Client.Common
 	{
 		private readonly IMovieSession _movieSession;
 
-#if NET6_0
-		public IReadOnlySet<string> Keys
-			=> throw new NotImplementedException();
-#else
-		public IReadOnlyCollection<string> Keys
-			=> _movieSession.UserBag.Keys.ToList();
-#endif
+		public KeyCollectionType Keys
+		{
+			get
+			{
+				ICollection<string> keys = _movieSession.UserBag.Keys;
+				return (keys as KeyCollectionType) ?? keys.ToList();
+			}
+		}
 
 		public UserDataApi(IMovieSession movieSession) => _movieSession = movieSession;
 

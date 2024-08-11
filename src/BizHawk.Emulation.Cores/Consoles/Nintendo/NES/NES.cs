@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
@@ -69,6 +68,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					ser.Register(reader);
 				}
+			}
+
+			// only the subframe core should have ICycleTiming registered
+			if (!subframe)
+			{
+				ser.Unregister<ICycleTiming>();
 			}
 
 			ResetControllerDefinition(subframe);

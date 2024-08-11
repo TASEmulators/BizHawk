@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.menuStrip1 = new MenuStripEx();
+			this.menuStrip1 = new BizHawk.WinForms.Controls.MenuStripEx();
 			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NewMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.OpenMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -41,18 +41,18 @@ namespace BizHawk.Client.EmuHawk
 			this.noneToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.miAutoStart = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.miAutoSave = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.miAutoResume = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ClearMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DisassembleMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStrip1 = new ToolStripEx();
+			this.toolStrip1 = new BizHawk.WinForms.Controls.ToolStripEx();
 			this.tsbLoggingActive = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.tsbViewUpdate = new System.Windows.Forms.ToolStripButton();
 			this.tsbViewStyle = new System.Windows.Forms.ToolStripComboBox();
 			this.toolStripSeparator4 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.tsbExportText = new System.Windows.Forms.ToolStripButton();
-			this.lvCDL = new InputRoll();
-			this.miAutoResume = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.lvCDL = new BizHawk.Client.EmuHawk.InputRoll();
 			this.menuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -132,6 +132,11 @@ namespace BizHawk.Client.EmuHawk
 			this.miAutoSave.Text = "Auto-Save";
 			this.miAutoSave.Click += new System.EventHandler(this.MiAutoSave_Click);
 			// 
+			// miAutoResume
+			// 
+			this.miAutoResume.Text = "Auto-Resume";
+			this.miAutoResume.Click += new System.EventHandler(this.MiAutoResume_Click);
+			// 
 			// ClearMenuItem
 			// 
 			this.ClearMenuItem.Text = "&Clear";
@@ -161,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 			this.tsbLoggingActive.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.tsbLoggingActive.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbLoggingActive.Name = "tsbLoggingActive";
-			this.tsbLoggingActive.Size = new System.Drawing.Size(41, 22);
+			this.tsbLoggingActive.Size = new System.Drawing.Size(44, 22);
 			this.tsbLoggingActive.Text = "Active";
 			this.tsbLoggingActive.CheckedChanged += new System.EventHandler(this.TsbLoggingActive_CheckedChanged);
 			// 
@@ -173,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 			this.tsbViewUpdate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.tsbViewUpdate.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbViewUpdate.Name = "tsbViewUpdate";
-			this.tsbViewUpdate.Size = new System.Drawing.Size(46, 22);
+			this.tsbViewUpdate.Size = new System.Drawing.Size(49, 22);
 			this.tsbViewUpdate.Text = "Update";
 			// 
 			// tsbViewStyle
@@ -191,29 +196,30 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.tsbExportText.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbExportText.Name = "tsbExportText";
-			this.tsbExportText.Size = new System.Drawing.Size(87, 22);
+			this.tsbExportText.Size = new System.Drawing.Size(78, 22);
 			this.tsbExportText.Text = "To Clipboard";
 			this.tsbExportText.Click += new System.EventHandler(this.TsbExportText_Click);
 			// 
 			// lvCDL
 			// 
-			this.lvCDL.CellWidthPadding = 3;
-			this.lvCDL.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lvCDL.FullRowSelect = true;
-			this.lvCDL.GridLines = true;
-			this.lvCDL.RowCount = 0;
-			this.lvCDL.Location = new System.Drawing.Point(0, 49);
-			this.lvCDL.Name = "lvCDL";
-			this.lvCDL.Size = new System.Drawing.Size(992, 323);
-			this.lvCDL.TabIndex = 9;
 			this.lvCDL.AllowColumnReorder = false;
 			this.lvCDL.AllowColumnResize = true;
-			this.lvCDL.QueryItemText += new InputRoll.QueryItemTextHandler(this.LvCDL_QueryItemText);
-			// 
-			// miAutoResume
-			// 
-			this.miAutoResume.Text = "Auto-Resume";
-			this.miAutoResume.Click += new System.EventHandler(this.MiAutoResume_Click);
+			this.lvCDL.AllowMassNavigationShortcuts = true;
+			this.lvCDL.AllowRightClickSelection = true;
+			this.lvCDL.AlwaysScroll = false;
+			this.lvCDL.CellHeightPadding = 0;
+			this.lvCDL.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lvCDL.FullRowSelect = true;
+			this.lvCDL.HorizontalOrientation = false;
+			this.lvCDL.LetKeysModifySelection = false;
+			this.lvCDL.Location = new System.Drawing.Point(0, 49);
+			this.lvCDL.Name = "lvCDL";
+			this.lvCDL.RowCount = 0;
+			this.lvCDL.ScrollSpeed = 0;
+			this.lvCDL.SeekingCutoffInterval = 0;
+			this.lvCDL.Size = new System.Drawing.Size(992, 323);
+			this.lvCDL.TabIndex = 9;
+			this.lvCDL.QueryItemText += new BizHawk.Client.EmuHawk.InputRoll.QueryItemTextHandler(this.LvCDL_QueryItemText);
 			// 
 			// CDL
 			// 

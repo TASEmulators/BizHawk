@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -26,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override string Name => "tastudio";
 
-		private TAStudio Tastudio => Tools.Get<TAStudio>() as TAStudio;
+		private TAStudio Tastudio => Tools.TAStudio;
 
 		private struct PendingChanges
 		{
@@ -328,6 +327,7 @@ namespace BizHawk.Client.EmuHawk
 										Tastudio.CurrentTasMovie.SetAxisState(_changeList[i].Frame, _changeList[i].Button, _changeList[i].ValueAxis);
 										break;
 								}
+								Tastudio.RefreshForInputChange(_changeList[i].Frame);
 								break;
 							case LuaChangeTypes.InsertFrames:
 								Tastudio.InsertNumFrames(_changeList[i].Frame, _changeList[i].Number);
@@ -341,7 +341,6 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 					_changeList.Clear();
-					Tastudio.Refresh();
 					Tastudio.JumpToGreenzone();
 					Tastudio.DoAutoRestore();
 				}
@@ -543,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("tastudio.ongreenzoneinvalidated( function( currentindex )\r\n\tconsole.log( \"Called whenever the greenzone is invalidated.\" );\r\nend );")]
-		[LuaMethod("ongreenzoneinvalidated", "Called whenever the greenzone is invalidated. Your callback can have 1 parameter, which will be the index of the first row that was invalidated.")]
+		[LuaMethod("ongreenzoneinvalidated", "Called whenever the greenzone is invalidated. Your callback can have 1 parameter, which will be the index of the last row before the invalidated ones.")]
 		public void OnGreenzoneInvalidated(LuaFunction luaf)
 		{
 			if (Engaged())

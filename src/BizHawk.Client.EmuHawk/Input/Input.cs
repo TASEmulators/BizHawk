@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
@@ -27,7 +26,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly HashSet<Control> _wantingMouseFocus = new HashSet<Control>();
 
-		public static Input Instance { get; set; }
+#pragma warning disable CA2211 // public field
+		public static Input Instance;
+#pragma warning restore CA2211
 
 		private readonly Thread _updateThread;
 
@@ -131,6 +132,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandleAxis(string axis, int newValue)
 		{
+			if (ShouldSwallow(MainFormInputAllowedCallback(false), ClientInputFocus.Pad))
+				return;
+
 			if (_trackDeltas) _axisDeltas[axis] += Math.Abs(newValue - _axisValues[axis]);
 			_axisValues[axis] = newValue;
 		}
@@ -248,9 +252,9 @@ namespace BizHawk.Client.EmuHawk
 						foreach (var ie in _newEvents)
 						{
 							//events are swallowed in some cases:
-							if ((ie.LogicalButton.Modifiers & LogicalButton.MASK_ALT) is not 0U && ShouldSwallow(MainFormInputAllowedCallback(true), ie))
+							if ((ie.LogicalButton.Modifiers & LogicalButton.MASK_ALT) is not 0U && ShouldSwallow(MainFormInputAllowedCallback(true), ie.Source))
 								continue;
-							if (ie.EventType == InputEventType.Press && ShouldSwallow(allowInput, ie))
+							if (ie.EventType == InputEventType.Press && ShouldSwallow(allowInput, ie.Source))
 								continue;
 
 							EnqueueEvent(ie);
@@ -261,13 +265,13 @@ namespace BizHawk.Client.EmuHawk
 				} //lock(this)
 
 				//arbitrary selection of polling frequency:
-				Thread.Sleep(10);
+				Thread.Sleep(2);
 			}
 		}
 
-		private static bool ShouldSwallow(AllowInput allowInput, InputEvent inputEvent)
+		private static bool ShouldSwallow(AllowInput allowInput, ClientInputFocus inputFocus)
 		{
-			return allowInput == AllowInput.None || (allowInput == AllowInput.OnlyController && inputEvent.Source != ClientInputFocus.Pad);
+			return allowInput == AllowInput.None || (allowInput == AllowInput.OnlyController && inputFocus != ClientInputFocus.Pad);
 		}
 
 		public void StartListeningForAxisEvents()
@@ -324,7 +328,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					InputEvent ie = DequeueEvent();
 
-					if (ShouldSwallow(allowInput, ie)) continue;
+					if (ShouldSwallow(allowInput, ie.Source)) continue;
 
 					if (ie.EventType == InputEventType.Press)
 					{

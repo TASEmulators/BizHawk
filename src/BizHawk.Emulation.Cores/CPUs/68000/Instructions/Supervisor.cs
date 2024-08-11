@@ -1,12 +1,10 @@
-﻿using System;
-
 namespace BizHawk.Emulation.Cores.Components.M68000
 {
 	partial class MC68000
 	{
 		private void MOVEtSR()
 		{
-			if (S == false)
+			if (!S)
 				throw new Exception("Write to SR when not in supervisor mode. supposed to trap or something...");
 
 			int mode = (op >> 3) & 7;
@@ -45,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private void MOVEUSP()
 		{
-			if (S == false)
+			if (!S)
 				throw new Exception("MOVE to USP when not supervisor. needs to trap");
 
 			int dir = (op >> 3) & 1;
@@ -69,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private void ANDI_SR()
 		{
-			if (S == false)
+			if (!S)
 				throw new Exception("trap!");
 			SR &= ReadWord(PC); PC += 2;
 			PendingCycles -= 20;
@@ -85,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private void EORI_SR()
 		{
-			if (S == false)
+			if (!S)
 				throw new Exception("trap!");
 			SR ^= ReadWord(PC); PC += 2;
 			PendingCycles -= 20;
@@ -101,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private void ORI_SR()
 		{
-			if (S == false)
+			if (!S)
 				throw new Exception("trap!");
 			SR |= ReadWord(PC); PC += 2;
 			PendingCycles -= 20;

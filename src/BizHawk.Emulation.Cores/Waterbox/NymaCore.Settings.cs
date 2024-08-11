@@ -1,8 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using NymaTypes;
 
@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return val;
 		}
 
-		private unsafe void SettingsQuery(string name, IntPtr dest)
+		private void SettingsQuery(string name, IntPtr dest)
 		{
 			var val = SettingsQuery(name);
 			var bytes = val is null ? Array.Empty<byte>() : Encoding.UTF8.GetBytes(val);
@@ -223,9 +223,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				throw new InvalidOperationException($"Value {val} for setting {name} was too long");
 			}
-
-			new Span<byte>((void*)dest, 256).Clear();
-			Marshal.Copy(bytes, 0, dest, bytes.Length);
+			var dstSpan = Util.UnsafeSpanFromPointer(ptr: dest, length: 256);
+			dstSpan.Clear();
+			bytes.CopyTo(dstSpan);
 		}
 
 		private LibNymaCore.FrontendSettingQuery _settingsQueryDelegate;

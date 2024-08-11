@@ -1,13 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(APPVEYOR)' != '' ">
-		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../TestProjects.props" />
 	<PropertyGroup>
 		<DefineConstants Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">$(DefineConstants);SKIP_PLATFORM_TESTS</DefineConstants>
+		<RunSettingsFilePath>$(MSBuildProjectDirectory)/../MainSln.runsettings</RunSettingsFilePath>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />

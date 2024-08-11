@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -388,9 +387,7 @@ namespace BizHawk.Client.EmuHawk
 			=> MemoryDomainsMenuItem.ReplaceDropDownItems(MemoryDomains.MenuItems(SetMemoryDomain, _currentDomain.Name).ToArray());
 
 		private void BigEndianMenuItem_Click(object sender, EventArgs e)
-		{
-			_bigEndian ^= true;
-		}
+			=> _bigEndian = !_bigEndian;
 
 		private void DataSizeMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
@@ -415,9 +412,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void TurboWhileBottingMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.TurboWhenBotting ^= true;
-		}
+			=> Settings.TurboWhenBotting = !Settings.TurboWhenBotting;
 
 		private void RunBtn_Click(object sender, EventArgs e)
 		{
@@ -1301,9 +1296,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void InvisibleEmulationCheckBox_CheckedChanged(object sender, EventArgs e)
-		{
-			Settings.InvisibleEmulation ^= true;
-		}
+			=> Settings.InvisibleEmulation = !Settings.InvisibleEmulation;
 
 		private void MaximizeAddressBox_TextChanged(object sender, EventArgs e)
 		{

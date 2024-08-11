@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -13,6 +12,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	public abstract class WaterboxCore : IEmulator, IVideoProvider, ISoundProvider, IStatable,
 		IInputPollable, ISaveRam
 	{
+		private const int AUDIO_CHANNEL_COUNT = 2;
+
 		private LibWaterboxCore _core;
 		protected WaterboxHost _exe;
 		protected ICallingConventionAdapter _adapter;
@@ -37,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			BufferWidth = c.DefaultWidth;
 			BufferHeight = c.DefaultHeight;
 			_videoBuffer = new int[c.MaxWidth * c.MaxHeight];
-			_soundBuffer = new short[c.MaxSamples * 2];
+			_soundBuffer = new short[AUDIO_CHANNEL_COUNT * c.MaxSamples]; //TODO rename prop to MaxSamplesPerChannel
 			VsyncNumerator = c.DefaultFpsNumerator;
 			VsyncDenominator = c.DefaultFpsDenominator;
 			_serviceProvider = new BasicServiceProvider(this);
@@ -206,6 +207,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					var frame = FrameAdvancePrep(controller, render, rendersound);
 					frame.VideoBuffer = (IntPtr)vp;
 					frame.SoundBuffer = (IntPtr)sp;
+					//TODO it seems no-one thought to let the core know the LENGTH of either buffer; is it actually writing past the end? --yoshi
 
 					_core.FrameAdvance(frame);
 
@@ -336,10 +338,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
+		private string/*?*/ _finalCoreName = null;
+
+		private string FinalCoreName => _finalCoreName ??= this.Attributes().CoreName;
+
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			samples = _soundBuffer;
 			nsamp = _numSamples;
+			var maxPerChannel = samples.Length / AUDIO_CHANNEL_COUNT;
+			if (maxPerChannel < nsamp)
+			{
+				Util.DebugWriteLine($"FrameAdvance in Waterbox core {FinalCoreName} claimed to have written {AUDIO_CHANNEL_COUNT}x{nsamp} audio samples but buffer is only {AUDIO_CHANNEL_COUNT}x{maxPerChannel} long!");
+				nsamp = maxPerChannel;
+			}
 		}
 
 		public void GetSamplesAsync(short[] samples)

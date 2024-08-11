@@ -99,7 +99,7 @@ namespace BizHawk.Common
 			if (cds.AttributeLists.SelectMany(e => e.Attributes)
 			    .Any(e => e.Name.NormalizeWhitespace().ToFullString() == "CoreSettings"))
 			{
-				var symbol = semanticModel.GetDeclaredSymbol(cds);
+				var symbol = semanticModel.GetDeclaredSymbol(cds, context.CancellationToken);
 				if (symbol is not null) // probably never happens?
 				{
 					CreateDefaultSetter(source, symbol);

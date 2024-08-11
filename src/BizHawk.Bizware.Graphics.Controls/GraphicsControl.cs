@@ -5,12 +5,19 @@ namespace BizHawk.Bizware.Graphics.Controls
 	public abstract class GraphicsControl : Control
 	{
 		/// <summary>
+		/// Allows the control to tear when out of vsync
+		/// Only relevant for D3D11Control currently
+		/// </summary>
+		public abstract void AllowTearing(bool state);
+
+		/// <summary>
 		/// Sets whether presentation operations on this control will vsync
 		/// </summary>
 		public abstract void SetVsync(bool state);
 
 		/// <summary>
-		/// Swaps the buffers for this control
+		/// Swaps the buffers for this control.
+		/// Be aware, the owner IGL's current render target is undefined after calling this
 		/// </summary>
 		public abstract void SwapBuffers();
 

@@ -1,6 +1,5 @@
 #nullable enable
 
-using System;
 using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
@@ -17,10 +16,6 @@ namespace BizHawk.Client.Common
 
 		public IEmulationApi Emulation
 			=> Get<IEmulationApi>(); // requires IEmulator
-
-		[Obsolete("use Emulation")]
-		public IGameInfoApi GameInfo
-			=> Get<IGameInfoApi>();
 
 		public IGuiApi Gui
 			=> Get<IGuiApi>(); // requires IEmulator

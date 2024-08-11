@@ -1,9 +1,9 @@
-﻿using System;
 using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
 
 #pragma warning disable IDE1006
+#pragma warning disable CA1069
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
@@ -30,23 +30,33 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Japan_PAL = 4
 		}
 
+		public enum ForceVDP : int
+		{
+			Disabled = 0,
+			NTSC = 1,
+			PAL = 2
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct InitSettings
 		{
 			public uint BackdropColor;
 			public Region Region;
+			public ForceVDP ForceVDP;
 			public ushort LowPassRange;
 			public short LowFreq;
 			public short HighFreq;
 			public short LowGain;
 			public short MidGain;
 			public short HighGain;
+
 			public enum FilterType : byte
 			{
 				None = 0,
 				LowPass = 1,
 				ThreeBand = 2
 			}
+
 			public FilterType Filter;
 
 			public INPUT_SYSTEM InputSystemA;
@@ -60,6 +70,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				YM2413_MAME,
 				YM2413_NUKED
 			}
+
 			public SMSFMSoundChipType SMSFMSoundChip;
 
 			public enum GenesisFMSoundChipType : byte
@@ -70,6 +81,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				Nuked_YM2612,
 				Nuked_YM3438
 			}
+
 			public GenesisFMSoundChipType GenesisFMSoundChip;
 
 			public bool SpritesAlwaysOnTop;
@@ -83,6 +95,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				Horizontal = 1 << 1,
 				All = Vertical | Horizontal,
 			}
+
 			public OverscanType Overscan;
 			public bool GGExtra;
 		}
@@ -126,19 +139,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public enum INPUT_SYSTEM : byte
 		{
-			SYSTEM_NONE = 0,        // unconnected port	
-			SYSTEM_MD_GAMEPAD = 1,  // single 3-buttons or 6-buttons Control Pad 	
-			SYSTEM_MOUSE = 2,       // Sega Mouse 	
-			SYSTEM_MENACER = 3,     // Sega Menacer -- port B only
-			SYSTEM_JUSTIFIER = 4,   // Konami Justifiers -- port B only
-			SYSTEM_XE_A1P = 5,      // XE-A1P analog controller -- port A only
-			SYSTEM_ACTIVATOR = 6,   // Sega Activator 	
-			SYSTEM_MS_GAMEPAD = 7,  // single 2-buttons Control Pad -- Master System
-			SYSTEM_LIGHTPHASER = 8, // Sega Light Phaser -- Master System
-			SYSTEM_PADDLE = 9,      // Sega Paddle Control -- Master System
-			SYSTEM_SPORTSPAD = 10,  // Sega Sports Pad -- Master System
-			SYSTEM_TEAMPLAYER = 11, // Multi Tap -- Sega TeamPlayer 	
-			SYSTEM_WAYPLAY = 12,    // Multi Tap -- EA 4-Way Play -- use both ports
+			SYSTEM_NONE = 0,          // unconnected port
+			SYSTEM_GAMEPAD = 1,	      // single 2-buttons, 3-buttons or 6-buttons Control Pad
+			SYSTEM_MOUSE = 2,         // Sega Mouse
+			SYSTEM_MENACER = 3,       // Sega Menacer -- port B only
+			SYSTEM_JUSTIFIER = 4,     // Konami Justifiers -- port B only
+			SYSTEM_XE_A1P = 5,        // XE-A1P analog controller -- port A only
+			SYSTEM_ACTIVATOR = 6,     // Sega Activator
+			SYSTEM_LIGHTPHASER = 7,   // Sega Light Phaser -- Master System
+			SYSTEM_PADDLE = 8,        // Sega Paddle Control -- Master System
+			SYSTEM_SPORTSPAD = 9,     // Sega Sports Pad -- Master System
+			SYSTEM_GRAPHIC_BOARD = 10,// Sega Graphic Board
+			SYSTEM_MASTERTAP = 11,    // Multi Tap -- Furrtek's Master Tap (unofficial)
+			SYSTEM_TEAMPLAYER = 12,   // Multi Tap -- Sega TeamPlayer
+			SYSTEM_WAYPLAY = 13,      // Multi Tap -- EA 4-Way Play -- use both ports
 		}
 
 		public enum INPUT_DEVICE : byte
@@ -157,7 +171,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			DEVICE_ACTIVATOR = 0x0a,// Activator
 		}
 
-
 		public enum CDLog_AddrType
 		{
 			MDCART, RAM68k, RAMZ80, SRAM,
@@ -173,7 +186,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			DataZ80 = 0x20,
 			DMASource = 0x40,
 		}
-
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void input_cb();
@@ -267,22 +279,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
 			public readonly INPUT_SYSTEM[] system = new INPUT_SYSTEM[2];
+
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = MAX_DEVICES)]
 			public readonly INPUT_DEVICE[] dev = new INPUT_DEVICE[MAX_DEVICES];
+
 			/// <summary>
 			/// digital inputs
 			/// </summary>
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = MAX_DEVICES)]
 			public readonly INPUT_KEYS[] pad = new INPUT_KEYS[MAX_DEVICES];
+
 			/// <summary>
 			/// analog (x/y)
 			/// </summary>
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = MAX_DEVICES * 2)]
 			public readonly short[] analog = new short[MAX_DEVICES * 2];
+
 			/// <summary>
 			/// gun horizontal offset
 			/// </summary>
 			public int x_offset;
+
 			/// <summary>
 			/// gun vertical offset
 			/// </summary>
@@ -290,8 +307,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			public void ClearAllBools()
 			{
-				for (int i = 0; i < pad.Length; i++)
+				for (var i = 0; i < pad.Length; i++)
+				{
 					pad[i] = 0;
+				}
 			}
 		}
 

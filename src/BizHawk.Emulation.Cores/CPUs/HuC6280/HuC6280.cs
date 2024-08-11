@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -236,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 
 		public void WriteTimerEnable(byte value)
 		{
-			if (TimerEnabled == false && (value & 1) == 1)
+			if (!TimerEnabled && (value & 1) == 1)
 			{
 				TimerValue = TimerReloadValue; // timer value is reset when toggled from off to on
 				TimerTickCounter = 0;

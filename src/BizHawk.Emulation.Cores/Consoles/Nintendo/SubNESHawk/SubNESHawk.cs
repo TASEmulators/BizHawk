@@ -4,9 +4,7 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 {
 	[Core(CoreNames.SubNesHawk, "")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class SubNESHawk : IEmulator, IStatable, IInputPollable,
-		ISettable<NES.NES.NESSettings, NES.NES.NESSyncSettings>, ICycleTiming
+	public partial class SubNESHawk : IEmulator, IStatable, IInputPollable, ISettable<NES.NES.NESSettings, NES.NES.NESSyncSettings>
 	{
 		[CoreConstructor(VSystemID.Raw.NES, Priority = CorePriority.SuperLow)]
 		public SubNESHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ NES.NES.NESSettings settings, NES.NES.NESSyncSettings syncSettings)
@@ -36,6 +34,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			ser.Register(_nesCore.ServiceProvider.GetService<IDebuggable>());
 			ser.Register(_nesCore.ServiceProvider.GetService<IRegionable>());
 			ser.Register(_nesCore.ServiceProvider.GetService<ICodeDataLogger>());
+			ser.Register(_nesCore.ServiceProvider.GetService<IDriveLight>());
+			ser.Register(_nesCore.ServiceProvider.GetService<ICycleTiming>());
 
 			const string TRACE_HEADER = "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR), CPU Cycle, PPU Cycle";
 			_tracer = new TraceBuffer(TRACE_HEADER);
@@ -76,8 +76,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		public NES.NES.NESSyncSettings GetSyncSettings() => _nesCore.GetSyncSettings();
 		public PutSettingsDirtyBits PutSettings(NES.NES.NESSettings o) => _nesCore.PutSettings(o);
 		public PutSettingsDirtyBits PutSyncSettings(NES.NES.NESSyncSettings o) => _nesCore.PutSyncSettings(o);
-
-		public long CycleCount => _nesCore.CycleCount;
-		public double ClockRate => _nesCore.ClockRate;
 	}
 }

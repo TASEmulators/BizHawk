@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -451,7 +450,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var indices = SelectedIndices.ToList();
 			if (indices.Count == 0
-				|| indices[^1] == MainForm.CheatList.Count - 1) // at end already
+				|| indices[indices.Count - 1] == MainForm.CheatList.Count - 1) // at end already
 			{
 				return;
 			}
@@ -506,19 +505,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void AlwaysLoadCheatsMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Cheats.LoadFileByGame ^= true;
-		}
+			=> Config.Cheats.LoadFileByGame = !Config.Cheats.LoadFileByGame;
 
 		private void AutoSaveCheatsMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Cheats.AutoSaveOnClose ^= true;
-		}
+			=> Config.Cheats.AutoSaveOnClose = !Config.Cheats.AutoSaveOnClose;
 
 		private void CheatsOnOffLoadMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Cheats.DisableOnLoad ^= true;
-		}
+			=> Config.Cheats.DisableOnLoad = !Config.Cheats.DisableOnLoad;
 
 		[RestoreDefaults]
 		private void RestoreDefaults()
@@ -566,7 +559,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
-			var column = e.Column;
+			var column = e.Column!;
 			if (column.Name != _sortedColumn)
 			{
 				_sortReverse = false;
@@ -575,7 +568,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.CheatList.Sort(column.Name, _sortReverse);
 
 			_sortedColumn = column.Name;
-			_sortReverse ^= true;
+			_sortReverse = !_sortReverse;
 			GeneralUpdate();
 		}
 

@@ -11,6 +11,7 @@ cd melon && make -f Makefile $1 -j && cd -
 cd picodrive && make -f Makefile $1 -j && cd -
 cd snes9x && make -f Makefile $1 -j && cd -
 cd tic80 && make -f Makefile $1 -j && cd -
+cd uae && make -f Makefile $1 -j && cd -
 cd uzem && make -f Makefile $1 -j && cd -
 cd virtualjaguar && make -f Makefile $1 -j && cd -
 cd nyma && ./make-all-released-cores.sh $1 && cd -

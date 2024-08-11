@@ -38,6 +38,7 @@ struct AI : Thread, Memory::RCP<AI> {
     n1  dmaAddressCarry;
     n18 dmaLength[2];
     n2  dmaCount;
+    u64 dmaOriginPc[2];
     n14 dacRate;
     n4  bitRate;
   } io;

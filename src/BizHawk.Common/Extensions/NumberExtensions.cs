@@ -1,5 +1,5 @@
-﻿using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace BizHawk.Common.NumberExtensions
 {
@@ -121,6 +121,17 @@ namespace BizHawk.Common.NumberExtensions
 			return val;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static IntPtr Plus(this IntPtr p, int offset)
+			=> p + offset;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static IntPtr Plus(this IntPtr p, uint offset)
+		{
+			var half = unchecked((int) offset >> 1);
+			return p + half + unchecked((int) (offset - half));
+		}
+
 		public static void RotateRightU8(ref byte b, int shift)
 		{
 			byte temp = b;
@@ -144,5 +155,11 @@ namespace BizHawk.Common.NumberExtensions
 
 		/// <remarks>don't use this in cores without picking a suitable ε</remarks>
 		public static bool HawkFloatEquality(this float f, float other, float ε = ReallySmallNumber) => Math.Abs(other - f) < ε;
+
+		/// <summary> Reinterprets the byte representation of <paramref name="value"/> as a float</summary>
+		public static float ReinterpretAsF32(uint value) => Unsafe.As<uint, float>(ref value);
+
+		/// <summary> Reinterprets the byte representation of <paramref name="value"/> as a uint</summary>
+		public static uint ReinterpretAsUInt32(float value) => Unsafe.As<float, uint>(ref value);
 	}
 }

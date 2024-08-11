@@ -68,7 +68,7 @@
 			}
 		}
 
-		public bool WantsToControlRewind => true;
+		public bool WantsToControlRewind { get; private set; } = true;
 
 		public void CaptureRewind()
 		{
@@ -113,13 +113,7 @@
 			return success;
 		}
 
-		public bool WantsToControlReboot { get; private set; } = true;
-
-		public void RebootCore()
-		{
-			WantsToControlReboot = false;
-			NewTasMenuItem_Click(null, null);
-			WantsToControlReboot = true;
-		}
+		public bool WantsToControlReboot => false;
+		public void RebootCore() => throw new NotSupportedException("This should never be called");
 	}
 }

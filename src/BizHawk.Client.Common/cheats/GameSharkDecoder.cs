@@ -1,7 +1,7 @@
-﻿using System;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
+#pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
 {
 	public class GameSharkDecoder
@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common.cheats
 			{
 				// Problem: I don't know what the Non-FF Style codes are.
 				// TODO: Fix that.
-				if (code.StartsWithOrdinal("FF") == false)
+				if (!code.StartsWithOrdinal("FF"))
 				{
 					return new InvalidCheatCode("This Action Replay Code, is not yet supported.");
 				}
@@ -143,3 +143,4 @@ namespace BizHawk.Client.Common.cheats
 		}
 	}
 }
+#pragma warning restore MA0089

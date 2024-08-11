@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,8 +9,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.Sameboy;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 
@@ -68,8 +65,6 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_lcdc_obj_en_change_variant on CGB_C in SameBoy",
 				"m3_lcdc_obj_en_change_variant on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_obj_en_change_variant on CGB_D in GBHawk",
-				"m3_lcdc_obj_en_change_variant on CGB_D in SameBoy",
-				"m3_lcdc_obj_en_change_variant on CGB_D in SameBoy (no BIOS)",
 				"m3_lcdc_obj_en_change_variant on DMG in Gambatte",
 				"m3_lcdc_obj_en_change_variant on DMG in Gambatte (no BIOS)",
 				"m3_lcdc_obj_en_change_variant on DMG in GBHawk",
@@ -79,10 +74,14 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_lcdc_obj_size_change on DMG in Gambatte",
 				"m3_lcdc_obj_size_change on DMG in Gambatte (no BIOS)",
 				"m3_lcdc_obj_size_change on DMG in GBHawk",
+				"m3_lcdc_obj_size_change on DMG in SameBoy",
+				"m3_lcdc_obj_size_change on DMG in SameBoy (no BIOS)",
 				"m3_lcdc_obj_size_change_scx on CGB_C in GBHawk",
 				"m3_lcdc_obj_size_change_scx on DMG in Gambatte",
 				"m3_lcdc_obj_size_change_scx on DMG in Gambatte (no BIOS)",
 				"m3_lcdc_obj_size_change_scx on DMG in GBHawk",
+				"m3_lcdc_obj_size_change_scx on DMG in SameBoy",
+				"m3_lcdc_obj_size_change_scx on DMG in SameBoy (no BIOS)",
 				"m3_lcdc_tile_sel_change on CGB_C in Gambatte",
 				"m3_lcdc_tile_sel_change on CGB_C in Gambatte (no BIOS)",
 				"m3_lcdc_tile_sel_change on CGB_C in GBHawk",
@@ -115,8 +114,6 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_lcdc_win_en_change_multiple_wx on DMG_B in Gambatte",
 				"m3_lcdc_win_en_change_multiple_wx on DMG_B in Gambatte (no BIOS)",
 				"m3_lcdc_win_en_change_multiple_wx on DMG_B in GBHawk",
-				"m3_lcdc_win_en_change_multiple_wx on DMG_B in SameBoy",
-				"m3_lcdc_win_en_change_multiple_wx on DMG_B in SameBoy (no BIOS)",
 				"m3_lcdc_win_map_change on CGB_C in GBHawk",
 				"m3_lcdc_win_map_change on DMG in GBHawk",
 				"m3_lcdc_win_map_change2 on CGB_C in GBHawk",
@@ -159,8 +156,6 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_wx_4_change on DMG in Gambatte",
 				"m3_wx_4_change on DMG in Gambatte (no BIOS)",
 				"m3_wx_4_change on DMG in GBHawk",
-				"m3_wx_4_change on DMG in SameBoy",
-				"m3_wx_4_change on DMG in SameBoy (no BIOS)",
 				"m3_wx_4_change_sprites on CGB_C in Gambatte",
 				"m3_wx_4_change_sprites on CGB_C in Gambatte (no BIOS)",
 				"m3_wx_4_change_sprites on CGB_C in GBHawk",
@@ -169,13 +164,9 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_wx_4_change_sprites on DMG in Gambatte",
 				"m3_wx_4_change_sprites on DMG in Gambatte (no BIOS)",
 				"m3_wx_4_change_sprites on DMG in GBHawk",
-				"m3_wx_4_change_sprites on DMG in SameBoy",
-				"m3_wx_4_change_sprites on DMG in SameBoy (no BIOS)",
 				"m3_wx_5_change on DMG in Gambatte",
 				"m3_wx_5_change on DMG in Gambatte (no BIOS)",
 				"m3_wx_5_change on DMG in GBHawk",
-				"m3_wx_5_change on DMG in SameBoy",
-				"m3_wx_5_change on DMG in SameBoy (no BIOS)",
 				"m3_wx_6_change on DMG in GBHawk",
 			};
 

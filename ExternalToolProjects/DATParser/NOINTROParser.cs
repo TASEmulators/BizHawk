@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using System.Windows.Forms;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.DATTool
 {
@@ -69,9 +70,9 @@ namespace BizHawk.DATTool
 				{
 					GameDB item = new GameDB();
 					item.Name = g.Value;
-					item.SHA1 = g.Elements("rom").First().Attribute("sha1").Value.ToUpper();
-					item.MD5 = g.Elements("rom").First().Attribute("md5").Value.ToUpper();
-					item.CRC32 = g.Elements("rom").First().Attribute("crc").Value.ToUpper();
+					item.SHA1 = g.Elements("rom").First().Attribute("sha1").Value.ToUpperInvariant();
+					item.MD5 = g.Elements("rom").First().Attribute("md5").Value.ToUpperInvariant();
+					item.CRC32 = g.Elements("rom").First().Attribute("crc").Value.ToUpperInvariant();
 					item.System = GameDB.GetSystemCode(SysType);
 
 					ParseNOINTROFlags(item);
@@ -99,7 +100,7 @@ namespace BizHawk.DATTool
 				AddCommentBlock("Translated");
 				AppendCSVData(trans);
 
-				var good = working.Where(st => st.Status == "" || st.Status == null).OrderBy(na => na.Name).ToList();
+				var good = working.Where(st => string.IsNullOrEmpty(st.Status)).OrderBy(na => na.Name).ToList();
 				AddCommentBlock("Believed Good");
 				AppendCSVData(good);
 			}
@@ -121,7 +122,7 @@ namespace BizHawk.DATTool
 			string a = RemoveUnneededOptions(nameString);
 
 			// process data contained in ()
-			string[] d = a.ToString().Split('(', ')');
+			var d = a.Split('(', ')');
 
 			if (d.Length > 0)
 			{
@@ -146,7 +147,7 @@ namespace BizHawk.DATTool
 					string f = d[i].Trim();
 
 					// check for language
-					if (IsLanguageFlag(f) == true)
+					if (IsLanguageFlag(f))
 					{
 						g.Notes = f;
 						continue;
@@ -155,26 +156,26 @@ namespace BizHawk.DATTool
 					// version - ignore
 
 					// check development status (not currently implemented)
-					if (IsDevelopmenttStatus(f) == true)
+					if (IsDevelopmenttStatus(f))
 					{
 						continue;
 					}
 
 					// check copyright status (not currently implemented)
-					if (IsCopyrightStatus(f) == true)
+					if (IsCopyrightStatus(f))
 					{
 						continue;
 					}
 
 					// country flag(s)
-					if (IsCountryFlag(f) == true)
+					if (IsCountryFlag(f))
 					{
 						g.Region = f;
 						continue;
 					}
 
 					// language - if present add to notes
-					if (IsLanguageFlag(f) == true)
+					if (IsLanguageFlag(f))
 					{
 						g.Notes = f;
 						continue;
@@ -207,14 +208,14 @@ namespace BizHawk.DATTool
 
 						if (e.Where(str => 
 						// bad dump
-						str == "b" || str.StartsWith("b ")).ToList().Count > 0)
+						str == "b" || str.StartsWithOrdinal("b ")).ToList().Count > 0)
 						{
 							// RomStatus.BadDump
 							g.Status = "B";
 						}							
 						else if (e.Where(str => 
 						// BIOS
-						str == "BIOS" || str.StartsWith("BIOS ")).ToList().Count > 0)
+						str == "BIOS" || str.StartsWithOrdinal("BIOS ")).ToList().Count > 0)
 						{
 							// RomStatus.BIOS
 							g.Status = "I";
@@ -259,7 +260,7 @@ namespace BizHawk.DATTool
 			{
 				foreach (var x in LC)
 				{
-					if (s == x || s.StartsWith(x + ",") || s.EndsWith("," + x))
+					if (s == x || s.StartsWithOrdinal(x + ",") || s.EndsWithOrdinal("," + x))
 					{
 						b = true;
 						break;
@@ -286,7 +287,7 @@ namespace BizHawk.DATTool
 			{
 				foreach (var x in CC)
 				{
-					if (s == x || s.StartsWith(x) || s.EndsWith(x))
+					if (s == x || s.StartsWithOrdinal(x) || s.EndsWithOrdinal(x))
 					{
 						b = true;
 						break;

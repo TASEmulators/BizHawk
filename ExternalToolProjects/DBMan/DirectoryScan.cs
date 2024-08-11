@@ -18,7 +18,7 @@ namespace BizHawk.DBManTool
 
 			foreach (var f in files)
 			{
-				if (IsRomFile(f.Extension, f.Length) == false)
+				if (!IsRomFile(f.Extension, f.Length))
 					continue;
 				romInfos.Add(RomHasher.Generate(f.FullName));
 			}
@@ -56,11 +56,11 @@ namespace BizHawk.DBManTool
 			
 			foreach (var rom in roms)
 			{
-				if (RomInDatabase(rom.MD5) == false)
+				if (!RomInDatabase(rom.MD5))
 				{
 					InsertRom(rom);
 
-					if (GameInDatabase(rom) == false)
+					if (!GameInDatabase(rom))
 						InsertGame(rom);
 				}
 			}

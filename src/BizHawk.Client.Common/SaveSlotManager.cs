@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 
 using BizHawk.Common;
@@ -32,7 +31,7 @@ namespace BizHawk.Client.Common
 				else
 				{
 					var file = new FileInfo($"{saveStatePrefix}.QuickSave{i % 10}.State");
-					if (file.Directory != null && file.Directory.Exists == false)
+					if (file.Directory != null && !file.Directory.Exists)
 					{
 						file.Directory.Create();
 					}
@@ -68,7 +67,7 @@ namespace BizHawk.Client.Common
 
 		public void ToggleRedo(IMovie movie, int slot)
 		{
-			if (slot is >= 1 and <= 10 && movie is not ITasMovie) _redo[slot - 1] ^= true;
+			if (slot is >= 1 and <= 10 && movie is not ITasMovie) _redo[slot - 1] = !_redo[slot - 1];
 		}
 
 		public bool IsRedo(IMovie movie, int slot)

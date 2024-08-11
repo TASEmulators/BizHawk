@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -132,6 +131,7 @@ namespace BizHawk.Client.EmuHawk
 					Settings.Columns = LuaListView.AllColumns;
 					
 					DisplayManager.ClearApiHawkSurfaces();
+					DisplayManager.ClearApiHawkTextureCache();
 					ResetDrawSurfacePadding();
 					ClearFileWatches();
 					LuaImp?.Close();
@@ -386,7 +386,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			while (LuaImp.ScriptList.Count > 0)
 			{
-				RemoveLuaFile(LuaImp.ScriptList[^1]);
+				RemoveLuaFile(LuaImp.ScriptList[LuaImp.ScriptList.Count - 1]);
 			}
 		}
 
@@ -949,6 +949,7 @@ namespace BizHawk.Client.EmuHawk
 
 				UpdateDialog();
 				DisplayManager.ClearApiHawkSurfaces();
+				DisplayManager.ClearApiHawkTextureCache();
 				DisplayManager.OSD.ClearGuiText();
 				if (!LuaImp.ScriptList.Any(static lf => !lf.IsSeparator)) ResetDrawSurfacePadding(); // just removed last script, reset padding
 			}
@@ -1028,7 +1029,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var indices = LuaListView.SelectedRows.ToList();
 			if (indices.Count == 0
-				|| indices[^1] == LuaImp.ScriptList.Count - 1) // at end already
+				|| indices[indices.Count - 1] == LuaImp.ScriptList.Count - 1) // at end already
 			{
 				return;
 			}
@@ -1095,19 +1096,14 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void DisableScriptsOnLoadMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.DisableLuaScriptsOnLoad ^= true;
-		}
+			=> Settings.DisableLuaScriptsOnLoad = !Settings.DisableLuaScriptsOnLoad;
 
 		private void ToggleAllIfNoneSelectedMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.ToggleAllIfNoneSelected ^= true;
-		}
+			=> Settings.ToggleAllIfNoneSelected = !Settings.ToggleAllIfNoneSelected;
 
 		private void ReloadWhenScriptFileChangesMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.ReloadOnScriptFileChange ^= true;
-
+			Settings.ReloadOnScriptFileChange = !Settings.ReloadOnScriptFileChange;
 			if (Settings.ReloadOnScriptFileChange)
 			{
 				AddFileWatches();
@@ -1318,7 +1314,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void LuaListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
-			var columnToSort = e.Column.Name;
+			var columnToSort = e.Column!.Name;
 			var luaListTemp = new List<LuaFile>();
 			if (columnToSort != _lastColumnSorted)
 			{
@@ -1333,7 +1329,7 @@ namespace BizHawk.Client.EmuHawk
 				var split = words[0].Split(Path.DirectorySeparatorChar);
 
 				luaListTemp.Add(LuaImp.ScriptList[i]);
-				luaListTemp[i].Name = split[^1];
+				luaListTemp[i].Name = split[split.Length - 1];
 			}
 
 			// Script, Path

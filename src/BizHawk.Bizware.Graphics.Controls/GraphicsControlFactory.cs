@@ -1,7 +1,3 @@
-using System;
-
-using BizHawk.Bizware.BizwareGL;
-
 namespace BizHawk.Bizware.Graphics.Controls
 {
 	/// <summary>
@@ -13,8 +9,8 @@ namespace BizHawk.Bizware.Graphics.Controls
 		{
 			GraphicsControl ret = gl switch
 			{
-				IGL_OpenGL => new OpenGLControl(),
-				IGL_D3D9 d3d9 => new D3D9Control(d3d9.CreateSwapChain),
+				IGL_OpenGL openGL => new OpenGLControl(openGL.InitGLState),
+				IGL_D3D11 d3d11 => new D3D11Control(d3d11.CreateSwapChain),
 				IGL_GDIPlus gdiPlus => new GDIPlusControl(gdiPlus.CreateControlRenderTarget),
 				_ => throw new InvalidOperationException()
 			};

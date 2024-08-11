@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Globalization;
 using System.Collections.Generic;
@@ -438,8 +437,8 @@ namespace BizHawk.Emulation.DiscSystem
 			var buf2448 = new byte[2448];
 			var dsr = new DiscSectorReader(disc);
 
-			using var imgFile = File.OpenWrite(imgPath);
-			using var subFile = File.OpenWrite(subPath);
+			using var imgFile = File.Create(imgPath);
+			using var subFile = File.Create(subPath);
 			var nLBA = disc.Sessions[disc.Sessions.Count - 1].LeadoutLBA;
 			for (var lba = 0; lba < nLBA; lba++)
 			{

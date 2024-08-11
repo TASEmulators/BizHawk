@@ -1,6 +1,5 @@
 ﻿#if AVI_SUPPORT
 #pragma warning disable SA1129
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -125,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public VideoCopy(IVideoProvider c)
 			{
-				_vb = (int[])c.GetVideoBuffer().Clone();
+				_vb = c.GetVideoBufferCopy();
 				BufferWidth = c.BufferWidth;
 				BufferHeight = c.BufferHeight;
 				BackgroundColor = c.BackgroundColor;

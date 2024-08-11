@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Emulation.DiscSystem
 {
 	public static class DiscExtensions

@@ -27,7 +27,6 @@
 static sljit_s32 load_immediate(struct sljit_compiler *compiler, sljit_s32 dst_r, sljit_sw imm, sljit_s32 tmp_r)
 {
 	SLJIT_UNUSED_ARG(tmp_r);
-	SLJIT_ASSERT(dst_r != tmp_r);
 
 	if (imm <= SIMM_MAX && imm >= SIMM_MIN)
 		return push_inst(compiler, ADDI | RD(dst_r) | RS1(TMP_ZERO) | IMM_I(imm));
@@ -41,6 +40,31 @@ static sljit_s32 load_immediate(struct sljit_compiler *compiler, sljit_s32 dst_r
 		return SLJIT_SUCCESS;
 
 	return push_inst(compiler, ADDI | RD(dst_r) | RS1(dst_r) | IMM_I(imm));
+}
+
+SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_fset64(struct sljit_compiler *compiler,
+	sljit_s32 freg, sljit_f64 value)
+{
+	union {
+		sljit_s32 imm[2];
+		sljit_f64 value;
+	} u;
+
+	CHECK_ERROR();
+	CHECK(check_sljit_emit_fset64(compiler, freg, value));
+
+	u.value = value;
+
+	if (u.imm[0] != 0)
+		FAIL_IF(load_immediate(compiler, TMP_REG1, u.imm[0], TMP_REG3));
+	if (u.imm[1] != 0)
+		FAIL_IF(load_immediate(compiler, TMP_REG2, u.imm[1], TMP_REG3));
+
+	FAIL_IF(push_inst(compiler, ADDI | RD(SLJIT_SP) | RS1(SLJIT_SP) | IMM_I(-16)));
+	FAIL_IF(push_inst(compiler, SW | RS1(SLJIT_SP) | RS2(u.imm[0] != 0 ? TMP_REG1 : TMP_ZERO) | (8 << 7)));
+	FAIL_IF(push_inst(compiler, SW | RS1(SLJIT_SP) | RS2(u.imm[1] != 0 ? TMP_REG2 : TMP_ZERO) | (12 << 7)));
+	FAIL_IF(push_inst(compiler, FLD | FRD(freg) | RS1(SLJIT_SP) | IMM_I(8)));
+	return push_inst(compiler, ADDI | RD(SLJIT_SP) | RS1(SLJIT_SP) | IMM_I(16));
 }
 
 SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_fcopy(struct sljit_compiler *compiler, sljit_s32 op,

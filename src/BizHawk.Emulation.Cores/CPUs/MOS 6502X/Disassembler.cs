@@ -1,4 +1,3 @@
-using System;
 using BizHawk.Emulation.Common;
 using System.Collections.Generic;
 
@@ -21,10 +20,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public string PCRegisterName => "PC";
 
-		public IEnumerable<string> AvailableCpus
-		{
-			get { yield return "6502"; }
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "6502" ];
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
@@ -60,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case 0x0C: bytesToAdvance = 3; return $"NOP (${peeker_word(++pc, peeker):X4})";
 				case 0x0D: bytesToAdvance = 3; return $"ORA ${peeker_word(++pc, peeker):X4}";
 				case 0x0E: bytesToAdvance = 3; return $"ASL ${peeker_word(++pc, peeker):X4}";
-				case 0x10: bytesToAdvance = 2; return $"BPL ${pc + 2 + (sbyte)peeker(++pc):X4}";
+				case 0x10: bytesToAdvance = 2; return $"BPL ${(ushort)(pc + 2 + (sbyte)peeker(++pc)):X4}";
 				case 0x11: bytesToAdvance = 2; return $"ORA (${peeker(++pc):X2}),Y *";
 				case 0x14: bytesToAdvance = 2; return $"NOP ${peeker(++pc):X2},X";
 				case 0x15: bytesToAdvance = 2; return $"ORA ${peeker(++pc):X2},X";
@@ -82,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case 0x2C: bytesToAdvance = 3; return $"BIT ${peeker_word(++pc, peeker):X4}";
 				case 0x2D: bytesToAdvance = 3; return $"AND ${peeker_word(++pc, peeker):X4}";
 				case 0x2E: bytesToAdvance = 3; return $"ROL ${peeker_word(++pc, peeker):X4}";
-				case 0x30: bytesToAdvance = 2; return $"BMI ${pc + 2 + (sbyte)peeker(++pc):X4}";
+				case 0x30: bytesToAdvance = 2; return $"BMI ${(ushort)(pc + 2 + (sbyte)peeker(++pc)):X4}";
 				case 0x31: bytesToAdvance = 2; return $"AND (${peeker(++pc):X2}),Y *";
 				case 0x34: bytesToAdvance = 2; return $"NOP ${peeker(++pc):X2},X";
 				case 0x35: bytesToAdvance = 2; return $"AND ${peeker(++pc):X2},X";
@@ -104,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case 0x4C: bytesToAdvance = 3; return $"JMP ${peeker_word(++pc, peeker):X4}";
 				case 0x4D: bytesToAdvance = 3; return $"EOR ${peeker_word(++pc, peeker):X4}";
 				case 0x4E: bytesToAdvance = 3; return $"LSR ${peeker_word(++pc, peeker):X4}";
-				case 0x50: bytesToAdvance = 2; return $"BVC ${pc + 2 + (sbyte)peeker(++pc):X4}";
+				case 0x50: bytesToAdvance = 2; return $"BVC ${(ushort)(pc + 2 + (sbyte)peeker(++pc)):X4}";
 				case 0x51: bytesToAdvance = 2; return $"EOR (${peeker(++pc):X2}),Y *";
 				case 0x54: bytesToAdvance = 2; return $"NOP ${peeker(++pc):X2},X";
 				case 0x55: bytesToAdvance = 2; return $"EOR ${peeker(++pc):X2},X";
@@ -126,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case 0x6C: bytesToAdvance = 3; return $"JMP (${peeker_word(++pc, peeker):X4})";
 				case 0x6D: bytesToAdvance = 3; return $"ADC ${peeker_word(++pc, peeker):X4}";
 				case 0x6E: bytesToAdvance = 3; return $"ROR ${peeker_word(++pc, peeker):X4}";
-				case 0x70: bytesToAdvance = 2; return $"BVS ${pc + 2 + (sbyte)peeker(++pc):X4}";
+				case 0x70: bytesToAdvance = 2; return $"BVS ${(ushort)(pc + 2 + (sbyte)peeker(++pc)):X4}";
 				case 0x71: bytesToAdvance = 2; return $"ADC (${peeker(++pc):X2}),Y *";
 				case 0x74: bytesToAdvance = 2; return $"NOP ${peeker(++pc):X2},X";
 				case 0x75: bytesToAdvance = 2; return $"ADC ${peeker(++pc):X2},X";
@@ -149,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case 0x8C: bytesToAdvance = 3; return $"STY ${peeker_word(++pc, peeker):X4}";
 				case 0x8D: bytesToAdvance = 3; return $"STA ${peeker_word(++pc, peeker):X4}";
 				case 0x8E: bytesToAdvance = 3; return $"STX ${peeker_word(++pc, peeker):X4}";
-				case 0x90: bytesToAdvance = 2; return $"BCC ${pc + 2 + (sbyte)peeker(++pc):X4}";
+				case 0x90: bytesToAdvance = 2; return $"BCC ${(ushort)(pc + 2 + (sbyte)peeker(++pc)):X4}";
 				case 0x91: bytesToAdvance = 2; return $"STA (${peeker(++pc):X2}),Y";
 				case 0x94: bytesToAdvance = 2; return $"STY ${peeker(++pc):X2},X";
 				case 0x95: bytesToAdvance = 2; return $"STA ${peeker(++pc):X2},X";
@@ -170,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case 0xAC: bytesToAdvance = 3; return $"LDY ${peeker_word(++pc, peeker):X4}";
 				case 0xAD: bytesToAdvance = 3; return $"LDA ${peeker_word(++pc, peeker):X4}";
 				case 0xAE: bytesToAdvance = 3; return $"LDX ${peeker_word(++pc, peeker):X4}";
-				case 0xB0: bytesToAdvance = 2; return $"BCS ${pc + 2 + (sbyte)peeker(++pc):X4}";
+				case 0xB0: bytesToAdvance = 2; return $"BCS ${(ushort)(pc + 2 + (sbyte)peeker(++pc)):X4}";
 				case 0xB1: bytesToAdvance = 2; return $"LDA (${peeker(++pc):X2}),Y *";
 				case 0xB3: bytesToAdvance = 2; return $"LAX (${peeker(++pc):X2}),Y *";
 				case 0xB4: bytesToAdvance = 2; return $"LDY ${peeker(++pc):X2},X";
@@ -195,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case 0xCC: bytesToAdvance = 3; return $"CPY ${peeker_word(++pc, peeker):X4}";
 				case 0xCD: bytesToAdvance = 3; return $"CMP ${peeker_word(++pc, peeker):X4}";
 				case 0xCE: bytesToAdvance = 3; return $"DEC ${peeker_word(++pc, peeker):X4}";
-				case 0xD0: bytesToAdvance = 2; return $"BNE ${pc + 2 + (sbyte)peeker(++pc):X4}";
+				case 0xD0: bytesToAdvance = 2; return $"BNE ${(ushort)(pc + 2 + (sbyte)peeker(++pc)):X4}";
 				case 0xD1: bytesToAdvance = 2; return $"CMP (${peeker(++pc):X2}),Y *";
 				case 0xD4: bytesToAdvance = 2; return $"NOP ${peeker(++pc):X2},X";
 				case 0xD5: bytesToAdvance = 2; return $"CMP ${peeker(++pc):X2},X";
@@ -218,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case 0xEC: bytesToAdvance = 3; return $"CPX ${peeker_word(++pc, peeker):X4}";
 				case 0xED: bytesToAdvance = 3; return $"SBC ${peeker_word(++pc, peeker):X4}";
 				case 0xEE: bytesToAdvance = 3; return $"INC ${peeker_word(++pc, peeker):X4}";
-				case 0xF0: bytesToAdvance = 2; return $"BEQ ${pc + 2 + (sbyte)peeker(++pc):X4}";
+				case 0xF0: bytesToAdvance = 2; return $"BEQ ${(ushort)(pc + 2 + (sbyte)peeker(++pc)):X4}";
 				case 0xF1: bytesToAdvance = 2; return $"SBC (${peeker(++pc):X2}),Y *";
 				case 0xF4: bytesToAdvance = 2; return $"NOP ${peeker(++pc):X2},X";
 				case 0xF5: bytesToAdvance = 2; return $"SBC ${peeker(++pc):X2},X";

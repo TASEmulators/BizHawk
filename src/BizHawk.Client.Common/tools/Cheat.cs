@@ -149,7 +149,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!IsSeparator)
 			{
-				_enabled ^= true;
+				_enabled = !_enabled;
 				if (handleChange)
 				{
 					Changes();

@@ -1,8 +1,7 @@
-﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics;
 
 namespace BizHawk.Client.EmuHawk
 {

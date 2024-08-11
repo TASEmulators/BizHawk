@@ -1,6 +1,5 @@
 //http://nesdev.parodius.com/6502_cpu.txt
 
-using System;
 using System.Runtime.CompilerServices;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
@@ -1146,7 +1145,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void RelBranch_Stage2_BVC()
 		{
-			branch_taken = FlagV == false;
+			branch_taken = !FlagV;
 			RelBranch_Stage2();
 		}
 
@@ -1158,7 +1157,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void RelBranch_Stage2_BPL()
 		{
-			branch_taken = FlagN == false;
+			branch_taken = !FlagN;
 			RelBranch_Stage2();
 		}
 
@@ -1170,7 +1169,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void RelBranch_Stage2_BCC()
 		{
-			branch_taken = FlagC == false;
+			branch_taken = !FlagC;
 			RelBranch_Stage2();
 		}
 
@@ -1182,7 +1181,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void RelBranch_Stage2_BNE()
 		{
-			branch_taken = FlagZ == false;
+			branch_taken = !FlagZ;
 			RelBranch_Stage2();
 
 		}

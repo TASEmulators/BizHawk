@@ -1,4 +1,3 @@
-using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
@@ -56,14 +55,12 @@ namespace BizHawk.BizInvoke
 		/// <summary>
 		/// Computes the byte offset of the first field of any class relative to a class pointer.
 		/// </summary>
-		/// <returns></returns>
 		public static int ComputeClassFirstFieldOffset()
 			=> ComputeFieldOffset(typeof(CF).GetField("FirstField"));
 
 		/// <summary>
 		/// Compute the byte offset of the first byte of string data (UTF16) relative to a pointer to the string.
 		/// </summary>
-		/// <returns></returns>
 		public static int ComputeStringOffset()
 		{
 			var s = new string(Array.Empty<char>());
@@ -79,7 +76,6 @@ namespace BizHawk.BizInvoke
 		/// <summary>
 		/// Compute the offset to the 0th element of an array of value types
 		/// </summary>
-		/// <returns></returns>
 		public static int ComputeValueArrayElementOffset()
 		{
 			var arr = new int[4];
@@ -97,7 +93,6 @@ namespace BizHawk.BizInvoke
 		/// Compute the offset to the 0th element of an array of object types
 		/// Slow, so cache it if you need it.
 		/// </summary>
-		/// <returns></returns>
 		public static int ComputeObjectArrayElementOffset()
 		{
 			var obj = new object[4];

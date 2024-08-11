@@ -1,7 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
@@ -60,12 +60,7 @@ namespace BizHawk.Emulation.Common
 		public bool ContainsKey(string key) => _keys.Contains(key);
 
 		public IEnumerator<KeyValuePair<string, AxisSpec>> GetEnumerator()
-		{
-			foreach (var key in _keys)
-			{
-				yield return new(key, _specs[key]);
-			}
-		}
+			=> _keys.Select(key => new KeyValuePair<string, AxisSpec>(key, _specs[key])).GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

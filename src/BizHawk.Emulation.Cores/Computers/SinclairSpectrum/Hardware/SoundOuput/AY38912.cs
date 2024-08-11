@@ -1,7 +1,7 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
-using System;
+
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -51,7 +51,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// |11-- ---- ---- --0-|	-	IN	-	Read value of currently selected register	
 		/// </summary>
-		/// <returns></returns>
 		public bool ReadPort(ushort port, ref int value)
 		{
 			if (!port.Bit(1))
@@ -72,7 +71,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// |11-- ---- ---- --0-|	-	OUT	-	Register Select
 		/// |10-- ---- ---- --0-|	-	OUT	-	Write value to currently selected register
 		/// </summary>
-		/// <returns></returns>
 		public bool WritePort(ushort port, int value)
 		{
 			if (!port.Bit(1))

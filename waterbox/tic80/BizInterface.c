@@ -90,6 +90,12 @@ ECL_EXPORT void SetInputs(tic80_input* inputs)
 	memcpy(&biz_inputs, inputs, sizeof(tic80_input));
 }
 
+ECL_EXPORT bool IsMouseRelative()
+{
+	tic_mem* mem = (tic_mem*)tic;
+	return mem->ram->input.mouse.relative;
+}
+
 typedef struct
 {
 	FrameInfo b;

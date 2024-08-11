@@ -1,5 +1,3 @@
-using System;
-
 namespace BizHawk.Emulation.DiscSystem.CUE
 {
 	// extra synths using SS_Base, not used by CUEs but used for other formats

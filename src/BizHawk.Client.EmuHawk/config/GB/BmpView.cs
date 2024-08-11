@@ -1,6 +1,5 @@
 ﻿//TODO - this is redundant with RetainedViewportPanel. Someone needs to reconcile the two.
 
-using System;
 using System.ComponentModel;
 using System.Drawing.Imaging;
 using System.Drawing;

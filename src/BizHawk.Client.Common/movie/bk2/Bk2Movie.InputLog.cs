@@ -13,15 +13,8 @@ namespace BizHawk.Client.Common
 		public void WriteInputLog(TextWriter writer)
 		{
 			writer.WriteLine("[Input]");
-			if (string.IsNullOrEmpty(LogKey))
-			{
-				var lg = LogGeneratorInstance(Session.MovieController);
-				writer.WriteLine(lg.GenerateLogKey());
-			}
-			else
-			{
-				writer.WriteLine($"LogKey:{LogKey}");
-			}
+			writer.Write("LogKey:");
+			writer.WriteLine(string.IsNullOrEmpty(LogKey) ? Bk2LogEntryGenerator.GenerateLogKey(Session.MovieController.Definition) : LogKey);
 
 			foreach (var record in Log)
 			{
@@ -140,6 +133,12 @@ namespace BizHawk.Client.Common
 			if (stateFrame == 0)
 			{
 				stateFrame = newLog.Count;  // In case the frame count failed to parse, revert to using the entire state input log
+			}
+
+			if (stateFrame > newLog.Count)
+			{
+				errorMessage = $"Savestate has invalid frame number {stateFrame} (expected maximum {newLog.Count})";
+				return false;
 			}
 
 			if (Log.Count < stateFrame)

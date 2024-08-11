@@ -6,9 +6,10 @@
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<Nullable>disable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
 	<ItemGroup>
-		<Reference Include="System.Windows.Forms" />
+		<PackageReference Include="System.Drawing.Common" PrivateAssets="all" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
 	</ItemGroup>
 </Project>

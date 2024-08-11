@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -12,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 	// nb: multiple libretro cores could theoretically be ran at once
 	// but all of them would need to be different cores, a core itself is single instance
 	[PortedCore(CoreNames.Libretro, "CasualPokePlayer", singleInstance: true, isReleased: false)]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
+	[ServiceNotApplicable([ typeof(IDriveLight) ])]
 	public partial class LibretroHost
 	{
 		private static readonly LibretroBridge bridge;
@@ -28,21 +27,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 		}
 
 		private readonly LibretroApi api;
-		private IStatable _stateWrapper;
-
 		private readonly IntPtr cbHandler;
-		private readonly BridgeGuard _guard;
 
-		private class BridgeGuard : IMonitor
+		private class BridgeGuard(IntPtr parentHandler) : IMonitor
 		{
 			private static readonly object _sync = new();
 			private static IntPtr _activeHandler;
 			private static int _refCount;
-
-			private readonly IntPtr _parentHandler;
-
-			public BridgeGuard(IntPtr parentHandler)
-				=> _parentHandler = parentHandler;
 
 			public void Enter()
 			{
@@ -50,10 +41,10 @@ namespace BizHawk.Emulation.Cores.Libretro
 				{
 					if (_activeHandler == IntPtr.Zero)
 					{
-						_activeHandler = _parentHandler;
-						bridge.LibretroBridge_SetGlobalCallbackHandler(_parentHandler);
+						_activeHandler = parentHandler;
+						bridge.LibretroBridge_SetGlobalCallbackHandler(parentHandler);
 					}
-					else if (_activeHandler != _parentHandler)
+					else if (_activeHandler != parentHandler)
 					{
 						throw new InvalidOperationException("Multiple callback handlers cannot be active at once!");
 					}
@@ -94,10 +85,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 					throw new Exception("Failed to create callback handler!");
 				}
 
-				_guard = new(cbHandler);
-
+				var guard = new BridgeGuard(cbHandler);
 				api = BizInvoker.GetInvoker<LibretroApi>(
-					new DynamicLibraryImportResolver(corePath, hasLimitedLifetime: false), _guard, CallingConventionAdapters.Native);
+					new DynamicLibraryImportResolver(corePath, hasLimitedLifetime: false), guard, CallingConventionAdapters.Native);
 
 				_serviceProvider = new(this);
 
@@ -140,23 +130,17 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 		}
 
-		private class RetroData : IDisposable
+		private class RetroData(object o, long len = 0) : IDisposable
 		{
-			private readonly GCHandle _handle;
+			private GCHandle _handle = GCHandle.Alloc(o, GCHandleType.Pinned);
 
 			public IntPtr PinnedData => _handle.AddrOfPinnedObject();
-			public long Length { get; }
-
-			public RetroData(object o, long len = 0)
-			{
-				_handle = GCHandle.Alloc(o, GCHandleType.Pinned);
-				Length = len;
-			}
+			public long Length { get; } = len;
 
 			public void Dispose() => _handle.Free();
 		}
 
-		private byte[] RetroString(string managedString)
+		private static byte[] RetroString(string managedString)
 		{
 			var ret = Encoding.UTF8.GetBytes(managedString);
 			Array.Resize(ref ret, ret.Length + 1);
@@ -205,11 +189,11 @@ namespace BizHawk.Emulation.Cores.Libretro
 					success = api.retro_load_no_game();
 					break;
 				case RETRO_LOAD.PATH:
-					game = new() { path = path.PinnedData };
+					game = new() { path = path!.PinnedData };
 					success = api.retro_load_game(ref game);
 					break;
 				case RETRO_LOAD.DATA:
-					game = new() { path = path.PinnedData, data = data.PinnedData, size = data.Length };
+					game = new() { path = path!.PinnedData, data = data!.PinnedData, size = data.Length };
 					success = api.retro_load_game(ref game);
 					break;
 				default:
@@ -237,8 +221,11 @@ namespace BizHawk.Emulation.Cores.Libretro
 			var len = checked((int)api.retro_serialize_size());
 			if (len > 0)
 			{
-				_stateWrapper = new StatableLibretro(this, api, len);
-				_serviceProvider.Register(_stateWrapper);
+				_stateBuf = new byte[len];
+			}
+			else
+			{
+				_serviceProvider.Unregister<IStatable>();
 			}
 
 			_region = api.retro_get_region();

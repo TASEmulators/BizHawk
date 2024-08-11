@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Bizware.Graphics;
 using BizHawk.Emulation.Common;
 
@@ -13,8 +11,8 @@ namespace BizHawk.Client.EmuHawk
 		public bool SupportsGLVersion(int major, int minor)
 			=> OpenGLVersion.SupportsVersion(major, minor);
 
-		public object RequestGLContext(int major, int minor, bool coreProfile, bool forwardCompatible)
-			=> new SDL2OpenGLContext(major, minor, coreProfile, forwardCompatible);
+		public object RequestGLContext(int major, int minor, bool coreProfile)
+			=> new SDL2OpenGLContext(major, minor, coreProfile);
 
 		public void ReleaseGLContext(object context)
 			=> ((SDL2OpenGLContext)context).Dispose();

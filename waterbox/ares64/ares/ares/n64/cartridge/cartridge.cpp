@@ -47,7 +47,12 @@ auto Cartridge::connect() -> void {
 
   rtc.load();
 
-  isviewer.ram.allocate(64_KiB);
+  if(rom.size <= 0x03fe'ffff) {
+    isviewer.ram.allocate(64_KiB);
+    isviewer.tracer = node->append<Node::Debugger::Tracer::Notification>("ISViewer", "Cartridge");
+    isviewer.tracer->setAutoLineBreak(false);
+    isviewer.tracer->setTerminal(true);
+  }
 
   debugger.load(node);
 

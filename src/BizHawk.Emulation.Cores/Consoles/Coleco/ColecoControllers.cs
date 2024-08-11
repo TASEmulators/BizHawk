@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel;
 using System.Linq;
 
@@ -96,7 +95,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				if (c.IsPressed(Definition.BoolButtons[7])) retVal = 0x0D;
 				if (c.IsPressed(Definition.BoolButtons[12])) retVal = 0x0E;
 
-				if (c.IsPressed(Definition.BoolButtons[5]) == false) retVal |= 0x40;
+				if (!c.IsPressed(Definition.BoolButtons[5])) retVal |= 0x40;
 				retVal |= 0x30; // always set these bits
 				return retVal;
 			}
@@ -300,7 +299,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				if (c.IsPressed(Definition.BoolButtons[18])) retVal = 0x04;
 				if (c.IsPressed(Definition.BoolButtons[19])) retVal = 0x08;
 
-				if (c.IsPressed(Definition.BoolButtons[5]) == false) retVal |= 0x40;
+				if (!c.IsPressed(Definition.BoolButtons[5])) retVal |= 0x40;
 				retVal |= 0x30; // always set these bits
 				return retVal;
 			}
