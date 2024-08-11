@@ -1,6 +1,4 @@
-﻿using System;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Atari.Atari2600;
+﻿using BizHawk.Emulation.Common;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Stella

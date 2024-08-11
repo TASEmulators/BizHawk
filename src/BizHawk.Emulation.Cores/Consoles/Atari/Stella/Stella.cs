@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
-using BizHawk.Common.IOExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Atari.Stella;
