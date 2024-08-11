@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			FourScore = 0x2,
 			//FourScore2 = 0x3, // not available for port 1
 			ArkanoidNES = 0x4,
-			ArkanoidFamicom = 0x5
+			ArkanoidFamicom = 0x5,
 		}
 
 		public enum Port2PeripheralOption : byte

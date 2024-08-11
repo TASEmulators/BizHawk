@@ -110,13 +110,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			def.BoolButtons.AddRange(new[] { "Reset", "Power" }); // console buttons
 
 
-			if (_syncSettings.Port1 == Port1PeripheralOption.ArkanoidNES)
+			if (_syncSettings.Port1 is Port1PeripheralOption.ArkanoidNES)
 			{
 				def.AddAxis("P2 Paddle", 0.RangeTo(160), 80);
 				def.BoolButtons.Add("P2 Fire");
 			}
 
-			if (_syncSettings.Port1 == Port1PeripheralOption.ArkanoidFamicom)
+			else if (_syncSettings.Port1 is Port1PeripheralOption.ArkanoidFamicom)
 			{
 				def.BoolButtons.Add("P2 Up");
 				def.BoolButtons.Add("P2 Down");
