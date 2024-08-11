@@ -83,53 +83,88 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			ControllerDefinition def = new("NES Controller");
 
+			// Function to add gamepad buttons
 			void AddButtons(IEnumerable<(string PrefixedName, uint Bitmask)> entries)
 				=> def.BoolButtons.AddRange(entries.Select(static p => p.PrefixedName));
 
-			if (_syncSettings.Port1 == Port1PeripheralOption.Gamepad || _syncSettings.Port1 == Port1PeripheralOption.FourScore || _syncSettings.Port1 == Port1PeripheralOption.ArkanoidFamicom)
+			// Parsing Port1 niputs
+
+			switch (_syncSettings.Port1)
 			{
-				AddButtons(_syncSettings.Port1 switch
-				{
-					Port1PeripheralOption.Gamepad => GamepadButtons[0],
-					Port1PeripheralOption.ArkanoidFamicom => GamepadButtons[0],
-					Port1PeripheralOption.FourScore => FourScoreButtons[0],
-					_ => Enumerable.Empty<(string PrefixedName, uint Bitmask)>()
-				});
+				case Port1PeripheralOption.Gamepad:
+
+					// Adding set of gamepad buttons (P1)
+					AddButtons(GamepadButtons[0]);
+					
+					break;
+
+				case Port1PeripheralOption.FourScore:
+
+					// Adding set of gamepad buttons (P1)
+					AddButtons(FourScoreButtons[0]);
+
+					break;
+
+				case Port1PeripheralOption.ArkanoidNES:
+
+					// Adding Arkanoid Paddle potentiometer
+					def.AddAxis("P2 Paddle", 0.RangeTo(160), 80);
+
+					// Adding Arkanoid Fire button
+					def.BoolButtons.Add("P2 Fire");
+
+					break;
+
+				case Port1PeripheralOption.ArkanoidFamicom:
+
+					// Adding set of gamepad buttons (P1)
+					AddButtons(GamepadButtons[0]);
+
+					// Adding dummy set of P2 buttons (not yet supported)
+					def.BoolButtons.Add("P2 Up");
+					def.BoolButtons.Add("P2 Down");
+					def.BoolButtons.Add("P2 Left");
+					def.BoolButtons.Add("P2 Right");
+					def.BoolButtons.Add("P2 B");
+					def.BoolButtons.Add("P2 A");
+					def.BoolButtons.Add("P2 M"); // Microphone
+
+					// Adding Arkanoid Paddle potentiometer
+					def.AddAxis("P3 Paddle", 0.RangeTo(160), 80);
+
+					// Adding Arkanoid Fire button
+					def.BoolButtons.Add("P3 Fire");
+
+					break;
+
+				default: break;
 			}
 
-			if (_syncSettings.Port2 == Port2PeripheralOption.Gamepad || _syncSettings.Port2 == Port2PeripheralOption.FourScore2)
+			// Parsing Port2 niputs
+
+			switch (_syncSettings.Port2)
 			{
-				AddButtons(_syncSettings.Port2 switch
-				{
-					Port2PeripheralOption.Gamepad => GamepadButtons[1],
-					Port2PeripheralOption.FourScore2 => FourScoreButtons[1],
-					_ => Enumerable.Empty<(string PrefixedName, uint Bitmask)>()
-				});
+				case Port2PeripheralOption.Gamepad:
+
+					// Adding set of gamepad buttons (P1)
+					AddButtons(GamepadButtons[1]);
+
+					break;
+
+				case Port2PeripheralOption.FourScore2:
+
+					// Adding set of gamepad buttons (P2)
+					AddButtons(FourScoreButtons[1]);
+
+					break;
+
+				default: break;
 			}
 
+			// Adding console buttons
 			def.BoolButtons.AddRange(new[] { "Reset", "Power" }); // console buttons
 
-
-			if (_syncSettings.Port1 is Port1PeripheralOption.ArkanoidNES)
-			{
-				def.AddAxis("P2 Paddle", 0.RangeTo(160), 80);
-				def.BoolButtons.Add("P2 Fire");
-			}
-
-			else if (_syncSettings.Port1 is Port1PeripheralOption.ArkanoidFamicom)
-			{
-				def.BoolButtons.Add("P2 Up");
-				def.BoolButtons.Add("P2 Down");
-				def.BoolButtons.Add("P2 Left");
-				def.BoolButtons.Add("P2 Right");
-				def.BoolButtons.Add("P2 B");
-				def.BoolButtons.Add("P2 A");
-				def.BoolButtons.Add("P2 M");
-				def.AddAxis("P3 Paddle", 0.RangeTo(160), 80);
-				def.BoolButtons.Add("P3 Fire");
-			}
-
-				ControllerDefinition = def.MakeImmutable();
+			ControllerDefinition = def.MakeImmutable();
 		}
 
 		private static readonly (string PrefixedName, uint Bitmask)[][] GamepadButtons = new[]
@@ -199,7 +234,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		};
 
 
-
 		private void SetPads(IController controller, out uint j1, out uint j2)
 		{
 			static uint PackGamepadButtonsFor(int portNumber, IController controller)
@@ -248,11 +282,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
-		// Controller types
-		// none - 0
-		// joypad - 1
-		// arkanoidNES - 2
-		// arkanoidFamicom - 3
+		public enum QuickerNESInternalControllerTypeEnumeration : byte
+		{
+			None = 0x0,
+			Joypad = 0x1,
+			ArkanoidNES = 0x2,
+			ArkanoidFamicom = 0x3,
+		}
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
@@ -267,28 +303,47 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 			QN.qn_set_tracecb(Context, Tracer.IsEnabled() ? _traceCb : null);
 
-			// Getting correct controller type
-			uint controllerType = 1; // joypad
-			if (_syncSettings.Port1 == Port1PeripheralOption.ArkanoidNES) controllerType = 2;
-			if (_syncSettings.Port1 == Port1PeripheralOption.ArkanoidFamicom) controllerType = 3;
+			// Getting correct internal controller type for QuickerNES
+			QuickerNESInternalControllerTypeEnumeration internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.None;
+
+			// Handling Port2
+			switch (_syncSettings.Port2)
+			{
+				case Port2PeripheralOption.Gamepad:
+				case Port2PeripheralOption.FourScore2:
+					internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.Joypad; break;
+			}
+
+			// Handling Port1 -- Using Arkanoid overrides the selection for Port2
+			switch (_syncSettings.Port1)
+			{
+				case Port1PeripheralOption.Gamepad:
+				case Port1PeripheralOption.FourScore:
+					internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.Joypad; break;
+				case Port1PeripheralOption.ArkanoidNES:
+					internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.ArkanoidNES; break;
+				case Port1PeripheralOption.ArkanoidFamicom:
+					internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.ArkanoidFamicom; break;
+			}
 
 			// Parsing arkanoid inputs
 			uint arkanoidPos = 0;
 			uint arkanoidFire = 0;
 
-			if (_syncSettings.Port1 == Port1PeripheralOption.ArkanoidNES)
+			switch (_syncSettings.Port1)
 			{
-				arkanoidPos = (uint)controller.AxisValue("P2 Paddle");
-				arkanoidFire = controller.IsPressed("P2 Fire") ? 1u : 0u;
+				case Port1PeripheralOption.ArkanoidNES:
+					arkanoidPos = (uint)controller.AxisValue("P2 Paddle");
+					arkanoidFire = controller.IsPressed("P2 Fire") ? 1u : 0u;
+					break;
+
+				case Port1PeripheralOption.ArkanoidFamicom:
+					arkanoidPos = (uint)controller.AxisValue("P3 Paddle");
+					arkanoidFire = controller.IsPressed("P3 Fire") ? 1u : 0u;
+					break;
 			}
 
-			if (_syncSettings.Port1 == Port1PeripheralOption.ArkanoidFamicom)
-			{
-				arkanoidPos = (uint)controller.AxisValue("P3 Paddle");
-				arkanoidFire = controller.IsPressed("P3 Fire") ? 1u : 0u;
-			}
-
-			LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2, arkanoidPos, arkanoidFire, controllerType));
+			LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2, arkanoidPos, arkanoidFire, (uint) internalQuickerNESControllerType));
 			IsLagFrame = QN.qn_get_joypad_read_count(Context) == 0;
 			if (IsLagFrame)
 				LagCount++;
