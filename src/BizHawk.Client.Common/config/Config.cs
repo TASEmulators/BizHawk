@@ -50,7 +50,7 @@ namespace BizHawk.Client.Common
 			([ VSystemID.Raw.SNES ],
 				[ CoreNames.Snes9X, CoreNames.Bsnes115, CoreNames.SubBsnes115, CoreNames.Faust, CoreNames.Bsnes ]),
 			([ VSystemID.Raw.TI83 ],
-				[ CoreNames.Emu83, CoreNames.TI83Hawk ]),
+				[ CoreNames.Emu83, CoreNames.TI83Hawk ])
 
 		};
 
