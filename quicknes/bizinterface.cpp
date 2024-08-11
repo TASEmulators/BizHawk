@@ -50,9 +50,30 @@ QN_EXPORT const char *qn_set_sample_rate(quickerNES::Emu *e, int rate)
 	return ret;
 }
 
-QN_EXPORT const char *qn_emulate_frame(quickerNES::Emu *e, int pad1, int pad2)
+
+QN_EXPORT const char *qn_emulate_frame(quickerNES::Emu *e, int pad1, int pad2, int arkanoidPosition, int arkanoidFire, int controllerType)
 {
-	return e->emulate_frame((uint32_t)pad1, (uint32_t)pad2);
+	uint32_t arkanoidLatch = 0;
+
+	if ((quickerNES::Core::controllerType_t) controllerType == quickerNES::Core::controllerType_t::arkanoidNES_t ||
+	    (quickerNES::Core::controllerType_t) controllerType == quickerNES::Core::controllerType_t::arkanoidFamicom_t)
+	{
+        e->setControllerType((quickerNES::Core::controllerType_t) controllerType);
+
+		// Potentiometer is encoded in port 2 - MSB and adding one bit for signalling the presence of the potentiometer, subtracted from 173
+		uint8_t subtracter = 171 - arkanoidPosition;
+		
+		if ((subtracter & 128) > 0) arkanoidLatch += 1;
+		if ((subtracter & 64) > 0)  arkanoidLatch += 2;
+		if ((subtracter & 32) > 0)  arkanoidLatch += 4;
+		if ((subtracter & 16) > 0)  arkanoidLatch += 8;
+		if ((subtracter & 8) > 0)   arkanoidLatch += 16;
+		if ((subtracter & 4) > 0)   arkanoidLatch += 32;
+		if ((subtracter & 2) > 0)   arkanoidLatch += 64;
+		if ((subtracter & 1) > 0)   arkanoidLatch += 128;
+	}
+
+	return e->emulate_frame((uint32_t)pad1, (uint32_t)pad2, arkanoidLatch, (uint8_t) arkanoidFire);
 }
 
 QN_EXPORT void qn_blit(quickerNES::Emu *e, int32_t *dest, const int32_t *colors, int cropleft, int croptop, int cropright, int cropbottom)
