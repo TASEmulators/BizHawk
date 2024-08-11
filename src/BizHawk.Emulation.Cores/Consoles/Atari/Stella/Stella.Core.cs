@@ -11,25 +11,18 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 {
 	public partial class Stella
 	{
-		private readonly GameInfo _game;
-
 		internal struct CpuLink : IMOS6502XLink
 		{
-			private readonly Stella _atari2600;
+			public byte DummyReadMemory(ushort address) { return 0; }
 
-			public byte DummyReadMemory(ushort address) => _atari2600.ReadMemory(address);
+			public void OnExecFetch(ushort address) { }
 
-			public void OnExecFetch(ushort address) => _atari2600.ExecFetch(address);
+			public byte PeekMemory(ushort address) { return 0; }
 
-			public byte PeekMemory(ushort address) => _atari2600.ReadMemory(address);
+			public byte ReadMemory(ushort address) { return 0; }
 
-			public byte ReadMemory(ushort address) => _atari2600.ReadMemory(address);
-
-			public void WriteMemory(ushort address, byte value) => _atari2600.WriteMemory(address, value);
+			public void WriteMemory(ushort address, byte value) { }
 		}
-
-		// keeps track of tia cycles, 3 cycles per CPU cycle
-		private int cyc_counter;
 
 		internal byte BaseReadMemory(ushort addr)
 		{

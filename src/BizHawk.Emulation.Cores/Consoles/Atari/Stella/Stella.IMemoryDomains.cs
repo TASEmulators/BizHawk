@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 	{
 		internal IMemoryDomains MemoryDomains;
 		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
-		private bool _memoryDomainsInit;
 		private uint _cartMemSize;
 
 		private void SetupMemoryDomains()
@@ -62,8 +61,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 			MemoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
 			((BasicServiceProvider)ServiceProvider).Register(MemoryDomains);
-
-			_memoryDomainsInit = true;
 		}
 	}
 }
