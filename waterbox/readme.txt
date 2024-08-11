@@ -76,6 +76,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	cd nyma && make -f shock.mak install
 	cd nyma && make -f vb.mak install
 	cd picodrive && make install
+	cd stella && make install
 	cd snes9x && make install
 	cd tic80 && make install
 	cd uae && make install
