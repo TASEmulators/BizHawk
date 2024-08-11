@@ -460,10 +460,18 @@ namespace BizHawk.Client.EmuHawk
 				return null;
 			}
 
-			using var file = new HawkFile(path);
-			if (file.Exists)
+			try
 			{
-				return file.ReadAllBytes();
+				using var file = new HawkFile(path);
+				if (file.Exists)
+				{
+					return file.ReadAllBytes();
+				}
+			}
+			catch (Exception ex)
+			{
+				using var exceptionBox = new ExceptionBox(ex);
+				this.ShowDialogWithTempMute(exceptionBox);
 			}
 
 			return null;
