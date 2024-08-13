@@ -2,8 +2,8 @@
 {
 	public enum PreviousType
 	{
-		Original,
-		LastFrame,
-		LastChange,
+		Original = 0,
+		LastFrame = 2,
+		LastChange = 3,
 	}
 }
