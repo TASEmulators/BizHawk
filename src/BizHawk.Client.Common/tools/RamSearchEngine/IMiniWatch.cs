@@ -8,8 +8,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 	internal interface IMiniWatch
 	{
 		long Address { get; }
-		uint Previous { get; }
-		uint Current { get; }
+		long Previous { get; } // do not store sign extended variables in here.
+		long Current { get; }
 		int ChangeCount { get; }
 		void ClearChangeCount();
 		void SetPreviousToCurrent();
@@ -35,8 +35,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			_previous = _current;
 		}
 
-		public uint Previous => _previous;
-		public uint Current => _current;
+		public long Previous => _previous;
+		public long Current => _current;
 
 		public int ChangeCount { get; private set; }
 
@@ -87,8 +87,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			_previous = _current;
 		}
 
-		public uint Previous => _previous;
-		public uint Current => _current;
+		public long Previous => _previous;
+		public long Current => _current;
 
 		public int ChangeCount { get; private set; }
 
@@ -139,8 +139,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			_previous = _current;
 		}
 
-		public uint Previous => _previous;
-		public uint Current => _current;
+		public long Previous => _previous;
+		public long Current => _current;
 
 		public int ChangeCount { get; private set; }
 

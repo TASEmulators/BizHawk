@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -288,7 +287,7 @@ namespace BizHawk.Client.Common
 				LogCallback($"Warning: Attempted read {addr} outside memory size of {d.Size}");
 				return default;
 			}
-			return NumberExtensions.ReinterpretAsF32(d.PeekUint(addr, _isBigEndian));
+			return BitConverter.ToSingle(BitConverter.GetBytes(d.PeekUint(addr, _isBigEndian)), 0);
 		}
 
 		public void WriteFloat(long addr, double value, string domain = null)
@@ -304,7 +303,7 @@ namespace BizHawk.Client.Common
 				LogCallback($"Warning: Attempted write {addr} outside memory size of {d.Size}");
 				return;
 			}
-			d.PokeUint(addr, NumberExtensions.ReinterpretAsUInt32((float) value), _isBigEndian);
+			d.PokeUint(addr, BitConverter.ToUInt32(BitConverter.GetBytes((float) value), 0), _isBigEndian);
 		}
 
 		public int ReadS8(long addr, string domain = null) => (sbyte) ReadUnsigned(addr, 1, domain);

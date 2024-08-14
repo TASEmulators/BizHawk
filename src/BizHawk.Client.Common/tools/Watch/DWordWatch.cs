@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Globalization;
-using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -80,7 +79,7 @@ namespace BizHawk.Client.Common
 					WatchDisplayType.Hex => uint.Parse(value, NumberStyles.HexNumber),
 					WatchDisplayType.FixedPoint_20_12 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 4096.0),
 					WatchDisplayType.FixedPoint_16_16 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 65536.0),
-					WatchDisplayType.Float => NumberExtensions.ReinterpretAsUInt32(float.Parse(value, NumberFormatInfo.InvariantInfo)),
+					WatchDisplayType.Float => BitConverter.ToUInt32(BitConverter.GetBytes(float.Parse(value, NumberFormatInfo.InvariantInfo)), 0),
 					_ => 0
 				};
 
@@ -129,7 +128,8 @@ namespace BizHawk.Client.Common
 		{
 			string FormatFloat()
 			{
-				var _float = NumberExtensions.ReinterpretAsF32(val);
+				var bytes = BitConverter.GetBytes(val);
+				var _float = BitConverter.ToSingle(bytes, 0);
 				return _float.ToString(NumberFormatInfo.InvariantInfo);
 			}
 
