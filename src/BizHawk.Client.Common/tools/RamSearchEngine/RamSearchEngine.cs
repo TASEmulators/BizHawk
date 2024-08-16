@@ -89,9 +89,11 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				_watchList[index].Previous,
 				_settings.IsDetailed() ? _watchList[index].ChangeCount : 0);
 
-		public int DoSearch()
+		public int DoSearch(bool updatePrevious)
 		{
 			int before = _watchList.Length;
+
+			Update(updatePrevious);
 
 			using (Domain.EnterExit())
 			{
@@ -169,12 +171,12 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		/// </remarks>
 		public int? DifferentBy { get; set; }
 
-		public void Update()
+		public void Update(bool updatePrevious)
 		{
 			using var @lock = _settings.Domain.EnterExit();
 			foreach (var watch in _watchList)
 			{
-				watch.Update(_settings.PreviousType, _settings.Domain, _settings.BigEndian);
+				watch.Update(updatePrevious ? _settings.PreviousType : PreviousType.Original, _settings.Domain, _settings.BigEndian);
 			}
 		}
 
@@ -182,20 +184,13 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void SetEndian(bool bigEndian) => _settings.BigEndian = bigEndian;
 
-		/// <exception cref="InvalidOperationException"><see cref="Mode"/> is <see cref="SearchMode.Fast"/> and <paramref name="type"/> is <see cref="PreviousType.LastFrame"/></exception>
-		public void SetPreviousType(PreviousType type)
-		{
-			if (_settings.IsFastMode() && type == PreviousType.LastFrame)
-			{
-				throw new InvalidOperationException();
-			}
+		public void SetPreviousType(PreviousType type) => _settings.PreviousType = type;
 
-			_settings.PreviousType = type;
-		}
+		public void SetMode(SearchMode mode) => _settings.Mode = mode;
 
 		public void SetPreviousToCurrent()
 		{
-			Array.ForEach(_watchList, w => w.SetPreviousToCurrent(_settings.Domain, _settings.BigEndian));
+			Array.ForEach(_watchList, static w => w.SetPreviousToCurrent());
 		}
 
 		public void ClearChangeCounts()
@@ -450,7 +445,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		private IEnumerable<IMiniWatch> CompareChanges(IEnumerable<IMiniWatch> watchList)
 		{
-			if (CompareValue is not long compareValue) throw new InvalidCastException(); //TODO typo for IOE?
+			if (CompareValue is not long compareValue) throw new InvalidOperationException();
 			switch (Operator)
 			{
 				default:

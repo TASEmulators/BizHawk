@@ -270,8 +270,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_searches.Count > 0)
 			{
-				_searches.Update();
-
 				if (_autoSearch)
 				{
 					if (InputPollableCore != null && Settings.AutoSearchTakeLagFramesIntoAccount && InputPollableCore.IsLagFrame)
@@ -280,8 +278,12 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						DoSearch();
+						DoSearch(true);
 					}
+				}
+				else if (_settings.IsDetailed())
+				{
+					_searches.Update(true);
 				}
 
 				_forcePreviewClear = false;
@@ -289,12 +291,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		// TODO: this seems to be missing some logic from FrameUpdate that probably should exist here
 		private void MinimalUpdate()
 		{
 			if (_searches.Count > 0)
 			{
-				_searches.Update();
-
 				if (_autoSearch)
 				{
 					DoSearch();
@@ -521,14 +522,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DoSearch()
+		public void DoSearch(bool updatePrevious = false)
 		{
 			_searches.CompareValue = CompareToValue;
 			_searches.DifferentBy = DifferentByValue;
 			_searches.Operator = Operator;
 			_searches.CompareTo = Compare;
 
-			var removed = _searches.DoSearch();
+			var removed = _searches.DoSearch(updatePrevious);
 			UpdateList();
 			SetRemovedMessage(removed);
 			ToggleSearchDependentToolBarItems();
@@ -587,7 +588,6 @@ namespace BizHawk.Client.EmuHawk
 				&& _settings.IsDetailed())
 			{
 				_settings.Mode = SearchMode.Fast;
-				SetReboot(true);
 				MessageLabel.Text = "Large domain, switching to fast mode";
 			}
 		}
@@ -753,6 +753,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetToDetailedMode()
 		{
 			_settings.Mode = SearchMode.Detailed;
+			_searches.SetMode(SearchMode.Detailed);
 			NumberOfChangesRadio.Enabled = true;
 			NumberOfChangesBox.Enabled = true;
 			DifferenceRadio.Enabled = true;
@@ -763,7 +764,6 @@ namespace BizHawk.Client.EmuHawk
 			ChangesMenuItem.Checked = true;
 
 			ColumnToggleCallback();
-			SetReboot(true);
 		}
 
 		private ToolStripMenuItem ChangesMenuItem
@@ -782,6 +782,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetToFastMode()
 		{
 			_settings.Mode = SearchMode.Fast;
+			_searches.SetMode(SearchMode.Fast);
 
 			if (_settings.PreviousType == PreviousType.LastFrame || _settings.PreviousType == PreviousType.LastChange)
 			{
@@ -802,7 +803,6 @@ namespace BizHawk.Client.EmuHawk
 			ChangesMenuItem.Checked = false;
 
 			ColumnToggleCallback();
-			SetReboot(true);
 		}
 
 		private void RemoveAddresses()
