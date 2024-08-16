@@ -12,10 +12,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 {
 	public class RamSearchEngine
 	{
-		/// <remarks>TODO move to BizHawk.Common</remarks>
 		private static float ReinterpretAsF32(long l)
 		{
-			return Unsafe.As<long, float>(ref l);
+			var lsw = unchecked((uint) l);
+			return Unsafe.As<uint, float>(ref lsw);
 		}
 
 		private Compare _compareTo = Compare.Previous;
