@@ -290,7 +290,7 @@ namespace BizHawk.Client.Common
 			return BitConverter.ToSingle(BitConverter.GetBytes(d.PeekUint(addr, _isBigEndian)), 0);
 		}
 
-		public void WriteFloat(long addr, double value, string domain = null)
+		public void WriteFloat(long addr, float value, string domain = null)
 		{
 			var d = NamedDomainOrCurrent(domain);
 			if (!d.Writable)
@@ -303,7 +303,7 @@ namespace BizHawk.Client.Common
 				LogCallback($"Warning: Attempted write {addr} outside memory size of {d.Size}");
 				return;
 			}
-			d.PokeUint(addr, BitConverter.ToUInt32(BitConverter.GetBytes((float) value), 0), _isBigEndian);
+			d.PokeUint(addr, BitConverter.ToUInt32(BitConverter.GetBytes(value), 0), _isBigEndian);
 		}
 
 		public int ReadS8(long addr, string domain = null) => (sbyte) ReadUnsigned(addr, 1, domain);
