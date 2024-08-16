@@ -1105,9 +1105,6 @@ namespace BizHawk.Client.EmuHawk
 					Previous_LastChangeMenuItem.Checked = true;
 					break;
 			}
-
-			PreviousFrameMenuItem.Enabled = _settings.IsDetailed();
-			Previous_LastChangeMenuItem.Enabled = _settings.IsDetailed();
 		}
 
 		private void DetailedMenuItem_Click(object sender, EventArgs e)
@@ -1169,8 +1166,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SearchSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ClearChangeCountsMenuItem.Enabled = _settings.IsDetailed();
-
 			RemoveMenuItem.Enabled =
 				AddToRamWatchMenuItem.Enabled =
 					WatchListView.AnyRowsSelected;

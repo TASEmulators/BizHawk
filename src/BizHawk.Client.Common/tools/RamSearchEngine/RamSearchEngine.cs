@@ -64,46 +64,13 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				default:
 				case WatchSize.Byte:
-					if (_settings.IsDetailed())
-					{
-						for (var i = 0; i < _watchList.Length; i++) _watchList[i] = new MiniByteWatchDetailed(domain, i);
-					}
-					else
-					{
-						for (var i = 0; i < _watchList.Length; i++) _watchList[i] = new MiniByteWatch(domain, i);
-					}
+					for (var i = 0; i < _watchList.Length; i++) _watchList[i] = new MiniByteWatch(domain, i);
 					break;
 				case WatchSize.Word:
-					if (_settings.IsDetailed())
-					{
-						for (var i = 0; i < _watchList.Length; i++)
-						{
-							_watchList[i] = new MiniWordWatchDetailed(domain, i * stepSize, _settings.BigEndian);
-						}
-					}
-					else
-					{
-						for (var i = 0; i < _watchList.Length; i++)
-						{
-							_watchList[i] = new MiniWordWatch(domain, i * stepSize, _settings.BigEndian);
-						}
-					}
+					for (var i = 0; i < _watchList.Length; i++) _watchList[i] = new MiniWordWatch(domain, i * stepSize, _settings.BigEndian);
 					break;
 				case WatchSize.DWord:
-					if (_settings.IsDetailed())
-					{
-						for (var i = 0; i < _watchList.Length; i++)
-						{
-							_watchList[i] = new MiniDWordWatchDetailed(domain, i * stepSize, _settings.BigEndian);
-						}
-					}
-					else
-					{
-						for (var i = 0; i < _watchList.Length; i++)
-						{
-							_watchList[i] = new MiniDWordWatch(domain, i * stepSize, _settings.BigEndian);
-						}
-					}
+					for (var i = 0; i < _watchList.Length; i++) _watchList[i] = new MiniDWordWatch(domain, i * stepSize, _settings.BigEndian);
 					break;
 			}
 		}
@@ -121,7 +88,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				"",
 				0,
 				_watchList[index].Previous,
-				_settings.IsDetailed() ? ((IMiniWatchDetails)_watchList[index]).ChangeCount : 0);
+				_settings.IsDetailed() ? _watchList[index].ChangeCount : 0);
 
 		public int DoSearch()
 		{
@@ -205,9 +172,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void Update()
 		{
-			if (!_settings.IsDetailed()) return;
 			using var @lock = _settings.Domain.EnterExit();
-			foreach (IMiniWatchDetails watch in _watchList)
+			foreach (var watch in _watchList)
 			{
 				watch.Update(_settings.PreviousType, _settings.Domain, _settings.BigEndian);
 			}
@@ -235,8 +201,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void ClearChangeCounts()
 		{
-			if (!_settings.IsDetailed()) return;
-			foreach (var watch in _watchList.Cast<IMiniWatchDetails>())
+			foreach (var watch in _watchList)
 			{
 				watch.ClearChangeCount();
 			}
@@ -302,12 +267,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					_watchList = _watchList.OrderBy(w => w.Previous, reverse).ToArray();
 					break;
 				case WatchList.ChangesCol:
-					if (!_settings.IsDetailed()) break;
-					_watchList = _watchList
-						.Cast<IMiniWatchDetails>()
-						.OrderBy(w => w.ChangeCount, reverse)
-						.Cast<IMiniWatch>()
-						.ToArray();
+					_watchList = _watchList.OrderBy(w => w.ChangeCount, reverse).ToArray();
 					break;
 				case WatchList.Diff:
 					_watchList = _watchList.OrderBy(w => GetValue(w.Address) - w.Previous, reverse).ToArray();
@@ -493,40 +453,25 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		private IEnumerable<IMiniWatch> CompareChanges(IEnumerable<IMiniWatch> watchList)
 		{
-			if (!_settings.IsDetailed()) throw new InvalidCastException(); //TODO matches previous behaviour; was this intended to skip processing? --yoshi
 			if (CompareValue is not long compareValue) throw new InvalidCastException(); //TODO typo for IOE?
 			switch (Operator)
 			{
 				default:
 				case ComparisonOperator.Equal:
-					return watchList
-						.Cast<IMiniWatchDetails>()
-						.Where(w => w.ChangeCount == compareValue);
+					return watchList.Where(w => w.ChangeCount == compareValue);
 				case ComparisonOperator.NotEqual:
-					return watchList
-						.Cast<IMiniWatchDetails>()
-						.Where(w => w.ChangeCount != compareValue);
+					return watchList.Where(w => w.ChangeCount != compareValue);
 				case ComparisonOperator.GreaterThan:
-					return watchList
-						.Cast<IMiniWatchDetails>()
-						.Where(w => w.ChangeCount > compareValue);
+					return watchList.Where(w => w.ChangeCount > compareValue);
 				case ComparisonOperator.GreaterThanEqual:
-					return watchList
-						.Cast<IMiniWatchDetails>()
-						.Where(w => w.ChangeCount >= compareValue);
+					return watchList.Where(w => w.ChangeCount >= compareValue);
 				case ComparisonOperator.LessThan:
-					return watchList
-						.Cast<IMiniWatchDetails>()
-						.Where(w => w.ChangeCount < compareValue);
+					return watchList.Where(w => w.ChangeCount < compareValue);
 				case ComparisonOperator.LessThanEqual:
-					return watchList
-						.Cast<IMiniWatchDetails>()
-						.Where(w => w.ChangeCount <= compareValue);
+					return watchList.Where(w => w.ChangeCount <= compareValue);
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy is not int differentBy) throw new InvalidOperationException();
-					return watchList
-						.Cast<IMiniWatchDetails>()
-						.Where(w => Math.Abs(w.ChangeCount - compareValue) == differentBy);
+					return watchList.Where(w => Math.Abs(w.ChangeCount - compareValue) == differentBy);
 			}
 		}
 
