@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 				var nextColor = Color.White;
 				var search = _searches[index];
 				var isCheat = MainForm.CheatList.IsActive(_settings.Domain, search.Address);
-				var isWeeded = Settings.PreviewMode && !_forcePreviewClear && _searches.Preview(search.Address);
+				var isWeeded = Settings.PreviewMode && !_forcePreviewClear && _searches.Preview(index);
 
 				if (!search.IsValid)
 				{
