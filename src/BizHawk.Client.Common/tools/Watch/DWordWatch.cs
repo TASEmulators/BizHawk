@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -70,6 +72,8 @@ namespace BizHawk.Client.Common
 		/// <returns>True if value successfully sets; otherwise, false</returns>
 		public override bool Poke(string value)
 		{
+			static uint ReinterpretAsU32(float f)
+				=> Unsafe.As<float, uint>(ref f);
 			try
 			{
 				uint val = Type switch
@@ -79,7 +83,7 @@ namespace BizHawk.Client.Common
 					WatchDisplayType.Hex => uint.Parse(value, NumberStyles.HexNumber),
 					WatchDisplayType.FixedPoint_20_12 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 4096.0),
 					WatchDisplayType.FixedPoint_16_16 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 65536.0),
-					WatchDisplayType.Float => BitConverter.ToUInt32(BitConverter.GetBytes(float.Parse(value, NumberFormatInfo.InvariantInfo)), 0),
+					WatchDisplayType.Float => ReinterpretAsU32(float.Parse(value, NumberFormatInfo.InvariantInfo)),
 					_ => 0
 				};
 
@@ -127,12 +131,7 @@ namespace BizHawk.Client.Common
 		public string FormatValue(uint val)
 		{
 			string FormatFloat()
-			{
-				var bytes = BitConverter.GetBytes(val);
-				var _float = BitConverter.ToSingle(bytes, 0);
-				return _float.ToString(NumberFormatInfo.InvariantInfo);
-			}
-
+				=> Unsafe.As<uint, float>(ref val).ToString(NumberFormatInfo.InvariantInfo);
 			string FormatBinary()
 			{
 				var str = Convert.ToString(val, 2).PadLeft(32, '0');

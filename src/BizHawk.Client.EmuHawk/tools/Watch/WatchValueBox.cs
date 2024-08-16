@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
@@ -446,6 +447,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public int? ToRawInt()
 		{
+			static int ReinterpretAsS32(float f)
+				=> Unsafe.As<float, int>(ref f);
 			try
 			{
 				return _type switch
@@ -457,7 +460,7 @@ namespace BizHawk.Client.EmuHawk
 					WatchDisplayType.FixedPoint_12_4 => (int)(double.Parse(Text, NumberFormatInfo.InvariantInfo) * 16.0),
 					WatchDisplayType.FixedPoint_20_12 => (int)(double.Parse(Text, NumberFormatInfo.InvariantInfo) * 4096.0),
 					WatchDisplayType.FixedPoint_16_16 => (int)(double.Parse(Text, NumberFormatInfo.InvariantInfo) * 65536.0),
-					WatchDisplayType.Float => BitConverter.ToInt32(BitConverter.GetBytes(float.Parse(Text, NumberFormatInfo.InvariantInfo)), 0),
+					WatchDisplayType.Float => ReinterpretAsS32(float.Parse(Text, NumberFormatInfo.InvariantInfo)),
 					_ => int.Parse(Text)
 				};
 			}
@@ -501,9 +504,8 @@ namespace BizHawk.Client.EmuHawk
 						Text = (val.Value / 65536.0).ToString("F5", NumberFormatInfo.InvariantInfo);
 						break;
 					case WatchDisplayType.Float:
-						var bytes = BitConverter.GetBytes(val.Value);
-						float _float = BitConverter.ToSingle(bytes, 0);
-						Text = _float.ToString("F6", NumberFormatInfo.InvariantInfo);
+						var i = val.Value;
+						Text = Unsafe.As<int, float>(ref i).ToString("F6", NumberFormatInfo.InvariantInfo);
 						break;
 				}
 			}
