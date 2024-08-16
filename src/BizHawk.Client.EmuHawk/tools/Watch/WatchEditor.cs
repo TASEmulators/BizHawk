@@ -275,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 
 					Watches[i] = Watch.GenerateWatch(
 						Watches[i].Domain,
-						Watches.Count == 1 ? AddressBox.ToRawInt() ?? 0 : Watches[i].Address,
+						Watches.Count == 1 ? AddressBox.ToRawUInt() ?? 0 : Watches[i].Address,
 						size,
 						_changedDisplayType ? displayType : Watches[i].Type,
 						Watches[i].BigEndian,

@@ -100,13 +100,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public uint Address
 		{
-			get => (uint)AddressBox.ToRawInt().Value & AddressMask;
+			get => AddressBox.ToRawUInt().Value & AddressMask;
 			set => AddressBox.SetFromLong(value & AddressMask);
 		}
 
 		public uint AddressMask
 		{
-			get => (uint)AddressMaskBox.ToRawInt().Value;
+			get => AddressMaskBox.ToRawUInt().Value;
 			set => AddressMaskBox.SetFromLong(value);
 		}
 

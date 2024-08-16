@@ -593,7 +593,7 @@ namespace BizHawk.Client.EmuHawk
 			if (StopOnFrameCheckbox.Checked)
 			{
 				if (LastFrameCheckbox.Checked) _mainForm.PauseOnFrame = _movieSession.Movie.InputLogLength;
-				else if (StopOnFrameTextBox.ToRawInt() is int i) _mainForm.PauseOnFrame = i;
+				else if (StopOnFrameTextBox.ToRawUInt() is uint i) _mainForm.PauseOnFrame = (int)i;
 			}
 			Close();
 		}

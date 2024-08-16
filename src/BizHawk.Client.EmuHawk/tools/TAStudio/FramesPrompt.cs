@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 			this.label1.Text = bodyMessage;
 		}
 
-		public int Frames => NumFramesBox.ToRawInt() ?? 0;
+		public int Frames => (int)(NumFramesBox.ToRawUInt() ?? 0);
 
 		private void FramesPrompt_Load(object sender, EventArgs e)
 		{

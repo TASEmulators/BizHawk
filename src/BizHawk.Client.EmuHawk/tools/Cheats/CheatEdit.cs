@@ -93,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 			CheckFormState();
 			if (!_cheat.Compare.HasValue)
 			{
-				CompareBox.Text = ""; // Necessary hack until WatchValueBox.ToRawInt() becomes nullable
+				CompareBox.Text = ""; // Necessary hack until WatchValueBox.ToRawUInt() becomes nullable
 			}
 
 			_loading = false;
@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTypeSelected(WatchDisplayType.Hex);
 
 			CheckFormState();
-			CompareBox.Text = ""; // TODO: A needed hack until WatchValueBox.ToRawInt() becomes nullable
+			CompareBox.Text = ""; // TODO: A needed hack until WatchValueBox.ToRawUInt() becomes nullable
 			_loading = false;
 		}
 
@@ -310,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 		public Cheat GetCheat()
 		{
 			var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()]!;
-			var address = AddressBox.ToRawInt().Value;
+			var address = AddressBox.ToRawUInt().Value;
 			if (address < domain.Size)
 			{
 				var watch = Watch.GenerateWatch(
@@ -333,11 +333,11 @@ namespace BizHawk.Client.EmuHawk
 					_ => Cheat.CompareType.None
 				};
 
-				var compare = CompareBox.ToRawInt();
+				var compare = CompareBox.ToRawUInt();
 				return new Cheat(
 					watch,
-					value: ValueBox.ToRawInt().Value,
-					compare: compare,
+					value: (int)ValueBox.ToRawUInt().Value,
+					compare: (int?)compare,
 					enabled: true,
 					comparisonType);
 			}
