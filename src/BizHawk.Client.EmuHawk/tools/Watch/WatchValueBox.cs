@@ -474,45 +474,23 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetFromRawInt(int? val)
 		{
-			if (val.HasValue)
+			if (val is not int i)
 			{
-				switch (_type)
-				{
-					default:
-					case WatchDisplayType.Signed:
-						Text = val.Value.ToString();
-						break;
-					case WatchDisplayType.Unsigned:
-						var uval = (uint)val.Value;
-						Text = uval.ToString();
-						break;
-					case WatchDisplayType.Binary:
-						var bVal = (uint)val.Value;
-						var numBits = ((int)ByteSize) * 8;
-						Text = Convert.ToString(bVal, 2).PadLeft(numBits, '0');
-						break;
-					case WatchDisplayType.Hex:
-						Text = val.Value.ToHexString(MaxLength);
-						break;
-					case WatchDisplayType.FixedPoint_12_4:
-						Text = (val.Value / 16.0).ToString("F5", NumberFormatInfo.InvariantInfo);
-						break;
-					case WatchDisplayType.FixedPoint_20_12:
-						Text = (val.Value / 4096.0).ToString("F5", NumberFormatInfo.InvariantInfo);
-						break;
-					case WatchDisplayType.FixedPoint_16_16:
-						Text = (val.Value / 65536.0).ToString("F5", NumberFormatInfo.InvariantInfo);
-						break;
-					case WatchDisplayType.Float:
-						var i = val.Value;
-						Text = Unsafe.As<int, float>(ref i).ToString("F6", NumberFormatInfo.InvariantInfo);
-						break;
-				}
+				Text = string.Empty;
+				return;
 			}
-			else
+			Text = _type switch
 			{
-				Text = "";
-			}
+				WatchDisplayType.Signed => i.ToString(),
+				WatchDisplayType.Unsigned => ((uint) i).ToString(),
+				WatchDisplayType.Binary => Convert.ToString(i, toBase: 2).PadLeft(8 * (int) ByteSize, '0'),
+				WatchDisplayType.Hex => i.ToHexString(MaxLength),
+				WatchDisplayType.FixedPoint_12_4 => (i / 16.0).ToString("F5", NumberFormatInfo.InvariantInfo),
+				WatchDisplayType.FixedPoint_20_12 => (i / 4096.0).ToString("F5", NumberFormatInfo.InvariantInfo),
+				WatchDisplayType.FixedPoint_16_16 => (i / 65536.0).ToString("F5", NumberFormatInfo.InvariantInfo),
+				WatchDisplayType.Float => Unsafe.As<int, float>(ref i).ToString("F6", NumberFormatInfo.InvariantInfo),
+				_ => i.ToString()
+			};
 		}
 	}
 }
