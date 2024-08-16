@@ -106,11 +106,6 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					Compare.Difference => CompareDifference(_watchList).ToArray(),
 					_ => ComparePrevious(_watchList).ToArray()
 				};
-
-				if (_settings.PreviousType == PreviousType.LastSearch)
-				{
-					SetPreviousToCurrent();
-				}
 			}
 
 			if (UndoEnabled)

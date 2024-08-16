@@ -784,11 +784,6 @@ namespace BizHawk.Client.EmuHawk
 			_settings.Mode = SearchMode.Fast;
 			_searches.SetMode(SearchMode.Fast);
 
-			if (_settings.PreviousType == PreviousType.LastFrame || _settings.PreviousType == PreviousType.LastChange)
-			{
-				SetPreviousType(PreviousType.LastSearch);
-			}
-
 			NumberOfChangesRadio.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
 			NumberOfChangesBox.Text = "";
@@ -1084,7 +1079,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefinePreviousValueSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			Previous_LastSearchMenuItem.Checked = false;
 			PreviousFrameMenuItem.Checked = false;
 			Previous_OriginalMenuItem.Checked = false;
 			Previous_LastChangeMenuItem.Checked = false;
@@ -1092,9 +1086,6 @@ namespace BizHawk.Client.EmuHawk
 			switch (_settings.PreviousType)
 			{
 				default:
-				case PreviousType.LastSearch:
-					Previous_LastSearchMenuItem.Checked = true;
-					break;
 				case PreviousType.LastFrame:
 					PreviousFrameMenuItem.Checked = true;
 					break;
@@ -1141,11 +1132,6 @@ namespace BizHawk.Client.EmuHawk
 		private void Previous_LastFrameMenuItem_Click(object sender, EventArgs e)
 		{
 			SetPreviousType(PreviousType.LastFrame);
-		}
-
-		private void Previous_LastSearchMenuItem_Click(object sender, EventArgs e)
-		{
-			SetPreviousType(PreviousType.LastSearch);
 		}
 
 		private void Previous_OriginalMenuItem_Click(object sender, EventArgs e)

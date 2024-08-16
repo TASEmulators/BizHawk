@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 			Domain = memoryDomains.MainMemory;
 			CheckMisAligned = false;
-			PreviousType = PreviousType.LastSearch;
+			PreviousType = PreviousType.LastFrame;
 			UseUndoHistory = useUndoHistory;
 		}
 
