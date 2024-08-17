@@ -3814,6 +3814,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// This shows up if there's a problem
 					Tools.Restart(Config, Emulator, Game);
+					DisplayManager.UpdateGlobals(Config, Emulator);
+					DisplayManager.Blank();
 					ExtToolManager.BuildToolStrip();
 					OnRomChanged();
 					return false;
