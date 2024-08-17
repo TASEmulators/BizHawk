@@ -3645,7 +3645,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
 
-				if (result) Game = loader.Game;
+				Game = result ? loader.Game : GameInfo.NullInstance;
 
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)
