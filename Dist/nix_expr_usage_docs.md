@@ -54,9 +54,6 @@ There are a few parameters you can tweak without writing a full Nix expression:
 - Check [the source](default.nix) for the full list.
 
 Every installable can also be used with `nix-shell`. Omitting `-A` is the same as `nix-shell -A emuhawk-latest`.
-<!-- TODO haven't implemented LSPs
-Bring your own IDE, or pass e.g. `--arg useVSCode true` for one that's ready to use. Alternatives: `useKate`, and `useNanoAndCola`.
--->
 
 The `emuhawk-*` (and `discohawk-*`) attrs are wrappers, so `nix-build --check` won't rebuild the assemblies.
 You can use e.g. `-A emuhawk-latest.assemblies --check`.
