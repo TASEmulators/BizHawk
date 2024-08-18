@@ -12,7 +12,7 @@
 
 	public class MovieConfig : IMovieConfig
 	{
-		public MovieEndAction MovieEndAction { get; set; } = MovieEndAction.Finish;
+		public MovieEndAction MovieEndAction { get; set; } = MovieEndAction.Pause;
 		public bool EnableBackupMovies { get; set; } = true;
 		public bool MoviesOnDisk { get; set; }
 		public int MovieCompressionLevel { get; set; } = 2;
