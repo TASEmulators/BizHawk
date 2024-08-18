@@ -2417,6 +2417,7 @@ namespace BizHawk.Client.EmuHawk
 				path = _getConfigPath();
 			}
 
+			CommitCoreSettingsToConfig();
 			ConfigService.Save(path, Config);
 		}
 
