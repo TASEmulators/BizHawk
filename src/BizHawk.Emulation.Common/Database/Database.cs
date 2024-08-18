@@ -187,6 +187,10 @@ namespace BizHawk.Emulation.Common
 
 		public static GameInfo CheckDatabase(string hash)
 		{
+#if BIZHAWKBUILD_GAMEDB_ALWAYS_MISS
+			_ = hash;
+			return null;
+#else
 			_acquire.WaitOne();
 
 			var hashFormatted = FormatHash(hash);
@@ -198,13 +202,16 @@ namespace BizHawk.Emulation.Common
 			}
 
 			return new GameInfo(cgi);
+#endif
 		}
 
 		public static GameInfo GetGameInfo(byte[] romData, string fileName)
 		{
+			var hashSHA1 = SHA1Checksum.ComputeDigestHex(romData);
+
+#if !BIZHAWKBUILD_GAMEDB_ALWAYS_MISS
 			_acquire.WaitOne();
 
-			var hashSHA1 = SHA1Checksum.ComputeDigestHex(romData);
 			if (DB.TryGetValue(hashSHA1, out var cgi))
 			{
 				return new GameInfo(cgi);
@@ -221,6 +228,7 @@ namespace BizHawk.Emulation.Common
 			{
 				return new GameInfo(cgi);
 			}
+#endif
 
 			// rom is not in database. make some best-guesses
 			var game = new GameInfo
@@ -230,7 +238,9 @@ namespace BizHawk.Emulation.Common
 				NotInDatabase = true
 			};
 
+#if !BIZHAWKBUILD_GAMEDB_ALWAYS_MISS
 			Console.WriteLine($"Game was not in DB. CRC: {hashCRC32} MD5: {hashMD5}");
+#endif
 
 			var ext = Path.GetExtension(fileName)?.ToUpperInvariant();
 
