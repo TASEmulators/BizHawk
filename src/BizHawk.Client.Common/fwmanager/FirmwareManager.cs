@@ -165,12 +165,8 @@ namespace BizHawk.Client.Common
 				var found = FirmwareDatabase.FirmwareOptions
 					.Where(fo1 => fo1.ID == fr.ID && fo1.IsAcceptableOrIdeal && reader.Dict.ContainsKey(fo1.Hash))
 					.OrderByDescending(fo => fo.Status)
-					.Cast<FirmwareOption?>()
-					.FirstOrDefault();
-				if (found == null) continue; // didn't find any of them
-				var fo = found.Value;
-				// else found one, add it to the dict
-				_resolutionDictionary[fr] = new ResolutionInfo
+					.Take(1).ToArray(); // 0..1 elements (essentially, first or null)
+				if (found is [ FirmwareOption fo ]) _resolutionDictionary[fr] = new()
 				{
 					FilePath = reader.Dict[fo.Hash].FileInfo.FullName,
 					KnownFirmwareFile = FirmwareDatabase.FirmwareFilesByHash[fo.Hash],
