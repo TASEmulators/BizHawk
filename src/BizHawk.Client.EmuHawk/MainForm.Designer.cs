@@ -123,6 +123,8 @@ namespace BizHawk.Client.EmuHawk
 			this.LoadedCoreNameMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ViewSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.WindowSizeSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator26 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.DisableResizeWithFramebufferMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SwitchToFullscreenMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.DisplayFPSMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -978,8 +980,17 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// WindowSizeSubMenu
 			// 
+			this.WindowSizeSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator26,
+            this.DisableResizeWithFramebufferMenuItem});
 			this.WindowSizeSubMenu.Text = "&Window Size";
 			this.WindowSizeSubMenu.DropDownOpened += new System.EventHandler(this.WindowSizeSubMenu_DropDownOpened);
+			// 
+			// ResizeWithFramebufferMenuItem
+			// 
+			this.DisableResizeWithFramebufferMenuItem.CheckOnClick = true;
+			this.DisableResizeWithFramebufferMenuItem.Text = "&Static Size";
+			this.DisableResizeWithFramebufferMenuItem.Click += new System.EventHandler(this.DisableResizeWithFramebufferMenuItem_Click);
 			// 
 			// SwitchToFullscreenMenuItem
 			// 
@@ -2767,5 +2778,7 @@ namespace BizHawk.Client.EmuHawk
 		private ToolStripSeparatorEx toolStripSeparator24;
 		private ToolStripMenuItemEx AutosaveLastSlotMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator25;
+		private ToolStripMenuItemEx DisableResizeWithFramebufferMenuItem;
+		private ToolStripSeparatorEx toolStripSeparator26;
 	}
 }

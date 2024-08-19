@@ -615,16 +615,26 @@ namespace BizHawk.Client.EmuHawk
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			var windowScale = Config.GetWindowScaleFor(Emulator.SystemId);
-			foreach (ToolStripMenuItem item in WindowSizeSubMenu.DropDownItems)
+			foreach (ToolStripMenuItem item in WindowSizeSubMenu.DropDownItems.OfType<ToolStripMenuItem>())
 			{
-				item.Checked = (int) item.Tag == windowScale;
+				if (item.Tag is int itemScale)
+				{
+					item.Checked = itemScale == windowScale && Config.ResizeWithFramebuffer;
+				}
 			}
+			DisableResizeWithFramebufferMenuItem.Checked = !Config.ResizeWithFramebuffer;
 		}
 
 		private void WindowSize_Click(object sender, EventArgs e)
 		{
 			Config.SetWindowScaleFor(Emulator.SystemId, (int) ((ToolStripMenuItem) sender).Tag);
 			FrameBufferResized(true);
+		}
+
+		private void DisableResizeWithFramebufferMenuItem_Click(object sender, EventArgs e)
+		{
+			Config.ResizeWithFramebuffer = !DisableResizeWithFramebufferMenuItem.Checked;
+			FrameBufferResized();
 		}
 
 		private void SwitchToFullscreenMenuItem_Click(object sender, EventArgs e)
