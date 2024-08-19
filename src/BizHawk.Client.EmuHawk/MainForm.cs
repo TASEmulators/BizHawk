@@ -1366,9 +1366,9 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"{fi.Name} saved.");
 		}
 
-		public void FrameBufferResized(bool forceResize = false)
+		public void FrameBufferResized(bool forceWindowResize = false)
 		{
-			if (!Config.ResizeWithFramebuffer && !forceResize)
+			if (!Config.ResizeWithFramebuffer && !forceWindowResize)
 			{
 				return;
 			}
@@ -2566,7 +2566,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.SetWindowScaleFor(Emulator.SystemId, windowScale);
 			}
 			AddOnScreenMessage($"Screensize set to {windowScale}x");
-			FrameBufferResized(true);
+			FrameBufferResized(forceWindowResize: true);
 		}
 
 		private void DecreaseWindowSize()
@@ -2578,7 +2578,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.SetWindowScaleFor(Emulator.SystemId, windowScale);
 			}
 			AddOnScreenMessage($"Screensize set to {windowScale}x");
-			FrameBufferResized(true);
+			FrameBufferResized(forceWindowResize: true);
 		}
 
 		private static readonly int[] SpeedPercents = { 1, 3, 6, 12, 25, 50, 75, 100, 150, 200, 300, 400, 800, 1600, 3200, 6400 };
