@@ -3499,9 +3499,9 @@ namespace BizHawk.Client.EmuHawk
 			if (e.Type == RomLoader.LoadErrorType.MissingFirmware)
 			{
 				if (this.ShowMessageBox2(
-					caption: e.Message,
+					caption: "Missing Firmware!",
 					icon: EMsgBoxIcon.Error,
-					text: "The core needs certain firmware to load this rom.\n\nOpen the firmware manager now?",
+					text: $"{e.Message}\n\nOpen the firmware manager now?",
 					useOKCancel: true))
 				{
 					OpenFWConfigRomLoadFailed(e);
