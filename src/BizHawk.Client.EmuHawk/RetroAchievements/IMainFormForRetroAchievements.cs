@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 
 		GameInfo Game { get; }
 
-		public CheatCollection CheatList { get; }
+		CheatCollection CheatList { get; }
 
 		IMovieSession MovieSession { get; }
 
