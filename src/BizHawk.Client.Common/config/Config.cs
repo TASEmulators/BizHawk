@@ -274,6 +274,8 @@ namespace BizHawk.Client.Common
 		public int DispCropRight { get; set; } = 0;
 		public int DispCropBottom { get; set; } = 0;
 
+		public bool ResizeWithFramebuffer { get; set; } = true;
+
 		// Sound options
 		public ESoundOutputMethod SoundOutputMethod { get; set; } = HostCapabilityDetector.HasXAudio2 ? ESoundOutputMethod.XAudio2 : ESoundOutputMethod.OpenAL;
 

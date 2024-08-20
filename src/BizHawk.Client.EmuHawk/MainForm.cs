@@ -1372,8 +1372,12 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"{fi.Name} saved.");
 		}
 
-		public void FrameBufferResized()
+		public void FrameBufferResized(bool forceResize = false)
 		{
+			if (!Config.ResizeWithFramebuffer && !forceResize)
+			{
+				return;
+			}
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
 			for (int i = 0; i < 2; i++)
 			{
@@ -2568,7 +2572,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.SetWindowScaleFor(Emulator.SystemId, windowScale);
 			}
 			AddOnScreenMessage($"Screensize set to {windowScale}x");
-			FrameBufferResized();
+			FrameBufferResized(true);
 		}
 
 		private void DecreaseWindowSize()
@@ -2580,7 +2584,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.SetWindowScaleFor(Emulator.SystemId, windowScale);
 			}
 			AddOnScreenMessage($"Screensize set to {windowScale}x");
-			FrameBufferResized();
+			FrameBufferResized(true);
 		}
 
 		private static readonly int[] SpeedPercents = { 1, 3, 6, 12, 25, 50, 75, 100, 150, 200, 300, 400, 800, 1600, 3200, 6400 };

@@ -624,7 +624,7 @@ namespace BizHawk.Client.EmuHawk
 		private void WindowSize_Click(object sender, EventArgs e)
 		{
 			Config.SetWindowScaleFor(Emulator.SystemId, (int) ((ToolStripMenuItem) sender).Tag);
-			FrameBufferResized();
+			FrameBufferResized(true);
 		}
 
 		private void SwitchToFullscreenMenuItem_Click(object sender, EventArgs e)
