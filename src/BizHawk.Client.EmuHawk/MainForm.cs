@@ -3644,7 +3644,9 @@ namespace BizHawk.Client.EmuHawk
 
 				DisplayManager.ActivateOpenGLContext(); // required in case the core wants to create a shared OpenGL context
 
-				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
+				bool result = string.IsNullOrEmpty(MovieSession.QueuedCoreName)
+					? loader.LoadRom(path, nextComm, ioaRetro?.CorePath)
+					: loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
 
 				Game = result ? loader.Game : GameInfo.NullInstance;
 
