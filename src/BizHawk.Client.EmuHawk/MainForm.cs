@@ -613,9 +613,17 @@ namespace BizHawk.Client.EmuHawk
 				Config.MainWndy = 0;
 			}
 
-			if (Config.MainWndx != -1 && Config.MainWndy != -1 && Config.SaveWindowPosition)
+			if (Config.SaveWindowPosition)
 			{
-				Location = new Point(Config.MainWndx, Config.MainWndy);
+				if (Config.MainWndx != -1 && Config.MainWndy != -1)
+				{
+					Location = new Point(Config.MainWndx, Config.MainWndy);
+				}
+
+				if (Config.MainWindowWidth is int width && Config.MainWindowHeight is int height && !Config.ResizeWithFramebuffer)
+				{
+					Size = new(width, height);
+				}
 			}
 
 			if (Config.MainFormStayOnTop) TopMost = true;
@@ -2398,20 +2406,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Config.SaveWindowPosition)
 			{
-				if (Config.MainWndx != -32000) // When minimized location is -32000, don't save this into the config file!
+				if (WindowState is FormWindowState.Normal)
 				{
 					Config.MainWndx = Location.X;
-				}
-
-				if (Config.MainWndy != -32000)
-				{
 					Config.MainWndy = Location.Y;
+					Config.MainWindowWidth = Width;
+					Config.MainWindowHeight = Height;
 				}
 			}
 			else
 			{
 				Config.MainWndx = -1;
 				Config.MainWndy = -1;
+				Config.MainWindowWidth = null;
+				Config.MainWindowHeight = null;
 			}
 
 			Config.LastWrittenFrom = VersionInfo.MainVersion;

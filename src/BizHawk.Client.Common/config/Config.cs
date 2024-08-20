@@ -138,6 +138,8 @@ namespace BizHawk.Client.Common
 		public bool StartFullscreen { get; set; }
 		public int MainWndx { get; set; } = -1; // Negative numbers will be ignored
 		public int MainWndy { get; set; } = -1;
+		public int? MainWindowWidth { get; set; }
+		public int? MainWindowHeight { get; set; }
 		public bool RunInBackground { get; set; } = true;
 		public bool AcceptBackgroundInput { get; set; }
 		public bool AcceptBackgroundInputControllerOnly { get; set; }
