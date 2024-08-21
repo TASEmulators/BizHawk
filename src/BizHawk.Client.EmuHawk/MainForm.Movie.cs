@@ -35,12 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			var oldPreferredCores = new Dictionary<string, string>(Config.PreferredCores);
 			try
 			{
-				if (newMovie)
-				{
-					PopulateWithDefaultHeaderValues(movie);
-					if (movie is ITasMovie tasMovie)
-						tasMovie.ClearChanges();
-				}
+				if (newMovie) PrepopulateMovieHeaderValues(movie);
 				try
 				{
 					MovieSession.QueueNewMovie(
@@ -66,6 +61,12 @@ namespace BizHawk.Client.EmuHawk
 				Config.RecentMovies.Add(movie.Filename);
 
 				MovieSession.RunQueuedMovie(newMovie, Emulator);
+				if (newMovie)
+				{
+					PopulateWithDefaultHeaderValues(movie);
+					if (movie is ITasMovie tasMovie)
+						tasMovie.ClearChanges();
+				}
 			}
 			finally
 			{
@@ -157,20 +158,31 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
-		/// Sets default header values for the given <paramref name="movie"/>.
+		/// Sets necessary movie values in order to be able to start this <paramref name="movie"/>
+		/// Only required when creating a new movie from scratch.
 		/// </summary>
 		/// <param name="movie">The movie to fill with values</param>
-		private void PopulateWithDefaultHeaderValues(IMovie movie)
+		private void PrepopulateMovieHeaderValues(IMovie movie)
 		{
-			movie.EmulatorVersion = VersionInfo.GetEmuVersion();
-			movie.OriginalEmulatorVersion = VersionInfo.GetEmuVersion();
-			movie.SystemID = Emulator.SystemId;
+			movie.Core = Emulator.Attributes().CoreName;
+			movie.SystemID = Emulator.SystemId; // TODO: I feel like setting this shouldn't be necessary, but it is currently
 
 			var settable = GetSettingsAdapterForLoadedCoreUntyped();
 			if (settable.HasSyncSettings)
 			{
 				movie.SyncSettingsJson = ConfigService.SaveWithType(settable.GetSyncSettings());
 			}
+		}
+
+		/// <summary>
+		/// Sets default header values for the given <paramref name="movie"/>. Notably needs to be done after loading the core
+		/// to make sure all values are in the correct state, see https://github.com/TASEmulators/BizHawk/issues/3980
+		/// </summary>
+		/// <param name="movie">The movie to fill with values</param>
+		private void PopulateWithDefaultHeaderValues(IMovie movie)
+		{
+			movie.EmulatorVersion = VersionInfo.GetEmuVersion();
+			movie.OriginalEmulatorVersion = VersionInfo.GetEmuVersion();
 
 			movie.GameName = Game.FilesystemSafeName();
 			movie.Hash = Game.Hash;
@@ -270,8 +282,6 @@ namespace BizHawk.Client.EmuHawk
 				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
 				movie.HeaderEntries.Add(HeaderKeys.ClockRate, "0");
 			}
-
-			movie.Core = Emulator.Attributes().CoreName;
 		}
 	}
 }
