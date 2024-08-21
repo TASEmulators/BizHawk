@@ -580,17 +580,11 @@ namespace BizHawk.Client.EmuHawk
 
 			var filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 			var tasMovie = (ITasMovie)MovieSession.Get(filename);
+			tasMovie.Author = Config.DefaultAuthor;
 			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 
 			tasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 			tasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
-
-			tasMovie.PopulateWithDefaultHeaderValues(
-				Emulator,
-				((MainForm) MainForm).GetSettingsAdapterForLoadedCoreUntyped(), //HACK
-				Game,
-				MainForm.FirmwareManager,
-				Config.DefaultAuthor);
 
 			_ = StartNewMovieWrapper(tasMovie, isNew: true);
 

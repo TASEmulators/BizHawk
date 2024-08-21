@@ -222,6 +222,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var movieToRecord = _movieSession.Get(path);
+				movieToRecord.Author = AuthorBox.Text ?? _config.DefaultAuthor;
 
 				var fileInfo = new FileInfo(path);
 				if (!fileInfo.Exists)
@@ -260,12 +261,6 @@ namespace BizHawk.Client.EmuHawk
 					movieToRecord.SaveRam = core.CloneSaveRam();
 				}
 
-				movieToRecord.PopulateWithDefaultHeaderValues(
-					_emulator,
-					((MainForm) _mainForm).GetSettingsAdapterForLoadedCoreUntyped(), //HACK
-					_game,
-					_firmwareManager,
-					AuthorBox.Text ?? _config.DefaultAuthor);
 				_mainForm.StartNewMovie(movieToRecord, true);
 
 				_config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
