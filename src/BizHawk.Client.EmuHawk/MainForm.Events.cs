@@ -368,7 +368,7 @@ namespace BizHawk.Client.EmuHawk
 			// Nag user to user a more accurate core, but let them continue anyway
 			EnsureCoreIsAccurate();
 
-			using var form = new RecordMovie(this, Config, Game, Emulator, MovieSession, FirmwareManager);
+			using var form = new RecordMovie(this, Config, Game, Emulator, MovieSession);
 			this.ShowDialogWithTempMute(form);
 		}
 
