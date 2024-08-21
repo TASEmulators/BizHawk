@@ -173,10 +173,6 @@ namespace BizHawk.Client.EmuHawk
 				= RecentMovieSubMenu.Enabled
 					= !Emulator.IsNull() && !Tools.IsLoaded<TAStudio>();
 
-			// Record movie dialog should not be opened while in need of a reboot,
-			// Otherwise the wrong sync settings could be set for the recording movie and cause crashes
-			RecordMovieMenuItem.Enabled &= !RebootStatusBarIcon.Visible;
-
 			PlayFromBeginningMenuItem.Enabled = MovieSession.Movie.IsActive() && !Tools.IsLoaded<TAStudio>();
 		}
 
