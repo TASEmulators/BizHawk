@@ -17,6 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		bool EmulatorPaused { get; }
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
+		// TODO: remove? or does anything ever need access to the FirmwareManager
 		FirmwareManager FirmwareManager { get; }
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
