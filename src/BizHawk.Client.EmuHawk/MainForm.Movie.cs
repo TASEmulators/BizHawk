@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm
 	{
-		public bool StartNewMovie(IMovie movie, bool record)
+		public bool StartNewMovie(IMovie movie, bool newMovie)
 		{
 			if (movie is null) throw new ArgumentNullException(paramName: nameof(movie));
 
@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 
 				Config.RecentMovies.Add(movie.Filename);
 
-				MovieSession.RunQueuedMovie(record, Emulator);
+				MovieSession.RunQueuedMovie(newMovie, Emulator);
 			}
 			finally
 			{

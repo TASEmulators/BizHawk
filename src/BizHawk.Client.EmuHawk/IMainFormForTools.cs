@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 
 		void SetMainformMovieInfo();
 
-		bool StartNewMovie(IMovie movie, bool record);
+		bool StartNewMovie(IMovie movie, bool newMovie);
 
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
 		void Throttle();
