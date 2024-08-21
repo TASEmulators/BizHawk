@@ -250,7 +250,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				ConvertCurrentMovieToTasproj();
-				StartNewMovieWrapper(CurrentTasMovie);
+				StartNewMovieWrapper(CurrentTasMovie, false);
 				SetUpColumns();
 			}
 
@@ -527,7 +527,7 @@ namespace BizHawk.Client.EmuHawk
 			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			tasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 
-			if (!HandleMovieLoadStuff(tasMovie))
+			if (!StartNewMovieWrapper(tasMovie, false))
 			{
 				return false;
 			}
@@ -582,7 +582,6 @@ namespace BizHawk.Client.EmuHawk
 			var tasMovie = (ITasMovie)MovieSession.Get(filename);
 			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 
-
 			tasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 			tasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 
@@ -593,9 +592,8 @@ namespace BizHawk.Client.EmuHawk
 				MainForm.FirmwareManager,
 				Config.DefaultAuthor);
 
-			SetTasMovieCallbacks(tasMovie);
 			tasMovie.ClearChanges();
-			_ = HandleMovieLoadStuff(tasMovie);
+			StartNewMovieWrapper(tasMovie, true);
 
 			// clear all selections
 			TasView.DeselectAll();
@@ -606,34 +604,14 @@ namespace BizHawk.Client.EmuHawk
 			TasView.Refresh();
 		}
 
-		private bool HandleMovieLoadStuff(ITasMovie movie)
-		{
-			WantsToControlStopMovie = false;
-			var result = StartNewMovieWrapper(movie);
-
-			if (!result)
-			{
-				return false;
-			}
-
-			WantsToControlStopMovie = true;
-
-			CurrentTasMovie.ChangeLog.Clear();
-
-			UpdateWindowTitle();
-			MessageStatusLabel.Text = $"{Path.GetFileName(CurrentTasMovie.Filename)} loaded.";
-
-			return true;
-		}
-
-		private bool StartNewMovieWrapper(ITasMovie movie)
+		private bool StartNewMovieWrapper(ITasMovie movie, bool isNew)
 		{
 			_initializing = true;
 
 			SetTasMovieCallbacks(movie);
 
 			SuspendLayout();
-			bool result = MainForm.StartNewMovie(movie, false);
+			bool result = MainForm.StartNewMovie(movie, isNew);
 			ResumeLayout();
 			if (result)
 			{

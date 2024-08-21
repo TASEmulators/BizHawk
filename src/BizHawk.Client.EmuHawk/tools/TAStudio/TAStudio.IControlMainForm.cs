@@ -107,7 +107,7 @@
 		{
 			if (!AskSaveChanges()) return false;
 			WantsToControlStopMovie = false;
-			var success = StartNewMovieWrapper(CurrentTasMovie);
+			var success = StartNewMovieWrapper(CurrentTasMovie, false);
 			WantsToControlStopMovie = true;
 			RefreshDialog();
 			return success;
