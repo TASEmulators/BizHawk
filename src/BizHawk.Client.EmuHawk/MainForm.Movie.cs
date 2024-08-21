@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (newMovie)
 				{
-					PopulateWithDefaultHeaderValues(movie, Emulator, GetSettingsAdapterForLoadedCoreUntyped(), Game, FirmwareManager);
+					PopulateWithDefaultHeaderValues(movie);
 					if (movie is ITasMovie tasMovie)
 						tasMovie.ClearChanges();
 				}
@@ -160,46 +160,42 @@ namespace BizHawk.Client.EmuHawk
 		/// Sets default header values for the given <paramref name="movie"/>.
 		/// </summary>
 		/// <param name="movie">The movie to fill with values</param>
-		private static void PopulateWithDefaultHeaderValues(
-			IMovie movie,
-			IEmulator emulator,
-			ISettingsAdapter settable,
-			IGameInfo game,
-			FirmwareManager firmwareManager)
+		private void PopulateWithDefaultHeaderValues(IMovie movie)
 		{
 			movie.EmulatorVersion = VersionInfo.GetEmuVersion();
 			movie.OriginalEmulatorVersion = VersionInfo.GetEmuVersion();
-			movie.SystemID = emulator.SystemId;
+			movie.SystemID = Emulator.SystemId;
 
+			var settable = GetSettingsAdapterForLoadedCoreUntyped();
 			if (settable.HasSyncSettings)
 			{
 				movie.SyncSettingsJson = ConfigService.SaveWithType(settable.GetSyncSettings());
 			}
 
-			movie.GameName = game.FilesystemSafeName();
-			movie.Hash = game.Hash;
-			if (game.FirmwareHash != null)
+			movie.GameName = Game.FilesystemSafeName();
+			movie.Hash = Game.Hash;
+			if (Game.FirmwareHash != null)
 			{
-				movie.FirmwareHash = game.FirmwareHash;
+				movie.FirmwareHash = Game.FirmwareHash;
 			}
 
-			if (emulator.HasBoardInfo())
+			if (Emulator.HasBoardInfo())
 			{
-				movie.BoardName = emulator.AsBoardInfo().BoardName;
+				movie.BoardName = Emulator.AsBoardInfo().BoardName;
 			}
 
-			if (emulator.HasRegions())
+			if (Emulator.HasRegions())
 			{
-				var region = emulator.AsRegionable().Region;
+				var region = Emulator.AsRegionable().Region;
 				if (region == DisplayType.PAL)
 				{
 					movie.HeaderEntries.Add(HeaderKeys.Pal, "1");
 				}
 			}
 
-			if (firmwareManager.RecentlyServed.Count != 0)
+			if (FirmwareManager.RecentlyServed.Count != 0)
 			{
-				foreach (var firmware in firmwareManager.RecentlyServed)
+				foreach (var firmware in FirmwareManager.RecentlyServed)
 				{
 					var key = firmware.ID.MovieHeaderKey;
 					if (!movie.HeaderEntries.ContainsKey(key))
@@ -209,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (emulator is NDS nds && nds.IsDSi)
+			if (Emulator is NDS nds && nds.IsDSi)
 			{
 				movie.HeaderEntries.Add("IsDSi", "1");
 
@@ -219,19 +215,19 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if ((emulator is NES nes && nes.IsVS)
-				|| (emulator is SubNESHawk subnes && subnes.IsVs))
+			if ((Emulator is NES nes && nes.IsVS)
+				|| (Emulator is SubNESHawk subnes && subnes.IsVs))
 			{
 				movie.HeaderEntries.Add("IsVS", "1");
 			}
 
-			if (emulator is IGameboyCommon gb)
+			if (Emulator is IGameboyCommon gb)
 			{
 				//TODO doesn't IsCGBDMGMode imply IsCGBMode?
 				if (gb.IsCGBMode) movie.HeaderEntries.Add(gb.IsCGBDMGMode ? "IsCGBDMGMode" : "IsCGBMode", "1");
 			}
 
-			if (emulator is SMS sms)
+			if (Emulator is SMS sms)
 			{
 				if (sms.IsSG1000)
 				{
@@ -244,38 +240,38 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (emulator is GPGX gpgx && gpgx.IsMegaCD)
+			if (Emulator is GPGX gpgx && gpgx.IsMegaCD)
 			{
 				movie.HeaderEntries.Add("IsSegaCDMode", "1");
 			}
 
-			if (emulator is PicoDrive pico && pico.Is32XActive)
+			if (Emulator is PicoDrive pico && pico.Is32XActive)
 			{
 				movie.HeaderEntries.Add("Is32X", "1");
 			}
 
-			if (emulator is VirtualJaguar jag && jag.IsJaguarCD)
+			if (Emulator is VirtualJaguar jag && jag.IsJaguarCD)
 			{
 				movie.HeaderEntries.Add("IsJaguarCD", "1");
 			}
 
-			if (emulator is Ares64 ares && ares.IsDD)
+			if (Emulator is Ares64 ares && ares.IsDD)
 			{
 				movie.HeaderEntries.Add("IsDD", "1");
 			}
 
-			if (emulator is MAME mame)
+			if (Emulator is MAME mame)
 			{
 				movie.HeaderEntries.Add(HeaderKeys.VsyncAttoseconds, mame.VsyncAttoseconds.ToString());
 			}
 
-			if (emulator.HasCycleTiming())
+			if (Emulator.HasCycleTiming())
 			{
 				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
 				movie.HeaderEntries.Add(HeaderKeys.ClockRate, "0");
 			}
 
-			movie.Core = emulator.Attributes().CoreName;
+			movie.Core = Emulator.Attributes().CoreName;
 		}
 	}
 }
