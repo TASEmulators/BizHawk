@@ -184,9 +184,9 @@ namespace BizHawk.Client.EmuHawk
 				if (HorizontalOrientation)
 				{
 					var columnHeight = GetHColHeight(j);
-					var textHeight = (int)_renderer.MeasureString(column.Text, Font).Height;
-					x = CellWidthPadding;
-					y = yOffset + ((columnHeight - textHeight) / 2);
+					var textSize = _renderer.MeasureString(column.Text, Font);
+					x = MaxColumnWidth - CellWidthPadding - (int)textSize.Width;
+					y = yOffset + ((columnHeight - (int)textSize.Height) / 2);
 					yOffset += columnHeight;
 				}
 				else
