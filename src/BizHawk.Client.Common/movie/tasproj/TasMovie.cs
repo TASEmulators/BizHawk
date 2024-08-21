@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 			get => base.StartsFromSavestate;
 			set
 			{
-				Markers.Add(0, value ? "Savestate" : "Power on");
+				Markers.Add(new TasMovieMarker(0, value ? "Savestate" : "Power on"), true);
 				base.StartsFromSavestate = value;
 			}
 		}
