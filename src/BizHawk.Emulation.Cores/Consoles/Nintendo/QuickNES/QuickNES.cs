@@ -285,7 +285,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				throw new UnsupportedGameException("Game known to not be playable in this core");
 			}
 
-			sha1 = "sha1:" + sha1; // huh?
+			sha1 = $"{SHA1Checksum.PREFIX}:{sha1}";
 			var carts = BootGodDb.Identify(sha1);
 
 			if (carts.Count > 0)

@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							currCart = new CartInfo();
 							currCart.System = xmlReader.GetAttribute("system");
-							currCart.Sha1 = $"SHA1:{xmlReader.GetAttribute("sha1")}";
+							currCart.Sha1 = $"{SHA1Checksum.PREFIX}:{xmlReader.GetAttribute("sha1")}";
 							currCart.Name = currName;
 							state = 2;
 						}
