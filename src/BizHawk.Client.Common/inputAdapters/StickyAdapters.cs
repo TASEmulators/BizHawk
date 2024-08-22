@@ -206,15 +206,8 @@ namespace BizHawk.Client.Common
 
 		public void IncrementLoops(bool lagged)
 		{
-			for (int i = 0; i < _boolPatterns.Count; i++)
-			{
-				_boolPatterns.ElementAt(i).Value.GetNextValue(lagged);
-			}
-
-			for (int i = 0; i < _axisPatterns.Count; i++)
-			{
-				_axisPatterns.ElementAt(i).Value.GetNextValue(lagged);
-			}
+			foreach (var v in _boolPatterns.Values) v.GetNextValue(lagged);
+			foreach (var v in _axisPatterns.Values) v.GetNextValue(lagged);
 		}
 
 		private List<string> _justPressed = new List<string>();
