@@ -1,9 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.Serialization;
-
-using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Common
 {
@@ -102,23 +98,5 @@ namespace BizHawk.Common
 		}
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-	}
-
-	/// <summary>A dictionary whose index getter creates an entry if the requested key isn't part of the collection, making it always safe to use the returned value. The new entry's value will be the result of the default constructor of <typeparamref name="TValue"/>.</summary>
-	[Serializable]
-	public class WorkingDictionary<TKey, TValue> : Dictionary<TKey, TValue>
-		where TKey : notnull
-		where TValue : new()
-	{
-		public WorkingDictionary() {}
-
-		protected WorkingDictionary(SerializationInfo info, StreamingContext context) : base(info, context) {}
-
-		[property: MaybeNull]
-		public new TValue this[TKey key]
-		{
-			get => this.GetValueOrPutNew(key);
-			set => base[key] = value;
-		}
 	}
 }

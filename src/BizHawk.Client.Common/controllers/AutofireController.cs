@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -20,11 +21,11 @@ namespace BizHawk.Client.Common
 
 		private readonly IEmulator _emulator;
 
-		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
+		private readonly Dictionary<string, List<string>> _bindings = new();
 
-		private WorkingDictionary<string, bool> _buttons = new();
+		private Dictionary<string, bool> _buttons = new();
 
-		private readonly WorkingDictionary<string, int> _buttonStarts = new WorkingDictionary<string, int>();
+		private readonly Dictionary<string, int> _buttonStarts = new();
 
 		public int On { get; set; }
 		public int Off { get; set; }
@@ -34,8 +35,8 @@ namespace BizHawk.Client.Common
 		public ControllerDefinition Definition => _emulator.ControllerDefinition;
 
 		public bool IsPressed(string button)
-			=> _buttons[button]
-				&& ((internal_frame - _buttonStarts[button]) % (On + Off)) < On;
+			=> _buttons.GetValueOrDefault(button)
+				&& ((internal_frame - _buttonStarts.GetValueOrDefault(button)) % (On + Off)) < On;
 
 		public void ClearStarts()
 		{
@@ -69,7 +70,7 @@ namespace BizHawk.Client.Common
 					if (controller.IsPressed(boundBtn))
 					{
 						isPressed = true;
-						if (!buttonStatesPrev[k]) _buttonStarts[k] = internal_frame;
+						if (!buttonStatesPrev.GetValueOrDefault(k)) _buttonStarts[k] = internal_frame;
 					}
 				}
 				_buttons[k] = isPressed;
@@ -83,7 +84,7 @@ namespace BizHawk.Client.Common
 				var controlBindings = controlString.Split(',');
 				foreach (var control in controlBindings)
 				{
-					_bindings[button].Add(control.Trim());
+					_bindings.GetValueOrPutNew(button).Add(control.Trim());
 				}
 			}
 		}

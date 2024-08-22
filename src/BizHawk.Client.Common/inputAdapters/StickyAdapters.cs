@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -26,13 +25,7 @@ namespace BizHawk.Client.Common
 
 		public int AxisValue(string name)
 		{
-			var val = _axisSet[name];
-
-			if (val.HasValue)
-			{
-				return val.Value;
-			}
-
+			if (_axisSet.TryGetValue(name, out var i)) return i;
 			if (Source == null)
 			{
 				return 0;
@@ -51,13 +44,13 @@ namespace BizHawk.Client.Common
 
 		// if SetAxis() is called (typically virtual pads), then that axis will entirely override the Source input
 		// otherwise, the source is passed thru.
-		private readonly WorkingDictionary<string, int?> _axisSet = new WorkingDictionary<string, int?>();
+		private readonly Dictionary<string, int> _axisSet = new();
 
 		public void SetAxis(string name, int? value)
 		{
-			if (value.HasValue)
+			if (value is int i)
 			{
-				_axisSet[name] = value;
+				_axisSet[name] = i;
 			}
 			else
 			{
@@ -154,8 +147,9 @@ namespace BizHawk.Client.Common
 			_off = off < 0 ? 0 : off;
 		}
 
-		private readonly WorkingDictionary<string, AutoPatternBool> _boolPatterns = new WorkingDictionary<string, AutoPatternBool>();
-		private readonly WorkingDictionary<string, AutoPatternAxis> _axisPatterns = new WorkingDictionary<string, AutoPatternAxis>();
+		private readonly Dictionary<string, AutoPatternAxis> _axisPatterns = new();
+
+		private readonly Dictionary<string, AutoPatternBool> _boolPatterns = new();
 
 		public AutoFireStickyXorAdapter()
 		{

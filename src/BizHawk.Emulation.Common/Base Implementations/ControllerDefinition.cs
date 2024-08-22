@@ -91,7 +91,9 @@ namespace BizHawk.Emulation.Common
 					case CircularAxisConstraint circular:
 						var xAxis = k;
 						var yAxis = circular.PairedAxis;
-						(axes[xAxis], axes[yAxis]) = circular.ApplyTo(axes[xAxis], axes[yAxis]);
+						(axes[xAxis], axes[yAxis]) = circular.ApplyTo(
+							CollectionExtensions.GetValueOrDefault(axes, xAxis),
+							CollectionExtensions.GetValueOrDefault(axes, yAxis));
 						break;
 				}
 			}

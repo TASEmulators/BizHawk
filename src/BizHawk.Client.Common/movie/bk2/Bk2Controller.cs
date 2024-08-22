@@ -3,14 +3,16 @@ using System.Diagnostics;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	internal class Bk2Controller : IMovieController
 	{
-		private readonly WorkingDictionary<string, bool> _myBoolButtons = new();
-		private readonly WorkingDictionary<string, int> _myAxisControls = new();
+		private readonly Dictionary<string, int> _myAxisControls = new();
+
+		private readonly Dictionary<string, bool> _myBoolButtons = new();
 
 		private readonly Bk2ControllerDefinition _type;
 
@@ -45,8 +47,11 @@ namespace BizHawk.Client.Common
 
 		public ControllerDefinition Definition => _type;
 
-		public bool IsPressed(string button) => _myBoolButtons[button];
-		public int AxisValue(string name) => _myAxisControls[name];
+		public int AxisValue(string name)
+			=> _myAxisControls.GetValueOrDefault(name);
+
+		public bool IsPressed(string button)
+			=> _myBoolButtons.GetValueOrDefault(button);
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
 

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -23,21 +24,29 @@ namespace BizHawk.Client.Common
 
 		public ControllerDefinition Definition { get; }
 
-		public bool IsPressed(string button) => _buttons[button];
+		public bool IsPressed(string button)
+			=> _buttons.GetValueOrDefault(button);
 
-		public int AxisValue(string name) => _axes[name];
+		public int AxisValue(string name)
+			=> _axes.GetValueOrDefault(name);
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot()
 			=> _haptics.Select(kvp => (kvp.Key, kvp.Value)).ToArray();
 
 		public void SetHapticChannelStrength(string name, int strength) => _haptics[name] = strength;
 
-		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
-		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, int> _axes = new WorkingDictionary<string, int>();
-		private readonly Dictionary<string, AxisSpec> _axisRanges = new WorkingDictionary<string, AxisSpec>();
+		private readonly Dictionary<string, List<string>> _bindings = new();
+
+		private readonly Dictionary<string, bool> _buttons = new();
+
+		private readonly Dictionary<string, int> _axes = new();
+
+		private readonly Dictionary<string, AxisSpec> _axisRanges = new();
+
 		private readonly Dictionary<string, AnalogBind> _axisBindings = new Dictionary<string, AnalogBind>();
-		private readonly Dictionary<string, int> _haptics = new WorkingDictionary<string, int>();
+
+		private readonly Dictionary<string, int> _haptics = new();
+
 		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new Dictionary<string, FeedbackBind>();
 
 		public bool this[string button] => IsPressed(button);
@@ -89,7 +98,7 @@ namespace BizHawk.Client.Common
 				value *= v.Mult;
 
 				// -1..1 -> -A..A (where A is the larger "side" of the range e.g. a range of 0..50, neutral=10 would give A=40, and thus a value in -40..40)
-				var range = _axisRanges[k];
+				var range = _axisRanges[k]; // this was `GetValueOrPutNew`, but I really hope it was always found, since `new AxisSpec()` isn't valid --yoshi
 				value *= Math.Max(range.Neutral - range.Min, range.Max - range.Neutral);
 
 				// shift the midpoint, so a value of 0 becomes range.Neutral (and, assuming >=1x multiplier, all values in range are reachable)
@@ -148,7 +157,7 @@ namespace BizHawk.Client.Common
 				_axes[button] = controller.AxisValue(button);
 			}
 
-			foreach (var button in controller.InversedButtons) _buttons[button] = !_buttons[button];
+			foreach (var button in controller.InversedButtons) _buttons[button] = !_buttons.GetValueOrDefault(button);
 		}
 
 		public void BindMulti(string button, string controlString)
@@ -161,7 +170,7 @@ namespace BizHawk.Client.Common
 			var controlBindings = controlString.Split(',');
 			foreach (var control in controlBindings)
 			{
-				_bindings[button].Add(control.Trim());
+				_bindings.GetValueOrPutNew(button).Add(control.Trim());
 			}
 		}
 
