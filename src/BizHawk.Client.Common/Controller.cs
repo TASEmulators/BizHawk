@@ -68,6 +68,7 @@ namespace BizHawk.Client.Common
 					if (finalHostController.IsPressed(button))
 					{
 						_buttons[k] = true;
+						break;
 					}
 				}
 			}
