@@ -1585,6 +1585,11 @@ namespace BizHawk.Client.EmuHawk
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
 			_presentationPanel.Resized = true;
+			if (_framebufferResizedPending && WindowState is FormWindowState.Normal)
+			{
+				_framebufferResizedPending = false;
+				FrameBufferResized();
+			}
 		}
 
 		private void MainForm_Shown(object sender, EventArgs e)

@@ -1390,6 +1390,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FrameBufferResized(bool forceWindowResize = false)
 		{
+			if (WindowState is not FormWindowState.Normal)
+			{
+				// Wait until no longer maximized/minimized to get correct size/location values
+				_framebufferResizedPending = true;
+				return;
+			}
 			if (!Config.ResizeWithFramebuffer && !forceWindowResize)
 			{
 				return;
@@ -1692,6 +1698,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _inFullscreen;
 		private Point _windowedLocation;
 		private bool _needsFullscreenOnLoad;
+		private bool _framebufferResizedPending;
 
 		private int _lastOpenRomFilter;
 
