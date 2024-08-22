@@ -21,7 +21,9 @@ namespace BizHawk.Client.Common
 		private readonly IEmulator _emulator;
 
 		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
-		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
+
+		private WorkingDictionary<string, bool> _buttons = new();
+
 		private readonly WorkingDictionary<string, int> _buttonStarts = new WorkingDictionary<string, int>();
 
 		public int On { get; set; }
@@ -32,10 +34,8 @@ namespace BizHawk.Client.Common
 		public ControllerDefinition Definition => _emulator.ControllerDefinition;
 
 		public bool IsPressed(string button)
-		{
-			var a = (internal_frame - _buttonStarts[button]) % (On + Off);
-			return a < On && _buttons[button];
-		}
+			=> _buttons[button]
+				&& ((internal_frame - _buttonStarts[button]) % (On + Off)) < On;
 
 		public void ClearStarts()
 		{
@@ -59,30 +59,20 @@ namespace BizHawk.Client.Common
 		public void LatchFromPhysical(IController controller)
 		{
 			internal_frame = _emulator.Frame;
-			
+			var buttonStatesPrev = _buttons;
+			_buttons = new(); //TODO swap A/B instead of allocating
 			foreach (var (k, v) in _bindings)
 			{
+				var isPressed = false;
 				foreach (var boundBtn in v)
 				{
-					if (!_buttons[k] && controller.IsPressed(boundBtn))
+					if (controller.IsPressed(boundBtn))
 					{
-						_buttonStarts[k] = _emulator.Frame;
+						isPressed = true;
+						if (!buttonStatesPrev[k]) _buttonStarts[k] = internal_frame;
 					}
 				}
-			}
-			
-			_buttons.Clear();
-			foreach (var (k, v) in _bindings)
-			{
-				_buttons[k] = false;
-				foreach (var button in v)
-				{
-					if (controller.IsPressed(button))
-					{
-						_buttons[k] = true;
-						break;
-					}
-				}
+				_buttons[k] = isPressed;
 			}
 		}
 
