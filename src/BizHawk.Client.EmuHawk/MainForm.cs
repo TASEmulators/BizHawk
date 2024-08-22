@@ -1200,7 +1200,8 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case 1: // Input overrides Hotkeys
 						finalHostController.Receive(ie);
-						if (!activeControllerHasBinding(ie.LogicalButton.ToString()))
+						// don't check hotkeys when any of the pressed keys are input
+						if (!ie.LogicalButton.ToString().Split('+').Any(activeControllerHasBinding))
 						{
 							handled = false;
 							if (ie.EventType is InputEventType.Press)
