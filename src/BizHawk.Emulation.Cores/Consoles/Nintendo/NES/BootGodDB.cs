@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 #else
 			if (acquire == null) throw new InvalidOperationException("Bootgod DB not initialized. It's a client responsibility because only a client knows where the database is located.");
 			acquire.WaitOne();
-			return instance._sha1Table[sha1];
+			return instance._sha1Table.GetValueOrPutNew(sha1);
 #endif
 		}
 	}
