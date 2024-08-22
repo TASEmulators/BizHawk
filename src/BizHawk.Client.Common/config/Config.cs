@@ -136,8 +136,8 @@ namespace BizHawk.Client.Common
 		public bool MainFormStayOnTop { get; set; }
 		public bool StartPaused { get; set; }
 		public bool StartFullscreen { get; set; }
-		public int MainWndx { get; set; } = -1; // Negative numbers will be ignored
-		public int MainWndy { get; set; } = -1;
+		public int? MainWndx { get; set; }
+		public int? MainWndy { get; set; }
 		public int? MainWindowWidth { get; set; }
 		public int? MainWindowHeight { get; set; }
 		public bool RunInBackground { get; set; } = true;

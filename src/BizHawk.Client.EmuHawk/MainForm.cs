@@ -615,9 +615,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Config.SaveWindowPosition)
 			{
-				if (Config.MainWndx != -1 && Config.MainWndy != -1)
+				if (Config.MainWndx is int x && Config.MainWndy is int y)
 				{
-					Location = new Point(Config.MainWndx, Config.MainWndy);
+					Location = new Point(x, y);
 				}
 
 				if (Config.MainWindowWidth is int width && Config.MainWindowHeight is int height && !Config.ResizeWithFramebuffer)
@@ -2416,8 +2416,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Config.MainWndx = -1;
-				Config.MainWndy = -1;
+				Config.MainWndx = null;
+				Config.MainWndy = null;
 				Config.MainWindowWidth = null;
 				Config.MainWindowHeight = null;
 			}
