@@ -250,7 +250,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				ConvertCurrentMovieToTasproj();
-				StartNewMovieWrapper(CurrentTasMovie, false);
+				_ = StartNewMovieWrapper(CurrentTasMovie, isNew: false);
 				SetUpColumns();
 			}
 
@@ -527,7 +527,7 @@ namespace BizHawk.Client.EmuHawk
 			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			tasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 
-			if (!StartNewMovieWrapper(tasMovie, false))
+			if (!StartNewMovieWrapper(tasMovie, isNew: false))
 			{
 				return false;
 			}
@@ -593,7 +593,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.DefaultAuthor);
 
 			tasMovie.ClearChanges();
-			StartNewMovieWrapper(tasMovie, true);
+			_ = StartNewMovieWrapper(tasMovie, isNew: true);
 
 			// clear all selections
 			TasView.DeselectAll();
