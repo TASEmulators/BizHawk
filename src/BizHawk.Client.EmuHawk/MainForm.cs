@@ -1178,17 +1178,16 @@ namespace BizHawk.Client.EmuHawk
 				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done.
 				// maybe because it doesn't make sense to me to bind hotkeys and controller inputs to the same keystrokes
 
-				bool handled;
+				bool handled = false;
 				switch (Config.InputHotkeyOverrideOptions)
 				{
 					default:
 					case 0: // Both allowed
 						finalHostController.Receive(ie);
 
-						handled = false;
 						if (ie.EventType is InputEventType.Press)
 						{
-							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
+							handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
 						}
 
 						// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
@@ -1203,7 +1202,6 @@ namespace BizHawk.Client.EmuHawk
 						// don't check hotkeys when any of the pressed keys are input
 						if (!ie.LogicalButton.ToString().Split('+').Any(activeControllerHasBinding))
 						{
-							handled = false;
 							if (ie.EventType is InputEventType.Press)
 							{
 								handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
@@ -1218,7 +1216,6 @@ namespace BizHawk.Client.EmuHawk
 
 						break;
 					case 2: // Hotkeys override Input
-						handled = false;
 						if (ie.EventType is InputEventType.Press)
 						{
 							handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
