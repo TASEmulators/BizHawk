@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml;
 using System.Threading;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
@@ -17,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private readonly bool validate = true;
 
-		private readonly Bag<string, CartInfo> _sha1Table = new Bag<string, CartInfo>();
+		private readonly Dictionary<string, List<CartInfo>> _sha1Table = new();
 
 		private static BootGodDb instance;
 
@@ -124,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					case 4:
 						if (xmlReader.NodeType == XmlNodeType.EndElement && xmlReader.Name == "cartridge")
 						{
-							_sha1Table[currCart.Sha1].Add(currCart);
+							_sha1Table.GetValueOrPutNew(currCart.Sha1).Add(currCart);
 							currCart = null;
 							state = 5;
 						}
