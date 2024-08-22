@@ -53,6 +53,7 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void FrameAdvance(bool discardApiHawkSurfaces = true);
 
+		/// <param name="forceWindowResize">Override <see cref="Common.Config.ResizeWithFramebuffer"/></param>
 		void FrameBufferResized(bool forceWindowResize = false);
 
 		void FrameSkipMessage();

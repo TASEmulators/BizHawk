@@ -274,6 +274,9 @@ namespace BizHawk.Client.Common
 		public int DispCropRight { get; set; } = 0;
 		public int DispCropBottom { get; set; } = 0;
 
+		/// <summary>
+		/// Automatically resize main window when framebuffer size changes (default behavior)
+		/// </summary>
 		public bool ResizeWithFramebuffer { get; set; } = true;
 
 		// Sound options
