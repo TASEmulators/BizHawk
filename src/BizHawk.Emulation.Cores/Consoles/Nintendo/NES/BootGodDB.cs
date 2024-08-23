@@ -150,15 +150,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			} //end xmlreader loop
 		}
 
-		public static List<CartInfo> Identify(string sha1)
+		public static IReadOnlyList<CartInfo> Identify(string sha1)
 		{
 #if BIZHAWKBUILD_GAMEDB_ALWAYS_MISS
 			_ = sha1;
-			return new(capacity: 0);
+			return Array.Empty<CartInfo>();
 #else
 			if (acquire == null) throw new InvalidOperationException("Bootgod DB not initialized. It's a client responsibility because only a client knows where the database is located.");
 			acquire.WaitOne();
-			return instance._sha1Table.TryGetValue(sha1, out var l) ? l : new(capacity: 0);
+			return instance._sha1Table.TryGetValue(sha1, out var l) ? l : Array.Empty<CartInfo>();
 #endif
 		}
 	}
