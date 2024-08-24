@@ -16,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private const string ERR_MSG_CONTROL_NOT_LPB = "Drawing functions can only be used on PictureBox components.";
 
+		private const string ERR_MSG_DRAW_ON_FORM = "Drawing functions cannot be used on forms directly. Use them on a PictureBox component.";
+
 		public FormsLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
@@ -413,7 +415,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -446,7 +448,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -480,7 +482,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -514,7 +516,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -548,7 +550,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -582,7 +584,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -624,7 +626,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -666,7 +668,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -710,7 +712,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -755,7 +757,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -788,7 +790,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -836,7 +838,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -870,7 +872,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -904,7 +906,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -947,7 +949,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -991,7 +993,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -1025,7 +1027,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -1066,7 +1068,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -1109,7 +1111,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -1184,7 +1186,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -1218,7 +1220,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return 0;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
@@ -1252,7 +1254,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
 						return 0;
 					}
 					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
