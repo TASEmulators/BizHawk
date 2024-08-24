@@ -1151,34 +1151,18 @@ namespace BizHawk.Client.EmuHawk
 			string fontstyle = null,
 			string horizalign = null,
 			string vertalign = null)
-		{
-			try
-			{
-				var fgColor = _th.SafeParseColor(forecolor);
-				var bgColor = _th.SafeParseColor(backcolor);
-				var ptr = new IntPtr(componentHandle);
-				foreach (var form in _luaForms)
-				{
-					if (form.Handle == ptr)
-					{
-						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
-						return;
-					}
-					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
-					if (match is null) return;
-					if (match is not LuaPictureBox control)
-					{
-						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
-						return;
-					}
-					control.DrawText(x, y, message, fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
-				}
-			}
-			catch (Exception ex)
-			{
-				LogOutputCallback(ex.Message);
-			}
-		}
+				=> DrawText(
+					componentHandle: componentHandle,
+					x: x,
+					y: y,
+					message: message,
+					forecolor: forecolor,
+					backcolor: backcolor,
+					fontsize: fontsize,
+					fontfamily: fontfamily,
+					fontstyle: fontstyle,
+					horizalign: horizalign,
+					vertalign: vertalign);
 
 		[LuaMethodExample("forms.drawText( 334, 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, 8, \"Arial Narrow\", \"bold\", \"center\", \"middle\" );")]
 		[LuaMethod(
