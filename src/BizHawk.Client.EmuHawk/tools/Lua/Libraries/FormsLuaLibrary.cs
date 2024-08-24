@@ -62,6 +62,7 @@ namespace BizHawk.Client.EmuHawk
 					if (control.Handle == ptr)
 					{
 						form.ControlEvents.Add(new LuaWinform.LuaEvent(control.Handle, clickEvent));
+						return;
 					}
 				}
 			}
@@ -126,6 +127,7 @@ namespace BizHawk.Client.EmuHawk
 					if (control.Handle == ptr)
 					{
 						form.ControlEvents.RemoveAll(x => x.Control == ptr);
+						return;
 					}
 				}
 			}
@@ -422,6 +424,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.Clear(color1);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -454,6 +457,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.Refresh();
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -487,6 +491,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.SetDefaultForegroundColor(color1);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -520,6 +525,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.SetDefaultBackgroundColor(color1);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -553,6 +559,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.SetDefaultTextBackground(color1);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -586,6 +593,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.DrawBezier(points, color1);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -627,6 +635,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.DrawBox(x, y, x2, y2, strokeColor, fillColor);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -668,6 +677,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.DrawEllipse(x, y, width, height, strokeColor, fillColor);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -711,6 +721,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.DrawIcon(path, x, y, width, height);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -755,6 +766,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.DrawImage(path, x, y, width, height, cache);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -787,6 +799,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.ClearImageCache();
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -834,6 +847,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.DrawImageRegion(path, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -867,6 +881,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.DrawLine(x1, y1, x2, y2, color1);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -900,6 +915,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.DrawAxis(x, y, size, color1);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -942,6 +958,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.DrawArc(x, y, width, height, startangle, sweepangle, strokeColor);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -985,6 +1002,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.DrawPie(x, y, width, height, startangle, sweepangle, strokeColor, fillColor);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -1018,6 +1036,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.DrawPixel(x, y, color1);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -1058,6 +1077,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.DrawPolygon(points, x, y, strokeColor, fillColor);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -1100,6 +1120,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.DrawRectangle(x, y, width, height, strokeColor, fillColor);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -1174,6 +1195,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					control.DrawText(x, y, message, fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
+					return;
 				}
 			}
 			catch (Exception ex)
@@ -1308,6 +1330,7 @@ namespace BizHawk.Client.EmuHawk
 				if (form.Handle == ptr)
 				{
 					SetLocation(form, x, y);
+					return;
 				}
 				else
 				{
@@ -1316,6 +1339,7 @@ namespace BizHawk.Client.EmuHawk
 						if (control.Handle == ptr)
 						{
 							SetLocation(control, x, y);
+							return;
 						}
 					}
 				}
@@ -1379,6 +1403,7 @@ namespace BizHawk.Client.EmuHawk
 				if (form.Handle == ptr)
 				{
 					form.ClientSize = UIHelper.Scale(new Size(width, height));
+					return;
 				}
 				else
 				{
@@ -1387,6 +1412,7 @@ namespace BizHawk.Client.EmuHawk
 						if (control.Handle == ptr)
 						{
 							SetSize(control, width, height);
+							return;
 						}
 					}
 				}
@@ -1403,6 +1429,7 @@ namespace BizHawk.Client.EmuHawk
 				if (form.Handle == ptr)
 				{
 					SetText(form, caption);
+					return;
 				}
 				else
 				{
@@ -1411,6 +1438,7 @@ namespace BizHawk.Client.EmuHawk
 						if (control.Handle == ptr)
 						{
 							SetText(control, caption);
+							return;
 						}
 					}
 				}
