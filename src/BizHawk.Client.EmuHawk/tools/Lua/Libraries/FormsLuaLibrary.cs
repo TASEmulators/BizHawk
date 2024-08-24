@@ -169,6 +169,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_luaForms[i].Close();
 			}
+			_luaForms.Clear();
 		}
 
 		[LuaMethodExample("local infordro = forms.dropdown(333, { \"item 1\", \"item2\" }, 2, 48, 18, 24);")]
