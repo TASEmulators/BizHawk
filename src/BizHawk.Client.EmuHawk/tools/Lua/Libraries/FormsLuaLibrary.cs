@@ -89,17 +89,8 @@ namespace BizHawk.Client.EmuHawk
 			SetText(button, caption);
 			form.Controls.Add(button);
 			form.ControlEvents.Add(new LuaWinform.LuaEvent(button.Handle, clickEvent));
-
-			if (x.HasValue && y.HasValue)
-			{
-				SetLocation(button, x.Value, y.Value);
-			}
-
-			if (width.HasValue && height.HasValue)
-			{
-				SetSize(button, width.Value, height.Value);
-			}
-
+			ProcessPositionArguments(x: x, y: y, button);
+			ProcessSizeArguments(width: width, height: height, button);
 			return (long)button.Handle;
 		}
 
@@ -117,12 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			var checkbox = new LuaCheckbox();
 			form.Controls.Add(checkbox);
 			SetText(checkbox, caption);
-
-			if (x.HasValue && y.HasValue)
-			{
-				SetLocation(checkbox, x.Value, y.Value);
-			}
-
+			ProcessPositionArguments(x: x, y: y, checkbox);
 			return (long)checkbox.Handle;
 		}
 
@@ -194,17 +180,8 @@ namespace BizHawk.Client.EmuHawk
 
 			var dropdown = new LuaDropDown(dropdownItems);
 			form.Controls.Add(dropdown);
-
-			if (x.HasValue && y.HasValue)
-			{
-				SetLocation(dropdown, x.Value, y.Value);
-			}
-
-			if (width.HasValue && height.HasValue)
-			{
-				SetSize(dropdown, width.Value, height.Value);
-			}
-
+			ProcessPositionArguments(x: x, y: y, dropdown);
+			ProcessSizeArguments(width: width, height: height, dropdown);
 			return (long)dropdown.Handle;
 		}
 
@@ -325,17 +302,8 @@ namespace BizHawk.Client.EmuHawk
 
 			SetText(label, caption);
 			form.Controls.Add(label);
-
-			if (x.HasValue && y.HasValue)
-			{
-				SetLocation(label, x.Value, y.Value);
-			}
-
-			if (width.HasValue && height.HasValue)
-			{
-				SetSize(label, width.Value, height.Value);
-			}
-
+			ProcessPositionArguments(x: x, y: y, label);
+			ProcessSizeArguments(width: width, height: height, label);
 			return (long)label.Handle;
 		}
 
@@ -410,12 +378,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var pictureBox = new LuaPictureBox { TableHelper = _th };
 			form.Controls.Add(pictureBox);
-
-			if (x.HasValue && y.HasValue)
-			{
-				SetLocation(pictureBox, x.Value, y.Value);
-			}
-
+			ProcessPositionArguments(x: x, y: y, pictureBox);
 			if (width.HasValue && height.HasValue)
 			{
 				pictureBox.LuaResize(width.Value, height.Value);
@@ -1279,6 +1242,16 @@ namespace BizHawk.Client.EmuHawk
 			return 0;
 		}
 
+		private void ProcessPositionArguments(int? x, int? y, Control c)
+		{
+			if (x is int x1 && y is int y1) SetLocation(c, x: x1, y: y1);
+		}
+
+		private void ProcessSizeArguments(int? width, int? height, Control c)
+		{
+			if (width is int w && height is int h) SetSize(c, width: w, height: h);
+		}
+
 		[LuaMethodExample("forms.setdropdownitems(dropdown_handle, { \"item1\", \"item2\" });")]
 		[LuaMethod("setdropdownitems", "Updates the item list of a dropdown menu. The optional third parameter toggles alphabetical sorting of items, pass false to skip sorting.")]
 		public void SetDropdownItems(long handle, LuaTable items, bool alphabetize = true)
@@ -1483,16 +1456,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			SetText(textbox, caption);
-
-			if (x.HasValue && y.HasValue)
-			{
-				SetLocation(textbox, x.Value, y.Value);
-			}
-
-			if (width.HasValue && height.HasValue)
-			{
-				SetSize(textbox, width.Value, height.Value);
-			}
+			ProcessPositionArguments(x: x, y: y, textbox);
+			ProcessSizeArguments(width: width, height: height, textbox);
 
 			if (boxtype != null)
 			{
