@@ -89,8 +89,9 @@ namespace BizHawk.Client.EmuHawk
 			SetText(button, caption);
 			form.Controls.Add(button);
 			form.ControlEvents.Add(new LuaWinform.LuaEvent(button.Handle, clickEvent));
-			ProcessPositionArguments(x: x, y: y, button);
-			ProcessSizeArguments(width: width, height: height, button);
+			const string FUNC_NAME = "forms.button";
+			ProcessPositionArguments(x: x, y: y, button, functionName: FUNC_NAME);
+			ProcessSizeArguments(width: width, height: height, button, functionName: FUNC_NAME);
 			return (long)button.Handle;
 		}
 
@@ -108,7 +109,8 @@ namespace BizHawk.Client.EmuHawk
 			var checkbox = new LuaCheckbox();
 			form.Controls.Add(checkbox);
 			SetText(checkbox, caption);
-			ProcessPositionArguments(x: x, y: y, checkbox);
+			const string FUNC_NAME = "forms.checkbox";
+			ProcessPositionArguments(x: x, y: y, checkbox, functionName: FUNC_NAME);
 			return (long)checkbox.Handle;
 		}
 
@@ -180,8 +182,9 @@ namespace BizHawk.Client.EmuHawk
 
 			var dropdown = new LuaDropDown(dropdownItems);
 			form.Controls.Add(dropdown);
-			ProcessPositionArguments(x: x, y: y, dropdown);
-			ProcessSizeArguments(width: width, height: height, dropdown);
+			const string FUNC_NAME = "forms.dropdown";
+			ProcessPositionArguments(x: x, y: y, dropdown, functionName: FUNC_NAME);
+			ProcessSizeArguments(width: width, height: height, dropdown, functionName: FUNC_NAME);
 			return (long)dropdown.Handle;
 		}
 
@@ -302,8 +305,9 @@ namespace BizHawk.Client.EmuHawk
 
 			SetText(label, caption);
 			form.Controls.Add(label);
-			ProcessPositionArguments(x: x, y: y, label);
-			ProcessSizeArguments(width: width, height: height, label);
+			const string FUNC_NAME = "forms.label";
+			ProcessPositionArguments(x: x, y: y, label, functionName: FUNC_NAME);
+			ProcessSizeArguments(width: width, height: height, label, functionName: FUNC_NAME);
 			return (long)label.Handle;
 		}
 
@@ -378,11 +382,16 @@ namespace BizHawk.Client.EmuHawk
 
 			var pictureBox = new LuaPictureBox { TableHelper = _th };
 			form.Controls.Add(pictureBox);
-			ProcessPositionArguments(x: x, y: y, pictureBox);
-			if (width.HasValue && height.HasValue)
+			const string FUNC_NAME = "forms.pictureBox";
+			ProcessPositionArguments(x: x, y: y, pictureBox, functionName: FUNC_NAME);
+			if (width is int w && height is int h)
 			{
-				pictureBox.LuaResize(width.Value, height.Value);
-				SetSize(pictureBox, width.Value, height.Value);
+				pictureBox.LuaResize(width: w, height: h);
+				SetSize(pictureBox, width: w, height: h);
+			}
+			else if (width.HasValue || height.HasValue)
+			{
+				WarnForMismatchedPair(functionName: FUNC_NAME, kind: "width and height");
 			}
 
 			return (long)pictureBox.Handle;
@@ -1242,14 +1251,16 @@ namespace BizHawk.Client.EmuHawk
 			return 0;
 		}
 
-		private void ProcessPositionArguments(int? x, int? y, Control c)
+		private void ProcessPositionArguments(int? x, int? y, Control c, string functionName)
 		{
 			if (x is int x1 && y is int y1) SetLocation(c, x: x1, y: y1);
+			else if (x.HasValue || y.HasValue) WarnForMismatchedPair(functionName: functionName, kind: "x and y");
 		}
 
-		private void ProcessSizeArguments(int? width, int? height, Control c)
+		private void ProcessSizeArguments(int? width, int? height, Control c, string functionName)
 		{
 			if (width is int w && height is int h) SetSize(c, width: w, height: h);
+			else if (width.HasValue || height.HasValue) WarnForMismatchedPair(functionName: functionName, kind: "width and height");
 		}
 
 		[LuaMethodExample("forms.setdropdownitems(dropdown_handle, { \"item1\", \"item2\" });")]
@@ -1456,8 +1467,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			SetText(textbox, caption);
-			ProcessPositionArguments(x: x, y: y, textbox);
-			ProcessSizeArguments(width: width, height: height, textbox);
+			const string FUNC_NAME = "forms.textbox";
+			ProcessPositionArguments(x: x, y: y, textbox, functionName: FUNC_NAME);
+			ProcessSizeArguments(width: width, height: height, textbox, functionName: FUNC_NAME);
 
 			if (boxtype != null)
 			{
@@ -1483,5 +1495,8 @@ namespace BizHawk.Client.EmuHawk
 			form.Controls.Add(textbox);
 			return (long)textbox.Handle;
 		}
+
+		private void WarnForMismatchedPair(string functionName, string kind)
+			=> LogOutputCallback($"{functionName}: both {kind} must be set to have any effect");
 	}
 }
