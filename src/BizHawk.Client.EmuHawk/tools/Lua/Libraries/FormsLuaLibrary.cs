@@ -355,7 +355,7 @@ namespace BizHawk.Client.EmuHawk
 				form.ClientSize = UIHelper.Scale(new Size(width.Value, height.Value));
 			}
 
-			SetText(form, title);
+			if (!string.IsNullOrWhiteSpace(title)) form.Text = title;
 			form.MaximizeBox = false;
 			form.FormBorderStyle = FormBorderStyle.FixedDialog;
 			form.Icon = SystemIcons.Application;
