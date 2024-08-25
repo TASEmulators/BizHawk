@@ -65,7 +65,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public void UnlockBits(BitmapData bmpd)
 		{
-			Debug.Assert(CurrLock == bmpd);
+			Debug.Assert(CurrLock == bmpd, "must pass in the same object obtained from " + nameof(LockBits));
 
 			if (WrappedBitmap != null)
 			{

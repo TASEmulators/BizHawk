@@ -24,6 +24,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
@@ -459,7 +460,7 @@ namespace BizHawk.Client.EmuHawk
 						dims.Height = dims.Width = Math.Max(dims.Width, dims.Height);
 						allocate(dims.Width, dims.Height);
 						numPixels = dims.Width * dims.Height;
-						System.Diagnostics.Debug.Assert(stride / 4 == dims.Width);
+						Debug.Assert(dims.Width * 4 == stride, "line is not `width` pixels at 32bpp?");
 
 						map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
 						int paletteStart = 0;

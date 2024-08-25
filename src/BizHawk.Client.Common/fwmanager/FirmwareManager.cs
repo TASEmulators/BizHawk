@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -27,7 +26,7 @@ namespace BizHawk.Client.Common
 		{
 			var @base = File.ReadAllBytes(baseFilename);
 			var (patched, actualHash) = PerformPatchInMemory(@base, in patchOption);
-			Trace.Assert(actualHash == patchOption.TargetHash);
+			if (actualHash != patchOption.TargetHash) throw new InvalidOperationException("patch produced incorrect output");
 			var patchedParentDir = Path.Combine(pathEntries[PathEntryCollection.GLOBAL, "Temp Files"].Path, "AutopatchedFirmware");
 			Directory.CreateDirectory(patchedParentDir);
 			var ff = FirmwareDatabase.FirmwareFilesByHash[patchOption.TargetHash];

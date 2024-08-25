@@ -821,13 +821,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsVisible(int index)
 		{
-			Debug.Assert(FirstVisibleRow < LastFullyVisibleRow);
+			Debug.Assert(FirstVisibleRow < LastFullyVisibleRow, "rows out of order?");
 			return FirstVisibleRow <= index && index <= LastFullyVisibleRow;
 		}
 
 		public bool IsPartiallyVisible(int index)
 		{
-			Debug.Assert(FirstVisibleRow < LastVisibleRow);
+			Debug.Assert(FirstVisibleRow < LastVisibleRow, "rows out of order?");
 			return FirstVisibleRow <= index && index <= LastVisibleRow;
 		}
 

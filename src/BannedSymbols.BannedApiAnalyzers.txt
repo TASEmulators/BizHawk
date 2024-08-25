@@ -9,4 +9,6 @@ M:System.Convert.ToSingle(System.String);use float.{Try,}Parse
 M:System.Convert.ToUInt16(System.String);use ushort.{Try,}Parse
 M:System.Convert.ToUInt32(System.String);use uint.{Try,}Parse
 M:System.Convert.ToUInt64(System.String);use ulong.{Try,}Parse
+M:System.Diagnostics.Debug.Assert(System.Boolean);include a unique message
+M:System.Diagnostics.Trace.Assert(System.Boolean);include a unique message
 M:System.Windows.Forms.Control.Focus;use Activate for Forms, or Select otherwise

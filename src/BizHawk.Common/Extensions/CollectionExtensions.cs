@@ -133,7 +133,7 @@ namespace BizHawk.Common.CollectionExtensions
 			if (a.Length is 0) return b;
 			var combined = new T[a.Length + b.Length];
 			var returned = ((ReadOnlySpan<T>) a).ConcatArray(b, combined);
-			Debug.Assert(returned == combined);
+			Debug.Assert(returned == combined, "expecting return value to cover all of combined since the whole thing was written to");
 			return combined;
 		}
 
