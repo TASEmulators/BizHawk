@@ -1500,7 +1500,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				_hexFind.InitialValue = _findStr;
-				_hexFind.Focus();
+				_hexFind.Activate();
 			}
 		}
 

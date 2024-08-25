@@ -610,7 +610,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_programmaticallyChangingStopFrameCheckbox)
 			{
-				StopOnFrameTextBox.Focus();
+				StopOnFrameTextBox.Select();
 			}
 		}
 

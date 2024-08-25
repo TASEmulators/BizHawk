@@ -1074,7 +1074,7 @@ namespace BizHawk.Client.EmuHawk
 					if (form is LuaRegisteredFunctionsList)
 					{
 						alreadyOpen = true;
-						form.Focus();
+						form.Activate();
 					}
 				}
 

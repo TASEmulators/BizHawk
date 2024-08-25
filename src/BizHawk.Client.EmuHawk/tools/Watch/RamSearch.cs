@@ -1464,7 +1464,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Focused)
 			{
-				SpecificValueBox.Focus();
+				SpecificValueBox.Select();
 			}
 
 			SpecificAddressBox.Enabled = false;
@@ -1486,7 +1486,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Focused)
 			{
-				SpecificAddressBox.Focus();
+				SpecificAddressBox.Select();
 			}
 
 			NumberOfChangesBox.Enabled = false;
@@ -1508,7 +1508,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Focused)
 			{
-				NumberOfChangesBox.Focus();
+				NumberOfChangesBox.Select();
 			}
 
 			DifferenceBox.Enabled = false;
@@ -1530,7 +1530,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Focused)
 			{
-				DifferenceBox.Focus();
+				DifferenceBox.Select();
 			}
 
 			SetCompareTo(Compare.Difference);
@@ -1590,7 +1590,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Focused)
 			{
-				DifferentByBox.Focus();
+				DifferentByBox.Select();
 			}
 
 			SetComparisonOperator(ComparisonOperator.DifferentBy);

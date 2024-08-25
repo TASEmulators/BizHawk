@@ -510,7 +510,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ContainsFocus)
 			{
-				TasView.Focus();
+				TasView.Select();
 			}
 		}
 

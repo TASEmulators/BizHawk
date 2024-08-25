@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 				.ThenBy(l => l.Name)
 				.ToList();
 			UpdateList();
-			FilterBox.Focus();
+			FilterBox.Select();
 
 			ToWikiMarkupButton.Visible = VersionInfo.DeveloperBuild;
 		}

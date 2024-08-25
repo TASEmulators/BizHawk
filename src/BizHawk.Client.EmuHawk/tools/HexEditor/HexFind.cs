@@ -40,7 +40,6 @@ namespace BizHawk.Client.EmuHawk
 				TextRadio.Select();
 			}
 
-			FindBox.Focus();
 			FindBox.Select();
 
 		}

@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 			_config = config;
 			InitializeComponent();
 			Icon = Properties.Resources.HotKeysIcon;
-			tabPage1.Focus();
+			tabPage1.Select();
 		}
 
 		protected override void OnActivated(EventArgs e)
@@ -189,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var c in HotkeyTabControl.SelectedTab.Controls.OfType<InputWidget>())
 				{
-					c.Focus();
+					c.Select();
 					return;
 				}
 			}
@@ -208,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 					if (w != null)
 					{
 						HotkeyTabControl.SelectTab((TabPage)w.Parent);
-						w.Focus();
+						w.Select();
 					}
 				}
 

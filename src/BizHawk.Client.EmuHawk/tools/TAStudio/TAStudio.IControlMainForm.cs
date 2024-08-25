@@ -61,7 +61,7 @@
 		{
 			if (!MainForm.GameIsClosing)
 			{
-				Focus();
+				Activate();
 				_suppressAskSave = suppressSave;
 				NewTasMenuItem_Click(null, null);
 				_suppressAskSave = false;
