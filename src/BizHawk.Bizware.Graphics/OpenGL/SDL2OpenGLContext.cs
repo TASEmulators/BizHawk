@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using Silk.NET.OpenGL;
 #endif
 
+using BizHawk.Common;
 using static SDL2.SDL;
 
 namespace BizHawk.Bizware.Graphics
@@ -45,7 +46,40 @@ namespace BizHawk.Bizware.Graphics
 		private IntPtr _sdlWindow;
 		private IntPtr _glContext;
 
-		private void CreateContext(int majorVersion, int minorVersion, bool coreProfile, bool shareContext)
+		// helper function for OpenGLControl
+		public static IntPtr CreateDummyX11ParentWindow(int majorVersion, int minorVersion, bool coreProfile)
+		{
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				throw new NotSupportedException("This function should only be called on Linux");
+			}
+
+			SetAttributes(majorVersion, minorVersion, coreProfile, shareContext: false);
+			var sdlWindow = SDL_CreateWindow(null, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1, 1,
+				SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL_WindowFlags.SDL_WINDOW_HIDDEN);
+			if (sdlWindow == IntPtr.Zero)
+			{
+				throw new($"Could not create SDL Window! SDL Error: {SDL_GetError()}");
+			}
+
+			var wmInfo = default(SDL_SysWMinfo);
+			SDL_GetVersion(out wmInfo.version);
+			if (SDL_GetWindowWMInfo(sdlWindow, ref wmInfo) == SDL_bool.SDL_FALSE)
+			{
+				SDL_DestroyWindow(sdlWindow);
+				throw new($"Failed to obtain SDL window info! SDL error: {SDL_GetError()}");
+			}
+
+			if (wmInfo.subsystem != SDL_SYSWM_TYPE.SDL_SYSWM_X11)
+			{
+				SDL_DestroyWindow(sdlWindow);
+				throw new("Subsystem is not X11!");
+			}
+
+			return wmInfo.info.x11.window;
+		}
+
+		private static void SetAttributes(int majorVersion, int minorVersion, bool coreProfile, bool shareContext)
 		{
 			// set some sensible defaults
 			SDL_GL_ResetAttributes();
@@ -88,7 +122,10 @@ namespace BizHawk.Bizware.Graphics
 			{
 				throw new($"Could not set share context attribute! SDL Error: {SDL_GetError()}");
 			}
+		}
 
+		private void CreateContext()
+		{
 			_glContext = SDL_GL_CreateContext(_sdlWindow);
 			if (_glContext == IntPtr.Zero)
 			{
@@ -109,18 +146,24 @@ namespace BizHawk.Bizware.Graphics
 
 		public SDL2OpenGLContext(IntPtr nativeWindowhandle, int majorVersion, int minorVersion, bool coreProfile)
 		{
+			// Controls are not shared, they are the sharees
+			SetAttributes(majorVersion, minorVersion, coreProfile, shareContext: false);
+
 			_sdlWindow = SDL_CreateWindowFrom(nativeWindowhandle);
 			if (_sdlWindow == IntPtr.Zero)
 			{
 				throw new($"Could not create SDL Window! SDL Error: {SDL_GetError()}");
 			}
 
-			// Controls are not shared, they are the sharees
-			CreateContext(majorVersion, minorVersion, coreProfile, shareContext: false);
+			CreateContext();
 		}
 
 		public SDL2OpenGLContext(int majorVersion, int minorVersion, bool coreProfile)
 		{
+			// offscreen contexts are shared (as we want to send texture from it over to our control's context)
+			// make sure to set the current graphics control context before creating this context
+			SetAttributes(majorVersion, minorVersion, coreProfile, shareContext: true);
+
 			_sdlWindow = SDL_CreateWindow(null, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1, 1,
 				SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL_WindowFlags.SDL_WINDOW_HIDDEN);
 			if (_sdlWindow == IntPtr.Zero)
@@ -128,9 +171,7 @@ namespace BizHawk.Bizware.Graphics
 				throw new($"Could not create SDL Window! SDL Error: {SDL_GetError()}");
 			}
 
-			// offscreen contexts are shared (as we want to send texture from it over to our control's context)
-			// make sure to set the current graphics control context before creating this context
-			CreateContext(majorVersion, minorVersion, coreProfile, shareContext: true);
+			CreateContext();
 		}
 
 		public void Dispose()
