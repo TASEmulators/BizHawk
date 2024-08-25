@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			luaPictureBox = new LuaPictureBox
+			luaPictureBox = new(_th)
 			{
 				Image = Properties.Resources.LuaPictureBox,
 				Location = new Point(0, 0),
@@ -65,7 +65,6 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(100, 50),
 				SizeMode = PictureBoxSizeMode.AutoSize,
 				TabIndex = 0,
-				TableHelper = _th,
 				TabStop = false
 			};
 			Controls.Add(luaPictureBox);

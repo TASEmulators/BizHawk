@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
 		private readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
 
-		internal NLuaTableHelper TableHelper { get; set; }
+		private readonly NLuaTableHelper TableHelper;
 
 		private SolidBrush GetBrush([LuaColorParam] object color)
 			=> _solidBrushes.GetValueOrPutNew1(TableHelper.ParseColor(color));
@@ -29,9 +29,10 @@ namespace BizHawk.Client.EmuHawk
 		private Color? _defaultBackground;
 		private Color? _defaultTextBackground = Color.FromArgb(128, 0, 0, 0);
 
-		public LuaPictureBox()
+		public LuaPictureBox(NLuaTableHelper tableHelper)
 		{
 			Image = new Bitmap(Width, Height);
+			TableHelper = tableHelper;
 		}
 		
 		public void LuaResize(int width, int height)
