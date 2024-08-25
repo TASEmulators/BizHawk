@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			luaPictureBox = new(_th)
+			luaPictureBox = new(_th, LogOutputCallback)
 			{
 				Image = Properties.Resources.LuaPictureBox,
 				Location = new Point(0, 0),

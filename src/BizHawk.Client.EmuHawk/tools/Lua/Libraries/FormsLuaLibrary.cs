@@ -305,7 +305,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			LuaPictureBox pictureBox = new(_th);
+			LuaPictureBox pictureBox = new(_th, LogOutputCallback);
 			form.Controls.Add(pictureBox);
 			const string FUNC_NAME = "forms.pictureBox";
 			ProcessPositionArguments(x: x, y: y, pictureBox, functionName: FUNC_NAME);
