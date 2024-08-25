@@ -145,15 +145,16 @@ namespace BizHawk.Client.EmuHawk
 			boxBackground.DrawEllipse(GetPen(TableHelper.SafeParseColor(line) ?? _defaultForeground), x, y, width, height);
 		}
 
-		public void DrawIcon(string path, int x, int y, int? width, int? height)
+		public void DrawIcon(string path, int x, int y, int? width, int? height, string functionName)
 		{
 			Icon icon;
-			if (width.HasValue && height.HasValue)
+			if (width is int w && height is int h)
 			{
-				icon = new Icon(path, width.Value, height.Value);
+				icon = new Icon(path, width: w, height: h);
 			}
 			else
 			{
+				if (width is not null || height is not null) WarnForMismatchedPair(functionName: functionName, kind: "width and height");
 				icon = new Icon(path);
 			}
 
@@ -409,5 +410,8 @@ namespace BizHawk.Client.EmuHawk
 			DoLuaClick(this, e);
 			base.OnClick(e);
 		}
+
+		private void WarnForMismatchedPair(string functionName, string kind)
+			=> LogOutputCallback($"{functionName}: both {kind} must be set to have any effect");
 	}
 }

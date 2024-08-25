@@ -535,9 +535,24 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var match = FindFormOrControlWithHandle(componentHandle);
-				if (match is LuaPictureBox control) control.DrawIcon(path, x: x, y: y, width: width, height: height);
-				else if (match is Form) LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
-				else if (match is not null) LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+				if (match is LuaPictureBox control)
+				{
+					control.DrawIcon(
+						path: path,
+						x: x,
+						y: y,
+						width: width,
+						height: height,
+						functionName: "forms.drawIcon");
+				}
+				else if (match is Form)
+				{
+					LogOutputCallback(ERR_MSG_DRAW_ON_FORM);
+				}
+				else if (match is not null)
+				{
+					LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+				}
 			}
 			catch (Exception ex)
 			{

@@ -220,7 +220,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				luaPictureBox.DrawIcon(path, x, y, width, height);
+				luaPictureBox.DrawIcon(
+					path: path,
+					x: x,
+					y: y,
+					width: width,
+					height: height,
+					functionName: "(LuaCanvas).DrawIcon");
 			}
 			catch (Exception ex)
 			{
