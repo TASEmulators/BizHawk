@@ -241,6 +241,8 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			}
 		}
 
+		private const string PFX_SCRATCHPAD_REG = "SPR";
+
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			var res = new Dictionary<string, RegisterValue>
@@ -266,7 +268,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 			for (int i = 0; i < 64; i++)
 			{
-				res.Add("SPR" + i, Regs[i]);
+				res.Add(PFX_SCRATCHPAD_REG + i, Regs[i]);
 			}
 
 			return res;
@@ -274,9 +276,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		public void SetCpuRegister(string register, int value)
 		{
-			if (register.StartsWithOrdinal("SPR"))
+			if (register.StartsWithOrdinal(PFX_SCRATCHPAD_REG))
 			{
-				var reg = Convert.ToInt32(register.Replace("SPR", ""));
+				var reg = int.Parse(register.Substring(startIndex: PFX_SCRATCHPAD_REG.Length));
 
 				if (reg > 63)
 				{

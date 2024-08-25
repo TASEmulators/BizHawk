@@ -422,7 +422,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						break;
 					case HeaderKeys.VsyncAttoseconds:
-						if (_emulator is MAME mame && mame.VsyncAttoseconds != Convert.ToInt64(v))
+						if (_emulator is MAME mame && mame.VsyncAttoseconds != long.Parse(v))
 						{
 							item.BackColor = Color.Pink;
 							item.ToolTipText = $"Expected: {v}\n Actual: {mame.VsyncAttoseconds}";

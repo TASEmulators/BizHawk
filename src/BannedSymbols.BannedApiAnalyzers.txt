@@ -1,0 +1,11 @@
+M:System.Convert.ToByte(System.String);use byte.{Try,}Parse
+M:System.Convert.ToDecimal(System.String);use decimal.{Try,}Parse
+M:System.Convert.ToDouble(System.String);use double.{Try,}Parse
+M:System.Convert.ToInt16(System.String);use short.{Try,}Parse
+M:System.Convert.ToInt32(System.String);use int.{Try,}Parse
+M:System.Convert.ToInt64(System.String);use long.{Try,}Parse
+M:System.Convert.ToSByte(System.String);use sbyte.{Try,}Parse
+M:System.Convert.ToSingle(System.String);use float.{Try,}Parse
+M:System.Convert.ToUInt16(System.String);use ushort.{Try,}Parse
+M:System.Convert.ToUInt32(System.String);use uint.{Try,}Parse
+M:System.Convert.ToUInt64(System.String);use ulong.{Try,}Parse

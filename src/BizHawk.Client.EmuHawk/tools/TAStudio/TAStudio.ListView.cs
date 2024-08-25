@@ -1323,14 +1323,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_axisTypedValue = _axisTypedValue.Substring(startIndex: 0, length: _axisTypedValue.Length - 1); // drop last char
-				if (_axisTypedValue == "" || _axisTypedValue == "-")
-				{
-					value = 0f;
-				}
-				else
-				{
-					value = Convert.ToSingle(_axisTypedValue);
-				}
+				if (!float.TryParse(_axisTypedValue, out value)) value = 0.0f;
 			}
 			else if (e.KeyCode == Keys.Enter)
 			{
