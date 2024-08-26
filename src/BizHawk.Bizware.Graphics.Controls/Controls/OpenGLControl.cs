@@ -6,32 +6,6 @@ namespace BizHawk.Bizware.Graphics.Controls
 {
 	internal sealed class OpenGLControl : GraphicsControl
 	{
-		// workaround a bug with proprietary Nvidia drivers resulting in some BadMatch on setting context to current
-		// seems they don't like whatever depth values mono's winforms ends up setting
-		// mono's winforms seems to try to copy from the "parent" window, so we need to create a "friendly" window
-		private static readonly Lazy<IntPtr> _x11GLParent = new(() =>
-		{
-			// ugh, i hate this, seems just returning an x11 window handle is not good enough (unlike on windows where handing some native HWND is good enough)
-			// instead it has to have been created with mono's internal "Hwnd" class
-			var hwnd = typeof(Control).Assembly.CreateInstance("System.Windows.Forms.Hwnd");
-			if (hwnd == null)
-			{
-				Console.WriteLine("Couldn't find System.Windows.Forms.Hwnd");
-				return IntPtr.Zero;
-			}
-
-			var clientWindowProp = hwnd.GetType().GetProperty("ClientWindow");
-			if (clientWindowProp == null)
-			{
-				Console.WriteLine("Couldn't find ClientWindow prop");
-				return IntPtr.Zero;
-			}
-
-			var x11Window = SDL2OpenGLContext.CreateDummyX11ParentWindow(3, 2, true);
-			clientWindowProp.SetValue(hwnd, x11Window);
-			return x11Window;
-		});
-
 		private readonly Action _initGLState;
 		private SDL2OpenGLContext _context;
 
@@ -61,11 +35,6 @@ namespace BizHawk.Bizware.Graphics.Controls
 					// According to OpenTK, this is necessary for OpenGL on windows
 					cp.ClassStyle |= CS_VREDRAW | CS_HREDRAW | CS_OWNDC;
 				}
-				else
-				{
-					// workaround buggy proprietary Nvidia drivers
-					cp.Parent = _x11GLParent.Value;
-				}
 
 				return cp;
 			}
@@ -81,7 +50,7 @@ namespace BizHawk.Bizware.Graphics.Controls
 		protected override void OnHandleDestroyed(EventArgs e)
 		{
 			base.OnHandleDestroyed(e);
-			_context.Dispose();
+			_context?.Dispose();
 			_context = null;
 		}
 
