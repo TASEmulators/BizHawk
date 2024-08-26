@@ -50,7 +50,7 @@ namespace BizHawk.Bizware.Graphics.Controls
 		protected override void OnHandleDestroyed(EventArgs e)
 		{
 			base.OnHandleDestroyed(e);
-			_context?.Dispose();
+			_context.Dispose();
 			_context = null;
 		}
 
