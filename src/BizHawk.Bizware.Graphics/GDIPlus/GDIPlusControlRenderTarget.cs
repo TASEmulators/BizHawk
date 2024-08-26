@@ -30,8 +30,8 @@ namespace BizHawk.Bizware.Graphics
 			ControlGraphics?.Dispose();
 			BufferedGraphics?.Dispose();
 			(ControlGraphics, var r) = _getControlRenderContext();
-			r.Width = Math.Min(1, r.Width);
-			r.Height = Math.Min(1, r.Height);
+			r.Width = Math.Max(1, r.Width);
+			r.Height = Math.Max(1, r.Height);
 			BufferedGraphics = _bufferedGraphicsContext.Allocate(ControlGraphics, r);
 		}
 	}
