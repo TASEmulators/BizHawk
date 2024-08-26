@@ -9,7 +9,28 @@ namespace BizHawk.Bizware.Graphics.Controls
 		// workaround a bug with proprietary Nvidia drivers resulting in some BadMatch on setting context to current
 		// seems they don't like whatever depth values mono's winforms ends up setting
 		// mono's winforms seems to try to copy from the "parent" window, so we need to create a "friendly" window
-		private static readonly Lazy<IntPtr> _x11GLParent = new(() => SDL2OpenGLContext.CreateDummyX11ParentWindow(3, 2, true));
+		private static readonly Lazy<IntPtr> _x11GLParent = new(() =>
+		{
+			// ugh, i hate this, seems just returning an x11 window handle is not good enough (unlike on windows where handing some native HWND is good enough)
+			// instead it has to have been created with mono's internal "Hwnd" class
+			var hwnd = typeof(Control).Assembly.CreateInstance("System.Windows.Forms.Hwnd");
+			if (hwnd == null)
+			{
+				Console.WriteLine("Couldn't find System.Windows.Forms.Hwnd");
+				return IntPtr.Zero;
+			}
+
+			var clientWindowProp = hwnd.GetType().GetProperty("ClientWindow");
+			if (clientWindowProp == null)
+			{
+				Console.WriteLine("Couldn't find ClientWindow prop");
+				return IntPtr.Zero;
+			}
+
+			var x11Window = SDL2OpenGLContext.CreateDummyX11ParentWindow(3, 2, true);
+			clientWindowProp.SetValue(hwnd, x11Window);
+			return x11Window;
+		});
 
 		private readonly Action _initGLState;
 		private SDL2OpenGLContext _context;
