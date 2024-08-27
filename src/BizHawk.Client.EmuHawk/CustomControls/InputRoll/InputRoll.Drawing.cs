@@ -191,8 +191,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					x = column.Left + 2 * CellWidthPadding - _hBar.Value;
-					// TODO: fix this CellPadding issue (2 * CellPadding vs just CellPadding)
+					x = 1 + column.Left + CellWidthPadding - _hBar.Value;
 					y = CellHeightPadding;
 				}
 
@@ -264,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							// Center Text
 							int textX = Math.Max(((colHeight - textWidth) / 2), CellWidthPadding) + strOffsetX;
-							int textY = CellWidthPadding + strOffsetY;
+							int textY = CellHeightPadding + strOffsetY;
 
 							_renderer.PrepDrawString(Font, _foreColor, rotate: true);
 							DrawString(text, new Rectangle(baseX - textY, baseY + textX, 999, CellHeight));

@@ -1648,7 +1648,7 @@ namespace BizHawk.Client.EmuHawk
 			RecalculateScrollBars();
 			if (_columns.VisibleColumns.Any())
 			{
-				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width) + CellWidthPadding * 4;
+				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width);
 			}
 		}
 
@@ -1946,7 +1946,7 @@ namespace BizHawk.Client.EmuHawk
 		private int ColumnHeight => CellHeight + 2;
 
 		// The width of a cell in Horizontal Orientation.
-		private int CellWidth => (int)_charSize.Width + CellWidthPadding * 4; // Double the padding for horizontal because it looks better
+		private int CellWidth => Math.Max((int)_charSize.Height + CellHeightPadding * 2, (int)_charSize.Width + CellWidthPadding * 2);
 
 		// The height of a cell in Vertical Orientation.
 		private int CellHeight => (int)_charSize.Height + CellHeightPadding * 2;
@@ -1967,7 +1967,7 @@ namespace BizHawk.Client.EmuHawk
 			
 			if (_columns.VisibleColumns.Any())
 			{
-				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width) + CellWidthPadding * 4;
+				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width);
 			}
 		}
 
