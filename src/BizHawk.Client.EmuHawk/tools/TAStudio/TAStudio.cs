@@ -592,7 +592,6 @@ namespace BizHawk.Client.EmuHawk
 				MainForm.FirmwareManager,
 				Config.DefaultAuthor);
 
-			tasMovie.ClearChanges();
 			_ = StartNewMovieWrapper(tasMovie, isNew: true);
 
 			// clear all selections

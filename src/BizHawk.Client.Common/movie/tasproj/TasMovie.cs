@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 			get => base.StartsFromSavestate;
 			set
 			{
-				Markers.Add(new TasMovieMarker(0, value ? "Savestate" : "Power on"), true);
+				Markers.Add(new TasMovieMarker(0, value ? "Savestate" : "Power on"), skipHistory: true);
 				base.StartsFromSavestate = value;
 			}
 		}
@@ -123,8 +123,8 @@ namespace BizHawk.Client.Common
 		public override void StartNewRecording()
 		{
 			ClearTasprojExtras();
-			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
-			ChangeLog = new TasMovieChangeLog(this);
+			Markers.Add(new TasMovieMarker(0, StartsFromSavestate ? "Savestate" : "Power on"), skipHistory: true);
+			ClearChanges();
 
 			base.StartNewRecording();
 		}
@@ -350,7 +350,6 @@ namespace BizHawk.Client.Common
 
 		private bool IsReserved(int frame)
 		{
-			
 			// Why the frame before?
 			// because we always navigate to the frame before and emulate 1 frame so that we ensure a proper frame buffer on the screen
 			// users want instant navigation to markers, so to do this, we need to reserve the frame before the marker, not the marker itself
