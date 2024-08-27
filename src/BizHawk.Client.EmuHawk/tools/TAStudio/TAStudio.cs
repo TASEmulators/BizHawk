@@ -286,7 +286,6 @@ namespace BizHawk.Client.EmuHawk
 
 			MainForm.AddOnScreenMessage("TAStudio engaged");
 			SetTasMovieCallbacks(CurrentTasMovie);
-			UpdateWindowTitle();
 			_originalEndAction = Config.Movies.MovieEndAction;
 			MainForm.DisableRewind();
 			Config.Movies.MovieEndAction = MovieEndAction.Record;
@@ -619,6 +618,7 @@ namespace BizHawk.Client.EmuHawk
 				BookMarkControl.UpdateTextColumnWidth();
 				MarkerControl.UpdateTextColumnWidth();
 				TastudioPlayMode();
+				UpdateWindowTitle();
 			}
 
 			_initializing = false;
@@ -800,7 +800,6 @@ namespace BizHawk.Client.EmuHawk
 					Update();
 					CurrentTasMovie.Save();
 					Settings.RecentTas.Add(CurrentTasMovie.Filename);
-					UpdateWindowTitle();
 					MessageStatusLabel.Text = "File saved.";
 					Cursor = Cursors.Default;
 				}
