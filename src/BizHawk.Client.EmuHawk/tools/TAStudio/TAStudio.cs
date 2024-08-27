@@ -610,7 +610,9 @@ namespace BizHawk.Client.EmuHawk
 			SetTasMovieCallbacks(movie);
 
 			SuspendLayout();
+			WantsToControlStopMovie = false;
 			bool result = MainForm.StartNewMovie(movie, isNew);
+			WantsToControlStopMovie = true;
 			ResumeLayout();
 			if (result)
 			{

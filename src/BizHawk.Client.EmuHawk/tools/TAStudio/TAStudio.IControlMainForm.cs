@@ -63,7 +63,7 @@
 			{
 				Activate();
 				_suppressAskSave = suppressSave;
-				NewTasMenuItem_Click(null, null);
+				StartNewTasMovie();
 				_suppressAskSave = false;
 			}
 		}
@@ -106,9 +106,7 @@
 		public bool RestartMovie()
 		{
 			if (!AskSaveChanges()) return false;
-			WantsToControlStopMovie = false;
 			var success = StartNewMovieWrapper(CurrentTasMovie, isNew: false);
-			WantsToControlStopMovie = true;
 			RefreshDialog();
 			return success;
 		}
