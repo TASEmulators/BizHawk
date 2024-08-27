@@ -25,10 +25,6 @@ namespace BizHawk.Client.Common
 			Header[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{CurrentVersion.ToString(CultureInfo.InvariantCulture)}";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
-			Markers.Add(0, "Power on");
-			TasStateManager = new ZwinderStateManager(
-				session.Settings.DefaultTasStateManagerSettings,
-				IsReserved);
 		}
 
 		public override void Attach(IEmulator emulator)
@@ -45,19 +41,18 @@ namespace BizHawk.Client.Common
 
 			_inputPollable = emulator.AsInputPollable();
 
+			TasStateManager ??= new ZwinderStateManager(Session.Settings.DefaultTasStateManagerSettings, IsReserved);
 			if (StartsFromSavestate)
 			{
 				TasStateManager.Engage(BinarySavestate);
 			}
 			else
 			{
-				var ms = new MemoryStream();
 				if (StartsFromSaveRam && emulator.HasSaveRam())
 				{
 					emulator.AsSaveRam().StoreSaveRam(SaveRam!);
 				}
-				emulator.AsStatable().SaveStateBinary(new BinaryWriter(ms));
-				TasStateManager.Engage(ms.ToArray());
+				TasStateManager.Engage(emulator.AsStatable().CloneSavestate());
 			}
 
 			base.Attach(emulator);
