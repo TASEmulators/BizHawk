@@ -533,6 +533,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_engaged = true;
+			Settings.RecentTas.Add(CurrentTasMovie.Filename); // only add if it did load
 
 			if (startsFromSavestate)
 			{
