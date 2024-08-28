@@ -58,9 +58,12 @@ namespace BizHawk.Client.EmuHawk
 			_updateThread.Start();
 		}
 
-		private readonly WorkingDictionary<string, bool> _lastState = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, int> _axisValues = new WorkingDictionary<string, int>();
-		private readonly WorkingDictionary<string, float> _axisDeltas = new WorkingDictionary<string, float>();
+		private readonly Dictionary<string, float> _axisDeltas = new();
+
+		private readonly Dictionary<string, int> _axisValues = new();
+
+		private readonly Dictionary<string, bool> _lastState = new();
+
 		private bool _trackDeltas;
 		private bool _ignoreEventsNextPoll;
 
@@ -99,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 			var modIndex = _currentConfig.ModifierKeysEffective.IndexOf(button1);
 			var currentModifier = modIndex is -1 ? 0U : 1U << modIndex;
 			if (EnableIgnoreModifiers && currentModifier is not 0U) return;
-			if (newState == _lastState[button1]) return;
+			if (newState == _lastState.GetValueOrDefault(button1)) return;
 
 			if (currentModifier is not 0U)
 			{
@@ -135,7 +138,11 @@ namespace BizHawk.Client.EmuHawk
 			if (ShouldSwallow(MainFormInputAllowedCallback(false), ClientInputFocus.Pad))
 				return;
 
-			if (_trackDeltas) _axisDeltas[axis] += Math.Abs(newValue - _axisValues[axis]);
+			if (_trackDeltas)
+			{
+				_axisDeltas[axis] = _axisDeltas.GetValueOrDefault(axis)
+					+ Math.Abs(newValue - _axisValues.GetValueOrDefault(axis));
+			}
 			_axisValues[axis] = newValue;
 		}
 
@@ -217,8 +224,11 @@ namespace BizHawk.Client.EmuHawk
 							if (_trackDeltas)
 							{
 								// these are relative to screen coordinates, but that's not terribly important
-								_axisDeltas["WMouse X"] += Math.Abs(mousePos.X - _axisValues["WMouse X"]) * 50;
-								_axisDeltas["WMouse Y"] += Math.Abs(mousePos.Y - _axisValues["WMouse Y"]) * 50;
+								const float MOUSE_DELTA_SCALE = 50.0f;
+								_axisDeltas["WMouse X"] = _axisDeltas.GetValueOrDefault("WMouse X")
+									+ MOUSE_DELTA_SCALE * Math.Abs(mousePos.X - _axisValues.GetValueOrDefault("WMouse X"));
+								_axisDeltas["WMouse Y"] = _axisDeltas.GetValueOrDefault("WMouse Y")
+									+ MOUSE_DELTA_SCALE * Math.Abs(mousePos.Y - _axisValues.GetValueOrDefault("WMouse Y"));
 							}
 							// coordinate translation happens later
 							_axisValues["WMouse X"] = mousePos.X;

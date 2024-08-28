@@ -45,7 +45,7 @@ namespace BizHawk.Bizware.Graphics
 		private IntPtr _sdlWindow;
 		private IntPtr _glContext;
 
-		private void CreateContext(int majorVersion, int minorVersion, bool coreProfile, bool shareContext)
+		private static void SetAttributes(int majorVersion, int minorVersion, bool coreProfile, bool shareContext)
 		{
 			// set some sensible defaults
 			SDL_GL_ResetAttributes();
@@ -53,6 +53,7 @@ namespace BizHawk.Bizware.Graphics
 				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_GREEN_SIZE, 8) is not 0
 				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BLUE_SIZE, 8) is not 0
 				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_ALPHA_SIZE, 0) is not 0
+				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DEPTH_SIZE, 24) is not 0
 				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DOUBLEBUFFER, 1) is not 0)
 			{
 				throw new($"Could not set GL attributes! SDL Error: {SDL_GetError()}");
@@ -88,7 +89,10 @@ namespace BizHawk.Bizware.Graphics
 			{
 				throw new($"Could not set share context attribute! SDL Error: {SDL_GetError()}");
 			}
+		}
 
+		private void CreateContext()
+		{
 			_glContext = SDL_GL_CreateContext(_sdlWindow);
 			if (_glContext == IntPtr.Zero)
 			{
@@ -109,18 +113,24 @@ namespace BizHawk.Bizware.Graphics
 
 		public SDL2OpenGLContext(IntPtr nativeWindowhandle, int majorVersion, int minorVersion, bool coreProfile)
 		{
+			// Controls are not shared, they are the sharees
+			SetAttributes(majorVersion, minorVersion, coreProfile, shareContext: false);
+
 			_sdlWindow = SDL_CreateWindowFrom(nativeWindowhandle);
 			if (_sdlWindow == IntPtr.Zero)
 			{
 				throw new($"Could not create SDL Window! SDL Error: {SDL_GetError()}");
 			}
 
-			// Controls are not shared, they are the sharees
-			CreateContext(majorVersion, minorVersion, coreProfile, shareContext: false);
+			CreateContext();
 		}
 
 		public SDL2OpenGLContext(int majorVersion, int minorVersion, bool coreProfile)
 		{
+			// offscreen contexts are shared (as we want to send texture from it over to our control's context)
+			// make sure to set the current graphics control context before creating this context
+			SetAttributes(majorVersion, minorVersion, coreProfile, shareContext: true);
+
 			_sdlWindow = SDL_CreateWindow(null, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1, 1,
 				SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL_WindowFlags.SDL_WINDOW_HIDDEN);
 			if (_sdlWindow == IntPtr.Zero)
@@ -128,9 +138,7 @@ namespace BizHawk.Bizware.Graphics
 				throw new($"Could not create SDL Window! SDL Error: {SDL_GetError()}");
 			}
 
-			// offscreen contexts are shared (as we want to send texture from it over to our control's context)
-			// make sure to set the current graphics control context before creating this context
-			CreateContext(majorVersion, minorVersion, coreProfile, shareContext: true);
+			CreateContext();
 		}
 
 		public void Dispose()

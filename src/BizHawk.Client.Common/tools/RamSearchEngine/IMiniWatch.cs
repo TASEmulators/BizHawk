@@ -4,172 +4,130 @@ namespace BizHawk.Client.Common.RamSearchEngine
 {
 	/// <summary>
 	/// Represents a Ram address for watching in the <see cref="RamSearchEngine" />
+	/// With the minimal details necessary for searching
 	/// </summary>
 	internal interface IMiniWatch
 	{
 		long Address { get; }
-		uint Previous { get; }
-		uint Current { get; }
-		int ChangeCount { get; }
-		void ClearChangeCount();
-		void SetPreviousToCurrent();
+		long Previous { get; } // do not store sign extended variables in here.
+		void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian);
 		bool IsValid(MemoryDomain domain);
-		void Update(PreviousType type, MemoryDomain domain, bool bigEndian);
 	}
 
 	internal sealed class MiniByteWatch : IMiniWatch
 	{
 		public long Address { get; }
-
 		private byte _previous;
-		private byte _current;
 
 		public MiniByteWatch(MemoryDomain domain, long addr)
 		{
 			Address = addr;
-			_previous = _current = GetByte(domain);
+			_previous = GetByte(Address, domain);
 		}
 
-		public void SetPreviousToCurrent()
+		public long Previous => _previous;
+
+		public bool IsValid(MemoryDomain domain)
 		{
-			_previous = _current;
+			return IsValid(Address, domain);
 		}
 
-		public uint Previous => _previous;
-		public uint Current => _current;
-
-		public int ChangeCount { get; private set; }
-
-		public void Update(PreviousType type, MemoryDomain domain, bool bigEndian)
+		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
-			var newValue = GetByte(domain);
+			_previous = GetByte(Address, domain);
+		}
 
-			if (newValue != _current)
+		public static bool IsValid(long address, MemoryDomain domain)
+		{
+			return address < domain.Size;
+		}
+
+		public static byte GetByte(long address, MemoryDomain domain)
+		{
+			if (!IsValid(address, domain))
 			{
-				ChangeCount++;
-				if (type == PreviousType.LastChange)
-				{
-					_previous = _current;
-				}
+				return 0;
 			}
 
-			if (type == PreviousType.LastFrame)
-				_previous = _current;
-
-			_current = newValue;
-		}
-
-		public void ClearChangeCount() => ChangeCount = 0;
-
-		public bool IsValid(MemoryDomain domain) => Address < domain.Size;
-
-		public byte GetByte(MemoryDomain domain)
-		{
-			return IsValid(domain) ? domain.PeekByte(Address) : (byte)0;
+			return domain.PeekByte(address);
 		}
 	}
 
 	internal sealed class MiniWordWatch : IMiniWatch
 	{
 		public long Address { get; }
-
 		private ushort _previous;
-		private ushort _current;
 
 		public MiniWordWatch(MemoryDomain domain, long addr, bool bigEndian)
 		{
 			Address = addr;
-			_previous = _current = GetUshort(domain, bigEndian);
+			_previous = GetUshort(Address, domain, bigEndian);
 		}
 
-		public void SetPreviousToCurrent()
+		public long Previous => _previous;
+
+		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
-			_previous = _current;
+			_previous = GetUshort(Address, domain, bigEndian);
 		}
 
-		public uint Previous => _previous;
-		public uint Current => _current;
-
-		public int ChangeCount { get; private set; }
-
-		public void Update(PreviousType type, MemoryDomain domain, bool bigEndian)
+		public bool IsValid(MemoryDomain domain)
 		{
-			var newValue = GetUshort(domain, bigEndian);
+			return IsValid(Address, domain);
+		}
 
-			if (newValue != _current)
+		public static bool IsValid(long address, MemoryDomain domain)
+		{
+			return address < (domain.Size - 1);
+		}
+
+		public static ushort GetUshort(long address, MemoryDomain domain, bool bigEndian)
+		{
+			if (!IsValid(address, domain))
 			{
-				ChangeCount++;
-				if (type == PreviousType.LastChange)
-				{
-					_previous = _current;
-				}
+				return 0;
 			}
 
-			if (type == PreviousType.LastFrame)
-				_previous = _current;
-
-			_current = newValue;
-		}
-
-		public void ClearChangeCount() => ChangeCount = 0;
-
-		public bool IsValid(MemoryDomain domain) => Address < domain.Size - 1;
-
-		private ushort GetUshort(MemoryDomain domain, bool bigEndian)
-		{
-			return IsValid(domain) ? domain.PeekUshort(Address, bigEndian) : (ushort)0;
+			return domain.PeekUshort(address, bigEndian);
 		}
 	}
 
 	internal sealed class MiniDWordWatch : IMiniWatch
 	{
 		public long Address { get; }
-
 		private uint _previous;
-		private uint _current;
 
 		public MiniDWordWatch(MemoryDomain domain, long addr, bool bigEndian)
 		{
 			Address = addr;
-			_previous = _current = GetUint(domain, bigEndian);
+			_previous = GetUint(Address, domain, bigEndian);
 		}
 
-		public void SetPreviousToCurrent()
+		public long Previous => _previous;
+
+		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
-			_previous = _current;
+			_previous = GetUint(Address, domain, bigEndian);
 		}
 
-		public uint Previous => _previous;
-		public uint Current => _current;
-
-		public int ChangeCount { get; private set; }
-
-		public void Update(PreviousType type, MemoryDomain domain, bool bigEndian)
+		public bool IsValid(MemoryDomain domain)
 		{
-			var newValue = GetUint(domain, bigEndian);
+			return IsValid(Address, domain);
+		}
 
-			if (newValue != _current)
+		public static bool IsValid(long address, MemoryDomain domain)
+		{
+			return address < (domain.Size - 3);
+		}
+
+		public static uint GetUint(long address, MemoryDomain domain, bool bigEndian)
+		{
+			if (!IsValid(address, domain))
 			{
-				ChangeCount++;
-				if (type == PreviousType.LastChange)
-				{
-					_previous = _current;
-				}
+				return 0;
 			}
 
-			if (type == PreviousType.LastFrame)
-				_previous = _current;
-
-			_current = newValue;
-		}
-
-		public void ClearChangeCount() => ChangeCount = 0;
-
-		public bool IsValid(MemoryDomain domain) => Address < domain.Size - 3;
-
-		private uint GetUint(MemoryDomain domain, bool bigEndian)
-		{
-			return IsValid(domain) ? domain.PeekUint(Address, bigEndian) : 0;
+			return domain.PeekUint(address, bigEndian);
 		}
 	}
 }

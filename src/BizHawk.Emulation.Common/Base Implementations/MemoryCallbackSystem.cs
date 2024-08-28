@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.Common
 
 		private void RemoveAtInternal(int index)
 		{
-			Debug.Assert(_modifyInProgress);
+			Debug.Assert(_modifyInProgress, "unexpected collection mutation state");
 			CopyIfRequired();
 
 			var removedItem = _items[index];
@@ -357,7 +357,7 @@ namespace BizHawk.Emulation.Common
 		private void EndCopyOnWrite()
 		{
 			_copyOnWriteRequired--;
-			Debug.Assert(_copyOnWriteRequired >= 0);
+			Debug.Assert(_copyOnWriteRequired >= 0, "unexpected CoW state");
 		}
 
 		public Enumerator GetEnumerator()

@@ -68,6 +68,7 @@ in {
 , extraDotnetBuildFlags ? "" # currently passed to EVERY `dotnet build` and `dotnet test` invocation (and does not replace the flags for parallel compilation added by default)
 , forNixOS ? true
 , initConfig ? {} # forwarded to Dist/launch-scripts.nix (see docs there)
+, profileManagedCalls ? false # forwarded to Dist/launch-scripts.nix
 }: let
 	isVersionAtLeast = lib.flip lib.versionAtLeast; # I stand by this being the more useful param order w.r.t. currying
 	replaceDotWithUnderscore = s: lib.replaceStrings [ "." ] [ "_" ] s;
@@ -99,7 +100,7 @@ in {
 		inherit lib
 			writeShellScript writeText
 			bizhawkAssemblies nixGL
-			debugPInvokes debugDotnetHostCrashes initConfig isManualLocalBuild;
+			debugPInvokes debugDotnetHostCrashes initConfig isManualLocalBuild profileManagedCalls;
 		mkfifo = coreutils;
 		mktemp = coreutils;
 	};

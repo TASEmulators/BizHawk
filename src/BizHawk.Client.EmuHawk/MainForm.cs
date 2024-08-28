@@ -1178,14 +1178,14 @@ namespace BizHawk.Client.EmuHawk
 				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done.
 				// maybe because it doesn't make sense to me to bind hotkeys and controller inputs to the same keystrokes
 
-				bool handled;
 				switch (Config.InputHotkeyOverrideOptions)
 				{
 					default:
 					case 0: // Both allowed
+					{
 						finalHostController.Receive(ie);
 
-						handled = false;
+						var handled = false;
 						if (ie.EventType is InputEventType.Press)
 						{
 							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
@@ -1198,11 +1198,14 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						break;
+					}
 					case 1: // Input overrides Hotkeys
+					{
 						finalHostController.Receive(ie);
-						if (!activeControllerHasBinding(ie.LogicalButton.ToString()))
+						// don't check hotkeys when any of the pressed keys are input
+						if (!ie.LogicalButton.ToString().Split('+').Any(activeControllerHasBinding))
 						{
-							handled = false;
+							var handled = false;
 							if (ie.EventType is InputEventType.Press)
 							{
 								handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
@@ -1216,8 +1219,10 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						break;
+					}
 					case 2: // Hotkeys override Input
-						handled = false;
+					{
+						var handled = false;
 						if (ie.EventType is InputEventType.Press)
 						{
 							handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
@@ -1233,6 +1238,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						break;
+					}
 				}
 			} // foreach event
 
@@ -2417,6 +2423,7 @@ namespace BizHawk.Client.EmuHawk
 				path = _getConfigPath();
 			}
 
+			CommitCoreSettingsToConfig();
 			ConfigService.Save(path, Config);
 		}
 
@@ -3498,9 +3505,9 @@ namespace BizHawk.Client.EmuHawk
 			if (e.Type == RomLoader.LoadErrorType.MissingFirmware)
 			{
 				if (this.ShowMessageBox2(
-					caption: e.Message,
+					caption: "Missing Firmware!",
 					icon: EMsgBoxIcon.Error,
-					text: "The core needs certain firmware to load this rom.\n\nOpen the firmware manager now?",
+					text: $"{e.Message}\n\nOpen the firmware manager now?",
 					useOKCancel: true))
 				{
 					OpenFWConfigRomLoadFailed(e);
@@ -3643,9 +3650,11 @@ namespace BizHawk.Client.EmuHawk
 
 				DisplayManager.ActivateOpenGLContext(); // required in case the core wants to create a shared OpenGL context
 
-				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
+				bool result = string.IsNullOrEmpty(MovieSession.QueuedCoreName)
+					? loader.LoadRom(path, nextComm, ioaRetro?.CorePath)
+					: loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
 
-				if (result) Game = loader.Game;
+				Game = result ? loader.Game : GameInfo.NullInstance;
 
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)
@@ -3814,6 +3823,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// This shows up if there's a problem
 					Tools.Restart(Config, Emulator, Game);
+					DisplayManager.UpdateGlobals(Config, Emulator);
+					DisplayManager.Blank();
 					ExtToolManager.BuildToolStrip();
 					OnRomChanged();
 					return false;

@@ -25,10 +25,6 @@ namespace BizHawk.Client.Common
 			Header[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{CurrentVersion.ToString(CultureInfo.InvariantCulture)}";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
-			Markers.Add(0, "Power on");
-			TasStateManager = new ZwinderStateManager(
-				session.Settings.DefaultTasStateManagerSettings,
-				IsReserved);
 		}
 
 		public override void Attach(IEmulator emulator)
@@ -45,19 +41,18 @@ namespace BizHawk.Client.Common
 
 			_inputPollable = emulator.AsInputPollable();
 
+			TasStateManager ??= new ZwinderStateManager(Session.Settings.DefaultTasStateManagerSettings, IsReserved);
 			if (StartsFromSavestate)
 			{
 				TasStateManager.Engage(BinarySavestate);
 			}
 			else
 			{
-				var ms = new MemoryStream();
 				if (StartsFromSaveRam && emulator.HasSaveRam())
 				{
 					emulator.AsSaveRam().StoreSaveRam(SaveRam!);
 				}
-				emulator.AsStatable().SaveStateBinary(new BinaryWriter(ms));
-				TasStateManager.Engage(ms.ToArray());
+				TasStateManager.Engage(emulator.AsStatable().CloneSavestate());
 			}
 
 			base.Attach(emulator);
@@ -75,7 +70,7 @@ namespace BizHawk.Client.Common
 			get => base.StartsFromSavestate;
 			set
 			{
-				Markers.Add(0, value ? "Savestate" : "Power on");
+				Markers.Add(new TasMovieMarker(0, value ? "Savestate" : "Power on"), skipHistory: true);
 				base.StartsFromSavestate = value;
 			}
 		}
@@ -123,8 +118,8 @@ namespace BizHawk.Client.Common
 		public override void StartNewRecording()
 		{
 			ClearTasprojExtras();
-			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
-			ChangeLog = new TasMovieChangeLog(this);
+			Markers.Add(new TasMovieMarker(0, StartsFromSavestate ? "Savestate" : "Power on"), skipHistory: true);
+			ClearChanges();
 
 			base.StartNewRecording();
 		}
@@ -350,7 +345,6 @@ namespace BizHawk.Client.Common
 
 		private bool IsReserved(int frame)
 		{
-			
 			// Why the frame before?
 			// because we always navigate to the frame before and emulate 1 frame so that we ensure a proper frame buffer on the screen
 			// users want instant navigation to markers, so to do this, we need to reserve the frame before the marker, not the marker itself

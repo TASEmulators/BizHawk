@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			Debug.Assert(inFinalTarget);
+			Debug.Assert(inFinalTarget, "not in final target?");
 
 			// present and conclude drawing
 			_graphicsControl.SwapBuffers();
