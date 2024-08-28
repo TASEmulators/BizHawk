@@ -76,7 +76,7 @@ QN_EXPORT const char *qn_emulate_frame(quickerNES::Emu *e, uint32_t pad1, uint32
 		// 1) Obtain the relative value of arkanoidPosition from the centeringPotValue
 		uint8_t relativePosition = centeringPotValue - arkanoidPosition;
 
-		// 2) The result is reversed and bit-inverted (required by the console)
+		// 2) The result is bit-inverted (required by the console)
 		//    The easiest solution is simply to do this per bit
 		if ((relativePosition & 128) > 0) arkanoidLatch += 1;
 		if ((relativePosition & 64) > 0)  arkanoidLatch += 2;
