@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			void AddButtons(IEnumerable<(string PrefixedName, uint Bitmask)> entries)
 				=> def.BoolButtons.AddRange(entries.Select(static p => p.PrefixedName));
 
-			// Parsing Port1 niputs
+			// Parsing Port1 inputs
 
 			switch (_syncSettings.Port1)
 			{
@@ -136,11 +136,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					def.BoolButtons.Add("P3 Fire");
 
 					break;
-
-				default: break;
 			}
 
-			// Parsing Port2 niputs
+			// Parsing Port2 inputs
 
 			switch (_syncSettings.Port2)
 			{
@@ -157,8 +155,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					AddButtons(FourScoreButtons[1]);
 
 					break;
-
-				default: break;
 			}
 
 			// Adding console buttons
@@ -327,19 +323,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 
 			// Parsing arkanoid inputs
-			uint arkanoidPos = 0;
-			uint arkanoidFire = 0;
+			byte arkanoidPos = 0;
+			byte arkanoidFire = 0;
 
 			switch (_syncSettings.Port1)
 			{
 				case Port1PeripheralOption.ArkanoidNES:
-					arkanoidPos = (uint)controller.AxisValue("P2 Paddle");
-					arkanoidFire = controller.IsPressed("P2 Fire") ? 1u : 0u;
+					arkanoidPos = (byte)controller.AxisValue("P2 Paddle");
+					arkanoidFire = (byte)(controller.IsPressed("P2 Fire") ? 1 : 0);
 					break;
 
 				case Port1PeripheralOption.ArkanoidFamicom:
-					arkanoidPos = (uint)controller.AxisValue("P3 Paddle");
-					arkanoidFire = controller.IsPressed("P3 Fire") ? 1u : 0u;
+					arkanoidPos = (byte)controller.AxisValue("P3 Paddle");
+					arkanoidFire = (byte)(controller.IsPressed("P3 Fire") ? 1 : 0);
 					break;
 			}
 
