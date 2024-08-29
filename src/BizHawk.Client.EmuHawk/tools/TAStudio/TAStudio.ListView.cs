@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (TasView.HorizontalOrientation)
 				{
-					offsetX = 2;
+					offsetX = -1;
 					offsetY = 5;
 				}
 
