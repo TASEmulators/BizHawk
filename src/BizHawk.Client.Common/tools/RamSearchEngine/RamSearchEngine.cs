@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			};
 		}
 
-		public RamSearchEngine(SearchEngineSettings settings, IMemoryDomains memoryDomains, Compare compareTo, long? compareValue, int? differentBy)
+		public RamSearchEngine(SearchEngineSettings settings, IMemoryDomains memoryDomains, Compare compareTo, uint? compareValue, int? differentBy)
 			: this(settings, memoryDomains)
 		{
 			_compareTo = compareTo;
@@ -191,7 +191,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			}
 		}
 
-		public long? CompareValue { get; set; }
+		public uint? CompareValue { get; set; }
 
 		public ComparisonOperator Operator { get; set; }
 
@@ -407,7 +407,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		private IEnumerable<IMiniWatch> CompareSpecificValue(IEnumerable<IMiniWatch> watchList)
 		{
-			if (CompareValue is not long compareValue) throw new InvalidOperationException();
+			if (CompareValue is not uint compareValue) throw new InvalidOperationException();
 			if (_settings.Type is not WatchDisplayType.Float)
 			{
 				switch (Operator)
@@ -465,7 +465,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		private IEnumerable<IMiniWatch> CompareSpecificAddress(IEnumerable<IMiniWatch> watchList)
 		{
-			if (CompareValue is not long compareValue) throw new InvalidOperationException();
+			if (CompareValue is not uint compareValue) throw new InvalidOperationException();
 			switch (Operator)
 			{
 				default:
@@ -490,7 +490,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		private IEnumerable<IMiniWatch> CompareChanges(IEnumerable<IMiniWatch> watchList)
 		{
 			if (!_settings.IsDetailed()) throw new InvalidCastException(); //TODO matches previous behaviour; was this intended to skip processing? --yoshi
-			if (CompareValue is not long compareValue) throw new InvalidCastException(); //TODO typo for IOE?
+			if (CompareValue is not uint compareValue) throw new InvalidCastException(); //TODO typo for IOE?
 			switch (Operator)
 			{
 				default:
@@ -528,7 +528,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		private IEnumerable<IMiniWatch> CompareDifference(IEnumerable<IMiniWatch> watchList)
 		{
-			if (CompareValue is not long compareValue) throw new InvalidCastException(); //TODO typo for IOE?
+			if (CompareValue is not uint compareValue) throw new InvalidCastException(); //TODO typo for IOE?
 			if (_settings.Type is not WatchDisplayType.Float)
 			{
 				switch (Operator)
@@ -584,7 +584,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			}
 		}
 
-		private long SignExtendAsNeeded(long val)
+		private long SignExtendAsNeeded(uint val)
 		{
 			if (_settings.Type != WatchDisplayType.Signed)
 			{
@@ -600,9 +600,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			};
 		}
 
-		private long GetValue(long addr)
+		private uint GetValue(long addr)
 		{
-			// do not return sign extended variables from here.
 			return _settings.Size switch
 			{
 				WatchSize.Byte => MiniByteWatch.GetByte(addr, Domain),

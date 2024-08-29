@@ -33,7 +33,7 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 			_previous = _prevFrame = MiniByteWatch.GetByte(Address, domain);
 		}
 
-		public long Previous => _previous;
+		public uint Previous => _previous;
 
 		public int ChangeCount { get; private set; }
 
@@ -89,7 +89,7 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 			_previous = _prevFrame = MiniWordWatch.GetUshort(Address, domain, bigEndian);
 		}
 
-		public long Previous => _previous;
+		public uint Previous => _previous;
 
 		public int ChangeCount { get; private set; }
 
@@ -144,7 +144,7 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 			_previous = _prevFrame = MiniDWordWatch.GetUint(Address, domain, bigEndian);
 		}
 
-		public long Previous => (int)_previous;
+		public uint Previous => _previous;
 
 		public int ChangeCount { get; private set; }
 

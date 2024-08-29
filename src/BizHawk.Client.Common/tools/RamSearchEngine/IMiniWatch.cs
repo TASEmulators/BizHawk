@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 	internal interface IMiniWatch
 	{
 		long Address { get; }
-		long Previous { get; } // do not store sign extended variables in here.
+		uint Previous { get; }
 		void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian);
 		bool IsValid(MemoryDomain domain);
 	}
@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			_previous = GetByte(Address, domain);
 		}
 
-		public long Previous => _previous;
+		public uint Previous => _previous;
 
 		public bool IsValid(MemoryDomain domain)
 		{
@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			_previous = GetUshort(Address, domain, bigEndian);
 		}
 
-		public long Previous => _previous;
+		public uint Previous => _previous;
 
 		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			_previous = GetUint(Address, domain, bigEndian);
 		}
 
-		public long Previous => _previous;
+		public uint Previous => _previous;
 
 		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
