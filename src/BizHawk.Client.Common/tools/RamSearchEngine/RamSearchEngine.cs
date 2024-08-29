@@ -1,23 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
+using static BizHawk.Common.NumberExtensions.NumberExtensions;
 
 // ReSharper disable PossibleInvalidCastExceptionInForeachLoop
 namespace BizHawk.Client.Common.RamSearchEngine
 {
 	public class RamSearchEngine
 	{
-		/// <remarks>TODO move to BizHawk.Common</remarks>
-		private static float ReinterpretAsF32(long l)
-		{
-			return Unsafe.As<long, float>(ref l);
-		}
-
 		private Compare _compareTo = Compare.Previous;
 
 		private IMiniWatch[] _watchList = Array.Empty<IMiniWatch>();
