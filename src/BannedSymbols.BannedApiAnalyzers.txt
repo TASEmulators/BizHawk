@@ -1,3 +1,11 @@
+M:System.BitConverter.ToDouble(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<double> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from an 8-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.BitConverter.ToInt16(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<short> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from a 2-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.BitConverter.ToInt32(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<int> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from a 4-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.BitConverter.ToInt64(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<long> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from an 8-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.BitConverter.ToSingle(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<float> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from a 4-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.BitConverter.ToUInt16(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<ushort> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from a 2-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.BitConverter.ToUInt32(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<uint> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from a 4-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.BitConverter.ToUInt64(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<ulong> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from an 8-octet struct, reinterpret-cast it with Unsafe.As instead
 M:System.Convert.ToByte(System.String);use byte.{Try,}Parse
 M:System.Convert.ToDecimal(System.String);use decimal.{Try,}Parse
 M:System.Convert.ToDouble(System.String);use double.{Try,}Parse

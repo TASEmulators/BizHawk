@@ -429,9 +429,7 @@ namespace BizHawk.Client.EmuHawk
 					return true;
 				}
 
-				var programIdBytes = new byte[8];
-				Marshal.Copy(optional_program_id, programIdBytes, 0, 8);
-				var programId = BitConverter.ToUInt64(programIdBytes, 0);
+				var programId = MemoryMarshal.GetReference(Util.UnsafeSpanFromPointer<ulong>(ptr: optional_program_id, count: 1));
 
 				FirmwareID seeddbFWID = new("3DS", "seeddb");
 				using BinaryReader seeddb = new(GetFirmware(seeddbFWID));
