@@ -90,7 +90,7 @@ namespace BizHawk.Bizware.Graphics
 		public void BindDefaultRenderTarget()
 			=> CurRenderTarget = null;
 
-		public GDIPlusControlRenderTarget CreateControlRenderTarget(Func<(SDGraphics Graphics, Rectangle Rectangle)> getControlRenderContext)
+		public GDIPlusControlRenderTarget CreateControlRenderTarget(Func<GDIPlusControlRenderContext> getControlRenderContext)
 		{
 			if (_controlRenderTarget != null)
 			{
