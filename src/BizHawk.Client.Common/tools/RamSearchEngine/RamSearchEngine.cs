@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			};
 		}
 
-		public RamSearchEngine(SearchEngineSettings settings, IMemoryDomains memoryDomains, Compare compareTo, uint? compareValue, int? differentBy)
+		public RamSearchEngine(SearchEngineSettings settings, IMemoryDomains memoryDomains, Compare compareTo, uint? compareValue, uint? differentBy)
 			: this(settings, memoryDomains)
 		{
 			_compareTo = compareTo;
@@ -199,7 +199,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		/// zero 07-sep-2014 - this isn't ideal. but don't bother changing it (to a long, for instance) until it can support floats. maybe store it as a double here.<br/>
 		/// it already supported floats by way of reinterpret-cast, it just wasn't implemented correctly on this side --yoshi
 		/// </remarks>
-		public int? DifferentBy { get; set; }
+		public uint? DifferentBy { get; set; }
 
 		public void Update()
 		{
@@ -367,7 +367,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					case ComparisonOperator.LessThanEqual:
 						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) <= SignExtendAsNeeded(w.Previous));
 					case ComparisonOperator.DifferentBy:
-						if (DifferentBy is not int differentBy) throw new InvalidOperationException();
+						if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 						return watchList.Where(w =>
 							differentBy == Math.Abs(SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous)));
 				}
@@ -398,7 +398,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 						return val < prev || val.HawkFloatEquality(prev);
 					});
 				case ComparisonOperator.DifferentBy:
-					if (DifferentBy is not int differentBy) throw new InvalidOperationException();
+					if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 					var differentByF = ReinterpretAsF32(differentBy);
 					return watchList.Where(w => Math.Abs(ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous))
 						.HawkFloatEquality(differentByF));
@@ -426,7 +426,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					case ComparisonOperator.LessThanEqual:
 						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) <= SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.DifferentBy:
-						if (DifferentBy is not int differentBy) throw new InvalidOperationException();
+						if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 						return watchList.Where(w =>
 							differentBy == Math.Abs(SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(compareValue)));
 				}
@@ -456,7 +456,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 						return val < compareValueF || val.HawkFloatEquality(compareValueF);
 					});
 				case ComparisonOperator.DifferentBy:
-					if (DifferentBy is not int differentBy) throw new InvalidOperationException();
+					if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 					var differentByF = ReinterpretAsF32(differentBy);
 					return watchList.Where(w => Math.Abs(ReinterpretAsF32(GetValue(w.Address)) - compareValueF)
 						.HawkFloatEquality(differentByF));
@@ -482,7 +482,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				case ComparisonOperator.LessThanEqual:
 					return watchList.Where(w => w.Address <= compareValue);
 				case ComparisonOperator.DifferentBy:
-					if (DifferentBy is not int differentBy) throw new InvalidOperationException();
+					if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 					return watchList.Where(w => Math.Abs(w.Address - compareValue) == differentBy);
 			}
 		}
@@ -519,7 +519,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 						.Cast<IMiniWatchDetails>()
 						.Where(w => w.ChangeCount <= compareValue);
 				case ComparisonOperator.DifferentBy:
-					if (DifferentBy is not int differentBy) throw new InvalidOperationException();
+					if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 					return watchList
 						.Cast<IMiniWatchDetails>()
 						.Where(w => Math.Abs(w.ChangeCount - compareValue) == differentBy);
@@ -547,7 +547,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					case ComparisonOperator.LessThanEqual:
 						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) <= compareValue);
 					case ComparisonOperator.DifferentBy:
-						if (DifferentBy is not int differentBy) throw new InvalidOperationException();
+						if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 						return watchList.Where(w =>
 							differentBy == Math.Abs(SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) - compareValue));
 				}
@@ -577,7 +577,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 						return diff < compareValueF || diff.HawkFloatEquality(compareValueF);
 					});
 				case ComparisonOperator.DifferentBy:
-					if (DifferentBy is not int differentBy) throw new InvalidOperationException();
+					if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 					var differentByF = ReinterpretAsF32(differentBy);
 					return watchList.Where(w => Math.Abs(ReinterpretAsF32(GetValue(w.Address)) - ReinterpretAsF32(w.Previous) - compareValueF)
 						.HawkFloatEquality(differentByF));
