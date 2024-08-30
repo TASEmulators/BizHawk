@@ -42,6 +42,16 @@ namespace BizHawk.Bizware.Graphics
 			Unknown
 		}
 
+		private static readonly ushort[] _blacklistedIntelDeviceIds =
+		[
+			0x1602, 0x1606, 0x160A, 0x160B,
+			0x160D, 0x160E, 0x1612, 0x1616,
+			0x161A, 0x161B, 0x161D, 0x161E,
+			0x1622, 0x1626, 0x162A, 0x162B,
+			0x162D, 0x162E, 0x1632, 0x1636,
+			0x163A, 0x163B, 0x163D, 0x163E,
+		];
+
 		static D3D11GLInterop()
 		{
 			using (new SavedOpenGLContext())
@@ -135,6 +145,16 @@ namespace BizHawk.Bizware.Graphics
 							// for now, don't even try for unknown vendors
 							default:
 								return;
+						}
+
+						if (vendor == Vendor.Intel)
+						{
+							// avoid Broadwell gpus, these have been reported crashing with gl interop
+							// (specifically, Intel HD Graphics 5500, presumingly all Broadwell are affected, better safe than sorry)
+							if (Array.IndexOf(_blacklistedIntelDeviceIds, adapter.Description.DeviceId) != -1)
+							{
+								return;
+							}
 						}
 
 						unsafe
