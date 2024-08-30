@@ -6,6 +6,7 @@ using Vortice.Direct3D;
 using Vortice.Direct3D11;
 using Vortice.DXGI;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 
 using static SDL2.SDL;
@@ -42,7 +43,7 @@ namespace BizHawk.Bizware.Graphics
 			Unknown
 		}
 
-		private static readonly ushort[] _blacklistedIntelDeviceIds =
+		private static readonly int[] _blacklistedIntelDeviceIds =
 		[
 			0x1602, 0x1606, 0x160A, 0x160B,
 			0x160D, 0x160E, 0x1612, 0x1616,
@@ -151,7 +152,7 @@ namespace BizHawk.Bizware.Graphics
 						{
 							// avoid Broadwell gpus, these have been reported crashing with gl interop
 							// (specifically, Intel HD Graphics 5500, presumingly all Broadwell are affected, better safe than sorry)
-							if (Array.IndexOf(_blacklistedIntelDeviceIds, adapter.Description.DeviceId) != -1)
+							if (_blacklistedIntelDeviceIds.Contains(adapter.Description.DeviceId))
 							{
 								return;
 							}

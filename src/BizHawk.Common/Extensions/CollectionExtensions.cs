@@ -110,6 +110,13 @@ namespace BizHawk.Common.CollectionExtensions
 			foreach (var item in collection) list.Add(item);
 		}
 
+		/// <remarks>
+		/// Contains method for arrays which does not need Linq, but rather uses Array.IndexOf
+		/// similar to <see cref="ICollection{T}.Contains">ICollection's Contains</see>
+		/// </remarks>
+		public static bool Contains<T>(this T[] array, T value)
+			=> Array.IndexOf(array, value) >= 0;
+
 		/// <returns>
 		/// portion of <paramref name="dest"/> that was written to,
 		/// unless either span is empty, in which case the other reference is returned<br/>
