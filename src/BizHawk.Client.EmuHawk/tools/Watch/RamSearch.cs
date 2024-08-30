@@ -172,6 +172,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetToFastMode();
 			}
+			else
+			{
+				SetToDetailedMode();
+			}
 
 			NewSearch();
 		}
