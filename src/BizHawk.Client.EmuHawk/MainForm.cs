@@ -783,6 +783,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheckMayCloseAndCleanup(object/*?*/ closingSender, CancelEventArgs closingArgs)
 		{
+			if (_currAviWriter is not null)
+			{
+				if (!this.ModalMessageBox2(
+					caption: "Really quit?",
+					icon: EMsgBoxIcon.Question,
+					text: "You are currently recording A/V.\nChoose \"Yes\" to finalise it and quit EmuHawk.\nChoose \"No\" to cancel shutdown and continue recording."))
+				{
+					closingArgs.Cancel = true;
+					return;
+				}
+				StopAv();
+			}
+
 			if (!Tools.AskSave())
 			{
 				closingArgs.Cancel = true;
