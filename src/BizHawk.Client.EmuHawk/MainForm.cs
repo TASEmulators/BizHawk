@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -523,21 +524,7 @@ namespace BizHawk.Client.EmuHawk
 				DragDrop += FormDragDrop;
 			};
 
-			Closing += (o, e) =>
-			{
-				if (Tools.AskSave())
-				{
-					// zero 03-nov-2015 - close game after other steps. tools might need to unhook themselves from a core.
-					MovieSession.StopMovie();
-					Tools.Close();
-					CloseGame();
-					SaveConfig();
-				}
-				else
-				{
-					e.Cancel = true;
-				}
-			};
+			Closing += CheckMayCloseAndCleanup;
 
 			ResizeBegin += (o, e) =>
 			{
@@ -792,6 +779,21 @@ namespace BizHawk.Client.EmuHawk
 #endif
 				}
 			}
+		}
+
+		private void CheckMayCloseAndCleanup(object/*?*/ closingSender, CancelEventArgs closingArgs)
+		{
+			if (!Tools.AskSave())
+			{
+				closingArgs.Cancel = true;
+				return;
+			}
+
+			MovieSession.StopMovie();
+			Tools.Close();
+			// zero 03-nov-2015 - close game after other steps. tools might need to unhook themselves from a core.
+			CloseGame();
+			SaveConfig();
 		}
 
 		private readonly bool _suppressSyncSettingsWarning;
