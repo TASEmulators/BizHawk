@@ -52,10 +52,11 @@ namespace BizHawk.Client.EmuHawk
 		public override Size GetPanelNativeSize() => _presentationPanel.NativeSize;
 
 		protected override int GetGraphicsControlDpi()
-			=> OSTailoredCode.IsUnixHost ? DisplayManagerBase.DEFAULT_DPI : GraphicsControlDpi;
-
-		// DeviceDpi is not available under mono, so we need to have this access wrapped in a separate function
-		private int GraphicsControlDpi => _graphicsControl.DeviceDpi;
+		{
+			return OSTailoredCode.IsUnixHost
+				? DEFAULT_DPI
+				: Win32Imports.GetDpiForWindow(_graphicsControl.Handle);
+		}
 
 		protected override Point GraphicsControlPointToClient(Point p) => _graphicsControl.PointToClient(p);
 
