@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public virtual void BulkPeekByte(Range<long> addresses, byte[] values)
+		public virtual void BulkPeekByte(Int64Interval addresses, byte[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
@@ -114,20 +114,20 @@ namespace BizHawk.Emulation.Common
 
 			using (this.EnterExit())
 			{
-				for (var i = addresses.Start; i <= addresses.EndInclusive; i++)
+				for (var i = addresses.Start; i < addresses.EndExclusive; i++)
 				{
 					values[i - addresses.Start] = PeekByte(i);
 				}
 			}
 		}
 
-		public virtual void BulkPeekUshort(Range<long> addresses,  bool bigEndian, ushort[] values)
+		public virtual void BulkPeekUshort(Int64Interval addresses,  bool bigEndian, ushort[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
 			var start = addresses.Start;
-			var end  = addresses.EndInclusive + 1;
+			var end  = addresses.EndExclusive;
 
 			if ((start & 1) != 0 || (end & 1) != 0)
 				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
@@ -145,13 +145,13 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public virtual void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
+		public virtual void BulkPeekUint(Int64Interval addresses, bool bigEndian, uint[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
 			var start = addresses.Start;
-			var end  = addresses.EndInclusive + 1;
+			var end  = addresses.EndExclusive;
 
 			if ((start & 3) != 0 || (end & 3) != 0)
 				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
