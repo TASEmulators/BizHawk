@@ -39,7 +39,9 @@ namespace BizHawk.Common
 					CustomBuildString = lines[0];
 				}
 			}
-			UserAgentEscaped = $"BizHawk/{MainVersion}{(DeveloperBuild ? "-dev" : string.Empty)}";
+			UserAgentEscaped = $"{
+				(string.IsNullOrWhiteSpace(CustomBuildString) ? "EmuHawk" : CustomBuildString!.OnlyAlphanumeric())
+			}/{MainVersion}{(DeveloperBuild ? "-dev" : string.Empty)}";
 		}
 
 		public static (string Label, string TargetURI) GetGitCommitLink()
