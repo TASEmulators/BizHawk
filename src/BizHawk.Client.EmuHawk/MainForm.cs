@@ -453,6 +453,14 @@ namespace BizHawk.Client.EmuHawk
 				AutohideCursor(false);
 				if (Config.ShowContextMenu && e.Button == MouseButtons.Right)
 				{
+					// suppress the context menu if right click has a binding
+					// (unless shift is being pressed, similar to double click fullscreening)
+					var allowSuppress = ModifierKeys != Keys.Shift;
+					if (allowSuppress && InputManager.ActiveController.HasBinding("WMouse R"))
+					{
+						return;
+					}
+
 					MainFormContextMenu.Show(PointToScreen(new Point(e.X, e.Y + MainformMenu.Height)));
 				}
 			}
