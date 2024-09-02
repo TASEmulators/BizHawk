@@ -20,12 +20,12 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public MiniByteWatchDetailed(MemoryDomain domain, long addr) : base(domain, addr)
 		{
-			SetPreviousToCurrent(domain, false);
+			_previous = _current = GetByte(Address, domain);
 		}
 
 		public override void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
-			_previous = _current = GetByte(Address, domain);
+			_previous = _current;
 		}
 
 		public int ChangeCount { get; private set; }
@@ -59,12 +59,12 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public MiniWordWatchDetailed(MemoryDomain domain, long addr, bool bigEndian) : base(domain, addr, bigEndian)
 		{
-			SetPreviousToCurrent(domain, bigEndian);
+			_previous = _current = GetUshort(Address, domain, bigEndian);
 		}
 
 		public override void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
-			_previous = _current = GetUshort(Address, domain, bigEndian);
+			_previous = _current;
 		}
 
 		public uint Current => _current;
@@ -100,12 +100,12 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public MiniDWordWatchDetailed(MemoryDomain domain, long addr, bool bigEndian) : base(domain, addr, bigEndian)
 		{
-			SetPreviousToCurrent(domain, bigEndian);
+			_previous = _current = GetUint(Address, domain, bigEndian);
 		}
 
 		public override void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
-			_previous = _current = GetUint(Address, domain, bigEndian);
+			_previous = _current;
 		}
 
 		public int ChangeCount { get; private set; }
