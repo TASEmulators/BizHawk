@@ -362,9 +362,8 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly ConsoleID[] UseFullMainMem =
 		[
 			ConsoleID.Amiga, ConsoleID.Lynx, ConsoleID.NeoGeoPocket, ConsoleID.Jaguar,
-			ConsoleID.JaguarCD, ConsoleID.DS, ConsoleID.DSi, ConsoleID.AppleII,
-			ConsoleID.Vectrex, ConsoleID.Tic80, ConsoleID.PCEngine, ConsoleID.Uzebox,
-			ConsoleID.Nintendo3DS,
+			ConsoleID.JaguarCD, ConsoleID.AppleII, ConsoleID.Vectrex, ConsoleID.Tic80,
+			ConsoleID.PCEngine, ConsoleID.Uzebox, ConsoleID.Nintendo3DS,
 		];
 
 		// these consoles will use part of the system bus at an offset
@@ -582,6 +581,11 @@ namespace BizHawk.Client.EmuHawk
 					case ConsoleID.TI83:
 						TryAddDomain("RAM"); // Emu83
 						TryAddDomain("Main RAM"); // TI83Hawk
+						break;
+					case ConsoleID.DS:
+					case ConsoleID.DSi:
+						TryAddDomain("Main RAM", 0x1000000);
+						mfs.Add(new(domains["Data TCM"], 0, domains["Data TCM"].Size));
 						break;
 					case ConsoleID.UnknownConsoleID:
 					case ConsoleID.ZXSpectrum: // this doesn't actually have anything standardized, so...
