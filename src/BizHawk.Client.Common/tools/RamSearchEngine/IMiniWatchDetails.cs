@@ -9,6 +9,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 	/// </summary>
 	internal interface IMiniWatchDetails : IMiniWatch
 	{
+		uint Current { get; }
 		int ChangeCount { get; }
 		void ClearChangeCount();
 		void Update(PreviousType type, MemoryDomain domain, bool bigEndian);
@@ -27,6 +28,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			_previous = _current;
 		}
+
+		public uint Current => _current;
 
 		public int ChangeCount { get; private set; }
 
@@ -107,6 +110,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			_previous = _current;
 		}
+
+		public uint Current => _current;
 
 		public int ChangeCount { get; private set; }
 
