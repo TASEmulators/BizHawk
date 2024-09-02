@@ -587,8 +587,29 @@ namespace BizHawk.Client.EmuHawk
 						TryAddDomain("Main RAM", 0x1000000);
 						mfs.Add(new(domains["Data TCM"], 0, domains["Data TCM"].Size));
 						break;
+					case ConsoleID.ZXSpectrum:
+						// zx spectrum is complicated due to various machine types and the ram configs that come with such
+						// in practice, it can mostly be deduced into two categories: ZX 16K/48K and ZX 128Ks
+						if (domains.Has("RAM - BANK 0 (Screen)")) // ZX 16/48K
+						{
+							mfs.Add(new(domains["RAM - BANK 0 (Screen)"], 0, domains["RAM - BANK 0 (Screen)"].Size));
+							TryAddDomain("RAM - BANK 1");
+							TryAddDomain("RAM - BANK 2");
+						}
+						else // ZX 128Ks
+						{
+							mfs.Add(new(domains["RAM - BANK 5 (Screen)"], 0, domains["RAM - BANK 5 (Screen)"].Size));
+							mfs.Add(new(domains["RAM - BANK 2"], 0, domains["RAM - BANK 2"].Size));
+							mfs.Add(new(domains["RAM - BANK 0"], 0, domains["RAM - BANK 0"].Size));
+							mfs.Add(new(domains["RAM - BANK 1"], 0, domains["RAM - BANK 1"].Size));
+							mfs.Add(new(domains["RAM - BANK 3"], 0, domains["RAM - BANK 3"].Size));
+							mfs.Add(new(domains["RAM - BANK 4"], 0, domains["RAM - BANK 4"].Size));
+							mfs.Add(new(domains["RAM - BANK 6"], 0, domains["RAM - BANK 6"].Size));
+							mfs.Add(new(domains["RAM - BANK 7 (Shadow Screen)"], 0, domains["RAM - BANK 7 (Shadow Screen)"].Size));
+						}
+
+						break;
 					case ConsoleID.UnknownConsoleID:
-					case ConsoleID.ZXSpectrum: // this doesn't actually have anything standardized, so...
 					default:
 						mfs.Add(new(domains.MainMemory, 0, domains.MainMemory.Size));
 						break;
