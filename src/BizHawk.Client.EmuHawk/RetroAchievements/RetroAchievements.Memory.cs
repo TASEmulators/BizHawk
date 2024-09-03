@@ -412,6 +412,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
+				// ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 				switch (consoleId)
 				{
 					case ConsoleID.MegaDrive:
