@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			}
 			else
 			{
-				var m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Big, data, false, 1);
+				var m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Big, data, true, 1);
 				_byteArrayDomains.Add(name, m);
 			}
 #pragma warning restore MEN014
