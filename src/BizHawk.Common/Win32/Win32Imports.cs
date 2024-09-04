@@ -67,5 +67,8 @@ namespace BizHawk.Common
 
 		[DllImport("user32.dll", ExactSpelling = true)]
 		public static extern int TrackPopupMenuEx(IntPtr hmenu, TPM fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
+
+		[DllImport("user32.dll", ExactSpelling = true)]
+		public static extern int GetDpiForWindow(IntPtr hwnd);
 	}
 }

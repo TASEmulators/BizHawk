@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Cart.BoardType = Cart.BoardType.TrimEnd('\0');
 			Cart.BoardType = "UNIF_" + Cart.BoardType;
 
-			if (Chunks.TryGetValue("BATR", out _))
+			if (Chunks.ContainsKey("BATR"))
 			{
 				// apparently, this chunk just existing means battery is yes
 				Cart.WramBattery = true;

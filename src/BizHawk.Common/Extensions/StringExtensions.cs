@@ -43,6 +43,10 @@ namespace BizHawk.Common.StringExtensions
 		public static bool In(this string str, params string[] options) =>
 			options.Any(opt => string.Equals(opt, str, StringComparison.OrdinalIgnoreCase));
 
+		/// <returns>a copy of <paramref name="raw"/> with all characters outside <c>[0-9A-Za-z]</c> removed</returns>
+		public static string OnlyAlphanumeric(this string raw)
+			=> string.Concat(raw.Where(static c => c is (>= '0' and <= '9') or (>= 'A' and <= 'Z') or (>= 'a' and <= 'z')));
+
 		/// <returns>
 		/// <paramref name="str"/> with the first char removed, or
 		/// the original <paramref name="str"/> if the first char of <paramref name="str"/> is not <paramref name="prefix"/>

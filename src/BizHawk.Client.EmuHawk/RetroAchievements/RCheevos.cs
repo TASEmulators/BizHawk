@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			_lib.rc_hash_init_custom_filereader(in _filereader);
 			_lib.rc_hash_init_custom_cdreader(in _cdreader);
 
-			_http.DefaultRequestHeaders.UserAgent.ParseAdd($"BizHawk/{VersionInfo.GetEmuVersion()}");
+			_http.DefaultRequestHeaders.UserAgent.ParseAdd(VersionInfo.UserAgentEscaped);
 		}
 
 		private IntPtr _runtime;

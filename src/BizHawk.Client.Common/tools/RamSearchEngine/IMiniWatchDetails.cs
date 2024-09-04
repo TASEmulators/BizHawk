@@ -1,6 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 
-namespace  BizHawk.Client.Common.RamSearchEngine
+namespace BizHawk.Client.Common.RamSearchEngine
 {
 	/// <summary>
 	/// Represents a <see cref="IMiniWatch" /> but with added details
@@ -9,175 +9,132 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 	/// </summary>
 	internal interface IMiniWatchDetails : IMiniWatch
 	{
+		uint Current { get; }
 		int ChangeCount { get; }
-
 		void ClearChangeCount();
 		void Update(PreviousType type, MemoryDomain domain, bool bigEndian);
 	}
 
-	internal sealed class MiniByteWatchDetailed : IMiniWatchDetails
+	internal sealed class MiniByteWatchDetailed : MiniByteWatch, IMiniWatchDetails
 	{
-		public long Address { get; }
+		private byte _current;
 
-		private byte _previous;
-		private byte _prevFrame;
-
-		public MiniByteWatchDetailed(MemoryDomain domain, long addr)
+		public MiniByteWatchDetailed(MemoryDomain domain, long addr) : base(domain, addr)
 		{
-			Address = addr;
-			SetPreviousToCurrent(domain, false);
+			_previous = _current = GetByte(Address, domain);
 		}
 
-		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
+		public override void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
-			_previous = _prevFrame = MiniByteWatch.GetByte(Address, domain);
+			_previous = _current;
 		}
 
-		public long Previous => _previous;
+		public uint Current => _current;
 
 		public int ChangeCount { get; private set; }
 
 		public void Update(PreviousType type, MemoryDomain domain, bool bigEndian)
 		{
-			var value = MiniByteWatch.GetByte(Address, domain);
-
-			if (value != _prevFrame)
+			var newValue = GetByte(Address, domain);
+			if (newValue != _current)
 			{
 				ChangeCount++;
+				if (type is PreviousType.LastChange)
+				{
+					_previous = _current;
+				}
 			}
 
-			switch (type)
+			if (type is PreviousType.LastFrame)
 			{
-				case PreviousType.Original:
-				case PreviousType.LastSearch:
-					break;
-				case PreviousType.LastFrame:
-					_previous = _prevFrame;
-					break;
-				case PreviousType.LastChange:
-					if (_prevFrame != value)
-					{
-						_previous = _prevFrame;
-					}
-
-					break;
+				_previous = _current;
 			}
 
-			_prevFrame = value;
+			_current = newValue;
 		}
 
 		public void ClearChangeCount() => ChangeCount = 0;
-
-		public bool IsValid(MemoryDomain domain) => MiniByteWatch.IsValid(Address, domain);
 	}
 
-	internal sealed class MiniWordWatchDetailed : IMiniWatchDetails
+	internal sealed class MiniWordWatchDetailed : MiniWordWatch, IMiniWatchDetails
 	{
-		public long Address { get; }
+		private ushort _current;
 
-		private ushort _previous;
-		private ushort _prevFrame;
-
-		public MiniWordWatchDetailed(MemoryDomain domain, long addr, bool bigEndian)
+		public MiniWordWatchDetailed(MemoryDomain domain, long addr, bool bigEndian) : base(domain, addr, bigEndian)
 		{
-			Address = addr;
-			SetPreviousToCurrent(domain, bigEndian);
+			_previous = _current = GetUshort(Address, domain, bigEndian);
 		}
 
-		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
+		public override void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
-			_previous = _prevFrame = MiniWordWatch.GetUshort(Address, domain, bigEndian);
+			_previous = _current;
 		}
 
-		public long Previous => _previous;
+		public uint Current => _current;
 
 		public int ChangeCount { get; private set; }
 
 		public void Update(PreviousType type, MemoryDomain domain, bool bigEndian)
 		{
-			var value = MiniWordWatch.GetUshort(Address, domain, bigEndian);
-			if (value != Previous)
+			var newValue = GetUshort(Address, domain, bigEndian);
+			if (newValue != _current)
 			{
 				ChangeCount++;
+				if (type is PreviousType.LastChange)
+				{
+					_previous = _current;
+				}
 			}
 
-			switch (type)
+			if (type is PreviousType.LastFrame)
 			{
-				case PreviousType.Original:
-				case PreviousType.LastSearch:
-					break;
-				case PreviousType.LastFrame:
-					_previous = _prevFrame;
-					break;
-				case PreviousType.LastChange:
-					if (_prevFrame != value)
-					{
-						_previous = _prevFrame;
-					}
-
-					break;
+				_previous = _current;
 			}
 
-			_prevFrame = value;
+			_current = newValue;
 		}
 
 		public void ClearChangeCount() => ChangeCount = 0;
-
-		public bool IsValid(MemoryDomain domain) => MiniWordWatch.IsValid(Address, domain);
 	}
 
-	internal sealed class MiniDWordWatchDetailed : IMiniWatchDetails
+	internal sealed class MiniDWordWatchDetailed : MiniDWordWatch, IMiniWatchDetails
 	{
-		public long Address { get; }
+		private uint _current;
 
-		private uint _previous;
-		private uint _prevFrame;
-
-		public MiniDWordWatchDetailed(MemoryDomain domain, long addr, bool bigEndian)
+		public MiniDWordWatchDetailed(MemoryDomain domain, long addr, bool bigEndian) : base(domain, addr, bigEndian)
 		{
-			Address = addr;
-			SetPreviousToCurrent(domain, bigEndian);
+			_previous = _current = GetUint(Address, domain, bigEndian);
 		}
 
-		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
+		public override void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
-			_previous = _prevFrame = MiniDWordWatch.GetUint(Address, domain, bigEndian);
+			_previous = _current;
 		}
 
-		public long Previous => (int)_previous;
+		public uint Current => _current;
 
 		public int ChangeCount { get; private set; }
 
 		public void Update(PreviousType type, MemoryDomain domain, bool bigEndian)
 		{
-			var value = MiniDWordWatch.GetUint(Address, domain, bigEndian);
-			if (value != Previous)
+			var newValue = GetUint(Address, domain, bigEndian);
+			if (newValue != _current)
 			{
 				ChangeCount++;
+				if (type is PreviousType.LastChange)
+				{
+					_previous = _current;
+				}
 			}
 
-			switch (type)
+			if (type is PreviousType.LastFrame)
 			{
-				case PreviousType.Original:
-				case PreviousType.LastSearch:
-					break;
-				case PreviousType.LastFrame:
-					_previous = _prevFrame;
-					break;
-				case PreviousType.LastChange:
-					if (_prevFrame != value)
-					{
-						_previous = _prevFrame;
-					}
-
-					break;
+				_previous = _current;
 			}
 
-			_prevFrame = value;
+			_current = newValue;
 		}
 
 		public void ClearChangeCount() => ChangeCount = 0;
-
-		public bool IsValid(MemoryDomain domain) => MiniDWordWatch.IsValid(Address, domain);
 	}
 }

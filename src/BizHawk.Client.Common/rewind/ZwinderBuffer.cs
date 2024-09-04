@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 
@@ -353,7 +354,7 @@ namespace BizHawk.Client.Common
 			{
 				byte[] sizeArr = new byte[8];
 				reader.Read(sizeArr, 1, 7);
-				var size = BitConverter.ToInt64(sizeArr, 0);
+				var size = MemoryMarshal.Read<long>(sizeArr);
 				var sizeMask = reader.ReadInt64();
 				var targetFrameLength = reader.ReadInt32();
 				var useCompression = reader.ReadBoolean();

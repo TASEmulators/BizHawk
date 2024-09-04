@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -452,6 +453,14 @@ namespace BizHawk.Client.EmuHawk
 				AutohideCursor(false);
 				if (Config.ShowContextMenu && e.Button == MouseButtons.Right)
 				{
+					// suppress the context menu if right click has a binding
+					// (unless shift is being pressed, similar to double click fullscreening)
+					var allowSuppress = ModifierKeys != Keys.Shift;
+					if (allowSuppress && InputManager.ActiveController.HasBinding("WMouse R"))
+					{
+						return;
+					}
+
 					MainFormContextMenu.Show(PointToScreen(new Point(e.X, e.Y + MainformMenu.Height)));
 				}
 			}
@@ -523,21 +532,7 @@ namespace BizHawk.Client.EmuHawk
 				DragDrop += FormDragDrop;
 			};
 
-			Closing += (o, e) =>
-			{
-				if (Tools.AskSave())
-				{
-					// zero 03-nov-2015 - close game after other steps. tools might need to unhook themselves from a core.
-					MovieSession.StopMovie();
-					Tools.Close();
-					CloseGame();
-					SaveConfig();
-				}
-				else
-				{
-					e.Cancel = true;
-				}
-			};
+			Closing += CheckMayCloseAndCleanup;
 
 			ResizeBegin += (o, e) =>
 			{
@@ -792,6 +787,34 @@ namespace BizHawk.Client.EmuHawk
 #endif
 				}
 			}
+		}
+
+		private void CheckMayCloseAndCleanup(object/*?*/ closingSender, CancelEventArgs closingArgs)
+		{
+			if (_currAviWriter is not null)
+			{
+				if (!this.ModalMessageBox2(
+					caption: "Really quit?",
+					icon: EMsgBoxIcon.Question,
+					text: "You are currently recording A/V.\nChoose \"Yes\" to finalise it and quit EmuHawk.\nChoose \"No\" to cancel shutdown and continue recording."))
+				{
+					closingArgs.Cancel = true;
+					return;
+				}
+				StopAv();
+			}
+
+			if (!Tools.AskSave())
+			{
+				closingArgs.Cancel = true;
+				return;
+			}
+
+			MovieSession.StopMovie();
+			Tools.Close();
+			// zero 03-nov-2015 - close game after other steps. tools might need to unhook themselves from a core.
+			CloseGame();
+			SaveConfig();
 		}
 
 		private readonly bool _suppressSyncSettingsWarning;

@@ -9,15 +9,15 @@ namespace BizHawk.Client.Common.RamSearchEngine
 	internal interface IMiniWatch
 	{
 		long Address { get; }
-		long Previous { get; } // do not store sign extended variables in here.
+		uint Previous { get; }
 		void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian);
 		bool IsValid(MemoryDomain domain);
 	}
 
-	internal sealed class MiniByteWatch : IMiniWatch
+	internal class MiniByteWatch : IMiniWatch
 	{
 		public long Address { get; }
-		private byte _previous;
+		private protected byte _previous;
 
 		public MiniByteWatch(MemoryDomain domain, long addr)
 		{
@@ -25,14 +25,14 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			_previous = GetByte(Address, domain);
 		}
 
-		public long Previous => _previous;
+		public uint Previous => _previous;
 
 		public bool IsValid(MemoryDomain domain)
 		{
 			return IsValid(Address, domain);
 		}
 
-		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
+		public virtual void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
 			_previous = GetByte(Address, domain);
 		}
@@ -53,10 +53,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		}
 	}
 
-	internal sealed class MiniWordWatch : IMiniWatch
+	internal class MiniWordWatch : IMiniWatch
 	{
 		public long Address { get; }
-		private ushort _previous;
+		private protected ushort _previous;
 
 		public MiniWordWatch(MemoryDomain domain, long addr, bool bigEndian)
 		{
@@ -64,9 +64,9 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			_previous = GetUshort(Address, domain, bigEndian);
 		}
 
-		public long Previous => _previous;
+		public uint Previous => _previous;
 
-		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
+		public virtual void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
 			_previous = GetUshort(Address, domain, bigEndian);
 		}
@@ -92,10 +92,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		}
 	}
 
-	internal sealed class MiniDWordWatch : IMiniWatch
+	internal class MiniDWordWatch : IMiniWatch
 	{
 		public long Address { get; }
-		private uint _previous;
+		private protected uint _previous;
 
 		public MiniDWordWatch(MemoryDomain domain, long addr, bool bigEndian)
 		{
@@ -103,9 +103,9 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			_previous = GetUint(Address, domain, bigEndian);
 		}
 
-		public long Previous => _previous;
+		public uint Previous => _previous;
 
-		public void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
+		public virtual void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 		{
 			_previous = GetUint(Address, domain, bigEndian);
 		}

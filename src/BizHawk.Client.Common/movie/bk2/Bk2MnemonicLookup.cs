@@ -510,6 +510,7 @@ namespace BizHawk.Client.Common
 			{
 				["LidOpen"] = 'o',
 				["LidClose"] = 'c',
+				["Microphone"] = 'M',
 				["Touch"] = 'T'
 			},
 			[VSystemID.Raw.O2] = new()

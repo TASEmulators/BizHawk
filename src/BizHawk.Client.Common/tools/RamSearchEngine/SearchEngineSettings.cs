@@ -8,14 +8,11 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			BigEndian = memoryDomains.MainMemory.EndianType == MemoryDomain.Endian.Big;
 			Size = (WatchSize)memoryDomains.MainMemory.WordSize;
-			Type = WatchDisplayType.Unsigned;
 			Mode = memoryDomains.MainMemory.Size > 1024 * 1024
 				? SearchMode.Fast
 				: SearchMode.Detailed;
 
 			Domain = memoryDomains.MainMemory;
-			CheckMisAligned = false;
-			PreviousType = PreviousType.LastSearch;
 			UseUndoHistory = useUndoHistory;
 		}
 
@@ -26,9 +23,9 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		public bool CheckMisAligned { get; set; }
 
 		/*Can be changed mid-search*/
-		public WatchDisplayType Type { get; set; }
+		public WatchDisplayType Type { get; set; } = WatchDisplayType.Unsigned;
 		public bool BigEndian { get; set; }
-		public PreviousType PreviousType { get; set; }
+		public PreviousType PreviousType { get; set; } = PreviousType.LastSearch;
 		public bool UseUndoHistory { get; set; }
 	}
 
