@@ -12,6 +12,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public virtual void SyncByteArrayDomain(ChannelF sys)
 		{
 			sys.SyncByteArrayDomain("ROM", _rom);
+			if (_ram?.Length > 0)
+			{
+				sys.SyncByteArrayDomain("SRAM", _ram);
+			}
 		}
 
 		public virtual byte[] ROM

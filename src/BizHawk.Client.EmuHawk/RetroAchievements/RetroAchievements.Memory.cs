@@ -565,6 +565,11 @@ namespace BizHawk.Client.EmuHawk
 						// special case
 						mfs.Add(new ChanFMemFunctions(debuggable, domains["VRAM"]));
 						mfs.Add(new(domains.SystemBus, 0, domains.SystemBus.Size));
+						// only add in SRAM if it's from HANG/MAZE carts (where SRAM isn't on the System Bus)
+						if (domains.Has("SRAM") && domains["SRAM"].Size == 0x200)
+						{
+							mfs.Add(new(domains["SRAM"], 0, domains["SRAM"].Size));
+						}
 						break;
 					case ConsoleID.PCEngineCD:
 						mfs.Add(new(domains["System Bus (21 bit)"], 0x1F0000, 0x2000));

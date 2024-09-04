@@ -36,6 +36,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			CPU.SyncState(ser);
 			Cartridge.SyncState(ser);
 			ser.EndSection();
+
+			if (ser.IsReader)
+			{
+				SyncAllByteArrayDomains();
+			}
+
 			/*
 
 			byte[] core = null;
