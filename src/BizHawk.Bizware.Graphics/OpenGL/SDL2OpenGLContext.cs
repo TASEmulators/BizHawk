@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 using Silk.NET.OpenGL;
 #endif
 
+using BizHawk.Common;
+
 using static SDL2.SDL;
 
 namespace BizHawk.Bizware.Graphics
@@ -16,16 +18,59 @@ namespace BizHawk.Bizware.Graphics
 	{
 		static SDL2OpenGLContext()
 		{
+			if (OSTailoredCode.IsUnixHost)
+			{
+				// make sure that Linux uses the x11 video driver
+				// we need this as mono winforms uses x11
+				// and the user could potentially try to force the wayland video driver via env vars
+				SDL_SetHint("SDL_VIDEODRIVER", "x11");
+				// try to use EGL if it is available
+				// GLX is the old API, and is the more or less "deprecated" at this point, and potentially more buggy with some drivers
+				// we do need to a bit more work, in case EGL is not actually available or potentially doesn't have desktop GL support
+				SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "1");
+			}
+
 			// init SDL video
 			if (SDL_Init(SDL_INIT_VIDEO) != 0)
 			{
 				throw new($"Could not init SDL video! SDL Error: {SDL_GetError()}");
 			}
 
-			// load the default OpenGL library
-			if (SDL_GL_LoadLibrary(null) != 0)
+			if (OSTailoredCode.IsUnixHost)
 			{
-				throw new($"Could not load default OpenGL library! SDL Error: {SDL_GetError()}");
+				// if we fail to load EGL, we'll just try again with GLX...
+				var loadGlx = SDL_GL_LoadLibrary(null) != 0;
+
+				if (!loadGlx)
+				{
+					try
+					{
+						// check if we can actually create a desktop GL context
+						using var glContext = new SDL2OpenGLContext(3, 2, true);
+					}
+					catch
+					{
+						// failed to create a context, fallback to GLX
+						loadGlx = true;
+					}
+				}
+
+				if (loadGlx)
+				{
+					SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "0");
+					if (SDL_GL_LoadLibrary(null) != 0)
+					{
+						throw new($"Could not load default OpenGL library! SDL Error: {SDL_GetError()}");
+					}
+				}
+			}
+			else
+			{
+				// load the default OpenGL library
+				if (SDL_GL_LoadLibrary(null) != 0)
+				{
+					throw new($"Could not load default OpenGL library! SDL Error: {SDL_GetError()}");
+				}
 			}
 
 			// we will be turning a foreign window into an SDL window
@@ -53,7 +98,6 @@ namespace BizHawk.Bizware.Graphics
 				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_GREEN_SIZE, 8) is not 0
 				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BLUE_SIZE, 8) is not 0
 				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_ALPHA_SIZE, 0) is not 0
-				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DEPTH_SIZE, 24) is not 0
 				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DOUBLEBUFFER, 1) is not 0)
 			{
 				throw new($"Could not set GL attributes! SDL Error: {SDL_GetError()}");
@@ -122,7 +166,15 @@ namespace BizHawk.Bizware.Graphics
 				throw new($"Could not create SDL Window! SDL Error: {SDL_GetError()}");
 			}
 
-			CreateContext();
+			try
+			{
+				CreateContext();
+			}
+			catch
+			{
+				Dispose();
+				throw;
+			}
 		}
 
 		public SDL2OpenGLContext(int majorVersion, int minorVersion, bool coreProfile)
@@ -138,7 +190,15 @@ namespace BizHawk.Bizware.Graphics
 				throw new($"Could not create SDL Window! SDL Error: {SDL_GetError()}");
 			}
 
-			CreateContext();
+			try
+			{
+				CreateContext();
+			}
+			catch
+			{
+				Dispose();
+				throw;
+			}
 		}
 
 		public void Dispose()
