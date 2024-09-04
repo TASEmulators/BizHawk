@@ -329,13 +329,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			switch (_syncSettings.Port1)
 			{
 				case Port1PeripheralOption.ArkanoidNES:
-					arkanoidPos = (byte)controller.AxisValue("P2 Paddle");
-					arkanoidFire = (byte)(controller.IsPressed("P2 Fire") ? 1 : 0);
+					arkanoidPos = unchecked((byte)controller.AxisValue("P2 Paddle"));
+					arkanoidFire = controller.IsPressed("P2 Fire") ? (byte) 1 : (byte) 0;
 					break;
 
 				case Port1PeripheralOption.ArkanoidFamicom:
-					arkanoidPos = (byte)controller.AxisValue("P3 Paddle");
-					arkanoidFire = (byte)(controller.IsPressed("P3 Fire") ? 1 : 0);
+					arkanoidPos = unchecked((byte)controller.AxisValue("P3 Paddle"));
+					arkanoidFire = controller.IsPressed("P3 Fire") ? (byte) 1 : (byte) 0;
 					break;
 			}
 
