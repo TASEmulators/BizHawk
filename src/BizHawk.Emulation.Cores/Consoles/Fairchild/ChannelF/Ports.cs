@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					{
 						// WRT pulse
 						// pulse clocks the 74195 parallel access shift register which feeds inputs of 2 NAND gates
-						// writing data to both sets of even and odd VRAM chips (based on the row and column addresses latched into the 7493 ICs
+						// writing data to both sets of even and odd VRAM chips (based on the row and column addresses latched into the 7493 ICs)
 						VRAM[((latch_y) * 0x80) + latch_x] = (byte)latch_colour; 
 					}
 					break;
@@ -119,12 +119,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				case 5:
 					OutputLatch[addr] = value;					
 					latch_y = (value | 0xC0) ^ 0xFF;
-					var audio = ((value ^ 0xFF) >> 6) & 0x03;
+					var audio = ((value) >> 6) & 0x03;
 					if (audio != tone)
 					{
 						tone = audio;
-						time = 0;
-						amplitude = 1;
 						AudioChange();
 					}
 					break;

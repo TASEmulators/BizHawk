@@ -320,7 +320,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			set { }
 		}
 
-		public string PCRegisterName => "PC";
+		public string PCRegisterName => "PC0";
 
 		public IEnumerable<string> AvailableCpus { get; } = [ "F3850" ];
 
