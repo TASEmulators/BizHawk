@@ -16,13 +16,11 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			CoreComm = lp.Comm;
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
 			_files = lp.Roms.Select(r => r.RomData).ToList();
-			
 
-			var settings = lp.Settings ?? new ChannelFSettings();
-			var syncSettings = lp.SyncSettings ?? new ChannelFSyncSettings();
+			Settings = lp.Settings ?? new ChannelFSettings();
+			SyncSettings = lp.SyncSettings ?? new ChannelFSyncSettings();
 
-			region = syncSettings.Region;
-
+			region = SyncSettings.Region;
 
 			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
