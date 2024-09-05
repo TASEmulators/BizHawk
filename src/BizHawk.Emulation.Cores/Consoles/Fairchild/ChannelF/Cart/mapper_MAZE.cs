@@ -9,7 +9,7 @@
 
 		public mapper_MAZE(byte[] rom)
 		{
-			ROM = new byte[0xFFFF - 0x800];
+			ROM = new byte[0x10000 - 0x800];
 			for (int i = 0; i < rom.Length; i++)
 			{
 				ROM[i] = rom[i];
