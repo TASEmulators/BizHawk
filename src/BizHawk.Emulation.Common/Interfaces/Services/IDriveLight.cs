@@ -16,9 +16,7 @@
 		/// </summary>
 		bool DriveLightOn { get; }
 
-		/// <summary>
-		/// Gets a value indicating the description of the drive light icon (that will be displayed as a ToolTip on MainForm
-		/// </summary>
+		/// <value>description of the drive light icon (used in MainForm for the tooltip of the status bar icon)</value>
 		string DriveLightIconDescription { get; }
 	}
 }
