@@ -137,8 +137,11 @@ B074C867F235FB69CED96C6916673B45		Video Blackjack (1976)(Fairchild)	ChannelF		bo
 C3C7B3246E50117BD5CDDB2B53E6FBAE		Werbetextcassette (198x)(Electronic-Partner)(DE)	ChannelF			DE
 
 
-AC9804D4C0E9D07E33472E3726ED15C3		Fairchild VES &amp; Channel F BIOS (1976)(Fairchild)[SL31253]	ChannelF		board=STD	
-DA98F4BB3242AB80D76629021BB27585		Fairchild VES &amp; Channel F BIOS (1976)(Fairchild)[SL31254]	ChannelF		board=STD	
-95D339631D867C8F1D15A5F2EC26069D		Fairchild VES &amp; Channel F BIOS (1976)(Fairchild)[SL90025]	ChannelF		board=STD	
-495AA78EEFD90504A15E20DDDCC4943F		Fairchild VES &amp; Channel F BIOS (1976)(Fairchild)[b concatenated SL31253 &amp; SL31254]	ChannelF		board=STD	
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; BIOSes - If any of these are loaded as a ROM ChannelFHawk will jump to the on-board games
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+AC9804D4C0E9D07E33472E3726ED15C3		Fairchild VES &amp; Channel F BIOS [PSU1] (1976)(Fairchild)[SL31253]	ChannelF		board=BIOS	
+DA98F4BB3242AB80D76629021BB27585		Fairchild VES &amp; Channel F BIOS [PSU2](1976)(Fairchild)[SL31254]	ChannelF		board=BIOS	
+95D339631D867C8F1D15A5F2EC26069D		Fairchild VES &amp; Channel F II BIOS [PSU1] (1976)(Fairchild)[SL90025]	ChannelF		board=BIOS	
+495AA78EEFD90504A15E20DDDCC4943F		Fairchild VES &amp; Channel F BIOS [PSU1+2] (1976)(Fairchild)[b concatenated SL31253 &amp; SL31254]	ChannelF		board=BIOS	
 

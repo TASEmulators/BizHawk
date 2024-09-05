@@ -62,6 +62,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			switch (boardStr)
 			{
+				// The supplied ROM is actually a BIOS
+				case "BIOS":
+					// we can just pass the rom into channel f and because it does not detect a 0x55 at rom[0] it will just jump straight to onboard games
+					// (hockey and tennis)
+					return new mapper_STD(rom);
+
 				// standard cart layout
 				case "STD":				
 					// any number of F3851 Program Storage Units (1KB ROM each) or F3856 Program Storage Unit (2KB ROM)
