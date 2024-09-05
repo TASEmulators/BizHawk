@@ -786,7 +786,20 @@ namespace BizHawk.Client.Common
 				["Insert"] = 'v',
 				["Next Drive"] = '}',
 				["Next Slot"] = '>',
-			}
+			},
+			[VSystemID.Raw.ChannelF] = new()
+			{
+				["Forward"] = 'U',
+				["Back"] = 'D',
+				["Left"] = 'L',
+				["Right"] = 'R',
+				["Pull"] = 'O',
+				["Push"] = 'P',
+				["Time"] = 'T',
+				["Mode"] = 'M',
+				["Hold"] = 'H',
+				["Start"] = 'S',
+			},
 		};
 
 		private static readonly Dictionary<string, string> BaseAxisLookupTable = new Dictionary<string, string>
@@ -836,6 +849,11 @@ namespace BizHawk.Client.Common
 				["Mouse Position Y"] = "mpY",
 				["Mouse Scroll X"] = "msX",
 				["Mouse Scroll Y"] = "msY",
+			},
+			[VSystemID.Raw.ChannelF] = new()
+			{
+				["CCW"] = "CCW",
+				["CW"] = "CW",				
 			},
 		};
 	}
