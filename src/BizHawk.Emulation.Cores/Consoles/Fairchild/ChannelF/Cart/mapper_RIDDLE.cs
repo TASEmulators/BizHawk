@@ -1,6 +1,4 @@
-﻿using BizHawk.Common.NumberExtensions;
-
-namespace BizHawk.Emulation.Cores.Consoles.ChannelF
+﻿namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	/// <summary>
 	/// Sean Riddle's modified SCHACH cart mapper (multi-cart) (WIP)
