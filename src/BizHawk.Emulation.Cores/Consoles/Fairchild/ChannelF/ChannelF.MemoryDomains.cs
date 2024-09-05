@@ -7,16 +7,27 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	public partial class ChannelF
 	{
-		internal IMemoryDomains memoryDomains;
-		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
-		private bool _memoryDomainsInit = false;
+		private IMemoryDomains _memoryDomains;
+		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = [ ];
+		private bool _memoryDomainsInit;
 
 		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>
 			{
+				new MemoryDomainDelegate("Scratchpad", 64, MemoryDomain.Endian.Big,
+					addr =>
+					{
+						if (addr is < 0 or > 63) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+						return CPU.Regs[addr];
+					},
+					(addr, value) =>
+					{
+						if (addr is < 0 or > 63) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+						CPU.Regs[addr] = value;
+					}, 1),
 				new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Big,
-					(addr) =>
+					addr =>
 					{
 						if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 						return ReadBus((ushort)addr);
@@ -30,8 +41,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			SyncAllByteArrayDomains();
 
-			memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
-			(ServiceProvider as BasicServiceProvider)?.Register<IMemoryDomains>(memoryDomains);
+			_memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList()) { MainMemory = domains[0] };
+			((BasicServiceProvider)ServiceProvider).Register(_memoryDomains);
 
 			_memoryDomainsInit = true;
 		}
