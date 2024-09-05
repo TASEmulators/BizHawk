@@ -26,10 +26,6 @@
 		public override byte ReadBus(ushort addr)
 		{
 			var off = addr - 0x800;
-			if (off >= ROM.Length)
-			{
-				System.Diagnostics.Debugger.Break();
-			}
 			return ROM[off];
 		}
 
