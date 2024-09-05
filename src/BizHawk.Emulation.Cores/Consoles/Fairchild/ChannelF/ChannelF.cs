@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public VesCartBase Cartridge;
 		public RegionType region;
 
-		public bool DriveLightEnabled => true;
+		public bool DriveLightEnabled => Cartridge.HasActivityLED;
 
 		public bool DriveLightOn => Cartridge.ActivityLED;
 	}

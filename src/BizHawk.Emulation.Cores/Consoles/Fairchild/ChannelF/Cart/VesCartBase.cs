@@ -33,6 +33,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		}
 		protected byte[] _ram;
 
+		public virtual bool HasActivityLED { get; set; }
+		public virtual string ActivityLEDDescription { get; set; }
+		
+
 		public bool ActivityLED;
 		public int MultiBank;
 		public int MultiHalfBank;

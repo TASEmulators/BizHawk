@@ -8,6 +8,8 @@
 	public class mapper_SCHACH : VesCartBase
 	{
 		public override string BoardType => "SCHACH";
+		public override bool HasActivityLED => true;
+		public override string ActivityLEDDescription => "Chess Brain Thinking Activity";
 
 		public mapper_SCHACH(byte[] rom)
 		{
