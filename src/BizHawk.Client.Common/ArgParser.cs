@@ -1,233 +1,206 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
+using System.CommandLine;
+using System.CommandLine.Builder;
+using System.CommandLine.Parsing;
 using System.Linq;
-using System.IO;
 using System.Net.Sockets;
 
 using BizHawk.Common.CollectionExtensions;
-using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
-	/// <summary>
-	/// Parses command line flags from a string array into various instance fields.
-	/// </summary>
-	/// <remarks>
-	/// If a flag is given multiple times, the last is taken.<br/>
-	/// If a flag that isn't recognised is given, it is parsed as a filename. As noted above, the last filename is taken.
-	/// </remarks>
+	/// <summary>Parses command-line flags into a <see cref="ParsedCLIFlags"/> struct.</summary>
 	public static class ArgParser
 	{
-		/// <exception cref="ArgParserException"><c>--socket_ip</c> passed without specifying <c>--socket_port</c> or vice-versa</exception>
+		private sealed class BespokeOption<T> : Option<T>
+		{
+			public BespokeOption(string name)
+				: base(name) {}
+
+			public BespokeOption(string name, string description)
+				: base(name: name, description: description) {}
+		}
+
+		private static readonly Argument<string?> ArgumentRomFilePath = new("rom", () => null);
+
+		private static readonly BespokeOption<string?> OptionAVDumpAudioSync = new(name: "--audiosync", description: "bool; `true` is the only truthy value, all else falsey; if not set, uses remembered state from config");
+
+		private static readonly BespokeOption<int?> OptionAVDumpEndAtFrame = new("--dump-length");
+
+		private static readonly BespokeOption<string?> OptionAVDumpFrameList = new("--dump-frames"); // desc added in static ctor
+
+		private static readonly BespokeOption<string?> OptionAVDumpName = new("--dump-name"); // desc added in static ctor
+
+		private static readonly BespokeOption<bool> OptionAVDumpQuitWhenDone = new("--dump-close");
+
+		private static readonly BespokeOption<string?> OptionAVDumpType = new("--dump-type"); // desc added in static ctor
+
+		private static readonly BespokeOption<string?> OptionConfigFilePath = new("--config");
+
+		private static readonly BespokeOption<string?> OptionHTTPClientURIGET = new("--url_get");
+
+		private static readonly BespokeOption<string?> OptionHTTPClientURIPOST = new("--url_post");
+
+		private static readonly BespokeOption<bool> OptionLaunchChromeless = new(name: "--chromeless", description: "chrome is never shown, even in windowed mode");
+
+		private static readonly BespokeOption<bool> OptionLaunchFullscreen = new("--fullscreen");
+
+		private static readonly BespokeOption<int?> OptionLoadQuicksaveSlot = new("--load-slot");
+
+		private static readonly BespokeOption<string?> OptionLoadSavestateFilePath = new("--load-state");
+
+		private static readonly BespokeOption<string?> OptionLuaFilePath = new("--lua"); // desc added in static ctor
+
+		private static readonly BespokeOption<string?> OptionMMFPath = new("--mmf");
+
+		private static readonly BespokeOption<string?> OptionMovieFilePath = new("--movie");
+
+		private static readonly BespokeOption<string?> OptionOpenExternalTool = new(name: "--open-ext-tool-dll", description: "the first ext. tool from ExternalToolManager.ToolStripMenu which satisfies both of these will be opened: 1) available (no load errors, correct system/rom, etc.) and 2) dll path matches given string; or dll filename matches given string with or without `.dll`");
+
+		private static readonly BespokeOption<bool> OptionOpenLuaConsole = new("--luaconsole");
+
+		private static readonly BespokeOption<bool> OptionQueryAppVersion = new("--version");
+
+		private static readonly BespokeOption<string?> OptionSocketServerIP = new("--socket_ip"); // desc added in static ctor
+
+		private static readonly BespokeOption<ushort?> OptionSocketServerPort = new("--socket_port"); // desc added in static ctor
+
+		private static readonly BespokeOption<bool> OptionSocketServerUseUDP = new("--socket_udp"); // desc added in static ctor
+
+		private static readonly BespokeOption<string?> OptionUserdataUnparsedPairs = new(name: "--userdata", description: "pairs in the format `k1:v1;k2:v2` (mind your shell escape sequences); if the value is `true`/`false` it's interpreted as a boolean, if it's a valid 32-bit signed integer e.g. `-1234` it's interpreted as such, if it's a valid 32-bit float e.g. `12.34` it's interpreted as such, else it's interpreted as a string");
+
+		private static readonly Parser Parser;
+
+		static ArgParser()
+		{
+			OptionAVDumpFrameList.Description = $"comma-separated list of integers, indices of frames which should be included in the A/V dump (encoding); implies `--{OptionAVDumpEndAtFrame.Name}=<end>` where `<end>` is the highest frame listed";
+			OptionAVDumpName.Description = $"ignored unless `--{OptionAVDumpType.Name}` also passed";
+			OptionAVDumpType.Description = $"ignored unless `--{OptionAVDumpName.Name}` also passed";
+			OptionLuaFilePath.Description = $"implies `--{OptionOpenLuaConsole.Name}`";
+			OptionSocketServerIP.Description = $"must be paired with `--{OptionSocketServerPort.Name}`";
+			OptionSocketServerPort.Description = $"must be paired with `--{OptionSocketServerIP.Name}`";
+			OptionSocketServerUseUDP.Description = $"ignored unless `--{OptionSocketServerIP.Name} --{OptionSocketServerPort.Name}` also passed";
+
+			RootCommand root = new();
+			root.Add(ArgumentRomFilePath);
+			// `--help` uses this order, so keep alphabetised by flag
+			root.Add(/* --audiosync */ OptionAVDumpAudioSync);
+			root.Add(/* --chromeless */ OptionLaunchChromeless);
+			root.Add(/* --config */ OptionConfigFilePath);
+			root.Add(/* --dump-close */ OptionAVDumpQuitWhenDone);
+			root.Add(/* --dump-frames */ OptionAVDumpFrameList);
+			root.Add(/* --dump-length */ OptionAVDumpEndAtFrame);
+			root.Add(/* --dump-name */ OptionAVDumpName);
+			root.Add(/* --dump-type */ OptionAVDumpType);
+			root.Add(/* --fullscreen */ OptionLaunchFullscreen);
+			root.Add(/* --load-slot */ OptionLoadQuicksaveSlot);
+			root.Add(/* --load-state */ OptionLoadSavestateFilePath);
+			root.Add(/* --lua */ OptionLuaFilePath);
+			root.Add(/* --luaconsole */ OptionOpenLuaConsole);
+			root.Add(/* --mmf */ OptionMMFPath);
+			root.Add(/* --movie */ OptionMovieFilePath);
+			root.Add(/* --open-ext-tool-dll */ OptionOpenExternalTool);
+			root.Add(/* --socket_ip */ OptionSocketServerIP);
+			root.Add(/* --socket_port */ OptionSocketServerPort);
+			root.Add(/* --socket_udp */ OptionSocketServerUseUDP);
+			root.Add(/* --url_get */ OptionHTTPClientURIGET);
+			root.Add(/* --url_post */ OptionHTTPClientURIPOST);
+			root.Add(/* --userdata */ OptionUserdataUnparsedPairs);
+			root.Add(/* --version */ OptionQueryAppVersion);
+
+			Parser = new CommandLineBuilder(root)
+//				.UseVersionOption() // "cannot be combined with other arguments" which is fair enough but `--config` is crucial on NixOS
+//				.UseHelp() //TODO
+//				.UseEnvironmentVariableDirective() // useless
+				.UseParseDirective()
+				.UseSuggestDirective()
+//				.RegisterWithDotnetSuggest() // intended for dotnet tools
+//				.UseTypoCorrections() // we're only using the parser, and I guess this only works with the full buy-in
+//				.UseParseErrorReporting() // we're only using the parser, and I guess this only works with the full buy-in
+//				.UseExceptionHandler() // we're only using the parser, so nothing should be throwing
+//				.CancelOnProcessTermination() // we're only using the parser, so there's not really anything to cancel
+				.Build();
+		}
+
+		/// <exception cref="ArgParserException">parsing failure, or invariant broken</exception>
 		public static void ParseArguments(out ParsedCLIFlags parsed, string[] args)
 		{
-			string? cmdLoadSlot = null;
-			string? cmdLoadState = null;
-			string? cmdConfigFile = null;
-			string? cmdMovie = null;
-			string? cmdDumpType = null;
+			parsed = default;
+			var result = Parser.Parse(args);
+			if (result.Errors.Count is not 0)
+			{
+				// write all to stdout and show first in modal dialog (done in `catch` block in `Program`)
+				Console.WriteLine("failed to parse command-line arguments:");
+				foreach (var error in result.Errors) Console.WriteLine(error.Message);
+				throw new ArgParserException($"failed to parse command-line arguments: {result.Errors[0].Message}");
+			}
+
+			var autoDumpLength = result.GetValueForOption(OptionAVDumpEndAtFrame);
 			HashSet<int>? currAviWriterFrameList = null;
-			int? autoDumpLength = null;
-			bool? printVersion = null;
-			string? cmdDumpName = null;
-			bool? autoCloseOnDump = null;
-			bool? chromeless = null;
-			bool? startFullscreen = null;
-			string? luaScript = null;
-			bool? luaConsole = null;
-			ushort? socketPort = null;
-			string? socketIP = null;
-			string? mmfFilename = null;
-			string? urlGet = null;
-			string? urlPost = null;
-			bool? audiosync = null;
-			string? openExtToolDll = null;
-			var socketProtocol = ProtocolType.Tcp;
+			if (result.GetValueForOption(OptionAVDumpFrameList) is string list)
+			{
+				currAviWriterFrameList = new();
+				currAviWriterFrameList.AddRange(list.Split(',').Select(int.Parse));
+				// automatically set dump length to maximum frame
+				autoDumpLength ??= currAviWriterFrameList.Max();
+			}
+
+			var luaScript = result.GetValueForOption(OptionLuaFilePath);
+			var luaConsole = luaScript is not null || result.GetValueForOption(OptionOpenLuaConsole);
+
+			var socketIP = result.GetValueForOption(OptionSocketServerIP);
+			var socketPort = result.GetValueForOption(OptionSocketServerPort);
+			var socketAddress = socketIP is null && socketPort is null
+				? ((string, ushort)?) null // don't bother
+				: socketIP is not null && socketPort is not null
+					? (socketIP, socketPort.Value)
+					: throw new ArgParserException("Socket server needs both --socket_ip and --socket_port. Socket server was not started");
+
+			var httpClientURIGET = result.GetValueForOption(OptionHTTPClientURIGET);
+			var httpClientURIPOST = result.GetValueForOption(OptionHTTPClientURIPOST);
+			var httpAddresses = httpClientURIGET is null && httpClientURIPOST is null
+					? ((string?, string?)?) null // don't bother
+					: (httpClientURIGET, httpClientURIPOST);
+
+			var audiosync = result.GetValueForOption(OptionAVDumpAudioSync)?.Equals("true", StringComparison.OrdinalIgnoreCase);
+
 			List<(string Key, string Value)>? userdataUnparsedPairs = null;
-			string? cmdRom = null;
-
-			for (var i = 0; i < args.Length; i++)
+			if (result.GetValueForOption(OptionUserdataUnparsedPairs) is string list1)
 			{
-				var arg = args[i];
-
-				if (arg == ">")
+				userdataUnparsedPairs = new();
+				foreach (var s in list1.Split(';'))
 				{
-					// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
-					var stdout = args[++i];
-					Console.SetOut(new StreamWriter(stdout));
-					continue;
-				}
-
-				var argDowncased = arg.ToLowerInvariant();
-				if (argDowncased.StartsWithOrdinal("--load-slot="))
-				{
-					cmdLoadSlot = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--load-state="))
-				{
-					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--config="))
-				{
-					cmdConfigFile = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--movie="))
-				{
-					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--dump-type="))
-				{
-					// ignored unless `--dump-name` also passed
-					cmdDumpType = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--dump-frames="))
-				{
-					// comma-separated list of integers, indices of frames which should be included in the A/V dump (encoding)
-					string list = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
-					currAviWriterFrameList = new();
-					currAviWriterFrameList.AddRange(list.Split(',').Select(int.Parse));
-					// automatically set dump length to maximum frame
-					autoDumpLength = currAviWriterFrameList.Max();
-				}
-				else if (argDowncased.StartsWithOrdinal("--version"))
-				{
-					printVersion = true;
-				}
-				else if (argDowncased.StartsWithOrdinal("--dump-name="))
-				{
-					// ignored unless `--dump-type` also passed
-					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--dump-length="))
-				{
-					var len = int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out var i1) ? i1 : default;
-					autoDumpLength = len;
-				}
-				else if (argDowncased.StartsWithOrdinal("--dump-close"))
-				{
-					autoCloseOnDump = true;
-				}
-				else if (argDowncased.StartsWithOrdinal("--chromeless"))
-				{
-					// chrome is never shown, even in windowed mode
-					chromeless = true;
-				}
-				else if (argDowncased.StartsWithOrdinal("--fullscreen"))
-				{
-					startFullscreen = true;
-				}
-				else if (argDowncased.StartsWithOrdinal("--lua="))
-				{
-					luaScript = arg.Substring(arg.IndexOf('=') + 1);
-					// implies `--luaconsole`
-					luaConsole = true;
-				}
-				else if (argDowncased.StartsWithOrdinal("--luaconsole"))
-				{
-					luaConsole = true;
-				}
-				else if (argDowncased.StartsWithOrdinal("--socket_port="))
-				{
-					// must be paired with `--socket_ip`
-					var port = ushort.TryParse(arg.Substring(14), out var i1) ? i1 : (ushort) 0;
-					if (port > 0) socketPort = port;
-				}
-				else if (argDowncased.StartsWithOrdinal("--socket_ip="))
-				{
-					// must be paired with `--socket_port`
-					socketIP = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--socket_udp"))
-				{
-					// ignored unless `--socket_ip --socket_port` also passed
-					socketProtocol = ProtocolType.Udp;
-				}
-				else if (argDowncased.StartsWithOrdinal("--mmf="))
-				{
-					mmfFilename = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--url_get="))
-				{
-					urlGet = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--url_post="))
-				{
-					urlPost = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--audiosync="))
-				{
-					// `true` is the only truthy value, all else falsey
-					// if not set, uses remembered state from config
-					audiosync = argDowncased.Substring(argDowncased.IndexOf('=') + 1) == "true";
-				}
-				else if (argDowncased.StartsWithOrdinal("--open-ext-tool-dll="))
-				{
-					// the first ext. tool from ExternalToolManager.ToolStripMenu which satisfies both of these will be opened:
-					// - available (no load errors, correct system/rom, etc.)
-					// - dll path matches given string; or dll filename matches given string with or without `.dll`
-					openExtToolDll = arg.Substring(20);
-				}
-				else if (argDowncased.StartsWithOrdinal("--userdata="))
-				{
-					// pairs in the format `k1:v1;k2:v2` (mind your shell escape sequences)
-					// if the value is `true`/`false` it's interpreted as a boolean,
-					// if it's a valid 32-bit signed integer e.g. `-1234` it's interpreted as such, if it's a valid 32-bit float e.g. `12.34` it's interpreted as such,
-					// else it's interpreted as a string
-					userdataUnparsedPairs = new();
-					foreach (var s in arg.Substring(11).Split(';'))
-					{
-						var iColon = s.IndexOf(':');
-						if (iColon is -1) throw new ArgParserException("malformed userdata (';' without ':')");
-						userdataUnparsedPairs.Add((s.Substring(startIndex: 0, length: iColon), s.Substring(iColon + 1)));
-					}
-				}
-				else
-				{
-					cmdRom = arg;
+					var iColon = s.IndexOf(':');
+					if (iColon is -1) throw new ArgParserException("malformed userdata (';' without ':')");
+					userdataUnparsedPairs.Add((s.Substring(startIndex: 0, length: iColon), s.Substring(iColon + 1)));
 				}
 			}
 
-			var httpAddresses = urlGet == null && urlPost == null
-				? ((string?, string?)?) null // don't bother
-				: (urlGet, urlPost);
-			(string, ushort)? socketAddress;
-			if (socketIP == null && socketPort == null)
-			{
-				socketAddress = null; // don't bother
-			}
-			else if (socketIP == null || socketPort == null)
-			{
-				throw new ArgParserException("Socket server needs both --socket_ip and --socket_port. Socket server was not started");
-			}
-			else
-			{
-				socketAddress = (socketIP, socketPort.Value);
-			}
-
-			parsed = new ParsedCLIFlags(
-				cmdLoadSlot: cmdLoadSlot is null ? null : int.Parse(cmdLoadSlot),
-				cmdLoadState: cmdLoadState,
-				cmdConfigFile: cmdConfigFile,
-				cmdMovie: cmdMovie,
-				cmdDumpType: cmdDumpType,
+			parsed = new(
+				cmdLoadSlot: result.GetValueForOption(OptionLoadQuicksaveSlot),
+				cmdLoadState: result.GetValueForOption(OptionLoadSavestateFilePath),
+				cmdConfigFile: result.GetValueForOption(OptionConfigFilePath),
+				cmdMovie: result.GetValueForOption(OptionMovieFilePath),
+				cmdDumpType: result.GetValueForOption(OptionAVDumpType),
 				currAviWriterFrameList: currAviWriterFrameList,
 				autoDumpLength: autoDumpLength ?? 0,
-				printVersion: printVersion ?? false,
-				cmdDumpName: cmdDumpName,
-				autoCloseOnDump: autoCloseOnDump ?? false,
-				chromeless: chromeless ?? false,
-				startFullscreen: startFullscreen ?? false,
+				printVersion: result.GetValueForOption(OptionQueryAppVersion),
+				cmdDumpName: result.GetValueForOption(OptionAVDumpName),
+				autoCloseOnDump: result.GetValueForOption(OptionAVDumpQuitWhenDone),
+				chromeless: result.GetValueForOption(OptionLaunchChromeless),
+				startFullscreen: result.GetValueForOption(OptionLaunchFullscreen),
 				luaScript: luaScript,
-				luaConsole: luaConsole ?? false,
+				luaConsole: luaConsole,
 				socketAddress: socketAddress,
-				mmfFilename: mmfFilename,
+				mmfFilename: result.GetValueForOption(OptionMMFPath),
 				httpAddresses: httpAddresses,
 				audiosync: audiosync,
-				openExtToolDll: openExtToolDll,
-				socketProtocol: socketProtocol,
+				openExtToolDll: result.GetValueForOption(OptionOpenExternalTool),
+				socketProtocol: result.GetValueForOption(OptionSocketServerUseUDP) ? ProtocolType.Udp : ProtocolType.Tcp,
 				userdataUnparsedPairs: userdataUnparsedPairs,
-				cmdRom: cmdRom
+				cmdRom: result.GetValueForArgument(ArgumentRomFilePath)
 			);
 		}
 
