@@ -99,8 +99,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public int BufferWidth => 256 - lBorder - rBorder;
 		public int BufferHeight => (64 * scanlineRepeats) - tBorder - bBorder;
 		public int BackgroundColor => Colors.ARGB(0xFF, 0xFF, 0xFF);
-		public int VsyncNumerator => (int)refreshRate;
-		public int VsyncDenominator => 1;
+		public int VsyncNumerator { get; private set; }
+		public int VsyncDenominator { get; private set; }
 
 		public int[] TrimOutputBuffer(int[] buff, int leftTrim, int topTrim, int rightTrim, int bottomTrim)
 		{

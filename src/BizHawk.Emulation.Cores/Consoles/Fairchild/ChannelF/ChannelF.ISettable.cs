@@ -5,46 +5,24 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
-	public partial class ChannelF : ISettable<ChannelF.ChannelFSettings, ChannelF.ChannelFSyncSettings>
+	public partial class ChannelF : ISettable<object, ChannelF.ChannelFSyncSettings>
 	{
-		internal ChannelFSettings Settings = new ChannelFSettings();
-		internal ChannelFSyncSettings SyncSettings = new ChannelFSyncSettings();
+		private ChannelFSyncSettings _syncSettings;
 
-		public ChannelFSettings GetSettings()
-		{
-			return Settings.Clone();
-		}
+		public object GetSettings()
+			=> null;
 
 		public ChannelFSyncSettings GetSyncSettings()
-		{
-			return SyncSettings.Clone();
-		}
+			=> _syncSettings.Clone();
 
-		public PutSettingsDirtyBits PutSettings(ChannelFSettings o)
-		{
-			Settings = o;
-			return PutSettingsDirtyBits.None;
-		}
+		public PutSettingsDirtyBits PutSettings(object o)
+			=> PutSettingsDirtyBits.None;
 
 		public PutSettingsDirtyBits PutSyncSettings(ChannelFSyncSettings o)
 		{
-			bool ret = ChannelFSyncSettings.NeedsReboot(SyncSettings, o);
-			SyncSettings = o;
+			var ret = ChannelFSyncSettings.NeedsReboot(_syncSettings, o);
+			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
-		}
-
-		[CoreSettings]
-		public class ChannelFSettings
-		{
-			public ChannelFSettings Clone()
-			{
-				return (ChannelFSettings)MemberwiseClone();
-			}
-
-			public ChannelFSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
 		}
 
 		[CoreSettings]

@@ -18,15 +18,16 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			ser.Sync(nameof(_isLag), ref _isLag);
 			ser.Sync(nameof(_lagCount), ref _lagCount);
 
-			ser.Sync(nameof(tone), ref tone);
-			ser.Sync(nameof(sampleBuffer), ref sampleBuffer, false);
-			ser.Sync(nameof(toneBuffer), ref toneBuffer, false);
-			ser.Sync(nameof(samplesPerFrame), ref samplesPerFrame);
-			ser.Sync(nameof(cyclesPerSample), ref cyclesPerSample);
-			ser.Sync(nameof(amplitude), ref amplitude);
-			ser.Sync(nameof(rampCounter), ref rampCounter);
-			ser.Sync(nameof(currTone), ref currTone);
-			ser.Sync(nameof(samplePosition), ref samplePosition);
+			ser.Sync(nameof(_tone), ref _tone);
+			ser.Sync(nameof(_sampleBuffer), ref _sampleBuffer, false);
+			ser.Sync(nameof(_filteredSampleBuffer), ref _filteredSampleBuffer, false);
+			ser.Sync(nameof(_toneBuffer), ref _toneBuffer, false);
+			ser.Sync(nameof(_samplesPerFrame), ref _samplesPerFrame);
+			ser.Sync(nameof(_cyclesPerSample), ref _cyclesPerSample);
+			ser.Sync(nameof(_amplitude), ref _amplitude);
+			ser.Sync(nameof(_rampCounter), ref _rampCounter);
+			ser.Sync(nameof(_currTone), ref _currTone);
+			ser.Sync(nameof(_samplePosition), ref _samplePosition);
 
 			ser.Sync(nameof(StateConsole), ref StateConsole, false);
 			ser.Sync(nameof(StateRight), ref StateRight, false);

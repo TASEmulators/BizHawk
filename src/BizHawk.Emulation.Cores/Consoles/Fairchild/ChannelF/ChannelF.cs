@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	public partial class ChannelF : IDriveLight
 	{
 		[CoreConstructor(VSystemID.Raw.ChannelF)]
-		public ChannelF(CoreLoadParameters<ChannelFSettings, ChannelFSyncSettings> lp)
+		public ChannelF(CoreLoadParameters<object, ChannelFSyncSettings> lp)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
@@ -18,13 +18,11 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
 			_files = lp.Roms.Select(r => r.RomData).ToList();
 
-			Settings = lp.Settings ?? new ChannelFSettings();
-			SyncSettings = lp.SyncSettings ?? new ChannelFSyncSettings();
+			_syncSettings = lp.SyncSettings ?? new ChannelFSyncSettings();
+			region = _syncSettings.Region;
+			version = _syncSettings.Version;
 
-			region = SyncSettings.Region;
-			version = SyncSettings.Version;
-
-			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
+			MemoryCallbacks = new MemoryCallbackSystem([ "System Bus" ]);
 
 			ControllerDefinition = ChannelFControllerDefinition;
 
@@ -40,7 +38,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			}
 
 			Cartridge = VesCartBase.Configure(_gameInfo[0], _files[0]);
-			
 
 			CPU = new F3850
 			{
