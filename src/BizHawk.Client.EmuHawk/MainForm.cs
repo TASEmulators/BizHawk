@@ -2674,49 +2674,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandleToggleLightAndLink()
 		{
-			if (MainStatusBar.Visible)
+			if (!MainStatusBar.Visible) return;
+
+			if (Emulator.HasDriveLight() && Emulator.AsDriveLight() is { DriveLightEnabled: true } diskLEDCore)
 			{
-				var hasDriveLight = Emulator.HasDriveLight() && Emulator.AsDriveLight().DriveLightEnabled;
+				LedLightStatusLabel.Image = diskLEDCore.DriveLightOn ? _statusBarDiskLightOnImage : _statusBarDiskLightOffImage;
+				LedLightStatusLabel.Visible = true;
+			}
+			else
+			{
+				LedLightStatusLabel.Visible = false;
+			}
 
-				if (hasDriveLight)
-				{
-					if (!LedLightStatusLabel.Visible)
-					{
-						LedLightStatusLabel.Visible = true;
-					}
-
-					LedLightStatusLabel.Image = Emulator.AsDriveLight().DriveLightOn
-						? _statusBarDiskLightOnImage
-						: _statusBarDiskLightOffImage;
-				}
-				else
-				{
-					if (LedLightStatusLabel.Visible)
-					{
-						LedLightStatusLabel.Visible = false;
-					}
-				}
-
-				if (Emulator.UsesLinkCable())
-				{
-					if (!LinkConnectStatusBarButton.Visible)
-					{
-						LinkConnectStatusBarButton.Visible = true;
-					}
-
-					LinkConnectStatusBarButton.Image = Emulator.AsLinkable().LinkConnected
-						? _linkCableOn
-						: _linkCableOff;
-
-					LinkConnectStatusBarButton.ToolTipText = $"Link connection is currently {(Emulator.AsLinkable().LinkConnected ? "enabled" : "disabled")}";
-				}
-				else
-				{
-					if (LinkConnectStatusBarButton.Visible)
-					{
-						LinkConnectStatusBarButton.Visible = false;
-					}
-				}
+			if (Emulator.UsesLinkCable())
+			{
+				var linkableCore = Emulator.AsLinkable();
+				LinkConnectStatusBarButton.Image = linkableCore.LinkConnected ? _linkCableOn : _linkCableOff;
+				LinkConnectStatusBarButton.ToolTipText = $"Link connection is currently {(linkableCore.LinkConnected ? "enabled" : "disabled")}";
+				LinkConnectStatusBarButton.Visible = true;
+			}
+			else
+			{
+				LinkConnectStatusBarButton.Visible = false;
 			}
 		}
 
