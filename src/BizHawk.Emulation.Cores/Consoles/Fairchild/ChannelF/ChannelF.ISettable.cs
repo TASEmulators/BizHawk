@@ -36,11 +36,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		[CoreSettings]
 		public class ChannelFSettings
 		{
-			[DisplayName("Default Background Color")]
-			[Description("The default BG color")]
-			[DefaultValue(0)]
-			public int BackgroundColor { get; set; }
-
 			public ChannelFSettings Clone()
 			{
 				return (ChannelFSettings)MemberwiseClone();
@@ -63,6 +58,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			[Description("NTSC or PAL - Affects the CPU clock speed and refresh rate")]
 			[DefaultValue(RegionType.NTSC)]
 			public RegionType Region { get; set; }
+			[DisplayName("Version")]
+			[Description("Both versions are the same from an emulation perspective. Channel F II has a very slightly different BIOS to Channel F")]
+			[DefaultValue(ConsoleVersion.ChannelF)]
+			public ConsoleVersion Version { get; set; }
 
 			public ChannelFSyncSettings Clone()
 			{
@@ -84,6 +83,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		{
 			NTSC,
 			PAL
+		}
+
+		public enum ConsoleVersion
+		{
+			ChannelF,
+			ChannelF_II
 		}
 	}
 }

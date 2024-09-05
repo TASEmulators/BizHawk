@@ -197,8 +197,9 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("302AFB5D8BE26C758309CA3DF611AE69CCED2821", 32768, "MSX", "bios_basic_jpn", "MSX_jpn.rom", "MSX 1.0 JPN BIOS and BASIC");
 
 			// Channel F
-			FirmwareAndOption("81193965A374D77B99B4743D317824B53C3E3C78", 1024, "ChannelF", "ChannelF_sl131253", "ChannelF_SL31253.rom", "Channel F Rom0");
-			FirmwareAndOption("8F70D1B74483BA3A37E86CF16C849D601A8C3D2C", 1024, "ChannelF", "ChannelF_sl131254", "ChannelF_SL31254.rom", "Channel F Rom1");
+			FirmwareAndOption("81193965A374D77B99B4743D317824B53C3E3C78", 1024, "ChannelF", "ChannelF_sl131253", "ChannelF_SL31253.rom", "Channel F BIOS (PSU1)");
+			FirmwareAndOption("8F70D1B74483BA3A37E86CF16C849D601A8C3D2C", 1024, "ChannelF", "ChannelF_sl131254", "ChannelF_SL31254.rom", "Channel F BIOS (PSU2)");
+			FirmwareAndOption("759E2ED31FBDE4A2D8DAF8B9F3E0DFFEBC90DAE2", 1024, "ChannelF", "ChannelF_sl90025", "ChannelF_sl90025.rom", "Channel F II BIOS (PSU1)");
 
 			// Saturn
 			var ss_100_j = File("2B8CB4F87580683EB4D760E4ED210813D667F0A2", 524288, "SAT_1.00-(J).bin", "Bios v1.00 (J)");

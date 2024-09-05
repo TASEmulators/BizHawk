@@ -22,19 +22,25 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			SyncSettings = lp.SyncSettings ?? new ChannelFSyncSettings();
 
 			region = SyncSettings.Region;
+			version = SyncSettings.Version;
 
 			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
 			ControllerDefinition = ChannelFControllerDefinition;
 
-			var bios01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
-			var bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
-			//var bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl90025"));
+			if (version == ConsoleVersion.ChannelF)
+			{
+				BIOS01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
+				BIOS02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
+			}
+			else
+			{
+				BIOS01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl90025"));
+				BIOS02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
+			}
 
 			Cartridge = VesCartBase.Configure(_gameInfo[0], _files[0]);
-
-			BIOS01 = bios01;
-			BIOS02 = bios02;			
+			
 
 			CPU = new F3850
 			{
@@ -71,6 +77,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public VesCartBase Cartridge;
 		public RegionType region;
+		public ConsoleVersion version;
 
 		public bool DriveLightEnabled => Cartridge.HasActivityLED;
 
