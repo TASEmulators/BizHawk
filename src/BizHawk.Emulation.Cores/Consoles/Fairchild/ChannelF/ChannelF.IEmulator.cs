@@ -40,12 +40,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				CPU.TraceCallback = null;
 			}
 
+			PollInput();
+
 			while (FrameClock++ < ClockPerFrame)
 			{
 				CPU.ExecuteOne();
 			}
-
-			PollInput();
 
 			FrameClock = 0;
 			_frame++;

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.FairchildF8;
 

@@ -32,6 +32,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			ser.Sync(nameof(StateRight), ref StateRight, false);
 			ser.Sync(nameof(StateLeft), ref StateLeft, false);
 
+			ser.Sync(nameof(OutputLatch), ref OutputLatch, false);
+			ser.Sync(nameof(LS368Enable), ref LS368Enable);
+
 			//ser.Sync(nameof(ControllersEnabled), ref ControllersEnabled);
 			CPU.SyncState(ser);
 			Cartridge.SyncState(ser);

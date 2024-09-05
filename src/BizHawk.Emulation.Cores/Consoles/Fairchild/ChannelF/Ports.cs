@@ -39,6 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					// b3:	START
 					// RESET button is connected directly to the RST pin on the CPU (this is handled here in the PollInput() method)					
 					result = (~DataConsole & 0x0F) | OutputLatch[addr];
+					InputCallbacks.Call();
 					_isLag = false;
 					break;
 
@@ -53,6 +54,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					// b5:	CW
 					var v1 = LS368Enable ? DataRight : DataRight | 0xC0;
 					result = (~v1) | OutputLatch[addr];
+					InputCallbacks.Call();
 					_isLag = false;
 					break;
 
@@ -71,7 +73,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					var v2 = LS368Enable ? DataLeft : 0xFF;
 					result = (~v2) | OutputLatch[addr];
 					if (LS368Enable)
+					{
+						InputCallbacks.Call();
 						_isLag = false;
+					}
 					break;
 
 				case 5:
@@ -97,13 +102,14 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				case 0:
 					OutputLatch[addr] = value;
 					LS368Enable = !value.Bit(6);
-					if (value.Bit(5)) 
+					if (value.Bit(5))
 					{
 						// WRT pulse
 						// pulse clocks the 74195 parallel access shift register which feeds inputs of 2 NAND gates
 						// writing data to both sets of even and odd VRAM chips (based on the row and column addresses latched into the 7493 ICs)
-						VRAM[((latch_y) * 0x80) + latch_x] = (byte)latch_colour; 
+						VRAM[((latch_y) * 0x80) + latch_x] = (byte)latch_colour;
 					}
+
 					break;
 
 				case 1:
@@ -117,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					break;
 
 				case 5:
-					OutputLatch[addr] = value;					
+					OutputLatch[addr] = value;
 					latch_y = (value | 0xC0) ^ 0xFF;
 					var audio = ((value) >> 6) & 0x03;
 					if (audio != tone)
@@ -125,6 +131,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 						tone = audio;
 						AudioChange();
 					}
+
 					break;
 
 				default:
@@ -132,6 +139,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					Cartridge.WritePort(addr, value);
 					break;
 			}
-		}		
+		}
 	}
 }

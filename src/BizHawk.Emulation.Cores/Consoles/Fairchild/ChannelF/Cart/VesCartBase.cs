@@ -1,7 +1,8 @@
-﻿using BizHawk.Common;
+﻿using System.Collections;
+
+using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
-using System.Collections;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
