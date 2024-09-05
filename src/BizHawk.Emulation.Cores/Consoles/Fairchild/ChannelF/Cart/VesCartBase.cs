@@ -171,6 +171,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			m_addr_latch = 0;
 			m_read_write = 0;
 			m_data0 = 0;
+			ActivityLED = false;
 		}
 
 		public virtual void SyncState(Serializer ser)

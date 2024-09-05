@@ -48,12 +48,11 @@
 			}
 			else if (addr == 0x3800)
 			{
-				// activity LED
-				ActivityLED = !ActivityLED;
+				ActivityLED = false;
 			}
-			else
+			else if (addr == 0x8000)
 			{
-
+				ActivityLED = true;
 			}
 		}
 

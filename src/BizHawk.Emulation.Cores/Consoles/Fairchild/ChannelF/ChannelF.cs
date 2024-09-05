@@ -74,6 +74,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public bool DriveLightEnabled => true;
 
-		public bool DriveLightOn => !Cartridge.ActivityLED;
+		public bool DriveLightOn => Cartridge.ActivityLED;
 	}
 }
