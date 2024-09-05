@@ -280,5 +280,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public bool DriveLightOn =>
 			_machine?.TapeDevice?.TapeIsPlaying == true
 			|| _machine?.UPDDiskDevice?.DriveLight == true;
+
+		public string DriveLightIconDescription => "Disc Drive Activity";
 	}
 }

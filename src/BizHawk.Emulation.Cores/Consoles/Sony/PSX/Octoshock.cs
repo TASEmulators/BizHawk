@@ -453,6 +453,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public bool DriveLightEnabled { get; private set; }
 		public bool DriveLightOn { get; private set; }
+		public string DriveLightIconDescription => "CD Drive Activity";
 
 		private void Attach()
 		{

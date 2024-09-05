@@ -2679,6 +2679,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator.HasDriveLight() && Emulator.AsDriveLight() is { DriveLightEnabled: true } diskLEDCore)
 			{
 				LedLightStatusLabel.Image = diskLEDCore.DriveLightOn ? _statusBarDiskLightOnImage : _statusBarDiskLightOffImage;
+				LedLightStatusLabel.ToolTipText = Emulator.AsDriveLight().DriveLightIconDescription;
 				LedLightStatusLabel.Visible = true;
 			}
 			else

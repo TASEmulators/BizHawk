@@ -15,5 +15,10 @@
 		/// Gets a value indicating whether the light is currently lit
 		/// </summary>
 		bool DriveLightOn { get; }
+
+		/// <summary>
+		/// Gets a value indicating the description of the drive light icon (that will be displayed as a ToolTip on MainForm
+		/// </summary>
+		string DriveLightIconDescription { get; }
 	}
 }

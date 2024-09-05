@@ -82,5 +82,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public bool DriveLightEnabled => Cartridge.HasActivityLED;
 
 		public bool DriveLightOn => Cartridge.ActivityLED;
+
+		public string DriveLightIconDescription => "Computer thinking activity";
 	}
 }
