@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 					if (key == "RESET" && StateConsole[i])
 					{
-						CPU.Reset();
+						ConsoleReset();
 						for (int l = 0; l < OutputLatch.Length; l++)
 						{
 							OutputLatch[l] = 0;

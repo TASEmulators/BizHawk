@@ -18,10 +18,10 @@ E1FB8D61FFE07B53869A93A8AD0C04A8	B	Robot War (1977)(Fairchild)(proto)[b]	Channel
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Hacks
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-02B4A4F523B972C63FEF21BF2E51AE58		Channel F Multi-Cart - Menu (2004)(Riddle, Sean)	ChannelF		board=SCHACH
-DFC3DF32F9FB558A6E54928559D67FE7		Channel F Multi-Cart (2004)(Riddle, Sean)	ChannelF		board=SCHACH
-4B3657594CD1000D08704F4F0FB53C75		Channel F Multi-Cart - Menu (2004)(Riddle, Sean)[a]	ChannelF		board=SCHACH
-0C8AE0E5776D48022F8D2B9642C6A197		Channel F Multi-Cart (2004)(Riddle, Sean)[a]	ChannelF		board=SCHACH
+02B4A4F523B972C63FEF21BF2E51AE58		Channel F Multi-Cart - Menu (2004)(Riddle, Sean)	ChannelF		board=RIDDLE
+DFC3DF32F9FB558A6E54928559D67FE7		Channel F Multi-Cart (2004)(Riddle, Sean)	ChannelF		board=RIDDLE
+4B3657594CD1000D08704F4F0FB53C75		Channel F Multi-Cart - Menu (2004)(Riddle, Sean)[a]	ChannelF		board=RIDDLE
+0C8AE0E5776D48022F8D2B9642C6A197		Channel F Multi-Cart (2004)(Riddle, Sean)[a]	ChannelF		board=RIDDLE
 533BAC14DE68FBA49078EEF8E9502DD2		Hangman (USA) (Multicart Hack)	ChannelF		board=SCHACH	USA
 ABC6FC7083B66A65C1E18EBF911F6689		Maze + Jailbreak + Blind-man's-bluff + Trailblazer (1977)(Fairchild)[h]	ChannelF		board=SCHACH	USA
 

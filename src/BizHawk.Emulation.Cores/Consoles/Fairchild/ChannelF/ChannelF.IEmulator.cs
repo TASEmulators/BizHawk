@@ -74,5 +74,11 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public void Dispose()
 		{
 		}
+
+		private void ConsoleReset()
+		{
+			CPU.Reset();
+			Cartridge.Reset();
+		}
 	}
 }

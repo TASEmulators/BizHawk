@@ -34,6 +34,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		protected byte[] _ram;
 
 		public bool ActivityLED;
+		public int MultiBank;
+		public int MultiHalfBank;
 
 		// SRAM config
 		// taken from https://github.com/mamedev/mame/blob/ee1e4f9683a4953cb9d88f9256017fcbc38e3144/src/devices/bus/chanf/rom.cpp
@@ -64,6 +66,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				case "MAZE":
 					return new mapper_MAZE(rom);
+
+				case "RIDDLE":
+					// Sean Riddle's modified SCHACH multi-cart
+					return new mapper_RIDDLE(rom);
 
 				case "SCHACH":
 				default:
@@ -157,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			}
 		}		
 
-		public void Reset()
+		public virtual void Reset()
 		{
 			m_latch[0] = 0;
 			m_latch[1] = 0;
@@ -177,6 +183,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			ser.Sync(nameof(m_read_write), ref m_read_write);
 			ser.Sync(nameof(m_data0), ref m_data0);
 			ser.Sync(nameof(ActivityLED), ref ActivityLED);
+			ser.Sync(nameof(MultiBank), ref MultiBank);
+			ser.Sync(nameof(MultiHalfBank), ref MultiHalfBank);
 			ser.EndSection();
 		}
 	}

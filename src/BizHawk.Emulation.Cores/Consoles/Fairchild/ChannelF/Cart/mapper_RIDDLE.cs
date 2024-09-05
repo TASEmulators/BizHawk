@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Cores.Consoles.ChannelF
+﻿using BizHawk.Common.NumberExtensions;
+
+namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	/// <summary>
 	/// Sean Riddle's modified SCHACH cart mapper (multi-cart) (WIP)
@@ -9,7 +11,7 @@
 
 		public mapper_RIDDLE(byte[] rom)
 		{
-			ROM = new byte[0x10000 - 0x800];
+			ROM = new byte[rom.Length];
 			for (int i = 0; i < rom.Length; i++)
 			{
 				ROM[i] = rom[i];
@@ -31,7 +33,7 @@
 			else
 			{
 				if (off < ROM.Length)
-					result = ROM[off];
+					result = ROM[off + (MultiBank * 0x2000) + (MultiHalfBank * 0x1000)];
 			}
 
 			return (byte)result;
@@ -44,14 +46,15 @@
 			{
 				RAM[addr - 0x2800] = value;
 			}
-			else if (addr == 0x3800)
+			else if (addr == 0x3000)
 			{
-				// activity LED
-				ActivityLED = !ActivityLED;
+				// bank switching
+				MultiBank = value & 0x1F;
+				MultiHalfBank = (value & 0x20) >> 5;
 			}
 			else
 			{
-
+				
 			}
 		}
 
@@ -63,6 +66,13 @@
 		public override void WritePort(ushort addr, byte data)
 		{
 			// no writeable hardware
+		}
+
+		public override void Reset()
+		{
+			base.Reset();
+			MultiBank = 0;
+			MultiHalfBank = 0;
 		}
 	}
 }
