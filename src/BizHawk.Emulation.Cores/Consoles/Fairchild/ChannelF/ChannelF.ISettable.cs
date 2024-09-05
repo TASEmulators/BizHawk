@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			[DefaultValue(RegionType.NTSC)]
 			public RegionType Region { get; set; }
 			[DisplayName("Version")]
-			[Description("Both versions are the same from an emulation perspective. Channel F II has a very slightly different BIOS to Channel F")]
+			[Description("Channel F II has a very slightly different BIOS to Channel F and a slightly slower CPU in the PAL version compared to v1")]
 			[DefaultValue(ConsoleVersion.ChannelF)]
 			public ConsoleVersion Version { get; set; }
 

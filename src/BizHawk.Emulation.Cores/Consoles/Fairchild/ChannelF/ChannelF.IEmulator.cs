@@ -12,14 +12,31 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public bool DeterministicEmulation { get; set; }
 
-		private double cpuFreq => region == RegionType.NTSC ? 1.7897725 : 2.000000;
-		private double refreshRate => region == RegionType.NTSC ? 60 : 50;
+		private double cpuFreq;
+		private double refreshRate => region == RegionType.NTSC ? 60.5307257846 : 50.0801282051;
 
 		public int ClockPerFrame;
 		public int FrameClock = 0;
 
 		private void CalcClock()
 		{
+			// CPU speeds from https://en.wikipedia.org/wiki/Fairchild_Channel_F
+			if (Region == DisplayType.NTSC)
+			{				
+				cpuFreq = 1.7897725;
+			}
+			else
+			{
+				if (version == ConsoleVersion.ChannelF)
+				{
+					cpuFreq = 2.0;
+				}
+				else if (version == ConsoleVersion.ChannelF_II)
+				{
+					cpuFreq = 1.9704972;
+				}
+			}
+
 			var c = ((cpuFreq * 1000000) / refreshRate);
 			ClockPerFrame = (int) c;
 

@@ -57,6 +57,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			//Array.Copy(rom, 0, Rom, 0, rom.Length);
 
 			CalcClock();
+			SetupVideo();
 
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ITraceable>(_tracer);

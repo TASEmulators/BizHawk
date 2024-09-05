@@ -78,6 +78,9 @@ namespace BizHawk.Client.Common
 			["O2_PAL"] = 89478485.0 / 1800319, // 49.70146124103561646574857011
 
 			["TIC80"] = 60,
+
+			["ChannelF"] = 60.5307257846, // (3579545 * 8 / 7) / (256 * 264)
+			["ChannelF_PAL"] = 50.0801282051, // 4000000 / (256 * 312) 
 		};
 
 		public static double GetFrameRate(string systemId, bool pal)
