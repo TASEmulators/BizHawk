@@ -189,5 +189,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public bool DriveLightOn =>
 			(_machine?.TapeDevice != null && _machine.TapeDevice.TapeIsPlaying)
 			|| (_machine?.UPDDiskDevice != null && _machine.UPDDiskDevice.DriveLight);
+
+		public string DriveLightIconDescription => "Disc Drive Activity";
 	}
 }

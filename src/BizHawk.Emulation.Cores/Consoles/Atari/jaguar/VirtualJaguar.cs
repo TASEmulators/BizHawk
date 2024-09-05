@@ -243,6 +243,8 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		public bool DriveLightEnabled => IsJaguarCD;
 		public bool DriveLightOn { get; private set; }
 
+		public string DriveLightIconDescription => "CD Drive Activity";
+
 		private readonly LibVirtualJaguar.CDTOCCallback _cdTocCallback;
 		private readonly LibVirtualJaguar.CDReadCallback _cdReadCallback;
 		
