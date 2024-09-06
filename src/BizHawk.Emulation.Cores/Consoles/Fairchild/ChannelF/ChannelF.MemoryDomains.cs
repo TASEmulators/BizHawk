@@ -19,12 +19,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					addr =>
 					{
 						if (addr is < 0 or > 63) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-						return CPU.Regs[addr];
+						return _cpu.Regs[addr];
 					},
 					(addr, value) =>
 					{
 						if (addr is < 0 or > 63) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-						CPU.Regs[addr] = value;
+						_cpu.Regs[addr] = value;
 					}, 1),
 				new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Big,
 					addr =>
@@ -49,11 +49,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		private void SyncAllByteArrayDomains()
 		{
-			SyncByteArrayDomain("BIOS1", BIOS01);
-			SyncByteArrayDomain("BIOS2", BIOS02);
-			Cartridge.SyncByteArrayDomain(this);
-			//SyncByteArrayDomain("ROM", Rom);
-			SyncByteArrayDomain("VRAM", VRAM);
+			SyncByteArrayDomain("BIOS1", _bios01);
+			SyncByteArrayDomain("BIOS2", _bios02);
+			_cartridge.SyncByteArrayDomain(this);
+			SyncByteArrayDomain("VRAM", _vram);
 		}
 
 		public void SyncByteArrayDomain(string name, byte[] data)

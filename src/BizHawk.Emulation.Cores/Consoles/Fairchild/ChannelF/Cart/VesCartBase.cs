@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	public abstract class VesCartBase
 	{
-		public abstract string BoardType { get; }	
+		public abstract string BoardType { get; }
 
 		public virtual void SyncByteArrayDomain(ChannelF sys)
 		{
@@ -19,23 +19,11 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			}
 		}
 
-		public virtual byte[] ROM
-		{
-			get { return _rom; }
-			protected set { _rom = value; }
-		}
-		protected byte[] _rom;		
-
-		public virtual byte[] RAM
-		{
-			get { return _ram; }
-			protected set { _ram = value; }
-		}
+		protected byte[] _rom;
 		protected byte[] _ram;
 
 		public virtual bool HasActivityLED { get; set; }
 		public virtual string ActivityLEDDescription { get; set; }
-		
 
 		public bool ActivityLED;
 		public int MultiBank;
@@ -58,38 +46,36 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public static VesCartBase Configure(GameInfo gi, byte[] rom)
 		{
 			// get board type
-			string boardStr = gi.OptionPresent("board") ? gi.GetStringValue("board") : "STD";
-
+			var boardStr = gi.OptionPresent("board") ? gi.GetStringValue("board") : "STD";
 			switch (boardStr)
 			{
 				// The supplied ROM is actually a BIOS
 				case "BIOS":
 					// we can just pass the rom into channel f and because it does not detect a 0x55 at rom[0] it will just jump straight to onboard games
 					// (hockey and tennis)
-					return new mapper_STD(rom);
+					return new MapperSTD(rom);
 
 				// standard cart layout
-				case "STD":				
+				case "STD":
 					// any number of F3851 Program Storage Units (1KB ROM each) or F3856 Program Storage Unit (2KB ROM)
 					// no on-pcb RAM and no extra IO
-					return new mapper_STD(rom);
+					return new MapperSTD(rom);
 
 				case "MAZE":
-					return new mapper_MAZE(rom);
+					return new MapperMAZE(rom);
 
 				case "RIDDLE":
 					// Sean Riddle's modified SCHACH multi-cart
-					return new mapper_RIDDLE(rom);
+					return new MapperRIDDLE(rom);
 
 				case "SCHACH":
 				default:
 					// F3853 Memory Interface Chip, 6KB of ROM and 2KB of RAM
 					//  - default to this
-					return new mapper_SCHACH(rom);
+					return new MapperSCHACH(rom);
 
 				case "HANG":
-
-					return new mapper_HANG(rom);
+					return new MapperHANG(rom);
 			}
 		}
 
@@ -106,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				if (m_read_write == 0)
 				{
 					m_addr = m_addr_latch;
-					m_data0 = RAM[m_addr] & 1;
+					m_data0 = _ram[m_addr] & 1;
 					return (byte)((m_latch[0] & 0x7f) | (m_data0 << 7));
 				}
 
@@ -141,8 +127,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				if (m_read_write == 1)
 				{
-					RAM[m_addr] = (byte)m_data0;
-				}					
+					_ram[m_addr] = (byte)m_data0;
+				}
 			}
 			else
 			{
@@ -171,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				b.CopyTo(resBytes, 0);
 				m_addr_latch = (ushort)(resBytes[0] | resBytes[1] << 8);
 			}
-		}		
+		}
 
 		public virtual void Reset()
 		{
@@ -187,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public virtual void SyncState(Serializer ser)
 		{
 			ser.BeginSection("Cart");
-			ser.Sync(nameof(RAM), ref _ram, false);
+			ser.Sync(nameof(_ram), ref _ram, false);
 			ser.Sync(nameof(m_latch), ref m_latch, false);
 			ser.Sync(nameof(m_addr_latch), ref m_addr_latch);
 			ser.Sync(nameof(m_addr), ref m_addr);

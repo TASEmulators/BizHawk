@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		{
 			_samplesPerFrame = (int)(SAMPLE_RATE * VsyncDenominator / VsyncNumerator);
 			// TODO: more precise audio clocking
-			_cyclesPerSample = CpuClocksPerFrame / (double)_samplesPerFrame;
+			_cyclesPerSample = _cpuClocksPerFrame / (double)_samplesPerFrame;
 			_sampleBuffer = new short[_samplesPerFrame];
 			_filteredSampleBuffer = new double[_samplesPerFrame];
 			_toneBuffer = new int[_samplesPerFrame];
@@ -37,8 +37,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		private void AudioChange()
 		{
-			var currSample = (int)(FrameClock / _cyclesPerSample);
-
+			var currSample = (int)(_frameClock / _cyclesPerSample);
 			while (currSample < _samplesPerFrame)
 			{
 				_toneBuffer[currSample++] = _tone;
@@ -130,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			for (var i = 2; i < samples.Length; i++)
 			{
 				filteredSamples[i] = (b0 / a0) * samples[i] + (b1 / a0) * samples[i - 1] + (b2 / a0) * samples[i - 2]
-									 - (a1 / a0) * filteredSamples[i - 1] - (a2 / a0) * filteredSamples[i - 2];
+					- (a1 / a0) * filteredSamples[i - 1] - (a2 / a0) * filteredSamples[i - 2];
 			}
 
 			for (var i = 0; i < samples.Length; i++)
@@ -150,9 +149,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		}
 
 		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+			=> throw new NotSupportedException("Async is not available");
 
 		public void DiscardSamples()
 		{
@@ -166,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			// process tone buffer			
+			// process tone buffer
 			for (var t = 0; t < _toneBuffer.Length; t++)
 			{
 				var tValue = _toneBuffer[t];
@@ -189,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 						_currTone = tValue;
 
 						if (_rampCounter <= 0)
-							_sampleBuffer[t] = (short)((GetWaveSample(_samplePosition++, _currTone) * _amplitude) / 30);						
+							_sampleBuffer[t] = (short)((GetWaveSample(_samplePosition++, _currTone) * _amplitude) / 30);
 					}
 				}
 				else if (_currTone > 0)

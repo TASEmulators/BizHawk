@@ -5,8 +5,8 @@
 	/// </summary>
 	public partial class ChannelF
 	{
-		public byte[] BIOS01 = new byte[1024];
-		public byte[] BIOS02 = new byte[1024];
+		private readonly byte[] _bios01;
+		private readonly byte[] _bios02;
 
 		/// <summary>
 		/// Simulates reading a byte of data from the address space
@@ -16,17 +16,17 @@
 			if (addr < 0x400)
 			{
 				// BIOS ROM 1
-				return BIOS01[addr];
+				return _bios01[addr];
 			}
 			else if (addr < 0x800)
 			{
 				// BIOS ROM 2
-				return BIOS02[addr - 0x400];
+				return _bios02[addr - 0x400];
 			}
 			else
 			{
 				// Cartridge Memory Space
-				return Cartridge.ReadBus(addr);
+				return _cartridge.ReadBus(addr);
 			}
 		}
 
@@ -35,8 +35,6 @@
 		/// Channel F addressable through the address space)
 		/// </summary>
 		public void WriteBus(ushort addr, byte value)
-		{
-			Cartridge.WriteBus(addr, value);
-		}		
+			=> _cartridge.WriteBus(addr, value);
 	}
 }

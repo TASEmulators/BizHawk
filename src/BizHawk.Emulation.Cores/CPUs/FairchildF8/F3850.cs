@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	///
 	/// Note: Programmable timer and interrupt logic from the F3851 is not currently emulated
 	/// </summary>
-	public sealed partial class F3850
+	public sealed partial class F3850<TLink> where TLink : IF3850Link
 	{
 		// operations that can take place in an instruction
 		public const byte ROMC_01 = 1;
@@ -100,8 +100,11 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		public const byte OP_DS = 157;
 		public const byte OP_LIS = 158;
 
-		public F3850()
+		private readonly TLink _link;
+
+		public F3850(TLink link)
 		{
+			_link = link;
 			Reset();
 		}
 
@@ -133,36 +136,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; set; }
 
-		// Memory Access 
-		public Func<ushort, byte> ReadMemory;
-		public Action<ushort, byte> WriteMemory;
-		public Func<ushort, byte> PeekMemory;
-		public Func<ushort, byte> DummyReadMemory;
-
-		// Hardware I/O Port Access
-		public Func<ushort, byte> ReadHardware;
-		public Action<ushort, byte> WriteHardware;
-
-		public Action<ushort> OnExecFetch;
-
-		public void SetCallbacks
-		(
-			Func<ushort, byte> ReadMemory,
-			Func<ushort, byte> DummyReadMemory,
-			Func<ushort, byte> PeekMemory,
-			Action<ushort, byte> WriteMemory,
-			Func<ushort, byte> ReadHardware,
-			Action<ushort, byte> WriteHardware
-		)
-		{
-			this.ReadMemory = ReadMemory;
-			this.DummyReadMemory = DummyReadMemory;
-			this.PeekMemory = PeekMemory;
-			this.WriteMemory = WriteMemory;
-			this.ReadHardware = ReadHardware;
-			this.WriteHardware = WriteHardware;
-		}
-
 		/// <summary>
 		/// Runs a single CPU clock cycle
 		/// </summary>
@@ -180,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			{
 				// always the last tick within an opcode instruction cycle
 				case END:
-					OnExecFetch?.Invoke(RegPC0);
+					_link.OnExecFetch(RegPC0);
 					TraceCallback?.Invoke(State());
 					opcode = Regs[DB];
 					instr_pntr = 0;
@@ -785,12 +758,12 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		{
 			int bytes_read = 0;
 			ushort pc = (ushort)(RegPC0 - 1);
-			string disasm = disassemble ? Disassemble(pc, ReadMemory, out bytes_read) : "---";
+			string disasm = disassemble ? Disassemble(pc, _link.ReadMemory, out bytes_read) : "---";
 			string byte_code = null;
 
 			for (ushort i = 0; i < bytes_read; i++)
 			{
-				byte_code += ReadMemory((ushort)(pc + i)).ToString("X2");
+				byte_code += _link.ReadMemory((ushort)(pc + i)).ToString("X2");
 				if (i < (bytes_read - 1))
 				{
 					byte_code += " ";
@@ -868,7 +841,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection(nameof(F3850));
+			ser.BeginSection("F3850");
 			ser.Sync(nameof(Regs), ref Regs, false);
 			ser.Sync(nameof(cur_instr), ref cur_instr, false);
 			ser.Sync(nameof(instr_pntr), ref instr_pntr);

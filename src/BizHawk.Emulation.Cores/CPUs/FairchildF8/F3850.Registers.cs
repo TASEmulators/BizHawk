@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	/// <summary>
 	/// Internal Registers
 	/// </summary>
-	public sealed partial class F3850
+	public sealed partial class F3850<TLink>
 	{
 		/// <summary>
 		/// Registers (counters and scratchpad)

@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.FairchildF8;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
@@ -15,71 +12,60 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			CoreComm = lp.Comm;
-			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
-			_files = lp.Roms.Select(r => r.RomData).ToList();
+			var gameInfo = lp.Roms[0].Game;
+			var rom = lp.Roms[0].RomData;
 
 			_syncSettings = lp.SyncSettings ?? new ChannelFSyncSettings();
-			region = _syncSettings.Region;
-			version = _syncSettings.Version;
+			_region = _syncSettings.Region;
+			_version = _syncSettings.Version;
 
 			MemoryCallbacks = new MemoryCallbackSystem([ "System Bus" ]);
 
-			ControllerDefinition = ChannelFControllerDefinition;
+			ControllerDefinition = _channelFControllerDefinition.Value;
 
-			if (version == ConsoleVersion.ChannelF)
+			if (_version == ConsoleVersion.ChannelF)
 			{
-				BIOS01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
-				BIOS02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
+				_bios01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
+				_bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
 			}
 			else
 			{
-				BIOS01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl90025"));
-				BIOS02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
+				_bios01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl90025"));
+				_bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
 			}
 
-			Cartridge = VesCartBase.Configure(_gameInfo[0], _files[0]);
-
-			CPU = new F3850
+			if (_bios01.Length != 1024 || _bios02.Length != 1024)
 			{
-				ReadMemory = ReadBus,
-				WriteMemory = WriteBus,
-				ReadHardware = ReadPort,
-				WriteHardware = WritePort,
-				DummyReadMemory = ReadBus
-			};
+				throw new InvalidOperationException("BIOS must be exactly 1024 bytes!");
+			}
 
-			_tracer = new TraceBuffer(CPU.TraceHeader);			
+			_cartridge = VesCartBase.Configure(gameInfo, rom);
 
-			//var rom = _files.First();
-			//Array.Copy(rom, 0, Rom, 0, rom.Length);
+			_cpu = new F3850<CpuLink>(new CpuLink(this));
+			_tracer = new TraceBuffer(_cpu.TraceHeader);
 
 			CalcClock();
 			SetupVideo();
 
-			ser.Register<IVideoProvider>(this);
 			ser.Register<ITraceable>(_tracer);
-			ser.Register<IDisassemblable>(CPU);
-			ser.Register<ISoundProvider>(this);
+			ser.Register<IDisassemblable>(_cpu);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 		}
 
-		internal CoreComm CoreComm { get; }
+		private CoreComm CoreComm { get; }
 
-		public List<GameInfo> _gameInfo;
-		private readonly List<byte[]> _files;
-
-		public F3850 CPU;
+		private readonly F3850<CpuLink> _cpu;
 		private readonly TraceBuffer _tracer;
-		public IController _controller;
+		private IController _controller;
 
-		public VesCartBase Cartridge;
-		public RegionType region;
-		public ConsoleVersion version;
+		private readonly VesCartBase _cartridge;
+		private readonly RegionType _region;
+		private readonly ConsoleVersion _version;
 
-		public bool DriveLightEnabled => Cartridge.HasActivityLED;
+		public bool DriveLightEnabled => _cartridge.HasActivityLED;
 
-		public bool DriveLightOn => Cartridge.ActivityLED;
+		public bool DriveLightOn => _cartridge.ActivityLED;
 
 		public string DriveLightIconDescription => "Computer thinking activity";
 	}

@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Vectors of Instruction Operations
 	/// </summary>
-	public sealed partial class F3850
+	public sealed partial class F3850<TLink>
 	{
 		/// <summary>
 		/// LR - LOAD REGISTER 

@@ -6,21 +6,20 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition { get; set; }
+		public ControllerDefinition ControllerDefinition { get; }
 
 		public string SystemId => VSystemID.Raw.ChannelF;
 
-		public bool DeterministicEmulation { get; set; }
+		public bool DeterministicEmulation => true;
 
-		public int CpuClocksPerFrame;
-		public int FrameClock;
+		private int _cpuClocksPerFrame;
+		private int _frameClock;
 
 		private void CalcClock()
 		{
 			// CPU speeds from https://en.wikipedia.org/wiki/Fairchild_Channel_F
 			// also https://github.com/mamedev/mame/blob/c8192c898ce7f68c0c0b87e44199f0d3e710439b/src/mame/drivers/channelf.cpp
 			double cpuFreq, pixelClock;
-			int pixelClocksPerFrame;
 			if (Region == DisplayType.NTSC)
 			{
 				HTotal = 256;
@@ -37,8 +36,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				cpuFreq = NTSC_COLORBURST / 2;
 				// NTSC pixel clock is NTSC Colorburst * 8 / 7
 				pixelClock = NTSC_COLORBURST * 8 / 7;
-				// NTSC refresh rate is (pixelclock * 8 / 7) / (256 * 264)
-				pixelClocksPerFrame = 256 * 264;
+				// NTSC refresh rate is (pixelclock * 8 / 7) / (HTotal * VTotal)
 				// (aka (1023750000 * 8) / (256 * 264 * 286 * 7)
 				// reduced to 234375 / 3872
 				VsyncNumerator = 234375;
@@ -55,19 +53,18 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				ScanlineRepeats = 5;
 				PixelWidth = 2;
 
-				if (version == ConsoleVersion.ChannelF)
+				if (_version == ConsoleVersion.ChannelF)
 				{
 					// PAL CPU speed is 2MHz
 					cpuFreq = 2000000;
 					// PAL pixel clock is 4MHz
 					pixelClock = 4000000;
-					// PAL refresh rate is pixelclock / (256 * 312)
-					pixelClocksPerFrame = 256 * 312;
+					// PAL refresh rate is pixelclock / (HTotal * VTotal)
 					// reduced to 15625 / 312
 					VsyncNumerator = 15625;
 					VsyncDenominator = 312;
 				}
-				else if (version == ConsoleVersion.ChannelF_II)
+				else if (_version == ConsoleVersion.ChannelF_II)
 				{
 					// PAL CPU speed for gen 2 seems to be contested
 					// various sources seem to say 1.77MHz (i.e. PAL Colorburst * 2 / 5)
@@ -81,8 +78,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					// not entirely sure what the pixel clock for PAL is here
 					// presumingly, it's just cpuFreq * 2?
 					pixelClock = PAL_COLORBURST * 8 / 9;
-					// PAL refresh rate is pixelclock / (256 * 312)
-					pixelClocksPerFrame = 256 * 312;
+					// PAL refresh rate is pixelclock / (HTotal * VTotal)
 					// (aka (4433618.75 * 8) / (256 * 312 * 9)
 					// reduced to 17734475 / 359424
 					VsyncNumerator = 17734475;
@@ -94,10 +90,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				}
 			}
 
-			var c = cpuFreq * pixelClocksPerFrame / pixelClock;
-			CpuClocksPerFrame = (int) c;
 			PixelClocksPerCpuClock = pixelClock / cpuFreq;
-			PixelClocksPerFrame = pixelClocksPerFrame;
+			PixelClocksPerFrame = HTotal * VTotal;
+
+			var c = cpuFreq * PixelClocksPerFrame / pixelClock;
+			// note: this always results in a nice integer, no precision is lost!
+			_cpuClocksPerFrame = (int)c;
 
 			SetupAudio();
 		}
@@ -109,22 +107,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			if (_tracer.IsEnabled())
 			{
-				CPU.TraceCallback = s => _tracer.Put(s);
+				_cpu.TraceCallback = s => _tracer.Put(s);
 			}
 			else
 			{
-				CPU.TraceCallback = null;
+				_cpu.TraceCallback = null;
 			}
 
 			PollInput();
 
-			while (FrameClock++ < CpuClocksPerFrame)
+			while (_frameClock++ < _cpuClocksPerFrame)
 			{
-				CPU.ExecuteOne();
+				_cpu.ExecuteOne();
 				ClockVideo();
 			}
 
-			FrameClock = 0;
+			_frameClock = 0;
 			_frame++;
 
 			if (_isLag)
@@ -134,10 +132,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		}
 
 		private int _frame;
-#pragma warning disable CS0414
-		//private int _lagcount;
-		//private bool _islag;
-#pragma warning restore CS0414
 
 		public void ResetCounters()
 		{
@@ -154,8 +148,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		private void ConsoleReset()
 		{
-			CPU.Reset();
-			Cartridge.Reset();
+			_cpu.Reset();
+			_cartridge.Reset();
 		}
 	}
 }
