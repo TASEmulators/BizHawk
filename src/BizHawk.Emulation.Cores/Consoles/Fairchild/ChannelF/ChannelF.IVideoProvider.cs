@@ -1,6 +1,5 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
