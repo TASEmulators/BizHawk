@@ -789,16 +789,19 @@ namespace BizHawk.Client.Common
 			},
 			[VSystemID.Raw.ChannelF] = new()
 			{
-				["Forward"] = 'U',
-				["Back"] = 'D',
-				["Left"] = 'L',
 				["Right"] = 'R',
+				["Left"] = 'L',
+				["Back"] = 'D',
+				["Forward"] = 'U',
+				["CCW"] = 'c',
+				["CW"] = 'C',
 				["Pull"] = 'O',
 				["Push"] = 'P',
-				["Time"] = 'T',
-				["Mode"] = 'M',
-				["Hold"] = 'H',
-				["Start"] = 'S',
+				["TIME"] = 'T',
+				["MODE"] = 'M',
+				["HOLD"] = 'H',
+				["START"] = 'S',
+				["RESET"] = 'r',
 			},
 		};
 
@@ -849,11 +852,6 @@ namespace BizHawk.Client.Common
 				["Mouse Position Y"] = "mpY",
 				["Mouse Scroll X"] = "msX",
 				["Mouse Scroll Y"] = "msY",
-			},
-			[VSystemID.Raw.ChannelF] = new()
-			{
-				["CCW"] = "CCW",
-				["CW"] = "CW",				
 			},
 		};
 	}
