@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// For the purposes of this core we will use 8192 bytes and just mask 0x03
 		/// (Also adding an additional 10 rows to the RAM buffer so that it's more aligned with the actual display)
 		/// </summary>
-		public byte[] VRAM = new byte[128 * (64 + 10)];
+		public byte[] VRAM = new byte[128 * 64];
 
 
 		public static readonly int[] FPalette =
@@ -82,12 +82,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				else
 				{
 					// active display
-					var p1 = (VRAM[(currRowInVram * 0x80) + 125]) & 0x03;
-					var p2 = (VRAM[(currRowInVram * 0x80) + 126]) & 0x03;
-					var pOffset = ((p2 & 0x02) | (p1 >> 1)) << 2;
+					if (currRowInVram < 64)
+					{
+						var p1 = (VRAM[(currRowInVram * 0x80) + 125]) & 0x03;
+						var p2 = (VRAM[(currRowInVram * 0x80) + 126]) & 0x03;
+						var pOffset = ((p2 & 0x02) | (p1 >> 1)) << 2;
 
-					var colourIndex = pOffset + (VRAM[currColInVram | (currRowInVram << 7)] & 0x03);
-					videoBuffer[(currScanline * HTotal) + currPixelInLine] = FPalette[CMap[colourIndex]];
+						var colourIndex = pOffset + (VRAM[currColInVram | (currRowInVram << 7)] & 0x03);
+						videoBuffer[(currScanline * HTotal) + currPixelInLine] = FPalette[CMap[colourIndex]];
+					}
 				}
 
 				_pixelClockCounter++;
