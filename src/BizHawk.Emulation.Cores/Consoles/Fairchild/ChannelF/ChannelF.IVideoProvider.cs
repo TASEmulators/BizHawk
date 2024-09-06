@@ -38,9 +38,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private int _latch_colour = 2;
 		private int _latch_x;
 		private int _latch_y;
-		
-		private int[] frameBuffer;
-		private int[] outputBuffer;
 		private int[] videoBuffer;
 		private double _pixelClockCounter;
 		private double _pixelClocksRemaining;
@@ -59,9 +56,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public void SetupVideo()
 		{
-
-			outputBuffer = new int[(HBlankOn - HBlankOff) * (VBlankOn - VBlankOff)];
-
 			videoBuffer = new int[HTotal * VTotal];
 		}
 
