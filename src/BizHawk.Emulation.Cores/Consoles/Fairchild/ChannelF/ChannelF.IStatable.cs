@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			ser.Sync(nameof(_latch_colour), ref _latch_colour);
 			ser.Sync(nameof(_latch_x), ref _latch_x);
 			ser.Sync(nameof(_latch_y), ref _latch_y);
+			ser.Sync(nameof(_pixelClockCounter), ref _pixelClockCounter);	
 			ser.Sync(nameof(_pixelClocksRemaining), ref _pixelClocksRemaining);
 
 			ser.Sync(nameof(FrameClock), ref FrameClock);
