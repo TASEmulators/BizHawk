@@ -125,12 +125,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		private static double GetVerticalModifier(int bufferWidth, int bufferHeight, double targetAspectRatio)
 		{
-			// Calculate the current aspect ratio
 			double currentAspectRatio = (double)bufferWidth / bufferHeight;
-
-			// Calculate the vertical modifier needed to achieve the target aspect ratio
 			double verticalModifier = currentAspectRatio / targetAspectRatio;
-
 			return verticalModifier;
 		}
 
