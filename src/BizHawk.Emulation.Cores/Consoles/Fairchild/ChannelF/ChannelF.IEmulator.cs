@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public bool DeterministicEmulation { get; set; }
 
-		public int ClockPerFrame;
+		public int CpuClocksPerFrame;
 		public int FrameClock;
 
 		private void CalcClock()
@@ -23,6 +23,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			int pixelClocksPerFrame;
 			if (Region == DisplayType.NTSC)
 			{
+				HTotal = 256;
+				HBlankOff = 8;
+				HBlankOn = 212;
+				VTotal = 264;
+				VBlankOff = 16;
+				VBlankOn = 248;
+				ScanlineRepeats = 4;
+				PixelWidth = 2;
+
 				// NTSC CPU speed is NTSC Colorburst / 2
 				const double NTSC_COLORBURST = 4500000 * 227.5 / 286;
 				cpuFreq = NTSC_COLORBURST / 2;
@@ -37,6 +46,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			}
 			else
 			{
+				HTotal = 256;
+				HBlankOff = 8;
+				HBlankOn = 212;
+				VTotal = 312;
+				VBlankOff = 20;
+				VBlankOn = 310;
+				ScanlineRepeats = 5;
+				PixelWidth = 2;
+
 				if (version == ConsoleVersion.ChannelF)
 				{
 					// PAL CPU speed is 2MHz
@@ -77,7 +95,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			}
 
 			var c = cpuFreq * pixelClocksPerFrame / pixelClock;
-			ClockPerFrame = (int) c;
+			CpuClocksPerFrame = (int) c;
+			PixelClocksPerCpuClock = pixelClock / cpuFreq;
+			PixelClocksPerFrame = pixelClocksPerFrame;
 
 			SetupAudio();
 		}
@@ -98,9 +118,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			PollInput();
 
-			while (FrameClock++ < ClockPerFrame)
+			while (FrameClock++ < CpuClocksPerFrame)
 			{
 				CPU.ExecuteOne();
+				ClockVideo();
 			}
 
 			FrameClock = 0;

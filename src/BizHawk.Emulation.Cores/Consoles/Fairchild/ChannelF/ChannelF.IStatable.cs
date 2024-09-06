@@ -8,13 +8,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		{
 			ser.BeginSection("ChannelF");
 			ser.Sync(nameof(VRAM), ref VRAM, false);
-			ser.Sync(nameof(latch_colour), ref latch_colour);
-			ser.Sync(nameof(latch_x), ref latch_x);
-			ser.Sync(nameof(latch_y), ref latch_y);
+			ser.Sync(nameof(_latch_colour), ref _latch_colour);
+			ser.Sync(nameof(_latch_x), ref _latch_x);
+			ser.Sync(nameof(_latch_y), ref _latch_y);
+			ser.Sync(nameof(_pixelClocksRemaining), ref _pixelClocksRemaining);
 
 			ser.Sync(nameof(FrameClock), ref FrameClock);
 			ser.Sync(nameof(_frame), ref _frame);
-			ser.Sync(nameof(ClockPerFrame), ref ClockPerFrame);
 			ser.Sync(nameof(_isLag), ref _isLag);
 			ser.Sync(nameof(_lagCount), ref _lagCount);
 

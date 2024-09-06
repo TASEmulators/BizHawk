@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		{
 			_samplesPerFrame = (int)(SAMPLE_RATE * VsyncDenominator / VsyncNumerator);
 			// TODO: more precise audio clocking
-			_cyclesPerSample = ClockPerFrame / (double)_samplesPerFrame;
+			_cyclesPerSample = CpuClocksPerFrame / (double)_samplesPerFrame;
 			_sampleBuffer = new short[_samplesPerFrame];
 			_filteredSampleBuffer = new double[_samplesPerFrame];
 			_toneBuffer = new int[_samplesPerFrame];
