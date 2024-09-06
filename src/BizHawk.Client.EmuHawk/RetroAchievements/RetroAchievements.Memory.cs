@@ -264,31 +264,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class ChanFMemFunctions : MemFunctions
+		// our vram is unpacked, but RA expects it packed
+		private class ChanFMemFunctions(MemoryDomain vram)
+			: MemFunctions(null, 0, 0x800)
 		{
-			private readonly IDebuggable _debuggable;
-			private readonly MemoryDomain _vram; // our vram is unpacked, but RA expects it packed
-
 			private byte ReadVRAMPacked(uint addr)
 			{
-				return (byte)(((_vram.PeekByte(addr * 4 + 0) & 3) << 6)
-					| ((_vram.PeekByte(addr * 4 + 1) & 3) << 4)
-					| ((_vram.PeekByte(addr * 4 + 2) & 3) << 2)
-					| ((_vram.PeekByte(addr * 4 + 3) & 3) << 0));
+				return (byte)(((vram.PeekByte(addr * 4 + 0) & 3) << 6)
+					| ((vram.PeekByte(addr * 4 + 1) & 3) << 4)
+					| ((vram.PeekByte(addr * 4 + 2) & 3) << 2)
+					| ((vram.PeekByte(addr * 4 + 3) & 3) << 0));
 			}
 
 			protected override byte ReadMem(uint addr)
 			{
 				using (MemGuard.EnterExit())
 				{
-					if (addr < 0x40)
-					{
-						return (byte)_debuggable.GetCpuFlagsAndRegisters()["SPR" + addr].Value;
-					}
-					else
-					{
-						return ReadVRAMPacked(addr - 0x40);
-					}
+					return ReadVRAMPacked(addr);
 				}
 			}
 
@@ -296,18 +288,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				using (MemGuard.EnterExit())
 				{
-					if (addr < 0x40)
-					{
-						_debuggable.SetCpuRegister("SPR" + addr, val);
-					}
-					else
-					{
-						addr -= 0x40;
-						_vram.PokeByte(addr * 4 + 0, (byte)((val >> 6) & 3));
-						_vram.PokeByte(addr * 4 + 1, (byte)((val >> 4) & 3));
-						_vram.PokeByte(addr * 4 + 2, (byte)((val >> 2) & 3));
-						_vram.PokeByte(addr * 4 + 3, (byte)((val >> 0) & 3));
-					}
+					vram.PokeByte(addr * 4 + 0, (byte)((val >> 6) & 3));
+					vram.PokeByte(addr * 4 + 1, (byte)((val >> 4) & 3));
+					vram.PokeByte(addr * 4 + 2, (byte)((val >> 2) & 3));
+					vram.PokeByte(addr * 4 + 3, (byte)((val >> 0) & 3));
 				}
 			}
 
@@ -320,35 +304,17 @@ namespace BizHawk.Client.EmuHawk
 
 				using (MemGuard.EnterExit())
 				{
-					var regs = _debuggable.GetCpuFlagsAndRegisters();
 					var end = Math.Min(addr + bytes, BankSize);
 					for (var i = addr; i < end; i++)
 					{
-						byte val;
-						if (i < 0x40)
-						{
-							val = (byte)regs["SPR" + i].Value;
-						}
-						else
-						{
-							val = ReadVRAMPacked(i - 0x40);
-						}
-
 						unsafe
 						{
-							((byte*)buffer)![i - addr] = val;
+							((byte*)buffer)![i - addr] = ReadVRAMPacked(i);
 						}
 					}
 
 					return end - addr;
 				}
-			}
-
-			public ChanFMemFunctions(IDebuggable debuggable, MemoryDomain vram)
-				: base(null, 0, 0x840)
-			{
-				_debuggable = debuggable;
-				_vram = vram;
 			}
 		}
 
@@ -374,7 +340,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// anything more complicated will be handled accordingly
 
-		protected static IReadOnlyList<MemFunctions> CreateMemoryBanks(ConsoleID consoleId, IMemoryDomains domains, IDebuggable debuggable)
+		protected static IReadOnlyList<MemFunctions> CreateMemoryBanks(ConsoleID consoleId, IMemoryDomains domains)
 		{
 			var mfs = new List<MemFunctions>();
 
@@ -562,8 +528,9 @@ namespace BizHawk.Client.EmuHawk
 						TryAddDomain("EEPROM");
 						break;
 					case ConsoleID.FairchildChannelF:
+						mfs.Add(new(domains["Scratchpad"], 0, domains["Scratchpad"].Size));
 						// special case
-						mfs.Add(new ChanFMemFunctions(debuggable, domains["VRAM"]));
+						mfs.Add(new ChanFMemFunctions(domains["VRAM"]));
 						mfs.Add(new(domains.SystemBus, 0, domains.SystemBus.Size));
 						// only add in SRAM if it's from HANG/MAZE carts (where SRAM isn't on the System Bus)
 						if (domains.Has("SRAM") && domains["SRAM"].Size == 0x400)

@@ -376,11 +376,11 @@ namespace BizHawk.Client.EmuHawk
 			_consoleId = SystemIdToConsoleId();
 
 			// init the read map
-			_readMap = Array.Empty<byte>();
+			_readMap = [ ];
 
 			if (Emu.HasMemoryDomains())
 			{
-				_memFunctions = CreateMemoryBanks(_consoleId, Domains, Emu.CanDebug() ? Emu.AsDebuggable() : null);
+				_memFunctions = CreateMemoryBanks(_consoleId, Domains);
 				if (_memFunctions.Count > 255)
 				{
 					throw new InvalidOperationException("_memFunctions must have less than 256 memory banks");
