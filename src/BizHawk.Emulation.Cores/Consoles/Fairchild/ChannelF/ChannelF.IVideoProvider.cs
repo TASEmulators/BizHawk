@@ -106,16 +106,16 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		private int[] ClampBuffer(int[] buffer, int originalWidth, int originalHeight, int trimLeft, int trimTop, int trimRight, int trimBottom)
 		{
-			int newWidth = originalWidth - trimLeft - trimRight;
-			int newHeight = originalHeight - trimTop - trimBottom;
-			int[] newBuffer = new int[newWidth * newHeight];
+			var newWidth = originalWidth - trimLeft - trimRight;
+			var newHeight = originalHeight - trimTop - trimBottom;
+			var newBuffer = new int[newWidth * newHeight];
 
-			for (int y = 0; y < newHeight; y++)
+			for (var y = 0; y < newHeight; y++)
 			{
 				for (int x = 0; x < newWidth; x++)
 				{
-					int originalIndex = (y + trimTop) * originalWidth + (x + trimLeft);
-					int newIndex = y * newWidth + x;
+					var originalIndex = (y + trimTop) * originalWidth + (x + trimLeft);
+					var newIndex = y * newWidth + x;
 					newBuffer[newIndex] = buffer[originalIndex];
 				}
 			}
@@ -125,8 +125,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		private static double GetVerticalModifier(int bufferWidth, int bufferHeight, double targetAspectRatio)
 		{
-			double currentAspectRatio = (double)bufferWidth / bufferHeight;
-			double verticalModifier = currentAspectRatio / targetAspectRatio;
+			var currentAspectRatio = (double)bufferWidth / bufferHeight;
+			var verticalModifier = currentAspectRatio / targetAspectRatio;
 			return verticalModifier;
 		}
 
