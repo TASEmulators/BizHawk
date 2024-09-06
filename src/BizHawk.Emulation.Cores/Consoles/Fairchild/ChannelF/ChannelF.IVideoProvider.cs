@@ -108,8 +108,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private int HDisplayable => HBlankOn - HBlankOff;
 		private int VDisplayable => VBlankOn - VBlankOff;
 
-		private double HPixelAspectModifier => Region == DisplayType.NTSC ? 1.75 : 1.95;    // This is only here because the aspect ratio is off between regions. It could maybe be negated by trimming the number of scanlines on PAL??
-
 		private int[] ClampBuffer(int[] buffer, int originalWidth, int originalHeight, int trimLeft, int trimTop, int trimRight, int trimBottom)
 		{
 			int newWidth = originalWidth - trimLeft - trimRight;
@@ -127,17 +125,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			}
 
 			return newBuffer;
-		}
-
-		private static double GetHorizontalModifier(int bufferWidth, int bufferHeight, double targetAspectRatio)
-		{
-			// Calculate the current aspect ratio
-			double currentAspectRatio = (double)bufferWidth / bufferHeight;
-
-			// Calculate the horizontal modifier needed to achieve the target aspect ratio
-			double horizontalModifier = targetAspectRatio / currentAspectRatio;
-
-			return horizontalModifier;
 		}
 
 		private static double GetVerticalModifier(int bufferWidth, int bufferHeight, double targetAspectRatio)
