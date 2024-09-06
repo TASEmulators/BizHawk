@@ -13,8 +13,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private const string PLACEHOLDER_TITLE = "(will take value from WindowTitle/WindowTitleStatic)";
 
-		private static readonly bool IsUsingGTKThemeWorkaround = string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GTK_DATA_PREFIX") ?? "UNSET");
-
 		/// <summary>
 		/// Under Mono, <see cref="SystemColors.Control">SystemColors.Control</see> returns an ugly beige.<br/>
 		/// This method recursively replaces the <see cref="Control.BackColor"/> of the given <paramref name="control"/> (can be a <see cref="Form"/>) with <see cref="Color.WhiteSmoke"/>
@@ -78,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 				return;
 			}
-			if (OSTailoredCode.IsUnixHost && !IsUsingGTKThemeWorkaround) FixBackColorOnControls(this);
+			if (OSTailoredCode.IsUnixHost) FixBackColorOnControls(this);
 			UpdateWindowTitle();
 		}
 
