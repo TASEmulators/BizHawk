@@ -85,5 +85,6 @@ namespace BizHawk.Emulation.Common
 
 			public string Scope { get; }
 		}
+#nullable restore
 	}
 }
