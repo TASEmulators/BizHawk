@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			[FirmwareOptionStatus.Unknown] = STATUS_DESC_UNUSED,
 			[FirmwareOptionStatus.Unacceptable] = "NO: This doesn't work on the core",
 			[FirmwareOptionStatus.Acceptable] = "OK: This works on the core",
-			[FirmwareOptionStatus.Ideal] = "COOL: Ideal for TASing and anything. There can only be one.",
+			[FirmwareOptionStatus.Ideal] = "PERFECT: Ideal for TASing and anything.",
 		};
 
 		internal static readonly IReadOnlyDictionary<FirmwareOptionStatus, Image> StatusIcons = new Dictionary<FirmwareOptionStatus, Image>
