@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			_values[PatternList.SelectedIndex] = unchecked((int) ValueNum.Value).ToString(NumberFormatInfo.InvariantInfo);
+			_values[PatternList.SelectedIndex] = ((int) ValueNum.Value).ToString(NumberFormatInfo.InvariantInfo);
 			UpdatePattern();
 			UpdateDisplay();
 		}

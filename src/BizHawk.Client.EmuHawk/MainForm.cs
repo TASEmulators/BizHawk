@@ -4650,7 +4650,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_singleInstanceServer.IsMessageComplete) break;
 				}
 
-				var payloadString = System.Text.Encoding.ASCII.GetString(payloadBytes.GetBuffer(), 0, (int)payloadBytes.Length);
+				var payloadString = Encoding.ASCII.GetString(payloadBytes.GetBuffer(), 0, (int)payloadBytes.Length);
 				var args = payloadString.Split('|').Select(a => Encoding.UTF8.GetString(a.HexStringToBytes())).ToArray();
 
 				Console.WriteLine("RECEIVED SINGLE INSTANCE FORWARDED ARGS:");

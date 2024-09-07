@@ -1242,7 +1242,7 @@ namespace BizHawk.Client.EmuHawk
 				// find the control under the mouse
 				Point m = Cursor.Position;
 				Control top = this;
-				Control found = null;
+				Control found;
 				do
 				{
 					found = top.GetChildAtPoint(top.PointToClient(m), GetChildAtPointSkip.Invisible);

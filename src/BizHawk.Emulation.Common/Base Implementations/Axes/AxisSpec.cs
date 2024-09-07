@@ -2,7 +2,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
 {
-	public readonly struct AxisSpec
+	public readonly record struct AxisSpec
 	{
 		/// <summary>
 		/// Gets the axis constraints that apply artificial constraints to float values
