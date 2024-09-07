@@ -29,6 +29,11 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	///
 	/// Note: Programmable timer and interrupt logic from the F3851 is not currently emulated
 	/// </summary>
+	/// <remarks>
+	/// this type parameter might look useless—and it is—but after monomorphisation,
+	/// this way happens to perform better than the alternative
+	/// </remarks>
+	/// <seealso cref="IF3850Link"/>
 	public sealed partial class F3850<TLink> where TLink : IF3850Link
 	{
 		// operations that can take place in an instruction

@@ -7,6 +7,11 @@ using BizHawk.Common.NumberExtensions;
 // Z80A CPU
 namespace BizHawk.Emulation.Cores.Components.Z80A
 {
+	/// <remarks>
+	/// this type parameter might look useless—and it is—but after monomorphisation,
+	/// this way happens to perform better than the alternative
+	/// </remarks>
+	/// <seealso cref="IZ80ALink"/>
 	public sealed partial class Z80A<TLink> where TLink : IZ80ALink
 	{
 		// operations that can take place in an instruction
