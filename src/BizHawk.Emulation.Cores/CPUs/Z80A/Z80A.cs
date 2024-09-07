@@ -716,7 +716,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					break;
 
 				case IORQ:
-					IRQACKCallback();
+					_link.IRQACKCallback();
 					break;
 			}
 
@@ -742,7 +742,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					iff2 = iff1;
 					iff1 = false;
 					NMI_();
-					NMICallback();
+					_link.NMICallback();
 					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
 
 					temp_R = (byte)(Regs[R] & 0x7F);
@@ -774,7 +774,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							INTERRUPT_2();
 							break;
 					}
-					IRQCallback();
+					_link.IRQCallback();
 					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
 
 					temp_R = (byte)(Regs[R] & 0x7F);

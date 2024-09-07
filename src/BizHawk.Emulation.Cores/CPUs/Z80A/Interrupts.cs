@@ -36,13 +36,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			}
 		}
 
-		public Action IRQCallback = () => {};
-		public Action NMICallback = () => {};
-
-		// this will be a few cycles off for now
-		// it should suffice for now until Alyosha returns from hiatus
-		public Action IRQACKCallback = () => {};
-
 		private void NMI_()
 		{
 			PopulateCURINSTR
