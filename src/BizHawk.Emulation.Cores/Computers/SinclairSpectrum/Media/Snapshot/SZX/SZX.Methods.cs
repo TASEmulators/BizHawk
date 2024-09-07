@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	{
 		private readonly SpectrumBase _machine;
 
-		private Z80A _cpu => _machine.CPU;
+		private Z80A<ZXSpectrum.CpuLink> _cpu => _machine.CPU;
 
 		private SZX(SpectrumBase machine)
 		{

@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	public class AmstradGateArray : IPortIODevice, IVideoProvider
 	{
 		private readonly CPCBase _machine;
-		private Z80A CPU => _machine.CPU;
+		private Z80A<AmstradCPC.CpuLink> CPU => _machine.CPU;
 		private CRCT_6845 CRCT => _machine.CRCT;
 		//private CRTDevice CRT => _machine.CRT;
 		private IPSG PSG => _machine.AYDevice;

@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Reference to the instantiated Z80 cpu (piped in via constructor)
 		/// </summary>
-		public Z80A CPU { get; set; }
+		public Z80A<AmstradCPC.CpuLink> CPU { get; set; }
 
 		/// <summary>
 		/// ROM and extended info

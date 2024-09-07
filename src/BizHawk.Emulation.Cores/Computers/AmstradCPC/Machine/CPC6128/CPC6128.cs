@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Main constructor
 		/// </summary>
-		public CPC6128(AmstradCPC cpc, Z80A cpu, List<byte[]> files, bool autoTape, AmstradCPC.BorderType borderType)
+		public CPC6128(AmstradCPC cpc, Z80A<AmstradCPC.CpuLink> cpu, List<byte[]> files, bool autoTape, AmstradCPC.BorderType borderType)
 		{
 			CPC = cpc;
 			CPU = cpu;

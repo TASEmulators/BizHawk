@@ -16,14 +16,12 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 			ServiceProvider = ser;
 			PutSettings(lp.Settings ?? new TI83CommonSettings());
 
-			_cpu.FetchMemory = ReadMemory;
-			_cpu.ReadMemory = ReadMemory;
-			_cpu.WriteMemory = WriteMemory;
-			_cpu.ReadHardware = ReadHardware;
-			_cpu.WriteHardware = WriteHardware;
-			_cpu.IRQCallback = IRQCallback;
-			_cpu.NMICallback = NMICallback;
-			_cpu.MemoryCallbacks = MemoryCallbacks;
+			_cpu = new Z80A<CpuLink>(new CpuLink(this))
+			{
+				IRQCallback = IRQCallback,
+				NMICallback = NMICallback,
+				MemoryCallbacks = MemoryCallbacks
+			};
 
 			_rom = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("TI83", "Rom"));
 			LinkPort = new TI83LinkPort(this);
@@ -41,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 
 		private readonly TraceBuffer _tracer;
 
-		private readonly Z80A _cpu = new Z80A();
+		private readonly Z80A<CpuLink> _cpu;
 		private readonly byte[] _rom;
 
 		// configuration

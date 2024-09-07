@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	public sealed class DatacorderDevice : IPortIODevice
 	{
 		private SpectrumBase _machine { get; set; }
-		private Z80A _cpu { get; set; }
+		private Z80A<ZXSpectrum.CpuLink> _cpu { get; set; }
 		private OneBitBeeper _buzzer { get; set; }
 
 		/// <summary>

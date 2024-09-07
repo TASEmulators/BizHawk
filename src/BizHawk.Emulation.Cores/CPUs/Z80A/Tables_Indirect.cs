@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Cores.Components.Z80A
 {
-	public partial class Z80A
+	public partial class Z80A<TLink>
 	{
 		private void INT_OP_IND(ushort operation, ushort src_l, ushort src_h)
 		{

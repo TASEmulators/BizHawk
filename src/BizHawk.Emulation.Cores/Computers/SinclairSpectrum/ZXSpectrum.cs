@@ -27,7 +27,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
 
-			_cpu = new Z80A();
+			_cpu = new Z80A<CpuLink>(default)
+			{
+				MemoryCallbacks = MemoryCallbacks
+			};
 
 			_tracer = new TraceBuffer(_cpu.TraceHeader);
 
@@ -94,18 +97,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					throw new InvalidOperationException("Machine not yet emulated");
 			}
 
-			_cpu.MemoryCallbacks = MemoryCallbacks;
-
 			HardReset = _machine.HardReset;
 			SoftReset = _machine.SoftReset;
 
-			_cpu.FetchMemory = _machine.ReadMemory;
-			_cpu.ReadMemory = _machine.ReadMemory;
-			_cpu.WriteMemory = _machine.WriteMemory;
-			_cpu.ReadHardware = _machine.ReadPort;
-			_cpu.WriteHardware = _machine.WritePort;
-			_cpu.FetchDB = _machine.PushBus;
-			_cpu.OnExecFetch = _machine.CPUMon.OnExecFetch;
+			_cpu.SetCpuLink(new CpuLink(this, _machine));
 
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(_cpu);
@@ -147,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public Action HardReset;
 		public Action SoftReset;
 
-		private readonly Z80A _cpu;
+		private readonly Z80A<CpuLink> _cpu;
 		private readonly TraceBuffer _tracer;
 		public IController _controller;
 		public SpectrumBase _machine;
