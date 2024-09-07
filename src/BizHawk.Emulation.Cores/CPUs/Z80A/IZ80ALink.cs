@@ -23,5 +23,12 @@
 
 		// This is only called when the first byte of an instruction is fetched.
 		void OnExecFetch(ushort address);
+
+		void IRQCallback();
+		void NMICallback();
+
+		// This will be a few cycles off for now
+		// It should suffice for now until Alyosha returns from hiatus
+		void IRQACKCallback();
 	}
 }

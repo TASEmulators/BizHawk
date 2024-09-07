@@ -30,6 +30,18 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			public void OnExecFetch(ushort address)
 				=> sms.OnExecMemory(address);
+
+			public void IRQCallback()
+			{
+			}
+
+			public void NMICallback()
+			{
+			}
+
+			public void IRQACKCallback()
+			{
+			}
 		}
 	}
 }

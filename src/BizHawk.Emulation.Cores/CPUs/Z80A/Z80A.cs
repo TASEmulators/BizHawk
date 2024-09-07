@@ -242,8 +242,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; set; }
-
 		public void SetCpuLink(TLink link)
 			=> _link = link;
 

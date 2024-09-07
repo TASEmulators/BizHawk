@@ -16,12 +16,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 			ServiceProvider = ser;
 			PutSettings(lp.Settings ?? new TI83CommonSettings());
 
-			_cpu = new Z80A<CpuLink>(new CpuLink(this))
-			{
-				IRQCallback = IRQCallback,
-				NMICallback = NMICallback,
-				MemoryCallbacks = MemoryCallbacks
-			};
+			_cpu = new Z80A<CpuLink>(new CpuLink(this));
 
 			_rom = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("TI83", "Rom"));
 			LinkPort = new TI83LinkPort(this);

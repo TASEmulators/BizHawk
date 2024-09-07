@@ -27,6 +27,16 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 			public void OnExecFetch(ushort address)
 			{
 			}
+
+			public void IRQCallback()
+				=> ti83.IRQCallback();
+
+			public void NMICallback()
+				=> ti83.NMICallback();
+
+			public void IRQACKCallback()
+			{
+			}
 		}
 	}
 }

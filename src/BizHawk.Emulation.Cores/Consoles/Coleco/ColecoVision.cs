@@ -17,10 +17,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			_syncSettings = syncSettings ?? new ColecoSyncSettings();
 			bool skipBios = _syncSettings.SkipBiosIntro;
 
-			_cpu = new Z80A<CpuLink>(new CpuLink(this))
-			{
-				MemoryCallbacks = MemoryCallbacks
-			};
+			_cpu = new Z80A<CpuLink>(new CpuLink(this));
 
 			PSG = new SN76489col();
 			SGM_sound = new AY_3_8910_SGM();

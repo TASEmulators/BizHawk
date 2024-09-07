@@ -28,6 +28,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			public void OnExecFetch(ushort address)
 				=> machine.CPUMon.OnExecFetch(address);
+
+			public void IRQCallback()
+			{
+			}
+
+			public void NMICallback()
+			{
+			}
+
+			public void IRQACKCallback()
+			{
+			}
 		}
 	}
 }

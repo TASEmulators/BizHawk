@@ -23,12 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ServiceProvider = ser;
 			CoreComm = lp.Comm;
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
-
-			_cpu = new Z80A<CpuLink>(default)
-			{
-				MemoryCallbacks = MemoryCallbacks
-			};
-
+			_cpu = new Z80A<CpuLink>(default);
 			_tracer = new TraceBuffer(_cpu.TraceHeader);
 			_files = lp.Roms.Select(r => r.RomData).ToList();
 
@@ -59,7 +54,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			SoftReset = _machine.SoftReset;
 
 			_cpu.SetCpuLink(new CpuLink(_machine));
-			_cpu.IRQACKCallback = _machine.GateArray.IORQA;
 
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(_cpu);

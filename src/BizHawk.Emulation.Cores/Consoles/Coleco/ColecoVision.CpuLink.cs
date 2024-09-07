@@ -27,6 +27,18 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			public void OnExecFetch(ushort address)
 			{
 			}
+
+			public void IRQCallback()
+			{
+			}
+
+			public void NMICallback()
+			{
+			}
+
+			public void IRQACKCallback()
+			{
+			}
 		}
 	}
 }

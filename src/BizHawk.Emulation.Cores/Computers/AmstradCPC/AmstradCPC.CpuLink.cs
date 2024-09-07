@@ -27,6 +27,17 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			public void OnExecFetch(ushort address)
 			{
 			}
+
+			public void IRQCallback()
+			{
+			}
+
+			public void NMICallback()
+			{
+			}
+
+			public void IRQACKCallback()
+				=> machine.GateArray.IORQA();
 		}
 	}
 }

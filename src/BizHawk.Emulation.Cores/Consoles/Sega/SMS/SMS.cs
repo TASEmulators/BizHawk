@@ -77,10 +77,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				HasYM2413 = true;
 			}
 
-			Cpu = new Z80A<CpuLink>(new CpuLink(this))
-			{
-				MemoryCallbacks = MemoryCallbacks
-			};
+			Cpu = new Z80A<CpuLink>(new CpuLink(this));
 
 			// set this before turning off GG system for GG_in_SMS games
 			bool sms_reg_compat = !IsGameGear && (_region == SmsSyncSettings.Regions.Japan);

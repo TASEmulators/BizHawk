@@ -27,11 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
 
-			_cpu = new Z80A<CpuLink>(default)
-			{
-				MemoryCallbacks = MemoryCallbacks
-			};
-
+			_cpu = new Z80A<CpuLink>(default);
 			_tracer = new TraceBuffer(_cpu.TraceHeader);
 
 			_files = lp.Roms.Select(r => r.RomData).ToList();
