@@ -1388,18 +1388,14 @@ namespace BizHawk.Client.EmuHawk
 
 					LuaSandbox.Sandbox(null, () =>
 					{
-						LuaImp.ExecuteString($"console.log({rawCommand})");
-					}, () =>
-					{
-						LuaSandbox.Sandbox(null, () =>
+						var results = LuaImp.ExecuteString(rawCommand);
+						// empty array if the command was e.g. a variable assignment or a loop without return statement
+						// "void" functions return a single null
+						// if output didn't change, Print will take care of writing out "(no return)"
+						if (results is not [ ] and not [ null ] || OutputBox.Text == consoleBeforeCall)
 						{
-							LuaImp.ExecuteString(rawCommand);
-
-							if (OutputBox.Text == consoleBeforeCall)
-							{
-								WriteLine("Command successfully executed");
-							}
-						});
+							LuaLibraries.Print(results);
+						}
 					});
 
 					_messageCount = 0;
