@@ -8,7 +8,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 	public partial class Stella
 	{
 		internal IMemoryDomains MemoryDomains;
-		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
 		private uint _cartMemSize;
 
 		private void SetupMemoryDomains()
