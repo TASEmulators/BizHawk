@@ -4,5 +4,5 @@
 #include <vector>
 #include <cstdint>
 
-extern uint16_t soundbuffer[4096];
+extern uint16_t* soundbuffer;
 extern int nsamples;

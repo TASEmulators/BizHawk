@@ -13,7 +13,7 @@
 #include "M6532.hxx"
 #include "TIA.hxx"
 
-uint16_t soundbuffer[4096];
+uint16_t* soundbuffer;
 int nsamples;
 
 struct InitSettings
@@ -201,6 +201,9 @@ ECL_EXPORT int stella_init(
 {
 	fprintf(stderr, "Initializing Stella core...\n");
  
+ // Allocating sound buffer
+	soundbuffer = (uint16_t*) alloc_invisible(4096);
+
 	Settings::Options opts;
 	_a2600 = MediaFactory::createOSystem();
 	if(!_a2600->initialize(opts)) { fprintf(stderr, "ERROR: Couldn't create A2600 System\n"); return 0; }
