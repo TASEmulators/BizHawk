@@ -25,13 +25,11 @@ namespace BizHawk.Client.Common
 
 			Changes = true;
 
-			LagLog.RemoveFrom(frame);
 			LagLog[frame] = _inputPollable.IsLagFrame;
 
 			if (this.IsRecording())
 			{
-				TasStateManager.InvalidateAfter(frame);
-				GreenzoneInvalidated(frame);
+				InvalidateAfter(frame);
 			}
 
 			if (frame != 0)

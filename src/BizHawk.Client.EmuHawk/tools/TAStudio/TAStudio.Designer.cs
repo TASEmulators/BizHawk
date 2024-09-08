@@ -344,11 +344,11 @@ namespace BizHawk.Client.EmuHawk
             this.CutMenuItem,
             this.toolStripSeparator8,
             this.ClearFramesMenuItem,
-            this.InsertFrameMenuItem,
             this.DeleteFramesMenuItem,
+            this.InsertFrameMenuItem,
+            this.InsertNumFramesMenuItem,
             this.CloneFramesMenuItem,
             this.CloneFramesXTimesMenuItem,
-            this.InsertNumFramesMenuItem,
             this.toolStripSeparator6,
             this.TruncateMenuItem,
             this.ClearGreenzoneMenuItem,
@@ -1006,11 +1006,11 @@ namespace BizHawk.Client.EmuHawk
             this.cutToolStripMenuItem,
             this.separateToolStripMenuItem,
             this.ClearContextMenuItem,
-            this.InsertFrameContextMenuItem,
             this.DeleteFramesContextMenuItem,
+            this.InsertFrameContextMenuItem,
+            this.InsertNumFramesContextMenuItem,
             this.CloneContextMenuItem,
             this.CloneXTimesContextMenuItem,
-            this.InsertNumFramesContextMenuItem,
             this.toolStripSeparator18,
             this.TruncateContextMenuItem,
             this.BranchContextMenuItem,
@@ -1018,7 +1018,7 @@ namespace BizHawk.Client.EmuHawk
             this.StartNewProjectFromNowMenuItem,
             this.StartANewProjectFromSaveRamMenuItem});
 			this.RightClickMenu.Name = "RightClickMenu";
-			this.RightClickMenu.Size = new System.Drawing.Size(253, 502);
+			this.RightClickMenu.Size = new System.Drawing.Size(253, 524);
 			this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
 			// 
 			// SetMarkersContextMenuItem

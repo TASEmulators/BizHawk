@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public int FrameLength = 79872;
 
 		private readonly CPCBase _machine;
-		private Z80A CPU => _machine.CPU;
+		private Z80A<AmstradCPC.CpuLink> CPU => _machine.CPU;
 		private CRCT_6845 CRCT => _machine.CRCT;
 		private IPSG PSG => _machine.AYDevice;
 

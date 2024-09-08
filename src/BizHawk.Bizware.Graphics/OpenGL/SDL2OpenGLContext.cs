@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 using Silk.NET.OpenGL;
 #endif
 
+using BizHawk.Common;
+
 using static SDL2.SDL;
 
 namespace BizHawk.Bizware.Graphics
@@ -16,16 +18,59 @@ namespace BizHawk.Bizware.Graphics
 	{
 		static SDL2OpenGLContext()
 		{
+			if (OSTailoredCode.IsUnixHost)
+			{
+				// make sure that Linux uses the x11 video driver
+				// we need this as mono winforms uses x11
+				// and the user could potentially try to force the wayland video driver via env vars
+				SDL_SetHint("SDL_VIDEODRIVER", "x11");
+				// try to use EGL if it is available
+				// GLX is the old API, and is the more or less "deprecated" at this point, and potentially more buggy with some drivers
+				// we do need to a bit more work, in case EGL is not actually available or potentially doesn't have desktop GL support
+				SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "1");
+			}
+
 			// init SDL video
 			if (SDL_Init(SDL_INIT_VIDEO) != 0)
 			{
 				throw new($"Could not init SDL video! SDL Error: {SDL_GetError()}");
 			}
 
-			// load the default OpenGL library
-			if (SDL_GL_LoadLibrary(null) != 0)
+			if (OSTailoredCode.IsUnixHost)
 			{
-				throw new($"Could not load default OpenGL library! SDL Error: {SDL_GetError()}");
+				// if we fail to load EGL, we'll just try again with GLX...
+				var loadGlx = SDL_GL_LoadLibrary(null) != 0;
+
+				if (!loadGlx)
+				{
+					try
+					{
+						// check if we can actually create a desktop GL context
+						using var glContext = new SDL2OpenGLContext(3, 2, true);
+					}
+					catch
+					{
+						// failed to create a context, fallback to GLX
+						loadGlx = true;
+					}
+				}
+
+				if (loadGlx)
+				{
+					SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "0");
+					if (SDL_GL_LoadLibrary(null) != 0)
+					{
+						throw new($"Could not load default OpenGL library! SDL Error: {SDL_GetError()}");
+					}
+				}
+			}
+			else
+			{
+				// load the default OpenGL library
+				if (SDL_GL_LoadLibrary(null) != 0)
+				{
+					throw new($"Could not load default OpenGL library! SDL Error: {SDL_GetError()}");
+				}
 			}
 
 			// we will be turning a foreign window into an SDL window
@@ -45,7 +90,7 @@ namespace BizHawk.Bizware.Graphics
 		private IntPtr _sdlWindow;
 		private IntPtr _glContext;
 
-		private void CreateContext(int majorVersion, int minorVersion, bool coreProfile, bool shareContext)
+		private static void SetAttributes(int majorVersion, int minorVersion, bool coreProfile, bool shareContext)
 		{
 			// set some sensible defaults
 			SDL_GL_ResetAttributes();
@@ -88,7 +133,10 @@ namespace BizHawk.Bizware.Graphics
 			{
 				throw new($"Could not set share context attribute! SDL Error: {SDL_GetError()}");
 			}
+		}
 
+		private void CreateContext()
+		{
 			_glContext = SDL_GL_CreateContext(_sdlWindow);
 			if (_glContext == IntPtr.Zero)
 			{
@@ -109,18 +157,32 @@ namespace BizHawk.Bizware.Graphics
 
 		public SDL2OpenGLContext(IntPtr nativeWindowhandle, int majorVersion, int minorVersion, bool coreProfile)
 		{
+			// Controls are not shared, they are the sharees
+			SetAttributes(majorVersion, minorVersion, coreProfile, shareContext: false);
+
 			_sdlWindow = SDL_CreateWindowFrom(nativeWindowhandle);
 			if (_sdlWindow == IntPtr.Zero)
 			{
 				throw new($"Could not create SDL Window! SDL Error: {SDL_GetError()}");
 			}
 
-			// Controls are not shared, they are the sharees
-			CreateContext(majorVersion, minorVersion, coreProfile, shareContext: false);
+			try
+			{
+				CreateContext();
+			}
+			catch
+			{
+				Dispose();
+				throw;
+			}
 		}
 
 		public SDL2OpenGLContext(int majorVersion, int minorVersion, bool coreProfile)
 		{
+			// offscreen contexts are shared (as we want to send texture from it over to our control's context)
+			// make sure to set the current graphics control context before creating this context
+			SetAttributes(majorVersion, minorVersion, coreProfile, shareContext: true);
+
 			_sdlWindow = SDL_CreateWindow(null, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1, 1,
 				SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL_WindowFlags.SDL_WINDOW_HIDDEN);
 			if (_sdlWindow == IntPtr.Zero)
@@ -128,9 +190,15 @@ namespace BizHawk.Bizware.Graphics
 				throw new($"Could not create SDL Window! SDL Error: {SDL_GetError()}");
 			}
 
-			// offscreen contexts are shared (as we want to send texture from it over to our control's context)
-			// make sure to set the current graphics control context before creating this context
-			CreateContext(majorVersion, minorVersion, coreProfile, shareContext: true);
+			try
+			{
+				CreateContext();
+			}
+			catch
+			{
+				Dispose();
+				throw;
+			}
 		}
 
 		public void Dispose()

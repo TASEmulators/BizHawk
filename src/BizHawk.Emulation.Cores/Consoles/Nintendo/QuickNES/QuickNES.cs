@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			QN = BizInvoker.GetInvoker<LibQuickNES>(resolver, CallingConventionAdapters.Native);
 		}
 
-		[CoreConstructor(VSystemID.Raw.NES, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.NES)]
 		public QuickNES(byte[] file, QuickNESSettings settings, QuickNESSyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
@@ -285,7 +285,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				throw new UnsupportedGameException("Game known to not be playable in this core");
 			}
 
-			sha1 = "sha1:" + sha1; // huh?
+			sha1 = $"{SHA1Checksum.PREFIX}:{sha1}";
 			var carts = BootGodDb.Identify(sha1);
 
 			if (carts.Count > 0)

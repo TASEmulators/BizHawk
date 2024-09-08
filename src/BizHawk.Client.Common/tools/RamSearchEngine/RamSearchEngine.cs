@@ -7,15 +7,16 @@ using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using static BizHawk.Common.NumberExtensions.NumberExtensions;
 
+// ReSharper disable PossibleInvalidCastExceptionInForeachLoop
 namespace BizHawk.Client.Common.RamSearchEngine
 {
 	public class RamSearchEngine
 	{
 		private Compare _compareTo = Compare.Previous;
 
-		private IMiniWatch[] _watchList = [ ];
+		private IMiniWatch[] _watchList = Array.Empty<IMiniWatch>();
 		private readonly SearchEngineSettings _settings;
-		private readonly UndoHistory<IEnumerable<IMiniWatch>> _history = new(true, [ ]); //TODO use IList instead of IEnumerable and stop calling `.ToArray()` (i.e. cloning) on reads and writes?
+		private readonly UndoHistory<IEnumerable<IMiniWatch>> _history = new UndoHistory<IEnumerable<IMiniWatch>>(true, new List<IMiniWatch>()); //TODO use IList instead of IEnumerable and stop calling `.ToArray()` (i.e. cloning) on reads and writes?
 
 		public RamSearchEngine(SearchEngineSettings settings, IMemoryDomains memoryDomains)
 		{
@@ -56,13 +57,46 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				default:
 				case WatchSize.Byte:
-					for (var i = 0; i < _watchList.Length; i++) _watchList[i] = new MiniByteWatch(domain, i);
+					if (_settings.IsDetailed())
+					{
+						for (var i = 0; i < _watchList.Length; i++) _watchList[i] = new MiniByteWatchDetailed(domain, i);
+					}
+					else
+					{
+						for (var i = 0; i < _watchList.Length; i++) _watchList[i] = new MiniByteWatch(domain, i);
+					}
 					break;
 				case WatchSize.Word:
-					for (var i = 0; i < _watchList.Length; i++) _watchList[i] = new MiniWordWatch(domain, i * stepSize, _settings.BigEndian);
+					if (_settings.IsDetailed())
+					{
+						for (var i = 0; i < _watchList.Length; i++)
+						{
+							_watchList[i] = new MiniWordWatchDetailed(domain, i * stepSize, _settings.BigEndian);
+						}
+					}
+					else
+					{
+						for (var i = 0; i < _watchList.Length; i++)
+						{
+							_watchList[i] = new MiniWordWatch(domain, i * stepSize, _settings.BigEndian);
+						}
+					}
 					break;
 				case WatchSize.DWord:
-					for (var i = 0; i < _watchList.Length; i++) _watchList[i] = new MiniDWordWatch(domain, i * stepSize, _settings.BigEndian);
+					if (_settings.IsDetailed())
+					{
+						for (var i = 0; i < _watchList.Length; i++)
+						{
+							_watchList[i] = new MiniDWordWatchDetailed(domain, i * stepSize, _settings.BigEndian);
+						}
+					}
+					else
+					{
+						for (var i = 0; i < _watchList.Length; i++)
+						{
+							_watchList[i] = new MiniDWordWatch(domain, i * stepSize, _settings.BigEndian);
+						}
+					}
 					break;
 			}
 		}
@@ -80,13 +114,11 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				"",
 				0,
 				_watchList[index].Previous,
-				_settings.IsDetailed() ? _watchList[index].ChangeCount : 0);
+				_settings.IsDetailed() ? ((IMiniWatchDetails)_watchList[index]).ChangeCount : 0);
 
-		public int DoSearch(bool updatePrevious)
+		public int DoSearch()
 		{
 			int before = _watchList.Length;
-
-			Update(updatePrevious);
 
 			using (Domain.EnterExit())
 			{
@@ -99,6 +131,11 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					Compare.Difference => CompareDifference(_watchList).ToArray(),
 					_ => ComparePrevious(_watchList).ToArray()
 				};
+
+				if (_settings.PreviousType == PreviousType.LastSearch)
+				{
+					SetPreviousToCurrent();
+				}
 			}
 
 			if (UndoEnabled)
@@ -112,7 +149,6 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		public bool Preview(int index)
 		{
 			var addressWatch = _watchList[index];
-			addressWatch.Update(PreviousType.Original, _settings.Domain, _settings.BigEndian);
 			IMiniWatch[] listOfOne = [ addressWatch ];
 
 			return _compareTo switch
@@ -159,12 +195,13 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		/// </remarks>
 		public uint? DifferentBy { get; set; }
 
-		public void Update(bool updatePrevious)
+		public void Update()
 		{
+			if (!_settings.IsDetailed()) return;
 			using var @lock = _settings.Domain.EnterExit();
-			foreach (var watch in _watchList)
+			foreach (IMiniWatchDetails watch in _watchList)
 			{
-				watch.Update(updatePrevious ? _settings.PreviousType : PreviousType.Original, _settings.Domain, _settings.BigEndian);
+				watch.Update(_settings.PreviousType, _settings.Domain, _settings.BigEndian);
 			}
 		}
 
@@ -172,18 +209,26 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void SetEndian(bool bigEndian) => _settings.BigEndian = bigEndian;
 
-		public void SetPreviousType(PreviousType type) => _settings.PreviousType = type;
+		/// <exception cref="InvalidOperationException"><see cref="Mode"/> is <see cref="SearchMode.Fast"/> and <paramref name="type"/> is <see cref="PreviousType.LastFrame"/></exception>
+		public void SetPreviousType(PreviousType type)
+		{
+			if (_settings.IsFastMode() && type == PreviousType.LastFrame)
+			{
+				throw new InvalidOperationException();
+			}
 
-		public void SetMode(SearchMode mode) => _settings.Mode = mode;
+			_settings.PreviousType = type;
+		}
 
 		public void SetPreviousToCurrent()
 		{
-			Array.ForEach(_watchList, static w => w.SetPreviousToCurrent());
+			Array.ForEach(_watchList, w => w.SetPreviousToCurrent(_settings.Domain, _settings.BigEndian));
 		}
 
 		public void ClearChangeCounts()
 		{
-			foreach (var watch in _watchList)
+			if (!_settings.IsDetailed()) return;
+			foreach (var watch in _watchList.Cast<IMiniWatchDetails>())
 			{
 				watch.ClearChangeCount();
 			}
@@ -241,16 +286,21 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					_watchList = _watchList.OrderBy(w => w.Address, reverse).ToArray();
 					break;
 				case WatchList.Value:
-					_watchList = _watchList.OrderBy(w => w.Current, reverse).ToArray();
+					_watchList = _watchList.OrderBy(w => GetValue(w), reverse).ToArray();
 					break;
 				case WatchList.Prev:
 					_watchList = _watchList.OrderBy(w => w.Previous, reverse).ToArray();
 					break;
 				case WatchList.ChangesCol:
-					_watchList = _watchList.OrderBy(w => w.ChangeCount, reverse).ToArray();
+					if (!_settings.IsDetailed()) break;
+					_watchList = _watchList
+						.Cast<IMiniWatchDetails>()
+						.OrderBy(w => w.ChangeCount, reverse)
+						.Cast<IMiniWatch>()
+						.ToArray();
 					break;
 				case WatchList.Diff:
-					_watchList = _watchList.OrderBy(w => w.Current - w.Previous, reverse).ToArray();
+					_watchList = _watchList.OrderBy(w => GetValue(w) - w.Previous, reverse).ToArray();
 					break;
 			}
 		}
@@ -299,52 +349,52 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				{
 					default:
 					case ComparisonOperator.Equal:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) == SignExtendAsNeeded(w.Previous));
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) == SignExtendAsNeeded(w.Previous));
 					case ComparisonOperator.NotEqual:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) != SignExtendAsNeeded(w.Previous));
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) != SignExtendAsNeeded(w.Previous));
 					case ComparisonOperator.GreaterThan:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) > SignExtendAsNeeded(w.Previous));
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) > SignExtendAsNeeded(w.Previous));
 					case ComparisonOperator.GreaterThanEqual:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) >= SignExtendAsNeeded(w.Previous));
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) >= SignExtendAsNeeded(w.Previous));
 					case ComparisonOperator.LessThan:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) < SignExtendAsNeeded(w.Previous));
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) < SignExtendAsNeeded(w.Previous));
 					case ComparisonOperator.LessThanEqual:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) <= SignExtendAsNeeded(w.Previous));
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) <= SignExtendAsNeeded(w.Previous));
 					case ComparisonOperator.DifferentBy:
 						if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 						return watchList.Where(w =>
-							differentBy == Math.Abs(SignExtendAsNeeded(w.Current) - SignExtendAsNeeded(w.Previous)));
+							differentBy == Math.Abs(SignExtendAsNeeded(GetValue(w)) - SignExtendAsNeeded(w.Previous)));
 				}
 			}
 			switch (Operator)
 			{
 				default:
 				case ComparisonOperator.Equal:
-					return watchList.Where(w => ReinterpretAsF32(w.Current).HawkFloatEquality(ReinterpretAsF32(w.Previous)));
+					return watchList.Where(w => ReinterpretAsF32(GetValue(w)).HawkFloatEquality(ReinterpretAsF32(w.Previous)));
 				case ComparisonOperator.NotEqual:
-					return watchList.Where(w => !ReinterpretAsF32(w.Current).HawkFloatEquality(ReinterpretAsF32(w.Previous)));
+					return watchList.Where(w => !ReinterpretAsF32(GetValue(w)).HawkFloatEquality(ReinterpretAsF32(w.Previous)));
 				case ComparisonOperator.GreaterThan:
-					return watchList.Where(w => ReinterpretAsF32(w.Current) > ReinterpretAsF32(w.Previous));
+					return watchList.Where(w => ReinterpretAsF32(GetValue(w)) > ReinterpretAsF32(w.Previous));
 				case ComparisonOperator.GreaterThanEqual:
 					return watchList.Where(w =>
 					{
-						var val = ReinterpretAsF32(w.Current);
+						var val = ReinterpretAsF32(GetValue(w));
 						var prev = ReinterpretAsF32(w.Previous);
 						return val > prev || val.HawkFloatEquality(prev);
 					});
 				case ComparisonOperator.LessThan:
-					return watchList.Where(w => ReinterpretAsF32(w.Current) < ReinterpretAsF32(w.Previous));
+					return watchList.Where(w => ReinterpretAsF32(GetValue(w)) < ReinterpretAsF32(w.Previous));
 				case ComparisonOperator.LessThanEqual:
 					return watchList.Where(w =>
 					{
-						var val = ReinterpretAsF32(w.Current);
+						var val = ReinterpretAsF32(GetValue(w));
 						var prev = ReinterpretAsF32(w.Previous);
 						return val < prev || val.HawkFloatEquality(prev);
 					});
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 					var differentByF = ReinterpretAsF32(differentBy);
-					return watchList.Where(w => Math.Abs(ReinterpretAsF32(w.Current) - ReinterpretAsF32(w.Previous))
+					return watchList.Where(w => Math.Abs(ReinterpretAsF32(GetValue(w)) - ReinterpretAsF32(w.Previous))
 						.HawkFloatEquality(differentByF));
 			}
 		}
@@ -358,21 +408,21 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				{
 					default:
 					case ComparisonOperator.Equal:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) == SignExtendAsNeeded(compareValue));
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) == SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.NotEqual:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) != SignExtendAsNeeded(compareValue));
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) != SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.GreaterThan:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) > SignExtendAsNeeded(compareValue));
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) > SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.GreaterThanEqual:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) >= SignExtendAsNeeded(compareValue));
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) >= SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.LessThan:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) < SignExtendAsNeeded(compareValue));
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) < SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.LessThanEqual:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) <= SignExtendAsNeeded(compareValue));
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) <= SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.DifferentBy:
 						if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 						return watchList.Where(w =>
-							differentBy == Math.Abs(SignExtendAsNeeded(w.Current) - SignExtendAsNeeded(compareValue)));
+							differentBy == Math.Abs(SignExtendAsNeeded(GetValue(w)) - SignExtendAsNeeded(compareValue)));
 				}
 			}
 			var compareValueF = ReinterpretAsF32(compareValue);
@@ -380,29 +430,29 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				default:
 				case ComparisonOperator.Equal:
-					return watchList.Where(w => ReinterpretAsF32(w.Current).HawkFloatEquality(compareValueF));
+					return watchList.Where(w => ReinterpretAsF32(GetValue(w)).HawkFloatEquality(compareValueF));
 				case ComparisonOperator.NotEqual:
-					return watchList.Where(w => !ReinterpretAsF32(w.Current).HawkFloatEquality(compareValueF));
+					return watchList.Where(w => !ReinterpretAsF32(GetValue(w)).HawkFloatEquality(compareValueF));
 				case ComparisonOperator.GreaterThan:
-					return watchList.Where(w => ReinterpretAsF32(w.Current) > compareValueF);
+					return watchList.Where(w => ReinterpretAsF32(GetValue(w)) > compareValueF);
 				case ComparisonOperator.GreaterThanEqual:
 					return watchList.Where(w =>
 					{
-						var val = ReinterpretAsF32(w.Current);
+						var val = ReinterpretAsF32(GetValue(w));
 						return val > compareValueF || val.HawkFloatEquality(compareValueF);
 					});
 				case ComparisonOperator.LessThan:
-					return watchList.Where(w => ReinterpretAsF32(w.Current) < compareValueF);
+					return watchList.Where(w => ReinterpretAsF32(GetValue(w)) < compareValueF);
 				case ComparisonOperator.LessThanEqual:
 					return watchList.Where(w =>
 					{
-						var val = ReinterpretAsF32(w.Current);
+						var val = ReinterpretAsF32(GetValue(w));
 						return val < compareValueF || val.HawkFloatEquality(compareValueF);
 					});
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 					var differentByF = ReinterpretAsF32(differentBy);
-					return watchList.Where(w => Math.Abs(ReinterpretAsF32(w.Current) - compareValueF)
+					return watchList.Where(w => Math.Abs(ReinterpretAsF32(GetValue(w)) - compareValueF)
 						.HawkFloatEquality(differentByF));
 			}
 		}
@@ -433,52 +483,67 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		private IEnumerable<IMiniWatch> CompareChanges(IEnumerable<IMiniWatch> watchList)
 		{
+			if (!_settings.IsDetailed()) throw new InvalidCastException(); //TODO matches previous behaviour; was this intended to skip processing? --yoshi
 			if (CompareValue is not uint compareValue) throw new InvalidOperationException();
 			switch (Operator)
 			{
 				default:
 				case ComparisonOperator.Equal:
-					return watchList.Where(w => w.ChangeCount == compareValue);
+					return watchList
+						.Cast<IMiniWatchDetails>()
+						.Where(w => w.ChangeCount == compareValue);
 				case ComparisonOperator.NotEqual:
-					return watchList.Where(w => w.ChangeCount != compareValue);
+					return watchList
+						.Cast<IMiniWatchDetails>()
+						.Where(w => w.ChangeCount != compareValue);
 				case ComparisonOperator.GreaterThan:
-					return watchList.Where(w => w.ChangeCount > compareValue);
+					return watchList
+						.Cast<IMiniWatchDetails>()
+						.Where(w => w.ChangeCount > compareValue);
 				case ComparisonOperator.GreaterThanEqual:
-					return watchList.Where(w => w.ChangeCount >= compareValue);
+					return watchList
+						.Cast<IMiniWatchDetails>()
+						.Where(w => w.ChangeCount >= compareValue);
 				case ComparisonOperator.LessThan:
-					return watchList.Where(w => w.ChangeCount < compareValue);
+					return watchList
+						.Cast<IMiniWatchDetails>()
+						.Where(w => w.ChangeCount < compareValue);
 				case ComparisonOperator.LessThanEqual:
-					return watchList.Where(w => w.ChangeCount <= compareValue);
+					return watchList
+						.Cast<IMiniWatchDetails>()
+						.Where(w => w.ChangeCount <= compareValue);
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
-					return watchList.Where(w => Math.Abs(w.ChangeCount - compareValue) == differentBy);
+					return watchList
+						.Cast<IMiniWatchDetails>()
+						.Where(w => Math.Abs(w.ChangeCount - compareValue) == differentBy);
 			}
 		}
 
 		private IEnumerable<IMiniWatch> CompareDifference(IEnumerable<IMiniWatch> watchList)
 		{
-			if (CompareValue is not uint compareValue) throw new InvalidCastException(); //TODO typo for IOE?
+			if (CompareValue is not uint compareValue) throw new InvalidOperationException();
 			if (_settings.Type is not WatchDisplayType.Float)
 			{
 				switch (Operator)
 				{
 					default:
 					case ComparisonOperator.Equal:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) - SignExtendAsNeeded(w.Previous) == compareValue);
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) - SignExtendAsNeeded(w.Previous) == compareValue);
 					case ComparisonOperator.NotEqual:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) - SignExtendAsNeeded(w.Previous) != compareValue);
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) - SignExtendAsNeeded(w.Previous) != compareValue);
 					case ComparisonOperator.GreaterThan:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) - SignExtendAsNeeded(w.Previous) > compareValue);
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) - SignExtendAsNeeded(w.Previous) > compareValue);
 					case ComparisonOperator.GreaterThanEqual:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) - SignExtendAsNeeded(w.Previous) >= compareValue);
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) - SignExtendAsNeeded(w.Previous) >= compareValue);
 					case ComparisonOperator.LessThan:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) - SignExtendAsNeeded(w.Previous) < compareValue);
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) - SignExtendAsNeeded(w.Previous) < compareValue);
 					case ComparisonOperator.LessThanEqual:
-						return watchList.Where(w => SignExtendAsNeeded(w.Current) - SignExtendAsNeeded(w.Previous) <= compareValue);
+						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) - SignExtendAsNeeded(w.Previous) <= compareValue);
 					case ComparisonOperator.DifferentBy:
 						if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 						return watchList.Where(w =>
-							differentBy == Math.Abs(Math.Abs(SignExtendAsNeeded(w.Current) - SignExtendAsNeeded(w.Previous)) - compareValue));
+							differentBy == Math.Abs(SignExtendAsNeeded(GetValue(w)) - SignExtendAsNeeded(w.Previous) - compareValue));
 				}
 			}
 			var compareValueF = ReinterpretAsF32(compareValue);
@@ -486,34 +551,34 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				default:
 				case ComparisonOperator.Equal:
-					return watchList.Where(w => (ReinterpretAsF32(w.Current) - ReinterpretAsF32(w.Previous)).HawkFloatEquality(compareValueF));
+					return watchList.Where(w => (ReinterpretAsF32(GetValue(w)) - ReinterpretAsF32(w.Previous)).HawkFloatEquality(compareValueF));
 				case ComparisonOperator.NotEqual:
-					return watchList.Where(w => !(ReinterpretAsF32(w.Current) - ReinterpretAsF32(w.Previous)).HawkFloatEquality(compareValueF));
+					return watchList.Where(w => !(ReinterpretAsF32(GetValue(w)) - ReinterpretAsF32(w.Previous)).HawkFloatEquality(compareValueF));
 				case ComparisonOperator.GreaterThan:
-					return watchList.Where(w => ReinterpretAsF32(w.Current) - ReinterpretAsF32(w.Previous) > compareValueF);
+					return watchList.Where(w => ReinterpretAsF32(GetValue(w)) - ReinterpretAsF32(w.Previous) > compareValueF);
 				case ComparisonOperator.GreaterThanEqual:
 					return watchList.Where(w =>
 					{
-						var diff = ReinterpretAsF32(w.Current) - ReinterpretAsF32(w.Previous);
+						var diff = ReinterpretAsF32(GetValue(w)) - ReinterpretAsF32(w.Previous);
 						return diff > compareValueF || diff.HawkFloatEquality(compareValueF);
 					});
 				case ComparisonOperator.LessThan:
-					return watchList.Where(w => ReinterpretAsF32(w.Current) - ReinterpretAsF32(w.Previous) < compareValueF);
+					return watchList.Where(w => ReinterpretAsF32(GetValue(w)) - ReinterpretAsF32(w.Previous) < compareValueF);
 				case ComparisonOperator.LessThanEqual:
 					return watchList.Where(w =>
 					{
-						var diff = ReinterpretAsF32(w.Current) - ReinterpretAsF32(w.Previous);
+						var diff = ReinterpretAsF32(GetValue(w)) - ReinterpretAsF32(w.Previous);
 						return diff < compareValueF || diff.HawkFloatEquality(compareValueF);
 					});
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 					var differentByF = ReinterpretAsF32(differentBy);
-					return watchList.Where(w => Math.Abs(ReinterpretAsF32(w.Current) - ReinterpretAsF32(w.Previous) - compareValueF)
+					return watchList.Where(w => Math.Abs(ReinterpretAsF32(GetValue(w)) - ReinterpretAsF32(w.Previous) - compareValueF)
 						.HawkFloatEquality(differentByF));
 			}
 		}
 
-		private long SignExtendAsNeeded(long val)
+		private long SignExtendAsNeeded(uint val)
 		{
 			if (_settings.Type != WatchDisplayType.Signed)
 			{
@@ -529,12 +594,28 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			};
 		}
 
+		private uint GetValue(IMiniWatch watch)
+		{
+			if (watch is IMiniWatchDetails detailedWatch)
+			{
+				return detailedWatch.Current;
+			}
+
+			return _settings.Size switch
+			{
+				WatchSize.Byte => MiniByteWatch.GetByte(watch.Address, Domain),
+				WatchSize.Word => MiniWordWatch.GetUshort(watch.Address, Domain, _settings.BigEndian),
+				WatchSize.DWord => MiniDWordWatch.GetUint(watch.Address, Domain, _settings.BigEndian),
+				_ => MiniByteWatch.GetByte(watch.Address, Domain)
+			};
+		}
+
 		private bool CanDoCompareType(Compare compareType)
 		{
 			return _settings.Mode switch
 			{
 				SearchMode.Detailed => true,
-				SearchMode.Fast => compareType != Compare.Changes,
+				SearchMode.Fast => (compareType != Compare.Changes),
 				_ => true
 			};
 		}

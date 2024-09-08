@@ -110,6 +110,13 @@ namespace BizHawk.Common.CollectionExtensions
 			foreach (var item in collection) list.Add(item);
 		}
 
+		/// <remarks>
+		/// Contains method for arrays which does not need Linq, but rather uses Array.IndexOf
+		/// similar to <see cref="ICollection{T}.Contains">ICollection's Contains</see>
+		/// </remarks>
+		public static bool Contains<T>(this T[] array, T value)
+			=> Array.IndexOf(array, value) >= 0;
+
 		/// <returns>
 		/// portion of <paramref name="dest"/> that was written to,
 		/// unless either span is empty, in which case the other reference is returned<br/>
@@ -133,7 +140,7 @@ namespace BizHawk.Common.CollectionExtensions
 			if (a.Length is 0) return b;
 			var combined = new T[a.Length + b.Length];
 			var returned = ((ReadOnlySpan<T>) a).ConcatArray(b, combined);
-			Debug.Assert(returned == combined);
+			Debug.Assert(returned == combined, "expecting return value to cover all of combined since the whole thing was written to");
 			return combined;
 		}
 
@@ -153,6 +160,10 @@ namespace BizHawk.Common.CollectionExtensions
 		/// If the key is not present, returns default(TValue).
 		/// backported from .NET Core 2.0
 		/// </summary>
+		public static TValue? GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key)
+			=> dictionary.TryGetValue(key, out var found) ? found : default;
+
+		/// <inheritdoc cref="GetValueOrDefault{K,V}(IDictionary{K,V},K)"/>
 		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
 			=> dictionary.TryGetValue(key, out var found) ? found : default;
 
@@ -161,6 +172,10 @@ namespace BizHawk.Common.CollectionExtensions
 		/// If the key is not present, returns <paramref name="defaultValue"/>.
 		/// backported from .NET Core 2.0
 		/// </summary>
+		public static TValue? GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
+
+		/// <inheritdoc cref="GetValueOrDefault{K,V}(IDictionary{K,V},K,V)"/>
 		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
 			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
 #endif

@@ -417,6 +417,10 @@ namespace BizHawk.Client.EmuHawk
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.CloneFramesExternal();
 					break;
+				case "Clone # Times":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.CloneFramesXTimesExternal();
+					break;
 				case "Analog Increment":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.AnalogIncrementByOne();

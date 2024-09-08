@@ -5,6 +5,7 @@
 
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.NumberExtensions;
@@ -171,7 +172,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//Console.WriteLine("binary searched"); //use this to check for mistaken LastReadIndex logic resulting in binary searches during sequential access
 			var listIndex = Index.LowerBoundBinarySearch(idx => idx.LogicalOffset, offset);
-			System.Diagnostics.Debug.Assert(listIndex < Index.Count);
+			Debug.Assert(listIndex < Index.Count, "insertion point may not be after end");
 			//Console.WriteLine("byte_pos {0:X8} using index #{1} at offset {2:X8}", offset, listIndex, Index[listIndex].LogicalOffset);
 
 			return listIndex;

@@ -130,6 +130,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public bool DriveLightEnabled => true;
 		public bool DriveLightOn => _machine.DiskIIController.DriveLight;
 
+		public string DriveLightIconDescription => "Disk Drive Activity LED";
+
 		private bool _nextPressed;
 		private bool _prevPressed;
 

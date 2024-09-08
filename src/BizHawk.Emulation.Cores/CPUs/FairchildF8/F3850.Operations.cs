@@ -5,21 +5,21 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	/// <summary>
 	/// ALU Operations
 	/// </summary>
-	public sealed partial class F3850
+	public sealed partial class F3850<TLink>
 	{
 		public void Read_Func(byte dest, byte src_l, byte src_h)
 		{
-			Regs[dest] = ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[dest] = _link.ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 		}
 
 		public void Write_Func(byte dest_l, byte dest_h, byte src)
 		{
-			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), Regs[src]);
+			_link.WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), Regs[src]);
 		}
 
 		public void IN_Func(byte dest, byte src)
 		{
-			Regs[dest] = ReadHardware(Regs[src]);
+			Regs[dest] = _link.ReadHardware(Regs[src]);
 		}
 
 		/// <summary>
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		{
 			// data is complemented between accumulator and I/O pins (because PINs are active-low)
 			// however for ease here we will make them active-high
-			WriteHardware(Regs[dest], Regs[src]);
+			_link.WriteHardware(Regs[dest], Regs[src]);
 		}
 
 		public void ClearFlags_Func()

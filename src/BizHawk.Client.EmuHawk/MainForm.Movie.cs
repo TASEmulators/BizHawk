@@ -2,13 +2,24 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Arcades.MAME;
+using BizHawk.Emulation.Cores.Atari.Jaguar;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
+using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
+using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm
 	{
-		public bool StartNewMovie(IMovie movie, bool record)
+		public bool StartNewMovie(IMovie movie, bool newMovie)
 		{
 			if (movie is null) throw new ArgumentNullException(paramName: nameof(movie));
 
@@ -24,6 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			var oldPreferredCores = new Dictionary<string, string>(Config.PreferredCores);
 			try
 			{
+				if (newMovie) PrepopulateMovieHeaderValues(movie);
 				try
 				{
 					MovieSession.QueueNewMovie(
@@ -48,7 +60,13 @@ namespace BizHawk.Client.EmuHawk
 
 				Config.RecentMovies.Add(movie.Filename);
 
-				MovieSession.RunQueuedMovie(record, Emulator);
+				MovieSession.RunQueuedMovie(newMovie, Emulator);
+				if (newMovie)
+				{
+					PopulateWithDefaultHeaderValues(movie);
+					if (movie is ITasMovie tasMovie)
+						tasMovie.ClearChanges();
+				}
 			}
 			finally
 			{
@@ -136,6 +154,133 @@ namespace BizHawk.Client.EmuHawk
 				{
 					AddOnScreenMessage("No movie active");
 				}
+			}
+		}
+
+		/// <summary>
+		/// Sets necessary movie values in order to be able to start this <paramref name="movie"/>
+		/// Only required when creating a new movie from scratch.
+		/// </summary>
+		/// <param name="movie">The movie to fill with values</param>
+		private void PrepopulateMovieHeaderValues(IMovie movie)
+		{
+			movie.Core = Emulator.Attributes().CoreName;
+			movie.SystemID = Emulator.SystemId; // TODO: I feel like setting this shouldn't be necessary, but it is currently
+
+			var settable = GetSettingsAdapterForLoadedCoreUntyped();
+			if (settable.HasSyncSettings)
+			{
+				movie.SyncSettingsJson = ConfigService.SaveWithType(settable.GetSyncSettings());
+			}
+		}
+
+		/// <summary>
+		/// Sets default header values for the given <paramref name="movie"/>. Notably needs to be done after loading the core
+		/// to make sure all values are in the correct state, see https://github.com/TASEmulators/BizHawk/issues/3980
+		/// </summary>
+		/// <param name="movie">The movie to fill with values</param>
+		private void PopulateWithDefaultHeaderValues(IMovie movie)
+		{
+			movie.EmulatorVersion = VersionInfo.GetEmuVersion();
+			movie.OriginalEmulatorVersion = VersionInfo.GetEmuVersion();
+
+			movie.GameName = Game.FilesystemSafeName();
+			movie.Hash = Game.Hash;
+			if (Game.FirmwareHash != null)
+			{
+				movie.FirmwareHash = Game.FirmwareHash;
+			}
+
+			if (Emulator.HasBoardInfo())
+			{
+				movie.BoardName = Emulator.AsBoardInfo().BoardName;
+			}
+
+			if (Emulator.HasRegions())
+			{
+				var region = Emulator.AsRegionable().Region;
+				if (region == DisplayType.PAL)
+				{
+					movie.HeaderEntries.Add(HeaderKeys.Pal, "1");
+				}
+			}
+
+			if (FirmwareManager.RecentlyServed.Count != 0)
+			{
+				foreach (var firmware in FirmwareManager.RecentlyServed)
+				{
+					var key = firmware.ID.MovieHeaderKey;
+					if (!movie.HeaderEntries.ContainsKey(key))
+					{
+						movie.HeaderEntries.Add(key, firmware.Hash);
+					}
+				}
+			}
+
+			if (Emulator is NDS nds && nds.IsDSi)
+			{
+				movie.HeaderEntries.Add("IsDSi", "1");
+
+				if (nds.IsDSiWare)
+				{
+					movie.HeaderEntries.Add("IsDSiWare", "1");
+				}
+			}
+
+			if ((Emulator is NES nes && nes.IsVS)
+				|| (Emulator is SubNESHawk subnes && subnes.IsVs))
+			{
+				movie.HeaderEntries.Add("IsVS", "1");
+			}
+
+			if (Emulator is IGameboyCommon gb)
+			{
+				//TODO doesn't IsCGBDMGMode imply IsCGBMode?
+				if (gb.IsCGBMode) movie.HeaderEntries.Add(gb.IsCGBDMGMode ? "IsCGBDMGMode" : "IsCGBMode", "1");
+			}
+
+			if (Emulator is SMS sms)
+			{
+				if (sms.IsSG1000)
+				{
+					movie.HeaderEntries.Add("IsSGMode", "1");
+				}
+
+				if (sms.IsGameGear)
+				{
+					movie.HeaderEntries.Add("IsGGMode", "1");
+				}
+			}
+
+			if (Emulator is GPGX gpgx && gpgx.IsMegaCD)
+			{
+				movie.HeaderEntries.Add("IsSegaCDMode", "1");
+			}
+
+			if (Emulator is PicoDrive pico && pico.Is32XActive)
+			{
+				movie.HeaderEntries.Add("Is32X", "1");
+			}
+
+			if (Emulator is VirtualJaguar jag && jag.IsJaguarCD)
+			{
+				movie.HeaderEntries.Add("IsJaguarCD", "1");
+			}
+
+			if (Emulator is Ares64 ares && ares.IsDD)
+			{
+				movie.HeaderEntries.Add("IsDD", "1");
+			}
+
+			if (Emulator is MAME mame)
+			{
+				movie.HeaderEntries.Add(HeaderKeys.VsyncAttoseconds, mame.VsyncAttoseconds.ToString());
+			}
+
+			if (Emulator.HasCycleTiming())
+			{
+				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
+				movie.HeaderEntries.Add(HeaderKeys.ClockRate, "0");
 			}
 		}
 	}

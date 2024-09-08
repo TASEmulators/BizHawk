@@ -24,7 +24,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly GameInfo _game;
 		private readonly IEmulator _emulator;
 		private readonly IMovieSession _movieSession;
-		private readonly FirmwareManager _firmwareManager;
 
 		private readonly TextBox AuthorBox;
 
@@ -41,8 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			Config config,
 			GameInfo game,
 			IEmulator core,
-			IMovieSession movieSession,
-			FirmwareManager firmwareManager)
+			IMovieSession movieSession)
 		{
 			if (game.IsNullInstance()) throw new InvalidOperationException("how is the traditional Record dialog open with no game loaded? please report this including as much detail as possible");
 
@@ -51,7 +49,6 @@ namespace BizHawk.Client.EmuHawk
 			_game = game;
 			_emulator = core;
 			_movieSession = movieSession;
-			_firmwareManager = firmwareManager;
 
 			SuspendLayout();
 
@@ -222,6 +219,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var movieToRecord = _movieSession.Get(path);
+				movieToRecord.Author = AuthorBox.Text ?? _config.DefaultAuthor;
 
 				var fileInfo = new FileInfo(path);
 				if (!fileInfo.Exists)
@@ -260,12 +258,6 @@ namespace BizHawk.Client.EmuHawk
 					movieToRecord.SaveRam = core.CloneSaveRam();
 				}
 
-				movieToRecord.PopulateWithDefaultHeaderValues(
-					_emulator,
-					((MainForm) _mainForm).GetSettingsAdapterForLoadedCoreUntyped(), //HACK
-					_game,
-					_firmwareManager,
-					AuthorBox.Text ?? _config.DefaultAuthor);
 				_mainForm.StartNewMovie(movieToRecord, true);
 
 				_config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;

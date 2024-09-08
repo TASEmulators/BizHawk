@@ -7,5 +7,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public bool DriveLightEnabled { get; } = true;
 
 		public bool DriveLightOn { get; internal set; }
+
+		public string DriveLightIconDescription => "CD Drive Activity";
 	}
 }

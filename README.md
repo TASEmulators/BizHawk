@@ -200,7 +200,8 @@ tl;dr:
 
 #### Passing command-line arguments
 
-EmuHawk takes some command-line options which aren't well-documented; you might be able to figure them out from [the source](https://github.com/TASEmulators/BizHawk/blob/78daf4913d4c8e47d24fc14d84ca33ddef913ed4/src/BizHawk.Client.Common/ArgParser.cs).
+EmuHawk takes some command-line options which are documented in [the source](https://github.com/TASEmulators/BizHawk/blob/2d37fc1f13afb0774629f16ffea5ff86d9b47951/src/BizHawk.Client.Common/ArgParser.cs).
+On Linux starting from 2.10, these can also be viewed offline with the usual `--help`.
 
 On Windows 8.1/10, it's easiest to use PowerShell for this. For example, to pass `--lua=C:\path\to\script.lua` as the first argument and `C:\path\to\rom.n64` as the second, navigate to the BizHawk install folder and run:
 ```pwsh
@@ -210,6 +211,7 @@ On Windows 8.1/10, it's easiest to use PowerShell for this. For example, to pass
 On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono`. (You can also `export` env. vars.) All the arguments work as on Windows, with some caveats:
 * file paths must be absolute (or relative to the install dir, `EmuHawkMono.sh` changes the CWD to there);
 * `--mono-no-redirect`: if you pass this flag *as the first argument*, it will be eaten by the script itself, and stdout/stderr will *not* be redirected to a file. (It's redirected by default.)
+** From 2.10, this will no longer be necessary.
 
 The same example as above would be `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.n64`.
 

@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 using BizHawk.Common.PathExtensions;
 
@@ -394,7 +395,7 @@ namespace BizHawk.Emulation.DiscSystem
 					track.ExtraOffset = bc.ToInt32(trackHeader.Skip(12).Take(4).ToArray());
 					track.SectorSize = bc.ToInt16(trackHeader.Skip(16).Take(2).ToArray());
 					track.PLBA = bc.ToInt32(trackHeader.Skip(36).Take(4).ToArray());
-					track.StartOffset = BitConverter.ToUInt64(trackHeader.Skip(40).Take(8).ToArray(), 0);
+					track.StartOffset = MemoryMarshal.Read<ulong>(trackHeader.AsSpan(start: 12 + sizeof(int) + sizeof(short) + 18 + sizeof(int)));
 					track.Files = bc.ToInt32(trackHeader.Skip(48).Take(4).ToArray());
 					track.FooterOffset = bc.ToInt32(trackHeader.Skip(52).Take(4).ToArray());
 

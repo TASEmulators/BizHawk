@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	public class CPUMonitor
 	{
 		private readonly SpectrumBase _machine;
-		private readonly Z80A _cpu;
+		private readonly Z80A<ZXSpectrum.CpuLink> _cpu;
 		public MachineType machineType = MachineType.ZXSpectrum48;
 
 		/// <summary>
@@ -131,17 +131,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					addr = (ushort)(_cpu.Regs[_cpu.R] | _cpu.Regs[_cpu.I] << 8);
 					break;
 				// BC
-				case Z80A.BIO1:
-				case Z80A.BIO2:
-				case Z80A.BIO3:
-				case Z80A.BIO4:
+				case Z80A<ZXSpectrum.CpuLink>.BIO1:
+				case Z80A<ZXSpectrum.CpuLink>.BIO2:
+				case Z80A<ZXSpectrum.CpuLink>.BIO3:
+				case Z80A<ZXSpectrum.CpuLink>.BIO4:
 					addr = (ushort)(_cpu.Regs[_cpu.C] | _cpu.Regs[_cpu.B] << 8);
 					break;
 				// WZ
-				case Z80A.WIO1:
-				case Z80A.WIO2:
-				case Z80A.WIO3:
-				case Z80A.WIO4:
+				case Z80A<ZXSpectrum.CpuLink>.WIO1:
+				case Z80A<ZXSpectrum.CpuLink>.WIO2:
+				case Z80A<ZXSpectrum.CpuLink>.WIO3:
+				case Z80A<ZXSpectrum.CpuLink>.WIO4:
 					addr = (ushort)(_cpu.Regs[_cpu.Z] | _cpu.Regs[_cpu.W] << 8);
 					break;
 			}
@@ -160,28 +160,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			switch (BUSRQ)
 			{
 				// BC: T1
-				case Z80A.BIO1:
+				case Z80A<ZXSpectrum.CpuLink>.BIO1:
 					lastPortAddr = AscertainBUSRQAddress();
 					isIO = true;
 					if (IsIOCycleContended(1))
 						_cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
 					break;
 				// BC: T2
-				case Z80A.BIO2:
+				case Z80A<ZXSpectrum.CpuLink>.BIO2:
 					lastPortAddr = AscertainBUSRQAddress();
 					isIO = true;
 					if (IsIOCycleContended(2))
 						_cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
 					break;
 				// BC: T3
-				case Z80A.BIO3:
+				case Z80A<ZXSpectrum.CpuLink>.BIO3:
 					lastPortAddr = AscertainBUSRQAddress();
 					isIO = true;
 					if (IsIOCycleContended(3))
 						_cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
 					break;
 				// BC: T4
-				case Z80A.BIO4:
+				case Z80A<ZXSpectrum.CpuLink>.BIO4:
 					lastPortAddr = AscertainBUSRQAddress();
 					isIO = true;
 					if (IsIOCycleContended(4))
@@ -189,28 +189,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					break;
 
 				// WZ: T1
-				case Z80A.WIO1:
+				case Z80A<ZXSpectrum.CpuLink>.WIO1:
 					lastPortAddr = AscertainBUSRQAddress();
 					isIO = true;
 					if (IsIOCycleContended(1))
 						_cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
 					break;
 				// WZ: T2
-				case Z80A.WIO2:
+				case Z80A<ZXSpectrum.CpuLink>.WIO2:
 					lastPortAddr = AscertainBUSRQAddress();
 					isIO = true;
 					if (IsIOCycleContended(2))
 						_cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
 					break;
 				// WZ: T3
-				case Z80A.WIO3:
+				case Z80A<ZXSpectrum.CpuLink>.WIO3:
 					lastPortAddr = AscertainBUSRQAddress();
 					isIO = true;
 					if (IsIOCycleContended(3))
 						_cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
 					break;
 				// WZ: T4
-				case Z80A.WIO4:
+				case Z80A<ZXSpectrum.CpuLink>.WIO4:
 					lastPortAddr = AscertainBUSRQAddress();
 					isIO = true;
 					if (IsIOCycleContended(4))

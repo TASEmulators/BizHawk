@@ -250,7 +250,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				ConvertCurrentMovieToTasproj();
-				StartNewMovieWrapper(CurrentTasMovie);
+				_ = StartNewMovieWrapper(CurrentTasMovie, isNew: false);
 				SetUpColumns();
 			}
 
@@ -286,7 +286,6 @@ namespace BizHawk.Client.EmuHawk
 
 			MainForm.AddOnScreenMessage("TAStudio engaged");
 			SetTasMovieCallbacks(CurrentTasMovie);
-			UpdateWindowTitle();
 			_originalEndAction = Config.Movies.MovieEndAction;
 			MainForm.DisableRewind();
 			Config.Movies.MovieEndAction = MovieEndAction.Record;
@@ -347,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			TasView.AllColumns.Clear();
 			TasView.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 18, type: ColumnType.Boolean, text: string.Empty));
-			TasView.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 68, text: "Frame#")
+			TasView.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 60, text: "Frame#")
 			{
 				Rotatable = true,
 			});
@@ -527,12 +526,13 @@ namespace BizHawk.Client.EmuHawk
 			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			tasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 
-			if (!HandleMovieLoadStuff(tasMovie))
+			if (!StartNewMovieWrapper(tasMovie, isNew: false))
 			{
 				return false;
 			}
 
 			_engaged = true;
+			Settings.RecentTas.Add(CurrentTasMovie.Filename); // only add if it did load
 
 			if (startsFromSavestate)
 			{
@@ -580,22 +580,13 @@ namespace BizHawk.Client.EmuHawk
 
 			var filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 			var tasMovie = (ITasMovie)MovieSession.Get(filename);
+			tasMovie.Author = Config.DefaultAuthor;
 			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
-
 
 			tasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 			tasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 
-			tasMovie.PopulateWithDefaultHeaderValues(
-				Emulator,
-				((MainForm) MainForm).GetSettingsAdapterForLoadedCoreUntyped(), //HACK
-				Game,
-				MainForm.FirmwareManager,
-				Config.DefaultAuthor);
-
-			SetTasMovieCallbacks(tasMovie);
-			tasMovie.ClearChanges();
-			_ = HandleMovieLoadStuff(tasMovie);
+			_ = StartNewMovieWrapper(tasMovie, isNew: true);
 
 			// clear all selections
 			TasView.DeselectAll();
@@ -606,40 +597,23 @@ namespace BizHawk.Client.EmuHawk
 			TasView.Refresh();
 		}
 
-		private bool HandleMovieLoadStuff(ITasMovie movie)
-		{
-			WantsToControlStopMovie = false;
-			var result = StartNewMovieWrapper(movie);
-
-			if (!result)
-			{
-				return false;
-			}
-
-			WantsToControlStopMovie = true;
-
-			CurrentTasMovie.ChangeLog.Clear();
-
-			UpdateWindowTitle();
-			MessageStatusLabel.Text = $"{Path.GetFileName(CurrentTasMovie.Filename)} loaded.";
-
-			return true;
-		}
-
-		private bool StartNewMovieWrapper(ITasMovie movie)
+		private bool StartNewMovieWrapper(ITasMovie movie, bool isNew)
 		{
 			_initializing = true;
 
 			SetTasMovieCallbacks(movie);
 
 			SuspendLayout();
-			bool result = MainForm.StartNewMovie(movie, false);
+			WantsToControlStopMovie = false;
+			bool result = MainForm.StartNewMovie(movie, isNew);
+			WantsToControlStopMovie = true;
 			ResumeLayout();
 			if (result)
 			{
 				BookMarkControl.UpdateTextColumnWidth();
 				MarkerControl.UpdateTextColumnWidth();
 				TastudioPlayMode();
+				UpdateWindowTitle();
 			}
 
 			_initializing = false;
@@ -821,7 +795,6 @@ namespace BizHawk.Client.EmuHawk
 					Update();
 					CurrentTasMovie.Save();
 					Settings.RecentTas.Add(CurrentTasMovie.Filename);
-					UpdateWindowTitle();
 					MessageStatusLabel.Text = "File saved.";
 					Cursor = Cursors.Default;
 				}

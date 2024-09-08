@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -27,7 +26,7 @@ namespace BizHawk.Client.Common
 		{
 			var @base = File.ReadAllBytes(baseFilename);
 			var (patched, actualHash) = PerformPatchInMemory(@base, in patchOption);
-			Trace.Assert(actualHash == patchOption.TargetHash);
+			if (actualHash != patchOption.TargetHash) throw new InvalidOperationException("patch produced incorrect output");
 			var patchedParentDir = Path.Combine(pathEntries[PathEntryCollection.GLOBAL, "Temp Files"].Path, "AutopatchedFirmware");
 			Directory.CreateDirectory(patchedParentDir);
 			var ff = FirmwareDatabase.FirmwareFilesByHash[patchOption.TargetHash];
@@ -161,13 +160,12 @@ namespace BizHawk.Client.Common
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
 				_resolutionDictionary.Remove(fr); // clear previous resolution results
-				// check each acceptable option for this firmware, looking for the first that's in the reader's file list
-				var found = FirmwareDatabase.FirmwareOptions.FirstOrNull(fo1 => fo1.ID == fr.ID && fo1.IsAcceptableOrIdeal
-					&& reader.Dict.ContainsKey(fo1.Hash));
-				if (found == null) continue; // didn't find any of them
-				var fo = found.Value;
-				// else found one, add it to the dict
-				_resolutionDictionary[fr] = new ResolutionInfo
+				// check each acceptable option for this firmware, looking for the first available sorted by status
+				var found = FirmwareDatabase.FirmwareOptions
+					.Where(fo1 => fo1.ID == fr.ID && fo1.IsAcceptableOrIdeal && reader.Dict.ContainsKey(fo1.Hash))
+					.OrderByDescending(fo => fo.Status)
+					.Take(1).ToArray(); // 0..1 elements (essentially, first or null)
+				if (found is [ FirmwareOption fo ]) _resolutionDictionary[fr] = new()
 				{
 					FilePath = reader.Dict[fo.Hash].FileInfo.FullName,
 					KnownFirmwareFile = FirmwareDatabase.FirmwareFilesByHash[fo.Hash],

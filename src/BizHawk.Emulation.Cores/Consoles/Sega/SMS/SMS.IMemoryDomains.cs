@@ -19,12 +19,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				(addr) =>
 				{
 					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-					return Cpu.ReadMemory((ushort)addr);
+					return ReadMemory((ushort)addr);
 				},
 				(addr, value) =>
 				{
 					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-					Cpu.WriteMemory((ushort)addr, value);
+					WriteMemory((ushort)addr, value);
 				}, 1)
 			};
 

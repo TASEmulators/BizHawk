@@ -20,7 +20,9 @@ namespace BizHawk.Client.Common
 
 		private void AddTasProjLumps(ZipStateSaver bs, bool isBackup = false)
 		{
-			var settings = JsonConvert.SerializeObject(TasStateManager.Settings);
+			// at this point, TasStateManager may be null if we're currently importing a .bk2
+
+			var settings = JsonConvert.SerializeObject(TasStateManager?.Settings ?? Session.Settings.DefaultTasStateManagerSettings);
 			bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(settings));
 			bs.PutLump(BinaryStateLump.LagLog, tw => LagLog.Save(tw));
 			bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
@@ -43,7 +45,7 @@ namespace BizHawk.Client.Common
 
 			bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(JsonConvert.SerializeObject(TasSession)));
 
-			if (!isBackup)
+			if (!isBackup && TasStateManager is not null)
 			{
 				bs.PutLump(BinaryStateLump.StateHistory, bw => TasStateManager.SaveStateHistory(bw));
 			}

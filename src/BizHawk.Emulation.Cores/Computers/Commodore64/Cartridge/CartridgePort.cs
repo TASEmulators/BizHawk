@@ -135,5 +135,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public bool DriveLightEnabled => _connected && _cartridgeDevice.DriveLightEnabled;
 		public bool DriveLightOn => _connected && _cartridgeDevice.DriveLightOn;
+
+		public string DriveLightIconDescription => "Cart Activity";
 	}
 }

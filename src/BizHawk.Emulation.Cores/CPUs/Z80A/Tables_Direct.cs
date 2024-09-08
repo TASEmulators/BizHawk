@@ -1,6 +1,6 @@
 namespace BizHawk.Emulation.Cores.Components.Z80A
 {
-	public partial class Z80A
+	public partial class Z80A<TLink>
 	{
 		// this contains the vectors of instrcution operations
 		// NOTE: This list is NOT confirmed accurate for each individual cycle

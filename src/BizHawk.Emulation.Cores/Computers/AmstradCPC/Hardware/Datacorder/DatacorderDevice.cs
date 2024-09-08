@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	public sealed class DatacorderDevice
 	{
 		private CPCBase _machine;
-		private Z80A _cpu => _machine.CPU;
+		private Z80A<AmstradCPC.CpuLink> _cpu => _machine.CPU;
 		private IBeeperDevice _buzzer => _machine.TapeBuzzer;
 
 		/// <summary>

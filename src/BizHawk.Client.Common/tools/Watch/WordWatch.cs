@@ -166,7 +166,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Get the previous value
 		/// </summary>
-		public override int Previous => _previous;
+		public override uint Previous => _previous;
 
 		/// <summary>
 		/// Get a string representation of the previous value

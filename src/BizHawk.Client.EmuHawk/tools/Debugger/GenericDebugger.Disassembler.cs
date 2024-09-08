@@ -57,16 +57,17 @@ namespace BizHawk.Client.EmuHawk
 			int lineCount = DisassemblerView.RowCount * 6 + 2;
 
 			_disassemblyLines.Clear();
-			uint a = _currentDisassemblerAddress;
+			uint currentAddress = _currentDisassemblerAddress;
 			for (int i = 0; i <= lineCount; ++i)
 			{
-				string line = Disassembler.Disassemble(MemoryDomains.SystemBus, a, out var advance);
-				_disassemblyLines.Add(new DisasmOp(a, advance, line));
-				a += (uint)advance;
-				if (a > BusMaxValue)
+				if (currentAddress >= BusMaxValue)
 				{
 					break;
 				}
+
+				string line = Disassembler.Disassemble(MemoryDomains.SystemBus, currentAddress, out var advance);
+				_disassemblyLines.Add(new DisasmOp(currentAddress, advance, line));
+				currentAddress += (uint)advance;
 			}
 		}
 
@@ -101,26 +102,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DecrementCurrentAddress()
 		{
-			if (_currentDisassemblerAddress == 0)
-			{
-				return;
-			}
-
 			uint newaddress = _currentDisassemblerAddress;
-			
-			while (true)
+
+			while (newaddress != 0)
 			{
 				Disassembler.Disassemble(MemoryDomains.SystemBus, newaddress, out var bytestoadvance);
 				if (newaddress + bytestoadvance == _currentDisassemblerAddress)
 				{
-					break;
-				}
-
-				newaddress--;
-
-				if (newaddress < 0)
-				{
-					newaddress = 0;
 					break;
 				}
 
@@ -130,6 +118,8 @@ namespace BizHawk.Client.EmuHawk
 					newaddress = _currentDisassemblerAddress - 1;
 					break;
 				}
+
+				newaddress--;
 			}
 
 			_currentDisassemblerAddress = newaddress;

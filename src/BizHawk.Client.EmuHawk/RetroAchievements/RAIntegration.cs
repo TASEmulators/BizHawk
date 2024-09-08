@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Emu.HasMemoryDomains())
 			{
-				_memFunctions = CreateMemoryBanks(consoleId, Domains, Emu.CanDebug() ? Emu.AsDebuggable() : null);
+				_memFunctions = CreateMemoryBanks(consoleId, Domains);
 
 				for (var i = 0; i < _memFunctions.Count; i++)
 				{

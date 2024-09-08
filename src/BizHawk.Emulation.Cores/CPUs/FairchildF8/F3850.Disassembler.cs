@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	/// <summary>
 	/// Disassembler
 	/// </summary>
-	public sealed partial class F3850 : IDisassemblable
+	public sealed partial class F3850<TLink> : IDisassemblable
 	{
 		private static string Result(string format, Func<ushort, byte> read, ref ushort addr)
 		{
@@ -320,7 +320,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			set { }
 		}
 
-		public string PCRegisterName => "PC";
+		public string PCRegisterName => "PC0";
 
 		public IEnumerable<string> AvailableCpus { get; } = [ "F3850" ];
 

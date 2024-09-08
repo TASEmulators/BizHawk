@@ -77,17 +77,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				HasYM2413 = true;
 			}
 
-			Cpu = new Z80A
-			{
-				ReadHardware = ReadPort,
-				WriteHardware = WritePort,
-				FetchMemory = FetchMemory,
-				ReadMemory = ReadMemory,
-				WriteMemory = WriteMemory,
-				MemoryCallbacks = MemoryCallbacks,
-				OnExecFetch = OnExecMemory
-			};
-			
+			Cpu = new Z80A<CpuLink>(new CpuLink(this));
+
 			// set this before turning off GG system for GG_in_SMS games
 			bool sms_reg_compat = !IsGameGear && (_region == SmsSyncSettings.Regions.Japan);
 
@@ -209,9 +200,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			Vdp.ProcessOverscan();
 
-			Cpu.ReadMemory = ReadMemory;
-			Cpu.WriteMemory = WriteMemory;
-
 			// Z80 SP initialization
 			// stops a few SMS and GG games from crashing
 			Cpu.Regs[Cpu.SPl] = 0xF0;
@@ -246,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private readonly byte[] BiosRom;
 
 		// Machine resources
-		public Z80A Cpu;
+		public Z80A<CpuLink> Cpu;
 		public byte[] SystemRam;
 		public VDP Vdp;
 		public SN76489sms PSG;

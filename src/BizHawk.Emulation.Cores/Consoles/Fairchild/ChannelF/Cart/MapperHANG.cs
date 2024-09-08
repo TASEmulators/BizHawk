@@ -2,36 +2,29 @@
 {
 	/// <summary>
 	/// Hangman ChannelF Cartridge
-	/// 2KB ROM / NO RAM
+	/// Utilises 2102 SRAM over IO
 	/// </summary>
-	public class mapper_HANG : VesCartBase
+	public class MapperHANG : VesCartBase
 	{
 		public override string BoardType => "HANG";
 
-		public mapper_HANG(byte[] rom)
+		public MapperHANG(byte[] rom)
 		{
-			ROM = new byte[0xFFFF - 0x800];
-			for (int i = 0; i < rom.Length; i++)
-			{
-				ROM[i] = rom[i];
-				if (i > 3000)
-				{
-					var test = rom[i];
-				}
-			}
-
-			RAM = new byte[0x400];
+			_rom = new byte[0x10000 - 0x800];
+			Array.Copy(rom, _rom, rom.Length);
+			_rom.AsSpan(rom.Length).Fill(0xFF);
+			_ram = new byte[0x400];
 		}
 
 		public override byte ReadBus(ushort addr)
 		{
 			var off = addr - 0x800;
-			return ROM[off];
+			return _rom[off];
 		}
 
 		public override void WriteBus(ushort addr, byte value)
 		{
-			// no writeable memory
+			// no directly writeable memory
 		}
 
 		public override byte ReadPort(ushort addr)
@@ -45,6 +38,5 @@
 			var index = addr - 0x20;
 			SRAM2102_Write(index, data);
 		}
-
 	}
 }

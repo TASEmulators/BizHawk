@@ -510,6 +510,7 @@ namespace BizHawk.Client.Common
 			{
 				["LidOpen"] = 'o',
 				["LidClose"] = 'c',
+				["Microphone"] = 'M',
 				["Touch"] = 'T'
 			},
 			[VSystemID.Raw.O2] = new()
@@ -785,7 +786,23 @@ namespace BizHawk.Client.Common
 				["Insert"] = 'v',
 				["Next Drive"] = '}',
 				["Next Slot"] = '>',
-			}
+			},
+			[VSystemID.Raw.ChannelF] = new()
+			{
+				["Right"] = 'R',
+				["Left"] = 'L',
+				["Back"] = 'D',
+				["Forward"] = 'U',
+				["CCW"] = 'c',
+				["CW"] = 'C',
+				["Pull"] = 'O',
+				["Push"] = 'P',
+				["TIME"] = 'T',
+				["MODE"] = 'M',
+				["HOLD"] = 'H',
+				["START"] = 'S',
+				["RESET"] = 'r',
+			},
 		};
 
 		private static readonly Dictionary<string, string> BaseAxisLookupTable = new Dictionary<string, string>

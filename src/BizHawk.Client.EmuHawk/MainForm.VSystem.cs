@@ -885,10 +885,6 @@ namespace BizHawk.Client.EmuHawk
 				snes9X.PutSettings(s);
 				AddOnScreenMessage($"Sprite {layer} Layer {(result ? "On" : "Off")}");
 			}
-			else
-			{
-				return;
-			}
 		}
 
 

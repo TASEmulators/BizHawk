@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 					LatchInputToUser();
 				}
 			}
-			else if (Movie.IsPlayingOrFinished())
+			else if (Movie.IsPlaying())
 			{
 				LatchInputToLog();
 

@@ -1,6 +1,6 @@
 namespace BizHawk.Emulation.Cores.Components.Z80A
 {
-	public partial class Z80A
+	public partial class Z80A<TLink>
 	{
 		// registers
 		public ushort PCl = 0;

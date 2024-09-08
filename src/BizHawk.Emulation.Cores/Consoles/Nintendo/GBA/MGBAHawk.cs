@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				ret.Hardware |= LibmGBA.Hardware.Tilt;
 			}
 
-			if (syncSettings.OverrideGbPlayerDetect is true)
+			if (syncSettings.OverrideGbPlayerDetect)
 			{
 				ret.Hardware |= LibmGBA.Hardware.GbPlayerDetect;
 			}

@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace BizHawk.Common
@@ -54,10 +55,10 @@ namespace BizHawk.Common
 			if (tmp[0] != 0x1F || tmp[1] != 0x8B) throw new InvalidOperationException("GZIP header not present");
 			src.Seek(-4, SeekOrigin.End);
 			var bytesRead = src.Read(tmp, offset: 0, count: tmp.Length);
-			Debug.Assert(bytesRead == tmp.Length);
+			Debug.Assert(bytesRead == tmp.Length, "failed to read tail");
 			src.Seek(0, SeekOrigin.Begin);
 			using var gs = new GZipStream(src, CompressionMode.Decompress, true);
-			var data = new byte[BitConverter.ToInt32(tmp, 0)];
+			var data = new byte[MemoryMarshal.Read<int>(tmp)]; //TODO definitely not a uint? worth checking, though values >= 0x80000000U would immediately throw here since it would amount to a negative array length
 			using var ms = new MemoryStream(data);
 			gs.CopyTo(ms);
 			return data;

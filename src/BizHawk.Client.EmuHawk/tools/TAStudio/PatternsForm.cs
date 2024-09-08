@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			_values[PatternList.SelectedIndex] = ValueNum.Value.ToString(NumberFormatInfo.InvariantInfo);
+			_values[PatternList.SelectedIndex] = ((int) ValueNum.Value).ToString(NumberFormatInfo.InvariantInfo);
 			UpdatePattern();
 			UpdateDisplay();
 		}
@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					LagBox.Checked = _tastudio.AxisPatterns[index].SkipsLag;
-					ValueNum.Value = Convert.ToDecimal(_values[PatternList.SelectedIndex]);
+					ValueNum.Value = int.Parse(_values[PatternList.SelectedIndex]);
 					CountNum.Value = _counts[PatternList.SelectedIndex];
 				}
 			}
@@ -267,7 +267,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (int c = 0; c < _counts[i]; c++)
 					{
-						p.Add((int) Convert.ToSingle(_values[i]));
+						p.Add(int.Parse(_values[i]));
 					}
 				}
 

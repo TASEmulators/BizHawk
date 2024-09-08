@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -452,6 +453,14 @@ namespace BizHawk.Client.EmuHawk
 				AutohideCursor(false);
 				if (Config.ShowContextMenu && e.Button == MouseButtons.Right)
 				{
+					// suppress the context menu if right click has a binding
+					// (unless shift is being pressed, similar to double click fullscreening)
+					var allowSuppress = ModifierKeys != Keys.Shift;
+					if (allowSuppress && InputManager.ActiveController.HasBinding("WMouse R"))
+					{
+						return;
+					}
+
 					MainFormContextMenu.Show(PointToScreen(new Point(e.X, e.Y + MainformMenu.Height)));
 				}
 			}
@@ -523,21 +532,7 @@ namespace BizHawk.Client.EmuHawk
 				DragDrop += FormDragDrop;
 			};
 
-			Closing += (o, e) =>
-			{
-				if (Tools.AskSave())
-				{
-					// zero 03-nov-2015 - close game after other steps. tools might need to unhook themselves from a core.
-					MovieSession.StopMovie();
-					Tools.Close();
-					CloseGame();
-					SaveConfig();
-				}
-				else
-				{
-					e.Cancel = true;
-				}
-			};
+			Closing += CheckMayCloseAndCleanup;
 
 			ResizeBegin += (o, e) =>
 			{
@@ -792,6 +787,34 @@ namespace BizHawk.Client.EmuHawk
 #endif
 				}
 			}
+		}
+
+		private void CheckMayCloseAndCleanup(object/*?*/ closingSender, CancelEventArgs closingArgs)
+		{
+			if (_currAviWriter is not null)
+			{
+				if (!this.ModalMessageBox2(
+					caption: "Really quit?",
+					icon: EMsgBoxIcon.Question,
+					text: "You are currently recording A/V.\nChoose \"Yes\" to finalise it and quit EmuHawk.\nChoose \"No\" to cancel shutdown and continue recording."))
+				{
+					closingArgs.Cancel = true;
+					return;
+				}
+				StopAv();
+			}
+
+			if (!Tools.AskSave())
+			{
+				closingArgs.Cancel = true;
+				return;
+			}
+
+			MovieSession.StopMovie();
+			Tools.Close();
+			// zero 03-nov-2015 - close game after other steps. tools might need to unhook themselves from a core.
+			CloseGame();
+			SaveConfig();
 		}
 
 		private readonly bool _suppressSyncSettingsWarning;
@@ -1178,14 +1201,14 @@ namespace BizHawk.Client.EmuHawk
 				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done.
 				// maybe because it doesn't make sense to me to bind hotkeys and controller inputs to the same keystrokes
 
-				bool handled;
 				switch (Config.InputHotkeyOverrideOptions)
 				{
 					default:
 					case 0: // Both allowed
+					{
 						finalHostController.Receive(ie);
 
-						handled = false;
+						var handled = false;
 						if (ie.EventType is InputEventType.Press)
 						{
 							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
@@ -1198,11 +1221,14 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						break;
+					}
 					case 1: // Input overrides Hotkeys
+					{
 						finalHostController.Receive(ie);
-						if (!activeControllerHasBinding(ie.LogicalButton.ToString()))
+						// don't check hotkeys when any of the pressed keys are input
+						if (!ie.LogicalButton.ToString().Split('+').Any(activeControllerHasBinding))
 						{
-							handled = false;
+							var handled = false;
 							if (ie.EventType is InputEventType.Press)
 							{
 								handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
@@ -1216,8 +1242,10 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						break;
+					}
 					case 2: // Hotkeys override Input
-						handled = false;
+					{
+						var handled = false;
 						if (ie.EventType is InputEventType.Press)
 						{
 							handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
@@ -1233,6 +1261,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						break;
+					}
 				}
 			} // foreach event
 
@@ -2417,6 +2446,7 @@ namespace BizHawk.Client.EmuHawk
 				path = _getConfigPath();
 			}
 
+			CommitCoreSettingsToConfig();
 			ConfigService.Save(path, Config);
 		}
 
@@ -2644,49 +2674,29 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandleToggleLightAndLink()
 		{
-			if (MainStatusBar.Visible)
+			if (!MainStatusBar.Visible) return;
+
+			if (Emulator.HasDriveLight() && Emulator.AsDriveLight() is { DriveLightEnabled: true } diskLEDCore)
 			{
-				var hasDriveLight = Emulator.HasDriveLight() && Emulator.AsDriveLight().DriveLightEnabled;
+				LedLightStatusLabel.Image = diskLEDCore.DriveLightOn ? _statusBarDiskLightOnImage : _statusBarDiskLightOffImage;
+				LedLightStatusLabel.ToolTipText = Emulator.AsDriveLight().DriveLightIconDescription;
+				LedLightStatusLabel.Visible = true;
+			}
+			else
+			{
+				LedLightStatusLabel.Visible = false;
+			}
 
-				if (hasDriveLight)
-				{
-					if (!LedLightStatusLabel.Visible)
-					{
-						LedLightStatusLabel.Visible = true;
-					}
-
-					LedLightStatusLabel.Image = Emulator.AsDriveLight().DriveLightOn
-						? _statusBarDiskLightOnImage
-						: _statusBarDiskLightOffImage;
-				}
-				else
-				{
-					if (LedLightStatusLabel.Visible)
-					{
-						LedLightStatusLabel.Visible = false;
-					}
-				}
-
-				if (Emulator.UsesLinkCable())
-				{
-					if (!LinkConnectStatusBarButton.Visible)
-					{
-						LinkConnectStatusBarButton.Visible = true;
-					}
-
-					LinkConnectStatusBarButton.Image = Emulator.AsLinkable().LinkConnected
-						? _linkCableOn
-						: _linkCableOff;
-
-					LinkConnectStatusBarButton.ToolTipText = $"Link connection is currently {(Emulator.AsLinkable().LinkConnected ? "enabled" : "disabled")}";
-				}
-				else
-				{
-					if (LinkConnectStatusBarButton.Visible)
-					{
-						LinkConnectStatusBarButton.Visible = false;
-					}
-				}
+			if (Emulator.UsesLinkCable())
+			{
+				var linkableCore = Emulator.AsLinkable();
+				LinkConnectStatusBarButton.Image = linkableCore.LinkConnected ? _linkCableOn : _linkCableOff;
+				LinkConnectStatusBarButton.ToolTipText = $"Link connection is currently {(linkableCore.LinkConnected ? "enabled" : "disabled")}";
+				LinkConnectStatusBarButton.Visible = true;
+			}
+			else
+			{
+				LinkConnectStatusBarButton.Visible = false;
 			}
 		}
 
@@ -3498,9 +3508,9 @@ namespace BizHawk.Client.EmuHawk
 			if (e.Type == RomLoader.LoadErrorType.MissingFirmware)
 			{
 				if (this.ShowMessageBox2(
-					caption: e.Message,
+					caption: "Missing Firmware!",
 					icon: EMsgBoxIcon.Error,
-					text: "The core needs certain firmware to load this rom.\n\nOpen the firmware manager now?",
+					text: $"{e.Message}\n\nOpen the firmware manager now?",
 					useOKCancel: true))
 				{
 					OpenFWConfigRomLoadFailed(e);
@@ -3643,9 +3653,11 @@ namespace BizHawk.Client.EmuHawk
 
 				DisplayManager.ActivateOpenGLContext(); // required in case the core wants to create a shared OpenGL context
 
-				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
+				bool result = string.IsNullOrEmpty(MovieSession.QueuedCoreName)
+					? loader.LoadRom(path, nextComm, ioaRetro?.CorePath)
+					: loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
 
-				if (result) Game = loader.Game;
+				Game = result ? loader.Game : GameInfo.NullInstance;
 
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)
@@ -3814,6 +3826,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// This shows up if there's a problem
 					Tools.Restart(Config, Emulator, Game);
+					DisplayManager.UpdateGlobals(Config, Emulator);
+					DisplayManager.Blank();
 					ExtToolManager.BuildToolStrip();
 					OnRomChanged();
 					return false;
@@ -4636,7 +4650,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_singleInstanceServer.IsMessageComplete) break;
 				}
 
-				var payloadString = System.Text.Encoding.ASCII.GetString(payloadBytes.GetBuffer(), 0, (int)payloadBytes.Length);
+				var payloadString = Encoding.ASCII.GetString(payloadBytes.GetBuffer(), 0, (int)payloadBytes.Length);
 				var args = payloadString.Split('|').Select(a => Encoding.UTF8.GetString(a.HexStringToBytes())).ToArray();
 
 				Console.WriteLine("RECEIVED SINGLE INSTANCE FORWARDED ARGS:");

@@ -1,27 +1,25 @@
 ﻿namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	/// <summary>
-	/// ChannelF Cartridge that utilises 2102 SRAM over IO
+	/// Maze ChannelF Cartridge
+	/// Utilises 2102 SRAM over IO
 	/// </summary>
-	public class mapper_MAZE : VesCartBase
+	public class MapperMAZE : VesCartBase
 	{
 		public override string BoardType => "MAZE";
 
-		public mapper_MAZE(byte[] rom)
+		public MapperMAZE(byte[] rom)
 		{
-			ROM = new byte[0xFFFF - 0x800];
-			for (int i = 0; i < rom.Length; i++)
-			{
-				ROM[i] = rom[i];
-			}
-
-			RAM = new byte[0x400];
+			_rom = new byte[0x10000 - 0x800];
+			Array.Copy(rom, _rom, rom.Length);
+			_rom.AsSpan(rom.Length).Fill(0xFF);
+			_ram = new byte[0x400];
 		}
 
 		public override byte ReadBus(ushort addr)
 		{
 			var off = addr - 0x800;
-			return ROM[off];
+			return _rom[off];
 		}
 
 		public override void WriteBus(ushort addr, byte value)
@@ -38,7 +36,7 @@
 		public override void WritePort(ushort addr, byte data)
 		{
 			var index = addr - 0x24;
-			SRAM2102_Write(index, data);			
+			SRAM2102_Write(index, data);
 		}
 	}
 }

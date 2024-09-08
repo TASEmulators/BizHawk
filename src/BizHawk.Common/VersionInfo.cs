@@ -22,6 +22,8 @@ namespace BizHawk.Common
 
 		public static readonly string BizHawkContributorsListURI = "https://github.com/TASEmulators/BizHawk/graphs/contributors";
 
+		public static readonly string UserAgentEscaped;
+
 		static VersionInfo()
 		{
 			var path = Path.Combine(
@@ -37,6 +39,9 @@ namespace BizHawk.Common
 					CustomBuildString = lines[0];
 				}
 			}
+			UserAgentEscaped = $"{
+				(string.IsNullOrWhiteSpace(CustomBuildString) ? "EmuHawk" : CustomBuildString!.OnlyAlphanumeric())
+			}/{MainVersion}{(DeveloperBuild ? "-dev" : string.Empty)}";
 		}
 
 		public static (string Label, string TargetURI) GetGitCommitLink()
