@@ -587,6 +587,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SelectAll()
 		{
+			_selectedItems.Clear();
 			var oldFullRowVal = FullRowSelect;
 			FullRowSelect = true;
 			for (int i = 0; i < RowCount; i++)
