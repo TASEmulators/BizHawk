@@ -149,6 +149,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>..\core\source\quickerNES\core;..\core\extern\jaffarCommon\include;$(IncludePath)</IncludePath>
+    <OutDir>..\Assets\dll</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>..\core\source\quickerNES\core;..\core\extern\jaffarCommon\include;$(IncludePath)</IncludePath>
@@ -159,7 +160,7 @@
       <Optimization>Disabled</Optimization>
       <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);_QUICKERNES_DETECT_JOYPAD_READS;_QUICKERNES_ENABLE_TRACEBACK_SUPPORT;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);_QUICKERNES_DETECT_JOYPAD_READS;_QUICKERNES_ENABLE_TRACEBACK_SUPPORT;_QUICKERNES_SUPPORT_ARKANOID_INPUTS;__INLINE__=inline</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -179,7 +180,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);_QUICKERNES_DETECT_JOYPAD_READS;_QUICKERNES_ENABLE_TRACEBACK_SUPPORT;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);_QUICKERNES_DETECT_JOYPAD_READS;_QUICKERNES_ENABLE_TRACEBACK_SUPPORT;_QUICKERNES_SUPPORT_ARKANOID_INPUTS;__INLINE__=inline</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
