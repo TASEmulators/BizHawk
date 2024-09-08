@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.DiscSystem
 			var buffer = new byte[512 * 2352];
 			var dsr = new DiscSectorReader(disc);
 			// don't hash generated lead-in and lead-out tracks
-			for (int i = 1; i < disc.Session1.Tracks.Count - 1; i++)
+			for (int i = 1; i <= disc.Session1.InformationTrackCount; i++)
 			{
 				var track = disc.Session1.Tracks[i];
 
