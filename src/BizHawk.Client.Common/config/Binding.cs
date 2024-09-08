@@ -142,8 +142,9 @@ namespace BizHawk.Client.Common
 			Bind("TAStudio", "Clear Frames", "Delete");
 			Bind("TAStudio", "Delete Frames", "Ctrl+Delete");
 			Bind("TAStudio", "Insert Frame", "Insert");
-			Bind("TAStudio", "Insert # Frames", "Ctrl+Shift+Insert");
+			Bind("TAStudio", "Insert # Frames", "Shift+Insert");
 			Bind("TAStudio", "Clone Frames", "Ctrl+Insert");
+			Bind("TAStudio", "Clone # Times", "Ctrl+Shift+Insert");
 			Bind("TAStudio", "Analog Increment", "Up");
 			Bind("TAStudio", "Analog Decrement", "Down");
 			Bind("TAStudio", "Analog Incr. by 10", "Shift+Up");
