@@ -73,7 +73,7 @@
 [submodule "waterbox/gpgx/Genesis-Plus-GX"]
 	path = waterbox/gpgx/Genesis-Plus-GX
 	url = https://github.com/TASEmulators/Genesis-Plus-GX.git
-	branch = tasvideos-2.1
+	branch = tasvideos-2.2
 [submodule "waterbox/uae/libretro-uae"]
 	path = waterbox/uae/libretro-uae
 	url = https://github.com/TASEmulators/libretro-uae.git
