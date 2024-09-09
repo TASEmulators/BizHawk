@@ -55,8 +55,9 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 					1));
 			}
 
-			domains.Add(new MemoryDomainIntPtrMonitor("Main RAM", MemoryDomain.Endian.Little, mainRamAddress, 128, true, 1, _elf));
-
+			MemoryDomainIntPtrMonitor mainRAM = new("Main RAM", MemoryDomain.Endian.Little, mainRamAddress, 128, true, 1, _elf);
+			domains.Add(mainRAM);
+			
 			MemoryDomains = new MemoryDomainList(domains) { MainMemory = mainRAM };
 			((BasicServiceProvider)ServiceProvider).Register(MemoryDomains);
 		}
