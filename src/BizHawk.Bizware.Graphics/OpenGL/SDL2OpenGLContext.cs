@@ -9,6 +9,8 @@ using BizHawk.Common;
 
 using static SDL2.SDL;
 
+#pragma warning disable BHI1007 // target-typed Exception TODO don't
+
 namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>

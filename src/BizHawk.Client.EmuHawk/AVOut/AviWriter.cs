@@ -168,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!_workerT.IsAlive)
 				{
-					throw new("AVI Worker thread died!");
+					throw new Exception("AVI Worker thread died!");
 				}
 			}
 		}
@@ -194,7 +194,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!_workerT.IsAlive)
 				{
-					throw new("AVI Worker thread died!");
+					throw new Exception("AVI Worker thread died!");
 				}
 			}
 		}
@@ -977,7 +977,7 @@ namespace BizHawk.Client.EmuHawk
 		public void SetDefaultVideoCodecToken(Config config)
 		{
 			var ct = CodecToken.DeSerialize(config.AviCodecToken);
-			_currVideoCodecToken = ct ?? throw new($"No default {nameof(config.AviCodecToken)} in config!");
+			_currVideoCodecToken = ct ?? throw new Exception($"No default {nameof(config.AviCodecToken)} in config!");
 		}
 
 		public string DesiredExtension()

@@ -385,7 +385,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static byte[] GetTMDData(ulong titleId)
 		{
 			using var zip = new ZipArchive(Zstd.DecompressZstdStream(new MemoryStream(Resources.TMDS.Value)), ZipArchiveMode.Read, false);
-			using var tmd = zip.GetEntry($"{titleId:x16}.tmd")?.Open() ?? throw new($"Cannot find TMD for title ID {titleId:x16}, please report");
+			using var tmd = zip.GetEntry($"{titleId:x16}.tmd")?.Open() ?? throw new Exception($"Cannot find TMD for title ID {titleId:x16}, please report");
 			return tmd.ReadAllBytes();
 		}
 

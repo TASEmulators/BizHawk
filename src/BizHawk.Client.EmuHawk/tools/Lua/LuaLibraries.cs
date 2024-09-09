@@ -191,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 				lib.APIs = _apiContainer;
 				if (!ServiceInjector.UpdateServices(newServiceProvider, lib, mayCache: true))
 				{
-					throw new("Lua lib has required service(s) that can't be fulfilled");
+					throw new Exception("Lua lib has required service(s) that can't be fulfilled");
 				}
 
 				lib.Restarted();

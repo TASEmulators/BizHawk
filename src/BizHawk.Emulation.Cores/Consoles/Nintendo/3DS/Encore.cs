@@ -8,6 +8,8 @@ using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
+#pragma warning disable BHI1007 // target-typed Exception TODO don't
+
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
 	[PortedCore(CoreNames.Encore, "", "nightly-2104", "https://github.com/CasualPokePlayer/encore", singleInstance: true)]

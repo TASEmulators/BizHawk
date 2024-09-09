@@ -10,6 +10,8 @@ using BizHawk.Common.IOExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
+#pragma warning disable BHI1007 // target-typed Exception TODO don't
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RCheevos : RetroAchievements

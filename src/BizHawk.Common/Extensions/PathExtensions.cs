@@ -219,7 +219,9 @@ namespace BizHawk.Common.PathExtensions
 			else
 			{
 				var dirPath = AppContext.BaseDirectory;
-				DataDirectoryPath = ExeDirectoryPath = string.IsNullOrEmpty(dirPath) ? throw new("failed to get location of executable, very bad things must have happened") : dirPath.RemoveSuffix('\\');
+				DataDirectoryPath = ExeDirectoryPath = string.IsNullOrEmpty(dirPath)
+					? throw new Exception("failed to get location of executable, very bad things must have happened")
+					: dirPath.RemoveSuffix('\\');
 				DllDirectoryPath = Path.Combine(ExeDirectoryPath, "dll");
 			}
 		}

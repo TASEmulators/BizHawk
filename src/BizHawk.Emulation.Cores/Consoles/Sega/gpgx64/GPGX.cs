@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				{
 					if (lp.Discs.Count > 128)
 					{
-						throw new("Too many discs loaded at once!");
+						throw new ArgumentException(paramName: nameof(lp), message: "Too many discs loaded at once!");
 					}
 
 					_cds = lp.Discs.Select(d => d.DiscData).ToArray();

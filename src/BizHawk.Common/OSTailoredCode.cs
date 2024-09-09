@@ -279,7 +279,7 @@ namespace BizHawk.Common
 			using var proc = ConstructSubshell(cmd, args);
 			proc.Start();
 			var stdout = proc.StandardOutput;
-			if (stdout.EndOfStream) throw new($"{noOutputMsg} ({cmd} wrote nothing to stdout)");
+			if (stdout.EndOfStream) throw new Exception($"{noOutputMsg} ({cmd} wrote nothing to stdout)");
 			return stdout.ReadLine()!;
 		}
 	}
