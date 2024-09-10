@@ -378,6 +378,7 @@ namespace BizHawk.Client.EmuHawk
 				int prev = prevMarker?.Frame ?? 0;
 				int next = nextMarker?.Frame ?? CurrentTasMovie.InputLogLength;
 
+				TasView.DeselectAll();
 				for (int i = prev; i < next; i++)
 				{
 					TasView.SelectRow(i, true);

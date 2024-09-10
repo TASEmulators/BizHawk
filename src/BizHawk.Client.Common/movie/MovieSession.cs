@@ -81,32 +81,30 @@ namespace BizHawk.Client.Common
 			else if (Movie.IsPlaying())
 			{
 				LatchInputToLog();
-
-				if (Movie.IsRecording()) // The movie end situation can cause the switch to record mode, in that case we need to capture some input for this frame
+				// if we're at the movie's end and the MovieEndAction is record, just continue recording in play mode
+				// TODO change to TAStudio check
+				if (Movie is ITasMovie && Movie.Emulator.Frame == Movie.FrameCount && Settings.MovieEndAction == MovieEndAction.Record)
 				{
-					HandleFrameLoopForRecordMode();
+					Movie.RecordFrame(Movie.Emulator.Frame, MovieOut.Source);
 				}
 			}
 			else if (Movie.IsRecording())
 			{
-				HandleFrameLoopForRecordMode();
+				LatchInputToUser();
+				Movie.RecordFrame(Movie.Emulator.Frame, MovieOut.Source);
 			}
 		}
 
-		// TODO: this is a mess, simplify
 		public void HandleFrameAfter()
 		{
 			if (Movie is ITasMovie tasMovie)
 			{
 				tasMovie.GreenzoneCurrentFrame();
-				if (tasMovie.IsPlayingOrFinished() && Settings.MovieEndAction == MovieEndAction.Record && Movie.Emulator.Frame >= tasMovie.InputLogLength)
-				{
-					HandleFrameLoopForRecordMode();
-					return;
-				}
+				// TODO change to TAStudio check
+				if (Settings.MovieEndAction == MovieEndAction.Record) return;
 			}
 
-			if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.InputLogLength)
+			if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.FrameCount)
 			{
 				HandlePlaybackEnd();
 			}
@@ -329,13 +327,8 @@ namespace BizHawk.Client.Common
 		private void LatchInputToLog()
 		{
 			var input = Movie.GetInputState(Movie.Emulator.Frame);
-			if (input == null)
-			{
-				HandleFrameAfter();
-				return;
-			}
 
-			MovieController.SetFrom(input);
+			MovieController.SetFrom(input ?? GenerateMovieController());
 			MovieOut.Source = MovieController;
 		}
 
@@ -413,21 +406,6 @@ namespace BizHawk.Client.Common
 			}
 
 			_modeChangedCallback();
-		}
-
-		private void HandleFrameLoopForRecordMode()
-		{
-			// we don't want TasMovie to latch user input outside its internal recording mode, so limit it to autohold
-			if (Movie is ITasMovie && Movie.IsPlayingOrFinished())
-			{
-				MovieController.SetFromSticky(StickySource);
-			}
-			else
-			{
-				MovieController.SetFrom(MovieIn);
-			}
-
-			Movie.RecordFrame(Movie.Emulator.Frame, MovieController);
 		}
 	}
 }

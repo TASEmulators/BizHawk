@@ -9,6 +9,8 @@ using BizHawk.Common.CollectionExtensions;
 
 using static SDL2.SDL;
 
+#pragma warning disable BHI1007 // target-typed Exception TODO don't
+
 namespace BizHawk.Bizware.Input
 {
 	public sealed class SDL2InputAdapter : OSTailoredKeyInputAdapter

@@ -7,6 +7,8 @@ using BizHawk.Common.NumberExtensions;
 
 using static SDL2.SDL;
 
+#pragma warning disable BHI1007 // target-typed Exception TODO don't
+
 namespace BizHawk.Bizware.Audio
 {
 	internal sealed class SDL2WavStream : Stream, ISpanStream

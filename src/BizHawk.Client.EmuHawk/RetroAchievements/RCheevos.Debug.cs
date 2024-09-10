@@ -11,6 +11,8 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.DiscSystem;
 
+#pragma warning disable BHI1007 // target-typed Exception TODO don't
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RCheevos

@@ -3,6 +3,8 @@ using System.Numerics;
 
 using Silk.NET.OpenGL;
 
+#pragma warning disable BHI1007 // target-typed Exception TODO don't
+
 namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>
