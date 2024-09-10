@@ -48,11 +48,10 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Creates a <see cref="IMovieController" /> instance based on the
-		/// given button definition if provided else the
-		/// current <see cref="MovieController" /> button definition
-		/// will be used
+		/// given button definition if provided else the current
+		/// <see cref="MovieController"/>s button definition will be used
 		/// </summary>
-		IMovieController GenerateMovieController(ControllerDefinition definition = null);
+		IMovieController GenerateMovieController(ControllerDefinition definition = null, string logKey = null);
 
 		void HandleFrameBefore();
 		void HandleFrameAfter();

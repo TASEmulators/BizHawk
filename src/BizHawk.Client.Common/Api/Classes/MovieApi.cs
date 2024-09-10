@@ -50,9 +50,7 @@ namespace BizHawk.Client.Common
 				return string.Empty;
 			}
 
-			var lg = _movieSession.Movie.LogGeneratorInstance(
-				_movieSession.Movie.GetInputState(frame));
-			return lg.GenerateLogEntry();
+			return Bk2LogEntryGenerator.GenerateLogEntry(_movieSession.Movie.GetInputState(frame));
 		}
 
 		public void Save(string filename)

@@ -69,8 +69,6 @@ namespace BizHawk.Emulation.Common
 
 			private readonly IController _src;
 
-			public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
 			public DummyController(
 				IController src,
 				IReadOnlyDictionary<string, string> buttonAxisRemaps)

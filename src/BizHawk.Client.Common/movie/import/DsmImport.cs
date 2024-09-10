@@ -93,6 +93,7 @@ namespace BizHawk.Client.Common
 
 		private void ImportInputFrame(string line)
 		{
+			DeSmuMEControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
 			SimpleController controller = new(DeSmuMEControllerDef);
 
 			controller["LidOpen"] = false;

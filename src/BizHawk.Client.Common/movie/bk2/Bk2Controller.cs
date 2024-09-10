@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 using BizHawk.Common;
@@ -14,38 +13,22 @@ namespace BizHawk.Client.Common
 
 		private readonly Dictionary<string, bool> _myBoolButtons = new();
 
-		private readonly Bk2ControllerDefinition _type;
-
-		private IReadOnlyList<ControlMap> _controlsOrdered;
-
-		private IReadOnlyList<ControlMap> ControlsOrdered
-			=> _controlsOrdered
-				??= _type.OrderedControlsFlat.Select(name => new ControlMap(name, _type)).ToArray();
-
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
-		public Bk2Controller(string key, ControllerDefinition definition) : this(definition)
+		public Bk2Controller(ControllerDefinition definition, string logKey) : this(definition)
 		{
-			if (!string.IsNullOrEmpty(key))
-			{
-				var groups = key.Split(new[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
-
-				_type.ControlsFromLog = groups
-					.Select(group => group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList())
-					.ToList();
-			}
+			if (!string.IsNullOrEmpty(logKey))
+				Definition = new Bk2ControllerDefinition(definition, logKey);
 		}
 
 		public Bk2Controller(ControllerDefinition definition)
 		{
-			_type = new Bk2ControllerDefinition(definition);
+			Definition = definition;
 			foreach ((string axisName, AxisSpec range) in definition.Axes)
 			{
 				_myAxisControls[axisName] = range.Neutral;
 			}
 		}
 
-		public ControllerDefinition Definition => _type;
+		public ControllerDefinition Definition { get; }
 
 		public int AxisValue(string name)
 			=> _myAxisControls.GetValueOrDefault(name);
@@ -87,16 +70,12 @@ namespace BizHawk.Client.Common
 			if (string.IsNullOrWhiteSpace(mnemonic)) return;
 			var iterator = 0;
 
-			foreach (var key in ControlsOrdered)
+			foreach (var playerControls in Definition.ControlsOrdered)
+			foreach ((string buttonName, AxisSpec? axisSpec) in playerControls)
 			{
 				while (mnemonic[iterator] == '|') iterator++;
 
-				if (key.IsBool)
-				{
-					_myBoolButtons[key.Name] = mnemonic[iterator] != '.';
-					iterator++;
-				}
-				else if (key.IsAxis)
+				if (axisSpec.HasValue)
 				{
 					var commaIndex = mnemonic.IndexOf(',', iterator);
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
@@ -105,9 +84,14 @@ namespace BizHawk.Client.Common
 					var axisValueString = mnemonic.Substring(startIndex: iterator, length: commaIndex - iterator);
 					var val = int.Parse(axisValueString);
 #endif
-					_myAxisControls[key.Name] = val;
+					_myAxisControls[buttonName] = val;
 
 					iterator = commaIndex + 1;
+				}
+				else
+				{
+					_myBoolButtons[buttonName] = mnemonic[iterator] != '.';
+					iterator++;
 				}
 			}
 		}
@@ -122,40 +106,23 @@ namespace BizHawk.Client.Common
 			_myAxisControls[buttonName] = value;
 		}
 
-		private readonly struct ControlMap
-		{
-			public readonly bool IsAxis;
-
-			public readonly bool IsBool;
-
-			public readonly string Name;
-
-			public ControlMap(string name, bool isButton, bool isAxis)
-			{
-				Debug.Assert(isButton ^ isAxis, "axis conflicts with button of the same name?");
-				Name = name;
-				IsBool = isButton;
-				IsAxis = isAxis;
-			}
-
-			public ControlMap(string name, ControllerDefinition def)
-				: this(
-					name: name,
-					isButton: def.BoolButtons.Contains(name),
-					isAxis: def.Axes.ContainsKey(name)) {}
-		}
-
 		private class Bk2ControllerDefinition : ControllerDefinition
 		{
-			public IReadOnlyList<IReadOnlyList<string>> ControlsFromLog = null;
+			private readonly IReadOnlyList<IReadOnlyList<(string, AxisSpec?)>> _controlsFromLogKey;
 
-			public Bk2ControllerDefinition(ControllerDefinition source)
-				: base(source)
+			public Bk2ControllerDefinition(ControllerDefinition sourceDefinition, string logKey)
+				: base(sourceDefinition)
 			{
+				var groups = logKey.Split(new[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
+
+				_controlsFromLogKey = groups
+					.Select(group => group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries)
+						.Select(buttonname => (buttonname, sourceDefinition.Axes.TryGetValue(buttonname, out var axisSpec) ? axisSpec : (AxisSpec?)null))
+						.ToArray())
+					.ToArray();
 			}
 
-			protected override IReadOnlyList<IReadOnlyList<string>> GenOrderedControls()
-				=> ControlsFromLog is not null && ControlsFromLog.Count is not 0 ? ControlsFromLog : base.GenOrderedControls();
+			protected override IReadOnlyList<IReadOnlyList<(string Name, AxisSpec? AxisSpec)>> GenOrderedControls() => _controlsFromLogKey;
 		}
 	}
 }

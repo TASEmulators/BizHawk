@@ -54,13 +54,14 @@ namespace BizHawk.Client.Common
 
 		public void ResetMainControllers(AutofireController nullAutofireController)
 		{
-			ActiveController = new(NullController.Instance.Definition);
+			ActiveController = new Controller(NullController.Instance.Definition);
 			AutoFireController = nullAutofireController;
 		}
 
 		public void SyncControls(IEmulator emulator, IMovieSession session, Config config)
 		{
 			var def = emulator.ControllerDefinition;
+			def.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(emulator.SystemId));
 
 			ActiveController = BindToDefinition(def, config.AllTrollers, config.AllTrollersAnalog, config.AllTrollersFeedbacks);
 			AutoFireController = BindToDefinitionAF(emulator, config.AllTrollersAutoFire, config.AutofireOn, config.AutofireOff);
