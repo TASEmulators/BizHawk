@@ -9,7 +9,11 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Atari.Stella
 {
-	[Core(CoreNames.Stella, "The Stella Team")]
+	[PortedCore(
+		name: CoreNames.Stella,
+		author: "The Stella Team",
+//		portedVersion: "", //TODO
+		portedUrl: "https://stella-emu.github.io")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
 	public partial class Stella : IEmulator, IVideoProvider, IInputPollable, IRomInfo, IRegionable,
 		ICreateGameDBEntries, ISettable<Stella.A2600Settings, Stella.A2600SyncSettings>
