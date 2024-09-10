@@ -13,6 +13,8 @@
 #include "M6532.hxx"
 #include "TIA.hxx"
 
+#define SOUND_BUFFER_SIZE 1024*1024
+
 uint16_t* soundbuffer;
 int nsamples;
 
@@ -202,7 +204,7 @@ ECL_EXPORT int stella_init(
 	fprintf(stderr, "Initializing Stella core...\n");
  
  // Allocating sound buffer
-	soundbuffer = (uint16_t*) alloc_invisible(4096);
+	soundbuffer = (uint16_t*) alloc_invisible(SOUND_BUFFER_SIZE);
 
 	Settings::Options opts;
 	_a2600 = MediaFactory::createOSystem();
