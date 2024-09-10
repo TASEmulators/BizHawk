@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 using BizHawk.Emulation.Common;
 
@@ -8,7 +7,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 	public partial class Stella
 	{
 		internal IMemoryDomains MemoryDomains;
-		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
 		private uint _cartMemSize;
 
 		private void SetupMemoryDomains()
@@ -56,9 +54,10 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 					1));
 			}
 
-			domains.Add(new MemoryDomainIntPtrMonitor("Main RAM", MemoryDomain.Endian.Little, mainRamAddress, 128, true, 1, _elf));
-
-			MemoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
+			MemoryDomainIntPtrMonitor mainRAM = new("Main RAM", MemoryDomain.Endian.Little, mainRamAddress, 128, true, 1, _elf);
+			domains.Add(mainRAM);
+			
+			MemoryDomains = new MemoryDomainList(domains) { MainMemory = mainRAM };
 			((BasicServiceProvider)ServiceProvider).Register(MemoryDomains);
 		}
 	}
