@@ -1,13 +1,13 @@
 // #define DEBUG_OPENGL
 
-using System.IO;
-
 #if DEBUG_OPENGL
 using System.Runtime.InteropServices;
-using Silk.NET.OpenGL;
 #endif
 
+using Silk.NET.OpenGL;
+
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 using static SDL2.SDL;
 
@@ -31,7 +31,7 @@ namespace BizHawk.Bizware.Graphics
 				// try to use EGL if it is available
 				// GLX is the old API, and is the more or less "deprecated" at this point, and potentially more buggy with some drivers
 				// we do need to a bit more work, in case EGL is not actually available or potentially doesn't have desktop GL support
-				if (!Directory.Exists("/nix")/* this is just for me --yoshi */) SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "1");
+				SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "1");
 			}
 
 			// init SDL video
@@ -51,6 +51,22 @@ namespace BizHawk.Bizware.Graphics
 					{
 						// check if we can actually create a desktop GL context
 						using var glContext = new SDL2OpenGLContext(3, 2, true);
+						using var gl = GL.GetApi(GetGLProcAddress);
+						var versionString = gl.GetStringS(StringName.Version);
+						if (versionString.ContainsOrdinal("OpenGL ES"))
+						{
+							// driver ended up creating a GL ES context regardless
+							// hopefully GLX works here
+							loadGlx = true;
+						}
+						else
+						{
+							// check if we did in fact get at least GL 3.2
+							var versionParts = versionString!.Split('.');
+							var major = int.Parse(versionParts[0]);
+							var minor = int.Parse(versionParts[1][0].ToString());
+							loadGlx = major * 10 + minor < 320;
+						}
 					}
 					catch
 					{
