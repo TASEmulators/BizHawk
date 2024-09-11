@@ -25,6 +25,19 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+
+		public enum ViewPort
+		{
+			/// <summary>
+			/// View the entire screen minus flyback areas
+			/// </summary>
+			AllVisible,
+			/// <summary>
+			/// Trimmed viewport for a more centred display
+			/// </summary>
+			Trimmed
+		}
+
 		public enum RegionType
 		{
 			NTSC,
@@ -49,6 +62,11 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			[Description("Channel F II has a very slightly different BIOS to Channel F and a slightly slower CPU in the PAL version compared to v1")]
 			[DefaultValue(ConsoleVersion.ChannelF)]
 			public ConsoleVersion Version { get; set; }
+
+			[DisplayName("Viewport")]
+			[Description("Visable screen area (cropping options)")]
+			[DefaultValue(ViewPort.Trimmed)]
+			public ViewPort Viewport { get; set; }
 
 			public ChannelFSyncSettings Clone()
 				=> (ChannelFSyncSettings)MemberwiseClone();

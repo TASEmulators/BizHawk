@@ -51,8 +51,36 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private double PixelClocksPerCpuClock;
 		private double PixelClocksPerFrame;
 
+		private int HDisplayable => HBlankOn - HBlankOff - TrimLeft - TrimRight;
+		private int VDisplayable => VBlankOn - VBlankOff - TrimTop - TrimBottom;
+
+		private int TrimLeft;
+		private int TrimRight;
+		private int TrimTop;
+		private int TrimBottom;
+
 		private void SetupVideo()
-			=> _videoBuffer = new int[HTotal * VTotal];
+		{
+			_videoBuffer = new int[HTotal * VTotal];
+
+			switch (_syncSettings.Viewport)
+			{
+				case ViewPort.AllVisible:
+					TrimLeft = 0;
+					TrimRight = 0;
+					TrimTop = 0;
+					TrimBottom = 0;
+					break;
+
+				case ViewPort.Trimmed:
+					// https://channelf.se/veswiki/index.php?title=VRAM
+					TrimLeft = 0;
+					TrimRight = HBlankOn - HBlankOff - (95 * PixelWidth);
+					TrimTop = 0;
+					TrimBottom = 0;
+					break;
+			}
+		}
 
 		/// <summary>
 		/// Called after every CPU clock
@@ -97,10 +125,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			{
 				_pixelClockCounter -= PixelClocksPerFrame;
 			}
-		}
-
-		private int HDisplayable => HBlankOn - HBlankOff;
-		private int VDisplayable => VBlankOn - VBlankOff;
+		}		
 
 		private static int[] ClampBuffer(int[] buffer, int originalWidth, int originalHeight, int trimLeft, int trimTop, int trimRight, int trimBottom)
 		{
@@ -147,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		// VirtualWidth is being used to force the aspect ratio into 4:3
 		// On real hardware it looks like this (so we are close): https://www.youtube.com/watch?v=ZvQA9tiEIuQ
 		public int[] GetVideoBuffer()
-			=> ClampBuffer(_videoBuffer, HTotal, VTotal, HBlankOff, VBlankOff, HTotal - HBlankOn, VTotal - VBlankOn);
+			=> ClampBuffer(_videoBuffer, HTotal, VTotal, HBlankOff + TrimLeft, VBlankOff + TrimTop, HTotal - HBlankOn + TrimRight, VTotal - VBlankOn + TrimBottom);
 
 		public DisplayType Region => _region == RegionType.NTSC ? DisplayType.NTSC : DisplayType.PAL;
 	}
