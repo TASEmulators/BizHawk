@@ -1,4 +1,5 @@
-﻿﻿## ChannelFHawk
+
+## ChannelFHawk
 ### Fairchild Channel F Core
 
 Authored by Asnivor
