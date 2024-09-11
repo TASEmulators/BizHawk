@@ -404,6 +404,24 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
+		public void UpdateDomains(IMemoryDomains domains)
+		{
+			for (int i = _cheatList.Count - 1; i >= 0; i--)
+			{
+				var cheat = _cheatList[i];
+				var newDomain = domains[cheat.Domain.Name];
+				if (newDomain is not null)
+				{
+					cheat.Domain = newDomain;
+				}
+				else
+				{
+					_cheatList.RemoveAt(i);
+					Changes = true;
+				}
+			}
+		}
+
 		private static readonly RigidMultiPredicateSort<Cheat> ColumnSorts
 			= new RigidMultiPredicateSort<Cheat>(new Dictionary<string, Func<Cheat, IComparable>>
 			{
