@@ -3,7 +3,7 @@ using BizHawk.Emulation.Cores.Components.FairchildF8;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
-	[Core(CoreNames.ChannelFHawk, "Asnivor", isReleased: false)]
+	[Core(CoreNames.ChannelFHawk, "Asnivor", isReleased: true)]
 	public partial class ChannelF : IDriveLight
 	{
 		[CoreConstructor(VSystemID.Raw.ChannelF)]

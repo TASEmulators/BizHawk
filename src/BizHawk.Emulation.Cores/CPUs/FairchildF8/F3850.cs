@@ -6,6 +6,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 {
 	/// <summary>
 	/// Fairchild F3850 (F8) CPU
+	/// Author: Asnivor
 	/// 
 	/// The F8 microprocessor is made up of separate interchangeable devices
 	/// The Channel F has:

@@ -1,7 +1,7 @@
 ﻿namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	/// <summary>
-	/// Sean Riddle's modified SCHACH cart mapper (multi-cart) (WIP)
+	/// Sean Riddle's modified SCHACH cart mapper (multi-cart)
 	/// </summary>
 	public class MapperRIDDLE : VesCartBase
 	{
