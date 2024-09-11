@@ -153,10 +153,6 @@ namespace BizHawk.Client.Common
 					int previousFrame = Movie.Emulator.Frame - 1;
 					Movie.Session.MovieController.SetFrom(Movie.GetInputState(previousFrame));
 				}
-				else if (Movie.IsFinished())
-				{
-					LatchInputToUser();
-				}
 			}
 			else
 			{
