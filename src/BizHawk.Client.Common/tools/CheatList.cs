@@ -205,12 +205,6 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		public void RemoveAll()
-		{
-			_cheatList.Clear();
-			Changes = true;
-		}
-
 		public void Clear()
 		{
 			_cheatList.Clear();
