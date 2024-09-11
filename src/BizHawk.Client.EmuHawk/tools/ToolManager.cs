@@ -586,11 +586,6 @@ namespace BizHawk.Client.EmuHawk
 			_emulator = emulator;
 			_game = game;
 			_apiProvider = null;
-			// If Cheat tool is loaded, restarting will restart the list too anyway
-			if (!Has<Cheats>())
-			{
-				_owner.CheatList.NewList(GenerateDefaultCheatFilename(), autosave: true);
-			}
 
 			var unavailable = new List<IToolForm>();
 
