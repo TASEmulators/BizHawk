@@ -9,6 +9,7 @@ cd gpgx && make -f Makefile $1 -j && cd -
 cd libsnes && make -f Makefile $1 -j && cd -
 cd melon && make -f Makefile $1 -j && cd -
 cd picodrive && make -f Makefile $1 -j && cd -
+cd stella && make -f Makefile $1 -j && cd -
 cd snes9x && make -f Makefile $1 -j && cd -
 cd tic80 && make -f Makefile $1 -j && cd -
 cd uae && make -f Makefile $1 -j && cd -
