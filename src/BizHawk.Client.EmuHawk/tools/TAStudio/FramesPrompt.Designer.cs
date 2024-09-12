@@ -88,6 +88,8 @@
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "FramesPrompt";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
