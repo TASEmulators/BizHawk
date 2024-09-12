@@ -604,17 +604,6 @@ namespace BizHawk.Client.EmuHawk
 			CheatList.Changed += Tools.UpdateCheatRelatedTools;
 			RewireSound();
 
-			// Workaround for windows, location is -32000 when minimized, if they close it during this time, that's what gets saved
-			if (Config.MainWndx == -32000)
-			{
-				Config.MainWndx = 0;
-			}
-
-			if (Config.MainWndy == -32000)
-			{
-				Config.MainWndy = 0;
-			}
-
 			if (Config.SaveWindowPosition)
 			{
 				if (Config.MainWndx is int x && Config.MainWndy is int y)
