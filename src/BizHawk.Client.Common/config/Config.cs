@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 
 using BizHawk.Bizware.Graphics;
@@ -136,10 +137,8 @@ namespace BizHawk.Client.Common
 		public bool MainFormStayOnTop { get; set; }
 		public bool StartPaused { get; set; }
 		public bool StartFullscreen { get; set; }
-		public int? MainWndx { get; set; }
-		public int? MainWndy { get; set; }
-		public int? MainWindowWidth { get; set; }
-		public int? MainWindowHeight { get; set; }
+		public Point? MainWindowPosition { get; set; }
+		public Size? MainWindowSize { get; set; }
 		public bool RunInBackground { get; set; } = true;
 		public bool AcceptBackgroundInput { get; set; }
 		public bool AcceptBackgroundInputControllerOnly { get; set; }

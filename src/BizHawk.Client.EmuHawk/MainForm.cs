@@ -606,14 +606,14 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Config.SaveWindowPosition)
 			{
-				if (Config.MainWndx is int x && Config.MainWndy is int y)
+				if (Config.MainWindowPosition is Point position)
 				{
-					Location = new Point(x, y);
+					Location = position;
 				}
 
-				if (Config.MainWindowWidth is int width && Config.MainWindowHeight is int height && !Config.ResizeWithFramebuffer)
+				if (Config.MainWindowSize is Size size && !Config.ResizeWithFramebuffer)
 				{
-					Size = new(width, height);
+					Size = size;
 				}
 			}
 
@@ -2399,18 +2399,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (WindowState is FormWindowState.Normal)
 				{
-					Config.MainWndx = Location.X;
-					Config.MainWndy = Location.Y;
-					Config.MainWindowWidth = Width;
-					Config.MainWindowHeight = Height;
+					Config.MainWindowPosition = Location;
+					Config.MainWindowSize = Size;
 				}
 			}
 			else
 			{
-				Config.MainWndx = null;
-				Config.MainWndy = null;
-				Config.MainWindowWidth = null;
-				Config.MainWindowHeight = null;
+				Config.MainWindowPosition = null;
+				Config.MainWindowSize = null;
 			}
 
 			Config.LastWrittenFrom = VersionInfo.MainVersion;
