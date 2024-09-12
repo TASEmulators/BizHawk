@@ -142,6 +142,7 @@ namespace BizHawk.Client.Common
 		public bool StartFullscreen { get; set; }
 		public Point? MainWindowPosition { get; set; }
 		public Size? MainWindowSize { get; set; }
+		public bool MainWindowMaximized { get; set; }
 		public bool RunInBackground { get; set; } = true;
 		public bool AcceptBackgroundInput { get; set; }
 		public bool AcceptBackgroundInputControllerOnly { get; set; }

@@ -610,6 +610,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Size = size;
 				}
+
+				if (Config.MainWindowMaximized)
+				{
+					WindowState = FormWindowState.Maximized;
+				}
 			}
 
 			if (Config.MainFormStayOnTop) TopMost = true;
@@ -2434,6 +2439,7 @@ namespace BizHawk.Client.EmuHawk
 					Config.MainWindowPosition = Location;
 					Config.MainWindowSize = Size;
 				}
+				Config.MainWindowMaximized = WindowState is FormWindowState.Maximized && !_inFullscreen;
 			}
 			else
 			{
