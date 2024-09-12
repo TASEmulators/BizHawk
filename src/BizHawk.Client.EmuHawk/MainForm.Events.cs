@@ -625,16 +625,16 @@ namespace BizHawk.Client.EmuHawk
 			DisableResizeWithFramebufferMenuItem.Checked = !Config.ResizeWithFramebuffer;
 		}
 
-		private void WindowSize_Click(object sender, EventArgs e)
-		{
-			Config.SetWindowScaleFor(Emulator.SystemId, (int) ((ToolStripMenuItem) sender).Tag);
-			FrameBufferResized(forceWindowResize: true);
-		}
-
 		private void DisableResizeWithFramebufferMenuItem_Click(object sender, EventArgs e)
 		{
 			Config.ResizeWithFramebuffer = !DisableResizeWithFramebufferMenuItem.Checked;
 			FrameBufferResized();
+		}
+
+		private void WindowSize_Click(object sender, EventArgs e)
+		{
+			Config.SetWindowScaleFor(Emulator.SystemId, (int) ((ToolStripMenuItem) sender).Tag);
+			FrameBufferResized(forceWindowResize: true);
 		}
 
 		private void SwitchToFullscreenMenuItem_Click(object sender, EventArgs e)
