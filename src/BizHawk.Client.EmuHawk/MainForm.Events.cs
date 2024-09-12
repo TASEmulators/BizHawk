@@ -615,11 +615,12 @@ namespace BizHawk.Client.EmuHawk
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			var windowScale = Config.GetWindowScaleFor(Emulator.SystemId);
-			foreach (ToolStripMenuItem item in WindowSizeSubMenu.DropDownItems.OfType<ToolStripMenuItem>())
+			foreach (var item in WindowSizeSubMenu.DropDownItems)
 			{
-				if (item.Tag is int itemScale)
+				// filter out separators
+				if (item is ToolStripMenuItem menuItem && menuItem.Tag is int itemScale)
 				{
-					item.Checked = itemScale == windowScale && Config.ResizeWithFramebuffer;
+					menuItem.Checked = itemScale == windowScale && Config.ResizeWithFramebuffer;
 				}
 			}
 			DisableResizeWithFramebufferMenuItem.Checked = !Config.ResizeWithFramebuffer;
