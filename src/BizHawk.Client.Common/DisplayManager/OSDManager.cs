@@ -172,29 +172,13 @@ namespace BizHawk.Client.Common
 		}
 
 		public string InputStrMovie()
-			=> MakeStringFor(_movieSession.MovieController);
+		{
+			var state = _movieSession.Movie?.GetInputState(_emulator.Frame - 1);
+			return state is not null ? MakeStringFor(state) : "";
+		}
 
 		public string InputStrImmediate()
 			=> MakeStringFor(_inputManager.AutofireStickyXorAdapter);
-
-		public string InputPrevious()
-		{
-			if (_movieSession.Movie.IsPlayingOrRecording())
-			{
-				var state = _movieSession.Movie.GetInputState(_emulator.Frame - 1);
-				if (state != null)
-				{
-					return MakeStringFor(state);
-				}
-			}
-
-			return "";
-		}
-
-		public string InputStrOrAll()
-			=> _movieSession.Movie.IsPlayingOrRecording() && _emulator.Frame > 0
-				? MakeStringFor(_inputManager.AutofireStickyXorAdapter.Or(_movieSession.Movie.GetInputState(_emulator.Frame - 1)))
-				: InputStrImmediate();
 
 		private static string MakeStringFor(IController controller)
 		{
@@ -244,34 +228,31 @@ namespace BizHawk.Client.Common
 
 			if (_config.DisplayInput)
 			{
-				var moviePlaying = _movieSession.Movie.IsPlaying();
-				// After the last frame of the movie, we want both the last movie input and the current inputs.
-				var atMovieEnd = _movieSession.Movie.IsFinished() && _movieSession.Movie.IsAtEnd();
-				if (moviePlaying || atMovieEnd)
+				if (_movieSession.Movie.IsPlaying())
 				{
 					var input = InputStrMovie();
 					var point = GetCoordinates(g, _config.InputDisplay, input);
 					var c = Color.FromArgb(_config.MovieInput);
 					g.DrawString(input, c, point.X, point.Y);
 				}
-
-				if (!moviePlaying) // TODO: message config -- allow setting of "mixed", and "auto"
+				else // TODO: message config -- allow setting of "mixed", and "auto"
 				{
 					var previousColor = Color.FromArgb(_config.LastInputColor);
 					var immediateColor = Color.FromArgb(_config.MessagesColor);
 					var autoColor = Color.Pink;
 					var changedColor = Color.PeachPuff;
 
-					//we need some kind of string for calculating position when right-anchoring, of something like that
-					var bgStr = InputStrOrAll();
-					var point = GetCoordinates(g, _config.InputDisplay, bgStr);
-
 					// now, we're going to render these repeatedly, with higher-priority things overriding
 
 					// first display previous frame's input.
 					// note: that's only available in case we're working on a movie
-					var previousStr = InputPrevious();
-					g.DrawString(previousStr, previousColor, point.X, point.Y);
+					var previousStr = InputStrMovie();
+
+					//we need some kind of string for calculating position when right-anchoring, of something like that
+					var point = GetCoordinates(g, _config.InputDisplay, previousStr);
+
+					bool atMovieEnd = _movieSession.Movie.IsFinished() && _movieSession.Movie.IsAtEnd();
+					g.DrawString(previousStr, atMovieEnd ? Color.FromArgb(_config.MovieInput) : previousColor, point.X, point.Y);
 
 					// next, draw the immediate input.
 					// that is, whatever is being held down interactively right this moment even if the game is paused
