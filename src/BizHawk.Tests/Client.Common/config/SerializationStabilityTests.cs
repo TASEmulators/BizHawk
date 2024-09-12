@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Reflection;
 
 using BizHawk.Client.Common;
@@ -32,8 +33,10 @@ namespace BizHawk.Tests.Client.Common.config
 			typeof(List<>),
 			typeof(Nullable<>),
 			typeof(object),
+			typeof(Point),
 			typeof(Queue<>),
 			typeof(float),
+			typeof(Size),
 			typeof(string),
 		};
 
