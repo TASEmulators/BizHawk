@@ -1365,7 +1365,6 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"{fi.Name} saved.");
 		}
 
-		/// <param name="forceWindowResize">Override <see cref="Common.Config.ResizeWithFramebuffer"/></param>
 		public void FrameBufferResized(bool forceWindowResize = false)
 		{
 			if (!Config.ResizeWithFramebuffer && !forceWindowResize)
