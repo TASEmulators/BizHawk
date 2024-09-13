@@ -67,7 +67,7 @@ namespace BizHawk.Bizware.Graphics
 							var versionParts = versionString!.Split('.');
 							var major = int.Parse(versionParts[0]);
 							var minor = int.Parse(versionParts[1][0].ToString());
-							loadGlx = major * 10 + minor < 320;
+							loadGlx = major * 10 + minor < 32;
 						}
 					}
 					catch
