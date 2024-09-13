@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 					var temp = new ToolStripMenuItemEx
 					{
 						Tag = i,
-						Text = $"{(quotient > 0 ? quotient : "")}&{remainder}x"
+						Text = $"{(quotient is not 0L ? quotient.ToString() : string.Empty)}&{remainder}x",
 					};
 					temp.Click += this.WindowSize_Click;
 					WindowSizeSubMenu.DropDownItems.Insert(i - 1, temp);
