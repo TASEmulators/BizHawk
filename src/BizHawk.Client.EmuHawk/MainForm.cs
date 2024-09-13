@@ -1433,14 +1433,17 @@ namespace BizHawk.Client.EmuHawk
 				// Is window off the screen at this size?
 				if (!area.Contains(Bounds))
 				{
+					// At large framebuffer sizes/low screen resolutions, the window may be too large to fit the screen even at 1x scale
+					// Prioritize that the top-left of the window is on-screen so the title bar and menu stay accessible
+
 					if (Bounds.Right > area.Right) // Window is off the right edge
 					{
-						Location = new Point(area.Right - Size.Width, Location.Y);
+						Left = Math.Max(area.Right - Size.Width, area.Left);
 					}
 
 					if (Bounds.Bottom > area.Bottom) // Window is off the bottom edge
 					{
-						Location = new Point(Location.X, area.Bottom - Size.Height);
+						Top = Math.Max(area.Bottom - Size.Height, area.Top);
 					}
 				}
 			}
