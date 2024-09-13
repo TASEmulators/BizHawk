@@ -61,9 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		{	
 			UpdateWindowTitle();
 			
-			ToolStripItem[] CreateWindowSizeFactorSubmenus()
 			{
-				var items = new ToolStripItem[WINDOW_SCALE_MAX];
 				for (int i = 1; i <= WINDOW_SCALE_MAX; i++)
 				{
 					long quotient = Math.DivRem(i, 10, out long remainder);
@@ -73,11 +71,9 @@ namespace BizHawk.Client.EmuHawk
 						Text = $"{(quotient > 0 ? quotient : "")}&{remainder}x"
 					};
 					temp.Click += this.WindowSize_Click;
-					items[i - 1] = temp;
+					WindowSizeSubMenu.DropDownItems.Insert(i - 1, temp);
 				}
-				return items;
 			}
-			WindowSizeSubMenu.DropDownItems.AddRange(CreateWindowSizeFactorSubmenus());
 
 			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
 			{
@@ -603,20 +599,17 @@ namespace BizHawk.Client.EmuHawk
 			CheatList.Changed += Tools.UpdateCheatRelatedTools;
 			RewireSound();
 
-			// Workaround for windows, location is -32000 when minimized, if they close it during this time, that's what gets saved
-			if (Config.MainWndx == -32000)
+			if (Config.SaveWindowPosition)
 			{
-				Config.MainWndx = 0;
-			}
+				if (Config.MainWindowPosition is Point position)
+				{
+					Location = position;
+				}
 
-			if (Config.MainWndy == -32000)
-			{
-				Config.MainWndy = 0;
-			}
-
-			if (Config.MainWndx != -1 && Config.MainWndy != -1 && Config.SaveWindowPosition)
-			{
-				Location = new Point(Config.MainWndx, Config.MainWndy);
+				if (Config.MainWindowSize is Size size && !Config.ResizeWithFramebuffer)
+				{
+					Size = size;
+				}
 			}
 
 			if (Config.MainFormStayOnTop) TopMost = true;
@@ -1395,8 +1388,12 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"{fi.Name} saved.");
 		}
 
-		public void FrameBufferResized()
+		public void FrameBufferResized(bool forceWindowResize = false)
 		{
+			if (!Config.ResizeWithFramebuffer && !forceWindowResize)
+			{
+				return;
+			}
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
 			for (int i = 0; i < 2; i++)
 			{
@@ -2422,20 +2419,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Config.SaveWindowPosition)
 			{
-				if (Config.MainWndx != -32000) // When minimized location is -32000, don't save this into the config file!
+				if (WindowState is FormWindowState.Normal)
 				{
-					Config.MainWndx = Location.X;
-				}
-
-				if (Config.MainWndy != -32000)
-				{
-					Config.MainWndy = Location.Y;
+					Config.MainWindowPosition = Location;
+					Config.MainWindowSize = Size;
 				}
 			}
 			else
 			{
-				Config.MainWndx = -1;
-				Config.MainWndy = -1;
+				Config.MainWindowPosition = null;
+				Config.MainWindowSize = null;
 			}
 
 			Config.LastWrittenFrom = VersionInfo.MainVersion;
@@ -2591,7 +2584,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.SetWindowScaleFor(Emulator.SystemId, windowScale);
 			}
 			AddOnScreenMessage($"Screensize set to {windowScale}x");
-			FrameBufferResized();
+			FrameBufferResized(forceWindowResize: true);
 		}
 
 		private void DecreaseWindowSize()
@@ -2603,7 +2596,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.SetWindowScaleFor(Emulator.SystemId, windowScale);
 			}
 			AddOnScreenMessage($"Screensize set to {windowScale}x");
-			FrameBufferResized();
+			FrameBufferResized(forceWindowResize: true);
 		}
 
 		private static readonly int[] SpeedPercents = { 1, 3, 6, 12, 25, 50, 75, 100, 150, 200, 300, 400, 800, 1600, 3200, 6400 };

@@ -197,7 +197,7 @@ namespace BizHawk.Client.Common
 			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 			{
 				_config.SetWindowScaleFor(Emulator.SystemId, size);
-				_mainForm.FrameBufferResized();
+				_mainForm.FrameBufferResized(forceWindowResize: true);
 				_displayManager.OSD.AddMessage($"Window size set to {size}x");
 			}
 			else
