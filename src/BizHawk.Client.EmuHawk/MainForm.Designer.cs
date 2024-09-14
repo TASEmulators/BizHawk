@@ -2147,7 +2147,7 @@ namespace BizHawk.Client.EmuHawk
 			this.ProfileFirstBootLabel.AutoToolTip = true;
 			this.ProfileFirstBootLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.ProfileFirstBootLabel.Text = "ProfileFirstBootLabel";
-			this.ProfileFirstBootLabel.ToolTipText = "Set up your profile before use";
+			this.ProfileFirstBootLabel.ToolTipText = "Open the setup/onboarding wizard";
 			this.ProfileFirstBootLabel.Visible = false;
 			this.ProfileFirstBootLabel.Click += new System.EventHandler(this.ProfileFirstBootLabel_Click);
 			// 

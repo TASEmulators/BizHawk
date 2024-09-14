@@ -83,6 +83,10 @@ namespace BizHawk.Client.Common
 		private readonly List<UIDisplay> _guiTextList = [ ];
 		private readonly List<UIDisplay> _ramWatchList = [ ];
 
+		/// <summary>Clears the queue used by <see cref="AddMessage"/>. You probably don't want to do this.</summary>
+		public void ClearRegularMessages()
+			=> _messages.Clear();
+
 		public void AddMessage(string message, int? duration = null)
 			=> _messages.Add(new() {
 				Message = message,

@@ -1514,12 +1514,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProfileFirstBootLabel_Click(object sender, EventArgs e)
 		{
-			// We do not check if the user is actually setting a profile here.
-			// This is intentional.
 			using var profileForm = new ProfileConfig(Config, this);
-			this.ShowDialogWithTempMute(profileForm);
+			_ = this.ShowDialogWithTempMute(profileForm); // interpret Cancel as user acklowledgement (there are instructions for re-opening the dialog anyway)
 			Config.FirstBoot = false;
 			ProfileFirstBootLabel.Visible = false;
+			OSD.ClearRegularMessages();
+			AddOnScreenMessage("You can find that again at Config > Profiles", duration: 10/*seconds*/); // intentionally left off the ellipsis from the menu item's name as it could be misinterpreted as the message being truncated
+			AddOnScreenMessage("All done! Drag+drop a rom to start playing", duration: 10/*seconds*/);
 		}
 
 		private void LinkConnectStatusBarButton_Click(object sender, EventArgs e)
