@@ -86,7 +86,7 @@ namespace BizHawk.Client.Common
 		public void AddMessage(string message, int? duration = null)
 			=> _messages.Add(new() {
 				Message = message,
-				ExpireAt = DateTime.Now + TimeSpan.FromSeconds(duration ?? _config.OSDMessageDuration),
+				ExpireAt = DateTime.Now + TimeSpan.FromSeconds(Math.Max(_config.OSDMessageDuration, duration ?? 0)),
 			});
 
 		public void ClearRamWatches()
