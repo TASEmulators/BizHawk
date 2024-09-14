@@ -171,29 +171,30 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string InputStrMovie()
+		private string InputStrMovie()
 		{
 			var state = _movieSession.Movie?.GetInputState(_emulator.Frame - 1);
 			return state is not null ? MakeStringFor(state) : "";
 		}
 
-		public string InputStrImmediate()
+		private string InputStrCurrent()
 			=> MakeStringFor(_inputManager.AutofireStickyXorAdapter);
+
+		// returns an input string for inputs pressed by the user that are not getting unpressed by the sticky adapters
+		private string InputStrUser()
+			=> MakeStringFor(_inputManager.AutofireStickyXorAdapter.And(_inputManager.StickyXorAdapter.Source));
 
 		private static string MakeStringFor(IController controller)
 		{
 			return Bk2InputDisplayGenerator.Generate(controller);
 		}
 
-		public string MakeIntersectImmediatePrevious()
+		private string MakeIntersectImmediatePrevious()
 		{
-			if (_movieSession.Movie.IsActive())
+			if (_movieSession.Movie.IsRecording())
 			{
-				var m = _movieSession.Movie.IsPlayingOrRecording()
-					? _movieSession.Movie.GetInputState(_emulator.Frame - 1)
-					: _movieSession.MovieController;
-
-				return MakeStringFor(_inputManager.AutofireStickyXorAdapter.And(m));
+				var movieInput = _movieSession.Movie.GetInputState(_emulator.Frame - 1);
+				return MakeStringFor(_inputManager.AutofireStickyXorAdapter.And(movieInput));
 			}
 
 			return "";
@@ -237,42 +238,34 @@ namespace BizHawk.Client.Common
 				}
 				else // TODO: message config -- allow setting of "mixed", and "auto"
 				{
-					var previousColor = Color.FromArgb(_config.LastInputColor);
-					var immediateColor = Color.FromArgb(_config.MessagesColor);
-					var autoColor = Color.Pink;
-					var changedColor = Color.PeachPuff;
+					var previousColor = _movieSession.Movie.IsRecording() ? Color.FromArgb(_config.LastInputColor) : Color.FromArgb(_config.MovieInput);
+					var currentColor = Color.FromArgb(_config.MessagesColor);
+					var stickyColor = Color.Pink;
+					var currentAndPreviousColor = Color.PeachPuff;
 
-					// now, we're going to render these repeatedly, with higher-priority things overriding
+					// now, we're going to render these repeatedly, with higher priority draws overwriting all lower priority draws
+					// in order of highest priority to lowest, we are effectively displaying (in different colors):
+					// 1. currently pressed input that was also pressed on the previous frame (movie active + recording mode only)
+					// 2. currently pressed input that is being pressed by sticky autohold or sticky autofire
+					// 3. currently pressed input by the user (non-sticky)
+					// 4. input that was pressed on the previous frame (movie active only)
 
-					// first display previous frame's input.
-					// note: that's only available in case we're working on a movie
-					var previousStr = InputStrMovie();
+					var previousInput = InputStrMovie();
+					var currentInput = InputStrCurrent();
+					var userInput = InputStrUser();
+					var currentAndPreviousInput = MakeIntersectImmediatePrevious();
 
-					//we need some kind of string for calculating position when right-anchoring, of something like that
-					var point = GetCoordinates(g, _config.InputDisplay, previousStr);
+					// calculate origin for drawing all strings. Mainly relevant when right-anchoring
+					var point = GetCoordinates(g, _config.InputDisplay, currentInput);
 
-					bool atMovieEnd = _movieSession.Movie.IsFinished() && _movieSession.Movie.IsAtEnd();
-					g.DrawString(previousStr, atMovieEnd ? Color.FromArgb(_config.MovieInput) : previousColor, point.X, point.Y);
-
-					// next, draw the immediate input.
-					// that is, whatever is being held down interactively right this moment even if the game is paused
-					// this includes things held down due to autohold or autofire
-					// I know, this is all really confusing
-					var immediate = InputStrImmediate();
-					g.DrawString(immediate, immediateColor, point.X, point.Y);
-
-					// next draw anything that's pressed because it's sticky.
-					// this applies to autofire and autohold both. somehow. I don't understand it.
-					// basically we're tinting whatever is pressed because it's sticky specially
-					// in order to achieve this we want to avoid drawing anything pink that isn't actually held down right now
-					// so we make an AND adapter and combine it using immediate & sticky
-					// (adapter creation moved to InputManager)
-					var autoString = MakeStringFor(_inputManager.WeirdStickyControllerForInputDisplay);
-					g.DrawString(autoString, autoColor, point.X, point.Y);
-
-					//recolor everything that's changed from the previous input
-					var immediateOverlay = MakeIntersectImmediatePrevious();
-					g.DrawString(immediateOverlay, changedColor, point.X, point.Y);
+					// draw previous input first. Currently pressed input will overwrite this
+					g.DrawString(previousInput, previousColor, point.X, point.Y);
+					// draw all currently pressed input with the sticky color
+					g.DrawString(currentInput, stickyColor, point.X, point.Y);
+					// draw all currently pressed non-sticky input with the current color, overwriting previously drawn non-sticky input in the wrong color
+					g.DrawString(userInput, currentColor, point.X, point.Y);
+					// re-draw all currently pressed inputs that were also pressed on the previous frame in their own color
+					g.DrawString(currentAndPreviousInput, currentAndPreviousColor, point.X, point.Y);
 				}
 			}
 
