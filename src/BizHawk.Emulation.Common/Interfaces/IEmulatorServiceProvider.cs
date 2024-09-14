@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Common
 
 		/// <summary>
 		/// Returns an instance of T if T is available
-		/// Else throws NRE
+		/// Else returns null
 		/// </summary>
 		/// <typeparam name="T">The requested <see cref="IEmulatorService"/></typeparam>
 		T GetService<T>() where T : IEmulatorService;
