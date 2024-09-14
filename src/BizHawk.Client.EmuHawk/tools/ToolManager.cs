@@ -580,6 +580,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void GeneralUpdateActiveExtTools()
+		{
+			foreach (var tool in _tools.ToArray())
+			{
+				if (tool is IExternalToolForm { IsActive: true }) tool.UpdateValues(ToolFormUpdateType.General);
+			}
+		}
+
 		public void Restart(Config config, IEmulator emulator, IGameInfo game)
 		{
 			_config = config;

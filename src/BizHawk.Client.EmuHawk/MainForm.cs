@@ -881,10 +881,13 @@ namespace BizHawk.Client.EmuHawk
 				// autohold/autofire must not be affected by the following inputs
 				InputManager.ActiveController.Overrides(InputManager.ButtonOverrideAdapter);
 
+				// emu.yield()'ing scripts
 				if (Tools.Has<LuaConsole>())
 				{
 					Tools.LuaConsole.ResumeScripts(false);
 				}
+				// ext. tools don't yield per se, so just send them a GeneralUpdate
+				Tools.GeneralUpdateActiveExtTools();
 
 				StepRunLoop_Core();
 				Render();
