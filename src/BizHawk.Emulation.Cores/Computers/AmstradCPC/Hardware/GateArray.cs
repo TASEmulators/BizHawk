@@ -3,8 +3,6 @@ using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
-using System.Collections;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -21,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private CRTC CRTC => _machine.CRCT;
 		private IPSG PSG => _machine.AYDevice;
 		private ushort BUSRQ => CPU.MEMRQ[CPU.bus_pntr];
-		private AmstradGateArrayType GateArrayType;
+		private GateArrayType GateArrayType;
 
 		/// <summary>
 		/// Length of a GA frame in 1MHz clock cycles
@@ -154,11 +152,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private byte _screenMode;
 
 		/// <summary>
-		/// Latched screen mode value that will take effect at the next HSYNC
-		/// </summary>
-		//private byte _screenModePending;
-
-		/// <summary>
 		/// PENR (register 0) - Pen Selection
 		/// This register can be used to select one of the 17 color-registers (pen 0 to 15 or the border). 
 		/// It will remain selected until another PENR command is executed.
@@ -245,9 +238,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					_machine.LowerROMPaged = false;
 				else
 					_machine.LowerROMPaged = true;
-
-				// Screenmode latch
-				//_screenModePending = (byte)(_RMR & 0x03);
 
 				// Interrupt generation control
 				if (_RMR.Bit(4))
@@ -361,7 +351,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int HSYNCCounter;
 
 
-		public GateArray(CPCBase machine, AmstradGateArrayType gateArrayType)
+		public GateArray(CPCBase machine, GateArrayType gateArrayType)
 		{
 			_machine = machine;
 			GateArrayType = gateArrayType;
@@ -392,10 +382,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// latch screenmode
 			_screenMode = (byte)(_RMR & 0x03);
-
-			//CRT_HSYNC_Pending = true;
-
-			//testH++;
 		}
 
 		/// <summary>
@@ -404,6 +390,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public void OnHSYNCOff()
 		{
 			GA_HSYNC = false;
+
+			// latch screenmode
+			_screenMode = (byte)(_RMR & 0x03);
 
 			// The 6-bit counter is incremented after each HSYNC from the CRTC
 			// (When standard CRTC display settings are used, this is equivalent to counting scan-lines)
@@ -824,7 +813,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			switch (GateArrayType)
 			{
-				case AmstradGateArrayType.Amstrad40489:
+				case GateArrayType.Amstrad40489:
 					// CPC+ and GX4000 return 0x79 for all reads to the gate array (according to mame)
 					result = 0x79;
 					return true;
@@ -875,15 +864,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				case 0b_101:
 					switch (GateArrayType)
 					{
-						case AmstradGateArrayType.Amstrad40007:
-						case AmstradGateArrayType.Amstrad40008:
-						case AmstradGateArrayType.Amstrad40010:
-						case AmstradGateArrayType.Amstrad40226:
+						case GateArrayType.Amstrad40007:
+						case GateArrayType.Amstrad40008:
+						case GateArrayType.Amstrad40010:
+						case GateArrayType.Amstrad40226:
 							// RMR ghost register
 							RMR = (byte)result;
 							break;
 						
-						case AmstradGateArrayType.Amstrad40489:
+						case GateArrayType.Amstrad40489:
 							// TODO: RMR2 register
 							break;
 					}
@@ -937,8 +926,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 
 		public int BackgroundColor => CPCHardwarePalette[1];
-		public int VsyncNumerator => 4000000 * 50;
-		public int VsyncDenominator => 4000000;
+		public int VsyncNumerator => 16_000_000;		// pixel clock
+		public int VsyncDenominator => 319_488;			// 1024 * 312
 
 		public int BufferWidth => MAX_SCREEN_WIDTH_PIXELS;
 		public int BufferHeight => TOTAL_DISPLAY_SCANLINES;
@@ -979,41 +968,5 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync(nameof(_horCharCounter), ref _horCharCounter);
 			ser.EndSection();
 		}
-	}
-
-	public enum AmstradGateArrayType
-	{
-		/// <summary>
-		/// CPC 464
-		/// The first version of the Gate Array is the 40007 and was released with the CPC 464
-		/// </summary>
-		Amstrad40007,
-		/// <summary>
-		/// CPC 664
-		/// Later, the CPC 664 came out fitted with the 40008 version (and at the same time, the CPC 464 was also upgraded with this version). 
-		/// This version is pinout incompatible with the 40007 (that's why the upgraded 464 of this period have two Gate Array slots on the motherboard, 
-		/// one for a 40007 and one for a 40008)
-		/// </summary>
-		Amstrad40008,
-		/// <summary>
-		/// CPC 6128
-		/// The CPC 6128 was released with the 40010 version (and the CPC 464 and 664 manufactured at that time were also upgraded to this version). 
-		/// The 40010 is pinout compatible with the previous 40008
-		/// </summary>
-		Amstrad40010,
-		/// <summary>
-		/// Costdown CPC
-		/// In the last serie of CPC 464 and 6128 produced by Amstrad in 1988, a small ASIC chip have been used to reduce the manufacturing costs. 
-		/// This ASIC emulates the Gate Array, the PAL and the CRTC 6845. And no, there is no extra features like on the Amstrad Plus. 
-		/// The only noticeable difference seems to be about the RGB output levels which are not exactly the same than those produced with a real Gate Array
-		/// </summary>
-		Amstrad40226,
-		/// <summary>
-		/// Plus &amp; GX-4000
-		/// All the Plus range is built upon a bigger ASIC chip which is integrating many features of the classic CPC (FDC, CRTC, PPI, Gate Array/PAL) and all 
-		/// the new Plus specific features. The Gate Array on the Plus have a new register, named RMR2, to expand the ROM mapping functionnalities of the machine. 
-		/// This register requires to be unlocked first to be available. And finally, the RGB levels produced by the ASIC on the Plus are noticeably differents
-		/// </summary>
-		Amstrad40489,
 	}
 }

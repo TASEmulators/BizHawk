@@ -82,11 +82,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public bool FrameCompleted;
 
 		/// <summary>
-		/// Overflow from the previous frame (in Z80 cycles)
-		/// </summary>
-		public int OverFlow;
-
-		/// <summary>
 		/// The total number of frames rendered
 		/// </summary>
 		public int FrameCount;
@@ -293,7 +288,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			ser.BeginSection("CPCMachine");
 			ser.Sync(nameof(FrameCompleted), ref FrameCompleted);
-			ser.Sync(nameof(OverFlow), ref OverFlow);
 			ser.Sync(nameof(FrameCount), ref FrameCount);
 			ser.Sync(nameof(_frameCycles), ref _frameCycles);
 			ser.Sync(nameof(inputRead), ref inputRead);

@@ -14,16 +14,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public CPC464(AmstradCPC cpc, Z80A<AmstradCPC.CpuLink> cpu, List<byte[]> files, bool autoTape, AmstradCPC.BorderType borderType)
 		{
 			CPC = cpc;
-			CPU = cpu;
-
-			FrameLength = 79872;
+			CPU = cpu;			
 
 			CRCT = new CRTC(0);
-			//CRCT = new CRCT_6845(CRCT_6845.CRCTType.MC6845, this);
-			//CRT = new CRTDevice(this);
+			GateArray = new GateArray(this, GateArrayType.Amstrad40008);
 
+			FrameLength = GateArray.FrameLength / 4;
 
-			GateArray = new GateArray(this, AmstradGateArrayType.Amstrad40008);
 			PPI = new PPI_8255(this);
 
 			TapeBuzzer = new Beeper(this);

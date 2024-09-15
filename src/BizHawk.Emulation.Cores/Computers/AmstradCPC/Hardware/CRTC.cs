@@ -1,6 +1,5 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using System;
 using System.Collections;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
@@ -87,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				if (value != _VSYNC)
 				{
 					// value has changed
-					if (value == true) { VSYNC_On_Callbacks(); }
+					if (value) { VSYNC_On_Callbacks(); }
 					else { VSYNC_Off_Callbacks(); }
 				}
 				_VSYNC = value;
@@ -301,37 +300,34 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private const int R16_LIGHT_PEN_H = 16;
 		private const int R17_LIGHT_PEN_L = 17;
 
-		/*
-                RegIdx    Register Name                 Type
-                                                        0             1             2             3                      4
-                0         Horizontal Total              Write Only    Write Only    Write Only    (note 2)               (note 3)
-                1         Horizontal Displayed          Write Only    Write Only    Write Only    (note 2)               (note 3)
-                2         Horizontal Sync Position      Write Only    Write Only    Write Only    (note 2)               (note 3)
-                3         H and V Sync Widths           Write Only    Write Only    Write Only    (note 2)               (note 3)
-                4         Vertical Total                Write Only    Write Only    Write Only    (note 2)               (note 3)
-                5         Vertical Total Adjust         Write Only    Write Only    Write Only    (note 2)               (note 3)
-                6         Vertical Displayed            Write Only    Write Only    Write Only    (note 2)               (note 3)
-                7         Vertical Sync position        Write Only    Write Only    Write Only    (note 2)               (note 3)
-                8         Interlace and Skew            Write Only    Write Only    Write Only    (note 2)               (note 3)
-                9         Maximum Raster Address        Write Only    Write Only    Write Only    (note 2)               (note 3)
-                10        Cursor Start Raster           Write Only    Write Only    Write Only    (note 2)               (note 3)
-                11        Cursor End Raster             Write Only    Write Only    Write Only    (note 2)               (note 3)
-                12        Disp. Start Address (High)    Read/Write    Write Only    Write Only    Read/Write (note 2)    (note 3)
-                13        Disp. Start Address (Low)     Read/Write    Write Only    Write Only    Read/Write (note 2)    (note 3)
-                14        Cursor Address (High)         Read/Write    Read/Write    Read/Write    Read/Write (note 2)    (note 3)
-                15        Cursor Address (Low)          Read/Write    Read/Write    Read/Write    Read/Write (note 2)    (note 3)
-                16        Light Pen Address (High)      Read Only     Read Only     Read Only     Read Only (note 2)     (note 3)
-                17        Light Pen Address (Low)       Read Only     Read Only     Read Only     Read Only (note 2)     (note 3)
-
-				18-31	  Not Used
-
-                1. On type 0 and 1, if a Write Only register is read from, "0" is returned.
-                2. See the document "Extra CPC Plus Hardware Information" for more details.
-                3. CRTC type 4 is the same as CRTC type 3. The registers also repeat as they do on the type 3.
-        */
-
 		/// <summary>
-		/// Storage for main MPU registers      
+		/// Storage for main MPU registers 
+		/// 
+		/// RegIdx    Register Name                 Type
+		///                                         0             1             2             3                      4
+		/// 0         Horizontal Total              Write Only    Write Only    Write Only    (note 2)               (note 3)
+		/// 1         Horizontal Displayed          Write Only    Write Only    Write Only    (note 2)               (note 3)
+		/// 2         Horizontal Sync Position      Write Only    Write Only    Write Only    (note 2)               (note 3)
+		/// 3         H and V Sync Widths           Write Only    Write Only    Write Only    (note 2)               (note 3)
+		/// 4         Vertical Total                Write Only    Write Only    Write Only    (note 2)               (note 3)
+		/// 5         Vertical Total Adjust         Write Only    Write Only    Write Only    (note 2)               (note 3)
+		/// 6         Vertical Displayed            Write Only    Write Only    Write Only    (note 2)               (note 3)
+		/// 7         Vertical Sync position        Write Only    Write Only    Write Only    (note 2)               (note 3)
+		/// 8         Interlace and Skew            Write Only    Write Only    Write Only    (note 2)               (note 3)
+		/// 9         Maximum Raster Address        Write Only    Write Only    Write Only    (note 2)               (note 3)
+		/// 10        Cursor Start Raster           Write Only    Write Only    Write Only    (note 2)               (note 3)
+		/// 11        Cursor End Raster             Write Only    Write Only    Write Only    (note 2)               (note 3)
+		/// 12        Disp. Start Address (High)    Read/Write    Write Only    Write Only    Read/Write (note 2)    (note 3)
+		/// 13        Disp. Start Address (Low)     Read/Write    Write Only    Write Only    Read/Write (note 2)    (note 3)
+		/// 14        Cursor Address (High)         Read/Write    Read/Write    Read/Write    Read/Write (note 2)    (note 3)
+		/// 15        Cursor Address (Low)          Read/Write    Read/Write    Read/Write    Read/Write (note 2)    (note 3)
+		/// 16        Light Pen Address (High)      Read Only     Read Only     Read Only     Read Only (note 2)     (note 3)
+		/// 
+		/// 18-31	  Not Used
+		/// 
+		/// 1. On type 0 and 1, if a Write Only register is read from, "0" is returned.
+		/// 2. See the document "Extra CPC Plus Hardware Information" for more details.
+		/// 3. CRTC type 4 is the same as CRTC type 3. The registers also repeat as they do on the type 3.
 		/// </summary>
 		private byte[] Register = new byte[32];
 
@@ -581,7 +577,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public void Clock()
 		{
-
+			//TODO: Implement CRTC clocking
 		}
 
 		/// <summary>
@@ -1034,6 +1030,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync(nameof(adjusting), ref adjusting);
 			ser.Sync(nameof(r_addr), ref r_addr);
 			ser.Sync(nameof(_inReset), ref _inReset);
+			ser.Sync(nameof(_vtac), ref _vtac);			
 			ser.EndSection();
 		}
 	}
