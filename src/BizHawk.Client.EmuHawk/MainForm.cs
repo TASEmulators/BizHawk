@@ -1409,7 +1409,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
-			for (int i = 0; i < 2; i++)
+			void DoPresentationPanelResize()
 			{
 				int zoom = Config.GetWindowScaleFor(Emulator.SystemId);
 				var area = Screen.FromControl(this).WorkingArea;
@@ -1455,6 +1455,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+			DoPresentationPanelResize();
+			DoPresentationPanelResize();
 		}
 
 		private void SynchChrome()
