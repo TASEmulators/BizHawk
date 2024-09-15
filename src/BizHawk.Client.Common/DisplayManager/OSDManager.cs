@@ -237,12 +237,12 @@ namespace BizHawk.Client.Common
 				{
 					var input = InputStrMovie();
 					var point = GetCoordinates(g, _config.InputDisplay, input);
-					var c = Color.FromArgb(_config.MovieInput);
+					var c = Color.FromArgb(_config.MovieInputColor);
 					g.DrawString(input, c, point.X, point.Y);
 				}
 				else // TODO: message config -- allow setting of "mixed", and "auto"
 				{
-					var previousColor = _movieSession.Movie.IsRecording() ? Color.FromArgb(_config.LastInputColor) : Color.FromArgb(_config.MovieInput);
+					var previousColor = _movieSession.Movie.IsRecording() ? Color.FromArgb(_config.LastInputColor) : Color.FromArgb(_config.MovieInputColor);
 					var currentColor = Color.FromArgb(_config.MessagesColor);
 					var stickyColor = Color.Pink;
 					var currentAndPreviousColor = Color.PeachPuff;

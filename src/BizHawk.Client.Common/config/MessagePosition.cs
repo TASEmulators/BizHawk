@@ -49,6 +49,6 @@
 			MessagesColor = -1,
 			AlertMessageColor = -65536,
 			LastInputColor = -23296,
-			MovieInput = -8355712;
+			MovieInputColor = -8355712;
 	}
 }

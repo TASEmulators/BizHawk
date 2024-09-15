@@ -248,7 +248,7 @@ namespace BizHawk.Client.Common
 		public int MessagesColor { get; set; } = DefaultMessagePositions.MessagesColor;
 		public int AlertMessageColor { get; set; } = DefaultMessagePositions.AlertMessageColor;
 		public int LastInputColor { get; set; } = DefaultMessagePositions.LastInputColor;
-		public int MovieInput { get; set; } = DefaultMessagePositions.MovieInput;
+		public int MovieInputColor { get; set; } = DefaultMessagePositions.MovieInputColor;
 
 		public int DispPrescale { get; set; } = 1;
 
