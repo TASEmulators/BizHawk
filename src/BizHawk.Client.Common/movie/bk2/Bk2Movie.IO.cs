@@ -51,19 +51,15 @@ namespace BizHawk.Client.Common
 		public void SetCycleValues() //TODO IEmulator should not be an instance prop of movies, it should be passed in to every call (i.e. from MovieService) --yoshi
 		{
 			// The saved cycle value will only be valid if the end of the movie has been emulated.
-			if (this.IsAtEnd())
+			if (this.IsAtEnd() && Emulator.AsCycleTiming() is { } cycleCore)
 			{
-				var cycleCore = Emulator.AsCycleTiming();
-				if (cycleCore != null)
-				{
-					Header[HeaderKeys.CycleCount] = cycleCore.CycleCount.ToString();
-					Header[HeaderKeys.ClockRate] = cycleCore.ClockRate.ToString(CultureInfo.InvariantCulture);
-				}
+				// legacy movies may incorrectly have no ClockRate header value set
+				Header[HeaderKeys.ClockRate] = cycleCore.ClockRate.ToString(NumberFormatInfo.InvariantInfo);
+				Header[HeaderKeys.CycleCount] = cycleCore.CycleCount.ToString();
 			}
 			else
 			{
-				Header.Remove(HeaderKeys.CycleCount);
-				Header.Remove(HeaderKeys.ClockRate);
+				Header.Remove(HeaderKeys.CycleCount); // don't allow invalid cycle count fields to stay set
 			}
 		}
 

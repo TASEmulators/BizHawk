@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -279,8 +280,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Emulator.HasCycleTiming())
 			{
-				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
-				movie.HeaderEntries.Add(HeaderKeys.ClockRate, "0");
+				movie.HeaderEntries.Add(HeaderKeys.ClockRate, Emulator.AsCycleTiming().ClockRate.ToString(NumberFormatInfo.InvariantInfo));
 			}
 		}
 	}
