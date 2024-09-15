@@ -46,9 +46,9 @@
 		public static readonly MessagePosition RamWatches = new MessagePosition { X = 0, Y = 70 };
 
 		public const int
-			MessagesColor = -1,
-			AlertMessageColor = -65536,
-			LastInputColor = -23296,
-			MovieInputColor = -8355712;
+			MessagesColor = unchecked((int)0x_FF_FF_FF_FF),
+			AlertMessageColor = unchecked((int)0x_FF_FF_00_00),
+			LastInputColor = unchecked((int)0x_FF_FF_A5_00),
+			MovieInputColor = unchecked((int)0x_FF_80_80_80);
 	}
 }
