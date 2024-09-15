@@ -3,6 +3,8 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
+	/*
+
 	/// <summary>
 	/// Cathode Ray Tube Controller Chip - 6845
 	/// http://www.cpcwiki.eu/index.php/CRTC
@@ -69,11 +71,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Vertical Scanline Count (within the current vertical character)
 		/// </summary>
 		public int VLC;
-
-		/*
-         *  These are not accessible directlyon real hardware
-         *  It just makes screen generation easier to have these accessbile from the gate array
-         */
 
 		/// <summary>
 		/// The total frame width (in characters)
@@ -182,8 +179,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 
-		/* Easier memory functions */
-
 		/// <summary>
 		/// The current byte address
 		/// </summary>
@@ -209,27 +204,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public int LatchedScreenWidthBytes;
 
-		/*
-        Index    Register Name                          Range       CPC Setting    Notes
-        0        Horizontal Total                       00000000    63             Width of the screen, in characters. Should always be 63 (64 characters). 1 character == 1μs.
-        1        Horizontal Displayed                   00000000    40             Number of characters displayed. Once horizontal character count (HCC) matches this value, DISPTMG is set to 1.
-        2        Horizontal Sync Position               00000000    46             When to start the HSync signal.
-        3        Horizontal and Vertical Sync Widths    VVVVHHHH    128+14         HSync pulse width in characters (0 means 16 on some CRTC), should always be more than 8; VSync width in scan-lines. (0 means 16 on some CRTC. Not present on all CRTCs, fixed to 16 lines on these)
-        4        Vertical Total                         x0000000    38             Height of the screen, in characters.
-        5        Vertical Total Adjust                  xxx00000    0              Measured in scanlines, can be used for smooth vertical scrolling on CPC.
-        6        Vertical Displayed                     x0000000    25             Height of displayed screen in characters. Once vertical character count (VCC) matches this value, DISPTMG is set to 1.
-        7        Vertical Sync position                 x0000000    30             When to start the VSync signal, in characters.
-        8        Interlace and Skew                     xxxxxx00    0              00: No interlace; 01: Interlace Sync Raster Scan Mode; 10: No Interlace; 11: Interlace Sync and Video Raster Scan Mode
-        9        Maximum Raster Address                 xxx00000    7              Maximum scan line address on CPC can hold between 0 and 7, higher values' upper bits are ignored
-        10       Cursor Start Raster                    xBP00000    0              Cursor not used on CPC. B = Blink On/Off; P = Blink Period Control (Slow/Fast). Sets first raster row of character that cursor is on to invert.
-        11       Cursor End Raster                      xxx00000    0              Sets last raster row of character that cursor is on to invert
-        12       Display Start Address (High)           xx000000    32
-        13       Display Start Address (Low)            00000000    0              Allows you to offset the start of screen memory for hardware scrolling, and if using memory from address &0000 with the firmware.
-        14       Cursor Address (High)                  xx000000    0
-        15       Cursor Address (Low)                   00000000    0
-        16       Light Pen Address (High)               xx000000                   Read Only
-        17       Light Pen Address (Low)                00000000                   Read Only
-        */
 		/// <summary>
 		/// 6845 internal registers
 		/// </summary>
@@ -736,6 +710,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 DISPTMG = true;
             }
             */
+
+	/*
 		}
 
 		public int lineCounter = 0;
@@ -804,7 +780,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 2. See the document "Extra CPC Plus Hardware Information" for more details.
                 3. CRTC type 4 is the same as CRTC type 3. The registers also repeat as they do on the type 3.
         */
-
+	/*
 		/// <summary>
 		/// Writes to the currently selected register
 		/// </summary>
@@ -994,7 +970,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             #BEXX    %x0xxxx10 xxxxxxxx    6845 CRTC Status (as far as supported)     Read    -
             #BFXX    %x0xxxx11 xxxxxxxx    6845 CRTC Data In (as far as supported)    Read    -
          */
-
+	/*
 		/// <summary>
 		/// Device responds to an IN instruction
 		/// </summary>
@@ -1097,4 +1073,5 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			AMS40226 = 4
 		}
 	}
+	*/
 }

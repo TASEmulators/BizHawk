@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
+	/*
 	/// <summary>
 	/// * Amstrad Gate Array *
 	/// http://www.cpcwiki.eu/index.php/Gate_Array
@@ -1079,18 +1080,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     }
                     return croppedBuffer;
                     */
-			/*
-			var slWidth = BufferWidth;
-			return ScreenBuffer;
+	/*
+	var slWidth = BufferWidth;
+	return ScreenBuffer;
 
-			break;
+	break;
 
 
-	}
-	*/
-			//return ScreenBuffer;
-		}
-
+}
+*/
+	//return ScreenBuffer; 
+	/*
+}
+/*
 		public void SetupScreenSize()
 		{
 			SysBufferWidth = 800;
@@ -1319,5 +1321,5 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			/// </summary>
 			Amstrad40489,
 		}
-	}
+	}*/
 }

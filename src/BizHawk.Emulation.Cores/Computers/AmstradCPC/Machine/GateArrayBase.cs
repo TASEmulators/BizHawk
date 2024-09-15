@@ -6,6 +6,7 @@ using System.Collections;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
+	/*
 	/// <summary>
 	/// The abstract class that all emulated models will inherit from
 	/// * Amstrad Gate Array *
@@ -18,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		private readonly CPCBase _machine;
 		private Z80A<AmstradCPC.CpuLink> CPU => _machine.CPU;
-		private CRCT_6845 CRCT => _machine.CRCT;
+		private CRTC CRCT => _machine.CRCT;
 		private IPSG PSG => _machine.AYDevice;
 
 		/// <summary>
@@ -461,7 +462,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			//  Mode 2: 1 pixel
 			//  Mode 0: 4 pixels
 			//  Mode 3: 4 pixels
-
+			/*
 			BufferWidth = 640;
 			BufferHeight = 400;
 			VirtualHeight = BufferHeight;
@@ -472,4 +473,5 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		protected int[] croppedBuffer;
 	}
+			*/
 }

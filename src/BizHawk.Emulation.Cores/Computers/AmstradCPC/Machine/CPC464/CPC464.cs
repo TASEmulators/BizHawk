@@ -18,9 +18,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			FrameLength = 79872;
 
-			CRCT = new CRCT_6845(CRCT_6845.CRCTType.MC6845, this);
+			CRCT = new CRTC(0);
+			//CRCT = new CRCT_6845(CRCT_6845.CRCTType.MC6845, this);
 			//CRT = new CRTDevice(this);
-			GateArray = new AmstradGateArray(this, AmstradGateArray.GateArrayType.Amstrad40007);
+
+
+			GateArray = new GateArray(this, AmstradGateArrayType.Amstrad40008);
 			PPI = new PPI_8255(this);
 
 			TapeBuzzer = new Beeper(this);

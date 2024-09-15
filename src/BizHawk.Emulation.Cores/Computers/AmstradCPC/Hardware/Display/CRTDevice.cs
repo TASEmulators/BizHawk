@@ -4,6 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
+	/*
 	/// <summary>
 	/// Render pixels to the screen
 	/// </summary>
@@ -393,6 +394,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[m0B1P1]];
                     Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[m0B1P1]];
                     */
+	/*
 					break;
 
 				// 2 bits per pixel - 2 bytes - 8 pixels (16 CRT pixels)
@@ -634,4 +636,5 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		HSYNCandVSYNC = 5
 	}
+	*/
 }

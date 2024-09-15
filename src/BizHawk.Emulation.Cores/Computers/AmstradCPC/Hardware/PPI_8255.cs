@@ -12,8 +12,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	public class PPI_8255 : IPortIODevice
 	{
 		private readonly CPCBase _machine;
-		private CRCT_6845 CRTC => _machine.CRCT;
-		private AmstradGateArray GateArray => _machine.GateArray;
+		private CRTC CRTC => _machine.CRCT;
+		private GateArray GateArray => _machine.GateArray;
 		private IPSG PSG => _machine.AYDevice;
 		private DatacorderDevice Tape => _machine.TapeDevice;
 		private IKeyboard Keyboard => _machine.KeyboardDevice;

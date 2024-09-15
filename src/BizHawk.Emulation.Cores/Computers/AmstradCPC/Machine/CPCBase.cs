@@ -53,12 +53,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The Cathode Ray Tube Controller chip
 		/// </summary>
-		public CRCT_6845 CRCT { get; set; }
+		//public CRCT_6845 CRCT { get; set; }
+		public CRTC CRCT { get; set; }
 
 		/// <summary>
 		/// The Amstrad gate array
 		/// </summary>
-		public AmstradGateArray GateArray { get; set; }
+		public GateArray GateArray { get; set; }
 
 		//      /// <summary>
 		//      /// Renders pixels to the screen
@@ -103,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Gets the current frame cycle according to the CPU tick count
 		/// </summary>
-		public virtual long CurrentFrameCycle => GateArray.FrameClock; // CPU.TotalExecutedCycles - LastFrameStartCPUTick;
+		public virtual long CurrentFrameCycle => GateArray.GAClockCounter; // GateArray.FrameClock; // CPU.TotalExecutedCycles - LastFrameStartCPUTick;
 
 		/// <summary>
 		/// Non-Deterministic bools
@@ -125,9 +126,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public virtual void ExecuteFrame(bool render, bool renderSound)
 		{
-			GateArray.FrameEnd = false;
-			CRCT.lineCounter = 0;
-
 			InputRead = false;
 			_render = render;
 			_renderSound = renderSound;
@@ -144,12 +142,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			PollInput();
 
-			//CRT.SetupVideo();
-			//CRT.ScanlineCounter = 0;
-
-			while (!GateArray.FrameEnd)
+			while (GateArray.GAClockCounter >= 0)
 			{
-				GateArray.ClockCycle();
+				GateArray.Clock();
 
 				// cycle the tape device
 				if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
@@ -182,7 +177,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			GateArray.FrameClock = 0;
+			// setup GA for next frame
+			GateArray.GAClockCounter = 0;
 		}
 
 		/// <summary>

@@ -4,6 +4,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
+	/*
 	/// <summary>
 	/// CATHODE RAY TUBE CONTROLLER (CRTC) IMPLEMENTATION
 	/// http://www.cpcwiki.eu/index.php/CRTC
@@ -113,6 +114,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             data located within a 16K block of refresh memory. These outputs drive a TTL load and 30pF. A high level on
             MAO-MA 13 is a logical "1." 
          */
+	/*
 		public bool MA0 => LinearAddress.Bit(0);
 		public bool MA1 => LinearAddress.Bit(1);
 		public bool MA2 => LinearAddress.Bit(2);
@@ -133,6 +135,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             Raster Addresses (RAO-RA4) - These 5 outputs from the internal Raster Counter address the Character ROM
             for the row of a character. These outputs drive a TTL load and 30pF. A high level (on RAO-RA4) is a logical "1." 
          */
+	/*
 		public bool RA0 => RowSelects.Bit(0);
 		public bool RA1 => RowSelects.Bit(1);
 		public bool RA2 => RowSelects.Bit(2);
@@ -162,6 +165,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             A1                       6845             MA0
             A0                       Gate-Array       CLK
          */
+	/*
 		public ushort AddressLineCPC
 		{
 			get
@@ -342,7 +346,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			The Read/Write functions below are geared toward Amstrad CPC only
 			They could be overridden for a different implementation if needs be
      */
-
+/*
 		/// <summary>
 		/// CPU (or other device) reads from the 8-bit databus
 		/// </summary>
@@ -1093,13 +1097,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return false;
 		}
 
-		/* persistent switch signals */
+		
 		private bool s_VS;
 		private bool s_HDISP;
 		private bool s_VDISP;
 		private bool s_HSYNC;
 
-		/* Other chip counters */
+		
 		/// <summary>
 		/// Linear Address Generator counter latch
 		/// </summary>
@@ -1134,7 +1138,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private void ClockCycle_Type0()
 		{
-			/* non-persistent clock signals */
+			
 			bool c_VT = false;
 			bool c_VTOTAL = false;
 			bool c_HMAX = false;
@@ -1148,7 +1152,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// we are going to clock everything individually but simulate everything
 			// happeneing at once (exactly like the chip would do)
 
-			/* Character Counter */
+			
 			CharacterCTR++;
 			if (CharacterCTR == Register[H_DISPLAYED])
 			{
@@ -1173,7 +1177,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				c_HALFHTOTAL = true;
 			}
 
-			/* Horizontal Sync Width Counter */
+			
 			if (s_HSYNC)
 			{
 				HorizontalSyncWidthCTR++;
@@ -1184,7 +1188,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			/* Raster Counter */
+		
 			if (c_HMAX)
 			{
 				RasterCTR++;
@@ -1205,7 +1209,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			/* Line Counter */
+		
 			if (c_RASMAX)
 			{
 				LineCTR++;
@@ -1231,7 +1235,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			/* Vertical Sync Width Counter */
+			
 			if (c_RASMAX && s_VS)
 			{
 				VerticalSyncWidthCTR++;
@@ -1241,7 +1245,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			/* VTOTAL Control */
+		
 			// todo - interlace logic		
 			if (c_VTOTAL)
 			{
@@ -1263,7 +1267,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				s_VDISP = true;
 			}
 
-			/* Interlace Control */
+		
 			// the interlace control generates the RA0-RA4 row selects
 			// this is based on the VT clock and VS switch,
 			// the value of the Raster Counter and the current interlace mode
@@ -1288,7 +1292,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				// interlace sync and video logic should go here (todo)
 			}
 
-			/* Linear Address Generator */
+		
 			// counter is incremented with every CLK signal
 			LAG_Counter++;
 
@@ -1335,10 +1339,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				c_CURMATCH = true;
 			}
 
-			/* HSYNC */
+	
 			_HSYNC = s_HSYNC;
 
-			/* DISPTMG skew control */
+		
 			if (DISPTMGSkew < 0)
 			{
 				// no output
@@ -1396,7 +1400,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			/* Cursor Control */
+			
 			if (s_HDISP && s_VDISP)
 			{
 				// AND gate is active - cursor control is clocked
@@ -1444,7 +1448,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				CUR_Field_Counter = 0;
 			}
 
-			/* Cursor Skew Control */
+		
 			if (c_CURSKEW)
 			{
 				if (CUDISPSkew < 0)
@@ -1504,7 +1508,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			/* Light Pen Control */
+			
 			if (LPSTB)
 			{
 				// strobe has been detected
@@ -1525,7 +1529,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private void ClockCycle_Type1()
 		{
-			/* non-persistent clock signals */
+			
 			bool c_VT = false;
 			bool c_VTOTAL = false;
 			bool c_HMAX = false;
@@ -1538,7 +1542,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// we are going to clock everything individually but simulate everything
 			// happeneing at once (exactly like the chip would do)
 
-			/* Character Counter */
+		
 			CharacterCTR++;
 			if (CharacterCTR == Register[H_DISPLAYED])
 			{
@@ -1563,7 +1567,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				c_HALFHTOTAL = true;
 			}
 
-			/* Horizontal Sync Width Counter */
+		
 			if (s_HSYNC)
 			{
 				HorizontalSyncWidthCTR++;
@@ -1574,7 +1578,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			/* Raster Counter */
+	
 			if (c_HMAX)
 			{
 				RasterCTR++;
@@ -1595,7 +1599,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			/* Line Counter */
+	
 			if (c_RASMAX)
 			{
 				LineCTR++;
@@ -1621,7 +1625,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			/* Vertical Sync Width Counter */
+		
 			if (c_RASMAX && s_VS)
 			{
 				VerticalSyncWidthCTR++;
@@ -1631,7 +1635,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			/* VTOTAL Control */
+		
 			// todo - interlace logic		
 			if (c_VTOTAL)
 			{
@@ -1653,7 +1657,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				s_VDISP = true;
 			}
 
-			/* Interlace Control */
+
 			// the interlace control generates the RA0-RA4 row selects
 			// this is based on the VT clock and VS switch,
 			// the value of the Raster Counter and the current interlace mode
@@ -1682,7 +1686,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				// interlace sync and video logic should go here (todo)
 			}
 
-			/* Linear Address Generator */
+		
 			// counter is incremented with every CLK signal
 			LAG_Counter++;
 
@@ -1729,10 +1733,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				c_CURMATCH = true;
 			}
 
-			/* HSYNC */
+
 			_HSYNC = s_HSYNC;
 
-			/* DISPTMG */
 			if (s_HDISP && s_VDISP)
 			{
 				_DISPTMG = true;
@@ -1742,7 +1745,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				_DISPTMG = false;
 			}
 
-			/* Cursor Control */
+
 			if (s_HDISP && s_VDISP)
 			{
 				// AND gate is active - cursor control is clocked
@@ -1794,7 +1797,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				CUR_Field_Counter = 0;
 			}
 
-			/* Light Pen Control */
+		
 			if (LPSTB)
 			{
 				// strobe has been detected
@@ -1820,7 +1823,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private void ClockCycle_Type2()
 		{
-			/* non-persistent clock signals */
+			
 			bool c_VT = false;
 			bool c_VTOTAL = false;
 			bool c_HMAX = false;
@@ -1833,7 +1836,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// we are going to clock everything individually but simulate everything
 			// happeneing at once (exactly like the chip would do)
 
-			/* Character Counter */
+		
 			CharacterCTR++;
 			if (CharacterCTR == Register[H_DISPLAYED])
 			{
@@ -1858,7 +1861,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				c_HALFHTOTAL = true;
 			}
 
-			/* Horizontal Sync Width Counter */
+		
 			if (s_HSYNC)
 			{
 				HorizontalSyncWidthCTR++;
@@ -1869,7 +1872,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			/* Raster Counter */
+		
 			if (c_HMAX)
 			{
 				RasterCTR++;
@@ -1890,7 +1893,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			/* Line Counter */
+	
 			if (c_RASMAX)
 			{
 				LineCTR++;
@@ -1916,7 +1919,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			/* Vertical Sync Width Counter */
+			
 			if (c_RASMAX && s_VS)
 			{
 				VerticalSyncWidthCTR++;
@@ -1926,7 +1929,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			/* VTOTAL Control */
+
 			// todo - interlace logic		
 			if (c_VTOTAL)
 			{
@@ -1948,7 +1951,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				s_VDISP = true;
 			}
 
-			/* Interlace Control */
+	
 			// the interlace control generates the RA0-RA4 row selects
 			// this is based on the VT clock and VS switch,
 			// the value of the Raster Counter and the current interlace mode
@@ -1973,7 +1976,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				// interlace sync and video logic should go here (todo)
 			}
 
-			/* Linear Address Generator */
+		
 			// counter is incremented with every CLK signal
 			LAG_Counter++;
 
@@ -2020,10 +2023,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				c_CURMATCH = true;
 			}
 
-			/* HSYNC */
+		
 			_HSYNC = s_HSYNC;
 
-			/* DISPTMG */
+	
 			if (s_HDISP && s_VDISP)
 			{
 				_DISPTMG = true;
@@ -2033,7 +2036,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				_DISPTMG = false;
 			}
 
-			/* Cursor Control */
+
 			if (s_HDISP && s_VDISP)
 			{
 				// AND gate is active - cursor control is clocked
@@ -2085,7 +2088,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				CUR_Field_Counter = 0;
 			}
 
-			/* Light Pen Control */
+	
 			if (LPSTB)
 			{
 				// strobe has been detected
@@ -2105,7 +2108,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		}
 
-		/* Horizontal Timing Register Constants */
+	
 		/// <summary>
 		/// This 8 bit write-only register determines the horizontal frequency of HS. 
 		/// It is the total of displayed plus non-displayed character time units minus one.
@@ -2128,7 +2131,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private const int SYNC_WIDTHS = 3;
 
-		/* Vertical Timing Register Constants */
+		
 		/// <summary>
 		/// The vertical frequency of VS is determined by both R4 and R5.The calculated number of character I ine times is usual I y an integer plus a fraction to 
 		/// get exactly a 50 or 60Hz vertical refresh rate. The integer number of character line times minus one is programmed in the 7 bit write-only Vertical Total Register; 
@@ -2156,7 +2159,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private const int MAX_SL_ADDRESS = 9;
 
-		/* Other Main Register Constants */
+	
 		/// <summary>
 		/// This 7 bit write-only register controls the cursor format(see Figure 10). Bit 5 is the blink timing control.When bit 5 is low, the blink frequency is 1/16 of the 
 		/// vertical field rate, and when bit 5 is high, the blink frequency is 1/32 of the vertical field rate.Bit 6 is used to enable a blink.
@@ -2275,4 +2278,5 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.EndSection();
 		}
 	}
+*/
 }
