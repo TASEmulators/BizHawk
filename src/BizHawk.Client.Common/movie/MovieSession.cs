@@ -335,6 +335,7 @@ namespace BizHawk.Client.Common
 			Debug.Assert(Movie.IsPlaying());
 			Debug.Assert(Movie.Emulator.Frame >= Movie.InputLogLength);
 #endif
+#if false // code below doesn't actually do anything as the cycle count is indiscriminately overwritten (or removed) on save anyway.
 			if (Movie.IsAtEnd() && Movie.Emulator.HasCycleTiming())
 			{
 				const string WINDOW_TITLE_MISMATCH = "Cycle count mismatch";
@@ -384,6 +385,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
+#endif
 			switch (Settings.MovieEndAction)
 			{
 				case MovieEndAction.Stop:
