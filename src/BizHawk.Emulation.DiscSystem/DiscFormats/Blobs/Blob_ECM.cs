@@ -81,13 +81,11 @@ namespace BizHawk.Emulation.DiscSystem
 					nbits += 7;
 				}
 
-				//end of blocks section
-				if (N == 0xFFFFFFFF)
-					break;
+				// end of blocks section
+				if (N is 0xFFFF_FFFF) break;
 
-				//the 0x80000000 business is confusing, but this is almost positively an error
-				if (N >= 0x100000000)
-					MisformedException();
+				// the 0x8000_0000 business is confusing, but this is almost positively an error
+				if (N >= 0x1_0000_0000) MisformedException();
 
 				var todo = (uint)N + 1;
 

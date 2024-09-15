@@ -72,17 +72,17 @@ namespace BizHawk.Common.NumberExtensions
 				return 2;
 			}
 
-			if (i < 0x10000)
+			if (i < 0x1_0000)
 			{
 				return 4;
 			}
 
-			if (i < 0x1000000)
+			if (i < 0x100_0000)
 			{
 				return 6;
 			}
 
-			if (i < 0x100000000)
+			if (i < 0x1_0000_0000)
 			{
 				return 8;
 			}
