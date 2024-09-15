@@ -580,17 +580,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void GeneralUpdateActiveExtTools()
+		{
+			foreach (var tool in _tools.ToArray())
+			{
+				if (tool is IExternalToolForm { IsActive: true }) tool.UpdateValues(ToolFormUpdateType.General);
+			}
+		}
+
 		public void Restart(Config config, IEmulator emulator, IGameInfo game)
 		{
 			_config = config;
 			_emulator = emulator;
 			_game = game;
 			_apiProvider = null;
-			// If Cheat tool is loaded, restarting will restart the list too anyway
-			if (!Has<Cheats>())
-			{
-				_owner.CheatList.NewList(GenerateDefaultCheatFilename(), autosave: true);
-			}
 
 			var unavailable = new List<IToolForm>();
 

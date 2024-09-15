@@ -237,9 +237,9 @@ namespace BizHawk.Client.EmuHawk
 			// TODO: can we deduplicate this logic somehow? The same code with minimal changes is copy pasted like 4 times
 			_autosaveTimer.Stop();
 
-			if (Emulator.HasCycleTiming())
+			if (Emulator.HasCycleTiming() && !CurrentTasMovie.IsAtEnd())
 			{
-				DialogController.ShowMessageBox("This core requires emulation to be on the last frame when writing the movie, otherwise movie length will appear incorrect.\nTAStudio can't handle this, so Export BK2, play it to the end, and then Save Movie.", "Warning", EMsgBoxIcon.Warning);
+				DialogController.ShowMessageBox("This core requires emulation to be on the last frame when writing the movie, otherwise movie length will appear incorrect.", "Warning", EMsgBoxIcon.Warning);
 			}
 
 			string filename = CurrentTasMovie.Filename;
@@ -260,6 +260,7 @@ namespace BizHawk.Client.EmuHawk
 				Cursor = Cursors.WaitCursor;
 				var bk2 = CurrentTasMovie.ToBk2();
 				bk2.Filename = fileInfo.FullName;
+				bk2.Attach(Emulator); // required to be able to save the cycle count for ICycleTiming emulators
 				bk2.Save();
 				MessageStatusLabel.Text = $"{bk2.Name} exported.";
 				Cursor = Cursors.Default;

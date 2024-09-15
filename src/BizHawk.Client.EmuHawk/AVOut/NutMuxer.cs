@@ -203,11 +203,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public enum StartCode : ulong
 			{
-				Main = 0x4e4d7a561f5f04ad,
-				Stream = 0x4e5311405bf2f9db,
-				Syncpoint = 0x4e4be4adeeca4569,
-				Index = 0x4e58dd672f23e64e,
-				Info = 0x4e49ab68b596ba78
+				// where tf does this incantation come from --yoshi
+				Main = 0x4E4D_7A56_1F5F_04AD,
+				Stream = 0x4E53_1140_5BF2_F9DB,
+				Syncpoint = 0x4E4B_E4AD_EECA_4569,
+				Index = 0x4E58_DD67_2F23_E64E,
+				Info = 0x4E49_AB68_B596_BA78,
 			}
 
 			private MemoryStream _data;

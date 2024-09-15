@@ -58,7 +58,8 @@ namespace BizHawk.Client.EmuHawk
 		void FrameAdvance(bool discardApiHawkSurfaces = true);
 
 		/// <remarks>only referenced from <see cref="LuaConsole"/></remarks>
-		void FrameBufferResized();
+		/// <param name="forceWindowResize">Override <see cref="Common.Config.ResizeWithFramebuffer"/></param>
+		void FrameBufferResized(bool forceWindowResize = false);
 
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
 		bool LoadQuickSave(int slot, bool suppressOSD = false);

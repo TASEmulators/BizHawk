@@ -1169,7 +1169,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UnfreezeAllContextMenuItem_Click(object sender, EventArgs e)
 		{
-			MainForm.CheatList.RemoveAll();
+			MainForm.CheatList.Clear();
 		}
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)

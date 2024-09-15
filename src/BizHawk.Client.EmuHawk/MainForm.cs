@@ -61,23 +61,19 @@ namespace BizHawk.Client.EmuHawk
 		{	
 			UpdateWindowTitle();
 			
-			ToolStripItem[] CreateWindowSizeFactorSubmenus()
 			{
-				var items = new ToolStripItem[WINDOW_SCALE_MAX];
 				for (int i = 1; i <= WINDOW_SCALE_MAX; i++)
 				{
 					long quotient = Math.DivRem(i, 10, out long remainder);
 					var temp = new ToolStripMenuItemEx
 					{
 						Tag = i,
-						Text = $"{(quotient > 0 ? quotient : "")}&{remainder}x"
+						Text = $"{(quotient is not 0L ? quotient.ToString() : string.Empty)}&{remainder}x",
 					};
 					temp.Click += this.WindowSize_Click;
-					items[i - 1] = temp;
+					WindowSizeSubMenu.DropDownItems.Insert(i - 1, temp);
 				}
-				return items;
 			}
-			WindowSizeSubMenu.DropDownItems.AddRange(CreateWindowSizeFactorSubmenus());
 
 			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
 			{
@@ -603,20 +599,22 @@ namespace BizHawk.Client.EmuHawk
 			CheatList.Changed += Tools.UpdateCheatRelatedTools;
 			RewireSound();
 
-			// Workaround for windows, location is -32000 when minimized, if they close it during this time, that's what gets saved
-			if (Config.MainWndx == -32000)
+			if (Config.SaveWindowPosition)
 			{
-				Config.MainWndx = 0;
-			}
+				if (Config.MainWindowPosition is Point position)
+				{
+					Location = position;
+				}
 
-			if (Config.MainWndy == -32000)
-			{
-				Config.MainWndy = 0;
-			}
+				if (Config.MainWindowSize is Size size && !Config.ResizeWithFramebuffer)
+				{
+					Size = size;
+				}
 
-			if (Config.MainWndx != -1 && Config.MainWndy != -1 && Config.SaveWindowPosition)
-			{
-				Location = new Point(Config.MainWndx, Config.MainWndy);
+				if (Config.MainWindowMaximized)
+				{
+					WindowState = FormWindowState.Maximized;
+				}
 			}
 
 			if (Config.MainFormStayOnTop) TopMost = true;
@@ -883,10 +881,13 @@ namespace BizHawk.Client.EmuHawk
 				// autohold/autofire must not be affected by the following inputs
 				InputManager.ActiveController.Overrides(InputManager.ButtonOverrideAdapter);
 
+				// emu.yield()'ing scripts
 				if (Tools.Has<LuaConsole>())
 				{
 					Tools.LuaConsole.ResumeScripts(false);
 				}
+				// ext. tools don't yield per se, so just send them a GeneralUpdate
+				Tools.GeneralUpdateActiveExtTools();
 
 				StepRunLoop_Core();
 				Render();
@@ -1395,10 +1396,20 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"{fi.Name} saved.");
 		}
 
-		public void FrameBufferResized()
+		public void FrameBufferResized(bool forceWindowResize = false)
 		{
+			if (WindowState is not FormWindowState.Normal)
+			{
+				// Wait until no longer maximized/minimized to get correct size/location values
+				_framebufferResizedPending = true;
+				return;
+			}
+			if (!Config.ResizeWithFramebuffer && !forceWindowResize)
+			{
+				return;
+			}
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
-			for (int i = 0; i < 2; i++)
+			void DoPresentationPanelResize()
 			{
 				int zoom = Config.GetWindowScaleFor(Emulator.SystemId);
 				var area = Screen.FromControl(this).WorkingArea;
@@ -1430,17 +1441,22 @@ namespace BizHawk.Client.EmuHawk
 				// Is window off the screen at this size?
 				if (!area.Contains(Bounds))
 				{
+					// At large framebuffer sizes/low screen resolutions, the window may be too large to fit the screen even at 1x scale
+					// Prioritize that the top-left of the window is on-screen so the title bar and menu stay accessible
+
 					if (Bounds.Right > area.Right) // Window is off the right edge
 					{
-						Location = new Point(area.Right - Size.Width, Location.Y);
+						Left = Math.Max(area.Right - Size.Width, area.Left);
 					}
 
 					if (Bounds.Bottom > area.Bottom) // Window is off the bottom edge
 					{
-						Location = new Point(Location.X, area.Bottom - Size.Height);
+						Top = Math.Max(area.Bottom - Size.Height, area.Top);
 					}
 				}
 			}
+			DoPresentationPanelResize();
+			DoPresentationPanelResize();
 		}
 
 		private void SynchChrome()
@@ -1695,6 +1711,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _inFullscreen;
 		private Point _windowedLocation;
 		private bool _needsFullscreenOnLoad;
+		private bool _framebufferResizedPending;
 
 		private int _lastOpenRomFilter;
 
@@ -2422,20 +2439,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Config.SaveWindowPosition)
 			{
-				if (Config.MainWndx != -32000) // When minimized location is -32000, don't save this into the config file!
+				if (WindowState is FormWindowState.Normal)
 				{
-					Config.MainWndx = Location.X;
+					Config.MainWindowPosition = Location;
+					Config.MainWindowSize = Size;
 				}
-
-				if (Config.MainWndy != -32000)
-				{
-					Config.MainWndy = Location.Y;
-				}
+				Config.MainWindowMaximized = WindowState is FormWindowState.Maximized && !_inFullscreen;
 			}
 			else
 			{
-				Config.MainWndx = -1;
-				Config.MainWndy = -1;
+				Config.MainWindowPosition = null;
+				Config.MainWindowSize = null;
 			}
 
 			Config.LastWrittenFrom = VersionInfo.MainVersion;
@@ -2591,7 +2605,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.SetWindowScaleFor(Emulator.SystemId, windowScale);
 			}
 			AddOnScreenMessage($"Screensize set to {windowScale}x");
-			FrameBufferResized();
+			FrameBufferResized(forceWindowResize: true);
 		}
 
 		private void DecreaseWindowSize()
@@ -2603,7 +2617,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.SetWindowScaleFor(Emulator.SystemId, windowScale);
 			}
 			AddOnScreenMessage($"Screensize set to {windowScale}x");
-			FrameBufferResized();
+			FrameBufferResized(forceWindowResize: true);
 		}
 
 		private static readonly int[] SpeedPercents = { 1, 3, 6, 12, 25, 50, 75, 100, 150, 200, 300, 400, 800, 1600, 3200, 6400 };
@@ -3774,21 +3788,32 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
+					var previousRom = CurrentlyOpenRom;
 					CurrentlyOpenRom = oaOpenrom?.Path ?? openAdvancedArgs;
 					CurrentlyOpenRomArgs = args;
 
 					Tools.Restart(Config, Emulator, Game);
 
-					if (Config.Cheats.LoadFileByGame && Emulator.HasMemoryDomains())
+					if (previousRom != CurrentlyOpenRom)
 					{
-						CheatList.SetDefaultFileName(Tools.GenerateDefaultCheatFilename());
-						if (CheatList.AttemptToLoadCheatFile(Emulator.AsMemoryDomains()))
+						CheatList.NewList(Tools.GenerateDefaultCheatFilename(), autosave: true);
+						if (Config.Cheats.LoadFileByGame && Emulator.HasMemoryDomains())
 						{
-							AddOnScreenMessage("Cheats file loaded");
+							if (CheatList.AttemptToLoadCheatFile(Emulator.AsMemoryDomains()))
+							{
+								AddOnScreenMessage("Cheats file loaded");
+							}
 						}
-						else if (CheatList.Any())
+					}
+					else
+					{
+						if (Emulator.HasMemoryDomains())
 						{
-							CheatList.Clear();
+							CheatList.UpdateDomains(Emulator.AsMemoryDomains());
+						}
+						else
+						{
+							CheatList.NewList(Tools.GenerateDefaultCheatFilename(), autosave: true);
 						}
 					}
 
@@ -3829,6 +3854,7 @@ namespace BizHawk.Client.EmuHawk
 					DisplayManager.UpdateGlobals(Config, Emulator);
 					DisplayManager.Blank();
 					ExtToolManager.BuildToolStrip();
+					CheatList.NewList("", autosave: true);
 					OnRomChanged();
 					return false;
 				}
@@ -3964,6 +3990,7 @@ namespace BizHawk.Client.EmuHawk
 				PauseOnFrame = null;
 				CurrentlyOpenRom = null;
 				CurrentlyOpenRomArgs = null;
+				CheatList.NewList("", autosave: true);
 				OnRomChanged();
 			}
 		}

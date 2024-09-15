@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			if (format.ContainsOrdinal('d'))
 			{
 				var b = unchecked((sbyte)read(addr++));
-				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{(b < 0 ? -b : b):X2}h");
+				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{Math.Abs((short) b):X2}h");
 			}
 
 			return format;

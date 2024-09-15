@@ -611,16 +611,27 @@ namespace BizHawk.Client.EmuHawk
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			var windowScale = Config.GetWindowScaleFor(Emulator.SystemId);
-			foreach (ToolStripMenuItem item in WindowSizeSubMenu.DropDownItems)
+			foreach (var item in WindowSizeSubMenu.DropDownItems)
 			{
-				item.Checked = (int) item.Tag == windowScale;
+				// filter out separators
+				if (item is ToolStripMenuItem menuItem && menuItem.Tag is int itemScale)
+				{
+					menuItem.Checked = itemScale == windowScale && Config.ResizeWithFramebuffer;
+				}
 			}
+			DisableResizeWithFramebufferMenuItem.Checked = !Config.ResizeWithFramebuffer;
+		}
+
+		private void DisableResizeWithFramebufferMenuItem_Click(object sender, EventArgs e)
+		{
+			Config.ResizeWithFramebuffer = !DisableResizeWithFramebufferMenuItem.Checked;
+			FrameBufferResized();
 		}
 
 		private void WindowSize_Click(object sender, EventArgs e)
 		{
 			Config.SetWindowScaleFor(Emulator.SystemId, (int) ((ToolStripMenuItem) sender).Tag);
-			FrameBufferResized();
+			FrameBufferResized(forceWindowResize: true);
 		}
 
 		private void SwitchToFullscreenMenuItem_Click(object sender, EventArgs e)
@@ -1503,12 +1514,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProfileFirstBootLabel_Click(object sender, EventArgs e)
 		{
-			// We do not check if the user is actually setting a profile here.
-			// This is intentional.
 			using var profileForm = new ProfileConfig(Config, this);
-			this.ShowDialogWithTempMute(profileForm);
+			_ = this.ShowDialogWithTempMute(profileForm); // interpret Cancel as user acklowledgement (there are instructions for re-opening the dialog anyway)
 			Config.FirstBoot = false;
 			ProfileFirstBootLabel.Visible = false;
+			OSD.ClearRegularMessages();
+			AddOnScreenMessage("You can find that again at Config > Profiles", duration: 10/*seconds*/); // intentionally left off the ellipsis from the menu item's name as it could be misinterpreted as the message being truncated
+			AddOnScreenMessage("All done! Drag+drop a rom to start playing", duration: 10/*seconds*/);
 		}
 
 		private void LinkConnectStatusBarButton_Click(object sender, EventArgs e)
@@ -1574,6 +1586,11 @@ namespace BizHawk.Client.EmuHawk
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
 			_presentationPanel.Resized = true;
+			if (_framebufferResizedPending && WindowState is FormWindowState.Normal)
+			{
+				_framebufferResizedPending = false;
+				FrameBufferResized();
+			}
 		}
 
 		private void MainForm_Shown(object sender, EventArgs e)

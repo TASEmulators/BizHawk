@@ -205,12 +205,6 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		public void RemoveAll()
-		{
-			_cheatList.Clear();
-			Changes = true;
-		}
-
 		public void Clear()
 		{
 			_cheatList.Clear();
@@ -408,6 +402,24 @@ namespace BizHawk.Client.Common
 			_config.Recent.Add(CurrentFileName);
 			Changes = false;
 			return true;
+		}
+
+		public void UpdateDomains(IMemoryDomains domains)
+		{
+			for (int i = _cheatList.Count - 1; i >= 0; i--)
+			{
+				var cheat = _cheatList[i];
+				var newDomain = domains[cheat.Domain.Name];
+				if (newDomain is not null)
+				{
+					cheat.Domain = newDomain;
+				}
+				else
+				{
+					_cheatList.RemoveAt(i);
+					Changes = true;
+				}
+			}
 		}
 
 		private static readonly RigidMultiPredicateSort<Cheat> ColumnSorts

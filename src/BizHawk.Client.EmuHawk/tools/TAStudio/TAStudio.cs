@@ -202,7 +202,6 @@ namespace BizHawk.Client.EmuHawk
 				_defaultBranchMarkerSplitDistance);
 
 			TasView.Font = TasViewFont;
-			CurrentTasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			RefreshDialog();
 			_initialized = true;
 		}
@@ -284,7 +283,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			MainForm.AddOnScreenMessage("TAStudio engaged");
-			SetTasMovieCallbacks(CurrentTasMovie);
 			_originalEndAction = Config.Movies.MovieEndAction;
 			MainForm.DisableRewind();
 			Config.Movies.MovieEndAction = MovieEndAction.Record;
@@ -498,17 +496,13 @@ namespace BizHawk.Client.EmuHawk
 		private void ConvertCurrentMovieToTasproj()
 		{
 			MovieSession.ConvertToTasProj();
-			CurrentTasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 			Settings.RecentTas.Add(MovieSession.Movie.Filename);
 			MainForm.SetMainformMovieInfo();
-			CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 		}
 
 		private bool LoadMovie(ITasMovie tasMovie, bool startsFromSavestate = false, int gotoFrame = 0)
 		{
 			_engaged = false;
-			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
-			tasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 
 			if (!StartNewMovieWrapper(tasMovie, isNew: false))
 			{
@@ -541,7 +535,6 @@ namespace BizHawk.Client.EmuHawk
 
 			SetUpToolStripColumns();
 
-			CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 			BookMarkControl.UpdateTextColumnWidth();
 			MarkerControl.UpdateTextColumnWidth();
 			// clear all selections
@@ -565,10 +558,6 @@ namespace BizHawk.Client.EmuHawk
 			var filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 			var tasMovie = (ITasMovie)MovieSession.Get(filename);
 			tasMovie.Author = Config.DefaultAuthor;
-			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
-
-			tasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
-			tasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 
 			_ = StartNewMovieWrapper(tasMovie, isNew: true);
 
@@ -586,6 +575,9 @@ namespace BizHawk.Client.EmuHawk
 			_initializing = true;
 
 			SetTasMovieCallbacks(movie);
+			movie.BindMarkersToInput = Settings.BindMarkersToInput;
+			movie.GreenzoneInvalidated = GreenzoneInvalidated;
+			movie.PropertyChanged += TasMovie_OnPropertyChanged;
 
 			SuspendLayout();
 			WantsToControlStopMovie = false;

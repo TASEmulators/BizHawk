@@ -45,10 +45,12 @@
 		public static readonly MessagePosition Autohold = new MessagePosition { X = 0, Y = 0, Anchor = MessagePosition.AnchorType.TopRight };
 		public static readonly MessagePosition RamWatches = new MessagePosition { X = 0, Y = 70 };
 
-		public const int
-			MessagesColor = -1,
-			AlertMessageColor = -65536,
-			LastInputColor = -23296,
-			MovieInput = -8355712;
+		public const int MessagesColor = unchecked((int) 0xFF_FF_FF_FF);
+
+		public const int AlertMessageColor = unchecked((int) 0xFF_FF_00_00);
+
+		public const int LastInputColor = unchecked((int) 0xFF_FF_A5_00);
+
+		public const int MovieInputColor = unchecked((int) 0xFF_80_80_80);
 	}
 }

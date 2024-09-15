@@ -32,8 +32,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public StickyXorAdapter StickyXorAdapter { get; } = new StickyXorAdapter();
 
-		public IController WeirdStickyControllerForInputDisplay { get; private set; }
-
 		/// <summary>
 		/// Used to AND to another controller, used for <see cref="IJoypadApi.Set(IReadOnlyDictionary{string, bool}, int?)">JoypadApi.Set</see>
 		/// </summary>
@@ -79,7 +77,6 @@ namespace BizHawk.Client.Common
 			// these are all reference types which don't change so this SHOULD be a no-op, but I'm not brave enough to move it to the ctor --yoshi
 			StickyXorAdapter.Source = UdLRControllerAdapter;
 			AutofireStickyXorAdapter = new() { Source = StickyXorAdapter };
-			WeirdStickyControllerForInputDisplay = StickyXorAdapter.Source.Xor(AutofireStickyXorAdapter).And(AutofireStickyXorAdapter);
 
 			session.MovieIn = AutofireStickyXorAdapter;
 			session.StickySource = AutofireStickyXorAdapter;

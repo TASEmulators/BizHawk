@@ -73,7 +73,11 @@ namespace BizHawk.Client.Common
 
 		public int? Compare => _compare.HasValue && !IsSeparator ? _compare : null;
 
-		public MemoryDomain Domain => _watch.Domain;
+		public MemoryDomain Domain
+		{
+			get =>	_watch.Domain;
+			set => _watch.Domain = value;
+		}
 
 		public WatchSize Size => _watch.Size;
 

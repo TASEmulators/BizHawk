@@ -12,7 +12,7 @@ using Verify = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<
 public sealed class NoTargetTypedThrowAnalyzerTests
 {
 	[TestMethod]
-	public Task CheckMisuseOfXORAssignment()
+	public Task CheckMisuseOfTargetTypedNewForExceptions()
 		=> Verify.VerifyAnalyzerAsync("""
 			using System;
 			public static class Cases {
