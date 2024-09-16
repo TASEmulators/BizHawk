@@ -62,6 +62,8 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 					Core.stella_get_frame_rate(out var fps);
 
+					InitSound(fps);
+
 					var regionId = Core.stella_get_region();
 					Region = regionId switch
 					{
@@ -85,7 +87,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 					Core.stella_set_input_callback(_inputCallback);
 
-					// Getting cartridge type
 					var ptr = Core.stella_get_cart_type();
 					var cartType = Marshal.PtrToStringAnsi(ptr);
 					Console.WriteLine($"[Stella] Cart type loaded: {cartType}");

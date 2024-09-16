@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		public void Dispose()
 		{
 			_elf.Dispose();
+			DisposeSound();
 		}
 	}
 }
