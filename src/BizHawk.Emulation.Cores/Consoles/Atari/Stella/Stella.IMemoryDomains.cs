@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		{
 			_cartMemSize = Core.stella_get_cartram_size();
 			var mainRamAddress = IntPtr.Zero;
-			var cartDPCRamAddress = IntPtr.Zero;
 			Core.stella_get_mainram_ptr(ref mainRamAddress);
 
 			var domains = new List<MemoryDomain>

@@ -5,37 +5,32 @@ using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
-using BizHawk.Emulation.Cores.Consoles.Atari.Stella;
 
 namespace BizHawk.Emulation.Cores.Atari.Stella
 {
 	public partial class Stella : ISettable<Stella.A2600Settings, Stella.A2600SyncSettings>
 	{
+		private A2600Settings _settings;
+		private A2600SyncSettings _syncSettings;
+
 		public A2600Settings GetSettings()
-		{
-			return Settings.Clone();
-		}
+			=> _settings.Clone();
 
 		public A2600SyncSettings GetSyncSettings()
-		{
-			return SyncSettings.Clone();
-		}
+			=> _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(A2600Settings o)
 		{
-			Settings = o;
+			_settings = o;
 			return PutSettingsDirtyBits.None;
 		}
 
 		public PutSettingsDirtyBits PutSyncSettings(A2600SyncSettings o)
 		{
-			bool ret = A2600SyncSettings.NeedsReboot(SyncSettings, o);
-			SyncSettings = o;
+			var ret = A2600SyncSettings.NeedsReboot(_syncSettings, o);
+			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
-
-		internal A2600Settings Settings { get; private set; }
-		internal A2600SyncSettings SyncSettings { get; private set; }
 
 		[CoreSettings]
 		public class A2600Settings
@@ -133,9 +128,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			public Color BackgroundColor { get; set; }
 
 			public A2600Settings Clone()
-			{
-				return (A2600Settings)MemberwiseClone();
-			}
+				=> (A2600Settings)MemberwiseClone();
 
 			public A2600Settings()
 			{
@@ -178,7 +171,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			[DefaultValue(false)]
 			public bool FastScBios { get; set; }
 
-
 			public CInterface.InitSettings GetNativeSettings(GameInfo game)
 			{
 				return new CInterface.InitSettings
@@ -188,9 +180,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			}
 
 			public A2600SyncSettings Clone()
-			{
-				return (A2600SyncSettings)MemberwiseClone();
-			}
+				=> (A2600SyncSettings)MemberwiseClone();
 
 			public A2600SyncSettings()
 			{
@@ -198,9 +188,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			}
 
 			public static bool NeedsReboot(A2600SyncSettings x, A2600SyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+				=> !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

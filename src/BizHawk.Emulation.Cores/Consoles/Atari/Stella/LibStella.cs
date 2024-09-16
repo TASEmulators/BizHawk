@@ -2,11 +2,10 @@
 
 using BizHawk.BizInvoke;
 
-namespace BizHawk.Emulation.Cores.Consoles.Atari.Stella
+namespace BizHawk.Emulation.Cores.Atari.Stella
 {
 	public abstract class CInterface
 	{
-
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int load_archive_cb(string filename, IntPtr buffer, int maxsize);
 
@@ -26,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Atari.Stella
 		public abstract bool stella_init(
 			string fileName,
 			load_archive_cb feload_archive_cb,
-			[In]InitSettings settings);
+			[In] InitSettings settings);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void stella_frame_advance(int port1, int port2, bool reset, bool power, bool leftDiffToggled, bool rightDiffToggled);
@@ -75,6 +74,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Atari.Stella
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract IntPtr stella_get_cart_type();
-
 	}
 }

@@ -26,8 +26,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 		ControllerDefinition Definition { get; }
 
-		void SyncState(Serializer ser);
-
 		int PortNum { get; }
 	}
 
@@ -51,11 +49,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 		public ControllerDefinition Definition { get; }
 
-		public void SyncState(Serializer ser)
-		{
-			// Do nothing
-		}
-
 		public int PortNum { get; }
 	}
 
@@ -73,11 +66,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		}
 
 		public ControllerDefinition Definition { get; }
-
-		public void SyncState(Serializer ser)
-		{
-			// Nothing todo, I think
-		}
 
 		public int PortNum { get; }
 
@@ -100,9 +88,9 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		}
 
 		private static readonly string[] BaseDefinition =
-		{
+		[
 			"Up", "Down", "Left", "Right", "Button"
-		};
+		];
 	}
 
 	public class PaddleController : IPort
@@ -122,18 +110,13 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 		public int PortNum { get; }
 
-		public void SyncState(Serializer ser)
-		{
-			// Nothing todo, I think
-		}
-
 		public ControllerDefinition Definition { get; }
 
 		private static readonly string[] BaseDefinition =
-		{
+		[
 			"Button 1",
 			"Button 2"
-		};
+		];
 
 		public byte Read(IController c)
 		{
@@ -173,19 +156,14 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 		public int PortNum { get; }
 
-		public void SyncState(Serializer ser)
-		{
-			// Nothing todo, I think
-		}
-
 		public ControllerDefinition Definition { get; }
 
 		private static readonly string[] BaseDefinition =
-		{
+		[
 			"Up", "Down", "Left", "Right", "Button",
 			"Button 1",
 			"Button 2"
-		};
+		];
 
 		public byte Read(IController c)
 		{
@@ -239,17 +217,12 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 		public int PortNum { get; }
 
-		public void SyncState(Serializer ser)
-		{
-			// Nothing todo, I think
-		}
-
 		public ControllerDefinition Definition { get; }
 
 		private static readonly string[] BaseDefinition =
-		{
+		[
 			"Button"
-		};
+		];
 
 		public byte Read(IController c)
 		{
@@ -365,11 +338,11 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		}
 
 		private static readonly string[] BaseDefinition =
-		{
+		[
 			"1", "2", "3",
 			"4", "5", "6",
 			"7", "8", "9",
 			"*", "0", "#"
-		};
+		];
 	}
 }

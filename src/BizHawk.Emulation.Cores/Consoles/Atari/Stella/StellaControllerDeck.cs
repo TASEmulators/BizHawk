@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Stella
 {
 	public class Atari2600ControllerDeck
 	{
-
 		public Atari2600ControllerDeck(Atari2600ControllerTypes controller1, Atari2600ControllerTypes controller2)
 		{
 			Port1 = ControllerCtors[controller1](1);
@@ -18,10 +16,10 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			{
 				BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
-					.Concat(new[]
-					{
+					.Concat(
+					[
 						"Reset", "Select", "Power", "Toggle Left Difficulty", "Toggle Right Difficulty"
-					})
+					])
 					.ToList()
 			};
 
@@ -32,37 +30,18 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		}
 
 		public byte ReadPort1(IController c)
-		{
-			return Port1.Read(c);
-		}
+			=> Port1.Read(c);
 
 		public byte ReadPort2(IController c)
-		{
-			return Port2.Read(c);
-		}
+			=> Port2.Read(c);
 
 		public int ReadPot1(IController c, int pot)
-		{
-			return Port1.Read_Pot(c, pot);
-		}
+			=> Port1.Read_Pot(c, pot);
 
 		public int ReadPot2(IController c, int pot)
-		{
-			return Port2.Read_Pot(c, pot);
-		}
+			=> Port2.Read_Pot(c, pot);
 
 		public ControllerDefinition Definition { get; }
-
-		public void SyncState(Serializer ser)
-		{
-			ser.BeginSection(nameof(Port1));
-			Port1.SyncState(ser);
-			ser.EndSection();
-
-			ser.BeginSection(nameof(Port2));
-			Port2.SyncState(ser);
-			ser.EndSection();
-		}
 
 		private readonly IPort Port1;
 		private readonly IPort Port2;

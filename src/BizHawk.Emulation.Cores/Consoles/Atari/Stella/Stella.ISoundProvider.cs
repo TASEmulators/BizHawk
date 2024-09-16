@@ -1,5 +1,6 @@
-﻿using BizHawk.Emulation.Common;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Stella
@@ -38,15 +39,17 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
-		private void update_audio()
+		private void UpdateAudio()
 		{
-			IntPtr src = IntPtr.Zero;
+			var src = IntPtr.Zero;
 			Core.stella_get_audio(ref _nsamp, ref src);
 
 			if (src != IntPtr.Zero)
 			{
 				using (_elf.EnterExit())
+				{
 					Marshal.Copy(src, _samples, 0, _nsamp * 2);
+				}
 			}
 		}
 	}

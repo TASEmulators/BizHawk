@@ -1,5 +1,4 @@
 ﻿using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Atari.Stella;
 
 namespace BizHawk.Emulation.Cores.Atari.Stella
 {
@@ -13,9 +12,9 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 		private readonly CInterface.input_cb _inputCallback;
 
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		private readonly InputCallbackSystem _inputCallbacks = [ ];
 
-		private void input_callback()
+		private void InputCallback()
 		{
 			InputCallbacks.Call();
 			IsLagFrame = false;

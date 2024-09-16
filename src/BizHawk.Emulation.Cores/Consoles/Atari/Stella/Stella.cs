@@ -1,10 +1,9 @@
-﻿using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Atari.Stella;
 using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Atari.Stella
@@ -13,28 +12,19 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		name: CoreNames.Stella,
 		author: "The Stella Team",
 //		portedVersion: "", //TODO
-		portedUrl: "https://stella-emu.github.io")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
-	public partial class Stella : IEmulator, IVideoProvider, IInputPollable, IRomInfo, IRegionable,
-		ICreateGameDBEntries, ISettable<Stella.A2600Settings, Stella.A2600SyncSettings>
+		portedUrl: "https://stella-emu.github.io",
+		isReleased: false)]
+	[ServiceNotApplicable([ typeof(IDriveLight), typeof(ISaveRam) ])]
+	public partial class Stella : IRomInfo, IRegionable
 	{
-		internal static class RomChecksums
-		{
-			public const string CongoBongo = "SHA1:3A77DB43B6583E8689435F0F14AA04B9E57BDDED";
-
-			public const string KangarooNotInGameDB = "SHA1:982B8016B393A9AA7DD110295A53C4612ECF2141";
-
-			public const string Tapper = "SHA1:E986E1818E747BEB9B33CE4DFF1CDC6B55BDB620";
-		}
-
 		[CoreConstructor(VSystemID.Raw.A26)]
-		public Stella(CoreLoadParameters<Stella.A2600Settings, Stella.A2600SyncSettings> lp)
+		public Stella(CoreLoadParameters<A2600Settings, A2600SyncSettings> lp)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			SyncSettings = lp.SyncSettings ?? new A2600SyncSettings();
-			Settings = lp.Settings ?? new A2600Settings();
-			_controllerDeck = new Atari2600ControllerDeck(SyncSettings.Port1, SyncSettings.Port2);
+			_syncSettings = lp.SyncSettings ?? new A2600SyncSettings();
+			_settings = lp.Settings ?? new A2600Settings();
+			_controllerDeck = new Atari2600ControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
 			_elf = new WaterboxHost(new WaterboxOptions
 			{
@@ -49,89 +39,89 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
-			LoadCallback = load_archive;
-			_inputCallback = input_callback;
-
-			var callingConventionAdapter = CallingConventionAdapters.MakeWaterbox(new Delegate[]
+			try
 			{
-				LoadCallback, _inputCallback
-			}, _elf);
+				_loadCallback = LoadCallback;
+				_inputCallback = InputCallback;
 
-			using (_elf.EnterExit())
-			{
-				Core = BizInvoker.GetInvoker<CInterface>(_elf, _elf, callingConventionAdapter);
-				SyncSettings = lp.SyncSettings ?? new A2600SyncSettings();
-				Settings = lp.Settings ?? new A2600Settings();
+				var callingConventionAdapter = CallingConventionAdapters.MakeWaterbox(
+				[
+					_loadCallback, _inputCallback
+				], _elf);
 
-				CoreComm = lp.Comm;
+				using (_elf.EnterExit())
+				{
+					Core = BizInvoker.GetInvoker<CInterface>(_elf, _elf, callingConventionAdapter);
+					_syncSettings = lp.SyncSettings ?? new A2600SyncSettings();
+					_settings = lp.Settings ?? new A2600Settings();
 
-				_romfile = lp.Roms.FirstOrDefault()?.RomData;
-				string romPath = lp.Roms.FirstOrDefault()?.RomPath;
+					_romfile = lp.Roms[0].RomData;
+					var initResult = Core.stella_init("rom.a26", LoadCallback, _syncSettings.GetNativeSettings(lp.Game));
 
-				var initResult = Core.stella_init(romPath, LoadCallback, SyncSettings.GetNativeSettings(lp.Game));
+					if (!initResult) throw new Exception($"{nameof(Core.stella_init)}() failed");
 
-				if (!initResult) throw new Exception($"{nameof(Core.stella_init)}() failed");
+					Core.stella_get_frame_rate(out var fps);
 
-				Core.stella_get_frame_rate(out int fps);
+					var regionId = Core.stella_get_region();
+					Region = regionId switch
+					{
+						0 => DisplayType.NTSC,
+						1 => DisplayType.PAL,
+						2 => DisplayType.SECAM,
+						_ => throw new InvalidOperationException()
+					};
 
-				int regionId = Core.stella_get_region();
-				if (regionId == 0) _region = DisplayType.NTSC;
-				if (regionId == 1) _region = DisplayType.PAL;
-				if (regionId == 2) _region = DisplayType.SECAM;
+					// ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+					_vidPalette = Region switch
+					{
+						DisplayType.NTSC => NTSCPalette,
+						DisplayType.PAL => PALPalette,
+						DisplayType.SECAM => SecamPalette,
+						_ => throw new InvalidOperationException()
+					};
 
-				VsyncNumerator = fps;
-				VsyncDenominator = 1;
+					VsyncNumerator = fps;
+					VsyncDenominator = 1;
 
-				Core.stella_set_input_callback(_inputCallback);
+					Core.stella_set_input_callback(_inputCallback);
 
-				// Getting cartridge type
-				var ptr = Core.stella_get_cart_type();
-				string _cartType = Marshal.PtrToStringAnsi(ptr);
-				Console.WriteLine("[Stella] Cart type loaded: {0} (string size: {1}, ptr: {2})", _cartType, _cartType.Length, ptr);
+					// Getting cartridge type
+					var ptr = Core.stella_get_cart_type();
+					var cartType = Marshal.PtrToStringAnsi(ptr);
+					Console.WriteLine($"[Stella] Cart type loaded: {cartType}");
 
-				_elf.Seal();
+					RomDetails = $"{lp.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(_romfile)}\r\n{MD5Checksum.ComputePrefixedHex(_romfile)}\r\nMapper Impl \"{cartType}\"";
+
+					_elf.Seal();
+				}
+
+				// pull the default video size from the core
+				UpdateVideo();
+
+				// Registering memory domains
+				SetupMemoryDomains();
 			}
-
-			// pull the default video size from the core
-			UpdateVideo();
-
-			// Registering memory domains
-			SetupMemoryDomains();
+			catch
+			{
+				Dispose();
+				throw;
+			}
 		}
 
 		// IRegionable
-		public DisplayType Region => _region;
+		public DisplayType Region { get; }
 
-		private DisplayType _region;
+		// IRomInfo
+		public string RomDetails { get; }
 
-		private CInterface.load_archive_cb LoadCallback;
+		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+		private readonly CInterface.load_archive_cb _loadCallback;
 
 		private readonly byte[] _romfile;
 		private readonly CInterface Core;
 		private readonly WaterboxHost _elf;
-		private string _cartType { get; }
-
-		private CoreComm CoreComm { get; }
-
-		public string RomDetails { get; private set; }
 
 		private readonly Atari2600ControllerDeck _controllerDeck;
-
-		private ITraceable Tracer { get; }
-
-		// ICreateGameDBEntries
-		public CompactGameInfo GenerateGameDbEntry()
-		{
-			return new CompactGameInfo
-			{
-			};
-		}
-
-		// IBoardInfo
-		private static bool DetectPal(GameInfo game, byte[] rom)
-		{
-			return true;
-		}
 
 		/// <summary>
 		/// core callback for file loading
@@ -140,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		/// <param name="buffer">buffer to load file to</param>
 		/// <param name="maxsize">maximum length buffer can hold</param>
 		/// <returns>actual size loaded, or 0 on failure</returns>
-		private int load_archive(string filename, IntPtr buffer, int maxsize)
+		private int LoadCallback(string filename, IntPtr buffer, int maxsize)
 		{
 			byte[] srcdata = null;
 
@@ -179,7 +169,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			{
 				throw new InvalidOperationException("Unknown error processing firmware");
 			}
-
 		}
 	}
 }

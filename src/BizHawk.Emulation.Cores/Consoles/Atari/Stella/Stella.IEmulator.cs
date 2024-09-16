@@ -8,12 +8,11 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-        private bool _leftDifficultyToggled = false;
-		private bool _rightDifficultyToggled = false;
+        private bool _leftDifficultyToggled;
+		private bool _rightDifficultyToggled;
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
-			
 			int port1 = _controllerDeck.ReadPort1(controller);
 			int port2 = _controllerDeck.ReadPort2(controller);
             
@@ -36,16 +35,14 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 				UpdateVideo();
 
 			if (renderSound)
-				update_audio();
+				UpdateAudio();
 
-			_frame++;
+			Frame++;
 
 			return true;
 		}
 
-		public int _frame;
-
-		public int Frame => _frame;
+		public int Frame { get; private set; }
 
 		public string SystemId => VSystemID.Raw.A26;
 
@@ -53,13 +50,14 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 		public void ResetCounters()
 		{
-			_frame = 0;
+			Frame = 0;
 			LagCount = 0;
 			IsLagFrame = false;
 		}
 
 		public void Dispose()
 		{
+			_elf.Dispose();
 		}
 	}
 }
