@@ -18,12 +18,11 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 	public partial class Stella : IRomInfo, IRegionable
 	{
 		[CoreConstructor(VSystemID.Raw.A26)]
-		public Stella(CoreLoadParameters<A2600Settings, A2600SyncSettings> lp)
+		public Stella(CoreLoadParameters<object, A2600SyncSettings> lp)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			_syncSettings = lp.SyncSettings ?? new A2600SyncSettings();
-			_settings = lp.Settings ?? new A2600Settings();
 			_controllerDeck = new Atari2600ControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
 			_elf = new WaterboxHost(new WaterboxOptions
@@ -52,8 +51,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 				using (_elf.EnterExit())
 				{
 					Core = BizInvoker.GetInvoker<CInterface>(_elf, _elf, callingConventionAdapter);
-					_syncSettings = lp.SyncSettings ?? new A2600SyncSettings();
-					_settings = lp.Settings ?? new A2600Settings();
 
 					_romfile = lp.Roms[0].RomData;
 					var initResult = Core.stella_init("rom.a26", _loadCallback, _syncSettings.GetNativeSettings(lp.Game));

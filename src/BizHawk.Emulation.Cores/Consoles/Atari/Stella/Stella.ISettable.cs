@@ -1,139 +1,28 @@
 ﻿using System.ComponentModel;
-using System.Drawing;
-
-using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Stella
 {
-	public partial class Stella : ISettable<Stella.A2600Settings, Stella.A2600SyncSettings>
+	public partial class Stella : ISettable<object, Stella.A2600SyncSettings>
 	{
-		private A2600Settings _settings;
 		private A2600SyncSettings _syncSettings;
 
-		public A2600Settings GetSettings()
-			=> _settings.Clone();
+		public object GetSettings()
+			=> null;
 
 		public A2600SyncSettings GetSyncSettings()
 			=> _syncSettings.Clone();
 
-		public PutSettingsDirtyBits PutSettings(A2600Settings o)
-		{
-			_settings = o;
-			return PutSettingsDirtyBits.None;
-		}
+		public PutSettingsDirtyBits PutSettings(object o)
+			=> PutSettingsDirtyBits.None;
 
 		public PutSettingsDirtyBits PutSyncSettings(A2600SyncSettings o)
 		{
 			var ret = A2600SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
-		}
-
-		[CoreSettings]
-		public class A2600Settings
-		{
-			[JsonIgnore]
-			private int _ntscTopLine;
-
-			[JsonIgnore]
-			private int _ntscBottomLine;
-
-			[JsonIgnore]
-			private int _palTopLine;
-
-			[JsonIgnore]
-			private int _palBottomLine;
-
-			[DisplayName("Show Background")]
-			[Description("Sets whether or not the Background layer will be displayed")]
-			[DefaultValue(true)]
-			public bool ShowBG { get; set; }
-
-			[DisplayName("Show Player 1")]
-			[Description("Sets whether or not the Player 1 layer will be displayed")]
-			[DefaultValue(true)]
-			public bool ShowPlayer1 { get; set; }
-
-			[DisplayName("Show Player 2")]
-			[Description("Sets whether or not the Player 2 layer will be displayed")]
-			[DefaultValue(true)]
-			public bool ShowPlayer2 { get; set; }
-
-			[DisplayName("Show Missle 1")]
-			[Description("Sets whether or not the Missle 1 layer will be displayed")]
-			[DefaultValue(true)]
-			public bool ShowMissle1 { get; set; }
-
-			[DisplayName("Show Missle 2")]
-			[Description("Sets whether or not the Missle 2 layer will be displayed")]
-			[DefaultValue(true)]
-			public bool ShowMissle2 { get; set; }
-
-			[DisplayName("Show Ball")]
-			[Description("Sets whether or not the Ball layer will be displayed")]
-			[DefaultValue(true)]
-			public bool ShowBall { get; set; }
-
-			[DisplayName("Show Playfield")]
-			[Description("Sets whether or not the Playfield layer will be displayed")]
-			[DefaultValue(true)]
-			public bool ShowPlayfield { get; set; }
-
-			[DisplayName("SECAM Colors")]
-			[Description("If true, PAL mode will show with SECAM (French) colors.")]
-			[DefaultValue(false)]
-			public bool SECAMColors { get; set; }
-
-			[DisplayName("NTSC Top Line")]
-			[Description("First line of the video image to display in NTSC mode.")]
-			[DefaultValue(24)]
-			public int NTSCTopLine
-			{
-				get => _ntscTopLine;
-				set => _ntscTopLine = Math.Min(64, Math.Max(value, 0));
-			}
-
-			[DisplayName("NTSC Bottom Line")]
-			[Description("Last line of the video image to display in NTSC mode.")]
-			[DefaultValue(248)]
-			public int NTSCBottomLine
-			{
-				get => _ntscBottomLine;
-				set => _ntscBottomLine = Math.Min(260, Math.Max(value, 192));
-			}
-
-			[DisplayName("PAL Top Line")]
-			[Description("First line of the video image to display in PAL mode.")]
-			[DefaultValue(24)]
-			public int PALTopLine
-			{
-				get => _palTopLine;
-				set => _palTopLine = Math.Min(64, Math.Max(value, 0));
-			}
-
-			[DisplayName("PAL Bottom Line")]
-			[Description("Last line of the video image to display in PAL mode.")]
-			[DefaultValue(296)]
-			public int PALBottomLine
-			{
-				get => _palBottomLine;
-				set => _palBottomLine = Math.Min(310, Math.Max(value, 192));
-			}
-
-			[DisplayName("Background Color")]
-			[DefaultValue(typeof(Color), "Black")]
-			public Color BackgroundColor { get; set; }
-
-			public A2600Settings Clone()
-				=> (A2600Settings)MemberwiseClone();
-
-			public A2600Settings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
 		}
 
 		[CoreSettings]
@@ -150,26 +39,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			[Description("The type of controller plugged into the second controller port")]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public Atari2600ControllerTypes Port2 { get; set; } = Atari2600ControllerTypes.Joystick;
-
-			[DisplayName("Black and White Mode")]
-			[Description("Set the TV Type switch on the console to B&W or Color.  This only affects the displayed image if the game supports it.")]
-			[DefaultValue(false)]
-			public bool BW { get; set; }
-
-			[DisplayName("Left Difficulty")]
-			[Description("Set the Left Difficulty switch on the console")]
-			[DefaultValue(true)]
-			public bool LeftDifficulty { get; set; }
-
-			[DisplayName("Right Difficulty")]
-			[Description("Set the Right Difficulty switch on the console")]
-			[DefaultValue(true)]
-			public bool RightDifficulty { get; set; }
-
-			[DisplayName("Super Charger BIOS Skip")]
-			[Description("On Super Charger carts, this will skip the BIOS intro")]
-			[DefaultValue(false)]
-			public bool FastScBios { get; set; }
 
 			public CInterface.InitSettings GetNativeSettings(GameInfo game)
 			{
