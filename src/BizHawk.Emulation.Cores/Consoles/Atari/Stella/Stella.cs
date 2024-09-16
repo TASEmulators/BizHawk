@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 					_settings = lp.Settings ?? new A2600Settings();
 
 					_romfile = lp.Roms[0].RomData;
-					var initResult = Core.stella_init("rom.a26", LoadCallback, _syncSettings.GetNativeSettings(lp.Game));
+					var initResult = Core.stella_init("rom.a26", _loadCallback, _syncSettings.GetNativeSettings(lp.Game));
 
 					if (!initResult) throw new Exception($"{nameof(Core.stella_init)}() failed");
 
