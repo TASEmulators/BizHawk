@@ -351,6 +351,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private int HSYNCCounter;
 
+		/// <summary>
+		/// True when the frame has ended
+		/// </summary>
+		public bool FrameEnd;
+
 
 		public GateArray(CPCBase machine, GateArrayType gateArrayType)
 		{
@@ -424,6 +429,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// increment the vertical scanline counter
 			_verScanlineCounter++;
+			_horCharCounter = 0;
 		}
 
 		/// <summary>
@@ -433,7 +439,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			GA_VSYNC = true;
 			HSYNCCounter = 0;
-			_horCharCounter = 0;
+			//_horCharCounter = 0;
 
 			//CRT_VSYNC_Pending = true;
 		}
@@ -450,6 +456,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// reset the frame clock counter
 			GAClockCounter = -1;
+			FrameEnd = true;
 
 			// interrupts should be syncronised with the start of the frame now (i.e. InterruptCounter = 0)
 			// CRT beam position should be at the start of the display area
@@ -596,6 +603,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						CPU.ExecuteOne();
 					}
 
+					
+
 					break;
 			}
 
@@ -607,9 +616,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				// start of a new character (or end of the old one if you like).
 				// increment the horizontal character counter
 				_horCharCounter++;
+				
 			}
 
 			_clockCounter++;
+			GAClockCounter++;
 
 			// enforce 4-bit wraparound
 			_clockCounter &= 0x0F;			
@@ -638,7 +649,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				_HSYNCWidthCounter++;
 
-				if (_HSYNCWidthCounter > 3)
+				if (_HSYNCWidthCounter < 3)
 				{
 					// CSYNC (HSYNC + VSYNC) is sent to the CRT 2µs after the start of the GA HSYNC
 					CRT_HSYNC = false;
@@ -652,7 +663,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					// HSYNC width is 4µs wide
 					CRT_HSYNC = false;
 				}
-			}	
+			}
+			else
+			{
+				_HSYNCWidthCounter = 0;
+			}
 		}
 
 		/// <summary>
@@ -667,6 +682,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			var vPos = _verScanlineCounter * 2;
 			var bufferPos = (vPos * MAX_SCREEN_WIDTH_PIXELS) + hPos;
 
+			int pen = 0;
 			int colour = 0;
 
 			// https://www.cpcwiki.eu/index.php/Gate_Array#CSYNC_signal
@@ -676,10 +692,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// When CRTC HSYNC is active, the Gate Array immediately outputs the palette colour black.
 			// If the HSYNC is set to 14 characters then black will be output for 14µs.
-			if (CRT_HSYNC || GA_VSYNC)
+			if (GA_VSYNC)
 			{
 				// gate array outputs true black (not affected by any luminosity settings)
-				colour = Colors.ARGB(0x00, 0x00, 0x00);
+				colour = CPCFirmwarePalette[7];
+			}
+			else if (CRT_HSYNC)
+			{
+				// gate array outputs black
+				colour = CPCFirmwarePalette[14];
 			}
 			else if (CRTC.DISPTMG)
 			{
@@ -700,7 +721,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						if (pixelPos < 4)
 						{
 							// pixel 0
-							colour = 
+							pen = 
 								((byteToUse & 0x80) >> 7) |
 								((byteToUse & 0x08) >> 2) |
 								((byteToUse & 0x20) >> 3) |
@@ -709,12 +730,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						else
 						{
 							// pixel 1
-							colour =
+							pen =
 								((byteToUse & 0x40) >> 6) |
 								((byteToUse & 0x04) >> 1) |
 								((byteToUse & 0x10) >> 2) |
 								((byteToUse & 0x01) << 3);
 						}
+
+						colour = CPCHardwarePalette[_colourRegisters[pen]];
 
 						break;
 
@@ -732,28 +755,30 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							case 0:
 							case 1:
 								// pixel 0
-								colour = ((byteToUse & 0x80) >> 7) | ((byteToUse & 0x08) >> 2);
+								pen = ((byteToUse & 0x80) >> 7) | ((byteToUse & 0x08) >> 2);
 								break;
 
 							case 2:
 							case 3:
 								// pixel 1
-								colour = ((byteToUse & 0x40) >> 6) | ((byteToUse & 0x04) >> 1);
+								pen = ((byteToUse & 0x40) >> 6) | ((byteToUse & 0x04) >> 1);
 								break;
 
 							case 4:
 							case 5:
 								// pixel 2
-								colour = ((byteToUse & 0x20) >> 5) | (byteToUse & 0x02);
+								pen = ((byteToUse & 0x20) >> 5) | (byteToUse & 0x02);
 								break;
 
 							case 6:
 							case 7:
 								// pixel 3
-								colour = ((byteToUse & 0x10) >> 4) | ((byteToUse & 0x01) << 1);
+								pen = ((byteToUse & 0x10) >> 4) | ((byteToUse & 0x01) << 1);
 								break;
 						}
-						
+
+						colour = CPCHardwarePalette[_colourRegisters[pen]];
+
 						break;
 
 					// Mode 2, 1-bit per pixel, 640x200 resolution, 2 colours
@@ -780,15 +805,17 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						if (pixelPos < 4)
 						{
 							// pixel 0
-							colour =
+							pen =
 								((byteToUse & 0x80) >> 7) | ((byteToUse & 0x08) >> 2);
 						}
 						else
 						{
 							// pixel 1
-							colour =
+							pen =
 								((byteToUse & 0x40) >> 6) | ((byteToUse & 0x04) >> 1);
 						}
+
+						colour = CPCHardwarePalette[_colourRegisters[pen]];
 
 						break;
 				}
@@ -923,15 +950,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Initial framebuffer that the gate array will output to
 		/// This will include HSYNC and VSYNC timings (which we will trim afterwards)
 		/// </summary>
-		private int[] _frameBuffer = new int[MAX_SCREEN_WIDTH_PIXELS * TOTAL_DISPLAY_SCANLINES * 2];
+		private int[] _frameBuffer = new int[MAX_SCREEN_WIDTH_PIXELS * TOTAL_DISPLAY_SCANLINES];
 
 
-		public int BackgroundColor => CPCHardwarePalette[1];
+		public int BackgroundColor => CPCFirmwarePalette[4];
 		public int VsyncNumerator => 16_000_000;		// pixel clock
 		public int VsyncDenominator => 319_488;			// 1024 * 312
 
 		public int BufferWidth => MAX_SCREEN_WIDTH_PIXELS;
-		public int BufferHeight => TOTAL_DISPLAY_SCANLINES * 2;
+		public int BufferHeight => TOTAL_DISPLAY_SCANLINES;
 		public int VirtualWidth => BufferWidth;
 		public int VirtualHeight => BufferHeight;
 

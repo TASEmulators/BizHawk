@@ -131,7 +131,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			PollInput();
 
-			while (GateArray.GAClockCounter >= 0)
+			GateArray.GAClockCounter = 0;
+			GateArray.FrameEnd = false;
+
+			while (!GateArray.FrameEnd)
 			{
 				GateArray.Clock();
 
