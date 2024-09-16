@@ -1,6 +1,7 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using System.Collections;
+using System.ComponentModel.Design;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -445,7 +446,55 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// DISPTMG Active Display Skew
+		/// CRTC-type vertical total independent helper function
+		/// </summary>
+		private int R4_VerticalTotal
+		{
+			get
+			{
+				int vt = Register[R4_V_TOTAL];
+				return vt;
+			}
+		}
+
+		/// <summary>
+		/// CRTC-type vertical total adjust independent helper function
+		/// </summary>
+		private int R5_VerticalTotalAdjust
+		{
+			get
+			{
+				int vta = Register[R5_V_TOTAL_ADJUST];
+				return vta;
+			}
+		}
+
+		/// <summary>
+		/// CRTC-type vertical displayed independent helper function
+		/// </summary>
+		private int R6_VerticalDisplayed
+		{
+			get
+			{
+				int vd = Register[R6_V_DISPLAYED];
+				return vd;
+			}
+		}
+
+		/// <summary>
+		/// CRTC-type vertical sync position independent helper function
+		/// </summary>
+		private int R7_VerticalSyncPosition
+		{
+			get
+			{
+				int vsp = Register[R7_V_SYNC_POS];
+				return vsp;
+			}
+		}
+
+		/// <summary>
+		/// CRTC-type DISPTMG Active Display Skew helper function
 		/// </summary>
 		private int R8_Skew
 		{
@@ -476,7 +525,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// Interlace
+		/// CRTC-type Interlace Mode helper function
 		/// </summary>
 		private int R8_Interlace
 		{
@@ -485,12 +534,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				int interlace = 0;
 				switch (_crtcType)
 				{
-					// 0 = Non-interlace
-					// 1 = Interlace SYNC Raster Scan
-					// 2 = Interlace SYNC and Video Raster Scan
+					
 					case 0:
 					case 1:
 					case 2:
+						// 0 = Non-interlace
+						// 1 = Interlace SYNC Raster Scan
+						// 2 = Interlace SYNC and Video Raster Scan
 						interlace = Register[R8_INTERLACE_MODE] & 0x03;
 						if (!interlace.Bit(0))
 						{
@@ -501,6 +551,18 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						break;
 				}
 				return interlace;
+			}
+		}
+
+		/// <summary>
+		/// Max Scanlines
+		/// </summary>
+		private int R9_MaxScanline
+		{
+			get
+			{
+				int max = Register[R9_MAX_SL_ADDRESS];
+				return max;
 			}
 		}
 
@@ -609,19 +671,200 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		// persistent control signals
 		private bool latch_hdisp;
 		private bool latch_vdisp;
+		private bool latch_idisp;
+
 		private bool latch_hsync;
 		private bool latch_vadjust;
 		private bool latch_skew;
+
+		private bool hclock;
+		private bool hhclock;
+		private bool hend;
+		private bool hsend;
+
 		private int r_addr;
 		private bool adjusting;
 		private int field;
+		
 
 		/// <summary>
 		/// CRTC is clocked by the gatearray at 1MHz (every 16 GA clocks / pixel clocks)
 		/// </summary>
 		public void Clock()
 		{
-			// TODO: Implement CRTC clocking
+			if (_inReset > 0)
+			{
+				// reset takes a whole CRTC clock cycle
+				_inReset--;
+
+				HCC = 0;
+				HSC = 0;
+				VCC = 0;
+				VSC = 0;
+				VLC = 0;
+				VTAC = 0;
+
+				// set regs to default
+				for (int i = 0; i < 18; i++)
+					Register[i] = RegDefaults[i];
+
+				return;
+			}
+			else
+				_inReset = -1;
+
+			/**********************************/
+			/* CLK - Linear Address Generator */
+			/**********************************/
+
+			// running the LAG before the other stuff so that initial addressing is correct
+			if (VCC == 0)
+			{
+				r_addr = (Register[R12_START_ADDR_H] << 8) | Register[R13_START_ADDR_L];
+			}
+
+			_LA = r_addr + HCC;
+			_RA = VLC;
+
+			/*****************************/
+			/* CLK - Horizontal Counters */
+			/*****************************/
+
+			if (HCC == R0_HorizontalTotal)
+			{
+				// H-Clock is generated
+				hclock = true;
+				// H-Display is active
+				latch_hdisp = true;
+			}
+
+			if (HCC == (R0_HorizontalTotal / 2))
+			{
+				// HH-Clock is generated
+				hhclock = true;
+			}
+
+			if (HCC == R1_HorizontalDisplayed - 1)
+			{
+				// H-Display is made inactive
+				latch_hdisp = false;
+				// HEND is generated
+				hend = true;
+			}
+
+			if (HCC == R2_HorizontalSyncPosition - 1)
+			{
+				// HSYNC is generated				
+				HSYNC = true;
+			}
+
+			// clock the horiz char counter
+			HCC++;
+
+			if (HSYNC)
+			{
+				// HSYNC also triggers CE on the horizontal sync width counter which means it can start counting with every CLK
+				if (HSC == R3_HorizontalSyncWidth - 1)
+				{
+					// HSC is reset
+					HSC = 0;
+					// end of HSYNC - start of displayable area again
+					HSYNC = false;
+					// vertical control is clocked
+					hsend = true;
+				}
+				else
+				{
+					// clock the horizontal sync width counter
+					HSC++;
+				}
+			}
+
+			/******************************/
+			/* H-CLOCK - Vertical Control */
+			/******************************/
+
+			if (hclock)
+			{
+				// hclock is a single clock, not latched
+				hclock = false;				
+
+				// hclock clocks the scanline counter
+				if (VLC == R9_MaxScanline)
+				{
+					// linear address generator is clocked
+					//todo
+
+					// character row counter is clocked
+					if (VCC == R6_VerticalDisplayed - 1)
+					{
+						// start of border
+						latch_vdisp = false;
+					}
+
+					if (VCC == R7_VerticalSyncPosition - 1)
+					{
+						// start of VSYNC
+						VSYNC = true;
+					}
+
+					if (VCC == R4_VerticalTotal - 1)
+					{
+						// start of addressable display
+						latch_vdisp = true;
+
+						// vertical control is clocked
+						//todo
+
+						// vertical character counter is reset
+						VCC = 0;
+
+						// VSYNC disabled
+						VSYNC = false;
+					}
+					else
+					{
+						VCC++;
+					}					
+
+					// scanline counter reset (via an OR gate with the LAG)
+					VLC = 0;
+				}
+				else
+				{
+					// clock the vertical scanline counter
+					VLC++;
+				}
+
+				if (hhclock)
+				{
+					// need to work out what to do here
+					hhclock = false;
+				}
+
+				HCC = 0;
+			}
+
+
+			// DISPTMG Generation
+			if (latch_hdisp || latch_vdisp)
+			{
+				// HSYNC output pin is fed through a NOR gate with either 2 or 3 inputs
+				// - H Display
+				// - V Display
+				// - R8 DISPTMG Skew (only on certain CRTC types)
+				DISPTMG = true;
+			}
+			else
+			{
+				DISPTMG = false;
+			}
+		}
+
+
+		private void HClock()
+		{
+
 		}
 
 		/// <summary>
@@ -1027,17 +1270,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public void Reset()
 		{
-			_inReset = 1;
-			HCC = 0;
-			HSC = 0;
-			VCC = 0;
-			VSC = 0;			
-			VLC = 0;
-			VTAC = 0;
-
-			// set regs to default
-			for (int i = 0; i < 18; i++)
-				Register[i] = RegDefaults[i];
+			_inReset = 1;			
 		}
 
 		public void SyncState(Serializer ser)

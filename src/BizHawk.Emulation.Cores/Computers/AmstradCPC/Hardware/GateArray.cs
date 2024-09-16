@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// http://www.cpcwiki.eu/index.php/Gate_Array
 	/// https://web.archive.org/web/20170612081209/http://www.grimware.org/doku.php/documentations/devices/gatearray
 	/// http://bread80.com/2021/06/03/understanding-the-amstrad-cpc-video-ram-and-gate-array-subsystem/
+	/// https://cpctech.cpcwiki.de/docs/crtcnew.html
 	/// </summary>
 	public class GateArray : IPortIODevice, IVideoProvider
 	{
@@ -922,7 +923,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Initial framebuffer that the gate array will output to
 		/// This will include HSYNC and VSYNC timings (which we will trim afterwards)
 		/// </summary>
-		private int[] _frameBuffer = new int[MAX_SCREEN_WIDTH_PIXELS * TOTAL_DISPLAY_SCANLINES];
+		private int[] _frameBuffer = new int[MAX_SCREEN_WIDTH_PIXELS * TOTAL_DISPLAY_SCANLINES * 2];
 
 
 		public int BackgroundColor => CPCHardwarePalette[1];
@@ -930,7 +931,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public int VsyncDenominator => 319_488;			// 1024 * 312
 
 		public int BufferWidth => MAX_SCREEN_WIDTH_PIXELS;
-		public int BufferHeight => TOTAL_DISPLAY_SCANLINES;
+		public int BufferHeight => TOTAL_DISPLAY_SCANLINES * 2;
 		public int VirtualWidth => BufferWidth;
 		public int VirtualHeight => BufferHeight;
 
