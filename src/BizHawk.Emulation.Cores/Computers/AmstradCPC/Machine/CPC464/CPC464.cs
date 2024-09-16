@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			CPC = cpc;
 			CPU = cpu;			
 
-			CRCT = new CRTC(0);
+			CRTC = new CRTC(0);
 			GateArray = new GateArray(this, GateArrayType.Amstrad40008);
 
 			FrameLength = GateArray.FrameLength / 4;

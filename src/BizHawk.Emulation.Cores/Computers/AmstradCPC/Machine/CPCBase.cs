@@ -53,18 +53,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The Cathode Ray Tube Controller chip
 		/// </summary>
-		//public CRCT_6845 CRCT { get; set; }
-		public CRTC CRCT { get; set; }
+		public CRTC CRTC { get; set; }
 
 		/// <summary>
 		/// The Amstrad gate array
 		/// </summary>
 		public GateArray GateArray { get; set; }
-
-		//      /// <summary>
-		//      /// Renders pixels to the screen
-		//      /// </summary>
-		//      public CRTDevice CRT { get; set; }
 
 		/// <summary>
 		/// The PPI contoller chip
@@ -310,8 +304,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync(nameof(RAMConfig), ref RAMConfig);
 			ser.Sync(nameof(RAM64KBank), ref RAM64KBank);
 
-			CRCT.SyncState(ser);
-			//CRT.SyncState(ser);
+			CRTC.SyncState(ser);
 			GateArray.SyncState(ser);
 			KeyboardDevice.SyncState(ser);
 			TapeBuzzer.SyncState(ser);

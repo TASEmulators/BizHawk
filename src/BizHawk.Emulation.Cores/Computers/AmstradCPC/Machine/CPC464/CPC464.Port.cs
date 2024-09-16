@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 			else if (DecodeINPort(port) == PortDevice.CRCT)
 			{
-				CRCT.ReadPort(port, ref result);
+				CRTC.ReadPort(port, ref result);
 			}
 			else if (DecodeINPort(port) == PortDevice.ROMSelect)
 			{
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 				else if (d == PortDevice.CRCT)
 				{
-					CRCT.WritePort(port, value);
+					CRTC.WritePort(port, value);
 				}
 				else if (d == PortDevice.ROMSelect)
 				{

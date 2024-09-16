@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	{
 		private readonly CPCBase _machine;
 		private Z80A<AmstradCPC.CpuLink> CPU => _machine.CPU;
-		private CRTC CRTC => _machine.CRCT;
+		private CRTC CRTC => _machine.CRTC;
 		private IPSG PSG => _machine.AYDevice;
 		private ushort BUSRQ => CPU.MEMRQ[CPU.bus_pntr];
 		private GateArrayType GateArrayType;

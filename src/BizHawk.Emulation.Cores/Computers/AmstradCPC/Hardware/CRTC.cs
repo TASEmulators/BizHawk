@@ -99,13 +99,21 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// This TTL compatible output is an active high signal which indicates the CRTC is providing addressing in the active Display Area.
 		/// </summary>      
-		public bool DISPTMG => _DISPTMG;
+		public bool DISPTMG
+		{
+			get => _DISPTMG;
+			private set => _DISPTMG = value;
+		}
 		private bool _DISPTMG;
 
 		/// <summary>
 		/// This TTL compatible output indicates Cursor Display to external Video Processing Logic.Active high signal. 
 		/// </summary>       
-		public bool CUDISP => _CUDISP;
+		public bool CUDISP
+		{
+			get => _CUDISP;
+			private set => _CUDISP = value;
+		}
 		private bool _CUDISP;
 
 		/// <summary>
@@ -335,6 +343,42 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Internal Status Register specific to the Type 1 UM6845R
 		/// </summary>
 		private byte StatusRegister;
+
+		/// <summary>
+		/// CRTC-type horizontal total independent helper function
+		/// </summary>
+		private int R0_HorizontalTotal
+		{
+			get
+			{
+				int ht = Register[R0_H_TOTAL];
+				return ht;
+			}
+		}
+
+		/// <summary>
+		/// CRTC-type horizontal displayed independent helper function
+		/// </summary>
+		private int R1_HorizontalDisplayed
+		{
+			get
+			{
+				int hd = Register[R1_H_DISPLAYED];
+				return hd;
+			}
+		}
+
+		/// <summary>
+		/// CRTC-type horizontal sync position independent helper function
+		/// </summary>
+		private int R2_HorizontalSyncPosition
+		{
+			get
+			{
+				int hsp = Register[R2_H_SYNC_POS];
+				return hsp;
+			}
+		}
 
 		/// <summary>
 		/// CRTC-type horizontal sync width independent helper function 
@@ -577,7 +621,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public void Clock()
 		{
-			//TODO: Implement CRTC clocking
+			// TODO: Implement CRTC clocking
 		}
 
 		/// <summary>
@@ -585,14 +629,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private void SelectRegister(int value)
 		{
-			var v = (byte)((byte)value & 0x1F);
+			var v = (byte)(value & 0x1F);
 			AddressRegister = v;
-			/*
-			if (v > 0 && v < 18)
-			{
-				AddressRegister = v;
-			}
-			*/
 		}
 
 		/// <summary>
