@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -195,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 					XNumeric.Value = XNumeric.Maximum;
 				}
 
-				_stickyXorAdapter.SetAxis(XName, (int)((float)XNumeric.Value * MultiplierX));
+				_stickyXorAdapter.SetAxis(XName, (XNumeric.Value.ConvertToF32() * MultiplierX).RoundToInt());
 				_isSet = true;
 			}
 		}
@@ -217,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 					YNumeric.Value = YNumeric.Maximum;
 				}
 
-				_stickyXorAdapter.SetAxis(YName, (int)((float)YNumeric.Value * MultiplierY));
+				_stickyXorAdapter.SetAxis(YName, (YNumeric.Value.ConvertToF32() * MultiplierY).RoundToInt());
 				_isSet = true;
 			}
 		}
