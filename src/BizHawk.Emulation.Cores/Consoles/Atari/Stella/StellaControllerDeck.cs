@@ -53,10 +53,10 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			{
 				[Atari2600ControllerTypes.Unplugged] = portNum => new UnpluggedController(portNum),
 				[Atari2600ControllerTypes.Joystick] = portNum => new StandardController(portNum),
-				[Atari2600ControllerTypes.Paddle] = portNum => new PaddleController(portNum),
-				[Atari2600ControllerTypes.BoostGrip] = portNum => new BoostGripController(portNum),
+				//[Atari2600ControllerTypes.Paddle] = portNum => new PaddleController(portNum),
+				//[Atari2600ControllerTypes.BoostGrip] = portNum => new BoostGripController(portNum),
 				[Atari2600ControllerTypes.Driving] = portNum => new DrivingController(portNum),
-				[Atari2600ControllerTypes.Keyboard] = portNum => new KeyboardController(portNum)
+				//[Atari2600ControllerTypes.Keyboard] = portNum => new KeyboardController(portNum)
 			};
 	}
 }

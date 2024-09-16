@@ -78,10 +78,10 @@ namespace BizHawk.Emulation.Cores
 			{
 				StellaControllerTypes.Unplugged => null,
 				StellaControllerTypes.Joystick => StandardController(controller),
-				StellaControllerTypes.Paddle => PaddleController(controller),
-				StellaControllerTypes.BoostGrip => BoostGripController(controller),
+				//StellaControllerTypes.Paddle => PaddleController(controller),
+				//StellaControllerTypes.BoostGrip => BoostGripController(controller),
 				StellaControllerTypes.Driving => DrivingController(controller),
-				StellaControllerTypes.Keyboard => KeyboardController(controller),
+				//StellaControllerTypes.Keyboard => KeyboardController(controller),
 				_ => null
 			};
 		}

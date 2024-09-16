@@ -9,10 +9,10 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 	{
 		Unplugged,
 		Joystick,
-		Paddle,
-		BoostGrip,
+		//Paddle,
+		//BoostGrip,
 		Driving,
-		Keyboard
+		//Keyboard
 	}
 
 	/// <summary>
@@ -304,11 +304,6 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		}
 
 		public ControllerDefinition Definition { get; }
-
-		public void SyncState(Serializer ser)
-		{
-			// Nothing todo, I think
-		}
 
 		public int PortNum { get; }
 
