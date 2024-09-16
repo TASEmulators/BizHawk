@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-        private bool _leftDifficultyToggled;
+		private bool _leftDifficultyToggled;
 		private bool _rightDifficultyToggled;
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)

@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 				var src = IntPtr.Zero;
 				Core.stella_get_video(out var width, out var height, out _, ref src);
 
-                BufferWidth = width;
+				BufferWidth = width;
 				BufferHeight = height;
 
 				if (_vidBuff.Length < BufferWidth * BufferHeight)

@@ -6,12 +6,11 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 {
 	public partial class Stella
 	{
-		internal IMemoryDomains MemoryDomains;
-		private uint _cartMemSize;
+		private IMemoryDomains MemoryDomains;
 
 		private void SetupMemoryDomains()
 		{
-			_cartMemSize = Core.stella_get_cartram_size();
+			var cartMemSize = Core.stella_get_cartram_size();
 			var mainRamAddress = IntPtr.Zero;
 			Core.stella_get_mainram_ptr(ref mainRamAddress);
 
@@ -42,11 +41,11 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 					1)
 			};
 
-			if (_cartMemSize > 0)
+			if (cartMemSize > 0)
 			{
 				domains.Add(new MemoryDomainDelegate(
 					"Cart Ram",
-					_cartMemSize,
+					cartMemSize,
 					MemoryDomain.Endian.Little,
 					addr => Core.stella_peek_cartram((uint)addr),
 					(addr, value) => Core.stella_poke_cartram((uint)addr, value),
