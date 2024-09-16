@@ -7,9 +7,9 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 	{
 		public int[] GetVideoBuffer() => _vidBuff;
 
-		public int VirtualWidth => 160;
+		public int VirtualWidth => Region == DisplayType.NTSC ? 275 : 320;
 
-		public int VirtualHeight => 192;
+		public int VirtualHeight => BufferHeight;
 
 		public int BufferWidth { get; private set; }
 
