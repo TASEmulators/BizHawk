@@ -56,5 +56,20 @@ namespace BizHawk.Tests.Client.Common.config
 				}
 			}
 		}
+
+		[TestMethod]
+		public void AssertNoConflictingPreferenceInGroup()
+		{
+			foreach(var (systemIds, cores) in CoreInventory.Instance.SystemGroups.Where(tuple => tuple.CoreNames.Count > 1))
+			{
+				var preferredCoreForGroup = DefaultCorePrefDict[systemIds[0]];
+				foreach (var systemId in systemIds)
+				{
+					var preferredCore = DefaultCorePrefDict[systemId];
+
+					Assert.AreEqual(preferredCoreForGroup, preferredCore, $"Default core preference for {systemId} does not match the preferred core for the whole group ({string.Join(" | ", systemIds)})");
+				}
+			}
+		}
 	}
 }
