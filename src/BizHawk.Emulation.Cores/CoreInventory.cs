@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// create a core inventory, collecting all IEmulators from some assemblies
 		/// </summary>
-		public CoreInventory(IEnumerable<IEnumerable<Type>> assys)
+		public CoreInventory(IEnumerable<IEnumerable<Type>> assemblies)
 		{
 			var systemsFlat = new Dictionary<Type, Core>();
 			void ProcessConstructor(Type type, CoreConstructorAttribute consAttr, CoreAttribute coreAttr, ConstructorInfo cons)
@@ -171,23 +171,20 @@ namespace BizHawk.Emulation.Cores
 				_systems.GetValueOrPutNew(consAttr.System).Add(core);
 				systemsFlat[type] = core;
 			}
-			foreach (var assy in assys)
+			foreach (var type in assemblies.SelectMany(assembly => assembly).OrderBy(type => type.AssemblyQualifiedName))
 			{
-				foreach (var typ in assy)
+				if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IEmulator)))
 				{
-					if (!typ.IsAbstract && typ.GetInterfaces().Contains(typeof(IEmulator)))
+					var coreAttr = type.GetCustomAttributes(typeof(CoreAttribute), false);
+					if (coreAttr.Length != 1)
+						throw new InvalidOperationException($"{nameof(IEmulator)} {type} without {nameof(CoreAttribute)}s!");
+					var cons = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
+						.Where(c => c.GetCustomAttributes(typeof(CoreConstructorAttribute), false).Length > 0);
+					foreach(var con in cons)
 					{
-						var coreAttr = typ.GetCustomAttributes(typeof(CoreAttribute), false);
-						if (coreAttr.Length != 1)
-							throw new InvalidOperationException($"{nameof(IEmulator)} {typ} without {nameof(CoreAttribute)}s!");
-						var cons = typ.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
-							.Where(c => c.GetCustomAttributes(typeof(CoreConstructorAttribute), false).Length > 0);
-						foreach(var con in cons)
+						foreach (var consAttr in con.GetCustomAttributes(typeof(CoreConstructorAttribute), false).Cast<CoreConstructorAttribute>())
 						{
-							foreach (var consAttr in con.GetCustomAttributes(typeof(CoreConstructorAttribute), false).Cast<CoreConstructorAttribute>())
-							{
-								ProcessConstructor(typ, consAttr, (CoreAttribute)coreAttr[0], con);
-							}
+							ProcessConstructor(type, consAttr, (CoreAttribute)coreAttr[0], con);
 						}
 					}
 				}
