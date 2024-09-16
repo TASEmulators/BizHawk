@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 		public static readonly IReadOnlyList<(string[] AppliesTo, string[] CoreNames)> CorePickerUIData = new List<(string[], string[])>
 		{
 			([ VSystemID.Raw.A26 ],
-				[ CoreNames.Stella, CoreNames.Atari2600Hawk ]),
+				[ CoreNames.Atari2600Hawk, CoreNames.Stella ]),
 			([ VSystemID.Raw.Satellaview ],
 				[ CoreNames.Bsnes115, CoreNames.SubBsnes115 ]),
 			([ VSystemID.Raw.GB, VSystemID.Raw.GBC ],
@@ -52,7 +52,6 @@ namespace BizHawk.Client.Common
 				[ CoreNames.Snes9X, CoreNames.Bsnes115, CoreNames.SubBsnes115, CoreNames.Faust, CoreNames.Bsnes ]),
 			([ VSystemID.Raw.TI83 ],
 				[ CoreNames.Emu83, CoreNames.TI83Hawk ]),
-
 		};
 
 		public static Dictionary<string, string> GenDefaultCorePreferences()
