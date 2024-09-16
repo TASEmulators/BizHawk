@@ -32,13 +32,13 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			[DisplayName("Port 1 Device")]
 			[Description("The type of controller plugged into the first controller port")]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public Atari2600ControllerTypes Port1 { get; set; } = Atari2600ControllerTypes.Joystick;
+			public Atari2600ControllerTypes Port1 { get; set; }
 
 			[DefaultValue(Atari2600ControllerTypes.Joystick)]
 			[DisplayName("Port 2 Device")]
 			[Description("The type of controller plugged into the second controller port")]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public Atari2600ControllerTypes Port2 { get; set; } = Atari2600ControllerTypes.Joystick;
+			public Atari2600ControllerTypes Port2 { get; set; }
 
 			public CInterface.InitSettings GetNativeSettings(GameInfo game)
 			{
