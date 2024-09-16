@@ -11,8 +11,7 @@ public sealed class TernaryInferredTypeMismatchAnalyzer : DiagnosticAnalyzer
 {
 	private static readonly DiagnosticDescriptor DiagTernaryInferredTypeMismatch = new(
 		id: "BHI1210",
-		title: "Inferred type of bramches of ternary expression in interpolation don't match",
-//		messageFormat: "Inferred type of ternary expression is object (missing ToString call?)",
+		title: "Inferred type of branches of ternary expression in interpolation don't match",
 		messageFormat: "{0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Warning,
