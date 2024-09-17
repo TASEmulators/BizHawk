@@ -743,46 +743,38 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveAsTas()
 		{
 			_autosaveTimer.Stop();
-			MainForm.DoWithTempMute(() =>
+
+			var filename = CurrentTasMovie.Filename;
+			if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
 			{
-				ClearLeftMouseStates();
-				var filename = CurrentTasMovie.Filename;
-				if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
-				{
-					filename = SuggestedTasProjName();
-				}
+				filename = SuggestedTasProjName();
+			}
 
-				FileInfo file;
-				do
-				{
-					file = SaveFileDialog(
-						currentFile: filename,
-						path: Config!.PathEntries.MovieAbsolutePath(),
-						TAStudioProjectsFSFilterSet,
-						this);
-				}
-				while (file?.FullName == DefaultTasProjName()); // disallow saving as this reserved filename
+			var fileInfo = SaveFileDialog(
+				currentFile: filename,
+				path: Config!.PathEntries.MovieAbsolutePath(),
+				TAStudioProjectsFSFilterSet,
+				this);
 
-				if (file != null)
-				{
-					CurrentTasMovie.Filename = file.FullName;
-					MessageStatusLabel.Text = "Saving...";
-					Cursor = Cursors.WaitCursor;
-					Update();
-					CurrentTasMovie.Save();
-					Settings.RecentTas.Add(CurrentTasMovie.Filename);
-					MessageStatusLabel.Text = "File saved.";
-					Cursor = Cursors.Default;
-				}
+			if (fileInfo != null)
+			{
+				MessageStatusLabel.Text = "Saving...";
+				MessageStatusLabel.Owner.Update();
+				Cursor = Cursors.WaitCursor;
+				CurrentTasMovie.Filename = fileInfo.FullName;
+				CurrentTasMovie.Save();
+				Settings.RecentTas.Add(CurrentTasMovie.Filename);
+				MessageStatusLabel.Text = "File saved.";
+				Cursor = Cursors.Default;
+			}
 
-				// keep insisting
-				if (Settings.AutosaveInterval > 0)
-				{
-					_autosaveTimer.Start();
-				}
+			if (Settings.AutosaveInterval > 0)
+			{
+				_autosaveTimer.Start();
+			}
 
-				MainForm.UpdateWindowTitle();
-			});
+			UpdateWindowTitle(); // changing the movie's filename does not flag changes, so we need to ensure the window title is always updated
+			MainForm.UpdateWindowTitle();
 		}
 
 		protected override string WindowTitle
