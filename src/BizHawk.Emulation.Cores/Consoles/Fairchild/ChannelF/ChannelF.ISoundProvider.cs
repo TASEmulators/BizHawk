@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	{
 		private const double SAMPLE_RATE = 44100;
 		private const double DECAY = 0.998;
-		private const int RAMP_UP_TIME = 10;
+		private const int RAMP_UP_TIME = 1;
 
 		private int _tone;
 		private short[] _sampleBuffer;
