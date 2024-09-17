@@ -311,18 +311,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Settings.AutosaveAsBk2)
 				{
-					SaveBk2BackupMenuItem_Click(sender, e);
+					SaveTas(saveAsBk2: true, saveBackup: true);
 				}
 				else
 				{
-					SaveBackupMenuItem_Click(sender, e);
+					SaveTas(saveBackup: true);
 				}
 			}
 			else
 			{
 				if (Settings.AutosaveAsBk2)
 				{
-					ToBk2MenuItem_Click(sender, e);
+					SaveTas(saveAsBk2: true);
 				}
 				else
 				{
@@ -712,31 +712,36 @@ namespace BizHawk.Client.EmuHawk
 				$"{Game.FilesystemSafeName()}.{MovieService.TasMovieExtension}");
 		}
 
-		private void SaveTas()
+		private void SaveTas(bool saveAsBk2 = false, bool saveBackup = false)
 		{
-			if (string.IsNullOrEmpty(CurrentTasMovie.Filename)
-				|| CurrentTasMovie.Filename == DefaultTasProjName())
-			{
-				SaveAsTas();
-			}
-			else
-			{
-				_autosaveTimer?.Stop();
-				MainForm.DoWithTempMute(() =>
-				{
-					MessageStatusLabel.Text = "Saving...";
-					Cursor = Cursors.WaitCursor;
-					Update();
-					CurrentTasMovie.Save();
-					if (Settings.AutosaveInterval > 0)
-					{
-						_autosaveTimer?.Start();
-					}
+			if (string.IsNullOrEmpty(CurrentTasMovie.Filename) || CurrentTasMovie.Filename == DefaultTasProjName()) return;
 
-					MessageStatusLabel.Text = "File saved.";
-					Settings.RecentTas.Add(CurrentTasMovie.Filename);
-					Cursor = Cursors.Default;
-				});
+			_autosaveTimer.Stop();
+			MessageStatusLabel.Text = saveBackup
+				? "Saving backup..."
+				: "Saving...";
+			MessageStatusLabel.Owner.Update();
+			Cursor = Cursors.WaitCursor;
+
+			IMovie movieToSave = CurrentTasMovie;
+			if (saveAsBk2)
+			{
+				movieToSave = CurrentTasMovie.ToBk2();
+				movieToSave.Attach(Emulator);
+			}
+
+			if (saveBackup)
+				movieToSave.SaveBackup();
+			else
+				movieToSave.Save();
+
+			MessageStatusLabel.Text = saveBackup
+				? $"Backup .{(saveAsBk2 ? MovieService.StandardMovieExtension : MovieService.TasMovieExtension)} saved to \"Movie backups\" path."
+				: "File saved.";
+			Cursor = Cursors.Default;
+			if (Settings.AutosaveInterval > 0)
+			{
+				_autosaveTimer.Start();
 			}
 		}
 

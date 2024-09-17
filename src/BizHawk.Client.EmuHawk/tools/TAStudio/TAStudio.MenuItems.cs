@@ -21,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			SaveBackupMenuItem.Enabled = !string.IsNullOrWhiteSpace(CurrentTasMovie.Filename) && CurrentTasMovie.Filename != DefaultTasProjName();
 			saveSelectionToMacroToolStripMenuItem.Enabled =
 				placeMacroAtSelectionToolStripMenuItem.Enabled =
 				recentMacrosToolStripMenuItem.Enabled =
@@ -114,10 +115,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveTasMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveTas();
+			if (string.IsNullOrEmpty(CurrentTasMovie.Filename) || CurrentTasMovie.Filename == DefaultTasProjName())
+			{
+				SaveAsTas();
+			}
+			else
+			{
+				SaveTas();
+			}
 			if (Settings.BackupPerFileSave)
 			{
-				SaveBackupMenuItem_Click(sender, e);
+				SaveTas(saveBackup: true);
 			}
 		}
 
@@ -126,53 +134,18 @@ namespace BizHawk.Client.EmuHawk
 			SaveAsTas();
 			if (Settings.BackupPerFileSave)
 			{
-				SaveBackupMenuItem_Click(sender, e);
+				SaveTas(saveBackup: true);
 			}
 		}
 
 		private void SaveBackupMenuItem_Click(object sender, EventArgs e)
 		{
-			if (string.IsNullOrEmpty(CurrentTasMovie.Filename)
-				|| CurrentTasMovie.Filename == DefaultTasProjName())
-			{
-				SaveAsTas();
-			}
-			else
-			{
-				_autosaveTimer.Stop();
-				MainForm.DoWithTempMute(() =>
-				{
-					MessageStatusLabel.Text = "Saving...";
-					Cursor = Cursors.WaitCursor;
-					Update();
-					CurrentTasMovie.SaveBackup();
-					if (Settings.AutosaveInterval > 0)
-					{
-						_autosaveTimer.Start();
-					}
-
-					MessageStatusLabel.Text = "Backup .tasproj saved to \"Movie backups\" path.";
-					Settings.RecentTas.Add(CurrentTasMovie.Filename);
-					Cursor = Cursors.Default;
-				});
-			}
+			SaveTas(saveBackup: true);
 		}
 
 		private void SaveBk2BackupMenuItem_Click(object sender, EventArgs e)
 		{
-			_autosaveTimer.Stop();
-			var bk2 = CurrentTasMovie.ToBk2();
-			MessageStatusLabel.Text = "Exporting to .bk2...";
-			Cursor = Cursors.WaitCursor;
-			Update();
-			bk2.SaveBackup();
-			if (Settings.AutosaveInterval > 0)
-			{
-				_autosaveTimer.Start();
-			}
-
-			MessageStatusLabel.Text = "Backup .bk2 saved to \"Movie backups\" path.";
-			Cursor = Cursors.Default;
+			SaveTas(saveAsBk2: true, saveBackup: true);
 		}
 
 		private void SaveSelectionToMacroMenuItem_Click(object sender, EventArgs e)
@@ -234,7 +207,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToBk2MenuItem_Click(object sender, EventArgs e)
 		{
-			// TODO: can we deduplicate this logic somehow? The same code with minimal changes is copy pasted like 4 times
 			_autosaveTimer.Stop();
 
 			if (Emulator.HasCycleTiming() && !CurrentTasMovie.IsAtEnd())
@@ -257,6 +229,7 @@ namespace BizHawk.Client.EmuHawk
 			if (fileInfo is not null)
 			{
 				MessageStatusLabel.Text = "Exporting to .bk2...";
+				MessageStatusLabel.Owner.Update();
 				Cursor = Cursors.WaitCursor;
 				var bk2 = CurrentTasMovie.ToBk2();
 				bk2.Filename = fileInfo.FullName;
