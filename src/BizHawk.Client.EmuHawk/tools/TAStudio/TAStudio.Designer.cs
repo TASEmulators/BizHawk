@@ -292,7 +292,6 @@ namespace BizHawk.Client.EmuHawk
 			// SaveBk2BackupMenuItem
 			// 
 			this.SaveBk2BackupMenuItem.Text = "Save Bk2 Backup";
-			this.SaveBk2BackupMenuItem.Visible = false;
 			this.SaveBk2BackupMenuItem.Click += new System.EventHandler(this.SaveBk2BackupMenuItem_Click);
 			// 
 			// RecentSubMenu
