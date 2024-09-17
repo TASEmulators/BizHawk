@@ -675,10 +675,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private void WritePixel()
 		{
-			var byteToUse = _clockCounter < 8 ? _videoData[0] : _videoData[1];
+			var vidByteIndex = _clockCounter < 8 ? 0 : 1;
+			var byteToUse = _videoData[vidByteIndex];
 			var pixelPos = _clockCounter & 0x07;
 
-			var hPos = (_horCharCounter * 16) + pixelPos;
+			var hPos = (_horCharCounter * 16) + pixelPos + (8 * vidByteIndex);
 			var vPos = _verScanlineCounter * 2;
 			var bufferPos = (vPos * MAX_SCREEN_WIDTH_PIXELS) + hPos;
 
@@ -824,7 +825,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				// display enable is inactive from the CRTC
 				// gate array outputs border colour
-				colour = CPCHardwarePalette[_colourRegisters[16]];
+				colour = CPCHardwarePalette[_colourRegisters[0]];
 			}
 
 			_frameBuffer[bufferPos] = colour;

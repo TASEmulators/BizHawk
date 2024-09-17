@@ -793,7 +793,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				if (VLC == R9_MaxScanline)
 				{
 					// linear address generator is clocked
-					//todo
+					r_addr += R1_HorizontalDisplayed;
 
 					// character row counter is clocked
 					if (VCC == R6_VerticalDisplayed - 1)
