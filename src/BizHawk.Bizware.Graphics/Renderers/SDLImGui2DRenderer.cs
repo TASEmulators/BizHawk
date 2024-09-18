@@ -131,6 +131,12 @@ namespace BizHawk.Bizware.Graphics
 							if (texId != IntPtr.Zero)
 							{
 								var userTex = (ImGuiUserTexture)GCHandle.FromIntPtr(texId).Target!;
+								// skip this draw if it's the string output draw (we execute this at arbitrary points rather)
+								if (userTex.Bitmap == _stringOutput)
+								{
+									continue;
+								}
+
 								var texBmpData = userTex.Bitmap.LockBits(
 									new(0, 0, userTex.Bitmap.Width, userTex.Bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 								try
@@ -176,6 +182,49 @@ namespace BizHawk.Bizware.Graphics
 							var brush = _resourceCache.BrushCache.GetValueOrPutNew1(stringArgs.Color);
 							_stringGraphics.TextRenderingHint = stringArgs.TextRenderingHint;
 							_stringGraphics.DrawString(stringArgs.Str, stringArgs.Font, brush, stringArgs.X, stringArgs.Y, stringArgs.Format);
+
+							// now draw the string graphics, if the next command is not another draw string command
+							if (i == cmdBuffer.Size
+								|| (DrawCallbackId)cmdBuffer[i + 1].UserCallback != DrawCallbackId.DrawString)
+							{
+								var lastCmd = cmdBuffer[cmdBuffer.Size - 1];
+								var texId = lastCmd.GetTexID();
+
+								// last command must be for drawing the string output bitmap
+								var userTex = (ImGuiUserTexture)GCHandle.FromIntPtr(texId).Target!;
+								if (userTex.Bitmap != _stringOutput)
+								{
+									throw new InvalidOperationException("Unexpected bitmap mismatch!");
+								}
+
+								var texBmpData = _stringOutput.LockBits(
+									new(0, 0, _stringOutput.Width, _stringOutput.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+								try
+								{
+									using var texSurf = new SDLSurface(texBmpData);
+									var sdlTex = SDL_CreateTextureFromSurface(sdlRenderer, texSurf.Surface);
+									if (sdlTex == IntPtr.Zero)
+									{
+										throw new($"Failed to create SDL texture from surface, SDL error: {SDL_GetError()}");
+									}
+
+									try
+									{
+										RenderCommand(sdlRenderer, sdlTex, _imGuiDrawList, lastCmd);
+									}
+									finally
+									{
+										SDL_DestroyTexture(sdlTex);
+									}
+								}
+								finally
+								{
+									_stringOutput.UnlockBits(texBmpData);
+								}
+
+								ClearStringOutput();
+							}
+
 							break;
 						}
 						default:

@@ -63,6 +63,7 @@ namespace BizHawk.Bizware.Graphics
 		protected bool _hasClearPending;
 		protected Bitmap _stringOutput;
 		protected SDGraphics _stringGraphics;
+		protected ITexture2D _stringTexture;
 		protected IRenderTarget _renderTarget;
 
 		public ImGui2DRenderer(IGL igl, ImGuiResourceCache resourceCache)
@@ -84,6 +85,8 @@ namespace BizHawk.Bizware.Graphics
 			ClearGCHandles();
 			_renderTarget?.Dispose();
 			_renderTarget = null;
+			_stringTexture?.Dispose();
+			_stringTexture = null;
 			_stringGraphics?.Dispose();
 			_stringGraphics = null;
 			_stringOutput?.Dispose();
@@ -92,7 +95,7 @@ namespace BizHawk.Bizware.Graphics
 			_imGuiDrawList = IntPtr.Zero;
 		}
 
-		private void ClearStringOutput()
+		protected void ClearStringOutput()
 		{
 			var bmpData = _stringOutput.LockBits(new(0, 0, _stringOutput.Width, _stringOutput.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			Util.UnsafeSpanFromPointer(ptr: bmpData.Scan0, length: bmpData.Stride * bmpData.Height).Clear();
@@ -206,6 +209,12 @@ namespace BizHawk.Bizware.Graphics
 							}
 							else
 							{
+								// skip this draw if it's the string output draw (we execute this at arbitrary points rather)
+								if (userTex.Bitmap == _stringOutput)
+								{
+									continue;
+								}
+
 								tempTex = _igl.LoadTexture(userTex.Bitmap);
 								_resourceCache.SetTexture(tempTex);
 								if (userTex.WantCache)
@@ -226,9 +235,11 @@ namespace BizHawk.Bizware.Graphics
 					}
 					case DrawCallbackId.DisableBlending:
 						_igl.DisableBlending();
+						EnableBlending = false;
 						break;
 					case DrawCallbackId.EnableBlendAlpha:
 						_igl.EnableBlendAlpha();
+						EnableBlending = true;
 						break;
 					case DrawCallbackId.EnableBlendNormal:
 						_igl.EnableBlendNormal();
@@ -239,6 +250,38 @@ namespace BizHawk.Bizware.Graphics
 						var brush = _resourceCache.BrushCache.GetValueOrPutNew1(stringArgs.Color);
 						_stringGraphics.TextRenderingHint = stringArgs.TextRenderingHint;
 						_stringGraphics.DrawString(stringArgs.Str, stringArgs.Font, brush, stringArgs.X, stringArgs.Y, stringArgs.Format);
+
+						// now draw the string graphics, if the next command is not another draw string command
+						if ((DrawCallbackId)cmdBuffer[i + 1].UserCallback != DrawCallbackId.DrawString)
+						{
+							var lastCmd = cmdBuffer[cmdBuffer.Size - 1];
+							var texId = lastCmd.GetTexID();
+
+							// last command must be for drawing the string output bitmap
+							var userTex = (ImGuiUserTexture)GCHandle.FromIntPtr(texId).Target!;
+							if (userTex.Bitmap != _stringOutput)
+							{
+								throw new InvalidOperationException("Unexpected bitmap mismatch!");
+							}
+
+							// we want to normal blend the text image rather than alpha blend it (matches GDI+ behavior it seems?)
+							if (EnableBlending)
+							{
+								_igl.EnableBlendNormal();
+							}
+
+							_stringTexture.LoadFrom(new BitmapBuffer(userTex.Bitmap, new()));
+							_resourceCache.SetTexture(_stringTexture);
+							_igl.DrawIndexed((int)lastCmd.ElemCount, (int)lastCmd.IdxOffset, (int)lastCmd.VtxOffset);
+
+							if (EnableBlending)
+							{
+								_igl.EnableBlendAlpha();
+							}
+
+							ClearStringOutput();
+						}
+
 						break;
 					}
 					default:
@@ -263,10 +306,12 @@ namespace BizHawk.Bizware.Graphics
 					|| _stringOutput.Width != width
 					|| _stringOutput.Height != height))
 			{
+				_stringTexture?.Dispose();
 				_stringGraphics?.Dispose();
 				_stringOutput?.Dispose();
 				_stringOutput = new(width, height, PixelFormat.Format32bppArgb);
 				_stringGraphics = SDGraphics.FromImage(_stringOutput);
+				_stringTexture = _igl.CreateTexture(width, height);
 			}
 
 			_renderTarget.Bind();
@@ -283,13 +328,18 @@ namespace BizHawk.Bizware.Graphics
 				if (_hasDrawStringCommand)
 				{
 					ClearStringOutput();
+
 					// synthesize an add image command for our string bitmap
-					if (!_pendingBlendEnable)
-					{
-						// always normal blend the string (it covers the entire image, if it was alpha that'd obscure everything else)
-						_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlendNormal, IntPtr.Zero);
-					}
-					DrawImage(_stringOutput, 0, 0);
+					// we have to do this now as the string bitmap isn't properly created until here
+					// however, the position in the command list (the end) will be a lie
+					// we'll rather just reuse the command at the end when we need to draw graphics
+					var texture = new ImGuiUserTexture { Bitmap = _stringOutput, WantCache = false };
+					var handle = GCHandle.Alloc(texture, GCHandleType.Normal);
+					_gcHandles.Add(handle);
+					_imGuiDrawList.AddImage(
+						user_texture_id: GCHandle.ToIntPtr(handle),
+						p_min: new(0, 0),
+						p_max: new(_stringOutput.Width, _stringOutput.Height));
 				}
 
 				_imGuiDrawList._PopUnusedDrawCmd();
@@ -308,6 +358,13 @@ namespace BizHawk.Bizware.Graphics
 
 		public void Discard()
 			=> ResetDrawList();
+
+		protected enum BlendState
+		{
+			NoBlending,
+			AlphaBlending,
+			NormalBlending,
+		}
 
 		protected bool EnableBlending { get; private set; }
 		private bool _pendingBlendEnable;
