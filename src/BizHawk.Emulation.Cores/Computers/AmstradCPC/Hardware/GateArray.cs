@@ -703,6 +703,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				// gate array outputs black
 				colour = CPCFirmwarePalette[14];
 			}
+			else if (!CRTC.DISPTMG)
+			{
+				// display enable is inactive from the CRTC
+				// gate array outputs border colour
+				colour = CPCHardwarePalette[2];
+			}
 			else if (CRTC.DISPTMG)
 			{
 				// display enable is active from the CRTC
@@ -790,7 +796,42 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					// Pixel Timing:	|  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
 					case 2:
 						
+						switch (pixelPos)
+						{
+							case 0:
+								pen = byteToUse.Bit(7) ? 1 : 0;
+								break;
 
+							case 1:
+								pen = byteToUse.Bit(6) ? 1 : 0;
+								break;
+
+							case 2:
+								pen = byteToUse.Bit(5) ? 1 : 0;
+								break;
+
+							case 3:
+								pen = byteToUse.Bit(4) ? 1 : 0;
+								break;
+
+							case 4:
+								pen = byteToUse.Bit(3) ? 1 : 0;
+								break;
+
+							case 5:
+								pen = byteToUse.Bit(2) ? 1 : 0;
+								break;
+
+							case 6:
+								pen = byteToUse.Bit(1) ? 1 : 0;
+								break;
+
+							case 7:
+								pen = byteToUse.Bit(0) ? 1 : 0;
+								break;
+						}
+
+						colour = CPCHardwarePalette[_colourRegisters[pen]];
 
 						break;
 
@@ -823,9 +864,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 			else
 			{
-				// display enable is inactive from the CRTC
-				// gate array outputs border colour
-				colour = CPCHardwarePalette[_colourRegisters[0]];
+				// this shouldnt happen
 			}
 
 			_frameBuffer[bufferPos] = colour;

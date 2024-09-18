@@ -1,7 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using System.Collections;
-using System.ComponentModel.Design;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -752,10 +751,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				hend = true;
 			}
 
-			if (HCC == R2_HorizontalSyncPosition - 1)
+			if (HCC == R2_HorizontalSyncPosition)
 			{
-				// HSYNC is generated				
-				HSYNC = true;
+				// on all CRTCs you cannot trigger a new HSYNC when one is ongoing
+				if (!HSYNC)
+				{
+					// HSYNC is generated				
+					HSYNC = true;
+				}
 			}
 
 			// clock the horiz char counter
@@ -802,7 +805,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						latch_vdisp = false;
 					}
 
-					if (VCC == R7_VerticalSyncPosition - 1)
+					if (VCC == R7_VerticalSyncPosition)
 					{
 						// start of VSYNC
 						VSYNC = true;
@@ -847,17 +850,17 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 
 			// DISPTMG Generation
-			if (latch_hdisp || latch_vdisp)
+			if (!latch_hdisp || !latch_vdisp)
 			{
 				// HSYNC output pin is fed through a NOR gate with either 2 or 3 inputs
 				// - H Display
 				// - V Display
 				// - R8 DISPTMG Skew (only on certain CRTC types)
-				DISPTMG = true;
+				DISPTMG = false;
 			}
 			else
 			{
-				DISPTMG = false;
+				DISPTMG = true;
 			}
 		}
 
