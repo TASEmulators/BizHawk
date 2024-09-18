@@ -359,13 +359,6 @@ namespace BizHawk.Bizware.Graphics
 		public void Discard()
 			=> ResetDrawList();
 
-		protected enum BlendState
-		{
-			NoBlending,
-			AlphaBlending,
-			NormalBlending,
-		}
-
 		protected bool EnableBlending { get; private set; }
 		private bool _pendingBlendEnable;
 
