@@ -474,12 +474,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			};
 
 			_openGLProvider.ActivateGLContext(_glContext); // SetScreenSettings will re-present the frame, so needs OpenGL context active
-			_core.SetScreenSettings(_console, ref screenSettings, out var w , out var h, out var vw, out var vh);
+			_core.SetScreenSettings(_console, ref screenSettings, out var w , out var h, out _, out _);
 
 			BufferWidth = w;
 			BufferHeight = h;
-			_glTextureProvider.VirtualWidth = vw;
-			_glTextureProvider.VirtualHeight = vh;
 			_glTextureProvider.VideoDirty = true;
 		}
 
