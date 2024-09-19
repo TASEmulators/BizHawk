@@ -387,8 +387,8 @@ namespace BizHawk.Client.Common
 		public void DrawRectangle(int x, int y, int width, int height, Color? line = null, Color? background = null, DisplaySurfaceID? surfaceID = null)
 		{
 			var r = Get2DRenderer(surfaceID);
-			var w = Math.Max(width, 1);
-			var h = Math.Max(height, 1);
+			var w = Math.Max(width, 0);
+			var h = Math.Max(height, 0);
 			// GDI+ had an off by one here, we increment width and height to preserve backwards compatibility
 			w++; h++;
 			r.DrawRectangle(line ?? _defaultForeground, x, y, w, h);

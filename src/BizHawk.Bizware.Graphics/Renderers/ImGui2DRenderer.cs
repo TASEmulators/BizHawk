@@ -425,6 +425,13 @@ namespace BizHawk.Bizware.Graphics
 			var right = x + width - 1;
 			var bottom = y + height - 1;
 
+			if (width == 1 || height == 1)
+			{
+				// width or height of 1 is just a single line
+				DrawLine(color, x, y, right, bottom);
+				return;
+			}
+
 			// top left to top right
 			DrawLine(color, x, y, right, y);
 			// top right (and 1 pixel down) to bottom right
@@ -517,29 +524,33 @@ namespace BizHawk.Bizware.Graphics
 			var p1 = new Vector2(x1, y1);
 			var p2 = new Vector2(x2, y2);
 
+			// imgui seems to have behavior which necessitate the rightmost and bottommost ends be extended to correctly draw the line (some subpixel jitter?)
+
 			if (p1.X > p2.X)
 			{
-				p1.X += 0.5f;
+				// right to left drawing, extend the beginning by 1 pixel rightwards
+				p1.X++;
 			}
 			else
 			{
-				p2.X += 0.5f;
+				// left to right drawing, extend the end by 1 pixel rightwards
+				p2.X++;
 			}
 
 			if (p1.Y > p2.Y)
 			{
-				p1.Y += 0.5f;
+				// down to up drawing, extend the beginning by 1 pixel downwards
+				p1.Y++;
 			}
 			else
 			{
-				p2.Y += 0.5f;
+				// up to down drawing, extend the end by 1 pixel downwards
+				p2.Y++;
 			}
 
-			_imGuiDrawList.AddLine(
-				p1: p1,
-				p2: p2,
-				col: (uint)color.ToArgb(),
-				thickness: RenderThickness);
+			_imGuiDrawList.PathLineTo(p1);
+			_imGuiDrawList.PathLineTo(p2);
+			_imGuiDrawList.PathStroke((uint)color.ToArgb(), 0, RenderThickness);
 		}
 
 		public void DrawPie(Color color, int x, int y, int width, int height, int startAngle, int sweepAngle)
