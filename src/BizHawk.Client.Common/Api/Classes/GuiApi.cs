@@ -273,7 +273,8 @@ namespace BizHawk.Client.Common
 
 			if (!_imageCache.TryGetValue(path, out var img))
 			{
-				img = new(Image.FromFile(path));
+				using var file = Image.FromFile(path);
+				img = new(file);
 				if (cache) _imageCache[path] = img;
 			}
 
@@ -322,7 +323,11 @@ namespace BizHawk.Client.Common
 			var r = Get2DRenderer(surfaceID);
 			r.CompositingMode = _compositingMode;
 			r.DrawImage(
-				_imageCache.GetValueOrPut(path, static i => new(Image.FromFile(i))),
+				_imageCache.GetValueOrPut(path, static i =>
+				{
+					using var file = Image.FromFile(i);
+					return new(file);
+				}),
 				new Rectangle(dest_x, dest_y, dest_width ?? source_width, dest_height ?? source_height),
 				source_x,
 				source_y,
