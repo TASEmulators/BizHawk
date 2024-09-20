@@ -81,6 +81,7 @@ namespace BizHawk.Client.Common
 					WatchDisplayType.FixedPoint_20_12 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 4096.0),
 					WatchDisplayType.FixedPoint_16_16 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 65536.0),
 					WatchDisplayType.Float => NumberExtensions.ReinterpretAsUInt32(float.Parse(value, NumberFormatInfo.InvariantInfo)),
+					WatchDisplayType.Binary => Convert.ToUInt32(value, 2),
 					_ => 0
 				};
 
