@@ -592,7 +592,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Sound.StartSound();
-			InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 			CheatList = new CheatCollection(this, Config.Cheats);
 			CheatList.Changed += Tools.UpdateCheatRelatedTools;
@@ -1037,8 +1036,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				InputManager.StickyXorAdapter.ClearStickies();
-				InputManager.AutofireStickyXorAdapter.ClearStickies();
+				InputManager.StickyHoldController.ClearStickies();
+				InputManager.StickyAutofireController.ClearStickies();
 			}
 		}
 
@@ -3059,7 +3058,7 @@ namespace BizHawk.Client.EmuHawk
 					InputManager.AutoFireController.IncrementStarts();
 				}
 
-				InputManager.AutofireStickyXorAdapter.IncrementLoops(Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame);
+				InputManager.StickyAutofireController.IncrementLoops(Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame);
 
 				PressFrameAdvance = false;
 
@@ -3823,8 +3822,6 @@ namespace BizHawk.Client.EmuHawk
 					DisplayManager.Blank();
 					CreateRewinder();
 
-					ClearHolds();
-
 					RewireSound();
 					Tools.UpdateCheatRelatedTools(null, null);
 					if (!MovieSession.NewMovieQueued && Config.AutoLoadLastSaveSlot && HasSlot(Config.SaveSlot))
@@ -3981,7 +3978,6 @@ namespace BizHawk.Client.EmuHawk
 				Game = GameInfo.NullInstance;
 				Tools.Restart(Config, Emulator, Game);
 				RewireSound();
-				ClearHolds();
 				DisplayManager.UpdateGlobals(Config, Emulator);
 				InputManager.SyncControls(Emulator, MovieSession, Config);
 				Tools.UpdateCheatRelatedTools(null, null);

@@ -182,11 +182,11 @@ namespace BizHawk.Client.Common
 		}
 
 		private string InputStrCurrent()
-			=> MakeStringFor(_inputManager.AutofireStickyXorAdapter);
+			=> MakeStringFor(_movieSession.MovieIn);
 
-		// returns an input string for inputs pressed by the user that are not getting unpressed by the sticky adapters
-		private string InputStrUser()
-			=> MakeStringFor(_inputManager.AutofireStickyXorAdapter.And(_inputManager.StickyXorAdapter.Source));
+		// returns an input string for inputs pressed solely by the sticky controller
+		private string InputStrSticky()
+			=> MakeStringFor(_movieSession.MovieIn.And(_inputManager.StickyController));
 
 		private static string MakeStringFor(IController controller)
 		{
@@ -198,7 +198,7 @@ namespace BizHawk.Client.Common
 			if (_movieSession.Movie.IsRecording())
 			{
 				var movieInput = _movieSession.Movie.GetInputState(_emulator.Frame - 1);
-				return MakeStringFor(_inputManager.AutofireStickyXorAdapter.And(movieInput));
+				return MakeStringFor(_movieSession.MovieIn.And(movieInput));
 			}
 
 			return "";
@@ -256,7 +256,7 @@ namespace BizHawk.Client.Common
 
 					var previousInput = InputStrMovie();
 					var currentInput = InputStrCurrent();
-					var userInput = InputStrUser();
+					var stickyInput = InputStrSticky();
 					var currentAndPreviousInput = MakeIntersectImmediatePrevious();
 
 					// calculate origin for drawing all strings. Mainly relevant when right-anchoring
@@ -264,10 +264,10 @@ namespace BizHawk.Client.Common
 
 					// draw previous input first. Currently pressed input will overwrite this
 					g.DrawString(previousInput, previousColor, point.X, point.Y);
-					// draw all currently pressed input with the sticky color
-					g.DrawString(currentInput, stickyColor, point.X, point.Y);
-					// draw all currently pressed non-sticky input with the current color, overwriting previously drawn non-sticky input in the wrong color
-					g.DrawString(userInput, currentColor, point.X, point.Y);
+					// draw all currently pressed input with the current color (including sticky input)
+					g.DrawString(currentInput, currentColor, point.X, point.Y);
+					// re-draw all currently pressed sticky input with the sticky color
+					g.DrawString(stickyInput, stickyColor, point.X, point.Y);
 					// re-draw all currently pressed inputs that were also pressed on the previous frame in their own color
 					g.DrawString(currentAndPreviousInput, currentAndPreviousColor, point.X, point.Y);
 				}
@@ -297,12 +297,12 @@ namespace BizHawk.Client.Common
 			{
 				var sb = new StringBuilder("Held: ");
 
-				foreach (var sticky in _inputManager.StickyXorAdapter.CurrentStickies)
+				foreach (var sticky in _inputManager.StickyHoldController.CurrentHolds)
 				{
 					sb.Append(sticky).Append(' ');
 				}
 
-				foreach (var autoSticky in _inputManager.AutofireStickyXorAdapter.CurrentStickies)
+				foreach (var autoSticky in _inputManager.StickyAutofireController.CurrentAutofires)
 				{
 					sb
 						.Append("Auto-")

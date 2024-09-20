@@ -44,9 +44,20 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		// pass axes solely from the original source
-		// this works in the code because SourceOr is the autofire controller
-		public int AxisValue(string name) => Source.AxisValue(name);
+		// xor logic for axes: xor the logical state of axes (not neutral vs. neutral) and return the result
+		public int AxisValue(string name)
+		{
+			int sourceAxisValue = Source.AxisValue(name);
+			int sourceXorAxisValue = SourceXor.AxisValue(name);
+			int neutral = Definition.Axes[name].Neutral;
+
+			if (sourceAxisValue == neutral)
+			{
+				return sourceXorAxisValue;
+			}
+
+			return sourceXorAxisValue == neutral ? sourceAxisValue : neutral;
+		}
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
 

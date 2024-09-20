@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ButtonSchema button => GenVirtualPadButton(_inputManager, button),
 					SingleAxisSchema singleAxis => new VirtualPadAnalogButton(
-						_inputManager.StickyXorAdapter,
+						_inputManager.StickyHoldController,
 						singleAxis.Name,
 						singleAxis.DisplayName,
 						singleAxis.MinValue,
@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 						Size = UIHelper.Scale(singleAxis.TargetSize)
 					},
 					AnalogSchema analog => new VirtualPadAnalogStick(
-						_inputManager.StickyXorAdapter,
+						_inputManager.StickyHoldController,
 						_setLastFocusedNUD,
 						analog.Name,
 						analog.SecondaryName,
@@ -143,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 						Size = UIHelper.Scale(new Size(180 + 79, 200 + 9))
 					},
 					TargetedPairSchema targetedPair => new VirtualPadTargetScreen(
-						_inputManager.StickyXorAdapter,
+						_inputManager.StickyHoldController,
 						_setLastFocusedNUD,
 						targetedPair.Name,
 						targetedPair.SecondaryName,

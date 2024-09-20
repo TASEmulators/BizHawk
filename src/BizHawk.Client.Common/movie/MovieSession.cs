@@ -48,9 +48,9 @@ namespace BizHawk.Client.Common
 
 		public IDictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
 
-		public IInputAdapter MovieIn { get; set; }
+		public IController MovieIn { get; set; }
 		public IInputAdapter MovieOut { get; } = new CopyControllerAdapter();
-		public IStickyAdapter StickySource { get; set; }
+		public IController StickySource { get; set; }
 
 		public IMovieController MovieController { get; private set; } = new Bk2Controller(NullController.Instance.Definition);
 
@@ -325,7 +325,7 @@ namespace BizHawk.Client.Common
 		{
 			var input = Movie.GetInputState(Movie.Emulator.Frame);
 
-			MovieController.SetFrom(input ?? GenerateMovieController());
+			MovieController.SetFrom(input ?? StickySource);
 			MovieOut.Source = MovieController;
 		}
 
