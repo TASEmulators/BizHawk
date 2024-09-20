@@ -46,9 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			SaveRAMSubMenu.Enabled = hasSaveRam;
 			SaveRAMSubMenu.SetStyle(needBold ? FontStyle.Bold : FontStyle.Regular);
 
-			AVSubMenu.Enabled =
-			ScreenshotSubMenu.Enabled =
-				Emulator.HasVideoProvider();
+			AVSubMenu.Enabled = Emulator.HasVideoProvider(); //TODO necessary?
 		}
 
 		private void RecentRomMenuItem_DropDownOpened(object sender, EventArgs e)
