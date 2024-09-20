@@ -571,8 +571,6 @@ namespace BizHawk.Client.EmuHawk
 			);
 			InitControls();
 
-			InputManager.ResetMainControllers(_autofireNullControls);
-			InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
 			var savedOutputMethod = Config.SoundOutputMethod;
 			if (savedOutputMethod is ESoundOutputMethod.Dummy) Config.SoundOutputMethod = HostCapabilityDetector.HasXAudio2 ? ESoundOutputMethod.XAudio2 : ESoundOutputMethod.OpenAL;
 			try
@@ -594,6 +592,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Sound.StartSound();
+			InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 			CheatList = new CheatCollection(this, Config.Cheats);
 			CheatList.Changed += Tools.UpdateCheatRelatedTools;
@@ -1032,12 +1031,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ClearHolds()
 		{
-			InputManager.StickyXorAdapter.ClearStickies();
-			InputManager.AutofireStickyXorAdapter.ClearStickies();
-
 			if (Tools.Has<VirtualpadTool>())
 			{
 				Tools.VirtualPad.ClearVirtualPadHolds();
+			}
+			else
+			{
+				InputManager.StickyXorAdapter.ClearStickies();
+				InputManager.AutofireStickyXorAdapter.ClearStickies();
 			}
 		}
 
@@ -3822,9 +3823,7 @@ namespace BizHawk.Client.EmuHawk
 					DisplayManager.Blank();
 					CreateRewinder();
 
-					InputManager.StickyXorAdapter.ClearStickies();
-					InputManager.StickyXorAdapter.ClearStickyAxes();
-					InputManager.AutofireStickyXorAdapter.ClearStickies();
+					ClearHolds();
 
 					RewireSound();
 					Tools.UpdateCheatRelatedTools(null, null);
