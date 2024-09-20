@@ -116,7 +116,7 @@ namespace BizHawk.Bizware.Graphics
 		public void EnableBlending()
 		{
 			Flush();
-			Owner.EnableBlendNormal();
+			Owner.EnableBlending();
 		}
 
 		public void DisableBlending()

@@ -102,7 +102,7 @@ namespace BizHawk.Bizware.Graphics
 
 		protected override void RenderInternal(int width, int height)
 		{
-			var rt = (GDIPlusRenderTarget)_renderTarget;
+			var rt = (GDIPlusRenderTarget)_pass2RenderTarget;
 			var bmpData = rt.SDBitmap.LockBits(rt.GetRectangle(), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			try
 			{
@@ -172,8 +172,7 @@ namespace BizHawk.Bizware.Graphics
 						case DrawCallbackId.DisableBlending:
 							_ = SDL_SetRenderDrawBlendMode(sdlRenderer, SDL_BlendMode.SDL_BLENDMODE_NONE);
 							break;
-						case DrawCallbackId.EnableBlendAlpha:
-						case DrawCallbackId.EnableBlendNormal:
+						case DrawCallbackId.EnableBlending:
 							_ = SDL_SetRenderDrawBlendMode(sdlRenderer, SDL_BlendMode.SDL_BLENDMODE_BLEND);
 							break;
 						case DrawCallbackId.DrawString:

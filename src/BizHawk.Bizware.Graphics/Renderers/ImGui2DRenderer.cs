@@ -53,6 +53,8 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		private readonly HashSet<GCHandle> _gcHandles = [ ];
+		private ITexture2D _stringTexture;
+		private IRenderTarget _pass1RenderTarget;
 
 		protected virtual float RenderThickness => 1;
 
@@ -63,8 +65,7 @@ namespace BizHawk.Bizware.Graphics
 		protected bool _hasClearPending;
 		protected Bitmap _stringOutput;
 		protected SDGraphics _stringGraphics;
-		protected ITexture2D _stringTexture;
-		protected IRenderTarget _renderTarget;
+		protected IRenderTarget _pass2RenderTarget;
 
 		public ImGui2DRenderer(IGL igl, ImGuiResourceCache resourceCache)
 		{
@@ -83,8 +84,10 @@ namespace BizHawk.Bizware.Graphics
 		public void Dispose()
 		{
 			ClearGCHandles();
-			_renderTarget?.Dispose();
-			_renderTarget = null;
+			_pass2RenderTarget?.Dispose();
+			_pass2RenderTarget = null;
+			_pass1RenderTarget?.Dispose();
+			_pass1RenderTarget = null;
 			_stringTexture?.Dispose();
 			_stringTexture = null;
 			_stringGraphics?.Dispose();
@@ -160,21 +163,34 @@ namespace BizHawk.Bizware.Graphics
 		{
 			None,
 			DisableBlending,
-			EnableBlendAlpha,
-			EnableBlendNormal,
+			EnableBlending,
 			DrawString,
+		}
+
+		private void PerformPasses(ImDrawCmdPtr cmd)
+		{
+			if (EnableBlending)
+			{
+				_pass1RenderTarget.Bind();
+				_resourceCache.SetBlendingParamters(_pass2RenderTarget, false);
+				_igl.DrawIndexed((int)cmd.ElemCount, (int)cmd.IdxOffset, (int)cmd.VtxOffset);
+
+				_pass2RenderTarget.Bind();
+				_resourceCache.SetBlendingParamters(_pass1RenderTarget, true);
+				_igl.DrawIndexed((int)cmd.ElemCount, (int)cmd.IdxOffset, (int)cmd.VtxOffset);
+			}
+			else
+			{
+				_resourceCache.SetBlendingParamters(null, true);
+				_igl.DrawIndexed((int)cmd.ElemCount, (int)cmd.IdxOffset, (int)cmd.VtxOffset);
+			}
 		}
 
 		protected virtual void RenderInternal(int width, int height)
 		{
-			if (EnableBlending)
-			{
-				_igl.EnableBlendAlpha();
-			}
-			else
-			{
-				_igl.DisableBlending();
-			}
+			// we handle blending programmatically with 2 passes
+			// therefore, we disable normal blending operations
+			_igl.DisableBlending();
 
 			_igl.BindPipeline(_resourceCache.Pipeline);
 			_resourceCache.SetProjection(width, height);
@@ -229,20 +245,15 @@ namespace BizHawk.Bizware.Graphics
 							_resourceCache.SetTexture(null);
 						}
 
-						_igl.DrawIndexed((int)cmd.ElemCount, (int)cmd.IdxOffset, (int)cmd.VtxOffset);
+						PerformPasses(cmd);
 						tempTex?.Dispose();
 						break;
 					}
 					case DrawCallbackId.DisableBlending:
-						_igl.DisableBlending();
 						EnableBlending = false;
 						break;
-					case DrawCallbackId.EnableBlendAlpha:
-						_igl.EnableBlendAlpha();
+					case DrawCallbackId.EnableBlending:
 						EnableBlending = true;
-						break;
-					case DrawCallbackId.EnableBlendNormal:
-						_igl.EnableBlendNormal();
 						break;
 					case DrawCallbackId.DrawString:
 					{
@@ -264,21 +275,9 @@ namespace BizHawk.Bizware.Graphics
 								throw new InvalidOperationException("Unexpected bitmap mismatch!");
 							}
 
-							// we want to normal blend the text image rather than alpha blend it (matches GDI+ behavior it seems?)
-							if (EnableBlending)
-							{
-								_igl.EnableBlendNormal();
-							}
-
-							_stringTexture.LoadFrom(new BitmapBuffer(userTex.Bitmap, new()));
+							_stringTexture.LoadFrom(new BitmapBuffer(_stringOutput, new()));
 							_resourceCache.SetTexture(_stringTexture);
-							_igl.DrawIndexed((int)lastCmd.ElemCount, (int)lastCmd.IdxOffset, (int)lastCmd.VtxOffset);
-
-							if (EnableBlending)
-							{
-								_igl.EnableBlendAlpha();
-							}
-
+							PerformPasses(lastCmd);
 							ClearStringOutput();
 						}
 
@@ -294,10 +293,12 @@ namespace BizHawk.Bizware.Graphics
 		{
 			var needsRender = _imGuiDrawList.VtxBuffer.Size > 0 || _imGuiDrawList.IdxBuffer.Size > 0 || _hasDrawStringCommand;
 			var needsClear = needsRender || _hasClearPending;
-			if (_renderTarget == null || _renderTarget.Width != width || _renderTarget.Height != height)
+			if (_pass1RenderTarget == null || _pass1RenderTarget.Width != width || _pass1RenderTarget.Height != height)
 			{
-				_renderTarget?.Dispose();
-				_renderTarget = _igl.CreateRenderTarget(width, height);
+				_pass1RenderTarget?.Dispose();
+				_pass1RenderTarget = _igl.CreateRenderTarget(width, height);
+				_pass2RenderTarget?.Dispose();
+				_pass2RenderTarget = _igl.CreateRenderTarget(width, height);
 				needsClear = true;
 			}
 
@@ -314,7 +315,7 @@ namespace BizHawk.Bizware.Graphics
 				_stringTexture = _igl.CreateTexture(width, height);
 			}
 
-			_renderTarget.Bind();
+			_pass2RenderTarget.Bind();
 			_igl.SetViewport(width, height);
 
 			if (needsClear)
@@ -347,7 +348,7 @@ namespace BizHawk.Bizware.Graphics
 				ResetDrawList();
 			}
 
-			return _renderTarget;
+			return _pass2RenderTarget;
 		}
 
 		public void Clear()
@@ -375,7 +376,7 @@ namespace BizHawk.Bizware.Graphics
 						break;
 					// CompositingMode.SourceOver means enable blending
 					case false when value == CompositingMode.SourceOver:
-						_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlendAlpha, IntPtr.Zero);
+						_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlending, IntPtr.Zero);
 						_pendingBlendEnable = true;
 						break;
 				}
@@ -384,6 +385,11 @@ namespace BizHawk.Bizware.Graphics
 
 		public void DrawBezier(Color color, Point pt1, Point pt2, Point pt3, Point pt4)
 		{
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
+
 			_imGuiDrawList.AddBezierCubic(
 				p1: pt1.ToVector(),
 				p2: pt2.ToVector(),
@@ -391,6 +397,11 @@ namespace BizHawk.Bizware.Graphics
 				p4: pt4.ToVector(),
 				col: (uint)color.ToArgb(),
 				thickness: RenderThickness);
+
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
 		}
 
 		public void DrawBeziers(Color color, Point[] points)
@@ -404,6 +415,11 @@ namespace BizHawk.Bizware.Graphics
 			var col = (uint)color.ToArgb();
 			for (var i = 1; i < points.Length; i += 3)
 			{
+				if (color.A != 0xFF)
+				{
+					_imGuiDrawList.AddDrawCmd();
+				}
+
 				_imGuiDrawList.AddBezierCubic(
 					p1: startPt.ToVector(),
 					p2: points[i + 0].ToVector(),
@@ -412,11 +428,21 @@ namespace BizHawk.Bizware.Graphics
 					col: col,
 					thickness: RenderThickness);
 				startPt = points[i + 2];
+
+				if (color.A != 0xFF)
+				{
+					_imGuiDrawList.AddDrawCmd();
+				}
 			}
 		}
 
 		public void DrawRectangle(Color color, int x, int y, int width, int height)
 		{
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
+
 			// we don't use AddRect as we want to avoid double drawing at the corners
 			// as that produces artifacts with alpha blending
 
@@ -428,30 +454,56 @@ namespace BizHawk.Bizware.Graphics
 			if (width == 1 || height == 1)
 			{
 				// width or height of 1 is just a single line
-				DrawLine(color, x, y, right, bottom);
+				DrawLineInternal(color, x, y, right, bottom);
+
+				if (color.A != 0xFF)
+				{
+					_imGuiDrawList.AddDrawCmd();
+				}
+
 				return;
 			}
 
 			// top left to top right
-			DrawLine(color, x, y, right, y);
+			DrawLineInternal(color, x, y, right, y);
 			// top right (and 1 pixel down) to bottom right
-			DrawLine(color, right, y + 1, right, bottom);
+			DrawLineInternal(color, right, y + 1, right, bottom);
 			// bottom right (and 1 pixel left) to bottom left
-			DrawLine(color, right - 1, bottom, x, bottom);
+			DrawLineInternal(color, right - 1, bottom, x, bottom);
 			// bottom left (and 1 pixel up) to top left (and 1 pixel down)
-			DrawLine(color, x, bottom - 1, x, y + 1);
+			DrawLineInternal(color, x, bottom - 1, x, y + 1);
+
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
 		}
 
 		public void FillRectangle(Color color, int x, int y, int width, int height)
 		{
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
+
 			_imGuiDrawList.AddRectFilled(
 				p_min: new(x, y),
 				p_max: new(x + width, y + height),
 				col: (uint)color.ToArgb());
+
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
 		}
 
 		public void DrawEllipse(Color color, int x, int y, int width, int height)
 		{
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
+
 			var radius = new Vector2(width / 2.0f, height / 2.0f);
 			_imGuiDrawList.AddEllipse(
 				center: new(x + radius.X, y + radius.Y),
@@ -460,25 +512,34 @@ namespace BizHawk.Bizware.Graphics
 				rot: 0,
 				num_segments: 0,
 				RenderThickness);
+
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
 		}
 
 		public void FillEllipse(Color color, int x, int y, int width, int height)
 		{
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
+
 			var radius = new Vector2(width / 2.0f, height / 2.0f);
 			_imGuiDrawList.AddEllipseFilled(
 				center: new(x + radius.X, y + radius.Y),
 				radius: radius,
 				col: (uint)color.ToArgb());
+
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
 		}
 
 		public void DrawImage(Bitmap image, int x, int y)
 		{
-			// use normal blending for images
-			if (_pendingBlendEnable)
-			{
-				_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlendNormal, IntPtr.Zero);
-			}
-
 			var texture = new ImGuiUserTexture { Bitmap = image, WantCache = false };
 			var handle = GCHandle.Alloc(texture, GCHandleType.Normal);
 			_gcHandles.Add(handle);
@@ -486,21 +547,10 @@ namespace BizHawk.Bizware.Graphics
 				user_texture_id: GCHandle.ToIntPtr(handle),
 				p_min: new(x, y),
 				p_max: new(x + image.Width, y + image.Height));
-
-			if (_pendingBlendEnable)
-			{
-				_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlendAlpha, IntPtr.Zero);
-			}
 		}
 
 		public void DrawImage(Bitmap image, Rectangle destRect, int srcX, int srcY, int srcWidth, int srcHeight, bool cache)
 		{
-			// use normal blending for images
-			if (_pendingBlendEnable)
-			{
-				_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlendNormal, IntPtr.Zero);
-			}
-
 			var texture = new ImGuiUserTexture { Bitmap = image, WantCache = cache };
 			var handle = GCHandle.Alloc(texture, GCHandleType.Normal);
 			_gcHandles.Add(handle);
@@ -512,14 +562,9 @@ namespace BizHawk.Bizware.Graphics
 				p_max: new(destRect.Right, destRect.Bottom),
 				uv_min: new(srcX / imgWidth, srcY / imgHeight),
 				uv_max: new((srcX + srcWidth) / imgWidth, (srcY + srcHeight) / imgHeight));
-
-			if (_pendingBlendEnable)
-			{
-				_imGuiDrawList.AddCallback((IntPtr)DrawCallbackId.EnableBlendAlpha, IntPtr.Zero);
-			}
 		}
 
-		public void DrawLine(Color color, int x1, int y1, int x2, int y2)
+		private void DrawLineInternal(Color color, int x1, int y1, int x2, int y2)
 		{
 			var p1 = new Vector2(x1, y1);
 			var p2 = new Vector2(x2, y2);
@@ -553,8 +598,28 @@ namespace BizHawk.Bizware.Graphics
 			_imGuiDrawList.PathStroke((uint)color.ToArgb(), 0, RenderThickness);
 		}
 
+		public void DrawLine(Color color, int x1, int y1, int x2, int y2)
+		{
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
+
+			DrawLineInternal(color, x1, y1, x2, y2);
+
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
+		}
+
 		public void DrawPie(Color color, int x, int y, int width, int height, int startAngle, int sweepAngle)
 		{
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
+
 			var radius = new Vector2(width / 2.0f, height / 2.0f);
 			var center = new Vector2(x + radius.X, y + radius.Y);
 			var aMin = (float)(Math.PI / 180 * startAngle);
@@ -562,10 +627,20 @@ namespace BizHawk.Bizware.Graphics
 			_imGuiDrawList.PathEllipticalArcTo(center, radius, 0, aMin, aMax);
 			_imGuiDrawList.PathLineTo(center);
 			_imGuiDrawList.PathStroke((uint)color.ToArgb(), ImDrawFlags.Closed, RenderThickness);
+
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
 		}
 
 		public void FillPie(Color color, int x, int y, int width, int height, int startAngle, int sweepAngle)
 		{
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
+
 			var radius = new Vector2(width / 2.0f, height / 2.0f);
 			var center = new Vector2(x + radius.X, y + radius.Y);
 			var aMin = (float)(Math.PI / 180 * startAngle);
@@ -573,6 +648,11 @@ namespace BizHawk.Bizware.Graphics
 			_imGuiDrawList.PathEllipticalArcTo(center, radius, 0, aMin, aMax);
 			_imGuiDrawList.PathLineTo(center);
 			_imGuiDrawList.PathFillConvex((uint)color.ToArgb());
+
+			if (color.A != 0xFF)
+			{
+				_imGuiDrawList.AddDrawCmd();
+			}
 		}
 
 		public unsafe void DrawPolygon(Color color, Point[] points)
@@ -580,12 +660,22 @@ namespace BizHawk.Bizware.Graphics
 			var vectorPoints = Array.ConvertAll(points, static p => new Vector2(p.X + 0.5f, p.Y + 0.5f));
 			fixed (Vector2* p = vectorPoints)
 			{
+				if (color.A != 0xFF)
+				{
+					_imGuiDrawList.AddDrawCmd();
+				}
+
 				_imGuiDrawList.AddPolyline(
 					points: ref *p,
 					num_points: vectorPoints.Length,
 					col: (uint)color.ToArgb(),
 					flags: ImDrawFlags.Closed,
 					thickness: RenderThickness);
+
+				if (color.A != 0xFF)
+				{
+					_imGuiDrawList.AddDrawCmd();
+				}
 			}
 		}
 
@@ -594,10 +684,20 @@ namespace BizHawk.Bizware.Graphics
 			var vectorPoints = Array.ConvertAll(points, static p => new Vector2(p.X + 0.5f, p.Y + 0.5f));
 			fixed (Vector2* p = vectorPoints)
 			{
+				if (color.A != 0xFF)
+				{
+					_imGuiDrawList.AddDrawCmd();
+				}
+
 				_imGuiDrawList.AddConcavePolyFilled(
 					points: ref *p,
 					num_points: vectorPoints.Length,
 					col: (uint)color.ToArgb());
+
+				if (color.A != 0xFF)
+				{
+					_imGuiDrawList.AddDrawCmd();
+				}
 			}
 		}
 
