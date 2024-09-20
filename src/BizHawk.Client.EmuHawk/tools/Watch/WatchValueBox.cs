@@ -144,6 +144,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						WatchSize.Byte => 8,
 						WatchSize.Word => 16,
+						WatchSize.DWord => 32,
 						_ => 8
 					};
 					break;
