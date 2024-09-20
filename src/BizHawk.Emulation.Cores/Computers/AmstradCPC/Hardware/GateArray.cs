@@ -453,6 +453,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// this is effectively the start of a new frame
 			// latch the current frame clock count
 			LastGAFrameClocks = GAClockCounter;
+			var crtClock = LastGAFrameClocks / 16;
 
 			// reset the frame clock counter
 			GAClockCounter = -1;
@@ -539,6 +540,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					_videoDataByte1 = _machine.FetchScreenMemory(CRTC.MA_Address);
 
 					break;
+
+				case 1:
+					
+					break;
+
 
 				// PHI Clock 2
 				case 4:
@@ -677,14 +683,20 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			var vidByteIndex = _clockCounter < 8 ? 0 : 1;
 			var byteToUse = _videoData[vidByteIndex];
-			var pixelPos = _clockCounter & 0x07;
+			var pixelPos = _clockCounter % 8;
 
 			var hPos = (_horCharCounter * 16) + pixelPos + (8 * vidByteIndex);
 			var vPos = _verScanlineCounter * 2;
 			var bufferPos = (vPos * MAX_SCREEN_WIDTH_PIXELS) + hPos;
+			var bufferPos2 = bufferPos + MAX_SCREEN_WIDTH_PIXELS;
 
 			int pen = 0;
 			int colour = 0;
+
+			if (byteToUse != 0)
+			{
+
+			}
 
 			// https://www.cpcwiki.eu/index.php/Gate_Array#CSYNC_signal
 			// The HSYNC and VSYNC signals are received from the CRTC.
@@ -693,7 +705,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// When CRTC HSYNC is active, the Gate Array immediately outputs the palette colour black.
 			// If the HSYNC is set to 14 characters then black will be output for 14µs.
-			if (GA_VSYNC)
+			if (GA_VSYNC && CRT_HSYNC)
+			{
+				// hsync in vsync
+				colour = CPCFirmwarePalette[8];
+			}
+			else if (GA_VSYNC)
 			{
 				// gate array outputs true black (not affected by any luminosity settings)
 				colour = CPCFirmwarePalette[7];
@@ -707,7 +724,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				// display enable is inactive from the CRTC
 				// gate array outputs border colour
-				colour = CPCHardwarePalette[2];
+				colour = CPCHardwarePalette[1];
 			}
 			else if (CRTC.DISPTMG)
 			{
@@ -867,7 +884,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				// this shouldnt happen
 			}
 
-			_frameBuffer[bufferPos] = colour;
+			if (bufferPos < _frameBuffer.Length)
+			{
+				_frameBuffer[bufferPos] = colour;
+				_frameBuffer[bufferPos2] = colour;
+			}
+			else
+			{
+				// buffer overrun - probably at CRTC init
+			}
+			
 		}
 
 
