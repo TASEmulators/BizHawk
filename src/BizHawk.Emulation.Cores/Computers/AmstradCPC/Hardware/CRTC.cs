@@ -1,7 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using System.Collections;
-using System.Runtime.CompilerServices;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -95,8 +94,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 		private bool _VSYNC;
-
-		public int FIELD => ~field & R8_Interlace & 0x01;
 
 		/// <summary>
 		/// This TTL compatible output is an active high signal which indicates the CRTC is providing addressing in the active Display Area.
@@ -639,7 +636,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					case 4:
 						return VLC;
 					default:
-						return _vtac & 0x1F;
+						return _vtacCTR & 0x1F;
 				}
 			}
 			set
@@ -652,12 +649,24 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						//VLC = value;
 						break;
 					default:
-						_vtac = value & 0x1F;
+						_vtacCTR = value & 0x1F;
 						break;
 				}
 			}
 		}
-		private int _vtac;
+		private int _vtacCTR;
+
+		/// <summary>
+		/// Field Counter
+		/// 6-bit
+		/// Used for cursor flash - counts the number of completed fields
+		/// </summary>
+		private int CFC
+		{
+			get => _fieldCTR & 0x1F;
+			set => _fieldCTR = value & 0x1F;
+		}
+		private int _fieldCTR;
 
 
 		private int _vma2;
@@ -675,22 +684,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		// persistent control signals
-		private bool latch_hdisp;
-		private bool latch_vdisp;
-		private bool latch_idisp;
+		
 
 		private bool latch_hsync;
 		private bool latch_vadjust;
 		private bool latch_skew;
 
-		private bool hclock;
-		private bool hhclock;
+		
 		private bool hend;
 		private bool hsend;
 
 		private int r_addr;
 		private bool adjusting;
-		private int field;
+		
 
 
 		private int hCnt;
@@ -699,10 +705,21 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int hsCnt;
 		private int vsCnt;
 
+
+		private bool hclock;
+
+
+		private bool latch_hdisp;
+		private bool latch_vdisp;
+		private bool latch_idisp;
+		private bool hssstart;
+		private bool hhclock;
+		private bool _field;
+
 		private int _vma;
 		private int _vmaRowStart;
 
-		public void ClockWIP()
+		public void Clock()
 		{
 			if (_inReset > 0)
 			{
@@ -715,6 +732,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				VSC = 0;
 				VLC = 0;
 				VTAC = 0;
+				CFC = 0;
+				_field = false;
+				_vmaRowStart = 0;
+				_vma = 0;
+				_LA = 0;
+				_RA = 0;
+				latch_hdisp = false;
+				latch_vdisp = false;
+				latch_idisp = false;
 
 				// set regs to default
 				for (int i = 0; i < 18; i++)
@@ -726,6 +752,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				_inReset = -1;
 
 
+			
+
 
 			if (HCC == R0_HorizontalTotal)
 			{
@@ -734,7 +762,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				HCC = 0;
 
 				// TODO: handle interlace setup
-				if (R8_Interlace > 0)
+				if (R8_Interlace == 3)
 				{
 
 				}
@@ -753,7 +781,17 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 					if (VCC == R4_VerticalTotal)
 					{
-						// TODO: interlace field toggling
+						// check the interlace mode
+						if (R8_Interlace.Bit(0))
+						{
+							// toggle the field
+							_field = !_field;
+						}
+						else
+						{
+							// stay on the even field
+							_field = false;
+						}
 
 						// we have reached the end of the vertical display area
 						// address loaded from start address register at the top of each field
@@ -763,7 +801,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						VCC = 0;
 
 						// increment field counter
-						// TODO ^^
+						CFC++;
 					}
 					else
 					{
@@ -777,10 +815,21 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				else
 				{
 					// next scanline
-					// increment vertical line counter
-					VLC++;
+					if (R8_Interlace == 3)
+					{
+						// interlace sync+video mode
+						// vertical line counter increments by 2
+						VLC += 2;
 
-					//TODO: handle interlace sync+video mode counting
+						// ensure vertical line counter is an even value
+						VLC &= ~1;
+					}
+					else
+					{
+						// non-interlace mode
+						// increment vertical line counter
+						VLC++;
+					}
 				}
 
 				// MA set to row start at the beginning of each line
@@ -793,16 +842,137 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				HCC++;
 
 				// increment VMA
-				_vma += 1;
+				_vma++;
 			}
 
+			hssstart = false;
+			hhclock = false;
+
+			if (HCC == R2_HorizontalSyncPosition)
+			{
+				// start of horizontal sync
+				hssstart = true;
+			}
+
+			if (HCC == R2_HorizontalSyncPosition / 2)
+			{
+				// we are half way through the line
+				hhclock = true;
+			}
+
+			/* Hor active video */
+			if (HCC == 0)
+			{
+				// active display
+				latch_hdisp = true;
+			}
+
+			if (HCC == R1_HorizontalDisplayed)
+			{
+				// inactive display
+				latch_hdisp = false;
+			}
+
+			/* Hor sync */
+			if (hssstart ||     // start of horizontal sync
+				HSYNC)          // already in horizontal sync
+			{
+				// start of horizontal sync
+				HSYNC = true;
+				HSC++;
+			}
+			else
+			{
+				// reset hsync counter
+				HSC = 0;
+			}
+
+			if (HSC == R3_HorizontalSyncWidth)
+			{
+				// end of horizontal sync
+				HSYNC = false;
+			}
+
+			/* Ver active video */
+			if (VCC == 0)
+			{
+				// active display
+				latch_vdisp = true;
+			}
+
+			if (VCC == R6_VerticalDisplayed)
+			{
+				// inactive display
+				latch_vdisp = false;
+			}
+
+			// vertical sync occurs at different times depending on the interlace field
+			// even field:	the same time as HSYNC
+			// odd field:	half a line later than HSYNC
+			if ((!_field && hssstart) || (_field && hhclock))
+			{
+				if ((VCC == R7_VerticalSyncPosition && VLC == 0)	// vsync starts on the first line
+					|| VSYNC)										// vsync is already in progress
+				{
+					// start of vertical sync
+					VSYNC = true;
+					// increment vertical sync counter
+					VSC++;
+				}
+				else
+				{
+					// reset vsync counter
+					VSC = 0;
+				}
+
+				if (VSYNC && VSC == R3_VerticalSyncWidth)
+				{
+					// end of vertical sync
+					VSYNC = false;
+				}
+			}	
 			
+
+			/* Address Generation */
+			var line = VLC;
+
+			if (R8_Interlace == 3)
+			{
+				// interlace sync+video mode
+				// the least significant bit is based on the current field number
+				int fNum = _field ? 1 : 0;
+				int lNum = VLC.Bit(0) ? 1 : 0;
+				line &= ~1;
+
+				_RA = line & (fNum | lNum);
+			}
+			else
+			{
+				// raster address is just the VLC
+				_RA = VLC;
+			}
+
+			_LA = _vma;
+
+			// DISPTMG Generation
+			if (!latch_hdisp || !latch_vdisp)
+			{
+				// HSYNC output pin is fed through a NOR gate with either 2 or 3 inputs
+				// - H Display
+				// - V Display
+				// - TODO: R8 DISPTMG Skew (only on certain CRTC types)
+				DISPTMG = false;
+			}
+			else
+			{
+				DISPTMG = true;
+			}
 		}
 
 		/// <summary>		
 		/// CRTC is clocked by the gatearray at 1MHz (every 16 GA clocks / pixel clocks)
 		/// </summary>
-		public void Clock()
+		public void Clocka()
 		{
 			if (HCC == 0 && VCC == 0 && !VSYNC && !HSYNC && VLC == 0)
 			{
@@ -1590,16 +1760,17 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync(nameof(_vswCTR), ref _vswCTR);
 			ser.Sync(nameof(_rowCTR), ref _rowCTR);
 			ser.Sync(nameof(_lineCTR), ref _lineCTR);
+			ser.Sync(nameof(_vtacCTR), ref _vtacCTR);
+			ser.Sync(nameof(_fieldCTR), ref _fieldCTR);
 			ser.Sync(nameof(latch_hdisp), ref latch_hdisp);
 			ser.Sync(nameof(latch_vdisp), ref latch_vdisp);
 			ser.Sync(nameof(latch_hsync), ref latch_hsync);
 			ser.Sync(nameof(latch_vadjust), ref latch_vadjust);
 			ser.Sync(nameof(latch_skew), ref latch_skew);
-			ser.Sync(nameof(field), ref field);
+			ser.Sync(nameof(_field), ref _field);
 			ser.Sync(nameof(adjusting), ref adjusting);
 			ser.Sync(nameof(r_addr), ref r_addr);
-			ser.Sync(nameof(_inReset), ref _inReset);
-			ser.Sync(nameof(_vtac), ref _vtac);			
+			ser.Sync(nameof(_inReset), ref _inReset);	
 			ser.EndSection();
 		}
 	}
