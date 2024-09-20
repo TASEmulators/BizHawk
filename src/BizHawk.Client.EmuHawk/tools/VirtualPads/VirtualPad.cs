@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 						Size = UIHelper.Scale(singleAxis.TargetSize)
 					},
 					AnalogSchema analog => new VirtualPadAnalogStick(
-						_inputManager,
+						_inputManager.StickyXorAdapter,
 						_setLastFocusedNUD,
 						analog.Name,
 						analog.SecondaryName,

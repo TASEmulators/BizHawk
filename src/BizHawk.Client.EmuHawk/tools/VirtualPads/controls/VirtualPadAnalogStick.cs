@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadAnalogStick : UserControl, IVirtualPadControl
 	{
-		private readonly InputManager _inputManager;
+		private readonly StickyXorAdapter _stickyXorAdapter;
 		private bool _readonly;
 
 		private bool _updatingFromAnalog;
@@ -24,14 +24,14 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Func<int, int, (uint R, uint Θ)> RectToPolarHelper;
 
 		public VirtualPadAnalogStick(
-			InputManager inputManager,
+			StickyXorAdapter stickyXorAdapter,
 			EventHandler setLastFocusedNUD,
 			string name,
 			string secondaryName,
 			AxisSpec rangeX,
 			AxisSpec rangeY)
 		{
-			_inputManager = inputManager;
+			_stickyXorAdapter = stickyXorAdapter;
 
 			RangeX = rangeX;
 			RangeY = rangeY;
@@ -97,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 			MaxYNumeric.LostFocus += UnsetLastFocusedNUD;
 
 			AnalogStick.Init(
-				_inputManager.StickyXorAdapter,
+				_stickyXorAdapter,
 				name,
 				RangeX,
 				string.IsNullOrEmpty(secondaryName) ? Name.Replace('X', 'Y') : secondaryName,
@@ -138,10 +138,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AnalogStick.Clear(fromCallback: true);
 			SetNumericsFromAnalog();
-			_inputManager.AutofireStickyXorAdapter.SetSticky(AnalogStick.XName, false);
-			_inputManager.StickyXorAdapter.Unset(AnalogStick.XName);
-			_inputManager.AutofireStickyXorAdapter.SetSticky(AnalogStick.YName, false);
-			_inputManager.StickyXorAdapter.Unset(AnalogStick.YName);
+			_stickyXorAdapter.Unset(AnalogStick.XName);
+			_stickyXorAdapter.Unset(AnalogStick.YName);
 		}
 
 		public void Clear() => AnalogStick.Clear();

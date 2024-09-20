@@ -134,20 +134,15 @@ namespace BizHawk.Client.EmuHawk
 			if (RightClicked)
 			{
 				InputManager.AutofireStickyXorAdapter.SetSticky(Name, Checked);
-
-				if (!Checked)
-				{
-					Clear();
-				}
 			}
 			else
 			{
 				InputManager.StickyXorAdapter.SetSticky(Name, Checked);
+			}
 
-				if (!Checked)
-				{
-					Clear();
-				}
+			if (!Checked)
+			{
+				Clear();
 			}
 
 			base.OnCheckedChanged(e);

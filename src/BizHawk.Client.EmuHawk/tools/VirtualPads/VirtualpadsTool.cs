@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			ControllerPanel.Controls.AddRange(padSchemata.Select(s => (Control) new VirtualPad(s, InputManager, SetLastFocusedNUD)).Reverse().ToArray());
+			ControllerPanel.Controls.AddRange(padSchemata.Select(Control (s) => new VirtualPad(s, InputManager, SetLastFocusedNUD)).Reverse().ToArray());
 		}
 
 		public void ScrollToPadSchema(string padSchemaName)
@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
-			if (!IsHandleCreated || IsDisposed)
+			if (!IsActive)
 			{
 				return;
 			}
@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateAfter()
 		{
-			if (!IsHandleCreated || IsDisposed)
+			if (!IsActive)
 			{
 				return;
 			}
