@@ -16,6 +16,7 @@
 # makedeps
 , git
 # rundeps
+, gtk2-x11
 , libgdiplus
 , libGL
 , lua
@@ -63,7 +64,8 @@
 		'';
 		dontFixup = true;
 	};
-	genDepsHostTargetFor = { hawkSourceInfo, mono' ? mono }: [
+	genDepsHostTargetFor = { hawkSourceInfo, gtk2-x11' ? getMainOutput gtk2-x11, mono' ? mono }: [
+		gtk2-x11'
 		(getMainOutput libgdiplus)
 		lua
 		mono'
@@ -89,8 +91,10 @@
 		strictDeps = true;
 		nativeBuildInputs = lib.optional finalAttrs.doCheck finalAttrs.mono
 			++ lib.optional finalAttrs.isLocalBuild git;
+		gtk2-x11 = getMainOutput gtk2-x11;
 		buildInputs = genDepsHostTargetFor {
 			inherit hawkSourceInfo;
+			gtk2-x11' = finalAttrs.gtk2-x11;
 			mono' = finalAttrs.mono;
 		};
 		patches = lib.optional (!hawkSourceInfo.hasMiscTypeCheckerPatch_6afb3be98) (fetchpatch {

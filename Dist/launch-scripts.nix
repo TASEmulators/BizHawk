@@ -83,7 +83,14 @@
 		fi
 
 		${if isManualLocalBuild then noAssetManagementScript else assetManagementScript}
-		ldLibPath="$BIZHAWK_INT_SYSLIB_PATH:${lib.makeLibraryPath bizhawkAssemblies.buildInputs}"
+		${""/*
+			here's the breakdown for the GTK theme problem:
+			problem 1: `Gtk not found (missing LD_LIBRARY_PATH to libgtk-x11-2.0.so.0?), using built-in colorscheme` printed to stderr
+				fixed by adding `${pkgs.gtk2-x11.out}/lib` to `$LD_LIBRARY_PATH`
+				we're now in Adwaita (light) instead of ugly beige!
+				this does add a new warning to stderr though: `Unable to locate theme engine in module_path: "adwaita"`
+			sadly, it still doesn't seem to respect `$GTK_RC_FILES` or even `$GTK_THEME` :(
+		*/}ldLibPath="$BIZHAWK_INT_SYSLIB_PATH:${lib.makeLibraryPath bizhawkAssemblies.buildInputs}"
 		if [ -z "$LD_LIBRARY_PATH" ]; then
 			export LD_LIBRARY_PATH="$ldLibPath"
 		else
