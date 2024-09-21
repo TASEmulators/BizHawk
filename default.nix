@@ -38,6 +38,7 @@ in {
 , git ? pkgs.gitMinimal # only when building from-CWD (`-local`)
 # rundeps
 , coreutils ? pkgs.coreutils
+, gnome-themes-extra ? pkgs.gnome3.gnome-themes-extra
 , gtk2-x11 ? pkgs.gtk2-x11
 , kate ? pkgs.kate.overrideAttrs (oldAttrs: {
 	patches = (oldAttrs.patches or []) ++ [ (fetchpatch {
@@ -111,7 +112,7 @@ in {
 			buildDotnetModule fetchpatch fetchzip hardLinkJoin launchScriptsFor makeDesktopItem
 				releaseTagSourceInfos runCommand symlinkJoin writeShellScriptBin
 			git
-			gtk2-x11 libgdiplus libGL lua openal SDL2 udev zstd
+			gnome-themes-extra gtk2-x11 libgdiplus libGL lua openal SDL2 udev zstd
 			buildConfig doCheck extraDefines extraDotnetBuildFlags;
 		mono = if mono != null
 			then mono # allow older Mono if set explicitly

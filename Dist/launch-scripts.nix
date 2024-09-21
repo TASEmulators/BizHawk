@@ -89,12 +89,18 @@
 				fixed by adding `${pkgs.gtk2-x11.out}/lib` to `$LD_LIBRARY_PATH`
 				we're now in Adwaita (light) instead of ugly beige!
 				this does add a new warning to stderr though: `Unable to locate theme engine in module_path: "adwaita"`
+					fixed by adding `${pkgs.gnome3.gnome-themes-extra}/lib/gtk-2.0` to `$GTK_PATH`
 			sadly, it still doesn't seem to respect `$GTK_RC_FILES` or even `$GTK_THEME` :(
 		*/}ldLibPath="$BIZHAWK_INT_SYSLIB_PATH:${lib.makeLibraryPath bizhawkAssemblies.buildInputs}"
 		if [ -z "$LD_LIBRARY_PATH" ]; then
 			export LD_LIBRARY_PATH="$ldLibPath"
 		else
 			export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$ldLibPath"
+		fi
+		if [ -z "$GTK_PATH" ]; then
+			export GTK_PATH='${bizhawkAssemblies.gnome-themes-extra}/lib/gtk-2.0'
+		else
+			export GTK_PATH="${bizhawkAssemblies.gnome-themes-extra}/lib/gtk-2.0:$GTK_PATH"
 		fi
 		${if profileManagedCalls == false then "" else ''printf "Will write profiling results to %s/*.mlpd\n" "$PWD"
 		''}${if bizhawkAssemblies.hawkSourceInfo.hasAssemblyResolveHandler then "" else ''export MONO_PATH="$BIZHAWK_HOME/dll/nlua:$BIZHAWK_HOME/dll"

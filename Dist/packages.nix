@@ -16,6 +16,7 @@
 # makedeps
 , git
 # rundeps
+, gnome-themes-extra
 , gtk2-x11
 , libgdiplus
 , libGL
@@ -81,7 +82,7 @@
 		hawkSourceInfo = populateHawkSourceInfo hawkSourceInfo';
 		extraManagedDeps = hawkSourceInfo.extraManagedDeps or buildExtraManagedDepsFor hawkSourceInfo;
 	in buildDotnetModule (lib.fix (finalAttrs: { # proper `finalAttrs` not supported >:(
-		inherit doCheck mono;
+		inherit doCheck gnome-themes-extra mono;
 		inherit (hawkSourceInfo) __contentAddressed dotnet-sdk nugetDeps src version;
 		pname = "BizHawk";
 		isLocalBuild = lib.hasSuffix "-local" finalAttrs.version;
@@ -175,7 +176,7 @@
 		passthru = {
 			inherit extraManagedDeps # could use this to backport changes to ExternalProjects? IDK
 				hawkSourceInfo; # simple way to override `nugetDeps` for patching: `buildAssembliesFor (bizhawkAssemblies-latest.hawkSourceInfo // { nugetDeps = /*...*/; })`
-			inherit (finalAttrs) mono;
+			inherit (finalAttrs) gnome-themes-extra mono;
 #			extraUnmanagedDeps = buildUnmanagedDepsFor hawkSourceInfo; # this will override the output of the same name, example: `buildEmuHawkInstallableFor { bizhawkAssemblies = bizhawkAssemblies-latest // { extraUnmanagedDeps = /*...*/; }; }`
 			# can similarly override `assets` output, only used by launch script to populate `BIZHAWK_DATA_HOME` if the dir doesn't exist at runtime,
 			# and `waterboxCores` output, which holds just the Waterbox cores, as the name suggests
