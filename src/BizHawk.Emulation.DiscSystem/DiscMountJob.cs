@@ -230,10 +230,5 @@ namespace BizHawk.Emulation.DiscSystem
 			var len = new FileInfo(binFilePath).Length;
 			return GenerateCue(binFilename, isMode2: len % 2048 is not 0 && len % 2352 is 0);
 		}
-
-		public static void CreateSyntheticCue(string cueFilePath, string binFilePath)
-			=> File.WriteAllText(
-				path: cueFilePath,
-				contents: GenerateCue(binFilename: binFilePath/*abs is fine here*/, binFilePath: binFilePath)); //TODO as with .iso, may want to try both
 	}
 }

@@ -485,34 +485,6 @@ namespace BizHawk.Client.Common
 						game.System = VSystemID.Raw.SGB;
 					}
 					break;
-				case VSystemID.Raw.PSX when ext is ".bin":
-					const string FILE_EXT_CUE = ".cue";
-					var cuePath = TempFileManager.GetTempFilename(friendlyName: "syn", dotAndExtension: FILE_EXT_CUE, delete: false);
-					DiscMountJob.CreateSyntheticCue(cueFilePath: cuePath, binFilePath: file.Name);
-					var gameBak = game;
-					var nextEmulatorBak = nextEmulator;
-					try
-					{
-						if (LoadDisc(
-							path: cuePath,
-							nextComm,
-							new(cuePath),
-							ext: FILE_EXT_CUE,
-							forcedCoreName: forcedCoreName,
-							out nextEmulator,
-							out game))
-						{
-							return;
-						}
-						Console.WriteLine("synthesised .cue failed to load");
-					}
-					catch (Exception e)
-					{
-						Console.WriteLine($"synthesised .cue failed to load: {e}");
-					}
-					game = gameBak;
-					nextEmulator = nextEmulatorBak;
-					break;
 			}
 			var cip = new CoreInventoryParameters(this)
 			{
