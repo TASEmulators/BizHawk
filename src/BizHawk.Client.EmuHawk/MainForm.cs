@@ -4147,7 +4147,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (Emulator.Frame > MovieSession.Movie.FrameCount)
+			if (MovieSession.Movie.IsActive() && Emulator.Frame > MovieSession.Movie.FrameCount)
 			{
 				OSD.AddMessage("Cannot savestate after movie end!");
 				return;
