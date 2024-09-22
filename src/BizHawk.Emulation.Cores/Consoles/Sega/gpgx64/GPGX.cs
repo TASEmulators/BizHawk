@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	[PortedCore(
 		name: CoreNames.Gpgx,
 		author: "Eke-Eke",
-		portedVersion: "0c45a8a",
+		portedVersion: "a6002bb",
 		portedUrl: "https://github.com/ekeeke/Genesis-Plus-GX")]
 	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
