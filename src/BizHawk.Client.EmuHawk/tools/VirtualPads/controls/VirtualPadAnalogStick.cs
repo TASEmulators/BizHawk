@@ -138,8 +138,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AnalogStick.Clear(fromCallback: true);
 			SetNumericsFromAnalog();
-			_stickyXorAdapter.Unset(AnalogStick.XName);
-			_stickyXorAdapter.Unset(AnalogStick.YName);
+			_stickyXorAdapter.SetAxis(AnalogStick.XName, null);
+			_stickyXorAdapter.SetAxis(AnalogStick.YName, null);
 		}
 
 		public void Clear() => AnalogStick.Clear();

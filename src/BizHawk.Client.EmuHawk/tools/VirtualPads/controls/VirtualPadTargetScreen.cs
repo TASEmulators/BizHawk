@@ -58,8 +58,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			_stickyXorAdapter.Unset(XName);
-			_stickyXorAdapter.Unset(YName);
+			_stickyXorAdapter.SetAxis(XName, null);
+			_stickyXorAdapter.SetAxis(YName, null);
 			_overrideX = null;
 			_overrideY = null;
 			_isSet = false;

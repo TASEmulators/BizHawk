@@ -62,12 +62,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Unset(string button)
-		{
-			_buttonHolds.Remove(button);
-			_axisHolds.Remove(button);
-		}
-
 		public bool IsSticky(string button) => _buttonHolds.Contains(button);
 
 		public void ClearStickies()
