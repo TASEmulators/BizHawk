@@ -15,7 +15,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		name: CoreNames.PUAE,
 		author: "UAE Team",
 		portedVersion: "5.0.0",
-		portedUrl: "https://github.com/libretro/libretro-uae")]
+		portedUrl: "https://github.com/libretro/libretro-uae",
+		isReleased: false)]
 	public partial class PUAE : WaterboxCore
 	{
 		internal CoreComm _comm { get; }
