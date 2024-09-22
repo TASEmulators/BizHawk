@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 {
 	public interface IStickyAdapter : IInputAdapter
 	{
-		bool IsSticky(string button);
+		bool IsSticky(string buttonOrAxis);
 	}
 
 	public class StickyXorAdapter : IStickyAdapter
@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool IsSticky(string button) => _buttonHolds.Contains(button);
+		public bool IsSticky(string buttonOrAxis) => _buttonHolds.Contains(buttonOrAxis) || _axisHolds.ContainsKey(buttonOrAxis);
 
 		public void ClearStickies()
 		{
@@ -166,7 +166,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool IsSticky(string button) => _boolPatterns.ContainsKey(button) || _axisPatterns.ContainsKey(button);
+		public bool IsSticky(string buttonOrAxis) => _boolPatterns.ContainsKey(buttonOrAxis) || _axisPatterns.ContainsKey(buttonOrAxis);
 
 		public void ClearStickies()
 		{
