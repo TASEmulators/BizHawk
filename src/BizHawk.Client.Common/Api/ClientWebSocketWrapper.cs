@@ -16,10 +16,9 @@ namespace BizHawk.Client.Common
 
 		public ClientWebSocketWrapper(Uri uri, CancellationToken? cancellationToken = null)
 		{
+			cancellationToken ??= CancellationToken.None;
 			_w = new ClientWebSocket();
-#pragma warning disable MA0040 // Analyzer not smart enough to recognise this
-			_w.ConnectAsync(uri, cancellationToken ?? CancellationToken.None).Wait();
-#pragma warning restore MA0040
+			_w.ConnectAsync(uri, cancellationToken.Value).Wait(cancellationToken.Value);
 		}
 
 		/// <summary>calls <see cref="ClientWebSocket.CloseAsync"/></summary>
