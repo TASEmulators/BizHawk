@@ -38,9 +38,9 @@ namespace BizHawk.Client.Common
 
 		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
 
-		public void SetSticky(string button, bool isSticky)
+		public void SetButtonHold(string button, bool enabled)
 		{
-			if (isSticky)
+			if (enabled)
 			{
 				_buttonHolds.Add(button);
 			}
@@ -50,11 +50,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void SetAxis(string name, int? value)
+		public void SetAxisHold(string name, int? value)
 		{
-			if (value is int i)
+			if (value.HasValue)
 			{
-				_axisHolds[name] = i;
+				_axisHolds[name] = value.Value;
 			}
 			else
 			{
@@ -140,9 +140,9 @@ namespace BizHawk.Client.Common
 			_offFrames = Math.Max(offFrames, 1);
 		}
 
-		public void SetSticky(string button, bool isSticky, AutoPatternBool pattern = null)
+		public void SetButtonAutofire(string button, bool enabled, AutoPatternBool pattern = null)
 		{
-			if (isSticky)
+			if (enabled)
 			{
 				pattern ??= new AutoPatternBool(_onFrames, _offFrames);
 				_boolPatterns[button] = pattern;
@@ -153,7 +153,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void SetAxis(string name, int? value, AutoPatternAxis pattern = null)
+		public void SetAxisAutofire(string name, int? value, AutoPatternAxis pattern = null)
 		{
 			if (value.HasValue)
 			{
@@ -186,7 +186,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
 			{
-				SetSticky(button, !_boolPatterns.ContainsKey(button));
+				SetButtonAutofire(button, !_boolPatterns.ContainsKey(button));
 			}
 
 			_justPressed = buttons;

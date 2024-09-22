@@ -31,8 +31,8 @@ namespace BizHawk.Client.EmuHawk
 				RightClicked = false;
 				Checked = false;
 				//HOOMOO
-				InputManager.AutofireStickyXorAdapter.SetSticky(Name, false);
-				InputManager.StickyXorAdapter.SetSticky(Name, false);
+				InputManager.AutofireStickyXorAdapter.SetButtonAutofire(Name, false);
+				InputManager.StickyXorAdapter.SetButtonHold(Name, false);
 			}
 		}
 
@@ -133,11 +133,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (RightClicked)
 			{
-				InputManager.AutofireStickyXorAdapter.SetSticky(Name, Checked);
+				InputManager.AutofireStickyXorAdapter.SetButtonAutofire(Name, Checked);
 			}
 			else
 			{
-				InputManager.StickyXorAdapter.SetSticky(Name, Checked);
+				InputManager.StickyXorAdapter.SetButtonHold(Name, Checked);
 			}
 
 			if (!Checked)

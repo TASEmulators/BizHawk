@@ -97,7 +97,7 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				_inputManager.StickyXorAdapter.SetAxis(controller == null ? control : $"P{controller} {control}", value);
+				_inputManager.StickyXorAdapter.SetAxisHold(controller == null ? control : $"P{controller} {control}", value);
 			}
 			catch
 			{

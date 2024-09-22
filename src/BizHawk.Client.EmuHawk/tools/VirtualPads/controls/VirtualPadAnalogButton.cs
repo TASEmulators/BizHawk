@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			_stickyXorAdapter.SetAxis(Name, null);
+			_stickyXorAdapter.SetAxisHold(Name, null);
 			IsSet = false;
 		}
 
@@ -149,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!_programmaticallyChangingValue)
 			{
 				CurrentValue = AnalogTrackBar.Value;
-				_stickyXorAdapter.SetAxis(Name, AnalogTrackBar.Value);
+				_stickyXorAdapter.SetAxisHold(Name, AnalogTrackBar.Value);
 			}
 		}
 

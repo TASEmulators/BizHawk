@@ -58,8 +58,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			_stickyXorAdapter.SetAxis(XName, null);
-			_stickyXorAdapter.SetAxis(YName, null);
+			_stickyXorAdapter.SetAxisHold(XName, null);
+			_stickyXorAdapter.SetAxisHold(YName, null);
 			_overrideX = null;
 			_overrideY = null;
 			_isSet = false;
@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 					XNumeric.Value = XNumeric.Maximum;
 				}
 
-				_stickyXorAdapter.SetAxis(XName, (XNumeric.Value.ConvertToF32() * MultiplierX).RoundToInt());
+				_stickyXorAdapter.SetAxisHold(XName, (XNumeric.Value.ConvertToF32() * MultiplierX).RoundToInt());
 				_isSet = true;
 			}
 		}
@@ -218,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 					YNumeric.Value = YNumeric.Maximum;
 				}
 
-				_stickyXorAdapter.SetAxis(YName, (YNumeric.Value.ConvertToF32() * MultiplierY).RoundToInt());
+				_stickyXorAdapter.SetAxisHold(YName, (YNumeric.Value.ConvertToF32() * MultiplierY).RoundToInt());
 				_isSet = true;
 			}
 		}
