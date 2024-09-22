@@ -12,91 +12,83 @@ namespace BizHawk.Client.Common
 
 	public class StickyXorAdapter : IStickyAdapter
 	{
+		private readonly HashSet<string> _buttonHolds = [ ];
+		// if SetAxis() is called (typically virtual pads), then that axis will entirely override the Source input
+		// otherwise, the source is passed thru.
+		private readonly Dictionary<string, int> _axisHolds = [ ];
+
+		public IController Source { get; set; }
 		public ControllerDefinition Definition => Source.Definition;
+
+		public IReadOnlyCollection<string> CurrentStickies => _buttonHolds; // the callsite doesn't care about sticky axes
 
 		public bool IsPressed(string button)
 		{
 			var source = Source.IsPressed(button);
-			source ^= CurrentStickies.Contains(button);
+			source ^= _buttonHolds.Contains(button);
 			return source;
 		}
 
 		public int AxisValue(string name)
 		{
-			if (_axisSet.TryGetValue(name, out var i)) return i;
-			if (Source == null)
-			{
-				return 0;
-			}
-
-			return Source.AxisValue(name);
+			return _axisHolds.TryGetValue(name, out int axisValue) ? axisValue : Source.AxisValue(name);
 		}
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
 
 		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
 
-		public IController Source { get; set; }
-
-		private List<string> _justPressed = new List<string>();
-
-		// if SetAxis() is called (typically virtual pads), then that axis will entirely override the Source input
-		// otherwise, the source is passed thru.
-		private readonly Dictionary<string, int> _axisSet = new();
+		public void SetSticky(string button, bool isSticky)
+		{
+			if (isSticky)
+			{
+				_buttonHolds.Add(button);
+			}
+			else
+			{
+				_buttonHolds.Remove(button);
+			}
+		}
 
 		public void SetAxis(string name, int? value)
 		{
 			if (value is int i)
 			{
-				_axisSet[name] = i;
+				_axisHolds[name] = i;
 			}
 			else
 			{
-				_axisSet.Remove(name);
-			}
-		}
-
-		public void ClearStickyAxes() => _axisSet.Clear();
-
-		public void SetSticky(string button, bool isSticky)
-		{
-			if (isSticky)
-			{
-				CurrentStickies.Add(button);
-			}
-			else
-			{
-				CurrentStickies.Remove(button);
+				_axisHolds.Remove(name);
 			}
 		}
 
 		public void Unset(string button)
 		{
-			CurrentStickies.Remove(button);
-			_axisSet.Remove(button);
+			_buttonHolds.Remove(button);
+			_axisHolds.Remove(button);
 		}
 
-		public bool IsSticky(string button) => CurrentStickies.Contains(button);
-
-		public HashSet<string> CurrentStickies { get; } = new HashSet<string>();
+		public bool IsSticky(string button) => _buttonHolds.Contains(button);
 
 		public void ClearStickies()
 		{
-			CurrentStickies.Clear();
-			_axisSet.Clear();
+			_buttonHolds.Clear();
+			_axisHolds.Clear();
 		}
+
+		private List<string> _justPressed = [ ];
 
 		public void MassToggleStickyState(List<string> buttons)
 		{
 			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
 			{
-				if (CurrentStickies.Contains(button))
+				if (_buttonHolds.Contains(button))
 				{
-					CurrentStickies.Remove(button);
+					_buttonHolds.Remove(button);
 				}
 				else
 				{
-					CurrentStickies.Add(button);
+					_buttonHolds.Add(button);
 				}
 			}
 
@@ -106,7 +98,24 @@ namespace BizHawk.Client.Common
 
 	public class AutoFireStickyXorAdapter : IStickyAdapter, IInputAdapter
 	{
+		// TODO: Change the AutoHold adapter to be one of these, with an 'Off' value of 0?
+		// Probably would have slightly lower performance, but it seems weird to have such a similar class that is only used once.
+		private int _onFrames;
+		private int _offFrames;
+
+		private readonly Dictionary<string, AutoPatternBool> _boolPatterns = [ ];
+		private readonly Dictionary<string, AutoPatternAxis> _axisPatterns = [ ];
+
+		public IController Source { get; set; }
 		public ControllerDefinition Definition => Source.Definition;
+
+		public IReadOnlyCollection<string> CurrentStickies => _boolPatterns.Keys; // the callsite doesn't care about sticky axes
+
+		public AutoFireStickyXorAdapter()
+		{
+			_onFrames = 1;
+			_offFrames = 1;
+		}
 
 		public bool IsPressed(string button)
 		{
@@ -114,7 +123,6 @@ namespace BizHawk.Client.Common
 			bool patternValue = false;
 			if (_boolPatterns.TryGetValue(button, out var pattern))
 			{
-				// I can't figure a way to determine right here if it should Peek or Get.
 				patternValue = pattern.PeekNextValue();
 			}
 
@@ -126,53 +134,23 @@ namespace BizHawk.Client.Common
 		public int AxisValue(string name)
 			=> _axisPatterns.TryGetValue(name, out var pattern)
 				? pattern.PeekNextValue()
-				: Source?.AxisValue(name) ?? 0;
+				: Source.AxisValue(name);
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
 
 		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
 
-		// TODO: Change the AutoHold adapter to be one of these, with an 'Off' value of 0?
-		// Probably would have slightly lower performance, but it seems weird to have such a similar class that is only used once.
-		private int _on;
-		private int _off;
-
-		public void SetOnOffPatternFromConfig(int on, int off)
+		public void SetOnOffPatternFromConfig(int onFrames, int offFrames)
 		{
-			_on = on < 0 ? 0 : on;
-			_off = off < 0 ? 0 : off;
-		}
-
-		private readonly Dictionary<string, AutoPatternAxis> _axisPatterns = new();
-
-		private readonly Dictionary<string, AutoPatternBool> _boolPatterns = new();
-
-		public AutoFireStickyXorAdapter()
-		{
-			_on = 1;
-			_off = 1;
-		}
-
-		public IController Source { get; set; }
-
-		public void SetAxis(string name, int? value, AutoPatternAxis pattern = null)
-		{
-			if (value.HasValue)
-			{
-				pattern ??= new AutoPatternAxis(value.Value, _on, 0, _off);
-				_axisPatterns[name] = pattern;
-			}
-			else
-			{
-				_axisPatterns.Remove(name);
-			}
+			_onFrames = Math.Max(onFrames, 1);
+			_offFrames = Math.Max(offFrames, 1);
 		}
 
 		public void SetSticky(string button, bool isSticky, AutoPatternBool pattern = null)
 		{
 			if (isSticky)
 			{
-				pattern ??= new AutoPatternBool(_on, _off);
+				pattern ??= new AutoPatternBool(_onFrames, _offFrames);
 				_boolPatterns[button] = pattern;
 			}
 			else
@@ -181,12 +159,20 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool IsSticky(string button)
+		public void SetAxis(string name, int? value, AutoPatternAxis pattern = null)
 		{
-			return _boolPatterns.ContainsKey(button) || _axisPatterns.ContainsKey(button);
+			if (value.HasValue)
+			{
+				pattern ??= new AutoPatternAxis(value.Value, _onFrames, 0, _offFrames);
+				_axisPatterns[name] = pattern;
+			}
+			else
+			{
+				_axisPatterns.Remove(name);
+			}
 		}
 
-		public HashSet<string> CurrentStickies => new HashSet<string>(_boolPatterns.Keys);
+		public bool IsSticky(string button) => _boolPatterns.ContainsKey(button) || _axisPatterns.ContainsKey(button);
 
 		public void ClearStickies()
 		{
@@ -200,7 +186,7 @@ namespace BizHawk.Client.Common
 			foreach (var v in _axisPatterns.Values) v.GetNextValue(lagged);
 		}
 
-		private List<string> _justPressed = new List<string>();
+		private List<string> _justPressed = [ ];
 
 		public void MassToggleStickyState(List<string> buttons)
 		{
