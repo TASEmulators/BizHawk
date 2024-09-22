@@ -38,8 +38,10 @@
 	{
 		/// <summary>if both directions are pressed, only the most recently pressed (of the pair) will be sent</summary>
 		Priority = 0,
+
 		/// <summary>if both directions are pressed, they will "cancel out" and neither will be sent</summary>
 		Forbid = 1,
+
 		/// <summary>both directions will be sent when both are pressed</summary>
 		Allow = 2,
 	}
