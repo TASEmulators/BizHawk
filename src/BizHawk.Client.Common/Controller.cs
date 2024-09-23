@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 				value += range.Neutral;
 
 				// finally, constrain to range
-				_axes[k] = ((int) value).ConstrainWithin(range.Range);
+				_axes[k] = ((int)Math.Round(value)).ConstrainWithin(range.Range);
 			}
 		}
 
