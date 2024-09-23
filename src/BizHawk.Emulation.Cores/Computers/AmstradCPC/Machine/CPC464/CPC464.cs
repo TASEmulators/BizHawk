@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			CRTC = new CRTC(0);
 			GateArray = new GateArray(this, GateArrayType.Amstrad40008);
+			CRTScreen = new CRTScreen(ScreenType.CTM064x);
 
 			FrameLength = GateArray.FrameLength / 4;
 

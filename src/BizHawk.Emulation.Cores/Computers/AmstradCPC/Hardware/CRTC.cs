@@ -8,7 +8,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// CATHODE RAY TUBE CONTROLLER (CRTC) IMPLEMENTATION
 	/// http://www.cpcwiki.eu/index.php/CRTC
 	/// http://cpctech.cpc-live.com/docs/cpcplus.html
-	/// http://logon.system.free.fr/down/ACCC1.6-EN.pdf
+	/// https://shaker.logonsystem.eu/
+	/// https://shaker.logonsystem.eu/ACCC1.8-EN.pdf
+	/// https://shaker.logonsystem.eu/tests
 	/// This implementation aims to emulate all the various CRTC chips that appear within
 	/// the CPC, CPC+ and GX4000 ranges. The CPC community have assigned them type numbers.
 	/// If different implementations share the same type number it indicates that they are functionally identical:
