@@ -671,7 +671,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _fieldCTR;
 
 
-		private int _vma2;
+		//private int _vma2;
 
 		
 

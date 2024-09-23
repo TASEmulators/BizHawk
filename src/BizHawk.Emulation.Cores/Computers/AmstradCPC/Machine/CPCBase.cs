@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			GateArray.GAClockCounter = 0;
 			GateArray.FrameEnd = false;
 
-			while (!GateArray.FrameEnd)
+			while (!CRTScreen.FrameEnd)
 			{
 				GateArray.Clock();
 
@@ -147,6 +147,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
 					TapeDevice.TapeCycle();
 			}
+
+			CRTScreen.FrameEnd = false;
+
 			// we have reached the end of a frame
 			LastFrameStartCPUTick = CPU.TotalExecutedCycles; // - OverFlow;
 

@@ -21,6 +21,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public ScreenType ScreenType { get; private set; }
 
+		public bool FrameEnd { get; set; }
+
 		/// <summary>
 		/// Total line period in microseconds
 		/// </summary>
@@ -108,7 +110,20 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 				else
 				{
-					_gunPosV += field;
+					switch (field)
+					{
+						case -1:
+							_gunPosV += 1;
+							break;
+						case 1:
+							_gunPosV += field;
+							break;
+							
+						default:
+							break;
+					}
+
+					//_gunPosV += field;
 					/*
 					if (field == 0)
 					{
@@ -140,17 +155,23 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 				_gunPosH = 0;
 				_gunPosV = 0;
+
+				FrameEnd = true;
 			}
 
 			if (cVsync || cHsync)
 			{
 				// crt beam is off
 				_frameBuffer[(_gunPosV * TOTAL_PIXELS) + _gunPosH] = 0;
+				if (field == -1)
+					_frameBuffer[((_gunPosV + 1) * TOTAL_PIXELS) + _gunPosH] = 0;
 			}
 			else
 			{
 				// beam should be painting
 				_frameBuffer[(_gunPosV * TOTAL_PIXELS) + _gunPosH] = colour;
+				if (field == -1)
+					_frameBuffer[((_gunPosV + 1) * TOTAL_PIXELS) + _gunPosH] = colour;
 			}
 		}
 
@@ -165,10 +186,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public int VsyncNumerator => 16_000_000;        // pixel clock
 		public int VsyncDenominator => 319_488;         // 1024 * 312
 
-		public int BufferWidth => TOTAL_PIXELS; // VISIBLE_PIXEL_WIDTH;
-		public int BufferHeight => TOTAL_LINES; // VISIBLE_PIXEL_HEIGHT;
+		public int BufferWidth => TOTAL_PIXELS; // - L_TRIM - R_TRIM; // VISIBLE_PIXEL_WIDTH;
+		public int BufferHeight => TOTAL_LINES; // - T_TRIM - B_TRIM; // VISIBLE_PIXEL_HEIGHT;
 		public int VirtualWidth => BufferWidth;
 		public int VirtualHeight => BufferHeight;
+
+		private int L_TRIM = 0;
+		private int T_TRIM = 0;
+		private int R_TRIM = 30;
+		private int B_TRIM = 0;
 
 		/// <summary>
 		/// Working buffer that encapsulates the entire frame time
@@ -182,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public int[] GetVideoBuffer()
 		{
-			return _frameBuffer;
+			return _frameBuffer; // TrimFrameBuffer(L_TRIM, R_TRIM, T_TRIM, B_TRIM);
 
 			for (int y = 0; y < VISIBLE_PIXEL_HEIGHT; y++)
 			{
@@ -192,6 +218,22 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 			return _outputBuff;
+		}
+
+		public int[] TrimFrameBuffer(int left, int right, int top, int bottom)
+		{
+			int newWidth = BufferWidth - left - right;
+			int newHeight = BufferHeight - top - bottom;
+			int[] trimmedBuffer = new int[newWidth * newHeight];
+
+			for (int y = 0; y < newHeight; y++)
+			{
+				int sourceIndex = (top + y) * BufferWidth + left;
+				int destIndex = y * newWidth;
+				Array.Copy(_frameBuffer, sourceIndex, trimmedBuffer, destIndex, newWidth);
+			}
+
+			return trimmedBuffer;
 		}
 
 		public void SyncState(Serializer ser)

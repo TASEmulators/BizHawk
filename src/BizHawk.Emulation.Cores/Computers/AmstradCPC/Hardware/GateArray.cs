@@ -1,7 +1,6 @@
 ﻿
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
@@ -13,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// http://bread80.com/2021/06/03/understanding-the-amstrad-cpc-video-ram-and-gate-array-subsystem/
 	/// https://cpctech.cpcwiki.de/docs/crtcnew.html
 	/// </summary>
-	public class GateArray : IPortIODevice, IVideoProvider
+	public class GateArray : IPortIODevice
 	{
 		private readonly CPCBase _machine;
 		private Z80A<AmstradCPC.CpuLink> CPU => _machine.CPU;
@@ -570,6 +569,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private byte[] _videoData = new byte[2];
 
+		private ushort[] _videoAddr = new ushort[2]; 
+
 
 		/// <summary>
 		/// Gate array is clocked at 16MHz (which is also the pixel clock)
@@ -627,7 +628,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 					// RAM is outputting video data and the gatearray should be latching it in
 					_videoData[1] = _videoDataByte2;
-					_videoDataByte2 = _machine.FetchScreenMemory((ushort)(CRTC.MA_Address));
+					_videoDataByte2 = _machine.FetchScreenMemory(CRTC.MA_Address);
+
+
+
 					break;
 
 				case 2:
@@ -698,7 +702,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 					// RAM is outputting video data and the gatearray should be latching it in
 					_videoData[0] = _videoDataByte1;
-					_videoDataByte1 = _machine.FetchScreenMemory((ushort)(CRTC.MA_Address));
+					_videoDataByte1 = _machine.FetchScreenMemory(CRTC.MA_Address);
 					break;
 
 				case 12:
@@ -878,262 +882,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			}
 
-			CRT.VideoClock(colour, 1, C_HSYNC, C_VSYNC);
-		}
-
-		/// <summary>
-		/// Called at 1MHz, this simulates outputting a single CRTC character's worth of video data to the screen
-		/// </summary>
-		/// <param name="byte1CycleIndex">Position (0-16) within the GA cycle that the 1st byte of pixels is output</param>
-		/// <param name="byte2CycleIndex">Position (0-16) within the GA cycle that the 2nd byte of pixels is output</param>
-		private void OutputCharacter(int byte1CycleIndex, int byte2CycleIndex)
-		{
-			int pen = 0;
-			int colour = 0;
-
-			for (int b = 0; b < 2; b++)
-			{
-				for (int p = 0; p < 8; p++)
-				{
-					switch (_screenMode)
-					{
-						case 0:
-							break;
-						case 1:
-							break;
-						case 2:
-							break;
-						case 3:
-							break;
-					}
-				}
-			}
-		}
-
-		/*
-		/// <summary>
-		/// Writes the correct pixel from the currently read video data byte to the framebuffer
-		/// </summary>
-		private void WritePixel()
-		{
-			var vidByteIndex = _xtal < 8 ? 0 : 1;
-			var byteToUse = _videoData[vidByteIndex];
-			var pixelPos = _xtal % 8;
-
-			var hPos = (_horCharCounter * 16) + pixelPos + (8 * vidByteIndex);
-			var vPos = _verScanlineCounter * 2;
-			var bufferPos = (vPos * MAX_SCREEN_WIDTH_PIXELS) + hPos;
-			var bufferPos2 = bufferPos + MAX_SCREEN_WIDTH_PIXELS;
-
-			int pen = 0;
-			int colour = 0;
-
-			if (byteToUse != 0)
-			{
-
-			}
-
-			// https://www.cpcwiki.eu/index.php/Gate_Array#CSYNC_signal
-			// The HSYNC and VSYNC signals are received from the CRTC.
-			// These signals are then modified by the Gate Array to C - HSYNC and C-VSYNC and merged into a single CSYNC signal that will be
-			// sent to the display.
-
-			// When CRTC HSYNC is active, the Gate Array immediately outputs the palette colour black.
-			// If the HSYNC is set to 14 characters then black will be output for 14µs.
-			if (GA_VSYNC && CRT_HSYNC)
-			{
-				// hsync in vsync
-				colour = CPCFirmwarePalette[8];
-			}
-			else if (GA_VSYNC)
-			{
-				// gate array outputs true black (not affected by any luminosity settings)
-				colour = CPCFirmwarePalette[7];
-			}
-			else if (CRT_HSYNC)
-			{
-				// gate array outputs black
-				colour = CPCFirmwarePalette[14];
-			}
-			else if (!CRTC.DISPTMG)
-			{
-				// display enable is inactive from the CRTC
-				// gate array outputs border colour
-				colour = CPCHardwarePalette[_colourRegisters[16]];
-			}
-			else if (CRTC.DISPTMG)
-			{
-				// display enable is active from the CRTC
-				// gate array outputs pixel colour data from RAM
-				// http://www.cpcmania.com/Docs/Programming/Painting_pixels_introduction_to_video_memory.htm
-				switch (_screenMode)
-				{
-					// Mode 0, 4-bits per pixel, 160x200 resolution, 16 colours
-					// ------------------------------------------------------------------
-					// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
-					// Pixel:			|  0  |  1  |  0  |  1  |  0  |  1  |  0  |  1  |
-					// Pixel Bit Enc.:	|  0  |  0  |  2  |  2  |  1  |  1  |  3  |  3  |
-					// Pixel Timing:	|           0           |           1           |
-					// ------------------------------------------------------------------
-					case 0:
-
-						if (pixelPos < 4)
-						{
-							// pixel 0
-							pen = 
-								((byteToUse & 0x80) >> 7) |
-								((byteToUse & 0x08) >> 2) |
-								((byteToUse & 0x20) >> 3) |
-								((byteToUse & 0x02) << 2);
-						}
-						else
-						{
-							// pixel 1
-							pen =
-								((byteToUse & 0x40) >> 6) |
-								((byteToUse & 0x04) >> 1) |
-								((byteToUse & 0x10) >> 2) |
-								((byteToUse & 0x01) << 3);
-						}
-
-						colour = CPCHardwarePalette[_colourRegisters[pen]];
-
-						break;
-
-					// Mode 1, 2-bits per pixel, 320x200 resolution, 4 colours
-					// ------------------------------------------------------------------
-					// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
-					// Pixel:			|  0  |  1  |  2  |  3  |  0  |  1  |  2  |  3  |
-					// Pixel Bit Enc.:	|  0  |  0  |  0  |  0  |  1  |  1  |  1  |  1  |
-					// Pixel Timing:	|     0     |     1     |	  2     |     3     |
-					// ------------------------------------------------------------------
-					case 1:
-
-						switch (pixelPos)
-						{
-							case 0:
-							case 1:
-								// pixel 0
-								pen = ((byteToUse & 0x80) >> 7) | ((byteToUse & 0x08) >> 2);
-								break;
-
-							case 2:
-							case 3:
-								// pixel 1
-								pen = ((byteToUse & 0x40) >> 6) | ((byteToUse & 0x04) >> 1);
-								break;
-
-							case 4:
-							case 5:
-								// pixel 2
-								pen = ((byteToUse & 0x20) >> 5) | (byteToUse & 0x02);
-								break;
-
-							case 6:
-							case 7:
-								// pixel 3
-								pen = ((byteToUse & 0x10) >> 4) | ((byteToUse & 0x01) << 1);
-								break;
-						}
-
-						colour = CPCHardwarePalette[_colourRegisters[pen]];
-
-						break;
-
-					// Mode 2, 1-bit per pixel, 640x200 resolution, 2 colours
-					// ------------------------------------------------------------------
-					// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
-					// Pixel:			|  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
-					// Pixel Bit Enc.:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
-					// Pixel Timing:	|  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
-					case 2:
-						
-						switch (pixelPos)
-						{
-							case 0:
-								pen = byteToUse.Bit(7) ? 1 : 0;
-								break;
-
-							case 1:
-								pen = byteToUse.Bit(6) ? 1 : 0;
-								break;
-
-							case 2:
-								pen = byteToUse.Bit(5) ? 1 : 0;
-								break;
-
-							case 3:
-								pen = byteToUse.Bit(4) ? 1 : 0;
-								break;
-
-							case 4:
-								pen = byteToUse.Bit(3) ? 1 : 0;
-								break;
-
-							case 5:
-								pen = byteToUse.Bit(2) ? 1 : 0;
-								break;
-
-							case 6:
-								pen = byteToUse.Bit(1) ? 1 : 0;
-								break;
-
-							case 7:
-								pen = byteToUse.Bit(0) ? 1 : 0;
-								break;
-						}
-
-						colour = CPCHardwarePalette[_colourRegisters[pen]];
-
-						break;
-
-					// Mode 3, 2-bits per pixel, 160x200 resolution, 4 colours (undocumented)
-					// ------------------------------------------------------------------
-					// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
-					// Pixel:			|  0  |  1  |  x  |  x  |  0  |  1  |  x  |  x  |
-					// Pixel Bit Enc.:	|  0  |  0  |  x  |  x  |  1  |  1  |  x  |  x  |
-					// Pixel Timing:	|           0           |           1           |
-					// ------------------------------------------------------------------
-					case 3:
-
-						if (pixelPos < 4)
-						{
-							// pixel 0
-							pen =
-								((byteToUse & 0x80) >> 7) | ((byteToUse & 0x08) >> 2);
-						}
-						else
-						{
-							// pixel 1
-							pen =
-								((byteToUse & 0x40) >> 6) | ((byteToUse & 0x04) >> 1);
-						}
-
-						colour = CPCHardwarePalette[_colourRegisters[pen]];
-
-						break;
-				}
-			}
-			else
-			{
-				// this shouldnt happen
-			}
-
-			if (bufferPos < _frameBuffer.Length)
-			{
-				_frameBuffer[bufferPos] = colour;
-				//_frameBuffer[bufferPos2] = colour;
-			}
-			else
-			{
-				// buffer overrun - probably at CRTC init
-			}
-			
-		}
-
-
-		*/
-
+			CRT.VideoClock(colour, -1, C_HSYNC, C_VSYNC);
+		}		
 
 		/// <summary>
 		/// Device responds to an IN instruction
@@ -1247,27 +997,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private const int TOTAL_DISPLAY_SCANLINES = MAX_SCREEN_SCANLINES * 2;
 
-		/// <summary>
-		/// Initial framebuffer that the gate array will output to
-		/// This will include HSYNC and VSYNC timings (which we will trim afterwards)
-		/// </summary>
-		private int[] _frameBuffer = new int[MAX_SCREEN_WIDTH_PIXELS * TOTAL_DISPLAY_SCANLINES];
-
-
-		public int BackgroundColor => CPCFirmwarePalette[4];
-		public int VsyncNumerator => 16_000_000;		// pixel clock
-		public int VsyncDenominator => 319_488;			// 1024 * 312
-
-		public int BufferWidth => MAX_SCREEN_WIDTH_PIXELS;
-		public int BufferHeight => TOTAL_DISPLAY_SCANLINES;
-		public int VirtualWidth => BufferWidth;
-		public int VirtualHeight => BufferHeight;
-
-		public int[] GetVideoBuffer()
-		{
-			return _frameBuffer;
-		}
-
+		
 
 		public void SyncState(Serializer ser)
 		{
