@@ -157,7 +157,7 @@ namespace BizHawk.Client.Common
 		{
 			if (value.HasValue)
 			{
-				pattern ??= new AutoPatternAxis(value.Value, _onFrames, 0, _offFrames);
+				pattern ??= new AutoPatternAxis(value.Value, _onFrames, Definition.Axes[name].Neutral, _offFrames);
 				_axisPatterns[name] = pattern;
 			}
 			else
