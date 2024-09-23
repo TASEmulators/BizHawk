@@ -920,12 +920,12 @@
 			"Pointer X": {
 				"Value": "WMouse X",
 				"Mult": 1.0,
-				"Deadzone": 0.1
+				"Deadzone": 0.0
 			},
 			"Pointer Y": {
 				"Value": "WMouse Y",
 				"Mult": 1.0,
-				"Deadzone": 0.1
+				"Deadzone": 0.0
 			},
 			"P1 Pointer X": {
 				"Value": "",
@@ -964,12 +964,12 @@
 			"P2 Scope X": {
 				"Value": "WMouse X",
 				"Mult": 1.0,
-				"Deadzone": 0.1
+				"Deadzone": 0.0
 			},
 			"P2 Scope Y": {
 				"Value": "WMouse Y",
 				"Mult": 1.0,
-				"Deadzone": 0.1
+				"Deadzone": 0.0
 			}
 		},
 		"Saturn Controller": {
@@ -1026,12 +1026,12 @@
 			"P1 X": {
 				"Value": "WMouse X",
 				"Mult": 1.0,
-				"Deadzone": 0.1
+				"Deadzone": 0.0
 			},
 			"P1 Y": {
 				"Value": "WMouse Y",
 				"Mult": 1.0,
-				"Deadzone": 0.1
+				"Deadzone": 0.0
 			}
 		},
 		"SMS Paddle Controller": {
