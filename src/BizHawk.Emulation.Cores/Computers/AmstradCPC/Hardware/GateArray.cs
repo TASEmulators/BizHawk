@@ -375,21 +375,22 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				if (_v26 == 2)
 				{
 					// GA activates C-SYNC
-					C_HSYNC = true;
+					C_VSYNC = true;
 				}
 
 				if (_v26 == 6)
 				{
-					C_HSYNC = false;
+					C_VSYNC = false;
 				}
 
 				if (_v26 == 26)
 				{
 					C_VSYNC_Black = false;
+					// vsync completed
+					GA_VSYNC = false;
 				}
 
-				// vsync completed
-				GA_VSYNC = false;
+				
 			}
 		}
 		private int _v26;
@@ -409,6 +410,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				if (_h06 == 2)
 				{
 					C_HSYNC = true;
+
+					// latch screenmode
+					_screenMode = (byte)(_RMR & 0x03);
 				}
 
 				if (_h06 == 6)
@@ -483,9 +487,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// gate array hsync is enabled
 			GA_HSYNC = true;
 			// hsync black colour enabled
-			C_HSYNC_Black = true;
-			// latch screenmode
-			_screenMode = (byte)(_RMR & 0x03);
+			C_HSYNC_Black = true;			
 		}
 
 		/// <summary>
@@ -512,7 +514,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 			// latch screenmode
-			_screenMode = (byte)(_RMR & 0x03);
+			//_screenMode = (byte)(_RMR & 0x03);
 		}
 
 		/// <summary>
@@ -533,7 +535,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public void OnVSYNCOff()
 		{
-			GA_VSYNC = false;
+			//GA_VSYNC = false;
 			// this is effectively the start of a new frame from a bizhawk perspective
 			// latch the current frame clock count
 			LastGAFrameClocks = GAClockCounter;
@@ -587,42 +589,63 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public void Clock()
 		{
-			// Based on timing oscilloscope traces from 
-			// https://bread80.com/2021/06/03/understanding-the-amstrad-cpc-video-ram-and-gate-array-subsystem/
-			// and section 16.2.2 of ACCC1.6
+			// Gatearray should be constantly outputting a single pixel of video data ever 1/16th of a microsecond
+			// (so every 1 GA clock cycle)
+			// We will do this for now to get the accuracy right, but will probably need to optimise this down the line
+			OutputPixel(0);
 
-			// we will align this sequence to a Z80 clock cycle rising edge
-			switch (_xtal++)
+			// Based on timing oscilloscope traces from 
+			// https://bread80.com
+			// and section 16.2.2 of ACCC1.8
+			switch (_xtal)
 			{
+				case 15:
+					// /CPU_ADDR LOW
+					// /RAS HIGH
+
+					if (GA_HSYNC)
+					{
+						H06++;
+					}
+
+					break;
+
 				case 0:
-					// * PHI-CLOCK - Active-HIGH (0)
-					// READY line is held high (Z80 /WAIT is inactive)
-					//CheckInterrupt();
+					// READY HIGH (Z80 /WAIT is inactive)
+					// /RAS LOW
+
+					// /CCLK LOW
+					CRTC.CLK = false;
+					CRTC.Clock();
+
+					// PHI HIGH (1)
 					CPU.ExecuteOne();
 					break;
-				case 1:
-					// READY line is held high (Z80 /WAIT is inactive)
-					break;
-				case 2:
-					// PHI-CLOCK - Inactive-LOW
-					// READY line is held high (Z80 /WAIT is inactive)
-					// /CPU_ADDR and /RAS go high
-					break;
-				case 3:
-					// READY line transitions to low (Z80 /WAIT is active)
-					// /CAS_ADDR and /CAS goes high
-					// with /CPU_ADDR and /CAS_ADDR both high, RAM is being fed the video row address
-					break;
-				case 4:
-					// * PHI-CLOCK - Active-HIGH (1)
-					// READY line is held low (Z80 /WAIT is active)
-					// /RAS goes low to tell the RAM to latch in that row address
 
-					// Z80 will sample /WAIT during the cycle it intends to access the bus when reading opcodes
-					// but will sample *before* the cycle for other memory accesses
-					//CheckInterrupt();
+				case 1:
+					// /CAS_ADDR LOW
+
+					// RAM is outputting video data and the gatearray should be latching it in
+					_videoData[1] = _videoDataByte2;
+					_videoDataByte2 = _machine.FetchScreenMemory((ushort)(CRTC.MA_Address));
+					break;
+
+				case 2:
+					// PHI LOW (1)
+					break;
+
+				case 3:
+					break;
+
+				case 4:
+					// READY LOW (Z80 /WAIT is active)
+
+					// PHI HIGH (2)
 					if (BUSRQ == 1) // PCh
 					{
+						// Z80 will sample /WAIT during the cycle it intends to access the bus when reading opcodes
+						// but will sample *before* the cycle for other memory accesses
+
 						// opcode fetch memory action upcoming - CPU will wait
 						CPU.TotalExecutedCycles++;
 					}
@@ -631,29 +654,26 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						// no fetch, or non-opcode fetch - CPU does not wait
 						CPU.ExecuteOne();
 					}
+
 					break;
+
 				case 5:
-					// READY line is held low (Z80 /WAIT is active)
-					// /CAS_ADDR goes low
+					// /RAS HIGH
+					// /CPU_ADDR HIGH
+					// /CAS_ADDR HIGH
 					break;
+
 				case 6:
-					// READY line is held low (Z80 /WAIT is active)
-					// PHI-CLOCK - Inactive-LOW
-					// RAM is outputting video data and the gatearray should be latching it in
-
-					// latch the video data 1st byte (it will be output to screen about 1 microsecond later)
-					_videoData[0] = _videoDataByte1;
-					// GA reads first byte of video data
-					_videoDataByte1 = _machine.FetchScreenMemory(CRTC.MA_Address);
+					// PHI LOW (2)
 					break;
+
 				case 7:
-					// READY line is held low (Z80 /WAIT is active)
+					// /RAS LOW
+					// /CAS_ADDR LOW					
 					break;
+
 				case 8:
-					// * PHI-CLOCK - Active-HIGH (2)
-					// // READY line is held low (Z80 /WAIT is active)				
-					// /CAS goes high
-					//CheckInterrupt();
+					// PHI HIGH (3)
 					if (BUSRQ > 0)
 					{
 						// memory action upcoming - CPU clock is halted
@@ -663,35 +683,26 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					{
 						CPU.ExecuteOne();
 					}
-
 					break;
+
 				case 9:
-					// READY line is held low (Z80 /WAIT is active)
-					// CRTC-CLK transitions to HIGH
-					CRTC.CLK = true;
 					break;
+
 				case 10:
-					// PHI-CLOCK - Inactive-LOW
-					// READY line is held low (Z80 /WAIT is active)
-					// /CAS goes low
+					// PHI LOW (3)
 					break;
+
 				case 11:
+					// /CCLK HIGH
+					CRTC.CLK = true;
+
 					// RAM is outputting video data and the gatearray should be latching it in
-
-					// latch the video data 2nd byte (it will be output to screen about 1 microsecond later)
-					_videoData[1] = _videoDataByte2;
-					// GA reads second byte of video data
-					_videoDataByte2 = _machine.FetchScreenMemory(CRTC.MA_Address);
-
-					//CheckCRTTimings();
-
+					_videoData[0] = _videoDataByte1;
+					_videoDataByte1 = _machine.FetchScreenMemory((ushort)(CRTC.MA_Address));
 					break;
-				case 12:
-					// * PHI-CLOCK - Active-HIGH (3)
-					// READY line is held low (Z80 /WAIT is active)
-					// /RAS goes high
 
-					//CheckInterrupt();
+				case 12:
+					// PHI HIGH (4)
 					if (BUSRQ > 0)
 					{
 						// memory action upcoming - CPU clock is halted
@@ -701,200 +712,174 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					{
 						CPU.ExecuteOne();
 					}
+					break;
 
-					break;
 				case 13:
-					// READY line is held low (Z80 /WAIT is active)
-					// /CPU_ADDR and /CAS_ADDR go high					
 					break;
+
 				case 14:
-					// PHI-CLOCK - Inactive-LOW
-					// READY line is held low (Z80 /WAIT is active)
-					// CRTC-CLK transitions to low
-					CRTC.CLK = false;
-					CRTC.Clock();
 					break;
-				case 15:
-					// READY line goes high (Z80 /WAIT is now inactive)
-					
-					// output both video bytes to the screen
-					OutputCharacter(byte1CycleIndex: 7, byte2CycleIndex: 12);
-					break;
-			}			
+			}
+
+			
+
+			_xtal++;
 
 			// enforce 4-bit wraparound
 			_xtal &= 0x0F;
 
 			GAClockCounter++;
-
-
-			return;
-
-			/*
-			switch (_xtal)
-			{
-				// PHI Clock 1
-				case 0:
-
-					CheckInterrupt();
-					CheckCRTTimings();
-
-					// /WAIT line is inactive
-					CPU.ExecuteOne();
-
-					
-
-					// clock CRTC (active low)
-					CRTC.CLK = false;
-					CRTC.Clock();
-
-					// latch the video data first byte (it will be output to screen over the next 8 GA clocks)
-					_videoData[0] = _videoDataByte1;
-
-					// GA reads first byte of video data
-					_videoDataByte1 = _machine.FetchScreenMemory(CRTC.MA_Address);
-
-
-
-					break;
-
-				// PHI Clock 2
-				case 4:
-
-					CheckInterrupt();
-
-					// /WAIT is active
-					// Z80 will sample /WAIT during the cycle it intends to access the bus when reading opcodes
-					// but will sample *before* the cycle for other memory accesses
-					if (BUSRQ == 1)	// PCh
-					{
-						// opcode fetch memory action upcoming - CPU will wait
-						CPU.TotalExecutedCycles++;
-					}
-					else
-					{
-						// no fetch, or non-opcode fetch - CPU does not wait
-						CPU.ExecuteOne();
-					}
-
-					break;
-
-				// PHI Clock 3
-				case 8:
-
-					CheckInterrupt();
-
-					if (BUSRQ > 0)
-					{
-						// memory action upcoming - CPU clock is halted
-						CPU.TotalExecutedCycles++;
-					}
-					else
-					{
-						CPU.ExecuteOne();
-					}
-
-					
-
-					// un-clock CRTC (inactive high)
-					CRTC.CLK = true;
-
-					// latch the video data first byte (it will be output to screen over the next 8 GA clocks)
-					_videoData[1] = _videoDataByte2;
-
-					// GA reads second byte of video data
-					_videoDataByte2 = _machine.FetchScreenMemory(CRTC.MA_Address);
-
-
-
-					break;
-
-				// PHI Clock 4
-				case 12:
-
-					CheckInterrupt();
-
-					// /WAIT is active
-					if (BUSRQ > 0)
-					{
-						// memory action upcoming - CPU clock is halted
-						CPU.TotalExecutedCycles++;
-					}
-					else
-					{
-						CPU.ExecuteOne();
-					}
-
-					
-
-					break;
-			}
-
-			// output a pixel at 16MHz - each byte contains 8 pixels, 2 bytes per 16 GA clocks, 16 pixels per CRTC character
-			WritePixel();
-
-			if (_xtal == 0)
-			{
-				// start of a new character (or end of the old one if you like).
-				// increment the horizontal character counter
-				//_horCharCounter++;
-				
-			}
-
-			_xtal++;
-			GAClockCounter++;
-
-			// enforce 4-bit wraparound
-			_xtal &= 0x0F;		
-			
-			*/
 		}
-		/*
-		private void CheckInterrupt()
-		{
-			if (_holdingInterrupt)
-			{
-				_interruptHoldCounter++;
 
-				if (_interruptHoldCounter >= 6)
-				{
-					// 1.4us (ish) have past - stop holding the interrupt
-					_holdingInterrupt = false;
-					CPU.FlagI = false;
-					_interruptHoldCounter = 0;
-				}
+		/// <summary>
+		/// Outputs a single pixel to the monitor at 16MHz
+		/// </summary>
+		private void OutputPixel(int pixelOffset)
+		{
+			int pen = 0;
+			int colour = 0;
+
+			var pixIndex = (_xtal + pixelOffset) & 0x0F;
+
+			var vidByteIndex = _xtal < 8 ? 0 : 1;
+			var dataByte = _xtal < 8 ? _videoDataByte1 : _videoDataByte2; // _videoData[vidByteIndex];
+			pixIndex &= 0x07;
+
+			if (dataByte != 0)
+			{
+
 			}
-		}
-		*/
-		/*
-		private void CheckCRTTimings()
-		{
-			// HSYNC
-			if (GA_HSYNC)
-			{
-				_HSYNCWidthCounter++;
 
-				if (_HSYNCWidthCounter < 3)
+			if (C_VSYNC_Black)
+			{
+				colour = 0;
+			}
+			else if (C_HSYNC_Black)
+			{
+				colour = 0;
+			}
+			else if (!CRTC.DISPTMG)
+			{
+				colour = CPCHardwarePalette[_colourRegisters[16]];
+			}
+			else if (CRTC.DISPTMG)
+			{
+				// http://www.cpcmania.com/Docs/Programming/Painting_pixels_introduction_to_video_memory.htm
+				switch (_screenMode)
 				{
-					// CSYNC (HSYNC + VSYNC) is sent to the CRT 2µs after the start of the GA HSYNC
-					CRT_HSYNC = false;
+					// Mode 0, 4-bits per pixel, 160x200 resolution, 16 colours
+					// ------------------------------------------------------------------
+					// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+					// Pixel:			|  0  |  1  |  0  |  1  |  0  |  1  |  0  |  1  |
+					// Pixel Bit Enc.:	|  0  |  0  |  2  |  2  |  1  |  1  |  3  |  3  |
+					// Pixel Timing:	|           0           |           1           |
+					// ------------------------------------------------------------------
+					case 0:
+						pen = pixIndex < 4
+							? ((dataByte & 0x80) >> 7) | ((dataByte & 0x08) >> 2) | ((dataByte & 0x20) >> 3) | ((dataByte & 0x02) << 2)
+							: ((dataByte & 0x40) >> 6) | ((dataByte & 0x04) >> 1) | ((dataByte & 0x10) >> 2) | ((dataByte & 0x01) << 3);
+						break;
+
+					// Mode 1, 2-bits per pixel, 320x200 resolution, 4 colours
+					// ------------------------------------------------------------------
+					// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+					// Pixel:			|  0  |  1  |  2  |  3  |  0  |  1  |  2  |  3  |
+					// Pixel Bit Enc.:	|  0  |  0  |  0  |  0  |  1  |  1  |  1  |  1  |
+					// Pixel Timing:	|     0     |     1     |	  2     |     3     |
+					// ------------------------------------------------------------------
+					case 1:
+						switch (pixIndex)
+						{
+							// pixel 0
+							case 0:
+							case 1:
+								pen = ((dataByte & 0x80) >> 7) | ((dataByte & 0x08) >> 2);
+								break;
+
+							case 2:
+							case 3:
+								pen = ((dataByte & 0x40) >> 6) | ((dataByte & 0x04) >> 1);
+								break;
+
+							case 4:
+							case 5:
+								pen = ((dataByte & 0x20) >> 5) | (dataByte & 0x02);
+								break;
+
+							case 6:
+							case 7:
+								pen = ((dataByte & 0x10) >> 4) | ((dataByte & 0x01) << 1);
+								break;
+
+						}
+						break;
+
+					// Mode 2, 1-bit per pixel, 640x200 resolution, 2 colours
+					// ------------------------------------------------------------------
+					// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+					// Pixel:			|  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
+					// Pixel Bit Enc.:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+					// Pixel Timing:	|  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
+					case 2:
+						switch (pixIndex)
+						{
+							case 0:
+								pen = dataByte.Bit(7) ? 1 : 0;
+								break;
+
+							case 1:
+								pen = dataByte.Bit(6) ? 1 : 0;
+								break;
+
+							case 2:
+								pen = dataByte.Bit(5) ? 1 : 0;
+								break;
+
+							case 3:
+								pen = dataByte.Bit(4) ? 1 : 0;
+								break;
+
+							case 4:
+								pen = dataByte.Bit(3) ? 1 : 0;
+								break;
+
+							case 5:
+								pen = dataByte.Bit(2) ? 1 : 0;
+								break;
+
+							case 6:
+								pen = dataByte.Bit(1) ? 1 : 0;
+								break;
+
+							case 7:
+								pen = dataByte.Bit(0) ? 1 : 0;
+								break;
+						}
+						break;
+
+					// Mode 3, 2-bits per pixel, 160x200 resolution, 4 colours (undocumented)
+					// ------------------------------------------------------------------
+					// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+					// Pixel:			|  0  |  1  |  x  |  x  |  0  |  1  |  x  |  x  |
+					// Pixel Bit Enc.:	|  0  |  0  |  x  |  x  |  1  |  1  |  x  |  x  |
+					// Pixel Timing:	|           0           |           1           |
+					// ------------------------------------------------------------------
+					case 3:
+						pen = pixIndex < 4
+							? ((dataByte & 0x80) >> 7) | ((dataByte & 0x08) >> 2)
+							: ((dataByte & 0x40) >> 6) | ((dataByte & 0x04) >> 1);
+						break;
 				}
-				else if (_HSYNCWidthCounter < 6)
-				{
-					CRT_HSYNC = true;
-				}
-				else
-				{
-					// HSYNC width is 4µs wide
-					CRT_HSYNC = false;
-				}
+
+				colour = CPCHardwarePalette[_colourRegisters[pen]];
 			}
 			else
 			{
-				_HSYNCWidthCounter = 0;
+
 			}
+
+			CRT.VideoClock(colour, 1, C_HSYNC, C_VSYNC);
 		}
-		*/
 
 		/// <summary>
 		/// Called at 1MHz, this simulates outputting a single CRTC character's worth of video data to the screen
@@ -903,7 +888,26 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <param name="byte2CycleIndex">Position (0-16) within the GA cycle that the 2nd byte of pixels is output</param>
 		private void OutputCharacter(int byte1CycleIndex, int byte2CycleIndex)
 		{
+			int pen = 0;
+			int colour = 0;
 
+			for (int b = 0; b < 2; b++)
+			{
+				for (int p = 0; p < 8; p++)
+				{
+					switch (_screenMode)
+					{
+						case 0:
+							break;
+						case 1:
+							break;
+						case 2:
+							break;
+						case 3:
+							break;
+					}
+				}
+			}
 		}
 
 		/*

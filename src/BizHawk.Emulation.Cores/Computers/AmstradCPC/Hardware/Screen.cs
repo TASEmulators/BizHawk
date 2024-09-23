@@ -27,6 +27,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private const int LINE_PERIOD = 64;
 
 		/// <summary>
+		/// Total horizontal time in pixels
+		/// </summary>
+		private const int TOTAL_PIXELS = LINE_PERIOD * PIXEL_TIME;
+
+		/// <summary>
 		/// The first 4 microseconds of a scan line are taken up by the horizontal sync signal (a low pulse)
 		/// </summary>
 		private const int HSYNC_PERIOD = 4;
@@ -62,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Display buffer width in pixels
 		/// </summary>
-		private const int VISIBLE_PIXEL_WIDTH = (LINE_PERIOD * PIXEL_TIME) - HSYNC_PERIOD - BACK_PORCH_PERIOD;
+		private const int VISIBLE_PIXEL_WIDTH = (LINE_PERIOD * PIXEL_TIME) - (HSYNC_PERIOD * PIXEL_TIME) - (BACK_PORCH_PERIOD * PIXEL_TIME);
 
 		/// <summary>
 		/// Display buffer height in pixels
@@ -93,16 +98,18 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public void VideoClock(int colour, int field, bool cHsync = false, bool cVsync = false)
 		{
-			if (_gunPosH == LINE_PERIOD * PIXEL_TIME)
+			if (++_gunPosH == LINE_PERIOD * PIXEL_TIME)
 			{
 				_gunPosH = 0;
 
-				if (_gunPosV == TOTAL_LINES)
+				if (++_gunPosV == TOTAL_LINES)
 				{
 					_gunPosV = 0;
 				}
 				else
 				{
+					_gunPosV += field;
+					/*
 					if (field == 0)
 					{
 						_gunPosV += 2;
@@ -111,12 +118,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					{
 						_gunPosV++;
 					}
+					*/
 				}
 			}
+			/*
 			else
 			{
 				_gunPosH++;
 			}
+			*/
 
 			if (!_isVsync && cVsync)
 			{
@@ -127,17 +137,20 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				// vsync ends
 				_isVsync = false;
+
+				_gunPosH = 0;
+				_gunPosV = 0;
 			}
 
 			if (cVsync || cHsync)
 			{
 				// crt beam is off
-				_frameBuffer[_gunPosV * LINE_PERIOD * PIXEL_TIME + _gunPosH] = 0;
+				_frameBuffer[(_gunPosV * TOTAL_PIXELS) + _gunPosH] = 0;
 			}
 			else
 			{
 				// beam should be painting
-				_frameBuffer[_gunPosV * LINE_PERIOD * PIXEL_TIME + _gunPosH] = colour;
+				_frameBuffer[(_gunPosV * TOTAL_PIXELS) + _gunPosH] = colour;
 			}
 		}
 
@@ -152,8 +165,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public int VsyncNumerator => 16_000_000;        // pixel clock
 		public int VsyncDenominator => 319_488;         // 1024 * 312
 
-		public int BufferWidth => VISIBLE_PIXEL_WIDTH;
-		public int BufferHeight => VISIBLE_PIXEL_HEIGHT;
+		public int BufferWidth => TOTAL_PIXELS; // VISIBLE_PIXEL_WIDTH;
+		public int BufferHeight => TOTAL_LINES; // VISIBLE_PIXEL_HEIGHT;
 		public int VirtualWidth => BufferWidth;
 		public int VirtualHeight => BufferHeight;
 
@@ -169,6 +182,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public int[] GetVideoBuffer()
 		{
+			return _frameBuffer;
+
 			for (int y = 0; y < VISIBLE_PIXEL_HEIGHT; y++)
 			{
 				int sourceIndex = (DISPLAY_START_LINE + y) * LINE_PERIOD * PIXEL_TIME + HSYNC_PERIOD + BACK_PORCH_PERIOD;
