@@ -506,8 +506,6 @@
 		<Compile Update="tools/Watch/RamWatch.Designer.cs" DependentUpon="RamWatch.cs" />
 		<EmbeddedResource Update="tools/Watch/RamWatch.resx" DependentUpon="RamWatch.cs" />
 		<Compile Update="tools/Watch/WatchEditor.cs" SubType="Form" />
-		<Compile Update="tools/Watch/WatchEditor.Designer.cs" DependentUpon="WatchEditor.cs" />
-		<EmbeddedResource Update="tools/Watch/WatchEditor.resx" DependentUpon="WatchEditor.cs" />
 		<Compile Update="tools/Watch/WatchValueBox.cs" SubType="Component" />
 		<Compile Update="UpdateChecker.cs" SubType="Code" />
 	</ItemGroup>

@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.WinForms.Controls;
 
 using Emu = BizHawk.Emulation.Common;
 
@@ -26,10 +27,133 @@ namespace BizHawk.Client.EmuHawk
 
 		public Point InitialLocation { get; set;  } = new Point(0, 0);
 
+		private HexTextBox AddressBox = default!;
+
+		private CheckBox BigEndianCheckBox = default!;
+
+		private ComboBox DisplayTypeDropDown = default!;
+
+		private ComboBox DomainDropDown = default!;
+
+		private TextBox NotesBox = default!;
+
+		private ComboBox SizeDropDown = default!;
+
 		public WatchEditor()
 		{
 			_changedDisplayType = false;
-			InitializeComponent();
+
+			SuspendLayout();
+
+			LocLabelEx label1 = new() { Location = new(9, 9), Text = "Address: 0x" };
+			AddressBox = new()
+			{
+				CharacterCasing = CharacterCasing.Upper,
+				Location = new(69, 6),
+				MaxLength = 8,
+				Nullable = false,
+				Size = new(100, 20),
+				TabIndex = 1,
+				Text = "00000000",
+			};
+
+			LocLabelEx label2 = new() { Location = new(9, 35), Text = "Notes:" };
+			NotesBox = new() { Location = new(69, 32), MaxLength = 256, Size = new(100, 20), TabIndex = 5 };
+
+			LocLabelEx label3 = new() { Location = new(9, 64), Text = "Size" };
+			SizeDropDown = new()
+			{
+				DropDownStyle = ComboBoxStyle.DropDownList,
+				FormattingEnabled = true,
+				Items = { "1 Byte", "2 Byte", "4 Byte" },
+				Location = new(10, 80),
+				Size = new(141, 21),
+				TabIndex = 10,
+			};
+			SizeDropDown.SelectedIndexChanged += SizeDropDown_SelectedIndexChanged;
+
+			LocLabelEx DisplayTypeLael = new() { Location = new(11, 106), Text = "Display Type" };
+			DisplayTypeDropDown = new()
+			{
+				DropDownStyle = ComboBoxStyle.DropDownList,
+				FormattingEnabled = true,
+				Items = { "1 Byte", "2 Byte", "4 Byte" },
+				Location = new(12, 122),
+				Size = new(141, 21),
+				TabIndex = 15,
+			};
+			DisplayTypeDropDown.SelectedIndexChanged += DisplayTypeDropDown_SelectedIndexChanged;
+
+			BigEndianCheckBox = new()
+			{
+				AutoSize = true,
+				Location = new(14, 159),
+				Size = new(77, 17),
+				TabIndex = 20,
+				Text = "Big Endian",
+				UseVisualStyleBackColor = true,
+			};
+
+			LocLabelEx label6 = new() { Location = new(11, 214), Text = "Memory Domain" };
+			DomainDropDown = new()
+			{
+				DropDownStyle = ComboBoxStyle.DropDownList,
+				FormattingEnabled = true,
+				Location = new(12, 230),
+				Size = new(141, 21),
+				TabIndex = 25,
+			};
+			DomainDropDown.SelectedIndexChanged += DomainComboBox_SelectedIndexChanged;
+
+			Button OK = new()
+			{
+				Anchor = AnchorStyles.Bottom | AnchorStyles.Left,
+				Location = new(12, 260),
+				Size = new(75, 23),
+				TabIndex = 30,
+				Text = "OK",
+				UseVisualStyleBackColor = true,
+			};
+			OK.Click += Ok_Click;
+			Button Cancel = new()
+			{
+				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
+				DialogResult = DialogResult.Cancel,
+				Location = new(123, 260),
+				Size = new(75, 23),
+				TabIndex = 35,
+				Text = "Cancel",
+				UseVisualStyleBackColor = true,
+			};
+			Cancel.Click += Cancel_Click;
+			AcceptButton = OK;
+			AutoScaleDimensions = new(6F, 13F);
+			AutoScaleMode = AutoScaleMode.Font;
+			CancelButton = Cancel;
+			ClientSize = new(213, 296);
+			Controls.Add(BigEndianCheckBox);
+			Controls.Add(DisplayTypeLael);
+			Controls.Add(DisplayTypeDropDown);
+			Controls.Add(label3);
+			Controls.Add(SizeDropDown);
+			Controls.Add(label6);
+			Controls.Add(DomainDropDown);
+			Controls.Add(Cancel);
+			Controls.Add(OK);
+			Controls.Add(NotesBox);
+			Controls.Add(AddressBox);
+			Controls.Add(label2);
+			Controls.Add(label1);
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			MaximizeBox = false;
+			MinimizeBox = false;
+			Name = nameof(WatchEditor);
+			StartPosition = FormStartPosition.CenterParent;
+			Text = "New Watch";
+			Load += RamWatchNewWatch_Load;
+
+			ResumeLayout(performLayout: false);
+			PerformLayout();
 		}
 
 		private void RamWatchNewWatch_Load(object sender, EventArgs e)
