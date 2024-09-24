@@ -422,37 +422,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 		private int _h06;
 
-		/*
-		/// <summary>
-		/// Simulates the internal 6bit INT counter (R52 - R is for Raster)
-		/// This is incremented at the end of every HSYNC signal from the CRTC
-		/// On all CRTCs, R52 interrupts always start 1µs after the end of an HSYNC
-		/// But on CRTCs 3/4, HSYNCs occur 1µs later than on CRTCs 0/1/2. Which means that on CRTCs 3/4,
-		/// interrupts start 1µs later than on CRTCs 0/1/2.
-		/// </summary>		
-		private int InterruptCounter
-		{
-			get => _interruptCounter & 0x3F;
-			set
-			{
-				_interruptCounter = value & 0x3F;
-
-				// When the counter equals "52", it is cleared to "0" and the Gate-Array will issue a interrupt request to the Z80,
-				// the interrupt request remains active for 1.4us (22.4 gate array cycles)
-				if (_interruptCounter >= 52)
-				{
-					_interruptCounter = 0;
-
-					// interrupt should be raised
-					CPU.FlagI = true;
-					_holdingInterrupt = true;
-					_interruptHoldCounter = 0;
-				}
-			}
-		}
-		private int _interruptCounter;
-		*/
-
 
 		public GateArray(CPCBase machine, GateArrayType gateArrayType)
 		{
@@ -511,9 +480,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				// vsync is active - count hsyncs
 				V26++;
 			}
-
-			// latch screenmode
-			//_screenMode = (byte)(_RMR & 0x03);
 		}
 
 		/// <summary>
@@ -572,6 +538,21 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private ushort[] _videoAddr = new ushort[2]; 
 
 
+		private byte[] _videoDataBuffer = new byte[64];
+		private int VideoDataPntr
+		{
+			get => _videoDataPntr & 0x3F;
+			set => _videoDataPntr = value & 0x3F;
+		}
+		private int _videoDataPntr = 0;
+
+		private void LatchVideoByte(byte data)
+		{
+			VideoDataPntr++;
+			_videoDataBuffer[VideoDataPntr] = data;
+		}
+		
+
 		/// <summary>
 		/// Gate array is clocked at 16MHz (which is also the pixel clock)
 		/// It implements a 4-phase clock that is in charge of clocking the following devices:
@@ -593,7 +574,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// Gatearray should be constantly outputting a single pixel of video data ever 1/16th of a microsecond
 			// (so every 1 GA clock cycle)
 			// We will do this for now to get the accuracy right, but will probably need to optimise this down the line
-			OutputPixel(0);
+			//OutputPixel(0);
 
 			// Based on timing oscilloscope traces from 
 			// https://bread80.com
@@ -612,6 +593,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					break;
 
 				case 0:
+
+					OutputByte(0);
+
 					// READY HIGH (Z80 /WAIT is inactive)
 					// /RAS LOW
 
@@ -627,8 +611,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					// /CAS_ADDR LOW
 
 					// RAM is outputting video data and the gatearray should be latching it in
-					_videoData[1] = _videoDataByte2;
-					_videoDataByte2 = _machine.FetchScreenMemory(CRTC.MA_Address);
+					LatchVideoByte(_machine.FetchScreenMemory(CRTC.MA_Address));
+					//_videoData[1] = _videoDataByte2;
+					//_videoDataByte2 = _machine.FetchScreenMemory(CRTC.MA_Address);
 
 
 
@@ -677,6 +662,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					break;
 
 				case 8:
+
+					OutputByte(0);
+
 					// PHI HIGH (3)
 					if (BUSRQ > 0)
 					{
@@ -701,8 +689,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					CRTC.CLK = true;
 
 					// RAM is outputting video data and the gatearray should be latching it in
-					_videoData[0] = _videoDataByte1;
-					_videoDataByte1 = _machine.FetchScreenMemory(CRTC.MA_Address);
+					LatchVideoByte(_machine.FetchScreenMemory(CRTC.MA_Address));
+					//_videoData[0] = _videoDataByte1;
+					//_videoDataByte1 = _machine.FetchScreenMemory(CRTC.MA_Address);
 					break;
 
 				case 12:
@@ -734,6 +723,144 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			GAClockCounter++;
 		}
+
+		private void OutputByte(int byteOffset)
+		{
+			int pen = 0;
+			int colour = 0;
+
+			var dataByte = _videoDataBuffer[VideoDataPntr + byteOffset];
+
+			for (int pixIndex = 0; pixIndex < 8; pixIndex++)
+			{
+				if (C_VSYNC_Black)
+				{
+					colour = 0;
+				}
+				else if (C_HSYNC_Black)
+				{
+					colour = 0;
+				}
+				else if (!CRTC.DISPTMG)
+				{
+					colour = CPCHardwarePalette[_colourRegisters[16]];
+				}
+				else if (CRTC.DISPTMG)
+				{
+					// http://www.cpcmania.com/Docs/Programming/Painting_pixels_introduction_to_video_memory.htm
+					switch (_screenMode)
+					{
+						// Mode 0, 4-bits per pixel, 160x200 resolution, 16 colours
+						// ------------------------------------------------------------------
+						// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+						// Pixel:			|  0  |  1  |  0  |  1  |  0  |  1  |  0  |  1  |
+						// Pixel Bit Enc.:	|  0  |  0  |  2  |  2  |  1  |  1  |  3  |  3  |
+						// Pixel Timing:	|           0           |           1           |
+						// ------------------------------------------------------------------
+						case 0:
+							pen = pixIndex < 4
+								? ((dataByte & 0x80) >> 7) | ((dataByte & 0x08) >> 2) | ((dataByte & 0x20) >> 3) | ((dataByte & 0x02) << 2)
+								: ((dataByte & 0x40) >> 6) | ((dataByte & 0x04) >> 1) | ((dataByte & 0x10) >> 2) | ((dataByte & 0x01) << 3);
+							break;
+
+						// Mode 1, 2-bits per pixel, 320x200 resolution, 4 colours
+						// ------------------------------------------------------------------
+						// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+						// Pixel:			|  0  |  1  |  2  |  3  |  0  |  1  |  2  |  3  |
+						// Pixel Bit Enc.:	|  0  |  0  |  0  |  0  |  1  |  1  |  1  |  1  |
+						// Pixel Timing:	|     0     |     1     |	  2     |     3     |
+						// ------------------------------------------------------------------
+						case 1:
+							switch (pixIndex)
+							{
+								// pixel 0
+								case 0:
+								case 1:
+									pen = ((dataByte & 0x80) >> 7) | ((dataByte & 0x08) >> 2);
+									break;
+
+								case 2:
+								case 3:
+									pen = ((dataByte & 0x40) >> 6) | ((dataByte & 0x04) >> 1);
+									break;
+
+								case 4:
+								case 5:
+									pen = ((dataByte & 0x20) >> 5) | (dataByte & 0x02);
+									break;
+
+								case 6:
+								case 7:
+									pen = ((dataByte & 0x10) >> 4) | ((dataByte & 0x01) << 1);
+									break;
+
+							}
+							break;
+
+						// Mode 2, 1-bit per pixel, 640x200 resolution, 2 colours
+						// ------------------------------------------------------------------
+						// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+						// Pixel:			|  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
+						// Pixel Bit Enc.:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+						// Pixel Timing:	|  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
+						case 2:
+							switch (pixIndex)
+							{
+								case 0:
+									pen = dataByte.Bit(7) ? 1 : 0;
+									break;
+
+								case 1:
+									pen = dataByte.Bit(6) ? 1 : 0;
+									break;
+
+								case 2:
+									pen = dataByte.Bit(5) ? 1 : 0;
+									break;
+
+								case 3:
+									pen = dataByte.Bit(4) ? 1 : 0;
+									break;
+
+								case 4:
+									pen = dataByte.Bit(3) ? 1 : 0;
+									break;
+
+								case 5:
+									pen = dataByte.Bit(2) ? 1 : 0;
+									break;
+
+								case 6:
+									pen = dataByte.Bit(1) ? 1 : 0;
+									break;
+
+								case 7:
+									pen = dataByte.Bit(0) ? 1 : 0;
+									break;
+							}
+							break;
+
+						// Mode 3, 2-bits per pixel, 160x200 resolution, 4 colours (undocumented)
+						// ------------------------------------------------------------------
+						// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+						// Pixel:			|  0  |  1  |  x  |  x  |  0  |  1  |  x  |  x  |
+						// Pixel Bit Enc.:	|  0  |  0  |  x  |  x  |  1  |  1  |  x  |  x  |
+						// Pixel Timing:	|           0           |           1           |
+						// ------------------------------------------------------------------
+						case 3:
+							pen = pixIndex < 4
+								? ((dataByte & 0x80) >> 7) | ((dataByte & 0x08) >> 2)
+								: ((dataByte & 0x40) >> 6) | ((dataByte & 0x04) >> 1);
+							break;
+					}
+
+					colour = CPCHardwarePalette[_colourRegisters[pen]];
+				}
+
+				CRT.VideoClock(colour, -1, C_HSYNC, C_VSYNC);
+			}
+		}
+		
 
 		/// <summary>
 		/// Outputs a single pixel to the monitor at 16MHz

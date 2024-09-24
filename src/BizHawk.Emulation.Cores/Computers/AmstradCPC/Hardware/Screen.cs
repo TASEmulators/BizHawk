@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The scanline on which VSYNC starts
 		/// </summary>
-		private const int DISPLAY_END_LINE = 312 * 2;
+		private const int DISPLAY_END_LINE = (312 - 6) * 2;
 
 		/// <summary>
 		/// The number or pixels being rendered every microsecond
@@ -79,6 +79,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public CRTScreen(ScreenType screenType)
 		{
 			ScreenType = screenType;
+
+			TrimLeft = 0;
+			TrimTop = 39;
+			TrimRight = 210;
+			TrimBottom = 11;
 		}
 
 		/// <summary>
@@ -93,7 +98,94 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		private bool _isVsync;
 		private bool _isHsync;
-		
+		private int _latchedHorPixelPos;
+
+		public void VideoClock_(int colour, int field, bool cHsync = false, bool cVsync = false)
+		{
+			_gunPosH++;
+
+			// enforce horiztonal wrap-around
+			_gunPosH %= TOTAL_PIXELS;
+
+			if (_gunPosH == 0)
+			{
+				// end of scanline
+				_gunPosV++;
+
+				if (_gunPosV == DISPLAY_END_LINE)
+				{
+					// monitor VSYNC starts
+					_isVsync = true;
+
+					// latch horizonal position
+					// During vertical flyback the beam traverses diagonally from bottom left, to middle right, to top left,
+					// so when vsync completes, the beam is at the same horizontal position as it was when vsync started
+					_latchedHorPixelPos = _gunPosH;
+				}
+
+				// enforce vertical wraparound
+				_gunPosV %= TOTAL_LINES;
+
+				if (_gunPosV == 0)
+				{
+					// monitor vsync is over
+					_isVsync = false;
+
+					// signal bizhawk frame end
+					FrameEnd = true;
+
+					_gunPosH = _latchedHorPixelPos;
+				}
+			}
+
+			if (cVsync)
+			{
+				// vsync signal is being received - turn off the beam as the flyback happens
+				// and the CRT will attempt to syncronise with the signal
+				_isVsync = true;
+				_latchedHorPixelPos = _gunPosH;
+			}
+			else if (cHsync)
+			{
+				// hsync signal is being received - turn off the beam as the flyback happens
+				// and the CRT will attempt to syncronise with the signal
+				_isHsync = true;
+			}
+
+			if (_isVsync && !cVsync)
+			{
+				// incoming vsync signal has ended
+				// CRT should be vertically syncronised with the signal
+				_isVsync = false;
+				_gunPosV = 0;
+				FrameEnd = true;
+			}
+			else if (_isHsync && !cHsync)
+			{
+				// incoming hsync signal has ended
+				// CRT should be horizontally syncronised with the signal
+				_isHsync = false;
+			}
+
+			if (_isVsync || _isHsync)
+			{
+				// crt beam is off
+				colour = 0;
+			}
+
+			var currPos = (_gunPosV * TOTAL_PIXELS) + _gunPosH;
+			var nextPos = ((_gunPosV + 1) * TOTAL_PIXELS) + _gunPosH;
+
+			if (currPos < _frameBuffer.Length)
+			{
+				_frameBuffer[currPos] = colour;
+			}
+
+			if (field == -1 && nextPos < _frameBuffer.Length)
+			{
+				_frameBuffer[nextPos] = colour;
+			}
+		}
 
 		/// <summary>
 		/// Should be called at the pixel clock rate (in the case of the Amstrad CPC, 16MHz)
@@ -118,7 +210,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						case 1:
 							_gunPosV += field;
 							break;
-							
+
 						default:
 							break;
 					}
@@ -162,16 +254,20 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			if (cVsync || cHsync)
 			{
 				// crt beam is off
-				_frameBuffer[(_gunPosV * TOTAL_PIXELS) + _gunPosH] = 0;
-				if (field == -1)
-					_frameBuffer[((_gunPosV + 1) * TOTAL_PIXELS) + _gunPosH] = 0;
+				colour = 0;
 			}
-			else
+
+			var currPos = (_gunPosV * TOTAL_PIXELS) + _gunPosH;
+			var nextPos = ((_gunPosV + 1) * TOTAL_PIXELS) + _gunPosH;
+
+			if (currPos < _frameBuffer.Length)
 			{
-				// beam should be painting
-				_frameBuffer[(_gunPosV * TOTAL_PIXELS) + _gunPosH] = colour;
-				if (field == -1)
-					_frameBuffer[((_gunPosV + 1) * TOTAL_PIXELS) + _gunPosH] = colour;
+				_frameBuffer[currPos] = colour;
+			}
+
+			if (field == -1 && nextPos < _frameBuffer.Length)
+			{
+				_frameBuffer[nextPos] = colour;
 			}
 		}
 
@@ -181,60 +277,60 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_gunPosV = 0;
 		}
 
+		private int HDisplayable => TOTAL_PIXELS - TrimLeft - TrimRight;
+		private int VDisplayable => TOTAL_LINES - TrimTop - TrimBottom;
+
+		private int TrimLeft;
+		private int TrimRight;
+		private int TrimTop;
+		private int TrimBottom;
+
+		/// <summary>
+		/// Working buffer that encapsulates the entire PAL frame time
+		/// </summary>
+		private int[] _frameBuffer = new int[LINE_PERIOD * PIXEL_TIME * TOTAL_LINES];
+
 
 		public int BackgroundColor => 0;
 		public int VsyncNumerator => 16_000_000;        // pixel clock
 		public int VsyncDenominator => 319_488;         // 1024 * 312
 
-		public int BufferWidth => TOTAL_PIXELS; // - L_TRIM - R_TRIM; // VISIBLE_PIXEL_WIDTH;
-		public int BufferHeight => TOTAL_LINES; // - T_TRIM - B_TRIM; // VISIBLE_PIXEL_HEIGHT;
-		public int VirtualWidth => BufferWidth;
-		public int VirtualHeight => BufferHeight;
+		public int BufferWidth => HDisplayable;
+		public int BufferHeight => VDisplayable;
+		public int VirtualWidth => HDisplayable;
+		public int VirtualHeight => (int)(VDisplayable * GetVerticalModifier(HDisplayable, VDisplayable, 4.0 / 3.0));
 
-		private int L_TRIM = 0;
-		private int T_TRIM = 0;
-		private int R_TRIM = 30;
-		private int B_TRIM = 0;
+		
 
-		/// <summary>
-		/// Working buffer that encapsulates the entire frame time
-		/// </summary>
-		private int[] _frameBuffer = new int[LINE_PERIOD * PIXEL_TIME * TOTAL_LINES];
 
-		/// <summary>
-		/// Output buffer sent to the video renderer
-		/// </summary>
-		private int[] _outputBuff = new int[VISIBLE_PIXEL_WIDTH * VISIBLE_PIXEL_HEIGHT];
+		public int[] GetVideoBuffer() => ClampBuffer(_frameBuffer, TOTAL_PIXELS, TOTAL_LINES, TrimLeft, TrimTop, TrimRight, TrimBottom);
 
-		public int[] GetVideoBuffer()
+		private static int[] ClampBuffer(int[] buffer, int originalWidth, int originalHeight, int trimLeft, int trimTop, int trimRight, int trimBottom)
 		{
-			return _frameBuffer; // TrimFrameBuffer(L_TRIM, R_TRIM, T_TRIM, B_TRIM);
+			var newWidth = originalWidth - trimLeft - trimRight;
+			var newHeight = originalHeight - trimTop - trimBottom;
+			var newBuffer = new int[newWidth * newHeight];
 
-			for (int y = 0; y < VISIBLE_PIXEL_HEIGHT; y++)
+			for (var y = 0; y < newHeight; y++)
 			{
-				int sourceIndex = (DISPLAY_START_LINE + y) * LINE_PERIOD * PIXEL_TIME + HSYNC_PERIOD + BACK_PORCH_PERIOD;
-				int destIndex = y * VISIBLE_PIXEL_WIDTH;
-				Array.Copy(_frameBuffer, sourceIndex, _outputBuff, destIndex, VISIBLE_PIXEL_WIDTH);
+				for (var x = 0; x < newWidth; x++)
+				{
+					var originalIndex = (y + trimTop) * originalWidth + (x + trimLeft);
+					var newIndex = y * newWidth + x;
+					newBuffer[newIndex] = buffer[originalIndex];
+				}
 			}
 
-			return _outputBuff;
+			return newBuffer;
 		}
 
-		public int[] TrimFrameBuffer(int left, int right, int top, int bottom)
+		private static double GetVerticalModifier(int bufferWidth, int bufferHeight, double targetAspectRatio)
 		{
-			int newWidth = BufferWidth - left - right;
-			int newHeight = BufferHeight - top - bottom;
-			int[] trimmedBuffer = new int[newWidth * newHeight];
-
-			for (int y = 0; y < newHeight; y++)
-			{
-				int sourceIndex = (top + y) * BufferWidth + left;
-				int destIndex = y * newWidth;
-				Array.Copy(_frameBuffer, sourceIndex, trimmedBuffer, destIndex, newWidth);
-			}
-
-			return trimmedBuffer;
+			var currentAspectRatio = (double)bufferWidth / bufferHeight;
+			var verticalModifier = currentAspectRatio / targetAspectRatio;
+			return verticalModifier;
 		}
+
 
 		public void SyncState(Serializer ser)
 		{
