@@ -45,71 +45,90 @@ namespace BizHawk.Client.EmuHawk
 
 			SuspendLayout();
 
-			LocLabelEx label1 = new() { Location = new(9, 9), Text = "Address: 0x" };
+			TableLayoutPanel tlpMain = new()
+			{
+				ColumnStyles = { new(), new() },
+				Location = new(4, 4),
+				RowStyles = { new(), new(), new(), new(), new(), new() },
+				Size = new(200, 160),
+			};
+			var row = 0;
+
+			LocLabelEx label1 = new() { Anchor = AnchorStyles.Right, Text = "Address:" };
 			AddressBox = new()
 			{
 				CharacterCasing = CharacterCasing.Upper,
-				Location = new(69, 6),
 				MaxLength = 8,
 				Nullable = false,
 				Size = new(100, 20),
-				TabIndex = 1,
 				Text = "00000000",
 			};
+			SingleRowFLP flpAddr = new()
+			{
+				Controls = { new LabelEx { Text = "0x" }, AddressBox },
+			};
+			tlpMain.Controls.Add(label1, row: row, column: 0);
+			tlpMain.Controls.Add(flpAddr, row: row, column: 1);
+			row++;
 
-			LocLabelEx label2 = new() { Location = new(9, 35), Text = "Notes:" };
-			NotesBox = new() { Location = new(69, 32), MaxLength = 256, Size = new(100, 20), TabIndex = 5 };
+			LocLabelEx label2 = new() { Anchor = AnchorStyles.Right, Text = "Notes:" };
+			NotesBox = new() { MaxLength = 256, Size = new(120, 20) };
+			tlpMain.Controls.Add(label2, row: row, column: 0);
+			tlpMain.Controls.Add(NotesBox, row: row, column: 1);
+			row++;
 
-			LocLabelEx label3 = new() { Location = new(9, 64), Text = "Size" };
+			LocLabelEx label3 = new() { Anchor = AnchorStyles.Right, Text = "Size:" };
 			SizeDropDown = new()
 			{
 				DropDownStyle = ComboBoxStyle.DropDownList,
 				FormattingEnabled = true,
 				Items = { "1 Byte", "2 Byte", "4 Byte" },
-				Location = new(10, 80),
-				Size = new(141, 21),
-				TabIndex = 10,
+				Size = new(120, 21),
 			};
 			SizeDropDown.SelectedIndexChanged += SizeDropDown_SelectedIndexChanged;
+			tlpMain.Controls.Add(label3, row: row, column: 0);
+			tlpMain.Controls.Add(SizeDropDown, row: row, column: 1);
+			row++;
 
-			LocLabelEx DisplayTypeLabel = new() { Location = new(11, 106), Text = "Display Type" };
+			LocLabelEx DisplayTypeLabel = new() { Anchor = AnchorStyles.Right, Text = "Display Type:" };
 			DisplayTypeDropDown = new()
 			{
 				DropDownStyle = ComboBoxStyle.DropDownList,
 				FormattingEnabled = true,
-				Location = new(12, 122),
-				Size = new(141, 21),
-				TabIndex = 15,
+				Size = new(120, 21),
 			};
 			DisplayTypeDropDown.SelectedIndexChanged += DisplayTypeDropDown_SelectedIndexChanged;
+			tlpMain.Controls.Add(DisplayTypeLabel, row: row, column: 0);
+			tlpMain.Controls.Add(DisplayTypeDropDown, row: row, column: 1);
+			row++;
 
 			BigEndianCheckBox = new()
 			{
 				AutoSize = true,
-				Location = new(14, 159),
 				Size = new(77, 17),
-				TabIndex = 20,
 				Text = "Big Endian",
 				UseVisualStyleBackColor = true,
 			};
+			tlpMain.Controls.Add(BigEndianCheckBox, row: row, column: 1);
+			row++;
 
-			LocLabelEx label6 = new() { Location = new(11, 214), Text = "Memory Domain" };
+			LocLabelEx label6 = new() { Anchor = AnchorStyles.Right | AnchorStyles.Top, Text = "Mem Domain:" };
 			DomainDropDown = new()
 			{
 				DropDownStyle = ComboBoxStyle.DropDownList,
 				FormattingEnabled = true,
-				Location = new(12, 230),
-				Size = new(141, 21),
-				TabIndex = 25,
+				Size = new(120, 21),
 			};
 			DomainDropDown.SelectedIndexChanged += DomainComboBox_SelectedIndexChanged;
+			tlpMain.Controls.Add(label6, row: row, column: 0);
+			tlpMain.Controls.Add(DomainDropDown, row: row, column: 1);
+			row++;
 
 			Button OK = new()
 			{
 				Anchor = AnchorStyles.Bottom | AnchorStyles.Left,
 				Location = new(12, 260),
 				Size = new(75, 23),
-				TabIndex = 30,
 				Text = "OK",
 				UseVisualStyleBackColor = true,
 			};
@@ -120,7 +139,6 @@ namespace BizHawk.Client.EmuHawk
 				DialogResult = DialogResult.Cancel,
 				Location = new(123, 260),
 				Size = new(75, 23),
-				TabIndex = 35,
 				Text = "Cancel",
 				UseVisualStyleBackColor = true,
 			};
@@ -130,19 +148,9 @@ namespace BizHawk.Client.EmuHawk
 			AutoScaleMode = AutoScaleMode.Font;
 			CancelButton = Cancel;
 			ClientSize = new(213, 296);
-			Controls.Add(BigEndianCheckBox);
-			Controls.Add(DisplayTypeLabel);
-			Controls.Add(DisplayTypeDropDown);
-			Controls.Add(label3);
-			Controls.Add(SizeDropDown);
-			Controls.Add(label6);
-			Controls.Add(DomainDropDown);
-			Controls.Add(Cancel);
+			Controls.Add(tlpMain);
 			Controls.Add(OK);
-			Controls.Add(NotesBox);
-			Controls.Add(AddressBox);
-			Controls.Add(label2);
-			Controls.Add(label1);
+			Controls.Add(Cancel);
 			FormBorderStyle = FormBorderStyle.FixedDialog;
 			MaximizeBox = false;
 			MinimizeBox = false;
