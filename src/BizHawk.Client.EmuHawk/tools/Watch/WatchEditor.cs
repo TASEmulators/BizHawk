@@ -72,12 +72,11 @@ namespace BizHawk.Client.EmuHawk
 			};
 			SizeDropDown.SelectedIndexChanged += SizeDropDown_SelectedIndexChanged;
 
-			LocLabelEx DisplayTypeLael = new() { Location = new(11, 106), Text = "Display Type" };
+			LocLabelEx DisplayTypeLabel = new() { Location = new(11, 106), Text = "Display Type" };
 			DisplayTypeDropDown = new()
 			{
 				DropDownStyle = ComboBoxStyle.DropDownList,
 				FormattingEnabled = true,
-				Items = { "1 Byte", "2 Byte", "4 Byte" },
 				Location = new(12, 122),
 				Size = new(141, 21),
 				TabIndex = 15,
@@ -132,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 			CancelButton = Cancel;
 			ClientSize = new(213, 296);
 			Controls.Add(BigEndianCheckBox);
-			Controls.Add(DisplayTypeLael);
+			Controls.Add(DisplayTypeLabel);
 			Controls.Add(DisplayTypeDropDown);
 			Controls.Add(label3);
 			Controls.Add(SizeDropDown);
