@@ -54,6 +54,18 @@ namespace BizHawk.Client.EmuHawk
 			};
 			var row = 0;
 
+			LocLabelEx label6 = new() { Anchor = AnchorStyles.Right, Text = "Mem Domain:" };
+			DomainDropDown = new()
+			{
+				DropDownStyle = ComboBoxStyle.DropDownList,
+				FormattingEnabled = true,
+				Size = new(120, 21),
+			};
+			DomainDropDown.SelectedIndexChanged += DomainComboBox_SelectedIndexChanged;
+			tlpMain.Controls.Add(label6, row: row, column: 0);
+			tlpMain.Controls.Add(DomainDropDown, row: row, column: 1);
+			row++;
+
 			LocLabelEx label1 = new() { Anchor = AnchorStyles.Right, Text = "Address:" };
 			AddressBox = new()
 			{
@@ -71,12 +83,6 @@ namespace BizHawk.Client.EmuHawk
 			tlpMain.Controls.Add(flpAddr, row: row, column: 1);
 			row++;
 
-			LocLabelEx label2 = new() { Anchor = AnchorStyles.Right, Text = "Notes:" };
-			NotesBox = new() { MaxLength = 256, Size = new(120, 20) };
-			tlpMain.Controls.Add(label2, row: row, column: 0);
-			tlpMain.Controls.Add(NotesBox, row: row, column: 1);
-			row++;
-
 			LocLabelEx label3 = new() { Anchor = AnchorStyles.Right, Text = "Size:" };
 			SizeDropDown = new()
 			{
@@ -88,6 +94,17 @@ namespace BizHawk.Client.EmuHawk
 			SizeDropDown.SelectedIndexChanged += SizeDropDown_SelectedIndexChanged;
 			tlpMain.Controls.Add(label3, row: row, column: 0);
 			tlpMain.Controls.Add(SizeDropDown, row: row, column: 1);
+			row++;
+
+			//TODO merge into size dropdown (event handlers will need rewriting)
+			BigEndianCheckBox = new()
+			{
+				AutoSize = true,
+				Size = new(77, 17),
+				Text = "Big Endian",
+				UseVisualStyleBackColor = true,
+			};
+			tlpMain.Controls.Add(BigEndianCheckBox, row: row, column: 1);
 			row++;
 
 			LocLabelEx DisplayTypeLabel = new() { Anchor = AnchorStyles.Right, Text = "Display Type:" };
@@ -102,26 +119,10 @@ namespace BizHawk.Client.EmuHawk
 			tlpMain.Controls.Add(DisplayTypeDropDown, row: row, column: 1);
 			row++;
 
-			BigEndianCheckBox = new()
-			{
-				AutoSize = true,
-				Size = new(77, 17),
-				Text = "Big Endian",
-				UseVisualStyleBackColor = true,
-			};
-			tlpMain.Controls.Add(BigEndianCheckBox, row: row, column: 1);
-			row++;
-
-			LocLabelEx label6 = new() { Anchor = AnchorStyles.Right | AnchorStyles.Top, Text = "Mem Domain:" };
-			DomainDropDown = new()
-			{
-				DropDownStyle = ComboBoxStyle.DropDownList,
-				FormattingEnabled = true,
-				Size = new(120, 21),
-			};
-			DomainDropDown.SelectedIndexChanged += DomainComboBox_SelectedIndexChanged;
-			tlpMain.Controls.Add(label6, row: row, column: 0);
-			tlpMain.Controls.Add(DomainDropDown, row: row, column: 1);
+			LocLabelEx label2 = new() { Anchor = AnchorStyles.Right | AnchorStyles.Top, Text = "Notes:" };
+			NotesBox = new() { MaxLength = 256, Size = new(120, 20) };
+			tlpMain.Controls.Add(label2, row: row, column: 0);
+			tlpMain.Controls.Add(NotesBox, row: row, column: 1);
 			row++;
 
 			Button OK = new()
