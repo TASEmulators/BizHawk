@@ -832,7 +832,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutofireMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new AutofireConfig(Config, InputManager.AutoFireController, InputManager.AutofireStickyXorAdapter);
+			using var form = new AutofireConfig(Config, InputManager.AutoFireController, InputManager.StickyAutofireController);
 			if (this.ShowDialogWithTempMute(form).IsOk()) AddOnScreenMessage("Autofire settings saved");
 		}
 

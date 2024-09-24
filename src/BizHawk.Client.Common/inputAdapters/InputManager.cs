@@ -25,12 +25,11 @@ namespace BizHawk.Client.Common
 
 		private UdlrControllerAdapter UdLRControllerAdapter { get; } = new UdlrControllerAdapter();
 
-		public AutoFireStickyXorAdapter AutofireStickyXorAdapter { get; private set; } = new AutoFireStickyXorAdapter();
+		public StickyHoldController StickyHoldController { get; private set; }
+		public StickyAutofireController StickyAutofireController { get; private set; }
 
-		/// <summary>
-		/// provides an opportunity to mutate the player's input in an autohold style
-		/// </summary>
-		public StickyXorAdapter StickyXorAdapter { get; } = new StickyXorAdapter();
+		// StickyHold OR StickyAutofire
+		public IController StickyController { get; private set; }
 
 		/// <summary>
 		/// Used to AND to another controller, used for <see cref="IJoypadApi.Set(IReadOnlyDictionary{string, bool}, int?)">JoypadApi.Set</see>
@@ -50,10 +49,13 @@ namespace BizHawk.Client.Common
 
 		public Func<(Point Pos, long Scroll, bool LMB, bool MMB, bool RMB, bool X1MB, bool X2MB)> GetMainFormMouseInfo { get; set; }
 
+		// TODO does this function make sense? Shouldn't SyncControls be called instead, even for the NullEmulator case?
 		public void ResetMainControllers(AutofireController nullAutofireController)
 		{
 			ActiveController = new Controller(NullController.Instance.Definition);
 			AutoFireController = nullAutofireController;
+			StickyHoldController = null;
+			StickyAutofireController = null;
 		}
 
 		public void SyncControls(IEmulator emulator, IMovieSession session, Config config)
@@ -63,6 +65,8 @@ namespace BizHawk.Client.Common
 
 			ActiveController = BindToDefinition(def, config.AllTrollers, config.AllTrollersAnalog, config.AllTrollersFeedbacks);
 			AutoFireController = BindToDefinitionAF(emulator, config.AllTrollersAutoFire, config.AutofireOn, config.AutofireOff);
+			StickyHoldController = new StickyHoldController(def);
+			StickyAutofireController = new StickyAutofireController(def, config.AutofireOn, config.AutofireOff);
 
 			// allow propagating controls that are in the current controller definition but not in the prebaked one
 			// these two lines shouldn't be required anymore under the new system? --natt 2013
@@ -74,24 +78,22 @@ namespace BizHawk.Client.Common
 			UdLRControllerAdapter.Source = ActiveController.Or(AutoFireController);
 			UdLRControllerAdapter.OpposingDirPolicy = config.OpposingDirPolicy;
 
-			// these are all reference types which don't change so this SHOULD be a no-op, but I'm not brave enough to move it to the ctor --yoshi
-			StickyXorAdapter.Source = UdLRControllerAdapter;
-			AutofireStickyXorAdapter = new() { Source = StickyXorAdapter };
+			StickyController = StickyHoldController.Or(StickyAutofireController);
 
-			session.MovieIn = AutofireStickyXorAdapter;
-			session.StickySource = AutofireStickyXorAdapter;
+			session.MovieIn = UdLRControllerAdapter.Xor(StickyController);
+			session.StickySource = StickyController;
 			ControllerOutput.Source = session.MovieOut;
 		}
 
 		public void ToggleStickies()
 		{
-			StickyXorAdapter.MassToggleStickyState(ActiveController.PressedButtons);
-			AutofireStickyXorAdapter.MassToggleStickyState(AutoFireController.PressedButtons);
+			StickyHoldController.MassToggleStickyState(ActiveController.PressedButtons);
+			StickyAutofireController.MassToggleStickyState(AutoFireController.PressedButtons); // does this even make sense?
 		}
 
 		public void ToggleAutoStickies()
 		{
-			AutofireStickyXorAdapter.MassToggleStickyState(ActiveController.PressedButtons);
+			StickyAutofireController.MassToggleStickyState(ActiveController.PressedButtons);
 		}
 
 		private static Controller BindToDefinition(

@@ -54,17 +54,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void SetFromSticky(IStickyAdapter controller)
-		{
-			foreach (var button in Definition.BoolButtons)
-			{
-				_myBoolButtons[button] = controller.IsSticky(button);
-			}
-
-			// axes don't have sticky logic, so latch default value
-			foreach (var (k, v) in Definition.Axes) _myAxisControls[k] = v.Neutral;
-		}
-
 		public void SetFromMnemonic(string mnemonic)
 		{
 			if (string.IsNullOrWhiteSpace(mnemonic)) return;

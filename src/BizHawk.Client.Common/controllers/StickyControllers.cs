@@ -1,42 +1,36 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public interface IStickyAdapter : IInputAdapter
-	{
-		bool IsSticky(string buttonOrAxis);
-	}
-
-	public class StickyXorAdapter : IStickyAdapter
+	public class StickyHoldController : IController
 	{
 		private readonly HashSet<string> _buttonHolds = [ ];
-		// if SetAxis() is called (typically virtual pads), then that axis will entirely override the Source input
-		// otherwise, the source is passed thru.
 		private readonly Dictionary<string, int> _axisHolds = [ ];
 
-		public IController Source { get; set; }
-		public ControllerDefinition Definition => Source.Definition;
+		public ControllerDefinition Definition { get; }
 
-		public IReadOnlyCollection<string> CurrentStickies => _buttonHolds; // the callsite doesn't care about sticky axes
+		public IReadOnlyCollection<string> CurrentHolds => _buttonHolds; // the callsite doesn't care about sticky axes
+
+		public StickyHoldController(ControllerDefinition definition)
+		{
+			Definition = definition;
+		}
 
 		public bool IsPressed(string button)
 		{
-			var source = Source.IsPressed(button);
-			source ^= _buttonHolds.Contains(button);
-			return source;
+			return _buttonHolds.Contains(button);
 		}
 
 		public int AxisValue(string name)
 		{
-			return _axisHolds.TryGetValue(name, out int axisValue) ? axisValue : Source.AxisValue(name);
+			return _axisHolds.TryGetValue(name, out int axisValue) ? axisValue : Definition.Axes[name].Neutral;
 		}
 
-		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
-
-		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => throw new NotSupportedException();
+		public void SetHapticChannelStrength(string name, int strength) => throw new NotSupportedException();
 
 		public void SetButtonHold(string button, bool enabled)
 		{
@@ -90,9 +84,9 @@ namespace BizHawk.Client.Common
 		}
 	}
 
-	public class AutoFireStickyXorAdapter : IStickyAdapter, IInputAdapter
+	public class StickyAutofireController : IController
 	{
-		// TODO: Change the AutoHold adapter to be one of these, with an 'Off' value of 0?
+		// TODO: Change the AutoHold controller to be one of these, with an 'Off' value of 0?
 		// Probably would have slightly lower performance, but it seems weird to have such a similar class that is only used once.
 		private int _onFrames;
 		private int _offFrames;
@@ -100,41 +94,30 @@ namespace BizHawk.Client.Common
 		private readonly Dictionary<string, AutoPatternBool> _boolPatterns = [ ];
 		private readonly Dictionary<string, AutoPatternAxis> _axisPatterns = [ ];
 
-		public IController Source { get; set; }
-		public ControllerDefinition Definition => Source.Definition;
+		public ControllerDefinition Definition { get; }
 
-		public IReadOnlyCollection<string> CurrentStickies => _boolPatterns.Keys; // the callsite doesn't care about sticky axes
+		public IReadOnlyCollection<string> CurrentAutofires => _boolPatterns.Keys; // the callsite doesn't care about sticky axes
 
-		public AutoFireStickyXorAdapter()
+		public StickyAutofireController(ControllerDefinition definition, int onFrames = 1, int offFrames = 1)
 		{
-			_onFrames = 1;
-			_offFrames = 1;
+			Definition = definition;
+			SetDefaultOnOffPattern(onFrames, offFrames);
 		}
 
 		public bool IsPressed(string button)
 		{
-			var source = Source.IsPressed(button);
-			bool patternValue = false;
-			if (_boolPatterns.TryGetValue(button, out var pattern))
-			{
-				patternValue = pattern.PeekNextValue();
-			}
-
-			source ^= patternValue;
-
-			return source;
+			return _boolPatterns.TryGetValue(button, out var pattern) && pattern.PeekNextValue();
 		}
 
 		public int AxisValue(string name)
 			=> _axisPatterns.TryGetValue(name, out var pattern)
 				? pattern.PeekNextValue()
-				: Source.AxisValue(name);
+				: Definition.Axes[name].Neutral;
 
-		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => throw new NotSupportedException();
+		public void SetHapticChannelStrength(string name, int strength) => throw new NotSupportedException();
 
-		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
-
-		public void SetOnOffPatternFromConfig(int onFrames, int offFrames)
+		public void SetDefaultOnOffPattern(int onFrames, int offFrames)
 		{
 			_onFrames = Math.Max(onFrames, 1);
 			_offFrames = Math.Max(offFrames, 1);
