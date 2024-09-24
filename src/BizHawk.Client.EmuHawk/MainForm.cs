@@ -726,16 +726,19 @@ namespace BizHawk.Client.EmuHawk
 				};
 			}
 
-			//start Lua Console if requested in the command line arguments
-			if (_argParser.luaConsole)
+			Shown += (_, _) =>
 			{
-				OpenLuaConsole();
-			}
-			//load Lua Script if requested in the command line arguments
-			if (_argParser.luaScript != null)
-			{
-				_ = Tools.LuaConsole.LoadByFileExtension(_argParser.luaScript.MakeAbsolute(), out _);
-			}
+				//start Lua Console if requested in the command line arguments
+				if (_argParser.luaConsole)
+				{
+					OpenLuaConsole();
+				}
+				//load Lua Script if requested in the command line arguments
+				if (_argParser.luaScript != null)
+				{
+					_ = Tools.LuaConsole.LoadByFileExtension(_argParser.luaScript.MakeAbsolute(), out _);
+				}
+			};
 
 			SetStatusBar();
 
