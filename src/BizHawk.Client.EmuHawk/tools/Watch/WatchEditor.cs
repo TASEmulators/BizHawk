@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 			tlpMain.Controls.Add(DisplayTypeDropDown, row: row, column: 1);
 			row++;
 
-			LocLabelEx label2 = new() { Anchor = AnchorStyles.Right | AnchorStyles.Top, Text = "Notes:" };
+			LocLabelEx label2 = new() { Anchor = AnchorStyles.Right, Text = "Notes:" };
 			NotesBox = new() { MaxLength = 256, Size = new(120, 20) };
 			tlpMain.Controls.Add(label2, row: row, column: 0);
 			tlpMain.Controls.Add(NotesBox, row: row, column: 1);
