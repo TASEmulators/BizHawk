@@ -14,9 +14,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public CPC464(AmstradCPC cpc, Z80A<AmstradCPC.CpuLink> cpu, List<byte[]> files, bool autoTape, AmstradCPC.BorderType borderType)
 		{
 			CPC = cpc;
-			CPU = cpu;			
+			CPU = cpu;
 
-			CRTC = new CRTC(0);
+			CRTC = CRTC.Create(0);
 			GateArray = new GateArray(this, GateArrayType.Amstrad40008);
 			CRTScreen = new CRTScreen(ScreenType.CTM064x);
 

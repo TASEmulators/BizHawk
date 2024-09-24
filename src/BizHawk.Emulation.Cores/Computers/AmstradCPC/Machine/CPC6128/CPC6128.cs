@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			CPC = cpc;
 			CPU = cpu;
 
-			CRTC = new CRTC(0);
+			CRTC = CRTC.Create(0);
 			GateArray = new GateArray(this, GateArrayType.Amstrad40010);
 			CRTScreen = new CRTScreen(ScreenType.CTM064x);
 
