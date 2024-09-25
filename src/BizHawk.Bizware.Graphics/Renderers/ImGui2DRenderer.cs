@@ -9,7 +9,6 @@ using System.Runtime.InteropServices;
 using ImGuiNET;
 
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 
 using SDGraphics = System.Drawing.Graphics;
 
@@ -262,7 +261,8 @@ namespace BizHawk.Bizware.Graphics
 					case DrawCallbackId.DrawString:
 					{
 						var stringArgs = (DrawStringArgs)GCHandle.FromIntPtr(cmd.UserCallbackData).Target!;
-						var brush = _resourceCache.BrushCache.GetValueOrPutNew1(stringArgs.Color);
+						var brush = _resourceCache.CachedBrush;
+						brush.Color = stringArgs.Color;
 						_stringGraphics.TextRenderingHint = stringArgs.TextRenderingHint;
 						_stringGraphics.DrawString(stringArgs.Str, stringArgs.Font, brush, stringArgs.X, stringArgs.Y, stringArgs.Format);
 

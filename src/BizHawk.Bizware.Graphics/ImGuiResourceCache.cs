@@ -14,7 +14,8 @@ namespace BizHawk.Bizware.Graphics
 
 		internal readonly IPipeline Pipeline;
 		internal readonly Dictionary<Bitmap, ITexture2D> TextureCache = [ ];
-		internal readonly Dictionary<Color, SolidBrush> BrushCache = [ ];
+
+		internal readonly SolidBrush CachedBrush = new(default);
 
 		public ImGuiResourceCache(IGL igl)
 		{
@@ -87,14 +88,8 @@ namespace BizHawk.Bizware.Graphics
 			{
 				cachedTex.Dispose();
 			}
-
-			foreach (var cachedBrush in BrushCache.Values)
-			{
-				cachedBrush.Dispose();
-			}
-
+			CachedBrush.Dispose();
 			TextureCache.Clear();
-			BrushCache.Clear();
 			Pipeline?.Dispose();
 		}
 
