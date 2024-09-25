@@ -390,7 +390,7 @@ namespace BizHawk.Client.EmuHawk
 			boxBackground.FillRectangle(GetBrush(TableHelper.SafeParseColor(backColor) ?? _defaultTextBackground.Value), rect);
 			boxBackground = Graphics.FromImage(Image);
 			boxBackground.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-			boxBackground.DrawString(message, font, new SolidBrush(TableHelper.SafeParseColor(foreColor) ?? Color.Black), x, y);
+			boxBackground.DrawString(message, font, GetBrush(TableHelper.SafeParseColor(foreColor) ?? Color.Black), x, y);
 		}
 		
 		public Point GetMouse()
