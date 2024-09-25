@@ -662,6 +662,8 @@ namespace BizHawk.Client.EmuHawk
 			HandlePaletteViewMouseMove(e.Location);
 		}
 
+		private readonly SolidBrush _brush = new(default);
+
 		private void HandlePaletteViewMouseMove(Point e)
 		{
 			if (e.X < PaletteView.ClientRectangle.Left) return;
@@ -685,18 +687,20 @@ namespace BizHawk.Client.EmuHawk
 
 			byte[] palRam = _ppu.GetPalRam();
 
+			PaletteViewer.Palette pal;
 			if (baseAddr == 0x3F00)
 			{
-				val = palRam[PaletteView.BgPalettes[column].Address];
 				ValueLabel.Text = $"ID: BG{column / 4}";
-				g.FillRectangle(new SolidBrush(PaletteView.BgPalettes[column].Color), 0, 0, 64, 64);
+				pal = PaletteView.BgPalettes[column];
 			}
 			else
 			{
-				val = palRam[PaletteView.SpritePalettes[column].Address];
 				ValueLabel.Text = $"ID: SPR{column / 4}";
-				g.FillRectangle(new SolidBrush(PaletteView.SpritePalettes[column].Color), 0, 0, 64, 64);
+				pal = PaletteView.SpritePalettes[column];
 			}
+			val = palRam[pal.Address];
+			_brush.Color = pal.Color;
+			g.FillRectangle(_brush, 0, 0, 64, 64);
 
 			g.Dispose();
 
