@@ -669,13 +669,13 @@ namespace BizHawk.Client.EmuHawk
 			var bmp = new Bitmap(pixsize, pixsize, PixelFormat.Format32bppArgb);
 			using (var g = Graphics.FromImage(bmp))
 			{
+				using SolidBrush brush = new(default);
 				for (int y = 0; y < 16; y++)
 				{
 					for (int x = 0; x < 16; x++)
 					{
 						int rgb555 = lastPalette[y * 16 + x];
-						int color = gd.Colorize(rgb555);
-						using var brush = new SolidBrush(Color.FromArgb(color));
+						brush.Color = Color.FromArgb(gd.Colorize(rgb555));
 						g.FillRectangle(brush, new Rectangle(paletteCellSpacing + x * cellTotalSize, paletteCellSpacing + y * cellTotalSize, paletteCellSize, paletteCellSize));
 					}
 				}
