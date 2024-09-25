@@ -132,7 +132,8 @@ namespace BizHawk.Client.EmuHawk
 		private int GfxToRealY(int val) =>
 			MaybeReversedInY((_rangeY.Start + ((val - PixelMinY) / ScaleY).RoundToInt()).ConstrainWithin(_rangeY));
 
-		private readonly Pen _blackPen = new Pen(Brushes.Black);
+		private readonly Pen _blackPen = Pens.Black;
+
 		private readonly Pen _bluePen = new Pen(Brushes.Blue, 2);
 		private readonly Pen _grayPen = new Pen(Brushes.Gray, 2);
 
