@@ -611,6 +611,8 @@ namespace BizHawk.Client.EmuHawk
 			return GetPaletteRegion(start, num);
 		}
 
+		private readonly Pen _pen = new(default(Color));
+
 		private void DrawPaletteRegion(Graphics g, Color color, Rectangle region)
 		{
 			int cellTotalSize = (paletteCellSize + paletteCellSpacing);
@@ -621,8 +623,8 @@ namespace BizHawk.Client.EmuHawk
 			int height = cellTotalSize * region.Height;
 
 			var rect = new Rectangle(x, y, width, height);
-			using var pen = new Pen(color);
-			g.DrawRectangle(pen, rect);
+			_pen.Color = color;
+			g.DrawRectangle(_pen, rect);
 		}
 
 		//if a tile set is being displayed, this will adapt the user's color selection into a palette to be used for rendering the tiles
