@@ -8,8 +8,9 @@ namespace BizHawk.Client.EmuHawk
 		private const int ScaleFactor = 4;
 		private const int _3DPadding = 5;
 
-		private readonly Pen _blackPen;
-		private readonly Pen _bluePen;
+		private readonly Pen _blackPen = Pens.Black;
+
+		private readonly Pen _bluePen = Pens.Cyan;
 
 		private int _maxX = 127;
 		private int _maxY = 127;
@@ -75,9 +76,6 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.Opaque, true);
 			BackColor = Color.Gray;
 			BorderStyle = BorderStyle.Fixed3D;
-
-			_blackPen = new Pen(Brushes.Black);
-			_bluePen = new Pen(Brushes.Cyan);
 
 			InitializeComponent();
 		}

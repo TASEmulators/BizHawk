@@ -140,7 +140,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private WatchSize WatchSize => (WatchSize)DataSize;
 
-		private readonly Pen _blackPen = new Pen(Color.Black);
+		private readonly Pen _blackPen = Pens.Black;
+
 		private SolidBrush _freezeBrush;
 		private SolidBrush _freezeHighlightBrush;
 		private SolidBrush _highlightBrush;

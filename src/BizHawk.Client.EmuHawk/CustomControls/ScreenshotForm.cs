@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			e.Graphics.DrawImage(_bitmap!, new Rectangle(0, 0, Width, _drawingHeight));
 			if (Padding > 0)
 			{
-				e.Graphics.DrawRectangle(new Pen(Brushes.Black), new Rectangle(new Point(0, _drawingHeight), new Size(Width - 1, Padding - 1)));
+				e.Graphics.DrawRectangle(Pens.Black, new Rectangle(new Point(0, _drawingHeight), new Size(Width - 1, Padding - 1)));
 				e.Graphics.DrawString(Text, Font, Brushes.Black, new Rectangle(2, _drawingHeight, Width - 2, Height));
 			}
 
