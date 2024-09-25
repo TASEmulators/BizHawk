@@ -90,6 +90,7 @@ namespace BizHawk.Client.Common
 		// Probably would have slightly lower performance, but it seems weird to have such a similar class that is only used once.
 		private int _onFrames;
 		private int _offFrames;
+		private bool _respectLag;
 
 		private readonly Dictionary<string, AutoPatternBool> _boolPatterns = [ ];
 		private readonly Dictionary<string, AutoPatternAxis> _axisPatterns = [ ];
@@ -98,10 +99,10 @@ namespace BizHawk.Client.Common
 
 		public IReadOnlyCollection<string> CurrentAutofires => _boolPatterns.Keys; // the callsite doesn't care about sticky axes
 
-		public StickyAutofireController(ControllerDefinition definition, int onFrames = 1, int offFrames = 1)
+		public StickyAutofireController(ControllerDefinition definition, int onFrames = 1, int offFrames = 1, bool respectLag = true)
 		{
 			Definition = definition;
-			SetDefaultOnOffPattern(onFrames, offFrames);
+			UpdateDefaultPatternSettings(onFrames, offFrames, respectLag);
 		}
 
 		public bool IsPressed(string button)
@@ -117,17 +118,18 @@ namespace BizHawk.Client.Common
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => throw new NotSupportedException();
 		public void SetHapticChannelStrength(string name, int strength) => throw new NotSupportedException();
 
-		public void SetDefaultOnOffPattern(int onFrames, int offFrames)
+		public void UpdateDefaultPatternSettings(int onFrames, int offFrames, bool respectLag)
 		{
 			_onFrames = Math.Max(onFrames, 1);
 			_offFrames = Math.Max(offFrames, 1);
+			_respectLag = respectLag;
 		}
 
 		public void SetButtonAutofire(string button, bool enabled, AutoPatternBool pattern = null)
 		{
 			if (enabled)
 			{
-				pattern ??= new AutoPatternBool(_onFrames, _offFrames);
+				pattern ??= new AutoPatternBool(_onFrames, _offFrames, _respectLag);
 				_boolPatterns[button] = pattern;
 			}
 			else
@@ -140,7 +142,7 @@ namespace BizHawk.Client.Common
 		{
 			if (value.HasValue)
 			{
-				pattern ??= new AutoPatternAxis(value.Value, _onFrames, Definition.Axes[name].Neutral, _offFrames);
+				pattern ??= new AutoPatternAxis(value.Value, _onFrames, Definition.Axes[name].Neutral, _offFrames, _respectLag);
 				_axisPatterns[name] = pattern;
 			}
 			else
