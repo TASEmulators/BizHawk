@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// https://shaker.logonsystem.eu/tests
 	/// This implementation aims to emulate all the various CRTC chips that appear within
 	/// the CPC, CPC+ and GX4000 ranges. The CPC community have assigned them type numbers.
-	/// If different implementations share the same type number it indicates that they are functionally identical:
+	/// If different implementations share the same type number it indicates that they are functionally identical
 	/// 
 	/// Part No.      Manufacturer    Type No.    Info.
 	/// ------------------------------------------------------------------------------------------------------
@@ -588,7 +588,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// Horizontal Character Counter
+		/// C0: Horizontal Character Counter
 		/// 8-bit
 		/// </summary>		
 		protected virtual int HCC
@@ -599,7 +599,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _hcCTR;
 
 		/// <summary>
-		/// Horizontal Sync Width Counter (HSYNC)
+		/// C3l: Horizontal Sync Width Counter (HSYNC)
 		/// 4-bit
 		/// </summary>		
 		protected virtual int HSC
@@ -610,7 +610,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _hswCTR;
 
 		/// <summary>
-		/// Vertical Character Row Counter
+		/// C4: Vertical Character Row Counter
 		/// 7-bit
 		/// </summary>
 		protected virtual int VCC
@@ -621,7 +621,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _rowCTR;
 
 		/// <summary>
-		/// Vertical Sync Width Counter (VSYNC)
+		/// C3h: Vertical Sync Width Counter (VSYNC)
 		/// 4-bit
 		/// </summary>
 		protected virtual int VSC
@@ -632,7 +632,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _vswCTR;
 
 		/// <summary>
-		/// Vertical Line Counter (Scanline Counter)
+		/// C9: Vertical Line Counter (Scanline Counter)
 		/// 5-bit
 		/// If not in IVM mode, this counter is exposed on CRTC pins RA0..RA4
 		/// </summary>
@@ -644,7 +644,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _lineCTR;
 
 		/// <summary>
-		/// Vertical Total Adjust Counter
+		/// C5: Vertical Total Adjust Counter
 		/// 5-bit??
 		/// This counter does not exist on CRTCs 0/3/4. C9 (VLC) is reused instead
 		/// </summary>
@@ -780,11 +780,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Attempts to read from the internal status register (if present)
 		/// </summary>
-		protected bool ReadStatus(ref int data)
-		{
-			//todo 
-			return false;
-		}
+		protected virtual bool ReadStatus(ref int data) => false;
 
 		/// <summary>
 		/// Device responds to an IN instruction

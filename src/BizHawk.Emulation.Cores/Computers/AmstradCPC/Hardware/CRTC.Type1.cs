@@ -2,6 +2,11 @@
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
+	/// <summary>
+	/// CATHODE RAY TUBE CONTROLLER (CRTC) IMPLEMENTATION
+	/// TYPE 1
+	/// - UMC UM6845R		http://www.cpcwiki.eu/imgs/b/b5/Um6845r.umc.pdf
+	/// </summary>
 	public class CRTC_Type1 : CRTC
 	{
 		/// <summary>
@@ -10,8 +15,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public override int CrtcType => 1;
 
 		/// <summary>
-		/// CRTC Type 1
-		/// - UM6845R
+		/// CRTC is clocked at 1MHz (16 GA cycles)
 		/// </summary>
 		public override void Clock()
 		{
@@ -170,6 +174,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				// inactive display
 				latch_vdisp = false;
+
+				// ACCC1.8 - 21.3.3
+				// On CRTC 1, bit 5 of the Status register is updated when C0=R0 according to the BORDER R6
+				// conditions (False: C4=C9=C0=0 / True: C4=R6 & C9=C0=0)
+				StatusRegister |= (1 << 5);
 			}
 
 			// vertical sync occurs at different times depending on the interlace field
@@ -334,6 +343,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					Register[AddressRegister] = (byte)(v & 0x03);
 					break;
 			}
+		}
+
+		/// <summary>
+		/// CRTC 1 has a status register
+		/// </summary>
+		protected override bool ReadStatus(ref int data)
+		{
+			// ACCC1.8 - 21.3.1
+			// Only CRTC 1 has a status register present on the specific port &BE00.
+			// This port is a mirror of the read port for CRTC’s 3 and 4, which handle status differently			
+			data = StatusRegister;
+
+			return true;
 		}
 	}
 }

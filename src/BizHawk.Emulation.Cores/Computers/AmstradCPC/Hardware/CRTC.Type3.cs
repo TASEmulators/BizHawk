@@ -2,6 +2,11 @@
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
+	/// <summary>
+	/// CATHODE RAY TUBE CONTROLLER (CRTC) IMPLEMENTATION
+	/// TYPE 3
+	/// - Amstrad AMS40489
+	/// </summary>
 	public class CRTC_Type3 : CRTC
 	{
 		/// <summary>
@@ -10,8 +15,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public override int CrtcType => 3;
 
 		/// <summary>
-		/// CRTC Type 3
-		/// - AMS40489
+		/// CRTC is clocked at 1MHz (16 GA cycles)
 		/// </summary>
 		public override void Clock()
 		{

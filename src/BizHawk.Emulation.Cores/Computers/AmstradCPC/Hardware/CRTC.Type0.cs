@@ -3,6 +3,12 @@ using System.Runtime.CompilerServices;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
+	/// <summary>
+	/// CATHODE RAY TUBE CONTROLLER (CRTC) IMPLEMENTATION
+	/// TYPE 0
+	/// - Hitachi HD6845S	http://www.cpcwiki.eu/imgs/c/c0/Hd6845.hitachi.pdf
+	/// - UMC UM6845		http://www.cpcwiki.eu/imgs/1/13/Um6845.umc.pdf
+	/// </summary>
 	public class CRTC_Type0 : CRTC
 	{
 		/// <summary>
@@ -11,9 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public override int CrtcType => 0;
 
 		/// <summary>
-		/// CRTC Type 0
-		/// - HD6845S
-		/// - UM6845
+		/// CRTC is clocked at 1MHz (16 GA cycles)
 		/// </summary>
 		public override void Clock()
 		{
@@ -321,6 +325,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					Register[AddressRegister] = (byte)(v & 0xF3);
 					break;
 			}
+		}
+
+		/// <summary>
+		/// CRTC 0 has no status register
+		/// </summary>
+		protected override bool ReadStatus(ref int data)
+		{
+			// ACCC1.8 - 21.3.2
+			// CRTC0 randomly apparently returns 255 or 127 on this port
+			
+			// For the purposes of Bizhawk determinism, we will return one of the above values based on the current HCC
+			data = HCC.Bit(0) ? 255 : 127;
+			return true;
 		}
 	}
 }

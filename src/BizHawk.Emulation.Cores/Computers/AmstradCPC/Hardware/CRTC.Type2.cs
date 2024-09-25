@@ -2,6 +2,13 @@
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
+	/// <summary>
+	/// CATHODE RAY TUBE CONTROLLER (CRTC) IMPLEMENTATION
+	/// TYPE 2
+	/// - Motorola MC6845
+	/// http://www.cpcwiki.eu/imgs/d/da/Mc6845.motorola.pdf
+	/// http://bitsavers.trailing-edge.com/components/motorola/_dataSheets/6845.pdf
+	/// </summary>
 	public class CRTC_Type2 : CRTC
 	{
 		/// <summary>
@@ -10,8 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public override int CrtcType => 2;
 
 		/// <summary>
-		/// CRTC Type 2
-		/// - MC6845
+		/// CRTC is clocked at 1MHz (16 GA cycles)
 		/// </summary>
 		public override void Clock()
 		{
@@ -321,6 +327,17 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					Register[AddressRegister] = (byte)(v & 0x03);
 					break;
 			}
+		}
+
+		/// <summary>
+		/// CRTC 2 has no status register
+		/// </summary>
+		protected override bool ReadStatus(ref int data)
+		{
+			// ACCC1.8 - 21.3.2
+			// CRTC2 always returns 255 on this port
+			data = 255;
+			return true;
 		}
 	}
 }
