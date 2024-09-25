@@ -177,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				BitArray MA = new BitArray(16);
+				var MA = new BitArray(16);
 				MA[0] = CLK;
 				MA[1] = _LA.Bit(0);
 				MA[2] = _LA.Bit(1);
@@ -221,22 +221,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		protected CallBack VSYNC_Off_Callbacks;
 
-		public void AttachHSYNCOnCallback(CallBack hCall)
-		{
-			HSYNC_On_Callbacks += hCall;
-		}
-		public void AttachHSYNCOffCallback(CallBack hCall)
-		{
-			HSYNC_Off_Callbacks += hCall;
-		}
-		public void AttachVSYNCOnCallback(CallBack vCall)
-		{
-			VSYNC_On_Callbacks += vCall;
-		}
-		public void AttachVSYNCOffCallback(CallBack vCall)
-		{
-			VSYNC_Off_Callbacks += vCall;
-		}
+		public void AttachHSYNCOnCallback(CallBack hCall) => HSYNC_On_Callbacks += hCall;
+		public void AttachHSYNCOffCallback(CallBack hCall) => HSYNC_Off_Callbacks += hCall;
+		public void AttachVSYNCOnCallback(CallBack vCall) => VSYNC_On_Callbacks += vCall;
+		public void AttachVSYNCOffCallback(CallBack vCall) => VSYNC_Off_Callbacks += vCall;
 
 		/// <summary>
 		/// Reset Counter
@@ -412,7 +400,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				int swr;
 
 				// Bits 3..0 define Horizontal Sync Width
-				var sw = Register[R3_SYNC_WIDTHS] & 0x0F;
+				int sw = Register[R3_SYNC_WIDTHS] & 0x0F;
 
 				switch (CrtcType)
 				{
@@ -444,7 +432,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				int swr;
 
 				//Bits 7..4 define Vertical Sync Width
-				var sw = (Register[R3_SYNC_WIDTHS] >> 4) & 0x0F;
+				int sw = (Register[R3_SYNC_WIDTHS] >> 4) & 0x0F;
 
 				switch (CrtcType)
 				{
@@ -763,7 +751,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		protected void SelectRegister(int value)
 		{
-			var v = (byte)(value & 0x1F);
+			byte v = (byte)(value & 0x1F);
 			AddressRegister = v;
 		}
 
@@ -788,7 +776,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public virtual bool ReadPort(ushort port, ref int result)
 		{
 			byte portUpper = (byte)(port >> 8);
-			byte portLower = (byte)(port & 0xff);
 
 			bool accessed = false;
 
@@ -821,7 +808,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public virtual bool WritePort(ushort port, int result)
 		{
 			byte portUpper = (byte)(port >> 8);
-			byte portLower = (byte)(port & 0xff);
 
 			bool accessed = false;
 
@@ -829,7 +815,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			if (portUpper.Bit(6))
 				return accessed;
 
-			var func = portUpper & 3;
+			int func = portUpper & 3;
 
 			switch (func)
 			{
@@ -851,10 +837,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Simulates the RESET pin
 		/// This should take at least one cycle
 		/// </summary>
-		public void Reset()
-		{
-			_inReset = 1;			
-		}
+		public void Reset() => _inReset = 1;
 
 		public void SyncState(Serializer ser)
 		{

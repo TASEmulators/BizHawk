@@ -2,6 +2,7 @@
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Cores.Components.Z80A;
+using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -73,38 +74,101 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _currentPen;
 
 		/// <summary>
+		/// All CPC colour information
+		/// Based on: https://www.grimware.org/doku.php/documentations/devices/gatearray
+		/// </summary>
+		private CPCColourData[] CPCPalette = new CPCColourData[32];
+
+		private void SetPalette(GateArrayType gaType)
+		{
+			switch (gaType)
+			{
+				case GateArrayType.Amstrad40007:
+				case GateArrayType.Amstrad40008:
+				case GateArrayType.Amstrad40010:
+
+					// non-asic
+					CPCPalette = new CPCColourData[]
+					{
+						new CPCColourData { IndexFirmware = 0, IndexINKR = 0b01011000, IndexASIC = 0x000, Red = 0.0, Green = 0.9615, Blue = 0.4808 },
+						new CPCColourData { IndexFirmware = 1, IndexINKR = 0b01000100, IndexASIC = 0x006, Red = 0.0, Green = 0.9615, Blue = 41.8269 },
+						new CPCColourData { IndexFirmware = 2, IndexINKR = 0b01010101, IndexASIC = 0x00F, Red = 4.8077, Green = 0.9615, Blue = 95.6731 },
+						new CPCColourData { IndexFirmware = 3, IndexINKR = 0b01011100, IndexASIC = 0x060, Red = 42.3077, Green = 0.9615, Blue = 0.4808 },
+						new CPCColourData { IndexFirmware = 4, IndexINKR = 0b01011000, IndexASIC = 0x066, Red = 41.3462, Green = 0.9615, Blue = 40.8654 },
+						new CPCColourData { IndexFirmware = 5, IndexINKR = 0b01011101, IndexASIC = 0x06F, Red = 42.3077, Green = 0.9615, Blue = 94.7115 },
+						new CPCColourData { IndexFirmware = 6, IndexINKR = 0b01001100, IndexASIC = 0x0F0, Red = 95.1923, Green = 1.9231, Blue = 2.4038 },
+						new CPCColourData { IndexFirmware = 7, IndexINKR = 0b01000101, IndexASIC = 0x0F6, Red = 94.2308, Green = 0.9615, Blue = 40.8654 },
+						new CPCColourData { IndexFirmware = 8, IndexINKR = 0b01001101, IndexASIC = 0x0FF, Red = 95.1923, Green = 0.9615, Blue = 95.6731 },
+						new CPCColourData { IndexFirmware = 9, IndexINKR = 0b01010110, IndexASIC = 0x600, Red = 0.9615, Green = 47.1154, Blue = 0.4808 },
+						new CPCColourData { IndexFirmware = 10, IndexINKR = 0b01000110, IndexASIC = 0x606, Red = 0.0, Green = 47.1154, Blue = 40.8654 },
+						new CPCColourData { IndexFirmware = 11, IndexINKR = 0b01010111, IndexASIC = 0x60F, Red = 4.8077, Green = 48.0769, Blue = 95.6731 },
+						new CPCColourData { IndexFirmware = 12, IndexINKR = 0b01011110, IndexASIC = 0x660, Red = 43.2692, Green = 48.0769, Blue = 0.4808 },
+						new CPCColourData { IndexFirmware = 13, IndexINKR = 0b01000000, IndexASIC = 0x666, Red = 43.2692, Green = 49.0385, Blue = 41.8269 },
+						new CPCColourData { IndexFirmware = 14, IndexINKR = 0b01011111, IndexASIC = 0x66F, Red = 43.2692, Green = 48.0769, Blue = 96.6346 },
+						new CPCColourData { IndexFirmware = 15, IndexINKR = 0b01001110, IndexASIC = 0x6F0, Red = 95.1923, Green = 49.0385, Blue = 5.2885 },
+						new CPCColourData { IndexFirmware = 16, IndexINKR = 0b01000111, IndexASIC = 0x6F6, Red = 95.1923, Green = 49.0385, Blue = 41.8269 },
+						new CPCColourData { IndexFirmware = 17, IndexINKR = 0b01001111, IndexASIC = 0x6FF, Red = 98.0769, Green = 50.0, Blue = 97.5962 },
+						new CPCColourData { IndexFirmware = 18, IndexINKR = 0b01010010, IndexASIC = 0xF00, Red = 0.9615, Green = 94.2308, Blue = 0.4808 },
+						new CPCColourData { IndexFirmware = 19, IndexINKR = 0b01000010, IndexASIC = 0xF06, Red = 0.0, Green = 95.1923, Blue = 41.8269 },
+						new CPCColourData { IndexFirmware = 20, IndexINKR = 0b01010011, IndexASIC = 0xF0F, Red = 5.7692, Green = 95.1923, Blue = 94.7115 },
+						new CPCColourData { IndexFirmware = 21, IndexINKR = 0b01011010, IndexASIC = 0xF60, Red = 44.2308, Green = 96.1538, Blue = 1.4423 },
+						new CPCColourData { IndexFirmware = 22, IndexINKR = 0b01011001, IndexASIC = 0xF66, Red = 44.2308, Green = 95.1923, Blue = 41.8269 },
+						new CPCColourData { IndexFirmware = 23, IndexINKR = 0b01011011, IndexASIC = 0xF6F, Red = 44.2308, Green = 95.1923, Blue = 95.6731 },
+						new CPCColourData { IndexFirmware = 24, IndexINKR = 0b01001010, IndexASIC = 0xFF0, Red = 95.1923, Green = 95.1923, Blue = 5.2885 },
+						new CPCColourData { IndexFirmware = 25, IndexINKR = 0b01000011, IndexASIC = 0xFF6, Red = 95.1923, Green = 95.1923, Blue = 42.7885 },
+						new CPCColourData { IndexFirmware = 26, IndexINKR = 0b01001011, IndexASIC = 0xFFF, Red = 100.0, Green = 95.1923, Blue = 97.5962 },
+
+						new CPCColourData { IndexFirmware = 27, IndexINKR = 0b01000001, IndexASIC = 0x666, Red = 43.2692, Green = 48.0769, Blue = 42.7885 },
+						new CPCColourData { IndexFirmware = 28, IndexINKR = 0b01001000, IndexASIC = 0x0F6, Red = 95.1923, Green = 0.9615, Blue = 40.8654 },
+						new CPCColourData { IndexFirmware = 29, IndexINKR = 0b01001001, IndexASIC = 0xFF6, Red = 95.1923, Green = 95.1923, Blue = 41.8269 },
+						new CPCColourData { IndexFirmware = 30, IndexINKR = 0b01010000, IndexASIC = 0x006, Red = 0.0, Green = 0.9615, Blue = 40.8654 },
+						new CPCColourData { IndexFirmware = 31, IndexINKR = 0b01010001, IndexASIC = 0xF06, Red = 0.9615, Green = 95.1923, Blue = 41.8269 },
+					}.OrderBy(x => x.IndexHardware).ToArray();
+
+					break;
+				case GateArrayType.Amstrad40226:
+				case GateArrayType.Amstrad40489:
+
+					// asic
+
+
+					break;
+			}
+		}
+
+		/// <summary>
 		/// The standard CPC Pallete (ordered by firmware #)
 		/// http://www.cpcwiki.eu/index.php/CPC_Palette
 		/// </summary>
 		private static readonly int[] CPCFirmwarePalette =
 		{
-			Colors.ARGB(0x00, 0x00, 0x00), // Black
-            Colors.ARGB(0x00, 0x00, 0x80), // Blue
-            Colors.ARGB(0x00, 0x00, 0xFF), // Bright Blue
-            Colors.ARGB(0x80, 0x00, 0x00), // Red            
-            Colors.ARGB(0x80, 0x00, 0x80), // Magenta
-            Colors.ARGB(0x80, 0x00, 0xFF), // Mauve
-            Colors.ARGB(0xFF, 0x00, 0x00), // Bright Red
-            Colors.ARGB(0xFF, 0x00, 0x80), // Purple
-            Colors.ARGB(0xFF, 0x00, 0xFF), // Bright Magenta
-            Colors.ARGB(0x00, 0x80, 0x00), // Green
-            Colors.ARGB(0x00, 0x80, 0x80), // Cyan
-            Colors.ARGB(0x00, 0x80, 0xFF), // Sky Blue
-            Colors.ARGB(0x80, 0x80, 0x00), // Yellow
-            Colors.ARGB(0x80, 0x80, 0x80), // White
-            Colors.ARGB(0x80, 0x80, 0xFF), // Pastel Blue
-            Colors.ARGB(0xFF, 0x80, 0x00), // Orange
-            Colors.ARGB(0xFF, 0x80, 0x80), // Pink
-            Colors.ARGB(0xFF, 0x80, 0xFF), // Pastel Magenta
-            Colors.ARGB(0x00, 0xFF, 0x00), // Bright Green
-            Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green
-            Colors.ARGB(0x00, 0xFF, 0xFF), // Bright Cyan
-            Colors.ARGB(0x80, 0xFF, 0x00), // Lime
-            Colors.ARGB(0x80, 0xFF, 0x80), // Pastel Green
-            Colors.ARGB(0x80, 0xFF, 0xFF), // Pastel Cyan
-            Colors.ARGB(0xFF, 0xFF, 0x00), // Bright Yellow
-            Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow
-            Colors.ARGB(0xFF, 0xFF, 0xFF), // Bright White
+			Colors.ARGB(0x00, 0x00, 0x00), // Black					0
+            Colors.ARGB(0x00, 0x00, 0x80), // Blue					1
+            Colors.ARGB(0x00, 0x00, 0xFF), // Bright Blue			2
+            Colors.ARGB(0x80, 0x00, 0x00), // Red					3
+            Colors.ARGB(0x80, 0x00, 0x80), // Magenta				4
+            Colors.ARGB(0x80, 0x00, 0xFF), // Mauve					5
+            Colors.ARGB(0xFF, 0x00, 0x00), // Bright Red			6
+            Colors.ARGB(0xFF, 0x00, 0x80), // Purple				7
+            Colors.ARGB(0xFF, 0x00, 0xFF), // Bright Magenta		8
+            Colors.ARGB(0x00, 0x80, 0x00), // Green					9
+            Colors.ARGB(0x00, 0x80, 0x80), // Cyan					10
+            Colors.ARGB(0x00, 0x80, 0xFF), // Sky Blue				11
+            Colors.ARGB(0x80, 0x80, 0x00), // Yellow				12
+            Colors.ARGB(0x80, 0x80, 0x80), // White					13
+            Colors.ARGB(0x80, 0x80, 0xFF), // Pastel Blue			14
+            Colors.ARGB(0xFF, 0x80, 0x00), // Orange				15
+            Colors.ARGB(0xFF, 0x80, 0x80), // Pink					16
+            Colors.ARGB(0xFF, 0x80, 0xFF), // Pastel Magenta		17
+            Colors.ARGB(0x00, 0xFF, 0x00), // Bright Green			18
+            Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green				19
+            Colors.ARGB(0x00, 0xFF, 0xFF), // Bright Cyan			20
+            Colors.ARGB(0x80, 0xFF, 0x00), // Lime					21
+            Colors.ARGB(0x80, 0xFF, 0x80), // Pastel Green			22
+            Colors.ARGB(0x80, 0xFF, 0xFF), // Pastel Cyan			23
+            Colors.ARGB(0xFF, 0xFF, 0x00), // Bright Yellow			24
+            Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow			25
+            Colors.ARGB(0xFF, 0xFF, 0xFF), // Bright White			26
         };
 
 		/// <summary>
@@ -113,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private static readonly int[] CPCHardwarePalette =
 		{
-			Colors.ARGB(0x80, 0x80, 0x80), // White
+			Colors.ARGB(0x80, 0x80, 0x80), // White							
             Colors.ARGB(0x80, 0x80, 0x80), // White (duplicate)
             Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green
             Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow
@@ -431,6 +495,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			CRTC.AttachHSYNCOffCallback(OnHSYNCOff);
 			CRTC.AttachVSYNCOnCallback(OnVSYNCOn);
 			CRTC.AttachVSYNCOffCallback(OnVSYNCOff);
+
+			SetPalette(GateArrayType);
+
 			Reset();
 		}
 
@@ -731,19 +798,33 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			var dataByte = _videoDataBuffer[VideoDataPntr + byteOffset];
 
+			//var vid = new CPCColourData();
+
 			for (int pixIndex = 0; pixIndex < 8; pixIndex++)
 			{
+				/*
+				if (C_HSYNC)
+					vid.C_HSYNC = true;
+
+				if (C_VSYNC)
+					vid.C_VSYNC = true;
+				*/
+
 				if (C_VSYNC_Black)
 				{
 					colour = 0;
+					//vid.ARGB = 0;
 				}
 				else if (C_HSYNC_Black)
 				{
 					colour = 0;
+					//vid.ARGB = 0;
 				}
 				else if (!CRTC.DISPTMG)
 				{
-					colour = CPCHardwarePalette[_colourRegisters[16]];
+					//colour = CPCHardwarePalette[_colourRegisters[16]];
+					colour = CPCPalette[_colourRegisters[16]].ARGB;
+					//vid = CPCPalette[_colourRegisters[16]];
 				}
 				else if (CRTC.DISPTMG)
 				{
@@ -854,10 +935,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							break;
 					}
 
-					colour = CPCHardwarePalette[_colourRegisters[pen]];
+					//colour = CPCHardwarePalette[_colourRegisters[pen]];
+					colour = CPCPalette[_colourRegisters[pen]].ARGB;
+					//vid = CPCPalette[_colourRegisters[pen]];
 				}
 
 				CRT.VideoClock(colour, -1, C_HSYNC, C_VSYNC);
+				//CRT.VideoClock(vid, -1);
 			}
 		}
 		
@@ -1153,5 +1237,81 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync(nameof(LastGAFrameClocks), ref _lastGAFrameClocks);
 			ser.EndSection();
 		}
+	}
+
+	/// <summary>
+	/// Data structure for holding
+	/// </summary>
+	public class CPCColourData
+	{
+		/// <summary>
+		/// CPC Firmware Index (also defines the green screen luminosity)
+		/// </summary>
+		public int IndexFirmware { get; set; }
+
+		/// <summary>
+		/// CPC Hardware Index
+		/// </summary>
+		public int IndexHardware => IndexINKR & 0b00011111;
+
+		/// <summary>
+		/// CPC Hardware Palette Index (the INKR number)
+		/// </summary>
+		public int IndexINKR { get; set; }		
+
+		/// <summary>
+		/// 12-bit ASIC index value
+		/// </summary>
+		public int IndexASIC { get; set; }
+
+		/// <summary>
+		/// RED channel percentage
+		/// </summary>
+		public double Red { get; set; }
+
+		/// <summary>
+		/// GREEN channel percentage
+		/// </summary>
+		public double Green { get; set; }
+
+		/// <summary>
+		/// BLUE channel percentage
+		/// </summary>
+		public double Blue {  get; set; }
+
+		/// <summary>
+		/// .NET ARGB value
+		/// </summary>
+		public int ARGB
+		{
+			get
+			{
+				var r = (int)(Red * 255 / 100);
+				var g = (int)(Green * 255 / 100);
+				var b = (int)(Blue * 255 / 100);
+
+				return (r << 16) | (g << 8) | b;
+			}
+			set
+			{
+				int r = (value >> 16) & 0xFF;
+				int g = (value >> 8) & 0xFF;
+				int b = value & 0xFF;
+
+				Red = r * 100 / 255;
+				Green = g * 100 / 255;
+				Blue = b * 100 / 255;
+			}
+		}
+
+		/// <summary>
+		/// Composite VSYNC - set when CSYNC is pulsed
+		/// </summary>
+		public bool C_VSYNC { get; set; }
+
+		/// <summary>
+		/// Composite HSYNC - set when CSYNC is pulsed
+		/// </summary>
+		public bool C_HSYNC { get; set; }
 	}
 }

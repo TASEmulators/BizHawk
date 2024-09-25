@@ -13,6 +13,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// - https://www.cpcwiki.eu/index.php/GT64/GT65
 	/// - https://www.cpcwiki.eu/index.php/CTM640/CTM644
 	/// - https://martin.hinner.info/vga/pal.html
+	/// - https://uzebox.org/forums/viewtopic.php?t=11062
+	/// - https://www.cpcwiki.eu/forum/emulators/wish-60hz60fps-support-in-emulators-thought-on-emulating-a-crt/
+	/// - https://www.batsocks.co.uk/readme/video_timing.htm
+	/// - https://web.archive.org/web/20170202185019/https://www.retroleum.co.uk/PALTVtimingandvoltages.html
+	/// - https://web.archive.org/web/20131125145905/http://lipas.uwasa.fi/~f76998/video/modes/
 	/// </summary>
 	public class CRTScreen : IVideoProvider
 	{
@@ -175,6 +180,97 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			var currPos = (_gunPosV * TOTAL_PIXELS) + _gunPosH;
 			var nextPos = ((_gunPosV + 1) * TOTAL_PIXELS) + _gunPosH;
+
+			if (currPos < _frameBuffer.Length)
+			{
+				_frameBuffer[currPos] = colour;
+			}
+
+			if (field == -1 && nextPos < _frameBuffer.Length)
+			{
+				_frameBuffer[nextPos] = colour;
+			}
+		}
+
+		/// <summary>
+		/// Should be called at the pixel clock rate (in the case of the Amstrad CPC, 16MHz)
+		/// </summary>
+		public void VideoClock(CPCColourData v, int field)
+		{
+			var colour = 0;
+
+			if (++_gunPosH == LINE_PERIOD * PIXEL_TIME)
+			{
+				_gunPosH = 0;
+
+				if (++_gunPosV == TOTAL_LINES)
+				{
+					_gunPosV = 0;
+				}
+				else
+				{
+					switch (field)
+					{
+						case -1:
+							_gunPosV += 1;
+							break;
+						case 1:
+							_gunPosV += field;
+							break;
+
+						default:
+							break;
+					}
+
+					//_gunPosV += field;
+					/*
+					if (field == 0)
+					{
+						_gunPosV += 2;
+					}
+					else
+					{
+						_gunPosV++;
+					}
+					*/
+				}
+			}
+			/*
+			else
+			{
+				_gunPosH++;
+			}
+			*/
+
+			if (!_isVsync && v.C_VSYNC)
+			{
+				// vsync is just starting
+				_isVsync = true;
+			}
+			else if (_isVsync && !v.C_VSYNC)
+			{
+				// vsync ends
+				_isVsync = false;
+
+				_gunPosH = 0;
+				_gunPosV = 0;
+
+				FrameEnd = true;
+			}			
+
+			var currPos = (_gunPosV * TOTAL_PIXELS) + _gunPosH;
+			var nextPos = ((_gunPosV + 1) * TOTAL_PIXELS) + _gunPosH;
+
+
+			if (v.C_VSYNC || v.C_HSYNC)
+			{
+				// crt beam is off
+				colour = 0;
+			}
+			else
+			{
+				colour = v.ARGB;
+			}
 
 			if (currPos < _frameBuffer.Length)
 			{
@@ -359,5 +455,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Amstrad green screen monitors
 		/// </summary>
 		GT6x
+	}
+
+
+	public class VideoData
+	{
+		public int R { get; set; }
+		public int G { get; set; }
+		public int B { get; set; }
+		public bool C_HSYNC { get; set; }
+		public bool c_VSYNC { get; set; }
 	}
 }
