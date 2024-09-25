@@ -8,8 +8,10 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		private readonly Pen _currentPen = Pens.Black.GetMutableCopy();
 
-		private readonly SolidBrush _currentBrush = new SolidBrush(Color.Black);
-		private readonly SolidBrush _currentStringBrush = new SolidBrush(Color.Black);
+		private readonly SolidBrush _currentBrush = ((SolidBrush) Brushes.Black).GetMutableCopy();
+
+		private readonly SolidBrush _currentStringBrush = ((SolidBrush) Brushes.Black).GetMutableCopy();
+
 		private Font _currentFont;
 		private bool _rotateString;
 
