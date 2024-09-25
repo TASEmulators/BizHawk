@@ -14,7 +14,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System.Windows.Forms" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics.Controls/BizHawk.Bizware.Graphics.Controls.csproj" />
 		<EmbeddedResource Include="TestImages/**/*" />
 		<None Include="$(ProjectDir)../../Assets/dll/*SDL2*" CopyToOutputDirectory="PreserveNewest" />

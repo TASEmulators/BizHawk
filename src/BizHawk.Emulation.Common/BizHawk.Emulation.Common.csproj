@@ -11,6 +11,5 @@
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="ppy.SDL2-CS" ExcludeAssets="native;contentFiles" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
 </Project>

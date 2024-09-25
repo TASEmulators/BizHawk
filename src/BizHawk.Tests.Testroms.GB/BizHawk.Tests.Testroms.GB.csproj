@@ -22,7 +22,6 @@
 	<ItemGroup>
 		<PackageReference Include="Magick.NET-Q8-AnyCPU" />
 		<PackageReference Include="System.Drawing.Common" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 		<EmbeddedResource Include="res/**/*" />
 		<Content Include="$(ProjectDir)../../Assets/gamedb/**/*" LinkBase="gamedb" CopyToOutputDirectory="PreserveNewest" />
