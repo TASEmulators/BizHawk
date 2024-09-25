@@ -14,18 +14,25 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
 
-		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
-		private readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
+		private readonly SolidBrush _brush = new(default);
+
+		private readonly Pen _pen = new(default(Color));
 
 		private readonly Action<string> LogOutputCallback;
 
 		private readonly NLuaTableHelper TableHelper;
 
 		private SolidBrush GetBrush([LuaColorParam] object color)
-			=> _solidBrushes.GetValueOrPutNew1(TableHelper.ParseColor(color));
+		{
+			_brush.Color = TableHelper.ParseColor(color);
+			return _brush;
+		}
 
 		private Pen GetPen([LuaColorParam] object color)
-			=> _pens.GetValueOrPutNew1(TableHelper.ParseColor(color));
+		{
+			_pen.Color = TableHelper.ParseColor(color);
+			return _pen;
+		}
 
 		private Color _defaultForeground = Color.Black;
 		private Color? _defaultBackground;
