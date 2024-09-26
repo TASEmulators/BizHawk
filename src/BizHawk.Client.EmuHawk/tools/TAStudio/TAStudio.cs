@@ -398,39 +398,24 @@ namespace BizHawk.Client.EmuHawk
 			TasView.AllColumns.ColumnsChanged();
 		}
 
-		private void SetupBoolPatterns()
+		private void SetupCustomPatterns()
 		{
-			// Patterns
-			int bStart = 0;
-			int fStart = 0;
-			if (BoolPatterns == null)
-			{
-				BoolPatterns = new AutoPatternBool[ControllerType.BoolButtons.Count + 2];
-				AxisPatterns = new AutoPatternAxis[ControllerType.Axes.Count + 2];
-			}
-			else
-			{
-				bStart = BoolPatterns.Length - 2;
-				fStart = AxisPatterns.Length - 2;
-				Array.Resize(ref BoolPatterns, ControllerType.BoolButtons.Count + 2);
-				Array.Resize(ref AxisPatterns, ControllerType.Axes.Count + 2);
-			}
+			// custom autofire patterns to allow configuring a unique pattern for each button or axis
+			BoolPatterns = new AutoPatternBool[ControllerType.BoolButtons.Count];
+			AxisPatterns = new AutoPatternAxis[ControllerType.Axes.Count];
 
-			for (int i = bStart; i < BoolPatterns.Length - 2; i++)
+			for (int i = 0; i < BoolPatterns.Length; i++)
 			{
+				// standard 1 on 1 off autofire pattern
 				BoolPatterns[i] = new AutoPatternBool(1, 1);
 			}
 
-			BoolPatterns[BoolPatterns.Length - 2] = new(1, 0);
-			BoolPatterns[BoolPatterns.Length - 1] = new(Config.AutofireOn, Config.AutofireOff);
-
-			for (int i = fStart; i < AxisPatterns.Length - 2; i++)
+			for (int i = 0; i < AxisPatterns.Length; i++)
 			{
-				AxisPatterns[i] = new AutoPatternAxis(new[] { 1 });
+				// autohold pattern with the maximum axis range as hold value (bit arbitrary)
+				var axisSpec = ControllerType.Axes[ControllerType.Axes[i]];
+				AxisPatterns[i] = new AutoPatternAxis([ axisSpec.Range.EndInclusive ]);
 			}
-
-			AxisPatterns[AxisPatterns.Length - 2] = new([ 1 ]);
-			AxisPatterns[AxisPatterns.Length - 1] = new(1, Config.AutofireOn, 0, Config.AutofireOff);
 		}
 
 		/// <remarks>for Lua</remarks>
@@ -572,7 +557,7 @@ namespace BizHawk.Client.EmuHawk
 					SetUpColumns();
 				}
 				SetUpToolStripColumns();
-				SetupBoolPatterns();
+				SetupCustomPatterns();
 				UpdateAutoFire();
 			}
 

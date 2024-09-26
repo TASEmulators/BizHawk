@@ -112,6 +112,16 @@
 			// ValueNum
 			// 
 			this.ValueNum.Location = new System.Drawing.Point(48, 179);
+			this.ValueNum.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+			this.ValueNum.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
 			this.ValueNum.Name = "ValueNum";
 			this.ValueNum.Size = new System.Drawing.Size(51, 20);
 			this.ValueNum.TabIndex = 5;

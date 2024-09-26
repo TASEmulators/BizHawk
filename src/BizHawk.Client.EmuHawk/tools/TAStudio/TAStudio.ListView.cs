@@ -439,64 +439,51 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateAutoFire(string button, bool? isOn)
 		{
-			if (!isOn.HasValue) // No value means don't change whether it's on or off.
-			{
-				isOn = TasView.AllColumns.Find(c => c.Name == button).Emphasis;
-			}
+			// No value means don't change whether it's on or off.
+			isOn ??= TasView.AllColumns.Find(c => c.Name == button).Emphasis;
 
-			int index = 0;
-			if (autoHoldToolStripMenuItem.Checked)
-			{
-				index = 1;
-			}
-
-			if (autoFireToolStripMenuItem.Checked)
-			{
-				index = 2;
-			}
+			// use custom pattern if set
+			bool useCustom = customPatternToolStripMenuItem.Checked;
+			// else, set autohold or fire based on setting
+			bool autoHold = autoHoldToolStripMenuItem.Checked; // !autoFireToolStripMenuItem.Checked
 
 			if (ControllerType.BoolButtons.Contains(button))
 			{
-				if (index == 0)
+				InputManager.StickyHoldController.SetButtonHold(button, false);
+				InputManager.StickyAutofireController.SetButtonAutofire(button, false);
+				if (!isOn.Value) return;
+
+				if (useCustom)
 				{
-					index = ControllerType.BoolButtons.IndexOf(button);
+					InputManager.StickyAutofireController.SetButtonAutofire(button, true, BoolPatterns[ControllerType.BoolButtons.IndexOf(button)]);
+				}
+				else if (autoHold)
+				{
+					InputManager.StickyHoldController.SetButtonHold(button, true);
 				}
 				else
 				{
-					index += ControllerType.BoolButtons.Count - 1;
-				}
-
-				// Fixes auto-loading, but why is this code like this? The code above suggests we have a BoolPattern for every  bool button? But we don't
-				// This is a sign of a deeper problem, but this fixes some basic functionality at least
-				if (index < BoolPatterns.Length)
-				{
-					AutoPatternBool p = BoolPatterns[index];
-					InputManager.StickyAutofireController.SetButtonAutofire(button, isOn.Value, p);
+					InputManager.StickyAutofireController.SetButtonAutofire(button, true);
 				}
 			}
 			else
 			{
-				if (index == 0)
+				InputManager.StickyHoldController.SetAxisHold(button, null);
+				InputManager.StickyAutofireController.SetAxisAutofire(button, null);
+				if (!isOn.Value) return;
+
+				int holdValue = ControllerType.Axes[button].Range.EndInclusive; // it's not clear what value to use for auto-hold, just use max i guess
+				if (useCustom)
 				{
-					index = ControllerType.Axes.IndexOf(button);
+					InputManager.StickyAutofireController.SetAxisAutofire(button, holdValue, AxisPatterns[ControllerType.Axes.IndexOf(button)]);
+				}
+				else if (autoHold)
+				{
+					InputManager.StickyHoldController.SetAxisHold(button, holdValue);
 				}
 				else
 				{
-					index += ControllerType.Axes.Count - 1;
-				}
-
-				int? value = null;
-				if (isOn.Value)
-				{
-					value = 0;
-				}
-
-				// Fixes auto-loading, but why is this code like this? The code above suggests we have a AxisPattern for every axis button? But we don't
-				// This is a sign of a deeper problem, but this fixes some basic functionality at least
-				if (index < AxisPatterns.Length)
-				{
-					AutoPatternAxis p = AxisPatterns[index];
-					InputManager.StickyAutofireController.SetAxisAutofire(button, value, p);
+					InputManager.StickyAutofireController.SetAxisAutofire(button, holdValue);
 				}
 			}
 		}
