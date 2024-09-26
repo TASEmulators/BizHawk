@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			GateArray.GAClockCounter = 0;
 			GateArray.FrameEnd = false;
 
-			while (!CRTScreen.FrameEnd)
+			while (!GateArray.FrameEnd)
 			{
 				GateArray.Clock();
 
@@ -152,6 +152,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			var ipf = GateArray.interruptsPerFrame;
 			GateArray.interruptsPerFrame = 0;
+			double nops = GateArray.LastGAFrameClocks / 16.0;
 
 			// we have reached the end of a frame
 			LastFrameStartCPUTick = CPU.TotalExecutedCycles; // - OverFlow;
@@ -169,6 +170,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			CPC.IsLagFrame = !InputRead;
 
 			// FDC debug
+			/*
 			if (UPDDiskDevice != null && UPDDiskDevice.writeDebug)
 			{
 				// only write UPD log every second
@@ -179,6 +181,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					//System.IO.File.WriteAllText(UPDDiskDevice.outputfile, UPDDiskDevice.outputString);
 				}
 			}
+			*/
 
 			// setup GA for next frame
 			GateArray.GAClockCounter = 0;

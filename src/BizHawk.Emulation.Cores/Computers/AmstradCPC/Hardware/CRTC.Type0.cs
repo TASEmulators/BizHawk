@@ -245,6 +245,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		protected override bool ReadRegister(ref int data)
 		{
+			bool addressed = false;
+
 			switch (AddressRegister)
 			{
 				case R0_H_TOTAL:
@@ -260,27 +262,31 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				case R10_CURSOR_START:
 				case R11_CURSOR_END:
 					// write-only registers return 0x0 on Type 0 CRTC
+					addressed = true;
 					data = 0;
 					break;
 				case R12_START_ADDR_H:
 				case R14_CURSOR_H:
 				case R16_LIGHT_PEN_H:
 					// read/write registers (6bit)
+					addressed = true;
 					data = Register[AddressRegister] & 0x3F;
 					break;
 				case R13_START_ADDR_L:
 				case R15_CURSOR_L:
 				case R17_LIGHT_PEN_L:
 					// read/write regiters (8bit)
+					addressed = true;
 					data = Register[AddressRegister];
 					break;
 				default:
 					// non-existent registers return 0x0
+					addressed = true;
 					data = 0;
 					break;
 			}
 
-			return true;
+			return addressed;
 		}
 
 		/// <summary>

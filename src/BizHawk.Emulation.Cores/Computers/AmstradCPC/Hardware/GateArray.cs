@@ -447,14 +447,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					C_VSYNC_Black = false;
 					// vsync completed
 					GA_VSYNC = false;
+					FrameEnd = true;
+					LastGAFrameClocks = GAClockCounter;
 				}
 
 				
 			}
 		}
 		private int _v26;
-
-		
 
 		/// <summary>
 		/// Counts the number of CRTC characters processed during a (CRTC) HSYNC signal
@@ -569,8 +569,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			LastGAFrameClocks = GAClockCounter;
 
 			// reset the frame clock counter
-			GAClockCounter = -1;
-			FrameEnd = true;
+			//FrameEnd = true;
+			//GAClockCounter = -1;
+			
 
 			// interrupts should be syncronised with the start of the frame now (i.e. InterruptCounter = 0)
 			// CRT beam position should be at the start of the display area
@@ -638,6 +639,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// (so every 1 GA clock cycle)
 			// We will do this for now to get the accuracy right, but will probably need to optimise this down the line
 			//OutputPixel(0);
+			GAClockCounter++;
+
 
 			// Based on timing oscilloscope traces from 
 			// https://bread80.com
@@ -797,7 +800,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// enforce 4-bit wraparound
 			_xtal &= 0x0F;
 
-			GAClockCounter++;
+			
+			/*
+			if (GA_VSYNC)
+			{
+				FrameEnd = true;
+				LastGAFrameClocks = GAClockCounter;
+			}
+			*/
 		}
 
 		private void OutputByte(int byteOffset)
