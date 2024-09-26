@@ -331,12 +331,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SetTasMovieCallbacks(ITasMovie movie)
-		{
-			movie.ClientSettingsForSave = () => TasView.UserSettingsSerialized();
-			movie.GetClientSettingsOnLoad = json => TasView.LoadSettingsSerialized(json);
-		}
-
 		private static readonly string[] N64CButtonSuffixes = { " C Up", " C Down", " C Left", " C Right" };
 
 		private void SetUpColumns()
@@ -574,7 +568,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_initializing = true;
 
-			SetTasMovieCallbacks(movie);
+			movie.InputRollSettingsForSave = () => TasView.UserSettingsSerialized();
 			movie.BindMarkersToInput = Settings.BindMarkersToInput;
 			movie.GreenzoneInvalidated = GreenzoneInvalidated;
 			movie.PropertyChanged += TasMovie_OnPropertyChanged;
@@ -590,6 +584,10 @@ namespace BizHawk.Client.EmuHawk
 				MarkerControl.UpdateTextColumnWidth();
 				TastudioPlayMode();
 				UpdateWindowTitle();
+				if (CurrentTasMovie.InputRollSettings != null)
+				{
+					TasView.LoadSettingsSerialized(CurrentTasMovie.InputRollSettings);
+				}
 			}
 
 			_initializing = false;
@@ -615,14 +613,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var movie = MovieSession.Get(path, loadMovie: false);
-				// we can't load the movie yet, we need to set the callbacks first...
-				if (movie is ITasMovie pendingTasMovie)
-				{
-					SetTasMovieCallbacks(pendingTasMovie);
-				}
-
-				movie.Load();
+				var movie = MovieSession.Get(path, loadMovie: true);
 				var tasMovie = movie as ITasMovie ?? movie.ToTasMovie();
 				movieLoadSucceeded = LoadMovie(tasMovie);
 			}

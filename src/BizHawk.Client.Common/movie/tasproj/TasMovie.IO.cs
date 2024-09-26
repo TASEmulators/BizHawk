@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 
 using BizHawk.Common.StringExtensions;
@@ -9,8 +9,8 @@ namespace BizHawk.Client.Common
 {
 	internal partial class TasMovie
 	{
-		public Func<string> ClientSettingsForSave { get; set; }
-		public Action<string> GetClientSettingsOnLoad { get; set; }
+		public Func<string> InputRollSettingsForSave { get; set; }
+		public string InputRollSettings { get; private set; }
 
 		protected override void AddLumps(ZipStateSaver bs, bool isBackup = false)
 		{
@@ -27,10 +27,10 @@ namespace BizHawk.Client.Common
 			bs.PutLump(BinaryStateLump.LagLog, tw => LagLog.Save(tw));
 			bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
-			if (ClientSettingsForSave != null)
+			if (InputRollSettingsForSave != null)
 			{
-				var clientSettingsJson = ClientSettingsForSave();
-				bs.PutLump(BinaryStateLump.ClientSettings, (TextWriter tw) => tw.Write(clientSettingsJson));
+				var inputRollSettingsJson = InputRollSettingsForSave();
+				bs.PutLump(BinaryStateLump.ClientSettings, (TextWriter tw) => tw.Write(inputRollSettingsJson));
 			}
 
 			if (VerificationLog.Any())
@@ -99,16 +99,13 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			if (GetClientSettingsOnLoad != null)
+			bl.GetLump(BinaryStateLump.ClientSettings, abort: false, tr =>
 			{
-				bl.GetLump(BinaryStateLump.ClientSettings, abort: false, tr =>
-				{
-					string clientSettings = tr.ReadToEnd();
+				string inputRollSettings = tr.ReadToEnd();
 
-					if (!string.IsNullOrEmpty(clientSettings))
-						GetClientSettingsOnLoad(clientSettings);
-				});
-			}
+				if (!string.IsNullOrEmpty(inputRollSettings))
+					InputRollSettings = inputRollSettings;
+			});
 
 			bl.GetLump(BinaryStateLump.VerificationLog, abort: false, tr =>
 			{
