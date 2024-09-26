@@ -18,9 +18,11 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		// pass axes solely from the original source
-		// this works in the code because SourceOr is the autofire controller
-		public int AxisValue(string name) => Source.AxisValue(name);
+		public int AxisValue(string name)
+		{
+			int neutralValue = Source.Definition.Axes[name].Neutral;
+			return SourceAnd.AxisValue(name) != neutralValue ? Source.AxisValue(name) : neutralValue;
+		}
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
 
@@ -77,9 +79,11 @@ namespace BizHawk.Client.Common
 					| (SourceOr?.IsPressed(button) ?? false);
 		}
 
-		// pass axes solely from the original source
-		// this works in the code because SourceOr is the autofire controller
-		public int AxisValue(string name) => Source.AxisValue(name);
+		public int AxisValue(string name)
+		{
+			int sourceValue = Source.AxisValue(name);
+			return sourceValue != Source.Definition.Axes[name].Neutral ? sourceValue : SourceOr.AxisValue(name);
+		}
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
 
