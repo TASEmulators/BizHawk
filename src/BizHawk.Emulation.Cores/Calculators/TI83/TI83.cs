@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores.Components.Z80A;
 namespace BizHawk.Emulation.Cores.Calculators.TI83
 {
 	[Core(CoreNames.TI83Hawk, "zeromus")]
-	[ServiceNotApplicable(new[] { typeof(IBoardInfo), typeof(IRegionable), typeof(ISaveRam), typeof(ISoundProvider) })]
+	[ServiceNotApplicable(typeof(IBoardInfo), typeof(IRegionable), typeof(ISaveRam), typeof(ISoundProvider))]
 	public partial class TI83 : TI83Common, IEmulator, IVideoProvider, IDebuggable, IInputPollable
 	{
 		[CoreConstructor(VSystemID.Raw.TI83)]

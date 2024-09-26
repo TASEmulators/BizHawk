@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Common
 	{
 		public IReadOnlyCollection<Type> NotApplicableTypes { get; }
 
-		public ServiceNotApplicableAttribute(Type[] types)
+		public ServiceNotApplicableAttribute(params Type[] types)
 			=> NotApplicableTypes = types;
 	}
 }
