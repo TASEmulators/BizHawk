@@ -13,7 +13,6 @@ using BizHawk.Emulation.Cores.Components.Z80A;
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	[Core(CoreNames.SMSHawk, "Vecna")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class SMS : IEmulator, ISoundProvider, ISaveRam, IInputPollable, IRegionable,
 		IDebuggable, ISettable<SMS.SmsSettings, SMS.SmsSyncSettings>, ICodeDataLogger
 	{

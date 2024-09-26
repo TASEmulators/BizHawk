@@ -16,7 +16,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		author: "SergioMartin86, kode54, Blargg",
 		portedVersion: "1.0.0",
 		portedUrl: "https://github.com/SergioMartin86/quickerNES")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public sealed partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable,
 		IBoardInfo, IVideoLogicalOffsets, IStatable, IDebuggable,
 		ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, INESPPUViewable

@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		author: "The Stella Team",
 //		portedVersion: "", //TODO
 		portedUrl: "https://stella-emu.github.io")]
-	[ServiceNotApplicable([ typeof(IDriveLight), typeof(ISaveRam) ])]
+	[ServiceNotApplicable([ typeof(ISaveRam) ])]
 	public partial class Stella : IRomInfo, IRegionable
 	{
 		[CoreConstructor(VSystemID.Raw.A26)]

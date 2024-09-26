@@ -18,7 +18,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	[PortedCore(CoreNames.MelonDS, "Arisotura", "0.9.5", "https://melonds.kuribo64.net/")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
+	[ServiceNotApplicable(new[] { typeof(IRegionable) })]
 	public sealed partial class NDS : WaterboxCore
 	{
 		private readonly LibMelonDS _core;

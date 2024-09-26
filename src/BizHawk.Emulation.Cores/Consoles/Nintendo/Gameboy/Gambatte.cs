@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	/// a gameboy/gameboy color emulator wrapped around native C++ libgambatte
 	/// </summary>
 	[PortedCore(CoreNames.Gambatte, "sinamas/PSR org", "r830", "https://github.com/pokemon-speedrunning/gambatte-core")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Gameboy : IInputPollable, IRomInfo, IGameboyCommon, ICycleTiming, ILinkable
 	{
 		/// <remarks>HACK disables BIOS requirement if the environment looks like a test runner...</remarks>

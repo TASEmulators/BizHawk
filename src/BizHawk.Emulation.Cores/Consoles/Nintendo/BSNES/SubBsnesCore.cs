@@ -5,7 +5,6 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	[PortedCore(CoreNames.SubBsnes115, "")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public class SubBsnesCore : IEmulator, ICycleTiming
 	{
 		[CoreConstructor(VSystemID.Raw.Satellaview)]
