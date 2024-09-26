@@ -245,10 +245,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				flags |= LibNymaCore.BizhawkFlags.SkipSoundening;
 			if (SettingsQuery("nyma.constantfb") != "0")
 				flags |= LibNymaCore.BizhawkFlags.RenderConstantSize;
-			if (controller.IsPressed("Open Tray"))
-				flags |= LibNymaCore.BizhawkFlags.OpenTray;
-			if (controller.IsPressed("Close Tray"))
-				flags |= LibNymaCore.BizhawkFlags.CloseTray;
+			int diskIndex = default;
+			if (_disks is not null)
+			{
+				if (controller.IsPressed("Open Tray")) flags |= LibNymaCore.BizhawkFlags.OpenTray;
+				if (controller.IsPressed("Close Tray")) flags |= LibNymaCore.BizhawkFlags.CloseTray;
+				diskIndex = controller.AxisValue("Disk Index");
+			}
 
 			var ret = new LibNymaCore.FrameInfo
 			{
@@ -260,7 +263,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						: LibNymaCore.CommandType.NONE,
 				InputPortData = (byte*)_frameAdvanceInputLock.AddrOfPinnedObject(),
 				FrontendTime = GetRtcTime(SettingsQuery("nyma.rtcrealtime") != "0"),
-				DiskIndex = controller.AxisValue("Disk Index")
+				DiskIndex = diskIndex,
 			};
 			if (_frameThreadStart != null)
 			{
