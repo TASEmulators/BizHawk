@@ -1282,16 +1282,14 @@ namespace BizHawk.Client.EmuHawk
 					ColumnsSubMenu.DropDownItems.Add(item);
 				}
 			}
-
-			TasView.AllColumns.ColumnsChanged();
 		}
 
 		// ReSharper disable once UnusedMember.Local
 		[RestoreDefaults]
 		private void RestoreDefaults()
 		{
-			TasView.AllColumns.Clear();
 			SetUpColumns();
+			SetUpToolStripColumns();
 			TasView.Refresh();
 			CurrentTasMovie.FlagChanges();
 

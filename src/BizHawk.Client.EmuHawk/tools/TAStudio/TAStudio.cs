@@ -217,8 +217,6 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.PauseOnFrame = null;
 			MainForm.PauseEmulator();
 
-			SetupBoolPatterns();
-
 			// Nag if inaccurate core, but not if auto-loading or movie is already loaded
 			if (!CanAutoload && MovieSession.Movie.NotActive())
 			{
@@ -249,7 +247,6 @@ namespace BizHawk.Client.EmuHawk
 
 				ConvertCurrentMovieToTasproj();
 				_ = StartNewMovieWrapper(CurrentTasMovie, isNew: false);
-				SetUpColumns();
 			}
 
 			// Start Scenario 2: A tasproj is already active
@@ -258,7 +255,6 @@ namespace BizHawk.Client.EmuHawk
 				bool result = LoadMovie(CurrentTasMovie, gotoFrame: Emulator.Frame);
 				if (!result)
 				{
-					TasView.AllColumns.Clear();
 					StartNewTasMovie();
 				}
 			}
@@ -400,7 +396,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			TasView.AllColumns.ColumnsChanged();
-			SetupBoolPatterns();
 		}
 
 		private void SetupBoolPatterns()
@@ -436,8 +431,6 @@ namespace BizHawk.Client.EmuHawk
 
 			AxisPatterns[AxisPatterns.Length - 2] = new([ 1 ]);
 			AxisPatterns[AxisPatterns.Length - 1] = new(1, Config.AutofireOn, 0, Config.AutofireOff);
-
-			SetUpToolStripColumns();
 		}
 
 		/// <remarks>for Lua</remarks>
@@ -519,18 +512,6 @@ namespace BizHawk.Client.EmuHawk
 				GoToFrame(CurrentTasMovie.TasSession.CurrentFrame);
 			}
 
-			// If we are loading an existing non-default movie, we will already have columns generated
-			// Only set up columns if needed
-			if (!TasView.AllColumns.Any())
-			{
-				SetUpColumns();
-			}
-			UpdateAutoFire();
-
-			SetUpToolStripColumns();
-
-			BookMarkControl.UpdateTextColumnWidth();
-			MarkerControl.UpdateTextColumnWidth();
 			// clear all selections
 			TasView.DeselectAll();
 			BookMarkControl.Restart();
@@ -559,9 +540,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.DeselectAll();
 			BookMarkControl.Restart();
 			MarkerControl.Restart();
-			SetUpColumns();
 			RefreshDialog();
-			TasView.Refresh();
 		}
 
 		private bool StartNewMovieWrapper(ITasMovie movie, bool isNew)
@@ -588,6 +567,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					TasView.LoadSettingsSerialized(CurrentTasMovie.InputRollSettings);
 				}
+				else
+				{
+					SetUpColumns();
+				}
+				SetUpToolStripColumns();
+				SetupBoolPatterns();
+				UpdateAutoFire();
 			}
 
 			_initializing = false;

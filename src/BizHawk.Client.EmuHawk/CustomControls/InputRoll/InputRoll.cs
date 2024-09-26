@@ -666,6 +666,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_columns = rollSettings.Columns;
 				_columns.ChangedCallback = ColumnChangedCallback;
+				_columns.ColumnsChanged();
 				HorizontalOrientation = rollSettings.HorizontalOrientation;
 				LagFramesToHide = rollSettings.LagFramesToHide;
 				HideWasLagFrames = rollSettings.HideWasLagFrames;
