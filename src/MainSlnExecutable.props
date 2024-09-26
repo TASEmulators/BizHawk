@@ -1,14 +1,16 @@
 <Project>
 	<Import Project="MainSlnCommon.props" />
 	<PropertyGroup>
+		<AssemblyTitle>$(Description)</AssemblyTitle>
 		<!-- Output path will contain the executable along with all its dependencies. We copy the executable up one directory up later on.
 			This allows us to have the executable dependencies automagically copied over to our dll folder while still keeping the executable in the output folder. -->
 		<OutputPath>$(MSBuildProjectDirectory)/../../output/dll/</OutputPath>
+		<Product>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1))))</Product>
 		<ExecFilesDest>$(MSBuildProjectDirectory)/../../output/</ExecFilesDest>
 		<!-- Setting TargetFileName does not change the AssemblyName (as setting TargetName would), but also does not change the output file name
 			for the executable on build (as one would expect). So we still need to rename the executable file below. Using this method has the advantage
 			of IDEs respecting the TargetFileName and expecting it. -->
-		<TargetFileName>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1)))).exe</TargetFileName>
+		<TargetFileName>$(Product).exe</TargetFileName>
 		<!-- This also doesn't actually change where the executable is output, rather it's just a hint to the IDE to know where the executable is (since we move it). -->
 		<TargetPath>$(ExecFilesDest)$(TargetFileName)</TargetPath>
 	</PropertyGroup>

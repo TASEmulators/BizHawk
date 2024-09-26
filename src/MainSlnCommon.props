@@ -8,7 +8,9 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DebugType>embedded</DebugType>
 		<DefineConstants>$(DefineConstants);AVI_SUPPORT</DefineConstants>
+		<NeutralLanguage>en-US</NeutralLanguage>
 		<NoWarn>$(NoWarn);CS1573;NU1702</NoWarn>
+		<Product>BizHawk</Product>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(SolutionDir)' != '' ">
