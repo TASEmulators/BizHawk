@@ -244,15 +244,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					// border select
 					_currentPen = 16;
 				}
-				else if (!_PENR.Bit(6) && !_PENR.Bit(7))
-				{
-					// pen select
-					_currentPen = _PENR & 0x0f;
-				}
 				else
 				{
-					// invalid?	
-					// TODO: check what happens here				
+					// pen select
+					_currentPen = _PENR & 0b0000_1111;
 				}
 			}
 		}
@@ -274,7 +269,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			set
 			{
 				_INKR = value;
-				_colourRegisters[_currentPen] = _INKR & 0x1f;
+				if (_currentPen == 16)
+				{
+
+				}
+				_colourRegisters[_currentPen] = _INKR & 0b0001_1111;
 			}
 		}
 		private byte _INKR;
@@ -299,22 +298,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				_RMR = value;
 
 				// Upper ROM paging
-				if (_RMR.Bit(3))
-					_machine.UpperROMPaged = false;
-				else
-					_machine.UpperROMPaged = true;
+				_machine.UpperROMPaged = !_RMR.Bit(3);
 
 				// Lower ROM paging
-				if (_RMR.Bit(2))
-					_machine.LowerROMPaged = false;
-				else
-					_machine.LowerROMPaged = true;
+				_machine.LowerROMPaged = !_RMR.Bit(2);
 
 				// Interrupt generation control
 				if (_RMR.Bit(4))
 				{
 					// reset interrupt counter
-					//InterruptCounter = 0;
 					R52 = 0;
 				}
 			}
@@ -822,8 +814,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 				else if (!CRTC.DISPTMG)
 				{
-					//colour = CPCHardwarePalette[_colourRegisters[16]];
-					colour = CPCPalette[_colourRegisters[16]].ARGB;
+					colour = CPCHardwarePalette[_colourRegisters[16]];
+					//colour = CPCPalette[_colourRegisters[16]].ARGB;
 					//vid = CPCPalette[_colourRegisters[16]];
 				}
 				else if (CRTC.DISPTMG)
@@ -884,6 +876,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						// Pixel:			|  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
 						// Pixel Bit Enc.:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
 						// Pixel Timing:	|  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
+						// ------------------------------------------------------------------
 						case 2:
 							switch (pixIndex)
 							{
@@ -935,8 +928,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							break;
 					}
 
-					//colour = CPCHardwarePalette[_colourRegisters[pen]];
-					colour = CPCPalette[_colourRegisters[pen]].ARGB;
+					colour = CPCHardwarePalette[_colourRegisters[pen]];
+					//colour = CPCPalette[_colourRegisters[pen]].ARGB;
 					//vid = CPCPalette[_colourRegisters[pen]];
 				}
 
@@ -1114,6 +1107,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
+		
+		public bool GateArrayUnlocked { get; set; }
+
 		/// <summary>
 		/// Device responds to an OUT instruction
 		/// </summary>
@@ -1130,50 +1126,71 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			if (!accessed)
 				return accessed;
 
-			var regSelect = (byte)(result >> 5);
-
-			switch (regSelect)
+			if (!result.Bit(7) && !result.Bit(6))
 			{
-				case 0b_000:
-				case 0b_001:
+				// PENR register
+				PENR = (byte)result;
+			}
+
+			if (!result.Bit(7) && result.Bit(6))
+			{
+				// INKR register
+				INKR = (byte)result;
+			}
+
+			if (result.Bit(7) && !result.Bit(6))
+			{
+				if (result.Bit(5) && GateArrayUnlocked)
+				{
+					// ASIC & Advanced ROM mapping (unlocked ASIC only)
+				}
+				else
+				{
+					// RMR (or RMR ghost) register
+					RMR = (byte)result;
+				}
+			}
+
+			if (result.Bit(7) && result.Bit(6))
+			{
+				// RAMR register
+				RAMR = (byte)result;
+			}
+
+			/*
+			// Gate array functions are selected by decoding the top two bits (6 and 7) of the data byte sent
+			switch ((byte)(result >> 6))
+			{
+				case 0b_00:
 					// PENR register
 					PENR = (byte)result;
 					break;
 
-				case 0b_010:
-				case 0b_011:
+				case 0b_01:
 					// INKR register
 					INKR = (byte)result;
 					break;
 
-				case 0b_100:
-					// RMR register
-					RMR = (byte)result;
+				case 0b_10:
+
+					if (result.Bit(5) && GateArrayUnlocked)
+					{
+						// ASIC & Advanced ROM mapping (unlocked ASIC only)
+					}
+					else
+					{
+						// RMR (or RMR ghost) register
+						RMR = (byte)result;
+					}
 					break;
 
-				case 0b_101:
-					switch (GateArrayType)
-					{
-						case GateArrayType.Amstrad40007:
-						case GateArrayType.Amstrad40008:
-						case GateArrayType.Amstrad40010:
-						case GateArrayType.Amstrad40226:
-							// RMR ghost register
-							RMR = (byte)result;
-							break;
-						
-						case GateArrayType.Amstrad40489:
-							// TODO: RMR2 register
-							break;
-					}
-					break;	
-
-				case 0b_110:
-				case 0b_111:
+				case 0b_11:
 					// RAMR register
 					RAMR = (byte)result;
 					break;
 			}
+
+			*/
 
 			return true;
 		}
