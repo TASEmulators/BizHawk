@@ -150,6 +150,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			CRTScreen.FrameEnd = false;
 
+			var ipf = GateArray.interruptsPerFrame;
+			GateArray.interruptsPerFrame = 0;
+
 			// we have reached the end of a frame
 			LastFrameStartCPUTick = CPU.TotalExecutedCycles; // - OverFlow;
 

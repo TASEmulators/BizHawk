@@ -307,7 +307,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				if (_RMR.Bit(4))
 				{
 					// reset interrupt counter
-					R52 = 0;
+					_r52 = 0;
 				}
 			}
 		}
@@ -380,6 +380,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private bool C_HSYNC_Black;
 
+		public int interruptsPerFrame { get; set; }
+
 		/// <summary>
 		/// GA raster counter incremented at the end of every HSYNC signal from the CRTC
 		/// (interrupt counter)
@@ -400,6 +402,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				{
 					// The GATE ARRAY sends an interrupt request when R52=0
 					CPU.FlagI = true;
+					interruptsPerFrame++;
 				}
 				else if (GA_VSYNC && _r52 == 2)
 				{
@@ -408,6 +411,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					{
 						// An interrupt is requested by the GATE ARRAY from the Z80A only if bit 5 of R52 is 1
 						CPU.FlagI = true;
+						interruptsPerFrame++;
 					}
 
 					// R52 is set to 0 unconditionally
@@ -500,7 +504,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			// an armed (pending) interrupt is acknowledged/authorised by the CPU
 			// R52 Bit5 is reset
-			R52 &= ~(1 << 5);
+			_r52 &= ~(1 << 5);
 			CPU.FlagI = false;
 		}
 
@@ -656,6 +660,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					OutputByte(0);
 
 					// READY HIGH (Z80 /WAIT is inactive)
+					CPU.FlagW = false;
 					// /RAS LOW
 
 					// /CCLK LOW
@@ -687,8 +692,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 				case 4:
 					// READY LOW (Z80 /WAIT is active)
+					CPU.FlagW = true;
 
 					// PHI HIGH (2)
+					CPU.ExecuteOne();
+					/*
 					if (BUSRQ == 1) // PCh
 					{
 						// Z80 will sample /WAIT during the cycle it intends to access the bus when reading opcodes
@@ -702,6 +710,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						// no fetch, or non-opcode fetch - CPU does not wait
 						CPU.ExecuteOne();
 					}
+					*/
 
 					break;
 
@@ -725,6 +734,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					OutputByte(0);
 
 					// PHI HIGH (3)
+					CPU.ExecuteOne();
+
+					/*
 					if (BUSRQ > 0)
 					{
 						// memory action upcoming - CPU clock is halted
@@ -734,6 +746,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					{
 						CPU.ExecuteOne();
 					}
+					*/
 					break;
 
 				case 9:
@@ -755,6 +768,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 				case 12:
 					// PHI HIGH (4)
+					CPU.ExecuteOne();
+
+					/*
 					if (BUSRQ > 0)
 					{
 						// memory action upcoming - CPU clock is halted
@@ -764,6 +780,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					{
 						CPU.ExecuteOne();
 					}
+					*/
 					break;
 
 				case 13:
