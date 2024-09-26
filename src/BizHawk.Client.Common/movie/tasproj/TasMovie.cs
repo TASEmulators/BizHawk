@@ -139,7 +139,7 @@ namespace BizHawk.Client.Common
 		public void InvalidateEntireGreenzone()
 			=> InvalidateAfter(0);
 
-		private (int Frame, IMovieController Controller) _displayCache = (-1, new Bk2Controller(NullController.Instance.Definition));
+		private (int Frame, IMovieController Controller) _displayCache = (-1, null);
 
 		/// <summary>
 		/// Returns the mnemonic value for boolean buttons, and actual value for axes,
@@ -147,7 +147,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)
 		{
-			if (_displayCache.Frame != frame)
+			// TODO: there are display issues in TAStudio when less than 3 frames are visible
+			// this is because the Bk2Controller returned from GetInputState is a shared object and mutated elsewhere (like the OSDManager),
+			// but it's getting cached here. this "works" in the >= 2 frames case because the _displayCache.Frame != frame condition
+			// will invalidate the cache. Can we do this properly somehow?
+			if (_displayCache.Frame != frame || FrameCount < 3)
 			{
 				_displayCache = (frame, GetInputState(frame));
 			}
