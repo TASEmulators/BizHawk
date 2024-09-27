@@ -804,8 +804,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 				else if (!CRTC.DISPTMG)
 				{
-					colour = CPCHardwarePalette[_colourRegisters[16]];
-					//colour = CPCPalette[_colourRegisters[16]].ARGB;
+					//colour = CPCHardwarePalette[_colourRegisters[16]];
+					colour = CPCPalette[_colourRegisters[16]].ARGB;
 					//vid = CPCPalette[_colourRegisters[16]];
 				}
 				else if (CRTC.DISPTMG)
@@ -918,166 +918,17 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							break;
 					}
 
-					colour = CPCHardwarePalette[_colourRegisters[pen]];
-					//colour = CPCPalette[_colourRegisters[pen]].ARGB;
+					//colour = CPCHardwarePalette[_colourRegisters[pen]];
+					colour = CPCPalette[_colourRegisters[pen]].ARGB;
 					//vid = CPCPalette[_colourRegisters[pen]];
 				}
 
 				CRT.VideoClock(colour, -1, C_HSYNC, C_VSYNC);
 				//CRT.VideoClock(vid, -1);
 			}
-		}
+		}	
+
 		
-
-		/// <summary>
-		/// Outputs a single pixel to the monitor at 16MHz
-		/// </summary>
-		private void OutputPixel(int pixelOffset)
-		{
-			int pen = 0;
-			int colour = 0;
-
-			var pixIndex = (_xtal + pixelOffset) & 0x0F;
-
-			var vidByteIndex = _xtal < 8 ? 0 : 1;
-			var dataByte = _xtal < 8 ? _videoDataByte1 : _videoDataByte2; // _videoData[vidByteIndex];
-			pixIndex &= 0x07;
-
-			if (dataByte != 0)
-			{
-
-			}
-
-			if (C_VSYNC_Black)
-			{
-				colour = 0;
-			}
-			else if (C_HSYNC_Black)
-			{
-				colour = 0;
-			}
-			else if (!CRTC.DISPTMG)
-			{
-				colour = CPCHardwarePalette[_colourRegisters[16]];
-			}
-			else if (CRTC.DISPTMG)
-			{
-				// http://www.cpcmania.com/Docs/Programming/Painting_pixels_introduction_to_video_memory.htm
-				switch (_screenMode)
-				{
-					// Mode 0, 4-bits per pixel, 160x200 resolution, 16 colours
-					// ------------------------------------------------------------------
-					// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
-					// Pixel:			|  0  |  1  |  0  |  1  |  0  |  1  |  0  |  1  |
-					// Pixel Bit Enc.:	|  0  |  0  |  2  |  2  |  1  |  1  |  3  |  3  |
-					// Pixel Timing:	|           0           |           1           |
-					// ------------------------------------------------------------------
-					case 0:
-						pen = pixIndex < 4
-							? ((dataByte & 0x80) >> 7) | ((dataByte & 0x08) >> 2) | ((dataByte & 0x20) >> 3) | ((dataByte & 0x02) << 2)
-							: ((dataByte & 0x40) >> 6) | ((dataByte & 0x04) >> 1) | ((dataByte & 0x10) >> 2) | ((dataByte & 0x01) << 3);
-						break;
-
-					// Mode 1, 2-bits per pixel, 320x200 resolution, 4 colours
-					// ------------------------------------------------------------------
-					// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
-					// Pixel:			|  0  |  1  |  2  |  3  |  0  |  1  |  2  |  3  |
-					// Pixel Bit Enc.:	|  0  |  0  |  0  |  0  |  1  |  1  |  1  |  1  |
-					// Pixel Timing:	|     0     |     1     |	  2     |     3     |
-					// ------------------------------------------------------------------
-					case 1:
-						switch (pixIndex)
-						{
-							// pixel 0
-							case 0:
-							case 1:
-								pen = ((dataByte & 0x80) >> 7) | ((dataByte & 0x08) >> 2);
-								break;
-
-							case 2:
-							case 3:
-								pen = ((dataByte & 0x40) >> 6) | ((dataByte & 0x04) >> 1);
-								break;
-
-							case 4:
-							case 5:
-								pen = ((dataByte & 0x20) >> 5) | (dataByte & 0x02);
-								break;
-
-							case 6:
-							case 7:
-								pen = ((dataByte & 0x10) >> 4) | ((dataByte & 0x01) << 1);
-								break;
-
-						}
-						break;
-
-					// Mode 2, 1-bit per pixel, 640x200 resolution, 2 colours
-					// ------------------------------------------------------------------
-					// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
-					// Pixel:			|  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
-					// Pixel Bit Enc.:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
-					// Pixel Timing:	|  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
-					case 2:
-						switch (pixIndex)
-						{
-							case 0:
-								pen = dataByte.Bit(7) ? 1 : 0;
-								break;
-
-							case 1:
-								pen = dataByte.Bit(6) ? 1 : 0;
-								break;
-
-							case 2:
-								pen = dataByte.Bit(5) ? 1 : 0;
-								break;
-
-							case 3:
-								pen = dataByte.Bit(4) ? 1 : 0;
-								break;
-
-							case 4:
-								pen = dataByte.Bit(3) ? 1 : 0;
-								break;
-
-							case 5:
-								pen = dataByte.Bit(2) ? 1 : 0;
-								break;
-
-							case 6:
-								pen = dataByte.Bit(1) ? 1 : 0;
-								break;
-
-							case 7:
-								pen = dataByte.Bit(0) ? 1 : 0;
-								break;
-						}
-						break;
-
-					// Mode 3, 2-bits per pixel, 160x200 resolution, 4 colours (undocumented)
-					// ------------------------------------------------------------------
-					// Video Byte Bit:	|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
-					// Pixel:			|  0  |  1  |  x  |  x  |  0  |  1  |  x  |  x  |
-					// Pixel Bit Enc.:	|  0  |  0  |  x  |  x  |  1  |  1  |  x  |  x  |
-					// Pixel Timing:	|           0           |           1           |
-					// ------------------------------------------------------------------
-					case 3:
-						pen = pixIndex < 4
-							? ((dataByte & 0x80) >> 7) | ((dataByte & 0x08) >> 2)
-							: ((dataByte & 0x40) >> 6) | ((dataByte & 0x04) >> 1);
-						break;
-				}
-
-				colour = CPCHardwarePalette[_colourRegisters[pen]];
-			}
-			else
-			{
-
-			}
-
-			CRT.VideoClock(colour, -1, C_HSYNC, C_VSYNC);
-		}		
 
 		/// <summary>
 		/// Device responds to an IN instruction

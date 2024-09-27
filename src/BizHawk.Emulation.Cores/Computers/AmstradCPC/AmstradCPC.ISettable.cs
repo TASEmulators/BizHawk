@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			[DisplayName("Border type")]
 			[Description("Select how to show the border area")]
-			[DefaultValue(BorderType.Uniform)]
+			[DefaultValue(BorderType.Visible)]
 			public BorderType BorderType { get; set; }
 
 			public AmstradCPCSyncSettings Clone()
@@ -331,19 +331,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public enum BorderType
 		{
 			/// <summary>
-			/// Attempts to equalise the border areas
+			/// Roughly what you might see on an Amstrad monitor
 			/// </summary>
-			Uniform,
+			Visible,
 
 			/// <summary>
-			/// Pretty much the signal the gate array is generating (looks shit)
+			/// The full display area
 			/// </summary>
 			Uncropped,
-
-			/// <summary>
-			/// Top and bottom border removed so that the result is *almost* 16:9
-			/// </summary>
-			Widescreen,
 		}
 	}
 }

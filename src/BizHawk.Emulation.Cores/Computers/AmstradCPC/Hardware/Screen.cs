@@ -81,14 +81,26 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private const int VISIBLE_PIXEL_HEIGHT = TOTAL_LINES - DISPLAY_START_LINE;
 
-		public CRTScreen(ScreenType screenType)
+		public CRTScreen(ScreenType screenType, AmstradCPC.BorderType bordertype)
 		{
 			ScreenType = screenType;
 
-			TrimLeft = 0;
-			TrimTop = 39;
-			TrimRight = 210;
-			TrimBottom = 11;
+			switch (bordertype)
+			{
+				case AmstradCPC.BorderType.Uncropped:
+					TrimLeft = 0;
+					TrimTop = 39;
+					TrimRight = 210;
+					TrimBottom = 11;
+					break;
+
+				case AmstradCPC.BorderType.Visible:
+					TrimLeft = 0 + 22;
+					TrimTop = 39 + 45;
+					TrimRight = 210 + 35;
+					TrimBottom = 11 + 35;
+					break;
+			}
 		}
 
 		/// <summary>
