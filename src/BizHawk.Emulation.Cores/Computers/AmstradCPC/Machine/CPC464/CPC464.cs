@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			FrameLength = GateArray.FrameLength / 4;
 
 			PPI = new PPI_8255(this);
+			PAL = new PAL16L8(this);
 
 			TapeBuzzer = new Beeper(this);
 			TapeBuzzer.Init(44100, FrameLength);

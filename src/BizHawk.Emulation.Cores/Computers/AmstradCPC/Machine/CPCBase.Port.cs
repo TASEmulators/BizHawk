@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				dev = PortDevice.GateArray;
 
 			else if (!port.Bit(15))
-				dev = PortDevice.RAMManagement;
+				dev = PortDevice.PAL;
 
 			else if (!port.Bit(14))
 				dev = PortDevice.CRCT;
@@ -68,7 +68,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				devs.Add(PortDevice.GateArray);
 
 			if (!port.Bit(15))
-				devs.Add(PortDevice.RAMManagement);
+				devs.Add(PortDevice.PAL);
+
+			if (!port.Bit(15))
+				devs.Add(PortDevice.PAL);
 
 			if (!port.Bit(14))
 				devs.Add(PortDevice.CRCT);
@@ -95,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			Unknown,
 			GateArray,
-			RAMManagement,
+			PAL,
 			CRCT,
 			ROMSelect,
 			Printer,

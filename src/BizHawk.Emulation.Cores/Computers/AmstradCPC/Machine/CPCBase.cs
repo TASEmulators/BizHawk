@@ -71,6 +71,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public PPI_8255 PPI { get; set; }
 
 		/// <summary>
+		/// PAL16L8 Programmable Logic Array Circuit
+		/// </summary>
+		public PAL16L8 PAL { get; set; }
+
+		/// <summary>
 		/// The length of a standard frame in CPU cycles
 		/// </summary>
 		public int FrameLength;
@@ -318,11 +323,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync(nameof(UpperROMPosition), ref UpperROMPosition);
 			ser.Sync(nameof(UpperROMPaged), ref UpperROMPaged);
 			ser.Sync(nameof(LowerROMPaged), ref LowerROMPaged);
-			ser.Sync(nameof(RAMConfig), ref RAMConfig);
-			ser.Sync(nameof(RAM64KBank), ref RAM64KBank);
 
 			CRTC.SyncState(ser);
 			GateArray.SyncState(ser);
+			PPI.SyncState(ser);
+			PAL.SyncState(ser);
 			KeyboardDevice.SyncState(ser);
 			TapeBuzzer.SyncState(ser);
 			AYDevice.SyncState(ser);

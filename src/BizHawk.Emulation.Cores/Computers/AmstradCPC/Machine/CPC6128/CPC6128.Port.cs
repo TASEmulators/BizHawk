@@ -1,7 +1,5 @@
 ﻿using BizHawk.Common.NumberExtensions;
 
-using System.Collections;
-
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
 	/// <summary>
@@ -15,10 +13,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public override byte ReadPort(ushort port)
 		{
-			BitArray portBits = new BitArray(BitConverter.GetBytes(port));
-			byte portUpper = (byte)(port >> 8);
-			byte portLower = (byte)(port & 0xff);
-
 			int result = 0xff;
 
 			if (DecodeINPort(port) == PortDevice.GateArray)
@@ -68,11 +62,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public override void WritePort(ushort port, byte value)
 		{
-			BitArray portBits = new BitArray(BitConverter.GetBytes(port));
-			BitArray dataBits = new BitArray(BitConverter.GetBytes(value));
-			byte portUpper = (byte)(port >> 8);
-			byte portLower = (byte)(port & 0xff);
-
 			var devs = DecodeOUTPort(port);
 
 			foreach (var d in devs)
@@ -81,15 +70,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				{
 					GateArray.WritePort(port, value);
 				}
-				else if (d == PortDevice.RAMManagement)
+				else if (d == PortDevice.PAL)
 				{
-					if (value.Bit(7) && value.Bit(6))
-					{
-						RAMConfig = value & 0x07;
-
-						// additional 64K bank index
-						var b64 = value & 0x38;
-					}
+					PAL.WritePort(port, value);					
 				}
 				else if (d == PortDevice.CRCT)
 				{

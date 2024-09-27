@@ -1,4 +1,3 @@
-using System.Collections;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -13,10 +12,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public override byte ReadPort(ushort port)
 		{
-			BitArray portBits = new BitArray(BitConverter.GetBytes(port));
-			byte portUpper = (byte)(port >> 8);
-			byte portLower = (byte)(port & 0xff);
-
 			int result = 0xff;
 
 			if (DecodeINPort(port) == PortDevice.GateArray)
@@ -53,11 +48,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public override void WritePort(ushort port, byte value)
 		{
-			BitArray portBits = new BitArray(BitConverter.GetBytes(port));
-			BitArray dataBits = new BitArray(BitConverter.GetBytes(value));
-			byte portUpper = (byte)(port >> 8);
-			byte portLower = (byte)(port & 0xff);
-
 			var devs = DecodeOUTPort(port);
 
 			foreach (var d in devs)
@@ -66,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				{
 					GateArray.WritePort(port, value);
 				}
-				else if (d == PortDevice.RAMManagement)
+				else if (d == PortDevice.PAL)
 				{
 					// not present in the unexpanded CPC464
 				}
