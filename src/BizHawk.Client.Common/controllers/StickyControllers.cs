@@ -25,9 +25,13 @@ namespace BizHawk.Client.Common
 		}
 
 		public int AxisValue(string name)
-		{
-			return _axisHolds.TryGetValue(name, out int axisValue) ? axisValue : Definition.Axes[name].Neutral;
-		}
+			=> _axisHolds.TryGetValue(name, out int axisValue)
+				? axisValue
+#if DEBUG
+				: Definition.Axes[name].Neutral; // throw if no such axis
+#else
+				: Definition.Axes.TryGetValue(name, out var axisSpec) ? axisSpec.Neutral : default;
+#endif
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => throw new NotSupportedException();
 		public void SetHapticChannelStrength(string name, int strength) => throw new NotSupportedException();
@@ -113,7 +117,11 @@ namespace BizHawk.Client.Common
 		public int AxisValue(string name)
 			=> _axisPatterns.TryGetValue(name, out var pattern)
 				? pattern.PeekNextValue()
-				: Definition.Axes[name].Neutral;
+#if DEBUG
+				: Definition.Axes[name].Neutral; // throw if no such axis
+#else
+				: Definition.Axes.TryGetValue(name, out var axisSpec) ? axisSpec.Neutral : default;
+#endif
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => throw new NotSupportedException();
 		public void SetHapticChannelStrength(string name, int strength) => throw new NotSupportedException();

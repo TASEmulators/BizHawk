@@ -41,7 +41,12 @@ namespace BizHawk.Client.Common
 			_buttonStarts.Clear();
 		}
 
-		public int AxisValue(string name) => Definition.Axes[name].Neutral;
+		public int AxisValue(string name)
+#if DEBUG
+			=> Definition.Axes[name].Neutral; // throw if no such axis
+#else
+			=> Definition.Axes.TryGetValue(name, out var axisSpec) ? axisSpec.Neutral : default;
+#endif
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
 

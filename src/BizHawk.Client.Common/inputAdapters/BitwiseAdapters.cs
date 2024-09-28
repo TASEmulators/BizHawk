@@ -51,7 +51,11 @@ namespace BizHawk.Client.Common
 		{
 			int sourceAxisValue = Source.AxisValue(name);
 			int sourceXorAxisValue = SourceXor.AxisValue(name);
-			int neutral = Definition.Axes[name].Neutral;
+#if DEBUG
+			var neutral = Definition.Axes[name].Neutral; // throw if no such axis
+#else
+			var neutral = Definition.Axes.TryGetValue(name, out var axisSpec) ? axisSpec.Neutral : default;
+#endif
 
 			if (sourceAxisValue == neutral)
 			{
@@ -82,7 +86,14 @@ namespace BizHawk.Client.Common
 		public int AxisValue(string name)
 		{
 			int sourceValue = Source.AxisValue(name);
-			return sourceValue != Source.Definition.Axes[name].Neutral ? sourceValue : SourceOr.AxisValue(name);
+#if DEBUG
+			var neutralValue = Source.Definition.Axes[name].Neutral; // throw if no such axis
+#else
+			var neutralValue = Source.Definition.Axes.TryGetValue(name, out var axisSpec) ? axisSpec.Neutral : default;
+#endif
+			return sourceValue != neutralValue
+				? sourceValue
+				: SourceOr.AxisValue(name);
 		}
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
