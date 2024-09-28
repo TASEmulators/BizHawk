@@ -450,7 +450,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			CurrentButtons = (LibGambatte.Buttons)b;
 
-			RemoteCommand = (byte)controller.AxisValue("Remote Command");
+			RemoteCommand = _syncSettings.EnableRemote
+				? (byte) controller.AxisValue("Remote Command")
+				: default(byte);
 
 			// the controller callback will set this to false if it actually gets called during the frame
 			IsLagFrame = true;
