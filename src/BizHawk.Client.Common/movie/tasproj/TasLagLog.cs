@@ -106,13 +106,12 @@ namespace BizHawk.Client.Common
 
 		private void RemoveLagEntry(int frame)
 		{
-			var result = _lagLog.TryGetValue(frame, out var lag);
-			if (result)
+			int index = _lagLog.IndexOfKey(frame);
+			if (index >= 0)
 			{
-				_wasLag[frame] = lag;
+				_wasLag[frame] = _lagLog.Values[index];
+				_lagLog.RemoveAt(index);
 			}
-
-			_lagLog.Remove(frame);
 		}
 	}
 }
