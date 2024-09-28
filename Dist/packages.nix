@@ -278,7 +278,7 @@ in {
 			buildInputs = genDepsHostTargetFor { hawkSourceInfo = hawkSourceInfo'; }; # is using `buildInputs` like this correct? it's necessary because the launch script reads from it
 			outputs = [ "out" "assets" "extraUnmanagedDeps" "waterboxCores" ];
 			passthru = {
-				inherit mono;
+				inherit gnome-themes-extra mono;
 				hawkSourceInfo = hawkSourceInfo';
 			};
 			meta.sourceProvenance = [ lib.sourceTypes.binaryNativeCode lib.sourceTypes.binaryBytecode ];
