@@ -256,7 +256,7 @@ namespace BizHawk.Client.Common
 			return stream;
 		}
 
-		public class StateInformation
+		public readonly struct StateInformation
 		{
 			private readonly int _index;
 			public int Frame => _parent._states[_index].Frame;
