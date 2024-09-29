@@ -284,16 +284,31 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Invalidate states from GetState(index) on to the end of the buffer, so that Count == index afterwards
+		/// Invalidate all states with frame number > frame.
+		/// <returns>True iff any state was invalidated, else false</returns>
 		/// </summary>
-		public void InvalidateEnd(int index)
+		public bool InvalidateAfter(int frame)
 		{
-			if ((uint) index > (uint) Count) // intentionally allows index == Count (e.g. clearing an empty buffer)
+			for (int i = _firstStateIndex; i != _nextStateIndex; i = (i + 1) & STATEMASK)
 			{
-				throw new ArgumentOutOfRangeException(paramName: nameof(index), index, message: "index out of range");
+				if (_states[i].Frame > frame)
+				{
+					_nextStateIndex = (i + _firstStateIndex) & STATEMASK;
+					return true;
+				}
 			}
-			_nextStateIndex = (index + _firstStateIndex) & STATEMASK;
+
+			return false;
 			//Util.DebugWriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
+		}
+
+		/// <summary>
+		/// Invalidates the last state in the buffer
+		/// </summary>
+		public void InvalidateLast()
+		{
+			if (Count != 0)
+				_nextStateIndex = (_nextStateIndex - 1) & STATEMASK;
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
