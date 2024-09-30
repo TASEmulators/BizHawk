@@ -1677,8 +1677,6 @@ namespace BizHawk.Client.EmuHawk
 		// AVI/WAV state
 		private IVideoWriter _currAviWriter;
 
-		private AutofireController _autofireNullControls;
-
 		// Sound refactor TODO: we can enforce async mode here with a property that gets/sets this but does an async check
 		private ISoundProvider _aviSoundInputAsync; // Note: This sound provider must be in async mode!
 
@@ -2102,10 +2100,6 @@ namespace BizHawk.Client.EmuHawk
 
 			InputManager.ClientControls = controls;
 			InputManager.ControllerInputCoalescer = new(); // ctor initialises values for host haptics
-			_autofireNullControls = new AutofireController(
-				Emulator,
-				Config.AutofireOn,
-				Config.AutofireOff);
 		}
 
 		private void LoadMoviesFromRecent(string path)
@@ -3674,8 +3668,6 @@ namespace BizHawk.Client.EmuHawk
 					? loader.LoadRom(path, nextComm, ioaRetro?.CorePath)
 					: loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
 
-				Game = result ? loader.Game : GameInfo.NullInstance;
-
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)
 				// i'm not sure this needs to be more abstractly engineered yet until we have more OpenAdvanced examples
@@ -3699,6 +3691,7 @@ namespace BizHawk.Client.EmuHawk
 					string openAdvancedArgs = $"*{OpenAdvancedSerializer.Serialize(ioa)}";
 					Emulator.Dispose();
 					Emulator = loader.LoadedEmulator;
+					Game = loader.Game;
 					Config.RecentCores.Enqueue(Emulator.Attributes().CoreName);
 					while (Config.RecentCores.Count > 5) Config.RecentCores.Dequeue();
 					InputManager.SyncControls(Emulator, MovieSession, Config);
@@ -3762,12 +3755,12 @@ namespace BizHawk.Client.EmuHawk
 					var romDetails = Emulator.RomDetails();
 					if (string.IsNullOrWhiteSpace(romDetails) && loader.Rom != null)
 					{
-						_defaultRomDetails = $"{loader.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(loader.Rom.RomData)}\r\n{MD5Checksum.ComputePrefixedHex(loader.Rom.RomData)}\r\n";
+						_defaultRomDetails = $"{Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(loader.Rom.RomData)}\r\n{MD5Checksum.ComputePrefixedHex(loader.Rom.RomData)}\r\n";
 					}
 					else if (string.IsNullOrWhiteSpace(romDetails) && loader.Rom == null)
 					{
 						// single disc game
-						_defaultRomDetails = $"{loader.Game.Name}\r\nSHA1:N/A\r\nMD5:N/A\r\n";
+						_defaultRomDetails = $"{Game.Name}\r\nSHA1:N/A\r\nMD5:N/A\r\n";
 					}
 
 					if (Emulator.HasBoardInfo())
@@ -3956,7 +3949,8 @@ namespace BizHawk.Client.EmuHawk
 			CheatList.SaveOnClose();
 			Emulator.Dispose();
 			Emulator = new NullEmulator();
-			InputManager.ResetMainControllers(_autofireNullControls);
+			Game = GameInfo.NullInstance;
+			InputManager.SyncControls(Emulator, MovieSession, Config);
 			RewireSound();
 			RebootStatusBarIcon.Visible = false;
 			GameIsClosing = false;
@@ -3976,14 +3970,8 @@ namespace BizHawk.Client.EmuHawk
 			if (Tools.AskSave())
 			{
 				CloseGame(clearSram);
-				Emulator.Dispose();
-				Emulator = new NullEmulator();
-				Game = GameInfo.NullInstance;
 				Tools.Restart(Config, Emulator, Game);
-				RewireSound();
 				DisplayManager.UpdateGlobals(Config, Emulator);
-				InputManager.SyncControls(Emulator, MovieSession, Config);
-				Tools.UpdateCheatRelatedTools(null, null);
 				ExtToolManager.BuildToolStrip();
 				PauseOnFrame = null;
 				CurrentlyOpenRom = null;

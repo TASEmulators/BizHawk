@@ -49,15 +49,6 @@ namespace BizHawk.Client.Common
 
 		public Func<(Point Pos, long Scroll, bool LMB, bool MMB, bool RMB, bool X1MB, bool X2MB)> GetMainFormMouseInfo { get; set; }
 
-		// TODO does this function make sense? Shouldn't SyncControls be called instead, even for the NullEmulator case?
-		public void ResetMainControllers(AutofireController nullAutofireController)
-		{
-			ActiveController = new Controller(NullController.Instance.Definition);
-			AutoFireController = nullAutofireController;
-			StickyHoldController = null;
-			StickyAutofireController = null;
-		}
-
 		public void SyncControls(IEmulator emulator, IMovieSession session, Config config)
 		{
 			var def = emulator.ControllerDefinition;
