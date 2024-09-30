@@ -209,11 +209,22 @@ namespace BizHawk.Bizware.Graphics
 
 									try
 									{
+										// have to blend here, due to transparent texture usage
+										if (!EnableBlending)
+										{
+											_ = SDL_SetRenderDrawBlendMode(sdlRenderer, SDL_BlendMode.SDL_BLENDMODE_BLEND);
+										}
+
 										RenderCommand(sdlRenderer, sdlTex, _imGuiDrawList, lastCmd);
 									}
 									finally
 									{
 										SDL_DestroyTexture(sdlTex);
+
+										if (!EnableBlending)
+										{
+											_ = SDL_SetRenderDrawBlendMode(sdlRenderer, SDL_BlendMode.SDL_BLENDMODE_NONE);
+										}
 									}
 								}
 								finally

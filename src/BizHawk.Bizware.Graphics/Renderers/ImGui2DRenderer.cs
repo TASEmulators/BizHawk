@@ -171,9 +171,9 @@ namespace BizHawk.Bizware.Graphics
 			DrawString,
 		}
 
-		private void PerformPasses(ImDrawCmdPtr cmd)
+		private void PerformPasses(ImDrawCmdPtr cmd, bool forceBlending)
 		{
-			if (EnableBlending && _needBlending)
+			if ((EnableBlending && _needBlending) || forceBlending)
 			{
 				_pass1RenderTarget.Bind();
 				_resourceCache.SetBlendingParamters(_pass2RenderTarget, false);
@@ -249,7 +249,7 @@ namespace BizHawk.Bizware.Graphics
 							_resourceCache.SetTexture(null);
 						}
 
-						PerformPasses(cmd);
+						PerformPasses(cmd, forceBlending: false);
 						tempTex?.Dispose();
 						break;
 					}
@@ -281,7 +281,11 @@ namespace BizHawk.Bizware.Graphics
 
 							_stringTexture.LoadFrom(new BitmapBuffer(_stringOutput, new()));
 							_resourceCache.SetTexture(_stringTexture);
-							PerformPasses(lastCmd);
+
+							// the string texture is largely transparent, so it implicitly needs blending
+							// however, other things might not need blending
+							// so as an optimization, don't force blending everywhere, just here if need be
+							PerformPasses(lastCmd, forceBlending: true);
 							ClearStringOutput();
 						}
 
@@ -418,11 +422,11 @@ namespace BizHawk.Bizware.Graphics
 				throw new InvalidOperationException("Invalid number of points");
 			}
 
-			CheckAlpha(color);
 			var startPt = points[0];
 			var col = (uint)color.ToArgb();
 			for (var i = 1; i < points.Length; i += 3)
 			{
+				CheckAlpha(color);
 				_imGuiDrawList.AddBezierCubic(
 					p1: startPt.ToVector(),
 					p2: points[i + 0].ToVector(),
@@ -620,6 +624,10 @@ namespace BizHawk.Bizware.Graphics
 		public void DrawString(string s, Font font, Color color, float x, float y, StringFormat format, TextRenderingHint textRenderingHint)
 		{
 			_splitNextCmd = false;
+			// drawing a string in the end just overlays a largely transparent texture with the drawn text
+			// as such, it implicitly needs blending during the string drawing
+			// however, as an optimization, we can avoid blending in general if the string color is opaque
+			// if it isn't opaque, we need to blend everywhere regardless
 			_needBlending |= color.A != 0xFF;
 			var stringArgs = new DrawStringArgs { Str = s, Font = font, Color = color, X = x, Y = y, Format = format, TextRenderingHint = textRenderingHint };
 			var handle = GCHandle.Alloc(stringArgs, GCHandleType.Normal);
