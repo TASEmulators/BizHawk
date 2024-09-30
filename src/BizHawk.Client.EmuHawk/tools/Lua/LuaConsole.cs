@@ -1193,7 +1193,7 @@ namespace BizHawk.Client.EmuHawk
 
 			StopAllScriptsContextItem.Visible =
 				ScriptContextSeparator.Visible =
-				LuaImp.ScriptList.Any(file => file.Enabled);
+				LuaImp.ScriptList.Exists(file => file.Enabled);
 
 			ClearRegisteredFunctionsContextItem.Enabled =
 				LuaImp.RegisteredFunctions.Any();

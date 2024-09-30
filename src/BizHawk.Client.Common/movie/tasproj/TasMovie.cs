@@ -347,7 +347,7 @@ namespace BizHawk.Client.Common
 			// Why the frame before?
 			// because we always navigate to the frame before and emulate 1 frame so that we ensure a proper frame buffer on the screen
 			// users want instant navigation to markers, so to do this, we need to reserve the frame before the marker, not the marker itself
-			return Markers.Any(m => m.Frame - 1 == frame)
+			return Markers.Exists(m => m.Frame - 1 == frame)
 				|| Branches.Any(b => b.Frame == frame); // Branches should already be in the reserved list, but it doesn't hurt to check
 		}
 
