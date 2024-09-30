@@ -1056,10 +1056,14 @@ GPGX_EX void gpgx_set_draw_mask(int mask)
 	cinterface_render_bgw = !!(mask & 4);
 	cinterface_render_obj = !!(mask & 8);
 	cinterface_custom_backdrop = !!(mask & 16);
-	if (cinterface_custom_backdrop)
-		color_update_m5(0, 0);
-	else
-		color_update_m5(0x00, *(uint16 *)&cram[border << 1]);
+
+	if (reg[1] & 0x04)
+	{
+		if (cinterface_custom_backdrop)
+			color_update_m5(0, 0);
+		else
+			color_update_m5(0x00, *(uint16 *)&cram[border << 1]);
+	}
 }
 
 GPGX_EX void gpgx_set_sprite_limit_enabled(int enabled)
