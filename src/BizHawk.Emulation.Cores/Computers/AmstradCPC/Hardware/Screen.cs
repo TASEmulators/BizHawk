@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				// vsync signal ongoing - beam is held at the top of the screen
 				_gunPosV = 0;
-				HackHPos();
+				//HackHPos();
 			}
 			else if (_gunPosV == TOTAL_LINES + vHold)
 			{
@@ -207,8 +207,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				// the second field should start at the same time as HSYNC
 				// for now, we'll reset _verticalTiming to 0 when vertical flyback happens just so the screen isnt broken half way
 				// and deal with interlacing later
-				if (_verticalTiming > 0)
+				if (_verticalTiming == 665)
+				{
 					_verticalTiming = 0;
+				}
 			}
 
 			// video output
