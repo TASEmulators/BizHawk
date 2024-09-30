@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			GateArray.GAClockCounter = 0;
 			GateArray.FrameEnd = false;
 
-			while (!GateArray.FrameEnd)
+			while (!CRTScreen.FrameEnd)
 			{
 				GateArray.Clock();
 

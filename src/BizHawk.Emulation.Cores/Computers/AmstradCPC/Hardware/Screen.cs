@@ -26,8 +26,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The type of monitor to emulate
 		/// </summary>
-		public ScreenType ScreenType { get; private set; }
+		public ScreenType ScreenType { get; }
 
+		/// <summary>
+		/// Checked and reset in the emulator loop. If true, framend processing happens
+		/// </summary>
 		public bool FrameEnd { get; set; }
 
 		/// <summary>
@@ -41,14 +44,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private const int TOTAL_PIXELS = LINE_PERIOD * PIXEL_TIME;
 
 		/// <summary>
-		/// The first 4 microseconds of a scan line are taken up by the horizontal sync signal (a low pulse)
+		/// Arbirary processing buffer width
 		/// </summary>
-		private const int HSYNC_PERIOD = 4;
-
-		/// <summary>
-		/// The second 8 microseconds of what is known as the "back porch" (this holds colour burst data for composite signals)
-		/// </summary>
-		private const int BACK_PORCH_PERIOD = 8;		
+		private const int FRAMEBUFFER_MAX_WIDTH = 1024;	
 
 		/// <summary>
 		/// Total scanlines per frame
@@ -59,48 +57,26 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private const int TOTAL_LINES = 625;
 
 		/// <summary>
-		/// The scanline on which VSYNC has ended and display can start
-		/// </summary>
-		private const int DISPLAY_START_LINE = 6 * 2;
-
-		/// <summary>
-		/// The scanline on which VSYNC starts
-		/// </summary>
-		private const int DISPLAY_END_LINE = (312 - 6) * 2;
-
-		/// <summary>
 		/// The number or pixels being rendered every microsecond
 		/// </summary>
 		private const int PIXEL_TIME = 16;
-
-		/// <summary>
-		/// Display buffer width in pixels
-		/// </summary>
-		private const int VISIBLE_PIXEL_WIDTH = (LINE_PERIOD * PIXEL_TIME) - (HSYNC_PERIOD * PIXEL_TIME) - (BACK_PORCH_PERIOD * PIXEL_TIME);
-
-		/// <summary>
-		/// Display buffer height in pixels
-		/// </summary>
-		private const int VISIBLE_PIXEL_HEIGHT = TOTAL_LINES - DISPLAY_START_LINE;
 
 		public CRTScreen(ScreenType screenType, AmstradCPC.BorderType bordertype)
 		{
 			ScreenType = screenType;
 
+			TrimLeft = 121;
+			TrimTop = 39;
+			TrimRight = 87;
+			TrimBottom = 10;
+
 			switch (bordertype)
 			{
-				case AmstradCPC.BorderType.Uncropped:
-					TrimLeft = 0;
-					TrimTop = 39;
-					TrimRight = 210;
-					TrimBottom = 11;
-					break;
-
 				case AmstradCPC.BorderType.Visible:
-					TrimLeft = 0 + 22;
-					TrimTop = 39 + 45;
-					TrimRight = 210 + 35;
-					TrimBottom = 11 + 35;
+					TrimLeft += 25;
+					TrimTop += 45;
+					TrimRight += 40;
+					TrimBottom += 35;
 					break;
 			}
 		}
@@ -125,357 +101,121 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private int _timePosV;
 
-		private bool _isVsync;
-		private bool _isHsync;
-		private int _latchedHorPixelPos;
-
-		public void VideoClock_(int colour, int field, bool cHsync = false, bool cVsync = false)
-		{
-			_gunPosH++;
-
-			// enforce horiztonal wrap-around
-			_gunPosH %= TOTAL_PIXELS;
-
-			if (_gunPosH == 0)
-			{
-				// end of scanline
-				_gunPosV++;
-
-				if (_gunPosV == DISPLAY_END_LINE)
-				{
-					// monitor VSYNC starts
-					_isVsync = true;
-
-					// latch horizonal position
-					// During vertical flyback the beam traverses diagonally from bottom left, to middle right, to top left,
-					// so when vsync completes, the beam is at the same horizontal position as it was when vsync started
-					_latchedHorPixelPos = _gunPosH;
-				}
-
-				// enforce vertical wraparound
-				_gunPosV %= TOTAL_LINES;
-
-				if (_gunPosV == 0)
-				{
-					// monitor vsync is over
-					_isVsync = false;
-
-					// signal bizhawk frame end
-					FrameEnd = true;
-
-					_gunPosH = _latchedHorPixelPos;
-				}
-			}
-
-			if (cVsync)
-			{
-				// vsync signal is being received - turn off the beam as the flyback happens
-				// and the CRT will attempt to syncronise with the signal
-				_isVsync = true;
-				_latchedHorPixelPos = _gunPosH;
-			}
-			else if (cHsync)
-			{
-				// hsync signal is being received - turn off the beam as the flyback happens
-				// and the CRT will attempt to syncronise with the signal
-				_isHsync = true;
-			}
-
-			if (_isVsync && !cVsync)
-			{
-				// incoming vsync signal has ended
-				// CRT should be vertically syncronised with the signal
-				_isVsync = false;
-				_gunPosV = 0;
-				FrameEnd = true;
-			}
-			else if (_isHsync && !cHsync)
-			{
-				// incoming hsync signal has ended
-				// CRT should be horizontally syncronised with the signal
-				_isHsync = false;
-			}
-
-			if (_isVsync || _isHsync)
-			{
-				// crt beam is off
-				colour = 0;
-			}
-
-			var currPos = (_gunPosV * TOTAL_PIXELS) + _gunPosH;
-			var nextPos = ((_gunPosV + 1) * TOTAL_PIXELS) + _gunPosH;
-
-			if (currPos < _frameBuffer.Length)
-			{
-				_frameBuffer[currPos] = colour;
-			}
-
-			if (field == -1 && nextPos < _frameBuffer.Length)
-			{
-				_frameBuffer[nextPos] = colour;
-			}
-		}
-
-		/// <summary>
-		/// Should be called at the pixel clock rate (in the case of the Amstrad CPC, 16MHz)
-		/// </summary>
-		public void VideoClock(CPCColourData v, int field)
-		{
-			var colour = 0;
-
-			if (++_gunPosH == LINE_PERIOD * PIXEL_TIME)
-			{
-				_gunPosH = 0;
-
-				if (++_gunPosV == TOTAL_LINES)
-				{
-					_gunPosV = 0;
-				}
-				else
-				{
-					switch (field)
-					{
-						case -1:
-							_gunPosV += 1;
-							break;
-						case 1:
-							_gunPosV += field;
-							break;
-
-						default:
-							break;
-					}
-
-					//_gunPosV += field;
-					/*
-					if (field == 0)
-					{
-						_gunPosV += 2;
-					}
-					else
-					{
-						_gunPosV++;
-					}
-					*/
-				}
-			}
-			/*
-			else
-			{
-				_gunPosH++;
-			}
-			*/
-
-			if (!_isVsync && v.C_VSYNC)
-			{
-				// vsync is just starting
-				_isVsync = true;
-			}
-			else if (_isVsync && !v.C_VSYNC)
-			{
-				// vsync ends
-				_isVsync = false;
-
-				_gunPosH = 0;
-				_gunPosV = 0;
-
-				FrameEnd = true;
-			}			
-
-			var currPos = (_gunPosV * TOTAL_PIXELS) + _gunPosH;
-			var nextPos = ((_gunPosV + 1) * TOTAL_PIXELS) + _gunPosH;
-
-
-			if (v.C_VSYNC || v.C_HSYNC)
-			{
-				// crt beam is off
-				colour = 0;
-			}
-			else
-			{
-				colour = v.ARGB;
-			}
-
-			if (currPos < _frameBuffer.Length)
-			{
-				_frameBuffer[currPos] = colour;
-			}
-
-			if (field == -1 && nextPos < _frameBuffer.Length)
-			{
-				_frameBuffer[nextPos] = colour;
-			}
-		}
-
-		/// <summary>
-		/// Should be called at the pixel clock rate (in the case of the Amstrad CPC, 16MHz)
-		/// </summary>
-		public void VideoClock_w(int colour, int field, bool cHsync = false, bool cVsync = false)
-		{
-			if (++_gunPosH == LINE_PERIOD * PIXEL_TIME)
-			{
-				_gunPosH = 0;
-
-				if (++_gunPosV == TOTAL_LINES)
-				{
-					_gunPosV = 0;
-				}
-				else
-				{
-					switch (field)
-					{
-						case -1:
-							_gunPosV += 1;
-							break;
-						case 1:
-							_gunPosV += field;
-							break;
-
-						default:
-							break;
-					}
-
-					//_gunPosV += field;
-					/*
-					if (field == 0)
-					{
-						_gunPosV += 2;
-					}
-					else
-					{
-						_gunPosV++;
-					}
-					*/
-				}
-			}
-			/*
-			else
-			{
-				_gunPosH++;
-			}
-			*/
-
-			if (!_isVsync && cVsync)
-			{
-				// vsync is just starting
-				_isVsync = true;
-			}
-			else if (_isVsync && !cVsync)
-			{
-				// vsync ends
-				_isVsync = false;
-
-				_gunPosH = 0;
-				_gunPosV = 0;
-
-				FrameEnd = true;
-			}
-
-			if (cVsync || cHsync)
-			{
-				// crt beam is off
-				colour = 0;
-			}
-
-			var currPos = (_gunPosV * TOTAL_PIXELS) + _gunPosH;
-			var nextPos = ((_gunPosV + 1) * TOTAL_PIXELS) + _gunPosH;
-
-			if (currPos < _frameBuffer.Length)
-			{
-				_frameBuffer[currPos] = colour;
-			}
-
-			if (field == -1 && nextPos < _frameBuffer.Length)
-			{
-				_frameBuffer[nextPos] = colour;
-			}
-		}
+		private int _verticalTiming;
+		private bool _isVsync;				
+		private bool _frameEndPending;
 
 		/// <summary>
 		/// Should be called at the pixel clock rate (in the case of the Amstrad CPC, 16MHz)
 		/// </summary>
 		public void VideoClock(int colour, int field, bool cHsync = false, bool cVsync = false)
 		{
-			// beam moves continuously downwards at 50 Hz and left to right with a HSYNC pulse every 15625Hz
-			// an HSYNC pulse is expected every 64us and a VSYNC pulse every 19968us
+			// Beam moves continuously downwards at 50 Hz and left to right with a HSYNC pulse every 15625Hz
+			// Horizontal and vertical movement are independent. 
 
+			// PAL Horizontal:
+			// - Beam moves right at a rate of 16 pixels per usec
+			// - As soon as an HSYNC signal is detected, the PLL capacitor discharges and the beam moves back to the left
+			// - If an HSYNC is not detected in time, the PLL will eventually move the beam back to the left
+			// - https://uzebox.org/forums/viewtopic.php?t=11062 suggests that the horizontal line time if this happens is somewhere around 14000Hz (71.43 usec)
+			//
+			// PAL Vertical
+			// - Beam moves down at a rate of 1 line per 64 microseconds (although this movement covers two scanlines)
+			// - As soon as a VSYNC signal is detected, the PLL capacitor discharges and the beam moves back to the top (at the same horizontal position that VSYNC started)
+			// - If a VSYNC is not detected in time, the PLL will eventually move the beam back to the top
+			// - Unsure what the vertical screen time for this action is. 
 
-			if (++_gunPosH == LINE_PERIOD * PIXEL_TIME)
+			int hHold = 118;	// pixels - approx (71.43 - 64) * 16
+			int vHold = 3;      // scanlines
+											
+
+			// * horizontal movement *
+			// gun moves left to right at a rate of 16 pixels per usec
+			_timePosH++;
+			_verticalTiming++;
+
+			if (cHsync)
 			{
+				// hsync signal detected - beam is moved to the left and held there until the signal is released
 				_gunPosH = 0;
-
-				if (++_gunPosV == TOTAL_LINES)
-				{
-					_gunPosV = 0;
-				}
-				else
-				{
-					switch (field)
-					{
-						case -1:
-							_gunPosV += 1;
-							break;
-						case 1:
-							_gunPosV += field;
-							break;
-
-						default:
-							break;
-					}
-
-					//_gunPosV += field;
-					/*
-					if (field == 0)
-					{
-						_gunPosV += 2;
-					}
-					else
-					{
-						_gunPosV++;
-					}
-					*/
-				}
+				_timePosH = 0;
 			}
-			/*
+			else if (_timePosH == TOTAL_PIXELS + hHold)
+			{
+				// hsync signal not detected in time - PLL forces the beam back to the left
+				_gunPosH = 0;
+				_timePosH = 0;
+			}
 			else
 			{
 				_gunPosH++;
-			}
-			*/
 
-			if (!_isVsync && cVsync)
-			{
-				// vsync is just starting
-				_isVsync = true;
+				if (_gunPosH >= FRAMEBUFFER_MAX_WIDTH)
+				{
+					// gun is at the rightmost position of the screen and is being held there
+					_gunPosH = FRAMEBUFFER_MAX_WIDTH - 1;
+				}
 			}
-			else if (_isVsync && !cVsync)
-			{
-				// vsync ends
-				_isVsync = false;
 
-				_gunPosH = 0;
+			// * vertical movement *
+			// gun moves downwards at a rate of 1 line per 64 microseconds - 1024 pixel times (although this movement covers two scanlines)
+			if (!cVsync && _verticalTiming % TOTAL_PIXELS == 0)
+			{
+				// gun moves down
+				_gunPosV += 2;
+				_verticalTiming = 0;
+
+				if (_gunPosV >= TOTAL_LINES - 1)
+				{
+					// gun is at the bottom of the screen and is being held there
+					_gunPosV = TOTAL_LINES - 1;
+				}
+			}
+
+			if (cVsync && !_isVsync)
+			{
+				// initial vsync signal detected - beam is moved back to the top of the screen and held there until the signal is released
 				_gunPosV = 0;
-
+				_isVsync = true;
 				FrameEnd = true;
+				HackHPos();
+			}
+			else if (cVsync)
+			{
+				// vsync signal ongoing - beam is held at the top of the screen
+				_gunPosV = 0;
+				HackHPos();
+			}
+			else if (_gunPosV == TOTAL_LINES + vHold)
+			{
+				// vsync signal not detected in time - PLL forces the beam back to the top
+				_gunPosV = 0;
+				_isVsync = false;
+				FrameEnd = true;
+				HackHPos();
+			}
+			else
+			{
+				// no vsync
+				_isVsync = false;
+			}
+			
+			void HackHPos()
+			{
+				// the field length is actually 312.5 scanlines, so HSYNC happens half way through a scanline
+				// this is for interlace mode and the first field starts half a scanline later
+				// the second field should start at the same time as HSYNC
+				// for now, we'll reset _verticalTiming to 0 when vertical flyback happens just so the screen isnt broken half way
+				// and deal with interlacing later
+				if (_verticalTiming > 0)
+					_verticalTiming = 0;
 			}
 
-			if (cVsync || cHsync)
+			// video output
+			if (!cHsync && !cVsync)
 			{
-				// crt beam is off
-				colour = 0;
-			}
-
-			var currPos = (_gunPosV * TOTAL_PIXELS) + _gunPosH;
-			var nextPos = ((_gunPosV + 1) * TOTAL_PIXELS) + _gunPosH;
-
-			if (currPos < _frameBuffer.Length)
-			{
-				_frameBuffer[currPos] = colour;
-			}
-
-			if (field == -1 && nextPos < _frameBuffer.Length)
-			{
-				_frameBuffer[nextPos] = colour;
+				_frameBuffer[(_gunPosV * FRAMEBUFFER_MAX_WIDTH) + _gunPosH] = colour;
+				_frameBuffer[((_gunPosV + 1) * FRAMEBUFFER_MAX_WIDTH) + _gunPosH] = colour;
 			}
 		}
 
@@ -485,18 +225,18 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_gunPosV = 0;
 		}
 
-		private int HDisplayable => TOTAL_PIXELS - TrimLeft - TrimRight;
+		private int HDisplayable => FRAMEBUFFER_MAX_WIDTH - TrimLeft - TrimRight;
 		private int VDisplayable => TOTAL_LINES - TrimTop - TrimBottom;
 
-		private int TrimLeft;
-		private int TrimRight;
-		private int TrimTop;
-		private int TrimBottom;
+		private readonly int TrimLeft;
+		private readonly int TrimRight;
+		private readonly int TrimTop;
+		private readonly int TrimBottom;
 
 		/// <summary>
 		/// Working buffer that encapsulates the entire PAL frame time
 		/// </summary>
-		private int[] _frameBuffer = new int[LINE_PERIOD * PIXEL_TIME * TOTAL_LINES];
+		private readonly int[] _frameBuffer = new int[FRAMEBUFFER_MAX_WIDTH * TOTAL_LINES];
 
 
 		public int BackgroundColor => 0;
@@ -508,23 +248,21 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public int VirtualWidth => HDisplayable;
 		public int VirtualHeight => (int)(VDisplayable * GetVerticalModifier(HDisplayable, VDisplayable, 4.0 / 3.0));
 
-		
 
-
-		public int[] GetVideoBuffer() => ClampBuffer(_frameBuffer, TOTAL_PIXELS, TOTAL_LINES, TrimLeft, TrimTop, TrimRight, TrimBottom);
+		public int[] GetVideoBuffer() => ClampBuffer(_frameBuffer, FRAMEBUFFER_MAX_WIDTH, TOTAL_LINES, TrimLeft, TrimTop, TrimRight, TrimBottom);
 
 		private static int[] ClampBuffer(int[] buffer, int originalWidth, int originalHeight, int trimLeft, int trimTop, int trimRight, int trimBottom)
 		{
-			var newWidth = originalWidth - trimLeft - trimRight;
-			var newHeight = originalHeight - trimTop - trimBottom;
-			var newBuffer = new int[newWidth * newHeight];
+			int newWidth = originalWidth - trimLeft - trimRight;
+			int newHeight = originalHeight - trimTop - trimBottom;
+			int[] newBuffer = new int[newWidth * newHeight];
 
-			for (var y = 0; y < newHeight; y++)
+			for (int y = 0; y < newHeight; y++)
 			{
-				for (var x = 0; x < newWidth; x++)
+				for (int x = 0; x < newWidth; x++)
 				{
-					var originalIndex = (y + trimTop) * originalWidth + (x + trimLeft);
-					var newIndex = y * newWidth + x;
+					int originalIndex = (y + trimTop) * originalWidth + (x + trimLeft);
+					int newIndex = y * newWidth + x;
 					newBuffer[newIndex] = buffer[originalIndex];
 				}
 			}
@@ -534,8 +272,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		private static double GetVerticalModifier(int bufferWidth, int bufferHeight, double targetAspectRatio)
 		{
-			var currentAspectRatio = (double)bufferWidth / bufferHeight;
-			var verticalModifier = currentAspectRatio / targetAspectRatio;
+			double currentAspectRatio = (double)bufferWidth / bufferHeight;
+			double verticalModifier = currentAspectRatio / targetAspectRatio;
 			return verticalModifier;
 		}
 
@@ -548,7 +286,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync(nameof(_gunPosV), ref _gunPosV);
 			ser.Sync(nameof(_timePosV), ref _timePosV);
 			ser.Sync(nameof(_isVsync), ref _isVsync);
-			ser.Sync(nameof(_isHsync), ref _isHsync);
+			ser.Sync(nameof(_frameEndPending), ref _frameEndPending);
+			ser.Sync(nameof(_verticalTiming), ref _verticalTiming);
 			ser.EndSection();
 		}
 	}
@@ -578,6 +317,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public int G { get; set; }
 		public int B { get; set; }
 		public bool C_HSYNC { get; set; }
-		public bool c_VSYNC { get; set; }
+		public bool C_VSYNC { get; set; }
 	}
 }
