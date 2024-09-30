@@ -18,6 +18,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// - https://www.batsocks.co.uk/readme/video_timing.htm
 	/// - https://web.archive.org/web/20170202185019/https://www.retroleum.co.uk/PALTVtimingandvoltages.html
 	/// - https://web.archive.org/web/20131125145905/http://lipas.uwasa.fi/~f76998/video/modes/
+	/// - https://cpcrulez.fr/coding_grimware-the_mighty_crtc_6845.htm
+	/// - https://www.monitortests.com/blog/timing-parameters-explained/
 	/// </summary>
 	public class CRTScreen : IVideoProvider
 	{
@@ -109,9 +111,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _gunPosH;
 
 		/// <summary>
+		/// Position in frame time on the X-axis
+		/// </summary>
+		private int _timePosH;
+
+		/// <summary>
 		/// Y position of the electron gun (inluding sync areas)
 		/// </summary>
 		private int _gunPosV;
+
+		/// <summary>
+		/// Position in frame time on the V-Axis
+		/// </summary>
+		private int _timePosV;
 
 		private bool _isVsync;
 		private bool _isHsync;
@@ -298,8 +310,96 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Should be called at the pixel clock rate (in the case of the Amstrad CPC, 16MHz)
 		/// </summary>
+		public void VideoClock_w(int colour, int field, bool cHsync = false, bool cVsync = false)
+		{
+			if (++_gunPosH == LINE_PERIOD * PIXEL_TIME)
+			{
+				_gunPosH = 0;
+
+				if (++_gunPosV == TOTAL_LINES)
+				{
+					_gunPosV = 0;
+				}
+				else
+				{
+					switch (field)
+					{
+						case -1:
+							_gunPosV += 1;
+							break;
+						case 1:
+							_gunPosV += field;
+							break;
+
+						default:
+							break;
+					}
+
+					//_gunPosV += field;
+					/*
+					if (field == 0)
+					{
+						_gunPosV += 2;
+					}
+					else
+					{
+						_gunPosV++;
+					}
+					*/
+				}
+			}
+			/*
+			else
+			{
+				_gunPosH++;
+			}
+			*/
+
+			if (!_isVsync && cVsync)
+			{
+				// vsync is just starting
+				_isVsync = true;
+			}
+			else if (_isVsync && !cVsync)
+			{
+				// vsync ends
+				_isVsync = false;
+
+				_gunPosH = 0;
+				_gunPosV = 0;
+
+				FrameEnd = true;
+			}
+
+			if (cVsync || cHsync)
+			{
+				// crt beam is off
+				colour = 0;
+			}
+
+			var currPos = (_gunPosV * TOTAL_PIXELS) + _gunPosH;
+			var nextPos = ((_gunPosV + 1) * TOTAL_PIXELS) + _gunPosH;
+
+			if (currPos < _frameBuffer.Length)
+			{
+				_frameBuffer[currPos] = colour;
+			}
+
+			if (field == -1 && nextPos < _frameBuffer.Length)
+			{
+				_frameBuffer[nextPos] = colour;
+			}
+		}
+
+		/// <summary>
+		/// Should be called at the pixel clock rate (in the case of the Amstrad CPC, 16MHz)
+		/// </summary>
 		public void VideoClock(int colour, int field, bool cHsync = false, bool cVsync = false)
 		{
+			// beam moves continuously downwards at 50 Hz and left to right with a HSYNC pulse every 15625Hz
+			// an HSYNC pulse is expected every 64us and a VSYNC pulse every 19968us
+
+
 			if (++_gunPosH == LINE_PERIOD * PIXEL_TIME)
 			{
 				_gunPosH = 0;
@@ -444,7 +544,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			ser.BeginSection("CRTScreen");
 			ser.Sync(nameof(_gunPosH), ref _gunPosH);
+			ser.Sync(nameof(_timePosH), ref _timePosH);
 			ser.Sync(nameof(_gunPosV), ref _gunPosV);
+			ser.Sync(nameof(_timePosV), ref _timePosV);
 			ser.Sync(nameof(_isVsync), ref _isVsync);
 			ser.Sync(nameof(_isHsync), ref _isHsync);
 			ser.EndSection();

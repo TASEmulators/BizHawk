@@ -30,7 +30,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				// set up for the next line
 				HCC = 0;
 
-				// TODO: handle interlace setup
 				if (R8_Interlace == 3)
 				{
 					// in interlace sync and video mask off bit 0 of the max scanline address

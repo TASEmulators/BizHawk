@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// CPC register default values
 		/// </summary>
-		private readonly byte[] RegDefaults = { 63, 40, 46, 142, 38, 0, 25, 30, 0, 7, 0, 0, 48, 0, 192, 7, 0, 0 };
+		public byte[] RegDefaults = { 63, 40, 46, 142, 38, 0, 25, 30, 0, 7, 0, 0, 48, 0, 192, 7, 0, 0 };
 
 		/// <summary>
 		/// The ClK isaTTUMOS-compatible input used to synchronize all CRT' functions except for the processor interface. 
@@ -685,7 +685,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public CRTC()
 		{
-			Reset();
+			//Reset();
 		}
 
 		// persistent control signals
@@ -736,9 +736,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				latch_vdisp = false;
 				latch_idisp = false;
 
+				/*
 				// set regs to default
 				for (int i = 0; i < 18; i++)
 					Register[i] = RegDefaults[i];
+				*/
+
+				// regs aren't touched
+
 
 				return;
 			}
