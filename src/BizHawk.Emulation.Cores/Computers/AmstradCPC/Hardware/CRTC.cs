@@ -49,8 +49,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				case 0:
 					return new CRTC_Type0();
 				case 1:
-					return new CRTC_Type1();
 				default:
+					return new CRTC_Type1();				
 				case 2:
 					return new CRTC_Type2();
 				case 3:
@@ -236,8 +236,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		protected byte AddressRegister
 		{
-			get => (byte)(_addressRegister & 0x1F);
-			set => _addressRegister = value;
+			get => (byte)(_addressRegister & 0b0001_1111);
+			set => _addressRegister = (byte)(value & 0b0001_1111);
 		}
 		private byte _addressRegister;
 

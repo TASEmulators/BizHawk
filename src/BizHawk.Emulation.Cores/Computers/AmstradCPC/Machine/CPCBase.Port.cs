@@ -26,6 +26,38 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// https://web.archive.org/web/20090808085929/http://www.cepece.info/amstrad/docs/iopord.html
 		/// http://www.cpcwiki.eu/index.php/I/O_Port_Summary
 		/// </summary>
+		protected virtual List<PortDevice> DecodeINPort(ushort port)
+		{
+			List<PortDevice> devs = new List<PortDevice>();
+
+			if (!port.Bit(15) && port.Bit(14))
+				devs.Add(PortDevice.GateArray);
+
+			if (!port.Bit(15))
+				devs.Add(PortDevice.PAL);
+
+			if (!port.Bit(15))
+				devs.Add(PortDevice.PAL);
+
+			if (!port.Bit(14))
+				devs.Add(PortDevice.CRCT);
+
+			if (!port.Bit(13))
+				devs.Add(PortDevice.ROMSelect);
+
+			if (!port.Bit(12))
+				devs.Add(PortDevice.Printer);
+
+			if (!port.Bit(11))
+				devs.Add(PortDevice.PPI);
+
+			if (!port.Bit(10))
+				devs.Add(PortDevice.Expansion);
+
+			return devs;
+		}
+
+		/*
 		protected virtual PortDevice DecodeINPort(ushort port)
 		{
 			PortDevice dev = PortDevice.Unknown;
@@ -53,6 +85,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			return dev;
 		}
+		*/
 
 		/// <summary>
 		/// Returns a list of port device enums based on the port address

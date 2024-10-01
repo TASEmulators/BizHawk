@@ -253,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				val &= 0x0f;
 
 				// isolate control bits
-				var v = Regs[PORT_C] & 0xc0;
+				int v = Regs[PORT_C] & 0xc0;
 
 				if (v == 0xc0)
 				{
