@@ -216,8 +216,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// video output
 			if (!cHsync && !cVsync)
 			{
-				_frameBuffer[(_gunPosV * FRAMEBUFFER_MAX_WIDTH) + _gunPosH] = colour;
-				_frameBuffer[((_gunPosV + 1) * FRAMEBUFFER_MAX_WIDTH) + _gunPosH] = colour;
+				int currPos = (_gunPosV * FRAMEBUFFER_MAX_WIDTH) + _gunPosH;
+				int nextPos = ((_gunPosV + 1) * FRAMEBUFFER_MAX_WIDTH) + _gunPosH;
+				_frameBuffer[currPos] = colour;
+
+				if (nextPos < TOTAL_LINES * FRAMEBUFFER_MAX_WIDTH)
+					_frameBuffer[nextPos] = colour;
 			}
 		}
 
