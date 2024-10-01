@@ -400,11 +400,41 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case ConsoleID.SNES:
 						mfs.Add(new(domains["WRAM"], 0, domains["WRAM"].Size));
-						TryAddDomain("CARTRAM");
+
+						var snesSramAdded = 0;
+						const int MAX_SNES_SRAM = 0x80000; // 512KiB, the highest theoretically mappable under normal hardware (also max enforced by our cores)
+						void AddSnesSramDomain(string domain)
+						{
+							if (snesSramAdded == MAX_SNES_SRAM)
+							{
+								return;
+							}
+
+							if (domains.Has(domain))
+							{
+								var domainSize = domains[domain]!.Size;
+								if (snesSramAdded + domainSize > MAX_SNES_SRAM)
+								{
+									Console.WriteLine("SNES CartRAM domains exceed 512KiB for RetroAchievements memory mapping (this is bad!)");
+									domainSize = MAX_SNES_SRAM - snesSramAdded;
+								}
+
+								mfs.Add(new(domains[domain], 0, domainSize));
+								snesSramAdded += (int)domainSize;
+							}
+						}
+
+						AddSnesSramDomain("CARTRAM");
 						// sufami B sram
-						// don't think this is actually hooked up at all anyways...
-						TryAddDomain("CARTRAM B"); // Snes9x
-						TryAddDomain("SUFAMI TURBO B RAM"); // new BSNES
+						AddSnesSramDomain("CARTRAM B"); // Snes9x
+						AddSnesSramDomain("SUFAMI TURBO B RAM"); // new BSNES
+
+						if (snesSramAdded < MAX_SNES_SRAM)
+						{
+							mfs.Add(new NullMemFunctions(MAX_SNES_SRAM - snesSramAdded));
+						}
+
+						TryAddDomain("SA1 IRAM");
 						break;
 					case ConsoleID.GB:
 					case ConsoleID.GBC:
