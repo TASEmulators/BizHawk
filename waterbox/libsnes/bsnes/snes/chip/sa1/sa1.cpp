@@ -116,6 +116,7 @@ void SA1::trigger_irq() {
 }
 
 void SA1::init() {
+  iram.init();
 }
 
 void SA1::load() {

@@ -16,9 +16,12 @@ struct StaticRAM : Memory {
   inline StaticRAM(unsigned size, const char* name = NULL);
   inline ~StaticRAM();
 
+  inline void init();
+
 private:
   uint8 *data_;
   unsigned size_;
+  const char* name_;
 };
 
 struct MappedRAM : Memory {
