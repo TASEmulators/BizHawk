@@ -809,8 +809,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			MovieSession.StopMovie();
 			Tools.Close();
+			MovieSession.StopMovie();
 			// zero 03-nov-2015 - close game after other steps. tools might need to unhook themselves from a core.
 			CloseGame();
 			SaveConfig();
