@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			base.Clock();
 
-			var maxScanLine = 0;
+			int maxScanLine;
 
 			if (HCC == R0_HorizontalTotal)
 			{
@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 
 			/* Address Generation */
-			var line = VLC;
+			int line = VLC;
 
 			if (R8_Interlace == 3)
 			{

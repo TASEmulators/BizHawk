@@ -44,20 +44,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public static CRTC Create(int crtcType)
 		{
-			switch (crtcType)
+			return crtcType switch
 			{
-				case 0:
-					return new CRTC_Type0();
-				case 1:
-				default:
-					return new CRTC_Type1();				
-				case 2:
-					return new CRTC_Type2();
-				case 3:
-					return new CRTC_Type3();
-				case 4:
-					return new CRTC_Type4();
-			}
+				0 => new CRTC_Type0(),
+				2 => new CRTC_Type2(),
+				3 => new CRTC_Type3(),
+				4 => new CRTC_Type4(),
+				_ => new CRTC_Type1(),
+			};
 		}
 
 

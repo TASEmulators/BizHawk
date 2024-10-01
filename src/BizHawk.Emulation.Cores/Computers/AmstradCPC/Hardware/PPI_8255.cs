@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	{
 		private readonly CPCBase _machine;
 		private CRTC CRTC => _machine.CRTC;
-		private GateArray GateArray => _machine.GateArray;
 		private IPSG PSG => _machine.AYDevice;
 		private DatacorderDevice Tape => _machine.TapeDevice;
 		private IKeyboard Keyboard => _machine.KeyboardDevice;
@@ -141,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				bool isSet = data.Bit(0);
 
 				// get the bit in PortC that we wish to change
-				var bit = (data >> 1) & 7;
+				int bit = (data >> 1) & 7;
 
 				// modify this bit
 				if (isSet)
@@ -202,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				// build the PortB output
 				// start with every bit reset
-				BitArray rBits = new BitArray(8);
+				var rBits = new BitArray(8);
 
 				// Bit0 - Vertical Sync ("1"=VSYNC active, "0"=VSYNC inactive)
 				if (CRTC.VSYNC)
@@ -302,14 +301,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public bool ReadPort(ushort port, ref int result)
 		{
-			byte portUpper = (byte)(port >> 8);
-			byte portLower = (byte)(port & 0xff);
-
-			// The 8255 responds to bit 11 reset with A10 and A12-A15 set
-			//if (portUpper.Bit(3))
-			//return false;
-
-			var PPIFunc = (port & 0x0300) >> 8; // portUpper & 3;
+			int PPIFunc = (port & 0x0300) >> 8; // portUpper & 3;
 
 			switch (PPIFunc)
 			{
@@ -346,14 +338,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public bool WritePort(ushort port, int result)
 		{
-			byte portUpper = (byte)(port >> 8);
-			byte portLower = (byte)(port & 0xff);
-
-			// The 8255 responds to bit 11 reset with A10 and A12-A15 set
-			if (portUpper.Bit(3))
+			if (port.Bit(11))
 				return false;
 
-			var PPIFunc = portUpper & 3;
+			int PPIFunc = (port >> 8) & 3;
 
 			switch (PPIFunc)
 			{

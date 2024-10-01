@@ -28,13 +28,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		protected virtual List<PortDevice> DecodeINPort(ushort port)
 		{
-			List<PortDevice> devs = new List<PortDevice>();
+			var devs = new List<PortDevice>();
 
 			if (!port.Bit(15) && port.Bit(14))
 				devs.Add(PortDevice.GateArray);
-
-			if (!port.Bit(15))
-				devs.Add(PortDevice.PAL);
 
 			if (!port.Bit(15))
 				devs.Add(PortDevice.PAL);
@@ -57,36 +54,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return devs;
 		}
 
-		/*
-		protected virtual PortDevice DecodeINPort(ushort port)
-		{
-			PortDevice dev = PortDevice.Unknown;
-
-			if (!port.Bit(15) && port.Bit(14))
-				dev = PortDevice.GateArray;
-
-			else if (!port.Bit(15))
-				dev = PortDevice.PAL;
-
-			else if (!port.Bit(14))
-				dev = PortDevice.CRCT;
-
-			else if (!port.Bit(13))
-				dev = PortDevice.ROMSelect;
-
-			else if (!port.Bit(12))
-				dev = PortDevice.Printer;
-
-			else if (!port.Bit(11))
-				dev = PortDevice.PPI;
-
-			else if (!port.Bit(10))
-				dev = PortDevice.Expansion;
-
-			return dev;
-		}
-		*/
-
 		/// <summary>
 		/// Returns a list of port device enums based on the port address
 		/// (for OUT operations)
@@ -95,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		protected virtual List<PortDevice> DecodeOUTPort(ushort port)
 		{
-			List<PortDevice> devs = new List<PortDevice>();
+			var devs = new List<PortDevice>();
 
 			if (!port.Bit(15) && port.Bit(14))
 				devs.Add(PortDevice.GateArray);

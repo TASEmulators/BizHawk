@@ -1,4 +1,6 @@
 
+using BizHawk.Common.NumberExtensions;
+
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
 	/// <summary>
@@ -12,14 +14,43 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public override byte ReadPort(ushort port)
 		{
-			int finalResult = 0xFF;
+			int finalResult = 0;
 			int result = 0;
+			bool deviceResponse = false;
 
 			var devs = DecodeINPort(port);
 
 			foreach (var d in devs)
 			{
-				if (d == PortDevice.GateArray)
+				if (d == PortDevice.PPI)
+				{
+					PPI.ReadPort(port, ref result);
+					finalResult |= result;
+					deviceResponse = true;
+				}
+
+				if (d == PortDevice.Expansion)
+				{
+					if (!port.Bit(7))
+					{
+						// FDC
+						if (port.Bit(8) && !port.Bit(0))
+						{
+							// FDC status register
+							UPDDiskDevice.ReadStatus(ref result);
+						}
+						else if (port.Bit(8) && port.Bit(0))
+						{
+							// FDC data register
+							UPDDiskDevice.ReadData(ref result);
+						}
+
+						finalResult |= result;
+						deviceResponse = true;
+					}
+				}
+
+				if (d == PortDevice.GateArray && !deviceResponse)
 				{
 					// ACCC 4.4.2
 					// The GATE ARRAY is write-only, and the RD pin is in the inactive state, which implies that a read
@@ -36,44 +67,34 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					// (whatever is on the data bus). "it would be risky to trust the returned value".
 					CRTC.WritePort(port, CPU.Regs[CPU.DB]);
 					result = CPU.Regs[CPU.DB];
-					finalResult |= result;
+
+					if (!deviceResponse)
+						finalResult |= result;
 				}
 
-				if (d == PortDevice.PPI)
-				{
-					PPI.ReadPort(port, ref result);
-					finalResult |= result;
-				}
-
-				if (d == PortDevice.ROMSelect)
+				if (d == PortDevice.ROMSelect && !deviceResponse)
 				{
 					// TODO: confirm this is a write-only port
 					result = 0xFF;
 					finalResult |= result;
 				}
 
-				if (d == PortDevice.Printer)
+				if (d == PortDevice.Printer && !deviceResponse)
 				{
 					// TODO: confirm this is a write-only port
 					result = 0xFF;
 					finalResult |= result;
 				}
 
-				if (d == PortDevice.PAL)
+				if (d == PortDevice.PAL && !deviceResponse)
 				{
 					// TODO: confirm this is a write-only port
-					result = 0xFF;
-					finalResult |= result;
-				}
-
-				if (d == PortDevice.Expansion)
-				{
 					result = 0xFF;
 					finalResult |= result;
 				}
 			}
 
-			return (byte)finalResult;			
+			return (byte)finalResult;	
 		}
 
 		/// <summary>
