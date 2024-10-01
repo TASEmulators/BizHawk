@@ -323,7 +323,7 @@ void SA1::reset() {
   mmio.overflow = false;
 }
 
-SA1::SA1() : iram(2048) {
+SA1::SA1() : iram(2048, "SA1_IRAM") {
 }
 
 }

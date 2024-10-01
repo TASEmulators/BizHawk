@@ -13,7 +13,7 @@ struct StaticRAM : Memory {
   inline uint8& operator[](unsigned addr);
   inline const uint8& operator[](unsigned addr) const;
 
-  inline StaticRAM(unsigned size);
+  inline StaticRAM(unsigned size, const char* name = NULL);
   inline ~StaticRAM();
 
 private:
