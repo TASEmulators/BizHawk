@@ -96,7 +96,7 @@
 		public abstract void InitROM(RomData[] romData);
 
 		/// <summary>
-		/// ULA reads the memory at the specified address
+		/// Gate Array reads the memory at the specified address
 		/// (No memory contention)
 		/// </summary>
 		public virtual byte FetchScreenMemory(ushort addr)
