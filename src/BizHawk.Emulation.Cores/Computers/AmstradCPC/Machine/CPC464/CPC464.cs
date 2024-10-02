@@ -16,12 +16,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			CPC = cpc;
 			CPU = cpu;
 
-			FrameLength = 79872;
+			CRTC = CRTC.Create(0);
+			GateArray = new GateArray(this, GateArrayType.Amstrad40008);
+			CRTScreen = new CRTScreen(ScreenType.CTM064x, borderType);
 
-			CRCT = new CRCT_6845(CRCT_6845.CRCTType.MC6845, this);
-			//CRT = new CRTDevice(this);
-			GateArray = new AmstradGateArray(this, AmstradGateArray.GateArrayType.Amstrad40007);
+			FrameLength = GateArray.FrameLength / 4;
+
 			PPI = new PPI_8255(this);
+			PAL = new PAL16L8(this);
 
 			TapeBuzzer = new Beeper(this);
 			TapeBuzzer.Init(44100, FrameLength);
