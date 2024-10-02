@@ -461,7 +461,7 @@
 					(IDLE,
 						IDLE,
 						IDLE,
-						WAIT,
+						IDLE,
 						WAIT,
 						IN, ALU, C, B,
 						IDLE,
@@ -482,7 +482,7 @@
 						WAIT,
 						RD, ALU, L, H,
 						IDLE,
-						WAIT,
+						IDLE,
 						WAIT,
 						REP_OP_O, C, B, ALU, operation, 3, operation, repeat_instr);
 

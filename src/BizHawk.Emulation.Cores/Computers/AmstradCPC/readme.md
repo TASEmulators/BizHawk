@@ -52,31 +52,7 @@ Unknown
 
 #### Test 5: Instruction timing test
 
-| Prefix | OPC | Inst. | Comments |
-|:----:|:----:|:-----:|:------------:|
-|NONE| D3:4 | OUT A |				|
-|NONE| DB:4 | IN A  |				|
-|NONE| D3:5 | OUT A |				|	
-|NONE| DB:5 | IN A  |				|
-|ED| 41:3 | OUT (C), B     |              |
-|ED| 49:3 | OUT (C), C      |              |
-|ED| 51:3 | OUT (C), D       |              |
-|ED| 59:3 | OUT (C), E      |              |
-|ED| 61:3 | OUT (C), H      |              |
-|ED| 69:3 | OUT (C), L      |              |
-|ED| 71:3 | OUT (C), 0      |              |
-|ED| 79:3 | OUT (C), A      |              |
-|ED| A2:6 | INI      |              |
-|ED| A3:6 | OUTI      |              |
-|ED| AA:6 | IND      |              |
-|ED| B2:7/6| INIR     |              |
-|ED| B3:7/6| OTIR     |              |
-|ED| BA:7/6| INDR    |              |
-|ED| BB:7/6| OTDR    |              |
-|DD CB| D3:5| SET 2, (ix+d), e    |              |
-|DD CB| DB:5| SET 3, (ix+d), e    |              |
-
-Everything else passes. Almost certainly the problems observed relate to IO timing.
+All tests passing
 
 #### Test 6: Register 0 test
 Unknown

@@ -515,7 +515,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						RD_INC, Z, PCl, PCh,
 						TR, ALU, A,
-						WAIT,
+						IDLE,
 						WAIT,
 						OUT_INC, Z, ALU, A);
 
@@ -530,7 +530,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					(IDLE,
 						TR16, Z, W, C, B,
 						IDLE,
-						IDLE,
+						WAIT,
 						OUT_INC, Z, W, src);
 
 			PopulateBUSRQ(0, BIO1, BIO2, BIO3, BIO4);
@@ -546,7 +546,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						RD_INC, Z, PCl, PCh,
 						IDLE,
-						WAIT,
+						IDLE,
 						WAIT,
 						IN_A_N_INC, A, Z, W);
 
@@ -560,7 +560,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			PopulateCURINSTR
 					(IDLE,
 						TR16, Z, W, C, B,
-						WAIT,
+						IDLE,
 						WAIT,
 						IN_INC, dest, Z, W);
 
