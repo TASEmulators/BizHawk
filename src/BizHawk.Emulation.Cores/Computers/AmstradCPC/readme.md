@@ -63,7 +63,20 @@ Unknown
 #### Test 8: Register 9 test
 Unknown
 
-#### Test 9: Interrupt Wait test
+#### Test 9: Interrupt Wait state timing test
+
+|PFX| OPC | Description | Comments |
+|:-:|:-:|:-:|:-:|
+|None| C0:2/4 | RET NZ | |
+|None| C8:4/2 | RET Z | |
+|None| D0:2/4 | RET NC | |
+|None| D8:4/2| RET C | |
+|None| E0:2/4 | RET Po | |
+|None| E8:4/2 | RET Pe | |
+|ED| 46:C | IM $0 | |
+|ED| 4E:C | IM $0 | |
+|ED| 66:C | IM $0 | |
+|ED| 6E:C | IM $0 | |
 
 
 
