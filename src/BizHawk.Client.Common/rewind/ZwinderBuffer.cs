@@ -293,7 +293,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_states[i].Frame > frame)
 				{
-					_nextStateIndex = (i + _firstStateIndex) & STATEMASK;
+					_nextStateIndex = i;
 					return true;
 				}
 			}
