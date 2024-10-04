@@ -65,6 +65,11 @@ namespace BizHawk.Common.CollectionExtensions
 			return min;
 		}
 
+		/// <remarks>for collection initializer syntax</remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Add<T>(this Queue<T> q, T item)
+			=> q.Enqueue(item);
+
 		/// <exception cref="InvalidOperationException"><paramref name="key"/> not found after mapping <paramref name="keySelector"/> over <paramref name="list"/></exception>
 		/// <remarks>implementation from https://stackoverflow.com/a/1766369/7467292</remarks>
 		public static T BinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key)
