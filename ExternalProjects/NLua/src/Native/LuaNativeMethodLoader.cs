@@ -282,7 +282,7 @@ namespace NLua.Native
 				return nativeMethods;
 			}
 
-			throw new("Could not load native lua methods");
+			throw new Exception("Could not load native lua methods");
 		});
 
 		internal static LuaNativeMethods GetNativeMethods()
