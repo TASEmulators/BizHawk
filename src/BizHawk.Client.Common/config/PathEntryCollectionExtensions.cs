@@ -121,16 +121,25 @@ namespace BizHawk.Client.Common
 				return path;
 			}
 
-			if (path.IsAbsolute())
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+			bool isAbsolute = path.IsAbsolute();
+#else
+			bool isAbsolute;
+			try
 			{
-				return path;
+				isAbsolute = path.IsAbsolute();
 			}
+			catch
+			{
+				isAbsolute = false;
+			}
+#endif
 
 			//handling of initial .. was removed (Path.GetFullPath can handle it)
 			//handling of file:// or file:\\ was removed  (can Path.GetFullPath handle it? not sure)
 
 			// all bad paths default to EXE
-			return PathUtils.ExeDirectoryPath;
+			return isAbsolute ? path : PathUtils.ExeDirectoryPath;
 		}
 
 		public static string MovieAbsolutePath(this PathEntryCollection collection)
