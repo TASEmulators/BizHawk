@@ -206,9 +206,9 @@ namespace BizHawk.Client.EmuHawk
 			_initialized = true;
 		}
 
-		private void LoadMostRecentOrStartNew()
+		private bool LoadMostRecentOrStartNew()
 		{
-			LoadFileWithFallback(Settings.RecentTas.MostRecent);
+			return LoadFileWithFallback(Settings.RecentTas.MostRecent);
 		}
 
 		private bool Engage()
@@ -216,6 +216,7 @@ namespace BizHawk.Client.EmuHawk
 			_engaged = false;
 			MainForm.PauseOnFrame = null;
 			MainForm.PauseEmulator();
+			bool success = false;
 
 			// Nag if inaccurate core, but not if auto-loading or movie is already loaded
 			if (!CanAutoload && MovieSession.Movie.NotActive())
@@ -246,7 +247,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				ConvertCurrentMovieToTasproj();
-				_ = StartNewMovieWrapper(CurrentTasMovie, isNew: false);
+				success = StartNewMovieWrapper(CurrentTasMovie, isNew: false);
 			}
 
 			// Start Scenario 2: A tasproj is already active
@@ -255,24 +256,24 @@ namespace BizHawk.Client.EmuHawk
 				bool result = LoadMovie(CurrentTasMovie, gotoFrame: Emulator.Frame);
 				if (!result)
 				{
-					StartNewTasMovie();
+					success = StartNewTasMovie();
 				}
 			}
 
 			// Start Scenario 3: No movie, but user wants to autoload their last project
 			else if (CanAutoload)
 			{
-				LoadMostRecentOrStartNew();
+				success = LoadMostRecentOrStartNew();
 			}
 
 			// Start Scenario 4: No movie, default behavior of engaging tastudio with a new default project
 			else
 			{
-				StartNewTasMovie();
+				success = StartNewTasMovie();
 			}
 
 			// Attempts to load failed, abort
-			if (Emulator.IsNull())
+			if (!success)
 			{
 				Disengage();
 				return false;
@@ -506,11 +507,11 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private void StartNewTasMovie()
+		private bool StartNewTasMovie()
 		{
 			if (!AskSaveChanges())
 			{
-				return;
+				return false;
 			}
 
 			if (Game.IsNullInstance()) throw new InvalidOperationException("how is TAStudio open with no game loaded? please report this including as much detail as possible");
@@ -519,13 +520,18 @@ namespace BizHawk.Client.EmuHawk
 			var tasMovie = (ITasMovie)MovieSession.Get(filename);
 			tasMovie.Author = Config.DefaultAuthor;
 
-			_ = StartNewMovieWrapper(tasMovie, isNew: true);
+			bool success = StartNewMovieWrapper(tasMovie, isNew: true);
 
-			// clear all selections
-			TasView.DeselectAll();
-			BookMarkControl.Restart();
-			MarkerControl.Restart();
-			RefreshDialog();
+			if (success)
+			{
+				// clear all selections
+				TasView.DeselectAll();
+				BookMarkControl.Restart();
+				MarkerControl.Restart();
+				RefreshDialog();
+			}
+
+			return success;
 		}
 
 		private bool StartNewMovieWrapper(ITasMovie movie, bool isNew)
@@ -591,7 +597,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!movieLoadSucceeded)
 			{
-				StartNewTasMovie();
+				movieLoadSucceeded = StartNewTasMovie();
 				_engaged = true;
 			}
 
