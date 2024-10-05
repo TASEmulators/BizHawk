@@ -29,14 +29,14 @@ namespace BizHawk.Client.Common
 				globalBase = PathUtils.ExeDirectoryPath + globalBase.Substring(5);
 			}
 
-			// rooted paths get returned without change
+			// absolute paths get returned without change
 			// (this is done after keyword substitution to avoid problems though)
-			if (Path.IsPathRooted(globalBase))
+			if (globalBase.IsAbsolute())
 			{
 				return globalBase;
 			}
 
-			// not-rooted things are relative to exe path
+			// non-absolute things are relative to exe path
 			globalBase = Path.Combine(PathUtils.ExeDirectoryPath, globalBase);
 			return globalBase;
 		}
@@ -121,7 +121,7 @@ namespace BizHawk.Client.Common
 				return path;
 			}
 
-			if (Path.IsPathRooted(path))
+			if (path.IsAbsolute())
 			{
 				return path;
 			}
@@ -327,7 +327,7 @@ namespace BizHawk.Client.Common
 
 		private static string ResolveToolsPath(this PathEntryCollection collection, string subPath)
 		{
-			if (Path.IsPathRooted(subPath) || subPath.StartsWith('%')) return subPath;
+			if (subPath.IsAbsolute() || subPath.StartsWith('%')) return subPath;
 
 			var toolsPath = collection[PathEntryCollection.GLOBAL, "Tools"].Path;
 
