@@ -1,5 +1,5 @@
 ﻿using BizHawk.Common;
-using BizHawk.Emulation.Cores.Components.Z80A;
+//using BizHawk.Emulation.Cores.Components.Z80A;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -14,10 +14,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public AmstradCPC CPC { get; set; }
 
+		/*
 		/// <summary>
 		/// Reference to the instantiated Z80 cpu (piped in via constructor)
 		/// </summary>
 		public Z80A<AmstradCPC.CpuLink> CPU { get; set; }
+		*/
+
+		public LibFz80Wrapper CPU { get; set; }
 
 		/// <summary>
 		/// ROM and extended info

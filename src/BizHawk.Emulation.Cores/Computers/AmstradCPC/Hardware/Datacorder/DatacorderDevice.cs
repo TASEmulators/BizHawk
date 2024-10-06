@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
-using BizHawk.Emulation.Cores.Components.Z80A;
+
+//using BizHawk.Emulation.Cores.Components.Z80A;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	public sealed class DatacorderDevice
 	{
 		private CPCBase _machine;
-		private Z80A<AmstradCPC.CpuLink> CPU => _machine.CPU;
+		//private Z80A<AmstradCPC.CpuLink> CPU => _machine.CPU;
+		private LibFz80Wrapper CPU => _machine.CPU;
 		private IBeeperDevice Buzzer => _machine.TapeBuzzer;
 
 		/// <summary>

@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Cores.Components.Z80A;
+﻿//using BizHawk.Emulation.Cores.Components.Z80A;
+
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
@@ -11,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Main constructor
 		/// </summary>
-		public CPC464(AmstradCPC cpc, Z80A<AmstradCPC.CpuLink> cpu, List<byte[]> files, bool autoTape, AmstradCPC.BorderType borderType)
+		public CPC464(AmstradCPC cpc, LibFz80Wrapper cpu, List<byte[]> files, bool autoTape, AmstradCPC.BorderType borderType)
 		{
 			CPC = cpc;
 			CPU = cpu;

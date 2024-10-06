@@ -1,7 +1,7 @@
 ﻿
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using BizHawk.Emulation.Cores.Components.Z80A;
+//using BizHawk.Emulation.Cores.Components.Z80A;
 using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
@@ -16,12 +16,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	public class GateArray : IPortIODevice
 	{
 		private readonly CPCBase _machine;
-		private Z80A<AmstradCPC.CpuLink> CPU => _machine.CPU;
+		//private Z80A<AmstradCPC.CpuLink> CPU => _machine.CPU;
+		private LibFz80Wrapper CPU => _machine.CPU;
 		private CRTC CRTC => _machine.CRTC;
 
 		private CRTScreen CRT => _machine.CRTScreen;
 		private IPSG PSG => _machine.AYDevice;
-		private ushort BUSRQ => CPU.MEMRQ[CPU.bus_pntr];
+		//private ushort BUSRQ => CPU.MEMRQ[CPU.bus_pntr];
 		private GateArrayType GateArrayType;
 
 		/// <summary>
@@ -364,7 +365,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				if (_r52 == 0)
 				{
 					// The GATE ARRAY sends an interrupt request when R52=0
-					CPU.FlagI = true;
+					//CPU.FlagI = true;
+					CPU.INT = 1;
 					interruptsPerFrame++;
 				}
 				else if (GA_VSYNC && _r52 == 2)
@@ -373,7 +375,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					if (_r52.Bit(5))
 					{
 						// An interrupt is requested by the GATE ARRAY from the Z80A only if bit 5 of R52 is 1
-						CPU.FlagI = true;
+						//CPU.FlagI = true;
+						CPU.INT = 1;
 						interruptsPerFrame++;
 					}
 
@@ -455,6 +458,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			CRTC.AttachVSYNCOnCallback(OnVSYNCOn);
 			CRTC.AttachVSYNCOffCallback(OnVSYNCOff);
 
+			CPU.AttachIRQACKOnCallback(IORQA);
+
 			SetPalette(GateArrayType);
 
 			Reset();
@@ -468,7 +473,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// an armed (pending) interrupt is acknowledged/authorised by the CPU
 			// R52 Bit5 is reset
 			_r52 &= ~(1 << 5);
-			CPU.FlagI = false;
+			//CPU.FlagI = false;
+			CPU.INT = 0;
 		}
 
 		/// <summary>
@@ -626,7 +632,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					OutputByte(0);
 
 					// READY HIGH (Z80 /WAIT is inactive)
-					CPU.FlagW = false;
+					//CPU.FlagW = false;
+					CPU.WAIT = 0;
 					// /RAS LOW
 
 					// /CCLK LOW
@@ -658,7 +665,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 				case 4:
 					// READY LOW (Z80 /WAIT is active)
-					CPU.FlagW = true;
+					//CPU.FlagW = true;
+					CPU.WAIT = 1;
 
 					// PHI HIGH (2)
 					CPU.ExecuteOne();

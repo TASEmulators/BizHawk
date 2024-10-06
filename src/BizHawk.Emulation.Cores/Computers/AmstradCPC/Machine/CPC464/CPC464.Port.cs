@@ -61,6 +61,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 				if (d == PortDevice.CRCT)
 				{
+					/*
 					// ACCC 4.4.2
 					// However, the CRTCs are not connected to the Z80A's RD and WR pins, so there is no detection of the I/O direction.
 					// Consequently, if a read instruction is used on a write register of the CRTC, then a data is sent to the CRTC
@@ -70,6 +71,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 					if (!deviceResponse)
 						finalResult |= result;
+					*/
 				}
 
 				if (d == PortDevice.ROMSelect && !deviceResponse)
