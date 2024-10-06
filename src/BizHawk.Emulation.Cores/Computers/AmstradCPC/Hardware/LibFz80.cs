@@ -1,12 +1,9 @@
-﻿using BizHawk.Common;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.NES;
-using SDL2;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using static BizHawk.Common.Shell32Imports.BROWSEINFOW;
-using System.Security.Cryptography;
+
+using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {

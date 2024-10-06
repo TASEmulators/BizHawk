@@ -4,7 +4,6 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-//using BizHawk.Emulation.Cores.Components.Z80A;
 using BizHawk.Emulation.Cores.Properties;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
@@ -98,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		//private readonly Z80A<CpuLink> _cpu;
 		private readonly LibFz80Wrapper _cpu;
-		private readonly TraceBuffer _tracer;
+		// private readonly TraceBuffer _tracer;
 		public IController _controller;
 		public CPCBase _machine;
 
