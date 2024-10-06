@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (MovieSession.Movie.Hash != Game.Hash)
 			{
-				AddOnScreenMessage("Warning: Movie hash does not match the ROM");
+				AddOnScreenMessage("Warning: Movie hash does not match the ROM", 5);
 			}
 
 			return !Emulator.IsNull();
