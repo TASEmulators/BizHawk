@@ -180,7 +180,9 @@ namespace BizHawk.Common
 		/// <remarks>Any non-zero element is interpreted as <see langword="true"/>.</remarks>
 		public static bool[] ToBoolBuffer(this byte[] buf)
 		{
-			return MemoryMarshal.Cast<byte, bool>(buf).ToArray();
+			var ret = new bool[buf.Length];
+			for (int i = 0, len = buf.Length; i != len; i++) ret[i] = buf[i] != 0;
+			return ret;
 		}
 
 		public static double[] ToDoubleBuffer(this byte[] buf)
