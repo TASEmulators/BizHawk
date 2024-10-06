@@ -204,6 +204,7 @@ GPGX_EX void gpgx_swap_disc(const toc_t* toc, int8 index)
 	{
 		if (toc)
 		{
+			fprintf(stderr, "Hotswapping CD index %d, TOC CRC32: %08lX\n", index, crc32(0, (const unsigned char*)toc, sizeof(toc_t)));
 			char header[0x210];
 			cd_index = index;
 			memcpy(&pending_toc, toc, sizeof(toc_t));
@@ -211,6 +212,7 @@ GPGX_EX void gpgx_swap_disc(const toc_t* toc, int8 index)
 		}
 		else
 		{
+			fprintf(stderr, "Removing CD with index %d (NULL TOC), setting index to -1\n", index);
 			cd_index = -1;
 			cdd_unload();
 		}
