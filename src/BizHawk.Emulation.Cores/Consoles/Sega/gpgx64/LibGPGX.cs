@@ -351,7 +351,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public abstract void gpgx_set_cdd_callback(cd_read_cb cddcb);
 
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void gpgx_swap_disc([In] CDData toc);
+		public abstract void gpgx_swap_disc([In] CDData toc, sbyte discIndex);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct VDPNameTable

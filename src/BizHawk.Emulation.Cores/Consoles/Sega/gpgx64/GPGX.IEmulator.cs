@@ -22,8 +22,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			if (_cds != null)
 			{
-				Console.WriteLine("======= GPGX.FrameAdvance");
-				Console.WriteLine($"was: |{_discIndex}|{(_prevDiskPressed ? 'P' : '.')}{(_nextDiskPressed ? 'N' : '.')}|");
 				var prev = controller.IsPressed("Previous Disk");
 				var next = controller.IsPressed("Next Disk");
 				var newDisk = _discIndex;
@@ -53,9 +51,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (newDisk != _discIndex)
 				{
 					_discIndex = newDisk;
-					Core.gpgx_swap_disc(_discIndex == -1 ? null : GetCDDataStruct(_cds[_discIndex]));
+					Core.gpgx_swap_disc(_discIndex == -1 ? null : GetCDDataStruct(_cds[_discIndex]), (sbyte)_discIndex);
 				}
-				Console.WriteLine($"now: |{_discIndex}|{(_prevDiskPressed ? 'P' : '.')}{(_nextDiskPressed ? 'N' : '.')}|");
 			}
 
 			// this shouldn't be needed, as nothing has changed
