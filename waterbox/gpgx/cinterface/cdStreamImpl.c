@@ -61,14 +61,12 @@ cdStream* cdStreamOpen(const char* fname)
 			if (load_archive("PRIMARY_CD", (unsigned char*)&pending_toc, sizeof(toc_t), NULL))
 			{
 				cd_index = 0;
-				fprintf(stderr, "Initing primary CD\n");
 				cdStreamInit(&cd_streams[0], &pending_toc, 0);
 				return &cd_streams[0];
 			}
 		}
 		else if (!strcmp(fname, "HOTSWAP_CD"))
 		{
-			fprintf(stderr, "Initing hotswap CD\n");
 			cdStreamInit(&cd_streams[cd_index], &pending_toc, 0);
 			return &cd_streams[cd_index];
 		}
@@ -79,7 +77,6 @@ cdStream* cdStreamOpen(const char* fname)
 		if (load_archive("SECONDARY_CD", (unsigned char*)&pending_toc, sizeof(toc_t), NULL))
 		{
 			cd_index = 0;
-			fprintf(stderr, "Initing secondary CD\n");
 			cdStreamInit(&cd_streams[0], &pending_toc, 0);
 			return &cd_streams[0];
 		}
@@ -89,14 +86,12 @@ cdStream* cdStreamOpen(const char* fname)
 		// .cue file will attempt to be loaded for parsing
 		// we use this to know when to load in the TOC
 		// (can't do it when PRIMARY_CD/HOTSWAP_CD/SECONDARY_CD is opened, due to GPGX assuming those are a single track)
-		fprintf(stderr, "Copying TOC, TOC CRC32: %08lX\n", crc32(0, (unsigned char*)&pending_toc, sizeof(toc_t)));
 		memcpy(&cdd.toc, &pending_toc, sizeof(toc_t));
 		return NULL;
 	}
 	else if (!strcmp(fext, ".sub"))
 	{
 		// separate stream for subcode
-		fprintf(stderr, "Initing subcode CD stream\n");
 		cdStreamInit(&subcode_streams[cd_index], &cdd.toc, 1);
 		return &subcode_streams[cd_index];
 	}
