@@ -209,11 +209,7 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(false).ToBoolBuffer();
-				if (val == null && !useNull)
-				{
-					val = Array.Empty<bool>();
-				}
+				val = _br.ReadByteBuffer(false)!.ToBoolBuffer();
 			}
 			else
 			{
@@ -250,11 +246,7 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(false).ToShortBuffer();
-				if (val == null && !useNull)
-				{
-					val = Array.Empty<short>();
-				}
+				val = _br.ReadByteBuffer(false)!.ToShortBuffer();
 			}
 			else
 			{
@@ -270,11 +262,7 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(false).ToUShortBuffer();
-				if (val == null && !useNull)
-				{
-					val = Array.Empty<ushort>();
-				}
+				val = _br.ReadByteBuffer(false)!.ToUShortBuffer();
 			}
 			else
 			{
@@ -334,11 +322,7 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(false).ToIntBuffer();
-				if (val == null && !useNull)
-				{
-					val = Array.Empty<int>();
-				}
+				val = _br.ReadByteBuffer(false)!.ToIntBuffer();
 			}
 			else
 			{
@@ -376,11 +360,7 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(false).ToUIntBuffer();
-				if (val == null && !useNull)
-				{
-					val = Array.Empty<uint>();
-				}
+				val = _br.ReadByteBuffer(false)!.ToUIntBuffer();
 			}
 			else
 			{
@@ -418,11 +398,7 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(false).ToFloatBuffer();
-				if (val == null && !useNull)
-				{
-					val = Array.Empty<float>();
-				}
+				val = _br.ReadByteBuffer(false)!.ToFloatBuffer();
 			}
 			else
 			{
@@ -460,11 +436,7 @@ namespace BizHawk.Common
 			}
 			else if (IsReader)
 			{
-				val = _br.ReadByteBuffer(false).ToDoubleBuffer();
-				if (val == null && !useNull)
-				{
-					val = Array.Empty<double>();
-				}
+				val = _br.ReadByteBuffer(false)!.ToDoubleBuffer();
 			}
 			else
 			{
