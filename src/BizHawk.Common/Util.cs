@@ -209,7 +209,9 @@ namespace BizHawk.Common
 
 		public static byte[] ToUByteBuffer(this bool[] buf)
 		{
-			return MemoryMarshal.Cast<bool, byte>(buf).ToArray();
+			var ret = new byte[buf.Length];
+			for (int i = 0, len = buf.Length; i != len; i++) ret[i] = buf[i] ? (byte) 1 : (byte) 0;
+			return ret;
 		}
 
 		public static byte[] ToUByteBuffer(this double[] buf)
