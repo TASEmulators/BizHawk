@@ -78,17 +78,17 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 	m[0].Data  = chipmem_bank.baseaddr;
 	m[0].Name  = "Chip RAM";
 	m[0].Size  = chipmem_bank.allocated_size;
-	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_PRIMARY;
+	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
 
 	m[1].Data  = bogomem_bank.baseaddr;
 	m[1].Name  = "Slow RAM";
 	m[1].Size  = bogomem_bank.allocated_size;
-	m[1].Flags = MEMORYAREA_FLAGS_WORDSIZE1;
+	m[1].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
 
 	m[2].Data  = fastmem_bank[0].baseaddr;
 	m[2].Name  = "Fast RAM";
 	m[2].Size  = fastmem_bank[0].allocated_size;
-	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE1;
+	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
 }
 
 void (*InputCallback)();
