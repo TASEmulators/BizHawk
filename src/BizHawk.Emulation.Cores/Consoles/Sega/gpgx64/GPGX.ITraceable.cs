@@ -15,13 +15,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			IDisassemblable disassembler)
 			: CallbackBasedTraceBuffer(debuggableCore, memoryDomains, disassembler, TRACE_HEADER)
 		{
-			private const string TRACE_HEADER = "M68K: PC, machine code, mnemonic, operands, registers (D0-D7, A0-A7, SR, USP), flags (XNZVC)";
+			private const string TRACE_HEADER = "M68K: PC, machine code, mnemonic, operands, registers (A0-A7, D0-D7, SR, USP), flags (XNZVC)";
 
 			protected override void TraceFromCallback(uint addr, uint value, uint flags)
 			{
 				var regs = DebuggableCore.GetCpuFlagsAndRegisters();
-				var pc = (uint)regs["M68K PC"].Value;
-				var disasm = Disassembler.Disassemble(MemoryDomains.SystemBus, pc & 0xFFFFFF, out _);
+				var pc = (uint)regs["M68K PC"].Value & 0xFFFFFF;
+				var disasm = Disassembler.Disassemble(MemoryDomains.SystemBus, pc, out _);
 
 				var sb = new StringBuilder();
 

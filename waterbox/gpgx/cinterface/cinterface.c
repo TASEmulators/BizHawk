@@ -1100,14 +1100,6 @@ GPGX_EX int gpgx_getregs(gpregister_t *regs)
 	if ((system_hw & SYSTEM_PBC) == SYSTEM_MD)
 	{
 #define MAKEREG(x) regs->name = "M68K " #x; regs->value = m68k_get_reg(M68K_REG_##x); regs++; ret++;
-	MAKEREG(D0);
-	MAKEREG(D1);
-	MAKEREG(D2);
-	MAKEREG(D3);
-	MAKEREG(D4);
-	MAKEREG(D5);
-	MAKEREG(D6);
-	MAKEREG(D7);
 	MAKEREG(A0);
 	MAKEREG(A1);
 	MAKEREG(A2);
@@ -1116,6 +1108,14 @@ GPGX_EX int gpgx_getregs(gpregister_t *regs)
 	MAKEREG(A5);
 	MAKEREG(A6);
 	MAKEREG(A7);
+	MAKEREG(D0);
+	MAKEREG(D1);
+	MAKEREG(D2);
+	MAKEREG(D3);
+	MAKEREG(D4);
+	MAKEREG(D5);
+	MAKEREG(D6);
+	MAKEREG(D7);
 	MAKEREG(PC);
 	MAKEREG(SR);
 	MAKEREG(SP);
@@ -1146,14 +1146,6 @@ GPGX_EX int gpgx_getregs(gpregister_t *regs)
 	if (system_hw == SYSTEM_MCD)
 	{
 #define MAKEREG(x) regs->name = "S68K " #x; regs->value = s68k_get_reg(M68K_REG_##x); regs++; ret++;
-	MAKEREG(D0);
-	MAKEREG(D1);
-	MAKEREG(D2);
-	MAKEREG(D3);
-	MAKEREG(D4);
-	MAKEREG(D5);
-	MAKEREG(D6);
-	MAKEREG(D7);
 	MAKEREG(A0);
 	MAKEREG(A1);
 	MAKEREG(A2);
@@ -1162,6 +1154,14 @@ GPGX_EX int gpgx_getregs(gpregister_t *regs)
 	MAKEREG(A5);
 	MAKEREG(A6);
 	MAKEREG(A7);
+	MAKEREG(D0);
+	MAKEREG(D1);
+	MAKEREG(D2);
+	MAKEREG(D3);
+	MAKEREG(D4);
+	MAKEREG(D5);
+	MAKEREG(D6);
+	MAKEREG(D7);
 	MAKEREG(PC);
 	MAKEREG(SR);
 	MAKEREG(SP);
