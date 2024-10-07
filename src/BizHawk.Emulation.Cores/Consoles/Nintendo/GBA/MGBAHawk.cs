@@ -62,16 +62,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				_tracecb = MakeTrace;
 				ser.Register(Tracer);
 				_memoryCallbacks = new(LibmGBA, Core);
+
+				// most things are already handled in the core, this is just for event.oninputpoll
+				InputCallback = InputCallbacks.Call;
+				LibmGBA.BizSetInputCallback(Core, InputCallback);
+
+				RumbleCallback = SetRumble;
+				LibmGBA.BizSetRumbleCallback(Core, RumbleCallback);
 			}
 			catch
 			{
 				LibmGBA.BizDestroy(Core);
 				throw;
 			}
-
-			// most things are already handled in the core, this is just for event.oninputpoll
-			InputCallback = InputCallbacks.Call;
-			LibmGBA.BizSetInputCallback(Core, InputCallback);
 		}
 
 		private static LibmGBA.OverrideInfo GetOverrideInfo(SyncSettings syncSettings)
