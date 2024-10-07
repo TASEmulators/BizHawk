@@ -14,7 +14,7 @@ A7800Hawk, Atari2600Hawk, C64Hawk, ColecoHawk, GBHawk, IntelliHawk, NesHawk, O2H
 [![Build and test main solution](https://github.com/TASEmulators/BizHawk/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/TASEmulators/BizHawk/actions/workflows/ci.yml)
 
 [![reproducible via | Nix](https://img.shields.io/badge/reproducible_via-Nix-5277C3?logo=nixos&logoColor=7EBAE4&style=popout)](#nixnixos)
-[![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/5365/badge)](https://bestpractices.coreinfrastructure.org/projects/5365)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/5365/badge)](https://www.bestpractices.dev/projects/5365)
 
 ---
 
