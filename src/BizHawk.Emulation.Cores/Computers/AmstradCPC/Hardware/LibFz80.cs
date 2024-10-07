@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
-	public class LibFz80Wrapper : IDisposable
+	public class LibFz80Wrapper
 	{
 		public const int Z80_PIN_M1 = 24;		// machine cycle 1
 		public const int Z80_PIN_MREQ = 25;     // memory request
@@ -27,9 +27,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public ulong Pins
 		{
-			get { return _pins; }
-			set { _pins = value; }
+			get => _pins;
+			set => _pins = value;
 		}
+
 		private ulong _pins;
 
 		// read only pins
@@ -48,16 +49,23 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			get => GetPin(Z80_PIN_INT);
 			set => ChangePin(30, value);
 		}
+
 		public int RES
 		{
 			get => GetPin(Z80_PIN_RES);
-			set => Reset();					// the z80 implementation doesn't implement the RES pin properly
+			set
+			{
+				_ = value;
+				Reset(); // the z80 implementation doesn't implement the RES pin properly
+			}
 		}
+
 		public int NMI
 		{
 			get => GetPin(Z80_PIN_NMI);
 			set => ChangePin(Z80_PIN_NMI, value);
 		}
+
 		public int WAIT
 		{
 			get => GetPin(Z80_PIN_WAIT);
@@ -73,11 +81,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public long TotalExecutedCycles;
 
-
 		private int GetPin(int pin)
-		{
-			return (_pins & (1UL << pin)) != 0 ? 1 : 0;
-		}
+			=> (_pins & (1UL << pin)) != 0 ? 1 : 0;
 
 		private void ChangePin(int pin, int value)
 		{
@@ -91,195 +96,58 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
-		private IntPtr instance;
+		private Z80State Z80;
 
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		private static extern IntPtr CreateLibFz80();
+		[StructLayout(LayoutKind.Sequential)]
+		public struct Z80State
+		{
+			public ushort step;
+			public ushort addr;
+			public byte dlatch;
+			public byte opcode;
+			public byte hlx_idx;
+			public byte prefix_active;
+			public ulong pins;
+			public ulong int_bits;
+			public ushort pc;
+			public ushort af;
+			public ushort bc;
+			public ushort de;
+			public ushort hl;
+			public ushort ix;
+			public ushort iy;
+			public ushort wz;
+			public ushort sp;
+			public ushort ir;
+			public ushort af2, bc2, de2, hl2;
+			public byte im;
+			public byte iff1, iff2;
+		}
 
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void DestroyLibFz80(IntPtr instance);
+		[DllImport("FlooohZ80", CallingConvention = CallingConvention.Cdecl)]
+		private static extern ulong LibFz80_Initialize(ref Z80State z80);
 
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		private static extern ulong LibFz80_Initialize(IntPtr instance);
+		[DllImport("FlooohZ80", CallingConvention = CallingConvention.Cdecl)]
+		private static extern ulong LibFz80_Reset(ref Z80State z80);
 
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		private static extern ulong LibFz80_Reset(IntPtr instance);
+		[DllImport("FlooohZ80", CallingConvention = CallingConvention.Cdecl)]
+		private static extern ulong LibFz80_Tick(ref Z80State z80, ulong pins);
 
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		private static extern ulong LibFz80_Tick(IntPtr instance, ulong pins);
+#if false
+		[DllImport("FlooohZ80", CallingConvention = CallingConvention.Cdecl)]
+		private static extern ulong LibFz80_Prefetch(ref Z80State z80, ushort new_pc);
 
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		private static extern ulong LibFz80_Prefetch(IntPtr instance, ushort new_pc);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		private static extern bool LibFz80_InstructionDone(IntPtr instance);
-
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_step(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_addr(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern byte LibFz80_GET_dlatch(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern byte LibFz80_GET_opcode(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern byte LibFz80_GET_hlx_idx(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool LibFz80_GET_prefix_active(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ulong LibFz80_GET_pins(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ulong LibFz80_GET_int_bits(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_pc(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_af(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_bc(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_de(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_hl(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_ix(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_iy(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_wz(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_sp(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_ir(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_af2(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_bc2(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_de2(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ushort LibFz80_GET_hl2(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern byte LibFz80_GET_im(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool LibFz80_GET_iff1(IntPtr instance);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool LibFz80_GET_iff2(IntPtr instance);
-
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_step(IntPtr instance, ushort value);		
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_addr(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_dlatch(IntPtr instance, byte value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_opcode(IntPtr instance, byte value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_hlx_idx(IntPtr instance, byte value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_prefix_active(IntPtr instance, bool value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_pins(IntPtr instance, ulong value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_addr(IntPtr instance, ulong value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_int_bits(IntPtr instance, ulong value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_pc(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_af(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_bc(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_de(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_hl(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_ix(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_iy(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_wz(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_sp(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_ir(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_af2(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_bc2(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_de2(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_hl2(IntPtr instance, ushort value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_im(IntPtr instance, byte value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_iff1(IntPtr instance, bool value);
-
-		[DllImport("FlooohZ80.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void LibFz80_SET_iff2(IntPtr instance, bool value);
-
-		/// <summary>
-		/// Public Delegate
-		/// </summary>
-		public delegate void CallBack();
+		[DllImport("FlooohZ80", CallingConvention = CallingConvention.Cdecl)]
+		private static extern bool LibFz80_InstructionDone(ref Z80State z80);
+#endif
 
 		/// <summary>
 		/// Fired when the CPU acknowledges an interrupt
 		/// </summary>
-		private CallBack IRQACK_Callbacks;
+		private Action IRQACK_Callbacks;
 
-		public void AttachIRQACKOnCallback(CallBack irqackCall) => IRQACK_Callbacks += irqackCall;
+		public void AttachIRQACKOnCallback(Action irqackCall)
+			=> IRQACK_Callbacks += irqackCall;
 
 		public Func<ushort, byte> ReadMemory;
 		public Action<ushort, byte> WriteMemory;
@@ -295,14 +163,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public LibFz80Wrapper()
 		{
-			instance = CreateLibFz80();
-			_pins = Initialize();
-			//Z80State = new Z80();
+			_pins = LibFz80_Initialize(ref Z80);
 		}
 
 		public void ExecuteOne()
 		{
-			ushort step = GetStep();
+			//ushort step = Z80.step;
 
 			if (MREQ == 1 && RD == 1)
 			{
@@ -331,174 +197,54 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			TotalExecutedCycles++;
 
-			_pins = Tick(_pins);
+			_pins = LibFz80_Tick(ref Z80, _pins);
 		}
 
 		public ulong Reset()
-		{
-			return LibFz80_Reset(instance);
-		}
+			=> LibFz80_Reset(ref Z80);
 
-		public void Dispose()
-		{
-			if (instance != IntPtr.Zero)
-			{
-				DestroyLibFz80(instance);
-				instance = IntPtr.Zero;
-			}
-		}
-
+#if false
 		public bool InstructionDone()
-		{
-			return LibFz80_InstructionDone(instance);
-		}
-
-		private ulong Initialize()
-		{
-			return LibFz80_Initialize(instance);
-		}		
-
-		private ulong Tick(ulong pins)
-		{
-			return LibFz80_Tick(instance, pins);
-		}
+			=> LibFz80_InstructionDone(ref Z80);
 
 		private ulong Prefetch(ushort new_pc)
-		{
-			return LibFz80_Prefetch(instance, new_pc);
-		}
-
-
-		private ushort GetStep()
-		{
-			return LibFz80_GET_step(instance);
-		}
-
-		private void SetStep(ushort value)
-		{
-			LibFz80_SET_step(instance, value);
-		}
-
-		ushort step;
-		ushort addr;
-		byte dlatch;
-		byte opcode;
-		byte hlx_idx;
-		bool prefix_active;
-		ulong pins;
-		ulong int_bits;
-		ushort pc;
-		ushort af;
-		ushort bc;
-		ushort de;
-		ushort hl;
-		ushort ix;
-		ushort iy;
-		ushort wz;
-		ushort sp;
-		ushort ir;
-		ushort af2;
-		ushort bc2;
-		ushort de2;
-		ushort hl2;
-		byte im;
-		bool iff1;
-		bool iff2;
-
-		private void GetStateFromCpu()
-		{
-			step = LibFz80_GET_step(instance);
-			addr = LibFz80_GET_addr(instance);
-			dlatch = LibFz80_GET_dlatch(instance);
-			opcode = LibFz80_GET_opcode(instance);
-			hlx_idx = LibFz80_GET_hlx_idx(instance);
-			prefix_active = LibFz80_GET_prefix_active(instance);
-			pins = LibFz80_GET_pins(instance);
-			int_bits = LibFz80_GET_int_bits(instance);
-			pc = LibFz80_GET_pc(instance);
-			af = LibFz80_GET_af(instance);
-			bc = LibFz80_GET_bc(instance);
-			de = LibFz80_GET_de(instance);
-			hl = LibFz80_GET_hl(instance);
-			ix = LibFz80_GET_ix(instance);
-			iy = LibFz80_GET_iy(instance);
-			wz = LibFz80_GET_wz(instance);
-			sp = LibFz80_GET_sp(instance);
-			ir = LibFz80_GET_ir(instance);
-			af2 = LibFz80_GET_af2(instance);
-			bc2 = LibFz80_GET_bc2(instance);
-			de2 = LibFz80_GET_de2(instance);
-			hl2 = LibFz80_GET_hl2(instance);
-			im = LibFz80_GET_im(instance);
-			iff1 = LibFz80_GET_iff1(instance);
-			iff2 = LibFz80_GET_iff2(instance);
-		}
-
-		private void PutStateToCpu()
-		{
-			LibFz80_SET_step(instance, step);
-			LibFz80_SET_addr(instance, addr);
-			LibFz80_SET_dlatch(instance, dlatch);
-			LibFz80_SET_opcode(instance, opcode);
-			LibFz80_SET_hlx_idx(instance, hlx_idx);
-			LibFz80_SET_prefix_active(instance, prefix_active);
-			LibFz80_SET_pins(instance, pins);
-			LibFz80_SET_int_bits(instance, int_bits);
-			LibFz80_SET_pc(instance, pc);
-			LibFz80_SET_af(instance, af);
-			LibFz80_SET_bc(instance, bc);
-			LibFz80_SET_de(instance, de);
-			LibFz80_SET_hl(instance, hl);
-			LibFz80_SET_ix(instance, ix);
-			LibFz80_SET_iy(instance, iy);
-			LibFz80_SET_wz(instance, wz);
-			LibFz80_SET_sp(instance, sp);
-			LibFz80_SET_ir(instance, ir);
-			LibFz80_SET_af2(instance, af2);
-			LibFz80_SET_bc2(instance, bc2);
-			LibFz80_SET_de2(instance, de2);
-			LibFz80_SET_hl2(instance, hl2);
-			LibFz80_SET_im(instance, im);
-			LibFz80_SET_iff1(instance, iff1);
-			LibFz80_SET_iff2(instance, iff2);
-		}
+			=> LibFz80_Prefetch(ref Z80, new_pc);
+#endif
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			GetStateFromCpu();
-
 			return new Dictionary<string, RegisterValue>
 			{
-				["A"] = af >> 8,
-				["AF"] = af,
-				["B"] = bc >> 8,
-				["BC"] = bc,
-				["C"] = bc & 0xff,
-				["D"] = de >> 8,
-				["DE"] = de,
-				["E"] = de & 0xff,
-				["F"] = af * 0xff,
-				["H"] = hl >> 8,
-				["HL"] = hl,
-				["I"] = ir >> 8,
-				["IX"] = ix,
-				["IY"] = iy,
-				["L"] = hl & 0xff,
-				["PC"] = pc,
-				["R"] = ir & 0xff,
-				["Shadow AF"] = af2,
-				["Shadow BC"] = bc2,
-				["Shadow DE"] = de2,
-				["Shadow HL"] = hl2,
-				["SP"] = sp,
-				["Flag C"] = af.Bit(0),
-				["Flag N"] = af.Bit(1),
-				["Flag P/V"] = af.Bit(2),
-				["Flag 3rd"] = af.Bit(3),
-				["Flag H"] = af.Bit(4),
-				["Flag 5th"] = af.Bit(5),
-				["Flag Z"] = af.Bit(6),
-				["Flag S"] = af.Bit(7)
+				["A"] = Z80.af >> 8,
+				["F"] = Z80.af & 0xFF,
+				["AF"] = Z80.af,
+				["B"] = Z80.bc >> 8,
+				["C"] = Z80.bc & 0xFF,
+				["BC"] = Z80.bc,
+				["D"] = Z80.de >> 8,
+				["E"] = Z80.de & 0xFF,
+				["DE"] = Z80.de,
+				["H"] = Z80.hl >> 8,
+				["L"] = Z80.hl & 0xFF,
+				["HL"] = Z80.hl,
+				["I"] = Z80.ir >> 8,
+				["R"] = Z80.ir & 0xFF,
+				["IX"] = Z80.ix,
+				["IY"] = Z80.iy,
+				["PC"] = Z80.pc,
+				["Shadow AF"] = Z80.af2,
+				["Shadow BC"] = Z80.bc2,
+				["Shadow DE"] = Z80.de2,
+				["Shadow HL"] = Z80.hl2,
+				["SP"] = Z80.sp,
+				["Flag C"] = Z80.af.Bit(0),
+				["Flag N"] = Z80.af.Bit(1),
+				["Flag P/V"] = Z80.af.Bit(2),
+				["Flag 3rd"] = Z80.af.Bit(3),
+				["Flag H"] = Z80.af.Bit(4),
+				["Flag 5th"] = Z80.af.Bit(5),
+				["Flag Z"] = Z80.af.Bit(6),
+				["Flag S"] = Z80.af.Bit(7)
 			};
 		}
 
@@ -509,102 +255,80 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				default:
 					throw new InvalidOperationException();
 				case "A":
-					af = LibFz80_GET_af(instance);
-					af |= (ushort)(value << 8);
-					LibFz80_SET_af(instance, af);
-					break;
-				case "AF":
-					af = (ushort)value;
-					LibFz80_SET_af(instance, af);
-					break;
-				case "B":
-					bc = LibFz80_GET_bc(instance);
-					bc |= (ushort)(value << 8);
-					LibFz80_SET_bc(instance, bc);
-					break;
-				case "BC":
-					bc = (ushort)value;
-					LibFz80_SET_bc(instance, bc);
-					break;
-				case "C":
-					bc = LibFz80_GET_bc(instance);
-					bc |= (ushort)(value & 0xff);
-					LibFz80_SET_bc(instance, bc);
-					break;
-				case "D":
-					de = LibFz80_GET_de(instance);
-					de |= (ushort)(value << 8);
-					LibFz80_SET_de(instance, de);
-					break;
-				case "DE":
-					de = (ushort)value;
-					LibFz80_SET_de(instance, de);
-					break;
-				case "E":
-					de = LibFz80_GET_de(instance);
-					de |= (ushort)(value & 0xff);
-					LibFz80_SET_de(instance, de);
+					Z80.af &= 0x00FF;
+					Z80.af |= (ushort)(value << 8);
 					break;
 				case "F":
-					af = LibFz80_GET_af(instance);
-					af |= (ushort)(value & 0xff);
-					LibFz80_SET_af(instance, af);
+					Z80.af &= 0xFF00;
+					Z80.af |= (ushort)(value & 0xFF);
+					break;
+				case "AF":
+					Z80.af = (ushort)value;
+					break;
+				case "B":
+					Z80.bc &= 0x00FF;
+					Z80.bc |= (ushort)(value << 8);
+					break;
+				case "C":
+					Z80.bc &= 0xFF00;
+					Z80.bc |= (ushort)(value & 0xFF);
+					break;
+				case "BC":
+					Z80.bc = (ushort)value;
+					break;
+				case "D":
+					Z80.de &= 0x00FF;
+					Z80.de |= (ushort)(value << 8);
+					break;
+				case "E":
+					Z80.de &= 0xFF00;
+					Z80.de |= (ushort)(value & 0xFF);
+					break;
+				case "DE":
+					Z80.de = (ushort)value;
 					break;
 				case "H":
-					hl = LibFz80_GET_hl(instance);
-					hl |= (ushort)(value << 8);
-					LibFz80_SET_hl(instance, hl);
-					break;
-				case "HL":
-					hl = (ushort)value;
-					LibFz80_SET_hl(instance, hl);
-					break;
-				case "I":
-					ir = LibFz80_GET_ir(instance);
-					ir |= (ushort)(value << 8);
-					LibFz80_SET_ir(instance, ir);
-					break;
-				case "IX":
-					ix = (ushort)value;
-					LibFz80_SET_ix(instance, ix);
-					break;
-				case "IY":
-					iy = (ushort)value;
-					LibFz80_SET_iy(instance, iy);
+					Z80.hl &= 0xFF00;
+					Z80.hl |= (ushort)(value << 8);
 					break;
 				case "L":
-					hl = LibFz80_GET_hl(instance);
-					hl |= (ushort)(value & 0xff);
-					LibFz80_SET_hl(instance, hl);
+					Z80.hl &= 0x00FF;
+					Z80.hl |= (ushort)(value & 0xFF);
 					break;
-				case "PC":
-					pc = (ushort)value;
-					LibFz80_SET_pc(instance, pc);
+				case "HL":
+					Z80.hl = (ushort)value;
+					break;
+				case "I":
+					Z80.ir &= 0x00FF;
+					Z80.ir |= (ushort)(value << 8);
 					break;
 				case "R":
-					ir = LibFz80_GET_ir(instance);
-					ir |= (ushort)(value & 0xff);
-					LibFz80_SET_ir(instance, ir);
+					Z80.ir &= 0xFF00;
+					Z80.ir |= (ushort)(value & 0xFF);
+					break;
+				case "IX":
+					Z80.ix = (ushort)value;
+					break;
+				case "IY":
+					Z80.iy = (ushort)value;
+					break;
+				case "PC":
+					Z80.pc = (ushort)value;
 					break;
 				case "Shadow AF":
-					af2 = (ushort)value;
-					LibFz80_SET_af2(instance, af2);
+					Z80.af2 = (ushort)value;
 					break;
 				case "Shadow BC":
-					bc2 = (ushort)value;
-					LibFz80_SET_bc2(instance, bc2);
+					Z80.bc2 = (ushort)value;
 					break;
 				case "Shadow DE":
-					de2 = (ushort)value;
-					LibFz80_SET_de2(instance, de2);
+					Z80.de2 = (ushort)value;
 					break;
 				case "Shadow HL":
-					hl2 = (ushort)value;
-					LibFz80_SET_hl2(instance, hl2);
+					Z80.hl2 = (ushort)value;
 					break;
 				case "SP":
-					sp = (ushort)value;
-					LibFz80_SET_sp(instance, sp);
+					Z80.sp = (ushort)value;
 					break;
 			}
 		}
@@ -613,44 +337,35 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			ser.BeginSection("FlooohZ80");
 
-			if (ser.IsWriter)
-			{
-				GetStateFromCpu();
-			}
-
-			ser.Sync(nameof(step), ref step);
-			ser.Sync(nameof(addr), ref addr);
-			ser.Sync(nameof(dlatch), ref dlatch);
-			ser.Sync(nameof(opcode), ref opcode);
-			ser.Sync(nameof(hlx_idx), ref hlx_idx);
-			ser.Sync(nameof(prefix_active), ref prefix_active);
-			ser.Sync(nameof(pins), ref pins);
-			ser.Sync(nameof(int_bits), ref int_bits);
-			ser.Sync(nameof(pc), ref pc);
-			ser.Sync(nameof(af), ref af);
-			ser.Sync(nameof(bc), ref bc);
-			ser.Sync(nameof(de), ref de);
-			ser.Sync(nameof(hl), ref hl);
-			ser.Sync(nameof(ix), ref ix);
-			ser.Sync(nameof(iy), ref iy);
-			ser.Sync(nameof(wz), ref wz);
-			ser.Sync(nameof(sp), ref sp);
-			ser.Sync(nameof(ir), ref ir);
-			ser.Sync(nameof(af2), ref af2);
-			ser.Sync(nameof(bc2), ref bc2);
-			ser.Sync(nameof(de2), ref de2);
-			ser.Sync(nameof(hl2), ref hl2);
-			ser.Sync(nameof(im), ref im);
-			ser.Sync(nameof(iff1), ref iff1);
-			ser.Sync(nameof(iff2), ref iff2);
-
-
-			if (ser.IsReader)
-			{
-				PutStateToCpu();
-			}
+			ser.Sync(nameof(Z80.step), ref Z80.step);
+			ser.Sync(nameof(Z80.addr), ref Z80.addr);
+			ser.Sync(nameof(Z80.dlatch), ref Z80.dlatch);
+			ser.Sync(nameof(Z80.opcode), ref Z80.opcode);
+			ser.Sync(nameof(Z80.hlx_idx), ref Z80.hlx_idx);
+			ser.Sync(nameof(Z80.prefix_active), ref Z80.prefix_active);
+			ser.Sync(nameof(Z80.pins), ref Z80.pins);
+			ser.Sync(nameof(Z80.int_bits), ref Z80.int_bits);
+			ser.Sync(nameof(Z80.pc), ref Z80.pc);
+			ser.Sync(nameof(Z80.af), ref Z80.af);
+			ser.Sync(nameof(Z80.bc), ref Z80.bc);
+			ser.Sync(nameof(Z80.de), ref Z80.de);
+			ser.Sync(nameof(Z80.hl), ref Z80.hl);
+			ser.Sync(nameof(Z80.ix), ref Z80.ix);
+			ser.Sync(nameof(Z80.iy), ref Z80.iy);
+			ser.Sync(nameof(Z80.wz), ref Z80.wz);
+			ser.Sync(nameof(Z80.sp), ref Z80.sp);
+			ser.Sync(nameof(Z80.ir), ref Z80.ir);
+			ser.Sync(nameof(Z80.af2), ref Z80.af2);
+			ser.Sync(nameof(Z80.bc2), ref Z80.bc2);
+			ser.Sync(nameof(Z80.de2), ref Z80.de2);
+			ser.Sync(nameof(Z80.hl2), ref Z80.hl2);
+			ser.Sync(nameof(Z80.im), ref Z80.im);
+			ser.Sync(nameof(Z80.iff1), ref Z80.iff1);
+			ser.Sync(nameof(Z80.iff2), ref Z80.iff2);
 
 			ser.Sync(nameof(_pins), ref _pins);
+			ser.Sync(nameof(TotalExecutedCycles), ref TotalExecutedCycles);
+			
 			ser.EndSection();
 		}
 	}	
