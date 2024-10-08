@@ -164,7 +164,7 @@ namespace BizHawk.Client.Common
 		public bool AviCaptureLua { get; set; }
 		public bool ScreenshotCaptureOsd { get; set; }
 		public bool FirstBoot { get; set; } = true;
-		public bool UpdateAutoCheckEnabled { get; set; }
+		public bool UpdateAutoCheckEnabled { get; set; } = true;
 		public DateTime? UpdateLastCheckTimeUtc { get; set; }
 		public string UpdateLatestVersion { get; set; } = "";
 		public string UpdateIgnoreVersion { get; set; } = "";

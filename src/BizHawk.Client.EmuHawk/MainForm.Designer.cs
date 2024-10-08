@@ -2161,7 +2161,6 @@ namespace BizHawk.Client.EmuHawk
 			// UpdateNotification
 			// 
 			this.UpdateNotification.IsLink = true;
-			this.UpdateNotification.LinkColor = System.Drawing.Color.Red;
 			this.UpdateNotification.Spring = true;
 			this.UpdateNotification.Text = "New version available!";
 			this.UpdateNotification.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
