@@ -6,6 +6,9 @@ using System.Linq;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+#if BIZHAWKBUILD_DEBUG_RUMBLE
+using BizHawk.Common.NumberExtensions;
+#endif
 
 using static SDL2.SDL;
 
@@ -170,6 +173,12 @@ namespace BizHawk.Bizware.Input
 				{
 					var leftStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Left");
 					var rightStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Right");
+#if BIZHAWKBUILD_DEBUG_RUMBLE
+					const int WIDTH = 50; // don't forget to change PACKED_BAR_GRAPHICS too
+					const string PACKED_BAR_GRAPHICS = "                                                  ##################################################                                                  ";
+					const float SCALE_FACTOR = (float) (WIDTH / (double) int.MaxValue);
+					Console.WriteLine($"rumble: [{PACKED_BAR_GRAPHICS.Substring(startIndex: (leftStrength * SCALE_FACTOR).RoundToInt(), length: WIDTH)}] L / R [{PACKED_BAR_GRAPHICS.Substring(startIndex: 2 * WIDTH - (rightStrength * SCALE_FACTOR).RoundToInt(), length: WIDTH)}]");
+#endif
 					pad.SetVibration(leftStrength, rightStrength);	
 				}
 			}
