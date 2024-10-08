@@ -1,13 +1,13 @@
-﻿using BizHawk.Common;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Text;
+
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 //using BizHawk.Emulation.DiscSystem;
-
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
@@ -19,19 +19,18 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		isReleased: false)]
 	public partial class PUAE : WaterboxCore
 	{
-		internal CoreComm _comm { get; }
 		private readonly List<IRomAsset> _roms;
 		//private readonly List<IDiscAsset> _discs;
-		private LibPUAE _puae;
 		private List<string> _args;
 		private string _chipsetCompatible = "";
-		private int _currentDrive = 0;
-		private int _currentSlot = 0;
-		private byte[] _currentRom;
-		private bool _ejectPressed = false;
-		private bool _insertPressed = false;
-		private bool _nextSlotPressed = false;
-		private bool _nextDrivePressed = false;
+
+		private int _currentDrive;
+		private int _currentSlot;
+
+		private bool _ejectPressed;
+		private bool _insertPressed;
+		private bool _nextSlotPressed;
+		private bool _nextDrivePressed;
 
 		[CoreConstructor(VSystemID.Raw.Amiga)]
 		public PUAE(CoreLoadParameters<object, PUAESyncSettings> lp)
@@ -47,15 +46,14 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				DefaultFpsDenominator = 1
 			})
 		{
-			_comm = lp.Comm;
 			_roms = lp.Roms;
 			//_discs = lp.Discs;
 			_syncSettings = lp.SyncSettings ?? new();
 			var filesToRemove = new List<string>();
 			CreateArguments(_syncSettings);
-			ControllerDefinition = InitInput();
+			ControllerDefinition = _controllerDefinition;
 
-			_puae = PreInit<LibPUAE>(new WaterboxOptions
+			var paue = PreInit<LibPUAE>(new WaterboxOptions
 			{
 				Filename                   = "puae.wbx",
 				SbrkHeapSizeKB             = 5 * 512,
@@ -82,12 +80,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					var filesys_path = "";
 					var controller_unit = "uae0";
 
-					if (Encoding.ASCII.GetString(lp.Roms[index].RomData, 0, 3) == "RDS")
+					if (Encoding.ASCII.GetString(lp.Roms[index].FileData, 0, 3) == "RDS")
 					{
 						blocks_per_track = 0;
 						surfaces = 0;
 						reserved = 0;
 					}
+
 					_exe.AddReadonlyFile(lp.Roms[index].FileData, volume_name);
 						AppendSetting($"hardfile2=" +
 							$"{access}," +
@@ -103,12 +102,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				}
 				else
 				{
-					_exe.AddTransientFile(lp.Roms[index].FileData, FileNames.FD + index);
+					_exe.AddReadonlyFile(lp.Roms[index].FileData, FileNames.FD + index);
 					if (index < Math.Min(LibPUAE.MAX_FLOPPIES, _syncSettings.FloppyDrives))
 					{
 						AppendSetting($"floppy{index}={FileNames.FD}{index}");
 						AppendSetting($"floppy{index}type={(int)DriveType.DRV_35_DD}");
-						AppendSetting($"floppy_write_protect=no");
+						AppendSetting("floppy_write_protect=true");
 					}
 				}
 			}
@@ -130,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			Console.WriteLine(s);
 			Console.WriteLine();
 
-			if (!_puae.Init(_args.Count, _args.ToArray()))
+			if (!paue.Init(_args.Count, _args.ToArray()))
 				throw new InvalidOperationException("Core rejected the rom!");
 
 			foreach (var f in filesToRemove)
@@ -141,13 +140,42 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			PostInit();
 		}
 
-		private static ControllerDefinition InitInput()
+		private static readonly (string Name, LibPUAE.PUAEJoystick Button)[] _joystickMap = CreateJoystickMap();
+		private static readonly (string Name, LibPUAE.PUAEKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
+		private static readonly ControllerDefinition _controllerDefinition = CreateControllerDefinition();
+
+		private static (string Name, LibPUAE.PUAEJoystick Value)[] CreateJoystickMap()
+		{
+			var joystickMap = new List<(string, LibPUAE.PUAEJoystick)>();
+			// ReSharper disable once LoopCanBeConvertedToQuery
+			foreach (var b in Enum.GetValues(typeof(LibPUAE.PUAEJoystick)))
+			{
+				var name = Enum.GetName(typeof(LibPUAE.PUAEJoystick), b)!.Replace('_', ' ');
+				joystickMap.Add((name, (LibPUAE.PUAEJoystick)b));
+			}
+
+			return joystickMap.ToArray();
+		}
+
+		private static (string Name, LibPUAE.PUAEKeyboard Value)[] CreateKeyboardMap()
+		{
+			var keyboardMap = new List<(string, LibPUAE.PUAEKeyboard)>();
+			// ReSharper disable once LoopCanBeConvertedToQuery
+			foreach (var k in Enum.GetValues(typeof(LibPUAE.PUAEKeyboard)))
+			{
+				var name = Enum.GetName(typeof(LibPUAE.PUAEKeyboard), k)!.Replace('_', ' ');
+				keyboardMap.Add((name, (LibPUAE.PUAEKeyboard)k));
+			}
+
+			return keyboardMap.ToArray();
+		}
+
+		private static ControllerDefinition CreateControllerDefinition()
 		{
 			var controller = new ControllerDefinition("Amiga Controller");
 
-			foreach (var b in Enum.GetValues(typeof(LibPUAE.PUAEJoystick)))
+			foreach (var (name, _) in _joystickMap)
 			{
-				var name = Enum.GetName(typeof(LibPUAE.PUAEJoystick), b).Replace('_', ' ');
 				controller.BoolButtons.Add(name);
 				controller.CategoryLabels[name] = "Joystick";
 			}
@@ -158,8 +186,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			]);
 
 			controller
-				.AddAxis(Inputs.MouseX, (0).RangeTo(LibPUAE.PAL_WIDTH),  LibPUAE.PAL_WIDTH  / 2)
-				.AddAxis(Inputs.MouseY, (0).RangeTo(LibPUAE.PAL_HEIGHT), LibPUAE.PAL_HEIGHT / 2);
+				.AddAxis(Inputs.MouseX, 0.RangeTo(LibPUAE.PAL_WIDTH),  LibPUAE.PAL_WIDTH  / 2)
+				.AddAxis(Inputs.MouseY, 0.RangeTo(LibPUAE.PAL_HEIGHT), LibPUAE.PAL_HEIGHT / 2);
 
 			foreach (var b in controller.BoolButtons)
 			{
@@ -174,9 +202,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				Inputs.NextDrive, Inputs.NextSlot, Inputs.Insert, Inputs.Eject
 			]);
 
-			foreach (var b in Enum.GetValues(typeof(LibPUAE.PUAEKeyboard)))
+			foreach (var (name, _) in _keyboardMap)
 			{
-				var name = Enum.GetName(typeof(LibPUAE.PUAEKeyboard), b).Replace('_', ' ');
 				controller.BoolButtons.Add(name);
 				controller.CategoryLabels[name] = "Keyboard";
 			}
@@ -192,26 +219,29 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				Action = LibPUAE.DriveAction.None
 			};
 
-			foreach (var b in Enum.GetValues(typeof(LibPUAE.PUAEJoystick)))
+			foreach (var (name, button) in _joystickMap)
 			{
-				if (controller.IsPressed(Enum.GetName(typeof(LibPUAE.PUAEJoystick), b).Replace('_', ' ')))
+				if (controller.IsPressed(name))
 				{
-					fi.JoystickState |= (LibPUAE.PUAEJoystick)b;
+					fi.JoystickState |= button;
 				}
 			}
-			
+
 			if (controller.IsPressed(Inputs.MouseLeftButton))
 			{
-				fi.MouseButtons |= LibPUAE.b00000001;
+				fi.MouseButtons |= 0b00000001;
 			}
+
 			if (controller.IsPressed(Inputs.MouseRightButton))
 			{
-				fi.MouseButtons |= LibPUAE.b00000010;
+				fi.MouseButtons |= 0b00000010;
 			}
+
 			if (controller.IsPressed(Inputs.MouseMIddleButton))
 			{
-				fi.MouseButtons |= LibPUAE.b00000100;
+				fi.MouseButtons |= 0b00000100;
 			}
+
 			fi.MouseX = controller.AxisValue(Inputs.MouseX);
 			fi.MouseY = controller.AxisValue(Inputs.MouseY);
 
@@ -229,15 +259,18 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					fi.Action = LibPUAE.DriveAction.Insert;
 					unsafe
 					{
-						string str = FileNames.FD + _currentSlot;
-						fixed(char* filename = str)
-						fixed (byte* buffer = fi.Name.Buffer)
+						var str = FileNames.FD + _currentSlot;
+						fixed (char* filename = str)
 						{
-							Encoding.ASCII.GetBytes(filename, str.Length, buffer, LibPUAE.FILENAME_MAXLENGTH);
+							fixed (byte* buffer = fi.Name.Buffer)
+							{
+								Encoding.ASCII.GetBytes(filename, str.Length, buffer, LibPUAE.FILENAME_MAXLENGTH);
+							}
 						}
 					}
 				}
 			}
+
 			if (controller.IsPressed(Inputs.NextSlot))
 			{
 				if (!_nextSlotPressed)
@@ -245,34 +278,33 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					_currentSlot++;
 					_currentSlot %= _roms.Count;
 					var selectedFile = _roms[_currentSlot];
-					_currentRom = selectedFile.FileData;
-					_comm.Notify(selectedFile.Game.Name, null);
+					CoreComm.Notify(selectedFile.Game.Name, null);
 				}
 			}
+
 			if (controller.IsPressed(Inputs.NextDrive))
 			{
 				if (!_nextDrivePressed)
 				{
 					_currentDrive++;
 					_currentDrive %= _syncSettings.FloppyDrives;
-					_comm.Notify($"Selected FD{ _currentDrive }: Drive", null);
+					CoreComm.Notify($"Selected FD{ _currentDrive }: Drive", null);
 				}
 			}
+
 			_ejectPressed     = controller.IsPressed(Inputs.Eject);
 			_insertPressed    = controller.IsPressed(Inputs.Insert);
 			_nextSlotPressed  = controller.IsPressed(Inputs.NextSlot);
 			_nextDrivePressed = controller.IsPressed(Inputs.NextDrive);			
 			fi.CurrentDrive = _currentDrive;
-			
-			foreach (var b in Enum.GetValues(typeof(LibPUAE.PUAEKeyboard)))
+
+			foreach (var (name, key) in _keyboardMap)
 			{
-				var name = Enum.GetName(typeof(LibPUAE.PUAEKeyboard), b);
-				var value = (int)Enum.Parse(typeof(LibPUAE.PUAEKeyboard), name);
-				if (controller.IsPressed(name.Replace('_', ' ')))
+				if (controller.IsPressed(name))
 				{
 					unsafe
 					{
-						fi.Keys.Buffer[value] = 1;
+						fi.Keys.Buffer[(int)key] = 1;
 					}
 				}
 			}
@@ -286,6 +318,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			writer.Write(_insertPressed);
 			writer.Write(_nextSlotPressed);
 			writer.Write(_nextDrivePressed);
+			writer.Write(_currentDrive);
+			writer.Write(_currentSlot);
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
@@ -294,6 +328,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			_insertPressed = reader.ReadBoolean();
 			_nextSlotPressed = reader.ReadBoolean();
 			_nextDrivePressed = reader.ReadBoolean();
+			_currentDrive = reader.ReadInt32();
+			_currentSlot = reader.ReadInt32();
 		}
 
 		private static class FileNames

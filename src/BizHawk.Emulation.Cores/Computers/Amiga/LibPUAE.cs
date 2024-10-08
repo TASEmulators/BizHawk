@@ -1,7 +1,7 @@
-﻿using BizHawk.BizInvoke;
-using BizHawk.Emulation.Cores.Waterbox;
+﻿using System.Runtime.InteropServices;
 
-using System.Runtime.InteropServices;
+using BizHawk.BizInvoke;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
@@ -15,14 +15,6 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		public const int MAX_FLOPPIES = 4;
 		public const int FILENAME_MAXLENGTH = 64;
 		public const int KEY_COUNT = 0x68;
-		public const byte b00000001 = 1 << 0;
-		public const byte b00000010 = 1 << 1;
-		public const byte b00000100 = 1 << 2;
-		public const byte b00001000 = 1 << 3;
-		public const byte b00010000 = 1 << 4;
-		public const byte b00100000 = 1 << 5;
-		public const byte b01000000 = 1 << 6;
-		public const byte b10000000 = 1 << 7;
 
 		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init(int argc, string[] argv);
@@ -37,14 +29,14 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			public KeyBuffer Keys;
 			public struct KeyBuffer
 			{
-				public unsafe fixed byte Buffer[LibPUAE.KEY_COUNT];
+				public unsafe fixed byte Buffer[KEY_COUNT];
 			}
 			public int CurrentDrive;
 			public DriveAction Action;
 			public FileName Name;
 			public struct FileName
 			{
-				public unsafe fixed byte Buffer[LibPUAE.FILENAME_MAXLENGTH];
+				public unsafe fixed byte Buffer[FILENAME_MAXLENGTH];
 			}
 		}
 
@@ -58,13 +50,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		[Flags]
 		public enum PUAEJoystick : byte
 		{
-			Joystick_Up       = b00000001,
-			Joystick_Down     = b00000010,
-			Joystick_Left     = b00000100,
-			Joystick_Right    = b00001000,
-			Joystick_Button_1 = b00010000,
-			Joystick_Button_2 = b00100000,
-			Joystick_Button_3 = b01000000
+			Joystick_Up       = 0b00000001,
+			Joystick_Down     = 0b00000010,
+			Joystick_Left     = 0b00000100,
+			Joystick_Right    = 0b00001000,
+			Joystick_Button_1 = 0b00010000,
+			Joystick_Button_2 = 0b00100000,
+			Joystick_Button_3 = 0b01000000
 		}
 
 		// https://wiki.amigaos.net/wiki/Keymap_Library
