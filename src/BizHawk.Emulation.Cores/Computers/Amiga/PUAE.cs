@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			_roms = lp.Roms;
 			//_discs = lp.Discs;
 			_syncSettings = lp.SyncSettings ?? new();
+			_syncSettings.FloppyDrives = Math.Min(LibPUAE.MAX_FLOPPIES, _syncSettings.FloppyDrives);
 			var filesToRemove = new List<string>();
 			CreateArguments(_syncSettings);
 			ControllerDefinition = _controllerDefinition;
@@ -103,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				else
 				{
 					_exe.AddReadonlyFile(lp.Roms[index].FileData, FileNames.FD + index);
-					if (index < Math.Min(LibPUAE.MAX_FLOPPIES, _syncSettings.FloppyDrives))
+					if (index < _syncSettings.FloppyDrives)
 					{
 						AppendSetting($"floppy{index}={FileNames.FD}{index}");
 						AppendSetting($"floppy{index}type={(int)DriveType.DRV_35_DD}");
