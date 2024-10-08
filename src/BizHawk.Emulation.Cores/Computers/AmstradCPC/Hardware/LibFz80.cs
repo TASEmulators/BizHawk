@@ -22,6 +22,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public const int Z80_PIN_NMI = 32;		// non-maskable interrupt
 		public const int Z80_PIN_WAIT = 33;     // wait requested
 
+		public const int Z80_FLAG_C = 0;		// carry
+		public const int Z80_FLAG_N = 1;		// add/subtract
+		public const int Z80_FLAG_P = 2;        // parity/overflow
+		public const int Z80_FLAG_3 = 3;		// undocumented bit 3
+		public const int Z80_FLAG_H = 4;        // half carry
+		public const int Z80_FLAG_5 = 5;        // undocumented bit 5
+		public const int Z80_FLAG_Z = 6;		// zero
+		public const int Z80_FLAG_S = 7;		// sign
+
 		/// <summary>
 		/// Z80 pin configuration
 		/// </summary>
@@ -168,11 +177,24 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public void ExecuteOne()
 		{
-			//ushort step = Z80.step;
+			if (INT == 1 && Z80.iff1 > 0)
+			{
+				TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
+			}
+
+			if (NMI == 1)
+			{
+				TraceCallback?.Invoke(new(disassembly: "====NMI====", registerInfo: string.Empty));
+			}
 
 			if (MREQ == 1 && RD == 1)
 			{
 				DB = ReadMemory(ADDR);
+
+				if (M1 == 1)
+				{
+					TraceCallback?.Invoke(State());
+				}
 			}
 
 			if (MREQ == 1 && WR == 1)
@@ -331,6 +353,48 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					Z80.sp = (ushort)value;
 					break;
 			}
+		}
+
+		public Action<TraceInfo> TraceCallback;
+
+		public string TraceHeader => "Z80A: PC, machine code, mnemonic, operands, registers (AF, BC, DE, HL, IX, IY, SP, Cy), flags (CNP3H5ZS)";
+
+		public TraceInfo State(bool disassemble = true)
+		{
+			int bytes_read = 0;
+
+			string disasm = disassemble ? BizHawk.Emulation.Cores.Components.Z80A.Z80ADisassembler.Disassemble(Z80.pc, ReadMemory, out bytes_read) : "---";
+			string byte_code = null;
+
+			for (ushort i = 0; i < bytes_read; i++)
+			{
+				byte_code += $"{ReadMemory((ushort)(Z80.pc + i)):X2}";
+				if (i < (bytes_read - 1))
+				{
+					byte_code += " ";
+				}
+			}
+
+			return new(
+				disassembly: $"{Z80.pc:X4}: {byte_code.PadRight(12)} {disasm.PadRight(26)}",
+				registerInfo: string.Join(" ",
+					$"AF:{Z80.af:X4}",
+					$"BC:{Z80.bc:X4}",
+					$"DE:{Z80.de:X4}",
+					$"HL:{Z80.hl:X4}",
+					$"IX:{Z80.ix:X4}",
+					$"IY:{Z80.iy:X4}",
+					$"SP:{Z80.sp:X4}",
+					$"Cy:{TotalExecutedCycles}",
+					string.Concat(
+						Z80.af.Bit(Z80_FLAG_C) ? "C" : "c",
+						Z80.af.Bit(Z80_FLAG_N) ? "N" : "n",
+						Z80.af.Bit(Z80_FLAG_P) ? "P" : "p",
+						Z80.af.Bit(Z80_FLAG_3) ? "3" : "-",
+						Z80.af.Bit(Z80_FLAG_H) ? "H" : "h",
+						Z80.af.Bit(Z80_FLAG_5) ? "5" : "-",
+						Z80.af.Bit(Z80_FLAG_Z) ? "Z" : "z",
+						Z80.af.Bit(Z80_FLAG_S) ? "S" : "s")));
 		}
 
 		public void SyncState(Serializer ser)

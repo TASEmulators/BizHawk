@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
 			//_cpu = new Z80A<CpuLink>(default);
 			_cpu = new LibFz80Wrapper();
-			//_tracer = new TraceBuffer(_cpu.TraceHeader);
+			_tracer = new TraceBuffer(_cpu.TraceHeader);
 			_files = lp.Roms.Select(r => r.RomData).ToList();
 
 			var settings = lp.Settings ?? new AmstradCPCSettings();
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			//_cpu.OnExecFetch = _machine.OnExecFetch;
 
 
-			//ser.Register<ITraceable>(_tracer);
+			ser.Register<ITraceable>(_tracer);
 			//ser.Register<IDisassemblable>(_cpu);
 			ser.Register<IVideoProvider>(_machine.CRTScreen);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		//private readonly Z80A<CpuLink> _cpu;
 		private readonly LibFz80Wrapper _cpu;
-		// private readonly TraceBuffer _tracer;
+		private readonly TraceBuffer _tracer;
 		public IController _controller;
 		public CPCBase _machine;
 
