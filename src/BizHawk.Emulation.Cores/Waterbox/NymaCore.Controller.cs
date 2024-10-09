@@ -305,7 +305,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								// so these thunks are called after the frame has advanced
 								_rumblers.Add((c, b) =>
 								{
-									const double SCALE_FACTOR = (double) int.MaxValue / (double) byte.MaxValue;
+									const double SCALE_FACTOR = (double)int.MaxValue / byte.MaxValue;
 									static int Scale(byte b)
 										=> (b * SCALE_FACTOR).RoundToInt();
 									//TODO double-check order
