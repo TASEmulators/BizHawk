@@ -3,6 +3,7 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -115,7 +116,9 @@ namespace BizHawk.Client.Common
 				{
 					foreach (var hostChannel in v.Channels!.Split('+'))
 					{
-						finalHostController.SetHapticChannelStrength(v.GamepadPrefix + hostChannel, (int) ((double) strength * v.Prescale));
+						finalHostController.SetHapticChannelStrength(
+							v.GamepadPrefix + hostChannel,
+							(v.Prescale * strength).Clamp(min: 0.0f, max: 1.0f).RoundToInt());
 					}
 				}
 			}
