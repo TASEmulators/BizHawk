@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 			this.AVSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RecordAVMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ConfigAndRecordAVMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.StopAVIMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.StopAVMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator19 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.CaptureOSDMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CaptureLuaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -315,7 +315,7 @@ namespace BizHawk.Client.EmuHawk
 			this.PlayRecordStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
 			this.PauseStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
 			this.RebootStatusBarIcon = new BizHawk.WinForms.Controls.StatusLabelEx();
-			this.AVIStatusLabel = new BizHawk.WinForms.Controls.StatusLabelEx();
+			this.AVStatusLabel = new BizHawk.WinForms.Controls.StatusLabelEx();
 			this.LedLightStatusLabel = new BizHawk.WinForms.Controls.StatusLabelEx();
 			this.SaveSlotsStatusLabel = new BizHawk.WinForms.Controls.StatusLabelEx();
 			this.Slot1StatusButton = new BizHawk.WinForms.Controls.StatusLabelEx();
@@ -836,28 +836,28 @@ namespace BizHawk.Client.EmuHawk
 			this.AVSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RecordAVMenuItem,
             this.ConfigAndRecordAVMenuItem,
-            this.StopAVIMenuItem,
+            this.StopAVMenuItem,
             this.toolStripSeparator19,
             this.CaptureOSDMenuItem,
             this.CaptureLuaMenuItem,
             this.SynclessRecordingMenuItem});
-			this.AVSubMenu.Text = "&AVI/WAV";
+			this.AVSubMenu.Text = "&A/V Writer";
 			this.AVSubMenu.DropDownOpened += new System.EventHandler(this.AVSubMenu_DropDownOpened);
 			// 
 			// RecordAVMenuItem
 			// 
-			this.RecordAVMenuItem.Text = "&Record AVI/WAV";
+			this.RecordAVMenuItem.Text = "&Record A/V";
 			this.RecordAVMenuItem.Click += new System.EventHandler(this.RecordAVMenuItem_Click);
 			// 
 			// ConfigAndRecordAVMenuItem
 			// 
-			this.ConfigAndRecordAVMenuItem.Text = "Config and Record AVI/WAV...";
+			this.ConfigAndRecordAVMenuItem.Text = "Config and Record A/V...";
 			this.ConfigAndRecordAVMenuItem.Click += new System.EventHandler(this.ConfigAndRecordAVMenuItem_Click);
 			// 
-			// StopAVIMenuItem
+			// StopAVMenuItem
 			// 
-			this.StopAVIMenuItem.Text = "&Stop AVI/WAV";
-			this.StopAVIMenuItem.Click += new System.EventHandler(this.StopAVMenuItem_Click);
+			this.StopAVMenuItem.Text = "&Stop A/V Writer";
+			this.StopAVMenuItem.Click += new System.EventHandler(this.StopAVMenuItem_Click);
 			// 
 			// CaptureOSDMenuItem
 			// 
@@ -1989,7 +1989,7 @@ namespace BizHawk.Client.EmuHawk
             this.PlayRecordStatusButton,
             this.PauseStatusButton,
             this.RebootStatusBarIcon,
-            this.AVIStatusLabel,
+            this.AVStatusLabel,
             this.LedLightStatusLabel,
             this.SaveSlotsStatusLabel,
             this.Slot1StatusButton,
@@ -2053,10 +2053,10 @@ namespace BizHawk.Client.EmuHawk
 			this.RebootStatusBarIcon.ToolTipText = "A reboot of the core is needed for a setting change to take effect";
 			this.RebootStatusBarIcon.Click += new System.EventHandler(this.PowerMenuItem_Click);
 			// 
-			// AVIStatusLabel
+			// AVStatusLabel
 			// 
-			this.AVIStatusLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.AVIStatusLabel.Text = "AVI Capture";
+			this.AVStatusLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.AVStatusLabel.Text = "A/V Capture";
 			// 
 			// LedLightStatusLabel
 			// 
@@ -2211,7 +2211,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// StopAVContextMenuItem
 			// 
-			this.StopAVContextMenuItem.Text = "Stop AVI/WAV";
+			this.StopAVContextMenuItem.Text = "Stop A/V Writer";
 			this.StopAVContextMenuItem.Click += new System.EventHandler(this.StopAVMenuItem_Click);
 			// 
 			// RecordMovieContextMenuItem
@@ -2585,8 +2585,8 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DisplaySubtitlesMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AVSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ConfigAndRecordAVMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StopAVIMenuItem;
-		private BizHawk.WinForms.Controls.StatusLabelEx AVIStatusLabel;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StopAVMenuItem;
+		private BizHawk.WinForms.Controls.StatusLabelEx AVStatusLabel;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RestartMovieContextMenuItem;
 		private BizHawk.WinForms.Controls.StatusLabelEx CheatStatusButton;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AutofireMenuItem;

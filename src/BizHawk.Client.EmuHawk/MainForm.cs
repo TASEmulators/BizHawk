@@ -168,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			// Hide Status bar icons and general StatusBar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right
 			PlayRecordStatusButton.Visible = false;
-			AVIStatusLabel.Visible = false;
+			AVStatusLabel.Visible = false;
 			SetPauseStatusBarIcon();
 			Tools.UpdateCheatRelatedTools(null, null);
 			RebootStatusBarIcon.Visible = false;
@@ -283,7 +283,7 @@ namespace BizHawk.Client.EmuHawk
 			StopMovieWithoutSavingMenuItem.Image = Properties.Resources.Stop;
 			RecordAVMenuItem.Image = Properties.Resources.Record;
 			ConfigAndRecordAVMenuItem.Image = Properties.Resources.Avi;
-			StopAVIMenuItem.Image = Properties.Resources.Stop;
+			StopAVMenuItem.Image = Properties.Resources.Stop;
 			ScreenshotMenuItem.Image = Properties.Resources.Camera;
 			PauseMenuItem.Image = Properties.Resources.Pause;
 			RebootCoreMenuItem.Image = Properties.Resources.Reboot;
@@ -350,7 +350,7 @@ namespace BizHawk.Client.EmuHawk
 			PlayRecordStatusButton.Image = Properties.Resources.Blank;
 			PauseStatusButton.Image = Properties.Resources.Blank;
 			RebootStatusBarIcon.Image = Properties.Resources.Reboot;
-			AVIStatusLabel.Image = Properties.Resources.Blank;
+			AVStatusLabel.Image = Properties.Resources.Blank;
 			LedLightStatusLabel.Image = Properties.Resources.LightOff;
 			KeyPriorityStatusLabel.Image = Properties.Resources.Both;
 			CoreNameStatusBarButton.Image = Properties.Resources.CorpHawkSmall;
@@ -3305,9 +3305,9 @@ namespace BizHawk.Client.EmuHawk
 				// commit the avi writing last, in case there were any errors earlier
 				_currAviWriter = aw;
 				AddOnScreenMessage("A/V capture started");
-				AVIStatusLabel.Image = Properties.Resources.Avi;
-				AVIStatusLabel.ToolTipText = "A/V capture in progress";
-				AVIStatusLabel.Visible = true;
+				AVStatusLabel.Image = Properties.Resources.Avi;
+				AVStatusLabel.ToolTipText = "A/V capture in progress";
+				AVStatusLabel.Visible = true;
 			}
 			catch
 			{
@@ -3350,9 +3350,9 @@ namespace BizHawk.Client.EmuHawk
 			_currAviWriter.Dispose();
 			_currAviWriter = null;
 			AddOnScreenMessage("A/V capture aborted");
-			AVIStatusLabel.Image = Properties.Resources.Blank;
-			AVIStatusLabel.ToolTipText = "";
-			AVIStatusLabel.Visible = false;
+			AVStatusLabel.Image = Properties.Resources.Blank;
+			AVStatusLabel.ToolTipText = "";
+			AVStatusLabel.Visible = false;
 			_aviSoundInputAsync = null;
 			_dumpProxy = null; // return to normal sound output
 			RewireSound();
@@ -3371,9 +3371,9 @@ namespace BizHawk.Client.EmuHawk
 			_currAviWriter.Dispose();
 			_currAviWriter = null;
 			AddOnScreenMessage("A/V capture stopped");
-			AVIStatusLabel.Image = Properties.Resources.Blank;
-			AVIStatusLabel.ToolTipText = "";
-			AVIStatusLabel.Visible = false;
+			AVStatusLabel.Image = Properties.Resources.Blank;
+			AVStatusLabel.ToolTipText = "";
+			AVStatusLabel.Visible = false;
 			_aviSoundInputAsync = null;
 			_dumpProxy = null; // return to normal sound output
 			RewireSound();
