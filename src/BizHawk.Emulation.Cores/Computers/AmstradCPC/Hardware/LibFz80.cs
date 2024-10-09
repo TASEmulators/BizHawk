@@ -177,12 +177,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public void ExecuteOne()
 		{
-			if (INT == 1 && Z80.iff1 > 0)
+			if (INT == 1 && Z80.iff1 == 0 && Z80.iff2 == 0)
 			{
 				TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 			}
 
-			if (NMI == 1)
+			if (NMI == 1 && Z80.iff1 == 0 && Z80.iff2 == 0)
 			{
 				TraceCallback?.Invoke(new(disassembly: "====NMI====", registerInfo: string.Empty));
 			}
