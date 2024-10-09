@@ -241,6 +241,60 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
+
+		/// <summary>
+		/// R3l: CRTC-type horizontal sync width independent helper function 
+		/// </summary>
+		protected override int R3_HorizontalSyncWidth
+		{
+			get
+			{
+				// Bits 3..0 define Horizontal Sync Width
+				// on CRTC2, a zero value means 16 characters of HSYNC are generated
+				return (Register[R3_SYNC_WIDTHS] & 0x0F) == 0 ? 16 : Register[R3_SYNC_WIDTHS] & 0x0F;
+			}
+		}
+
+		/// <summary>
+		/// R3h: CRTC-type vertical sync width independent helper function 
+		/// </summary>
+		protected override int R3_VerticalSyncWidth
+		{
+			get
+			{
+				// Bits 7..4 are ignored
+				// on CRTC2 VSYNC is fixed at 16 lines
+				return 16;
+			}
+		}
+
+		/// <summary>
+		/// R8: CRTC-type CUDISP Active Display Skew helper function
+		/// </summary>
+		protected override int R8_Skew_CUDISP
+		{
+			get
+			{
+				// CRTC2
+				// Bits 7..6 are ignored
+				return 0;
+			}
+		}
+
+		/// <summary>
+		/// R8: CRTC-type CUDISP Active Display Skew helper function
+		/// </summary>
+		protected override int R8_Skew_DISPTMG
+		{
+			get
+			{
+				// CRTC2
+				// Bits 5..4 are ignored
+				return 0;
+			}
+		}
+
+
 		/// <summary>
 		/// Attempts to read from the currently selected register
 		/// </summary>

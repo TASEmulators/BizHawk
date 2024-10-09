@@ -349,7 +349,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		protected byte StatusRegister;
 
 		/// <summary>
-		/// CRTC-type horizontal total independent helper function
+		/// R0: CRTC-type horizontal total independent helper function
 		/// </summary>
 		protected virtual int R0_HorizontalTotal
 		{
@@ -361,7 +361,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// CRTC-type horizontal displayed independent helper function
+		/// R1: CRTC-type horizontal displayed independent helper function
 		/// </summary>
 		protected virtual int R1_HorizontalDisplayed
 		{
@@ -373,7 +373,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// CRTC-type horizontal sync position independent helper function
+		/// R2: CRTC-type horizontal sync position independent helper function
 		/// </summary>
 		protected virtual int R2_HorizontalSyncPosition
 		{
@@ -385,71 +385,17 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// CRTC-type horizontal sync width independent helper function 
+		/// R3l: CRTC-type horizontal sync width independent helper function 
 		/// </summary>
-		protected virtual int R3_HorizontalSyncWidth
-		{
-			get
-			{
-				int swr;
-
-				// Bits 3..0 define Horizontal Sync Width
-				int sw = Register[R3_SYNC_WIDTHS] & 0x0F;
-
-				switch (CrtcType)
-				{
-					case 0:
-					case 1:
-						// If 0 is programmed no HSYNC is generated
-						swr = sw;
-						break;
-					case 2:
-					case 3:
-					case 4:
-					default:
-						// If 0 is programmed this gives a HSYNC width of 16
-						swr = sw > 0 ? sw : 16;
-						break;
-				}
-
-				return swr;
-			}
-		}
+		protected virtual int R3_HorizontalSyncWidth { get; }
 
 		/// <summary>
-		/// CRTC-type vertical sync width independent helper function 
+		/// R3h: CRTC-type vertical sync width independent helper function 
 		/// </summary>
-		protected virtual int R3_VerticalSyncWidth
-		{
-			get
-			{
-				int swr;
-
-				//Bits 7..4 define Vertical Sync Width
-				int sw = (Register[R3_SYNC_WIDTHS] >> 4) & 0x0F;
-
-				switch (CrtcType)
-				{
-					case 0:
-					case 3:
-					case 4:
-					default:
-						// If 0 is programmed this gives 16 lines of VSYNC
-						swr = sw > 0 ? sw : 16;
-						break;
-					case 1:
-					case 2:
-						// Vertical Sync is fixed at 16 lines
-						swr = 16;
-						break;
-				}
-
-				return swr;
-			}
-		}
+		protected virtual int R3_VerticalSyncWidth { get; }
 
 		/// <summary>
-		/// CRTC-type vertical total independent helper function
+		/// R4: CRTC-type vertical total independent helper function
 		/// </summary>
 		protected virtual int R4_VerticalTotal
 		{
@@ -461,7 +407,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// CRTC-type vertical total adjust independent helper function
+		/// R5: CRTC-type vertical total adjust independent helper function
 		/// </summary>
 		protected virtual int R5_VerticalTotalAdjust
 		{
@@ -473,7 +419,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// CRTC-type vertical displayed independent helper function
+		/// R6: CRTC-type vertical displayed independent helper function
 		/// </summary>
 		protected virtual int R6_VerticalDisplayed
 		{
@@ -485,7 +431,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// CRTC-type vertical sync position independent helper function
+		/// R7: CRTC-type vertical sync position independent helper function
 		/// </summary>
 		protected virtual int R7_VerticalSyncPosition
 		{
@@ -497,68 +443,31 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// CRTC-type DISPTMG Active Display Skew helper function
+		/// R8: CRTC-type CUDISP Active Display Skew helper function
 		/// </summary>
-		protected virtual int R8_Skew
-		{
-			get
-			{
-				int skew = 0;
-				switch (CrtcType)
-				{
-					case 0:
-						// For Hitachi HD6845:
-						// 0 = no skew
-						// 1 = one-character skew
-						// 2 = two-character skew
-						// 3 = non-output
-						skew = (Register[R8_INTERLACE_MODE] >> 4) & 0x03;
-						break;
-					case 1:
-						// skew not implemented
-						break;
-					case 2:
-						// skew not implemented
-						break;
-					default:
-						return skew;
-				}
-				return skew;
-			}
-		}
+		protected virtual int R8_Skew_CUDISP { get; }
 
 		/// <summary>
-		/// CRTC-type Interlace Mode helper function
+		/// R8: CRTC-type DISPTMG Active Display Skew helper function
+		/// </summary>
+		protected virtual int R8_Skew_DISPTMG { get; }
+
+		/// <summary>
+		/// R8: CRTC-type Interlace Mode helper function
 		/// </summary>
 		protected virtual int R8_Interlace
 		{
 			get
 			{
-				int interlace = 0;
-				switch (CrtcType)
-				{
-
-					case 0:
-					case 1:
-					case 2:
-						// 0 = Non-interlace
-						// 1 = Interlace SYNC Raster Scan
-						// 2 = Interlace SYNC and Video Raster Scan
-						interlace = Register[R8_INTERLACE_MODE] & 0x03;
-						if (!interlace.Bit(0))
-						{
-							interlace = 0;
-						}
-						break;
-					default:
-						break;
-				}
-				return interlace;
+				// 0 = Non-interlace
+				// 1 = Interlace SYNC Raster Scan
+				// 2 = Interlace SYNC and Video Raster Scan
+				return Register[R8_INTERLACE_MODE] & 0x03;
 			}
 		}
 
 		/// <summary>
-		/// Max Scanlines
+		/// R9: Max Scanlines
 		/// </summary>
 		protected virtual int R9_MaxScanline
 		{
