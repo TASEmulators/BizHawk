@@ -116,9 +116,10 @@ namespace BizHawk.Client.Common
 				{
 					foreach (var hostChannel in v.Channels!.Split('+'))
 					{
+						const double S32_MAX_AS_F64 = int.MaxValue;
 						finalHostController.SetHapticChannelStrength(
 							v.GamepadPrefix + hostChannel,
-							(v.Prescale * strength).Clamp(min: 0.0f, max: 1.0f).RoundToInt());
+							(v.Prescale * (double) strength).Clamp(min: 0.0, max: S32_MAX_AS_F64).RoundToInt());
 					}
 				}
 			}
