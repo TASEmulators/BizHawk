@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using NymaTypes;
@@ -295,14 +296,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								// TODO: wire up statuses to something (not controller, of course)
 								break;
 							case InputType.Rumble:
-								ret.HapticsChannels.Add(name);
+								//TODO Does this apply to all Mednafen's systems? (This is for PSX.) Might need to pass more metadata through to here
+								var nameLeft = $"{name} Left (strong)";
+								var nameRight = $"{name} Right (weak)";
+								ret.HapticsChannels.Add(nameLeft);
+								ret.HapticsChannels.Add(nameRight);
 								// this is a special case, we treat b here as output rather than input
 								// so these thunks are called after the frame has advanced
 								_rumblers.Add((c, b) =>
 								{
-									// TODO: not entirely sure this is correct...
-									var val = b[byteStart] | (b[byteStart + 1] << 8);
-									c.SetHapticChannelStrength(name, val << 7);
+									const double S32_MAX_AS_F64 = int.MaxValue;
+									static int Scale(byte b)
+										=> (b * S32_MAX_AS_F64).RoundToInt();
+									//TODO double-check order
+									c.SetHapticChannelStrength(nameRight, Scale(b[byteStart]));
+									c.SetHapticChannelStrength(nameLeft, Scale(b[byteStart + 1]));
 								});
 								break;
 							default:
