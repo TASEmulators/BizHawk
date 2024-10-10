@@ -59,14 +59,7 @@ namespace BizHawk.Client.Common
 				_maxSteps = value;
 				if (_history.Count > value)
 				{
-					if (_history.Count <= value)
-					{
-						Clear();
-					}
-					else
-					{
-						Clear(_history.Count - value);
-					}
+					Clear(_history.Count - value);
 				}
 			}
 		}
