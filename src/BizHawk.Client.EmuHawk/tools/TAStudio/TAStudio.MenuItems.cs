@@ -795,7 +795,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (val > 0)
 				{
-					CurrentTasMovie.ChangeLog.MaxSteps = val;
+					Settings.MaxUndoSteps = CurrentTasMovie.ChangeLog.MaxSteps = val;
 				}
 			}
 		}

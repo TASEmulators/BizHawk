@@ -116,6 +116,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool BindMarkersToInput { get; set; }
 			public bool CopyIncludesFrameNo { get; set; }
 			public TAStudioPalette Palette { get; set; }
+			public int MaxUndoSteps { get; set; } = 100;
 		}
 
 		public TAStudio()
@@ -541,6 +542,7 @@ namespace BizHawk.Client.EmuHawk
 			movie.InputRollSettingsForSave = () => TasView.UserSettingsSerialized();
 			movie.BindMarkersToInput = Settings.BindMarkersToInput;
 			movie.GreenzoneInvalidated = GreenzoneInvalidated;
+			movie.ChangeLog.MaxSteps = Settings.MaxUndoSteps;
 			movie.PropertyChanged += TasMovie_OnPropertyChanged;
 
 			SuspendLayout();
