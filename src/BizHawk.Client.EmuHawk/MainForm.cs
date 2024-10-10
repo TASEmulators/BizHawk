@@ -3027,13 +3027,14 @@ namespace BizHawk.Client.EmuHawk
 				}
 				// why not skip audio if the user doesn't want sound
 				bool renderSound = (Config.SoundEnabled && !IsTurboing)
-					|| (_currAviWriter?.UsesAudio ?? false);
+					|| _currAviWriter?.UsesAudio is true;
 				if (!renderSound)
 				{
 					atten = 0;
 				}
 
-				bool render = !InvisibleEmulation && (!_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false));
+				bool atTurboSeekEnd = IsTurboSeeking && Emulator.Frame == PauseOnFrame.Value - 1;
+				bool render = !InvisibleEmulation && (!_throttle.skipNextFrame || _currAviWriter?.UsesVideo is true || atTurboSeekEnd);
 				bool newFrame = Emulator.FrameAdvance(InputManager.ControllerOutput, render, renderSound);
 
 				MovieSession.HandleFrameAfter();
@@ -3060,7 +3061,7 @@ namespace BizHawk.Client.EmuHawk
 				PressFrameAdvance = false;
 
 				// Update tools, but not if we're at the end of a turbo seek. In that case, updating will happen later when the seek is ended.
-				if (!(IsTurboSeeking && Emulator.Frame == PauseOnFrame.Value))
+				if (!atTurboSeekEnd)
 				{
 					if (IsTurboing)
 					{
