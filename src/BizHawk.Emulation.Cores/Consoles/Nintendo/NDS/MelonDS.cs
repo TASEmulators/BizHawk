@@ -500,7 +500,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			_isDisposing = true;
 			_frameThreadStartEvent.Release();
-			_frameThread?.Join();
+
+			if (_frameThread != null)
+			{
+				while (_frameThread.IsAlive)
+				{
+					Thread.Sleep(1);
+				}
+			}
+
 			_frameThreadStartEvent.Dispose();
 			_frameThreadEndEvent.Dispose();
 
