@@ -114,6 +114,9 @@ namespace BizHawk.Client.EmuHawk
 							dsr.ReadLBA_2048(sector, buf2048, 0);
 							exePath = Encoding.ASCII.GetString(buf2048);
 
+							// replace any tab characters with space characters to normalize exePath
+							exePath = exePath.Replace('\t', ' ');
+
 							// "BOOT = cdrom:" precedes the path
 							var index = exePath.IndexOf("BOOT = cdrom:", StringComparison.Ordinal);
 							if (index < -1) break;
