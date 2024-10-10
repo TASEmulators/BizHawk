@@ -97,6 +97,15 @@ namespace BizHawk.Client.EmuHawk
 										return (buf2048[index + 4] << 16) | (buf2048[index + 3] << 8) | buf2048[index + 2];
 									}
 								}
+
+								// move on to next sector if filename not found in current sector due to subdirectory
+								if (buf2048[index] == 0)
+								{
+									dsr.ReadLBA_2048(++sector, buf2048, 0);
+									index = 0;
+									continue;
+								}
+
 								index += buf2048[index];
 							}
 
