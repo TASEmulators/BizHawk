@@ -212,15 +212,17 @@ function Objects()
 	GetCam()
 	local base = 0xFFAD54
 	for i=0,100 do
-		local link = rw (base+   6)
-		local ptr1 = rw (base+0x0A)+0xFF0000
-		local ptr2 = rl (ptr1+0x2A)
-		local delay = rl(base+0x2E) >> 8
-		local x    = rws(base+0x3E)
-		local xsub = rb (base+0x40)
-		local y    = rws(base+0x42)
-		local ysub = rb (base+0x44)
-		local hp   = rw (base+0x52)
+		local id    = rl (base)
+		local link  = rw (base+   6)
+		local ptr1  = rw (base+0x0A) + 0xFF0000
+		local delay = rl (base+0x2E) >> 8
+		local x     = rws(base+0x3E)
+		local xsub  = rb (base+0x40)
+		local y     = rws(base+0x42)
+		local ysub  = rb (base+0x44)
+		local hp    = rw (base+0x52)
+		local ptr2  = 0
+		if id == 0x53B3 then ptr2 = rl(ptr1+0x2A) end
 	--	local code = rw (ptr2)
 		if base > 0 then
 			if ptr2 == 0x27DEE -- helicopter black
@@ -238,11 +240,14 @@ function Objects()
 			then
 				Items = Items + 1
 			else
-			--	text(x - xcam, y - ycam, string.format("%X", ptr2), "green")
+				text(x - xcam, y - ycam, string.format("%d", delay))
 			end
 			if delay > 0 and delay < 1000 then
 				SpawnDelay = delay
-			--	print(string.format("%X: %X", base+0x2E, delay))
+			--	print(string.format("%d delay = %d", i, delay))
+				local xscr = 100
+				local yscr = 30 + i*10
+				text(xscr, yscr, string.format("delay %d: %d", i, delay))
 			end
 		end
 		base = link + 0xFF0000
@@ -276,6 +281,55 @@ function Spawns()
 		userdata.set("SpawnOpac", 192)
 		userdata.set("SpawnCount", userdata.get("SpawnCount") + 1)
 	--	print(string.format("%02d - %X - %s", userdata.get("SpawnCount"), ptr2, text))
+	end
+end
+
+function Waves()
+	local level = rw(0xFFFFF5)
+	if level ~= 1142 then return end
+	GetCam()
+	local waveCount = rw(0xffdfb0)
+	text(120, 8, "Waves: " .. waveCount)
+	local base = 0xFFAD54
+	for i=0,100 do
+		local id     = rl (base)
+		local link   = rw (base+   6)
+		local x0A    = rw (base+0x0A)
+		local x12    = rw (base+0x12)
+		local x14    = rw (base+0x14)
+		local code   = rl (base+0x1E) & 0xffffff
+		local delay  = rl (base+0x2E) >> 8
+		local x      = rws(base+0x3E)
+		local y      = rws(base+0x42)
+		local hp     = rws(base+0x52)
+		local nextop = rw (code)
+		local wait   = ""
+		local color  = 0xffffffff
+		if base > 0
+		and id  ~= 0x53b4                 -- projectile
+		and x0A ~= 0xaf16                 -- batman
+		and not (hp <= 0 and id == 0x7D2) -- item
+		then
+			local xscr = 120
+			local yscr = 0 + i*7 + 14
+			if base == 0xFFAE62                   then color =   "yellow" end
+			if code == 0x411FC                    then color = 0xff00ff00 end
+			if code == 0x41206 or code == 0x4130E then color =      "red" end
+			if nextop == 0x6ED2 then
+				wait = ":: wait enemies == 0"
+			elseif nextop >= 0x6EB2 and nextop <= 0x6ED2 then
+				wait = string.format(":: wait enemies <= %d", (0x6ED2 - nextop) / 4)
+			end
+			if x ~= 0 or y ~= 0 then
+				line(x - xcam, y - ycam, xscr, yscr+3, 0xAAFFFFFF)
+			end
+			text(xscr, yscr, string.format(
+				"%2d:%4X %4X %4X  Timer:%3d %s",
+				i, x0A, x12, x14, delay, wait), color)
+			text(x - xcam - 10, y - ycam, i, 0xFF00FF00)
+		end
+		base = link + 0xFF0000
+		if rl(base) == 0x88BE then return end
 	end
 end
 
@@ -356,6 +410,7 @@ function Main()
 	HandleMsgTable()
 	PlayerPos()
 	Objects()
+	Waves()
 	if level == 818 or level == 1026 then
 		line(30, 42, SpawnX, SpawnY, 0x00FF00 + (userdata.get("SpawnOpac") << 24))
 		text( 0, 35, string.format("Obj: %d", userdata.get("SpawnCount")), 0xFF00FF00)
@@ -380,11 +435,11 @@ function Main()
 	RNGcount  = 0
 
 	if rb(0xFF4633) == 5 then	
-		text(143,3,string.format("     %2d", LIFT), 0xFFFF00FF, clear) 
+	--	text(143,3,string.format("     %2d", LIFT), 0xFFFF00FF, clear) 
 	end
 	
 	DER =  rw(0xFFAEA0)
-	text(135,3,string.format("     %2d", DER), 0xFFFF00FF, clear)
+--	text(135,3,string.format("     %2d", DER), 0xFFFF00FF, clear)
 	
 --	emu.frameadvance()
 --	gui.clearGraphics()
