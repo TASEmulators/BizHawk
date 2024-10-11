@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 
 		void SpawnAndSetFileThread(string pathToLoad, LuaFile lf);
 
-		void ExecuteString(string command);
+		object[] ExecuteString(string command);
 
 		(bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf);
 	}
