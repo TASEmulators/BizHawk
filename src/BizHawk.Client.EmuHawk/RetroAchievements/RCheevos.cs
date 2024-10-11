@@ -286,7 +286,7 @@ namespace BizHawk.Client.EmuHawk
 			if (size > 0)
 			{
 				var buffer = new byte[(int)size];
-				_lib.rc_runtime_serialize_progress(buffer, _runtime, IntPtr.Zero);
+				_lib.rc_runtime_serialize_progress_sized(buffer, (uint)buffer.Length, _runtime, IntPtr.Zero);
 				using var file = File.Create(path + ".rap");
 				file.Write(buffer, 0, buffer.Length);
 			}
@@ -312,7 +312,7 @@ namespace BizHawk.Client.EmuHawk
 
 			using var file = File.OpenRead(path + ".rap");
 			var buffer = file.ReadAllBytes();
-			_lib.rc_runtime_deserialize_progress(_runtime, buffer, IntPtr.Zero);
+			_lib.rc_runtime_deserialize_progress_sized(_runtime, buffer, (uint)buffer.Length, IntPtr.Zero);
 		}
 		
 		private void QuickLoadCallback(object _, BeforeQuickLoadEventArgs e)
@@ -537,7 +537,7 @@ namespace BizHawk.Client.EmuHawk
 							if (!lboard.Hidden)
 							{
 								CurrentLboard = lboard;
-								_dialogParent.AddOnScreenMessage($"Leaderboard Attempt Started!");
+								_dialogParent.AddOnScreenMessage("Leaderboard Attempt Started!");
 								_dialogParent.AddOnScreenMessage(lboard.Description);
 								PlaySound(_lboardStartSound);
 							}
