@@ -14,12 +14,276 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public override int CrtcType => 1;
 
+		private int cnt;
+
 		/// <summary>
 		/// CRTC is clocked at 1MHz (16 GA cycles)
 		/// </summary>
 		public override void Clock()
 		{
+			CheckReset();
+			cnt++;
+
+			// linear address generator clocked
+			ma = (ma + 1) & 0x3FFF;
+
+			// horizontal character counter clocked
+			HCC++;
+
+			if (HCC == R0_HorizontalTotal + 1)          // C0 == R0
+			{
+				// new scanline
+				// increment raster counter
+				VLC++;
+
+				if (VLC == R9_MaxScanline + 1)              // C9 == R9
+				{
+					// new character row
+					// vertical character counter reset
+					VLC = 0;
+
+					// incremement vertical character counter
+					VCC++;
+
+					if (VCC == R6_VerticalDisplayed)        // C4 == R6
+					{
+						// vertical display is disabled
+						latch_vdisp = false;
+					}
+
+					if (VCC == R4_VerticalTotal + 1)        // C4 == R4
+					{
+						// new CRTC frame
+						// vertical character counter reset
+						VCC = 0;
+
+						// vertical display enabled
+						latch_vdisp = true;
+
+						// cached VMA loaded with register start address
+						ma_store = (Register[R12_START_ADDR_H] << 8) | Register[R13_START_ADDR_L];
+					}
+
+					if (VCC == R7_VerticalSyncPosition)     // C4 == R7
+					{
+						// VSYNC enabled
+						VSYNC = true;
+
+						// reset vertical sync counter
+						VSC = 0;
+					}
+
+					ma_row_start = ma_store;
+				}
+
+				if (VSYNC)
+				{
+					// increment vertical sync counter
+					VSC++;
+
+					if (VSC == R3_VerticalSyncWidth         // C3h == R3h
+						|| VSC == 0)                        // VSC counter wrap-around
+					{
+						// VSYNC disabled
+						VSYNC = false;
+						cnt = 0;
+					}
+				}
+
+				// H display is enabled
+				latch_hdisp = true;
+
+				// horizontal character counter reset
+				HCC = 0;
+
+				// VMA updated with row start address
+				ma = ma_row_start;
+			}
+
+			if (HCC == R1_HorizontalDisplayed)          // CO == R1
+			{
+				// H display is disabled
+				latch_hdisp = false;
+
+				// current VMA is copied into memory
+				ma_store = ma;
+			}
+
+			if (HCC == R2_HorizontalSyncPosition)       // C0 == R2
+			{
+				// HSYNC is enabled
+				HSYNC = true;
+
+				// reset horizontal sync counter
+				HSC = 0;
+			}
+
+			if (HSYNC)
+			{
+				// HSYNC still enabled - increment counter
+				HSC++;
+
+				if (HSC == R3_HorizontalSyncWidth       // C3l == R3l
+					|| HSC == 0)                        // HSC counter wrap-around
+				{
+					// disable HSYNC
+					HSYNC = false;
+				}
+			}
+
+			// outputs
+			if (!latch_hdisp || !latch_vdisp)
+			{
+				// HSYNC output pin is fed through a NOR gate with either 2 or 3 inputs
+				// - H Display
+				// - V Display
+				DISPTMG = false;
+			}
+			else
+			{
+				DISPTMG = true;
+			}
+		}
+
+		public void Clock2()
+		{
 			base.Clock();
+
+			ma = (ma + 1) & 0x3FFF;
+			HCC++;
+
+			// C0 == R0
+			if (HCC == R0_HorizontalTotal + 1)
+			{
+				// new scanline
+				HCC = 0;
+
+				// C9 == R9
+				if (++VLC == R9_MaxScanline + 1 || latch_vadjust)
+				{
+					VLC = 0;
+
+					// C4 == R4
+					if (++VCC == R4_VerticalTotal + 1)
+					{
+						latch_vadjust = true;
+
+						_vmaRowStart = (Register[R12_START_ADDR_H] << 8) | Register[R13_START_ADDR_L];
+
+						// C5 == R5
+						if (VTAC == R5_VerticalTotalAdjust)
+						{
+							latch_vadjust = false;
+							VCC = 0;
+							VTAC = 0;
+						}
+						else
+						{
+							VTAC++;
+						}
+					}
+					else
+					{
+						// MA set to row start at the beginning of each line
+						_vmaRowStart += R1_HorizontalDisplayed;
+					}
+
+					// C4 == 0
+					if (VCC == 0)
+					{
+						latch_vdisp = true;
+					}
+
+					if (VCC == R6_VerticalDisplayed)
+					{
+						latch_vdisp = false;
+					}
+				}
+
+				if (!latch_vadjust)
+				{
+					// C4 == R7
+					if (VCC == R7_VerticalSyncPosition && VLC == 0)
+					{
+						VSYNC = true;
+						VSC = 0;
+					}
+
+					if (VSYNC)
+					{
+						VSC++;
+
+						// C3h == R3h
+						if (VSC == R3_VerticalSyncWidth || VSC == 0)
+						{
+							VSYNC = false;
+						}
+					}
+				}
+
+
+			}
+
+			if (HCC == 0)
+			{
+				ma = _vmaRowStart;
+			}
+
+			// C0 == R2
+			if (HCC == R2_HorizontalSyncPosition)
+			{
+				HSYNC = true;
+				HSC = 0;
+			}
+			if (HSYNC)
+			{
+				if (R3_HorizontalSyncWidth > 0)
+				{
+					HSC++;
+				}
+
+				// C3l == R3l
+				if (HSC == R3_HorizontalSyncWidth)
+				{
+					HSYNC = false;
+				}
+			}
+
+			int dSkew = R8_Skew_CUDISP > 2 ? -1 : R8_Skew_CUDISP;
+
+			// C0 == 0
+			if (dSkew >= 0 && HCC == dSkew)
+			{
+				latch_hdisp = true;
+			}
+
+			// C0 == R1
+			if (dSkew >= 0 && HCC == R1_HorizontalDisplayed + dSkew)
+			{
+				latch_hdisp = false;
+			}
+
+
+
+
+			// outputs
+			if (!latch_hdisp || !latch_vdisp)
+			{
+				// HSYNC output pin is fed through a NOR gate with either 2 or 3 inputs
+				// - H Display
+				// - V Display
+				DISPTMG = false;
+			}
+			else
+			{
+				DISPTMG = true;
+			}
+		}
+
+		
+		public void Clocko()
+		{
+			CheckReset();
 
 			int maxScanLine;
 
@@ -227,7 +491,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				_RA = VLC;
 			}
 
-			_LA = _vma;
+			ma = _vma;
 
 			// DISPTMG Generation
 			if (!latch_hdisp || !latch_vdisp)

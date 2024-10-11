@@ -51,6 +51,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 		private int _GAClockCounter;
 
+		public double CRTCClockCounter => (double)GAClockCounter / 16;
+		public double CPUClockClounter => (double)GAClockCounter / 4;
+
 
 		/// <summary>
 		/// Previous frame clock count. Latched at the end of the frame (VSYNC off)
@@ -514,6 +517,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
+		private int GAClockCounterOriginVSYNC;
+		private double GACunlockCounterOriginVSYNCCRTC => (double)GAClockCounterOriginVSYNC / 16;
+
 		/// <summary>
 		/// Fired when CRTC VSYNC active signal is detected
 		/// </summary>
@@ -525,6 +531,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			GA_VSYNC = true;
 			// black colour enabled for vsync
 			C_VSYNC_Black = true;
+
+			// signal start of new frame
+			GAClockCounterOriginVSYNC = 0;
+			FrameEnd = true;
 		}
 
 		/// <summary>
@@ -609,6 +619,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// We will do this for now to get the accuracy right, but will probably need to optimise this down the line
 			//OutputPixel(0);
 			GAClockCounter++;
+			GAClockCounterOriginVSYNC++;
 
 
 			// Based on timing oscilloscope traces from 

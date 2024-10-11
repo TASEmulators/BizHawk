@@ -148,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			GateArray.GAClockCounter = 0;
 			GateArray.FrameEnd = false;
 
-			while (!CRTScreen.FrameEnd)
+			while (!GateArray.FrameEnd)
 			{
 				GateArray.Clock();
 
@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					TapeDevice.TapeCycle();
 			}
 
-			CRTScreen.FrameEnd = false;
+			GateArray.FrameEnd = false;
 
 			var ipf = GateArray.interruptsPerFrame;
 			GateArray.interruptsPerFrame = 0;

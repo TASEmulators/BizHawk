@@ -15,12 +15,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public override int CrtcType => 0;
 
-		/// <summary>
-		/// CRTC is clocked at 1MHz (16 GA cycles)
-		/// </summary>
+		public override void Clock() => throw new InvalidOperationException("CRTC Type 0 not implemented yet");
+		
+
+		/*
 		public override void Clock()
 		{
-			base.Clock();
+			CheckReset();
 
 			int maxScanLine;
 
@@ -130,7 +131,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				hhclock = true;
 			}
 
-			/* Hor active video */
 			if (HCC == 0)
 			{
 				// active display
@@ -143,7 +143,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				latch_hdisp = false;
 			}
 
-			/* Hor sync */
 			if (hssstart ||     // start of horizontal sync
 				HSYNC)          // already in horizontal sync
 			{
@@ -163,7 +162,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				HSYNC = false;
 			}
 
-			/* Ver active video */
 			if (VCC == 0)
 			{
 				// active display
@@ -203,7 +201,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 
-			/* Address Generation */
 			int line = VLC;
 
 			if (R8_Interlace == 3)
@@ -222,7 +219,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				_RA = VLC;
 			}
 
-			_LA = _vma;
+			ma = _vma;
 
 			// DISPTMG Generation
 			if (!latch_hdisp || !latch_vdisp)
@@ -238,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				DISPTMG = true;
 			}
 		}
-
+		*/
 
 		/// <summary>
 		/// R3l: CRTC-type horizontal sync width independent helper function 
