@@ -446,7 +446,7 @@ namespace BizHawk.Client.EmuHawk
 
 			void MainForm_MouseClick(object sender, MouseEventArgs e)
 			{
-				AutohideCursor(false);
+				AutohideCursor(hide: false);
 				if (Config.ShowContextMenu && e.Button == MouseButtons.Right)
 				{
 					// suppress the context menu if right click has a binding
@@ -460,7 +460,7 @@ namespace BizHawk.Client.EmuHawk
 					MainFormContextMenu.Show(PointToScreen(new Point(e.X, e.Y + MainformMenu.Height)));
 				}
 			}
-			void MainForm_MouseMove(object sender, MouseEventArgs e) => AutohideCursor(false);
+			void MainForm_MouseMove(object sender, MouseEventArgs e) => AutohideCursor(hide: false, alwaysUpdate: false);
 			void MainForm_MouseWheel(object sender, MouseEventArgs e) => MouseWheelTracker += e.Delta;
 			MouseClick += MainForm_MouseClick;
 			MouseMove += MainForm_MouseMove;
@@ -1493,7 +1493,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ToggleFullscreen(bool allowSuppress = false)
 		{
-			AutohideCursor(false);
+			AutohideCursor(hide: false);
 
 			// prohibit this operation if the current controls include LMouse
 			if (allowSuppress)
@@ -2259,16 +2259,38 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var args in todo) SingleInstanceProcessArgs(args);
 		}
 
-		private void AutohideCursor(bool hide)
+		private Point _lastMouseAutoHidePos;
+
+		private void AutohideCursor(bool hide, bool alwaysUpdate = true)
 		{
+			var mousePos = MousePosition;
+			// avoid sensitive mice unhiding the mouse cursor
+			var shouldUpdateCursor = alwaysUpdate
+				|| Math.Abs(_lastMouseAutoHidePos.X - mousePos.X) > 5
+				|| Math.Abs(_lastMouseAutoHidePos.Y - mousePos.Y) > 5;
+
+			if (!shouldUpdateCursor)
+			{
+				return;
+			}
+
+			_lastMouseAutoHidePos = mousePos;
 			if (hide && !_cursorHidden)
 			{
+				// this only works assuming the mouse is perfectly still
+				// if the mouse is slightly moving, it will use the "moving" cursor rather
 				_presentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
+
+				// This will actually fully hide the cursor
+				// However, this is a no-op on Mono, so we need to do both ways
+				Cursor.Hide();
+
 				_cursorHidden = true;
 			}
 			else if (!hide && _cursorHidden)
 			{
 				_presentationPanel.Control.Cursor = Cursors.Default;
+				Cursor.Show();
 				timerMouseIdle.Stop();
 				timerMouseIdle.Start();
 				_cursorHidden = false;

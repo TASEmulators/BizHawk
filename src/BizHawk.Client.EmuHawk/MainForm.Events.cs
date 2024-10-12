@@ -1572,13 +1572,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_inFullscreen && Config.DispChromeFullscreenAutohideMouse)
 			{
-				AutohideCursor(true);
+				AutohideCursor(hide: true);
 			}
 		}
 
 		private void MainForm_Enter(object sender, EventArgs e)
 		{
-			AutohideCursor(false);
+			AutohideCursor(hide: false);
 		}
 
 		private void MainForm_Resize(object sender, EventArgs e)
