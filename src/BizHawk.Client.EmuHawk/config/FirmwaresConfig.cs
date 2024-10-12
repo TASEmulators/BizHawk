@@ -179,11 +179,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FirmwaresConfig_Load(object sender, EventArgs e)
 		{
+			string GetSystemGroupName(string sysID) => SystemGroupNames.TryGetValue(sysID, out var name) ? name : "FIX ME (FirmwaresConfig.cs)";
+
 			ListViewGroup AddGroup(string sysID)
 			{
 				lvFirmwares.Groups.Add(
 					key: sysID,
-					headerText: SystemGroupNames.TryGetValue(sysID, out var name) ? name : "FIX ME (FirmwaresConfig.cs)");
+					headerText: GetSystemGroupName(sysID));
 				return lvFirmwares.Groups[lvFirmwares.Groups.Count - 1];
 			}
 
@@ -194,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// populate ListView from firmware DB
 			var groups = new Dictionary<string, ListViewGroup>();
-			foreach (var fr in FirmwareDatabase.FirmwareRecords)
+			foreach (var fr in FirmwareDatabase.FirmwareRecords.OrderBy(r => GetSystemGroupName(r.ID.System)))
 			{
 				var sysID = fr.ID.System;
 				var lvi = new ListViewItem
