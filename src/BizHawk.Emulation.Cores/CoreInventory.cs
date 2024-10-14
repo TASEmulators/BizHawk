@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
@@ -14,9 +15,13 @@ namespace BizHawk.Emulation.Cores
 	public class CoreInventory
 	{
 		private readonly Dictionary<string, List<Core>> _systems = new Dictionary<string, List<Core>>();
+		private readonly List<(List<string>, List<string>)> _systemGroups = [ ];
 
 		/// <summary>keys are system IDs; values are core/ctor info for all that system's cores</summary>
 		public IReadOnlyDictionary<string, List<Core>> AllCores => _systems;
+
+		// list of system ids groups; each system id in the group shares the same core choices
+		public IReadOnlyList<(List<string> SystemIds, List<string> CoreNames)> SystemGroups => _systemGroups;
 
 		public readonly IReadOnlyCollection<Core> SystemsFlat;
 
@@ -157,7 +162,7 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// create a core inventory, collecting all IEmulators from some assemblies
 		/// </summary>
-		public CoreInventory(IEnumerable<IEnumerable<Type>> assys)
+		public CoreInventory(IEnumerable<IEnumerable<Type>> assemblies)
 		{
 			var systemsFlat = new Dictionary<Type, Core>();
 			void ProcessConstructor(Type type, CoreConstructorAttribute consAttr, CoreAttribute coreAttr, ConstructorInfo cons)
@@ -166,26 +171,40 @@ namespace BizHawk.Emulation.Cores
 				_systems.GetValueOrPutNew(consAttr.System).Add(core);
 				systemsFlat[type] = core;
 			}
-			foreach (var assy in assys)
+			foreach (var type in assemblies.SelectMany(assembly => assembly).OrderBy(type => type.AssemblyQualifiedName))
 			{
-				foreach (var typ in assy)
+				if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IEmulator)))
 				{
-					if (!typ.IsAbstract && typ.GetInterfaces().Contains(typeof(IEmulator)))
+					var coreAttr = type.GetCustomAttributes(typeof(CoreAttribute), false);
+					if (coreAttr.Length != 1)
+						throw new InvalidOperationException($"{nameof(IEmulator)} {type} without {nameof(CoreAttribute)}s!");
+					var cons = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
+						.Where(c => c.GetCustomAttributes(typeof(CoreConstructorAttribute), false).Length > 0);
+					foreach(var con in cons)
 					{
-						var coreAttr = typ.GetCustomAttributes(typeof(CoreAttribute), false);
-						if (coreAttr.Length != 1)
-							throw new InvalidOperationException($"{nameof(IEmulator)} {typ} without {nameof(CoreAttribute)}s!");
-						var cons = typ.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
-							.Where(c => c.GetCustomAttributes(typeof(CoreConstructorAttribute), false).Length > 0);
-						foreach(var con in cons)
+						foreach (var consAttr in con.GetCustomAttributes(typeof(CoreConstructorAttribute), false).Cast<CoreConstructorAttribute>())
 						{
-							foreach (var consAttr in con.GetCustomAttributes(typeof(CoreConstructorAttribute), false).Cast<CoreConstructorAttribute>())
-							{
-								ProcessConstructor(typ, consAttr, (CoreAttribute)coreAttr[0], con);
-							}
+							ProcessConstructor(type, consAttr, (CoreAttribute)coreAttr[0], con);
 						}
 					}
 				}
+			}
+			foreach (var (systemId, cores) in _systems)
+			{
+				var coreNames = cores.Select(core => core.Name).ToList();
+				bool found = false;
+				foreach (var (systemIds, existingCores) in _systemGroups)
+				{
+					if (existingCores.SequenceEqual(coreNames))
+					{
+						systemIds.Add(systemId);
+						found = true;
+						break;
+					}
+				}
+
+				if (!found)
+					_systemGroups.Add(([ systemId ], coreNames));
 			}
 			SystemsFlat = systemsFlat.Values;
 		}
@@ -205,9 +224,9 @@ namespace BizHawk.Emulation.Cores
 		UserPreference = -200,
 
 		/// <summary>
-		/// A very good core that should be preferred over normal cores.  Don't use this?
+		/// The default core for a system when no other preferences exist. Must be set once per system
 		/// </summary>
-		High = -100,
+		DefaultPreference = -100,
 
 		/// <summary>
 		/// Most cores should use this

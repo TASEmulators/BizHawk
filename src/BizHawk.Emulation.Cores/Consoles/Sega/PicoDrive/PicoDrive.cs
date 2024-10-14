@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		private readonly DiscSectorReader _cdReader;
 		private readonly bool _isPal;
 
-		[CoreConstructor(VSystemID.Raw.GEN, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.GEN)]
 		[CoreConstructor(VSystemID.Raw.Sega32X)]
 		public PicoDrive(CoreComm comm, GameInfo game, byte[] rom, bool deterministic, SyncSettings syncSettings)
 			: this(comm, game, rom, null, deterministic, syncSettings)

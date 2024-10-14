@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			QN = BizInvoker.GetInvoker<LibQuickNES>(resolver, CallingConventionAdapters.Native);
 		}
 
-		[CoreConstructor(VSystemID.Raw.NES)]
+		[CoreConstructor(VSystemID.Raw.NES, Priority = CorePriority.DefaultPreference)]
 		public QuickNES(byte[] file, QuickNESSettings settings, QuickNESSyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);

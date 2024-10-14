@@ -75,30 +75,32 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
+			foreach (var (systemIds, coreNames) in CoreInventory.Instance.SystemGroups
+						.Where(tuple => tuple.CoreNames.Count >= 2)
+						.OrderBy(tuple => tuple.SystemIds[0]))
 			{
-				var submenu = new ToolStripMenuItem { Text = string.Join(" | ", appliesTo) };
+				var submenu = new ToolStripMenuItem { Text = string.Join(" | ", systemIds) };
 				submenu.DropDownItems.AddRange(coreNames.Select(coreName => {
 					var entry = new ToolStripMenuItem { Text = coreName };
 					entry.Click += (_, _) =>
 					{
 						string currentCoreName = Emulator.Attributes().CoreName;
 						if (coreName != currentCoreName && coreNames.Contains(currentCoreName)) FlagNeedsReboot();
-						foreach (string system in appliesTo)
-							Config.PreferredCores[system] = coreName;
+						foreach (string systemId in systemIds)
+							Config.PreferredCores[systemId] = coreName;
 					};
 					return (ToolStripItem) entry;
 				}).ToArray());
 				submenu.DropDownOpened += (openedSender, _1) =>
 				{
-					_ = Config.PreferredCores.TryGetValue(appliesTo[0], out var preferred);
+					_ = Config.PreferredCores.TryGetValue(systemIds[0], out var preferred);
 					if (!coreNames.Contains(preferred))
 					{
 						// invalid --> default (doing this here rather than when reading config file to allow for hacked-in values, though I'm not sure if that could do anything at the moment --yoshi)
 						var defaultCore = coreNames[0];
 						Console.WriteLine($"setting preferred core for {submenu.Text} to {defaultCore} (was {preferred ?? "null"})");
 						preferred = defaultCore;
-						foreach (var sysID in appliesTo) Config.PreferredCores[sysID] = preferred;
+						foreach (var sysID in systemIds) Config.PreferredCores[sysID] = preferred;
 					}
 					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems) entry.Checked = entry.Text == preferred;
 				};

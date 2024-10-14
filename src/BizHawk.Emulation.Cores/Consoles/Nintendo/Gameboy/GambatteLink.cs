@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	[PortedCore(CoreNames.GambatteLink, "sinamas/natt")]
 	public partial class GambatteLink : ILinkable, ILinkedGameBoyCommon, IRomInfo
 	{
-		[CoreConstructor(VSystemID.Raw.GBL)]
+		[CoreConstructor(VSystemID.Raw.GBL, Priority = CorePriority.DefaultPreference)]
 		public GambatteLink(CoreLoadParameters<GambatteLinkSettings, GambatteLinkSyncSettings> lp)
 		{
 			if (lp.Roms.Count < MIN_PLAYERS || lp.Roms.Count > MAX_PLAYERS)
