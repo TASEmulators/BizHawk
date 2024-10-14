@@ -64,7 +64,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						ma_store = (Register[R12_START_ADDR_H] << 8) | Register[R13_START_ADDR_L];
 					}
 
-					if (VCC == R7_VerticalSyncPosition)     // C4 == R7
+					if (VCC == R7_VerticalSyncPosition      // C4 == R7
+						&& !VSYNC)							// ACCC 16.3: It is not possible to trigger or inhibit VSYNC during a VSYNC     
 					{
 						// VSYNC enabled
 						VSYNC = true;
@@ -109,7 +110,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				ma_store = ma;
 			}
 
-			if (HCC == R2_HorizontalSyncPosition)       // C0 == R2
+			if (HCC == R2_HorizontalSyncPosition        // C0 == R2
+				&& R3_HorizontalSyncWidth > 0)			// ACCC 14.6: When R3 == 0, CRTC 0 and 1 do not produce HSYNC     
 			{
 				// HSYNC is enabled
 				HSYNC = true;
@@ -124,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				HSC++;
 
 				if (HSC == R3_HorizontalSyncWidth       // C3l == R3l
-					|| HSC == 0)                        // HSC counter wrap-around
+					|| HSC == 0)                        // HSC counter wrap-around                        
 				{
 					// disable HSYNC
 					HSYNC = false;
