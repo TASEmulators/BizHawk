@@ -139,9 +139,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 						// update buffer width/height for scaling
 						if (_activeSyncSettings.GLScaleFactor > 1)
 						{
-							BufferWidth = (256 * _activeSyncSettings.GLScaleFactor) * 3 + ((128 * _activeSyncSettings.GLScaleFactor) * 4 / 3) + 1;
-							BufferHeight = (384 / 2 * _activeSyncSettings.GLScaleFactor) * 2 + (128 * _activeSyncSettings.GLScaleFactor);
-							_videoBuffer = new int[BufferWidth * BufferHeight];
+							var maxWidth = (256 * _activeSyncSettings.GLScaleFactor) * 3 + ((128 * _activeSyncSettings.GLScaleFactor) * 4 / 3) + 1;
+							var maxHeight = (384 / 2 * _activeSyncSettings.GLScaleFactor) * 2 + (128 * _activeSyncSettings.GLScaleFactor);
+							_videoBuffer = new int[maxWidth * maxHeight];
 						}
 					}
 				}
