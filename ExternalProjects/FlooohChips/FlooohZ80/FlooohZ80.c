@@ -1,5 +1,5 @@
 #define CHIPS_IMPL
-#include "..\chips\chips\z80.h"
+#include "../chips/chips/z80.h"
 
 #ifdef _WIN32
 	#define FZ80_EXPORT __declspec(dllexport)
