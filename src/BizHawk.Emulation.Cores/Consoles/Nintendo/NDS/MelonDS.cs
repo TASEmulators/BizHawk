@@ -76,8 +76,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				DefaultWidth = 256,
 				DefaultHeight = 384,
-				MaxWidth = (256 * 16) * 3 + ((128 * 16) * 4 / 3) + 1,
-				MaxHeight = (384 / 2 * 16) * 2 + (128 * 16),
+				MaxWidth = 256 * 3 + (128 * 4 / 3) + 1,
+				MaxHeight = (384 / 2) * 2 + 128,
 				MaxSamples = 4096, // rather large max samples is intentional, see comment in ThreadStartCallback
 				DefaultFpsNumerator = 33513982,
 				DefaultFpsDenominator = 560190,
@@ -136,6 +136,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					else
 					{
 						_glContext = _openGLProvider.RequestGLContext(majorGlVersion, minorGlVersion, true);
+						// update buffer width/height for scaling
+						if (_activeSyncSettings.GLScaleFactor > 1)
+						{
+							BufferWidth = (256 * _activeSyncSettings.GLScaleFactor) * 3 + ((128 * _activeSyncSettings.GLScaleFactor) * 4 / 3) + 1;
+							BufferHeight = (384 / 2 * _activeSyncSettings.GLScaleFactor) * 2 + (128 * _activeSyncSettings.GLScaleFactor);
+							_videoBuffer = new int[BufferWidth * BufferHeight];
+						}
 					}
 				}
 
