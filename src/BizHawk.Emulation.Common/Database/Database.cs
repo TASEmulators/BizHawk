@@ -412,12 +412,16 @@ namespace BizHawk.Emulation.Common
 
 				case ".ADF":
 				case ".ADZ":
-				case ".DMS":
-				case ".IPF":
+				case ".DMS":				
 				case ".FDI":
 				case ".HDF":
 				case ".LHA":
 					game.System = VSystemID.Raw.Amiga;
+					break;
+
+				case ".IPF":
+					var ipfId = new IpfIdentifier(romData);
+					game.System = ipfId.IdentifiedSystem;
 					break;
 
 				case ".32X":
