@@ -1,5 +1,5 @@
 #!/bin/sh
-if [ -z "$BIZHAWKBUILD_HOME" ]; then export BIZHAWKBUILD_HOME="$(realpath "$(dirname "$0")/../..")"; fi
+if [ -z "$BIZHAWKBUILD_HOME" ]; then export BIZHAWKBUILD_HOME="$(realpath "$(dirname "$0")/../../..")"; fi
 if [ -z "$CC" ]; then export CXX="clang"; fi
 
 mkdir -p build
