@@ -254,8 +254,8 @@ namespace BizHawk.Client.EmuHawk
 			// Start Scenario 2: A tasproj is already active
 			else if (MovieSession.Movie.IsActive() && MovieSession.Movie is ITasMovie)
 			{
-				bool result = LoadMovie(CurrentTasMovie, gotoFrame: Emulator.Frame);
-				if (!result)
+				success = LoadMovie(CurrentTasMovie, gotoFrame: Emulator.Frame);
+				if (!success)
 				{
 					success = StartNewTasMovie();
 				}
