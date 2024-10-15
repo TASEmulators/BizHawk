@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					else
 					{
 						_glContext = _openGLProvider.RequestGLContext(majorGlVersion, minorGlVersion, true);
-						// update buffer width/height for scaling
+						// reallocate video buffer for scaling
 						if (_activeSyncSettings.GLScaleFactor > 1)
 						{
 							var maxWidth = (256 * _activeSyncSettings.GLScaleFactor) * 3 + ((128 * _activeSyncSettings.GLScaleFactor) * 4 / 3) + 1;
