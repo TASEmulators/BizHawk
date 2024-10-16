@@ -125,9 +125,10 @@ namespace BizHawk.Client.EmuHawk
 
 							// the boot exe parameter has the following format "drive:\path\name.ext;version"
 							// and can be extracted as the substring between colon ':' and semicolon ';'
+							// if there is no semicolon in the string use carriage return '\r' to terminate the path
 							var pathStartIndex = exePath.IndexOf(':') + 1;
 							if (pathStartIndex < 1) break;
-							var pathLength = exePath.IndexOf(';') - pathStartIndex;
+							var pathLength = (exePath.Contains(';') ? exePath.IndexOf(';') : exePath.IndexOf('\r')) - pathStartIndex;
 							if (pathLength < 1) break;
 							exePath = exePath.Substring(startIndex: pathStartIndex, length: pathLength);
 
