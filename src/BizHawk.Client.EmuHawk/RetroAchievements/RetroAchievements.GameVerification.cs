@@ -123,22 +123,16 @@ namespace BizHawk.Client.EmuHawk
 							dsr.ReadLBA_2048(sector, buf2048, 0);
 							exePath = Encoding.ASCII.GetString(buf2048);
 
-							// replace any tab characters with space characters to normalize exePath
-							exePath = exePath.Replace('\t', ' ');
-
-							// "BOOT = cdrom:" precedes the path
-							var index = exePath.IndexOf("BOOT = cdrom:", StringComparison.Ordinal);
-							if (index < -1) break;
-							exePath = exePath.Remove(0, index + 13);
+							// the boot exe parameter has the following format "drive:\path\name.ext;version"
+							// and can be extracted as the substring between colon ':' and semicolon ';'
+							var pathStartIndex = exePath.IndexOf(':') + 1;
+							if (pathStartIndex < 1) break;
+							var pathLength = exePath.IndexOf(';') - pathStartIndex;
+							if (pathLength < 1) break;
+							exePath = exePath.Substring(startIndex: pathStartIndex, length: pathLength);
 
 							// the path might start with a number of slashes, remove these
-							index = 0;
-							while (index < exePath.Length && exePath[index] is '\\') index++;
-
-							// end of the path has ;
-							var end = exePath.IndexOf(';');
-							if (end < 0) break;
-							exePath = exePath.Substring(startIndex: index, length: end - index);
+							exePath = exePath.TrimStart('\\');
 						}
 
 						buffer.AddRange(Encoding.ASCII.GetBytes(exePath));
