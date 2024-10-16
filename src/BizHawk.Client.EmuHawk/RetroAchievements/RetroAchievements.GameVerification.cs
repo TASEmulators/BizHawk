@@ -86,31 +86,46 @@ namespace BizHawk.Client.EmuHawk
 						int GetFileSector(string filename, out int filesize)
 						{
 							dsr.ReadLBA_2048(16, buf2048, 0);
+							// get directory record sector
 							var sector = (buf2048[160] << 16) | (buf2048[159] << 8) | buf2048[158];
-							dsr.ReadLBA_2048(sector, buf2048, 0);
-							var index = 0;
-							while (index + 33 + filename.Length < 2048)
+							// find number of sectors for the directory record
+							var logicalBlockSize = (buf2048[129] << 8) | buf2048[128];
+							int numSectors;
+							if (logicalBlockSize == 0)
 							{
-								var term = buf2048[index + 33 + filename.Length];
-								if (term == ';' || term == '\0')
+								numSectors = 1;
+							}
+							else
+							{
+								var directoryRecordLength = (uint)((buf2048[169] << 24) | (buf2048[168] << 16) | (buf2048[167] << 8) | buf2048[166]);
+								numSectors = (int)(directoryRecordLength / logicalBlockSize);
+							}
+
+							for (var i = 0; i < numSectors; i++)
+							{
+								dsr.ReadLBA_2048(sector + i, buf2048, 0);
+								var index = 0;
+								while (index + 33 + filename.Length < 2048)
 								{
-									var fn = Encoding.ASCII.GetString(buf2048, index + 33, filename.Length);
-									if (filename.Equals(fn, StringComparison.OrdinalIgnoreCase))
+									var term = buf2048[index + 33 + filename.Length];
+									if (term == ';' || term == '\0')
 									{
-										filesize = (buf2048[index + 13] << 24) | (buf2048[index + 12] << 16) | (buf2048[index + 11] << 8) | buf2048[index + 10];
-										return (buf2048[index + 4] << 16) | (buf2048[index + 3] << 8) | buf2048[index + 2];
+										var fn = Encoding.ASCII.GetString(buf2048, index + 33, filename.Length);
+										if (filename.Equals(fn, StringComparison.OrdinalIgnoreCase))
+										{
+											filesize = (buf2048[index + 13] << 24) | (buf2048[index + 12] << 16) | (buf2048[index + 11] << 8) | buf2048[index + 10];
+											return (buf2048[index + 4] << 16) | (buf2048[index + 3] << 8) | buf2048[index + 2];
+										}
 									}
-								}
 
-								// move on to next sector if filename not found in current sector due to subdirectory
-								if (buf2048[index] == 0)
-								{
-									dsr.ReadLBA_2048(++sector, buf2048, 0);
-									index = 0;
-									continue;
-								}
+									// break out if string size is 0 (to avoid an infinite loop)
+									if (buf2048[index] == 0)
+									{
+										break;
+									}
 
-								index += buf2048[index];
+									index += buf2048[index];
+								}
 							}
 
 							filesize = 0;
@@ -127,22 +142,35 @@ namespace BizHawk.Client.EmuHawk
 							dsr.ReadLBA_2048(sector, buf2048, 0);
 							exePath = Encoding.ASCII.GetString(buf2048);
 
-							// replace any tab characters with space characters to normalize exePath
-							exePath = exePath.Replace('\t', ' ');
-
 							// "BOOT = cdrom:" precedes the path
-							var index = exePath.IndexOf("BOOT = cdrom:", StringComparison.Ordinal);
-							if (index < -1) break;
-							exePath = exePath.Remove(0, index + 13);
+							// the amount of whitespace is variable here however, so we can't make assumptions about it
+							var index = exePath.IndexOf("BOOT", StringComparison.Ordinal);
+							if (index < 0) break;
+
+							// go to the '=' now
+							index += 4;
+							while (index < exePath.Length && char.IsWhiteSpace(exePath[index])) index++;
+							if (index >= exePath.Length || exePath[index] != '=') break;
+
+							// go to "cdrom:" now
+							index++;
+							while (index < exePath.Length && char.IsWhiteSpace(exePath[index])) index++;
+							if (index > exePath.Length - 6 || exePath.Substring(index, 6) != "cdrom:") break;
+
+							// remove "cdrom:"
+							exePath = exePath.Remove(0, index + 6);
 
 							// the path might start with a number of slashes, remove these
 							index = 0;
 							while (index < exePath.Length && exePath[index] is '\\') index++;
+							if (index == exePath.Length) break;
 
-							// end of the path has ;
-							var end = exePath.IndexOf(';');
-							if (end < 0) break;
-							exePath = exePath.Substring(startIndex: index, length: end - index);
+							// end of the path has ; or whitespace
+							var endIndex = index;
+							while (endIndex < exePath.Length && exePath[endIndex] != ';' && !char.IsWhiteSpace(exePath[endIndex])) endIndex++;
+							if (endIndex == exePath.Length) break;
+
+							exePath = exePath[index..endIndex];
 						}
 
 						buffer.AddRange(Encoding.ASCII.GetBytes(exePath));
