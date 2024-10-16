@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			PrepareBuffer(buffer, offset, 2352);
 			PrepareJob(lba);
-			job.DestBuffer2448 = buf2442;
+			job.DestBuffer2448 = buf2448;
 			job.DestOffset = 0;
 			job.Parts = ESectorSynthPart.User2352;
 			job.Disc = disc;
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			sector.Synth(job);
 
-			Buffer.BlockCopy(buf2442, 0, buffer, offset, 2352);
+			Buffer.BlockCopy(buf2448, 0, buffer, offset, 2352);
 
 			return 2352;
 		}
@@ -133,12 +133,12 @@ namespace BizHawk.Emulation.DiscSystem
 
 			PrepareBuffer(buffer, offset, 2048);
 			PrepareJob(lba);
-			job.DestBuffer2448 = buf2442;
+			job.DestBuffer2448 = buf2448;
 			job.DestOffset = 0;
 			job.Parts = ESectorSynthPart.User2048;
 
 			sector.Synth(job);
-			Buffer.BlockCopy(buf2442, 16, buffer, offset, 2048);
+			Buffer.BlockCopy(buf2448, 16, buffer, offset, 2048);
 
 			return 2048;
 		}
@@ -152,12 +152,12 @@ namespace BizHawk.Emulation.DiscSystem
 
 			PrepareBuffer(buffer, offset, 2048);
 			PrepareJob(lba);
-			job.DestBuffer2448 = buf2442;
+			job.DestBuffer2448 = buf2448;
 			job.DestOffset = 0;
 			job.Parts = ESectorSynthPart.User2336;
 
 			sector.Synth(job);
-			Buffer.BlockCopy(buf2442, 24, buffer, offset, 2048);
+			Buffer.BlockCopy(buf2448, 24, buffer, offset, 2048);
 
 			return 2048;
 		}
@@ -174,12 +174,12 @@ namespace BizHawk.Emulation.DiscSystem
 
 			PrepareBuffer(buffer, offset, 12);
 			PrepareJob(lba);
-			job.DestBuffer2448 = buf2442;
+			job.DestBuffer2448 = buf2448;
 			job.DestOffset = 0;
 			job.Parts = ESectorSynthPart.SubchannelQ | ESectorSynthPart.SubcodeDeinterleave;
 
 			sector.Synth(job);
-			Buffer.BlockCopy(buf2442, 2352 + 12, buffer, offset, 12);
+			Buffer.BlockCopy(buf2448, 2352 + 12, buffer, offset, 12);
 
 			return 12;
 		}
@@ -208,17 +208,17 @@ namespace BizHawk.Emulation.DiscSystem
 
 				PrepareBuffer(buffer, offset, 2048);
 				PrepareJob(lba);
-				job.DestBuffer2448 = buf2442;
+				job.DestBuffer2448 = buf2448;
 				job.DestOffset = 0;
 				job.Parts = ESectorSynthPart.Header16 | ESectorSynthPart.User2048 | ESectorSynthPart.EDC12;
 
 				sector.Synth(job);
 
 				//now the inspection, based on the mode
-				byte mode = buf2442[15];
+				byte mode = buf2448[15];
 				if (mode == 1)
 				{
-					Buffer.BlockCopy(buf2442, 16, buffer, offset, 2048);
+					Buffer.BlockCopy(buf2448, 16, buffer, offset, 2048);
 					return 2048;
 				}
 				else if (mode == 2)
@@ -226,7 +226,7 @@ namespace BizHawk.Emulation.DiscSystem
 					//greenbook pg II-22
 					//we're going to do a sanity check here.. we're not sure what happens if we try to read 2048 bytes from a form-2 2324 byte sector
 					//we could handle it by policy but for now the policy is exception
-					byte submodeByte = buf2442[18];
+					byte submodeByte = buf2448[18];
 					int form = ((submodeByte >> 5) & 1) + 1;
 					if (form == 2)
 					{
@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.DiscSystem
 					}
 
 					//otherwise it's OK
-					Buffer.BlockCopy(buf2442, 24, buffer, offset, 2048);
+					Buffer.BlockCopy(buf2448, 24, buffer, offset, 2048);
 					return 2048;
 				}
 				else
@@ -284,18 +284,18 @@ namespace BizHawk.Emulation.DiscSystem
 			if (sector == null) return 0;
 
 			PrepareJob(lba);
-			job.DestBuffer2448 = buf2442;
+			job.DestBuffer2448 = buf2448;
 			job.DestOffset = 0;
 			job.Parts = ESectorSynthPart.Header16;
 			job.Disc = disc;
 
 			sector.Synth(job);
 
-			return buf2442[15];
+			return buf2448[15];
 		}
 
 		//lets not try to these as a sector cache. it gets too complicated. its just a temporary variable.
-		private readonly byte[] buf2442 = new byte[2448];
+		private readonly byte[] buf2448 = new byte[2448];
 		private readonly byte[] buf12 = new byte[12];
 		private readonly SectorSynthJob job = new SectorSynthJob();
 	}
