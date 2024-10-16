@@ -21,6 +21,12 @@ namespace BizHawk.Emulation.DiscSystem
 			/// Read it as mode 2 (form 1)
 			/// </summary>
 			AssumeMode2_Form1,
+
+			/// <summary>
+			/// The contents of the sector should be inspected (mode) and 2048 bytes returned accordingly
+			/// Mode 2 form is assumed to be 1
+			/// </summary>
+			InspectSector_AssumeForm1,
 		}
 
 		/// <summary>
@@ -223,19 +229,22 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 				else if (mode == 2)
 				{
-					//greenbook pg II-22
-					//we're going to do a sanity check here.. we're not sure what happens if we try to read 2048 bytes from a form-2 2324 byte sector
-					//we could handle it by policy but for now the policy is exception
-					byte submodeByte = buf2448[18];
-					int form = ((submodeByte >> 5) & 1) + 1;
-					if (form == 2)
+					// greenbook pg II-22
+					// we're going to do a sanity check here.. we're not sure what happens if we try to read 2048 bytes from a form-2 2324 byte sector
+					// default policy is exception, although some cases might prefer assuming form 1
+					if (Policy.UserData2048Mode != DiscSectorReaderPolicy.EUserData2048Mode.InspectSector_AssumeForm1)
 					{
-						if (Policy.ThrowExceptions2048)
-							throw new InvalidOperationException("Unsupported scenario: reading 2048 bytes from a Mode2 Form 2 sector");
-						else return 0;
+						byte submodeByte = buf2448[18];
+						int form = ((submodeByte >> 5) & 1) + 1;
+						if (form == 2)
+						{
+							if (Policy.ThrowExceptions2048)
+								throw new InvalidOperationException("Unsupported scenario: reading 2048 bytes from a Mode2 Form 2 sector");
+							else return 0;
+						}
 					}
 
-					//otherwise it's OK
+					// otherwise it's OK
 					Buffer.BlockCopy(buf2448, 24, buffer, offset, 2048);
 					return 2048;
 				}
