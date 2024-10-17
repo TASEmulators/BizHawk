@@ -86,19 +86,36 @@ namespace BizHawk.Client.EmuHawk
 						int GetFileSector(string filename, out int filesize)
 						{
 							dsr.ReadLBA_2048(16, buf2048, 0);
-							// get directory record sector
-							var sector = (buf2048[160] << 16) | (buf2048[159] << 8) | buf2048[158];
-							// find number of sectors for the directory record
-							var logicalBlockSize = (buf2048[129] << 8) | buf2048[128];
-							int numSectors;
-							if (logicalBlockSize == 0)
+							var slashIndex = filename.LastIndexOf('\\');
+							int sector, numSectors;
+							if (slashIndex < 0)
 							{
-								numSectors = 1;
+								// get directory record sector
+								sector = (buf2048[160] << 16) | (buf2048[159] << 8) | buf2048[158];
+								// find number of sectors for the directory record
+								var logicalBlockSize = (buf2048[129] << 8) | buf2048[128];
+								if (logicalBlockSize == 0)
+								{
+									numSectors = 1;
+								}
+								else
+								{
+									var directoryRecordLength = (uint)((buf2048[169] << 24) | (buf2048[168] << 16) | (buf2048[167] << 8) | buf2048[166]);
+									numSectors = (int)(directoryRecordLength / logicalBlockSize);
+								}
 							}
 							else
 							{
-								var directoryRecordLength = (uint)((buf2048[169] << 24) | (buf2048[168] << 16) | (buf2048[167] << 8) | buf2048[166]);
-								numSectors = (int)(directoryRecordLength / logicalBlockSize);
+								// find the directory sector
+								// note this will mutate buf2048 again (but we don't care about the current contents anymore)
+								sector = GetFileSector(filename[..slashIndex], out filesize);
+								if (sector < 0)
+								{
+									return sector;
+								}
+
+								filename = filename.Remove(0, slashIndex);
+								numSectors = (filesize + 2047) / 2048;
 							}
 
 							for (var i = 0; i < numSectors; i++)
@@ -174,14 +191,6 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						buffer.AddRange(Encoding.ASCII.GetBytes(exePath));
-
-						// get the filename
-						// valid too if -1, as that means we already have the filename
-						var start = exePath.LastIndexOf('\\');
-						if (start > 0)
-						{
-							exePath = exePath.Remove(0, start + 1);
-						}
 
 						// get sector for exe
 						sector = GetFileSector(exePath, out var exeSize);
