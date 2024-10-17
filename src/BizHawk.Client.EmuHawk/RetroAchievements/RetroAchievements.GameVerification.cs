@@ -114,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 									return sector;
 								}
 
-								filename = filename.Remove(0, slashIndex);
+								filename = filename.Remove(0, slashIndex + 1);
 								numSectors = (filesize + 2047) / 2048;
 							}
 
