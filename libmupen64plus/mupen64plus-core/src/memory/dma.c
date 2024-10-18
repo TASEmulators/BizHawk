@@ -235,7 +235,7 @@ void dma_pi_write(void)
         for (i=0; i<(int)longueur; i++)
         {
             ((unsigned char*)rdram)[MASK_ADDR_U8((pi_register.pi_dram_addr_reg+i)^S8, rdram)]=
-                rom[MASK_ADDR_U8((((pi_register.pi_cart_addr_reg-0x10000000)&0x3FFFFFF)+i)^S8, rom)];
+                rom[((((pi_register.pi_cart_addr_reg-0x10000000)&0x3FFFFFF)+i)^S8) & (rom_size - 1)];
         }
     }
 
@@ -300,7 +300,7 @@ void dma_sp_write(void)
 
     for(j=0; j<count; j++) {
         for(i=0; i<length; i++) {
-            spmem[MASK_ADDR_U8(memaddr^S8, SP_DMEM)] = dram[MASK_ADDR_U8(dramaddr^S8, rdram)];
+            spmem[(memaddr^S8) & 0xFFF] = dram[MASK_ADDR_U8(dramaddr^S8, rdram)];
             memaddr++;
             dramaddr++;
         }
@@ -326,7 +326,7 @@ void dma_sp_read(void)
 
     for(j=0; j<count; j++) {
         for(i=0; i<length; i++) {
-            dram[MASK_ADDR_U8(dramaddr^S8, rdram)] = spmem[MASK_ADDR_U8(memaddr^S8, SP_DMEM)];
+            dram[MASK_ADDR_U8(dramaddr^S8, rdram)] = spmem[(memaddr^S8) & 0xFFF];
             memaddr++;
             dramaddr++;
         }
