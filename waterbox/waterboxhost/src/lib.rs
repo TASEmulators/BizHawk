@@ -2,7 +2,6 @@
 
 #![feature(try_trait_v2)]
 #![feature(never_type)]
-#![feature(control_flow_enum)]
 #![feature(core_intrinsics)]
 
 #![allow(dead_code)]
