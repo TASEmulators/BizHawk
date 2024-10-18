@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
-	public record N64Settings
+	public sealed record class N64Settings
 	{
 		public int VideoSizeX = 320;
 		public int VideoSizeY = 240;

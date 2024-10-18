@@ -69,6 +69,14 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
+	private static readonly DiagnosticDescriptor DiagRecordImplicitlyRefType = new(
+		id: "BHI1130",
+		title: "Record type declaration missing class (or struct) keyword",
+		messageFormat: "Add class (or struct) keyword",
+		category: "Usage",
+		defaultSeverity: DiagnosticSeverity.Warning,
+		isEnabledByDefault: true);
+
 	private static readonly DiagnosticDescriptor DiagSwitchShouldThrowIOE = new(
 		id: "BHI1005",
 		title: "Default branch of switch expression should throw InvalidOperationException/SwitchExpressionException or not throw",
@@ -84,6 +92,7 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 		DiagNoAnonDelegates,
 		DiagNoDiscardingLocals,
 		DiagNoQueryExpression,
+		DiagRecordImplicitlyRefType,
 		DiagSwitchShouldThrowIOE);
 
 	public override void Initialize(AnalysisContext context)
@@ -147,6 +156,9 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 					case QueryExpressionSyntax:
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoQueryExpression, snac.Node.GetLocation()));
 						break;
+					case RecordDeclarationSyntax rds:
+						if (!rds.ClassOrStructKeyword.ToFullString().Contains("class")) snac.ReportDiagnostic(Diagnostic.Create(DiagRecordImplicitlyRefType, rds.GetLocation()));
+						break;
 					case SwitchExpressionArmSyntax { WhenClause: null, Pattern: DiscardPatternSyntax, Expression: ThrowExpressionSyntax tes }:
 						var thrownExceptionType = snac.SemanticModel.GetThrownExceptionType(tes);
 						if (thrownExceptionType is null)
@@ -173,6 +185,7 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 			SyntaxKind.InterpolatedStringExpression,
 			SyntaxKind.ListPattern,
 			SyntaxKind.QueryExpression,
+			SyntaxKind.RecordDeclaration,
 			SyntaxKind.SimpleAssignmentExpression,
 			SyntaxKind.SwitchExpressionArm);
 	}

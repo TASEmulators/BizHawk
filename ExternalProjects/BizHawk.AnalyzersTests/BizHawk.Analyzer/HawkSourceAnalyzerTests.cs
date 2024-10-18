@@ -133,6 +133,14 @@ public sealed class HawkSourceAnalyzerTests
 		""");
 
 	[TestMethod]
+	public Task CheckMisuseOfRecordDeclKeywords()
+		=> Verify.VerifyAnalyzerAsync("""
+			internal record struct Y {}
+			internal record class Z {}
+			{|BHI1130:internal record A {}|}
+		""");
+
+	[TestMethod]
 	public Task CheckMisuseOfQuerySyntax()
 		=> Verify.VerifyAnalyzerAsync("""
 			using System.Linq;
