@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					Filename = "melonDS.wbx",
 					SbrkHeapSizeKB = 2 * 1024,
 					SealedHeapSizeKB = 4,
-					InvisibleHeapSizeKB = 16 * 1024,
+					InvisibleHeapSizeKB = 48 * 1024,
 					PlainHeapSizeKB = 4,
 					MmapHeapSizeKB = 1024 * 1024,
 					SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
