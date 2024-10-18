@@ -190,6 +190,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 				_activeSyncSettings.UseRealBIOS |= IsDSi;
 
+				if (!_activeSyncSettings.UseRealBIOS)
+				{
+					// check if the user is using an encrypted rom
+					// if they are, they need to be using real bios files
+					Span<byte> decryptedBytePattern = stackalloc byte[] { 0xFF, 0xDE, 0xFF, 0xE7, 0xFF, 0xDE, 0xFF, 0xE7 };
+					if (!roms[0].AsSpan(0x4000, 8).SequenceEqual(decryptedBytePattern))
+					{
+						_activeSyncSettings.UseRealBIOS = true;
+					}
+				}
+
 				byte[] bios9 = null, bios7 = null, firmware = null;
 				if (_activeSyncSettings.UseRealBIOS)
 				{
