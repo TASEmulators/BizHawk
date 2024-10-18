@@ -406,15 +406,7 @@ namespace BizHawk.Emulation.Common
 			public byte[] SectorData { get; set; }
 			public bool ContainsMultipleWeakSectors { get; set; }
 
-			public int GetModChecksum256()
-			{
-				int res = 0;
-				for (int i = 0; i < ActualDataByteLength; i++)
-				{
-					res = (res + SectorData[i]) % 256;
-				}
-				return res;
-			}
+			public byte GetModChecksum256() => (byte) (SectorData.Sum(static b => b) & 0xFF);
 		}
 	}
 }
