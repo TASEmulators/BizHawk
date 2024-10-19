@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 				ColumnStyles = { new(), new() },
 				Location = new(4, 4),
 				RowStyles = { new(), new(), new(), new(), new(), new() },
-				Size = new(200, 160),
+				Size = new(201, 160),
 			};
 			var row = 0;
 
@@ -148,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 			AutoScaleDimensions = new(6F, 13F);
 			AutoScaleMode = AutoScaleMode.Font;
 			CancelButton = Cancel;
-			ClientSize = new(213, 296);
+			ClientSize = new(215, 296);
 			Controls.Add(tlpMain);
 			Controls.Add(OK);
 			Controls.Add(Cancel);
