@@ -874,7 +874,7 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> N64DD = new[] { "ndd" };
 
-			public static readonly IReadOnlyCollection<string> NDS = new[] { "nds" };
+			public static readonly IReadOnlyCollection<string> NDS = new[] { "nds", "srl", "dsi", "ids" };
 
 			public static readonly IReadOnlyCollection<string> NES = new[] { "nes", "fds", "unf" };
 
