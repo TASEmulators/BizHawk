@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -192,12 +193,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 				if (!_activeSyncSettings.UseRealBIOS)
 				{
-					// check if the user is using an encrypted rom
-					// if they are, they need to be using real bios files
-					Span<byte> decryptedBytePattern = stackalloc byte[] { 0xFF, 0xDE, 0xFF, 0xE7, 0xFF, 0xDE, 0xFF, 0xE7 };
-					if (!roms[0].AsSpan(0x4000, 8).SequenceEqual(decryptedBytePattern))
+					var arm9RomOffset = BinaryPrimitives.ReadInt32LittleEndian(roms[0].AsSpan(0x20, 4));
+					if (arm9RomOffset is >= 0x4000 and < 0x8000)
 					{
-						_activeSyncSettings.UseRealBIOS = true;
+						// check if the user is using an encrypted rom
+						// if they are, they need to be using real bios files
+						var secureAreaId = BinaryPrimitives.ReadUInt64LittleEndian(roms[0].AsSpan(arm9RomOffset, 8));
+						_activeSyncSettings.UseRealBIOS = secureAreaId != 0xE7FFDEFF_E7FFDEFF;
 					}
 				}
 
