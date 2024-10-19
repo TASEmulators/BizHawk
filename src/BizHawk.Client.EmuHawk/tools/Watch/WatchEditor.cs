@@ -11,7 +11,7 @@ using Emu = BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class WatchEditor : Form
+	public sealed class WatchEditor : Form
 	{
 		public enum Mode { New, Duplicate, Edit }
 
@@ -27,17 +27,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public Point InitialLocation { get; set;  } = new Point(0, 0);
 
-		private HexTextBox AddressBox = default!;
+		private readonly HexTextBox AddressBox;
 
-		private CheckBox BigEndianCheckBox = default!;
+		private readonly CheckBox BigEndianCheckBox;
 
-		private ComboBox DisplayTypeDropDown = default!;
+		private readonly ComboBox DisplayTypeDropDown;
 
-		private ComboBox DomainDropDown = default!;
+		private readonly ComboBox DomainDropDown;
 
-		private TextBox NotesBox = default!;
+		private readonly TextBox NotesBox;
 
-		private ComboBox SizeDropDown = default!;
+		private readonly ComboBox SizeDropDown;
 
 		public WatchEditor()
 		{
