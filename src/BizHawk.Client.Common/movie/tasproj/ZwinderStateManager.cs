@@ -251,14 +251,13 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Enumerate all states in reverse order
+		/// Enumerate all states in the following order: current -> recent -> gap -> reserved states
 		/// </summary>
 		internal IEnumerable<StateInfo> AllStates()
 		{
 			return CurrentAndRecentStates()
 				.Concat(GapStates())
-				.Concat(ReservedStates())
-				.OrderByDescending(s => s.Frame);
+				.Concat(ReservedStates());
 		}
 
 		public int Last => StateCache.Max();
@@ -474,8 +473,15 @@ namespace BizHawk.Client.Common
 			if (frame < 0)
 				throw new ArgumentOutOfRangeException(nameof(frame));
 
-			var si = AllStates().First(s => s.Frame <= frame);
-			return new KeyValuePair<int, Stream>(si.Frame, si.Read());
+			StateInfo closestState = null;
+			foreach (var state in AllStates())
+			{
+				if (state.Frame <= frame && (closestState is null || state.Frame > closestState.Frame))
+				{
+					closestState = state;
+				}
+			}
+			return new KeyValuePair<int, Stream>(closestState!.Frame, closestState.Read());
 		}
 
 		public bool HasState(int frame)
