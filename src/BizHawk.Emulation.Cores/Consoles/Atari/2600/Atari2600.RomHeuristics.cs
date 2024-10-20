@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					return "F8SC";
 				}
 
-				if (rom.Take(4096).SequenceEqual(rom.Skip(4096).Take(4096)))
+				if (rom.AsSpan(start: 0, length: 4096).SequenceEqual(rom.AsSpan(start: 4096, length: 4096)))
 				{
 					return "4K"; // Again if it is simply the same 4k twice. Got this scenario from Stella logic.  Will assume a good reason for it
 				}

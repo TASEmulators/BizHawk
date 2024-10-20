@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
 
 
@@ -31,8 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			var br = new BinaryReader(s, Encoding.ASCII);
 
-			if (!Encoding.ASCII.GetBytes("UNIF")
-				.SequenceEqual(br.ReadBytes(4)))
+			if (!br.ReadBytes(4).SequenceEqual("UNIF"u8))
 			{
 				throw new Exception("Missing \"UNIF\" header mark!");
 			}
