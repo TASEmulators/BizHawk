@@ -8,6 +8,8 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 
+using BizHawk.Common.CollectionExtensions;
+
 using SDGraphics = System.Drawing.Graphics;
 
 namespace BizHawk.Bizware.Graphics
@@ -33,10 +35,6 @@ namespace BizHawk.Bizware.Graphics
 		private readonly Bitmap WrappedBitmap;
 		private GCHandle CurrLockHandle;
 		private BitmapData CurrLock;
-
-		/// <summary>same as <see cref="Pixels"/> (<see cref="PixelFormat.Format32bppArgb">A8R8G8B8</see>)</summary>
-		public Span<int> AsSpan()
-			=> Pixels;
 
 		/// <exception cref="InvalidOperationException">already locked</exception>
 		/// <remarks>TODO add read/write semantic, for wraps</remarks>
@@ -545,7 +543,7 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public bool SequenceEqual(BitmapBuffer other)
-			=> Width == other.Width && Height == other.Height && AsSpan().SequenceEqual(other.AsSpan());
+			=> Width == other.Width && Height == other.Height && Pixels.SequenceEqual(other.Pixels);
 
 		/// <summary>
 		/// Dumps this BitmapBuffer to a new System.Drawing.Bitmap

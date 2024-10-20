@@ -321,5 +321,7 @@ namespace BizHawk.Common.CollectionExtensions
 			for (int i = 0, e = span.Length - 1; i < e; i++) if (span[i + 1].CompareTo(span[i]) > 0) return false;
 			return true;
 		}
+
+		public static bool SequenceEqual<T>(this T[] a, ReadOnlySpan<T> b) where T : IEquatable<T> => a.AsSpan().SequenceEqual(b);
 	}
 }
