@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common.CollectionExtensions;
@@ -35,6 +36,11 @@ namespace BizHawk.Bizware.Graphics
 		private readonly Bitmap WrappedBitmap;
 		private GCHandle CurrLockHandle;
 		private BitmapData CurrLock;
+
+		/// <summary>same as <see cref="Pixels"/> (<see cref="PixelFormat.Format32bppArgb">A8R8G8B8</see>)</summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public Span<int> AsSpan()
+			=> Pixels;
 
 		/// <exception cref="InvalidOperationException">already locked</exception>
 		/// <remarks>TODO add read/write semantic, for wraps</remarks>
@@ -221,7 +227,7 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public BitmapBuffer Copy()
-			=> new(width: Width, height: Height, pixels: Pixels.AsSpan().ToArray());
+			=> new(width: Width, height: Height, pixels: AsSpan().ToArray());
 
 		/// <remarks>TODO surely there's a better implementation --yoshi</remarks>
 		public BitmapBuffer Copy(Rectangle region)
@@ -543,7 +549,7 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public bool SequenceEqual(BitmapBuffer other)
-			=> Width == other.Width && Height == other.Height && Pixels.SequenceEqual(other.Pixels);
+			=> Width == other.Width/* && Height == other.Height*/ && AsSpan().SequenceEqual(other.AsSpan());
 
 		/// <summary>
 		/// Dumps this BitmapBuffer to a new System.Drawing.Bitmap
