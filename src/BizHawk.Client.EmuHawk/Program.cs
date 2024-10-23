@@ -11,6 +11,7 @@ using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
+using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -314,6 +315,7 @@ namespace BizHawk.Client.EmuHawk
 			var exitCode = 0;
 			try
 			{
+				GameDBHelper.BackgroundInitAll();
 				MainForm mf = new(
 					cliFlags,
 					workingGL,

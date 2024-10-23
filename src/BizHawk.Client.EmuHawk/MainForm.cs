@@ -26,7 +26,6 @@ using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
@@ -406,14 +405,6 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 			}
-
-			//do this threaded stuff early so it has plenty of time to run in background
-			Database.InitializeDatabase(
-				bundledRoot: Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"),
-				userRoot: Path.Combine(PathUtils.DataDirectoryPath, "gamedb"),
-				silent: true);
-			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
-			MAMEMachineDB.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
 			_argParser = cliFlags;
 			_getConfigPath = getConfigPath;
