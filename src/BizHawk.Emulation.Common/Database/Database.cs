@@ -97,10 +97,18 @@ namespace BizHawk.Emulation.Common
 		public static CompactGameInfo ParseCGIRecord(string line)
 		{
 			const char FIELD_SEPARATOR = '\t';
-			var items = line.Split(FIELD_SEPARATOR);
-			var field = 0;
-			var hashDigest = FormatHash(items[field++]);
-			var dumpStatus = items[field++].Trim() switch
+			var iFieldStart = -1;
+			var iFieldEnd = -1; // offset of the tab char, or line.Length if at end
+			string AdvanceAndReadField(out bool isLastField)
+			{
+				iFieldStart = iFieldEnd + 1;
+				iFieldEnd = line.IndexOf(FIELD_SEPARATOR, iFieldStart);
+				isLastField = iFieldEnd < 0;
+				if (isLastField) iFieldEnd = line.Length;
+				return line.Substring(startIndex: iFieldStart, length: iFieldEnd - iFieldStart);
+			}
+			var hashDigest = FormatHash(AdvanceAndReadField(out _));
+			var dumpStatus = AdvanceAndReadField(out _).Trim() switch
 			{
 				"B" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
 				"V" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
@@ -112,21 +120,21 @@ namespace BizHawk.Emulation.Common
 				"U" => RomStatus.Unknown,
 				_ => RomStatus.GoodDump
 			};
-			var knownName = items[field++];
-			var sysID = items[field++];
+			var knownName = AdvanceAndReadField(out _);
+			var sysID = AdvanceAndReadField(out var isLastField);
 			string/*?*/ metadata = null;
 			string region = string.Empty;
 			string forcedCore = string.Empty;
-			if (field < items.Length)
+			if (!isLastField)
 			{
-				_ = items[field++]; // rarely populated; possibly genre or just a remark
-				if (field < items.Length)
+				_ = AdvanceAndReadField(out isLastField); // rarely present; possibly genre or just a remark
+				if (!isLastField)
 				{
-					metadata = items[field++];
-					if (field < items.Length)
+					metadata = AdvanceAndReadField(out isLastField);
+					if (!isLastField)
 					{
-						region = items[field++];
-						if (field < items.Length) forcedCore = items[field++];
+						region = AdvanceAndReadField(out isLastField);
+						if (!isLastField) forcedCore = AdvanceAndReadField(out isLastField);
 					}
 				}
 			}
