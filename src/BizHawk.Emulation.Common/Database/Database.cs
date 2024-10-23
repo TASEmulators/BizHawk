@@ -94,6 +94,54 @@ namespace BizHawk.Emulation.Common
 
 		private static bool initialized = false;
 
+		public static CompactGameInfo ParseCGIRecord(string line)
+		{
+			const char FIELD_SEPARATOR = '\t';
+			var items = line.Split(FIELD_SEPARATOR);
+			var field = 0;
+			var hashDigest = FormatHash(items[field++]);
+			var dumpStatus = items[field++].Trim() switch
+			{
+				"B" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
+				"V" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
+				"T" => RomStatus.TranslatedRom,
+				"O" => RomStatus.Overdump,
+				"I" => RomStatus.Bios,
+				"D" => RomStatus.Homebrew,
+				"H" => RomStatus.Hack,
+				"U" => RomStatus.Unknown,
+				_ => RomStatus.GoodDump
+			};
+			var knownName = items[field++];
+			var sysID = items[field++];
+			string/*?*/ metadata = null;
+			string region = string.Empty;
+			string forcedCore = string.Empty;
+			if (field < items.Length)
+			{
+				_ = items[field++]; // rarely populated; possibly genre or just a remark
+				if (field < items.Length)
+				{
+					metadata = items[field++];
+					if (field < items.Length)
+					{
+						region = items[field++];
+						if (field < items.Length) forcedCore = items[field++];
+					}
+				}
+			}
+			return new()
+			{
+				Hash = hashDigest,
+				Status = dumpStatus,
+				Name = knownName,
+				System = sysID,
+				MetaData = metadata,
+				Region = region,
+				ForcedCore = forcedCore,
+			};
+		}
+
 		private static void InitializeWork(string path, bool inUser, bool silent)
 		{
 			if (!inUser) _expected.Remove(Path.GetFileName(path));
@@ -115,31 +163,7 @@ namespace BizHawk.Emulation.Common
 					{
 						continue;
 					}
-
-					var items = line.Split('\t');
-
-					var game = new CompactGameInfo
-					{
-						Hash = FormatHash(items[0]),
-						Status = items[1].Trim()
-							switch
-						{
-							"B" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
-							"V" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
-							"T" => RomStatus.TranslatedRom,
-							"O" => RomStatus.Overdump,
-							"I" => RomStatus.Bios,
-							"D" => RomStatus.Homebrew,
-							"H" => RomStatus.Hack,
-							"U" => RomStatus.Unknown,
-							_ => RomStatus.GoodDump
-						},
-						Name = items[2],
-						System = items[3],
-						MetaData = items.Length >= 6 ? items[5] : null,
-						Region = items.Length >= 7 ? items[6] : "",
-						ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : ""
-					};
+					var game = ParseCGIRecord(line);
 					if (game.Hash is SHA1Checksum.EmptyFile or MD5Checksum.EmptyFile)
 					{
 						Console.WriteLine($"WARNING: gamedb {path} contains entry for empty rom as \"{game.Name}\"!");
