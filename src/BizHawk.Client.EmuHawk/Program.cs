@@ -316,6 +316,9 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				GameDBHelper.BackgroundInitAll();
+#if BIZHAWKBUILD_RUN_ONLY_GAMEDB_INIT
+				GameDBHelper.WaitForThreadAndQuickTest();
+#else
 				MainForm mf = new(
 					cliFlags,
 					workingGL,
@@ -362,6 +365,7 @@ namespace BizHawk.Client.EmuHawk
 						movieSession.Movie.Save();
 					}
 				}
+#endif
 			}
 			catch (Exception e) when (!Debugger.IsAttached)
 			{
