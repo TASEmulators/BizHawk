@@ -313,6 +313,11 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			return fi;
 		}
 
+		protected override void FrameAdvancePost()
+		{
+			VsyncNumerator = BufferHeight == LibPUAE.NTSC_HEIGHT ? 60 : 50;
+		}
+
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
 		{
 			writer.Write(_ejectPressed);

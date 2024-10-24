@@ -60,6 +60,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			Auto
 		}
 
+		public enum VideoStandard
+		{
+			PAL,
+			NTSC
+		}
+
 		public enum ChipMemory
 		{
 			[Display(Name = "512KB")]
@@ -224,6 +230,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				AppendSetting("fastmem_size=" + settings.FastMemory);
 			}
 
+			if (settings.Region == VideoStandard.NTSC)
+			{
+				AppendSetting("ntsc=true");
+				VsyncNumerator = 60;
+			}
+
 			AppendSetting("input.mouse_speed=" + settings.MouseSpeed);
 			AppendSetting("sound_stereo_separation=" + settings.StereoSeparation / 10);
 		}
@@ -334,6 +346,11 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			[DefaultValue(1)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int FloppyDrives { get; set; }
+
+			[DisplayName("Video standard")]
+			[Description("Determines resolution and framerate.")]
+			[DefaultValue(VideoStandard.PAL)]
+			public VideoStandard Region { get; set; }
 
 			public PUAESyncSettings()
 				=> SettingsUtil.SetDefaultValues(this);

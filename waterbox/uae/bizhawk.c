@@ -25,8 +25,9 @@ ECL_EXPORT bool Init(int argc, char **argv)
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
-    f->base.Width = 720;
-    f->base.Height = 576;
+	bool is_ntsc = minfirstline == VBLANK_ENDLINE_NTSC;
+    f->base.Width = PUAE_VIDEO_WIDTH;
+    f->base.Height = is_ntsc ? PUAE_VIDEO_HEIGHT_NTSC : PUAE_VIDEO_HEIGHT_PAL;
 	sound_buffer = f->base.SoundBuffer;
 	thisframe_y_adjust = minfirstline;
 	visible_left_border = retro_max_diwlastword - retrow;
