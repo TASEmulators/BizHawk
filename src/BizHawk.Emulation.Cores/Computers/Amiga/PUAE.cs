@@ -57,11 +57,11 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			var paue = PreInit<LibPUAE>(new WaterboxOptions
 			{
 				Filename                   = "puae.wbx",
-				SbrkHeapSizeKB             = 5 * 512,
-				SealedHeapSizeKB           = 10 * 1024,
-				InvisibleHeapSizeKB        = 10 * 1024,
-				PlainHeapSizeKB            = 10 * 1024,
-				MmapHeapSizeKB             = 40 * 1024,
+				SbrkHeapSizeKB             = 1024,
+				SealedHeapSizeKB           = 512,
+				InvisibleHeapSizeKB        = 512,
+				PlainHeapSizeKB            = 512,
+				MmapHeapSizeKB             = 20 * 1024,
 				SkipCoreConsistencyCheck   = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
