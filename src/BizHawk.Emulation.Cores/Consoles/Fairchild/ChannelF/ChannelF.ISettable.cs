@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			[DisplayName("Viewport")]
 			[Description("Visable screen area (cropping options)")]
-			[DefaultValue(ViewPort.Trimmed)]
+			[DefaultValue(ViewPort.AllVisible)]
 			public ViewPort Viewport { get; set; }
 
 			public ChannelFSyncSettings Clone()

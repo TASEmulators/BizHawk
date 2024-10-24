@@ -74,10 +74,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				case ViewPort.Trimmed:
 					// https://channelf.se/veswiki/index.php?title=VRAM
-					TrimLeft = 0;
-					TrimRight = HBlankOn - HBlankOff - (95 * PixelWidth);
-					TrimTop = 0;
-					TrimBottom = 0;
+					TrimLeft = 5;
+					TrimRight = 5;
+					TrimTop = 5;
+					TrimBottom = 5;
 					break;
 			}
 		}
