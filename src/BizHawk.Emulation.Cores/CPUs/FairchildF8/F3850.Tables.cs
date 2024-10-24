@@ -252,8 +252,8 @@
 		{
 			PopulateCURINSTR(
 				// L
-				OP_LR8, DB, Ql,             // DB <- (r15)
-				//OP_EI,                      // Set ICB Flag
+				OP_LR8, DB, Ql,				// DB <- (r15)
+				//OP_EI,                    // Set ICB Flag
 				IDLE,
 				IDLE,
 				ROMC_17,					// PC0l <- (DB)
@@ -751,7 +751,7 @@
 				ROMC_03_L,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
-				OP_CI,				// Set flags for A <- (DB) + (-A) + 1 (do not store result in A)
+				OP_CI,						// Set flags for A <- (DB) + (-A) + 1 (do not store result in A)
 				IDLE,
 				IDLE,
 				// S
@@ -1451,7 +1451,7 @@
 				ROMC_1C_S,                  // Idle
 				OP_IN, ALU0, IO,            // A <- ((Port index - 0/1))
 				IDLE,				
-				OP_LR_A_DB_IO, A, ALU0,       // A <- (A) - flags set as result of IN or INS operation
+				OP_LR_A_DB_IO, A, ALU0,     // A <- (A) - flags set as result of IN or INS operation
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
@@ -1507,7 +1507,7 @@
 				// S
 				ROMC_1C_S,					// Idle
 				IDLE,
-				OP_OUT, IO, A,			// Port <- (A)
+				OP_OUT, IO, A,				// Port <- (A)
 				IDLE,
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
@@ -1878,13 +1878,13 @@
 			PopulateCURINSTR(
 				// L
 				IDLE,
-				ROMC_01,            // PC0 <- PC0 + (DB)
+				ROMC_01,					// PC0 <- PC0 + (DB)
 				IDLE,
 				IDLE,
 				IDLE,
 				IDLE,
 				// S
-				ROMC_00_S,          // DB <- ((PC0)); PC0++	
+				ROMC_00_S,					// DB <- ((PC0)); PC0++	
 				IDLE,
 				IDLE,
 				END);
@@ -1899,11 +1899,11 @@
 			PopulateCURINSTR(
 				// S
 				IDLE,
-				ROMC_03_S,          // Immediate operand fetch
+				ROMC_03_S,					// Immediate operand fetch
 				IDLE,
 				IDLE,
 				// S
-				ROMC_00_S,          // DB <- ((PC0)); PC0++	
+				ROMC_00_S,					// DB <- ((PC0)); PC0++	
 				IDLE,
 				IDLE,
 				END);

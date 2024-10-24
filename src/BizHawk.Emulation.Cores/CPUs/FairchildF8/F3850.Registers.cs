@@ -349,10 +349,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			Regs[ONE] = 1;
 			Regs[ZERO] = 0;
 			Regs[BYTE] = 0xFF;
-
-			// testing only - fill scratchpad with 0xff
-			//for (int i = 0; i < 64; i++)
-				//Regs[i] = 0xff;
 		}
 	}
 }

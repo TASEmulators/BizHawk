@@ -125,7 +125,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				case 5:
 					_outputLatch[addr] = value;
 					_latchY = (value | 0xC0) ^ 0xFF;
-					//var audio = ((value ^ 0xFF) >> 6) & 0x03;
 					var audio = (value >> 6) & 0x03;
 					if (audio != _tone)
 					{

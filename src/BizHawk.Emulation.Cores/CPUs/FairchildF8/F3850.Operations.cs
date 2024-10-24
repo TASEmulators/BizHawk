@@ -217,7 +217,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			Regs[ALU0] = twosComp;
 			Regs[ALU1] = Regs[DB];
 			ADD_Func(ALU0, ALU1, ONE);
-			//ADD_Func(ALU0, ALU1);
 		}		
 
 		/// <summary>
