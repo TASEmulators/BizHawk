@@ -30,6 +30,30 @@
 			}
 		}
 
+		public CDLResult ReadCDL(ushort addr)
+		{
+			var result = new CDLResult();
+			int divisor = addr / 0x400;
+			result.Address = addr % 0x400;
+
+			switch (divisor)
+			{
+				case 0:
+					result.Type = CDLType.BIOS1;
+					break;
+
+				case 1:
+					result.Type = CDLType.BIOS2;
+					break;
+
+				default:
+					result.Type = CDLType.CARTROM;
+					break;
+			}
+
+			return result;
+		}
+
 		/// <summary>
 		/// Simulates writing a byte of data to the address space (in its default configuration, there is no writeable RAM in the
 		/// Channel F addressable through the address space)

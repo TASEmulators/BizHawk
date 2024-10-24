@@ -7,7 +7,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public readonly struct CpuLink(ChannelF channelF) : IF3850Link
 		{
 			public byte ReadMemory(ushort address)
-				=> channelF.ReadBus(address);
+				=> channelF._cdl == null
+					? channelF.ReadBus(address)
+					: channelF.ReadMemory_CDL(address);
 
 			public void WriteMemory(ushort address, byte value)
 				=> channelF.WriteBus(address, value);
