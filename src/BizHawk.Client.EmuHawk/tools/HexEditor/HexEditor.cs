@@ -133,6 +133,7 @@ namespace BizHawk.Client.EmuHawk
 			public Color Freeze { get; set;  }= Color.LightBlue;
 			public Color Highlight { get; set; } = Color.Pink;
 			public Color HighlightFreeze { get; set; } = Color.Violet;
+			public Color Foreground00 { get; set; } = Color.SlateGray;
 		}
 
 		[ConfigPersist]
@@ -219,11 +220,21 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateAfter()
 		{
+			if (AddressesLabel.ZeroColor != Colors.Foreground00)
+			{
+				AddressesLabel.ZeroColor = Colors.Foreground00;
+			}
+
 			AddressesLabel.Text = GenerateMemoryViewString(true);
 		}
 
 		protected override void GeneralUpdate()
 		{
+			if (AddressesLabel.ZeroColor != Colors.Foreground00)
+			{
+				AddressesLabel.ZeroColor = Colors.Foreground00;
+			}
+
 			AddressesLabel.Text = GenerateMemoryViewString(true);
 			AddressLabel.Text = GenerateAddressString();
 		}
@@ -2052,54 +2063,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				HexScrollBar.Value = newValue;
 				MemoryViewerBox.Refresh();
-			}
-		}
-
-		private void AddressesLabel_Paint(object sender, PaintEventArgs e)
-		{
-			return;
-
-			if (sender is not Label label)
-				return;
-
-			char gap = ' ';
-
-			//PointF point = new PointF(label.Location.X, label.Location.Y);
-			PointF point = new PointF(0, 0);
-			string text = label.Text;
-			Font font = label.Font;
-
-			string[] lines = text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-
-			Color color = label.ForeColor;
-
-			foreach (string line in lines)
-			{
-				string[] words = line.Split(gap);
-
-				foreach (string word in words)
-				{
-					if (word == "00")
-					{
-						color = Color.SlateGray;
-					}
-					else
-					{
-						color = label.ForeColor;
-					}
-
-					SizeF size = e.Graphics.MeasureString(word, font);
-
-					using (Brush brush = new SolidBrush(color))
-					{
-						e.Graphics.DrawString(word, font, brush, point);
-					}
-
-					point.X += size.Width + e.Graphics.MeasureString(gap.ToString(), font).Width;
-				}
-
-				point.X = label.Location.X;
-				point.Y += e.Graphics.MeasureString(line, font).Height;
 			}
 		}
 

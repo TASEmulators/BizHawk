@@ -454,7 +454,6 @@ namespace BizHawk.Client.EmuHawk
 			this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
 			this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
 			this.AddressesLabel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseUp);
-			this.AddressesLabel.Paint += new System.Windows.Forms.PaintEventHandler(this.AddressesLabel_Paint);
 			// 
 			// Header
 			// 
