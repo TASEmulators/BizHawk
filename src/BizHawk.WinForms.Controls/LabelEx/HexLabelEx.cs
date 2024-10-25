@@ -86,10 +86,8 @@ namespace BizHawk.WinForms.Controls
 							color = this.ForeColor;
 							break;
 					}
-					using (Brush brush = new SolidBrush(color))
-					{
-						e.Graphics.DrawString(word, font, brush, point);
-					}
+
+					DrawString(word, font, point, color);
 
 					point.X += size.Width + e.Graphics.MeasureString(gap.ToString(), font).Width + spacingHexModifier;
 				}
@@ -98,10 +96,8 @@ namespace BizHawk.WinForms.Controls
 				string div = "|";
 				point.X -= spacingPreDivider;
 				SizeF sizeDiv = e.Graphics.MeasureString(div, font);
-				using (Brush brush = new SolidBrush(this.ForeColor))
-				{
-					e.Graphics.DrawString(div, font, brush, point);					
-				}
+
+				DrawString(div, font, point, this.ForeColor);
 
 				point.X += e.Graphics.MeasureString(gap.ToString(), font).Width + spacingPostDividerModifier;
 
@@ -110,11 +106,7 @@ namespace BizHawk.WinForms.Controls
 				foreach (var c in chars)
 				{
 					string str = c.ToString();
-
-					using (Brush brush = new SolidBrush(this.ForeColor))
-					{
-						e.Graphics.DrawString(str, font, brush, point);
-					}
+					DrawString(str, font, point, this.ForeColor);
 
 					// fixed size
 					point.X += spacingAscii;
@@ -122,6 +114,14 @@ namespace BizHawk.WinForms.Controls
 
 				point.X = 0;
 				point.Y += e.Graphics.MeasureString(line, font).Height + spacingLineModifier;
+			}
+
+			void DrawString(string s, Font f, PointF p, Color color)
+			{
+				using (Brush brush = new SolidBrush(color))
+				{
+					e.Graphics.DrawString(s, f, brush, p);
+				}
 			}
 		}
 	}
