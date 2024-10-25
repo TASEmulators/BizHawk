@@ -49,7 +49,6 @@ namespace BizHawk.WinForms.Controls
 
 			string[] lines = text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
-			Color color00 = this.ForeColor;
 			Color color = this.ForeColor;
 
 			foreach (string line in lines)
@@ -61,6 +60,14 @@ namespace BizHawk.WinForms.Controls
 				{
 					// skip - last line appears to be empty
 					continue;
+				}
+				else if (panes.Length > 2)
+				{
+					// pipe character present in the ascii pane?
+					for (int i = 2; i < panes.Length; i++)
+					{
+						panes[1] += "|" + panes[i];
+					}
 				}
 
 				// hex pane
