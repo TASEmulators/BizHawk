@@ -13,11 +13,11 @@ namespace BizHawk.Client.EmuHawk
 	// TODO - Allow relative paths in record TextBox
 	public sealed class RecordMovie : Form, IDialogParent
 	{
-		private const string START_FROM_POWERON = "Power-On";
+		private const string START_FROM_POWERON = "Power-on (clean)";
 
-		private const string START_FROM_SAVERAM = "SaveRam";
+		private const string START_FROM_SAVERAM = "SaveRAM";
 
-		private const string START_FROM_SAVESTATE = "Now";
+		private const string START_FROM_SAVESTATE = "SaveRAM + savestate";
 
 		private readonly IMainFormForTools _mainForm;
 		private readonly Config _config;
@@ -102,8 +102,8 @@ namespace BizHawk.Client.EmuHawk
 				MaxDropDownItems = 32,
 				Size = new(152, 21),
 			};
-			if (_emulator.HasSavestates()) StartFromCombo.Items.Add(START_FROM_SAVESTATE);
 			if (_emulator.HasSaveRam()) StartFromCombo.Items.Add(START_FROM_SAVERAM);
+			if (_emulator.HasSavestates()) StartFromCombo.Items.Add(START_FROM_SAVESTATE);
 
 			DefaultAuthorCheckBox = new()
 			{
@@ -227,7 +227,8 @@ namespace BizHawk.Client.EmuHawk
 					Directory.CreateDirectory(fileInfo.DirectoryName);
 				}
 
-				if (StartFromCombo.SelectedItem.ToString() is START_FROM_SAVESTATE && _emulator.HasSavestates())
+				var selectedStartFromValue = StartFromCombo.SelectedItem.ToString();
+				if (selectedStartFromValue is START_FROM_SAVESTATE && _emulator.HasSavestates())
 				{
 					var core = _emulator.AsStatable();
 
@@ -251,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 						movieToRecord.SavestateFramebuffer = _emulator.AsVideoProvider().GetVideoBufferCopy();
 					}
 				}
-				else if (StartFromCombo.SelectedItem.ToString() is START_FROM_SAVERAM && _emulator.HasSaveRam())
+				else if (selectedStartFromValue is START_FROM_SAVERAM && _emulator.HasSaveRam())
 				{
 					var core = _emulator.AsSaveRam();
 					movieToRecord.StartsFromSaveRam = true;
