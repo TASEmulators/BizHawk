@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
 			this.HexScrollBar = new System.Windows.Forms.VScrollBar();
 			this.AddressLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.AddressesLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.AddressesLabel = new BizHawk.WinForms.Controls.HexLabelEx();
 			this.Header = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.HexMenuStrip.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
@@ -454,6 +454,7 @@ namespace BizHawk.Client.EmuHawk
 			this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
 			this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
 			this.AddressesLabel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseUp);
+			this.AddressesLabel.Paint += new System.Windows.Forms.PaintEventHandler(this.AddressesLabel_Paint);
 			// 
 			// Header
 			// 
@@ -511,7 +512,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AddToRamWatchMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FreezeAddressMenuItem;
 		public System.Windows.Forms.GroupBox MemoryViewerBox;
-		private BizHawk.WinForms.Controls.LocLabelEx AddressesLabel;
+		private BizHawk.WinForms.Controls.HexLabelEx AddressesLabel;
 		private System.Windows.Forms.VScrollBar HexScrollBar;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx UnfreezeAllMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx UnfreezeAllContextItem;

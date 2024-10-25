@@ -2055,6 +2055,54 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void AddressesLabel_Paint(object sender, PaintEventArgs e)
+		{
+			return;
+
+			if (sender is not Label label)
+				return;
+
+			char gap = ' ';
+
+			//PointF point = new PointF(label.Location.X, label.Location.Y);
+			PointF point = new PointF(0, 0);
+			string text = label.Text;
+			Font font = label.Font;
+
+			string[] lines = text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+			Color color = label.ForeColor;
+
+			foreach (string line in lines)
+			{
+				string[] words = line.Split(gap);
+
+				foreach (string word in words)
+				{
+					if (word == "00")
+					{
+						color = Color.SlateGray;
+					}
+					else
+					{
+						color = label.ForeColor;
+					}
+
+					SizeF size = e.Graphics.MeasureString(word, font);
+
+					using (Brush brush = new SolidBrush(color))
+					{
+						e.Graphics.DrawString(word, font, brush, point);
+					}
+
+					point.X += size.Width + e.Graphics.MeasureString(gap.ToString(), font).Width;
+				}
+
+				point.X = label.Location.X;
+				point.Y += e.Graphics.MeasureString(line, font).Height;
+			}
+		}
+
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
 			var activeCheats = MainForm.CheatList.Where(x => x.Enabled);
