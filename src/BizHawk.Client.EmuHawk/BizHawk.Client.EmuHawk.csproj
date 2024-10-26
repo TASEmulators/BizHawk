@@ -120,12 +120,12 @@
 		<Compile Update="config/FileExtensionPreferencesPicker.cs" SubType="UserControl" />
 		<Compile Update="config/FileExtensionPreferencesPicker.Designer.cs" DependentUpon="FileExtensionPreferencesPicker.cs" />
 		<EmbeddedResource Update="config/FileExtensionPreferencesPicker.resx" DependentUpon="FileExtensionPreferencesPicker.cs" />
-		<Compile Update="config/FirmwaresConfig.cs" SubType="Form" />
-		<Compile Update="config/FirmwaresConfig.Designer.cs" DependentUpon="FirmwaresConfig.cs" />
-		<EmbeddedResource Update="config/FirmwaresConfig.resx" DependentUpon="FirmwaresConfig.cs" />
-		<Compile Update="config/FirmwaresConfigInfo.cs" SubType="Form" />
-		<Compile Update="config/FirmwaresConfigInfo.Designer.cs" DependentUpon="FirmwaresConfigInfo.cs" />
-		<EmbeddedResource Update="config/FirmwaresConfigInfo.resx" DependentUpon="FirmwaresConfigInfo.cs" />
+		<Compile Update="config/FirmwareConfig.cs" SubType="Form" />
+		<Compile Update="config/FirmwareConfig.Designer.cs" DependentUpon="FirmwareConfig.cs" />
+		<EmbeddedResource Update="config/FirmwareConfig.resx" DependentUpon="FirmwareConfig.cs" />
+		<Compile Update="config/FirmwareConfigInfo.cs" SubType="Form" />
+		<Compile Update="config/FirmwareConfigInfo.Designer.cs" DependentUpon="FirmwareConfigInfo.cs" />
+		<EmbeddedResource Update="config/FirmwareConfigInfo.resx" DependentUpon="FirmwareConfigInfo.cs" />
 		<Compile Update="config/GB/BmpView.cs" SubType="Component" />
 		<Compile Update="config/GB/CGBColorChooserForm.cs" SubType="Form" />
 		<Compile Update="config/GB/CGBColorChooserForm.Designer.cs" DependentUpon="CGBColorChooserForm.cs" />
