@@ -41,14 +41,14 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		public HyperNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, VSystemID.Raw.PCE, "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{
-			var firmwares = new Dictionary<string, FirmwareID>();
+			var firmwareIDMap = new Dictionary<string, FirmwareID>();
 			if (lp.Discs.Count > 0)
 			{
 				_hasCds = true;
-				firmwares.Add("FIRMWARE:syscard3.pce", new("PCECD", "Bios"));
+				firmwareIDMap.Add("FIRMWARE:syscard3.pce", new("PCECD", "Bios"));
 			}
 
-			_hyperNyma = DoInit<LibHyperNyma>(lp, "hyper.wbx", firmwares);
+			_hyperNyma = DoInit<LibHyperNyma>(lp, "hyper.wbx", firmwareIDMap);
 
 			_cachedSettingsInfo ??= SettingsInfo.Clone();
 		}

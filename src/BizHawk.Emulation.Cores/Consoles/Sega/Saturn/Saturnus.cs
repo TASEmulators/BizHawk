@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		{
 			if (lp.Roms.Count > 0)
 				throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");
-			var firmwares = new Dictionary<string, FirmwareID>
+			var firmwareIDMap = new Dictionary<string, FirmwareID>
 			{
 				{ "FIRMWARE:$J", new("SAT", "J") },
 				{ "FIRMWARE:$U", new("SAT", "U") },
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				{ "FIRMWARE:$ULTRA", new("SAT", "ULTRAMAN") },
 				// { "FIRMWARE:$SATAR", new("SAT", "AR") }, // action replay garbage
 			};
-			_saturnus = DoInit<LibSaturnus>(lp, "ss.wbx", firmwares);
+			_saturnus = DoInit<LibSaturnus>(lp, "ss.wbx", firmwareIDMap);
 
 			_cachedSettingsInfo ??= SettingsInfo.Clone();
 		}
