@@ -168,7 +168,7 @@ namespace BizHawk.Client.Common
 
 		public static string FirmwareAbsolutePath(this PathEntryCollection collection)
 		{
-			return collection.AbsolutePathFor(collection.FirmwaresPathFragment, null);
+			return collection.AbsolutePathFor(collection.FirmwarePathFragment, null);
 		}
 
 		public static string LogAbsolutePath(this PathEntryCollection collection)

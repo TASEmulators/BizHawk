@@ -162,7 +162,8 @@ namespace BizHawk.Client.Common
 		}
 
 		[JsonIgnore]
-		public string FirmwaresPathFragment => this[GLOBAL, "Firmware"].Path;
+		public string FirmwarePathFragment
+			=> this[GLOBAL, "Firmware"].Path;
 
 		[JsonIgnore]
 		internal string TempFilesFragment => this[GLOBAL, "Temp Files"].Path;
