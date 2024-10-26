@@ -322,7 +322,7 @@ namespace BizHawk.Emulation.Common
 			// full hash according to nointro, although incomplete dumps work just as well...
 			FirmwareAndOption("719B9EEF33692406D7170FF526069615759C4DFC", 65536, "NDS", "bios9i", "NDS_Bios9i.bin", "ARM9i BIOS");
 			Firmware("NDS", "firmware", "NDS Firmware");
-			// throwing a ton of hashes from various reported firmwares
+			// throwing a ton of hashes from various reported firmware
 			// TODO: Probably should just add in no-intro hashes
 			var knownhack1 = File("22A7547DBC302BCBFB4005CFB5A2D426D3F85AC6", 262144, "NDS_Firmware [b1].bin", "NDS Firmware", "known hack", true);
 			var knownhack2 = File("AE22DE59FBF3F35CCFBEACAEBA6FA87AC5E7B14B", 262144, "NDS_Firmware [b2].bin", "NDS Firmware", "known hack", true);

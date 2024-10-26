@@ -90,7 +90,7 @@ namespace BizHawk.Tests.Testroms.GB
 		}
 
 		/// <summary>
-		/// set-up firmwares on <paramref name="efp"/>, optionally setting <paramref name="config"/>, then
+		/// set-up firmware on <paramref name="efp"/>, optionally setting <paramref name="config"/>, then
 		/// initialise and return a core instance (<paramref name="coreComm"/> is provided),
 		/// and optionally specify a frame number to seek to (e.g. to skip BIOS screens)
 		/// </summary>

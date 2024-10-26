@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores
 		public TSync SyncSettings { get; set; }
 		/// <summary>
 		/// All roms that should be loaded as part of this core load.
-		/// Order may be significant.  Does not include firmwares or other general resources.
+		/// Order may be significant. Does not include firmware or other general resources.
 		/// </summary>
 		public List<IRomAsset> Roms { get; set; } = new List<IRomAsset>();
 		/// <summary>

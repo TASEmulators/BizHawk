@@ -16,7 +16,7 @@ using BizHawk.Emulation.Common;
 // notes: eventually, we intend to have a "firmware acquisition interface" exposed to the emulator cores.
 // it will be implemented by EmuHawk, and use firmware keys to fetch the firmware content.
 // however, for now, the cores are using strings from the config class. so we have the `configMember` which is
-// used by reflection to set the configuration for firmwares which were found
+// used by reflection to set the configuration for firmware which were found
 
 // TODO - we may eventually need to add a progress dialog for this. we should have one for other reasons.
 // I started making one in BizHawk.Util as QuickProgressPopup but ran out of time
@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// makes sure that the specified SystemId is selected in the list (and that all the firmwares for it are visible)
+		// makes sure that the specified SystemId is selected in the list (and that all the firmware for it is visible)
 		private void WarpToSystemId(string sysId)
 		{
 			bool selectedFirst = false;
@@ -460,7 +460,7 @@ namespace BizHawk.Client.EmuHawk
 					var filePath = result;
 
 					// if the selected file is an archive, allow the user to pick the inside file
-					// to always be copied to the global firmwares directory
+					// to always be copied to the global firmware directory
 					if (hf.IsArchive)
 					{
 						var ac = new ArchiveChooser(new HawkFile(filePath));
@@ -469,7 +469,7 @@ namespace BizHawk.Client.EmuHawk
 						var insideFile = hf.BindArchiveMember(ac.SelectedMemberIndex);
 						var fileData = insideFile.ReadAllBytes();
 
-						// write to file in the firmwares folder
+						// write to file in the firmware folder
 						File.WriteAllBytes(Path.Combine(firmwarePath, insideFile.Name), fileData);
 						filePath = Path.Combine(firmwarePath, insideFile.Name);
 					}

@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <remarks>
-		/// Sometimes this is called from a loop in <c>FirmwaresConfig.DoScan</c>.
+		/// Sometimes this is called from a loop in <c>FirmwareConfig.DoScan</c>.
 		/// In that case, we don't want to call <see cref="DoScanAndResolve"/> repeatedly, so we use <paramref name="forbidScan"/> to skip it.
 		/// </remarks>
 		public ResolutionInfo? Resolve(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications, FirmwareRecord record, bool forbidScan = false)
@@ -144,7 +144,7 @@ namespace BizHawk.Client.Common
 		{
 			var reader = new RealFirmwareReader();
 
-			// build a list of files under the global firmwares path, and build a hash for each of them (as ResolutionInfo) while we're at it
+			// build a list of files under the global firmware path, and build a hash for each of them (as ResolutionInfo) while we're at it
 			Queue<DirectoryInfo> todo = [ new(pathEntries.FirmwareAbsolutePath()) ];
 			while (todo.Count != 0)
 			{
@@ -207,7 +207,7 @@ namespace BizHawk.Client.Common
 				ri.Size = fi.Length;
 				ri.Hash = rff.Hash;
 
-				// check whether it was a known file anyway, and go ahead and bind to the known file, as a perk (the firmwares config doesn't really use this information right now)
+				// check whether it was a known file anyway, and go ahead and bind to the known file, as a perk (the firmware config doesn't really use this information right now)
 				if (FirmwareDatabase.FirmwareFilesByHash.TryGetValue(rff.Hash, out var ff))
 				{
 					ri.KnownFirmwareFile = ff;
