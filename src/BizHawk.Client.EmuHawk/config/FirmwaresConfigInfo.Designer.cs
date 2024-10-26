@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class FirmwaresConfigInfo
+	partial class FirmwareConfigInfo
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -177,7 +177,7 @@
 			this.tsmiOptionsCopy.Text = "&Copy";
 			this.tsmiOptionsCopy.Click += new System.EventHandler(this.TsmiOptionsCopy_Click);
 			// 
-			// FirmwaresConfigInfo
+			// FirmwareConfigInfo
 			// 
 			this.AcceptButton = this.btnClose;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -185,7 +185,7 @@
 			this.CancelButton = this.btnClose;
 			this.ClientSize = new System.Drawing.Size(728, 469);
 			this.Controls.Add(this.tableLayoutPanel1);
-			this.Name = "FirmwaresConfigInfo";
+			this.Name = "FirmwareConfigInfo";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Firmware Info";

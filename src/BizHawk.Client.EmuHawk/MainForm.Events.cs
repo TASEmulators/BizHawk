@@ -775,7 +775,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenFWConfigRomLoadFailed(RomLoader.RomErrorArgs args)
 		{
-			using FirmwaresConfig configForm = new(
+			using FirmwareConfig configForm = new(
 				this,
 				FirmwareManager,
 				Config.FirmwareUserSpecifications,
@@ -787,7 +787,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FirmwaresMenuItem_Click(object sender, EventArgs e)
 		{
-			using var configForm = new FirmwaresConfig(this, FirmwareManager, Config.FirmwareUserSpecifications, Config.PathEntries);
+			using var configForm = new FirmwareConfig(this, FirmwareManager, Config.FirmwareUserSpecifications, Config.PathEntries);
 			this.ShowDialogWithTempMute(configForm);
 		}
 

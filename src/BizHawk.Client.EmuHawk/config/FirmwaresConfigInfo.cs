@@ -6,14 +6,14 @@ using System.Windows.Forms;
 // todo - turn top info into textboxes i guess, labels suck
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class FirmwaresConfigInfo : Form
+	public partial class FirmwareConfigInfo : Form
 	{
-		public FirmwaresConfigInfo()
+		public FirmwareConfigInfo()
 		{
 			InitializeComponent();
 
 			// prep imagelist for listview
-			foreach (var kvp in FirmwaresConfig.StatusIcons.OrderBy(static kvp => kvp.Key)) imageList1.Images.Add(kvp.Value);
+			foreach (var kvp in FirmwareConfig.StatusIcons.OrderBy(static kvp => kvp.Key)) imageList1.Images.Add(kvp.Value);
 		}
 
 		private void LvOptions_KeyDown(object sender, KeyEventArgs e)

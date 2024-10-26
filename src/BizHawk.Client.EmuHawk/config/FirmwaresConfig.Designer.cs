@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.EmuHawk
 {
-    partial class FirmwaresConfig
+    partial class FirmwareConfig
     {
         /// <summary>
         /// Required designer variable.
@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
         private void InitializeComponent()
         {
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FirmwaresConfig));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FirmwareConfig));
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.lvFirmware = new System.Windows.Forms.ListView();
 			this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -344,13 +344,13 @@ namespace BizHawk.Client.EmuHawk
 			this.label2.Name = "label2";
 			this.label2.Text = "Firmware such as BIOS files are copyrighted material and not provided by BizHawk";
 			// 
-			// FirmwaresConfig
+			// FirmwareConfig
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(830, 478);
 			this.Controls.Add(this.tableLayoutPanel1);
-			this.Name = "FirmwaresConfig";
+			this.Name = "FirmwareConfig";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Firmware";

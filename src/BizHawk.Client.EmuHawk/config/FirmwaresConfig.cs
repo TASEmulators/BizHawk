@@ -25,7 +25,7 @@ using BizHawk.Emulation.Common;
 // IDEA: prepop set customization to dir of current custom
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class FirmwaresConfig : Form, IDialogParent
+	public partial class FirmwareConfig : Form, IDialogParent
 	{
 		private const string STATUS_DESC_UNUSED = "";
 
@@ -121,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 		private string _currSelectorDir;
 		private readonly ListViewSorter _listViewSorter;
 
-		public FirmwaresConfig(
+		public FirmwareConfig(
 			IDialogController dialogController,
 			FirmwareManager firmwareManager,
 			IDictionary<string, string> firmwareUserSpecifications,
@@ -180,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 		private void FirmwareConfig_Load(object sender, EventArgs e)
 		{
 			string GetSystemGroupName(string sysID)
-				=> SystemGroupNames.TryGetValue(sysID, out var name) ? name : $"FIX ME ({nameof(FirmwaresConfig)}.{nameof(SystemGroupNames)})";
+				=> SystemGroupNames.TryGetValue(sysID, out var name) ? name : $"FIX ME ({nameof(FirmwareConfig)}.{nameof(SystemGroupNames)})";
 			ListViewGroup AddGroup(string sysID)
 			{
 				lvFirmware.Groups.Add(
@@ -529,7 +529,7 @@ namespace BizHawk.Client.EmuHawk
 			// get all options for this firmware (in order)
 			var options = FirmwareDatabase.FirmwareOptions.Where(fo => fo.ID == fr.ID);
 
-			var fciDialog = new FirmwaresConfigInfo
+			var fciDialog = new FirmwareConfigInfo
 			{
 				lblFirmware =
 				{
