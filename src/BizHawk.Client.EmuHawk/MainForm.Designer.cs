@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			this.DisplayConfigMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SoundMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PathsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.FirmwaresMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.FirmwareMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MessagesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AutofireMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RewindOptionsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -1050,7 +1050,7 @@ namespace BizHawk.Client.EmuHawk
             this.DisplayConfigMenuItem,
             this.SoundMenuItem,
             this.PathsMenuItem,
-            this.FirmwaresMenuItem,
+            this.FirmwareMenuItem,
             this.MessagesMenuItem,
             this.AutofireMenuItem,
             this.RewindOptionsMenuItem,
@@ -1094,10 +1094,10 @@ namespace BizHawk.Client.EmuHawk
 			this.PathsMenuItem.Text = "Paths...";
 			this.PathsMenuItem.Click += new System.EventHandler(this.PathsMenuItem_Click);
 			// 
-			// FirmwaresMenuItem
+			// FirmwareMenuItem
 			// 
-			this.FirmwaresMenuItem.Text = "&Firmware...";
-			this.FirmwaresMenuItem.Click += new System.EventHandler(this.FirmwaresMenuItem_Click);
+			this.FirmwareMenuItem.Text = "&Firmware...";
+			this.FirmwareMenuItem.Click += new System.EventHandler(this.FirmwareMenuItem_Click);
 			// 
 			// MessagesMenuItem
 			// 
@@ -2326,7 +2326,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripMenuItem11
 			// 
 			this.toolStripMenuItem11.Text = "&Firmware...";
-			this.toolStripMenuItem11.Click += new System.EventHandler(this.FirmwaresMenuItem_Click);
+			this.toolStripMenuItem11.Click += new System.EventHandler(this.FirmwareMenuItem_Click);
 			// 
 			// toolStripMenuItem12
 			// 
@@ -2642,7 +2642,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Ares64SettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ConfigContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RewindOptionsMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FirmwaresMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FirmwareMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx LoadTIFileMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearSRAMContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx ShowMenuContextMenuSeparator;

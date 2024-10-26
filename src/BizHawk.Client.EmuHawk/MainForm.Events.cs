@@ -785,7 +785,7 @@ namespace BizHawk.Client.EmuHawk
 			args.Retry = this.ShowDialogWithTempMute(configForm) is DialogResult.Retry;
 		}
 
-		private void FirmwaresMenuItem_Click(object sender, EventArgs e)
+		private void FirmwareMenuItem_Click(object sender, EventArgs e)
 		{
 			using var configForm = new FirmwareConfig(this, FirmwareManager, Config.FirmwareUserSpecifications, Config.PathEntries);
 			this.ShowDialogWithTempMute(configForm);

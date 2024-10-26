@@ -292,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 			DisplayConfigMenuItem.Image = Properties.Resources.TvIcon;
 			SoundMenuItem.Image = Properties.Resources.Audio;
 			PathsMenuItem.Image = Properties.Resources.CopyFolder;
-			FirmwaresMenuItem.Image = Properties.Resources.Pcb;
+			FirmwareMenuItem.Image = Properties.Resources.Pcb;
 			MessagesMenuItem.Image = Properties.Resources.MessageConfig;
 			AutofireMenuItem.Image = Properties.Resources.Lightning;
 			RewindOptionsMenuItem.Image = Properties.Resources.Previous;
