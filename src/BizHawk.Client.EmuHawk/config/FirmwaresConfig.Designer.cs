@@ -353,7 +353,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Name = "FirmwaresConfig";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Firmwares";
+			this.Text = "Firmware";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FirmwaresConfig_FormClosed);
 			this.Load += new System.EventHandler(this.FirmwaresConfig_Load);
 			this.lvFirmwaresContextMenuStrip.ResumeLayout(false);

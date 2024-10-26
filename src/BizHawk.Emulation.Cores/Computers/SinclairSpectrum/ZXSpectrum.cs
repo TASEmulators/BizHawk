@@ -202,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("ZXSpectrum", n))).FirstOrDefault(b => b != null && b.Length == length);
 			if (result == null)
 			{
-				throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");
+				throw new MissingFirmwareException($"At least one of these firmware options is required: {string.Join(", ", names)}");
 			}
 
 			return result;

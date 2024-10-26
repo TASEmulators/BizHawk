@@ -179,8 +179,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FirmwaresConfig_Load(object sender, EventArgs e)
 		{
-			string GetSystemGroupName(string sysID) => SystemGroupNames.TryGetValue(sysID, out var name) ? name : "FIX ME (FirmwaresConfig.cs)";
-
+			string GetSystemGroupName(string sysID)
+				=> SystemGroupNames.TryGetValue(sysID, out var name) ? name : $"FIX ME ({nameof(FirmwaresConfig)}.{nameof(SystemGroupNames)})";
 			ListViewGroup AddGroup(string sysID)
 			{
 				lvFirmwares.Groups.Add(
@@ -377,7 +377,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TbbOrganize_Click(object sender, EventArgs e)
 		{
-			if (!this.ModalMessageBox2("This is going to move/rename every automatically-selected firmware file under your configured firmwares directory to match our recommended organizational scheme (which is not super great right now). Proceed?", "Firmwares Organization Confirm", useOKCancel: true))
+			if (!this.ModalMessageBox2(
+				caption: "Organize firmware",
+				text: "This is going to move/rename every automatically-selected firmware file under your configured Firmware folder to match our recommended organizational scheme (which is not super great right now)."
+					+ "\nProceed?",
+				useOKCancel: true))
 			{
 				return;
 			}

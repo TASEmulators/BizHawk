@@ -3841,10 +3841,10 @@ namespace BizHawk.Client.EmuHawk
 
 					if (FirmwareManager.RecentlyServed.Count > 0)
 					{
-						Console.WriteLine("Active Firmwares:");
+						Console.WriteLine("Active firmware:");
 						foreach (var f in FirmwareManager.RecentlyServed)
 						{
-							Console.WriteLine($"  {f.ID} : {f.Hash}");
+							Console.WriteLine($"\t{f.ID} : {f.Hash}");
 						}
 					}
 

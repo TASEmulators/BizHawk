@@ -1096,7 +1096,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// FirmwaresMenuItem
 			// 
-			this.FirmwaresMenuItem.Text = "&Firmwares...";
+			this.FirmwaresMenuItem.Text = "&Firmware...";
 			this.FirmwaresMenuItem.Click += new System.EventHandler(this.FirmwaresMenuItem_Click);
 			// 
 			// MessagesMenuItem
@@ -2325,7 +2325,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// toolStripMenuItem11
 			// 
-			this.toolStripMenuItem11.Text = "&Firmwares...";
+			this.toolStripMenuItem11.Text = "&Firmware...";
 			this.toolStripMenuItem11.Click += new System.EventHandler(this.FirmwaresMenuItem_Click);
 			// 
 			// toolStripMenuItem12
