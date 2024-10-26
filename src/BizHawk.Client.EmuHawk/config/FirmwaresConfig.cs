@@ -166,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 		private void WarpToSystemId(string sysId)
 		{
 			bool selectedFirst = false;
-			foreach (ListViewItem lvi in lvFirmwares.Items)
+			foreach (ListViewItem lvi in lvFirmware.Items)
 			{
 				if (lvi.SubItems[1].Text == sysId)
 				{
@@ -177,21 +177,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void FirmwaresConfig_Load(object sender, EventArgs e)
+		private void FirmwareConfig_Load(object sender, EventArgs e)
 		{
 			string GetSystemGroupName(string sysID)
 				=> SystemGroupNames.TryGetValue(sysID, out var name) ? name : $"FIX ME ({nameof(FirmwaresConfig)}.{nameof(SystemGroupNames)})";
 			ListViewGroup AddGroup(string sysID)
 			{
-				lvFirmwares.Groups.Add(
+				lvFirmware.Groups.Add(
 					key: sysID,
 					headerText: GetSystemGroupName(sysID));
-				return lvFirmwares.Groups[lvFirmwares.Groups.Count - 1];
+				return lvFirmware.Groups[lvFirmware.Groups.Count - 1];
 			}
 
 			// we'll use this font for displaying the hash, so they don't look all jagged in a long list
 			_fixedFont = new Font(new FontFamily("Courier New"), 8);
-			_boldFont = new Font(lvFirmwares.Font, FontStyle.Bold);
+			_boldFont = new Font(lvFirmware.Font, FontStyle.Bold);
 			_boldFixedFont = new Font(_fixedFont, FontStyle.Bold);
 
 			// populate ListView from firmware DB
@@ -215,16 +215,16 @@ namespace BizHawk.Client.EmuHawk
 				lvi.SubItems.Add(""); // hash
 				lvi.SubItems[6].Font = _fixedFont; // would be used for hash and size
 				lvi.SubItems[7].Font = _fixedFont; // would be used for hash and size
-				lvFirmwares.Items.Add(lvi);
+				lvFirmware.Items.Add(lvi);
 
 				// build the groups in the ListView as we go:
 				lvi.Group = groups.GetValueOrPut(sysID, AddGroup);
 			}
 
 			// now that we have some items in the ListView, we can size some columns to sensible widths
-			lvFirmwares.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.ColumnContent);
-			lvFirmwares.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
-			lvFirmwares.AutoResizeColumn(3, ColumnHeaderAutoResizeStyle.ColumnContent);
+			lvFirmware.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.ColumnContent);
+			lvFirmware.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
+			lvFirmware.AutoResizeColumn(3, ColumnHeaderAutoResizeStyle.ColumnContent);
 
 			if (TargetSystem != null)
 			{
@@ -248,7 +248,7 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult = DialogResult.Retry;
 		}
 
-		private void FirmwaresConfig_FormClosed(object sender, FormClosedEventArgs e)
+		private void FirmwareConfig_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			_fixedFont.Dispose();
 			_boldFont.Dispose();
@@ -258,10 +258,10 @@ namespace BizHawk.Client.EmuHawk
 		private void TbbGroup_Click(object sender, EventArgs e)
 		{
 			// toggle the grouping state
-			lvFirmwares.ShowGroups = !lvFirmwares.ShowGroups;
+			lvFirmware.ShowGroups = !lvFirmware.ShowGroups;
 		}
 
-		private void LvFirmwares_ColumnClick(object sender, ColumnClickEventArgs e)
+		private void LvFirmware_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
 			if (_listViewSorter.Column != e.Column)
 			{
@@ -269,9 +269,9 @@ namespace BizHawk.Client.EmuHawk
 				_listViewSorter.Sign = 1;
 			}
 			else _listViewSorter.Sign *= -1;
-			lvFirmwares.ListViewItemSorter = _listViewSorter;
-			lvFirmwares.SetSortIcon(e.Column, _listViewSorter.Sign == 1 ? SortOrder.Descending : SortOrder.Ascending);
-			lvFirmwares.Sort();
+			lvFirmware.ListViewItemSorter = _listViewSorter;
+			lvFirmware.SetSortIcon(e.Column, _listViewSorter.Sign == 1 ? SortOrder.Descending : SortOrder.Ascending);
+			lvFirmware.Sort();
 		}
 
 		private void TbbScan_Click(object sender, EventArgs e)
@@ -282,13 +282,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoScan()
 		{
-			lvFirmwares.BeginUpdate();
+			lvFirmware.BeginUpdate();
 			Manager.DoScanAndResolve(
 				_pathEntries,
 				_firmwareUserSpecifications);
 
 			// for each type of firmware, try resolving and record the result
-			foreach (ListViewItem lvi in lvFirmwares.Items)
+			foreach (ListViewItem lvi in lvFirmware.Items)
 			{
 				var fr = (FirmwareRecord) lvi.Tag;
 				var ri = Manager.Resolve(
@@ -343,7 +343,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						foreach (ListViewItem.ListViewSubItem subItem in lvi.SubItems) subItem.Font = lvFirmwares.Font;
+						foreach (ListViewItem.ListViewSubItem subItem in lvi.SubItems) subItem.Font = lvFirmware.Font;
 						lvi.SubItems[6].Font = _fixedFont;
 					}
 
@@ -372,7 +372,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			lvFirmwares.EndUpdate();
+			lvFirmware.EndUpdate();
 		}
 
 		private void TbbOrganize_Click(object sender, EventArgs e)
@@ -418,7 +418,7 @@ namespace BizHawk.Client.EmuHawk
 			System.Diagnostics.Process.Start(frmWares);
 		}
 
-		private void LvFirmwares_KeyDown(object sender, KeyEventArgs e)
+		private void LvFirmware_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.IsCtrl(Keys.C))
 			{
@@ -428,14 +428,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PerformListCopy()
 		{
-			var str = lvFirmwares.CopyItemsAsText();
+			var str = lvFirmware.CopyItemsAsText();
 			if (str.Length > 0) Clipboard.SetDataObject(str);
 		}
 
-		private void LvFirmwares_MouseClick(object sender, MouseEventArgs e)
+		private void LvFirmware_MouseClick(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Right && lvFirmwares.GetItemAt(e.X, e.Y) != null)
-				lvFirmwaresContextMenuStrip.Show(lvFirmwares, e.Location);
+			if (e.Button == MouseButtons.Right && lvFirmware.GetItemAt(e.X, e.Y) != null)
+				lvFirmwareContextMenuStrip.Show(lvFirmware, e.Location);
 		}
 
 		private void TsmiSetCustomization_Click(object sender, EventArgs e)
@@ -454,7 +454,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				using HawkFile hf = new(result);
 				// for each selected item, set the user choice (even though multiple selection for this operation is no longer allowed)
-				foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
+				foreach (ListViewItem lvi in lvFirmware.SelectedItems)
 				{
 					var fr = (FirmwareRecord) lvi.Tag;
 					var filePath = result;
@@ -512,7 +512,7 @@ namespace BizHawk.Client.EmuHawk
 		private void TsmiClearCustomization_Click(object sender, EventArgs e)
 		{
 			// for each selected item, clear the user choice
-			foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
+			foreach (ListViewItem lvi in lvFirmware.SelectedItems)
 			{
 				var fr = (FirmwareRecord) lvi.Tag;
 				_firmwareUserSpecifications.Remove(fr.ID.ConfigKey);
@@ -523,7 +523,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TsmiInfo_Click(object sender, EventArgs e)
 		{
-			var lvi = lvFirmwares.SelectedItems[0];
+			var lvi = lvFirmware.SelectedItems[0];
 			var fr = (FirmwareRecord) lvi.Tag;
 
 			// get all options for this firmware (in order)
@@ -568,11 +568,11 @@ namespace BizHawk.Client.EmuHawk
 			fciDialog.ShowDialog(this);
 		}
 
-		private void LvFirmwaresContextMenuStrip_Opening(object sender, CancelEventArgs e)
+		private void LvFirmwareContextMenuStrip_Opening(object sender, CancelEventArgs e)
 		{
 			// hide menu items that aren't appropriate for multi-select
-			tsmiSetCustomization.Visible = lvFirmwares.SelectedItems.Count == 1;
-			tsmiInfo.Visible = lvFirmwares.SelectedItems.Count == 1;
+			tsmiSetCustomization.Visible = lvFirmware.SelectedItems.Count == 1;
+			tsmiInfo.Visible = lvFirmware.SelectedItems.Count == 1;
 		}
 
 		private void TsmiCopy_Click(object sender, EventArgs e)
@@ -693,12 +693,12 @@ namespace BizHawk.Client.EmuHawk
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-		private void LvFirmwares_DragEnter(object sender, DragEventArgs e)
+		private void LvFirmware_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Set(DragDropEffects.Copy);
 		}
 
-		private void LvFirmwares_DragDrop(object sender, DragEventArgs e)
+		private void LvFirmware_DragDrop(object sender, DragEventArgs e)
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{

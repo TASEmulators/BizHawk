@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FirmwaresConfig));
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-			this.lvFirmwares = new System.Windows.Forms.ListView();
+			this.lvFirmware = new System.Windows.Forms.ListView();
 			this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.lvFirmwaresContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.lvFirmwareContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsmiSetCustomization = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.tsmiClearCustomization = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.tsmiInfo = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.lvFirmwaresContextMenuStrip.SuspendLayout();
+			this.lvFirmwareContextMenuStrip.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
@@ -78,10 +78,10 @@ namespace BizHawk.Client.EmuHawk
 			this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
 			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
 			// 
-			// lvFirmwares
+			// lvFirmware
 			// 
-			this.lvFirmwares.AllowDrop = true;
-			this.lvFirmwares.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.lvFirmware.AllowDrop = true;
+			this.lvFirmware.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader5,
             this.columnHeader1,
             this.columnHeader6,
@@ -90,24 +90,24 @@ namespace BizHawk.Client.EmuHawk
             this.columnHeader3,
             this.columnHeader8,
             this.columnHeader7});
-			this.lvFirmwares.ContextMenuStrip = this.lvFirmwaresContextMenuStrip;
-			this.lvFirmwares.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lvFirmwares.FullRowSelect = true;
-			this.lvFirmwares.GridLines = true;
-			this.lvFirmwares.HideSelection = false;
-			this.lvFirmwares.Location = new System.Drawing.Point(0, 25);
-			this.lvFirmwares.Name = "lvFirmwares";
-			this.lvFirmwares.ShowItemToolTips = true;
-			this.lvFirmwares.Size = new System.Drawing.Size(824, 404);
-			this.lvFirmwares.SmallImageList = this.imageList1;
-			this.lvFirmwares.TabIndex = 24;
-			this.lvFirmwares.UseCompatibleStateImageBehavior = false;
-			this.lvFirmwares.View = System.Windows.Forms.View.Details;
-			this.lvFirmwares.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.LvFirmwares_ColumnClick);
-			this.lvFirmwares.DragDrop += new System.Windows.Forms.DragEventHandler(this.LvFirmwares_DragDrop);
-			this.lvFirmwares.DragEnter += new System.Windows.Forms.DragEventHandler(this.LvFirmwares_DragEnter);
-			this.lvFirmwares.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LvFirmwares_KeyDown);
-			this.lvFirmwares.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LvFirmwares_MouseClick);
+			this.lvFirmware.ContextMenuStrip = this.lvFirmwareContextMenuStrip;
+			this.lvFirmware.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lvFirmware.FullRowSelect = true;
+			this.lvFirmware.GridLines = true;
+			this.lvFirmware.HideSelection = false;
+			this.lvFirmware.Location = new System.Drawing.Point(0, 25);
+			this.lvFirmware.Name = "lvFirmware";
+			this.lvFirmware.ShowItemToolTips = true;
+			this.lvFirmware.Size = new System.Drawing.Size(824, 404);
+			this.lvFirmware.SmallImageList = this.imageList1;
+			this.lvFirmware.TabIndex = 24;
+			this.lvFirmware.UseCompatibleStateImageBehavior = false;
+			this.lvFirmware.View = System.Windows.Forms.View.Details;
+			this.lvFirmware.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.LvFirmware_ColumnClick);
+			this.lvFirmware.DragDrop += new System.Windows.Forms.DragEventHandler(this.LvFirmware_DragDrop);
+			this.lvFirmware.DragEnter += new System.Windows.Forms.DragEventHandler(this.LvFirmware_DragEnter);
+			this.lvFirmware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LvFirmware_KeyDown);
+			this.lvFirmware.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LvFirmware_MouseClick);
 			// 
 			// columnHeader5
 			// 
@@ -146,16 +146,16 @@ namespace BizHawk.Client.EmuHawk
 			this.columnHeader7.Text = "Hash";
 			this.columnHeader7.Width = 250;
 			// 
-			// lvFirmwaresContextMenuStrip
+			// lvFirmwareContextMenuStrip
 			// 
-			this.lvFirmwaresContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.lvFirmwareContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiSetCustomization,
             this.tsmiClearCustomization,
             this.tsmiInfo,
             this.tsmiCopy});
-			this.lvFirmwaresContextMenuStrip.Name = "lvFirmwaresContextMenuStrip";
-			this.lvFirmwaresContextMenuStrip.Size = new System.Drawing.Size(170, 92);
-			this.lvFirmwaresContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.LvFirmwaresContextMenuStrip_Opening);
+			this.lvFirmwareContextMenuStrip.Name = "lvFirmwareContextMenuStrip";
+			this.lvFirmwareContextMenuStrip.Size = new System.Drawing.Size(170, 92);
+			this.lvFirmwareContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.LvFirmwareContextMenuStrip_Opening);
 			// 
 			// tsmiSetCustomization
 			// 
@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.lvFirmwares);
+			this.panel1.Controls.Add(this.lvFirmware);
 			this.panel1.Controls.Add(this.toolStrip1);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(3, 23);
@@ -354,9 +354,9 @@ namespace BizHawk.Client.EmuHawk
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Firmware";
-			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FirmwaresConfig_FormClosed);
-			this.Load += new System.EventHandler(this.FirmwaresConfig_Load);
-			this.lvFirmwaresContextMenuStrip.ResumeLayout(false);
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FirmwareConfig_FormClosed);
+			this.Load += new System.EventHandler(this.FirmwareConfig_Load);
+			this.lvFirmwareContextMenuStrip.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
@@ -372,7 +372,7 @@ namespace BizHawk.Client.EmuHawk
         #endregion
 
 				private System.Windows.Forms.ImageList imageList1;
-				private System.Windows.Forms.ListView lvFirmwares;
+				private System.Windows.Forms.ListView lvFirmware;
 				private System.Windows.Forms.ColumnHeader columnHeader5;
 				private System.Windows.Forms.ColumnHeader columnHeader1;
 				private System.Windows.Forms.ColumnHeader columnHeader4;
@@ -388,7 +388,7 @@ namespace BizHawk.Client.EmuHawk
 				private System.Windows.Forms.ToolTip toolTip1;
 				private System.Windows.Forms.ColumnHeader columnHeader3;
 				private System.Windows.Forms.ColumnHeader columnHeader7;
-				private System.Windows.Forms.ContextMenuStrip lvFirmwaresContextMenuStrip;
+				private System.Windows.Forms.ContextMenuStrip lvFirmwareContextMenuStrip;
 				private BizHawk.WinForms.Controls.ToolStripMenuItemEx tsmiSetCustomization;
 				private BizHawk.WinForms.Controls.ToolStripMenuItemEx tsmiClearCustomization;
 				private BizHawk.WinForms.Controls.ToolStripMenuItemEx tsmiInfo;
