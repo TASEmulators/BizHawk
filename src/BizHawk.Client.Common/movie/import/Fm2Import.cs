@@ -24,11 +24,9 @@ namespace BizHawk.Client.Common
 				NesLeftPort = nameof(UnpluggedNES),
 				NesRightPort = nameof(UnpluggedNES)
 			};
+			bool isFourScore = false;
 
-			_deck = controllerSettings.Instantiate((x, y) => true).AddSystemToControllerDef();
-			_deck.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
-
-			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
+			Result.Movie.SystemID = platform;
 
 			using var sr = SourceFile.OpenText();
 			string line;
@@ -117,19 +115,19 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWith("port0", StringComparison.OrdinalIgnoreCase))
 				{
-					if (ParseHeader(line, "port0") == "1")
+					if (!isFourScore && ParseHeader(line, "port0") == "1")
 					{
 						controllerSettings.NesLeftPort = nameof(ControllerNES);
-						_deck = controllerSettings.Instantiate((x, y) => false).AddSystemToControllerDef();
+						_deck = controllerSettings.Instantiate((_, _) => false).AddSystemToControllerDef();
 						_deck.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
 					}
 				}
 				else if (line.StartsWith("port1", StringComparison.OrdinalIgnoreCase))
 				{
-					if (ParseHeader(line, "port1") == "1")
+					if (!isFourScore && ParseHeader(line, "port1") == "1")
 					{
 						controllerSettings.NesRightPort = nameof(ControllerNES);
-						_deck = controllerSettings.Instantiate((x, y) => false).AddSystemToControllerDef();
+						_deck = controllerSettings.Instantiate((_, _) => false).AddSystemToControllerDef();
 						_deck.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
 					}
 				}
@@ -142,16 +140,15 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWith("fourscore", StringComparison.OrdinalIgnoreCase))
 				{
-					bool fourscore = ParseHeader(line, "fourscore") == "1";
-					if (fourscore)
+					isFourScore = ParseHeader(line, "fourscore") == "1";
+					if (isFourScore)
 					{
 						// TODO: set controller config sync settings
 						controllerSettings.NesLeftPort = nameof(FourScore);
 						controllerSettings.NesRightPort = nameof(FourScore);
+						_deck = controllerSettings.Instantiate((_, _) => false).AddSystemToControllerDef();
+						_deck.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
 					}
-
-					_deck = controllerSettings.Instantiate((x, y) => false)/*.AddSystemToControllerDef()*/; //TODO call omitted on purpose? --yoshi
-					_deck.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
 				}
 				else
 				{
