@@ -762,9 +762,9 @@ namespace BizHawk.Client.EmuHawk
 				var (winVersion, win10PlusVersion) = OSTailoredCode.HostWindowsVersion.Value;
 				var message = winVersion switch
 				{
-//					OSTailoredCode.WindowsVersion._11 when win10PlusVersion! < new Version(10, 0, 22621) => $"Quick reminder: Your copy of Windows 11 (build {win10PlusVersion.Build}) is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please update to at least 21H2 for increased security.",
+					OSTailoredCode.WindowsVersion._11 when win10PlusVersion! < new Version(10, 0, 22621) => $"Quick reminder: Your copy of Windows 11 (build {win10PlusVersion.Build}) is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please update to 24H2 for increased security.",
 					OSTailoredCode.WindowsVersion._11 => null,
-					OSTailoredCode.WindowsVersion._10 when win10PlusVersion! < new Version(10, 0, 19045) => $"Quick reminder: Your copy of Windows 10 (build {win10PlusVersion.Build}) is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please update to at least 22H2 for increased security.",
+					OSTailoredCode.WindowsVersion._10 when win10PlusVersion! < new Version(10, 0, 19045) => $"Quick reminder: Your copy of Windows 10 (build {win10PlusVersion.Build}) is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please update to 22H2 for increased security.",
 					OSTailoredCode.WindowsVersion._10 => null,
 					_ => $"Quick reminder: Windows {winVersion.ToString().RemovePrefix('_').Replace('_', '.')} is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please get a new operating system for increased security (either Windows 10+ or a GNU+Linux distro)."
 				};
