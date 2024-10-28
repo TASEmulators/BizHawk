@@ -60,7 +60,8 @@ namespace BizHawk.Common
 			if (rawWinVer >= new Version(6, 3))
 			{
 				// Win8.1, Win10, and Win11 all have CurrentVersion == "6.3"
-				if ((GetRegValue("ProductName") ?? "Windows 10").Contains("Windows 10"))
+				var productName = GetRegValue("ProductName") ?? "Windows 10";
+				if (productName.Contains("Windows 10"))
 				{
 					// Win11 has ProductName == "Windows 10 Pro" MICROSOFT WHY https://stackoverflow.com/a/69922526 https://stackoverflow.com/a/70456554
 #if false // bonus why: this doesn't work because the file's metadata wasn't updated
@@ -72,6 +73,7 @@ namespace BizHawk.Common
 #endif
 					const int WIN11_BUILD_NUMBER_THRESHOLD = 21000; // first Win11 release was 22000
 					winVer = win10PlusVer < new Version(10, 0, WIN11_BUILD_NUMBER_THRESHOLD) ? WindowsVersion._10 : WindowsVersion._11;
+					if (winVer is WindowsVersion._10 && productName.Contains("LTSC")) win10PlusVer = new(10, 0, 20000 + win10PlusVer.Build / 10); // since the oldest LTSC build goes EOL on 2025-10-14, the same as the last GAC build (not global assembly cache; that's MS' name for SLS), we can just shift those build numbers over a bit and treat Win10 LTSC like it's Win10.1 (honestly this works so well I wouldn't be surprised if MS does this internally)
 					return (winVer, win10PlusVer);
 				}
 				// ...else we're on 8.1
