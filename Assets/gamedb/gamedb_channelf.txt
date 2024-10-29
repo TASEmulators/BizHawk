@@ -95,6 +95,7 @@ C8A8361F9CDAC201AD6744E1D7B39E89	D	Game-No-Watch Ball (Original Release) (2024-0
 ADACE4C5A9FA27BA71DEFA3D0F6764D6	D	Game-No-Watch Ball (Colour) (2024-04-15)(Mikebloke)	ChannelF		board=SCHACH
 66FDA5422350751E4DFAF73487E7D481	D	Super Wipeout (2024-09-19)(Mikebloke)	ChannelF		board=SCHACH
 C539CA74082665C18A38318801F467FD	D	Squash (2022-10-15)(Mikebloke)	ChannelF		board=SCHACH
+3CBB8C13F7A602425DE1733D2A28EDD3	D	Golf v71a (2019-07-25) (atari2600land & e5frog)	ChannelF		board=SCHACH
 
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Believed Good
