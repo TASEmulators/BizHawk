@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 				IsDSi = _activeSyncSettings.UseDSi;
 
-				var roms = lp.Roms.Select(r => r.RomData).ToList();
+				var roms = lp.Roms.Select(r => r.FileData).ToList();
 
 				DSiTitleId = GetDSiTitleId(roms[0]);
 				IsDSi |= IsDSiWare;
