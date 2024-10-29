@@ -321,7 +321,7 @@ namespace BizHawk.Client.EmuHawk
 		// these consoles will use the entire system bus
 		private static readonly ConsoleID[] UseFullSysBus =
 		[
-			ConsoleID.NES, ConsoleID.C64, ConsoleID.AmstradCPC, ConsoleID.Atari7800,
+			ConsoleID.NES, ConsoleID.AmstradCPC, ConsoleID.Atari7800,
 		];
 
 		// these consoles will use the entire main memory domain
@@ -525,6 +525,12 @@ namespace BizHawk.Client.EmuHawk
 					case ConsoleID.MSX:
 						// no, can't use MainMemory here, as System Bus is that due to init ordering
 						// todo: make this MainMemory
+						mfs.Add(new(domains["RAM"], 0, domains["RAM"].Size));
+						break;
+					case ConsoleID.C64:
+						// no, can't use MainMemory here, as System Bus is that due to init ordering
+						// todo: make this MainMemory
+						// (yes, it's the same between MSX and C64, not a copypaste error!)
 						mfs.Add(new(domains["RAM"], 0, domains["RAM"].Size));
 						break;
 					case ConsoleID.AppleII:
