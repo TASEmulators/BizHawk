@@ -1,7 +1,7 @@
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Type:	NO-INTRO & TOSEC
-;;; Source:	Fairchild - Channel F - 20120223-000000
-;;; FileGen:	2024-09-04 15:01:49 (UTC)
+;;; Type:	NO-INTRO & TOSEC & Manual
+;;; Source:	Fairchild - Channel F
+;;; FileGen:	2024-29-10 13:57:49 (UTC)
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Bad Dumps
@@ -90,6 +90,11 @@ F680225A38C3C4A66E30DBCA8D351407	D	Test Controls (200x)(e5frog)(PD)	ChannelF		bo
 D7050AF61479AA549206250441AA2B0F	D	Tetris (2004)(Trauner, Peter)[p]	ChannelF		board=SCHACH	USA
 2AEBEDA05478E8B7F5C1ECA037AC6C2F	D	Tetris (2004)(Trauner, Peter)[p][a]	ChannelF		board=SCHACH	USA
 745479A23FB09DDA3DF3179C56719CA8	D	Wrdl-F (2022-03-04)(Arlasoft)	ChannelF		board=SCHACH	USA
+C8A8361F9CDAC201AD6744E1D7B39E89	D	Game-No-Watch Ball (Original Release) (2024-02-12)(Mikebloke)	ChannelF		board=SCHACH
+847DE518A9ED29750F57CBE740417B9D	D	Game-No-Watch Ball (Black and White) (2024-04-15)(Mikebloke)	ChannelF		board=SCHACH
+ADACE4C5A9FA27BA71DEFA3D0F6764D6	D	Game-No-Watch Ball (Colour) (2024-04-15)(Mikebloke)	ChannelF		board=SCHACH
+66FDA5422350751E4DFAF73487E7D481	D	Super Wipeout (2024-09-19)(Mikebloke)	ChannelF		board=SCHACH
+C539CA74082665C18A38318801F467FD	D	Squash (2022-10-15)(Mikebloke)	ChannelF		board=SCHACH
 
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Believed Good
