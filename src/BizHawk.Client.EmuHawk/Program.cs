@@ -191,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 			// if this isn't done, SIGINT/SIGTERM get swallowed by SDL
 			if (OSTailoredCode.IsUnixHost)
 			{
-				SDL2.SDL.SDL_SetHint(SDL2.SDL.SDL_HINT_NO_SIGNAL_HANDLERS, "1");
+				SDL2.SDL.SDL_SetHintWithPriority(SDL2.SDL.SDL_HINT_NO_SIGNAL_HANDLERS, "1", SDL2.SDL.SDL_HintPriority.SDL_HINT_OVERRIDE);
 			}
 
 			var glInitCount = 0;

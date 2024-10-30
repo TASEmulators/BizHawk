@@ -29,7 +29,7 @@ namespace BizHawk.Bizware.Graphics
 				// make sure that Linux uses the x11 video driver
 				// we need this as mono winforms uses x11
 				// and the user could potentially try to force the wayland video driver via env vars
-				SDL_SetHint("SDL_VIDEODRIVER", "x11");
+				SDL_SetHintWithPriority("SDL_VIDEODRIVER", "x11", SDL_HintPriority.SDL_HINT_OVERRIDE);
 				// try to use EGL if it is available
 				// GLX is the old API, and is the more or less "deprecated" at this point, and potentially more buggy with some drivers
 				// we do need to a bit more work, in case EGL is not actually available or potentially doesn't have desktop GL support
@@ -97,10 +97,10 @@ namespace BizHawk.Bizware.Graphics
 
 			// we will be turning a foreign window into an SDL window
 			// we need this so it knows that it is capable of using OpenGL functions
-			SDL_SetHint(SDL_HINT_VIDEO_FOREIGN_WINDOW_OPENGL, "1");
+			SDL_SetHintWithPriority(SDL_HINT_VIDEO_FOREIGN_WINDOW_OPENGL, "1", SDL_HintPriority.SDL_HINT_OVERRIDE);
 			// don't allow windows events to be pumped
 			// it's not needed and can be dangerous in some rare cases
-			SDL_SetHint(SDL_HINT_WINDOWS_ENABLE_MESSAGELOOP, "0");
+			SDL_SetHintWithPriority(SDL_HINT_WINDOWS_ENABLE_MESSAGELOOP, "0", SDL_HintPriority.SDL_HINT_OVERRIDE);
 		}
 
 #if DEBUG_OPENGL

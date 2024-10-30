@@ -37,7 +37,7 @@ namespace BizHawk.Bizware.Input
 		{
 			SDL_SetEventFilter(_sdlEventFilter, IntPtr.Zero);
 			// this is required as we create hidden (unfocused!) SDL windows in IGL backends
-			SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
+			SDL_SetHintWithPriority(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1", SDL_HintPriority.SDL_HINT_OVERRIDE);
 		}
 
 		private static void DoSDLEventLoop()
