@@ -380,6 +380,10 @@ namespace BizHawk.Emulation.Common
 						: VSystemID.Raw.ZXSpectrum;
 					break;
 
+				case ".SV":
+					game.System = VSystemID.Raw.SuperVision;
+					break;
+
 				case ".Z64":
 				case ".V64":
 				case ".N64":

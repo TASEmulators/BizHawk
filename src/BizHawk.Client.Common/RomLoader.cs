@@ -888,6 +888,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> SNES = new[] { "smc", "sfc", "xml", "bs" };
 
+			public static readonly IReadOnlyCollection<string> SuperVision = new[] { "sv", "bin" };
+
 			public static readonly IReadOnlyCollection<string> TI83 = new[] { "83g", "83l", "83p" };
 
 			public static readonly IReadOnlyCollection<string> TIC80 = new[] { "tic" };
@@ -977,6 +979,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("MSX", RomFileExtensions.MSX),
 			new FilesystemFilter("Arcade", RomFileExtensions.Arcade),
 			new FilesystemFilter("Amiga", RomFileExtensions.Amiga),
+			new FilesystemFilter("SuperVision", RomFileExtensions.SuperVision),
 			FilesystemFilter.EmuHawkSaveStates)
 		{
 			CombinedEntryDesc = "Everything",

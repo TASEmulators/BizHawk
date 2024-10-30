@@ -56,6 +56,7 @@ namespace BizHawk.Emulation.Cores
 		public const string SubBsnes115 = "SubBSNESv115+";
 		public const string SubGbHawk = "SubGBHawk";
 		public const string SubNesHawk = "SubNESHawk";
+		public const string SuperVisionHawk = "SuperVisionHawk";
 		public const string TI83Hawk = "TI83Hawk";
 		public const string TIC80 = "TIC-80";
 		public const string TST = "T. S. T.";
@@ -65,6 +66,6 @@ namespace BizHawk.Emulation.Cores
 		public const string Virtu = "Virtu";
 		public const string VirtualBoyee = "Virtual Boyee";
 		public const string VirtualJaguar = "Virtual Jaguar";
-		public const string ZXHawk = "ZXHawk";
+		public const string ZXHawk = "ZXHawk";		
 	}
 }

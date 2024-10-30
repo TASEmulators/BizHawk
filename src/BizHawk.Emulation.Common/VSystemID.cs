@@ -64,6 +64,7 @@ namespace BizHawk.Emulation.Common
 			public const string SGXCD = "SGXCD";
 			public const string SMS = "SMS";
 			public const string SNES = "SNES";
+			public const string SuperVision = "SuperVision";
 			public const string TI83 = "TI83";
 			public const string TIC80 = "TIC80";
 			public const string UZE = "UZE";
