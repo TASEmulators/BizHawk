@@ -2,7 +2,7 @@
 {
 	public partial class SuperVision
 	{
-		public byte ReadPort(ushort address)
+		public byte ReadHardware(ushort address)
 		{
 			return _asic.ReadPort(address);
 		}
