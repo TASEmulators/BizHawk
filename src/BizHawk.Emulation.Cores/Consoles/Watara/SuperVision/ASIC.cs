@@ -55,6 +55,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		private int _intTimer;
 		private int _nmiTimer;
 		private bool _intFlag;
+		private bool _dmaInProgress;
+		private int _dmaCounter;
 
 		/// <summary>
 		/// ASIC is clocked at the same rate as the CPU
@@ -62,6 +64,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		public void Clock()
 		{
 			CheckInterrupt();
+			CheckDMA();
 			VideoClock();
 			AudioClock();
 
@@ -91,6 +94,33 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			{
 
 			}
+		}
+
+		/// <summary>
+		/// DMA Control
+		/// </summary>
+		private void CheckDMA()
+		{
+			if (_regs[R_DMA_CONTROL].Bit(7))
+			{
+				// DMA start requested
+				_dmaInProgress = true;
+			}
+
+			if (_dmaInProgress)
+			{
+				ushort source = (ushort) (_regs[R_DMA_SOURCE_HIGH] << 8 | _regs[R_DMA_SOURCE_LOW]);
+				ushort dest = (ushort) (_regs[R_DMA_DEST_HIGH] << 8 | _regs[R_DMA_DEST_LOW]);
+
+				_dmaCounter++;
+
+				if (_dmaCounter == 4096)
+				{
+					// wrap around
+					_dmaCounter = 0;
+				}
+			}
+			
 		}
 
 		/// <summary>
@@ -472,6 +502,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			ser.Sync(nameof(_intTimer), ref _intTimer);
 			ser.Sync(nameof(_nmiTimer), ref _nmiTimer);
 			ser.Sync(nameof(_intFlag), ref _intFlag);
+			ser.Sync(nameof(_dmaInProgress), ref _dmaInProgress);
+			ser.Sync(nameof(_dmaCounter), ref _dmaCounter);
 
 			ser.Sync(nameof(_field), ref _field);
 			ser.Sync(nameof(_latchedVRAM), ref _latchedVRAM);

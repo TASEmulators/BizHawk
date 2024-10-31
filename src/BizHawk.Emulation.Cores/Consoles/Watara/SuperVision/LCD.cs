@@ -86,7 +86,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			{
 				// end of field
 				// write last pixel
-				WritePixels(data, framePolarity);
+				if (DisplayEnable)
+					WritePixels(data, framePolarity);
 
 				// setup for next frame
 				_vPos = 0;
@@ -101,7 +102,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			}
 			else
 			{
-				WritePixels(data, framePolarity);
+				if (DisplayEnable)
+					WritePixels(data, framePolarity);
 			}
 		}
 
