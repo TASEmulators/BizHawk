@@ -41,37 +41,141 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		public const int R_SYSTEM_CONTROL = 0x26;
 		public const int R_IRQ_STATUS = 0x27;
 
-		private SuperVision _sv;
+		/// <summary>
+		/// Scanline length in cpu clocks
+		/// </summary>
+		public int CLOCK_WIDTH => 
+			((_regs[R_LCD_X_SIZE] & 0xFC)	// topmost 6 bits of the X Size register
+			+ 4)                            // line latch pulse
+			* 6;							// 6 clocks per pixel
 
+		/// <summary>
+		/// Number of scanlines in a field
+		/// </summary>
+		public int LINE_HEIGHT => _regs[R_LCD_Y_SIZE];
+
+		private SuperVision _sv;
 		private byte[] _regs = new byte[0x30];
+
+		/// <summary>
+		/// The inbuilt LCD screen
+		/// </summary>
+		public LCD Screen;
 
 		public ASIC(SuperVision sv, SuperVision.SuperVisionSyncSettings ss)
 		{
 			_sv = sv;
-			_screen = new LCD(ss.ScreenType);
+			Screen = new LCD(ss.ScreenType);
 		}
 
 		public bool FrameStart;
 		private int _intTimer;
+		private bool _intTimerEnabled;
+		private bool _intTimerChanged;
 		private int _nmiTimer;
 		private bool _intFlag;
 		private bool _dmaInProgress;
 		private int _dmaCounter;
+		private int _seqCounter;
+		private int _byteCounter;
+		private int _lineCounter;
+		private int _field;
+		private ushort _vramByteBuffer;
 
 		/// <summary>
 		/// ASIC is clocked at the same rate as the CPU
 		/// </summary>
 		public void Clock()
 		{
-			CheckInterrupt();
+			// According to the information presented in https://github.com/GrenderG/supervision_reveng_notes/blob/master/Supervision_Tech.txt
+			// it can be surmised that the ASIC rigidly sticks to a 6-phase sequencer, which is as follows:
+			// 0: CPU RDY line true / PixelCLK to LCD / Output 1/2 byte to LCD
+			// 1: DMA byte transfer to VRAM (if DMA is active) / CPU RDY line false (if DMA is active)
+			// 2: DMA byte transfer to VRAM (if DMA is active) / CPU RDY line false (if DMA is active)
+			// 3: DMA byte transfer to VRAM (if DMA is active) / CPU RDY line false (if DMA is active)
+			// 4: DMA byte transfer to VRAM (if DMA is active) / CPU RDY line false (if DMA is active)
+			// 5: DMA byte transfer to VRAM (if DMA is active) / CPU RDY line false (if DMA is active)
+
 			CheckDMA();
-			VideoClock();
+
+			// so DMA can transfer 5 bytes to VRAM every 6 clocks, the 6th clock being the 1/2 byte transfer to the LCD
+			switch (_seqCounter)
+			{
+				case 0:					
+					// there is no DMA on this cycle so CPU can run freely
+					_sv._cpu.RDY = true;
+
+					// ASIC reads a byte from VRAM					
+					byte data = 0xff; //todo
+
+					// shift the last read byte in the buffer and add the new byte to the start
+					_vramByteBuffer = (ushort) ((_vramByteBuffer << 8) | data);
+
+					// get the correct byte data based on the X Scroll register lower 2 bits
+					// this simulates a delay in the bits sent to the LCD
+					byte b = (byte) ((_vramByteBuffer >> (_regs[R_X_SCROLL] & 0b0000_0011)) & 0xff);
+
+					// depending on the field, a 4 bit sequence is sent to the LCD
+					// Field0:	bits 0-2-4-6
+					// Field1:	bits 1-3-5-7
+					byte lData = _field == 0
+						? (byte) ((b & 0b0000_0001) | ((b & 0b0000_0100) >> 1) | ((b & 0b0001_0000) >> 2) | ((b & 0b0100_0000) >> 3))
+						: (byte) ((b & 0b0000_0010) >> 1 | ((b & 0b0000_1000) >> 2) | ((b & 0b0010_0000) >> 3) | ((b & 0b1000_0000) >> 4));
+
+					bool lineEnd = _byteCounter == CLOCK_WIDTH - 1;
+					bool frameEnd = _lineCounter == LINE_HEIGHT && lineEnd && _field == 1;
+
+					// send 1/2 byte to the LCD
+					Screen.PixelClock(lData, _field, lineEnd, frameEnd);
+
+					_byteCounter++;
+
+					if (_byteCounter == CLOCK_WIDTH)
+					{
+						// end of scanline
+						_byteCounter = 0;
+						_lineCounter++;
+
+						if (_lineCounter == LINE_HEIGHT)
+						{
+							// end of field
+							_lineCounter = 0;
+							_field++;
+
+							if (_field == 2)
+								_field = 0; // wraparound
+						}
+					}
+					break;
+
+				default:
+					if (_dmaInProgress)
+					{
+						// perform DMA transfer
+						DoDMA();
+
+						_sv._cpu.RDY = !_dmaInProgress;
+					}
+					break;
+			}
+
+			_seqCounter++;			
+
+			if (_seqCounter == 7)
+				_seqCounter = 0;    // wraparound
+
+			CheckInterrupt();
 			AudioClock();
 
 			if (FrameStart)
 				FrameStart = false;
+
+			_sv.FrameClock++;
 		}
 
+		/// <summary>
+		/// The current prescaler value for the IRQ timer
+		/// </summary>
 		private int IntPrescaler => _regs[R_SYSTEM_CONTROL].Bit(4) ? 16384 : 256;
 
 		/// <summary>
@@ -88,16 +192,63 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				_sv._cpu.NMI = true;
 			}
 
-			_intTimer--;
-
-			if (_intTimer <= 0)
+			if (_intTimerChanged)
 			{
+				// IRQ timer register has just been modified
+				_intTimerChanged = false;
+				_intTimerEnabled = true;
 
+				// prescaler reset
+				_intTimer = 0;
+
+				if (_regs[R_IRQ_TIMER] == 0)
+				{
+					if (_regs[R_SYSTEM_CONTROL].Bit(1))
+					{
+						// instant IRQ
+						_intFlag = true;
+						_intTimerEnabled = false;
+
+						// set IRQ Timer expired bit
+						_regs[R_IRQ_STATUS] = (byte) (_regs[R_IRQ_STATUS] | 2);
+					}
+				}
+			}
+			else if (_regs[R_IRQ_TIMER] > 0)
+			{
+				// timer will be counting down clocked by the prescaler
+				if (_intTimer++ == IntPrescaler)
+				{
+					// prescaler clock
+					_intTimer = 0;
+
+					// decrement timer
+					_regs[R_IRQ_TIMER]--;
+				}
+			}
+			else
+			{
+				// timer has expired
+				if (_intTimerEnabled)
+				{
+					_intFlag = true;
+					_intTimerEnabled = false;
+
+					// set IRQ Timer expired bit
+					_regs[R_IRQ_STATUS] = (byte) (_regs[R_IRQ_STATUS] | 2);
+				}
+			}
+
+			if (_intFlag && _regs[R_SYSTEM_CONTROL].Bit(1))
+			{
+				// IRQ enabled				
+				_sv._cpu.IRQ = true;
+				_intFlag = false;
 			}
 		}
 
 		/// <summary>
-		/// DMA Control
+		/// Check whether DMA needs to start
 		/// </summary>
 		private void CheckDMA()
 		{
@@ -105,22 +256,46 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			{
 				// DMA start requested
 				_dmaInProgress = true;
-			}
 
+				// Unset the DMA start bit
+				_regs[R_DMA_CONTROL] = (byte) (_regs[R_DMA_CONTROL] & ~(1 << 7));
+			}
+		}
+
+		/// <summary>
+		/// Perform a DMA transfer
+		/// </summary>
+		private void DoDMA()
+		{
 			if (_dmaInProgress)
 			{
-				ushort source = (ushort) (_regs[R_DMA_SOURCE_HIGH] << 8 | _regs[R_DMA_SOURCE_LOW]);
-				ushort dest = (ushort) (_regs[R_DMA_DEST_HIGH] << 8 | _regs[R_DMA_DEST_LOW]);
-
 				_dmaCounter++;
 
-				if (_dmaCounter == 4096)
+				if (_dmaCounter == 4096 || _dmaCounter == _regs[R_DMA_LENGTH] * 16)
 				{
-					// wrap around
+					// wraparound or length reached
 					_dmaCounter = 0;
+					_dmaInProgress = false;
+				}
+				else
+				{					
+					ushort source = (ushort) (_regs[R_DMA_SOURCE_HIGH] << 8 | _regs[R_DMA_SOURCE_LOW]);
+					ushort dest = (ushort) (_regs[R_DMA_DEST_HIGH] << 8 | _regs[R_DMA_DEST_LOW]);
+
+					// transfer a byte from source to dest using DMA
+					_sv.WriteMemory(dest, _sv.ReadMemory(source));
+
+					// source registers incremented
+					source++;
+					_regs[R_DMA_SOURCE_HIGH] = (byte) (source >> 8);
+					_regs[R_DMA_SOURCE_LOW] = (byte) source;
+
+					// destination registers incremeneted
+					dest++;
+					_regs[R_DMA_DEST_HIGH] = (byte) (dest >> 8);
+					_regs[R_DMA_DEST_LOW] = (byte) dest;
 				}
 			}
-			
 		}
 
 		/// <summary>
@@ -135,45 +310,83 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				// LCD_X_Size
 				case 0x00:
 				case 0x04:
+
+					// Only the upper 6 bits of LCD_X_Size are usable.  The lower 2 bits are ignored.
+					// the LCD size can only be changed in 4 pixel increments
+					_regs[R_LCD_X_SIZE] = value;
+
 					break;
 
 				// LCD_Y_Size
 				case 0x01:
 				case 0x05:
+
+					// LCD_Y_Size controls how many scanlines are shown in the field
+					// After the requisite number of scanlines, the LCD frame latch signal is output and the frame polarity line is toggled
+					_regs[R_LCD_Y_SIZE] = value;
+
 					break;
 
 				// X_Scroll
 				case 0x02:
 				case 0x06:
+
+					_regs[R_X_SCROLL] = value;
+
 					break;
 
 				// Y_Scroll
 				case 0x03:
 				case 0x07:
+
+					_regs[R_Y_SCROLL] = value;
+
 					break;
 
 				// DMA Source low
 				case 0x08:
+
+					_regs[R_DMA_SOURCE_LOW] = value;
+
 					break;
 
 				// DMA Source high
 				case 0x09:
+
+					_regs[R_DMA_SOURCE_HIGH] = value;
+
 					break;
 
 				// DMA Destination low
 				case 0x0A:
+
+					_regs[R_DMA_DEST_LOW] = value;
+
 					break;
 
 				// DMA Destination high
 				case 0x0B:
+
+					_regs[R_DMA_DEST_HIGH] = value;
+
 					break;
 
 				// DMA Length
 				case 0x0C:
+
+					// 8bit register
+					// This register selects how many bytes of data to move.  The actual number of bytes to move is (L * 16).
+					// If the register is loaded with 0, a full 4096 bytes is moved.
+					_regs[R_DMA_LENGTH] = value;
+
 					break;
 
 				// DMA Control
 				case 0x0D:
+
+					// Start DMA when written with bit7 set
+					_regs[R_DMA_CONTROL] = value;
+
 					break;
 
 				// CH1_Flow (right only)
@@ -244,9 +457,12 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					// This timer is clocked by a prescaler, which is reset when the timer is written to.
 					// This prescaler can divide the system clock by 256 or 16384.
 					// 8bits
+					_regs[R_IRQ_TIMER] = value;
+
+					_intTimerEnabled = true;
 
 					// reset prescaler?
-					_regs[R_SYSTEM_CONTROL] = (byte)(_regs[R_SYSTEM_CONTROL] & ~(1 << 4)); // Reset bit 4
+					//_regs[R_SYSTEM_CONTROL] = (byte)(_regs[R_SYSTEM_CONTROL] & ~(1 << 4)); // Reset bit 4
 
 					_intTimer = value * IntPrescaler;
 
@@ -274,18 +490,14 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					_regs[regIndex] = value;
 
 					// lcd displayenable
-					_screen.DisplayEnable = value.Bit(3);
+					Screen.DisplayEnable = value.Bit(3);
 
 					// banking
 					_sv.BankSelect = value >> 5;
 
 					// writing to this register resets the LCD rendering system and makes it start rendering from the upper left corner, regardless of the bit pattern.
-					_screen.ResetPosition();
+					Screen.ResetPosition();
 
-					break;
-
-				// IRQ status
-				case 0x27:
 					break;
 
 				// CH4_Freq_Vol (left and right)
@@ -305,7 +517,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 
 				// READONLY				
-				case 0x20:		// Controller
+				case 0x20:      // Controller								
+				case 0x27:      // IRQ status
 					break;
 
 				// UNKNOWN
@@ -440,6 +653,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 				// IRQ timer
 				case 0x23:
+					result = _regs[R_IRQ_TIMER];
 					break;
 
 				// Reset IRQ timer flag
@@ -457,6 +671,11 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 				// IRQ status
 				case 0x27:
+
+					// bit0:	DMA Audio System (1 == DMA audio finished)
+					// bit1:	IRQ Timer expired (1 == expired)
+					result = _regs[regIndex];
+
 					break;
 
 				// CH4_Freq_Vol (left and right)
@@ -500,18 +719,18 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			ser.Sync(nameof(_regs), ref _regs, false);
 			ser.Sync(nameof(FrameStart), ref FrameStart);
 			ser.Sync(nameof(_intTimer), ref _intTimer);
+			ser.Sync(nameof(_intTimerEnabled), ref _intTimerEnabled);
+			ser.Sync(nameof(_intTimerChanged), ref _intTimerChanged);
 			ser.Sync(nameof(_nmiTimer), ref _nmiTimer);
 			ser.Sync(nameof(_intFlag), ref _intFlag);
 			ser.Sync(nameof(_dmaInProgress), ref _dmaInProgress);
 			ser.Sync(nameof(_dmaCounter), ref _dmaCounter);
-
+			ser.Sync(nameof(_seqCounter), ref _seqCounter);
+			ser.Sync(nameof(_byteCounter), ref _byteCounter);
+			ser.Sync(nameof(_lineCounter), ref _lineCounter);
 			ser.Sync(nameof(_field), ref _field);
-			ser.Sync(nameof(_latchedVRAM), ref _latchedVRAM);
-			ser.Sync(nameof(_currentVRAMPointer), ref _currentVRAMPointer);
-			ser.Sync(nameof(_currY), ref _currY);
-			ser.Sync(nameof(_currX), ref _currX);
-
-			_screen.SyncState(ser);
+			ser.Sync(nameof(_vramByteBuffer), ref _vramByteBuffer);
+			Screen.SyncState(ser);
 
 			ser.EndSection();
 		}

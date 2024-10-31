@@ -11,9 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		/// <summary>
 		/// 8K of VRAM which the CPU can access with 0 wait states
 		/// </summary>
-		public byte[] VRAM = new byte[0x2000];
-
-		
+		public byte[] VRAM = new byte[0x2000];		
 
 		/// <summary>
 		/// Bank select index
@@ -30,53 +28,54 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			_cpuMemoryAccess = true;
 			byte result = 0xFF;
 
-			if (address < 0x2000)
+			var divider = address / 0x2000;
+
+			switch (divider)
 			{
-				// RAM
-				return WRAM[address];
-			}
+				case 0:
+					// WRAM
+					result = WRAM[address];
+					break;
 
-			if (address < 0x4000)
-			{
-				// port access
-				return ReadHardware(address);
-			}
+				case 1:
+					// IO address space
+					break;
 
-			if (address < 0x6000)
-			{
-				// VRAM
-				return VRAM[address - 0x4000];
-			}
+				case 2:
+					// VRAM
+					result = VRAM[address - 0x4000];
+					break;
 
-			if (address < 0x8000)
-			{
-				// nothing here
-			}
+				case 3:
+					// nothing here
+					break;
 
-			if (address < 0xC000)
-			{
-				// cartridge rom banking
-				// 0x8000 - 0xBFFF is selectable using the 3 bits from the SystemControl register
-				switch (BankSelect)
-				{
-					// first 16k
-					case 0:
-						return _cartridge.ReadByte((ushort)(address % 0x2000));
+				case 4:
+					// cartridge rom banking
+					// 0x8000 - 0xBFFF is selectable using the 3 bits from the SystemControl register
+					switch (BankSelect)
+					{
+						// first 16k
+						case 0:
+							result = _cartridge.ReadByte((ushort) (address % 0x2000));
+							break;
 
-					// second 16k
-					case 1:
-						return _cartridge.ReadByte((ushort)((address % 0x2000) + 0x2000));
+						// second 16k
+						case 1:
+							result = _cartridge.ReadByte((ushort) ((address % 0x2000) + 0x2000));
+							break;
 
-					// third 16k
-					case 2:
-						return _cartridge.ReadByte((ushort)((address % 0x2000) + 0x4000));
-				}
-			}
+						// third 16k
+						case 2:
+							result = _cartridge.ReadByte((ushort) ((address % 0x2000) + 0x4000));
+							break;
+					}
+					break;
 
-			if (address < 0xFFFF)
-			{
-				// fixed to the last 16K in the cart address space
-				return _cartridge.ReadByte((ushort)((address % 0x2000) + 0x6000));
+				case 5:
+					// fixed to the last 16K in the cart address space
+					result = _cartridge.ReadByte(address);
+					break;
 			}
 
 			return result;

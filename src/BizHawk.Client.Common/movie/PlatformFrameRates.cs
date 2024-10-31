@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common
 			["INTV"] = 59.92,
 
 			["ZXSpectrum_PAL"] = 50.080128205,
-			["AmstradCPC_PAL"] = 50.08012820512821,	// = 1 / ((1024 * 312) / 16,000,000)
+			["AmstradCPC_PAL"] = 50.08012820512821, // = 1 / ((1024 * 312) / 16,000,000)
 
 			["UZE"] = 1125000.0 / 18733.0, // = 8 * 315000000 / 88 / 1820 / 262 ≈ 60.05444936742646666
 			["VEC"] = 50,
@@ -82,8 +82,10 @@ namespace BizHawk.Client.Common
 			["TIC80"] = 60,
 
 			["ChannelF"] = 234375.0 / 3872.0, // (NTSCCarrier * 8 / 7) / (256 * 264)
-			// note: ChannelF II PAL timings might be slightly different...
+											  // note: ChannelF II PAL timings might be slightly different...
 			["ChannelF_PAL"] = 15625.0 / 312.0, // 4000000 / (256 * 312) 
+
+			["SuperVision"] = 50.08012820512821
 		};
 
 		public static double GetFrameRate(string systemId, bool pal)

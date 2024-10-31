@@ -18,7 +18,11 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		private int _frameClock;
 		private int _frame;
 
-		public int FrameClock => _frameClock;	
+		public int FrameClock
+		{
+			get => _frameClock;
+			set => _frameClock = value;
+		}	
 		public int Frame => _frame;
 
 		private void CalcClock()
@@ -31,6 +35,10 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				2;          // fields per frame
 
 			double refreshRate = _cpuClocksPerSecond / _cpuClocksPerFrame;  // 50.8130081300813
+
+			_asic.Screen.SetRates(
+				(int) _cpuClocksPerSecond,
+				(int) _cpuClocksPerFrame);
 		}
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)

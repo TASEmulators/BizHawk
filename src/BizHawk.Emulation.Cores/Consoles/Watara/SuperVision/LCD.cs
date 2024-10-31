@@ -27,10 +27,13 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 		private readonly int[] _palette = new int[4];
 
+		public const int PEN_BUFFER_WIDTH = 160 * 2;
+		public const int PEN_BUFFER_HEIGHT = 160;
+
 		/// <summary>
 		/// The inbuilt screen is a 160*160 dot 2bpp monochrome LCD
 		/// </summary>
-		private int[] _penBuffer = new int[160 * 160 * 2];
+		private int[] _penBuffer = new int[PEN_BUFFER_WIDTH * PEN_BUFFER_HEIGHT];
 
 		/// <summary>
 		/// The output framebuffer
@@ -90,13 +93,11 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					WritePixels(data, framePolarity);
 
 				// setup for next frame
-				_vPos = 0;
-				_hPos = 0;
+				ResetPosition();
 			}
 			else if (lineLatch)
 			{
 				// end of scanline
-				// 
 				_hPos = 0;
 				_vPos++;
 			}
@@ -115,13 +116,27 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		{
 			for (int i = 0; i < 4; i++)
 			{
-				_frameBuffer[(_vPos * 160 * 2) + (_hPos + framePolarity)] = (data >> i) & 0x01;
+				if (_hPos < PEN_BUFFER_WIDTH && _vPos < PEN_BUFFER_HEIGHT)
+				{
+					_penBuffer[(_vPos * 160 * 2) + (_hPos + framePolarity)] = (data >> i) & 0x01;					
+				}
+				else
+				{
+					// bits out of bounds of the LCD screen
+					// data is discarded
+				}
+
 				_hPos += 2;
 			}
 		}
 
+		public void SetRates(int num, int dom)
+		{
+			VsyncNumerator = num;
+			VsyncDenominator = dom;
+		}
 
-		public int VirtualWidth => BufferWidth;
+		public int VirtualWidth => (int)(BufferWidth * 1.25);
 		public int VirtualHeight => BufferHeight;
 		public int BufferWidth => 160;
 		public int BufferHeight => 160;
@@ -144,6 +159,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		{
 			ser.BeginSection("LCD");
 			ser.Sync(nameof(_frameBuffer), ref _frameBuffer, false);
+			ser.Sync(nameof(_penBuffer), ref _penBuffer, false);
 			ser.Sync(nameof(_hPos), ref _hPos);
 			ser.Sync(nameof(_vPos), ref _vPos);
 			ser.Sync(nameof(DisplayEnable), ref DisplayEnable);

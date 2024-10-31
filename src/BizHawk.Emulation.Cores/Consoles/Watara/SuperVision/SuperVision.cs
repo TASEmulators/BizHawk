@@ -28,6 +28,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			_tracer = new TraceBuffer(_cpu.TraceHeader);
 			_asic = new ASIC(this, _syncSettings);
 
+			CalcClock();
+
+			ser.Register<IVideoProvider>(_asic.Screen);
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(_cpu);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
