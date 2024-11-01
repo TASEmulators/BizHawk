@@ -25,6 +25,14 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			Colors.ARGB(0x36, 0x4E, 0x54), // FULL DARK
 		];
 
+		public static readonly int[] Palette_AM =
+		[
+			Colors.ARGB(0xFC, 0xFE, 0x00), // OFF
+			Colors.ARGB(0xA8, 0x66, 0x00), // 1/3 DARKNESS
+			Colors.ARGB(0x54, 0x33, 0x00), // 2/3 DARKNESS
+			Colors.ARGB(0x00, 0x00, 0x00), // FULL DARK
+		];
+
 		private readonly int[] _palette = new int[4];
 
 		public const int PEN_BUFFER_WIDTH = 160 * 2;
@@ -52,9 +60,12 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				case SuperVision.ScreenType.Green:
 					_palette = Palette_GR;
 					break;
-				case SuperVision.ScreenType.Monochrome:
+				case SuperVision.ScreenType.BlackAndWhite:
 				default:
 					_palette = Palette_BW;
+					break;
+				case SuperVision.ScreenType.Amber:
+					_palette = Palette_AM;
 					break;
 			}
 		}

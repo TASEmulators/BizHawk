@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		public int LINE_HEIGHT => _regs[R_LCD_Y_SIZE];
 
 		private SuperVision _sv;
-		private byte[] _regs = new byte[0x30];
+		private byte[] _regs = new byte[0x2000];
 
 		/// <summary>
 		/// The inbuilt LCD screen
@@ -114,8 +114,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					_sv._cpu.RDY = true;
 
 					bool lineEnd = _byteCounter == CLOCK_WIDTH - 1;
-					bool fieldEnd = _lineCounter == LINE_HEIGHT && lineEnd && _field == 0;
-					bool frameEnd = _lineCounter == LINE_HEIGHT && lineEnd && _field == 1;
+					bool fieldEnd = _lineCounter == LINE_HEIGHT - 1 && lineEnd && _field == 0;
+					bool frameEnd = _lineCounter == LINE_HEIGHT - 1 && lineEnd && _field == 1;
 
 					// vram pointer
 					if (fieldEnd)
@@ -180,12 +180,13 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					break;
 
 				default:
+
+					_sv._cpu.RDY = !_dmaInProgress;
+
 					if (_dmaInProgress)
 					{
 						// perform DMA transfer
 						DoDMA();
-
-						_sv._cpu.RDY = !_dmaInProgress;
 					}
 					break;
 			}
@@ -231,12 +232,16 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 				// prescaler reset
 				_intTimer = 0;
+			}
 
+			if (_intTimerEnabled)
+			{
 				if (_regs[R_IRQ_TIMER] == 0)
 				{
 					if (_regs[R_SYSTEM_CONTROL].Bit(1))
 					{
-						// instant IRQ
+						// raise IRQ
+						// this handles IRQ after timer countdown AND instant IRQ when timer is set to 0
 						_intFlag = true;
 						_intTimerEnabled = false;
 
@@ -244,35 +249,23 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 						_regs[R_IRQ_STATUS] = (byte) (_regs[R_IRQ_STATUS] | 2);
 					}
 				}
-			}
-			else if (_regs[R_IRQ_TIMER] > 0)
-			{
-				// timer will be counting down clocked by the prescaler
-				if (_intTimer++ == IntPrescaler)
+				else
 				{
-					// prescaler clock
-					_intTimer = 0;
+					// timer should be counting down clocked by the prescaler
+					if (_intTimer++ == IntPrescaler)
+					{
+						// prescaler clock
+						_intTimer = 0;
 
-					// decrement timer
-					_regs[R_IRQ_TIMER]--;
-				}
-			}
-			else
-			{
-				// timer has expired
-				if (_intTimerEnabled)
-				{
-					_intFlag = true;
-					_intTimerEnabled = false;
-
-					// set IRQ Timer expired bit
-					_regs[R_IRQ_STATUS] = (byte) (_regs[R_IRQ_STATUS] | 2);
+						// decrement timer
+						_regs[R_IRQ_TIMER]--;
+					}
 				}
 			}
 
 			if (_intFlag && _regs[R_SYSTEM_CONTROL].Bit(1))
 			{
-				// IRQ enabled				
+				// fire IRQ				
 				_sv._cpu.IRQ = true;
 				_intFlag = false;
 			}
@@ -399,12 +392,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					// 8bits
 					_regs[R_IRQ_TIMER] = value;
 
-					_intTimerEnabled = true;
-
-					// reset prescaler?
-					//_regs[R_SYSTEM_CONTROL] = (byte)(_regs[R_SYSTEM_CONTROL] & ~(1 << 4)); // Reset bit 4
-
-					_intTimer = value * IntPrescaler;
+					_intTimerChanged = true;
 
 					// Writing 00h to the IRQ Timer register results in an instant IRQ. It does not wrap to FFh and continue counting;  it just stays at 00h and fires off an IRQ.
 
@@ -425,6 +413,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					Screen.DisplayEnable = value.Bit(3);
 
 					// banking
+					var bank = value >> 5;
 					_sv.BankSelect = (value >> 5);
 
 					// writing to this register resets the LCD rendering system and makes it start rendering from the upper left corner, regardless of the bit pattern.
@@ -446,6 +435,11 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				case 0x1E:
 				case 0x1F:
 				case 0x2B:
+					_regs[regIndex] = value;
+					break;
+
+				default:
+					_regs[regIndex] = value;
 					break;
 			}
 		}
@@ -548,6 +542,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					break;
 
 				default:
+					result = _regs[regIndex];
 					break;
 			}
 

@@ -26,9 +26,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 		public enum ScreenType
 		{
-			Monochrome,
-			Green,
-			TVLinkColor
+			BlackAndWhite,
+			Amber,
+			Green
 		}
 
 		[CoreSettings]
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		{
 			[DisplayName("ScreenType")]
 			[Description("Color of LCD screen")]
-			[DefaultValue(ScreenType.Green)]
+			[DefaultValue(ScreenType.BlackAndWhite)]
 			public ScreenType ScreenType { get; set; }
 
 			public SuperVisionSyncSettings Clone()
