@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 {
-	public partial class SuperVision
+	public partial class SuperVision : ISettable<object,SuperVision.SuperVisionSyncSettings>
 	{
 		private SuperVisionSyncSettings _syncSettings;
 

@@ -5,6 +5,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 {
 	public partial class ASIC
 	{
+		// register constants
 		public const int R_LCD_X_SIZE = 0x00;
 		public const int R_LCD_Y_SIZE = 0x01;
 		public const int R_X_SCROLL = 0x02;
@@ -305,149 +306,58 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		{
 			int regIndex = address - 0x2000;
 
+			// mirror reg handling
+			if (regIndex is
+				0x04 or     // LCD_X_Size (mirror)
+				0x05 or     // LCD_Y_Size (mirror)
+				0x06 or     // X_Scroll (mirror)
+				0x07 or     // Y_Scroll (mirror)
+				0x2C or     // CH4_Freq_Vol (mirror)
+				0x2D or     // CH4_Length (mirror)
+				0x2E)       // CH4_Control (mirror)
+				regIndex -= 4;
+
 			switch (regIndex)
 			{
-				// LCD_X_Size
-				case 0x00:
-				case 0x04:
+				
+				case 0x00:  // LCD_X_Size	-	Only the upper 6 bits of LCD_X_Size are usable. The lower 2 bits are ignored (the LCD size can only be changed in 4 pixel increments)
+				case 0x01:  // LCD_Y_Size	-	LCD_Y_Size controls how many scanlines are shown in the field. After the requisite number of scanlines, the LCD frame latch signal is output and the frame polarity line is toggled
+				case 0x02:  // X_Scroll
+				case 0x03:  // Y_Scroll
 
-					// Only the upper 6 bits of LCD_X_Size are usable.  The lower 2 bits are ignored.
-					// the LCD size can only be changed in 4 pixel increments
-					_regs[R_LCD_X_SIZE] = value;
+				case 0x08:  // DMA Source low
+				case 0x09:  // DMA Source high
+				case 0x0A:  // DMA Destination low
+				case 0x0B:  // DMA Destination high
+				case 0x0C:  // DMA Length	-	This register selects how many bytes of data to move.  The actual number of bytes to move is (L * 16).  If the register is loaded with 0, a full 4096 bytes is moved.
+				case 0x0D:  // DMA Control	-	Start DMA when written with bit7 set
 
-					break;
+				case 0x10:  // CH1_Flow (right only)
+				case 0x11:  // CH1_Fhi
+				case 0x12:  // CH1_Vol_Duty
+				case 0x13:  // CH1_Length
 
-				// LCD_Y_Size
-				case 0x01:
-				case 0x05:
+				case 0x14:  // CH2_Flow (right only)
+				case 0x15:  // CH2_Fhi
+				case 0x16:  // CH2_Vol_Duty
+				case 0x17:  // CH2_Length
 
-					// LCD_Y_Size controls how many scanlines are shown in the field
-					// After the requisite number of scanlines, the LCD frame latch signal is output and the frame polarity line is toggled
-					_regs[R_LCD_Y_SIZE] = value;
+				case 0x18:  // CH3_Addrlow
+				case 0x19:  // CH3_Addrhi
+				case 0x1A:  // CH3_Length
+				case 0x1B:  // CH3_Control
+				case 0x1C:  // CH3_Trigger
 
-					break;
+				case 0x28:  // CH4_Freq_Vol (left and right)
+				case 0x29:  // CH4_Length
+				case 0x2A:  // CH4_Control
 
-				// X_Scroll
-				case 0x02:
-				case 0x06:
+				case 0x21:  // Link port DDR
+				case 0x22:  // Link port data
 
-					_regs[R_X_SCROLL] = value;
+					_regs[regIndex] = value;
 
-					break;
-
-				// Y_Scroll
-				case 0x03:
-				case 0x07:
-
-					_regs[R_Y_SCROLL] = value;
-
-					break;
-
-				// DMA Source low
-				case 0x08:
-
-					_regs[R_DMA_SOURCE_LOW] = value;
-
-					break;
-
-				// DMA Source high
-				case 0x09:
-
-					_regs[R_DMA_SOURCE_HIGH] = value;
-
-					break;
-
-				// DMA Destination low
-				case 0x0A:
-
-					_regs[R_DMA_DEST_LOW] = value;
-
-					break;
-
-				// DMA Destination high
-				case 0x0B:
-
-					_regs[R_DMA_DEST_HIGH] = value;
-
-					break;
-
-				// DMA Length
-				case 0x0C:
-
-					// 8bit register
-					// This register selects how many bytes of data to move.  The actual number of bytes to move is (L * 16).
-					// If the register is loaded with 0, a full 4096 bytes is moved.
-					_regs[R_DMA_LENGTH] = value;
-
-					break;
-
-				// DMA Control
-				case 0x0D:
-
-					// Start DMA when written with bit7 set
-					_regs[R_DMA_CONTROL] = value;
-
-					break;
-
-				// CH1_Flow (right only)
-				case 0x10:
-					break;
-
-				// CH1_Fhi
-				case 0x11:
-					break;
-
-				// CH1_Vol_Duty
-				case 0x12:
-					break;
-
-				// CH1_Length
-				case 0x13:
-					break;
-
-				// CH2_Flow (right only)
-				case 0x14:
-					break;
-
-				// CH2_Fhi
-				case 0x15:
-					break;
-
-				// CH2_Vol_Duty
-				case 0x16:
-					break;
-
-				// CH2_Length
-				case 0x17:
-					break;
-
-				// CH3_Addrlow
-				case 0x18:
-					break;
-
-				// CH3_Addrhi
-				case 0x19:
-					break;
-
-				// CH3_Length
-				case 0x1A:
-					break;
-
-				// CH3_Control
-				case 0x1B:
-					break;
-
-				// CH3_Trigger
-				case 0x1C:
 					break;				
-
-				// Link port DDR
-				case 0x21:
-					break;
-
-				// Link port data
-				case 0x22:
-					break;
 
 				// IRQ timer
 				case 0x23:
@@ -470,14 +380,6 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 					break;
 
-				// Reset IRQ timer flag
-				case 0x24:
-					break;
-
-				// Reset Sound DMA IRQ flag
-				case 0x25:
-					break;
-
 				// System Control
 				case 0x26:
 
@@ -498,27 +400,13 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					// writing to this register resets the LCD rendering system and makes it start rendering from the upper left corner, regardless of the bit pattern.
 					Screen.ResetPosition();
 
-					break;
-
-				// CH4_Freq_Vol (left and right)
-				case 0x28:
-				case 0x2C:
-					break;
-
-				// CH4_Length
-				case 0x29:
-				case 0x2D:
-					break;
-
-				// CH4_Control
-				case 0x2A:
-				case 0x2E:
-					break;
-
+					break;				
 
 				// READONLY				
 				case 0x20:      // Controller								
 				case 0x27:      // IRQ status
+				case 0x24:      // Reset IRQ timer flag
+				case 0x25:      // Reset Sound DMA IRQ flag
 					break;
 
 				// UNKNOWN
@@ -540,133 +428,74 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			byte result = 0xFF;
 			int regIndex = address - 0x2000;
 
+			// mirror reg handling
+			if (regIndex is 
+				0x04 or     // LCD_X_Size (mirror)
+				0x05 or     // LCD_Y_Size (mirror)
+				0x06 or     // X_Scroll (mirror)
+				0x07 or     // Y_Scroll (mirror)
+				0x2C or     // CH4_Freq_Vol (mirror)
+				0x2D or     // CH4_Length (mirror)
+				0x2E)       // CH4_Control (mirror)
+				regIndex -= 4;
+
 			switch (regIndex)
 			{
-				// LCD_X_Size
-				case 0x00:
-				case 0x04:
-					break;
+				case 0x00:  // LCD_X_Size
+				case 0x01:  // LCD_Y_Size
+				case 0x02:  // X_Scroll
+				case 0x03:  // Y_Scroll
 
-				// LCD_Y_Size
-				case 0x01:
-				case 0x05:
-					break;
+				case 0x08:  // DMA Source low
+				case 0x09:  // DMA Source high
+				case 0x0A:  // DMA Destination low
+				case 0x0B:  // DMA Destination high
+				case 0x0C:  // DMA Length
+				case 0x0D:  // DMA Control
 
-				// X_Scroll
-				case 0x02:
-				case 0x06:
-					break;
+				case 0x10:  // CH1_Flow (right only)
+				case 0x11:  // CH1_Fhi
+				case 0x12:  // CH1_Vol_Duty
+				case 0x13:  // CH1_Length
 
-				// Y_Scroll
-				case 0x03:
-				case 0x07:
-					break;
+				case 0x14:  // CH2_Flow (right only)
+				case 0x15:  // CH2_Fhi
+				case 0x16:  // CH2_Vol_Duty
+				case 0x17:  // CH2_Length
 
-				// DMA Source low
-				case 0x08:
-					break;
+				case 0x18:  // CH3_Addrlow
+				case 0x19:  // CH3_Addrhi
+				case 0x1A:  // CH3_Length
+				case 0x1B:  // CH3_Control
+				case 0x1C:  // CH3_Trigger
 
-				// DMA Source high
-				case 0x09:
-					break;
+				case 0x28:  // CH4_Freq_Vol (left and right)
+				case 0x29:  // CH4_Length
+				case 0x2A:  // CH4_Control
 
-				// DMA Destination low
-				case 0x0A:
-					break;
+				case 0x21:  // Link port DDR
+				case 0x22:  // Link port data
 
-				// DMA Destination high
-				case 0x0B:
-					break;
+				case 0x23:  // IRQ timer
+				case 0x26:  // System Control
 
-				// DMA Length
-				case 0x0C:
-					break;
-
-				// DMA Control
-				case 0x0D:
-					break;
-
-				// CH1_Flow (right only)
-				case 0x10:
-					break;
-
-				// CH1_Fhi
-				case 0x11:
-					break;
-
-				// CH1_Vol_Duty
-				case 0x12:
-					break;
-
-				// CH1_Length
-				case 0x13:
-					break;
-
-				// CH2_Flow (right only)
-				case 0x14:
-					break;
-
-				// CH2_Fhi
-				case 0x15:
-					break;
-
-				// CH2_Vol_Duty
-				case 0x16:
-					break;
-
-				// CH2_Length
-				case 0x17:
-					break;
-
-				// CH3_Addrlow
-				case 0x18:
+					result = _regs[regIndex];				
+				
 				break;
-
-				// CH3_Addrhi
-				case 0x19:
-					break;
-
-				// CH3_Length
-				case 0x1A:
-					break;
-
-				// CH3_Control
-				case 0x1B:
-					break;
-
-				// CH3_Trigger
-				case 0x1C:
-					break;
 
 				// Controller
 				case 0x20:
 					result = _sv.ReadControllerByte();
 					break;
 
-				// Link port DDR
-				case 0x21:
-					break;
-
-				// Link port data
-				case 0x22:
-					break;
-
-				// IRQ timer
-				case 0x23:
-					result = _regs[R_IRQ_TIMER];
-					break;
-
 				// Reset IRQ timer flag
 				case 0x24:
+					// When this register is read, it resets the timer IRQ flag (clears the status reg bit too)
 					break;
 
 				// Reset Sound DMA IRQ flag
 				case 0x25:
-					break;
-
-				// System Control
-				case 0x26:
-					result = _regs[regIndex];
+					//When this register is read, it resets the audio DMA IRQ flag (clears status reg bit too)
 					break;
 
 				// IRQ status
@@ -678,31 +507,18 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 					break;
 
-				// CH4_Freq_Vol (left and right)
-				case 0x28:
-				case 0x2C:
-					break;
-
-				// CH4_Length
-				case 0x29:
-				case 0x2D:
-					break;
-
-				// CH4_Control
-				case 0x2A:
-				case 0x2E:
-					break;
-
-
 				// UNKNOWN
 				case 0x0E:
 				case 0x0F:
 				case 0x1D:
 				case 0x1E:
 				case 0x1F:
-				case 0x2B:
+				case 0x2B:					
+					result = _regs[regIndex];
 					break;
 
+				default:
+					break;
 			}
 
 			return result;

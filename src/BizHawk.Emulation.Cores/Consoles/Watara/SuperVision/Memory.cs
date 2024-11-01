@@ -32,49 +32,46 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 			switch (divider)
 			{
-				case 0:
-					// WRAM
+				// 0x0000 - 0x1FFF
+				// WRAM - 8K
+				case 0:					
 					result = WRAM[address];
 					break;
 
+				// 0x2000 - 0x3FFF
+				// IO address space - 8K
 				case 1:
-					// IO address space
+					result = ReadHardware(address);
 					break;
 
+				// 0x4000 - 0x5FFF
+				// VRAM - 8K
 				case 2:
-					// VRAM
-					result = VRAM[address - 0x4000];
+					result = VRAM[address % 0x2000];
 					break;
 
+				// 0x6000 - 0x7FFF
 				case 3:
 					// nothing here
 					break;
 
+				// 0x8000 - 0xBFFF
+				// Cart bank 1 - 16K
 				case 4:
-					// cartridge rom banking
+				case 5:
 					// 0x8000 - 0xBFFF is selectable using the 3 bits from the SystemControl register
-					switch (BankSelect)
-					{
-						// first 16k
-						case 0:
-							result = _cartridge.ReadByte((ushort) (address % 0x2000));
-							break;
-
-						// second 16k
-						case 1:
-							result = _cartridge.ReadByte((ushort) ((address % 0x2000) + 0x2000));
-							break;
-
-						// third 16k
-						case 2:
-							result = _cartridge.ReadByte((ushort) ((address % 0x2000) + 0x4000));
-							break;
-					}
+					// 0: first 16k
+					// 1: 2nd 16k
+					// 2: 3rd 16k
+					result = _cartridge.ReadByte((ushort) ((address % 0x4000) + (BankSelect * 0x4000)));
 					break;
 
-				case 5:
+				// 0xC000 - 0xFFFF
+				// Cart bank 2 - 16K
+				case 6:
+				case 7:
 					// fixed to the last 16K in the cart address space
-					result = _cartridge.ReadByte(address);
+					result = _cartridge.ReadByte((ushort) ((address % 0x4000) + (3 * 0x4000)));
 					break;
 			}
 
@@ -83,53 +80,52 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 		public void WriteMemory(ushort address, byte value)
 		{
-			if (address < 0x2000)
-			{
-				// RAM
-				WRAM[address] = value;
-			}
-			else if (address < 0x4000)
-			{
-				// port access
-				WriteHardware(address, value);
-			}
-			else if (address < 0x6000)
-			{
-				// VRAM
-				VRAM[address - 0x4000] = value;
-			}
-			else if (address < 0x8000)
-			{
-				// nothing here
-			}
-			else if (address < 0xC000)
-			{
-				// cartridge rom banking
-				// 0x8000 - 0xBFFF is selectable using the 3 bits from the SystemControl register
-				switch (BankSelect)
-				{
-					// first 16k
-					case 0:
-						_cartridge.WriteByte((ushort) (address % 0x2000), value);
-						break;
+			var divider = address / 0x2000;
 
-					// second 16k
-					case 1:
-						_cartridge.WriteByte((ushort) ((address % 0x2000) + 0x2000), value);
-						break;
-
-					// third 16k
-					case 2:
-						_cartridge.WriteByte((ushort) ((address % 0x2000) + 0x4000), value);
-						break;
-				}
-			}
-
-			if (address < 0xFFFF)
+			switch (divider)
 			{
-				// fixed to the last 16K in the cart address space
-				_cartridge.WriteByte((ushort) ((address % 0x2000) + 0x6000), value);
-			}
+				// 0x0000 - 0x1FFF
+				// WRAM - 8K
+				case 0:
+					WRAM[address] = value;
+					break;
+
+				// 0x2000 - 0x3FFF
+				// IO address space - 8K
+				case 1:
+					WriteHardware(address, value);
+					break;
+
+				// 0x4000 - 0x5FFF
+				// VRAM - 8K
+				case 2:
+					VRAM[address % 0x2000] = value;
+					break;
+
+				// 0x6000 - 0x7FFF
+				case 3:
+					// nothing here
+					break;
+
+				// 0x8000 - 0xBFFF
+				// Cart bank 1 - 16K
+				case 4:
+				case 5:
+					// 0x8000 - 0xBFFF is selectable using the 3 bits from the SystemControl register
+					// 0: first 16k
+					// 1: 2nd 16k
+					// 2: 3rd 16k
+					_cartridge.WriteByte((ushort) ((address % 0x4000) + (BankSelect * 0x4000)), value);
+					break;
+
+				// 0xC000 - 0xFFFF
+				// Cart bank 2 - 16K
+				case 6: 
+				case 7:
+					// fixed to the last 16K in the cart address space
+					_cartridge.WriteByte((ushort) ((address % 0x4000) + (3 * 0x4000)), value);
+					break;
+			}			
 		}
 	}
 }
