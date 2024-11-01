@@ -141,7 +141,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	}
 
 	f->Samples = f->NDS->SPU.ReadOutput(f->SoundBuffer, 4096);
-	if (f->Samples == 0) // hack when core decides to stop outputting audio altogether (lid closed or power off)
+	if (f->Samples == 0) // hack when core decides to stop outputting audio altogether (power off)
 	{
 		memset(f->SoundBuffer, 0, 737 * 2 * sizeof(u16));
 		f->Samples = 737;
