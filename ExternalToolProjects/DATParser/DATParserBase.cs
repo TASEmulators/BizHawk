@@ -225,5 +225,6 @@ namespace BizHawk.DATTool
 		MSX,
 		NDS,
 		Jaguar,
+		SuperVision
 	}
 }

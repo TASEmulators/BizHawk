@@ -1,0 +1,173 @@
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Type:	TOSEC
+;;; Source:	Watara Supervision - Homebrew - Games (TOSEC-v2024-01-15)
+;;; FileGen:	2024-11-01 14:45:48 (UTC)
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Bad Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Hacks
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Over Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Believed Good
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+SHA1:D579049862297D05AD8FBF318CF21F5423ED9B64		Cross Bomber (2020-08-26)(Caruso, Fabrizio)	SuperVision	
+SHA1:F89EA469DAEA905043DE56D5401467CAB141A64C		Cross Chase (2018-07-19)(Caruso, Fabrizio)	SuperVision	
+SHA1:CCE1942BED5D5FD776576865C4526D9C1D0FA83D		Cross Chase (2018-08-04)(Caruso, Fabrizio)	SuperVision	
+SHA1:0CC8EDDDC6E1E9D4C8CD1FC71791BA6D54689930		Cross Chase (2018-10-29)(Caruso, Fabrizio)	SuperVision	
+SHA1:144813317A51235C3D471726A19B1680257ABCD4		Cross Chase (2019-09-30)(Caruso, Fabrizio)	SuperVision	
+SHA1:B1B9686F7F0431C51E14ACA94F635A5A7C9B4CED		Cross Chase (2020-04-02)(Caruso, Fabrizio)	SuperVision	
+SHA1:6564E4644E66005D8FB9FE23018B514503E0C869		Cross Chase (2021-05-13)(Caruso, Fabrizio)	SuperVision	
+SHA1:1ADE42601FC2168DD2C3E81B91B3B3F25B78724D		Cross Horde (2021-04-16)(Caruso, Fabrizio)	SuperVision	
+SHA1:55F40007CECE66864B29DD26CAE700F587A086A5		Cross Horde (2021-04-25)(Caruso, Fabrizio)	SuperVision	
+SHA1:A09C3C83EA7E8F610611BE852A4F51262D94E280		Cross Horde v1.0 (2021-05-01)(Caruso, Fabrizio)	SuperVision	
+SHA1:3E0396921D2CCE4671409FF26C08F9973F98AD06		Cross Shoot (2020-07-03)(Caruso, Fabrizio)	SuperVision	
+SHA1:50D811B555E4471765121A36173F4356D971363A		Cross Snake v2.0 (2020-12-31)(Caruso, Fabrizio)	SuperVision	
+SHA1:0AA4E96EA1C6C76A7F6639ADBC4D1EF7E5E1303F		Cross Verbix (2022-12-16)(Caruso, Fabrizio)	SuperVision	
+SHA1:C244B0075A81E1175E359F5E7BF56D8F26269A1B		Shuriken (2023-06-30)(Caruso, Fabrizio)	SuperVision	
+SHA1:93DFFDE8CCD6C13E7CBB8A1C5EA830B07980AB52		Stinger (2023-10-08)(Caruso, Fabrizio)	SuperVision	
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Type:	TOSEC
+;;; Source:	Watara Supervision - Games (TOSEC-v2024-01-15)
+;;; FileGen:	2024-11-01 14:45:48 (UTC)
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Bad Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+SHA1:FFF0E56E3B9BB7799A8D2F1B9562AA86DC114502	B	Carrier (199x)(-)[b]	SuperVision	
+SHA1:EF87EF536BD82C1A9B707FFCB173BEEF74953CD5	B	Final Combat (1992)(Thin Chen)[b]	SuperVision	
+SHA1:ED532DD29212754D8C96539DA04452B56E89D17B	B	Penguin Hideout (1992)(Thin Chen)[b]	SuperVision	
+SHA1:E16C13F1FE3A5BDE2FA3A4D4C10D28514328B7C8	B	Super Block (1992)(Bon Treasure)[b]	SuperVision	
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Hacks
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Over Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Believed Good
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+SHA1:F2B7902B8C522F63858C99CAA81D63F4CDCB60CB		2 in 1 - Block Buster + Cross High (199x)(-)	SuperVision	
+SHA1:BCA1C05EBAC50A1ACD4A8D3B440A29867EDC9826		2 in 1 - Hash Blocks + Eagle Plan (1992)(Bon Treasure)	SuperVision	
+SHA1:3E220D943787467A46B3170506720CA872314E24		4 in 1 - Hash Block + Challenger Tank + Brain Power + Jacky Lucky (199x)(Watara)	SuperVision	
+SHA1:E20AE19D0555DC8D34DA8F16D2D7BCCE8C9856DA		Alien (199x)(-)	SuperVision	
+SHA1:2D58BB254BB79F47D64F1505336BF736C7B5A4D8		Balloon Fight (1992)(Thin Chen)	SuperVision	
+SHA1:639C69AFA4A68236DFEA263B51E9C032C1AA71BE		Block Buster (199x)(-)	SuperVision	
+SHA1:8A97572CAA6CD91950BD333BCAB5C61D60CF28D2		Brain Power (199x)(-)	SuperVision	
+SHA1:F47972EA376DCE72265D57763B17D35BB50F842D		Bubble World (1992)(Bon Treasure)	SuperVision	
+SHA1:13061B97C7B6D74990B766670F59DBF1E7598120		Carrier (199x)(-)	SuperVision	
+SHA1:AF1232C2E781AC2AE12163DC200815A8579C269D		Cave Wonders (1992)(Bon Treasure)	SuperVision	
+SHA1:70F7589FDF40C851CC34C0A5F644216F3765EB8C		Challenger Tank (199x)(-)	SuperVision	
+SHA1:C384062CE1284A4C80E8FBB1AD0E8FA924C6881B		Chimera (199x)(-)	SuperVision	
+SHA1:EB69FA9DF9186A3BF3FD4F8AFEBDD7A6D022AB38		Chinese Checkers (1992)(Sachen)	SuperVision	
+SHA1:1D45A437DFB8B5833EA56A42A8ED6BE5E70686AA		Classic Casino (1993)(Bon Treasure)	SuperVision	
+SHA1:F0B5D83CFF1C45C7798DA65DD01C3EE0B66E78AC		Climber (1992)(Bon Treasure)	SuperVision	
+SHA1:EFC3A8065D6EEFD0F461C0C86EF66197D761F569		Cross High (1991)(GTC)	SuperVision	
+SHA1:F23F53F7486857DB36A959A0ECC71B6B688C7AF1		Crystball (199x)(-)	SuperVision	
+SHA1:A5A421BFAAD2837A7CEE9522A59411C96DCC0827		Dancing Block (1992)(Thin Chen)	SuperVision	
+SHA1:EE68C188C41CF8F12F74458D6DD614AFC7B8EDBB		Delta Hero (1992)(Bon Treasure)	SuperVision	
+SHA1:0812C859A54161F19E7160FEC3C0F56BA0B33DB6		Dream World (1992)(Bon Treasure)	SuperVision	
+SHA1:226E8F14498BE513B73F97B5E618A524209C4595		Eagle Plan (1991)(GTC)	SuperVision	
+SHA1:8B0550DDE96661B9B7317A1D247174ECCA813698		Earth Defender (1992)(Bon Treasure)	SuperVision	
+SHA1:9C6282CAA6B06C63F53910FDB11B7D0F83D29310		Fatal Craft (1992)(Bon Treasure)	SuperVision	
+SHA1:23EFA16603C540E60DC85C7442188A8B76383098		Final Combat (1992)(Thin Chen)	SuperVision	
+SHA1:7739826471D4AC2A69D34BDBD154BB6D748E90CC		Galactic Crusader (1992)(Sachen)	SuperVision	
+SHA1:721350E7C7761B9BE13D2A236EBFC72E51755851		Galaxy Fighter (1992)(Thin Chen)	SuperVision	
+SHA1:A6B93E0BBB0D037A0FE4B0D8056B6808AEA7AE6C		Grand Prix (199x)(Bon Treasure)	SuperVision	
+SHA1:D8A78BB3CB492A90464F7A16BB2486566F7D4BAA		Happy Pairs (1992)(Sachen)	SuperVision	
+SHA1:08DC1BD109986D8745CFA6F1EB3C9731D736255F		Happy Race (1992)(Sachen)	SuperVision	
+SHA1:D9836DFE4F113DCA030B0472DEB7A8D8BB9065DC		Hash Blocks (1991)(GTC)	SuperVision	
+SHA1:690036B386EE57C15E23A64015513A36861BD145		Hero Hawk (1992)(Sachen)	SuperVision	
+SHA1:3E5DE3350E3BCF75E057B970D7E1C56634699BB1		Hero Kid (199x)(-)	SuperVision	
+SHA1:3412CB0D657C6C79EEF71D29C6AF06AC3082CB2F		Honey Bee (1992)(Bon Treasure)	SuperVision	
+SHA1:F7311CCCA24811AA3595114D50E5C1AC5772B4C9		Jacky Lucky (1992)(Bon Treasure)	SuperVision	
+SHA1:212F577B0D1DF539AADFECDEC4E85404E4D57201		Jaguar Bomber (1992)(Bon Treasure)	SuperVision	
+SHA1:B422814B073544B66F2AD86C76BAE6403F7A4530		John Adventure (1992)(Sachen)	SuperVision	
+SHA1:548DD9165EDD4BC1D1F2C2B5DC519574B7F43F3B		Journey to the West (199x)(-)	SuperVision	
+SHA1:A5C8BEECFF5444183DFED9E46DD67150C12C8BFD		Juggler (1992)(Bon Treasure)	SuperVision	
+SHA1:517154E5340BF221392A99640733B0798C7490EE		Kabi Island (1992)(Sachen)	SuperVision	
+SHA1:D8F095EC94A18F4E006B4FC9480EABE98852A8FE		Kitchen War (1992)(Bon Treasure)	SuperVision	
+SHA1:548938179D25EA3A8DE45662B3920D8AA5E9AC55		Kung-Fu Street (1993)(Thin Chen)	SuperVision	
+SHA1:9F80A72D967D2A35168250CA3DA3941164164BFC		Linear Racing (199x)(-)	SuperVision	
+SHA1:B7AEC7D24175BDEA1CFCCC1359B5AB353E023D44		Magincross (1992)(Thin Chen)	SuperVision	
+SHA1:9EEF723F67A91FABF3DDDA6411204883C50F8574		Majong (1992)(Bon Treasure)	SuperVision	
+SHA1:FB6AF626A6496907D02A26B9BB5132F4BE88BDA9		Matta Blatta (199x)(-)	SuperVision	
+SHA1:4B863616BB9B821ADF397F20E0EA043A3DAA026A		Olympic Trials (199x)(-)	SuperVision	
+SHA1:794CE6FB7084274C680B277A41F269840402E61B		P-52 Sea Battle (199x)(-)	SuperVision	
+SHA1:AFA267BCCED763CB51599CD5605062530EDE1AF3		PacBoy & Mouse (199x)(-)	SuperVision	
+SHA1:453385EC16A50ADD9B3B8591E954220B679F0439		Pacific Battle (1992)(Bon Treasure)	SuperVision	
+SHA1:9520221D8CFD3BDFB0FB6B7FB9FED66BA027A756		Penguin Hideout (1992)(Thin Chen)	SuperVision	
+SHA1:9FA06B4D171D9ADE2F9E4A639E80FEBA15C963F9		Police Bust (199x)(Bon Treasure)	SuperVision	
+SHA1:7D9672FD2500F2D645D0CA28417FBF9E9BAC3045		Popo Team (1992)(Sachen)	SuperVision	
+SHA1:8FAB2B0D3E4485E156C78159B92FD70AABC02994		Pyramid (1992)(Thin Chen)	SuperVision	
+SHA1:FC64336D963B88FC29DD2EA1B987F98A99E725E9		Recycle Design (199x)(Bon Treasure)	SuperVision	
+SHA1:4FD487CE62C8B7A6F3D4000FCD72F2A269D32FC2		Scaffolder (1992)(Bon Treasure)	SuperVision	
+SHA1:2B794E22F7D595902C515B3FD617980655A9D994		Soccer Champion (199x)(-)	SuperVision	
+SHA1:00724D0275BD4EF77514468D6D04669C93125E32		Sonny Xpress! (199x)(-)	SuperVision	
+SHA1:A2FA39C871956A27DC3AFA74FE368E93EF8EE99A		Space Fighter (1992)(Bon Treasure)	SuperVision	
+SHA1:DA02D8E119FBD38048F16C78CE9714ABF93BBFD6		SSSnake (1992)(BITS)	SuperVision	
+SHA1:93DFFDE8CCD6C13E7CBB8A1C5EA830B07980AB52		Stinger (2023-10-08)(Caruso, Fabrizio)	SuperVision	
+SHA1:1FA3236AD83984D922893C294ED0D9E432201FB0		Super Block (1992)(Bon Treasure)	SuperVision	
+SHA1:6C59BC0D14A05B404292DE8ABA3A7DA12D72F355		Super Kong (1992)(Thin Chen)	SuperVision	
+SHA1:C4D61FCAB3E8EB2AEDB48B41BAC24BF7197A7E21		Super Pang (1992)(Sachen)	SuperVision	
+SHA1:DA884D97FBE7E7ACA40DC1B5B0DB6D7FF69377E3		Tasac 2010 (1992)(Thin Chen)	SuperVision	
+SHA1:386F555FCEDAAF9FC4D81DDF59EC0320F42AF988		Tennis Pro '92 (1992)(BITS)	SuperVision	
+SHA1:C292DD656860C9048935F52B8A90BBA2D6F7FB99		Thunder Shooting (1992)(Thin Chen)	SuperVision	
+SHA1:BAF24B026023F44968FD1352637F1C01CBB89F3E		Treasure Hunter (1992)(Bon Treasure)	SuperVision	
+SHA1:1CC36699D11DC1EF1A7731EA5F093A23489DD2DF		Untouchable (199x)(Bon Treasure)	SuperVision	
+SHA1:F5476F1C663D34C3DDA2BC6E9631E6F2DC661E1D		Witty Cat (199x)(Bon Treasure)	SuperVision	
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Type:	TOSEC
+;;; Source:	Watara Supervision - Applications (TOSEC-v2013-10-03)
+;;; FileGen:	2024-11-01 14:45:48 (UTC)
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Bad Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Hacks
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Over Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Believed Good
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+SHA1:08EA89EC012034CDE36919FF94AF95B9D8AF8AA6		TV-Link (199x)(-)	SuperVision	
+SHA1:F5476F1C663D34C3DDA2BC6E9631E6F2DC661E1D		Witty Cat (199x)(Bon Treasure)	SuperVision	

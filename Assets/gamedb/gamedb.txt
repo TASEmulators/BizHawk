@@ -31,6 +31,7 @@
 #include gamedb_amstradcpc.txt
 #include gamedb_ngp.txt
 #include gamedb_channelf.txt
+#include gamedb_supervision.txt
 #includeuser gamedb_user.txt
 
 ; so, there's just zero explanation anywhere for B vs V status flag
