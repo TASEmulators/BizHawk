@@ -11,12 +11,18 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		/// <summary>
 		/// 8K of VRAM which the CPU can access with 0 wait states
 		/// </summary>
-		public byte[] VRAM = new byte[0x2000];		
+		public byte[] VRAM = new byte[0x2000];
 
 		/// <summary>
 		/// Bank select index
 		/// </summary>
-		public int BankSelect;
+		public int BankSelect
+		{
+			get { return _bankSelect % (_cartridge.CartROMSize / 0x4000); }
+			set { _bankSelect = value; }
+		}
+		private int _bankSelect;
+
 
 		/// <summary>
 		/// True when the CPU is accessing memory
@@ -63,6 +69,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					// 0: first 16k
 					// 1: 2nd 16k
 					// 2: 3rd 16k
+					// etc..
 					result = _cartridge.ReadByte((ushort) ((address % 0x4000) + (BankSelect * 0x4000)));
 					break;
 
@@ -71,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				case 6:
 				case 7:
 					// fixed to the last 16K in the cart address space
-					result = _cartridge.ReadByte((ushort) ((address % 0x4000) + (3 * 0x4000)));
+					result = _cartridge.ReadByte((ushort) ((address % 0x4000) + (_cartridge.CartROMSize - 0x4000)));
 					break;
 			}
 
@@ -115,6 +122,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					// 0: first 16k
 					// 1: 2nd 16k
 					// 2: 3rd 16k
+					// etc..
 					_cartridge.WriteByte((ushort) ((address % 0x4000) + (BankSelect * 0x4000)), value);
 					break;
 
@@ -123,9 +131,19 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				case 6: 
 				case 7:
 					// fixed to the last 16K in the cart address space
-					_cartridge.WriteByte((ushort) ((address % 0x4000) + (3 * 0x4000)), value);
+					_cartridge.WriteByte((ushort) ((address % 0x4000) + (_cartridge.CartROMSize - 0x4000)), value);
 					break;
 			}			
+		}
+
+		/// <summary>
+		/// ASIC is connected directly to VRAM
+		/// 8bit data bus
+		/// 12bit addr bus
+		/// </summary>
+		public byte ReadVRAM(ushort address)
+		{
+			return VRAM[address & 0x0FFF];
 		}
 	}
 }

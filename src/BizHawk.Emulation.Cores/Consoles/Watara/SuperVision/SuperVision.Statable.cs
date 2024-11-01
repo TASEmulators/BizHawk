@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		private void SyncState(Serializer ser)
 		{
 			ser.BeginSection("SuperVision");
-			ser.Sync(nameof(BankSelect), ref BankSelect);
+			ser.Sync(nameof(BankSelect), ref _bankSelect);
 
 			ser.Sync(nameof(_frameClock), ref _frameClock);
 			ser.Sync(nameof(_frame), ref _frame);

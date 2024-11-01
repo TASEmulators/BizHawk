@@ -48,7 +48,12 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		public int CLOCK_WIDTH => 
 			((_regs[R_LCD_X_SIZE] & 0xFC)	// topmost 6 bits of the X Size register
 			+ 4)                            // line latch pulse
-			* 6;							// 6 clocks per pixel
+			* 6;                            // 6 clocks per pixel
+
+		/// <summary>
+		/// Y offset modifier used with Y_Scroll to determine the VRAM pointer
+		/// </summary>
+		public int Y_OFFSET => _regs[R_LCD_X_SIZE] > 0xC0 ? 0x30 : 0x60;
 
 		/// <summary>
 		/// Number of scanlines in a field
@@ -82,6 +87,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		private int _lineCounter;
 		private int _field;
 		private ushort _vramByteBuffer;
+		private int _vramPointer;
+		private int _vramStartAddress;
 
 		/// <summary>
 		/// ASIC is clocked at the same rate as the CPU
@@ -106,8 +113,29 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					// there is no DMA on this cycle so CPU can run freely
 					_sv._cpu.RDY = true;
 
+					bool lineEnd = _byteCounter == CLOCK_WIDTH - 1;
+					bool fieldEnd = _lineCounter == LINE_HEIGHT && lineEnd && _field == 0;
+					bool frameEnd = _lineCounter == LINE_HEIGHT && lineEnd && _field == 1;
+
+					// vram pointer
+					if (fieldEnd)
+					{
+						// Y_Scroll offset added to the VRAM pointer at the start of the field (could be frame)
+						_vramStartAddress = (_regs[R_Y_SCROLL] * Y_OFFSET) & 0x1FFF;
+
+						if (_vramStartAddress == 0x1FE0)
+							_vramStartAddress = 0;
+					}
+
+					if (_byteCounter == 0)
+					{
+						// new scanline
+						_vramPointer = _vramStartAddress + (_regs[R_X_SCROLL] >> 2);
+					}
+
 					// ASIC reads a byte from VRAM					
-					byte data = 0xff; //todo
+					byte data = _sv.ReadVRAM((ushort) _vramPointer);
+					_vramPointer++;
 
 					// shift the last read byte in the buffer and add the new byte to the start
 					_vramByteBuffer = (ushort) ((_vramByteBuffer << 8) | data);
@@ -121,10 +149,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					// Field1:	bits 1-3-5-7
 					byte lData = _field == 0
 						? (byte) ((b & 0b0000_0001) | ((b & 0b0000_0100) >> 1) | ((b & 0b0001_0000) >> 2) | ((b & 0b0100_0000) >> 3))
-						: (byte) ((b & 0b0000_0010) >> 1 | ((b & 0b0000_1000) >> 2) | ((b & 0b0010_0000) >> 3) | ((b & 0b1000_0000) >> 4));
-
-					bool lineEnd = _byteCounter == CLOCK_WIDTH - 1;
-					bool frameEnd = _lineCounter == LINE_HEIGHT && lineEnd && _field == 1;
+						: (byte) ((b & 0b0000_0010) >> 1 | ((b & 0b0000_1000) >> 2) | ((b & 0b0010_0000) >> 3) | ((b & 0b1000_0000) >> 4));					
 
 					// send 1/2 byte to the LCD
 					Screen.PixelClock(lData, _field, lineEnd, frameEnd);
@@ -136,6 +161,11 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 						// end of scanline
 						_byteCounter = 0;
 						_lineCounter++;
+
+						// setup start address
+						_vramStartAddress += Y_OFFSET & 0x1FFF;
+						if (_vramStartAddress == 0x1FE0)
+							_vramStartAddress = 0;
 
 						if (_lineCounter == LINE_HEIGHT)
 						{
@@ -395,7 +425,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					Screen.DisplayEnable = value.Bit(3);
 
 					// banking
-					_sv.BankSelect = value >> 5;
+					_sv.BankSelect = (value >> 5);
 
 					// writing to this register resets the LCD rendering system and makes it start rendering from the upper left corner, regardless of the bit pattern.
 					Screen.ResetPosition();
@@ -546,6 +576,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			ser.Sync(nameof(_lineCounter), ref _lineCounter);
 			ser.Sync(nameof(_field), ref _field);
 			ser.Sync(nameof(_vramByteBuffer), ref _vramByteBuffer);
+			ser.Sync(nameof(_vramPointer), ref _vramPointer);
+			ser.Sync(nameof(_vramStartAddress), ref _vramStartAddress);
 			Screen.SyncState(ser);
 
 			ser.EndSection();

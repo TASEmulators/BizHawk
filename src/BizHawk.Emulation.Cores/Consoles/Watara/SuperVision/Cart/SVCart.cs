@@ -10,6 +10,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		/// </summary>
 		private byte[] _rom = new byte[0x20000];
 
+		public int CartROMSize => _rom.Length;
+
 		public SVCart(byte[] rom)
 		{
 			if (_rom.Length != rom.Length)
