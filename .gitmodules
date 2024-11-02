@@ -85,3 +85,6 @@
 [submodule "ExternalProjects/FlooohChips/chips"]
 	path = ExternalProjects/FlooohChips/chips
 	url = https://github.com/floooh/chips.git
+[submodule "ExternalProjects/vfEmu6502/vrEmu6502"]
+	path = ExternalProjects/vfEmu6502/vrEmu6502
+	url = https://github.com/visrealm/vrEmu6502.git
