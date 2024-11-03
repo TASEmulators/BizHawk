@@ -8,33 +8,24 @@ namespace BizHawk.Emulation.Cores.Components.vr6502
 		public struct VrEmu6502State
 		{
 			public VrEmu6502Model Model;
-
 			public IntPtr readFn;
 			public IntPtr writeFn;
-
-			public VrEmu6502Interrupt intPin;
-			public VrEmu6502Interrupt nmiPin;
-
+			public IntPtr intPin;
+			public IntPtr nmiPin;
 			public byte step;
 			public byte currentOpcode;
 			public ushort currentOpcodeAddr;
-
 			public byte wai;
 			public byte stp;
-
 			public ushort pc;
-
 			public byte ac;
 			public byte ix;
 			public byte iy;
 			public byte sp;
-
 			public byte flags;
-
 			public ushort zpBase;
 			public ushort spBase;
 			public ushort tmpAddr;
-
 			public IntPtr opcodes;
 			public IntPtr mnemonicNames;
 			public IntPtr addrModes;
