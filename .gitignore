@@ -49,3 +49,5 @@ UpgradeLog.htm
 
 launchSettings.json
 /ExternalProjects/vfEmu6502/x64
+/ExternalProjects/vrEmu6502/out/build
+/ExternalProjects/vrEmu6502/out/Assets/dll
