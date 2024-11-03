@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			var results = new List<string>();
 			foreach (var filePath in filePaths)
 			{
-				var ext = Path.GetExtension(path).ToLowerInvariant();
+				var ext = Path.GetExtension(filePath).ToLowerInvariant();
 
 				//some choices are always bad: (we're looking for things like .bin and .wav)
 				//it's a little unclear whether we should go for a whitelist or a blacklist here.
