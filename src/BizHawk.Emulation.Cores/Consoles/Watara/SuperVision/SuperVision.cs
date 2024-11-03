@@ -1,5 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components.M6502;
+using BizHawk.Emulation.Cores.Components.vr6502;
 
 namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 {
@@ -18,21 +18,22 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			_syncSettings = lp.SyncSettings ?? new SuperVisionSyncSettings();
 			_screenType = _syncSettings.ScreenType;
 
-			MemoryCallbacks = new MemoryCallbackSystem([ "System Bus" ]);
+			//MemoryCallbacks = new MemoryCallbackSystem([ "System Bus" ]);
 
 			ControllerDefinition = _superVisionControllerDefinition.Value;
 
 			_cartridge = SVCart.Configure(gameInfo, rom);
 
-			_cpu = new MOS6502X<CpuLink>(new CpuLink(this));
-			_tracer = new TraceBuffer(_cpu.TraceHeader);
+			_cpu = new vr6502(vr6502.VrEmu6502Model.CPU_65C02, ReadMemory, WriteMemory);
+			//_cpu = new MOS6502X<CpuLink>(new CpuLink(this));
+			//_tracer = new TraceBuffer(_cpu.TraceHeader);
 			_asic = new ASIC(this, _syncSettings);
 
 			CalcClock();
 
 			ser.Register<IVideoProvider>(_asic.Screen);
 			ser.Register<ITraceable>(_tracer);
-			ser.Register<IDisassemblable>(_cpu);
+			//ser.Register<IDisassemblable>(_cpu);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 		}
@@ -40,7 +41,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		private CoreComm CoreComm { get; }
 		private IController _controller;
 		private readonly ScreenType _screenType;
-		public readonly MOS6502X<CpuLink> _cpu;
+		//public readonly MOS6502X<CpuLink> _cpu;
+		public readonly vr6502 _cpu;
 		private readonly TraceBuffer _tracer;
 		private ASIC _asic;
 		private readonly SVCart _cartridge;

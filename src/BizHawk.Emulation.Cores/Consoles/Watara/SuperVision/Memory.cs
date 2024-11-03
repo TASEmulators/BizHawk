@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		/// </summary>
 		private bool _cpuMemoryAccess;
 
-		public byte ReadMemory(ushort address)
+		public byte ReadMemory(ushort address, bool isDbg = false)
 		{
 			_cpuMemoryAccess = true;
 			byte result = 0xFF;

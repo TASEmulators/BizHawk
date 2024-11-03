@@ -221,7 +221,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			if (_nmiTimer == 0x10000 && _regs[R_SYSTEM_CONTROL].Bit(0))
 			{
 				_nmiTimer = 0;
-				_sv._cpu.NMI = true;
+				//_sv._cpu.NMI = true;
+				_sv._cpu.SetNMI();
 			}
 
 			if (_intTimerChanged)
@@ -265,8 +266,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 			if (_intFlag && _regs[R_SYSTEM_CONTROL].Bit(1))
 			{
-				// fire IRQ				
-				_sv._cpu.IRQ = true;
+				// fire IRQ		
+				_sv._cpu.SetIRQ();	
+				//_sv._cpu.IRQ = true;
 				_intFlag = false;
 			}
 		}

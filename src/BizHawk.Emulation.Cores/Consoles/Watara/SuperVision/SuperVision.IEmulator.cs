@@ -46,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			_controller = controller;
 			_isLag = true;
 
+			/*
 			if (_tracer.IsEnabled())
 			{
 				_cpu.TraceCallback = s => _tracer.Put(s);
@@ -54,6 +55,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			{
 				_cpu.TraceCallback = null;
 			}
+			*/
 
 			PollInput();
 
@@ -62,7 +64,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			while (_frameClock < _cpuClocksPerFrame)
 			{
 				_asic.Clock();
-				_cpu.ExecuteOne();
+				//_cpu.ExecuteOne();
+				_cpu.ExecuteTick();
 			}
 
 			_frameClock = 0;

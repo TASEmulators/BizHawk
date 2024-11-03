@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Components.vr6502
 		/// Instantiate a new 6502 emulator
 		/// </summary>
 		[DllImport(lib, CallingConvention = cc)]
-		public static extern VrEmu6502State vrEmu6502New(
+		public static extern IntPtr vrEmu6502New(
 		VrEmu6502Model model,
 		VrEmu6502MemRead readFn,
 		VrEmu6502MemWrite writeFn);
@@ -40,5 +40,9 @@ namespace BizHawk.Emulation.Cores.Components.vr6502
 		/// </summary>
 		[DllImport(lib, CallingConvention = cc)]
 		public static extern byte vrEmu6502InstCycle(ref VrEmu6502State state);
+
+
+		[DllImport(lib, CallingConvention = cc)]
+		public static extern IntPtr vrEmu6502OpcodeToMnemonicStr(ref VrEmu6502State state, byte opcode);
 	}
 }

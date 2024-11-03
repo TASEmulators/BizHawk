@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 {
+	/*
 	public partial class SuperVision : IDebuggable
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
@@ -20,4 +21,5 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 		public long TotalExecutedCycles => _cpu.TotalExecutedCycles;
 	}
+	*/
 }

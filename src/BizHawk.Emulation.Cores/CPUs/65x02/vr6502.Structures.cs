@@ -9,38 +9,36 @@ namespace BizHawk.Emulation.Cores.Components.vr6502
 		{
 			public VrEmu6502Model Model;
 
-			public IntPtr ReadFn;
-			public IntPtr WriteFn;
+			public IntPtr readFn;
+			public IntPtr writeFn;
 
-			public VrEmu6502Interrupt IntPin;
-			public VrEmu6502Interrupt NmiPin;
+			public VrEmu6502Interrupt intPin;
+			public VrEmu6502Interrupt nmiPin;
 
-			public byte Step;
-			public byte CurrentOpcode;
-			public ushort CurrentOpcodeAddr;
+			public byte step;
+			public byte currentOpcode;
+			public ushort currentOpcodeAddr;
 
-			public bool Wai;
-			public bool Stp;
+			public byte wai;
+			public byte stp;
 
-			public ushort Pc;
+			public ushort pc;
 
-			public byte Ac;
-			public byte Ix;
-			public byte Iy;
-			public byte Sp;
+			public byte ac;
+			public byte ix;
+			public byte iy;
+			public byte sp;
 
-			public byte Flags;
+			public byte flags;
 
-			public ushort ZpBase;
-			public ushort SpBase;
-			public ushort TmpAddr;
+			public ushort zpBase;
+			public ushort spBase;
+			public ushort tmpAddr;
 
-			public IntPtr Opcodes; // Use IntPtr for pointer to array
-
+			public IntPtr opcodes;
+			public IntPtr mnemonicNames;
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-			public string[] MnemonicNames;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-			public VrEmu6502AddrMode[] AddrModes;
+			public VrEmu6502AddrMode[] addrModes;
 		}
 
 		public enum VrEmu6502Model
