@@ -3,6 +3,7 @@ using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using static BizHawk.Emulation.Cores.Components.vr6502.vr6502;
 
 namespace BizHawk.Emulation.Cores.Components.vr6502
 {
@@ -49,9 +50,32 @@ namespace BizHawk.Emulation.Cores.Components.vr6502
 		public delegate byte VrEmu6502MemRead(ushort addr, bool isDbg);
 		public delegate void VrEmu6502MemWrite(ushort addr, byte val);	
 		
-		public void SetNMI() => _6502s.nmiPin = VrEmu6502Interrupt.IntLow;
+		public void SetNMI() => WriteNMI(VrEmu6502Interrupt.IntRequested);
+		public void SetIRQ() => WriteInt(VrEmu6502Interrupt.IntRequested);
 
-		public bool SetIRQ() => _6502s.intPin == VrEmu6502Interrupt.IntLow;
+		private void WriteNMI(VrEmu6502Interrupt state)
+		{
+			IntPtr nmiPtr = VrEmu6502Interop.vrEmu6502Nmi(ref _6502s);
+			Marshal.WriteInt32(nmiPtr, (int)state);
+		}
+
+		private VrEmu6502Interrupt ReadNMI()
+		{
+			IntPtr nmiPtr = VrEmu6502Interop.vrEmu6502Nmi(ref _6502s);
+			return (VrEmu6502Interrupt)Marshal.ReadInt32(nmiPtr);
+		}
+
+		private void WriteInt(VrEmu6502Interrupt state)
+		{
+			IntPtr intPtr = VrEmu6502Interop.vrEmu6502Int(ref _6502s);
+			Marshal.WriteInt32(intPtr, (int)state);
+		}
+
+		private VrEmu6502Interrupt ReadInt()
+		{
+			IntPtr intPtr = VrEmu6502Interop.vrEmu6502Int(ref _6502s);
+			return (VrEmu6502Interrupt)Marshal.ReadInt32(intPtr);
+		}
 
 		public bool RDY;
 
@@ -61,8 +85,8 @@ namespace BizHawk.Emulation.Cores.Components.vr6502
 		}
 
 		public void ExecuteTick()
-		{	
-			if (RDY)
+		{
+			if (!RDY)
 			{
 				VrEmu6502Interop.vrEmu6502Tick(ref _6502s);
 			}
@@ -72,9 +96,9 @@ namespace BizHawk.Emulation.Cores.Components.vr6502
 
 		public byte ExecuteInstruction()
 		{
-			int cycles = 0;
+			int cycles = 0;		
 
-			if (RDY)
+			if (!RDY)
 			{
 				cycles = VrEmu6502Interop.vrEmu6502InstCycle(ref _6502s);
 			}
@@ -118,10 +142,8 @@ namespace BizHawk.Emulation.Cores.Components.vr6502
 			ser.Sync(nameof(RDY), ref RDY);
 
 			ser.SyncEnum(nameof(_6502s.Model), ref _6502s.Model);
-			// ReadFn not serializable
-			// WriteFn not serializable
-			ser.SyncEnum(nameof(_6502s.intPin), ref _6502s.intPin);
-			ser.SyncEnum(nameof(_6502s.nmiPin), ref _6502s.nmiPin);
+			//ser.SyncEnum(nameof(_6502s.intPin), ref _6502s.intPin);
+			//ser.SyncEnum(nameof(_6502s.nmiPin), ref _6502s.nmiPin);
 			ser.Sync(nameof(_6502s.step), ref _6502s.step);
 			ser.Sync(nameof(_6502s.currentOpcode), ref _6502s.currentOpcode);
 			ser.Sync(nameof(_6502s.currentOpcodeAddr), ref _6502s.currentOpcodeAddr);
@@ -136,9 +158,26 @@ namespace BizHawk.Emulation.Cores.Components.vr6502
 			ser.Sync(nameof(_6502s.zpBase), ref _6502s.zpBase);
 			ser.Sync(nameof(_6502s.spBase), ref _6502s.spBase);
 			ser.Sync(nameof(_6502s.tmpAddr), ref _6502s.tmpAddr);
-			// Opcodes????
-			// MnemonicNames??
-			// AddrModes??
+
+			VrEmu6502Interrupt nmiP = new VrEmu6502Interrupt();
+			VrEmu6502Interrupt intP = new VrEmu6502Interrupt();
+
+			if (ser.IsReader)
+			{
+				// loading state
+				ser.SyncEnum(nameof(nmiP), ref nmiP);
+				ser.SyncEnum(nameof(intP), ref intP);
+				WriteNMI(nmiP);
+				WriteInt(intP);
+			}
+			else
+			{
+				// saving state
+				nmiP = ReadNMI();				
+				intP = ReadInt();
+				ser.SyncEnum(nameof(nmiP), ref nmiP);
+				ser.SyncEnum(nameof(intP), ref intP);
+			}
 
 			ser.Sync(nameof(TotalExecutedCycles), ref TotalExecutedCycles);
 			ser.EndSection();

@@ -59,16 +59,16 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 			PollInput();
 
-			_asic.FrameStart = true;
+			//_asic.FrameStart = true;
 
 			while (_frameClock < _cpuClocksPerFrame)
 			{
-				_asic.Clock();
+				int ticks = _cpu.ExecuteInstruction();
+				_asic.Clock(ticks);
 				//_cpu.ExecuteOne();
-				_cpu.ExecuteTick();
 			}
 
-			_frameClock = 0;
+			_frameClock %= (int)_cpuClocksPerFrame;
 			_frame++;
 
 			if (_isLag)

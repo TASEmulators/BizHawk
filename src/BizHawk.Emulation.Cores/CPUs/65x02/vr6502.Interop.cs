@@ -41,6 +41,18 @@ namespace BizHawk.Emulation.Cores.Components.vr6502
 		[DllImport(lib, CallingConvention = cc)]
 		public static extern byte vrEmu6502InstCycle(ref VrEmu6502State state);
 
+		/// <summary>
+		/// Pointer to the NMI pin
+		/// </summary>
+		[DllImport(lib, CallingConvention = cc)]
+		public static extern IntPtr vrEmu6502Nmi(ref VrEmu6502State state);
+
+		/// <summary>
+		/// Pointer to the INT pin
+		/// </summary>
+		[DllImport(lib, CallingConvention = cc)]
+		public static extern IntPtr vrEmu6502Int(ref VrEmu6502State state);
+
 
 		[DllImport(lib, CallingConvention = cc)]
 		public static extern IntPtr vrEmu6502OpcodeToMnemonicStr(ref VrEmu6502State state, byte opcode);

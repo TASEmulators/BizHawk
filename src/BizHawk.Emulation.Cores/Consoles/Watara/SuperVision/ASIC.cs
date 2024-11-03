@@ -91,7 +91,50 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		private int _vramStartAddress;
 
 		/// <summary>
-		/// ASIC is clocked at the same rate as the CPU
+		/// Runs 'ticks' clock cycles of the ASIC
+		/// </summary>
+		public void Clock(int ticks)
+		{
+			int dmaCycles = 0;
+			int lcdCycles = 0;
+
+			// sequencer
+			for (int i = 0; i < ticks; i++)
+			{
+				_seqCounter++;
+
+				if (_seqCounter == 7)
+				{
+					_seqCounter = 0;
+					lcdCycles++;
+				}
+				else
+				{
+					dmaCycles++;
+				}	
+			}
+
+			// DMA
+			CheckDMA();
+			if (_dmaInProgress)
+			{
+				DoDMA(dmaCycles);
+			}
+
+			// interrupts
+			CheckInterrupt(ticks);
+
+			// video
+
+
+			// audio
+			AudioClock();
+
+			_sv.FrameClock += ticks;
+		}
+
+		/// <summary>
+		/// Runs a single clock cycle of the ASIC
 		/// </summary>
 		public void Clock()
 		{
@@ -104,14 +147,14 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			// 4: DMA byte transfer to VRAM (if DMA is active) / CPU RDY line false (if DMA is active)
 			// 5: DMA byte transfer to VRAM (if DMA is active) / CPU RDY line false (if DMA is active)
 
-			CheckDMA();
+			
 
 			// so DMA can transfer 5 bytes to VRAM every 6 clocks, the 6th clock being the 1/2 byte transfer to the LCD
 			switch (_seqCounter)
 			{
 				case 0:					
 					// there is no DMA on this cycle so CPU can run freely
-					_sv._cpu.RDY = true;
+					//_sv._cpu.RDY = true;
 
 					bool lineEnd = _byteCounter == CLOCK_WIDTH - 1;
 					bool fieldEnd = _lineCounter == LINE_HEIGHT - 1 && lineEnd && _field == 0;
@@ -213,14 +256,14 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		/// <summary>
 		/// Interrupt management
 		/// </summary>
-		private void CheckInterrupt()
+		private void CheckInterrupt(int ticks = 0)
 		{
-			_nmiTimer++;
+			_nmiTimer += ticks;
 
 			// The NMI occurs every 65536 clock cycles (61.04Hz) regardless of the rate that the LCD refreshes
-			if (_nmiTimer == 0x10000 && _regs[R_SYSTEM_CONTROL].Bit(0))
+			if (_nmiTimer >= 0x10000 && _regs[R_SYSTEM_CONTROL].Bit(0))
 			{
-				_nmiTimer = 0;
+				_nmiTimer %= 0x10000;
 				//_sv._cpu.NMI = true;
 				_sv._cpu.SetNMI();
 			}
@@ -235,31 +278,34 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				_intTimer = 0;
 			}
 
-			if (_intTimerEnabled)
+			for (int i = 0; i < ticks; i++)
 			{
-				if (_regs[R_IRQ_TIMER] == 0)
+				if (_intTimerEnabled)
 				{
-					if (_regs[R_SYSTEM_CONTROL].Bit(1))
+					if (_regs[R_IRQ_TIMER] == 0)
 					{
-						// raise IRQ
-						// this handles IRQ after timer countdown AND instant IRQ when timer is set to 0
-						_intFlag = true;
-						_intTimerEnabled = false;
+						if (_regs[R_SYSTEM_CONTROL].Bit(1))
+						{
+							// raise IRQ
+							// this handles IRQ after timer countdown AND instant IRQ when timer is set to 0
+							_intFlag = true;
+							_intTimerEnabled = false;
 
-						// set IRQ Timer expired bit
-						_regs[R_IRQ_STATUS] = (byte) (_regs[R_IRQ_STATUS] | 2);
+							// set IRQ Timer expired bit
+							_regs[R_IRQ_STATUS] = (byte) (_regs[R_IRQ_STATUS] | 2);
+						}
 					}
-				}
-				else
-				{
-					// timer should be counting down clocked by the prescaler
-					if (_intTimer++ == IntPrescaler)
+					else
 					{
-						// prescaler clock
-						_intTimer = 0;
+						// timer should be counting down clocked by the prescaler
+						if (_intTimer++ == IntPrescaler)
+						{
+							// prescaler clock
+							_intTimer = 0;
 
-						// decrement timer
-						_regs[R_IRQ_TIMER]--;
+							// decrement timer
+							_regs[R_IRQ_TIMER]--;
+						}
 					}
 				}
 			}
@@ -291,9 +337,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		/// <summary>
 		/// Perform a DMA transfer
 		/// </summary>
-		private void DoDMA()
+		private void DoDMA(int dmaCycles = 1)
 		{
-			if (_dmaInProgress)
+			for (int i = 0; i > dmaCycles; i++)
 			{
 				_dmaCounter++;
 
@@ -302,9 +348,10 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					// wraparound or length reached
 					_dmaCounter = 0;
 					_dmaInProgress = false;
+					break;
 				}
 				else
-				{					
+				{
 					ushort source = (ushort) (_regs[R_DMA_SOURCE_HIGH] << 8 | _regs[R_DMA_SOURCE_LOW]);
 					ushort dest = (ushort) (_regs[R_DMA_DEST_HIGH] << 8 | _regs[R_DMA_DEST_LOW]);
 

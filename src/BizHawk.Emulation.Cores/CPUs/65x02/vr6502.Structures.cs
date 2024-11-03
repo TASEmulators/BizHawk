@@ -37,8 +37,7 @@ namespace BizHawk.Emulation.Cores.Components.vr6502
 
 			public IntPtr opcodes;
 			public IntPtr mnemonicNames;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-			public VrEmu6502AddrMode[] addrModes;
+			public IntPtr addrModes;
 		}
 
 		public enum VrEmu6502Model
