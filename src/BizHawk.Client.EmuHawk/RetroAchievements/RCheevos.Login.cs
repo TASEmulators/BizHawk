@@ -1,3 +1,5 @@
+using BizHawk.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RCheevos
@@ -57,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var config = _getConfig();
 			Username = config.RAUsername;
-			ApiToken = config.RAToken;
+			ApiToken = SensitiveStrings.DecryptString(config.RAToken);
 
 			if (LoggedIn)
 			{
@@ -65,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 				if (DoLogin(Username, apiToken: ApiToken))
 				{
 					config.RAUsername = Username;
-					config.RAToken = ApiToken;
+					config.RAToken = SensitiveStrings.EncryptString(ApiToken);
 					PlaySound(_loginSound);
 					return;
 				}
@@ -75,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			loginForm.ShowDialog();
 
 			config.RAUsername = Username;
-			config.RAToken = ApiToken;
+			config.RAToken = SensitiveStrings.EncryptString(ApiToken);
 
 			if (LoggedIn)
 			{
