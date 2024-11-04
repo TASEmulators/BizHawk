@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -130,7 +131,10 @@ namespace BizHawk.Client.EmuHawk
 			
 			RA = BizInvoker.GetInvoker<RAInterface>(_resolver, _memAccess, CallingConventionAdapters.Native);
 
-			RA.InitClient(mainForm.AsWinFormsHandle().Handle, "BizHawk", VersionInfo.GetEmuVersion());
+			// make sure clientName and clientVer match our user agent, as these get put into RAIntegration's user agent
+			RA.InitClient(mainForm.AsWinFormsHandle().Handle,
+				clientName: string.IsNullOrWhiteSpace(VersionInfo.CustomBuildString) ? "EmuHawk" : VersionInfo.CustomBuildString.OnlyAlphanumeric(),
+				clientVer: $"{VersionInfo.MainVersion}{(VersionInfo.DeveloperBuild ? "-dev" : string.Empty)}");
 
 			_isActive = () => !Emu.IsNull();
 			_unpause = _mainForm.UnpauseEmulator;
