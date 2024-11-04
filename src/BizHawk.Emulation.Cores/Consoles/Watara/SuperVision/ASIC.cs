@@ -62,6 +62,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 		private SuperVision _sv;
 		private byte[] _regs = new byte[0x2000];
+		public byte[] Regs => _regs;
 
 		/// <summary>
 		/// The inbuilt LCD screen
@@ -89,6 +90,11 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		private ushort _vramByteBuffer;
 		private int _vramPointer;
 		private int _vramStartAddress;
+
+		/// <summary>
+		/// The current prescaler value for the IRQ timer
+		/// </summary>
+		private int IntPrescaler => _regs[R_SYSTEM_CONTROL].Bit(4) ? 16384 : 256;
 
 		/// <summary>
 		/// Runs 'ticks' clock cycles of the ASIC
@@ -121,14 +127,16 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				DoDMA(dmaCycles);
 			}
 
+			// audio
+			AudioClock();
+
 			// interrupts
 			CheckInterrupt(ticks);
 
 			// video
 
 
-			// audio
-			AudioClock();
+			
 
 			_sv.FrameClock += ticks;
 		}
@@ -248,10 +256,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			_sv.FrameClock++;
 		}
 
-		/// <summary>
-		/// The current prescaler value for the IRQ timer
-		/// </summary>
-		private int IntPrescaler => _regs[R_SYSTEM_CONTROL].Bit(4) ? 16384 : 256;
+		
 
 		/// <summary>
 		/// Interrupt management
@@ -268,7 +273,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				_sv._cpu.SetNMI();
 			}
 
-			if (_intTimerChanged)
+			if (_intTimerChanged && ticks > 0)
 			{
 				// IRQ timer register has just been modified
 				_intTimerChanged = false;
@@ -421,8 +426,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				case 0x1C:  // CH3_Trigger
 
 				case 0x28:  // CH4_Freq_Vol (left and right)
-				case 0x29:  // CH4_Length
-				case 0x2A:  // CH4_Control
+				case 0x29:  // CH4_Length				
 
 				case 0x21:  // Link port DDR
 				case 0x22:  // Link port data
@@ -468,7 +472,15 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					// writing to this register resets the LCD rendering system and makes it start rendering from the upper left corner, regardless of the bit pattern.
 					Screen.ResetPosition();
 
-					break;				
+					break;
+
+				// CH4_Control
+				case 0x2A:
+					_regs[regIndex] = value;
+
+					// Writing to this register resets the LFSR to all 1's.  Writing to the other noise registers do not reset the LFSR. 
+					_ch4.LFSR = 0x7FFF;
+					break;
 
 				// READONLY				
 				case 0x20:      // Controller								
@@ -498,7 +510,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		/// </summary>
 		public byte ReadPort(ushort address)
 		{
-			byte result = 0xFF;
+			byte result = 0x00;
 			int regIndex = address - 0x2000;
 
 			// mirror reg handling
@@ -574,9 +586,16 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				// IRQ status
 				case 0x27:
 
-					// bit0:	DMA Audio System (1 == DMA audio finished)
-					// bit1:	IRQ Timer expired (1 == expired)
-					result = _regs[regIndex];
+					// bit0:	IRQ Timer expired (1 == expired)
+					if (!_intTimerEnabled)
+					{
+						result |= 0b0000_0001;
+					}
+
+					// bit1:	DMA Audio System (1 == DMA audio finished)
+					result |= 0b0000_0010;
+
+					//result = _regs[regIndex];
 
 					break;
 
@@ -623,6 +642,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			ser.Sync(nameof(_vramPointer), ref _vramPointer);
 			ser.Sync(nameof(_vramStartAddress), ref _vramStartAddress);
 			Screen.SyncState(ser);
+			SyncAudioState(ser);
 
 			ser.EndSection();
 		}

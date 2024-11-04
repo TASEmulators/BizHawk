@@ -18,6 +18,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		private int _frameClock;
 		private int _frame;
 
+		public double CpuFreq => _cpuClocksPerSecond;
+		public double CpuClocksPerFrame => _cpuClocksPerFrame;
+
 		public int FrameClock
 		{
 			get => _frameClock;
