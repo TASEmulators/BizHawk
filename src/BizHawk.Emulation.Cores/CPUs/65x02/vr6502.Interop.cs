@@ -53,8 +53,21 @@ namespace BizHawk.Emulation.Cores.Components.vr6502
 		[DllImport(lib, CallingConvention = cc)]
 		public static extern IntPtr vrEmu6502Int(ref VrEmu6502State state);
 
-
+		/// <summary>
+		/// Return the mnemonic string for a given opcode
+		/// </summary>
 		[DllImport(lib, CallingConvention = cc)]
 		public static extern IntPtr vrEmu6502OpcodeToMnemonicStr(ref VrEmu6502State state, byte opcode);
+
+		/// <summary>
+		/// Return the address mode for a given opcode
+		/// </summary>
+		[DllImport(lib, CallingConvention = cc)]
+		public static extern IntPtr vrEmu6502GetOpcodeAddrMode(ref VrEmu6502State state, byte opcode);
+
+		[DllImport(lib, CallingConvention = cc)]
+		public static extern ushort vrEmu6502DisassembleInstruction(
+		ref VrEmu6502State state, ushort addr, int bufferSize, IntPtr buffer,
+		IntPtr refAddr, IntPtr labelMap);
 	}
 }

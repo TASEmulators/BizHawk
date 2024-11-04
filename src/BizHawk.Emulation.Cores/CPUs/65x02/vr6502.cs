@@ -3,7 +3,6 @@ using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using static BizHawk.Emulation.Cores.Components.vr6502.vr6502;
 
 namespace BizHawk.Emulation.Cores.Components.vr6502
 {
@@ -112,6 +111,32 @@ namespace BizHawk.Emulation.Cores.Components.vr6502
 		{
 			IntPtr strPtr = VrEmu6502Interop.vrEmu6502OpcodeToMnemonicStr(ref _6502s, opcode);
 			return Marshal.PtrToStringAnsi(strPtr);
+		}
+
+		public string DisassembleInstruction()
+		{
+			ushort address = _6502s.currentOpcodeAddr;
+			int bufferSize = 256;
+
+			IntPtr buffer = Marshal.AllocHGlobal(bufferSize);
+			IntPtr refAddr = Marshal.AllocHGlobal(sizeof(ushort));
+			IntPtr labelMap = IntPtr.Zero;
+
+			try
+			{
+				ushort nextAddr = VrEmu6502Interop.vrEmu6502DisassembleInstruction(
+					ref _6502s, address, bufferSize, buffer, refAddr, labelMap);
+
+				string disassembly = Marshal.PtrToStringAnsi(buffer);
+				ushort referenceAddress = (ushort) Marshal.ReadInt16(refAddr);
+
+				return $"Disassembly: {disassembly}, Next Address: {nextAddr}, Reference Address: {referenceAddress}";
+			}
+			finally
+			{
+				Marshal.FreeHGlobal(buffer);
+				Marshal.FreeHGlobal(refAddr);
+			}
 		}
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
