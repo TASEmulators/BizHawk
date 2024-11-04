@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		public ASIC(SuperVision sv, SuperVision.SuperVisionSyncSettings ss)
 		{
 			_sv = sv;
-			Screen = new LCD(ss.ScreenType);
+			Screen = new LCD(ss.ScreenType);			
 		}
 
 		public bool FrameStart;
@@ -127,16 +127,16 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				DoDMA(dmaCycles);
 			}
 
-			// audio
-			AudioClock();
-
 			// interrupts
 			CheckInterrupt(ticks);
+
+			// audio
+			AudioClock(ticks);
 
 			// video
 
 
-			
+
 
 			_sv.FrameClock += ticks;
 		}
@@ -248,7 +248,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				_seqCounter = 0;    // wraparound
 
 			CheckInterrupt();
-			AudioClock();
+			AudioClock(1);
 
 			if (FrameStart)
 				FrameStart = false;
@@ -411,29 +411,53 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 				case 0x10:  // CH1_Flow (right only)
 				case 0x11:  // CH1_Fhi
-				case 0x12:  // CH1_Vol_Duty
-				case 0x13:  // CH1_Length
+				case 0x12:  // CH1_Vol_Duty				
 
 				case 0x14:  // CH2_Flow (right only)
 				case 0x15:  // CH2_Fhi
-				case 0x16:  // CH2_Vol_Duty
-				case 0x17:  // CH2_Length
+				case 0x16:  // CH2_Vol_Duty				
 
 				case 0x18:  // CH3_Addrlow
-				case 0x19:  // CH3_Addrhi
-				case 0x1A:  // CH3_Length
+				case 0x19:  // CH3_Addrhi				
 				case 0x1B:  // CH3_Control
 				case 0x1C:  // CH3_Trigger
 
-				case 0x28:  // CH4_Freq_Vol (left and right)
-				case 0x29:  // CH4_Length				
+				case 0x28:  // CH4_Freq_Vol (left and right)							
 
 				case 0x21:  // Link port DDR
 				case 0x22:  // Link port data
 
 					_regs[regIndex] = value;
 
-					break;				
+					break;
+
+				// CH1_Length
+				case 0x13:
+					// Writing to this register triggers the sound to play for L counts if bit 6 of CHx_Vol_Duty is cleared
+					// If that E bit is set, the length counter still runs, but it has no effect unless the E bit is cleared before the timer expires.
+					_regs[regIndex] = value;
+					_ch1.LengthChanged();
+					break;
+
+				// CH2_Length
+				case 0x17:
+					// Writing to this register triggers the sound to play for L counts if bit 6 of CHx_Vol_Duty is cleared
+					// If that E bit is set, the length counter still runs, but it has no effect unless the E bit is cleared before the timer expires.
+					_regs[regIndex] = value;
+					_ch2.LengthChanged();
+					break;
+
+				// CH3_Length
+				case 0x1A:
+					_regs[regIndex] = value;
+					//TODO: ch3 length changed call
+					break;
+
+				// CH4_Length	
+				case 0x29:
+					_regs[regIndex] = value;
+					_ch4.LengthChanged();
+					break;
 
 				// IRQ timer
 				case 0x23:

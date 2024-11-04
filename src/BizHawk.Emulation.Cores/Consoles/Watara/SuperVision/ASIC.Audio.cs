@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 	public partial class ASIC : ISoundProvider
 	{
 		public const double SAMPLE_RATE = 44100;
+		public double FRAME_RATE => _sv.CpuFreq / _sv.CpuClocksPerFrame;
+		public double samplesPerFrame => SAMPLE_RATE / FRAME_RATE;
 
 		/// <summary>
 		/// CH1: the right square wave channel
@@ -25,20 +27,31 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		/// </summary>
 		private CH_Noise _ch4;
 
-		private void InitAudio()
+		public void InitAudio()
 		{
 			_ch1 = new CH_Square(this, 1);
 			_ch2 = new CH_Square(this, 2);
 			_ch4 = new CH_Noise(this);
+
+			ch1Buff = new short[(int)samplesPerFrame];
+			ch2Buff = new short[(int)samplesPerFrame];
+			ch4LBuff = new short[(int)samplesPerFrame];
+			ch4RBuff = new short[(int)samplesPerFrame];
 		}
 
-		public void AudioClock()
+		public void AudioClock(int ticks)
 		{
+			_ch1.Clock(ticks);
+			_ch2.Clock(ticks);
 
+			_ch4.Clock(ticks);
 		}
 
 		public void SyncAudioState(Serializer ser)
 		{
+			_ch1.SyncState(ser);
+			_ch2.SyncState(ser);
+
 			_ch4.SyncState(ser);
 		}
 
@@ -57,6 +70,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			private int AR_Len => _chIndex == 1 ? R_CH1_LENGTH : R_CH2_LENGTH;
 
 			private ASIC _asic;
+			private readonly BlipBuffer _blip;
+			public BlipBuffer Blip => _blip;
 			private double _cpuFreq => _asic._sv.CpuFreq;			
 
 			/// <summary>
@@ -64,6 +79,14 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			/// Comprised of 8 bits of CHx_Flow and 3 bits of CHx_Fhigh
 			/// </summary>
 			public ushort Freq => (ushort)(_asic.Regs[AR_FLow] | ((_asic.Regs[AR_FHigh] & 0b0000_0111) << 8));
+
+			/// <summary>
+			/// Actual frequency of the square wave
+			/// The rev. eng. notes say that the frequency is 12500 / (Freq + 1)
+			/// If that was based on a 4MHz clock, then this would be cpuClock / 32 / (Freq + 1)
+			/// So for now we will assume it's using a 5bit divider
+			/// </summary>
+			public double FreqActual => _cpuFreq / 32.0 / (Freq + 1.0);
 
 			/// <summary>
 			/// True:	channel always produces sound
@@ -87,6 +110,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			/// </summary>
 			public int Volume => _asic.Regs[AR_VolDuty] & 0b0000_1111;
 
+			
+
 			/// <summary>
 			/// Sound plays for Length counts if AlwaysOutput is 0
 			/// </summary>
@@ -103,12 +128,17 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			/// This prescaler is never reloaded or reset
 			/// So there is a 1 audio clock uncertainty in the length counter, because it's decremented each time the prescaler expires
 			/// </summary>
-			public int LenPrescaler
+			public ushort LenPrescaler
 			{
 				get => _lenPrescaler;
-				set => _lenPrescaler = value & 0x10000; 
+				set => _lenPrescaler = (ushort) (value & 0x10000);
 			}
-			private int _lenPrescaler;
+			private ushort _lenPrescaler;
+
+			/// <summary>
+			/// Keeps track of ticks since the last waveform change
+			/// </summary>
+			private double _tickBuffer;
 
 			public CH_Square(ASIC asic, int chIndex)
 			{
@@ -120,6 +150,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				}
 
 				_chIndex = chIndex;
+
+				_blip = new BlipBuffer((int)(_asic.samplesPerFrame * 2));
+				_blip.SetRates(_cpuFreq, SAMPLE_RATE);
 			}
 
 			public void Clock(int ticks)
@@ -128,7 +161,25 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				{
 					if (++LenPrescaler == 0)
 					{
+						_lenCounter--;
+						if (_lenCounter <= 0)
+						{
+							_lenCounter = 0;
+						}
+					}
 
+					if (AlwaysOutput || _lenCounter > 0)
+					{
+						_tickBuffer++;
+
+						double ticksPerFreq = _asic._sv.CpuFreq / FreqActual;
+
+						if (_tickBuffer >= ticksPerFreq)
+						{
+							_tickBuffer -= ticksPerFreq;
+							int sample = GetSquareWaveSample(_asic._sv.FrameClock, FreqActual, DutyCycle) * Volume / 15;
+							_blip.AddDelta((uint)_asic._sv.FrameClock, (short)sample);
+						}
 					}
 				}
 			}
@@ -137,14 +188,22 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			/// Called whenever the length register is written to
 			/// </summary>
 			public void LengthChanged() => _lenCounter = Length;
+		
 
-			private static int GetSquareWaveSample(double time, double freq)
+			private static int GetSquareWaveSample(double time, double freq, int dutyCycle)
 			{
-				var sTime = time / SAMPLE_RATE;
-				var period = 1.0 / freq;
-				var halfPeriod = period / 2.0;
-				var currentTimeInPeriod = sTime % period;
-				return currentTimeInPeriod < halfPeriod ? 32766 : -32766;
+				double sTime = time / SAMPLE_RATE;
+				double period = 1.0 / freq;
+				double dutyCycleFraction = dutyCycle switch
+				{
+					0 => 0.125, // 12.5%
+					1 => 0.25,  // 25%
+					2 => 0.50,  // 50%
+					3 => 0.75,  // 75%
+					_ => 0.50
+				};
+				double currentTimeInPeriod = sTime % period;
+				return currentTimeInPeriod < period * dutyCycleFraction ? short.MaxValue / 32 : short.MinValue / 32;
 			}
 
 			public virtual void SyncState(Serializer ser)
@@ -152,6 +211,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				ser.BeginSection($"AUDIO_CH{_chIndex}_NOISE");
 				ser.Sync(nameof(LenPrescaler), ref _lenPrescaler);
 				ser.Sync(nameof(_lenCounter), ref _lenCounter);
+				ser.Sync(nameof(_tickBuffer), ref _tickBuffer);
 				ser.EndSection();
 			}
 		}
@@ -162,6 +222,11 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		public class CH_Noise
 		{
 			private ASIC _asic;
+			private readonly BlipBuffer _blipL;
+			private readonly BlipBuffer _blipR;
+			public BlipBuffer BlipL => _blipL;
+			public BlipBuffer BlipR => _blipR;
+
 			private double _cpuFreq => _asic._sv.CpuFreq;
 
 			/// <summary>
@@ -187,6 +252,27 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			public int Length => _asic.Regs[R_CH4_LENGTH] & 0b0000_0000;
 
 			/// <summary>
+			/// 1 - enable noise channel continuously.  
+			/// 0 - use the length register
+			/// </summary>
+			public bool ChannelEnable => _asic.Regs[R_CH3_CONTROL].Bit(1);
+
+			/// <summary>
+			/// Noise enabled
+			/// </summary>
+			public bool NoiseEnable => _asic.Regs[R_CH3_CONTROL].Bit(4);
+
+			/// <summary>
+			/// Left output. 1 - mix audio with left channel
+			/// </summary>
+			public bool LeftChannelOutput => _asic.Regs[R_CH3_CONTROL].Bit(3);
+
+			/// <summary>
+			/// Right output. 1 - mix audio with right channel
+			/// </summary>
+			public bool RightChannelOutput => _asic.Regs[R_CH3_CONTROL].Bit(2);
+
+			/// <summary>
 			/// Linear Feedback Shift Register
 			/// </summary>
 			public ushort LFSR
@@ -202,32 +288,63 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			/// This prescaler is never reloaded or reset
 			/// So there is a 1 audio clock uncertainty in the length counter, because it's decremented each time the prescaler expires
 			/// </summary>
-			public int LenPrescaler
+			public ushort LenPrescaler
 			{
 				get => _lenPrescaler;
-				set => _lenPrescaler = value & 0x10000;
+				set => _lenPrescaler = (ushort)(value & 0x10000);
 			}
-			private int _lenPrescaler;
+			private ushort _lenPrescaler;
 
 			/// <summary>
 			/// Length counter is clocked by the prescaler, decrementing each time the prescaler expires
 			/// </summary>
 			private int _lenCounter;
 
+			/// <summary>
+			/// Keeps track of ticks since the last noise change
+			/// </summary>
+			private double _tickBuffer;
+
 
 			public CH_Noise(ASIC asic)
 			{
 				_asic = asic;
 				_noiseFreqs = NoiseFreqEntry.Init(_cpuFreq);
+
+				_blipL = new BlipBuffer((int) (_asic.samplesPerFrame * 2));
+				_blipL.SetRates(_cpuFreq, SAMPLE_RATE);
+
+				_blipR = new BlipBuffer((int) (_asic.samplesPerFrame * 2));
+				_blipR.SetRates(_cpuFreq, SAMPLE_RATE);
 			}
 
 			public void Clock(int ticks)
 			{
 				for (int t = 0; t < ticks; t++)
-				{
+				{					
 					if (++LenPrescaler == 0)
 					{
+						_lenCounter--;
+						if (_lenCounter <= 0)
+						{
+							_lenCounter = 0;
+						}
+					}
 
+					if (NoiseEnable)
+					{
+						if (ChannelEnable || _lenCounter > 0)
+						{
+							_tickBuffer++;
+
+							if (_tickBuffer >= _currNoiseFreq.TicksPerFreq)
+							{
+								_tickBuffer -= _currNoiseFreq.TicksPerFreq;
+								ClockLFSR();
+								_blipL.AddDelta((uint)_asic._sv.FrameClock, LeftChannelOutput ? (short)LFSR : 0);
+								_blipR.AddDelta((uint)_asic._sv.FrameClock, RightChannelOutput ? (short)LFSR : 0);
+							}
+						}
 					}
 				}
 			}
@@ -266,6 +383,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				ser.Sync(nameof(LFSR), ref _lfsr);
 				ser.Sync(nameof(LenPrescaler), ref _lenPrescaler);
 				ser.Sync(nameof(_lenCounter), ref _lenCounter);
+				ser.Sync(nameof(_tickBuffer), ref _tickBuffer);
 				ser.EndSection();
 			}
 		}
@@ -349,13 +467,80 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 		public void DiscardSamples()
 		{
-
+			_ch1.Blip.Clear();
+			_ch2.Blip.Clear();
+			_ch4.BlipL.Clear();
+			_ch4.BlipR.Clear();
 		}
+
+		private short[] ch1Buff;
+		private short[] ch2Buff;
+		private short[] ch4LBuff;
+		private short[] ch4RBuff;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			nsamp = 1;
-			samples = new short[nsamp];
+			nsamp = (int)samplesPerFrame;
+
+			// L			
+			_ch2.Blip.EndFrame((uint) _sv.CpuClocksPerFrame);
+			int ch2Nsamp = _ch2.Blip.SamplesAvailable();
+			if (ch2Nsamp != nsamp)
+			{
+
+			}
+			_ch2.Blip.ReadSamples(ch2Buff, nsamp, false);
+
+			_ch4.BlipL.EndFrame((uint) _sv.CpuClocksPerFrame);
+			int ch4LNsamp = _ch4.BlipL.SamplesAvailable();
+			if (ch4LNsamp != nsamp)
+			{
+
+			}
+			_ch4.BlipL.ReadSamples(ch4LBuff, nsamp, false);
+
+			// R
+			_ch1.Blip.EndFrame((uint)_sv.CpuClocksPerFrame);
+			int ch1Nsamp = _ch1.Blip.SamplesAvailable();
+			if (ch1Nsamp != nsamp)
+			{
+
+			}
+			_ch1.Blip.ReadSamples(ch1Buff, nsamp, false);
+
+			_ch4.BlipR.EndFrame((uint) _sv.CpuClocksPerFrame);
+			int ch4RNsamp = _ch4.BlipR.SamplesAvailable();
+			if (ch4RNsamp != nsamp)
+			{
+
+			}
+			_ch4.BlipR.ReadSamples(ch4RBuff, nsamp, false);
+
+			// muxing is pretty shit
+			// Each of the outputs (left and right) are only 4 bit DACs.
+			// But each channel can output up to 3 different things.  (Square, noise, DMA)
+			// The hardware simply adds all three together, and clips it at 0fh
+			// we will do similar here, just with short.MaxValue and short.MinValue
+			samples = new short[nsamp * 2];
+
+			for (int i = 0, o = 0;  i < nsamp; i++, o += 2)
+			{
+				int left = ch2Buff[i] + ch4LBuff[i];
+				int right = ch1Buff[i] + ch4RBuff[i];
+
+				samples[o] = (short)ClampSample(left);
+				samples[o + 1] = (short)ClampSample(right);
+			}
+		}
+
+		private static int ClampSample(int sample)
+		{
+			if (sample >= short.MaxValue)
+				sample = short.MaxValue;
+			else if (sample <= short.MinValue)
+				sample = short.MinValue;
+
+			return sample;
 		}
 	}
 }

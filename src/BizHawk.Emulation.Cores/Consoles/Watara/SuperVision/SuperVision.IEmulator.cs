@@ -42,6 +42,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			_asic.Screen.SetRates(
 				(int) _cpuClocksPerSecond,
 				(int) _cpuClocksPerFrame);
+
+			_asic.InitAudio();
 		}
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)

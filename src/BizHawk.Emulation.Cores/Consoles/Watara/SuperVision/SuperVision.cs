@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			CalcClock();
 
 			ser.Register<IVideoProvider>(_asic.Screen);
+			ser.Register<ISoundProvider>(_asic);
 			ser.Register<ITraceable>(_tracer);
 			//ser.Register<IDisassemblable>(_cpu);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
