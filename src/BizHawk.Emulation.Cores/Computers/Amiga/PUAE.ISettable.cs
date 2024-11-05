@@ -130,6 +130,14 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			DRV_FB
 		}
 
+		public enum ControllerType
+		{
+			Joystick,
+			Mouse,
+			[Display(Name = "CD32 pad")]
+			CD32_pad
+		}
+
 		private void CreateArguments(PUAESyncSettings settings)
 		{
 			_args = new List<string>
@@ -240,6 +248,17 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			AppendSetting("sound_stereo_separation=" + settings.StereoSeparation / 10);
 		}
 
+		private void EnableCycleExact()
+		{
+			AppendSetting(new List<string>
+			{
+				"cpu_compatible=true",
+				"cpu_cycle_exact=true",
+				"cpu_memory_cycle_exact=true",
+				"blitter_cycle_exact=true",
+			});
+		}
+
 		private void AppendSetting(List<string> settings)
 		{
 			foreach (var s in settings)
@@ -253,17 +272,6 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			_args.AddRange(new List<string>
 			{
 				"-s", setting
-			});
-		}
-
-		private void EnableCycleExact()
-		{
-			AppendSetting(new List<string>
-			{
-				"cpu_compatible=true",
-				"cpu_cycle_exact=true",
-				"cpu_memory_cycle_exact=true",
-				"blitter_cycle_exact=true",
 			});
 		}
 		
@@ -325,6 +333,18 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			[DefaultValue(LibPUAE.FASTMEM_AUTO)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int FastMemory { get; set; }
+
+			[DisplayName("Controller port 1")]
+			[Description("")]
+			[DefaultValue(ControllerType.Joystick)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public ControllerType ControllerPort1 { get; set; }
+
+			[DisplayName("Controller port 2")]
+			[Description("")]
+			[DefaultValue(ControllerType.Mouse)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public ControllerType ControllerPort2 { get; set; }
 
 			[DisplayName("Mouse speed")]
 			[Description("Mouse speed in percents (1% - 1000%).  Adjust if there's mismatch between emulated and host mouse movement.  Note that maximum mouse movement is still 127 pixels due to Amiga hardware limitations.")]

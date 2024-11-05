@@ -19,6 +19,7 @@
 #include "include/drawing.h"
 #include "include/inputdevice.h"
 
+// libretro
 #include "libretro/libretro-core.h"
 
 static const int FILENAME_MAXLENGTH = 4;
@@ -34,6 +35,8 @@ extern int thisframe_y_adjust;
 extern unsigned short int defaultw;
 extern unsigned short int defaulth;
 extern int retro_max_diwlastword;
+extern int cd32_pad_enabled[NORMAL_JPORTS];
+extern int joybutton[MAX_JPORTS];
 
 extern int umain(int argc, char **argv);
 extern int m68k_go(int may_quit, int resume);
@@ -98,8 +101,15 @@ typedef union
         bool b1:1;
         bool b2:1;
         bool b3:1;
+        bool b4:1;
+        bool b5:1;
+        bool b6:1;
+        bool b7:1;
+        bool b8:1;
+        bool b9:1;
+        bool b10:1;
     };
-    uint8_t data;
+    uint16_t data;
 } PUAEJoystick;
 
 typedef struct

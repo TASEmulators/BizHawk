@@ -3,7 +3,6 @@ using System.IO;
 using System.Text;
 
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -52,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			_syncSettings.FloppyDrives = Math.Min(LibPUAE.MAX_FLOPPIES, _syncSettings.FloppyDrives);
 			var filesToRemove = new List<string>();
 			CreateArguments(_syncSettings);
-			ControllerDefinition = _controllerDefinition;
+			ControllerDefinition = CreateControllerDefinition(_syncSettings);
 
 			var paue = PreInit<LibPUAE>(new WaterboxOptions
 			{
@@ -68,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			for (var index = 0; index < lp.Roms.Count; index++)
 			{
-				if (lp.Roms[index].Extension.ToLowerInvariant() == ".hdf")
+				if (lp.Roms[index].Extension.ToLowerInvariant() == ".hdf") // doesn't work yet
 				{
 					var access = "ro";
 					var device_name = "DH0";
@@ -141,110 +140,73 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			PostInit();
 		}
 
-		private static readonly (string Name, LibPUAE.PUAEJoystick Button)[] _joystickMap = CreateJoystickMap();
-		private static readonly (string Name, LibPUAE.PUAEKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
-		private static readonly ControllerDefinition _controllerDefinition = CreateControllerDefinition();
-
-		private static (string Name, LibPUAE.PUAEJoystick Value)[] CreateJoystickMap()
-		{
-			var joystickMap = new List<(string, LibPUAE.PUAEJoystick)>();
-			// ReSharper disable once LoopCanBeConvertedToQuery
-			foreach (var b in Enum.GetValues(typeof(LibPUAE.PUAEJoystick)))
-			{
-				var name = Enum.GetName(typeof(LibPUAE.PUAEJoystick), b)!.Replace('_', ' ');
-				joystickMap.Add((name, (LibPUAE.PUAEJoystick)b));
-			}
-
-			return joystickMap.ToArray();
-		}
-
-		private static (string Name, LibPUAE.PUAEKeyboard Value)[] CreateKeyboardMap()
-		{
-			var keyboardMap = new List<(string, LibPUAE.PUAEKeyboard)>();
-			// ReSharper disable once LoopCanBeConvertedToQuery
-			foreach (var k in Enum.GetValues(typeof(LibPUAE.PUAEKeyboard)))
-			{
-				var name = Enum.GetName(typeof(LibPUAE.PUAEKeyboard), k)!.Replace('_', ' ');
-				keyboardMap.Add((name, (LibPUAE.PUAEKeyboard)k));
-			}
-
-			return keyboardMap.ToArray();
-		}
-
-		private static ControllerDefinition CreateControllerDefinition()
-		{
-			var controller = new ControllerDefinition("Amiga Controller");
-
-			foreach (var (name, _) in _joystickMap)
-			{
-				controller.BoolButtons.Add(name);
-				controller.CategoryLabels[name] = "Joystick";
-			}
-
-			controller.BoolButtons.AddRange(
-			[
-				Inputs.MouseLeftButton, Inputs.MouseMIddleButton, Inputs.MouseRightButton
-			]);
-
-			controller
-				.AddAxis(Inputs.MouseX, 0.RangeTo(LibPUAE.PAL_WIDTH),  LibPUAE.PAL_WIDTH  / 2)
-				.AddAxis(Inputs.MouseY, 0.RangeTo(LibPUAE.PAL_HEIGHT), LibPUAE.PAL_HEIGHT / 2);
-
-			foreach (var b in controller.BoolButtons)
-			{
-				if (b.StartsWithOrdinal("Mouse"))
-				{
-					controller.CategoryLabels[b] = "Mouse";
-				}
-			}
-
-			controller.BoolButtons.AddRange(
-			[
-				Inputs.NextDrive, Inputs.NextSlot, Inputs.Insert, Inputs.Eject
-			]);
-
-			foreach (var (name, _) in _keyboardMap)
-			{
-				controller.BoolButtons.Add(name);
-				controller.CategoryLabels[name] = "Keyboard";
-			}
-
-			return controller.MakeImmutable();
-		}
-
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			var fi = new LibPUAE.FrameInfo
 			{
-				MouseButtons = 0,
+				Port1 = new LibPUAE.ControllerState
+				{
+					Buttons = 0
+				},
+				Port2 = new LibPUAE.ControllerState
+				{
+					Buttons = 0
+				},
 				Action = LibPUAE.DriveAction.None
 			};
 
-			foreach (var (name, button) in _joystickMap)
-			{
-				if (controller.IsPressed(name))
+			for (int port = 1; port <= 2; port++)
+			{				
+				ControllerType type = (port == 1) ? _syncSettings.ControllerPort1 : _syncSettings.ControllerPort2;
+				var currentPort = (port == 1) ? fi.Port1 : fi.Port2;
+
+				switch (type)
 				{
-					fi.JoystickState |= button;
+					case ControllerType.Joystick:
+						{
+							foreach (var (name, button) in _joystickMap)
+							{
+								if (controller.IsPressed($"P{port} {name}"))
+								{
+									currentPort.Buttons |= button;
+								}
+							}
+							break;
+						}
+					case ControllerType.CD32_pad:
+						{
+							foreach (var (name, button) in _cd32padMap)
+							{
+								if (controller.IsPressed($"P{port} {name}"))
+								{
+									currentPort.Buttons |= button;
+								}
+							}
+							break;
+						}
+					case ControllerType.Mouse:
+						{
+							if (controller.IsPressed($"P{port} {Inputs.MouseLeftButton}"))
+							{
+								currentPort.Buttons |= LibPUAE.AllButtons.Button1;
+							}
+
+							if (controller.IsPressed($"P{port} {Inputs.MouseRightButton}"))
+							{
+								currentPort.Buttons |= LibPUAE.AllButtons.Button2;
+							}
+
+							if (controller.IsPressed($"P{port} {Inputs.MouseMiddleButton}"))
+							{
+								currentPort.Buttons |= LibPUAE.AllButtons.Button3;
+							}
+
+							currentPort.MouseX = controller.AxisValue($"P{port} {Inputs.MouseX}");
+							currentPort.MouseY = controller.AxisValue($"P{port} {Inputs.MouseY}");
+							break;
+						}
 				}
 			}
-
-			if (controller.IsPressed(Inputs.MouseLeftButton))
-			{
-				fi.MouseButtons |= 0b00000001;
-			}
-
-			if (controller.IsPressed(Inputs.MouseRightButton))
-			{
-				fi.MouseButtons |= 0b00000010;
-			}
-
-			if (controller.IsPressed(Inputs.MouseMIddleButton))
-			{
-				fi.MouseButtons |= 0b00000100;
-			}
-
-			fi.MouseX = controller.AxisValue(Inputs.MouseX);
-			fi.MouseY = controller.AxisValue(Inputs.MouseY);
 
 			if (controller.IsPressed(Inputs.Eject))
 			{
@@ -343,19 +305,6 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			public const string FD = "FloppyDisk";
 			public const string CD = "CompactDisk";
 			public const string HD = "HardDrive";
-		}
-
-		private static class Inputs
-		{
-			public const string MouseLeftButton = "Mouse Left Button";
-			public const string MouseRightButton = "Mouse Right Button";
-			public const string MouseMIddleButton = "Mouse Middle Button";
-			public const string MouseX = "Mouse X";
-			public const string MouseY = "Mouse Y";
-			public const string Eject = "Eject";
-			public const string Insert = "Insert";
-			public const string NextDrive = "Next Drive";
-			public const string NextSlot = "Next Slot";
 		}
 	}
 }

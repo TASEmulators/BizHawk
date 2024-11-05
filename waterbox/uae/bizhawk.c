@@ -23,8 +23,19 @@ ECL_EXPORT bool Init(int argc, char **argv)
 	return true;
 }
 
+void SetCD32ButtonState(int port, int button, int state)
+{
+	if (state)
+		joybutton[port] |= 1 << button;
+	else
+		joybutton[port] &= ~(1 << button);
+}
+
 ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
+	
+	cd32_pad_enabled[0] = 1;
+	cd32_pad_enabled[1] = 1;
 	bool is_ntsc = minfirstline == VBLANK_ENDLINE_NTSC;
     f->base.Width = PUAE_VIDEO_WIDTH;
     f->base.Height = is_ntsc ? PUAE_VIDEO_HEIGHT_NTSC : PUAE_VIDEO_HEIGHT_PAL;
@@ -38,9 +49,17 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	setjoystickstate(PORT_0, AXIS_HORIZONTAL,
 		f->JoystickState.left  ? JOY_MIN :
 		f->JoystickState.right ? JOY_MAX : JOY_MID, 1);
-	setjoybuttonstate(PORT_0, 0, f->JoystickState.b1);
-	setjoybuttonstate(PORT_0, 1, f->JoystickState.b2);
-	setjoybuttonstate(PORT_0, 2, f->JoystickState.b3);
+	setjoybuttonstate(PORT_0, JOYBUTTON_1, f->JoystickState.b1);
+	setjoybuttonstate(PORT_0, JOYBUTTON_2, f->JoystickState.b2);
+	setjoybuttonstate(PORT_0, JOYBUTTON_3, f->JoystickState.b3);
+
+	SetCD32ButtonState(PORT_0, JOYBUTTON_CD32_PLAY,   f->JoystickState.b4);
+	SetCD32ButtonState(PORT_0, JOYBUTTON_CD32_RWD,    f->JoystickState.b5);
+	SetCD32ButtonState(PORT_0, JOYBUTTON_CD32_FFW,    f->JoystickState.b6);
+	SetCD32ButtonState(PORT_0, JOYBUTTON_CD32_GREEN,  f->JoystickState.b7);
+	SetCD32ButtonState(PORT_0, JOYBUTTON_CD32_YELLOW, f->JoystickState.b8);
+	SetCD32ButtonState(PORT_0, JOYBUTTON_CD32_RED,    f->JoystickState.b9);
+	SetCD32ButtonState(PORT_0, JOYBUTTON_CD32_BLUE,   f->JoystickState.b10);
 
 	setmousebuttonstate(PORT_0, MOUSE_LEFT,      f->MouseButtons & 1);
 	setmousebuttonstate(PORT_0, MOUSE_RIGHT,     f->MouseButtons & 2);

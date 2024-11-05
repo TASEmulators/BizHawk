@@ -16,16 +16,39 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		public const int FILENAME_MAXLENGTH = 64;
 		public const int KEY_COUNT = 0x68;
 
+		public const byte MouseButtonsMask =
+			(byte)(AllButtons.Button1
+			| AllButtons.Button2
+			| AllButtons.Button3);
+		public const byte JoystickMask =
+			(byte)(AllButtons.Up
+			| AllButtons.Down
+			| AllButtons.Left
+			| AllButtons.Right
+			| AllButtons.Button1
+			| AllButtons.Button2
+			| AllButtons.Button3);
+		public const short Cd32padMask =
+			(short)(AllButtons.Up
+			| AllButtons.Down
+			| AllButtons.Left
+			| AllButtons.Right
+			| AllButtons.Play
+			| AllButtons.Rewind
+			| AllButtons.Forward
+			| AllButtons.Green
+			| AllButtons.Yellow
+			| AllButtons.Red
+			| AllButtons.Blue);
+
 		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init(int argc, string[] argv);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
-			public PUAEJoystick JoystickState;
-			public byte MouseButtons;
-			public int MouseX;
-			public int MouseY;
+			public ControllerState Port1;
+			public ControllerState Port2;
 			public KeyBuffer Keys;
 			public struct KeyBuffer
 			{
@@ -40,23 +63,31 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			}
 		}
 
-		public enum DriveAction : int
+		[StructLayout(LayoutKind.Sequential)]
+		public struct ControllerState
 		{
-			None,
-			Eject,
-			Insert
+			public AllButtons Buttons;
+			public int MouseX;
+			public int MouseY;
 		}
 
 		[Flags]
-		public enum PUAEJoystick : byte
+		public enum AllButtons : short
 		{
-			Joystick_Up       = 0b00000001,
-			Joystick_Down     = 0b00000010,
-			Joystick_Left     = 0b00000100,
-			Joystick_Right    = 0b00001000,
-			Joystick_Button_1 = 0b00010000,
-			Joystick_Button_2 = 0b00100000,
-			Joystick_Button_3 = 0b01000000
+			Up      = 0b0000000000000001,
+			Down    = 0b0000000000000010,
+			Left    = 0b0000000000000100,
+			Right   = 0b0000000000001000,
+			Button1 = 0b0000000000010000,
+			Button2 = 0b0000000000100000,
+			Button3 = 0b0000000001000000,
+			Play    = 0b0000000010000000,
+			Rewind  = 0b0000000100000000,
+			Forward = 0b0000001000000000,
+			Green   = 0b0000010000000000,
+			Yellow  = 0b0000100000000000,
+			Red     = 0b0001000000000000,
+			Blue    = 0b0010000000000000
 		}
 
 		// https://wiki.amigaos.net/wiki/Keymap_Library
@@ -166,6 +197,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			Key_Right_Alt      = 0x65,
 			Key_Left_Amiga     = 0x66,
 			Key_Right_Amiga    = 0x67,
+		}
+
+		public enum DriveAction : int
+		{
+			None,
+			Eject,
+			Insert
 		}
 	}
 }
