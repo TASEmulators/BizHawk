@@ -8,6 +8,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Bcl.HashCode" />
+		<PackageReference Include="Microsoft.Win32.Registry" />
 		<PackageReference Include="PolySharp" />
 		<PackageReference Include="System.ComponentModel.Annotations" />
 		<PackageReference Include="System.Memory" />

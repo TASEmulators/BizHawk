@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var config = _getConfig();
 			Username = config.RAUsername;
-			ApiToken = SensitiveStrings.DecryptString(config.RAToken);
+			ApiToken = SecretStrings.DecryptString(config.RAToken);
 
 			if (LoggedIn)
 			{
@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 				if (DoLogin(Username, apiToken: ApiToken))
 				{
 					config.RAUsername = Username;
-					config.RAToken = SensitiveStrings.EncryptString(ApiToken);
+					config.RAToken = SecretStrings.EncryptString(ApiToken);
 					PlaySound(_loginSound);
 					return;
 				}
@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			loginForm.ShowDialog();
 
 			config.RAUsername = Username;
-			config.RAToken = SensitiveStrings.EncryptString(ApiToken);
+			config.RAToken = SecretStrings.EncryptString(ApiToken);
 
 			if (LoggedIn)
 			{
