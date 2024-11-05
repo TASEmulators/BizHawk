@@ -8,9 +8,30 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 {
 	public partial class ASIC : ISoundProvider
 	{
+		/// <summary>
+		/// Output sample rate
+		/// </summary>
 		public const double SAMPLE_RATE = 44100;
-		public double FRAME_RATE => _sv.CpuFreq / _sv.CpuClocksPerFrame;
-		public double samplesPerFrame => SAMPLE_RATE / FRAME_RATE;
+
+		/// <summary>
+		/// Total number of audio samples in a frame
+		/// </summary>
+		public double SamplesPerFrame => SAMPLE_RATE / _sv.RefreshRate;
+
+		/// <summary>
+		/// Total CPU cycles in a frame
+		/// </summary>
+		public int CpuTicksPerFrame => (int)_sv.CpuTicksPerFrame;
+
+		/// <summary>
+		/// The calculated CPU tick position within the frame
+		/// </summary>
+		public int TickPos;
+
+		/// <summary>
+		/// Keeps track of additional ticks outside of the frame window that need to be processed as a part of the next frame
+		/// </summary>
+		public int TicksOverrun;
 
 		/// <summary>
 		/// CH1: the right square wave channel
@@ -25,7 +46,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		/// <summary>
 		/// CH4: the noise channel
 		/// </summary>
-		private CH_Noise _ch4;
+		public CH_Noise _ch4;
+
+		
 
 		public void InitAudio()
 		{
@@ -33,18 +56,41 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			_ch2 = new CH_Square(this, 2);
 			_ch4 = new CH_Noise(this);
 
-			ch1Buff = new short[(int)samplesPerFrame];
-			ch2Buff = new short[(int)samplesPerFrame];
-			ch4LBuff = new short[(int)samplesPerFrame];
-			ch4RBuff = new short[(int)samplesPerFrame];
+			ch1Buff = new short[(int)SamplesPerFrame];
+			ch2Buff = new short[(int)SamplesPerFrame];
+
+			ch4LBuff = new short[(int)SamplesPerFrame];
+			ch4RBuff = new short[(int)SamplesPerFrame];
 		}
 
-		public void AudioClock(int ticks)
+		public void AudioClock(int incomingTicks)
 		{
+			int ticks = incomingTicks + TicksOverrun;
+
+			// determine frame boundaries
+			if (TickPos + ticks >= CpuTicksPerFrame)
+			{
+				// we are about to overrun the frame
+				TicksOverrun = TickPos + ticks - CpuTicksPerFrame;
+				// set ticks to run only up to the frame boundary
+				ticks -= TicksOverrun;
+			}
+			else
+			{
+				// still within frame boundaries
+				TicksOverrun = 0;
+			}
+
 			_ch1.Clock(ticks);
 			_ch2.Clock(ticks);
 
 			_ch4.Clock(ticks);
+
+			TickPos += ticks;
+			if (TickPos == CpuTicksPerFrame)
+			{
+				TickPos = 0;
+			}
 		}
 
 		public void SyncAudioState(Serializer ser)
@@ -151,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 				_chIndex = chIndex;
 
-				_blip = new BlipBuffer((int)(_asic.samplesPerFrame * 2));
+				_blip = new BlipBuffer((int)(_asic.SamplesPerFrame));
 				_blip.SetRates(_cpuFreq, SAMPLE_RATE);
 			}
 
@@ -177,7 +223,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 						if (_tickBuffer >= ticksPerFreq)
 						{
 							_tickBuffer -= ticksPerFreq;
-							int sample = GetSquareWaveSample(_asic._sv.FrameClock, FreqActual, DutyCycle) * Volume / 15;
+							int sample = GetSquareWaveSample(_asic.TickPos + t, FreqActual, DutyCycle);
 							_blip.AddDelta((uint)_asic._sv.FrameClock, (short)sample);
 						}
 					}
@@ -190,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			public void LengthChanged() => _lenCounter = Length;
 		
 
-			private static int GetSquareWaveSample(double time, double freq, int dutyCycle)
+			private int GetSquareWaveSample(double time, double freq, int dutyCycle)
 			{
 				double sTime = time / SAMPLE_RATE;
 				double period = 1.0 / freq;
@@ -203,12 +249,12 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					_ => 0.50
 				};
 				double currentTimeInPeriod = sTime % period;
-				return currentTimeInPeriod < period * dutyCycleFraction ? short.MaxValue / 32 : short.MinValue / 32;
+				return currentTimeInPeriod < period * dutyCycleFraction ? Volume * 8 : Volume * -8;
 			}
 
 			public virtual void SyncState(Serializer ser)
 			{
-				ser.BeginSection($"AUDIO_CH{_chIndex}_NOISE");
+				ser.BeginSection($"AUDIO_CH{_chIndex}_SQUARE");
 				ser.Sync(nameof(LenPrescaler), ref _lenPrescaler);
 				ser.Sync(nameof(_lenCounter), ref _lenCounter);
 				ser.Sync(nameof(_tickBuffer), ref _tickBuffer);
@@ -311,10 +357,10 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				_asic = asic;
 				_noiseFreqs = NoiseFreqEntry.Init(_cpuFreq);
 
-				_blipL = new BlipBuffer((int) (_asic.samplesPerFrame * 2));
+				_blipL = new BlipBuffer((int) (_asic.SamplesPerFrame));
 				_blipL.SetRates(_cpuFreq, SAMPLE_RATE);
 
-				_blipR = new BlipBuffer((int) (_asic.samplesPerFrame * 2));
+				_blipR = new BlipBuffer((int) (_asic.SamplesPerFrame));
 				_blipR.SetRates(_cpuFreq, SAMPLE_RATE);
 			}
 
@@ -341,8 +387,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 							{
 								_tickBuffer -= _currNoiseFreq.TicksPerFreq;
 								ClockLFSR();
-								_blipL.AddDelta((uint)_asic._sv.FrameClock, LeftChannelOutput ? (short)LFSR : 0);
-								_blipR.AddDelta((uint)_asic._sv.FrameClock, RightChannelOutput ? (short)LFSR : 0);
+								_blipL.AddDelta((uint)(_asic.TickPos + t), LeftChannelOutput ? (short)LFSR : 0);
+								_blipR.AddDelta((uint)(_asic.TickPos + t), RightChannelOutput ? (short)LFSR : 0);
 							}
 						}
 					}
@@ -480,10 +526,10 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			nsamp = (int)samplesPerFrame;
+			nsamp = (int)SamplesPerFrame;
 
 			// L			
-			_ch2.Blip.EndFrame((uint) _sv.CpuClocksPerFrame);
+			_ch2.Blip.EndFrame((uint)CpuTicksPerFrame);
 			int ch2Nsamp = _ch2.Blip.SamplesAvailable();
 			if (ch2Nsamp != nsamp)
 			{
@@ -491,7 +537,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			}
 			_ch2.Blip.ReadSamples(ch2Buff, nsamp, false);
 
-			_ch4.BlipL.EndFrame((uint) _sv.CpuClocksPerFrame);
+			_ch4.BlipL.EndFrame((uint)CpuTicksPerFrame);
 			int ch4LNsamp = _ch4.BlipL.SamplesAvailable();
 			if (ch4LNsamp != nsamp)
 			{
@@ -500,7 +546,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			_ch4.BlipL.ReadSamples(ch4LBuff, nsamp, false);
 
 			// R
-			_ch1.Blip.EndFrame((uint)_sv.CpuClocksPerFrame);
+			_ch1.Blip.EndFrame((uint)CpuTicksPerFrame);
 			int ch1Nsamp = _ch1.Blip.SamplesAvailable();
 			if (ch1Nsamp != nsamp)
 			{
@@ -508,7 +554,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			}
 			_ch1.Blip.ReadSamples(ch1Buff, nsamp, false);
 
-			_ch4.BlipR.EndFrame((uint) _sv.CpuClocksPerFrame);
+			_ch4.BlipR.EndFrame((uint)CpuTicksPerFrame);
 			int ch4RNsamp = _ch4.BlipR.SamplesAvailable();
 			if (ch4RNsamp != nsamp)
 			{
@@ -531,6 +577,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				samples[o] = (short)ClampSample(left);
 				samples[o + 1] = (short)ClampSample(right);
 			}
+
+			DiscardSamples();
 		}
 
 		private static int ClampSample(int sample)

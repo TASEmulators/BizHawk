@@ -13,13 +13,23 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 		public bool DeterministicEmulation => true;
 
-		private double _cpuClocksPerFrame;
-		private double _cpuClocksPerSecond;
+		/// <summary>
+		/// CPU frequency
+		/// </summary>
+		public double CpuFreq;
+
+		/// <summary>
+		/// Total number of CPU cycles in a frame
+		/// </summary>
+		public double CpuTicksPerFrame;
+
+		/// <summary>
+		/// Number of frames per second
+		/// </summary>
+		public double RefreshRate;
+
 		private int _frameClock;
 		private int _frame;
-
-		public double CpuFreq => _cpuClocksPerSecond;
-		public double CpuClocksPerFrame => _cpuClocksPerFrame;
 
 		public int FrameClock
 		{
@@ -30,18 +40,18 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 		private void CalcClock()
 		{
-			_cpuClocksPerSecond = 4_000_000.0;
-			_cpuClocksPerFrame = 
+			CpuFreq = 4_000_000.0;
+			CpuTicksPerFrame = 
 				(40 + 1) *	// pixel clocks per scanline + 1 latch write pixel clock
 				6 *         // cpu clocks per pixel
 				160 *		// scanlines per field
 				2;          // fields per frame
 
-			double refreshRate = _cpuClocksPerSecond / _cpuClocksPerFrame;  // 50.8130081300813
+			RefreshRate = CpuFreq / CpuTicksPerFrame;  // 50.8130081300813
 
 			_asic.Screen.SetRates(
-				(int) _cpuClocksPerSecond,
-				(int) _cpuClocksPerFrame);
+				(int) CpuFreq,
+				(int) CpuTicksPerFrame);
 
 			_asic.InitAudio();
 		}
@@ -66,14 +76,14 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 
 			//_asic.FrameStart = true;
 
-			while (_frameClock < _cpuClocksPerFrame)
+			while (_frameClock < CpuTicksPerFrame)
 			{
 				int ticks = _cpu.ExecuteInstruction();
 				_asic.Clock(ticks);
 				//_cpu.ExecuteOne();
 			}
 
-			_frameClock %= (int)_cpuClocksPerFrame;
+			_frameClock %= (int)CpuTicksPerFrame;
 			_frame++;
 
 			if (_isLag)

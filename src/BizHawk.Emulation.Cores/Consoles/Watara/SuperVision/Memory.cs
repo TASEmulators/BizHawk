@@ -23,9 +23,6 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		}
 		private int _bankSelect;
 
-		private int _bankOffset => BankSelect << 14;
-
-
 		/// <summary>
 		/// True when the CPU is accessing memory
 		/// </summary>
@@ -72,7 +69,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 					// 1: 2nd 16k
 					// 2: 3rd 16k
 					// etc..
-					result = _cartridge.ReadByte((ushort) ((address % 0x4000) + (_bankOffset % _cartridge.CartROMSize)));
+					//result = _cartridge.ReadByte((ushort) ((address % 0x4000) + (_bankOffset % _cartridge.CartROMSize)));
+					result = _cartridge.ReadByte((ushort) ((address % 0x4000) + ((BankSelect * 0x4000) % _cartridge.CartROMSize)));
 					break;
 
 				// 0xC000 - 0xFFFF
@@ -133,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 				case 6: 
 				case 7:
 					// fixed to the last 16K in the cart address space
-					_cartridge.WriteByte((ushort) ((address % 0x4000) + (_bankOffset % _cartridge.CartROMSize)), value);
+					_cartridge.WriteByte((ushort) ((address % 0x4000) + ((BankSelect * 0x4000) % _cartridge.CartROMSize)), value);
 					break;
 			}			
 		}
