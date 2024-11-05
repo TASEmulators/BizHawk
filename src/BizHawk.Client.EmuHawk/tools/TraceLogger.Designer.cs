@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 			// ToFileRadio
 			// 
 			this.ToFileRadio.AutoSize = true;
-			this.ToFileRadio.Location = new System.Drawing.Point(143, 21);
+			this.ToFileRadio.Location = new System.Drawing.Point(175, 12);
 			this.ToFileRadio.Name = "ToFileRadio";
 			this.ToFileRadio.Size = new System.Drawing.Size(50, 17);
 			this.ToFileRadio.TabIndex = 10;
@@ -253,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.ToWindowRadio.AutoSize = true;
 			this.ToWindowRadio.Checked = true;
-			this.ToWindowRadio.Location = new System.Drawing.Point(67, 21);
+			this.ToWindowRadio.Location = new System.Drawing.Point(99, 12);
 			this.ToWindowRadio.Name = "ToWindowRadio";
 			this.ToWindowRadio.Size = new System.Drawing.Size(73, 17);
 			this.ToWindowRadio.TabIndex = 5;
@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 			this.LoggingEnabled.Name = "LoggingEnabled";
 			this.LoggingEnabled.Size = new System.Drawing.Size(55, 23);
 			this.LoggingEnabled.TabIndex = 1;
-			this.LoggingEnabled.Text = "&Logging";
+			this.LoggingEnabled.Text = "Start &logging";
 			this.LoggingEnabled.UseVisualStyleBackColor = true;
 			this.LoggingEnabled.CheckedChanged += new System.EventHandler(this.LoggingEnabled_CheckedChanged);
 			// 
