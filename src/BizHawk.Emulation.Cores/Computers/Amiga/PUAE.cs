@@ -50,6 +50,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			_syncSettings = lp.SyncSettings ?? new();
 			_syncSettings.FloppyDrives = Math.Min(LibPUAE.MAX_FLOPPIES, _syncSettings.FloppyDrives);
 			var filesToRemove = new List<string>();
+
+			_ports = [
+				_syncSettings.ControllerPort1,
+				_syncSettings.ControllerPort2
+			];
+
 			CreateArguments(_syncSettings);
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
 
@@ -156,11 +162,10 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			};
 
 			for (int port = 1; port <= 2; port++)
-			{				
-				ControllerType type = (port == 1) ? _syncSettings.ControllerPort1 : _syncSettings.ControllerPort2;
+			{
 				var currentPort = (port == 1) ? fi.Port1 : fi.Port2;
 
-				switch (type)
+				switch (_ports[port - 1])
 				{
 					case ControllerType.Joystick:
 						{

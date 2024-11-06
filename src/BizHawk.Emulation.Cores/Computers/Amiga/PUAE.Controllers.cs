@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
 	public partial class PUAE
 	{
+		private ControllerType[] _ports { get; set; }
 		private static readonly (string Name, LibPUAE.AllButtons Button)[] _joystickMap = CreateJoystickMap();
 		private static readonly (string Name, LibPUAE.AllButtons Button)[] _cd32padMap = CreateCd32padMap();
 		private static readonly (string Name, LibPUAE.PUAEKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
