@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		/// </summary>
 		public byte ReadVRAM(ushort address)
 		{
-			return VRAM[address & 0x0FFF];
+			return VRAM[address & 0x1FFF];
 		}
 	}
 }

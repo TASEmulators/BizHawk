@@ -184,9 +184,6 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 						{
 							_vramStartAddress = 0;
 						}
-
-						// setup for the next scanline
-						_vramPointer = _vramStartAddress + (_regs[R_X_SCROLL] >> 2);
 					}					
 				}
 			}
