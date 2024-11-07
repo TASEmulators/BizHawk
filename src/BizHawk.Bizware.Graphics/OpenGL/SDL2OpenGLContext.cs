@@ -1,7 +1,5 @@
 // #define DEBUG_OPENGL
 
-using System.IO;
-
 #if DEBUG_OPENGL
 using System.Runtime.InteropServices;
 #endif
@@ -33,7 +31,7 @@ namespace BizHawk.Bizware.Graphics
 				// try to use EGL if it is available
 				// GLX is the old API, and is the more or less "deprecated" at this point, and potentially more buggy with some drivers
 				// we do need to a bit more work, in case EGL is not actually available or potentially doesn't have desktop GL support
-				if (!Directory.Exists("/nix")/* this is just for me --yoshi */) SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "1");
+				SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "1");
 			}
 
 			// init SDL video
