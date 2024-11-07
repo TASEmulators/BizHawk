@@ -79,6 +79,7 @@ namespace BizHawk.Bizware.Graphics
 
 				if (loadGlx)
 				{
+					SDL_GL_UnloadLibrary();
 					SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "0");
 					if (SDL_GL_LoadLibrary(null) != 0)
 					{
