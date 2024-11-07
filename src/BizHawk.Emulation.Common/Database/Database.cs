@@ -1,5 +1,6 @@
 ﻿#nullable disable
 
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -14,7 +15,9 @@ namespace BizHawk.Emulation.Common
 {
 	public static class Database
 	{
-		private static readonly Dictionary<string, CompactGameInfo> DB = new();
+		private static readonly Dictionary<string, CompactGameInfo> _builder = new();
+
+		private static FrozenDictionary<string, CompactGameInfo> DB;
 
 		/// <summary>
 		/// blocks until the DB is done loading
@@ -58,6 +61,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		/// <remarks>expensive, as it creates a new <see cref="FrozenDictionary{TKey,TValue}"/></remarks>
 		public static void SaveDatabaseEntry(CompactGameInfo gameInfo, string filename = "gamedb_user.txt")
 		{
 			var sb = new StringBuilder();
@@ -89,7 +93,7 @@ namespace BizHawk.Emulation.Common
 				.Append(Environment.NewLine);
 
 			File.AppendAllText(Path.Combine(_userRoot, filename), sb.ToString());
-			DB[gameInfo.Hash] = gameInfo;
+			DB = DB.Append(new(gameInfo.Hash, gameInfo)).ToFrozenDictionary();
 		}
 
 		private static bool initialized = false;
@@ -176,12 +180,12 @@ namespace BizHawk.Emulation.Common
 					{
 						Console.WriteLine($"WARNING: gamedb {path} contains entry for empty rom as \"{game.Name}\"!");
 					}
-					if (!silent && DB.TryGetValue(game.Hash, out var dupe))
+					if (!silent && _builder.TryGetValue(game.Hash, out var dupe))
 					{
 						Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, dupe.Name);
 					}
 
-					DB[game.Hash] = game;
+					_builder[game.Hash] = game;
 				}
 				catch (FileNotFoundException e) when (e.Message.Contains("missing external game database"))
 				{
@@ -196,6 +200,8 @@ namespace BizHawk.Emulation.Common
 					Util.DebugWriteLine($"Error parsing database entry: {line}");
 				}
 			}
+			DB = _builder.ToFrozenDictionary();
+			_builder.Clear();
 		}
 
 		public static void InitializeDatabase(string bundledRoot, string userRoot, bool silent)
