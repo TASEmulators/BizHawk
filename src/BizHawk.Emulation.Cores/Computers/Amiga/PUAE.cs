@@ -2,11 +2,8 @@
 using System.IO;
 using System.Text;
 
-using BizHawk.Common;
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
-//using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
