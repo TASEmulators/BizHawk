@@ -42,6 +42,7 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.GEN,
 				VSystemID.Raw.GGL,
 				VSystemID.Raw.Jaguar,
+				VSystemID.Raw.N3DS,
 				VSystemID.Raw.N64,
 				VSystemID.Raw.NDS,
 				VSystemID.Raw.PCFX,
