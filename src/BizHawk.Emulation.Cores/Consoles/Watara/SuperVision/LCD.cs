@@ -89,47 +89,50 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		// 9 - Power Control
 
 		/// <summary>
-		/// It takes 6 cycles for each write to the LCD screen (so 1 pixelclock == 6 cpu cycles)
+		/// Pulsed at the end of a field
+		/// Clears the column and row shift registers
 		/// </summary>
-		public void PixelClock(byte data, int framePolarity = 0, bool lineLatch = false, bool frameLatch = false)
-		{
-			// Each scanline is composed of 246 clocks.
-			// There are 40 pixel writes to the LCD, and 1 latch write, for a total of 41 writes.
-			// Each write period lasts 6 clock cycles, so 41*6 = 246 cycles
-			if (frameLatch)
-			{
-				// end of field
-				// write last pixel
-				if (DisplayEnable)
-					WritePixels(data, framePolarity);
+		public void FrameLatch() => ResetPosition();
 
-				// setup for next frame
-				ResetPosition();
-			}
-			else if (lineLatch)
-			{
-				// end of scanline
-				_hPos = 0;
-				_vPos++;
-			}
-			else
-			{
-				if (DisplayEnable)
-					WritePixels(data, framePolarity);
-			}
+		/// <summary>
+		/// When pulsed, data from the column shift register latched into the current LCD glass column
+		/// The row shift register is then clocked
+		/// </summary>
+		public void LineLatch()
+		{
+			_vPos++;
+			_hPos = 0;
 		}
 
 		/// <summary>
-		/// This outputs 4 pixels at a time - we only use the first 4 bits of the data
-		/// 2BPP, bit0 is written in the first field, bit1 in the second
+		/// The frame polarity/bright control signal is toggled every field
+		/// This inverts all the driver signals
+		/// It also darkens the display a bit so you can get a true 2 bits per pixel
+		/// The polarity toggling is done to prevent destruction of the LCD display glass via electrolytic plating action
 		/// </summary>
-		private void WritePixels(byte data, int framePolarity)
+		public bool FramePolarity
+		{
+			get { return _framePolarity; }
+			set { _framePolarity = value; }
+		}
+		private bool _framePolarity;
+
+
+		/// <summary>
+		/// Bit offset when writing to the framebuffer
+		/// </summary>
+		private int _polarityOffset => FramePolarity ? 1 : 0;
+
+		/// <summary>
+		/// It takes 6 cycles for each write to the LCD screen (so 1 pixelclock == 6 cpu cycles)
+		/// </summary>
+		public void PixelClock(byte data)
 		{
 			for (int i = 0; i < 4; i++)
 			{
 				if (_hPos < PEN_BUFFER_WIDTH && _vPos < PEN_BUFFER_HEIGHT)
 				{
-					_penBuffer[(_vPos * 160 * 2) + (_hPos + framePolarity)] = (data >> i) & 0x01;					
+					_penBuffer[(_vPos * 160 * 2) + (_hPos + _polarityOffset)] = (data >> i) & 0x01;
 				}
 				else
 				{
@@ -147,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			VsyncDenominator = dom;
 		}
 
-		public int VirtualWidth => (int)(BufferWidth * 1.25);
+		public int VirtualWidth => BufferWidth;
 		public int VirtualHeight => BufferHeight;
 		public int BufferWidth => 160;
 		public int BufferHeight => 160;
@@ -174,6 +177,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			ser.Sync(nameof(_hPos), ref _hPos);
 			ser.Sync(nameof(_vPos), ref _vPos);
 			ser.Sync(nameof(DisplayEnable), ref DisplayEnable);
+			ser.Sync(nameof(FramePolarity), ref _framePolarity);
 			ser.EndSection();
 		}
 	}

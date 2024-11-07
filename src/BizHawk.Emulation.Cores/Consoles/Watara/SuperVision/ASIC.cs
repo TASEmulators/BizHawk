@@ -43,22 +43,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		public const int R_IRQ_STATUS = 0x27;
 
 		/// <summary>
-		/// Scanline length in cpu clocks
-		/// </summary>
-		public int CLOCK_WIDTH => 
-			((_regs[R_LCD_X_SIZE] & 0xFC)	// topmost 6 bits of the X Size register
-			+ 4)                            // line latch pulse
-			* 6;                            // 6 clocks per pixel
-
-		/// <summary>
 		/// Y offset modifier used with Y_Scroll to determine the VRAM pointer
 		/// </summary>
 		public int Y_OFFSET => _regs[R_LCD_X_SIZE] > 0xC0 ? 0x30 : 0x60;
-
-		/// <summary>
-		/// Number of scanlines in a field
-		/// </summary>
-		public int LINE_HEIGHT => _regs[R_LCD_Y_SIZE];
 
 		private SuperVision _sv;
 		private byte[] _regs = new byte[0x2000];
@@ -86,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 		private int _seqCounter;
 		private int _byteCounter;
 		private int _lineCounter;
-		private int _field;
+		private bool _field;
 		private ushort _vramByteBuffer;
 		private int _vramPointer;
 		private int _vramStartAddress;
@@ -134,13 +121,80 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			AudioClock(ticks);
 
 			// video
+			for (int i = 0; i < lcdCycles; i++)
+			{
+				_byteCounter++;
 
+				if (_byteCounter * 4 <= (_regs[R_LCD_X_SIZE] & 0b1111_1100))
+				{
+					// still sending pixel data to the LCD
+					// 4 pixles (bits) per byte read
+				    _vramPointer = (ushort) (_vramStartAddress + (_regs[R_X_SCROLL] >> 2) + _byteCounter - 1);
+					//_vramPointer = (ushort)(_vramPointer + _byteCounter - 1);
 
+					// read a byte of data from VRAM
+					byte data = _sv.ReadVRAM((ushort)_vramPointer);
 
+					// shift the last read byte in the buffer and add the new byte to the start
+					_vramByteBuffer = (ushort) ((_vramByteBuffer << 8) | data);
+
+					// get the correct byte data based on the X Scroll register lower 2 bits
+					// this simulates a delay in the bits sent to the LCD
+					byte b = (byte) ((_vramByteBuffer >> (_regs[R_X_SCROLL] & 0b0000_0011)) & 0xff);
+
+					// structure the correct bits based on the current field
+					byte lData = !_field
+						? (byte) ((b & 0b0000_0001) | ((b & 0b0000_0100) >> 1) | ((b & 0b0001_0000) >> 2) | ((b & 0b0100_0000) >> 3))
+						: (byte) ((b & 0b0000_0010) >> 1 | ((b & 0b0000_1000) >> 2) | ((b & 0b0010_0000) >> 3) | ((b & 0b1000_0000) >> 4));
+
+					Screen.PixelClock(lData);
+				}
+				else if (_byteCounter * 4 > (_regs[R_LCD_X_SIZE] & 0b1111_1100))
+				{
+					// end of scanline
+					_lineCounter++;
+					_byteCounter = 0;
+
+					if (_lineCounter < _regs[R_LCD_Y_SIZE])
+					{
+						// still within the frame
+						// pulse line latch
+						Screen.LineLatch();		
+						
+						// vstart is updated every scanline
+						// it is incremented based on the X_Size register
+						int inc = _regs[R_LCD_X_SIZE] > 0xC3 ? 0x60 : 0x30;
+						_vramStartAddress = (_vramStartAddress + inc) & 0x1FFFF;
+						if (_vramStartAddress == 0x1FE0)
+							_vramStartAddress = 0;
+					}
+					else
+					{
+						// end of field
+						_lineCounter = 0;
+						// pulse the frame latch
+						Screen.FrameLatch();
+						// new field
+						_field = !_field;
+						Screen.FramePolarity = _field;
+
+						// setup memory pointer for beginning of field
+						_vramStartAddress = (_regs[R_Y_SCROLL] * 0x30) & 0x1FFF;
+						if (_vramStartAddress == 0x1FE0)
+						{
+							_vramStartAddress = 0;
+						}
+
+						// setup for the next scanline
+						_vramPointer = _vramStartAddress + (_regs[R_X_SCROLL] >> 2);
+					}					
+				}
+			}
 
 			_sv.FrameClock += ticks;
 		}
 
+		/*
 		/// <summary>
 		/// Runs a single clock cycle of the ASIC
 		/// </summary>
@@ -256,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SuperVision
 			_sv.FrameClock++;
 		}
 
-		
+		*/
 
 		/// <summary>
 		/// Interrupt management
