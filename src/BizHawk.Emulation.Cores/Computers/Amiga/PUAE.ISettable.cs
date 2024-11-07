@@ -130,14 +130,6 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			DRV_FB
 		}
 
-		public enum ControllerType
-		{
-			Joystick,
-			Mouse,
-			[Display(Name = "CD32 pad")]
-			CD32_pad
-		}
-
 		private void CreateArguments(PUAESyncSettings settings)
 		{
 			_args = new List<string>
@@ -336,15 +328,15 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			[DisplayName("Controller port 1")]
 			[Description("")]
-			[DefaultValue(ControllerType.Joystick)]
+			[DefaultValue(LibPUAE.ControllerType.Joystick)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public ControllerType ControllerPort1 { get; set; }
+			public LibPUAE.ControllerType ControllerPort1 { get; set; }
 
 			[DisplayName("Controller port 2")]
 			[Description("")]
-			[DefaultValue(ControllerType.Mouse)]
+			[DefaultValue(LibPUAE.ControllerType.Mouse)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public ControllerType ControllerPort2 { get; set; }
+			public LibPUAE.ControllerType ControllerPort2 { get; set; }
 
 			[DisplayName("Mouse speed")]
 			[Description("Mouse speed in percents (1% - 1000%).  Adjust if there's mismatch between emulated and host mouse movement.  Note that maximum mouse movement is still 127 pixels due to Amiga hardware limitations.")]

@@ -149,10 +149,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			{
 				Port1 = new LibPUAE.ControllerState
 				{
+					Type = _ports[0],
 					Buttons = 0
 				},
 				Port2 = new LibPUAE.ControllerState
 				{
+					Type = _ports[1],
 					Buttons = 0
 				},
 				Action = LibPUAE.DriveAction.None
@@ -164,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 				switch (_ports[port - 1])
 				{
-					case ControllerType.Joystick:
+					case LibPUAE.ControllerType.Joystick:
 						{
 							foreach (var (name, button) in _joystickMap)
 							{
@@ -175,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 							}
 							break;
 						}
-					case ControllerType.CD32_pad:
+					case LibPUAE.ControllerType.CD32_pad:
 						{
 							foreach (var (name, button) in _cd32padMap)
 							{
@@ -186,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 							}
 							break;
 						}
-					case ControllerType.Mouse:
+					case LibPUAE.ControllerType.Mouse:
 						{
 							if (controller.IsPressed($"P{port} {Inputs.MouseLeftButton}"))
 							{

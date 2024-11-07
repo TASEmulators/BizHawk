@@ -2,16 +2,15 @@
 
 ECL_EXPORT bool Init(int argc, char **argv)
 {
-	last_mouse_x = 0;
-	last_mouse_y = 0;
+	log_cb = biz_log_cb;
     libretro_runloop_active = 0;
+
 	pix_bytes = 4;
 	defaultw = PUAE_VIDEO_WIDTH;
 	defaulth = PUAE_VIDEO_HEIGHT_PAL;
 	retrow = PUAE_VIDEO_WIDTH;
 	retrow_crop = retrow;
 	retroh_crop = retroh;
-	log_cb = biz_log_cb;
 	
 	retro_set_audio_sample_batch(biz_audio_cb);
 	init_output_audio_buffer(2048);
@@ -33,39 +32,48 @@ void SetCD32ButtonState(int port, int button, int state)
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
-	
-	cd32_pad_enabled[0] = 1;
-	cd32_pad_enabled[1] = 1;
 	bool is_ntsc = minfirstline == VBLANK_ENDLINE_NTSC;
     f->base.Width = PUAE_VIDEO_WIDTH;
     f->base.Height = is_ntsc ? PUAE_VIDEO_HEIGHT_NTSC : PUAE_VIDEO_HEIGHT_PAL;
-	sound_buffer = f->base.SoundBuffer;
 	thisframe_y_adjust = minfirstline;
 	visible_left_border = retro_max_diwlastword - retrow;
 
-	setjoystickstate(PORT_0, AXIS_VERTICAL,
-		f->JoystickState.up   ? JOY_MIN :
-		f->JoystickState.down ? JOY_MAX : JOY_MID, 1);
-	setjoystickstate(PORT_0, AXIS_HORIZONTAL,
-		f->JoystickState.left  ? JOY_MIN :
-		f->JoystickState.right ? JOY_MAX : JOY_MID, 1);
-	setjoybuttonstate(PORT_0, JOYBUTTON_1, f->JoystickState.b1);
-	setjoybuttonstate(PORT_0, JOYBUTTON_2, f->JoystickState.b2);
-	setjoybuttonstate(PORT_0, JOYBUTTON_3, f->JoystickState.b3);
+	sound_buffer = f->base.SoundBuffer;
 
-	SetCD32ButtonState(PORT_0, JOYBUTTON_CD32_PLAY,   f->JoystickState.b4);
-	SetCD32ButtonState(PORT_0, JOYBUTTON_CD32_RWD,    f->JoystickState.b5);
-	SetCD32ButtonState(PORT_0, JOYBUTTON_CD32_FFW,    f->JoystickState.b6);
-	SetCD32ButtonState(PORT_0, JOYBUTTON_CD32_GREEN,  f->JoystickState.b7);
-	SetCD32ButtonState(PORT_0, JOYBUTTON_CD32_YELLOW, f->JoystickState.b8);
-	SetCD32ButtonState(PORT_0, JOYBUTTON_CD32_RED,    f->JoystickState.b9);
-	SetCD32ButtonState(PORT_0, JOYBUTTON_CD32_BLUE,   f->JoystickState.b10);
+	for (int port = 0; port <= 1; port++)
+	{
+		Controller *controller = (port == 0) ? &f->Port1 : &f->Port2;
+		cd32_pad_enabled[port] = 0;
 
-	setmousebuttonstate(PORT_0, MOUSE_LEFT,      f->MouseButtons & 1);
-	setmousebuttonstate(PORT_0, MOUSE_RIGHT,     f->MouseButtons & 2);
-	setmousebuttonstate(PORT_0, MOUSE_MIDDLE,    f->MouseButtons & 4);
-	setmousestate(      PORT_0, AXIS_HORIZONTAL, f->MouseX - last_mouse_x, MOUSE_RELATIVE);
-	setmousestate(      PORT_0, AXIS_VERTICAL,   f->MouseY - last_mouse_y, MOUSE_RELATIVE);
+		// shared between mouse and joystick
+		setjoybuttonstate(port, JOYBUTTON_1, controller->Buttons.b1);
+		setjoybuttonstate(port, JOYBUTTON_2, controller->Buttons.b2);
+		setjoybuttonstate(port, JOYBUTTON_3, controller->Buttons.b3);
+
+		switch (controller->Type)
+		{
+			case CONTROLLER_JOYSTICK:
+				setjoystickstate(port, AXIS_VERTICAL,   controller->Buttons.up    ? JOY_MIN :
+														controller->Buttons.down  ? JOY_MAX : JOY_MID, 1);
+				setjoystickstate(port, AXIS_HORIZONTAL, controller->Buttons.left  ? JOY_MIN :
+														controller->Buttons.right ? JOY_MAX : JOY_MID, 1);
+				break;
+			case CONTROLLER_CD32PAD:
+				cd32_pad_enabled[port] = 1;
+				SetCD32ButtonState(port, JOYBUTTON_CD32_PLAY,   controller->Buttons.play);
+				SetCD32ButtonState(port, JOYBUTTON_CD32_RWD,    controller->Buttons.rewind);
+				SetCD32ButtonState(port, JOYBUTTON_CD32_FFW,    controller->Buttons.forward);
+				SetCD32ButtonState(port, JOYBUTTON_CD32_GREEN,  controller->Buttons.green);
+				SetCD32ButtonState(port, JOYBUTTON_CD32_YELLOW, controller->Buttons.yellow);
+				SetCD32ButtonState(port, JOYBUTTON_CD32_RED,    controller->Buttons.red);
+				SetCD32ButtonState(port, JOYBUTTON_CD32_BLUE,   controller->Buttons.blue);
+				break;
+			case CONTROLLER_MOUSE:
+				setmousestate(port, AXIS_HORIZONTAL, controller->MouseX - last_mouse_x[port], MOUSE_RELATIVE);
+				setmousestate(port, AXIS_VERTICAL,   controller->MouseY - last_mouse_y[port], MOUSE_RELATIVE);
+				break;
+		}
+	}
 
 	for (int i = 0; i < KEY_COUNT; i++)
 		if (f->Keys[i] != last_key_state[i])
@@ -88,9 +96,18 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	upload_output_audio_buffer();
 	f->base.Samples = sound_sample_count;
 	memcpy(f->base.VideoBuffer, retro_bmp, sizeof(retro_bmp) / sizeof(retro_bmp[0]));
-	last_mouse_x = f->MouseX;
-	last_mouse_y = f->MouseY;
 	sound_buffer = NULL;
+
+	for (int port = 0; port <= 1; port++)
+	{
+		Controller *controller = (port == 0) ? &f->Port1 : &f->Port2;
+
+		if (controller->Type == CONTROLLER_MOUSE)
+		{
+			last_mouse_x[port] = controller->MouseX;
+			last_mouse_y[port] = controller->MouseY;
+		}
+	}
 }
 
 ECL_EXPORT void GetMemoryAreas(MemoryArea *m)

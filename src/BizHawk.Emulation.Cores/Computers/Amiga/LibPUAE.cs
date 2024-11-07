@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -66,9 +67,25 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ControllerState
 		{
+			public ControllerType Type;
 			public AllButtons Buttons;
 			public int MouseX;
 			public int MouseY;
+		}
+
+		public enum ControllerType : int
+		{
+			Joystick,
+			Mouse,
+			[Display(Name = "CD32 pad")]
+			CD32_pad
+		}
+
+		public enum DriveAction : int
+		{
+			None,
+			Eject,
+			Insert
 		}
 
 		[Flags]
@@ -197,13 +214,6 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			Key_Right_Alt      = 0x65,
 			Key_Left_Amiga     = 0x66,
 			Key_Right_Amiga    = 0x67,
-		}
-
-		public enum DriveAction : int
-		{
-			None,
-			Eject,
-			Insert
 		}
 	}
 }

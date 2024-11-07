@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
 	public partial class PUAE
 	{
-		private ControllerType[] _ports { get; set; }
+		private LibPUAE.ControllerType[] _ports { get; set; }
 		private static readonly (string Name, LibPUAE.AllButtons Button)[] _joystickMap = CreateJoystickMap();
 		private static readonly (string Name, LibPUAE.AllButtons Button)[] _cd32padMap = CreateCd32padMap();
 		private static readonly (string Name, LibPUAE.PUAEKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
@@ -62,13 +62,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			for (int port = 1; port <= 2; port++)
 			{
-				ControllerType type = port == 1
+				LibPUAE.ControllerType type = port == 1
 					? settings.ControllerPort1
 					: settings.ControllerPort2;
 
 				switch (type)
 				{
-					case ControllerType.Joystick:
+					case LibPUAE.ControllerType.Joystick:
 						{
 							foreach (var (name, _) in _joystickMap)
 							{
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 							}
 							break;
 						}
-					case ControllerType.CD32_pad:
+					case LibPUAE.ControllerType.CD32_pad:
 						{
 							foreach (var (name, _) in _cd32padMap)
 							{
@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 							}
 							break;
 						}
-					case ControllerType.Mouse:
+					case LibPUAE.ControllerType.Mouse:
 						{
 							controller.BoolButtons.AddRange(
 							[

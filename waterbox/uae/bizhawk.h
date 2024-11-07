@@ -28,9 +28,10 @@ static const int KEY_COUNT = 0x68;
 int16_t* sound_buffer = NULL;
 int sound_sample_count = 0;
 static char last_key_state[KEY_COUNT];
-static int last_mouse_x;
-static int last_mouse_y;
+static int last_mouse_x[NORMAL_JPORTS] = {0};
+static int last_mouse_y[NORMAL_JPORTS] = {0};
 
+extern uint8_t libretro_runloop_active;
 extern int thisframe_y_adjust;
 extern unsigned short int defaultw;
 extern unsigned short int defaulth;
@@ -56,12 +57,6 @@ enum JoystickRange
 	JOY_MIN = -1,
 	JOY_MID,
 	JOY_MAX
-};
-
-enum ControllerPort
-{
-	PORT_0,
-	PORT_1
 };
 
 enum MouseButtons
@@ -90,6 +85,13 @@ enum DriveAction
 	ACTION_INSERT
 };
 
+enum ControllerType
+{
+	CONTROLLER_JOYSTICK,
+	CONTROLLER_MOUSE,
+	CONTROLLER_CD32PAD
+};
+
 typedef union
 {
     struct
@@ -101,24 +103,30 @@ typedef union
         bool b1:1;
         bool b2:1;
         bool b3:1;
-        bool b4:1;
-        bool b5:1;
-        bool b6:1;
-        bool b7:1;
-        bool b8:1;
-        bool b9:1;
-        bool b10:1;
+        bool play:1;
+        bool rewind:1;
+        bool forward:1;
+        bool green:1;
+        bool yellow:1;
+        bool red:1;
+        bool blue:1;
     };
     uint16_t data;
-} PUAEJoystick;
+} AllButtons;
+
+typedef struct ControllerState
+{
+	int Type;
+	AllButtons Buttons;
+	int MouseX;
+	int MouseY;
+} Controller;
 
 typedef struct
 {
 	FrameInfo base;
-	PUAEJoystick JoystickState;
-	uint8_t MouseButtons;
-	int MouseX;
-	int MouseY;
+	Controller Port1;
+	Controller Port2;
 	char Keys[KEY_COUNT];
 	int CurrentDrive;
 	int Action;
