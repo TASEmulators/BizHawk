@@ -328,13 +328,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			[DisplayName("Controller port 1")]
 			[Description("")]
-			[DefaultValue(LibPUAE.ControllerType.Joystick)]
+			[DefaultValue(LibPUAE.ControllerType.Mouse)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public LibPUAE.ControllerType ControllerPort1 { get; set; }
 
 			[DisplayName("Controller port 2")]
 			[Description("")]
-			[DefaultValue(LibPUAE.ControllerType.Mouse)]
+			[DefaultValue(LibPUAE.ControllerType.Joystick)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public LibPUAE.ControllerType ControllerPort2 { get; set; }
 

@@ -45,11 +45,6 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 		Controller *controller = (port == 0) ? &f->Port1 : &f->Port2;
 		cd32_pad_enabled[port] = 0;
 
-		// shared between mouse and joystick
-		setjoybuttonstate(port, JOYBUTTON_1, controller->Buttons.b1);
-		setjoybuttonstate(port, JOYBUTTON_2, controller->Buttons.b2);
-		setjoybuttonstate(port, JOYBUTTON_3, controller->Buttons.b3);
-
 		switch (controller->Type)
 		{
 			case CONTROLLER_JOYSTICK:
@@ -57,6 +52,9 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 														controller->Buttons.down  ? JOY_MAX : JOY_MID, 1);
 				setjoystickstate(port, AXIS_HORIZONTAL, controller->Buttons.left  ? JOY_MIN :
 														controller->Buttons.right ? JOY_MAX : JOY_MID, 1);
+				setjoybuttonstate(port, JOYBUTTON_1, controller->Buttons.b1);
+				setjoybuttonstate(port, JOYBUTTON_2, controller->Buttons.b2);
+				setjoybuttonstate(port, JOYBUTTON_3, controller->Buttons.b3);
 				break;
 			case CONTROLLER_CD32PAD:
 				cd32_pad_enabled[port] = 1;
@@ -71,6 +69,9 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 			case CONTROLLER_MOUSE:
 				setmousestate(port, AXIS_HORIZONTAL, controller->MouseX - last_mouse_x[port], MOUSE_RELATIVE);
 				setmousestate(port, AXIS_VERTICAL,   controller->MouseY - last_mouse_y[port], MOUSE_RELATIVE);
+				setmousebuttonstate(port, MOUSE_LEFT,   controller->Buttons.b1);
+				setmousebuttonstate(port, MOUSE_RIGHT,  controller->Buttons.b2);
+				setmousebuttonstate(port, MOUSE_MIDDLE, controller->Buttons.b3);
 				break;
 		}
 	}
