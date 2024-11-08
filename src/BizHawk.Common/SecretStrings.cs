@@ -53,8 +53,10 @@ namespace BizHawk.Common
 		static SecretStrings()
 		{
 			_aes = Aes.Create();
-			_aes.Key = SHA256Checksum.Compute(Encoding.UTF8.GetBytes($"{GetMachineGuid()}/{Environment.MachineName}"));
-			_aes.IV = new byte[_aes.BlockSize / 8];
+			var machineIdBytes = Encoding.UTF8.GetBytes($"{GetMachineGuid()}/{Environment.MachineName}");
+			var machineIdHash = SHA256Checksum.Compute(machineIdBytes);
+			_aes.Key = machineIdHash;
+			_aes.IV = SHA256Checksum.Compute([ ..machineIdHash, ..machineIdBytes ]).AsSpan(0, 16).ToArray();
 			_aes.Mode = CipherMode.CBC;
 			_aes.Padding = PaddingMode.PKCS7;
 		}
