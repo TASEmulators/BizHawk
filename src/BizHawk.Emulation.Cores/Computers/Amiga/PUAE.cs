@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			for (int port = 1; port <= 2; port++)
 			{
-				var currentPort = (port == 1) ? fi.Port1 : fi.Port2;
+				ref var currentPort = ref (port is 1 ? ref fi.Port1 : ref fi.Port2);
 
 				switch (_ports[port - 1])
 				{
@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 						{
 							foreach (var (name, button) in _joystickMap)
 							{
-								if (controller.IsPressed($"P{port} {name}"))
+								if (controller.IsPressed($"P{port} {Inputs.Joystick} {name}"))
 								{
 									currentPort.Buttons |= button;
 								}
@@ -181,7 +181,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 						{
 							foreach (var (name, button) in _cd32padMap)
 							{
-								if (controller.IsPressed($"P{port} {name}"))
+								if (controller.IsPressed($"P{port} {Inputs.Cd32Pad} {name}"))
 								{
 									currentPort.Buttons |= button;
 								}
