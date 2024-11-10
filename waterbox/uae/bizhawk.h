@@ -38,6 +38,7 @@ extern unsigned short int defaulth;
 extern int retro_max_diwlastword;
 extern int cd32_pad_enabled[NORMAL_JPORTS];
 extern int joybutton[MAX_JPORTS];
+extern int joydir[MAX_JPORTS];
 
 extern int umain(int argc, char **argv);
 extern int m68k_go(int may_quit, int resume);
@@ -45,6 +46,7 @@ extern void init_output_audio_buffer(int32_t capacity);
 extern void upload_output_audio_buffer();
 extern void disk_eject(int num);
 extern void disk_insert_force (int num, const TCHAR *name, bool forcedwriteprotect);
+extern void joymousecounter(int joy);
 
 enum Axis
 {

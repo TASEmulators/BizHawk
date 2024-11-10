@@ -22,12 +22,18 @@ ECL_EXPORT bool Init(int argc, char **argv)
 	return true;
 }
 
-void SetCD32ButtonState(int port, int button, int state)
+void SetJoyButtonRaw(int port, int button, int state)
 {
 	if (state)
 		joybutton[port] |= 1 << button;
 	else
 		joybutton[port] &= ~(1 << button);
+}
+
+void SetJoyDirectionRaw(int port, int direction, int state)
+{
+	if (state)
+		joydir[port] |= direction;
 }
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
@@ -44,38 +50,35 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	{
 		Controller *controller = (port == 0) ? &f->Port1 : &f->Port2;
 		cd32_pad_enabled[port] = 0;
+		joydir[port] = 0;
+
+		SetJoyButtonRaw(   port, JOYBUTTON_1, controller->Buttons.b1);
+		SetJoyButtonRaw(   port, JOYBUTTON_2, controller->Buttons.b2);
+		SetJoyButtonRaw(   port, JOYBUTTON_3, controller->Buttons.b3);
+		SetJoyDirectionRaw(port, DIR_LEFT,    controller->Buttons.left);
+		SetJoyDirectionRaw(port, DIR_RIGHT,   controller->Buttons.right);
+		SetJoyDirectionRaw(port, DIR_UP,      controller->Buttons.up);
+		SetJoyDirectionRaw(port, DIR_DOWN,    controller->Buttons.down);
 
 		switch (controller->Type)
 		{
 			case CONTROLLER_JOYSTICK:
-				setjoystickstate(0, AXIS_VERTICAL,   controller->Buttons.up    ? JOY_MIN :
-													 controller->Buttons.down  ? JOY_MAX : JOY_MID, 1);
-				setjoystickstate(0, AXIS_HORIZONTAL, controller->Buttons.left  ? JOY_MIN :
-													 controller->Buttons.right ? JOY_MAX : JOY_MID, 1);
-				setjoybuttonstate(0, JOYBUTTON_1, controller->Buttons.b1);
-				setjoybuttonstate(0, JOYBUTTON_2, controller->Buttons.b2);
-				setjoybuttonstate(0, JOYBUTTON_3, controller->Buttons.b3);
+				joymousecounter(port);
 				break;
 			case CONTROLLER_CD32PAD:
 				cd32_pad_enabled[port] = 1;
-				setjoystickstate(0, AXIS_VERTICAL,   controller->Buttons.up    ? JOY_MIN :
-													 controller->Buttons.down  ? JOY_MAX : JOY_MID, 1);
-				setjoystickstate(0, AXIS_HORIZONTAL, controller->Buttons.left  ? JOY_MIN :
-													 controller->Buttons.right ? JOY_MAX : JOY_MID, 1);
-				SetCD32ButtonState(port, JOYBUTTON_CD32_PLAY,   controller->Buttons.play);
-				SetCD32ButtonState(port, JOYBUTTON_CD32_RWD,    controller->Buttons.rewind);
-				SetCD32ButtonState(port, JOYBUTTON_CD32_FFW,    controller->Buttons.forward);
-				SetCD32ButtonState(port, JOYBUTTON_CD32_GREEN,  controller->Buttons.green);
-				SetCD32ButtonState(port, JOYBUTTON_CD32_YELLOW, controller->Buttons.yellow);
-				SetCD32ButtonState(port, JOYBUTTON_CD32_RED,    controller->Buttons.red);
-				SetCD32ButtonState(port, JOYBUTTON_CD32_BLUE,   controller->Buttons.blue);
+				SetJoyButtonRaw(port, JOYBUTTON_CD32_PLAY,   controller->Buttons.play);
+				SetJoyButtonRaw(port, JOYBUTTON_CD32_RWD,    controller->Buttons.rewind);
+				SetJoyButtonRaw(port, JOYBUTTON_CD32_FFW,    controller->Buttons.forward);
+				SetJoyButtonRaw(port, JOYBUTTON_CD32_GREEN,  controller->Buttons.green);
+				SetJoyButtonRaw(port, JOYBUTTON_CD32_YELLOW, controller->Buttons.yellow);
+				SetJoyButtonRaw(port, JOYBUTTON_CD32_RED,    controller->Buttons.red);
+				SetJoyButtonRaw(port, JOYBUTTON_CD32_BLUE,   controller->Buttons.blue);
+				joymousecounter(port);
 				break;
 			case CONTROLLER_MOUSE:
-				setmousestate(0, AXIS_HORIZONTAL, controller->MouseX - last_mouse_x[port], MOUSE_RELATIVE);
-				setmousestate(0, AXIS_VERTICAL,   controller->MouseY - last_mouse_y[port], MOUSE_RELATIVE);
-				setmousebuttonstate(0, MOUSE_LEFT,   controller->Buttons.b1);
-				setmousebuttonstate(0, MOUSE_RIGHT,  controller->Buttons.b2);
-				setmousebuttonstate(0, MOUSE_MIDDLE, controller->Buttons.b3);
+				setmousestate(port, AXIS_HORIZONTAL, controller->MouseX - last_mouse_x[port], MOUSE_RELATIVE);
+				setmousestate(port, AXIS_VERTICAL,   controller->MouseY - last_mouse_y[port], MOUSE_RELATIVE);
 				break;
 		}
 	}
