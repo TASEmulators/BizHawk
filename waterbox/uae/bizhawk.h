@@ -39,6 +39,8 @@ extern int retro_max_diwlastword;
 extern int cd32_pad_enabled[NORMAL_JPORTS];
 extern int joybutton[MAX_JPORTS];
 extern int joydir[MAX_JPORTS];
+extern uae_s16 mouse_delta[MAX_JPORTS][4];
+extern uae_s16 mouse_deltanoreset[MAX_JPORTS][4];
 
 extern int umain(int argc, char **argv);
 extern int m68k_go(int may_quit, int resume);

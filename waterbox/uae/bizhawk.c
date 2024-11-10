@@ -77,10 +77,13 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 				joymousecounter(port);
 				break;
 			case CONTROLLER_MOUSE:
-				setmousestate(port, AXIS_HORIZONTAL, controller->MouseX - last_mouse_x[port], MOUSE_RELATIVE);
-				setmousestate(port, AXIS_VERTICAL,   controller->MouseY - last_mouse_y[port], MOUSE_RELATIVE);
+				mouse_delta[port][AXIS_HORIZONTAL] = controller->MouseX - last_mouse_x[port];
+				mouse_delta[port][AXIS_VERTICAL]   = controller->MouseY - last_mouse_y[port];
 				break;
 		}
+
+		mouse_deltanoreset[port][0] = 1;
+		mouse_deltanoreset[port][1] = 1;
 	}
 
 	for (int i = 0; i < KEY_COUNT; i++)
