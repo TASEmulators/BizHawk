@@ -4,7 +4,7 @@ libpath=""
 if [ "$(command -v lsb_release)" ]; then
 	case "$(lsb_release -i | head -n1 | cut -c17- | tr A-Z a-z)" in
 		"arch"|"artix"|"manjarolinux") libpath="/usr/lib";;
-		"fedora"|"gentoo"|"opensuse") libpath="/usr/lib64";;
+		"fedora"|"gentoo"|"nobaralinux"|"opensuse") libpath="/usr/lib64";;
 		"nixos") libpath="/usr/lib"; printf "Running on NixOS? Why aren't you using the Nix expr?\n";;
 		"debian"|"linuxmint"|"pop"|"ubuntu") libpath="/usr/lib/x86_64-linux-gnu";;
 	esac
