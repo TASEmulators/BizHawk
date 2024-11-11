@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 		public override string Name => "input";
 
 		[LuaMethodExample("local buttons_down = input.get();\nlocal is_b_down = buttons_down[\"B\"];\nif is_b_down and not was_b_down then console.writeline(\"B pressed\"); end\nwas_b_down = is_b_down;")]
-		[LuaMethod("get", "Returns a dict-like table of key/button names (of host). Only pressed buttons will appear (with a value of {{true}}); unpressed buttons are omitted. Includes gamepad axes ({{!axis.isNeutral}}, with sticks as 4 \"buttons\" suffixed {{\"Up\"}}/{{\"Down\"}}/{{\"Left\"}}/{{\"Right\"}}). Includes mouse buttons, but not axes (cursor position and wheel rotation). Unlike {{getmouse}}, these have the names {{\"WMouse L\"}}, {{\"WMouse R\"}}, {{\"WMouse C\"}}, {{\"WMouse 1\"}}, and {{\"WMouse 2\"}} for LMB, RMB, MMB, Mouse4, and Mouse5, respectively.")]
+		[LuaMethod("get", "Returns a dict-like table of key/button names (of host). Only pressed buttons will appear (with a value of {{true}}); unpressed buttons are omitted. Includes gamepad axes ({{!axis.isNeutral}}, with sticks as 4 \"buttons\" suffixed {{\"Up\"}}/{{\"Down\"}}/{{\"Left\"}}/{{\"Right\"}}). Includes mouse buttons, but not axes (cursor position and wheel rotation). Unlike {{getmouse}}, these have the names {{\"WMouse L\"}}, {{\"WMouse R\"}}, {{\"WMouse M\"}}, {{\"WMouse 1\"}}, and {{\"WMouse 2\"}} for LMB, RMB, MMB, Mouse4, and Mouse5, respectively.")]
 		public LuaTable Get()
 #pragma warning disable CS0618 // the ApiHawk equivalent of this function is warn-level deprecated; Lua can't and shouldn't make that distinction
 			=> _th.DictToTable(APIs.Input.Get());

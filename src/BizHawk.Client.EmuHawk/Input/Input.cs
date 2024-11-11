@@ -236,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 
 							var mouseBtns = Control.MouseButtons;
 							HandleButton("WMouse L", (mouseBtns & MouseButtons.Left) != 0, ClientInputFocus.Mouse);
-							HandleButton("WMouse C", (mouseBtns & MouseButtons.Middle) != 0, ClientInputFocus.Mouse);
+							HandleButton("WMouse M", (mouseBtns & MouseButtons.Middle) != 0, ClientInputFocus.Mouse);
 							HandleButton("WMouse R", (mouseBtns & MouseButtons.Right) != 0, ClientInputFocus.Mouse);
 							HandleButton("WMouse 1", (mouseBtns & MouseButtons.XButton1) != 0, ClientInputFocus.Mouse);
 							HandleButton("WMouse 2", (mouseBtns & MouseButtons.XButton2) != 0, ClientInputFocus.Mouse);
@@ -246,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 #if false // don't do this: for now, it will interfere with the virtualpad. don't do something similar for the mouse position either
 							// unpress all buttons
 							HandleButton("WMouse L", false, ClientInputFocus.Mouse);
-							HandleButton("WMouse C", false, ClientInputFocus.Mouse);
+							HandleButton("WMouse M", false, ClientInputFocus.Mouse);
 							HandleButton("WMouse R", false, ClientInputFocus.Mouse);
 							HandleButton("WMouse 1", false, ClientInputFocus.Mouse);
 							HandleButton("WMouse 2", false, ClientInputFocus.Mouse);
