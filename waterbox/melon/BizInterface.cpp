@@ -56,7 +56,7 @@ static void MicFeedNoise(u8 vol)
 
 	for (int i = 0; i < 735; i++)
 	{
-		biz_mic_input[i] = round(mic_blow[sampPos++] * (vol / 100.0));
+		biz_mic_input[i] = round((s16)mic_blow[sampPos++] * (vol / 100.0));
 		if (sampPos >= sampLen) sampPos = 0;
 	}
 }
