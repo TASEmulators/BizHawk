@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
 	[PortedCore(CoreNames.Encore, "", "nightly-2104", "https://github.com/CasualPokePlayer/encore", singleInstance: true)]
 	[ServiceNotApplicable(typeof(IRegionable))]
-	public partial class Encore
+	public partial class Encore : IRomInfo
 	{
 		private static DynamicLibraryImportResolver _resolver;
 		private static LibEncore _core;
@@ -166,7 +166,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			// advance one frame to avoid that issue
 			_core.Encore_RunFrame(_context);
 			OnVideoRefresh();
+
+			var n3dsHasher = new N3DSHasher(aesKeys, seeddb);
+			lp.Game.Hash = n3dsHasher.HashROM(romPath) ?? "N/A";
+			var gi = Database.CheckDatabase(lp.Game.Hash);
+			if (gi != null)
+			{
+				lp.Game.Name = gi.Name;
+				lp.Game.Hash = gi.Hash;
+				lp.Game.Region = gi.Region;
+				lp.Game.Status = gi.Status;
+				lp.Game.NotInDatabase = gi.NotInDatabase;
+			}
+
+			RomDetails = $"{lp.Game.Name}\r\n{MD5Checksum.PREFIX}:{lp.Game.Hash}";
 		}
+
+		public string RomDetails { get; }
 
 		private IntPtr RequestGLContextCallback()
 		{

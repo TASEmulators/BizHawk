@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -269,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// get rid of a final trailing 0
-			// but also make sure we have 0 paddng to 16 bytes
+			// but also make sure we have 0 padding to 16 bytes
 			Array.Resize(ref normalKeyBytes, 16);
 
 			// .ToByteArray() is always in little endian order, but we want big endian order
@@ -381,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
 					return true;
 				}
 
-				var programId = MemoryMarshal.Read<ulong>(
+				var programId = BinaryPrimitives.ReadUInt64LittleEndian(
 					Util.UnsafeSpanFromPointer<byte>(ptr: optional_program_id, count: 8));
 
 				FirmwareID seeddbFWID = new("3DS", "seeddb");

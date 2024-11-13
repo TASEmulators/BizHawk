@@ -51,9 +51,9 @@ namespace BizHawk.Client.Common
 					throw new InvalidOperationException("3DS ROMs cannot be in archives.");
 				}
 
-				Console.WriteLine($"3DS ROM detected, skipping hash checks...");
+				Console.WriteLine("3DS ROM detected, skipping full file hashing...");
 
-				FileData = RomData = Array.Empty<byte>();
+				FileData = RomData = [ ];
 				GameInfo = new()
 				{
 					Name = Path.GetFileNameWithoutExtension(file.Name).Replace('_', ' '),
