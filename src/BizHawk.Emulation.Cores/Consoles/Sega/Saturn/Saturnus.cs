@@ -57,8 +57,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			{ "ss.cart.satar4mp_path", new() { Hide = true , Default = "$SATAR" } }, // FIRMWARE:
 			{ "ss.affinity.vdp2", new() { Hide = true } },
 			{ "ss.dbg_exe_cdpath", new() { Hide = true } },
-			{ "ss.dbg_exe_cem", new() { Hide = true } },
-			{ "ss.dbg_exe_hh", new() { Hide = true } },
+			{ "ss.dbg_cem", new() { Hide = true } },
+			{ "ss.dbg_hh", new() { Hide = true } },
 
 			{ "ss.scsp.resamp_quality", new() { NonSync = true } }, // Don't set NoRestart = true for this
 			{ "ss.input.mouse_sensitivity", new() { Hide = true } },
