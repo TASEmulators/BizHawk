@@ -119,7 +119,7 @@ namespace BizHawk.Client.Common
 					{
 						controllerSettings.NesLeftPort = nameof(ControllerNES);
 						_deck = controllerSettings.Instantiate((_, _) => false).AddSystemToControllerDef();
-						_deck.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
+						_deck.ControllerDef.BuildMnemonicsCache(Result.Movie.SystemID);
 					}
 				}
 				else if (line.StartsWith("port1", StringComparison.OrdinalIgnoreCase))
@@ -128,7 +128,7 @@ namespace BizHawk.Client.Common
 					{
 						controllerSettings.NesRightPort = nameof(ControllerNES);
 						_deck = controllerSettings.Instantiate((_, _) => false).AddSystemToControllerDef();
-						_deck.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
+						_deck.ControllerDef.BuildMnemonicsCache(Result.Movie.SystemID);
 					}
 				}
 				else if (line.StartsWith("port2", StringComparison.OrdinalIgnoreCase))
@@ -147,7 +147,7 @@ namespace BizHawk.Client.Common
 						controllerSettings.NesLeftPort = nameof(FourScore);
 						controllerSettings.NesRightPort = nameof(FourScore);
 						_deck = controllerSettings.Instantiate((_, _) => false).AddSystemToControllerDef();
-						_deck.ControllerDef.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
+						_deck.ControllerDef.BuildMnemonicsCache(Result.Movie.SystemID);
 					}
 				}
 				else

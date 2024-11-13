@@ -14,19 +14,19 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void Initializer()
 		{
 			_boolController = new(new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "A" } }.MakeImmutable());
-			_boolController.Definition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(VSystemID.Raw.NES));
+			_boolController.Definition.BuildMnemonicsCache(VSystemID.Raw.NES);
 			_axisController = new(
 				new ControllerDefinition("Dummy Gamepad")
 					.AddXYPair("Stick{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(200), 100)
 					.MakeImmutable());
-			_axisController.Definition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(VSystemID.Raw.NES));
+			_axisController.Definition.BuildMnemonicsCache(VSystemID.Raw.NES);
 		}
 
 		[TestMethod]
 		public void GenerateLogEntry_ExclamationForUnknownButtons()
 		{
 			SimpleController controller = new(new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "Unknown Button" } }.MakeImmutable());
-			controller.Definition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(VSystemID.Raw.NES));
+			controller.Definition.BuildMnemonicsCache(VSystemID.Raw.NES);
 			controller["Unknown Button"] = true;
 			var actual = Bk2LogEntryGenerator.GenerateLogEntry(controller);
 			Assert.AreEqual("|!|", actual);

@@ -15,12 +15,12 @@ namespace BizHawk.Tests.Client.Common.Display
 		public void Initializer()
 		{
 			_boolController = new(new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "A" } }.MakeImmutable());
-			_boolController.Definition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(VSystemID.Raw.NULL));
+			_boolController.Definition.BuildMnemonicsCache(VSystemID.Raw.NULL);
 			_axisController = new(
 				new ControllerDefinition("Dummy Gamepad")
 					.AddXYPair("Stick{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(200), MidValue)
 					.MakeImmutable());
-			_axisController.Definition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(VSystemID.Raw.NULL));
+			_axisController.Definition.BuildMnemonicsCache(VSystemID.Raw.NULL);
 		}
 
 		[TestMethod]

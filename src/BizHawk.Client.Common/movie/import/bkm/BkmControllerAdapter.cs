@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 				_ => "Null Controller",
 			};
 			Definition = new(copyFrom: definition, withName: name);
-			Definition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(systemId));
+			Definition.BuildMnemonicsCache(systemId); //TODO these aren't the same...
 		}
 
 		public ControllerDefinition Definition { get; set; }

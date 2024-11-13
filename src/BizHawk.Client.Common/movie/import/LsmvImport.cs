@@ -84,7 +84,7 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			ControllerDefinition controllerDefinition = new BsnesControllers(ss, true).Definition;
-			controllerDefinition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(VSystemID.Raw.SNES));
+			controllerDefinition.BuildMnemonicsCache(VSystemID.Raw.SNES);
 			_emptyController = new SimpleController(controllerDefinition);
 			_controller = new SimpleController(controllerDefinition);
 			_playerCount = controllerDefinition.PlayerCount;

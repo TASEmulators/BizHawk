@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			private const string CAT_KEYBOARD = "RetroKeyboard";
 
-			public const string PFX_RETROPAD = "RetroPad ";
+			private const string PFX_RETROPAD = "RetroPad ";
 
 			public LibretroControllerDef()
 				: base(name: "LibRetro Controls"/*for compatibility*/)

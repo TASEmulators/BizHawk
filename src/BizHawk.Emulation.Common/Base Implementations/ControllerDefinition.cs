@@ -40,14 +40,15 @@ namespace BizHawk.Emulation.Common
 
 		/// <remarks>
 		/// TODO: this should probably be called in <see cref="MakeImmutable"/>,
-		/// but the needed Bk2MnemonicsLookup is in Client.Common
 		/// </remarks>
-		public void BuildMnemonicsCache(Func<string, char> mnemonicFunc)
+		public void BuildMnemonicsCache(string sysID)
 		{
 			if (_mutable)
 				throw new InvalidOperationException($"this {nameof(ControllerDefinition)} has not yet been built and sealed; can't build mnemonics cache");
 
-			_mnemonicsCache ??= BoolButtons.ToDictionary(buttonName => buttonName, mnemonicFunc);
+			_mnemonicsCache ??= BoolButtons.ToDictionary(
+				static buttonName => buttonName,
+				buttonName => Bk2MnemonicLookup.Lookup(buttonName, sysID));
 		}
 
 		public ControllerDefinition(string name)

@@ -106,7 +106,7 @@ namespace BizHawk.Client.Common.movie.import
 					"Reset", "Power", "Previous Disk", "Next Disk", "P1 Left", "P1 Right", "P1 Up", "P1 Down", "P1 Start", "P1 A", "P1 B", "P1 C", "P1 X", "P1 Y", "P1 Z", "P1 L", "P1 R"
 				}
 			}.MakeImmutable());
-			controllers.Definition.BuildMnemonicsCache(Bk2MnemonicLookup.MnemonicFunc(Result.Movie.SystemID));
+			controllers.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 
 			// Split up the sections of the frame.
 			var sections = line.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);

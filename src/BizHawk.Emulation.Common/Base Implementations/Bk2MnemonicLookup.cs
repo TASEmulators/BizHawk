@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using BizHawk.Common.StringExtensions;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Libretro;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Emulation.Common
 {
 	public static class Bk2MnemonicLookup
 	{
+		/// <remarks>duplicated with <c>LibretroControllerDef</c></remarks>
+		private const string PFX_RETROPAD = "RetroPad ";
+
 		public static char Lookup(string button, string systemId)
 		{
 			var key = button.Replace("Key ", "");
@@ -21,7 +22,7 @@ namespace BizHawk.Client.Common
 					key = key.Substring(3);
 				}
 			}
-			key = key.RemovePrefix(LibretroHost.LibretroControllerDef.PFX_RETROPAD);
+			key = key.RemovePrefix(PFX_RETROPAD);
 
 			if (SystemOverrides.TryGetValue(systemId, out var overridesForSys) && overridesForSys.TryGetValue(key, out var c))
 			{
@@ -62,8 +63,6 @@ namespace BizHawk.Client.Common
 
 			return button;
 		}
-
-		public static Func<string, char> MnemonicFunc(string systemId) => buttonName => Lookup(buttonName, systemId);
 
 		private static readonly Dictionary<string, char> BaseMnemonicLookupTable = new Dictionary<string, char>
 		{
