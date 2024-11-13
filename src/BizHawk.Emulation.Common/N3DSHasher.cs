@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Common
 	/// As 3DS roms may be >= 2GiB, too large for a .NET array
 	/// As such, we need to perform a quick hash to identify them
 	/// For this purpose, we re-use RetroAchievement's hashing formula
-	/// Note that we assume here a CIA isn't be hashed, but rather its installed file (identical hash anyways)
+	/// Note that we assume here a CIA isn't being hashed, but rather its installed file (identical hash anyways)
 	/// Reference code: https://github.com/RetroAchievements/rcheevos/blob/8d8ef920e253f1286464771e81ce4cf7f4358eee/src/rhash/hash.c#L1573-L2184
 	/// </summary>
 	public class N3DSHasher(byte[]? aesKeys, byte[]? seedDb)
@@ -353,7 +353,7 @@ namespace BizHawk.Emulation.Common
 						{
 							var ivCopy = new byte[iv.Length];
 							iv.AsSpan().CopyTo(ivCopy);
-							exeFsSectionOffset &= 0xFU;
+							exeFsSectionOffset &= ~0xFU;
 
 							// First decrypt these last bytes using the secondary key
 							AesCtrTransform(aes, iv, exeFsBuffer.AsSpan((int)exeFsSectionOffset, (int)(0x10 - (exeFsSectionSize & 0xF))));
