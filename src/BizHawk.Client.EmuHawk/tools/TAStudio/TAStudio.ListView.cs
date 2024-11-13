@@ -1244,13 +1244,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			float value = CurrentTasMovie.GetAxisState(_axisEditRow, _axisEditColumn);
-			float prev = value;
+			int value = CurrentTasMovie.GetAxisState(_axisEditRow, _axisEditColumn);
+			int prev = value;
 			string prevTyped = _axisTypedValue;
 
 			var range = ControllerType.Axes[_axisEditColumn];
-			float rMin = range.Min;
-			float rMax = range.Max;
 
 			// feos: typing past max digits overwrites existing value, not touching the sign
 			// but doesn't handle situations where the range is like -50 through 100, where minimum is negative and has less digits
@@ -1270,12 +1268,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.KeyCode == Keys.Right)
 			{
-				value = rMax;
+				value = range.Max;
 				_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 			}
 			else if (e.KeyCode == Keys.Left)
 			{
-				value = rMin;
+				value = range.Min;
 				_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 			}
 			else if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
@@ -1310,7 +1308,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_axisTypedValue = _axisTypedValue.Substring(startIndex: 0, length: _axisTypedValue.Length - 1); // drop last char
-				if (!float.TryParse(_axisTypedValue, out value)) value = 0.0f;
+				if (!int.TryParse(_axisTypedValue, out value)) value = 0;
 			}
 			else if (e.KeyCode == Keys.Enter)
 			{
@@ -1334,10 +1332,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				float changeBy = 0;
+				int changeBy = 0;
 				if (e.KeyCode == Keys.Up)
 				{
-					changeBy = 1; // We're assuming for now that ALL axis controls should contain integers.
+					changeBy = 1;
 				}
 				else if (e.KeyCode == Keys.Down)
 				{
@@ -1367,24 +1365,16 @@ namespace BizHawk.Client.EmuHawk
 					if (prevTyped != "")
 					{
 						value = ControllerType.Axes[_axisEditColumn].Neutral;
-						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, (int) value);
+						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, value);
 					}
 				}
 				else
 				{
-					if (float.TryParse(_axisTypedValue, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out value)) // String "-" can't be parsed.
+					if (int.TryParse(_axisTypedValue, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out value)) // String "-" can't be parsed.
 					{
-						if (value > rMax)
-						{
-							value = rMax;
-						}
-						else if (value < rMin)
-						{
-							value = rMin;
-						}
+						value = value.ConstrainWithin(range.Range);
 
-						_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
-						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, (int) value);
+						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, value);
 					}
 				}
 
@@ -1392,7 +1382,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					foreach (int row in _extraAxisRows)
 					{
-						CurrentTasMovie.SetAxisState(row, _axisEditColumn, (int) value);
+						CurrentTasMovie.SetAxisState(row, _axisEditColumn, value);
 					}
 				}
 
