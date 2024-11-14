@@ -471,8 +471,39 @@ namespace BizHawk.Emulation.Common
 			Option("SAT", "E", in ss_100_ue, FirmwareOptionStatus.Ideal);
 			Option("SAT", "E", in ss_100a_ue);
 			FirmwareAndOption("A67CD4F550751F8B91DE2B8B74528AB4E0C11C77", 2 * 1024 * 1024, "SAT", "KOF95", "SAT_KoF95.bin", "King of Fighters cartridge");
-			//Firmware("SAT", "ULTRAMAN", "Ultraman cartridge");
 			FirmwareAndOption("56C1B93DA6B660BF393FBF48CA47569000EF4047", 2 * 1024 * 1024, "SAT", "ULTRAMAN", "SAT_Ultraman.bin", "Ultraman cartridge");
+			// Saturn ST-V (arcade variant, which mednafen supports)
+			// hashes taken from MAME's db: https://github.com/mamedev/mame/blob/e9bdabea3702683e8b962acf8dbe61f2a5f46de0/src/mame/sega/stv.cpp#L1893-L1955
+			var ss_stv_j = File("1A31B6B1A4257FCB6AC6A91E67DD798F91505F48", 524288, "SAT_STV_23603-(J).bin", "ST-V BIOS EPR-23603 (J)");
+			var ss_stv_j1 = File("EFF0F54C70BCE05FF3A289BF30B1027E1C8CD117", 524288, "SAT_STV_20091-(J).bin", "ST-V BIOS EPR-20091 (J)");
+			var ss_stv_j2 = File("FAE53107C894E0C41C49E191DBE706C9CD6E50BD", 524288, "SAT_STV_19730-(J).bin", "ST-V BIOS EPR-19730 (J)");
+			var ss_stv_j3 = File("63CF4A6432F6C87952F9CF3AB0F977AED2367303", 524288, "SAT_STV_17951A-(J).bin", "ST-V BIOS EPR-17951A (J)");
+			var ss_stv_j4 = File("F9B282FD27693E9891843597B2E1823DA3D23C7B", 524288, "SAT_STV_17740A-(J).bin", "ST-V BIOS EPR-17740A (J)");
+			var ss_stv_j5 = File("06860D96923B81AFBC21E0AD32EE19487D8FF6E7", 524288, "SAT_STV_17740-(J).bin", "ST-V BIOS EPR-17740 (J)");
+			var ss_stv_u = File("EAF1C3E5D602E1139D2090A78D7E19F04F916794", 524288, "SAT_STV_17952A-(U).bin", "ST-V BIOS EPR-17952A (U)");
+			var ss_stv_u1 = File("CC41D30DE06160083D77E0DC5D69E61FEC7FDCB5", 524288, "SAT_STV_17741A-(U).bin", "ST-V BIOS EPR-17741A (U)");
+			var ss_stv_e = File("AF79CFF317E5B57D49E463AF16A9F616ED1EEE08", 524288, "SAT_STV_17954A-(E).bin", "ST-V BIOS EPR-17954A (E)");
+			var ss_stv_t = File("B55CDCB45B2A5B0B35E352CF7625F0BD659084DF", 524288, "SAT_STV_19854-(T).bin", "ST-V BIOS EPR-19854 (T)");
+			var ss_stv_t1 = File("9EFC73717EC8A13417E65C54344DED9FC25BF5EF", 524288, "SAT_STV_17953A-(T).bin", "ST-V BIOS EPR-17953A (T)");
+			var ss_stv_t2 = File("23185BEB1CE9C09B8719E57D1ADB7B28C8141FD5", 524288, "SAT_STV_17742A-(T).bin", "ST-V BIOS EPR-17742A (T)");
+			Firmware("SAT", "STV_J", "ST-V Bios (J)");
+			// mame appears to order bios files from newest to oldest, so reverse the order of presentation here
+			// similarly to regular saturn bios files, set mednafen's preferred bios files to ideal
+			Option("SAT", "STV_J", in ss_stv_j5);
+			Option("SAT", "STV_J", in ss_stv_j4);
+			Option("SAT", "STV_J", in ss_stv_j3);
+			Option("SAT", "STV_J", in ss_stv_j2);
+			Option("SAT", "STV_J", in ss_stv_j1, FirmwareOptionStatus.Ideal);
+			Option("SAT", "STV_J", in ss_stv_j);
+			// mednafen appears to consider Taiwan as Japan for purposes of bios files, so we'll do that too
+			Option("SAT", "STV_J", in ss_stv_t2);
+			Option("SAT", "STV_J", in ss_stv_t1);
+			Option("SAT", "STV_J", in ss_stv_t);
+			Firmware("SAT", "STV_U", "ST-V Bios (U)");
+			Option("SAT", "STV_U", in ss_stv_u1);
+			Option("SAT", "STV_U", in ss_stv_u, FirmwareOptionStatus.Ideal);
+			Firmware("SAT", "STV_E", "ST-V Bios (E)");
+			Option("SAT", "STV_E", in ss_stv_e, FirmwareOptionStatus.Ideal);
 
 			// SMS
 			var sms_us_13 = File("C315672807D8DDB8D91443729405C766DD95CAE7", 8192, "SMS_us_1.3.sms", "SMS BIOS 1.3 (USA, Europe)");

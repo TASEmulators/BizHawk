@@ -39,6 +39,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			{
 				{ "FIRMWARE:$J", new("SAT", "J") },
 				{ "FIRMWARE:$U", new("SAT", "U") },
+				{ "FIRMWARE:$STV_J", new("SAT", "STV_J") },
+				{ "FIRMWARE:$STV_U", new("SAT", "STV_U") },
+				{ "FIRMWARE:$STV_E", new("SAT", "STV_E") },
 				{ "FIRMWARE:$KOF", new("SAT", "KOF95") },
 				{ "FIRMWARE:$ULTRA", new("SAT", "ULTRAMAN") },
 				// { "FIRMWARE:$SATAR", new("SAT", "AR") }, // action replay garbage
@@ -50,11 +53,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
-			{ "ss.bios_jp", new() { Hide = true , Default = "$J" } }, // FIRMWARE:
-			{ "ss.bios_na_eu", new() { Hide = true , Default = "$U" } }, // FIRMWARE:
-			{ "ss.cart.kof95_path", new() { Hide = true , Default = "$KOF" } }, // FIRMWARE:
-			{ "ss.cart.ultraman_path", new() { Hide = true , Default = "$ULTRA" } }, // FIRMWARE:
-			{ "ss.cart.satar4mp_path", new() { Hide = true , Default = "$SATAR" } }, // FIRMWARE:
+			{ "ss.bios_jp", new() { Hide = true, Default = "$J" } }, // FIRMWARE:
+			{ "ss.bios_na_eu", new() { Hide = true, Default = "$U" } }, // FIRMWARE:
+			{ "ss.bios_stv_jp", new() { Hide = true, Default = "$STV_J" } }, // FIRMWARE:
+			{ "ss.bios_stv_na", new() { Hide = true, Default = "$STV_U" } }, // FIRMWARE:
+			{ "ss.bios_stv_eu", new() { Hide = true, Default = "$STV_E" } }, // FIRMWARE:
+			{ "ss.cart.kof95_path", new() { Hide = true, Default = "$KOF" } }, // FIRMWARE:
+			{ "ss.cart.ultraman_path", new() { Hide = true, Default = "$ULTRA" } }, // FIRMWARE:
+			{ "ss.cart.satar4mp_path", new() { Hide = true, Default = "$SATAR" } }, // FIRMWARE:
+
+			{ "ss.midi", new() { Hide = true } },
 			{ "ss.affinity.vdp2", new() { Hide = true } },
 			{ "ss.dbg_exe_cdpath", new() { Hide = true } },
 			{ "ss.dbg_cem", new() { Hide = true } },
@@ -80,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			{ "ss.slend", new() { NonSync = true } },
 			{ "ss.h_overscan", new() { NonSync = true } },
 			{ "ss.h_blend", new() { NonSync = true } },
-			{ "ss.correct_aspect", new() { NonSync = true, Default = "0" } },
+			{ "ss.correct_aspect", new() { NonSync = true } },
 			{ "ss.slstartp", new() { NonSync = true } },
 			{ "ss.slendp", new() { NonSync = true } },
 		};
