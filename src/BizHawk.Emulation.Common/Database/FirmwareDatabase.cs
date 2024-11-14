@@ -447,9 +447,9 @@ namespace BizHawk.Emulation.Common
 			Option("PSX", "J", in ps2_50j, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "J", in ps_22jv, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "U", in ps_41aw, FirmwareOptionStatus.Unacceptable);
-			Option("PSX", "U", in psxOnPSP, FirmwareOptionStatus.Acceptable);
+			Option("PSX", "U", in psxOnPSP, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "E", in psxOnPSP, FirmwareOptionStatus.Unacceptable); // doesn't work w/ PAL titles
-			Option("PSX", "J", in psxOnPSP, FirmwareOptionStatus.Acceptable);
+			Option("PSX", "J", in psxOnPSP, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "U", in ps_ps3, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "U", in ps_dtl_h2000, FirmwareOptionStatus.Unacceptable); //not really sure what to do with this one, let's just call it region free
 			Option("PSX", "E", in ps_dtl_h2000, FirmwareOptionStatus.Unacceptable);
