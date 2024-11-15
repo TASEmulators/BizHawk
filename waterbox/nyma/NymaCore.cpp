@@ -285,6 +285,11 @@ ECL_EXPORT SystemInfo* GetSystemInfo()
 	return &SI;
 }
 
+ECL_EXPORT const char* GetInputDeviceOverride(uint32_t port)
+{
+	return Game->DesiredInput.size() > port ? Game->DesiredInput[port].device_name : nullptr;
+}
+
 ECL_EXPORT const char* GetLayerData()
 {
 	return Game->LayerNames;
