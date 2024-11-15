@@ -65,6 +65,10 @@ namespace BizHawk.Client.Common
 			["PSX"] = 502813668.0 / 8388608, //59.940060138702392578125
 			["PSX_PAL"] = 419432765.0 / 8388608, //50.00028192996978759765625
 
+			// according to https://github.com/TASEmulators/mednafen/blob/382ff1b8d293c9a862497706808cbb79b2cecbfb/src/ss/vdp2.cpp#L904-L907
+			["SAT"] = 8734090909.0 / 145852525, // = 1746818181.8 / 61 / 4 / 455 / ((263 + 262.5) / 2.0) ≈ 59.8830284837
+			["SAT_PAL"] = 62500.0 / 1251, // = 1734687500.0 / 61 / 4 / 455 / ((313 + 312.5) / 2.0) ≈ 49.9600319744
+
 			["C64_PAL"] = PALCarrier * 2 / 9 / 312 / 63,
 			["C64_NTSC"] = NTSCCarrier * 2 / 7 / 263 / 65,
 			["C64_NTSC_OLD"] = NTSCCarrier * 2 / 7 / 262 / 64,
