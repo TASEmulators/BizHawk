@@ -127,5 +127,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		public new void StoreSaveRam(byte[] data)
 			=> _saturnus.PutSaveRam(data, data.Length);
+
+		public bool IsSTV => _isArcade;
 	}
 }

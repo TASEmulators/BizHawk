@@ -12,6 +12,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
+using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -218,7 +219,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (Emulator is NDS nds && nds.IsDSi)
+			if (Emulator is NDS { IsDSi: true } nds)
 			{
 				movie.HeaderEntries.Add("IsDSi", "1");
 
@@ -228,16 +229,15 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if ((Emulator is NES nes && nes.IsVS)
-				|| (Emulator is SubNESHawk subnes && subnes.IsVs))
+			if (Emulator is NES { IsVS: true } or SubNESHawk { IsVs: true })
 			{
 				movie.HeaderEntries.Add("IsVS", "1");
 			}
 
-			if (Emulator is IGameboyCommon gb)
+			if (Emulator is IGameboyCommon { IsCGBMode: true } gb)
 			{
-				//TODO doesn't IsCGBDMGMode imply IsCGBMode?
-				if (gb.IsCGBMode) movie.HeaderEntries.Add(gb.IsCGBDMGMode ? "IsCGBDMGMode" : "IsCGBMode", "1");
+				// TODO doesn't IsCGBDMGMode imply IsCGBMode?
+				movie.HeaderEntries.Add(gb.IsCGBDMGMode ? "IsCGBDMGMode" : "IsCGBMode", "1");
 			}
 
 			if (Emulator is SMS sms)
@@ -253,24 +253,29 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (Emulator is GPGX gpgx && gpgx.IsMegaCD)
+			if (Emulator is GPGX { IsMegaCD: true })
 			{
 				movie.HeaderEntries.Add("IsSegaCDMode", "1");
 			}
 
-			if (Emulator is PicoDrive pico && pico.Is32XActive)
+			if (Emulator is PicoDrive { Is32XActive: true })
 			{
 				movie.HeaderEntries.Add("Is32X", "1");
 			}
 
-			if (Emulator is VirtualJaguar jag && jag.IsJaguarCD)
+			if (Emulator is VirtualJaguar { IsJaguarCD: true })
 			{
 				movie.HeaderEntries.Add("IsJaguarCD", "1");
 			}
 
-			if (Emulator is Ares64 ares && ares.IsDD)
+			if (Emulator is Ares64 { IsDD: true })
 			{
 				movie.HeaderEntries.Add("IsDD", "1");
+			}
+
+			if (Emulator is Saturnus { IsSTV: true })
+			{
+				movie.HeaderEntries.Add("IsSTV", "1");
 			}
 
 			if (Emulator is MAME mame)
