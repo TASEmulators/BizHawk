@@ -35,6 +35,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			int thunkWriteOffset)
 				=> ret.AddAxis(name, 0.RangeTo(0xFFFF), 0x8000, isReversed);
 
+		private string GetInputDeviceOverride(int port)
+			=> Mershul.PtrToStringUtf8(_nyma.GetInputDeviceOverride(port));
+
 		private void InitControls(List<NPortInfoT> allPorts, int numCds, ref SystemInfo si)
 		{
 			_controllerAdapter = new ControllerAdapter(
@@ -43,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				OverrideButtonName,
 				numCds,
 				ref si,
+				GetInputDeviceOverride,
 				ComputeHiddenPorts(),
 				AddAxis,
 				_controllerDeckName);
@@ -66,6 +70,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				Func<string, string> overrideName,
 				int numCds,
 				ref SystemInfo systemInfo,
+				Func<int, string> getInputDeviceOverride,
 				HashSet<string> hiddenPorts,
 				AddAxisHook addAxisHook,
 				string controllerDeckName)
@@ -89,7 +94,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				for (int port = 0, devByteStart = 0; port < allPorts.Count; port++)
 				{
 					var portInfo = allPorts[port];
-					if (!config.TryGetValue(port, out var deviceName)) deviceName = portInfo.DefaultDeviceShortName;
+					var deviceName = getInputDeviceOverride(port);
+					if (deviceName == null)
+					{
+						if (!config.TryGetValue(port, out deviceName))
+						{
+							deviceName = portInfo.DefaultDeviceShortName;
+						}
+					}
+
 					finalDevices.Add(deviceName);
 
 					if (hiddenPorts.Contains(portInfo.ShortName))

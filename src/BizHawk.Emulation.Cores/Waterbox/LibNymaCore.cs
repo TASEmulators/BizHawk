@@ -123,6 +123,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[BizImport(CC)]
 		public abstract void SetLayers(ulong layers);
 
+		/// <summary>
+		/// Gets an input device override for a port
+		/// Corresponds to Game->DesiredInput[port].device_name
+		/// </summary>
+		[BizImport(CC)]
+		public abstract IntPtr GetInputDeviceOverride(int port);
+
 		[BizImport(CC)]
 		public abstract void DumpInputs();
 

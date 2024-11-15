@@ -255,7 +255,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private IController _currentController;
 
-		private bool _isArcade;
+		protected bool _isArcade;
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
