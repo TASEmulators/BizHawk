@@ -34,7 +34,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			: base(lp.Comm, VSystemID.Raw.SAT, "Saturn Controller", lp.Settings, lp.SyncSettings)
 		{
 			if (lp.Roms.Count > 0)
-				throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");
+			{
+				// roms might be valid (ST-V Arcade ROMs)
+				if (lp.Roms.Exists(rom => rom.FileData.Length > 0x3000000))
+				{
+					throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");
+				}
+			}
+
 			var firmwareIDMap = new Dictionary<string, FirmwareID>
 			{
 				{ "FIRMWARE:$J", new("SAT", "J") },

@@ -142,6 +142,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			SECAM
 		}
 
+		public enum GameMediumTypes : int
+		{
+			GMT_NONE = 0,
+			GMT_ARCADE,
+			GMT_PLAYER
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct SystemInfo
 		{
@@ -150,14 +157,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public int NominalWidth;
 			public int NominalHeight;
 			public VideoSystem VideoSystem;
+			public GameMediumTypes GameType;
 			public int FpsFixed;
 			public long MasterClock;
 			public int LcmWidth;
 			public int LcmHeight;
-			public int  PointerScaleX;
-			public int  PointerScaleY;
-			public int  PointerOffsetX;
-			public int  PointerOffsetY;
+			public int PointerScaleX;
+			public int PointerScaleY;
+			public int PointerOffsetX;
+			public int PointerOffsetY;
 		}
 
 		[BizImport(CC, Compatibility = true)]

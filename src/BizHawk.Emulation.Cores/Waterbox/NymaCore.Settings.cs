@@ -321,6 +321,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private static readonly IReadOnlyDictionary<string, SettingOverride> ExtraOverrides = new Dictionary<string, SettingOverride>
 		{
 			{ "nyma.constantfb", new() { NonSync = true, NoRestart = true } },
+			// global setting... needs a value set if it gets used (only use case in practice is ST-V with Saturnus)
+			{ "filesys.untrusted_fip_check", new() { Hide = true, Default = "0" } },
 		};
 
 		private static readonly IReadOnlyCollection<SettingT> ExtraSettings = new List<SettingT>

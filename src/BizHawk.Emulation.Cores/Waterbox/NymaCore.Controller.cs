@@ -76,6 +76,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					{
 						{ "Power", "System" },
 						{ "Reset", "System" },
+						{ "Insert Coin", "System" },
 						{ "Open Tray", "System" },
 						{ "Close Tray", "System" },
 						{ "Disk Index", "System" },
@@ -325,6 +326,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				ret.BoolButtons.Add("Power");
 				ret.BoolButtons.Add("Reset");
+				if (systemInfo.GameType == GameMediumTypes.GMT_ARCADE)
+				{
+					ret.BoolButtons.Add("Insert Coin");
+				}
 				if (numCds > 0)
 				{
 					ret.BoolButtons.Add("Open Tray");
