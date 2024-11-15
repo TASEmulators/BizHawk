@@ -88,3 +88,6 @@
 [submodule "ExternalProjects/vfEmu6502/vrEmu6502"]
 	path = ExternalProjects/vfEmu6502/vrEmu6502
 	url = https://github.com/visrealm/vrEmu6502.git
+[submodule "ExternalProjects/ziplantil_w65c02s.h/w65c02s.h"]
+	path = ExternalProjects/ziplantil_w65c02s.h/w65c02s.h
+	url = https://github.com/ziplantil/w65c02s.h.git
