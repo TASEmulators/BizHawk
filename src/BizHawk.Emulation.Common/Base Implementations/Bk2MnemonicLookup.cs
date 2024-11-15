@@ -643,6 +643,10 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.SAT] = new()
 			{
 				["Smpc Reset"] = 's',
+				["St-V Test"] = 'T',
+				["St-V Service"] = 'V',
+				["St-V Pause"] = 'P',
+				["Insert Coin"] = 'c',
 				["D-Pad Up"] = 'U',
 				["D-Pad Down"] = 'D',
 				["D-Pad Left"] = 'L',
