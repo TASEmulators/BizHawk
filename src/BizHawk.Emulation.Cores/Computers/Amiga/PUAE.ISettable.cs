@@ -238,6 +238,26 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			AppendSetting("input.mouse_speed=" + settings.MouseSpeed);
 			AppendSetting("sound_stereo_separation=" + settings.StereoSeparation / 10);
+
+			for (int port = 0; port <= 1; port++)
+			{
+				LibPUAE.ControllerType type = port == 0
+					? settings.ControllerPort1
+					: settings.ControllerPort2;
+
+				switch (type)
+				{
+					case LibPUAE.ControllerType.Joystick:
+						AppendSetting($"joyport{port}mode=djoy");
+						break;
+					case LibPUAE.ControllerType.CD32_pad:
+						AppendSetting($"joyport{port}mode=cd32joy");
+						break;
+					case LibPUAE.ControllerType.Mouse:
+						AppendSetting($"joyport{port}mode=mouse");
+						break;
+				}
+			}
 		}
 
 		private void EnableCycleExact()

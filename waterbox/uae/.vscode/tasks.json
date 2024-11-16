@@ -1,0 +1,46 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "make-install",
+			"command": "make",
+			"args": [
+				"-j8",
+				"install"
+			],
+			"problemMatcher": [
+				"$gcc"
+			],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+		},
+		{
+			"type": "shell",
+			"label": "make-install-debug",
+			"command": "make",
+			"args": [
+				"-j8",
+				"install-debug"
+			],
+			"problemMatcher": [
+				"$gcc"
+			],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+		},
+		{
+			"type": "shell",
+			"label": "clean",
+			"command": "make",
+			"args": [
+				"clean"
+			],
+			"problemMatcher": []
+		}
+	]
+}

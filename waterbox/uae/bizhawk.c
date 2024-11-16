@@ -52,9 +52,9 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 		cd32_pad_enabled[port] = 0;
 		joydir[port] = 0;
 
-		SetJoyButtonRaw(   port, JOYBUTTON_1, controller->Buttons.b1);
-		SetJoyButtonRaw(   port, JOYBUTTON_2, controller->Buttons.b2);
-		SetJoyButtonRaw(   port, JOYBUTTON_3, controller->Buttons.b3);
+		SetJoyButtonRaw   (port, JOYBUTTON_1, controller->Buttons.b1);
+		SetJoyButtonRaw   (port, JOYBUTTON_2, controller->Buttons.b2);
+		SetJoyButtonRaw   (port, JOYBUTTON_3, controller->Buttons.b3);
 		SetJoyDirectionRaw(port, DIR_LEFT,    controller->Buttons.left);
 		SetJoyDirectionRaw(port, DIR_RIGHT,   controller->Buttons.right);
 		SetJoyDirectionRaw(port, DIR_UP,      controller->Buttons.up);
@@ -77,13 +77,12 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 				joymousecounter(port);
 				break;
 			case CONTROLLER_MOUSE:
-				mouse_delta[port][AXIS_HORIZONTAL] = controller->MouseX - last_mouse_x[port];
-				mouse_delta[port][AXIS_VERTICAL]   = controller->MouseY - last_mouse_y[port];
+				mouse_delta[port][AXIS_HORIZONTAL] += controller->MouseX - last_mouse_x[port];
+				mouse_delta[port][AXIS_VERTICAL  ] += controller->MouseY - last_mouse_y[port];
+				mouse_deltanoreset[port][AXIS_HORIZONTAL] = 0;
+				mouse_deltanoreset[port][AXIS_VERTICAL  ] = 0;
 				break;
 		}
-
-		mouse_deltanoreset[port][0] = 1;
-		mouse_deltanoreset[port][1] = 1;
 	}
 
 	for (int i = 0; i < KEY_COUNT; i++)
