@@ -1,0 +1,2093 @@
+; NOTE: These hashes were generated using a quick hash formula: https://github.com/TASEmulators/BizHawk/blob/10fdfdd6dd59dd3df53b3bb7c063e329f05f64fe/src/BizHawk.Emulation.Common/N3DSHasher.cs
+; Decrypted and encrypted ROMs will generate the same hash
+17E020B9C800BFDCDC83273CAD4E415D	 	100% Pascal Sensei - Kanpeki Paint Bombers (Japan)	3DS
+9203DE06855FFFBF2687F5BFA4B5C311	 	12-Sai. Honto no Kimochi (Japan)	3DS
+AE5A1EE3A93E2D707D32964E605EE145	 	12-Sai. Koisuru Diary (Japan)	3DS
+C287AB41C6BFE38FFD0F591B901AE7EE	 	12-Sai. Torokeru Puzzle Futari no Harmony (Japan)	3DS
+FDB87CCB4509C2DBBE4E9EAF4E101243	 	2in1 - Life with Horses 3D + My Baby Pet Hotel 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+9B662321C758F4E74EBF49CEF0BF639A	 	2in1 - My Vet Practice 3D - In the Country + My Baby Pet Hotel 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+0A591C1AB7D6B14E79DCAEB4B1133EDB	 	2in1 Horses 3D - My Foal 3D + My Riding Stables 3D - Rivals in the Saddle (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da)	3DS
+5627715E3B1CD94C109DBD6EF6DAA649	 	2in1 Horses 3D Vol.2 - Rivals in the Saddle and Jumping for the Team 3D (Europe) (En,Fr,De,Es,It)	3DS
+A36549E071178D013347D9F92B7345A4	 	2in1 Horses 3D Vol.3 - My Riding Stables 3D - Jumping for the Team and My Western Horse 3D (Europe) (En,Fr,De,It,Nl)	3DS
+EFC40B8248E467BED0BC03FFAFE899D2	 	35 Classic Games (Europe) (En,Fr,Es,It)	3DS
+38B772767E2A99644A9C46A28C3FB90E	 	3D Game Collection - 55-en-1 (France)	3DS
+910E8AC6565AB0112807271618015DD2	 	3D Game Collection - 55-in-1 (Europe)	3DS
+2F54B3AE3FFEBC5D2DA1598612CFD4BF	 	3D Game Collection - 55-in-1 (Germany) (Fr,De)	3DS
+366E00394DE6DA5361C0B6365B91440D	 	3D MahJongg (Europe) (En,Fr,De,Nl)	3DS
+BB01FFB96859F5C59DC0BF2464568321	 	3in1 Horses - My Riding Stables 3D - Jumping for the Team + Riding Star 3D + My Western Horse 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+E56B4468BCA475FD34BD6DFEE241FD9A	 	4 Elements (Europe) (En,Fr,De,Nl)	3DS
+3684E3065DA9B5E9CBD2FC5D91D23468	 	50 Classic Games (Europe) (En,Fr,Es,It)	3DS
+BD9FD65947CC46B9964E40B59FAC8409	 	50 Classic Games 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+49A28181715588853F51AABC1938CC23	 	50 Classic Games 3D (USA) (En,Fr,Es)	3DS
+4E97BA24C3F6B83C18094D114AEB2278	 	7th Dragon III Code - VFD (Japan)	3DS
+D184BEE4E008960D27BC95ED847883B6	 	7th Dragon III Code - VFD (USA)	3DS
+4EAF8E24E69E15E2574E0EA4D443681D	 	7th Dragon III Code - VFD (Europe)	3DS
+7DFD2627B4C1B2F9DA42CF5A67943822	 	A-Ressha de Ikou 3D (Japan)	3DS
+7C5E7B35168BB5EFAB8E5679F16943E7	 	A-Ressha de Ikou 3D NEO (Japan)	3DS
+577F3F7164D0F25CD1BA1E4AB6F8EADB	 	Ace Combat - Assault Horizon Legacy (USA) (En,Fr,Es)	3DS
+54E67CE4A436D42575F86F27CC9E0D11	 	Ace Combat - Assault Horizon Legacy (Europe) (En,Fr,De,Es,It)	3DS
+27F6C82DABA0451D7A75DAA65454A2D7	 	Ace Combat - Assault Horizon Legacy+ (Europe) (En,Fr,De,Es,It)	3DS
+31046606947EECA4A960CF7902EFB65F	 	Ace Combat - Assault Horizon Legacy+ (USA) (En,Fr,Es)	3DS
+21B7676681957142966AD6FC743C5214	 	Ace Combat 3D - Cross Rumble (Japan)	3DS
+F57E4775AE69D76260CF7D07C8029699	 	Ace Combat 3D - Cross Rumble+ (Japan)	3DS
+9307D55B6A328B15F38168CA2D38CD84	 	Acrylic Palette - Irodori Cafe - Cheers (Japan)	3DS
+ECB6DC2351378006097EB887018292AA	 	Adventure Time - Explore the Dungeon because I DON'T KNOW! (USA)	3DS
+BB91741F30CEB3751B1BD5F14D49E301	 	Adventure Time - Explore the Dungeon because I DON'T KNOW! (Europe) (En,Fr,De,Es,It)	3DS
+9EB3E9F2AD473BBC4152D78E3C072C8C	 	Adventure Time - Finn & Jake Investigations (USA)	3DS
+EB1B51F5FA00285F36A0298BE4994900	 	Adventure Time - Finn & Jake Investigations (Europe) (En,Fr,De,Es,It)	3DS
+94BEB0206D983F04462C30FAC76C9F3E	 	Adventure Time - Hey Ice King! Why'd You Steal Our Garbage!! (USA) (Rev 1)	3DS
+F6F1BA396D08CA7DF7C2234512297C6A	 	Adventure Time - Hey Ice King! Why'd You Steal Our Garbage!! (USA)	3DS
+123B25AF43429E60B12B57EA4F120F37	 	Adventure Time - Nameless Oukoku no Sannin no Princess (Japan)	3DS
+8209C3DEA8E3BE116C120A8C5B0B4FA0	 	Adventure Time - The Secret of the Nameless Kingdom (USA)	3DS
+D5C00777CB8F332AF8550AF46370C02C	 	Adventure Time - The Secret of the Nameless Kingdom (Europe)	3DS
+142CA7CF6518B10E42C8FFA01DF91ED7	 	Adventures of Tintin, The - The Game (USA) (En,Fr,Es,Pt)	3DS
+EEF3633B38EFA16DA74A527624FED98E	 	Adventures of Tintin, The - The Secret of the Unicorn (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da,Fi,Ca)	3DS
+B9522BFDDBBD5506C6C6F97966B1AE13	 	Aikatsu Stars! My Special Appeal (Japan)	3DS
+F5371017FEE13E2FF3FF928DB814AD81	 	Aikatsu! 2-ri no My Princess (Japan)	3DS
+3A0957DB9AFE29D9F5D0D25D55EED756	 	Aikatsu! 365-nichi no Idol Days (Japan)	3DS
+F16F051F0D2BD992715A946BF727D375	 	Aikatsu! Cinderella Lesson (Japan)	3DS
+4B370A6DFB61C61E8BDD91D7EE342F7B	 	Aikatsu! My No.1 Stage! (Japan)	3DS
+9A2B8429A5741654DA3830FCD04ED36F	 	AKB48+Me (Japan)	3DS
+FF2B23421E15C8ACD770FC678B11D7A7	 	Alien Chaos 3D (USA)	3DS
+4FCE0BCDB085C98329379F7615B9540E	 	All Kamen Rider - Rider Revolution (Japan)	3DS
+88BF8B9C3F425AD7E55FD3F80EDCE3D1	 	Alliance Alive, The (Japan)	3DS
+6CDC02BFD3D87C8308D84482F534F3CF	 	Alliance Alive, The (USA)	3DS
+42C342D7103DBCBC8043364CE00AAB07	 	Amazing Spider-Man 2, The (USA)	3DS
+6A19D2721753804719C2478D4A3B006F	 	Amazing Spider-Man 2, The (Europe) (En,Fr,De,Es,It)	3DS
+7637764458BEECBBBF7DA65015EC3650	 	Amazing Spider-Man, The (Europe) (Fr,De)	3DS
+D5BF19BA5A7F78687F95A4E6E8C8A092	 	Amazing Spider-Man, The (USA) (En,Fr,Es)	3DS
+6504BD2F5C0BC91E237C8120B30C7286	 	Amazing Spider-Man, The (Europe) (En,Es,It)	3DS
+F2A4314FAF5CBDA2274D60115B9C96EC	 	American Mensa Academy (USA)	3DS
+50E2D5D803EAC2913E53B6FC3AA06278	 	Andro Dunos 2 (Europe)	3DS
+00384DC540B7A180E8F01F9E4CFD7FCD	 	Andro Dunos 2 (USA)	3DS
+D22F57371CBC11B5BAB7AF1F64D4059B	 	Angler's Club - Ultimate Bass Fishing 3D (Europe) (En,Fr,Es)	3DS
+703B9253B6B5AF7F571A521091555384	 	Angry Birds Star Wars (USA) (En,Fr,Es,Pt)	3DS
+E779B9B001779F566EA8B4996196E917	 	Angry Birds Star Wars (Europe) (En,Fr,De,Es,It)	3DS
+C1A56B09F14A1391BC3DB32A0879F86F	 	Angry Birds Trilogy (Europe) (En,Fr,De,Es,It) (Rev 1)	3DS
+8ECA8DD262AEB24255E12BEA361CA58E	 	Angry Birds Trilogy (USA) (En,Fr)	3DS
+61AA4EBC37B7AB8DE90BB3E713DD2F06	 	Angry Birds Trilogy (Europe) (En,Fr,De,Es,It)	3DS
+8CC19D53710FA0AFBC40C1AA2CEC28E4	 	Animal Crossing - Happy Home Designer (USA) (En,Fr,Es)	3DS
+96B267D9132D705DC73478B4A8B08A32	 	Animal Crossing - Happy Home Designer (Europe) (En,Fr,De,Es,It)	3DS
+179C8AAA10A357C4EF04A63B348F05E4	 	Animal Crossing - Happy Home Designer (USA) (En,Fr,Es) (Rev 1)	3DS
+FA4C2570996E895FE0F141116E642E8A	 	Animal Crossing - New Leaf (Europe) (En,Fr,De,Es,It)	3DS
+7D916F1B1C10D8FD32648CA02E73C5FB	 	Animal Crossing - New Leaf (USA) (En,Fr,Es)	3DS
+BB7EF05CECB0BCF4F13CAFA9907408F6	 	Animal Crossing - New Leaf - Welcome Amiibo (Europe) (En,Fr,De,Es,It)	3DS
+33A992C381C96BE4CA8DF7400A1BCF74	 	Animal Crossing - New Leaf - Welcome Amiibo (USA)	3DS
+F4545D80C1A71FBDC91A14A7D6F83BB4	 	Animal Hospital (Europe) (En,Fr,De,Es,It,Nl)	3DS
+8998A82CA365CBCC5D4F6AF84335E337	 	Animal Resort - Dobutsuen o Tsukurou!! (Japan)	3DS
+47AD9B825D4A51343AD26946FE8F3DBF	 	Anpanman to Asobo - New Aiueo Kyoushitsu (Japan)	3DS
+A470B513965C504CAE8F40191EDD3584	 	Anpanman to Touch de Waku Waku Training (Japan)	3DS
+B5AC6429F48B2CEA4DAF335202AECA9A	 	Ansatsu Kyoushitsu - Assassin Ikusei Keikaku!! (Japan)	3DS
+207868900E38895E58011CFBD949FEEA	 	Ansatsu Kyoushitsu - Koro-sensei Daihouimou!! (Japan)	3DS
+0610E7716B300343EF0DAD7FA2AA07CB	 	AR Games (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+2A6E0201EB21B99F5B0F404BBA2C4307	 	Arcade Classics 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+053FE13F505067072DE3DA642E974A52	 	Are You Smarter than a 5th Grader (USA)	3DS
+95B66ADE1C66F500A8DB20C46AB86866	 	Armed Blue Gunvolt - Striker Pack (Japan)	3DS
+58A37BDDF8F84EFF571573C6D872702D	 	Around the World with Hello Kitty & Friends (Europe) (En,Sv,No,Da,Fi)	3DS
+FDDBDAF4C3DB36DE4DE73588284AA8C8	 	Around the World with Hello Kitty & Friends (Europe) (En,Fr,De,Es,It)	3DS
+30A32DEDDDC66B8C969EC6CD58AAA381	 	Art Academy - Lessons for Everyone (USA) (En,Fr,Es)	3DS
+02AC9A48CC2511E6CE5C7B7BD6228ED1	 	Asonde Shogi ga Tsuyokunaru! Ginsei Shogi DX (Japan)	3DS
+09CFA6D075FBF64F12A040AD9E40B5CD	 	Asphalt 3D (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+73542F201A60D33065F70440FA419BBA	 	Asphalt 3D (Europe) (En,Fr,De,Es,It)	3DS
+774640DDD9DD1A2571A68C5EB74AC35E	 	Asphalt 3D (USA) (En,Fr,Es)	3DS
+C252EA0777C98B29E03870D0D4808637	 	Asphalt 3D - Nitro Racing (Japan)	3DS
+2A42ADD24607EE695FB372A44D8409CC	 	Asterix - The Mansions of the Gods (Europe) (En,Fr,De,Es,It,Nl)	3DS
+9B39079913A171F2488C4F11DC218099	 	Atelier Deco La Doll Collection (Japan)	3DS
+88421C6111AA74BD639EF2477169F88A	 	Atlantic Quest (Europe) (En,Fr,De,Es,It,Nl)	3DS
+F0AB91D41227867B66F1749400D4AB4F	 	Atooi Collection (USA)	3DS
+0813C11502C9A3295A3CAEE898742133	 	Azada (Europe) (En,Fr,De,Nl)	3DS
+6D1124A25C0D7C037ADCAA1D0664A390	 	Azito 3D (Japan)	3DS
+A160C7D7E2BBFA265398B7255FD400AF	 	Azure Striker Gunvolt - Striker Pack (USA)	3DS
+B7207191D7BB8A35E22DED3BDC870450	 	Bandai Namco Games Presents J Legend Retsuden (Japan)	3DS
+2E8FE0937A32D654B803C5EB83249079	 	Barbie - Fun & Fashion Dogs (Europe) (En,Fr,De,Es,It,Nl)	3DS
+F3F5F28F282E118E810FFA620FFD2617	 	Barbie - Groom and Glam Pups (USA) (En,Fr,Es)	3DS
+5D76C0FBCC16C1056B48AD7FA4B1A7AC	 	Barbie & Her Sisters - Puppy Rescue (USA)	3DS
+C3B7DAB759F3528EDCBA0E7BE304C463	 	Barbie & Her Sisters - Puppy Rescue (Europe) (En,Fr,De)	3DS
+480CD23A773BA83AC783AAECE98312A2	 	Barbie & Her Sisters - Puppy Rescue (Europe) (Fr,Es,It)	3DS
+6D94BCEDE159CC955A5408445F56AC5B	 	Barbie Dreamhouse Party (USA) (En,Fr,Es)	3DS
+0B463A3FCD7712C8712C3D90BC06068A	 	Barbie Dreamhouse Party (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da,Fi)	3DS
+2746979052AC782EFAD45F498FDC29ED	 	Batman - Arkham Origins Blackgate (Europe) (En,Fr,De,Es,It)	3DS
+E9410586C973EDED0E084CD01198BD70	 	Batman - Arkham Origins Blackgate (USA) (En,Fr,Es)	3DS
+FC16EDD5210364D41F31B02816778E56	 	Battleship (Europe) (En,Fr,De,Es,It)	3DS
+060A56FD382307D36B67D6D79CAFAFCC	 	Battleship (USA) (En,Fr)	3DS
+89B7412821AD9E97DBFA71D69D49EC6F	 	Beast Saga - Saikyou Gekitotsu Colosseum! (Japan)	3DS
+BDDAD7C780474DB6BE4A29E244D0E8D7	 	Bella Sara - The Magical Horse Adventures (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi)	3DS
+8D2FC3E511901EB876935F222B06A6EF	 	Bella Sara 2 (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi)	3DS
+E674CA07960BDFFB6C461F34A919841E	 	Ben 10 - Galactic Racing (USA) (En,Fr,Es)	3DS
+690F38C9AAB0D3A941E0A716E5C3A634	 	Ben 10 - Galactic Racing (Europe) (En,Fr,De,Es,It)	3DS
+F97A10766F4090D817ECE52B492009C3	 	Ben 10 - Omniverse (Europe) (En,Fr,De,Es,It,Ru)	3DS
+D38EE99DC107CC8A4603A5ECF7002743	 	Ben 10 - Omniverse (USA) (En,Fr,Es)	3DS
+AC3C8DD6F35BA984920DC93EAF08EBF0	 	Ben 10 - Omniverse 2 (USA) (En,Fr,Es)	3DS
+74CC38B0BF84D9C8FA317B35F0171101	 	Ben 10 - Omniverse 2 (Europe) (En,Fr,De,Es,It)	3DS
+590E774B6517F40A157908D3C80AE2C6	 	Best Friends My Horse 3D (Europe) (En,De,It)	3DS
+94A40A56D7B7F271A31A3FB4CDED68EF	 	Best of Arcade Games (Europe) (En,Fr,De,Es,It,Nl)	3DS
+FEDD72174910D4127DBB172E402EF62E	 	Best of Board Games (Europe) (En,Fr,De,Es,It,Nl)	3DS
+5570AE547FEF7ACD85078E1CD983E25F	 	Best of Casual Games (Europe) (En,Fr,De,Es,It,Nl)	3DS
+C7997E5DC30EECC9E34E8323BBBEDA15	 	Beyblade - Evolution (USA) (En,Fr,Es)	3DS
+C47118FFA03346216823D28964942B3D	 	Beyblade - Evolution (Europe) (En,Fr,De,Es)	3DS
+1D6B3960609F5F104246C57213C590F6	 	Beyblade Burst (Japan)	3DS
+B6CADDA297CF360A778F6B2CBFCAB05A	 	Beyblade Burst God (Japan)	3DS
+5AB1F4B0FB1B6ECB0F84E46E6479167D	 	Bibi & Tina - Das Spiel zum Kinofilm (Germany) (Rev 1)	3DS
+6EA9490C3D942DE054669E8D895669B3	 	Bibi & Tina - Das Spiel zum Kinofilm (Germany)	3DS
+E9C6A333C4E1D717398F03218109C269	 	Bibi Blocksberg - Das grosse Hexenbesen-Rennen 2 (Germany)	3DS
+82E2165E56B15D4D5A40BB1FB20621D8	 	Big Hero 6 - Battle in the Bay (USA)	3DS
+1E8ED3F3F5929DB5860EB172C564BEAA	 	Big Hero 6 - Battle in the Bay (Europe) (En,Fr,De,Es,It,Nl)	3DS
+63F6AB3C714947CC409D86E0CEB79AEC	 	Big Hero 6 - Battle in the Bay (Europe)	3DS
+C06F157F68AE02F3A4EC7DB96EA1CD35	 	Bikkuri! Tobidasu! Mahou no Pen (Japan)	3DS
+995A654FC7BE5EB0C8597B32E9D06545	 	Bikkuriman Kanjuku Haou - Sanmi Douran Sensouki (Japan)	3DS
+80A2C6A950AB8C899DA0C583BE459D9A	 	Biohazard - Revelations (Japan)	3DS
+A15B106B83C14236CDD910FA112924AE	 	Biohazard - Revelations (Taiwan)	3DS
+0F26030F84E5BF78C723017728C59B59	 	Biohazard - Revelations (Korea)	3DS
+56763C67E8ADA0A5CB2E91FB40D08A64	 	Biohazard - Revelations (Japan) (Rev 1)	3DS
+CAE4A226D216C5735F64AFD54AB51B68	 	Biohazard - The Mercenaries 3D (Japan) (Rev 1)	3DS
+3521D274E515E298C25BB1582FDFA509	 	Biohazard - The Mercenaries 3D (Japan) (Rev 2)	3DS
+E7F726E37387536C35EB6FF5FA8784C6	 	Biohazard - The Mercenaries 3D (Japan)	3DS
+41BB06A4067BCF14799E6DC77844ABEB	 	Bit.Trip Saga (USA)	3DS
+374A7B2EDD779A81BE7F7413CE3984F8	 	Bit.Trip Saga (Europe)	3DS
+59F28E46B303254C9A249FE35726125F	 	Biyoushi Debut Monogatari - Top Sutairisuto o Mezasou! (Japan)	3DS
+16BDB98915C5BCB1B2C413D6BC5B7E90	 	Blazblue - Continuum Shift II (Europe) (En,Ja,Zh,Ko)	3DS
+4A75DD42156C89CA3CBC277685928286	 	Blazblue - Continuum Shift II (USA) (En,Ja,Zh,Ko)	3DS
+0F607357544845FB08792FB3401F7F2C	 	Blazblue - Continuum Shift II (Japan)	3DS
+B720F8F8A614C57090DCE837C2EF3F7F	 	Blazblue - Continuum Shift II (USA) (En,Ja,Zh,Ko) (Rev 1)	3DS
+6DD40E4217741B55915A4C7A03DB3A5A	 	Boku no Hero Academia - Battle for All (Japan)	3DS
+80CEA8A7898B9B1A546FB8A320B663A3	 	Boku wa Koukuu Kanseikan - Airport Hero 3D - Haneda All Stars (Japan)	3DS
+395CB089BF194223ED691DA86AEEAE72	 	Boku wa Koukuu Kanseikan - Airport Hero 3D - Haneda with JAL (Japan)	3DS
+00D6C6AECFF7D9B969B24868219896FB	 	Boku wa Koukuu Kanseikan - Airport Hero 3D - Honolulu (Japan)	3DS
+F87C361E8078BB48C1AEC1CCD80961C4	 	Boku wa Koukuu Kanseikan - Airport Hero 3D - Kankuu All Stars (Japan)	3DS
+466D7D5B4BADCEB4B50959CEDCAE639C	 	Boku wa Koukuu Kanseikan - Airport Hero 3D - Kankuu Sky Story (Japan)	3DS
+AADFCCF567FD83C48DEBCE498E41A8E5	 	Boku wa Koukuu Kanseikan - Airport Hero 3D - Naha Premium (Japan)	3DS
+9F3323D0E21574E3322F6163E8C0E000	 	Boku wa Koukuu Kanseikan - Airport Hero 3D - Narita All Stars (Japan)	3DS
+DAE73131DDB3CB1C3C4948081B686182	 	Boku wa Koukuu Kanseikan - Airport Hero 3D - Narita with ANA (Japan)	3DS
+90E038345F5E917CE7B0A9FAFB308443	 	Boku wa Koukuu Kanseikan - Airport Hero 3D - Shin Chitose with JAL (Japan)	3DS
+598BCE4F7F1BD53545A09C63572323AF	 	Bokujou Monogatari - 3-tsu no Sato no Taisetsu na Tomodachi (Japan)	3DS
+F2431E30065D332346B01FA68940DC47	 	Bokujou Monogatari - Futago no Mura + (Japan)	3DS
+DE939E68E6D219D26E95DFB508393890	 	Bokujou Monogatari - Hajimari no Daichi (Japan) (Rev 2)	3DS
+8E468CCCDF182A55184128953413FBB6	 	Bokujou Monogatari - Hajimari no Daichi (Japan) (Rev 1)	3DS
+FD805487E04D0CF573332024566152F5	 	Bokujou Monogatari - Hajimari no Daichi (Japan)	3DS
+B2B4B031A648012FB5524A21B267450E	 	Bokujou Monogatari - Tsunagaru Shin Tenchi (Japan)	3DS
+031C730E715C9DA87A02E7FBE090A9AB	 	Bonbonribbon - Tokimeki Coord Kirakira Dance (Japan)	3DS
+486E7BF7704F0A64D25A481C9CAEC415	 	Boulder Dash-XL 3D (USA)	3DS
+E4B833367D36C19108512B396A02FCEB	 	Boulder Dash-XL 3D (Europe) (En,Fr,De,Es,It)	3DS
+E53206D4FCCECBB6A7A70C79AA61CBBA	 	Bowling Bonanza 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+C9175BCA255A6CC891DA11D8762ECCBF	 	Brain Age - Concentration Training (USA) (En,Fr,Es)	3DS
+7E76F3EAB2FFDCD3B3888914704D7797	 	Brain Training 3D (Europe) (En,Fr,De,Es,It)	3DS
+5701F0805217B1A1E242295EDA1C41A3	 	Bratz - Fashion Boutique (USA)	3DS
+17478F8EA6E8F30A1A0BA602091D8F4F	 	Bravely Default (Europe) (En,Ja,Fr,De,Es,It)	3DS
+9EF90F0F9E7D215C6F101CC079DB9513	 	Bravely Default (USA) (En,Ja,Fr,De,Es,It)	3DS
+A3FB23FD7A1986BCEA4E2809153F4F6E	 	Bravely Default - Flying Fairy (Japan)	3DS
+D4665D95A5D54E26400EC6F733031163	 	Bravely Default - For the Sequel (Japan)	3DS
+1CC0753412063B5D7E3099500B7CEF95	 	Bravely Second - End Layer (Korea)	3DS
+27C11D1BF8C5FF8751D91A6083F23002	 	Bravely Second - End Layer (Japan)	3DS
+5FE8BFBED7869218DF019F1451EA9577	 	Bravely Second - End Layer (Europe) (En,Fr,De,Es,It)	3DS
+444AB01E52B001EDD4913FA452187A6D	 	Bravely Second - End Layer (USA) (En,Fr,Es)	3DS
+175F4E59BA15497237E8D62FF26085DC	 	Brunswick Pro Bowling (USA)	3DS
+D36522A16D95D2E0910D16B06012F5D7	 	Bust-A-Move Universe (USA) (En,Fr,Es)	3DS
+6C6ED97D002C5A70ADAAA03F2F8BACB6	 	Byeol-ui Kirby - Robobot Planet (Korea)	3DS
+F510018343114A196F02D02E84FB6FBA	 	Byeol-ui Kirby - Robobot Planet (Korea) (Demo) (Kiosk)	3DS
+E91135E4BF962F96FBC51397A59808B3	 	Byeorui Kirby - Triple Deluxe (Korea)	3DS
+2A2674DEFFA39484ACE21FF2604ED042	 	Cake-ya San Monogatari - Oishii Sweets o Tsukurou! (Japan)	3DS
+04FF97A34E95334F9F02C1F46B859D20	 	Candy Match 3 (Europe) (En,Fr,De,Es,It,Nl)	3DS
+3B2F31779686B77FB69BF9E2FFB3D42A	 	Captain America - Super Soldier (Europe) (En,Fr,De,Es,It)	3DS
+909DB38972FC575B618D4B0E7D1B3B2B	 	Captain America - Super Soldier (USA) (En,Fr,Es)	3DS
+17CE2BC1B6769591FA42AEB8DEEF41CC	 	Captain Toad - Treasure Tracker (Europe) (En,Fr,De,Es,It,Nl)	3DS
+1E873CFB76DB6470D724B24F74494B75	 	Captain Toad - Treasure Tracker (USA) (En,Fr,Es)	3DS
+7573E03A69FCBAC26B9E3E73D043DD3B	 	Cardfight!! Vanguard - Lock On Victory!! (Japan)	3DS
+BA021BE8C349D41360F0F6549B013BD2	 	Cardfight!! Vanguard - Ride to Victory!! (Japan)	3DS
+126A960AAAD8D91A62706D2966423BED	 	CardFight!! Vanguard G - Stride to Victory!! (Japan)	3DS
+9F43789505B0551A5C697DC0D9B602DF	 	Carnival Games - Wild West 3D (USA) (En,Fr,Es)	3DS
+77E479C6E6740586FDF11A5677DCD794	 	Carnival Games - Wild West 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+8621118D91859247F915528D0D3B2105	 	Cars 2 (USA) (En,Fr,Es)	3DS
+25BB812DEE1A0BB951E826281857FAE4	 	Cars 2 (Europe) (En,Fr,De,Es,It,Nl)	3DS
+A58C0581BF2258A4373F9D459078F1BB	 	Cars 2 (Europe) (En,Sv,No,Da,Fi)	3DS
+330EA6C94BBC3C117A8D7E118056AE1C	 	Cartoon Network - Battle Crashers (USA)	3DS
+DFD1D46C9E4E4706E652BA7F08FBC0D1	 	Cartoon Network - Battle Crashers (Europe) (En,Fr,De,Es,It,Nl)	3DS
+125A7913DFC89215370EFA86723A6B4E	 	Cartoon Network - Punch Time Explosion (Europe) (En,Fr,De,Es,It)	3DS
+39424BB649CD7D3392BD4712045B3D29	 	Cartoon Network - Punch Time Explosion (USA)	3DS
+0FF09C26A6A0C944009647403059FEE4	 	Castlevania - Lords of Shadow - Mirror of Fate (USA) (En,Fr,Es)	3DS
+430EB706513D5BD1A2C65A3B09FA1841	 	Castlevania - Lords of Shadow - Mirror of Fate (Europe) (En,Fr,De,Es,It)	3DS
+5479BDEDD8A00576D29363D30614EE75	 	Castlevania - Lords of Shadow - Sadame no Makyou (Japan)	3DS
+E5D19BC11AA72E891A65104CEDDBB35B	 	Cats & Dogs - Pets at Play (Europe) (En,Fr,De,Es,It)	3DS
+75D76ADB91D71E4D89499E9689C1E564	 	Cave Story 3D (USA)	3DS
+B7E41B20960D95738168F5014C6DA20B	 	Cave Story 3D (Europe)	3DS
+6DD1685F26745923E2A709A2944CB4BF	 	Cave Story 3D (Japan)	3DS
+4FB487AF8B86F78352083028D9651E48	 	Centipede - Infestation (USA) (En,Fr,Es)	3DS
+E6FC921F37498E64354AA15F17F27C63	 	Chao Illust Club (Japan)	3DS
+948B39147EC9DCBA0F66F0E16863BD87	 	CharaPet Tsukutte! Sodatete! Character Shougakkou (Japan)	3DS
+51BF9F171C358400A546F64523026E0B	 	Chevrolet Camaro - Wild Ride 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+D8A509DB4CDC6CD2BACED8D4E5E253D3	 	Chibi Devi! (Japan)	3DS
+61B2A9E9613FB8831008819DF21E1C42	 	Chibi Devi! 2 - Mahou no Yume Ehon (Japan)	3DS
+3517CF659865CBA0F5CC054110027D12	 	Chibi-Robo! Zip Lash (USA)	3DS
+412826507C8623EB4E91DB33BDB6E1BC	 	Chibi-Robo! Zip Lash (Europe) (En,Fr,De,Es,It)	3DS
+D59810B05CD662374D9F675C1A5F2140	 	Chin-gumoa Apateu (Korea)	3DS
+1DEA5E56CFE1248C3306CE82EFF6A4FA	 	Cho-rich! Tamagotchi no Puchi Puchi Omisetchi (Japan)	3DS
+F4D0B3ACCCE37500DF2414DF31E43FA1	 	Chocoken no Chokotto Fushigi na Monogatari - Chocolat-hime to Mahou no Recipe (Japan)	3DS
+CDD0B7E8B5BEBA0DB4355BA0918B3EAB	 	Chou Sentouchuu Kyuukyoku no Shinobi to Battle Player Choujou Kessen (Japan)	3DS
+2AD3F21390DDEAA34805B06BD7652925	 	Chou Tousouchuu Atsumare! Saikyou no Tousousha-tachi (Japan)	3DS
+C5629859B1F2F4510D52791D5C21FBC5	 	Choujin Ultra Baseball Action Card Battle (Japan)	3DS
+7855B23CF48542F256133EF404E52F58	 	Choukaiten Sushi Striker - The Way of Sushido (Japan)	3DS
+BF1910A926AA7282EF340289A9B67582	 	Chousoku Henkei Gyrozetter - Albatross no Tsubasa (Japan)	3DS
+09ADB50B38AE35867CDB1DC2B1523486	 	Classic Games Overload - Card & Puzzle Edition (USA)	3DS
+E38FB9F020168A16B4323F554B6FFC8D	 	Cloudy with a Chance of Meatballs 2 (Europe) (En,Fr,De,It,Nl)	3DS
+47DA4F88B40AC7D9189DF61CF57B626C	 	Cloudy with a Chance of Meatballs 2 (USA)	3DS
+22AA594BCCFE73355DF867FFBA4BD46E	 	Cloudy with a Chance of Meatballs 2 (Europe)	3DS
+50F31F6FF1BAA5FBC3B2BEDFC1E8EB99	 	Cocoto - Alien Brick Breaker (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi)	3DS
+A8B51781F5574A9F94C908D951B9B407	 	Code Name - S.T.E.A.M. (USA)	3DS
+E49B9794FAE44172517BD7A99FB46920	 	Code Name - S.T.E.A.M. (Europe) (En,Fr,De,Es,It)	3DS
+AC2C25840626195E237C2EFA278BA013	 	Code Name - S.T.E.A.M. (Korea)	3DS
+81EBF460B86146D7D035654397C0D573	 	Code Name - S.T.E.A.M. - Lincoln VS Alien (Japan)	3DS
+4E971A074C7928D74645A7AB393BD551	 	Code of Princess (USA)	3DS
+23C78C9360EA5315D3555207F0D5B40A	 	Code of Princess (Japan)	3DS
+D10334272F9D59F82C70DDAD1F144E09	 	Combat of Giants - Dinosaurs 3D (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da)	3DS
+E868FC4CD4BFD53B9D69622C05FBA978	 	Combat of Giants - Dinosaurs 3D (USA) (En,Fr,Es)	3DS
+2E3FF8B5E8FC63C74CD9903D388A11E1	 	Combat of Giants - Dinosaurs 3D (Japan)	3DS
+550B0808F6B1B2144A6819A800C0E25A	 	Combo Pack - Madagascar 3 - Europe's Most Wanted + Croods, The - Prehistoric Party! (Europe) (En,Fr,De,Es,It)	3DS
+171E3D5B6C029E545A24F55D2BDEC746	 	Conception II - Children of the Seven Stars (USA)	3DS
+77343FDA36825A82E9184A1745365DD8	 	Conception II - Shichisei no Michibiki to Mazuru no Akumu (Japan)	3DS
+89C0E2BA85A8EE4DD95C358063865E4A	 	Cooking Mama - Bon Appetit! (Europe) (En,Fr,De,Es,It)	3DS
+8B001980F48E250B96070E63E7A596A2	 	Cooking Mama - Mamareul Dowajullae (Korea)	3DS
+BD41991A4BFBF4CA6FED8DC718E402FB	 	Cooking Mama - Sweet Shop (USA)	3DS
+273C1684B91510190EEFD9E2DC300752	 	Cooking Mama - Sweet Shop (Europe) (En,Fr,De,Es,It)	3DS
+D12C175D8DAC64076700A17E003C6234	 	Cooking Mama - Watashi no Sweets Shop (Japan)	3DS
+37FDACCFF3C09143C8DBA691A46F5795	 	Cooking Mama 4 (Japan)	3DS
+B4D3A2FC0FE6B3F161C6545C040C1810	 	Cooking Mama 4 (Europe) (En,Fr,De,Es,It)	3DS
+59E854A1200C7C0E9056CEDE7B3208BA	 	Cooking Mama 4 - Kitchen Magic (USA)	3DS
+AC254DE5EF656B40608FE93DB0D89480	 	Cooking Mama 4 - Kitchen Magic (USA) (Rev 1)	3DS
+C52CDB234F46AEAED2BC6D4D06200E46	 	Cooking Mama 5 (Japan)	3DS
+7F06AC3C39979ED1294BEC9EB0E05348	 	Cooking Mama 5 - Bon Appetit! (USA)	3DS
+D5299F73D6C7EB71423F04C7691CC1C2	 	Corpse Party (USA)	3DS
+A8112E7A39B5EBA6D623E50456E4378D	 	Corpse Party - Blood Covered - Repeated Fear (Japan)	3DS
+5848D9E6FE414A35C00AE5F0C893DB46	 	Corpse Party - Blood Covered - Repeated Fear (Korea)	3DS
+328BF3C69478774A305DD43C342B54FA	 	Crash City Mayhem (USA)	3DS
+FF88A90DC86FB62D32F385EEF0510CAE	 	Crash Time 3D (Europe) (En,Fr,De,It)	3DS
+96EAF7FAB07DF7C02D530DF6EF838E22	 	Crayon Shin-chan - Arashi wo Yobu Kasukabe Eiga Stars! (Japan)	3DS
+F5E180F2E8A9A7C2F8155A049B435C23	 	Crayon Shin-chan - Gekiatsu! Oden wa Rudo Dai Konran!! (Japan)	3DS
+D87C3253AB098B082E9C3C7EDF79F47A	 	Crayon Shin-chan - Uchuu de Achoo! - Yuujou no Oba-Karate!! (Japan)	3DS
+3FCC141B18B08E21B5CA7641AA34FF57	 	Crazy Construction (Europe) (En,Fr,De)	3DS
+12C93EF95E3023CBF120005694449190	 	Croods, The - Prehistoric Party! (Europe) (En,Fr,De,Es,It)	3DS
+0DAF5542186C7B69A482C83879EE6A7D	 	Croods, The - Prehistoric Party! (USA) (En,Fr,Es)	3DS
+5C060E0CD25B805D29190711BD6B3E54	 	Crosswords Plus (USA)	3DS
+699D85E97C16BEDF46CC03591F5C0129	 	Crush 3D (Europe) (En,Fr,De,Es,It)	3DS
+27ED633B9B9C81484B35CEB23C1A2E00	 	Crush 3D (USA) (En,Fr,Es)	3DS
+5795D026C8F2328D6F6A17CC5FB58FF7	 	CTR Guide Boot Card (Europe) (Rev 1) (Program)	3DS
+D75BD2506DDABE66D689B9F16455BE57	 	CTR Guide Boot Card (Europe) (Program)	3DS
+3891E7F21950088D9C4CD3DCDBBDF523	 	Cube Creator DX (Japan)	3DS
+59F0885BADE87D05D56C46E7D3EACB43	 	Cube Creator DX (Korea)	3DS
+A3001ADEEC41FC906D860897382305E2	 	Cube, The (Europe) (En,Es,It)	3DS
+02EF906D4BFBD50BE5C8EC4BBD664EB5	 	Cubic Ninja (Europe) (En,Fr,De,Es,It,Nl)	3DS
+0D84DFF8922B251DA3C8885B6D9C6FFF	 	Cubic Ninja (USA) (En,Fr,Es)	3DS
+D386A78A74FAA10A67A376BBF0F8B843	 	Cubic Ninja (Japan)	3DS
+E5E2BF2FF77EFFF4E1E00747C0C6001F	 	Culdcept (Japan)	3DS
+39845300C1121797862CF606E7E58739	 	Culdcept Revolt (Japan) (Rev 2)	3DS
+75C22BEC355B5A02D88EC16822870021	 	Culdcept Revolt (USA)	3DS
+6090006286FC32347B1BCA8D2D8BBDAE	 	Culdcept Revolt (Europe) (En,Fr,De,Es,It)	3DS
+4D26F8E7D12100CBE38C751913C30898	 	Cut the Rope - Triple Treat (USA) (En,Fr)	3DS
+3078CB663422897EFEBE224874C0C054	 	Cut the Rope - Triple Treat (Europe) (En,Fr,De,Es,It)	3DS
+D259CB5905ADAC0C762A7B1529C37093	 	Dai Gyakuten Saiban - Naruhodou Ryuunosuke no Bouken (Japan)	3DS
+8046D49426090E96C7EBA4896351A61F	 	Dai Gyakuten Saiban 2 - Naruhodou Ryuunosuke no Kakugo (Japan)	3DS
+CFDE012018ABB13A196D4E6BB86A5BA4	 	Daigassou! Band Brothers P (Japan)	3DS
+EA58972B05B227681B18475978D32FEF	 	Dairantou Smash Bros. for Nintendo 3DS (Japan)	3DS
+D90081369DED8E0A28C9B288D9A2776E	 	Dairantou Smash Bros. for Nintendo 3DS (Japan) (Rev 1)	3DS
+89CAC67DB49E8815EBC84327EDF5B286	 	Dairantou Smash Bros. for Nintendo 3DS (Japan) (Rev 7)	3DS
+B1C78EC16BCF94541ED6BE37408F147F	 	Dairantou Smash Bros. for Nintendo 3DS (Japan) (Rev 3)	3DS
+10B9F65F7A65E6AD72A1DE42BF9D9268	 	Dairantou Smash Bros. for Nintendo 3DS (Japan) (Rev 10)	3DS
+091EF5AB8CC0779A49FA3B10111918D1	 	Dairantou Smash Bros. for Nintendo 3DS (Japan) (Rev 5)	3DS
+3AE8333D86D4DDA10B3DCA0F339163BC	 	Dairantou Smash Bros. for Nintendo 3DS (Japan) (Rev 2)	3DS
+7B20582D7B0AF8F65DFD255A775ECD22	 	Dairantou Smash Bros. for Nintendo 3DS (Japan) (Rev 4)	3DS
+0086DA4E19CF34F1DFDE2AAA8E37C381	 	Dairantou Smash Bros. for Nintendo 3DS (Japan) (Rev 11)	3DS
+8B0AF914C9109C69702D689175E8F9C8	 	Dairantou Smash Bros. for Nintendo 3DS (Japan) (Rev 6)	3DS
+B99C2069082D3082702D0332FB1DA778	 	Dairantou Smash Brothers for Nintendo 3DS (Taiwan) (Ja)	3DS
+4D2E224701D664C3CD6CFAC56389AD50	 	Daisenryaku Daitoua Koboshi DX - Dainiji Sekai Taisen (Japan)	3DS
+921C472F6780BAB38EA4901428FE3C83	 	Danball Senki Baku Boost (Japan)	3DS
+4DAEE1CE4A02DEAEEF35387055152C60	 	Danball Senki Baku Boost (Japan) (Rev 1)	3DS
+4DFE479A47FBF80A358689D1FD43B3F5	 	Danball Senki W Super Custom (Japan)	3DS
+9C8EFACDAAA0D3AE0F50AE18CE30E04D	 	Danball Senki Wars (Japan)	3DS
+94D23F6B7C45564946EB13CF2960B9A2	 	Dangerous Jiisan to 1000 nin no Otomodachi Ja (Japan)	3DS
+16D658808D616520FAF94982782ABE73	 	Dasshutsu Adventure - Zetsubou Yousai (Japan)	3DS
+956847A54003BF55BE0D0427D3A208FF	 	Dead Heat Breakers, The (Japan)	3DS
+7B1EEE584E2367B91A2FA6B5FD4CEC53	 	Dead or Alive - Dimensions (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+3001BD04CC78E24723E02BE185C57AEC	 	Dead or Alive - Dimensions (Europe) (En,Ja,Fr,De,Es,It)	3DS
+C7D8FEDEBB14D49EC373DAB9A88997CC	 	Dead or Alive - Dimensions (USA) (En,Ja,Fr,De,Es,It)	3DS
+A880FD7BA9527E0BA6A47E7748055422	 	Dead or Alive - Dimensions (Japan)	3DS
+39B4BAC7F460A9A7FF1CC9DCB028C6AD	 	Dead or Alive - Dimensions (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+E8C52C0A1D89547BE2730DD87A93AE98	 	Deca Sporta - 3D Sports (Japan)	3DS
+A16EB7D57AF6AD7954C3070769565362	 	Deca Sports Extreme (USA) (En,Fr,Es)	3DS
+55E202D27B1306941BB378DB1A630F63	 	Deer Drive Legends (USA) (En,Fr,Es)	3DS
+7D46E582A3BD6F378F7C0C9EED811FE9	 	Derby Stallion Gold (Japan)	3DS
+8DA07805DFA04176C168508045013644	 	Detective Pikachu (Europe) (En,Ja,Fr,De,Es,It,Zh)	3DS
+8D89FF17727199EF2370B2F864E96AD2	 	Detective Pikachu (USA) (En,Ja,Fr,De,Es,It,Zh)	3DS
+66450E63134B6555E11DA35BBAE0770B	 	Devil Summoner - Soul Hackers (Japan) (Rev 1)	3DS
+52778EBD90D702628EC0AFCA51684304	 	Devil Summoner - Soul Hackers (Japan)	3DS
+9C093E09656A32FF55A3EE32C185CE11	 	Devil Survivor - Over Clock (Japan)	3DS
+7852B2A01B36D260F2C58F992077AA47	 	Devil Survivor - Over Clock (Japan) (Rev 1)	3DS
+B785F6ECFFD519945E5CF340DEA6FDCB	 	Devil Survivor 2 - Break Record (Japan) (Rev 1)	3DS
+DDE522C06D054B4F52E0C9029738E3B4	 	Devil Survivor 2 - Break Record (Korea)	3DS
+4D685552C23A7423BAB773D9BCBCBAD4	 	Die drei Fragezeichen Kids - Jagd auf das Phantom (Germany)	3DS
+19AFF85D2F9E46821D141D03707F51AE	 	Digimon Universe - Appli Monsters (Japan)	3DS
+A0DA046AACDB73C328E5E0820533D92D	 	Digimon World Re-Digitize Decode (Japan)	3DS
+0C2F930E01B7B918A9747B67AD6BFB99	 	Dillon's Dead-Heat Breakers (Europe) (En,Fr,De,Es,It)	3DS
+188795AEEB4D40399CFAFB2D0DEBFC68	 	Disney 2-Pack - Frozen - Olaf's Quest + Big Hero 6 - Battle in the Bay (Europe) (En,Fr,De,It,Nl)	3DS
+4B512636E69FCBCD35F2C2CD0A912A32	 	Disney 2-Pack - Frozen - Olaf's Quest + Big Hero 6 - Battle in the Bay (USA)	3DS
+A082D21628C60D70C41039FD5E557511	 	Disney Anna to Yuki no Joou - Olaf no Okurimono (Japan)	3DS
+093D49E9EAB745DC842534E60C59F0CC	 	Disney Art Academy (Japan)	3DS
+C84E00F8AB806CAC435F230A9A1C6F48	 	Disney Art Academy (USA)	3DS
+B19A9AD19F11EC3E3525264311F9E994	 	Disney Art Academy (Europe) (En,Fr,De,Es,It)	3DS
+62E3B2EC8F0E3819070EE128BC0EAA5B	 	Disney Baymax - Heroes Battle (Japan)	3DS
+BBF986DA2A7D6CEB68103106DDEB6899	 	Disney Epic Mickey - Mickey no Fushigi na Bouken (Japan)	3DS
+EF457A8B3F89DB76E69B2F30ADF3D14C	 	Disney Epic Mickey - Power of Illusion (Europe) (En,Fr,De,Es,It,Nl,Pt)	3DS
+C1F651B7CCB7BAABEB2C5277E6F0E442	 	Disney Epic Mickey - Power of Illusion (USA) (En,Fr,Es,Pt)	3DS
+848E4EE1950E939A35B7E0651A78E3E2	 	Disney Epic Mickey - Power of Illusion (Europe) (En,Sv,No,Da)	3DS
+558CE8D9430E862BD17214F611BBBF37	 	Disney Frozen - Olaf's Quest (Europe) (En,Fr,De,It,Nl)	3DS
+F8609BF4EDF2BEDCF1CA2AA158D4DA7B	 	Disney Frozen - Olaf's Quest (USA)	3DS
+2D1185C1282A295CC75DF35C028A29CB	 	Disney Frozen - Olaf's Quest (Europe)	3DS
+7C6822C8297DC752CBF47E3F2EEBD833	 	Disney Infinity (Europe) (En,Fr,De,Es,It,Nl)	3DS
+96E03A7E6365130D886E59F129F0E729	 	Disney Infinity (Japan)	3DS
+2BD97F774D7530FD991DD021F489D633	 	Disney Infinity (Europe) (En,Sv,No,Da,Fi)	3DS
+44510921A15A84363869745A1803A95E	 	Disney Infinity - Toy Box Challenge (USA) (En,Fr,Es,Pt)	3DS
+FC47726E70BE6E59C714FBB4BA45FBD5	 	Disney Magic Castle - My Happy Life (Japan)	3DS
+88D1D9C557E6A9825624CF051E255647	 	Disney Magic Castle - My Happy Life 2 (Japan)	3DS
+1E094D29C906CEFFADC09DD0504311B6	 	Disney Magical World (Europe) (En,Fr,De,Es,It)	3DS
+2EFA755A5CFA8482D2BE7957CF36BE6D	 	Disney Magical World (USA)	3DS
+5CE77CE356FDC37BCE2863384D691C7F	 	Disney Magical World 2 (Europe) (En,Fr,De,Es,It)	3DS
+F7BFD2B505361389DEBC64C90BA858DE	 	Disney Magical World 2 (USA)	3DS
+FF81ACA28B71DDD9BA70798A89634979	 	Disney Planes (Russia) (En,Ru)	3DS
+772F24F29A07E4E070D6FA9BFB1BA5D5	 	Disney Planes (Europe) (Fr,Nl)	3DS
+7F02DA9E27E620E90B5B45B6362DBE99	 	Disney Planes (Europe) (En,Fr,De,Es,It,Nl)	3DS
+D83B72DCE277DF277683216CCC65CBE4	 	Disney Planes (USA) (En,Fr,Es)	3DS
+57503915093721B650482D63E7DD3866	 	Disney Planes (Europe) (En,Sv,No,Da,Fi)	3DS
+FF1A45B12609809E611E352DD90044F0	 	Disney Planes - Fire & Rescue (USA) (En,Fr,Es,Pt)	3DS
+5BB3D12272CAF23752CF9078893117A1	 	Disney Planes - Fire & Rescue (Europe) (En,Fr,De,Es,It)	3DS
+70BCF9BF139CBF93CB142940AC53E3CD	 	Disney Princess - My Fairytale Adventure (Spain) (En,Es)	3DS
+38B466CF009E26A9C5EDFC48B85053AE	 	Disney Princess - My Fairytale Adventure (Europe) (Fr,De,It)	3DS
+B6B0F87CED3DDEAECC330EA3194CAF20	 	Disney Princess - My Fairytale Adventure (USA) (En,Fr,Es)	3DS
+0DA8EFA601217E6440CE78BB21797899	 	Disney Princess - My Fairytale Adventure (Europe) (Sv,No,Da)	3DS
+F1787DB586E076232A97D984EAEBA49E	 	Disney Princess - My Fairytale Adventure (Europe) (En,Fr,Nl)	3DS
+CA104840D8DE358B7F90FF31C965DC0E	 	Disney Violetta - Rhythm & Music (Europe) (En,Fr,De,Es,It,Pt)	3DS
+E2FBB7D0F07879F768499B94BC74A922	 	Doctor Lautrec and the Forgotten Knights (Europe) (En,Fr,De,Es,It)	3DS
+3BCDE7D1BF38CCCEDD138B11FB9BC06F	 	Doctor Lautrec and the Forgotten Knights (USA) (En,Fr,Es)	3DS
+F6E341D0DDAAECEE2AB338F42CDB5AB2	 	Doctor Lautrec to Boukyaku no Kishidan (Japan)	3DS
+1A1EB6D2699D55AC9B5A2580C6DB4B39	 	Dog School - Lovely Puppy (Japan)	3DS
+86F6FB7C51F29C5039185CFB3DC917F1	 	Doki Doki Precure - Narikiri Life (Japan)	3DS
+5CBA2434445E47C84B1BB663C475FA03	 	Dolly Kanon Dokidoki Tokimeki Himitsu no Ongaku Katsudou Start Desu!! (Japan)	3DS
+F80EC5103C9F58514512C78547A08992	 	Donkey Kong Country Returns 3D (Europe) (En,Fr,De,Es,It)	3DS
+1131CBE702865158B5EBC044F4C258DA	 	Donkey Kong Country Returns 3D (USA) (En,Fr,Es)	3DS
+CA1C36D855B76CDADF1ECF68E450F930	 	Donkey Kong Returns 3D (Japan)	3DS
+68EA15113C4D3490CE6A3BD3E46F9D37	 	Donkey Kong Returns 3D (Korea)	3DS
+66B3E055B7BEE8BF91332AB77097DED0	 	Doodle Jump Adventures (USA)	3DS
+579D86214F4A79C5B133821DCA5FF220	 	Doodle Jump Adventures (Europe) (En,Fr,De,It,Nl)	3DS
+9CAA85C6F6987A894C7B2F08BD93B9FA	 	Doodle Jump Adventures (Europe)	3DS
+752DF780257BB56CB461D742A42B25B9	 	Dora-Chie - Mini-Dora Ongakutai to Nanatsu no Chie (Japan)	3DS
+EB21BE01AD51323DD96A81E326531A4D	 	DoraEigo - Nobita to Yousei no Fushigi Collection (Japan)	3DS
+BE0DD0C0399BCBAB8F7AE4AB88ED78CF	 	Doraemon - Jinguui Suhak Daemoheom (Korea)	3DS
+212BD201CF870AF5D7EB83298A5B5594	 	Doraemon - Nobita no Himitsu Dougu Museum (Japan)	3DS
+2D820896EC0189151531248931729E1D	 	Doraemon - Nobita no Nankyoku Kachikochi Daibouken (Japan)	3DS
+16EF84AC7C236F8DF8587728081FFF5B	 	Doraemon - Nobita no Takarajima (Japan)	3DS
+AA6BC2792F83ABB357613C0D0840BC35	 	Doraemon - Nobita no Uchuu Eiyuuki (Japan)	3DS
+78FEC82117DBDEF8EF6B799D4B838468	 	Doraemon - Nobita to Kiseki no Shima (Japan)	3DS
+AAE54C0A208712D99B1613F419535803	 	Doraemon - Nobita's Number Adventure (Taiwan)	3DS
+0E120DBABC20A215F221CF085C466DE9	 	Doraemon - Shin Nobita no Daimakyou (Japan)	3DS
+24F103209019244876B0992D935D7D94	 	Doraemon - Shin Nobita no Nippon Tanjou (Japan)	3DS
+45FD1C0778BD29B3743D4784A75C5AD6	 	DoraKazu - Nobita no Suuji Daibouken (Japan)	3DS
+DD7D9D759366EE2A4314800AD3DB511A	 	DoraMoji - Nobita no Kanji Daisakusen (Japan)	3DS
+00DE843A65E855DE733EF54B88760A4B	 	Doubutsu no Mori - Happy Home Designer (Japan)	3DS
+71C2D8201490295409F66469D3F90A13	 	Doubutsu no Mori - Happy Home Designer (Japan) (Rev 1)	3DS
+871D45B77CAB421B69AEF5F8D9D2DEC3	 	Downtown Nekketsu Jidaigeki (Japan)	3DS
+B30EC1F633CF2AA2FCB286CF1E8A89ED	 	Downtown Nekketsu Monogatari SP (Japan)	3DS
+9D7C42331E555942B275407B19F1EC82	 	Downtown no Gaki no Tsukai ya Arahen de!! Zettai ni Tsukamatteha Ikenai Gasu Kurobikari Land (Japan)	3DS
+76C688DE3B53EB527D8F76584A676386	 	Dr. Kawashima's Devilish Brain Training - Can You Stay Focused (Europe) (En,Fr,De,Es,It,Nl) (Rev 1)	3DS
+782FFC111D518ADE5AD607E414A755A5	 	Dragon Ball Fusions (Japan)	3DS
+5EA04DC1766895F8C1DEFB862EE69C1C	 	Dragon Ball Fusions (USA)	3DS
+37CD456EB41E7456359B901A4E09BCC7	 	Dragon Ball Fusions (Europe) (En,Fr,De,Es,It)	3DS
+9E7AFA98A924E73D8BE24DA7AE6A5FBF	 	Dragon Ball Heroes - Ultimate Mission (Japan)	3DS
+22770E43F9B63CEA787207EBC4EF2BF1	 	Dragon Ball Heroes - Ultimate Mission 2 (Japan)	3DS
+2D659C4F43DDBAB006C71143D7A765CC	 	Dragon Ball Heroes - Ultimate Mission X (Japan)	3DS
+8775229E2AA0BE6B6E856C48907AE5E8	 	Dragon Ball Z - Chogunggeuk Mutujeon (Korea)	3DS
+9F72FE84F29A571E03EB8C156E62214A	 	Dragon Ball Z - Extreme Butoden (Europe) (En,Fr,De,Es,It)	3DS
+39EA1AA4F379B9C6EF6214E69AB93B58	 	Dragon Ball Z - Extreme Butoden (USA)	3DS
+AECBDA8D8376DB3704B314102E91AC98	 	Dragon Ball Z - Extreme Butouden (Japan)	3DS
+56C9F2C4F4B6902DB48E19B99756D0F0	 	Dragon Quest Monsters - Joker 3 (Japan)	3DS
+B4996770FA170D7B3E88C3DC81810461	 	Dragon Quest Monsters - Joker 3 Professional (Japan)	3DS
+F7396F39185BC834A2E642195BADA3E4	 	Dragon Quest Monsters - Terry no Wonderland 3D (Japan)	3DS
+247F1977C9B04EF846B0712D0C815ABD	 	Dragon Quest Monsters 2 - Iru to Ruka no Fushigi na Fushigi na Kagi (Japan)	3DS
+524308B35872945D346DBDDCAC85AD4E	 	Dragon Quest VII - Eden no Senshi-tachi (Japan)	3DS
+4C2707EF81E57A4B3522A43BF480046F	 	Dragon Quest VII - Fragments of the Forgotten Past (Europe) (En,Fr,De,Es,It)	3DS
+E0423FCE47D6A8206BFEB7B4B2438A8A	 	Dragon Quest VII - Fragments of the Forgotten Past (USA)	3DS
+8812FE1B728318F0D2FAF9437E7D8A2D	 	Dragon Quest VIII - Journey of the Cursed King (Europe) (En,Fr,De,Es,It)	3DS
+941E1F0DD63271DCB410F6395E9EE690	 	Dragon Quest VIII - Journey of the Cursed King (USA)	3DS
+149176C0953268510C54F84D3CA9B8E9	 	Dragon Quest VIII - Sora to Umi to Daichi to Norowareshi Himegimi (Japan)	3DS
+A6BE42E6B17A28D1D30B102695E12930	 	Dragon Quest XI - Sugi Sarishi Toki o Motomete (Japan)	3DS
+A4170ACF51263BD8540500C48885D518	 	Dream Girl Premier (Japan)	3DS
+E4BAD37A561924A741186749BC3D5201	 	Dream Trigger 3D (Europe) (En,Fr,Es)	3DS
+A9AFE2F14BBAD4C6C58FB12E8C7A1808	 	Dream Trigger 3D (USA) (En,Fr,Es)	3DS
+1F94893C7F56AF046DD414C3E0F8D698	 	DreamWorks Super Star Kartz (USA) (En,Fr)	3DS
+03C25414F42E0C6F15BF0A4A73678F8B	 	DreamWorks Super Star Kartz (Europe) (En,Fr,De,Es,It,Nl,Sv)	3DS
+0079AB20D153A0152FFD8AE7BC6C6F14	 	Driver - Renegade (USA) (En,Fr,Es)	3DS
+C36E1F0BE755F86FD689E22B05C7EFCF	 	Driver - Renegade 3D (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da)	3DS
+E24D92F424DA93C3A0275A5DCAC0415D	 	Driver - Renegade 3D (Japan)	3DS
+A78E2C7A278A176C1AC4DEAF0B183214	 	DualPenSports (Europe) (En,Fr,De,Es,It)	3DS
+A1E19B32B25CCC76EA87EFB534B924D8	 	DualPenSports (USA) (En,Fr)	3DS
+3E1A011B21B777BB498E942714256590	 	Duck Dynasty (USA)	3DS
+998E9633BEC3507F459049471FD87413	 	E.X. Troopers (Japan)	3DS
+3FA2DBEC8A59544F0DECFF006739D9F0	 	Earthpedia (Japan)	3DS
+DDBACA6E6F37EE2D7EC076FF6AD74B1E	 	Elminage Gothic 3D Remix - Ulm Zakir to Yami no Gishiki (Japan)	3DS
+DBAE93382509C767A5DC127DB51C9727	 	Elminage Ibun - Ame no Mihashira Kai (Japan) (Rev 1)	3DS
+43FA3A089DA4001AFB19F5CEAB2E0A02	 	Elminage Imullok - Hwanseyomajeon - Ame no Mihashira (Korea)	3DS
+C49FD6975153B2F5864822AA6E38FE48	 	ESSE Rakuraku Kakeibo (Japan)	3DS
+7BCF9D03AFEDB78D9E7D74B4737C56CA	 	Etrian Mystery Dungeon (USA)	3DS
+6AF1729B4A481C1DC948EA32C455F082	 	Etrian Mystery Dungeon (Europe)	3DS
+5F2FC0B3CC6A50A7A8C01BD07D911053	 	Etrian Odyssey 2 Untold - The Fafnir Knight (USA)	3DS
+8D228F78574EBB2E95E9D1E12980D612	 	Etrian Odyssey 2 Untold - The Fafnir Knight (Europe)	3DS
+7D2D14CFDBA418484054A882750836E6	 	Etrian Odyssey IV - Legends of the Titan (USA)	3DS
+F25D2BEB2CCF70A1AA28D11EE51547A6	 	Etrian Odyssey IV - Legends of the Titan (Europe)	3DS
+6B4FA677E1E9F5898220108E2CD7F426	 	Etrian Odyssey Nexus (Europe)	3DS
+FD260650AB5116AC76702936D9E41221	 	Etrian Odyssey Nexus (USA)	3DS
+385FF0C9006BFA9C3C1389EF79B60B49	 	Etrian Odyssey Untold - The Millennium Girl (USA)	3DS
+228B2316467F63B39FD2C7559A14A0A3	 	Etrian Odyssey Untold - The Millennium Girl (Europe)	3DS
+914A057FC990FA9AB7F8A863C779360D	 	Etrian Odyssey V - Beyond the Myth (USA)	3DS
+64DAAE168CF28E9C365586D18A75C735	 	Etrian Odyssey V - Beyond the Myth (Europe)	3DS
+A0F650E53BE3068E67E704AB42A2EFCA	 	Ever Oasis (Europe) (En,Fr,De,Es,It,Nl)	3DS
+EB4AB48E81CF3182D6CFBAB375F1F295	 	Ever Oasis (USA) (En,Fr,Es)	3DS
+5271BEF15487320BFC9155E8612E2222	 	Ever Oasis - Seirei to Tanebito no Mirage (Japan)	3DS
+0B4461122FAA7B8282BB0C98BDC36E00	 	Exstetra (Japan)	3DS
+68B69FD0F3DB37C9D48659830DA580B5	 	F1 2011 (Europe) (En,Fr,De,Es,It)	3DS
+FF88E8DF4BEF54E01F4A2898B05CC465	 	F1 2011 (USA) (En,Fr,Es)	3DS
+B529792B8019508641E443E05771D9F5	 	F1 2011 (Japan)	3DS
+9199238006D29081E8573A14B6CB54D8	 	FabStyle (Japan)	3DS
+870736A128B8BE9992F1338D4AD27E6A	 	Face Racers - Photo Finish (USA)	3DS
+97E125153E82FE5B77BE7AE967633EED	 	Famicom Remix Best Choice (Japan)	3DS
+573815270C8DD9E05788517ABE2A5DB6	 	Fantasy Life (Europe) (En,Fr,De,Es,It)	3DS
+37FAE482D142F4C11456CCE664C38E5A	 	Fantasy Life (USA)	3DS
+6675E4E10750E77F9C2990208C1C38ED	 	Fantasy Life (Japan)	3DS
+DAFD991B71BA692FE410C352ADE5F544	 	Fantasy Life Link! (Japan)	3DS
+882A212C76B492AE5F80DF47270EF7E2	 	Farming Simulator 14 (Europe) (En,Fr,De,Es,It,Pt,Ru)	3DS
+5AFC626E53961E132595D88672C7CEAF	 	Farming Simulator 14 (USA) (En,Fr,Es,Pt)	3DS
+EC8CAED50FFF676627A49555A550D943	 	Farming Simulator 14 - Pocket Nouen 2 (Japan)	3DS
+7465E2A54E0EEABD7843ABAC8970268A	 	Farming Simulator 18 (Europe) (En,Fr,De,Es,It,Pt,Pl,Ru)	3DS
+73408BADF6FADB4F455DC0E2DEA49E64	 	Farming Simulator 18 (USA)	3DS
+382C5D78A41A195CD6E81BD794777C5D	 	Farming Simulator 18 - Pocket Nouen 4 (Japan)	3DS
+DB34923ACB3BAC4B8AD75B8F0F28D9F3	 	Farming Simulator 2012 3D (Europe) (En,Fr,De)	3DS
+29D7BCD46FA9E82681CE9477F23CED20	 	Farming Simulator 3D - Pocket Nouen (Japan)	3DS
+71DC13A3F557FF85D7C9BF0F466BA09E	 	Farmscapes (Europe) (Fr,Nl)	3DS
+5F14FFDB96B4C9A27D4EEB5E856DB813	 	Fast & Furious - Showdown (Europe) (En,Fr,De,Es,It)	3DS
+CF8BFA3FA2F149D91387DD2C3B95B72B	 	Fast & Furious - Showdown (USA) (En,Fr)	3DS
+08F950D45AFD511FD387E0F284888415	 	Fate Kaleid Liner - Prisma Illya (Japan)	3DS
+995A31A3F5D461141DBF2E6E6E65866A	 	FIFA 12 (Europe) (De,Es,It) (Rev 1)	3DS
+C910AD5A771926248C4C8F43DAED6E8B	 	FIFA 12 (Europe) (En,Fr,Nl) (Rev 1)	3DS
+FD381930F8BA4465BFEDE65F0F0D03E9	 	FIFA 12 (Europe) (En,Fr,Nl)	3DS
+3E80D53A2900974775E59EA4D1D8AEFC	 	FIFA 12 (Europe) (De,Es,It)	3DS
+19BBFA6B629AB95A3581673E685146A6	 	FIFA 13 (Europe) (En,Fr,Nl)	3DS
+0BE71FDAC0DC433E918D868251F2E85C	 	FIFA 13 (Europe) (De,Es,It)	3DS
+73FC99A3A1B92F51930E5C61194D48AB	 	FIFA 14 - Legacy Edition (Europe) (En,Fr,Nl)	3DS
+A767BF3C311A0694033C10D22ACE2148	 	FIFA 14 - Legacy Edition (Europe) (De,Es,It)	3DS
+2FD566BF36ED0DD85A2886541F8DEA54	 	FIFA 14 - Legacy Edition (USA) (En,Fr,Es)	3DS
+CB9F9A2050A64368DBCBDE7DC7DAB6A5	 	FIFA 15 - Legacy Edition (Europe) (De,Es,It)	3DS
+832AE79A9AC84B6F40FFB80A5D18AD0B	 	FIFA 15 - Legacy Edition (Europe) (En,Fr,Nl)	3DS
+9FE532C53E591C9FC1B1118BCD329A62	 	FIFA 15 - Legacy Edition (USA) (En,Fr,Es)	3DS
+7C90F7D21BE099B26B3EEBDE43150347	 	FIFA Soccer 12 (USA) (En,Fr,Es)	3DS
+C3D3020DA01571935C922350E865B1EB	 	FIFA Soccer 13 (USA) (En,Fr,Es)	3DS
+482752B1626BD5006FFF3DBA1D6E7634	 	Final Fantasy Explorers (Japan)	3DS
+F95AD4C81C8901DAB2671628AC767781	 	Final Fantasy Explorers (USA)	3DS
+C5382295CDCFCACED45ACC3830B22213	 	Final Fantasy Explorers (Europe) (En,Fr)	3DS
+3040DC98C318B5700E51AFCB92F13F18	 	Finding Nemo - Escape to the Big Blue - Special Edition (USA)	3DS
+D95105FFB408E2B50D762D409A60843B	 	Finding Nemo - Escape to the Big Blue - Special Edition (Europe) (En,Fr,De,Es,It,Nl)	3DS
+AADC8D0B54D3D9F9A0A58D8B0895DD43	 	Finding Nemo - Escape to the Big Blue - Special Edition (Europe) (En,Sv,No,Da)	3DS
+4C7277F1B7546C7F8CC355AEBFCFAF29	 	Fire Emblem - Awakening (Europe) (En,Fr,De,Es,It)	3DS
+EF0B12F84285C3B99EC894D8D20C6962	 	Fire Emblem - Awakening (USA)	3DS
+E91A7C1A0ED5B751301A5ACA909A0D23	 	Fire Emblem - Kakusei (Japan)	3DS
+D515FA5D83E041B8788FFE8D0049942F	 	Fire Emblem - Kakusei (Japan) (Rev 1)	3DS
+7BDBD9233F828EEF05A2D18D74726217	 	Fire Emblem Echoes - Mou Hitori no Eiyuu Ou (Japan) (Ja,Zh) (Rev 1)	3DS
+C78F40C040B3250E1F096C1DBE5BC522	 	Fire Emblem Echoes - Shadows of Valentia (Europe) (En,Fr,De,Es,It,Nl)	3DS
+73207796B837B1027C7D6163850B8878	 	Fire Emblem Echoes - Shadows of Valentia (USA) (En,Fr,Es)	3DS
+3368B5D72524D88B0D0F00009DFCAD32	 	Fire Emblem Echoes - Tto Hanaui Yeongungwang (Korea)	3DS
+0DC838B63CA9C194CE78BCCC82DB2237	 	Fire Emblem Fates - Birthright (USA)	3DS
+EA9E6E5059AFD319C19819666E1C2F02	 	Fire Emblem Fates - Birthright (Europe) (En,Fr,De,Es,It)	3DS
+39D76BB5CCC33F4BD85DD27CAE8082BD	 	Fire Emblem Fates - Conquest (USA)	3DS
+C151709C5F038294EFE4EEA6506AF641	 	Fire Emblem Fates - Conquest (Europe) (En,Fr,De,Es,It)	3DS
+2EF6A4F72DA1130F95AACF1C52902783	 	Fire Emblem Fates - Limited Edition (Europe) (En,Fr,De,Es,It)	3DS
+A237C13C2FC02BEFFD6CFA87FA8A5AB6	 	Fire Emblem Fates - Special Edition (USA)	3DS
+D7DE0F0D4AE3616AE381C300966B2648	 	Fire Emblem If (Korea)	3DS
+FB03184C10FAB79CBA46011394A7F166	 	Fire Emblem If - Anya Oukoku (Japan)	3DS
+11C6EC33F8FEACEBD549B55AB00716EF	 	Fire Emblem If - Byakuya Oukoku (Japan)	3DS
+1C217FD1D826B902847BAC79A86A63AF	 	Fire Emblem If - Byakuya Oukoku (Taiwan) (Ja)	3DS
+FBEBAF4D56526E6FCAA43CCBDF413E65	 	Fire Emblem If - Special Edition (Japan)	3DS
+03CEB965D828243C149181C4E82EE910	 	Fireman Sam - To the Rescue (Europe) (En,Fr,De,Es,It,Nl)	3DS
+633E2858992EDD667D720F8E7887AFEC	 	Fish Eyes 3D (Japan) (Rev 1)	3DS
+DABD6398D122A5A8B131C5EDAEC8CFE7	 	Fish Eyes 3D (Japan)	3DS
+9E80A7813E3BA9FECC86AAC65C7DE8B3	 	Fishing 3D (Japan)	3DS
+44799D8BDE607BA2E290B71EE6BBE2B0	 	Flap Flap (Europe) (En,Fr,De,It,Nl)	3DS
+AC1C3CFF1076932C8BA36B778A7F4A57	 	Fossil Fighters - Frontier (USA) (Rev 1)	3DS
+02164384FB2736F1FC1626E53FB58E1B	 	Fossil Fighters - Frontier (Europe) (En,Fr,De,Es,It)	3DS
+86E7E131CCA195FF98210BD5DF9D112E	 	Fragrant Story (USA)	3DS
+BA24298EED80FD3C231FE067288C05A3	 	Freakyforms Deluxe - Your Creations, Alive! (Europe) (En,Fr,De,Es,It)	3DS
+FC61DBC21C4A054751BAD836821428C2	 	Freakyforms Deluxe - Your Creations, Alive! (USA) (En,Fr,Es)	3DS
+FD53344E45A78C58B6934E604F07B679	 	Frogger 3D (USA) (En,Fr,Es)	3DS
+84B0EEC9EC72005297003C3EFB55304C	 	Frogger 3D (Europe) (En,Fr,De,Es,It)	3DS
+96099E36FE1C3242472954F1F5647593	 	Frogger 3D (Japan)	3DS
+39D4E73BB0E28192B4C4B1D24604A399	 	Frogger 3D (Japan) (Beta)	3DS
+9CA8B625B1042CDF711BDD4CAEFC5E25	 	Fujiko F. Fujio Characters Daishuugou! SF Dotabata Party!! (Japan)	3DS
+6FCC87AE5A81345D7AADBFAFFE2FCA7B	 	Funfair Party Games (Germany) (Fr,De)	3DS
+E6CF031D4F96068AC0636DE59FA073B4	 	Funfair Party Games (Europe) (En,Fr)	3DS
+88BFDA6EBECF8E8B5E7AEE7C57E545DA	 	Funky Barn 3D (USA) (En,Fr,Es)	3DS
+844223DCFBAC830C238FAAA9FCADD8FF	 	Funky Barn 3D (Europe) (En,Fr,De,Es,It)	3DS
+44991F19EB45DE02245C8E2D75A93931	 	Future Card Buddyfight - Mezase! Buddy Champion! (Japan)	3DS
+909B7E81B02C2293726A677F50C252D1	 	Future Card Buddyfight - Tanjou! Ore-tachi no Saikyou Buddy! (Japan)	3DS
+7AE06CC59DC44E599F04DE929273F891	 	Future Card Buddyfight - Yuujou no Bakunetsu Fight! (Japan)	3DS
+BB09CC83338E7015E28D4AB9D28183D5	 	G1 Grand Prix (Japan)	3DS
+04B167072A559057D0B7FE9ECD26F285	 	Gabrielle's Ghostly Groove 3D (USA)	3DS
+63AA002499A18A81382AC0FC41AAF179	 	Gabrielle's Ghostly Groove 3D (Europe) (En,Fr,De,It)	3DS
+4261C50B0ADEB752009AAF1E79CC5CF5	 	Gabrielle's Ghostly Groove 3D (Europe) (En,Fr,De,Es,It) (Rev 1)	3DS
+A0C6D119FB66138967F1ABB5E20095B2	 	Gaist Crusher (Japan)	3DS
+F2DF12EA34B4194A454C31623DF66832	 	Gaist Crusher God (Japan) (Rev 1)	3DS
+A029A17DE7814595A3763478A622F297	 	Game Center CX - 3-Choume no Arino (Japan)	3DS
+272A3D2D2443A82C7A911BF85AEA2B4A	 	Games Festival 1 (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi)	3DS
+56C9A8BBF04555E28689A41CA7D97672	 	Games Festival 2 (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi)	3DS
+2CBC2BAC337F9D8E0ABCF3B2B9B06403	 	Gardening Mama - Forest Friends (Europe) (En,Fr,De,Es,It)	3DS
+46FA0B3C74C656F6D620F11520BFDB69	 	Gardening Mama - Mama to Mori no Nakama-tachi (Japan)	3DS
+FFCEB27B39415DCC511416725E1E16D5	 	Gardening Mama - Mamawa Sup Sok Chingudeul (Korea)	3DS
+EE4C8A7D1DD33FBE611366D94E15963F	 	Gardening Mama 2 - Forest Friends (USA)	3DS
+26DAAB041C05CB46BD6B7103C31A0530	 	Gardenscapes (Europe) (En,Fr,De,Nl)	3DS
+0C473E7C4F440AF776F595D7DF73D063	 	Garfield Kart (Europe) (En,Fr,De,Es,It)	3DS
+075A60EBD48C2C18C9D4C0FB4968B6FD	 	Garfield Kart (USA)	3DS
+850D04DBB205EF91CC9A7AA6A1FFA7EF	 	Gem Smashers (USA)	3DS
+EB8108174ADB7683EC7A50EB76BAD2FD	 	Generator Rex - Agent of Providence (Europe) (En,Fr,De,Es,It)	3DS
+7AE9F6CD2325DF1638DF5FC511E7F8EF	 	Generator Rex - Agent of Providence (USA) (En,Fr)	3DS
+3EFCB28722861C77A66D02EEF44A37CC	 	Girls Fashion 3D - Mezase! Top Stylist (Japan)	3DS
+EA9BE637581BA461A36485E8DFAE715D	 	Girls Mode 3 - Kirakira Code (Japan)	3DS
+81F1682F955B08765936300371FA64A7	 	Girls Mode 3 - Kirakira Code (Japan) (Rev 3)	3DS
+ABE571597089BAE03D0C2012C2454687	 	Girls Mode 3 - Kirakira Code (Japan) (Rev 2)	3DS
+EB82B00EF6BC431545F0B949FAAB695E	 	Girls Mode 4 - Star & Stylist (Japan)	3DS
+5F0027838B56A4E3EAB1A2375A743BA8	 	Girls RPG - Cinderellife (Japan)	3DS
+1573D35852DD822FB74F35D0AADA2E72	 	Girls Style - Fashion Leader Seoneon! (Korea)	3DS
+21188834F891D6E679999B2F2EA39747	 	Girls' Fashion Shoot (USA)	3DS
+65428F147BEBDD204465E43C9EAA4D03	 	Girls' Fashion Shoot (Germany) (En,De)	3DS
+2B0C2D3171D24F44450D157179F4F4C2	 	Girls' Fashion Shoot (Europe) (En,Fr)	3DS
+801083D2D4CB5B2E9AC4EC11325DD647	 	Go! Go! Kokopolo - Harmonious Forest Revenge (USA)	3DS
+37F0AE422D706BA4D7C618EAEFE5428F	 	Go! Go! Kokopolo 3D - Space Recipe For Disaster (USA)	3DS
+9FE919CF60AF477DEB5A94C19DBE2C3E	 	Go! Princess PreCure - Sugar Oukoku to 6-nin no Princess! (Japan)	3DS
+D7AD27F09923BE676B04183C9F093526	 	Gon BakuBaku BakuBaku Adventure (Japan)	3DS
+13D8D628FFCE9C8D2A1BEA9295CB025A	 	Gon WaguWagu Adventure (Korea)	3DS
+66F8E852A37230C6509690AD60A3DC8D	 	Goosebumps - The Game (USA)	3DS
+1EDE7664FCD7493044637B76CAF13E0B	 	Goosebumps - The Game (Europe)	3DS
+46C4EFB02F2B99F03113699BA4D9422A	 	Gotouchi Tetsudou - Gotouchi Chara to Nihon Zenkoku no Tabi (Japan)	3DS
+720F421CFFAC4EF14EB947B3E6BCC5D0	 	Grande LEGO Aventure - Le Jeu Video, La (France) (En,Fr,Es,It,Nl,Da)	3DS
+D41401A434AAD0A24B80A4F779C16F76	 	Gravity Falls - Legend of the Gnome Gemulets (USA)	3DS
+241A28458FFCC8B8F49B49FC2A05FCB9	 	Gravity Falls - Legend of the Gnome Gemulets (Europe) (En,Fr,De,Es,It)	3DS
+86791C990A28EABFD621763A0E3BD017	 	Green Lantern - Rise of the Manhunters (Europe) (En,Fr,De,Es,It,Nl)	3DS
+5A547FC95400CE755ADEA2ABD86A26D4	 	Green Lantern - Rise of the Manhunters (USA) (En,Fr,Es)	3DS
+9E57BB6F802CDBFEAF956027DDB455DC	 	Gudetama - Hanjuku de Tanomuwa (Japan)	3DS
+0C1214F87A95BB8D4CB6FF3A964056B6	 	Gudetama - Okawari Ikagassuka (Japan)	3DS
+3DAFD63E0342622A13A05A05E7C7CEE2	 	Guild01 (Japan)	3DS
+3203FA38304A39D119D12DC61B89CB5E	 	Gummy Bears - Magical Medallion (Europe) (En,Fr,De,Es,It,Nl)	3DS
+0243E8845DF51A92E2B9BEE64865EF94	 	Gundam - The 3D Battle (Japan)	3DS
+29A90ED54A726C409B1E1556E39D04EC	 	Gundam Try Age SP (Japan)	3DS
+306E49B9EF4872C9DB6C2DD97D2B7DE2	 	Guruguru Tamagotchi! (Japan)	3DS
+3CFE4E89C02912A41DBD59BE68D1DF54	 	Gyakuten Saiban 123 - Naruhodo Selection (Japan)	3DS
+AFE1228F19390574F30F23E14FAEC94B	 	Gyakuten Saiban 4 (Japan)	3DS
+B7ADEFBE6D6424B8BA20E1C9C3C98868	 	Gyakuten Saiban 5 (Japan)	3DS
+FD5FEED4D5E0D34DEAB796E0D11A774B	 	Gyakuten Saiban 6 (Japan)	3DS
+A4CC8D60DF5115E8D0A36E66D71895C6	 	Haikyu!! Cross Team Match! (Japan)	3DS
+147C4354A73ABCB2521829551077E7B7	 	Haikyu!! Tsunage! Itadaki no Keshiki!! (Japan)	3DS
+754ECAE39EC23F7425688C55321A5103	 	Hako Boy! Hakozume Box (Japan)	3DS
+A13148793AEDDFC1AE1E62B749564F74	 	Hakuoki - Memories of the Shinsengumi (USA)	3DS
+FFDE635A16B6F32D35E6C338CDAFC552	 	Hakuoki - Memories of the Shinsengumi (Europe)	3DS
+A4821995183C3D15696109EAD1573EE0	 	Hakuouki 3D (Japan)	3DS
+4B85DBE456B9491CCF44695379783AA7	 	Hamatora - Look at Smoking World (Japan)	3DS
+5A27DD35114B95DD1D4F4BA6D5CD872B	 	Hana to Ikimono Rittai Zukan (Japan) (Rev 1)	3DS
+71AC46583AFF31224A3155EF336B5C3E	 	Hana to Ikimono Rittai Zukan (Japan)	3DS
+315F9CD9E6B80BD0A5B578747D3E9795	 	Happiness Charge PreCure! Kawarun Collection (Japan)	3DS
+AF83B285CD07ACB199FEEFF6278DC1A4	 	Happy Animal Bokujou (Japan)	3DS
+B1C477344FC94703994C101B3BC1C4E9	 	Happy Feet Two (USA) (En,Fr,De,Es,It,Nl)	3DS
+1EB3EE7540E41B5DFAFFD60AF2FD8326	 	Happy Feet Two (Europe) (En,Fr,De,Es,It,Nl)	3DS
+1CB07B6A9F923658EB964BBC37BE384A	 	Harvest Moon - Skytree Village (USA)	3DS
+CA8D7541DBF2FCBE92382C0841CC5082	 	Harvest Moon - Skytree Village (Europe) (En,Fr,De,Es)	3DS
+0C21659B04098678D1705CB0DD7CA7E2	 	Harvest Moon - The Lost Valley (Europe) (En,Fr,De,Es)	3DS
+965DF24755AE58C410D6879BCE9663FC	 	Harvest Moon 3D - A New Beginning (USA)	3DS
+EEED1CF50976096AF503EB6975CB9238	 	Harvest Moon 3D - A New Beginning (Europe)	3DS
+C4AADD7DEE7453335FCACF81BA48811D	 	Harvest Moon 3D - The Lost Valley (USA)	3DS
+5780E5DD1886DDDD1EED1CAE4839BCC4	 	Harvest Moon 3D - The Tale of Two Towns (USA) (Rev 2)	3DS
+B63458AD3836F41C516F5EB6E7371936	 	Harvest Moon 3D - The Tale of Two Towns (Europe) (En,Fr,De) (Rev 1)	3DS
+267AD383C12FF6776E8253BDD6BC5690	 	Harvest Moon 3D - The Tale of Two Towns (USA) (Rev 1)	3DS
+2BDD7CF714DAA7C72E4B7C364B5D44F9	 	Harvest Moon 3D - The Tale of Two Towns (USA)	3DS
+3CD94FBDF9D48C78DC805BE5F71FBBF3	 	Harvest Moon 3D - The Tale of Two Towns (Europe) (En,Fr,De)	3DS
+447354653F4AD1D4E528B55357CF883C	 	Hatsune Miku - Project Mirai 2 (Japan)	3DS
+AF26A80C8DA80C125A3160B605255E22	 	Hatsune Miku - Project Mirai Deluxe (Korea)	3DS
+2C1233445A9C476D429900008A15D574	 	Hatsune Miku - Project Mirai Deluxe (Japan)	3DS
+2C66ADD82BAC1A71DAD03DBC452383A5	 	Hatsune Miku - Project Mirai DX (USA)	3DS
+FDE0C51B6AE1FDDB3CF21C55F70ACF00	 	Hatsune Miku - Project Mirai DX (Europe)	3DS
+AEA36A9D60A3FD37B8CA036FDCAE4700	 	Hatsune Miku and Future Stars - Project Mirai (Japan)	3DS
+1ED0BE7FA36063F2A5EE21BF5058FCB5	 	Heavy Fire - The Chosen Few (Japan)	3DS
+AA355726CDB0878FD2D926EF1DF87224	 	Heavy Fire - The Chosen Few 3D (USA)	3DS
+21B8B83D2E178766108350FDB2B59E17	 	Heavy Fire - The Chosen Few 3D (Europe) (En,Fr,De,Es,It)	3DS
+E95868CF09DA110560A630590702C316	 	Hello Kitty & Friends - Rock n' World Tour (Europe) (En,Fr,De,Es,It)	3DS
+1AA69953124F0FC8F860077A129B99B3	 	Hello Kitty and Sanrio Friends 3D Racing (USA)	3DS
+6586DD0989A162A57F377AA078C6949F	 	Hello Kitty and Sanrio Friends 3D Racing (Europe) (En,Fr,De,Es,It,Nl)	3DS
+455B7C0D11B67AA28CB451A78052BD77	 	Hello Kitty and the Apron of Magic - Rhythm Cooking (Europe)	3DS
+9C1DCE5DF3AA0625D9A42867405FFE95	 	Hello Kitty Happy Happy Family (Europe) (En,Fr,De,Es,It,Nl)	3DS
+86A27EBB7FC8E89EFD2418D6D43BCD99	 	Hello Kitty Picnic with Sanrio Characters (Europe) (En,Fr,De,Es,It)	3DS
+8638FBFCE07A89D0F794AFE35B9A0E61	 	Hello Kitty Picnic with Sanrio Friends (USA)	3DS
+5CF4B11CBEE814DF7154C1056AFDBE1B	 	Hello Kitty Picnic with Sanrio Friends (USA) (Rev 1)	3DS
+2B68AFDC191CF3EDA3A459DDA8100693	 	Hello Kitty to Issho! Block Crash Z (Japan)	3DS
+06F1A3C8B8190AA210FAEFE8D5F7F198	 	Hello Kitty to Mahou no Apron - Rhythm Cooking (Japan)	3DS
+C3C52BB132BE6A586F0628D538FA03C8	 	Hello Kitty to Sanrio Characters - World Rock Tour (Japan)	3DS
+8E72B73CBB93C61E7BF3E0C2C145FC02	 	Hello Kitty to Sekai Ryokou! Iron na Kuni e Odekake Shimasho (Japan)	3DS
+BBE6A37A4A58597128D381DB8BBD9A6A	 	Hero Bank (Japan)	3DS
+CD2F02F83BA269641E9F21B95BA245E9	 	Hero Bank 2 (Japan)	3DS
+42270186598C563BC68AFD6940C634AF	 	Heroes of Ruin (Europe) (En,Fr,De,Es,It)	3DS
+7C01DDB7966841CDC10C339E05F3DD09	 	Heroes of Ruin (USA) (En,Fr,Es)	3DS
+28487E220DF11D45F8FD734BEC8D38CE	 	Hey! Pikmin (Japan)	3DS
+146ED549F84319B54CC2FA52306F2BE0	 	Hey! Pikmin (Europe) (En,Fr,De,Es,It,Nl)	3DS
+998EFA5C4CDD8E81BAD9E597262A75EF	 	Hey! Pikmin (USA)	3DS
+087015461816B100EBB36B64BFA5FDD8	 	Hey! Pikmin (USA) (Demo) (Kiosk)	3DS
+F6C7FF5F332DFB774793F98DF27E6791	 	Hey! Pikmin (Korea)	3DS
+DC8F4C449474167A94B7F1C9092F64A2	 	Hidden Expedition - Titanic (Europe) (En,Fr,De,Nl)	3DS
+00CB7AC20DEA79340672300AA561DB72	 	Hidden, The (USA)	3DS
+2B61E62F5DB27F1B2CA57DF89EF8E7E9	 	High School DxD (Japan)	3DS
+53740F1C5EB7FA497BEE59B5BD68C514	 	Hime Girl Paradise - Mechikawa! Agemori Sensation! (Japan)	3DS
+6CA33B501B9653A7E253B4FA6F3B6064	 	Hollywood Fame - Hidden Object Adventure (Europe) (En,Fr,De,Es,It,Nl)	3DS
+32C9624E70CACC8E19D7BEFF8364C276	 	Hometown Story (USA)	3DS
+291ECD9F542FA5410CDBDDF2F884CEFD	 	Hometown Story (Japan)	3DS
+6C1F3B6556552BF37158FADF146A4130	 	Hometown Story (Europe) (En,Fr,De)	3DS
+E3D50E8910A86FE21336DDD92CD4CFB1	 	Hoppe-chan - Minna de Odekake! Waku Waku Hoppe Land!! (Japan)	3DS
+34A45056F21FCC6D2805A46F7550B908	 	Hoppe-chan - Punitto Shibotte Daibouken! (Japan)	3DS
+543211E00FEF77390CEEF08E3AB85268	 	Hoppe-chan - Tsukutte! Asonde! Punipuni Town!! (Japan)	3DS
+4D8C9AD66BA805DCC3F9EBD31D2A8DF1	 	Hoppe-chan - Tsukutte! Asonde! Punipuni Town!! (Japan) (Rev 1)	3DS
+424925331D19AF430AD26AAB9459A63C	 	Horrid Henry - The Good, the Bad & the Bugly (Europe)	3DS
+7EA63D2F4B4DBCAEA95FF75404E01EC3	 	Horse Life 4 (Europe) (En,Fr,De,Es,It)	3DS
+1FAEC815F4C89BD1F743DD7C57D518AA	 	Horse Vet 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+8496CB1BADBE867208F051AEADC59972	 	Horses 3D (USA) (En,Fr,Es)	3DS
+57F101E324EBC0810990509DCBF9BE59	 	Hoshi no Kirby - Robobo Planet (Japan)	3DS
+041157F0A16FC1F9CDBAA4B998032FAE	 	Hoshi no Kirby - Triple Deluxe (Japan)	3DS
+58891B6429A0C9ABB96C9ADDF66AD358	 	Hot Wheels - World's Best Driver (USA) (En,Fr,Es)	3DS
+8A04E070C47421FF4B63148218551745	 	Hot Wheels - World's Best Driver (Europe) (En,Fr,De,Es,It,Nl)	3DS
+AA603237F1E818A53B6EF2F10F5EAE1A	 	Hotel Transylvania (Europe) (En,Fr,De,It)	3DS
+6E91F952926194069677E910B3CB644B	 	Hotel Transylvania (USA) (Rev 1)	3DS
+16A37A87116F29E21CB22031EBE861F0	 	Hotel Transylvania (United Kingdom)	3DS
+3611022578841331809E145EA08A8C73	 	Hotel Transylvania (Europe) (En,Fr,Nl)	3DS
+57EC60443AB3EA0196F3F5B3EE5B8480	 	Hotel Transylvania (USA)	3DS
+A602E52FDAD37818F41340C61D91CBBB	 	How to Train Your Dragon 2 (USA) (En,Fr,Es,Pt)	3DS
+B32BC60FD2964F4DE89A46362FD74F53	 	How to Train Your Dragon 2 (Europe) (En,Fr,De,Es,It,Pt)	3DS
+2D82D26CB1B537F6AA81F06496821534	 	Hwaseok Fighter (Korea)	3DS
+BF90C7A0AB6FE45C2E5A033A40304E26	 	Hyakumasu Dora-Zan - Nobita no Time Battle (Japan)	3DS
+AA2E7471A83DC6D381CF789F658F720D	 	Hyrule Warriors Legends (Europe) (En,Fr,De,Es,It)	3DS
+EC3FA098CAF5AEBC85F57518A81D5B21	 	Hyrule Warriors Legends (USA)	3DS
+B78A6A479C62BD480AF3DDFA43AA7FCC	 	Hyrule Warriors Legends (USA) (Demo) (Kiosk)	3DS
+3163A3438DECE0D7D6F738C6A77DD8C1	 	Hyrule Warriors Legends (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+710BC1326B01871D7D164CCCF18443BA	 	I Love My Cats (Europe) (En,Fr,De,Es,It,Nl)	3DS
+79B6319116B3D23A905CEE6200D23820	 	I Love My Dogs (Europe) (En,Fr,De,Es,It,Nl)	3DS
+74E0D745EFED0C07CAAA0380243E8921	 	I Love My Horse (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi)	3DS
+D09AA0878C4BCA1F3E0642E451085345	 	I Love My Little Boy (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi)	3DS
+9BDA94B5FC4DCB51F71FAF97A8747C25	 	I Love My Little Girl (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi)	3DS
+8D0E678B77526F80F75BE33BB2241D96	 	I Love My Pets (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi)	3DS
+5DD3A890B1BAE5CB3B8103C4115C621F	 	I Love My Pony (Europe) (En,Fr,De,Es,It,Nl)	3DS
+15C5E661AC8C17527FA1D43DDDD5BDF0	 	Ice Age - Continental Drift - Arctic Games (USA) (En,Fr)	3DS
+AAC233576BE894BF12FD210D99C33378	 	Ice Age 4 - Continental Drift - Arctic Games (Europe) (En,Fr,De,Es,Nl,Sv)	3DS
+C80BFFCA506E27C0D46771D347C787C1	 	Idol Time PriPara - Yume All-Star Live (Japan)	3DS
+6E7C02AE7DF4DF5420F3D828022076CF	 	Imagine - Babies 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+F9EC956B753E411F24A9DBACE76F6FE4	 	Imagine - Babyz (USA) (En,Fr,Es)	3DS
+64BD19F27AB97DEC9A5F21EA918A1CC6	 	Imagine - Champion Rider 3D (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da)	3DS
+7009FA573A34B17048E72B9193ABD48E	 	Imagine - Fashion Designer (USA) (En,Fr,Es)	3DS
+A61048E5C21414465098D11A0DF58107	 	Imagine - Fashion Designer 3D (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da)	3DS
+A55013AD1423CE620465F14B32967E35	 	Imagine - Fashion Life (USA) (En,Fr,Es)	3DS
+2D3969B71C11F9B140057741C13ADFA6	 	Imagine - Fashion World 3D (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da)	3DS
+D4B0B47923A3E2B738CACCB10E91CF67	 	Imagine Collection (Europe) (En,Fr,De,Es,Nl,Sv,No,Da)	3DS
+EA1FB5ACD32DAC0BE80996378F45EA91	 	Inazuma Eleven 1-2-3!! - Endou Mamoru Densetsu (Japan)	3DS
+D8FDAA1E534615722D4D27DC2F50DCDF	 	Inazuma Eleven 3 - Bomb Blast (Europe) (En,Fr,De)	3DS
+5DC3D94439C4399ECE51AD64FF0A42C5	 	Inazuma Eleven 3 - Bomb Blast (Europe) (En,Es,It)	3DS
+8B14A79B9726D0D62AB903F99CCC7831	 	Inazuma Eleven 3 - Lightning Bolt (Europe) (En,Fr,De)	3DS
+8FC1A97358945F7DC5AEF6089D756D0B	 	Inazuma Eleven 3 - Lightning Bolt (Europe) (En,Es,It)	3DS
+ADCEB74CFE93305637ED5AFC9384A5E3	 	Inazuma Eleven 3 - Team Ogre Attacks! (Europe) (En,Es,It)	3DS
+ADEFE26771036719A1A3C4D1631EE55D	 	Inazuma Eleven 3 - Team Ogre Attacks! (Europe) (En,Fr,De)	3DS
+E5FDDE7891D6D6DEC4E1CDFF019D6A43	 	Inazuma Eleven GO - Chrono Stones - Thunderflash (Europe) (En,Fr,De,Es,It)	3DS
+C9A5474FA4A347CFF152B8368F2D8E5F	 	Inazuma Eleven GO - Chrono Stones - Wildfire (Europe) (En,Fr,De,Es,It)	3DS
+94AFC5DBB5723C7B284F0BB88F4F9F1E	 	Inazuma Eleven Go - Dark (Japan)	3DS
+F931B8BEF2684E48018312B19AC7A945	 	Inazuma Eleven Go - Light (Europe) (En,Fr,De,Es,It)	3DS
+6E8EF000ABFDCE4B5548498B9A961609	 	Inazuma Eleven Go - Shadow (Europe) (En,Fr,De,Es,It)	3DS
+BF9C5B37F98FD094A9914F65278917AA	 	Inazuma Eleven Go - Shine (Japan)	3DS
+46509191FF65431660F1C954457DA19E	 	Inazuma Eleven Go 2 - Chrono Stone - Neppuu (Japan)	3DS
+04983009C5049464C78D049D09383D2D	 	Inazuma Eleven Go 2 - Chrono Stone - Raimei (Japan)	3DS
+5DE47CB97413A39A763FA0B71FDDD330	 	Inazuma Eleven Go Galaxy - Big Bang (Japan)	3DS
+0FFB28F32E9E03049CB51A4D91ADF97C	 	Inazuma Eleven Go Galaxy - Supernova (Japan)	3DS
+4408AC4CE506E4C97824AE02859BE70D	 	Island Days (Japan)	3DS
+15BF21A9DF18A96C4AE8F41309966BEC	 	Jake Hunter Detective Story - Ghost of the Dusk (USA)	3DS
+0999424B971C43D24925F69604EF6764	 	James Noir's Hollywood Crimes (USA) (En,Fr,Es)	3DS
+41A9F2F73D1F63BE94FB4EF7A503DE57	 	James Noir's Hollywood Crimes 3D (Europe) (En,Fr,De,Es,It)	3DS
+FF815134B035230FF9E6AE07028DA039	 	Jaws - Ultimate Predator (USA)	3DS
+6D3F21B2E1FC800A5950C0336D4EEE81	 	Jeongungmin Model - Audition Superstar 2 (Korea)	3DS
+DD7F81BAB4E811AF1C7104C922ADCC26	 	Jet Dog (Europe) (En,Fr,De,Es,It,Nl)	3DS
+C2E13D0EAAAC00099F03B5A516633F45	 	Jewel Link - Legends of Atlantis 3D (Europe) (En,Fr,Es,It)	3DS
+C0CCAB97E04AA6D477E5EE688CAA91FE	 	Jewel Link Double Pack - Safari Quest and Atlantic Quest (Europe)	3DS
+4FB215540786FE5AB1CDE542FBF8D0BA	 	Jewel Master (Japan)	3DS
+AC73FD1AA13960B8D1B180A5B3326C79	 	Jewel Master - Atlantis 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+87A534CD78D607A7167E1C8EF9EF5E0C	 	Jewel Master - Cradle of Egypt 2 3D (France) (En,Fr,Es,It)	3DS
+E3A1970123BF914EE102429B6988F11C	 	Jewel Master - Cradle of Egypt 2 3D (USA) (En,Fr,Es)	3DS
+56D3DE87B0F9A3B30A7AEC41DCAAD40F	 	Jewel Master - Cradle of Egypt 2 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+E73946599D2BDAEEA3AC91B2F36F9238	 	Jewel Master - Cradle of Rome 2 (Europe) (En,Fr,De,Es,It,Nl)	3DS
+7A4F0B27B8CEA6ECB035C787EA7826A0	 	Jewel Master - Cradle of Rome 2 (Europe) (En,Fr,Es)	3DS
+00714FF7939AAB71E6A5938F41A44388	 	Jewel Master - Cradle of Rome 2 (USA) (En,Fr,Es)	3DS
+C3C29B50222FD9235402FC41D67B2B72	 	Jewel Match 3 (Europe) (En,Fr,De,Nl)	3DS
+8CBA0043E72909F386FADDC27A947B90	 	Jewel Pet - Cafe de Mahou no Cooking! (Japan)	3DS
+1C15947BBC93A3D196F9060340EBBF81	 	Jewel Pet - Mahou de Oshare ni Dance Deco! (Japan)	3DS
+2F018A33484C4A3E44493BE060537AD0	 	Jewel Pet - Mahou no Rhythm de Ieie! (Japan) (Rev 1)	3DS
+EF6B807D81501A35AD5E62A9785636E9	 	Jewel Quest - The Sapphire Dragon (Europe) (En,Fr,De,Es,It,Nl)	3DS
+2C586A5D06E39F38F6C68AA4A6EC6EE4	 	Jewel Quest IV - Heritage (Europe) (En,Fr,De,Es,It,Nl)	3DS
+EBAF9BC6F5EF89FE3CF3D09A534895A7	 	Jewel Quest Mysteries 3 - The Seventh Gate (Europe) (En,Fr,De,Es,It,Nl)	3DS
+07EBE688DBAA3B961ABB16898D23E9E6	 	Jikkyou Powerful Pro Yakyuu Heroes (Japan)	3DS
+7FC55C0D777D51F44A7BFDED024E5316	 	Jikkyou Powerful Pro Yakyuu Heroes - Jisedai World Hobby Fair 17 Winter Tokubetsu Taikenban (Japan) (Demo) (Promo)	3DS
+96B3CCB05E752B6151F7A3CD7ACFD033	 	Jin Yeosin Jeonsaeng IV (Korea)	3DS
+82DF1C3FB5CA283C43968C3EEB30FE0B	 	Jjangguneun Monmallyeo - Pantaseutik! Ujubyeol Daemoheom!! (Korea)	3DS
+80F287EE01520C0798D591FBF770657A	 	JS Girl - Doki Doki Model Challenge (Japan)	3DS
+00F702A75853B12AA714674254BB54B3	 	Jukugo - Sokubiki Jiten Yomenai Kanji mo Raku Raku Yomeru (Japan) (Rev 1)	3DS
+9430BD255039D69D9696F74FFB3508FA	 	Junior Classic Games 3D (USA) (En,Fr,Es)	3DS
+2A90A6F5E0481BD27D4FA1C8FE4CCED4	 	Junior Games 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+14DE42A6AD5595AEDE2B918D1E460548	 	Kaite Oboeru - DoraGana (Japan)	3DS
+FC71848D187757593F93F24DC0C1B795	 	Kaitou Joker - Toki o Koeru Kaitou to Ushinawareta Houseki (Japan)	3DS
+53BE6D7893E13B27F01FB6241358F4BE	 	Kamen Rider - Travelers Senki (Japan)	3DS
+48C80252BF4E561217AAE12E0249CC74	 	Kamiwaza Wanda - Kirakira Ichibangai Kikiippatsu (Japan)	3DS
+629D1169D114168AE68B6D99AB070FB6	 	Karous - The Beast of Re-Eden (Japan)	3DS
+AAF02F273C934D3CF7DF126EF5332971	 	Kaseki Horider - Mugen Gear (Japan)	3DS
+4BC5EA40DEA2410FDBFD122CD24D55EC	 	Katachi Shinhakken! Rittai Picross 2 (Japan)	3DS
+D884B1DF0E35AA001D2F000D28556E81	 	Kawaii Koinu 3D (Japan)	3DS
+C961262FEFEC7A4C840EC3BAF18AB9AC	 	Kawaii Koneko 3D (Japan)	3DS
+84F5CE00E627E97976494D9B6D8D4327	 	Kawaii Pet to Kurasou! Wan Nyan & Idol Animal (Japan)	3DS
+F2884E604E6A0BDAF2DF157A847E3232	 	Kawaii Pet to Kurasou! Wan Nyan & Mini Mini Animal (Japan) (Rev 1)	3DS
+919060440F806B6FF1698E3EAA35ECE7	 	Kawashima Ryuuta Baksa Gamsu - Chogangnyeok! 5-bunganui Jipjungnyeok Training (Korea)	3DS
+727986AE0F809F2E3D9CAA93E5F879EB	 	Keito no Kirby Plus (Japan) (Rev 1)	3DS
+E02FA9E1A194C454B056C2F6FE5F2CED	 	Ken to Mahou to Gakuen Mono. 3D (Japan)	3DS
+900BB02C4665112FFE8F77A61506323C	 	Kenka Banchou 6 - Soul & Blood (Japan)	3DS
+0C32985072FA2892C7CE6913D839DA07	 	Kid Icarus - Uprising (Europe) (En,Fr,De,Es,It)	3DS
+E9E33890FAEFDDC83FCDB5F654BEEB0B	 	Kid Icarus - Uprising (USA) (En,Fr,Es)	3DS
+876538FEC675DB5417A5F624888E3943	 	Kingdom Hearts 3D - Dream Drop Distance (Europe) (En,Fr,De)	3DS
+95B5D31223ABE92FEACAA3C9B0694B40	 	Kingdom Hearts 3D - Dream Drop Distance (Japan)	3DS
+28CED82F8F53A1C76FF0B66138E02397	 	Kingdom Hearts 3D - Dream Drop Distance (USA) (En,Fr)	3DS
+E916184580B17D293303624AF6F921DB	 	Kiniro no Corda 3 - Full Voice Special (Japan)	3DS
+94C06A92FA7999E994433B3AABD05787	 	Kinki no Magna (Japan)	3DS
+FA09DEAEE50A1EFE14E0937F18B30F54	 	Kipper no Eigo Kyoushitsu - Floppys Phonics Vol. 1 - Kipper-Hen (Japan)	3DS
+1FBC28F329190F4B39EFBE2398C9A702	 	Kipper no Eigo Kyoushitsu - Floppys Phonics Vol. 2 - Biff-Hen (Japan)	3DS
+719F4D30B07AD9FEF6C96D78B84B6106	 	Kipper no Eigo Kyoushitsu - Floppys Phonics Vol. 3 - Chip-Hen (Japan)	3DS
+1FD55B811D5585B11235E7E1B4855985	 	Kirameki Oshare Salon! Watashi no Shigoto wa Biyoushi-San (Japan)	3DS
+E04EBC7371D3811BEA2E39BBA40A0815	 	Kirameki Waku Waku Sweets (Japan)	3DS
+3ADE5575F86DC963FA3545D7FF3753C3	 	Kirby - Planet Robobot (USA) (Demo) (Kiosk)	3DS
+D994B77AB74F7E25922EE3342588F8AD	 	Kirby - Planet Robobot (Europe)	3DS
+5AB4756DD3AEB78C83077D8BB4FEA1FD	 	Kirby - Planet Robobot (USA)	3DS
+13168EA50991EFA6465F55602BB49A8B	 	Kirby - Planet Robobot (Europe) (Demo) (Kiosk)	3DS
+30CF4FAD62559B913374E4C7C369B639	 	Kirby - Triple Deluxe (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+EA1034109AE61E63F9801FA464F9D832	 	Kirby - Triple Deluxe (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+6745AEE74002E276F18D70BC09EEED4E	 	Kirby - Triple Deluxe (USA) (En,Fr,Es)	3DS
+2DC7269938970315853C684F8F4AFC6D	 	Kirby - Triple Deluxe (Europe) (En,Fr,De,Es,It)	3DS
+354C6D2EC07AFCEF0255BAF2334FABE1	 	Kirby Battle Deluxe (Japan)	3DS
+C24D90EE5E3E9FEAA01ED3DACE67AA47	 	Kirby Battle Royale (USA) (En,Ja,Fr,De,Es,It,Nl,Ko) (Rev 2)	3DS
+98812D28853817DB151A5C1135AD0921	 	Kirby Battle Royale (Europe) (En,Fr,De,Es,It,Nl)	3DS
+111BF0CFABB07C1CFEB552B608C20377	 	Kirby Battle Royale (USA)	3DS
+D22742D28275C7F80331BFA53DA330FC	 	Kirby Battle Royale (USA) (Demo) (Kiosk)	3DS
+8C96EB1011257B238057D3BF5B20B660	 	Kirby's Extra Epic Yarn (Europe) (En,Fr,De,Es,It)	3DS
+7C4269F311ED73F5AA57DCCD729247BB	 	Kirby's Extra Epic Yarn (USA) (En,Fr,Es)	3DS
+1DDC8A5E7CD66A1891EA9A41CAB25108	 	Kirby's Extra Epic Yarn (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+7E4EB6DA4E833050F28D166588AE1361	 	Kobayashi ga Kawai Sugite Tsurai!! Game Demo Kyun Moe MAX ga Tomaranai (Japan)	3DS
+3C54C99D8074A01702F598BF65570550	 	Kobito Dukan - Kobito Kansatsu Set (Japan) (Rev 1)	3DS
+1B68835202E69850BD47219C4DCCBBD4	 	Kobito Dukan - Kobito no Fushigi - Jikken Set (Japan)	3DS
+63EAF4E0F83725678E57734A63A6BB15	 	Kobito Game Taizen (Japan)	3DS
+CB72A25EA130832C53210954A7B3624A	 	Kodomo ni Anshin Shite Ataerareru Game Series - Sekai Meisaku Douwa - Oyako de Yomeru Game Ehon Bouken-Hen (Japan)	3DS
+313873C119EDF726B85CD749C919DA13	 	Kodomo ni Anshin Shite Ataerareru Game Series - Sekai Meisaku Douwa - Oyako de Yomeru Game Ehon Princess-Hen (Japan)	3DS
+7054CF4ABA2636FF94F4C5770C1A86DD	 	Kokuga (Japan)	3DS
+4ED152A6FFE39FE90AB23DCE66BF7C79	 	Konchu Monster - Super Battle (Japan)	3DS
+A026EAC986F320A2A3EECBB5171861B2	 	Koneko no Album - My Little Cat (Japan)	3DS
+089A5E6047B0EF2564EC98A3535D6693	 	Kouekizaidan Houjin Nihon Kanji Nouryoku Kentei Kyoukai - Kanken Training (Japan)	3DS
+DA9F712A3554D9150C5479CECAF1EAD7	 	Kouekizaidan Houjin Nihon Kanji Nouryoku Kentei Kyoukai - Kanken Training (Japan) (Rev 1)	3DS
+FD4C030B66B790091708DBB1BFD35957	 	Kouekizaidan Houjin Nihon Kanji Nouryoku Kentei Kyoukai - Kanken Training 2 (Japan)	3DS
+AAA998A4BA0A67577C7A994504EADDBE	 	Kouenji Joshi Soccer 3 - Koisuru Eleven Itsuka wa Heaven (Japan)	3DS
+930ABB824B2403CAD94889CDE083659E	 	Kuma Tomo (Japan) (Rev 1)	3DS
+31ED37FC1E28F2AEF8D062B5CCE1E53F	 	Kumamon Bomber Puzzle de Kumamon Taisou (Japan)	3DS
+963593CDEF7BBB8254A1D2B5B79316FA	 	Kung Fu Panda - Showdown of Legendary Legends (Europe) (En,Fr,De,Es,It)	3DS
+82D494DAA35586EC7DDDCE7C2B0B27BE	 	Kung Fu Panda - Showdown of Legendary Legends (USA)	3DS
+1D215D451F1474928C44E5A2B2449E31	 	Kunio-kun Nekketsu Complete - Famicom-Hen (Japan)	3DS
+DB48F325995C9DF0DE994FE686D39F34	 	Kuroko no Basuke - Mirai e no Kizuna (Japan)	3DS
+BA9ADB5EEC2D815FCFCE6E568F00081B	 	Kuroko no Basuke - Shouri e no Kiseki (Japan)	3DS
+46CF1A32F5930448CAE844D7467A5E27	 	Kuukan Sagashimono Kei Nouryoku Kaihatsu - 3D Nou Training (Japan)	3DS
+C5FFBEFD47FD6A99E43D951C61442877	 	Kyokugen Dasshutsu ADV - Zennin Shiboudesu (Japan)	3DS
+1DF9FF94B9DD0440164D0C808EEE63C1	 	L'Era Glaciale 4 - Continenti alla Deriva - Giochi Polari (Italy)	3DS
+1F0783ABAE4D27697B296BC7BA13C9D3	 	Labyrinth no Kanata (Japan)	3DS
+ECC618A600B131D5C8BC4A1A65D4CD46	 	Lalaloopsy - Carnival of Friends (USA)	3DS
+6BD007FEBFC3950607A46302353E0E69	 	Langrisser - Re - Incarnation Tensei (Japan)	3DS
+334C91C373E7CF67CCCB5914A4347D95	 	Langrisser Re - Incarnation -TENSEI- (USA)	3DS
+68DCFB4E7D34722E1E7DF02E03E2465F	 	Layton Kyouju to Choubunmei A no Isan (Japan)	3DS
+FDB809BD5F980D219C80700229BBD087	 	Layton Kyouju to Kiseki no Kamen (Japan)	3DS
+30A356965DAFC56FDF26D4CA8851DDF5	 	Layton Kyouju vs Gyakuten Saiban (Japan)	3DS
+0923ABCD90127A3C63C9862D712B3886	 	Layton's Mystery Journey - Ilgop Daebuhoui Eummo (Korea)	3DS
+7B80C7139245FF9818D8828024DBC1DD	 	Layton's Mystery Journey - Katrielle and the Millionaires' Conspiracy (Europe) (En,Fr,De,Es,It,Nl)	3DS
+9FB8E16FAF3D9F3C6E2CD955B0F00450	 	Layton's Mystery Journey - Katrielle and the Millionaires' Conspiracy (USA) (En,Fr,Es)	3DS
+418DCAF1F8B9931E97C19294CA13D626	 	Layton's Mystery Journey - Katrielle to Daifugou no Inbou (Japan)	3DS
+DCAFD7246418B2D86C7CCAD43BDA5099	 	LBX - Little Battlers eXperience (USA) (En,Fr,Es)	3DS
+21AE9C502E22955729C72A81437066B1	 	LBX - Little Battlers eXperience (Europe) (En,Fr,De)	3DS
+F0FBF874CCC7D2B981799181389C30A6	 	LBX - Little Battlers eXperience (Europe) (En,Es,It)	3DS
+F35E20875804B33E8B1FCE08A4E44C70	 	Legend of Korra - A New Era Begins, The (USA)	3DS
+8D43DBB91809F4600B271A37E5685A59	 	Legend of Legacy, The (Japan)	3DS
+A61BFB5B1C2EDD3F48D957B5B0C4CE94	 	Legend of Legacy, The (USA)	3DS
+CC6CE693E478EA663714E5C25B528A35	 	Legend of Legacy, The (Europe)	3DS
+1C2A0B81B609734CD6DC3D9962BA014C	 	Legend of Zelda, The - A Link Between Worlds (Europe) (En,Fr,De,Es,It,Nl) (Demo) (Kiosk)	3DS
+AC8DB2D608A6E5DD9EF915888FD7F44B	 	Legend of Zelda, The - A Link Between Worlds (Europe) (En,Fr,De,Es,It)	3DS
+B502BFFB7C92A4D5C84332F63B67C152	 	Legend of Zelda, The - A Link Between Worlds (USA) (En,Fr,Es)	3DS
+66F360C79654E69606113EC4E53262C2	 	Legend of Zelda, The - A Link Between Worlds (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+CD1A45708BCB788AFC22EC16BFF76841	 	Legend of Zelda, The - Majora's Mask 3D (Europe) (En,Fr,De,Es,It)	3DS
+9B5AAE6105C6DED7FC4871DB37F2C6E2	 	Legend of Zelda, The - Majora's Mask 3D (USA) (En,Fr,Es)	3DS
+F369C1A1CBD92EDFE99D6355B007D663	 	Legend of Zelda, The - Majora's Mask 3D (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+10CE51096CDE68310EE9269088DE86D5	 	Legend of Zelda, The - Majora's Mask 3D (USA) (Demo) (Kiosk)	3DS
+861D95D54B85DB50B8EE3366727E037D	 	Legend of Zelda, The - Majora's Mask 3D (USA) (En,Fr,Es) (Rev 1)	3DS
+D3120656722776F1DF3C01167791507F	 	Legend of Zelda, The - Majora's Mask 3D (Europe) (En,Fr,De,Es,It) (Rev 1)	3DS
+A669664E8D030DCCD2AF11F6026EE003	 	Legend of Zelda, The - Ocarina of Time 3D (Europe) (En,Fr,De,Es,It) (Rev 1)	3DS
+A582B6832F7DB3C9CC858DC0F8C79761	 	Legend of Zelda, The - Ocarina of Time 3D (USA) (En,Fr,Es) (Rev 1)	3DS
+6E4E5C5D86526B7D4B72D5F190150EF7	 	Legend of Zelda, The - Ocarina of Time 3D (Korea)	3DS
+88C335FE680044B6833117FD2A009B6F	 	Legend of Zelda, The - Ocarina of Time 3D (Europe) (En,Fr,De,Es,It)	3DS
+088B3C32E0D85F6182BBEB679C023A24	 	Legend of Zelda, The - Ocarina of Time 3D (USA) (En,Fr,Es)	3DS
+E16387454030C1B5714E9FC65E4CFC5F	 	Legend of Zelda, The - Ocarina of Time 3D (Taiwan) (Tw, Cn Region Lock)	3DS
+FBE1BB0F4AC7F520670477F66AB37B64	 	Legend of Zelda, The - Ocarina of Time 3D (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+AEA87BC5D32457A1FA749DBAC5A23015	 	Legend of Zelda, The - Ocarina of Time 3D (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+FBBF75E51246733CC83B7447132E2BA3	 	Legend of Zelda, The - Tri Force Heroes (Europe) (En,Fr,De,Es,It)	3DS
+C34A1C18FEC99279BBCB08A65AE99DFA	 	Legend of Zelda, The - Tri Force Heroes (USA) (En,Fr,Es)	3DS
+EE0796B31BF3A537D3C4B84994C856CF	 	Legends of Oz - Dorothy's Return (USA)	3DS
+45554A630BBEE765437A24051A41C005	 	Legends of Oz - Dorothy's Return (Europe)	3DS
+102D8DC1393DB1CF853F1F3F424F13D0	 	LEGO Batman 2 - DC Super Heroes (France) (En,Fr) (Rev 1)	3DS
+A7AE8EEDF845AA7ADEA7AE9E6C3202AB	 	LEGO Batman 2 - DC Super Heroes (USA) (En,Fr,Es,Pt)	3DS
+51D23ACA53CC64733CE39CC3185D29BE	 	LEGO Batman 2 - DC Super Heroes (Germany) (En,De)	3DS
+5284147B6018DFB7086C9EC125839B8F	 	LEGO Batman 2 - DC Super Heroes (France) (En,Fr)	3DS
+B0E9EF11937852A378648AE78CA5D4AD	 	LEGO Batman 2 - DC Super Heroes (Europe) (En,Fr,De,Es,It,Nl,Da)	3DS
+3D7732405BBAFBE4754D73AA94FECB2A	 	LEGO Batman 2 - DC Super Heroes (Canada) (En,Fr-CA)	3DS
+AF13D42641FCEA5256DA6C9A26A8A126	 	LEGO Batman 2 - DC Super Heroes (Korea)	3DS
+062FE542AA47B8D0A148505262719AFD	 	LEGO Batman 2 - DC Super Heroes (Europe) (En,Fr,De,Es,It,Nl,Da) (Rev 1)	3DS
+D37D67A595E9EEAC99064B2D205B7F69	 	LEGO Batman 2 - DC Super Heroes (Germany) (En,De) (Rev 1)	3DS
+26593D9864C95919F46956B91CE47923	 	LEGO Batman 3 - Au-dela de Gotham (France) (En,Fr,De,Es,It,Nl,Da)	3DS
+3108EFCB8791C734C33815A302E6302F	 	LEGO Batman 3 - Beyond Gotham (USA) (En,Fr,Es,Pt)	3DS
+5B062B2F7C204E95F49927B93B612C53	 	LEGO Batman 3 - Beyond Gotham (Europe) (En,Fr,De,Es,It,Nl,Da)	3DS
+8205CB2C4971A055772708BB7F564657	 	LEGO Batman 3 - Beyond Gotham (Spain) (En,Fr,De,Es,It,Nl,Da)	3DS
+0E813618F103EC71A9BF4F3B057461B4	 	LEGO Batman 3 - Gotham e Oltre (Italy) (En,Fr,De,Es,It,Nl,Da)	3DS
+38321D0E0E8430D83F6CE8BB9B5D804A	 	LEGO Batman 3 - Jenseits von Gotham (Germany) (En,Fr,De,Es,It,Nl,Da)	3DS
+EE96A5835B9EA0418D58C633FAA71C1F	 	LEGO Batman 3 - The Game - Gotham kara Uchuu e (Japan)	3DS
+6FED36DD38F8158F65C28BF96DC7A8C3	 	LEGO City Undercover - The Chase Begins (Japan)	3DS
+E99BA3BDB02312F752F18639D52BDCC9	 	LEGO City Undercover - The Chase Begins (Europe) (En,Fr,De,Es,It,Nl,Pt,Da,Ru) (Demo) (Kiosk)	3DS
+399160321004A8F657281166CE2DCE70	 	LEGO City Undercover - The Chase Begins (USA) (Demo) (Kiosk)	3DS
+829C269942D018586B1892378CBC697D	 	LEGO City Undercover - The Chase Begins (USA) (En,Fr,Es)	3DS
+51B15E93826057CFCA4B2D9479A0C769	 	LEGO City Undercover - The Chase Begins (Europe) (En,Fr,De,Es,It,Nl,Pt,Da,Ru)	3DS
+580B5ED7784D8DF9DFDCA6E0189598EA	 	LEGO City Undercover - The Chase Begins (Korea)	3DS
+95D44CD507E8E888A0C96C6D768A7CE7	 	LEGO Der Herr der Ringe (Germany) (En,Fr,De,Es,It,Nl,Da)	3DS
+546A4C8B4E910AFF361BC1669A21A1AE	 	LEGO Der Hobbit (Germany) (En,Fr,De,Es,It,Nl,Da)	3DS
+8625F59073F875A98117CC6B49513469	 	LEGO El Hobbit (Spain) (En,Fr,De,Es,It,Nl,Da)	3DS
+EC36E30090D0D34CA37B6F7174240E43	 	LEGO El Senor de los Anillos (Spain) (En,Fr,De,Es,It,Nl,Da)	3DS
+145E01586514DFA5FAC5E32B3FE1E04B	 	LEGO Friends (Europe) (En,Fr,De,Es,It,Nl,Da)	3DS
+835B7EFF31C1987277A7830AF53E7C22	 	LEGO Friends (USA) (En,Fr,Es,Pt)	3DS
+BB6C303902F6AE0CBBCC779C1096D946	 	LEGO Harry Potter - Years 5-7 (USA) (En,Fr,Es,Pt)	3DS
+7A2DCC07BEDF952EC18474779F206B3A	 	LEGO Harry Potter - Years 5-7 (Europe) (En,Fr,De,Es,It,Nl,Da)	3DS
+23155EC79942C8EDD67753C698C870DA	 	LEGO Jurassic World (Germany) (En,Fr,De,Es,It,Nl,Da)	3DS
+ED5CAED9B2057C2C7226105FA6A1B37E	 	LEGO Jurassic World (Europe) (En,Fr,De,Es,It,Nl,Da)	3DS
+FA2027D7F0BFEC743D20A597B23C0D3A	 	LEGO Jurassic World (France) (En,Fr,De,Es,It,Nl,Da)	3DS
+3E9B3B37A3E76D2EF2A47FFBAD0D6076	 	LEGO Jurassic World (USA) (En,Fr,Es,Pt)	3DS
+58DC8160B7F8D4E62B9C8FE1018FBB12	 	LEGO Jurassic World (Italy) (En,Fr,De,Es,It,Nl,Da)	3DS
+5B06749BE0E147E7E2A5F5A114A67436	 	LEGO Jurassic World (Spain) (En,Fr,De,Es,It,Nl,Da)	3DS
+5A6670721E36A95D5EE8A6E87FFB3F2A	 	LEGO Jurassic World (Japan)	3DS
+C33BBF798F59AD3234485FA7D22E842E	 	LEGO Le Seigneur des Anneaux (France) (En,Fr,De,Es,It,Nl,Da)	3DS
+570EE72255C69AAE495F8EFC59FF6D0E	 	LEGO Legends of Chima - Laval's Journey (Europe) (En,Fr,De,Es,It,Nl,Da)	3DS
+21ED5ACE54A00F8A74EB07C390F7223B	 	LEGO Legends of Chima - Laval's Journey (USA) (En,Fr,Es,Pt)	3DS
+CEE657E27DB236C43D0AFEB6576C39B0	 	LEGO Legends of Chima - Laval's Journey (Europe) (En,Fr,De,Es,It,Nl,Da) (Rev 1)	3DS
+09B9DC92763C7A8D8A130E19098E3FFA	 	LEGO Legends of Chima - Lavalui Yeohaeng (Korea)	3DS
+F21BB5A60FB64332661CC53F8220E3A3	 	LEGO Marvel Avengers (Germany) (En,Fr,De,Es,It,Nl,Da)	3DS
+06257A3C30C3FC0BE8A988EA8B2C3D8E	 	LEGO Marvel Avengers (USA) (En,Fr,Es,Pt)	3DS
+B769C103946E558DA82157698C0E24EE	 	LEGO Marvel Avengers (Europe) (En,Fr,De,Es,It,Nl,Da)	3DS
+0F5F997509D62AACCE64CF2276107ACD	 	LEGO Marvel Avengers (France) (En,Fr,De,Es,It,Nl,Da)	3DS
+AA4249963237C313B7A997B1564973FF	 	LEGO Marvel Avengers (Italy) (En,Fr,De,Es,It,Nl,Da)	3DS
+2BCCC87566322762410A6936D9D7C020	 	LEGO Marvel Avengers (Japan)	3DS
+96256AFE7006A52337158B3945DE5C58	 	LEGO Marvel Super Heroes - L'Univers en Peril (France) (En,Fr,De,Es,It,Nl,Da)	3DS
+D167D4C3FBF8567184BEE87CDBAB0492	 	LEGO Marvel Super Heroes - The Game (Japan)	3DS
+82B9B5A32E76CF3BFE14E322391B30DF	 	LEGO Marvel Super Heroes - Universe in Peril (USA) (En,Fr,Es,Pt) (Spanish-only Audio)	3DS
+E9DCF591C8785A53CCC68BBF94C14353	 	LEGO Marvel Super Heroes - Universe in Peril (USA) (En,Fr,Es,Pt) (English-only Audio)	3DS
+39C663900AE678595BE8C6A345BF016B	 	LEGO Marvel Super Heroes - Universe in Peril (Europe) (En,Fr,De,Es,It,Nl,Da)	3DS
+4748D10DE049A7EF42535004DDBD687B	 	LEGO Marvel Super Heroes - Universo en Peligro (Spain) (En,Fr,De,Es,It,Nl,Da)	3DS
+D8078163BE4022E392988EB45A92EAAC	 	LEGO Marvel Super Heroes - Universum in Gefahr (Germany) (En,Fr,De,Es,It,Nl,Da)	3DS
+EDAA47C6ED0D02D53F2D5E769559D2FF	 	LEGO Marvel Vengadores (Spain) (En,Fr,De,Es,It,Nl,Da)	3DS
+E8E2A2A986ED337DC57BA87A78F022F6	 	LEGO Movie Videogame, The (Japan)	3DS
+02CC083C2CD35BEB17BD1E6225606D91	 	LEGO Movie Videogame, The (USA) (En,Fr,Es,Pt)	3DS
+46F88F4CBFD8E39CE63B2708C018685E	 	LEGO Movie Videogame, The (Germany) (En,Fr,De,Es,It,Nl,Da)	3DS
+B3D403F3E61CE7144CC799C6D20FCD5F	 	LEGO Movie Videogame, The (Europe) (En,Fr,Es,It,Nl,Da)	3DS
+299C37BBD5E4E405AF4678ACA1B649BF	 	LEGO Ninjago - L'Ombre de Ronin (France) (En,Fr,De,Es,It,Nl,Da)	3DS
+5519D40AE4ED6398CF3E99342572D09A	 	LEGO Ninjago - La Sombra de Ronin (Spain) (En,Fr,De,Es,It,Nl,Da)	3DS
+67B08B8400A92E68B862F46314F8C84D	 	LEGO Ninjago - Nindroids (Germany) (En,Fr,De,Es,It,Nl,Da)	3DS
+8A40E6A30BFDF3D42C1678813AC6F073	 	LEGO Ninjago - Nindroids (USA) (En,Fr,Es,Pt)	3DS
+6C50008F82EE1BC2C0A5D62D2F4F8A04	 	LEGO Ninjago - Nindroids (Europe) (En,Fr,De,Es,It,Nl,Da)	3DS
+5FA0FB107018D3D9D8D26F06E6762FC6	 	LEGO Ninjago - Nindroids (France) (En,Fr,De,Es,It,Nl,Da)	3DS
+692876B7A478F361BDA71EBCEFEC3D46	 	LEGO Ninjago - Nindroids (Spain) (En,Fr,De,Es,It,Nl,Da)	3DS
+B5944E17F1678A9A6915878280581902	 	LEGO Ninjago - Nindroids (Japan)	3DS
+E8179B72BA7D51929A5F5E789F498B21	 	LEGO Ninjago - Nindroids (Korea)	3DS
+448E664D3C298B800AE3C3AF798D3A1B	 	LEGO Ninjago - Schatten des Ronin (Germany) (En,Fr,De,Es,It,Nl,Da)	3DS
+3D363D6579A4C589F81B98ABD22F3B66	 	LEGO Ninjago - Shadow of Ronin (USA) (En,Fr,Es,Pt)	3DS
+46062C50EE3E4CC4F1FC86A38F957F91	 	LEGO Ninjago - Shadow of Ronin (Europe) (En,Fr,De,Es,It,Nl,Da)	3DS
+E875B265455398678A426D80D0AC8205	 	LEGO Ninjago - Shadow of Ronin (Korea)	3DS
+7526DE8DF321EBC27FBF03377561F234	 	LEGO Ninjago Ronin no Kage (Japan)	3DS
+68D3062975090603A7768F7A10ABC84D	 	LEGO Pelicula el Videojuego, La (Spain) (En,Fr,Es,It,Nl,Da)	3DS
+C398576D624EAF1760473C0975E996F4	 	LEGO Pirates of the Caribbean - The Video Game (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da) (Rev 1)	3DS
+70630E06EC24FD39340982662636ADE8	 	LEGO Pirates of the Caribbean - The Video Game (USA) (En,Fr,Es) (Rev 1)	3DS
+994631171BF4EC8C7C34CB1744AE6FE7	 	LEGO Pirates of the Caribbean - The Video Game (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da)	3DS
+4385DCF5930FF8D9EEF1A2518139B4A9	 	LEGO Pirates of the Caribbean - The Video Game (USA) (En,Fr,Es)	3DS
+502D9E5ACD7EFDA0C52313A1F7270B0D	 	LEGO Star Wars - Das Erwachen der Macht (Germany) (En,Fr,De,Es,It,Nl,Da)	3DS
+B6895D34B40F9392344040325BFB0A5B	 	LEGO Star Wars - El Despertar de la Fuerza (Spain) (En,Fr,De,Es,It,Nl,Da)	3DS
+710D22108871B9248FCAD205277D2FF0	 	LEGO Star Wars - Force no Kakusei (Japan)	3DS
+E834957941859714F435D87FD7437474	 	LEGO Star Wars - Il Risveglio della Forza (Italy) (En,Fr,De,Es,It,Nl,Da)	3DS
+FB09D63EE2F4EC2B0B7BA56E188958D2	 	LEGO Star Wars - Kkaeeonan Force (Korea)	3DS
+7D99424D5AC139421C77BB744E760025	 	LEGO Star Wars - Le Reveil de la Force (France) (En,Fr,De,Es,It,Nl,Da)	3DS
+F4FA060179080E8197BA07788E02A326	 	LEGO Star Wars - The Force Awakens (Europe) (En,Fr,De,Es,It,Nl,Da)	3DS
+9A0ECDA576344B18E03A322240D6A855	 	LEGO Star Wars - The Force Awakens (USA)	3DS
+70BA7625B022050C19AFE71B5616A366	 	LEGO Star Wars III - The Clone Wars (Europe) (En,Fr,De,Es,It,Da)	3DS
+16315AF38FF79569DFBF03DC4107051D	 	LEGO Star Wars III - The Clone Wars (USA) (En,Fr,Es)	3DS
+F615493560ED8143B05205C7799DA696	 	LEGO Star Wars III - The Clone Wars (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+4EFE23FC6765D0C564A0CC3EB7C34AD5	 	LEGO Star Wars III - The Clone Wars (Europe) (En,Fr,De,Es,It,Da) (Rev 1)	3DS
+8F18EE1E32556498A356D223A6E34D75	 	LEGO The Hobbit (USA) (En,Fr,Es,Pt)	3DS
+93BCF724E711D9D0668B859DC99F9BD2	 	LEGO The Hobbit (Europe) (En,Fr,De,Es,It,Nl,Da)	3DS
+8940C1EDFE0CADD11A206A901C60D5BA	 	LEGO The Hobbit (France) (En,Fr,De,Es,It,Nl,Da)	3DS
+88D4D23E3ABE46AD9C88706E86541B13	 	LEGO The Lord of the Rings (USA) (En,Fr,Es,Pt)	3DS
+6E83E93894F9FE8EAA1F4990641C3C34	 	LEGO The Lord of the Rings (Europe) (En,Fr,De,Es,It,Nl,Da)	3DS
+C3A693C4CEB5685DDF0153367740A5BB	 	Let's Ride! Best in Breed 3D (USA)	3DS
+1BC9E213D60A5CD868FA634CE8756FE8	 	Life with Horses 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+8593FD3ADB7721FDB1EC842678D64ABA	 	Lord of Magna - Maiden Heaven (USA)	3DS
+8877D29A66FDCA2D8504202727D5BA3B	 	Lost Heroes (Japan)	3DS
+5F694440AED4BB0D990CF30275AC78B8	 	Lost Heroes 2 (Japan)	3DS
+4243AC0EDA0973AD21717503442E24F1	 	Lost Heroes 2 (Premium Edition) (Japan)	3DS
+5387BB5AF17E8D4027760A729E68B015	 	Lucky Luke & The Daltons (Europe) (En,Fr,De,Es,It)	3DS
+EDAC2139FB093DF5EE6498DD624F3EE7	 	Luigi Mansion (Japan) (Rev 1)	3DS
+A4976EA42E6747B3F800966CE7A0A940	 	Luigi Mansion (Korea)	3DS
+2F0E0DB491B0A597DA4E07E5E394708E	 	Luigi Mansion 2 (Japan)	3DS
+8EC47D7C9F6741709DF6A19D4FBFBD46	 	Luigi's Mansion (USA)	3DS
+5BA166213097DFD0ABE0C58A53AE7EF1	 	Luigi's Mansion (Europe) (En,Fr,De,Es,It)	3DS
+0F8D9B073BE425AEEB2B2C0E92D2B6A2	 	Luigi's Mansion - Dark Moon (Korea)	3DS
+C0FBEB3BAC8FB0D843C9E86C73D0F9DB	 	Luigi's Mansion - Dark Moon (USA) (En,Fr,Es)	3DS
+9DC56224851C87CCF3BC17179AE82333	 	Luigi's Mansion 2 (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+6C0EF2A610DC0913AA54356A1B057876	 	Luigi's Mansion 2 (Taiwan) (Tw, Cn Region Lock)	3DS
+C137AD6DC4E7066460D05BC31825D33C	 	Luv Me Buddies Wonderland (Europe) (En,Fr,De,Es,It)	3DS
+34D4BE2796A56F0913B7BBD0E4886CD8	 	Luxor (Europe) (En,Fr,De,Nl)	3DS
+A99E92A00EE86F4647270F57F47D2EE7	 	Madagascar 3 (Japan)	3DS
+F8E0712D2A1F0EA3F5121E76AE7D4C68	 	Madagascar 3 - Europe's Most Wanted (Europe) (En,Fr,De,Es,It,Nl,Ru)	3DS
+BF78B36B573A8C091A4BAC0EE8CAFC33	 	Madagascar 3 - The Video Game (USA) (En,Fr,Es)	3DS
+0E4C9B6E4FBFE8E2208A18B05D5C4290	 	Madden NFL Football (Europe)	3DS
+C55A235A44CC2CBDB001454C541CD619	 	Madden NFL Football (USA)	3DS
+1C14E9F9050EF9B0AFFAA467C7172AA0	 	Made in Wario Gorgeous (Japan)	3DS
+DABFE592628BEF69948F73909B7AEABD	 	Magi - Aratanaru Sekai (Japan)	3DS
+61D460264BAD3B367C705F3DC2C1A908	 	Magi - Hajimari no Meikyuu (Japan)	3DS
+8A2186C2544A6FE999C901656BA8FE39	 	Mahjong 3D - Warriors of the Emperor (Europe) (En,Fr,De,Es)	3DS
+08CBCD0E40AFC50EA722FB9C05864963	 	Mahjong 3D - Warriors of the Emperor (USA)	3DS
+8400384C03F842A008D776F0A4F9FEC1	 	Mahjong Cub3D (USA)	3DS
+C824A4CE444EF03DBB5571E7533C1D93	 	Mahjong Mysteries - Ancient Athena 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+1EFC21F972D1ED5766514999DD6B8528	 	Mahjong Mysteries - Ancient Athena 3D (Europe) (En,Fr,Es,It)	3DS
+919A4577693E2F9DF2753B96DD369794	 	MahoCole - Mahou Idol Collection (Japan)	3DS
+E67768AF0CE50CD79D0C40D9CDAB1081	 	Majin Bone - Jikan to Kuukan no Majin (Japan)	3DS
+4720ED57887EBFFE0F864463BFD64AFA	 	Makai Ouji - Devils and Realist - Dairiou no Hihou (Japan)	3DS
+F7A9FB7AB8223D8360EAE1132BC1C9EE	 	Mamegoma - Yoi Ko Marui Ko Genki na Ko (Japan)	3DS
+F0906D04737A51C1F97B1DDA2E5ADE0B	 	Mamegoma Happy! Sweets Farm (Japan)	3DS
+EC2C242ADF66ADDDE187DED40B58DA3F	 	Mameshiba (Japan)	3DS
+4ED5EEF073C3755C2526508CCF64BCF6	 	Manga-ka Debut Monogatari - Suteki na Manga o Egakou (Japan)	3DS
+C2E53877D9AD1410F14CF8776569F2DE	 	MapleStory - Unmei no Shoujo (Japan)	3DS
+37D0F68FF83BAE2C8E92133E94B7ADF0	 	MapleStory - Unmyeongui Sonyeo (Korea)	3DS
+C509703FA0345F6EDE8CDD9AA1B0CD88	 	Mario & Luigi - Bowser's Inside Story + Bowser Jr.'s Journey (USA)	3DS
+2A55CE2F85D8E045CD4C9829A6660C37	 	Mario & Luigi - Bowser's Inside Story + Bowser Jr.'s Journey (Europe) (En,Fr,De,Es,It)	3DS
+38078951A5984ACE5876B3D0A7A0210E	 	Mario & Luigi - Dream Team (USA) (En,Fr,Es) (Rev 1)	3DS
+02E9CBF66333B3DFE956E679E3C70F1E	 	Mario & Luigi - Dream Team (USA) (En,Fr,Es)	3DS
+52BA0850A7596745F10E82D95F740C72	 	Mario & Luigi - Dream Team (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+E2AD56B480E9D1E4554CBD004D3969FA	 	Mario & Luigi - Dream Team Bros. (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+9696F5B6E56EB79437B52B3A2EFC7AD8	 	Mario & Luigi - Dream Team Bros. (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 1)	3DS
+062A329A2B318A47646D57833337B18C	 	Mario & Luigi - Paper Jam (USA)	3DS
+275A0B007A6802B5FDDE730FECB8CA92	 	Mario & Luigi - Paper Jam Bros. (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+7139622BC65456B1C6D98AB8EB0C32FA	 	Mario & Luigi - Paper Jam Bros. (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+DC9D04384CF6DCA207879AC013296294	 	Mario & Luigi - RPG1 DX (Japan)	3DS
+96A2E7C69A350ED1DC18CB4F674BDA4C	 	Mario & Luigi - RPG1 DX (Korea)	3DS
+ADDF5EEAACA9A10F76F4892D9A7A762C	 	Mario & Luigi - Superstar Saga + Bowser's Minions (Europe) (En,Fr,De,Es,It,Nl)	3DS
+17A8B5D39DE06F9227E2FC1EC936B293	 	Mario & Luigi - Superstar Saga + Bowser's Minions (USA) (En,Fr,Es)	3DS
+9E66E651366A59E14EAE6CBCA5233279	 	Mario & Luigi RPG - Paper Mario MIX (Japan)	3DS
+EFAE09E04B3733C58909D82D2703CB13	 	Mario & Luigi RPG - Paper Mario MIX (Korea)	3DS
+FF649EC9C34DE1F30CE946476F8393D7	 	Mario & Luigi RPG 4 - Dream Adventure (Korea)	3DS
+D1BE03ED824028E2F1CB3D8654A57137	 	Mario & Luigi RPG 4 - Dream Adventure (Japan)	3DS
+C841DECB112D20C1C3B28153948C3F86	 	Mario & Luigi RPG3 DX (Japan)	3DS
+03ADF0E21BB6A6FEBF907B07FD067697	 	Mario & Sonic at London Olympics (Japan) (Rev 1)	3DS
+0149FD4580CFD41672A6162E1C2ED371	 	Mario & Sonic at Rio Olympics (Japan) (Rev 1)	3DS
+5CDB92DC62C6B49D306687E6303EAB37	 	Mario & Sonic at the London 2012 Olympic Games (USA) (En,Fr,Es) (Rev 1)	3DS
+F0BA1C189BF62178E321D48DB71D30CE	 	Mario & Sonic at the London 2012 Olympic Games (USA) (En,Fr,Es)	3DS
+14E3C8B3E940C34D03672C864721C912	 	Mario & Sonic at the London 2012 Olympic Games (Europe) (En,Fr,De,Es,It,Nl)	3DS
+D25BD0DD00DCD1F5158D88CB896B7B30	 	Mario & Sonic at the Rio 2016 Olympic Games (USA) (En,Fr,Es)	3DS
+4EE1C8CB3A457A4D87DF0A60B5CA8BB7	 	Mario & Sonic at the Rio 2016 Olympic Games (Europe) (En,Fr,De,Es,It,Nl)	3DS
+AB26CC7488E05570DE4272A500260BF4	 	Mario & Sonic at the Rio 2016 Olympic Games (Europe) (Demo) (Kiosk)	3DS
+9B094F0B747A194985EF1282E8288EED	 	Mario Golf - World Tour (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Demo) (Kiosk)	3DS
+1A4882A18E3000FBEC4BB7D85230F68A	 	Mario Golf - World Tour (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+8EACEDA42ED3289F9E88E06776B7646A	 	Mario Golf - World Tour (Japan)	3DS
+8570C6085BA490209DCA169E3345B927	 	Mario Golf - World Tour (USA) (En,Fr,Es)	3DS
+95AE28781FAE031887599951AF80D863	 	Mario Golf - World Tour (Korea)	3DS
+11677939E3EA8AD8C515EE2C476BFC6A	 	Mario Kart 7 (Japan) (Rev 2)	3DS
+64992AB3CC28E70F4B03CB1946226203	 	Mario Kart 7 (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 1)	3DS
+B137EAFEF41452E31CBBE1B8C7006963	 	Mario Kart 7 (Japan) (Rev 1)	3DS
+A4C4F40D970AD2DEF40DD93172B6EBBF	 	Mario Kart 7 (Korea)	3DS
+4EDDF25E972B65BBA142BBFD82D0EFAC	 	Mario Kart 7 (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+29849F033F3BEE5655CE45136D8F9B10	 	Mario Kart 7 (USA) (En,Fr,Es)	3DS
+EC92F581BB50D15E4E7F51B1D99961C7	 	Mario Kart 7 (Japan)	3DS
+141A2BA3D9AD80F73C9FD642A857B307	 	Mario Kart 7 (Taiwan)	3DS
+77471F1F76ED7F6A50C31207A3227B3A	 	Mario Kart 7 (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+203A89F54C4CC44ECAE54CB41B0DEB3B	 	Mario Kart 7 (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+D95A2A8A9E2E2CDF727979B31935637A	 	Mario Kart 7 (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 2)	3DS
+D8293968FCF5FFCE40FC390389E012B6	 	Mario Kart 7 (USA) (En,Fr,Es) (Rev 1)	3DS
+117863224A727DF8C961194DB9A9FE36	 	Mario Party - Island Tour (USA) (En,Fr,Es)	3DS
+88521C95C29F0EE72C7A6431E0EF1F46	 	Mario Party - Island Tour (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+13A53369F7FA5C61B60C9CAD41FBC793	 	Mario Party - Island Tour (Japan)	3DS
+08726D50EFB13D81353E95AB19C50FFE	 	Mario Party - Island Tour (Korea)	3DS
+C9FE3DCCA6A1A327D8F678A2E458F248	 	Mario Party - Star Rush (Korea)	3DS
+9CFC3C1DE8B9A8BCA79873DC27534C2B	 	Mario Party - Star Rush (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+72E36F5B8FDA1B3265AC22061E6A5CCD	 	Mario Party - Star Rush (USA) (En,Fr,Es)	3DS
+FC8C59427FE230234E4B6D174EC4A155	 	Mario Party - Star Rush (Japan)	3DS
+0AC164B3119B4F9221EC65FCAE7AAAE5	 	Mario Party - The Top 100 (USA)	3DS
+5C93F8D321BAC614FED4D5216952C84D	 	Mario Party - The Top 100 (Europe) (En,Fr,De,Es,It,Nl)	3DS
+078EC73EC6249F8E575B6747ED6C0943	 	Mario Party 100 - Mini Game Collection (Japan)	3DS
+30FF80381ED68411D5D995E5C3F3EBD2	 	Mario Sports Superstars (Europe) (En,Fr,De,Es,It,Nl)	3DS
+FC2841CF6A836DD1BB65D0D1002F8294	 	Mario Sports Superstars (USA)	3DS
+1D593B9050CC57C889B85C6EED6237CC	 	Mario Sports Superstars (Japan)	3DS
+C4FCBC36A6CEC758C36D7D6BF5EFC753	 	Mario Tennis Open (Korea)	3DS
+751BC1ED3197ABA7C4957D0CB3A10578	 	Mario Tennis Open (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+31C5AB1A4791944D82CF32BB90EAEAA3	 	Mario Tennis Open (USA) (En,Fr,Es) (Rev 1)	3DS
+EBD40334F556FED573921B6A836AE799	 	Mario Tennis Open (Taiwan) (Tw, Cn Region Lock)	3DS
+B1B2F86279DA709EE346C054D43F4FF9	 	Mario Tennis Open (Japan)	3DS
+69ACE87BA76E04759864B6BB4EC21EC7	 	Mario Tennis Open (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Demo) (Kiosk)	3DS
+A94D34A044727C866EE278D2064F4D54	 	Mario Tennis Open (USA) (Demo) (Kiosk)	3DS
+67E0A39B3DBF4F40054DEFF12A1F4AF9	 	Mario Tennis Open (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 1)	3DS
+5818A58D0F2C8E2FDA55D48EEC3BC963	 	Mario Tennis Open (USA) (En,Fr,Es)	3DS
+761FB4B2C9C2187C5568AC46AE8A928B	 	Mario Tennis Open (Japan) (Rev 1)	3DS
+0E715C452D6530ABD0D16E52217D92F6	 	Mario vs. Donkey Kong - Minna de Mini-Land (Japan)	3DS
+DE641AF8B456391A4F4CC1179E99C133	 	Mariowa Sonic - Rio Olympics (Korea)	3DS
+375A18E2BA9DBEA12C79EBAD30199E4A	 	Mariowa Sonic London Olympic (Korea)	3DS
+492A1C52A234D63974971066DB3F16EC	 	Marvel Disk Wars - Avengers - Ultimate Heroes (Japan)	3DS
+9B72A2EFDF44F2F7CAEF666DDCE4F610	 	Marvel Super Hero Squad - The Infinity Gauntlet (Europe) (En,Fr,Es,It)	3DS
+33B161661ED1A75FDCDB5FEEB732C992	 	Marvel Super Hero Squad - The Infinity Gauntlet (USA) (En,Fr,Es)	3DS
+D4F88193CC9BBAC3E0127B796ECD6774	 	Me & My Furry Patients 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+7CF03A75CEF0A79D249FC5F4D2619B9B	 	Me & My Pets 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+81B87CF59E0F5563A06157CD06431D57	 	Medarot 7 - Kabuto Ver. (Japan)	3DS
+25D83932B5039B966062055B90EB5A56	 	Medarot 7 - Kuwagata Ver. (Japan)	3DS
+0B42930F19A9EF7D11B96916C579F128	 	Medarot 8 - Kabuto Ver. (Japan)	3DS
+3EB80DA902F53D2FAF41315FD43B84FC	 	Medarot 8 - Kuwagata Ver. (Japan)	3DS
+FBF6A1AA68B47B009391DE2070686CD5	 	Medarot 9 - Kabuto Ver. (Japan)	3DS
+A2CF75D5BE7A588318DA01653398ECBD	 	Medarot 9 - Kuwagata Ver. (Japan)	3DS
+D5AC5CD10E448D1FD7B9A1E32233C7CF	 	Medarot Classics - Kabuto Version (Japan)	3DS
+5B7A978E8AD2A32290F8CEB65AE0F95B	 	Medarot Classics - Kuwagata Version (Japan)	3DS
+FFF13FFE5D2570EC51718F93D17E4F28	 	Medarot Dual - Kabuto Ver. (Japan)	3DS
+8A893208587AA2960721EEAD52B95072	 	Medarot Dual - Kuwagata Ver. (Japan)	3DS
+1A693A1D38C7F1ABB46FAACCB82BCE8D	 	Medarot Girls Mission - Kabuto Ver. (Japan)	3DS
+FEB50D34EEA8630A2A3E8334E75FD3EE	 	Medarot Girls Mission - Kuwagata Ver. (Japan)	3DS
+DF6A08412F9D5D5FCC0A57DB573AF351	 	Mega Man Legacy Collection (USA)	3DS
+FA7CC3EBBF858994C87D087C541D05DA	 	Meitantei Conan - Marionette Symphony (Japan)	3DS
+74A0989AFC2D53E35839F7BD2C7744E0	 	Meitantei Conan - Phantom Rhapsody (Japan)	3DS
+3DE4B740DE41AB0ADE6F62D2E5D0A3E2	 	Meitantei Pikachu (Japan) (En,Ja,Fr,De,Es,It,Zh)	3DS
+C3607EE579F72BDB6F6C685AE28D2B66	 	Mensa Academy (Europe)	3DS
+22D80317A506B03E437A6C382EC8DC7B	 	Metal Fight Beyblade 4D x ZEROG Ultimate Tournament (Japan)	3DS
+3D50F9D09B0DB77BA4A5D9078001A5AE	 	Metal Gear Solid 3D - Snake Eater (USA) (En,Fr,Es)	3DS
+288EDD04EFB64B3CE44487264D6F9DC5	 	Metal Gear Solid 3D - Snake Eater (Europe) (En,Fr,De,Es,It)	3DS
+57DD1AA4DFD8D0FC6A6D3B1718794F78	 	Metal Gear Solid 3D - Snake Eater (Japan)	3DS
+B15BC05F83051CE1CA693D9CAEB37CE5	 	Metal Max 4 - Gekkou no Diva (Japan)	3DS
+3AC31B3BC5269C791BE4D19EDCA3D9BE	 	Metroid - Samus Returns (Europe) (En,Fr,De,Es,It,Nl)	3DS
+15CE0D732A3017C96C4DC08CEF0837E4	 	Metroid - Samus Returns (Japan)	3DS
+A6CE9E60681DB5A2FCBC2A39E89C20F2	 	Metroid - Samus Returns (USA) (En,Fr,Es)	3DS
+05A6E1CD2C29637E60B19E3997D24587	 	Metroid Prime - Federation Force (USA) (En,Fr,Es)	3DS
+5C522DC570E8F78D96743677CA5B78BE	 	Metroid Prime - Federation Force (Japan)	3DS
+886E6F67C5C3ADEB012145266D8F8471	 	Metroid Prime - Federation Force (Europe) (En,Fr,De,Es,It)	3DS
+E9591AE09DAA132235C23C672E38F00A	 	Michael Jackson - The Experience 3D (Europe) (En,Fr,De,Es,It)	3DS
+4E0DD825C7699380F8B4425CC1F83527	 	Michael Jackson - The Experience 3D (USA) (En,Fr,Es)	3DS
+50F8369BBCEB9EEEE07AFA01E61EEF25	 	Miitopia (Japan)	3DS
+DCD1A12EC90E1EC70FECCF2F81509324	 	Miitopia (Europe) (En,Fr,De,Es,It,Nl)	3DS
+A51DF06DF7AEE5C7D2D1C8B41620CC5B	 	Miitopia (USA) (En,Fr,Es)	3DS
+44F2536FBC3BAB96F1D5C3411E40369F	 	Mike the Knight and the Great Gallop (Europe) (En,Fr,De,Es,It,Nl)	3DS
+FF29D4C77FDE75278C0C9104C28245C6	 	Minarai Majo to MocoMoco Friends (Japan) (Rev 1)	3DS
+014A5FD9D0B665CFCB5A08C827EB5952	 	Minna de Auto Racing 3D (Japan)	3DS
+EDF6D251C9DF097A4900B1CD86D592D6	 	Minna no Ennichi (Japan)	3DS
+A372909F1D564A4B0E48434D6845B212	 	Minna no Pokemon Scramble (Japan)	3DS
+FFFE50D5158FDB12A865646EDC8E74D1	 	Miracle Tunes! Game de Tune Up! Dapun! (Japan)	3DS
+C83B4C92409EC16A76802C2D40DECA02	 	Moco Moco Friends (USA)	3DS
+59995C0F87B79EB5605716E0B3AD1A70	 	Model Oshare Audition - Dream Girl (Japan)	3DS
+6B4675C580A06E9F7348D9054CCA506B	 	Moe Moe Daisensou - Gendaiban 3D (Japan)	3DS
+75037084912155F3ED7A5F90FA99E6DA	 	Mokjangiyagi - Story of Seasons (Korea)	3DS
+BD8DF19BED1E86C943F068D264D114A4	 	Momotarou Dentetsu 2017 - Tachiagare Nippon!! (Japan)	3DS
+CD1B76443D7810D83773D33AB779A049	 	MonHun Nikki - Poka Poka Ailu Mura DX (Japan)	3DS
+0A9845C116491C4233D58BC9065A3A13	 	Monster 4x4 3D (Europe) (En,Fr,De,Es,It)	3DS
+AABC485B24569EB21FFF3838BCE7D454	 	Monster 4x4 3D (USA) (En,Fr,Es)	3DS
+C5A61F427058BADE1B5165F8FD3BCEAF	 	Monster High - 13 Wishes (USA) (En,Fr,Es)	3DS
+703ADC245C548CC6A5050EF6147EEDEA	 	Monster High - 13 Wishes (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da,Fi) (AEFP)	3DS
+F15C8A558367E367D192D4A6323E67EB	 	Monster High - 13 Wishes (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da,Fi) (AEFZ)	3DS
+B1E5730349295C2F9786A52E20393E25	 	Monster High - New Ghoul in School (Europe) (En,Fr,De,Es,It)	3DS
+906B2DDCBB94194922B0DD68CC06C969	 	Monster High - New Ghoul in School (USA)	3DS
+B09DB9C51489AE7C84F1B1C5F128BF8E	 	Monster High - Skultimate Roller Maze (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da,Fi) (Rev 1)	3DS
+C37B5EE1BE905A4AB6384E34BC894DD3	 	Monster High - Skultimate Roller Maze (USA) (En,Fr,Es) (Rev 1)	3DS
+92D2329A22C11788DDDB7569B22555D0	 	Monster High - Skultimate Roller Maze (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da,Fi)	3DS
+8472AAE099CBCADC67120331148FDB82	 	Monster High - Skultimate Roller Maze (USA) (En,Fr,Es)	3DS
+8EF6922DB3D500C50395A387B4D7FE5F	 	Monster Hunter 3 Ultimate (Europe) (En,Fr,De,Es,It)	3DS
+8B2FBF4FFA1DA9D2CB8C14EBD2024C7C	 	Monster Hunter 3 Ultimate (USA) (En,Fr,De,Es,It)	3DS
+2B062E9E5A6662196FCF7EC93A9812E4	 	Monster Hunter 3G (Japan)	3DS
+4425E67441B3C5001DE845C9398CE000	 	Monster Hunter 3G (Japan) (Rev 1)	3DS
+69F54F3B5A527EF47E50884590E2B3CB	 	Monster Hunter 4 (Taiwan) (Ja)	3DS
+EB262FD790E96B9B30928A4B07D6CD36	 	Monster Hunter 4 (Korea)	3DS
+18829027CA63B0F50BF5C63D6A7D0BD4	 	Monster Hunter 4 (Japan)	3DS
+3DE8CC790863B679C8FE481B6A2A11CE	 	Monster Hunter 4 Ultimate (Europe) (En,Fr,De,Es,It)	3DS
+40603DDA7779C32B6B05EA536B73A18C	 	Monster Hunter 4 Ultimate (USA)	3DS
+19238BF494CAF67043B5737352F9BC99	 	Monster Hunter 4G (Japan) (Rev 1)	3DS
+3632E365DC8D4B59EA2CCA688CB01FE7	 	Monster Hunter 4G (Taiwan) (Ja)	3DS
+7AD522A6DFCCBEAC62F50FAEC35A6F2E	 	Monster Hunter 4G (Korea)	3DS
+02E53BA4FA446BC4A440DB9C9076CB6C	 	Monster Hunter Generations (Europe) (En,Fr,De,Es,It)	3DS
+7F250F3AC2FA9F34BDE785D3BCA3F09B	 	Monster Hunter Generations (USA)	3DS
+FC4C33163009A294B999D6D739CCD4E0	 	Monster Hunter Generations (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+88EAB650BC73FDFDE958BBE650F2D93E	 	Monster Hunter Stories (Japan)	3DS
+5AD4A050E5CA2AACD58117C443EC2DC5	 	Monster Hunter Stories (Japan) (Rev 1)	3DS
+049370957B17C6E18E490DCEE686DA35	 	Monster Hunter Stories (Europe) (En,Fr,De,Es,It,Nl)	3DS
+B9BA9E2FED2776E10AA76CDBB9DFFE35	 	Monster Hunter Stories (USA)	3DS
+F7030CC67B963AADB17BEB64F1BDF552	 	Monster Hunter X (Japan)	3DS
+AA257E90AA7003CBB004B12AAE381B84	 	Monster Hunter XX - Double Cross (Japan)	3DS
+CC7831E803ACA634AC78A827EEE26F43	 	Monster Strike (Japan)	3DS
+FC200A11AF4C3F096B12C841BE4ECAEB	 	Moshi Monsters - Katsuma Unleashed (USA)	3DS
+5E5AE9900D38D3F30A769F0F4D11A1EE	 	Moshi Monsters - Katsuma Unleashed (Europe)	3DS
+06C0333AFB0072356F9A07B8E2847C57	 	Moshi Monsters - Moshlings Theme Park (USA)	3DS
+AB212986889517059B14CAE14E4609AC	 	Moshi Monsters - Moshlings Theme Park (Europe)	3DS
+3CF3C7063B0315297CB5ABB16C6DA25D	 	Movie Player (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+2F8238D67E4D9D1D2CEB0C00E5237804	 	Murder on the Titanic (Europe) (En,Fr,De,Nl)	3DS
+FA6300B4CF7152912C95677F166E9F1D	 	Mushi Bugyou (Japan)	3DS
+D9E6437DD9A6A5F8D5D4E330CC376F02	 	My Baby Pet Hotel 3D (Europe) (En,Fr,De,Nl)	3DS
+247C6E05D6DAB544C2F0F5F7F1C802EB	 	My Exotic Farm (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi)	3DS
+67F7EF399BCBCE0C17F2B573F30E32BB	 	My Farm 3D (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi)	3DS
+A321CD5B1F8D5A578A9A898799DD3D74	 	My Foal 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+3B0547ACE7648CDF3CA6881104923A68	 	My Foal 3D (Europe) (En,Fr,De,Es,It,Nl) (Rev 2)	3DS
+25F3C90695BE38EF076B1E60A06B88A7	 	My Foal 3D (Europe) (En,Fr,De,Es,It,Nl) (Rev 1)	3DS
+AF05B3A5DE5F61C5F84DE991EFC940F8	 	My Life on a Farm 3D (Europe) (En,Fr,De,It)	3DS
+304DFAA3A730684FF44239D4B3413FF2	 	My Life on a Farm 3D (Europe) (En,Fr,De,It,Nl) (Rev 1)	3DS
+134E7F7694D9EAA5A5A45AAA07CA7092	 	My Little Baby 3D (Europe) (En,Fr,De,Es,It)	3DS
+7F6C28A09536DAB6D7771D36ED033579	 	My Melody - Negai ga Kanau Fushigi na Hako (Japan)	3DS
+E3C266E15AA2D16BC581C37B05FD8E42	 	My Pet Puppy 3D (USA)	3DS
+C3973567BD352D4F8BCA2CC7AA09CF3F	 	My Pet School 3D (Europe) (En,Fr,De,Es,It)	3DS
+180608B262F49CE70B599B45BD816CE1	 	My Riding Stables 3D - Jumping for the Team (Europe) (En,Fr,De,It,Nl)	3DS
+47A42A64F883AAA917F86676C34A4383	 	My Vet Practice 3D - In the Country (Europe) (En,Fr,De,Es,It,Nl)	3DS
+90DCDB1581DBA04648F498B12309C4F8	 	My Western Horse 3D (Europe) (En,Fr,De,It,Nl)	3DS
+21A9E0B95D82EB2B0F4711AC0296361A	 	My Zoo - Vet Practice 3D (Europe) (En,Fr,De,Nl)	3DS
+602DA6D01115BBC0120E4A6D8C267AF4	 	Myst (Europe) (En,Fr,De)	3DS
+69F3D7A2AD18401DBB8A87D1BDDB72C3	 	Myst (USA) (En,Fr)	3DS
+79FB23465EC243DD138F3CE9860A3502	 	Mysterious Cities of Gold, The - Secret Paths (Europe) (En,Fr,De,Es,It,Pt,Sv,No,Ar)	3DS
+799FB4C8BE32ED4F7969D99947AAB581	 	Mystery Case Files - Dire Grove (Europe) (En,Fr,De,Es,It,Nl)	3DS
+E89D97F9CB50679E850EE324A2E508D5	 	Mystery Case Files - Ravenhearst (Europe) (En,Fr,De,Nl)	3DS
+A918DC8EC42108DBCA24118CBF8D9980	 	Mystery Case Files - Return to Ravenhearst (Europe) (En,Fr,De,Es,It,Nl)	3DS
+930A26838719F86799A098BDC8829201	 	Mystery Murders - Jack the Ripper (Europe) (En,Fr)	3DS
+189186F718CF8E85346D0C718535CD1A	 	Nagenawa Action! Guruguru! Chibi Robo! (Japan)	3DS
+6728C3ED47CCBD906A47E97DDDCC35CA	 	Nanami to Issho ni Manabo! English Joutatsu no Kotsu Riron-Hen (Japan)	3DS
+9358EB8E9C29AB86AEA9D8C1F1F24BDF	 	Nanatsu no Taizai - The Seven Deadly Sins - Unjust Sin (Japan)	3DS
+6FACCE2652C90E3D419CF1A5BFB1F386	 	Nankou Furaku Sangokuden - Shu to Toki no Doujaku (Japan)	3DS
+113D112CD994CC6A35D396DDD7D79060	 	Nano Assault (USA)	3DS
+A7AB2F8001BD7542530A030F7B56646E	 	Nano Assault (Japan)	3DS
+361D912B5FA21FCABEFF8A492716D36D	 	Naruto Powerful Shippuden (Europe) (En,Fr,De,Es,It)	3DS
+0320045663404D6E987FA0AD77D06F05	 	Naruto Powerful Shippuden (USA) (En,Fr,Es)	3DS
+1A18C002AC5BE742D3C2C94A8C15B484	 	Naruto SD Powerful Shippuden (Taiwan) (Ja)	3DS
+411189D04DBA7F6781B33293DE468B44	 	Naruto SD Powerful Shippuden (Japan)	3DS
+D7BBF54A1169E2D5AE32C99E45B9BB7D	 	Naruto Shippuden - Shinobi Rittai Emaki! Saikyou Ninkai Kessen!! (Japan)	3DS
+D9D2635C479D18DE6C177CDECE02250A	 	Naruto Shippuden 3D - The New Era (Europe) (Fr,It)	3DS
+506A06DDD2D6B1B3228D009B15D745A7	 	Naruto Shippuden 3D - The New Era (Europe) (En,Fr,De,Es,It)	3DS
+417ADC060C1936D87469696C5C52422C	 	NASCAR Unleashed (USA)	3DS
+6D9660817371A9FBD1A5E0653D12EDEF	 	Nashi-jiru Action! Funassyi no Yukai na Ohanassyi (Japan) (Rev 1)	3DS
+23E0F9B9182EB4137D6044BB11A72B8E	 	Nashijiru Busha!! Funassyi vs Dragons (Japan)	3DS
+0196DA9CD218707CD24F1B970E9E986B	 	Navy Commander (Europe) (En,Fr,De,Es,It,Nl)	3DS
+49DFA5F9E14025245197AFEA6BA4C752	 	Nazo Waku Yakata - Oto no Ma ni Ma ni (Japan) (Rev 1)	3DS
+B4B0AD992FD0AC4C8E6950ADE298514B	 	Nazo Waku Yakata - Oto no Ma ni Ma ni (Japan)	3DS
+FA6FFD70CC765AF602887F337343F305	 	Nazotoki Battle TORE! Densetsu no Makyuu o Fukkatsu Saseyo! (Japan)	3DS
+3505822E64E82B6D8F0E09DB5294AA55	 	NCIS 3D (Europe) (En,Fr,De,Es,It)	3DS
+4C35CD24EBECE981260E8FEB43761F19	 	NCIS 3D (USA) (En,Fr,Es)	3DS
+B52C0A1D07BCF4D918C9A66A98F92A3C	 	Need for Speed - The Run (Europe) (En,Fr,De,Es,It,Nl)	3DS
+3D98D21B4D4DDDE0C2D02E22761F016D	 	Need for Speed - The Run (USA) (En,Fr,Es)	3DS
+CFB1D0FBF57D49323C10177F9D60D3D9	 	Need for Speed - The Run (Japan)	3DS
+68DEB81015B8D7D492071F6E9C196DC3	 	Nekketsu Kouha Kunio-Kun SP - Rantou Kyousoukyoku (Japan)	3DS
+403A81DCE71F0488BCE21F243CE74FEB	 	Nekketsu Kouha Kunio-Kun Special (Japan)	3DS
+E08001887AE252E7426AC0EA7C81D5C9	 	Neko Tomo (Japan) (Rev 1)	3DS
+A541B30944BFAC46FED62015A8B66F27	B	Neko Tomo (Japan) (Beta) [b]	3DS
+CA00256D87A4118DF419E9CD6B17EFE0	 	Neratte! Tobashite! Rilakkuma Guragura Sweets Tower (Japan)	3DS
+F9F9836FB257168C9C29E4C63489989D	 	New Art Academy (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+CD2D733B62497ECF3834AB808A5FA904	 	New Love Plus (Japan)	3DS
+FA280CEF1EC094696473C0501D175563	 	New Love Plus+ (Japan)	3DS
+5F3502DC48EC7A3E2AB75DB293E6CF4C	 	New Super Mario Bros. 2 (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+0C06CF72E355AF62B6523EEECEAFA2E6	 	New Super Mario Bros. 2 (USA) (En,Fr,Es)	3DS
+AB731E9F2668F1CB0A55C0D9FAC10CEC	 	New Super Mario Bros. 2 (Taiwan) (Tw, Cn Region Lock)	3DS
+FF5979C9EDFB544AF478BFD8199DA33F	 	New Super Mario Bros. 2 (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+B8885080ED5B4628484C84451A482D2B	 	New Super Mario Bros. 2 (Japan)	3DS
+E923FB03C13FFACA38CA307BD2D94DCC	 	New Super Mario Bros. 2 (Korea)	3DS
+E855E27007123376EAEB128825180E85	 	Nickelodeon Teenage Mutant Ninja Turtles (USA) (En,Fr)	3DS
+ADC4CF4DF766E87604E5D21EBBC66601	 	Nickelodeon Teenage Mutant Ninja Turtles (Europe) (En,Fr,De,Es,It,Nl,Sv)	3DS
+FC7CE247D4649B5F630974FD281D3502	 	Nicktoons MLB 3D (USA)	3DS
+227655E6324A1526F45F10C18A283CC0	 	Nico Puchi Girls Runway (Japan)	3DS
+8A4624C54203BF9C590666620AFF5F91	 	Nicola Kanshuu - Model Oshare Audition 2 (Japan)	3DS
+A968ED9D18EC08E4811D563B506CD216	 	Nicola Kanshuu - Model Oshare Audition Platina (Japan)	3DS
+C6C04EE8CEACF487BD7034638DDE8E57	 	Nightmare Puzzle - Crush 3D (Japan)	3DS
+41029AC2518C2EA364DCF9584CF44FBD	 	Nikoli no Sudoku 3D - 8-tsu no Puzzle de 1000-mon (Japan)	3DS
+82256353915F36B6AA789C3D12A21A73	 	Nikoli no Sudoku 3D Dai-ni-Shuu - 8-tsu no Puzzle de 1000-Mon (Japan)	3DS
+EAC0C9B47A0EADA0424CC21A1EC85322	 	Nikoli's Pencil Puzzle (USA) (En,Fr,Es)	3DS
+423509A9B1C1069B1D07F6918BD96DCF	 	Ninja Jajamaru-kun - Sakura Hime to Karyuu no Himitsu (Japan)	3DS
+0EA02EC7613792353E3CE5B555E3EFA7	 	Nintendo 3DS Guide - Louvre (Europe)	3DS
+630E5ED57E542495CDF31459DF035DBE	 	Nintendo 3DS Guide - Louvre (France)	3DS
+7545C0C61239D901C2FF090F75C9DDB7	 	Nintendo 3DS Guide - Louvre (Spain)	3DS
+50B50B6DA856465AB15193168148B32B	 	Nintendo 3DS Guide - Louvre (Germany)	3DS
+2D7D705F90840CA1B7D3E21ECDADABE2	 	Nintendo 3DS Guide - Louvre (Italy)	3DS
+E613808763AEF466724993191CFB0CD2	 	Nintendo 3DS Guide - Louvre (Japan)	3DS
+67C0A5C062B32B6BEE6527EEC81FA51C	 	Nintendo 3DS Guide - Louvre (Korea)	3DS
+5F93F571D7A6937A671A75BEAB0FE2F2	 	Nintendo presents - New Style Boutique (Europe) (En,Fr,De,Es,It)	3DS
+265E7930749C218401A9C84C8D5150F7	 	Nintendo presents - New Style Boutique (Europe) (En,Fr,De,Es,It) (Rev 1)	3DS
+B9BBA005DE9DDD407809DA7EF493BD30	 	Nintendo presents - New Style Boutique 2 - Fashion Forward (Europe) (En,Fr,De,Es,It)	3DS
+7348B86B20C984D71E4B77849D585593	 	Nintendo presents - New Style Boutique 3 - Styling Star (Europe) (En,Fr,De,Es,It,Nl)	3DS
+ABD10303DB887FF1102196925955B979	 	Nintendogs + Cats (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+C21B8D740777CBD27588A7405CE5D699	 	Nintendogs + Cats (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+0083BC5A236A377A89BC38CF1669469F	 	Nintendogs + Cats - French Bull & New Chingudeul (Korea)	3DS
+911550A80EE6021FAE40616161219629	 	Nintendogs + Cats - French Bulldog & New Friends (USA) (En,Fr,Es)	3DS
+44DD8BC3FBC8650D0FA57BFDF273F5C0	 	Nintendogs + Cats - French Bulldog & New Friends (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+C1E4FA7B77B6DC907DCE7182A3EA0EDA	 	Nintendogs + Cats - French Bulldog & New Friends (Taiwan) (Tw, Cn Region Lock)	3DS
+019ED8336EF2BF0B5724F5314775EDDA	 	Nintendogs + Cats - French Bulldog & New Friends (Japan)	3DS
+55FAE636BA5657611C3613CB726B31D2	 	Nintendogs + Cats - French Bulldog & New Friends (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 2)	3DS
+AA795BECE8110212A8271A9B16952EB2	 	Nintendogs + Cats - French Bulldog & New Friends (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 1)	3DS
+520071EB31AA3CEA89C27F1AB97BEC83	 	Nintendogs + Cats - French Bulldog & New Friends (Japan) (Rev 2)	3DS
+0E0F83D1DFB3F0230B374245F6DAFF43	 	Nintendogs + Cats - French Bulldog & New Friends (USA) (En,Fr,Es) (Rev 1)	3DS
+8476467489C92E55932D29476C7D33F8	 	Nintendogs + Cats - French Bulldog & New Friends (USA) (En,Fr,Es) (Rev 2)	3DS
+B2AA54FF64B676B011E691111FF56BEC	 	Nintendogs + Cats - Golden Retriever & New Friends (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 2)	3DS
+13E54E476399AF8BDA4B9E7912935D05	 	Nintendogs + Cats - Golden Retriever & New Friends (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+70E997092197FF296296E107BFA1ED15	 	Nintendogs + Cats - Golden Retriever & New Friends (USA) (En,Fr,Es) (Rev 2)	3DS
+9BFE440BCCE27641338A6EFB9397885F	 	Nintendogs + Cats - Golden Retriever & New Friends (USA) (En,Fr,Es)	3DS
+BE67557FD5758CCCCC8997BF1B2545B8	 	Nintendogs + Cats - Golden Retriever & New Friends (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 1)	3DS
+E8E1FEFD5D2C148243B064E9D82426A0	 	Nintendogs + Cats - Poodle & New Chingudeul (Korea)	3DS
+2E9480A1CFDC1AE1D024DF52F7E32A28	 	Nintendogs + Cats - Shiba & New Friends (Taiwan) (Tw, Cn Region Lock)	3DS
+CDCE850A2359398863EB3C0C7A4F7ED2	 	Nintendogs + Cats - Shiba & New Friends (Japan)	3DS
+4D6D79C29B6334789FF86007C26B82CF	 	Nintendogs + Cats - Shiba & New Friends (Japan) (Rev 2)	3DS
+BED65BBB0338B29F294BB1229A3C0780	 	Nintendogs + Cats - Shiba & New Friends (Japan) (Rev 1)	3DS
+FA159BCCE9E52E5E758E2D262B00945E	 	Nintendogs + Cats - Shiba Inu & New Chingudeul (Korea)	3DS
+FE31EF00C49F0AFE9EA365C8491C849A	 	Nintendogs + Cats - Toy Poodle & New Friends (USA) (En,Fr,Es) (Rev 2)	3DS
+13B4464F2C09E58E332D2773F8B6442B	 	Nintendogs + Cats - Toy Poodle & New Friends (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 2)	3DS
+33AEF533D5E6F06CD039633E2FD6FA3D	 	Nintendogs + Cats - Toy Poodle & New Friends (Japan) (Rev 2)	3DS
+E2F10F41FC56A23423E2BB8ED62B577A	 	Nintendogs + Cats - Toy Poodle & New Friends (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 1)	3DS
+ADBD41FBD77DED84C45CB2496D274BAD	 	Nintendogs + Cats - Toy Poodle & New Friends (Japan) (Rev 1)	3DS
+0675838A3A423FC5F0820C4C1C82FD42	 	Nintendogs + Cats - Toy Poodle & New Friends (USA) (En,Fr,Es)	3DS
+E97D82891ED04587D67E6ACA000E90BB	 	Nintendogs + Cats - Toy Poodle & New Friends (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+113BCCB5346126B1EF57FE27BA292015	 	Nintendogs + Cats - Toy Poodle & New Friends (Japan)	3DS
+2EEDDB801B39FF264EA664CA967EAE10	 	Nintendogs + Cats - Toy Poodle & New Friends (Taiwan) (Tw, Cn Region Lock)	3DS
+0023C8954150530ABE42E475346589B8	 	Nobunaga no Yabou (Japan)	3DS
+C2BFE30C99FDA19F2E75D7BE7F1B93D6	 	Nobunaga no Yabou 2 (Japan)	3DS
+9ED6B407CB74810920F5F6766735A4CC	 	Nuigurumi no Cakeyasan - Mahou no Patissiere (Japan)	3DS
+A0DEBB897DC80080EAEEE6A56A562DB6	 	Ocha-Ken to Itsumo Nakayoshi (Japan)	3DS
+C66CA57D41139D535CB30C53D41BE410	 	One Piece - Dai Kaizoku Colosseum (Japan)	3DS
+326ED7F08C3399318672597626AAB0F6	 	One Piece - Romance Dawn (Europe) (En,Fr,De,Es,It)	3DS
+A8F554F057EBCC171022F84DAC5AF501	 	One Piece - Romance Dawn (USA) (En,Fr,Es)	3DS
+3176CCE5C832D939F8A79AFBAFD309E5	 	One Piece - Romance Dawn - Bouken no Yoake (Japan)	3DS
+395E10BF1CF22176C89594479C61ED86	 	One Piece - Super Grand Battle! X (Japan)	3DS
+4F3BB3A9177D5D5C147EA01DAC69BAFE	 	One Piece - Unlimited Cruise SP (Japan) (Rev 1)	3DS
+6881A76660A3711CC7FAD5E6FE774795	 	One Piece - Unlimited Cruise SP (Europe) (En,Fr,De,Es,It)	3DS
+5D67DAC87039F8B6749ADBEF00187677	 	One Piece - Unlimited Cruise SP (Japan)	3DS
+9A607E80CB3BB67751900639B9A8CB76	 	One Piece - Unlimited Cruise SP2 (Europe) (En,Fr,De,Es,It)	3DS
+A9E7E9B9CAFADDC231587F6CB827BE34	 	One Piece - Unlimited World Red (Japan)	3DS
+CAF805605509EEB2A1FD6CC60765BFC7	 	One Piece - Unlimited World Red (Europe) (En,Fr,De,Es,It)	3DS
+289200A9CFDAD4B0CBF121406139529C	 	One Piece - Unlimited World Red (USA)	3DS
+C68C1D0EBA1FB9F72E6C89EBF6B46755	 	Onnanoko to Misshitsu ni Itara Marumaru Shichau Kamoshirenai (Japan)	3DS
+49F3A08858ECDD343467CF8BB9795374	 	Order Up!! (Europe) (En,Fr,De,Es,It)	3DS
+322A911DB090E2A9F8FDF9BF82302750	 	Oregon Trail, The (USA)	3DS
+704B513CD63B9942137C35291DD97992	 	Oresama Kingdom - Ikemen Kareshi o Get Shiyo! Moe Kyun School Days (Japan)	3DS
+D378B6064CE553A65759B428C3A51084	 	Osawari Tantei Nameko Daihanshoku (Japan)	3DS
+B7C601CF74ADC5F36F6D7E1BAA2BE14B	 	Osawari Tantei Ozawa Rina Nameko Rhythm (Japan)	3DS
+F9B9EAA77D4B93B7861C084E9B8D34E9	 	Osawari Tantei Ozawa Rina Rising 3 Nameko wa Banana no Yume wo Miruka (Japan)	3DS
+2B530ED042549E10C8E6383F5532968F	 	Oshaberi Usagi Mecha Kawa Oshare Collection (Japan)	3DS
+5D4059539CFAF2160439A4D72F57A7BD	 	Oshare de Kawaii! Koinu to Asobo! Machi-Hen (Japan)	3DS
+D4291E5DE0C7A1C222FBA590B21141CC	 	Oshare de Kawaii! Koinu to Asobo! Umi-Hen (Japan)	3DS
+5DE77DF2B8130070482A07FE266FC2F2	 	Oshare Hamster to Kurasou - Issho ni Odekake (Japan)	3DS
+9C579370043AE061689B41CD38A5A7FF	 	Oshare na Koinu 3D (Japan)	3DS
+D8C692ADECAEBD9340970B9FD6D4BA27	 	Oshigoto Theme Park 2 (Japan)	3DS
+9FF33C11557DE888AE72C1AD748345F9	 	Osomatsu-san Matsu Matsuri! (Japan)	3DS
+5AD255770F6CCA8EB64AEFE7B197CF3E	 	Ouchi Mainichi Tamagotchi (Japan)	3DS
+0F524A676E505A25E07EE068DD365BC7	 	Outback Pet Rescue 3D (Europe) (En,Fr,De,Es,It)	3DS
+40E7B48507AB11D706E8BCF749FF99DB	 	Outdoors Unleashed - Africa 3D (Europe) (En,Fr,De,Es,It)	3DS
+11654C92C103D9757E0A57835362EE08	 	Pac-Man & Galaga Dimensions (USA) (En,Fr,Es)	3DS
+ABBCD677E634EC4353C9C9A9DC22A731	 	Pac-Man & Galaga Dimensions (Europe) (En,Fr,De,Es,It)	3DS
+307BC601ADBF6C890B427DF210D34DDD	 	Pac-Man & Galaga Dimensions (Japan)	3DS
+D556C32201C8ED14B47617C605388D57	 	Pac-Man and the Ghostly Adventures (USA) (En,Fr,Es)	3DS
+98E8535C9B9906A81C0B66745EA32D74	 	Pac-Man and the Ghostly Adventures (Europe) (En,Fr,De,Es,It)	3DS
+C993050229E7A82791347DAD92598713	B	Pac-Man and the Ghostly Adventures 2 (USA) (Beta) [b]	3DS
+4639337D017113E8F488BC53604158AA	 	Pac-Man and the Ghostly Adventures 2 (USA)	3DS
+E1C31E7C3313BC7F1019A9C21C0BE1C9	 	Pac-Man and the Ghostly Adventures 2 (Europe) (En,Fr,De,Es,It)	3DS
+4F48097119516669DB78EB7BB4455EF9	 	Pac-Man Party 3D (USA) (En,Fr,Es)	3DS
+C9BBBAF4AC0018BFD56FBC9A4396120E	 	Pac-Man Party 3D (Europe) (En,Fr,De,Es,It)	3DS
+5763DC4327745E72DFC8CE68CAE45534	 	Pac-Man Party 3D (Japan)	3DS
+9EC78C65B08EF1AE5D21CDABD4EF72A9	 	Pac-World (Japan)	3DS
+754EA07F9587F0EC9F818A82ED7B50A8	 	Pac-World 2 (Japan)	3DS
+63ACBB18EB5C9C86D3A5F1B66BB32F58	 	PachiPara 3D - Deluxe Umi Monogatari - Pachi-Pro Fuuunroko - Hana Kotou no Shoubushi-tachi (Japan)	3DS
+37A63B30FF087DDBB2044F8A84BF0A3F	 	PachiPara 3D - Ooumi Monogatari 2 - Pachi Pro Fuuunroku Hana - Kibou to Uragiri no Gakuen Seikatsu (Japan)	3DS
+B8B64ADD5D04B6DB4063BD2E29CEFFBE	 	PachiPara 3D - Ooumi Monogatari 2 with Agnes Lum - Pachi-Pro Fuuunroku Hana Kesareta License (Japan)	3DS
+44143C10E7C67FB44CC6E85FB7AA7F73	 	PachiPara 3D - Premium Umi Monogatari (Japan)	3DS
+E1B388534C1E648F52C698CF2423547F	 	Paddington - Adventures in London (Europe) (En,Fr,De,Es,It)	3DS
+09563EF58A85CFA43E4C8B2466EAD7F7	 	Paddington - Adventures in London (USA)	3DS
+86F8BA59ADC1DC3A61FB4144F99F93FB	 	Paper Mario - Sticker Star (Korea)	3DS
+AA6FF45F5ADCCBAB91284FAABCAB1B5C	 	Paper Mario - Sticker Star (Europe) (En,Fr,De,Es,It)	3DS
+06EAA5DBE38008B413494FC605E1B9CB	 	Paper Mario - Sticker Star (USA) (En,Fr,Es)	3DS
+B86369C9B9ACC8CABDB124452AF5597D	 	Paper Mario - Super Seal (Taiwan) (Tw, Cn Region Lock)	3DS
+654B2FBEEE7AD342D8B92A4AB8EE2067	 	Paper Mario - Super Seal (Japan)	3DS
+F9CC7F5BADAD85E2B2280B2F743D031A	 	Paws & Claws - Pampered Pets Resort 3D (USA)	3DS
+5E010E36805F811946F8417A9E53CBC6	 	PazuDora Z - Gentei Challenge-Ban (Japan) (Demo) (Promo)	3DS
+75FFA01EB6FF81B8988257AA9D669E53	 	PazuDora Z - Puzzle & Dragons Z (Japan) (Demo) (Promo)	3DS
+3A1A02318DD2E3CC0BCD48FFC4E1FAB3	 	PazuDora Z - Puzzle & Dragons Z (Japan)	3DS
+F614F0BE6D6DEFC899070753ED8F0B6A	 	Pazuru (Europe) (En,Fr,De,Es)	3DS
+AB3CDFB6C63A933B0881BBD4367AA59C	 	Peanuts Movie, The - Snoopy's Grand Adventure (Europe) (En,Fr,De,Es,It,Nl,Sv)	3DS
+2EA14752BC6F5858EB4805CD80E17C6A	 	Peanuts Movie, The - Snoopy's Grand Adventure (USA)	3DS
+C905573D8ED8B5FC95B7CE13E345F861	 	Penguin no Mondai - The Wars (Japan)	3DS
+0EA9E668AB75A12D4E5B2B973575DD6C	 	Penguin no Mondai+ Bakushou! Roulette Battle!! (Japan)	3DS
+D12C6F59436BAF5E0F6AB52CDE5E472C	 	Penguins of Madagascar (USA) (En,Fr)	3DS
+53B9B3176B961B21C5CEBA1CD7F5B332	 	Penguins of Madagascar (Europe) (En,Fr,De,Es,It)	3DS
+58C4C28705EC62F86D5687774D1BE35F	 	Persona Q - Shadow of the Labyrinth (Japan)	3DS
+F4AE0815631C23C4FDE645C86E76DD94	 	Persona Q - Shadow of the Labyrinth (USA)	3DS
+3DEB3DC61101F522166754EFDDCD134F	 	Persona Q - Shadow of the Labyrinth (Europe)	3DS
+37004AADB5E3483FBDE014D8184BA8D7	 	Persona Q - Shadow of the Labyrinth (Korea)	3DS
+B8626691CF60C7A9C57558F9E074CED1	 	Persona Q2 - New Cinema Labyrinth (Japan)	3DS
+477DE2F42FC868B8A8D1B6703F1F5274	 	Persona Q2 - New Cinema Labyrinth (Europe) (En,Fr)	3DS
+C63A6A93ADE8CF14D7B8FA8CAFED0EC1	 	Persona Q2 - New Cinema Labyrinth (USA)	3DS
+473E5ADA9F43446B1983276AA5C75CC7	 	Pet Zombies (USA)	3DS
+22B697D9A567D42F84105CE737B30181	 	Pets Paradise Resort 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+E246D7F70BCBFEE55E01CE52CAEAF593	 	Pets Paradise Resort 3D (Europe) (En,Fr,De,Es,It,Nl) (Rev 1)	3DS
+3DAA7869DF35A4ABD39E7CC48EAABCD2	 	Petz Beach (USA) (En,Fr,Es) (Rev 1)	3DS
+FFEDAFF51AA5CD63D5A737200F58606C	 	Petz Beach (Europe) (En,Fr,De,Es,It)	3DS
+12E98777E2FBD35C76EEFA685D79D0EC	 	Petz Countryside (Europe) (En,Fr,De,Es,It)	3DS
+24C72878BD714375A7000A1C1F2928BC	 	Petz Countryside (USA) (En,Fr,Es) (Rev 1)	3DS
+4DEC5C49CBD87BD154D10645D7B5E586	 	Petz Fantasy 3D (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da) (Rev 1)	3DS
+7134C523537CCCB8BF11C10611D84427	 	Petz Fantasy 3D (USA) (En,Fr,Es)	3DS
+038A1F7D05335B48BB0DC6856BB034AA	 	Petz Fantasy 3D (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da)	3DS
+063A26ACF2E170EF03286F072120A66E	 	Phineas and Ferb - Quest for Cool Stuff (USA)	3DS
+980801DD290F3FD91799706E3D525F27	 	Phineas and Ferb - Quest for Cool Stuff (Europe) (En,Fr,De,Es,It)	3DS
+AB41A58E92AC3E883A44EE5A5628647A	 	Phonics Fun with Biff, Chip & Kipper Vol. 1 (Europe) (En,Fr,De,Es,It,Pt)	3DS
+54E20A4F1E5133332F31F8CD06365C2F	 	Phonics Fun with Biff, Chip & Kipper Vol. 2 (Europe) (En,Fr,De,Es,It,Pt)	3DS
+106CD168880C6B4590C5E74AFE4BB439	 	Phonics Fun with Biff, Chip & Kipper Vol. 3 (Europe) (En,Fr,De,Es,It,Pt)	3DS
+999E6FC94BBA72A0C0B3D80E4A78DF3A	 	Picross 3D - Round 2 (Europe) (En,Fr,De,Es,It)	3DS
+7A342FF61F2F168DFF5B8A5B69D90DDD	 	Pika Pika Nurse Monogatari - Shounika wa Itsumo Oosawagi (Japan)	3DS
+D878FE1B9157B156E47E6D2BE0C17B1C	 	Pika Pika Nurse Monogatari 2 (Japan)	3DS
+AB1E5D9CD7321AC3475B7471F453D86A	 	Pilotwings Resort (Europe) (En,Fr,De,Es,It) (Rev 1)	3DS
+C03FF668A6CF8FF11F30910F7CE30792	 	Pilotwings Resort (Japan) (Rev 1)	3DS
+29FC4E07713577207800FC6DD6AE702B	 	Pilotwings Resort (USA) (En,Fr,Es) (Rev 1)	3DS
+7EDF21AFF351A843942CFA433A5E7966	 	Pilotwings Resort (Europe) (En,Fr,De,Es,It)	3DS
+E13D676CBCEBA5D6D7CE537E43DCA1B3	 	Pilotwings Resort (USA) (En,Fr,Es)	3DS
+5CBF93A2645428014891F4A12078F442	 	Pilotwings Resort (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+63E3AA089A64105170CA68E31BFE3E0C	 	Pilotwings Resort (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+2000D36639743D6174829531C2C532AA	 	Pilotwings Resort (Japan)	3DS
+B5795099729DE5AE7CFC482D738ABFDF	 	Pinball Hall of Fame - The Williams' Collection (USA)	3DS
+6DE6E8E8E2153069EA2064011F9FD096	 	Pinball Hall of Fame 3D - The Williams' Collection (Europe) (En,Fr,De,Es,It)	3DS
+F819F12C637F18ACE15482144AF578E9	 	Pippi Longstocking 3D (Europe) (En,Fr,De,Nl,Sv,No,Da,Fi)	3DS
+8AAE484C351F4AE0414B5742F4E9F512	 	Pocket Monsters Moon (Japan) (En,Ja,Fr,De,Es,It,Zh,Ko)	3DS
+B5DAB9680BC68147FC64DCFFD0176EC0	 	Pocket Monsters Moon (Korea)	3DS
+9181E23EAF31337F49757E3C7B04D7D3	 	Pocket Monsters Sun (Korea)	3DS
+1502E0DADCC32BD366173A2157DC77F6	 	Pocket Monsters Sun (Japan) (En,Ja,Fr,De,Es,It,Zh,Ko)	3DS
+30807FCE7BE4B0D59A5E7A0B069E5B59	 	Pocket Monsters Ultra Moon (Japan) (En,Ja,Fr,De,Es,It,Zh,Ko)	3DS
+BE3F7EDBF5AE68797D0A83DB96F144EF	 	Pocket Monsters Ultra Moon (Korea)	3DS
+5F0041B6D8717866A10A555F446D6403	 	Pocket Monsters Ultra Sun (Japan) (En,Ja,Fr,De,Es,It,Zh,Ko)	3DS
+DB9404B952A68976493CD968EA008A23	 	Pocket Monsters Ultra Sun (Korea)	3DS
+3C4758E89DEED979A4886A2B98F3E144	 	Pocket Soccer League - Calciobit (Japan)	3DS
+DAC7AB7B09F8A52AC6ECA2D9E6AFC8D5	 	Pokemon Alpha Sapphire (Japan) (En,Ja,Fr,De,Es,It,Ko) (Rev 2)	3DS
+A4B06C43450E1C030C0E03660A7619D4	 	Pokemon Alpha Sapphire (USA) (En,Ja,Fr,De,Es,It,Ko) (Rev 2)	3DS
+BB5B596215DBF331002C79A69FF30C48	 	Pokemon Alpha Sapphire (Europe) (En,Ja,Fr,De,Es,It,Ko) (Rev 2)	3DS
+2584AC04209073B5FEFBFED0B24BEF25	 	Pokemon Alpha Sapphire (Korea) (En,Ja,Fr,De,Es,It,Ko) (Rev 2)	3DS
+4CAD11F813E4613AB4A72E314F6F59E3	 	Pokemon Alpha Sapphire (Taiwan) (En,Ja,Fr,De,Es,It,Ko) (Rev 2)	3DS
+137B6B54C29269C37D51BE27FEE50423	 	Pokemon Art Academy (Europe) (En,Fr,De,Es,It)	3DS
+1F984CBA17DAA6CBFCFFC355EAB2EE1A	 	Pokemon Art Academy (USA) (En,Fr,Es) (Rev 2)	3DS
+769D33A3E358022982B1336C48CB8E36	 	Pokemon Art Academy (Japan)	3DS
+E444D37EA771E29492C30D58F8CD8887	 	Pokemon Art Academy (Korea)	3DS
+D86E51DD9B92B9A1945B33DF47DE8281	 	Pokemon Chou Fushigi no Dungeon (Japan)	3DS
+E31D184596EF1F200A9E232E49795A75	 	Pokemon Fushigi no Dungeon - Magnagate to Mugendai Meikyuu (Japan)	3DS
+935CE8D12096D45C441F16BA978B471B	 	Pokemon Moon (USA) (En,Ja,Fr,De,Es,It,Zh,Ko)	3DS
+9EC955B66B6B0AC2350021627AE21040	 	Pokemon Moon (Europe) (En,Ja,Fr,De,Es,It,Zh,Ko)	3DS
+2858FD49AC7C99E61894BD6E983144E6	 	Pokemon Moon (Taiwan) (En,Ja,Fr,De,Es,It,Zh-Hant,Zh-Hans,Ko)	3DS
+2749CA14766F2FD010A203FE63199521	 	Pokemon Mystery Dungeon - Gates to Infinity (USA)	3DS
+819DCDAFF65579637DB0534D9E3238AE	 	Pokemon Mystery Dungeon - Gates to Infinity (Europe) (En,Fr,De,Es,It)	3DS
+FC0C040845DAB03551FA23970358DD6F	 	Pokemon Omega Ruby (Japan) (En,Ja,Fr,De,Es,It,Ko) (Rev 2)	3DS
+4093E3688DC4EBB4A8B778C093CF4DCB	 	Pokemon Omega Ruby (Europe) (En,Ja,Fr,De,Es,It,Ko) (Rev 2)	3DS
+51460C24B7C647FB47706754A2F6A304	 	Pokemon Omega Ruby (USA) (En,Ja,Fr,De,Es,It,Ko) (Rev 2)	3DS
+72035FC93691B14C557C304328B17641	 	Pokemon Omega Ruby (Korea) (En,Ja,Fr,De,Es,It,Ko) (Rev 2)	3DS
+9A1EF560B3BE616031569177846005A1	 	Pokemon Omega Ruby (Taiwan) (En,Ja,Fr,De,Es,It,Ko) (Rev 2)	3DS
+D63B2A86703572B66FC36AC5A1DA0300	 	Pokemon Rumble Blast (USA) (Rev 1)	3DS
+2A002B7E2085EA31B0E5610504E2BB1C	 	Pokemon Rumble Blast (USA)	3DS
+D1E86A4FF42E5DA4B56DEE97F1AFD641	 	Pokemon Rumble World (Europe) (En,Fr,De,Es,It)	3DS
+4A35981A7BE8223A391B1BE9BECB9F06	 	Pokemon Rumble World (USA)	3DS
+B867352E137DF72AAA5FF944F4669789	 	Pokemon Rumble World (Japan) (Beta) (trunk, 34961M)	3DS
+43CD2D9C89FF0724D88D459FF64E3026	 	Pokemon Rumble World (Japan) (Beta) (branches-TPC20150716, 36474)	3DS
+1E3C22D1BA156A622D262A532D63934E	 	Pokemon Rumble World (Japan) (Beta) (trunk, 34356M)	3DS
+E89D01F522F2EBDE20E0E5033AEE1AF8	 	Pokemon Sun (USA) (En,Ja,Fr,De,Es,It,Zh,Ko)	3DS
+FB1590FBE15F9696AFB952909DCAA7A7	 	Pokemon Sun (Europe) (En,Ja,Fr,De,Es,It,Zh,Ko)	3DS
+87F369CB30AEE2DB14355527F65D70ED	 	Pokemon Sun (Taiwan) (En,Ja,Fr,De,Es,It,Zh-Hant,Zh-Hans,Ko)	3DS
+3E6AC5DC761975C788B7D31525DF06B1	 	Pokemon Super Mystery Dungeon (USA)	3DS
+A1D2D7AD8DAF0AB5FC14BB11F004D35C	 	Pokemon Super Mystery Dungeon (Europe) (En,Fr,De,Es,It)	3DS
+96869CD10BA922317343310D435B2E07	 	Pokemon Ultra Moon (Europe) (En,Ja,Fr,De,Es,It,Zh,Ko)	3DS
+EE1E19147C858142C6D9C52E93A58995	 	Pokemon Ultra Moon (USA) (En,Ja,Fr,De,Es,It,Zh,Ko)	3DS
+84E0D9BAC137CA9055B23D210C46F453	 	Pokemon Ultra Moon (Taiwan) (En,Ja,Fr,De,Es,It,Zh-Hant,Zh-Hans,Ko)	3DS
+4E8DC4584D76FEDDD5CB44B84328F098	 	Pokemon Ultra Sun (Europe) (En,Ja,Fr,De,Es,It,Zh,Ko)	3DS
+3FBA0C2CAE3666C2657468A32513666F	 	Pokemon Ultra Sun (USA) (En,Ja,Fr,De,Es,It,Zh,Ko)	3DS
+F22049436361E67160580B1F6E0E9618	 	Pokemon Ultra Sun (Taiwan) (En,Ja,Fr,De,Es,It,Zh-Hant,Zh-Hans,Ko)	3DS
+C1B6DA2FA28A7DFC86C4C8D30EAADEB2	 	Pokemon X (Taiwan) (En,Ja,Fr,De,Es,It,Ko)	3DS
+46FAF3B710BF480CBA549E242E1E559F	 	Pokemon X (Korea) (En,Ja,Fr,De,Es,It,Ko)	3DS
+20274670A283793605ACED7F12A724B5	 	Pokemon X (Europe) (En,Ja,Fr,De,Es,It,Ko)	3DS
+2589B0894A0D12F089A7BA9A5DFCD94E	 	Pokemon X (USA) (En,Ja,Fr,De,Es,It,Ko)	3DS
+39AB43F9CF2744186E19E7FCFFA7E951	 	Pokemon X (Japan) (En,Ja,Fr,De,Es,It,Ko) (Rev 1)	3DS
+79CA13B2982F8532359C7F34E68105D6	 	Pokemon Y (Europe) (En,Ja,Fr,De,Es,It,Ko)	3DS
+0C0C54FC3A0DA480061D661BA3A5644F	 	Pokemon Y (USA) (En,Ja,Fr,De,Es,It,Ko)	3DS
+2B8226837154B81199172D41C4A102BF	 	Pokemon Y (Japan) (En,Ja,Fr,De,Es,It,Ko) (Rev 1)	3DS
+ED625B7211FC5D612FD9D2C12289A34E	 	Pokemon Y (Taiwan) (En,Ja,Fr,De,Es,It,Ko)	3DS
+246D0BEC2264467E2AC35F83887A7D46	 	Pokemon Y (Korea) (En,Ja,Fr,De,Es,It,Ko)	3DS
+A25E833C9776A95DFD139B39B3864DE7	 	Pom Pom Purin - Corocoro Daibouken (Japan)	3DS
+6322C2A4946482D2EF9261DDA244EF9D	 	Poochy & Yoshi's Woolly World (Europe) (En,Fr,De,Es,It,Nl)	3DS
+2DFD2E3E9581EC9817B423C69F229812	 	Poochy & Yoshi's Woolly World (USA) (En,Fr,Es) (Rev 1)	3DS
+4C9FCDA8CC43ED8710E80F9E4A8E6B6E	 	Poochy & Yoshi's Woolly World (USA) (Demo) (Kiosk)	3DS
+D91E0DB6E0F6486B5B384395FD0F19A2	 	Poochy & Yoshi's Woolly World (Europe) (En,Fr,De,Es,It,Nl) (Demo) (Kiosk)	3DS
+9ED4DFC5F4A9E2BEEF35F513ADCBF16C	 	Poochy to! Yoshi Wool World (Japan) (Rev 1)	3DS
+EC53024D0366A72694A59E31AE8F74B1	 	Poochywa! Yoshi Woolly World (Korea)	3DS
+0DB7C9A13E8AFDE7DB3200BF7743D760	 	Popolocrois - Bokujou Monogatari (Japan)	3DS
+E9860571D8555F511F8C114CCC6A90D0	 	Poptropica - Forgotten Islands (USA)	3DS
+586CC59D03B3D2588AD17FB220AF7BA5	 	Power Rangers - Megaforce (USA) (En,Fr,Es)	3DS
+FE0730E46F1B9951C8F9D6BD774A39D5	 	Power Rangers - Megaforce (Europe) (En,Fr,De,Es,It)	3DS
+80B8C2EF91EE96D1D5EB06BF2186F049	 	Power Rangers - Super Megaforce (Europe) (En,Fr,De,Es,It)	3DS
+3CEEFD689E3B72558717CE00A4CD306B	 	Power Rangers - Super Megaforce (USA)	3DS
+592043CDEFC58847603285F18B2C125B	 	Poyo Poyo Kansatsu Nikki (Japan)	3DS
+F22B8932B8EF8ED06C79F7C250183A48	 	Pretty Rhythm - My Deco Rainbow Wedding (Japan)	3DS
+16490D2C7C234F19EA9D07D9F5814C08	 	Pretty Rhythm - Rainbow Live Kirakira My Design (Japan)	3DS
+991CD60DC28DD02034B55A959A487813	 	PriPara - Mezase! Idol Grand Prix No.1! (Japan)	3DS
+A9142C70E91A6DFD2A8286955E9E83B6	 	PriPara & Pretty Rhythm - PriPara de Tsukaeru Oshare Item 1450! (Japan)	3DS
+458E3E3DBC9E3B415AF8DAE94D369DC7	 	PriPara Mezameyo! Megami no Dress Design (Japan)	3DS
+A5845BC48E7918FD8451C7C600B39E6F	 	PriPri Chi-chan! PriPri DecoRoom! (Japan)	3DS
+0D35C73E352AA1DE99088592A3C4B333	 	Pro Evolution Soccer 2011 3D (Europe) (Es,It)	3DS
+31F574EF57C63268091CB9835836958A	 	Pro Evolution Soccer 2011 3D (Europe) (En,Fr,De)	3DS
+DDB4BC15D998DE6B6261020FA0EB6244	 	Pro Evolution Soccer 2011 3D (USA) (En,Fr,Es)	3DS
+A870A0B31033ABC2DB27E494043B5A45	 	Pro Evolution Soccer 2012 3D (USA) (En,Fr,Es,Pt)	3DS
+42CE44BCDD1C0BC857532EA6AFD24EAC	 	Pro Evolution Soccer 2012 3D (Europe) (En,Nl,Sv,Ru,Tr)	3DS
+3A20CF6553E2F4E8535222E78F71A9A6	 	Pro Evolution Soccer 2012 3D (Europe) (Fr,De)	3DS
+C4A1758ED20144B9E96E79E405D55A26	 	Pro Evolution Soccer 2012 3D (Europe) (Es,It,Pt,El)	3DS
+1A418B057CBFBA11F3956E7CA4A2B03D	 	Pro Evolution Soccer 2013 3D (Europe) (Fr,De)	3DS
+E394A57C21D20EB91CF8ACEDB7E12568	 	Pro Evolution Soccer 2013 3D (USA) (En,Fr,Es,Pt)	3DS
+A05AEDCFB8159D5E100B4AC5F293E175	 	Pro Evolution Soccer 2013 3D (Europe) (En,Sv,No,Ru,Tr)	3DS
+A6E36CF258EA7955721A99182CA81D0C	 	Pro Evolution Soccer 2013 3D (Europe) (Es,It,Pt,El)	3DS
+03423B838C01794AE10FE45E8B364CD2	 	Pro Yakyuu Famista 2011 (Japan)	3DS
+5D973DA59273BD97020896D5144E4B6E	 	Pro Yakyuu Famista Climax (Japan)	3DS
+0158097BFA898E7FC8FCB9D7709A1C45	 	Pro Yakyuu Famista Climax (Japan) (Rev 1)	3DS
+D090B72401AE8DB815BF643E225DD51B	 	Pro Yakyuu Famista Returns (Japan)	3DS
+8BC713F56D56360C8C9715667712A46A	 	Pro Yakyuu Spirits 2011 (Japan)	3DS
+F07A8B57C6F2902A37A776DF2C09CB17	 	Profesor Layton y el Legado de los Ashalanti, El (Spain)	3DS
+3BA8351A3BAB57040931D60756496588	 	Profesor Layton y la Mascara de los Prodigios, El (Spain)	3DS
+D6F9ADA32B68BAE07E0E7D502ECBEEF0	 	Profesor Layton y la Mascara de los Prodigios, El (Spain) (Rev 1)	3DS
+BC498395382F0F353F15FAB8BBA4260A	 	Professeur Layton et l'Heritage des Aslantes (France)	3DS
+E3368EF5F1AA66C573A1879525043D5F	 	Professeur Layton et le Masque des Miracles (France)	3DS
+9AD692D18F82AEFDA33A7A4EBE40C20B	 	Professeur Layton et le Masque des Miracles (France) (Demo) (Kiosk)	3DS
+CB55F6EEDB33BD511C5774FC59C148CA	 	Professor Layton and the Azran Legacy (Europe) (Demo) (Kiosk)	3DS
+FC2BE2CE245870214FA8AD57194A41E0	 	Professor Layton and the Azran Legacy (Europe)	3DS
+C2FF0134368133E3ED3F87A9D5C4AFD2	 	Professor Layton and the Azran Legacy (USA)	3DS
+ECA9B02D228F3E3FBD89312F3FE9E75E	 	Professor Layton and the Miracle Mask (USA)	3DS
+1EBDFA30F2450FBB92CD72E75BE3058C	 	Professor Layton and the Miracle Mask (Europe)	3DS
+5CEB1AB6EA76338F18B3BA42716BB850	 	Professor Layton and the Miracle Mask (Europe) (Demo) (Kiosk)	3DS
+8728F0F86F87ABDD57AB104201F7C414	 	Professor Layton and the Miracle Mask (USA) (Rev 1)	3DS
+D274584E4D311276D70ECBCE5F15286C	 	Professor Layton e l'Eredita' degli Aslant, Il (Italy)	3DS
+D553D7A7398783CBF9882DD3E6176166	 	Professor Layton e la Maschera dei Miracoli, Il (Italy)	3DS
+C332BBB35FCE91385497B3505EAAF06A	 	Professor Layton en de Erfenis van de Azran (Netherlands)	3DS
+BA6762EFAF6B7C97FDDA41E8B0280BC1	 	Professor Layton en het Masker der Wonderen (Netherlands)	3DS
+8FB39615E61DB61D5321771E06B4360F	 	Professor Layton und das Vermaechtnis von Aslant (Germany)	3DS
+502479FB616E355440617A4A78DBA047	 	Professor Layton und das Vermaechtnis von Aslant (Germany) (Demo) (Kiosk)	3DS
+BF61EE965CD91F8134AB20C40DF60593	 	Professor Layton und die Maske der Wunder (Germany)	3DS
+AA1DB07802CA99C0C7E9862A7D610F2D	 	Professor Layton vs Phoenix Wright - Ace Attorney (Europe) (En,Fr,De,Nl)	3DS
+9A99AD1DABC3845A8D159152F912401A	 	Professor Layton vs Phoenix Wright - Ace Attorney (Europe) (En,Es,It)	3DS
+B77BFD37502D146AF4E8423922F7DEA0	 	Professor Layton vs. Phoenix Wright - Ace Attorney (USA) (En,Fr,Es)	3DS
+E320BD9F3423F0F5962B0CD3DAFA3882	 	Project Cross Zone 2 (Korea)	3DS
+3999E21F3F5906095EF68F50FFE3AE38	 	Project X Zone (Japan)	3DS
+2CB257994918BD542F4C57635901C7A5	 	Project X Zone (Europe)	3DS
+01C5E5C61F850EBD4AF4921468769A94	 	Project X Zone (USA)	3DS
+68D3994F015EC1DDDDA945473E591C05	 	Project X Zone 2 (Europe) (En,Fr,De,Es,It)	3DS
+937368578AFCA52441EC44CFADFB722E	 	Project X Zone 2 (USA)	3DS
+0C1ADD91EEEA73D348796E1CB630E2C7	 	Project X Zone 2 - Brave New World (Japan)	3DS
+EDD6EBEEA685863F52566999484B7F9B	 	Project X Zone 2 - Brave New World (Original Game Sound Edition) (Japan)	3DS
+7AA3CBB1C5389E6D1748B0ABCF5737C4	 	Puppies 3D (USA) (En,Fr,Es)	3DS
+EA4EDBDA93E2160EF618E80AEF0D0211	 	Puppies World 3D (Europe) (En,Fr,De,Es,It)	3DS
+2F5798AB60AF894BD02B3BD62AC8AF61	 	Purr Pals - Purrfection (Europe) (En,Fr,De,Es,It)	3DS
+765F76F633A7D8E5A1B6493F8AFD3D6E	 	Purr Pals - Purrfection (USA) (En,Fr,Es)	3DS
+01804B49CB19D1B043568DC0A1508828	 	Putty Squad (Europe) (En,Fr,De,Es,It)	3DS
+C86CCC075B4B9CFAE1457C09519C978F	 	Putty Squad (USA) (En,Fr,Es)	3DS
+11E9A5CDB20721B0A221AA727241D42F	 	Puyo Puyo Chronicle (Japan)	3DS
+1C80B46059B95775245DD6E3E388302E	 	Puyo Puyo Tetris (Japan)	3DS
+84C533251CE3526DFE04DD9859602150	 	Puyo Puyo!! 20th Anniversary (Japan)	3DS
+3ED298D982FA25C2A584F1439335B8F0	 	Puzzle & Dragons - Super Mario Bros. Edition (Japan)	3DS
+290545F4B8F9B9860317C93EFB2F422B	 	Puzzle & Dragons X - Kami no Shou (Japan)	3DS
+22FF8F5C2B79295458D1038AE0C96A3F	 	Puzzle & Dragons X - Ryuu no Shou (Japan)	3DS
+4672D6607EC24D8FE02E112E704A1AFB	 	Puzzle & Dragons Z - Puzzle & Dragons Super Mario Bros Edition (Korea)	3DS
+F938F1D526671BB4B2D9D3EE7093F0B1	 	Puzzle & Dragons Z + Puzzle & Dragons - Super Mario Bros. Edition (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+6B56C7900D1039EDB0FD6B4E9851BB55	 	Puzzle & Dragons Z + Puzzle & Dragons Super Mario Bros. Edition (Europe)	3DS
+BEEAE6F62C10D527E62A937F0468A4BD	 	Puzzle & Dragons Z + Puzzle & Dragons Super Mario Bros. Edition (USA)	3DS
+8ACD3A1B3E05DD210266C98D8F661C1D	 	Puzzle Bobble Universe (Europe) (En,Fr,De,Es,It)	3DS
+04EC792534E671D6F4E9615F488B6DDB	 	Puzzler Brain Games (Europe) (En,Fr,De,Es,It)	3DS
+C17102671437B2C518045989C5CF2C65	 	Puzzler Mind Gym 3D (USA) (En,Fr,Es)	3DS
+44C1E8E931BC7E414679D10AB5719274	 	Puzzler Mind Gym 3D (Europe) (En,Fr,De,Es,It)	3DS
+F59EA314492EF2773B19E19C8FC10480	 	Puzzler World 2012 3D (Europe) (En,Fr,De,Es,It)	3DS
+58805CE80908D86479FC6956CE18F910	 	Puzzler World 2012 3D (USA) (En,Fr,Es)	3DS
+94333301CB75CB106F97E09FF60A51DD	 	Puzzler World 2013 (USA)	3DS
+251604F60D5641E4E40E15B2286F4430	 	Puzzler World 2013 (Europe) (En,Fr,De,Es,It)	3DS
+FAB3A747E39ABBB468CD5F1AC0E0AFB2	 	Rabbids - Travel in Time 3D (USA) (En,Fr,Es)	3DS
+BB942683AD3F0F06A0BEB6B5A981B818	 	Rabbids 3D (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da)	3DS
+06E23516080FC15D57EE139DDE866C52	 	Rabbids Rumble (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da)	3DS
+85A0B9C40AE7B5004A4CFE9BD1F72177	 	Rabbids Rumble (USA) (En,Fr,Es,Pt)	3DS
+07C5D3DD1A44F1966AA59ADE1D027664	 	Rabbids Time Travel (Japan)	3DS
+44D66F66A94718D333B0F7158DB7C5C4	 	Radiant Historia - Perfect Chronology (Japan)	3DS
+9DD5D7F34600A3CA28FA756A21D820BF	 	Radiant Historia - Perfect Chronology (USA)	3DS
+2570F67B666E5CB0E100693CEEE00EDF	 	Radiant Historia - Perfect Chronology (Europe)	3DS
+7F3052341753420EE4CE5CE071CA9A57	 	Raishi (Japan)	3DS
+B231F643653396AA5551C50D52DDF817	 	Raishi - Konpeki no Shou (Japan)	3DS
+0425EAFBB634F415BBE7365C0DDDDF3E	 	Rayman 3D (Europe) (En,Fr,De,Es,It) (Rev 1)	3DS
+0D9E1BA664AA10CE257FFEF1A7AE0A0F	 	Rayman 3D (Europe) (En,Fr,De,Es,It)	3DS
+C2BD5969256D985C74C40E70AD012EF8	 	Rayman 3D (USA) (En,Fr,De,Es,It)	3DS
+6C2C65C39A917C31925B5872EF96D456	 	Rayman and Rabbids Family Pack (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da) (Rev 1)	3DS
+48E4DB480F8439007CC924CAB23E2ECC	 	Rayman Origins (Europe) (En,Fr,De,Es,It,Nl) (Rev 1)	3DS
+3F85FF905309F84221CEF1644797CB97	 	Rayman Origins (Europe) (En,Fr,De,Es,It,Nl)	3DS
+A28CDF1670E14AD8C176324E14C3B88B	 	Rayman Origins (USA) (En,Fr,Es)	3DS
+7CDAAAE93420DA75A54E871DECB3E39E	 	Rayman Origins (Japan)	3DS
+A0060BB9179A05E447BD318254C83DBA	 	Real 3D Bass Fishing - Fish On (Japan)	3DS
+47265CE9BF6697A7E5D3239C300BB5D8	 	Real Heroes - Firefighter 3D (USA)	3DS
+2148BFAEBF157D58A7914803F5DE7F8B	 	Real Heroes - Firefighter 3D (Europe) (En,Fr,De,Es,It)	3DS
+C95B7DB043E314B79D99D67712A60E47	 	Real Heroes - Firefighter 3D (Germany) (En,Fr,De,Es,It)	3DS
+BADCEB646F705D7C3DC8FF69912793CC	 	Reel Fishing Paradise 3D (USA)	3DS
+EB9B70F4C5E843F2505B777CD2F448BA	 	Reel Fishing Paradise 3D (Europe) (En,Fr,De,Es,It,Pt)	3DS
+D472572E524DBD93991F94418BFBFB92	 	Regular Show - Mordecai and Rigby in 8-bit Land (USA)	3DS
+21676EBEA705DDD2E312A298FD719947	 	Regular Show - Mordecai and Rigby in 8-bit Land (Europe)	3DS
+2532D981CEE2711673357A13F77832E5	 	Relaxuma Nakayoshi Collection (Japan)	3DS
+2D3449B48F5E1F9A0B1505120D4A181D	 	Resident Evil - Revelations (USA) (En,Ja,Fr,De,Es,It) (Rev 1)	3DS
+CC2E2711AA91DB55B708068D30D96BD2	 	Resident Evil - Revelations (Europe) (En,Ja,Fr,De,Es,It)	3DS
+BA0EBFAC04C67C2700679793D63F9A19	 	Resident Evil - Revelations (USA) (En,Ja,Fr,De,Es,It)	3DS
+BCAC3FF40B0D9E6BAFF48030D444B0D8	 	Resident Evil - The Mercenaries 3D (Europe) (En,Fr,De,Es,It)	3DS
+5DDB05A1E88E2FFD950625294FCB4E4F	 	Resident Evil - The Mercenaries 3D (USA) (En,Fr)	3DS
+59A599DA3CAB81331354AF6E66234EC9	 	Resident Evil - The Mercenaries 3D (USA) (En,Fr) (Rev 1)	3DS
+637EC95BFE756201A27E40C86EBC6D73	 	Return to PopoloCrois - A Story of Seasons Fairytale (USA)	3DS
+9CA0FD9DA03A1770B482403CCD4FE873	 	Rhythm Kaitou R - Koutei Napoleon no Isan (Japan)	3DS
+05BF13063A6302E656F3FA31F21AED06	 	Rhythm Paradise Megamix (Europe) (En,Fr,De,Es,It)	3DS
+2B739B5CD13102023471E77342C292B1	 	Rhythm Sesang - The Best+ (Korea)	3DS
+7B00E95F0E21FD661167FBE89B3BA713	 	Rhythm Tengoku - The Best+ (Japan)	3DS
+C7BD3F87A8222DE33FD3D676F8F7C9D2	 	Rhythm Thief & the Emperor's Treasure (Europe) (En,Fr,De,Es,It)	3DS
+1FA73BEF635AA5B9623782B5C4A50823	 	Rhythm Thief & the Emperor's Treasure (USA) (En,Fr,Es)	3DS
+519121FD856403423FA31267818A83B3	 	Ridge Racer 3D (Europe) (En,Fr,De,Es,It)	3DS
+FBC8C1998607EE9B85049E2833E0A0FE	 	Ridge Racer 3D (Japan)	3DS
+5E9EE439BB00B65382AEEE338FCADB9D	 	Ridge Racer 3D (USA) (En,Fr,Es)	3DS
+966F019840B03B4A901E7866D6254E86	 	Ridge Racer 3D (Japan) (Rev 2)	3DS
+DD102126DB306C990B0BCDFB6AC924E0	 	Riding Stables 3D (Europe) (En,Fr,De,It,Nl,Sv,No,Da)	3DS
+285017DA72CD2FD08F7AFF24C8B70E02	 	Riding Stables 3D - Rivals in the Saddle (Europe) (En,Fr,De,It,Nl,Sv,No,Da) (Rev 1)	3DS
+0ABEE619A46B7E35B4A69DBE3322A4F7	 	Riding Star 3D (Europe) (En,Fr,De,Es,It)	3DS
+63899B6E62B3E3079E1E939868F1257C	 	Rilu Rilu Fairilu Kirakira Hajimete no Fairilu Magic (Japan)	3DS
+D9D97C4B3CA7A651EA9F1D0ABE9887A8	 	Rise of the Guardians (Europe) (En,Fr,De,Es,It)	3DS
+6F0B6832FAACDFFC648C10E53DCCD67C	 	Rise of the Guardians (USA) (En,Fr,Es)	3DS
+E8B2EA2BAE9A623EC6CD2EA390FC4CF1	 	River City - Rival Showdown (USA)	3DS
+EE7E76433DC758185EDB6BFC8873E767	 	River City - Tokyo Rumble (USA)	3DS
+F04EF52E1F0060EC6519301CB22DEE0B	 	Rockman Classics Collection (Japan)	3DS
+3A1E81C3CDC0D8018CDAC968067A6D4E	 	Rodea the Sky Soldier (Japan)	3DS
+44F5FF7C747938F4E04607995552082B	 	Rodea the Sky Soldier (Europe) (En,Ja,Fr,De)	3DS
+2F94698F0C67FD49E0BF5718B98BC594	 	Rodea the Sky Soldier (USA)	3DS
+187360F09002FC8956F7B60520563CBF	 	Rodea the Sky Soldier (Korea)	3DS
+0C3C10513A9EF1116AC2D185A3FB25D5	 	RollerCoaster Tycoon 3D (Europe) (En,Fr,De,Es,It)	3DS
+964A23A8C7BF81139846C0C885167CC2	 	RollerCoaster Tycoon 3D (USA)	3DS
+5E77B88995D465C9A6CA86868BED5A50	 	RPG Maker Fes (Europe) (En,Fr,De,Es,It)	3DS
+C5A345EA013668F05B62613E5FD9D252	 	RPG Maker Fes (USA) (En,Fr,Es)	3DS
+6946A558BC2518CB7A9FE7BA269F09B2	 	RPG Tsukuru Fes (Japan)	3DS
+1FB8661D75A7CE3EF55F3C49F95BC679	 	Runabout 3D - Drive Impossible (Japan)	3DS
+7486C20E1C859B0B5ADCF49D49ECA133	 	Rune Factory 4 (Japan)	3DS
+D9C50E9E0F2C4EDC2B801C2203745CAE	 	Rune Factory 4 (USA)	3DS
+CAA286FD681E83C87F40A06D52A97B70	 	Rune Factory 4 (Japan) (Rev 1)	3DS
+B97DC708D4FD845F33FC8A54BFE424CE	 	Ryoume de Unou o Kitaeru - 3D Sokudoku Jutsu (Japan)	3DS
+B44B194A6FD4A3554F715510B9F6EC81	 	Safari Quest (Europe) (En,Fr,De,Es,It,Nl)	3DS
+0939FA70DF2997DDAF4EA13DB21A39F3	 	Saiki Kusuo no Sainan - Shijou Saidai no Sainan (Japan)	3DS
+0BED41CBA4F041CA5A4DCDF4D846B9BB	 	Samurai Warriors - Chronicles (USA)	3DS
+3EAE77D6AD7A823DDDF0475CAC73EFC2	 	Samurai Warriors - Chronicles (Europe)	3DS
+19800444EFF6DDC5347D3C0D16B1A2FF	 	San Goku Shi (Japan)	3DS
+A9682DA63C1854A5E3DD392D6BDA6B93	 	Sangokushi 2 (Japan)	3DS
+E1F4552314F706208244A632A15CA9B4	 	Sayonara Umihara Kawase (Japan)	3DS
+6AF387FABB8BFD061494F8AEC4098B6A	 	Schlag den Raab - Das 2. Spiel (Germany)	3DS
+E763DB17F96C0B9EC3C9E07872437ABA	 	Scooby-Doo! & Looney Tunes Cartoon Universe - Adventure (USA) (En,Fr,Es,Pt)	3DS
+1F05D08888F3DB0AB607CE39255230E7	 	Scribblenauts Unlimited (Europe)	3DS
+6364DC942CEB3582D837C4044F2B9FFD	 	Scribblenauts Unlimited (USA) (En,Fr,Es,Pt)	3DS
+65931702F9171CEE9A8A2E3A563C5009	 	Scribblenauts Unlimited (Europe) (En,Fr,De,Es,It,Nl) (Rev 2)	3DS
+C45D236B5ED8D01FEFAD192673D587A9	 	Scribblenauts Unmasked - A DC Comics Adventure (USA) (En,Fr,Es,Pt)	3DS
+30180D6685ED170A34D29F8B87A8A4FC	 	Scribblenauts Unmasked - A DC Comics Adventure (Europe)	3DS
+4D8EF035CAC4F77919F8FB286BBA1F8F	 	SD Gundam G Generation 3D (Japan)	3DS
+EF97DBECB891623ABEF7612586F76555	 	Secret Agent Files - Miami (Europe) (En,Fr,De,Nl)	3DS
+BBE977719B5B8D535F33078DF79A783C	 	Secret Mysteries in London (Europe) (En,Fr,De,Nl)	3DS
+81E931B124BC68BCAA71A1262B05A885	 	Secrets of the Titanic (Europe) (En,Fr)	3DS
+78BA4448DCC4CF55DA12920E61191503	 	SEGA 3D Classics Collection (USA)	3DS
+8D4572F0C801D1963C9FA69971B431B2	 	SEGA 3D Classics Collection (Europe)	3DS
+61E72A7CAEBD7531B4E623F76020A68D	 	SEGA 3D Fukkoku Archives (Japan)	3DS
+28E036FFA529BC548693FDA621D39013	 	SEGA 3D Fukkoku Archives 2 (Japan)	3DS
+40D797E5817F67C3A55D990FF33660F9	 	SEGA 3D Fukkoku Archives 3 - Final Stage (Japan)	3DS
+A2C0A88E3F5F870CA908D15E87E87D7A	 	Seisou no Amazones (Japan)	3DS
+84C8F8EF7A44791A9CD452E96F83E8CC	 	Sekaiju no Meikyuu IV - Denshou no Kyoshin (Japan)	3DS
+453198362079483D937DFB802D2C6D4A	 	Sekaiju no Meikyuu V - Nagaki Shinwa no Hate (Japan) (Rev 1)	3DS
+088675A07EBB452D83D31C291B1F2702	 	Sekaiju no Meikyuu X (Japan)	3DS
+F6D9619698A1CACA71C7EE275177C148	 	Sekaiju to Fushigi no Dungeon (Japan)	3DS
+08CE01D8E26C3B059FED2725E62B0F8F	 	Sekaiju to Fushigi no Dungeon 2 (Japan)	3DS
+ECC1F01A64739B93521C48B3E4330BCF	 	Sengoku Musou Chronicle (Japan)	3DS
+28ED307CCE6CBE16B6CC7E297BFAFA49	 	Sengoku Musou Chronicle 2nd (Japan)	3DS
+F464C49152D13863DA9DE81ABC01B3B6	 	Sengoku Musou Chronicle 3 (Japan)	3DS
+D4C081DFD41C875D7D6629FE8D9CE244	 	Senran Kagura - Shoujo-tachi no Shinei (Japan)	3DS
+6FED641D9D06A2839C628A081FA84F57	 	Senran Kagura 2 - Deep Crimson (Europe)	3DS
+AF51ADEDDD7989DD0C7E3428F080FC5E	 	Senran Kagura 2 - Deep Crimson (USA)	3DS
+3A1D296E622F1AA98867656FA5F134BB	 	Senran Kagura 2 - Deep Crimson (Korea)	3DS
+3FF40698623F75F109E08DBDEABA5DFC	 	Senran Kagura 2 - Shinku (Japan)	3DS
+4A29190BE70A29B2E89528591C8E7E5F	 	Senran Kagura Burst (Europe)	3DS
+809F7CC7D983ABBCB9DB607156F35A47	 	Senran Kagura Burst - Guren no Shoujo-tachi (Japan)	3DS
+550422EC3239C1D19391E73F39A36483	 	Senran Kagura Burst - Guren no Shoujo-tachi (Japan) (Rev 1)	3DS
+3236F4A6293CCA650DE0C5A2A9E94E03	 	Sentouchu - Densetsu no Shinobi to Survival Battle! (Japan)	3DS
+97A6B53E411FB3D35F4D30B1319010B8	 	Shanghai 3D Cube (Japan)	3DS
+10C60665B66B8E2D9166BAD313895281	 	Shanghai Mahjong (Europe) (En,Fr,De,Es,It,Nl)	3DS
+78B298031F29C9EBDAEAB880917576CF	 	Shantae - Kaizoku no Noroi (Japan)	3DS
+6170F79D2203155EC29F04C0114B4B74	 	Shantae and the Pirate's Curse (Europe) (En,Fr,De,Es,It)	3DS
+148593F4D7D0810BBE9AAEBD7C479948	 	Shantae and the Pirate's Curse (USA)	3DS
+FD9525E7F261B37CF5593D450C253EF4	 	Sherlock Holmes - The Mystery of the Frozen City (Europe) (En,Fr,De,Es,It,Nl)	3DS
+9DE70790DBF08C41EDA29CD8BD9DBB5E	 	Sherlock Holmes Puzzle City (Japan)	3DS
+01C3C07F0A776D48945F3B2417AC3F65	 	Shifting World (USA) (En,Fr,Es)	3DS
+A67D9335DC281CA3B86880804FCE8189	 	Shifting World (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+DD3BDE7EDD08DCEF8A2C96D780E855BB	 	Shifting World - Shiro to Kuro no Meikyuu (Japan)	3DS
+FBEB3E98BF74114017E5B13F4522D14C	 	Shin Egokoro Kyoushitsu (Japan)	3DS
+28CBBED75B9500445BA2248BC1B76092	 	Shin Hikari Shinwa - Palutena no Kagami (Japan)	3DS
+5306C1BEF3DD4A1534572D7A8D4074AD	 	Shin Hikari Shinwa - Palutena no Kagami (Japan) (Rev 1)	3DS
+ED00C0E131B83447BC319996E42E86C0	 	Shin Megami Tensei - Deep Strange Journey (Japan)	3DS
+6576F5BE650BABCE71217D6C65F1D056	 	Shin Megami Tensei - Devil Summoner - Soul Hackers (USA)	3DS
+8F2F5607356C2CABD55C414D3B6B3A08	 	Shin Megami Tensei - Devil Summoner - Soul Hackers (Europe)	3DS
+F64C5A5B8BBF8F38AA2E6B024EBE41B6	 	Shin Megami Tensei - Devil Survivor 2 - Record Breaker (USA)	3DS
+970A52DC6B21A4CF042696F27952233D	 	Shin Megami Tensei - Devil Survivor 2 - Record Breaker (Europe)	3DS
+433186F37D6ECE84605ED22A6D71D814	 	Shin Megami Tensei - Devil Survivor Overclocked (USA) (Rev 1)	3DS
+0B6CE479CBA5DD8A558267FD456F7BB8	 	Shin Megami Tensei - Devil Survivor Overclocked (USA)	3DS
+B2F7F3929F6E3B1F07185D43B6B2E7C4	 	Shin Megami Tensei - Devil Survivor Overclocked (Europe)	3DS
+520F686293ED18AEABB74765F2EA9DD6	 	Shin Megami Tensei - Strange Journey Redux (Europe)	3DS
+1E5E31BF83814990A120437ADA05B304	 	Shin Megami Tensei - Strange Journey Redux (USA)	3DS
+CC85189FDE0D285217D820DF1064888C	 	Shin Megami Tensei IV (Taiwan) (Ja)	3DS
+06990701F83A7AF6CC3EBC4CDA5843D0	 	Shin Megami Tensei IV (USA)	3DS
+098A2B2B8528CD216AC2237CD67826EE	 	Shin Megami Tensei IV (Japan)	3DS
+6F486BF90965B11FB66E6C981BBCB44E	 	Shin Megami Tensei IV - Apocalypse (USA)	3DS
+83B013B454B14B00AFD56A972A4033F4	 	Shin Megami Tensei IV - Apocalypse (Europe)	3DS
+5A9997C0B806D6ACD11016835E88379C	 	Shin Megami Tensei IV - Final (Japan)	3DS
+609E030E736CA44B0CB2464B3F28A7E7	 	Shin Rorona no Atelier Hajimari no Monogatari - Arland no Renkinjutsushi (Japan)	3DS
+F27DE217FFE814FB2EC442C20DC37723	 	Shin Sangoku Musou VS (Japan)	3DS
+C9B1D1158B01BF807C296890BBFEA41F	 	Shin Sekaiju no Meikyuu - Millennium no Shoujo (Japan)	3DS
+823AE27BF620466C8A3EF4A27C4372AB	 	Shin Sekaiju no Meikyuu 2 - Fafnir no Kishi (Japan)	3DS
+29E9727066958A13870B4B0CDE68A51D	 	Shin Tennis no Oujisama - Go to the top (Japan)	3DS
+AD31D1A32B6D909CD0D4574F5CEBAD7D	 	Shingeki no Kyojin - Jinrui Saigo no Tsubasa (Japan) (Rev 1)	3DS
+7AB3537355A86FB2A0C28392AED6F59E	 	Shingeki no Kyojin - Jinrui Saigo no Tsubasa (Japan)	3DS
+C537655078A370CF375D6157DB0FF9D2	 	Shingeki no Kyojin - Jinrui Saigo no Tsubasa CHAIN (Japan)	3DS
+8D9A6D808494019D8FE454D2A0909290	 	Shingeki no Kyojin - Jinrui Saigo no Tsubasa CHAIN (Japan) (Rev 1)	3DS
+F8904E750A2A00120A45F16FC58CB382	 	Shingeki no Kyojin - Shichi-Kara no Dasshutsu (Japan)	3DS
+885DD7423EA08CB5008044C412C02506	 	Shingeki no Kyoujin 2 - Mirai no Zahyou (Japan)	3DS
+39FBE24583921BDF8D9E3D8F16B1B6FB	 	Shinobi (USA) (En,Fr,Es)	3DS
+2D8AF9EDE685A9B6E27DD509557F5CC8	 	Shinobi (Europe) (En,Fr,De,Es,It)	3DS
+56303E7937C32EF3091617FF6CA2AF01	 	Shinobi 3D (Japan)	3DS
+001E74AABA380E41134E201892DCA903	 	Shinrei Camera - Tsuiteru Techou (Japan)	3DS
+602F38E2412767D687704242E1F83E50	 	Shokugeki no Soma - Yuujou to Kizuna no Hitosara (Japan)	3DS
+75B4F92C78BD5411AA34E6A5D9EF6A9F	 	Shoshinsha kara Nippon Ichi made - Soroban, Anzan, Flash Anzan (Japan)	3DS
+834ACEC5DA723B8FA373C9EFFEEE6E5B	 	Shovel Knight (Europe) (En,Fr,De,Es,It)	3DS
+E779E18D9648CEB7A4B928A27AFB0E75	 	Shovel Knight (USA)	3DS
+DF2FC2A51DA2A08B20433C4CF53B6194	 	Shovel Knight (Japan)	3DS
+43F8F56EDC9C7ABF2CD4D650FE08A5F2	 	Simple Series for Nintendo 3DS Vol. 1 - The Mahjong (Japan)	3DS
+FFD2096E2D4254C05C3F84C455016A0F	 	Simple Series for Nintendo 3DS Vol. 2 - The Misshitsu Kara no Dasshutsu Archives 1 (Japan)	3DS
+92B03AE44A2117D47CD27C6B4F8D65AA	 	Simple Series for Nintendo 3DS Vol. 3 - The Misshitsu Kara no Dasshutsu Archives 2 (Japan)	3DS
+19D22A78776EB2821D2750D848899EB4	 	Sims 3, The (Europe) (En,Fr,De,Es,It,Nl)	3DS
+39BEA575336CAC5523A89A42393AC065	 	Sims 3, The (USA) (En,Fr,Es)	3DS
+4110D6D9247DE57732CAB33AFE6C0068	 	Sims 3, The (Japan)	3DS
+D579B6460F4452039976BE2DD078E66B	 	Sims 3, The - Pets (USA) (En,Fr,Es)	3DS
+31A43B38CA3B434D5D42089450A13609	 	Sims 3, The - Pets (Europe) (En,Fr,De,Es,It,Nl)	3DS
+92C80B026ACAB73F03727073BDFFE62C	 	Sims 3, The - Pets (Japan)	3DS
+AE090DDD90674B8F800E395D4B1070BA	 	Sin Segyesuui Migung - Millenniumui Sonyeo (Korea)	3DS
+30F90F2C4DB9B428CD8530223DD952B1	 	Skylanders - Spyro no Daibouken (Japan)	3DS
+8D4A33548D7DEBB0789A469547584544	 	Skylanders - Spyro's Adventure (USA) (En,Fr)	3DS
+AA36E90D52932B63041B8C5CA42A5C31	 	Skylanders - Spyro's Adventure (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da,Fi)	3DS
+F43EE4BFD4BB212734FA9268646870C3	 	Skylanders Giants (USA) (En,Fr,Es)	3DS
+971908CE90D85B7373D3B4B4E8814E0D	 	Skylanders Giants (Europe) (En,Fr,De,Es,It,Nl)	3DS
+2BD24B0CDFF0F7B17C5AECA6AAA75025	 	Skylanders Giants (Europe) (Sv,No,Da,Fi)	3DS
+2FEFD035702A00DF7E92E6AFD4FAE357	 	Skylanders SuperChargers Racing (USA)	3DS
+7E8B9DFA8ABB8CEA75D94BA8231CBC92	 	Skylanders SuperChargers Racing (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da,Fi)	3DS
+E3A84F9CB37E792AD72A8F2C6C86B59B	 	Skylanders Swap Force (USA) (En,Fr,Es,Pt)	3DS
+7546C776E9E58EC97997F879355AA724	 	Skylanders Swap Force (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da,Fi)	3DS
+E5B42B5F9C98FA3E9578CF14528C9637	 	Skylanders Trap Team (Europe) (En,Fr,De,Es,It,Nl,Sv,No,Da,Fi)	3DS
+60D5E420EC8D3A91F8B6A74A54FBA154	 	Skylanders Trap Team (USA) (En,Fr,Es,Pt)	3DS
+5EDC058FC62800C2708E2BE00E6645F8	 	Slime Mori Mori Dragon Quest 3 - Daikaizoku to Shippo Dan (Japan)	3DS
+657C3722175423A1F3CC7A09BA458DBC	 	Smile Precure! Lets Go! Marchen World (Japan)	3DS
+A7C4C45D1A8AAB285EF7674D950B0577	 	Smurfs, The (Europe) (En,Fr,De,Es,It,Nl)	3DS
+E9CFB0F243A78B760986056AAA105152	 	Smurfs, The (USA)	3DS
+2AA58DF419C8379065DE2FD0F30B5B84	 	Snack World, The - TreJarers (Japan)	3DS
+60E0565A1D89A9472F4F8FBA8A0BDAE0	 	Soni Pro (Japan)	3DS
+48244EBA89AD54ADBCC394A1E94DAAD5	 	Sonic - Lost World (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+F6B07EAD10B5DDEB1FBE774CAE0194BC	 	Sonic - Lost World (Europe) (En,Fr,De,Es,It)	3DS
+FA6D21750C41E3A549456766EA83A601	 	Sonic - Lost World (USA) (En,Fr,Es)	3DS
+0E04068793433B3DABBAA5956CE0C055	 	Sonic - Lost World (Japan)	3DS
+CA4E5DBC066A18F9B4EC6846F9A62B06	 	Sonic & All-Stars Racing Transformed (Europe) (En,Fr,De,Es,It)	3DS
+2069FDAF7F9E17C08D6C70954BF760D6	 	Sonic & All-Stars Racing Transformed (USA) (En,Fr,Es)	3DS
+0584A973DB6FDEB22E02FFEB1A60AA7E	 	Sonic Boom - Fire & Ice (Europe) (En,Fr,De,Es,It)	3DS
+888B342CAC1B8D4CEB80D4AC5EB2F07A	 	Sonic Boom - Fire & Ice (USA) (En,Fr,Es)	3DS
+3A2490EEFC9F051BBDDE0658E8CF87EB	 	Sonic Boom - Shattered Crystal (USA)	3DS
+CAEF83A5EDA651C03D869A8AD50BF9C9	 	Sonic Boom - Shattered Crystal (Europe) (En,Fr,De,Es,It)	3DS
+DCBA72BCDCA7E8E855E988A3D18582EF	 	Sonic Generations (Europe) (En,Fr,De,Es,It) (Rev 1)	3DS
+BE0B5604C5C6759D0693B5127D2E4E68	 	Sonic Generations (USA) (En,Fr,Es) (Rev 1)	3DS
+D3A8C2B8C1CAC951CFCDC0F59DB456BB	 	Sonic Generations (USA) (En,Fr,Es)	3DS
+6B6091489ABEB9C9BB370383C1F47000	 	Sonic Generations (Europe) (En,Fr,De,Es,It)	3DS
+99013C40D0B59A55AE9687100193178F	 	Sonic Generations - Ao no Bouken (Japan)	3DS
+4612C76A8FB62535B19C9B71D585B0D7	 	Sonic Toon - Fire & Ice (Japan)	3DS
+94C86CDABA27D4BE0D43FD1B1ED57EB3	 	Sonic Toon - Island Adventure (Japan)	3DS
+1388771CE0EFB9AFADCBB1B9F6947785	 	Soroban - Anzan - Flash Anzan Kanzenban (Japan)	3DS
+23B99C0B5525C297CD96977230B700DB	 	Sousaku Alice to Oujisama! (Japan)	3DS
+1D8E5E37E18218A4F6DF1EB3079C75BF	 	SPEC - Kan (Japan)	3DS
+41D83C75D73E3ED57A44EFB77242D269	 	Spider-Man - Aux Frontieres du Temps (France)	3DS
+D038D1AD3BF8C3D52F373661EF527DBF	 	Spider-Man - Edge of Time (USA)	3DS
+26C0A9AA055D1E63EA9464D97FDF2C19	 	Spider-Man - Edge of Time (Europe) (En,De,Es,It)	3DS
+C547AAB0743A2A48E707721740D28DE3	 	Spider-Man - Edge of Time (Canada)	3DS
+769FE9323FA174290E914B70B6D458B0	 	Spirit Camera - The Cursed Memoir (Europe) (En,Fr,De,Es,It)	3DS
+B0F78DAA31E178DDEEBE3EDF8EEA3B3B	 	Spirit Camera - The Cursed Memoir (USA)	3DS
+CD82E622E25FF71211ED104B1BAA4549	 	SpongeBob HeroPants (USA)	3DS
+AAA2D49A8C11B323F95B1B136055988B	 	SpongeBob HeroPants (Europe) (En,Fr,De,It)	3DS
+969F6509FBEAC52A2CB53B549370FD10	 	SpongeBob SquarePants - Plankton's Robotic Revenge (USA) (En,Fr)	3DS
+3F88A2065E52980F0DF54A2E10FC0AB4	 	SpongeBob SquarePants - Plankton's Robotic Revenge (Europe) (En,Fr,De,Es,It,Nl,Sv)	3DS
+D3B7C901B9515F94ED3BD98AC62E891A	 	SpongeBob SquigglePants (Europe) (En,Fr,De,Es,It,Nl)	3DS
+D40C384095715C4F319E571B0EB9F130	 	SpongeBob SquigglePants (Europe) (En,Fr,De,Es,It,Nl) (Rev 1)	3DS
+77D4F6097378DA71465EE06F86D9155F	 	SpongeBob SquigglePants 3D (USA) (En,Fr,Es) (Rev 1)	3DS
+03EA5BAF9A73495F47BFCC595F825690	 	SpongeBob SquigglePants 3D (USA) (En,Fr,Es)	3DS
+829B6BB2CBE10C76C2D7B71D2E8A7F73	 	Sports Island 3D (Europe) (En,Fr,De,Es,It)	3DS
+D4E6F53B144C9A9B7539E5A10160C0B4	 	Spot the Differences (Europe) (En,Fr,De,Es,It,Nl)	3DS
+4375151E86EE635B5B99DAF99A1517A3	 	Spy Hunter (Europe) (En,Fr,De,Es,It,Nl)	3DS
+F02D71A17C46BC99482A39BB6644C93E	 	Spy Hunter (USA) (En,Fr,Es)	3DS
+B5963080924789E173A7CD0004709546	 	Star Fox 64 3D (Europe) (En,Fr,De,Es,It) (Rev 2)	3DS
+679F3512D2C25B0776172FC85F0C50E2	 	Star Fox 64 3D (USA) (En,Fr,Es) (Rev 2)	3DS
+AE42244FF03C3CA3B0B74256F305ACF1	 	Star Fox 64 3D (Taiwan) (Rev 1) (Tw, Cn Region Lock)	3DS
+5DA5391AFC2414A19E93B7076AF8D1D8	 	Star Fox 64 3D (Japan) (Rev 1)	3DS
+B11DAB1F3CD193F8E2E72B3D3DB28178	 	Star Fox 64 3D (Europe) (En,Fr,De,Es,It) (Rev 1) (Demo) (Kiosk)	3DS
+45D11AC93F3C3385768BD37C00BE4803	 	Star Fox 64 3D (USA) (En,Fr,Es) (Rev 1) (Demo) (Kiosk)	3DS
+295A6718369CD615D933D774C2155F35	 	Star Fox 64 3D (Japan) (Rev 3)	3DS
+2A5014E7C48FEC46EB7AC55071FCDEDA	 	Star Fox 64 3D (Europe) (En,Fr,De,Es,It) (Rev 3)	3DS
+ED535FFB35693B72F5B3E0392D9B420E	 	Star Fox 64 3D (USA) (En,Fr,Es) (Rev 3)	3DS
+092EAB52271551CC761CF6C207667608	 	Star Fox 64 3D (Korea)	3DS
+1E3D166507B12E13871E149D768E8243	 	Starry Sky - In Autumn 3D (Japan)	3DS
+E46672B322CCDBB1821AC8609F57C257	 	Starry Sky - In Spring 3D (Japan)	3DS
+0D6C936B0BA7850284E72B37ABBE0789	 	Starry Sky - In Summer 3D (Japan)	3DS
+B2EF7012FEFCF0ADA5835CCA58F8DE29	 	Starry Sky - In Winter 3D (Japan)	3DS
+1F86BC04050D374326C87E6C1A7E04E9	 	Steel Diver (Europe) (En,Fr,De,Es,It)	3DS
+AEA8839AFF051BF46C2301D72738A33B	 	Steel Diver (USA) (En,Fr,Es)	3DS
+77AFA5A41F441B09902476D295D80C1E	 	Steel Diver (Japan)	3DS
+BF2246BBD3DE210986A3F1B9ADD36D31	 	Steel Diver (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+1C8135ECF62A8A1750AEA55CACBEC127	 	Steel Diver (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+A2BAF000E7B1F0D0F3081648388D14B1	 	Stella Glow (Japan)	3DS
+658DBDF08224EF0FE8DE2C3EE967435E	 	Stella Glow (USA)	3DS
+E552B545ABD342362A608ADB39F62A7B	 	Stella Glow (Europe)	3DS
+3B46A7AF882607F3C7BF67604F0804AD	 	Sternenschweif 3D - Das Geheimnis im Zauberwald (Germany)	3DS
+49722CD79587947B4B30CA0943B5117C	 	Story of Seasons (USA)	3DS
+97D39C9945BC7D08DEE928E8F9F163E0	 	Story of Seasons (Europe) (En,Fr,De,Es,It)	3DS
+4F72583063F4127C353FEE39921FC250	 	Story of Seasons - Trio of Towns (USA)	3DS
+66BB1CDFFB2EEC072F4836E8279CA730	 	Story of Seasons - Trio of Towns (Europe) (En,Fr,De,Es,It)	3DS
+FE096BC33CF706AEDB5114ECD8C052C6	 	Style Savvy - Fashion Forward (USA)	3DS
+F468B70607BE43751D1C5E8D8D2E2AE1	 	Style Savvy - Trendsetters (USA)	3DS
+ABA7449E6A103AF296009ECE13444B71	 	Style Savvy - Trendsetters (USA) (Demo) (Kiosk)	3DS
+A0C1312670A2976195AE62B1CA5A24A3	 	Sudoku - The Puzzle Game Collection (Europe) (En,Fr,De,Es,It)	3DS
+F02310DBB2C3746DF646D30B5917FA5E	 	Sudoku + 7 Other Complex Puzzles by Nikoli (Europe)	3DS
+FED391567C119A74845224F3F996B8B0	 	Sudoku to 3-Tsu no Puzzle - Nikoli no Puzzle Variety (Japan)	3DS
+F56B611583F31ADF1AD8F76EF87EF207	 	SuiChara - Sweets Gakkou e Youkoso! (Japan)	3DS
+F4A6EABFD52861A847B6DC66BDEFC0AF	 	Sumikko Gurashi - Koko ga Ochitsukundesu (Japan)	3DS
+BA39BB125DCE12E376A258B3DE9F2489	 	Sumikko Gurashi - Koko ga Ochitsukundesu (Japan) (Rev 2)	3DS
+1DB23E32881BD5A900CB10FE07227665	 	Sumikko Gurashi - Koko, Dokonan Desu (Japan)	3DS
+50769BCA33EB0034AF92662042BCB088	 	Sumikko Gurashi - Koko, Dokonan Desu (Japan) (Beta)	3DS
+6E6B03360CC97009686ABECF5E1DA39A	 	Sumikko Gurashi - Mura o Tsukurundesu (Japan)	3DS
+C181B92E5B82A2B43AAAEE3D99F10E49	 	Sumikko Gurashi - Omise Hajimerundesu (Japan)	3DS
+B683D212695FC0A75AD5FAAA3BFC60D1	 	Sumikko Gurashi - Omise Hajimerundesu (Japan) (Rev 1)	3DS
+3637AE9113A73375EC7C9084C07B417B	 	Super Black Bass - 3D Fight (Japan)	3DS
+EBC5C54874D42C7A422B315F24C85497	 	Super Black Bass 3D (USA)	3DS
+5EF5AD8922BD8D383442F46B1B686F95	 	Super Black Bass 3D (Europe) (En,Fr,De)	3DS
+7E66F8E717DED6D9037DFC26C964BBAE	 	Super Mario (USA) (Beta) (E3 2011 demo)	3DS
+7FE05CE91F42AAD35FBDE3CF86FC5EA0	 	Super Mario 3D Land (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 1)	3DS
+19F0F298AF17059AF87E64D7D83D7D8F	 	Super Mario 3D Land (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 2)	3DS
+9AD211128BE1D94FD43918E82FEE1BFB	 	Super Mario 3D Land (USA) (En,Fr,Es) (Rev 1)	3DS
+1A152F3D874A963779FD1CC901255A12	 	Super Mario 3D Land (Japan) (Rev 1)	3DS
+3087B0C386B467E75507213EEB98C638	 	Super Mario 3D Land (Japan) (Rev 2)	3DS
+38049F64B705876964C5626C54B746F2	 	Super Mario 3D Land (Taiwan) (Jp Region Lock)	3DS
+38442BB51D1EF24BF4DEA3E2AD98C015	 	Super Mario 3D Land (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+D49D8C372B24D34BC760781260DD1441	 	Super Mario 3D Land (USA) (En,Fr,Es)	3DS
+8293802F27558B5EA71CCC005E77E12E	 	Super Mario 3D Land (Japan)	3DS
+63C6DEFA4F052381B47D9BFDD6FEC96D	 	Super Mario 3D Land (Korea)	3DS
+511F8EE2B20E9904E566DB28BF5ED675	 	Super Mario 3D Land (Taiwan)	3DS
+8B5BA4D63E8CC5B9F554C255CE7B76C5	 	Super Mario 3D Land (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+90C65A068D7C63BB74503A5378877E1E	 	Super Mario Maker for Nintendo 3DS (Japan) (Rev 3)	3DS
+8CAC55ABEB7935626C547FC404DC6FAE	 	Super Mario Maker for Nintendo 3DS (Korea) (Rev 1)	3DS
+2C7F2BF30723B77A1E24B98FB1FE5433	 	Super Mario Maker for Nintendo 3DS (Korea)	3DS
+2620728C49C77A7E2C9F0BA8A5ACDF73	 	Super Mario Maker for Nintendo 3DS (Japan)	3DS
+06A090D7D8F024A779DA737241E148CF	 	Super Mario Maker for Nintendo 3DS (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+1DFB99B00B2312B9DD57590FBF6E0CF6	 	Super Mario Maker for Nintendo 3DS (USA)	3DS
+BDFEDD4FB7F3E1293FCCF3A4673BB97B	 	Super Mario Maker for Nintendo 3DS (USA) (En,Fr,Es) (Rev 2)	3DS
+523212BA5492F3EAB60EE8B2EB06D7EA	 	Super Mario Maker for Nintendo 3DS (Japan) (Rev 2)	3DS
+F676071C388831475A56107369AE4314	 	Super Mario Maker for Nintendo 3DS (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 2)	3DS
+9C6FC613C372E04E954376668968292C	 	Super Mario Maker for Nintendo 3DS (USA) (En,Fr,Es) (Rev 3)	3DS
+B55C5ADC8275EC9AB42A27E507EB3CA0	 	Super Mario Maker for Nintendo 3DS (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 3)	3DS
+2AC29EC17931B93CD3989E26E52CE573	 	Super Monkey Ball 3D (Europe) (En,Fr,De,Es,It)	3DS
+E500784DD8BD1B7CC4C2E15DF19043A3	 	Super Monkey Ball 3D (USA) (En,Fr,Es)	3DS
+D3F966DA6F29E4A5763E0A789549C14A	 	Super Monkey Ball 3D (Japan)	3DS
+DD2A2C3C22994D9DA298D49CCB522441	 	Super Pokemon Daegyeokdol (Korea)	3DS
+1596EC8B3FD05508A73CB5DFA437797C	 	Super Pokemon Rumble (Europe) (En,Fr,De,Es,It) (Rev 1)	3DS
+FC58EC75FA50DCCA6AA3E3CAF16F9025	 	Super Pokemon Rumble (Europe) (En,Fr,De,Es,It)	3DS
+89E96B2FDEC3DA4F542A3830BB1F881B	 	Super Pokemon Scramble (Japan)	3DS
+B52354B084F419226E1A7D9361957568	 	Super Robot Taisen BX (Japan) (Rev 1)	3DS
+04F0ABA0D21A1E4388626E78949A8A12	 	Super Robot Taisen UX (Japan)	3DS
+94AD5D316E9287DED8CFD9323919E6A6	 	Super Smash Bros. for Nintendo 3DS (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+CA5FC632925FE7F1753AD19E6CC9919D	 	Super Smash Bros. for Nintendo 3DS (USA) (En,Fr,Es)	3DS
+42DCB5A1E64A3B6E9CE0944129808676	 	Super Smash Bros. for Nintendo 3DS (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+A2FAB120FE56A810B0C99BD28F0CEC0F	 	Super Smash Bros. for Nintendo 3DS (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+2D3F360BA1F73E00844A2DB11CC18750	 	Super Smash Bros. for Nintendo 3DS (USA) (En,Fr,Es) (Rev 2)	3DS
+53A59C2E5DE3F0BCFD63E128127CAB68	 	Super Smash Bros. for Nintendo 3DS (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 1)	3DS
+62720AFBA7AC6AE727A818DC775AB3F0	 	Super Smash Bros. for Nintendo 3DS (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 5)	3DS
+1A6E56B25F717C138F7C79BC06199317	 	Super Smash Bros. for Nintendo 3DS (USA) (En,Fr,Es) (Rev 1)	3DS
+CCBEAF549845AE3A88A348677B86F876	 	Super Smash Bros. for Nintendo 3DS (Korea)	3DS
+DD98715C0130FE19B825694F014468C0	 	Super Smash Bros. for Nintendo 3DS (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 4)	3DS
+74311829F648CEC5DFA4051A42024244	 	Super Smash Bros. for Nintendo 3DS (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 10)	3DS
+15F3A1471F351EB42B6305203DEFEB2C	 	Super Smash Bros. for Nintendo 3DS (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 3)	3DS
+035527A2A9FF90717F4E6E8778E438B6	 	Super Smash Bros. for Nintendo 3DS (USA) (En,Fr,Es) (Rev 5)	3DS
+9FCF233F76D8F5D68FFBBD68F28E50FC	 	Super Smash Bros. for Nintendo 3DS (USA) (En,Fr,Es) (Rev 6)	3DS
+DA8F2F45BB575E8056C64B96F20B0769	 	Super Smash Bros. for Nintendo 3DS (USA) (En,Fr,Es) (Rev 10)	3DS
+9F5CE17877ADE8095CB2032D67D26D20	 	Super Smash Bros. for Nintendo 3DS (USA) (En,Fr,Es) (Rev 7)	3DS
+E0B1F45E8851925221185C03A83EB406	 	Super Smash Bros. for Nintendo 3DS (USA) (En,Fr,Es) (Rev 3)	3DS
+CF05386CCA661BF665626ECE630BBAD4	 	Super Smash Bros. for Nintendo 3DS (USA) (En,Fr,Es) (Rev 4)	3DS
+432090A6CFEB79D1ED194780CCD6EB92	 	Super Smash Bros. for Nintendo 3DS (USA) (En,Fr,Es) (Rev 11)	3DS
+2458F766EC7B009C49B4194EF16D4D07	 	Super Smash Bros. for Nintendo 3DS (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Rev 11)	3DS
+4F1742B80AE808163341A983D9E2F9FB	 	Super Street Fighter IV - 3D Edition (Europe) (En,Fr,De,Es,It)	3DS
+A3605BF90F538F8BFDA3DE537F0D0881	 	Super Street Fighter IV - 3D Edition (USA) (En,Fr,Es)	3DS
+E41802D95FA3F0B16603452B8D01DF5F	 	Super Street Fighter IV - 3D Edition (Japan)	3DS
+EE0499E8A53EB6328E543611E8932A47	 	Super Street Fighter IV - 3D Edition (Europe) (En,Fr,De,Es,It) (Demo) (Kiosk)	3DS
+2A3FA60289822A6B458C034CED901338	 	Super Street Fighter IV - 3D Edition (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+FB1F7A862AB9A8A2FCC7FCD21CC6AC9C	 	Survivor 3D - The Ultimate Adventure (Europe) (En,Fr,Es,It,Nl)	3DS
+56282F31697964386ADCC5DA6C66DBCD	 	Survivor Heroes (Europe) (En,Fr,Es,It,Nl,Sv,No,Da,Tr)	3DS
+6370E4FAD8073A272AE79CA4A4F6389C	 	Sushi Striker - The Way of Sushido (Europe) (En,Fr,De,Es,It,Nl)	3DS
+DF29DE3EE019D78ED34BAB448829E6DF	 	Sushi Striker - The Way of Sushido (USA) (En,Fr,Es)	3DS
+B883958EB7498023ADC65A0DF607184E	 	Susume! Kinopio Taichou (Japan)	3DS
+740A674A18AE9FBC2066838BD038B696	 	Syunsoku Mezase! Zenkoku Saikyou Runner (Japan)	3DS
+8AF130A096705F77B369BA897F5DEF23	 	Taegoui Darin - Kungttak Kungttak Sigong Daemoheom (Korea)	3DS
+D34E5D617FA3EDAD1B30911662D968FB	 	Taiko no Tatsujin - Chibi Dragon to Fushigi na Orb (Japan) (Rev 1)	3DS
+F475FEF9959566CDFFC0A30D36A77065	 	Taiko no Tatsujin - Chibi Dragon to Fushigi na Orb (Japan)	3DS
+58A165466FA1E329A34F8044E6CC6134	 	Taiko no Tatsujin - Doko Don! Mystery Adventure (Japan)	3DS
+6229BE9AF442A3E1EF3AB5A1AF01B918	 	Taiko no Tatsujin - Don to Katsu no Jikuu Daibouken (Japan)	3DS
+609891C42CCF834100860920054EAA40	 	Tales of the Abyss (Europe)	3DS
+EB12DD842B548A9B7248A4D1E481CE5A	 	Tales of the Abyss (USA)	3DS
+1C1BD828CB1DB8E3AF672E4F13D5C9D9	 	Tales of the Abyss (Japan)	3DS
+BC079CEE22340BA4D54D011ABB78D296	 	Tales of the Abyss (Japan) (Rev 1)	3DS
+A1F309A346348F4AA930F6CEBF0E3785	 	Tales of the World - Reve Unitia (Japan)	3DS
+CAED71E95BFC2A826E00FA025321FB71	 	Tamagotchi no Doki Doki Dream Omisetchi (Japan)	3DS
+C92A6A89E104A3B7E06266582C08D833	 	Tamagotchi no Puchi Puchi Omisechi - Ninki no Omise Atsume Mashita (Japan)	3DS
+E8156E5CE1F22717E8F10029B82F8680	 	Tamagotchi! Seeshun no Dream School (Japan)	3DS
+1BD431A06724F22990FB26B904F2721E	 	Tanoshiku - Omoshiroku - Kanken Shougakusei (Japan)	3DS
+F561EBACFAD6243FFFEDCEA322DD515E	 	Tantei Jinguuji Saburo - Fukushuu no Rondo (Japan)	3DS
+A7D65E36BCEE7611403F4608C48B1D43	 	Tantei Jinguuji Saburou - Ghost of the Dusk (Japan)	3DS
+9AA58016B893ABE3D51A26FCB1691CAB	 	Teddy Together (Europe) (En,Fr,De,Es,It)	3DS
+130493A63DBF5309A343C93385AE3FFE	 	Teenage Mutant Ninja Turtles (USA) (En,Fr)	3DS
+73A2839A947B64BD8ADCF1170C3E41B2	 	Teenage Mutant Ninja Turtles (Europe) (En,Fr,De,Es,It,Nl,Sv)	3DS
+B0717BAFDBC591CEADD7BCDF0B1975D3	 	Teenage Mutant Ninja Turtles - Danger of the Ooze (Europe) (En,Fr,De,Es,It,Nl,Sv)	3DS
+B63BB139D1146FCAA57790A2198B8A27	 	Teenage Mutant Ninja Turtles - Danger of the Ooze (USA)	3DS
+75FF764DFBDC7AAB48719D980DF01D42	 	Teenage Mutant Ninja Turtles - Master Splinter's Training Pack (Europe) (En,Fr,De,Es,It,Nl,Sv)	3DS
+C26898BE93D9511BB1533B7A0C7D9FCC	 	Teenage Mutant Ninja Turtles - Master Splinter's Training Pack (USA) (En,Fr)	3DS
+D6F2BBF14DD891ACD8701747ACC6C9C0	 	Tekken 3D - Prime Edition (Korea)	3DS
+019520448A94DE096A2877CAB35D49BA	 	Tekken 3D - Prime Edition (Europe) (En,Fr,De,Es,It)	3DS
+4572AA5AB038738AE6E8CB3E9C3905BD	 	Tekken 3D - Prime Edition (USA) (En,Fr,Es)	3DS
+F6AED34AA903B6D970CE82DEA1082F46	 	Tekken 3D - Prime Edition (Japan)	3DS
+F7291F3CC2E28C2A698CB753F5E2BA57	 	Tenkai Knights - Brave Battle (Europe) (En,Fr,De,Es,It)	3DS
+5B9E79C4E8EA21ED33513A089D68DFEB	 	Tenkai Knights - Brave Battle (Japan)	3DS
+762FA932B1032E4D51215EAE02075A9E	 	Tenkai Knights - Brave Battle (USA) (En,Fr,Es)	3DS
+5B15BE2737DADE2CB4DF4A28F151D132	 	Terra Formars - Akaki Hoshi no Gekitou (Japan)	3DS
+794AA18F63E8BB5F8E29E7540032F0F9	 	Terraria (Europe) (En,Fr,De,Es,It) (Rev 1)	3DS
+6DEE1214810C45B1C44782051A4D9BE3	 	Terraria (USA) (Rev 1)	3DS
+86FD6BD2B232335DE89063CBFC542CDA	 	Terraria (Japan)	3DS
+C2086015764A93BADFFA556241FAAB8F	 	Tetris (Europe) (En,Fr,De,Es,It,Nl) (Rev 1)	3DS
+69F704A45EE6A335D8A7FDF1C2CD06FA	 	Tetris (Europe) (En,Fr,De,Es,It,Nl)	3DS
+7649AAB9FAFDA24D593E2748227D4D1A	 	Tetris (Japan)	3DS
+73BE5495A19335F8B5C33E97517375C1	 	Tetris Axis (USA) (En,Fr,Es)	3DS
+C5022ADAB05B319553DB52B526B9DE8A	 	Tetris Ultimate (Europe) (En,Fr,De,Es,It)	3DS
+E15B18FA9207391144D325813E571E4A	 	Tetris Ultimate (USA) (En,Fr,Es,Pt)	3DS
+EB029A76539AC4A462E58429A5A77729	 	Tetsudou Nippon! Rosen Tabi - Aizu Tetsudou Hen (Japan)	3DS
+A3828225EA870CC58AA8CC72EF9DDE2F	 	Tetsudou Nippon! Rosen Tabi - Eizan Densha Hen (Japan)	3DS
+D9921D313B267E17A390AC765315776C	 	Tetsudou Nippon! Rosen Tabi - Joumou Denki Tetsudou Hen (Japan)	3DS
+825019599BF15C1C4C4EC9E04B538C5A	 	Tetsudou Nippon! Rosen Tabi - Kashima Rinkai Tetsudou Hen (Japan)	3DS
+9F24AFF53D37750499B97D4820A41484	 	Tetsudou Nippon! Rosen Tabi - Kikansha Thomas Hen - Ooigawa Tetsudou wo Hashirou! (Japan)	3DS
+AE9BB240CD5607DFD42B06EA6C520F8A	 	Tetsudou Nippon! Rosen Tabi - Nagaragawa Tetsudou Hen (Japan)	3DS
+5F56EBECF88C6AFE7C8A1CF00C99EF20	 	Tetsudou Nippon! Rosen Tabi - Ohmi Tetsudou Hen (Japan)	3DS
+98A66CE86204F5A0FB55D3FEB0E2BE5B	 	Tetsudou Nippon! Rosen Tabi - Yui Rail-Hen (Japan)	3DS
+07BD3021B02310523F8760924C1D07E5	 	Theatrhythm Dragon Quest (Japan)	3DS
+F591B6E81DA732262076DEFB7D64DCB3	 	Theatrhythm Final Fantasy (Europe)	3DS
+018790683150AE0FECFE46B248B559C3	 	Theatrhythm Final Fantasy (USA)	3DS
+E7DEB56EC1054301538F7F4249753A46	 	Theatrhythm Final Fantasy (Japan)	3DS
+B67BBCF2580B15555DABB0EADAE0AFCD	 	Theatrhythm Final Fantasy - Curtain Call (Japan)	3DS
+5BAE71ED6A98C0F49771BB752F84B6C2	 	Theatrhythm Final Fantasy - Curtain Call (USA)	3DS
+F7A264ADC5D44D42451DD44FF8496DEC	 	Theatrhythm Final Fantasy - Curtain Call (Europe)	3DS
+9B0D45D7CD1D635A119335192F4112A0	 	Thomas & Friends - Steaming around Sodor (Europe) (En,Fr,De,Es,It,Nl)	3DS
+99FFE97A7FD85072D57E52AC079D29AF	 	Thomas to Asonde Oboeru Kotoba to Kazu to ABC (Japan)	3DS
+A87BAFB417CBC1174295E47EF5EDE144	 	Thor - God of Thunder (Europe) (En,Fr,De,Es,It)	3DS
+5BCA32DBF77201875DCF40EF70129109	 	Thor - God of Thunder (USA) (En,Fr,Es)	3DS
+BBADD4E01EB679FDB7877B9A4488155D	 	Time Travelers (Japan)	3DS
+267C9FA6EECB4F65FC64AEED05231DBD	 	Tintin no Bouken - Unicorn-Gou no Himitsu (Japan)	3DS
+2434DA994D22ED7D9AF6A6ED3573EF40	 	Tobidase Doubutsu no Mori (Japan)	3DS
+F740C0E9A7DA9E2359D6AE4177DCB611	 	Tobidase Doubutsu no Mori (Japan) (Rev 1)	3DS
+12C7001C0E2CBD83199216CD4BAFF388	 	Tobidase Doubutsu no Mori - amiibo+ (Japan)	3DS
+4F231E1EC4FA2EB58036FA9957B09886	 	Tobidasu! Puzzle Bobble 3D (Japan)	3DS
+374C760B4AADF3B6391E03DD8A6B9C01	 	TOEIC Test - Chousoku Training (Japan)	3DS
+E31A05A9C927D3C3F68139D4E250ACD9	 	Tohoku Daigaku Karei Igaku Kenkyuusho - Kawashima Ryuuta Kyouju Kanshuu - Monosugoku Nou wo Kitaeru 5-Funkan no Oni Training (Japan)	3DS
+EFBF167C950EAEB34F7F660EF77C48CC	 	Tohoku Daigaku Karei Igaku Kenkyuusho - Kawashima Ryuuta Kyouju Kanshuu - Monosugoku Nou wo Kitaeru 5-Funkan no Oni Training (Taiwan) (Tw, Cn Region Lock)	3DS
+BF07212B858638351E0747ADC380C591	 	Tom Clancy's Ghost Recon - Shadow Wars (Europe) (En,Fr,De,Es,It)	3DS
+374E3C9D4616774A82B96EE300619234	 	Tom Clancy's Ghost Recon - Shadow Wars (USA) (En,Fr,Es)	3DS
+8FF880F44D0C427D76BF3955DA8A33A5	 	Tom Clancy's Ghost Recon - Shadow Wars (Japan)	3DS
+E4245BDBA9CDABC213FB9963F4E3610D	 	Tom Clancy's Splinter Cell 3D (Europe) (En,Fr,De,Es,It)	3DS
+F3D01263647E4E0F80CE2A3BE40D59AE	 	Tom Clancy's Splinter Cell 3D (USA) (En,Fr,Es)	3DS
+338C2C3DD2122C74A3313C9F8D411FAC	 	Tom Clancy's Splinter Cell 3D (Japan)	3DS
+6FF83287DD61979ABC40A159AC4900DC	 	Tomodachi Collection - Shin Seikatsu (Japan)	3DS
+6A74E2AFCE985BBB074D53E006784AA5	 	Tomodachi Collection - Shin Seikatsu (Japan) (Rev 2)	3DS
+FEF27C17C55C04111DA5E3CC10D792B7	 	Tomodachi Collection - Shin Seikatsu (Japan) (Rev 1)	3DS
+5F4FB2A640A9AF68B6B0B63818035BF4	 	Tomodachi Life (USA)	3DS
+72A4765F91CE92F3B76BD1AAA4956736	 	Tomodachi Life (USA) (Rev 1)	3DS
+F40DABAFDB6AD801247D4052C7B5B92F	 	Tomodachi Life (Europe) (En,Fr,De,Es,It) (Rev 1)	3DS
+E98C9F0FCE5149AFD1AE4348F03C3578	 	Tomodachi Life (Europe) (En,Fr,De,Es,It,Nl) (Rev 2)	3DS
+FF9283F31FB508336538FDBD02DA398B	 	Tomodachi Life (Europe) (En,Fr,De,Es,It)	3DS
+CBC6D6B3CD950CFCEEDFE8059E79DD59	 	Tongari Boushi to Mahou no Machi (Japan)	3DS
+669296C6157B5C03E08A3682B524D7C7	 	Top Model 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+2B1867C34130769B04584DE9E4BB28D4	 	Top Trumps - NBA All Stars (USA)	3DS
+109342DE88BDF5C21C443F054717764E	 	Toriko - Gourmet Battle! (Japan)	3DS
+C05072F4A72EFE5221CABFB18D1B4E5E	 	Toriko - Gourmet Monsters! (Japan)	3DS
+0C6EEE3FB720EF8EA4B0A74CAE6D3E44	 	Toriko - Ultimate Survival (Japan)	3DS
+30BDAF859859F905ACC7E98D3502C8A3	 	Touch! Double Pen Sports (Japan)	3DS
+AD50AB33E6C7970371D207505E6C4BD0	 	Toushin Toshi - Girls Gift RPG (Japan)	3DS
+C1F6FCE27005A5D500DC09150F7F0AA7	 	Tousouchuu - Shijou Saikyou no Hunter-tachi Kara Nigekire! (Japan)	3DS
+161794E1626FEB4AA2B5FBF3F34D0B65	 	Transformers - Dark of the Moon - Stealth Force Edition (Europe) (En,Fr,De,Es,It)	3DS
+B631106ABE23D1B1AEB10D24A9A75C3A	 	Transformers - Dark of the Moon - Stealth Force Edition (USA) (En,Fr)	3DS
+142F8BB754CC2D012837A862A1345EE2	 	Transformers - Rise of the Dark Spark (USA) (En,Fr)	3DS
+41F10F1F8170E820B700214E740EE649	 	Transformers - Rise of the Dark Spark (Europe) (En,Fr,De,Es,It)	3DS
+245D01F0C702C6DCF538B5534009F9E6	 	Transformers Prime - The Game (Europe) (En,Fr,De,Es,It,Nl,Sv)	3DS
+22F9463B95C4E98449561F461662D6A7	 	Transformers Prime - The Game (USA) (En,Fr)	3DS
+F9CEB3EFFB70C96E79716467E1B68C23	 	Trash Pack, The (USA)	3DS
+F88C46DE1C4000E4F3405400C19ABFEF	 	Trash Pack, The (Europe)	3DS
+88914764D6124131140A8BDA89ABF32A	 	Travel Adventures with Hello Kitty (USA)	3DS
+E88FBEE344E4C2D81D56C61F53FD801C	 	Tribe Cool Crew - THE G@ME (Japan)	3DS
+AFD571BF8037F0C1A92A2494C3AAFE5A	 	Turbo - Super Stunt Squad (USA) (En,Fr,Es)	3DS
+ED4E8D98184BD5ADE4A6C02C68F54379	 	Turbo - Super Stunt Squad (Europe) (En,Fr,De,Es,It)	3DS
+0A6A9D7F898343AE8C51C6074F5E9013	 	Twieonawayo Dongmul-ui Sup (Korea)	3DS
+2BEDF8C6EE0D649B32193CAF832C82E6	 	Twieonawayo Dongmul-ui Sup (Korea) (Rev 1)	3DS
+58AB3E53C969C5CB5A326C16011F1D45	 	Twieonawayo Dongmul-ui Sup amiibo+ (Korea)	3DS
+5E8DFFF7692CDC95E88E7B5BD3357891	 	Ultimate NES Remix (Europe) (En,Fr,De,Es,It)	3DS
+2358551B5EBDC8EF9712F3C32AC9BED9	 	Ultimate NES Remix (USA) (En,Fr,Es)	3DS
+F03F4A1438C4E367B965E5A9192EE609	 	UnchainBlades EXXiV (Japan)	3DS
+113A1F69FF56B0279C2E43FE01248408	 	UnchainBlades ReXX (Japan)	3DS
+1083ADED879FCCE80467D968FE0F267D	 	Ushimitsu Monstruo - Linze to Mahou no Rhythm (Japan)	3DS
+E2BCE757BDE87D7D813465B29B119D2F	 	Viking Invasion 2 - Tower Defense (Europe) (En,Fr,De,Es,It)	3DS
+A2C7BD997AB951A64A2D174C0DAE3618	 	Virus Shooter XX (Japan)	3DS
+CD52480B33F023F55DDAF6231A612AFC	 	Vitamin X - Evolution Plus (Japan)	3DS
+A99B35FFE2D4C090698C2982CF946FAC	 	Vitamin Z Revolution (Japan)	3DS
+8FDF676E2E8BB6E31639EFCD52E43C9B	 	Wagamama Fashion - GirlsMode - Yokubari Sengen (Japan) (Rev 1)	3DS
+73DFADBF9555DFBAAB16703CE521396D	 	Wagamama Fashion - GirlsMode - Yokubari Sengen! Tokimeki Up! (Japan) (Rev 3)	3DS
+2BCE8A840AC0C449A27C6F92599A6B2B	 	Wan Nyan Doubutsu Byouin - Pet no Oisha-san ni Narou! (Japan)	3DS
+69C1900F663E584127117F09C3514439	 	Wan Nyan Doubutsu Byouin - Suteki na Juui-san ni Narou! (Japan)	3DS
+20EC568147898B1C277C040D9096019D	 	Wan Nyan Doubutsu Byouin - Suteki na Juui-san ni Narou! (Japan) (Beta)	3DS
+ECC37C164EE54F90A85942F1C0362C81	 	Wan Nyan Doubutsu Byouin 2 (Japan) (Rev 1)	3DS
+9EC02C4D96E7E2FC78881ACBCCC32880	 	Wan Nyan Pet Shop (Japan) (Rev 2)	3DS
+3DBC0406DA305A88C50FF819694FAAF6	 	Wan Nyan Pet Shop (Japan)	3DS
+69653DF3468474DBFF879FC78E67CD83	 	Wan Nyan Pet Shop (Japan) (Rev 3)	3DS
+9F8B0F6406C738C09D6583E806BC8946	 	WarioWare Gold (Europe) (En,Fr,De,Es,It)	3DS
+E597B45BB34DFC312AB740CACFE79902	 	WarioWare Gold (USA)	3DS
+4612B99B92C5FDE9A0F2777A3AA4F6BD	 	WarioWare Gold (USA) (Rev 1)	3DS
+6B819DFF335E7E9222A5DDE1157D76D7	 	Whitakers Present, The - Milton & Friends 3D (Europe)	3DS
+077601D41DDF4FEE9D1CA8A185E0513B	 	Winning Eleven 3D Soccer (Japan)	3DS
+C00D2C536DCBCED5FBC6D0407C3747E7	 	Winter Sports 2012 - Feel the Spirit (Europe) (En,Fr,De,It)	3DS
+AA2BF44252014516141C6C8FA1BACB57	 	Winx Club - Saving Alfea (Europe) (En,Fr,De,Es,It,Pt)	3DS
+1E47E775D3634BC898A39174D04512A6	 	Winx Club - Saving Alfea (USA) (En,Fr,Es,Pt)	3DS
+B7915CEBD41A8A643FB10EE5F2316444	 	Wipeout - Create and Crash (USA)	3DS
+52EABE0AB5DCA783441A861316B18CA7	 	Wipeout 2 (USA)	3DS
+8E86FE3DACD6D431DCC46CE3CB3C27B0	 	Wipeout 3 (USA)	3DS
+843132C7B29E4D943E417C57EED9C1CF	 	Word Wizard 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+6B1BB501545CC6B154B98F6C3FDF6DED	 	World Soccer Winning Eleven 2012 (Japan)	3DS
+3EFB143FA82CBE1B0683A89BADBDD344	 	World Soccer Winning Eleven 2013 (Japan)	3DS
+B517C5E0CABE66E93BFC3E93AFFB40B3	 	World Soccer Winning Eleven 2014 (Japan)	3DS
+9EC792AE36D78447793395AA648E0DEB	 	World Soccer Winning Eleven 2014 - Aoki Samurai no Chousen (Japan)	3DS
+9A7E000E1290BAF301E0BE9D03080D6F	 	WRC - FIA World Rally Championship (Europe) (En,Fr,De,Es,It)	3DS
+52EDF425C5BAB5C2E9E91E87167FA1A1	 	Wreck-It Ralph (Europe) (En,Fr,De,Es,It,Nl,Sv)	3DS
+901238C61302DE3A7B3EE8446FC0A2C7	 	Wreck-It Ralph (USA) (En,Fr)	3DS
+5210A55A61F75A2ABA2FE08D147E92CE	 	Wreck-It Ralph (Europe) (En,Fr,De,Es,It,Nl,Sv) (Rev 1)	3DS
+48800756D8AB29ECE20D1B060CE3B862	 	WWE All Stars (USA) (En,Fr,Es)	3DS
+801A2EB9195D9F505DE30101F201C1B5	 	WWE All Stars (Europe) (En,Fr,De,Es,It)	3DS
+D30F569EA0C403C2295A53C8E92529EB	 	Yakari - The Mystery of Four Seasons (Europe) (En,Fr,De,Es,It)	3DS
+27EB0330A1D2BA29FACFD3D29851142C	 	Yeolhyeolgyeongpa Kunio-Kun SP - Nantu Hyeopjugog (Korea)	3DS
+8FF4CAC64150AD3273DF80EFA0053DD7	 	Yeolhyeolgyeongpa Kunio-Kun Special (Korea)	3DS
+818A15EB3E456CB817B472768658E2C1	 	Yo-Kai Watch (USA)	3DS
+E7BCEB6A47FD8131B0DA2A6EE0F42F66	 	Yo-Kai Watch (Australia)	3DS
+6D1E2FC4A133D874A0CDF947A58C44B1	 	Yo-Kai Watch (USA) (Demo) (Kiosk)	3DS
+825E75141E517563A5F87D2DF97A9125	 	Yo-Kai Watch (Europe) (En,Fr,De,Es,It)	3DS
+8F77088711A15FAD355DCD8B8850474F	 	Yo-Kai Watch (Korea)	3DS
+5783FFAE0FBC8BC325B465EC04E7E8FC	 	Yo-Kai Watch (Europe) (En,Fr,De,Es,It,Nl) (Demo) (Kiosk)	3DS
+8848354CB001D4A6BB9ED3DA5864EE8C	 	Yo-Kai Watch (Australia) (Demo) (Kiosk)	3DS
+EB53F1F3C2FB32148A8C23C863AD75C1	 	Yo-Kai Watch 2 - Bony Spirits (USA)	3DS
+6B3551B3BF9DBC2953D2660BEBE30365	 	Yo-Kai Watch 2 - Bony Spirits (Australia)	3DS
+B6C1F8AA2F1ED847FA52AA5167FA86B8	 	Yo-Kai Watch 2 - Bony Spirits (Europe) (En,Fr,De,Es,It,Nl)	3DS
+BF83D69BAE5C4C6885363A41A2C48D77	 	Yo-Kai Watch 2 - Fleshy Souls (USA)	3DS
+FF27B4746E35CED3F9746CDB8580447D	 	Yo-Kai Watch 2 - Fleshy Souls (Australia)	3DS
+0B24700AEEA41645A317973E5BB9DDAE	 	Yo-Kai Watch 2 - Fleshy Souls (Europe) (En,Fr,De,Es,It,Nl)	3DS
+969228063D621583DA5B0441802851EF	 	Yo-Kai Watch 2 - Fleshy Souls and Bony Spirits (USA) (Demo) (Kiosk)	3DS
+A14E650B421DC730FA886483FEF7110E	 	Yo-Kai Watch 2 - Fleshy Souls and Bony Spirits (Europe) (En,Fr,De,Es,It,Nl) (Demo) (Kiosk)	3DS
+A44E328784FDA1DBE76152C4E769AB40	 	Yo-Kai Watch 2 - Fleshy Souls and Bony Spirits (Australia) (Demo) (Kiosk)	3DS
+42C1D9D024E5B74C2FC897DE8B7D8173	 	Yo-Kai Watch 2 - Psychic Specters (Europe) (En,Fr,De,Es,It,Nl,Ru)	3DS
+F6AB23E86F0BF769E03C1153EDA71043	 	Yo-Kai Watch 2 - Psychic Specters (USA) (En,Fr,Es)	3DS
+726C646E8CF7BF2D61B91D0477345C7B	 	Yo-Kai Watch 2 - Psychic Specters (Australia)	3DS
+44EA7A44E6ED83D32F6FFE8CDB00671E	 	Yo-Kai Watch 3 (Germany)	3DS
+CD36E98236D3887A4D1C2A56E534A45E	 	Yo-Kai Watch 3 (Europe) (En,Fr,De,Es,It)	3DS
+1F5E7BD87223706F7BC2C40D3E348ECC	 	Yo-Kai Watch 3 (Italy)	3DS
+8C3A7023598FB593156B22090DA6AD1F	 	Yo-Kai Watch 3 (France)	3DS
+E8FE398A1E1070CB26DC15CA8FF778D2	 	Yo-Kai Watch 3 (USA)	3DS
+D296002F12131B0DCD9598CF294BF77E	 	Yo-Kai Watch 3 (Spain)	3DS
+DB914AA8D5AA00558A8719F1121C660D	 	Yo-Kai Watch Blasters - Red Cat Corps (Europe) (En,Fr,De,Es,It)	3DS
+A5E8D998E0A07F875977879846E10E4E	 	Yo-Kai Watch Blasters - Red Cat Corps (USA)	3DS
+36C79A52F137BB37ECB18737ED63935D	 	Yo-Kai Watch Blasters - White Dog Squad (USA)	3DS
+1DEAAFDCF4C7B90CB7265FF9E87C82EA	 	Yo-Kai Watch Blasters - White Dog Squad (Europe) (En,Fr,De,Es,It)	3DS
+D8D0C89A5E23A5F33FAEB54CF06F0BB9	 	Yogoe Watch 2 - Bonga (Korea)	3DS
+93F68D16260495CF44966E0FDD02FC81	 	Yogoe Watch 2 - Kkeutpanwang (Korea)	3DS
+EB88CBCBD1A10150979BAF06E2EE5C72	 	Yogoe Watch 2 - Wonjo (Korea)	3DS
+991793E8E1F546BFF6CABBCD196609D9	 	Yogoe Watch Busters - Baekgyeondae (Korea)	3DS
+DA81F323E2ED995C3AD023DDD248B264	 	Yogoe Watch Busters - Jeongmyodan (Korea)	3DS
+FF38395DEED86BF88F681991189D9E01	 	Yoshi New Island (Korea)	3DS
+5EDC5218727945BBD58095EFFC904AB4	 	Yoshi's New Island (Japan)	3DS
+986972F2B3F5CC55650610E29E694C0F	 	Yoshi's New Island (Taiwan) (Ja)	3DS
+69C7E7C09C245C8DB508EDF586343CA6	 	Yoshi's New Island (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru)	3DS
+ECA0ED9EED8ACD053F961093E4032F79	 	Yoshi's New Island (USA) (En,Fr,Es)	3DS
+60AA5E4484D17449E726A51E7FB9285F	 	Yoshi's New Island (USA) (En,Fr,Es) (Demo) (Kiosk)	3DS
+E0FE9B12FDA5879928D5F6E25373D3B5	 	Yoshi's New Island (Europe) (En,Fr,De,Es,It,Nl,Pt,Ru) (Demo) (Kiosk)	3DS
+3E0144ABD6BEDD1212ABD3BD4735A5D4	 	Youkai Sangokushi (Japan)	3DS
+70972C12CDBFBC74C3A614593203BD62	 	Youkai Watch (Japan)	3DS
+20C70FD1FE4CF9F264A3FBCCB916E378	 	Youkai Watch 2 - Ganso (Japan)	3DS
+75E13448EAF7D718BD83B59171E8CAFD	 	Youkai Watch 2 - Ganso (Japan) (Rev 3)	3DS
+C258595EA166B0090684901E42D2A51F	 	Youkai Watch 2 - Ganso (Japan) (Rev 2)	3DS
+827182F8B21D04B0CA7CD0AA0C14371D	 	Youkai Watch 2 - Ganso (Japan) (Rev 1)	3DS
+846ABD723FA6A50684CF6EC6CBC033B8	 	Youkai Watch 2 - Honke (Japan)	3DS
+E67EAB8827E2911B64D586D9E46D2013	 	Youkai Watch 2 - Honke (Japan) (Rev 1)	3DS
+0746DAAB6DD81B6CD26B1D92BD471A5A	 	Youkai Watch 2 - Honke (Japan) (Rev 3)	3DS
+CA785D7FE1BC747FF12463648CF1C604	 	Youkai Watch 2 - Honke (Japan) (Rev 2)	3DS
+933C60A22DB007FA48FD1B5EFABDAC30	 	Youkai Watch 2 - Shinuchi (Japan)	3DS
+4FDBE62F123C98EE281717B54AB46EB5	 	Youkai Watch 2 - Shinuchi (Japan) (Rev 1)	3DS
+E15F4F3F5C031A1D4BFAAFC23BB397E6	 	Youkai Watch 2 - Shinuchi (Japan) (Rev 2)	3DS
+BAA8DF0F184D1FBC732776817B5D6833	 	Youkai Watch 3 - Sukiyaki (Japan)	3DS
+A98C4E688A2B408D8537DAA8B16D4900	 	Youkai Watch 3 - Sushi (Japan)	3DS
+D98D235073C530B3B9B1A65426D16022	 	Youkai Watch 3 - Tempura (Japan)	3DS
+5A58C84CB2C98D7A1B85989698CFAA8D	 	Youkai Watch Busters - Akanekodan (Japan)	3DS
+D98E03FCD43F96C3312EA0169DA20AE6	 	Youkai Watch Busters - Akanekodan (Japan) (Rev 1)	3DS
+203C00EEF34F3C210A4D3A335B17E894	 	Youkai Watch Busters - Shiroinutai (Japan)	3DS
+CB63D813BC6F1B93DCC6D61C7729FBE9	 	Youkai Watch Busters - Shiroinutai (Japan) (Rev 1)	3DS
+BF2DD292D1CE5195684CBFB7479A0CEB	 	Youkai Watch Busters 2 - Hihou Densetsu Banbarayaa - Magnum (Japan)	3DS
+8DEA2CF36FF8906E4C59505D7D34D660	 	Youkai Watch Busters 2 - Hihou Densetsu Banbarayaa - Sword (Japan)	3DS
+B8667DB4B474EF55C7BCAEAE065ECB31	 	Young Justice - Legacy (USA) (En,Fr,Es)	3DS
+CAD00EE5B42AED07FFDEEF55A6D8E987	 	Yowamushi Pedal - Ashita e no High Cadence (Japan)	3DS
+713E47CD8FBD9735DA22613695084FB7	 	Yu-Gi-Oh! Zexal - Gekitotsu! Duel Carnival! (Japan)	3DS
+29399A2ED7B35DD00D84AE5ED88F96E6	 	Yu-Gi-Oh! Zexal - World Duel Carnival (Europe) (En,Fr,De,Es,It)	3DS
+26AF403FB2005EE615C8C3833BA1E7CC	 	Yuugen Gaisha Brave Company (Japan)	3DS
+C41BDB403850B55DEAC5FAF5BFA9BBE3	 	Zelda Jeonseol Majora Gamyeon 3D (Korea)	3DS
+5F434EA2CEFFCD9EA384AABBB9E967FE	 	Zelda Jeonseol Sindeul-ui Triforce 2 (Korea)	3DS
+4D28A971B2E06C4E273069393A13E5D5	 	Zelda Musou - Hyrule All-Stars (Japan)	3DS
+0216792E776BDAE54912B24904C2B026	 	Zelda Mussang - Hyruleui Jeonseoldeul (Korea)	3DS
+E818861C18B7054262EB65862A50689A	 	Zelda no Densetsu - Kamigami no Triforce 2 (Japan)	3DS
+1AFB20347C3E8AB46DCAECCF1F385D53	 	Zelda no Densetsu - Mujura no Kamen 3D (Japan) (Rev 1)	3DS
+36DFA3C128B9124FCA6ECC2F5DA19DD1	 	Zelda no Densetsu - Toki no Ocarina 3D (Japan) (Rev 1)	3DS
+9E60D08D9D5C81B6E9E32158078C49FB	 	Zelda no Densetsu - Toki no Ocarina 3D (Japan)	3DS
+CDE8E1913AC79FD1EC220C1B7AEED00E	 	Zelda no Densetsu - Tri Force 3-Juushi (Taiwan) (Ja)	3DS
+5F4B9ED0DA9D50E048A6A5878DE1F7FA	 	Zelda no Densetsu - Triforce 3-Juushi (Japan)	3DS
+150C97FC06EF74542C6F40FA5FD828E4	 	Zelda no Densetsu - Triforce 3-Juushi (Japan) (Rev 1)	3DS
+74EB83ABEFE20042D54E06350608A8A6	 	Zero Escape - Toki no Dilemma (Japan)	3DS
+F72E73F3758C7344AFA4B58D0FB6CB37	 	Zero Escape - Virtue's Last Reward (USA) (Rev 2)	3DS
+8D05901B0194C81A3083DF3ADBA81F81	 	Zero Escape - Virtue's Last Reward (Europe)	3DS
+86300F56B3ED89C09A2D2B7541ADCDE1	 	Zero Escape - Virtue's Last Reward (USA)	3DS
+B136C324BB12E8A34E8BF350A695F282	 	Zero Escape - Virtue's Last Reward (Europe) (Rev 2)	3DS
+5315E094696CFD0D333D22D7DCDE57BC	 	Zero Escape - Zero Time Dilemma (USA)	3DS
+2EA8CA2EE341060C22875C40757EC95E	 	Zoo Keeper 3D (Japan)	3DS
+880C24E9672B139153ACC3F7DD5D764C	 	Zoo Resort 3D (Europe) (En,Fr,De,Es,It,Nl)	3DS
+ABB841AEB23847947B9C5CC4B11EFBD1	 	Zoo Resort 3D (USA) (En,Fr,Es)	3DS
+9E3A0CCF06D0FBB31E021867EF791676	 	Zyuden Sentai Kyouryuger - Game de Gaburincho!! (Japan)	3DS
+; New 3DS exclusive games
+AD58FF9036A49743313328A34EE6C5A2	 	Fire Emblem Musou (Japan)	3DS
+B79455233292A3893F2C85CD6AB9CD7D	 	Fire Emblem Warriors (Europe) (En,Fr,De,Es,It)	3DS
+1A82850D5EA4A232C9A61D296751D883	 	Fire Emblem Warriors (USA)	3DS
+FAE3EC5AD91BBA1926DBD67F1679117E	 	Minecraft - New Nintendo 3DS Edition (USA)	3DS
+8D624849886240D0E3DADDC286EBCF95	 	Runbow Pocket Deluxe Edition (USA)	3DS
+762D0074A38EC134D19C8BBE7C518AB1	 	Xenoblade (Japan)	3DS
+A0A7E2E4C833C73D8282989C3BF073E7	 	Xenoblade Chronicles 3D (Europe) (En,Fr,De,Es,It) (Rev 1)	3DS
+2C3C0A84A8A661C033BC45FC1CCA2EBB	 	Xenoblade Chronicles 3D (Europe) (En,Fr,De,Es,It)	3DS
+F36549F56CC9FCFCFF8B57F06C2494E8	 	Xenoblade Chronicles 3D (USA) (Beta)	3DS
+9A0E118C1292FAF00822F8DE79955448	 	Xenoblade Chronicles 3D (USA) (En,Fr,Es) (Rev 1)	3DS
+B979F1AB6B111EF97F906E405CC4247D	 	Xenoblade Chronicles 3D (USA) (En,Fr,Es)	3DS
