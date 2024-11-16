@@ -92,6 +92,7 @@ namespace BizHawk.Emulation.Common
 				.Append(gameInfo.MetaData)
 				.Append(Environment.NewLine);
 
+			_acquire.WaitOne();
 			File.AppendAllText(Path.Combine(_userRoot, filename), sb.ToString());
 			DB = DB.Append(new(gameInfo.Hash, gameInfo)).ToFrozenDictionary();
 		}
@@ -159,7 +160,7 @@ namespace BizHawk.Emulation.Common
 			if (!inUser) _expected.Remove(Path.GetFileName(path));
 			//reminder: this COULD be done on several threads, if it takes even longer
 			using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
-			while (reader.ReadLine() is string line)
+			while (reader.ReadLine() is { } line)
 			{
 				try
 				{
@@ -200,8 +201,6 @@ namespace BizHawk.Emulation.Common
 					Util.DebugWriteLine($"Error parsing database entry: {line}");
 				}
 			}
-			DB = _builder.ToFrozenDictionary();
-			_builder.Clear();
 		}
 
 		public static void InitializeDatabase(string bundledRoot, string userRoot, bool silent)
@@ -217,6 +216,8 @@ namespace BizHawk.Emulation.Common
 			var stopwatch = Stopwatch.StartNew();
 			ThreadPool.QueueUserWorkItem(_ => {
 				InitializeWork(Path.Combine(bundledRoot, "gamedb.txt"), inUser: false, silent: silent);
+				DB = _builder.ToFrozenDictionary();
+				_builder.Clear();
 				if (_expected.Count is not 0) Util.DebugWriteLine($"extra bundled gamedb files were not #included: {string.Join(", ", _expected)}");
 				Util.DebugWriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
 				_acquire.Set();
