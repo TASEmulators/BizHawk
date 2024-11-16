@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Numerics;
@@ -19,7 +20,6 @@ namespace BizHawk.Emulation.Common
 	/// As 3DS roms may be >= 2GiB, too large for a .NET array
 	/// As such, we need to perform a quick hash to identify them
 	/// For this purpose, we re-use RetroAchievement's hashing formula
-	/// Note that we assume here a CIA isn't being hashed, but rather its installed file (identical hash anyways)
 	/// Reference code: https://github.com/RetroAchievements/rcheevos/blob/8d8ef920e253f1286464771e81ce4cf7f4358eee/src/rhash/hash.c#L1573-L2184
 	/// </summary>
 	public class N3DSHasher(byte[]? aesKeys, byte[]? seedDb)
@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Common
 			throw new Exception("Could not find seed in seeddb");
 		}
 
-		private void HashNCCH(FileStream romFile, IncrementalHash md5Inc, byte[] header)
+		private void HashNCCH(FileStream romFile, IncrementalHash md5Inc, byte[] header, Aes? ciaAes = null)
 		{
 			long exeFsOffset = BinaryPrimitives.ReadUInt32LittleEndian(header.AsSpan(0x1A0, 4));
 			long exeFsSize = BinaryPrimitives.ReadUInt32LittleEndian(header.AsSpan(0x1A4, 4));
@@ -262,14 +262,44 @@ namespace BizHawk.Emulation.Common
 
 			md5Inc.AppendData(header);
 
+			// note: stream offset must be +0x200 from the beginning of the NCCH (i.e. after the NCCH header)
+			exeFsOffset -= 0x200;
+
+			if (ciaAes != null)
+			{
+				// CBC decryption works by setting the IV to the encrypted previous block.
+				// Normally this means we would need to decrypt the data between the header and the ExeFS so the CIA AES state is correct.
+				// However, we can abuse how CBC decryption works and just set the IV to last block we would otherwise decrypt.
+				// We don't care about the data betweeen the header and ExeFS, so this works fine.
+
+				var ciaIv = new byte[ciaAes.BlockSize / 8];
+				romFile.Seek(exeFsOffset - ciaIv.Length, SeekOrigin.Current);
+				if (romFile.Read(ciaIv, 0, ciaIv.Length) != ciaIv.Length)
+				{
+					throw new Exception("Failed to read NCCH data");
+				}
+
+				ciaAes.IV = ciaIv;
+			}
+			else
+			{
+				// No encryption present, just skip over the in-between data
+				romFile.Seek(exeFsOffset, SeekOrigin.Current);
+			}
+
 			// constrict hash buffer size to 64MiBs (like RetroAchievements does)
 			var exeFsBufferSize = (int)Math.Min(exeFsSize, 64 * 1024 * 1024);
 			var exeFsBuffer = new byte[exeFsBufferSize];
-			// note: stream offset must be +0x200 from the beginning of the NCCH (i.e. after the NCCH header)
-			romFile.Seek(exeFsOffset - 0x200, SeekOrigin.Current);
 			if (romFile.Read(exeFsBuffer, 0, exeFsBufferSize) != exeFsBufferSize)
 			{
 				throw new Exception("Failed to read ExeFS data");
+			}
+
+			if (ciaAes != null)
+			{
+				using var decryptor = ciaAes.CreateDecryptor();
+				Debug.Assert(decryptor.CanTransformMultipleBlocks, "AES decryptor can transform multiple blocks");
+				decryptor.TransformBlock(exeFsBuffer, 0, exeFsBuffer.Length, exeFsBuffer, 0);
 			}
 
 			if (!noCryptoFlag)
@@ -377,6 +407,173 @@ namespace BizHawk.Emulation.Common
 			md5Inc.AppendData(exeFsBuffer);
 		}
 
+		private byte[] GetCIANormalKey(byte commonKeyIndex)
+		{
+			var (keyX, keyY) = FindAesKeys("slot0x3DKeyX=", $"common{commonKeyIndex}=");
+			return Derive3DSNormalKey(keyX, keyY);
+		}
+
+		private static uint CIASignatureSize(byte[] header)
+		{
+			var signatureType = BinaryPrimitives.ReadUInt32BigEndian(header.AsSpan(0, 4));
+			return signatureType switch
+			{
+				0x010000 or 0x010003 => 0x200 + 0x3C,
+				0x010001 or 0x010004 => 0x100 + 0x3C,
+				0x010002 or 0x010005 => 0x3C + 0x40,
+				_ => throw new InvalidOperationException($"Invalid signature type {signatureType:X8}"),
+			};
+		}
+
+		private const uint CIA_HEADER_SIZE = 0x2020;
+
+		// note that the header passed here is just the first 0x200 bytes, not a full CIA_HEADER_SIZE
+		private void HashCIA(FileStream romFile, IncrementalHash md5Inc, byte[] header)
+		{
+			var certSize = BinaryPrimitives.ReadUInt32LittleEndian(header.AsSpan(0x08, 4));
+			var tikSize = BinaryPrimitives.ReadUInt32LittleEndian(header.AsSpan(0x0C, 4));
+			var tmdSize = BinaryPrimitives.ReadUInt32LittleEndian(header.AsSpan(0x10, 4));
+
+			const long CIA_ALIGNMENT_MASK = 64 - 1; // sizes are aligned to 64 bytes
+			const long CERT_OFFSET = (CIA_HEADER_SIZE + CIA_ALIGNMENT_MASK) & ~CIA_ALIGNMENT_MASK;
+			var tikOffset = (CERT_OFFSET + certSize + CIA_ALIGNMENT_MASK) & ~CIA_ALIGNMENT_MASK;
+			var tmdOffset = (tikOffset + tikSize + CIA_ALIGNMENT_MASK) & ~CIA_ALIGNMENT_MASK;
+			var contentOffset = (tmdOffset + tmdSize + CIA_ALIGNMENT_MASK) & ~CIA_ALIGNMENT_MASK;
+
+			// Check if this CIA is encrypted, if it isn't, we can hash it right away
+
+			romFile.Seek(tmdOffset, SeekOrigin.Begin);
+			if (romFile.Read(header, 0, 4) != 4)
+			{
+				throw new Exception("Failed to read TMD signature type");
+			}
+
+			var signatureSize = CIASignatureSize(header);
+
+			romFile.Seek(signatureSize + 0x9E, SeekOrigin.Current);
+			if (romFile.Read(header, 0, 2) != 2)
+			{
+				throw new Exception("Failed to read TMD content count");
+			}
+
+			var contentCount = BinaryPrimitives.ReadUInt16BigEndian(header.AsSpan(0, 2));
+
+			romFile.Seek(0x9C4 - 0x9E - 2, SeekOrigin.Current);
+			int contentCountIndex;
+			for (contentCountIndex = 0; contentCountIndex < contentCount; contentCountIndex++)
+			{
+				if (romFile.Read(header, 0, 0x30) != 0x30)
+				{
+					throw new Exception("Failed to read TMD content chunk");
+				}
+
+				// Content index 0 is the main content (i.e. the 3DS executable)
+				var contentIndex = BinaryPrimitives.ReadUInt16BigEndian(header.AsSpan(4, 2));
+				if (contentIndex == 0)
+				{
+					break;
+				}
+
+				contentOffset += BinaryPrimitives.ReadUInt32BigEndian(header.AsSpan(0xC, 4));
+			}
+
+			if (contentCountIndex == contentCount)
+			{
+				throw new Exception("Failed to find main content chunk in TMD");
+			}
+
+			var cryptoFlag = header[7].Bit(0);
+			string ncchHeaderTag;
+			if (!cryptoFlag)
+			{
+				// Not encrypted, we can hash the NCCH immediately
+				romFile.Seek(contentOffset, SeekOrigin.Begin);
+				if (romFile.Read(header, 0, 0x200) != 0x200)
+				{
+					throw new Exception("Failed to read NCCH header");
+				}
+
+				ncchHeaderTag = Encoding.ASCII.GetString(header.AsSpan(0x100, 4));
+				if (ncchHeaderTag != "NCCH")
+				{
+					throw new Exception($"NCCH header was not at offset {contentOffset:X}");
+				}
+
+				HashNCCH(romFile, md5Inc, header);
+				return;
+			}
+
+			// Acquire the encrypted title key, title id, and common key index from the ticket
+			// These will be needed to decrypt the title key, and that will be needed to decrypt the CIA
+
+			romFile.Seek(tikOffset, SeekOrigin.Begin);
+			if (romFile.Read(header, 0, 4) != 4)
+			{
+				throw new Exception("Failed to read ticket signature type");
+			}
+
+			signatureSize = CIASignatureSize(header);
+
+			romFile.Seek(signatureSize, SeekOrigin.Current);
+			if (romFile.Read(header, 0, 0xB2) != 0xB2)
+			{
+				throw new Exception("Failed to read ticket data");
+			}
+
+			var commonKeyIndex = header[0xB1];
+			if (commonKeyIndex > 5)
+			{
+				throw new Exception($"Invalid common key index {commonKeyIndex:X2}");
+			}
+
+			var normalKey = GetCIANormalKey(commonKeyIndex);
+			var titleId = header.AsSpan(0x9C, sizeof(ulong));
+			var iv = new byte[128 / 8];
+			titleId.CopyTo(iv);
+
+			using var aes = Aes.Create();
+			aes.Mode = CipherMode.CBC;
+			aes.Padding = PaddingMode.None;
+			aes.BlockSize = 128;
+			aes.KeySize = 128;
+			aes.Key = normalKey;
+			aes.IV = iv;
+
+			// Finally, decrypt the title key
+			var titleKey = header.AsSpan(0x7F, 128 / 8).ToArray();
+			using (var decryptor = aes.CreateDecryptor())
+			{
+				decryptor.TransformBlock(titleKey, 0, titleKey.Length, titleKey, 0);
+			}
+
+			// Now we can hash the NCCH
+
+			romFile.Seek(contentOffset, SeekOrigin.Begin);
+			if (romFile.Read(header, 0, 0x200) != 0x200)
+			{
+				throw new Exception("Failed to read NCCH header");
+			}
+
+			// Content index is iv (which is always 0 for main content)
+			iv.AsSpan().Clear();
+			aes.Key = titleKey;
+			aes.IV = iv;
+
+			using (var decryptor = aes.CreateDecryptor())
+			{
+				Debug.Assert(decryptor.CanTransformMultipleBlocks, "AES decryptor can transform multiple blocks");
+				decryptor.TransformBlock(header, 0, header.Length, header, 0);
+			}
+
+			ncchHeaderTag = Encoding.ASCII.GetString(header.AsSpan(0x100, 4));
+			if (ncchHeaderTag != "NCCH")
+			{
+				throw new Exception($"NCCH header was not at offset {contentOffset:X}");
+			}
+
+			HashNCCH(romFile, md5Inc, header, aes);
+		}
+
 		private static void Hash3DSX(FileStream romFile, IncrementalHash md5Inc, byte[] header)
 		{
 			var headerSize = BinaryPrimitives.ReadUInt16LittleEndian(header.AsSpan(4, 2));
@@ -448,6 +645,13 @@ namespace BizHawk.Emulation.Common
 
 				// Couldn't identify either an NCSD or NCCH
 
+				// Try to identify this as a CIA
+				if (BinaryPrimitives.ReadUInt32LittleEndian(header.AsSpan(0, 4)) == CIA_HEADER_SIZE)
+				{
+					HashCIA(romFile, md5Inc, header);
+					return FinalizeHash(md5Inc);
+				}
+
 				// This might be a homebrew game, try to detect that
 				var _3dsxTag = Encoding.ASCII.GetString(header.AsSpan(0, 4));
 				if (_3dsxTag == "3DSX")
@@ -485,7 +689,7 @@ namespace BizHawk.Emulation.Common
 		private static void AesCtrTransform(Aes aes, byte[] iv, Span<byte> inputOutput)
 		{
 			// ECB encryptor is used for both CTR encryption and decryption
-			using var xcryptor = aes.CreateEncryptor();
+			using var encryptor = aes.CreateEncryptor();
 			var blockSize = aes.BlockSize / 8;
 			var outputBlockBuffer = new byte[blockSize];
 
@@ -494,7 +698,7 @@ namespace BizHawk.Emulation.Common
 			{
 				if (bi == blockSize)
 				{
-					xcryptor.TransformBlock(iv, 0, iv.Length, outputBlockBuffer, 0);
+					encryptor.TransformBlock(iv, 0, iv.Length, outputBlockBuffer, 0);
 					for (bi = blockSize - 1; bi >= 0; --bi)
 					{
 						if (iv[bi] == 0xFF)
