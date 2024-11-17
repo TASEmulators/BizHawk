@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			//_discs = lp.Discs;
 			_syncSettings = lp.SyncSettings ?? new();
 			_syncSettings.FloppyDrives = Math.Min(LibPUAE.MAX_FLOPPIES, _syncSettings.FloppyDrives);
-			DeterministicEmulation = (int)_syncSettings.FloppySpeed == FloppySpeed._100 || lp.DeterministicEmulationRequested;
+			DeterministicEmulation = lp.DeterministicEmulationRequested || _syncSettings.FloppySpeed is FloppySpeed._100;
 			var filesToRemove = new List<string>();
 
 			_ports = [
