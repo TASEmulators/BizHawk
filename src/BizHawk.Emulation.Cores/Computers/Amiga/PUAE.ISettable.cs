@@ -130,6 +130,19 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			DRV_FB
 		}
 
+		public enum FloppySpeed
+		{
+			[Display(Name = "100%")]
+			_100 = 100,
+			[Display(Name = "200%")]
+			_200 = 200,
+			[Display(Name = "400%")]
+			_400 = 400,
+			[Display(Name = "800%")]
+			_800 = 800,
+			Turbo = 0
+		}
+
 		private void CreateArguments(PUAESyncSettings settings)
 		{
 			_args = new List<string>
@@ -238,6 +251,11 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			AppendSetting("input.mouse_speed=" + settings.MouseSpeed);
 			AppendSetting("sound_stereo_separation=" + settings.StereoSeparation / 10);
+
+			if (!DeterministicEmulation)
+			{
+				AppendSetting("floppy_speed=" + (int)settings.FloppySpeed);
+			}
 
 			for (int port = 0; port <= 1; port++)
 			{
@@ -383,6 +401,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			[Description("Determines resolution and framerate.")]
 			[DefaultValue(VideoStandard.PAL)]
 			public VideoStandard Region { get; set; }
+
+			[DisplayName("Floppy drive speed")]
+			[Description("Default speed is 300RPM.  'Turbo' removes disk rotation emulation.  This is a speedhack, not available for movies.")]
+			[DefaultValue(FloppySpeed._100)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public FloppySpeed FloppySpeed { get; set; }
 
 			public PUAESyncSettings()
 				=> SettingsUtil.SetDefaultValues(this);
