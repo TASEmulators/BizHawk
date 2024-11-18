@@ -164,6 +164,7 @@ namespace BizHawk.Emulation.Common
 				Array.Reverse(secondaryKeyYBytes); // convert big endian to little endian
 				var secondaryKeyY = new BigInteger(secondaryKeyYBytes);
 				Derive3DSNormalKey(secondaryKeyX, secondaryKeyY).AsSpan().CopyTo(secondaryKey);
+				return;
 			}
 
 			throw new Exception("Could not find seed in seeddb");
