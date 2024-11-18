@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 						"chipset_compatible=" + _chipsetCompatible,
 						"chipmem_size=" + (int)ChipMemory.MB_2,
 						"bogomem_size=" + (int)SlowMemory.KB_0,
-						"fastmem_size=8",
+						"fastmem_size=0",
 					});
 					EnableCycleExact();
 					break;
@@ -329,36 +329,36 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			public MachineConfig MachineConfig { get; set; }
 
 			[DisplayName("CPU model")]
-			[Description("")]
+			[Description("Overrides machine configuration.")]
 			[DefaultValue(CpuModel.Auto)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public CpuModel CpuModel { get; set; }
 
 			[DisplayName("Chipset compatible")]
-			[Description("")]
+			[Description("Overrides machine configuration.")]
 			[DefaultValue(ChipsetCompatible.Auto)]
 			public ChipsetCompatible ChipsetCompatible { get; set; }
 
 			[DisplayName("Chipset")]
-			[Description("")]
+			[Description("Overrides machine configuration.")]
 			[DefaultValue(Chipset.Auto)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public Chipset Chipset { get; set; }
 
 			[DisplayName("Chip memory")]
-			[Description("Size of chip-memory")]
+			[Description("Size of chip-memory.  Overrides machine configuration.")]
 			[DefaultValue(ChipMemory.Auto)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ChipMemory ChipMemory { get; set; }
 
 			[DisplayName("Slow memory")]
-			[Description("Size of bogo-memory at 0xC00000")]
+			[Description("Size of bogo-memory at 0xC00000.  Overrides machine configuration.")]
 			[DefaultValue(SlowMemory.Auto)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SlowMemory SlowMemory { get; set; }
 
 			[DisplayName("Fast memory")]
-			[Description("Size in megabytes of fast-memory.  -1 means Auto.")]
+			[Description("Size in megabytes of fast-memory.  -1 means Auto.  Overrides machine configuration.")]
 			[Range(LibPUAE.FASTMEM_AUTO, 512)]
 			[DefaultValue(LibPUAE.FASTMEM_AUTO)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
