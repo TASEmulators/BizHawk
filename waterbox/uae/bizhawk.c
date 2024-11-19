@@ -79,8 +79,6 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 			case CONTROLLER_MOUSE:
 				mouse_delta[port][AXIS_HORIZONTAL] += controller->MouseX - last_mouse_x[port];
 				mouse_delta[port][AXIS_VERTICAL  ] += controller->MouseY - last_mouse_y[port];
-				mouse_deltanoreset[port][AXIS_HORIZONTAL] = 0;
-				mouse_deltanoreset[port][AXIS_VERTICAL  ] = 0;
 				break;
 		}
 	}

@@ -81,7 +81,7 @@
 [submodule "waterbox/uae/libretro-uae"]
 	path = waterbox/uae/libretro-uae
 	url = https://github.com/TASEmulators/libretro-uae.git
-	branch = wbx
+	branch = wbx-1
 [submodule "ExternalProjects/FlooohChips/chips"]
 	path = ExternalProjects/FlooohChips/chips
 	url = https://github.com/floooh/chips.git
