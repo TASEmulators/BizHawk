@@ -323,12 +323,6 @@ namespace BizHawk.Client.EmuHawk
 		public void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)
 			=> lf.Thread = SpawnCoroutine(pathToLoad);
 
-		/// <summary>
-		/// Executes Lua code. Automatically prepends <see langword="return"/> statement if possible.
-		/// </summary>
-		/// <returns>
-		/// Values returned by the Lua script, if any.
-		/// </returns>
 		public object[] ExecuteString(string command)
 		{
 			const string ChunkName = "input"; // shows up in error messages

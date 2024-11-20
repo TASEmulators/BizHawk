@@ -51,6 +51,12 @@ namespace BizHawk.Client.Common
 
 		void SpawnAndSetFileThread(string pathToLoad, LuaFile lf);
 
+		/// <summary>
+		/// Executes Lua code. Automatically prepends <see langword="return"/> statement if possible.
+		/// </summary>
+		/// <returns>
+		/// Values returned by the Lua script, if any.
+		/// </returns>
 		object[] ExecuteString(string command);
 
 		(bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf);
