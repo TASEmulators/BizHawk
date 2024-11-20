@@ -1392,7 +1392,7 @@ namespace BizHawk.Client.EmuHawk
 						// empty array if the command was e.g. a variable assignment or a loop without return statement
 						// "void" functions return a single null
 						// if output didn't change, Print will take care of writing out "(no return)"
-						if (results is not ([ ] or [ null ]) || OutputBox.Text == consoleBeforeCall)
+						if (results is not ([ ] or [ null ]) || ReferenceEquals(OutputBox.Text, consoleBeforeCall))
 						{
 							LuaLibraries.Print(results);
 						}
