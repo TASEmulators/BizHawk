@@ -451,7 +451,7 @@ namespace BizHawk.Emulation.Common
 
 				case ".ADF":
 				case ".ADZ":
-				case ".DMS":				
+				case ".DMS":
 				case ".FDI":
 			//	case ".HDF":
 			//	case ".LHA":

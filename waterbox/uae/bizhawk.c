@@ -7,10 +7,9 @@ ECL_EXPORT bool Init(int argc, char **argv)
 
 	pix_bytes = 4;
 	defaultw = PUAE_VIDEO_WIDTH;
-	defaulth = PUAE_VIDEO_HEIGHT_PAL;
-	retrow = PUAE_VIDEO_WIDTH;
-	retrow_crop = retrow;
-	retroh_crop = retroh;
+	defaulth = PUAE_WINDOW_HEIGHT_PAL;
+	retrow_crop = retrow = PUAE_VIDEO_WIDTH;
+	retroh_crop = retroh = PUAE_WINDOW_HEIGHT_PAL;
 	
 	retro_set_audio_sample_batch(biz_audio_cb);
 	init_output_audio_buffer(2048);
@@ -40,7 +39,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	bool is_ntsc = minfirstline == VBLANK_ENDLINE_NTSC;
     f->base.Width = PUAE_VIDEO_WIDTH;
-    f->base.Height = is_ntsc ? PUAE_VIDEO_HEIGHT_NTSC : PUAE_VIDEO_HEIGHT_PAL;
+    f->base.Height = is_ntsc ? PUAE_WINDOW_HEIGHT_NTSC : PUAE_WINDOW_HEIGHT_PAL;
 	thisframe_y_adjust = minfirstline;
 	visible_left_border = retro_max_diwlastword - retrow;
 
@@ -103,7 +102,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	m68k_go(1, 1);
 	upload_output_audio_buffer();
 	f->base.Samples = sound_sample_count;
-	memcpy(f->base.VideoBuffer, retro_bmp, sizeof(retro_bmp) / sizeof(retro_bmp[0]));
+	memcpy(f->base.VideoBuffer, retro_bmp, f->base.Width * f->base.Height * pix_bytes);
 	sound_buffer = NULL;
 
 	for (int port = 0; port <= 1; port++)

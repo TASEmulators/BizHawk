@@ -15,35 +15,48 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		isReleased: false)]
 	public partial class PUAE : WaterboxCore
 	{
-		private readonly List<IRomAsset> _roms;
-		//private readonly List<IDiscAsset> _discs;
-		private List<string> _args;
-		private string _chipsetCompatible = "";
+		private static readonly Configuration ConfigPAL = new Configuration
+		{
+			SystemId              = VSystemID.Raw.Amiga,
+			MaxSamples            = 2 * 1024,
+			DefaultWidth          = LibPUAE.PAL_WIDTH,
+			DefaultHeight         = LibPUAE.PAL_HEIGHT,
+			MaxWidth              = LibPUAE.PAL_WIDTH,
+			MaxHeight             = LibPUAE.PAL_HEIGHT,
+			DefaultFpsNumerator   = LibPUAE.PUAE_VIDEO_NUMERATOR_PAL,
+			DefaultFpsDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_PAL
+		};
 
+		private static readonly Configuration ConfigNTSC = new Configuration
+		{
+			SystemId              = VSystemID.Raw.Amiga,
+			MaxSamples            = 2 * 1024,
+			DefaultWidth          = LibPUAE.NTSC_WIDTH,
+			DefaultHeight         = LibPUAE.NTSC_HEIGHT,
+			MaxWidth              = LibPUAE.NTSC_WIDTH,
+			MaxHeight             = LibPUAE.NTSC_HEIGHT,
+			DefaultFpsNumerator   = LibPUAE.PUAE_VIDEO_NUMERATOR_NTSC,
+			DefaultFpsDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_NTSC
+		};
+
+		private string _chipsetCompatible = "";
+		private readonly List<IRomAsset> _roms;
+		private List<string> _args;
 		private int _currentDrive;
 		private int _currentSlot;
-
 		private bool _ejectPressed;
 		private bool _insertPressed;
 		private bool _nextSlotPressed;
 		private bool _nextDrivePressed;
+		private int _correctedWidth;
+
+		public override int VirtualWidth => _correctedWidth;
 
 		[CoreConstructor(VSystemID.Raw.Amiga)]
 		public PUAE(CoreLoadParameters<object, PUAESyncSettings> lp)
-			: base(lp.Comm, new Configuration
-			{
-				DefaultWidth          = LibPUAE.PAL_WIDTH,
-				DefaultHeight         = LibPUAE.PAL_HEIGHT,
-				MaxWidth              = LibPUAE.PAL_WIDTH,
-				MaxHeight             = LibPUAE.PAL_HEIGHT,
-				MaxSamples            = 2 * 1024,
-				SystemId              = VSystemID.Raw.Amiga,
-				DefaultFpsNumerator   = 50,
-				DefaultFpsDenominator = 1
-			})
+			: base(lp.Comm, lp.SyncSettings.Region is VideoStandard.PAL ? ConfigPAL : ConfigNTSC)
 		{
 			_roms = lp.Roms;
-			//_discs = lp.Discs;
 			_syncSettings = lp.SyncSettings ?? new();
 			_syncSettings.FloppyDrives = Math.Min(LibPUAE.MAX_FLOPPIES, _syncSettings.FloppyDrives);
 			DeterministicEmulation = lp.DeterministicEmulationRequested || _syncSettings.FloppySpeed is FloppySpeed._100;
@@ -54,6 +67,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				_syncSettings.ControllerPort2
 			];
 
+			UpdateAspectRatio(_syncSettings);
 			CreateArguments(_syncSettings);
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
 
@@ -71,52 +85,14 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			for (var index = 0; index < lp.Roms.Count; index++)
 			{
-				if (lp.Roms[index].Extension.ToLowerInvariant() == ".hdf") // doesn't work yet
+				_exe.AddReadonlyFile(lp.Roms[index].FileData, FileNames.FD + index);
+				if (index < _syncSettings.FloppyDrives)
 				{
-					var access = "ro";
-					var device_name = "DH0";
-					var volume_name = FileNames.HD + index;
-					var blocks_per_track = 32;
-					var surfaces = 1;
-					var reserved = 2;
-					var block_size = 512;
-					var boot_priority = 0;
-					var filesys_path = "";
-					var controller_unit = "uae0";
-
-					if (Encoding.ASCII.GetString(lp.Roms[index].FileData, 0, 3) == "RDS")
-					{
-						blocks_per_track = 0;
-						surfaces = 0;
-						reserved = 0;
-					}
-
-					_exe.AddReadonlyFile(lp.Roms[index].FileData, volume_name);
-						AppendSetting($"hardfile2=" +
-							$"{access}," +
-							$"{device_name}:" +
-							$"\"{volume_name}\"," +
-							$"{blocks_per_track}," +
-							$"{surfaces}," +
-							$"{reserved}," +
-							$"{block_size}," +
-							$"{boot_priority}," +
-							$"{filesys_path}," +
-							$"{controller_unit}");
-				}
-				else
-				{
-					_exe.AddReadonlyFile(lp.Roms[index].FileData, FileNames.FD + index);
-					if (index < _syncSettings.FloppyDrives)
-					{
-						AppendSetting($"floppy{index}={FileNames.FD}{index}");
-						AppendSetting($"floppy{index}type={(int)DriveType.DRV_35_DD}");
-						AppendSetting("floppy_write_protect=true");
-					}
+					AppendSetting($"floppy{index}={FileNames.FD}{index}");
+					AppendSetting($"floppy{index}type={(int)DriveType.DRV_35_DD}");
+					AppendSetting("floppy_write_protect=true");
 				}
 			}
-
-			//AppendSetting("filesystem2=ro,DH0:data:Floppy/,0");
 
 			var (kickstartData, kickstartInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(
 				new(VSystemID.Raw.Amiga, _chipsetCompatible),
@@ -128,9 +104,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				"-r", kickstartInfo.Name
 			]);
 
-			var s = string.Join(" ", _args);
 			Console.WriteLine();
-			Console.WriteLine(s);
+			Console.WriteLine(string.Join(" ", _args));
 			Console.WriteLine();
 
 			if (!paue.Init(_args.Count, _args.ToArray()))
@@ -282,7 +257,17 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 		protected override void FrameAdvancePost()
 		{
-			VsyncNumerator = BufferHeight == LibPUAE.NTSC_HEIGHT ? 60 : 50;
+			if (BufferHeight == LibPUAE.NTSC_HEIGHT)
+			{
+				VsyncNumerator = LibPUAE.PUAE_VIDEO_NUMERATOR_NTSC;
+				VsyncDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_NTSC;
+			}
+			else
+			{
+				VsyncNumerator = LibPUAE.PUAE_VIDEO_NUMERATOR_PAL;
+				VsyncDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_PAL;
+			}
+			UpdateAspectRatio(_syncSettings);
 		}
 
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
@@ -303,6 +288,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			_nextDrivePressed = reader.ReadBoolean();
 			_currentDrive = reader.ReadInt32();
 			_currentSlot = reader.ReadInt32();
+		}
+
+		private void UpdateAspectRatio(PUAESyncSettings settings)
+		{
+			_correctedWidth = settings.Region is VideoStandard.PAL
+				? LibPUAE.PAL_WIDTH
+				: LibPUAE.PAL_WIDTH * 6 / 7;
 		}
 
 		private static class FileNames
