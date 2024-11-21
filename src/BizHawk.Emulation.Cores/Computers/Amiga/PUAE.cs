@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 		[CoreConstructor(VSystemID.Raw.Amiga)]
 		public PUAE(CoreLoadParameters<object, PUAESyncSettings> lp)
-			: base(lp.Comm, lp.SyncSettings.Region is VideoStandard.PAL ? ConfigPAL : ConfigNTSC)
+			: base(lp.Comm, lp.SyncSettings?.Region is VideoStandard.NTSC ? ConfigNTSC : ConfigPAL)
 		{
 			_roms = lp.Roms;
 			_syncSettings = lp.SyncSettings ?? new();
