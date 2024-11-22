@@ -246,7 +246,6 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			if (settings.Region == VideoStandard.NTSC)
 			{
 				AppendSetting("ntsc=true");
-				VsyncNumerator = 60;
 			}
 
 			AppendSetting("input.mouse_speed=" + settings.MouseSpeed);

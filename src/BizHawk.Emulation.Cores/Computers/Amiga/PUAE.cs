@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			CreateArguments(_syncSettings);
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
 
-			var paue = PreInit<LibPUAE>(new WaterboxOptions
+			var puae = PreInit<LibPUAE>(new WaterboxOptions
 			{
 				Filename                   = "puae.wbx",
 				SbrkHeapSizeKB             = 1024,
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			Console.WriteLine(string.Join(" ", _args));
 			Console.WriteLine();
 
-			if (!paue.Init(_args.Count, _args.ToArray()))
+			if (!puae.Init(_args.Count, _args.ToArray()))
 				throw new InvalidOperationException("Core rejected the rom!");
 
 			foreach (var f in filesToRemove)
