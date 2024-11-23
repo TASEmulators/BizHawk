@@ -131,6 +131,7 @@ in {
 			BIZHAWK_DATA_HOME="$HOME/.local/share"
 		fi
 		export BIZHAWK_DATA_HOME="$BIZHAWK_DATA_HOME/emuhawk-monort-${hawkVersion}"
+		mkdir -p "$BIZHAWK_DATA_HOME"
 		cd "$BIZHAWK_DATA_HOME"
 
 		${if profileManagedCalls == false then "" else ''printf "Will write profiling results to %s/*.mlpd\n" "$PWD"
