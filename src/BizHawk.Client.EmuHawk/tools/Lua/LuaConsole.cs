@@ -1373,7 +1373,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.KeyCode == Keys.Enter)
 			{
-				string consoleBeforeCall = OutputBox.Text;
 				var rawCommand = InputBox.Text;
 				InputBox.Clear();
 				InputBox.Refresh(); // if the command is something like `client.seekframe`, the Lua Console (and MainForm) will freeze until it finishes, so at least make it obvious that the Enter press was received
@@ -1388,18 +1387,15 @@ namespace BizHawk.Client.EmuHawk
 
 					LuaSandbox.Sandbox(null, () =>
 					{
-						LuaImp.ExecuteString($"console.log({rawCommand})");
-					}, () =>
-					{
-						LuaSandbox.Sandbox(null, () =>
+						var prevMessageCount = _messageCount;
+						var results = LuaImp.ExecuteString(rawCommand);
+						// empty array if the command was e.g. a variable assignment or a loop without return statement
+						// "void" functions return a single null
+						// if output didn't change, Print will take care of writing out "(no return)"
+						if (results is not ([ ] or [ null ]) || _messageCount == prevMessageCount)
 						{
-							LuaImp.ExecuteString(rawCommand);
-
-							if (OutputBox.Text == consoleBeforeCall)
-							{
-								WriteLine("Command successfully executed");
-							}
-						});
+							LuaLibraries.Print(results);
+						}
 					});
 
 					_messageCount = 0;
