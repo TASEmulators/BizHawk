@@ -30,17 +30,17 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		public const int KEY_COUNT = 0x68;
 
 		public const byte MouseButtonsMask =
-			(byte)(AllButtons.Button1
-			| AllButtons.Button2
-			| AllButtons.Button3);
+			(byte)(AllButtons.Button_1
+			| AllButtons.Button_2
+			| AllButtons.Button_3);
 		public const byte JoystickMask =
 			(byte)(AllButtons.Up
 			| AllButtons.Down
 			| AllButtons.Left
 			| AllButtons.Right
-			| AllButtons.Button1
-			| AllButtons.Button2
-			| AllButtons.Button3);
+			| AllButtons.Button_1
+			| AllButtons.Button_2
+			| AllButtons.Button_3);
 		public const short Cd32padMask =
 			(short)(AllButtons.Up
 			| AllButtons.Down
@@ -96,8 +96,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		public enum DriveAction : int
 		{
 			None,
-			Eject,
-			Insert
+			EjectDisk,
+			InsertDisk
 		}
 
 		[Flags]
@@ -107,9 +107,9 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			Down    = 0b0000000000000010,
 			Left    = 0b0000000000000100,
 			Right   = 0b0000000000001000,
-			Button1 = 0b0000000000010000,
-			Button2 = 0b0000000000100000,
-			Button3 = 0b0000000001000000,
+			Button_1 = 0b0000000000010000,
+			Button_2 = 0b0000000000100000,
+			Button_3 = 0b0000000001000000,
 			Play    = 0b0000000010000000,
 			Rewind  = 0b0000000100000000,
 			Forward = 0b0000001000000000,

@@ -363,6 +363,10 @@ namespace BizHawk.Client.EmuHawk
 					|| c.Name == "Light Sensor"
 					|| c.Name == "Disc Select"
 					|| c.Name == "Disk Index"
+					|| c.Name == "Next Drive"
+					|| c.Name == "Next Slot"
+					|| c.Name == "Insert Disk"
+					|| c.Name == "Eject Disk"
 					|| c.Name.StartsWithOrdinal("Tilt")
 					|| c.Name.StartsWithOrdinal("Key ")
 					|| c.Name.StartsWithOrdinal("Open")

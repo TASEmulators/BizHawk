@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			controller.BoolButtons.AddRange(
 			[
-				Inputs.NextDrive, Inputs.NextSlot, Inputs.Insert, Inputs.Eject
+				Inputs.NextDrive, Inputs.NextSlot, Inputs.InsertDisk, Inputs.EjectDisk
 			]);
 
 			foreach (var (name, _) in _keyboardMap)
@@ -123,8 +123,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			public const string MouseMiddleButton = "Mouse Middle Button";
 			public const string MouseX = "Mouse X";
 			public const string MouseY = "Mouse Y";
-			public const string Eject = "Eject";
-			public const string Insert = "Insert";
+			public const string EjectDisk = "Eject Disk";
+			public const string InsertDisk = "Insert Disk";
 			public const string NextDrive = "Next Drive";
 			public const string NextSlot = "Next Slot";
 		}

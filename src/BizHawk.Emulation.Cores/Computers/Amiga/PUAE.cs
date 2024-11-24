@@ -168,17 +168,17 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 						{
 							if (controller.IsPressed($"P{port} {Inputs.MouseLeftButton}"))
 							{
-								currentPort.Buttons |= LibPUAE.AllButtons.Button1;
+								currentPort.Buttons |= LibPUAE.AllButtons.Button_1;
 							}
 
 							if (controller.IsPressed($"P{port} {Inputs.MouseRightButton}"))
 							{
-								currentPort.Buttons |= LibPUAE.AllButtons.Button2;
+								currentPort.Buttons |= LibPUAE.AllButtons.Button_2;
 							}
 
 							if (controller.IsPressed($"P{port} {Inputs.MouseMiddleButton}"))
 							{
-								currentPort.Buttons |= LibPUAE.AllButtons.Button3;
+								currentPort.Buttons |= LibPUAE.AllButtons.Button_3;
 							}
 
 							currentPort.MouseX = controller.AxisValue($"P{port} {Inputs.MouseX}");
@@ -188,18 +188,18 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				}
 			}
 
-			if (controller.IsPressed(Inputs.Eject))
+			if (controller.IsPressed(Inputs.EjectDisk))
 			{
 				if (!_ejectPressed)
 				{
-					fi.Action = LibPUAE.DriveAction.Eject;
+					fi.Action = LibPUAE.DriveAction.EjectDisk;
 				}
 			}
-			else if (controller.IsPressed(Inputs.Insert))
+			else if (controller.IsPressed(Inputs.InsertDisk))
 			{
 				if (!_insertPressed)
 				{
-					fi.Action = LibPUAE.DriveAction.Insert;
+					fi.Action = LibPUAE.DriveAction.InsertDisk;
 					unsafe
 					{
 						var str = FileNames.FD + _currentSlot;
@@ -235,8 +235,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				}
 			}
 
-			_ejectPressed     = controller.IsPressed(Inputs.Eject);
-			_insertPressed    = controller.IsPressed(Inputs.Insert);
+			_ejectPressed     = controller.IsPressed(Inputs.EjectDisk);
+			_insertPressed    = controller.IsPressed(Inputs.InsertDisk);
 			_nextSlotPressed  = controller.IsPressed(Inputs.NextSlot);
 			_nextDrivePressed = controller.IsPressed(Inputs.NextDrive);			
 			fi.CurrentDrive = _currentDrive;
