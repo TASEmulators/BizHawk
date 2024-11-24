@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public bool IsLagFrame { get; set; }
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
-		private void SetRumble(bool enable)
-			=> _controller.SetHapticChannelStrength("Rumble", enable ? int.MaxValue : 0);
+		private void SetRumble(int value)
+			=> _controller.SetHapticChannelStrength("Rumble", value);
 	}
 }

@@ -199,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public abstract void BizSetInputCallback(IntPtr ctx, InputCallback cb);
 
 		[UnmanagedFunctionPointer(cc)]
-		public delegate void RumbleCallback([MarshalAs(UnmanagedType.Bool)] bool enable);
+		public delegate void RumbleCallback(int value);
 
 		[BizImport(cc)]
 		public abstract void BizSetRumbleCallback(IntPtr ctx, RumbleCallback cb);
