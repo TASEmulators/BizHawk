@@ -133,6 +133,7 @@ namespace BizHawk.Emulation.Common
 			["Lightgun Start"] = 'S',
 			["Lightgun B"] = 'B',
 			["Lightgun C"] = 'C',
+			["Lightgun Offscreen Shot"] = 'O',
 			["Microphone"] = 'M',
 
 			["Star"] = '*',

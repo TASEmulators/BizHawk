@@ -96,8 +96,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			using (_elf.EnterExit())
 			{
-				var src = IntPtr.Zero;
-				Core.gpgx_get_video(out var gpwidth, out var gpheight, out var gppitch, ref src);
+				Core.gpgx_get_video(out var gpwidth, out var gpheight, out var gppitch, out var src);
 
 				_vwidth = gpwidth;
 				_vheight = gpheight;

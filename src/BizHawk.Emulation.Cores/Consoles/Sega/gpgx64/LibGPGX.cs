@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	public abstract class LibGPGX
 	{
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void gpgx_get_video(out int w, out int h, out int pitch, ref IntPtr buffer);
+		public abstract void gpgx_get_video(out int w, out int h, out int pitch, out IntPtr buffer);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_get_audio(ref int n, ref IntPtr buffer);
