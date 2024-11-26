@@ -424,6 +424,8 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_ColumnRightClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
 			var col = e.Column!;
+			if (col.Name is FrameColumnName or CursorColumnName) return;
+
 			col.Emphasis = !col.Emphasis;
 			UpdateAutoFire(col.Name, col.Emphasis);
 			TasView.Refresh();
