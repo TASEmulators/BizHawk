@@ -953,24 +953,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HeaderMenuItem_Click(object sender, EventArgs e)
 		{
-			new MovieHeaderEditor(CurrentTasMovie, Config)
-			{
-				Owner = Owner,
-				Location = this.ChildPointToScreen(TasView)
-			}.Show();
+			MovieHeaderEditor form = new(CurrentTasMovie, Config) { Owner = this.Owner/*uhh*/ };
+			form.CenterOn(TasView);
+			form.Show();
 		}
 
 		private void StateHistorySettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new GreenzoneSettings(
+			GreenzoneSettings form = new(
 				DialogController,
 				new ZwinderStateManagerSettings(CurrentTasMovie.TasStateManager.Settings),
 				(s, k) => { CurrentTasMovie.TasStateManager.UpdateSettings(s, k); },
 				false)
 			{
-				Location = this.ChildPointToScreen(TasView),
-				Owner = Owner
-			}.ShowDialog();
+				Owner = this.Owner, // uhh
+			};
+			form.CenterOn(TasView);
+			form.ShowDialog();
 		}
 
 		private void CommentsMenuItem_Click(object sender, EventArgs e)
@@ -987,15 +986,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultStateSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new GreenzoneSettings(
+			GreenzoneSettings form = new(
 				DialogController,
 				new ZwinderStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
 				(s, k) => { Config.Movies.DefaultTasStateManagerSettings = s; },
 				true)
 			{
-				Location = this.ChildPointToScreen(TasView),
-				Owner = Owner
-			}.ShowDialog();
+				Owner = this.Owner, // uhh
+			};
+			form.CenterOn(TasView);
+			form.ShowDialog();
 		}
 
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)

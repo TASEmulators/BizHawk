@@ -92,7 +92,7 @@
 			this.Controls.Add(this.OkBtn);
 			this.Controls.Add(this.CancelBtn);
 			this.Name = "GreenzoneSettings";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Default Savestate History Settings";
 			this.Load += new System.EventHandler(this.GreenzoneSettings_Load);
 			this.ResumeLayout(false);
