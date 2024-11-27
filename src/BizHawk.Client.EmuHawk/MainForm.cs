@@ -1758,9 +1758,11 @@ namespace BizHawk.Client.EmuHawk
 				if (!Emulator.IsNull())
 				{
 					sb.Append($"{Game.Name} [{Emulator.GetSystemDisplayName()}] - ");
-					if (MovieSession.Movie.IsActive())
+					var movie = MovieSession.Movie;
+					if (movie.IsActive())
 					{
-						sb.Append($"{Path.GetFileName(MovieSession.Movie.Filename)} - ");
+						// I think the asterisk is conventionally after the filename, but I worry it would often be cut off there --yoshi
+						sb.Append($"{(movie.Changes ? "*" : string.Empty)}{Path.GetFileName(movie.Filename)} - ");
 					}
 				}
 
