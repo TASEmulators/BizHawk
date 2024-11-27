@@ -1076,7 +1076,11 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void Dispose(bool disposing)
 		{
-			if (_isBotting) RestoreConfigFlags(); // disposed while running? least we can do is not clobber config
+			if (disposing)
+			{
+				components?.Dispose();
+				if (_isBotting) RestoreConfigFlags(); // disposed while running? least we can do is not clobber config
+			}
 			base.Dispose(disposing: disposing);
 		}
 
