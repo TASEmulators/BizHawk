@@ -146,6 +146,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_previousInvisibleEmulation = InvisibleEmulationCheckBox.Checked = Settings.InvisibleEmulation;
 			_previousDisplayMessage = Config.DisplayMessages;
+			Closing += (_, _) => StopBot();
 		}
 
 		private Dictionary<string, double> ControlProbabilities =>
@@ -1073,6 +1074,12 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
+		protected override void Dispose(bool disposing)
+		{
+			if (_isBotting) RestoreConfigFlags(); // disposed while running? least we can do is not clobber config
+			base.Dispose(disposing: disposing);
+		}
+
 		private void StopBot()
 		{
 			RunBtn.Visible = true;
@@ -1084,18 +1091,19 @@ namespace BizHawk.Client.EmuHawk
 			_targetFrame = 0;
 			reset_curent(0);
 			GoalGroupBox.Enabled = true;
-
-			if (MovieSession.Movie.IsRecording())
-			{
-				MovieSession.Movie.IsCountingRerecords = _oldCountingSetting;
-			}
-
-			Config.DisplayMessages = _previousDisplayMessage;
-			MainForm.InvisibleEmulation = _previousInvisibleEmulation;
+			RestoreConfigFlags();
 			MainForm.PauseEmulator();
 			SetNormalSpeed();
 			UpdateBotStatusIcon();
 			MessageLabel.Text = "Bot stopped";
+		}
+
+		private void RestoreConfigFlags()
+		{
+			Config.DisplayMessages = _previousDisplayMessage;
+			MainForm.InvisibleEmulation = _previousInvisibleEmulation;
+			var movie = MovieSession.Movie;
+			if (movie.IsRecording()) movie.IsCountingRerecords = _oldCountingSetting;
 		}
 
 		private void UpdateBotStatusIcon()
