@@ -45,12 +45,21 @@ namespace BizHawk.Bizware.Graphics
 
 		private static readonly int[] _blacklistedIntelDeviceIds =
 		[
+			// Broadwell GPUs
 			0x1602, 0x1606, 0x160A, 0x160B,
 			0x160D, 0x160E, 0x1612, 0x1616,
 			0x161A, 0x161B, 0x161D, 0x161E,
 			0x1622, 0x1626, 0x162A, 0x162B,
 			0x162D, 0x162E, 0x1632, 0x1636,
 			0x163A, 0x163B, 0x163D, 0x163E,
+			// Skylake GPUs
+			0x1902, 0x1906, 0x190A, 0x190B,
+			0x190E, 0x1912, 0x1913, 0x1915,
+			0x1916, 0x1917, 0x191A, 0x191B,
+			0x191D, 0x191E, 0x1921, 0x1923,
+			0x1926, 0x1927, 0x192A, 0x192B,
+			0x192D, 0x1932, 0x193A, 0x193B,
+			0x193D
 		];
 
 		static D3D11GLInterop()
@@ -150,8 +159,8 @@ namespace BizHawk.Bizware.Graphics
 
 						if (vendor == Vendor.Intel)
 						{
-							// avoid Broadwell gpus, these have been reported crashing with gl interop
-							// (specifically, Intel HD Graphics 5500, presumingly all Broadwell are affected, better safe than sorry)
+							// avoid Broadwell and Skylake gpus, these have been reported crashing with gl interop
+							// (specifically, Intel HD Graphics 5500 and Intel HD Graphics 530, presumingly all Broadwell and Skylake are affected, better safe than sorry)
 							if (_blacklistedIntelDeviceIds.Contains(adapter.Description.DeviceId))
 							{
 								return;
