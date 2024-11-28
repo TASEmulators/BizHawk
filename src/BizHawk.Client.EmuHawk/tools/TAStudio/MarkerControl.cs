@@ -205,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void EditMarkerPopUp(TasMovieMarker marker)
+		public void EditMarkerPopUp(TasMovieMarker marker, bool openAtMouseCursor = false)
 		{
 			var markerFrame = marker.Frame;
 			var i = new InputPrompt
@@ -218,7 +218,11 @@ namespace BizHawk.Client.EmuHawk
 					? Markers.PreviousOrCurrent(markerFrame).Message
 					: ""
 			};
-
+			if (openAtMouseCursor)
+			{
+				i.StartPosition = FormStartPosition.Manual;
+				i.Location = Cursor.Position - i.HalfSize(); // eww
+			}
 			if (!this.ShowDialogWithTempMute(i).IsOk()) return;
 
 			marker.Message = i.PromptText;

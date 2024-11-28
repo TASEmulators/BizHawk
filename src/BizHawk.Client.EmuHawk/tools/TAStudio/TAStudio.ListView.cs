@@ -903,7 +903,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (existingMarker != null)
 					{
-						MarkerControl.EditMarkerPopUp(existingMarker);
+						MarkerControl.EditMarkerPopUp(existingMarker, openAtMouseCursor: true);
 					}
 					else
 					{
