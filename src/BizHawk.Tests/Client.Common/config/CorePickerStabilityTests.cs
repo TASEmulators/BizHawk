@@ -13,7 +13,7 @@ namespace BizHawk.Tests.Client.Common.config
 		private static readonly IReadOnlyDictionary<string, string> DefaultCorePrefDict = new Config().PreferredCores;
 
 		[TestMethod]
-		public void AssertAllChoicesInMenu()
+		public void AssertAllChoicesValid()
 		{
 			var multiCoreSystems = CoreInventory.Instance.AllCores.Where(kvp => kvp.Value.Count != 1)
 				.Select(kvp => kvp.Key)
