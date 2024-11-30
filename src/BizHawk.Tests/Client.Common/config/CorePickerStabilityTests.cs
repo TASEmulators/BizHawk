@@ -25,7 +25,7 @@ namespace BizHawk.Tests.Client.Common.config
 			foreach (var (appliesTo, _) in Config.CorePickerUIData)
 			{
 				Assert.IsTrue(
-					appliesTo.Any(multiCoreSystems.Contains),
+					appliesTo.All(multiCoreSystems.Contains),
 					appliesTo.Length is 1
 						? $"core picker has submenu for {appliesTo[0]}, but that system doesn't have alternate cores"
 						: $"core picker has submenu for {appliesTo[0]} ({string.Join("/", appliesTo)}), but none of those systems have alternate cores");
@@ -43,23 +43,6 @@ namespace BizHawk.Tests.Client.Common.config
 			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData) foreach (var coreName in coreNames)
 			{
 				Assert.IsTrue(allCoreNames.Contains(coreName), $"core picker includes nonexistant core \"{coreName}\" under {appliesTo[0]} group");
-			}
-		}
-
-		/// <remarks>this really shouldn't be necessary</remarks>
-		[TestMethod]
-		public void AssertNoMissingSystems()
-		{
-			var allSysIDs = CoreInventory.Instance.AllCores.Keys.ToHashSet();
-#if false // already covered by AssertAllChoicesInMenu
-			foreach (var sysID in DefaultCorePrefDict.Keys)
-			{
-				Assert.IsTrue(allSysIDs.Contains(sysID), $"a default core preference exists for {sysID}, which isn't emulated by any core");
-			}
-#endif
-			foreach (var (appliesTo, _) in Config.CorePickerUIData) foreach (var sysID in appliesTo)
-			{
-				Assert.IsTrue(allSysIDs.Contains(sysID), $"core picker has choices for {sysID}, which isn't emulated by any core");
 			}
 		}
 	}
