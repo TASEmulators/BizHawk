@@ -3,6 +3,7 @@ using System.Linq;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Tests.Client.Common.config
@@ -43,6 +44,17 @@ namespace BizHawk.Tests.Client.Common.config
 			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData) foreach (var coreName in coreNames)
 			{
 				Assert.IsTrue(allCoreNames.Contains(coreName), $"core picker includes nonexistant core \"{coreName}\" under {appliesTo[0]} group");
+			}
+		}
+
+		[TestMethod]
+		public void AssertNoMissingChoices()
+		{
+			var multiCoreSystems = CoreInventory.Instance.AllCores.Where(kvp => kvp.Value.Count != 1).ToArray();
+			foreach (var (sysID, cores) in multiCoreSystems)
+			{
+				Assert.IsTrue(DefaultCorePrefDict.ContainsKey(sysID), $"missing default core preference for {sysID} with {cores.Count} core choices");
+				Assert.IsTrue(Config.CorePickerUIData.Any(item => item.AppliesTo.Contains(sysID)), $"missing core picker submenu for {sysID} with {cores.Count} core choices");
 			}
 		}
 	}
