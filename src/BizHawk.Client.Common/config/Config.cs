@@ -18,50 +18,15 @@ namespace BizHawk.Client.Common
 	{
 		public static string ControlDefaultPath => Path.Combine(PathUtils.ExeDirectoryPath, "defctrl.json");
 
-		/// <remarks>
-		/// <c>CoreNames[0]</c> is the default (out-of-the-box) core.<br/>
-		/// <c>AppliesTo</c> are concatenated to make the submenu's label, and
-		/// <c>Config.PreferredCores[AppliesTo[0]]</c> (lookup on global <see cref="Config"/> instance) determines which option is shown as checked.<br/>
-		/// The order within submenus and the order of the submenus themselves are determined by the declaration order here.
-		/// </remarks>
-		public static readonly IReadOnlyList<(string[] AppliesTo, string[] CoreNames)> CorePickerUIData = new List<(string[], string[])>
-		{
-			([ VSystemID.Raw.A26 ],
-				[ CoreNames.Atari2600Hawk, CoreNames.Stella ]),
-			([ VSystemID.Raw.Satellaview ],
-				[ CoreNames.Bsnes115, CoreNames.SubBsnes115 ]),
-			([ VSystemID.Raw.GB, VSystemID.Raw.GBC ],
-				[ CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk ]),
-			([ VSystemID.Raw.GBL ],
-				[ CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x ]),
-			([ VSystemID.Raw.SGB ],
-				[ CoreNames.Gambatte, CoreNames.Bsnes115, CoreNames.SubBsnes115, CoreNames.Bsnes ]),
-			([ VSystemID.Raw.GEN ],
-				[ CoreNames.Gpgx, CoreNames.PicoDrive ]),
-			([ VSystemID.Raw.N64 ],
-				[ CoreNames.Mupen64Plus, CoreNames.Ares64 ]),
-			([ VSystemID.Raw.NES ],
-				[ CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk ]),
-			([ VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX, VSystemID.Raw.SGXCD ],
-				[ CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk ]),
-			([ VSystemID.Raw.PSX ],
-				[ CoreNames.Nymashock, CoreNames.Octoshock ]),
-			([ VSystemID.Raw.SMS, VSystemID.Raw.GG, VSystemID.Raw.SG ],
-				[ CoreNames.Gpgx, CoreNames.SMSHawk ]),
-			([ VSystemID.Raw.SNES ],
-				[ CoreNames.Snes9X, CoreNames.Bsnes115, CoreNames.SubBsnes115, CoreNames.Faust, CoreNames.Bsnes ]),
-			([ VSystemID.Raw.TI83 ],
-				[ CoreNames.Emu83, CoreNames.TI83Hawk ]),
-		};
-
 		public static Dictionary<string, string> GenDefaultCorePreferences()
 		{
 			Dictionary<string, string> dict = new();
-			foreach (var (appliesTo, coreNames) in CorePickerUIData)
+			foreach(var (systemId, cores) in CoreInventory.Instance.AllCores)
 			{
-				var defaultCore = coreNames[0];
-				foreach (var sysID in appliesTo) dict[sysID] = defaultCore;
+				if (cores.Count > 1)
+					dict[systemId] = cores.Find(core => core.Priority == CorePriority.DefaultPreference)?.Name;
 			}
+
 			return dict;
 		}
 

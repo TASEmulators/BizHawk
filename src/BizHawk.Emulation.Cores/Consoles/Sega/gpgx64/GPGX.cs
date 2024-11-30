@@ -18,10 +18,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
-		[CoreConstructor(VSystemID.Raw.GEN)]
-		[CoreConstructor(VSystemID.Raw.SMS)]
-		[CoreConstructor(VSystemID.Raw.GG)]
-		[CoreConstructor(VSystemID.Raw.SG)]
+		[CoreConstructor(VSystemID.Raw.GEN, Priority = CorePriority.DefaultPreference)]
+		[CoreConstructor(VSystemID.Raw.SMS, Priority = CorePriority.DefaultPreference)]
+		[CoreConstructor(VSystemID.Raw.GG, Priority = CorePriority.DefaultPreference)]
+		[CoreConstructor(VSystemID.Raw.SG, Priority = CorePriority.DefaultPreference)]
 		public GPGX(CoreLoadParameters<GPGXSettings, GPGXSyncSettings> lp)
 		{
 			LoadCallback = LoadArchive;

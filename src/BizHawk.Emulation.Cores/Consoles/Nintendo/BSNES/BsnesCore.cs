@@ -16,8 +16,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	[PortedCore(CoreNames.Bsnes115, "bsnes team", "v115+", "https://github.com/bsnes-emu/bsnes")]
 	public partial class BsnesCore : IEmulator, IDebuggable, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>, IBSNESForGfxDebugger, IBoardInfo
 	{
-		[CoreConstructor(VSystemID.Raw.Satellaview)]
-		[CoreConstructor(VSystemID.Raw.SGB)]
+		[CoreConstructor(VSystemID.Raw.Satellaview, Priority = CorePriority.DefaultPreference)]
+		[CoreConstructor(VSystemID.Raw.SGB, Priority = CorePriority.DefaultPreference)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
 		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters) : this(loadParameters, false) { }
 		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters, bool subframe = false)

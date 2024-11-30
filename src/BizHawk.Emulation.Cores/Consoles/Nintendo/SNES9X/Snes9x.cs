@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 	{
 		private readonly LibSnes9x _core;
 
-		[CoreConstructor(VSystemID.Raw.SNES)]
+		[CoreConstructor(VSystemID.Raw.SNES, Priority = CorePriority.DefaultPreference)]
 		public Snes9x(CoreLoadParameters<Settings, SyncSettings> loadParameters)
 			:base(loadParameters.Comm, new Configuration
 			{

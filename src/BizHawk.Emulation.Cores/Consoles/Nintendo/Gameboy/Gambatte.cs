@@ -18,8 +18,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <remarks>HACK disables BIOS requirement if the environment looks like a test runner...</remarks>
 		private static readonly bool TestromsBIOSDisableHack = Type.GetType("Microsoft.VisualStudio.TestTools.UnitTesting.Assert, Microsoft.VisualStudio.TestPlatform.TestFramework") is not null;
 
-		[CoreConstructor(VSystemID.Raw.GB)]
-		[CoreConstructor(VSystemID.Raw.GBC)]
+		[CoreConstructor(VSystemID.Raw.GB, Priority = CorePriority.DefaultPreference)]
+		[CoreConstructor(VSystemID.Raw.GBC, Priority = CorePriority.DefaultPreference)]
 		[CoreConstructor(VSystemID.Raw.SGB)]
 		public Gameboy(CoreComm comm, IGameInfo game, byte[] file, GambatteSettings settings, GambatteSyncSettings syncSettings, bool deterministic)
 		{

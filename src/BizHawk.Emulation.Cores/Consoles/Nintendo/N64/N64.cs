@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <param name="file">Rom that should be loaded</param>
 		/// <param name="rom">rom data with consistent endianness/order</param>
 		/// <param name="syncSettings">N64SyncSettings object</param>
-		[CoreConstructor(VSystemID.Raw.N64)]
+		[CoreConstructor(VSystemID.Raw.N64, Priority = CorePriority.DefaultPreference)]
 		public N64(GameInfo game, byte[] file, byte[] rom, N64Settings settings, N64SyncSettings syncSettings)
 		{
 			if (OSTailoredCode.IsUnixHost) throw new NotImplementedException();

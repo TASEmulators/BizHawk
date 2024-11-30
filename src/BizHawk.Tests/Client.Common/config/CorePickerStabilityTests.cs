@@ -13,22 +13,24 @@ namespace BizHawk.Tests.Client.Common.config
 		private static readonly IReadOnlyDictionary<string, string> DefaultCorePrefDict = new Config().PreferredCores;
 
 		[TestMethod]
-		public void AssertAllChoicesInMenu()
+		public void AssertAllPrefencesExist()
 		{
 			var multiCoreSystems = CoreInventory.Instance.AllCores.Where(kvp => kvp.Value.Count != 1)
-				.Select(kvp => kvp.Key)
-				.ToHashSet();
-			foreach (var sysID in DefaultCorePrefDict.Keys)
+				.Select(kvp => kvp.Key);
+			foreach (var sysID in multiCoreSystems)
 			{
-				Assert.IsTrue(multiCoreSystems.Contains(sysID), $"a default core preference exists for {sysID} but that system doesn't have alternate cores");
+				Assert.IsTrue(DefaultCorePrefDict.ContainsKey(sysID), $"{sysID} has multiple cores, but no default core preference exists for it!");
 			}
-			foreach (var (appliesTo, _) in Config.CorePickerUIData)
+		}
+
+		[TestMethod]
+		public void AssertNoExtraPreferences()
+		{
+			var singleCoreSystems = CoreInventory.Instance.AllCores.Where(kvp => kvp.Value.Count == 1)
+				.Select(kvp => kvp.Key);
+			foreach (var sysID in singleCoreSystems)
 			{
-				Assert.IsTrue(
-					appliesTo.Any(multiCoreSystems.Contains),
-					appliesTo.Length is 1
-						? $"core picker has submenu for {appliesTo[0]}, but that system doesn't have alternate cores"
-						: $"core picker has submenu for {appliesTo[0]} ({string.Join("/", appliesTo)}), but none of those systems have alternate cores");
+				Assert.IsFalse(DefaultCorePrefDict.ContainsKey(sysID), $"{sysID} only has one core implementing it, but an unnecessary preference choice exists for it!");
 			}
 		}
 
@@ -40,26 +42,33 @@ namespace BizHawk.Tests.Client.Common.config
 			{
 				Assert.IsTrue(allCoreNames.Contains(coreName), $"default core preference for {sysID} is \"{coreName}\", which doesn't exist");
 			}
-			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData) foreach (var coreName in coreNames)
+		}
+
+		[TestMethod]
+		public void AssertExactlyOnePreferredCore()
+		{
+			foreach(var (systemId, cores) in CoreInventory.Instance.AllCores)
 			{
-				Assert.IsTrue(allCoreNames.Contains(coreName), $"core picker includes nonexistant core \"{coreName}\" under {appliesTo[0]} group");
+				if (cores.Count >= 2)
+				{
+					int preferredCoresCount = cores.Count(core => core.Priority == CorePriority.DefaultPreference);
+					Assert.IsTrue(preferredCoresCount == 1, $"{systemId} has {preferredCoresCount} preferred cores, expected exactly 1.");
+				}
 			}
 		}
 
-		/// <remarks>this really shouldn't be necessary</remarks>
 		[TestMethod]
-		public void AssertNoMissingSystems()
+		public void AssertNoConflictingPreferenceInGroup()
 		{
-			var allSysIDs = CoreInventory.Instance.AllCores.Keys.ToHashSet();
-#if false // already covered by AssertAllChoicesInMenu
-			foreach (var sysID in DefaultCorePrefDict.Keys)
+			foreach(var (systemIds, cores) in CoreInventory.Instance.SystemGroups.Where(tuple => tuple.CoreNames.Count > 1))
 			{
-				Assert.IsTrue(allSysIDs.Contains(sysID), $"a default core preference exists for {sysID}, which isn't emulated by any core");
-			}
-#endif
-			foreach (var (appliesTo, _) in Config.CorePickerUIData) foreach (var sysID in appliesTo)
-			{
-				Assert.IsTrue(allSysIDs.Contains(sysID), $"core picker has choices for {sysID}, which isn't emulated by any core");
+				var preferredCoreForGroup = DefaultCorePrefDict[systemIds[0]];
+				foreach (var systemId in systemIds)
+				{
+					var preferredCore = DefaultCorePrefDict[systemId];
+
+					Assert.AreEqual(preferredCoreForGroup, preferredCore, $"Default core preference for {systemId} does not match the preferred core for the whole group ({string.Join(" | ", systemIds)})");
+				}
 			}
 		}
 	}

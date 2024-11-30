@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return _cachedSettingsInfo;
 		}
 
-		[CoreConstructor(VSystemID.Raw.PSX)]
+		[CoreConstructor(VSystemID.Raw.PSX, Priority = CorePriority.DefaultPreference)]
 		public Nymashock(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, VSystemID.Raw.PSX, "PSX Front Panel", lp.Settings, lp.SyncSettings)
 		{

@@ -19,10 +19,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		int IVideoLogicalOffsets.ScreenY => Settings.TopLine;
 
-		[CoreConstructor(VSystemID.Raw.PCE, Priority = CorePriority.Low)]
-		[CoreConstructor(VSystemID.Raw.SGX, Priority = CorePriority.Low)]
-		[CoreConstructor(VSystemID.Raw.PCECD, Priority = CorePriority.Low)]
-		[CoreConstructor(VSystemID.Raw.SGXCD, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.PCE)]
+		[CoreConstructor(VSystemID.Raw.SGX)]
+		[CoreConstructor(VSystemID.Raw.PCECD)]
+		[CoreConstructor(VSystemID.Raw.SGXCD)]
 		public PCEngine(CoreLoadParameters<PCESettings, PCESyncSettings> lp)
 		{
 			if (lp.Discs.Count == 1 && lp.Roms.Count == 0)
