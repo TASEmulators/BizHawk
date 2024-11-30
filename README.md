@@ -137,7 +137,9 @@ No package for your distro? Install via Nix (see below), or install manually by 
 
 If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder.
 The runtime dependencies are glibc, Mono "complete", OpenAL, Lua 5.4, and `lsb_release`.
-The .NET 6 Runtime (a.k.a. .NET Core) is **not** a runtime dependency, only Mono. WINE is also **not** a runtime dependency. If you try to use WINE anyway then you're on your own.
+The .NET 8 Runtime (a.k.a. .NET Core) is **not** a runtime dependency, only Mono. WINE is also **not** a runtime dependency. If you try to use WINE anyway then you're on your own.  
+If it's not clear from the downloads here or in your package manager, EmuHawk is for x86_64 CPUs only.
+You may be able to run on AArch64 with missing features: see [#4052](https://github.com/TASEmulators/BizHawk/issues/4052).
 
 Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a `.desktop` file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output. It takes mostly the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments).
 
@@ -145,21 +147,30 @@ Most features and cores work, a notable omission being Mupen64Plus (N64). See th
 
 [to top](#bizhawk)
 
+#### Android
+
+Not available for either AArch64 or x86_64 devices. The feature request is [#355](https://github.com/TASEmulators/BizHawk/issues/355).
+
+#### iOS
+
+As with Apple Silicon Macs, not available.
+
+If you were looking to emulate iOS apps, see [#3956](https://github.com/TASEmulators/BizHawk/issues/3956).
+
 #### macOS (legacy BizHawk)
 
 EmuHawk depends on certain libraries for graphics, and these don't work on macOS. Users on macOS have three options:
-* Use another machine with Windows or Linux, or install either in a VM (WINE is not a VM).
-* Use an older 1.x release which was ported to macOS by @Sappharad (with replacements for the missing libraries). Links and more details are in [this TASVideos forum thread](https://tasvideos.org/Forum/Topics/12659) (jump to last page for latest binaries).
+* Use another machine with Windows or Linux, or install either in an x86_64 VM (WINE is not a VM).
+* Use an older 1.x release, which was ported to macOS by @Sappharad (with replacements for the missing libraries), via Rosetta. Links and more details are in [this TASVideos forum thread](https://tasvideos.org/Forum/Topics/12659) (jump to last page for latest binaries). See [#3697](https://github.com/TASEmulators/BizHawk/issues/3697) for details.
 * For the technically-minded, download the [source](https://github.com/Sappharad/BizHawk/tree/MacUnixMonoCompat) of an older 2.x release. @Sappharad put a lot of work into it but ultimately decided to stop.
 	* ...or use the Nix expression as a starting point instead.
-
-[to top](#bizhawk)
+	* Either way, this probably won't work on Apple Silicon without a lot more effort. You'll probably want to build for x86_64 and run Mono via Rosetta. See [#4052](https://github.com/TASEmulators/BizHawk/issues/4052) re: Linux AArch64.
 
 #### Nix/NixOS
 
 (Curious what this Nix thing is about? [Start here](https://zero-to-nix.com).)
 
-Dev builds and a few recent releases can be built with Nix, either by cloning the repo, or by `fetchzip`'ing a commit and importing the expression from it. (The repo isn't a Flake yet, but you should be able to IFD.)
+You can get a dev build or recent release with Nix, either by cloning the repo, or by `fetchzip`'ing a commit and importing the expression from it. (The repo isn't a Flake yet, but you should be able to IFD.)
 See the [dedicated Nix usage readme](Dist/nix_expr_usage_docs.md) for what attributes are exposed.
 If you use a non-NixOS distro with Nix installed, you just need to add one argument and your host graphics drivers will be picked up thanks to nixGL.
 
