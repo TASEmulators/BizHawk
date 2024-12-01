@@ -258,24 +258,19 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local ws_id = comm.ws_open(\"wss://echo.websocket.org\");")]
 		public async Task<string> WebSocketOpen(string uri, string guid = null, int bufferSize = 1024, int maxMessages = 20)
 		{
-			Log($"Opening websocket server {uri}");
 			var wsServer = APIs.Comm.WebSockets;
 			if (wsServer == null)
 			{
-				Log("WebSocket server is not available");
 				return null;
 			}
 			var localGuid = guid == null ? Guid.NewGuid() : Guid.Parse(guid);
-			Log($"Server ID is {localGuid}");
 			if (guid == null)
 			{
-				Log($"OK here we go, connecting in pt 1");
 				_websockets[localGuid] = wsServer.Open(new Uri(uri));
 				await _websockets[localGuid].Connect(bufferSize, maxMessages);
 			}
 			else
 			{
-				Log($"OK here we go, connecting in pt 2");
 				await _websockets[localGuid].Connect(bufferSize, maxMessages);
 			}
 			return localGuid.ToString();
