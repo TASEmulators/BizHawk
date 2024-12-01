@@ -17,16 +17,16 @@ namespace BizHawk.Client.Common
 		private sealed class BespokeOption<T> : Option<T>
 		{
 			public BespokeOption(string name)
-				: base(name) {}
+				: base(name) { }
 
 			public BespokeOption(string name, string description)
-				: base(name: name, description: description) {}
+				: base(name: name, description: description) { }
 
 			public BespokeOption(string[] aliases)
-				: base(aliases) {}
+				: base(aliases) { }
 
 			public BespokeOption(string[] aliases, string description)
-				: base(aliases, description) {}
+				: base(aliases, description) { }
 		}
 
 		private static readonly Argument<string?> ArgumentRomFilePath = new(name: "rom", () => null, description: "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`");
@@ -47,9 +47,9 @@ namespace BizHawk.Client.Common
 
 		private static readonly BespokeOption<string?> OptionConfigFilePath = new(name: "--config", description: "path of config file to use");
 
-		private static readonly BespokeOption<string?> OptionHTTPClientURIGET = new(aliases: [ "--url-get", "--url_get" ], description: "string; URI to use for HTTP 'GET' IPC (Lua `comm.http*Get*`)");
+		private static readonly BespokeOption<string?> OptionHTTPClientURIGET = new(aliases: ["--url-get", "--url_get"], description: "string; URI to use for HTTP 'GET' IPC (Lua `comm.http*Get*`)");
 
-		private static readonly BespokeOption<string?> OptionHTTPClientURIPOST = new(aliases: [ "--url-post", "--url_post" ], description: "string; URI to use for HTTP 'POST' IPC (Lua `comm.http*Post*`)");
+		private static readonly BespokeOption<string?> OptionHTTPClientURIPOST = new(aliases: ["--url-post", "--url_post"], description: "string; URI to use for HTTP 'POST' IPC (Lua `comm.http*Post*`)");
 
 		private static readonly BespokeOption<bool> OptionLaunchChromeless = new(name: "--chromeless", description: "pass and the 'chrome' (a.k.a. GUI) will never be shown, not even in windowed mode");
 
@@ -71,11 +71,15 @@ namespace BizHawk.Client.Common
 
 		private static readonly BespokeOption<bool> OptionQueryAppVersion = new(name: "--version", description: "pass to print version information and immediately quit");
 
-		private static readonly BespokeOption<string?> OptionSocketServerIP = new(aliases: [ "--socket-ip", "--socket_ip" ]); // desc added in static ctor
+		private static readonly BespokeOption<string?> OptionSocketServerIP = new(aliases: ["--socket-ip", "--socket_ip"]); // desc added in static ctor
 
-		private static readonly BespokeOption<ushort?> OptionSocketServerPort = new(aliases: [ "--socket-port", "--socket_port" ]); // desc added in static ctor
+		private static readonly BespokeOption<ushort?> OptionSocketServerPort = new(aliases: ["--socket-port", "--socket_port"]); // desc added in static ctor
 
-		private static readonly BespokeOption<bool> OptionSocketServerUseUDP = new(aliases: [ "--socket-udp", "--socket_udp" ]); // desc added in static ctor
+		private static readonly BespokeOption<bool> OptionSocketServerUseUDP = new(aliases: ["--socket-udp", "--socket_udp"]); // desc added in static ctor
+
+		private static readonly BespokeOption<string?> OptionWebSocketServerIP = new(aliases: ["--websocket-server-ip", "--ws_ip"]); // desc added in static ctor
+
+		private static readonly BespokeOption<ushort?> OptionWebSocketServerPort = new(aliases: ["--websocket-server-port", "--ws_port"]); // desc added in static ctor
 
 		private static readonly BespokeOption<string?> OptionUserdataUnparsedPairs = new(name: "--userdata", description: "pairs in the format `k1:v1;k2:v2` (mind your shell escape sequences); if the value is `true`/`false` it's interpreted as a boolean, if it's a valid 32-bit signed integer e.g. `-1234` it's interpreted as such, if it's a valid 32-bit float e.g. `12.34` it's interpreted as such, else it's interpreted as a string");
 
@@ -91,6 +95,8 @@ namespace BizHawk.Client.Common
 			OptionSocketServerIP.Description = $"string; IP address for Unix socket IPC (Lua `comm.socket*`); must be paired with `--{OptionSocketServerPort.Name}`";
 			OptionSocketServerPort.Description = $"int; port for Unix socket IPC (Lua `comm.socket*`); must be paired with `--{OptionSocketServerIP.Name}`";
 			OptionSocketServerUseUDP.Description = $"pass to use UDP instead of TCP for Unix socket IPC (Lua `comm.socket*`); ignored unless `--{OptionSocketServerIP.Name} --{OptionSocketServerPort.Name}` also passed";
+			OptionWebSocketServerIP.Description = $"string; IP address for websocket server; must be paired with `--{OptionWebSocketServerPort.Name}`";
+			OptionWebSocketServerPort.Description = $"int; port for websocket server; must be paired with `--{OptionWebSocketServerIP.Name}`";
 
 			RootCommand root = new();
 			root.Add(ArgumentRomFilePath);
@@ -114,22 +120,24 @@ namespace BizHawk.Client.Common
 			root.Add(/* --socket-ip */ OptionSocketServerIP);
 			root.Add(/* --socket-port */ OptionSocketServerPort);
 			root.Add(/* --socket-udp */ OptionSocketServerUseUDP);
+			root.Add(/* --websocket-server-ip */ OptionWebSocketServerIP);
+			root.Add(/* --websocket-server-port */ OptionWebSocketServerPort);
 			root.Add(/* --url-get */ OptionHTTPClientURIGET);
 			root.Add(/* --url-post */ OptionHTTPClientURIPOST);
 			root.Add(/* --userdata */ OptionUserdataUnparsedPairs);
 			root.Add(/* --version */ OptionQueryAppVersion);
 
 			Parser = new CommandLineBuilder(root)
-//				.UseVersionOption() // "cannot be combined with other arguments" which is fair enough but `--config` is crucial on NixOS
+				//				.UseVersionOption() // "cannot be combined with other arguments" which is fair enough but `--config` is crucial on NixOS
 				.UseHelp()
-//				.UseEnvironmentVariableDirective() // useless
+				//				.UseEnvironmentVariableDirective() // useless
 				.UseParseDirective()
 				.UseSuggestDirective()
-//				.RegisterWithDotnetSuggest() // intended for dotnet tools
-//				.UseTypoCorrections() // we're only using the parser, and I guess this only works with the full buy-in
-//				.UseParseErrorReporting() // we're only using the parser, and I guess this only works with the full buy-in
-//				.UseExceptionHandler() // we're only using the parser, so nothing should be throwing
-//				.CancelOnProcessTermination() // we're only using the parser, so there's not really anything to cancel
+				//				.RegisterWithDotnetSuggest() // intended for dotnet tools
+				//				.UseTypoCorrections() // we're only using the parser, and I guess this only works with the full buy-in
+				//				.UseParseErrorReporting() // we're only using the parser, and I guess this only works with the full buy-in
+				//				.UseExceptionHandler() // we're only using the parser, so nothing should be throwing
+				//				.CancelOnProcessTermination() // we're only using the parser, so there's not really anything to cancel
 				.Build();
 			GeneratedOptions = root.Options.Where(static o =>
 			{
@@ -185,6 +193,14 @@ namespace BizHawk.Client.Common
 					? (socketIP, socketPort.Value)
 					: throw new ArgParserException("Socket server needs both --socket_ip and --socket_port. Socket server was not started");
 
+			var websocketIP = result.GetValueForOption(OptionWebSocketServerIP);
+			var websocketPort = result.GetValueForOption(OptionWebSocketServerPort);
+			var webSocketServerAddress = websocketIP is null && websocketPort is null
+				? ((string, ushort)?) null // don't bother
+				: websocketIP is not null && websocketPort is not null
+					? (websocketIP, websocketPort.Value)
+					: throw new ArgParserException("Websocket server needs both --ws_ip and --ws_port. Websocket server was not started");
+
 			var httpClientURIGET = result.GetValueForOption(OptionHTTPClientURIGET);
 			var httpClientURIPOST = result.GetValueForOption(OptionHTTPClientURIPOST);
 			var httpAddresses = httpClientURIGET is null && httpClientURIPOST is null
@@ -221,6 +237,7 @@ namespace BizHawk.Client.Common
 				luaScript: luaScript,
 				luaConsole: luaConsole,
 				socketAddress: socketAddress,
+				webSocketServerAddress: webSocketServerAddress,
 				mmfFilename: result.GetValueForOption(OptionMMFPath),
 				httpAddresses: httpAddresses,
 				audiosync: audiosync,
@@ -234,7 +251,7 @@ namespace BizHawk.Client.Common
 
 		public sealed class ArgParserException : Exception
 		{
-			public ArgParserException(string message) : base(message) {}
+			public ArgParserException(string message) : base(message) { }
 		}
 	}
 }
