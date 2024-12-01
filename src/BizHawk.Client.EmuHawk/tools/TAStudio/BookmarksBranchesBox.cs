@@ -661,8 +661,8 @@ namespace BizHawk.Client.EmuHawk
 						location.Offset(width + Width, 0);
 					}
 
-					Math.Max(0, location.Y);
-					var screen = Screen.AllScreens.Where(s => s.WorkingArea.Contains(location)).FirstOrDefault();
+					location.Y = Math.Max(0, location.Y);
+					var screen = Screen.AllScreens.First(s => s.WorkingArea.Contains(location));
 					var h = screen.WorkingArea.Bottom - bottom;
 
 					if (h < 0)

@@ -92,9 +92,7 @@ namespace BizHawk.Client.EmuHawk
 			var topLeft = new Point(
 				Math.Max(0, form.Location.X),
 				Math.Max(0, form.Location.Y));
-			var screen = Screen.AllScreens
-				.Where(s => s.WorkingArea.Contains(topLeft))
-				.FirstOrDefault();
+			var screen = Screen.AllScreens.First(s => s.WorkingArea.Contains(topLeft));
 			var w = screen.WorkingArea.Right - form.Bounds.Right;
 			var h = screen.WorkingArea.Bottom - form.Bounds.Bottom;
 			if (h < 0) topLeft.Y += h;

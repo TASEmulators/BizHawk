@@ -824,9 +824,7 @@ namespace BizHawk.Client.EmuHawk
 					var bottomRight = new Point(
 						topLeft.X + RightClickMenu.Width,
 						topLeft.Y + RightClickMenu.Height);
-					var screen = Screen.AllScreens
-						.Where(s => s.WorkingArea.Contains(topLeft))
-						.FirstOrDefault();
+					var screen = Screen.AllScreens.First(s => s.WorkingArea.Contains(topLeft));
 					// if we don't fully fit, move to the other side of the pointer
 					if (bottomRight.X > screen.WorkingArea.Right)
 						offset.X -= RightClickMenu.Width;
