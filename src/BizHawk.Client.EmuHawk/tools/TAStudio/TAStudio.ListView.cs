@@ -819,7 +819,24 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					RightClickMenu.Show(TasView, e.X, e.Y);
+					var offset = new Point(0);
+					var topLeft = Cursor.Position;
+					var bottomRight = new Point(
+						topLeft.X + RightClickMenu.Width,
+						topLeft.Y + RightClickMenu.Height);
+					var screen = Screen.AllScreens
+						.Where(s => s.WorkingArea.Contains(topLeft))
+						.FirstOrDefault();
+					// if we don't fully fit, move to the other side of the pointer
+					if (bottomRight.X > screen.WorkingArea.Right)
+						offset.X -= RightClickMenu.Width;
+					if (bottomRight.Y > screen.WorkingArea.Bottom)
+						offset.Y -= RightClickMenu.Height;
+					topLeft.Offset(offset);
+					// if the screen is insultingly tiny, best we can do is avoid negative pos
+					RightClickMenu.Show(
+						Math.Max(0, topLeft.X),
+						Math.Max(0, topLeft.Y));
 				}
 			}
 			else if (e.Button == MouseButtons.Left)
