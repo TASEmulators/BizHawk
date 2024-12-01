@@ -105,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 			EventHandler clickHandler = (clickSender, _) =>
 			{
 				if (!object.ReferenceEquals(appleII, Emulator)) return;
-				appleII.SetDisk((int) ((Control) clickSender).Tag);
+				appleII.SetDisk((int) ((ToolStripItem) clickSender).Tag);
 			};
 			var selected = appleII.CurrentDisk;
 			for (int i = 0; i < appleII.DiskCount; i++)
@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 			EventHandler clickHandler = (clickSender, _) =>
 			{
 				if (!object.ReferenceEquals(c64, Emulator)) return;
-				c64.SetDisk((int) ((Control) clickSender).Tag);
+				c64.SetDisk((int) ((ToolStripItem) clickSender).Tag);
 			};
 			var selected = c64.CurrentDisk;
 			for (int i = 0; i < c64.DiskCount; i++)
@@ -274,7 +274,7 @@ namespace BizHawk.Client.EmuHawk
 			EventHandler clickHandler = (clickSender, _) =>
 			{
 				if (!object.ReferenceEquals(ams, Emulator)) return;
-				ams._machine.TapeMediaIndex = (int) ((Control) clickSender).Tag;
+				ams._machine.TapeMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
 			};
 			var tapeMediaIndex = ams._machine.TapeMediaIndex;
 			for (int i = 0; i < ams._tapeInfo.Count; i++)
@@ -297,7 +297,7 @@ namespace BizHawk.Client.EmuHawk
 			EventHandler clickHandler = (clickSender, _) =>
 			{
 				if (!object.ReferenceEquals(ams, Emulator)) return;
-				ams._machine.DiskMediaIndex = (int) ((Control) clickSender).Tag;
+				ams._machine.DiskMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
 			};
 			var diskMediaIndex = ams._machine.DiskMediaIndex;
 			for (int i = 0; i < ams._diskInfo.Count; i++)
@@ -1005,7 +1005,7 @@ namespace BizHawk.Client.EmuHawk
 			EventHandler clickHandler = (clickSender, _) =>
 			{
 				if (!object.ReferenceEquals(speccy, Emulator)) return;
-				speccy._machine.TapeMediaIndex = (int) ((Control) clickSender).Tag;
+				speccy._machine.TapeMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
 			};
 			var tapeMediaIndex = speccy._machine.TapeMediaIndex;
 			for (int i = 0; i < speccy._tapeInfo.Count; i++)
@@ -1028,7 +1028,7 @@ namespace BizHawk.Client.EmuHawk
 			EventHandler clickHandler = (clickSender, _) =>
 			{
 				if (!object.ReferenceEquals(speccy, Emulator)) return;
-				speccy._machine.DiskMediaIndex = (int) ((Control) clickSender).Tag;
+				speccy._machine.DiskMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
 			};
 			var diskMediaIndex = speccy._machine.DiskMediaIndex;
 			for (int i = 0; i < speccy._diskInfo.Count; i++)
