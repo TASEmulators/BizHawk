@@ -903,7 +903,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (existingMarker != null)
 					{
-						MarkerControl.EditMarkerPopUp(existingMarker, true);
+						MarkerControl.EditMarkerPopUp(existingMarker);
 					}
 					else
 					{

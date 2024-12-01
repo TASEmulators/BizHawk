@@ -79,6 +79,14 @@ namespace BizHawk.Client.EmuHawk
 			return control.PointToScreen(new Point(child.Location.X, child.Location.Y));
 		}
 
+		public static void FollowMousePointer(this Form form)
+		{
+			var point = Cursor.Position;
+			point.Offset(form.Width / -2, form.Height / -2);
+			form.StartPosition = FormStartPosition.Manual;
+			form.Location = point;
+		}
+
 		public static DialogResult ShowDialogOnScreen(this Form form)
 		{
 			var topLeft = new Point(
