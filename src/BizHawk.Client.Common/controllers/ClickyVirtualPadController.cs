@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
@@ -14,8 +13,6 @@ namespace BizHawk.Client.Common
 		private readonly HashSet<string> _pressed = new HashSet<string>();
 
 		public ControllerDefinition Definition { get; set; }
-
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
 		public bool IsPressed(string button) => _pressed.Contains(button);
 

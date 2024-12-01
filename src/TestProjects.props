@@ -11,5 +11,6 @@
 	<ItemGroup>
 		<PackageReference Include="MSTest" PrivateAssets="all" />
 		<PackageReference Include="JunitXml.TestLogger" PrivateAssets="all" />
+		<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
 	</ItemGroup>
 </Project>

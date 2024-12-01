@@ -1,10 +1,9 @@
-﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Reflection;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -34,8 +33,10 @@ namespace BizHawk.Tests.Client.Common.config
 			typeof(List<>),
 			typeof(Nullable<>),
 			typeof(object),
+			typeof(Point),
 			typeof(Queue<>),
 			typeof(float),
+			typeof(Size),
 			typeof(string),
 		};
 

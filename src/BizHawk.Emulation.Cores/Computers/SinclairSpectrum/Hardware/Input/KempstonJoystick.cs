@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum

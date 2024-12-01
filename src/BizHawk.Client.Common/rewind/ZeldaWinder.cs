@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using BizHawk.Common;
@@ -85,7 +84,7 @@ namespace BizHawk.Client.Common
 		public void Clear()
 		{
 			Sync();
-			_buffer.InvalidateEnd(0);
+			_buffer.InvalidateAfter(-1);
 			_count = 0;
 			_masterFrame = -1;
 		}
@@ -237,7 +236,7 @@ namespace BizHawk.Client.Common
 				{
 					var index = _buffer.Count - 1;
 					RefillMaster(_buffer.GetState(index));
-					_buffer.InvalidateEnd(index);
+					_buffer.InvalidateLast();
 					_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
 				}
 				else

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -26,10 +25,6 @@ namespace BizHawk.Client.Common
 			Header[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{CurrentVersion.ToString(CultureInfo.InvariantCulture)}";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
-			Markers.Add(0, "Power on");
-			TasStateManager = new ZwinderStateManager(
-				session.Settings.DefaultTasStateManagerSettings,
-				IsReserved);
 		}
 
 		public override void Attach(IEmulator emulator)
@@ -46,37 +41,29 @@ namespace BizHawk.Client.Common
 
 			_inputPollable = emulator.AsInputPollable();
 
+			TasStateManager ??= new ZwinderStateManager(Session.Settings.DefaultTasStateManagerSettings, IsReserved);
 			if (StartsFromSavestate)
 			{
 				TasStateManager.Engage(BinarySavestate);
 			}
 			else
 			{
-				var ms = new MemoryStream();
 				if (StartsFromSaveRam && emulator.HasSaveRam())
 				{
 					emulator.AsSaveRam().StoreSaveRam(SaveRam!);
 				}
-				emulator.AsStatable().SaveStateBinary(new BinaryWriter(ms));
-				TasStateManager.Engage(ms.ToArray());
+				TasStateManager.Engage(emulator.AsStatable().CloneSavestate());
 			}
 
 			base.Attach(emulator);
-
-			foreach (var button in emulator.ControllerDefinition.BoolButtons)
-			{
-				_mnemonicCache[button] = Bk2MnemonicLookup.Lookup(button, emulator.SystemId);
-			}
 		}
-
-		private readonly Dictionary<string, char> _mnemonicCache = new Dictionary<string, char>();
 
 		public override bool StartsFromSavestate
 		{
 			get => base.StartsFromSavestate;
 			set
 			{
-				Markers.Add(0, value ? "Savestate" : "Power on");
+				Markers.Add(new TasMovieMarker(0, value ? "Savestate" : "Power on"), skipHistory: true);
 				base.StartsFromSavestate = value;
 			}
 		}
@@ -124,8 +111,8 @@ namespace BizHawk.Client.Common
 		public override void StartNewRecording()
 		{
 			ClearTasprojExtras();
-			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
-			ChangeLog = new TasMovieChangeLog(this);
+			Markers.Add(new TasMovieMarker(0, StartsFromSavestate ? "Savestate" : "Power on"), skipHistory: true);
+			ClearChanges();
 
 			base.StartNewRecording();
 		}
@@ -152,7 +139,7 @@ namespace BizHawk.Client.Common
 		public void InvalidateEntireGreenzone()
 			=> InvalidateAfter(0);
 
-		private (int Frame, IMovieController Controller) _displayCache = (-1, new Bk2Controller("", NullController.Instance.Definition));
+		private (int Frame, IMovieController Controller) _displayCache = (-1, null);
 
 		/// <summary>
 		/// Returns the mnemonic value for boolean buttons, and actual value for axes,
@@ -160,7 +147,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)
 		{
-			if (_displayCache.Frame != frame)
+			// TODO: there are display issues in TAStudio when less than 3 frames are visible
+			// this is because the Bk2Controller returned from GetInputState is a shared object and mutated elsewhere (like the OSDManager),
+			// but it's getting cached here. this "works" in the >= 2 frames case because the _displayCache.Frame != frame condition
+			// will invalidate the cache. Can we do this properly somehow?
+			if (_displayCache.Frame != frame || FrameCount < 3)
 			{
 				_displayCache = (frame, GetInputState(frame));
 			}
@@ -168,12 +159,14 @@ namespace BizHawk.Client.Common
 			return CreateDisplayValueForButton(_displayCache.Controller, buttonName);
 		}
 
-		private string CreateDisplayValueForButton(IController adapter, string buttonName)
+		private static string CreateDisplayValueForButton(IController adapter, string buttonName)
 		{
+			// those Contains checks could be avoided by passing in the button type
+			// this should be considered if this becomes a significant performance issue
 			if (adapter.Definition.BoolButtons.Contains(buttonName))
 			{
 				return adapter.IsPressed(buttonName)
-					? _mnemonicCache[buttonName].ToString()
+					? adapter.Definition.MnemonicsCache![buttonName].ToString()
 					: "";
 			}
 
@@ -312,7 +305,7 @@ namespace BizHawk.Client.Common
 
 			if (BindMarkersToInput) // pretty critical not to erase them
 			{
-				Markers = branch.Markers;
+				Markers = branch.Markers.DeepClone();
 			}
 
 			Changes = true;
@@ -351,11 +344,10 @@ namespace BizHawk.Client.Common
 
 		private bool IsReserved(int frame)
 		{
-			
 			// Why the frame before?
 			// because we always navigate to the frame before and emulate 1 frame so that we ensure a proper frame buffer on the screen
 			// users want instant navigation to markers, so to do this, we need to reserve the frame before the marker, not the marker itself
-			return Markers.Any(m => m.Frame - 1 == frame)
+			return Markers.Exists(m => m.Frame - 1 == frame)
 				|| Branches.Any(b => b.Frame == frame); // Branches should already be in the reserved list, but it doesn't hurt to check
 		}
 

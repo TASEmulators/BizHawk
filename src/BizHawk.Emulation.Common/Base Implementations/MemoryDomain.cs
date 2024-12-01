@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
@@ -35,71 +34,59 @@ namespace BizHawk.Emulation.Common
 
 		public virtual ushort PeekUshort(long addr, bool bigEndian)
 		{
-			Endian endian = bigEndian ? Endian.Big : Endian.Little;
-			switch (endian)
+			if (bigEndian)
 			{
-				default:
-				case Endian.Big:
-					return (ushort)((PeekByte(addr) << 8) | PeekByte(addr + 1));
-				case Endian.Little:
-					return (ushort)(PeekByte(addr) | (PeekByte(addr + 1) << 8));
+				return (ushort)((PeekByte(addr) << 8) | PeekByte(addr + 1));
 			}
+
+			return (ushort)(PeekByte(addr) | (PeekByte(addr + 1) << 8));
 		}
 
 		public virtual uint PeekUint(long addr, bool bigEndian)
 		{
-			Endian endian = bigEndian ? Endian.Big : Endian.Little;
-			switch (endian)
+			if (bigEndian)
 			{
-				default:
-				case Endian.Big:
-					return (uint)((PeekByte(addr) << 24)
+				return (uint)((PeekByte(addr) << 24)
 					| (PeekByte(addr + 1) << 16)
 					| (PeekByte(addr + 2) << 8)
 					| (PeekByte(addr + 3) << 0));
-				case Endian.Little:
-					return (uint)((PeekByte(addr) << 0)
-					| (PeekByte(addr + 1) << 8)
-					| (PeekByte(addr + 2) << 16)
-					| (PeekByte(addr + 3) << 24));
 			}
+
+			return (uint)((PeekByte(addr) << 0)
+				| (PeekByte(addr + 1) << 8)
+				| (PeekByte(addr + 2) << 16)
+				| (PeekByte(addr + 3) << 24));
 		}
 
 		public virtual void PokeUshort(long addr, ushort val, bool bigEndian)
 		{
-			Endian endian = bigEndian ? Endian.Big : Endian.Little;
-			switch (endian)
+			if (bigEndian)
 			{
-				default:
-				case Endian.Big:
-					PokeByte(addr + 0, (byte)(val >> 8));
-					PokeByte(addr + 1, (byte)val);
-					break;
-				case Endian.Little:
-					PokeByte(addr + 0, (byte)val);
-					PokeByte(addr + 1, (byte)(val >> 8));
-					break;
+				PokeByte(addr + 0, (byte)(val >> 8));
+				PokeByte(addr + 1, (byte)val);
+			}
+			else
+			{
+				PokeByte(addr + 0, (byte)val);
+				PokeByte(addr + 1, (byte)(val >> 8));
 			}
 		}
 
 		public virtual void PokeUint(long addr, uint val, bool bigEndian)
 		{
-			Endian endian = bigEndian ? Endian.Big : Endian.Little;
-			switch (endian)
+			if (bigEndian)
 			{
-				default:
-				case Endian.Big:
-					PokeByte(addr + 0, (byte)(val >> 24));
-					PokeByte(addr + 1, (byte)(val >> 16));
-					PokeByte(addr + 2, (byte)(val >> 8));
-					PokeByte(addr + 3, (byte)val);
-					break;
-				case Endian.Little:
-					PokeByte(addr + 0, (byte)val);
-					PokeByte(addr + 1, (byte)(val >> 8));
-					PokeByte(addr + 2, (byte)(val >> 16));
-					PokeByte(addr + 3, (byte)(val >> 24));
-					break;
+				PokeByte(addr + 0, (byte)(val >> 24));
+				PokeByte(addr + 1, (byte)(val >> 16));
+				PokeByte(addr + 2, (byte)(val >> 8));
+				PokeByte(addr + 3, (byte)val);
+			}
+			else
+			{
+				PokeByte(addr + 0, (byte)val);
+				PokeByte(addr + 1, (byte)(val >> 8));
+				PokeByte(addr + 2, (byte)(val >> 16));
+				PokeByte(addr + 3, (byte)(val >> 24));
 			}
 		}
 
@@ -108,7 +95,7 @@ namespace BizHawk.Emulation.Common
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
-			if ((long) addresses.Count() != values.Length)
+			if ((long)addresses.Count() != values.Length)
 			{
 				throw new InvalidOperationException("Invalid length of values array");
 			}
@@ -122,17 +109,17 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public virtual void BulkPeekUshort(Range<long> addresses,  bool bigEndian, ushort[] values)
+		public virtual void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
 			var start = addresses.Start;
-			var end  = addresses.EndInclusive + 1;
+			var end = addresses.EndInclusive + 1;
 
 			if ((start & 1) != 0 || (end & 1) != 0)
 				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
-			
+
 			if (values.LongLength * 2 != end - start)
 			{
 				// a longer array could be valid, but nothing needs that so don't support it for now
@@ -152,11 +139,11 @@ namespace BizHawk.Emulation.Common
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
 			var start = addresses.Start;
-			var end  = addresses.EndInclusive + 1;
+			var end = addresses.EndInclusive + 1;
 
 			if ((start & 3) != 0 || (end & 3) != 0)
 				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
-			
+
 			if (values.LongLength * 4 != end - start)
 			{
 				// a longer array could be valid, but nothing needs that so don't support it for now

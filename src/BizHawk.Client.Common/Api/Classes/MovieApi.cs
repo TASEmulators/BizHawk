@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -51,12 +50,10 @@ namespace BizHawk.Client.Common
 				return string.Empty;
 			}
 
-			var lg = _movieSession.Movie.LogGeneratorInstance(
-				_movieSession.Movie.GetInputState(frame));
-			return lg.GenerateLogEntry();
+			return Bk2LogEntryGenerator.GenerateLogEntry(_movieSession.Movie.GetInputState(frame));
 		}
 
-		public void Save(string filename = null)
+		public void Save(string filename)
 		{
 			if (_movieSession.Movie.NotActive())
 			{

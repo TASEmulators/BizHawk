@@ -1,6 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
@@ -47,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			foreach (var buttonField in buttonFields)
 			{
-				if (buttonField != string.Empty && !buttonField.Contains('%'))
+				if (buttonField.Length is not 0 && !buttonField.ContainsOrdinal('%'))
 				{
 					var tag = buttonField.SubstringBefore(',');
 					var field = buttonField.SubstringAfterLast(',');
@@ -66,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			foreach (var analogField in analogFields)
 			{
-				if (analogField != string.Empty && !analogField.Contains('%'))
+				if (analogField.Length is not 0 && !analogField.ContainsOrdinal('%'))
 				{
 					var keys = analogField.Split(',');
 					var tag = keys[0];

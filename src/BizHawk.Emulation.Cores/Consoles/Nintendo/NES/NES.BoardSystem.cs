@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
@@ -142,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			foreach (var hash in hash_sha1)
 			{
-				List<CartInfo> choices = BootGodDb.Identify(hash);
+				var choices = BootGodDb.Identify(hash);
 				//pick the first board for this hash arbitrarily. it probably doesn't make a difference
 				if (choices.Count != 0)
 					return choices[0];

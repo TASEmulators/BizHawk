@@ -1,11 +1,10 @@
-﻿using System;
 using System.IO;
 
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Common.PathExtensions
 {
-	public static partial class PathExtensions
+	public static class PathExtensions
 	{
 		/// <returns><see langword="true"/> iff <paramref name="childPath"/> indicates a child of <paramref name="parentPath"/>, with <see langword="false"/> being returned if either path is <see langword="null"/></returns>
 		/// <remarks>algorithm for Windows taken from https://stackoverflow.com/a/7710620/7467292</remarks>
@@ -49,7 +48,19 @@ namespace BizHawk.Common.PathExtensions
 		/// <seealso cref="IsRelative"/>
 		public static bool IsAbsolute(this string path)
 		{
-			return PathInternal.IsPathFullyQualified(path);
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+			return Path.IsPathFullyQualified(path);
+#else
+			if (OSTailoredCode.IsUnixHost)
+			{
+				return path.StartsWith(Path.DirectorySeparatorChar);
+			}
+			else
+			{
+				var root = Path.GetPathRoot(path);
+				return root.StartsWithOrdinal(@"\\") || root.EndsWith('\\') && root is not @"\";
+			}
+#endif
 		}
 
 		/// <returns><see langword="false"/> iff absolute (OS-dependent)</returns>
@@ -208,7 +219,9 @@ namespace BizHawk.Common.PathExtensions
 			else
 			{
 				var dirPath = AppContext.BaseDirectory;
-				DataDirectoryPath = ExeDirectoryPath = string.IsNullOrEmpty(dirPath) ? throw new("failed to get location of executable, very bad things must have happened") : dirPath.RemoveSuffix('\\');
+				DataDirectoryPath = ExeDirectoryPath = string.IsNullOrEmpty(dirPath)
+					? throw new Exception("failed to get location of executable, very bad things must have happened")
+					: dirPath.RemoveSuffix('\\');
 				DllDirectoryPath = Path.Combine(ExeDirectoryPath, "dll");
 			}
 		}

@@ -1,9 +1,9 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 using ISOParser;
 
@@ -446,9 +446,7 @@ namespace BizHawk.Emulation.DiscSystem
 			var data = ReadDataSectorCached(lba);
 			if (data == null) return false;
 			var cmp = Encoding.ASCII.GetBytes(s);
-			var cmp2 = new byte[cmp.Length];
-			Buffer.BlockCopy(data, offset, cmp2, 0, cmp.Length);
-			return cmp.SequenceEqual(cmp2);
+			return cmp.SequenceEqual(data.AsSpan(start: offset, length: cmp.Length));
 		}
 
 		private bool SectorContains(string s, int lba = 0)

@@ -11,9 +11,6 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		ControllerDefinition Definition { get; }
 
-		/// <summary>used as cache by frontend; implement as autoprop w/ initial value <see langword="null"/></summary>
-		IInputDisplayGenerator InputDisplayGenerator { get; set; }
-
 		/// <seealso cref="SetHapticChannelStrength"/>
 		IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot();
 

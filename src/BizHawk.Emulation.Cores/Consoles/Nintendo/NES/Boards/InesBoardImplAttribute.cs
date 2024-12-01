@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// this will be used to track classes that implement boards

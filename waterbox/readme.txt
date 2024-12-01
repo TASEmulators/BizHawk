@@ -37,6 +37,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 		* waterbox/snes9x (required for Snes9x)
 		* waterbox/gpgx/Genesis-Plus-GX (required for gpgx)
 		* waterbox/uae/libretro-uae (required for puae)
+		* waterbox/stella/core (required for stella)
 	* none of these submodules need to be cloned recursively
 
 3. Consider whether it is time to update your build environment (i.e. sudo apt-get upgrade). Build environment tools are generally best kept at the latest version, to ensure top performance for our users.
@@ -76,6 +77,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	cd nyma && make -f shock.mak install
 	cd nyma && make -f vb.mak install
 	cd picodrive && make install
+	cd stella && make install
 	cd snes9x && make install
 	cd tic80 && make install
 	cd uae && make install

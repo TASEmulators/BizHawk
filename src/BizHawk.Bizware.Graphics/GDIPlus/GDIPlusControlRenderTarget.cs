@@ -1,37 +1,38 @@
-using System;
 using System.Drawing;
 
 using SDGraphics = System.Drawing.Graphics;
 
 namespace BizHawk.Bizware.Graphics
 {
+	public readonly record struct GDIPlusControlRenderContext(SDGraphics Graphics, Rectangle Rectangle) : IDisposable
+	{
+		public void Dispose()
+			=> Graphics.Dispose();
+	}
+
 	public sealed class GDIPlusControlRenderTarget : IDisposable
 	{
-		private readonly Func<(SDGraphics, Rectangle)> _getControlRenderContext;
+		private readonly Func<GDIPlusControlRenderContext> _getControlRenderContext;
 		private BufferedGraphicsContext _bufferedGraphicsContext = new();
 
-		public SDGraphics ControlGraphics;
 		public BufferedGraphics BufferedGraphics;
 
-		internal GDIPlusControlRenderTarget(Func<(SDGraphics Graphics, Rectangle Rectangle)> getControlRenderContext)
+		internal GDIPlusControlRenderTarget(Func<GDIPlusControlRenderContext> getControlRenderContext)
 			=> _getControlRenderContext = getControlRenderContext;
 
 		public void Dispose()
 		{
-			ControlGraphics?.Dispose();
-			ControlGraphics = null;
 			BufferedGraphics?.Dispose();
 			BufferedGraphics = null;
 			_bufferedGraphicsContext?.Dispose();
 			_bufferedGraphicsContext = null;
 		}
 
-		public void CreateGraphics()
+		public void CreateBufferedGraphics()
 		{
-			ControlGraphics?.Dispose();
 			BufferedGraphics?.Dispose();
-			(ControlGraphics, var r) = _getControlRenderContext();
-			BufferedGraphics = _bufferedGraphicsContext.Allocate(ControlGraphics, r);
+			using var controlRenderContext = _getControlRenderContext();
+			BufferedGraphics = _bufferedGraphicsContext.Allocate(controlRenderContext.Graphics, controlRenderContext.Rectangle);
 		}
 	}
 }

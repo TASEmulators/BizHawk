@@ -1,6 +1,6 @@
-﻿using System;
 using System.Globalization;
 
+#pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
 {
 	// TODO: cheats support comparison type, so we could support a lot more codes, by having Compare and Type properties and parsing
@@ -57,3 +57,4 @@ namespace BizHawk.Client.Common.cheats
 		}
 	}
 }
+#pragma warning restore MA0089

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,23 +19,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				addr =>
 				{
 					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-					return _cpu.ReadMemory((ushort)addr);
+					return ReadMemory((ushort)addr);
 				},
 				(addr, value) =>
 				{
 					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-					_cpu.WriteMemory((ushort)addr, value);
+					WriteMemory((ushort)addr, value);
 				}, 1)
 			};
-
-			if (use_SGM)
-			{
-				var SGMLRam = new MemoryDomainByteArray("SGM Low RAM", MemoryDomain.Endian.Little, SGM_low_RAM, true, 1);
-				domains.Add(SGMLRam);
-
-				var SGMHRam = new MemoryDomainByteArray("SGM High RAM", MemoryDomain.Endian.Little, SGM_high_RAM, true, 1);
-				domains.Add(SGMHRam);
-			}
 
 			SyncAllByteArrayDomains();
 
@@ -50,6 +40,12 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			SyncByteArrayDomain("Main RAM", _ram);
 			SyncByteArrayDomain("Video RAM", _vdp.VRAM);
+
+			if (use_SGM)
+			{
+				SyncByteArrayDomain("SGM Low RAM", SGM_low_RAM);
+				SyncByteArrayDomain("SGM High RAM", SGM_high_RAM);
+			}
 		}
 
 		private void SyncByteArrayDomain(string name, byte[] data)

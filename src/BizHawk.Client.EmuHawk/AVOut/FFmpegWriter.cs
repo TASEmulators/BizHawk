@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -196,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 			var video = source.GetVideoBuffer();
 			try
 			{
-				_muxer.WriteVideoFrame(video);
+				_muxer.WriteVideoFrame(video.AsSpan(0, _width * _height));
 			}
 			catch
 			{

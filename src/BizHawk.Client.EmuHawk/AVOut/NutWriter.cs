@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 
 using BizHawk.Client.Common;
@@ -76,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 				SetVideoParameters(source.BufferWidth, source.BufferHeight);
 			}
 
-			_current.WriteVideoFrame(source.GetVideoBuffer());
+			_current.WriteVideoFrame(source.GetVideoBuffer().AsSpan(0, _width * _height));
 		}
 
 		public void AddSamples(short[] samples)

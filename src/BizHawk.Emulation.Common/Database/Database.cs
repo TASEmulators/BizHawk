@@ -1,6 +1,6 @@
 ﻿#nullable disable
 
-using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -15,7 +15,9 @@ namespace BizHawk.Emulation.Common
 {
 	public static class Database
 	{
-		private static readonly Dictionary<string, CompactGameInfo> DB = new();
+		private static readonly Dictionary<string, CompactGameInfo> _builder = new();
+
+		private static FrozenDictionary<string, CompactGameInfo> DB;
 
 		/// <summary>
 		/// blocks until the DB is done loading
@@ -59,6 +61,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		/// <remarks>expensive, as it creates a new <see cref="FrozenDictionary{TKey,TValue}"/></remarks>
 		public static void SaveDatabaseEntry(CompactGameInfo gameInfo, string filename = "gamedb_user.txt")
 		{
 			var sb = new StringBuilder();
@@ -89,18 +92,75 @@ namespace BizHawk.Emulation.Common
 				.Append(gameInfo.MetaData)
 				.Append(Environment.NewLine);
 
+			_acquire.WaitOne();
 			File.AppendAllText(Path.Combine(_userRoot, filename), sb.ToString());
-			DB[gameInfo.Hash] = gameInfo;
+			DB = DB.Append(new(gameInfo.Hash, gameInfo)).ToFrozenDictionary();
 		}
 
 		private static bool initialized = false;
+
+		public static CompactGameInfo ParseCGIRecord(string line)
+		{
+			const char FIELD_SEPARATOR = '\t';
+			var iFieldStart = -1;
+			var iFieldEnd = -1; // offset of the tab char, or line.Length if at end
+			string AdvanceAndReadField(out bool isLastField)
+			{
+				iFieldStart = iFieldEnd + 1;
+				iFieldEnd = line.IndexOf(FIELD_SEPARATOR, iFieldStart);
+				isLastField = iFieldEnd < 0;
+				if (isLastField) iFieldEnd = line.Length;
+				return line.Substring(startIndex: iFieldStart, length: iFieldEnd - iFieldStart);
+			}
+			var hashDigest = FormatHash(AdvanceAndReadField(out _));
+			var dumpStatus = AdvanceAndReadField(out _).Trim() switch
+			{
+				"B" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
+				"V" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
+				"T" => RomStatus.TranslatedRom,
+				"O" => RomStatus.Overdump,
+				"I" => RomStatus.Bios,
+				"D" => RomStatus.Homebrew,
+				"H" => RomStatus.Hack,
+				"U" => RomStatus.Unknown,
+				_ => RomStatus.GoodDump
+			};
+			var knownName = AdvanceAndReadField(out _);
+			var sysID = AdvanceAndReadField(out var isLastField);
+			string/*?*/ metadata = null;
+			string region = string.Empty;
+			string forcedCore = string.Empty;
+			if (!isLastField)
+			{
+				_ = AdvanceAndReadField(out isLastField); // rarely present; possibly genre or just a remark
+				if (!isLastField)
+				{
+					metadata = AdvanceAndReadField(out isLastField);
+					if (!isLastField)
+					{
+						region = AdvanceAndReadField(out isLastField);
+						if (!isLastField) forcedCore = AdvanceAndReadField(out isLastField);
+					}
+				}
+			}
+			return new()
+			{
+				Hash = hashDigest,
+				Status = dumpStatus,
+				Name = knownName,
+				System = sysID,
+				MetaData = metadata,
+				Region = region,
+				ForcedCore = forcedCore,
+			};
+		}
 
 		private static void InitializeWork(string path, bool inUser, bool silent)
 		{
 			if (!inUser) _expected.Remove(Path.GetFileName(path));
 			//reminder: this COULD be done on several threads, if it takes even longer
 			using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
-			while (reader.ReadLine() is string line)
+			while (reader.ReadLine() is { } line)
 			{
 				try
 				{
@@ -116,41 +176,17 @@ namespace BizHawk.Emulation.Common
 					{
 						continue;
 					}
-
-					var items = line.Split('\t');
-
-					var game = new CompactGameInfo
-					{
-						Hash = FormatHash(items[0]),
-						Status = items[1].Trim()
-							switch
-						{
-							"B" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
-							"V" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
-							"T" => RomStatus.TranslatedRom,
-							"O" => RomStatus.Overdump,
-							"I" => RomStatus.Bios,
-							"D" => RomStatus.Homebrew,
-							"H" => RomStatus.Hack,
-							"U" => RomStatus.Unknown,
-							_ => RomStatus.GoodDump
-						},
-						Name = items[2],
-						System = items[3],
-						MetaData = items.Length >= 6 ? items[5] : null,
-						Region = items.Length >= 7 ? items[6] : "",
-						ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : ""
-					};
+					var game = ParseCGIRecord(line);
 					if (game.Hash is SHA1Checksum.EmptyFile or MD5Checksum.EmptyFile)
 					{
 						Console.WriteLine($"WARNING: gamedb {path} contains entry for empty rom as \"{game.Name}\"!");
 					}
-					if (!silent && DB.TryGetValue(game.Hash, out var dupe))
+					if (!silent && _builder.TryGetValue(game.Hash, out var dupe))
 					{
 						Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, dupe.Name);
 					}
 
-					DB[game.Hash] = game;
+					_builder[game.Hash] = game;
 				}
 				catch (FileNotFoundException e) when (e.Message.Contains("missing external game database"))
 				{
@@ -180,6 +216,8 @@ namespace BizHawk.Emulation.Common
 			var stopwatch = Stopwatch.StartNew();
 			ThreadPool.QueueUserWorkItem(_ => {
 				InitializeWork(Path.Combine(bundledRoot, "gamedb.txt"), inUser: false, silent: silent);
+				DB = _builder.ToFrozenDictionary();
+				_builder.Clear();
 				if (_expected.Count is not 0) Util.DebugWriteLine($"extra bundled gamedb files were not #included: {string.Join(", ", _expected)}");
 				Util.DebugWriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
 				_acquire.Set();
@@ -188,6 +226,10 @@ namespace BizHawk.Emulation.Common
 
 		public static GameInfo CheckDatabase(string hash)
 		{
+#if BIZHAWKBUILD_GAMEDB_ALWAYS_MISS
+			_ = hash;
+			return null;
+#else
 			_acquire.WaitOne();
 
 			var hashFormatted = FormatHash(hash);
@@ -199,13 +241,16 @@ namespace BizHawk.Emulation.Common
 			}
 
 			return new GameInfo(cgi);
+#endif
 		}
 
 		public static GameInfo GetGameInfo(byte[] romData, string fileName)
 		{
+			var hashSHA1 = SHA1Checksum.ComputeDigestHex(romData);
+
+#if !BIZHAWKBUILD_GAMEDB_ALWAYS_MISS
 			_acquire.WaitOne();
 
-			var hashSHA1 = SHA1Checksum.ComputeDigestHex(romData);
 			if (DB.TryGetValue(hashSHA1, out var cgi))
 			{
 				return new GameInfo(cgi);
@@ -222,6 +267,7 @@ namespace BizHawk.Emulation.Common
 			{
 				return new GameInfo(cgi);
 			}
+#endif
 
 			// rom is not in database. make some best-guesses
 			var game = new GameInfo
@@ -231,7 +277,9 @@ namespace BizHawk.Emulation.Common
 				NotInDatabase = true
 			};
 
+#if !BIZHAWKBUILD_GAMEDB_ALWAYS_MISS
 			Console.WriteLine($"Game was not in DB. CRC: {hashCRC32} MD5: {hashMD5}");
+#endif
 
 			var ext = Path.GetExtension(fileName)?.ToUpperInvariant();
 
@@ -404,11 +452,15 @@ namespace BizHawk.Emulation.Common
 				case ".ADF":
 				case ".ADZ":
 				case ".DMS":
-				case ".IPF":
 				case ".FDI":
-				case ".HDF":
-				case ".LHA":
+			//	case ".HDF":
+			//	case ".LHA":
 					game.System = VSystemID.Raw.Amiga;
+					break;
+
+				case ".IPF":
+					var ipfId = new IpfIdentifier(romData);
+					game.System = ipfId.IdentifiedSystem;
 					break;
 
 				case ".32X":

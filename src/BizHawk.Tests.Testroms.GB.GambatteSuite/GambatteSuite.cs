@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -9,8 +8,6 @@ using System.Text.RegularExpressions;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Common.StringExtensions;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 

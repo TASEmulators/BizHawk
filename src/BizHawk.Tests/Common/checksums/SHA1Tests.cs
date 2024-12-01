@@ -1,9 +1,7 @@
-using System;
-using System.Linq;
 using System.Text;
-using BizHawk.Common;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Tests.Common.checksums
 {
@@ -49,7 +47,7 @@ namespace BizHawk.Tests.Common.checksums
 			Encoding.ASCII.GetBytes(testString).CopyTo(data, 0);
 
 			byte[] expectedSha2 = [ 0x65, 0x87, 0x84, 0xE2, 0x68, 0xBF, 0xB1, 0x67, 0x94, 0x7B, 0xB7, 0xF3, 0xFB, 0x76, 0x69, 0x62, 0x79, 0x3E, 0x8C, 0x46 ];
-			Assert.IsTrue(expectedSha2.SequenceEqual(SHA1Checksum.Compute(new Span<byte>(data, 0, 64))));
+			Assert.IsTrue(expectedSha2.SequenceEqual(SHA1Checksum.Compute(data.AsSpan(0, 64))));
 
 			byte[] expectedSha3 = [ 0x34, 0xF3, 0xA2, 0x57, 0xBD, 0x12, 0x5E, 0x6E, 0x0E, 0x28, 0xD0, 0xE5, 0xDA, 0xBE, 0x22, 0x28, 0x97, 0xFA, 0x69, 0x55 ];
 			Assert.IsTrue(expectedSha3.SequenceEqual(SHA1Checksum.Compute(data)));

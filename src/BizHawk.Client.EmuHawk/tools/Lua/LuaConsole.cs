@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -132,6 +131,7 @@ namespace BizHawk.Client.EmuHawk
 					Settings.Columns = LuaListView.AllColumns;
 					
 					DisplayManager.ClearApiHawkSurfaces();
+					DisplayManager.ClearApiHawkTextureCache();
 					ResetDrawSurfacePadding();
 					ClearFileWatches();
 					LuaImp?.Close();
@@ -949,6 +949,7 @@ namespace BizHawk.Client.EmuHawk
 
 				UpdateDialog();
 				DisplayManager.ClearApiHawkSurfaces();
+				DisplayManager.ClearApiHawkTextureCache();
 				DisplayManager.OSD.ClearGuiText();
 				if (!LuaImp.ScriptList.Any(static lf => !lf.IsSeparator)) ResetDrawSurfacePadding(); // just removed last script, reset padding
 			}
@@ -1073,7 +1074,7 @@ namespace BizHawk.Client.EmuHawk
 					if (form is LuaRegisteredFunctionsList)
 					{
 						alreadyOpen = true;
-						form.Focus();
+						form.Activate();
 					}
 				}
 
@@ -1095,19 +1096,14 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void DisableScriptsOnLoadMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.DisableLuaScriptsOnLoad ^= true;
-		}
+			=> Settings.DisableLuaScriptsOnLoad = !Settings.DisableLuaScriptsOnLoad;
 
 		private void ToggleAllIfNoneSelectedMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.ToggleAllIfNoneSelected ^= true;
-		}
+			=> Settings.ToggleAllIfNoneSelected = !Settings.ToggleAllIfNoneSelected;
 
 		private void ReloadWhenScriptFileChangesMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.ReloadOnScriptFileChange ^= true;
-
+			Settings.ReloadOnScriptFileChange = !Settings.ReloadOnScriptFileChange;
 			if (Settings.ReloadOnScriptFileChange)
 			{
 				AddFileWatches();
@@ -1197,7 +1193,7 @@ namespace BizHawk.Client.EmuHawk
 
 			StopAllScriptsContextItem.Visible =
 				ScriptContextSeparator.Visible =
-				LuaImp.ScriptList.Any(file => file.Enabled);
+				LuaImp.ScriptList.Exists(file => file.Enabled);
 
 			ClearRegisteredFunctionsContextItem.Enabled =
 				LuaImp.RegisteredFunctions.Any();
@@ -1377,7 +1373,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.KeyCode == Keys.Enter)
 			{
-				string consoleBeforeCall = OutputBox.Text;
 				var rawCommand = InputBox.Text;
 				InputBox.Clear();
 				InputBox.Refresh(); // if the command is something like `client.seekframe`, the Lua Console (and MainForm) will freeze until it finishes, so at least make it obvious that the Enter press was received
@@ -1392,18 +1387,15 @@ namespace BizHawk.Client.EmuHawk
 
 					LuaSandbox.Sandbox(null, () =>
 					{
-						LuaImp.ExecuteString($"console.log({rawCommand})");
-					}, () =>
-					{
-						LuaSandbox.Sandbox(null, () =>
+						var prevMessageCount = _messageCount;
+						var results = LuaImp.ExecuteString(rawCommand);
+						// empty array if the command was e.g. a variable assignment or a loop without return statement
+						// "void" functions return a single null
+						// if output didn't change, Print will take care of writing out "(no return)"
+						if (results is not ([ ] or [ null ]) || _messageCount == prevMessageCount)
 						{
-							LuaImp.ExecuteString(rawCommand);
-
-							if (OutputBox.Text == consoleBeforeCall)
-							{
-								WriteLine("Command successfully executed");
-							}
-						});
+							LuaLibraries.Print(results);
+						}
 					});
 
 					_messageCount = 0;

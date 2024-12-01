@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
@@ -7,7 +5,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	[Core(CoreNames.Atari2600Hawk, "Micro500, Alyosha, adelikat, natt")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
+	[ServiceNotApplicable(typeof(ISaveRam))]
 	public partial class Atari2600 : IEmulator, IDebuggable, IInputPollable, IBoardInfo, IRomInfo,
 		IRegionable, ICreateGameDBEntries, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{

@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +13,12 @@ namespace BizHawk.Client.Common
 
 		public BasicApiProvider(ApiContainer apiContainer) => Container = apiContainer;
 
-		public object? GetApi(Type t) => Container.Libraries.TryGetValue(t, out var api) ? api : null;
+		public object? GetApi(Type t)
+			=> Container.Libraries.TryGetValue(t, out var api)
+				? api
+				: t == typeof(ApiContainer)
+					? Container
+					: null;
 
 		public bool HasApi(Type t) => Container.Libraries.ContainsKey(t);
 	}

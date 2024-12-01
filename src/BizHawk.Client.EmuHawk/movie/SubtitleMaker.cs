@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -47,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			DurationNumeric.Value = Sub.Duration;
 			colorDialog1.Color = Color.FromArgb((int)Sub.Color);
 			ColorPanel.BackColor = colorDialog1.Color;
-			Message.Focus();
+			Message.Select();
 		}
 
 		private void ColorPanel_DoubleClick(object sender, EventArgs e)

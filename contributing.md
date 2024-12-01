@@ -70,6 +70,7 @@ It's probably a good idea to get the .NET SDK, even if you're not working on a .
 - Linux
 	- Install the .NET 8 SDK (package name is usually `dotnet-sdk-8.0`, see [full instructions](https://learn.microsoft.com/en-gb/dotnet/core/install/linux)).
 	- VS Community isn't available for Linux, but Rider and VS Code are.
+	- Nix/NixOS users can get the .NET SDK ephemerally with the provided `shell.nix`. For IDE setup and more, see the [Nix-specific docs](Dist/nix_expr_usage_docs.md#ide-setup).
 - macOS
 	- Note that EmuHawk does not currently support macOS.
 	- Install the .NET 8 SDK [manually](https://learn.microsoft.com/en-gb/dotnet/core/install/macos) or with Homebrew.
@@ -78,7 +79,8 @@ It's probably a good idea to get the .NET SDK, even if you're not working on a .
 	- The .NET 8 SDK comes with [VS Community 2022](https://visualstudio.microsoft.com/vs/community) (see [full instructions](https://learn.microsoft.com/en-gb/dotnet/core/install/windows)).
 	- You can also use Rider, VS Code, or something else instead of VS Community.
 
-For EmuHawk and libraries in the main solution, which do not target .NET 8, we have [this page](https://github.com/TASEmulators/BizHawk/wiki/Available-C%23-and-.NET-features) documenting which features are actually available to use.
+For EmuHawk and libraries in the main solution, which do not target .NET 8, we have [this page](https://github.com/TASEmulators/BizHawk/wiki/Available-C%23-and-.NET-features) documenting which features are actually available to use.  
+We also have [supplemental docs](https://github.com/TASEmulators/BizHawk/wiki/C%23-and-.NET-docs-supplement) on some of the language's footguns.
 
 
 
@@ -114,13 +116,14 @@ See [EmuHawk](#emuhawk). Build scripts also build DiscoHawk, or from VS2022 choo
 > EmuHawk is the main app, an emulator frontend.
 
 Uses C#; you will need the .NET SDK or an IDE which includes it. See the [.NET section](#for-any-net-project).
-Most projects target .NET Standard 2.0, with some targeting .NET Framework 4.8. It's written at the top of their project files, or you can check the [project graph](https://gitlab.com/TASVideos/BizHawk/snippets/1886666).
+Most projects target .NET Standard 2.0, with some targeting .NET Framework 4.8. It's written at the top of their project files, or you can check the [project graph](https://github.com/TASEmulators/BizHawk/wiki/Dependencies#main-solution).
 
 The source for EmuHawk, plus DiscoHawk and the supporting libraries, is in `/src`, with a few extra files used by the build system elsewhere.
-EmuHawk's project file `/src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj` includes the other projects [in a tree](https://gitlab.com/TASVideos/BizHawk/snippets/1886666), and they're all included in `/BizHawk.sln`.
+EmuHawk's project file `/src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj` includes the other projects [in a tree](https://github.com/TASEmulators/BizHawk/wiki/Dependencies#main-solution), and they're all included in `/BizHawk.sln`.
 
 In VS2022, open `BizHawk.sln`, then select the "BizHawk.Client.EmuHawk | Release" configuration to build and run.
-On the command-line, from root of the repo run `Dist/BuildRelease.sh` (Unix) or `Dist\QuickTestBuildAndPackage_Release.bat` (Windows). Run EmuHawk from `output` in the repo's root.
+To build from the command-line on Windows, simply run `dotnet build BizHawk.sln` from the repository's root, and then `output\EmuHawk` will be available. Alternatively, you can run one of the existing build scripts that apply additional checks and configurations, such as `Dist\QuickTestBuildAndPackage_Release.bat`.
+To build from the command-line on Unix, run `Dist/BuildRelease.sh`, and then `output/EmuHawkMono.sh` will be available.
 
 There are 2 build configurations. Besides `Release` there is `Debug`, which *does not run* bytecode optimisations, *does not remove* debugging symbols, *enables* additional logging and assertions, and *enables* some features. On Windows, a `Debug` executable will spawn a console window for stdout. Note there is also a "stronger" release build in the form of `VersionInfo.DeveloperBuild == false`, which is only used by GitLab CI for preparing a release (during `Dist/UpdateVersionInfoForRelease.sh`).
 
@@ -321,5 +324,5 @@ See [Waterbox readme](https://github.com/TASEmulators/BizHawk/tree/master/waterb
 By contributing, you declare that any additions or changes either:
 - were authored by you and you are willing to license your contributions to us under the [project's license](https://github.com/TASEmulators/BizHawk/tree/master/LICENSE); or
 - were copied from a compatibly open-source, publicly-licensed source and are properly attributed, including licensing info.
-> **Important**
+> [!IMPORTANT]
 > We will **not** accept any contributions "authored" by GitHub Copilot or similar ML tools.

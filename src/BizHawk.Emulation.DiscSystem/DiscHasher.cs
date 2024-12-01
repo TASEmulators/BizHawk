@@ -1,5 +1,7 @@
-using System;
+#nullable enable
 
+using System.Collections.Generic;
+using System.Text;
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 
@@ -13,6 +15,16 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		private readonly Disc disc;
+
+		public string CalculateBizHash(DiscType discType)
+		{
+			return discType switch
+			{
+				DiscType.SonyPSX => Calculate_PSX_BizIDHash(),
+				DiscType.JaguarCD => CalculateRAJaguarHash() ?? "",
+				_ => OldHash(),
+			};
+		}
 
 		/// <summary>
 		/// calculates the hash for quick PSX Disc identification
@@ -89,18 +101,131 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var buffer = new byte[512 * 2352];
 			var dsr = new DiscSectorReader(disc);
-			foreach (var track in disc.Session1.Tracks)
+			// don't hash generated lead-in and lead-out tracks
+			for (int i = 1; i <= disc.Session1.InformationTrackCount; i++)
 			{
+				var track = disc.Session1.Tracks[i];
+
 				if (track.IsAudio)
 					continue;
 
-				var lba_len = Math.Min(track.NextTrack.LBA, 512);
+				var lba_len = Math.Min(track.NextTrack.LBA - track.LBA, 512);
 				for (var s = 0; s < 512 && s < lba_len; s++)
 					dsr.ReadLBA_2352(track.LBA + s, buffer, s * 2352);
 
 				return MD5Checksum.ComputeDigestHex(buffer.AsSpan(start: 0, length: lba_len * 2352));
 			}
 			return "no data track found";
+		}
+
+		/// <summary>
+		/// Calculate Jaguar CD hash according to RetroAchievements logic
+		/// </summary>
+		public string? CalculateRAJaguarHash()
+		{
+			if (disc.Sessions.Count <= 2)
+			{
+				return null;
+			}
+
+			var dsr = new DiscSectorReader(disc)
+			{
+				Policy = { DeterministicClearBuffer = false } // let's make this a little faster
+			};
+
+			static string? HashJaguar(DiscTrack bootTrack, DiscSectorReader dsr, bool commonHomebrewHash)
+			{
+				const string _jaguarHeader = "ATARI APPROVED DATA HEADER ATRI";
+				const string _jaguarBSHeader = "TARA IPARPVODED TA AEHDAREA RT";
+				var buffer = new List<byte>();
+				var buf2352 = new byte[2352];
+
+				// find the boot track header
+				// see https://github.com/TASEmulators/BizHawk/blob/f29113287e88c6a644dbff30f92a9833307aad20/waterbox/virtualjaguar/src/cdhle.cpp#L109-L145
+				var startLba = bootTrack.LBA;
+				var numLbas = bootTrack.NextTrack.LBA - bootTrack.LBA;
+				int bootLen = 0, bootLba = 0, bootOff = 0;
+				bool byteswapped = false, foundHeader = false;
+				var bootLenOffset = (commonHomebrewHash ? 0x40 : 0) + 32 + 4;
+				for (var i = 0; i < numLbas; i++)
+				{
+					dsr.ReadLBA_2352(startLba + i, buf2352, 0);
+
+					for (var j = 0; j < 2352 - bootLenOffset - 4; j++)
+					{
+						if (buf2352[j] == _jaguarHeader[0])
+						{
+							if (_jaguarHeader == Encoding.ASCII.GetString(buf2352, j, 32 - 1))
+							{
+								bootLen = (buf2352[j + bootLenOffset + 0] << 24) | (buf2352[j + bootLenOffset + 1] << 16) |
+									(buf2352[j + bootLenOffset + 2] << 8) | buf2352[j + bootLenOffset + 3];
+								bootLba = startLba + i;
+								bootOff = j + bootLenOffset + 4;
+								// byteswapped = false;
+								foundHeader = true;
+								break;
+							}
+						}
+						else if (buf2352[j] == _jaguarBSHeader[0])
+						{
+							if (_jaguarBSHeader == Encoding.ASCII.GetString(buf2352, j, 32 - 2))
+							{
+								bootLen = (buf2352[j + bootLenOffset + 1] << 24) | (buf2352[j + bootLenOffset + 0] << 16) |
+									(buf2352[j + bootLenOffset + 3] << 8) | buf2352[j + bootLenOffset + 2];
+								bootLba = startLba + i;
+								bootOff = j + bootLenOffset + 4;
+								byteswapped = true;
+								foundHeader = true;
+								break;
+							}
+						}
+					}
+
+					if (foundHeader)
+					{
+						break;
+					}
+				}
+
+				if (!foundHeader)
+				{
+					return null;
+				}
+
+				dsr.ReadLBA_2352(bootLba++, buf2352, 0);
+
+				if (byteswapped)
+				{
+					EndiannessUtils.MutatingByteSwap16(buf2352.AsSpan());
+				}
+
+				buffer.AddRange(new ArraySegment<byte>(buf2352, bootOff, Math.Min(2352 - bootOff, bootLen)));
+				bootLen -= 2352 - bootOff;
+
+				while (bootLen > 0)
+				{
+					dsr.ReadLBA_2352(bootLba++, buf2352, 0);
+
+					if (byteswapped)
+					{
+						EndiannessUtils.MutatingByteSwap16(buf2352.AsSpan());
+					}
+
+					buffer.AddRange(new ArraySegment<byte>(buf2352, 0, Math.Min(2352, bootLen)));
+					bootLen -= 2352;
+				}
+
+				return MD5Checksum.ComputeDigestHex(buffer.ToArray());
+			}
+
+			var jaguarHash = HashJaguar(disc.Sessions[2].Tracks[1], dsr, false);
+
+			if (jaguarHash is "254487B59AB21BC005338E85CBF9FD2F") // see https://github.com/RetroAchievements/rcheevos/pull/234
+			{
+				jaguarHash = HashJaguar(disc.Sessions[1].Tracks[2], dsr, true);
+			}
+
+			return jaguarHash;
 		}
 	}
 }

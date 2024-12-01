@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
@@ -8,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	/// <summary>
 	/// Internal Registers
 	/// </summary>
-	public sealed partial class F3850
+	public sealed partial class F3850<TLink>
 	{
 		/// <summary>
 		/// Registers (counters and scratchpad)
@@ -242,6 +241,8 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			}
 		}
 
+		private const string PFX_SCRATCHPAD_REG = "SPR";
+
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			var res = new Dictionary<string, RegisterValue>
@@ -267,7 +268,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 			for (int i = 0; i < 64; i++)
 			{
-				res.Add("SPR" + i, Regs[i]);
+				res.Add(PFX_SCRATCHPAD_REG + i, Regs[i]);
 			}
 
 			return res;
@@ -275,9 +276,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		public void SetCpuRegister(string register, int value)
 		{
-			if (register.StartsWithOrdinal("SPR"))
+			if (register.StartsWithOrdinal(PFX_SCRATCHPAD_REG))
 			{
-				var reg = Convert.ToInt32(register.Replace("SPR", ""));
+				var reg = int.Parse(register.Substring(startIndex: PFX_SCRATCHPAD_REG.Length));
 
 				if (reg > 63)
 				{
@@ -348,10 +349,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			Regs[ONE] = 1;
 			Regs[ZERO] = 0;
 			Regs[BYTE] = 0xFF;
-
-			// testing only - fill scratchpad with 0xff
-			//for (int i = 0; i < 64; i++)
-				//Regs[i] = 0xff;
 		}
 	}
 }

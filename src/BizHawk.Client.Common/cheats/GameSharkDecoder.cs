@@ -1,7 +1,7 @@
-﻿using System;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
+#pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
 {
 	public class GameSharkDecoder
@@ -136,10 +136,11 @@ namespace BizHawk.Client.Common.cheats
 
 			if (code.Length == 8)
 			{
-				return GbGameSharkDecoder.Decode(code);
+				return SnesActionReplayDecoder.Decode(code);
 			}
 			
 			return new InvalidCheatCode($"Unknown code type: {code}");
 		}
 	}
 }
+#pragma warning restore MA0089

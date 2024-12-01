@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
@@ -450,9 +448,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		private readonly Z80A Cpu;
+		private readonly Z80A<ColecoVision.CpuLink> Cpu;
 
-		public TMS9918A(Z80A cpu)
+		public TMS9918A(Z80A<ColecoVision.CpuLink> cpu)
 		{
 			Cpu = cpu;
 		}

@@ -1,5 +1,3 @@
-using System;
-
 namespace BizHawk.Emulation.DiscSystem.CUE
 {
 	internal abstract class SS_Base : ISectorSynthJob2448

@@ -1,4 +1,3 @@
-﻿using System;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
@@ -75,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private SnesSettings _settings;
 		private SnesSyncSettings _syncSettings;
 
-		public record SnesSettings : SNES.IBSNESForGfxDebugger.SettingsObj
+		public sealed record class SnesSettings : SNES.IBSNESForGfxDebugger.SettingsObj
 		{
 			public bool ShowBG1_0 { get; set; } = true;
 			public bool ShowBG2_0 { get; set; } = true;
@@ -98,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public BsnesApi.ASPECT_RATIO_CORRECTION AspectRatioCorrection { get; set; } = BsnesApi.ASPECT_RATIO_CORRECTION.Auto;
 		}
 
-		public record SnesSyncSettings
+		public sealed record class SnesSyncSettings
 		{
 			public BsnesApi.BSNES_PORT1_INPUT_DEVICE LeftPort { get; set; } = BsnesApi.BSNES_PORT1_INPUT_DEVICE.Gamepad;
 

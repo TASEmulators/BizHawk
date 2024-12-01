@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Client.Common
 {
 	public interface IRewinder : IDisposable
@@ -12,6 +10,7 @@ namespace BizHawk.Client.Common
 		bool Active { get; }
 
 		void Capture(int frame);
+
 		/// <summary>
 		/// Rewind 1 or 2 saved frames, avoiding frameToAvoid if possible.
 		/// </summary>

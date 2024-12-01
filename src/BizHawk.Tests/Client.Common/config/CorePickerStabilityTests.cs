@@ -3,9 +3,8 @@ using System.Linq;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Cores;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BizHawk.Tests.Client.Common.config
 {
@@ -15,7 +14,7 @@ namespace BizHawk.Tests.Client.Common.config
 		private static readonly IReadOnlyDictionary<string, string> DefaultCorePrefDict = new Config().PreferredCores;
 
 		[TestMethod]
-		public void AssertAllChoicesInMenu()
+		public void AssertAllChoicesValid()
 		{
 			var multiCoreSystems = CoreInventory.Instance.AllCores.Where(kvp => kvp.Value.Count != 1)
 				.Select(kvp => kvp.Key)
@@ -27,7 +26,7 @@ namespace BizHawk.Tests.Client.Common.config
 			foreach (var (appliesTo, _) in Config.CorePickerUIData)
 			{
 				Assert.IsTrue(
-					appliesTo.Any(multiCoreSystems.Contains),
+					appliesTo.All(multiCoreSystems.Contains),
 					appliesTo.Length is 1
 						? $"core picker has submenu for {appliesTo[0]}, but that system doesn't have alternate cores"
 						: $"core picker has submenu for {appliesTo[0]} ({string.Join("/", appliesTo)}), but none of those systems have alternate cores");
@@ -48,20 +47,14 @@ namespace BizHawk.Tests.Client.Common.config
 			}
 		}
 
-		/// <remarks>this really shouldn't be necessary</remarks>
 		[TestMethod]
-		public void AssertNoMissingSystems()
+		public void AssertNoMissingChoices()
 		{
-			var allSysIDs = CoreInventory.Instance.AllCores.Keys.ToHashSet();
-#if false // already covered by AssertAllChoicesInMenu
-			foreach (var sysID in DefaultCorePrefDict.Keys)
+			var multiCoreSystems = CoreInventory.Instance.AllCores.Where(kvp => kvp.Value.Count != 1).ToArray();
+			foreach (var (sysID, cores) in multiCoreSystems)
 			{
-				Assert.IsTrue(allSysIDs.Contains(sysID), $"a default core preference exists for {sysID}, which isn't emulated by any core");
-			}
-#endif
-			foreach (var (appliesTo, _) in Config.CorePickerUIData) foreach (var sysID in appliesTo)
-			{
-				Assert.IsTrue(allSysIDs.Contains(sysID), $"core picker has choices for {sysID}, which isn't emulated by any core");
+				Assert.IsTrue(DefaultCorePrefDict.ContainsKey(sysID), $"missing default core preference for {sysID} with {cores.Count} core choices");
+				Assert.IsTrue(Config.CorePickerUIData.Any(item => item.AppliesTo.Contains(sysID)), $"missing core picker submenu for {sysID} with {cores.Count} core choices");
 			}
 		}
 	}

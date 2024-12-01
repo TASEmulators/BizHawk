@@ -1,5 +1,5 @@
 ﻿using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
+
 using System.Collections.Generic;
 using BizHawk.Emulation.Cores.Sound;
 
@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Main constructor
 		/// </summary>
-		public ZX48(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
+		public ZX48(ZXSpectrum spectrum, Z80A<ZXSpectrum.CpuLink> cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
 		{
 			Spectrum = spectrum;
 			CPU = cpu;

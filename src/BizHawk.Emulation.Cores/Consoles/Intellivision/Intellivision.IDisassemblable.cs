@@ -13,10 +13,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public string PCRegisterName => "PC";
 
-		public IEnumerable<string> AvailableCpus
-		{
-			get { yield return "CP1610"; }
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "CP1610" ];
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{

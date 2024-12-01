@@ -1,5 +1,6 @@
-﻿using System;
 using System.Collections.Generic;
+
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.FairchildF8
@@ -7,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	/// <summary>
 	/// Disassembler
 	/// </summary>
-	public sealed partial class F3850 : IDisassemblable
+	public sealed partial class F3850<TLink> : IDisassemblable
 	{
 		private static string Result(string format, Func<ushort, byte> read, ref ushort addr)
 		{
@@ -15,20 +16,19 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			//n immediate succeeds the opcode and the displacement (if present)
 			//nn immediately succeeds the opcode and the displacement (if present)
 
-			if (format.IndexOf("nn", StringComparison.Ordinal) != -1)
+			if (format.ContainsOrdinal("nn"))
 			{
 				format = format.Replace("nn", read(addr++)
 					.ToString("X2") + read(addr++)
 					.ToString("X2") + "h"); // MSB is read first
 			}
+			if (format.ContainsOrdinal('n')) format = format.Replace("n", $"{read(addr++):X2}h");
 
-			if (format.IndexOf("n", StringComparison.Ordinal) != -1) format = format.Replace("n", $"{read(addr++):X2}h");
-
-			if (format.IndexOf("+d", StringComparison.Ordinal) != -1) format = format.Replace("+d", "d");
-			if (format.IndexOf("d", StringComparison.Ordinal) != -1)
+			format = format.Replace("+d", "d");
+			if (format.ContainsOrdinal('d'))
 			{
 				var b = unchecked((sbyte)read(addr++));
-				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{(b < 0 ? -b : b):X2}h");
+				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{Math.Abs((short) b):X2}h");
 			}
 
 			return format;
@@ -320,12 +320,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			set { }
 		}
 
-		public string PCRegisterName => "PC";
+		public string PCRegisterName => "PC0";
 
-		public IEnumerable<string> AvailableCpus
-		{
-			get { yield return "F3850"; }
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "F3850" ];
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{

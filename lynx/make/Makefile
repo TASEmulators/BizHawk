@@ -16,7 +16,7 @@ TARGET = bizlynx.dll
 
 LDFLAGS_32 = -static -static-libgcc -static-libstdc++
 LDFLAGS_64 =
-LDFLAGS = -shared $(LDFLAGS_$(ARCH)) $(CXXFLAGS)
+LDFLAGS = -shared $(LDFLAGS_$(ARCH)) $(CXXFLAGS) -s
 
 DEST_64 = ../../Assets/dll
 DESTCOPY_64 = ../../output/dll

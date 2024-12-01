@@ -567,7 +567,7 @@
 			this.MinimizeBox = false;
 			this.Name = "RewindConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Rewind & Savestate Cofiguration";
+			this.Text = "Rewind & Savestate Configuration";
 			this.Load += new System.EventHandler(this.RewindConfig_Load);
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).EndInit();
 			this.groupBox4.ResumeLayout(false);

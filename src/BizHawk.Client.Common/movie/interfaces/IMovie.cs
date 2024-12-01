@@ -75,14 +75,12 @@ namespace BizHawk.Client.Common
 		void SaveBackup();
 
 		/// <summary>
-		/// Creates a log generator using the given input source
-		/// </summary>
-		Bk2LogEntryGenerator LogGeneratorInstance(IController source);
-
-		/// <summary>
 		/// Instructs the movie to save the current contents to Filename
 		/// </summary>
 		void Save();
+
+		/// <summary>updates the <see cref="HeaderKeys.CycleCount"/> and <see cref="HeaderKeys.ClockRate"/> headers from the currently loaded core</summary>
+		void SetCycleValues();
 
 		/// <summary>
 		/// Writes the input log directly to the stream, bypassing the need to load it all into ram as a string
@@ -212,6 +210,7 @@ namespace BizHawk.Client.Common
 		public static bool IsFinished(this IMovie movie) => movie?.Mode == MovieMode.Finished;
 		public static bool IsPlayingOrFinished(this IMovie movie) => movie?.Mode == MovieMode.Play || movie?.Mode == MovieMode.Finished;
 		public static bool IsPlayingOrRecording(this IMovie movie) => movie?.Mode == MovieMode.Play || movie?.Mode == MovieMode.Record;
+
 		/// <summary>
 		/// Emulation is currently right after the movie's last input frame,
 		/// but no further frames have been emulated.

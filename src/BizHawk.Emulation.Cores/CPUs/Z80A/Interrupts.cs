@@ -1,8 +1,6 @@
-using System;
-
 namespace BizHawk.Emulation.Cores.Components.Z80A
 {
-	public partial class Z80A
+	public partial class Z80A<TLink>
 	{
 		private bool iff1;
 		public bool IFF1
@@ -37,13 +35,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				interruptMode = value;
 			}
 		}
-
-		public Action IRQCallback = () => {};
-		public Action NMICallback = () => {};
-
-		// this will be a few cycles off for now
-		// it should suffice for now until Alyosha returns from hiatus
-		public Action IRQACKCallback = () => {};
 
 		private void NMI_()
 		{

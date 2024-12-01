@@ -1,5 +1,6 @@
-﻿using System;
 using System.Windows.Forms;
+
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -22,8 +23,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public double Probability
 		{
-			get => (double)ProbabilityUpDown.Value;
-			set => ProbabilityUpDown.Value = (decimal)value;
+			get => ProbabilityUpDown.Value.ConvertToF64();
+			set => ProbabilityUpDown.Value = new(value);
 		}
 
 		private void ProbabilityUpDown_ValueChanged(object sender, EventArgs e)

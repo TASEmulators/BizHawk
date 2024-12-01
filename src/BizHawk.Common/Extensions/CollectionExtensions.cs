@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +6,9 @@ using System.Runtime.CompilerServices;
 
 namespace BizHawk.Common.CollectionExtensions
 {
+#pragma warning disable MA0104 // unlikely to conflict with System.Collections.Generic.CollectionExtensions
 	public static class CollectionExtensions
+#pragma warning restore MA0104
 	{
 		public static IOrderedEnumerable<TSource> OrderBy<TSource, TKey>(
 			this IEnumerable<TSource> source,
@@ -64,6 +65,11 @@ namespace BizHawk.Common.CollectionExtensions
 			return min;
 		}
 
+		/// <remarks>for collection initializer syntax</remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Add<T>(this Queue<T> q, T item)
+			=> q.Enqueue(item);
+
 		/// <exception cref="InvalidOperationException"><paramref name="key"/> not found after mapping <paramref name="keySelector"/> over <paramref name="list"/></exception>
 		/// <remarks>implementation from https://stackoverflow.com/a/1766369/7467292</remarks>
 		public static T BinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key)
@@ -109,6 +115,13 @@ namespace BizHawk.Common.CollectionExtensions
 			foreach (var item in collection) list.Add(item);
 		}
 
+		/// <remarks>
+		/// Contains method for arrays which does not need Linq, but rather uses Array.IndexOf
+		/// similar to <see cref="ICollection{T}.Contains">ICollection's Contains</see>
+		/// </remarks>
+		public static bool Contains<T>(this T[] array, T value)
+			=> Array.IndexOf(array, value) >= 0;
+
 		/// <returns>
 		/// portion of <paramref name="dest"/> that was written to,
 		/// unless either span is empty, in which case the other reference is returned<br/>
@@ -132,7 +145,7 @@ namespace BizHawk.Common.CollectionExtensions
 			if (a.Length is 0) return b;
 			var combined = new T[a.Length + b.Length];
 			var returned = ((ReadOnlySpan<T>) a).ConcatArray(b, combined);
-			Debug.Assert(returned == combined);
+			Debug.Assert(returned == combined, "expecting return value to cover all of combined since the whole thing was written to");
 			return combined;
 		}
 
@@ -152,6 +165,10 @@ namespace BizHawk.Common.CollectionExtensions
 		/// If the key is not present, returns default(TValue).
 		/// backported from .NET Core 2.0
 		/// </summary>
+		public static TValue? GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key)
+			=> dictionary.TryGetValue(key, out var found) ? found : default;
+
+		/// <inheritdoc cref="GetValueOrDefault{K,V}(IDictionary{K,V},K)"/>
 		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
 			=> dictionary.TryGetValue(key, out var found) ? found : default;
 
@@ -160,6 +177,10 @@ namespace BizHawk.Common.CollectionExtensions
 		/// If the key is not present, returns <paramref name="defaultValue"/>.
 		/// backported from .NET Core 2.0
 		/// </summary>
+		public static TValue? GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
+
+		/// <inheritdoc cref="GetValueOrDefault{K,V}(IDictionary{K,V},K,V)"/>
 		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
 			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
 #endif
@@ -300,5 +321,8 @@ namespace BizHawk.Common.CollectionExtensions
 			for (int i = 0, e = span.Length - 1; i < e; i++) if (span[i + 1].CompareTo(span[i]) > 0) return false;
 			return true;
 		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool SequenceEqual<T>(this T[] a, ReadOnlySpan<T> b) where T : IEquatable<T> => a.AsSpan().SequenceEqual(b);
 	}
 }

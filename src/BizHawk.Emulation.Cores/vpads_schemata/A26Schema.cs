@@ -1,9 +1,12 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
+using BizHawk.Emulation.Cores.Atari.Stella;
+
+using Atari2600ControllerTypes = BizHawk.Emulation.Cores.Atari.Atari2600.Atari2600ControllerTypes;
+using StellaControllerTypes = BizHawk.Emulation.Cores.Atari.Stella.Atari2600ControllerTypes;
 
 namespace BizHawk.Emulation.Cores
 {
@@ -12,18 +15,44 @@ namespace BizHawk.Emulation.Cores
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
-			var ss = ((Atari2600)core).GetSyncSettings().Clone();
-
-			var port1 = PadSchemaFromSetting(ss.Port1, 1);
-			if (port1 != null)
+			switch (core)
 			{
-				yield return port1;
-			}
+				case Atari2600 atari2600:
+				{
+					var ss = atari2600.GetSyncSettings();
 
-			var port2 = PadSchemaFromSetting(ss.Port2, 2);
-			if (port2 != null)
-			{
-				yield return port2;
+					var port1 = PadSchemaFromSetting(ss.Port1, 1);
+					if (port1 != null)
+					{
+						yield return port1;
+					}
+
+					var port2 = PadSchemaFromSetting(ss.Port2, 2);
+					if (port2 != null)
+					{
+						yield return port2;
+					}
+
+					break;
+				}
+				case Stella stella:
+				{
+					var ss = stella.GetSyncSettings();
+
+					var port1 = PadSchemaFromSetting(ss.Port1, 1);
+					if (port1 != null)
+					{
+						yield return port1;
+					}
+
+					var port2 = PadSchemaFromSetting(ss.Port2, 2);
+					if (port2 != null)
+					{
+						yield return port2;
+					}
+
+					break;
+				}
 			}
 
 			yield return ConsoleButtons();
@@ -39,6 +68,20 @@ namespace BizHawk.Emulation.Cores
 				Atari2600ControllerTypes.BoostGrip => BoostGripController(controller),
 				Atari2600ControllerTypes.Driving => DrivingController(controller),
 				Atari2600ControllerTypes.Keyboard => KeyboardController(controller),
+				_ => null
+			};
+		}
+
+		private static PadSchema PadSchemaFromSetting(StellaControllerTypes type, int controller)
+		{
+			return type switch
+			{
+				StellaControllerTypes.Unplugged => null,
+				StellaControllerTypes.Joystick => StandardController(controller),
+				//StellaControllerTypes.Paddle => PaddleController(controller),
+				//StellaControllerTypes.BoostGrip => BoostGripController(controller),
+				StellaControllerTypes.Driving => DrivingController(controller),
+				//StellaControllerTypes.Keyboard => KeyboardController(controller),
 				_ => null
 			};
 		}

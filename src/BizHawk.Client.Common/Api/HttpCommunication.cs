@@ -1,7 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+
+using BizHawk.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -24,6 +25,7 @@ namespace BizHawk.Client.Common
 			_takeScreenshotCallback = takeScreenshotCallback;
 			GetUrl = getURL;
 			PostUrl = postURL;
+			_client.DefaultRequestHeaders.UserAgent.ParseAdd(VersionInfo.UserAgentEscaped);
 		}
 
 		public string ExecGet(string url = null) => Get(url ?? GetUrl).Result;

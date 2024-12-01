@@ -8,6 +8,9 @@
 	<ItemGroup>
 		<Reference Include="System.Windows.Forms" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
+		<Reference Include="BizHawk.Bizware.Graphics"
+			HintPath="$(MSBuildProjectDirectory)/../../output/dll/BizHawk.Bizware.Graphics.dll"
+			Private="true" />
 		<Reference Include="BizHawk.Client.Common"
 			HintPath="$(MSBuildProjectDirectory)/../../output/dll/BizHawk.Client.Common.dll"
 			Private="true" />

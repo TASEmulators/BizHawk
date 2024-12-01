@@ -1,4 +1,3 @@
-﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
 
@@ -32,8 +31,8 @@ namespace BizHawk.Client.EmuHawk
 				RightClicked = false;
 				Checked = false;
 				//HOOMOO
-				InputManager.AutofireStickyXorAdapter.SetSticky(Name, false);
-				InputManager.StickyXorAdapter.SetSticky(Name, false);
+				InputManager.StickyAutofireController.SetButtonAutofire(Name, false);
+				InputManager.StickyHoldController.SetButtonHold(Name, false);
 			}
 		}
 
@@ -83,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 					if (!ReadOnly)
 					{
 						RightClicked = true;
-						Checked ^= true;
+						Checked = !Checked;
 					}
 					return;
 				case 0x0205: // WM_RBUTTONUP
@@ -134,21 +133,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (RightClicked)
 			{
-				InputManager.AutofireStickyXorAdapter.SetSticky(Name, Checked);
-
-				if (!Checked)
-				{
-					Clear();
-				}
+				InputManager.StickyAutofireController.SetButtonAutofire(Name, Checked);
 			}
 			else
 			{
-				InputManager.StickyXorAdapter.SetSticky(Name, Checked);
+				InputManager.StickyHoldController.SetButtonHold(Name, Checked);
+			}
 
-				if (!Checked)
-				{
-					Clear();
-				}
+			if (!Checked)
+			{
+				Clear();
 			}
 
 			base.OnCheckedChanged(e);

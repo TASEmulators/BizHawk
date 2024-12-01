@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -75,6 +74,12 @@ namespace BizHawk.Client.EmuHawk
 			if (MovieSession.Movie.IsPlaying())
 			{
 				HandleHardcoreModeDisable("Playing a movie while in hardcore mode is not allowed.");
+				return;
+			}
+
+			if (CheatList.AnyActive)
+			{
+				HandleHardcoreModeDisable("Using cheat codes while in hardcore mode is not allowed.");
 				return;
 			}
 

@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 			LibEmu83.TI83_GetRegs(Context, regs);
 			ushort PC = (ushort)regs[10];
 
-			string disasm = Z80A.Disassemble(PC, addr => LibEmu83.TI83_ReadMemory(Context, addr), out int bytes_read);
+			string disasm = Z80ADisassembler.Disassemble(PC, addr => LibEmu83.TI83_ReadMemory(Context, addr), out int bytes_read);
 			string byte_code = null;
 
 			for (ushort i = 0; i < bytes_read; i++)

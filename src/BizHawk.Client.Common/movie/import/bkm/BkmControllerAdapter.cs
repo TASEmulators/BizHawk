@@ -1,15 +1,12 @@
-﻿using System;
 using System.Collections.Generic;
 
-using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	internal class BkmControllerAdapter : IController
 	{
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
 		public BkmControllerAdapter(ControllerDefinition definition, string systemId)
 		{
 			// We do need to map the definition name to the legacy
@@ -35,19 +32,16 @@ namespace BizHawk.Client.Common
 				_ => "Null Controller",
 			};
 			Definition = new(copyFrom: definition, withName: name);
+			Definition.BuildMnemonicsCache(systemId); //TODO these aren't the same...
 		}
 
 		public ControllerDefinition Definition { get; set; }
 
 		public bool IsPressed(string button)
-		{
-			return _myBoolButtons[button];
-		}
+			=> _myBoolButtons.GetValueOrDefault(button);
 
 		public int AxisValue(string name)
-		{
-			return _myAxisControls[name];
-		}
+			=> _myAxisControls.GetValueOrDefault(name);
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => throw new NotImplementedException(); // no idea --yoshi
 
@@ -213,8 +207,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private readonly WorkingDictionary<string, bool> _myBoolButtons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, int> _myAxisControls = new WorkingDictionary<string, int>();
+		private readonly Dictionary<string, int> _myAxisControls = new();
+
+		private readonly Dictionary<string, bool> _myBoolButtons = new();
 
 		private bool IsGenesis6Button() => Definition.BoolButtons.Contains("P1 X");
 

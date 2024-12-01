@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+		"*.def": "c",
+		"*.h": "c",
+	}
+}

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -127,7 +126,7 @@ namespace BizHawk.Client.Common
 
 		public void Add(TasMovieMarker item, bool skipHistory)
 		{
-			var existingItem = this.FirstOrDefault(m => m.Frame == item.Frame);
+			var existingItem = Find(m => m.Frame == item.Frame);
 			if (existingItem != null)
 			{
 				if (existingItem.Message != item.Message)
@@ -335,7 +334,7 @@ namespace BizHawk.Client.Common
 
 		public TasMovieMarker Get(int frame)
 		{
-			return this.FirstOrDefault(m => m == frame);
+			return Find(m => m == frame);
 		}
 		
 		public void ShiftAt(int frame, int offset)

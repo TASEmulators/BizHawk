@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using BizHawk.Emulation.Common;
@@ -42,20 +41,13 @@ namespace BizHawk.Client.Common
 		/// Get a nearby state.  The returned frame must be less than or equal to the passed frame.
 		/// This may not fail; the StateManager strongly holds a frame 0 state to ensure there's always a possible result.
 		/// </summary>
-		/// <param name="frame"></param>
 		/// <returns>This stream may be consumed only once, and before any other calls to statemanager occur</returns>
 		KeyValuePair<int, Stream> GetStateClosestToFrame(int frame);
 
-		/// <summary>
-		/// Returns the total number of states currently held by the state manager
-		/// </summary>
-		/// <value></value>
+		/// <value>the total number of states currently held by the state manager</value>
 		int Count { get; }
 
-		/// <summary>
-		/// Returns the most recent frame number that the state manager possesses
-		/// </summary>
-		/// <value></value>
+		/// <value>the most recent frame number that the state manager possesses</value>
 		int Last { get; }
 
 		/// <summary>
@@ -72,7 +64,6 @@ namespace BizHawk.Client.Common
 		/// Enables the instance to be used. An instance of <see cref="IStateManager"/> should not
 		/// be useable until this method is called
 		/// </summary>
-		/// <param name="frameZeroState"></param>
 		void Engage(byte[] frameZeroState);
 	}
 }

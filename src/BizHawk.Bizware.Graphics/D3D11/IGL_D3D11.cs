@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.Numerics;
 
@@ -26,7 +25,6 @@ namespace BizHawk.Bizware.Graphics
 		private IDXGIFactory1 Factory1 => _resources.Factory1;
 		private IDXGIFactory2 Factory2 => _resources.Factory2;
 		private ID3D11BlendState BlendNormalState => _resources.BlendNormalState;
-		private ID3D11BlendState BlendAlphaState => _resources.BlendAlphaState;
 		private ID3D11BlendState BlendDisableState => _resources.BlendDisableState;
 		private ID3D11RasterizerState RasterizerState => _resources.RasterizerState;
 
@@ -187,11 +185,8 @@ namespace BizHawk.Bizware.Graphics
 		public void ClearColor(Color color)
 			=> Context.ClearRenderTargetView(CurRenderTarget?.RTV ?? _controlSwapChain.RTV, new(color.R, color.B, color.G, color.A));
 
-		public void EnableBlendNormal()
+		public void EnableBlending()
 			=> Context.OMSetBlendState(BlendNormalState);
-
-		public void EnableBlendAlpha()
-			=> Context.OMSetBlendState(BlendAlphaState);
 
 		public void DisableBlending()
 			=> Context.OMSetBlendState(BlendDisableState);
@@ -270,7 +265,7 @@ namespace BizHawk.Bizware.Graphics
 			Context.OMSetRenderTargets(_controlSwapChain.RTV);
 		}
 
-		private unsafe void UpdateConstantBuffers()
+		private void UpdateConstantBuffers()
 		{
 			for (var i = 0; i < ID3D11DeviceContext.CommonShaderConstantBufferSlotCount; i++)
 			{
@@ -283,7 +278,8 @@ namespace BizHawk.Bizware.Graphics
 				if (pb.VSBufferDirty)
 				{
 					var vsCb = Context.Map(CurPipeline.VSConstantBuffers[i], MapMode.WriteDiscard);
-					Buffer.MemoryCopy((void*)pb.VSPendingBuffer, (void*)vsCb.DataPointer, pb.VSBufferSize, pb.VSBufferSize);
+					Util.UnsafeSpanFromPointer(ptr: pb.VSPendingBuffer, length: pb.VSBufferSize)
+						.CopyTo(Util.UnsafeSpanFromPointer(ptr: vsCb.DataPointer, length: pb.VSBufferSize));
 					Context.Unmap(CurPipeline.VSConstantBuffers[i]);
 					pb.VSBufferDirty = false;
 				}
@@ -291,7 +287,8 @@ namespace BizHawk.Bizware.Graphics
 				if (pb.PSBufferDirty)
 				{
 					var psCb = Context.Map(CurPipeline.PSConstantBuffers[i], MapMode.WriteDiscard);
-					Buffer.MemoryCopy((void*)pb.PSPendingBuffer, (void*)psCb.DataPointer, pb.PSBufferSize, pb.PSBufferSize);
+					Util.UnsafeSpanFromPointer(ptr: pb.PSPendingBuffer, length: pb.PSBufferSize)
+						.CopyTo(Util.UnsafeSpanFromPointer(ptr: psCb.DataPointer, length: pb.PSBufferSize));
 					Context.Unmap(CurPipeline.PSConstantBuffers[i]);
 					pb.PSBufferDirty = false;
 				}

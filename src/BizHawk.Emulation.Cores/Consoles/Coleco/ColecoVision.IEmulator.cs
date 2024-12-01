@@ -1,6 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
-using System;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {

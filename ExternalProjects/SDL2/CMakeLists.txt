@@ -135,6 +135,7 @@ set_target_properties(SDL2 PROPERTIES
 	NO_SONAME ON
 	OUTPUT_NAME "SDL2"
 )
+target_link_options(SDL2 PRIVATE -s)
 
 # Copy output to our dll folders
 # This requires a bit of magic (add_custom_command is not allowed for targets made with add_subdirectory)

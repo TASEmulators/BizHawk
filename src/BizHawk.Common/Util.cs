@@ -1,13 +1,11 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-#if NETCOREAPP3_0_OR_GREATER
 using System.Runtime.CompilerServices;
-#endif
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace BizHawk.Common
@@ -56,10 +54,11 @@ namespace BizHawk.Common
 			if (src.Read(tmp, 0, 2) != 2) throw new InvalidOperationException("Unexpected end of stream");
 			if (tmp[0] != 0x1F || tmp[1] != 0x8B) throw new InvalidOperationException("GZIP header not present");
 			src.Seek(-4, SeekOrigin.End);
-			src.Read(tmp, 0, 4);
+			var bytesRead = src.Read(tmp, offset: 0, count: tmp.Length);
+			Debug.Assert(bytesRead == tmp.Length, "failed to read tail");
 			src.Seek(0, SeekOrigin.Begin);
 			using var gs = new GZipStream(src, CompressionMode.Decompress, true);
-			var data = new byte[BitConverter.ToInt32(tmp, 0)];
+			var data = new byte[MemoryMarshal.Read<int>(tmp)]; //TODO definitely not a uint? worth checking, though values >= 0x80000000U would immediately throw here since it would amount to a negative array length
 			using var ms = new MemoryStream(data);
 			gs.CopyTo(ms);
 			return data;
@@ -188,42 +187,24 @@ namespace BizHawk.Common
 
 		public static double[] ToDoubleBuffer(this byte[] buf)
 		{
-			var len = buf.Length;
-			var ret = new double[len / 8];
-			Buffer.BlockCopy(buf, 0, ret, 0, len);
-			return ret;
+			return MemoryMarshal.Cast<byte, double>(buf).ToArray();
 		}
 
 		public static float[] ToFloatBuffer(this byte[] buf)
 		{
-			var len = buf.Length;
-			var ret = new float[len / 4];
-			Buffer.BlockCopy(buf, 0, ret, 0, len);
-			return ret;
+			return MemoryMarshal.Cast<byte, float>(buf).ToArray();
 		}
 
 		/// <remarks>Each set of 4 elements in <paramref name="buf"/> becomes 1 element in the returned buffer. The first of each set is interpreted as the LSB, with the 4th being the MSB. Elements are used as raw bits without regard for sign.</remarks>
 		public static int[] ToIntBuffer(this byte[] buf)
 		{
-			var len = buf.Length / 4;
-			var ret = new int[len];
-			unchecked
-			{
-				for (var i = 0; i != len; i++) ret[i] = (buf[4 * i + 3] << 24) | (buf[4 * i + 2] << 16) | (buf[4 * i + 1] << 8) | buf[4 * i];
-			}
-			return ret;
+			return MemoryMarshal.Cast<byte, int>(buf).ToArray();
 		}
 
 		/// <remarks>Each pair of elements in <paramref name="buf"/> becomes 1 element in the returned buffer. The first of each pair is interpreted as the LSB. Elements are used as raw bits without regard for sign.</remarks>
 		public static short[] ToShortBuffer(this byte[] buf)
 		{
-			var len = buf.Length / 2;
-			var ret = new short[len];
-			unchecked
-			{
-				for (var i = 0; i != len; i++) ret[i] = (short) ((buf[2 * i + 1] << 8) | buf[2 * i]);
-			}
-			return ret;
+			return MemoryMarshal.Cast<byte, short>(buf).ToArray();
 		}
 
 		public static byte[] ToUByteBuffer(this bool[] buf)
@@ -235,110 +216,48 @@ namespace BizHawk.Common
 
 		public static byte[] ToUByteBuffer(this double[] buf)
 		{
-			var len = buf.Length * 8;
-			var ret = new byte[len];
-			Buffer.BlockCopy(buf, 0, ret, 0, len);
-			return ret;
+			return MemoryMarshal.Cast<double, byte>(buf).ToArray();
 		}
 
 		public static byte[] ToUByteBuffer(this float[] buf)
 		{
-			var len = buf.Length * 4;
-			var ret = new byte[len];
-			Buffer.BlockCopy(buf, 0, ret, 0, len);
-			return ret;
+			return MemoryMarshal.Cast<float, byte>(buf).ToArray();
 		}
 
 		/// <remarks>Each element of <paramref name="buf"/> becomes 4 elements in the returned buffer, with the LSB coming first. Elements are used as raw bits without regard for sign.</remarks>
 		public static byte[] ToUByteBuffer(this int[] buf)
 		{
-			var len = buf.Length;
-			var ret = new byte[4 * len];
-			unchecked
-			{
-				for (var i = 0; i != len; i++)
-				{
-					ret[4 * i] = (byte) buf[i];
-					ret[4 * i + 1] = (byte) (buf[i] >> 8);
-					ret[4 * i + 2] = (byte) (buf[i] >> 16);
-					ret[4 * i + 3] = (byte) (buf[i] >> 24);
-				}
-			}
-			return ret;
+			return MemoryMarshal.Cast<int, byte>(buf).ToArray();
 		}
 
 		/// <remarks>Each element of <paramref name="buf"/> becomes 2 elements in the returned buffer, with the LSB coming first. Elements are used as raw bits without regard for sign.</remarks>
 		public static byte[] ToUByteBuffer(this short[] buf)
 		{
-			var len = buf.Length;
-			var ret = new byte[2 * len];
-			unchecked
-			{
-				for (var i = 0; i != len; i++)
-				{
-					ret[2 * i] = (byte) buf[i];
-					ret[2 * i + 1] = (byte) (buf[i] >> 8);
-				}
-			}
-			return ret;
+			return MemoryMarshal.Cast<short, byte>(buf).ToArray();
 		}
 
 		/// <inheritdoc cref="ToUByteBuffer(int[])"/>
 		public static byte[] ToUByteBuffer(this uint[] buf)
 		{
-			var len = buf.Length;
-			var ret = new byte[4 * len];
-			unchecked
-			{
-				for (var i = 0; i != len; i++)
-				{
-					ret[4 * i] = (byte) buf[i];
-					ret[4 * i + 1] = (byte) (buf[i] >> 8);
-					ret[4 * i + 2] = (byte) (buf[i] >> 16);
-					ret[4 * i + 3] = (byte) (buf[i] >> 24);
-				}
-			}
-			return ret;
+			return MemoryMarshal.Cast<uint, byte>(buf).ToArray();
 		}
 
 		/// <inheritdoc cref="ToUByteBuffer(short[])"/>
 		public static byte[] ToUByteBuffer(this ushort[] buf)
 		{
-			var len = buf.Length;
-			var ret = new byte[2 * len];
-			unchecked
-			{
-				for (var i = 0; i != len; i++)
-				{
-					ret[2 * i] = (byte) buf[i];
-					ret[2 * i + 1] = (byte) (buf[i] >> 8);
-				}
-			}
-			return ret;
+			return MemoryMarshal.Cast<ushort, byte>(buf).ToArray();
 		}
 
 		/// <inheritdoc cref="ToIntBuffer"/>
 		public static uint[] ToUIntBuffer(this byte[] buf)
 		{
-			var len = buf.Length / 4;
-			var ret = new uint[len];
-			unchecked
-			{
-				for (var i = 0; i != len; i++) ret[i] = (uint) ((buf[4 * i + 3] << 24) | (buf[4 * i + 2] << 16) | (buf[4 * i + 1] << 8) | buf[4 * i]);
-			}
-			return ret;
+			return MemoryMarshal.Cast<byte, uint>(buf).ToArray();
 		}
 
 		/// <inheritdoc cref="ToShortBuffer"/>
 		public static ushort[] ToUShortBuffer(this byte[] buf)
 		{
-			var len = buf.Length / 2;
-			var ret = new ushort[len];
-			unchecked
-			{
-				for (var i = 0; i != len; i++) ret[i] = (ushort) ((buf[2 * i + 1] << 8) | buf[2 * i]);
-			}
-			return ret;
+			return MemoryMarshal.Cast<byte, ushort>(buf).ToArray();
 		}
 
 		/// <summary>Tries really hard to keep the contents of <paramref name="desiredPath"/> saved (as <paramref name="backupPath"/>) while freeing that path to be used for a new file.</summary>
@@ -379,6 +298,25 @@ namespace BizHawk.Common
 			{
 				return false; // this will be hit in the unlikely event that something else wrote to the backup path after we checked it was okay
 			}
+		}
+
+		/// <summary>creates span over <paramref name="length"/> octets starting at <paramref name="ptr"/></summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Span<byte> UnsafeSpanFromPointer(IntPtr ptr, int length)
+		{
+			return new(pointer: ptr.ToPointer(), length: length);
+		}
+
+		/// <summary>
+		/// creates span over <paramref name="count"/><c> * sizeof(</c><typeparamref name="T"/><c>)</c> octets
+		/// starting at <paramref name="ptr"/>
+		/// </summary>
+		/// <remarks>uses native endianness</remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Span<T> UnsafeSpanFromPointer<T>(IntPtr ptr, int count)
+			where T : unmanaged
+		{
+			return new(pointer: ptr.ToPointer(), length: count * sizeof(T));
 		}
 
 		public static void WriteByteBuffer(this BinaryWriter bw, byte[]? data)

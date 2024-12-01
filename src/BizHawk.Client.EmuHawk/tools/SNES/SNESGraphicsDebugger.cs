@@ -22,9 +22,9 @@
 //hiding the tab control headers.. once this design gets solid, ill get rid of them
 //http://www.mostthingsweb.com/2011/01/hiding-tab-headers-on-a-tabcontrol-in-c/
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
@@ -460,7 +460,7 @@ namespace BizHawk.Client.EmuHawk
 						dims.Height = dims.Width = Math.Max(dims.Width, dims.Height);
 						allocate(dims.Width, dims.Height);
 						numPixels = dims.Width * dims.Height;
-						System.Diagnostics.Debug.Assert(stride / 4 == dims.Width);
+						Debug.Assert(dims.Width * 4 == stride, "line is not `width` pixels at 32bpp?");
 
 						map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
 						int paletteStart = 0;
@@ -611,6 +611,8 @@ namespace BizHawk.Client.EmuHawk
 			return GetPaletteRegion(start, num);
 		}
 
+		private readonly Pen _pen = new(default(Color));
+
 		private void DrawPaletteRegion(Graphics g, Color color, Rectangle region)
 		{
 			int cellTotalSize = (paletteCellSize + paletteCellSpacing);
@@ -621,8 +623,8 @@ namespace BizHawk.Client.EmuHawk
 			int height = cellTotalSize * region.Height;
 
 			var rect = new Rectangle(x, y, width, height);
-			using var pen = new Pen(color);
-			g.DrawRectangle(pen, rect);
+			_pen.Color = color;
+			g.DrawRectangle(_pen, rect);
 		}
 
 		//if a tile set is being displayed, this will adapt the user's color selection into a palette to be used for rendering the tiles
@@ -667,13 +669,13 @@ namespace BizHawk.Client.EmuHawk
 			var bmp = new Bitmap(pixsize, pixsize, PixelFormat.Format32bppArgb);
 			using (var g = Graphics.FromImage(bmp))
 			{
+				using SolidBrush brush = new(default);
 				for (int y = 0; y < 16; y++)
 				{
 					for (int x = 0; x < 16; x++)
 					{
 						int rgb555 = lastPalette[y * 16 + x];
-						int color = gd.Colorize(rgb555);
-						using var brush = new SolidBrush(Color.FromArgb(color));
+						brush.Color = Color.FromArgb(gd.Colorize(rgb555));
 						g.FillRectangle(brush, new Rectangle(paletteCellSpacing + x * cellTotalSize, paletteCellSpacing + y * cellTotalSize, paletteCellSize, paletteCellSize));
 					}
 				}
@@ -1242,7 +1244,7 @@ namespace BizHawk.Client.EmuHawk
 				// find the control under the mouse
 				Point m = Cursor.Position;
 				Control top = this;
-				Control found = null;
+				Control found;
 				do
 				{
 					found = top.GetChildAtPoint(top.PointToClient(m), GetChildAtPointSkip.Invisible);
@@ -1377,14 +1379,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void lblEnPrio2_Click(object sender, EventArgs e)
-		{
-			checkEN2_OBJ.Checked ^= true;
-		}
+			=> checkEN2_OBJ.Checked = !checkEN2_OBJ.Checked;
 
 		private void lblEnPrio3_Click(object sender, EventArgs e)
-		{
-			checkEN3_OBJ.Checked ^= true;
-		}
+			=> checkEN3_OBJ.Checked = !checkEN3_OBJ.Checked;
 
 	} //class SNESGraphicsDebugger
 } //namespace BizHawk.Client.EmuHawk

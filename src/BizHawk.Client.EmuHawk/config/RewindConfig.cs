@@ -1,4 +1,4 @@
-﻿using System;
+using System.Numerics;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -58,7 +58,12 @@ namespace BizHawk.Client.EmuHawk
 			RewindEnabledBox.Checked = _config.Rewind.Enabled;
 			UseCompression.Checked = _config.Rewind.UseCompression;
 			cbDeltaCompression.Checked = _config.Rewind.UseDelta;
-			BufferSizeUpDown.Value = Math.Max((decimal) Math.Log(_config.Rewind.BufferSize, 2), BufferSizeUpDown.Minimum);
+			BufferSizeUpDown.Value = Math.Max(
+				BufferSizeUpDown.Minimum,
+				_config.Rewind.BufferSize < 0L
+					? 0.0M
+					: new decimal(BitOperations.Log2(unchecked((ulong) _config.Rewind.BufferSize)))
+			);
 			TargetFrameLengthRadioButton.Checked = !_config.Rewind.UseFixedRewindInterval;
 			TargetRewindIntervalRadioButton.Checked = _config.Rewind.UseFixedRewindInterval;
 			TargetFrameLengthNumeric.Value = Math.Max(_config.Rewind.TargetFrameLength, TargetFrameLengthNumeric.Minimum);

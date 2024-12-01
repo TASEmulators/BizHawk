@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -68,5 +67,12 @@ namespace BizHawk.Common
 
 		[DllImport("user32.dll", ExactSpelling = true)]
 		public static extern int TrackPopupMenuEx(IntPtr hmenu, TPM fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
+
+		[DllImport("kernel32.dll", ExactSpelling = true)]
+		public static extern IntPtr GetCurrentProcess();
+
+		[DllImport("kernel32.dll", ExactSpelling = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool IsWow64Process(IntPtr hProcess, [MarshalAs(UnmanagedType.Bool)] out bool Wow64Process);
 	}
 }

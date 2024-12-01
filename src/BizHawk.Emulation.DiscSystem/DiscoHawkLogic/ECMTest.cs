@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -82,10 +81,9 @@ namespace BizHawk.Emulation.DiscSystem
 //					plaindisc.ReadLBA_2352_Flat(item.Item1, chunkbuf_corlet, 0, item.Item2); // API has changed
 //					ecmdisc.ReadLBA_2352_Flat(item.Item1, chunkbuf_mine, 0, item.Item2); // API has changed
 					for (int i = 0; i < item.Item2; i++)
-						if (chunkbuf_corlet[i] != chunkbuf_mine[i])
-						{
-							Debug.Assert(false);
-						}
+					{
+						Debug.Assert(chunkbuf_corlet[i] == chunkbuf_mine[i], $"buffers differ at [{t}; {i}]");
+					}
 				}
 			}
 		}

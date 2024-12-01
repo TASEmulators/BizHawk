@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Drawing;
@@ -74,8 +73,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					using (var sb = new SolidBrush(Color.Black))
 					{
+						var sb = Brushes.Black;
 						g.FillRectangle(sb, _bmp.Width, 0, Width - _bmp.Width, Height);
 						g.FillRectangle(sb, 0, _bmp.Height, _bmp.Width, Height - _bmp.Height);
 					}

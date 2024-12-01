@@ -59,6 +59,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
+			{ "snes_faust.renderer", new() { Default = "mt" } },
 			{ "snes_faust.affinity.ppu", new() { Hide = true } },
 			{ "snes_faust.affinity.msu1.audio", new() { Hide = true } },
 			{ "snes_faust.affinity.msu1.data", new() { Hide = true } },

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
@@ -8,7 +7,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadAnalogButton : UserControl, IVirtualPadControl
 	{
-		private readonly StickyXorAdapter _stickyXorAdapter;
+		private readonly StickyHoldController _stickyHoldController;
 		private bool _programmaticallyChangingValue;
 		private bool _readonly;
 
@@ -24,15 +23,14 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public VirtualPadAnalogButton(
-			StickyXorAdapter stickyXorAdapter,
+			StickyHoldController stickyHoldController,
 			string name,
 			string displayName,
 			int minValue,
 			int maxValue,
 			Orientation orientation)
 		{
-			_stickyXorAdapter = stickyXorAdapter;
-			
+			_stickyHoldController = stickyHoldController;
 
 			InitializeComponent();
 
@@ -68,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (AnalogTrackBar.Value != _stickyXorAdapter.AxisValue(Name))
+			if (AnalogTrackBar.Value != _stickyHoldController.AxisValue(Name))
 			{
 				RefreshWidgets();
 			}
@@ -76,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			_stickyXorAdapter.Unset(Name);
+			_stickyHoldController.SetAxisHold(Name, null);
 			IsSet = false;
 		}
 
@@ -150,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!_programmaticallyChangingValue)
 			{
 				CurrentValue = AnalogTrackBar.Value;
-				_stickyXorAdapter.SetAxis(Name, AnalogTrackBar.Value);
+				_stickyHoldController.SetAxisHold(Name, AnalogTrackBar.Value);
 			}
 		}
 
@@ -159,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!_isSet)
 			{
 				_programmaticallyChangingValue = true;
-				AnalogTrackBar.Value = _stickyXorAdapter.AxisValue(Name);
+				AnalogTrackBar.Value = _stickyHoldController.AxisValue(Name);
 				ValueLabel.Text = AnalogTrackBar.Value.ToString();
 				_programmaticallyChangingValue = false;
 			}

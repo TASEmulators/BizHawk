@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -6,6 +5,8 @@ namespace BizHawk.Common.NumberExtensions
 {
 	public static class NumberExtensions
 	{
+		private const string ERR_MSG_PRECISION_LOSS = "unable to convert from decimal without loss of precision";
+
 		public static string ToHexString(this int n, int numDigits)
 		{
 			return string.Format($"{{0:X{numDigits}}}", n);
@@ -56,6 +57,76 @@ namespace BizHawk.Common.NumberExtensions
 			return (byte)(((v / 16) * 10) + (v % 16));
 		}
 
+		/// <returns>the <see langword="float"/> whose value is closest to <paramref name="m"/></returns>
+		/// <exception cref="OverflowException">loss of precision (the value won't survive a round-trip)</exception>
+		/// <remarks>like a <c>checked</c> conversion</remarks>
+		public static float ConvertToF32(this decimal m)
+		{
+			var f = decimal.ToSingle(m);
+			return m.Equals(new decimal(f)) ? f : throw new OverflowException(ERR_MSG_PRECISION_LOSS);
+		}
+
+		/// <returns>the <see langword="double"/> whose value is closest to <paramref name="m"/></returns>
+		/// <exception cref="OverflowException">loss of precision (the value won't survive a round-trip)</exception>
+		/// <remarks>like a <c>checked</c> conversion</remarks>
+		public static double ConvertToF64(this decimal m)
+		{
+			var d = decimal.ToDouble(m);
+			return m.Equals(new decimal(d)) ? d : throw new OverflowException(ERR_MSG_PRECISION_LOSS);
+		}
+
+		/// <returns>the <see langword="decimal"/> whose value is closest to <paramref name="f"/></returns>
+		/// <exception cref="NotFiniteNumberException">
+		/// iff <paramref name="f"/> is NaN and <paramref name="throwIfNaN"/> is set
+		/// (infinite values are rounded to <see cref="decimal.MinValue"/>/<see cref="decimal.MaxValue"/>)
+		/// </exception>
+		/// <remarks>like an <c>unchecked</c> conversion</remarks>
+		public static decimal ConvertToMoneyTruncated(float f, bool throwIfNaN = false)
+		{
+			try
+			{
+#pragma warning disable BHI1105 // this is the sanctioned call-site
+				return (decimal) f;
+#pragma warning restore BHI1105
+			}
+			catch (OverflowException)
+			{
+				return float.IsNaN(f)
+					? throwIfNaN
+						? throw new NotFiniteNumberException(f)
+						: default
+					: f < 0.0f
+						? decimal.MinValue
+						: decimal.MaxValue;
+			}
+		}
+
+		/// <returns>the <see langword="decimal"/> whose value is closest to <paramref name="d"/></returns>
+		/// <exception cref="NotFiniteNumberException">
+		/// iff <paramref name="d"/> is NaN and <paramref name="throwIfNaN"/> is set
+		/// (infinite values are rounded to <see cref="decimal.MinValue"/>/<see cref="decimal.MaxValue"/>)
+		/// </exception>
+		/// <remarks>like an <c>unchecked</c> conversion</remarks>
+		public static decimal ConvertToMoneyTruncated(double d, bool throwIfNaN = false)
+		{
+			try
+			{
+#pragma warning disable BHI1105 // this is the sanctioned call-site
+				return (decimal) d;
+#pragma warning restore BHI1105
+			}
+			catch (OverflowException)
+			{
+				return double.IsNaN(d)
+					? throwIfNaN
+						? throw new NotFiniteNumberException(d)
+						: default
+					: d < 0.0
+						? decimal.MinValue
+						: decimal.MaxValue;
+			}
+		}
+
 		/// <summary>
 		/// Receives a number and returns the number of hexadecimal digits it is
 		/// Note: currently only returns 2, 4, 6, or 8
@@ -73,17 +144,17 @@ namespace BizHawk.Common.NumberExtensions
 				return 2;
 			}
 
-			if (i < 0x10000)
+			if (i < 0x1_0000)
 			{
 				return 4;
 			}
 
-			if (i < 0x1000000)
+			if (i < 0x100_0000)
 			{
 				return 6;
 			}
 
-			if (i < 0x100000000)
+			if (i < 0x1_0000_0000)
 			{
 				return 8;
 			}
@@ -120,6 +191,17 @@ namespace BizHawk.Common.NumberExtensions
 			}
 
 			return val;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static IntPtr Plus(this IntPtr p, int offset)
+			=> p + offset;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static IntPtr Plus(this IntPtr p, uint offset)
+		{
+			var half = unchecked((int) offset >> 1);
+			return p + half + unchecked((int) (offset - half));
 		}
 
 		public static void RotateRightU8(ref byte b, int shift)

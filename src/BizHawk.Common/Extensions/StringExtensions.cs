@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -13,14 +12,40 @@ namespace BizHawk.Common.StringExtensions
 			return new(a);
 		}
 
+#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
+		public static bool Contains(this string haystack, char needle)
+			=> haystack.IndexOf(needle) >= 0;
+#endif
+
 		public static bool Contains(this string haystack, string needle, StringComparison comparisonType)
 			=> haystack.IndexOf(needle, comparisonType) != -1;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool ContainsOrdinal(this string haystack, char needle)
+			=> haystack.Contains(needle); // already ordinal
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool ContainsOrdinal(this string haystack, string needle)
+			=> haystack.Contains(needle); // already ordinal
+
+#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
+		public static bool EndsWith(this string haystack, char needle)
+			=> haystack.Length >= 1 && haystack[^1] == needle;
+#endif
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool EndsWithOrdinal(this string haystack, char needle)
+			=> haystack.EndsWith(needle); // already ordinal
 
 		/// <returns>
 		/// <see langword="true"/> if <paramref name="str"/> appears in <paramref name="options"/> (case-insensitive)
 		/// </returns>
 		public static bool In(this string str, params string[] options) =>
 			options.Any(opt => string.Equals(opt, str, StringComparison.OrdinalIgnoreCase));
+
+		/// <returns>a copy of <paramref name="raw"/> with all characters outside <c>[0-9A-Za-z]</c> removed</returns>
+		public static string OnlyAlphanumeric(this string raw)
+			=> string.Concat(raw.Where(static c => c is (>= '0' and <= '9') or (>= 'A' and <= 'Z') or (>= 'a' and <= 'z')));
 
 		/// <returns>
 		/// <paramref name="str"/> with the first char removed, or

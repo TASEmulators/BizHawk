@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
@@ -53,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (newDisk != _discIndex)
 				{
 					_discIndex = newDisk;
-					Core.gpgx_swap_disc(_discIndex == -1 ? null : GetCDDataStruct(_cds[_discIndex]));
+					Core.gpgx_swap_disc(_discIndex == -1 ? null : GetCDDataStruct(_cds[_discIndex]), (sbyte)_discIndex);
 				}
 			}
 
@@ -61,8 +59,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			// if (!Core.gpgx_get_control(input, inputsize))
 			//	throw new Exception("gpgx_get_control() failed!");
 
-			ControlConverter.ScreenWidth = _vwidth;
-			ControlConverter.ScreenHeight = _vheight;
+			Core.gpgx_get_video(out var screenWidth, out var screenHeight, out _, out _);
+			ControlConverter.ScreenWidth = screenWidth;
+			ControlConverter.ScreenHeight = screenHeight;
 			ControlConverter.Convert(controller, _input);
 
 			if (controller.IsPressed("Pause"))

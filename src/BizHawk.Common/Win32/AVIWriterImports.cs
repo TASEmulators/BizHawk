@@ -1,7 +1,6 @@
 #nullable disable
 
 #if AVI_SUPPORT
-using System;
 using System.Runtime.InteropServices;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global

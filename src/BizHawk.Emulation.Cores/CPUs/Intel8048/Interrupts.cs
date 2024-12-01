@@ -1,5 +1,3 @@
-using System;
-
 namespace BizHawk.Emulation.Cores.Components.I8048
 {
 	public partial class I8048

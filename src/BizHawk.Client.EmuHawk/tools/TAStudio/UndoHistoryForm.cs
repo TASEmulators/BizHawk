@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
@@ -165,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MaxStepsNum_ValueChanged(object sender, EventArgs e)
 		{
-			Log.MaxSteps = (int)MaxStepsNum.Value;
+			_tastudio.Settings.MaxUndoSteps = Log.MaxSteps = (int)MaxStepsNum.Value;
 		}
 	}
 }

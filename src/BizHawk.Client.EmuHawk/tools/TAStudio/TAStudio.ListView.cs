@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -164,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (TasView.HorizontalOrientation)
 				{
-					offsetX = 2;
+					offsetX = -1;
 					offsetY = 5;
 				}
 
@@ -425,6 +424,8 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_ColumnRightClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
 			var col = e.Column!;
+			if (col.Name is FrameColumnName or CursorColumnName) return;
+
 			col.Emphasis = !col.Emphasis;
 			UpdateAutoFire(col.Name, col.Emphasis);
 			TasView.Refresh();
@@ -440,64 +441,51 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateAutoFire(string button, bool? isOn)
 		{
-			if (!isOn.HasValue) // No value means don't change whether it's on or off.
-			{
-				isOn = TasView.AllColumns.Find(c => c.Name == button).Emphasis;
-			}
+			// No value means don't change whether it's on or off.
+			isOn ??= TasView.AllColumns.Find(c => c.Name == button).Emphasis;
 
-			int index = 0;
-			if (autoHoldToolStripMenuItem.Checked)
-			{
-				index = 1;
-			}
-
-			if (autoFireToolStripMenuItem.Checked)
-			{
-				index = 2;
-			}
+			// use custom pattern if set
+			bool useCustom = customPatternToolStripMenuItem.Checked;
+			// else, set autohold or fire based on setting
+			bool autoHold = autoHoldToolStripMenuItem.Checked; // !autoFireToolStripMenuItem.Checked
 
 			if (ControllerType.BoolButtons.Contains(button))
 			{
-				if (index == 0)
+				InputManager.StickyHoldController.SetButtonHold(button, false);
+				InputManager.StickyAutofireController.SetButtonAutofire(button, false);
+				if (!isOn.Value) return;
+
+				if (useCustom)
 				{
-					index = ControllerType.BoolButtons.IndexOf(button);
+					InputManager.StickyAutofireController.SetButtonAutofire(button, true, BoolPatterns[ControllerType.BoolButtons.IndexOf(button)]);
+				}
+				else if (autoHold)
+				{
+					InputManager.StickyHoldController.SetButtonHold(button, true);
 				}
 				else
 				{
-					index += ControllerType.BoolButtons.Count - 1;
-				}
-
-				// Fixes auto-loading, but why is this code like this? The code above suggests we have a BoolPattern for every  bool button? But we don't
-				// This is a sign of a deeper problem, but this fixes some basic functionality at least
-				if (index < BoolPatterns.Length)
-				{
-					AutoPatternBool p = BoolPatterns[index];
-					InputManager.AutofireStickyXorAdapter.SetSticky(button, isOn.Value, p);
+					InputManager.StickyAutofireController.SetButtonAutofire(button, true);
 				}
 			}
 			else
 			{
-				if (index == 0)
+				InputManager.StickyHoldController.SetAxisHold(button, null);
+				InputManager.StickyAutofireController.SetAxisAutofire(button, null);
+				if (!isOn.Value) return;
+
+				int holdValue = ControllerType.Axes[button].Range.EndInclusive; // it's not clear what value to use for auto-hold, just use max i guess
+				if (useCustom)
 				{
-					index = ControllerType.Axes.IndexOf(button);
+					InputManager.StickyAutofireController.SetAxisAutofire(button, holdValue, AxisPatterns[ControllerType.Axes.IndexOf(button)]);
+				}
+				else if (autoHold)
+				{
+					InputManager.StickyHoldController.SetAxisHold(button, holdValue);
 				}
 				else
 				{
-					index += ControllerType.Axes.Count - 1;
-				}
-
-				int? value = null;
-				if (isOn.Value)
-				{
-					value = 0;
-				}
-
-				// Fixes auto-loading, but why is this code like this? The code above suggests we have a AxisPattern for every axis button? But we don't
-				// This is a sign of a deeper problem, but this fixes some basic functionality at least
-				if (index < AxisPatterns.Length)
-				{
-					AutoPatternAxis p = AxisPatterns[index];
-					InputManager.AutofireStickyXorAdapter.SetAxis(button, value, p);
+					InputManager.StickyAutofireController.SetAxisAutofire(button, holdValue);
 				}
 			}
 		}
@@ -511,7 +499,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ContainsFocus)
 			{
-				TasView.Focus();
+				TasView.Select();
 			}
 		}
 
@@ -905,7 +893,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (TasView.CurrentCell.Column is not { Name: var columnName }) return;
+			if (TasView.CurrentCell?.Column is not { Name: var columnName }) return;
 
 			if (e.Button == MouseButtons.Left)
 			{
@@ -915,7 +903,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (existingMarker != null)
 					{
-						MarkerControl.EditMarkerPopUp(existingMarker, true);
+						MarkerControl.EditMarkerPopUp(existingMarker, openAtMouseCursor: true);
 					}
 					else
 					{
@@ -936,10 +924,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
 		{
-			// TODO: If NewCell is null, it indicates that there was a mouse leave scenario, we may want to account for that
-			// For now return if a null because this happens OnEnter which doesn't have any of the below behaviors yet
-			if (e.OldCell?.Column == null || e.OldCell?.RowIndex == null
-				|| e.NewCell?.Column == null || e.NewCell?.RowIndex == null)
+			toolTip1.SetToolTip(TasView, null);
+
+			if (e.NewCell.RowIndex is null)
 			{
 				return;
 			}
@@ -951,7 +938,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_paintingMinFrame >= 0)
 			{
-				_paintingMinFrame = Math.Min(_paintingMinFrame, e.NewCell?.RowIndex ?? 0);
+				_paintingMinFrame = Math.Min(_paintingMinFrame, e.NewCell.RowIndex.Value);
 			}
 
 			// skip rerecord counting on drawing entirely, mouse down is enough
@@ -961,7 +948,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int startVal, endVal;
 			int frame = e.NewCell.RowIndex.Value;
-			if (e.OldCell.RowIndex.Value < e.NewCell.RowIndex.Value)
+			if (e.OldCell.RowIndex < e.NewCell.RowIndex)
 			{
 				startVal = e.OldCell.RowIndex.Value;
 				endVal = e.NewCell.RowIndex.Value;
@@ -973,7 +960,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				startVal = e.NewCell.RowIndex.Value;
-				endVal = e.OldCell.RowIndex.Value;
+				endVal = e.OldCell.RowIndex ?? e.NewCell.RowIndex.Value;
 				if(_patternPaint)
 				{
 					endVal = _startRow;
@@ -988,7 +975,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (var i = startVal; i <= endVal; i++)
 				{
-					TasView.SelectRow(i, _selectionDragState);
+					if (!TasView.IsRowSelected(i))
+						TasView.SelectRow(i, _selectionDragState);
 					if (AxisEditingMode && (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift))
 					{
 						if (_selectionDragState)
@@ -1258,13 +1246,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			float value = CurrentTasMovie.GetAxisState(_axisEditRow, _axisEditColumn);
-			float prev = value;
+			int value = CurrentTasMovie.GetAxisState(_axisEditRow, _axisEditColumn);
+			int prev = value;
 			string prevTyped = _axisTypedValue;
 
 			var range = ControllerType.Axes[_axisEditColumn];
-			float rMin = range.Min;
-			float rMax = range.Max;
 
 			// feos: typing past max digits overwrites existing value, not touching the sign
 			// but doesn't handle situations where the range is like -50 through 100, where minimum is negative and has less digits
@@ -1284,12 +1270,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.KeyCode == Keys.Right)
 			{
-				value = rMax;
+				value = range.Max;
 				_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 			}
 			else if (e.KeyCode == Keys.Left)
 			{
-				value = rMin;
+				value = range.Min;
 				_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 			}
 			else if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
@@ -1324,14 +1310,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_axisTypedValue = _axisTypedValue.Substring(startIndex: 0, length: _axisTypedValue.Length - 1); // drop last char
-				if (_axisTypedValue == "" || _axisTypedValue == "-")
-				{
-					value = 0f;
-				}
-				else
-				{
-					value = Convert.ToSingle(_axisTypedValue);
-				}
+				if (!int.TryParse(_axisTypedValue, out value)) value = 0;
 			}
 			else if (e.KeyCode == Keys.Enter)
 			{
@@ -1355,10 +1334,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				float changeBy = 0;
+				int changeBy = 0;
 				if (e.KeyCode == Keys.Up)
 				{
-					changeBy = 1; // We're assuming for now that ALL axis controls should contain integers.
+					changeBy = 1;
 				}
 				else if (e.KeyCode == Keys.Down)
 				{
@@ -1388,24 +1367,16 @@ namespace BizHawk.Client.EmuHawk
 					if (prevTyped != "")
 					{
 						value = ControllerType.Axes[_axisEditColumn].Neutral;
-						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, (int) value);
+						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, value);
 					}
 				}
 				else
 				{
-					if (float.TryParse(_axisTypedValue, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out value)) // String "-" can't be parsed.
+					if (int.TryParse(_axisTypedValue, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out value)) // String "-" can't be parsed.
 					{
-						if (value > rMax)
-						{
-							value = rMax;
-						}
-						else if (value < rMin)
-						{
-							value = rMin;
-						}
+						value = value.ConstrainWithin(range.Range);
 
-						_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
-						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, (int) value);
+						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, value);
 					}
 				}
 
@@ -1413,7 +1384,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					foreach (int row in _extraAxisRows)
 					{
-						CurrentTasMovie.SetAxisState(row, _axisEditColumn, (int) value);
+						CurrentTasMovie.SetAxisState(row, _axisEditColumn, value);
 					}
 				}
 

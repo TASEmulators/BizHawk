@@ -73,8 +73,15 @@
 [submodule "waterbox/gpgx/Genesis-Plus-GX"]
 	path = waterbox/gpgx/Genesis-Plus-GX
 	url = https://github.com/TASEmulators/Genesis-Plus-GX.git
-	branch = tasvideos-2.1
+	branch = tasvideos-2.2
+[submodule "waterbox/stella/core"]
+	path = waterbox/stella/core
+	url = https://github.com/TASEmulators/stella.git
+	branch = tasvideos-1
 [submodule "waterbox/uae/libretro-uae"]
 	path = waterbox/uae/libretro-uae
 	url = https://github.com/TASEmulators/libretro-uae.git
-	branch = wbx
+	branch = wbx-1
+[submodule "ExternalProjects/FlooohChips/chips"]
+	path = ExternalProjects/FlooohChips/chips
+	url = https://github.com/floooh/chips.git

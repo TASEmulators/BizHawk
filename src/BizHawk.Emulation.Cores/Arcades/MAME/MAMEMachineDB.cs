@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading;
 
 using BizHawk.Common;
@@ -53,11 +51,16 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public static bool IsMAMEMachine(string path)
 		{
+#if BIZHAWKBUILD_GAMEDB_ALWAYS_MISS
+			_ = path;
+			return false;
+#else
 			if (_acquire == null) throw new InvalidOperationException("MAME Machine DB not initialized. It's a client responsibility because only a client knows where the database is located.");
-			if (path.Contains('|')) return false; // binded archive, can't be a mame zip (note | is not a legal filesystem char, at least on windows)
+			if (HawkFile.PathContainsPipe(path)) return false; // binded archive, can't be a mame zip (note | is not a legal filesystem char, at least on windows)
 			if (Path.GetExtension(path).ToLowerInvariant() is not ".zip" and not ".7z") return false;
 			_acquire.WaitOne();
 			return Instance.MachineDB.Contains(Path.GetFileNameWithoutExtension(path).ToLowerInvariant());
+#endif
 		}
 	}
 }

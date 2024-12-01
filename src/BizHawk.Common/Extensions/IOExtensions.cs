@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Text;
 
@@ -43,9 +42,7 @@ namespace BizHawk.Common.IOExtensions
 		/// <summary>
 		/// Read a string from a binary reader using utf8 encoding and known byte length
 		/// </summary>
-		/// <param name="r"></param>
 		/// <param name="bytes">exact number of bytes to read</param>
-		/// <returns></returns>
 		public static string ReadStringFixedUtf8(this BinaryReader r, int bytes)
 		{
 			var read = new byte[bytes];
@@ -56,8 +53,6 @@ namespace BizHawk.Common.IOExtensions
 		/// <summary>
 		/// Read a null terminated string from a binary reader using utf8 encoding
 		/// </summary>
-		/// <param name="br"></param>
-		/// <returns></returns>
 		public static string ReadStringUtf8NullTerminated(this BinaryReader br)
 		{
 			using var ms = new MemoryStream();

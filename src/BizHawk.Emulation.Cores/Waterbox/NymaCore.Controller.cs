@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using NymaTypes;
@@ -35,6 +35,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			int thunkWriteOffset)
 				=> ret.AddAxis(name, 0.RangeTo(0xFFFF), 0x8000, isReversed);
 
+		private string GetInputDeviceOverride(int port)
+			=> Mershul.PtrToStringUtf8(_nyma.GetInputDeviceOverride(port));
+
 		private void InitControls(List<NPortInfoT> allPorts, int numCds, ref SystemInfo si)
 		{
 			_controllerAdapter = new ControllerAdapter(
@@ -43,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				OverrideButtonName,
 				numCds,
 				ref si,
+				GetInputDeviceOverride,
 				ComputeHiddenPorts(),
 				AddAxis,
 				_controllerDeckName);
@@ -66,6 +70,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				Func<string, string> overrideName,
 				int numCds,
 				ref SystemInfo systemInfo,
+				Func<int, string> getInputDeviceOverride,
 				HashSet<string> hiddenPorts,
 				AddAxisHook addAxisHook,
 				string controllerDeckName)
@@ -76,6 +81,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					{
 						{ "Power", "System" },
 						{ "Reset", "System" },
+						{ "Insert Coin", "System" },
 						{ "Open Tray", "System" },
 						{ "Close Tray", "System" },
 						{ "Disk Index", "System" },
@@ -88,7 +94,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				for (int port = 0, devByteStart = 0; port < allPorts.Count; port++)
 				{
 					var portInfo = allPorts[port];
-					if (!config.TryGetValue(port, out var deviceName)) deviceName = portInfo.DefaultDeviceShortName;
+					var deviceName = getInputDeviceOverride(port);
+					if (deviceName == null)
+					{
+						if (!config.TryGetValue(port, out deviceName))
+						{
+							deviceName = portInfo.DefaultDeviceShortName;
+						}
+					}
+
 					finalDevices.Add(deviceName);
 
 					if (hiddenPorts.Contains(portInfo.ShortName))
@@ -296,14 +310,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								// TODO: wire up statuses to something (not controller, of course)
 								break;
 							case InputType.Rumble:
-								ret.HapticsChannels.Add(name);
+								//TODO Does this apply to all Mednafen's systems? (This is for PSX.) Might need to pass more metadata through to here
+								var nameLeft = $"{name} Left (strong)";
+								var nameRight = $"{name} Right (weak)";
+								ret.HapticsChannels.Add(nameLeft);
+								ret.HapticsChannels.Add(nameRight);
 								// this is a special case, we treat b here as output rather than input
 								// so these thunks are called after the frame has advanced
 								_rumblers.Add((c, b) =>
 								{
-									// TODO: not entirely sure this is correct...
-									var val = b[byteStart] | (b[byteStart + 1] << 8);
-									c.SetHapticChannelStrength(name, val << 7);
+									const double SCALE_FACTOR = (double)int.MaxValue / byte.MaxValue;
+									static int Scale(byte b)
+										=> (b * SCALE_FACTOR).RoundToInt();
+									//TODO double-check order
+									c.SetHapticChannelStrength(nameRight, Scale(b[byteStart]));
+									c.SetHapticChannelStrength(nameLeft, Scale(b[byteStart + 1]));
 								});
 								break;
 							default:
@@ -318,6 +339,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				ret.BoolButtons.Add("Power");
 				ret.BoolButtons.Add("Reset");
+				if (systemInfo.GameType == GameMediumTypes.GMT_ARCADE)
+				{
+					ret.BoolButtons.Add("Insert Coin");
+				}
 				if (numCds > 0)
 				{
 					ret.BoolButtons.Add("Open Tray");

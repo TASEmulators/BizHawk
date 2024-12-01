@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
@@ -48,5 +47,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public bool DriveLightEnabled => _disks?.Length > 0;
 		public bool DriveLightOn { get; private set; }
+
+		public string DriveLightIconDescription => "CD Drive Activity";
 	}
 }

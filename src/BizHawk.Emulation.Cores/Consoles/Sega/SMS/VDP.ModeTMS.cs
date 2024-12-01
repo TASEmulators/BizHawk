@@ -1,5 +1,4 @@
 ﻿// Contains rendering functions for legacy TMS9918 modes.
-using System;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {

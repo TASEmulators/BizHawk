@@ -96,7 +96,7 @@ ECL_EXPORT bool Init()
 	srand(uzebox.randomSeed); //used for the watchdog timer entropy
 
 	blip = blip_new(2048);
-	blip_set_rates(blip, 28618182, 44100);
+	blip_set_rates(blip, 315000000.0 / 11.0, 44100);
 
 	return true;
 }

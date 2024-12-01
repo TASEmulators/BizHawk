@@ -1,5 +1,4 @@
 ﻿using BizHawk.Client.Common;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BizHawk.Tests.Client.Common.Movie
 {

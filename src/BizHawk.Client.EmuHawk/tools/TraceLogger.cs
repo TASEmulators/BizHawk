@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -377,6 +376,7 @@ namespace BizHawk.Client.EmuHawk
 					CloseFile();
 				}
 			}
+			LoggingEnabled.Text = LoggingEnabled.Checked ? "Stop &logging" : "Start &logging";
 		}
 
 		private void StartLogFile(bool append = false)

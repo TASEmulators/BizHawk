@@ -1,4 +1,4 @@
-﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -51,9 +51,9 @@ namespace BizHawk.Client.Common
 					throw new InvalidOperationException("3DS ROMs cannot be in archives.");
 				}
 
-				Console.WriteLine($"3DS ROM detected, skipping hash checks...");
+				Console.WriteLine("3DS ROM detected, skipping full file hashing...");
 
-				FileData = RomData = Array.Empty<byte>();
+				FileData = RomData = [ ];
 				GameInfo = new()
 				{
 					Name = Path.GetFileNameWithoutExtension(file.Name).Replace('_', ' '),
@@ -94,7 +94,8 @@ namespace BizHawk.Client.Common
 			// read the entire file into FileData.
 			FileData = new byte[fileLength];
 			stream.Position = 0;
-			stream.Read(FileData, 0, fileLength);
+			var bytesRead = stream.Read(FileData, offset: 0, count: fileLength);
+			Debug.Assert(bytesRead == fileLength, "failed to read whole rom stream");
 
 			string SHA1_check = SHA1Checksum.ComputePrefixedHex(FileData);
 

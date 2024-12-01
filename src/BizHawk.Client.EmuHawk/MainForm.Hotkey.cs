@@ -1,8 +1,6 @@
-﻿using System;
 using System.Linq;
+
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -21,23 +19,6 @@ namespace BizHawk.Client.EmuHawk
 				_ = LoadQuickSave(slot);
 				Config.SaveSlot = slot;
 				UpdateStatusSlots();
-			}
-			void ToggleGambatteSyncSetting(
-				string name,
-				Func<Gameboy.GambatteSyncSettings, bool> getter,
-				Action<Gameboy.GambatteSyncSettings, bool> setter)
-			{
-				if (Emulator is not Gameboy gb) return;
-				if (gb.DeterministicEmulation)
-				{
-					AddOnScreenMessage($"{name} cannot be toggled during movie recording.");
-					return;
-				}
-				var ss = gb.GetSyncSettings();
-				var newState = !getter(ss);
-				setter(ss, newState);
-				gb.PutSyncSettings(ss);
-				AddOnScreenMessage($"{name} toggled {(newState ? "on" : "off")}");
 			}
 
 			switch (trigger)
@@ -113,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 					ToggleBackgroundInput();
 					break;
 				case "Toggle Menu":
-					MainMenuStrip.Visible ^= true;
+					ShowMenuContextMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Volume Up":
 					VolumeUp();
@@ -152,22 +133,21 @@ namespace BizHawk.Client.EmuHawk
 					RebootCore();
 					break;
 				case "Toggle Skip Lag Frame":
-					Config.SkipLagFrame ^= true;
+					Config.SkipLagFrame = !Config.SkipLagFrame;
 					AddOnScreenMessage($"Skip Lag Frames toggled {(Config.SkipLagFrame ? "On" : "Off")}");
 					break;
 				case "Toggle Key Priority":
 					ToggleKeyPriority();
 					break;
 				case "Toggle Messages":
-					Config.DisplayMessages ^= true;
+					DisplayMessagesMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Toggle Display Nothing":
 					// TODO: account for 1 when implemented
 					Config.DispSpeedupFeatures = Config.DispSpeedupFeatures == 0 ? 2 : 0;
 					break;
 				case "Accept Background Input":
-					Config.AcceptBackgroundInput ^= true;
-					AddOnScreenMessage($"Accept Background Input toggled {(Config.AcceptBackgroundInput ? "On" : "Off")}");
+					ToggleBackgroundInput();
 					break;
 
 				// Save States
@@ -297,16 +277,16 @@ namespace BizHawk.Client.EmuHawk
 
 				// Tools
 				case "RAM Watch":
-					Tools.LoadRamWatch(true);
+					RamWatchMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "RAM Search":
-					Tools.Load<RamSearch>();
+					RamSearchMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Hex Editor":
-					Tools.Load<HexEditor>();
+					HexEditorMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Trace Logger":
-					Tools.Load<TraceLogger>();
+					TraceLoggerMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Lua Console":
 					OpenLuaConsole();
@@ -318,7 +298,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					break;
 				case "Cheats":
-					Tools.Load<Cheats>();
+					CheatsMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Toggle All Cheats":
 					var cheats = CheatList.Where(static c => !c.IsSeparator).ToList();
@@ -336,10 +316,10 @@ namespace BizHawk.Client.EmuHawk
 					TAStudioMenuItem_Click(null, null);
 					break;
 				case "ToolBox":
-					Tools.Load<ToolBox>();
+					ToolBoxMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Virtual Pad":
-					Tools.Load<VirtualpadTool>();
+					VirtualPadMenuItem_Click(this, EventArgs.Empty);
 					break;
 
 				// RAM Search
@@ -384,15 +364,18 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Toggle Follow Cursor":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.TasPlaybackBox.FollowCursor ^= true;
+					var playbackBox = Tools.TAStudio.TasPlaybackBox;
+					playbackBox.FollowCursor = !playbackBox.FollowCursor;
 					break;
 				case "Toggle Auto-Restore":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.TasPlaybackBox.AutoRestore ^= true;
+					var playbackBox1 = Tools.TAStudio.TasPlaybackBox;
+					playbackBox1.AutoRestore = !playbackBox1.AutoRestore;
 					break;
 				case "Toggle Turbo Seek":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.TasPlaybackBox.TurboSeek ^= true;
+					var playbackBox2 = Tools.TAStudio.TasPlaybackBox;
+					playbackBox2.TurboSeek = !playbackBox2.TurboSeek;
 					break;
 				case "Undo":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
@@ -433,6 +416,10 @@ namespace BizHawk.Client.EmuHawk
 				case "Clone Frames":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.CloneFramesExternal();
+					break;
+				case "Clone # Times":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.CloneFramesXTimesExternal();
 					break;
 				case "Analog Increment":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
@@ -487,22 +474,13 @@ namespace BizHawk.Client.EmuHawk
 
 				// GB
 				case "GB Toggle BG":
-					ToggleGambatteSyncSetting(
-						"BG",
-						static ss => ss.DisplayBG,
-						static (ss, newState) => ss.DisplayBG = newState);
+					GB_ToggleBackgroundLayer();
 					break;
 				case "GB Toggle Obj":
-					ToggleGambatteSyncSetting(
-						"OBJ",
-						static ss => ss.DisplayOBJ,
-						static (ss, newState) => ss.DisplayOBJ = newState);
+					GB_ToggleObjectLayer();
 					break;
 				case "GB Toggle Window":
-					ToggleGambatteSyncSetting(
-						"WIN",
-						static ss => ss.DisplayWindow,
-						static (ss, newState) => ss.DisplayWindow = newState);
+					GB_ToggleWindowLayer();
 					break;
 
 				// Analog
@@ -533,64 +511,17 @@ namespace BizHawk.Client.EmuHawk
 
 				// DS
 				case "Next Screen Layout":
-					IncrementDSLayout(1);
+					NDS_IncrementLayout(1);
 					break;
 				case "Previous Screen Layout":
-					IncrementDSLayout(-1);
+					NDS_IncrementLayout(-1);
 					break;
 				case "Screen Rotate":
-					IncrementDSScreenRotate();
+					NDS_IncrementScreenRotate();
 					break;
 			}
 
 			return true;
-		}
-
-		private void IncrementDSScreenRotate()
-		{
-			if (Emulator is NDS ds)
-			{
-				var settings = ds.GetSettings();
-				settings.ScreenRotation = settings.ScreenRotation switch
-				{
-					NDS.ScreenRotationKind.Rotate0 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate90,
-					NDS.ScreenRotationKind.Rotate90 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate180,
-					NDS.ScreenRotationKind.Rotate180 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate270,
-					NDS.ScreenRotationKind.Rotate270 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate0,
-					_ => settings.ScreenRotation
-				};
-				ds.PutSettings(settings);
-				AddOnScreenMessage($"Screen rotation to {settings.ScreenRotation}");
-				FrameBufferResized();
-			}
-		}
-
-		private void IncrementDSLayout(int delta)
-		{
-			bool decrement = delta == -1;
-			if (Emulator is NDS ds)
-			{
-				var settings = ds.GetSettings();
-				var num = (int)settings.ScreenLayout;
-				if (decrement)
-				{
-					num--;
-				}
-				else
-				{
-					num++;
-				}
-
-				var next = (NDS.ScreenLayoutKind)Enum.Parse(typeof(NDS.ScreenLayoutKind), num.ToString());
-				if (typeof(NDS.ScreenLayoutKind).IsEnumDefined(next))
-				{
-					settings.ScreenLayout = next;
-
-					ds.PutSettings(settings);
-					AddOnScreenMessage($"Screen layout to {next}");
-					FrameBufferResized();
-				}
-			}
 		}
 
 		// Determines if the value is a hotkey  that would be handled outside of the CheckHotkey method

@@ -3,7 +3,7 @@ auto SA1::dmaNormal() -> void {
   while(mmio.dtc--) {
     uint8 data = r.mdr;
     uint24 source = mmio.dsa++;
-    uint16 target = mmio.dda++;
+    uint24 target = mmio.dda++;
 
     if(mmio.sd == DMA::SourceROM && mmio.dd == DMA::DestBWRAM) {
       step();

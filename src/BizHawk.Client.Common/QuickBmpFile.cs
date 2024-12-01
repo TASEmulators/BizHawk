@@ -1,4 +1,4 @@
-﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -95,11 +95,13 @@ namespace BizHawk.Client.Common
 
 		private static unsafe T GetObject<T>(Stream s)
 		{
-			byte[] tmp = new byte[Marshal.SizeOf(typeof(T))];
-			s.Read(tmp, 0, tmp.Length);
+			var t = typeof(T);
+			byte[] tmp = new byte[Marshal.SizeOf(t)];
+			var bytesRead = s.Read(tmp, offset: 0, count: tmp.Length);
+			Debug.Assert(bytesRead == tmp.Length, $"reached end-of-file while reading {t.Name}");
 			fixed (byte* p = tmp)
 			{
-				return (T)Marshal.PtrToStructure((IntPtr)p, typeof(T));
+				return (T) Marshal.PtrToStructure((IntPtr) p, t);
 			}
 		}
 
@@ -185,7 +187,7 @@ namespace BizHawk.Client.Common
 		{
 			if (src.BufferWidth == dst.BufferWidth && src.BufferHeight == dst.BufferHeight)
 			{
-				Array.Copy(src.GetVideoBuffer(), dst.GetVideoBuffer(), src.GetVideoBuffer().Length);
+				Array.Copy(src.GetVideoBuffer(), dst.GetVideoBuffer(), src.BufferWidth * src.BufferHeight);
 			}
 			else
 			{
@@ -248,7 +250,8 @@ namespace BizHawk.Client.Common
 			int inH = bi.biHeight;
 
 			byte[] src = new byte[inW * inH * 4];
-			s.Read(src, 0, src.Length);
+			var bytesRead = s.Read(src, offset: 0, count: src.Length);
+			Debug.Assert(bytesRead == src.Length, "reached end-of-file while reading .bmp");
 			if (v is LoadedBMP)
 			{
 				var l = v as LoadedBMP;

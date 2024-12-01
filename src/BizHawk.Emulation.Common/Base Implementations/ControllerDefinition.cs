@@ -1,7 +1,4 @@
-﻿#nullable disable
-
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -22,38 +19,49 @@ namespace BizHawk.Emulation.Common
 
 		private bool _mutable = true;
 
-		private IReadOnlyList<IReadOnlyList<string>> _orderedControls = null;
-
-		private IReadOnlyList<string> _orderedControlsFlat = null;
+		private IReadOnlyList<IReadOnlyList<(string, AxisSpec?)>>? _orderedControls;
 
 		/// <summary>starts with console buttons, then each player's buttons individually</summary>
-		public IReadOnlyList<IReadOnlyList<string>> ControlsOrdered
+		public IReadOnlyList<IReadOnlyList<(string Name, AxisSpec? AxisSpec)>> ControlsOrdered
 		{
 			get
 			{
 				if (_orderedControls is not null) return _orderedControls;
 				if (!_mutable) return _orderedControls = GenOrderedControls();
-				const string ERR_MSG = "this " + nameof(ControllerDefinition) + " has not yet been built and sealed, so it is not safe to enumerate this while it could still be mutated";
+				const string ERR_MSG = $"this {nameof(ControllerDefinition)} has not yet been built and sealed, so it is not safe to enumerate this while it could still be mutated";
 				throw new InvalidOperationException(ERR_MSG);
 			}
 		}
 
 		public readonly string Name;
 
-		public IReadOnlyList<string> OrderedControlsFlat => _orderedControlsFlat ??= ControlsOrdered.SelectMany(static s => s).ToList();
+		private Dictionary<string, char>? _mnemonicsCache;
+		public IReadOnlyDictionary<string, char>? MnemonicsCache => _mnemonicsCache;
+
+		/// <remarks>
+		/// TODO: this should probably be called in <see cref="MakeImmutable"/>,
+		/// </remarks>
+		public void BuildMnemonicsCache(string sysID)
+		{
+			if (_mutable)
+				throw new InvalidOperationException($"this {nameof(ControllerDefinition)} has not yet been built and sealed; can't build mnemonics cache");
+
+			_mnemonicsCache ??= BoolButtons.ToDictionary(
+				static buttonName => buttonName,
+				buttonName => Bk2MnemonicLookup.Lookup(buttonName, sysID));
+		}
 
 		public ControllerDefinition(string name)
 			=> Name = name;
 
-		public ControllerDefinition(ControllerDefinition copyFrom, string withName = null)
+		public ControllerDefinition(ControllerDefinition copyFrom, string? withName = null)
 			: this(withName ?? copyFrom.Name)
 		{
 			BoolButtons.AddRange(copyFrom.BoolButtons);
 			foreach (var kvp in copyFrom.Axes) Axes.Add(kvp);
 			HapticsChannels.AddRange(copyFrom.HapticsChannels);
 			CategoryLabels = copyFrom.CategoryLabels;
-			// Do not clone _orderedControls, as GenOrderedControls may be overridden by the derived class
-			// _orderedControls = copyFrom._orderedControls;
+			_mnemonicsCache = copyFrom._mnemonicsCache;
 			MakeImmutable();
 		}
 
@@ -92,7 +100,9 @@ namespace BizHawk.Emulation.Common
 					case CircularAxisConstraint circular:
 						var xAxis = k;
 						var yAxis = circular.PairedAxis;
-						(axes[xAxis], axes[yAxis]) = circular.ApplyTo(axes[xAxis], axes[yAxis]);
+						(axes[xAxis], axes[yAxis]) = circular.ApplyTo(
+							CollectionExtensions.GetValueOrDefault(axes, xAxis),
+							CollectionExtensions.GetValueOrDefault(axes, yAxis));
 						break;
 				}
 			}
@@ -104,11 +114,12 @@ namespace BizHawk.Emulation.Common
 			if (!_mutable) throw new InvalidOperationException(ERR_MSG);
 		}
 
-		protected virtual IReadOnlyList<IReadOnlyList<string>> GenOrderedControls()
+		protected virtual IReadOnlyList<IReadOnlyList<(string Name, AxisSpec? AxisSpec)>> GenOrderedControls()
 		{
-			var ret = new List<string>[PlayerCount + 1];
+			var ret = new List<(string, AxisSpec?)>[PlayerCount + 1];
 			for (var i = 0; i < ret.Length; i++) ret[i] = new();
-			foreach (var btn in Axes.Keys.Concat(BoolButtons)) ret[PlayerNumber(btn)].Add(btn);
+			foreach ((string buttonName, var axisSpec) in Axes) ret[PlayerNumber(buttonName)].Add((buttonName, axisSpec));
+			foreach (var btn in BoolButtons) ret[PlayerNumber(btn)].Add((btn, null));
 			return ret;
 		}
 

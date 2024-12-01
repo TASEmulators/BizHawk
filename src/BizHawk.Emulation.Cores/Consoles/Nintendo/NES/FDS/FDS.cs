@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
 using System.Text;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
@@ -90,12 +89,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void SetDiskImage(byte[] diskimage)
 		{
 			// each FDS format is worse than the last
-			if (diskimage.Take(4).SequenceEqual(Encoding.ASCII.GetBytes("\x01*NI")))
+			if (diskimage.AsSpan(start: 0, length: 4).SequenceEqual("\x01*NI"u8))
 			{
 				int nsides = diskimage.Length / 65500;
 
 				MemoryStream ms = new MemoryStream();
-				ms.Write(Encoding.ASCII.GetBytes("FDS\x1A"), 0, 4);
+				ms.Write("FDS\x1A"u8.ToArray(), 0, 4);
 				ms.WriteByte((byte)nsides);
 				byte[] nulls = new byte[11];
 				ms.Write(nulls, 0, 11);
@@ -195,9 +194,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//	throw new Exception("FDS Saveram: Can't load when a disk is active!");
 			MemoryStream ms = new MemoryStream(data, false);
 			BinaryReader br = new BinaryReader(ms);
-			byte[] cmp = Encoding.ASCII.GetBytes("FDSS");
-			byte[] tmp = br.ReadBytes(cmp.Length);
-			if (!cmp.SequenceEqual(tmp))
+			if (!br.ReadBytes(4).SequenceEqual("FDSS"u8))
 				throw new Exception("FDS Saveram: bad header");
 			int n = br.ReadInt32();
 			if (n != NumSides)

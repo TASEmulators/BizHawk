@@ -1,9 +1,6 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.cheats;
@@ -55,6 +52,7 @@ namespace BizHawk.Tests.Client.Common.cheats
 			new object?[] { VSystemID.Raw.GB, "BE0-37B-08C", 0x4037, 0xBE, 0xB9, WatchSize.Byte },
 			new object?[] { VSystemID.Raw.GBA, "4012F5B7 3B7801A6", 0x00000006, 0xB7, NO_COMPARE, WatchSize.Byte },
 			new object?[] { VSystemID.Raw.GBA, "686D7FC3 24B5B832", 0x00000032, 0x7FC3, NO_COMPARE, WatchSize.Word },
+			new object?[] { VSystemID.Raw.SNES, "7E1F2801", 0x7E1F28, 0x01, NO_COMPARE, WatchSize.Byte },
 		};
 
 		[DataTestMethod]

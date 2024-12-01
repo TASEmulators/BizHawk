@@ -1,6 +1,6 @@
-﻿using System;
 using System.Globalization;
 
+#pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
 {
 	// TODO: support comparison cheat codes
@@ -66,3 +66,4 @@ namespace BizHawk.Client.Common.cheats
 		}
 	}
 }
+#pragma warning restore MA0089

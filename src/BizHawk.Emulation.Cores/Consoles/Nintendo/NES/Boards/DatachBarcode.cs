@@ -1,4 +1,3 @@
-﻿using System;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;

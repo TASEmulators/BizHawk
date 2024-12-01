@@ -1,0 +1,16 @@
+{
+	"configurations": [
+		{
+			"name": "Waterbox",
+			"includePath": [
+				"${workspaceFolder}/**",
+				"${workspaceFolder}/../emulibc"
+			],
+			"defines": [
+				"WATERBOX"
+			],
+			"intelliSenseMode": "gcc-x64"
+			}
+	],
+	"version": 4
+}

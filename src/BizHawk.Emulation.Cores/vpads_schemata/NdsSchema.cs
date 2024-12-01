@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using BizHawk.Emulation.Common;
@@ -53,7 +52,8 @@ namespace BizHawk.Emulation.Cores
 				{
 					new ButtonSchema(8, 18, "LidOpen") { DisplayName = "Lid Open" },
 					new ButtonSchema(68, 18, "LidClose") { DisplayName = "Lid Close" },
-					new ButtonSchema(128, 18, "Power"),
+					new ButtonSchema(128, 18, "Microphone") { DisplayName = "Mic" },
+					new ButtonSchema(163, 18, "Power"),
 
 					new SingleAxisSchema(10, 63, "Mic Volume")
 					{

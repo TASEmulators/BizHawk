@@ -1,8 +1,9 @@
-﻿using System;
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 using BizHawk.Common.PathExtensions;
 
@@ -115,7 +116,7 @@ namespace BizHawk.Emulation.DiscSystem
 				var bc = EndianBitConverter.CreateForLittleEndian();
 				
 				var header = new byte[88];
-				stream.Read(header, 0, 88);
+				_ = stream.Read(header, offset: 0, count: header.Length); // stream size checked at callsite
 
 				this.Signature = Encoding.ASCII.GetString(header.Take(16).ToArray());
 				this.Version = header.Skip(16).Take(2).ToArray();
@@ -339,7 +340,8 @@ namespace BizHawk.Emulation.DiscSystem
 			for (var se = 0; se < aFile.Header.SessionCount; se++)
 			{
 				var sessionHeader = new byte[24];
-				stream.Read(sessionHeader, 0, 24);
+				var bytesRead = stream.Read(sessionHeader, offset: 0, count: sessionHeader.Length);
+				Debug.Assert(bytesRead == sessionHeader.Length, "reached end-of-file while reading session header");
 				//sessionHeader.Reverse().ToArray();
 
 				var session = new ASession
@@ -375,7 +377,8 @@ namespace BizHawk.Emulation.DiscSystem
 					var trackHeader = new byte[80];
 					var track = new ATrack();
 
-					stream.Read(trackHeader, 0, 80);
+					var bytesRead = stream.Read(trackHeader, offset: 0, count: trackHeader.Length);
+					Debug.Assert(bytesRead == trackHeader.Length, "reached end-of-file while reading track header");
 
 					track.Mode = trackHeader[0];
 					track.SubMode = trackHeader[1];
@@ -392,7 +395,7 @@ namespace BizHawk.Emulation.DiscSystem
 					track.ExtraOffset = bc.ToInt32(trackHeader.Skip(12).Take(4).ToArray());
 					track.SectorSize = bc.ToInt16(trackHeader.Skip(16).Take(2).ToArray());
 					track.PLBA = bc.ToInt32(trackHeader.Skip(36).Take(4).ToArray());
-					track.StartOffset = BitConverter.ToUInt64(trackHeader.Skip(40).Take(8).ToArray(), 0);
+					track.StartOffset = MemoryMarshal.Read<ulong>(trackHeader.AsSpan(start: 12 + sizeof(int) + sizeof(short) + 18 + sizeof(int)));
 					track.Files = bc.ToInt32(trackHeader.Skip(48).Take(4).ToArray());
 					track.FooterOffset = bc.ToInt32(trackHeader.Skip(52).Take(4).ToArray());
 
@@ -405,7 +408,8 @@ namespace BizHawk.Emulation.DiscSystem
 					{
 						var extHeader = new byte[8];
 						stream.Seek(track.ExtraOffset, SeekOrigin.Begin);
-						stream.Read(extHeader, 0, 8);
+						var bytesRead1 = stream.Read(extHeader, offset: 0, count: extHeader.Length);
+						Debug.Assert(bytesRead1 == extHeader.Length, "reached end-of-file while reading extra block of track");
 						track.ExtraBlock.Pregap = bc.ToInt32(extHeader.Take(4).ToArray());
 						track.ExtraBlock.Sectors = bc.ToInt32(extHeader.Skip(4).Take(4).ToArray());
 						stream.Seek(currPos, SeekOrigin.Begin);
@@ -426,7 +430,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 						var foot = new byte[16];
 						stream.Seek(track.FooterOffset, SeekOrigin.Begin);
-						stream.Read(foot, 0, 16);
+						var bytesRead1 = stream.Read(foot, offset: 0, count: foot.Length);
+						Debug.Assert(bytesRead1 == foot.Length, "reached end-of-file while reading track footer");
 
 						var f = new AFooter
 						{
@@ -466,7 +471,8 @@ namespace BizHawk.Emulation.DiscSystem
 							
 
 							// read the filename
-							stream.Read(fname, 0, fname.Length);
+							var bytesRead2 = stream.Read(fname, offset: 0, count: fname.Length);
+							Debug.Assert(bytesRead2 == fname.Length, "reached end-of-file while reading track filename");
 
 							// if widechar is 1 filename is stored using 16-bit, otherwise 8-bit is used
 							if (f.WideChar == 1)

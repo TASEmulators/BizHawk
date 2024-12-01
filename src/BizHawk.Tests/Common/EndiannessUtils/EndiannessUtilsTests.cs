@@ -1,8 +1,4 @@
-﻿using System;
-
 using BizHawk.Common;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BizHawk.Tests.Common
 {

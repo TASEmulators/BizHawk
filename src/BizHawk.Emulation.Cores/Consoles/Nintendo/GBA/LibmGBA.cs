@@ -1,4 +1,3 @@
-﻿using System;
 using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
@@ -198,6 +197,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		[BizImport(cc)]
 		public abstract void BizSetInputCallback(IntPtr ctx, InputCallback cb);
+
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void RumbleCallback(int value);
+
+		[BizImport(cc)]
+		public abstract void BizSetRumbleCallback(IntPtr ctx, RumbleCallback cb);
 
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void TraceCallback(string msg);

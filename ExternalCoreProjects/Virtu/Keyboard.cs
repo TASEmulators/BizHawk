@@ -141,7 +141,9 @@ namespace Jellyfish.Virtu
 		Reset = 2305843009213693952UL,
 	}
 
+#pragma warning disable MA0104 // unlikely to conflict with System.Windows.Input.Keyboard
 	public sealed class Keyboard
+#pragma warning restore MA0104
 	{
 		static Keyboard()
 		{
@@ -268,7 +270,7 @@ namespace Jellyfish.Virtu
 			bool caps = keys.HasFlag(Keys.CapsLock);
 			if (caps && !_currentCapsLockState) // leading edge: toggle CapsLock
 			{
-				CapsActive ^= true;
+				CapsActive = !CapsActive;
 			}
 			_currentCapsLockState = caps;
 			shift ^= CapsActive;

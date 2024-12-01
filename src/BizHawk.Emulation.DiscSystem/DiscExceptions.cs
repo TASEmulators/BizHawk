@@ -1,5 +1,3 @@
-﻿using System;
-
 // some old junk
 namespace BizHawk.Emulation.DiscSystem
 {

@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Xml;
 using System.IO;
@@ -19,7 +18,6 @@ using BizHawk.Emulation.Cores.Components.W65816;
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	[PortedCore(CoreNames.Bsnes, "byuu", "v87", "https://github.com/bsnes-emu/bsnes/tree/v087")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>, IBSNESForGfxDebugger
 	{

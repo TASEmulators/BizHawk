@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 
 using BizHawk.Emulation.Common;
@@ -16,14 +15,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public void SetCDL(ICodeDataLog cdl)
 		{
 			_cdl = cdl;
-			if (cdl == null || !cdl.Active)
-			{
-				_cpu.ReadMemory = _machine.ReadMemory;
-			}
-			else
-			{
-				_cpu.ReadMemory = ReadMemory_CDL;
-			}
 		}
 
 		public void NewCDL(ICodeDataLog cdl)

@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
@@ -30,14 +29,14 @@ namespace BizHawk.Client.Common
 				globalBase = PathUtils.ExeDirectoryPath + globalBase.Substring(5);
 			}
 
-			// rooted paths get returned without change
+			// absolute paths get returned without change
 			// (this is done after keyword substitution to avoid problems though)
-			if (Path.IsPathRooted(globalBase))
+			if (globalBase.IsAbsolute())
 			{
 				return globalBase;
 			}
 
-			// not-rooted things are relative to exe path
+			// non-absolute things are relative to exe path
 			globalBase = Path.Combine(PathUtils.ExeDirectoryPath, globalBase);
 			return globalBase;
 		}
@@ -122,16 +121,25 @@ namespace BizHawk.Client.Common
 				return path;
 			}
 
-			if (Path.IsPathRooted(path))
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+			bool isAbsolute = path.IsAbsolute();
+#else
+			bool isAbsolute;
+			try
 			{
-				return path;
+				isAbsolute = path.IsAbsolute();
 			}
+			catch
+			{
+				isAbsolute = false;
+			}
+#endif
 
 			//handling of initial .. was removed (Path.GetFullPath can handle it)
 			//handling of file:// or file:\\ was removed  (can Path.GetFullPath handle it? not sure)
 
 			// all bad paths default to EXE
-			return PathUtils.ExeDirectoryPath;
+			return isAbsolute ? path : PathUtils.ExeDirectoryPath;
 		}
 
 		public static string MovieAbsolutePath(this PathEntryCollection collection)
@@ -160,7 +168,7 @@ namespace BizHawk.Client.Common
 
 		public static string FirmwareAbsolutePath(this PathEntryCollection collection)
 		{
-			return collection.AbsolutePathFor(collection.FirmwaresPathFragment, null);
+			return collection.AbsolutePathFor(collection.FirmwarePathFragment, null);
 		}
 
 		public static string LogAbsolutePath(this PathEntryCollection collection)
@@ -178,6 +186,12 @@ namespace BizHawk.Client.Common
 		public static string ToolsAbsolutePath(this PathEntryCollection collection)
 		{
 			var path = collection[PathEntryCollection.GLOBAL, "Tools"].Path;
+			return collection.AbsolutePathFor(path, null);
+		}
+
+		public static string ExternalToolsAbsolutePath(this PathEntryCollection collection)
+		{
+			var path = collection[PathEntryCollection.GLOBAL, "External Tools"].Path;
 			return collection.AbsolutePathFor(path, null);
 		}
 
@@ -322,7 +336,7 @@ namespace BizHawk.Client.Common
 
 		private static string ResolveToolsPath(this PathEntryCollection collection, string subPath)
 		{
-			if (Path.IsPathRooted(subPath) || subPath.StartsWith('%')) return subPath;
+			if (subPath.IsAbsolute() || subPath.StartsWith('%')) return subPath;
 
 			var toolsPath = collection[PathEntryCollection.GLOBAL, "Tools"].Path;
 

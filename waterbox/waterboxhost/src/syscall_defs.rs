@@ -55,7 +55,6 @@ impl FromResidual for SyscallReturn {
 impl FromResidual<Result<std::convert::Infallible, SyscallError>> for SyscallReturn {
 	fn from_residual(v: Result<std::convert::Infallible, SyscallError>) -> Self {
 		match v {
-			Ok(never) => match never {},
 			Err(zz) => SyscallReturn(-zz.0 as isize as usize),
 		}
 	}	

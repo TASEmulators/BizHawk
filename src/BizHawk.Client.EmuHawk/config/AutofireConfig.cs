@@ -1,4 +1,3 @@
-﻿using System;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 
@@ -8,16 +7,16 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Config _config;
 		private readonly AutofireController _autoFireController;
-		private readonly AutoFireStickyXorAdapter _stickyXorAdapter;
+		private readonly StickyAutofireController _stickyAutofireController;
 
 		public AutofireConfig(
 			Config config,
 			AutofireController autoFireController,
-			AutoFireStickyXorAdapter stickyXorAdapter)
+			StickyAutofireController stickyAutofireController)
 		{
 			_config = config;
 			_autoFireController = autoFireController;
-			_stickyXorAdapter = stickyXorAdapter;
+			_stickyAutofireController = stickyAutofireController;
 			InitializeComponent();
 			Icon = Properties.Resources.LightningIcon;
 		}
@@ -58,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 			_autoFireController.On = _config.AutofireOn = (int)nudPatternOn.Value;
 			_autoFireController.Off = _config.AutofireOff = (int)nudPatternOff.Value;
 			_config.AutofireLagFrames = cbConsiderLag.Checked;
-			_stickyXorAdapter.SetOnOffPatternFromConfig(_config.AutofireOn, _config.AutofireOff);
+			_stickyAutofireController.UpdateDefaultPatternSettings(_config.AutofireOn, _config.AutofireOff, _config.AutofireLagFrames);
 
 			DialogResult = DialogResult.OK;
 			Close();

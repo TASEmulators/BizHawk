@@ -1,9 +1,10 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Common
 {
@@ -21,6 +22,10 @@ namespace BizHawk.Common
 	/// </remarks>
 	public sealed class HawkFile : IDisposable
 	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool PathContainsPipe(string s)
+			=> s.ContainsOrdinal('|');
+
 		private readonly List<HawkArchiveFileItem>? _archiveItems;
 
 		private Stream? _boundStream;

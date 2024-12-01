@@ -1,4 +1,3 @@
-﻿using System;
 using System.Runtime.InteropServices;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -482,14 +481,14 @@ namespace BizHawk.Common
 			public RAWINPUTDATA data;
 		}
 
-		[DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
-		public static extern unsafe IntPtr DefRawInputProc(RAWINPUT* paRawInput, int nInput, int cbSizeHeader);
-
 		[DllImport("user32.dll", ExactSpelling = true)]
 		public static extern int GetRawInputData(IntPtr hRawInput, RID uiCommand, IntPtr pData, out int bSize, int cbSizeHeader);
 
 		[DllImport("user32.dll", ExactSpelling = true)]
 		public static extern unsafe int GetRawInputData(IntPtr hRawInput, RID uiCommand, RAWINPUT* pData, ref int bSize, int cbSizeHeader);
+
+		[DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
+		public static extern unsafe int GetRawInputBuffer(RAWINPUT* pData, ref int bSize, int cbSizeHeader);
 
 		[DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]

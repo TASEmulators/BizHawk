@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
@@ -8,9 +6,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// <summary>
 	/// describes a 24C01 or 24C02 as connected to a BANDAI-FCG
 	/// </summary>
-
-	// http://pdf1.alldatasheet.com/datasheet-pdf/view/56094/ATMEL/24C01.html 24C01
-	// http://www.atmel.com/Images/doc0180.pdf 24C02 and others
+	/// <remarks>
+	/// <see href="http://pdf1.alldatasheet.com/datasheet-pdf/view/56094/ATMEL/24C01.html">24C01</see><br/>
+	/// <see href="http://www.atmel.com/Images/doc0180.pdf">24C02 and others</see>
+	/// </remarks>
 	public sealed class SEEPROM
 	{
 		/// <summary>

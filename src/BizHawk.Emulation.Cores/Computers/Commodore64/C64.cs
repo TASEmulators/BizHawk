@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -253,7 +252,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("C64", n))).FirstOrDefault(b => b != null && b.Length == length);
 			if (result == null)
 			{
-				throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");
+				throw new MissingFirmwareException($"At least one of these firmware options is required: {string.Join(", ", names)}");
 			}
 
 			return result;

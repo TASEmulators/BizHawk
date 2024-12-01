@@ -13,13 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			set { }
 		}
 
-		public IEnumerable<string> AvailableCpus
-		{
-			get
-			{
-				yield return "R4300";
-			}
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "R4300" ];
 
 		public string PCRegisterName => "PC";
 

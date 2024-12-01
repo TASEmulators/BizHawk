@@ -1,6 +1,4 @@
 ﻿using BizHawk.Common.NumberExtensions;
-using System;
-using System.Collections;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -15,51 +13,89 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public override byte ReadPort(ushort port)
 		{
-			BitArray portBits = new BitArray(BitConverter.GetBytes(port));
-			byte portUpper = (byte)(port >> 8);
-			byte portLower = (byte)(port & 0xff);
+			int finalResult = 0;
+			int result = 0;
+			bool deviceResponse = false;
 
-			int result = 0xff;
+			var devs = DecodeINPort(port);
 
-			if (DecodeINPort(port) == PortDevice.GateArray)
+			foreach (var d in devs)
 			{
-				GateArray.ReadPort(port, ref result);
-			}
-			else if (DecodeINPort(port) == PortDevice.CRCT)
-			{
-				CRCT.ReadPort(port, ref result);
-			}
-			else if (DecodeINPort(port) == PortDevice.ROMSelect)
-			{
-
-			}
-			else if (DecodeINPort(port) == PortDevice.Printer)
-			{
-
-			}
-			else if (DecodeINPort(port) == PortDevice.PPI)
-			{
-				PPI.ReadPort(port, ref result);
-			}
-			else if (DecodeINPort(port) == PortDevice.Expansion)
-			{
-				if (!port.Bit(7))
+				if (d == PortDevice.PPI)
 				{
-					// FDC
-					if (port.Bit(8) && !port.Bit(0))
+					PPI.ReadPort(port, ref result);
+					finalResult |= result;
+					deviceResponse = true;
+				}
+
+				if (d == PortDevice.Expansion)
+				{
+					if (!port.Bit(7))
 					{
-						// FDC status register
-						UPDDiskDevice.ReadStatus(ref result);
+						// FDC
+						if (port.Bit(8) && !port.Bit(0))
+						{
+							// FDC status register
+							UPDDiskDevice.ReadStatus(ref result);
+						}
+						else if (port.Bit(8) && port.Bit(0))
+						{
+							// FDC data register
+							UPDDiskDevice.ReadData(ref result);
+						}
+
+						finalResult |= result;
+						deviceResponse = true;
 					}
-					if (port.Bit(8) && port.Bit(0))
-					{
-						// FDC data register
-						UPDDiskDevice.ReadData(ref result);
-					}
+				}
+
+				if (d == PortDevice.GateArray && !deviceResponse)
+				{
+					// ACCC 4.4.2
+					// The GATE ARRAY is write-only, and the RD pin is in the inactive state, which implies that a read
+					// on this circuit is not considered. At best, a high impedance state available on the data bus is recovered.
+					result = 0xFF;
+					finalResult |= result;
+				}
+
+				if (d == PortDevice.CRCT)
+				{
+					/*
+					// ACCC 4.4.2
+					// However, the CRTCs are not connected to the Z80A's RD and WR pins, so there is no detection of the I/O direction.
+					// Consequently, if a read instruction is used on a write register of the CRTC, then a data is sent to the CRTC
+					// (whatever is on the data bus). "it would be risky to trust the returned value".
+					CRTC.WritePort(port, CPU.Regs[CPU.DB]);
+					result = CPU.Regs[CPU.DB];
+
+					if (!deviceResponse)
+						finalResult |= result;
+					*/
+				}				
+
+				if (d == PortDevice.ROMSelect && !deviceResponse)
+				{
+					// TODO: confirm this is a write-only port
+					result = 0xFF;
+					finalResult |= result;
+				}
+
+				if (d == PortDevice.Printer && !deviceResponse)
+				{
+					// TODO: confirm this is a write-only port
+					result = 0xFF;
+					finalResult |= result;
+				}
+
+				if (d == PortDevice.PAL && !deviceResponse)
+				{
+					// TODO: confirm this is a write-only port
+					result = 0xFF;
+					finalResult |= result;
 				}
 			}
 
-			return (byte)result;
+			return (byte)finalResult;
 		}
 
 		/// <summary>
@@ -68,11 +104,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public override void WritePort(ushort port, byte value)
 		{
-			BitArray portBits = new BitArray(BitConverter.GetBytes(port));
-			BitArray dataBits = new BitArray(BitConverter.GetBytes(value));
-			byte portUpper = (byte)(port >> 8);
-			byte portLower = (byte)(port & 0xff);
-
 			var devs = DecodeOUTPort(port);
 
 			foreach (var d in devs)
@@ -81,19 +112,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				{
 					GateArray.WritePort(port, value);
 				}
-				else if (d == PortDevice.RAMManagement)
+				else if (d == PortDevice.PAL)
 				{
-					if (value.Bit(7) && value.Bit(6))
-					{
-						RAMConfig = value & 0x07;
-
-						// additional 64K bank index
-						var b64 = value & 0x38;
-					}
+					PAL.WritePort(port, value);					
 				}
 				else if (d == PortDevice.CRCT)
 				{
-					CRCT.WritePort(port, value);
+					CRTC.WritePort(port, value);
 				}
 				else if (d == PortDevice.ROMSelect)
 				{

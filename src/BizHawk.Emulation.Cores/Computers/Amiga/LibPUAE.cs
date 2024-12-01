@@ -1,29 +1,58 @@
-﻿using BizHawk.BizInvoke;
-using BizHawk.Emulation.Cores.Waterbox;
-
-using System;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
+
+using BizHawk.BizInvoke;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
 	public abstract class LibPUAE : LibWaterboxCore
 	{
 		public const int PAL_WIDTH = 720;
-		public const int PAL_HEIGHT = 576;
-		public const int NTSC_WIDTH = 720;
-		public const int NTSC_HEIGHT = 480;
+		public const int NTSC_WIDTH = PAL_WIDTH;
+		// the core renders 576 which is what libretro displays
+		// but default window height is 568 in original PUAE and WinUAE
+		// this lets us hide a black line and a weird artifact that our A600 config has there
+		public const int PAL_HEIGHT = 568;
+		// WinUAE displays 484 lines for NTSC
+		// but libretro port only renders 482 and then only displays 480
+		public const int NTSC_HEIGHT = 482;
+		// libretro defines PUAE_VIDEO_HZ_PAL as 49.9204101562500000f
+		public const int PUAE_VIDEO_NUMERATOR_PAL = 102237;
+		public const int PUAE_VIDEO_DENOMINATOR_PAL = 2048;
+		// libretro defines PUAE_VIDEO_HZ_NTSC as 59.8260993957519531f
+		public const int PUAE_VIDEO_NUMERATOR_NTSC = 299130497;
+		public const int PUAE_VIDEO_DENOMINATOR_NTSC = 5000000;
+
 		public const int FASTMEM_AUTO = -1;
 		public const int MAX_FLOPPIES = 4;
 		public const int FILENAME_MAXLENGTH = 64;
 		public const int KEY_COUNT = 0x68;
-		public const byte b00000001 = 1 << 0;
-		public const byte b00000010 = 1 << 1;
-		public const byte b00000100 = 1 << 2;
-		public const byte b00001000 = 1 << 3;
-		public const byte b00010000 = 1 << 4;
-		public const byte b00100000 = 1 << 5;
-		public const byte b01000000 = 1 << 6;
-		public const byte b10000000 = 1 << 7;
+
+		public const byte MouseButtonsMask =
+			(byte)(AllButtons.Button_1
+			| AllButtons.Button_2
+			| AllButtons.Button_3);
+		public const byte JoystickMask =
+			(byte)(AllButtons.Up
+			| AllButtons.Down
+			| AllButtons.Left
+			| AllButtons.Right
+			| AllButtons.Button_1
+			| AllButtons.Button_2
+			| AllButtons.Button_3);
+		public const short Cd32padMask =
+			(short)(AllButtons.Up
+			| AllButtons.Down
+			| AllButtons.Left
+			| AllButtons.Right
+			| AllButtons.Play
+			| AllButtons.Rewind
+			| AllButtons.Forward
+			| AllButtons.Green
+			| AllButtons.Yellow
+			| AllButtons.Red
+			| AllButtons.Blue);
 
 		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init(int argc, string[] argv);
@@ -31,41 +60,63 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
-			public PUAEJoystick JoystickState;
-			public byte MouseButtons;
-			public int MouseX;
-			public int MouseY;
+			public ControllerState Port1;
+			public ControllerState Port2;
 			public KeyBuffer Keys;
 			public struct KeyBuffer
 			{
-				public unsafe fixed byte Buffer[LibPUAE.KEY_COUNT];
+				public unsafe fixed byte Buffer[KEY_COUNT];
 			}
 			public int CurrentDrive;
 			public DriveAction Action;
 			public FileName Name;
 			public struct FileName
 			{
-				public unsafe fixed byte Buffer[LibPUAE.FILENAME_MAXLENGTH];
+				public unsafe fixed byte Buffer[FILENAME_MAXLENGTH];
 			}
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct ControllerState
+		{
+			public ControllerType Type;
+			public AllButtons Buttons;
+			public int MouseX;
+			public int MouseY;
+		}
+
+		public enum ControllerType : int
+		{
+			Joystick,
+			Mouse,
+			[Display(Name = "CD32 pad")]
+			CD32_pad
 		}
 
 		public enum DriveAction : int
 		{
 			None,
-			Eject,
-			Insert
+			EjectDisk,
+			InsertDisk
 		}
 
 		[Flags]
-		public enum PUAEJoystick : byte
+		public enum AllButtons : short
 		{
-			Joystick_Up       = b00000001,
-			Joystick_Down     = b00000010,
-			Joystick_Left     = b00000100,
-			Joystick_Right    = b00001000,
-			Joystick_Button_1 = b00010000,
-			Joystick_Button_2 = b00100000,
-			Joystick_Button_3 = b01000000
+			Up      = 0b0000000000000001,
+			Down    = 0b0000000000000010,
+			Left    = 0b0000000000000100,
+			Right   = 0b0000000000001000,
+			Button_1 = 0b0000000000010000,
+			Button_2 = 0b0000000000100000,
+			Button_3 = 0b0000000001000000,
+			Play    = 0b0000000010000000,
+			Rewind  = 0b0000000100000000,
+			Forward = 0b0000001000000000,
+			Green   = 0b0000010000000000,
+			Yellow  = 0b0000100000000000,
+			Red     = 0b0001000000000000,
+			Blue    = 0b0010000000000000
 		}
 
 		// https://wiki.amigaos.net/wiki/Keymap_Library

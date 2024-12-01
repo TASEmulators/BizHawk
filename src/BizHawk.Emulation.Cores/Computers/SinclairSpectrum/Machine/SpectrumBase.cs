@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Reference to the instantiated Z80 cpu (piped in via constructor)
 		/// </summary>
-		public Z80A CPU { get; set; }
+		public Z80A<ZXSpectrum.CpuLink> CPU { get; set; }
 
 		/// <summary>
 		/// ROM and extended info

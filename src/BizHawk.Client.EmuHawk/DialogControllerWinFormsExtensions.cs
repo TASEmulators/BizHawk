@@ -1,6 +1,5 @@
 #nullable enable
 
-using System;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;

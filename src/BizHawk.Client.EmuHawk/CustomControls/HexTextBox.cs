@@ -1,4 +1,3 @@
-﻿using System;
 using System.Globalization;
 using System.Windows.Forms;
 using BizHawk.Client.EmuHawk.CustomControls;
@@ -11,8 +10,8 @@ namespace BizHawk.Client.EmuHawk
 	public interface INumberBox
 	{
 		bool Nullable { get; }
-		uint? ToRawUInt();
-		void SetFromRawUInt(uint? rawUInt);
+		int? ToRawInt();
+		void SetFromRawInt(int? rawInt);
 	}
 
 	public class HexTextBox : ClipboardEventTextBox, INumberBox
@@ -86,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Text.IsHex() && !string.IsNullOrEmpty(_addressFormatStr))
 				{
-					var val = ToRawUInt();
+					var val = (uint)ToRawInt();
 
 					if (val == GetMax())
 					{
@@ -104,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Text.IsHex() && !string.IsNullOrEmpty(_addressFormatStr))
 				{
-					var val = ToRawUInt();
+					var val = (uint)ToRawInt();
 					if (val == 0)
 					{
 						val = (uint)GetMax(); // int to long todo
@@ -147,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 			base.OnPaste(e);
 		}
 
-		public uint? ToRawUInt()
+		public int? ToRawInt()
 		{
 			if (string.IsNullOrWhiteSpace(Text))
 			{
@@ -159,10 +158,10 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			return uint.Parse(Text, NumberStyles.HexNumber);
+			return int.Parse(Text, NumberStyles.HexNumber);
 		}
 
-		public void SetFromRawUInt(uint? val)
+		public void SetFromRawInt(int? val)
 		{
 			Text = val.HasValue ? string.Format(_addressFormatStr, val) : "";
 		}
@@ -231,7 +230,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Text.IsHex())
 				{
-					var val = ToRawUInt().Value;
+					var val = (uint)ToRawInt();
 					if (val == uint.MaxValue)
 					{
 						val = 0;
@@ -248,7 +247,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Text.IsHex())
 				{
-					var val = ToRawUInt().Value;
+					var val = (uint)ToRawInt();
 
 					if (val == 0)
 					{
@@ -280,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 			base.OnTextChanged(e);
 		}
 
-		public uint? ToRawUInt()
+		public int? ToRawInt()
 		{
 			if (string.IsNullOrWhiteSpace(Text) || !Text.IsHex())
 			{
@@ -292,10 +291,10 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			return uint.Parse(Text);
+			return (int)uint.Parse(Text);
 		}
 
-		public void SetFromRawUInt(uint? val)
+		public void SetFromRawInt(int? val)
 		{
 			Text = val?.ToString() ?? "";
 		}

@@ -1,6 +1,5 @@
 ﻿//TODO - for chr, refactor to use 8 registers of 8 bits instead of 16 registers of 4 bits. more realistic, less weird code.
 
-using System;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 

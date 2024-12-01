@@ -1,9 +1,7 @@
-﻿using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common.PathExtensions;
@@ -99,13 +97,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private bool LoadRom(string filename, string archive = null)
-		{
-			var args = new LoadRomArgs
-			{
-				OpenAdvanced = new OpenAdvanced_OpenRom {Path = filename}
-			};
-			return LoadRom(filename, args);
-		}
+			=> LoadRom(filename, new LoadRomArgs(new OpenAdvanced_OpenRom(filename)));
 
 		private bool LoadStateFile(string filename, string archive = null)
 			=> LoadState(path: filename, userFriendlyStateName: Path.GetFileName(filename));
@@ -169,13 +161,10 @@ namespace BizHawk.Client.EmuHawk
 							 */
 							var dearchivalMethod = SharpCompressDearchivalMethod.Instance;
 
+#if false // making this run always to restore the default behavior where unrecognized files are treated like roms --adelikat
 							if (string.IsNullOrEmpty(archive) && dearchivalMethod.CheckSignature(file, out _, out _))
+#endif
 							{
-								sortedFiles[LoadOrdering.Rom].Add(fileInformation);
-							}
-							else
-							{
-								// This is hack is to ensure that unrecognized files are treated like ROMs
 								sortedFiles[LoadOrdering.Rom].Add(fileInformation);
 							}
 

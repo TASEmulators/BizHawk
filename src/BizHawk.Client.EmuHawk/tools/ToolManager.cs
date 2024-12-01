@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -478,10 +477,9 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="condition">The condition to check for</param>
 		/// <typeparam name="T">Type of tools to check</typeparam>
-		/// <returns></returns>
 		public T FirstOrNull<T>(Predicate<T> condition) where T : class
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools) // not bothering to copy here since `condition` is expected to have no side-effects
 			{
 				if (tool.IsActive && tool is T specialTool && condition(specialTool))
 				{
@@ -582,21 +580,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void GeneralUpdateActiveExtTools()
+		{
+			foreach (var tool in _tools.ToArray())
+			{
+				if (tool is IExternalToolForm { IsActive: true }) tool.UpdateValues(ToolFormUpdateType.General);
+			}
+		}
+
 		public void Restart(Config config, IEmulator emulator, IGameInfo game)
 		{
 			_config = config;
 			_emulator = emulator;
 			_game = game;
 			_apiProvider = null;
-			// If Cheat tool is loaded, restarting will restart the list too anyway
-			if (!Has<Cheats>())
-			{
-				_owner.CheatList.NewList(GenerateDefaultCheatFilename(), autosave: true);
-			}
 
 			var unavailable = new List<IToolForm>();
 
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				SetBaseProperties(tool);
 				if (ServiceInjector.UpdateServices(_emulator.ServiceProvider, tool)
@@ -664,8 +665,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Close()
 		{
-			_tools.ForEach(t => t.Close());
+			var toolsCopy = _tools.ToArray();
 			_tools.Clear();
+			foreach (var t in toolsCopy)
+			{
+				try
+				{
+					t.Close();
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine($"caught while calling Form.Close on tool: {e}");
+				}
+			}
 		}
 
 		/// <summary>
@@ -739,7 +751,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateToolsBefore()
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				if (tool.IsActive)
 				{
@@ -750,7 +762,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateToolsAfter()
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				if (tool.IsActive)
 				{
@@ -761,7 +773,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdateBefore()
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				if (tool.IsActive)
 				{
@@ -772,7 +784,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdateAfter()
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				if (tool.IsActive)
 				{

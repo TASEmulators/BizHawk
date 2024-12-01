@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +13,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	/// a gameboy/gameboy color emulator wrapped around native C++ libgambatte
 	/// </summary>
 	[PortedCore(CoreNames.Gambatte, "sinamas/PSR org", "r830", "https://github.com/pokemon-speedrunning/gambatte-core")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Gameboy : IInputPollable, IRomInfo, IGameboyCommon, ICycleTiming, ILinkable
 	{
 		/// <remarks>HACK disables BIOS requirement if the environment looks like a test runner...</remarks>
@@ -452,7 +450,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			CurrentButtons = (LibGambatte.Buttons)b;
 
-			RemoteCommand = (byte)controller.AxisValue("Remote Command");
+			RemoteCommand = _syncSettings.EnableRemote
+				? (byte) controller.AxisValue("Remote Command")
+				: default(byte);
 
 			// the controller callback will set this to false if it actually gets called during the frame
 			IsLagFrame = true;

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -49,16 +48,17 @@ namespace BizHawk.Client.Common
 
 		public IDictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
 
-		public IInputAdapter MovieIn { get; set; }
+		public IController MovieIn { get; set; }
 		public IInputAdapter MovieOut { get; } = new CopyControllerAdapter();
-		public IStickyAdapter StickySource { get; set; }
+		public IController StickySource { get; set; }
 
-		public IMovieController MovieController { get; private set; } = new Bk2Controller("", NullController.Instance.Definition);
+		public IMovieController MovieController { get; private set; } = new Bk2Controller(NullController.Instance.Definition);
 
-		public IMovieController GenerateMovieController(ControllerDefinition definition = null)
+		public IMovieController GenerateMovieController(ControllerDefinition definition = null, string logKey = null)
 		{
-			// TODO: expose Movie.LogKey and pass in here
-			return new Bk2Controller("", definition ?? MovieController.Definition);
+			// TODO: should this fallback to Movie.LogKey?
+			// this function is kinda weird
+			return new Bk2Controller(definition ?? MovieController.Definition, logKey);
 		}
 
 		public void HandleFrameBefore()
@@ -79,35 +79,33 @@ namespace BizHawk.Client.Common
 					LatchInputToUser();
 				}
 			}
-			else if (Movie.IsPlayingOrFinished())
+			else if (Movie.IsPlaying())
 			{
 				LatchInputToLog();
-
-				if (Movie.IsRecording()) // The movie end situation can cause the switch to record mode, in that case we need to capture some input for this frame
+				// if we're at the movie's end and the MovieEndAction is record, just continue recording in play mode
+				// TODO change to TAStudio check
+				if (Movie is ITasMovie && Movie.Emulator.Frame == Movie.FrameCount && Settings.MovieEndAction == MovieEndAction.Record)
 				{
-					HandleFrameLoopForRecordMode();
+					Movie.RecordFrame(Movie.Emulator.Frame, MovieOut.Source);
 				}
 			}
 			else if (Movie.IsRecording())
 			{
-				HandleFrameLoopForRecordMode();
+				LatchInputToUser();
+				Movie.RecordFrame(Movie.Emulator.Frame, MovieOut.Source);
 			}
 		}
 
-		// TODO: this is a mess, simplify
 		public void HandleFrameAfter()
 		{
 			if (Movie is ITasMovie tasMovie)
 			{
 				tasMovie.GreenzoneCurrentFrame();
-				if (tasMovie.IsPlayingOrFinished() && Settings.MovieEndAction == MovieEndAction.Record && Movie.Emulator.Frame >= tasMovie.InputLogLength)
-				{
-					HandleFrameLoopForRecordMode();
-					return;
-				}
+				// TODO change to TAStudio check
+				if (Settings.MovieEndAction == MovieEndAction.Record) return;
 			}
 
-			if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.InputLogLength)
+			if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.FrameCount)
 			{
 				HandlePlaybackEnd();
 			}
@@ -154,10 +152,6 @@ namespace BizHawk.Client.Common
 					// set the controller state to the previous frame for input display purposes
 					int previousFrame = Movie.Emulator.Frame - 1;
 					Movie.Session.MovieController.SetFrom(Movie.GetInputState(previousFrame));
-				}
-				else if (Movie.IsFinished())
-				{
-					LatchInputToUser();
 				}
 			}
 			else
@@ -330,37 +324,68 @@ namespace BizHawk.Client.Common
 		private void LatchInputToLog()
 		{
 			var input = Movie.GetInputState(Movie.Emulator.Frame);
-			if (input == null)
-			{
-				HandleFrameAfter();
-				return;
-			}
 
-			MovieController.SetFrom(input);
+			MovieController.SetFrom(input ?? StickySource);
 			MovieOut.Source = MovieController;
 		}
 
 		private void HandlePlaybackEnd()
 		{
+#if false // invariants given by single call-site
+			Debug.Assert(Movie.IsPlaying());
+			Debug.Assert(Movie.Emulator.Frame >= Movie.InputLogLength);
+#endif
+#if false // code below doesn't actually do anything as the cycle count is indiscriminately overwritten (or removed) on save anyway.
 			if (Movie.IsAtEnd() && Movie.Emulator.HasCycleTiming())
 			{
+				const string WINDOW_TITLE_MISMATCH = "Cycle count mismatch";
+				const string WINDOW_TITLE_MISSING = "Cycle count not yet saved";
+				const string PFX_MISSING = "The cycle count (running time) hasn't been saved into this movie yet.\n";
+				const string ERR_MSG_MISSING_READONLY = PFX_MISSING + "The movie was loaded in read-only mode. To add the cycle count, load it in read-write mode and play to the end again.";
+				const string ERR_MSG_MISSING_CONFIRM = PFX_MISSING + "Add it now?";
+				const string PFX_MISMATCH = "The cycle count (running time) saved into this movie ({0}) doesn't match the measured count ({1}) here at the end.\n";
+				const string ERR_FMT_STR_MISMATCH_READONLY = PFX_MISMATCH + "The movie was loaded in read-only mode. To correct the cycle count, load it in read-write mode and play to the end again.";
+				const string ERR_FMT_STR_MISMATCH_CONFIRM = PFX_MISMATCH + "Correct it now?";
 				var coreValue = Movie.Emulator.AsCycleTiming().CycleCount;
-				var movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out var movieValueStr);
-
-				var movieValue = movieHasValue ? Convert.ToInt64(movieValueStr) : 0;
-				var valuesMatch = movieValue == coreValue;
-
-				if (!movieHasValue || !valuesMatch)
+				if (!Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out var movieValueStr)
+					|| !long.TryParse(movieValueStr, out var movieValue))
 				{
-					var previousState = !movieHasValue
-						? $"The movie is currently missing a cycle count."
-						: $"The cycle count in the movie ({movieValue}) doesn't match the current value.";
-					// TODO: Ideally, this would be a Yes/No MessageBox that saves when "Yes" is pressed.
-					PopupMessage($"The end of the movie has been reached.\n\n{previousState}\n\nSave the movie to update to the current cycle count ({coreValue}).");
+					if (ReadOnly)
+					{
+						//TODO this would be annoying to encounter; detect the missing field when playback starts instead --yoshi
+						_dialogParent.ModalMessageBox(
+							caption: WINDOW_TITLE_MISSING,
+							text: ERR_MSG_MISSING_READONLY,
+							icon: EMsgBoxIcon.Info);
+					}
+					else if (_dialogParent.ModalMessageBox2(
+						caption: WINDOW_TITLE_MISSING,
+						text: ERR_MSG_MISSING_CONFIRM,
+						icon: EMsgBoxIcon.Question))
+					{
+						Movie.SetCycleValues();
+					}
+				}
+				else if (coreValue != movieValue)
+				{
+					if (ReadOnly)
+					{
+						//TODO this would be annoying to encounter; detect the missing field when playback starts instead --yoshi
+						_dialogParent.ModalMessageBox(
+							caption: WINDOW_TITLE_MISMATCH,
+							text: string.Format(ERR_FMT_STR_MISMATCH_READONLY, movieValue, coreValue),
+							icon: EMsgBoxIcon.Warning);
+					}
+					else if (_dialogParent.ModalMessageBox2(
+						caption: WINDOW_TITLE_MISMATCH,
+						text: string.Format(ERR_FMT_STR_MISMATCH_CONFIRM, movieValue, coreValue),
+						icon: EMsgBoxIcon.Question))
+					{
+						Movie.SetCycleValues();
+					}
 				}
 			}
-
-			// TODO: mainform callback to update on mode change
+#endif
 			switch (Settings.MovieEndAction)
 			{
 				case MovieEndAction.Stop:
@@ -380,21 +405,6 @@ namespace BizHawk.Client.Common
 			}
 
 			_modeChangedCallback();
-		}
-
-		private void HandleFrameLoopForRecordMode()
-		{
-			// we don't want TasMovie to latch user input outside its internal recording mode, so limit it to autohold
-			if (Movie is ITasMovie && Movie.IsPlayingOrFinished())
-			{
-				MovieController.SetFromSticky(StickySource);
-			}
-			else
-			{
-				MovieController.SetFrom(MovieIn);
-			}
-
-			Movie.RecordFrame(Movie.Emulator.Frame, MovieController);
 		}
 	}
 }

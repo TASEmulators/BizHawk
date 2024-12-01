@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -64,6 +63,19 @@ namespace BizHawk.Client.Common
 
 		public void SetAttributes(ImageAttributes a)
 		{
+		}
+
+		public void WithSurface(DisplaySurfaceID surfaceID, Action<IGuiApi> drawingCallsFunc)
+		{
+			_usingSurfaceID = surfaceID;
+			try
+			{
+				drawingCallsFunc(this);
+			}
+			finally
+			{
+				_usingSurfaceID = null;
+			}
 		}
 
 		public void WithSurface(DisplaySurfaceID surfaceID, Action drawingCallsFunc)
@@ -261,7 +273,8 @@ namespace BizHawk.Client.Common
 
 			if (!_imageCache.TryGetValue(path, out var img))
 			{
-				img = new(Image.FromFile(path));
+				using var file = Image.FromFile(path);
+				img = new(file);
 				if (cache) _imageCache[path] = img;
 			}
 
@@ -279,7 +292,10 @@ namespace BizHawk.Client.Common
 		}
 
 		public void ClearImageCache()
-			=> _imageCache.Clear();
+		{
+			_imageCache.Clear();
+			_displayManager.ClearApiHawkTextureCache();
+		}
 
 		public void DrawImageRegion(Image img, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null, DisplaySurfaceID? surfaceID = null)
 		{
@@ -307,7 +323,11 @@ namespace BizHawk.Client.Common
 			var r = Get2DRenderer(surfaceID);
 			r.CompositingMode = _compositingMode;
 			r.DrawImage(
-				_imageCache.GetValueOrPut(path, static i => new(Image.FromFile(i))),
+				_imageCache.GetValueOrPut(path, static i =>
+				{
+					using var file = Image.FromFile(i);
+					return new(file);
+				}),
 				new Rectangle(dest_x, dest_y, dest_width ?? source_width, dest_height ?? source_height),
 				source_x,
 				source_y,
@@ -372,8 +392,8 @@ namespace BizHawk.Client.Common
 		public void DrawRectangle(int x, int y, int width, int height, Color? line = null, Color? background = null, DisplaySurfaceID? surfaceID = null)
 		{
 			var r = Get2DRenderer(surfaceID);
-			var w = Math.Max(width, 1);
-			var h = Math.Max(height, 1);
+			var w = Math.Max(width, 0);
+			var h = Math.Max(height, 0);
 			// GDI+ had an off by one here, we increment width and height to preserve backwards compatibility
 			w++; h++;
 			r.DrawRectangle(line ?? _defaultForeground, x, y, w, h);

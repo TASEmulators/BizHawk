@@ -1,10 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -46,25 +46,42 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		private LibNymaCore _nyma;
+
 		protected T DoInit<T>(
 			CoreLoadParameters<NymaSettings, NymaSyncSettings> lp,
 			string wbxFilename,
-			IDictionary<string, FirmwareID> firmwares = null
+			IDictionary<string, FirmwareID> firmwareIDMap = null
 		)
 			where T : LibNymaCore
 		{
 			return DoInit<T>(
-				lp.Game,
-				lp.Roms.FirstOrDefault()?.RomData,
+				lp.Roms.Select(r => (r.RomData,
+					Path.GetFileName(r.RomPath[(r.RomPath.LastIndexOf('|') + 1)..])!.ToLowerInvariant())).ToArray(),
 				lp.Discs.Select(d => d.DiscData).ToArray(),
 				wbxFilename,
 				lp.Roms.FirstOrDefault()?.Extension,
 				lp.DeterministicEmulationRequested,
-				firmwares
+				firmwareIDMap
 			);
 		}
-		protected T DoInit<T>(GameInfo game, byte[] rom, Disc[] discs, string wbxFilename, string extension, bool deterministic,
-			IDictionary<string, FirmwareID> firmwares = null)
+
+		protected T DoInit<T>(
+			GameInfo game, byte[] rom, Disc[] discs, string wbxFilename,
+			string romExtension, bool deterministic, IDictionary<string, FirmwareID> firmwareIDMap = null)
+			where T : LibNymaCore
+		{
+			return DoInit<T>(
+				[ (Data: rom, Filename: game.FilesystemSafeName() + romExtension.ToLowerInvariant()) ],
+				discs,
+				wbxFilename,
+				romExtension,
+				deterministic,
+				firmwareIDMap
+			);
+		}
+
+		protected T DoInit<T>((byte[] Data, string Filename)[] roms, Disc[] discs, string wbxFilename,
+			string romExtension, bool deterministic, IDictionary<string, FirmwareID> firmwareIDMap = null)
 			where T : LibNymaCore
 		{
 			_settingsQueryDelegate = SettingsQuery;
@@ -73,9 +90,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			var filesToRemove = new List<string>();
 
-			var firmwareDelegate = new LibNymaCore.FrontendFirmwareNotify((name) =>
+			var firmwareDelegate = new LibNymaCore.FrontendFirmwareNotify(name =>
 			{
-				if (firmwares != null && firmwares.TryGetValue(name, out var id))
+				if (firmwareIDMap != null && firmwareIDMap.TryGetValue(name, out var id))
 				{
 					var data = CoreComm.CoreFileProvider.GetFirmwareOrThrow(id, "Firmware files are usually required and may stop your game from loading");
 					_exe.AddReadonlyFile(data, name);
@@ -124,21 +141,25 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				else
 				{
-					var fn = game.FilesystemSafeName();
-					_exe.AddReadonlyFile(rom, fn);
+					foreach (var (data, filename) in roms)
+					{
+						_exe.AddReadonlyFile(data, filename);
+					}
 
 					var didInit = _nyma.InitRom(new LibNymaCore.InitData
 					{
-						// TODO: Set these as some cores need them
-						FileNameBase = "",
-						FileNameExt = extension.Trim('.').ToLowerInvariant(),
-						FileNameFull = fn
+						FileNameBase = Path.GetFileNameWithoutExtension(roms[0].Filename),
+						FileNameExt = romExtension.Trim('.').ToLowerInvariant(),
+						FileNameFull = roms[0].Filename
 					});
 
 					if (!didInit)
 						throw new InvalidOperationException("Core rejected the rom!");
 
-					_exe.RemoveReadonlyFile(fn);
+					foreach (var (_, filename) in roms)
+					{
+						_exe.RemoveReadonlyFile(filename);
+					}
 				}
 
 				foreach (var s in filesToRemove)
@@ -172,6 +193,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				VsyncDenominator = 1 << 24;
 				ClockRate = info.MasterClock / (double)0x100000000;
 				_soundBuffer = new short[22050 * 2];
+				_isArcade = info.GameType == LibNymaCore.GameMediumTypes.GMT_ARCADE;
 
 				InitControls(portData, discs?.Length ?? 0, ref info);
 				PostInit();
@@ -233,12 +255,18 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private IController _currentController;
 
+		protected bool _isArcade;
+
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			DriveLightOn = false;
 			_currentController = controller; // need to remember this for rumble
 			_controllerAdapter.SetBits(controller, _inputPortData);
-			_frameAdvanceInputLock = GCHandle.Alloc(_inputPortData, GCHandleType.Pinned);
+			if (!_frameAdvanceInputLock.IsAllocated)
+			{
+				_frameAdvanceInputLock = GCHandle.Alloc(_inputPortData, GCHandleType.Pinned);
+			}
+
 			LibNymaCore.BizhawkFlags flags = 0;
 			if (!render)
 				flags |= LibNymaCore.BizhawkFlags.SkipRendering;
@@ -246,10 +274,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				flags |= LibNymaCore.BizhawkFlags.SkipSoundening;
 			if (SettingsQuery("nyma.constantfb") != "0")
 				flags |= LibNymaCore.BizhawkFlags.RenderConstantSize;
-			if (controller.IsPressed("Open Tray"))
-				flags |= LibNymaCore.BizhawkFlags.OpenTray;
-			if (controller.IsPressed("Close Tray"))
-				flags |= LibNymaCore.BizhawkFlags.CloseTray;
+			int diskIndex = default;
+			if (_disks is not null)
+			{
+				if (controller.IsPressed("Open Tray")) flags |= LibNymaCore.BizhawkFlags.OpenTray;
+				if (controller.IsPressed("Close Tray")) flags |= LibNymaCore.BizhawkFlags.CloseTray;
+				diskIndex = controller.AxisValue("Disk Index");
+			}
 
 			var ret = new LibNymaCore.FrameInfo
 			{
@@ -258,10 +289,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					? LibNymaCore.CommandType.POWER
 					: controller.IsPressed("Reset")
 						? LibNymaCore.CommandType.RESET
-						: LibNymaCore.CommandType.NONE,
+						: _isArcade && controller.IsPressed("Insert Coin")
+							? LibNymaCore.CommandType.INSERT_COIN
+							: LibNymaCore.CommandType.NONE,
 				InputPortData = (byte*)_frameAdvanceInputLock.AddrOfPinnedObject(),
 				FrontendTime = GetRtcTime(SettingsQuery("nyma.rtcrealtime") != "0"),
-				DiskIndex = controller.AxisValue("Disk Index")
+				DiskIndex = diskIndex,
 			};
 			if (_frameThreadStart != null)
 			{
@@ -269,6 +302,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 			return ret;
 		}
+
 		protected override void FrameAdvancePost()
 		{
 			_controllerAdapter.DoRumble(_currentController, _inputPortData);
@@ -348,6 +382,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					disk.Dispose();
 				}
 			}
+
+			if (_frameAdvanceInputLock.IsAllocated)
+			{
+				_frameAdvanceInputLock.Free();
+			}
+
 			base.Dispose();
 		}
 	}

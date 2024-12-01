@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
@@ -52,7 +51,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 
-		private readonly MemoryCallbackSystem _memoryCallbacks = new(new[] { "System Bus" });
+		// FIXME: internally the code actually just does this for either bus (probably don't want to bother adding support)
+		private readonly MemoryCallbackSystem _memoryCallbacks = new([ "ARM9 System Bus" ]);
 
 		private LibMelonDS.MemoryCallback _readCallback;
 		private LibMelonDS.MemoryCallback _writeCallback;
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				{
 					if (getHasCBOfType())
 					{
-						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, "System Bus");
+						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, "ARM9 System Bus");
 					}
 				};
 			}

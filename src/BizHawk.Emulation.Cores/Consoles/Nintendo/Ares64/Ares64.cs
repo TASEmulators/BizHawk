@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Linq;
 
@@ -10,7 +9,6 @@ using BizHawk.Emulation.Cores.Waterbox;
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
 	[PortedCore(CoreNames.Ares64, "ares team, Near", "v138", "https://ares-emu.net/")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight), })]
 	public partial class Ares64 : WaterboxCore, IRegionable
 	{
 		private readonly LibAres64 _core;
@@ -254,35 +252,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			for (int i = 0; i < 4; i++)
-			{
-				if (ControllerSettings[i] == LibAres64.ControllerType.Rumblepak)
-				{
-					controller.SetHapticChannelStrength($"P{i + 1} Rumble Pak", _core.GetRumbleStatus(i) ? int.MaxValue : 0);
-				}
-			}
-
-			return new LibAres64.FrameInfo
+			LibAres64.FrameInfo fi = new()
 			{
 				Time = GetRtcTime(!DeterministicEmulation),
-
-				P1Buttons = GetButtons(controller, 1),
-				P2Buttons = GetButtons(controller, 2),
-				P3Buttons = GetButtons(controller, 3),
-				P4Buttons = GetButtons(controller, 4),
-
-				P1XAxis = (short)controller.AxisValue("P1 X Axis"),
-				P1YAxis = (short)controller.AxisValue("P1 Y Axis"),
-
-				P2XAxis = (short)controller.AxisValue("P2 X Axis"),
-				P2YAxis = (short)controller.AxisValue("P2 Y Axis"),
-
-				P3XAxis = (short)controller.AxisValue("P3 X Axis"),
-				P3YAxis = (short)controller.AxisValue("P3 Y Axis"),
-
-				P4XAxis = (short)controller.AxisValue("P4 X Axis"),
-				P4YAxis = (short)controller.AxisValue("P4 Y Axis"),
-
 				Reset = controller.IsPressed("Reset"),
 				Power = controller.IsPressed("Power"),
 				
@@ -290,6 +262,43 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				FastVI = _settings.FastVI,
 				SkipDraw = !render,
 			};
+			for (int i = 0; i < 4; i++)
+			{
+				var peripheral = ControllerSettings[i];
+				if (peripheral is LibAres64.ControllerType.Unplugged) continue;
+				var num = i + 1;
+				if (peripheral is LibAres64.ControllerType.Rumblepak)
+				{
+					controller.SetHapticChannelStrength($"P{num} Rumble Pak", _core.GetRumbleStatus(i) ? int.MaxValue : 0);
+				}
+				var buttonsState = GetButtons(controller, num);
+				var stickXState = unchecked((short) controller.AxisValue($"P{num} X Axis"));
+				var stickYState = unchecked((short) controller.AxisValue($"P{num} Y Axis"));
+				switch (num)
+				{
+					case 1:
+						fi.P1Buttons = buttonsState;
+						fi.P1XAxis = stickXState;
+						fi.P1YAxis = stickYState;
+						break;
+					case 2:
+						fi.P2Buttons = buttonsState;
+						fi.P2XAxis = stickXState;
+						fi.P2YAxis = stickYState;
+						break;
+					case 3:
+						fi.P3Buttons = buttonsState;
+						fi.P3XAxis = stickXState;
+						fi.P3YAxis = stickYState;
+						break;
+					case 4:
+						fi.P4Buttons = buttonsState;
+						fi.P4XAxis = stickXState;
+						fi.P4YAxis = stickYState;
+						break;
+				}
+			}
+			return fi;
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)

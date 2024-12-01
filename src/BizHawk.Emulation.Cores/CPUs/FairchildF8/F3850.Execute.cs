@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Components.FairchildF8
 {
-	public sealed partial class F3850
+	public sealed partial class F3850<TLink>
 	{
 		public const int MaxInstructionLength = 48;
 
@@ -31,9 +31,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		public void FetchInstruction()
 		{
-			//dLog[opcode] = dLog[opcode] + 1;
-			//UpdateDebug();
-
 			switch (opcode)
 			{
 				case 0x00: LR_A_KU(); break;					// LR A, (KU) 

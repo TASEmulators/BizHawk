@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,12 +26,12 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// The session blocks
 			/// </summary>
-			public readonly IList<CDISession> Sessions = new List<CDISession>();
+			public readonly List<CDISession> Sessions = [ ];
 
 			/// <summary>
 			/// The track blocks
 			/// </summary>
-			public readonly IList<CDITrack> Tracks = new List<CDITrack>();
+			public readonly List<CDITrack> Tracks = [ ];
 			
 			/// <summary>
 			/// The disc info block
@@ -389,7 +388,7 @@ namespace BizHawk.Emulation.DiscSystem
 				cdif.DiscInfo.CdText = br.ReadStringFixedUtf8((int)cdTextLengh);
 				stream.Seek(12, SeekOrigin.Current); // unknown bytes
 
-				if (cdif.Tracks.Any(track => track.NumTracks != cdif.Tracks.Count) || cdif.DiscInfo.NumTracks != cdif.Tracks.Count)
+				if (cdif.Tracks.Exists(track => track.NumTracks != cdif.Tracks.Count) || cdif.DiscInfo.NumTracks != cdif.Tracks.Count)
 				{
 					throw new CDIParseException("Malformed CDI format: Total track number mismatch!");
 				}

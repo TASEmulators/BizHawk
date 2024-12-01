@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy

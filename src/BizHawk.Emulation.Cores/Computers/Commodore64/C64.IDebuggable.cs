@@ -10,13 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private IDebuggable _selectedDebuggable;
 
 		private IEnumerable<IDebuggable> GetAvailableDebuggables()
-		{
-			yield return _board.Cpu;
-			if (_board.DiskDrive != null)
-			{
-				yield return _board.DiskDrive;
-			}
-		}
+			=> _board.DiskDrive is IDebuggable dd ? [ _board.Cpu, dd ] : [ _board.Cpu ];
 
 		private void SetDefaultDebuggable()
 		{

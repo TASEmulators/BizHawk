@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System;
 using System.Linq;
 using System.Text;
 using BizHawk.Common.StringExtensions;
@@ -18,7 +17,7 @@ namespace BizHawk.Emulation.Common
 		private string _possibleIdent = "";
 
 		/// <summary>
-		/// Default fallthrough to AppleII
+		/// Default fallthrough to AppleII - the AppleII *.dsk format seems to be very simple with no ident strings
 		/// </summary>
 		public string IdentifiedSystem { get; set; } = VSystemID.Raw.AppleII;
 
@@ -94,7 +93,7 @@ namespace BizHawk.Emulation.Common
 			// check for bootable status
 			if (trk.Sectors[0].SectorData != null && trk.Sectors[0].SectorData.Length > 0)
 			{
-				switch (trk.Sectors[0].GetChecksum256())
+				switch (trk.Sectors[0].GetModChecksum256())
 				{
 					case 3:
 						IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
@@ -117,13 +116,13 @@ namespace BizHawk.Emulation.Common
 			}
 
 			// at this point the disk is not standard bootable
-			// try format analysis
+			// try format analysis			
 			if (trk.Sectors.Length == 9 && trk.Sectors[0].SectorSize == 2)
 			{
 				switch (trk.GetLowestSectorID())
 				{
 					case 1:
-						switch (trk.Sectors[0].GetChecksum256())
+						switch (trk.Sectors[0].GetModChecksum256())
 						{
 							case 3:
 								IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
@@ -407,7 +406,7 @@ namespace BizHawk.Emulation.Common
 			public byte[] SectorData { get; set; }
 			public bool ContainsMultipleWeakSectors { get; set; }
 
-			public int GetChecksum256() => SectorData.Sum(b => b % 256);
+			public byte GetModChecksum256() => (byte) (SectorData.Sum(static b => b) & 0xFF);
 		}
 	}
 }

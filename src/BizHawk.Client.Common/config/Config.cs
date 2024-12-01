@@ -1,5 +1,5 @@
-﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 
 using BizHawk.Bizware.Graphics;
@@ -19,12 +19,17 @@ namespace BizHawk.Client.Common
 		public static string ControlDefaultPath => Path.Combine(PathUtils.ExeDirectoryPath, "defctrl.json");
 
 		/// <remarks>
-		/// <c>AppliesTo[0]</c> is used as the group label, and
+		/// <c>CoreNames[0]</c> is the default (out-of-the-box) core.<br/>
+		/// <c>AppliesTo</c> are concatenated to make the submenu's label, and
 		/// <c>Config.PreferredCores[AppliesTo[0]]</c> (lookup on global <see cref="Config"/> instance) determines which option is shown as checked.<br/>
 		/// The order within submenus and the order of the submenus themselves are determined by the declaration order here.
 		/// </remarks>
 		public static readonly IReadOnlyList<(string[] AppliesTo, string[] CoreNames)> CorePickerUIData = new List<(string[], string[])>
 		{
+			([ VSystemID.Raw.A26 ],
+				[ CoreNames.Atari2600Hawk, CoreNames.Stella ]),
+			([ VSystemID.Raw.Satellaview ],
+				[ CoreNames.Bsnes115, CoreNames.SubBsnes115 ]),
 			([ VSystemID.Raw.GB, VSystemID.Raw.GBC ],
 				[ CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk ]),
 			([ VSystemID.Raw.GBL ],
@@ -114,6 +119,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.GBA] = 3,
 			[VSystemID.Raw.GBC] = 3,
 			[VSystemID.Raw.N64] = 1,
+			[VSystemID.Raw.WSWAN] = 3,
 		};
 
 		public int GetWindowScaleFor(string sysID)
@@ -133,8 +139,9 @@ namespace BizHawk.Client.Common
 		public bool MainFormStayOnTop { get; set; }
 		public bool StartPaused { get; set; }
 		public bool StartFullscreen { get; set; }
-		public int MainWndx { get; set; } = -1; // Negative numbers will be ignored
-		public int MainWndy { get; set; } = -1;
+		public Point? MainWindowPosition { get; set; }
+		public Size? MainWindowSize { get; set; }
+		public bool MainWindowMaximized { get; set; }
 		public bool RunInBackground { get; set; } = true;
 		public bool AcceptBackgroundInput { get; set; }
 		public bool AcceptBackgroundInputControllerOnly { get; set; }
@@ -157,7 +164,7 @@ namespace BizHawk.Client.Common
 		public bool AviCaptureLua { get; set; }
 		public bool ScreenshotCaptureOsd { get; set; }
 		public bool FirstBoot { get; set; } = true;
-		public bool UpdateAutoCheckEnabled { get; set; }
+		public bool UpdateAutoCheckEnabled { get; set; } = true;
 		public DateTime? UpdateLastCheckTimeUtc { get; set; }
 		public string UpdateLatestVersion { get; set; } = "";
 		public string UpdateIgnoreVersion { get; set; } = "";
@@ -240,7 +247,7 @@ namespace BizHawk.Client.Common
 		public int MessagesColor { get; set; } = DefaultMessagePositions.MessagesColor;
 		public int AlertMessageColor { get; set; } = DefaultMessagePositions.AlertMessageColor;
 		public int LastInputColor { get; set; } = DefaultMessagePositions.LastInputColor;
-		public int MovieInput { get; set; } = DefaultMessagePositions.MovieInput;
+		public int MovieInputColor { get; set; } = DefaultMessagePositions.MovieInputColor;
 
 		public int DispPrescale { get; set; } = 1;
 
@@ -270,6 +277,11 @@ namespace BizHawk.Client.Common
 		public int DispCropTop { get; set; } = 0;
 		public int DispCropRight { get; set; } = 0;
 		public int DispCropBottom { get; set; } = 0;
+
+		/// <summary>
+		/// Automatically resize main window when framebuffer size changes (default behavior)
+		/// </summary>
+		public bool ResizeWithFramebuffer { get; set; } = true;
 
 		// Sound options
 		public ESoundOutputMethod SoundOutputMethod { get; set; } = HostCapabilityDetector.HasXAudio2 ? ESoundOutputMethod.XAudio2 : ESoundOutputMethod.OpenAL;

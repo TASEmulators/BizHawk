@@ -1,5 +1,3 @@
-using System;
-
 namespace BizHawk.Common
 {
 	/// <summary>Indicates that a string value is formatted as a path, with an extension to the format: paths followed by <c>'|'</c> and then a relative path represent a member of an archive file.</summary>

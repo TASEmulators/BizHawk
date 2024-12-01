@@ -1,11 +1,10 @@
 ﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	[Core(CoreNames.ColecoHawk, "Vecna")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
+	[ServiceNotApplicable(typeof(ISaveRam))]
 	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
 	{
 		[CoreConstructor(VSystemID.Raw.Coleco)]
@@ -18,15 +17,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			_syncSettings = syncSettings ?? new ColecoSyncSettings();
 			bool skipBios = _syncSettings.SkipBiosIntro;
 
-			_cpu = new Z80A
-			{
-				FetchMemory = ReadMemory,
-				ReadMemory = ReadMemory,
-				WriteMemory = WriteMemory,
-				ReadHardware = ReadPort,
-				WriteHardware = WritePort,
-				MemoryCallbacks = MemoryCallbacks
-			};
+			_cpu = new Z80A<CpuLink>(new CpuLink(this));
 
 			PSG = new SN76489col();
 			SGM_sound = new AY_3_8910_SGM();
@@ -61,7 +52,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.Register<ITraceable>(_tracer = new TraceBuffer(_cpu.TraceHeader));
 		}
 
-		private readonly Z80A _cpu;
+		private readonly Z80A<CpuLink> _cpu;
 		private readonly TMS9918A _vdp;
 		private readonly byte[] _biosRom;
 		private readonly TraceBuffer _tracer;

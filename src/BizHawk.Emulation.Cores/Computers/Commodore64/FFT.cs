@@ -1,5 +1,3 @@
-﻿using System;
-
 // Copyright(C) 1996-2001 Takuya Ooura
 // C# port by J.D. Purcell
 // You may use, copy, modify this code for any purpose and without fee.

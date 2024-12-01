@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 using BizHawk.Common;
@@ -88,7 +87,7 @@ namespace BizHawk.Emulation.Common
 				=> _header = header;
 
 			public override string ToString()
-				=> $"[{ContentTypeField >> 4:X1}] {Title} r{Revision} ({(IsSelfDestructing ? RemainingPlays : "unlimited")} plays left)";
+				=> $"[{ContentTypeField >> 4:X1}] {Title} r{Revision} ({(IsSelfDestructing ? RemainingPlays.ToString() : "unlimited")} plays left)";
 
 			public bool VerifyChecksum(ReadOnlySpan<byte> rom)
 				=> true; //TODO need to parse page mapping from offset 0x20..0x23 in order to calculate this

@@ -38,6 +38,14 @@ in {
 , git ? pkgs.gitMinimal # only when building from-CWD (`-local`)
 # rundeps
 , coreutils ? pkgs.coreutils
+, gnome-themes-extra ? pkgs.gnome3.gnome-themes-extra
+, gtk2-x11 ? pkgs.gtk2-x11
+, kate ? pkgs.kate.overrideAttrs (oldAttrs: {
+	patches = (oldAttrs.patches or []) ++ [ (fetchpatch {
+		url = "https://invent.kde.org/utilities/kate/-/commit/9ddf4f0c9eb3c26a0ab33c862d2b161bcbdc6a6e.patch"; # Fix name of OmniSharp LSP binary
+		hash = "sha256-a2KqoxuuVhfAQUJA3/yEQb1QCoa1JCvLz7BZZnSLnzI=";
+	}) ];
+})
 , libgdiplus ? pkgs.libgdiplus
 , libGL ? pkgs.libGL
 , lua ? pkgs.lua54Packages.lua
@@ -47,6 +55,7 @@ in {
 	hash = "sha512-GvV707ftLvE0MCTfMJb/M86S2Nxf3vai+HPwq0QvJylmMBwliqYx/nW8X2ja2ruOHzaw3MXXmAxjnv5MMUn07w==";
 }) { inherit system; })
 , nixGL ? nixGLChannel.auto.nixGLDefault
+, omnisharp-roslyn ? pkgs.omnisharp-roslyn
 #, nixVulkan ? nixGLChannel.auto.nixVulkanNvidia
 , openal ? pkgs.openal
 , SDL2 ? pkgs.SDL2
@@ -57,11 +66,11 @@ in {
 , debugPInvokes ? false # forwarded to Dist/launch-scripts.nix
 , debugDotnetHostCrashes ? false # forwarded to Dist/launch-scripts.nix
 , doCheck ? true # runs `Dist/BuildTest${buildConfig}.sh`
-, emuhawkBuildFlavour ? "NixHawk"
 , extraDefines ? "" # added to `<DefineConstants/>`, so ';'-separated
 , extraDotnetBuildFlags ? "" # currently passed to EVERY `dotnet build` and `dotnet test` invocation (and does not replace the flags for parallel compilation added by default)
 , forNixOS ? true
 , initConfig ? {} # forwarded to Dist/launch-scripts.nix (see docs there)
+, profileManagedCalls ? false # forwarded to Dist/launch-scripts.nix
 }: let
 	isVersionAtLeast = lib.flip lib.versionAtLeast; # I stand by this being the more useful param order w.r.t. currying
 	replaceDotWithUnderscore = s: lib.replaceStrings [ "." ] [ "_" ] s;
@@ -93,7 +102,7 @@ in {
 		inherit lib
 			writeShellScript writeText
 			bizhawkAssemblies nixGL
-			debugPInvokes debugDotnetHostCrashes initConfig isManualLocalBuild;
+			debugPInvokes debugDotnetHostCrashes initConfig isManualLocalBuild profileManagedCalls;
 		mkfifo = coreutils;
 		mktemp = coreutils;
 	};
@@ -103,8 +112,8 @@ in {
 			buildDotnetModule fetchpatch fetchzip hardLinkJoin launchScriptsFor makeDesktopItem
 				releaseTagSourceInfos runCommand symlinkJoin writeShellScriptBin
 			git
-			libgdiplus libGL lua openal SDL2 udev zstd
-			buildConfig doCheck emuhawkBuildFlavour extraDefines extraDotnetBuildFlags;
+			gnome-themes-extra gtk2-x11 libgdiplus libGL lua openal SDL2 udev zstd
+			buildConfig doCheck extraDefines extraDotnetBuildFlags;
 		mono = if mono != null
 			then mono # allow older Mono if set explicitly
 			else if isVersionAtLeast "6.12.0.151" pkgs.mono.version
@@ -155,7 +164,7 @@ in {
 	];
 	latestVersionFrag = lib.head releaseFrags;
 	combined = pp // asmsFromReleaseArtifacts // releasesEmuHawkInstallables // {
-		inherit depsForHistoricalRelease releaseTagSourceInfos;
+		inherit depsForHistoricalRelease populateHawkSourceInfo releaseTagSourceInfos;
 		bizhawkAssemblies = pp.buildAssembliesFor (fillTargetOSDifferences hawkSourceInfoDevBuild);
 		"bizhawkAssemblies-${latestVersionFrag}" = pp.buildAssembliesFor
 			(fillTargetOSDifferences releaseTagSourceInfos."info-${latestVersionFrag}");
@@ -172,6 +181,9 @@ in {
 			bizhawkAssemblies = asmsFromReleaseArtifacts."bizhawkAssemblies-${latestVersionFrag}-bin";
 		};
 		emuhawk = emuhawk-local;
+		IDEs = {
+			kate = [ kate omnisharp-roslyn ];
+		};
 		launchScriptsForLocalBuild = launchScriptsFor emuhawk-local.assemblies true;
 	};
 in combined // lib.listToAttrs (lib.concatLists (builtins.map

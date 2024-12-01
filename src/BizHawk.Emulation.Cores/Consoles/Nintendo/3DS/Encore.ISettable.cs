@@ -1,7 +1,6 @@
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;

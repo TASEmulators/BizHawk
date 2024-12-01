@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -235,9 +234,7 @@ namespace BizHawk.Client.Common
 			// TODO - use more sophisticated IDer
 			var discType = new DiscIdentifier(disc).DetectDiscType();
 			var discHasher = new DiscHasher(disc);
-			var discHash = discType == DiscType.SonyPSX
-				? discHasher.Calculate_PSX_BizIDHash()
-				: discHasher.OldHash();
+			var discHash = discHasher.CalculateBizHash(discType);
 
 			var game = Database.CheckDatabase(discHash);
 			if (game is not null) return game;
@@ -487,34 +484,6 @@ namespace BizHawk.Client.Common
 					{
 						game.System = VSystemID.Raw.SGB;
 					}
-					break;
-				case VSystemID.Raw.PSX when ext is ".bin":
-					const string FILE_EXT_CUE = ".cue";
-					var cuePath = TempFileManager.GetTempFilename(friendlyName: "syn", dotAndExtension: FILE_EXT_CUE, delete: false);
-					DiscMountJob.CreateSyntheticCue(cueFilePath: cuePath, binFilePath: file.Name);
-					var gameBak = game;
-					var nextEmulatorBak = nextEmulator;
-					try
-					{
-						if (LoadDisc(
-							path: cuePath,
-							nextComm,
-							new(cuePath),
-							ext: FILE_EXT_CUE,
-							forcedCoreName: forcedCoreName,
-							out nextEmulator,
-							out game))
-						{
-							return;
-						}
-						Console.WriteLine("synthesised .cue failed to load");
-					}
-					catch (Exception e)
-					{
-						Console.WriteLine($"synthesised .cue failed to load: {e}");
-					}
-					game = gameBak;
-					nextEmulator = nextEmulatorBak;
 					break;
 			}
 			var cip = new CoreInventoryParameters(this)
@@ -875,7 +844,7 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> A78 = new[] { "a78" };
 
-			public static readonly IReadOnlyCollection<string> Amiga = new[] { "adf", "adz", "dms", "fdi", "hdf", "ipf", "lha" };
+			public static readonly IReadOnlyCollection<string> Amiga = new[] { "adf", "adz", "dms", "fdi", /*"hdf", "ipf", "lha"*/ };
 
 			public static readonly IReadOnlyCollection<string> AppleII = new[] { "dsk", "do", "po" };
 
@@ -905,7 +874,7 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> N64DD = new[] { "ndd" };
 
-			public static readonly IReadOnlyCollection<string> NDS = new[] { "nds" };
+			public static readonly IReadOnlyCollection<string> NDS = new[] { "nds", "srl", "dsi", "ids" };
 
 			public static readonly IReadOnlyCollection<string> NES = new[] { "nes", "fds", "unf" };
 
@@ -931,7 +900,7 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> WSWAN = new[] { "ws", "wsc", "pc2" };
 
-			public static readonly IReadOnlyCollection<string> ZXSpectrum = new[] { "tzx", "tap", "dsk", "pzx" };
+			public static readonly IReadOnlyCollection<string> ZXSpectrum = new[] { "tzx", "tap", "dsk", "pzx", "ipf" };
 
 			public static readonly IReadOnlyCollection<string> AutoloadFromArchive = Array.Empty<string>()
 				.Concat(A26)

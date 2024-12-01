@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +6,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -31,7 +31,8 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrWhiteSpace(FilterBox.Text))
 			{
 				_filteredList = _functionList
-					.Where(f => $"{f.Library}.{f.Name}".ToLowerInvariant().Contains(FilterBox.Text.ToLowerInvariant()))
+					.Where(f => $"{f.Library}.{f.Name}".Contains(FilterBox.Text, StringComparison.OrdinalIgnoreCase)
+						|| f.Description.Contains(FilterBox.Text, StringComparison.OrdinalIgnoreCase))
 					.ToList();
 			}
 			else
@@ -47,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 				.ThenBy(l => l.Name)
 				.ToList();
 			UpdateList();
-			FilterBox.Focus();
+			FilterBox.Select();
 
 			ToWikiMarkupButton.Visible = VersionInfo.DeveloperBuild;
 		}
@@ -100,11 +101,7 @@ namespace BizHawk.Client.EmuHawk
 				get => _column;
 				set
 				{
-					if (_column == value)
-					{
-						Descending ^= true;
-					}
-
+					if (_column == value) Descending = !Descending;
 					_column = value;
 				}
 			}

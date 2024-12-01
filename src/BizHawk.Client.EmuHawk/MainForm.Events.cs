@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -13,60 +12,6 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Arcades.MAME;
-using BizHawk.Emulation.Cores.Atari.A7800Hawk;
-using BizHawk.Emulation.Cores.Atari.Atari2600;
-using BizHawk.Emulation.Cores.Atari.Jaguar;
-using BizHawk.Emulation.Cores.Atari.Lynx;
-using BizHawk.Emulation.Cores.Calculators.Emu83;
-using BizHawk.Emulation.Cores.Calculators.TI83;
-using BizHawk.Emulation.Cores.ColecoVision;
-using BizHawk.Emulation.Cores.Computers.Amiga;
-using BizHawk.Emulation.Cores.Computers.AmstradCPC;
-using BizHawk.Emulation.Cores.Computers.AppleII;
-using BizHawk.Emulation.Cores.Computers.Commodore64;
-using BizHawk.Emulation.Cores.Computers.MSX;
-using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
-using BizHawk.Emulation.Cores.Computers.TIC80;
-using BizHawk.Emulation.Cores.Consoles.Belogic;
-using BizHawk.Emulation.Cores.Consoles.ChannelF;
-using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
-using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.Faust;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.VB;
-using BizHawk.Emulation.Cores.Consoles.O2Hawk;
-using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
-using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
-using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
-using BizHawk.Emulation.Cores.Consoles.SNK;
-using BizHawk.Emulation.Cores.Consoles.Vectrex;
-using BizHawk.Emulation.Cores.Intellivision;
-using BizHawk.Emulation.Cores.Libretro;
-using BizHawk.Emulation.Cores.Nintendo.BSNES;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Nintendo.GBA;
-using BizHawk.Emulation.Cores.Nintendo.GBHawk;
-using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
-using BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x;
-using BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x;
-using BizHawk.Emulation.Cores.Nintendo.N64;
-using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Nintendo.Sameboy;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.Nintendo.SNES9X;
-using BizHawk.Emulation.Cores.Nintendo.SubGBHawk;
-using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
-using BizHawk.Emulation.Cores.PCEngine;
-using BizHawk.Emulation.Cores.Sega.GGHawkLink;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
-using BizHawk.Emulation.Cores.Sony.PSX;
-using BizHawk.Emulation.Cores.Waterbox;
-using BizHawk.Emulation.Cores.WonderSwan;
 using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
@@ -83,13 +28,6 @@ namespace BizHawk.Client.EmuHawk
 			AppendAllFilesEntry = false,
 		};
 
-		private static readonly FilesystemFilterSet TI83ProgramFilesFSFilterSet = new(new FilesystemFilter("TI-83 Program Files", new[] { "83p", "8xp" }));
-
-		private static readonly FilesystemFilterSet ZXStateFilesFSFilterSet = new(new FilesystemFilter("ZX-State files", new[] { "szx" }))
-		{
-			AppendAllFilesEntry = false,
-		};
-
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveStateSubMenu.Enabled =
@@ -100,9 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			OpenRomMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Open ROM"];
 			CloseRomMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Close ROM"];
 
-			MovieSubMenu.Enabled =
-				CloseRomMenuItem.Enabled =
-				!Emulator.IsNull();
+			CloseRomMenuItem.Enabled = !Emulator.IsNull();
 
 			var hasSaveRam = Emulator.HasSaveRam();
 			bool needBold = hasSaveRam && Emulator.AsSaveRam().SaveRamModified;
@@ -110,9 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			SaveRAMSubMenu.Enabled = hasSaveRam;
 			SaveRAMSubMenu.SetStyle(needBold ? FontStyle.Bold : FontStyle.Regular);
 
-			AVSubMenu.Enabled =
-			ScreenshotSubMenu.Enabled =
-				Emulator.HasVideoProvider();
+			AVSubMenu.Enabled = Emulator.HasVideoProvider(); //TODO necessary?
 		}
 
 		private void RecentRomMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -233,14 +167,9 @@ namespace BizHawk.Client.EmuHawk
 			SaveMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save Movie"];
 
 			PlayMovieMenuItem.Enabled
-				= ImportMoviesMenuItem.Enabled
+				= RecordMovieMenuItem.Enabled
 				= RecentMovieSubMenu.Enabled
-					= !Tools.IsLoaded<TAStudio>();
-
-			// Record movie dialog should not be opened while in need of a reboot,
-			// Otherwise the wrong sync settings could be set for the recording movie and cause crashes
-			RecordMovieMenuItem.Enabled = !Tools.IsLoaded<TAStudio>()
-				&& !RebootStatusBarIcon.Visible;
+					= !Emulator.IsNull() && !Tools.IsLoaded<TAStudio>();
 
 			PlayFromBeginningMenuItem.Enabled = MovieSession.Movie.IsActive() && !Tools.IsLoaded<TAStudio>();
 		}
@@ -266,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AVSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ConfigAndRecordAVMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Record A/V"];
-			StopAVIMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Stop A/V"];
+			StopAVMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Stop A/V"];
 			CaptureOSDMenuItem.Checked = Config.AviCaptureOsd;
 			CaptureLuaMenuItem.Checked = Config.AviCaptureLua || Config.AviCaptureOsd; // or with osd is for better compatibility with old config files
 
@@ -275,12 +204,12 @@ namespace BizHawk.Client.EmuHawk
 			if (_currAviWriter == null)
 			{
 				ConfigAndRecordAVMenuItem.Enabled = true;
-				StopAVIMenuItem.Enabled = false;
+				StopAVMenuItem.Enabled = false;
 			}
 			else
 			{
 				ConfigAndRecordAVMenuItem.Enabled = false;
-				StopAVIMenuItem.Enabled = true;
+				StopAVMenuItem.Enabled = true;
 			}
 		}
 
@@ -304,30 +233,25 @@ namespace BizHawk.Client.EmuHawk
 
 			if (oac.Result == AdvancedRomLoaderType.LibretroLaunchNoGame)
 			{
-				var argsNoGame = new LoadRomArgs
-				{
-					OpenAdvanced = new OpenAdvanced_LibretroNoGame(Config.LibretroCore)
-				};
-				_ = LoadRom(string.Empty, argsNoGame);
+				_ = LoadRom(string.Empty, new LoadRomArgs(new OpenAdvanced_LibretroNoGame(Config.LibretroCore)));
 				return;
 			}
 
-			var args = new LoadRomArgs();
-
-			var filter = RomLoader.RomFilter;
-
+			IOpenAdvanced ioa;
+			FilesystemFilterSet filter;
 			if (oac.Result == AdvancedRomLoaderType.LibretroLaunchGame)
 			{
-				args.OpenAdvanced = new OpenAdvanced_Libretro();
+				ioa = new OpenAdvanced_Libretro();
 				filter = oac.SuggestedExtensionFilter!;
 			}
 			else if (oac.Result == AdvancedRomLoaderType.ClassicLaunchGame)
 			{
-				args.OpenAdvanced = new OpenAdvanced_OpenRom();
+				ioa = new OpenAdvanced_OpenRom();
+				filter = RomLoader.RomFilter;
 			}
 			else if (oac.Result == AdvancedRomLoaderType.MameLaunchGame)
 			{
-				args.OpenAdvanced = new OpenAdvanced_MAME();
+				ioa = new OpenAdvanced_MAME();
 				filter = MAMERomsFSFilterSet;
 			}
 			else
@@ -342,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result is null) return;
 			FileInfo file = new(result);
 			Config.PathEntries.LastRomPath = file.DirectoryName;
-			_ = LoadRom(file.FullName, args);
+			_ = LoadRom(file.FullName, new LoadRomArgs(ioa));
 		}
 
 		private void CloseRomMenuItem_Click(object sender, EventArgs e)
@@ -363,13 +287,10 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadNamedStateMenuItem_Click(object sender, EventArgs e) => LoadStateAs();
 
 		private void AutoloadLastSlotMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.AutoLoadLastSaveSlot ^= true;
-		}
+			=> Config.AutoLoadLastSaveSlot = !Config.AutoLoadLastSaveSlot;
+
 		private void AutosaveLastSlotMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.AutoSaveLastSaveSlot ^= true;
-		}
+			=> Config.AutoSaveLastSaveSlot = !Config.AutoSaveLastSaveSlot;
 
 		private void SelectSlotMenuItems_Click(object sender, EventArgs e)
 		{
@@ -441,7 +362,7 @@ namespace BizHawk.Client.EmuHawk
 			// Nag user to user a more accurate core, but let them continue anyway
 			EnsureCoreIsAccurate();
 
-			using var form = new RecordMovie(this, Config, Game, Emulator, MovieSession, FirmwareManager);
+			using var form = new RecordMovie(this, Config, Game, Emulator, MovieSession);
 			this.ShowDialogWithTempMute(form);
 		}
 
@@ -514,14 +435,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void AutomaticMovieBackupMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Movies.EnableBackupMovies ^= true;
-		}
+			=> Config.Movies.EnableBackupMovies = !Config.Movies.EnableBackupMovies;
 
 		private void FullMovieLoadstatesMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Movies.VBAStyleMovieLoadState ^= true;
-		}
+			=> Config.Movies.VBAStyleMovieLoadState = !Config.Movies.VBAStyleMovieLoadState;
 
 		private void MovieEndFinishMenuItem_Click(object sender, EventArgs e)
 		{
@@ -605,9 +522,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ScreenshotCaptureOSDMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.ScreenshotCaptureOsd ^= true;
-		}
+			=> Config.ScreenshotCaptureOsd = !Config.ScreenshotCaptureOsd;
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
@@ -694,16 +609,27 @@ namespace BizHawk.Client.EmuHawk
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			var windowScale = Config.GetWindowScaleFor(Emulator.SystemId);
-			foreach (ToolStripMenuItem item in WindowSizeSubMenu.DropDownItems)
+			foreach (var item in WindowSizeSubMenu.DropDownItems)
 			{
-				item.Checked = (int) item.Tag == windowScale;
+				// filter out separators
+				if (item is ToolStripMenuItem menuItem && menuItem.Tag is int itemScale)
+				{
+					menuItem.Checked = itemScale == windowScale && Config.ResizeWithFramebuffer;
+				}
 			}
+			DisableResizeWithFramebufferMenuItem.Checked = !Config.ResizeWithFramebuffer;
+		}
+
+		private void DisableResizeWithFramebufferMenuItem_Click(object sender, EventArgs e)
+		{
+			Config.ResizeWithFramebuffer = !DisableResizeWithFramebufferMenuItem.Checked;
+			FrameBufferResized();
 		}
 
 		private void WindowSize_Click(object sender, EventArgs e)
 		{
 			Config.SetWindowScaleFor(Emulator.SystemId, (int) ((ToolStripMenuItem) sender).Tag);
-			FrameBufferResized();
+			FrameBufferResized(forceWindowResize: true);
 		}
 
 		private void SwitchToFullscreenMenuItem_Click(object sender, EventArgs e)
@@ -732,25 +658,19 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void DisplayRerecordsMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.DisplayRerecordCount ^= true;
-		}
+			=> Config.DisplayRerecordCount = !Config.DisplayRerecordCount;
 
 		private void DisplaySubtitlesMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.DisplaySubtitles ^= true;
-		}
+			=> Config.DisplaySubtitles = !Config.DisplaySubtitles;
 
 		private void DisplayStatusBarMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.DispChromeStatusBarWindowed ^= true;
+			Config.DispChromeStatusBarWindowed = !Config.DispChromeStatusBarWindowed;
 			SetStatusBar();
 		}
 
 		private void DisplayMessagesMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.DisplayMessages ^= true;
-		}
+			=> Config.DisplayMessages = !Config.DisplayMessages;
 
 		private void DisplayLogWindowMenuItem_Click(object sender, EventArgs e)
 		{
@@ -855,7 +775,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenFWConfigRomLoadFailed(RomLoader.RomErrorArgs args)
 		{
-			using FirmwaresConfig configForm = new(
+			using FirmwareConfig configForm = new(
 				this,
 				FirmwareManager,
 				Config.FirmwareUserSpecifications,
@@ -865,9 +785,9 @@ namespace BizHawk.Client.EmuHawk
 			args.Retry = this.ShowDialogWithTempMute(configForm) is DialogResult.Retry;
 		}
 
-		private void FirmwaresMenuItem_Click(object sender, EventArgs e)
+		private void FirmwareMenuItem_Click(object sender, EventArgs e)
 		{
-			using var configForm = new FirmwaresConfig(this, FirmwareManager, Config.FirmwareUserSpecifications, Config.PathEntries);
+			using var configForm = new FirmwareConfig(this, FirmwareManager, Config.FirmwareUserSpecifications, Config.PathEntries);
 			this.ShowDialogWithTempMute(configForm);
 		}
 
@@ -912,7 +832,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutofireMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new AutofireConfig(Config, InputManager.AutoFireController, InputManager.AutofireStickyXorAdapter);
+			using var form = new AutofireConfig(Config, InputManager.AutoFireController, InputManager.StickyAutofireController);
 			if (this.ShowDialogWithTempMute(form).IsOk()) AddOnScreenMessage("Autofire settings saved");
 		}
 
@@ -963,7 +883,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClockThrottleMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.ClockThrottle ^= true;
+			Config.ClockThrottle = !Config.ClockThrottle;
 			if (Config.ClockThrottle)
 			{
 				var old = Config.SoundThrottle;
@@ -986,7 +906,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AudioThrottleMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.SoundThrottle ^= true;
+			Config.SoundThrottle = !Config.SoundThrottle;
 			RewireSound();
 			if (Config.SoundThrottle)
 			{
@@ -1004,7 +924,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VsyncThrottleMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.VSyncThrottle ^= true;
+			Config.VSyncThrottle = !Config.VSyncThrottle;
 			_presentationPanel.Resized = true;
 			if (Config.VSyncThrottle)
 			{
@@ -1028,7 +948,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VsyncEnabledMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.VSync ^= true;
+			Config.VSync = !Config.VSync;
 			if (!Config.VSyncThrottle) // when vsync throttle is on, vsync is forced to on, so no change to make here
 			{
 				_presentationPanel.Resized = true;
@@ -1042,14 +962,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleUnthrottled()
 		{
-			Config.Unthrottled ^= true;
+			Config.Unthrottled = !Config.Unthrottled;
 			ThrottleMessage();
 		}
 
 		private void MinimizeSkippingMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.AutoMinimizeSkipping ^= true;
-		}
+			=> Config.AutoMinimizeSkipping = !Config.AutoMinimizeSkipping;
 
 		private void NeverSkipMenuItem_Click(object sender, EventArgs e) { Config.FrameSkip = 0; FrameSkipMessage(); }
 		private void Frameskip1MenuItem_Click(object sender, EventArgs e) { Config.FrameSkip = 1; FrameSkipMessage(); }
@@ -1271,568 +1189,6 @@ namespace BizHawk.Client.EmuHawk
 			OpenRetroAchievements();
 		}
 
-		private void NesSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			var boardName = Emulator.HasBoardInfo() ? Emulator.AsBoardInfo().BoardName : null;
-			FDSControlsMenuItem.Enabled = boardName == "FDS";
-
-			VSControlsMenuItem.Enabled =
-			VSSettingsMenuItem.Enabled =
-				(Emulator is NES nes && nes.IsVS)
-				|| (Emulator is SubNESHawk sub && sub.IsVs);
-
-			NESSoundChannelsMenuItem.Enabled = Tools.IsAvailable<NESSoundConfig>();
-			MovieSettingsMenuItem.Enabled = Emulator is NES or SubNESHawk && MovieSession.Movie.NotActive();
-
-			NesControllerSettingsMenuItem.Enabled = Tools.IsAvailable<NesControllerSettings>() && MovieSession.Movie.NotActive();
-
-			BarcodeReaderMenuItem.Enabled = ServiceInjector.IsAvailable(Emulator.ServiceProvider, typeof(BarcodeEntry));
-
-			MusicRipperMenuItem.Enabled = Tools.IsAvailable<NESMusicRipper>();
-		}
-
-		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			var boardName = Emulator.HasBoardInfo() ? Emulator.AsBoardInfo().BoardName : null;
-			FdsEjectDiskMenuItem.Enabled = boardName == "FDS";
-
-			while (FDSControlsMenuItem.DropDownItems.Count > 1)
-			{
-				FDSControlsMenuItem.DropDownItems.RemoveAt(1);
-			}
-
-			string button;
-			for (int i = 0; Emulator.ControllerDefinition.BoolButtons.Contains(button = $"FDS Insert {i}"); i++)
-			{
-				var name = $"Disk {i / 2 + 1} Side {(char)(i % 2 + 'A')}";
-				FdsInsertDiskMenuAdd($"Insert {name}", button, $"FDS {name} inserted.");
-			}
-		}
-
-		private void NesPpuViewerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<NesPPU>();
-		}
-
-		private void NesNametableViewerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<NESNameTableViewer>();
-		}
-
-		private void MusicRipperMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<NESMusicRipper>();
-		}
-
-		private DialogResult OpenNesHawkGraphicsSettingsDialog(ISettingsAdapter settable)
-		{
-			using NESGraphicsConfig form = new(Config, this, settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private DialogResult OpenQuickNesGraphicsSettingsDialog(ISettingsAdapter settable)
-		{
-			using QuickNesConfig form = new(Config, DialogController, settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void NesGraphicSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				NES => OpenNesHawkGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<NES>()),
-				SubNESHawk => OpenNesHawkGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>()),
-				QuickNES => OpenQuickNesGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<QuickNES>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private void NesSoundChannelsMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<NESSoundConfig>();
-		}
-
-		private DialogResult OpenNesHawkVSSettingsDialog(ISettingsAdapter settable)
-		{
-			using NesVsSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void VsSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				NES { IsVS: true } => OpenNesHawkVSSettingsDialog(GetSettingsAdapterForLoadedCore<NES>()),
-				SubNESHawk { IsVs: true } => OpenNesHawkVSSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private void FdsEjectDiskMenuItem_Click(object sender, EventArgs e)
-		{
-			if (!MovieSession.Movie.IsPlaying())
-			{
-				InputManager.ClickyVirtualPadController.Click("FDS Eject");
-				AddOnScreenMessage("FDS disk ejected.");
-			}
-		}
-
-		private void VsInsertCoinP1MenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is NES nes && nes.IsVS
-			|| Emulator is SubNESHawk sub && sub.IsVs)
-			{
-				if (!MovieSession.Movie.IsPlaying())
-				{
-					InputManager.ClickyVirtualPadController.Click("Insert Coin P1");
-					AddOnScreenMessage("P1 Coin Inserted");
-				}
-			}
-		}
-
-		private void VsInsertCoinP2MenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is NES nes && nes.IsVS
-				|| Emulator is SubNESHawk sub && sub.IsVs)
-			{
-				if (!MovieSession.Movie.IsPlaying())
-				{
-					InputManager.ClickyVirtualPadController.Click("Insert Coin P2");
-					AddOnScreenMessage("P2 Coin Inserted");
-				}
-			}
-		}
-
-		private void VsServiceSwitchMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is NES nes && nes.IsVS
-				|| Emulator is SubNESHawk sub && sub.IsVs)
-			{
-				if (!MovieSession.Movie.IsPlaying())
-				{
-					InputManager.ClickyVirtualPadController.Click("Service Switch");
-					AddOnScreenMessage("Service Switch Pressed");
-				}
-			}
-		}
-
-		private DialogResult OpenNesHawkGamepadSettingsDialog(ISettingsAdapter settable)
-		{
-			using NesControllerSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private DialogResult OpenQuickNesGamepadSettingsDialog(ISettingsAdapter settable)
-			=> GenericCoreConfig.DoDialogFor(
-				this,
-				settable,
-				CoreNames.QuickNes + " Controller Settings",
-				isMovieActive: MovieSession.Movie.IsActive(),
-				ignoreSettings: true);
-
-		private void NesControllerSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				NES => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<NES>()),
-				SubNESHawk => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>()),
-				QuickNES => OpenQuickNesGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<QuickNES>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private DialogResult OpenNesHawkAdvancedSettingsDialog(ISettingsAdapter settable, bool hasMapperProperties)
-		{
-			using NESSyncSettingsForm form = new(this, settable, hasMapperProperties: hasMapperProperties);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void MovieSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				NES nesHawk => OpenNesHawkAdvancedSettingsDialog(GetSettingsAdapterForLoadedCore<NES>(), nesHawk.HasMapperProperties),
-				SubNESHawk subNESHawk => OpenNesHawkAdvancedSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>(), subNESHawk.HasMapperProperties),
-				_ => DialogResult.None
-			};
-		}
-
-		private void BarcodeReaderMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<BarcodeEntry>();
-		}
-
-		private void Ti83KeypadMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<TI83KeyPad>();
-		}
-
-		private void Ti83LoadTIFileMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is not TI83 ti83) return;
-			var result = this.ShowFileOpenDialog(
-				discardCWDChange: true,
-				filter: TI83ProgramFilesFSFilterSet,
-				initDir: Config.PathEntries.RomAbsolutePath(Emulator.SystemId));
-			if (result is null) return;
-			try
-			{
-				ti83.LinkPort.SendFileToCalc(File.OpenRead(result), true);
-			}
-			catch (IOException ex)
-			{
-				var message =
-					$"Invalid file format. Reason: {ex.Message} \nForce transfer? This may cause the calculator to crash.";
-				if (this.ShowMessageBox3(owner: null, message, "Upload Failed", EMsgBoxIcon.Question) == true)
-				{
-					ti83.LinkPort.SendFileToCalc(File.OpenRead(result), false);
-				}
-			}
-		}
-
-		private DialogResult OpenTI83PaletteSettingsDialog(ISettingsAdapter settable)
-		{
-			using TI83PaletteConfig form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void Ti83PaletteMenuItem_Click(object sender, EventArgs e)
-		{
-			var result = Emulator switch
-			{
-				Emu83 => OpenTI83PaletteSettingsDialog(GetSettingsAdapterForLoadedCore<Emu83>()),
-				TI83 => OpenTI83PaletteSettingsDialog(GetSettingsAdapterForLoadedCore<TI83>()),
-				_ => DialogResult.None
-			};
-			if (result.IsOk()) AddOnScreenMessage("Palette settings saved");
-		}
-
-		private void A7800SubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			A7800ControllerSettingsMenuItem.Enabled
-				= A7800FilterSettingsMenuItem.Enabled
-				= MovieSession.Movie.NotActive();
-		}
-
-		private DialogResult OpenA7800HawkGamepadSettingsDialog(ISettingsAdapter settable)
-		{
-			using A7800ControllerSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void A7800ControllerSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				A7800Hawk => OpenA7800HawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<A7800Hawk>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private DialogResult OpenA7800HawkFilterSettingsDialog(ISettingsAdapter settable)
-		{
-			using A7800FilterSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void A7800FilterSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				A7800Hawk => OpenA7800HawkFilterSettingsDialog(GetSettingsAdapterForLoadedCore<A7800Hawk>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private DialogResult OpenGambatteSettingsDialog(ISettingsAdapter settable)
-			=> GBPrefs.DoGBPrefsDialog(Config, this, Game, MovieSession, settable);
-
-		private DialogResult OpenGBHawkSettingsDialog()
-			=> OpenGenericCoreConfigFor<GBHawk>(CoreNames.GbHawk + " Settings");
-
-		private DialogResult OpenSameBoySettingsDialog()
-			=> OpenGenericCoreConfigFor<Sameboy>(CoreNames.Sameboy + " Settings");
-
-		private DialogResult OpenSubGBHawkSettingsDialog()
-			=> OpenGenericCoreConfigFor<SubGBHawk>(CoreNames.SubGbHawk + " Settings");
-
-		private void GbCoreSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				Gameboy => OpenGambatteSettingsDialog(GetSettingsAdapterForLoadedCore<Gameboy>()),
-				GBHawk => OpenGBHawkSettingsDialog(),
-				Sameboy => OpenSameBoySettingsDialog(),
-				SubGBHawk => OpenSubGBHawkSettingsDialog(),
-				_ => DialogResult.None
-			};
-		}
-
-		private DialogResult OpenSameBoyPaletteSettingsDialog(ISettingsAdapter settable)
-		{
-			using SameBoyColorChooserForm form = new(Config, this, Game, settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void SameboyColorChooserMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				Sameboy => OpenSameBoyPaletteSettingsDialog(GetSettingsAdapterForLoadedCore<Sameboy>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private void GbGpuViewerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<GbGpuView>();
-		}
-
-		private void GbPrinterViewerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<GBPrinterView>();
-		}
-
-		private void PsxSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			PSXControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
-		}
-
-		private DialogResult OpenOctoshockGamepadSettingsDialog(ISettingsAdapter settable)
-		{
-			using PSXControllerConfig form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void PsxControllerSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				Octoshock => OpenOctoshockGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<Octoshock>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private DialogResult OpenOctoshockSettingsDialog(ISettingsAdapter settable, OctoshockDll.eVidStandard vidStandard, Size vidSize)
-			=> PSXOptions.DoSettingsDialog(Config, this, settable, vidStandard, vidSize);
-
-		private void PsxOptionsMenuItem_Click(object sender, EventArgs e)
-		{
-			var result = Emulator switch
-			{
-				Octoshock octoshock => OpenOctoshockSettingsDialog(GetSettingsAdapterForLoadedCore<Octoshock>(), octoshock.SystemVidStandard, octoshock.CurrentVideoSize),
-				_ => DialogResult.None
-			};
-			if (result.IsOk()) FrameBufferResized();
-		}
-
-		private void PsxDiscControlsMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<VirtualpadTool>().ScrollToPadSchema("Console");
-		}
-
-		private void PsxHashDiscsMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is not IRedumpDiscChecksumInfo psx) return;
-			using PSXHashDiscs form = new() { _psx = psx };
-			this.ShowDialogWithTempMute(form);
-		}
-
-		private void SnesSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			SNESControllerConfigurationMenuItem.Enabled = MovieSession.Movie.NotActive();
-		}
-
-		private DialogResult OpenOldBSNESGamepadSettingsDialog(ISettingsAdapter settable)
-		{
-			using SNESControllerSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private DialogResult OpenBSNESGamepadSettingsDialog(ISettingsAdapter settable)
-		{
-			using BSNESControllerSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				LibsnesCore => OpenOldBSNESGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<LibsnesCore>()),
-				BsnesCore => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<BsnesCore>()),
-				SubBsnesCore => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<SubBsnesCore>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<SNESGraphicsDebugger>();
-		}
-
-		private DialogResult OpenOldBSNESSettingsDialog(ISettingsAdapter settable)
-			=> SNESOptions.DoSettingsDialog(this, settable);
-
-		private DialogResult OpenBSNESSettingsDialog(ISettingsAdapter settable)
-			=> BSNESOptions.DoSettingsDialog(this, settable);
-
-		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				LibsnesCore => OpenOldBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<LibsnesCore>()),
-				BsnesCore => OpenBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<BsnesCore>()),
-				SubBsnesCore => OpenBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<SubBsnesCore>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private void ColecoSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			if (Emulator is ColecoVision coleco)
-			{
-				var ss = coleco.GetSyncSettings();
-				ColecoSkipBiosMenuItem.Checked = ss.SkipBiosIntro;
-				ColecoUseSGMMenuItem.Checked = ss.UseSGM;
-				ColecoControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
-			}
-		}
-
-		private void ColecoHawkSetSkipBIOSIntro(bool newValue, ISettingsAdapter settable)
-		{
-			var ss = (ColecoVision.ColecoSyncSettings) settable.GetSyncSettings();
-			ss.SkipBiosIntro = newValue;
-			settable.PutCoreSyncSettings(ss);
-		}
-
-		private void ColecoSkipBiosMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is ColecoVision) ColecoHawkSetSkipBIOSIntro(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<ColecoVision>());
-		}
-
-		private void ColecoHawkSetSuperGameModule(bool newValue, ISettingsAdapter settable)
-		{
-			var ss = (ColecoVision.ColecoSyncSettings) settable.GetSyncSettings();
-			ss.UseSGM = newValue;
-			settable.PutCoreSyncSettings(ss);
-		}
-
-		private void ColecoUseSGMMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is ColecoVision) ColecoHawkSetSuperGameModule(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<ColecoVision>());
-		}
-
-		private DialogResult OpenColecoHawkGamepadSettingsDialog(ISettingsAdapter settable)
-		{
-			using ColecoControllerSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void ColecoControllerSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				ColecoVision => OpenColecoHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<ColecoVision>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private void N64SubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			N64PluginSettingsMenuItem.Enabled =
-				N64ControllerSettingsMenuItem.Enabled =
-				N64ExpansionSlotMenuItem.Enabled =
-				MovieSession.Movie.NotActive();
-
-			N64CircularAnalogRangeMenuItem.Checked = Config.N64UseCircularAnalogConstraint;
-
-			var s = ((N64)Emulator).GetSettings();
-			MupenStyleLagMenuItem.Checked = s.UseMupenStyleLag;
-
-			N64ExpansionSlotMenuItem.Checked = ((N64)Emulator).UsingExpansionSlot;
-			N64ExpansionSlotMenuItem.Enabled = !((N64)Emulator).IsOverridingUserExpansionSlotSetting;
-		}
-
-		private DialogResult OpenMupen64PlusGraphicsSettingsDialog(ISettingsAdapter settable)
-		{
-			using N64VideoPluginConfig form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			if (OpenMupen64PlusGraphicsSettingsDialog(GetSettingsAdapterFor<N64>()).IsOk()
-				&& Emulator is not N64) // If it's loaded, the reboot required message will appear
-			{
-				AddOnScreenMessage("Plugin settings saved");
-			}
-		}
-
-		private DialogResult OpenMupen64PlusGamepadSettingsDialog(ISettingsAdapter settable)
-		{
-			using N64ControllersSetup form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void N64ControllerSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				N64 => OpenMupen64PlusGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<N64>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private void N64CircularAnalogRangeMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.N64UseCircularAnalogConstraint ^= true;
-		}
-
-		private static void Mupen64PlusSetMupenStyleLag(bool newValue, ISettingsAdapter settable)
-		{
-			var s = (N64Settings) settable.GetSettings();
-			s.UseMupenStyleLag = newValue;
-			settable.PutCoreSettings(s);
-		}
-
-		private void MupenStyleLagMenuItem_Click(object sender, EventArgs e)
-			=> Mupen64PlusSetMupenStyleLag(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<N64>());
-
-		private void Mupen64PlusSetUseExpansionSlot(bool newValue, ISettingsAdapter settable)
-		{
-			var ss = (N64SyncSettings) settable.GetSyncSettings();
-			ss.DisableExpansionSlot = !newValue;
-			settable.PutCoreSyncSettings(ss);
-		}
-
-		private void N64ExpansionSlotMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is N64)
-			{
-				Mupen64PlusSetUseExpansionSlot(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<N64>());
-				FlagNeedsReboot();
-			}
-		}
-
-		private void Ares64SubMenu_DropDownOpened(object sender, EventArgs e)
-			=> Ares64CircularAnalogRangeMenuItem.Checked = Config.N64UseCircularAnalogConstraint;
-
-		private void Ares64SettingsMenuItem_Click(object sender, EventArgs e)
-			=> OpenGenericCoreConfigFor<Ares64>(CoreNames.Ares64 + " Settings");
-
-		private DialogResult OpenGambatteLinkSettingsDialog(ISettingsAdapter settable)
-			=> GBLPrefs.DoGBLPrefsDialog(Config, this, Game, MovieSession, settable);
-
-		private void GblSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				GambatteLink => OpenGambatteLinkSettingsDialog(GetSettingsAdapterForLoadedCore<GambatteLink>()),
-				_ => DialogResult.None
-			};
-		}
-
 		private DialogResult OpenGenericCoreConfigFor<T>(string title)
 			where T : IEmulator
 			=> GenericCoreConfig.DoDialogFor(this, GetSettingsAdapterFor<T>(), title, isMovieActive: MovieSession.Movie.IsActive());
@@ -1842,399 +1198,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GenericCoreSettingsMenuItem_Click(object sender, EventArgs e)
 			=> OpenGenericCoreConfig();
-
-		private DialogResult OpenVirtuSettingsDialog()
-			=> OpenGenericCoreConfigFor<AppleII>(CoreNames.Virtu + " Settings");
-
-		private void AppleIISettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				AppleII => OpenVirtuSettingsDialog(),
-				_ => DialogResult.None
-			};
-		}
-
-		private void AppleSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			if (Emulator is AppleII a)
-			{
-				AppleDisksSubMenu.Enabled = a.DiskCount > 1;
-			}
-		}
-
-		private void AppleDisksSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AppleDisksSubMenu.DropDownItems.Clear();
-
-			if (Emulator is AppleII appleII)
-			{
-				for (int i = 0; i < appleII.DiskCount; i++)
-				{
-					var menuItem = new ToolStripMenuItem
-					{
-						Name = $"Disk{i + 1}",
-						Text = $"Disk{i + 1}",
-						Checked = appleII.CurrentDisk == i
-					};
-
-					int dummy = i;
-					menuItem.Click += (o, ev) =>
-					{
-						appleII.SetDisk(dummy);
-					};
-
-					AppleDisksSubMenu.DropDownItems.Add(menuItem);
-				}
-			}
-		}
-
-		private void C64SubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			if (Emulator is C64 c64)
-			{
-				C64DisksSubMenu.Enabled = c64.DiskCount > 1;
-			}
-		}
-
-		private void C64DisksSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			C64DisksSubMenu.DropDownItems.Clear();
-
-			if (Emulator is C64 c64)
-			{
-				for (int i = 0; i < c64.DiskCount; i++)
-				{
-					var menuItem = new ToolStripMenuItem
-					{
-						Name = $"Disk{i + 1}",
-						Text = $"Disk{i + 1}",
-						Checked = c64.CurrentDisk == i
-					};
-
-					int dummy = i;
-					menuItem.Click += (o, ev) =>
-					{
-						c64.SetDisk(dummy);
-					};
-
-					C64DisksSubMenu.DropDownItems.Add(menuItem);
-				}
-			}
-		}
-
-		private DialogResult OpenC64HawkSettingsDialog()
-			=> OpenGenericCoreConfigFor<C64>(CoreNames.C64Hawk + " Settings");
-
-		private void C64SettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				C64 => OpenC64HawkSettingsDialog(),
-				_ => DialogResult.None
-			};
-		}
-
-		private void IntVSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			IntVControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
-		}
-
-		private DialogResult OpenIntelliHawkGamepadSettingsDialog(ISettingsAdapter settable)
-		{
-			using IntvControllerSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void IntVControllerSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				Intellivision => OpenIntelliHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<Intellivision>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private DialogResult OpenZXHawkGamepadSettingsDialog(ISettingsAdapter settable)
-		{
-			using ZxSpectrumJoystickSettings form = new(this, settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				ZXSpectrum => OpenZXHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private DialogResult OpenZXHawkSyncSettingsDialog(ISettingsAdapter settable)
-		{
-			using ZxSpectrumCoreEmulationSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void ZXSpectrumCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				ZXSpectrum => OpenZXHawkSyncSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private DialogResult OpenZXHawkSettingsDialog(ISettingsAdapter settable)
-		{
-			using ZxSpectrumNonSyncSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void ZXSpectrumNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				ZXSpectrum => OpenZXHawkSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private DialogResult OpenZXHawkAudioSettingsDialog(ISettingsAdapter settable)
-		{
-			using ZxSpectrumAudioSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void ZXSpectrumAudioSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				ZXSpectrum => OpenZXHawkAudioSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private void ZXSpectrumMediaMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			if (Emulator is ZXSpectrum speccy)
-			{
-				ZXSpectrumTapesSubMenu.Enabled = speccy._tapeInfo.Count > 0;
-				ZXSpectrumDisksSubMenu.Enabled = speccy._diskInfo.Count > 0;
-			}
-		}
-
-		private void ZXSpectrumTapesSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			ZXSpectrumTapesSubMenu.DropDownItems.Clear();
-
-			List<ToolStripItem> items = new();
-
-			if (Emulator is ZXSpectrum speccy)
-			{
-				var tapeMediaIndex = speccy._machine.TapeMediaIndex;
-
-				for (int i = 0; i < speccy._tapeInfo.Count; i++)
-				{
-					string name = speccy._tapeInfo[i].Name;
-
-					var menuItem = new ToolStripMenuItem
-					{
-						Name = $"{i}_{name}",
-						Text = $"{i}: {name}",
-						Checked = tapeMediaIndex == i
-					};
-
-					int dummy = i;
-					menuItem.Click += (o, ev) =>
-					{
-						speccy._machine.TapeMediaIndex = dummy;
-					};
-
-					items.Add(menuItem);
-				}
-			}
-
-			ZXSpectrumTapesSubMenu.DropDownItems.AddRange(items.ToArray());
-		}
-
-		private void ZXSpectrumDisksSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			ZXSpectrumDisksSubMenu.DropDownItems.Clear();
-
-			List<ToolStripItem> items = new();
-
-			if (Emulator is ZXSpectrum speccy)
-			{
-				var diskMediaIndex = speccy._machine.DiskMediaIndex;
-
-				for (int i = 0; i < speccy._diskInfo.Count; i++)
-				{
-					string name = speccy._diskInfo[i].Name;
-
-					var menuItem = new ToolStripMenuItem
-					{
-						Name = $"{i}_{name}",
-						Text = $"{i}: {name}",
-						Checked = diskMediaIndex == i
-					};
-
-					int dummy = i;
-					menuItem.Click += (o, ev) =>
-					{
-						speccy._machine.DiskMediaIndex = dummy;
-					};
-
-					items.Add(menuItem);
-				}
-			}
-
-			ZXSpectrumDisksSubMenu.DropDownItems.AddRange(items.ToArray());
-		}
-
-		private void ZXSpectrumExportSnapshotMenuItemMenuItem_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				var result = this.ShowFileSaveDialog(
-					discardCWDChange: true,
-					fileExt: "szx",
-//					SupportMultiDottedExtensions = true, // I think this should be enabled globally if we're going to do it --yoshi
-					filter: ZXStateFilesFSFilterSet,
-					initDir: Config.PathEntries.ToolsAbsolutePath());
-				if (result is not null)
-				{
-					var speccy = (ZXSpectrum)Emulator;
-					var snap = speccy.GetSZXSnapshot();
-					File.WriteAllBytes(result, snap);
-				}
-			}
-			catch (Exception)
-			{
-			}
-		}
-
-		private DialogResult OpenCPCHawkSyncSettingsDialog(ISettingsAdapter settable)
-		{
-			using AmstradCpcCoreEmulationSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void AmstradCpcCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				AmstradCPC => OpenCPCHawkSyncSettingsDialog(GetSettingsAdapterForLoadedCore<AmstradCPC>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private DialogResult OpenCPCHawkAudioSettingsDialog(ISettingsAdapter settable)
-		{
-			using AmstradCpcAudioSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void AmstradCpcAudioSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				AmstradCPC => OpenCPCHawkAudioSettingsDialog(GetSettingsAdapterForLoadedCore<AmstradCPC>()),
-				_ => DialogResult.None
-			};
-		}
-
-		private void AmstradCpcMediaMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			if (Emulator is AmstradCPC cpc)
-			{
-				AmstradCPCTapesSubMenu.Enabled = cpc._tapeInfo.Count > 0;
-				AmstradCPCDisksSubMenu.Enabled = cpc._diskInfo.Count > 0;
-			}
-		}
-
-		private void AmstradCpcTapesSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AmstradCPCTapesSubMenu.DropDownItems.Clear();
-
-			List<ToolStripItem> items = new();
-
-			if (Emulator is AmstradCPC ams)
-			{
-				var tapeMediaIndex = ams._machine.TapeMediaIndex;
-
-				for (int i = 0; i < ams._tapeInfo.Count; i++)
-				{
-					string name = ams._tapeInfo[i].Name;
-
-					var menuItem = new ToolStripMenuItem
-					{
-						Name = $"{i}_{name}",
-						Text = $"{i}: {name}",
-						Checked = tapeMediaIndex == i
-					};
-
-					int dummy = i;
-					menuItem.Click += (o, ev) =>
-					{
-						ams._machine.TapeMediaIndex = dummy;
-					};
-
-					items.Add(menuItem);
-				}
-			}
-
-			AmstradCPCTapesSubMenu.DropDownItems.AddRange(items.ToArray());
-		}
-
-		private void AmstradCpcDisksSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AmstradCPCDisksSubMenu.DropDownItems.Clear();
-
-			List<ToolStripItem> items = new();
-
-			if (Emulator is AmstradCPC ams)
-			{
-				var diskMediaIndex = ams._machine.DiskMediaIndex;
-
-				for (int i = 0; i < ams._diskInfo.Count; i++)
-				{
-					string name = ams._diskInfo[i].Name;
-
-					var menuItem = new ToolStripMenuItem
-					{
-						Name = $"{i}_{name}",
-						Text = $"{i}: {name}",
-						Checked = diskMediaIndex == i
-					};
-
-					int dummy = i;
-					menuItem.Click += (o, ev) =>
-					{
-						ams._machine.DiskMediaIndex = dummy;
-					};
-
-					items.Add(menuItem);
-				}
-			}
-
-			AmstradCPCDisksSubMenu.DropDownItems.AddRange(items.ToArray());
-		}
-
-		private DialogResult OpenCPCHawkSettingsDialog(ISettingsAdapter settable)
-		{
-			using AmstradCpcNonSyncSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
-		private void AmstradCpcNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			_ = Emulator switch
-			{
-				AmstradCPC => OpenCPCHawkSettingsDialog(GetSettingsAdapterForLoadedCore<AmstradCPC>()),
-				_ => DialogResult.None
-			};
-		}
 
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -2454,7 +1417,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ShowMenuContextMenuItem_Click(object sender, EventArgs e)
 		{
-			MainMenuStrip.Visible ^= true;
+			MainMenuStrip.Visible = !MainMenuStrip.Visible;
 			FrameBufferResized();
 		}
 
@@ -2549,12 +1512,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProfileFirstBootLabel_Click(object sender, EventArgs e)
 		{
-			// We do not check if the user is actually setting a profile here.
-			// This is intentional.
 			using var profileForm = new ProfileConfig(Config, this);
-			this.ShowDialogWithTempMute(profileForm);
+			_ = this.ShowDialogWithTempMute(profileForm); // interpret Cancel as user acklowledgement (there are instructions for re-opening the dialog anyway)
 			Config.FirstBoot = false;
 			ProfileFirstBootLabel.Visible = false;
+			OSD.ClearRegularMessages();
+			AddOnScreenMessage("You can find that again at Config > Profiles", duration: 10/*seconds*/); // intentionally left off the ellipsis from the menu item's name as it could be misinterpreted as the message being truncated
+			AddOnScreenMessage("All done! Drag+drop a rom to start playing", duration: 10/*seconds*/);
 		}
 
 		private void LinkConnectStatusBarButton_Click(object sender, EventArgs e)
@@ -2562,8 +1526,9 @@ namespace BizHawk.Client.EmuHawk
 			// toggle Link status (only outside of a movie session)
 			if (!MovieSession.Movie.IsPlaying())
 			{
-				Emulator.AsLinkable().LinkConnected ^= true;
-				Console.WriteLine("Cable connect status to {0}", Emulator.AsLinkable().LinkConnected);
+				var core = Emulator.AsLinkable();
+				core.LinkConnected = !core.LinkConnected;
+				Console.WriteLine($"Cable connect status to {core.LinkConnected}");
 			}
 		}
 
@@ -2607,18 +1572,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_inFullscreen && Config.DispChromeFullscreenAutohideMouse)
 			{
-				AutohideCursor(true);
+				AutohideCursor(hide: true);
 			}
 		}
 
 		private void MainForm_Enter(object sender, EventArgs e)
 		{
-			AutohideCursor(false);
+			AutohideCursor(hide: false);
 		}
 
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
 			_presentationPanel.Resized = true;
+			if (_framebufferResizedPending && WindowState is FormWindowState.Normal)
+			{
+				_framebufferResizedPending = false;
+				FrameBufferResized();
+			}
 		}
 
 		private void MainForm_Shown(object sender, EventArgs e)
@@ -2672,354 +1642,5 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FormDragDrop(object sender, DragEventArgs e)
 			=> PathsFromDragDrop = (string[]) e.Data.GetData(DataFormats.FileDrop);
-
-		private enum VSystemCategory : int
-		{
-			Consoles = 0,
-			Handhelds = 1,
-			PCs = 2,
-			Other = 3,
-		}
-
-		private IReadOnlyCollection<ToolStripItem> CreateCoreSettingsSubmenus(bool includeDupes = false)
-		{
-			static ToolStripMenuItemEx CreateSettingsItem(string text, EventHandler onClick)
-			{
-				ToolStripMenuItemEx menuItem = new() { Text = text };
-				menuItem.Click += onClick;
-				return menuItem;
-			}
-			ToolStripMenuItemEx CreateGenericCoreConfigItem<T>(string coreName)
-				where T : IEmulator
-				=> CreateSettingsItem("Settings...", (_, _) => OpenGenericCoreConfigFor<T>($"{coreName} Settings"));
-			ToolStripMenuItemEx CreateGenericNymaCoreConfigItem<T>(string coreName, Func<CoreComm, NymaCore.NymaSettingsInfo> getCachedSettingsInfo)
-				where T : NymaCore
-				=> CreateSettingsItem(
-					"Settings...",
-					(_, _) => GenericCoreConfig.DoNymaDialogFor(
-						this,
-						GetSettingsAdapterFor<T>(),
-						$"{coreName} Settings",
-						getCachedSettingsInfo(CreateCoreComm()),
-						isMovieActive: MovieSession.Movie.IsActive()));
-			ToolStripMenuItemEx CreateCoreSubmenu(VSystemCategory cat, string coreName, params ToolStripItem[] items)
-			{
-				ToolStripMenuItemEx submenu = new() { Tag = cat, Text = coreName };
-				submenu.DropDownItems.AddRange(items);
-				return submenu;
-			}
-
-			List<ToolStripItem> items = new();
-
-			// A7800Hawk
-			var a7800HawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenA7800HawkGamepadSettingsDialog(GetSettingsAdapterFor<A7800Hawk>()));
-			var a7800HawkFilterSettingsItem = CreateSettingsItem("Filter Settings...", (_, _) => OpenA7800HawkFilterSettingsDialog(GetSettingsAdapterFor<A7800Hawk>()));
-			var a7800HawkSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.A7800Hawk, a7800HawkGamepadSettingsItem, a7800HawkFilterSettingsItem);
-			a7800HawkSubmenu.DropDownOpened += (_, _) => a7800HawkGamepadSettingsItem.Enabled = a7800HawkFilterSettingsItem.Enabled = MovieSession.Movie.NotActive() || Emulator is not A7800Hawk;
-			items.Add(a7800HawkSubmenu);
-
-			// Ares64
-			var ares64AnalogConstraintItem = CreateSettingsItem("Circular Analog Range", N64CircularAnalogRangeMenuItem_Click);
-			var ares64Submenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Ares64, CreateGenericCoreConfigItem<Ares64>(CoreNames.Ares64));
-			ares64Submenu.DropDownOpened += (_, _) => ares64AnalogConstraintItem.Checked = Config.N64UseCircularAnalogConstraint;
-			items.Add(ares64Submenu);
-
-			// Atari2600Hawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Atari2600Hawk, CreateGenericCoreConfigItem<Atari2600>(CoreNames.Atari2600Hawk)));
-
-			// BSNES
-			var oldBSNESGamepadSettingsItem = CreateSettingsItem("Controller Configuration...", (_, _) => OpenOldBSNESGamepadSettingsDialog(GetSettingsAdapterFor<LibsnesCore>()));
-			var oldBSNESSettingsItem = CreateSettingsItem("Options...", (_, _) => OpenOldBSNESSettingsDialog(GetSettingsAdapterFor<LibsnesCore>()));
-			var oldBSNESSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Bsnes, oldBSNESGamepadSettingsItem, oldBSNESSettingsItem);
-			oldBSNESSubmenu.DropDownOpened += (_, _) => oldBSNESGamepadSettingsItem.Enabled = MovieSession.Movie.NotActive() || Emulator is not LibsnesCore;
-			items.Add(oldBSNESSubmenu);
-
-			// BSNESv115+
-			var bsnesGamepadSettingsItem = CreateSettingsItem("Controller Configuration...", (_, _) => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterFor<BsnesCore>()));
-			var bsnesSettingsItem = CreateSettingsItem("Options...", (_, _) => OpenBSNESSettingsDialog(GetSettingsAdapterFor<BsnesCore>()));
-			var bsnesSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Bsnes115, bsnesGamepadSettingsItem, bsnesSettingsItem);
-			bsnesSubmenu.DropDownOpened += (_, _) => bsnesGamepadSettingsItem.Enabled = MovieSession.Movie.NotActive() || Emulator is not BsnesCore;
-			items.Add(bsnesSubmenu);
-
-			// SubBSNESv115+
-			var subBsnesGamepadSettingsItem = CreateSettingsItem("Controller Configuration...", (_, _) => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterFor<SubBsnesCore>()));
-			var subBsnesSettingsItem = CreateSettingsItem("Options...", (_, _) => OpenBSNESSettingsDialog(GetSettingsAdapterFor<SubBsnesCore>()));
-			var subBsnesSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.SubBsnes115, subBsnesGamepadSettingsItem, subBsnesSettingsItem);
-			subBsnesSubmenu.DropDownOpened += (_, _) => subBsnesGamepadSettingsItem.Enabled = MovieSession.Movie.NotActive() || Emulator is not SubBsnesCore;
-			items.Add(subBsnesSubmenu);
-
-			// C64Hawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.C64Hawk, CreateSettingsItem("Settings...", (_, _) => OpenC64HawkSettingsDialog())));
-
-			// ChannelFHawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.ChannelFHawk, CreateGenericCoreConfigItem<ChannelF>(CoreNames.ChannelFHawk)));
-
-			// Encore
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Encore, CreateGenericCoreConfigItem<Encore>(CoreNames.Encore)));
-
-			// ColecoHawk
-			var colecoHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenColecoHawkGamepadSettingsDialog(GetSettingsAdapterFor<ColecoVision>()));
-			var colecoHawkSkipBIOSItem = CreateSettingsItem("Skip BIOS intro (When Applicable)", (sender, _) => ColecoHawkSetSkipBIOSIntro(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<ColecoVision>()));
-			var colecoHawkUseSGMItem = CreateSettingsItem("Use the Super Game Module", (sender, _) => ColecoHawkSetSuperGameModule(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<ColecoVision>()));
-			var colecoHawkSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.ColecoHawk, colecoHawkGamepadSettingsItem, colecoHawkSkipBIOSItem, colecoHawkUseSGMItem);
-			colecoHawkSubmenu.DropDownOpened += (_, _) =>
-			{
-				var ss = (ColecoVision.ColecoSyncSettings) GetSettingsAdapterFor<ColecoVision>().GetSyncSettings();
-				colecoHawkGamepadSettingsItem.Enabled = MovieSession.Movie.NotActive() || Emulator is not ColecoVision;
-				colecoHawkSkipBIOSItem.Checked = ss.SkipBiosIntro;
-				colecoHawkUseSGMItem.Checked = ss.UseSGM;
-			};
-			items.Add(colecoHawkSubmenu);
-
-			// CPCHawk
-			items.Add(CreateCoreSubmenu(
-				VSystemCategory.PCs,
-				CoreNames.CPCHawk,
-				CreateSettingsItem("Core Emulation Settings...", (_, _) => OpenCPCHawkSyncSettingsDialog(GetSettingsAdapterFor<AmstradCPC>())),
-				CreateSettingsItem("Audio Settings...", (_, _) => OpenCPCHawkAudioSettingsDialog(GetSettingsAdapterFor<AmstradCPC>())),
-				CreateSettingsItem("Non-Sync Settings...", (_, _) => OpenCPCHawkSettingsDialog(GetSettingsAdapterFor<AmstradCPC>()))));
-
-			// Cygne
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Cygne, CreateGenericCoreConfigItem<WonderSwan>(CoreNames.Cygne)));
-
-			// Emu83
-			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.Emu83, CreateSettingsItem("Palette...", (_, _) => OpenTI83PaletteSettingsDialog(GetSettingsAdapterFor<Emu83>()))));
-
-			// Faust
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Faust, CreateGenericNymaCoreConfigItem<Faust>(CoreNames.Faust, Faust.CachedSettingsInfo)));
-
-			// Gambatte
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Gambatte, CreateSettingsItem("Settings...", (_, _) => OpenGambatteSettingsDialog(GetSettingsAdapterFor<Gameboy>()))));
-			if (includeDupes) items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Gambatte, CreateSettingsItem("Settings...", (_, _) => OpenGambatteSettingsDialog(GetSettingsAdapterFor<Gameboy>()))));
-
-			// GambatteLink
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GambatteLink, CreateSettingsItem("Settings...", (_, _) => OpenGambatteLinkSettingsDialog(GetSettingsAdapterFor<GambatteLink>()))));
-
-			// GBHawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GbHawk, CreateSettingsItem("Settings...", (_, _) => OpenGBHawkSettingsDialog())));
-
-			// GBHawkLink
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GBHawkLink, CreateGenericCoreConfigItem<GBHawkLink>(CoreNames.GBHawkLink)));
-
-			// GBHawkLink3x
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GBHawkLink3x, CreateGenericCoreConfigItem<GBHawkLink3x>(CoreNames.GBHawkLink3x)));
-
-			// GBHawkLink4x
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GBHawkLink4x, CreateGenericCoreConfigItem<GBHawkLink4x>(CoreNames.GBHawkLink4x)));
-
-			// GGHawkLink
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GGHawkLink, CreateGenericCoreConfigItem<GGHawkLink>(CoreNames.GGHawkLink)));
-
-			// Genplus-gx
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Gpgx, CreateGenericCoreConfigItem<GPGX>(CoreNames.Gpgx)));
-
-			// Handy
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Handy, CreateGenericCoreConfigItem<Lynx>(CoreNames.Handy))); // as Handy doesn't implement `ISettable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
-
-			// HyperNyma
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.HyperNyma, CreateGenericNymaCoreConfigItem<HyperNyma>(CoreNames.HyperNyma, HyperNyma.CachedSettingsInfo)));
-
-			// IntelliHawk
-			var intelliHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenIntelliHawkGamepadSettingsDialog(GetSettingsAdapterFor<Intellivision>()));
-			var intelliHawkSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.IntelliHawk, intelliHawkGamepadSettingsItem);
-			intelliHawkSubmenu.DropDownOpened += (_, _) => intelliHawkGamepadSettingsItem.Enabled = MovieSession.Movie.NotActive() || Emulator is not Intellivision;
-			items.Add(intelliHawkSubmenu);
-
-			// Libretro
-			items.Add(CreateCoreSubmenu(
-				VSystemCategory.Other,
-				CoreNames.Libretro,
-				CreateGenericCoreConfigItem<LibretroHost>(CoreNames.Libretro))); // as Libretro doesn't implement `ISettable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
-
-			// MAME
-			var mameSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGenericCoreConfig());
-			var mameSubmenu = CreateCoreSubmenu(VSystemCategory.Other, CoreNames.MAME, mameSettingsItem);
-			mameSubmenu.DropDownOpened += (_, _) => mameSettingsItem.Enabled = Emulator is MAME;
-			items.Add(mameSubmenu);
-
-			// melonDS
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.MelonDS, CreateGenericCoreConfigItem<NDS>(CoreNames.MelonDS)));
-
-			// mGBA
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Mgba, CreateGenericCoreConfigItem<MGBAHawk>(CoreNames.Mgba)));
-
-			// MSXHawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.MSXHawk, CreateGenericCoreConfigItem<MSX>(CoreNames.MSXHawk)));
-
-			// Mupen64Plus
-			var mupen64PlusGraphicsSettingsItem = CreateSettingsItem("Video Plugins...", N64PluginSettingsMenuItem_Click);
-			var mupen64PlusGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenMupen64PlusGamepadSettingsDialog(GetSettingsAdapterFor<N64>()));
-			var mupen64PlusAnalogConstraintItem = CreateSettingsItem("Circular Analog Range", N64CircularAnalogRangeMenuItem_Click);
-			var mupen64PlusMupenStyleLagFramesItem = CreateSettingsItem("Mupen Style Lag Frames", (sender, _) => Mupen64PlusSetMupenStyleLag(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<N64>()));
-			var mupen64PlusUseExpansionSlotItem = CreateSettingsItem("Use Expansion Slot", (sender, _) => Mupen64PlusSetUseExpansionSlot(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<N64>()));
-			var mupen64PlusSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Mupen64Plus, mupen64PlusGraphicsSettingsItem, mupen64PlusGamepadSettingsItem, mupen64PlusAnalogConstraintItem, mupen64PlusMupenStyleLagFramesItem, mupen64PlusUseExpansionSlotItem);
-			mupen64PlusSubmenu.DropDownOpened += (_, _) =>
-			{
-				var settable = GetSettingsAdapterFor<N64>();
-				var s = (N64Settings) settable.GetSettings();
-				var isMovieActive = MovieSession.Movie.IsActive();
-				var mupen64Plus = Emulator as N64;
-				var loadedCoreIsMupen64Plus = mupen64Plus is not null;
-				mupen64PlusGraphicsSettingsItem.Enabled = !loadedCoreIsMupen64Plus || !isMovieActive;
-				mupen64PlusGamepadSettingsItem.Enabled = !loadedCoreIsMupen64Plus || !isMovieActive;
-				mupen64PlusAnalogConstraintItem.Checked = Config.N64UseCircularAnalogConstraint;
-				mupen64PlusMupenStyleLagFramesItem.Checked = s.UseMupenStyleLag;
-				if (loadedCoreIsMupen64Plus)
-				{
-					mupen64PlusUseExpansionSlotItem.Checked = mupen64Plus.UsingExpansionSlot;
-					mupen64PlusUseExpansionSlotItem.Enabled = !mupen64Plus.IsOverridingUserExpansionSlotSetting;
-				}
-				else
-				{
-					mupen64PlusUseExpansionSlotItem.Checked = !((N64SyncSettings) settable.GetSyncSettings()).DisableExpansionSlot;
-					mupen64PlusUseExpansionSlotItem.Enabled = true;
-				}
-			};
-			items.Add(mupen64PlusSubmenu);
-
-			// NeoPop
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.NeoPop, CreateGenericNymaCoreConfigItem<NeoGeoPort>(CoreNames.NeoPop, NeoGeoPort.CachedSettingsInfo)));
-
-			// NesHawk
-			var nesHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterFor<NES>()));
-			var nesHawkVSSettingsItem = CreateSettingsItem("VS Settings...", (_, _) => OpenNesHawkVSSettingsDialog(GetSettingsAdapterFor<NES>()));
-			var nesHawkAdvancedSettingsItem = CreateSettingsItem("Advanced Settings...", (_, _) => OpenNesHawkAdvancedSettingsDialog(GetSettingsAdapterFor<NES>(), Emulator is not NES nesHawk || nesHawk.HasMapperProperties));
-			var nesHawkSubmenu = CreateCoreSubmenu(
-				VSystemCategory.Consoles,
-				CoreNames.NesHawk,
-				nesHawkGamepadSettingsItem,
-				CreateSettingsItem("Graphics Settings...", (_, _) => OpenNesHawkGraphicsSettingsDialog(GetSettingsAdapterFor<NES>())),
-				nesHawkVSSettingsItem,
-				nesHawkAdvancedSettingsItem);
-			nesHawkSubmenu.DropDownOpened += (_, _) =>
-			{
-				var nesHawk = Emulator as NES;
-				var canEditSyncSettings = nesHawk is null || MovieSession.Movie.NotActive();
-				nesHawkGamepadSettingsItem.Enabled = canEditSyncSettings && Tools.IsAvailable<NesControllerSettings>();
-				nesHawkVSSettingsItem.Enabled = nesHawk?.IsVS is null or true;
-				nesHawkAdvancedSettingsItem.Enabled = canEditSyncSettings;
-			};
-			items.Add(nesHawkSubmenu);
-
-			// Nymashock
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Nymashock, CreateGenericNymaCoreConfigItem<Nymashock>(CoreNames.Nymashock, Nymashock.CachedSettingsInfo)));
-
-			// O2Hawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.O2Hawk, CreateGenericCoreConfigItem<O2Hawk>(CoreNames.O2Hawk)));
-
-			// Octoshock
-			var octoshockGamepadSettingsItem = CreateSettingsItem("Controller / Memcard Settings...", (_, _) => OpenOctoshockGamepadSettingsDialog(GetSettingsAdapterFor<Octoshock>()));
-			var octoshockSettingsItem = CreateSettingsItem("Options...", PsxOptionsMenuItem_Click);
-			// using init buffer sizes here (in practice, they don't matter here, but might as well)
-			var octoshockNTSCSettingsItem = CreateSettingsItem("Options (as NTSC)...", (_, _) => OpenOctoshockSettingsDialog(GetSettingsAdapterFor<Octoshock>(), OctoshockDll.eVidStandard.NTSC, new(280, 240)));
-			var octoshockPALSettingsItem = CreateSettingsItem("Options (as PAL)...", (_, _) => OpenOctoshockSettingsDialog(GetSettingsAdapterFor<Octoshock>(), OctoshockDll.eVidStandard.PAL, new(280, 288)));
-			var octoshockSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Octoshock, octoshockGamepadSettingsItem, octoshockSettingsItem, octoshockNTSCSettingsItem, octoshockPALSettingsItem);
-			octoshockSubmenu.DropDownOpened += (_, _) =>
-			{
-				var loadedCoreIsOctoshock = Emulator is Octoshock;
-				octoshockGamepadSettingsItem.Enabled = !loadedCoreIsOctoshock || MovieSession.Movie.NotActive();
-				octoshockSettingsItem.Visible = loadedCoreIsOctoshock;
-				octoshockNTSCSettingsItem.Visible = octoshockPALSettingsItem.Visible = !loadedCoreIsOctoshock;
-			};
-			items.Add(octoshockSubmenu);
-
-			// PCEHawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.PceHawk, CreateGenericCoreConfigItem<PCEngine>(CoreNames.PceHawk)));
-
-			// PicoDrive
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.PicoDrive, CreateGenericCoreConfigItem<PicoDrive>(CoreNames.PicoDrive)));
-
-			// PUAE
-			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.PUAE, CreateGenericCoreConfigItem<PUAE>(CoreNames.PUAE)));
-
-			// QuickNes
-			var quickNesGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenQuickNesGamepadSettingsDialog(GetSettingsAdapterFor<QuickNES>()));
-			var quickNesSubmenu = CreateCoreSubmenu(
-				VSystemCategory.Consoles,
-				CoreNames.QuickNes,
-				quickNesGamepadSettingsItem,
-				CreateSettingsItem("Graphics Settings...", (_, _) => OpenQuickNesGraphicsSettingsDialog(GetSettingsAdapterFor<QuickNES>())));
-			quickNesSubmenu.DropDownOpened += (_, _) => quickNesGamepadSettingsItem.Enabled = (MovieSession.Movie.NotActive() || Emulator is not QuickNES) && Tools.IsAvailable<NesControllerSettings>();
-			items.Add(quickNesSubmenu);
-
-			// SameBoy
-			items.Add(CreateCoreSubmenu(
-				VSystemCategory.Handhelds,
-				CoreNames.Sameboy,
-				CreateSettingsItem("Settings...", (_, _) => OpenSameBoySettingsDialog()),
-				CreateSettingsItem("Choose Custom Palette...", (_, _) => OpenSameBoyPaletteSettingsDialog(GetSettingsAdapterFor<Sameboy>()))));
-
-			// Saturnus
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Saturnus, CreateGenericNymaCoreConfigItem<Saturnus>(CoreNames.Saturnus, Saturnus.CachedSettingsInfo)));
-
-			// SMSHawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.SMSHawk, CreateGenericCoreConfigItem<SMS>(CoreNames.SMSHawk)));
-			if (includeDupes) items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.SMSHawk, CreateGenericCoreConfigItem<SMS>(CoreNames.SMSHawk)));
-
-			// Snes9x
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Snes9X, CreateGenericCoreConfigItem<Snes9x>(CoreNames.Snes9X)));
-
-			// SubGBHawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.SubGbHawk, CreateSettingsItem("Settings...", (_, _) => OpenSubGBHawkSettingsDialog())));
-
-			// SubNESHawk
-			var subNESHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterFor<SubNESHawk>()));
-			var subNESHawkVSSettingsItem = CreateSettingsItem("VS Settings...", (_, _) => OpenNesHawkVSSettingsDialog(GetSettingsAdapterFor<SubNESHawk>()));
-			var subNESHawkAdvancedSettingsItem = CreateSettingsItem("Advanced Settings...", (_, _) => OpenNesHawkAdvancedSettingsDialog(GetSettingsAdapterFor<SubNESHawk>(), Emulator is not SubNESHawk subNESHawk || subNESHawk.HasMapperProperties));
-			var subNESHawkSubmenu = CreateCoreSubmenu(
-				VSystemCategory.Consoles,
-				CoreNames.SubNesHawk,
-				subNESHawkGamepadSettingsItem,
-				CreateSettingsItem("Graphics Settings...", (_, _) => OpenNesHawkGraphicsSettingsDialog(GetSettingsAdapterFor<SubNESHawk>())),
-				subNESHawkVSSettingsItem,
-				subNESHawkAdvancedSettingsItem);
-			subNESHawkSubmenu.DropDownOpened += (_, _) =>
-			{
-				var subNESHawk = Emulator as SubNESHawk;
-				var canEditSyncSettings = subNESHawk is null || MovieSession.Movie.NotActive();
-				subNESHawkGamepadSettingsItem.Enabled = canEditSyncSettings && Tools.IsAvailable<NesControllerSettings>();
-				subNESHawkVSSettingsItem.Enabled = subNESHawk?.IsVs is null or true;
-				subNESHawkAdvancedSettingsItem.Enabled = canEditSyncSettings;
-			};
-			items.Add(subNESHawkSubmenu);
-
-			// TI83Hawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.TI83Hawk, CreateSettingsItem("Palette...", (_, _) => OpenTI83PaletteSettingsDialog(GetSettingsAdapterFor<TI83>()))));
-
-			// TIC80
-			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.TIC80, CreateGenericCoreConfigItem<TIC80>(CoreNames.TIC80)));
-
-			// T. S. T.
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.TST, CreateGenericNymaCoreConfigItem<Tst>(CoreNames.TST, Tst.CachedSettingsInfo)));
-
-			// TurboNyma
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.TurboNyma, CreateGenericNymaCoreConfigItem<TurboNyma>(CoreNames.TurboNyma, TurboNyma.CachedSettingsInfo)));
-
-			// uzem
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Uzem, CreateGenericCoreConfigItem<Uzem>(CoreNames.Uzem))); // as uzem doesn't implement `ISettable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
-
-			// VectrexHawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.VectrexHawk, CreateGenericCoreConfigItem<VectrexHawk>(CoreNames.VectrexHawk)));
-
-			// Virtu
-			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.Virtu, CreateSettingsItem("Settings...", (_, _) => OpenVirtuSettingsDialog())));
-
-			// Virtual Boyee
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.VirtualBoyee, CreateGenericNymaCoreConfigItem<VirtualBoyee>(CoreNames.VirtualBoyee, VirtualBoyee.CachedSettingsInfo)));
-
-			// Virtual Jaguar
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.VirtualJaguar, CreateGenericCoreConfigItem<VirtualJaguar>(CoreNames.VirtualJaguar)));
-
-			// ZXHawk
-			items.Add(CreateCoreSubmenu(
-				VSystemCategory.PCs,
-				CoreNames.ZXHawk,
-				CreateSettingsItem("Core Emulation Settings...", (_, _) => OpenZXHawkSyncSettingsDialog(GetSettingsAdapterFor<ZXSpectrum>())),
-				CreateSettingsItem("Joystick Configuration...", (_, _) => OpenZXHawkGamepadSettingsDialog(GetSettingsAdapterFor<ZXSpectrum>())),
-				CreateSettingsItem("Audio Settings...", (_, _) => OpenZXHawkAudioSettingsDialog(GetSettingsAdapterFor<ZXSpectrum>())),
-				CreateSettingsItem("Non-Sync Settings...", (_, _) => OpenZXHawkSettingsDialog(GetSettingsAdapterFor<ZXSpectrum>()))));
-
-			return items;
-		}
 	}
 }

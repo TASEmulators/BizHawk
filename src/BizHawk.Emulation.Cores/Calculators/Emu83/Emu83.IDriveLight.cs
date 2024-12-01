@@ -6,5 +6,7 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 	{
 		public bool DriveLightEnabled => true;
 		public bool DriveLightOn => LibEmu83.TI83_GetLinkActive(Context);
+
+		public string DriveLightIconDescription => "Link Activity";
 	}
 }

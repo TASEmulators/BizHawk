@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Emulation.Common;
 using static BizHawk.Emulation.Cores.Libretro.LibretroApi;
 

@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using System;
 using System.IO;
 
 namespace BizHawk.Emulation.Cores.Waterbox

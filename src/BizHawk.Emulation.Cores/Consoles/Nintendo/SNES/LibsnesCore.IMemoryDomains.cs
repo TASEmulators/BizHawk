@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 using BizHawk.Common;
@@ -38,6 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			MakeMemoryDomain("WRAM", LibsnesApi.SNES_MEMORY.WRAM, MemoryDomain.Endian.Little);
 			MakeMemoryDomain("CARTROM", LibsnesApi.SNES_MEMORY.CARTRIDGE_ROM, MemoryDomain.Endian.Little, byteSize: 2); //there are signs this doesnt work on SGB?
 			MakeMemoryDomain("CARTRAM", LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM, MemoryDomain.Endian.Little, byteSize: 2);
+			MakeMemoryDomain("SA1 IRAM", LibsnesApi.SNES_MEMORY.SA1_IRAM, MemoryDomain.Endian.Little, byteSize: 2);
 			MakeMemoryDomain("VRAM", LibsnesApi.SNES_MEMORY.VRAM, MemoryDomain.Endian.Little, byteSize: 2);
 			MakeMemoryDomain("OAM", LibsnesApi.SNES_MEMORY.OAM, MemoryDomain.Endian.Little, byteSize: 2);
 			MakeMemoryDomain("CGRAM", LibsnesApi.SNES_MEMORY.CGRAM, MemoryDomain.Endian.Little, byteSize: 2);

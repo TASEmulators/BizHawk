@@ -1,6 +1,5 @@
-﻿using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
@@ -83,21 +82,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 			public byte[] GetBytes()
 			{
-				return GetBytesEnumerable().ToArray();
+				var buf = new byte[sizeof(int)];
+				BinaryPrimitives.WriteInt32BigEndian(buf, Data);
+				return buf;
 			}
 
-			private IEnumerable<byte> GetBytesEnumerable()
-			{
-				yield return unchecked((byte)(Data >> 24));
-				yield return unchecked((byte)(Data >> 16));
-				yield return unchecked((byte)(Data >> 8));
-				yield return unchecked((byte)Data);
-			}
-
+#if false
 			public IEnumerable<bool> Entries
 			{
 				get
 				{
+//					return Enumerable.Range(start: 0, count: Sectors).Select(i => (Data & (1 << (24 - i))) is not 0);
+					// ^ simpler implementation, probably has an off-by-one error --yoshi
 					var d = Data;
 					for (var i = 0; i < Sectors; i++)
 					{
@@ -106,6 +102,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 					}
 				}
 			}
+#endif
 		}
 
 		protected class LocatedEntry

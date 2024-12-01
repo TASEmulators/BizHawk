@@ -1,6 +1,5 @@
 
 
-using System;
 using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 using BizHawk.Common;

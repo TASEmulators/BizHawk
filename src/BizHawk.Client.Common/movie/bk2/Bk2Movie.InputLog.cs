@@ -135,6 +135,12 @@ namespace BizHawk.Client.Common
 				stateFrame = newLog.Count;  // In case the frame count failed to parse, revert to using the entire state input log
 			}
 
+			if (stateFrame > newLog.Count)
+			{
+				errorMessage = $"Savestate has invalid frame number {stateFrame} (expected maximum {newLog.Count})";
+				return false;
+			}
+
 			if (Log.Count < stateFrame)
 			{
 				if (this.IsFinished())

@@ -1,8 +1,9 @@
-using System;
 using System.Drawing;
 using System.Numerics;
 
 using Silk.NET.OpenGL;
+
+#pragma warning disable BHI1007 // target-typed Exception TODO don't
 
 namespace BizHawk.Bizware.Graphics
 {
@@ -57,18 +58,11 @@ namespace BizHawk.Bizware.Graphics
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 		}
 
-		public void EnableBlendNormal()
+		public void EnableBlending()
 		{
 			GL.Enable(EnableCap.Blend);
 			GL.BlendEquation(GLEnum.FuncAdd);
 			GL.BlendFuncSeparate(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha, BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
-		}
-
-		public void EnableBlendAlpha()
-		{
-			GL.Enable(EnableCap.Blend);
-			GL.BlendEquation(GLEnum.FuncAdd);
-			GL.BlendFuncSeparate(BlendingFactor.One, BlendingFactor.Zero, BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
 		}
 
 		public void DisableBlending()

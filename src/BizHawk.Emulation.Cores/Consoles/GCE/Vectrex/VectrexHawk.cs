@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.MC6809;
@@ -7,7 +5,6 @@ using BizHawk.Emulation.Cores.Components.MC6809;
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
 	[Core(CoreNames.VectrexHawk, "")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class VectrexHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, 
 	ISettable<object, VectrexHawk.VectrexSyncSettings>
 	{

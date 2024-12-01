@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using BizHawk.Common.NumberExtensions;
@@ -37,19 +36,15 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets a list of <see cref="WatchDisplayType"/> for a <see cref="DWordWatch"/>
 		/// </summary>
-		public static IEnumerable<WatchDisplayType> ValidTypes
-		{
-			get
-			{
-				yield return WatchDisplayType.Unsigned;
-				yield return WatchDisplayType.Signed;
-				yield return WatchDisplayType.Hex;
-				yield return WatchDisplayType.Binary;
-				yield return WatchDisplayType.FixedPoint_20_12;
-				yield return WatchDisplayType.FixedPoint_16_16;
-				yield return WatchDisplayType.Float;
-			}
-		}
+		public static IEnumerable<WatchDisplayType> ValidTypes { get; } = [
+			WatchDisplayType.Unsigned,
+			WatchDisplayType.Signed,
+			WatchDisplayType.Hex,
+			WatchDisplayType.Binary,
+			WatchDisplayType.FixedPoint_20_12,
+			WatchDisplayType.FixedPoint_16_16,
+			WatchDisplayType.Float,
+		];
 
 		/// <summary>
 		/// Get a list of <see cref="WatchDisplayType"/> that can be used for a <see cref="DWordWatch"/>
@@ -86,6 +81,7 @@ namespace BizHawk.Client.Common
 					WatchDisplayType.FixedPoint_20_12 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 4096.0),
 					WatchDisplayType.FixedPoint_16_16 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 65536.0),
 					WatchDisplayType.Float => NumberExtensions.ReinterpretAsUInt32(float.Parse(value, NumberFormatInfo.InvariantInfo)),
+					WatchDisplayType.Binary => Convert.ToUInt32(value, 2),
 					_ => 0
 				};
 
@@ -191,7 +187,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Get the previous value
 		/// </summary>
-		public override int Previous => (int)_previous;
+		public override uint Previous => _previous;
 
 		/// <summary>
 		/// Get a string representation of the previous value

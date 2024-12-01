@@ -1,5 +1,3 @@
-using System;
-
 using NLua;
 
 using BizHawk.Emulation.Common;
@@ -53,7 +51,13 @@ namespace BizHawk.Client.Common
 
 		void SpawnAndSetFileThread(string pathToLoad, LuaFile lf);
 
-		void ExecuteString(string command);
+		/// <summary>
+		/// Executes Lua code. Automatically prepends <see langword="return"/> statement if possible.
+		/// </summary>
+		/// <returns>
+		/// Values returned by the Lua script, if any.
+		/// </returns>
+		object[] ExecuteString(string command);
 
 		(bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf);
 	}

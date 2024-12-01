@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -15,24 +14,35 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
 
-		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
-		private readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
+		private readonly SolidBrush _brush = new(default);
 
-		internal NLuaTableHelper TableHelper { get; set; }
+		private readonly Pen _pen = new(default(Color));
+
+		private readonly Action<string> LogOutputCallback;
+
+		private readonly NLuaTableHelper TableHelper;
 
 		private SolidBrush GetBrush([LuaColorParam] object color)
-			=> _solidBrushes.GetValueOrPutNew1(TableHelper.ParseColor(color));
+		{
+			_brush.Color = TableHelper.ParseColor(color);
+			return _brush;
+		}
 
 		private Pen GetPen([LuaColorParam] object color)
-			=> _pens.GetValueOrPutNew1(TableHelper.ParseColor(color));
+		{
+			_pen.Color = TableHelper.ParseColor(color);
+			return _pen;
+		}
 
 		private Color _defaultForeground = Color.Black;
 		private Color? _defaultBackground;
 		private Color? _defaultTextBackground = Color.FromArgb(128, 0, 0, 0);
 
-		public LuaPictureBox()
+		public LuaPictureBox(NLuaTableHelper tableHelper, Action<string> logOutputCallback)
 		{
 			Image = new Bitmap(Width, Height);
+			LogOutputCallback = logOutputCallback;
+			TableHelper = tableHelper;
 		}
 		
 		public void LuaResize(int width, int height)
@@ -83,7 +93,13 @@ namespace BizHawk.Client.EmuHawk
 			boxBackground.DrawBezier(GetPen(TableHelper.ParseColor(color)), pointsArr[0], pointsArr[1], pointsArr[2], pointsArr[3]);
 		}
 
-		public void DrawBox(int x, int y, int x2, int y2, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
+		public void DrawBox(
+			int x,
+			int y,
+			int x2,
+			int y2,
+			[LuaColorParam] object line,
+			[LuaColorParam] object background)
 		{
 			if (x < x2)
 			{
@@ -116,7 +132,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DrawEllipse(int x, int y, int width, int height, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
+		public void DrawEllipse(
+			int x,
+			int y,
+			int width,
+			int height,
+			[LuaColorParam] object line,
+			[LuaColorParam] object background)
 		{
 			var bg = TableHelper.SafeParseColor(background) ?? _defaultBackground;
 			var boxBackground = Graphics.FromImage(Image);
@@ -130,15 +152,16 @@ namespace BizHawk.Client.EmuHawk
 			boxBackground.DrawEllipse(GetPen(TableHelper.SafeParseColor(line) ?? _defaultForeground), x, y, width, height);
 		}
 
-		public void DrawIcon(string path, int x, int y, int? width = null, int? height = null)
+		public void DrawIcon(string path, int x, int y, int? width, int? height, string functionName)
 		{
 			Icon icon;
-			if (width.HasValue && height.HasValue)
+			if (width is int w && height is int h)
 			{
-				icon = new Icon(path, width.Value, height.Value);
+				icon = new Icon(path, width: w, height: h);
 			}
 			else
 			{
+				if (width is not null || height is not null) WarnForMismatchedPair(functionName: functionName, kind: "width and height");
 				icon = new Icon(path);
 			}
 
@@ -146,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 			boxBackground.DrawIcon(icon, x, y);
 		}
 
-		public void DrawImage(string path, int x, int y, int? width = null, int? height = null, bool cache = true)
+		public void DrawImage(string path, int x, int y, int? width, int? height, bool cache)
 		{
 			if (!_imageCache.TryGetValue(path, out var img))
 			{
@@ -171,7 +194,16 @@ namespace BizHawk.Client.EmuHawk
 			_imageCache.Clear();
 		}
 
-		public void DrawImageRegion(string path, int sourceX, int sourceY, int sourceWidth, int sourceHeight, int destX, int destY, int? destWidth = null, int? destHeight = null)
+		public void DrawImageRegion(
+			string path,
+			int sourceX,
+			int sourceY,
+			int sourceWidth,
+			int sourceHeight,
+			int destX,
+			int destY,
+			int? destWidth,
+			int? destHeight)
 		{
 			var img = _imageCache.GetValueOrPut(path, Image.FromFile);
 			var destRect = new Rectangle(destX, destY, destWidth ?? sourceWidth, destHeight ?? sourceHeight);
@@ -180,20 +212,27 @@ namespace BizHawk.Client.EmuHawk
 			boxBackground.DrawImage(img, destRect, sourceX, sourceY, sourceWidth, sourceHeight, GraphicsUnit.Pixel);
 		}
 
-		public void DrawLine(int x1, int y1, int x2, int y2, [LuaColorParam] object color = null)
+		public void DrawLine(int x1, int y1, int x2, int y2, [LuaColorParam] object color)
 		{
 			var boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawLine(GetPen(TableHelper.SafeParseColor(color) ?? _defaultForeground), x1, y1, x2, y2);
 		}
 
-		public void DrawAxis(int x, int y, int size, [LuaColorParam] object color = null)
+		public void DrawAxis(int x, int y, int size, [LuaColorParam] object color)
 		{
 			var color1 = TableHelper.SafeParseColor(color);
 			DrawLine(x + size, y, x - size, y, color1);
 			DrawLine(x, y + size, x, y - size, color1);
 		}
 
-		public void DrawArc(int x, int y, int width, int height, int startAngle, int sweepAngle, [LuaColorParam] object line = null)
+		public void DrawArc(
+			int x,
+			int y,
+			int width,
+			int height,
+			int startAngle,
+			int sweepAngle,
+			[LuaColorParam] object line)
 		{
 			var boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawArc(GetPen(TableHelper.SafeParseColor(line) ?? _defaultForeground), x, y, width, height, startAngle, sweepAngle);
@@ -206,8 +245,8 @@ namespace BizHawk.Client.EmuHawk
 			int height,
 			int startAngle,
 			int sweepAngle,
-			[LuaColorParam] object line = null,
-			[LuaColorParam] object background = null)
+			[LuaColorParam] object line,
+			[LuaColorParam] object background)
 		{
 			var bg = TableHelper.SafeParseColor(background) ?? _defaultBackground;
 			var boxBackground = Graphics.FromImage(Image);
@@ -221,13 +260,18 @@ namespace BizHawk.Client.EmuHawk
 			boxBackground.DrawPie(GetPen(TableHelper.SafeParseColor(line) ?? _defaultForeground), x + 1, y + 1, width - 1, height - 1, startAngle, sweepAngle);
 		}
 
-		public void DrawPixel(int x, int y, [LuaColorParam] object color = null)
+		public void DrawPixel(int x, int y, [LuaColorParam] object color)
 		{
 			var boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawLine(GetPen(TableHelper.SafeParseColor(color) ?? _defaultForeground), x, y, x + 0.1F, y);
 		}
 
-		public void DrawPolygon(LuaTable points, int? x = null, int? y = null, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
+		public void DrawPolygon(
+			LuaTable points,
+			int? x,
+			int? y,
+			[LuaColorParam] object line,
+			[LuaColorParam] object background)
 		{
 			var pointsList = TableHelper.EnumerateValues<LuaTable>(points)
 				.Select(table => TableHelper.EnumerateValues<long>(table).ToList()).ToList();
@@ -249,7 +293,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DrawRectangle(int x, int y, int width, int height, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
+		public void DrawRectangle(
+			int x,
+			int y,
+			int width,
+			int height,
+			[LuaColorParam] object line,
+			[LuaColorParam] object background)
 		{
 			var bg = TableHelper.SafeParseColor(background) ?? _defaultBackground;
 			var boxBackground = Graphics.FromImage(Image);
@@ -266,13 +316,13 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			[LuaColorParam] object foreColor = null,
-			[LuaColorParam] object backColor = null,
-			int? fontSize = null,
-			string fontFamily = null,
-			string fontStyle = null,
-			string horizAlign = null,
-			string vertAlign = null)
+			[LuaColorParam] object foreColor,
+			[LuaColorParam] object backColor,
+			int? fontSize,
+			string fontFamily,
+			string fontStyle,
+			string horizAlign,
+			string vertAlign)
 		{
 			var family = FontFamily.GenericMonospace;
 			if (fontFamily != null)
@@ -347,7 +397,7 @@ namespace BizHawk.Client.EmuHawk
 			boxBackground.FillRectangle(GetBrush(TableHelper.SafeParseColor(backColor) ?? _defaultTextBackground.Value), rect);
 			boxBackground = Graphics.FromImage(Image);
 			boxBackground.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-			boxBackground.DrawString(message, font, new SolidBrush(TableHelper.SafeParseColor(foreColor) ?? Color.Black), x, y);
+			boxBackground.DrawString(message, font, GetBrush(TableHelper.SafeParseColor(foreColor) ?? Color.Black), x, y);
 		}
 		
 		public Point GetMouse()
@@ -367,5 +417,8 @@ namespace BizHawk.Client.EmuHawk
 			DoLuaClick(this, e);
 			base.OnClick(e);
 		}
+
+		private void WarnForMismatchedPair(string functionName, string kind)
+			=> LogOutputCallback($"{functionName}: both {kind} must be set to have any effect");
 	}
 }

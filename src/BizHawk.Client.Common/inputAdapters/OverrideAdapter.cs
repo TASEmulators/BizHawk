@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
@@ -12,8 +11,6 @@ namespace BizHawk.Client.Common
 	public class OverrideAdapter : IController
 	{
 		public ControllerDefinition Definition { get; private set; }
-
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
 		private readonly Dictionary<string, bool> _overrides = new Dictionary<string, bool>();
 		private readonly Dictionary<string, int> _axisOverrides = new Dictionary<string, int>();

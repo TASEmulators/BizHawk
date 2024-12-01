@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
@@ -340,7 +339,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			origin = EDetectionOrigin.None;
 
 			if (file.Length < 16) throw new Exception("Alleged NES rom too small to be anything useful");
-			if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("UNIF")))
+			if (file.AsSpan(start: 0, length: 4).SequenceEqual("UNIF"u8))
 			{
 				unif = new Unif(new MemoryStream(file));
 				LoadWriteLine("Found UNIF header:");
@@ -350,7 +349,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				hash_sha1_several.Add(hash_sha1);
 				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
 			}
-			else if(file.Take(5).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("NESM\x1A")))
+			else if(file.AsSpan(0, 5).SequenceEqual("NESM\x1A"u8))
 			{
 				origin = EDetectionOrigin.NSF;
 				LoadWriteLine("Loading as NSF");
@@ -376,8 +375,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				return;
 			}
-			else if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("FDS\x1A"))
-				|| file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("\x01*NI")))
+			else if (file.AsSpan(start: 0, length: 4).SequenceEqual("FDS\x1A"u8)
+				|| file.AsSpan(start: 0, length: 4).SequenceEqual("\x01*NI"u8))
 			{
 				// danger!  this is a different codepath with an early return.  accordingly, some
 				// code is duplicated twice...
@@ -416,12 +415,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				byte[] nesheader = new byte[16];
-				Buffer.BlockCopy(file, 0, nesheader, 0, 16);
-
 				bool exists = true;
 
-				if (!DetectFromINES(nesheader, out iNesHeaderInfo, out iNesHeaderInfoV2))
+				if (!DetectFromINES(file.AsSpan(start: 0, length: 16), out iNesHeaderInfo, out iNesHeaderInfoV2))
 				{
 					// we don't have an ines header, check if the game hash is in the game db
 					exists = false;

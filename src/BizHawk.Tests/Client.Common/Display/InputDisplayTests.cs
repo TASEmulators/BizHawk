@@ -1,5 +1,3 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -17,18 +15,19 @@ namespace BizHawk.Tests.Client.Common.Display
 		public void Initializer()
 		{
 			_boolController = new(new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "A" } }.MakeImmutable());
+			_boolController.Definition.BuildMnemonicsCache(VSystemID.Raw.NULL);
 			_axisController = new(
 				new ControllerDefinition("Dummy Gamepad")
 					.AddXYPair("Stick{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(200), MidValue)
 					.MakeImmutable());
+			_axisController.Definition.BuildMnemonicsCache(VSystemID.Raw.NULL);
 		}
 
 		[TestMethod]
 		public void Generate_BoolPressed_GeneratesMnemonic()
 		{
 			_boolController["A"] = true;
-			var displayGenerator = new Bk2InputDisplayGenerator("NES", _boolController);
-			var actual = displayGenerator.Generate();
+			var actual = Bk2InputDisplayGenerator.Generate(_boolController);
 			Assert.AreEqual("A", actual);
 		}
 
@@ -36,16 +35,14 @@ namespace BizHawk.Tests.Client.Common.Display
 		public void Generate_BoolUnPressed_GeneratesSpace()
 		{
 			_boolController["A"] = false;
-			var displayGenerator = new Bk2InputDisplayGenerator("NES", _boolController);
-			var actual = displayGenerator.Generate();
+			var actual = Bk2InputDisplayGenerator.Generate(_boolController);
 			Assert.AreEqual(" ", actual);
 		}
 
 		[TestMethod]
 		public void Generate_Floats()
 		{
-			var displayGenerator = new Bk2InputDisplayGenerator("NES", _axisController);
-			var actual = displayGenerator.Generate();
+			var actual = Bk2InputDisplayGenerator.Generate(_axisController);
 			Assert.AreEqual("    0,    0,", actual);
 		}
 
@@ -53,8 +50,7 @@ namespace BizHawk.Tests.Client.Common.Display
 		public void Generate_MidRangeDisplaysEmpty()
 		{
 			_axisController.AcceptNewAxis("StickX", MidValue);
-			var displayGenerator = new Bk2InputDisplayGenerator("NES", _axisController);
-			var actual = displayGenerator.Generate();
+			var actual = Bk2InputDisplayGenerator.Generate(_axisController);
 			Assert.AreEqual("          0,", actual);
 		}
 	}

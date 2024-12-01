@@ -10,7 +10,6 @@
 //perhaps moving the slider is meaningless if the disc is ejected--it only affects what disc is inserted when the disc gets inserted!! yeah! this might could save us!
 //not exactly user friendly but maybe we can build it from there with a custom UI.. a disk-changer? dunno if that would help
 
-using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.IO;
@@ -152,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				}
 			}
 
-			//TODO - known bad firmwares are a no-go. we should refuse to boot them. (that's the mednafen policy)
+			//TODO - known bad firmware is a no-go. we should refuse to boot them. (that's the mednafen policy)
 			var firmware = comm.CoreFileProvider.GetFirmwareOrThrow(new("PSX", firmwareRegion), $"A PSX `{firmwareRegion}` region bios file is required");
 
 			//create the instance
@@ -454,6 +453,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public bool DriveLightEnabled { get; private set; }
 		public bool DriveLightOn { get; private set; }
+		public string DriveLightIconDescription => "CD Drive Activity";
 
 		private void Attach()
 		{

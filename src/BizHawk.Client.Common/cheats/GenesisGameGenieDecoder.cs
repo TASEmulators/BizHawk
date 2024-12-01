@@ -1,6 +1,6 @@
-﻿using System;
 using System.Collections.Generic;
 
+#pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
 {
 	public static class GenesisGameGenieDecoder
@@ -69,19 +69,20 @@ namespace BizHawk.Client.Common.cheats
 				hexCode |= y;
 			}
 
-			long decoded = (hexCode & 0xFF00000000) >> 32;
-			decoded |= hexCode & 0x00FF000000;
-			decoded |= (hexCode & 0x0000FF0000) << 16;
-			decoded |= (hexCode & 0x00000000700) << 5;
-			decoded |= (hexCode & 0x000000F800) >> 3;
-			decoded |= (hexCode & 0x00000000FF) << 16;
+			long decoded = (hexCode & 0xFF_0000_0000) >> 32;
+			decoded |= hexCode & 0x00_FF00_0000;
+			decoded |= (hexCode & 0x00_00FF_0000) << 16;
+			decoded |= (hexCode & 0x00_0000_0700) << 5;
+			decoded |= (hexCode & 0x00_0000_F800) >> 3;
+			decoded |= (hexCode & 0x00_0000_00FF) << 16;
 
 			return new DecodeResult
 			{
 				Size = WatchSize.Word,
-				Value = (int)(decoded & 0x000000FFFF),
-				Address= (int)((decoded & 0xFFFFFF0000) >> 16)
+				Value = (int) (decoded & 0x00_0000_FFFF),
+				Address = (int) ((decoded & 0xFF_FFFF_0000) >> 16),
 			};
 		}
 	}
 }
+#pragma warning restore MA0089

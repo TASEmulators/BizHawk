@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
@@ -14,8 +13,6 @@ namespace BizHawk.Emulation.Common
 	{
 		public ControllerDefinition Definition { get; } = new ControllerDefinition("Null Controller").MakeImmutable();
 
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
 		public bool IsPressed(string button) => false;
 
 		public int AxisValue(string name) => 0;
@@ -24,6 +21,7 @@ namespace BizHawk.Emulation.Common
 
 		public void SetHapticChannelStrength(string name, int strength) {}
 
-		public static readonly NullController Instance = new NullController();
+		public static readonly NullController Instance = new();
+		private NullController() {}
 	}
 }

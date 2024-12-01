@@ -112,6 +112,16 @@
 			// ValueNum
 			// 
 			this.ValueNum.Location = new System.Drawing.Point(48, 179);
+			this.ValueNum.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+			this.ValueNum.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
 			this.ValueNum.Name = "ValueNum";
 			this.ValueNum.Size = new System.Drawing.Size(51, 20);
 			this.ValueNum.TabIndex = 5;
@@ -162,8 +172,10 @@
 			this.Controls.Add(this.InsertButton);
 			this.Controls.Add(this.PatternList);
 			this.Controls.Add(this.ButtonBox);
+			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(209, 9999);
-			this.MinimumSize = new System.Drawing.Size(209, 34);
+			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(209, 39);
 			this.Name = "PatternsForm";
 			this.Text = "Patterns Options";
 			this.Load += new System.EventHandler(this.PatternsForm_Load);

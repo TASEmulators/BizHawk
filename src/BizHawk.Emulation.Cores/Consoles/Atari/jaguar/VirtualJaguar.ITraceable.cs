@@ -1,4 +1,3 @@
-﻿using System;
 using System.Text;
 using BizHawk.Emulation.Common;
 

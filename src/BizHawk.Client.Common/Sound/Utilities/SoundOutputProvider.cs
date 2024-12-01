@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,7 +31,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Func<double> _getCoreVsyncRateCallback;
 
-		private readonly Queue<short> _buffer = new Queue<short>();
+		private readonly List<short> _buffer = [ ];
 		private readonly bool _standaloneMode;
 		private readonly int _targetExtraSamples;
 		private int _maxSamplesDeficit;
@@ -102,7 +101,7 @@ namespace BizHawk.Client.Common
 			_buffer.Clear();
 			for (int i = 0; i < _targetExtraSamples * ChannelCount; i++)
 			{
-				_buffer.Enqueue(0);
+				_buffer.Add(0);
 			}
 		}
 
@@ -166,7 +165,7 @@ namespace BizHawk.Client.Common
 				if (LogDebug) Console.WriteLine($"Generating {generateSampleCount} samples");
 				for (int i = 0; i < generateSampleCount * ChannelCount; i++)
 				{
-					_buffer.Enqueue(0);
+					_buffer.Add(0);
 				}
 
 				hardCorrected = true;
@@ -175,10 +174,7 @@ namespace BizHawk.Client.Common
 			{
 				int discardSampleCount = extraSampleCount;
 				if (LogDebug) Console.WriteLine($"Discarding {discardSampleCount} samples");
-				for (int i = 0; i < discardSampleCount * ChannelCount; i++)
-				{
-					_buffer.Dequeue();
-				}
+				_buffer.RemoveRange(0, discardSampleCount * ChannelCount);
 
 				hardCorrected = true;
 			}
@@ -287,18 +283,13 @@ namespace BizHawk.Client.Common
 
 		private void GetSamplesFromBuffer(short[] samples, int count)
 		{
-			for (int i = 0; i < count * ChannelCount; i++)
-			{
-				samples[i] = _buffer.Dequeue();
-			}
+			_buffer.CopyTo(0, samples, 0, count * ChannelCount);
+			_buffer.RemoveRange(0, count * ChannelCount);
 		}
 
 		private void AddSamplesToBuffer(short[] samples, int count)
 		{
-			for (int i = 0; i < count * ChannelCount; i++)
-			{
-				_buffer.Enqueue(samples[i]);
-			}
+			_buffer.AddRange(new ArraySegment<short>(samples, 0, count * ChannelCount));
 		}
 
 		private short[] GetOutputBuffer(int count)

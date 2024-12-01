@@ -1,7 +1,6 @@
 // https://www.angelcode.com/products/bmfont/
 // https://devblog.cyotek.com/post/angelcode-bitmap-font-parsing-using-csharp
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -144,6 +143,7 @@ namespace BizHawk.Bizware.Graphics
 		private List<ITexture2D> TexturePages = [ ];
 		private readonly Dictionary<char, TexCoords> CharTexCoords = [ ];
 
-		private record TexCoords(float U0, float V0, float U1, float V1);
+		/// <remarks>TODO can this be a struct? it's only 16o and only used here, in the above dict</remarks>
+		private sealed record class TexCoords(float U0, float V0, float U1, float V1);
 	}
 }

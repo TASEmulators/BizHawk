@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 
@@ -124,6 +123,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[BizImport(CC)]
 		public abstract void SetLayers(ulong layers);
 
+		/// <summary>
+		/// Gets an input device override for a port
+		/// Corresponds to Game->DesiredInput[port].device_name
+		/// </summary>
+		[BizImport(CC)]
+		public abstract IntPtr GetInputDeviceOverride(int port);
+
 		[BizImport(CC)]
 		public abstract void DumpInputs();
 
@@ -143,6 +149,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			SECAM
 		}
 
+		public enum GameMediumTypes : int
+		{
+			GMT_NONE = 0,
+			GMT_ARCADE,
+			GMT_PLAYER
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct SystemInfo
 		{
@@ -151,14 +164,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public int NominalWidth;
 			public int NominalHeight;
 			public VideoSystem VideoSystem;
+			public GameMediumTypes GameType;
 			public int FpsFixed;
 			public long MasterClock;
 			public int LcmWidth;
 			public int LcmHeight;
-			public int  PointerScaleX;
-			public int  PointerScaleY;
-			public int  PointerOffsetX;
-			public int  PointerOffsetY;
+			public int PointerScaleX;
+			public int PointerScaleY;
+			public int PointerOffsetX;
+			public int PointerOffsetY;
 		}
 
 		[BizImport(CC, Compatibility = true)]
@@ -180,9 +194,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public delegate void FrontendFirmwareNotify(string name);
 		/// <summary>
-		/// Set a callback to be called whenever the core calls MDFN_MakeFName for a firmware, so that we can load firmwares on demand
+		/// Set a callback to be called whenever the core calls MDFN_MakeFName for a firmware, so that we can load firmware on demand
 		/// </summary>
-		/// <param name="cb"></param>
 		[BizImport(CC)]
 		public abstract void SetFrontendFirmwareNotify(FrontendFirmwareNotify cb);
 
@@ -208,7 +221,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// Callback to receive a disk TOC
 		/// </summary>
-		/// <param name="disk"></param>
 		/// <param name="dest">Deposit a LibNymaCore.TOC here</param>
 		[UnmanagedFunctionPointer(CC)]
 		public delegate void CDTOCCallback(int disk, IntPtr dest);

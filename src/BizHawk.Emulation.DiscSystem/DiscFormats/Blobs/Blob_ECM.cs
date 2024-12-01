@@ -3,9 +3,9 @@
 //TODO - make a background thread to validate the EDC. be sure to terminate thread when the Blob disposes
 //remember: may need another stream for that. the IBlob architecture doesn't demand multi-threading support
 
-using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.NumberExtensions;
@@ -81,13 +81,11 @@ namespace BizHawk.Emulation.DiscSystem
 					nbits += 7;
 				}
 
-				//end of blocks section
-				if (N == 0xFFFFFFFF)
-					break;
+				// end of blocks section
+				if (N is 0xFFFF_FFFF) break;
 
-				//the 0x80000000 business is confusing, but this is almost positively an error
-				if (N >= 0x100000000)
-					MisformedException();
+				// the 0x8000_0000 business is confusing, but this is almost positively an error
+				if (N >= 0x1_0000_0000) MisformedException();
 
 				var todo = (uint)N + 1;
 
@@ -172,7 +170,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//Console.WriteLine("binary searched"); //use this to check for mistaken LastReadIndex logic resulting in binary searches during sequential access
 			var listIndex = Index.LowerBoundBinarySearch(idx => idx.LogicalOffset, offset);
-			System.Diagnostics.Debug.Assert(listIndex < Index.Count);
+			Debug.Assert(listIndex < Index.Count, "insertion point may not be after end");
 			//Console.WriteLine("byte_pos {0:X8} using index #{1} at offset {2:X8}", offset, listIndex, Index[listIndex].LogicalOffset);
 
 			return listIndex;

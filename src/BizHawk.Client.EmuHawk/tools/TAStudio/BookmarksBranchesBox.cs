@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -481,8 +480,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedBranch == null)
 			{
-				Select(Branches.Current, true);
-				BranchView.Refresh();
+				if (Branches.Current != -1)
+				{
+					Select(Branches.Current, true);
+					BranchView.Refresh();
+				}
 				return;
 			}
 
@@ -572,11 +574,6 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a message",
 				InitialValue = branch.UserText
 			};
-
-			var point = Cursor.Position;
-			point.Offset(i.Width / -2, i.Height / -2);
-			i.StartPosition = FormStartPosition.Manual;
-			i.Location = point;
 
 			if (this.ShowDialogWithTempMute(i).IsOk())
 			{

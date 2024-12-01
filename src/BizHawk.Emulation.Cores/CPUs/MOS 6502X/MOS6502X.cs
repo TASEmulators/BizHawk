@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 
 using BizHawk.Common;
@@ -6,6 +5,11 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.M6502
 {
+	/// <remarks>
+	/// this type parameter might look useless—and it is—but after monomorphisation,
+	/// this way happens to perform better than the alternative
+	/// </remarks>
+	/// <seealso cref="IMOS6502XLink"/>
 	public sealed partial class MOS6502X<TLink> where TLink : IMOS6502XLink
 	{
 		private readonly TLink _link;

@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,7 +8,6 @@ using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 namespace BizHawk.Client.Common.movie.import
 {
-	// ReSharper disable once UnusedMember.Global
 	/// <summary>For Snes9x's <see href="https://tasvideos.org/EmulatorResources/Snes9x/SMV"><c>.smv</c> format</see></summary>
 	[ImporterFor("Snes9x", ".smv")]
 	internal class SmvImport : MovieImporter
@@ -29,7 +27,7 @@ namespace BizHawk.Client.Common.movie.import
 				return;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.SNES;
+			Result.Movie.SystemID = VSystemID.Raw.SNES;
 
 			// 004 4-byte little-endian unsigned int: version number
 			uint versionNumber = r.ReadUInt32();
@@ -191,6 +189,7 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			ControllerDefinition definition = new Snes9xControllers(ss).ControllerDefinition;
+			definition.BuildMnemonicsCache(Result.Movie.SystemID);
 			SimpleController controllers = new(definition);
 
 			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(definition);

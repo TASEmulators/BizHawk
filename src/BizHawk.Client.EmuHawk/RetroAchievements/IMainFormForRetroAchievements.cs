@@ -15,6 +15,8 @@ namespace BizHawk.Client.EmuHawk
 
 		GameInfo Game { get; }
 
+		CheatCollection CheatList { get; }
+
 		IMovieSession MovieSession { get; }
 
 		FirmwareManager FirmwareManager { get; }

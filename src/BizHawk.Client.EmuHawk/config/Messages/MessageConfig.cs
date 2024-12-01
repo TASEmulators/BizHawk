@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -41,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			["Main Messages"] = _config.MessagesColor,
 			["Alert Messages"] = _config.AlertMessageColor,
 			["Previous Frame Input"] = _config.LastInputColor,
-			["Movie Input"] = _config.MovieInput
+			["Movie Input"] = _config.MovieInputColor
 		};
 
 		private IEnumerable<ColorRow> ColorRows => ColorBox.Controls.OfType<ColorRow>();
@@ -155,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.MessagesColor = ColorRows.Single(r => r.Name == "Main Messages").SelectedColor;
 			_config.AlertMessageColor = ColorRows.Single(r => r.Name == "Alert Messages").SelectedColor;
 			_config.LastInputColor = ColorRows.Single(r => r.Name == "Previous Frame Input").SelectedColor;
-			_config.MovieInput = ColorRows.Single(r => r.Name == "Movie Input").SelectedColor;
+			_config.MovieInputColor = ColorRows.Single(r => r.Name == "Movie Input").SelectedColor;
 
 			_config.OSDMessageDuration = (int) _nudDuration.Value;
 			_config.StackOSDMessages = StackMessagesCheckbox.Checked;
@@ -181,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 			ColorRows.Single(r => r.Name == "Main Messages").SelectedColor = DefaultMessagePositions.MessagesColor;
 			ColorRows.Single(r => r.Name == "Alert Messages").SelectedColor = DefaultMessagePositions.AlertMessageColor;
 			ColorRows.Single(r => r.Name == "Previous Frame Input").SelectedColor = DefaultMessagePositions.LastInputColor;
-			ColorRows.Single(r => r.Name == "Movie Input").SelectedColor = DefaultMessagePositions.MovieInput;
+			ColorRows.Single(r => r.Name == "Movie Input").SelectedColor = DefaultMessagePositions.MovieInputColor;
 
 			CreateMessageRows();
 			StackMessagesCheckbox.Checked = true;

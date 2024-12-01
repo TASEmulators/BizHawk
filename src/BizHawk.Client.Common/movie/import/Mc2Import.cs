@@ -1,4 +1,3 @@
-﻿using System;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.PCEngine;
 
@@ -147,6 +146,7 @@ namespace BizHawk.Client.Common.movie.import
 		{
 			var buttons = new[] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
 
+			_deck.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 			SimpleController controllers = new(_deck.Definition);
 
 			// Split up the sections of the frame.

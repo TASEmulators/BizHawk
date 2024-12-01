@@ -1,33 +1,14 @@
-﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.Z80A
 {
-	public sealed partial class Z80A : IDisassemblable
+	public static class Z80ADisassembler
 	{
-		private static string Result(string format, Func<ushort, byte> read, ref ushort addr)
-		{
-			//d immediately succeeds the opcode
-			//n immediate succeeds the opcode and the displacement (if present)
-			//nn immediately succeeds the opcode and the displacement (if present)
-
-			if (format.IndexOf("nn", StringComparison.Ordinal) != -1) format = format.Replace("nn", $"{read(addr++) + (read(addr++) << 8):X4}h"); // LSB is read first
-			if (format.IndexOf("n", StringComparison.Ordinal) != -1) format = format.Replace("n", $"{read(addr++):X2}h");
-
-			if (format.IndexOf("+d", StringComparison.Ordinal) != -1) format = format.Replace("+d", "d");
-			if (format.IndexOf("d", StringComparison.Ordinal) != -1)
-			{
-				var b = unchecked ((sbyte) read(addr++));
-				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{(b < 0 ? -b : b):X2}h");
-			}
-
-			return format;
-		}
-
 		private static readonly string[] mnemonics =
-		{
+		[
 			"NOP", "LD BC, nn", "LD (BC), A", "INC BC", //0x04
 			"INC B", "DEC B", "LD B, n", "RLCA", //0x08
 			"EX AF, AF'", "ADD HL, BC", "LD A, (BC)", "DEC BC", //0x0C
@@ -92,10 +73,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"CALL P, nn", "PUSH AF", "OR n", "RST $30", //0xF8
 			"RET M", "LD SP, HL", "JP M, nn", "EI", //0xFC
 			"CALL M, nn", "[FD]", "CP n", "RST $38", //0x100
-		};
+		];
 
 		private static readonly string[] mnemonicsDD =
-		{
+		[
 			"NOP", "LD BC, nn", "LD (BC), A", "INC BC", //0x04
 			"INC B", "DEC B", "LD B, n", "RLCA", //0x08
 			"EX AF, AF'", "ADD IX, BC", "LD A, (BC)", "DEC BC", //0x0C
@@ -160,10 +141,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"CALL P, nn", "PUSH AF", "OR n", "RST $30", //0xF8
 			"RET M", "LD SP, IX", "JP M, nn", "EI", //0xFC
 			"CALL M, nn", "[!!DD FD!!]", "CP n", "RST $38", //0x100
-		};
+		];
 
 		private static readonly string[] mnemonicsFD =
-		{
+		[
 			"NOP", "LD BC, nn", "LD (BC), A", "INC BC", //0x04
 			"INC B", "DEC B", "LD B, n", "RLCA", //0x08
 			"EX AF, AF'", "ADD IY, BC", "LD A, (BC)", "DEC BC", //0x0C
@@ -228,10 +209,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"CALL P, nn", "PUSH AF", "OR n", "RST $30", //0xF8
 			"RET M", "LD SP, IY", "JP M, nn", "EI", //0xFC
 			"CALL M, nn", "[!FD FD!]", "CP n", "RST $38", //0x100
-		};
+		];
 
 		private static readonly string[] mnemonicsDDCB =
-		{
+		[
 			"RLC (IX+d)->B", "RLC (IX+d)->C", "RLC (IX+d)->D", "RLC (IX+d)->E", "RLC (IX+d)->H", "RLC (IX+d)->L", "RLC (IX+d)", "RLC (IX+d)->A", 
 			"RRC (IX+d)->B", "RRC (IX+d)->C", "RRC (IX+d)->D", "RRC (IX+d)->E", "RRC (IX+d)->H", "RRC (IX+d)->L", "RRC (IX+d)", "RRC (IX+d)->A", 
 			"RL (IX+d)->B", "RL (IX+d)->C", "RL (IX+d)->D", "RL (IX+d)->E", "RL (IX+d)->H", "RL (IX+d)->L", "RL (IX+d)", "RL (IX+d)->A", 
@@ -264,10 +245,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"SET 5 (IX+d)->B", "SET 5 (IX+d)->C", "SET 5 (IX+d)->D", "SET 5 (IX+d)->E", "SET 5 (IX+d)->H", "SET 5 (IX+d)->L", "SET 5 (IX+d)", "SET 5 (IX+d)->A", 
 			"SET 6 (IX+d)->B", "SET 6 (IX+d)->C", "SET 6 (IX+d)->D", "SET 6 (IX+d)->E", "SET 6 (IX+d)->H", "SET 6 (IX+d)->L", "SET 6 (IX+d)", "SET 6 (IX+d)->A", 
 			"SET 7 (IX+d)->B", "SET 7 (IX+d)->C", "SET 7 (IX+d)->D", "SET 7 (IX+d)->E", "SET 7 (IX+d)->H", "SET 7 (IX+d)->L", "SET 7 (IX+d)", "SET 7 (IX+d)->A", 
-		};
+		];
 
 		private static readonly string[] mnemonicsFDCB =
-		{
+		[
 			"RLC (IY+d)->B", "RLC (IY+d)->C", "RLC (IY+d)->D", "RLC (IY+d)->E", "RLC (IY+d)->H", "RLC (IY+d)->L", "RLC (IY+d)", "RLC (IY+d)->A", 
 			"RRC (IY+d)->B", "RRC (IY+d)->C", "RRC (IY+d)->D", "RRC (IY+d)->E", "RRC (IY+d)->H", "RRC (IY+d)->L", "RRC (IY+d)", "RRC (IY+d)->A", 
 			"RL (IY+d)->B", "RL (IY+d)->C", "RL (IY+d)->D", "RL (IY+d)->E", "RL (IY+d)->H", "RL (IY+d)->L", "RL (IY+d)", "RL (IY+d)->A", 
@@ -300,10 +281,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"SET 5 (IY+d)->B", "SET 5 (IY+d)->C", "SET 5 (IY+d)->D", "SET 5 (IY+d)->E", "SET 5 (IY+d)->H", "SET 5 (IY+d)->L", "SET 5 (IY+d)", "SET 5 (IY+d)->A", 
 			"SET 6 (IY+d)->B", "SET 6 (IY+d)->C", "SET 6 (IY+d)->D", "SET 6 (IY+d)->E", "SET 6 (IY+d)->H", "SET 6 (IY+d)->L", "SET 6 (IY+d)", "SET 6 (IY+d)->A", 
 			"SET 7 (IY+d)->B", "SET 7 (IY+d)->C", "SET 7 (IY+d)->D", "SET 7 (IY+d)->E", "SET 7 (IY+d)->H", "SET 7 (IY+d)->L", "SET 7 (IY+d)", "SET 7 (IY+d)->A", 
-		};
+		];
 
 		private static readonly string[] mnemonicsCB =
-		{
+		[
 			"RLC B", "RLC C", "RLC D", "RLC E", "RLC H", "RLC L", "RLC (HL)", "RLC A", 
 			"RRC B", "RRC C", "RRC D", "RRC E", "RRC H", "RRC L", "RRC (HL)", "RRC A",
 			"RL B", "RL C", "RL D", "RL E", "RL H", "RL L", "RL (HL)", "RL A",
@@ -336,10 +317,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"SET 5, B", "SET 5, C", "SET 5, D", "SET 5, E", "SET 5, H", "SET 5, L", "SET 5, (HL)", "SET 5, A",
 			"SET 6, B", "SET 6, C", "SET 6, D", "SET 6, E", "SET 6, H", "SET 6, L", "SET 6, (HL)", "SET 6, A",
 			"SET 7, B", "SET 7, C", "SET 7, D", "SET 7, E", "SET 7, H", "SET 7, L", "SET 7, (HL)", "SET 7, A",
-		};
+		];
 
 		private static readonly string[] mnemonicsED =
-		{
+		[
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", 
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", 
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", 
@@ -378,7 +359,26 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", //0xE0
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", //0xF0
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", //0x100
-		};
+		];
+
+		private static string Result(string format, Func<ushort, byte> read, ref ushort addr)
+		{
+			//d immediately succeeds the opcode
+			//n immediate succeeds the opcode and the displacement (if present)
+			//nn immediately succeeds the opcode and the displacement (if present)
+
+			if (format.ContainsOrdinal("nn")) format = format.Replace("nn", $"{read(addr++) + (read(addr++) << 8):X4}h"); // LSB is read first
+			if (format.ContainsOrdinal('n')) format = format.Replace("n", $"{read(addr++):X2}h");
+
+			format = format.Replace("+d", "d");
+			if (format.ContainsOrdinal('d'))
+			{
+				var b = unchecked ((sbyte) read(addr++));
+				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{Math.Abs((short) b):X2}h");
+			}
+
+			return format;
+		}
 
 		public static string Disassemble(ushort addr, Func<ushort, byte> read, out int size)
 		{
@@ -430,7 +430,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			return temp;
 		}
+	}
 
+	public sealed partial class Z80A<TLink> : IDisassemblable
+	{
 		public string Cpu
 		{
 			get => "Z80";
@@ -439,15 +442,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		public string PCRegisterName => "PC";
 
-		public IEnumerable<string> AvailableCpus
-		{
-			get { yield return "Z80"; }
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "Z80" ];
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
-		{
-			string ret = Disassemble((ushort)addr, a => m.PeekByte(a), out length);
-			return ret;
-		}
+			=> Z80ADisassembler.Disassemble((ushort)addr, a => m.PeekByte(a), out length);
 	}
 }

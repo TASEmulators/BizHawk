@@ -40,7 +40,7 @@
 			this.AutoScrollCheck = new System.Windows.Forms.CheckBox();
 			this.MaxStepsNum = new System.Windows.Forms.NumericUpDown();
 			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.HistoryView = new InputRoll();
+			this.HistoryView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.RightClickMenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.MaxStepsNum)).BeginInit();
 			this.SuspendLayout();
@@ -149,21 +149,28 @@
 			// 
 			// HistoryView
 			// 
+			this.HistoryView.AllowColumnReorder = false;
+			this.HistoryView.AllowColumnResize = false;
+			this.HistoryView.AlwaysScroll = false;
 			this.HistoryView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.HistoryView.RowCount = 0;
+			this.HistoryView.CellHeightPadding = 0;
+			this.HistoryView.CellWidthPadding = 0;
+			this.HistoryView.FullRowSelect = true;
+			this.HistoryView.HorizontalOrientation = false;
+			this.HistoryView.LetKeysModifySelection = false;
 			this.HistoryView.Location = new System.Drawing.Point(10, 10);
 			this.HistoryView.MultiSelect = false;
 			this.HistoryView.Name = "HistoryView";
+			this.HistoryView.RowCount = 0;
+			this.HistoryView.ScrollSpeed = 0;
+			this.HistoryView.SeekingCutoffInterval = 0;
 			this.HistoryView.Size = new System.Drawing.Size(369, 213);
 			this.HistoryView.TabIndex = 2;
 			this.HistoryView.DoubleClick += new System.EventHandler(this.HistoryView_DoubleClick);
 			this.HistoryView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.HistoryView_MouseDown);
 			this.HistoryView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.HistoryView_MouseUp);
-			this.HistoryView.AllowColumnReorder = false;
-			this.HistoryView.AllowColumnResize = false;
-			this.HistoryView.FullRowSelect = true;
 			// 
 			// UndoHistoryForm
 			// 

@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -89,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 				DirectoryMonitor.Created -= DirectoryMonitor_Created;
 				DirectoryMonitor.Dispose();
 			}
-			var path = _config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path;
+			var path = _config.PathEntries.ExternalToolsAbsolutePath();
 			if (Directory.Exists(path))
 			{
 				DirectoryMonitor = new FileSystemWatcher(path, "*.dll")
@@ -154,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					foreach (var depFilename in toolAttribute.LoadAssemblyFiles)
 					{
-						var depFilePath = $"{_config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path}/{depFilename}";
+						var depFilePath = Path.Combine(_config.PathEntries.ExternalToolsAbsolutePath(), depFilename);
 						Console.WriteLine($"preloading assembly {depFilePath} requested by ext. tool {toolAttribute.Name}");
 						Assembly.LoadFrom(depFilePath);
 					}

@@ -7,7 +7,8 @@
 	{
 		NTSC,
 		PAL,
-		Dendy
+		Dendy,
+		SECAM
 	}
 
 	/// <summary>

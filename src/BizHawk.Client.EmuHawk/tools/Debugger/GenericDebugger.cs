@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -119,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 				var pc = PCRegister;
 				SeekToBox.Nullable = false;
 				SeekToBox.SetHexProperties((long)Math.Pow(2, pc.BitSize));
-				SeekToBox.SetFromRawUInt(0);
+				SeekToBox.SetFromRawInt(0);
 			}
 			else
 			{
@@ -264,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SeekToBtn_Click(object sender, EventArgs e)
 		{
 			CancelSeekBtn.Enabled = true;
-			var pcVal = SeekToBox.ToRawUInt() ?? 0;
+			var pcVal = (uint)(SeekToBox.ToRawInt() ?? 0);
 			var pcBitSize = PCRegister.BitSize;
 
 			BreakPointControl1.RemoveCurrentSeek();

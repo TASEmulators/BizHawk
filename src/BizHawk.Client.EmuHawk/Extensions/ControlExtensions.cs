@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -75,6 +74,18 @@ namespace BizHawk.Client.EmuHawk
 			return menu;
 		}
 
+		public static void CenterOn(this Form form, Control logicalParent)
+			=> form.CenterOn((logicalParent is Form ? logicalParent : logicalParent.Parent)
+				.ChildPointToScreen(logicalParent) + logicalParent.HalfSize());
+
+		public static void CenterOn(this Form form, Point point)
+		{
+			// not asserting `form` is closed at this point, but we could
+			point -= form.HalfSize();
+			form.StartPosition = FormStartPosition.Manual;
+			form.Location = point;
+		}
+
 		public static Point ChildPointToScreen(this Control control, Control child)
 		{
 			return control.PointToScreen(new Point(child.Location.X, child.Location.Y));
@@ -131,6 +142,9 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static IEnumerable<Control> Controls(this Control control)
 			=> control.Controls.Cast<Control>();
+
+		public static Size HalfSize(this Control c)
+			=> new(c.Width / 2, c.Height / 2);
 
 		public static IEnumerable<TabPage> TabPages(this TabControl tabControl)
 		{

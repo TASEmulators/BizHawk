@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -7,7 +5,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[PortedCore(CoreNames.Mgba, "endrift", "0.11", "https://mgba.io/")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
+	[ServiceNotApplicable(typeof(IRegionable))]
 	public partial class MGBAHawk
 	{
 		private static readonly LibmGBA LibmGBA;
@@ -64,16 +62,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				_tracecb = MakeTrace;
 				ser.Register(Tracer);
 				_memoryCallbacks = new(LibmGBA, Core);
+
+				// most things are already handled in the core, this is just for event.oninputpoll
+				InputCallback = InputCallbacks.Call;
+				LibmGBA.BizSetInputCallback(Core, InputCallback);
+
+				RumbleCallback = SetRumble;
+				LibmGBA.BizSetRumbleCallback(Core, RumbleCallback);
 			}
 			catch
 			{
 				LibmGBA.BizDestroy(Core);
 				throw;
 			}
-
-			// most things are already handled in the core, this is just for event.oninputpoll
-			InputCallback = InputCallbacks.Call;
-			LibmGBA.BizSetInputCallback(Core, InputCallback);
 		}
 
 		private static LibmGBA.OverrideInfo GetOverrideInfo(SyncSettings syncSettings)
@@ -132,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				ret.Hardware |= LibmGBA.Hardware.Tilt;
 			}
 
-			if (syncSettings.OverrideGbPlayerDetect is true)
+			if (syncSettings.OverrideGbPlayerDetect)
 			{
 				ret.Hardware |= LibmGBA.Hardware.GbPlayerDetect;
 			}

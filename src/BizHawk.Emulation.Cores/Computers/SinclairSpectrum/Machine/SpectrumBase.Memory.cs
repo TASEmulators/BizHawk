@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>

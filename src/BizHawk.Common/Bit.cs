@@ -14,19 +14,19 @@ namespace BizHawk.Common
 		
 		public static implicit operator Bit(int rhs)
 		{
-			Debug.Assert((rhs & ~1) == 0);
+			Debug.Assert((rhs & ~1) is 0, "higher bits can't be used");
 			return new Bit((uint)rhs);
 		}
 
 		public static implicit operator Bit(uint rhs)
 		{
-			Debug.Assert((rhs & ~1) == 0);
+			Debug.Assert((rhs & ~1) is 0, "higher bits can't be used");
 			return new Bit(rhs);
 		}
 
 		public static implicit operator Bit(byte rhs)
 		{
-			Debug.Assert((rhs & ~1) == 0);
+			Debug.Assert((rhs & ~1) is 0, "higher bits can't be used");
 			return new Bit(rhs);
 		}
 

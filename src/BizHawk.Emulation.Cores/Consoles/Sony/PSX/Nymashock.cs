@@ -61,13 +61,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public Nymashock(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, VSystemID.Raw.PSX, "PSX Front Panel", lp.Settings, lp.SyncSettings)
 		{
-			var firmwares = new Dictionary<string, FirmwareID>
+			var firmwareIDMap = new Dictionary<string, FirmwareID>
 			{
 				{ "FIRMWARE:$J", new("PSX", "J") },
 				{ "FIRMWARE:$U", new("PSX", "U") },
 				{ "FIRMWARE:$E", new("PSX", "E") },
 			};
-			DoInit<LibNymaCore>(lp, "shock.wbx", firmwares);
+			DoInit<LibNymaCore>(lp, "shock.wbx", firmwareIDMap);
 
 			_cachedSettingsInfo ??= SettingsInfo.Clone();
 

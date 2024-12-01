@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using BizHawk.Emulation.Common;
 
@@ -9,18 +8,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public void SetCDL(ICodeDataLog cdl)
 		{
 			CDL = cdl;
-			if (cdl == null)
-			{
-				Cpu.ReadMemory = ReadMemory;
-				Cpu.WriteMemory = WriteMemory;
-				Cpu.FetchMemory = FetchMemory;
-			}
-			else
-			{
-				Cpu.ReadMemory = ReadMemory_CDL;
-				Cpu.WriteMemory = WriteMemory;
-				Cpu.FetchMemory = FetchMemory_CDL;
-			}
 		}
 
 		public void NewCDL(ICodeDataLog cdl)

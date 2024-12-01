@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -149,7 +148,7 @@ namespace BizHawk.Common
 						if (size is 0)
 						{
 							var rleSize = (data[i++] * 0x100) | data[i++];
-							Debug.Assert(rleSize is not 0);
+							Debug.Assert(rleSize is not 0, "may not run-length-encode nothing");
 							records.Add((i, targetOffset, rleSize, true));
 							i++;
 						}

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 using static SDL2.SDL;
@@ -109,11 +108,11 @@ namespace BizHawk.Bizware.Input
 
 		private List<(string ButtonName, Func<bool> GetIsPressed)> CreateGameControllerButtonGetters()
 		{
-			List<(string ButtonName, Func<bool> GetIsPressed)> buttonGetters = new();
+			List<(string ButtonName, Func<bool> GetIsPressed)> buttonGetters = [ ];
 
-			const int dzp = 20000;
-			const int dzn = -20000;
-			const int dzt = 5000;
+			const int dzp = (int)(32768 / 2.5);
+			const int dzn = (int)(-32768 / 2.5);
+			const int dzt = (int)(32768 / 6.5);
 
 			// buttons
 			buttonGetters.Add(("A", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_A) == 1));
@@ -161,8 +160,8 @@ namespace BizHawk.Bizware.Input
 		{
 			List<(string ButtonName, Func<bool> GetIsPressed)> buttonGetters = new();
 
-			const float dzp = 20000;
-			const float dzn = -20000;
+			const float dzp = (int)(32768 / 2.5);
+			const float dzn = (int)(-32768 / 2.5);
 
 			// axes
 			buttonGetters.Add(("X+", () => SDL_JoystickGetAxis(Opaque, 0) >= dzp));

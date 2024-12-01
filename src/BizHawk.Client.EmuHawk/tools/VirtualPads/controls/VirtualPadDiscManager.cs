@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
@@ -126,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 		private void lvDiscs_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			// emergency measure: if no selection, set no disc
-			_inputManager.StickyXorAdapter.SetAxis(_discSelectName, lvDiscs.SelectedIndices.Count == 0 ? 0 : lvDiscs.SelectedIndices[0]);
+			_inputManager.StickyHoldController.SetAxisHold(_discSelectName, lvDiscs.SelectedIndices.Count == 0 ? 0 : lvDiscs.SelectedIndices[0]);
 		}
 
 		private void btnClose_Click(object sender, EventArgs e)

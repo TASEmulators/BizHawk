@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -506,19 +505,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void AlwaysLoadCheatsMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Cheats.LoadFileByGame ^= true;
-		}
+			=> Config.Cheats.LoadFileByGame = !Config.Cheats.LoadFileByGame;
 
 		private void AutoSaveCheatsMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Cheats.AutoSaveOnClose ^= true;
-		}
+			=> Config.Cheats.AutoSaveOnClose = !Config.Cheats.AutoSaveOnClose;
 
 		private void CheatsOnOffLoadMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Cheats.DisableOnLoad ^= true;
-		}
+			=> Config.Cheats.DisableOnLoad = !Config.Cheats.DisableOnLoad;
 
 		[RestoreDefaults]
 		private void RestoreDefaults()
@@ -575,7 +568,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.CheatList.Sort(column.Name, _sortReverse);
 
 			_sortedColumn = column.Name;
-			_sortReverse ^= true;
+			_sortReverse = !_sortReverse;
 			GeneralUpdate();
 		}
 

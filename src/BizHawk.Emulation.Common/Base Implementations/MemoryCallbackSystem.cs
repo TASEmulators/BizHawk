@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -219,40 +218,10 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public IEnumerator<IMemoryCallback> GetEnumerator()
-		{
-			foreach (var imc in _reads)
-			{
-				yield return imc;
-			}
-
-			foreach (var imc in _writes)
-			{
-				yield return imc;
-			}
-
-			foreach (var imc in _execs)
-			{
-				yield return imc;
-			}
-		}
+			=> _reads.Concat(_writes).Concat(_execs).GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			foreach (var imc in _reads)
-			{
-				yield return imc;
-			}
-
-			foreach (var imc in _writes)
-			{
-				yield return imc;
-			}
-
-			foreach (var imc in _execs)
-			{
-				yield return imc;
-			}
-		}
+			=> GetEnumerator();
 	}
 
 	public class MemoryCallback : IMemoryCallback
@@ -307,7 +276,7 @@ namespace BizHawk.Emulation.Common
 
 		private void RemoveAtInternal(int index)
 		{
-			Debug.Assert(_modifyInProgress);
+			Debug.Assert(_modifyInProgress, "unexpected collection mutation state");
 			CopyIfRequired();
 
 			var removedItem = _items[index];
@@ -388,7 +357,7 @@ namespace BizHawk.Emulation.Common
 		private void EndCopyOnWrite()
 		{
 			_copyOnWriteRequired--;
-			Debug.Assert(_copyOnWriteRequired >= 0);
+			Debug.Assert(_copyOnWriteRequired >= 0, "unexpected CoW state");
 		}
 
 		public Enumerator GetEnumerator()

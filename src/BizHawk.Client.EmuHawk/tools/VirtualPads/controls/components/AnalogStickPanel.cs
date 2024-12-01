@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -11,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class AnalogStickPanel : Panel
 	{
-		private StickyXorAdapter _stickyXorAdapter;
+		private StickyHoldController _stickyHoldController;
 		private int _x;
 		private int _y;
 
@@ -60,9 +59,9 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		public void Init(StickyXorAdapter stickyXorAdapter, string nameX, AxisSpec rangeX, string nameY, AxisSpec rangeY)
+		public void Init(StickyHoldController stickyHoldController, string nameX, AxisSpec rangeX, string nameY, AxisSpec rangeY)
 		{
-			_stickyXorAdapter = stickyXorAdapter;
+			_stickyHoldController = stickyHoldController;
 
 			var scaleBase = Math.Min(Size.Width, Size.Height) - 10.0; // be circular when control is stretched
 
@@ -108,6 +107,7 @@ namespace BizHawk.Client.EmuHawk
 		/// min + (max - i) == max - (i - min) == min + max - i
 		/// </remarks>
 		private int MaybeReversedInX(int i) => _reverseX ? _rangeX.Start + _rangeX.EndInclusive - i : i;
+
 		/// <inheritdoc cref="MaybeReversedInX"/>
 		private int MaybeReversedInY(int i) => _reverseY ? i : _rangeY.Start + _rangeY.EndInclusive - i;
 
@@ -132,7 +132,8 @@ namespace BizHawk.Client.EmuHawk
 		private int GfxToRealY(int val) =>
 			MaybeReversedInY((_rangeY.Start + ((val - PixelMinY) / ScaleY).RoundToInt()).ConstrainWithin(_rangeY));
 
-		private readonly Pen _blackPen = new Pen(Brushes.Black);
+		private readonly Pen _blackPen = Pens.Black;
+
 		private readonly Pen _bluePen = new Pen(Brushes.Blue, 2);
 		private readonly Pen _grayPen = new Pen(Brushes.Gray, 2);
 
@@ -170,8 +171,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetAnalog()
 		{
-			_stickyXorAdapter.SetAxis(XName, HasValue ? X : null);
-			_stickyXorAdapter.SetAxis(YName, HasValue ? Y : null);
+			_stickyHoldController.SetAxisHold(XName, HasValue ? X : null);
+			_stickyHoldController.SetAxisHold(YName, HasValue ? Y : null);
 			Refresh();
 		}
 

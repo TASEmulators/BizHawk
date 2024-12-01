@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -82,12 +81,14 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets or sets a value indicating whether or not the control will respond to right-click events with a context menu
 		/// </summary>
 		[Category("Behavior")]
+		[DefaultValue(true)]
 		public bool AllowRightClickSelection { get; set; } = true;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether or not Home and End will navigate to the beginning or end of the list
 		/// </summary>
 		[Category("Behavior")]
+		[DefaultValue(true)]
 		public bool AllowMassNavigationShortcuts { get; set; } = true;
 
 		[Category("Behavior")]
@@ -208,14 +209,14 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		[DefaultValue(3)]
 		[Category("Behavior")]
-		public int CellWidthPadding { get; set; }
+		public int CellWidthPadding { get; set; } = 3;
 
 		/// <summary>
 		/// Gets or sets the amount of top and bottom padding on the text inside a cell
 		/// </summary>
 		[DefaultValue(1)]
 		[Category("Behavior")]
-		public int CellHeightPadding { get; set; }
+		public int CellHeightPadding { get; set; } = 1;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether grid lines are displayed around cells
@@ -381,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets or sets a value indicating whether pressing page up/down will cause
 		/// the current selection to change
 		/// </summary>
-		[DefaultValue(false)]
+		[DefaultValue(true)]
 		[Category("Behavior")]
 		public bool ChangeSelectionWhenPaging { get; set; } = true;
 
@@ -586,6 +587,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SelectAll()
 		{
+			_selectedItems.Clear();
 			var oldFullRowVal = FullRowSelect;
 			FullRowSelect = true;
 			for (int i = 0; i < RowCount; i++)
@@ -664,6 +666,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_columns = rollSettings.Columns;
 				_columns.ChangedCallback = ColumnChangedCallback;
+				_columns.ColumnsChanged();
 				HorizontalOrientation = rollSettings.HorizontalOrientation;
 				LagFramesToHide = rollSettings.LagFramesToHide;
 				HideWasLagFrames = rollSettings.HideWasLagFrames;
@@ -796,7 +799,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					// Small jump, more accurate
-					var range = 0.RangeTo(_lagFrames[VisibleRows - halfRow]);
 					int lastVisible = LastFullyVisibleRow;
 					do
 					{
@@ -812,7 +814,7 @@ namespace BizHawk.Client.EmuHawk
 						SetLagFramesArray();
 						lastVisible = LastFullyVisibleRow;
 					}
-					while (!range.Contains(lastVisible - value) && FirstVisibleRow != 0);
+					while ((lastVisible - value < 0 || _lagFrames[VisibleRows - halfRow] < lastVisible - value) && FirstVisibleRow != 0);
 				}
 				_programmaticallyChangingRow = false;
 				PointMouseToNewCell();
@@ -821,13 +823,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsVisible(int index)
 		{
-			Debug.Assert(FirstVisibleRow < LastFullyVisibleRow);
+			Debug.Assert(FirstVisibleRow < LastFullyVisibleRow, "rows out of order?");
 			return FirstVisibleRow <= index && index <= LastFullyVisibleRow;
 		}
 
 		public bool IsPartiallyVisible(int index)
 		{
-			Debug.Assert(FirstVisibleRow < LastVisibleRow);
+			Debug.Assert(FirstVisibleRow < LastVisibleRow, "rows out of order?");
 			return FirstVisibleRow <= index && index <= LastVisibleRow;
 		}
 
@@ -976,21 +978,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEnumerable<ToolStripItem> GenerateContextMenuItems()
 		{
-			if (Rotatable)
+			if (!Rotatable) return [ ];
+			var rotate = new ToolStripMenuItem
 			{
-				yield return new ToolStripSeparator();
-
-				var rotate = new ToolStripMenuItem
-				{
-					Name = "RotateMenuItem",
-					Text = "Rotate",
-					ShortcutKeyDisplayString = RotateHotkeyStr
-				};
-
-				rotate.Click += (o, ev) => { HorizontalOrientation ^= true; };
-
-				yield return rotate;
-			}
+				Name = "RotateMenuItem",
+				Text = "Rotate",
+				ShortcutKeyDisplayString = RotateHotkeyStr
+			};
+			rotate.Click += (_, _) => HorizontalOrientation = !HorizontalOrientation;
+			return [ new ToolStripSeparator(), rotate ];
 		}
 
 		public string RotateHotkeyStr => "Ctrl+Shift+F";
@@ -1334,10 +1330,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+#pragma warning disable MA0091 // passing through `sender` is intentional
 		private void DoRightMouseScroll(object sender, MouseEventArgs e)
 		{
 			RightMouseScrolled?.Invoke(sender, e);
 		}
+#pragma warning restore MA0091
 
 		private void ColumnClickEvent(RollColumn/*?*/ column)
 		{
@@ -1369,10 +1367,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (e.IsCtrlShift(Keys.F))
 				{
-					if (Rotatable)
-					{
-						HorizontalOrientation ^= true;
-					}
+					if (Rotatable) HorizontalOrientation = !HorizontalOrientation;
 				}
 				// Scroll
 				else if (e.IsPressed(Keys.PageUp))
@@ -1602,7 +1597,7 @@ namespace BizHawk.Client.EmuHawk
 				PointedCellChanged(this, new CellEventArgs(_lastCell, CurrentCell));
 			}
 
-			if (CurrentCell?.Column != null && CurrentCell.RowIndex.HasValue)
+			if (CurrentCell?.Column is not null)
 			{
 				_hoverTimer.Start();
 			}
@@ -1619,6 +1614,7 @@ namespace BizHawk.Client.EmuHawk
 				Refresh();
 			}
 
+#pragma warning disable MA0091 // unorthodox, but I think this is sound --yoshi
 			if (_horizontalOrientation)
 			{
 				ColumnScroll?.Invoke(_hBar, e);
@@ -1627,6 +1623,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				RowScroll?.Invoke(_vBar, e);
 			}
+#pragma warning restore MA0091
 		}
 
 		private void HorizontalBar_ValueChanged(object sender, EventArgs e)
@@ -1636,6 +1633,7 @@ namespace BizHawk.Client.EmuHawk
 				Refresh();
 			}
 
+#pragma warning disable MA0091 // unorthodox, but I think this is sound --yoshi
 			if (_horizontalOrientation)
 			{
 				RowScroll?.Invoke(_hBar, e);
@@ -1644,6 +1642,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ColumnScroll?.Invoke(_vBar, e);
 			}
+#pragma warning restore MA0091
 		}
 
 		private void ColumnChangedCallback()
@@ -1651,7 +1650,7 @@ namespace BizHawk.Client.EmuHawk
 			RecalculateScrollBars();
 			if (_columns.VisibleColumns.Any())
 			{
-				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width) + CellWidthPadding * 4;
+				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width);
 			}
 		}
 
@@ -1948,13 +1947,11 @@ namespace BizHawk.Client.EmuHawk
 		// The height of a column cell in Vertical Orientation.
 		private int ColumnHeight => CellHeight + 2;
 
-		// The width of a cell in Horizontal Orientation. Only can be changed by changing the Font or CellPadding.
-		private int CellWidth { get; set; }
+		// The width of a cell in Horizontal Orientation.
+		private int CellWidth => Math.Max((int)_charSize.Height + CellHeightPadding * 2, (int)_charSize.Width + CellWidthPadding * 2);
 
-		/// <summary>
-		/// Gets or sets a value indicating the height of a cell in Vertical Orientation. Only can be changed by changing the Font or CellPadding.
-		/// </summary>
-		private int CellHeight { get; set; } = 8;
+		// The height of a cell in Vertical Orientation.
+		private int CellHeight => (int)_charSize.Height + CellHeightPadding * 2;
 
 		/// <summary>
 		/// Call when _charSize, MaxCharactersInHorizontal, or CellPadding is changed.
@@ -1967,16 +1964,12 @@ namespace BizHawk.Client.EmuHawk
 				// Measure width change to ignore extra padding at start/end
 				var size1 = _renderer.MeasureString("A", Font);
 				var size2 = _renderer.MeasureString("AA", Font);
-				_charSize = new SizeF(size2.Width - size1.Width, size1.Height); // TODO make this a property so changing it updates other values.
+				_charSize = new SizeF(size2.Width - size1.Width, size1.Height);
 			}
-
-			// TODO: Should we round instead of truncate?
-			CellHeight = (int)_charSize.Height + (CellHeightPadding * 2);
-			CellWidth = (int)_charSize.Width + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
 			
 			if (_columns.VisibleColumns.Any())
 			{
-				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width) + CellWidthPadding * 4;
+				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width);
 			}
 		}
 

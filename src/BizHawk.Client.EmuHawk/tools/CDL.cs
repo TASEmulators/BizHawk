@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -185,9 +184,7 @@ namespace BizHawk.Client.EmuHawk
 					lvi[3] = $"{total}";
 				if (tsbViewStyle.SelectedIndex == 2)
 				{
-					int n = (int) (dataA.Length / 1024.0f);
-					float ncheck = dataA.Length / 1024.0f;
-					lvi[4] = $"of {(n == ncheck ? "" : "~")}{n} KBytes";
+					lvi[4] = $"of {(dataA.Length % 1024 == 0 ? "" : "~")}{dataA.Length / 1024} KBytes";
 				}
 				else
 					lvi[4] = $"of {dataA.Length} Bytes";
@@ -576,18 +573,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MiAutoSave_Click(object sender, EventArgs e)
-		{
-			CDLAutoSave ^= true;
-		}
+			=> CDLAutoSave = !CDLAutoSave;
 
 		private void MiAutoStart_Click(object sender, EventArgs e)
-		{
-			CDLAutoStart ^= true;
-		}
+			=> CDLAutoStart = !CDLAutoStart;
 
 		private void MiAutoResume_Click(object sender, EventArgs e)
-		{
-			CDLAutoResume ^= true;
-		}
+			=> CDLAutoResume = !CDLAutoResume;
 	}
 }

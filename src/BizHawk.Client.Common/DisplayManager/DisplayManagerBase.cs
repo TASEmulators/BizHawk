@@ -1,7 +1,6 @@
 ﻿// TODO
 // we could flag textures as 'actually' render targets (keep a reference to the render target?) which could allow us to convert between them more quickly in some cases
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
@@ -41,6 +40,8 @@ namespace BizHawk.Client.Common
 				_callback = callback;
 			}
 		}
+
+		public const int DEFAULT_DPI = 96;
 
 		public OSDManager OSD { get; }
 
@@ -489,6 +490,7 @@ namespace BizHawk.Client.Common
 			UpdateSourceInternal(job);
 			return job.OffscreenBb;
 		}
+
 		/// <summary>
 		/// Does the display process to an offscreen buffer, suitable for a Lua-inclusive movie.
 		/// </summary>
@@ -945,5 +947,8 @@ namespace BizHawk.Client.Common
 				renderer.Discard();
 			}
 		}
+
+		public void ClearApiHawkTextureCache()
+			=> _imGuiResourceCache.ClearTextureCache();
 	}
 }

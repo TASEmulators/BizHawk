@@ -1,6 +1,8 @@
+#include gamedb_3ds.txt
 #include gamedb_a2600.txt
 #include gamedb_a7800.txt
 #include gamedb_appleII.txt
+#include gamedb_channelf.txt
 #include gamedb_coleco.txt
 #include gamedb_e_cards.txt
 #include gamedb_intv.txt
@@ -30,7 +32,6 @@
 #include gamedb_zxspectrum.txt
 #include gamedb_amstradcpc.txt
 #include gamedb_ngp.txt
-#include gamedb_channelf.txt
 #includeuser gamedb_user.txt
 
 ; so, there's just zero explanation anywhere for B vs V status flag

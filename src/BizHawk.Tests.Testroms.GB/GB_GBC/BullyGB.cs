@@ -1,11 +1,8 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 using BizHawk.Common.IOExtensions;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 

@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Client.Common
 {
 	public sealed class SaveStateLuaLibrary : LuaLibraryBase

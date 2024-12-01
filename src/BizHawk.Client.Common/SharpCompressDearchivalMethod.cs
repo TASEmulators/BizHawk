@@ -1,6 +1,5 @@
 #nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -22,15 +21,9 @@ namespace BizHawk.Client.Common
 			offset = 0;
 			isExecutable = false;
 
-			try
-			{
-				using var arcTest = ArchiveFactory.Open(fileName); // should throw for non-archives
-				if (arcTest.Type != ArchiveType.Tar) return true; // not expecting false positives from anything but .tar for now
-			}
-			catch
-			{
-				return false;
-			}
+			bool isArchive = ArchiveFactory.IsArchive(fileName, out var type);
+			if (!isArchive) return false;
+			if (type is not ArchiveType.Tar) return true; // not expecting false positives from anything but .tar for now
 
 			// SharpCompress seems to overzealously flag files it thinks are the in original .tar format, so we'll check for false positives. This affects 0.24.0, and the latest at time of writing, 0.27.1.
 			// https://github.com/adamhathcock/sharpcompress/issues/390
@@ -41,7 +34,7 @@ namespace BizHawk.Client.Common
 			// looking for magic bytes
 			fs.Seek(0x101, SeekOrigin.Begin);
 			var buffer = new byte[8];
-			fs.Read(buffer, 0, 8);
+			_ = fs.Read(buffer, offset: 0, count: buffer.Length); // if stream is too short, the next check will catch it
 			var s = buffer.BytesToHexString();
 			if (s == "7573746172003030" || s == "7573746172202000") return true; // "ustar\000" (libarchive's bsdtar) or "ustar  \0" (GNU Tar)
 
@@ -52,26 +45,21 @@ namespace BizHawk.Client.Common
 		public bool CheckSignature(Stream fileStream, string? filenameHint)
 		{
 			if (!fileStream.CanRead || !fileStream.CanSeek) return false;
+			long initialPosition = fileStream.Position;
 
-			try
-			{
-				using var arcTest = ArchiveFactory.Open(fileStream); // should throw for non-archives
-				if (arcTest.Type != ArchiveType.Tar) return true; // not expecting false positives from anything but .tar for now
-			}
-			catch
-			{
-				return false;
-			}
+			bool isArchive = ArchiveFactory.IsArchive(fileStream, out var type);
+			fileStream.Seek(initialPosition, SeekOrigin.Begin);
+			if (!isArchive) return false;
+			if (type is not ArchiveType.Tar) return true; // not expecting false positives from anything but .tar for now
 
 			// as above, SharpCompress seems to overzealously flag files it thinks are the in original .tar format, so we'll check for false positives
 
 			if (fileStream.Length < 512) return false;
 			// looking for magic bytes
-			var seekPos = fileStream.Position;
 			fileStream.Seek(0x101, SeekOrigin.Begin);
 			var buffer = new byte[8];
-			fileStream.Read(buffer, 0, 8);
-			fileStream.Seek(seekPos, SeekOrigin.Begin);
+			_ = fileStream.Read(buffer, offset: 0, count: buffer.Length); // if stream is too short, the next check will catch it
+			fileStream.Seek(initialPosition, SeekOrigin.Begin);
 			var s = buffer.BytesToHexString();
 			if (s == "7573746172003030" || s == "7573746172202000") return true; // "ustar\000" (libarchive's bsdtar) or "ustar  \0" (GNU Tar)
 

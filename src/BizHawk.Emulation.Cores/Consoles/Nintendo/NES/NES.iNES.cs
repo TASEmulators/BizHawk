@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Text;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
@@ -14,11 +11,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return 1 << (i + 6);
 		}
 
-		public static bool DetectFromINES(byte[] data, out CartInfo Cart, out CartInfo CartV2)
+		public static bool DetectFromINES(ReadOnlySpan<byte> data, out CartInfo Cart, out CartInfo CartV2)
 		{
-			byte[] ID = new byte[4];
-			Buffer.BlockCopy(data, 0, ID, 0, 4);
-			if (!ID.SequenceEqual(Encoding.ASCII.GetBytes("NES\x1A")))
+			if (!data[..4].SequenceEqual("NES\x1A"u8))
 			{
 				Cart = null;
 				CartV2 = null;

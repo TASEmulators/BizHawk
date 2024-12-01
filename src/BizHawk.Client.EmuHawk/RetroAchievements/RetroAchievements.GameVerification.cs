@@ -1,5 +1,6 @@
-using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,6 +13,8 @@ using BizHawk.Client.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
+
+#pragma warning disable BHI1007 // target-typed Exception TODO don't
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -27,7 +30,11 @@ namespace BizHawk.Client.EmuHawk
 			using var disc = DiscExtensions.CreateAnyType(path, e => throw new(e));
 			var dsr = new DiscSectorReader(disc)
 			{
-				Policy = { DeterministicClearBuffer = false } // let's make this a little faster
+				Policy =
+				{
+					UserData2048Mode = DiscSectorReaderPolicy.EUserData2048Mode.InspectSector_AssumeForm1,
+					DeterministicClearBuffer = false // let's make this a little faster
+				}
 			};
 
 			var buf2048 = new byte[2048];
@@ -80,22 +87,63 @@ namespace BizHawk.Client.EmuHawk
 						int GetFileSector(string filename, out int filesize)
 						{
 							dsr.ReadLBA_2048(16, buf2048, 0);
-							var sector = (buf2048[160] << 16) | (buf2048[159] << 8) | buf2048[158];
-							dsr.ReadLBA_2048(sector, buf2048, 0);
-							var index = 0;
-							while (index + 33 + filename.Length < 2048)
+							var slashIndex = filename.LastIndexOf('\\');
+							int sector, numSectors;
+							if (slashIndex < 0)
 							{
-								var term = buf2048[index + 33 + filename.Length];
-								if (term == ';' || term == '\0')
+								// get directory record sector
+								sector = (buf2048[160] << 16) | (buf2048[159] << 8) | buf2048[158];
+								// find number of sectors for the directory record
+								var logicalBlockSize = (buf2048[129] << 8) | buf2048[128];
+								if (logicalBlockSize == 0)
 								{
-									var fn = Encoding.ASCII.GetString(buf2048, index + 33, filename.Length);
-									if (filename.Equals(fn, StringComparison.OrdinalIgnoreCase))
-									{
-										filesize = (buf2048[index + 13] << 24) | (buf2048[index + 12] << 16) | (buf2048[index + 11] << 8) | buf2048[index + 10];
-										return (buf2048[index + 4] << 16) | (buf2048[index + 3] << 8) | buf2048[index + 2];
-									}
+									numSectors = 1;
 								}
-								index += buf2048[index];
+								else
+								{
+									var directoryRecordLength = (uint)((buf2048[169] << 24) | (buf2048[168] << 16) | (buf2048[167] << 8) | buf2048[166]);
+									numSectors = (int)(directoryRecordLength / logicalBlockSize);
+								}
+							}
+							else
+							{
+								// find the directory sector
+								// note this will mutate buf2048 again (but we don't care about the current contents anymore)
+								sector = GetFileSector(filename[..slashIndex], out filesize);
+								if (sector < 0)
+								{
+									return sector;
+								}
+
+								filename = filename.Remove(0, slashIndex + 1);
+								numSectors = (filesize + 2047) / 2048;
+							}
+
+							for (var i = 0; i < numSectors; i++)
+							{
+								dsr.ReadLBA_2048(sector + i, buf2048, 0);
+								var index = 0;
+								while (index + 33 + filename.Length < 2048)
+								{
+									var term = buf2048[index + 33 + filename.Length];
+									if (term == ';' || term == '\0')
+									{
+										var fn = Encoding.ASCII.GetString(buf2048, index + 33, filename.Length);
+										if (filename.Equals(fn, StringComparison.OrdinalIgnoreCase))
+										{
+											filesize = (buf2048[index + 13] << 24) | (buf2048[index + 12] << 16) | (buf2048[index + 11] << 8) | buf2048[index + 10];
+											return (buf2048[index + 4] << 16) | (buf2048[index + 3] << 8) | buf2048[index + 2];
+										}
+									}
+
+									// break out if string size is 0 (to avoid an infinite loop)
+									if (buf2048[index] == 0)
+									{
+										break;
+									}
+
+									index += buf2048[index];
+								}
 							}
 
 							filesize = 0;
@@ -113,29 +161,37 @@ namespace BizHawk.Client.EmuHawk
 							exePath = Encoding.ASCII.GetString(buf2048);
 
 							// "BOOT = cdrom:" precedes the path
-							var index = exePath.IndexOf("BOOT = cdrom:", StringComparison.Ordinal);
-							if (index < -1) break;
-							exePath = exePath.Remove(0, index + 13);
+							// the amount of whitespace is variable here however, so we can't make assumptions about it
+							var index = exePath.IndexOf("BOOT", StringComparison.Ordinal);
+							if (index < 0) break;
+
+							// go to the '=' now
+							index += 4;
+							while (index < exePath.Length && char.IsWhiteSpace(exePath[index])) index++;
+							if (index >= exePath.Length || exePath[index] != '=') break;
+
+							// go to "cdrom:" now
+							index++;
+							while (index < exePath.Length && char.IsWhiteSpace(exePath[index])) index++;
+							if (index > exePath.Length - 6 || exePath.Substring(index, 6) != "cdrom:") break;
+
+							// remove "cdrom:"
+							exePath = exePath.Remove(0, index + 6);
 
 							// the path might start with a number of slashes, remove these
 							index = 0;
 							while (index < exePath.Length && exePath[index] is '\\') index++;
+							if (index == exePath.Length) break;
 
-							// end of the path has ;
-							var end = exePath.IndexOf(';');
-							if (end < 0) break;
-							exePath = exePath.Substring(startIndex: index, length: end - index);
+							// end of the path has ; or whitespace
+							var endIndex = index;
+							while (endIndex < exePath.Length && exePath[endIndex] != ';' && !char.IsWhiteSpace(exePath[endIndex])) endIndex++;
+							if (endIndex == exePath.Length) break;
+
+							exePath = exePath[index..endIndex];
 						}
 
 						buffer.AddRange(Encoding.ASCII.GetBytes(exePath));
-
-						// get the filename
-						// valid too if -1, as that means we already have the filename
-						var start = exePath.LastIndexOf('\\');
-						if (start > 0)
-						{
-							exePath = exePath.Remove(0, start + 1);
-						}
 
 						// get sector for exe
 						sector = GetFileSector(exePath, out var exeSize);
@@ -166,115 +222,12 @@ namespace BizHawk.Client.EmuHawk
 					buffer.AddRange(new ArraySegment<byte>(buf2048, 0, 512));
 					break;
 				case ConsoleID.JaguarCD:
-					// we want to hash the second session of the disc
-					if (disc.Sessions.Count > 2)
+					var discHasher = new DiscHasher(disc);
+					return discHasher.CalculateRAJaguarHash() switch
 					{
-						static string HashJaguar(DiscTrack bootTrack, DiscSectorReader dsr, bool commonHomebrewHash)
-						{
-							const string _jaguarHeader = "ATARI APPROVED DATA HEADER ATRI";
-							const string _jaguarBSHeader = "TARA IPARPVODED TA AEHDAREA RT";
-							var buffer = new List<byte>();
-							var buf2352 = new byte[2352];
-
-							// find the boot track header
-							// see https://github.com/TASEmulators/BizHawk/blob/f29113287e88c6a644dbff30f92a9833307aad20/waterbox/virtualjaguar/src/cdhle.cpp#L109-L145
-							var startLba = bootTrack.LBA;
-							var numLbas = bootTrack.NextTrack.LBA - bootTrack.LBA;
-							int bootLen = 0, bootLba = 0, bootOff = 0;
-							bool byteswapped = false, foundHeader = false;
-							var bootLenOffset = (commonHomebrewHash ? 0x40 : 0) + 32 + 4;
-							for (var i = 0; i < numLbas; i++)
-							{
-								dsr.ReadLBA_2352(startLba + i, buf2352, 0);
-
-								for (var j = 0; j < 2352 - bootLenOffset - 4; j++)
-								{
-									if (buf2352[j] == _jaguarHeader[0])
-									{
-										if (_jaguarHeader == Encoding.ASCII.GetString(buf2352, j, 32 - 1))
-										{
-											bootLen = (buf2352[j + bootLenOffset + 0] << 24) | (buf2352[j + bootLenOffset + 1] << 16) |
-												(buf2352[j + bootLenOffset + 2] << 8) | buf2352[j + bootLenOffset + 3];
-											bootLba = startLba + i;
-											bootOff = j + bootLenOffset + 4;
-											// byteswapped = false;
-											foundHeader = true;
-											break;
-										}
-									}
-									else if (buf2352[j] == _jaguarBSHeader[0])
-									{
-										if (_jaguarBSHeader == Encoding.ASCII.GetString(buf2352, j, 32 - 2))
-										{
-											bootLen = (buf2352[j + bootLenOffset + 1] << 24) | (buf2352[j + bootLenOffset + 0] << 16) |
-												(buf2352[j + bootLenOffset + 3] << 8) | buf2352[j + bootLenOffset + 2];
-											bootLba = startLba + i;
-											bootOff = j + bootLenOffset + 4;
-											byteswapped = true;
-											foundHeader = true;
-											break;
-										}
-									}
-								}
-
-								if (foundHeader)
-								{
-									break;
-								}
-							}
-
-							if (!foundHeader)
-							{
-								return null;
-							}
-
-							dsr.ReadLBA_2352(bootLba++, buf2352, 0);
-
-							if (byteswapped)
-							{
-								EndiannessUtils.MutatingByteSwap16(buf2352.AsSpan());
-							}
-
-							buffer.AddRange(new ArraySegment<byte>(buf2352, bootOff, Math.Min(2352 - bootOff, bootLen)));
-							bootLen -= 2352 - bootOff;
-
-							while (bootLen > 0)
-							{
-								dsr.ReadLBA_2352(bootLba++, buf2352, 0);
-
-								if (byteswapped)
-								{
-									EndiannessUtils.MutatingByteSwap16(buf2352.AsSpan());
-								}
-
-								buffer.AddRange(new ArraySegment<byte>(buf2352, 0, Math.Min(2352, bootLen)));
-								bootLen -= 2352;
-							}
-
-							return MD5Checksum.ComputeDigestHex(buffer.ToArray());
-						}
-
-						var jaguarHash = HashJaguar(disc.Sessions[2].Tracks[1], dsr, false);
-						switch (jaguarHash)
-						{
-							case null:
-								return 0;
-							case "254487B59AB21BC005338E85CBF9FD2F": // see https://github.com/RetroAchievements/rcheevos/pull/234
-							{
-								jaguarHash = HashJaguar(disc.Sessions[1].Tracks[2], dsr, true);
-								if (jaguarHash is null)
-								{
-									return 0;
-								}
-
-								break;
-							}
-						}
-
-						return IdentifyHash(jaguarHash);
-					}
-
-					return 0;
+						string jaguarHash => IdentifyHash(jaguarHash),
+						null => 0,
+					};
 			}
 
 			var hash = MD5Checksum.ComputeDigestHex(buffer.ToArray());
@@ -317,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// get rid of a final trailing 0
-			// but also make sure we have 0 paddng to 16 bytes
+			// but also make sure we have 0 padding to 16 bytes
 			Array.Resize(ref normalKeyBytes, 16);
 
 			// .ToByteArray() is always in little endian order, but we want big endian order
@@ -429,11 +382,11 @@ namespace BizHawk.Client.EmuHawk
 					return true;
 				}
 
-				var programIdBytes = new byte[8];
-				Marshal.Copy(optional_program_id, programIdBytes, 0, 8);
-				var programId = BitConverter.ToUInt64(programIdBytes, 0);
+				var programId = BinaryPrimitives.ReadUInt64LittleEndian(
+					Util.UnsafeSpanFromPointer<byte>(ptr: optional_program_id, count: 8));
 
-				using var seeddb = new BinaryReader(GetFirmware(new("3DS", "seeddb")));
+				FirmwareID seeddbFWID = new("3DS", "seeddb");
+				using BinaryReader seeddb = new(GetFirmware(seeddbFWID));
 				var count = seeddb.ReadUInt32();
 				seeddb.BaseStream.Seek(12, SeekOrigin.Current); // apparently some padding bytes before actual seeds
 				for (long i = 0; i < count; i++)
@@ -447,7 +400,8 @@ namespace BizHawk.Client.EmuHawk
 
 					var sha256Input = new byte[32];
 					Marshal.Copy(primary_key_y, sha256Input, 0, 16);
-					seeddb.BaseStream.Read(sha256Input, 16, 16);
+					var bytesRead = seeddb.BaseStream.Read(sha256Input, offset: 16, count: 16);
+					Debug.Assert(bytesRead is 16, $"reached end-of-file while reading {seeddbFWID} firmware");
 					var sha256Digest = SHA256Checksum.Compute(sha256Input);
 
 					var secondaryKeyYBytes = new byte[17];

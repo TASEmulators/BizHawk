@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using System.Security.Principal;
 
@@ -15,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>http://stackoverflow.com/questions/139010/how-to-resolve-a-lnk-in-c-sharp</remarks>
 		public static string ResolveShortcut(string filename)
 		{
-			if (OSTailoredCode.IsUnixHost || filename.Contains("|")
+			if (OSTailoredCode.IsUnixHost || HawkFile.PathContainsPipe(filename)
 				|| !".lnk".Equals(Path.GetExtension(filename), StringComparison.OrdinalIgnoreCase))
 			{
 				return filename; // archive internal files are never shortcuts (and choke when analyzing any further)

@@ -1,4 +1,3 @@
-﻿using System;
 using Newtonsoft.Json;
 
 using BizHawk.Common;

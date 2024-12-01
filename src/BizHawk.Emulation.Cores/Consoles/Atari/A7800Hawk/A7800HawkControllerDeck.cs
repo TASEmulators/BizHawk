@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -119,6 +118,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				[typeof(LightGunController).DisplayName()] = portNum => new LightGunController(portNum)
 			};
 
-		public static string DefaultControllerName => typeof(StandardController).DisplayName();
+		public static string DefaultControllerName => typeof(ProLineController).DisplayName();
 	}
 }

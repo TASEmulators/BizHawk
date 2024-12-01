@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -73,14 +72,14 @@ namespace BizHawk.Client.Common
 			=> new(sysID, "Cheats", Path.Combine(".", "Cheats"));
 
 		private static IEnumerable<PathEntry> CommonEntriesFor(string sysID, string basePath, bool omitSaveRAM = false)
-		{
-			yield return BaseEntryFor(sysID, basePath);
-			yield return ROMEntryFor(sysID);
-			yield return SavestatesEntryFor(sysID);
-			if (!omitSaveRAM) yield return SaveRAMEntryFor(sysID);
-			yield return ScreenshotsEntryFor(sysID);
-			yield return CheatsEntryFor(sysID);
-		}
+			=> [
+				BaseEntryFor(sysID, basePath),
+				ROMEntryFor(sysID),
+				SavestatesEntryFor(sysID),
+				..(omitSaveRAM ? [ ] : new[] { SaveRAMEntryFor(sysID) }),
+				ScreenshotsEntryFor(sysID),
+				CheatsEntryFor(sysID),
+			];
 
 		public static string GetDisplayNameFor(string sysID)
 			=> _displayNameLookup.GetValueOrPut(sysID, static s => s + " (INTERIM)");
@@ -163,7 +162,8 @@ namespace BizHawk.Client.Common
 		}
 
 		[JsonIgnore]
-		public string FirmwaresPathFragment => this[GLOBAL, "Firmware"].Path;
+		public string FirmwarePathFragment
+			=> this[GLOBAL, "Firmware"].Path;
 
 		[JsonIgnore]
 		internal string TempFilesFragment => this[GLOBAL, "Temp Files"].Path;

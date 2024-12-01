@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 using Vortice.Direct3D;
@@ -19,7 +18,6 @@ namespace BizHawk.Bizware.Graphics
 		public IDXGIFactory1 Factory1;
 		public IDXGIFactory2 Factory2;
 		public ID3D11BlendState BlendNormalState;
-		public ID3D11BlendState BlendAlphaState;
 		public ID3D11BlendState BlendDisableState;
 		public ID3D11SamplerState PointSamplerState;
 		public ID3D11SamplerState LinearSamplerState;
@@ -90,8 +88,6 @@ namespace BizHawk.Bizware.Graphics
 
 				bd.RenderTarget[0].SourceBlend = Blend.One;
 				bd.RenderTarget[0].DestinationBlend = Blend.Zero;
-				BlendAlphaState = Device.CreateBlendState(bd);
-
 				bd.RenderTarget[0].BlendEnable = false;
 				BlendDisableState = Device.CreateBlendState(bd);
 
@@ -155,8 +151,6 @@ namespace BizHawk.Bizware.Graphics
 
 			BlendNormalState?.Dispose();
 			BlendNormalState = null;
-			BlendAlphaState?.Dispose();
-			BlendAlphaState = null;
 			BlendDisableState?.Dispose();
 			BlendDisableState = null;
 

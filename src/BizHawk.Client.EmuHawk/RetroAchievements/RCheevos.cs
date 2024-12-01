@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -10,6 +9,8 @@ using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+
+#pragma warning disable BHI1007 // target-typed Exception TODO don't
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -38,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			_lib.rc_hash_init_custom_filereader(in _filereader);
 			_lib.rc_hash_init_custom_cdreader(in _cdreader);
 
-			_http.DefaultRequestHeaders.UserAgent.ParseAdd($"BizHawk/{VersionInfo.GetEmuVersion()}");
+			_http.DefaultRequestHeaders.UserAgent.ParseAdd(VersionInfo.UserAgentEscaped);
 		}
 
 		private IntPtr _runtime;
@@ -73,7 +74,11 @@ namespace BizHawk.Client.EmuHawk
 				Checked = _getConfig().RAAutostart,
 				CheckOnClick = true,
 			};
-			autoStartRAItem.CheckedChanged += (_, _) => _getConfig().RAAutostart ^= true;
+			autoStartRAItem.CheckedChanged += (_, _) =>
+			{
+				var config = _getConfig();
+				config.RAAutostart = !config.RAAutostart;
+			};
 			raDropDownItems.Add(autoStartRAItem);
 
 			var loginItem = new ToolStripMenuItem("Login")
@@ -111,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 				Checked = CheevosActive,
 				CheckOnClick = true
 			};
-			enableCheevosItem.CheckedChanged += (_, _) => CheevosActive ^= true;
+			enableCheevosItem.CheckedChanged += (_, _) => CheevosActive = !CheevosActive;
 			raDropDownItems.Add(enableCheevosItem);
 
 			var enableLboardsItem = new ToolStripMenuItem("Enable Leaderboards")
@@ -120,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 				CheckOnClick = true,
 				Enabled = HardcoreMode
 			};
-			enableLboardsItem.CheckedChanged += (_, _) => LBoardsActive ^= true;
+			enableLboardsItem.CheckedChanged += (_, _) => LBoardsActive = !LBoardsActive;
 			raDropDownItems.Add(enableLboardsItem);
 
 			var enableRichPresenceItem = new ToolStripMenuItem("Enable Rich Presence")
@@ -128,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 				Checked = RichPresenceActive,
 				CheckOnClick = true
 			};
-			enableRichPresenceItem.CheckedChanged += (_, _) => RichPresenceActive ^= true;
+			enableRichPresenceItem.CheckedChanged += (_, _) => RichPresenceActive = !RichPresenceActive;
 			raDropDownItems.Add(enableRichPresenceItem);
 
 			var enableHardcoreItem = new ToolStripMenuItem("Enable Hardcore Mode")
@@ -138,8 +143,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			enableHardcoreItem.CheckedChanged += (_, _) =>
 			{
-				_hardcoreMode ^= true;
-
+				_hardcoreMode = !_hardcoreMode;
 				if (HardcoreMode)
 				{
 					_hardcoreMode = _mainForm.RebootCore(); // unset hardcore mode if we fail to reboot core somehow
@@ -160,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 				Checked = EnableSoundEffects,
 				CheckOnClick = true
 			};
-			enableSoundEffectsItem.CheckedChanged += (_, _) => EnableSoundEffects ^= true;
+			enableSoundEffectsItem.CheckedChanged += (_, _) => EnableSoundEffects = !EnableSoundEffects;
 			raDropDownItems.Add(enableSoundEffectsItem);
 
 			var enableUnofficialCheevosItem = new ToolStripMenuItem("Test Unofficial Achievements")
@@ -282,7 +286,7 @@ namespace BizHawk.Client.EmuHawk
 			if (size > 0)
 			{
 				var buffer = new byte[(int)size];
-				_lib.rc_runtime_serialize_progress(buffer, _runtime, IntPtr.Zero);
+				_lib.rc_runtime_serialize_progress_sized(buffer, (uint)buffer.Length, _runtime, IntPtr.Zero);
 				using var file = File.Create(path + ".rap");
 				file.Write(buffer, 0, buffer.Length);
 			}
@@ -308,7 +312,7 @@ namespace BizHawk.Client.EmuHawk
 
 			using var file = File.OpenRead(path + ".rap");
 			var buffer = file.ReadAllBytes();
-			_lib.rc_runtime_deserialize_progress(_runtime, buffer, IntPtr.Zero);
+			_lib.rc_runtime_deserialize_progress_sized(_runtime, buffer, (uint)buffer.Length, IntPtr.Zero);
 		}
 		
 		private void QuickLoadCallback(object _, BeforeQuickLoadEventArgs e)
@@ -374,11 +378,11 @@ namespace BizHawk.Client.EmuHawk
 			_consoleId = SystemIdToConsoleId();
 
 			// init the read map
-			_readMap = Array.Empty<byte>();
+			_readMap = [ ];
 
 			if (Emu.HasMemoryDomains())
 			{
-				_memFunctions = CreateMemoryBanks(_consoleId, Domains, Emu.CanDebug() ? Emu.AsDebuggable() : null);
+				_memFunctions = CreateMemoryBanks(_consoleId, Domains);
 				if (_memFunctions.Count > 255)
 				{
 					throw new InvalidOperationException("_memFunctions must have less than 256 memory banks");
@@ -533,7 +537,7 @@ namespace BizHawk.Client.EmuHawk
 							if (!lboard.Hidden)
 							{
 								CurrentLboard = lboard;
-								_dialogParent.AddOnScreenMessage($"Leaderboard Attempt Started!");
+								_dialogParent.AddOnScreenMessage("Leaderboard Attempt Started!");
 								_dialogParent.AddOnScreenMessage(lboard.Description);
 								PlaySound(_lboardStartSound);
 							}

@@ -187,7 +187,7 @@ void dma_read_flashram(void)
         for (i=0; i<(pi_register.pi_wr_len_reg & 0x0FFFFFF)+1; i++)
         {
             ((unsigned char*)rdram)[MASK_ADDR_U8((pi_register.pi_dram_addr_reg+i)^S8, rdram)]=
-                flashram[MASK_ADDR_U8((((pi_register.pi_cart_addr_reg-0x08000000)&0xFFFF)*2+i)^S8, rdram)];
+                flashram[MASK_ADDR_U8((((pi_register.pi_cart_addr_reg-0x08000000)&0xFFFF)*2+i)^S8, flashram)];
         }
         break;
     default:

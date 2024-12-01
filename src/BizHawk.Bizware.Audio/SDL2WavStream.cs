@@ -1,11 +1,13 @@
-﻿using System;
 using System.Buffers;
 using System.IO;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 
 using static SDL2.SDL;
+
+#pragma warning disable BHI1007 // target-typed Exception TODO don't
 
 namespace BizHawk.Bizware.Audio
 {
@@ -92,17 +94,19 @@ namespace BizHawk.Bizware.Audio
 		{
 		}
 
-		public unsafe int Read(Span<byte> buffer)
+		public int Read(Span<byte> buffer)
 		{
 			if (_wav == IntPtr.Zero)
 			{
 				throw new ObjectDisposedException(nameof(SDL2WavStream));
 			}
 
-			var count = (int)Math.Min(buffer.Length, _len - _pos);
-			new ReadOnlySpan<byte>((void*)((nint)_wav + _pos), count).CopyTo(buffer);
-			_pos += (uint)count;
-			return count;
+			uint count = Math.Min((uint) buffer.Length, _len - _pos);
+			var countSigned = unchecked((int) count); // since `Span.Length` is at most `int.MaxValue`, so must `count` be
+			// really, these fields should just be widened to whatever they're used as, which seems to be s64, and asserted to be in 0..<int.MaxValue
+			Util.UnsafeSpanFromPointer(ptr: _wav.Plus(_pos), length: countSigned).CopyTo(buffer);
+			_pos += count;
+			return countSigned;
 		}
 
 		public override int Read(byte[] buffer, int offset, int count)

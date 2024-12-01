@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using BizHawk.Emulation.Common;
@@ -36,17 +35,13 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets an Enumeration of <see cref="WatchDisplayType"/>s that are valid for a <see cref="WordWatch"/>
 		/// </summary>
-		public static IEnumerable<WatchDisplayType> ValidTypes
-		{
-			get
-			{
-				yield return WatchDisplayType.Unsigned;
-				yield return WatchDisplayType.Signed;
-				yield return WatchDisplayType.Hex;
-				yield return WatchDisplayType.Binary;
-				yield return WatchDisplayType.FixedPoint_12_4;
-			}
-		}
+		public static IEnumerable<WatchDisplayType> ValidTypes { get; } = [
+			WatchDisplayType.Unsigned,
+			WatchDisplayType.Signed,
+			WatchDisplayType.Hex,
+			WatchDisplayType.Binary,
+			WatchDisplayType.FixedPoint_12_4,
+		];
 
 		/// <summary>
 		/// Get a list a <see cref="WatchDisplayType"/> that can be used for this <see cref="WordWatch"/>
@@ -171,7 +166,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Get the previous value
 		/// </summary>
-		public override int Previous => _previous;
+		public override uint Previous => _previous;
 
 		/// <summary>
 		/// Get a string representation of the previous value

@@ -1,9 +1,10 @@
 ﻿#nullable disable
 
-using System;
 using System.Runtime.InteropServices;
 
 using static SDL2.SDL;
+
+#pragma warning disable BHI1007 // target-typed Exception TODO don't
 
 namespace BizHawk.Emulation.Common
 {

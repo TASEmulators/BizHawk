@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common.IOExtensions;
 
 namespace BizHawk.Emulation.Cores.Properties {

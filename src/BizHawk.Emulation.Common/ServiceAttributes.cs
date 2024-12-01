@@ -1,6 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
@@ -23,12 +21,9 @@ namespace BizHawk.Emulation.Common
 	[AttributeUsage(AttributeTargets.Class)]
 	public sealed class ServiceNotApplicableAttribute : Attribute
 	{
-		/// <remarks>TODO neither array nor <see cref="IEnumerable{T}"/> is the correct collection to be using here, try <see cref="IReadOnlyList{T}"/>/<see cref="IReadOnlyCollection{T}"/> instead</remarks>
-		public ServiceNotApplicableAttribute(Type[]? types)
-		{
-			NotApplicableTypes = types?.AsEnumerable() ?? Enumerable.Empty<Type>();
-		}
+		public IReadOnlyCollection<Type> NotApplicableTypes { get; }
 
-		public IEnumerable<Type> NotApplicableTypes { get; }
+		public ServiceNotApplicableAttribute(params Type[] types)
+			=> NotApplicableTypes = types;
 	}
 }

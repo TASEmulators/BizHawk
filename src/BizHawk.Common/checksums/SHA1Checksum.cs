@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -50,7 +49,7 @@ namespace BizHawk.Common
 				if (_sha1Impl == null)
 				{
 					_sha1Impl = SHA1.Create();
-					Debug.Assert(_sha1Impl.CanReuseTransform && _sha1Impl.HashSize is EXPECTED_LENGTH);
+					Debug.Assert(_sha1Impl.CanReuseTransform && _sha1Impl.HashSize is EXPECTED_LENGTH, "nonstandard implementation?");
 				}
 				return _sha1Impl;
 			}

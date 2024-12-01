@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -57,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			luaPictureBox = new LuaPictureBox
+			luaPictureBox = new(_th, LogOutputCallback)
 			{
 				Image = Properties.Resources.LuaPictureBox,
 				Location = new Point(0, 0),
@@ -66,7 +65,6 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(100, 50),
 				SizeMode = PictureBoxSizeMode.AutoSize,
 				TabIndex = 0,
-				TableHelper = _th,
 				TabStop = false
 			};
 			Controls.Add(luaPictureBox);
@@ -222,7 +220,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				luaPictureBox.DrawIcon(path, x, y, width, height);
+				luaPictureBox.DrawIcon(
+					path: path,
+					x: x,
+					y: y,
+					width: width,
+					height: height,
+					functionName: "(LuaCanvas).DrawIcon");
 			}
 			catch (Exception ex)
 			{

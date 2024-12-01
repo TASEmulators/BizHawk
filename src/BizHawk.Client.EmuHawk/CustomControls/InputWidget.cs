@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -229,7 +228,9 @@ namespace BizHawk.Client.EmuHawk
 			switch (m.Msg)
 			{
 				case 0x0201: // WM_LBUTTONDOWN
+#pragma warning disable RS0030 //TODO is this correct, or should it be `Select()`? --yoshi
 					Focus();
+#pragma warning restore RS0030
 					return;
 				case 0x0203: // WM_LBUTTONDBLCLK
 				case 0x0204: // WM_RBUTTONDOWN

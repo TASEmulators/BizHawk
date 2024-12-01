@@ -111,7 +111,8 @@
 			// 
 			// FileSelectorPanel
 			// 
-			this.FileSelectorPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.FileSelectorPanel.AllowDrop = true;
+			this.FileSelectorPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 			| System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
 			this.FileSelectorPanel.AutoScroll = true;
@@ -120,6 +121,8 @@
 			this.FileSelectorPanel.Name = "FileSelectorPanel";
 			this.FileSelectorPanel.Size = new System.Drawing.Size(486, 214);
 			this.FileSelectorPanel.TabIndex = 12;
+			this.FileSelectorPanel.DragDrop += new System.Windows.Forms.DragEventHandler(this.OnDragDrop);
+			this.FileSelectorPanel.DragEnter += new System.Windows.Forms.DragEventHandler(this.OnDragEnter);
 			// 
 			// AddButton
 			// 

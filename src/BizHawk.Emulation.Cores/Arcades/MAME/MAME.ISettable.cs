@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -166,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					}
 					else
 					{
-						if (hashdata.Contains("^"))
+						if (hashdata.EndsWithOrdinal('^'))
 						{
 							hashdata = hashdata.RemoveSuffix("^");
 							name += " (BAD DUMP)";

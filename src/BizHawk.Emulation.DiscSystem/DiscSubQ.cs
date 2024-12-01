@@ -1,5 +1,3 @@
-﻿using System;
-
 //TODO - call on unmanaged code in mednadisc if available to do deinterleaving faster. be sure to benchmark it though..
 
 //a decent little subcode reference

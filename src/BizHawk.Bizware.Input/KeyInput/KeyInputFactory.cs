@@ -1,7 +1,5 @@
 #nullable enable
 
-using System;
-
 using BizHawk.Common;
 
 namespace BizHawk.Bizware.Input

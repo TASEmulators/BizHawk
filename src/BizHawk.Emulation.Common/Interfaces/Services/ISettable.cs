@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System;
 using System.Linq;
 using System.Reflection;
 
@@ -61,9 +60,7 @@ namespace BizHawk.Emulation.Common
 	/// Classes with this attribute will have a BizHawk.Common.SettingsUtil.SetDefaultValues(T) function generated
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class)]
-	public class CoreSettings : Attribute
-	{
-	}
+	public class CoreSettingsAttribute : Attribute {}
 
 	//note: this is a bit of a frail API. If a frontend wants a new flag, cores won't know to yea or nay it
 	//this could be solved by adding a KnownSettingsDirtyBits on the settings interface

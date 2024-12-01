@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -59,6 +58,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			ECS,
 			AGA,
 			Auto
+		}
+
+		public enum VideoStandard
+		{
+			PAL,
+			NTSC
 		}
 
 		public enum ChipMemory
@@ -125,6 +130,19 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			DRV_FB
 		}
 
+		public enum FloppySpeed
+		{
+			[Display(Name = "100%")]
+			_100 = 100,
+			[Display(Name = "200%")]
+			_200 = 200,
+			[Display(Name = "400%")]
+			_400 = 400,
+			[Display(Name = "800%")]
+			_800 = 800,
+			Turbo = 0
+		}
+
 		private void CreateArguments(PUAESyncSettings settings)
 		{
 			_args = new List<string>
@@ -169,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 						"chipset_compatible=" + _chipsetCompatible,
 						"chipmem_size=" + (int)ChipMemory.MB_2,
 						"bogomem_size=" + (int)SlowMemory.KB_0,
-						"fastmem_size=8",
+						"fastmem_size=0",
 					});
 					EnableCycleExact();
 					break;
@@ -225,8 +243,49 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				AppendSetting("fastmem_size=" + settings.FastMemory);
 			}
 
+			if (settings.Region == VideoStandard.NTSC)
+			{
+				AppendSetting("ntsc=true");
+			}
+
 			AppendSetting("input.mouse_speed=" + settings.MouseSpeed);
 			AppendSetting("sound_stereo_separation=" + settings.StereoSeparation / 10);
+
+			if (!DeterministicEmulation)
+			{
+				AppendSetting("floppy_speed=" + (int)settings.FloppySpeed);
+			}
+
+			for (int port = 0; port <= 1; port++)
+			{
+				LibPUAE.ControllerType type = port == 0
+					? settings.ControllerPort1
+					: settings.ControllerPort2;
+
+				switch (type)
+				{
+					case LibPUAE.ControllerType.Joystick:
+						AppendSetting($"joyport{port}mode=djoy");
+						break;
+					case LibPUAE.ControllerType.CD32_pad:
+						AppendSetting($"joyport{port}mode=cd32joy");
+						break;
+					case LibPUAE.ControllerType.Mouse:
+						AppendSetting($"joyport{port}mode=mouse");
+						break;
+				}
+			}
+		}
+
+		private void EnableCycleExact()
+		{
+			AppendSetting(new List<string>
+			{
+				"cpu_compatible=true",
+				"cpu_cycle_exact=true",
+				"cpu_memory_cycle_exact=true",
+				"blitter_cycle_exact=true",
+			});
 		}
 
 		private void AppendSetting(List<string> settings)
@@ -242,17 +301,6 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			_args.AddRange(new List<string>
 			{
 				"-s", setting
-			});
-		}
-
-		private void EnableCycleExact()
-		{
-			AppendSetting(new List<string>
-			{
-				"cpu_compatible=true",
-				"cpu_cycle_exact=true",
-				"cpu_memory_cycle_exact=true",
-				"blitter_cycle_exact=true",
 			});
 		}
 		
@@ -280,40 +328,52 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			public MachineConfig MachineConfig { get; set; }
 
 			[DisplayName("CPU model")]
-			[Description("")]
+			[Description("Overrides machine configuration.")]
 			[DefaultValue(CpuModel.Auto)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public CpuModel CpuModel { get; set; }
 
 			[DisplayName("Chipset compatible")]
-			[Description("")]
+			[Description("Overrides machine configuration.")]
 			[DefaultValue(ChipsetCompatible.Auto)]
 			public ChipsetCompatible ChipsetCompatible { get; set; }
 
 			[DisplayName("Chipset")]
-			[Description("")]
+			[Description("Overrides machine configuration.")]
 			[DefaultValue(Chipset.Auto)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public Chipset Chipset { get; set; }
 
 			[DisplayName("Chip memory")]
-			[Description("Size of chip-memory")]
+			[Description("Size of chip-memory.  Overrides machine configuration.")]
 			[DefaultValue(ChipMemory.Auto)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ChipMemory ChipMemory { get; set; }
 
 			[DisplayName("Slow memory")]
-			[Description("Size of bogo-memory at 0xC00000")]
+			[Description("Size of bogo-memory at 0xC00000.  Overrides machine configuration.")]
 			[DefaultValue(SlowMemory.Auto)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SlowMemory SlowMemory { get; set; }
 
 			[DisplayName("Fast memory")]
-			[Description("Size in megabytes of fast-memory.  -1 means Auto.")]
+			[Description("Size in megabytes of fast-memory.  -1 means Auto.  Overrides machine configuration.")]
 			[Range(LibPUAE.FASTMEM_AUTO, 512)]
 			[DefaultValue(LibPUAE.FASTMEM_AUTO)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int FastMemory { get; set; }
+
+			[DisplayName("Controller port 1")]
+			[Description("")]
+			[DefaultValue(LibPUAE.ControllerType.Mouse)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public LibPUAE.ControllerType ControllerPort1 { get; set; }
+
+			[DisplayName("Controller port 2")]
+			[Description("")]
+			[DefaultValue(LibPUAE.ControllerType.Joystick)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public LibPUAE.ControllerType ControllerPort2 { get; set; }
 
 			[DisplayName("Mouse speed")]
 			[Description("Mouse speed in percents (1% - 1000%).  Adjust if there's mismatch between emulated and host mouse movement.  Note that maximum mouse movement is still 127 pixels due to Amiga hardware limitations.")]
@@ -335,6 +395,17 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			[DefaultValue(1)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int FloppyDrives { get; set; }
+
+			[DisplayName("Video standard")]
+			[Description("Determines resolution and framerate.")]
+			[DefaultValue(VideoStandard.PAL)]
+			public VideoStandard Region { get; set; }
+
+			[DisplayName("Floppy drive speed")]
+			[Description("Default speed is 300RPM.  'Turbo' removes disk rotation emulation.  This is a speedhack, not available for movies.")]
+			[DefaultValue(FloppySpeed._100)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public FloppySpeed FloppySpeed { get; set; }
 
 			public PUAESyncSettings()
 				=> SettingsUtil.SetDefaultValues(this);

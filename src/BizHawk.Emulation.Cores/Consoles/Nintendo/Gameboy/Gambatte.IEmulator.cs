@@ -1,4 +1,3 @@
-﻿using System;
 using System.Diagnostics;
 
 using BizHawk.Emulation.Common;
@@ -50,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					{
 						// target number of samples to emit: length of 1 frame minus whatever overflow
 						samplesEmitted = TICKSINFRAME - frameOverflow;
-						Debug.Assert(samplesEmitted * 2 <= _soundbuff.Length);
+						Debug.Assert(samplesEmitted * 2 <= _soundbuff.Length, "buffer capacity exceeded");
 						if (LibGambatte.gambatte_runfor(GambatteState, FrameBuffer, 160, _soundbuff, ref samplesEmitted) > 0)
 						{
 							Array.Copy(FrameBuffer, VideoBuffer, FrameBuffer.Length);
@@ -91,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 							inputFrameLengthInt = TICKSINFRAME;
 						}
 						samplesEmitted = inputFrameLengthInt - frameOverflow;
-						Debug.Assert(samplesEmitted * 2 <= _soundbuff.Length);
+						Debug.Assert(samplesEmitted * 2 <= _soundbuff.Length, "buffer capacity exceeded");
 						if (LibGambatte.gambatte_runfor(GambatteState, FrameBuffer, 160, _soundbuff, ref samplesEmitted) > 0)
 						{
 							Array.Copy(FrameBuffer, VideoBuffer, FrameBuffer.Length);

@@ -145,7 +145,8 @@
 			"R": "E, J1 B6, X1 RightShoulder",
 			"Select": "Space, J1 B9, X1 Back",
 			"Start": "Enter, J1 B10, X1 Start",
-			"Touch": "WMouse L"
+			"Touch": "WMouse L",
+			"Microphone": "M"
 		},
 		"Atari 2600 Basic Controller": {
 			"Reset": "D, J1 B9, X1 Back",
@@ -240,6 +241,29 @@
 			"Insert Next Disk": "F11",
 			"Insert Previous Disk": "F10",
 			"Get Disk Status": "F12"
+		},
+		"ChannelF Controller": {
+		  "P1 Forward": "Keypad8, J1 POV1U, X1 DpadUp, X1 LStickUp",
+		  "P1 Back": "Keypad2, J1 POV1D, X1 DpadDown, X1 LStickDown",
+		  "P1 Left": "Keypad4, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+		  "P1 Right": "Keypad6, J1 POV1R, X1 DpadRight, X1 LStickRight",
+		  "P1 CCW": "Left, J1 Z-, X1 RStickLeft",
+		  "P1 CW": "Right, J1 Z+, X1 RStickRight",
+		  "P1 Pull": "Up, J1 RotationZ-, X1 RStickUp",
+		  "P1 Push": "Down, J1 RotationZ+, X1 RStickDown",
+		  "TIME": "F1",
+		  "MODE": "F2",
+		  "HOLD": "F3",
+		  "START": "F4",
+		  "RESET": "F5",
+		  "P2 Forward": "W, J2 POV1U, X2 DpadUp, X2 LStickUp",
+		  "P2 Back": "S, J2 POV1D, X2 DpadDown, X2 LStickDown",
+		  "P2 Left": "A, J2 POV1L, X2 DpadLeft, X2 LStickLeft",
+		  "P2 Right": "D, J2 POV1R, X2 DpadRight, X2 LStickRight",
+		  "P2 CCW": "J, J2 Z-, X2 RStickLeft",
+		  "P2 CW": "L, J2 Z+, X2 RStickRight",
+		  "P2 Pull": "I, J2 RotationZ-, X2 RStickUp",
+		  "P2 Push": "K, J2 RotationZ+, X2 RStickDown",
 		},
 		"Intellivision Controller": {
 			"P1 Up": "Up, J1 POV1U, X1 DpadUp, X1 LStickUp",
@@ -896,12 +920,12 @@
 			"Pointer X": {
 				"Value": "WMouse X",
 				"Mult": 1.0,
-				"Deadzone": 0.1
+				"Deadzone": 0.0
 			},
 			"Pointer Y": {
 				"Value": "WMouse Y",
 				"Mult": 1.0,
-				"Deadzone": 0.1
+				"Deadzone": 0.0
 			},
 			"P1 Pointer X": {
 				"Value": "",
@@ -940,12 +964,12 @@
 			"P2 Scope X": {
 				"Value": "WMouse X",
 				"Mult": 1.0,
-				"Deadzone": 0.1
+				"Deadzone": 0.0
 			},
 			"P2 Scope Y": {
 				"Value": "WMouse Y",
 				"Mult": 1.0,
-				"Deadzone": 0.1
+				"Deadzone": 0.0
 			}
 		},
 		"Saturn Controller": {
@@ -1002,12 +1026,12 @@
 			"P1 X": {
 				"Value": "WMouse X",
 				"Mult": 1.0,
-				"Deadzone": 0.1
+				"Deadzone": 0.0
 			},
 			"P1 Y": {
 				"Value": "WMouse Y",
 				"Mult": 1.0,
-				"Deadzone": 0.1
+				"Deadzone": 0.0
 			}
 		},
 		"SMS Paddle Controller": {

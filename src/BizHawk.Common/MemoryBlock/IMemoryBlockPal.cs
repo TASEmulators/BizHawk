@@ -1,5 +1,3 @@
-using System;
-
 namespace BizHawk.Common
 {
 	/// <summary>

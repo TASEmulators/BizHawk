@@ -1,4 +1,3 @@
-﻿using System;
 using System.Threading;
 
 using BizHawk.Emulation.Common;

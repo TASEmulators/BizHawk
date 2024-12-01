@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
@@ -7,7 +7,12 @@ using BizHawk.Common.NumberExtensions;
 // Z80A CPU
 namespace BizHawk.Emulation.Cores.Components.Z80A
 {
-	public sealed partial class Z80A
+	/// <remarks>
+	/// this type parameter might look useless—and it is—but after monomorphisation,
+	/// this way happens to perform better than the alternative
+	/// </remarks>
+	/// <seealso cref="IZ80ALink"/>
+	public sealed partial class Z80A<TLink> where TLink : IZ80ALink
 	{
 		// operations that can take place in an instruction
 		public const ushort IDLE = 0; 
@@ -91,8 +96,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public ushort Ztemp1, Ztemp2, Ztemp3, Ztemp4;	
 		public byte temp_R;
 
-		public Z80A()
+		private TLink _link;
+
+		public Z80A(TLink link)
 		{
+			_link = link;
 			Reset();
 			InitTableParity();
 		}
@@ -239,54 +247,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; set; }
-
-		// Memory Access 
-		public Func<ushort, byte> FetchMemory;
-		public Func<ushort, byte> ReadMemory;
-		public Action<ushort, byte> WriteMemory;
-		public Func<ushort, byte> PeekMemory;
-		public Func<ushort, byte> DummyReadMemory;
-
-		// Hardware I/O Port Access
-		public Func<ushort, byte> ReadHardware;
-		public Action<ushort, byte> WriteHardware;
-
-		// Data Bus
-		// Interrupting Devices are responsible for putting a value onto the data bus
-		// for as long as the interrupt is valid
-		public Func<byte> FetchDB;
-
-		//this only calls when the first byte of an instruction is fetched.
-		public Action<ushort> OnExecFetch;
-
-		public void UnregisterMemoryMapper()
-		{
-			ReadMemory = null;
-			WriteMemory = null;
-			PeekMemory = null;
-			DummyReadMemory = null;
-			ReadHardware = null;
-			WriteHardware = null;
-		}
-
-		public void SetCallbacks
-		(
-			Func<ushort, byte> ReadMemory,
-			Func<ushort, byte> DummyReadMemory,
-			Func<ushort, byte> PeekMemory,
-			Action<ushort, byte> WriteMemory,
-			Func<ushort, byte> ReadHardware,
-			Action<ushort, byte> WriteHardware
-		)
-		{
-			this.ReadMemory = ReadMemory;
-			this.DummyReadMemory = DummyReadMemory;
-			this.PeekMemory = PeekMemory;
-			this.WriteMemory = WriteMemory;
-			this.ReadHardware = ReadHardware;
-			this.WriteHardware = WriteHardware;
-		}
+		public void SetCpuLink(TLink link)
+			=> _link = link;
 
 		// Execute instructions
 		public void ExecuteOne()
@@ -303,9 +265,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					break;
 				case OP_F:
 					// Read the opcode of the next instruction	
-					OnExecFetch?.Invoke(RegPC);
+					_link.OnExecFetch(RegPC);
 					TraceCallback?.Invoke(State());
-					opcode = FetchMemory(RegPC++);
+					opcode = _link.FetchMemory(RegPC++);
 					FetchInstruction();
 					
 					temp_R = (byte)(Regs[R] & 0x7F);
@@ -522,7 +484,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						Regs[R] = (byte)((Regs[R] & 0x80) | temp_R);
 					}
 
-					opcode = FetchMemory(RegPC++);
+					opcode = _link.FetchMemory(RegPC++);
 					FetchInstruction();
 					instr_pntr = bus_pntr = mem_pntr = irq_pntr = 0;
 					I_skip = true;
@@ -754,7 +716,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					break;
 
 				case IORQ:
-					IRQACKCallback();
+					_link.IRQACKCallback();
 					break;
 			}
 
@@ -780,7 +742,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					iff2 = iff1;
 					iff1 = false;
 					NMI_();
-					NMICallback();
+					_link.NMICallback();
 					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
 
 					temp_R = (byte)(Regs[R] & 0x7F);
@@ -812,7 +774,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							INTERRUPT_2();
 							break;
 					}
-					IRQCallback();
+					_link.IRQCallback();
 					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
 
 					temp_R = (byte)(Regs[R] & 0x7F);
@@ -855,12 +817,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			int bytes_read = 0;
 
-			string disasm = disassemble ? Disassemble(RegPC, ReadMemory, out bytes_read) : "---";
+			string disasm = disassemble ? Z80ADisassembler.Disassemble(RegPC, _link.ReadMemory, out bytes_read) : "---";
 			string byte_code = null;
 
 			for (ushort i = 0; i < bytes_read; i++)
 			{
-				byte_code += $"{ReadMemory((ushort)(RegPC + i)):X2}";
+				byte_code += $"{_link.ReadMemory((ushort)(RegPC + i)):X2}";
 				if (i < (bytes_read - 1))
 				{
 					byte_code += " ";

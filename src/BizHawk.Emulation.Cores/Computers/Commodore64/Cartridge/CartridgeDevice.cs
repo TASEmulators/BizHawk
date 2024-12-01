@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -271,5 +270,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			get => _driveLightOn;
 			protected set => _driveLightOn = value;
 		}
+
+		public string DriveLightIconDescription => "Cart Activity";
 	}
 }

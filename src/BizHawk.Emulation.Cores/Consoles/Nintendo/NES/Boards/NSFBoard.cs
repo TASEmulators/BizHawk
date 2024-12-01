@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 
 //NSF ROM and general approaches are heavily derived from FCEUX. the general ideas:

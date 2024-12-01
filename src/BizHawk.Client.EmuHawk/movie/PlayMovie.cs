@@ -1,4 +1,3 @@
-﻿using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -423,7 +422,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						break;
 					case HeaderKeys.VsyncAttoseconds:
-						if (_emulator is MAME mame && mame.VsyncAttoseconds != Convert.ToInt64(v))
+						if (_emulator is MAME mame && mame.VsyncAttoseconds != long.Parse(v))
 						{
 							item.BackColor = Color.Pink;
 							item.ToolTipText = $"Expected: {v}\n Actual: {mame.VsyncAttoseconds}";
@@ -594,7 +593,7 @@ namespace BizHawk.Client.EmuHawk
 			if (StopOnFrameCheckbox.Checked)
 			{
 				if (LastFrameCheckbox.Checked) _mainForm.PauseOnFrame = _movieSession.Movie.InputLogLength;
-				else if (StopOnFrameTextBox.ToRawUInt() is uint i) _mainForm.PauseOnFrame = (int)i;
+				else if (StopOnFrameTextBox.ToRawInt() is int i) _mainForm.PauseOnFrame = i;
 			}
 			Close();
 		}
@@ -611,7 +610,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_programmaticallyChangingStopFrameCheckbox)
 			{
-				StopOnFrameTextBox.Focus();
+				StopOnFrameTextBox.Select();
 			}
 		}
 

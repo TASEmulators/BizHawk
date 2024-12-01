@@ -1,4 +1,3 @@
-﻿using System;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Components.M68000

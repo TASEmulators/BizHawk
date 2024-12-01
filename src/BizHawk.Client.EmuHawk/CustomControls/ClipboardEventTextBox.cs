@@ -1,4 +1,3 @@
-﻿using System;
 using System.Windows.Forms;
 using BizHawk.Common;
 
@@ -81,6 +80,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		{
 			public bool ContainsText { get; }
 			public string Text { get; }
+
 			/// <summary>Prevents regular paste handling if set to <see langword="true"/>.</summary>
 			public bool Handled { get; set; }
 

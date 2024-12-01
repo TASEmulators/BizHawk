@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -72,10 +71,6 @@ namespace BizHawk.Emulation.Cores
 					new ButtonSchema(275, 75, "Mouse Right Click")
 					{
 						DisplayName = "Right",
-					},
-					new ButtonSchema(275, 105, "Mouse Relative Toggle")
-					{
-						DisplayName = "Relative Toggle",
 					},
 				}
 			};

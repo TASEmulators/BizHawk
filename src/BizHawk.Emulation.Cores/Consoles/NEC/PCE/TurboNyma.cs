@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -44,15 +43,15 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		public TurboNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, VSystemID.Raw.PCE, "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{
-			var firmwares = new Dictionary<string, FirmwareID>();
+			var firmwareIDMap = new Dictionary<string, FirmwareID>();
 			if (lp.Discs.Count > 0)
 			{
 				_hasCds = true;
 				var ids = lp.Discs.Select(dg => dg.DiscType).ToList();
 				if (ids.Contains(DiscType.TurboCD))
-					firmwares.Add("FIRMWARE:syscard3.pce", new("PCECD", "Bios"));
+					firmwareIDMap.Add("FIRMWARE:syscard3.pce", new("PCECD", "Bios"));
 				if (ids.Contains(DiscType.TurboGECD))
-					firmwares.Add("FIRMWARE:gecard.pce", new("PCECD", "GE-Bios"));
+					firmwareIDMap.Add("FIRMWARE:gecard.pce", new("PCECD", "GE-Bios"));
 			}
 			else if (lp.Roms.Count == 1)
 			{
@@ -60,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 					SettingOverrides["pce.disable_bram_hucard"].Default = "0";
 			}
 
-			_turboNyma = DoInit<LibTurboNyma>(lp, "turbo.wbx", firmwares);
+			_turboNyma = DoInit<LibTurboNyma>(lp, "turbo.wbx", firmwareIDMap);
 
 			_cachedSettingsInfo ??= SettingsInfo.Clone();
 		}

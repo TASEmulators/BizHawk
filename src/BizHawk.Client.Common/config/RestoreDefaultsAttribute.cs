@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Client.Common
 {
 	/// <summary>Indicates which method of an <see cref="IToolFormAutoConfig"/> is to be called when the generated <c>Restore Defaults</c> menu item is clicked.</summary>

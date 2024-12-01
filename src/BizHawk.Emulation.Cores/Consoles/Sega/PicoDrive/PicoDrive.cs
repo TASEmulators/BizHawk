@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -281,6 +280,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 
 		public bool DriveLightEnabled { get; }
 		public bool DriveLightOn { get; private set; }
+
+		public string DriveLightIconDescription => "CD Drive Activity";
 
 		public DisplayType Region => _isPal ? DisplayType.PAL : DisplayType.NTSC;
 	}

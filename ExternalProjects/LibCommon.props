@@ -1,7 +1,7 @@
 <Project>
 	<Import Project="../Common.props" />
 	<PropertyGroup>
-		<NoWarn>$(NoWarn);SA1200</NoWarn>
+		<NoWarn>$(NoWarn);BHI1105;MEN018;SA1200</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="*.sh" />

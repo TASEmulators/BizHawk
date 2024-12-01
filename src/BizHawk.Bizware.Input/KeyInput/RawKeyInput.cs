@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -23,9 +22,14 @@ namespace BizHawk.Bizware.Input
 		private const int WM_INPUT = 0x00FF;
 
 		private IntPtr RawInputWindow;
-		private bool HandleAltKbLayouts;
-		private List<KeyEvent> KeyEvents = new();
-		private readonly object LockObj = new();
+		private bool _handleAltKbLayouts;
+		private List<KeyEvent> _keyEvents = [ ];
+		private readonly object _lockObj = new();
+		private bool _disposed;
+
+		private IntPtr RawInputBuffer;
+		private int RawInputBufferSize;
+		private readonly int RawInputBufferDataOffset;
 
 		private static readonly WNDPROC _wndProc = WndProc;
 
@@ -53,71 +57,120 @@ namespace BizHawk.Bizware.Input
 				return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 			}
 
+			GCHandle handle;
+			RawKeyInput rawKeyInput;
 			if (uMsg != WM_INPUT)
 			{
 				if (uMsg == WM_CLOSE)
 				{
 					SetWindowLongPtrW(hWnd, GWLP_USERDATA, IntPtr.Zero);
-					GCHandle.FromIntPtr(ud).Free();
+					handle = GCHandle.FromIntPtr(ud);
+					rawKeyInput = (RawKeyInput)handle.Target;
+					Marshal.FreeCoTaskMem(rawKeyInput.RawInputBuffer);
+					handle.Free();
 				}
 
 				return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 			}
 
 			if (GetRawInputData(lParam, RID.INPUT, IntPtr.Zero,
-					out var size, Marshal.SizeOf<RAWINPUTHEADER>()) == -1)
+					out var size, sizeof(RAWINPUTHEADER)) == -1)
 			{
 				return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 			}
 
 			// don't think size should ever be this big, but just in case
+			// also, make sure to align the buffer to a pointer boundary
 			var buffer = size > 1024
-				? new byte[size]
-				: stackalloc byte[size];
+				? new IntPtr[(size + sizeof(IntPtr) - 1) / sizeof(IntPtr)]
+				: stackalloc IntPtr[(size + sizeof(IntPtr) - 1) / sizeof(IntPtr)];
 
-			fixed (byte* p = buffer)
+			handle = GCHandle.FromIntPtr(ud);
+			rawKeyInput = (RawKeyInput)handle.Target;
+
+			fixed (IntPtr* p = buffer)
 			{
 				var input = (RAWINPUT*)p;
-
 				if (GetRawInputData(lParam, RID.INPUT, input,
-						ref size, Marshal.SizeOf<RAWINPUTHEADER>()) == -1)
+						ref size, sizeof(RAWINPUTHEADER)) == -1)
 				{
 					return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 				}
 
-				if (input->header.dwType is RAWINPUTHEADER.RIM_TYPE.KEYBOARD
-					&& (input->data.keyboard.Flags & ~(RAWKEYBOARD.RI_KEY.E0 | RAWKEYBOARD.RI_KEY.BREAK)) is 0)
+				if (input->header.dwType == RAWINPUTHEADER.RIM_TYPE.KEYBOARD)
 				{
-					var handle = GCHandle.FromIntPtr(ud);
-					var rawKeyInput = (RawKeyInput)handle.Target;
+					rawKeyInput.AddKeyInput(&input->data.keyboard);
+				}
+			}
 
-					lock (rawKeyInput.LockObj)
-					{
-						var rawKey = (RawKey)(input->data.keyboard.MakeCode |
-							((input->data.keyboard.Flags & RAWKEYBOARD.RI_KEY.E0) != 0 ? 0x80 : 0));
-
-						// kind of a dumb hack, the Pause key is apparently special here
-						// keyboards would send scancode 0x1D with an E1 prefix, followed by 0x45 (which is NumLock!)
-						// this "NumLock" press will set the VKey to 255 (invalid VKey), so we can use that to know if this is actually a Pause press
-						// (note that DIK_PAUSE is just 0x45 with an E0 prefix, although this is likely just a conversion DirectInput does internally)
-						if (rawKey == RawKey.NUMLOCK && input->data.keyboard.VKey == VirtualKey.VK_NONE)
-						{
-							rawKey = RawKey.PAUSE;
-						}
-
-						if (rawKeyInput.HandleAltKbLayouts)
-						{
-							rawKey = MapToRealKeyViaScanCode(rawKey);
-						}
-
-						if (KeyEnumMap.TryGetValue(rawKey, out var key))
-						{
-							rawKeyInput.KeyEvents.Add(new(key, (input->data.keyboard.Flags & RAWKEYBOARD.RI_KEY.BREAK) == RAWKEYBOARD.RI_KEY.MAKE));
-						}
-					}
+			while (true)
+			{
+				var rawInputBuffer = (RAWINPUT*)rawKeyInput.RawInputBuffer;
+				size = rawKeyInput.RawInputBufferSize;
+				var count = GetRawInputBuffer(rawInputBuffer, ref size, sizeof(RAWINPUTHEADER));
+				if (count == 0)
+				{
+					break;
 				}
 
-				return DefRawInputProc(input, 0, Marshal.SizeOf<RAWINPUTHEADER>());
+				if (count == -1)
+				{
+					// From testing, it appears this never actually occurs in practice
+					// As GetRawInputBuffer will succeed as long as the buffer has room for at least 1 packet
+					// As such, initial size is made very large to hopefully accommodate all packets at once
+					const int ERROR_INSUFFICIENT_BUFFER = 0x7A;
+					if (Marshal.GetLastWin32Error() == ERROR_INSUFFICIENT_BUFFER)
+					{
+						rawKeyInput.RawInputBufferSize *= 2;
+						rawKeyInput.RawInputBuffer = Marshal.ReAllocCoTaskMem(rawKeyInput.RawInputBuffer, rawKeyInput.RawInputBufferSize);
+						continue;
+					}
+
+					break;
+				}
+
+				for (var i = 0u; i < (uint)count; i++)
+				{
+					if (rawInputBuffer->header.dwType == RAWINPUTHEADER.RIM_TYPE.KEYBOARD)
+					{
+						var keyboard = (RAWKEYBOARD*)((byte*)&rawInputBuffer->data.keyboard + rawKeyInput.RawInputBufferDataOffset);
+						rawKeyInput.AddKeyInput(keyboard);
+					}
+
+					var packetSize = rawInputBuffer->header.dwSize;
+					var rawInputBufferUnaligned = (nuint)rawInputBuffer + packetSize;
+					var pointerAlignment = (nuint)sizeof(nuint) - 1;
+					rawInputBuffer = (RAWINPUT*)((rawInputBufferUnaligned + pointerAlignment) & ~pointerAlignment);
+				}
+			}
+
+			return IntPtr.Zero;
+		}
+
+		private unsafe void AddKeyInput(RAWKEYBOARD* keyboard)
+		{
+			if ((keyboard->Flags & ~(RAWKEYBOARD.RI_KEY.E0 | RAWKEYBOARD.RI_KEY.BREAK)) == 0)
+			{
+				var rawKey = (RawKey)(keyboard->MakeCode | ((keyboard->Flags & RAWKEYBOARD.RI_KEY.E0) != 0 ? 0x80 : 0));
+
+				// kind of a dumb hack, the Pause key is apparently special here
+				// keyboards would send scancode 0x1D with an E1 prefix, followed by 0x45 (which is NumLock!)
+				// this "NumLock" press will set the VKey to 255 (invalid VKey), so we can use that to know if this is actually a Pause press
+				// (note that DIK_PAUSE is just 0x45 with an E0 prefix, although this is likely just a conversion DirectInput does internally)
+				if (rawKey == RawKey.NUMLOCK && keyboard->VKey == VirtualKey.VK_NONE)
+				{
+					rawKey = RawKey.PAUSE;
+				}
+
+				if (_handleAltKbLayouts)
+				{
+					rawKey = MapToRealKeyViaScanCode(rawKey);
+				}
+
+				if (KeyEnumMap.TryGetValue(rawKey, out var key))
+				{
+					_keyEvents.Add(new(key, (keyboard->Flags & RAWKEYBOARD.RI_KEY.BREAK) == RAWKEYBOARD.RI_KEY.MAKE));
+				}
 			}
 		}
 
@@ -169,11 +222,27 @@ namespace BizHawk.Bizware.Input
 			// but we can still test window creation
 			var testWindow = CreateRawInputWindow(); // this will throw if window creation or rawinput registering fails
 			DestroyWindow(testWindow);
+
+			// 32-bit dumb: GetRawInputBuffer packets are directly copied from the kernel
+			// so on WOW64 they will have 64-bit headers (i.e. 64 bit handles, not 32 bit)
+			if (IntPtr.Size == 4)
+			{
+				var currentProccess = Win32Imports.GetCurrentProcess();
+				if (!Win32Imports.IsWow64Process(currentProccess, out var isWow64))
+				{
+					throw new InvalidOperationException("Failed to query WOW64 status");
+				}
+
+				RawInputBufferDataOffset = isWow64 ? 8 : 0;
+			}
+
+			RawInputBufferSize = (Marshal.SizeOf<RAWINPUT>() + RawInputBufferDataOffset) * 16;
+			RawInputBuffer = Marshal.AllocCoTaskMem(RawInputBufferSize);
 		}
 
 		public void Dispose()
 		{
-			lock (LockObj)
+			lock (_lockObj)
 			{
 				if (RawInputWindow != IntPtr.Zero)
 				{
@@ -181,13 +250,26 @@ namespace BizHawk.Bizware.Input
 					PostMessageW(RawInputWindow, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
 					RawInputWindow = IntPtr.Zero;
 				}
+				else
+				{
+					// We'll free RawInputBuffer the raw input window message handler if it's around
+					// Otherwise, just do it here
+					Marshal.FreeCoTaskMem(RawInputBuffer);
+				}
+
+				_disposed = true;
 			}
 		}
 
 		public IEnumerable<KeyEvent> Update(bool handleAltKbLayouts)
 		{
-			lock (LockObj)
+			lock (_lockObj)
 			{
+				if (_disposed)
+				{
+					return [ ];
+				}
+
 				if (RawInputWindow == IntPtr.Zero)
 				{
 					RawInputWindow = CreateRawInputWindow();
@@ -195,7 +277,7 @@ namespace BizHawk.Bizware.Input
 					SetWindowLongPtrW(RawInputWindow, GWLP_USERDATA, GCHandle.ToIntPtr(handle));
 				}
 
-				HandleAltKbLayouts = handleAltKbLayouts;
+				_handleAltKbLayouts = handleAltKbLayouts;
 
 				while (PeekMessageW(out var msg, RawInputWindow, 0, 0, PM_REMOVE))
 				{
@@ -203,14 +285,14 @@ namespace BizHawk.Bizware.Input
 					DispatchMessageW(ref msg);
 				}
 
-				var ret = KeyEvents;
-				KeyEvents = new();
+				var ret = _keyEvents;
+				_keyEvents = [ ];
 				return ret;
 			}
 		}
 
 		private static readonly RawKey[] _rawKeysNoTranslation =
-		{
+		[
 			RawKey.NUMPAD0,
 			RawKey.NUMPAD1,
 			RawKey.NUMPAD2,
@@ -231,7 +313,7 @@ namespace BizHawk.Bizware.Input
 			RawKey.INTL4,
 			RawKey.LANG3,
 			RawKey.LANG4
-		};
+		];
 
 		private static RawKey MapToRealKeyViaScanCode(RawKey key)
 		{

@@ -31,13 +31,13 @@ namespace BizHawk.Client.EmuHawk
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.CheatListView = new InputRoll();
+			this.CheatListView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.CheatsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.ToggleContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RemoveContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DisableAllContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ViewInHexEditorContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.CheatsMenu = new MenuStripEx();
+			this.CheatsMenu = new BizHawk.WinForms.Controls.MenuStripEx();
 			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NewMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.OpenMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 			this.AlwaysLoadCheatsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AutoSaveCheatsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DisableCheatsOnLoadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStrip1 = new ToolStripEx();
+			this.toolStrip1 = new BizHawk.WinForms.Controls.ToolStripEx();
 			this.NewToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.OpenToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.SaveToolBarItem = new System.Windows.Forms.ToolStripButton();
@@ -86,20 +86,25 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// CheatListView
 			// 
-			this.CheatListView.CellWidthPadding = 3;
 			this.CheatListView.AllowColumnReorder = true;
 			this.CheatListView.AllowColumnResize = true;
-			this.CheatListView.MultiSelect = true;
 			this.CheatListView.AllowDrop = true;
+			this.CheatListView.AllowMassNavigationShortcuts = true;
+			this.CheatListView.AllowRightClickSelection = true;
+			this.CheatListView.AlwaysScroll = false;
 			this.CheatListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.CheatListView.CellHeightPadding = 0;
 			this.CheatListView.ContextMenuStrip = this.CheatsContextMenu;
 			this.CheatListView.FullRowSelect = true;
-			this.CheatListView.GridLines = true;
-			this.CheatListView.RowCount = 0;
+			this.CheatListView.HorizontalOrientation = false;
+			this.CheatListView.LetKeysModifySelection = false;
 			this.CheatListView.Location = new System.Drawing.Point(12, 72);
 			this.CheatListView.Name = "CheatListView";
+			this.CheatListView.RowCount = 0;
+			this.CheatListView.ScrollSpeed = 0;
+			this.CheatListView.SeekingCutoffInterval = 0;
 			this.CheatListView.Size = new System.Drawing.Size(414, 321);
 			this.CheatListView.TabIndex = 1;
 			this.CheatListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.CheatListView_ColumnClick);
@@ -117,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
             this.DisableAllContextMenuItem,
             this.ViewInHexEditorContextMenuItem});
 			this.CheatsContextMenu.Name = "contextMenuStrip1";
-			this.CheatsContextMenu.Size = new System.Drawing.Size(170, 92);
+			this.CheatsContextMenu.Size = new System.Drawing.Size(171, 92);
 			this.CheatsContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.CheatsContextMenu_Opening);
 			// 
 			// ToggleContextMenuItem
@@ -247,15 +252,15 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// ToggleMenuItem
 			// 
-			this.ToggleMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Enter)));
 			this.ToggleMenuItem.ShortcutKeyDisplayString = "Ctrl + Enter";
+			this.ToggleMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Return)));
 			this.ToggleMenuItem.Text = "&Toggle";
 			this.ToggleMenuItem.Click += new System.EventHandler(this.ToggleMenuItem_Click);
 			// 
 			// DisableAllCheatsMenuItem
 			// 
-			this.DisableAllCheatsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Back)));
 			this.DisableAllCheatsMenuItem.ShortcutKeyDisplayString = "Ctrl + Backspace";
+			this.DisableAllCheatsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Back)));
 			this.DisableAllCheatsMenuItem.Text = "Disable all";
 			this.DisableAllCheatsMenuItem.Click += new System.EventHandler(this.DisableAllCheatsMenuItem_Click);
 			// 
@@ -374,7 +379,7 @@ namespace BizHawk.Client.EmuHawk
 			this.LoadGameGenieToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.LoadGameGenieToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.LoadGameGenieToolbarItem.Name = "LoadGameGenieToolbarItem";
-			this.LoadGameGenieToolbarItem.Size = new System.Drawing.Size(75, 22);
+			this.LoadGameGenieToolbarItem.Size = new System.Drawing.Size(94, 22);
 			this.LoadGameGenieToolbarItem.Text = "Code Converter";
 			this.LoadGameGenieToolbarItem.ToolTipText = "Open the Cheat Code Converter";
 			this.LoadGameGenieToolbarItem.Click += new System.EventHandler(this.OpenGameGenieEncoderDecoderMenuItem_Click);

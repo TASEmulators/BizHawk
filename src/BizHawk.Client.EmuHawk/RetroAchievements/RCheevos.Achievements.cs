@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
@@ -12,6 +11,7 @@ namespace BizHawk.Client.EmuHawk
 		private sealed class CheevoUnlockRequest : RCheevoHttpRequest
 		{
 			private readonly LibRCheevos.rc_api_award_achievement_request_t _apiParams;
+			private readonly DateTime _unlockTime;
 
 			protected override void ResponseCallback(byte[] serv_resp)
 			{
@@ -25,13 +25,17 @@ namespace BizHawk.Client.EmuHawk
 
 			public override void DoRequest()
 			{
-				var apiParamsResult = _lib.rc_api_init_award_achievement_request(out var api_req, in _apiParams);
+				var secondsSinceUnlock = (DateTime.UtcNow - _unlockTime).TotalSeconds;
+				var apiParams = new LibRCheevos.rc_api_award_achievement_request_t(_apiParams.username, _apiParams.api_token,
+					_apiParams.achievement_id, _apiParams.hardcore, _apiParams.game_hash, (uint)secondsSinceUnlock);
+				var apiParamsResult = _lib.rc_api_init_award_achievement_request(out var api_req, in apiParams);
 				InternalDoRequest(apiParamsResult, ref api_req);
 			}
 
 			public CheevoUnlockRequest(string username, string api_token, uint achievement_id, bool hardcore, string game_hash)
 			{
-				_apiParams = new(username, api_token, achievement_id, hardcore, game_hash);
+				_apiParams = new(username, api_token, achievement_id, hardcore, game_hash, seconds_since_unlock: 0);
+				_unlockTime = DateTime.UtcNow;
 			}
 		}
 
@@ -148,14 +152,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_gameData.GameID == 0)
 			{
-				AllowUnofficialCheevos ^= true;
+				AllowUnofficialCheevos = !AllowUnofficialCheevos;
 				return;
 			}
 
 			_activeModeUnlocksRequest.Wait();
 
 			DeactivateCheevos(HardcoreMode);
-			AllowUnofficialCheevos ^= true;
+			AllowUnofficialCheevos = !AllowUnofficialCheevos;
 			ActivateCheevos(HardcoreMode);
 		}
 

@@ -1,5 +1,3 @@
-using System;
-
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
@@ -35,8 +33,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			return vb;
 		}
 
-		public int VirtualWidth { get; internal set; }
-		public int VirtualHeight { get; internal set; }
+		public int VirtualWidth => _vp.BufferWidth;
+		public int VirtualHeight => _vp.BufferHeight;
 		public int BufferWidth => _vp.BufferWidth;
 		public int BufferHeight => _vp.BufferHeight;
 		public int VsyncNumerator => _vp.VsyncNumerator;

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -252,14 +251,13 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Enumerate all states in reverse order
+		/// Enumerate all states in the following order: current -> recent -> gap -> reserved states
 		/// </summary>
 		internal IEnumerable<StateInfo> AllStates()
 		{
 			return CurrentAndRecentStates()
 				.Concat(GapStates())
-				.Concat(ReservedStates())
-				.OrderByDescending(s => s.Frame);
+				.Concat(ReservedStates());
 		}
 
 		public int Last => StateCache.Max();
@@ -438,7 +436,7 @@ namespace BizHawk.Client.Common
 				else
 					StateCache.Remove(lastGap.Frame);
 
-				_gapFiller.InvalidateEnd(i);
+				_gapFiller.InvalidateLast();
 			}
 
 			_gapFiller.Capture(
@@ -462,9 +460,9 @@ namespace BizHawk.Client.Common
 
 		public void Clear()
 		{
-			_current.InvalidateEnd(0);
-			_recent.InvalidateEnd(0);
-			_gapFiller.InvalidateEnd(0);
+			_current.InvalidateAfter(-1);
+			_recent.InvalidateAfter(-1);
+			_gapFiller.InvalidateAfter(-1);
 			StateCache.Clear();
 			AddStateCache(0);
 			_reserved = _reserved.Where(static kvp => kvp.Key is 0).ToDictionary(); //TODO clone needed?
@@ -475,8 +473,15 @@ namespace BizHawk.Client.Common
 			if (frame < 0)
 				throw new ArgumentOutOfRangeException(nameof(frame));
 
-			var si = AllStates().First(s => s.Frame <= frame);
-			return new KeyValuePair<int, Stream>(si.Frame, si.Read());
+			StateInfo closestState = null;
+			foreach (var state in AllStates())
+			{
+				if (state.Frame <= frame && (closestState is null || state.Frame > closestState.Frame))
+				{
+					closestState = state;
+				}
+			}
+			return new KeyValuePair<int, Stream>(closestState!.Frame, closestState.Read());
 		}
 
 		public bool HasState(int frame)
@@ -486,39 +491,18 @@ namespace BizHawk.Client.Common
 
 		private bool InvalidateGaps(int frame)
 		{
-			for (var i = 0; i < _gapFiller.Count; i++)
-			{
-				var state = _gapFiller.GetState(i);
-				if (state.Frame > frame)
-				{
-					_gapFiller.InvalidateEnd(i);
-					return true;
-				}
-			}
-			return false;
+			return _gapFiller.InvalidateAfter(frame);
 		}
 
 		private bool InvalidateNormal(int frame)
 		{
-			for (var i = 0; i < _recent.Count; i++)
+			if (_recent.InvalidateAfter(frame))
 			{
-				if (_recent.GetState(i).Frame > frame)
-				{
-					_recent.InvalidateEnd(i);
-					_current.InvalidateEnd(0);
-					return true;
-				}
+				_current.InvalidateAfter(-1);
+				return true;
 			}
 
-			for (var i = 0; i < _current.Count; i++)
-			{
-				if (_current.GetState(i).Frame > frame)
-				{
-					_current.InvalidateEnd(i);
-					return true;
-				}
-			}
-			return false;
+			return _current.InvalidateAfter(frame);
 		}
 
 		private bool InvalidateReserved(int frame)

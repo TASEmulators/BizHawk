@@ -1,13 +1,9 @@
-using System;
-
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
 	public class EncoreVideoProvider : IVideoProvider
 	{
-		internal int VW = 400;
-		internal int VH = 480;
 		internal int BW = 400;
 		internal int BH = 480;
 		internal bool VideoDirty;
@@ -22,8 +18,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		}
 
 		// ReSharper disable ConvertToAutoPropertyWhenPossible
-		public int VirtualWidth => VW;
-		public int VirtualHeight => VH;
+		public int VirtualWidth => BW;
+		public int VirtualHeight => BH;
 		public int BufferWidth => BW;
 		public int BufferHeight => BH;
 		public int VsyncNumerator => 268111856;

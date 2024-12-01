@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel;
 
 using BizHawk.Emulation.Cores.Nintendo.SNES;

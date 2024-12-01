@@ -1,4 +1,3 @@
-﻿using System;
 using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
@@ -43,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <param name="pad2">pad 2 input</param>
 		/// <returns>string error</returns>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract IntPtr qn_emulate_frame(IntPtr e, uint pad1, uint pad2);
+		public abstract IntPtr qn_emulate_frame(IntPtr e, uint pad1, uint pad2, byte arkanoidPos, byte arkanoidFire, uint controllerType);
 		/// <summary>
 		/// blit to rgb32
 		/// </summary>

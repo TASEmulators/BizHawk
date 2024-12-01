@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Emulation.Cores.PCEngine
 {
 	// If you're wondering what the point of this is: It's mostly to have .Clear() be fast.

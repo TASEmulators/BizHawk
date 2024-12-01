@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -9,8 +8,9 @@ namespace BizHawk.Client.EmuHawk
 		private const int ScaleFactor = 4;
 		private const int _3DPadding = 5;
 
-		private readonly Pen _blackPen;
-		private readonly Pen _bluePen;
+		private readonly Pen _blackPen = Pens.Black;
+
+		private readonly Pen _bluePen = Pens.Cyan;
 
 		private int _maxX = 127;
 		private int _maxY = 127;
@@ -77,9 +77,6 @@ namespace BizHawk.Client.EmuHawk
 			BackColor = Color.Gray;
 			BorderStyle = BorderStyle.Fixed3D;
 
-			_blackPen = new Pen(Brushes.Black);
-			_bluePen = new Pen(Brushes.Cyan);
-
 			InitializeComponent();
 		}
 
@@ -122,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.Button == MouseButtons.Right)
 			{
-				Radial ^= true;
+				Radial = !Radial;
 			}
 
 			base.OnMouseDown(e);

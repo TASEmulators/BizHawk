@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using BizHawk.Common;
-using System;
+
 using System.Collections.Generic;
 using BizHawk.Common.StringExtensions;
 
@@ -52,17 +52,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				sbm.AppendLine("The detected disk image contains multiple sides.");
 				sbm.AppendLine("This is NOT currently supported in ZXHawk.");
 				sbm.AppendLine("Please find an alternate image/dump where each side has been saved as a separate *.dsk image (and use the multi-disk bundler tool to load into Bizhawk).");
-				throw new NotImplementedException(sbm.ToString());
-			}
-
-			if (DiskHeader.NumberOfTracks > 42)
-			{
-				StringBuilder sbm = new StringBuilder();
-				sbm.AppendLine();
-				sbm.AppendLine();
-				sbm.AppendLine("The detected disk is an " + DiskHeader.NumberOfTracks + " track disk image.");
-				sbm.AppendLine("This is currently incompatible with the emulated +3 disk drive (42 tracks).");
-				sbm.AppendLine("Likely the disk image is an 80 track betadisk or opus image, the drives and controllers for which are not currently emulated in ZXHawk");
 				throw new NotImplementedException(sbm.ToString());
 			}
 

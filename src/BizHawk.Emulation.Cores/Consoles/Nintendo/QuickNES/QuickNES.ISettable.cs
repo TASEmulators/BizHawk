@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
@@ -157,6 +156,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			Gamepad = 0x1,
 			FourScore = 0x2,
 			//FourScore2 = 0x3, // not available for port 1
+			ArkanoidNES = 0x4,
+			ArkanoidFamicom = 0x5,
 		}
 
 		public enum Port2PeripheralOption : byte

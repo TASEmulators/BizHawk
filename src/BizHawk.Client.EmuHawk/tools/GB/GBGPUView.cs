@@ -1,4 +1,3 @@
-﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text;
@@ -44,6 +43,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Whether the tiles are being drawn with the sprite or bg palettes
 		/// </summary>
 		private bool _tilesPalIsSprite;
+
 		/// <summary>
 		/// How far (in bytes, I guess?) we should offset into the tiles palette
 		/// </summary>

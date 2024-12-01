@@ -1,4 +1,3 @@
-using System;
 using System.Buffers;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -11,6 +10,8 @@ using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.DiscSystem;
+
+#pragma warning disable BHI1007 // target-typed Exception TODO don't
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -102,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			private readonly Disc _disc;
 			private readonly DiscSectorReader _dsr;
 			private readonly DiscTrack _track;
-			private readonly byte[] _buf2448;
+			private readonly byte[] _buf2352;
 
 			public bool IsAvailable => _disc != null;
 			public int LBA => _track.LBA;
@@ -193,8 +194,16 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				_dsr = new(_disc);
-				_buf2448 = new byte[2448];
+				_dsr = new(_disc)
+				{
+					Policy =
+					{
+						UserData2048Mode = DiscSectorReaderPolicy.EUserData2048Mode.InspectSector_AssumeForm1,
+						ThrowExceptions2048 = false
+					}
+				};
+
+				_buf2352 = new byte[2352];
 			}
 
 			public int ReadSector(int lba, IntPtr buffer, nuint requestedBytes)
@@ -204,9 +213,11 @@ namespace BizHawk.Client.EmuHawk
 					return 0;
 				}
 
-				var numRead = _dsr.ReadLBA_2448(lba, _buf2448, 0);
+				var numRead = _track.IsAudio
+					? _dsr.ReadLBA_2352(lba, _buf2352, 0)
+					: _dsr.ReadLBA_2048(lba, _buf2352, 0);
 				var numCopied = (int)Math.Min((ulong)numRead, requestedBytes);
-				Marshal.Copy(_buf2448, 0, buffer, numCopied);
+				Marshal.Copy(_buf2352, 0, buffer, numCopied);
 				return numCopied;
 			}
 
@@ -310,7 +321,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			static string ResolvePath(string path)
 			{
-				if (path.IndexOf('|') == -1 && Disc.IsValidExtension(Path.GetExtension(path)))
+				if (!HawkFile.PathContainsPipe(path) && Disc.IsValidExtension(Path.GetExtension(path)))
 				{
 					return path; // nothing to do in this case
 				}
@@ -342,7 +353,7 @@ namespace BizHawk.Client.EmuHawk
 
 			static ConsoleID IdentifyConsole(string path)
 			{
-				if (path.IndexOf('|') == -1 && Disc.IsValidExtension(Path.GetExtension(path)))
+				if (!HawkFile.PathContainsPipe(path) && Disc.IsValidExtension(Path.GetExtension(path)))
 				{
 					using var disc = DiscExtensions.CreateAnyType(path, Console.WriteLine);
 					if (disc is null)

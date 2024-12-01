@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public static class GBColors

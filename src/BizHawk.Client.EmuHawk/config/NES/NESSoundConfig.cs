@@ -1,4 +1,3 @@
-﻿using System;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Common;
 

@@ -25,7 +25,7 @@ namespace NLua
 				var main = luaState.MainThread;
 				if (!translators.TryGetValue(main, out translator))
 				{
-					throw new("Invalid luaState, couldn't find ObjectTranslator");
+					throw new Exception("Invalid luaState, couldn't find ObjectTranslator");
 				}
 			}
 

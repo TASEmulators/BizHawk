@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -44,7 +43,7 @@ namespace BizHawk.Client.Common
 			var result = Importers.FirstOrNull(kvp => string.Equals(kvp.Value.Extension, ext, StringComparison.OrdinalIgnoreCase));
 			// Create a new instance of the importer class using the no-argument constructor
 			return result is { Key: var importerType }
-				&& importerType.GetConstructor(Array.Empty<Type>())?.Invoke(Array.Empty<object>()) is IMovieImport importer
+				&& importerType.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>()) is IMovieImport importer
 					? importer.Import(dialogParent, session, path, config)
 					: ImportResult.Error($"No importer found for file type {ext}");
 		}

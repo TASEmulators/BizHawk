@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -12,7 +11,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 	// nb: multiple libretro cores could theoretically be ran at once
 	// but all of them would need to be different cores, a core itself is single instance
 	[PortedCore(CoreNames.Libretro, "CasualPokePlayer", singleInstance: true, isReleased: false)]
-	[ServiceNotApplicable([ typeof(IDriveLight) ])]
 	public partial class LibretroHost
 	{
 		private static readonly LibretroBridge bridge;

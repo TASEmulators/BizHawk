@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -125,7 +124,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("memory.writefloat( 0x100, 10.0, false, mainmemory.getname( ) );")]
 		[LuaMethod("writefloat", "Writes the given 32-bit float value to the given address and endian")]
-		public void WriteFloat(long addr, double value, bool bigendian, string domain = null)
+		public void WriteFloat(long addr, float value, bool bigendian, string domain = null)
 		{
 			APIs.Memory.SetBigEndian(bigendian);
 			APIs.Memory.WriteFloat(addr, value, domain);

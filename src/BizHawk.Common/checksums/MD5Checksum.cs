@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using System.Security.Cryptography;
 
@@ -32,7 +31,7 @@ namespace BizHawk.Common
 				if (_md5Impl == null)
 				{
 					_md5Impl = MD5.Create();
-					Debug.Assert(_md5Impl.CanReuseTransform && _md5Impl.HashSize is EXPECTED_LENGTH);
+					Debug.Assert(_md5Impl.CanReuseTransform && _md5Impl.HashSize is EXPECTED_LENGTH, "nonstandard implementation?");
 				}
 				return _md5Impl;
 			}

@@ -1,8 +1,8 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -203,11 +203,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public enum StartCode : ulong
 			{
-				Main = 0x4e4d7a561f5f04ad,
-				Stream = 0x4e5311405bf2f9db,
-				Syncpoint = 0x4e4be4adeeca4569,
-				Index = 0x4e58dd672f23e64e,
-				Info = 0x4e49ab68b596ba78
+				// where tf does this incantation come from --yoshi
+				Main = 0x4E4D_7A56_1F5F_04AD,
+				Stream = 0x4E53_1140_5BF2_F9DB,
+				Syncpoint = 0x4E4B_E4AD_EECA_4569,
+				Index = 0x4E58_DD67_2F23_E64E,
+				Info = 0x4E49_AB68_B596_BA78,
 			}
 
 			private MemoryStream _data;
@@ -539,15 +540,15 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="video">raw video data; if length 0, write EOR</param>
 		/// <exception cref="Exception">internal error, possible A/V desync</exception>
 		/// <exception cref="InvalidOperationException">already written EOR</exception>
-		public void WriteVideoFrame(int[] video)
+		public void WriteVideoFrame(ReadOnlySpan<int> video)
 		{
 			if (_videoDone)
 				throw new InvalidOperationException("Can't write data after end of relevance!");
 			if (_audioQueue.Count > 5)
 				throw new Exception("A/V Desync?");
-			int dataLen = video.Length * sizeof(int);
-			byte[] data = _bufferPool.GetBufferAtLeast(dataLen);
-			Buffer.BlockCopy(video, 0, data, 0, dataLen);
+			var dataLen = video.Length * sizeof(int);
+			var data = _bufferPool.GetBufferAtLeast(dataLen);
+			MemoryMarshal.AsBytes(video).CopyTo(data.AsSpan(0, dataLen));
 			if (dataLen == 0)
 			{
 				_videoDone = true;
@@ -644,12 +645,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_videoDone)
 			{
-				WriteVideoFrame(Array.Empty<int>());
+				WriteVideoFrame([ ]);
 			}
 
 			if (!_audioDone)
 			{
-				WriteAudioFrame(Array.Empty<short>());
+				WriteAudioFrame([ ]);
 			}
 
 			// flush any remaining queued packets

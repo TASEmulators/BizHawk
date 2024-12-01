@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -32,7 +31,10 @@ namespace BizHawk.Bizware.Input
 
 			if (Display == IntPtr.Zero)
 			{
-				throw new("Could not open XDisplay");
+				// There doesn't seem to be a convention for what exception type to throw in these situations. Can't use NRE. Well...
+//				_ = Unsafe.AsRef<X11.Display>()!; // hmm
+				// InvalidOperationException doesn't match. Exception it is. --yoshi
+				throw new Exception("Could not open XDisplay");
 			}
 
 			using (new XLock(Display))

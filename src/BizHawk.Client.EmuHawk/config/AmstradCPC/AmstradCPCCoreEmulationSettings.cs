@@ -1,4 +1,3 @@
-﻿using System;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
@@ -100,9 +99,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			lblBorderInfo.Text = type switch
 			{
-				AmstradCPC.BorderType.Uniform => "Attempts to equalize the border areas",
-				AmstradCPC.BorderType.Uncropped => "Pretty much the signal the gate array is generating (looks pants)",
-				AmstradCPC.BorderType.Widescreen => "Top and bottom border removed so that the result is *almost* 16:9",
+				AmstradCPC.BorderType.Visible => "Approximates what you see on a CPC monitor",
+				AmstradCPC.BorderType.Uncropped => "The full display area",
 				_ => lblBorderInfo.Text
 			};
 		}

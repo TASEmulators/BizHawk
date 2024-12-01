@@ -203,6 +203,7 @@ namespace BizHawk.Client.Common.movie.import
 			SimpleController controllers = isGBA
 				? GbaController()
 				: GbController();
+			controllers.Definition.BuildMnemonicsCache(isGBA ? VSystemID.Raw.GBA : VSystemID.Raw.GB);
 
 			/*
 			 * 01 00 A

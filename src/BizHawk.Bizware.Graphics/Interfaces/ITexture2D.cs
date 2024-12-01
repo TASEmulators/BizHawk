@@ -1,5 +1,3 @@
-using System;
-
 namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>

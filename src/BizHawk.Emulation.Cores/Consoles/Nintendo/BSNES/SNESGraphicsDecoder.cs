@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using static BizHawk.Emulation.Cores.Nintendo.BSNES.BsnesApi.SNES_REGISTER;

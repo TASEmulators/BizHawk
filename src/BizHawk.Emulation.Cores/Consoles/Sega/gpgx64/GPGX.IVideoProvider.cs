@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
 
@@ -32,6 +30,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			var widthHasOverscan = (_syncSettings.Overscan & LibGPGX.InitSettings.OverscanType.Horizontal) != 0;
 			var heightHasOverscan = (_syncSettings.Overscan & LibGPGX.InitSettings.OverscanType.Vertical) != 0;
 			var isPal = Region == DisplayType.PAL;
+			bool isVdpPal = _syncSettings.ForceVDP switch
+			{
+				LibGPGX.ForceVDP.NTSC => false,
+				LibGPGX.ForceVDP.PAL => true,
+				_ => isPal
+			};
+			double videoSampleRate = isVdpPal ? 14750000.0 : 135000000.0 / 11.0;
+			int clockRate = isPal ? 53203424 : 53693175;
 
 			if (SystemId == VSystemID.Raw.GEN)
 			{
@@ -39,6 +45,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				VirtualHeight = 224;
 				VirtualWidth += widthHasOverscan ? 28 : 0;
 				VirtualHeight += heightHasOverscan ? (isPal ? 48 : 0) + 16 : 0;
+
+				VirtualWidth = (int)(VirtualWidth * 4.0 * videoSampleRate / clockRate);
 			}
 			else
 			{
@@ -55,6 +63,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					VirtualWidth += widthHasOverscan ? 28 : 0;
 					VirtualHeight += heightHasOverscan ? (isPal ? 96 : 48) : 0;
 				}
+
+				VirtualWidth = (int)(VirtualWidth * 5.0 * videoSampleRate / clockRate);
 			}
 		}
 
@@ -86,8 +96,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			using (_elf.EnterExit())
 			{
-				var src = IntPtr.Zero;
-				Core.gpgx_get_video(out var gpwidth, out var gpheight, out var gppitch, ref src);
+				Core.gpgx_get_video(out var gpwidth, out var gpheight, out var gppitch, out var src);
 
 				_vwidth = gpwidth;
 				_vheight = gpheight;

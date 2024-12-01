@@ -1,5 +1,3 @@
-using System;
-
 using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -19,6 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		bool EmulatorPaused { get; }
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
+		// TODO: remove? or does anything ever need access to the FirmwareManager
 		FirmwareManager FirmwareManager { get; }
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
@@ -59,7 +58,8 @@ namespace BizHawk.Client.EmuHawk
 		void FrameAdvance(bool discardApiHawkSurfaces = true);
 
 		/// <remarks>only referenced from <see cref="LuaConsole"/></remarks>
-		void FrameBufferResized();
+		/// <param name="forceWindowResize">Override <see cref="Common.Config.ResizeWithFramebuffer"/></param>
+		void FrameBufferResized(bool forceWindowResize = false);
 
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
 		bool LoadQuickSave(int slot, bool suppressOSD = false);
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 
 		void SetMainformMovieInfo();
 
-		bool StartNewMovie(IMovie movie, bool record);
+		bool StartNewMovie(IMovie movie, bool newMovie);
 
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
 		void Throttle();

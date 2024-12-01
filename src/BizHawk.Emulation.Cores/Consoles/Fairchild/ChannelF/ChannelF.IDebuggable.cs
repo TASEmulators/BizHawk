@@ -1,5 +1,5 @@
-﻿using System;
 using System.Collections.Generic;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
@@ -7,10 +7,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	public partial class ChannelF : IDebuggable
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
-			=> CPU.GetCpuFlagsAndRegisters();
+			=> _cpu.GetCpuFlagsAndRegisters();
 
 		public void SetCpuRegister(string register, int value)
-			=> CPU.SetCpuRegister(register, value);
+			=> _cpu.SetCpuRegister(register, value);
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; }
 
@@ -19,6 +19,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 
-		public long TotalExecutedCycles => CPU.TotalExecutedCycles;
+		public long TotalExecutedCycles => _cpu.TotalExecutedCycles;
 	}
 }

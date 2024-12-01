@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
@@ -12,7 +11,6 @@ using BizHawk.Emulation.Cores.Nintendo.BSNES;
 
 namespace BizHawk.Client.Common.movie.import
 {
-	// ReSharper disable once UnusedMember.Global
 	/// <summary>For lsnes' <see href="https://tasvideos.org/Lsnes/Movieformat"><c>.lsmv</c> format</see></summary>
 	[ImporterFor("LSNES", ".lsmv")]
 	internal class LsmvImport : MovieImporter
@@ -22,9 +20,9 @@ namespace BizHawk.Client.Common.movie.import
 		private SimpleController _controller;
 		private SimpleController _emptyController;
 
-		private readonly string[][] _lsnesGamepadButtons = Enumerable.Range(1, 8)
+		private readonly (string, AxisSpec?)[][] _lsnesGamepadButtons = Enumerable.Range(1, 8)
 		.Select(player => new[] { "B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R" }
-			.Select(button => $"P{player} {button}").ToArray())
+			.Select(button => ($"P{player} {button}", (AxisSpec?)null)).ToArray())
 		.ToArray();
 
 		protected override void RunImport()
@@ -35,7 +33,7 @@ namespace BizHawk.Client.Common.movie.import
 			using var fs = new FileStream(SourceFile.FullName, FileMode.Open, FileAccess.Read);
 			{
 				byte[] data = new byte[4];
-				fs.Read(data, 0, 4);
+				_ = fs.Read(data, offset: 0, count: data.Length); // if stream is too short, the next check will catch it
 				if (!data.SequenceEqual(Zipheader))
 				{
 					Result.Errors.Add("This is not a zip file.");
@@ -86,6 +84,7 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			ControllerDefinition controllerDefinition = new BsnesControllers(ss, true).Definition;
+			controllerDefinition.BuildMnemonicsCache(VSystemID.Raw.SNES);
 			_emptyController = new SimpleController(controllerDefinition);
 			_controller = new SimpleController(controllerDefinition);
 			_playerCount = controllerDefinition.PlayerCount;
@@ -313,8 +312,8 @@ namespace BizHawk.Client.Common.movie.import
 			{
 				if (player > _playerCount) break;
 
-				IReadOnlyList<string> buttons = _controller.Definition.ControlsOrdered[player];
-				if (buttons[0].EndsWithOrdinal("Up")) // hack to identify gamepad / multitap which have a different button order in bizhawk compared to lsnes
+				var buttons = _controller.Definition.ControlsOrdered[player];
+				if (buttons[0].Name.EndsWithOrdinal("Up")) // hack to identify gamepad / multitap which have a different button order in bizhawk compared to lsnes
 				{
 					buttons = _lsnesGamepadButtons[player - 1];
 				}
@@ -324,7 +323,7 @@ namespace BizHawk.Client.Common.movie.import
 					for (int button = 0; button < buttons.Count; button++)
 					{
 						// Consider the button pressed so long as its spot is not occupied by a ".".
-						_controller[buttons[button]] = sections[player][button] != '.';
+						_controller[buttons[button].Name] = sections[player][button] != '.';
 					}
 				}
 			}

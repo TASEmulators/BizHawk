@@ -1,5 +1,3 @@
-﻿using System;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -13,6 +11,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
+			_controller = controller;
+
 			if (controller.IsPressed("Power"))
 			{
 				LibmGBA.BizReset(Core);
@@ -73,7 +73,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public static readonly ControllerDefinition GBAController = new ControllerDefinition("GBA Controller")
 		{
-			BoolButtons = { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "L", "R", "Power" }
+			BoolButtons = { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "L", "R", "Power" },
+			HapticsChannels = { "Rumble" }
 		}.AddXYZTriple("Tilt {0}", (-32767).RangeTo(32767), 0)
 			.AddAxis("Light Sensor", 0.RangeTo(255), 0)
 			.MakeImmutable();
