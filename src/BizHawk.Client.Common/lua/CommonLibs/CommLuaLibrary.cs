@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
-using System.Threading.Tasks;
 using NLua;
 
 namespace BizHawk.Client.Common
@@ -254,9 +253,13 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethod("ws_open", "Opens a websocket and returns the id so that it can be retrieved later. If an id is provided, reconnects to the ")]
+		[LuaMethod("ws_open", "Opens a websocket and returns the id so that it can be retrieved later. If an id is provided, reconnects to the server")]
 		[LuaMethodExample("local ws_id = comm.ws_open(\"wss://echo.websocket.org\");")]
-		public async Task<string> WebSocketOpen(string uri, string guid = null, int bufferSize = 1024, int maxMessages = 20)
+		public string WebSocketOpen(
+			string uri,
+			string guid = null,
+			int bufferSize = 1024,
+			int maxMessages = 20)
 		{
 			var wsServer = APIs.Comm.WebSockets;
 			if (wsServer == null)
@@ -264,15 +267,9 @@ namespace BizHawk.Client.Common
 				return null;
 			}
 			var localGuid = guid == null ? Guid.NewGuid() : Guid.Parse(guid);
-			if (guid == null)
-			{
-				_websockets[localGuid] = wsServer.Open(new Uri(uri));
-				await _websockets[localGuid].Connect(bufferSize, maxMessages);
-			}
-			else
-			{
-				await _websockets[localGuid].Connect(bufferSize, maxMessages);
-			}
+
+			_websockets[localGuid] ??= wsServer.Open(new Uri(uri));
+			_websockets[localGuid].Connect(bufferSize, maxMessages).Wait(500);
 			return localGuid.ToString();
 		}
 

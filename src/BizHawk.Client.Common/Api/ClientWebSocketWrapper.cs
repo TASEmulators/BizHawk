@@ -33,21 +33,6 @@ namespace BizHawk.Client.Common
 			return task;
 		}
 
-		/// <summary>calls <see cref="ClientWebSocket.ReceiveAsync"/></summary>
-		public async Task Receive(int bufferSize, int maxMessages)
-		{
-			var buffer = new ArraySegment<byte>(new byte[bufferSize]);
-			while ((_w != null) && (_w.State == WebSocketState.Open))
-			{
-				WebSocketReceiveResult result;
-				result = await _w.ReceiveAsync(buffer, CancellationToken.None);
-				if (maxMessages == 0 || _receivedMessages.Count < maxMessages)
-				{
-					_receivedMessages.Enqueue(Encoding.UTF8.GetString(buffer.Array, 0, result.Count));
-				}
-			}
-		}
-
 		public async Task Connect(int bufferSize, int maxMessages)
 		{
 			_w ??= new();
@@ -55,6 +40,55 @@ namespace BizHawk.Client.Common
 			{
 				await _w.ConnectAsync(_uri, CancellationToken.None);
 				await Receive(bufferSize, maxMessages);
+			}
+		}
+
+		/// <summary>opens a connection to the configured server and passes messages to [consumer]</summary>
+		public async Task Connect(Action<string> consumer, int bufferSize = 1024)
+		{
+			_w ??= new();
+			if ((_w != null) && (_w.State != WebSocketState.Open))
+			{
+				await _w.ConnectAsync(_uri, CancellationToken.None);
+			}
+
+			var buffer = new ArraySegment<byte>(new byte[bufferSize]);
+			while ((_w != null) && (_w.State == WebSocketState.Open))
+			{
+				var result = await _w.ReceiveAsync(buffer, CancellationToken.None);
+				string message = Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
+				consumer(message);
+			}
+		}
+
+		/// <summary>opens a connection to the configured server and passes messages to [consumer]</summary>
+		public async Task Connect(Action<byte[]> consumer, int bufferSize = 2048)
+		{
+			_w ??= new();
+			if ((_w != null) && (_w.State != WebSocketState.Open))
+			{
+				await _w.ConnectAsync(_uri, CancellationToken.None);
+			}
+
+			var buffer = new ArraySegment<byte>(new byte[bufferSize]);
+			while ((_w != null) && (_w.State == WebSocketState.Open))
+			{
+				_ = await _w.ReceiveAsync(buffer, CancellationToken.None);
+				consumer(buffer.Array);
+			}
+		}
+
+		/// <summary>calls <see cref="ClientWebSocket.ReceiveAsync"/></summary>
+		public async Task Receive(int bufferSize, int maxMessages)
+		{
+			var buffer = new ArraySegment<byte>(new byte[bufferSize]);
+			while ((_w != null) && (_w.State == WebSocketState.Open))
+			{
+				var result = await _w.ReceiveAsync(buffer, CancellationToken.None);
+				if (maxMessages == 0 || _receivedMessages.Count < maxMessages)
+				{
+					_receivedMessages.Enqueue(Encoding.UTF8.GetString(buffer.Array, 0, result.Count));
+				}
 			}
 		}
 
