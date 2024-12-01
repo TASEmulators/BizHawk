@@ -903,20 +903,12 @@ namespace BizHawk.Client.EmuHawk
 
 					if (existingMarker != null)
 					{
-						MarkerControl.EditMarkerPopUp(existingMarker, openAtMouseCursor: true);
+						MarkerControl.EditMarkerPopUp(existingMarker, true);
 					}
 					else
 					{
-						if (Settings.EmptyMarkers)
-						{
-							CurrentTasMovie.Markers.Add(TasView.CurrentCell.RowIndex.Value, "");
-							RefreshDialog();
-						}
-						else
-						{
-							ClearLeftMouseStates();
-							MarkerControl.AddMarker(TasView.CurrentCell.RowIndex.Value, false);
-						}
+						ClearLeftMouseStates();
+						MarkerControl.AddMarker(TasView.CurrentCell.RowIndex.Value);
 					}
 				}
 			}

@@ -216,7 +216,6 @@ namespace BizHawk.Client.EmuHawk
 			this.lvCDL.Name = "lvCDL";
 			this.lvCDL.RowCount = 0;
 			this.lvCDL.ScrollSpeed = 0;
-			this.lvCDL.SeekingCutoffInterval = 0;
 			this.lvCDL.Size = new System.Drawing.Size(992, 323);
 			this.lvCDL.TabIndex = 9;
 			this.lvCDL.QueryItemText += new BizHawk.Client.EmuHawk.InputRoll.QueryItemTextHandler(this.LvCDL_QueryItemText);

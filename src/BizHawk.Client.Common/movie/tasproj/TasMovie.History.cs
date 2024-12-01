@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 		private readonly List<List<IMovieAction>> _history = new List<List<IMovieAction>>();
 		private readonly ITasMovie _movie;
 
-		private int _maxSteps = 100;
+		private int _maxSteps = 1000;
 		private int _totalSteps;
 		private bool _recordingBatch;
 

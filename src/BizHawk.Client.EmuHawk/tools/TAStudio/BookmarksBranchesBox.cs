@@ -38,12 +38,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public TAStudio Tastudio { get; set; }
 
-		public int HoverInterval
-		{
-			get => BranchView.HoverInterval;
-			set => BranchView.HoverInterval = value;
-		}
-
 		public IDialogController DialogController => Tastudio.MainForm;
 
 		public BookmarksBranchesBox()
@@ -574,6 +568,11 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a message",
 				InitialValue = branch.UserText
 			};
+
+			var point = Cursor.Position;
+			point.Offset(i.Width / -2, i.Height / -2);
+			i.StartPosition = FormStartPosition.Manual;
+			i.Location = point;
 
 			if (this.ShowDialogWithTempMute(i).IsOk())
 			{

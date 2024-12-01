@@ -689,7 +689,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var index in selectedRows)
 			{
-				MarkerControl.AddMarker(index, false);
+				MarkerControl.AddMarker(index);
 			}
 		}
 
@@ -760,7 +760,6 @@ namespace BizHawk.Client.EmuHawk
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AutopauseAtEndOfMovieMenuItem.Checked = Settings.AutoPause;
-			EmptyNewMarkerNotesMenuItem.Checked = Settings.EmptyMarkers;
 			AutosaveAsBk2MenuItem.Checked = Settings.AutosaveAsBk2;
 			AutosaveAsBackupFileMenuItem.Checked = Settings.AutosaveAsBackupFile;
 			BackupPerFileSaveMenuItem.Checked = Settings.BackupPerFileSave;
@@ -796,48 +795,6 @@ namespace BizHawk.Client.EmuHawk
 				if (val > 0)
 				{
 					Settings.MaxUndoSteps = CurrentTasMovie.ChangeLog.MaxSteps = val;
-				}
-			}
-		}
-
-		private void SetBranchCellHoverIntervalMenuItem_Click(object sender, EventArgs e)
-		{
-			using var prompt = new InputPrompt
-			{
-				TextInputType = InputPrompt.InputType.Unsigned,
-				Message = "ScreenshotPopUp Delay",
-				InitialValue = Settings.BranchCellHoverInterval.ToString()
-			};
-
-			var result = MainForm.DoWithTempMute(() => prompt.ShowDialog());
-			if (result.IsOk())
-			{
-				int val = int.Parse(prompt.PromptText);
-				if (val > 0)
-				{
-					Settings.BranchCellHoverInterval = val;
-					BookMarkControl.HoverInterval = val;
-				}
-			}
-		}
-
-		private void SetSeekingCutoffIntervalMenuItem_Click(object sender, EventArgs e)
-		{
-			using var prompt = new InputPrompt
-			{
-				TextInputType = InputPrompt.InputType.Unsigned,
-				Message = "Seeking Cutoff Interval",
-				InitialValue = Settings.SeekingCutoffInterval.ToString()
-			};
-
-			var result = MainForm.DoWithTempMute(() => prompt.ShowDialog());
-			if (result.IsOk())
-			{
-				int val = int.Parse(prompt.PromptText);
-				if (val > 0)
-				{
-					Settings.SeekingCutoffInterval = val;
-					TasView.SeekingCutoffInterval = val;
 				}
 			}
 		}
@@ -888,9 +845,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Settings.BindMarkersToInput = CurrentTasMovie.BindMarkersToInput = BindMarkersToInputMenuItem.Checked;
 		}
-
-		private void EmptyNewMarkerNotesMenuItem_Click(object sender, EventArgs e)
-			=> Settings.EmptyMarkers = !Settings.EmptyMarkers;
 
 		private void AutoPauseAtEndMenuItem_Click(object sender, EventArgs e)
 			=> Settings.AutoPause = !Settings.AutoPause;
@@ -953,48 +907,65 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HeaderMenuItem_Click(object sender, EventArgs e)
 		{
-			MovieHeaderEditor form = new(CurrentTasMovie, Config) { Owner = this.Owner/*uhh*/ };
-			form.CenterOn(TasView);
-			form.Show();
+			using MovieHeaderEditor form = new(CurrentTasMovie, Config)
+			{
+				Owner = Owner,
+				Location = this.ChildPointToScreen(TasView)
+			};
+			form.ShowDialog();
 		}
 
 		private void StateHistorySettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GreenzoneSettings form = new(
+			using GreenzoneSettings form = new(
 				DialogController,
 				new ZwinderStateManagerSettings(CurrentTasMovie.TasStateManager.Settings),
 				(s, k) => { CurrentTasMovie.TasStateManager.UpdateSettings(s, k); },
 				false)
 			{
-				Owner = this.Owner, // uhh
+				Owner = Owner,
+				Location = this.ChildPointToScreen(TasView)
 			};
-			form.CenterOn(TasView);
 			form.ShowDialog();
 		}
 
 		private void CommentsMenuItem_Click(object sender, EventArgs e)
 		{
-			var form = new EditCommentsForm(CurrentTasMovie, false);
-			form.Show();
+			using EditCommentsForm form = new(CurrentTasMovie, false)
+			{
+				Owner = Owner,
+				StartPosition = FormStartPosition.Manual,
+				Location = this.ChildPointToScreen(TasView)
+			};
+			form.ShowDialog();
 		}
 
 		private void SubtitlesMenuItem_Click(object sender, EventArgs e)
 		{
-			using EditSubtitlesForm form = new(DialogController, CurrentTasMovie, Config!.PathEntries, readOnly: false);
+			using EditSubtitlesForm form = new(
+				DialogController,
+				CurrentTasMovie,
+				Config!.PathEntries,
+				readOnly: false)
+			{
+				Owner = Owner,
+				StartPosition = FormStartPosition.Manual,
+				Location = this.ChildPointToScreen(TasView)
+			};
 			form.ShowDialog();
 		}
 
 		private void DefaultStateSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GreenzoneSettings form = new(
+			using GreenzoneSettings form = new(
 				DialogController,
 				new ZwinderStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
 				(s, k) => { Config.Movies.DefaultTasStateManagerSettings = s; },
 				true)
 			{
-				Owner = this.Owner, // uhh
+				Owner = Owner,
+				Location = this.ChildPointToScreen(TasView)
 			};
-			form.CenterOn(TasView);
 			form.ShowDialog();
 		}
 
@@ -1112,8 +1083,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColorSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var colorSettings = new TAStudioColorSettingsForm(Palette, p => Settings.Palette = p);
-			this.ShowDialogAsChild(colorSettings);
+			using TAStudioColorSettingsForm form = new(Palette, p => Settings.Palette = p)
+			{
+				Owner = Owner,
+				StartPosition = FormStartPosition.Manual,
+				Location = this.ChildPointToScreen(TasView)
+			};
+			form.ShowDialog();
 		}
 
 		private void WheelScrollSpeedMenuItem_Click(object sender, EventArgs e)

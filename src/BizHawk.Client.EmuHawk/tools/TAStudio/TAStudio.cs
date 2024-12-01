@@ -70,8 +70,6 @@ namespace BizHawk.Client.EmuHawk
 				ScrollSpeed = 6;
 				FollowCursorAlwaysScroll = false;
 				FollowCursorScrollMethod = "near";
-				BranchCellHoverInterval = 1;
-				SeekingCutoffInterval = 2;
 				AutosaveInterval = 120000;
 				AutosaveAsBk2 = false;
 				AutosaveAsBackupFile = false;
@@ -94,12 +92,9 @@ namespace BizHawk.Client.EmuHawk
 			public bool AutoPause { get; set; }
 			public bool AutoRestoreLastPosition { get; set; }
 			public bool FollowCursor { get; set; }
-			public bool EmptyMarkers { get; set; }
 			public int ScrollSpeed { get; set; }
 			public bool FollowCursorAlwaysScroll { get; set; }
 			public string FollowCursorScrollMethod { get; set; }
-			public int BranchCellHoverInterval { get; set; }
-			public int SeekingCutoffInterval { get; set; } // unused, relying on VisibleRows is smarter
 			public uint AutosaveInterval { get; set; }
 			public bool AutosaveAsBk2 { get; set; }
 			public bool AutosaveAsBackupFile { get; set; }
@@ -183,8 +178,6 @@ namespace BizHawk.Client.EmuHawk
 			TasView.ScrollSpeed = Settings.ScrollSpeed;
 			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
-			TasView.SeekingCutoffInterval = Settings.SeekingCutoffInterval;
-			BookMarkControl.HoverInterval = Settings.BranchCellHoverInterval;
 
 			_autosaveTimer = new Timer(components);
 			_autosaveTimer.Tick += AutosaveTimerEventProcessor;

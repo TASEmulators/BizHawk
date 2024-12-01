@@ -175,6 +175,11 @@ namespace BizHawk.Client.EmuHawk
 						""
 				};
 
+				var point = Cursor.Position;
+				point.Offset(i.Width / -2, i.Height / -2);
+				i.StartPosition = FormStartPosition.Manual;
+				i.Location = point;
+
 				if (!this.ShowDialogWithTempMute(i).IsOk()) return;
 
 				UpdateTextColumnWidth();
@@ -205,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void EditMarkerPopUp(TasMovieMarker marker, bool openAtMouseCursor = false)
+		public void EditMarkerPopUp(TasMovieMarker marker, bool followCursor = false)
 		{
 			var markerFrame = marker.Frame;
 			var i = new InputPrompt
@@ -218,11 +223,15 @@ namespace BizHawk.Client.EmuHawk
 					? Markers.PreviousOrCurrent(markerFrame).Message
 					: ""
 			};
-			if (openAtMouseCursor)
+
+			if (followCursor)
 			{
+				var point = Cursor.Position;
+				point.Offset(i.Width / -2, i.Height / -2);
 				i.StartPosition = FormStartPosition.Manual;
-				i.Location = Cursor.Position - i.HalfSize(); // eww
+				i.Location = point;
 			}
+
 			if (!this.ShowDialogWithTempMute(i).IsOk()) return;
 
 			marker.Message = i.PromptText;

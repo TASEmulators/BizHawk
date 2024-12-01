@@ -182,7 +182,6 @@ namespace BizHawk.Client.EmuHawk
 			this.WatchListView.Name = "WatchListView";
 			this.WatchListView.RowCount = 0;
 			this.WatchListView.ScrollSpeed = 0;
-			this.WatchListView.SeekingCutoffInterval = 0;
 			this.WatchListView.Size = new System.Drawing.Size(230, 366);
 			this.WatchListView.TabIndex = 1;
 			this.WatchListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.WatchListView_ColumnClick);

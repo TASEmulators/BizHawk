@@ -656,7 +656,6 @@ namespace BizHawk.Client.EmuHawk
 			this.LuaListView.Name = "LuaListView";
 			this.LuaListView.RowCount = 0;
 			this.LuaListView.ScrollSpeed = 1;
-			this.LuaListView.SeekingCutoffInterval = 0;
 			this.LuaListView.Size = new System.Drawing.Size(273, 271);
 			this.LuaListView.TabIndex = 0;
 			this.LuaListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.LuaListView_ColumnClick);
