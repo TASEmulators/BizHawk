@@ -590,7 +590,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CloneFramesXTimesMenuItem_Click(object sender, EventArgs e)
 		{
 			using var framesPrompt = new FramesPrompt("Clone # Times", "Insert times to clone:");
-			if (framesPrompt.ShowDialog().IsOk())
+			if (framesPrompt.ShowDialogOnScreen().IsOk())
 			{
 				CloneFramesXTimes(framesPrompt.Frames);
 			}
@@ -649,7 +649,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var insertionFrame = TasView.SelectionStartIndex ?? 0;
 				using var framesPrompt = new FramesPrompt();
-				if (framesPrompt.ShowDialog().IsOk())
+				if (framesPrompt.ShowDialogOnScreen().IsOk())
 				{
 					InsertNumFrames(insertionFrame, framesPrompt.Frames);
 				}
@@ -779,7 +779,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = CurrentTasMovie.ChangeLog.MaxSteps.ToString()
 			};
 
-			var result = MainForm.DoWithTempMute(() => prompt.ShowDialog());
+			var result = MainForm.DoWithTempMute(() => prompt.ShowDialogOnScreen());
 			if (result.IsOk())
 			{
 				int val = 0;
@@ -811,7 +811,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = (Settings.AutosaveInterval / 1000).ToString()
 			};
 
-			var result = MainForm.DoWithTempMute(() => prompt.ShowDialog());
+			var result = MainForm.DoWithTempMute(() => prompt.ShowDialogOnScreen());
 			if (result.IsOk())
 			{
 				uint val = uint.Parse(prompt.PromptText) * 1000;
@@ -912,7 +912,7 @@ namespace BizHawk.Client.EmuHawk
 				Owner = Owner,
 				Location = this.ChildPointToScreen(TasView)
 			};
-			form.ShowDialog();
+			form.ShowDialogOnScreen();
 		}
 
 		private void StateHistorySettingsMenuItem_Click(object sender, EventArgs e)
@@ -926,7 +926,7 @@ namespace BizHawk.Client.EmuHawk
 				Owner = Owner,
 				Location = this.ChildPointToScreen(TasView)
 			};
-			form.ShowDialog();
+			form.ShowDialogOnScreen();
 		}
 
 		private void CommentsMenuItem_Click(object sender, EventArgs e)
@@ -937,7 +937,7 @@ namespace BizHawk.Client.EmuHawk
 				StartPosition = FormStartPosition.Manual,
 				Location = this.ChildPointToScreen(TasView)
 			};
-			form.ShowDialog();
+			form.ShowDialogOnScreen();
 		}
 
 		private void SubtitlesMenuItem_Click(object sender, EventArgs e)
@@ -952,7 +952,7 @@ namespace BizHawk.Client.EmuHawk
 				StartPosition = FormStartPosition.Manual,
 				Location = this.ChildPointToScreen(TasView)
 			};
-			form.ShowDialog();
+			form.ShowDialogOnScreen();
 		}
 
 		private void DefaultStateSettingsMenuItem_Click(object sender, EventArgs e)
@@ -966,7 +966,7 @@ namespace BizHawk.Client.EmuHawk
 				Owner = Owner,
 				Location = this.ChildPointToScreen(TasView)
 			};
-			form.ShowDialog();
+			form.ShowDialogOnScreen();
 		}
 
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1089,7 +1089,7 @@ namespace BizHawk.Client.EmuHawk
 				StartPosition = FormStartPosition.Manual,
 				Location = this.ChildPointToScreen(TasView)
 			};
-			form.ShowDialog();
+			form.ShowDialogOnScreen();
 		}
 
 		private void WheelScrollSpeedMenuItem_Click(object sender, EventArgs e)

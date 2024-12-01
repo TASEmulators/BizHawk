@@ -79,6 +79,22 @@ namespace BizHawk.Client.EmuHawk
 			return control.PointToScreen(new Point(child.Location.X, child.Location.Y));
 		}
 
+		public static DialogResult ShowDialogOnScreen(this Form form)
+		{
+			var topLeft = new Point(
+				Math.Max(0, form.Location.X),
+				Math.Max(0, form.Location.Y));
+			var screen = Screen.AllScreens
+				.Where(s => s.WorkingArea.Contains(topLeft))
+				.FirstOrDefault();
+			var w = screen.WorkingArea.Right - form.Bounds.Right;
+			var h = screen.WorkingArea.Bottom - form.Bounds.Bottom;
+			if (h < 0) topLeft.Y += h;
+			if (w < 0) topLeft.X += w;
+			form.SetDesktopLocation(topLeft.X, topLeft.Y);
+			return form.ShowDialog();
+		}
+
 		public static Color Add(this Color color, int val)
 		{
 			var col = color.ToArgb();
