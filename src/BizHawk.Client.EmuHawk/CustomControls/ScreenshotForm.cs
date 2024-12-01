@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			bb.DiscardAlpha();
 			_bitmap = bb.ToSysdrawingBitmap();
 			Width = width;
-			Padding = (int) measureString(captionText, Font, width).Height;
+			Padding = (int)measureString(captionText, Font, width).Height;
 			_drawingHeight = height;
 			Text = captionText;
 			Location = location;

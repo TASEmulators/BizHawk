@@ -3,10 +3,11 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -651,12 +652,25 @@ namespace BizHawk.Client.EmuHawk
 					var bb = branch.OSDFrameBuffer;
 					var width = bb.Width;
 					Point location = PointToScreen(Location);
+					var bottom = location.Y + bb.Height;
 					location.Offset(-width, 0);
 
 					if (location.X < 0)
 					{
+						// show on the right of branch control
 						location.Offset(width + Width, 0);
 					}
+
+					Math.Max(0, location.Y);
+					var screen = Screen.AllScreens.Where(s => s.WorkingArea.Contains(location)).FirstOrDefault();
+					var h = screen.WorkingArea.Bottom - bottom;
+
+					if (h < 0)
+					{
+						// move up to become fully visible
+						location.Y += h;
+					}
+
 					_screenshot.UpdateValues(
 						bb,
 						branch.UserText,
