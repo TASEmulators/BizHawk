@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private readonly int[] chr_banks_4k = new int[2];
 		private readonly int[] prg_banks_16k = new int[2];
 
-		public class MMC1_SerialController
+		public sealed class MMC1_SerialController
 		{
 			//state
 			private int shift_count, shift_val;
@@ -580,7 +580,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	internal class SXROM : SuROM
+	internal sealed class SXROM : SuROM
 	{
 		//SXROM's PRG behaves similar to SuROM (and so inherits from it)
 		//it also has some WRAM select bits like SoROM

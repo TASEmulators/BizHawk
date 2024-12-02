@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTracerBoxTitle();
 		}
 
-		private class CallbackSink : ITraceSink
+		private sealed class CallbackSink : ITraceSink
 		{
 			public void Put(TraceInfo info)
 			{

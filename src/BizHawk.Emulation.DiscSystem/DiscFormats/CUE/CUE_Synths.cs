@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// <summary>
 	/// Represents a Mode1 2048-byte sector
 	/// </summary>
-	internal class SS_Mode1_2048 : SS_Base
+	internal sealed class SS_Mode1_2048 : SS_Base
 	{
 		public override void Synth(SectorSynthJob job)
 		{
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// <summary>
 	/// Represents a Mode2 2336-byte sector
 	/// </summary>
-	internal class SS_Mode2_2336 : SS_Base
+	internal sealed class SS_Mode2_2336 : SS_Base
 	{
 		public override void Synth(SectorSynthJob job)
 		{
@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// <summary>
 	/// Represents a 2352-byte sector of any sort
 	/// </summary>
-	internal class SS_2352 : SS_Base
+	internal sealed class SS_2352 : SS_Base
 	{
 		public override void Synth(SectorSynthJob job)
 		{
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// <summary>
 	/// Encodes a pre-gap sector
 	/// </summary>
-	internal class SS_Gap : SS_Base
+	internal sealed class SS_Gap : SS_Base
 	{
 		public CueTrackType TrackType;
 

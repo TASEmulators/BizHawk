@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	// 32 banks of 8KB.
 	// DFxx = status register, xxABBBBB. A=enable cart, B=bank
 	// Thanks to VICE team for the info: http://vice-emu.sourceforge.net/vice_15.html
-	internal class Mapper002B : CartridgeDevice
+	internal sealed class Mapper002B : CartridgeDevice
 	{
 		private readonly int[] _rom;
 

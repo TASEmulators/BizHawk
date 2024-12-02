@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UsesVideo => true;
 
-		private class DummyDisposable : IDisposable
+		private sealed class DummyDisposable : IDisposable
 		{
 			public void Dispose()
 			{

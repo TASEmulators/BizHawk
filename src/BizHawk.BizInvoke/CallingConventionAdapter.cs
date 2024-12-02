@@ -92,7 +92,7 @@ namespace BizHawk.BizInvoke
 
 	public static class CallingConventionAdapters
 	{
-		private class NativeConvention : ICallingConventionAdapter
+		private sealed class NativeConvention : ICallingConventionAdapter
 		{
 			public IntPtr GetArrivalFunctionPointer(IntPtr p, InvokerParameterInfo pp, object lifetime)
 				=> p;
@@ -132,9 +132,9 @@ namespace BizHawk.BizInvoke
 		public static ICallingConventionAdapter GetWaterboxUnsafeUnwrapped()
 			=> WaterboxAdapter.WaterboxWrapper;
 
-		private class WaterboxAdapter : ICallingConventionAdapter
+		private sealed class WaterboxAdapter : ICallingConventionAdapter
 		{
-			private class ReferenceEqualityComparer : IEqualityComparer<Delegate>
+			private sealed class ReferenceEqualityComparer : IEqualityComparer<Delegate>
 			{
 				public bool Equals(Delegate x, Delegate y)
 					=> x == y;
@@ -218,7 +218,7 @@ namespace BizHawk.BizInvoke
 		/// Calling Convention Adapter for where host code expects msabi and guest code is sysv.
 		/// Does not handle anything Waterbox specific.
 		/// </summary>
-		private class MsHostSysVGuest : ICallingConventionAdapter
+		private sealed class MsHostSysVGuest : ICallingConventionAdapter
 		{
 			// This is implemented by using thunks defined in a small dll, and putting stubs on top of them that close over the
 			// function pointer parameter. A dll is used here to easily set unwind information (allowing SEH exceptions to work).

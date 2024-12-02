@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		private readonly JsonSerializer _ser = new JsonSerializer { Formatting = Formatting.Indented };
 		private readonly byte[] _saveBuff;
 
-		private class TextStateData
+		private sealed class TextStateData
 		{
 			public int Frame;
 			public int LagCount;

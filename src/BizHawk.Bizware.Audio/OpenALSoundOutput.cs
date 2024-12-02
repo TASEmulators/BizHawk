@@ -255,7 +255,7 @@ namespace BizHawk.Bizware.Audio
 			}
 		}
 
-		private class BufferPool : IDisposable
+		private sealed class BufferPool : IDisposable
 		{
 			private readonly Stack<BufferPoolItem> _availableItems = new();
 			private readonly Queue<BufferPoolItem> _obtainedItems = new();
@@ -285,7 +285,7 @@ namespace BizHawk.Bizware.Audio
 				return item;
 			}
 
-			public class BufferPoolItem
+			public sealed class BufferPoolItem
 			{
 				public uint BufferID { get; } = _al.GenBuffer();
 				public int Length { get; set; }

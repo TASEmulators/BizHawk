@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		//http://stackoverflow.com/questions/2636065/alpha-in-forecolor
-		private class MyLabel : Label
+		private sealed class MyLabel : Label
 		{
 			protected override void OnPaint(PaintEventArgs e)
 			{

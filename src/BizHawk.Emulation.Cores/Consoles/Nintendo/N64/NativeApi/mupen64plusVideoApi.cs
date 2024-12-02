@@ -4,7 +4,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
-	internal class mupen64plusVideoApi
+	internal sealed class mupen64plusVideoApi
 	{
 		private IntPtr GfxDll;
 

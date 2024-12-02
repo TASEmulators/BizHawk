@@ -26,7 +26,7 @@ namespace BizHawk.BizInvoke
 		/// <summary>
 		/// holds information about a proxy implementation, including type and setup hooks
 		/// </summary>
-		private class InvokerImpl
+		private sealed class InvokerImpl
 		{
 			private readonly Action<object, ICallingConventionAdapter> _connectCallingConventionAdapter;
 

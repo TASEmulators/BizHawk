@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Adapted from FCEUX src
-	internal class UNIF_BMC_64in1_NR : NesBoardBase
+	internal sealed class UNIF_BMC_64in1_NR : NesBoardBase
 	{
 		private byte[] regs = new byte[4];
 

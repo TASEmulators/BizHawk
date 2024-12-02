@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class NullMemoryDomain : MemoryDomain
+		private sealed class NullMemoryDomain : MemoryDomain
 		{
 			public override byte PeekByte(long addr) => 0;
 
@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		private RecentFiles RecentTables { get; set; }
 
-		internal class ColorConfig
+		internal sealed class ColorConfig
 		{
 			public Color Background { get; set; } = SystemColors.Control;
 			public Color Foreground { get; set; } = SystemColors.ControlText;

@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public CCDParseException(string message) : base(message) { }
 		}
 
-		private class CCDSection : Dictionary<string, int>
+		private sealed class CCDSection : Dictionary<string, int>
 		{
 			public string Name;
 
@@ -448,7 +448,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
-		private class SS_CCD : ISectorSynthJob2448
+		private sealed class SS_CCD : ISectorSynthJob2448
 		{
 			public void Synth(SectorSynthJob job)
 			{

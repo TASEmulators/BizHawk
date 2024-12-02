@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	// to pull down EXROM. Also, accesses to LOROM while it is active
 	// discharge the capacitor.
 	// Thanks to VICE team for the info: http://vice-emu.sourceforge.net/vice_15.html
-	internal class Mapper000A : CartridgeDevice
+	internal sealed class Mapper000A : CartridgeDevice
 	{
 		// This constant differs depending on whose research you reference. TODO: Verify.
 		private const int RESET_CAPACITOR_CYCLES = 512;

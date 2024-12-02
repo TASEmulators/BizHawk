@@ -190,7 +190,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class NullMemFunctions : MemFunctions
+		private sealed class NullMemFunctions : MemFunctions
 		{
 			public NullMemFunctions(long bankSize)
 				: base(null, 0, bankSize)
@@ -202,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// this is a complete hack because the libretro Intelli core sucks and so achievements are made expecting this format
-		private class IntelliMemFunctions : MemFunctions
+		private sealed class IntelliMemFunctions : MemFunctions
 		{
 			protected override uint FixAddr(uint addr)
 				=> (addr >> 1) + (~addr & 1);
@@ -265,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// our vram is unpacked, but RA expects it packed
-		private class ChanFMemFunctions(MemoryDomain vram)
+		private sealed class ChanFMemFunctions(MemoryDomain vram)
 			: MemFunctions(null, 0, 0x800)
 		{
 			private byte ReadVRAMPacked(uint addr)

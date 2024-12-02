@@ -299,7 +299,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void LoadWriteLine(object arg) { LoadWriteLine("{0}", arg); }
 
-		private class MyWriter : StringWriter
+		private sealed class MyWriter : StringWriter
 		{
 			public MyWriter(TextWriter _loadReport)
 			{

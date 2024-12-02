@@ -152,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 			lvChannels.EndUpdate();
 		}
 
-		private class PsgEntry
+		private sealed class PsgEntry
 		{
 			public int Index { get; set; }
 			public bool Active { get; set; }

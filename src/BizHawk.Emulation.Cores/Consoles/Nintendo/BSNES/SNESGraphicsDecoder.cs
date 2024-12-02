@@ -592,7 +592,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 	}
 
-	internal class OAMInfo : ISNESGraphicsDecoder.OAMInfo
+	internal sealed class OAMInfo : ISNESGraphicsDecoder.OAMInfo
 	{
 		public ushort X { get; }
 		public byte Y { get; }

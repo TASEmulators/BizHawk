@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void Access(IntPtr buffer, long address, long count, bool write);
 
-		private class StubResolver : IImportResolver
+		private sealed class StubResolver : IImportResolver
 		{
 			private readonly IntPtr _p;
 			public StubResolver(IntPtr p)

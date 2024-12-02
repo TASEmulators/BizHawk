@@ -19,7 +19,7 @@ namespace BizHawk.Common
 			return s as ISpanStream
 				?? new SpanStreamAdapter(s);
 		}
-		private class SpanStreamAdapter : ISpanStream
+		private sealed class SpanStreamAdapter : ISpanStream
 		{
 			public SpanStreamAdapter(Stream stream)
 			{

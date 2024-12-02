@@ -9,7 +9,7 @@ using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Bizware.Graphics
 {
-	internal class OpenGLPipeline : IPipeline
+	internal sealed class OpenGLPipeline : IPipeline
 	{
 		private readonly GL GL;
 

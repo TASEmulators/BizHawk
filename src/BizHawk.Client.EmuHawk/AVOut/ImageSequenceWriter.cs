@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		private class CodecToken : IDisposable
+		private sealed class CodecToken : IDisposable
 		{
 			public void Dispose()
 			{

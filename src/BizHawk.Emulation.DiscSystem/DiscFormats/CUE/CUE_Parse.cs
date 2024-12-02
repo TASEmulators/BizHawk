@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// <summary>
 	/// Performs minimum parse processing on a cue file
 	/// </summary>
-	internal class ParseCueJob : DiscJob
+	internal sealed class ParseCueJob : DiscJob
 	{
 		private readonly string IN_CueString;
 
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// </summary>
 		public CUE_File OUT_CueFile { get; private set; }
 
-		private class CueLineParser
+		private sealed class CueLineParser
 		{
 			private int index;
 			private readonly string str;

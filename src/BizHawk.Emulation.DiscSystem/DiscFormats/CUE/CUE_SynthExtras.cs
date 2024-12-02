@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// Represents a Mode2 Form1 2048-byte sector
 	/// Only used by NRG, MDS, and CHD
 	/// </summary>
-	internal class SS_Mode2_Form1_2048 : SS_Base
+	internal sealed class SS_Mode2_Form1_2048 : SS_Base
 	{
 		public override void Synth(SectorSynthJob job)
 		{
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// Represents a Mode2 Form1 2324-byte sector
 	/// Only used by MDS and CHD
 	/// </summary>
-	internal class SS_Mode2_Form2_2324 : SS_Base
+	internal sealed class SS_Mode2_Form2_2324 : SS_Base
 	{
 		public override void Synth(SectorSynthJob job)
 		{
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// Represents a Mode2 Form1 2328-byte sector
 	/// Only used by MDS
 	/// </summary>
-	internal class SS_Mode2_Form2_2328 : SS_Base
+	internal sealed class SS_Mode2_Form2_2328 : SS_Base
 	{
 		public override void Synth(SectorSynthJob job)
 		{
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// Represents a full 2448-byte sector with interleaved subcode
 	/// Only used by MDS, NRG, and CDI
 	/// </summary>
-	internal class SS_2448_Interleaved : SS_Base
+	internal sealed class SS_2448_Interleaved : SS_Base
 	{
 		public override void Synth(SectorSynthJob job)
 		{
@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// Represents a 2364-byte (2352 + 12) sector with deinterleaved Q subcode
 	/// Only used by CDI
 	/// </summary>
-	internal class SS_2364_DeinterleavedQ : SS_Base
+	internal sealed class SS_2364_DeinterleavedQ : SS_Base
 	{
 		public override void Synth(SectorSynthJob job)
 		{

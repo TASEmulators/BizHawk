@@ -134,7 +134,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			((MAMESyncSettings)component).DriverSettings[Setting.LookupKey] = s;
 		}
 
-		private class MyTypeConverter : TypeConverter
+		private sealed class MyTypeConverter : TypeConverter
 		{
 			public MyTypeConverter(DriverSetting setting)
 				=> Setting = setting;

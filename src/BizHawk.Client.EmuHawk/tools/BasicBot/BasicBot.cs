@@ -472,7 +472,7 @@ namespace BizHawk.Client.EmuHawk
 			Frames = 0;
 		}
 
-		private class BotAttempt
+		private sealed class BotAttempt
 		{
 			public long Attempt { get; set; }
 			public int Maximize { get; set; }
@@ -524,7 +524,7 @@ namespace BizHawk.Client.EmuHawk
 			_bestBotAttempt.is_Reset = false;
 		}
 
-		private class BotData
+		private sealed class BotData
 		{
 			public BotAttempt Best { get; set; }
 			public Dictionary<string, double> ControlProbabilities { get; set; }
