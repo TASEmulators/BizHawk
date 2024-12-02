@@ -1,6 +1,6 @@
 <Project>
 	<PropertyGroup>
-		<AnalysisLevel>6</AnalysisLevel>
+		<AnalysisLevel>7</AnalysisLevel>
 		<AnalysisModeGlobalization>Recommended</AnalysisModeGlobalization>
 		<AnalysisModeMaintainability>Recommended</AnalysisModeMaintainability>
 		<AnalysisModeReliability>Recommended</AnalysisModeReliability>
