@@ -940,7 +940,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveScriptMenuItem_Click(object sender, EventArgs e)
 		{
 			var items = SelectedItems.ToList();
-			if (items.Any())
+			if (items.Count != 0)
 			{
 				foreach (var item in items)
 				{
@@ -1202,10 +1202,10 @@ namespace BizHawk.Client.EmuHawk
 		private void ConsoleContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			RegisteredFunctionsContextItem.Enabled = LuaImp.RegisteredFunctions.Any();
-			CopyContextItem.Enabled = OutputBox.SelectedText.Any();
+			CopyContextItem.Enabled = OutputBox.SelectedText.Length != 0;
 			ClearConsoleContextItem.Enabled =
 				SelectAllContextItem.Enabled =
-				OutputBox.Text.Any();
+				OutputBox.Text.Length != 0;
 
 			ClearRegisteredFunctionsLogContextItem.Enabled =
 				LuaImp.RegisteredFunctions.Any();

@@ -327,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (_watches.Any())
+			if (_watches.Count != 0)
 			{
 				_watches.UpdateValues(Config.RamWatchDefinePrevious);
 				DisplayOnScreenWatches();
@@ -342,7 +342,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			DisplayManager.OSD.ClearRamWatches();
-			if (_watches.Any())
+			if (_watches.Count != 0)
 			{
 				_watches.UpdateValues(Config.RamWatchDefinePrevious);
 				DisplayOnScreenWatches();
@@ -898,7 +898,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MoveUpMenuItem_Click(object sender, EventArgs e)
 		{
 			var indexes = SelectedIndices.ToList();
-			if (!indexes.Any() || indexes[0] == 0)
+			if (indexes.Count == 0 || indexes[0] == 0)
 			{
 				return;
 			}
@@ -954,7 +954,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MoveTopMenuItem_Click(object sender, EventArgs e)
 		{
 			var indexes = SelectedIndices.ToList();
-			if (!indexes.Any())
+			if (indexes.Count == 0)
 			{
 				return;
 			}
@@ -1177,7 +1177,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
 		{
 			var selected = SelectedWatches.ToList();
-			if (selected.Any())
+			if (selected.Count != 0)
 			{
 				Tools.Load<HexEditor>();
 				ViewInHexEditor(
@@ -1193,7 +1193,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var selected = SelectedWatches.ToList();
 
-			if (selected.Any())
+			if (selected.Count != 0)
 			{
 				var debugger = Tools.Load<GenericDebugger>();
 
@@ -1208,7 +1208,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var selected = SelectedWatches.ToList();
 
-			if (selected.Any())
+			if (selected.Count != 0)
 			{
 				var debugger = Tools.Load<GenericDebugger>();
 

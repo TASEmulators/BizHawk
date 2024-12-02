@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				if (DataBlocks.Any())
+				if (DataBlocks.Count != 0)
 				{
 					return _currentDataBlockIndex;
 				}
