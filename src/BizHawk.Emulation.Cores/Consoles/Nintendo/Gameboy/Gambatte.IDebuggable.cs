@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void SetCpuRegister(string register, int value)
 		{
-			if (register.Length == 9 && register.Substring(4, 5).ToUpperInvariant() == " BANK")
+			if (register.Length == 9 && register.Substring(4, 5).Equals(" BANK", StringComparison.OrdinalIgnoreCase))
 			{
 				var type = (LibGambatte.BankType)Enum.Parse(typeof(LibGambatte.BankType), register.Substring(0, 4).ToUpperInvariant());
 				LibGambatte.gambatte_setbank(GambatteState, type, value);

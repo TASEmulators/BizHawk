@@ -49,11 +49,11 @@ namespace BizHawk.Client.EmuHawk
 			var name = Path.Combine(dir!, $"{fileNoExt}_{_frame}{ext}");
 			BitmapBuffer bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
 			using var bmp = bb.ToSysdrawingBitmap();
-			if (ext.ToUpperInvariant() == ".PNG")
+			if (ext.Equals(".PNG", StringComparison.OrdinalIgnoreCase))
 			{
 				bmp.Save(name, ImageFormat.Png);
 			}
-			else if (ext.ToUpperInvariant() == ".JPG")
+			else if (ext.Equals(".JPG", StringComparison.OrdinalIgnoreCase))
 			{
 				bmp.Save(name, ImageFormat.Jpeg);
 			}

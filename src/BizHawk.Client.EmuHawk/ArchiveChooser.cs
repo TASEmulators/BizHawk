@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 				lvi.Text = item.Name;
 				long size = item.Size;
 				var extension = Path.GetExtension(item.Name);
-				if (extension != null && size % 1024 == 16 && extension.ToUpperInvariant() == ".NES")
+				if (extension != null && size % 1024 == 16 && extension.Equals(".NES", StringComparison.OrdinalIgnoreCase))
 					size -= 16;
 				lvi.SubItems[1].Text = Util.FormatFileSize(size);
 				_archiveItems.Add(lvi);
