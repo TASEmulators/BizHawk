@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common
 					catch (Exception e)
 					{
 						// TODO proper logging
-						Console.WriteLine("Error deserializing message {0}", e);
+						Console.WriteLine("Error deserializing message {0} produced error {1}", messageString, e);
 						await SendClientGenericError(clientId);
 					}
 				}

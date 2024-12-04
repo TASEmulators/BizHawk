@@ -1,5 +1,8 @@
 #nullable enable
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace BizHawk.Client.Common.Websocket.Messages
 {
 
@@ -26,6 +29,7 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		}
 	}
 
+	[JsonConverter(typeof(StringEnumConverter))]
 	public enum ErrorType : ushort
 	{
 		UnknownRequest = 0
