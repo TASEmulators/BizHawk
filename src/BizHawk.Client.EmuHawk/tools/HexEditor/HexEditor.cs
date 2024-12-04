@@ -2176,11 +2176,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							ClearHighlighted();
 						}
-						else if (_secondaryHighlightedAddresses.Contains(pointedAddress))
-						{
-							_secondaryHighlightedAddresses.Remove(pointedAddress);
-						}
-						else
+						else if (!_secondaryHighlightedAddresses.Remove(pointedAddress))
 						{
 							_secondaryHighlightedAddresses.Add(pointedAddress);
 						}
