@@ -3105,8 +3105,15 @@ namespace BizHawk.Client.EmuHawk
 					if (PauseOnFrame.Value == Emulator.Frame)
 					{
 						PauseEmulator();
-						if (Tools.IsLoaded<TAStudio>()) Tools.TAStudio.StopSeeking();
-						else PauseOnFrame = null;
+						if (Tools.IsLoaded<TAStudio>())
+						{
+							Tools.TAStudio.StopSeeking();
+							HoldFrameAdvance = false;
+						}
+						else
+						{
+							PauseOnFrame = null;
+						}
 					}
 					else if (Tools.IsLoaded<TAStudio>()
 						&& Tools.TAStudio.LastPositionFrame == Emulator.Frame

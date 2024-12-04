@@ -1116,16 +1116,19 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.ChangeLog.AddInputBind(Emulator.Frame - 1, true, $"Bind Input; Delete {Emulator.Frame - 1}");
 					bool wasRecording = CurrentTasMovie.ChangeLog.IsRecording;
 					CurrentTasMovie.ChangeLog.IsRecording = false;
-
 					CurrentTasMovie.RemoveFrames(framesToRemove);
 					foreach (int f in framesToRemove)
 					{
 						CurrentTasMovie.LagLog.RemoveHistoryAt(f + 1); // Removes from WasLag
 					}
-
 					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
+
+					CurrentTasMovie.LastPositionStable = true;
 					GoToLastEmulatedFrameIfNecessary(Emulator.Frame - 1);
-					DoAutoRestore();
+					if (!MainForm.HoldFrameAdvance)
+					{
+						MainForm.PauseOnFrame = LastPositionFrame;
+					}
 					return true;
 				}
 

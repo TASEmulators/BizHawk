@@ -901,6 +901,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
+					// needed for AutoAdjustInput() when it removes was-lag frames
+					MainForm.HoldFrameAdvance = true;
+
 					GoToFrame(Emulator.Frame - notch);
 				}
 			}
