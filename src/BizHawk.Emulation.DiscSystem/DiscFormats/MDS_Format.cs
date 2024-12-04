@@ -668,20 +668,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 					//mount the file			
 					var mdfBlob = new Blob_RawFile { PhysicalPath = file };
-
-					var dupe = false;
-					foreach (var re in disc.DisposableResources)
-					{
-						if (re.ToString() == mdfBlob.ToString())
-							dupe = true;
-					}
-
-					if (!dupe)
-					{
-						// wrap in zeropadadapter
-						disc.DisposableResources.Add(mdfBlob);
-						BlobIndex[count++] = mdfBlob;
-					}
+					disc.DisposableResources.Add(mdfBlob);
+					BlobIndex[count++] = mdfBlob;
 				}
 			}
 
