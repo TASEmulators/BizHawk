@@ -78,6 +78,7 @@ namespace BizHawk.Client.EmuHawk
 				OldControlSchemeForBranches = false;
 				LoadBranchOnDoubleClick = true;
 				CopyIncludesFrameNo = false;
+				AutoadjustInput = false;
 
 				// default to taseditor fashion
 				DenoteStatesWithIcons = false;
@@ -110,8 +111,9 @@ namespace BizHawk.Client.EmuHawk
 			public int BranchMarkerSplitDistance { get; set; }
 			public bool BindMarkersToInput { get; set; }
 			public bool CopyIncludesFrameNo { get; set; }
+			public bool AutoadjustInput { get; set; }
 			public TAStudioPalette Palette { get; set; }
-			public int MaxUndoSteps { get; set; } = 100;
+			public int MaxUndoSteps { get; set; } = 1000;
 		}
 
 		public TAStudio()
@@ -1099,16 +1101,31 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (lagLog.WasLagged.Value && !isLag)
 				{
+					// remove all consecutive was-lag frames in batch like taseditor
+					// current frame has no lag so they will all have to go anyway
+					var framesToRemove = new List<int>{ Emulator.Frame - 1 };
+					for (int frame = Emulator.Frame; CurrentTasMovie[frame].WasLagged.HasValue; frame++)
+					{
+						if (CurrentTasMovie[frame].WasLagged.Value)
+						{
+							framesToRemove.Add(frame);
+						}
+					}
+
 					// Deleting this frame requires rewinding a frame.
 					CurrentTasMovie.ChangeLog.AddInputBind(Emulator.Frame - 1, true, $"Bind Input; Delete {Emulator.Frame - 1}");
 					bool wasRecording = CurrentTasMovie.ChangeLog.IsRecording;
 					CurrentTasMovie.ChangeLog.IsRecording = false;
 
-					CurrentTasMovie.RemoveFrame(Emulator.Frame - 1);
-					CurrentTasMovie.LagLog.RemoveHistoryAt(Emulator.Frame); // Removes from WasLag
+					CurrentTasMovie.RemoveFrames(framesToRemove);
+					foreach (int f in framesToRemove)
+					{
+						CurrentTasMovie.LagLog.RemoveHistoryAt(f + 1); // Removes from WasLag
+					}
 
 					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
-					GoToFrame(Emulator.Frame - 1);
+					GoToLastEmulatedFrameIfNecessary(Emulator.Frame - 1);
+					DoAutoRestore();
 					return true;
 				}
 

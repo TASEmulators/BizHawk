@@ -768,6 +768,7 @@ namespace BizHawk.Client.EmuHawk
 			LoadBranchOnDoubleclickMenuItem.Checked = Settings.LoadBranchOnDoubleClick;
 			BindMarkersToInputMenuItem.Checked = CurrentTasMovie.BindMarkersToInput;
 			CopyIncludesFrameNoMenuItem.Checked = Settings.CopyIncludesFrameNo;
+			AutoadjustInputMenuItem.Checked = Settings.AutoadjustInput;
 		}
 
 		private void SetMaxUndoLevelsMenuItem_Click(object sender, EventArgs e)
@@ -801,6 +802,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyIncludesFrameNoMenuItem_Click(object sender, EventArgs e)
 			=> Settings.CopyIncludesFrameNo = !Settings.CopyIncludesFrameNo;
+
+		private void AutoadjustInputMenuItem_Click(object sender, EventArgs e)
+			=> Settings.AutoadjustInput = !Settings.AutoadjustInput;
 
 		private void SetAutosaveIntervalMenuItem_Click(object sender, EventArgs e)
 		{
