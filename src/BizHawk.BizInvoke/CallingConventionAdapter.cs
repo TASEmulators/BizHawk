@@ -225,12 +225,7 @@ namespace BizHawk.BizInvoke
 			// TODO: Another dll might be required for ARM64? Investigate
 
 			private const int BlockSize = 32;
-			private static readonly IImportResolver ThunkDll;
-
-			static MsHostSysVGuest()
-			{
-				ThunkDll = new DynamicLibraryImportResolver("libbizabiadapter_msabi_sysv.dll", hasLimitedLifetime: false);
-			}
+			private static readonly DynamicLibraryImportResolver ThunkDll = new("libbizabiadapter_msabi_sysv.dll", hasLimitedLifetime: false);
 
 			private readonly MemoryBlock _memory;
 			private readonly object _sync = new();

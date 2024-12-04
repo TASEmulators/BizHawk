@@ -54,7 +54,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			return zw;
 		}
 
-		private IStatable CreateStateSource() => new StateSource {PaddingData = new byte[1000]};
+		private StateSource CreateStateSource() => new StateSource {PaddingData = new byte[1000]};
 
 		[TestMethod]
 		public void SaveCreateRoundTrip()

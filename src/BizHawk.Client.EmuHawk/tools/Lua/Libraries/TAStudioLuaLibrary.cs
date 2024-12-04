@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	[LuaLibrary(released: true)]
 	public sealed class TAStudioLuaLibrary : LuaLibraryBase
 	{
-		private static readonly IDictionary<string, Icon> _iconCache = new Dictionary<string, Icon>();
+		private static readonly Dictionary<string, Icon> _iconCache = new Dictionary<string, Icon>();
 
 		public ToolManager Tools { get; set; }
 

@@ -275,8 +275,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				var ret = tempSegment.AcquireVideoCodecToken(_dialogParent.AsWinFormsHandle().Handle, _currVideoCodecToken);
-				var token = (CodecToken)ret;
+				var token = tempSegment.AcquireVideoCodecToken(_dialogParent.AsWinFormsHandle().Handle, _currVideoCodecToken);
 				config.AviCodecToken = token?.Serialize();
 				return token;
 			}
@@ -709,7 +708,7 @@ namespace BizHawk.Client.EmuHawk
 
 			/// <summary>acquires a video codec configuration from the user</summary>
 			/// <exception cref="InvalidOperationException">no file open (need to call <see cref="OpenFile"/>)</exception>
-			public IDisposable AcquireVideoCodecToken(IntPtr hwnd, CodecToken lastCodecToken)
+			public CodecToken AcquireVideoCodecToken(IntPtr hwnd, CodecToken lastCodecToken)
 			{
 				if (!_isOpen)
 				{

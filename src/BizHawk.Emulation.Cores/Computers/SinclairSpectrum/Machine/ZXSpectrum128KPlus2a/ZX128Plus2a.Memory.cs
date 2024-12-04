@@ -616,7 +616,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 ROM 2: +3DOS
                 ROM 3: 48 BASIC
             */
-            Stream stream = new MemoryStream(RomData.RomBytes);
+            MemoryStream stream = new MemoryStream(RomData.RomBytes);
             stream.Read(ROM0, 0, 16384);
             stream.Read(ROM1, 0, 16384);
             stream.Read(ROM2, 0, 16384);

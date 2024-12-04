@@ -793,7 +793,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static readonly IList<string> PossibleToolTypeNames = EmuHawk.ReflectionCache.Types.Select(t => t.AssemblyQualifiedName).ToList();
+		private static readonly List<string> PossibleToolTypeNames = EmuHawk.ReflectionCache.Types.Select(t => t.AssemblyQualifiedName).ToList();
 
 		public bool IsAvailable(Type tool)
 		{

@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Common
 
 		private static string _bundledRoot = null;
 
-		private static IList<string> _expected = null;
+		private static List<string> _expected = null;
 
 		private static string _userRoot = null;
 

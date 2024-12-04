@@ -133,12 +133,12 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		private void LoadFromString()
 		{
-			TextReader tr = new StringReader(IN_CueString);
+			StringReader reader = new(IN_CueString);
 
 			while (true)
 			{
 				CurrentLine++;
-				var line = tr.ReadLine()?.Trim();
+				var line = reader.ReadLine()?.Trim();
 				if (line is null) break;
 				if (line == string.Empty) continue;
 				var clp = new CueLineParser(line);

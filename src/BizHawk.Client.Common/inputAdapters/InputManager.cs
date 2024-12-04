@@ -89,9 +89,9 @@ namespace BizHawk.Client.Common
 
 		private static Controller BindToDefinition(
 			ControllerDefinition def,
-			IDictionary<string, Dictionary<string, string>> allBinds,
-			IDictionary<string, Dictionary<string, AnalogBind>> analogBinds,
-			IDictionary<string, Dictionary<string, FeedbackBind>> feedbackBinds)
+			Dictionary<string, Dictionary<string, string>> allBinds,
+			Dictionary<string, Dictionary<string, AnalogBind>> analogBinds,
+			Dictionary<string, Dictionary<string, FeedbackBind>> feedbackBinds)
 		{
 			var ret = new Controller(def);
 			if (allBinds.TryGetValue(def.Name, out var binds))
@@ -129,7 +129,7 @@ namespace BizHawk.Client.Common
 
 		private static AutofireController BindToDefinitionAF(
 			IEmulator emulator,
-			IDictionary<string, Dictionary<string, string>> allBinds,
+			Dictionary<string, Dictionary<string, string>> allBinds,
 			int on,
 			int off)
 		{

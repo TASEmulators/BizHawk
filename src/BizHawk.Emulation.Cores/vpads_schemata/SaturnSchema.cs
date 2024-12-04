@@ -275,7 +275,7 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private static PadSchema ConsoleButtons(AxisSpec diskRange)
+		private static ConsoleSchema ConsoleButtons(AxisSpec diskRange)
 		{
 			return new ConsoleSchema
 			{

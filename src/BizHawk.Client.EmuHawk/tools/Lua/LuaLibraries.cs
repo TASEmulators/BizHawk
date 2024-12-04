@@ -166,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsInInputOrMemoryCallback { get; set; }
 
-		private readonly IDictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
+		private readonly Dictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
 
 		private EventWaitHandle LuaWait;
 

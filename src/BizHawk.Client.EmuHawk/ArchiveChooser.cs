@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ArchiveChooser : Form
 	{
-		private readonly IList<ListViewItem> _archiveItems = new List<ListViewItem>();
+		private readonly List<ListViewItem> _archiveItems = new List<ListViewItem>();
 		private readonly ToolTip _errorBalloon = new ToolTip();
 
 		private static bool _useRegEx;

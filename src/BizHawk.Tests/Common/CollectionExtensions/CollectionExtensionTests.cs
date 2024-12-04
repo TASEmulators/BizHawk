@@ -14,7 +14,7 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 		/// <summary>there isn't really an <see cref="IList{T}"/> implementor which isn't <see cref="List{T}"/> and isn't immutable... so I made one</summary>
 		private readonly struct ListImpl : IList<int>
 		{
-			private readonly IList<int> _wrapped;
+			private readonly List<int> _wrapped;
 
 			public int Count => _wrapped.Count;
 

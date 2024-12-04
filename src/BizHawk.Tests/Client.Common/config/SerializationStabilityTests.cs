@@ -22,7 +22,7 @@ namespace BizHawk.Tests.Client.Common.config
 #if NET5_0_OR_GREATER
 		private static readonly IReadOnlySet<Type> KnownGoodFromStdlib = new HashSet<Type>
 #else
-		private static readonly ICollection<Type> KnownGoodFromStdlib = new HashSet<Type>
+		private static readonly HashSet<Type> KnownGoodFromStdlib = new HashSet<Type>
 #endif
 		{
 			typeof(bool),
