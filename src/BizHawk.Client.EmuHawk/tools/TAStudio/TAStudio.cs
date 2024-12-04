@@ -1110,6 +1110,10 @@ namespace BizHawk.Client.EmuHawk
 						{
 							framesToRemove.Add(frame);
 						}
+						else
+						{
+							break;
+						}
 					}
 
 					// Deleting this frame requires rewinding a frame.
