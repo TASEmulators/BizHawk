@@ -1664,27 +1664,43 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// ScrollBar.Maximum = DesiredValue + ScrollBar.LargeChange - 1
-		// See MSDN Page for more information on the dumb ScrollBar.Maximum Property
-		private void RecalculateScrollBars()
+		private void CalculateScrollbarsNeeded(int lastVisibleColumn)
 		{
-			UpdateDrawSize();
-
-			var columns = _columns.VisibleColumns.ToList();
-			int iLastColumn = columns.Count - 1;
-
 			if (HorizontalOrientation)
 			{
-				NeedsVScrollbar = GetHColBottom(iLastColumn) > _drawHeight;
+				NeedsVScrollbar = GetHColBottom(lastVisibleColumn) > _drawHeight;
 				NeedsHScrollbar = RowCount > 1;
 			}
 			else
 			{
-				NeedsVScrollbar = ColumnHeight + (RowCount * CellHeight)  > Height;
+				NeedsVScrollbar = ColumnHeight + (RowCount * CellHeight) > _drawHeight;
 				NeedsHScrollbar = TotalColWidth - _drawWidth + 1 > 0;
 			}
 
 			UpdateDrawSize();
+
+			// if either NeedsVScrollbar or NeedsHScrollbar changed we need to recalculate, so just run this again
+			if (HorizontalOrientation)
+			{
+				NeedsVScrollbar = GetHColBottom(lastVisibleColumn) > _drawHeight;
+				NeedsHScrollbar = RowCount > 1;
+			}
+			else
+			{
+				NeedsVScrollbar = ColumnHeight + (RowCount * CellHeight) > _drawHeight;
+				NeedsHScrollbar = TotalColWidth - _drawWidth + 1 > 0;
+			}
+
+			UpdateDrawSize();
+		}
+
+		// ScrollBar.Maximum = DesiredValue + ScrollBar.LargeChange - 1
+		// See MSDN Page for more information on the dumb ScrollBar.Maximum Property
+		private void RecalculateScrollBars()
+		{
+			int lastVisibleColumn = _columns.VisibleColumns.Count() - 1;
+			CalculateScrollbarsNeeded(lastVisibleColumn);
+
 			if (VisibleRows > 0)
 			{
 				if (HorizontalOrientation)
@@ -1708,7 +1724,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					_vBar.Maximum = GetHColBottom(iLastColumn) - _drawHeight + _vBar.LargeChange;
+					_vBar.Maximum = GetHColBottom(lastVisibleColumn) - _drawHeight + _vBar.LargeChange;
 					if (_vBar.Maximum < 0)
 					{
 						_vBar.Maximum = 0;
