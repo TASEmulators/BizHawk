@@ -81,8 +81,6 @@ namespace BizHawk.Client.EmuHawk
 			this.StateHistoryIntegrityCheckMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ConfigSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SetMaxUndoLevelsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SetBranchCellHoverIntervalMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SetSeekingCutoffIntervalMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CopyIncludesFrameNoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator26 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.autosaveToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -1346,9 +1344,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NewFromSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NewFromNowMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NewFromCurrentSaveRamMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetBranchCellHoverIntervalMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetMarkerWithTextContextMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetSeekingCutoffIntervalMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator26;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx TASEditorManualOnlineMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ForumThreadMenuItem;
