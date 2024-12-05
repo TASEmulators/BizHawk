@@ -15,12 +15,12 @@ namespace BizHawk.Client.Common
 {
 	public sealed class WebSocketServer
 	{
-		private static readonly HashSet<Topic> forcedRegistrationTopics = [Topic.Error, Topic.Registration];
+		private static readonly HashSet<Topic> forcedRegistrationTopics = [ Topic.Error, Topic.Registration ];
 		private readonly HttpListener clientRegistrationListener;
 		private CancellationToken _cancellationToken = default;
 		private bool _running = false;
-		private readonly Dictionary<string, WebSocket> clients = [];
-		private readonly Dictionary<Topic, HashSet<string>> topicRegistrations = [];
+		private readonly Dictionary<string, WebSocket> clients = [ ];
+		private readonly Dictionary<Topic, HashSet<string>> topicRegistrations = [ ];
 
 		/// <param name="host">
 		/// 	host address to register for listening to connections, defaults to <see cref="IPAddress.Loopback"/>>
@@ -163,11 +163,11 @@ namespace BizHawk.Client.Common
 				}
 				else if (request.Topics.Contains(topic))
 				{
-					_ = topicRegistrations.GetValueOrPut(topic, (_) => []).Add(clientId);
+					_ = topicRegistrations.GetValueOrPut(topic, (_) => [ ]).Add(clientId);
 				}
 				else
 				{
-					_ = topicRegistrations.GetValueOrDefault(topic, [])?.Remove(clientId);
+					_ = topicRegistrations.GetValueOrDefault(topic, [ ])?.Remove(clientId);
 				}
 			}
 
@@ -179,14 +179,16 @@ namespace BizHawk.Client.Common
 
 		private async Task HandleEchoRequest(string clientId, EchoRequestMessage request)
 		{
-			if (topicRegistrations.GetValueOrDefault(Topic.Echo, [])?.Contains(clientId) ?? false)
+			if (topicRegistrations.GetValueOrDefault(Topic.Echo, [ ])?.Contains(clientId) ?? false)
 			{
 				await SendClientMessage(clientId, new ResponseMessageWrapper(new EchoResponseMessage(request.Message)));
 			}
 		}
 
 		// clients always get error topics
-		private async Task SendClientGenericError(string clientId) => await SendClientMessage(clientId, new ResponseMessageWrapper(new ErrorMessage(ErrorType.UnknownRequest)));
+		private async Task SendClientGenericError(string clientId) => await SendClientMessage(
+			clientId, new ResponseMessageWrapper(new ErrorMessage(ErrorType.UnknownRequest))
+		); 
 
 		private async Task SendClientMessage(string clientId, object message)
 		{

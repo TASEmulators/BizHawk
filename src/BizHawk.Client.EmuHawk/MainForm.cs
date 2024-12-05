@@ -77,8 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
 			{
 				var submenu = new ToolStripMenuItem { Text = string.Join(" | ", appliesTo) };
-				submenu.DropDownItems.AddRange(coreNames.Select(coreName =>
-				{
+				submenu.DropDownItems.AddRange(coreNames.Select(coreName => {
 					var entry = new ToolStripMenuItem { Text = coreName };
 					entry.Click += (_, _) =>
 					{
@@ -497,9 +496,7 @@ namespace BizHawk.Client.EmuHawk
 				_argParser.HTTPAddresses is var (httpGetURL, httpPostURL)
 					? new HttpCommunication(NetworkingTakeScreenshot, httpGetURL, httpPostURL)
 					: null,
-
 				new MemoryMappedFiles(NetworkingTakeScreenshot, _argParser.MMFFilename),
-
 				_argParser.SocketAddress is var (socketIP, socketPort)
 					? new SocketServer(NetworkingTakeScreenshot, _argParser.SocketProtocol, socketIP, socketPort)
 					: null,
@@ -716,17 +713,17 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (_argParser.UserdataUnparsedPairs is { } pairs) foreach (var (k, v) in pairs)
+			if (_argParser.UserdataUnparsedPairs is {} pairs) foreach (var (k, v) in pairs)
+			{
+				MovieSession.UserBag[k] = v switch
 				{
-					MovieSession.UserBag[k] = v switch
-					{
-						"true" => true,
-						"false" => false,
-						_ when int.TryParse(v, out var i) => i,
-						_ when double.TryParse(v, out var d) => d,
-						_ => v
-					};
-				}
+					"true" => true,
+					"false" => false,
+					_ when int.TryParse(v, out var i) => i,
+					_ when double.TryParse(v, out var d) => d,
+					_ => v
+				};
+			}
 
 			Shown += (_, _) =>
 			{
@@ -783,7 +780,7 @@ namespace BizHawk.Client.EmuHawk
 				if (message is not null)
 				{
 #if DEBUG
-					Console.WriteLine(message);
+				Console.WriteLine(message);
 #else
 				Load += (_, _) => Config.SkipOutdatedOsCheck = this.ShowMessageBox2($"{message}\n\nSkip this reminder from now on?");
 #endif
@@ -1212,45 +1209,28 @@ namespace BizHawk.Client.EmuHawk
 				{
 					default:
 					case 0: // Both allowed
+					{
+						finalHostController.Receive(ie);
+
+						var handled = false;
+						if (ie.EventType is InputEventType.Press)
 						{
-							finalHostController.Receive(ie);
-
-							var handled = false;
-							if (ie.EventType is InputEventType.Press)
-							{
-								handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
-							}
-
-							// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
-							if (!handled)
-							{
-								hotkeyCoalescer.Receive(ie);
-							}
-
-							break;
+							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
 						}
+
+						// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
+						if (!handled)
+						{
+							hotkeyCoalescer.Receive(ie);
+						}
+
+						break;
+					}
 					case 1: // Input overrides Hotkeys
-						{
-							finalHostController.Receive(ie);
-							// don't check hotkeys when any of the pressed keys are input
-							if (!ie.LogicalButton.ToString().Split('+').Any(activeControllerHasBinding))
-							{
-								var handled = false;
-								if (ie.EventType is InputEventType.Press)
-								{
-									handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
-								}
-
-								// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
-								if (!handled)
-								{
-									hotkeyCoalescer.Receive(ie);
-								}
-							}
-
-							break;
-						}
-					case 2: // Hotkeys override Input
+					{
+						finalHostController.Receive(ie);
+						// don't check hotkeys when any of the pressed keys are input
+						if (!ie.LogicalButton.ToString().Split('+').Any(activeControllerHasBinding))
 						{
 							var handled = false;
 							if (ie.EventType is InputEventType.Press)
@@ -1262,13 +1242,30 @@ namespace BizHawk.Client.EmuHawk
 							if (!handled)
 							{
 								hotkeyCoalescer.Receive(ie);
-
-								// Check for hotkeys that may not be handled through CheckHotkey() method, reject controller input mapped to these
-								if (!triggers.Exists(IsInternalHotkey)) finalHostController.Receive(ie);
 							}
-
-							break;
 						}
+
+						break;
+					}
+					case 2: // Hotkeys override Input
+					{
+						var handled = false;
+						if (ie.EventType is InputEventType.Press)
+						{
+							handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
+						}
+
+						// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
+						if (!handled)
+						{
+							hotkeyCoalescer.Receive(ie);
+
+							// Check for hotkeys that may not be handled through CheckHotkey() method, reject controller input mapped to these
+							if (!triggers.Exists(IsInternalHotkey)) finalHostController.Receive(ie);
+						}
+
+						break;
+					}
 				}
 			} // foreach event
 
@@ -1286,11 +1283,11 @@ namespace BizHawk.Client.EmuHawk
 
 			//if we found mouse coordinates (and why wouldn't we?) then translate them now
 			//NOTE: these must go together, because in the case of screen rotation, X and Y are transformed together
-			if (mouseX != null && mouseY != null)
+			if(mouseX != null && mouseY != null)
 			{
 				var p = DisplayManager.UntransformPoint(new Point(mouseX.Value.Value, mouseY.Value.Value));
-				float x = p.X / (float) _currentVideoProvider.BufferWidth;
-				float y = p.Y / (float) _currentVideoProvider.BufferHeight;
+				float x = p.X / (float)_currentVideoProvider.BufferWidth;
+				float y = p.Y / (float)_currentVideoProvider.BufferHeight;
 				finalHostController.AcceptNewAxis("WMouse X", (int) ((x * 20000) - 10000));
 				finalHostController.AcceptNewAxis("WMouse Y", (int) ((y * 20000) - 10000));
 			}
@@ -1435,9 +1432,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				//				Util.DebugWriteLine($"For emulator framebuffer {new Size(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight)}:");
-				//				Util.DebugWriteLine($"  For virtual size {new Size(_currentVideoProvider.VirtualWidth, _currentVideoProvider.VirtualHeight)}:");
-				//				Util.DebugWriteLine($"  Selecting display size {lastComputedSize}");
+//				Util.DebugWriteLine($"For emulator framebuffer {new Size(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight)}:");
+//				Util.DebugWriteLine($"  For virtual size {new Size(_currentVideoProvider.VirtualWidth, _currentVideoProvider.VirtualHeight)}:");
+//				Util.DebugWriteLine($"  Selecting display size {lastComputedSize}");
 
 				// Change size
 				Size = new Size(lastComputedSize.Width + borderWidth, lastComputedSize.Height + borderHeight);
@@ -1959,7 +1956,7 @@ namespace BizHawk.Client.EmuHawk
 				string path;
 				if (autosave)
 				{
-					path = Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie);
+					path =  Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie);
 					AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
 				}
 				else
@@ -2226,7 +2223,7 @@ namespace BizHawk.Client.EmuHawk
 			// only check window messages a maximum of once per millisecond
 			// this check is irrelvant for the 99% of cases where fps are <1k
 			// but gives a slight fps boost in those scenarios
-			if ((uint) (currentTime - _lastMessageCheck).Milliseconds > 0)
+			if ((uint)(currentTime - _lastMessageCheck).Milliseconds > 0)
 			{
 				_lastMessageCheck = currentTime;
 				Application.DoEvents();
@@ -2315,8 +2312,7 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage(message);
 		}
 
-		/*internal*/
-		public void Render()
+		/*internal*/public void Render()
 		{
 			if (Config.DispSpeedupFeatures == 0)
 			{
@@ -2561,7 +2557,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Color SlotBackColor(int slot)
 		{
-			return Config.SaveSlot == slot
+			return  Config.SaveSlot == slot
 				? SystemColors.Highlight
 				: SystemColors.Control;
 		}
@@ -2826,13 +2822,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Emulator.SystemId == VSystemID.Raw.ZXSpectrum)
 			{
-				var core = (Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum) Emulator;
+				var core = (Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum)Emulator;
 				CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
 			}
 
 			if (Emulator.SystemId == VSystemID.Raw.AmstradCPC)
 			{
-				var core = (Emulation.Cores.Computers.AmstradCPC.AmstradCPC) Emulator;
+				var core = (Emulation.Cores.Computers.AmstradCPC.AmstradCPC)Emulator;
 				CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
 			}
 		}
@@ -2878,8 +2874,7 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}
 
-		/*internal*/
-		public void StepRunLoop_Throttle()
+		/*internal*/public void StepRunLoop_Throttle()
 		{
 			SyncThrottle();
 			_throttle.signal_frameAdvance = _runloopFrameAdvance;
@@ -2912,7 +2907,7 @@ namespace BizHawk.Client.EmuHawk
 			_runloopFrameAdvance = false;
 			var currentTimestamp = Stopwatch.GetTimestamp();
 
-			double frameAdvanceTimestampDeltaMs = (double) (currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
+			double frameAdvanceTimestampDeltaMs = (double)(currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
 			bool frameProgressTimeElapsed = frameAdvanceTimestampDeltaMs >= Config.FrameProgressDelayMs;
 
 			if (Config.SkipLagFrame && Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame && frameProgressTimeElapsed && Emulator.Frame > 0)
@@ -3141,7 +3136,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CalcFramerateAndUpdateDisplay(long currentTimestamp, bool isRewinding, bool isFastForwarding)
 		{
-			double elapsedSeconds = (currentTimestamp - _timestampLastFpsUpdate) / (double) Stopwatch.Frequency;
+			double elapsedSeconds = (currentTimestamp - _timestampLastFpsUpdate) / (double)Stopwatch.Frequency;
 
 			if (elapsedSeconds < 1.0 / _fpsUpdatesPerSecond)
 			{
@@ -4403,7 +4398,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						double timestampDeltaMs = (double) (currentTimestamp - _frameRewindTimestamp) / Stopwatch.Frequency * 1000.0;
+						double timestampDeltaMs = (double)(currentTimestamp - _frameRewindTimestamp) / Stopwatch.Frequency * 1000.0;
 						isRewinding = timestampDeltaMs >= Config.FrameProgressDelayMs;
 
 						// clear this flag once we get out of the progress stage
@@ -4452,7 +4447,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						double timestampDeltaMs = (double) (currentTimestamp - _frameRewindTimestamp) / Stopwatch.Frequency * 1000.0;
+						double timestampDeltaMs = (double)(currentTimestamp - _frameRewindTimestamp) / Stopwatch.Frequency * 1000.0;
 						isRewinding = timestampDeltaMs >= Config.FrameProgressDelayMs;
 					}
 				}
@@ -4691,7 +4686,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_singleInstanceServer.IsMessageComplete) break;
 				}
 
-				var payloadString = Encoding.ASCII.GetString(payloadBytes.GetBuffer(), 0, (int) payloadBytes.Length);
+				var payloadString = Encoding.ASCII.GetString(payloadBytes.GetBuffer(), 0, (int)payloadBytes.Length);
 				var args = payloadString.Split('|').Select(a => Encoding.UTF8.GetString(a.HexStringToBytes())).ToArray();
 
 				Console.WriteLine("RECEIVED SINGLE INSTANCE FORWARDED ARGS:");
