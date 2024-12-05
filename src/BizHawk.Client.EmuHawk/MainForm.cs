@@ -1956,12 +1956,12 @@ namespace BizHawk.Client.EmuHawk
 				string path;
 				if (autosave)
 				{
-					path =  Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie);
+					path = Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie);
 					AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
 				}
 				else
 				{
-					path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
+					path =  Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
 				}
 
 				var file = new FileInfo(path);
