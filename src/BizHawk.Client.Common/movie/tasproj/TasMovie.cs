@@ -147,13 +147,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)
 		{
-			// TODO: there are display issues in TAStudio when less than 3 frames are visible
-			// this is because the Bk2Controller returned from GetInputState is a shared object and mutated elsewhere (like the OSDManager),
-			// but it's getting cached here. this "works" in the >= 2 frames case because the _displayCache.Frame != frame condition
-			// will invalidate the cache. Can we do this properly somehow?
-			if (_displayCache.Frame != frame || FrameCount < 3)
+			if (_displayCache.Frame != frame)
 			{
-				_displayCache = (frame, GetInputState(frame));
+				_displayCache.Controller ??= new Bk2Controller(Session.MovieController.Definition, LogKey);
+				_displayCache.Controller.SetFromMnemonic(Log[frame]);
+				_displayCache.Frame = frame;
 			}
 			
 			return CreateDisplayValueForButton(_displayCache.Controller, buttonName);
