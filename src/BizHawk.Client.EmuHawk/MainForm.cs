@@ -2114,6 +2114,23 @@ namespace BizHawk.Client.EmuHawk
 						));
 					}
 				);
+
+				NetworkingHelpers.WebSocketServer.RegisterHandler(
+					Topic.Input,
+					(req) =>
+					{
+						Console.WriteLine($"Received input resquest {req.Input.Value.Name}");
+						bool success = false;
+						var controls = InputManager.ClickyVirtualPadController.ToBoolButtonNameList();
+						if (controls.Contains(req.Input.Value.Name)) {
+							InputManager.ClickyVirtualPadController.Click(req.Input.Value.Name);
+							success = true;
+						}
+						return System.Threading.Tasks.Task.FromResult<ResponseMessageWrapper?>(new ResponseMessageWrapper(
+							new InputResponseMessage(success)
+						));
+					}
+				);
 				_ = NetworkingHelpers.WebSocketServer.Start();
 			}
 		}

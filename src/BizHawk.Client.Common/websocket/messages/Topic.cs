@@ -30,5 +30,7 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		Echo = 2,
 
 		GetInputOptions = 3,
+
+		Input = 4,
 	}
 }

@@ -12,6 +12,8 @@ namespace BizHawk.Client.Common.Websocket.Messages
 
 		public GetInputOptionsRequestMessage? GetInputOptions { get; set; }
 
+		public InputRequestMessage? Input { get; set; }
+
 		public RequestMessageWrapper() { }
 
 		public RequestMessageWrapper(RegistrationRequestMessage message)
@@ -31,6 +33,12 @@ namespace BizHawk.Client.Common.Websocket.Messages
 			Topic = Topic.GetInputOptions;
 			GetInputOptions = message;
 		}
+
+		public RequestMessageWrapper(InputRequestMessage message)
+		{
+			Topic = Topic.Input;
+			Input = message;
+		}
 	}
 
 	public struct ResponseMessageWrapper
@@ -44,6 +52,8 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		public EchoResponseMessage? Echo { get; set; }
 
 		public GetInputOptionsResponseMessage? GetInputOptions { get; set; }
+
+		public InputResponseMessage? Input { get; set; }
 
 		public ResponseMessageWrapper() { }
 
@@ -69,6 +79,12 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		{
 			Topic = Topic.GetInputOptions;
 			GetInputOptions = message;
+		}
+
+		public ResponseMessageWrapper(InputResponseMessage message)
+		{
+			Topic = Topic.Input;
+			Input = message;
 		}
 	}
 }
