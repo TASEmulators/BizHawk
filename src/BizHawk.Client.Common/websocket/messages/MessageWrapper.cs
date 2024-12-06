@@ -1,8 +1,5 @@
 #nullable enable
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
 namespace BizHawk.Client.Common.Websocket.Messages
 {
 	public struct RequestMessageWrapper
@@ -12,6 +9,8 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		public RegistrationRequestMessage? Registration { get; set; }
 
 		public EchoRequestMessage? Echo { get; set; }
+
+		public GetInputOptionsRequestMessage? GetInputOptions { get; set; }
 
 		public RequestMessageWrapper() { }
 
@@ -26,6 +25,12 @@ namespace BizHawk.Client.Common.Websocket.Messages
 			Topic = Topic.Echo;
 			Echo = message;
 		}
+
+		public RequestMessageWrapper(GetInputOptionsRequestMessage message)
+		{
+			Topic = Topic.GetInputOptions;
+			GetInputOptions = message;
+		}
 	}
 
 	public struct ResponseMessageWrapper
@@ -37,6 +42,8 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		public RegistrationResponseMessage? Registration { get; set; }
 
 		public EchoResponseMessage? Echo { get; set; }
+
+		public GetInputOptionsResponseMessage? GetInputOptions { get; set; }
 
 		public ResponseMessageWrapper() { }
 
@@ -57,30 +64,11 @@ namespace BizHawk.Client.Common.Websocket.Messages
 			Topic = Topic.Echo;
 			Echo = message;
 		}
-	}
 
-	[JsonConverter(typeof(StringEnumConverter))]
-	public enum Topic : ushort
-	{
-		/// <summary>
-		/// Topic for general errors. Some errors may be client-specific, such as when
-		/// a request was made that could not be assigned to a topic.
-		/// </summary>
-		Error = 0,
-
-		/// <summary>
-		/// Topic for registration requests.
-		/// </summary>
-		/// <see cref="RegistrationRequestMessage"/>
-		/// <see cref="RegistrationResponseMessage"/>
-		Registration = 1,
-
-		/// <summary>
-		/// This is a client-specific topic, i.e. only the client who sent the message
-		/// will receive the echoed response.
-		/// </summary>
-		/// <see cref="EchoRequestMessage"/>
-		/// <see cref="EchoResponseMessage"/>
-		Echo = 2,
+		public ResponseMessageWrapper(GetInputOptionsResponseMessage message)
+		{
+			Topic = Topic.GetInputOptions;
+			GetInputOptions = message;
+		}
 	}
 }

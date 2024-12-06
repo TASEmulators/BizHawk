@@ -15,12 +15,13 @@ namespace BizHawk.Client.Common
 {
 	public sealed class WebSocketServer
 	{
-		private static readonly HashSet<Topic> forcedRegistrationTopics = [ Topic.Error, Topic.Registration ];
+		private static readonly HashSet<Topic> forcedRegistrationTopics = [ Topic.Error, Topic.Registration, Topic.GetInputOptions ];
 		private readonly HttpListener clientRegistrationListener;
 		private CancellationToken _cancellationToken = default;
 		private bool _running = false;
 		private readonly Dictionary<string, WebSocket> clients = [ ];
 		private readonly Dictionary<Topic, HashSet<string>> topicRegistrations = [ ];
+		private readonly Dictionary<Topic, HashSet<Func<RequestMessageWrapper, Task<ResponseMessageWrapper?>>>> handlers = [ ];
 
 		/// <param name="host">
 		/// 	host address to register for listening to connections, defaults to <see cref="IPAddress.Loopback"/>>
@@ -139,6 +140,10 @@ namespace BizHawk.Client.Common
 					case Topic.Echo:
 						await HandleEchoRequest(clientId, request.Echo!.Value);
 						break;
+
+					case Topic.GetInputOptions:
+						await HandleInputOptionsRequest(clientId, request);
+						break;
 				}
 
 			}
@@ -185,12 +190,23 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private async Task HandleInputOptionsRequest(string clientId, RequestMessageWrapper request)
+		{
+			foreach (var handler in handlers.GetValueOrDefault(Topic.GetInputOptions, [ ])!) 
+			{
+				var response = await handler(request);
+				if (response is not null) {
+					await SendClientMessage(clientId, response.Value);
+				}
+			}
+		}
+
 		// clients always get error topics
 		private async Task SendClientGenericError(string clientId) => await SendClientMessage(
 			clientId, new ResponseMessageWrapper(new ErrorMessage(ErrorType.UnknownRequest))
 		); 
 
-		private async Task SendClientMessage(string clientId, object message)
+		private async Task SendClientMessage(string clientId, ResponseMessageWrapper message)
 		{
 			await clients[clientId].SendAsync(
 				JsonSerde.Serialize(message),
@@ -209,9 +225,14 @@ namespace BizHawk.Client.Common
 				ContractResolver = new CamelCasePropertyNamesContractResolver(),
 			};
 
-			public static ArraySegment<byte> Serialize(object message) => new(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message, serializerSettings)));
+			public static ArraySegment<byte> Serialize(object message) => 
+				new(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message, serializerSettings)));
 
-			public static T? Deserialize<T>(string message) => JsonConvert.DeserializeObject<T>(message, serializerSettings);
+			public static T? Deserialize<T>(string message) => 
+				JsonConvert.DeserializeObject<T>(message, serializerSettings);
 		}
+
+		public void RegisterHandler(Topic topic, Func<RequestMessageWrapper, Task<ResponseMessageWrapper?>> handler) => 
+			_ = handlers.GetValueOrPut(topic, (_) => [ ]).Add(handler);
 	}
 }

@@ -42,6 +42,7 @@ using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.WinForms.Controls;
+using BizHawk.Client.Common.Websocket.Messages;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -505,11 +506,6 @@ namespace BizHawk.Client.EmuHawk
 					? new WebSocketServer(System.Net.IPAddress.Parse(websocketServerIP), websocketServerPort)
 					: null
 			);
-			// TODO better place to put the start of the server?
-			if (NetworkingHelpers.WebSocketServer is not null)
-			{
-				_ = NetworkingHelpers.WebSocketServer.Start();
-			}
 
 			ExtToolManager = new(
 				Config,
@@ -570,6 +566,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			);
 			InitControls();
+
+			InitWebSocketServer();
 
 			var savedOutputMethod = Config.SoundOutputMethod;
 			if (savedOutputMethod is ESoundOutputMethod.Dummy) Config.SoundOutputMethod = HostCapabilityDetector.HasXAudio2 ? ESoundOutputMethod.XAudio2 : ESoundOutputMethod.OpenAL;
@@ -2100,6 +2098,24 @@ namespace BizHawk.Client.EmuHawk
 
 			InputManager.ClientControls = controls;
 			InputManager.ControllerInputCoalescer = new(); // ctor initialises values for host haptics
+		}
+
+		private void InitWebSocketServer()
+		{
+			if (NetworkingHelpers.WebSocketServer is not null)
+			{
+				NetworkingHelpers.WebSocketServer.RegisterHandler(
+					Topic.GetInputOptions,
+					(req) =>
+					{
+						var controls = InputManager.ClickyVirtualPadController.ToBoolButtonNameList();
+						return System.Threading.Tasks.Task.FromResult<ResponseMessageWrapper?>(new ResponseMessageWrapper(
+							new GetInputOptionsResponseMessage(controls.ToHashSet())
+						));
+					}
+				);
+				_ = NetworkingHelpers.WebSocketServer.Start();
+			}
 		}
 
 		private void LoadMoviesFromRecent(string path)
