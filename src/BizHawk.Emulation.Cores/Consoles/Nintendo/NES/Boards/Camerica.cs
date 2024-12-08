@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	}
 
 	//AKA mapper 232
-	internal class Camerica_Mapper232 : NesBoardBase
+	internal sealed class Camerica_Mapper232 : NesBoardBase
 	{
 		//configuration
 		private int prg_bank_mask_16k;

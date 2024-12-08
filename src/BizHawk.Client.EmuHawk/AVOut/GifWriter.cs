@@ -115,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// the underlying stream we're writing to
 		/// </summary>
-		private Stream _f;
+		private FileStream _f;
 
 		/// <summary>
 		/// a final byte we must write before closing the stream

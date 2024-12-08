@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 			int Duration { get; set; }
 		}
 
-		private class Win32ScreenBlankTimer : IScreenBlankTimer
+		private sealed class Win32ScreenBlankTimer : IScreenBlankTimer
 		{
 			public int Duration
 			{
@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class UnixScreenBlankTimer : IScreenBlankTimer
+		private sealed class UnixScreenBlankTimer : IScreenBlankTimer
 		{
 			public int Duration { get; set; } = 0; //TODO implementation
 		}

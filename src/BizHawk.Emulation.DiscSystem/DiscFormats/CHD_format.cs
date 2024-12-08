@@ -516,7 +516,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// CHD is dumb and byteswaps audio samples for some reason
 		/// </summary>
-		private class SS_CHD_Audio : SS_Base
+		private sealed class SS_CHD_Audio : SS_Base
 		{
 			public override void Synth(SectorSynthJob job)
 			{
@@ -532,7 +532,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
-		private class SS_CHD_Sub : ISectorSynthJob2448
+		private sealed class SS_CHD_Sub : ISectorSynthJob2448
 		{
 			private readonly SS_Base _baseSynth;
 			private readonly uint _subOffset;
@@ -853,7 +853,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return crc16;
 		}
 
-		private class ChdHunkMapEntry
+		private sealed class ChdHunkMapEntry
 		{
 			public uint CompressedLength;
 			public long HunkOffset;

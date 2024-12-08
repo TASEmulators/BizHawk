@@ -812,7 +812,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveAddresses()
 		{
 			var indices = SelectedIndices.ToList();
-			if (indices.Any())
+			if (indices.Count != 0)
 			{
 				SetRemovedMessage(indices.Count);
 				_searches.RemoveRange(indices);
@@ -865,7 +865,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AddToRamWatch()
 		{
 			var watches = SelectedWatches.ToList();
-			if (watches.Any())
+			if (watches.Count != 0)
 			{
 				Tools.LoadRamWatch(true);
 				watches.ForEach(Tools.RamWatch.AddWatch);

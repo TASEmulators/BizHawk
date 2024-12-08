@@ -143,7 +143,7 @@ namespace BizHawk.Common
 			string GetErrorMessage();
 		}
 
-		private class LinuxLLManager : ILinkedLibManager
+		private sealed class LinuxLLManager : ILinkedLibManager
 		{
 			public int FreeByPtr(IntPtr hModule) => LinuxDlfcnImports.dlclose(hModule);
 
@@ -176,7 +176,7 @@ namespace BizHawk.Common
 
 		// this is just a copy paste of LinuxLLManager using PosixDlfcnImports instead of LinuxDlfcnImports
 		// TODO: probably could do some OOP magic so there isn't just a copy paste here
-		private class PosixLLManager : ILinkedLibManager
+		private sealed class PosixLLManager : ILinkedLibManager
 		{
 			public int FreeByPtr(IntPtr hModule) => PosixDlfcnImports.dlclose(hModule);
 
@@ -207,7 +207,7 @@ namespace BizHawk.Common
 			}
 		}
 
-		private class WindowsLLManager : ILinkedLibManager
+		private sealed class WindowsLLManager : ILinkedLibManager
 		{
 			public int FreeByPtr(IntPtr hModule) => FreeLibrary(hModule) ? 0 : 1;
 

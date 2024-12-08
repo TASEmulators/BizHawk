@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Common
 
 		private const int THRESHOLD = 3;
 
-		private static bool CheckHeaderHeuristics(bool checkHiROM, ReadOnlySpan<byte> rom, IList<string> warnings)
+		private static bool CheckHeaderHeuristics(bool checkHiROM, ReadOnlySpan<byte> rom, List<string> warnings)
 		{
 			SatellaviewHeader header = new(rom.Slice(start: checkHiROM ? 0xFFB0 : 0x7FB0, length: HEADER_LENGTH));
 			var corruption = 0;

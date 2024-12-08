@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// according to the latest on nesdev:
 	// mapper 079: [.... PCCC] @ 4100
 	// mapper 113: [MCPP PCCC] @ 4100  (no games for this are in bootgod)
-	internal class AVE_NINA_006 : NesBoardBase
+	internal sealed class AVE_NINA_006 : NesBoardBase
 	{
 		//configuration
 		private int prg_bank_mask_32k, chr_bank_mask_8k;

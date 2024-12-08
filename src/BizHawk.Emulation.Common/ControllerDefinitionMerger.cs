@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Common
 
 	public class ControlDefUnMerger
 	{
-		private class DummyController : IController
+		private sealed class DummyController : IController
 		{
 			private readonly IReadOnlyDictionary<string, string> _buttonAxisRemaps;
 

@@ -221,7 +221,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public bool IsSGB { get; }
 
-		private class SGBBoardInfo : IBoardInfo
+		private sealed class SGBBoardInfo : IBoardInfo
 		{
 			public string BoardName => "SGB";
 		}
@@ -279,7 +279,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// every rom requests msu1.rom... why? who knows.
 			// also handle msu-1 pcm files here
 			bool isMsu1Rom = hint == "msu1.rom";
-			bool isMsu1Pcm = Path.GetExtension(hint).ToLowerInvariant() == ".pcm";
+			bool isMsu1Pcm = Path.GetExtension(hint).Equals(".pcm", StringComparison.OrdinalIgnoreCase);
 			if (isMsu1Rom || isMsu1Pcm)
 			{
 				// well, check if we have an msu-1 xml

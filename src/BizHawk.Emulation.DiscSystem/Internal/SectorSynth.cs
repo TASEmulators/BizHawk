@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// Not a proper job? maybe with additional flags, it could be
 	/// </summary>
-	internal class SectorSynthJob
+	internal sealed class SectorSynthJob
 	{
 		public int LBA;
 		public ESectorSynthPart Parts;
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// an ISectorSynthProvider that just returns a value from an array of pre-made sectors
 	/// </summary>
-	internal class ArraySectorSynthProvider : ISectorSynthProvider
+	internal sealed class ArraySectorSynthProvider : ISectorSynthProvider
 	{
 		public List<ISectorSynthJob2448> Sectors = new();
 		public int FirstLBA;
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// an ISectorSynthProvider that just returns a fixed synthesizer
 	/// </summary>
-	internal class SimpleSectorSynthProvider : ISectorSynthProvider
+	internal sealed class SimpleSectorSynthProvider : ISectorSynthProvider
 	{
 		public ISectorSynthJob2448 SS;
 
@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// Returns 'Patch' synth if the provided condition is met
 	/// </summary>
-	internal class ConditionalSectorSynthProvider : ISectorSynthProvider
+	internal sealed class ConditionalSectorSynthProvider : ISectorSynthProvider
 	{
 		private Func<int,bool> Condition;
 		private ISectorSynthJob2448 Patch;
@@ -193,7 +193,7 @@ namespace BizHawk.Emulation.DiscSystem
 	}
 
 
-	internal class SS_PatchQ : ISectorSynthJob2448
+	internal sealed class SS_PatchQ : ISectorSynthJob2448
 	{
 		public ISectorSynthJob2448 Original;
 		public readonly byte[] Buffer_SubQ = new byte[12];
@@ -211,7 +211,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 	}
 
-	internal class SS_Leadout : ISectorSynthJob2448
+	internal sealed class SS_Leadout : ISectorSynthJob2448
 	{
 		public int SessionNumber;
 		public DiscMountPolicy Policy;

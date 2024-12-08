@@ -3,7 +3,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
-	internal class N64Audio : IDisposable
+	internal sealed class N64Audio : IDisposable
 	{
 		/// <summary>
 		/// mupen64 DLL Api

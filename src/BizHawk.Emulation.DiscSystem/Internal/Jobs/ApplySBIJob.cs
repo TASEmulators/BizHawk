@@ -1,7 +1,7 @@
 // TODO - generate correct Q subchannel CRC
 namespace BizHawk.Emulation.DiscSystem
 {
-	internal class ApplySBIJob
+	internal sealed class ApplySBIJob
 	{
 		/// <summary>
 		/// applies an SBI file to the disc

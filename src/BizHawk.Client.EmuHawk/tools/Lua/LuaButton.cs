@@ -2,7 +2,7 @@ using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
 {
-	internal class LuaButton : Button
+	internal sealed class LuaButton : Button
 	{
 		protected override void OnClick(EventArgs e)
 		{
