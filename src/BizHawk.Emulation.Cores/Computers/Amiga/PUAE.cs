@@ -42,6 +42,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		private string _chipsetCompatible = "";
 		private readonly List<IRomAsset> _roms;
 		private List<string> _args;
+		private List<string> _drives;
 		private int _currentDrive;
 		private int _currentSlot;
 		private bool _ejectPressed;
@@ -49,6 +50,9 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		private bool _nextSlotPressed;
 		private bool _nextDrivePressed;
 		private int _correctedWidth;
+		private const int _messageDuration = 4;
+
+		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
 
 		public override int VirtualWidth => _correctedWidth;
 
@@ -66,6 +70,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				_syncSettings.ControllerPort1,
 				_syncSettings.ControllerPort2
 			];
+			_drives = new(_syncSettings.FloppyDrives);
 
 			UpdateAspectRatio(_syncSettings);
 			CreateArguments(_syncSettings);
@@ -85,12 +90,14 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			for (var index = 0; index < lp.Roms.Count; index++)
 			{
-				_exe.AddReadonlyFile(lp.Roms[index].FileData, FileNames.FD + index);
+				var rom = lp.Roms[index];
+				_exe.AddReadonlyFile(rom.FileData, FileNames.FD + index);
 				if (index < _syncSettings.FloppyDrives)
 				{
 					AppendSetting($"floppy{index}={FileNames.FD}{index}");
 					AppendSetting($"floppy{index}type={(int)DriveType.DRV_35_DD}");
 					AppendSetting("floppy_write_protect=true");
+					_drives.Add(GetFullName(rom));
 				}
 			}
 
@@ -193,6 +200,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				if (!_ejectPressed)
 				{
 					fi.Action = LibPUAE.DriveAction.EjectDisk;
+					CoreComm.Notify($"Ejected drive FD{_currentDrive}: {_drives[_currentDrive]}", _messageDuration);
+					_drives[_currentDrive] = "empty";
 				}
 			}
 			else if (controller.IsPressed(Inputs.InsertDisk))
@@ -211,6 +220,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 							}
 						}
 					}
+					_drives[_currentDrive] = GetFullName(_roms[_currentSlot]);
+					CoreComm.Notify($"Insterted drive FD{_currentDrive}: {_drives[_currentDrive]}", _messageDuration);
 				}
 			}
 
@@ -221,7 +232,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					_currentSlot++;
 					_currentSlot %= _roms.Count;
 					var selectedFile = _roms[_currentSlot];
-					CoreComm.Notify(selectedFile.Game.Name, null);
+					CoreComm.Notify($"Selected slot {_currentSlot}: {GetFullName(selectedFile)}", _messageDuration);
 				}
 			}
 
@@ -231,7 +242,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				{
 					_currentDrive++;
 					_currentDrive %= _syncSettings.FloppyDrives;
-					CoreComm.Notify($"Selected FD{ _currentDrive }: Drive", null);
+					CoreComm.Notify($"Selected drive FD{_currentDrive}: {_drives[_currentDrive]}", _messageDuration);
 				}
 			}
 
