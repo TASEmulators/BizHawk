@@ -135,8 +135,13 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
 }
 
-void (*InputCallback)();
+void (*LEDCallback)();
+ECL_EXPORT void SetLEDCallback(void (*callback)())
+{
+	LEDCallback = callback;
+}
 
+void (*InputCallback)();
 ECL_EXPORT void SetInputCallback(void (*callback)())
 {
 	InputCallback = callback;

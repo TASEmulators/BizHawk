@@ -57,6 +57,9 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init(int argc, string[] argv);
 
+		[BizImport(CC)]
+		public abstract void SetLEDCallback(EmptyCallback callback);
+
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{

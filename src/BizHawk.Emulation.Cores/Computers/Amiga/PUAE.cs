@@ -38,9 +38,10 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			DefaultFpsNumerator   = LibPUAE.PUAE_VIDEO_NUMERATOR_NTSC,
 			DefaultFpsDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_NTSC
 		};
-
-		private string _chipsetCompatible = "";
+		
+		private readonly LibWaterboxCore.EmptyCallback _ledCallback;
 		private readonly List<IRomAsset> _roms;
+		private const int _messageDuration = 4;
 		private List<string> _args;
 		private List<string> _drives;
 		private int _currentDrive;
@@ -50,11 +51,14 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		private bool _nextSlotPressed;
 		private bool _nextDrivePressed;
 		private int _correctedWidth;
-		private const int _messageDuration = 4;
-
+		private string _chipsetCompatible = "";
+		public override int VirtualWidth => _correctedWidth;
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
 
-		public override int VirtualWidth => _correctedWidth;
+		private void LEDCallback()
+		{
+			DriveLightOn = true;
+		}
 
 		[CoreConstructor(VSystemID.Raw.Amiga)]
 		public PUAE(CoreLoadParameters<object, PUAESyncSettings> lp)
@@ -71,10 +75,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				_syncSettings.ControllerPort2
 			];
 			_drives = new(_syncSettings.FloppyDrives);
+			DriveLightEnabled = _syncSettings.FloppyDrives > 0;
 
 			UpdateAspectRatio(_syncSettings);
 			CreateArguments(_syncSettings);
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
+			_ledCallback = LEDCallback;
 
 			var puae = PreInit<LibPUAE>(new WaterboxOptions
 			{
@@ -86,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				MmapHeapSizeKB             = 20 * 1024,
 				SkipCoreConsistencyCheck   = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			});
+			}, new Delegate[] { _ledCallback });
 
 			for (var index = 0; index < lp.Roms.Count; index++)
 			{
@@ -124,10 +130,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			}
 
 			PostInit();
+
+			puae.SetLEDCallback(_syncSettings.FloppyDrives > 0 ? _ledCallback : null);
 		}
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
+			DriveLightOn = false;
 			var fi = new LibPUAE.FrameInfo
 			{
 				Port1 = new LibPUAE.ControllerState
