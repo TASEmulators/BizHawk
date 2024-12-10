@@ -17,25 +17,26 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 	{
 		private static readonly Configuration ConfigPAL = new Configuration
 		{
-			SystemId              = VSystemID.Raw.Amiga,
-			MaxSamples            = 2 * 1024,
-			DefaultWidth          = LibPUAE.PAL_WIDTH,
-			DefaultHeight         = LibPUAE.PAL_HEIGHT,
-			MaxWidth              = LibPUAE.PAL_WIDTH,
-			MaxHeight             = LibPUAE.PAL_HEIGHT,
-			DefaultFpsNumerator   = LibPUAE.PUAE_VIDEO_NUMERATOR_PAL,
+			SystemId = VSystemID.Raw.Amiga,
+			MaxSamples = 2 * 1024,
+			DefaultWidth = LibPUAE.PAL_WIDTH,
+			DefaultHeight = LibPUAE.PAL_HEIGHT,
+			MaxWidth = LibPUAE.PAL_WIDTH,
+			MaxHeight = LibPUAE.PAL_HEIGHT,
+			DefaultFpsNumerator = LibPUAE.PUAE_VIDEO_NUMERATOR_PAL,
 			DefaultFpsDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_PAL
 		};
 
 		private static readonly Configuration ConfigNTSC = new Configuration
 		{
-			SystemId              = VSystemID.Raw.Amiga,
-			MaxSamples            = 2 * 1024,
-			DefaultWidth          = LibPUAE.NTSC_WIDTH,
-			DefaultHeight         = LibPUAE.NTSC_HEIGHT,
-			MaxWidth              = LibPUAE.NTSC_WIDTH,
-			MaxHeight             = LibPUAE.NTSC_HEIGHT,
-			DefaultFpsNumerator   = LibPUAE.PUAE_VIDEO_NUMERATOR_NTSC,
+			SystemId = VSystemID.Raw.Amiga,
+			MaxSamples = 2 * 1024,
+			DefaultWidth = LibPUAE.NTSC_WIDTH,
+			DefaultHeight = LibPUAE.NTSC_HEIGHT,
+			// games never switch region, and video dumping won't be happy, but amiga can still do it
+			MaxWidth = LibPUAE.PAL_WIDTH,
+			MaxHeight = LibPUAE.PAL_HEIGHT,
+			DefaultFpsNumerator = LibPUAE.PUAE_VIDEO_NUMERATOR_NTSC,
 			DefaultFpsDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_NTSC
 		};
 		
@@ -77,20 +78,20 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			_drives = new(_syncSettings.FloppyDrives);
 			DriveLightEnabled = _syncSettings.FloppyDrives > 0;
 
-			UpdateAspectRatio(_syncSettings);
+			UpdateVideoStandard(true);
 			CreateArguments(_syncSettings);
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
 			_ledCallback = LEDCallback;
 
 			var puae = PreInit<LibPUAE>(new WaterboxOptions
 			{
-				Filename                   = "puae.wbx",
-				SbrkHeapSizeKB             = 1024,
-				SealedHeapSizeKB           = 512,
-				InvisibleHeapSizeKB        = 512,
-				PlainHeapSizeKB            = 512,
-				MmapHeapSizeKB             = 20 * 1024,
-				SkipCoreConsistencyCheck   = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				Filename = "puae.wbx",
+				SbrkHeapSizeKB = 1024,
+				SealedHeapSizeKB = 512,
+				InvisibleHeapSizeKB = 512,
+				PlainHeapSizeKB = 512,
+				MmapHeapSizeKB = 20 * 1024,
+				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _ledCallback });
 
@@ -255,9 +256,9 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				}
 			}
 
-			_ejectPressed     = controller.IsPressed(Inputs.EjectDisk);
-			_insertPressed    = controller.IsPressed(Inputs.InsertDisk);
-			_nextSlotPressed  = controller.IsPressed(Inputs.NextSlot);
+			_ejectPressed = controller.IsPressed(Inputs.EjectDisk);
+			_insertPressed = controller.IsPressed(Inputs.InsertDisk);
+			_nextSlotPressed = controller.IsPressed(Inputs.NextSlot);
 			_nextDrivePressed = controller.IsPressed(Inputs.NextDrive);			
 			fi.CurrentDrive = _currentDrive;
 
@@ -277,17 +278,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 		protected override void FrameAdvancePost()
 		{
-			if (BufferHeight == LibPUAE.NTSC_HEIGHT)
-			{
-				VsyncNumerator = LibPUAE.PUAE_VIDEO_NUMERATOR_NTSC;
-				VsyncDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_NTSC;
-			}
-			else
-			{
-				VsyncNumerator = LibPUAE.PUAE_VIDEO_NUMERATOR_PAL;
-				VsyncDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_PAL;
-			}
-			UpdateAspectRatio(_syncSettings);
+			UpdateVideoStandard(false);
 		}
 
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
@@ -310,11 +301,24 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			_currentSlot = reader.ReadInt32();
 		}
 
-		private void UpdateAspectRatio(PUAESyncSettings settings)
+		private void UpdateVideoStandard(bool initial)
 		{
-			_correctedWidth = settings.Region is VideoStandard.PAL
-				? LibPUAE.PAL_WIDTH
-				: LibPUAE.PAL_WIDTH * 6 / 7;
+			var ntsc = initial
+				? _syncSettings.Region is VideoStandard.NTSC
+				: BufferHeight == LibPUAE.NTSC_HEIGHT;
+
+			if (ntsc)
+			{
+				_correctedWidth = LibPUAE.PAL_WIDTH * 6 / 7;
+				VsyncNumerator = LibPUAE.PUAE_VIDEO_NUMERATOR_NTSC;
+				VsyncDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_NTSC;
+			}
+			else
+			{
+				_correctedWidth = LibPUAE.PAL_WIDTH;
+				VsyncNumerator = LibPUAE.PUAE_VIDEO_NUMERATOR_PAL;
+				VsyncDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_PAL;
+			}
 		}
 
 		private static class FileNames
