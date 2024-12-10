@@ -106,20 +106,20 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		[Flags]
 		public enum AllButtons : short
 		{
-			Up      = 0b0000000000000001,
-			Down    = 0b0000000000000010,
-			Left    = 0b0000000000000100,
-			Right   = 0b0000000000001000,
+			Up       = 0b0000000000000001,
+			Down     = 0b0000000000000010,
+			Left     = 0b0000000000000100,
+			Right    = 0b0000000000001000,
 			Button_1 = 0b0000000000010000,
 			Button_2 = 0b0000000000100000,
 			Button_3 = 0b0000000001000000,
-			Play    = 0b0000000010000000,
-			Rewind  = 0b0000000100000000,
-			Forward = 0b0000001000000000,
-			Green   = 0b0000010000000000,
-			Yellow  = 0b0000100000000000,
-			Red     = 0b0001000000000000,
-			Blue    = 0b0010000000000000
+			Play     = 0b0000000010000000,
+			Rewind   = 0b0000000100000000,
+			Forward  = 0b0000001000000000,
+			Green    = 0b0000010000000000,
+			Yellow   = 0b0000100000000000,
+			Red      = 0b0001000000000000,
+			Blue     = 0b0010000000000000
 		}
 
 		// https://wiki.amigaos.net/wiki/Keymap_Library
