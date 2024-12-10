@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class CoreFeatureAnalysis : ToolFormBase, IToolFormAutoConfig
 	{
-		private class CoreInfo
+		private sealed class CoreInfo
 		{
 			public string CoreName { get; set; }
 			public bool Released { get; set; }
@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class ServiceInfo
+		private sealed class ServiceInfo
 		{
 			public string TypeName { get; set; }
 			public bool Complete { get; set; }
@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class FunctionInfo
+		private sealed class FunctionInfo
 		{
 			public string TypeName { get; set; }
 			public bool Complete { get; set; }

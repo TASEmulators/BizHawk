@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private static PadSchema Console()
+		private static ConsoleSchema Console()
 		{
 			return new ConsoleSchema
 			{

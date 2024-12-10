@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Components
 	/// </summary>
 	public class Sunsoft5BAudio
 	{
-		private class Pulse
+		private sealed class Pulse
 		{
 			private readonly Action<int> SendDiff;
 			// regs

@@ -275,7 +275,7 @@ namespace BizHawk.Emulation.Cores.Components
 			ser.EndSection();
 		}
 
-		private class QueuedCommand
+		private sealed class QueuedCommand
 		{
 			public byte Register;
 			public byte Value;

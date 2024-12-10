@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.DiscSystem.SBI
 	/// <summary>
 	/// Loads SBI files into an internal representation.
 	/// </summary>
-	internal class LoadSBIJob : DiscJob
+	internal sealed class LoadSBIJob : DiscJob
 	{
 		private readonly string IN_Path;
 

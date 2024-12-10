@@ -8,7 +8,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// also, Namcot109, Namcot118, Namcot119 chips are this exact same thing
-	internal class Namcot108Chip
+	internal sealed class Namcot108Chip
 	{
 		private int reg_addr;
 		private byte[] regs = new byte[8];
@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Sync();
 		}
 
-		public virtual void SyncState(Serializer ser)
+		public void SyncState(Serializer ser)
 		{
 			ser.Sync(nameof(reg_addr), ref reg_addr);
 			ser.Sync(nameof(regs), ref regs, false);
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Sync();
 		}
 
-		public virtual void WritePRG(int addr, byte value)
+		public void WritePRG(int addr, byte value)
 		{
 			//($8001-$9FFF, odd)
 			switch (addr & 0x6001)

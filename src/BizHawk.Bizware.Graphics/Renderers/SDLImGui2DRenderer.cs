@@ -13,7 +13,7 @@ namespace BizHawk.Bizware.Graphics
 	/// Wraps SDL2's software rendering with an ImGui 2D renderer
 	/// Used for the GDI+ IGL, which doesn't understand vertexes and such
 	/// </summary>
-	internal class SDLImGui2DRenderer : ImGui2DRenderer
+	internal sealed class SDLImGui2DRenderer : ImGui2DRenderer
 	{
 		// SDL's software renderer sometimes doesn't fill in shapes all the way with a thickness of 1
 		// a thickness of 2 seems to suffice however

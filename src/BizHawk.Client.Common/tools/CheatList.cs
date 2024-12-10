@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common
 		{
 			_defaultFileName = defaultFileName;
 
-			if (_cheatList.Any() && _changes && autosave)
+			if (_cheatList.Count != 0 && _changes && autosave)
 			{
 				if (string.IsNullOrEmpty(CurrentFileName))
 				{
@@ -224,7 +224,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_config.AutoSaveOnClose)
 			{
-				if (Changes && _cheatList.Any())
+				if (Changes && _cheatList.Count != 0)
 				{
 					if (string.IsNullOrWhiteSpace(CurrentFileName))
 					{
@@ -233,7 +233,7 @@ namespace BizHawk.Client.Common
 
 					SaveFile(CurrentFileName);
 				}
-				else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(CurrentFileName))
+				else if (_cheatList.Count == 0 && !string.IsNullOrWhiteSpace(CurrentFileName))
 				{
 					File.Delete(CurrentFileName);
 					_config.Recent.Remove(CurrentFileName);

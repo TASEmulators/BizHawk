@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
-	internal class mupen64plusInputApi
+	internal sealed class mupen64plusInputApi
 	{
 		private IntPtr InpDll;
 

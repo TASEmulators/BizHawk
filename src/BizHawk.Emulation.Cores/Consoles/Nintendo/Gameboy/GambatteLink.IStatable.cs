@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
 
-		private class GBLSerialized
+		private sealed class GBLSerialized
 		{
 			public int NumCores;
 			public TextState<Gameboy.TextStateData>[] LinkedStates;

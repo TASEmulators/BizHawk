@@ -135,7 +135,7 @@ namespace BizHawk.Bizware.Audio
 		public override void Write(byte[] buffer, int offset, int count)
 			=> throw new NotSupportedException();
 
-		private unsafe class SDLRwOpsStreamWrapper : IDisposable
+		private sealed unsafe class SDLRwOpsStreamWrapper : IDisposable
 		{
 			public IntPtr Rw { get; private set; }
 			private readonly Stream _s;

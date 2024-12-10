@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Common
 		public string Header { get; }
 
 #nullable disable
-		private class TracingMemoryCallback : IMemoryCallback
+		private sealed class TracingMemoryCallback : IMemoryCallback
 		{
 			public TracingMemoryCallback(MemoryCallbackDelegate callback, string scope)
 			{

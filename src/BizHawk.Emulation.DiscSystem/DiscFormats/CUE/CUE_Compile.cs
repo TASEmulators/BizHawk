@@ -10,7 +10,7 @@ using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Emulation.DiscSystem.CUE
 {
-	internal class CompiledCDText
+	internal sealed class CompiledCDText
 	{
 		public string Songwriter;
 		public string Performer;
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		DecodeAudio,
 	}
 
-	internal class CompiledCueFile
+	internal sealed class CompiledCueFile
 	{
 		public string FullPath;
 		public CompiledCueFileType Type;
@@ -78,13 +78,13 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		}
 	}
 
-	internal class CompiledSessionInfo
+	internal sealed class CompiledSessionInfo
 	{
 		public int FirstRecordedTrackNumber, LastRecordedTrackNumber;
 		public SessionFormat SessionFormat;
 	}
 
-	internal class CompiledCueTrack
+	internal sealed class CompiledCueTrack
 	{
 		public int BlobIndex;
 		public int Number;
@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		}
 	}
 
-	internal class CompileCueJob : DiscJob
+	internal sealed class CompileCueJob : DiscJob
 	{
 		private readonly CUE_File IN_CueFile;
 

@@ -677,7 +677,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Class that holds information about a specific command
         /// </summary>
-        private class Command
+        private sealed class Command
         {
 //          /// <summary>
 //          /// Mask to remove potential parameter bits (5,6, and or 7) in order to identify the command

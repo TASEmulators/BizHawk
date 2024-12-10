@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 					HandleHardcoreModeDisable("Using MAME in hardcore mode is not allowed.");
 					break;
 				case NymaCore nyma:
-					if (nyma.GetSettings().DisabledLayers.Any())
+					if (nyma.GetSettings().DisabledLayers.Count != 0)
 					{
 						HandleHardcoreModeDisable($"Disabling {Emu.GetType().Name}'s graphics layers in hardcore mode is not allowed.");
 					}
