@@ -95,16 +95,20 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _ledCallback });
 
-			for (var index = 0; index < lp.Roms.Count; index++)
+			for (var index = 0; index < _syncSettings.FloppyDrives; index++)
 			{
-				var rom = lp.Roms[index];
-				_exe.AddReadonlyFile(rom.FileData, FileNames.FD + index);
-				if (index < _syncSettings.FloppyDrives)
+				if (index < lp.Roms.Count)
 				{
-					AppendSetting($"floppy{index}={FileNames.FD}{index}");
-					AppendSetting($"floppy{index}type={(int)DriveType.DRV_35_DD}");
-					AppendSetting("floppy_write_protect=true");
+					var rom = lp.Roms[index];
+					_exe.AddReadonlyFile(rom.FileData, FileNames.FD + index);
 					_drives.Add(GetFullName(rom));
+					AppendSetting($"floppy{index}={FileNames.FD}{index}");
+					AppendSetting($"floppy{index}type={(int) DriveType.DRV_35_DD}");
+					AppendSetting("floppy_write_protect=true");
+				}
+				else
+				{
+					_drives.Add("empty");
 				}
 			}
 
