@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
+#if !NET7_0_OR_GREATER
 using BizHawk.Common.CollectionExtensions;
+#endif
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
