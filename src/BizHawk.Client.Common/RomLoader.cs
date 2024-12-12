@@ -194,7 +194,7 @@ namespace BizHawk.Client.Common
 
 		public IOpenAdvanced OpenAdvanced { get; set; }
 
-		private bool HandleArchiveBinding(HawkFile file)
+		private bool HandleArchiveBinding(HawkFile file, bool showDialog = true)
 		{
 			// try binding normal rom extensions first
 			if (!file.IsBound)
@@ -213,7 +213,7 @@ namespace BizHawk.Client.Common
 			// if we have an archive and need to bind something, then pop the dialog
 			if (file.IsArchive && !file.IsBound)
 			{
-				int? result = HandleArchive(file);
+				var result = showDialog ? HandleArchive(file) : null;
 				if (result.HasValue)
 				{
 					file.BindArchiveMember(result.Value);
@@ -627,7 +627,10 @@ namespace BizHawk.Client.Common
 				try
 				{
 					using var f = new HawkFile(path, allowArchives: true);
-					if (!HandleArchiveBinding(f)) throw;
+					// we want to avoid opening up the choose file from archive dialog
+					// as it is very likely in this case this is actually a MAME ROM
+					// which case, we do want the error to be shown immediately, other cores won't load this
+					if (!HandleArchiveBinding(f, showDialog: false)) throw;
 					LoadOther(nextComm, f, ext: ext, forcedCoreName: null, out nextEmulator, out rom, out game, out cancel);
 				}
 				catch (Exception oex)
