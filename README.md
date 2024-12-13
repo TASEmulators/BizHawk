@@ -153,7 +153,7 @@ Not available for either AArch64 or x86_64 devices. The feature request is [#355
 
 #### iOS
 
-As with Apple Silicon Macs, not available.
+As with Apple silicon Macs, not available.
 
 If you were looking to emulate iOS apps, see [#3956](https://github.com/TASEmulators/BizHawk/issues/3956).
 
@@ -164,7 +164,7 @@ EmuHawk depends on certain libraries for graphics, and these don't work on macOS
 * Use an older 1.x release, which was ported to macOS by @Sappharad (with replacements for the missing libraries), via Rosetta. Links and more details are in [this TASVideos forum thread](https://tasvideos.org/Forum/Topics/12659) (jump to last page for latest binaries). See [#3697](https://github.com/TASEmulators/BizHawk/issues/3697) for details.
 * For the technically-minded, download the [source](https://github.com/Sappharad/BizHawk/tree/MacUnixMonoCompat) of an older 2.x release. @Sappharad put a lot of work into it but ultimately decided to stop.
 	* ...or use the Nix expression as a starting point instead.
-	* Either way, this probably won't work on Apple Silicon without a lot more effort. You'll probably want to build for x86_64 and run Mono via Rosetta. See [#4052](https://github.com/TASEmulators/BizHawk/issues/4052) re: Linux AArch64.
+	* Either way, this probably won't work on Apple silicon without a lot more effort. You'll probably want to build for x86_64 and run Mono via Rosetta. See [#4052](https://github.com/TASEmulators/BizHawk/issues/4052) re: Linux AArch64.
 
 #### Nix/NixOS
 
