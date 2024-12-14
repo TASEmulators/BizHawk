@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
-	public partial class PUAE : IDriveLight
+	public partial class UAE : IDriveLight
 	{
 		public bool DriveLightEnabled { get; }
 		public bool DriveLightOn { get; private set; }

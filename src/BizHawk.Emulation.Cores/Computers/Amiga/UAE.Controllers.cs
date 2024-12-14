@@ -6,69 +6,69 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
-	public partial class PUAE
+	public partial class UAE
 	{
-		private LibPUAE.ControllerType[] _ports { get; set; }
-		private static readonly (string Name, LibPUAE.AllButtons Button)[] _joystickMap = CreateJoystickMap();
-		private static readonly (string Name, LibPUAE.AllButtons Button)[] _cd32padMap = CreateCd32padMap();
-		private static readonly (string Name, LibPUAE.PUAEKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
+		private LibUAE.ControllerType[] _ports { get; set; }
+		private static readonly (string Name, LibUAE.AllButtons Button)[] _joystickMap = CreateJoystickMap();
+		private static readonly (string Name, LibUAE.AllButtons Button)[] _cd32padMap = CreateCd32padMap();
+		private static readonly (string Name, LibUAE.UAEKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
 
-		private static (string Name, LibPUAE.AllButtons Value)[] CreateJoystickMap()
+		private static (string Name, LibUAE.AllButtons Value)[] CreateJoystickMap()
 		{
-			var joystickMap = new List<(string, LibPUAE.AllButtons)>();
+			var joystickMap = new List<(string, LibUAE.AllButtons)>();
 			// ReSharper disable once LoopCanBeConvertedToQuery
-			foreach (var b in Enum.GetValues(typeof(LibPUAE.AllButtons)))
+			foreach (var b in Enum.GetValues(typeof(LibUAE.AllButtons)))
 			{
-				if (((short)b & LibPUAE.JoystickMask) == 0)
+				if (((short)b & LibUAE.JoystickMask) == 0)
 					continue;
 
-				var name = Enum.GetName(typeof(LibPUAE.AllButtons), b)!.Replace('_', ' ');
-				joystickMap.Add((name, (LibPUAE.AllButtons)b));
+				var name = Enum.GetName(typeof(LibUAE.AllButtons), b)!.Replace('_', ' ');
+				joystickMap.Add((name, (LibUAE.AllButtons)b));
 			}
 			return joystickMap.ToArray();
 		}
 
-		private static (string Name, LibPUAE.AllButtons Value)[] CreateCd32padMap()
+		private static (string Name, LibUAE.AllButtons Value)[] CreateCd32padMap()
 		{
-			var joystickMap = new List<(string, LibPUAE.AllButtons)>();
+			var joystickMap = new List<(string, LibUAE.AllButtons)>();
 			// ReSharper disable once LoopCanBeConvertedToQuery
-			foreach (var b in Enum.GetValues(typeof(LibPUAE.AllButtons)))
+			foreach (var b in Enum.GetValues(typeof(LibUAE.AllButtons)))
 			{
-				if (((short)b & LibPUAE.Cd32padMask) == 0)
+				if (((short)b & LibUAE.Cd32padMask) == 0)
 					continue;
 
-				var name = Enum.GetName(typeof(LibPUAE.AllButtons), b)!.Replace('_', ' ');
-				joystickMap.Add((name, (LibPUAE.AllButtons)b));
+				var name = Enum.GetName(typeof(LibUAE.AllButtons), b)!.Replace('_', ' ');
+				joystickMap.Add((name, (LibUAE.AllButtons)b));
 			}
 			return joystickMap.ToArray();
 		}
 
-		private static (string Name, LibPUAE.PUAEKeyboard Value)[] CreateKeyboardMap()
+		private static (string Name, LibUAE.UAEKeyboard Value)[] CreateKeyboardMap()
 		{
-			var keyboardMap = new List<(string, LibPUAE.PUAEKeyboard)>();
+			var keyboardMap = new List<(string, LibUAE.UAEKeyboard)>();
 			// ReSharper disable once LoopCanBeConvertedToQuery
-			foreach (var k in Enum.GetValues(typeof(LibPUAE.PUAEKeyboard)))
+			foreach (var k in Enum.GetValues(typeof(LibUAE.UAEKeyboard)))
 			{
-				var name = Enum.GetName(typeof(LibPUAE.PUAEKeyboard), k)!.Replace('_', ' ');
-				keyboardMap.Add((name, (LibPUAE.PUAEKeyboard)k));
+				var name = Enum.GetName(typeof(LibUAE.UAEKeyboard), k)!.Replace('_', ' ');
+				keyboardMap.Add((name, (LibUAE.UAEKeyboard)k));
 			}
 
 			return keyboardMap.ToArray();
 		}
 
-		private static ControllerDefinition CreateControllerDefinition(PUAESyncSettings settings)
+		private static ControllerDefinition CreateControllerDefinition(UAESyncSettings settings)
 		{
 			var controller = new ControllerDefinition("Amiga Controller");
 
 			for (int port = 1; port <= 2; port++)
 			{
-				LibPUAE.ControllerType type = port == 1
+				LibUAE.ControllerType type = port == 1
 					? settings.ControllerPort1
 					: settings.ControllerPort2;
 
 				switch (type)
 				{
-					case LibPUAE.ControllerType.Joystick:
+					case LibUAE.ControllerType.Joystick:
 						{
 							foreach (var (name, _) in _joystickMap)
 							{
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 							}
 							break;
 						}
-					case LibPUAE.ControllerType.CD32_pad:
+					case LibUAE.ControllerType.CD32_pad:
 						{
 							foreach (var (name, _) in _cd32padMap)
 							{
@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 							}
 							break;
 						}
-					case LibPUAE.ControllerType.Mouse:
+					case LibUAE.ControllerType.Mouse:
 						{
 							controller.BoolButtons.AddRange(
 							[
@@ -93,8 +93,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 								$"P{port} {Inputs.MouseRightButton}"
 							]);
 							controller
-								.AddAxis($"P{port} {Inputs.MouseX}", 0.RangeTo(LibPUAE.PAL_WIDTH), LibPUAE.PAL_WIDTH / 2)
-								.AddAxis($"P{port} {Inputs.MouseY}", 0.RangeTo(LibPUAE.PAL_HEIGHT), LibPUAE.PAL_HEIGHT / 2);
+								.AddAxis($"P{port} {Inputs.MouseX}", 0.RangeTo(LibUAE.PAL_WIDTH), LibUAE.PAL_WIDTH / 2)
+								.AddAxis($"P{port} {Inputs.MouseY}", 0.RangeTo(LibUAE.PAL_HEIGHT), LibUAE.PAL_HEIGHT / 2);
 							break;
 						}
 				}

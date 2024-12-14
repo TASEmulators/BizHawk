@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 				MAME => Properties.Resources.Mame,
 				MGBAHawk => Properties.Resources.Mgba,
 				NDS => Properties.Resources.MelonDS,
-				PUAE => Properties.Resources.Amiga,
+				UAE => Properties.Resources.Amiga,
 				_ => null
 			};
 		}

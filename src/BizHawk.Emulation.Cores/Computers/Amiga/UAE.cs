@@ -8,36 +8,36 @@ using BizHawk.Emulation.Cores.Waterbox;
 namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
 	[PortedCore(
-		name: CoreNames.PUAE,
+		name: CoreNames.UAE,
 		author: "UAE Team",
 		portedVersion: "5.0.0",
 		portedUrl: "https://github.com/libretro/libretro-uae",
 		isReleased: false)]
-	public partial class PUAE : WaterboxCore
+	public partial class UAE : WaterboxCore
 	{
 		private static readonly Configuration ConfigPAL = new Configuration
 		{
 			SystemId = VSystemID.Raw.Amiga,
 			MaxSamples = 2 * 1024,
-			DefaultWidth = LibPUAE.PAL_WIDTH,
-			DefaultHeight = LibPUAE.PAL_HEIGHT,
-			MaxWidth = LibPUAE.PAL_WIDTH,
-			MaxHeight = LibPUAE.PAL_HEIGHT,
-			DefaultFpsNumerator = LibPUAE.PUAE_VIDEO_NUMERATOR_PAL,
-			DefaultFpsDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_PAL
+			DefaultWidth = LibUAE.PAL_WIDTH,
+			DefaultHeight = LibUAE.PAL_HEIGHT,
+			MaxWidth = LibUAE.PAL_WIDTH,
+			MaxHeight = LibUAE.PAL_HEIGHT,
+			DefaultFpsNumerator = LibUAE.UAE_VIDEO_NUMERATOR_PAL,
+			DefaultFpsDenominator = LibUAE.UAE_VIDEO_DENOMINATOR_PAL
 		};
 
 		private static readonly Configuration ConfigNTSC = new Configuration
 		{
 			SystemId = VSystemID.Raw.Amiga,
 			MaxSamples = 2 * 1024,
-			DefaultWidth = LibPUAE.NTSC_WIDTH,
-			DefaultHeight = LibPUAE.NTSC_HEIGHT,
+			DefaultWidth = LibUAE.NTSC_WIDTH,
+			DefaultHeight = LibUAE.NTSC_HEIGHT,
 			// games never switch region, and video dumping won't be happy, but amiga can still do it
-			MaxWidth = LibPUAE.PAL_WIDTH,
-			MaxHeight = LibPUAE.PAL_HEIGHT,
-			DefaultFpsNumerator = LibPUAE.PUAE_VIDEO_NUMERATOR_NTSC,
-			DefaultFpsDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_NTSC
+			MaxWidth = LibUAE.PAL_WIDTH,
+			MaxHeight = LibUAE.PAL_HEIGHT,
+			DefaultFpsNumerator = LibUAE.UAE_VIDEO_NUMERATOR_NTSC,
+			DefaultFpsDenominator = LibUAE.UAE_VIDEO_DENOMINATOR_NTSC
 		};
 		
 		private readonly LibWaterboxCore.EmptyCallback _ledCallback;
@@ -62,12 +62,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		}
 
 		[CoreConstructor(VSystemID.Raw.Amiga)]
-		public PUAE(CoreLoadParameters<object, PUAESyncSettings> lp)
+		public UAE(CoreLoadParameters<object, UAESyncSettings> lp)
 			: base(lp.Comm, lp.SyncSettings?.Region is VideoStandard.NTSC ? ConfigNTSC : ConfigPAL)
 		{
 			_roms = lp.Roms;
 			_syncSettings = lp.SyncSettings ?? new();
-			_syncSettings.FloppyDrives = Math.Min(LibPUAE.MAX_FLOPPIES, _syncSettings.FloppyDrives);
+			_syncSettings.FloppyDrives = Math.Min(LibUAE.MAX_FLOPPIES, _syncSettings.FloppyDrives);
 			DeterministicEmulation = lp.DeterministicEmulationRequested || _syncSettings.FloppySpeed is FloppySpeed._100;
 			var filesToRemove = new List<string>();
 
@@ -83,9 +83,9 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
 			_ledCallback = LEDCallback;
 
-			var puae = PreInit<LibPUAE>(new WaterboxOptions
+			var uae = PreInit<LibUAE>(new WaterboxOptions
 			{
-				Filename = "puae.wbx",
+				Filename = "uae.wbx",
 				SbrkHeapSizeKB = 1024,
 				SealedHeapSizeKB = 512,
 				InvisibleHeapSizeKB = 512,
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			Console.WriteLine(string.Join(" ", _args));
 			Console.WriteLine();
 
-			if (!puae.Init(_args.Count, _args.ToArray()))
+			if (!uae.Init(_args.Count, _args.ToArray()))
 				throw new InvalidOperationException("Core rejected the rom!");
 
 			foreach (var f in filesToRemove)
@@ -132,25 +132,25 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			PostInit();
 
-			puae.SetLEDCallback(_syncSettings.FloppyDrives > 0 ? _ledCallback : null);
+			uae.SetLEDCallback(_syncSettings.FloppyDrives > 0 ? _ledCallback : null);
 		}
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			DriveLightOn = false;
-			var fi = new LibPUAE.FrameInfo
+			var fi = new LibUAE.FrameInfo
 			{
-				Port1 = new LibPUAE.ControllerState
+				Port1 = new LibUAE.ControllerState
 				{
 					Type = _ports[0],
 					Buttons = 0
 				},
-				Port2 = new LibPUAE.ControllerState
+				Port2 = new LibUAE.ControllerState
 				{
 					Type = _ports[1],
 					Buttons = 0
 				},
-				Action = LibPUAE.DriveAction.None
+				Action = LibUAE.DriveAction.None
 			};
 
 			for (int port = 1; port <= 2; port++)
@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 				switch (_ports[port - 1])
 				{
-					case LibPUAE.ControllerType.Joystick:
+					case LibUAE.ControllerType.Joystick:
 						{
 							foreach (var (name, button) in _joystickMap)
 							{
@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 							}
 							break;
 						}
-					case LibPUAE.ControllerType.CD32_pad:
+					case LibUAE.ControllerType.CD32_pad:
 						{
 							foreach (var (name, button) in _cd32padMap)
 							{
@@ -181,21 +181,21 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 							}
 							break;
 						}
-					case LibPUAE.ControllerType.Mouse:
+					case LibUAE.ControllerType.Mouse:
 						{
 							if (controller.IsPressed($"P{port} {Inputs.MouseLeftButton}"))
 							{
-								currentPort.Buttons |= LibPUAE.AllButtons.Button_1;
+								currentPort.Buttons |= LibUAE.AllButtons.Button_1;
 							}
 
 							if (controller.IsPressed($"P{port} {Inputs.MouseRightButton}"))
 							{
-								currentPort.Buttons |= LibPUAE.AllButtons.Button_2;
+								currentPort.Buttons |= LibUAE.AllButtons.Button_2;
 							}
 
 							if (controller.IsPressed($"P{port} {Inputs.MouseMiddleButton}"))
 							{
-								currentPort.Buttons |= LibPUAE.AllButtons.Button_3;
+								currentPort.Buttons |= LibUAE.AllButtons.Button_3;
 							}
 
 							currentPort.MouseX = controller.AxisValue($"P{port} {Inputs.MouseX}");
@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			{
 				if (!_ejectPressed)
 				{
-					fi.Action = LibPUAE.DriveAction.EjectDisk;
+					fi.Action = LibUAE.DriveAction.EjectDisk;
 					CoreComm.Notify($"Ejected drive FD{_currentDrive}: {_drives[_currentDrive]}", _messageDuration);
 					_drives[_currentDrive] = "empty";
 				}
@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			{
 				if (!_insertPressed)
 				{
-					fi.Action = LibPUAE.DriveAction.InsertDisk;
+					fi.Action = LibUAE.DriveAction.InsertDisk;
 					unsafe
 					{
 						var str = FileNames.FD + _currentSlot;
@@ -226,7 +226,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 						{
 							fixed (byte* buffer = fi.Name.Buffer)
 							{
-								Encoding.ASCII.GetBytes(filename, str.Length, buffer, LibPUAE.FILENAME_MAXLENGTH);
+								Encoding.ASCII.GetBytes(filename, str.Length, buffer, LibUAE.FILENAME_MAXLENGTH);
 							}
 						}
 					}
@@ -309,19 +309,19 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		{
 			var ntsc = initial
 				? _syncSettings.Region is VideoStandard.NTSC
-				: BufferHeight == LibPUAE.NTSC_HEIGHT;
+				: BufferHeight == LibUAE.NTSC_HEIGHT;
 
 			if (ntsc)
 			{
-				_correctedWidth = LibPUAE.PAL_WIDTH * 6 / 7;
-				VsyncNumerator = LibPUAE.PUAE_VIDEO_NUMERATOR_NTSC;
-				VsyncDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_NTSC;
+				_correctedWidth = LibUAE.PAL_WIDTH * 6 / 7;
+				VsyncNumerator = LibUAE.UAE_VIDEO_NUMERATOR_NTSC;
+				VsyncDenominator = LibUAE.UAE_VIDEO_DENOMINATOR_NTSC;
 			}
 			else
 			{
-				_correctedWidth = LibPUAE.PAL_WIDTH;
-				VsyncNumerator = LibPUAE.PUAE_VIDEO_NUMERATOR_PAL;
-				VsyncDenominator = LibPUAE.PUAE_VIDEO_DENOMINATOR_PAL;
+				_correctedWidth = LibUAE.PAL_WIDTH;
+				VsyncNumerator = LibUAE.UAE_VIDEO_NUMERATOR_PAL;
+				VsyncDenominator = LibUAE.UAE_VIDEO_DENOMINATOR_PAL;
 			}
 		}
 

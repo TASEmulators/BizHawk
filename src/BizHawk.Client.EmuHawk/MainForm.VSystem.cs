@@ -1332,8 +1332,8 @@ namespace BizHawk.Client.EmuHawk
 			// PicoDrive
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.PicoDrive, CreateGenericCoreConfigItem<PicoDrive>(CoreNames.PicoDrive)));
 
-			// PUAE
-			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.PUAE, CreateGenericCoreConfigItem<PUAE>(CoreNames.PUAE)));
+			// UAE
+			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.UAE, CreateGenericCoreConfigItem<UAE>(CoreNames.UAE)));
 
 			// QuickNes
 			var quickNesGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenQuickNesGamepadSettingsDialog(GetSettingsAdapterFor<QuickNES>()));

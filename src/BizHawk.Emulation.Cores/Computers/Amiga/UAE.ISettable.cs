@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
-	public partial class PUAE : ISettable<object, PUAE.PUAESyncSettings>
+	public partial class UAE : ISettable<object, UAE.UAESyncSettings>
 	{
 		public enum MachineConfig
 		{
@@ -143,11 +143,11 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			Turbo = 0
 		}
 
-		private void CreateArguments(PUAESyncSettings settings)
+		private void CreateArguments(UAESyncSettings settings)
 		{
 			_args = new List<string>
 			{
-				"puae",
+				"uae",
 			};
 
 			switch(settings.MachineConfig)
@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				AppendSetting("bogomem_size=" + (int)settings.SlowMemory);
 			}
 
-			if (settings.FastMemory != LibPUAE.FASTMEM_AUTO)
+			if (settings.FastMemory != LibUAE.FASTMEM_AUTO)
 			{
 				AppendSetting("fastmem_size=" + settings.FastMemory);
 			}
@@ -258,19 +258,19 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			for (int port = 0; port <= 1; port++)
 			{
-				LibPUAE.ControllerType type = port == 0
+				LibUAE.ControllerType type = port == 0
 					? settings.ControllerPort1
 					: settings.ControllerPort2;
 
 				switch (type)
 				{
-					case LibPUAE.ControllerType.Joystick:
+					case LibUAE.ControllerType.Joystick:
 						AppendSetting($"joyport{port}mode=djoy");
 						break;
-					case LibPUAE.ControllerType.CD32_pad:
+					case LibUAE.ControllerType.CD32_pad:
 						AppendSetting($"joyport{port}mode=cd32joy");
 						break;
-					case LibPUAE.ControllerType.Mouse:
+					case LibUAE.ControllerType.Mouse:
 						AppendSetting($"joyport{port}mode=mouse");
 						break;
 				}
@@ -307,19 +307,19 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		public object GetSettings() => null;
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
 
-		private PUAESyncSettings _syncSettings;
-		public PUAESyncSettings GetSyncSettings()
+		private UAESyncSettings _syncSettings;
+		public UAESyncSettings GetSyncSettings()
 			=> _syncSettings.Clone();
 
-		public PutSettingsDirtyBits PutSyncSettings(PUAESyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(UAESyncSettings o)
 		{
-			var ret = PUAESyncSettings.NeedsReboot(_syncSettings, o);
+			var ret = UAESyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		[CoreSettings]
-		public class PUAESyncSettings
+		public class UAESyncSettings
 		{
 			[DisplayName("Machine configuration")]
 			[Description("")]
@@ -358,22 +358,22 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			[DisplayName("Fast memory")]
 			[Description("Size in megabytes of fast-memory.  -1 means Auto.  Overrides machine configuration.")]
-			[Range(LibPUAE.FASTMEM_AUTO, 512)]
-			[DefaultValue(LibPUAE.FASTMEM_AUTO)]
+			[Range(LibUAE.FASTMEM_AUTO, 512)]
+			[DefaultValue(LibUAE.FASTMEM_AUTO)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int FastMemory { get; set; }
 
 			[DisplayName("Controller port 1")]
 			[Description("")]
-			[DefaultValue(LibPUAE.ControllerType.Mouse)]
+			[DefaultValue(LibUAE.ControllerType.Mouse)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public LibPUAE.ControllerType ControllerPort1 { get; set; }
+			public LibUAE.ControllerType ControllerPort1 { get; set; }
 
 			[DisplayName("Controller port 2")]
 			[Description("")]
-			[DefaultValue(LibPUAE.ControllerType.Joystick)]
+			[DefaultValue(LibUAE.ControllerType.Joystick)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public LibPUAE.ControllerType ControllerPort2 { get; set; }
+			public LibUAE.ControllerType ControllerPort2 { get; set; }
 
 			[DisplayName("Mouse speed")]
 			[Description("Mouse speed in percents (1% - 1000%).  Adjust if there's mismatch between emulated and host mouse movement.  Note that maximum mouse movement is still 127 pixels due to Amiga hardware limitations.")]
@@ -407,13 +407,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public FloppySpeed FloppySpeed { get; set; }
 
-			public PUAESyncSettings()
+			public UAESyncSettings()
 				=> SettingsUtil.SetDefaultValues(this);
 
-			public PUAESyncSettings Clone()
-				=> (PUAESyncSettings)MemberwiseClone();
+			public UAESyncSettings Clone()
+				=> (UAESyncSettings)MemberwiseClone();
 
-			public static bool NeedsReboot(PUAESyncSettings x, PUAESyncSettings y)
+			public static bool NeedsReboot(UAESyncSettings x, UAESyncSettings y)
 				=> !DeepEquality.DeepEquals(x, y);
 		}
 	}
