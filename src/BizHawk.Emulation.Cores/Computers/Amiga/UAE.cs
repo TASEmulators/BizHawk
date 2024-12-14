@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		private static readonly Configuration ConfigPAL = new Configuration
 		{
 			SystemId = VSystemID.Raw.Amiga,
-			MaxSamples = 2 * 1024,
+			MaxSamples = 8 * 1024,
 			DefaultWidth = LibUAE.PAL_WIDTH,
 			DefaultHeight = LibUAE.PAL_HEIGHT,
 			MaxWidth = LibUAE.PAL_WIDTH,
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		private static readonly Configuration ConfigNTSC = new Configuration
 		{
 			SystemId = VSystemID.Raw.Amiga,
-			MaxSamples = 2 * 1024,
+			MaxSamples = 8 * 1024,
 			DefaultWidth = LibUAE.NTSC_WIDTH,
 			DefaultHeight = LibUAE.NTSC_HEIGHT,
 			// games never switch region, and video dumping won't be happy, but amiga can still do it
