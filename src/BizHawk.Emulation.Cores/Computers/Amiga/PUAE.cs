@@ -95,20 +95,16 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _ledCallback });
 
-			for (var index = 0; index < _syncSettings.FloppyDrives; index++)
+			for (var index = 0; index < lp.Roms.Count; index++)
 			{
-				if (index < lp.Roms.Count)
+				var rom = lp.Roms[index];
+				_exe.AddReadonlyFile(rom.FileData, FileNames.FD + index);
+				if (index < _syncSettings.FloppyDrives)
 				{
-					var rom = lp.Roms[index];
-					_exe.AddReadonlyFile(rom.FileData, FileNames.FD + index);
 					_drives.Add(GetFullName(rom));
 					AppendSetting($"floppy{index}={FileNames.FD}{index}");
 					AppendSetting($"floppy{index}type={(int) DriveType.DRV_35_DD}");
 					AppendSetting("floppy_write_protect=true");
-				}
-				else
-				{
-					_drives.Add("empty");
 				}
 			}
 
@@ -256,6 +252,10 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				{
 					_currentDrive++;
 					_currentDrive %= _syncSettings.FloppyDrives;
+					if (_drives.Count <= _currentDrive)
+					{
+						_drives.Add("empty");
+					}
 					CoreComm.Notify($"Selected drive FD{_currentDrive}: {_drives[_currentDrive]}", _messageDuration);
 				}
 			}
