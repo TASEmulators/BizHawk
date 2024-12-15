@@ -88,6 +88,12 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap Erase = ReadEmbeddedBitmap("Erase");
 		internal static readonly Bitmap ESE = ReadEmbeddedBitmap("ESE");
 		internal static readonly Bitmap ExclamationRed = ReadEmbeddedBitmap("ExclamationRed");
+		internal static readonly Bitmap FFaccept = ReadEmbeddedBitmap("Farm-Fresh_accept");
+		internal static readonly Bitmap FFcancel = ReadEmbeddedBitmap("Farm-Fresh_cancel");
+		internal static readonly Bitmap FFdelete = ReadEmbeddedBitmap("Farm-Fresh_delete");
+		internal static readonly Bitmap FFexclamation = ReadEmbeddedBitmap("Farm-Fresh_exclamation");
+		internal static readonly Bitmap FFhelp = ReadEmbeddedBitmap("Farm-Fresh_help");
+		internal static readonly Bitmap FFstar = ReadEmbeddedBitmap("Farm-Fresh_star");
 		internal static readonly Bitmap FastForward = ReadEmbeddedBitmap("FastForward");
 		internal static readonly Bitmap Find = ReadEmbeddedBitmap("FindHS");
 		internal static readonly Bitmap Forward = ReadEmbeddedBitmap("Forward");

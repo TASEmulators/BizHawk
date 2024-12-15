@@ -36,17 +36,17 @@ namespace BizHawk.Client.EmuHawk
 			[FirmwareOptionStatus.Unknown] = STATUS_DESC_UNUSED,
 			[FirmwareOptionStatus.Unacceptable] = "NO: This doesn't work on the core",
 			[FirmwareOptionStatus.Acceptable] = "OK: This works on the core",
-			[FirmwareOptionStatus.Ideal] = "PERFECT: Ideal for TASing and anything.",
+			[FirmwareOptionStatus.Ideal] = "PERFECT: Ideal for TASing and anything",
 		};
 
 		internal static readonly IReadOnlyDictionary<FirmwareOptionStatus, Image> StatusIcons = new Dictionary<FirmwareOptionStatus, Image>
 		{
-			[FirmwareOptionStatus.Unset] = Properties.Resources.ExclamationRed,
-			[FirmwareOptionStatus.Bad] = Properties.Resources.ThumbsDown, // in this main view, bad dumps use this thumbs down (to differentiate from unset); in a record's info view, they use unset's red '!' (to differentiate from unacceptable)
-			[FirmwareOptionStatus.Unknown] = Properties.Resources.RetroQuestion,
-			[FirmwareOptionStatus.Unacceptable] = Properties.Resources.ThumbsDown,
-			[FirmwareOptionStatus.Acceptable] = Properties.Resources.GreenCheck,
-			[FirmwareOptionStatus.Ideal] = Properties.Resources.Freeze,
+			[FirmwareOptionStatus.Unset] = Properties.Resources.FFhelp,
+			[FirmwareOptionStatus.Bad] = Properties.Resources.FFdelete,
+			[FirmwareOptionStatus.Unknown] = Properties.Resources.FFexclamation,
+			[FirmwareOptionStatus.Unacceptable] = Properties.Resources.FFcancel,
+			[FirmwareOptionStatus.Acceptable] = Properties.Resources.FFaccept,
+			[FirmwareOptionStatus.Ideal] = Properties.Resources.FFstar,
 		};
 
 		private readonly IDictionary<string, string> _firmwareUserSpecifications;
@@ -328,10 +328,19 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						var fo = FirmwareDatabase.FirmwareOptions.FirstOrNull(fo => fo.Hash == hash);
-						lvi.ImageIndex = (int) (fo?.Status ?? FirmwareOptionStatus.Unset); // null here means it's an option for a different record, so use the red '!' like unset
-						lvi.ToolTipText = fo?.IsAcceptableOrIdeal == true
-							? "Good! This file has been bound to some kind of a decent choice"
-							: "Bad! This file has been bound to a choice which is known to be bad (details in right-click > Info)";
+						lvi.ImageIndex = (int) (fo?.Status ?? FirmwareOptionStatus.Unset);
+						if (fo?.Status == FirmwareOptionStatus.Ideal)
+						{
+							lvi.ToolTipText = "Perfect! This file has been bound to an ideal choice";
+						}
+						else if (fo?.Status == FirmwareOptionStatus.Acceptable)
+						{
+							lvi.ToolTipText = "Good! This file has been bound to some kind of a decent choice";
+						}
+						else
+						{
+							lvi.ToolTipText = "Bad! This file has been bound to a choice which is known to be bad (details in right-click -> Info)";
+						}
 						lvi.SubItems[4].Text = ri.KnownFirmwareFile.Value.Description;
 					}
 
@@ -545,7 +554,7 @@ namespace BizHawk.Client.EmuHawk
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				var ff = FirmwareDatabase.FirmwareFilesByOption[o];
-				olvi.ImageIndex = (int) (o.Status is FirmwareOptionStatus.Bad ? FirmwareOptionStatus.Unset : o.Status); // if bad, use unset's red '!' to differentiate from unacceptable
+				olvi.ImageIndex = (int) o.Status;
 				olvi.ToolTipText = StatusDescs[o.Status];
 				olvi.SubItems[0].Text = ff.Size.ToString();
 				olvi.SubItems[0].Font = Font; // why doesn't this work?
