@@ -15,7 +15,7 @@
 , profileManagedCalls
 }: let
 	/**
-	 * you can make use of the call duration data by seeing which methods it's spending the longest in: `mprof-report --reports=call --method-sort=self output/*.flame.mlpd` (really you'd want to sort by self/count but that's not an option)
+	 * you can make use of the call duration data by seeing which methods it's spending the longest in: `mprof-report --reports=call --method-sort=self output/*.flame.mlpd` (really you'd want to sort by the ratio `self/count` but that's not an option)
 	 *
 	 * the other useful profiling mode is allocations: `nix-shell --argstr profileManagedCalls " --profile=log:alloc,nocalls,output=%t.alloc.mlpd"`
 	 * you can make use of the allocation data by listing which types had the most instances allocated: `mprof-report --reports=alloc --alloc-sort=count output/*.alloc.mlpd`

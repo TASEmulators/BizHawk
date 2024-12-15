@@ -222,7 +222,12 @@ namespace BizHawk.Emulation.Common
 				DB = _builder.ToFrozenDictionary();
 				_builder.Clear();
 				if (_expected.Count is not 0) Util.DebugWriteLine($"extra bundled gamedb files were not #included: {string.Join(", ", _expected)}");
-				Util.DebugWriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
+#if BIZHAWKBUILD_RUN_ONLY_GAMEDB_INIT
+				Console.WriteLine( // should be optimising for measurement so want to print then
+#else
+				Util.DebugWriteLine( // ...but for most users it's just noise
+#endif
+					$"GameDB load: {stopwatch.Elapsed} sec");
 				_acquire.Set();
 			});
 		}
