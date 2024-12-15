@@ -183,6 +183,27 @@ namespace BizHawk.Common.StringExtensions
 			return a;
 		}
 
+		/// <summary>as <see cref="string.ToUpperInvariant"/>, but assumes <paramref name="str"/> is 7-bit ASCII to allow for an optimisation</summary>
+		/// <remarks>allocates a new char array only when necessary</remarks>
+		public static string ToUpperASCIIFast(this string str)
+		{
+			const ushort ASCII_UPCASE_MASK = 0b101111;
+			for (var i = 0; i < str.Length; i++)
+			{
+				if (str[i] is < 'a' or > 'z') continue;
+				var a = new char[str.Length];
+				str.AsSpan(start: 0, length: i).CopyTo(a);
+				a[i] = unchecked((char) (str[i] & ASCII_UPCASE_MASK));
+				while (++i < str.Length)
+				{
+					var c = str[i];
+					a[i] = c is >= 'a' and <= 'z' ? unchecked((char) (c & ASCII_UPCASE_MASK)) : c;
+				}
+				return new(a);
+			}
+			return str;
+		}
+
 		/// <summary>
 		/// splits a given <paramref name="str"/> by <paramref name="delimiter"/>,
 		/// applies <paramref name="transform"/> to each part, then rejoins them

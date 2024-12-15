@@ -36,7 +36,10 @@ namespace BizHawk.Emulation.Common
 		/// <param name="hash">The hash to format, this is typically prefixed with a type (e.g. sha1:)</param>
 		/// <returns>formatted hash</returns>
 		private static string FormatHash(string hash)
-			=> hash.Substring(hash.IndexOf(':') + 1).ToUpperInvariant();
+		{
+			var i = hash.IndexOf(':');
+			return (i < 0 ? hash.Substring(startIndex: i + 1) : hash).ToUpperASCIIFast();
+		}
 
 		private static void LoadDatabase_Escape(string line, bool inUser, bool silent)
 		{
