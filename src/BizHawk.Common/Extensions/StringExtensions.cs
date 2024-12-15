@@ -187,7 +187,7 @@ namespace BizHawk.Common.StringExtensions
 		/// <remarks>allocates a new char array only when necessary</remarks>
 		public static string ToUpperASCIIFast(this string str)
 		{
-			const ushort ASCII_UPCASE_MASK = 0b101111;
+			const ushort ASCII_UPCASE_MASK = 0b101_1111;
 			for (var i = 0; i < str.Length; i++)
 			{
 				if (str[i] is < 'a' or > 'z') continue;

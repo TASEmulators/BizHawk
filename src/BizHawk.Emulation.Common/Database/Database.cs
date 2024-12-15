@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Common
 		private static string FormatHash(string hash)
 		{
 			var i = hash.IndexOf(':');
-			return (i < 0 ? hash.Substring(startIndex: i + 1) : hash).ToUpperASCIIFast();
+			return (i < 0 ? hash : hash.Substring(startIndex: i + 1)).ToUpperASCIIFast();
 		}
 
 		private static void LoadDatabase_Escape(string line, bool inUser, bool silent)
