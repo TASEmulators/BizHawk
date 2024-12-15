@@ -292,6 +292,24 @@ namespace BizHawk.Common.CollectionExtensions
 			return true;
 		}
 
+		public static ReadOnlySpan<T> Slice<T>(this ReadOnlySpan<T> span, Range range)
+		{
+			var (offset, length) = range.GetOffsetAndLength(span.Length);
+			return span.Slice(start: offset, length: length);
+		}
+
+		public static Span<T> Slice<T>(this Span<T> span, Range range)
+		{
+			var (offset, length) = range.GetOffsetAndLength(span.Length);
+			return span.Slice(start: offset, length: length);
+		}
+
+		public static string Substring(this string str, Range range)
+		{
+			var (offset, length) = range.GetOffsetAndLength(str.Length);
+			return str.Substring(startIndex: offset, length: length);
+		}
+
 		/// <summary>shallow clone</summary>
 		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> list)
 			=> list.ToDictionary(static kvp => kvp.Key, static kvp => kvp.Value);

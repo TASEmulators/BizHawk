@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
@@ -102,21 +103,15 @@ namespace BizHawk.Emulation.Common
 
 		private static bool initialized = false;
 
-		public static CompactGameInfo ParseCGIRecord(string line)
+		public static CompactGameInfo ParseCGIRecord(string lineStr)
 		{
+			var line = lineStr.AsSpan();
 			const char FIELD_SEPARATOR = '\t';
-			var iFieldStart = -1;
-			var iFieldEnd = -1; // offset of the tab char, or line.Length if at end
-			string AdvanceAndReadField(out bool isLastField)
-			{
-				iFieldStart = iFieldEnd + 1;
-				iFieldEnd = line.IndexOf(FIELD_SEPARATOR, iFieldStart);
-				isLastField = iFieldEnd < 0;
-				if (isLastField) iFieldEnd = line.Length;
-				return line.Substring(startIndex: iFieldStart, length: iFieldEnd - iFieldStart);
-			}
-			var hashDigest = FormatHash(AdvanceAndReadField(out _));
-			var dumpStatus = AdvanceAndReadField(out _).Trim() switch
+			var iter = line.Split(FIELD_SEPARATOR);
+			_ = iter.MoveNext();
+			var hashDigest = FormatHash(lineStr.Substring(iter.Current));
+			_ = iter.MoveNext();
+			var dumpStatus = line.Slice(iter.Current).Trim() switch
 			{
 				"B" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
 				"V" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
@@ -128,21 +123,23 @@ namespace BizHawk.Emulation.Common
 				"U" => RomStatus.Unknown,
 				_ => RomStatus.GoodDump
 			};
-			var knownName = AdvanceAndReadField(out _);
-			var sysID = AdvanceAndReadField(out var isLastField);
+			_ = iter.MoveNext();
+			var knownName = lineStr.Substring(iter.Current);
+			_ = iter.MoveNext();
+			var sysID = lineStr.Substring(iter.Current);
 			string/*?*/ metadata = null;
 			string region = string.Empty;
 			string forcedCore = string.Empty;
-			if (!isLastField)
+			if (iter.MoveNext())
 			{
-				_ = AdvanceAndReadField(out isLastField); // rarely present; possibly genre or just a remark
-				if (!isLastField)
+				//_ = line.Slice(iter.Current); // rarely populated; possibly genre or just a remark
+				if (iter.MoveNext())
 				{
-					metadata = AdvanceAndReadField(out isLastField);
-					if (!isLastField)
+					metadata = lineStr.Substring(iter.Current);
+					if (iter.MoveNext())
 					{
-						region = AdvanceAndReadField(out isLastField);
-						if (!isLastField) forcedCore = AdvanceAndReadField(out isLastField);
+						region = lineStr.Substring(iter.Current);
+						if (iter.MoveNext()) forcedCore = lineStr.Substring(iter.Current);
 					}
 				}
 			}
