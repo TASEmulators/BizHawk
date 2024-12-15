@@ -29,7 +29,7 @@ namespace BizHawk.Client.Common
 				: base(aliases, description) {}
 		}
 
-		private static readonly Argument<string?> ArgumentRomFilePath = new(name: "rom", () => null, description: "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`");
+		private static readonly Argument<string?> ArgumentRomFilePath = new(name: "rom", () => null, description: "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`; this argument can and should be given LAST despite what it says at the top of --help");
 
 		private static readonly IReadOnlyList<Option> GeneratedOptions;
 
