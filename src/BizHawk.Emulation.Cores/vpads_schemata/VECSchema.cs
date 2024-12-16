@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores
 			return new ButtonSchema(x, y, controller, $"Button {button}", button.ToString());
 		}
 
-		private static PadSchema ConsoleButtons()
+		private static ConsoleSchema ConsoleButtons()
 		{
 			return new ConsoleSchema
 			{

@@ -1390,7 +1390,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				if (_extraAxisRows.Any())
+				if (_extraAxisRows.Count != 0)
 				{
 					foreach (int row in _extraAxisRows)
 					{

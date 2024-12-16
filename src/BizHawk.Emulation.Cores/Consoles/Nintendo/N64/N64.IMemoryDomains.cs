@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	{
 		private readonly List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
 
-		private IMemoryDomains MemoryDomains;
+		private MemoryDomainList MemoryDomains;
 
 		private void MakeMemoryDomain(string name, mupen64plusApi.N64_MEMORY id, MemoryDomain.Endian endian, bool swizzled = false)
 		{

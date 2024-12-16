@@ -185,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 			if (EditableItems.Any())
 			{
 				var items = EditableItems.ToList();
-				if (items.Any())
+				if (items.Count != 0)
 				{
 					foreach (var item in items)
 					{
@@ -216,7 +216,7 @@ namespace BizHawk.Client.EmuHawk
 			if (EditableItems.Any())
 			{
 				var items = EditableItems.ToList();
-				if (items.Any())
+				if (items.Count != 0)
 				{
 					foreach (var item in items) item.Active = !item.Active;
 					BreakpointView.VirtualListSize = _breakpoints.Count;

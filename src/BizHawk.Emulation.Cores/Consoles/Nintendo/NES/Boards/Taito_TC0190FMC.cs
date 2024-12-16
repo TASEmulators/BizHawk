@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int prg_bank_mask, chr_bank_mask;
 		private bool pal16;
 
-		private class MMC3Variant : MMC3
+		private sealed class MMC3Variant : MMC3
 		{
 			public MMC3Variant(NesBoardBase board)
 			: base(board,0)

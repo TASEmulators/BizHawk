@@ -364,7 +364,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		/// <summary>
 		/// Wraps the ShockDiscRef returned from the DLL and acts as a bridge between it and a DiscSystem disc
 		/// </summary>
-		private class DiscInterface : IDisposable
+		private sealed class DiscInterface : IDisposable
 		{
 			public DiscInterface(Disc disc, Action<DiscInterface> cbActivity)
 			{

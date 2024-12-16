@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Font _fixedFont, _boldFont, _boldFixedFont;
 
-		private class ListViewSorter : IComparer
+		private sealed class ListViewSorter : IComparer
 		{
 			public int Column { get; set; }
 			public int Sign { get; set; }

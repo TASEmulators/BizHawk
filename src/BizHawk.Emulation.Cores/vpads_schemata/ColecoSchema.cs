@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private static IEnumerable<ButtonSchema> StandardButtons(int controller) => new ButtonSchema[]
+		private static ButtonSchema[] StandardButtons(int controller) => new ButtonSchema[]
 		{
 			ButtonSchema.Up(50, 11, controller),
 			ButtonSchema.Down(50, 32, controller),

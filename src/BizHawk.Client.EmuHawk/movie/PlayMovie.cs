@@ -153,9 +153,9 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		private IBasicMovieInfo LoadMovieInfo(HawkFile hf, bool force)
+		private BasicMovieInfo LoadMovieInfo(HawkFile hf, bool force)
 		{
-			IBasicMovieInfo movie = new BasicMovieInfo(hf.CanonicalFullPath);
+			var movie = new BasicMovieInfo(hf.CanonicalFullPath);
 
 			try
 			{

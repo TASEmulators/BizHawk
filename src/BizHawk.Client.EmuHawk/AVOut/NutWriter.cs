@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// dummy codec token class
 		/// </summary>
-		private class NutWriterToken : IDisposable
+		private sealed class NutWriterToken : IDisposable
 		{
 			public void Dispose()
 			{

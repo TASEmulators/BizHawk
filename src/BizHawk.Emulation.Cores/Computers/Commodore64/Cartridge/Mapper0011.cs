@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	// to the System 3 mapper (000F) except that bank switching is
 	// done by reads to the DExx region instead of writes.
 	// This is why mapper 0011 inherits directly from 000F.
-	internal class Mapper0011 : Mapper000F
+	internal sealed class Mapper0011 : Mapper000F
 	{
 		public Mapper0011(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)
 			: base(newAddresses, newBanks, newData)

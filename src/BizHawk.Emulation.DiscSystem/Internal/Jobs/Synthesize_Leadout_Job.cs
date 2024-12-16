@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// generates lead-out sectors according to very crude approximations
 	/// TODO - this isn't being used right now
 	/// </summary>
-	internal class Synthesize_LeadoutJob
+	internal sealed class Synthesize_LeadoutJob
 	{
 		private readonly int Length;
 		private readonly Disc Disc;

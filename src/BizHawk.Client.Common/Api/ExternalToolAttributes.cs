@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 		[AttributeUsage(AttributeTargets.Class)]
 		public sealed class RomList : ExternalToolApplicabilityAttributeBase
 		{
-			private readonly IList<string> _romHashes;
+			private readonly List<string> _romHashes;
 
 			private readonly string _sysID;
 

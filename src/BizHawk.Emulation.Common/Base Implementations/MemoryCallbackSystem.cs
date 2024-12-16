@@ -250,7 +250,7 @@ namespace BizHawk.Emulation.Common
 	/// <remarks>
 	/// Reentrancy from ItemAdded and ItemRemoved events is not allowed.
 	/// </remarks>
-	internal class MemoryCallbackCollection : IReadOnlyCollection<IMemoryCallback>
+	internal sealed class MemoryCallbackCollection : IReadOnlyCollection<IMemoryCallback>
 	{
 		private List<IMemoryCallback> _items = new();
 		private int _copyOnWriteRequired = 0;

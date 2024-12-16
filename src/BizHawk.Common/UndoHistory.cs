@@ -12,7 +12,7 @@ namespace BizHawk.Common
 		/// </remarks>
 		private int _curPos;
 
-		private readonly IList<T> _history = new List<T>();
+		private readonly List<T> _history = new List<T>();
 
 		public bool CanRedo => Enabled && _curPos < _history.Count;
 

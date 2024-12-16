@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// 4-in-1 1993 (CK-001) [U][!].unf
-	internal class UNIF_BMC_8157 : NesBoardBase
+	internal sealed class UNIF_BMC_8157 : NesBoardBase
 	{
 		[MapperProp]
 		public bool _4in1Mode;

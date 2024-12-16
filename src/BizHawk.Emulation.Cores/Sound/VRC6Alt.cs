@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		private class Saw
+		private sealed class Saw
 		{
 			private readonly Action<int> SendDiff;
 			public Saw(Action<int> SendDiff) { this.SendDiff = SendDiff; }
@@ -186,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		private class Pulse
+		private sealed class Pulse
 		{
 			private readonly Action<int> SendDiff;
 			public Pulse(Action<int> SendDiff) { this.SendDiff = SendDiff; }

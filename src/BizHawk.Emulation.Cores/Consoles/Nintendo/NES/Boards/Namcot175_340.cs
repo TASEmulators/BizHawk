@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[NesBoardImplPriority]
-	internal class Namcot175_340 : NesBoardBase
+	internal sealed class Namcot175_340 : NesBoardBase
 	{
 		/*
 		 * Namcot 175 and 340.  Simpler versions of the 129/163.  Differences:

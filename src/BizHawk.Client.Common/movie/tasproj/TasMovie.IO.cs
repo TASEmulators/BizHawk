@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.ClientSettings, (TextWriter tw) => tw.Write(inputRollSettingsJson));
 			}
 
-			if (VerificationLog.Any())
+			if (VerificationLog.Count != 0)
 			{
 				bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(VerificationLog.ToInputLog()));
 			}
