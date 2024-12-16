@@ -1,6 +1,8 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 
+using CommunityToolkit.HighPerformance.Buffers;
+
 namespace BizHawk.Common.StringExtensions
 {
 	public static class StringExtensions
@@ -199,7 +201,7 @@ namespace BizHawk.Common.StringExtensions
 					var c = str[i];
 					a[i] = c is >= 'a' and <= 'z' ? unchecked((char) (c & ASCII_UPCASE_MASK)) : c;
 				}
-				return new(a);
+				return StringPool.Shared.GetOrAdd(a);
 			}
 			return str;
 		}

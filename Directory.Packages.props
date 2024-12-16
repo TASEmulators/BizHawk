@@ -1,5 +1,6 @@
 <Project>
 	<ItemGroup>
+		<PackageVersion Include="CommunityToolkit.HighPerformance" Version="8.3.2" />
 		<PackageVersion Include="Cyotek.Drawing.BitmapFont" Version="2.0.4" />
 		<PackageVersion Include="DotNetAnalyzers.DocumentationAnalyzers" Version="1.0.0-beta.59" />
 		<PackageVersion Include="Google.FlatBuffers" Version="23.5.26" /> <!-- last version with .NET Standard 2.0 support -->
