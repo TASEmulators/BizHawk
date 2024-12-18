@@ -342,7 +342,7 @@ namespace BizHawk.Client.EmuHawk
 					comparisonType);
 			}
 
-			MessageBox.Show($"{address} is not a valid address for the domain {domain.Name}", "Index out of range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			MessageBox.Show($"0x{address:X} is not a valid address for the domain {domain.Name}", "Index out of range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			return Cheat.Separator;
 		}
 
