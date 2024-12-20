@@ -104,7 +104,7 @@ print('\nReminder: Enable Capure OSD when Dumping!\n')
 
 size = {{['A26']=10, ['C64']=24, ['NES']=40, ['PCE']=40, ['PCECD']=40, ['SGX']=40, ['GB']=16, ['GBC']=16, ['VB']=38, ['WSWAN']=28, ['SNES']=46, ['GEN']=46, ['GBA']=34, ['Coleco']=16, ['SAT']=46, ['A78']=20, ['SG']=20, ['SMS']=36, ['Lynx']=32, ['GG']=30, ['NGP']=29, ['PCFX']=50, ['PSX']=56},{['A26']=16, ['C64']=16, ['NES']=16, ['PCE']=16, ['PCECD']=16, ['SGX']=16, ['GB']=24, ['GBC']=24, ['VB']=28, ['WSWAN']=28, ['SNES']=20, ['GEN']=20, ['GBA']=16, ['Coleco']=38, ['SAT']=20, ['A78']=20, ['SG']=20, ['SMS']=16, ['Lynx']=15, ['GG']=22, ['NGP']=14, ['PCFX']=22, ['PSX']=34}}
 
-event.onframestart(function()
+dragHandlerGuid = event.onframestart(function()
 	x = input.getmouse()['X']
 	y = input.getmouse()['Y']
 	b = input.getmouse()['Left'] or input.getmouse()['Right']
@@ -1052,3 +1052,6 @@ while sys == 'PSX' do
 
 	emu.frameadvance()
 end
+
+print(string.format('Unsupported system: %s. Stopping script.', sys))
+event.unregisterbyid(dragHandlerGuid)
