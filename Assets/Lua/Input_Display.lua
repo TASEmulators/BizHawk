@@ -54,21 +54,20 @@ enable = {true,true,true,true,true,true,true,true,true,true,true,true}
 --------------------------------------------------------------------------------
 
 -- Console Interface --
--- DO NOT CHANGE THIS, IS USED FOR DETECTION!
 
 do
-	pluged = {joypad.get(1)['Up'] ~= nil,
-			joypad.get( 2)['Up'] ~= nil,
-			joypad.get( 3)['Up'] ~= nil,
-			joypad.get( 4)['Up'] ~= nil,
-			joypad.get( 5)['Up'] ~= nil,
-			joypad.get( 6)['Up'] ~= nil,
-			joypad.get( 7)['Up'] ~= nil,
-			joypad.get( 8)['Up'] ~= nil,
-			joypad.get( 9)['Up'] ~= nil,
-			joypad.get(10)['Up'] ~= nil,
-			joypad.get(11)['Up'] ~= nil,
-			joypad.get(12)['Up'] ~= nil}
+	pluged = {next(joypad.get(1)) ~= nil,
+			next(joypad.get( 2)) ~= nil,
+			next(joypad.get( 3)) ~= nil,
+			next(joypad.get( 4)) ~= nil,
+			next(joypad.get( 5)) ~= nil,
+			next(joypad.get( 6)) ~= nil,
+			next(joypad.get( 7)) ~= nil,
+			next(joypad.get( 8)) ~= nil,
+			next(joypad.get( 9)) ~= nil,
+			next(joypad.get(10)) ~= nil,
+			next(joypad.get(11)) ~= nil,
+			next(joypad.get(12)) ~= nil}
 
 	sys = emu.getsystemid()
 	if sys == 'Game Gear' then sys = 'GG' end -- DualGG is weird
