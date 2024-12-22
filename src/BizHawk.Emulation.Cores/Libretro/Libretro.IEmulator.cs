@@ -111,29 +111,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 				MakeImmutable();
 			}
-
-			protected override IReadOnlyList<IReadOnlyList<(string Name, AxisSpec? AxisSpec)>> GenOrderedControls()
-			{
-				// all this is to remove the keyboard buttons from P0 and put them in P3 so they appear at the end of the input display
-				var players = base.GenOrderedControls().ToList();
-				List<(string, AxisSpec?)> retroKeyboard = new();
-				var p0 = (List<(string, AxisSpec?)>) players[0];
-				for (var i = 0; i < p0.Count; /* incremented in body */)
-				{
-					(string ButtonName, AxisSpec?) button = p0[i];
-					if (CategoryLabels.TryGetValue(button.ButtonName, out var v) && v is CAT_KEYBOARD)
-					{
-						retroKeyboard.Add(button);
-						p0.RemoveAt(i);
-					}
-					else
-					{
-						i++;
-					}
-				}
-				players.Add(retroKeyboard);
-				return players;
-			}
 		}
 
 		public ControllerDefinition ControllerDefinition { get; }

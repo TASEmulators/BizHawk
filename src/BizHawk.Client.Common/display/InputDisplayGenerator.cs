@@ -16,15 +16,9 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException("Can't generate input display string with empty mnemonics cache");
 
 			var sb = new StringBuilder();
-			var controls = source.Definition.ControlsOrdered.ToList();
-			// index 0 is for controls that don't belong to any indexed player
-			if (controls.ElementAtOrDefault(0) != null)
-			{
-				controls.Add(controls[0]);
-				controls.RemoveAt(0);
-			}
-
-			foreach ((string buttonName, AxisSpec? axisSpec) in controls.SelectMany(x => x))
+			var players = source.Definition.ControlsOrdered;
+			var playersNewOrder = players.Skip(1).Concat(players.Take(1)); // move first ("player 0") to end
+			foreach ((string buttonName, AxisSpec? axisSpec) in playersNewOrder.SelectMany(static x => x))
 			{
 				if (axisSpec.HasValue)
 				{

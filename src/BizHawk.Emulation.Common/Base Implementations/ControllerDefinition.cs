@@ -114,6 +114,7 @@ namespace BizHawk.Emulation.Common
 			if (!_mutable) throw new InvalidOperationException(ERR_MSG);
 		}
 
+		/// <remarks>implementors should include empty lists for empty players, including "player 0", to match this base implementation</remarks>
 		protected virtual IReadOnlyList<IReadOnlyList<(string Name, AxisSpec? AxisSpec)>> GenOrderedControls()
 		{
 			var ret = new List<(string, AxisSpec?)>[PlayerCount + 1];
