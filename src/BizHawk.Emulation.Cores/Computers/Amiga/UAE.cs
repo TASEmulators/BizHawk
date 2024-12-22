@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 using BizHawk.Emulation.Common;
@@ -23,8 +24,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			DefaultHeight = LibUAE.PAL_HEIGHT,
 			MaxWidth = LibUAE.PAL_WIDTH,
 			MaxHeight = LibUAE.PAL_HEIGHT,
-			DefaultFpsNumerator = LibUAE.UAE_VIDEO_NUMERATOR_PAL,
-			DefaultFpsDenominator = LibUAE.UAE_VIDEO_DENOMINATOR_PAL
+			DefaultFpsNumerator = LibUAE.VIDEO_NUMERATOR_PAL,
+			DefaultFpsDenominator = LibUAE.VIDEO_DENOMINATOR_PAL
 		};
 
 		private static readonly Configuration ConfigNTSC = new Configuration
@@ -36,15 +37,16 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			// games never switch region, and video dumping won't be happy, but amiga can still do it
 			MaxWidth = LibUAE.PAL_WIDTH,
 			MaxHeight = LibUAE.PAL_HEIGHT,
-			DefaultFpsNumerator = LibUAE.UAE_VIDEO_NUMERATOR_NTSC,
-			DefaultFpsDenominator = LibUAE.UAE_VIDEO_DENOMINATOR_NTSC
+			DefaultFpsNumerator = LibUAE.VIDEO_NUMERATOR_NTSC,
+			DefaultFpsDenominator = LibUAE.VIDEO_DENOMINATOR_NTSC
 		};
 		
 		private readonly LibWaterboxCore.EmptyCallback _ledCallback;
 		private readonly List<IRomAsset> _roms;
 		private const int _messageDuration = 4;
+		private const int _driveNullOrEmpty = -1;
+		private int[] _driveSlots;
 		private List<string> _args;
-		private List<string> _drives;
 		private int _currentDrive;
 		private int _currentSlot;
 		private bool _ejectPressed;
@@ -53,8 +55,9 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		private bool _nextDrivePressed;
 		private int _correctedWidth;
 		private string _chipsetCompatible = "";
-		public override int VirtualWidth => _correctedWidth;
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
+
+		public override int VirtualWidth => _correctedWidth;
 
 		private void LEDCallback()
 		{
@@ -75,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				_syncSettings.ControllerPort1,
 				_syncSettings.ControllerPort2
 			];
-			_drives = new(_syncSettings.FloppyDrives);
+			_driveSlots = Enumerable.Repeat(_driveNullOrEmpty, LibUAE.MAX_FLOPPIES).ToArray();
 			DriveLightEnabled = _syncSettings.FloppyDrives > 0;
 
 			UpdateVideoStandard(true);
@@ -101,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				_exe.AddReadonlyFile(rom.FileData, FileNames.FD + index);
 				if (index < _syncSettings.FloppyDrives)
 				{
-					_drives.Add(GetFullName(rom));
+					_driveSlots[index] = index;
 					AppendSetting($"floppy{index}={FileNames.FD}{index}");
 					AppendSetting($"floppy{index}type={(int) DriveType.DRV_35_DD}");
 					AppendSetting("floppy_write_protect=true");
@@ -210,8 +213,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				if (!_ejectPressed)
 				{
 					fi.Action = LibUAE.DriveAction.EjectDisk;
-					CoreComm.Notify($"Ejected drive FD{_currentDrive}: {_drives[_currentDrive]}", _messageDuration);
-					_drives[_currentDrive] = "empty";
+					CoreComm.Notify($"Ejected drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", _messageDuration);
+					_driveSlots[_currentDrive] = _driveNullOrEmpty;
 				}
 			}
 			else if (controller.IsPressed(Inputs.InsertDisk))
@@ -230,8 +233,8 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 							}
 						}
 					}
-					_drives[_currentDrive] = GetFullName(_roms[_currentSlot]);
-					CoreComm.Notify($"Insterted drive FD{_currentDrive}: {_drives[_currentDrive]}", _messageDuration);
+					_driveSlots[_currentDrive] = _currentSlot;
+					CoreComm.Notify($"Insterted drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", _messageDuration);
 				}
 			}
 
@@ -252,11 +255,16 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				{
 					_currentDrive++;
 					_currentDrive %= _syncSettings.FloppyDrives;
-					if (_drives.Count <= _currentDrive)
+					string name = "";
+					if (_driveSlots[_currentDrive] == _driveNullOrEmpty)
 					{
-						_drives.Add("empty");
+						name = "empty";
 					}
-					CoreComm.Notify($"Selected drive FD{_currentDrive}: {_drives[_currentDrive]}", _messageDuration);
+					else
+					{
+						name = GetFullName(_roms[_driveSlots[_currentDrive]]);
+					}
+					CoreComm.Notify($"Selected drive FD{_currentDrive}: {name}", _messageDuration);
 				}
 			}
 
@@ -293,6 +301,10 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			writer.Write(_nextDrivePressed);
 			writer.Write(_currentDrive);
 			writer.Write(_currentSlot);
+			writer.Write(_driveSlots[0]);
+			writer.Write(_driveSlots[1]);
+			writer.Write(_driveSlots[2]);
+			writer.Write(_driveSlots[3]);
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
@@ -303,6 +315,10 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			_nextDrivePressed = reader.ReadBoolean();
 			_currentDrive = reader.ReadInt32();
 			_currentSlot = reader.ReadInt32();
+			_driveSlots[0] = reader.ReadInt32();
+			_driveSlots[1] = reader.ReadInt32();
+			_driveSlots[2] = reader.ReadInt32();
+			_driveSlots[3] = reader.ReadInt32();
 		}
 
 		private void UpdateVideoStandard(bool initial)
@@ -314,14 +330,14 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			if (ntsc)
 			{
 				_correctedWidth = LibUAE.PAL_WIDTH * 6 / 7;
-				VsyncNumerator = LibUAE.UAE_VIDEO_NUMERATOR_NTSC;
-				VsyncDenominator = LibUAE.UAE_VIDEO_DENOMINATOR_NTSC;
+				VsyncNumerator = LibUAE.VIDEO_NUMERATOR_NTSC;
+				VsyncDenominator = LibUAE.VIDEO_DENOMINATOR_NTSC;
 			}
 			else
 			{
 				_correctedWidth = LibUAE.PAL_WIDTH;
-				VsyncNumerator = LibUAE.UAE_VIDEO_NUMERATOR_PAL;
-				VsyncDenominator = LibUAE.UAE_VIDEO_DENOMINATOR_PAL;
+				VsyncNumerator = LibUAE.VIDEO_NUMERATOR_PAL;
+				VsyncDenominator = LibUAE.VIDEO_DENOMINATOR_PAL;
 			}
 		}
 
