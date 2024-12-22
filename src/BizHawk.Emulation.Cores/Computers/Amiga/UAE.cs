@@ -213,8 +213,15 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				if (!_ejectPressed)
 				{
 					fi.Action = LibUAE.DriveAction.EjectDisk;
-					CoreComm.Notify($"Ejected drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", _messageDuration);
-					_driveSlots[_currentDrive] = _driveNullOrEmpty;
+					if (_driveSlots[_currentDrive] == _driveNullOrEmpty)
+					{
+						CoreComm.Notify($"Drive FD{_currentDrive} is already empty!", _messageDuration);
+					}
+					else
+					{
+						CoreComm.Notify($"Ejected drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", _messageDuration);
+						_driveSlots[_currentDrive] = _driveNullOrEmpty;
+					}
 				}
 			}
 			else if (controller.IsPressed(Inputs.InsertDisk))
