@@ -18,8 +18,11 @@ namespace BizHawk.Client.Common
 			var sb = new StringBuilder();
 			var controls = source.Definition.ControlsOrdered.ToList();
 			// index 0 is for controls that don't belong to any indexed player
-			controls.Add(controls[0]);
-			controls.RemoveAt(0);
+			if (controls.ElementAtOrDefault(0) != null)
+			{
+				controls.Add(controls[0]);
+				controls.RemoveAt(0);
+			}
 
 			foreach ((string buttonName, AxisSpec? axisSpec) in controls.SelectMany(x => x))
 			{
