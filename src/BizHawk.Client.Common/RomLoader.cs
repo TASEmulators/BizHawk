@@ -887,6 +887,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> PCE = new[] { "pce", "sgx" };
 
+			public static readonly IReadOnlyCollection<string> PSX = new[] { "exe" };
+
 			public static readonly IReadOnlyCollection<string> SMS = new[] { "sms", "gg", "sg" };
 
 			public static readonly IReadOnlyCollection<string> SNES = new[] { "smc", "sfc", "xml", "bs" };
@@ -945,8 +947,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Disc Images", FilesystemFilter.DiscExtensions),
 			new FilesystemFilter("NES", RomFileExtensions.NES.Concat(new[] { "nsf" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Super NES", RomFileExtensions.SNES, addArchiveExts: true),
-			new FilesystemFilter("PlayStation", FilesystemFilter.DiscExtensions),
-			new FilesystemFilter("PSX Executables (experimental)", Array.Empty<string>(), devBuildExtraExts: new[] { "exe" }),
+			new FilesystemFilter("PlayStation", RomFileExtensions.PSX.Concat(FilesystemFilter.DiscExtensions).ToList()),
 			new FilesystemFilter("PSF Playstation Sound File", new[] { "psf", "minipsf" }),
 			new FilesystemFilter("Nintendo 64", RomFileExtensions.N64),
 			new FilesystemFilter("Nintendo 64 Disk Drive", RomFileExtensions.N64DD),
