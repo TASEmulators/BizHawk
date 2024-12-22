@@ -945,6 +945,7 @@ namespace BizHawk.Client.Common
 		public static readonly FilesystemFilterSet RomFilter = new(
 			new FilesystemFilter("Music Files", Array.Empty<string>(), devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf", "gbs" }),
 			new FilesystemFilter("Disc Images", FilesystemFilter.DiscExtensions),
+			new FilesystemFilter("Rom Bundles", new[] { "xml" }),
 			new FilesystemFilter("NES", RomFileExtensions.NES.Concat(new[] { "nsf" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Super NES", RomFileExtensions.SNES, addArchiveExts: true),
 			new FilesystemFilter("PlayStation", RomFileExtensions.PSX.Concat(FilesystemFilter.DiscExtensions).ToList()),
