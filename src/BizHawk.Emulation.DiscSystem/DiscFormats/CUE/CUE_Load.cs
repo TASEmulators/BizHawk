@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// For this job, virtually all nonsense input is treated as errors, but the process will try to recover as best it can.
 	/// The user should still reject any jobs which generated errors
 	/// </summary>
-	internal class LoadCueJob : DiscJob
+	internal sealed class LoadCueJob : DiscJob
 	{
 		private readonly CompileCueJob IN_CompileJob;
 
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			Normal, Pregap, Postgap
 		}
 
-		private class BlobInfo
+		private sealed class BlobInfo
 		{
 			public IBlob Blob;
 			public long Length;

@@ -192,7 +192,7 @@ namespace BizHawk.Bizware.Audio
 			_wavVoice.Start();
 		}
 
-		private class BufferPool : IDisposable
+		private sealed class BufferPool : IDisposable
 		{
 			private readonly List<BufferPoolItem> _availableItems = new();
 			private readonly Queue<BufferPoolItem> _obtainedItems = new();
@@ -235,7 +235,7 @@ namespace BizHawk.Bizware.Audio
 					_availableItems.Add(_obtainedItems.Dequeue());
 			}
 
-			public class BufferPoolItem
+			public sealed class BufferPoolItem
 			{
 				public int MaxLength { get; }
 				public AudioBuffer AudioBuffer { get; }

@@ -12,7 +12,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	internal class Blob_ECM : IBlob
+	internal sealed class Blob_ECM : IBlob
 	{
 		private FileStream stream;
 

@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		private readonly JsonSerializer ser = new() { Formatting = Formatting.Indented };
 
 		[StructLayout(LayoutKind.Sequential)]
-		private class TextStateData
+		private sealed class TextStateData
 		{
 			public bool IsLagFrame;
 			public int LagCount;

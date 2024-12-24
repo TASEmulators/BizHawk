@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	internal class Synthesize_DiscTracks_From_DiscTOC_Job
+	internal sealed class Synthesize_DiscTracks_From_DiscTOC_Job
 	{
 		private readonly Disc IN_Disc;
 

@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	internal class UNIF_DREAMTECH01 : NesBoardBase
+	internal sealed class UNIF_DREAMTECH01 : NesBoardBase
 	{
 		// Korean Igo (Unl) [U][!]
 		private int reg;

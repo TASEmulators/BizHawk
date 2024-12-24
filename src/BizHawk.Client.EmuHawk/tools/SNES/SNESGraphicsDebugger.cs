@@ -505,7 +505,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class DisplayTypeItem
+		private sealed class DisplayTypeItem
 		{
 			public eDisplayType Type { get; }
 			public string Descr { get; }
@@ -516,7 +516,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class PaletteTypeItem
+		private sealed class PaletteTypeItem
 		{
 			public SnesColors.ColorType Type { get; }
 			public string Descr { get; }
@@ -930,7 +930,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class MapEntryState
+		private sealed class MapEntryState
 		{
 			public SNESGraphicsDecoder.TileEntry entry;
 			public int bgnum;
@@ -938,7 +938,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		private MapEntryState currMapEntryState;
 
-		private class TileDataState
+		private sealed class TileDataState
 		{
 			public eDisplayType Type;
 			public int Bpp;
@@ -948,7 +948,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		private TileDataState currTileDataState;
 
-		private class ObjDataState
+		private sealed class ObjDataState
 		{
 			public int Number;
 		}

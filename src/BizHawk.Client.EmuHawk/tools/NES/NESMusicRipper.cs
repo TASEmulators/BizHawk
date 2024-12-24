@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			public int Note;
 		}
 
-		private class ApuState
+		private sealed class ApuState
 		{
 			public PulseState Pulse0;
 			public PulseState Pulse1;

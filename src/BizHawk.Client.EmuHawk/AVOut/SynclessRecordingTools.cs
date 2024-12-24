@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 			wav = $"{path}.wav";
 		}
 
-		private class FrameInfo
+		private sealed class FrameInfo
 		{
 			public string WavPath { get; set; }
 			public string PngPath { get; set; }

@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Cores
 			}
 		}
 
-		private static PadSchema NesConsoleButtons()
+		private static ConsoleSchema NesConsoleButtons()
 		{
 			return new ConsoleSchema
 			{
@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private static PadSchema FdsConsoleButtons(int diskSize)
+		private static ConsoleSchema FdsConsoleButtons(int diskSize)
 		{
 			var buttons = new List<ButtonSchema>
 			{

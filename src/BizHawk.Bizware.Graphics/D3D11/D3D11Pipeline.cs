@@ -15,7 +15,7 @@ using Vortice.DXGI;
 
 namespace BizHawk.Bizware.Graphics
 {
-	internal class D3D11Pipeline : IPipeline
+	internal sealed class D3D11Pipeline : IPipeline
 	{
 		private readonly D3D11Resources _resources;
 		private ID3D11Device Device => _resources.Device;
@@ -43,7 +43,7 @@ namespace BizHawk.Bizware.Graphics
 		private readonly Dictionary<string, int> _vsSamplers = new();
 		private readonly Dictionary<string, int> _psSamplers = new();
 
-		public class D3D11PendingBuffer
+		public sealed class D3D11PendingBuffer
 		{
 			public IntPtr VSPendingBuffer, PSPendingBuffer;
 			public int VSBufferSize, PSBufferSize;

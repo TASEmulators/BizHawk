@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private static IEnumerable<ButtonSchema> StandardButtons(int controller)
+		private static ButtonSchema[] StandardButtons(int controller)
 		{
 			return new[]
 			{

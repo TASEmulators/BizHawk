@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private readonly ArcadeCardPage[] ArcadePage = new ArcadeCardPage[4];
 
-		private class ArcadeCardPage
+		private sealed class ArcadeCardPage
 		{
 			public byte Control;
 			public int Base;
