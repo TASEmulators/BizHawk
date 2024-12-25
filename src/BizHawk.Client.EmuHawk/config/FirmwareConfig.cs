@@ -145,7 +145,13 @@ namespace BizHawk.Client.EmuHawk
 				= tbbOpenFolder.Image = Properties.Resources.Placeholder;
 
 			// prep ImageList for ListView
-			foreach (var img in StatusIcons.Values) imageList1.Images.Add(img);
+			var iconList = StatusIcons.Values;
+			if (OSTailoredCode.IsUnixHost) // remove crusty artifacts
+			{
+				var bg = lvFirmware.BackColor;
+				iconList = iconList.Select(img => FormBase.FillImageBackground(img, bg));
+			}
+			foreach (var img in iconList) imageList1.Images.Add(img);
 
 			_listViewSorter = new ListViewSorter(-1);
 
