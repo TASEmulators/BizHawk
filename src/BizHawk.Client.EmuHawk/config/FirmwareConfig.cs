@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private const string STATUS_DESC_UNUSED = "";
 
-		private static readonly IReadOnlyDictionary<FirmwareOptionStatus, string> StatusDescs = new Dictionary<FirmwareOptionStatus, string>
+		private static readonly IReadOnlyDictionary<FirmwareOptionStatus, string> StatusDescs = new SortedDictionary<FirmwareOptionStatus, string>
 		{
 			[FirmwareOptionStatus.Unset] = STATUS_DESC_UNUSED,
 			[FirmwareOptionStatus.Bad] = "BAD! Why are you using this file",
@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			[FirmwareOptionStatus.Ideal] = "PERFECT: Ideal for TASing and anything",
 		};
 
-		internal static readonly IReadOnlyDictionary<FirmwareOptionStatus, Image> StatusIcons = new Dictionary<FirmwareOptionStatus, Image>
+		internal static readonly IReadOnlyDictionary<FirmwareOptionStatus, Image> StatusIcons = new SortedDictionary<FirmwareOptionStatus, Image>
 		{
 			[FirmwareOptionStatus.Unset] = Properties.Resources.FFhelp,
 			[FirmwareOptionStatus.Bad] = Properties.Resources.FFdelete,
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 				= tbbOpenFolder.Image = Properties.Resources.Placeholder;
 
 			// prep ImageList for ListView
-			foreach (var kvp in StatusIcons.OrderBy(static kvp => kvp.Key)) imageList1.Images.Add(kvp.Value);
+			foreach (var img in StatusIcons.Values) imageList1.Images.Add(img);
 
 			_listViewSorter = new ListViewSorter(-1);
 
