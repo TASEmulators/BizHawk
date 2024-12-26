@@ -148,6 +148,10 @@ namespace BizHawk.Client.Common
 					case Topic.Input:
 						await HandleInputRequest(clientId, request);
 						break;
+
+					case Topic.EmulatorCommand:
+						await HandleEmulatorCommandRequest(clientId, request);
+						break;
 				}
 
 			}
@@ -211,6 +215,17 @@ namespace BizHawk.Client.Common
 		private async Task HandleInputRequest(string clientId, RequestMessageWrapper request)
 		{
 			foreach (var handler in handlers.GetValueOrDefault(Topic.Input, [ ])!) 
+			{
+				var response = await handler(request);
+				if (response is not null) {
+					await SendClientMessage(clientId, response.Value);
+				}
+			}
+		}
+
+		private async Task HandleEmulatorCommandRequest(string clientId, RequestMessageWrapper request)
+		{
+			foreach (var handler in handlers.GetValueOrDefault(Topic.EmulatorCommand, [ ])!) 
 			{
 				var response = await handler(request);
 				if (response is not null) {

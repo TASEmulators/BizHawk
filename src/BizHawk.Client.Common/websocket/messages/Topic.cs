@@ -29,8 +29,25 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		/// <see cref="EchoResponseMessage"/>
 		Echo = 2,
 
+		/// <summary>
+		/// Topic for valid inputs to send to the emulator, such as button press.
+		/// </summary>
+		/// <see cref="GetInputOptionsRequestMessage"/>
+		/// <see cref="GetInputOptionsResponseMessage"/>
 		GetInputOptions = 3,
 
+		/// <summary>
+		/// Topic for performing an input such as a button press. 
+		/// </summary>
+		/// <see cref="InputRequestMessage"/>
+		/// <see cref="InputResponseMessage"/>
 		Input = 4,
+
+		/// <summary>
+		/// Topic for emulator commands like speedup, reset, etc.
+		/// </summary>
+		/// <see cref="EmulatorCommandRequestMessage"/>
+		/// <see cref="EmulatorCommandResponseMessage"/>
+		EmulatorCommand = 5
 	}
 }

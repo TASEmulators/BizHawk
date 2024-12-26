@@ -2121,23 +2121,57 @@ namespace BizHawk.Client.EmuHawk
 					(req) =>
 					{
 						bool success = false;
-						var controls = InputManager.ClickyVirtualPadController.ToBoolButtonNameList();
 						string requestId = req.Input?.RequestId;
-						if ((req.Input.Value.Click != null) && controls.Contains(req.Input.Value.Click.Value.Name)) 
+						if (req.Input.Value.Click != null) 
 						{
-							InputManager.ClickyVirtualPadController.Click(req.Input.Value.Click.Value.Name);
-							success = true;
+							var controls = InputManager.ClickyVirtualPadController.ToBoolButtonNameList();
+							if (controls.Contains(req.Input.Value.Click.Value.Name))
+							{
+								InputManager.ClickyVirtualPadController.Click(req.Input.Value.Click.Value.Name);
+								success = true;
+							}
 						}
-						else if ((req.Input.Value.Toggle != null) && controls.Contains(req.Input.Value.Toggle.Value.Name))
+						else if (req.Input.Value.Toggle != null)
 						{
-							InputManager.StickyHoldController.ToggleStickyState(req.Input.Value.Toggle.Value.Name);
-							success = true;
+							var controls = InputManager.StickyHoldController.ToBoolButtonNameList();
+							if (controls.Contains(req.Input.Value.Toggle.Value.Name))
+							{
+								InputManager.StickyHoldController.ToggleStickyState(req.Input.Value.Toggle.Value.Name);
+								success = true;
+							}
 						}
 						return System.Threading.Tasks.Task.FromResult<ResponseMessageWrapper?>(new ResponseMessageWrapper(
 							new InputResponseMessage(requestId, success)
 						));
 					}
 				);
+
+				NetworkingHelpers.WebSocketServer.RegisterHandler(
+					Topic.EmulatorCommand,
+					(req) =>
+					{
+						bool success = false;
+						string requestId = req.Input?.RequestId;
+						if (req.EmulatorCommand.Value.StepSpeed != null)
+						{
+							int steps = req.EmulatorCommand.Value.StepSpeed.Value.Steps;
+							if (steps > 0)
+							{
+								IncreaseSpeed(steps);
+								success = true;
+							}
+							else if (steps < 0)
+							{
+								DecreaseSpeed(-steps);
+								success = true;
+							}
+						}
+						return System.Threading.Tasks.Task.FromResult<ResponseMessageWrapper?>(new ResponseMessageWrapper(
+							new EmulatorCommandResponseMessage(requestId, success)
+						));
+					}
+				);
+
 				_ = NetworkingHelpers.WebSocketServer.Start();
 			}
 		}
@@ -2698,40 +2732,56 @@ namespace BizHawk.Client.EmuHawk
 			SetSpeedPercent(100);
 		}
 
-		private void IncreaseSpeed()
+		private void IncreaseSpeed(int steps = 1)
 		{
+			// TODO should this throw an error?
+			if (steps < 1)
+				return;
+
 			if (!CheckCanSetSpeed())
 				return;
 
-			var oldPercent = Config.SpeedPercent;
-			int newPercent;
+			int oldPercent = Config.SpeedPercent;
 
 			int i = 0;
-			do
+			int newPercent = oldPercent;
+			int stepsTaken = 0;
+			while ((stepsTaken < steps) && (i <  SpeedPercents.Length))
 			{
-				i++;
 				newPercent = SpeedPercents[i];
+				if (newPercent > oldPercent)
+				{
+					stepsTaken += 1;
+				}
+				i++;
 			}
-			while (newPercent <= oldPercent && i < SpeedPercents.Length - 1);
 
 			SetSpeedPercent(newPercent);
 		}
 
-		private void DecreaseSpeed()
+		private void DecreaseSpeed(int steps = 1)
 		{
+			// TODO should this throw an error?
+			if (steps < 1)
+				return;
+
 			if (!CheckCanSetSpeed())
 				return;
 
-			var oldPercent = Config.SpeedPercent;
-			int newPercent;
+			int oldPercent = Config.SpeedPercent;
 
-			int i = SpeedPercents.Length - 1;
-			do
+			int i = SpeedPercents[^1];
+			int newPercent = oldPercent;
+			int stepsTaken = 0;
+			while ((stepsTaken < steps) && (i >= 0))
 			{
-				i--;
 				newPercent = SpeedPercents[i];
+				if (newPercent < oldPercent)
+				{
+					stepsTaken += 1;
+				}
+				i--;
 			}
-			while (newPercent >= oldPercent && i > 0);
 
 			SetSpeedPercent(newPercent);
 		}
