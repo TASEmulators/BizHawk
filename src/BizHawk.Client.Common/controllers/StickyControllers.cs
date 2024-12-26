@@ -70,6 +70,19 @@ namespace BizHawk.Client.Common
 
 		private List<string> _justPressed = [ ];
 
+		public void ToggleStickyState(string button)
+		{
+			if (_buttonHolds.Contains(button))
+			{
+				_buttonHolds.Remove(button);
+			}
+			else 
+			{
+				_buttonHolds.Add(button);
+			}
+			_justPressed = [ button ];
+		}
+
 		public void MassToggleStickyState(List<string> buttons)
 		{
 			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
