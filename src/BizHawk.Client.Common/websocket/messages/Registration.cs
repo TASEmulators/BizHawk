@@ -11,6 +11,11 @@ namespace BizHawk.Client.Common.Websocket.Messages
 	public struct RegistrationRequestMessage
 	{
 		/// <summary>
+		/// Request ID, which will be sent in the response to identify the round-trip exchange.
+		/// </summary>
+		public string RequestId { get; set; }
+
+		/// <summary>
 		/// The set of topics to register for. Previous topics will be unregistered. Providing
 		/// an empty set of topics is the same as unregistering for all topics.
 		/// </summary>
@@ -18,8 +23,9 @@ namespace BizHawk.Client.Common.Websocket.Messages
 
 		public RegistrationRequestMessage() { }
 
-		public RegistrationRequestMessage(HashSet<Topic> topics)
+		public RegistrationRequestMessage(string requestId, HashSet<Topic> topics)
 		{
+			RequestId = requestId;
 			Topics = topics;
 		}
 	}
@@ -32,6 +38,11 @@ namespace BizHawk.Client.Common.Websocket.Messages
 	public struct RegistrationResponseMessage
 	{
 		/// <summary>
+		/// Request ID, which will be sent in the response to identify the round-trip exchange.
+		/// </summary>
+		public string RequestId { get; set; }
+
+		/// <summary>
 		/// The set of topics the client is registered for. Generally should match what was
 		/// in the request, plus some topics the client will always receive.
 		/// </summary>
@@ -39,8 +50,9 @@ namespace BizHawk.Client.Common.Websocket.Messages
 
 		public RegistrationResponseMessage() { }
 
-		public RegistrationResponseMessage(HashSet<Topic> topics)
+		public RegistrationResponseMessage(string requestId, HashSet<Topic> topics)
 		{
+			RequestId = requestId;
 			Topics = topics;
 		}
 	}

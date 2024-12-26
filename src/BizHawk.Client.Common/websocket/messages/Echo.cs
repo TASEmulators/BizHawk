@@ -8,6 +8,12 @@ namespace BizHawk.Client.Common.Websocket.Messages
 	/// <seealso cref="EchoResponseMessage"/>
 	public struct EchoRequestMessage
 	{
+
+		/// <summary>
+		/// Request ID, which will be sent in the response to identify the round-trip exchange.
+		/// </summary>
+		public string RequestId { get; set; }
+		
 		/// <summary>
 		/// Message body. Will be the same in the response.
 		/// </summary>
@@ -15,8 +21,9 @@ namespace BizHawk.Client.Common.Websocket.Messages
 
 		public EchoRequestMessage() { }
 
-		public EchoRequestMessage(string message)
+		public EchoRequestMessage(string requestId, string message)
 		{
+			RequestId = requestId;
 			Message = message;
 		}
 	}
@@ -30,14 +37,20 @@ namespace BizHawk.Client.Common.Websocket.Messages
 	public struct EchoResponseMessage
 	{
 		/// <summary>
+		/// Request ID, which will be sent in the response to identify the round-trip exchange.
+		/// </summary>
+		public string RequestId { get; set; }
+		
+		/// <summary>
 		/// Message body. Same as was in the request.
 		/// </summary>
 		public string Message { get; set; }
 
 		public EchoResponseMessage() { }
 
-		public EchoResponseMessage(string message)
+		public EchoResponseMessage(string requestId, string message)
 		{
+			RequestId = requestId;
 			Message = message;
 		}
 	}

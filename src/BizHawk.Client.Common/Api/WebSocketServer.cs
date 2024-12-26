@@ -182,7 +182,7 @@ namespace BizHawk.Client.Common
 
 			var registeredTopics = request.Topics;
 			registeredTopics.AddRange(forcedRegistrationTopics);
-			var responseMessage = new ResponseMessageWrapper(new RegistrationResponseMessage(registeredTopics));
+			var responseMessage = new ResponseMessageWrapper(new RegistrationResponseMessage(request.RequestId, registeredTopics));
 			await SendClientMessage(clientId, responseMessage);
 		}
 
@@ -190,7 +190,10 @@ namespace BizHawk.Client.Common
 		{
 			if (topicRegistrations.GetValueOrDefault(Topic.Echo, [ ])?.Contains(clientId) ?? false)
 			{
-				await SendClientMessage(clientId, new ResponseMessageWrapper(new EchoResponseMessage(request.Message)));
+				await SendClientMessage(
+					clientId, 
+					new ResponseMessageWrapper(new EchoResponseMessage(request.RequestId, request.Message))
+				);
 			}
 		}
 

@@ -10,7 +10,16 @@ namespace BizHawk.Client.Common.Websocket.Messages
 	/// </summary>
 	public struct GetInputOptionsRequestMessage
 	{
+		/// <summary>
+		/// Request ID, which will be sent in the response to identify the round-trip exchange.
+		/// </summary>
+		public string RequestId { get; set; }
+
 		public GetInputOptionsRequestMessage() { }
+
+		public GetInputOptionsRequestMessage(string requestId) {
+			RequestId = requestId;
+		}
 	}
 
 	/// <summary>
@@ -21,14 +30,20 @@ namespace BizHawk.Client.Common.Websocket.Messages
 	public struct GetInputOptionsResponseMessage
 	{
 		/// <summary>
+		/// Request ID, which will be sent in the response to identify the round-trip exchange.
+		/// </summary>
+		public string RequestId { get; set; }
+
+		/// <summary>
 		/// The set of controls that can be sent in a TBD message to control the current emulator.
 		/// </summary>
 		public HashSet<string> Inputs { get; set; }
 
 		public GetInputOptionsResponseMessage() { }
 
-		public GetInputOptionsResponseMessage(HashSet<string> inputs)
+		public GetInputOptionsResponseMessage(string requestId, HashSet<string> inputs)
 		{
+			RequestId = requestId;
 			Inputs = inputs;
 		}
 	}

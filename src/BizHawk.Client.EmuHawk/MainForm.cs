@@ -2108,9 +2108,10 @@ namespace BizHawk.Client.EmuHawk
 					Topic.GetInputOptions,
 					(req) =>
 					{
+						string requestId = req.GetInputOptions?.RequestId;
 						var controls = InputManager.ClickyVirtualPadController.ToBoolButtonNameList();
 						return System.Threading.Tasks.Task.FromResult<ResponseMessageWrapper?>(new ResponseMessageWrapper(
-							new GetInputOptionsResponseMessage(controls.ToHashSet())
+							new GetInputOptionsResponseMessage(requestId, controls.ToHashSet())
 						));
 					}
 				);
@@ -2119,15 +2120,21 @@ namespace BizHawk.Client.EmuHawk
 					Topic.Input,
 					(req) =>
 					{
-						Console.WriteLine($"Received input resquest {req.Input.Value.Name}");
 						bool success = false;
 						var controls = InputManager.ClickyVirtualPadController.ToBoolButtonNameList();
-						if (controls.Contains(req.Input.Value.Name)) {
-							InputManager.ClickyVirtualPadController.Click(req.Input.Value.Name);
+						string requestId = req.Input?.RequestId;
+						if ((req.Input.Value.Click != null) && controls.Contains(req.Input.Value.Click.Value.Name)) 
+						{
+							InputManager.ClickyVirtualPadController.Click(req.Input.Value.Click.Value.Name);
+							success = true;
+						}
+						else if ((req.Input.Value.Toggle != null) && controls.Contains(req.Input.Value.Toggle.Value.Name))
+						{
+							InputManager.StickyHoldController.ToggleStickyState(req.Input.Value.Toggle.Value.Name);
 							success = true;
 						}
 						return System.Threading.Tasks.Task.FromResult<ResponseMessageWrapper?>(new ResponseMessageWrapper(
-							new InputResponseMessage(success)
+							new InputResponseMessage(requestId, success)
 						));
 					}
 				);
