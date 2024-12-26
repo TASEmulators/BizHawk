@@ -2166,6 +2166,11 @@ namespace BizHawk.Client.EmuHawk
 								success = true;
 							}
 						}
+						else if (req.EmulatorCommand.Value.RebootCore != null)
+						{
+							RebootCore();
+							success = true;
+						}
 						return System.Threading.Tasks.Task.FromResult<ResponseMessageWrapper?>(new ResponseMessageWrapper(
 							new EmulatorCommandResponseMessage(requestId, success)
 						));
