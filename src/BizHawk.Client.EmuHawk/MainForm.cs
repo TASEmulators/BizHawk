@@ -2136,8 +2136,18 @@ namespace BizHawk.Client.EmuHawk
 							var controls = InputManager.StickyHoldController.ToBoolButtonNameList();
 							if (controls.Contains(req.Input.Value.Toggle.Value.Name))
 							{
-								InputManager.StickyHoldController.ToggleStickyState(req.Input.Value.Toggle.Value.Name);
-								success = true;
+								if (req.Input.Value.Toggle.Value.Value != null)
+								{
+									InputManager.StickyHoldController.SetButtonHold(
+										req.Input.Value.Toggle.Value.Name,
+										req.Input.Value.Toggle.Value.Value.Value
+									);
+									success = true;
+								} else
+								{
+									InputManager.StickyHoldController.ToggleStickyState(req.Input.Value.Toggle.Value.Name);
+									success = true;
+								}
 							}
 						}
 						return System.Threading.Tasks.Task.FromResult<ResponseMessageWrapper?>(new ResponseMessageWrapper(

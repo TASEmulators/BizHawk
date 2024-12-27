@@ -50,6 +50,11 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		/// Name of the input, e.g. one of the inputs returned in <see cref="GetInputOptionsResponseMessage"/>
 		/// </summary>
 		public string Name { get; set; }
+
+		/// <summary>
+		/// Optional value to set the toggle to, rather than flipping the state.
+		/// </summary>
+		public bool? Value { get; set; }
 	}
 
 	/// <summary>
