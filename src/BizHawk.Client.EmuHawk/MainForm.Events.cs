@@ -1221,7 +1221,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AboutMenuItem_Click(object sender, EventArgs e)
 		{
-			using BizBox form = new(() => Sound.PlayWavFile(Properties.Resources.GetNotHawkCallSFX(), atten: 1.0f));
+			var atten = Config.SoundEnabledNormal ? Config.SoundVolume / 100.0f : 0.0f;
+			using BizBox form = new(() => Sound.PlayWavFile(Properties.Resources.GetNotHawkCallSFX(), atten));
 			this.ShowDialogWithTempMute(form);
 		}
 
