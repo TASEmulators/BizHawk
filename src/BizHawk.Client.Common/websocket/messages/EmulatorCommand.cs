@@ -15,6 +15,8 @@ namespace BizHawk.Client.Common.Websocket.Messages
 
 		public RebootCoreRequestMessage? RebootCore { get; set; }
 
+		public SaveNamedStateRequestMessage? SaveNamedState { get; set; }
+
 		public EmulatorCommandRequestMessage(string requestId, StepSpeedRequestMessage message) {
 			RequestId = requestId;
 			StepSpeed = message;
@@ -23,6 +25,11 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		public EmulatorCommandRequestMessage(string requestId, RebootCoreRequestMessage message) {
 			RequestId = requestId;
 			RebootCore = message;
+		}
+
+		public EmulatorCommandRequestMessage(string requestId, SaveNamedStateRequestMessage message) {
+			RequestId = requestId;
+			SaveNamedState = message;
 		}
 
 		public EmulatorCommandRequestMessage() { }
@@ -54,6 +61,24 @@ namespace BizHawk.Client.Common.Websocket.Messages
 	public struct RebootCoreRequestMessage
 	{
 		public RebootCoreRequestMessage() {}
+	}
+
+	/// <summary>
+	/// Save a named state
+	/// </summary>
+	public struct SaveNamedStateRequestMessage
+	{
+		/// <summary>
+		/// Path to the save file relative to the default location for the current game system, e.g.
+		/// relative to GBA/State. Do not include a file extension.
+		/// </summary>
+		public string RelativePath { get; set; }
+
+		public SaveNamedStateRequestMessage(string relativePath) {
+			RelativePath = relativePath;
+		}
+
+		public SaveNamedStateRequestMessage() {}
 	}
 
 	/// <summary>

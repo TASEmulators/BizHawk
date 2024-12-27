@@ -2162,24 +2162,42 @@ namespace BizHawk.Client.EmuHawk
 					{
 						bool success = false;
 						string requestId = req.Input?.RequestId;
-						if (req.EmulatorCommand.Value.StepSpeed != null)
-						{
-							int steps = req.EmulatorCommand.Value.StepSpeed.Value.Steps;
-							if (steps > 0)
+						try {
+							if (req.EmulatorCommand.Value.StepSpeed != null)
 							{
-								IncreaseSpeed(steps);
+								int steps = req.EmulatorCommand.Value.StepSpeed.Value.Steps;
+								if (steps > 0)
+								{
+									IncreaseSpeed(steps);
+									success = true;
+								}
+								else if (steps < 0)
+								{
+									DecreaseSpeed(-steps);
+									success = true;
+								}
+							}
+							else if (req.EmulatorCommand.Value.RebootCore != null)
+							{
+								RebootCore();
 								success = true;
 							}
-							else if (steps < 0)
+							else if (req.EmulatorCommand.Value.SaveNamedState != null)
 							{
-								DecreaseSpeed(-steps);
-								success = true;
+								string relativePath = req.EmulatorCommand.Value.SaveNamedState.Value.RelativePath;
+								string absolutePath = $"{Config.PathEntries.SaveStateAbsolutePath(Game.System)}/{relativePath}.State";
+								SaveState(
+									absolutePath, 
+									relativePath, 
+									false, 
+									false
+								);
 							}
-						}
-						else if (req.EmulatorCommand.Value.RebootCore != null)
+						} 
+						catch (Exception e)
 						{
-							RebootCore();
-							success = true;
+							Console.WriteLine("failed emulator command request {0}", e);
+							success = false;
 						}
 						return System.Threading.Tasks.Task.FromResult<ResponseMessageWrapper?>(new ResponseMessageWrapper(
 							new EmulatorCommandResponseMessage(requestId, success)
