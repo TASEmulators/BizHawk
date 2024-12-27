@@ -2775,7 +2775,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int oldPercent = Config.SpeedPercent;
 
-			int i = SpeedPercents[^1];
+			int i = SpeedPercents.Length - 1;
 			int newPercent = oldPercent;
 			int stepsTaken = 0;
 			while ((stepsTaken < steps) && (i >= 0))
