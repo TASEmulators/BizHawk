@@ -11,40 +11,20 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		/// </summary>
 		public string RequestId { get; set; }
 
-		public ClickInputRequestMessage? Click { get; set; }
+		/// <summary>
+		/// Whether to clear existing inputs before processing <see cref="Inputs"/> .
+		/// </summary>
+		public bool ClearInputs { get; set; }
 
-		public ToggleInputRequestMessage? Toggle { get; set; }
-
-		public InputRequestMessage(string requestId, ClickInputRequestMessage click)
-		{
-			RequestId = requestId;
-			Click = click;
-		}
-
-		public InputRequestMessage(string requestId, ToggleInputRequestMessage toggle)
-		{
-			RequestId = requestId;
-			Toggle = toggle;
-		}
+		/// <summary>
+		/// Inputs, such as button presses or toggles.
+		/// </summary>
+		public ButtonInput[] Inputs { get; set; }
 
 		public InputRequestMessage() { }
 	}
 
-	/// <summary>
-	/// Request to click an input for a single frame.
-	/// </summary>
-	public struct ClickInputRequestMessage 
-	{
-		/// <summary>
-		/// Name of the input, e.g. one of the inputs returned in <see cref="GetInputOptionsResponseMessage"/>
-		/// </summary>
-		public string Name { get; set; }
-	}
-
-	/// <summary>
-	/// Request to switch an input between on/pressed to off/unpressed.
-	/// </summary>
-	public struct ToggleInputRequestMessage 
+	public struct ButtonInput
 	{
 		/// <summary>
 		/// Name of the input, e.g. one of the inputs returned in <see cref="GetInputOptionsResponseMessage"/>
@@ -52,9 +32,18 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		public string Name { get; set; }
 
 		/// <summary>
-		/// Optional value to set the toggle to, rather than flipping the state.
+		/// Number of frames to hold the button.
+		/// Examples:
+		/// <br/>
+		/// HoldFrames == 0 : Stop holding the button. If not currently held, this is a no-op.
+		/// <br/>
+		/// HoldFrames == null : Hold indefinitely. If already held, this is a no-op.
+		/// <br/>
+		/// HoldFrames == -1 : Toggle hold indefinitely. So, if not held, same as passing null, and if held, same as passing 0.
+		/// <br/>
+		/// HoldFrames == 3 : Hold for 3 frames and then stop holding.
 		/// </summary>
-		public bool? Value { get; set; }
+		public int? HoldFrames { get; set; }
 	}
 
 	/// <summary>

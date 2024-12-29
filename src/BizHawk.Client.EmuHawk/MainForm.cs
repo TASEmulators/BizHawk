@@ -2120,34 +2120,51 @@ namespace BizHawk.Client.EmuHawk
 					Topic.Input,
 					(req) =>
 					{
-						bool success = false;
+						bool success = true;
 						string requestId = req.Input?.RequestId;
-						if (req.Input.Value.Click != null) 
-						{
-							var controls = InputManager.ClickyVirtualPadController.ToBoolButtonNameList();
-							if (controls.Contains(req.Input.Value.Click.Value.Name))
-							{
-								InputManager.ClickyVirtualPadController.Click(req.Input.Value.Click.Value.Name);
-								success = true;
-							}
+						var currentAutofires = new HashSet<string>(InputManager.StickyAutofireController.CurrentAutofires);
+						if (req.Input.Value.ClearInputs) {
+							InputManager.StickyAutofireController.ClearStickies();
 						}
-						else if (req.Input.Value.Toggle != null)
+
+						foreach (var input in req.Input.Value.Inputs)
 						{
-							var controls = InputManager.StickyHoldController.ToBoolButtonNameList();
-							if (controls.Contains(req.Input.Value.Toggle.Value.Name))
+							if (input.HoldFrames == null)
 							{
-								if (req.Input.Value.Toggle.Value.Value != null)
+								var autoPattern = new AutoPatternBool([ true ], skipLag: true);
+								InputManager.StickyAutofireController.SetButtonAutofire(input.Name, true, autoPattern);
+							}
+							else if (input.HoldFrames == 0)
+							{
+								InputManager.StickyAutofireController.SetButtonAutofire(input.Name, false);
+							}
+							else if (input.HoldFrames > 0)
+							{
+								bool[] pattern = new bool[input.HoldFrames.Value];
+								for (int i = 0; i < input.HoldFrames; i++)
 								{
-									InputManager.StickyHoldController.SetButtonHold(
-										req.Input.Value.Toggle.Value.Name,
-										req.Input.Value.Toggle.Value.Value.Value
-									);
-									success = true;
-								} else
-								{
-									InputManager.StickyHoldController.ToggleStickyState(req.Input.Value.Toggle.Value.Name);
-									success = true;
+									pattern[i] = true;
 								}
+								var autoPattern = new AutoPatternBool(pattern, skipLag: true, iterations: 1);
+								InputManager.StickyAutofireController.SetButtonAutofire(input.Name, true, autoPattern);
+							}
+							else if (input.HoldFrames == -1)
+							{
+								if (currentAutofires.Contains(input.Name))
+								{
+									InputManager.StickyAutofireController.SetButtonAutofire(input.Name, false);
+								}
+								else
+								{
+									var autoPattern = new AutoPatternBool([ true ], skipLag: true, iterations: -1);
+									InputManager.StickyAutofireController.SetButtonAutofire(input.Name, true, autoPattern);
+								}
+							} 
+							else
+							{
+								// else input.HoldFrames is negative, an invalid value
+								success = false;
+								break;
 							}
 						}
 						return System.Threading.Tasks.Task.FromResult<ResponseMessageWrapper?>(new ResponseMessageWrapper(
