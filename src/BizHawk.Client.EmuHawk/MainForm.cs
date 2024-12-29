@@ -524,7 +524,10 @@ namespace BizHawk.Client.EmuHawk
 			ResizeBegin += (o, e) =>
 			{
 				_inResizeLoop = true;
-				Sound?.StopSound();
+				if (!OSTailoredCode.IsUnixHost)
+				{
+					Sound?.StopSound();
+				}
 			};
 
 			Resize += (_, _) => UpdateWindowTitle();
@@ -539,7 +542,10 @@ namespace BizHawk.Client.EmuHawk
 					_presentationPanel.Resized = true;
 				}
 
-				Sound?.StartSound();
+				if (!OSTailoredCode.IsUnixHost)
+				{
+					Sound?.StartSound();
+				}
 			};
 
 			Input.Instance = new Input(
