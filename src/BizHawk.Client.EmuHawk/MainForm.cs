@@ -2178,7 +2178,7 @@ namespace BizHawk.Client.EmuHawk
 					(req) =>
 					{
 						bool success = false;
-						string requestId = req.Input?.RequestId;
+						string requestId = req.EmulatorCommand?.RequestId;
 						try {
 							if (req.EmulatorCommand.Value.StepSpeed != null)
 							{
