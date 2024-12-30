@@ -225,6 +225,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(true)]
 			public bool UseRealTime { get; set; }
 
+			[DisplayName("Touch Interpolation")]
+			[Description("If true, touch inputs will be interpolated, creating smoother touch movements. Required to progress in some games. May be undesirable when TASing.")]
+			[DefaultValue(true)]
+			public bool UseTouchInterpolation { get; set; }
+
 			[DisplayName("DSi Mode")]
 			[Description("If true, DSi mode will be used. Forced true if a DSiWare rom is detected.")]
 			[DefaultValue(false)]

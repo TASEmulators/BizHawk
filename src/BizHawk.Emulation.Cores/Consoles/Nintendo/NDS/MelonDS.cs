@@ -503,6 +503,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				MicVolume = (byte)(controller.IsPressed("Microphone") ? controller.AxisValue("Mic Volume") : 0),
 				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
 				ConsiderAltLag = (byte)(_settings.ConsiderAltLag ? 1 : 0),
+				UseTouchInterpolation = (byte)(_activeSyncSettings.UseTouchInterpolation ? 1 : 0),
 			};
 		}
 

@@ -37,6 +37,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public byte MicVolume;
 			public byte GBALightSensor;
 			public byte ConsiderAltLag;
+			public byte UseTouchInterpolation;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
