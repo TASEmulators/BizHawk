@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Threading;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -109,7 +109,9 @@ namespace BizHawk.Client.Common
 		private int _offFrames;
 		private bool _respectLag;
 
+		private readonly Mutex _boolPatternsMutex = new Mutex();
 		private readonly Dictionary<string, AutoPatternBool> _boolPatterns = [ ];
+		private readonly Mutex _axisPatternsMutex = new Mutex();
 		private readonly Dictionary<string, AutoPatternAxis> _axisPatterns = [ ];
 
 		public ControllerDefinition Definition { get; }
@@ -148,6 +150,7 @@ namespace BizHawk.Client.Common
 
 		public void SetButtonAutofire(string button, bool enabled, AutoPatternBool pattern = null)
 		{
+			_boolPatternsMutex.WaitOne();
 			if (enabled)
 			{
 				pattern ??= new AutoPatternBool(_onFrames, _offFrames, _respectLag);
@@ -157,10 +160,12 @@ namespace BizHawk.Client.Common
 			{
 				_boolPatterns.Remove(button);
 			}
+			_boolPatternsMutex.ReleaseMutex();
 		}
 
 		public void SetAxisAutofire(string name, int? value, AutoPatternAxis pattern = null)
 		{
+			_axisPatternsMutex.WaitOne();
 			if (value.HasValue)
 			{
 				pattern ??= new AutoPatternAxis(value.Value, _onFrames, Definition.Axes[name].Neutral, _offFrames, _respectLag);
@@ -170,20 +175,31 @@ namespace BizHawk.Client.Common
 			{
 				_axisPatterns.Remove(name);
 			}
+			_axisPatternsMutex.ReleaseMutex();
 		}
 
 		public bool IsSticky(string buttonOrAxis) => _boolPatterns.ContainsKey(buttonOrAxis) || _axisPatterns.ContainsKey(buttonOrAxis);
 
 		public void ClearStickies()
 		{
+			_boolPatternsMutex.WaitOne();
 			_boolPatterns.Clear();
+			_boolPatternsMutex.ReleaseMutex();
+
+			_axisPatternsMutex.WaitOne();
 			_axisPatterns.Clear();
+			_axisPatternsMutex.ReleaseMutex();
 		}
 
 		public void IncrementLoops(bool lagged)
 		{
+			_boolPatternsMutex.WaitOne();
 			foreach (var v in _boolPatterns.Values) v.GetNextValue(lagged);
+			_boolPatternsMutex.ReleaseMutex();
+
+			_axisPatternsMutex.WaitOne();
 			foreach (var v in _axisPatterns.Values) v.GetNextValue(lagged);
+			_axisPatternsMutex.ReleaseMutex();
 		}
 
 		private List<string> _justPressed = [ ];
