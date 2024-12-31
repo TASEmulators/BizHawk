@@ -114,7 +114,7 @@ in {
 			git
 			gnome-themes-extra gtk2-x11 libgdiplus libGL lua openal SDL2 udev zstd
 			buildConfig doCheck extraDefines extraDotnetBuildFlags;
-		mono = if mono != null
+		mono = lib.recursiveUpdate { meta.mainProgram = "mono"; } (if mono != null
 			then mono # allow older Mono if set explicitly
 			else if isVersionAtLeast "6.12.0.151" pkgs.mono.version
 				then pkgs.mono
@@ -122,7 +122,7 @@ in {
 					(import (fetchzip {
 						url = "https://github.com/NixOS/nixpkgs/archive/23.05.tar.gz";
 						hash = "sha512-REPJ9fRKxTefvh1d25MloT4bXJIfxI+1EvfVWq644Tzv+nuq2BmiGMiBNmBkyN9UT5fl2tdjqGliye3gZGaIGg==";
-					}) { inherit system; }).mono;
+					}) { inherit system; }).mono);
 		monoBasic = fetchzip {
 			url = "https://download.mono-project.com/repo/debian/pool/main/m/mono-basic/libmono-microsoft-visualbasic10.0-cil_4.7-0xamarin3+debian9b1_all.deb";
 			nativeBuildInputs = [ dpkg ];
