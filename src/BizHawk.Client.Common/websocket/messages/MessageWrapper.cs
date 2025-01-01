@@ -16,6 +16,8 @@ namespace BizHawk.Client.Common.Websocket.Messages
 
 		public EmulatorCommandRequestMessage? EmulatorCommand { get; set; }
 
+		public CustomRequestMessage? Custom { get; set; }
+
 		public RequestMessageWrapper() { }
 
 		public RequestMessageWrapper(RegistrationRequestMessage message)
@@ -47,6 +49,12 @@ namespace BizHawk.Client.Common.Websocket.Messages
 			Topic = Topic.EmulatorCommand;
 			EmulatorCommand = message;
 		}
+
+		public RequestMessageWrapper(CustomRequestMessage message)
+		{
+			Topic = Topic.Custom;
+			Custom = message;
+		}
 	}
 
 	public struct ResponseMessageWrapper
@@ -64,6 +72,8 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		public InputResponseMessage? Input { get; set; }
 
 		public EmulatorCommandResponseMessage? EmulatorCommand { get; set; }
+
+		public CustomResponseMessage? Custom { get; set; }
 
 		public ResponseMessageWrapper() { }
 
@@ -101,6 +111,12 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		{
 			Topic = Topic.EmulatorCommand;
 			EmulatorCommand = message;
+		}
+
+		public ResponseMessageWrapper(CustomResponseMessage message)
+		{
+			Topic = Topic.Custom;
+			Custom = message;
 		}
 	}
 }

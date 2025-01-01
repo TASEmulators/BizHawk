@@ -21,12 +21,20 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		/// </summary>
 		public HashSet<Topic> Topics { get; set; }
 
+		/// <summary>
+		/// Set of subtopics within the <see cref="Topic.Custom"/> to subscribe to. Providing an empty
+		/// set of subtopics is the same as unregistering for all subtopics. You must also be registered
+		/// for the <see cref="Topic.Custom"/> topic to receive these.
+		/// </summary>
+		public HashSet<string> CustomTopics { get; set; }
+
 		public RegistrationRequestMessage() { }
 
-		public RegistrationRequestMessage(string requestId, HashSet<Topic> topics)
+		public RegistrationRequestMessage(string requestId, HashSet<Topic> topics, HashSet<string> customTopics)
 		{
 			RequestId = requestId;
 			Topics = topics;
+			CustomTopics = customTopics;
 		}
 	}
 
@@ -48,12 +56,19 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		/// </summary>
 		public HashSet<Topic> Topics { get; set; }
 
+		/// <summary>
+		/// Set of subtopics within the <see cref="Topic.Custom"/> to the client is registered for. Generally
+		/// should match what was in the request.
+		/// </summary>
+		public HashSet<string> CustomTopics { get; set; }
+
 		public RegistrationResponseMessage() { }
 
-		public RegistrationResponseMessage(string requestId, HashSet<Topic> topics)
+		public RegistrationResponseMessage(string requestId, HashSet<Topic> topics, HashSet<string> customTopics)
 		{
 			RequestId = requestId;
 			Topics = topics;
+			CustomTopics = customTopics;
 		}
 	}
 }

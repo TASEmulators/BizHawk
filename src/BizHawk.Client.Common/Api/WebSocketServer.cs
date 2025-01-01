@@ -7,9 +7,8 @@ using System.Threading;
 using System.Text;
 using System.Collections.Generic;
 using BizHawk.Client.Common.Websocket.Messages;
-using Newtonsoft.Json;
 using BizHawk.Common.CollectionExtensions;
-using Newtonsoft.Json.Serialization;
+using BizHawk.Client.Common.Websocket;
 
 namespace BizHawk.Client.Common
 {
@@ -21,7 +20,10 @@ namespace BizHawk.Client.Common
 		private bool _running = false;
 		private readonly Dictionary<string, WebSocket> clients = [ ];
 		private readonly Dictionary<Topic, HashSet<string>> topicRegistrations = [ ];
+		private readonly Dictionary<string, HashSet<string>> customTopicRegistrations = [ ];
 		private readonly Dictionary<Topic, HashSet<Func<RequestMessageWrapper, Task<ResponseMessageWrapper?>>>> handlers = [ ];
+
+		private readonly Dictionary<string, HashSet<Func<RequestMessageWrapper, Task<ResponseMessageWrapper?>>>> customTopicHandlers = [ ];
 
 		/// <param name="host">
 		/// 	host address to register for listening to connections, defaults to <see cref="IPAddress.Loopback"/>>
@@ -122,6 +124,48 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		/// <summary>
+		/// Broadcasts a message to all clients registered on the message's topic.
+		/// </summary>
+		/// <param name="message"> message to broadcast</param>
+		/// <returns>task that will complete when all clients have been sent the message</returns>
+		public async Task BroadcastMessage(ResponseMessageWrapper message)
+		{
+			if (message.Topic == Topic.Custom) {
+				await BroadcastCustomMessage(message);
+			} else {
+				var registeredClients = topicRegistrations[message.Topic];
+				if (registeredClients != null) {
+					var tasks = new Task[registeredClients.Count];
+					int i = 0;
+					foreach(string clientId in registeredClients)
+					{
+						tasks[i++] = SendClientMessage(clientId, message);
+					}
+					await Task.WhenAll(tasks);
+				}
+			}
+		}
+
+		private async Task BroadcastCustomMessage(ResponseMessageWrapper message)
+		{
+			var customRegistrants = new HashSet<string>(topicRegistrations[message.Topic]);
+			if (message.Custom == null)
+			{
+				throw new ArgumentNullException(null, "message.Custom");
+			}
+			var subtopicRegistrants = customTopicRegistrations[message.Custom.Value.SubTopic];
+			if ((customRegistrants != null) && (subtopicRegistrants != null)) {
+				customRegistrants.IntersectWith(subtopicRegistrants);
+				var tasks = new Task[customRegistrants.Count];
+				int i = 0;
+				foreach (string clientId in customRegistrants) {
+					tasks[i++] = SendClientMessage(clientId, message);
+				}
+				await Task.WhenAll(tasks);
+			}
+		}
+
 		private async Task HandleRequest(string clientId, RequestMessageWrapper request)
 		{
 			try
@@ -151,6 +195,10 @@ namespace BizHawk.Client.Common
 
 					case Topic.EmulatorCommand:
 						await HandleEmulatorCommandRequest(clientId, request);
+						break;
+
+					case Topic.Custom:
+						await HandleCustomRequest(clientId, request);
 						break;
 				}
 
@@ -184,9 +232,28 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			// limiting registrations to those topics that handlers have registered under the custom
+			// topics prevents clients from blowing up the custom topics, and also requires them
+			// to subscribe after the custom handlers have started.
+			foreach (string topic in customTopicHandlers.Keys)
+			{
+				if (request.CustomTopics.Contains(topic))
+				{
+					_ = customTopicRegistrations.GetValueOrPut(topic, (_) => [ ]).Add(clientId);
+				}
+				else
+				{
+					_ = customTopicRegistrations.GetValueOrDefault(topic, [ ])?.Remove(clientId);
+				}
+			}
+
 			var registeredTopics = request.Topics;
+			var registeredCustomTopics = request.CustomTopics;
 			registeredTopics.AddRange(forcedRegistrationTopics);
-			var responseMessage = new ResponseMessageWrapper(new RegistrationResponseMessage(request.RequestId, registeredTopics));
+			var responseMessage = new ResponseMessageWrapper(new RegistrationResponseMessage(
+				request.RequestId, 
+				registeredTopics, registeredCustomTopics
+			));
 			await SendClientMessage(clientId, responseMessage);
 		}
 
@@ -234,6 +301,22 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private async Task HandleCustomRequest(string clientId, RequestMessageWrapper request)
+		{
+			string? customTopic = request.Custom?.SubTopic;
+			if (customTopic == null)
+			{
+				throw new ArgumentNullException(null, "message.Custom.SubTopic");
+			}
+			foreach (var handler in customTopicHandlers.GetValueOrDefault(customTopic, [ ])!) 
+			{
+				var response = await handler(request);
+				if (response is not null) {
+					await SendClientMessage(clientId, response.Value);
+				}
+			}
+		}
+
 		// clients always get error topics
 		private async Task SendClientGenericError(string clientId) => await SendClientMessage(
 			clientId, new ResponseMessageWrapper(new ErrorMessage(ErrorType.UnknownRequest))
@@ -249,23 +332,11 @@ namespace BizHawk.Client.Common
 			);
 		}
 
-		private static class JsonSerde
-		{
-
-			private static readonly JsonSerializerSettings serializerSettings = new()
-			{
-				NullValueHandling = NullValueHandling.Ignore,
-				ContractResolver = new CamelCasePropertyNamesContractResolver(),
-			};
-
-			public static ArraySegment<byte> Serialize(object message) => 
-				new(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message, serializerSettings)));
-
-			public static T? Deserialize<T>(string message) => 
-				JsonConvert.DeserializeObject<T>(message, serializerSettings);
-		}
-
 		public void RegisterHandler(Topic topic, Func<RequestMessageWrapper, Task<ResponseMessageWrapper?>> handler) => 
 			_ = handlers.GetValueOrPut(topic, (_) => [ ]).Add(handler);
+
+		public void RegisterCustomHandler(string customTopic, Func<RequestMessageWrapper, Task<ResponseMessageWrapper?>> handler) {
+			_ = customTopicHandlers.GetValueOrPut(customTopic, (_) => [ ]).Add(handler);
+		}
 	}
 }

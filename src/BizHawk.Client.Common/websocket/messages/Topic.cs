@@ -48,6 +48,12 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		/// </summary>
 		/// <see cref="EmulatorCommandRequestMessage"/>
 		/// <see cref="EmulatorCommandResponseMessage"/>
-		EmulatorCommand = 5
+		EmulatorCommand = 5,
+
+		/// <summary>
+		/// Topic for custom data to send arbitrary JSON data between clients and services not in
+		/// the emulator central code (such as through Lua scripts).
+		/// </summary>
+		Custom = 6
 	}
 }
