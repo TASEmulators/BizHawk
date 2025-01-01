@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace BizHawk.Client.Common.Websocket.Messages
 {
 	/// <summary>
@@ -10,6 +12,11 @@ namespace BizHawk.Client.Common.Websocket.Messages
 	{
 
 		/// <summary>
+		/// Optional request ID, which the websocket server will forward on to custom handlers
+		/// </summary>
+		public string? RequestId { get; set; }
+
+		/// <summary>
 		/// Sub-topic defined by the custom handler.
 		/// </summary>
 		public string SubTopic { get; set; }
@@ -20,10 +27,14 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		/// </summary>
 		public string Message { get; set; }
 
-		public CustomRequestMessage() { }
+		public CustomRequestMessage() {
+			SubTopic = "";
+			Message = "";
+		}
 
-		public CustomRequestMessage(string subTopic, string message)
+		public CustomRequestMessage(string? requestId, string subTopic, string message)
 		{
+			RequestId = requestId;
 			SubTopic = subTopic;
 			Message = message;
 		}
@@ -37,6 +48,12 @@ namespace BizHawk.Client.Common.Websocket.Messages
 	/// <seealso cref="CustomRequestMessage"/>
 	public struct CustomResponseMessage
 	{
+
+		/// <summary>
+		/// Optional request ID, which a custom handler may use to identify responses to clients
+		/// </summary>
+		public string? RequestId { get; set; }
+
 		/// <summary>
 		/// Sub-topic defined by the custom handler.
 		/// </summary>
@@ -48,7 +65,10 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		/// </summary>
 		public string Message { get; set; }
 
-		public CustomResponseMessage() { }
+		public CustomResponseMessage() {
+			SubTopic = "";
+			Message = "";
+		}
 
 		public CustomResponseMessage(string subTopic, string message)
 		{
