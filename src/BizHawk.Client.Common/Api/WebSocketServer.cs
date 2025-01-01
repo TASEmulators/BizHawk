@@ -303,11 +303,7 @@ namespace BizHawk.Client.Common
 
 		private async Task HandleCustomRequest(string clientId, RequestMessageWrapper request)
 		{
-			string? customTopic = request.Custom?.SubTopic;
-			if (customTopic == null)
-			{
-				throw new ArgumentNullException(null, "message.Custom.SubTopic");
-			}
+			string? customTopic = (request.Custom?.SubTopic) ?? throw new ArgumentNullException(null, "message.Custom.SubTopic");
 			foreach (var handler in customTopicHandlers.GetValueOrDefault(customTopic, [ ])!) 
 			{
 				var response = await handler(request);
@@ -335,8 +331,7 @@ namespace BizHawk.Client.Common
 		public void RegisterHandler(Topic topic, Func<RequestMessageWrapper, Task<ResponseMessageWrapper?>> handler) => 
 			_ = handlers.GetValueOrPut(topic, (_) => [ ]).Add(handler);
 
-		public void RegisterCustomHandler(string customTopic, Func<RequestMessageWrapper, Task<ResponseMessageWrapper?>> handler) {
-			_ = customTopicHandlers.GetValueOrPut(customTopic, (_) => [ ]).Add(handler);
-		}
+		public void RegisterCustomHandler(string customTopic, Func<RequestMessageWrapper, Task<ResponseMessageWrapper?>> handler) => 
+			_ = customTopicHandlers.GetValueOrPut(customTopic, (_) => []).Add(handler);
 	}
 }

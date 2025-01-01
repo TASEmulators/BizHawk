@@ -27,10 +27,7 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		/// </summary>
 		public string Message { get; set; }
 
-		public CustomRequestMessage() {
-			SubTopic = "";
-			Message = "";
-		}
+		public CustomRequestMessage() { }
 
 		public CustomRequestMessage(string? requestId, string subTopic, string message)
 		{
@@ -65,13 +62,11 @@ namespace BizHawk.Client.Common.Websocket.Messages
 		/// </summary>
 		public string Message { get; set; }
 
-		public CustomResponseMessage() {
-			SubTopic = "";
-			Message = "";
-		}
+		public CustomResponseMessage() { }
 
-		public CustomResponseMessage(string subTopic, string message)
+		public CustomResponseMessage(string? requestId, string subTopic, string message)
 		{
+			RequestId = requestId;
 			SubTopic = subTopic;
 			Message = message;
 		}
