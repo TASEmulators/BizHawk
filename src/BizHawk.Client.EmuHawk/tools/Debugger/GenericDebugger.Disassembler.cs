@@ -54,11 +54,9 @@ namespace BizHawk.Client.EmuHawk
 		
 		private void Disassemble()
 		{
-			int lineCount = DisassemblerView.RowCount * 6 + 2;
-
 			_disassemblyLines.Clear();
 			uint currentAddress = _currentDisassemblerAddress;
-			for (int i = 0; i <= lineCount; ++i)
+			for (int i = 0; i <= DisassemblerView.RowCount; ++i)
 			{
 				if (currentAddress >= BusMaxValue)
 				{
