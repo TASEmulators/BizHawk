@@ -48,7 +48,6 @@ namespace BizHawk.Client.EmuHawk
 			if (CanDisassemble)
 			{
 				Disassemble();
-				SetDisassemblerItemCount();
 			}
 		}
 		
@@ -143,10 +142,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DisassemblerView_SizeChanged(object sender, EventArgs e)
 		{
 			SetDisassemblerItemCount();
-			if (CanDisassemble)
-			{
-				Disassemble();
-			}
+			UpdateDisassembler();
 		}
 
 		private void SmallIncrement()
