@@ -506,6 +506,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var visibleRows = FirstVisibleRow.RangeTo(LastVisibleRow);
 			int lastRow = -1;
+			var rowColor = _backColor;
 			foreach (Cell cell in _selectedItems)
 			{
 				if (!cell.RowIndex.HasValue || !visibleRows.Contains(cell.RowIndex.Value) || !VisibleColumns.Contains(cell.Column))
@@ -520,7 +521,6 @@ namespace BizHawk.Client.EmuHawk
 				};
 				relativeCell.RowIndex -= CountLagFramesAbsolute(relativeCell.RowIndex.Value);
 
-				var rowColor = _backColor;
 				if (QueryRowBkColor != null && lastRow != cell.RowIndex.Value)
 				{
 					QueryRowBkColor(cell.RowIndex.Value, ref rowColor);
