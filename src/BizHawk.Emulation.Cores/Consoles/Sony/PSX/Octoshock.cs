@@ -348,6 +348,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			disposed = true;
 
+			_memoryCallbacks.ActiveChanged -= RefreshMemCallbacks;
+
 			//discs arent bound to shock core instances, but they may be mounted. kill the core instance first to effectively dereference the disc
 			OctoshockDll.shock_Destroy(psx);
 			psx = IntPtr.Zero;

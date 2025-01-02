@@ -539,6 +539,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_glContext = null;
 			}
 
+			_memoryCallbacks.ActiveChanged -= SetMemoryCallbacks;
+
 			base.Dispose();
 		}
 

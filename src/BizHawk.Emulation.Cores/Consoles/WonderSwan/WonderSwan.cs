@@ -52,6 +52,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public void Dispose()
 		{
+			_inputCallbacks.ActiveChanged -= SetInputCallback;
+			_memorycallbacks.ActiveChanged -= SetMemoryCallbacks;
 			if (Core != IntPtr.Zero)
 			{
 				BizSwan.bizswan_delete(Core);

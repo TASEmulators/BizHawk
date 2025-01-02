@@ -122,6 +122,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			if (!_disposed)
 			{
+				_memoryCallbacks.ActiveChanged -= RefreshMemCallbacks;
 				_elf?.Dispose();
 
 				if (_cds != null)

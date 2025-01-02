@@ -300,5 +300,11 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			Marshal.Copy(_buf2352, 0, dst, 2352);
 			DriveLightOn = true;
 		}
+
+		public override void Dispose()
+		{
+			_memoryCallbacks.ActiveChanged -= SetMemoryCallbacks;
+			base.Dispose();
+		}
 	}
 }
