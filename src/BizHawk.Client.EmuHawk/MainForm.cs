@@ -958,13 +958,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_emulatorPaused = value;
-				OnPauseChanged?.Invoke(_emulatorPaused);
 			}
 		}
 
 		public bool BlockFrameAdvance { get; set; }
-
-		public event Action<bool> OnPauseChanged;
 
 		public string CurrentlyOpenRom { get; private set; } // todo - delete me and use only args instead
 		public LoadRomArgs CurrentlyOpenRomArgs { get; private set; }
