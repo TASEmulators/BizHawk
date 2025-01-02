@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		private readonly LibretroApi api;
 		private readonly IntPtr cbHandler;
 
-		private class BridgeGuard(IntPtr parentHandler) : IMonitor
+		private sealed class BridgeGuard(IntPtr parentHandler) : IMonitor
 		{
 			private static readonly object _sync = new();
 			private static IntPtr _activeHandler;
@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 		}
 
-		private class RetroData(object o, long len = 0) : IDisposable
+		private sealed class RetroData(object o, long len = 0) : IDisposable
 		{
 			private GCHandle _handle = GCHandle.Alloc(o, GCHandleType.Pinned);
 

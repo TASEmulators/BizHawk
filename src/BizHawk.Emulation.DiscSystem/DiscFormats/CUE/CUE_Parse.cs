@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// <summary>
 	/// Performs minimum parse processing on a cue file
 	/// </summary>
-	internal class ParseCueJob : DiscJob
+	internal sealed class ParseCueJob : DiscJob
 	{
 		private readonly string IN_CueString;
 
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// </summary>
 		public CUE_File OUT_CueFile { get; private set; }
 
-		private class CueLineParser
+		private sealed class CueLineParser
 		{
 			private int index;
 			private readonly string str;
@@ -133,12 +133,12 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		private void LoadFromString()
 		{
-			TextReader tr = new StringReader(IN_CueString);
+			StringReader reader = new(IN_CueString);
 
 			while (true)
 			{
 				CurrentLine++;
-				var line = tr.ReadLine()?.Trim();
+				var line = reader.ReadLine()?.Trim();
 				if (line is null) break;
 				if (line == string.Empty) continue;
 				var clp = new CueLineParser(line);

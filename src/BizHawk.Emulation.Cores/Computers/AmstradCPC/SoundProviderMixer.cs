@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// </summary>
 	internal sealed class SoundProviderMixer : ISoundProvider
 	{
-		private class Provider
+		private sealed class Provider
 		{
 			public ISoundProvider SoundProvider { get; set; }
 			public string ProviderDescription { get; set; }

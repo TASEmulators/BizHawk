@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 #endif
 		}
 
-		private class ReadWriteWrapper : IDisposable
+		private sealed class ReadWriteWrapper : IDisposable
 		{
 			private GCHandle _handle;
 			private readonly ISpanStream _backingSpanStream;
@@ -313,7 +313,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return new WaterboxPagesDomain(this);
 		}
 
-		private class WaterboxPagesDomain : MemoryDomain
+		private sealed class WaterboxPagesDomain : MemoryDomain
 		{
 			private readonly WaterboxHost _host;
 

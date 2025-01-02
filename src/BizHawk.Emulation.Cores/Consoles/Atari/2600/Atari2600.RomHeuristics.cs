@@ -232,12 +232,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return "UNKNOWN";
 		}
 
-		private static bool IsProbablySC(IList<byte> rom)
+		private static bool IsProbablySC(byte[] rom)
 		{
 			// We assume a Superchip cart contains the same bytes for its entire
 			// RAM area; obviously this test will fail if it doesn't
 			// The RAM area will be the first 256 bytes of each 4K bank
-			var numBanks = rom.Count / 4096;
+			var numBanks = rom.Length / 4096;
 			for (var i = 0; i < numBanks; i++)
 			{
 				var first = rom[i * 4096];
@@ -273,12 +273,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			});
 		}
 
-		private static bool IsProbably4A50(IList<byte> rom)
+		private static bool IsProbably4A50(byte[] rom)
 		{
 			// 4A50 carts store address $4A50 at the NMI vector, which
 			// in this scheme is always in the last page of ROM at
 			// $1FFA - $1FFB (at least this is true in rev 1 of the format)
-			if (rom[rom.Count - 6] == 0x50 && rom[rom.Count - 5] == 0x4A)
+			if (rom[rom.Length - 6] == 0x50 && rom[rom.Length - 5] == 0x4A)
 			{
 				return true;
 			}

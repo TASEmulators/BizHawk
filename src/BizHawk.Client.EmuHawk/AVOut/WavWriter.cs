@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UsesVideo => false;
 
-		private class WavWriterVToken : IDisposable
+		private sealed class WavWriterVToken : IDisposable
 		{
 			public void Dispose() { }
 		}

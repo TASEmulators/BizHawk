@@ -205,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class LogWriter : TextWriter
+		private sealed class LogWriter : TextWriter
 		{
 			public override void Write(char[] buffer, int offset, int count)
 			{

@@ -199,7 +199,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// writes a single packet out, including CheckSums
 		/// </summary>
-		private class NutPacket : Stream
+		private sealed class NutPacket : Stream
 		{
 			public enum StartCode : ulong
 			{
@@ -290,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// stores basic AV parameters
 		/// </summary>
-		private class AVParams
+		private sealed class AVParams
 		{
 			public int Width { get; set; }
 			public int Height { get; set; }
@@ -424,7 +424,7 @@ namespace BizHawk.Client.EmuHawk
 		/// stores a single frame with syncpoint, in mux-ready form
 		/// used because reordering of audio and video can be needed for proper interleave
 		/// </summary>
-		private class NutFrame
+		private sealed class NutFrame
 		{
 			/// <summary>
 			/// data ready to be written to stream/disk

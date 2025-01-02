@@ -3,7 +3,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
-	internal class N64VideoProvider : IVideoProvider, IDisposable
+	internal sealed class N64VideoProvider : IVideoProvider, IDisposable
 	{
 		private int[] frameBuffer;
 		private mupen64plusVideoApi api;

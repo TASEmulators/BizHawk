@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 			handle.Free();
 		}
 
-		private class RCTrack : IDisposable
+		private sealed class RCTrack : IDisposable
 		{
 			private readonly Disc _disc;
 			private readonly DiscSectorReader _dsr;

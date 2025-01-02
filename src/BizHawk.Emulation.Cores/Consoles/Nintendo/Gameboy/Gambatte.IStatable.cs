@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private readonly JsonSerializer _ser = new() { Formatting = Formatting.Indented };
 
 		// other data in the text state besides core
-		internal class TextStateData
+		internal sealed class TextStateData
 		{
 			public int Frame;
 			public int LagCount;

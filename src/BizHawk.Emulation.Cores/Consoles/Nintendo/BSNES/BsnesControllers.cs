@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		ControllerDefinition Definition { get; }
 	}
 
-	internal class BsnesUnpluggedController : IBsnesController
+	internal sealed class BsnesUnpluggedController : IBsnesController
 	{
 		private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)");
 
@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public short GetState(IController controller, int index, int id) => 0;
 	}
 
-	internal class BsnesController : IBsnesController
+	internal sealed class BsnesController : IBsnesController
 	{
 		private static readonly string[] Buttons =
 		{
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			return (short) (controller.IsPressed(Buttons[id]) ? 1 : 0);
 		}
 	}
-	internal class BsnesExtendedController : IBsnesController
+	internal sealed class BsnesExtendedController : IBsnesController
 	{
 		private static readonly string[] Buttons =
 		{
@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 	}
 
-	internal class BsnesMouseController : IBsnesController
+	internal sealed class BsnesMouseController : IBsnesController
 	{
 		private static readonly ControllerDefinition _definition = new ControllerDefinition("(SNES Controller fragment)")
 				{ BoolButtons = { "0Mouse Left", "0Mouse Right" } }
@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 	}
 
-	internal class BsnesMultitapController : IBsnesController
+	internal sealed class BsnesMultitapController : IBsnesController
 	{
 		private static readonly string[] Buttons =
 		{
@@ -253,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	/// <summary>
 	/// "Virtual" controller that behaves like a multitap controller, but with 16 instead of 12 buttons per controller.
 	/// </summary>
-	internal class BsnesPayloadController : IBsnesController
+	internal sealed class BsnesPayloadController : IBsnesController
 	{
 		private static readonly string[] Buttons =
 		{
@@ -299,7 +299,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 	}
 
-	internal class BsnesSuperScopeController : IBsnesController
+	internal sealed class BsnesSuperScopeController : IBsnesController
 	{
 		private static readonly ControllerDefinition _definition = new ControllerDefinition("(SNES Controller fragment)")
 			{ BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause", "0Offscreen" } }
@@ -322,7 +322,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 	}
 
-	internal class BsnesJustifierController : IBsnesController
+	internal sealed class BsnesJustifierController : IBsnesController
 	{
 		public BsnesJustifierController(bool chained)
 		{

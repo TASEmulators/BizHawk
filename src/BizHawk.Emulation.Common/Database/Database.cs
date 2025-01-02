@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Common
 
 		private static string _bundledRoot = null;
 
-		private static IList<string> _expected = null;
+		private static List<string> _expected = null;
 
 		private static string _userRoot = null;
 
@@ -487,7 +487,9 @@ namespace BizHawk.Emulation.Common
 			game.Name = Path.GetFileNameWithoutExtension(fileName)?.Replace('_', ' ');
 
 			// If filename is all-caps, then attempt to proper-case the title.
+#pragma warning disable CA1862 // incorrect detection, see https://github.com/dotnet/roslyn-analyzers/issues/7074
 			if (!string.IsNullOrWhiteSpace(game.Name) && game.Name == game.Name.ToUpperInvariant())
+#pragma warning restore CA1862
 			{
 				game.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(game.Name.ToLowerInvariant());
 			}

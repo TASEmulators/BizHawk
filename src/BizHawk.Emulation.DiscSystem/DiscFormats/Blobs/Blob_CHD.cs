@@ -2,7 +2,7 @@ using System.IO;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	internal class Blob_CHD : IBlob
+	internal sealed class Blob_CHD : IBlob
 	{
 		private IntPtr _chdFile;
 

@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		private class RegistrationRecord
+		private sealed class RegistrationRecord
 		{
 			public object Tag { get; set; }
 

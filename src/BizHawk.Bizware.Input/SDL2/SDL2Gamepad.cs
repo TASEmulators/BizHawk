@@ -7,7 +7,7 @@ namespace BizHawk.Bizware.Input
 	/// <summary>
 	/// SDL2 Gamepad Handler
 	/// </summary>
-	internal class SDL2Gamepad : IDisposable
+	internal sealed class SDL2Gamepad : IDisposable
 	{
 		// indexed by instance id
 		private static readonly Dictionary<int, SDL2Gamepad> Gamepads = new();

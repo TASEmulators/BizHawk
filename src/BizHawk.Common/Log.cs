@@ -31,10 +31,7 @@ namespace BizHawk.Common
 
 		public static void DisableDomain(string domain)
 		{
-			if (EnabledLogDomains.Contains(domain))
-			{
-				EnabledLogDomains.Remove(domain);
-			}
+			EnabledLogDomains.Remove(domain);
 		}
 
 		// -------------- Logging Action Configuration --------------
