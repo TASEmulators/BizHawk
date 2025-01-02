@@ -951,6 +951,7 @@ namespace BizHawk.Client.EmuHawk
 			private set
 			{
 				_didMenuPause = false; // overwritten where relevant
+				if (_emulatorPaused == value) return;
 				if (_emulatorPaused && !value) // Unpausing
 				{
 					InitializeFpsData();
