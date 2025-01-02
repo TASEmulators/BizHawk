@@ -245,6 +245,16 @@ namespace BizHawk.Client.Common
 			return APIs.Comm.HTTP?.GetUrl;
 		}
 
+		[LuaMethodExample("comm.wss_topic( \"my-custom-topic\" );")]
+		[LuaMethod("wss_topic", "Registers a custom topic for broadcast messages, which allows clients to register.")]
+		public void RegisterCustomWebSocketServerTopic(string customTopic)
+		{
+			if (WssEnabled())
+			{
+				APIs.Comm.WebSocketServer!.RegisterCustomBroadcastTopic(customTopic);
+			}
+		}
+
 		[LuaMethodExample("comm.wss_send( \"{\\\"topic\\\": \\\"Echo\\\", \\\"Echo\\\": {\\\"requestId\\\": \\\"abcd\\\", \\\"message\\\": \\\"hello, world\\\"}}\" );")]
 		[LuaMethod("wss_send", "Broadcasts a message over the websocket server to registered clients. Message contents must be a valid [ResponseMessageWrapper] JSON string with camelCase properties.")]
 		public async Task WebSocketServerSend(string messageJson)

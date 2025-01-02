@@ -235,7 +235,7 @@ namespace BizHawk.Client.Common
 			// limiting registrations to those topics that handlers have registered under the custom
 			// topics prevents clients from blowing up the custom topics, and also requires them
 			// to subscribe after the custom handlers have started.
-			foreach (string topic in customTopicHandlers.Keys)
+			foreach (string topic in customTopicRegistrations.Keys)
 			{
 				if (request.CustomTopics.Contains(topic))
 				{
@@ -331,7 +331,13 @@ namespace BizHawk.Client.Common
 		public void RegisterHandler(Topic topic, Func<RequestMessageWrapper, Task<ResponseMessageWrapper?>> handler) => 
 			_ = handlers.GetValueOrPut(topic, (_) => [ ]).Add(handler);
 
-		public void RegisterCustomHandler(string customTopic, Func<RequestMessageWrapper, Task<ResponseMessageWrapper?>> handler) => 
-			_ = customTopicHandlers.GetValueOrPut(customTopic, (_) => []).Add(handler);
+		public void RegisterCustomHandler(string customTopic, Func<RequestMessageWrapper, Task<ResponseMessageWrapper?>> handler) 
+		{
+			_ = customTopicHandlers.GetValueOrPut(customTopic, (_) => [ ]).Add(handler);
+			_ = customTopicRegistrations.GetValueOrPut(customTopic, (_) => [ ]);
+		} 
+
+		public void RegisterCustomBroadcastTopic(string customTopic) =>
+			_ = customTopicRegistrations.GetValueOrPut(customTopic, (_) => [ ]);
 	}
 }
