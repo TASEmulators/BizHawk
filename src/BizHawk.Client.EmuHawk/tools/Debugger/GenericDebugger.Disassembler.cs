@@ -204,11 +204,6 @@ namespace BizHawk.Client.EmuHawk
 			Clipboard.SetDataObject(blob.ToString());
 		}
 
-		private void OnPauseChanged(bool isPaused)
-		{
-			if (isPaused) FullUpdate();
-		}
-
 		private void DisassemblerContextMenu_Opening(object sender, EventArgs e)
 		{
 			AddBreakpointContextMenuItem.Enabled = DisassemblerView.AnyRowsSelected;

@@ -74,7 +74,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_disassemblyLines.Clear();
-			MainForm.OnPauseChanged += OnPauseChanged;
 			CancelSeekBtn.Enabled = false;
 			if (CanDisassemble)
 			{
@@ -149,7 +148,6 @@ namespace BizHawk.Client.EmuHawk
 		private void DisengageDebugger()
 		{
 			BreakPointControl1.Shutdown();
-			MainForm.OnPauseChanged -= OnPauseChanged;
 		}
 
 		public void DisableRegisterBox()
