@@ -527,9 +527,10 @@ namespace BizHawk.Client.EmuHawk
 			int? width = null,
 			int? height = null)
 		{
+			const string FUNC_NAME = "forms.drawIcon";
 			if (!File.Exists(path))
 			{
-				LogOutputCallback($"File not found: {path}\nScript Terminated");
+				LogOutputCallback($"{FUNC_NAME}: file \"{path}\" not found");
 				return;
 			}
 			try
@@ -543,7 +544,7 @@ namespace BizHawk.Client.EmuHawk
 						y: y,
 						width: width,
 						height: height,
-						functionName: "forms.drawIcon");
+						functionName: FUNC_NAME);
 				}
 				else if (match is Form)
 				{
@@ -575,7 +576,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!File.Exists(path))
 			{
-				LogOutputCallback($"File not found: {path}\nScript Terminated");
+				LogOutputCallback($"forms.drawImage: file \"{path}\" not found");
 				return;
 			}
 			try
@@ -637,7 +638,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!File.Exists(path))
 			{
-				LogOutputCallback($"File not found: {path}\nScript Terminated");
+				LogOutputCallback($"forms.drawImageRegion: file \"{path}\" not found");
 				return;
 			}
 			try
