@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			bool diskDriveEnabled = _board.DiskDrive != null;
 			bool tapeDriveEnabled = _board.TapeDrive != null;
+			bool cartEnabled = _board.CartPort.IsConnected;
 
 			var domains = new List<MemoryDomain>
 			{
@@ -39,6 +40,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				{
 					C64MemoryDomainFactory.Create("Tape Data", _board.TapeDrive.TapeDataDomain.Length, a => _board.TapeDrive.TapeDataDomain[a], (a, v) => _board.TapeDrive.TapeDataDomain[a] = (byte)v)
 				});
+			}
+
+			if (cartEnabled)
+			{
+				domains.AddRange(_board.CartPort.CreateMemoryDomains());
 			}
 
 			_memoryDomains = new MemoryDomainList(domains);
