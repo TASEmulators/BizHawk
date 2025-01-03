@@ -228,7 +228,7 @@ namespace BizHawk.Client.Common
 
 		public void RunQueuedMovie(bool recordMode, IEmulator emulator)
 		{
-			MovieController = new Bk2Controller(emulator.ControllerDefinition);
+			MovieController = new Bk2Controller(emulator.ControllerDefinition, _queuedMovie.LogKey);
 
 			Movie = _queuedMovie;
 			Movie.Attach(emulator);
