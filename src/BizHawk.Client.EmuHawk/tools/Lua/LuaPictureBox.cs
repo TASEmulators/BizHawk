@@ -276,11 +276,12 @@ namespace BizHawk.Client.EmuHawk
 			var pointsList = TableHelper.EnumerateValues<LuaTable>(points)
 				.Select(table => TableHelper.EnumerateValues<long>(table).ToList()).ToList();
 			var pointsArr = new Point[pointsList.Count];
+			var x1 = x ?? 0;
+			var y1 = y ?? 0;
 			var i = 0;
 			foreach (var point in pointsList)
 			{
-				pointsArr[i] = new Point((int) point[0] + x ?? 0, (int) point[1] + y ?? 0);
-				i++;
+				pointsArr[i++] = new(x1 + (int) point[0], y1 + (int) point[1]);
 			}
 
 			var boxBackground = Graphics.FromImage(Image);
