@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 					result = new Mapper0013(chipAddress, chipBank, chipData);
 					break;
 				case 0x0020:    // EasyFlash
-					result = new Mapper0020(chipAddress, chipBank, chipData);
+					result = new Mapper0020(BuildChipList(chipAddress, chipBank, chipData));
 					break;
 				case 0x002B:    // Prophet 64
 					result = new Mapper002B(chipAddress, chipBank, chipData);
@@ -118,6 +118,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 			return result;
 		}
+
+		private static List<CartridgeChip> BuildChipList(IList<int> addresses, IList<int> banks, IList<int[]> data) =>
+			Enumerable.Range(0, addresses.Count)
+				.Select(i => new CartridgeChip
+				{
+					Address = addresses[i],
+					Bank = banks[i],
+					Data = data[i]
+				})
+				.ToList();
 
 		private static int ReadCRTShort(BinaryReader reader)
 		{
@@ -255,6 +265,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		public virtual void WriteDF00(int addr, int val)
 		{
 		}
+
+		public virtual IEnumerable<MemoryDomain> CreateMemoryDomains() => 
+			Array.Empty<MemoryDomain>();
 
 		private bool _driveLightEnabled;
 		private bool _driveLightOn;
