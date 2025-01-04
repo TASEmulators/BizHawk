@@ -259,16 +259,28 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 			}
 
-			_fft = new RealFFT(nsamp_2);
+			if (_fft == null)
+				_fft = new RealFFT(nsamp_2);
+			else
+				_fft.Resize(nsamp_2);
 
 			// eventually this will settle on a single buffer size and stop reallocating
 			if (_fftBuffer.Length < nsamp_2)
 				Array.Resize(ref _fftBuffer, nsamp_2);
 
-			// linearly interpolate the original sample set into the new denser sample set
-			for (double i = 0; i < nsamp_2; i++)
+			// If no filters are enabled, filtered output will be silent.
+			if (!_filterSelectLoPass && !_filterSelectHiPass && !_filterSelectBandPass)
 			{
-				_fftBuffer[(int)i] = _outputBufferFiltered[(int)Math.Floor((i / (nsamp_2-1) * (nsamp - 1))) + _filterIndex];
+				for (var i = 0; i < nsamp_2; i++)
+					_fftBuffer[i] = 0;
+			}
+			else
+			{
+				// linearly interpolate the original sample set into the new denser sample set
+				for (double i = 0; i < nsamp_2; i++)
+				{
+					_fftBuffer[(int)i] = _outputBufferFiltered[(int)Math.Floor((i / (nsamp_2-1) * (nsamp - 1))) + _filterIndex];
+				}
 			}
 
 			// now we have everything we need to perform the FFT
