@@ -487,7 +487,8 @@ namespace BizHawk.Client.Common
 					break;
 				case VSystemID.Raw.PSX when ext is ".bin":
 					const string FILE_EXT_CUE = ".cue";
-					var cuePath = TempFileManager.GetTempFilename(friendlyName: "syn", dotAndExtension: FILE_EXT_CUE, delete: false);
+					var crc32Digest = CRC32Checksum.ComputeDigestHex(file.GetStream().ReadAllBytes()); // slow!
+					var cuePath = Path.Combine(Path.GetTempPath(), $"synthesised for {crc32Digest}{FILE_EXT_CUE}");
 					DiscMountJob.CreateSyntheticCue(cueFilePath: cuePath, binFilePath: file.Name);
 					var gameBak = game;
 					var nextEmulatorBak = nextEmulator;
