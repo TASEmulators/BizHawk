@@ -43,15 +43,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			{
 				// Maximum 128 banks.
 				if (chip.Bank is > 0x7F or < 0x00)
+				{
 					throw new Exception("Cartridge image has an invalid bank");
+				}
 				
 				// Addresses other than 0x8000 are not supported.
 				if (chip.Address != 0x8000)
+				{
 					continue;
+				}
 
 				// Bank wrap-around is based on powers of 2.
 				while (chip.Bank > _bankMask)
+				{
 					_bankMask = unchecked((byte) ((_bankMask << 1) | 1));
+				}
 				
 				var bank = new byte[BankSize];
 
@@ -61,7 +67,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 				_banks[chip.Bank] = bank;
 
 				if (chip.Bank > maxBank)
+				{
 					maxBank = chip.Bank;
+				}
 			}
 
 			_bankCount = maxBank + 1;
@@ -88,7 +96,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			ser.Sync("ROMEnable", ref _romEnable);
 
 			if (ser.IsReader)
+			{
 				BankSet(_bankNumber | (_romEnable ? 0x00 : 0x80));
+			}
 		}
 
 		private void BankSet(int index)
@@ -103,8 +113,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public override void PokeDE00(int addr, int val)
 		{
-			if (addr == 0x00) 
+			if (addr == 0x00)
+			{
 				BankSet(val);
+			}
 		}
 
 		public override int Read8000(int addr) => 
@@ -121,8 +133,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public override void WriteDE00(int addr, int val)
 		{
-			if (addr == 0x00) 
+			if (addr == 0x00)
+			{
 				BankSet(val);
+			}
 		}
 	}
 }
