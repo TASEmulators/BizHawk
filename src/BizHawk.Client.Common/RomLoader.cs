@@ -302,9 +302,14 @@ namespace BizHawk.Client.Common
 			return game;
 		}
 
+		private Disc/*?*/ InstantiateDiscFor(string path)
+			=> DiscExtensions.CreateAnyType(
+				path,
+				str => DoLoadErrorCallback(message: str, systemId: "???"/*TODO we should NOT be doing this, even if it's just for error display*/, LoadErrorType.DiscError));
+
 		private bool LoadDisc(string path, CoreComm nextComm, HawkFile file, string ext, string forcedCoreName, out IEmulator nextEmulator, out GameInfo game)
 		{
-			var disc = DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError));
+			var disc = InstantiateDiscFor(path);
 			if (disc == null)
 			{
 				game = null;
@@ -826,6 +831,12 @@ namespace BizHawk.Client.Common
 							retro.Dispose();
 							return false;
 						}
+						// else success; update game name
+						var ext = file.Extension;
+						var gi = Disc.IsValidExtension(ext)
+							? MakeGameFromDisc(InstantiateDiscFor(path), ext: ext, name: Path.GetFileNameWithoutExtension(file.Name))
+							: new RomGame(file).GameInfo;
+						Game.Name = $"{gi.Name} [{Game.Name/* core name */}]";
 					}
 				}
 				else
