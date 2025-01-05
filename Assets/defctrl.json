@@ -674,6 +674,16 @@
 			"Mouse Left Click": "Z",
 			"Mouse Middle Click": "X",
 			"Mouse Right Click": "C"
+		},
+		"Amiga Controller": {
+			"P1 Mouse Left Button": "WMouse L",
+			"P2 Joystick Up": "Up",
+			"P2 Joystick Down": "Down",
+			"P2 Joystick Left": "Left",
+			"P2 Joystick Right": "Right",
+			"P2 Joystick Button 1": "Z",
+			"P2 Joystick Button 2": "X",
+			"P2 Joystick Button 3": "C"
 		}
 	},
 	"AllTrollersAutoFire": {
@@ -1082,6 +1092,18 @@
 				"Deadzone": 0.0
 			},
 			"Mouse Y Position": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			}
+		},
+		"Amiga Controller": {
+			"P1 Mouse X": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Mouse Y": {
 				"Value": "WMouse Y",
 				"Mult": 1.0,
 				"Deadzone": 0.0
