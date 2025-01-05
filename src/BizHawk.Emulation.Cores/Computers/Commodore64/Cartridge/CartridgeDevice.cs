@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 					result = new Mapper0012(chipAddress, chipBank, chipData);
 					break;
 				case 0x0013:    // Domark
-					result = new Mapper0013(chipAddress, chipBank, chipData);
+					result = new Mapper0013(BuildChipList(chipAddress, chipBank, chipData));
 					break;
 				case 0x0020:    // EasyFlash
 					result = new Mapper0020(BuildChipList(chipAddress, chipBank, chipData));
