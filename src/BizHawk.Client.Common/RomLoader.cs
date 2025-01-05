@@ -486,6 +486,21 @@ namespace BizHawk.Client.Common
 					}
 					break;
 				case VSystemID.Raw.PSX when ext is ".bin":
+					if (TryLoadSiblingCue(
+						nextComm,
+						binFilePath: file.Name,
+						forcedCoreName: forcedCoreName,
+						out var nextEmulator1,
+						out var game1,
+						out cancel))
+					{
+						nextEmulator = nextEmulator1;
+						rom = null;
+						game = game1;
+						return;
+					}
+					if (cancel) break; //TODO return? the cancel earlier in this method doesn't
+
 					const string FILE_EXT_CUE = ".cue";
 					var crc32Digest = CRC32Checksum.ComputeDigestHex(file.GetStream().ReadAllBytes()); // slow!
 					var cuePath = Path.Combine(Path.GetTempPath(), $"synthesised for {crc32Digest}{FILE_EXT_CUE}");
@@ -532,6 +547,70 @@ namespace BizHawk.Client.Common
 				},
 			};
 			nextEmulator = MakeCoreFromCoreInventory(cip, forcedCoreName);
+		}
+
+		private bool TryLoadSiblingCue(
+			CoreComm nextComm,
+			string binFilePath,
+			string forcedCoreName,
+			out IEmulator nextEmulator,
+			out GameInfo game,
+			out bool cancel)
+		{
+			nextEmulator = null;
+			game = null;
+			cancel = false;
+			const string FILE_EXT_CUE = ".cue";
+			const string FMT_STR_ASK = "Found \"{0}\".\nLoad that instead? Select \"No\" to synthesise a new .cue file for this game.";
+			HawkFile/*?*/ hfChosen = null;
+			//TODO can probably express this logic flow in a better way
+
+			HawkFile hfMatching = new(binFilePath.RemoveSuffix(".bin") + ".cue");
+			if (hfMatching.Exists)
+			{
+				var result = nextComm.Question(string.Format(FMT_STR_ASK, hfMatching.Name));
+				if (result is null)
+				{
+					cancel = true;
+					return false;
+				}
+				if (result is true)
+				{
+					hfChosen = hfMatching;
+				}
+			}
+
+			if (hfChosen is null)
+			{
+				var soleCueSiblingPath = Directory.EnumerateFiles(Path.GetDirectoryName(binFilePath))
+					.Where(static s => s.EndsWithOrdinal(FILE_EXT_CUE))
+					.Except([ hfMatching.Name ]) // seen but denied by user; don't prompt for the same file again
+					.SingleOrDefault();
+				HawkFile hfSoleSibling = soleCueSiblingPath is null ? null : new(soleCueSiblingPath);
+				if (hfSoleSibling is { Exists: true })
+				{
+					var result = nextComm.Question(string.Format(FMT_STR_ASK, hfSoleSibling.Name));
+					if (result is null)
+					{
+						cancel = true;
+						return false;
+					}
+					if (result is true)
+					{
+						hfChosen = hfSoleSibling;
+					}
+				}
+			}
+
+			if (hfChosen is null) return false;
+			return LoadDisc(
+				path: hfChosen.Name,
+				nextComm,
+				file: hfChosen,
+				ext: FILE_EXT_CUE,
+				forcedCoreName: forcedCoreName,
+				out nextEmulator,
+				out game);
 		}
 
 		private void LoadPSF(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)

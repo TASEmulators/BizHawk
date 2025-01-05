@@ -258,6 +258,7 @@ namespace BizHawk.Client.EmuHawk
 			return new CoreComm(
 				message => this.ModalMessageBox(message, "Warning", EMsgBoxIcon.Warning),
 				AddOnScreenMessage,
+				text => this.ModalMessageBox3(icon: EMsgBoxIcon.Question, caption: "ROM loader", text: text),
 				cfp,
 				prefs,
 				new OpenGLProvider());
