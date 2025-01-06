@@ -13,29 +13,34 @@ public sealed partial class Drive1541 : ISaveRam
 	// we keep it here for all disks as we need to remember it when swapping disks around
 	// _usedDiskTracks.Length also doubles as a way to remember the disk count
 	private bool[][] _usedDiskTracks;
+	private bool[][] _dirtyDiskTracks;
 	private readonly Func<int> _getCurrentDiskNumber;
+	private int _diskCount;
 
 	public void InitSaveRam(int diskCount)
 	{
+		_diskCount = diskCount;
 		_usedDiskTracks = new bool[diskCount][];
+		_dirtyDiskTracks = new bool[diskCount][];
 		_diskDeltas = new byte[diskCount][][];
-		for (var i = 0; i < diskCount; i++)
+		for (var diskNumber = 0; diskNumber < diskCount; diskNumber++)
 		{
-			_usedDiskTracks[i] = new bool[84];
-			_diskDeltas[i] = new byte[84][];
-			for (var j = 0; j < 84; j++)
+			_usedDiskTracks[diskNumber] = new bool[84];
+			_diskDeltas[diskNumber] = new byte[84][];
+			_dirtyDiskTracks[diskNumber] = new bool[84];
+			for (var trackNumber = 0; trackNumber < 84; trackNumber++)
 			{
-				_diskDeltas[i][j] = Array.Empty<byte>();
+				_diskDeltas[diskNumber][trackNumber] = Array.Empty<byte>();
 			}
 		}
+
+		SaveRamModified = false;
 	}
 
 	public bool SaveRamModified { get; private set; } = false;
 
 	public byte[] CloneSaveRam()
 	{
-		SaveDeltas(); // update the current deltas
-
 		using var ms = new MemoryStream();
 		using var bw = new BinaryWriter(ms);
 		bw.Write(_usedDiskTracks.Length);
@@ -49,6 +54,7 @@ public sealed partial class Drive1541 : ISaveRam
 			}
 		}
 
+		SaveRamModified = false;
 		return ms.ToArray();
 	}
 
@@ -63,8 +69,6 @@ public sealed partial class Drive1541 : ISaveRam
 			throw new InvalidOperationException("Disk count mismatch!");
 		}
 
-		ResetDeltas();
-
 		for (var i = 0; i < _usedDiskTracks.Length; i++)
 		{
 			_usedDiskTracks[i] = br.ReadByteBuffer(returnNull: false)!.ToBoolBuffer();
@@ -74,50 +78,82 @@ public sealed partial class Drive1541 : ISaveRam
 			}
 		}
 
-		LoadDeltas(); // load up new deltas
-		_usedDiskTracks[_getCurrentDiskNumber()][_trackNumber] = true; // make sure this gets set to true now
+		LoadDeltas();
+		SaveRamModified = false;
 	}
 
+	/// <summary>
+	/// Clear all cached deltas.
+	/// </summary>
+	public void ResetDeltas()
+	{
+		for (var i = 0; i < _diskCount; i++)
+		{
+			for (var j = 0; j < 84; j++)
+			{
+				_diskDeltas[i][j] = Array.Empty<byte>();
+				_usedDiskTracks[i][j] = false;
+			}
+		}
+	}
+
+	/// <summary>
+	/// Calculate and cache the deltas for each track on the current disk.
+	/// </summary>
 	public void SaveDeltas()
 	{
-		_disk?.DeltaUpdate((tracknum, track) =>
+		if (_disk == null) return;
+
+		var diskNumber = _getCurrentDiskNumber();
+		var deltas = _diskDeltas[diskNumber];
+
+		for (var trackNumber = 0; trackNumber < 84; trackNumber++)
 		{
-			SaveDelta(tracknum, track.Delta);
-		});
+			var track = _disk.Tracks[trackNumber];
+			var isModified = track.IsModified();
+
+			_usedDiskTracks[diskNumber][trackNumber] = isModified;
+
+			if (_dirtyDiskTracks[diskNumber][trackNumber])
+			{
+				SaveRamModified = true;
+
+				deltas[trackNumber] = isModified
+					? DeltaSerializer.GetDelta(track.Original, track.Bits).ToArray()
+					: Array.Empty<byte>();
+
+				_dirtyDiskTracks[diskNumber][trackNumber] = false;
+			}
+		}
 	}
 
+	/// <summary>
+	/// Apply new deltas for each track on the current disk.
+	/// </summary>
 	public void LoadDeltas()
 	{
-		_disk?.DeltaUpdate((tracknum, track) =>
+		if (_disk == null) return;
+
+		var diskNumber = _getCurrentDiskNumber();
+		var deltas = _diskDeltas[diskNumber];
+
+		for (var trackNumber = 0; trackNumber < 84; trackNumber++)
 		{
-			LoadDelta(tracknum, track.Delta);
-		});
-	}
+			var track = _disk.Tracks[trackNumber];
+			var delta = deltas[trackNumber];
 
-	private void ResetDeltas()
-	{
-		_disk?.DeltaUpdate(static (_, track) =>
-		{
-			track.Reset();
-		});
-	}
+			if (delta == null || delta.Length == 0)
+			{
+				track.Reset();
+			}
+			else
+			{
+				DeltaSerializer.ApplyDelta(track.Original, track.Bits, delta);
+				SaveRamModified = true;
+			}
 
-	private void SaveDelta(int trackNumber, byte[] delta)
-	{
-		SaveRamModified = true;
-		_diskDeltas[_getCurrentDiskNumber()][trackNumber] = delta;
-	}
-
-	private void LoadDelta(int trackNumber, byte[] delta)
-	{
-		_diskDeltas[_getCurrentDiskNumber()][trackNumber] = delta;
-		_disk.GetTrack(trackNumber).ApplyDelta(delta);
-	}
-
-	private void ResetDelta(int trackNumber)
-	{
-		SaveRamModified = true;
-		_diskDeltas[_getCurrentDiskNumber()][trackNumber] = Array.Empty<byte>();
-		_disk.GetTrack(trackNumber).Reset();
+			_usedDiskTracks[diskNumber][trackNumber] = track.IsModified();
+			_dirtyDiskTracks[diskNumber][trackNumber] = false;
+		}
 	}
 }

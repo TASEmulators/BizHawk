@@ -38,8 +38,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
 		private void ExecuteFlux()
 		{
-			var track = _disk.GetTrack(_trackNumber);
-			var bits = track.Bits;
+			var track = _disk?.Tracks[_trackNumber];
+			var bits = track == null ? Span<int>.Empty : track.Bits;
 
 			// This actually executes the main 16mhz clock
 			while (_clocks > 0)
@@ -58,8 +58,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 					{
 						if (_diskBitsLeft <= 0)
 						{
-							if (_diskWriteEnabled)
-								track.Write(_diskByteOffset, _diskOutputBits);
+							if (_diskWriteEnabled && track.Write(_diskByteOffset, _diskOutputBits))
+							{
+								_dirtyDiskTracks[_getCurrentDiskNumber()][_trackNumber] = true;
+							}
 
 							_diskByteOffset++;
 
@@ -70,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 								_diskBits = bits[_diskByteOffset];
 
 							_diskOutputBits = 0;
-							_diskBitsLeft = Disk.FluxBitsPerEntry;
+							_diskBitsLeft = DiskTrack.FluxBitsPerEntry;
 						}
 					}
 					_diskOutputBits >>= 1;
@@ -200,8 +202,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 				_diskDensityCounter++;
 				_diskCycle = (_diskCycle + 1) & 0xF;
 			}
-
-			if (_diskWriteEnabled && track.UpdateDelta()) SaveDelta(_trackNumber, track.Delta);
 		}
 	}
 }
