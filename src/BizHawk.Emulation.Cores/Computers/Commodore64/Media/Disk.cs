@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		public const int FluxBitsPerTrack = 16000000 / 5;
 		public const int FluxEntriesPerTrack = FluxBitsPerTrack / FluxBitsPerEntry;
 		private readonly DiskTrack[] _tracks;
-		private bool[] _usedTracks;
 		public bool Valid;
 		public bool WriteProtected;
 
@@ -21,7 +20,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		{
 			WriteProtected = false;
 			_tracks = new DiskTrack[trackCount];
-			_usedTracks = new bool[trackCount];
 			FillMissingTracks();
 			Valid = true;
 		}
@@ -37,7 +35,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		{
 			WriteProtected = true;
 			_tracks = new DiskTrack[trackCapacity];
-			_usedTracks = new bool[trackCapacity];
 			for (var i = 0; i < trackData.Count; i++)
 			{
 				var track = new DiskTrack();
@@ -67,24 +64,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			}
 		}
 
-		/// <summary>
-		/// Generic update of the deltas stored in Drive1541's ISaveRam implementation.
-		/// deltaUpdateCallback will be called for each track which has been possibly dirtied
-		/// </summary>
-		/// <param name="deltaUpdateCallback">callback</param>
-		public void DeltaUpdate(Action<int, DiskTrack> deltaUpdateCallback)
-		{
-			for (var i = 0; i < _tracks.Length; i++)
-			{
-				if (_usedTracks[i])
-				{
-					deltaUpdateCallback(i, _tracks[i]);
-				}
-			}
-		}
-
-		public DiskTrack GetTrack(int trackNumber)
-			=> _tracks[trackNumber];
+		public IReadOnlyList<DiskTrack> Tracks
+			=> _tracks;
 
 		public void SyncState(Serializer ser)
 		{

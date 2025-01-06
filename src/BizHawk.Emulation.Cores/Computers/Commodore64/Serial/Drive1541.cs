@@ -195,11 +195,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			Via0.HardReset();
 			Via1.HardReset();
 			_trackNumber = 34;
-			for (var i = 0; i < _ram.Length; i++)
-			{
-				_ram[i] = 0x00;
-			}
-
+			_ram.AsSpan().Fill(0);
 			_diskDensity = 0;
 			_diskFluxReversalDetected = false;
 			_diskByteOffset = 0;
@@ -232,8 +228,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		{
 			if (_disk != null)
 			{
-				var track = _disk.GetTrack(_trackNumber);
-				_diskBits = track.Bits[_diskByteOffset] >> (Disk.FluxBitsPerEntry - _diskBitsLeft);
+				var track = _disk.Tracks[_trackNumber];
+				_diskBits = track.Bits[_diskByteOffset] >> (DiskTrack.FluxBitsPerEntry - _diskBitsLeft);
 				_diskWriteProtected = _disk.WriteProtected;
 			}
 			else
