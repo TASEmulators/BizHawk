@@ -4739,7 +4739,12 @@ namespace BizHawk.Client.EmuHawk
 				InputManager,
 				Tools,
 				() => Config,
-				wavFile => Sound.PlayWavFile(wavFile, 1), // TODO: Make this configurable
+				wavFile =>
+				{
+					// TODO: Probably want to have wav volume a different setting?
+					var atten = Config.SoundEnabledNormal ? Config.SoundVolume / 100.0f : 0.0f;
+					Sound.PlayWavFile(wavFile, atten);
+				},
 				RetroAchievementsMenuItem.DropDownItems,
 				() =>
 				{
