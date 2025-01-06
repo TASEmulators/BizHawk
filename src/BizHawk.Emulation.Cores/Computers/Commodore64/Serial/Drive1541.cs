@@ -7,6 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
 	public sealed partial class Drive1541 : SerialPortDevice
 	{
+		private byte[][][] _diskDeltas;
 		private Disk _disk;
 		private int _bitHistory;
 		private int _bitsRemainingInLatchedByte;
@@ -24,7 +25,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		private int _cpuClockNum;
 		private int _ratioDifference;
 		private int _driveLightOffTime;
-		private int[] _trackImageData;
 		public Func<int> ReadIec = () => 0xFF;
 		public Action DebuggerStep;
 		public readonly Chip23128 DriveRom;
@@ -129,24 +129,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 				SaveDeltas();
 			}
 
-			for (var i = 0; i < _usedDiskTracks.Length; i++)
+			for (var diskNumber = 0; diskNumber < _usedDiskTracks.Length; diskNumber++)
 			{
-				ser.Sync($"_usedDiskTracks{i}", ref _usedDiskTracks[i], useNull: false);
-				for (var j = 0; j < 84; j++)
+				ser.Sync($"_usedDiskTracks{diskNumber}", ref _usedDiskTracks[diskNumber], useNull: false);
+				for (var trackNumber = 0; trackNumber < 84; trackNumber++)
 				{
-					ser.Sync($"DiskDeltas{i},{j}", ref _diskDeltas[i, j], useNull: true);
+					ser.Sync($"DiskDeltas{diskNumber},{trackNumber}", ref _diskDeltas[diskNumber][trackNumber], useNull: true);
 				}
 			}
-
-			_disk?.AttachTracker(_usedDiskTracks[_getCurrentDiskNumber()]);
 
 			if (ser.IsReader)
 			{
 				LoadDeltas();
 			}
-
-			// set _trackImageData back to the correct reference
-			_trackImageData = _disk?.GetDataForTrack(_trackNumber);
 		}
 
 		public override void ExecutePhase()
@@ -230,7 +225,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		public void InsertMedia(Disk disk)
 		{
 			_disk = disk;
-			_disk?.AttachTracker(_usedDiskTracks[_getCurrentDiskNumber()]);
 			UpdateMediaData();
 		}
 
@@ -238,8 +232,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		{
 			if (_disk != null)
 			{
-				_trackImageData = _disk.GetDataForTrack(_trackNumber);
-				_diskBits = _trackImageData[_diskByteOffset] >> (Disk.FluxBitsPerEntry - _diskBitsLeft);
+				var track = _disk.GetTrack(_trackNumber);
+				_diskBits = track.Bits[_diskByteOffset] >> (Disk.FluxBitsPerEntry - _diskBitsLeft);
 				_diskWriteProtected = _disk.WriteProtected;
 			}
 			else
@@ -251,7 +245,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		public void RemoveMedia()
 		{
 			_disk = null;
-			_trackImageData = null;
 			_diskBits = 0;
 		}
 
