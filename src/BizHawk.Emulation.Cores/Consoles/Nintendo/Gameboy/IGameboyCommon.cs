@@ -24,7 +24,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		bool IsCGBMode { get; }
 
 		/// <value><see langword="true"/> iff the emulator is currently emulating CGB in DMG compatibility mode</value>
-		/// <remarks>NOTE: this mode does not take affect until the bootrom unmaps itself</remarks>
 		bool IsCGBDMGMode { get; }
 
 		/// <summary>

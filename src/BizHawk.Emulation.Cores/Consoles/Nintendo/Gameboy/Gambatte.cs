@@ -401,7 +401,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 #endif
 
 		public bool IsCGBDMGMode
+#if true
+		{
+			get
+			{
+				var headerCgbCompat = LibGambatte.gambatte_cpuread(GambatteState, 0x143);
+				return (headerCgbCompat & 0x80) == 0 || (headerCgbCompat & 0x84) == 0x84;
+			}
+		}
+#else
 			=> LibGambatte.gambatte_iscgbdmg(GambatteState);
+#endif
 
 		private InputCallbackSystem _inputCallbacks = new();
 
