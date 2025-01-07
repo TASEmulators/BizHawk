@@ -130,8 +130,6 @@ A "backport" release, [1.13.2](https://github.com/TASEmulators/BizHawk/releases/
 
 ### Unix
 
-**Note**: There's only one dev working on Linux (@YoshiRulz)! Please have patience, and try not to bother everyone else.
-
 Install the listed package with your package manager (some buttons are links to the relevant package). The changelog can be found [over on TASVideos](https://tasvideos.org/Bizhawk/ReleaseHistory).
 
 [![Manjaro | bizhawk-monort (AUR)](https://img.shields.io/badge/Manjaro-bizhawk--monort_(AUR)-%2335BF5C.svg?logo=manjaro&style=popout)](https://aur.archlinux.org/packages/bizhawk-monort)
@@ -146,9 +144,12 @@ The .NET 8 Runtime (a.k.a. .NET Core) is **not** a runtime dependency, only Mono
 If it's not clear from the downloads here or in your package manager, EmuHawk is for x86_64 CPUs only.
 You may be able to run on AArch64 with missing features: see [#4052](https://github.com/TASEmulators/BizHawk/issues/4052).
 
-Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a `.desktop` file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output. It takes mostly the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments).
+Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a `.desktop` file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output.
+It takes the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments).
 
 Most features and cores work, a notable omission being Mupen64Plus (N64). See the Linux thread, [#1430](https://github.com/TASEmulators/BizHawk/issues/1430), for a more detailed breakdown.
+
+**Note**: While the Linux port is about at parity, this remains a Windows-centric project. Please have patience as most of the dev team are on Windows.
 
 [to top](#bizhawk)
 
@@ -224,10 +225,8 @@ On Windows 8.1/10, it's easiest to use PowerShell for this. For example, to pass
 ./EmuHawk.exe '--lua=C:\path\to\script.lua' 'C:\path\to\rom.n64'
 ```
 
-On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono`. (You can also `export` env. vars.) All the arguments work as on Windows, with some caveats:
-* file paths must be absolute (or relative to the install dir, `EmuHawkMono.sh` changes the CWD to there);
-* `--mono-no-redirect`: if you pass this flag *as the first argument*, it will be eaten by the script itself, and stdout/stderr will *not* be redirected to a file. (It's redirected by default.)
-** From 2.10, this will no longer be necessary.
+On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono` and to EmuHawk. (You can also `export` env. vars.)
+All the arguments work as on Windows, with the caveat that **file paths must be absolute**, or relative to the install dir (`EmuHawkMono.sh` changes the working dir to there).
 
 The same example as above would be `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.n64`.
 
