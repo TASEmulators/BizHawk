@@ -114,7 +114,7 @@ Released binaries can be found right here on GitHub (also linked at the top of t
 [![Windows | binaries](https://img.shields.io/badge/Windows-binaries-%230078D6.svg?logo=windows&logoColor=0078D6&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 
 Click `BizHawk-<version>-win-x64.zip` to download it. Also note the changelog, the full version of which is [over on TASVideos](https://tasvideos.org/Bizhawk/ReleaseHistory).
-Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together.
+Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. You may move or rename the folder containing `EmuHawk.exe`, even to another drive—as long as you keep all the files together.
 
 Run `EmuHawk.exe` to start. If startup is blocked by a Windows SmartScreen dialog, click "More Info" to reveal the override button. Third-party antivirus may also block startup. There are some command-line arguments you can use: see [*Passing command-line arguments*](#passing-command-line-arguments).
 
@@ -374,7 +374,7 @@ A short [FAQ](https://tasvideos.org/Bizhawk/FAQ) is provided on the TASVideos wi
 	- For the .NET API, [the ApiHawk server](https://discord.gg/UPhN4um3px)
 - The [TASVideos forum for BizHawk](https://tasvideos.org/Forum/Subforum/64)
 - `#bizhawk` on Libera Chat ([via Matrix](https://matrix.to/#/#bizhawk:libera.chat) or [via IRC](https://libera.chat/guides/connect))
-- The [/r/BizHawk](https://reddit.com/r/BizHawk) subreddit
+- The [/r/BizHawk](https://reddit.com/r/BizHawk) and [/r/TAS](https://reddit.com/r/TAS) subreddits
 
 You can [open a new issue](https://github.com/TASEmulators/BizHawk/issues/new) at any time if you're logged in to GitHub. Please **at the very least read the issue templates**, we tend to ask the same questions for every one-line issue that's opened.
 
