@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			public ConsoleVersion Version { get; set; }
 
 			[DisplayName("Viewport")]
-			[Description("Visable screen area (cropping options)")]
+			[Description("Visible screen area (cropping options)")]
 			[DefaultValue(ViewPort.AllVisible)]
 			public ViewPort Viewport { get; set; }
 
