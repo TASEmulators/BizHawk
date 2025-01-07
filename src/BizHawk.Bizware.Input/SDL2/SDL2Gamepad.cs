@@ -179,8 +179,6 @@ namespace BizHawk.Bizware.Input
 			buttonGetters.Add(("LeftTrigger", () => SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERLEFT) > dzt));
 			buttonGetters.Add(("RightTrigger", () => SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERRIGHT) > dzt));
 
-
-
 			return buttonGetters;
 		}
 
