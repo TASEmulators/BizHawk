@@ -124,7 +124,8 @@ We have an old all-in-one installer which you can get [here](https://github.com/
 We will be following Microsoft in dropping support for old versions of Windows, that is, we reserve the right to ignore your problems
 unless you've updated to at least Win11 21H2 (initial release) or Win10 22H2. Read more on [MSDN](https://docs.microsoft.com/en-us/lifecycle/faq/windows).
 
-A "backport" release, [1.13.2](https://github.com/TASEmulators/BizHawk/releases/tag/1.13.2), is available for users of Windows XP, 7, or 8.1 32-bit. It has many bugs that will never be fixed and it doesn't have all the features of the later versions.
+A "backport" release, [1.13.2](https://github.com/TASEmulators/BizHawk/releases/tag/1.13.2), is available for users of Windows XP, 7, or 8.1 32-bit.
+It has many bugs that will never be fixed (backports have ceased) and it doesn't have all the features of the later versions—you should probably get a new operating system instead.
 
 [to top](#bizhawk)
 
@@ -220,7 +221,7 @@ tl;dr:
 EmuHawk takes some command-line options which are documented in [the source](https://github.com/TASEmulators/BizHawk/blob/2d37fc1f13afb0774629f16ffea5ff86d9b47951/src/BizHawk.Client.Common/ArgParser.cs).
 On Linux starting from 2.10, these can also be viewed offline with the usual `--help`.
 
-On Windows 8.1/10, it's easiest to use PowerShell for this. For example, to pass `--lua=C:\path\to\script.lua` as the first argument and `C:\path\to\rom.n64` as the second, navigate to the BizHawk install folder and run:
+On Windows 10+, it's easiest to use PowerShell for this. For example, to pass `--lua=C:\path\to\script.lua` as the first argument and `C:\path\to\rom.n64` as the second, navigate to the BizHawk install folder and run:
 ```pwsh
 ./EmuHawk.exe '--lua=C:\path\to\script.lua' 'C:\path\to\rom.n64'
 ```
