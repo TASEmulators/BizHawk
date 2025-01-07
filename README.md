@@ -118,7 +118,7 @@ Extract it anywhere, but **don't mix different versions** of BizHawk, keep each 
 
 Run `EmuHawk.exe` to start. If startup is blocked by a Windows SmartScreen dialog, click "More Info" to reveal the override button. Third-party antivirus may also block startup. There are some command-line arguments you can use: see [*Passing command-line arguments*](#passing-command-line-arguments).
 
-If you get the message "EmuHawk needs X in order to run!" when launching EmuHawk, it means you need to install that component on your system (as of 2.10, only the MSVC++ Runtime and optionally DirectX).
+If you get the message "EmuHawk needs X in order to run!" when launching EmuHawk, it means you need to install that component on your system (as of 2.10, only the MSVC++ Redist).
 We have an old all-in-one installer which you can get [here](https://github.com/TASEmulators/BizHawk-Prereqs/releases/latest), or you could download and install just the component that's missing.
 
 We will be following Microsoft in dropping support for old versions of Windows, that is, we reserve the right to ignore your problems
