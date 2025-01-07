@@ -66,8 +66,11 @@ Supported consoles and computers:
 	* Jaguar + CD
 	* Lynx
 * Bandai WonderSwan + Color
-* CBM Commodore 64
+* Commodore
+	* Amiga
+	* Commodore 64
 * Coleco Industries ColecoVision
+* Fairchild Channel F
 * GCE Vectrex
 * Magnavox Odyssey² / Videopac G7000
 * Mattel Intellivision
@@ -77,6 +80,8 @@ Supported consoles and computers:
 	* PC-FX
 * Neo Geo Pocket + Color
 * Nintendo
+	* 3DS
+	* DS + DSi
 	* Famicom / Nintendo Entertainment System + FDS
 	* Game Boy + Color
 	* Game Boy Advance
@@ -319,12 +324,15 @@ In the table below, core names in **bold** are accuracy-focused and acceptable o
 
 System | Cores
 --:|:--
+3DS | **Encore**
 Apple II | **Virtu**
+Amiga | **UAE**
 Arcade | **MAME**
-Atari 2600 | **Atari2600Hawk**
+Atari 2600 | **Stella**, Atari2600Hawk
 Atari 7800 | **A7800Hawk**
 Atari Jaguar | **Virtual Jaguar**
 Atari Lynx | **Handy**
+Channel F | **ChannelFHawk**
 Commodore 64 | **C64Hawk**
 ColecoVision | **ColecoHawk**
 Game Boy / Color | **Gambatte**, **GBHawk**, **SameBoy**
@@ -341,7 +349,7 @@ Playstation (PSX) | **Nymashock**, **Octoshock**
 Sega 32X | **PicoDrive**
 Sega Game Gear | **SMSHawk**
 Sega Genesis | **Genplus-gx**
-Sega Master System | **SMSHawk**
+Sega Master System | **Genplus-gx**, **SMSHawk**
 Sega Saturn | **Saturnus**
 SNES | **BSNES**, Faust, Snes9x
 Super Game Boy | **BSNES**, **Gambatte**
@@ -354,12 +362,7 @@ Virtual Boy | **Virtual Boyee**
 WonderSwan / Color | **Cygne**
 ZX Spectrum | **ZXHawk**
 
-There are also works-in-progress for:
-* Amstrad CPC (home-grown core)
-* Fairchild Channel F (home-grown core)
-* others maybe ([candidates](https://gitlab.com/TASVideos/BizHawk/snippets/1890492))
-
-Please don't bother core devs about these WIPs unless you're looking to contribute in some way.
+For an idea of what systems may be covered in the future, check [our core request list](https://github.com/TASEmulators/BizHawk/wiki/Core-Requests).
 
 [to top](#bizhawk)
 
