@@ -114,12 +114,12 @@ Released binaries can be found right here on GitHub (also linked at the top of t
 [![Windows | binaries](https://img.shields.io/badge/Windows-binaries-%230078D6.svg?logo=windows&logoColor=0078D6&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 
 Click `BizHawk-<version>-win-x64.zip` to download it. Also note the changelog, the full version of which is [over on TASVideos](https://tasvideos.org/Bizhawk/ReleaseHistory).
-Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
+Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together.
 
 Run `EmuHawk.exe` to start. If startup is blocked by a Windows SmartScreen dialog, click "More Info" to reveal the override button. Third-party antivirus may also block startup. There are some command-line arguments you can use: see [*Passing command-line arguments*](#passing-command-line-arguments).
 
-EmuHawk does have some prerequisites which it can't work without (it will let you know if they're missing). The list is [here](https://github.com/TASEmulators/BizHawk-Prereqs/blob/master/README), and we've made an all-in-one installer which you can get [here](https://github.com/TASEmulators/BizHawk-Prereqs/releases/latest).
-You should only have to run this once per machine, unless the changelog says we need something extra.
+If you get the message "EmuHawk needs X in order to run!" when launching EmuHawk, it means you need to install that component on your system (as of 2.10, only the MSVC++ Runtime and optionally DirectX).
+We have an old all-in-one installer which you can get [here](https://github.com/TASEmulators/BizHawk-Prereqs/releases/latest), or you could download and install just the component that's missing.
 
 We will be following Microsoft in dropping support for old versions of Windows, that is, we reserve the right to ignore your problems
 unless you've updated to at least Win11 21H2 (initial release) or Win10 22H2. Read more on [MSDN](https://docs.microsoft.com/en-us/lifecycle/faq/windows).
