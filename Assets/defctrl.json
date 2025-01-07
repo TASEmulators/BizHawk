@@ -129,7 +129,7 @@
 			"ZR": "R, J1 B8, X1 RightTrigger",
 			"Select": "Space, J1 B9, X1 Back",
 			"Start": "Enter, J1 B10, X1 Start",
-			"Touch": "WMouse L",
+			"Touch": "WMouse L, X1 Touchpad",
 			"Tilt": "WMouse R",
 		},
 		"NDS Controller": {
@@ -145,7 +145,7 @@
 			"R": "E, J1 B6, X1 RightShoulder",
 			"Select": "Space, J1 B9, X1 Back",
 			"Start": "Enter, J1 B10, X1 Start",
-			"Touch": "WMouse L",
+			"Touch": "WMouse L, X1 Touchpad",
 			"Microphone": "M"
 		},
 		"Atari 2600 Basic Controller": {

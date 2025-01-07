@@ -294,7 +294,9 @@ namespace BizHawk.Bizware.Input
 					("RightTrigger", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERRIGHT)))
 				];
 
-				static int TouchConv(float num) => (int)((num * 2.0f - 1.0f) * 10000.0f);
+				// note: this mimics the mouse conversion in MainForm
+				// also, don't try to "correct" the Y axis here, -/+ for u/d is how mouse does it, so that should be used here
+				static int TouchConv(float num) => (int)((num * 20000) - 10000);
 				var numTouchpads = SDL_GameControllerGetNumTouchpads(Opaque);
 				if (numTouchpads == 1)
 				{
@@ -305,7 +307,7 @@ namespace BizHawk.Bizware.Input
 					if (state != 0)
 					{
 						values.Add(("TouchpadX", TouchConv(x)));
-						values.Add(("TouchpadY", -TouchConv(y)));
+						values.Add(("TouchpadY", TouchConv(y)));
 					}
 					else
 					{
@@ -321,7 +323,7 @@ namespace BizHawk.Bizware.Input
 						if (state != 0)
 						{
 							values.Add(($"Touchpad{i}X", TouchConv(x)));
-							values.Add(($"Touchpad{i}Y", -TouchConv(y)));
+							values.Add(($"Touchpad{i}Y", TouchConv(y)));
 						}
 						else
 						{
