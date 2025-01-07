@@ -339,7 +339,7 @@ Game Boy / Color | **Gambatte**, **GBHawk**, **SameBoy**
 Game Boy Advance | **mGBA**
 Intellivision | **IntelliHawk**
 MSX | **MSXHawk**
-N64 | Ares64, **Mupen64Plus**
+N64 | **Ares64**, Mupen64Plus
 NDS | **melonDS**
 Neo Geo Pocket | **NeoPop**
 NES | **NesHawk**, quickerNES
@@ -380,12 +380,34 @@ You can [open a new issue](https://github.com/TASEmulators/BizHawk/issues/new) a
 
 ### Related projects
 
-* [Dolphin](https://dolphin-emu.org) for GameCube and Wii — cross-platform
-* [FCEUX](http://www.fceux.com/web/home.html) for NES/Famicom — cross-platform; TASing is Windows-only
+Unless specified, the below emulators are all available for both Windows and Linux PCs. Many are also available on macOS and Android.
+
+* [Dolphin](https://dolphin-emu.org) for GameCube and Wii
+* [FCEUX](https://fceux.com/web/home.html) for NES/Famicom
+* [GBAHawk](https://github.com/alyosha-tas/GBAHawk) (not part of BizHawk) for GBA — requires Windows host
 * [libTAS](https://github.com/clementgallet/libTAS) for ELF (Linux desktop apps) — requires GNU+Linux host; also emulates other emulators
-* [lsnes](https://tasvideos.org/Lsnes) for GB and SNES — cross-platform
-* [melonDS](http://melonds.kuribo64.net) for Nintendo DS — cross-platform
-* [mGBA](https://mgba.io) for GBA and GB/C — cross-platform
+* [lsnes](https://tasvideos.org/Lsnes) for GB and SNES
+* [openMSX](https://openmsx.org) for MSX
+* Not rerecording-capable:
+	* [ares](https://ares-emu.net) for several consoles
+	* [Cemu](https://cemu.info/) for Wii U
+	* [Flycast](https://github.com/flyinghead/flycast) for Dreamcast
+	* [Ruffle](https://ruffle.rs) for Flash
+	* RIP Ryujinx :(
+* Ported to BizHawk:
+	* [BSNES](https://github.com/bsnes-emu/bsnes) for SNES
+	* [Genesis Plus GX](https://github.com/ekeeke/Genesis-Plus-GX) for Sega's 8- and 16-bit consoles
+	* [GSE](https://github.com/CasualPokePlayer/GSE) for GB/C
+	* [MAME](https://www.mamedev.org) for countless arcades, plug-and-plays, etc.
+	* [Mednafen](https://mednafen.github.io) for several consoles
+	* [melonDS](http://melonds.kuribo64.net) for Nintendo DS
+	* [Mupen64Plus](https://mupen64plus.org) for N64
+	* [mGBA](https://mgba.io) for GBA and GB/C
+	* [PicoDrive](https://github.com/irixxxx/picodrive) for Sega's 8- and 16-bit consoles
+	* [quickerNES](https://github.com/SergioMartin86/quickerNES) for NES/Famicom
+	* [SameBoy](https://sameboy.github.io) for GB/C
+	* [Stella](https://stella-emu.github.io) for Atari VCS/2600
+<!--* A full list of libraries used by BizHawk can be found under `Help` > `About...` from within EmuHawk, or in the bundled `licences.md` file.--><!-- TODO that -->
 
 Emulators for other systems can be found on the [EmulatorResources page](https://tasvideos.org/EmulatorResources) at TASVideos. The [TASEmulators GitHub page](https://github.com/TASEmulators) also holds copies of other emulators and plugins where development happens sometimes, their upstreams may be of use.
 
