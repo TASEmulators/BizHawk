@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		author: "UAE Team",
 		portedVersion: "5.0.0",
 		portedUrl: "https://github.com/libretro/libretro-uae",
-		isReleased: false)]
+		isReleased: true)]
 	public partial class UAE : WaterboxCore
 	{
 		private static readonly Configuration ConfigPAL = new Configuration
