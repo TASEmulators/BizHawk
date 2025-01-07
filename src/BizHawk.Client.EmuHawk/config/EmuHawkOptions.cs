@@ -15,6 +15,9 @@ namespace BizHawk.Client.EmuHawk
 			_autoFlushSaveRamTimerBumpCallback = autoFlushSaveRamTimerBumpCallback;
 			_config = config;
 			InitializeComponent();
+			cbEnableGCAdapterSupport.Text = OSTailoredCode.IsUnixHost
+				? "Enable Wii U/Switch GameCube Adapter Support (via libusb)"
+				: "Enable Wii U/Switch GameCube Adapter Support (via Zadig/WinUSB)";
 		}
 
 		public int AutosaveSaveRAMSeconds
@@ -79,6 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			cbMoviesOnDisk.Checked = _config.Movies.MoviesOnDisk;
 			cbSkipWaterboxIntegrityChecks.Checked = _config.SkipWaterboxIntegrityChecks;
 			NoMixedKeyPriorityCheckBox.Checked = _config.NoMixedInputHokeyOverride;
+			cbEnableGCAdapterSupport.Checked = _config.GCAdapterSupportEnabled;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
@@ -118,6 +122,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.Movies.MoviesOnDisk = cbMoviesOnDisk.Checked;
 			_config.SkipWaterboxIntegrityChecks = cbSkipWaterboxIntegrityChecks.Checked;
 			_config.NoMixedInputHokeyOverride = NoMixedKeyPriorityCheckBox.Checked;
+			_config.GCAdapterSupportEnabled = cbEnableGCAdapterSupport.Checked;
 
 			Close();
 			DialogResult = DialogResult.OK;

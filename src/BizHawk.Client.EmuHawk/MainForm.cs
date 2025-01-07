@@ -549,6 +549,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 
+			if (!Config.GCAdapterSupportEnabled)
+			{
+				// annoyingly this isn't an SDL hint in SDL2, only in SDL3, have to use an environment variables to signal this
+				Environment.SetEnvironmentVariable("SDL_HIDAPI_DISABLE_LIBUSB", "1");
+			}
+
 			Input.Instance = new Input(
 				Handle,
 				() => Config,
