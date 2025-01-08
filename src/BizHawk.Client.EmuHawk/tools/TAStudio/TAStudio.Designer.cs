@@ -81,8 +81,6 @@ namespace BizHawk.Client.EmuHawk
 			this.StateHistoryIntegrityCheckMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ConfigSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SetMaxUndoLevelsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SetBranchCellHoverIntervalMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SetSeekingCutoffIntervalMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CopyIncludesFrameNoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator26 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.autosaveToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -98,7 +96,6 @@ namespace BizHawk.Client.EmuHawk
 			this.UseInputKeysItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator4 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.BindMarkersToInputMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.EmptyNewMarkerNotesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.OldControlSchemeForBranchesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.LoadBranchOnDoubleclickMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.OsdInBranchScreenshotsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -292,7 +289,6 @@ namespace BizHawk.Client.EmuHawk
 			// SaveBk2BackupMenuItem
 			// 
 			this.SaveBk2BackupMenuItem.Text = "Save Bk2 Backup";
-			this.SaveBk2BackupMenuItem.Visible = false;
 			this.SaveBk2BackupMenuItem.Click += new System.EventHandler(this.SaveBk2BackupMenuItem_Click);
 			// 
 			// RecentSubMenu
@@ -344,11 +340,11 @@ namespace BizHawk.Client.EmuHawk
             this.CutMenuItem,
             this.toolStripSeparator8,
             this.ClearFramesMenuItem,
-            this.InsertFrameMenuItem,
             this.DeleteFramesMenuItem,
+            this.InsertFrameMenuItem,
+            this.InsertNumFramesMenuItem,
             this.CloneFramesMenuItem,
             this.CloneFramesXTimesMenuItem,
-            this.InsertNumFramesMenuItem,
             this.toolStripSeparator6,
             this.TruncateMenuItem,
             this.ClearGreenzoneMenuItem,
@@ -482,8 +478,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.ConfigSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SetMaxUndoLevelsMenuItem,
-            this.SetBranchCellHoverIntervalMenuItem,
-            this.SetSeekingCutoffIntervalMenuItem,
             this.CopyIncludesFrameNoMenuItem,
             this.toolStripSeparator26,
             this.autosaveToolStripMenuItem,
@@ -496,7 +490,6 @@ namespace BizHawk.Client.EmuHawk
             this.UseInputKeysItem,
             this.toolStripSeparator4,
             this.BindMarkersToInputMenuItem,
-            this.EmptyNewMarkerNotesMenuItem,
             this.OldControlSchemeForBranchesMenuItem,
             this.LoadBranchOnDoubleclickMenuItem,
             this.OsdInBranchScreenshotsMenuItem,
@@ -513,20 +506,9 @@ namespace BizHawk.Client.EmuHawk
 			this.SetMaxUndoLevelsMenuItem.Text = "Set max Undo Levels";
 			this.SetMaxUndoLevelsMenuItem.Click += new System.EventHandler(this.SetMaxUndoLevelsMenuItem_Click);
 			// 
-			// SetBranchCellHoverIntervalMenuItem
-			// 
-			this.SetBranchCellHoverIntervalMenuItem.Text = "Set Branch Cell Hover Interval";
-			this.SetBranchCellHoverIntervalMenuItem.Click += new System.EventHandler(this.SetBranchCellHoverIntervalMenuItem_Click);
-			// 
-			// SetSeekingCutoffIntervalMenuItem
-			// 
-			this.SetSeekingCutoffIntervalMenuItem.Text = "Set Seeking Cutoff Interval";
-			this.SetSeekingCutoffIntervalMenuItem.Visible = false;
-			this.SetSeekingCutoffIntervalMenuItem.Click += new System.EventHandler(this.SetSeekingCutoffIntervalMenuItem_Click);
-			// 
 			// CopyIncludesFrameNoMenuItem
 			// 
-			this.CopyIncludesFrameNoMenuItem.Text = "Include Frame No. When Copying Row(s)";
+			this.CopyIncludesFrameNoMenuItem.Text = "Include Frame # When Copying Input";
 			this.CopyIncludesFrameNoMenuItem.Click += new System.EventHandler(this.CopyIncludesFrameNoMenuItem_Click);
 			// 
 			// autosaveToolStripMenuItem
@@ -561,6 +543,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.AutoadjustInputMenuItem.CheckOnClick = true;
 			this.AutoadjustInputMenuItem.Text = "Auto-adjust Input according to Lag";
+			this.AutoadjustInputMenuItem.Click += new System.EventHandler(this.AutoadjustInputMenuItem_Click);
 			// 
 			// applyPatternToPaintedInputToolStripMenuItem
 			// 
@@ -596,11 +579,6 @@ namespace BizHawk.Client.EmuHawk
 			this.BindMarkersToInputMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.BindMarkersToInputMenuItem.Text = "Bind Markers to Input";
 			this.BindMarkersToInputMenuItem.Click += new System.EventHandler(this.BindMarkersToInputMenuItem_Click);
-			// 
-			// EmptyNewMarkerNotesMenuItem
-			// 
-			this.EmptyNewMarkerNotesMenuItem.Text = "Empty new Marker Notes";
-			this.EmptyNewMarkerNotesMenuItem.Click += new System.EventHandler(this.EmptyNewMarkerNotesMenuItem_Click);
 			// 
 			// OldControlSchemeForBranchesMenuItem
 			// 
@@ -918,7 +896,6 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.Rotatable = true;
 			this.TasView.RowCount = 0;
 			this.TasView.ScrollSpeed = 1;
-			this.TasView.SeekingCutoffInterval = 0;
 			this.TasView.Size = new System.Drawing.Size(289, 528);
 			this.TasView.TabIndex = 1;
 			this.TasView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnClick);
@@ -1006,11 +983,11 @@ namespace BizHawk.Client.EmuHawk
             this.cutToolStripMenuItem,
             this.separateToolStripMenuItem,
             this.ClearContextMenuItem,
-            this.InsertFrameContextMenuItem,
             this.DeleteFramesContextMenuItem,
+            this.InsertFrameContextMenuItem,
+            this.InsertNumFramesContextMenuItem,
             this.CloneContextMenuItem,
             this.CloneXTimesContextMenuItem,
-            this.InsertNumFramesContextMenuItem,
             this.toolStripSeparator18,
             this.TruncateContextMenuItem,
             this.BranchContextMenuItem,
@@ -1018,7 +995,7 @@ namespace BizHawk.Client.EmuHawk
             this.StartNewProjectFromNowMenuItem,
             this.StartANewProjectFromSaveRamMenuItem});
 			this.RightClickMenu.Name = "RightClickMenu";
-			this.RightClickMenu.Size = new System.Drawing.Size(253, 502);
+			this.RightClickMenu.Size = new System.Drawing.Size(253, 524);
 			this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
 			// 
 			// SetMarkersContextMenuItem
@@ -1133,7 +1110,6 @@ namespace BizHawk.Client.EmuHawk
 			// BookMarkControl
 			// 
 			this.BookMarkControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.BookMarkControl.HoverInterval = 1;
 			this.BookMarkControl.LoadedCallback = null;
 			this.BookMarkControl.Location = new System.Drawing.Point(0, 0);
 			this.BookMarkControl.Name = "BookMarkControl";
@@ -1269,7 +1245,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AutoadjustInputMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx UseInputKeysItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx BindMarkersToInputMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx EmptyNewMarkerNotesMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OldControlSchemeForBranchesMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx OsdInBranchScreenshotsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator14;
@@ -1369,9 +1344,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NewFromSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NewFromNowMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NewFromCurrentSaveRamMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetBranchCellHoverIntervalMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetMarkerWithTextContextMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetSeekingCutoffIntervalMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator26;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx TASEditorManualOnlineMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ForumThreadMenuItem;

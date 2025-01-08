@@ -94,9 +94,6 @@ namespace BizHawk.Bizware.Graphics
 			Flush();
 			CurrPipeline = pipeline;
 
-			// clobber state cache
-			sTexture = null;
-
 			// save the modulate color? user beware, I guess, for now.
 		}
 
@@ -119,7 +116,7 @@ namespace BizHawk.Bizware.Graphics
 		public void EnableBlending()
 		{
 			Flush();
-			Owner.EnableBlendNormal();
+			Owner.EnableBlending();
 		}
 
 		public void DisableBlending()
@@ -164,8 +161,7 @@ namespace BizHawk.Bizware.Graphics
 			Owner.BindPipeline(CurrPipeline);
 			Owner.DisableBlending();
 
-			//clear state cache
-			sTexture = null;
+			// clear state cache
 			CurrPipeline.SetUniform("uSamplerEnable", false);
 			ModelView.Clear();
 			Projection.Clear();
@@ -201,12 +197,8 @@ namespace BizHawk.Bizware.Graphics
 
 		private void PrepDrawSubrectInternal(ITexture2D tex)
 		{
-			if (sTexture != tex)
-			{
-				sTexture = tex;
-				CurrPipeline.SetUniformSampler("uSampler0", tex);
-				CurrPipeline.SetUniform("uSamplerEnable", tex != null);
-			}
+			CurrPipeline.SetUniformSampler("uSampler0", tex);
+			CurrPipeline.SetUniform("uSamplerEnable", tex != null);
 
 			if (_projection.IsDirty)
 			{
@@ -266,9 +258,6 @@ namespace BizHawk.Bizware.Graphics
 
 		private IPipeline CurrPipeline;
 		private readonly IPipeline DefaultPipeline;
-
-		// state cache
-		private ITexture2D sTexture;
 
 		// shaders are hand-coded for each platform to make sure they stay as fast as possible
 

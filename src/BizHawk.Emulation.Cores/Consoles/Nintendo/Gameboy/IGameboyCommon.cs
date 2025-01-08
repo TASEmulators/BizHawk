@@ -24,14 +24,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		bool IsCGBMode { get; }
 
 		/// <value><see langword="true"/> iff the emulator is currently emulating CGB in DMG compatibility mode</value>
-		/// <remarks>NOTE: this mode does not take affect until the bootrom unmaps itself</remarks>
 		bool IsCGBDMGMode { get; }
 
 		/// <summary>
 		/// Acquire GPU memory for inspection.  The returned object must be disposed as soon as the frontend
 		/// tool is done inspecting it, and the pointers become invalid once it is disposed.
 		/// </summary>
-		/// <returns></returns>
 		IGPUMemoryAreas LockGPU();
 
 		/// <summary>

@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				}
 			}
 
-			//TODO - known bad firmwares are a no-go. we should refuse to boot them. (that's the mednafen policy)
+			//TODO - known bad firmware is a no-go. we should refuse to boot them. (that's the mednafen policy)
 			var firmware = comm.CoreFileProvider.GetFirmwareOrThrow(new("PSX", firmwareRegion), $"A PSX `{firmwareRegion}` region bios file is required");
 
 			//create the instance
@@ -348,6 +348,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			disposed = true;
 
+			_memoryCallbacks.ActiveChanged -= RefreshMemCallbacks;
+
 			//discs arent bound to shock core instances, but they may be mounted. kill the core instance first to effectively dereference the disc
 			OctoshockDll.shock_Destroy(psx);
 			psx = IntPtr.Zero;
@@ -453,6 +455,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public bool DriveLightEnabled { get; private set; }
 		public bool DriveLightOn { get; private set; }
+		public string DriveLightIconDescription => "CD Drive Activity";
 
 		private void Attach()
 		{

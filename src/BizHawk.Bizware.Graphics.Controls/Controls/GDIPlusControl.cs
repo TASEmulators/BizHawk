@@ -1,8 +1,5 @@
-using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-
-using SDGraphics = System.Drawing.Graphics;
 
 namespace BizHawk.Bizware.Graphics.Controls
 {
@@ -13,22 +10,27 @@ namespace BizHawk.Bizware.Graphics.Controls
 		/// </summary>
 		private readonly GDIPlusControlRenderTarget _renderTarget;
 
-		public GDIPlusControl(Func<Func<(SDGraphics Graphics, Rectangle Rectangle)>, GDIPlusControlRenderTarget> createControlRenderTarget)
+		public GDIPlusControl(Func<Func<GDIPlusControlRenderContext>, GDIPlusControlRenderTarget> createControlRenderTarget)
 		{
 			_renderTarget = createControlRenderTarget(GetControlRenderContext);
 
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.Opaque, true);
+			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserMouse, true);
-			DoubleBuffered = true;
+			DoubleBuffered = false;
 		}
 
-		private (SDGraphics Graphics, Rectangle Rectangle) GetControlRenderContext()
+		private GDIPlusControlRenderContext GetControlRenderContext()
 		{
 			var graphics = CreateGraphics();
 			graphics.CompositingMode = CompositingMode.SourceCopy;
 			graphics.CompositingQuality = CompositingQuality.HighSpeed;
-			return (graphics, ClientRectangle);
+			return new(graphics, ClientRectangle with
+			{
+				Width = Math.Max(ClientRectangle.Width, 1),
+				Height = Math.Max(ClientRectangle.Height, 1)
+			});
 		}
 
 		public override void AllowTearing(bool state)
@@ -52,7 +54,7 @@ namespace BizHawk.Bizware.Graphics.Controls
 		protected override void OnHandleCreated(EventArgs e)
 		{
 			base.OnHandleCreated(e);
-			_renderTarget.CreateGraphics();
+			_renderTarget.CreateBufferedGraphics();
 		}
 
 		protected override void OnHandleDestroyed(EventArgs e)
@@ -64,10 +66,20 @@ namespace BizHawk.Bizware.Graphics.Controls
 		protected override void OnResize(EventArgs e)
 		{
 			base.OnResize(e);
-			_renderTarget.CreateGraphics();
+			_renderTarget.CreateBufferedGraphics();
 		}
 
 		public override void SwapBuffers()
-			=> _renderTarget.BufferedGraphics?.Render(_renderTarget.ControlGraphics);
+		{
+			if (_renderTarget.BufferedGraphics is null)
+			{
+				return;
+			}
+
+			using var graphics = CreateGraphics();
+			graphics.CompositingMode = CompositingMode.SourceCopy;
+			graphics.CompositingQuality = CompositingQuality.HighSpeed;
+			_renderTarget.BufferedGraphics.Render(graphics);
+		}
 	}
 }

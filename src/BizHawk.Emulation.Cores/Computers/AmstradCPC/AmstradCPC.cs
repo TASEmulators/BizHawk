@@ -4,7 +4,6 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components.Z80A;
 using BizHawk.Emulation.Cores.Properties;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
@@ -23,7 +22,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ServiceProvider = ser;
 			CoreComm = lp.Comm;
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
-			_cpu = new Z80A();
+			//_cpu = new Z80A<CpuLink>(default);
+			_cpu = new LibFz80Wrapper();
 			_tracer = new TraceBuffer(_cpu.TraceHeader);
 			_files = lp.Roms.Select(r => r.RomData).ToList();
 
@@ -50,23 +50,21 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					throw new InvalidOperationException("Machine not yet emulated");
 			}
 
-			_cpu.MemoryCallbacks = MemoryCallbacks;
-
 			HardReset = _machine.HardReset;
 			SoftReset = _machine.SoftReset;
 
-			_cpu.FetchMemory = _machine.ReadMemory;
+			//_cpu.SetCpuLink(new CpuLink(_machine));
+
 			_cpu.ReadMemory = _machine.ReadMemory;
 			_cpu.WriteMemory = _machine.WriteMemory;
-			_cpu.ReadHardware = _machine.ReadPort;
-			_cpu.WriteHardware = _machine.WritePort;
-			_cpu.FetchDB = _machine.PushBus;
-			_cpu.IRQACKCallback = _machine.GateArray.IORQA;
-			//_cpu.OnExecFetch = _machine.CPUMon.OnExecFetch;
+			_cpu.ReadPort = _machine.ReadPort;
+			_cpu.WritePort = _machine.WritePort;
+			//_cpu.OnExecFetch = _machine.OnExecFetch;
+
 
 			ser.Register<ITraceable>(_tracer);
-			ser.Register<IDisassemblable>(_cpu);
-			ser.Register<IVideoProvider>(_machine.GateArray);
+			//ser.Register<IDisassemblable>(_cpu);
+			ser.Register<IVideoProvider>(_machine.CRTScreen);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 
 			// initialize sound mixer and attach the various ISoundProvider devices
@@ -97,7 +95,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public Action HardReset;
 		public Action SoftReset;
 
-		private readonly Z80A _cpu;
+		//private readonly Z80A<CpuLink> _cpu;
+		private readonly LibFz80Wrapper _cpu;
 		private readonly TraceBuffer _tracer;
 		public IController _controller;
 		public CPCBase _machine;
@@ -147,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("AmstradCPC", n))).FirstOrDefault(b => b != null && b.Length == length);
 			if (result == null)
 			{
-				throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");
+				throw new MissingFirmwareException($"At least one of these firmware options is required: {string.Join(", ", names)}");
 			}
 
 			return result;
@@ -189,5 +188,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public bool DriveLightOn =>
 			(_machine?.TapeDevice != null && _machine.TapeDevice.TapeIsPlaying)
 			|| (_machine?.UPDDiskDevice != null && _machine.UPDDiskDevice.DriveLight);
+
+		public string DriveLightIconDescription => "Disc Drive Activity";
 	}
 }

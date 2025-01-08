@@ -69,6 +69,14 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
+	private static readonly DiagnosticDescriptor DiagRecordImplicitlyRefType = new(
+		id: "BHI1130",
+		title: "Record type declaration missing class (or struct) keyword",
+		messageFormat: "Add class (or struct) keyword",
+		category: "Usage",
+		defaultSeverity: DiagnosticSeverity.Warning,
+		isEnabledByDefault: true);
+
 	private static readonly DiagnosticDescriptor DiagSwitchShouldThrowIOE = new(
 		id: "BHI1005",
 		title: "Default branch of switch expression should throw InvalidOperationException/SwitchExpressionException or not throw",
@@ -84,6 +92,7 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 		DiagNoAnonDelegates,
 		DiagNoDiscardingLocals,
 		DiagNoQueryExpression,
+		DiagRecordImplicitlyRefType,
 		DiagSwitchShouldThrowIOE);
 
 	public override void Initialize(AnalysisContext context)
@@ -128,22 +137,27 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 					case AnonymousObjectCreationExpressionSyntax:
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoAnonClasses, snac.Node.GetLocation()));
 						break;
-					case AssignmentExpressionSyntax aes when IsDiscard(aes) && snac.SemanticModel.GetSymbolInfo(aes.Right).Symbol?.Kind is SymbolKind.Local:
+					case AssignmentExpressionSyntax aes:
+						if (!IsDiscard(aes)) break;
+						if (snac.SemanticModel.GetSymbolInfo(aes.Right, snac.CancellationToken).Symbol?.Kind is not SymbolKind.Local) break;
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoDiscardingLocals, snac.Node.GetLocation()));
 						break;
 					case CollectionExpressionSyntax ces:
-						var cesError = CheckSpacingInList(ces.Elements, ces.OpenBracketToken, ces.ToFullString);
+						var cesError = CheckSpacingInList(ces.Elements, ces.OpenBracketToken, ces.ToString);
 						if (cesError is not null) snac.ReportDiagnostic(Diagnostic.Create(DiagListExprSpacing, ces.GetLocation(), cesError));
 						break;
 					case InterpolatedStringExpressionSyntax ises:
 						if (ises.StringStartToken.Text[0] is '@') snac.ReportDiagnostic(Diagnostic.Create(DiagInterpStringIsDollarAt, ises.GetLocation()));
 						break;
 					case ListPatternSyntax lps:
-						var lpsError = CheckSpacingInList(lps.Patterns, lps.OpenBracketToken, lps.ToFullString);
+						var lpsError = CheckSpacingInList(lps.Patterns, lps.OpenBracketToken, lps.ToString);
 						if (lpsError is not null) snac.ReportDiagnostic(Diagnostic.Create(DiagListExprSpacing, lps.GetLocation(), lpsError));
 						break;
 					case QueryExpressionSyntax:
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoQueryExpression, snac.Node.GetLocation()));
+						break;
+					case RecordDeclarationSyntax rds:
+						if (!rds.ClassOrStructKeyword.ToFullString().Contains("class")) snac.ReportDiagnostic(Diagnostic.Create(DiagRecordImplicitlyRefType, rds.GetLocation()));
 						break;
 					case SwitchExpressionArmSyntax { WhenClause: null, Pattern: DiscardPatternSyntax, Expression: ThrowExpressionSyntax tes }:
 						var thrownExceptionType = snac.SemanticModel.GetThrownExceptionType(tes);
@@ -171,6 +185,7 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 			SyntaxKind.InterpolatedStringExpression,
 			SyntaxKind.ListPattern,
 			SyntaxKind.QueryExpression,
+			SyntaxKind.RecordDeclaration,
 			SyntaxKind.SimpleAssignmentExpression,
 			SyntaxKind.SwitchExpressionArm);
 	}

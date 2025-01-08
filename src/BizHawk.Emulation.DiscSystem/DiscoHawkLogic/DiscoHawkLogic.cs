@@ -257,12 +257,12 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			DiscMountJob job = new(inputPath, discInterface);
 			job.Run();
-			var disc = job.OUT_Disc;
 			if (job.OUT_ErrorLevel)
 			{
 				errorCallback(job.OUT_Log);
 				return false;
 			}
+			using var disc = job.OUT_Disc;
 			var (dir, baseName, _) = inputPath.SplitPathToDirFileAndExt();
 			var ext = hawkedFormat switch
 			{

@@ -1,6 +1,7 @@
 <Project>
 	<Import Project="../Common.props" />
 	<ItemGroup>
+		<AdditionalFiles Include="$(MSBuildThisFileDirectory)/../src/Menees.Analyzers.Settings.xml" />
 		<None Remove="*.sh" />
 	</ItemGroup>
 </Project>

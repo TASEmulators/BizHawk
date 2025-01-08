@@ -366,9 +366,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void Label13_Click(object sender, EventArgs e)
-		{
-			cbAllowTearing.Checked ^= true;
-		}
+			=> cbAllowTearing.Checked = !cbAllowTearing.Checked;
 
 		private void BtnDefaults_Click(object sender, EventArgs e)
 		{

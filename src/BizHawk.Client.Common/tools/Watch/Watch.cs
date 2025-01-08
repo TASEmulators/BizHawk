@@ -458,7 +458,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the previous value
 		/// </summary>
-		public abstract int Previous { get; }
+		public abstract uint Previous { get; }
 
 		/// <summary>
 		/// Gets a string representation of the previous value

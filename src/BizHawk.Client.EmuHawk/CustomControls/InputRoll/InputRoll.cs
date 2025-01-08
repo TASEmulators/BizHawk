@@ -373,12 +373,6 @@ namespace BizHawk.Client.EmuHawk
 		public bool AlwaysScroll { get; set; }
 
 		/// <summary>
-		/// Gets or sets the lowest seek interval to activate the progress bar
-		/// </summary>
-		[Category("Behavior")]
-		public int SeekingCutoffInterval { get; set; }
-
-		/// <summary>
 		/// Gets or sets a value indicating whether pressing page up/down will cause
 		/// the current selection to change
 		/// </summary>
@@ -587,6 +581,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SelectAll()
 		{
+			_selectedItems.Clear();
 			var oldFullRowVal = FullRowSelect;
 			FullRowSelect = true;
 			for (int i = 0; i < RowCount; i++)
@@ -665,6 +660,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_columns = rollSettings.Columns;
 				_columns.ChangedCallback = ColumnChangedCallback;
+				_columns.ColumnsChanged();
 				HorizontalOrientation = rollSettings.HorizontalOrientation;
 				LagFramesToHide = rollSettings.LagFramesToHide;
 				HideWasLagFrames = rollSettings.HideWasLagFrames;
@@ -797,7 +793,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					// Small jump, more accurate
-					var range = 0.RangeTo(_lagFrames[VisibleRows - halfRow]);
 					int lastVisible = LastFullyVisibleRow;
 					do
 					{
@@ -813,7 +808,7 @@ namespace BizHawk.Client.EmuHawk
 						SetLagFramesArray();
 						lastVisible = LastFullyVisibleRow;
 					}
-					while (!range.Contains(lastVisible - value) && FirstVisibleRow != 0);
+					while ((lastVisible - value < 0 || _lagFrames[VisibleRows - halfRow] < lastVisible - value) && FirstVisibleRow != 0);
 				}
 				_programmaticallyChangingRow = false;
 				PointMouseToNewCell();
@@ -822,13 +817,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsVisible(int index)
 		{
-			Debug.Assert(FirstVisibleRow < LastFullyVisibleRow);
+			Debug.Assert(FirstVisibleRow < LastFullyVisibleRow, "rows out of order?");
 			return FirstVisibleRow <= index && index <= LastFullyVisibleRow;
 		}
 
 		public bool IsPartiallyVisible(int index)
 		{
-			Debug.Assert(FirstVisibleRow < LastVisibleRow);
+			Debug.Assert(FirstVisibleRow < LastVisibleRow, "rows out of order?");
 			return FirstVisibleRow <= index && index <= LastVisibleRow;
 		}
 
@@ -977,21 +972,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEnumerable<ToolStripItem> GenerateContextMenuItems()
 		{
-			if (Rotatable)
+			if (!Rotatable) return [ ];
+			var rotate = new ToolStripMenuItem
 			{
-				yield return new ToolStripSeparator();
-
-				var rotate = new ToolStripMenuItem
-				{
-					Name = "RotateMenuItem",
-					Text = "Rotate",
-					ShortcutKeyDisplayString = RotateHotkeyStr
-				};
-
-				rotate.Click += (o, ev) => { HorizontalOrientation ^= true; };
-
-				yield return rotate;
-			}
+				Name = "RotateMenuItem",
+				Text = "Rotate",
+				ShortcutKeyDisplayString = RotateHotkeyStr
+			};
+			rotate.Click += (_, _) => HorizontalOrientation = !HorizontalOrientation;
+			return [ new ToolStripSeparator(), rotate ];
 		}
 
 		public string RotateHotkeyStr => "Ctrl+Shift+F";
@@ -1372,10 +1361,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (e.IsCtrlShift(Keys.F))
 				{
-					if (Rotatable)
-					{
-						HorizontalOrientation ^= true;
-					}
+					if (Rotatable) HorizontalOrientation = !HorizontalOrientation;
 				}
 				// Scroll
 				else if (e.IsPressed(Keys.PageUp))
@@ -1658,7 +1644,7 @@ namespace BizHawk.Client.EmuHawk
 			RecalculateScrollBars();
 			if (_columns.VisibleColumns.Any())
 			{
-				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width) + CellWidthPadding * 4;
+				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width);
 			}
 		}
 
@@ -1678,27 +1664,43 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// ScrollBar.Maximum = DesiredValue + ScrollBar.LargeChange - 1
-		// See MSDN Page for more information on the dumb ScrollBar.Maximum Property
-		private void RecalculateScrollBars()
+		private void CalculateScrollbarsNeeded(int lastVisibleColumn)
 		{
-			UpdateDrawSize();
-
-			var columns = _columns.VisibleColumns.ToList();
-			int iLastColumn = columns.Count - 1;
-
 			if (HorizontalOrientation)
 			{
-				NeedsVScrollbar = GetHColBottom(iLastColumn) > _drawHeight;
+				NeedsVScrollbar = GetHColBottom(lastVisibleColumn) > _drawHeight;
 				NeedsHScrollbar = RowCount > 1;
 			}
 			else
 			{
-				NeedsVScrollbar = ColumnHeight + (RowCount * CellHeight)  > Height;
+				NeedsVScrollbar = ColumnHeight + (RowCount * CellHeight) > _drawHeight;
 				NeedsHScrollbar = TotalColWidth - _drawWidth + 1 > 0;
 			}
 
 			UpdateDrawSize();
+
+			// if either NeedsVScrollbar or NeedsHScrollbar changed we need to recalculate, so just run this again
+			if (HorizontalOrientation)
+			{
+				NeedsVScrollbar = GetHColBottom(lastVisibleColumn) > _drawHeight;
+				NeedsHScrollbar = RowCount > 1;
+			}
+			else
+			{
+				NeedsVScrollbar = ColumnHeight + (RowCount * CellHeight) > _drawHeight;
+				NeedsHScrollbar = TotalColWidth - _drawWidth + 1 > 0;
+			}
+
+			UpdateDrawSize();
+		}
+
+		// ScrollBar.Maximum = DesiredValue + ScrollBar.LargeChange - 1
+		// See MSDN Page for more information on the dumb ScrollBar.Maximum Property
+		private void RecalculateScrollBars()
+		{
+			int lastVisibleColumn = _columns.VisibleColumns.Count() - 1;
+			CalculateScrollbarsNeeded(lastVisibleColumn);
+
 			if (VisibleRows > 0)
 			{
 				if (HorizontalOrientation)
@@ -1722,7 +1724,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					_vBar.Maximum = GetHColBottom(iLastColumn) - _drawHeight + _vBar.LargeChange;
+					_vBar.Maximum = GetHColBottom(lastVisibleColumn) - _drawHeight + _vBar.LargeChange;
 					if (_vBar.Maximum < 0)
 					{
 						_vBar.Maximum = 0;
@@ -1955,13 +1957,11 @@ namespace BizHawk.Client.EmuHawk
 		// The height of a column cell in Vertical Orientation.
 		private int ColumnHeight => CellHeight + 2;
 
-		// The width of a cell in Horizontal Orientation. Only can be changed by changing the Font or CellPadding.
-		private int CellWidth { get; set; }
+		// The width of a cell in Horizontal Orientation.
+		private int CellWidth => Math.Max((int)_charSize.Height + CellHeightPadding * 2, (int)_charSize.Width + CellWidthPadding * 2);
 
-		/// <summary>
-		/// Gets or sets a value indicating the height of a cell in Vertical Orientation. Only can be changed by changing the Font or CellPadding.
-		/// </summary>
-		private int CellHeight { get; set; } = 8;
+		// The height of a cell in Vertical Orientation.
+		private int CellHeight => (int)_charSize.Height + CellHeightPadding * 2;
 
 		/// <summary>
 		/// Call when _charSize, MaxCharactersInHorizontal, or CellPadding is changed.
@@ -1974,16 +1974,12 @@ namespace BizHawk.Client.EmuHawk
 				// Measure width change to ignore extra padding at start/end
 				var size1 = _renderer.MeasureString("A", Font);
 				var size2 = _renderer.MeasureString("AA", Font);
-				_charSize = new SizeF(size2.Width - size1.Width, size1.Height); // TODO make this a property so changing it updates other values.
+				_charSize = new SizeF(size2.Width - size1.Width, size1.Height);
 			}
-
-			// TODO: Should we round instead of truncate?
-			CellHeight = (int)_charSize.Height + (CellHeightPadding * 2);
-			CellWidth = (int)_charSize.Width + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
 			
 			if (_columns.VisibleColumns.Any())
 			{
-				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width) + CellWidthPadding * 4;
+				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width);
 			}
 		}
 

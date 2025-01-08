@@ -3,10 +3,11 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -37,12 +38,6 @@ namespace BizHawk.Client.EmuHawk
 		public Action<int> RemovedCallback { get; set; }
 
 		public TAStudio Tastudio { get; set; }
-
-		public int HoverInterval
-		{
-			get => BranchView.HoverInterval;
-			set => BranchView.HoverInterval = value;
-		}
 
 		public IDialogController DialogController => Tastudio.MainForm;
 
@@ -480,8 +475,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedBranch == null)
 			{
-				Select(Branches.Current, true);
-				BranchView.Refresh();
+				if (Branches.Current != -1)
+				{
+					Select(Branches.Current, true);
+					BranchView.Refresh();
+				}
 				return;
 			}
 
@@ -572,12 +570,8 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = branch.UserText
 			};
 
-			var point = Cursor.Position;
-			point.Offset(i.Width / -2, i.Height / -2);
-			i.StartPosition = FormStartPosition.Manual;
-			i.Location = point;
-
-			if (this.ShowDialogWithTempMute(i).IsOk())
+			i.FollowMousePointer();
+			if (i.ShowDialogOnScreen().IsOk())
 			{
 				branch.UserText = i.PromptText;
 				UpdateTextColumnWidth();
@@ -658,12 +652,25 @@ namespace BizHawk.Client.EmuHawk
 					var bb = branch.OSDFrameBuffer;
 					var width = bb.Width;
 					Point location = PointToScreen(Location);
+					var bottom = location.Y + bb.Height;
 					location.Offset(-width, 0);
 
 					if (location.X < 0)
 					{
+						// show on the right of branch control
 						location.Offset(width + Width, 0);
 					}
+
+					location.Y = Math.Max(0, location.Y);
+					var screen = Screen.AllScreens.First(s => s.WorkingArea.Contains(location));
+					var h = screen.WorkingArea.Bottom - bottom;
+
+					if (h < 0)
+					{
+						// move up to become fully visible
+						location.Y += h;
+					}
+
 					_screenshot.UpdateValues(
 						bb,
 						branch.UserText,

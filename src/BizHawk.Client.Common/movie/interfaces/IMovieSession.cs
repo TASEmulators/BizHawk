@@ -28,16 +28,16 @@ namespace BizHawk.Client.Common
 		IMovieController MovieController { get; }
 
 		/// <summary>
-		/// Provides a source for sticky controls ot use when recording
+		/// Provides a source for sticky controls to use when recording
 		/// </summary>
-		IStickyAdapter StickySource { get; set; }
+		IController StickySource { get; set; }
 
 		/// <summary>
 		/// Represents the input source that is fed to
 		/// the movie for the purpose of recording, if active,
 		/// or to simply pass through if inactive
 		/// </summary>
-		IInputAdapter MovieIn { get; set; }
+		IController MovieIn { get; set; }
 
 		/// <summary>
 		/// Represents the movie input in the input chain
@@ -48,11 +48,10 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Creates a <see cref="IMovieController" /> instance based on the
-		/// given button definition if provided else the
-		/// current <see cref="MovieController" /> button definition
-		/// will be used
+		/// given button definition if provided else the current
+		/// <see cref="MovieController"/>s button definition will be used
 		/// </summary>
-		IMovieController GenerateMovieController(ControllerDefinition definition = null);
+		IMovieController GenerateMovieController(ControllerDefinition definition = null, string logKey = null);
 
 		void HandleFrameBefore();
 		void HandleFrameAfter();

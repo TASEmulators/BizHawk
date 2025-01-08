@@ -4,7 +4,7 @@ namespace nall {
   using uint = unsigned;
 
   enum class Compiler : uint { Clang, GCC, Microsoft, Unknown };
-  enum class Platform : uint { Windows, MacOS, Linux, BSD, Android, Unknown };
+  enum class Platform : uint { Windows, MacOS, Linux, BSD, Haiku, Android, Unknown };
   enum class API : uint { Windows, Posix, Unknown };
   enum class DisplayServer : uint { Windows, Quartz, Xorg, Unknown };
   enum class Architecture : uint { x86, amd64, ARM32, ARM64, PPC32, PPC64, Unknown };
@@ -98,13 +98,20 @@ namespace nall {
   constexpr auto platform() -> Platform { return Platform::Linux; }
   constexpr auto api() -> API { return API::Posix; }
   constexpr auto display() -> DisplayServer { return DisplayServer::Xorg; }
-#elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__NetBSD__) || defined(__OpenBSD__)
+#elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined (__DragonFly__)
   #define PLATFORM_BSD
   #define API_POSIX
   #define DISPLAY_XORG
   constexpr auto platform() -> Platform { return Platform::BSD; }
   constexpr auto api() -> API { return API::Posix; }
   constexpr auto display() -> DisplayServer { return DisplayServer::Xorg; }
+#elif defined(__HAIKU__)
+  #define PLATFORM_HAIKU
+  #define API_POSIX
+  #define DISPLAY_UNKNOWN
+  constexpr auto platform() -> Platform { return Platform::Haiku; }
+  constexpr auto api() -> API { return API::Posix; }
+  constexpr auto display() -> DisplayServer { return DisplayServer::Unknown; }
 #else
   #warning "unable to detect platform"
   #define PLATFORM_UNKNOWN

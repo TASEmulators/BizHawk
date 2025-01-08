@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 
 		public override string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
-			var ret = Z80A.Disassemble((ushort) addr, a => m.PeekByte(a), out var tmp);
+			var ret = Z80ADisassembler.Disassemble((ushort) addr, a => m.PeekByte(a), out var tmp);
 			length = tmp;
 			return ret;
 		}

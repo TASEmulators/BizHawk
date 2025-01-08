@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 
 		public IReadOnlyDictionary<string, object> Get(int? controller = null)
 		{
-			return _inputManager.AutofireStickyXorAdapter.ToDictionary(controller);
+			return _movieSession.MovieIn.ToDictionary(controller);
 		}
 
 		public IReadOnlyDictionary<string, object> GetWithMovie(int? controller = null)
@@ -97,7 +97,7 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				_inputManager.StickyXorAdapter.SetAxis(controller == null ? control : $"P{controller} {control}", value);
+				_inputManager.StickyHoldController.SetAxisHold(controller == null ? control : $"P{controller} {control}", value);
 			}
 			catch
 			{

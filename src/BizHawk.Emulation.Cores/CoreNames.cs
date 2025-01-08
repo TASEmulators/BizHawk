@@ -46,12 +46,13 @@ namespace BizHawk.Emulation.Cores
 		public const string Octoshock = "Octoshock";
 		public const string PceHawk = "PCEHawk";
 		public const string PicoDrive = "PicoDrive";
-		public const string PUAE = "PUAE";
+		public const string UAE = "UAE";
 		public const string QuickNes = "quickerNES";
 		public const string Sameboy = "SameBoy";
 		public const string Saturnus = "Saturnus";
 		public const string SMSHawk = "SMSHawk";
 		public const string Snes9X = "Snes9x";
+		public const string Stella = "Stella";
 		public const string SubBsnes115 = "SubBSNESv115+";
 		public const string SubGbHawk = "SubGBHawk";
 		public const string SubNesHawk = "SubNESHawk";

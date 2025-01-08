@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 			this.AVSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RecordAVMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ConfigAndRecordAVMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.StopAVIMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.StopAVMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator19 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.CaptureOSDMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CaptureLuaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -123,6 +123,8 @@ namespace BizHawk.Client.EmuHawk
 			this.LoadedCoreNameMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ViewSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.WindowSizeSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator26 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.DisableResizeWithFramebufferMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SwitchToFullscreenMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.DisplayFPSMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -142,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			this.DisplayConfigMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SoundMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PathsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.FirmwaresMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.FirmwareMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MessagesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AutofireMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RewindOptionsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -313,7 +315,7 @@ namespace BizHawk.Client.EmuHawk
 			this.PlayRecordStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
 			this.PauseStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
 			this.RebootStatusBarIcon = new BizHawk.WinForms.Controls.StatusLabelEx();
-			this.AVIStatusLabel = new BizHawk.WinForms.Controls.StatusLabelEx();
+			this.AVStatusLabel = new BizHawk.WinForms.Controls.StatusLabelEx();
 			this.LedLightStatusLabel = new BizHawk.WinForms.Controls.StatusLabelEx();
 			this.SaveSlotsStatusLabel = new BizHawk.WinForms.Controls.StatusLabelEx();
 			this.Slot1StatusButton = new BizHawk.WinForms.Controls.StatusLabelEx();
@@ -834,28 +836,28 @@ namespace BizHawk.Client.EmuHawk
 			this.AVSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RecordAVMenuItem,
             this.ConfigAndRecordAVMenuItem,
-            this.StopAVIMenuItem,
+            this.StopAVMenuItem,
             this.toolStripSeparator19,
             this.CaptureOSDMenuItem,
             this.CaptureLuaMenuItem,
             this.SynclessRecordingMenuItem});
-			this.AVSubMenu.Text = "&AVI/WAV";
+			this.AVSubMenu.Text = "&A/V Writer";
 			this.AVSubMenu.DropDownOpened += new System.EventHandler(this.AVSubMenu_DropDownOpened);
 			// 
 			// RecordAVMenuItem
 			// 
-			this.RecordAVMenuItem.Text = "&Record AVI/WAV";
+			this.RecordAVMenuItem.Text = "&Record A/V";
 			this.RecordAVMenuItem.Click += new System.EventHandler(this.RecordAVMenuItem_Click);
 			// 
 			// ConfigAndRecordAVMenuItem
 			// 
-			this.ConfigAndRecordAVMenuItem.Text = "Config and Record AVI/WAV...";
+			this.ConfigAndRecordAVMenuItem.Text = "Config and Record A/V...";
 			this.ConfigAndRecordAVMenuItem.Click += new System.EventHandler(this.ConfigAndRecordAVMenuItem_Click);
 			// 
-			// StopAVIMenuItem
+			// StopAVMenuItem
 			// 
-			this.StopAVIMenuItem.Text = "&Stop AVI/WAV";
-			this.StopAVIMenuItem.Click += new System.EventHandler(this.StopAVMenuItem_Click);
+			this.StopAVMenuItem.Text = "&Stop A/V Writer";
+			this.StopAVMenuItem.Click += new System.EventHandler(this.StopAVMenuItem_Click);
 			// 
 			// CaptureOSDMenuItem
 			// 
@@ -978,8 +980,17 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// WindowSizeSubMenu
 			// 
+			this.WindowSizeSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator26,
+            this.DisableResizeWithFramebufferMenuItem});
 			this.WindowSizeSubMenu.Text = "&Window Size";
 			this.WindowSizeSubMenu.DropDownOpened += new System.EventHandler(this.WindowSizeSubMenu_DropDownOpened);
+			// 
+			// ResizeWithFramebufferMenuItem
+			// 
+			this.DisableResizeWithFramebufferMenuItem.CheckOnClick = true;
+			this.DisableResizeWithFramebufferMenuItem.Text = "&Static Size";
+			this.DisableResizeWithFramebufferMenuItem.Click += new System.EventHandler(this.DisableResizeWithFramebufferMenuItem_Click);
 			// 
 			// SwitchToFullscreenMenuItem
 			// 
@@ -1039,7 +1050,7 @@ namespace BizHawk.Client.EmuHawk
             this.DisplayConfigMenuItem,
             this.SoundMenuItem,
             this.PathsMenuItem,
-            this.FirmwaresMenuItem,
+            this.FirmwareMenuItem,
             this.MessagesMenuItem,
             this.AutofireMenuItem,
             this.RewindOptionsMenuItem,
@@ -1083,10 +1094,10 @@ namespace BizHawk.Client.EmuHawk
 			this.PathsMenuItem.Text = "Paths...";
 			this.PathsMenuItem.Click += new System.EventHandler(this.PathsMenuItem_Click);
 			// 
-			// FirmwaresMenuItem
+			// FirmwareMenuItem
 			// 
-			this.FirmwaresMenuItem.Text = "&Firmwares...";
-			this.FirmwaresMenuItem.Click += new System.EventHandler(this.FirmwaresMenuItem_Click);
+			this.FirmwareMenuItem.Text = "&Firmware...";
+			this.FirmwareMenuItem.Click += new System.EventHandler(this.FirmwareMenuItem_Click);
 			// 
 			// MessagesMenuItem
 			// 
@@ -1978,7 +1989,7 @@ namespace BizHawk.Client.EmuHawk
             this.PlayRecordStatusButton,
             this.PauseStatusButton,
             this.RebootStatusBarIcon,
-            this.AVIStatusLabel,
+            this.AVStatusLabel,
             this.LedLightStatusLabel,
             this.SaveSlotsStatusLabel,
             this.Slot1StatusButton,
@@ -2042,10 +2053,10 @@ namespace BizHawk.Client.EmuHawk
 			this.RebootStatusBarIcon.ToolTipText = "A reboot of the core is needed for a setting change to take effect";
 			this.RebootStatusBarIcon.Click += new System.EventHandler(this.PowerMenuItem_Click);
 			// 
-			// AVIStatusLabel
+			// AVStatusLabel
 			// 
-			this.AVIStatusLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.AVIStatusLabel.Text = "AVI Capture";
+			this.AVStatusLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.AVStatusLabel.Text = "A/V Capture";
 			// 
 			// LedLightStatusLabel
 			// 
@@ -2136,7 +2147,7 @@ namespace BizHawk.Client.EmuHawk
 			this.ProfileFirstBootLabel.AutoToolTip = true;
 			this.ProfileFirstBootLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.ProfileFirstBootLabel.Text = "ProfileFirstBootLabel";
-			this.ProfileFirstBootLabel.ToolTipText = "Set up your profile before use";
+			this.ProfileFirstBootLabel.ToolTipText = "Open the setup/onboarding wizard";
 			this.ProfileFirstBootLabel.Visible = false;
 			this.ProfileFirstBootLabel.Click += new System.EventHandler(this.ProfileFirstBootLabel_Click);
 			// 
@@ -2150,7 +2161,6 @@ namespace BizHawk.Client.EmuHawk
 			// UpdateNotification
 			// 
 			this.UpdateNotification.IsLink = true;
-			this.UpdateNotification.LinkColor = System.Drawing.Color.Red;
 			this.UpdateNotification.Spring = true;
 			this.UpdateNotification.Text = "New version available!";
 			this.UpdateNotification.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -2201,7 +2211,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// StopAVContextMenuItem
 			// 
-			this.StopAVContextMenuItem.Text = "Stop AVI/WAV";
+			this.StopAVContextMenuItem.Text = "Stop A/V Writer";
 			this.StopAVContextMenuItem.Click += new System.EventHandler(this.StopAVMenuItem_Click);
 			// 
 			// RecordMovieContextMenuItem
@@ -2315,8 +2325,8 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// toolStripMenuItem11
 			// 
-			this.toolStripMenuItem11.Text = "&Firmwares...";
-			this.toolStripMenuItem11.Click += new System.EventHandler(this.FirmwaresMenuItem_Click);
+			this.toolStripMenuItem11.Text = "&Firmware...";
+			this.toolStripMenuItem11.Click += new System.EventHandler(this.FirmwareMenuItem_Click);
 			// 
 			// toolStripMenuItem12
 			// 
@@ -2575,8 +2585,8 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DisplaySubtitlesMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AVSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ConfigAndRecordAVMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StopAVIMenuItem;
-		private BizHawk.WinForms.Controls.StatusLabelEx AVIStatusLabel;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StopAVMenuItem;
+		private BizHawk.WinForms.Controls.StatusLabelEx AVStatusLabel;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RestartMovieContextMenuItem;
 		private BizHawk.WinForms.Controls.StatusLabelEx CheatStatusButton;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AutofireMenuItem;
@@ -2632,7 +2642,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Ares64SettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ConfigContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RewindOptionsMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FirmwaresMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FirmwareMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx LoadTIFileMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearSRAMContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx ShowMenuContextMenuSeparator;
@@ -2767,5 +2777,7 @@ namespace BizHawk.Client.EmuHawk
 		private ToolStripSeparatorEx toolStripSeparator24;
 		private ToolStripMenuItemEx AutosaveLastSlotMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator25;
+		private ToolStripMenuItemEx DisableResizeWithFramebufferMenuItem;
+		private ToolStripSeparatorEx toolStripSeparator26;
 	}
 }

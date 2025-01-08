@@ -55,17 +55,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				throw new System.NotImplementedException(sbm.ToString());
 			}
 
-			if (DiskHeader.NumberOfTracks > 42)
-			{
-				StringBuilder sbm = new StringBuilder();
-				sbm.AppendLine();
-				sbm.AppendLine();
-				sbm.AppendLine("The detected disk is an " + DiskHeader.NumberOfTracks + " track disk image.");
-				sbm.AppendLine("This is currently incompatible with the emulated +3 disk drive (42 tracks).");
-				sbm.AppendLine("Likely the disk image is an 80 track betadisk or opus image, the drives and controllers for which are not currently emulated in ZXHawk");
-				throw new System.NotImplementedException(sbm.ToString());
-			}
-
 			for (int i = 0; i < DiskHeader.NumberOfTracks * DiskHeader.NumberOfSides; i++)
 			{
 				DiskHeader.TrackSizes[i] = data[pos++] * 256;

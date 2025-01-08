@@ -12,6 +12,9 @@ namespace BizHawk.Client.Common
 		[Obsolete("No longer supported, no-op.")]
 		void SetAttributes(ImageAttributes a);
 
+		void WithSurface(DisplaySurfaceID surfaceID, Action<IGuiApi> drawingCallsFunc);
+
+		[Obsolete("use the other overload e.g. `APIs.Gui.WithSurface(..., gui => { gui.DrawLine(...); });`")]
 		void WithSurface(DisplaySurfaceID surfaceID, Action drawingCallsFunc);
 
 		[Obsolete("No longer supported, no-op.")]

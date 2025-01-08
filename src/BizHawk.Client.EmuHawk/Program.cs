@@ -11,6 +11,7 @@ using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
+using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -150,11 +151,12 @@ namespace BizHawk.Client.EmuHawk
 			ParsedCLIFlags cliFlags = default;
 			try
 			{
-				ArgParser.ParseArguments(out cliFlags, args);
+				if (ArgParser.ParseArguments(out cliFlags, args) is int exitCode1) return exitCode1;
 			}
 			catch (ArgParser.ArgParserException e)
 			{
 				new ExceptionBox(e.Message).ShowDialog();
+				return 1;
 			}
 
 			var configPath = cliFlags.cmdConfigFile ?? Path.Combine(PathUtils.ExeDirectoryPath, "config.ini");
@@ -189,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 			// if this isn't done, SIGINT/SIGTERM get swallowed by SDL
 			if (OSTailoredCode.IsUnixHost)
 			{
-				SDL2.SDL.SDL_SetHint(SDL2.SDL.SDL_HINT_NO_SIGNAL_HANDLERS, "1");
+				SDL2.SDL.SDL_SetHintWithPriority(SDL2.SDL.SDL_HINT_NO_SIGNAL_HANDLERS, "1", SDL2.SDL.SDL_HintPriority.SDL_HINT_OVERRIDE);
 			}
 
 			var glInitCount = 0;
@@ -313,6 +315,10 @@ namespace BizHawk.Client.EmuHawk
 			var exitCode = 0;
 			try
 			{
+				GameDBHelper.BackgroundInitAll();
+#if BIZHAWKBUILD_RUN_ONLY_GAMEDB_INIT
+				GameDBHelper.WaitForThreadAndQuickTest();
+#else
 				MainForm mf = new(
 					cliFlags,
 					workingGL,
@@ -359,6 +365,7 @@ namespace BizHawk.Client.EmuHawk
 						movieSession.Movie.Save();
 					}
 				}
+#endif
 			}
 			catch (Exception e) when (!Debugger.IsAttached)
 			{

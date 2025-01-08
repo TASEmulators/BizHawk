@@ -31,7 +31,9 @@ namespace BizHawk.Client.Common
 
 		public void WriteItem(string name, Action<Stream> callback, bool zstdCompress)
 		{
-			using var stream = _archive.CreateEntry(name, _level).Open();
+			// don't compress with deflate if we're already compressing with zstd
+			// this won't produce meaningful compression, and would just be a timesink
+			using var stream = _archive.CreateEntry(name, zstdCompress ? CompressionLevel.NoCompression : _level).Open();
 
 			if (zstdCompress)
 			{

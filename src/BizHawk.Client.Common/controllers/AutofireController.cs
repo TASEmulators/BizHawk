@@ -2,14 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	public class AutofireController : IController
 	{
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
 		public AutofireController(IEmulator emulator, int on, int off)
 		{
 			On = on < 1 ? 0 : on;
@@ -20,9 +19,11 @@ namespace BizHawk.Client.Common
 
 		private readonly IEmulator _emulator;
 
-		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
-		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, int> _buttonStarts = new WorkingDictionary<string, int>();
+		private readonly Dictionary<string, List<string>> _bindings = new();
+
+		private Dictionary<string, bool> _buttons = new();
+
+		private readonly Dictionary<string, int> _buttonStarts = new();
 
 		public int On { get; set; }
 		public int Off { get; set; }
@@ -32,21 +33,20 @@ namespace BizHawk.Client.Common
 		public ControllerDefinition Definition => _emulator.ControllerDefinition;
 
 		public bool IsPressed(string button)
-		{
-			var a = (internal_frame - _buttonStarts[button]) % (On + Off);
-			return a < On && _buttons[button];
-		}
+			=> _buttons.GetValueOrDefault(button)
+				&& ((internal_frame - _buttonStarts.GetValueOrDefault(button)) % (On + Off)) < On;
 
 		public void ClearStarts()
 		{
 			_buttonStarts.Clear();
 		}
 
-		/// <exception cref="NotImplementedException">always</exception>
 		public int AxisValue(string name)
-		{
-			throw new NotImplementedException();
-		}
+#if DEBUG
+			=> Definition.Axes[name].Neutral; // throw if no such axis
+#else
+			=> Definition.Axes.TryGetValue(name, out var axisSpec) ? axisSpec.Neutral : default;
+#endif
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
 
@@ -59,29 +59,20 @@ namespace BizHawk.Client.Common
 		public void LatchFromPhysical(IController controller)
 		{
 			internal_frame = _emulator.Frame;
-			
+			var buttonStatesPrev = _buttons;
+			_buttons = new(); //TODO swap A/B instead of allocating
 			foreach (var (k, v) in _bindings)
 			{
+				var isPressed = false;
 				foreach (var boundBtn in v)
 				{
-					if (!_buttons[k] && controller.IsPressed(boundBtn))
+					if (controller.IsPressed(boundBtn))
 					{
-						_buttonStarts[k] = _emulator.Frame;
+						isPressed = true;
+						if (!buttonStatesPrev.GetValueOrDefault(k)) _buttonStarts[k] = internal_frame;
 					}
 				}
-			}
-			
-			_buttons.Clear();
-			foreach (var (k, v) in _bindings)
-			{
-				_buttons[k] = false;
-				foreach (var button in v)
-				{
-					if (controller.IsPressed(button))
-					{
-						_buttons[k] = true;
-					}
-				}
+				_buttons[k] = isPressed;
 			}
 		}
 
@@ -92,7 +83,7 @@ namespace BizHawk.Client.Common
 				var controlBindings = controlString.Split(',');
 				foreach (var control in controlBindings)
 				{
-					_bindings[button].Add(control.Trim());
+					_bindings.GetValueOrPutNew(button).Add(control.Trim());
 				}
 			}
 		}

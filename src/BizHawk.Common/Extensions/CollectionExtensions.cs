@@ -65,6 +65,11 @@ namespace BizHawk.Common.CollectionExtensions
 			return min;
 		}
 
+		/// <remarks>for collection initializer syntax</remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Add<T>(this Queue<T> q, T item)
+			=> q.Enqueue(item);
+
 		/// <exception cref="InvalidOperationException"><paramref name="key"/> not found after mapping <paramref name="keySelector"/> over <paramref name="list"/></exception>
 		/// <remarks>implementation from https://stackoverflow.com/a/1766369/7467292</remarks>
 		public static T BinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key)
@@ -110,6 +115,13 @@ namespace BizHawk.Common.CollectionExtensions
 			foreach (var item in collection) list.Add(item);
 		}
 
+		/// <remarks>
+		/// Contains method for arrays which does not need Linq, but rather uses Array.IndexOf
+		/// similar to <see cref="ICollection{T}.Contains">ICollection's Contains</see>
+		/// </remarks>
+		public static bool Contains<T>(this T[] array, T value)
+			=> Array.IndexOf(array, value) >= 0;
+
 		/// <returns>
 		/// portion of <paramref name="dest"/> that was written to,
 		/// unless either span is empty, in which case the other reference is returned<br/>
@@ -133,7 +145,7 @@ namespace BizHawk.Common.CollectionExtensions
 			if (a.Length is 0) return b;
 			var combined = new T[a.Length + b.Length];
 			var returned = ((ReadOnlySpan<T>) a).ConcatArray(b, combined);
-			Debug.Assert(returned == combined);
+			Debug.Assert(returned == combined, "expecting return value to cover all of combined since the whole thing was written to");
 			return combined;
 		}
 
@@ -153,6 +165,10 @@ namespace BizHawk.Common.CollectionExtensions
 		/// If the key is not present, returns default(TValue).
 		/// backported from .NET Core 2.0
 		/// </summary>
+		public static TValue? GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key)
+			=> dictionary.TryGetValue(key, out var found) ? found : default;
+
+		/// <inheritdoc cref="GetValueOrDefault{K,V}(IDictionary{K,V},K)"/>
 		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
 			=> dictionary.TryGetValue(key, out var found) ? found : default;
 
@@ -161,6 +177,10 @@ namespace BizHawk.Common.CollectionExtensions
 		/// If the key is not present, returns <paramref name="defaultValue"/>.
 		/// backported from .NET Core 2.0
 		/// </summary>
+		public static TValue? GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
+
+		/// <inheritdoc cref="GetValueOrDefault{K,V}(IDictionary{K,V},K,V)"/>
 		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
 			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
 #endif
@@ -214,6 +234,7 @@ namespace BizHawk.Common.CollectionExtensions
 			return null;
 		}
 
+#if !NET7_0_OR_GREATER
 		/// <remarks>shorthand for <c>this.OrderBy(static e => e)</c>, backported from .NET 7</remarks>
 		public static IOrderedEnumerable<T> Order<T>(this IEnumerable<T> source)
 			where T : IComparable<T>
@@ -223,6 +244,7 @@ namespace BizHawk.Common.CollectionExtensions
 		public static IOrderedEnumerable<T> OrderDescending<T>(this IEnumerable<T> source)
 			where T : IComparable<T>
 			=> source.OrderByDescending(ReturnSelf);
+#endif
 
 		/// <inheritdoc cref="List{T}.RemoveAll"/>
 		/// <remarks>
@@ -270,6 +292,24 @@ namespace BizHawk.Common.CollectionExtensions
 			return true;
 		}
 
+		public static ReadOnlySpan<T> Slice<T>(this ReadOnlySpan<T> span, Range range)
+		{
+			var (offset, length) = range.GetOffsetAndLength(span.Length);
+			return span.Slice(start: offset, length: length);
+		}
+
+		public static Span<T> Slice<T>(this Span<T> span, Range range)
+		{
+			var (offset, length) = range.GetOffsetAndLength(span.Length);
+			return span.Slice(start: offset, length: length);
+		}
+
+		public static string Substring(this string str, Range range)
+		{
+			var (offset, length) = range.GetOffsetAndLength(str.Length);
+			return str.Substring(startIndex: offset, length: length);
+		}
+
 		/// <summary>shallow clone</summary>
 		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> list)
 			=> list.ToDictionary(static kvp => kvp.Key, static kvp => kvp.Value);
@@ -301,5 +341,8 @@ namespace BizHawk.Common.CollectionExtensions
 			for (int i = 0, e = span.Length - 1; i < e; i++) if (span[i + 1].CompareTo(span[i]) > 0) return false;
 			return true;
 		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool SequenceEqual<T>(this T[] a, ReadOnlySpan<T> b) where T : IEquatable<T> => a.AsSpan().SequenceEqual(b);
 	}
 }

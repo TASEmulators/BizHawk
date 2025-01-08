@@ -128,7 +128,7 @@ namespace BizHawk.DATTool
 			string a = RemoveUnneededOptions(nameString);
 
 			// process data contained in ()
-			string[] d = a.ToString().Split('(', ')');
+			var d = a.Split('(', ')');
 
 			if (d.Length > 0)
 			{

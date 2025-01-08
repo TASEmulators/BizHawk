@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 using BizHawk.Common.CollectionExtensions;
 
@@ -10,8 +9,8 @@ namespace BizHawk.Client.Common
 {
 	public class TasLagLog
 	{
-		private Dictionary<int, bool> _lagLog = new Dictionary<int, bool>();
-		private Dictionary<int, bool> _wasLag = new Dictionary<int, bool>();
+		private SortedList<int, bool> _lagLog = new();
+		private Dictionary<int, bool> _wasLag = new();
 
 		public bool? this[int frame]
 		{
@@ -41,13 +40,19 @@ namespace BizHawk.Client.Common
 
 		public bool RemoveFrom(int frame)
 		{
-			var frames = _lagLog.Keys.Where(k => k > frame).ToList();
-			foreach (var f in frames)
+			// find the index of the first lag log entry with frame number > `frame`
+			int startIndex = _lagLog.Keys.LowerBoundBinarySearch(static key => key, frame) + 1;
+			if (startIndex >= _lagLog.Count) return false;
+
+			// iterate in reverse to prevent array copies in RemoveAt
+			for (int i = _lagLog.Count - 1; i >= startIndex; i--)
 			{
-				RemoveLagEntry(f);
+				int frameNumber = _lagLog.Keys[i];
+				_wasLag[frameNumber] = _lagLog.Values[i];
+				_lagLog.RemoveAt(i);
 			}
 
-			return frames.Any();
+			return true;
 		}
 
 		public void RemoveHistoryAt(int frame)
@@ -69,7 +74,7 @@ namespace BizHawk.Client.Common
 
 		public void Load(TextReader tr)
 		{
-			_lagLog = JsonConvert.DeserializeObject<Dictionary<int, bool>>(tr.ReadLine());
+			_lagLog = JsonConvert.DeserializeObject<SortedList<int, bool>>(tr.ReadLine());
 			_wasLag = JsonConvert.DeserializeObject<Dictionary<int, bool>>(tr.ReadLine());
 		}
 
@@ -86,7 +91,7 @@ namespace BizHawk.Client.Common
 
 		public void FromLagLog(TasLagLog log)
 		{
-			_lagLog = log._lagLog.ToDictionary();
+			_lagLog = new SortedList<int, bool>(log._lagLog);
 			_wasLag = log._wasLag.ToDictionary();
 		}
 
@@ -101,13 +106,12 @@ namespace BizHawk.Client.Common
 
 		private void RemoveLagEntry(int frame)
 		{
-			var result = _lagLog.TryGetValue(frame, out var lag);
-			if (result)
+			int index = _lagLog.IndexOfKey(frame);
+			if (index >= 0)
 			{
-				_wasLag[frame] = lag;
+				_wasLag[frame] = _lagLog.Values[index];
+				_lagLog.RemoveAt(index);
 			}
-
-			_lagLog.Remove(frame);
 		}
 	}
 }

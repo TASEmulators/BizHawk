@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private readonly SMS Sms;
 		private readonly VdpMode mode;
 		public DisplayType DisplayType = DisplayType.NTSC;
-		private readonly Z80A Cpu;
+		private readonly Z80A<SMS.CpuLink> Cpu;
 
 		public bool SpriteLimit;
 		public int IPeriod = 228;
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private static readonly byte[] SMSPalXlatTable = { 0, 85, 170, 255 };
 		private static readonly byte[] GGPalXlatTable = { 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };
 
-		public VDP(SMS sms, Z80A cpu, VdpMode mode, DisplayType displayType, bool region_compat)
+		public VDP(SMS sms, Z80A<SMS.CpuLink> cpu, VdpMode mode, DisplayType displayType, bool region_compat)
 		{
 			Sms = sms;
 			Cpu = cpu;

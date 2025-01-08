@@ -63,7 +63,7 @@ namespace BizHawk.DBManTool
 
 			// parse out modifiers
 			var mods = new List<string>();
-			modifiers = modifiers.Replace(")", ";").Replace("]",";");
+			modifiers = modifiers.Replace(')', ';').Replace(']', ';');
 			modifiers = modifiers.Replace("(", "").Replace("[", "");
 			var m_ = modifiers.Split(';');
 			foreach (var mi in m_)

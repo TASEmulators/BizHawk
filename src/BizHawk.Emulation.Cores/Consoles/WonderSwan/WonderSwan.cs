@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	[PortedCore(CoreNames.Cygne, "Dox, Mednafen Team", "1.24.3", "https://mednafen.github.io/releases/")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
+	[ServiceNotApplicable(typeof(IRegionable))]
 	public partial class WonderSwan : IEmulator, IVideoProvider, ISoundProvider,
 		IInputPollable, IDebuggable
 	{
@@ -52,6 +52,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public void Dispose()
 		{
+			_inputCallbacks.ActiveChanged -= SetInputCallback;
+			_memorycallbacks.ActiveChanged -= SetMemoryCallbacks;
 			if (Core != IntPtr.Zero)
 			{
 				BizSwan.bizswan_delete(Core);

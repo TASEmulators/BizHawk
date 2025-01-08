@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 
 				return sb.ToString();
 			}
-			
+
 			return _emulator.Frame.ToString();
 		}
 
@@ -83,10 +83,14 @@ namespace BizHawk.Client.Common
 		private readonly List<UIDisplay> _guiTextList = [ ];
 		private readonly List<UIDisplay> _ramWatchList = [ ];
 
+		/// <summary>Clears the queue used by <see cref="AddMessage"/>. You probably don't want to do this.</summary>
+		public void ClearRegularMessages()
+			=> _messages.Clear();
+
 		public void AddMessage(string message, int? duration = null)
 			=> _messages.Add(new() {
 				Message = message,
-				ExpireAt = DateTime.Now + TimeSpan.FromSeconds(duration ?? _config.OSDMessageDuration),
+				ExpireAt = DateTime.Now + TimeSpan.FromSeconds(Math.Max(_config.OSDMessageDuration, duration ?? 0)),
 			});
 
 		public void ClearRamWatches()
@@ -171,51 +175,30 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string InputStrMovie()
-			=> MakeStringFor(_movieSession.MovieController, cache: true);
-
-		public string InputStrImmediate()
-			=> MakeStringFor(_inputManager.AutofireStickyXorAdapter, cache: true);
-
-		public string InputPrevious()
+		private string InputStrMovie()
 		{
-			if (_movieSession.Movie.IsPlayingOrRecording())
-			{
-				var state = _movieSession.Movie.GetInputState(_emulator.Frame - 1);
-				if (state != null)
-				{
-					return MakeStringFor(state);
-				}
-			}
-
-			return "";
+			var state = _movieSession.Movie?.GetInputState(_emulator.Frame - 1);
+			return state is not null ? MakeStringFor(state) : "";
 		}
 
-		public string InputStrOrAll()
-			=> _movieSession.Movie.IsPlayingOrRecording() && _emulator.Frame > 0
-				? MakeStringFor(_inputManager.AutofireStickyXorAdapter.Or(_movieSession.Movie.GetInputState(_emulator.Frame - 1)))
-				: InputStrImmediate();
+		private string InputStrCurrent()
+			=> MakeStringFor(_movieSession.MovieIn);
 
-		private string MakeStringFor(IController controller, bool cache = false)
+		// returns an input string for inputs pressed solely by the sticky controller
+		private string InputStrSticky()
+			=> MakeStringFor(_movieSession.MovieIn.And(_inputManager.StickyController));
+
+		private static string MakeStringFor(IController controller)
 		{
-			var idg = controller.InputDisplayGenerator;
-			if (idg is null)
-			{
-				idg = new Bk2InputDisplayGenerator(_emulator.SystemId, controller);
-				if (cache) controller.InputDisplayGenerator = idg;
-			}
-			return idg.Generate();
+			return Bk2InputDisplayGenerator.Generate(controller);
 		}
 
-		public string MakeIntersectImmediatePrevious()
+		private string MakeIntersectImmediatePrevious()
 		{
-			if (_movieSession.Movie.IsActive())
+			if (_movieSession.Movie.IsRecording())
 			{
-				var m = _movieSession.Movie.IsPlayingOrRecording()
-					? _movieSession.Movie.GetInputState(_emulator.Frame - 1)
-					: _movieSession.MovieController;
-
-				return MakeStringFor(_inputManager.AutofireStickyXorAdapter.And(m));
+				var movieInput = _movieSession.Movie.GetInputState(_emulator.Frame - 1);
+				return MakeStringFor(_movieSession.MovieIn.And(movieInput));
 			}
 
 			return "";
@@ -250,54 +233,43 @@ namespace BizHawk.Client.Common
 
 			if (_config.DisplayInput)
 			{
-				var moviePlaying = _movieSession.Movie.IsPlaying();
-				// After the last frame of the movie, we want both the last movie input and the current inputs.
-				var atMovieEnd = _movieSession.Movie.IsFinished() && _movieSession.Movie.IsAtEnd();
-				if (moviePlaying || atMovieEnd)
+				if (_movieSession.Movie.IsPlaying())
 				{
 					var input = InputStrMovie();
 					var point = GetCoordinates(g, _config.InputDisplay, input);
-					var c = Color.FromArgb(_config.MovieInput);
+					var c = Color.FromArgb(_config.MovieInputColor);
 					g.DrawString(input, c, point.X, point.Y);
 				}
-
-				if (!moviePlaying) // TODO: message config -- allow setting of "mixed", and "auto"
+				else // TODO: message config -- allow setting of "mixed", and "auto"
 				{
-					var previousColor = Color.FromArgb(_config.LastInputColor);
-					var immediateColor = Color.FromArgb(_config.MessagesColor);
-					var autoColor = Color.Pink;
-					var changedColor = Color.PeachPuff;
+					var previousColor = _movieSession.Movie.IsRecording() ? Color.FromArgb(_config.LastInputColor) : Color.FromArgb(_config.MovieInputColor);
+					var currentColor = Color.FromArgb(_config.MessagesColor);
+					var stickyColor = Color.Pink;
+					var currentAndPreviousColor = Color.PeachPuff;
 
-					//we need some kind of string for calculating position when right-anchoring, of something like that
-					var bgStr = InputStrOrAll();
-					var point = GetCoordinates(g, _config.InputDisplay, bgStr);
+					// now, we're going to render these repeatedly, with higher priority draws overwriting all lower priority draws
+					// in order of highest priority to lowest, we are effectively displaying (in different colors):
+					// 1. currently pressed input that was also pressed on the previous frame (movie active + recording mode only)
+					// 2. currently pressed input that is being pressed by sticky autohold or sticky autofire
+					// 3. currently pressed input by the user (non-sticky)
+					// 4. input that was pressed on the previous frame (movie active only)
 
-					// now, we're going to render these repeatedly, with higher-priority things overriding
+					var previousInput = InputStrMovie();
+					var currentInput = InputStrCurrent();
+					var stickyInput = InputStrSticky();
+					var currentAndPreviousInput = MakeIntersectImmediatePrevious();
 
-					// first display previous frame's input.
-					// note: that's only available in case we're working on a movie
-					var previousStr = InputPrevious();
-					g.DrawString(previousStr, previousColor, point.X, point.Y);
+					// calculate origin for drawing all strings. Mainly relevant when right-anchoring
+					var point = GetCoordinates(g, _config.InputDisplay, currentInput);
 
-					// next, draw the immediate input.
-					// that is, whatever is being held down interactively right this moment even if the game is paused
-					// this includes things held down due to autohold or autofire
-					// I know, this is all really confusing
-					var immediate = InputStrImmediate();
-					g.DrawString(immediate, immediateColor, point.X, point.Y);
-
-					// next draw anything that's pressed because it's sticky.
-					// this applies to autofire and autohold both. somehow. I don't understand it.
-					// basically we're tinting whatever is pressed because it's sticky specially
-					// in order to achieve this we want to avoid drawing anything pink that isn't actually held down right now
-					// so we make an AND adapter and combine it using immediate & sticky
-					// (adapter creation moved to InputManager)
-					var autoString = MakeStringFor(_inputManager.WeirdStickyControllerForInputDisplay, cache: true);
-					g.DrawString(autoString, autoColor, point.X, point.Y);
-
-					//recolor everything that's changed from the previous input
-					var immediateOverlay = MakeIntersectImmediatePrevious();
-					g.DrawString(immediateOverlay, changedColor, point.X, point.Y);
+					// draw previous input first. Currently pressed input will overwrite this
+					g.DrawString(previousInput, previousColor, point.X, point.Y);
+					// draw all currently pressed input with the current color (including sticky input)
+					g.DrawString(currentInput, currentColor, point.X, point.Y);
+					// re-draw all currently pressed sticky input with the sticky color
+					g.DrawString(stickyInput, stickyColor, point.X, point.Y);
+					// re-draw all currently pressed inputs that were also pressed on the previous frame in their own color
+					g.DrawString(currentAndPreviousInput, currentAndPreviousColor, point.X, point.Y);
 				}
 			}
 
@@ -325,12 +297,12 @@ namespace BizHawk.Client.Common
 			{
 				var sb = new StringBuilder("Held: ");
 
-				foreach (var sticky in _inputManager.StickyXorAdapter.CurrentStickies)
+				foreach (var sticky in _inputManager.StickyHoldController.CurrentHolds)
 				{
 					sb.Append(sticky).Append(' ');
 				}
 
-				foreach (var autoSticky in _inputManager.AutofireStickyXorAdapter.CurrentStickies)
+				foreach (var autoSticky in _inputManager.StickyAutofireController.CurrentAutofires)
 				{
 					sb
 						.Append("Auto-")

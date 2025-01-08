@@ -34,31 +34,46 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			: base(lp.Comm, VSystemID.Raw.SAT, "Saturn Controller", lp.Settings, lp.SyncSettings)
 		{
 			if (lp.Roms.Count > 0)
-				throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");
-			var firmwares = new Dictionary<string, FirmwareID>
+			{
+				// roms might be valid (ST-V Arcade ROMs)
+				if (lp.Roms.Exists(rom => rom.FileData.Length > 0x3000000))
+				{
+					throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");
+				}
+			}
+
+			var firmwareIDMap = new Dictionary<string, FirmwareID>
 			{
 				{ "FIRMWARE:$J", new("SAT", "J") },
 				{ "FIRMWARE:$U", new("SAT", "U") },
+				{ "FIRMWARE:$STV_J", new("SAT", "STV_J") },
+				{ "FIRMWARE:$STV_U", new("SAT", "STV_U") },
+				{ "FIRMWARE:$STV_E", new("SAT", "STV_E") },
 				{ "FIRMWARE:$KOF", new("SAT", "KOF95") },
 				{ "FIRMWARE:$ULTRA", new("SAT", "ULTRAMAN") },
 				// { "FIRMWARE:$SATAR", new("SAT", "AR") }, // action replay garbage
 			};
-			_saturnus = DoInit<LibSaturnus>(lp, "ss.wbx", firmwares);
+			_saturnus = DoInit<LibSaturnus>(lp, "ss.wbx", firmwareIDMap);
 
 			_cachedSettingsInfo ??= SettingsInfo.Clone();
 		}
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
-			{ "ss.bios_jp", new() { Hide = true , Default = "$J" } }, // FIRMWARE:
-			{ "ss.bios_na_eu", new() { Hide = true , Default = "$U" } }, // FIRMWARE:
-			{ "ss.cart.kof95_path", new() { Hide = true , Default = "$KOF" } }, // FIRMWARE:
-			{ "ss.cart.ultraman_path", new() { Hide = true , Default = "$ULTRA" } }, // FIRMWARE:
-			{ "ss.cart.satar4mp_path", new() { Hide = true , Default = "$SATAR" } }, // FIRMWARE:
+			{ "ss.bios_jp", new() { Hide = true, Default = "$J" } }, // FIRMWARE:
+			{ "ss.bios_na_eu", new() { Hide = true, Default = "$U" } }, // FIRMWARE:
+			{ "ss.bios_stv_jp", new() { Hide = true, Default = "$STV_J" } }, // FIRMWARE:
+			{ "ss.bios_stv_na", new() { Hide = true, Default = "$STV_U" } }, // FIRMWARE:
+			{ "ss.bios_stv_eu", new() { Hide = true, Default = "$STV_E" } }, // FIRMWARE:
+			{ "ss.cart.kof95_path", new() { Hide = true, Default = "$KOF" } }, // FIRMWARE:
+			{ "ss.cart.ultraman_path", new() { Hide = true, Default = "$ULTRA" } }, // FIRMWARE:
+			{ "ss.cart.satar4mp_path", new() { Hide = true, Default = "$SATAR" } }, // FIRMWARE:
+
+			{ "ss.midi", new() { Hide = true } },
 			{ "ss.affinity.vdp2", new() { Hide = true } },
 			{ "ss.dbg_exe_cdpath", new() { Hide = true } },
-			{ "ss.dbg_exe_cem", new() { Hide = true } },
-			{ "ss.dbg_exe_hh", new() { Hide = true } },
+			{ "ss.dbg_cem", new() { Hide = true } },
+			{ "ss.dbg_hh", new() { Hide = true } },
 
 			{ "ss.scsp.resamp_quality", new() { NonSync = true } }, // Don't set NoRestart = true for this
 			{ "ss.input.mouse_sensitivity", new() { Hide = true } },
@@ -80,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			{ "ss.slend", new() { NonSync = true } },
 			{ "ss.h_overscan", new() { NonSync = true } },
 			{ "ss.h_blend", new() { NonSync = true } },
-			{ "ss.correct_aspect", new() { NonSync = true, Default = "0" } },
+			{ "ss.correct_aspect", new() { NonSync = true } },
 			{ "ss.slstartp", new() { NonSync = true } },
 			{ "ss.slendp", new() { NonSync = true } },
 		};
@@ -88,9 +103,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		protected override HashSet<string> ComputeHiddenPorts()
 		{
 			var devCount = 12;
-			if (SettingsQuery("ss.input.sport1.multitap") != "1")
+			if (_isArcade || SettingsQuery("ss.input.sport1.multitap") != "1")
 				devCount -= 5;
-			if (SettingsQuery("ss.input.sport2.multitap") != "1")
+			if (_isArcade || SettingsQuery("ss.input.sport2.multitap") != "1")
 				devCount -= 5;
 			var ret = new HashSet<string>();
 			for (var i = 1; i <= 12; i++)
@@ -112,5 +127,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		public new void StoreSaveRam(byte[] data)
 			=> _saturnus.PutSaveRam(data, data.Length);
+
+		public bool IsSTV => _isArcade;
 	}
 }

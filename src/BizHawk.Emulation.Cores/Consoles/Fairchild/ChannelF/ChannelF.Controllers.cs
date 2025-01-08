@@ -1,116 +1,116 @@
-﻿using System.Collections.Generic;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	public partial class ChannelF
 	{
-		public ControllerDefinition ChannelFControllerDefinition
+		private static readonly Lazy<ControllerDefinition> _channelFControllerDefinition = new(() =>
 		{
-			get
+			ControllerDefinition definition = new("ChannelF Controller");
+
+			// sticks
+
+			const string P1_PREFIX = "P1 ";
+			string[] stickR =
+			[
+				// P1 (right) stick
+				P1_PREFIX + "Forward", P1_PREFIX + "Back", P1_PREFIX + "Left", P1_PREFIX + "Right", P1_PREFIX + "CCW", P1_PREFIX + "CW", P1_PREFIX + "Pull", P1_PREFIX + "Push"
+			];
+
+			foreach (var s in stickR)
 			{
-				ControllerDefinition definition = new("ChannelF Controller");
-
-				string pre = "P1 ";
-
-				// sticks
-				var stickR = new List<string>
-				{
-					// P1 (right) stick
-					pre + "Forward", pre + "Back", pre + "Left", pre + "Right", pre + "CCW", pre + "CW", pre + "Pull", pre + "Push"
-				};
-
-				foreach (var s in stickR)
-				{
-					definition.BoolButtons.Add(s);
-					definition.CategoryLabels[s] = "Right Controller";
-				}
-
-				pre = "P2 ";
-
-				var stickL = new List<string>
-				{
-					// P2 (left) stick
-					pre + "Forward", pre + "Back", pre + "Left", pre + "Right", pre + "CCW", pre + "CW", pre + "Pull", pre + "Push"
-				};
-
-				foreach (var s in stickL)
-				{
-					definition.BoolButtons.Add(s);
-					definition.CategoryLabels[s] = "Left Controller";
-				}
-
-				// console
-				var consoleButtons = new List<string>
-				{
-					"TIME", "MODE", "HOLD", "START", "RESET"
-				};
-
-				foreach (var s in consoleButtons)
-				{
-					definition.BoolButtons.Add(s);
-					definition.CategoryLabels[s] = "Console";
-				}
-
-				return definition.MakeImmutable();
+				definition.BoolButtons.Add(s);
+				definition.CategoryLabels[s] = "Right Controller";
 			}
-		}
 
-		public bool[] StateConsole = new bool[5];
-		public string[] ButtonsConsole =
-		{
+			const string P2_PREFIX = "P2 ";
+			string[] stickL =
+			[
+				// P2 (left) stick
+				P2_PREFIX + "Forward", P2_PREFIX + "Back", P2_PREFIX + "Left", P2_PREFIX + "Right", P2_PREFIX + "CCW", P2_PREFIX + "CW", P2_PREFIX + "Pull", P2_PREFIX + "Push"
+			];
+
+			foreach (var s in stickL)
+			{
+				definition.BoolButtons.Add(s);
+				definition.CategoryLabels[s] = "Left Controller";
+			}
+
+			// console
+			string[] consoleButtons =
+			[
+				"TIME", "MODE", "HOLD", "START", "RESET"
+			];
+
+			foreach (var s in consoleButtons)
+			{
+				definition.BoolButtons.Add(s);
+				definition.CategoryLabels[s] = "Console";
+			}
+
+			return definition.MakeImmutable();
+		});
+
+		private readonly string[] _buttonsConsole =
+		[
 			"TIME", "MODE", "HOLD", "START", "RESET"
-		};
+		];
 
-		public byte DataConsole
+		private bool[] _stateConsole = new bool[5];
+
+		private byte DataConsole
 		{
 			get
 			{
-				int w = 0;
-				for (int i = 0; i < 5; i++)
+				var w = 0;
+				for (var i = 0; i < 5; i++)
 				{
-					byte mask = (byte) (1 << i);
-					w = StateConsole[i] ? w | mask : w & ~mask;
+					var mask = (byte)(1 << i);
+					w = _stateConsole[i] ? w | mask : w & ~mask;
 				}
 
 				return (byte)(w & 0xFF);
 			}
 		}
 
-		public bool[] StateRight = new bool[8];
-		public string[] ButtonsRight =
-		{
-			"Right", "Left", "Back", "Forward", "CCW", "CW", "Pull", "Push"
-		};
-		public byte DataRight
+		private bool[] _stateRight = new bool[8];
+
+		private readonly string[] _buttonsRight =
+		[
+			"P1 Right", "P1 Left", "P1 Back", "P1 Forward", "P1 CCW", "P1 CW", "P1 Pull", "P1 Push"
+		];
+
+		private byte DataRight
 		{
 			get
 			{
-				int w = 0;
-				for (int i = 0; i < 8; i++)
+				var w = 0;
+				for (var i = 0; i < 8; i++)
 				{
-					byte mask = (byte)(1 << i);
-					w = StateRight[i] ? w | mask : w & ~mask;
+					var mask = (byte)(1 << i);
+					w = _stateRight[i] ? w | mask : w & ~mask;
 				}
 
 				return (byte)(w & 0xFF);
 			}
 		}
 
-		public bool[] StateLeft = new bool[8];
-		public string[] ButtonsLeft =
-		{
-			"Right", "Left", "Back", "Forward", "CCW", "CW", "Pull", "Push"
-		};
-		public byte DataLeft
+		private bool[] _stateLeft = new bool[8];
+
+		private readonly string[] _buttonsLeft =
+		[
+			"P2 Right", "P2 Left", "P2 Back", "P2 Forward", "P2 CCW", "P2 CW", "P2 Pull", "P2 Push"
+		];
+
+		private byte DataLeft
 		{
 			get
 			{
-				int w = 0;
-				for (int i = 0; i < 8; i++)
+				var w = 0;
+				for (var i = 0; i < 8; i++)
 				{
-					byte mask = (byte)(1 << i);
-					w = StateLeft[i] ? w | mask : w & ~mask;
+					var mask = (byte)(1 << i);
+					w = _stateLeft[i] ? w | mask : w & ~mask;
 				}
 
 				return (byte)(w & 0xFF);

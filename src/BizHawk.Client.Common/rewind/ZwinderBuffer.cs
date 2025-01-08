@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 
@@ -85,10 +86,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public int Count => (_nextStateIndex - _firstStateIndex) & STATEMASK;
 
-		/// <summary>
-		/// total number of bytes used
-		/// </summary>
-		/// <value></value>
+		/// <value>total number of bytes used</value>
 		public long Used => Count == 0
 			? 0
 			: (_states[HeadStateIndex].Start
@@ -96,10 +94,7 @@ namespace BizHawk.Client.Common
 				- _states[_firstStateIndex].Start
 			) & _sizeMask;
 
-		/// <summary>
-		/// Total size of the _buffer
-		/// </summary>
-		/// <value></value>
+		/// <value>Total size of the buffer</value>
 		public long Size { get; }
 
 		private readonly long _sizeMask;
@@ -261,7 +256,7 @@ namespace BizHawk.Client.Common
 			return stream;
 		}
 
-		public class StateInformation
+		public readonly struct StateInformation
 		{
 			private readonly int _index;
 			public int Frame => _parent._states[_index].Frame;
@@ -282,8 +277,6 @@ namespace BizHawk.Client.Common
 		/// Retrieve information about a state from 0..Count - 1.
 		/// The information contained within is valid only until the collection is modified.
 		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
 		public StateInformation GetState(int index)
 		{
 			if ((uint) index >= (uint) Count) throw new ArgumentOutOfRangeException(paramName: nameof(index), index, message: "index out of range");
@@ -291,17 +284,31 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Invalidate states from GetState(index) on to the end of the buffer, so that Count == index afterwards
+		/// Invalidate all states with frame number > frame.
+		/// <returns>True iff any state was invalidated, else false</returns>
 		/// </summary>
-		/// <param name="index"></param>
-		public void InvalidateEnd(int index)
+		public bool InvalidateAfter(int frame)
 		{
-			if ((uint) index > (uint) Count) // intentionally allows index == Count (e.g. clearing an empty buffer)
+			for (int i = _firstStateIndex; i != _nextStateIndex; i = (i + 1) & STATEMASK)
 			{
-				throw new ArgumentOutOfRangeException(paramName: nameof(index), index, message: "index out of range");
+				if (_states[i].Frame > frame)
+				{
+					_nextStateIndex = i;
+					return true;
+				}
 			}
-			_nextStateIndex = (index + _firstStateIndex) & STATEMASK;
+
+			return false;
 			//Util.DebugWriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
+		}
+
+		/// <summary>
+		/// Invalidates the last state in the buffer
+		/// </summary>
+		public void InvalidateLast()
+		{
+			if (Count != 0)
+				_nextStateIndex = (_nextStateIndex - 1) & STATEMASK;
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
@@ -362,7 +369,7 @@ namespace BizHawk.Client.Common
 			{
 				byte[] sizeArr = new byte[8];
 				reader.Read(sizeArr, 1, 7);
-				var size = BitConverter.ToInt64(sizeArr, 0);
+				var size = MemoryMarshal.Read<long>(sizeArr);
 				var sizeMask = reader.ReadInt64();
 				var targetFrameLength = reader.ReadInt32();
 				var useCompression = reader.ReadBoolean();

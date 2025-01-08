@@ -27,8 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
 
-			_cpu = new Z80A();
-
+			_cpu = new Z80A<CpuLink>(default);
 			_tracer = new TraceBuffer(_cpu.TraceHeader);
 
 			_files = lp.Roms.Select(r => r.RomData).ToList();
@@ -94,18 +93,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					throw new InvalidOperationException("Machine not yet emulated");
 			}
 
-			_cpu.MemoryCallbacks = MemoryCallbacks;
-
 			HardReset = _machine.HardReset;
 			SoftReset = _machine.SoftReset;
 
-			_cpu.FetchMemory = _machine.ReadMemory;
-			_cpu.ReadMemory = _machine.ReadMemory;
-			_cpu.WriteMemory = _machine.WriteMemory;
-			_cpu.ReadHardware = _machine.ReadPort;
-			_cpu.WriteHardware = _machine.WritePort;
-			_cpu.FetchDB = _machine.PushBus;
-			_cpu.OnExecFetch = _machine.CPUMon.OnExecFetch;
+			_cpu.SetCpuLink(new CpuLink(this, _machine));
 
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(_cpu);
@@ -147,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public Action HardReset;
 		public Action SoftReset;
 
-		private readonly Z80A _cpu;
+		private readonly Z80A<CpuLink> _cpu;
 		private readonly TraceBuffer _tracer;
 		public IController _controller;
 		public SpectrumBase _machine;
@@ -211,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("ZXSpectrum", n))).FirstOrDefault(b => b != null && b.Length == length);
 			if (result == null)
 			{
-				throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");
+				throw new MissingFirmwareException($"At least one of these firmware options is required: {string.Join(", ", names)}");
 			}
 
 			return result;
@@ -280,5 +271,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public bool DriveLightOn =>
 			_machine?.TapeDevice?.TapeIsPlaying == true
 			|| _machine?.UPDDiskDevice?.DriveLight == true;
+
+		public string DriveLightIconDescription => "Disc Drive Activity";
 	}
 }

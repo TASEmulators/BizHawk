@@ -42,7 +42,9 @@ public sealed class UseTypeofOperatorAnalyzer : DiagnosticAnalyzer
 				objectDotGetTypeSym ??= oac.Compilation.GetTypeByMetadataName("System.Object")!.GetMembers("GetType")[0];
 				if (!objectDotGetTypeSym.Matches(operation.TargetMethod)) return;
 				if (operation.Instance.Syntax is not ThisExpressionSyntax and not IdentifierNameSyntax { Identifier.Text: "GetType" }) return; // called on something that isn't `this`
-				var enclosingType = operation.SemanticModel!.GetDeclaredSymbol(((CSharpSyntaxNode) operation.Syntax).EnclosingTypeDeclarationSyntax()!)!;
+				var enclosingType = operation.SemanticModel!.GetDeclaredSymbol(
+					((CSharpSyntaxNode) operation.Syntax).EnclosingTypeDeclarationSyntax()!,
+					oac.CancellationToken)!;
 				oac.ReportDiagnostic(Diagnostic.Create(enclosingType.IsSealed ? DiagNoGetTypeOnThisSealed : DiagNoGetTypeOnThis, operation.Syntax.GetLocation(), enclosingType.Name));
 			},
 			OperationKind.Invocation);

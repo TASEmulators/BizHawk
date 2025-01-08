@@ -48,10 +48,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		private readonly DatacorderDevice _datacorder;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="_tapeDevice"></param>
 		public TzxConverter(DatacorderDevice _tapeDevice)
 		{
 			_datacorder = _tapeDevice;

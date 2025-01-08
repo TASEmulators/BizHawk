@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		private static Bitmap ReadEmbeddedIconAsBitmap(string filename) => new Bitmap(EmuHawk.ReflectionCache.EmbeddedResourceStream($"images.{filename}.ico"));
 
 		internal static readonly Lazy<Bitmap> A78Joystick = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.A78Joystick"));
+		internal static readonly Lazy<Bitmap> AmigaKeyboard = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.AmigaKeyboard"));
 		internal static readonly Lazy<Bitmap> AppleIIKeyboard = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.AppleIIKeyboard"));
 		internal static readonly Lazy<Bitmap> ArcadeController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.ArcadeController"));
 		internal static readonly Lazy<Bitmap> C64Joystick = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.C64Joystick"));
@@ -43,6 +44,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap Add = ReadEmbeddedBitmap("add");
 		internal static readonly Bitmap AddEdit = ReadEmbeddedBitmap("AddEdit");
 		internal static readonly Bitmap AddWatch = ReadEmbeddedIconAsBitmap("addWatch");
+		internal static readonly Bitmap Amiga = ReadEmbeddedBitmap("amiga");
 		internal static readonly Bitmap ArrowBlackDown = ReadEmbeddedBitmap("arrow_black_down");
 		internal static readonly Lazy<Bitmap> AtariController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("atari_controller"));
 		internal static readonly Bitmap Audio = ReadEmbeddedBitmap("AudioHS");
@@ -86,6 +88,12 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap Erase = ReadEmbeddedBitmap("Erase");
 		internal static readonly Bitmap ESE = ReadEmbeddedBitmap("ESE");
 		internal static readonly Bitmap ExclamationRed = ReadEmbeddedBitmap("ExclamationRed");
+		internal static readonly Bitmap FFaccept = ReadEmbeddedBitmap("Farm-Fresh_accept");
+		internal static readonly Bitmap FFcancel = ReadEmbeddedBitmap("Farm-Fresh_cancel");
+		internal static readonly Bitmap FFdelete = ReadEmbeddedBitmap("Farm-Fresh_delete");
+		internal static readonly Bitmap FFexclamation = ReadEmbeddedBitmap("Farm-Fresh_exclamation");
+		internal static readonly Bitmap FFhelp = ReadEmbeddedBitmap("Farm-Fresh_help");
+		internal static readonly Bitmap FFstar = ReadEmbeddedBitmap("Farm-Fresh_star");
 		internal static readonly Bitmap FastForward = ReadEmbeddedBitmap("FastForward");
 		internal static readonly Bitmap Find = ReadEmbeddedBitmap("FindHS");
 		internal static readonly Bitmap Forward = ReadEmbeddedBitmap("Forward");

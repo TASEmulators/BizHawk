@@ -14,7 +14,6 @@ namespace BizHawk.Common
 		/// <summary>
 		/// Map some bytes
 		/// </summary>
-		/// <param name="size"></param>
 		/// <exception cref="InvalidOperationException">
 		/// failed to mmap
 		/// </exception>

@@ -77,6 +77,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (CheatList.AnyActive)
+			{
+				HandleHardcoreModeDisable("Using cheat codes while in hardcore mode is not allowed.");
+				return;
+			}
+
 			// suppress rewind and frame advance hotkeys
 			_hardcoreHotkeyOverrides.FrameTick();
 			_hardcoreHotkeyOverrides.SetButton("Frame Advance", false);

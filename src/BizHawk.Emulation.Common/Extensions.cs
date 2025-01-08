@@ -330,9 +330,9 @@ namespace BizHawk.Emulation.Common
 
 		public static int VsyncNumerator(this IEmulator core)
 		{
-			if (core != null && core.HasVideoProvider())
+			if (core?.AsVideoProvider() is { } videoCore)
 			{
-				return core.AsVideoProvider().VsyncNumerator;
+				return videoCore.VsyncNumerator;
 			}
 
 			return 60;
@@ -340,9 +340,9 @@ namespace BizHawk.Emulation.Common
 
 		public static int VsyncDenominator(this IEmulator core)
 		{
-			if (core != null && core.HasVideoProvider())
+			if (core?.AsVideoProvider() is { } videoCore)
 			{
-				return core.AsVideoProvider().VsyncDenominator;
+				return videoCore.VsyncDenominator;
 			}
 
 			return 1;

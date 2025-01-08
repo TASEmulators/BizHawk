@@ -51,37 +51,31 @@ namespace BizHawk.Client.EmuHawk
 		private void MarkerView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			// This could happen if the control is told to redraw while Tastudio is rebooting, as we would not have a TasMovie just yet
-			if (Tastudio.CurrentTasMovie is null)
-			{
-				return;
-			}
+			if (Tastudio.CurrentTasMovie is null) return;
 
+			if (index >= Markers.Count) return; // this should never happen
+
+			var marker = Markers[index];
 			var prev = Markers.PreviousOrCurrent(Tastudio.Emulator.Frame);
 
-			if (prev != null && index == Markers.IndexOf(prev))
+			if (ReferenceEquals(marker, prev))
 			{
 				// feos: taseditor doesn't have it, so we're free to set arbitrary color scheme. and I prefer consistency
 				color = Tastudio.Palette.CurrentFrame_InputLog;
 			}
-			else if (index < Markers.Count)
+			else if (Tastudio.CurrentTasMovie.LagLog[marker.Frame + 1] is bool lagged)
 			{
-				var marker = Markers[index];
-				bool? lagged = Tastudio.CurrentTasMovie.LagLog[marker.Frame + 1];
-
-				if (lagged.HasValue)
+				if (lagged)
 				{
-					if (lagged.Value)
-					{
-						color = column.Name == "FrameColumn"
-							? Tastudio.Palette.LagZone_FrameCol
-							: Tastudio.Palette.LagZone_InputLog;
-					}
-					else
-					{
-						color = column.Name == "LabelColumn"
-							? Tastudio.Palette.GreenZone_FrameCol
-							: Tastudio.Palette.GreenZone_InputLog;
-					}
+					color = column.Name == "FrameColumn"
+						? Tastudio.Palette.LagZone_FrameCol
+						: Tastudio.Palette.LagZone_InputLog;
+				}
+				else
+				{
+					color = column.Name == "LabelColumn"
+						? Tastudio.Palette.GreenZone_FrameCol
+						: Tastudio.Palette.GreenZone_InputLog;
 				}
 			}
 		}
@@ -181,12 +175,8 @@ namespace BizHawk.Client.EmuHawk
 						""
 				};
 
-				var point = Cursor.Position;
-				point.Offset(i.Width / -2, i.Height / -2);
-				i.StartPosition = FormStartPosition.Manual;
-				i.Location = point;
-
-				if (!this.ShowDialogWithTempMute(i).IsOk()) return;
+				i.FollowMousePointer();
+				if (!i.ShowDialogOnScreen().IsOk()) return;
 
 				UpdateTextColumnWidth();
 				marker = new TasMovieMarker(frame, i.PromptText);
@@ -216,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void EditMarkerPopUp(TasMovieMarker marker, bool followCursor = false)
+		public void EditMarkerPopUp(TasMovieMarker marker)
 		{
 			var markerFrame = marker.Frame;
 			var i = new InputPrompt
@@ -230,15 +220,8 @@ namespace BizHawk.Client.EmuHawk
 					: ""
 			};
 
-			if (followCursor)
-			{
-				var point = Cursor.Position;
-				point.Offset(i.Width / -2, i.Height / -2);
-				i.StartPosition = FormStartPosition.Manual;
-				i.Location = point;
-			}
-
-			if (!this.ShowDialogWithTempMute(i).IsOk()) return;
+			i.FollowMousePointer();
+			if (!i.ShowDialogOnScreen().IsOk()) return;
 
 			marker.Message = i.PromptText;
 			UpdateTextColumnWidth();
@@ -258,7 +241,8 @@ namespace BizHawk.Client.EmuHawk
 					: "0",
 			};
 
-			if (!this.ShowDialogWithTempMute(i).IsOk()
+			i.FollowMousePointer();
+			if (!i.ShowDialogOnScreen().IsOk()
 				|| !int.TryParse(i.PromptText, out var promptValue)
 				|| Markers.IsMarker(promptValue)) // don't move to frame with an existing marker
 			{

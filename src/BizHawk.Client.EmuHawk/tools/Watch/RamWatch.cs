@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 		private IEnumerable<Watch> SelectedSeparators => SelectedItems.Where(x => x.IsSeparator);
 
 		private bool MayPokeAllSelected
-			=> WatchListView.AnyRowsSelected && SelectedWatches.All(static w => w.Domain.Writable);
+			=> SelectedWatches.Any() && SelectedWatches.All(static w => w.Domain.Writable);
 
 		public IEnumerable<Watch> Watches => _watches.Where(x => !x.IsSeparator);
 
@@ -580,7 +580,7 @@ namespace BizHawk.Client.EmuHawk
 			_watches.OrderWatches(column.Name, _sortReverse);
 
 			_sortedColumn = column.Name;
-			_sortReverse ^= true;
+			_sortReverse = !_sortReverse;
 			WatchListView.Refresh();
 		}
 
@@ -1041,8 +1041,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchesOnScreenMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.DisplayRamWatch ^= true;
-
+			Config.DisplayRamWatch = !Config.DisplayRamWatch;
 			if (!Config.DisplayRamWatch)
 			{
 				DisplayManager.OSD.ClearRamWatches();
@@ -1115,7 +1114,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private bool MaySplitAllSelected
-			=> WatchListView.AnyRowsSelected && SelectedWatches.All(static w => w.IsSplittable);
+			=> SelectedWatches.Any() && SelectedWatches.All(static w => w.IsSplittable);
 
 		private void ListViewContextMenu_Opening(object sender, CancelEventArgs e)
 		{
@@ -1141,6 +1140,8 @@ namespace BizHawk.Client.EmuHawk
 				= Separator6.Visible
 					= Debuggable?.MemoryCallbacksAvailable() is true
 						&& SelectedWatches.Any() && SelectedWatches.All(w => w.Domain.Name == sysBusName);
+
+			DuplicateContextMenuItem.Enabled = SelectedWatches.Any();
 
 			SplitContextMenuItem.Enabled = MaySplitAllSelected;
 
@@ -1170,7 +1171,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UnfreezeAllContextMenuItem_Click(object sender, EventArgs e)
 		{
-			MainForm.CheatList.RemoveAll();
+			MainForm.CheatList.Clear();
 		}
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)

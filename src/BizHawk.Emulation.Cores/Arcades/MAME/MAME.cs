@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			if (_loadFailure != string.Empty)
 			{
 				Dispose();
-				throw new("\n\n" + _loadFailure);
+				throw new Exception("\n\n" + _loadFailure);
 			}
 
 			// concat all SHA1 hashes together (unprefixed), then hash that

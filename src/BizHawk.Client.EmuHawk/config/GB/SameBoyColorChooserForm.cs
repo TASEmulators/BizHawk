@@ -265,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				filter: FilesystemFilterSet.Palettes,
-				initDir: _config.PathEntries.ScreenshotAbsolutePathFor(VSystemID.Raw.GB));
+				initDir: _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.GB));
 			if (result is not null) LoadColorFile(result, alert: true);
 		}
 

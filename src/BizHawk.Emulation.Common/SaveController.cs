@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -12,9 +13,7 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class SaveController : IController
 	{
-		private readonly WorkingDictionary<string, int> _buttons = new WorkingDictionary<string, int>();
-
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
+		private readonly Dictionary<string, int> _buttons = new();
 
 		public SaveController()
 		{
@@ -35,10 +34,10 @@ namespace BizHawk.Emulation.Common
 		public void Serialize(BinaryWriter b)
 		{
 			b.Write(_buttons.Keys.Count);
-			foreach (var k in _buttons.Keys)
+			foreach (var (k, v) in _buttons)
 			{
 				b.Write(k);
-				b.Write(_buttons[k]);
+				b.Write(v);
 			}
 		}
 
@@ -90,14 +89,10 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public bool IsPressed(string button)
-		{
-			return _buttons[button] != 0;
-		}
+			=> _buttons.GetValueOrDefault(button) is not 0;
 
 		public int AxisValue(string name)
-		{
-			return _buttons[name];
-		}
+			=> _buttons.GetValueOrDefault(name);
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
 

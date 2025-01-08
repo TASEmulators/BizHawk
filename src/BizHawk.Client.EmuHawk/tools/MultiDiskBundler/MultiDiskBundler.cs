@@ -42,6 +42,7 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.GEN,
 				VSystemID.Raw.GGL,
 				VSystemID.Raw.Jaguar,
+				VSystemID.Raw.N3DS,
 				VSystemID.Raw.N64,
 				VSystemID.Raw.NDS,
 				VSystemID.Raw.PCFX,
@@ -165,9 +166,7 @@ namespace BizHawk.Client.EmuHawk
 
 			DialogResult = DialogResult.OK;
 			Close();
-
-			var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
-			_ = MainForm.LoadRom(fileInfo.FullName, lra);
+			_ = MainForm.LoadRom(fileInfo.FullName, new LoadRomArgs(new OpenAdvanced_OpenRom(fileInfo.FullName)));
 		}
 
 		private void AddButton_Click(object sender, EventArgs e)

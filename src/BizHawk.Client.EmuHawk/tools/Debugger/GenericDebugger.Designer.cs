@@ -217,7 +217,6 @@ namespace BizHawk.Client.EmuHawk
 			this.DisassemblerView.Name = "DisassemblerView";
 			this.DisassemblerView.RowCount = 0;
 			this.DisassemblerView.ScrollSpeed = 0;
-			this.DisassemblerView.SeekingCutoffInterval = 0;
 			this.DisassemblerView.Size = new System.Drawing.Size(395, 448);
 			this.DisassemblerView.TabIndex = 1;
 			this.DisassemblerView.SizeChanged += new System.EventHandler(this.DisassemblerView_SizeChanged);

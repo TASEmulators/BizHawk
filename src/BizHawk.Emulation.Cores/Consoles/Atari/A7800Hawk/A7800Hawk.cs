@@ -6,7 +6,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	[Core(CoreNames.A7800Hawk, "")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISettable<,>) })]
+	[ServiceNotApplicable(typeof(ISettable<,>))]
 	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable,
 		IRegionable, IBoardInfo, ISettable<object, A7800Hawk.A7800SyncSettings>
 	{

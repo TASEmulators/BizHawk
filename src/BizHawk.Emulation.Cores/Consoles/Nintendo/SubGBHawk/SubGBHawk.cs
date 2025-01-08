@@ -5,7 +5,6 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 {
 	[Core(CoreNames.SubGbHawk, "")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class SubGBHawk : IEmulator, IStatable, IInputPollable,
 		ISettable<GBHawk.GBHawk.GBSettings, GBHawk.GBHawk.GBSyncSettings>, IDebuggable, ICycleTiming, IGameboyCommon
 	{

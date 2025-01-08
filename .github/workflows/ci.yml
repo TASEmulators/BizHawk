@@ -32,7 +32,7 @@ jobs:
        matrix:
           os:
             - { prettyname: Windows, fullname: windows-latest }
-            - { prettyname: Linux, fullname: ubuntu-latest }
+            - { prettyname: Linux, fullname: ubuntu-22.04 } # newer ubuntu versions don't ship with mono, so we need to pin for now, see https://github.com/actions/runner-images/issues/10636
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Cores.Components.Z80A
 {
-	public partial class Z80A
+	public partial class Z80A<TLink>
 	{
 		private void INT_OP_IND(ushort operation, ushort src_l, ushort src_h)
 		{
@@ -461,7 +461,7 @@
 					(IDLE,
 						IDLE,
 						IDLE,
-						WAIT,
+						IDLE,
 						WAIT,
 						IN, ALU, C, B,
 						IDLE,
@@ -482,7 +482,7 @@
 						WAIT,
 						RD, ALU, L, H,
 						IDLE,
-						WAIT,
+						IDLE,
 						WAIT,
 						REP_OP_O, C, B, ALU, operation, 3, operation, repeat_instr);
 

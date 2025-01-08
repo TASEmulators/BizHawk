@@ -6,7 +6,10 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+using BizHawk.Common.CollectionExtensions;
 
 using SDGraphics = System.Drawing.Graphics;
 
@@ -33,6 +36,11 @@ namespace BizHawk.Bizware.Graphics
 		private readonly Bitmap WrappedBitmap;
 		private GCHandle CurrLockHandle;
 		private BitmapData CurrLock;
+
+		/// <summary>same as <see cref="Pixels"/> (<see cref="PixelFormat.Format32bppArgb">A8R8G8B8</see>)</summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public Span<int> AsSpan()
+			=> Pixels;
 
 		/// <exception cref="InvalidOperationException">already locked</exception>
 		/// <remarks>TODO add read/write semantic, for wraps</remarks>
@@ -61,7 +69,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public void UnlockBits(BitmapData bmpd)
 		{
-			Debug.Assert(CurrLock == bmpd);
+			Debug.Assert(CurrLock == bmpd, "must pass in the same object obtained from " + nameof(LockBits));
 
 			if (WrappedBitmap != null)
 			{
@@ -213,19 +221,24 @@ namespace BizHawk.Bizware.Graphics
 				return new(0, 0);
 			}
 
-			var w = maxx - minx + 1;
-			var h = maxy - miny + 1;
-			var bbRet = new BitmapBuffer(w, h);
-			for (var y = 0; y < h; y++)
-			{
-				for (var x = 0; x < w; x++)
-				{
-					bbRet.SetPixel(x, y, GetPixel(x + minx, y + miny));
-				}
-			}
-
 			xofs = minx;
 			yofs = miny;
+			return Copy(region: new(x: minx, y: miny, width: maxx - minx + 1, height: maxy - miny + 1));
+		}
+
+		public BitmapBuffer Copy()
+			=> new(width: Width, height: Height, pixels: AsSpan().ToArray());
+
+		/// <remarks>TODO surely there's a better implementation --yoshi</remarks>
+		public BitmapBuffer Copy(Rectangle region)
+		{
+			BitmapBuffer bbRet = new(region.Size);
+			var miny = region.Top;
+			var minx = region.Left;
+			for (int y = 0, h = region.Height; y < h; y++) for (int x = 0, w = region.Width; x < w; x++)
+			{
+				bbRet.SetPixel(x, y, GetPixel(x + minx, y + miny));
+			}
 			return bbRet;
 		}
 
@@ -535,6 +548,8 @@ namespace BizHawk.Bizware.Graphics
 			return candidate;
 		}
 
+		public bool SequenceEqual(BitmapBuffer other)
+			=> Width == other.Width/* && Height == other.Height*/ && AsSpan().SequenceEqual(other.AsSpan());
 
 		/// <summary>
 		/// Dumps this BitmapBuffer to a new System.Drawing.Bitmap

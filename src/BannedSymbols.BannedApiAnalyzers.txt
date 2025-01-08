@@ -1,0 +1,25 @@
+M:System.BitConverter.ToDouble(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<double> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from an 8-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.BitConverter.ToInt16(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<short> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from a 2-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.BitConverter.ToInt32(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<int> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from a 4-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.BitConverter.ToInt64(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<long> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from an 8-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.BitConverter.ToSingle(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<float> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from a 4-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.BitConverter.ToUInt16(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<ushort> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from a 2-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.BitConverter.ToUInt32(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<uint> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from a 4-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.BitConverter.ToUInt64(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<ulong> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from an 8-octet struct, reinterpret-cast it with Unsafe.As instead
+M:System.Convert.ToByte(System.String);use byte.{Try,}Parse
+M:System.Convert.ToDecimal(System.String);use decimal.{Try,}Parse
+M:System.Convert.ToDouble(System.String);use double.{Try,}Parse
+M:System.Convert.ToInt16(System.String);use short.{Try,}Parse
+M:System.Convert.ToInt32(System.String);use int.{Try,}Parse
+M:System.Convert.ToInt64(System.String);use long.{Try,}Parse
+M:System.Convert.ToSByte(System.String);use sbyte.{Try,}Parse
+M:System.Convert.ToSingle(System.String);use float.{Try,}Parse
+M:System.Convert.ToUInt16(System.String);use ushort.{Try,}Parse
+M:System.Convert.ToUInt32(System.String);use uint.{Try,}Parse
+M:System.Convert.ToUInt64(System.String);use ulong.{Try,}Parse
+M:System.Diagnostics.Debug.Assert(System.Boolean);include a unique message
+M:System.Diagnostics.Debug.WriteLine(System.String);use Util.DebugWriteLine (first-party) because apparently the BCL's version doesn't work properly in some circumstances?
+M:System.Diagnostics.Trace.Assert(System.Boolean);include a unique message
+M:System.Diagnostics.Trace.Assert(System.Boolean,System.String);just do the check and throw a specific exception
+M:System.String.GetHashCode;strings' hashcodes aren't stable
+M:System.Windows.Forms.Control.Focus;use Activate for Forms, or Select otherwise

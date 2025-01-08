@@ -83,6 +83,7 @@ FATFS_SRCS = \
 	ffunicode.c
 
 MISC_SRCS = \
+	InvisiblePoolAllocator.cpp \
 	sha1/sha1.c \
 	tiny-AES-c/aes.c \
 	xxhash/xxhash.c \

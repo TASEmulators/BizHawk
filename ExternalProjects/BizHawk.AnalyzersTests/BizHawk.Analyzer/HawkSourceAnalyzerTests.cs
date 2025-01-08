@@ -118,12 +118,26 @@ public sealed class HawkSourceAnalyzerTests
 	public Task CheckMisuseOfListSyntaxes()
 		=> Verify.VerifyAnalyzerAsync("""
 			public static class Cases {
+				private static readonly int[] V = [ ];
+				private static readonly bool W = V is [ ];
+				private static readonly int[] X = W ? [ ] : V;
 				private static readonly int[] Y = [ 0x80, 0x20, 0x40 ];
 				private static readonly bool Z = Y is [ _, > 20, .. ];
 				private static readonly int[] A = {|BHI1110:[0x80, 0x20, 0x40 ]|};
 				private static readonly bool B = A is {|BHI1110:[ _, > 20, ..]|};
 				private static readonly bool C = A is {|BHI1110:[_, > 20, ..]|};
+				private static readonly int[] D = {|BHI1110:[]|};
+				private static readonly bool E = D is {|BHI1110:[]|};
+				private static readonly int[] F = E ? {|BHI1110:[]|} : D;
 			}
+		""");
+
+	[TestMethod]
+	public Task CheckMisuseOfRecordDeclKeywords()
+		=> Verify.VerifyAnalyzerAsync("""
+			internal record struct Y {}
+			internal record class Z {}
+			{|BHI1130:internal record A {}|}
 		""");
 
 	[TestMethod]

@@ -70,6 +70,7 @@ It's probably a good idea to get the .NET SDK, even if you're not working on a .
 - Linux
 	- Install the .NET 8 SDK (package name is usually `dotnet-sdk-8.0`, see [full instructions](https://learn.microsoft.com/en-gb/dotnet/core/install/linux)).
 	- VS Community isn't available for Linux, but Rider and VS Code are.
+	- Nix/NixOS users can get the .NET SDK ephemerally with the provided `shell.nix`. For IDE setup and more, see the [Nix-specific docs](Dist/nix_expr_usage_docs.md#ide-setup).
 - macOS
 	- Note that EmuHawk does not currently support macOS.
 	- Install the .NET 8 SDK [manually](https://learn.microsoft.com/en-gb/dotnet/core/install/macos) or with Homebrew.
@@ -78,7 +79,8 @@ It's probably a good idea to get the .NET SDK, even if you're not working on a .
 	- The .NET 8 SDK comes with [VS Community 2022](https://visualstudio.microsoft.com/vs/community) (see [full instructions](https://learn.microsoft.com/en-gb/dotnet/core/install/windows)).
 	- You can also use Rider, VS Code, or something else instead of VS Community.
 
-For EmuHawk and libraries in the main solution, which do not target .NET 8, we have [this page](https://github.com/TASEmulators/BizHawk/wiki/Available-C%23-and-.NET-features) documenting which features are actually available to use.
+For EmuHawk and libraries in the main solution, which do not target .NET 8, we have [this page](https://github.com/TASEmulators/BizHawk/wiki/Available-C%23-and-.NET-features) documenting which features are actually available to use.  
+We also have [supplemental docs](https://github.com/TASEmulators/BizHawk/wiki/C%23-and-.NET-docs-supplement) on some of the language's footguns.
 
 
 
@@ -114,10 +116,10 @@ See [EmuHawk](#emuhawk). Build scripts also build DiscoHawk, or from VS2022 choo
 > EmuHawk is the main app, an emulator frontend.
 
 Uses C#; you will need the .NET SDK or an IDE which includes it. See the [.NET section](#for-any-net-project).
-Most projects target .NET Standard 2.0, with some targeting .NET Framework 4.8. It's written at the top of their project files, or you can check the [project graph](https://gitlab.com/TASVideos/BizHawk/snippets/1886666).
+Most projects target .NET Standard 2.0, with some targeting .NET Framework 4.8. It's written at the top of their project files, or you can check the [project graph](https://github.com/TASEmulators/BizHawk/wiki/Dependencies#main-solution).
 
 The source for EmuHawk, plus DiscoHawk and the supporting libraries, is in `/src`, with a few extra files used by the build system elsewhere.
-EmuHawk's project file `/src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj` includes the other projects [in a tree](https://gitlab.com/TASVideos/BizHawk/snippets/1886666), and they're all included in `/BizHawk.sln`.
+EmuHawk's project file `/src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj` includes the other projects [in a tree](https://github.com/TASEmulators/BizHawk/wiki/Dependencies#main-solution), and they're all included in `/BizHawk.sln`.
 
 In VS2022, open `BizHawk.sln`, then select the "BizHawk.Client.EmuHawk | Release" configuration to build and run.
 To build from the command-line on Windows, simply run `dotnet build BizHawk.sln` from the repository's root, and then `output\EmuHawk` will be available. Alternatively, you can run one of the existing build scripts that apply additional checks and configurations, such as `Dist\QuickTestBuildAndPackage_Release.bat`.

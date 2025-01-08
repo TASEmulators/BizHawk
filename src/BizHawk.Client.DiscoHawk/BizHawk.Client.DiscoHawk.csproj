@@ -5,6 +5,7 @@
 	<Import Project="../MainSlnExecutable.props" />
 	<PropertyGroup>
 		<ApplicationIcon>discohawk.ico</ApplicationIcon>
+		<Description>Disc image format converter</Description>
 		<Nullable>disable</Nullable>
 		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>

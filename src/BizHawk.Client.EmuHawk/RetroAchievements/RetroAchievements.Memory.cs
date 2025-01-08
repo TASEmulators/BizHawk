@@ -264,31 +264,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class ChanFMemFunctions : MemFunctions
+		// our vram is unpacked, but RA expects it packed
+		private class ChanFMemFunctions(MemoryDomain vram)
+			: MemFunctions(null, 0, 0x800)
 		{
-			private readonly IDebuggable _debuggable;
-			private readonly MemoryDomain _vram; // our vram is unpacked, but RA expects it packed
-
 			private byte ReadVRAMPacked(uint addr)
 			{
-				return (byte)(((_vram.PeekByte(addr * 4 + 0) & 3) << 6)
-					| ((_vram.PeekByte(addr * 4 + 1) & 3) << 4)
-					| ((_vram.PeekByte(addr * 4 + 2) & 3) << 2)
-					| ((_vram.PeekByte(addr * 4 + 3) & 3) << 0));
+				return (byte)(((vram.PeekByte(addr * 4 + 0) & 3) << 6)
+					| ((vram.PeekByte(addr * 4 + 1) & 3) << 4)
+					| ((vram.PeekByte(addr * 4 + 2) & 3) << 2)
+					| ((vram.PeekByte(addr * 4 + 3) & 3) << 0));
 			}
 
 			protected override byte ReadMem(uint addr)
 			{
 				using (MemGuard.EnterExit())
 				{
-					if (addr < 0x40)
-					{
-						return (byte)_debuggable.GetCpuFlagsAndRegisters()["SPR" + addr].Value;
-					}
-					else
-					{
-						return ReadVRAMPacked(addr - 0x40);
-					}
+					return ReadVRAMPacked(addr);
 				}
 			}
 
@@ -296,18 +288,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				using (MemGuard.EnterExit())
 				{
-					if (addr < 0x40)
-					{
-						_debuggable.SetCpuRegister("SPR" + addr, val);
-					}
-					else
-					{
-						addr -= 0x40;
-						_vram.PokeByte(addr * 4 + 0, (byte)((val >> 6) & 3));
-						_vram.PokeByte(addr * 4 + 1, (byte)((val >> 4) & 3));
-						_vram.PokeByte(addr * 4 + 2, (byte)((val >> 2) & 3));
-						_vram.PokeByte(addr * 4 + 3, (byte)((val >> 0) & 3));
-					}
+					vram.PokeByte(addr * 4 + 0, (byte)((val >> 6) & 3));
+					vram.PokeByte(addr * 4 + 1, (byte)((val >> 4) & 3));
+					vram.PokeByte(addr * 4 + 2, (byte)((val >> 2) & 3));
+					vram.PokeByte(addr * 4 + 3, (byte)((val >> 0) & 3));
 				}
 			}
 
@@ -320,51 +304,32 @@ namespace BizHawk.Client.EmuHawk
 
 				using (MemGuard.EnterExit())
 				{
-					var regs = _debuggable.GetCpuFlagsAndRegisters();
 					var end = Math.Min(addr + bytes, BankSize);
 					for (var i = addr; i < end; i++)
 					{
-						byte val;
-						if (i < 0x40)
-						{
-							val = (byte)regs["SPR" + i].Value;
-						}
-						else
-						{
-							val = ReadVRAMPacked(i - 0x40);
-						}
-
 						unsafe
 						{
-							((byte*)buffer)![i - addr] = val;
+							((byte*)buffer)![i - addr] = ReadVRAMPacked(i);
 						}
 					}
 
 					return end - addr;
 				}
 			}
-
-			public ChanFMemFunctions(IDebuggable debuggable, MemoryDomain vram)
-				: base(null, 0, 0x840)
-			{
-				_debuggable = debuggable;
-				_vram = vram;
-			}
 		}
 
 		// these consoles will use the entire system bus
 		private static readonly ConsoleID[] UseFullSysBus =
 		[
-			ConsoleID.NES, ConsoleID.C64, ConsoleID.AmstradCPC, ConsoleID.Atari7800,
+			ConsoleID.NES, ConsoleID.AmstradCPC, ConsoleID.Atari7800,
 		];
 
 		// these consoles will use the entire main memory domain
 		private static readonly ConsoleID[] UseFullMainMem =
 		[
 			ConsoleID.Amiga, ConsoleID.Lynx, ConsoleID.NeoGeoPocket, ConsoleID.Jaguar,
-			ConsoleID.JaguarCD, ConsoleID.DS, ConsoleID.DSi, ConsoleID.AppleII,
-			ConsoleID.Vectrex, ConsoleID.Tic80, ConsoleID.PCEngine, ConsoleID.Uzebox,
-			ConsoleID.Nintendo3DS,
+			ConsoleID.JaguarCD, ConsoleID.AppleII, ConsoleID.Vectrex, ConsoleID.Tic80,
+			ConsoleID.PCEngine, ConsoleID.Uzebox, ConsoleID.Nintendo3DS,
 		];
 
 		// these consoles will use part of the system bus at an offset
@@ -375,7 +340,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// anything more complicated will be handled accordingly
 
-		protected static IReadOnlyList<MemFunctions> CreateMemoryBanks(ConsoleID consoleId, IMemoryDomains domains, IDebuggable debuggable)
+		protected static IReadOnlyList<MemFunctions> CreateMemoryBanks(ConsoleID consoleId, IMemoryDomains domains)
 		{
 			var mfs = new List<MemFunctions>();
 
@@ -413,6 +378,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
+				// ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 				switch (consoleId)
 				{
 					case ConsoleID.MegaDrive:
@@ -434,11 +400,41 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case ConsoleID.SNES:
 						mfs.Add(new(domains["WRAM"], 0, domains["WRAM"].Size));
-						TryAddDomain("CARTRAM");
+
+						var snesSramAdded = 0;
+						const int MAX_SNES_SRAM = 0x80000; // 512KiB, the highest theoretically mappable under normal hardware (also max enforced by our cores)
+						void AddSnesSramDomain(string domain)
+						{
+							if (snesSramAdded == MAX_SNES_SRAM)
+							{
+								return;
+							}
+
+							if (domains.Has(domain))
+							{
+								var domainSize = domains[domain]!.Size;
+								if (snesSramAdded + domainSize > MAX_SNES_SRAM)
+								{
+									Console.WriteLine("SNES CartRAM domains exceed 512KiB for RetroAchievements memory mapping (this is bad!)");
+									domainSize = MAX_SNES_SRAM - snesSramAdded;
+								}
+
+								mfs.Add(new(domains[domain], 0, domainSize));
+								snesSramAdded += (int)domainSize;
+							}
+						}
+
+						AddSnesSramDomain("CARTRAM");
 						// sufami B sram
-						// don't think this is actually hooked up at all anyways...
-						TryAddDomain("CARTRAM B"); // Snes9x
-						TryAddDomain("SUFAMI TURBO B RAM"); // new BSNES
+						AddSnesSramDomain("CARTRAM B"); // Snes9x
+						AddSnesSramDomain("SUFAMI TURBO B RAM"); // new BSNES
+
+						if (snesSramAdded < MAX_SNES_SRAM)
+						{
+							mfs.Add(new NullMemFunctions(MAX_SNES_SRAM - snesSramAdded));
+						}
+
+						TryAddDomain("SA1 IRAM");
 						break;
 					case ConsoleID.GB:
 					case ConsoleID.GBC:
@@ -531,6 +527,12 @@ namespace BizHawk.Client.EmuHawk
 						// todo: make this MainMemory
 						mfs.Add(new(domains["RAM"], 0, domains["RAM"].Size));
 						break;
+					case ConsoleID.C64:
+						// no, can't use MainMemory here, as System Bus is that due to init ordering
+						// todo: make this MainMemory
+						// (yes, it's the same between MSX and C64, not a copypaste error!)
+						mfs.Add(new(domains["RAM"], 0, domains["RAM"].Size));
+						break;
 					case ConsoleID.AppleII:
 						mfs.Add(new(domains["Main RAM"], 0, domains["Main RAM"].Size));
 						mfs.Add(new(domains["Auxiliary RAM"], 0, domains["Auxiliary RAM"].Size));
@@ -562,9 +564,15 @@ namespace BizHawk.Client.EmuHawk
 						TryAddDomain("EEPROM");
 						break;
 					case ConsoleID.FairchildChannelF:
+						mfs.Add(new(domains["Scratchpad"], 0, domains["Scratchpad"].Size));
 						// special case
-						mfs.Add(new ChanFMemFunctions(debuggable, domains["VRAM"]));
+						mfs.Add(new ChanFMemFunctions(domains["VRAM"]));
 						mfs.Add(new(domains.SystemBus, 0, domains.SystemBus.Size));
+						// only add in SRAM if it's from HANG/MAZE carts (where SRAM isn't on the System Bus)
+						if (domains.Has("SRAM") && domains["SRAM"].Size == 0x400)
+						{
+							mfs.Add(new(domains["SRAM"], 0, domains["SRAM"].Size));
+						}
 						break;
 					case ConsoleID.PCEngineCD:
 						mfs.Add(new(domains["System Bus (21 bit)"], 0x1F0000, 0x2000));
@@ -583,8 +591,34 @@ namespace BizHawk.Client.EmuHawk
 						TryAddDomain("RAM"); // Emu83
 						TryAddDomain("Main RAM"); // TI83Hawk
 						break;
+					case ConsoleID.DS:
+					case ConsoleID.DSi:
+						TryAddDomain("Main RAM", 0x1000000);
+						mfs.Add(new(domains["Data TCM"], 0, domains["Data TCM"].Size));
+						break;
+					case ConsoleID.ZXSpectrum:
+						// zx spectrum is complicated due to various machine types and the ram configs that come with such
+						// in practice, it can mostly be deduced into two categories: ZX 16K/48K and ZX 128Ks
+						if (domains.Has("RAM - BANK 0 (Screen)")) // ZX 16/48K
+						{
+							mfs.Add(new(domains["RAM - BANK 0 (Screen)"], 0, domains["RAM - BANK 0 (Screen)"].Size));
+							TryAddDomain("RAM - BANK 1");
+							TryAddDomain("RAM - BANK 2");
+						}
+						else // ZX 128Ks
+						{
+							mfs.Add(new(domains["RAM - BANK 5 (Screen)"], 0, domains["RAM - BANK 5 (Screen)"].Size));
+							mfs.Add(new(domains["RAM - BANK 2"], 0, domains["RAM - BANK 2"].Size));
+							mfs.Add(new(domains["RAM - BANK 0"], 0, domains["RAM - BANK 0"].Size));
+							mfs.Add(new(domains["RAM - BANK 1"], 0, domains["RAM - BANK 1"].Size));
+							mfs.Add(new(domains["RAM - BANK 3"], 0, domains["RAM - BANK 3"].Size));
+							mfs.Add(new(domains["RAM - BANK 4"], 0, domains["RAM - BANK 4"].Size));
+							mfs.Add(new(domains["RAM - BANK 6"], 0, domains["RAM - BANK 6"].Size));
+							mfs.Add(new(domains["RAM - BANK 7 (Shadow Screen)"], 0, domains["RAM - BANK 7 (Shadow Screen)"].Size));
+						}
+
+						break;
 					case ConsoleID.UnknownConsoleID:
-					case ConsoleID.ZXSpectrum: // this doesn't actually have anything standardized, so...
 					default:
 						mfs.Add(new(domains.MainMemory, 0, domains.MainMemory.Size));
 						break;

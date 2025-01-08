@@ -136,7 +136,7 @@ namespace BizHawk.Client.Common.cheats
 
 			if (code.Length == 8)
 			{
-				return GbGameSharkDecoder.Decode(code);
+				return SnesActionReplayDecoder.Decode(code);
 			}
 			
 			return new InvalidCheatCode($"Unknown code type: {code}");

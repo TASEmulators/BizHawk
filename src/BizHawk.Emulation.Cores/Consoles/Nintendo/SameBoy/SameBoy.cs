@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 	/// a gameboy/gameboy color emulator wrapped around native C libsameboy
 	/// </summary>
 	[PortedCore(CoreNames.Sameboy, "LIJI32", "0.16.3", "https://github.com/LIJI32/SameBoy")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Sameboy : ICycleTiming, IInputPollable, ILinkable, IRomInfo, IBoardInfo, IGameboyCommon
 	{
 		private static readonly LibSameboy LibSameboy;
@@ -39,7 +38,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			=> IsCgb; //TODO inline
 
 		public bool IsCGBDMGMode
+#if true
+		{
+			get
+			{
+				var headerCgbCompat = LibSameboy.sameboy_cpuread(SameboyState, 0x143);
+				return (headerCgbCompat & 0x80) == 0 || (headerCgbCompat & 0x84) == 0x84;
+			}
+		}
+#else
 			=> LibSameboy.sameboy_iscgbdmg(SameboyState);
+#endif
 
 		private readonly LibSameboy.InputCallback _inputcb;
 

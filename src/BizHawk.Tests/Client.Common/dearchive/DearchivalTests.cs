@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 
 using BizHawk.Client.Common;
@@ -36,7 +36,7 @@ namespace BizHawk.Tests.Client.Common.Dearchive
 				.Select(testCase => testCase.Filename))
 			{
 				var archive = EmbeddedData.GetStream(EMBED_GROUP, filename);
-				Assert.IsTrue(sc.CheckSignature(archive, filename), $"{filename} is an archive, but wasn't detected as such"); // puts the seek pos of the Stream param back where it was (in this case at the start), but that may not always be true
+				Assert.IsTrue(sc.CheckSignature(archive, filename), $"{filename} is an archive, but wasn't detected as such"); // puts the seek pos of the Stream param back where it was (in this case at the start)
 				var af = sc.Construct(archive);
 				var items = af.Scan();
 				Assert.IsNotNull(items, $"{filename} contains 1 file, but it couldn't be enumerated correctly");

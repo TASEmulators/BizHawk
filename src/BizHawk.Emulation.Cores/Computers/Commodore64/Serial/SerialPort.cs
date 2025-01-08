@@ -75,5 +75,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		public bool DriveLightEnabled => true;
 		public bool DriveLightOn => ReadDeviceLight();
 		public bool IsConnected => _connected;
+
+		public string DriveLightIconDescription => "Serial Activity";
 	}
 }

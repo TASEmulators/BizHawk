@@ -1,5 +1,7 @@
 ﻿using System.IO;
+using System.Text;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
@@ -14,11 +16,11 @@ namespace BizHawk.Client.Common.movie.import
 		protected override void RunImport()
 		{
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
-			using var r = new BinaryReader(fs);
+			using var r = new BinaryReader(fs, Encoding.ASCII);
 			
 			// 000 16-byte signature and format version: "Gens Movie TEST9"
-			string signature = new string(r.ReadChars(15));
-			if (signature != "Gens Movie TEST")
+			byte[] signature = r.ReadBytes(15);
+			if (!signature.SequenceEqual("Gens Movie TEST"u8))
 			{
 				Result.Errors.Add("This is not a valid .GMV file.");
 				return;
@@ -27,7 +29,7 @@ namespace BizHawk.Client.Common.movie.import
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.GEN;
 
 			// 00F ASCII-encoded GMV file format version. The most recent is 'A'. (?)
-			string version = new string(r.ReadChars(1));
+			char version = r.ReadChar();
 			Result.Movie.Comments.Add($"{MovieOrigin} .GMV version {version}");
 			Result.Movie.Comments.Add($"{EmulationOrigin} Gens");
 
@@ -63,18 +65,20 @@ namespace BizHawk.Client.Common.movie.import
 			// bit 5: if "1", movie is 3-player movie; if "0", movie is 2-player movie
 			bool threePlayers = ((flags >> 5) & 0x1) != 0;
 
+			bool useSixButtons = !threePlayers && (player1Config == '6' || player2Config == '6');
+
 			LibGPGX.InputData input = new LibGPGX.InputData();
-			input.dev[0] = player1Config == '6'
+			input.dev[0] = useSixButtons
 				? LibGPGX.INPUT_DEVICE.DEVICE_PAD6B
 				: LibGPGX.INPUT_DEVICE.DEVICE_PAD3B;
 
-			input.dev[1] = player2Config == '6'
+			input.dev[1] = useSixButtons
 				? LibGPGX.INPUT_DEVICE.DEVICE_PAD6B
 				: LibGPGX.INPUT_DEVICE.DEVICE_PAD3B;
 
 			var ss = new GPGX.GPGXSyncSettings
 			{
-				UseSixButton = player1Config == '6' || player2Config == '6',
+				UseSixButton = useSixButtons,
 				ControlTypeLeft = GPGX.ControlType.Normal,
 				ControlTypeRight = GPGX.ControlType.Normal
 			};
@@ -83,14 +87,15 @@ namespace BizHawk.Client.Common.movie.import
 
 			if (threePlayers)
 			{
-				input.dev[2] = ss.UseSixButton
-					? LibGPGX.INPUT_DEVICE.DEVICE_PAD6B
-					: LibGPGX.INPUT_DEVICE.DEVICE_PAD3B;
+				input.dev[2] = LibGPGX.INPUT_DEVICE.DEVICE_PAD3B;
 			}
 
 			GPGXControlConverter controlConverter = new(input, systemId: VSystemID.Raw.GEN, cdButtons: false);
-			
+
+			controlConverter.ControllerDef.BuildMnemonicsCache(Result.Movie.SystemID);
 			SimpleController controller = new(controlConverter.ControllerDef);
+
+			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(controlConverter.ControllerDef);
 
 			// Unknown.
 			r.ReadByte();

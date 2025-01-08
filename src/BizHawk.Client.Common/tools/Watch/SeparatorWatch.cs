@@ -34,9 +34,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <returns>WatchDisplayType.Separator nothing else</returns>
 		public override IEnumerable<WatchDisplayType> AvailableTypes()
-		{
-			yield return WatchDisplayType.Separator;
-		}
+			=> [ WatchDisplayType.Separator ];
 
 		/// <summary>
 		/// Ignore that stuff
@@ -46,7 +44,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override int Previous => 0;
+		public override uint Previous => 0;
 
 		/// <summary>
 		/// Ignore that stuff

@@ -10,13 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private IDisassemblable _selectedDisassemblable;
 
 		private IEnumerable<IDisassemblable> GetAvailableDisassemblables()
-		{
-			yield return _board.Cpu;
-			if (_board.DiskDrive != null)
-			{
-				yield return _board.DiskDrive;
-			}
-		}
+			=> _board.DiskDrive is IDisassemblable dd ? [ _board.Cpu, dd ] : [ _board.Cpu ];
 
 		private void SetDefaultDisassemblable()
 		{

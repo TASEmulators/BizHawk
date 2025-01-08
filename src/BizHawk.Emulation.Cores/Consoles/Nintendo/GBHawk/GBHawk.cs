@@ -20,7 +20,6 @@ using BizHawk.Common.ReflectionExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	[Core(CoreNames.GbHawk, "")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IGameboyCommon,
 	ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
 	{

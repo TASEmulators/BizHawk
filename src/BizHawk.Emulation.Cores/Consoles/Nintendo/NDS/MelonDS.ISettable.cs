@@ -225,6 +225,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(true)]
 			public bool UseRealTime { get; set; }
 
+			[DisplayName("Touch Interpolation")]
+			[Description("If true, touch inputs will be interpolated, creating smoother touch movements. Required to progress in some games. May be undesirable when TASing.")]
+			[DefaultValue(true)]
+			public bool UseTouchInterpolation { get; set; }
+
 			[DisplayName("DSi Mode")]
 			[Description("If true, DSi mode will be used. Forced true if a DSiWare rom is detected.")]
 			[DefaultValue(false)]
@@ -474,12 +479,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			};
 
 			_openGLProvider.ActivateGLContext(_glContext); // SetScreenSettings will re-present the frame, so needs OpenGL context active
-			_core.SetScreenSettings(_console, ref screenSettings, out var w , out var h, out var vw, out var vh);
+			_core.SetScreenSettings(_console, ref screenSettings, out var w , out var h, out _, out _);
 
 			BufferWidth = w;
 			BufferHeight = h;
-			_glTextureProvider.VirtualWidth = vw;
-			_glTextureProvider.VirtualHeight = vh;
 			_glTextureProvider.VideoDirty = true;
 		}
 

@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	[PortedCore(
 		name: CoreNames.Gpgx,
 		author: "Eke-Eke",
-		portedVersion: "0c45a8a",
+		portedVersion: "a6002bb",
 		portedUrl: "https://github.com/ekeeke/Genesis-Plus-GX")]
 	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
@@ -89,9 +89,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				if (lp.Discs.Count > 0)
 				{
-					if (lp.Discs.Count > 128)
+					if (lp.Discs.Count > sbyte.MaxValue)
 					{
-						throw new("Too many discs loaded at once!");
+						throw new ArgumentException(paramName: nameof(lp), message: "Too many discs loaded at once!");
 					}
 
 					_cds = lp.Discs.Select(d => d.DiscData).ToArray();
@@ -262,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					if (firmwareID != null)
 					{
 						// this path will be the most common PEBKAC error, so be a bit more vocal about the problem
-						srcdata = CoreComm.CoreFileProvider.GetFirmware(firmwareID.Value, "GPGX firmwares are usually required.");
+						srcdata = CoreComm.CoreFileProvider.GetFirmware(firmwareID.Value, "GPGX firmware is usually required.");
 						if (srcdata == null)
 						{
 							_firmwareRequestFailed = true;

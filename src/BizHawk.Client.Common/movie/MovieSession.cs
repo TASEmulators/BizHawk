@@ -48,16 +48,17 @@ namespace BizHawk.Client.Common
 
 		public IDictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
 
-		public IInputAdapter MovieIn { get; set; }
+		public IController MovieIn { get; set; }
 		public IInputAdapter MovieOut { get; } = new CopyControllerAdapter();
-		public IStickyAdapter StickySource { get; set; }
+		public IController StickySource { get; set; }
 
-		public IMovieController MovieController { get; private set; } = new Bk2Controller("", NullController.Instance.Definition);
+		public IMovieController MovieController { get; private set; } = new Bk2Controller(NullController.Instance.Definition);
 
-		public IMovieController GenerateMovieController(ControllerDefinition definition = null)
+		public IMovieController GenerateMovieController(ControllerDefinition definition = null, string logKey = null)
 		{
-			// TODO: expose Movie.LogKey and pass in here
-			return new Bk2Controller("", definition ?? MovieController.Definition);
+			// TODO: should this fallback to Movie.LogKey?
+			// this function is kinda weird
+			return new Bk2Controller(definition ?? MovieController.Definition, logKey);
 		}
 
 		public void HandleFrameBefore()
@@ -78,35 +79,33 @@ namespace BizHawk.Client.Common
 					LatchInputToUser();
 				}
 			}
-			else if (Movie.IsPlayingOrFinished())
+			else if (Movie.IsPlaying())
 			{
 				LatchInputToLog();
-
-				if (Movie.IsRecording()) // The movie end situation can cause the switch to record mode, in that case we need to capture some input for this frame
+				// if we're at the movie's end and the MovieEndAction is record, just continue recording in play mode
+				// TODO change to TAStudio check
+				if (Movie is ITasMovie && Movie.Emulator.Frame == Movie.FrameCount && Settings.MovieEndAction == MovieEndAction.Record)
 				{
-					HandleFrameLoopForRecordMode();
+					Movie.RecordFrame(Movie.Emulator.Frame, MovieOut.Source);
 				}
 			}
 			else if (Movie.IsRecording())
 			{
-				HandleFrameLoopForRecordMode();
+				LatchInputToUser();
+				Movie.RecordFrame(Movie.Emulator.Frame, MovieOut.Source);
 			}
 		}
 
-		// TODO: this is a mess, simplify
 		public void HandleFrameAfter()
 		{
 			if (Movie is ITasMovie tasMovie)
 			{
 				tasMovie.GreenzoneCurrentFrame();
-				if (tasMovie.IsPlayingOrFinished() && Settings.MovieEndAction == MovieEndAction.Record && Movie.Emulator.Frame >= tasMovie.InputLogLength)
-				{
-					HandleFrameLoopForRecordMode();
-					return;
-				}
+				// TODO change to TAStudio check
+				if (Settings.MovieEndAction == MovieEndAction.Record) return;
 			}
 
-			if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.InputLogLength)
+			if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.FrameCount)
 			{
 				HandlePlaybackEnd();
 			}
@@ -153,10 +152,6 @@ namespace BizHawk.Client.Common
 					// set the controller state to the previous frame for input display purposes
 					int previousFrame = Movie.Emulator.Frame - 1;
 					Movie.Session.MovieController.SetFrom(Movie.GetInputState(previousFrame));
-				}
-				else if (Movie.IsFinished())
-				{
-					LatchInputToUser();
 				}
 			}
 			else
@@ -233,7 +228,7 @@ namespace BizHawk.Client.Common
 
 		public void RunQueuedMovie(bool recordMode, IEmulator emulator)
 		{
-			MovieController = new Bk2Controller(emulator.ControllerDefinition);
+			MovieController = new Bk2Controller(emulator.ControllerDefinition, _queuedMovie.LogKey);
 
 			Movie = _queuedMovie;
 			Movie.Attach(emulator);
@@ -329,13 +324,8 @@ namespace BizHawk.Client.Common
 		private void LatchInputToLog()
 		{
 			var input = Movie.GetInputState(Movie.Emulator.Frame);
-			if (input == null)
-			{
-				HandleFrameAfter();
-				return;
-			}
 
-			MovieController.SetFrom(input);
+			MovieController.SetFrom(input ?? StickySource);
 			MovieOut.Source = MovieController;
 		}
 
@@ -345,6 +335,7 @@ namespace BizHawk.Client.Common
 			Debug.Assert(Movie.IsPlaying());
 			Debug.Assert(Movie.Emulator.Frame >= Movie.InputLogLength);
 #endif
+#if false // code below doesn't actually do anything as the cycle count is indiscriminately overwritten (or removed) on save anyway.
 			if (Movie.IsAtEnd() && Movie.Emulator.HasCycleTiming())
 			{
 				const string WINDOW_TITLE_MISMATCH = "Cycle count mismatch";
@@ -394,6 +385,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
+#endif
 			switch (Settings.MovieEndAction)
 			{
 				case MovieEndAction.Stop:
@@ -413,21 +405,6 @@ namespace BizHawk.Client.Common
 			}
 
 			_modeChangedCallback();
-		}
-
-		private void HandleFrameLoopForRecordMode()
-		{
-			// we don't want TasMovie to latch user input outside its internal recording mode, so limit it to autohold
-			if (Movie is ITasMovie && Movie.IsPlayingOrFinished())
-			{
-				MovieController.SetFromSticky(StickySource);
-			}
-			else
-			{
-				MovieController.SetFrom(MovieIn);
-			}
-
-			Movie.RecordFrame(Movie.Emulator.Frame, MovieController);
 		}
 	}
 }

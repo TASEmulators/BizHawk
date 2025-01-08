@@ -37,6 +37,7 @@ namespace BizHawk.Client.Common.movie.import
 				NesRightPort = nameof(ControllerNES)
 			};
 			_deck = controllerSettings.Instantiate((x, y) => true).AddSystemToControllerDef();
+			_deck.ControllerDef.BuildMnemonicsCache(Result.Movie.SystemID);
 
 			// 004 4-byte little-endian unsigned int: version number, must be 2
 			uint version = r.ReadUInt32();

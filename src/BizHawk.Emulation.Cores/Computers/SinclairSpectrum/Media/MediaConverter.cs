@@ -147,9 +147,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Caluclate a data block XOR checksum
 		/// </summary>
-		/// <param name="buf"></param>
-		/// <param name="len"></param>
-		/// <returns></returns>
 		public static bool CheckChecksum(byte[] buf, int len)
 		{
 			byte c = 0;

@@ -210,6 +210,7 @@ in {
 		hasAssetsInOutput = !isVersionAtLeast "2.6.1" version;
 		hasFFmpegPatch_e68a49aa5 = isVersionAtLeast "2.9.2" version; # with e68a49aa5, downloading *and running* FFmpeg finally works; TODO use FFmpeg from Nixpkgs since it's a stable version (4.4.1)
 		hasMiscTypeCheckerPatch_6afb3be98 = isVersionAtLeast "2.6.2" version;
+		mainAppFilename = "EmuHawk.exe"; # for emuhawk-mono-wrapper launch script
 		neededExtraManagedDeps = neededExtraManagedDepsApprox;
 		needsLibGLVND = false; # true iff not using nixGL (i.e. on NixOS) AND using the OpenGL renderer (the default option)
 		needsSDL = isVersionAtLeast "2.9.2" version;
@@ -224,7 +225,11 @@ in {
 		testProjectNeedsCIEnvVar = !isVersionAtLeast "2.8" version; # platform-specific tests don't run "in CI" because they assume Arch filesystem conventions (on Linux)--before 908d4519c, `-p:ContinuousIntegrationBuild=true` wasn't respected but `GITLAB_CI` was
 		versionProjNeedsDoubleBuild = !isVersionAtLeast "2.9.1" version;
 		#TODO warn about missing/broken features when eval'ing older releases
-	} // hawkSourceInfo;
+	} // hawkSourceInfo // {
+		frontendPackageFlavour = if (hawkSourceInfo.frontendPackageFlavour or null) == null
+			then "NixHawk"
+			else hawkSourceInfo.frontendPackageFlavour;
+	};
 	/** to be passed to `splitReleaseArtifact` */
 	releaseArtifactInfos = lib.mapAttrs'
 		(releaseFrag: value: {

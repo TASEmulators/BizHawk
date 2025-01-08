@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.DiscSystem
 				var cfr = new CueFileResolver();
 				var cueContext = new CUE_Context { DiscMountPolicy = IN_DiscMountPolicy, Resolver = cfr };
 
-				if (!cfr.IsHardcodedResolve) cfr.SetBaseDirectory(cueDirPath);
+				cfr.SetBaseDirectory(cueDirPath);
 
 				// parse the cue file
 				var parseJob = new ParseCueJob(cueContent);

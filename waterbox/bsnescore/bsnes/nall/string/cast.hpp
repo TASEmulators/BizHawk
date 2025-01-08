@@ -169,16 +169,6 @@ template<uint Bits> struct stringify<Real<Bits>> {
 //arrays
 
 template<> struct stringify<vector<uint8_t>> {
-  stringify(vector<uint8_t> source) {
-    _text.resize(source.size());
-    memory::copy(_text.data(), source.data(), source.size());
-  }
-  auto data() const -> const char* { return _text.data(); }
-  auto size() const -> uint { return _text.size(); }
-  vector<char> _text;
-};
-
-template<> struct stringify<const vector<uint8_t>&> {
   stringify(const vector<uint8_t>& source) {
     _text.resize(source.size());
     memory::copy(_text.data(), source.data(), source.size());
@@ -191,7 +181,7 @@ template<> struct stringify<const vector<uint8_t>&> {
 //char arrays
 
 template<> struct stringify<char*> {
-  stringify(char* source) : _data(source ? source : "") {}
+  stringify(const char* source) : _data(source ? source : "") {}
   auto data() const -> const char* { return _data; }
   auto size() const -> uint { return strlen(_data); }
   const char* _data;
@@ -213,21 +203,7 @@ template<> struct stringify<string> {
   const string& _text;
 };
 
-template<> struct stringify<const string&> {
-  stringify(const string& source) : _text(source) {}
-  auto data() const -> const char* { return _text.data(); }
-  auto size() const -> uint { return _text.size(); }
-  const string& _text;
-};
-
 template<> struct stringify<string_view> {
-  stringify(const string_view& source) : _view(source) {}
-  auto data() const -> const char* { return _view.data(); }
-  auto size() const -> uint { return _view.size(); }
-  const string_view& _view;
-};
-
-template<> struct stringify<const string_view&> {
   stringify(const string_view& source) : _view(source) {}
   auto data() const -> const char* { return _view.data(); }
   auto size() const -> uint { return _view.size(); }
@@ -241,21 +217,7 @@ template<> struct stringify<array_view<uint8_t>> {
   const array_view<uint8_t>& _view;
 };
 
-template<> struct stringify<const array_view<uint8_t>&> {
-  stringify(const array_view<uint8_t>& source) : _view(source) {}
-  auto data() const -> const char* { return _view.data<const char>(); }
-  auto size() const -> uint { return _view.size(); }
-  const array_view<uint8_t>& _view;
-};
-
 template<> struct stringify<string_pascal> {
-  stringify(const string_pascal& source) : _text(source) {}
-  auto data() const -> const char* { return _text.data(); }
-  auto size() const -> uint { return _text.size(); }
-  const string_pascal& _text;
-};
-
-template<> struct stringify<const string_pascal&> {
   stringify(const string_pascal& source) : _text(source) {}
   auto data() const -> const char* { return _text.data(); }
   auto size() const -> uint { return _text.size(); }
@@ -281,8 +243,8 @@ template<typename T> struct stringify<T*> {
 
 //
 
-template<typename T> auto make_string(T value) -> stringify<T> {
-  return stringify<T>(forward<T>(value));
+template<typename T> auto make_string(const T& value) {
+  return stringify<std::decay_t<T>>(value);
 }
 
 }

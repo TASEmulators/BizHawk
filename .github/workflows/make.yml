@@ -60,6 +60,7 @@ jobs:
            git submodule update --init gpgx/Genesis-Plus-GX;
            git submodule update --init ../submodules/sameboy/libsameboy;
            git submodule update --init uae/libretro-uae;
+           git submodule update --init stella/core;
     - name: Download compiled waterbox
       uses: actions/download-artifact@v4
       with:
@@ -100,6 +101,7 @@ jobs:
           Assets/dll/turbo.wbx.zst
           Assets/dll/uzem.wbx.zst
           Assets/dll/vb.wbx.zst
+          Assets/dll/stella.wbx.zst
           Assets/dll/virtualjaguar.wbx.zst
 
   build-mame:

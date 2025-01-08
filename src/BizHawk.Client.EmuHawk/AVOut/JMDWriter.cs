@@ -623,6 +623,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// some of this code is copied from AviWriter... not sure how if at all it should be abstracted
+
 		/// <summary>
 		/// blocking thread safe queue, used for communication between main program and file writing thread
 		/// </summary>

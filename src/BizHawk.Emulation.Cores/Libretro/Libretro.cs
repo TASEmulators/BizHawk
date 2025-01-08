@@ -11,7 +11,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 	// nb: multiple libretro cores could theoretically be ran at once
 	// but all of them would need to be different cores, a core itself is single instance
 	[PortedCore(CoreNames.Libretro, "CasualPokePlayer", singleInstance: true, isReleased: false)]
-	[ServiceNotApplicable([ typeof(IDriveLight) ])]
 	public partial class LibretroHost
 	{
 		private static readonly LibretroBridge bridge;
@@ -74,7 +73,21 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 		}
 
+		/// <remarks>does not keep a reference to <paramref name="game"/></remarks>
 		public LibretroHost(CoreComm comm, IGameInfo game, string corePath, bool analysis = false)
+			: this(
+				comm,
+				libretroSystemDir: comm.CoreFileProvider.GetRetroSystemPath(game),
+				libretroSaveRAMDir: comm.CoreFileProvider.GetRetroSaveRAMDirectory(game),
+				corePath: corePath,
+				analysis: analysis) {}
+
+		public LibretroHost(
+			CoreComm comm,
+			string libretroSystemDir,
+			string libretroSaveRAMDir,
+			string corePath,
+			bool analysis)
 		{
 			try
 			{
@@ -96,11 +109,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 					throw new InvalidOperationException("Unsupported Libretro API version (or major error in interop)");
 				}
 
-				bridge.LibretroBridge_SetDirectories(cbHandler,
-					comm.CoreFileProvider.GetRetroSystemPath(game),
-					comm.CoreFileProvider.GetRetroSaveRAMDirectory(game),
-					Path.GetDirectoryName(corePath),
-					Path.GetDirectoryName(corePath));
+				var libretroCoreDir = Path.GetDirectoryName(corePath);
+				bridge.LibretroBridge_SetDirectories(
+					cbHandler,
+					systemDirectory: libretroSystemDir,
+					saveDirectory: libretroSaveRAMDir,
+					coreDirectory: libretroCoreDir,
+					coreAssetsDirectory: libretroCoreDir);
 
 				ControllerDefinition = ControllerDef;
 				_notify = comm.Notify;

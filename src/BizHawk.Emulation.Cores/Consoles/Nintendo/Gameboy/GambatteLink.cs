@@ -7,7 +7,6 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	[PortedCore(CoreNames.GambatteLink, "sinamas/natt")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GambatteLink : ILinkable, ILinkedGameBoyCommon, IRomInfo
 	{
 		[CoreConstructor(VSystemID.Raw.GBL)]

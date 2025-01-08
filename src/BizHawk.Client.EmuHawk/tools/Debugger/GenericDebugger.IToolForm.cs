@@ -109,7 +109,13 @@ namespace BizHawk.Client.EmuHawk
 			UpdateCapabilitiesProps();
 			DisengageDebugger();
 			EngageDebugger();
-			FullUpdate();
+		}
+
+		protected override void GeneralUpdate() => FullUpdate();
+
+		protected override void UpdateAfter()
+		{
+			if (MainForm.EmulatorPaused) FullUpdate();
 		}
 	}
 }

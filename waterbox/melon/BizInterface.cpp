@@ -44,6 +44,7 @@ struct MyFrameInfo : public FrameInfo
 	u8 MicVolume;
 	u8 GBALightSensor;
 	bool ConsiderAltLag;
+	bool UseTouchInterpolation;
 };
 
 static s16 biz_mic_input[735];
@@ -56,7 +57,7 @@ static void MicFeedNoise(u8 vol)
 
 	for (int i = 0; i < 735; i++)
 	{
-		biz_mic_input[i] = round(mic_blow[sampPos++] * (vol / 100.0));
+		biz_mic_input[i] = round((s16)mic_blow[sampPos++] * (vol / 100.0));
 		if (sampPos >= sampLen) sampPos = 0;
 	}
 }
@@ -71,8 +72,15 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 
 	if (f->Keys & 0x1000)
 	{
-		// move touch coords incrementally to our new touch point
-		f->NDS->MoveTouch(f->TouchX, f->TouchY);
+		if (f->UseTouchInterpolation)
+		{
+			// move touch coords incrementally to our new touch point
+			f->NDS->MoveTouch(f->TouchX, f->TouchY);
+		}
+		else
+		{
+			f->NDS->TouchScreen(f->TouchX, f->TouchY);
+		}
 	}
 	else
 	{
@@ -113,8 +121,11 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 
 	if (f->Keys & 0x1000)
 	{
-		// finalize touch after emulation finishes
-		f->NDS->TouchScreen(f->TouchX, f->TouchY);
+		if (f->UseTouchInterpolation)
+		{
+			// finalize touch after emulation finishes
+			f->NDS->TouchScreen(f->TouchX, f->TouchY);
+		}
 	}
 
 	auto& renderer3d = f->NDS->GetRenderer3D();
@@ -141,7 +152,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	}
 
 	f->Samples = f->NDS->SPU.ReadOutput(f->SoundBuffer, 4096);
-	if (f->Samples == 0) // hack when core decides to stop outputting audio altogether (lid closed or power off)
+	if (f->Samples == 0) // hack when core decides to stop outputting audio altogether (power off)
 	{
 		memset(f->SoundBuffer, 0, 737 * 2 * sizeof(u16));
 		f->Samples = 737;

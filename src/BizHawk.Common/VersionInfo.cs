@@ -10,9 +10,9 @@ namespace BizHawk.Common
 		/// Bump this immediately after release.
 		/// Only use '0'..'9' and '.' or it will fail to parse and the new version notification won't work.
 		/// </remarks>
-		public static readonly string MainVersion = "2.9.2";
+		public static readonly string MainVersion = "2.10.1";
 
-		public static readonly string ReleaseDate = "May 3, 2023";
+		public static readonly string ReleaseDate = "January 7th, 2025";
 
 		public static readonly string HomePage = "https://tasvideos.org/BizHawk";
 
@@ -21,6 +21,8 @@ namespace BizHawk.Common
 		public static readonly string? CustomBuildString;
 
 		public static readonly string BizHawkContributorsListURI = "https://github.com/TASEmulators/BizHawk/graphs/contributors";
+
+		public static readonly string UserAgentEscaped;
 
 		static VersionInfo()
 		{
@@ -37,6 +39,9 @@ namespace BizHawk.Common
 					CustomBuildString = lines[0];
 				}
 			}
+			UserAgentEscaped = $"{
+				(string.IsNullOrWhiteSpace(CustomBuildString) ? "EmuHawk" : CustomBuildString!.OnlyAlphanumeric())
+			}/{MainVersion}{(DeveloperBuild ? "-dev" : string.Empty)}";
 		}
 
 		public static (string Label, string TargetURI) GetGitCommitLink()

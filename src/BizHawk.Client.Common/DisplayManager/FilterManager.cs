@@ -285,7 +285,7 @@ namespace BizHawk.Client.Common.FilterManager
 					if (ps.Type == ProgramStepType.NewTarget)
 					{
 						var size = (Size)ps.Args;
-						Debug.Assert(size == outsize);
+						Debug.Assert(size == outsize, "size of last " + nameof(ProgramStepType.NewTarget) + " was set wrong");
 						Program[i] = new(ProgramStepType.FinalTarget, size, ps.Comment);
 						break;
 					}

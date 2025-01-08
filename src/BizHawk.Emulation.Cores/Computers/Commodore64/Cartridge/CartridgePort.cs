@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -133,7 +134,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			ser.EndSection();
 		}
 
+		public ISaveRam SaveRam => _cartridgeDevice as ISaveRam;
+
+		public IEnumerable<MemoryDomain> CreateMemoryDomains()
+		{
+			if (_connected)
+				return _cartridgeDevice.CreateMemoryDomains();
+			return Array.Empty<MemoryDomain>();
+		}
+
 		public bool DriveLightEnabled => _connected && _cartridgeDevice.DriveLightEnabled;
 		public bool DriveLightOn => _connected && _cartridgeDevice.DriveLightOn;
+
+		public string DriveLightIconDescription => "Cart Activity";
 	}
 }

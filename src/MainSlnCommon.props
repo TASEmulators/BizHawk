@@ -8,8 +8,11 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DebugType>embedded</DebugType>
 		<DefineConstants>$(DefineConstants);AVI_SUPPORT</DefineConstants>
+		<NeutralLanguage>en-US</NeutralLanguage>
 		<NoWarn>$(NoWarn);CS1573;NU1702</NoWarn>
+		<Product>BizHawk</Product>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+		<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(SolutionDir)' != '' ">
 		<PathMap>$(SolutionDir)=/</PathMap>
@@ -18,7 +21,10 @@
 		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.ReflectionCache.dll" />
+		<AdditionalFiles Include="$(MSBuildThisFileDirectory)/BannedSymbols.BannedApiAnalyzers.txt" />
+		<AdditionalFiles Include="$(MSBuildThisFileDirectory)/Menees.Analyzers.Settings.xml" />
 		<Using Include="System" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(Configuration)' != 'Debug' ">

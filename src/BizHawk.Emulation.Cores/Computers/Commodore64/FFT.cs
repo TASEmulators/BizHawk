@@ -6,41 +6,54 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public class RealFFT
 	{
-		private readonly int _length;
-		private readonly int[] _ip;
-		private readonly double[] _w;
+		private int _length;
+		private int[] _ip = Array.Empty<int>();
+		private double[] _w = Array.Empty<double>();
 
-		public readonly double ForwardScaleFactor;
-		public readonly double ReverseScaleFactor;
-		public readonly double CorrectionScaleFactor;
+		public double ForwardScaleFactor { get; private set; }
+		public double ReverseScaleFactor { get; private set; }
+		public double CorrectionScaleFactor { get; private set; }
 
 		public RealFFT(int length)
+		{
+			Resize(length);
+		}
+
+		public void Resize(int length)
 		{
 			if (length < 2 || (length & (length - 1)) != 0)
 			{
 				throw new ArgumentException("FFT length must be at least 2 and a power of 2.", nameof(length));
 			}
 
-			_length = length;
-			_ip = new int[2 + (1 << (Convert.ToInt32(Math.Log(Math.Max(length / 4, 1), 2)) / 2))];
-			_w = new double[length / 2];
-
 			ForwardScaleFactor = length;
-			ReverseScaleFactor = 0.5;
-			CorrectionScaleFactor = 1.0 / (ForwardScaleFactor * ReverseScaleFactor);
+			ReverseScaleFactor = 0.5d;
+			CorrectionScaleFactor = 1.0d / (ForwardScaleFactor * ReverseScaleFactor);
+			_length = length;
+
+			var ipLength = 2 + (1 << (Convert.ToInt32(Math.Log(Math.Max(length / 4, 1), 2)) / 2));
+			if (_ip.Length < ipLength)
+				Array.Resize(ref _ip, ipLength);
+
+			var wLength = length / 2;
+			if (_w.Length < wLength)
+				Array.Resize(ref _w, wLength);
+			
+			_ip.AsSpan().Clear();
+			_w.AsSpan().Clear();
 		}
 
-		public void ComputeForward(double[] buff)
+		public void ComputeForward(Span<double> buff)
 		{
 			Compute(buff, false);
 		}
 
-		public void ComputeReverse(double[] buff)
+		public void ComputeReverse(Span<double> buff)
 		{
 			Compute(buff, true);
 		}
 
-		private void Compute(double[] buff, bool reverse)
+		private void Compute(Span<double> buff, bool reverse)
 		{
 			if (buff.Length < _length)
 			{
@@ -50,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			rdft(_length, reverse, buff, _ip, _w);
 		}
 
-		private static void rdft(int n, bool rev, double[] a, int[] ip, double[] w)
+		private static void rdft(int n, bool rev, Span<double> a, Span<int> ip, Span<double> w)
 		{
 			int nw, nc;
 			double xi;
@@ -102,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		/* -------- initializing routines -------- */
 
-		private static void makewt(int nw, int[] ip, double[] w)
+		private static void makewt(int nw, Span<int> ip, Span<double> w)
 		{
 			int j, nwh;
 			double delta, x, y;
@@ -133,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		private static void makect(int nc, int[] ip, double[] c, int nw)
+		private static void makect(int nc, Span<int> ip, Span<double> c, int nw)
 		{
 			int j, nch;
 			double delta;
@@ -155,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		/* -------- child routines -------- */
 
-		private static void bitrv2(int n, int[] ip, double[] a)
+		private static void bitrv2(int n, Span<int> ip, Span<double> a)
 		{
 			int j, j1, k, k1, l, m, m2;
 			double xr, xi, yr, yi;
@@ -263,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		private static void cftfsub(int n, double[] a, double[] w)
+		private static void cftfsub(int n, Span<double> a, Span<double> w)
 		{
 			int j, j1, j2, j3, l;
 			double x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
@@ -319,7 +332,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		private static void cftbsub(int n, double[] a, double[] w)
+		private static void cftbsub(int n, Span<double> a, Span<double> w)
 		{
 			int j, j1, j2, j3, l;
 			double x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
@@ -375,7 +388,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		private static void cft1st(int n, double[] a, double[] w)
+		private static void cft1st(int n, Span<double> a, Span<double> w)
 		{
 			int j, k1, k2;
 			double wk1r, wk1i, wk2r, wk2i, wk3r, wk3i;
@@ -480,7 +493,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		private static void cftmdl(int n, int l, double[] a, double[] w)
+		private static void cftmdl(int n, int l, Span<double> a, Span<double> w)
 		{
 			int j, j1, j2, j3, k, k1, k2, m, m2;
 			double wk1r, wk1i, wk2r, wk2i, wk3r, wk3i;
@@ -611,7 +624,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		private static void rftfsub(int n, double[] a, int nc, double[] c, int nw)
+		private static void rftfsub(int n, Span<double> a, int nc, Span<double> c, int nw)
 		{
 			int j, k, kk, ks, m;
 			double wkr, wki, xr, xi, yr, yi;
@@ -636,7 +649,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		private static void rftbsub(int n, double[] a, int nc, double[] c, int nw)
+		private static void rftbsub(int n, Span<double> a, int nc, Span<double> c, int nw)
 		{
 			int j, k, kk, ks, m;
 			double wkr, wki, xr, xi, yr, yi;

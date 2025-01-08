@@ -10,6 +10,9 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
+# ensure lib shared library prefix is used
+set(CMAKE_SHARED_LIBRARY_PREFIX "lib")
+
 if(MSVC)
 	# max warnings, treat as errors
 	add_compile_options(/W4)
@@ -30,9 +33,6 @@ if(MSVC)
 	add_compile_options(/permissive-)
 	add_compile_options(/volatile:iso)
 	add_compile_options(/fp:precise)
-
-	# cmake will not insert a lib prefix for libraries on MSVC targets
-	set(RC_TARGET librcheevos)
 else()
 	# max warnings, treat as errors
 	add_compile_options(-Wall -Wextra)
@@ -46,16 +46,13 @@ else()
 	if(CMAKE_C_COMPILER_ID MATCHES "Clang")
 		add_link_options(-fuse-ld=lld)
 	endif()
-
-	# cmake will insert a lib prefix for libraries on non-MSVC targets 
-	set(RC_TARGET rcheevos)
 endif()
 
 set(RC_SRC_DIR ${CMAKE_SOURCE_DIR}/rcheevos/src)
 set(RC_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/rcheevos/include)
 
 add_library(
-	${RC_TARGET}
+	rcheevos
 	SHARED
 	${RC_SRC_DIR}/rc_compat.c
 	${RC_SRC_DIR}/rc_compat.h
@@ -105,16 +102,16 @@ add_library(
 	${RC_INCLUDE_DIR}/rcheevos.h
 )
 
-target_compile_definitions(${RC_TARGET} PRIVATE RC_DISABLE_LUA RC_NO_THREADS RC_SHARED)
-target_include_directories(${RC_TARGET} PRIVATE ${RC_INCLUDE_DIR})
+target_compile_definitions(rcheevos PRIVATE RC_DISABLE_LUA RC_NO_THREADS RC_SHARED)
+target_include_directories(rcheevos PRIVATE ${RC_INCLUDE_DIR})
 
 add_custom_command(
-	TARGET ${RC_TARGET}
+	TARGET rcheevos
 	POST_BUILD
 	COMMAND ${CMAKE_COMMAND}
-	ARGS -E copy $<TARGET_FILE:${RC_TARGET}> ${CMAKE_SOURCE_DIR}/../../Assets/dll
+	ARGS -E copy $<TARGET_FILE:rcheevos> ${CMAKE_SOURCE_DIR}/../../Assets/dll
 	COMMAND ${CMAKE_COMMAND}
-	ARGS -E copy $<TARGET_FILE:${RC_TARGET}> ${CMAKE_SOURCE_DIR}/../../output/dll
+	ARGS -E copy $<TARGET_FILE:rcheevos> ${CMAKE_SOURCE_DIR}/../../output/dll
 )
 
 if(MSVC)

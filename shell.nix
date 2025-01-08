@@ -9,12 +9,15 @@
 , debugDotnetHostCrashes ? false # forwarded to Dist/launch-scripts.nix
 , debugPInvokes ? false # forwarded to Dist/launch-scripts.nix
 , forNixOS ? true
+, profileManagedCalls ? false # forwarded to Dist/launch-scripts.nix
 , useKate ? false
 , useNanoAndCola ? false
 , useVSCode ? false
 }: let
-	# thinking of exposing pre-configured IDEs from `default.nix` so they're available here
-	avail = import ./. { inherit debugDotnetHostCrashes debugPInvokes forNixOS system; };
+	avail = import ./. {
+		inherit forNixOS system
+			debugDotnetHostCrashes debugPInvokes profileManagedCalls;
+	};
 	f = drv: mkShell {
 		packages = [ git powershell ]
 			++ lib.optionals useNanoAndCola [ git-cola nano ]

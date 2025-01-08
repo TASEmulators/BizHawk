@@ -38,6 +38,8 @@ in {
 , git ? pkgs.gitMinimal # only when building from-CWD (`-local`)
 # rundeps
 , coreutils ? pkgs.coreutils
+, gnome-themes-extra ? pkgs.gnome3.gnome-themes-extra
+, gtk2-x11 ? pkgs.gtk2-x11
 , kate ? pkgs.kate.overrideAttrs (oldAttrs: {
 	patches = (oldAttrs.patches or []) ++ [ (fetchpatch {
 		url = "https://invent.kde.org/utilities/kate/-/commit/9ddf4f0c9eb3c26a0ab33c862d2b161bcbdc6a6e.patch"; # Fix name of OmniSharp LSP binary
@@ -64,11 +66,11 @@ in {
 , debugPInvokes ? false # forwarded to Dist/launch-scripts.nix
 , debugDotnetHostCrashes ? false # forwarded to Dist/launch-scripts.nix
 , doCheck ? true # runs `Dist/BuildTest${buildConfig}.sh`
-, emuhawkBuildFlavour ? "NixHawk"
 , extraDefines ? "" # added to `<DefineConstants/>`, so ';'-separated
 , extraDotnetBuildFlags ? "" # currently passed to EVERY `dotnet build` and `dotnet test` invocation (and does not replace the flags for parallel compilation added by default)
 , forNixOS ? true
 , initConfig ? {} # forwarded to Dist/launch-scripts.nix (see docs there)
+, profileManagedCalls ? false # forwarded to Dist/launch-scripts.nix
 }: let
 	isVersionAtLeast = lib.flip lib.versionAtLeast; # I stand by this being the more useful param order w.r.t. currying
 	replaceDotWithUnderscore = s: lib.replaceStrings [ "." ] [ "_" ] s;
@@ -100,7 +102,7 @@ in {
 		inherit lib
 			writeShellScript writeText
 			bizhawkAssemblies nixGL
-			debugPInvokes debugDotnetHostCrashes initConfig isManualLocalBuild;
+			debugPInvokes debugDotnetHostCrashes initConfig isManualLocalBuild profileManagedCalls;
 		mkfifo = coreutils;
 		mktemp = coreutils;
 	};
@@ -110,9 +112,9 @@ in {
 			buildDotnetModule fetchpatch fetchzip hardLinkJoin launchScriptsFor makeDesktopItem
 				releaseTagSourceInfos runCommand symlinkJoin writeShellScriptBin
 			git
-			libgdiplus libGL lua openal SDL2 udev zstd
-			buildConfig doCheck emuhawkBuildFlavour extraDefines extraDotnetBuildFlags;
-		mono = if mono != null
+			gnome-themes-extra gtk2-x11 libgdiplus libGL lua openal SDL2 udev zstd
+			buildConfig doCheck extraDefines extraDotnetBuildFlags;
+		mono = lib.recursiveUpdate { meta.mainProgram = "mono"; } (if mono != null
 			then mono # allow older Mono if set explicitly
 			else if isVersionAtLeast "6.12.0.151" pkgs.mono.version
 				then pkgs.mono
@@ -120,7 +122,7 @@ in {
 					(import (fetchzip {
 						url = "https://github.com/NixOS/nixpkgs/archive/23.05.tar.gz";
 						hash = "sha512-REPJ9fRKxTefvh1d25MloT4bXJIfxI+1EvfVWq644Tzv+nuq2BmiGMiBNmBkyN9UT5fl2tdjqGliye3gZGaIGg==";
-					}) { inherit system; }).mono;
+					}) { inherit system; }).mono);
 		monoBasic = fetchzip {
 			url = "https://download.mono-project.com/repo/debian/pool/main/m/mono-basic/libmono-microsoft-visualbasic10.0-cil_4.7-0xamarin3+debian9b1_all.deb";
 			nativeBuildInputs = [ dpkg ];
@@ -162,7 +164,7 @@ in {
 	];
 	latestVersionFrag = lib.head releaseFrags;
 	combined = pp // asmsFromReleaseArtifacts // releasesEmuHawkInstallables // {
-		inherit depsForHistoricalRelease releaseTagSourceInfos;
+		inherit depsForHistoricalRelease populateHawkSourceInfo releaseTagSourceInfos;
 		bizhawkAssemblies = pp.buildAssembliesFor (fillTargetOSDifferences hawkSourceInfoDevBuild);
 		"bizhawkAssemblies-${latestVersionFrag}" = pp.buildAssembliesFor
 			(fillTargetOSDifferences releaseTagSourceInfos."info-${latestVersionFrag}");

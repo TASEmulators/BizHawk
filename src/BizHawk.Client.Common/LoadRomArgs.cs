@@ -1,8 +1,9 @@
 namespace BizHawk.Client.Common
 {
-	public class LoadRomArgs
+	public sealed class LoadRomArgs(IOpenAdvanced ioa, bool? deterministic = null)
 	{
-		public bool? Deterministic { get; set; }
-		public IOpenAdvanced OpenAdvanced { get; set; }
+		public readonly bool? Deterministic = deterministic;
+
+		public readonly IOpenAdvanced OpenAdvanced = ioa;
 	}
 }

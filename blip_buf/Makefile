@@ -1,7 +1,7 @@
 CC = gcc
 
 CFLAGS = -Wall -Wextra -O3
-LFLAGS = -shared
+LFLAGS = -shared -s
 
 all:	blip_buf
 

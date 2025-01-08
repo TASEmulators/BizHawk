@@ -191,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 				lib.APIs = _apiContainer;
 				if (!ServiceInjector.UpdateServices(newServiceProvider, lib, mayCache: true))
 				{
-					throw new("Lua lib has required service(s) that can't be fulfilled");
+					throw new Exception("Lua lib has required service(s) that can't be fulfilled");
 				}
 
 				lib.Restarted();
@@ -323,8 +323,29 @@ namespace BizHawk.Client.EmuHawk
 		public void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)
 			=> lf.Thread = SpawnCoroutine(pathToLoad);
 
-		public void ExecuteString(string command)
-			=> _lua.DoString(command);
+		public object[] ExecuteString(string command)
+		{
+			const string ChunkName = "input"; // shows up in error messages
+
+			// Use LoadString to separate parsing and execution, to tell syntax errors and runtime errors apart
+			LuaFunction func;
+			try
+			{
+				// Adding a return is necessary to get out return values of functions and turn expressions ("1+1" etc.) into valid statements
+				func = _lua.LoadString($"return {command}", ChunkName);
+			}
+			catch (Exception)
+			{
+				// command may be a valid statement without the added "return"
+				// if previous attempt couldn't be parsed, run the raw command
+				return _lua.DoString(command, ChunkName);
+			}
+
+			using (func)
+			{
+				return func.Call();
+			}
+		}
 
 		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
 		{

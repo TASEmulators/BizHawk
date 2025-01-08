@@ -31,7 +31,7 @@ namespace BizHawk.Common
 				if (_sha256Impl == null)
 				{
 					_sha256Impl = SHA256.Create();
-					Debug.Assert(_sha256Impl.CanReuseTransform && _sha256Impl.HashSize is EXPECTED_LENGTH);
+					Debug.Assert(_sha256Impl.CanReuseTransform && _sha256Impl.HashSize is EXPECTED_LENGTH, "nonstandard implementation?");
 				}
 				return _sha256Impl;
 			}

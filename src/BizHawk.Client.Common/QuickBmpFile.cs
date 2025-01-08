@@ -187,7 +187,7 @@ namespace BizHawk.Client.Common
 		{
 			if (src.BufferWidth == dst.BufferWidth && src.BufferHeight == dst.BufferHeight)
 			{
-				Array.Copy(src.GetVideoBuffer(), dst.GetVideoBuffer(), src.GetVideoBuffer().Length);
+				Array.Copy(src.GetVideoBuffer(), dst.GetVideoBuffer(), src.BufferWidth * src.BufferHeight);
 			}
 			else
 			{

@@ -1,6 +1,8 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 
+using CommunityToolkit.HighPerformance.Buffers;
+
 namespace BizHawk.Common.StringExtensions
 {
 	public static class StringExtensions
@@ -42,6 +44,10 @@ namespace BizHawk.Common.StringExtensions
 		/// </returns>
 		public static bool In(this string str, params string[] options) =>
 			options.Any(opt => string.Equals(opt, str, StringComparison.OrdinalIgnoreCase));
+
+		/// <returns>a copy of <paramref name="raw"/> with all characters outside <c>[0-9A-Za-z]</c> removed</returns>
+		public static string OnlyAlphanumeric(this string raw)
+			=> string.Concat(raw.Where(static c => c is (>= '0' and <= '9') or (>= 'A' and <= 'Z') or (>= 'a' and <= 'z')));
 
 		/// <returns>
 		/// <paramref name="str"/> with the first char removed, or
@@ -177,6 +183,27 @@ namespace BizHawk.Common.StringExtensions
 			var a = new byte[str.Length];
 			for (var i = 0; i < str.Length; i++) a[i] = (byte) char.ConvertToUtf32(str, i);
 			return a;
+		}
+
+		/// <summary>as <see cref="string.ToUpperInvariant"/>, but assumes <paramref name="str"/> is 7-bit ASCII to allow for an optimisation</summary>
+		/// <remarks>allocates a new char array only when necessary</remarks>
+		public static string ToUpperASCIIFast(this string str)
+		{
+			const ushort ASCII_UPCASE_MASK = 0b101_1111;
+			for (var i = 0; i < str.Length; i++)
+			{
+				if (str[i] is < 'a' or > 'z') continue;
+				var a = new char[str.Length];
+				str.AsSpan(start: 0, length: i).CopyTo(a);
+				a[i] = unchecked((char) (str[i] & ASCII_UPCASE_MASK));
+				while (++i < str.Length)
+				{
+					var c = str[i];
+					a[i] = c is >= 'a' and <= 'z' ? unchecked((char) (c & ASCII_UPCASE_MASK)) : c;
+				}
+				return StringPool.Shared.GetOrAdd(a);
+			}
+			return str;
 		}
 
 		/// <summary>

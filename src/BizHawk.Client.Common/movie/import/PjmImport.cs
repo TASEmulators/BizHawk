@@ -181,6 +181,7 @@ namespace BizHawk.Client.Common
 				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None
 			};
 			SimpleController controllers = new(Octoshock.CreateControllerDefinition(settings));
+			controllers.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 
 			string[] buttons =
 			{
@@ -291,6 +292,7 @@ namespace BizHawk.Client.Common
 				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None
 			};
 			SimpleController controllers = new(Octoshock.CreateControllerDefinition(settings));
+			controllers.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 
 			string[] buttons =
 			{

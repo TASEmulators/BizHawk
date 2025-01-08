@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				var (rom, biosInfo) = lp.Comm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(
 					new("PCECD", "Bios"),
-					"PCE-CD System Card not found. Please check the BIOS settings in Config->Firmwares.");
+					"PCE-CD System Card not found. Please check the BIOS settings in Config > Firmware...");
 
 				if (biosInfo.Status == RomStatus.BadDump)
 				{

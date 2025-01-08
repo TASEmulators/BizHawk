@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -18,7 +19,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	[PortedCore(CoreNames.MelonDS, "Arisotura", "0.9.5", "https://melonds.kuribo64.net/")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
+	[ServiceNotApplicable(typeof(IRegionable))]
 	public sealed partial class NDS : WaterboxCore
 	{
 		private readonly LibMelonDS _core;
@@ -76,8 +77,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				DefaultWidth = 256,
 				DefaultHeight = 384,
-				MaxWidth = (256 * 16) * 3 + ((128 * 16) * 4 / 3) + 1,
-				MaxHeight = (384 / 2 * 16) * 2 + (128 * 16),
+				MaxWidth = 256 * 3 + (128 * 4 / 3) + 1,
+				MaxHeight = (384 / 2) * 2 + 128,
 				MaxSamples = 4096, // rather large max samples is intentional, see comment in ThreadStartCallback
 				DefaultFpsNumerator = 33513982,
 				DefaultFpsDenominator = 560190,
@@ -93,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 				IsDSi = _activeSyncSettings.UseDSi;
 
-				var roms = lp.Roms.Select(r => r.RomData).ToList();
+				var roms = lp.Roms.Select(r => r.FileData).ToList();
 
 				DSiTitleId = GetDSiTitleId(roms[0]);
 				IsDSi |= IsDSiWare;
@@ -136,6 +137,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					else
 					{
 						_glContext = _openGLProvider.RequestGLContext(majorGlVersion, minorGlVersion, true);
+						// reallocate video buffer for scaling
+						if (_activeSyncSettings.GLScaleFactor > 1)
+						{
+							var maxWidth = (256 * _activeSyncSettings.GLScaleFactor) * 3 + ((128 * _activeSyncSettings.GLScaleFactor) * 4 / 3) + 1;
+							var maxHeight = (384 / 2 * _activeSyncSettings.GLScaleFactor) * 2 + (128 * _activeSyncSettings.GLScaleFactor);
+							_videoBuffer = new int[maxWidth * maxHeight];
+						}
 					}
 				}
 
@@ -156,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					Filename = "melonDS.wbx",
 					SbrkHeapSizeKB = 2 * 1024,
 					SealedHeapSizeKB = 4,
-					InvisibleHeapSizeKB = 16 * 1024,
+					InvisibleHeapSizeKB = 48 * 1024,
 					PlainHeapSizeKB = 4,
 					MmapHeapSizeKB = 1024 * 1024,
 					SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
@@ -182,6 +190,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				}
 
 				_activeSyncSettings.UseRealBIOS |= IsDSi;
+
+				if (!_activeSyncSettings.UseRealBIOS)
+				{
+					var arm9RomOffset = BinaryPrimitives.ReadInt32LittleEndian(roms[0].AsSpan(0x20, 4));
+					if (arm9RomOffset is >= 0x4000 and < 0x8000)
+					{
+						// check if the user is using an encrypted rom
+						// if they are, they need to be using real bios files
+						var secureAreaId = BinaryPrimitives.ReadUInt64LittleEndian(roms[0].AsSpan(arm9RomOffset, 8));
+						_activeSyncSettings.UseRealBIOS = secureAreaId != 0xE7FFDEFF_E7FFDEFF;
+					}
+				}
 
 				byte[] bios9 = null, bios7 = null, firmware = null;
 				if (_activeSyncSettings.UseRealBIOS)
@@ -385,7 +405,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static byte[] GetTMDData(ulong titleId)
 		{
 			using var zip = new ZipArchive(Zstd.DecompressZstdStream(new MemoryStream(Resources.TMDS.Value)), ZipArchiveMode.Read, false);
-			using var tmd = zip.GetEntry($"{titleId:x16}.tmd")?.Open() ?? throw new($"Cannot find TMD for title ID {titleId:x16}, please report");
+			using var tmd = zip.GetEntry($"{titleId:x16}.tmd")?.Open() ?? throw new Exception($"Cannot find TMD for title ID {titleId:x16}, please report");
 			return tmd.ReadAllBytes();
 		}
 
@@ -416,10 +436,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			BoolButtons =
 			{
-				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power"
+				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Microphone", "Power"
 			}
 		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96)
-			.AddAxis("Mic Volume", (0).RangeTo(100), 0)
+			.AddAxis("Mic Volume", 0.RangeTo(100), 100)
 			.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0)
 			.MakeImmutable();
 
@@ -480,9 +500,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				Keys = GetButtons(controller),
 				TouchX = (byte)controller.AxisValue("Touch X"),
 				TouchY = (byte)controller.AxisValue("Touch Y"),
-				MicVolume = (byte)controller.AxisValue("Mic Volume"),
+				MicVolume = (byte)(controller.IsPressed("Microphone") ? controller.AxisValue("Mic Volume") : 0),
 				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
 				ConsiderAltLag = (byte)(_settings.ConsiderAltLag ? 1 : 0),
+				UseTouchInterpolation = (byte)(_activeSyncSettings.UseTouchInterpolation ? 1 : 0),
 			};
 		}
 
@@ -500,7 +521,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			_isDisposing = true;
 			_frameThreadStartEvent.Release();
-			_frameThread?.Join();
+
+			if (_frameThread != null)
+			{
+				while (_frameThread.IsAlive)
+				{
+					Thread.Sleep(1);
+				}
+			}
+
 			_frameThreadStartEvent.Dispose();
 			_frameThreadEndEvent.Dispose();
 
@@ -509,6 +538,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_openGLProvider.ReleaseGLContext(_glContext);
 				_glContext = null;
 			}
+
+			_memoryCallbacks.ActiveChanged -= SetMemoryCallbacks;
 
 			base.Dispose();
 		}

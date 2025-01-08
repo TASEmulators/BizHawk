@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -119,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ButtonSchema button => GenVirtualPadButton(_inputManager, button),
 					SingleAxisSchema singleAxis => new VirtualPadAnalogButton(
-						_inputManager.StickyXorAdapter,
+						_inputManager.StickyHoldController,
 						singleAxis.Name,
 						singleAxis.DisplayName,
 						singleAxis.MinValue,
@@ -131,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 						Size = UIHelper.Scale(singleAxis.TargetSize)
 					},
 					AnalogSchema analog => new VirtualPadAnalogStick(
-						_inputManager,
+						_inputManager.StickyHoldController,
 						_setLastFocusedNUD,
 						analog.Name,
 						analog.SecondaryName,
@@ -143,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 						Size = UIHelper.Scale(new Size(180 + 79, 200 + 9))
 					},
 					TargetedPairSchema targetedPair => new VirtualPadTargetScreen(
-						_inputManager.StickyXorAdapter,
+						_inputManager.StickyHoldController,
 						_setLastFocusedNUD,
 						targetedPair.Name,
 						targetedPair.SecondaryName,
@@ -166,6 +167,17 @@ namespace BizHawk.Client.EmuHawk
 					},
 					_ => throw new InvalidOperationException()
 				});
+			}
+			if (OSTailoredCode.IsUnixHost)
+			{
+				PadBox.PerformLayout();
+				foreach (var c in PadBox.Controls().Where(static c => c is CheckBox { Image: null }))
+				{
+					var size = c.Size;
+					size.Width -= UIHelper.ScaleX(8);
+					c.AutoSize = false;
+					c.Size = size;
+				}
 			}
 		}
 

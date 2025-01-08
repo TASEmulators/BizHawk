@@ -94,14 +94,7 @@ namespace BizHawk.Common.ReflectionExtensions
 		/// Takes an enum Type and generates a list of strings from the description attributes
 		/// </summary>
 		public static IEnumerable<string> GetEnumDescriptions(this Type type)
-		{
-			var vals = Enum.GetValues(type);
-
-			foreach (var v in vals)
-			{
-				yield return v.GetDescription();
-			}
-		}
+			=> Enum.GetValues(type).Cast<Enum>().Select(static v => v.GetDescription());
 
 		public static T GetAttribute<T>(this object o)
 		{

@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 
@@ -303,11 +305,8 @@ namespace BizHawk.Bizware.Graphics
 				var mappedVb = Context.Map(VertexBuffer, MapMode.WriteDiscard);
 				try
 				{
-					unsafe
-					{
-						Buffer.MemoryCopy((void*)data, (void*)mappedVb.DataPointer,
-							VertexBufferCount * VertexStride, count * VertexStride);
-					}
+					Util.UnsafeSpanFromPointer(ptr: data, length: count * VertexStride)
+						.CopyTo(Util.UnsafeSpanFromPointer(ptr: mappedVb.DataPointer, length: VertexBufferCount * VertexStride));
 				}
 				finally
 				{
@@ -331,11 +330,8 @@ namespace BizHawk.Bizware.Graphics
 				var mappedIb = Context.Map(IndexBuffer, MapMode.WriteDiscard);
 				try
 				{
-					unsafe
-					{
-						Buffer.MemoryCopy((void*)data, (void*)mappedIb.DataPointer,
-							IndexBufferCount * 2, count * 2);
-					}
+					Util.UnsafeSpanFromPointer(ptr: data, length: count * 2)
+						.CopyTo(Util.UnsafeSpanFromPointer(ptr: mappedIb.DataPointer, length: IndexBufferCount * 2));
 				}
 				finally
 				{
