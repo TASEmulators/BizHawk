@@ -452,7 +452,7 @@ Any developers looking to re-use code from BizHawk in their own work should unde
 
 Disclaimer time! Can't have emulation software without a disclaimer...
 > Following the terms of our license does not make you immune from other contracts or laws.
-> Some or all of the following may be illegal where you live: creating a copy of non-free software for backup purposes ("dumping" or "ripping"); distributing copies of non-free software; soliciting pirated copies of software; knowingly posessing pirated copies of software; importing software from the USA (GitHub and TASVideos are American entities); using a backup copy of non-free software without the original.
+> Some or all of the following may be illegal where you live: creating a copy of non-free software for backup purposes ("dumping" or "ripping"); distributing copies of non-free software; soliciting pirated copies of software; knowingly possessing pirated copies of software; importing software from the USA (GitHub and TASVideos are American entities); using a backup copy of non-free software without the original.
 > For obvious reasons, **we cannot and will not distribute dumped games or firmware that is under copyright**.
 
 [to top](#bizhawk)
