@@ -51,7 +51,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Chip6510()
 		{
 			// configure cpu r/w
-			_cpu = new MOS6502X<CpuLink>(new CpuLink(this));
+			_cpu = new MOS6502X<CpuLink>(new CpuLink(this))
+			{
+				// Required to pass the Lorenz test suite.
+				AneConstantFunc = () => 0xEF, 
+				LxaConstantFunc = () => 0xFE
+			};
 
 			// perform hard reset
 			HardReset();

@@ -245,6 +245,18 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			private set => P = (byte)((P & ~0x80) | (value ? 0x80 : 0x00));
 		}
 
+		/// <summary>
+		/// For the unsupported opcode, ANE.
+		/// If your core requires a specific constant for this opcode, set it here.
+		/// </summary>
+		public Func<byte> AneConstantFunc { get; set; }
+
+		/// <summary>
+		/// For the unsupported opcode, LXA.
+		/// If your core requires a specific constant for this opcode, set it here.
+		/// </summary>
+		public Func<byte> LxaConstantFunc { get; set; }
+
 		public long TotalExecutedCycles;
 
 		// SO pin

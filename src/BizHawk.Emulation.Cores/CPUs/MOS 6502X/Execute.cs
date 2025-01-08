@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			/*DEY [implied]*/ new Uop[] { Uop.Imp_DEY, Uop.End },
 			/*NOP #nn [immediate]*/ new Uop[] { Uop.Imm_Unsupported, Uop.End },
 			/*TXA [implied]*/ new Uop[] { Uop.Imp_TXA, Uop.End },
-			/*ANE** [immediate] [unofficial]*/ new Uop[] { Uop.Imm_Unsupported, Uop.End },
+			/*ANE** [immediate] [unofficial]*/ new Uop[] { Uop.Imm_ANE, Uop.End },
 			/*STY addr [absolute WRITE]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_WRITE_STY, Uop.End },
 			/*STA addr [absolute WRITE]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_WRITE_STA, Uop.End },
 			/*STX addr [absolute WRITE]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_WRITE_STX, Uop.End },
@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			/*BCC +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BCC, Uop.End },
 			/*STA (addr),Y [indirect indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_WRITE_Stage5, Uop.IndIdx_WRITE_Stage6_STA, Uop.End },
 			/*JAM*/ new Uop[] { Uop.Jam },
-			/*SHA** [indirect indexed WRITE] [unofficial] [not tested by blargg's instruction tests]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_WRITE_Stage5, Uop.IndIdx_WRITE_Stage6_SHA, Uop.End },
+			/*SHA** [indirect indexed WRITE] [unofficial] [not tested by blargg's instruction tests]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_WRITE_Stage5_SHA, Uop.IndIdx_WRITE_Stage6_SHA, Uop.End },
 			/*STY zp,X [zero page indexed WRITE X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_WRITE_STY, Uop.End },
 			/*STA zp,X [zero page indexed WRITE X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_WRITE_STA, Uop.End },
 			/*STX zp,Y [zero page indexed WRITE Y]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_Y, Uop.ZP_WRITE_STX, Uop.End },
@@ -197,10 +197,10 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			/*STA addr,Y [absolute indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
 			/*TXS [implied]*/ new Uop[] { Uop.Imp_TXS, Uop.End },
 			/*SHS* addr,Y [absolute indexed WRITE Y] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_ERROR, Uop.End },
-			/*SHY** [absolute indexed WRITE] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_SHY, Uop.End },
+			/*SHY** [absolute indexed WRITE] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4_SHY, Uop.AbsIdx_WRITE_Stage5_SHY, Uop.End },
 			/*STA addr,X [absolute indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
-			/*SHX* addr,Y [absolute indexed WRITE Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_SHX, Uop.End },
-			/*SHA* addr,Y [absolute indexed WRITE Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_SHY, Uop.End },
+			/*SHX* addr,Y [absolute indexed WRITE Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4_SHX, Uop.AbsIdx_WRITE_Stage5_SHX, Uop.End },
+			/*SHA* addr,Y [absolute indexed WRITE Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4_SHA, Uop.AbsIdx_WRITE_Stage5_SHA, Uop.End },
 			//0xA0
 			/*LDY #nn [immediate]*/ new Uop[] { Uop.Imm_LDY, Uop.End },
 			/*LDA (addr,X) [indexed indirect READ]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_READ_LDA, Uop.End },
@@ -466,7 +466,15 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			End_ISpecial, //same as end, but preserves the iflag set by the instruction
 			End_SuppressInterrupt,
 
-			Jam
+			Jam,
+			
+			// More unofficial micro-ops
+			Imm_ANE,
+			AbsIdx_WRITE_Stage5_SHA,
+			IndIdx_WRITE_Stage5_SHA,
+			AbsIdx_Stage4_SHX,
+			AbsIdx_Stage4_SHY,
+			AbsIdx_Stage4_SHA
 		}
 
 		private void InitOpcodeHandlers()
@@ -946,6 +954,22 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			}
 		}
 
+		private void IndIdx_WRITE_Stage5_SHA()
+		{
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				_link.ReadMemory((ushort) ea);
+
+				if (alu_temp.Bit(8))
+				{
+					ea = (ushort) (ea & 0xFF | ((ea + 0x100) & 0xFF00 & ((A & X) << 8)));
+				}
+
+				ea += unchecked((ushort) (alu_temp & 0xFF00));
+			}
+		}
+
 		private void IndIdx_READ_Stage5()
 		{
 			if (!alu_temp.Bit(8))
@@ -984,7 +1008,14 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void IndIdx_WRITE_Stage6_SHA()
 		{
-			_link.WriteMemory((ushort)ea, (byte)(A & X & 7));
+			alu_temp = A & X;
+			
+			if (RDY)
+			{
+				alu_temp &= unchecked((byte) ((ea >> 8) + 1));
+			}
+
+			_link.WriteMemory((ushort) ea, unchecked((byte) alu_temp));
 		}
 
 		private void IndIdx_READ_Stage6_LDA()
@@ -1697,8 +1728,35 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void _Arr()
 		{
+			A &= unchecked((byte) alu_temp);
+
+			if (FlagD && BCD_Enabled)
 			{
-				A &= (byte)alu_temp;
+				// Shift logic
+				var next = (A >> 1) | (FlagC ? 0x80 : 0x00);
+				FlagV = ((A ^ next) & 0x40) != 0;
+				FlagN = FlagC;
+				FlagZ = (next & 0xFF) == 0;
+				
+				// BCD fixup
+				if ((A & 0x0F) + (A & 0x01) > 0x05)
+				{
+					next = (next & 0xF0) | ((next + 0x06) & 0x0F);
+				}
+				if ((A & 0xF0) + (A & 0x10) > 0x50)
+				{
+					next = (next & 0x0F) | ((next + 0x60) & 0xF0);
+					FlagC = true;
+				}
+				else
+				{
+					FlagC = false;
+				}
+
+				A = unchecked((byte) next);
+			}
+			else
+			{
 				booltemp = A.Bit(0);
 				A = (byte)((A >> 1) | (FlagC ? 0x80 : 0x00));
 				FlagC = booltemp;
@@ -1709,13 +1767,24 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				else if (A.Bit(6))
 				{ FlagV = true; FlagC = true; }
 				else { FlagV = false; FlagC = false; }
-				FlagZ = (A == 0);
+				NZ_A();
 			}
+		}
+
+		private void _Ane()
+		{
+			// Many varied reports on what this should be.
+			// A safe value is 0xFF. Commodore 64 needs 0xEF.
+			A |= AneConstantFunc?.Invoke() ?? 0xFF;
+			A &= unchecked((byte) (X & alu_temp));
+			NZ_A();
 		}
 
 		private void _Lxa()
 		{
-			A |= 0xFF; //there is some debate about what this should be. it may depend on the 6502 variant. this is suggested by qeed's doc for the nes and passes blargg's instruction test
+			//there is some debate about what this should be. it may depend on the 6502 variant.
+			//this is suggested by qeed's doc for the nes and passes blargg's instruction test
+			A |= LxaConstantFunc?.Invoke() ?? 0xFF; 
 			A &= (byte)alu_temp;
 			X = A;
 			NZ_A();
@@ -1723,26 +1792,26 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void _Sbc()
 		{
+			value8 = unchecked((byte) alu_temp);
+			tempint = A - value8 - (FlagC ? 0 : 1);
+			if (FlagD && BCD_Enabled)
 			{
-				value8 = (byte)alu_temp;
-				tempint = A - value8 - (FlagC ? 0 : 1);
-				if (FlagD && BCD_Enabled)
-				{
-					lo = (A & 0x0F) - (value8 & 0x0F) - (FlagC ? 0 : 1);
-					hi = (A & 0xF0) - (value8 & 0xF0);
-					if ((lo & 0xF0) != 0) lo -= 0x06;
-					if ((lo & 0x80) != 0) hi -= 0x10;
-					if ((hi & 0x0F00) != 0) hi -= 0x60;
-					FlagV = ((A ^ value8) & (A ^ tempint) & 0x80) != 0;
-					FlagC = (hi & 0xFF00) == 0;
-					A = (byte)((lo & 0x0F) | (hi & 0xF0));
-				}
-				else
-				{
-					FlagV = ((A ^ value8) & (A ^ tempint) & 0x80) != 0;
-					FlagC = tempint >= 0;
-					A = (byte)tempint;
-				}
+				lo = (A & 0x0F) - (value8 & 0x0F) - (FlagC ? 0 : 1);
+				hi = (A & 0xF0) - (value8 & 0xF0);
+				if ((lo & 0xF0) != 0) lo -= 0x06;
+				if ((lo & 0x80) != 0) hi -= 0x10;
+				if ((hi & 0x0F00) != 0) hi -= 0x60;
+				FlagV = ((A ^ value8) & (A ^ tempint) & 0x80) != 0;
+				FlagZ = (tempint & 0xFF) == 0;
+				FlagN = (tempint & 0x80) != 0;
+				FlagC = (hi & 0xFF00) == 0;
+				A = unchecked((byte) ((lo & 0x0F) | (hi & 0xF0)));
+			}
+			else
+			{
+				FlagV = ((A ^ value8) & (A ^ tempint) & 0x80) != 0;
+				FlagC = tempint >= 0;
+				A = unchecked((byte) tempint);
 				NZ_A();
 			}
 		}
@@ -1938,6 +2007,16 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			{
 				Y = _link.ReadMemory(PC++);
 				NZ_Y();
+			}
+		}
+
+		private void Imm_ANE()
+		{
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = _link.ReadMemory(PC++);
+				_Ane();
 			}
 		}
 
@@ -2411,16 +2490,64 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private void AbsIdx_Stage4()
 		{
 			rdy_freeze = !RDY;
+
 			if (RDY)
 			{
-				//bleh.. redundant code to make sure we don't clobber alu_temp before using it to decide whether to change ea
+				var adjust = alu_temp.Bit(8);
+				alu_temp = _link.ReadMemory((ushort) ea);
 
-				if (alu_temp.Bit(8))
+				if (adjust)
 				{
-					alu_temp = _link.ReadMemory((ushort)ea);
 					ea = (ushort)(ea + 0x100);
 				}
-				else alu_temp = _link.ReadMemory((ushort)ea);
+			}
+		}
+
+		private void AbsIdx_Stage4_SHX()
+		{
+			rdy_freeze = !RDY;
+
+			if (RDY)
+			{
+				var adjust = alu_temp.Bit(8);
+				alu_temp = _link.ReadMemory((ushort) ea);
+
+				if (adjust)
+				{
+					ea = (ushort) (ea & 0xFF | ((ea + 0x100) & 0xFF00 & (X << 8)));
+				}
+			}
+		}
+
+		private void AbsIdx_Stage4_SHY()
+		{
+			rdy_freeze = !RDY;
+
+			if (RDY)
+			{
+				var adjust = alu_temp.Bit(8);
+				alu_temp = _link.ReadMemory((ushort) ea);
+
+				if (adjust)
+				{
+					ea = (ushort) (ea & 0xFF | ((ea + 0x100) & 0xFF00 & (Y << 8)));
+				}
+			}
+		}
+
+		private void AbsIdx_Stage4_SHA()
+		{
+			rdy_freeze = !RDY;
+
+			if (RDY)
+			{
+				var adjust = alu_temp.Bit(8);
+				alu_temp = _link.ReadMemory((ushort) ea);
+
+				if (adjust)
+				{
+					ea = (ushort) (ea & 0xFF | ((ea + 0x100) & 0xFF00 & ((A & X) << 8)));
+				}
 			}
 		}
 
@@ -2431,16 +2558,38 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void AbsIdx_WRITE_Stage5_SHY()
 		{
-			alu_temp = Y & (ea >> 8);
-			ea = (ea & 0xFF) | (alu_temp << 8); //"(the bank where the value is stored may be equal to the value stored)" -- more like IS.
-			_link.WriteMemory((ushort)ea, (byte)alu_temp);
+			alu_temp = Y;
+			
+			if (RDY)
+			{
+				alu_temp &= unchecked((byte)((ea >> 8) + 1));
+			}
+
+			_link.WriteMemory((ushort) ea, (byte) alu_temp);
 		}
 
 		private void AbsIdx_WRITE_Stage5_SHX()
 		{
-			alu_temp = X & (ea >> 8);
-			ea = (ea & 0xFF) | (alu_temp << 8); //"(the bank where the value is stored may be equal to the value stored)" -- more like IS.
-			_link.WriteMemory((ushort)ea, (byte)alu_temp);
+			alu_temp = X;
+			
+			if (RDY)
+			{
+				alu_temp &= unchecked((byte)((ea >> 8) + 1));
+			}
+
+			_link.WriteMemory((ushort) ea, (byte) alu_temp);
+		}
+
+		private void AbsIdx_WRITE_Stage5_SHA()
+		{
+			alu_temp = A & X;
+
+			if (RDY)
+			{
+				alu_temp &= unchecked((byte)((ea >> 8) + 1));
+			}
+
+			_link.WriteMemory((ushort) ea, (byte) alu_temp);
 		}
 
 		private void AbsIdx_WRITE_Stage5_ERROR()
@@ -2921,6 +3070,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case Uop.IndIdx_Stage3: IndIdx_Stage3(); break;
 				case Uop.IndIdx_Stage4: IndIdx_Stage4(); break;
 				case Uop.IndIdx_WRITE_Stage5: IndIdx_WRITE_Stage5(); break;
+				case Uop.IndIdx_WRITE_Stage5_SHA: IndIdx_WRITE_Stage5_SHA(); break;
 				case Uop.IndIdx_READ_Stage5: IndIdx_READ_Stage5(); break;
 				case Uop.IndIdx_RMW_Stage5: IndIdx_RMW_Stage5(); break;
 				case Uop.IndIdx_WRITE_Stage6_STA: IndIdx_WRITE_Stage6_STA(); break;
@@ -3021,6 +3171,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case Uop.Imm_LDA: Imm_LDA(); break;
 				case Uop.Imm_LDX: Imm_LDX(); break;
 				case Uop.Imm_LDY: Imm_LDY(); break;
+				case Uop.Imm_ANE: Imm_ANE(); break;
 				case Uop.Imm_Unsupported: Imm_Unsupported(); break;
 				case Uop.IdxInd_Stage3: IdxInd_Stage3(); break;
 				case Uop.IdxInd_Stage4: IdxInd_Stage4(); break;
@@ -3071,9 +3222,13 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case Uop.AbsIdx_Stage3_X: AbsIdx_Stage3_X(); break;
 				case Uop.AbsIdx_READ_Stage4: AbsIdx_READ_Stage4(); break;
 				case Uop.AbsIdx_Stage4: AbsIdx_Stage4(); break;
+				case Uop.AbsIdx_Stage4_SHX: AbsIdx_Stage4_SHX(); break;
+				case Uop.AbsIdx_Stage4_SHY: AbsIdx_Stage4_SHY(); break;
+				case Uop.AbsIdx_Stage4_SHA: AbsIdx_Stage4_SHA(); break;
 				case Uop.AbsIdx_WRITE_Stage5_STA: AbsIdx_WRITE_Stage5_STA(); break;
 				case Uop.AbsIdx_WRITE_Stage5_SHY: AbsIdx_WRITE_Stage5_SHY(); break;
 				case Uop.AbsIdx_WRITE_Stage5_SHX: AbsIdx_WRITE_Stage5_SHX(); break;
+				case Uop.AbsIdx_WRITE_Stage5_SHA: AbsIdx_WRITE_Stage5_SHA(); break;
 				case Uop.AbsIdx_WRITE_Stage5_ERROR: AbsIdx_WRITE_Stage5_ERROR(); break;
 				case Uop.AbsIdx_RMW_Stage5: AbsIdx_RMW_Stage5(); break;
 				case Uop.AbsIdx_RMW_Stage7: AbsIdx_RMW_Stage7(); break;
