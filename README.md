@@ -8,6 +8,8 @@ A7800Hawk, Atari2600Hawk, C64Hawk, ChannelFHawk, ColecoHawk, GBHawk, IntelliHawk
 MSXHawk is a bespoke emulation core written in C++.
 More info [below](#cores).
 
+DiscoHawk is a disc image converter written in C#.
+
 [![(latest) release | GitHub](https://img.shields.io/github/release/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&sort=semver&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/issues)
 
