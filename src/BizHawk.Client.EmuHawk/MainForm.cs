@@ -4499,6 +4499,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDialogController DialogController => this;
 
+		private static string SanitiseForFileDialog(string initDir)
+		{
+			if (Directory.Exists(initDir)) return initDir;
+#if DEBUG
+			throw new ArgumentException(
+				paramName: nameof(initDir),
+				message: File.Exists(initDir)
+					? $"file picker called with {nameof(initDir)} set to a non-dir"
+					: $"file picker called with {nameof(initDir)} set to a nonexistent path");
+#else
+			return File.Exists(initDir) ? Path.GetDirectoryName(initDir) : string.Empty;
+#endif
+		}
+
 		public IReadOnlyList<string>/*?*/ ShowFileMultiOpenDialog(
 			IDialogParent dialogParent,
 			string/*?*/ filterStr,
@@ -4514,10 +4528,11 @@ namespace BizHawk.Client.EmuHawk
 				FileName = initFileName ?? string.Empty,
 				Filter = filterStr ?? string.Empty,
 				FilterIndex = filterIndex,
-				InitialDirectory = initDir,
+				InitialDirectory = SanitiseForFileDialog(initDir),
 				Multiselect = maySelectMultiple,
 				RestoreDirectory = discardCWDChange,
 				Title = windowTitle ?? string.Empty,
+				ValidateNames = false, // only raises confusing errors, doesn't affect result
 			};
 			var result = dialogParent.ShowDialogWithTempMute(ofd);
 			filterIndex = ofd.FilterIndex;
@@ -4538,9 +4553,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultExt = fileExt ?? string.Empty,
 				FileName = initFileName ?? string.Empty,
 				Filter = filterStr ?? string.Empty,
-				InitialDirectory = initDir,
+				InitialDirectory = SanitiseForFileDialog(initDir),
 				OverwritePrompt = !muteOverwriteWarning,
 				RestoreDirectory = discardCWDChange,
+				ValidateNames = false, // only raises confusing errors, doesn't affect result
 			};
 			var result = dialogParent.ShowDialogWithTempMute(sfd);
 			return result.IsOk() ? sfd.FileName : null;
