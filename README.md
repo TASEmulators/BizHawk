@@ -328,7 +328,7 @@ System | Cores
 Apple II | **Virtu**
 Amiga | **UAE**
 Arcade | **MAME**
-Atari 2600 | **Stella**, Atari2600Hawk
+Atari 2600 | Atari2600Hawk, **Stella**
 Atari 7800 | **A7800Hawk**
 Atari Jaguar | **Virtual Jaguar**
 Atari Lynx | **Handy**
