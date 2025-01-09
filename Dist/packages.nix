@@ -100,7 +100,7 @@
 		};
 		patches = lib.optional (!hawkSourceInfo.hasMiscTypeCheckerPatch_6afb3be98) (fetchpatch {
 			url = "https://github.com/TASEmulators/BizHawk/commit/6afb3be98cd3d8bf111c8e61fdc29fc3136aab1e.patch";
-			hash = "sha512-WpLGbng7TkEHU6wWBfk0ogDkK7Ub9Zh5PKkIQZkXDrERkEtQKrdTOOYGhswFEfJ0W4Je5hl5iZ6Ona140BxhhA==";
+			hash = "sha512-zqyd0mvN7CxrfJa82zy9zaGv7lwZmpbtTr6DZMWvl0/L4LkI+5GQJVeXNUGzbkKVtHhPmSgZC/oNnMIhkgWb3w==";
 		});
 		postPatch = ''
 			sed -e 's/SimpleSubshell("uname", "-r", [^)]\+)/"${builtins.toString stdenv.hostPlatform.uname.release}"/' \
