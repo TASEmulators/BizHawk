@@ -288,7 +288,7 @@ in {
 			find . -type d -exec chmod +w {} \;
 			rm -f EmuHawkMono.sh
 			${if hawkSourceInfo'.releaseArtifactHasRogueOTKAsmConfig then ''mv -ft dll OpenTK.dll.config
-			'' else ""}rmdir Firmware
+			'' else ""}rmdir Firmware 2>/dev/null || :
 			mkdir -p ExternalTools; touch ExternalTools/.keep
 
 			mkdir -p $out; mv -t $out defctrl.json DiscoHawk.exe* dll EmuHawk.exe* gamedb [Ss]haders
