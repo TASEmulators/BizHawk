@@ -4,7 +4,9 @@ An emulation project.
 
 EmuHawk is a multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners). More info [below](#features-and-systems).
 
-A7800Hawk, Atari2600Hawk, C64Hawk, ColecoHawk, GBHawk, IntelliHawk, NesHawk, O2Hawk, PCEHawk, SMSHawk, TI83Hawk, VectrexHawk, and ZXHawk are bespoke emulation cores written in C#. MSXHawk is a bespoke emulation core written in C++. More info [below](#cores).
+A7800Hawk, Atari2600Hawk, C64Hawk, ChannelFHawk, ColecoHawk, GBHawk, IntelliHawk, NesHawk, O2Hawk, PCEHawk, SMSHawk, TI83Hawk, VectrexHawk, and ZXHawk are bespoke emulation cores written in C#.
+MSXHawk is a bespoke emulation core written in C++.
+More info [below](#cores).
 
 [![(latest) release | GitHub](https://img.shields.io/github/release/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&sort=semver&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/issues)
