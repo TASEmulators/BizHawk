@@ -220,7 +220,9 @@ namespace BizHawk.Client.EmuHawk
 				Emulator,
 				Game);
 
-			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => $"{a.Library}.{a.Name}").ToArray());
+			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Where(static f => f.SuggestInREPL)
+				.Select(static f => $"{f.Library}.{f.Name}")
+				.ToArray());
 
 			foreach (var file in runningScripts)
 			{

@@ -47,7 +47,8 @@ namespace BizHawk.Client.EmuHawk
 						name,
 						type.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>()
 							.Select(descAttr => descAttr.Description).FirstOrDefault() ?? string.Empty,
-						method
+						method,
+						suggestInREPL: false
 					);
 					Docs.Add(libFunc);
 				}

@@ -198,11 +198,14 @@ namespace BizHawk.Client.Common
 		private readonly LuaMethodAttribute _luaAttributes;
 		private readonly LuaMethodExampleAttribute _luaExampleAttribute;
 
-		public LibraryFunction(string library, string libraryDescription, MethodInfo method)
+		public readonly bool SuggestInREPL;
+
+		public LibraryFunction(string library, string libraryDescription, MethodInfo method, bool suggestInREPL = true)
 		{
 			_luaAttributes = method.GetCustomAttribute<LuaMethodAttribute>(false);
 			_luaExampleAttribute = method.GetCustomAttribute<LuaMethodExampleAttribute>(false);
 			Method = method;
+			SuggestInREPL = suggestInREPL;
 
 			IsDeprecated = method.GetCustomAttribute<LuaDeprecatedMethodAttribute>(false) != null;
 			Library = library;
