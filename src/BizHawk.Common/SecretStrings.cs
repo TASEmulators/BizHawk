@@ -61,8 +61,13 @@ namespace BizHawk.Common
 			_aes.Padding = PaddingMode.PKCS7;
 		}
 
-		public static string EncryptString(string secretString)
+		public static string EncryptString(string? secretString)
 		{
+			if (string.IsNullOrEmpty(secretString))
+			{
+				return string.Empty;
+			}
+
 			var bytes = Encoding.UTF8.GetBytes(secretString);
 			using var ms = new MemoryStream();
 			using var encryptor = _aes.CreateEncryptor();
@@ -74,7 +79,7 @@ namespace BizHawk.Common
 			return Convert.ToBase64String(ms.ToArray());
 		}
 
-		public static string DecryptString(string encryptedString)
+		public static string DecryptString(string? encryptedString)
 		{
 			try
 			{
