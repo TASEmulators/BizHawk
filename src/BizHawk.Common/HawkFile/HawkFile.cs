@@ -274,7 +274,7 @@ namespace BizHawk.Common
 		/// <summary>attempts to read all the content from the file</summary>
 		public byte[] ReadAllBytes()
 		{
-			using var stream = GetStream();
+			var stream = GetStream();
 			using var ms = new MemoryStream((int) stream.Length);
 			stream.CopyTo(ms);
 			return ms.GetBuffer();
