@@ -10,6 +10,7 @@ using NLua.Native;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -65,11 +66,21 @@ namespace BizHawk.Client.EmuHawk
 
 			// Register lua libraries
 			foreach (var lib in Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)
-				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t) && t.IsSealed && ServiceInjector.IsAvailable(serviceProvider, t)))
+				.Where(static t => typeof(LuaLibraryBase).IsAssignableFrom(t) && t.IsSealed))
 			{
 				if (VersionInfo.DeveloperBuild
 					|| lib.GetCustomAttribute<LuaLibraryAttribute>(inherit: false)?.Released is not false)
 				{
+					if (!ServiceInjector.IsAvailable(serviceProvider, lib))
+					{
+						Util.DebugWriteLine($"couldn't instantiate {lib.Name}, adding to docs only");
+						EnumerateLuaFunctions(
+							lib.Name.RemoveSuffix("LuaLibrary").ToLowerInvariant(), // why tf aren't we doing this for all of them? or grabbing it from an attribute?
+							lib,
+							instance: null);
+						continue;
+					}
+
 					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, this, _apiContainer, (Action<string>)LogToLuaConsole);
 					if (!ServiceInjector.UpdateServices(serviceProvider, instance, mayCache: true)) throw new Exception("Lua lib has required service(s) that can't be fulfilled");
 
