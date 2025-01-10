@@ -37,6 +37,9 @@ namespace BizHawk.Client.EmuHawk
 
 			void EnumerateLuaFunctions(string name, Type type, LuaLibraryBase instance)
 			{
+				var libraryDesc = type.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>()
+					.Select(static descAttr => descAttr.Description)
+					.FirstOrDefault() ?? string.Empty;
 				if (instance != null) _lua.NewTable(name);
 				foreach (var method in type.GetMethods())
 				{
@@ -44,9 +47,8 @@ namespace BizHawk.Client.EmuHawk
 					if (foundAttrs.Length == 0) continue;
 					if (instance != null) _lua.RegisterFunction($"{name}.{((LuaMethodAttribute)foundAttrs[0]).Name}", instance, method);
 					LibraryFunction libFunc = new(
-						name,
-						type.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>()
-							.Select(descAttr => descAttr.Description).FirstOrDefault() ?? string.Empty,
+						library: name,
+						libraryDescription: libraryDesc,
 						method,
 						suggestInREPL: false
 					);
