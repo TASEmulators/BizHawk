@@ -478,7 +478,7 @@ namespace BizHawk.Client.EmuHawk
 					// to always be copied to the global firmware directory
 					if (hf.IsArchive)
 					{
-						var ac = new ArchiveChooser(new HawkFile(filePath));
+						using var ac = new ArchiveChooser(hf);
 						if (!ac.ShowDialog(this).IsOk()) return;
 
 						var insideFile = hf.BindArchiveMember(ac.SelectedMemberIndex);

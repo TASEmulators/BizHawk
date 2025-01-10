@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				using ArchiveChooser ac = new(new(hawkPath)); //TODO can we pass hf here instead of instantiating a new HawkFile?
+				using ArchiveChooser ac = new(hf);
 				if (!this.ShowDialogAsChild(ac).IsOk()
 					|| ac.SelectedMemberIndex < 0 || hf.ArchiveItems.Count <= ac.SelectedMemberIndex)
 				{

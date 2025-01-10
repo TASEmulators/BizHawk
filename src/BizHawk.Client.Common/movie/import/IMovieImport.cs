@@ -95,7 +95,7 @@ namespace BizHawk.Client.Common
 
 				using var rom = new HawkFile(result);
 				if (rom.IsArchive) rom.BindFirst();
-				var romData = (ReadOnlySpan<byte>) rom.ReadAllBytes();
+				var romData = new ReadOnlySpan<byte>(rom.ReadAllBytes());
 				int headerBytes = romData.Length % 1024; // assume that all roms have sizes divisible by 1024, and any rest is header
 				romData = romData[headerBytes..];
 				if (matchesMovieHash(romData))

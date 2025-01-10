@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 				filter: FilesystemFilterSet.Palettes,
 				initDir: _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.NES));
 			if (result is null) return;
-			HawkFile palette = new(result);
+			using HawkFile palette = new(result);
 
 			if (palette.Exists)
 			{

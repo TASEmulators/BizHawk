@@ -835,7 +835,7 @@ namespace BizHawk.Client.Common
 						var ext = file.Extension;
 						var gi = Disc.IsValidExtension(ext)
 							? MakeGameFromDisc(InstantiateDiscFor(path), ext: ext, name: Path.GetFileNameWithoutExtension(file.Name))
-							: new RomGame(new(file.CanonicalFullPath)).GameInfo; // need to re-open???
+							: new RomGame(file).GameInfo;
 						Game.Name = $"{gi.Name} [{Game.Name/* core name */}]";
 					}
 				}

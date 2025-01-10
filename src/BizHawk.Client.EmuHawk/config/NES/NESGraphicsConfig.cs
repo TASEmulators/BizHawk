@@ -97,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (PalettePath.Text.Length > 0)
 				{
-					var palette = new HawkFile(PalettePath.Text);
+					using var palette = new HawkFile(PalettePath.Text);
 
 					if (palette.Exists)
 					{
