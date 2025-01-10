@@ -859,7 +859,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (layer is < 1 or > 4) return; // should this throw?
 			bool result = false;
-			if (Emulator is LibsnesCore bsnes)
+			if (Emulator is BsnesCore bsnes)
 			{
 				var s = bsnes.GetSettings();
 				result = layer switch
@@ -871,6 +871,20 @@ namespace BizHawk.Client.EmuHawk
 					_ => result,
 				};
 				bsnes.PutSettings(s);
+				AddOnScreenMessage($"Obj {layer} Layer {(result ? "On" : "Off")}");
+			}
+			else if (Emulator is LibsnesCore bsnes1)
+			{
+				var s = bsnes1.GetSettings();
+				result = layer switch
+				{
+					1 => s.ShowOBJ_0 = !s.ShowOBJ_0,
+					2 => s.ShowOBJ_1 = !s.ShowOBJ_1,
+					3 => s.ShowOBJ_2 = !s.ShowOBJ_2,
+					4 => s.ShowOBJ_3 = !s.ShowOBJ_3,
+					_ => result,
+				};
+				bsnes1.PutSettings(s);
 				AddOnScreenMessage($"Obj {layer} Layer {(result ? "On" : "Off")}");
 			}
 			else if (Emulator is Snes9x snes9X)
