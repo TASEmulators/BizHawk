@@ -272,9 +272,14 @@ namespace BizHawk.Common
 		public Stream GetStream() => _boundStream ?? throw new InvalidOperationException($"{nameof(HawkFile)}: Can't call {nameof(GetStream)}() before you've successfully bound something!");
 
 		/// <summary>attempts to read all the content from the file</summary>
-		public byte[] ReadAllBytes()
+		/// <remarks>
+		/// unlike <see cref="IOExtensions.IOExtensions.ReadAllBytes(Stream)"/>,
+		/// DOES seek to beginning unless <paramref name="fromStart"/> is <see langword="false"/>
+		/// </remarks>
+		public byte[] ReadAllBytes(bool fromStart = true)
 		{
 			var stream = GetStream();
+			if (fromStart) stream.Position = 0L;
 			using var ms = new MemoryStream((int) stream.Length);
 			stream.CopyTo(ms);
 			return ms.GetBuffer();
