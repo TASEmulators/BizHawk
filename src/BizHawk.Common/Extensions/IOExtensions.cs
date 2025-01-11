@@ -18,6 +18,7 @@ namespace BizHawk.Common.IOExtensions
 			fixed (byte* p = bytes) return encoding.GetString(p, bytes.Length);
 		}
 
+		/// <remarks>does NOT seek to beginning</remarks>
 		public static byte[] ReadAllBytes(this Stream stream)
 		{
 			var outStream = new MemoryStream();
