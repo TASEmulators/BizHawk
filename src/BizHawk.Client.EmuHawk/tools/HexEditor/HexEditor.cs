@@ -231,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 		public override void Restart()
 		{
 			_romDomain = null;
-			if (Emulator.SystemId is not VSystemID.Raw.Arcade)
+			if (Emulator.SystemId is not (VSystemID.Raw.Arcade or VSystemID.Raw.N3DS))
 			{
 				var rom = GetRomBytes();
 				if (rom is not null)
