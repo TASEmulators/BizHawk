@@ -46,13 +46,13 @@
 			switch (addr)
 			{
 				case 0x0:
-					return _port.ReadPra(_pra, _ddra, _prb, _ddrb);
+					return _port.ReadPra(_praOut, _ddraOut, _prbOut, _ddrbOut);
 				case 0x1:
-					return _port.ReadPrb(_pra, _ddra, _prb, _ddrb);
+					return _port.ReadPrb(_praOut, _ddraOut, _prbOut, _ddrbOut);
 				case 0x2:
-					return _ddra;
+					return _ddraOut;
 				case 0x3:
-					return _ddrb;
+					return _ddrbOut;
 				case 0x4:
 					return _ta & 0xFF;
 				case 0x5:
@@ -177,7 +177,7 @@
 					// Toggle output begins high when timer starts.
 					if ((_cra & 0x05) == 0x05 && (oldCra & 0x01) == 0)
 					{
-						_prb |= 0x40;
+						_taPrb6Out = 0x40;
 					}
 					break;
 				case 0xF:
@@ -187,7 +187,7 @@
 					// Toggle output begins high when timer starts.
 					if ((_crb & 0x05) == 0x05 && (oldCrb & 0x01) == 0)
 					{
-						_prb |= 0x80;
+						_tbPrb7Out = 0x80;
 					}
 					break;
 				default:
@@ -251,6 +251,7 @@
 					_newCra = val;
 					_taCntPhi2 = (val & 0x20) == 0;
 					_taCntCnt = (val & 0x20) == 0x20;
+					_taPrb6OutEnable = (val & 0x2) != 0;
 					break;
 				case 0xF:
 					_hasNewCrb = true;
@@ -259,20 +260,17 @@
 					_tbCntCnt = (val & 0x60) == 0x20;
 					_tbCntTa = (val & 0x60) == 0x40;
 					_tbCntTaCnt = (val & 0x60) == 0x60;
+					_tbPrb7OutEnable = (val & 0x2) != 0;
 					break;
 			}
 		}
 
-		public int DdrA => _ddra;
+		public int DdrA => _ddraOut;
 
-		public int DdrB => _ddrb;
+		public int DdrB => _ddrbOut;
 
-		public int PrA => _pra;
+		public int PrA => _praOut;
 
-		public int PrB => _prb;
-
-		public int EffectivePrA => _pra | ~_ddra;
-
-		public int EffectivePrB => _prb | ~_ddrb;
+		public int PrB => _prbOut;
 	}
 }
