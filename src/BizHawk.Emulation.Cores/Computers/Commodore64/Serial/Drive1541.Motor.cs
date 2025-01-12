@@ -7,7 +7,7 @@
 
 		private void ExecuteMotor()
 		{
-			_tempPrB1 = Via1.EffectivePrB;
+			_tempPrB1 = Via1.PrB | ~Via1.DdrB;
 			_tempStep = _tempPrB1 & 0x3;
 			_diskDensity = (_tempPrB1 & 0x60) >> 5;
 			_motorEnabled = (_tempPrB1 & 0x04) != 0;
