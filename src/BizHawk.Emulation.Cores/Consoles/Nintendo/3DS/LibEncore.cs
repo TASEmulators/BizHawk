@@ -121,9 +121,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		public abstract void Encore_Reset(IntPtr context);
 
 		[BizImport(cc)]
-		public abstract void Encore_GetVideoVirtualDimensions(IntPtr context, out int width, out int height);
-
-		[BizImport(cc)]
 		public abstract void Encore_GetVideoBufferDimensions(IntPtr context, out int width, out int height);
 
 		[BizImport(cc)]
@@ -157,6 +154,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		[BizImport(cc)]
 		public abstract void Encore_GetMemoryRegion(IntPtr context, MemoryRegion region, out IntPtr ptr, out int size);
+
+		[BizImport(cc)]
+		public abstract IntPtr Encore_GetPagePointer(IntPtr context, uint addr);
 
 		[BizImport(cc)]
 		public abstract void Encore_GetTouchScreenLayout(IntPtr context, out int x, out int y, out int width, out int height, out bool rotated, out bool enabled);
