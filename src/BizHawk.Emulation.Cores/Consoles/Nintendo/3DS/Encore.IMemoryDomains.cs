@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 				BulkPeekByte((uint)addresses.Start, MemoryMarshal.AsBytes(values.AsSpan()));
 
-				if (!bigEndian)
+				if (bigEndian)
 				{
 					for (var i = 0; i < values.Length; i++)
 					{
@@ -262,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 				BulkPeekByte((uint)addresses.Start, MemoryMarshal.AsBytes(values.AsSpan()));
 
-				if (!bigEndian)
+				if (bigEndian)
 				{
 					for (var i = 0; i < values.Length; i++)
 					{
