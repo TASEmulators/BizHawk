@@ -20,6 +20,8 @@ namespace BizHawk.Client.Common
 
 		public int Timeout { get; set; }
 
+		public bool ExpectContinue { get; set; } = true;
+
 		public HttpCommunication(Func<byte[]> takeScreenshotCallback, string getURL, string postURL)
 		{
 			_takeScreenshotCallback = takeScreenshotCallback;
@@ -49,6 +51,7 @@ namespace BizHawk.Client.Common
 		public async Task<string> Post(string url, FormUrlEncodedContent content)
 		{
 			_client.DefaultRequestHeaders.ConnectionClose = true;
+			_client.DefaultRequestHeaders.ExpectContinue = ExpectContinue;
 			HttpResponseMessage response;
 			try
 			{
