@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 using BizHawk.Common;
@@ -63,6 +64,11 @@ namespace BizHawk.Client.Common
 			).Result;
 		}
 #pragma warning restore DOC105
+
+		public string ExecPostRaw(string url = null, string payload = "", string contentType = "text/plain") => Post(
+			url ?? PostUrl,
+			new StringContent(payload, Encoding.UTF8, contentType)
+		).Result;
 
 		public async Task<string> Get(string url)
 		{
