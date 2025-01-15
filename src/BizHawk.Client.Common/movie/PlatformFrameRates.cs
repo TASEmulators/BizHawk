@@ -15,10 +15,11 @@ namespace BizHawk.Client.Common
 
 		private static readonly Dictionary<string, double> Rates = new Dictionary<string, double>
 		{
-			["NES"] = 60.098813897440515532, // discussion here: http://forums.nesdev.com/viewtopic.php?t=492 ; a rational expression would be (19687500 / 11) / ((341*262-0.529780.5)/3) -> (118125000 / 1965513) -> 60.098813897440515529533511098629 (so our chosen number is very close)
-			["NES_PAL"] = 50.006977968268290849,
-			["FDS"] = 60.098813897440515532,
-			["FDS_PAL"] = 50.006977968268290849,
+			["NES"] = 60.098813897440515, // per https://forums.nesdev.org/viewtopic.php?p=3783#p3783 the nominal value is (19687500/11) / ((341*262 - 0.5) / 3) = 39375000/655171 ≈ 60.09881389744051553 (so our chosen number, which is approximately 60.09881389744051461, is very close)
+			["FDS"] = 60.098813897440515, // ditto
+			["NES_PAL"] = 50.00697796826829, // per https://forums.nesdev.org/viewtopic.php?p=3783#p3783 the nominal value is 1662607 / (341*312/3.2) = 3325214/66495 ≈ 50.0069779682682908 (so our chosen number, which is approximately 50.0069779682682877, is very close)
+			["FDS_PAL"] = 50.00697796826829, // ditto
+
 			["SNES"] = 21477272.0 / (4 * 341 * 262 - 2), // 60.0988118623
 			["SNES_PAL"] = 21281370.0 / (4 * 341 * 312), // 50.0069789082
 			["SGB"] = 21477272.0 / (4 * 341 * 262 - 2), // 60.0988118623
@@ -58,12 +59,13 @@ namespace BizHawk.Client.Common
 			["A78"] = 59.9227510135505,
 			["Coleco"] = 59.9227510135505,
 
-			// according to http://problemkaputt.de/psx-spx.htm
-			//["PSX"] = 44100.0 * 768 * 11 / 7 / 263 / 3413, // 59.292862562
-			//["PSX_PAL"] = 44100.0 * 768 * 11 / 7 / 314 / 3406, // 49.7645593576
-			// according to https://github.com/TASEmulators/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp
-			["PSX"] = 502813668.0 / 8388608, //59.940060138702392578125
-			["PSX_PAL"] = 419432765.0 / 8388608, //50.00028192996978759765625
+#if true // according to https://github.com/TASEmulators/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp [failed verification—there are several expressions but none of them match these]
+			["PSX"] = 502813668.0 / 8388608.0, // 59.940060138702392578125
+			["PSX_PAL"] = 419432765.0 / 8388608.0, // 50.00028192996978759765625
+#else // according to https://problemkaputt.de/psx-spx.htm#gputimings
+			["PSX"] = 44100.0 * 768 * 11 / 7 / 263 / 3413, // 59.292862562
+			["PSX_PAL"] = 44100.0 * 768 * 11 / 7 / 314 / 3406, // 49.7645593576
+#endif
 
 			// according to https://github.com/TASEmulators/mednafen/blob/382ff1b8d293c9a862497706808cbb79b2cecbfb/src/ss/vdp2.cpp#L904-L907
 			["SAT"] = 8734090909.0 / 145852525, // = 1746818181.8 / 61 / 4 / 455 / ((263 + 262.5) / 2.0) ≈ 59.8830284837
