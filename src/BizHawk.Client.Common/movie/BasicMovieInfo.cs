@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common
 					const decimal attosInSec = 1_000_000_000_000_000_000.0M;
 					var m = attosInSec;
 					m /= ulong.Parse(vsyncAttoStr);
-					return m.ConvertToF64();
+					return decimal.ToDouble(m);
 				}
 
 				return PlatformFrameRates.GetFrameRate(SystemID, IsPal);
