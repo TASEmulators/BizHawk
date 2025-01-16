@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public double Probability
 		{
-			get => decimal.ToDouble(ProbabilityUpDown.Value);
+			get => ProbabilityUpDown.Value.ConvertToF64();
 			set => ProbabilityUpDown.Value = new(value);
 		}
 

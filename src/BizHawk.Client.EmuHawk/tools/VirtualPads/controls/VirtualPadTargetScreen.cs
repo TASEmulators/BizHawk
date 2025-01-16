@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 					XNumeric.Value = XNumeric.Maximum;
 				}
 
-				_stickyHoldController.SetAxisHold(XName, (decimal.ToSingle(XNumeric.Value) * MultiplierX).RoundToInt());
+				_stickyHoldController.SetAxisHold(XName, (XNumeric.Value.ConvertToF32() * MultiplierX).RoundToInt());
 				_isSet = true;
 			}
 		}
@@ -218,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 					YNumeric.Value = YNumeric.Maximum;
 				}
 
-				_stickyHoldController.SetAxisHold(YName, (decimal.ToSingle(YNumeric.Value) * MultiplierY).RoundToInt());
+				_stickyHoldController.SetAxisHold(YName, (YNumeric.Value.ConvertToF32() * MultiplierY).RoundToInt());
 				_isSet = true;
 			}
 		}
