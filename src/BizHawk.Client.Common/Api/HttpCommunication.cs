@@ -65,10 +65,14 @@ namespace BizHawk.Client.Common
 		}
 #pragma warning restore DOC105
 
-		public string ExecPostRaw(string url = null, string payload = "", string contentType = "text/plain") => Post(
-			url ?? PostUrl,
-			new StringContent(payload, Encoding.UTF8, contentType)
-		).Result;
+		public string ExecPostRaw(string url = null, string payload = "", string contentType = "text/plain")
+		{
+			return Post(
+				url ?? PostUrl,
+				new StringContent(payload, Encoding.UTF8, contentType),
+				payload.Length > ExpectContinueThreshold
+			).Result;
+		}
 
 		public async Task<string> Get(string url)
 		{
