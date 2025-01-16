@@ -32,7 +32,17 @@ namespace BizHawk.Client.Common
 
 		public string ExecGet(string url = null) => Get(url ?? GetUrl).Result;
 
+		/// <inheritdoc cref="ExecPostAsForm"/>
+		[Obsolete($"renamed to {nameof(ExecPostAsForm)}")]
 		public string ExecPost(string url = null, string payload = "")
+			=> ExecPostAsForm(url: url, payload: payload);
+
+#pragma warning disable DOC105 // false positive detecting param name in doc comment
+		/// <remarks>
+		/// uses <see cref="FormUrlEncodedContent"/> (<c>application/x-www-form-urlencoded</c>),
+		/// containing a single pair with key <c>payload</c> (literal) and value <paramref name="payload"/> (argument)
+		/// </remarks>
+		public string ExecPostAsForm(string url = null, string payload = "")
 		{
 			return Post(
 				url ?? PostUrl,
@@ -40,6 +50,7 @@ namespace BizHawk.Client.Common
 				sendAdvanceRequest: payload.Length >= ExpectContinueThreshold
 			).Result;
 		}
+#pragma warning restore DOC105
 
 		public async Task<string> Get(string url)
 		{

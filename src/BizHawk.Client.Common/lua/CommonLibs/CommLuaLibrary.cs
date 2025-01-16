@@ -200,7 +200,7 @@ namespace BizHawk.Client.Common
 		public string HttpPost(string url, string payload)
 		{
 			CheckHttp();
-			return APIs.Comm.HTTP?.ExecPost(url, payload);
+			return APIs.Comm.HTTP?.ExecPostAsForm(url: url, payload: payload);
 		}
 
 		[LuaMethod("httpPostScreenshot", "HTTP POST screenshot")]
