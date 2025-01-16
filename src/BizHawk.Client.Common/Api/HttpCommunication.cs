@@ -34,16 +34,17 @@ namespace BizHawk.Client.Common
 
 		public string ExecPost(string url = null, string payload = "")
 		{
-			_client.DefaultRequestHeaders.ExpectContinue = payload.Length > ExpectContinueThreshold;
 			return Post(
 				url ?? PostUrl,
-				new FormUrlEncodedContent(new Dictionary<string, string> { ["payload"] = payload })
+				new FormUrlEncodedContent(new Dictionary<string, string> { ["payload"] = payload }),
+				sendAdvanceRequest: payload.Length >= ExpectContinueThreshold
 			).Result;
 		}
 
 		public async Task<string> Get(string url)
 		{
 			_client.DefaultRequestHeaders.ConnectionClose = false;
+			_client.DefaultRequestHeaders.ExpectContinue = false;
 			var response = await _client.GetAsync(url).ConfigureAwait(false);
 			if (response.IsSuccessStatusCode)
 			{
@@ -52,9 +53,10 @@ namespace BizHawk.Client.Common
 			return null;
 		}
 
-		public async Task<string> Post(string url, FormUrlEncodedContent content)
+		public async Task<string> Post(string url, FormUrlEncodedContent content, bool sendAdvanceRequest = false)
 		{
 			_client.DefaultRequestHeaders.ConnectionClose = true;
+			_client.DefaultRequestHeaders.ExpectContinue = sendAdvanceRequest;
 			HttpResponseMessage response;
 			try
 			{
