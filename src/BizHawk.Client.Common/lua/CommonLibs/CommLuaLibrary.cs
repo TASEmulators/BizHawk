@@ -231,13 +231,6 @@ namespace BizHawk.Client.Common
 			APIs.Comm.HTTP.GetUrl = url;
 		}
 
-		[LuaMethod("httpSetExpectContinue", "Set ExpectContinue boolean to an explicit value")]
-		public void HttpSetExpectContinue(bool value)
-		{
-			CheckHttp();
-			APIs.Comm.HTTP.ExpectContinue = value;
-		}
-
 		[LuaMethod("httpGetPostUrl", "Gets HTTP POST URL")]
 		public string HttpGetPostUrl()
 		{
@@ -250,13 +243,6 @@ namespace BizHawk.Client.Common
 		{
 			CheckHttp();
 			return APIs.Comm.HTTP?.GetUrl;
-		}
-
-		[LuaMethod("httpGetExpectContinue", "Get ExpectContinue value")]
-		public bool HttpGetExpectContinue()
-		{
-			CheckHttp();
-			return APIs.Comm.HTTP.ExpectContinue;
 		}
 
 		private void CheckHttp()

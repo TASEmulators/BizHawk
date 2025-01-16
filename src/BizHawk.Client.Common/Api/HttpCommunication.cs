@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 
 		public int Timeout { get; set; }
 
-		public bool ExpectContinue { get; set; } = true;
+		public int ExpectContinueThreshold { get; set; } = 1024 * 1024; // 1MB
 
 		public HttpCommunication(Func<byte[]> takeScreenshotCallback, string getURL, string postURL)
 		{
@@ -32,10 +32,14 @@ namespace BizHawk.Client.Common
 
 		public string ExecGet(string url = null) => Get(url ?? GetUrl).Result;
 
-		public string ExecPost(string url = null, string payload = "") => Post(
-			url ?? PostUrl,
-			new FormUrlEncodedContent(new Dictionary<string, string> { ["payload"] = payload })
-		).Result;
+		public string ExecPost(string url = null, string payload = "")
+		{
+			_client.DefaultRequestHeaders.ExpectContinue = payload.Length > ExpectContinueThreshold;
+			return Post(
+				url ?? PostUrl,
+				new FormUrlEncodedContent(new Dictionary<string, string> { ["payload"] = payload })
+			).Result;
+		}
 
 		public async Task<string> Get(string url)
 		{
@@ -51,7 +55,6 @@ namespace BizHawk.Client.Common
 		public async Task<string> Post(string url, FormUrlEncodedContent content)
 		{
 			_client.DefaultRequestHeaders.ConnectionClose = true;
-			_client.DefaultRequestHeaders.ExpectContinue = ExpectContinue;
 			HttpResponseMessage response;
 			try
 			{
