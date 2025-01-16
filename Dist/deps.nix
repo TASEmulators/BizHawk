@@ -41,7 +41,7 @@
   (fetchNuGet { pname = "Newtonsoft.Json"; version = "13.0.3"; sha256 = "0xrwysmrn4midrjal8g2hr1bbg38iyisl0svamb11arqws4w2bw7"; })
   (fetchNuGet { pname = "NuGet.Frameworks"; version = "5.11.0"; sha256 = "0wv26gq39hfqw9md32amr5771s73f5zn1z9vs4y77cgynxr73s4z"; })
   (fetchNuGet { pname = "Nullable"; version = "1.3.1"; sha256 = "0hwrr4q22c0i056dqy3v431rxjv7md910ihz0pjsi16qxsbpw7p7"; })
-  (fetchNuGet { pname = "PolySharp"; version = "1.14.1"; sha256 = "1gfpxlzmcip2zbmmgs2yfib8k53c0fp34lxwsyy46w5y47wp7a4p"; })
+  (fetchNuGet { pname = "PolySharp"; version = "1.15.0"; sha256 = "0f15gnn3lqwzgfw2igpqynhichdwikbhxnj2a32xspxqjlwx8zww"; })
   (fetchNuGet { pname = "PowerShell"; version = "7.4.2"; sha256 = "17nrp0spddhmalbxy7m5s1926b597x7zl9d50il2w115y5cggbf0"; })
   (fetchNuGet { pname = "ppy.SDL2-CS"; version = "1.0.630-alpha"; sha256 = "0jrf70jrz976b49ac0ygfy9qph2w7fnbfrqv0g0x7hlpaip33ra8"; })
   (fetchNuGet { pname = "runtime.any.System.Runtime"; version = "4.3.0"; sha256 = "1cqh1sv3h5j7ixyb7axxbdkqx6cxy00p4np4j91kpm492rf4s25b"; })
