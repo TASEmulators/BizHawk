@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -8,6 +9,8 @@ namespace BizHawk.Client.Common
 {
 	public sealed class HttpCommunication
 	{
+		private const string MIME_FORM_URLENC = "application/x-www-form-urlencoded";
+
 		private readonly HttpClient _client = new HttpClient();
 
 		private readonly Func<byte[]> _takeScreenshotCallback;
@@ -30,6 +33,15 @@ namespace BizHawk.Client.Common
 			_client.DefaultRequestHeaders.UserAgent.ParseAdd(VersionInfo.UserAgentEscaped);
 		}
 
+		private HttpContent ContentObjectFor(string payload, [ConstantExpected] string mimeType)
+			=> mimeType switch
+			{
+				MIME_FORM_URLENC => new FormUrlEncodedContent([ new("payload", payload) ]),
+#pragma warning disable BHI1005 // exception type
+				_ => throw new NotImplementedException()
+#pragma warning restore BHI1005
+			};
+
 		public string ExecGet(string url = null) => Get(url ?? GetUrl).Result;
 
 		/// <inheritdoc cref="ExecPostAsForm"/>
@@ -46,7 +58,7 @@ namespace BizHawk.Client.Common
 		{
 			return Post(
 				url ?? PostUrl,
-				new FormUrlEncodedContent(new Dictionary<string, string> { ["payload"] = payload }),
+				ContentObjectFor(payload: payload, mimeType: MIME_FORM_URLENC),
 				sendAdvanceRequest: payload.Length >= ExpectContinueThreshold
 			).Result;
 		}
@@ -64,7 +76,7 @@ namespace BizHawk.Client.Common
 			return null;
 		}
 
-		public async Task<string> Post(string url, FormUrlEncodedContent content, bool sendAdvanceRequest = false)
+		public async Task<string> Post(string url, HttpContent content, bool sendAdvanceRequest = false)
 		{
 			_client.DefaultRequestHeaders.ConnectionClose = true;
 			_client.DefaultRequestHeaders.ExpectContinue = sendAdvanceRequest;
