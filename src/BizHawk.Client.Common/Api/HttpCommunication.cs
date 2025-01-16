@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -10,6 +9,15 @@ namespace BizHawk.Client.Common
 	public sealed class HttpCommunication
 	{
 		private const string MIME_FORM_URLENC = "application/x-www-form-urlencoded";
+
+		public static HttpContent ContentObjectFor(string payload, string mimeType)
+			=> mimeType switch
+			{
+				MIME_FORM_URLENC => new FormUrlEncodedContent([ new("payload", payload) ]),
+#pragma warning disable BHI1005 // exception type
+				_ => throw new NotImplementedException()
+#pragma warning restore BHI1005
+			};
 
 		private readonly HttpClient _client = new HttpClient();
 
@@ -32,15 +40,6 @@ namespace BizHawk.Client.Common
 			PostUrl = postURL;
 			_client.DefaultRequestHeaders.UserAgent.ParseAdd(VersionInfo.UserAgentEscaped);
 		}
-
-		private HttpContent ContentObjectFor(string payload, [ConstantExpected] string mimeType)
-			=> mimeType switch
-			{
-				MIME_FORM_URLENC => new FormUrlEncodedContent([ new("payload", payload) ]),
-#pragma warning disable BHI1005 // exception type
-				_ => throw new NotImplementedException()
-#pragma warning restore BHI1005
-			};
 
 		public string ExecGet(string url = null) => Get(url ?? GetUrl).Result;
 
