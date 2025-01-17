@@ -1775,7 +1775,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		{
 			// Many varied reports on what this should be.
 			// A safe value is 0xFF. Commodore 64 needs 0xEF.
-			A |= AneConstantFunc?.Invoke() ?? 0xFF;
+			A |= AneConstant;
 			A &= unchecked((byte) (X & alu_temp));
 			NZ_A();
 		}
@@ -1784,7 +1784,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		{
 			//there is some debate about what this should be. it may depend on the 6502 variant.
 			//this is suggested by qeed's doc for the nes and passes blargg's instruction test
-			A |= LxaConstantFunc?.Invoke() ?? 0xFF; 
+			A |= LxaConstant; 
 			A &= (byte)alu_temp;
 			X = A;
 			NZ_A();

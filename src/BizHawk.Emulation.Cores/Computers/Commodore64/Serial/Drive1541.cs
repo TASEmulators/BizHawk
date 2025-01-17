@@ -55,8 +55,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			_cpu = new MOS6502X<CpuLink>(new CpuLink(this))
 			{
 				NMI = false,
-				AneConstantFunc = () => 0xEF, 
-				LxaConstantFunc = () => 0xFE
+				AneConstant = 0xEF, 
+				LxaConstant = 0xFE
 			};
 
 			_ram = new int[0x800];

@@ -249,13 +249,13 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		/// For the unsupported opcode, ANE.
 		/// If your core requires a specific constant for this opcode, set it here.
 		/// </summary>
-		public Func<byte> AneConstantFunc { get; set; }
+		public byte AneConstant = 0xFF;
 
 		/// <summary>
 		/// For the unsupported opcode, LXA.
 		/// If your core requires a specific constant for this opcode, set it here.
 		/// </summary>
-		public Func<byte> LxaConstantFunc { get; set; }
+		public byte LxaConstant = 0xFF;
 
 		public long TotalExecutedCycles;
 
