@@ -1110,29 +1110,22 @@ namespace BizHawk.Client.EmuHawk
 						{
 							framesToRemove.Add(frame);
 						}
-						else
-						{
-							break;
-						}
 					}
 
 					// Deleting this frame requires rewinding a frame.
 					CurrentTasMovie.ChangeLog.AddInputBind(Emulator.Frame - 1, true, $"Bind Input; Delete {Emulator.Frame - 1}");
 					bool wasRecording = CurrentTasMovie.ChangeLog.IsRecording;
 					CurrentTasMovie.ChangeLog.IsRecording = false;
+
 					CurrentTasMovie.RemoveFrames(framesToRemove);
 					foreach (int f in framesToRemove)
 					{
 						CurrentTasMovie.LagLog.RemoveHistoryAt(f + 1); // Removes from WasLag
 					}
-					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
 
-					CurrentTasMovie.LastPositionStable = true;
+					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
 					GoToLastEmulatedFrameIfNecessary(Emulator.Frame - 1);
-					if (!MainForm.HoldFrameAdvance)
-					{
-						MainForm.PauseOnFrame = LastPositionFrame;
-					}
+					DoAutoRestore();
 					return true;
 				}
 
