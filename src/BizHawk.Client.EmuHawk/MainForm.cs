@@ -4494,7 +4494,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string SanitiseForFileDialog(string initDir)
 		{
-			if (Directory.Exists(initDir)) return initDir;
+			if (initDir.Length is 0 || Directory.Exists(initDir)) return initDir;
 #if DEBUG
 			throw new ArgumentException(
 				paramName: nameof(initDir),
