@@ -1160,6 +1160,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					CurrentTasMovie.SetAxisState(i, _startAxisDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+					_triggerAutoRestore = true;
+					TastudioPlayMode(true);
+					RefreshDialog();
 				}
 
 				_drewAxis = true;
