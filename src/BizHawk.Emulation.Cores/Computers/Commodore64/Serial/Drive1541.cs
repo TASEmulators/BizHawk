@@ -54,7 +54,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			DriveRom = new Chip23128();
 			_cpu = new MOS6502X<CpuLink>(new CpuLink(this))
 			{
-				NMI = false
+				NMI = false,
+				AneConstant = 0xEF, 
+				LxaConstant = 0xFE
 			};
 
 			_ram = new int[0x800];
