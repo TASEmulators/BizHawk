@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Common
 		/// The requested OpenGL context will be shared with the current context
 		/// Note: creating a context implicitly makes that created context current
 		/// </summary>
-		object RequestGLContext(int major, int minor, bool coreProfile, int width=1, int height=1);
+		object RequestGLContext(int major, int minor, bool coreProfile, int width=1, int height=1, bool vulkan=false);
 
 		/// <summary>
 		/// Frees this OpenGL context
@@ -50,5 +50,9 @@ namespace BizHawk.Emulation.Common
 		int GLGetAttribute(SDL.SDL_GLattr attribute);
 
 		void SwapBuffers(object context);
+
+		ulong vulkan(object context, IntPtr instance);
+
+		IntPtr[] GetVulkanInstanceExtensions();
 	}
 }
