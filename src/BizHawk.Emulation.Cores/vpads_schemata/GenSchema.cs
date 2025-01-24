@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private static IEnumerable<ButtonSchema> ThreeButtons(int controller)
+		private static ButtonSchema[] ThreeButtons(int controller)
 		{
 			return new[]
 			{
@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private static PadSchema ConsoleButtons()
+		private static ConsoleSchema ConsoleButtons()
 		{
 			return new ConsoleSchema
 			{

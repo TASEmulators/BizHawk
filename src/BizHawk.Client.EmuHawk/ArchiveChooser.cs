@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ArchiveChooser : Form
 	{
-		private readonly IList<ListViewItem> _archiveItems = new List<ListViewItem>();
+		private readonly List<ListViewItem> _archiveItems = new List<ListViewItem>();
 		private readonly ToolTip _errorBalloon = new ToolTip();
 
 		private static bool _useRegEx;
@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 				lvi.Text = item.Name;
 				long size = item.Size;
 				var extension = Path.GetExtension(item.Name);
-				if (extension != null && size % 1024 == 16 && extension.ToUpperInvariant() == ".NES")
+				if (extension != null && size % 1024 == 16 && extension.Equals(".NES", StringComparison.OrdinalIgnoreCase))
 					size -= 16;
 				lvi.SubItems[1].Text = Util.FormatFileSize(size);
 				_archiveItems.Add(lvi);
@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 			bool Matches(ListViewItem value);
 		}
 
-		private class SimpleMatcher : IMatcher
+		private sealed class SimpleMatcher : IMatcher
 		{
 			public string[] Keys { get; set; }
 			public bool Matches(ListViewItem value)
@@ -218,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class RegExMatcher : IMatcher
+		private sealed class RegExMatcher : IMatcher
 		{
 			public Regex Matcher { get; set; }
 			public bool Matches(ListViewItem value)

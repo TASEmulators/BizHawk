@@ -6,7 +6,7 @@ using System.Drawing;
 namespace BizHawk.Emulation.Cores
 {
 	[Schema(VSystemID.Raw.ChannelF)]
-	internal class ChannelFSchema : IVirtualPadSchema
+	internal sealed class ChannelFSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{

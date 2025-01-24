@@ -124,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// used to capture a reserved state immediately on branch creation
 		// while also not doing a double state
-		private class BufferedStatable : IStatable
+		private sealed class BufferedStatable : IStatable
 		{
 			private readonly byte[] _bufferedState;
 

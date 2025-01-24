@@ -63,7 +63,9 @@ namespace BizHawk.Client.Common
 					NotInDatabase = true
 				};
 
+#pragma warning disable CA1862 // incorrect detection, see https://github.com/dotnet/roslyn-analyzers/issues/7074
 				if (!string.IsNullOrWhiteSpace(GameInfo.Name) && GameInfo.Name == GameInfo.Name.ToUpperInvariant())
+#pragma warning restore CA1862
 				{
 					GameInfo.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(GameInfo.Name.ToLowerInvariant());
 				}

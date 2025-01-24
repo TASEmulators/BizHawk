@@ -182,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 		public override TypeConverter Converter => new MyTypeConverter { Setting = Setting };
 
-		private class MyTypeConverter : TypeConverter
+		private sealed class MyTypeConverter : TypeConverter
 		{
 			public SettingT Setting { get; set; }
 			// Mednafen includes extra fallback aliases of enums that are nameless, just one way value aliases.
@@ -354,7 +354,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public override TypeConverter Converter => new MyTypeConverter { Port = Port };
 
-		private class MyTypeConverter : TypeConverter
+		private sealed class MyTypeConverter : TypeConverter
 		{
 			public Port Port { get; set; }
 

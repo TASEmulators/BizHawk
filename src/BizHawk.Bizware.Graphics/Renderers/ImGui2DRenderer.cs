@@ -146,13 +146,13 @@ namespace BizHawk.Bizware.Graphics
 			EnableBlending = _pendingBlendEnable;
 		}
 
-		protected class ImGuiUserTexture
+		protected sealed class ImGuiUserTexture
 		{
 			public Bitmap Bitmap;
 			public bool WantCache;
 		}
 
-		protected class DrawStringArgs
+		protected sealed class DrawStringArgs
 		{
 			public string Str;
 			public Font Font;

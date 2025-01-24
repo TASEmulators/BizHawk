@@ -615,8 +615,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public class FamicomDeck : IControllerDeck
 	{
 		// two NES controllers are maintained internally
-		private readonly INesPort _player1 = new ControllerNES(false);
-		private readonly INesPort _player2 = new ControllerNES(true);
+		private readonly ControllerNES _player1 = new ControllerNES(false);
+		private readonly ControllerNES _player2 = new ControllerNES(true);
 		private readonly IFamicomExpansion _player3;
 
 		private readonly ControlDefUnMerger _player1U;

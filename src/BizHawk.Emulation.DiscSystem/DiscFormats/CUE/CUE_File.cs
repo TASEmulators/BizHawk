@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// <summary>
 	/// Represents the contents of a cue file
 	/// </summary>
-	internal class CUE_File
+	internal sealed class CUE_File
 	{
 		/// <remarks>
 		/// (here are all the commands we can encounter)
@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// <summary>
 		/// Stuff other than the commands, global for the whole disc
 		/// </summary>
-		public class DiscInfo
+		public sealed class DiscInfo
 		{
 			public Command.CATALOG? Catalog;
 			public Command.ISRC? ISRC;

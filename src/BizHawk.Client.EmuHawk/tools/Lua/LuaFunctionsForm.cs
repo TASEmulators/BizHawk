@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 			OrderColumn(e.Column);
 		}
 
-		private class Sorting
+		private sealed class Sorting
 		{
 			private int _column = 1;
 

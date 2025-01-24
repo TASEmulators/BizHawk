@@ -107,7 +107,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveFrames(ICollection<int> frames)
 		{
-			if (frames.Any())
+			if (frames.Count != 0)
 			{
 				// Separate the given frames into contiguous blocks
 				// and process each block independently

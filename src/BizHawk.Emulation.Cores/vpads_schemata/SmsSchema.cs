@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private static PadSchema ConsoleButtons()
+		private static ConsoleSchema ConsoleButtons()
 		{
 			return new ConsoleSchema
 			{

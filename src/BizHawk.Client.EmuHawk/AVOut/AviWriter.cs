@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	[VideoWriter("vfwavi", "AVI writer",
 		"Uses the Microsoft AVIFIL32 system to write .avi files.  Audio is uncompressed; Video can be compressed with any installed VCM codec.  Splits on 2G and resolution change.")]
-	internal class AviWriter : IVideoWriter
+	internal sealed class AviWriter : IVideoWriter
 	{
 		private CodecToken _currVideoCodecToken;
 		private AviWriterSegment _currSegment;
@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 		// we can't pass the IVideoProvider we get to another thread, because it doesn't actually keep a local copy of its data,
 		// instead grabbing it from the emu as needed.  this causes frame loss/dupping as a race condition
 		// instead we pass this
-		private class VideoCopy : IVideoProvider
+		private sealed class VideoCopy : IVideoProvider
 		{
 			private readonly int[] _vb;
 			public int VirtualWidth { get; }
@@ -275,8 +275,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				var ret = tempSegment.AcquireVideoCodecToken(_dialogParent.AsWinFormsHandle().Handle, _currVideoCodecToken);
-				var token = (CodecToken)ret;
+				var token = tempSegment.AcquireVideoCodecToken(_dialogParent.AsWinFormsHandle().Handle, _currVideoCodecToken);
 				config.AviCodecToken = token?.Serialize();
 				return token;
 			}
@@ -287,7 +286,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class Parameters
+		private sealed class Parameters
 		{
 			public int width, height;
 			public int pitch; //in bytes
@@ -398,7 +397,7 @@ namespace BizHawk.Client.EmuHawk
 			Segment();
 		}
 
-		public class CodecToken : IDisposable
+		public sealed class CodecToken : IDisposable
 		{
 			public void Dispose()
 			{
@@ -570,7 +569,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		private class AviWriterSegment : IDisposable
+		private sealed class AviWriterSegment : IDisposable
 		{
 			static AviWriterSegment()
 			{
@@ -608,7 +607,7 @@ namespace BizHawk.Client.EmuHawk
 				return _pGlobalBuf;
 			}
 
-			private class OutputStatus
+			private sealed class OutputStatus
 			{
 				public int video_frames;
 				public int video_bytes;
@@ -709,7 +708,7 @@ namespace BizHawk.Client.EmuHawk
 
 			/// <summary>acquires a video codec configuration from the user</summary>
 			/// <exception cref="InvalidOperationException">no file open (need to call <see cref="OpenFile"/>)</exception>
-			public IDisposable AcquireVideoCodecToken(IntPtr hwnd, CodecToken lastCodecToken)
+			public CodecToken AcquireVideoCodecToken(IntPtr hwnd, CodecToken lastCodecToken)
 			{
 				if (!_isOpen)
 				{

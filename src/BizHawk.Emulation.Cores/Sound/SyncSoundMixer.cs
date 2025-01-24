@@ -226,7 +226,7 @@ namespace BizHawk.Emulation.Cores.Components
 		/// <summary>
 		/// Instantiated for every ISoundProvider source that is added to the mixer
 		/// </summary>
-		private class ChildProvider
+		private sealed class ChildProvider
 		{
 			/// <summary>
 			/// The Child ISoundProvider

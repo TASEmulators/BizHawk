@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	internal class Blob_RawFile : IBlob
+	internal sealed class Blob_RawFile : IBlob
 	{
 		public string PhysicalPath
 		{

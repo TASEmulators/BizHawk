@@ -25,7 +25,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		internal class SwapChainResources : IDisposable
+		internal sealed class SwapChainResources : IDisposable
 		{
 			public ID3D11Device Device;
 			public ID3D11DeviceContext Context;

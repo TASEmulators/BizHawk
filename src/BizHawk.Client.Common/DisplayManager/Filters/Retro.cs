@@ -229,22 +229,22 @@ namespace BizHawk.Client.Common.Filters
 			public Vector2 Scale;
 		}
 
-		private static string FetchString(IDictionary<string, string> dict, string key, string @default)
+		private static string FetchString(Dictionary<string, string> dict, string key, string @default)
 		{
 			return dict.TryGetValue(key, out var str) ? str : @default;
 		}
 
-		private static int FetchInt(IDictionary<string, string> dict, string key, int @default)
+		private static int FetchInt(Dictionary<string, string> dict, string key, int @default)
 		{
 			return dict.TryGetValue(key, out var str) ? int.Parse(str) : @default;
 		}
 
-		private static float FetchFloat(IDictionary<string, string> dict, string key, float @default)
+		private static float FetchFloat(Dictionary<string, string> dict, string key, float @default)
 		{
 			return dict.TryGetValue(key, out var str) ? float.Parse(str, NumberFormatInfo.InvariantInfo) : @default;
 		}
 
-		private static bool FetchBool(IDictionary<string, string> dict, string key, bool @default)
+		private static bool FetchBool(Dictionary<string, string> dict, string key, bool @default)
 		{
 			return dict.TryGetValue(key, out var str) ? ParseBool(str) : @default;
 		}

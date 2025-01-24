@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// Please be sure to test round-tripping when you make any changes. This architecture is a bit tricky to use, but it works if you're careful.
 	/// TODO - clarify stream disposing semantics
 	/// </summary>
-	internal class RiffMaster : IDisposable
+	internal sealed class RiffMaster : IDisposable
 	{
 		public RiffMaster() { }
 
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private static string ReadTag(BinaryReader br) =>
 			string.Concat(br.ReadChar(), br.ReadChar(), br.ReadChar(), br.ReadChar());
 
-		protected static void WriteTag(BinaryWriter bw, string tag)
+		private static void WriteTag(BinaryWriter bw, string tag)
 		{
 			for (var i = 0; i < 4; i++)
 				bw.Write(tag[i]);
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
-		public class RiffSubchunk_fmt : RiffSubchunk
+		public sealed class RiffSubchunk_fmt : RiffSubchunk
 		{
 			public enum FORMAT_TAG : ushort
 			{
@@ -231,7 +231,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
-		public class RiffContainer_INFO : RiffContainer
+		public sealed class RiffContainer_INFO : RiffContainer
 		{
 			public readonly IDictionary<string, string> dictionary = new Dictionary<string, string>();
 			public RiffContainer_INFO() { type = "INFO"; }

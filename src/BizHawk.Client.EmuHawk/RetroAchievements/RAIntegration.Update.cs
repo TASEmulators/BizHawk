@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		public static bool IsAvailable => _RA != null;
 
 		// can't have both a proxy with a monitor and without one, so...
-		private class DummyMonitor : IMonitor
+		private sealed class DummyMonitor : IMonitor
 		{
 			public void Enter() {}
 			public void Exit() {}

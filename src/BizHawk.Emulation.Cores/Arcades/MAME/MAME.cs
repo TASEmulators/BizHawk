@@ -263,7 +263,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			foreach (var rom in roms)
 			{
 				// only close non-chd files
-				if (rom.Extension.ToLowerInvariant() != ".chd")
+				if (!rom.Extension.Equals(".chd", StringComparison.OrdinalIgnoreCase))
 				{
 					_exe.RemoveReadonlyFile(MakeFileName(rom));
 				}

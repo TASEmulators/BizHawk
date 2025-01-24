@@ -1388,7 +1388,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var bb = Config.ScreenshotCaptureOsd ? CaptureOSD() : MakeScreenshotImage())
 			{
 				using var img = bb.ToSysdrawingBitmap();
-				if (Path.GetExtension(path).ToUpperInvariant() == ".JPG")
+				if (Path.GetExtension(path).Equals(".JPG", StringComparison.OrdinalIgnoreCase))
 				{
 					img.Save(fi.FullName, ImageFormat.Jpeg);
 				}
@@ -2037,7 +2037,7 @@ namespace BizHawk.Client.EmuHawk
 				&& t.GetCustomAttribute<SpecializedToolAttribute>() is not null)
 			.ToList();
 
-		private ISet<char> _availableAccelerators;
+		private HashSet<char> _availableAccelerators;
 
 		private ISet<char> AvailableAccelerators
 		{
@@ -2066,9 +2066,8 @@ namespace BizHawk.Client.EmuHawk
 			for (var i = 0; i < sysID.Length; i++)
 			{
 				var upper = char.ToUpperInvariant(sysID[i]);
-				if (AvailableAccelerators.Contains(upper))
+				if (AvailableAccelerators.Remove(upper))
 				{
-					AvailableAccelerators.Remove(upper);
 					sysID = sysID.Insert(i, "&");
 					break;
 				}
@@ -3724,7 +3723,7 @@ namespace BizHawk.Client.EmuHawk
 					InputManager.SyncControls(Emulator, MovieSession, Config);
 					_multiDiskMode = false;
 
-					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && Emulator is not LibsnesCore)
+					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).Equals(".xml", StringComparison.OrdinalIgnoreCase) && Emulator is not LibsnesCore)
 					{
 						// this is a multi-disk bundler file
 						// determine the xml assets and create RomStatusDetails for all of them

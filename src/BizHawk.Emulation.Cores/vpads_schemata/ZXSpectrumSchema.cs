@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores
 {
 	[Schema(VSystemID.Raw.ZXSpectrum)]
-	internal class ZxSpectrumSchema : IVirtualPadSchema
+	public class ZxSpectrumSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private class ButtonLayout
+		private sealed class ButtonLayout
 		{
 			public string Name { get; set; }
 			public string DisName { get; set; }

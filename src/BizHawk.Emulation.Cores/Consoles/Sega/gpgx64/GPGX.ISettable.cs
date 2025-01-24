@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		private class UintToHexConverter : TypeConverter
+		private sealed class UintToHexConverter : TypeConverter
 		{
 			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 				=> sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 		}
 
-		private class UshortToHexConverter : TypeConverter
+		private sealed class UshortToHexConverter : TypeConverter
 		{
 			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 				=> sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);

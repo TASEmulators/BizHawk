@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// <summary>
 	/// +2A/+3 ULA
 	/// </summary>
-	internal class Screen128Plus2a : ULA
+	internal sealed class Screen128Plus2a : ULA
 	{
 		public Screen128Plus2a(SpectrumBase machine)
 			: base(machine)

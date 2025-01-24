@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_core = IntPtr.Zero;
 		}
 
-		private class CallbackContainer
+		private sealed class CallbackContainer
 		{
 			public CallbackContainer(IMemoryCallback callBack)
 			{

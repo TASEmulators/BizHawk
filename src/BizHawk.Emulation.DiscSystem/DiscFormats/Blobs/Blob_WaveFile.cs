@@ -7,10 +7,10 @@ namespace BizHawk.Emulation.DiscSystem
 	/// TODO - double-check that riffmaster is not filling memory at load-time but reading through to the disk
 	/// TODO - clarify stream disposing semantics
 	/// </summary>
-	internal class Blob_WaveFile : IBlob
+	internal sealed class Blob_WaveFile : IBlob
 	{
 		[Serializable]
-		public class Blob_WaveFile_Exception : Exception
+		public sealed class Blob_WaveFile_Exception : Exception
 		{
 			public Blob_WaveFile_Exception(string message)
 				: base(message)

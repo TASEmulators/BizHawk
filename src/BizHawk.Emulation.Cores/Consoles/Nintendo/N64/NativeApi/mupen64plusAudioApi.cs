@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
-	internal class mupen64plusAudioApi
+	internal sealed class mupen64plusAudioApi
 	{
 		/// <summary>
 		/// Handle to native audio plugin

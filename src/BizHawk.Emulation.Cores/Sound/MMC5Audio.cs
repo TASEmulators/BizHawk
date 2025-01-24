@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Components
 {
 	public class MMC5Audio
 	{
-		private class Pulse
+		private sealed class Pulse
 		{
 			// regs
 			private int V;

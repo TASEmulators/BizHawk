@@ -2,7 +2,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	internal class EEPROM93c46
+	internal sealed class EEPROM93c46
 	{
 		private enum EEPROMWriteMode
 		{

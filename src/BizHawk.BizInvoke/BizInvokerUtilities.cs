@@ -15,7 +15,7 @@ namespace BizHawk.BizInvoke
 	public static unsafe class BizInvokerUtilities
 	{
 		[StructLayout(LayoutKind.Explicit)]
-		private class U
+		private sealed class U
 		{
 			[FieldOffset(0)]
 			public readonly U1? First;
@@ -32,14 +32,14 @@ namespace BizHawk.BizInvoke
 		}
 
 		[StructLayout(LayoutKind.Explicit)]
-		private class U1
+		private sealed class U1
 		{
 			[FieldOffset(0)]
 			public UIntPtr P;
 		}
 
 		[StructLayout(LayoutKind.Explicit)]
-		private class U2
+		private sealed class U2
 		{
 			[FieldOffset(0)]
 			public object Target;
@@ -47,7 +47,7 @@ namespace BizHawk.BizInvoke
 			public U2(object target) => Target = target;
 		}
 
-		private class CF
+		private sealed class CF
 		{
 			public int FirstField = 0;
 		}

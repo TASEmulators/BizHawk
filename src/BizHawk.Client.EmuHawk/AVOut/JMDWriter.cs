@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// carries private compression information data
 		/// </summary>
-		private class CodecToken : IDisposable
+		private sealed class CodecToken : IDisposable
 		{
 			public void Dispose()
 			{
@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 		/// metadata for a movie
 		/// not needed if we aren't dumping something that's not a movie
 		/// </summary>
-		private class MovieMetaData
+		private sealed class MovieMetaData
 		{
 			/// <summary>
 			/// name of the game (rom)
@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// represents a JMD file packet ready to be written except for sorting and timestamp offset
 		/// </summary>
-		private class JmdPacket
+		private sealed class JmdPacket
 		{
 			public ushort Stream { get; set; }
 			public ulong Timestamp { get; set; } // final muxed timestamp will be relative to previous
@@ -135,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 		/// writes JMD file packets to an underlying bytestream
 		/// handles one video, one pcm audio, and one metadata track
 		/// </summary>
-		private class JmdFile
+		private sealed class JmdFile
 		{
 			// current timestamp position
 			private ulong _timestampOff;
@@ -600,7 +600,7 @@ namespace BizHawk.Client.EmuHawk
 		public void OpenFile(string baseName)
 		{
 			string ext = Path.GetExtension(baseName);
-			if (ext == null || ext.ToLowerInvariant() != ".jmd")
+			if (ext == null || !ext.Equals(".jmd", StringComparison.OrdinalIgnoreCase))
 			{
 				baseName += ".jmd";
 			}

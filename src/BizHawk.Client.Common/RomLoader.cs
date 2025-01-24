@@ -391,7 +391,7 @@ namespace BizHawk.Client.Common
 							return (int)CorePriority.UserPreference;
 						}
 
-						if (string.Equals(c.Name, dbForcedCoreName, StringComparison.OrdinalIgnoreCase))
+						if (c.Name.Equals(dbForcedCoreName, StringComparison.OrdinalIgnoreCase))
 						{
 							return (int)CorePriority.GameDbPreference;
 						}
@@ -645,7 +645,7 @@ namespace BizHawk.Client.Common
 		private static bool IsDiscForXML(string system, string path)
 		{
 			var ext = Path.GetExtension(path);
-			if (system == VSystemID.Raw.Arcade && ext.ToLowerInvariant() == ".chd")
+			if (system == VSystemID.Raw.Arcade && ext.Equals(".chd", StringComparison.OrdinalIgnoreCase))
 			{
 				return false;
 			}

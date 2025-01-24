@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_currentFont = font;
 		}
 
-		private class GdiPlusGraphicsLock : IDisposable
+		private sealed class GdiPlusGraphicsLock : IDisposable
 		{
 			public void Dispose()
 			{

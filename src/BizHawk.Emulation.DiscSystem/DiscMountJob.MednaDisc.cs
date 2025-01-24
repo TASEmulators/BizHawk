@@ -2,7 +2,7 @@
 {
 	public partial class DiscMountJob
 	{
-		private class SS_MednaDisc : ISectorSynthJob2448
+		private sealed class SS_MednaDisc : ISectorSynthJob2448
 		{
 			public void Synth(SectorSynthJob job)
 			{

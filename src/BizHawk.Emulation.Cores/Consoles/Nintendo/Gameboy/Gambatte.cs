@@ -651,7 +651,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			};
 		}
 
-		private class GPUMemoryAreas : IGPUMemoryAreas
+		private sealed class GPUMemoryAreas : IGPUMemoryAreas
 		{
 			public IntPtr Vram { get; init; }
 

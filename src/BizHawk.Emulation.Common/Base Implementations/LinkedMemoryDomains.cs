@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Common
 			return mm;
 		}
 
-		private class WrappedMemoryDomain : MemoryDomain
+		private sealed class WrappedMemoryDomain : MemoryDomain
 		{
 			private readonly MemoryDomain _m;
 
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Common
 			public override void PokeByte(long addr, byte val) => _m.PokeByte(addr, val);
 		}
 
-		private class LinkedSystemBus : MemoryDomain
+		private sealed class LinkedSystemBus : MemoryDomain
 		{
 			private readonly MemoryDomain[] _linkedSystemBuses;
 			private readonly LinkedDisassemblable _linkedDisassemblable;

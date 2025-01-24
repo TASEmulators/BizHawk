@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			_serviceProvider.Register<IVideoProvider>(_encoreVideoProvider);
 
 			var romPath = lp.Roms[0].RomPath;
-			if (lp.Roms[0].Extension.ToLowerInvariant() == ".cia")
+			if (lp.Roms[0].Extension.Equals(".cia", StringComparison.OrdinalIgnoreCase))
 			{
 				var message = new byte[1024];
 				var res = _core.Encore_InstallCIA(_context, romPath, message, message.Length);
@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			for (var i = 1; i < lp.Roms.Count; i++)
 			{
 				// doesn't make sense if not a CIA
-				if (lp.Roms[i].Extension.ToLowerInvariant() != ".cia")
+				if (!lp.Roms[i].Extension.Equals(".cia", StringComparison.OrdinalIgnoreCase))
 				{
 					Dispose();
 					throw new("ROMs after the index 0 should be CIAs");

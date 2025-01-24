@@ -253,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				base.WriteWram(addr, value);
 		}
 
-		private class SoundChannel
+		private sealed class SoundChannel
 		{
 			public SoundChannel(Action<int> enqueuer)
 			{
