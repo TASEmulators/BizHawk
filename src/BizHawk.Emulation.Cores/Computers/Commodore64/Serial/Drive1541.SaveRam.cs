@@ -41,6 +41,8 @@ public sealed partial class Drive1541 : ISaveRam
 
 	public byte[] CloneSaveRam()
 	{
+		SaveDeltas();
+
 		using var ms = new MemoryStream();
 		using var bw = new BinaryWriter(ms);
 		bw.Write(_usedDiskTracks.Length);

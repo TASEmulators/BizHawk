@@ -37,9 +37,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public bool DelayedInterrupts = true;
 
 		private int _pra;
+		private int _praOut;
 		private int _prb;
+		private int _prbOut;
 		private int _ddra;
+		private int _ddraOut;
 		private int _ddrb;
+		private int _ddrbOut;
 		private int _ta;
 		private int _tb;
 		private int _latcha;
@@ -83,6 +87,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private bool _lastCnt;
 		private bool _thisCnt;
 		private bool _tbCntTaCnt;
+		private int _taPrb6Out;
+		private bool _taPrb6OutEnable;
+		private int _tbPrb7Out;
+		private bool _tbPrb7OutEnable;
 
 		private readonly IPort _port;
 		private int _todlo;
@@ -141,6 +149,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_taState = TimerState.Stop;
 			_tbState = TimerState.Stop;
 			_lastCnt = true;
+			_taPrb6Out = 0; // datasheet: set low on /RES
+			_tbPrb7Out = 0; // datasheet: set low on /RES
+			_taPrb6OutEnable = false;
+			_tbPrb7OutEnable = false;
+			_praOut = 0;
+			_prbOut = 0;
 		}
 
 		public void ExecutePhase()
@@ -162,16 +176,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			if (_taPrb6NegativeNextCycle)
 			{
-				_prb &= 0xBF;
+				_taPrb6Out = 0x00;
 				_taPrb6NegativeNextCycle = false;
 			}
 
 			if (_tbPrb7NegativeNextCycle)
 			{
-				_prb &= 0x7F;
+				_tbPrb7Out = 0x00;
 				_tbPrb7NegativeNextCycle = false;
 			}
-
 
 			switch (_taState)
 			{
@@ -271,11 +284,23 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 			_flagLatch = _flagInput;
 
-			if ((_cra & 0x02) != 0)
-				_ddra |= 0x40;
-			if ((_crb & 0x02) != 0)
-				_ddrb |= 0x80;
+			_praOut = _pra;
+			_prbOut = _prb;
+			_ddraOut = _ddra;
+			_ddrbOut = _ddrb;
 
+			if (_taPrb6OutEnable)
+			{
+				_prbOut = (_prbOut & ~0x40) | _taPrb6Out;
+				_ddrbOut |= 0x40;
+			}
+
+			if (_tbPrb7OutEnable)
+			{
+				_prbOut = (_prbOut & ~0x80) | _tbPrb7Out;
+				_ddrbOut |= 0x80;
+			}
+			
 			_lastCnt = _thisCnt;
 		}
 
@@ -321,14 +346,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 				if ((_cra & 0x04) != 0)
 				{
+					_taPrb6Out = 0x40;
 					_taPrb6NegativeNextCycle = true;
-					_prb |= 0x40;
 				}
 				else
 				{
-					_prb ^= 0x40;
+					_taPrb6Out ^= 0x40;
 				}
-				_ddrb |= 0x40;
 			}
 		}
 
@@ -435,11 +459,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				if ((_crb & 0x04) != 0)
 				{
 					_tbPrb7NegativeNextCycle = true;
-					_prb |= 0x80;
+					_tbPrb7Out = 0x80;
 				}
 				else
 				{
-					_prb ^= 0x80;
+					_tbPrb7Out ^= 0x80;
 				}
 			}
 		}
@@ -562,6 +586,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_thisCnt), ref _thisCnt);
 			ser.Sync(nameof(_tbCntTaCnt), ref _tbCntTaCnt);
 			ser.Sync(nameof(_todCounter), ref _todCounter);
+			ser.Sync(nameof(_taPrb6Out), ref _taPrb6Out);
+			ser.Sync(nameof(_taPrb6OutEnable), ref _taPrb6OutEnable);
+			ser.Sync(nameof(_tbPrb7Out), ref _tbPrb7Out);
+			ser.Sync(nameof(_tbPrb7OutEnable), ref _tbPrb7OutEnable);
 		}
 	}
 }
