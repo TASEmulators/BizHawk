@@ -1,0 +1,389 @@
+0.6.2
+-----
+*New Features*
+
+ - Zipped and gzipped SMD ROMs are now supported
+ - Gain control for overall volume and FM/PSG invidually
+ 
+*Accuracy/Completeness Improvements*
+
+ - Fixed timing of a few instructions in Z80 core
+ - Added optional emulation of YM2612 imperfections (aka "ladder effect")
+ - Fixed some unintentional extra precision in some FM LFO calculations
+ - Added a 1 sample delay in some FM operator results when used as modulators to match hardware
+
+*Bugfixes*
+
+ - Fixed regression in NBA JAM TE and possibly other 32MBit Acclaim mapper titles
+ - Added code to handle controllers that have their d-pads mapped as buttons or axes
+ - Removed some problematic SDL2 game controller mappings
+ - Fixed crash that occurred when releasing mouse too clickly when loading a ROM
+ - Fixed SMD ROM support
+ - Fixed handling of audio contexts with more or less than 2 channels
+ - Fixed off-by-one error in IO device selection UI
+ - Fixed regression in GDB remote debugging support on Linux and OS X
+
+*Other Changes*
+
+ - MegaWiFi hardware can now be enabled by a header string (still gated by config)
+ - Tweaked the style of checkboxes in the Nuklear UI to hopefully make the on/off state more clear
+
+0.6.1
+-----
+*Bugfixes*
+
+ - Fixed build script so controller images are actually included so UI doesn't crash
+ - Disabled most bindings when UI active (fixes crashes/wonkiness when pressing certain keys)
+ - Fixed Windows implementation of get_config_dir() so config file ends up in %localappdata%\blastem like it should
+ - Fixed the location of sticky_path on all platforms
+ - Added virtual root directory used by ROM UI to new Nuklear UI
+
+0.6.0
+-----
+*New Features*
+
+ - New Nuklear UI with almost complete access to configuration options
+ - Added support for creating SDL2 mappings from inside the emulator
+ - Loading ROMs from ZIP archives is now supported
+ - Loading gzip compressed ROMs is now supported
+ - Internal screenshots can now be in PNG format
+ - New VDP plane debug view
+ - VDP debug views are now in separate windows
+ - Experimental support for sync to video (not enabled by default)
+ - Preliminary support for MegaWifi cart emulation
+ 
+*Bugfixes*
+
+ - Fixed a number of 68K decoder bugs (mostly illegal instruction decoding)
+ - Fixed implementation of the UNLK instruction when register is a7
+ - Fixed a number of memory leaks
+ 
+ *Accuracy/Completeness Improvements*
+ 
+ - Added support for J-Cart emulation
+ - Implemented Z80 interrupt mode 2
+ - Fixed the timing of a number of 68K instructions
+ - Fixed the timing of the Z80 JP cc, nn instruction
+ - Fixed the order bytes of a word are written to VRAM from the FIFO (fixes minor corruption in Road Rash 3 bike menu)
+ 
+*Other Changes*
+ - Added support for Open GL ES in addition to the existing desktop GL support
+ - Some small optimizations
+ - Added ROM DB entry for Squirrel King to support it's copy protection
+ - Added support for float32 audio output (fixes an issue with default SDL2 driver in Windows when using more recent SDL2 versions)
+ 
+0.5.1
+-----
+*New Features*
+
+ - Drag and Drop is now supported for loading ROMs
+ - Save states are now supported for SMS games
+ - Texture scaling method (linear or nearest neighbor) can now be selected in both renderers
+ - Menu now filters files based on a configurable extension list
+ - Lock on carts (Sonic & Knuckles and XBAND) can now be loaded via the menu
+ - ROMs can be reloaded via a hotkey (defaults to F5)
+ - Last path visited in the menu is now saved between runs (can be turned off via config)
+ - Window height can now be specified in the config file
+ 
+*Bugfixes*
+
+ - Default shader doesn't look like garbage in interlaced mode anymore
+ - Framebuffer pointers are properly released and reacquired on context switch (no more LOCKRECT errors)
+ - ROMs specifying SRAM at the normal RAM address no longer cause a crash
+ - Fixed an edge case in the s(tep) debugger command
+ - Entering the option menu in Dragon's Fury no longer results in a fatal error in 32-bit builds
+ - Screen is properly cleared so garbage will not appear when the window does not match the emulated display size
+ - Fixed a regression in XBAND keyboard support
+
+*Accuracy/Completeness Improvements*
+
+ - Locking on Sonic 3 to S&K will now use Sonic 3's save RAM
+ - Locking on a 4MB cart to S&K will now behave like on hardware
+ - Support for several X-in-1 bootleg carts has been added
+ - DMA from byte-wide SRAM now yields correct results
+ - VScroll is now latched earlier in the line (fixes minor glithces in Top Gear 2 and Skitchin)
+ - Sega/SSF2 mapper support now handles homebrew that uses SRAM
+ - ODD flag timing now matches hardware
+ - V counter as read from HV port is now correct in single-resolution interlace mode
+
+*Other Changes*
+
+ - Added a "subtle" CRT shader contributed by Anaël Seghezzi
+ - Mouse is now only captured if an emulated mouse is plugged in to the emulated system
+ - Missing mapping warnings will only be displayed for the first mapping of a controller
+ - Save states now default to a format native to BlastEm
+ - Remaining I2C EEPROM games have been added to the ROM DB
+ - When not specified, height now respects the aspect setting rather than assuming 4:3
+ - Pre-combined S&K ROMs and large (>2MB) S&K hacks should now work
+ - Using ui.exit (default Escape) can now be used to cleanly cancel a load ROM or savestate action
+ - Save states are now allowed in a more extensive range of Z80 states, fixing save state saving in some games
+
+0.5.0
+-----
+*New Features*
+
+ - SMS emulation in the form of the Gensis/MD's backwards compatibility mode
+ - Added support for SMS controllers
+ - Support for the mapper used by Realtec games
+ - Support for carts with fixed value registers
+ - Support for enough of the XBAND cartridge hardware to allow the menu to boot
+ - Basic XBAND keyboard emulation
+ - Configurable display overscan
+ - Fullscreen mode can now be toggled at runtime
+ - Window can now be resized at runtime
+ - Support for "semantic" controller button names in the gamepad mapping using SDL2's game controller API
+ - Analog axes can now be mapped to emulated gamepad buttons or UI actions
+ - System soft reset
+ - Keyboard can now be captured when a Saturn or XBAND keyboard is connected to the emulated system
+ - Internal screenshots that bypass all output filtering/overscan
+ - Homebrew using the "SSF2 Mapper" is now supported via header detection like on the Mega Everdrive
+ - Directory used for SRAM, EEPROM and savestates is now configurable
+ - Path configuration values can now contain both BlastEm-specific and environment variable references
+ - Open GL based rendering can be disabled in favor of the SDL2 render API fallback
+ 
+*Bugfixes*
+ 
+ - Fixed a bug that would cause a crash in certain games that have SRAM and ROM at the same address
+ - Fixed some issues with Z80 interrupts that caused issues with sound/music in Sonic 2 and Puyo Puyo 2
+ - Z80 debugger no longer crashes when resuming execution
+ - Undocumented Z80 instruction "out (c), 0" now decodes properly
+ - GDB remote debugging should now work with more recent versions of GDB
+ - GDB remote debugging should now work on more recent versions of Windows
+ - Overlapping instructions in self-modifying code no longer causes incorrect behavior
+ - Z80 instructions "in c" and "out c" now work correclty on 32-bit builds
+ - Specifying an output audio frequency higher than the FM frequency no longer deadlocks the emulator
+ - Fixed memory map generation for games with 3MB ROM and SRAM at the 3MB mark 
+ 
+*Accuracy/Completeness Improvements*
+
+ - YM2612 SSG-EG and CSM modes are now implemented
+ - VDP Mode 4 is now implemented in both Genesis and SMS mode
+ - Basic emulation of refresh delays has been added
+ - 68K interrupt latency has been made more accurate
+ - CRAM contention artifacts (aka CRAM dots) are now emulated
+ - DIVU/DIVS and MULU/MULS are now cycle accurate
+ - MOVEM now performs the extra ignored read and has correct timing
+ - The timing of serveral other 68K instructions has been fixed
+ - Implemented 68K trace mode
+ - SBCD flag calculation now matches hardware in 100% of cases
+ - 68K -> VDP DMA now properly has a delay at DMA start rather than at the end of the transfer
+ - A number of illegal effective address mode/operation combinations now properly decode as illegal instructions
+ - Added emulation of the slow rise time of an IO pin that was changed to an input when it was previously outputting 0
+ - Partial support for the VDP test register
+ - Partial support for the 128KB VRAM mode bit
+ - Improved accuracy of low level sprite rendering details
+ - Fixed handling of active/passive display transitions so that border extension tricks work
+ - Fixed handling of horizontal interrupts in extended display areas
+ - More accurate correspondance between horizontal counter and raster beam
+ - Partial emulation of serial IO registers
+ 
+ *Other Changes*
+ 
+ - Added Japanese version of Street Fighter 2: The New Challengers to ROM DB
+ - Added the following EEPROM games to ROM DB:
+       Ninja Burai Densetsu
+       Rockman Mega World
+ - Added ROM DB entries for the following games with incorrect region headers: 
+       Another World (E)
+       Alien Soldier (J)
+       Light Crusader (J)
+       Castle of Illusion - Fushigi no Oshiro Daibouken (J)
+       Atomic Robo-Kid (J)
+ - Added ROM DB entries for the following games which are incompatible with 6-button controllers:
+       King of Monsters
+       Combat Cars
+       Second Samurai
+       Dungeons & Dragons - Warriors of the Eternal Sun
+ - Added ROM DB entries for the following games with fixed value registers:
+       Ya Se Chuan Sho
+       16 Zhang Ma Jiang
+       Elf Wor
+       Huan Le Tao Qi Shu: Smart Mouse
+       Mighty Morphin' Power Rangers: The Fighting Edition
+       Super Bubble Bobble MD
+       Thunderbolt II
+ - Added ROM DB entries for the following games that have bad/missing SRAM headers:
+       Hardball III
+       Might and Magic - Gates to Another World
+       Might and Magic III - Isles of Terra
+
+0.4.1
+-----
+*New Features*
+
+ - Basic support for the Saturn Keyboard adapter peripheral
+ - You can now navigate up to a drive selection on Windows
+ - Added support for binding more "special" keys
+ 
+*Bugfixes*
+
+ - It's now possible to navigate to the root directory on Unix-like systems
+ - Fixed a bug in movep.l
+ - Fixed a crash bug in the memory management code
+ - Fixed a bug in the header parsing code, that caused a crash when the "International Name" field was empty
+ - Fixed some minor graphical corruption in Sonic 2 split-screen caused by a bug in vflip combined with interlace mode
+ - Corrected the PC value pushed onto the stack for line A emulator and line F emulator traps
+ - Fixed a bug in ensure_dir_exists that would cause it to fail to create directories in some cases when mixed path separators were used
+ - Fixed a bug that would result in a buffer overflow when starting a game with a long title from the menu
+ 
+*Accuracy/Completeness Improvements*
+
+ - All Z80 instructions are now implemented
+ - Z80 Half-carry flag is now fully implemented
+ - Implemented undocumented Z80 flag bits
+ - R register is now incremented appropriately
+ - Redundant opcode prefixes are now handled properly
+ - Z80 core now passes ZEXALL!
+
+*Other Changes*
+
+ - Added Buck Rogers to the ROM DB
+ - Added Wonder Boy in Monster World to the ROM DB (for real this time)
+ - Added Evander 'Real Deal' Holyfield's Boxing to the ROM DB
+ - Slightly better handling of directory read errors
+ - Added "Special Thanks" to About menu
+ - Use local app data folder for saves and config files on Windows rather than Unix-style locations
+
+0.4.0
+-----
+*New Features*
+
+
+ - Genesis ROM based Graphical User Interface - command line is no longer required for basic functionality
+ - Added support for the Mega/Sega Mouse
+ - Configurable low pass filter
+ - 68000 overclock and underclock
+ - Scanlines can now be controlled via the config file and defaults to off (previously was always on)
+ - VSync can now be specified via the config file and defaults to off (previously just used the OS/driver default)
+ - Fullscreen mode can now be specified via the config file in addition to the command line flag
+ - New 68K debugger command 'co' allows a list of commands to be run each time a breakpoint is hit
+ - 68K debugger now supports the 'di' command like the Z80 debugger
+ - New debugger command 'yt' displays YM-2612 timer info
+ - Added support for controller hotplug (game controllers don't need to be plugged in before starting BlastEm)
+ - IO devices can now be automatically configured by ROM DB entries
+
+*Bugfixes*
+
+ - Fixed calculation of window start column - removes graphical glitches in Afterburner 2, Fireshark, Dungeons and Dragons: Warriors of the Eternal Sun and probably others
+ - Fixed the implementation of LDD and LDDR
+ - Fixed ABCD/SBCD - eliminates the score counter problem in Bubsy
+ - Fixed btst when used with immediate destination - Fixes a crash in NHL 95
+ - Fixed YM-2612 attack phase and sustain level
+ - Fixed mapping of YM-2612 key on/off bits to operators
+ - Fixed YM-2612 LFO AMS shift values
+ - Fixed YM-2612 LFO phase modulation
+ - Fixed mapping of registers to operators in Channel 3 special mode (for real this time)
+ - Fixed a small bug in YM-2612 timer reloads
+ - Fixed peripheral ID for 3-button pad
+ - Accesses by the 68K to the low 4MB of the address space, but outside of the defined ROM will no longer cause a crash
+ - Config files and shaders saved with Windows-style line endings will no longer fail to load
+ - Fixed a crash bug on Windows by properly detecting invalid destination modes for immediate variant opcodes
+
+*Accuracy/Completeness Improvements*
+
+ - All 68000 instructions are now implemented
+ - Implemented 68000 privilege, address error and illegal instruction exceptions
+ - Z80 half carry flag is now implemented for the trivial cases
+ - Fixed timing of the Z80 IM and certain LD variants
+ - Implemented interrupt latency - Fixes Sesame Street: Counting Cafe
+ - Interrupts are know acknowleged based on what the VDP thinks its asserting rather than what the 68K actually is acking - Fixes Fatal Rewind
+ - Improved timing of 68000 interrupt processing
+ - Improved timing of Z80 busack response - Fixes a crash in Barkley: Shut Up and Jam
+ - Adjusted the amount of time the 68000 is blocked during DMA - gets rid of remaining part of "YOUR EMULATOR SUX" text in overdrive
+ - Corrected order individual words of a longword are written when the predecrement addressing mode is used as the destination of a move instruction
+ - Adjusted relationship between Horizontal counter and render events to better match tests/measurements
+ - Adjusted vertical interrupt timing to better match measurements
+ - Improved timing of 68K/Z80 interactions based on tests
+
+*Other Changes*
+
+ - Z80 disassembler now supports a start offset parameter: -s
+ - Windows build now uses link time optimization like the others
+ - Optimized the VDP code
+ - Improved audio resampling
+ - Added Mega Man - The Wily Wars to ROM database
+ - Added Wonder Boy in Monster World to ROM database
+
+0.3.1
+-----
+*New Features*
+
+ - BlastEm will now open a new terminal window when starting the debugger if it's not attached to one
+ - Errors are displayed in a message box if no terminal is attached
+ - Pure SDL render path for when OpenGL 2 is unavailable (thanks Higor Eurípedes)
+ 
+*Bugfixes*
+
+ - GDB remote debugging works again
+ - Fixed a name conflict that prevented vgmplay from being built on OS X
+ 
+*Other Changes*
+
+ - Windows build now includes the disassemblers, VGM player and save state viewer
+
+0.3.0
+-----
+*New Features*
+
+ - 32-bit x86 CPUs are now supported
+ - BlastEm is now available for OS X and Windows
+ - Finished support for the Sega mapper used by Super Street Fighter 2
+ - Added support for EEPROM saves
+ - Added support for large flat-mapped ROMs (used by some homebrew ROMS)
+ - New 68K debugger command bt (backtrace)
+ - I/O devices (gamepads and other peripherals) can now be configured in blastem.cfg
+ - VDP Debugger views from before 0.1.0 have been restored
+ 
+*Bugfixes*
+
+ - Partial emulation of floating bus bits for certain I/O regs (fixes Super Offroad 2)
+ - Fixed shadow/highlight mode
+ - Implemented AM and fixed LFO update speed
+ - Fixed negative detune values
+ - Corrected register to operator mapping for channel 3 special mode
+ - Initial stab at emulating cycles being stolen from the 68K when the Z80 accesses its bus
+ - Better handling of creating a savestate in "uncooperative" games/demos
+ - Implemented VSCROLL latching
+ - Fixed a bug that would corrupt the Z80's SP register in some situations
+ - Fixed PAL flag in VDP status register
+ - Fixed HV counter
+ - Fixed flag calculation for RRA, RRCA, RLA and RLCA
+ - Fixed instruction timing for RR, RRC, RL and RLC when using the IX or IY registers
+ - Fixed access to the I and R registers
+
+*Other Changes*
+
+ - Upgraded to SDL2
+ - Dropped suport for the non-OpenGL render path
+ - Linux builds should now work on something other than the specific version of Ubuntu I happen to be using at build time
+ - BlastEm now syncs at least once per line by default. You can change this behavior with the max_clocks config value
+
+0.2.0
+-----
+*New Features*
+
+- Added Turbo and Slow modes that overclock and underclock the system respectively
+- Added FPS counter
+- New OpenGL render backend that allows filters to be written in GLSL
+- Support 'UI' bindings on gamepad buttons and dpads
+- GDB remote debugging support
+- New debugger 68K debugger commands o, s and zp (see README for details)
+
+*Bugfixes*
+
+- Fixed argument handling so that the ROM filename does not need to be specified first
+- Don't allow register writes to Mode 5 only regs when in Mode 4
+- Fixed a bunch of VDP edge case behavior checked by Nemesis's test ROM
+- Fixed operator 1 self-feedback
+- Fixed handling of envelope overflow in attack phase
+- Fixed handling of channel output overflow
+- Adjusted FM and PSG volume to better match real hardware
+- Improved YM-2612 busy flag emulation
+- Properly sync hardware at end of frame when the 68K is blocked by DMA
+- Approximate wait state behavior when the Z80 accesses the 68K's bus
+- Implemented HV counter latch
+- Implemented sprite overflow and collision flags
+
+0.1.0
+-----
+Initial Release
