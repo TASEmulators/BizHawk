@@ -60,6 +60,7 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
 
+		public List<InputRoll> TasViews = new List<InputRoll>();
 		public class TAStudioSettingsMPR
 		{
 			public TAStudioSettingsMPR()
@@ -137,6 +138,17 @@ namespace BizHawk.Client.EmuHawk
 			TasPlaybackBoxMPR.TastudioMPR = this;
 			MarkerControlMPR.TastudioMPR = this;
 			BookMarkControlMPR.TastudioMPR = this;
+
+
+
+
+			foreach (InputRoll tasView in TasViews)
+				{
+
+
+
+
+			}
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView.QueryRowBkColor += TasView_QueryRowBkColor;
@@ -154,6 +166,27 @@ namespace BizHawk.Client.EmuHawk
 				if (e.NewCell.RowIndex is null)
 				{
 					toolTip1.Show(e.NewCell.Column!.Name, TasView, PointToClient(Cursor.Position));
+				}
+			};
+
+			InputRoll TasView2 = new InputRoll();
+			TasView2.Name = "TasView2";
+			TasView2.Parent = MainVertialSplit.Panel1;
+			TasView2.Width = 300;
+			TasView2.Height = 550;
+			TasView2.Location = new System.Drawing.Point(TasView.Location.X + TasView.Width + 10, 10);
+			TasView2.QueryItemText += TasView_QueryItemText;
+			TasView2.QueryItemBkColor += TasView_QueryItemBkColor;
+			TasView2.QueryRowBkColor += TasView_QueryRowBkColor;
+			TasView2.QueryItemIcon += TasView_QueryItemIcon;
+			TasView2.QueryFrameLag += TasView_QueryFrameLag;
+			TasView2.PointedCellChanged += TasView_PointedCellChanged;
+			TasView2.MouseLeave += TAStudio_MouseLeave;
+			TasView2.CellHovered += (_, e) =>
+			{
+				if (e.NewCell.RowIndex is null)
+				{
+					toolTip1.Show(e.NewCell.Column!.Name, TasView2, PointToClient(Cursor.Position));
 				}
 			};
 		}
