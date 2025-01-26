@@ -16,6 +16,7 @@ cd uae && make -f Makefile $1 -j && cd -
 cd uzem && make -f Makefile $1 -j && cd -
 cd virtualjaguar && make -f Makefile $1 -j && cd -
 cd nyma && ./make-all-released-cores.sh $1 && cd -
+cd dsda && make -f Makefile $1 -j && cd -
 
 # this won't include MAME by default, due to the large amount of time it takes to build it
 # to include MAME just do INCLUDE_MAME=1 ./make-all-cores.sh
