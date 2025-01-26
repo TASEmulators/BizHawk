@@ -2,8 +2,8 @@
 name: Core port request
 about: Request another emulator be ported into BizHawk
 title: "[Core Port Req.] (name of emulator, and systems emulated if it's not obvious)"
-labels: 'Core: Future core, Enhancement'
-assignees: ''
+type: Feature
+labels: "Request: New core/port/re-port"
 
 ---
 
@@ -16,7 +16,7 @@ assignees: ''
 - Target platforms: (win/mac/tux)
 - [Source repo](https://github.com/group/repo)
 - Language(s): (programming language)
-- License: (license name/identifier)
+- Licence: (licence name/identifier)
 
 ### Merits
 [//]: # "Briefly explain why this emulator is worth including in BizHawk. If it emulates the same system as an existing core, compare them."
