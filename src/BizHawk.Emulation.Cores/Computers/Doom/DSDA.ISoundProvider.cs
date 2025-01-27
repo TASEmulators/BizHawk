@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		{
 			var src = IntPtr.Zero;
 			var nsamp = 0;
-			Core.stella_get_audio(ref nsamp, ref src);
+			Core.dsda_get_audio(ref nsamp, ref src);
 
 			if (src != IntPtr.Zero)
 			{
@@ -91,6 +91,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				60 => 262 * 76 * 60 / 38, // 31440Hz
 				50 => 312 * 76 * 50 / 38, // 31200Hz
+				35 => 312 * 76 * 35 / 38, // ?? No idea what I'm doing
 				_ => throw new InvalidOperationException()
 			};
 

@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			IsLagFrame = true;
 
-			Core.stella_frame_advance(port1, port2, resetPressed, powerPressed, _leftDifficultyToggled, _rightDifficultyToggled);
+			Core.dsda_frame_advance();
 
 			if (IsLagFrame)
 				LagCount++;
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		public int Frame { get; private set; }
 
-		public string SystemId => VSystemID.Raw.A26;
+		public string SystemId => VSystemID.Raw.Doom;
 
 		public bool DeterministicEmulation => true;
 
