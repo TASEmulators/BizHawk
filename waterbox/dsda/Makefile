@@ -237,6 +237,33 @@ SRCS = \
 	core/prboom2/src/st_lib.c \
 	core/prboom2/src/st_stuff.c \
 	core/prboom2/src/s_advsound.c \
-	core/prboom2/src/s_sound.c 
+	core/prboom2/src/s_sound.c \
+	core/prboom2/src/tables.c \
+	core/prboom2/src/umapinfo.cpp \
+	core/prboom2/src/v_video.c \
+	core/prboom2/src/wadtbl.c \
+	core/prboom2/src/wi_stuff.c \
+	core/prboom2/src/w_wad.c \
+	core/prboom2/src/z_bmalloc.c \
+	core/prboom2/src/z_zone.c \
+	core/prboom2/src/d_client.c \
+	core/prboom2/src/w_mmap.c \
+	core/prboom2/src/memio.c \
+	core/prboom2/src/mus2mid.c \
+	core/prboom2/src/SDL/i_main.c \
+	core/prboom2/src/SDL/i_sound.c \
+	core/prboom2/src/SDL/i_sshot.c \
+	core/prboom2/src/SDL/i_system.c \
+	core/prboom2/src/SDL/i_video.c \
+	core/prboom2/src/MUSIC/dumbplayer.c \
+	core/prboom2/src/MUSIC/flplayer.c \
+	core/prboom2/src/MUSIC/madplayer.c \
+	core/prboom2/src/MUSIC/midifile.c \
+	core/prboom2/src/MUSIC/opl.c \
+	core/prboom2/src/MUSIC/opl3.c \
+	core/prboom2/src/MUSIC/oplplayer.c \
+	core/prboom2/src/MUSIC/opl_queue.c \
+	core/prboom2/src/MUSIC/portmidiplayer.c \
+	core/prboom2/src/MUSIC/vorbisplayer.c 
 
 include ../common.mak
