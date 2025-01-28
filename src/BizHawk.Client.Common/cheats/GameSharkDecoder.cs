@@ -128,12 +128,7 @@ namespace BizHawk.Client.Common.cheats
 
 		private static IDecodeResult Snes(string code)
 		{
-			if (code.Contains("-") && code.Length == 9)
-			{
-				return new InvalidCheatCode("Game genie codes are not currently supported for SNES");
-				////return SnesGameGenieDecoder.Decode(code);
-			}
-
+			if (SnesGameGenieDecoder.Decode(code) is DecodeResult validSNES) return validSNES; // decoder checks format, will not return invalid for any well-formed input
 			if (code.Length == 8)
 			{
 				return SnesActionReplayDecoder.Decode(code);
