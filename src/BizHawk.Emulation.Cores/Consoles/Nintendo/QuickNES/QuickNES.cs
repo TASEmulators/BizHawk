@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			Context = QN.qn_new();
+			
 			if (Context == IntPtr.Zero)
 			{
 				throw new InvalidOperationException($"{nameof(QN.qn_new)}() returned NULL");
@@ -48,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				InitMemoryDomains();
 
 				// Setting input callback
+				_inputCallback = InputCallback;
 				QN.qn_set_input_callback(_inputCallback);
 
 				int mapper = 0;
