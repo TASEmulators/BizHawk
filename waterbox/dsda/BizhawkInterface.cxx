@@ -1,7 +1,9 @@
+#include <vector>
 #include <cstdio>
 #include <cstdint>
 #include "BizhawkInterface.hxx"
 #include <d_player.h>
+#include <w_wad.h>
 
 extern "C"
 {
@@ -26,6 +28,9 @@ extern "C"
   void dsda_ArchiveAll(void);
   void dsda_UnArchiveAll(void);
   void headlessGetMapName(char* outString);
+  
+  void D_AddFile (const char *file, wad_source_t source, void* const buffer, const size_t size);
+  void AddIWAD(const char *iwad, void* const buffer, const size_t size); 
 }
 
 // Players information
@@ -37,8 +42,6 @@ extern "C" int reachedLevelExit;
 extern "C" int reachedGameEnd;
 extern "C" int gamemap;
 extern "C" int gametic;
-
-uint8_t* _videoBuffer;
 
 struct InitSettings
 {
@@ -61,8 +64,6 @@ ECL_EXPORT void dsda_get_video(int& w, int& h, int& pitch, uint8_t*& buffer, int
 	paletteBuffer = headlessGetPallette();
 }
 
-
-
 ECL_EXPORT void dsda_frame_advance()
 {
 }
@@ -80,13 +81,46 @@ ECL_EXPORT void dsda_set_input_callback(ECL_ENTRY void (*fecb)(void))
 	input_callback_cb = fecb;
 }
 
+bool foundIWAD = false;
 
-ECL_EXPORT int dsda_init(
-	const char* wadFileName,
-	ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize),
-	struct InitSettings *settings)
+ECL_EXPORT int dsda_init(struct InitSettings *settings)
 {
-    _videoBuffer = (uint8_t*) alloc_invisible(4 * 1024 * 1024);
-	return 1;
+  return 1;
 }
 
+
+ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize))
+{
+  auto wadFileBuffer = (unsigned char*) malloc(size);
+  int loadSize = feload_archive_cb(filename, wadFileBuffer, size);
+  if (loadSize != size) { fprintf(stderr, "Error loading '%s': read %d bytes, but expected %d bytes\n", filename, loadSize, size); return 0; }
+
+  // Safety checks
+  bool recognizedFormat = false;
+
+  // Loading PWAD
+  if (wadFileBuffer[0] == 'P' && wadFileBuffer[1] == 'W' && wadFileBuffer[2] == 'A' && wadFileBuffer[3] == 'D')
+  {
+	D_AddFile(filename, source_pwad, wadFileBuffer, size);
+    recognizedFormat = true;
+  } 
+
+  // Loading IWAD
+  if (wadFileBuffer[0] == 'I' && wadFileBuffer[1] == 'W' && wadFileBuffer[2] == 'A' && wadFileBuffer[3] == 'D')
+  {
+    recognizedFormat = true;
+
+    // Checking for repeated IWAD
+	if (foundIWAD == true) { fprintf(stderr, "Error with '%s': an IWAD was already loaded before\n", filename); return 0; }
+	foundIWAD = true;
+
+    // Loading IWAD
+	AddIWAD(filename, wadFileBuffer, size);
+  } 
+ 
+  // Checking for correct header
+  if (recognizedFormat) { fprintf(stderr, "Error with '%s': it contains an unrecognized header\n", filename); return 0; }
+
+  // Return 1 for all ok
+  return 1;
+}

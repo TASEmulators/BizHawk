@@ -6,6 +6,7 @@
 	},
 	"files.associations": {
 		"*.jaffar": "json",
-		"cstdint": "cpp"
+		"cstdint": "cpp",
+		"*.ipp": "cpp"
 	}
 }
