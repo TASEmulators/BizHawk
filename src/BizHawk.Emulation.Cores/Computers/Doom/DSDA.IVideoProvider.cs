@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			using (_elf.EnterExit())
 			{
 				var src = IntPtr.Zero;
-				Core.stella_get_video(out var width, out var height, out _, ref src);
+				Core.dsda_get_video(out var width, out var height, out _, ref src);
 
 				BufferWidth = width;
 				BufferHeight = height;

@@ -52,22 +52,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					Core = BizInvoker.GetInvoker<CInterface>(_elf, _elf, callingConventionAdapter);
 
 					_romfile = lp.Roms[0].RomData;
-					var initResult = Core.stella_init("rom.a26", _loadCallback, _syncSettings.GetNativeSettings(lp.Game));
+					var initResult = Core.dsda_init("rom.a26", _loadCallback, _syncSettings.GetNativeSettings(lp.Game));
 
-					if (!initResult) throw new Exception($"{nameof(Core.stella_init)}() failed");
+					if (!initResult) throw new Exception($"{nameof(Core.dsda_init)}() failed");
 
-					Core.stella_get_frame_rate(out var fps);
-
+					int fps = 35;
 					InitSound(fps);
 
-					var regionId = Core.stella_get_region();
-					Region = regionId switch
-					{
-						0 => DisplayType.NTSC,
-						1 => DisplayType.PAL,
-						2 => DisplayType.SECAM,
-						_ => throw new InvalidOperationException()
-					};
+					Region = DisplayType.NTSC; 
 
 					// ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
 					_vidPalette = Region switch
@@ -81,13 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					VsyncNumerator = fps;
 					VsyncDenominator = 1;
 
-					Core.stella_set_input_callback(_inputCallback);
-
-					var ptr = Core.stella_get_cart_type();
-					var cartType = Marshal.PtrToStringAnsi(ptr);
-					Console.WriteLine($"[Stella] Cart type loaded: {cartType}");
-
-					RomDetails = $"{lp.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(_romfile)}\r\n{MD5Checksum.ComputePrefixedHex(_romfile)}\r\nMapper Impl \"{cartType}\"";
+					RomDetails = $"{lp.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(_romfile)}\r\n{MD5Checksum.ComputePrefixedHex(_romfile)}";
 
 					_elf.Seal();
 				}

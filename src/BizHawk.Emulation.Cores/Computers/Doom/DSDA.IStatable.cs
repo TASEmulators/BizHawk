@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			LagCount = reader.ReadInt32();
 			IsLagFrame = reader.ReadBoolean();
 			// any managed pointers that we sent to the core need to be resent now!
-			Core.stella_set_input_callback(_inputCallback);
+			//Core.stella_set_input_callback(_inputCallback);
 			UpdateVideo();
 		}
 
