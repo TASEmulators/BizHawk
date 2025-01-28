@@ -51,13 +51,16 @@ ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
 	*buffer = nullptr;
 }
 
-ECL_EXPORT void dsda_get_video(int& w, int& h, int& pitch, uint8_t*& buffer)
+ECL_EXPORT void dsda_get_video(int& w, int& h, int& pitch, uint8_t*& buffer, int& paletteSize, uint32_t*& paletteBuffer)
 {
 	buffer = (uint8_t*)headlessGetVideoBuffer();
 	w = headlessGetVideoWidth();
 	h = headlessGetVideoHeight();
 	pitch = headlessGetVideoPitch();
+	paletteSize = 256;
+	paletteBuffer = headlessGetPallette();
 }
+
 
 
 ECL_EXPORT void dsda_frame_advance()
