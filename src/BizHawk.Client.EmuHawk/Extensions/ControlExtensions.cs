@@ -415,5 +415,17 @@ namespace BizHawk.Client.EmuHawk
 				// Eat it
 			}
 		}
+
+		public static void EnableCategoriesIfUsed(this PropertyGrid grid)
+		{
+			foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(grid.SelectedObject))
+			{
+				if (property.Category is not null)
+				{
+					grid.PropertySort = PropertySort.Categorized;
+					return;
+				}
+			}
+		}
 	}
 }
