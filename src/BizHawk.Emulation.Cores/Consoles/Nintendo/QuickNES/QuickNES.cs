@@ -47,6 +47,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				InitAudio();
 				InitMemoryDomains();
 
+				// Setting input callback
+				QN.qn_set_input_callback(_inputCallback);
+
 				int mapper = 0;
 				string mappername = Marshal.PtrToStringAnsi(QN.qn_get_mapper(Context, ref mapper));
 				Console.WriteLine($"{CoreNames.QuickNes}: Booted with Mapper #{mapper} \"{mappername}\"");

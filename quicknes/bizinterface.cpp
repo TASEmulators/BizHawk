@@ -50,6 +50,11 @@ QN_EXPORT const char *qn_set_sample_rate(quickerNES::Emu *e, int rate)
 	return ret;
 }
 
+void (*input_callback_cb)(void) = nullptr;
+QN_EXPORT void qn_set_input_callback(void (*fecb)(void))
+{
+	input_callback_cb = fecb;
+}
 
 QN_EXPORT const char *qn_emulate_frame(quickerNES::Emu *e, uint32_t pad1, uint32_t pad2, uint8_t arkanoidPosition, uint8_t arkanoidFire, int controllerType)
 {
