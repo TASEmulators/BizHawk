@@ -53,10 +53,10 @@ ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
 
 ECL_EXPORT void dsda_get_video(int& w, int& h, int& pitch, uint8_t*& buffer)
 {
-	buffer = _videoBuffer;
-	w = 320;
-	h = 200;
-	pitch = 0;
+	buffer = (uint8_t*)headlessGetVideoBuffer();
+	w = headlessGetVideoWidth();
+	h = headlessGetVideoHeight();
+	pitch = headlessGetVideoPitch();
 }
 
 
