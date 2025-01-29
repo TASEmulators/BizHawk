@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Frozen;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BizHawk.Client.Common
 {
@@ -27,10 +29,14 @@ namespace BizHawk.Client.Common
 		public const string VsyncAttoseconds = "VsyncAttoseconds"; // used for Arcade due to it representing thousands of different systems with different vsync rates
 		public const string Core = "Core";
 
-		public static bool Contains(string val) =>
-			typeof(HeaderKeys)
-				.GetFields()
-				.Select(field => field.GetValue(null).ToString())
-				.Contains(val);
+		private static FrozenSet<string> _allValues;
+
+		private static ISet<string> AllValues
+			=> _allValues ??= typeof(HeaderKeys).GetFields()
+				.Select(static field => field.GetValue(null).ToString())
+				.ToFrozenSet();
+
+		public static bool Contains(string val)
+			=> AllValues.Contains(val);
 	}
 }
