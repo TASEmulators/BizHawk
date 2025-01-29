@@ -793,7 +793,15 @@ namespace BizHawk.Client.Common
 				{
 					// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
 					// game name == name of core
-					Game = game = new GameInfo { Name = Path.GetFileNameWithoutExtension(launchLibretroCore), System = VSystemID.Raw.Libretro };
+					game = Disc.IsValidExtension(file.Extension)
+						? MakeGameFromDisc(
+							InstantiateDiscFor(path),
+							ext: file.Extension,
+							name: Path.GetFileNameWithoutExtension(file.Name),
+							fastFailUnsupportedSystems: false)
+						: new RomGame(file).GameInfo;
+					game.Name = $"{game.Name} [{Path.GetFileNameWithoutExtension(launchLibretroCore)}]";
+					game.System = VSystemID.Raw.Libretro;
 					var retro = new LibretroHost(nextComm, game, launchLibretroCore);
 					nextEmulator = retro;
 
@@ -841,16 +849,6 @@ namespace BizHawk.Client.Common
 							retro.Dispose();
 							return false;
 						}
-						// else success; update game name
-						var ext = file.Extension;
-						var gi = Disc.IsValidExtension(ext)
-							? MakeGameFromDisc(
-								InstantiateDiscFor(path),
-								ext: ext,
-								name: Path.GetFileNameWithoutExtension(file.Name),
-								fastFailUnsupportedSystems: false)
-							: new RomGame(file).GameInfo;
-						Game.Name = $"{gi.Name} [{Game.Name/* core name */}]";
 					}
 				}
 				else
