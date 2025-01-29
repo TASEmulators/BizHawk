@@ -229,7 +229,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		private GameInfo MakeGameFromDisc(Disc disc, string ext, string name)
+		private GameInfo MakeGameFromDisc(Disc disc, string ext, string name, bool fastFailUnsupportedSystems = true)
 		{
 			// TODO - use more sophisticated IDer
 			var discType = new DiscIdentifier(disc).DetectDiscType();
@@ -240,11 +240,11 @@ namespace BizHawk.Client.Common
 			if (game is not null) return game;
 			// else try to use our wizard methods
 			game = new GameInfo { Name = name, Hash = discHash };
-			Exception NoCoreForSystem(string sysID)
+			void NoCoreForSystem(string sysID)
 			{
 				// no supported emulator core for these (yet)
 				game.System = sysID;
-				return new NoAvailableCoreException(sysID);
+				if (fastFailUnsupportedSystems) throw new NoAvailableCoreException(sysID);
 			}
 			switch (discType)
 			{
@@ -268,25 +268,35 @@ namespace BizHawk.Client.Common
 					break;
 
 				case DiscType.Amiga:
-					throw NoCoreForSystem(VSystemID.Raw.Amiga);
+					NoCoreForSystem(VSystemID.Raw.Amiga);
+					break;
 				case DiscType.CDi:
-					throw NoCoreForSystem(VSystemID.Raw.PhillipsCDi);
+					NoCoreForSystem(VSystemID.Raw.PhillipsCDi);
+					break;
 				case DiscType.Dreamcast:
-					throw NoCoreForSystem(VSystemID.Raw.Dreamcast);
+					NoCoreForSystem(VSystemID.Raw.Dreamcast);
+					break;
 				case DiscType.GameCube:
-					throw NoCoreForSystem(VSystemID.Raw.GameCube);
+					NoCoreForSystem(VSystemID.Raw.GameCube);
+					break;
 				case DiscType.NeoGeoCD:
-					throw NoCoreForSystem(VSystemID.Raw.NeoGeoCD);
+					NoCoreForSystem(VSystemID.Raw.NeoGeoCD);
+					break;
 				case DiscType.Panasonic3DO:
-					throw NoCoreForSystem(VSystemID.Raw.Panasonic3DO);
+					NoCoreForSystem(VSystemID.Raw.Panasonic3DO);
+					break;
 				case DiscType.Playdia:
-					throw NoCoreForSystem(VSystemID.Raw.Playdia);
+					NoCoreForSystem(VSystemID.Raw.Playdia);
+					break;
 				case DiscType.SonyPS2:
-					throw NoCoreForSystem(VSystemID.Raw.PS2);
+					NoCoreForSystem(VSystemID.Raw.PS2);
+					break;
 				case DiscType.SonyPSP:
-					throw NoCoreForSystem(VSystemID.Raw.PSP);
+					NoCoreForSystem(VSystemID.Raw.PSP);
+					break;
 				case DiscType.Wii:
-					throw NoCoreForSystem(VSystemID.Raw.Wii);
+					NoCoreForSystem(VSystemID.Raw.Wii);
+					break;
 
 				case DiscType.AudioDisc:
 				case DiscType.UnknownCDFS:
@@ -834,7 +844,11 @@ namespace BizHawk.Client.Common
 						// else success; update game name
 						var ext = file.Extension;
 						var gi = Disc.IsValidExtension(ext)
-							? MakeGameFromDisc(InstantiateDiscFor(path), ext: ext, name: Path.GetFileNameWithoutExtension(file.Name))
+							? MakeGameFromDisc(
+								InstantiateDiscFor(path),
+								ext: ext,
+								name: Path.GetFileNameWithoutExtension(file.Name),
+								fastFailUnsupportedSystems: false)
 							: new RomGame(file).GameInfo;
 						Game.Name = $"{gi.Name} [{Game.Name/* core name */}]";
 					}
