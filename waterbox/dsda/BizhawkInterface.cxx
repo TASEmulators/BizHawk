@@ -94,6 +94,10 @@ ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY
 {
   printf("Loading WAD '%s' of size %d...\n", filename, size);
   auto wadFileBuffer = (unsigned char*) malloc(size);
+
+  if (wadFileBuffer == NULL) { fprintf(stderr, "Error creating buffer. Do we have enough memory in the waterbox?\n"); return 0; }
+  else printf("Created buffer at address: %p\n", wadFileBuffer);
+  
   int loadSize = feload_archive_cb(filename, wadFileBuffer, size);
   if (loadSize != size) { fprintf(stderr, "Error loading '%s': read %d bytes, but expected %d bytes\n", filename, loadSize, size); return 0; }
 
