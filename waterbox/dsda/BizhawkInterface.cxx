@@ -1,4 +1,5 @@
 #include <vector>
+#include <string>
 #include <cstdio>
 #include <cstdint>
 #include "BizhawkInterface.hxx"
@@ -95,18 +96,35 @@ ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY
   int loadSize = feload_archive_cb(filename, wadFileBuffer, size);
   if (loadSize != size) { fprintf(stderr, "Error loading '%s': read %d bytes, but expected %d bytes\n", filename, loadSize, size); return 0; }
 
+  // Check size is enough
+  if (size < 5) { fprintf(stderr, "Error loading '%s': read %d bytes, which is too small\n", filename, size); return 0; }
+
+  // Getting wad header
+  char header[5];
+  header[0] = wadFileBuffer[0];
+  header[1] = wadFileBuffer[1];
+  header[2] = wadFileBuffer[2];
+  header[3] = wadFileBuffer[3];
+  header[4] = '\0';
+
+  // Getting string
+  std::string headerString(header);
+
   // Safety checks
   bool recognizedFormat = false;
 
   // Loading PWAD
-  if (wadFileBuffer[0] == 'P' && wadFileBuffer[1] == 'W' && wadFileBuffer[2] == 'A' && wadFileBuffer[3] == 'D')
+  if (headerString == "PWAD")
   {
+	recognizedFormat = true;
+
+    // Loading PWAD
 	D_AddFile(filename, source_pwad, wadFileBuffer, size);
-    recognizedFormat = true;
+	printf("Loaded PWAD '%s' correctly\n", filename);
   } 
 
   // Loading IWAD
-  if (wadFileBuffer[0] == 'I' && wadFileBuffer[1] == 'W' && wadFileBuffer[2] == 'A' && wadFileBuffer[3] == 'D')
+  if (headerString == "IWAD")
   {
     recognizedFormat = true;
 
@@ -116,10 +134,11 @@ ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY
 
     // Loading IWAD
 	AddIWAD(filename, wadFileBuffer, size);
+    printf("Loaded IWAD '%s' correctly\n", filename);
   } 
  
   // Checking for correct header
-  if (recognizedFormat) { fprintf(stderr, "Error with '%s': it contains an unrecognized header\n", filename); return 0; }
+  if (recognizedFormat) { fprintf(stderr, "Error with '%s': it contains an unrecognized header '%s'\n", filename, header); return 0; }
 
   // Return 1 for all ok
   return 1;
