@@ -487,7 +487,9 @@ namespace BizHawk.Emulation.Common
 			game.Name = Path.GetFileNameWithoutExtension(fileName)?.Replace('_', ' ');
 
 			// If filename is all-caps, then attempt to proper-case the title.
+#pragma warning disable CA1862 // testing whether it's all-caps
 			if (!string.IsNullOrWhiteSpace(game.Name) && game.Name == game.Name.ToUpperInvariant())
+#pragma warning restore CA1862
 			{
 				game.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(game.Name.ToLowerInvariant());
 			}

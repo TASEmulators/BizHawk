@@ -1388,7 +1388,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var bb = Config.ScreenshotCaptureOsd ? CaptureOSD() : MakeScreenshotImage())
 			{
 				using var img = bb.ToSysdrawingBitmap();
-				if (Path.GetExtension(path).ToUpperInvariant() == ".JPG")
+				if (".JPG".EqualsIgnoreCase(Path.GetExtension(path)))
 				{
 					img.Save(fi.FullName, ImageFormat.Jpeg);
 				}
@@ -3724,7 +3724,8 @@ namespace BizHawk.Client.EmuHawk
 					InputManager.SyncControls(Emulator, MovieSession, Config);
 					_multiDiskMode = false;
 
-					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && Emulator is not LibsnesCore)
+					if (oaOpenrom is not null && ".xml".EqualsIgnoreCase(Path.GetExtension(oaOpenrom.Path.Replace("|", "")))
+						&& Emulator is not LibsnesCore)
 					{
 						// this is a multi-disk bundler file
 						// determine the xml assets and create RomStatusDetails for all of them

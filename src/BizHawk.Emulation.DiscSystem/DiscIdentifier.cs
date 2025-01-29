@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.DiscSystem
 					return DiscType.Playdia;
 
 				if (sysId is "CDTV" or "AMIGA"
-					|| iso.Root.Children.Keys.Any(k => k.ToLowerInvariant().Contains("cd32")))
+					|| iso.Root.Children.Keys.Any(static k => k.ContainsIgnoreCase("cd32")))
 				{
 					return DiscType.Amiga;
 				}

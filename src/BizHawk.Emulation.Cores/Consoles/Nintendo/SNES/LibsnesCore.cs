@@ -4,6 +4,7 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.W65816;
 
@@ -279,7 +280,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// every rom requests msu1.rom... why? who knows.
 			// also handle msu-1 pcm files here
 			bool isMsu1Rom = hint == "msu1.rom";
-			bool isMsu1Pcm = Path.GetExtension(hint).ToLowerInvariant() == ".pcm";
+			var isMsu1Pcm = ".pcm".EqualsIgnoreCase(Path.GetExtension(hint));
 			if (isMsu1Rom || isMsu1Pcm)
 			{
 				// well, check if we have an msu-1 xml

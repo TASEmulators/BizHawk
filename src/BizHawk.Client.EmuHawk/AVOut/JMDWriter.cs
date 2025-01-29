@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 
 using BizHawk.Client.Common;
-
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -600,7 +600,7 @@ namespace BizHawk.Client.EmuHawk
 		public void OpenFile(string baseName)
 		{
 			string ext = Path.GetExtension(baseName);
-			if (ext == null || ext.ToLowerInvariant() != ".jmd")
+			if (ext?.EqualsIgnoreCase(".jmd") is true or null)
 			{
 				baseName += ".jmd";
 			}

@@ -655,7 +655,7 @@ namespace BizHawk.Client.Common
 		private static bool IsDiscForXML(string system, string path)
 		{
 			var ext = Path.GetExtension(path);
-			if (system == VSystemID.Raw.Arcade && ext.ToLowerInvariant() == ".chd")
+			if (system is VSystemID.Raw.Arcade && ".chd".EqualsIgnoreCase(ext))
 			{
 				return false;
 			}
