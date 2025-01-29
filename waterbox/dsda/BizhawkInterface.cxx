@@ -138,7 +138,7 @@ ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY
   } 
  
   // Checking for correct header
-  if (recognizedFormat) { fprintf(stderr, "Error with '%s': it contains an unrecognized header '%s'\n", filename, header); return 0; }
+  if (recognizedFormat == false) { fprintf(stderr, "Error with '%s': it contains an unrecognized header '%s'\n", filename, header); return 0; }
 
   // Return 1 for all ok
   return 1;
