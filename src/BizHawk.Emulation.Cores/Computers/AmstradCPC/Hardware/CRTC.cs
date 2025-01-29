@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// Datasheet:    {none}
 	///
 	/// </summary>
-	public abstract partial class CRTC : IPortIODevice
+	public abstract class CRTC : IPortIODevice
 	{
 		/// <summary>
 		/// Instantiation helper
