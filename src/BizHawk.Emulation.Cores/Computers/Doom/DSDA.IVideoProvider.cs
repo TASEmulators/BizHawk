@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				// Handling pallette buffer
 				PaletteSize = paletteSize;
 				if (_palBuffer.Length < PaletteSize) _palBuffer = new int[PaletteSize];
-				var paletteBuffer = (byte*) palletteBufferSrc.ToPointer();
+				var paletteBuffer = (int*) palletteBufferSrc.ToPointer();
 				for (var i = 0; i < _palBuffer.Length; i++) _palBuffer[i] = paletteBuffer[i];
 
 				// Handling video buffer
