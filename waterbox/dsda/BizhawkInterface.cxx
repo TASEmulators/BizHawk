@@ -92,6 +92,7 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings)
 
 ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize))
 {
+  printf("Loading WAD '%s' of size %d...\n", filename, size);
   auto wadFileBuffer = (unsigned char*) malloc(size);
   int loadSize = feload_archive_cb(filename, wadFileBuffer, size);
   if (loadSize != size) { fprintf(stderr, "Error loading '%s': read %d bytes, but expected %d bytes\n", filename, loadSize, size); return 0; }
