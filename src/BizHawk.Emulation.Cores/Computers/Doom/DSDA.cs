@@ -1,10 +1,14 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
+using static BizHawk.Emulation.Cores.Computers.Amiga.LibUAE.FrameInfo;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
 {
@@ -14,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		portedVersion: "0.28.2 (fe0dfa0)", // in the middle of 6.7.1 and 7.0
 		portedUrl: "https://github.com/kraflab/dsda-doom")]
 	[ServiceNotApplicable(typeof(ISaveRam))]
-	public partial class DSDA : IRomInfo, IRegionable
+	public partial class DSDA : IRomInfo
 	{
 		[CoreConstructor(VSystemID.Raw.Doom)]
 		public DSDA(CoreLoadParameters<object, DoomSyncSettings> lp)
@@ -23,15 +27,28 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			ServiceProvider = ser;
 			_syncSettings = lp.SyncSettings ?? new DoomSyncSettings();
 			_controllerDeck = new DoomControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
+			_loadCallback = LoadCallback;
+
+			// Getting dsda-doom.wad -- required by DSDA
+			_dsdaWadFileData = Zstd.DecompressZstdStream(new MemoryStream(Resources.DSDA_DOOM_WAD.Value)).ToArray();
+
+			// Gathering information for the rest of the wads
+			_wadFiles = lp.Roms;
+
+			// Getting sum of wad sizes for the accurate calculation of the invisible heap
+			uint totalWadSize = (uint)_dsdaWadFileData.Length;
+			foreach (var wadFile in _wadFiles) totalWadSize += (uint) wadFile.FileData.Length;
+			uint totalWadSizeKb = ((uint)totalWadSize / 1024) + 1;
+			Console.WriteLine("Reserving {0}kb for WAD file memory", totalWadSizeKb);
 
 			_elf = new WaterboxHost(new WaterboxOptions
 			{
 				Path = PathUtils.DllDirectoryPath,
 				Filename = "dsda.wbx",
-				SbrkHeapSizeKB = 4 * 1024,
+				SbrkHeapSizeKB = 64 * 1024, // Things can get pretty heavy -- reserve enough memory
 				SealedHeapSizeKB = 4 * 1024,
-				InvisibleHeapSizeKB = 4 * 1024,
-				PlainHeapSizeKB = 4 * 1024,
+				InvisibleHeapSizeKB = totalWadSizeKb + 4 * 1024,
+				PlainHeapSizeKB = 4 * 1024, 
 				MmapHeapSizeKB = 4 * 1024,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
@@ -39,41 +56,36 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			try
 			{
-				_loadCallback = LoadCallback;
-				_inputCallback = InputCallback;
-
 				var callingConventionAdapter = CallingConventionAdapters.MakeWaterbox(
 				[
-					_loadCallback, _inputCallback
+					_loadCallback
 				], _elf);
 
 				using (_elf.EnterExit())
 				{
 					Core = BizInvoker.GetInvoker<CInterface>(_elf, _elf, callingConventionAdapter);
 
-					_romfile = lp.Roms[0].RomData;
-					var initResult = Core.dsda_init("rom.a26", _loadCallback, _syncSettings.GetNativeSettings(lp.Game));
+					// Adding dsda-doom wad file
+					Core.dsda_add_wad_file(_dsdaWadFileName, _dsdaWadFileData.Length, _loadCallback);
+
+					// Adding rom files
+					foreach (var wadFile in _wadFiles)
+					{
+						var loadWadResult = Core.dsda_add_wad_file(wadFile.RomPath, wadFile.RomData.Length, _loadCallback);
+						if (!loadWadResult) throw new Exception($"Could not load WAD file: '{wadFile.RomPath}'");
+					}
+
+					var initResult = Core.dsda_init(_syncSettings.GetNativeSettings(lp.Game));
 
 					if (!initResult) throw new Exception($"{nameof(Core.dsda_init)}() failed");
 
 					int fps = 35;
 					InitSound(fps);
 
-					Region = DisplayType.NTSC; 
-
-					// ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
-					_vidPalette = Region switch
-					{
-						DisplayType.NTSC => NTSCPalette,
-						DisplayType.PAL => PALPalette,
-						DisplayType.SECAM => SecamPalette,
-						_ => throw new InvalidOperationException()
-					};
-
 					VsyncNumerator = fps;
 					VsyncDenominator = 1;
 
-					RomDetails = $"{lp.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(_romfile)}\r\n{MD5Checksum.ComputePrefixedHex(_romfile)}";
+					RomDetails = $"{lp.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(_wadFiles[0].RomData)}\r\n{MD5Checksum.ComputePrefixedHex(_wadFiles[0].RomData)}";
 
 					_elf.Seal();
 				}
@@ -100,7 +112,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
 		private readonly CInterface.load_archive_cb _loadCallback;
 
-		private readonly byte[] _romfile;
+		private readonly string _dsdaWadFileName = "dsda-doom.wad";
+		private readonly byte[] _dsdaWadFileData;
+		private List<IRomAsset> _wadFiles;
+		
 		private readonly CInterface Core;
 		private readonly WaterboxHost _elf;
 
@@ -123,14 +138,27 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				return 0;
 			}
 
-			if (filename == "PRIMARY_ROM")
+			if (filename == _dsdaWadFileName)
 			{
-				if (_romfile == null)
+				if (_dsdaWadFileData == null)
 				{
-					Console.WriteLine("Couldn't satisfy firmware request PRIMARY_ROM because none was provided.");
+					Console.WriteLine("Could not read from 'dsda-doom.wad'. File must be missing from the Resources folder.");
 					return 0;
 				}
-				srcdata = _romfile;
+				srcdata = _dsdaWadFileData;
+			}
+
+			foreach (var wadFile in _wadFiles)
+			{
+				if (filename == wadFile.RomPath)
+				{
+					if (wadFile.FileData == null)
+					{
+						Console.WriteLine("Could not read from WAD file '{0}'", filename);
+						return 0;
+					}
+					srcdata = wadFile.FileData;
+				}
 			}
 
 			if (srcdata != null)
@@ -150,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 			else
 			{
-				throw new InvalidOperationException("Unknown error processing firmware");
+				throw new InvalidOperationException($"Unknown error processing file '{filename}'");
 			}
 		}
 	}

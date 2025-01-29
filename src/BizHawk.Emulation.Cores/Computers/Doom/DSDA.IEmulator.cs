@@ -24,12 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			if (controller.IsPressed("Toggle Left Difficulty"))	_leftDifficultyToggled = !_leftDifficultyToggled;
 			if (controller.IsPressed("Toggle Right Difficulty")) _rightDifficultyToggled = !_rightDifficultyToggled;
 
-			IsLagFrame = true;
-
 			Core.dsda_frame_advance();
-
-			if (IsLagFrame)
-				LagCount++;
 
 			if (render)
 				UpdateVideo();
@@ -51,8 +46,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public void ResetCounters()
 		{
 			Frame = 0;
-			LagCount = 0;
-			IsLagFrame = false;
 		}
 
 		public void Dispose()
