@@ -67,6 +67,13 @@ ECL_EXPORT void dsda_get_video(int& w, int& h, int& pitch, uint8_t*& buffer, int
 
 ECL_EXPORT void dsda_frame_advance()
 {
+	// Running a single tick
+	headlessRunSingleTick();
+
+	// if(_renderingEnabled == true) 
+	// {
+		headlessUpdateVideo();
+	// }
 }
 
 ECL_ENTRY void (*input_callback_cb)(void);
@@ -86,6 +93,74 @@ bool foundIWAD = false;
 
 ECL_EXPORT int dsda_init(struct InitSettings *settings)
 {
+  // Creating arguments
+  int argc = 0;
+  char** argv = (char**) alloc_invisible (sizeof(char*) * 512);
+  
+  int _skill = 4;
+  int _episode = 1;
+  int _map = 1;
+  int _compatibilityLevel = 3;
+  bool _fastMonsters = false;
+  bool _noMonsters = false;
+  bool _monstersRespawn = false;
+
+  // Specifying executable name
+  char arg0[] = "dsda";
+  argv[argc++] = arg0;
+
+  // Eliminating restrictions to TAS inputs
+  char arg2[] = "-tas";
+  argv[argc++] = arg2;
+  
+  // Specifying skill level
+  char arg3[] = "-skill";
+  argv[argc++] = arg3;
+  char argSkill[512];
+  sprintf(argSkill, "%d", _skill);
+  argv[argc++] = argSkill;
+  
+  // Specifying episode and map
+  char arg4[] = "-warp";
+  argv[argc++] = arg4;
+  char argEpisode[512];
+  if (_episode > 0)
+  {
+  	sprintf(argEpisode, "%d", _episode);
+  	argv[argc++] = argEpisode;
+  }
+  char argMap[512];
+  sprintf(argMap, "%d", _map);
+  argv[argc++] = argMap;
+  
+  // Specifying comp level
+  char arg5[] = "-complevel";
+  argv[argc++] = arg5;
+  char argCompatibilityLevel[512];
+  sprintf(argCompatibilityLevel, "%d", _compatibilityLevel);
+  argv[argc++] = argCompatibilityLevel;
+  
+  // Specifying fast monsters
+  char arg6[] = "-fast";
+  if (_fastMonsters) argv[argc++] = arg6;
+  
+  // Specifying monsters respawn
+  char arg7[] = "-respawn";
+  if (_monstersRespawn) argv[argc++] = arg7;
+  
+  // Specifying no monsters
+  char arg8[] = "-nomonsters";
+  if (_noMonsters) argv[argc++] = arg8;
+  
+  // Initializing DSDA core
+  headlessMain(argc, argv);
+
+  // Enabling rendering
+  headlessEnableRendering();
+
+  // Enabling DSDA output, for debugging
+  enableOutput = 1;
+
   return 1;
 }
 
@@ -93,7 +168,7 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings)
 ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize))
 {
   printf("Loading WAD '%s' of size %d...\n", filename, size);
-  auto wadFileBuffer = (unsigned char*) malloc(size);
+  auto wadFileBuffer = (unsigned char*) alloc_invisible(size);
 
   if (wadFileBuffer == NULL) { fprintf(stderr, "Error creating buffer. Do we have enough memory in the waterbox?\n"); return 0; }
   else printf("Created buffer at address: %p\n", wadFileBuffer);
@@ -138,6 +213,7 @@ ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY
 	foundIWAD = true;
 
     // Loading IWAD
+	printf("Loading IWAD '%s'...\n", filename);
 	AddIWAD(filename, wadFileBuffer, size);
     printf("Loaded IWAD '%s' correctly\n", filename);
   } 
