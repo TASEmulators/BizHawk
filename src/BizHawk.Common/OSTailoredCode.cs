@@ -87,7 +87,8 @@ namespace BizHawk.Common
 			return (winVer, null);
 		});
 
-		private static readonly Lazy<bool> _isWSL = new(() => IsUnixHost && SimpleSubshell("uname", "-r", "missing uname?").Contains("microsoft", StringComparison.InvariantCultureIgnoreCase));
+		private static readonly Lazy<bool> _isWSL = new(static () => IsUnixHost
+			&& SimpleSubshell(cmd: "uname", args: "-r", noOutputMsg: "missing uname?").Contains("microsoft", StringComparison.OrdinalIgnoreCase));
 
 		public static (WindowsVersion Version, Version? Win10PlusVersion)? HostWindowsVersion => _HostWindowsVersion.Value;
 

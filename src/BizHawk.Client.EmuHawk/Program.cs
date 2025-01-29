@@ -270,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
-			if (Array.Exists(args, arg => arg.StartsWith("--gdi", StringComparison.InvariantCultureIgnoreCase)))
+			if (Array.Exists(args, static arg => arg.StartsWith("--gdi", StringComparison.OrdinalIgnoreCase)))
 			{
 				initialConfig.DispMethod = EDispMethod.GdiPlus;
 			}

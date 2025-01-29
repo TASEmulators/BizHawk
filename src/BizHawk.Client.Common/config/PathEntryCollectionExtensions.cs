@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 			var globalBase = collection[PathEntryCollection.GLOBAL, "Base"].Path;
 
 			// if %exe% prefixed then substitute exe path and repeat
-			if (globalBase.StartsWith("%exe%", StringComparison.InvariantCultureIgnoreCase))
+			if (globalBase.StartsWith("%exe%", StringComparison.OrdinalIgnoreCase))
 			{
 				globalBase = PathUtils.ExeDirectoryPath + globalBase.Substring(5);
 			}
