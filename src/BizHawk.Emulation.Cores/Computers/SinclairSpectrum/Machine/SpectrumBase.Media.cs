@@ -245,7 +245,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			string hdr = Encoding.ASCII.GetString(data.Take(16).ToArray());
 
 			// disk checking first
-			if (hdr.Contains("EXTENDED CPC DSK", StringComparison.OrdinalIgnoreCase) || hdr.Contains("MV - CPC", StringComparison.OrdinalIgnoreCase))
+			if (hdr.ContainsIgnoreCase("MV - CPC") || hdr.ContainsIgnoreCase("EXTENDED CPC DSK"))
 			{
 				// spectrum .dsk disk file
 				// check for number of sides
@@ -255,17 +255,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				else
 					return SpectrumMediaType.DiskDoubleSided;
 			}
-			if (hdr.StartsWith("FDI", StringComparison.OrdinalIgnoreCase))
+			if (hdr.StartsWithIgnoreCase("FDI"))
 			{
 				// spectrum .fdi disk file
 				return SpectrumMediaType.Disk;
 			}
-			if (hdr.StartsWith("CAPS", StringComparison.OrdinalIgnoreCase))
+			if (hdr.StartsWithIgnoreCase("CAPS"))
 			{
 				// IPF format file
 				return SpectrumMediaType.Disk;
 			}
-			if (hdr.StartsWith("UDI!", StringComparison.OrdinalIgnoreCase) && data[0x08] == 0)
+			if (hdr.StartsWithIgnoreCase("UDI!") && data[0x08] is 0)
 			{
 				// UDI v1.0
 				if (hdr.StartsWithOrdinal("udi!"))
@@ -282,22 +282,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			// tape checking
-			if (hdr.StartsWith("ZXTAPE!", StringComparison.OrdinalIgnoreCase))
+			if (hdr.StartsWithIgnoreCase("ZXTAPE!"))
 			{
 				// spectrum .tzx tape file
 				return SpectrumMediaType.Tape;
 			}
-			if (hdr.StartsWith("PZXT", StringComparison.OrdinalIgnoreCase))
+			if (hdr.StartsWithIgnoreCase("PZXT"))
 			{
 				// spectrum .tzx tape file
 				return SpectrumMediaType.Tape;
 			}
-			if (hdr.StartsWith("COMPRESSED SQ", StringComparison.OrdinalIgnoreCase))
+			if (hdr.StartsWithIgnoreCase("COMPRESSED SQ"))
 			{
 				// spectrum .tzx tape file
 				return SpectrumMediaType.Tape;
 			}
-			if (hdr.Contains("WAVE", StringComparison.OrdinalIgnoreCase))
+			if (hdr.ContainsIgnoreCase("WAVE"))
 			{
 				// spectrum .tzx tape file
 				return SpectrumMediaType.Tape;

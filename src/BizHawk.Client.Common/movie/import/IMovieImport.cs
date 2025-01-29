@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -52,15 +53,15 @@ namespace BizHawk.Client.Common
 					// try to generate a matching hash from the original ROM
 					if (Result.Movie.HeaderEntries.TryGetValue(HeaderKeys.Crc32, out string crcHash))
 					{
-						hash = PromptForRom(data => string.Equals(CRC32Checksum.ComputeDigestHex(data), crcHash, StringComparison.OrdinalIgnoreCase));
+						hash = PromptForRom(data => CRC32Checksum.ComputeDigestHex(data).EqualsIgnoreCase(crcHash));
 					}
 					else if (Result.Movie.HeaderEntries.TryGetValue(HeaderKeys.Md5, out string md5Hash))
 					{
-						hash = PromptForRom(data => string.Equals(MD5Checksum.ComputeDigestHex(data), md5Hash, StringComparison.OrdinalIgnoreCase));
+						hash = PromptForRom(data => MD5Checksum.ComputeDigestHex(data).EqualsIgnoreCase(md5Hash));
 					}
 					else if (Result.Movie.HeaderEntries.TryGetValue(HeaderKeys.Sha256, out string sha256Hash))
 					{
-						hash = PromptForRom(data => string.Equals(SHA256Checksum.ComputeDigestHex(data), sha256Hash, StringComparison.OrdinalIgnoreCase));
+						hash = PromptForRom(data => SHA256Checksum.ComputeDigestHex(data).EqualsIgnoreCase(sha256Hash));
 					}
 
 					if (hash is not null)

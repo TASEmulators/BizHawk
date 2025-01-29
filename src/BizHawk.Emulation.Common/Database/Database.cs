@@ -44,8 +44,8 @@ namespace BizHawk.Emulation.Common
 
 		private static void LoadDatabase_Escape(string line, bool inUser, bool silent)
 		{
-			var isUserInclude = line.StartsWith("#includeuser", StringComparison.OrdinalIgnoreCase);
-			if (!isUserInclude && !line.StartsWith("#include", StringComparison.OrdinalIgnoreCase)) return;
+			var isUserInclude = line.StartsWithIgnoreCase("#includeuser");
+			if (!isUserInclude && !line.StartsWithIgnoreCase("#include")) return;
 
 			var searchUser = inUser || isUserInclude;
 			line = line.Substring(isUserInclude ? 12 : 8).TrimStart();

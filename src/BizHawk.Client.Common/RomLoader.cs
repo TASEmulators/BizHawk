@@ -401,7 +401,7 @@ namespace BizHawk.Client.Common
 							return (int)CorePriority.UserPreference;
 						}
 
-						if (string.Equals(c.Name, dbForcedCoreName, StringComparison.OrdinalIgnoreCase))
+						if (c.Name.EqualsIgnoreCase(dbForcedCoreName))
 						{
 							return (int)CorePriority.GameDbPreference;
 						}

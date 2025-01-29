@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -199,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.IsPressed(Keys.Enter) || e.IsPressed(Keys.Tab))
 			{
-				var k = HotkeyInfo.AllHotkeys.FirstOrNull(kvp => string.Compare(kvp.Value.DisplayName, SearchBox.Text, StringComparison.OrdinalIgnoreCase) is 0)?.Key;
+				var k = HotkeyInfo.AllHotkeys.FirstOrNull(kvp => kvp.Value.DisplayName.EqualsIgnoreCase(SearchBox.Text))?.Key;
 
 				// Found
 				if (k is not null)

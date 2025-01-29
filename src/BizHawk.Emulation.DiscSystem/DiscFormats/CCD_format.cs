@@ -212,7 +212,7 @@ namespace BizHawk.Emulation.DiscSystem
 						continue;
 					}
 					int val;
-					if (parts[1].StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+					if (parts[1].StartsWithIgnoreCase("0x"))
 						val = int.Parse(parts[1].Substring(2), NumberStyles.HexNumber);
 					else
 						val = int.Parse(parts[1]);

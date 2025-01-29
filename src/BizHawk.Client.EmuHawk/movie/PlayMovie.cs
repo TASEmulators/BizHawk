@@ -217,13 +217,8 @@ namespace BizHawk.Client.EmuHawk
 			var tas = new List<int>();
 			for (var i = 0; i < indices.Count; i++)
 			{
-				foreach (var ext in MovieService.MovieExtensions)
-				{
-					if ($".{ext}".Equals(Path.GetExtension(_movieList[indices[i]].Filename), StringComparison.OrdinalIgnoreCase))
-					{
-						tas.Add(i);
-					}
-				}
+				var fileExt = Path.GetExtension(_movieList[indices[i]].Filename);
+				if (MovieService.MovieExtensions.Select(static s => $".{s}").Any(fileExt.EqualsIgnoreCase)) tas.Add(i);
 			}
 
 			if (tas.Count is 0)

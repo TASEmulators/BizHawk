@@ -148,7 +148,7 @@ namespace BizHawk.Common.PathExtensions
 			if (fromUri.Scheme != toUri.Scheme) return basePath;
 
 			var relativePath = Uri.UnescapeDataString(fromUri.MakeRelativeUri(toUri).ToString());
-			return (toUri.Scheme.Equals(Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase)
+			return (Uri.UriSchemeFile.EqualsIgnoreCase(toUri.Scheme)
 				? relativePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
 				: relativePath
 			).TrimEnd(dirSepChar);

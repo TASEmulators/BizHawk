@@ -48,21 +48,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					text + (text == "" ? "" : "\r\n") +
 					string.Join("\r\n", _romHashes.Select(static r => $"{r.Value} - {r.Key}"));
 
-				if (text.Contains("imperfect", StringComparison.OrdinalIgnoreCase))
-				{
-					lp.Game.Status = RomStatus.Imperfect;
-				}
-
-				if (text.Contains("unemulated", StringComparison.OrdinalIgnoreCase))
-				{
-					lp.Game.Status = RomStatus.Unimplemented;
-				}
-
-				if (text.Contains("doesn't work", StringComparison.OrdinalIgnoreCase))
-				{
-					lp.Game.Status = RomStatus.NotWorking;
-				}
-
+				if (text.ContainsIgnoreCase("doesn't work")) lp.Game.Status = RomStatus.NotWorking;
+				else if (text.ContainsIgnoreCase("unemulated")) lp.Game.Status = RomStatus.Unimplemented;
+				else if (text.ContainsIgnoreCase("imperfect")) lp.Game.Status = RomStatus.Imperfect;
 			};
 
 			_exe = new(new()

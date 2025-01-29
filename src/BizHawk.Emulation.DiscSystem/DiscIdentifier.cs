@@ -452,7 +452,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private bool SectorContains(string s, int lba = 0)
 		{
 			var data = ReadDataSectorCached(lba);
-			return data != null && Encoding.ASCII.GetString(data).Contains(s, StringComparison.OrdinalIgnoreCase);
+			return data is not null && Encoding.ASCII.GetString(data).ContainsIgnoreCase(s);
 		}
 	}
 }

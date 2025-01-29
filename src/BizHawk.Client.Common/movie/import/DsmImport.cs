@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common
 				{
 					Result.Movie.Comments.Add(ParseHeader(line, "comment"));
 				}
-				else if (line.StartsWith("guid", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("guid"))
 				{
 					// We no longer care to keep this info
 				}
