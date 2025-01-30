@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			_syncSettings = lp.SyncSettings ?? new DoomSyncSettings();
-			_controllerDeck = new DoomControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
+			_controllerDeck = new DoomControllerDeck(_syncSettings.DemoInputFormat, _syncSettings.Player1Present, _syncSettings.Player2Present, _syncSettings.Player3Present, _syncSettings.Player4Present);
 			_loadCallback = LoadCallback;
 
 			// Getting dsda-doom.wad -- required by DSDA
