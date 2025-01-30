@@ -104,11 +104,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[CoreSettings]
 		public class DoomSyncSettings
 		{
-			[DefaultValue(DoomControllerTypes.Joystick)]
-			[DisplayName("Demo Format")]
-			[Description("The demo format provided for the players' input.")]
+			[DefaultValue(DoomControllerTypes.Doom)]
+			[DisplayName("Input Format")]
+			[Description("The format provided for the players' input.")]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public DoomControllerTypes DemoInputFormat { get; set; }
+			public DoomControllerTypes InputFormat { get; set; }
 
 			[DisplayName("Player 1 Present")]
 			[Description("Specifies if player 1 is present")]
