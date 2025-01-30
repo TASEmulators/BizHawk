@@ -1205,11 +1205,8 @@ namespace BizHawk.Client.EmuHawk
 		private void ConsoleContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			RegisteredFunctionsContextItem.Enabled = LuaImp.RegisteredFunctions.Any();
-			CopyContextItem.Enabled = OutputBox.SelectedText.Any();
-			ClearConsoleContextItem.Enabled =
-				SelectAllContextItem.Enabled =
-				OutputBox.Text.Any();
-
+			CopyContextItem.Enabled = OutputBox.SelectedText.Length is not 0;
+			ClearConsoleContextItem.Enabled = SelectAllContextItem.Enabled = OutputBox.Text.Length is not 0;
 			ClearRegisteredFunctionsLogContextItem.Enabled =
 				LuaImp.RegisteredFunctions.Any();
 		}
