@@ -55,14 +55,28 @@ ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
 	*buffer = nullptr;
 }
 
+#define PALETTE_SIZE 256
+uint32_t _convertedPaletteBuffer[PALETTE_SIZE];
 ECL_EXPORT void dsda_get_video(int& w, int& h, int& pitch, uint8_t*& buffer, int& paletteSize, uint32_t*& paletteBuffer)
 {
 	buffer = (uint8_t*)headlessGetVideoBuffer();
 	w = headlessGetVideoWidth();
 	h = headlessGetVideoHeight();
 	pitch = headlessGetVideoPitch();
-	paletteSize = 256;
-	paletteBuffer = headlessGetPallette();
+	paletteSize = PALETTE_SIZE;
+
+	auto palette = headlessGetPallette();
+	for (size_t i = 0; i < PALETTE_SIZE; i++)
+	{
+		uint8_t* srcColor = (uint8_t*)&palette[i];
+		uint8_t* dstColor = (uint8_t*)&_convertedPaletteBuffer[i];
+		dstColor[0] = srcColor[2];
+		dstColor[1] = srcColor[1];
+		dstColor[2] = srcColor[0];
+		dstColor[3] = srcColor[3];
+	} 
+
+	paletteBuffer = _convertedPaletteBuffer;
 }
 
 ECL_EXPORT void dsda_frame_advance()
