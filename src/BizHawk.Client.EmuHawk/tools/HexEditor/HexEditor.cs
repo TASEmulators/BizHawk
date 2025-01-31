@@ -281,7 +281,7 @@ namespace BizHawk.Client.EmuHawk
 			DataSize = (int)size;
 			SetDataSize(DataSize);
 			var addrList = addresses.ToList();
-			if (addrList.Any())
+			if (addrList.Count is not 0)
 			{
 				SetMemoryDomain(domain.Name);
 				SetHighlighted(addrList[0]);
@@ -295,7 +295,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public byte[] ConvertTextToBytes(string str)
 		{
-			if (_textTable.Any())
+			if (_textTable.Count is not 0)
 			{
 				var byteArr = new byte[str.Length];
 				for (var i = 0; i < str.Length; i++)
@@ -722,7 +722,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var addressesString = "0x" + $"{_domain.Size / DataSize:X8}".TrimStart('0');
 			var viewerText = $"{Emulator.SystemId} {_domain}{(_domain.Writable ? string.Empty : " (READ-ONLY)")}  -  {addressesString} addresses";
-			if (_nibbles.Any())
+			if (_nibbles.Count is not 0)
 			{
 				viewerText += $"  Typing: ({MakeNibbles()})";
 			}
@@ -793,7 +793,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var newTitle = "Hex Editor";
 				newTitle += " - Editing Address 0x" + string.Format(_numDigitsStr, _highlightedAddress);
-				if (_secondaryHighlightedAddresses.Any())
+				if (_secondaryHighlightedAddresses.Count is not 0)
 				{
 					newTitle += $" (Selected 0x{_secondaryHighlightedAddresses.Count + (_secondaryHighlightedAddresses.Contains(_highlightedAddress.Value) ? 0 : 1):X})";
 				}
@@ -880,7 +880,7 @@ namespace BizHawk.Client.EmuHawk
 				MainForm.CheatList.RemoveRange(MainForm.CheatList.Where(x => x.Contains(_highlightedAddress.Value)));
 			}
 
-			if (_secondaryHighlightedAddresses.Any())
+			if (_secondaryHighlightedAddresses.Count is not 0)
 			{
 				MainForm.CheatList.RemoveRange(
 					MainForm.CheatList.Where(cheat => !cheat.IsSeparator && cheat.Domain == _domain
@@ -1241,7 +1241,7 @@ namespace BizHawk.Client.EmuHawk
 				SaveAsBinaryMenuItem.Text = "Save as binary...";
 			}
 
-			CloseTableFileMenuItem.Enabled = _textTable.Any();
+			CloseTableFileMenuItem.Enabled = _textTable.Count is not 0;
 		}
 		
 		private void SaveMenuItem_Click(object sender, EventArgs e)

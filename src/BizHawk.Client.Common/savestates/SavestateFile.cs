@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
@@ -99,7 +98,7 @@ namespace BizHawk.Client.Common
 					});
 			}
 
-			if (_userBag.Any())
+			if (_userBag.Count is not 0)
 			{
 				bs.PutLump(BinaryStateLump.UserData,
 					tw =>

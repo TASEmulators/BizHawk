@@ -166,8 +166,6 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public bool Any()
-		{
-			return BoolButtons.Any() || Axes.Any();
-		}
+			=> BoolButtons.Count is not 0 || Axes.Count is not 0;
 	}
 }

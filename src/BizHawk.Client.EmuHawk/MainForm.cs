@@ -4013,13 +4013,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var result = MovieImport.ImportFile(this, MovieSession, fn, Config);
 
-			if (result.Errors.Any())
+			if (result.Errors.Count is not 0)
 			{
 				ShowMessageBox(owner: null, string.Join("\n", result.Errors), "Conversion error", EMsgBoxIcon.Error);
 				return;
 			}
 
-			if (result.Warnings.Any())
+			if (result.Warnings.Count is not 0)
 			{
 				AddOnScreenMessage(result.Warnings.First()); // For now, just show the first warning
 			}

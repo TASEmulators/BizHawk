@@ -1,5 +1,4 @@
 using System.IO;
-using System.Linq;
 using System.Text;
 
 using BizHawk.Emulation.Common;
@@ -289,7 +288,7 @@ namespace BizHawk.Client.Common.movie.import
 								break;
 						}
 
-						if (peripheral != "" && !Result.Warnings.Any())
+						if (peripheral.Length is not 0 && Result.Warnings.Count is 0)
 						{
 							Result.Warnings.Add($"Unable to import {peripheral}. Not supported yet");
 						}

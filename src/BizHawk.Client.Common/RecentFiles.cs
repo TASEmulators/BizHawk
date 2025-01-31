@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 using BizHawk.Common.StringExtensions;
 
@@ -32,15 +31,18 @@ namespace BizHawk.Client.Common
 		public bool Frozen { get; set; }
 
 		[JsonIgnore]
-		public bool Empty => !recentlist.Any();
+		public bool Empty
+			=> recentlist.Count is 0;
 
 		[JsonIgnore]
 		public int Count => recentlist.Count;
 
 		[JsonIgnore]
-		public string MostRecent => recentlist.Any() ? recentlist[0] : "";
+		public string MostRecent
+			=> recentlist.Count is 0 ? string.Empty : recentlist[0];
 
-		public string this[int index] => recentlist.Any() ? recentlist[index] : "";
+		public string this[int index]
+			=> recentlist.Count is 0 ? string.Empty : recentlist[index];
 
 		public IEnumerator<string> GetEnumerator() => recentlist.GetEnumerator();
 

@@ -137,7 +137,7 @@ namespace BizHawk.Client.Common
 
 			_messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
 
-			if (_messages.Any())
+			if (_messages.Count is not 0)
 			{
 				if (_config.StackOSDMessages)
 				{

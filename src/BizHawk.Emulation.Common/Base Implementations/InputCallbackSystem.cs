@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
@@ -21,33 +20,28 @@ namespace BizHawk.Emulation.Common
 		// TODO: these just happen to be all the add/remove methods the client uses, to be thorough the others should be overriden as well
 		public void RemoveAll(IEnumerable<Action> actions)
 		{
-			var hadAny = this.Any();
-
+			var hadAny = Count is not 0;
 			foreach (var action in actions)
 			{
 				Remove(action);
 			}
-
-			var hasAny = this.Any();
-
+			var hasAny = Count is not 0;
 			Changes(hadAny, hasAny);
 		}
 
 		public new void Add(Action item)
 		{
-			var hadAny = this.Any();
+			var hadAny = Count is not 0;
 			base.Add(item);
-			var hasAny = this.Any();
-
+			var hasAny = Count is not 0;
 			Changes(hadAny, hasAny);
 		}
 
 		public new bool Remove(Action item)
 		{
-			var hadAny = this.Any();
+			var hadAny = Count is not 0;
 			var result = base.Remove(item);
-			var hasAny = this.Any();
-
+			var hasAny = Count is not 0;
 			Changes(hadAny, hasAny);
 
 			return result;

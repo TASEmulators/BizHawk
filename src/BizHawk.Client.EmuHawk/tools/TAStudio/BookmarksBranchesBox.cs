@@ -543,7 +543,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateTextColumnWidth()
 		{
-			if (Branches.Any())
+			if (Branches.Count is not 0)
 			{
 				var longestBranchText = Branches
 					.OrderBy(b => b.UserText?.Length ?? 0)

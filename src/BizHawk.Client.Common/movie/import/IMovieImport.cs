@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 using BizHawk.Common;
@@ -45,7 +44,7 @@ namespace BizHawk.Client.Common
 			Result.Movie = session.Get(newFileName);
 			RunImport();
 
-			if (!Result.Errors.Any())
+			if (Result.Errors.Count is 0)
 			{
 				if (string.IsNullOrEmpty(Result.Movie.Hash))
 				{

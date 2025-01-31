@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace BizHawk.Client.Common
+﻿namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
@@ -9,7 +7,7 @@ namespace BizHawk.Client.Common
 		public virtual void StartNewRecording()
 		{
 			Mode = MovieMode.Record;
-			if (Session.Settings.EnableBackupMovies && MakeBackup && Log.Any())
+			if (MakeBackup && Session.Settings.EnableBackupMovies && Log.Count is not 0)
 			{
 				SaveBackup();
 				MakeBackup = false;
