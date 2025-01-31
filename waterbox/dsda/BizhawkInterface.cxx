@@ -32,6 +32,9 @@ extern "C"
   
   void D_AddFile (const char *file, wad_source_t source, void* const buffer, const size_t size);
   void AddIWAD(const char *iwad, void* const buffer, const size_t size); 
+  unsigned char * I_CaptureAudio (int* nsamples);
+  void I_InitSound(void);
+  void I_SetSoundCap (void);
 }
 
 // Players information
@@ -80,8 +83,15 @@ struct PackedPlayerInput
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
 {
-	*n = 0;
-	*buffer = nullptr;
+	int nSamples = 0;
+	void* audioBuffer = nullptr;
+    audioBuffer = I_CaptureAudio(&nSamples);
+	// printf("audioBuffer: %p - nSamples: %d\n", audioBuffer, nSamples);
+
+	if (n)
+		*n = nSamples;
+	if (buffer)
+		*buffer = audioBuffer;
 }
 
 #define PALETTE_SIZE 256
@@ -277,11 +287,21 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings)
   printf("\n");
 
 
+  // Initializing DSDA core
+  headlessMain(argc, argv);
+  printf("DSDA Initialized\n");
+
+  // Initializing audio
+  I_SetSoundCap();
+  I_InitSound();
+  printf("Audio Initialized\n");
+
+  // If, required prevent level exit and game end triggers
   preventLevelExit = settings->_PreventLevelExit;
   preventGameEnd = settings->_PreventGameEnd;
 
-  // Initializing DSDA core
-  headlessMain(argc, argv);
+  printf("Prevent Level Exit: %d\n", preventLevelExit);
+  printf("Prevent Game End:   %d\n", preventGameEnd);
 
   // Enabling DSDA output, for debugging
   enableOutput = 1;
