@@ -25,8 +25,6 @@ public sealed class TernaryInferredTypeMismatchAnalyzer : DiagnosticAnalyzer
 		context.EnableConcurrentExecution();
 		context.RegisterCompilationStartAction(initContext =>
 		{
-			var objectSym = initContext.Compilation.GetTypeByMetadataName("System.Object")!;
-			var stringSym = initContext.Compilation.GetTypeByMetadataName("System.String")!;
 			initContext.RegisterOperationAction(oac =>
 				{
 					var ifelseOrTernaryOp = (IConditionalOperation) oac.Operation;
@@ -37,7 +35,7 @@ public sealed class TernaryInferredTypeMismatchAnalyzer : DiagnosticAnalyzer
 					var ternaryOp = ifelseOrTernaryOp;
 					var typeTernary = ternaryOp.Type!;
 #if false // never hit; either both branches are string and there are no conversions, or conversions are necessary
-					if (stringSym.Matches(typeTernary)) return;
+					if (typeTernary.SpecialType is SpecialType.System_String) return;
 #endif
 					var lhs = ternaryOp.WhenTrue;
 					var rhs = ternaryOp.WhenFalse;
@@ -52,17 +50,17 @@ public sealed class TernaryInferredTypeMismatchAnalyzer : DiagnosticAnalyzer
 					var fatal = false;
 					IOperation flaggedOp = ternaryOp;
 					string message;
-					if (stringSym.Matches(typeLHS))
+					if (typeLHS.SpecialType is SpecialType.System_String)
 					{
 						flaggedOp = rhs;
 						message = ERR_MSG_OBJECT;
 					}
-					else if (stringSym.Matches(typeRHS))
+					else if (typeRHS.SpecialType is SpecialType.System_String)
 					{
 						flaggedOp = lhs;
 						message = ERR_MSG_OBJECT;
 					}
-					else if (objectSym.Matches(typeTernary))
+					else if (typeTernary.SpecialType is SpecialType.System_Object)
 					{
 						fatal = true;
 						message = "ternary branches are upcast to object! add ToString calls, or convert one to the other's type";

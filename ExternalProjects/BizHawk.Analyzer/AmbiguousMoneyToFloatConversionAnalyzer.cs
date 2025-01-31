@@ -26,27 +26,24 @@ public sealed class AmbiguousMoneyToFloatConversionAnalyzer : DiagnosticAnalyzer
 		context.EnableConcurrentExecution();
 		context.RegisterCompilationStartAction(initContext =>
 		{
-			var decimalSym = initContext.Compilation.GetTypeByMetadataName("System.Decimal")!;
-			var doubleSym = initContext.Compilation.GetTypeByMetadataName("System.Double")!;
-			var floatSym = initContext.Compilation.GetTypeByMetadataName("System.Single")!;
 			initContext.RegisterOperationAction(oac =>
 				{
 					var conversionOp = (IConversionOperation) oac.Operation;
-					var typeOutput = conversionOp.Type;
-					var typeInput = conversionOp.Operand.Type;
+					var typeOutput = conversionOp.Type?.SpecialType ?? SpecialType.None;
+					var typeInput = conversionOp.Operand.Type?.SpecialType ?? SpecialType.None;
 					bool isToDecimal;
 					bool isDoublePrecision;
-					if (decimalSym.Matches(typeOutput))
+					if (typeOutput is SpecialType.System_Decimal)
 					{
-						if (doubleSym.Matches(typeInput)) isDoublePrecision = true;
-						else if (floatSym.Matches(typeInput)) isDoublePrecision = false;
+						if (typeInput is SpecialType.System_Double) isDoublePrecision = true;
+						else if (typeInput is SpecialType.System_Single) isDoublePrecision = false;
 						else return;
 						isToDecimal = true;
 					}
-					else if (decimalSym.Matches(typeInput))
+					else if (typeInput is SpecialType.System_Decimal)
 					{
-						if (doubleSym.Matches(typeOutput)) isDoublePrecision = true;
-						else if (floatSym.Matches(typeOutput)) isDoublePrecision = false;
+						if (typeOutput is SpecialType.System_Double) isDoublePrecision = true;
+						else if (typeOutput is SpecialType.System_Single) isDoublePrecision = false;
 						else return;
 						isToDecimal = false;
 					}
