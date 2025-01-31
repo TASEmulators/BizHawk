@@ -33,10 +33,7 @@ namespace BizHawk.Client.Common
 			string line;
 			while ((line = sr.ReadLine()) != null)
 			{
-				if (line == "")
-				{
-					continue;
-				}
+				if (line.Length is 0) continue;
 
 				if (line[0] == '|')
 				{

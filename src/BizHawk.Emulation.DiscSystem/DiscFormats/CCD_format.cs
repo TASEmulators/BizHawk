@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				var line = sr.ReadLine();
 				if (line is null) break;
-				if (line == string.Empty) continue;
+				if (line.Length is 0) continue;
 				if (line.StartsWith('['))
 				{
 					currSection = new()

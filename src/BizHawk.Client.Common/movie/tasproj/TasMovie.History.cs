@@ -274,12 +274,7 @@ namespace BizHawk.Client.Common
 			{
 				TruncateLog(UndoIndex + 1);
 			}
-
-			if (name == "")
-			{
-				name = $"Undo step {_totalSteps}";
-			}
-
+			if (name.Length is 0) name = $"Undo step {_totalSteps}";
 			bool ret = false;
 			if (!_recordingBatch)
 			{
@@ -510,7 +505,7 @@ namespace BizHawk.Client.Common
 			else
 			{
 				LastFrame = marker.Frame;
-				_oldMessage = oldMessage == "" ? marker.Message : oldMessage;
+				_oldMessage = oldMessage.Length is 0 ? marker.Message : oldMessage;
 				_newMessage = marker.Message;
 			}
 		}

@@ -178,9 +178,7 @@ namespace BizHawk.Client.Common.movie.import
 					{
 						while(reader.ReadLine() is string line)
 						{
-							if (line == "") continue;
-
-							ImportTextFrame(line);
+							if (line.Length is not 0) ImportTextFrame(line);
 						}
 					}
 					Result.Movie.AppendFrame(_controller);

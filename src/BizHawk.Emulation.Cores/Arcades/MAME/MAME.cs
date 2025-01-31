@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					$"Framerate:          { (float)VsyncNumerator / VsyncDenominator } " +
 					$"({ VsyncNumerator } / { VsyncDenominator })\r\n" +
 					$"Driver Source File: { _driverSourceFile.RemovePrefix("src")}\r\n\r\n" +
-					text + (text == "" ? "" : "\r\n") +
+					text + (text.Length is 0 ? string.Empty : "\r\n") +
 					string.Join("\r\n", _romHashes.Select(static r => $"{r.Value} - {r.Key}"));
 
 				if (text.ContainsIgnoreCase("doesn't work")) lp.Game.Status = RomStatus.NotWorking;
@@ -243,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				_core.mame_coswitch();
 				_core.mame_lua_execute(MAMELuaCommand.Unpause);
 			}
-			else if (_loadFailure == string.Empty)
+			else if (_loadFailure.Length is 0)
 			{
 				_loadFailure = "Unknown load error occurred???";
 			}

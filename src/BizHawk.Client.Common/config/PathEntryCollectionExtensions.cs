@@ -244,13 +244,8 @@ namespace BizHawk.Client.Common
 		{
 			var name = game.FilesystemSafeName();
 			name = Path.GetDirectoryName(name);
-			if (name == "")
-			{
-				name = game.FilesystemSafeName();
-			}
-
-			name ??= "";
-
+			if (name is null) name = string.Empty;
+			else if (name.Length is 0) name = game.FilesystemSafeName();
 			var pathEntry = collection[game.System, "Save RAM"]
 				?? collection[game.System, "Base"];
 

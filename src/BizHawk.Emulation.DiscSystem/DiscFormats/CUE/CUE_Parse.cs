@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				CurrentLine++;
 				var line = tr.ReadLine()?.Trim();
 				if (line is null) break;
-				if (line == string.Empty) continue;
+				if (line.Length is 0) continue;
 				var clp = new CueLineParser(line);
 
 				var key = clp.ReadToken().ToUpperInvariant();

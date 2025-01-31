@@ -212,7 +212,7 @@ namespace BizHawk.Common.PathExtensions
 			{
 				var dirPath = ReadPathFromEnvVar("BIZHAWK_HOME") ?? AppContext.BaseDirectory;
 				ExeDirectoryPath = string.IsNullOrEmpty(dirPath) || dirPath == "/" ? string.Empty : dirPath;
-				DllDirectoryPath = Path.Combine(ExeDirectoryPath == string.Empty ? "/" : ExeDirectoryPath, "dll");
+				DllDirectoryPath = Path.Combine(ExeDirectoryPath.Length is 0 ? "/" : ExeDirectoryPath, "dll");
 				// yes, this is a lot of extra code to make sure BizHawk can run in `/` on Unix, but I've made up for it by caching these for the program lifecycle --yoshi
 				DataDirectoryPath = ReadPathFromEnvVar("BIZHAWK_DATA_HOME") ?? ExeDirectoryPath;
 			}

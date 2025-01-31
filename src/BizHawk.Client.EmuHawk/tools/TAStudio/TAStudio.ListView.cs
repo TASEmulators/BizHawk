@@ -1314,7 +1314,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.Back)
 			{
-				if (_axisTypedValue == "") // Very first key press is backspace?
+				if (_axisTypedValue.Length is 0) // Very first key press is backspace?
 				{
 					_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 				}
@@ -1372,7 +1372,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (_axisTypedValue == "")
+				if (_axisTypedValue.Length is 0)
 				{
 					if (prevTyped != "")
 					{
