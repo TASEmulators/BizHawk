@@ -63,7 +63,20 @@ struct InitSettings
 	int _StrictMode;
 	int _PreventLevelExit;
 	int _PreventGameEnd;
-};
+} __attribute__((packed));
+
+struct PackedPlayerInput
+{
+	int _RunSpeed;
+	int _StrafingSpeed;
+	int _TurningSpeed;
+	int _FlyLook;
+	int _WeaponSelect;
+	int _ArtifactUse;
+	int _Fire;
+	int _Action;
+	int _AltWeapon;
+} __attribute__((packed));
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
 {
@@ -95,8 +108,63 @@ ECL_EXPORT void dsda_get_video(int& w, int& h, int& pitch, uint8_t*& buffer, int
 	paletteBuffer = _convertedPaletteBuffer;
 }
 
-ECL_EXPORT void dsda_frame_advance()
+ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs)
 {
+	// Setting inputs
+    headlessClearTickCommand();
+
+    // Setting Player 1 inputs
+	headlessSetTickCommand
+	(
+		0,
+		player1Inputs->_RunSpeed,
+		player1Inputs->_StrafingSpeed,
+		player1Inputs->_TurningSpeed,
+		player1Inputs->_Fire,
+		player1Inputs->_Action,
+		player1Inputs->_WeaponSelect,
+		player1Inputs->_AltWeapon
+	);
+
+	// Setting Player 2 inputs
+	headlessSetTickCommand
+	(
+		1,
+		player2Inputs->_RunSpeed,
+		player2Inputs->_StrafingSpeed,
+		player2Inputs->_TurningSpeed,
+		player2Inputs->_Fire,
+		player2Inputs->_Action,
+		player2Inputs->_WeaponSelect,
+		player2Inputs->_AltWeapon
+	);
+
+	// Setting Player 3 inputs
+	headlessSetTickCommand
+	(
+		2,
+		player3Inputs->_RunSpeed,
+		player3Inputs->_StrafingSpeed,
+		player3Inputs->_TurningSpeed,
+		player3Inputs->_Fire,
+		player3Inputs->_Action,
+		player3Inputs->_WeaponSelect,
+		player3Inputs->_AltWeapon
+	);
+
+    // Setting Player 4 inputs
+	headlessSetTickCommand
+	(
+		3,
+		player4Inputs->_RunSpeed,
+		player4Inputs->_StrafingSpeed,
+		player4Inputs->_TurningSpeed,
+		player4Inputs->_Fire,
+		player4Inputs->_Action,
+		player4Inputs->_WeaponSelect,
+		player4Inputs->_AltWeapon
+	);
+
 	// Running a single tick
 	headlessRunSingleTick();
 
