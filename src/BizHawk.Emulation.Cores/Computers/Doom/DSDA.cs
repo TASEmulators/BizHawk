@@ -80,8 +80,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					if (!initResult) throw new Exception($"{nameof(Core.dsda_init)}() failed");
 
 					int fps = 35;
-					InitSound(fps);
-
 					VsyncNumerator = fps;
 					VsyncDenominator = 1;
 

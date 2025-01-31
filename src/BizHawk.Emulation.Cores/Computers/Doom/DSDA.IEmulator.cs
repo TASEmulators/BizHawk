@@ -58,7 +58,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public void Dispose()
 		{
 			_elf.Dispose();
-			DisposeSound();
 		}
 	}
 }
