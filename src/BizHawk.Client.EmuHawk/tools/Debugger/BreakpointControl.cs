@@ -182,7 +182,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveBreakpointButton_Click(object sender, EventArgs e)
 		{
-			if (!EditableItems.Any()) return;
 			var items = EditableItems.ToList();
 			if (!items.Any()) return;
 			foreach (var item in items) _breakpoints.Remove(item);
@@ -205,7 +204,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BreakpointView_ItemActivate(object sender, EventArgs e)
 		{
-			if (!EditableItems.Any()) return;
 			var items = EditableItems.ToList();
 			if (!items.Any()) return;
 			foreach (var item in items) item.Active = !item.Active;
