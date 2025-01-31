@@ -95,6 +95,14 @@ namespace BizHawk.Client.EmuHawk
 		private long? _highlightedAddress;
 		private readonly List<long> _secondaryHighlightedAddresses = new List<long>();
 
+		private IEnumerable<long> AllHighlightedAddresses
+			=> _highlightedAddress is long l
+				? _secondaryHighlightedAddresses.Prepend(l)
+				: _secondaryHighlightedAddresses;
+
+		private bool AreAnyHighlighted
+			=> _highlightedAddress is not null || _secondaryHighlightedAddresses.Count is not 0;
+
 		private readonly Dictionary<int, char> _textTable = new Dictionary<int, char>();
 
 		private int _rowsVisible;
@@ -698,8 +706,7 @@ namespace BizHawk.Client.EmuHawk
 				? SystemColors.ControlText
 				: SystemColors.ControlDarkDark;
 
-			if (_highlightedAddress >= _domain.Size
-				|| (_secondaryHighlightedAddresses.Any() && _secondaryHighlightedAddresses.Max() >= _domain.Size))
+			if (AllHighlightedAddresses.DefaultIfEmpty().Max() >= _domain.Size)
 			{
 				_highlightedAddress = null;
 				_secondaryHighlightedAddresses.Clear();
@@ -850,55 +857,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FreezeHighlighted()
 		{
-			if (!_highlightedAddress.HasValue && !_secondaryHighlightedAddresses.Any())
-			{
-				return;
-			}
-
-			var cheats = new List<Cheat>();
-			if (_highlightedAddress >= 0)
+			if (!AreAnyHighlighted) return;
+			MainForm.CheatList.AddRange(AllHighlightedAddresses.Select(address =>
 			{
 				var watch = Watch.GenerateWatch(
 					_domain,
-					_highlightedAddress.Value,
+					address,
 					WatchSize,
 					Common.WatchDisplayType.Hex,
 					BigEndian);
-
-				cheats.Add(new Cheat(
-					watch,
-					watch.Value));
-			}
-
-			if (_secondaryHighlightedAddresses.Any())
-			{
-				foreach (var address in _secondaryHighlightedAddresses)
-				{
-					var watch = Watch.GenerateWatch(
-						_domain,
-						address,
-						WatchSize,
-						Common.WatchDisplayType.Hex,
-						BigEndian);
-
-					cheats.Add(new Cheat(
-						watch,
-						watch.Value));
-				}
-			}
-
-			MainForm.CheatList.AddRange(cheats);
-
+				return new Cheat(watch, watch.Value);
+			}));
 			MemoryViewerBox.Refresh();
 		}
 
 		private void UnfreezeHighlighted()
 		{
-			if (!_highlightedAddress.HasValue && !_secondaryHighlightedAddresses.Any())
-			{
-				return;
-			}
-
+			if (!AreAnyHighlighted) return;
+			//TODO reconcile the logic between these two
 			if (_highlightedAddress >= 0)
 			{
 				MainForm.CheatList.RemoveRange(MainForm.CheatList.Where(x => x.Contains(_highlightedAddress.Value)));
@@ -1369,37 +1345,15 @@ namespace BizHawk.Client.EmuHawk
 		private void EditMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			var data = Clipboard.GetDataObject();
-			PasteMenuItem.Enabled =
-				_domain.Writable
-				&& (_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any())
-				&& data != null
-				&& data.GetDataPresent(DataFormats.Text);
-
+			PasteMenuItem.Enabled = _domain.Writable && AreAnyHighlighted
+				&& data?.GetDataPresent(DataFormats.Text) is true;
 			FindNextMenuItem.Enabled = !string.IsNullOrWhiteSpace(_findStr);
 		}
 
 		private string MakeCopyExportString(bool export)
 		{
-			// make room for an array with _secondaryHighlightedAddresses and optionally HighlightedAddress
-			long[] addresses = new long[_secondaryHighlightedAddresses.Count + (_highlightedAddress.HasValue ? 1 : 0)];
-
-			// if there was actually nothing to do, return
-			if (addresses.Length == 0)
-			{
-				return null;
-			}
-
-			// fill the array with _secondaryHighlightedAddresses
-			for (int i = 0; i < _secondaryHighlightedAddresses.Count; i++)
-			{
-				addresses[i] = _secondaryHighlightedAddresses[i];
-			}
-
-			// and add HighlightedAddress if present
-			if (_highlightedAddress is long l) addresses[addresses.Length - 1] = l;
-
-			// these need to be sorted. it's not just for HighlightedAddress, _secondaryHighlightedAddresses can even be jumbled
-			Array.Sort(addresses);
+			var addresses = AllHighlightedAddresses.Order().ToArray();
+			if (addresses.Length is 0) return null;
 
 			// find the maximum length of the exported string
 			int maximumLength = addresses.Length * (export ? 3 : 2) + 8;
@@ -1599,18 +1553,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddToRamWatchMenuItem_Click(object sender, EventArgs e)
 		{
-			if (_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any())
-			{
-				Tools.LoadRamWatch(true);
-			}
-
-			if (_highlightedAddress.HasValue)
-			{
-				Tools.RamWatch.AddWatch(MakeWatch(_highlightedAddress.Value));
-			}
-
-			_secondaryHighlightedAddresses.ForEach(addr =>
-				Tools.RamWatch.AddWatch(MakeWatch(addr)));
+			if (!AreAnyHighlighted) return;
+			Tools.LoadRamWatch(true);
+			foreach (var addr in AllHighlightedAddresses) Tools.RamWatch.AddWatch(MakeWatch(addr));
 		}
 
 		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
@@ -1644,41 +1589,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PokeAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!_domain.Writable)
+			if (!_domain.Writable || !AreAnyHighlighted) return;
+			var watches = AllHighlightedAddresses.Select(address => Watch.GenerateWatch(
+				_domain,
+				address,
+				WatchSize,
+				Common.WatchDisplayType.Hex,
+				BigEndian));
+			using var poke = new RamPoke(DialogController, watches, MainForm.CheatList)
 			{
-				return;
-			}
-
-			var addresses = new List<long>();
-			if (_highlightedAddress.HasValue)
-			{
-				addresses.Add(_highlightedAddress.Value);
-			}
-
-			if (_secondaryHighlightedAddresses.Any())
-			{
-				addresses.AddRange(_secondaryHighlightedAddresses);
-			}
-
-			if (addresses.Any())
-			{
-				var watches = addresses.Select(
-					address => Watch.GenerateWatch(
-						_domain,
-						address,
-						(WatchSize)DataSize,
-						Common.WatchDisplayType.Hex,
-						BigEndian));
-
-				using var poke = new RamPoke(DialogController, watches, MainForm.CheatList)
-				{
-					InitialLocation = this.ChildPointToScreen(AddressLabel),
-					ParentTool = this
-				};
-
-				this.ShowDialogWithTempMute(poke);
-				GeneralUpdate();
-			}
+				InitialLocation = this.ChildPointToScreen(AddressLabel),
+				ParentTool = this
+			};
+			this.ShowDialogWithTempMute(poke);
+			GeneralUpdate();
 		}
 
 		private void SetColorsMenuItem_Click(object sender, EventArgs e)
@@ -1961,19 +1885,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var data = Clipboard.GetDataObject();
 
-			var selectionNotEmpty = _highlightedAddress is not null || _secondaryHighlightedAddresses.Any();
-			CopyContextItem.Visible = AddToRamWatchContextItem.Visible = selectionNotEmpty;
+			CopyContextItem.Visible = AddToRamWatchContextItem.Visible = AreAnyHighlighted;
 
 			FreezeContextItem.Visible = PokeContextItem.Visible
 				= IncrementContextItem.Visible
 				= DecrementContextItem.Visible
 				= ContextSeparator2.Visible
-					= selectionNotEmpty && _domain.Writable;
+					= AreAnyHighlighted && _domain.Writable;
 
 			UnfreezeAllContextItem.Visible = MainForm.CheatList.AnyActive;
 			PasteContextItem.Visible = _domain.Writable && data != null && data.GetDataPresent(DataFormats.Text);
 
-			ContextSeparator1.Visible = selectionNotEmpty || data?.GetDataPresent(DataFormats.Text) is true;
+			ContextSeparator1.Visible = AreAnyHighlighted || data?.GetDataPresent(DataFormats.Text) is true;
 
 			if (_highlightedAddress.HasValue && IsFrozen(_highlightedAddress.Value))
 			{
@@ -1997,14 +1920,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-
-			if (_highlightedAddress.HasValue)
-			{
-				IncrementAddress(_highlightedAddress.Value);
-			}
-
-			_secondaryHighlightedAddresses.ForEach(IncrementAddress);
-
+			foreach (var addr in AllHighlightedAddresses) IncrementAddress(addr);
 			GeneralUpdate();
 		}
 
@@ -2014,14 +1930,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-
-			if (_highlightedAddress.HasValue)
-			{
-				DecrementAddress(_highlightedAddress.Value);
-			}
-
-			_secondaryHighlightedAddresses.ForEach(DecrementAddress);
-
+			foreach (var addr in AllHighlightedAddresses) DecrementAddress(addr);
 			GeneralUpdate();
 		}
 
