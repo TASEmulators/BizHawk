@@ -8,7 +8,6 @@ using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
-using static BizHawk.Emulation.Cores.Computers.Amiga.LibUAE.FrameInfo;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
 {
@@ -38,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			// Getting sum of wad sizes for the accurate calculation of the invisible heap
 			uint totalWadSize = (uint)_dsdaWadFileData.Length;
 			foreach (var wadFile in _wadFiles) totalWadSize += (uint) wadFile.FileData.Length;
-			uint totalWadSizeKb = ((uint)totalWadSize / 1024) + 1;
+			uint totalWadSizeKb = (totalWadSize / 1024) + 1;
 			Console.WriteLine("Reserving {0}kb for WAD file memory", totalWadSizeKb);
 
 			_elf = new WaterboxHost(new WaterboxOptions

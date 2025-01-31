@@ -1,9 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
-using BizHawk.Common;
 using static BizHawk.Emulation.Cores.Computers.Doom.DSDA;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom

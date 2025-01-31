@@ -2,9 +2,7 @@
 
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
-using BizHawk.Emulation.Cores.Computers.Amiga;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
 {
