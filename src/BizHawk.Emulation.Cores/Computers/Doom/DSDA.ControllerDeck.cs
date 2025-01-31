@@ -7,15 +7,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 {
 	public class DoomControllerDeck
 	{
-		public DoomControllerDeck(DoomControllerTypes controller1, DoomControllerTypes controller2)
+		public DoomControllerDeck(DoomControllerTypes controller1, bool player1Present, bool player2Present, bool player3Present, bool player4Present)
 		{
 			Port1 = ControllerCtors[controller1](1);
-			Port2 = ControllerCtors[controller2](2);
 
 			Definition = new("Doom Demo LMP 1.9 Input Format")
 			{
 				BoolButtons = Port1.Definition.BoolButtons
-					.Concat(Port2.Definition.BoolButtons)
+					//.Concat(Port2.Definition.BoolButtons)
 					.Concat(
 					[
 						"Reset", "Select", "Power", "Toggle Left Difficulty", "Toggle Right Difficulty"
@@ -24,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			};
 
 			foreach (var kvp in Port1.Definition.Axes) Definition.Axes.Add(kvp);
-			foreach (var kvp in Port2.Definition.Axes) Definition.Axes.Add(kvp);
+			//foreach (var kvp in Port2.Definition.Axes) Definition.Axes.Add(kvp);
 
 			Definition.MakeImmutable();
 		}

@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			int port1 = _controllerDeck.ReadPort1(controller);
-			int port2 = _controllerDeck.ReadPort2(controller);
+			//int port2 = _controllerDeck.ReadPort2(controller);
             
 			// Handle all the console controls here
 			bool powerPressed = false;
@@ -24,12 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			if (controller.IsPressed("Toggle Left Difficulty"))	_leftDifficultyToggled = !_leftDifficultyToggled;
 			if (controller.IsPressed("Toggle Right Difficulty")) _rightDifficultyToggled = !_rightDifficultyToggled;
 
-			IsLagFrame = true;
-
 			Core.dsda_frame_advance();
-
-			if (IsLagFrame)
-				LagCount++;
 
 			if (render)
 				UpdateVideo();
@@ -51,8 +46,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public void ResetCounters()
 		{
 			Frame = 0;
-			LagCount = 0;
-			IsLagFrame = false;
 		}
 
 		public void Dispose()

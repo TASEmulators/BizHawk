@@ -10,14 +10,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
-		private readonly CInterface.input_cb _inputCallback;
-
 		private readonly InputCallbackSystem _inputCallbacks = [ ];
-
-		private void InputCallback()
-		{
-			InputCallbacks.Call();
-			IsLagFrame = false;
-		}
 	}
 }
