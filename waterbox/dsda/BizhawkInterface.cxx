@@ -108,7 +108,7 @@ ECL_EXPORT void dsda_get_video(int& w, int& h, int& pitch, uint8_t*& buffer, int
 	paletteBuffer = _convertedPaletteBuffer;
 }
 
-ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs)
+ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, int renderVideo, int renderAudio)
 {
 	// Setting inputs
     headlessClearTickCommand();
@@ -165,13 +165,15 @@ ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, stru
 		player4Inputs->_AltWeapon
 	);
 
+   // Enabling/Disabling rendering, as required
+   if (renderVideo == 0) headlessDisableRendering();
+   if (renderVideo == 1) headlessEnableRendering();
+
 	// Running a single tick
 	headlessRunSingleTick();
 
-	// if(_renderingEnabled == true) 
-	// {
-		headlessUpdateVideo();
-	// }
+    // Updating video
+    if (renderVideo == 1) headlessUpdateVideo();
 }
 
 ECL_ENTRY void (*input_callback_cb)(void);
@@ -280,9 +282,6 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings)
 
   // Initializing DSDA core
   headlessMain(argc, argv);
-
-  // Enabling rendering
-  headlessEnableRendering();
 
   // Enabling DSDA output, for debugging
   enableOutput = 1;
