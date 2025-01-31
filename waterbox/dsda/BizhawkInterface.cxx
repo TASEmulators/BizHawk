@@ -46,8 +46,37 @@ extern "C" int gametic;
 
 struct InitSettings
 {
-	uint32_t dummy;
-};
+	int _Player1Present;
+	int _Player2Present;
+	int _Player3Present;
+	int _Player4Present;
+	int _CompatibilityMode;
+	int _SkillLevel;
+	int _InitialEpisode;
+	int _InitialMap;
+	int _Turbo;
+	int _FastMonsters;
+	int _MonstersRespawn;
+	int _NoMonsters;
+	int _PlayerClass;
+	int _ChainEpisodes;
+	int _StrictMode;
+	int _PreventLevelExit;
+	int _PreventGameEnd;
+} __attribute__((packed));
+
+struct PackedPlayerInput
+{
+	int _RunSpeed;
+	int _StrafingSpeed;
+	int _TurningSpeed;
+	int _FlyLook;
+	int _WeaponSelect;
+	int _ArtifactUse;
+	int _Fire;
+	int _Action;
+	int _AltWeapon;
+} __attribute__((packed));
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
 {
@@ -79,15 +108,72 @@ ECL_EXPORT void dsda_get_video(int& w, int& h, int& pitch, uint8_t*& buffer, int
 	paletteBuffer = _convertedPaletteBuffer;
 }
 
-ECL_EXPORT void dsda_frame_advance()
+ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, int renderVideo, int renderAudio)
 {
+	// Setting inputs
+    headlessClearTickCommand();
+
+    // Setting Player 1 inputs
+	headlessSetTickCommand
+	(
+		0,
+		player1Inputs->_RunSpeed,
+		player1Inputs->_StrafingSpeed,
+		player1Inputs->_TurningSpeed,
+		player1Inputs->_Fire,
+		player1Inputs->_Action,
+		player1Inputs->_WeaponSelect,
+		player1Inputs->_AltWeapon
+	);
+
+	// Setting Player 2 inputs
+	headlessSetTickCommand
+	(
+		1,
+		player2Inputs->_RunSpeed,
+		player2Inputs->_StrafingSpeed,
+		player2Inputs->_TurningSpeed,
+		player2Inputs->_Fire,
+		player2Inputs->_Action,
+		player2Inputs->_WeaponSelect,
+		player2Inputs->_AltWeapon
+	);
+
+	// Setting Player 3 inputs
+	headlessSetTickCommand
+	(
+		2,
+		player3Inputs->_RunSpeed,
+		player3Inputs->_StrafingSpeed,
+		player3Inputs->_TurningSpeed,
+		player3Inputs->_Fire,
+		player3Inputs->_Action,
+		player3Inputs->_WeaponSelect,
+		player3Inputs->_AltWeapon
+	);
+
+    // Setting Player 4 inputs
+	headlessSetTickCommand
+	(
+		3,
+		player4Inputs->_RunSpeed,
+		player4Inputs->_StrafingSpeed,
+		player4Inputs->_TurningSpeed,
+		player4Inputs->_Fire,
+		player4Inputs->_Action,
+		player4Inputs->_WeaponSelect,
+		player4Inputs->_AltWeapon
+	);
+
+   // Enabling/Disabling rendering, as required
+   if (renderVideo == 0) headlessDisableRendering();
+   if (renderVideo == 1) headlessEnableRendering();
+
 	// Running a single tick
 	headlessRunSingleTick();
 
-	// if(_renderingEnabled == true) 
-	// {
-		headlessUpdateVideo();
-	// }
+    // Updating video
+    if (renderVideo == 1) headlessUpdateVideo();
 }
 
 ECL_ENTRY void (*input_callback_cb)(void);
@@ -111,11 +197,6 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings)
   int argc = 0;
   char** argv = (char**) alloc_invisible (sizeof(char*) * 512);
   
-  int _skill = 4;
-  int _episode = 1;
-  int _map = 1;
-  int _compatibilityLevel = 3;
-  bool _fastMonsters = false;
   bool _noMonsters = false;
   bool _monstersRespawn = false;
 
@@ -124,53 +205,83 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings)
   argv[argc++] = arg0;
 
   // Eliminating restrictions to TAS inputs
-  char arg2[] = "-tas";
-  argv[argc++] = arg2;
+  if (settings->_StrictMode == 0)
+  {
+	char arg2[] = "-tas";
+	argv[argc++] = arg2;
+  }
   
   // Specifying skill level
   char arg3[] = "-skill";
   argv[argc++] = arg3;
   char argSkill[512];
-  sprintf(argSkill, "%d", _skill);
+  sprintf(argSkill, "%d", settings->_SkillLevel);
   argv[argc++] = argSkill;
   
   // Specifying episode and map
   char arg4[] = "-warp";
   argv[argc++] = arg4;
   char argEpisode[512];
-  if (_episode > 0)
   {
-  	sprintf(argEpisode, "%d", _episode);
+  	sprintf(argEpisode, "%d", settings->_InitialEpisode);
   	argv[argc++] = argEpisode;
   }
   char argMap[512];
-  sprintf(argMap, "%d", _map);
+  sprintf(argMap, "%d", settings->_InitialMap);
   argv[argc++] = argMap;
   
   // Specifying comp level
   char arg5[] = "-complevel";
   argv[argc++] = arg5;
   char argCompatibilityLevel[512];
-  sprintf(argCompatibilityLevel, "%d", _compatibilityLevel);
+  sprintf(argCompatibilityLevel, "%d", settings->_CompatibilityMode);
   argv[argc++] = argCompatibilityLevel;
   
   // Specifying fast monsters
   char arg6[] = "-fast";
-  if (_fastMonsters) argv[argc++] = arg6;
+  if (settings->_FastMonsters == 1) argv[argc++] = arg6;
   
   // Specifying monsters respawn
   char arg7[] = "-respawn";
-  if (_monstersRespawn) argv[argc++] = arg7;
+  if (settings->_MonstersRespawn == 1) argv[argc++] = arg7;
   
   // Specifying no monsters
   char arg8[] = "-nomonsters";
-  if (_noMonsters) argv[argc++] = arg8;
-  
+  if (settings->_NoMonsters == 1) argv[argc++] = arg8;
+
+  char arg9[] = "-chain_episodes";
+  if (settings->_ChainEpisodes == 1) argv[argc++] = arg9;
+
+  // Specifying Turbo
+  char arg10[] = "-turbo";
+  char argTurbo[512];
+  if (settings->_Turbo >= 0)
+  {
+	sprintf(argTurbo, "%d", settings->_Turbo);
+    argv[argc++] = arg10;
+	argv[argc++] = argTurbo;
+  } 
+
+  // Specifying Player Class
+  char arg11[] = "-class";
+  char argClass[512];
+  if (settings->_PlayerClass > 0)
+  {
+	sprintf(argClass, "%d", settings->_PlayerClass);
+    argv[argc++] = arg11;
+	argv[argc++] = argClass;
+  } 
+
+  printf("Passing arguments: \n");
+  for (int i = 0; i < argc; i++) printf("%s ", argv[i]);
+  printf("\n");
+
+
+  preventLevelExit = settings->_PreventLevelExit;
+  preventGameEnd = settings->_PreventGameEnd;
+
   // Initializing DSDA core
   headlessMain(argc, argv);
-
-  // Enabling rendering
-  headlessEnableRendering();
 
   // Enabling DSDA output, for debugging
   enableOutput = 1;
