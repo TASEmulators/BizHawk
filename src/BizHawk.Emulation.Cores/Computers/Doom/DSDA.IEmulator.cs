@@ -1,4 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
+using static BizHawk.Emulation.Cores.Computers.Doom.CInterface;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
 {
@@ -11,22 +12,28 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private bool _leftDifficultyToggled;
 		private bool _rightDifficultyToggled;
 
-		public bool FrameAdvance(IController controller, bool render, bool renderSound)
+		public bool FrameAdvance(IController controller, bool renderVideo, bool renderSound)
 		{
-			int port1 = _controllerDeck.ReadPort1(controller);
-			//int port2 = _controllerDeck.ReadPort2(controller);
-            
-			// Handle all the console controls here
-			bool powerPressed = false;
-			bool resetPressed = false;
-			if (controller.IsPressed("Power")) powerPressed = true;
-			if (controller.IsPressed("Reset")) resetPressed = true;
-			if (controller.IsPressed("Toggle Left Difficulty"))	_leftDifficultyToggled = !_leftDifficultyToggled;
-			if (controller.IsPressed("Toggle Right Difficulty")) _rightDifficultyToggled = !_rightDifficultyToggled;
+			// Declaring inputs
+			PackedPlayerInput player1Inputs = new PackedPlayerInput();
+			PackedPlayerInput player2Inputs = new PackedPlayerInput();
+			PackedPlayerInput player3Inputs = new PackedPlayerInput();
+			PackedPlayerInput player4Inputs = new PackedPlayerInput();
 
-			Core.dsda_frame_advance();
+			if (_syncSettings.Player1Present)
+			{
+				player1Inputs._RunSpeed      = _controllerDeck.ReadPot1(controller, 0);
+				player1Inputs._StrafingSpeed = _controllerDeck.ReadPot1(controller, 1);
+				player1Inputs._TurningSpeed  = _controllerDeck.ReadPot1(controller, 2);
+				player1Inputs._WeaponSelect  = _controllerDeck.ReadPot1(controller, 3);
+				player1Inputs._Fire          = (_controllerDeck.ReadPort1(controller) & 0b001) > 0 ? 1 : 0;
+				player1Inputs._Action        = (_controllerDeck.ReadPort1(controller) & 0b010) > 0 ? 1 : 0;
+				player1Inputs._AltWeapon     = (_controllerDeck.ReadPort1(controller) & 0b100) > 0 ? 1 : 0;
+			}
 
-			if (render)
+			Core.dsda_frame_advance(player1Inputs, player2Inputs, player3Inputs, player4Inputs, renderVideo ? 1 : 0, renderSound ? 1 : 0);
+
+			if (renderVideo)
 				UpdateVideo();
 
 			if (renderSound)
