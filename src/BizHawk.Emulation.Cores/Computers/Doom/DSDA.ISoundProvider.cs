@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private BlipBuffer _blipL, _blipR;
 		private int _latchL, _latchR;
 
-		private readonly short[] _samples = new short[4096];
+		private readonly short[] _samples = new short[6280];
 		private int _nsamp;
 
 		public bool CanProvideAsync => false;
@@ -87,18 +87,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		private void InitSound(int fps)
 		{
-			var sampleRate = fps switch
-			{
-				60 => 262 * 76 * 60 / 38, // 31440Hz
-				50 => 312 * 76 * 50 / 38, // 31200Hz
-				35 => 312 * 76 * 35 / 38, // ?? No idea what I'm doing
-				_ => throw new InvalidOperationException()
-			};
-
-			_blipL = new(2048);
-			_blipL.SetRates(sampleRate, 44100);
-			_blipR = new(2048);
-			_blipR.SetRates(sampleRate, 44100);
+			_blipL = new(16384);
+			_blipL.SetRates(1260, 44100);
+			_blipR = new(16384);
+			_blipR.SetRates(1260, 44100);
 		}
 
 		private void DisposeSound()
