@@ -20,11 +20,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 	public partial class DSDA : IRomInfo
 	{
 		[CoreConstructor(VSystemID.Raw.Doom)]
-		public DSDA(CoreLoadParameters<object, DoomSyncSettings> lp)
+		public DSDA(CoreLoadParameters<DoomSettings, DoomSyncSettings> lp)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			_syncSettings = lp.SyncSettings ?? new DoomSyncSettings();
+			_settings = lp.Settings ?? new DoomSettings();
 			_controllerDeck = new DoomControllerDeck(_syncSettings.InputFormat, _syncSettings.Player1Present, _syncSettings.Player2Present, _syncSettings.Player3Present, _syncSettings.Player4Present);
 			_loadCallback = LoadCallback;
 

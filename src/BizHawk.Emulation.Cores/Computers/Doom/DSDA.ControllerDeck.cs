@@ -36,10 +36,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			=> Port2.Read(c);
 
 		public byte ReadPort3(IController c)
-			=> Port2.Read(c);
+			=> Port3.Read(c);
 
 		public byte ReadPort4(IController c)
-			=> Port2.Read(c);
+			=> Port4.Read(c);
 
 		public int ReadPot1(IController c, int pot)
 			=> Port1.Read_Pot(c, pot);
@@ -48,10 +48,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			=> Port2.Read_Pot(c, pot);
 
 		public int ReadPot3(IController c, int pot)
-			=> Port1.Read_Pot(c, pot);
+			=> Port3.Read_Pot(c, pot);
 
 		public int ReadPot4(IController c, int pot)
-			=> Port2.Read_Pot(c, pot);
+			=> Port4.Read_Pot(c, pot);
 
 		public ControllerDefinition Definition { get; }
 

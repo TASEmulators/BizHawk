@@ -45,6 +45,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int _AltWeapon;
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public class PackedRenderInfo
+		{
+			public int _RenderVideo;
+			public int _RenderAudio;
+			public int _PlayerPointOfView;
+		}
+
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void dsda_get_audio(ref int n, ref IntPtr buffer);
 
@@ -52,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public abstract bool dsda_init([In] InitSettings settings);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void dsda_frame_advance([In] PackedPlayerInput player1Inputs, [In] PackedPlayerInput player2Inputs, [In] PackedPlayerInput player3Inputs, [In] PackedPlayerInput player4Inputs, int renderVideo, int renderSound);
+		public abstract void dsda_frame_advance([In] PackedPlayerInput player1Inputs, [In] PackedPlayerInput player2Inputs, [In] PackedPlayerInput player3Inputs, [In] PackedPlayerInput player4Inputs, [In] PackedRenderInfo renderInfo);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void dsda_get_video(out int w, out int h, out int pitch, ref IntPtr buffer, out int palSize, ref IntPtr palBuffer);
