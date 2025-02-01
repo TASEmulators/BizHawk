@@ -20,8 +20,10 @@ extern "C"
   int headlessGetVideoPitch();
   int headlessGetVideoWidth();
   int headlessGetVideoHeight();
-  void headlessEnableRendering();
-  void headlessDisableRendering();
+  void headlessEnableVideoRendering();
+  void headlessDisableVideoRendering();
+  void headlessEnableAudioRendering();
+  void headlessDisableAudioRendering();
   uint32_t* headlessGetPallette();
 
   void headlessSetSaveStatePointer(void* savePtr, int saveStateSize);
@@ -46,6 +48,9 @@ extern "C" int reachedLevelExit;
 extern "C" int reachedGameEnd;
 extern "C" int gamemap;
 extern "C" int gametic;
+extern "C" dboolean playeringame[MAX_MAXPLAYERS];
+extern "C" int consoleplayer;
+extern "C" int displayplayer;
 
 struct InitSettings
 {
@@ -79,6 +84,13 @@ struct PackedPlayerInput
 	int _Fire;
 	int _Action;
 	int _AltWeapon;
+} __attribute__((packed));
+
+struct PackedRenderInfo
+{
+	int _RenderVideo;
+	int _RenderAudio;
+	int _PlayerPointOfView;
 } __attribute__((packed));
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
@@ -118,7 +130,7 @@ ECL_EXPORT void dsda_get_video(int& w, int& h, int& pitch, uint8_t*& buffer, int
 	paletteBuffer = _convertedPaletteBuffer;
 }
 
-ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, int renderVideo, int renderAudio)
+ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
 {
 	// Setting inputs
     headlessClearTickCommand();
@@ -176,14 +188,20 @@ ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, stru
 	);
 
    // Enabling/Disabling rendering, as required
-   if (renderVideo == 0) headlessDisableRendering();
-   if (renderVideo == 1) headlessEnableRendering();
+   if (renderInfo->_RenderVideo == 0) headlessDisableVideoRendering();
+   if (renderInfo->_RenderVideo == 1) headlessEnableVideoRendering();
+   if (renderInfo->_RenderAudio == 0) headlessDisableAudioRendering();
+   if (renderInfo->_RenderAudio == 1) headlessEnableAudioRendering();
 
 	// Running a single tick
 	headlessRunSingleTick();
 
     // Updating video
-    if (renderVideo == 1) headlessUpdateVideo();
+    if (renderInfo->_RenderVideo == 1)
+	{
+	  displayplayer = consoleplayer = renderInfo->_PlayerPointOfView;
+	  headlessUpdateVideo();
+	} 
 }
 
 ECL_ENTRY void (*input_callback_cb)(void);
@@ -286,6 +304,16 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings)
   for (int i = 0; i < argc; i++) printf("%s ", argv[i]);
   printf("\n");
 
+  // Setting players in game
+  playeringame[0] = settings->_Player1Present;
+  playeringame[1] = settings->_Player2Present;
+  playeringame[2] = settings->_Player3Present;
+  playeringame[3] = settings->_Player4Present;
+
+  // Getting player count
+  auto playerCount = settings->_Player1Present + settings->_Player2Present + settings->_Player3Present + settings->_Player4Present;
+  char arg12[] = "-solo-net";
+  if (playerCount > 1) argv[argc++] = arg12;
 
   // Initializing DSDA core
   headlessMain(argc, argv);
