@@ -8,25 +8,25 @@ using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
-using static BizHawk.Emulation.Cores.Computers.Amiga.LibUAE.FrameInfo;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
 {
 	[PortedCore(
 		name: CoreNames.DSDA,
 		author: "The DSDA Team",
-		portedVersion: "0.28.2 (fe0dfa0)", // in the middle of 6.7.1 and 7.0
+		portedVersion: "0.28.2 (fe0dfa0)", 
 		portedUrl: "https://github.com/kraflab/dsda-doom")]
 	[ServiceNotApplicable(typeof(ISaveRam))]
 	public partial class DSDA : IRomInfo
 	{
 		[CoreConstructor(VSystemID.Raw.Doom)]
-		public DSDA(CoreLoadParameters<object, DoomSyncSettings> lp)
+		public DSDA(CoreLoadParameters<DoomSettings, DoomSyncSettings> lp)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			_syncSettings = lp.SyncSettings ?? new DoomSyncSettings();
-			_controllerDeck = new DoomControllerDeck(_syncSettings.DemoInputFormat, _syncSettings.Player1Present, _syncSettings.Player2Present, _syncSettings.Player3Present, _syncSettings.Player4Present);
+			_settings = lp.Settings ?? new DoomSettings();
+			_controllerDeck = new DoomControllerDeck(_syncSettings.InputFormat, _syncSettings.Player1Present, _syncSettings.Player2Present, _syncSettings.Player3Present, _syncSettings.Player4Present);
 			_loadCallback = LoadCallback;
 
 			// Getting dsda-doom.wad -- required by DSDA
@@ -38,18 +38,18 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			// Getting sum of wad sizes for the accurate calculation of the invisible heap
 			uint totalWadSize = (uint)_dsdaWadFileData.Length;
 			foreach (var wadFile in _wadFiles) totalWadSize += (uint) wadFile.FileData.Length;
-			uint totalWadSizeKb = ((uint)totalWadSize / 1024) + 1;
+			uint totalWadSizeKb = (totalWadSize / 1024) + 1;
 			Console.WriteLine("Reserving {0}kb for WAD file memory", totalWadSizeKb);
 
 			_elf = new WaterboxHost(new WaterboxOptions
 			{
 				Path = PathUtils.DllDirectoryPath,
 				Filename = "dsda.wbx",
-				SbrkHeapSizeKB = 64 * 1024, // Things can get pretty heavy -- reserve enough memory
+				SbrkHeapSizeKB = 64 * 1024, // This core loads quite a bunch of things on global mem -- reserve enough memory
 				SealedHeapSizeKB = 4 * 1024,
-				InvisibleHeapSizeKB = totalWadSizeKb + 4 * 1024,
+				InvisibleHeapSizeKB = totalWadSizeKb + 4 * 1024, // Make sure there's enough space for the wads
 				PlainHeapSizeKB = 4 * 1024, 
-				MmapHeapSizeKB = 4 * 1024,
+				MmapHeapSizeKB = 128 * 1024,  // Allow the game to malloc quite a lot of objects to support one of those big wads
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
@@ -80,8 +80,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					if (!initResult) throw new Exception($"{nameof(Core.dsda_init)}() failed");
 
 					int fps = 35;
-					InitSound(fps);
-
 					VsyncNumerator = fps;
 					VsyncDenominator = 1;
 

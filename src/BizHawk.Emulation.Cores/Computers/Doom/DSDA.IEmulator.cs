@@ -1,4 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
+using static BizHawk.Emulation.Cores.Computers.Doom.CInterface;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
 {
@@ -11,25 +12,69 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private bool _leftDifficultyToggled;
 		private bool _rightDifficultyToggled;
 
-		public bool FrameAdvance(IController controller, bool render, bool renderSound)
+		public bool FrameAdvance(IController controller, bool renderVideo, bool renderAudio)
 		{
-			int port1 = _controllerDeck.ReadPort1(controller);
-			//int port2 = _controllerDeck.ReadPort2(controller);
-            
-			// Handle all the console controls here
-			bool powerPressed = false;
-			bool resetPressed = false;
-			if (controller.IsPressed("Power")) powerPressed = true;
-			if (controller.IsPressed("Reset")) resetPressed = true;
-			if (controller.IsPressed("Toggle Left Difficulty"))	_leftDifficultyToggled = !_leftDifficultyToggled;
-			if (controller.IsPressed("Toggle Right Difficulty")) _rightDifficultyToggled = !_rightDifficultyToggled;
+			// Declaring inputs
+			PackedPlayerInput player1Inputs = new PackedPlayerInput();
+			PackedPlayerInput player2Inputs = new PackedPlayerInput();
+			PackedPlayerInput player3Inputs = new PackedPlayerInput();
+			PackedPlayerInput player4Inputs = new PackedPlayerInput();
 
-			Core.dsda_frame_advance();
+			if (_syncSettings.Player1Present)
+			{
+				player1Inputs._RunSpeed      = _controllerDeck.ReadPot1(controller, 0);
+				player1Inputs._StrafingSpeed = _controllerDeck.ReadPot1(controller, 1);
+				player1Inputs._TurningSpeed  = _controllerDeck.ReadPot1(controller, 2);
+				player1Inputs._WeaponSelect  = _controllerDeck.ReadPot1(controller, 3);
+				player1Inputs._Fire          = (_controllerDeck.ReadPort1(controller) & 0b001) > 0 ? 1 : 0;
+				player1Inputs._Action        = (_controllerDeck.ReadPort1(controller) & 0b010) > 0 ? 1 : 0;
+				player1Inputs._AltWeapon     = (_controllerDeck.ReadPort1(controller) & 0b100) > 0 ? 1 : 0;
+			}
 
-			if (render)
+			if (_syncSettings.Player2Present)
+			{
+				player2Inputs._RunSpeed = _controllerDeck.ReadPot2(controller, 0);
+				player2Inputs._StrafingSpeed = _controllerDeck.ReadPot2(controller, 1);
+				player2Inputs._TurningSpeed = _controllerDeck.ReadPot2(controller, 2);
+				player2Inputs._WeaponSelect = _controllerDeck.ReadPot2(controller, 3);
+				player2Inputs._Fire = (_controllerDeck.ReadPort2(controller) & 0b001) > 0 ? 1 : 0;
+				player2Inputs._Action = (_controllerDeck.ReadPort2(controller) & 0b010) > 0 ? 1 : 0;
+				player2Inputs._AltWeapon = (_controllerDeck.ReadPort2(controller) & 0b100) > 0 ? 1 : 0;
+			}
+
+			if (_syncSettings.Player3Present)
+			{
+				player3Inputs._RunSpeed = _controllerDeck.ReadPot3(controller, 0);
+				player3Inputs._StrafingSpeed = _controllerDeck.ReadPot3(controller, 1);
+				player3Inputs._TurningSpeed = _controllerDeck.ReadPot3(controller, 2);
+				player3Inputs._WeaponSelect = _controllerDeck.ReadPot3(controller, 3);
+				player3Inputs._Fire = (_controllerDeck.ReadPort3(controller) & 0b001) > 0 ? 1 : 0;
+				player3Inputs._Action = (_controllerDeck.ReadPort3(controller) & 0b010) > 0 ? 1 : 0;
+				player3Inputs._AltWeapon = (_controllerDeck.ReadPort3(controller) & 0b100) > 0 ? 1 : 0;
+			}
+
+			if (_syncSettings.Player4Present)
+			{
+				player4Inputs._RunSpeed = _controllerDeck.ReadPot4(controller, 0);
+				player4Inputs._StrafingSpeed = _controllerDeck.ReadPot4(controller, 1);
+				player4Inputs._TurningSpeed = _controllerDeck.ReadPot4(controller, 2);
+				player4Inputs._WeaponSelect = _controllerDeck.ReadPot4(controller, 3);
+				player4Inputs._Fire = (_controllerDeck.ReadPort4(controller) & 0b001) > 0 ? 1 : 0;
+				player4Inputs._Action = (_controllerDeck.ReadPort4(controller) & 0b010) > 0 ? 1 : 0;
+				player4Inputs._AltWeapon = (_controllerDeck.ReadPort4(controller) & 0b100) > 0 ? 1 : 0;
+			}
+
+			PackedRenderInfo renderInfo = new PackedRenderInfo();
+			renderInfo._RenderVideo = renderVideo ? 1 : 0;
+			renderInfo._RenderAudio = renderAudio ? 1 : 0;
+			renderInfo._PlayerPointOfView = _settings.DisplayPlayer - 1;
+
+			Core.dsda_frame_advance(player1Inputs, player2Inputs, player3Inputs, player4Inputs, renderInfo);
+
+			if (renderVideo)
 				UpdateVideo();
 
-			if (renderSound)
+			if (renderAudio)
 				UpdateAudio();
 
 			Frame++;
@@ -51,7 +96,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public void Dispose()
 		{
 			_elf.Dispose();
-			DisposeSound();
 		}
 	}
 }

@@ -1,10 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
-using BizHawk.Common;
-using static BizHawk.Emulation.Cores.Computers.Doom.DSDA;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
 {
@@ -35,6 +31,28 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int _PreventGameEnd;
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public class PackedPlayerInput
+		{
+			public int _RunSpeed;
+			public int _StrafingSpeed;
+			public int _TurningSpeed;
+			public int _FlyLook;
+			public int _WeaponSelect;
+			public int _ArtifactUse;
+			public int _Fire;
+			public int _Action;
+			public int _AltWeapon;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public class PackedRenderInfo
+		{
+			public int _RenderVideo;
+			public int _RenderAudio;
+			public int _PlayerPointOfView;
+		}
+
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void dsda_get_audio(ref int n, ref IntPtr buffer);
 
@@ -42,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public abstract bool dsda_init([In] InitSettings settings);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void dsda_frame_advance();
+		public abstract void dsda_frame_advance([In] PackedPlayerInput player1Inputs, [In] PackedPlayerInput player2Inputs, [In] PackedPlayerInput player3Inputs, [In] PackedPlayerInput player4Inputs, [In] PackedRenderInfo renderInfo);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void dsda_get_video(out int w, out int h, out int pitch, ref IntPtr buffer, out int palSize, ref IntPtr palBuffer);

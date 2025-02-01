@@ -2,16 +2,13 @@
 
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
-using BizHawk.Emulation.Cores.Computers.Amiga;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
 {
-	public partial class DSDA : ISettable<object, DSDA.DoomSyncSettings>
+	public partial class DSDA : ISettable<DSDA.DoomSettings, DSDA.DoomSyncSettings>
 	{
-		public const int TURBO_AUTO = -1;
-
 		public enum CompatibilityLevelEnum : int
 		{
 			[Display(Name = "0 - Doom v1.2")]
@@ -83,10 +80,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			C4 = 4
 		}
 
+		public const int TURBO_AUTO = -1;
+
+		private DoomSettings _settings;
 		private DoomSyncSettings _syncSettings;
 
-		public object GetSettings()
-			=> null;
+		public DoomSettings GetSettings()
+			=> _settings.Clone();
 
 		public DoomSyncSettings GetSyncSettings()
 			=> _syncSettings.Clone();
@@ -102,13 +102,44 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		}
 
 		[CoreSettings]
+		public class DoomSettings
+		{
+			[JsonIgnore]
+			[DisplayName("Player Point of View")]
+			[Description("Which of the players' point of view to use during rendering")]
+			[Range(1, 4)]
+			[DefaultValue(1)]
+			[TypeConverter(typeof(ConstrainedIntConverter))]
+			public int DisplayPlayer { get; set; }
+
+			public DoomSettings()
+				=> SettingsUtil.SetDefaultValues(this);
+
+			public DoomSettings Clone()
+				=> (DoomSettings) MemberwiseClone();
+
+			public static bool NeedsReboot(DoomSettings x, DoomSettings y)
+				=> !DeepEquality.DeepEquals(x, y);
+		}
+		public PutSettingsDirtyBits PutSettings(DoomSettings o)
+		{
+			var ret = DoomSettings.NeedsReboot(_settings, o);
+			_settings = o;
+			if (_settings.DisplayPlayer == 1 && !_syncSettings.Player1Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
+			if (_settings.DisplayPlayer == 2 && !_syncSettings.Player2Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
+			if (_settings.DisplayPlayer == 3 && !_syncSettings.Player3Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
+			if (_settings.DisplayPlayer == 4 && !_syncSettings.Player4Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+		}
+
+		[CoreSettings]
 		public class DoomSyncSettings
 		{
-			[DefaultValue(DoomControllerTypes.Joystick)]
-			[DisplayName("Demo Format")]
-			[Description("The demo format provided for the players' input.")]
+			[DefaultValue(DoomControllerTypes.Doom)]
+			[DisplayName("Input Format")]
+			[Description("The format provided for the players' input.")]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public DoomControllerTypes DemoInputFormat { get; set; }
+			public DoomControllerTypes InputFormat { get; set; }
 
 			[DisplayName("Player 1 Present")]
 			[Description("Specifies if player 1 is present")]
