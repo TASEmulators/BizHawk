@@ -818,6 +818,12 @@ namespace BizHawk.Emulation.Common
 				["START"] = 'S',
 				["RESET"] = 'r',
 			},
+			[VSystemID.Raw.Doom] = new()
+			{
+				["Action"] = 'A',
+				["Fire"] = 'F',
+				["Alt Weapon"] = 'X'
+			},
 		};
 
 		private static readonly Dictionary<string, string> BaseAxisLookupTable = new Dictionary<string, string>
@@ -867,6 +873,13 @@ namespace BizHawk.Emulation.Common
 				["Mouse Position Y"] = "mpY",
 				["Mouse Scroll X"] = "msX",
 				["Mouse Scroll Y"] = "msY",
+			},
+			[VSystemID.Raw.Doom] = new()
+			{
+				["Run Speed"] = "R",
+				["Strafing Speed"] = "S",
+				["Turning Speed"] = "T",
+				["Weapon Select"] = "W"
 			},
 		};
 	}
