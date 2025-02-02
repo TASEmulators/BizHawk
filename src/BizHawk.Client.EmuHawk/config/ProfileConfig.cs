@@ -3,7 +3,6 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.ColecoVision;
@@ -103,11 +102,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.SkipLagFrame = false;
 
 			// N64
-			var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
-			n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Hle;
-			n64Settings.Core = N64SyncSettings.CoreType.Interpret;
 			_config.N64UseCircularAnalogConstraint = true;
-			PutSyncSettings<N64>(n64Settings);
 
 			// SNES
 			_config.PreferredCores[VSystemID.Raw.SNES] = CoreNames.Snes9X;
@@ -198,10 +193,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.Rewind.Enabled = false;
 
 			// N64
-			var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
-			n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
 			_config.N64UseCircularAnalogConstraint = false;
-			PutSyncSettings<N64>(n64Settings);
 
 			// SNES
 			_config.PreferredCores[VSystemID.Raw.SNES] = CoreNames.Bsnes115;
