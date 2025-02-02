@@ -207,7 +207,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void qn_set_tracecb(IntPtr e, TraceCallback cb);
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void input_cb();
 
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void qn_set_input_callback(input_cb cb);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract byte qn_get_reg2000(IntPtr e);

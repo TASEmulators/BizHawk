@@ -4,7 +4,7 @@ CP = cp
 
 CXXFLAGS = -I../core/source/quickerNES/core/ -I../core/extern/jaffarCommon/include -Wall -Wfatal-errors -Werror \
 	-std=c++20 -O3 -fomit-frame-pointer -flto -fvisibility=internal -fvisibility-inlines-hidden \
-	-D_GNU_SOURCE -D__INLINE__=inline -D_QUICKERNES_DETECT_JOYPAD_READS -D_QUICKERNES_ENABLE_TRACEBACK_SUPPORT -D_QUICKERNES_SUPPORT_ARKANOID_INPUTS
+	-D_GNU_SOURCE -D__INLINE__=inline -D_QUICKERNES_DETECT_JOYPAD_READS -D_QUICKERNES_ENABLE_TRACEBACK_SUPPORT -D_QUICKERNES_SUPPORT_ARKANOID_INPUTS -D_QUICKERNES_ENABLE_INPUT_CALLBACK
 
 # TODO: include these as options in the Makefile
 # -fprofile-generate
