@@ -60,6 +60,7 @@ struct InitSettings
 	int _Player4Present;
 	int _CompatibilityMode;
 	int _SkillLevel;
+	int _MultiplayerMode;
 	int _InitialEpisode;
 	int _InitialMap;
 	int _Turbo;
@@ -314,6 +315,12 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings)
   auto playerCount = settings->_Player1Present + settings->_Player2Present + settings->_Player3Present + settings->_Player4Present;
   char arg12[] = "-solo-net";
   if (playerCount > 1) argv[argc++] = arg12;
+
+  // Set multiplayer mode
+  char arg13[] = "-deathmatch";
+  if (settings->_MultiplayerMode == 1) argv[argc++] = arg13;
+  char arg14[] = "-altdeath";
+  if (settings->_MultiplayerMode == 2) argv[argc++] = arg14;
 
   // Initializing DSDA core
   headlessMain(argc, argv);
