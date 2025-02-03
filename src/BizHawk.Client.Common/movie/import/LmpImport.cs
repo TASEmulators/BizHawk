@@ -81,6 +81,7 @@ namespace BizHawk.Client.Common
 			syncSettings.Player2Present = player2Present > 0;
 			syncSettings.Player3Present = player3Present > 0;
 			syncSettings.Player4Present = player4Present > 0;
+			syncSettings.CompatibilityMode = presumedCompatibilityLevel;
 
 			while (!sr.EndOfStream && (byte) sr.Read() != 0x80)
 			{
