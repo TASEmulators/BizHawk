@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int _Player4Present;
 			public int _CompatibilityMode;
 			public int _SkillLevel;
+			public int _MultiplayerMode;
 			public int _InitialEpisode;
 			public int _InitialMap;
 			public int _Turbo;

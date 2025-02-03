@@ -66,6 +66,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		}
 
+		public enum MultiplayerModeEnum : int
+		{
+			[Display(Name = "0 - Single Player / Coop")]
+			M0 = 0,
+			[Display(Name = "1 - Deathmatch")]
+			M1 = 1,
+			[Display(Name = "2 - Altdeath")]
+			M2 = 2
+		}
+
 		public enum HexenClassEnum : int
 		{
 			[Display(Name = "None (Doom/Heretic)")]
@@ -173,6 +183,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SkillLevelEnum SkillLevel { get; set; }
 
+			[DisplayName("Multiplayer Mode")]
+			[Description("Indicates the multiplayer mode")]
+			[DefaultValue(MultiplayerModeEnum.M0)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public MultiplayerModeEnum MultiplayerMode { get; set; }
+
 			[DisplayName("Initial Episode")]
 			[Description("Selects the initial episode. Use '0' for non-episodic IWads (e.g., DOOM2)")]
 			[DefaultValue(0)]
@@ -241,6 +257,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					_Player4Present = Player4Present ? 1 : 0,
 					_CompatibilityMode = (int)CompatibilityMode,
 					_SkillLevel = (int) SkillLevel,
+					_MultiplayerMode = (int) MultiplayerMode,
 					_InitialEpisode = InitialEpisode,
 					_InitialMap = InitialMap,
 					_Turbo = Turbo,
