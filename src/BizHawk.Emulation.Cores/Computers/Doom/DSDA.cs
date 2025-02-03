@@ -29,11 +29,40 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			_controllerDeck = new DoomControllerDeck(_syncSettings.InputFormat, _syncSettings.Player1Present, _syncSettings.Player2Present, _syncSettings.Player3Present, _syncSettings.Player4Present);
 			_loadCallback = LoadCallback;
 
-			// Getting dsda-doom.wad -- required by DSDA
-			_dsdaWadFileData = Zstd.DecompressZstdStream(new MemoryStream(Resources.DSDA_DOOM_WAD.Value)).ToArray();
-
 			// Gathering information for the rest of the wads
 			_wadFiles = lp.Roms;
+
+			// Checking for correct IWAD configuration
+			bool foundIWAD = false;
+			string IWADName = "";
+			foreach (var wadFile in _wadFiles)
+			{
+				bool recognized = false;
+
+				// Check for IWAD
+				if (wadFile.RomData[0] == 'I' && wadFile.RomData[1] == 'W' && wadFile.RomData[2] == 'A' && wadFile.RomData[3] == 'D')
+				{   
+					// Check not more than one IWAD is provided
+					if (foundIWAD) throw new Exception($"More than one IWAD provided. Trying to load '{wadFile.RomPath}', but IWAD '{IWADName}' was already provided");
+					IWADName = wadFile.RomPath;
+					foundIWAD = true;
+					recognized = true;
+				}
+
+				// Check for PWAD
+				if (wadFile.RomData[0] == 'P' && wadFile.RomData[1] == 'W' && wadFile.RomData[2] == 'A' && wadFile.RomData[3] == 'D')
+				{
+					recognized = true;
+				}
+
+				if (!recognized) throw new Exception($"Unrecognized WAD provided: '{wadFile.RomPath}' has non-standard header.");
+			}
+
+			// Check at least one IWAD was provided
+			if (!foundIWAD) throw new Exception($"No IWAD was provided");
+
+			// Getting dsda-doom.wad -- required by DSDA
+			_dsdaWadFileData = Zstd.DecompressZstdStream(new MemoryStream(Resources.DSDA_DOOM_WAD.Value)).ToArray();
 
 			// Getting sum of wad sizes for the accurate calculation of the invisible heap
 			uint totalWadSize = (uint)_dsdaWadFileData.Length;
