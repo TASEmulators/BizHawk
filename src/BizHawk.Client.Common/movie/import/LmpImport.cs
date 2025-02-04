@@ -1,4 +1,5 @@
 using System.IO;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Computers.Doom;
@@ -29,17 +30,11 @@ namespace BizHawk.Client.Common
 			Result.Movie.SystemID = platform;
 
 			// Getting input file stream
-			using var sr = SourceFile.OpenText();
-
-			// Checking it's not empty
-			if (sr.EndOfStream)
-			{
-				Result.Errors.Add("This is an empty file.");
-				return;
-			}
+			var input = SourceFile.OpenRead().ReadAllBytes();
+			Stream sr = new MemoryStream(input);
 
 			// Reading signature
-			var signature = sr.Read();
+			var signature = sr.ReadByte();
 
 			// Try to decide game version based on signature
 			DemoFormat presumedFormat = DemoFormat.DoomUpTo12;
@@ -55,21 +50,21 @@ namespace BizHawk.Client.Common
 
 			// Parsing header
 			byte skillLevel = (byte) signature; // For <=1.2, the first byte is already the skill level
-			if (presumedFormat == DemoFormat.DoomPost12) skillLevel = (byte)sr.Read();
-			byte episode = (byte) sr.Read();
-			byte map = (byte) sr.Read();
-			byte multiplayerMode = (byte) sr.Read();
-			byte monstersRespawn = (byte) sr.Read();
-			byte fastMonsters = (byte) sr.Read();
-			byte noMonsters = (byte) sr.Read();
-			byte displayPlayer = (byte) sr.Read();
-			byte player1Present = (byte) sr.Read();
-			byte player2Present = (byte) sr.Read();
-			byte player3Present = (byte) sr.Read();
-			byte player4Present = (byte) sr.Read();
+			if (presumedFormat == DemoFormat.DoomPost12) skillLevel = (byte)sr.ReadByte();
+			byte episode = (byte) sr.ReadByte();
+			byte map = (byte) sr.ReadByte();
+			byte multiplayerMode = (byte) sr.ReadByte();
+			byte monstersRespawn = (byte) sr.ReadByte();
+			byte fastMonsters = (byte) sr.ReadByte();
+			byte noMonsters = (byte) sr.ReadByte();
+			byte displayPlayer = (byte) sr.ReadByte();
+			byte player1Present = (byte) sr.ReadByte();
+			byte player2Present = (byte) sr.ReadByte();
+			byte player3Present = (byte) sr.ReadByte();
+			byte player4Present = (byte) sr.ReadByte();
 
 			// Setting values
-			syncSettings.SkillLevel = (DSDA.SkillLevelEnum) skillLevel;
+			syncSettings.SkillLevel = (DSDA.SkillLevelEnum) (skillLevel+1);
 			syncSettings.InitialEpisode = episode;
 			syncSettings.InitialMap = map;
 			syncSettings.MultiplayerMode = (DSDA.MultiplayerModeEnum) multiplayerMode;
@@ -83,31 +78,53 @@ namespace BizHawk.Client.Common
 			syncSettings.Player4Present = player4Present > 0;
 			syncSettings.CompatibilityMode = presumedCompatibilityLevel;
 
-			while (!sr.EndOfStream && (byte) sr.Read() != 0x80)
-			{
-				if (player1Present > 0) parsePlayer(sr);
-				if (player2Present > 0) parsePlayer(sr);
-				if (player3Present > 0) parsePlayer(sr);
-				if (player4Present > 0) parsePlayer(sr);
+			var doomController1 = new DoomController(0);
+			var controller = new SimpleController(doomController1.Definition);
+			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 
-				// Where do I get this controller object from?
-				// Result.Movie.AppendFrame(controller);
+			bool isFinished = false;
+			while (!isFinished)
+			{
+				if (player1Present > 0) parsePlayer(controller, sr, 0);
+				if (player2Present > 0) parsePlayer(controller, sr, 1);
+				if (player3Present > 0) parsePlayer(controller, sr, 2);
+				if (player4Present > 0) parsePlayer(controller, sr, 3);
+
+				// Appending new frame
+				Result.Movie.AppendFrame(controller);
+
+				// Check termination
+				if (sr.ReadByte() == 0x80) isFinished = true;
+				sr.Seek(-1, SeekOrigin.Current);
 			}
 
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 		}
 
-		private void parsePlayer(StreamReader sr)
+		private static void parsePlayer(SimpleController controller, Stream sr, int playerId)
 		{
-			sbyte runValue = (sbyte) sr.Read();
-			sbyte strafingValue = (sbyte) sr.Read();
-			sbyte turningValue = (sbyte) sr.Read();
-			byte specialValue = (byte) sr.Read();
+			sbyte runValue = (sbyte) sr.ReadByte();
+			controller.AcceptNewAxis($"P{playerId} Run Speed", runValue);
+
+			sbyte strafingValue = (sbyte) sr.ReadByte();
+			controller.AcceptNewAxis($"P{playerId} Strafing Speed", strafingValue);
+
+			sbyte turningValue = (sbyte) sr.ReadByte();
+			controller.AcceptNewAxis($"P{playerId} Turning Speed", turningValue);
+
+			byte specialValue = (byte) sr.ReadByte();
 
 			bool isFire = (specialValue & 0b00000001) > 0;
+			controller[$"P{playerId} Fire"] = isFire;
+
 			bool isAction = (specialValue & 0b00000010) > 1;
+			controller[$"P{playerId} Action"] = isAction;
+
 			byte weaponSelect = (byte) ((specialValue & 0b00011100) >> 2);
+			controller.AcceptNewAxis($"P{playerId} Weapon Select", weaponSelect);
+
 			bool altWeapon = (specialValue & 0b00100000) > 5;
+			controller[$"P{playerId} Alt Weapon"] = altWeapon;
 		}
 	}
 }
