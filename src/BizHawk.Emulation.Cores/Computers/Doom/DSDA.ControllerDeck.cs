@@ -66,6 +66,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			??= new Dictionary<DoomControllerTypes, Func<int, IPort>>
 			{
 				[DoomControllerTypes.Doom] = portNum => new DoomController(portNum),
+				[DoomControllerTypes.Heretic] = portNum => new HereticController(portNum),
+				[DoomControllerTypes.Hexen] = portNum => new HexenController(portNum),
 			};
 	}
 }

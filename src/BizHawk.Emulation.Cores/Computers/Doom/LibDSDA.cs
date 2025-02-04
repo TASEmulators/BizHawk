@@ -38,12 +38,18 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int _RunSpeed;
 			public int _StrafingSpeed;
 			public int _TurningSpeed;
-			public int _FlyLook;
 			public int _WeaponSelect;
-			public int _ArtifactUse;
 			public int _Fire;
 			public int _Action;
 			public int _AltWeapon;
+
+			// Hexen + Heretic (Raven Games)
+			public int _FlyLook;
+			public int _ArtifactUse;
+
+			// Hexen only
+			public int _Jump;
+			public int _EndPlayer;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

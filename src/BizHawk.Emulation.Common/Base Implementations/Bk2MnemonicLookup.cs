@@ -822,7 +822,9 @@ namespace BizHawk.Emulation.Common
 			{
 				["Action"] = 'A',
 				["Fire"] = 'F',
-				["Alt Weapon"] = 'X'
+				["Alt Weapon"] = 'X',
+				["Jump"] = 'J',
+				["End Player"] = 'E'
 			},
 		};
 
@@ -879,7 +881,9 @@ namespace BizHawk.Emulation.Common
 				["Run Speed"] = "R",
 				["Strafing Speed"] = "S",
 				["Turning Speed"] = "T",
-				["Weapon Select"] = "W"
+				["Weapon Select"] = "W",
+				["Fly / Look"] = "L",
+				["Use Artifact"] = "U"
 			},
 		};
 	}
