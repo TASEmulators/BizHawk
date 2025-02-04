@@ -12,7 +12,7 @@ extern "C"
   void headlessRunSingleTick();
   void headlessUpdateSounds(void);
   void headlessClearTickCommand();
-  void headlessSetTickCommand(int playerId, int forwardSpeed, int strafingSpeed, int turningSpeed, int fire, int action, int weapon, int altWeapon);
+  void headlessSetTickCommand(int playerId, int forwardSpeed, int strafingSpeed, int turningSpeed, int fire, int action, int weapon, int altWeapon, int lookfly, int artifact, int jump, int endPlayer);
 
   // Video-related functions
   void headlessUpdateVideo(void);
@@ -79,12 +79,14 @@ struct PackedPlayerInput
 	int _RunSpeed;
 	int _StrafingSpeed;
 	int _TurningSpeed;
-	int _FlyLook;
 	int _WeaponSelect;
-	int _ArtifactUse;
 	int _Fire;
 	int _Action;
 	int _AltWeapon;
+	int _FlyLook;
+	int _ArtifactUse;
+	int _Jump;
+	int _EndPlayer;
 } __attribute__((packed));
 
 struct PackedRenderInfo
@@ -146,7 +148,11 @@ ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, stru
 		player1Inputs->_Fire,
 		player1Inputs->_Action,
 		player1Inputs->_WeaponSelect,
-		player1Inputs->_AltWeapon
+		player1Inputs->_AltWeapon,
+		player1Inputs->_FlyLook,
+		player1Inputs->_ArtifactUse,
+		player1Inputs->_Jump,
+		player1Inputs->_EndPlayer
 	);
 
 	// Setting Player 2 inputs
@@ -159,7 +165,11 @@ ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, stru
 		player2Inputs->_Fire,
 		player2Inputs->_Action,
 		player2Inputs->_WeaponSelect,
-		player2Inputs->_AltWeapon
+		player2Inputs->_AltWeapon,
+		player2Inputs->_FlyLook,
+		player2Inputs->_ArtifactUse,
+		player2Inputs->_Jump,
+		player2Inputs->_EndPlayer
 	);
 
 	// Setting Player 3 inputs
@@ -172,7 +182,11 @@ ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, stru
 		player3Inputs->_Fire,
 		player3Inputs->_Action,
 		player3Inputs->_WeaponSelect,
-		player3Inputs->_AltWeapon
+		player3Inputs->_AltWeapon,
+		player3Inputs->_FlyLook,
+		player3Inputs->_ArtifactUse,
+		player3Inputs->_Jump,
+		player3Inputs->_EndPlayer
 	);
 
     // Setting Player 4 inputs
@@ -185,7 +199,11 @@ ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, stru
 		player4Inputs->_Fire,
 		player4Inputs->_Action,
 		player4Inputs->_WeaponSelect,
-		player4Inputs->_AltWeapon
+		player4Inputs->_AltWeapon,
+		player4Inputs->_FlyLook,
+		player4Inputs->_ArtifactUse,
+		player4Inputs->_Jump,
+		player4Inputs->_EndPlayer
 	);
 
    // Enabling/Disabling rendering, as required
