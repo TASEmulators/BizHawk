@@ -51,6 +51,7 @@ extern "C" int gametic;
 extern "C" dboolean playeringame[MAX_MAXPLAYERS];
 extern "C" int consoleplayer;
 extern "C" int displayplayer;
+extern "C" pclass_t PlayerClass[MAX_MAXPLAYERS];
 
 struct InitSettings
 {
@@ -67,7 +68,10 @@ struct InitSettings
 	int _FastMonsters;
 	int _MonstersRespawn;
 	int _NoMonsters;
-	int _PlayerClass;
+	int _Player1Class;
+	int _Player2Class;
+	int _Player3Class;
+	int _Player4Class;
 	int _ChainEpisodes;
 	int _StrictMode;
 	int _PreventLevelExit;
@@ -309,16 +313,6 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings)
 	argv[argc++] = argTurbo;
   } 
 
-  // Specifying Player Class
-  char arg11[] = "-class";
-  char argClass[512];
-  if (settings->_PlayerClass > 0)
-  {
-	sprintf(argClass, "%d", settings->_PlayerClass);
-    argv[argc++] = arg11;
-	argv[argc++] = argClass;
-  } 
-
   printf("Passing arguments: \n");
   for (int i = 0; i < argc; i++) printf("%s ", argv[i]);
   printf("\n");
@@ -339,6 +333,12 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings)
   if (settings->_MultiplayerMode == 1) argv[argc++] = arg13;
   char arg14[] = "-altdeath";
   if (settings->_MultiplayerMode == 2) argv[argc++] = arg14;
+
+  // Handle class
+  PlayerClass[0] = (pclass_t)settings->_Player1Class;
+  PlayerClass[1] = (pclass_t)settings->_Player2Class;
+  PlayerClass[2] = (pclass_t)settings->_Player3Class;
+  PlayerClass[3] = (pclass_t)settings->_Player4Class;
 
   // Initializing DSDA core
   headlessMain(argc, argv);
