@@ -3,9 +3,6 @@ using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Computers.Doom;
-using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
-using SharpGen.Runtime;
 
 namespace BizHawk.Client.Common
 {

@@ -25,7 +25,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int _FastMonsters;
 			public int _MonstersRespawn;
 			public int _NoMonsters;
-			public int _PlayerClass;
+			public int _Player1Class;
+			public int _Player2Class;
+			public int _Player3Class;
+			public int _Player4Class;
 			public int _ChainEpisodes;
 			public int _StrictMode;
 			public int _PreventLevelExit;
