@@ -61,6 +61,7 @@ namespace BizHawk.Client.Common
 			byte player4Present = (byte) sr.ReadByte();
 
 			// Setting values
+			syncSettings.InputFormat = DoomControllerTypes.Doom;
 			syncSettings.SkillLevel = (DSDA.SkillLevelEnum) (skillLevel+1);
 			syncSettings.InitialEpisode = episode;
 			syncSettings.InitialMap = map;
