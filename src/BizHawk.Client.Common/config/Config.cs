@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
@@ -31,9 +31,11 @@ namespace BizHawk.Client.Common
 			([ VSystemID.Raw.Satellaview ],
 				[ CoreNames.Bsnes115, CoreNames.SubBsnes115 ]),
 			([ VSystemID.Raw.GB, VSystemID.Raw.GBC ],
-				[ CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk, CoreNames.Bsnes, CoreNames.Bsnes115, CoreNames.SubBsnes115 ]),
+				[ CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk ]),
 			([ VSystemID.Raw.GBL ],
 				[ CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x ]),
+			([ VSystemID.Raw.SGB ],
+				[ CoreNames.Gambatte, CoreNames.Bsnes115, CoreNames.SubBsnes115, CoreNames.Bsnes ]),
 			([ VSystemID.Raw.GEN ],
 				[ CoreNames.Gpgx, CoreNames.PicoDrive ]),
 			([ VSystemID.Raw.N64 ],
@@ -398,6 +400,8 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, Dictionary<string, AnalogBind>> AllTrollersAnalog { get; set; } = new Dictionary<string, Dictionary<string, AnalogBind>>();
 		public Dictionary<string, Dictionary<string, FeedbackBind>> AllTrollersFeedbacks { get; set; } = new Dictionary<string, Dictionary<string, FeedbackBind>>();
 
+		/// <remarks>as this setting spans multiple cores and doesn't actually affect the behavior of any core, it hasn't been absorbed into the new system</remarks>
+		public bool GbAsSgb { get; set; }
 		public string LibretroCore { get; set; }
 
 		public Dictionary<string, string> PreferredCores = GenDefaultCorePreferences();

@@ -16,9 +16,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	[PortedCore(CoreNames.Bsnes115, "bsnes team", "v115+", "https://github.com/bsnes-emu/bsnes")]
 	public partial class BsnesCore : IEmulator, IDebuggable, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>, IBSNESForGfxDebugger, IBoardInfo
 	{
-		[CoreConstructor(VSystemID.Raw.GB)]
-		[CoreConstructor(VSystemID.Raw.GBC)]
 		[CoreConstructor(VSystemID.Raw.Satellaview)]
+		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
 		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters) : this(loadParameters, false) { }
 		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters, bool subframe = false)
@@ -29,8 +28,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath, null);
 			CoreComm = loadParameters.Comm;
 			_syncSettings = loadParameters.SyncSettings ?? new SnesSyncSettings();
-			_isSGB = loadParameters.Game.System is VSystemID.Raw.GB or VSystemID.Raw.GBC;
-			SystemId = _isSGB ? VSystemID.Raw.SGB : loadParameters.Game.System;
+			SystemId = loadParameters.Game.System;
+			_isSGB = SystemId == VSystemID.Raw.SGB;
 			_currentMsuTrack = new ProxiedFile();
 
 			byte[] sgbRomData = null;

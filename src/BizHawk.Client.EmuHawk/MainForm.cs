@@ -104,9 +104,17 @@ namespace BizHawk.Client.EmuHawk
 				CoresSubMenu.DropDownItems.Add(submenu);
 			}
 			CoresSubMenu.DropDownItems.Add(new ToolStripSeparator { AutoSize = true });
+			var GBInSGBMenuItem = new ToolStripMenuItem { Text = "GB in SGB" };
+			GBInSGBMenuItem.Click += (_, _) =>
+			{
+				Config.GbAsSgb = !Config.GbAsSgb;
+				if (Emulator.SystemId is VSystemID.Raw.GB or VSystemID.Raw.GBC or VSystemID.Raw.SGB) FlagNeedsReboot();
+			};
+			CoresSubMenu.DropDownItems.Add(GBInSGBMenuItem);
 			var setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core..." };
 			setLibretroCoreToolStripMenuItem.Click += (_, _) => RunLibretroCoreChooser();
 			CoresSubMenu.DropDownItems.Add(setLibretroCoreToolStripMenuItem);
+			CoresSubMenu.DropDownOpened += (_, _) => GBInSGBMenuItem.Checked = Config.GbAsSgb;
 
 			ToolStripMenuItemEx recentCoreSettingsSubmenu = new() { Text = "Recent" };
 			recentCoreSettingsSubmenu.DropDownItems.AddRange(CreateCoreSettingsSubmenus().ToArray());

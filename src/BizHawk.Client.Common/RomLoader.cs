@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -484,6 +484,11 @@ namespace BizHawk.Client.Common
 						);
 						return;
 					}
+
+					if (_config.GbAsSgb)
+					{
+						game.System = VSystemID.Raw.SGB;
+					}
 					break;
 				case VSystemID.Raw.PSX when ext is ".bin":
 					if (TryLoadSiblingCue(
@@ -937,6 +942,11 @@ namespace BizHawk.Client.Common
 			if (ex is MissingFirmwareException)
 			{
 				DoLoadErrorCallback(ex.Message, system, path, Deterministic, LoadErrorType.MissingFirmware);
+			}
+			else if (ex is CGBNotSupportedException)
+			{
+				// failed to load SGB bios or game does not support SGB mode.
+				DoLoadErrorCallback("Failed to load a GB rom in SGB mode.  You might try disabling SGB Mode.", system);
 			}
 			else if (ex is NoAvailableCoreException)
 			{

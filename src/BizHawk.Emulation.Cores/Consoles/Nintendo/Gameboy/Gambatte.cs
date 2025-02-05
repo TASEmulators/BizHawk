@@ -20,7 +20,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		[CoreConstructor(VSystemID.Raw.GB)]
 		[CoreConstructor(VSystemID.Raw.GBC)]
-		public Gameboy(CoreComm comm, GameInfo game, byte[] file, GambatteSettings settings, GambatteSyncSettings syncSettings, bool deterministic)
+		[CoreConstructor(VSystemID.Raw.SGB)]
+		public Gameboy(CoreComm comm, IGameInfo game, byte[] file, GambatteSettings settings, GambatteSyncSettings syncSettings, bool deterministic)
 		{
 			_serviceProvider = new(this);
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
@@ -45,6 +46,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				_syncSettings = syncSettings ?? new GambatteSyncSettings();
 
 				var flags = LibGambatte.LoadFlags.READONLY_SAV;
+
+				if (game.System == VSystemID.Raw.SGB)
+				{
+					_syncSettings.ConsoleMode = GambatteSyncSettings.ConsoleModeType.SGB2;
+				}
 
 				switch (_syncSettings.ConsoleMode)
 				{

@@ -7,9 +7,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	[PortedCore(CoreNames.SubBsnes115, "")]
 	public class SubBsnesCore : IEmulator, ICycleTiming
 	{
-		[CoreConstructor(VSystemID.Raw.GB)]
-		[CoreConstructor(VSystemID.Raw.GBC)]
 		[CoreConstructor(VSystemID.Raw.Satellaview)]
+		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
 		public SubBsnesCore(CoreLoadParameters<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings> loadParameters)
 		{
