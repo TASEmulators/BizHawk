@@ -586,12 +586,14 @@ namespace BizHawk.Client.Common.Filters
 		private readonly bool _drawOsd;
 		private readonly OSDManager _manager;
 		private readonly StringRenderer _font;
+		private readonly float _scale;
 
-		public OSD(bool drawOsd, OSDManager manager, StringRenderer font)
+		public OSD(bool drawOsd, OSDManager manager, StringRenderer font, float scale)
 		{
 			_drawOsd = drawOsd;
 			_manager = manager;
 			_font = font;
+			_scale = scale;
 		}
 
 		public override void Initialize()
@@ -614,8 +616,7 @@ namespace BizHawk.Client.Common.Filters
 			var size = FindInput().SurfaceFormat.Size;
 
 			FilterProgram.GuiRenderer.Begin(size.Width, size.Height);
-			var scale = FilterProgram.ControlDpi / 96.0F;
-			var blitter = new OSDBlitter(_font, FilterProgram.GuiRenderer, new(0, 0, size.Width, size.Height), scale);
+			var blitter = new OSDBlitter(_font, FilterProgram.GuiRenderer, new(0, 0, size.Width, size.Height), _scale);
 			FilterProgram.GuiRenderer.EnableBlending();
 			_manager.DrawScreenInfo(blitter);
 			_manager.DrawMessages(blitter);
@@ -635,15 +636,15 @@ namespace BizHawk.Client.Common.Filters
 				Scale = scale;
 			}
 
-			public void DrawString(string s, Color color, float x, float y)
+			public void DrawString(string s, Color color, int x, int y)
 			{
 				_renderer.SetModulateColor(color);
-				_font.RenderString(_renderer, x, y, s, Scale);
+				_font.RenderString(_renderer, x, y, s);
 				_renderer.SetModulateColorWhite();
 			}
 
 			public SizeF MeasureString(string s)
-				=> _font.Measure(s, Scale);
+				=> _font.Measure(s);
 
 			public Rectangle ClipBounds { get; }
 

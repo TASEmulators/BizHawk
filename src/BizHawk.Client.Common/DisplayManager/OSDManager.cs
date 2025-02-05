@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 
 
 
-		private static PointF GetCoordinates(IBlitter g, MessagePosition position, string message)
+		private static Point GetCoordinates(IBlitter g, MessagePosition position, string message)
 		{
 			var size = g.MeasureString(message);
 			var x = position.Anchor.IsLeft()
@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 				? position.Y * g.Scale
 				: g.ClipBounds.Height - position.Y * g.Scale - size.Height;
 
-			return new PointF(x, y);
+			return new Point((int)Math.Round(x), (int)Math.Round(y));
 		}
 
 		private string MakeFrameCounter()
@@ -211,7 +211,7 @@ namespace BizHawk.Client.Common
 				: "";
 		}
 
-		private static void DrawOsdMessage(IBlitter g, string message, Color color, float x, float y)
+		private static void DrawOsdMessage(IBlitter g, string message, Color color, int x, int y)
 			=> g.DrawString(message, color, x, y);
 
 		/// <summary>
