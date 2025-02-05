@@ -169,7 +169,7 @@ namespace BizHawk.Client.Common
 				{
 					< 1.25f => 16,
 					< 1.5f => 20,
-					< 2 => 26,
+					< 2 => 25,
 					_ => 32,
 				};
 				_scale = fontSize / 16f;
