@@ -101,8 +101,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-
-			TasView1.ScrollToIndex(frame ?? Emulator.Frame);
+			foreach(InputRoll tasView in TasViews)
+			{
+				tasView.ScrollToIndex(frame ?? Emulator.Frame);
+			}
+			
 		}
 
 		private void MaybeFollowCursor()
