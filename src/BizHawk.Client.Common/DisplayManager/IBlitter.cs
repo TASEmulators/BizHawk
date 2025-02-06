@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public interface IBlitter
 	{
-		void DrawString(string s, Color color, float x, float y);
+		void DrawString(string s, Color color, int x, int y);
 
 		SizeF MeasureString(string s);
 
