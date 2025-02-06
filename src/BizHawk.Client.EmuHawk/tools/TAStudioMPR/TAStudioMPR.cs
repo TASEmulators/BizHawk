@@ -9,6 +9,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
+using System.Runtime.Remoting.Channels;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -487,7 +488,7 @@ namespace BizHawk.Client.EmuHawk
 		public void ClearFramesExternal() => ClearFramesMenuItem_Click(null, null);
 		public void InsertFrameExternal() => InsertFrameMenuItem_Click(null, null);
 		public void InsertNumFramesExternal() => InsertNumFramesMenuItem_Click(null, null);
-		public void DeleteFramesExternal() => DeleteFramesMenuItem_Click(null, null);
+		public void DeleteFramesExternal(object sender) => DeleteFramesMenuItem_Click(null, null);
 		public void CloneFramesExternal() => CloneFramesMenuItem_Click(null, null);
 		public void CloneFramesXTimesExternal() => CloneFramesXTimesMenuItem_Click(null, null);
 		public void UndoExternal() => UndoMenuItem_Click(null, null);
@@ -1010,11 +1011,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetSplicer()
 		{
-			// TODO: columns selected?
-			var selectedRowCount = TasView1.SelectedRows.Count();
-			var temp = $"Selected: {selectedRowCount} {(selectedRowCount == 1 ? "frame" : "frames")}, States: {CurrentTasMovie.TasStateManager.Count}";
-			if (_tasClipboard.Any()) temp += $", Clipboard: {_tasClipboard.Count} {(_tasClipboard.Count == 1 ? "frame" : "frames")}";
-			SplicerStatusLabel.Text = temp;
+			
+			foreach ( InputRoll tasView in TasViews)
+			{
+				if (tasView.Focused && tasView.AnyRowsSelected)
+				{
+					var selectedRowCount = tasView.SelectedRows.Count();
+					var temp = $"Selected: {selectedRowCount} {(selectedRowCount == 1 ? "frame" : "frames")}, States: {CurrentTasMovie.TasStateManager.Count}";
+					if (_tasClipboard.Any()) temp += $", Clipboard: {_tasClipboard.Count} {(_tasClipboard.Count == 1 ? "frame" : "frames")}";
+					SplicerStatusLabel.Text = temp;
+				}
+			}
+						// TODO: columns selected?
+		
 		}
 
 		private void DoTriggeredAutoRestoreIfNeeded()
@@ -1064,6 +1073,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DeleteFrames(int beginningFrame, int numberOfFrames)
 		{
+			//var a = 
+
 			if (beginningFrame < CurrentTasMovie.InputLogLength)
 			{
 				int[] framesToRemove = Enumerable.Range(beginningFrame, numberOfFrames).ToArray();

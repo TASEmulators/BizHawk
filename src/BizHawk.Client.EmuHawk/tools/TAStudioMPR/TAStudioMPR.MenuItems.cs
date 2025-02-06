@@ -330,160 +330,186 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DeselectMenuItem_Click(object sender, EventArgs e)
 		{
-			TasView1.DeselectAll();
-			TasView1.Refresh();
+			foreach (InputRoll tasView in TasViews)
+			{
+				tasView.DeselectAll();
+				tasView.Refresh();
+			}
 		}
 
 		/// <remarks>TODO merge w/ Deselect?</remarks>
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
-			TasView1.SelectAll();
-			TasView1.Refresh();
+			foreach (InputRoll tasView in TasViews)
+			{
+				tasView.SelectAll();
+				tasView.Refresh();
+			}
 		}
 
 		private void SelectBetweenMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView1.Focused && TasView1.AnyRowsSelected)
+			foreach (InputRoll tasView in TasViews)
 			{
-				var selectionEnd = TasView1.SelectionEndIndex ?? 0;
-				var prevMarker = CurrentTasMovie.Markers.PreviousOrCurrent(selectionEnd);
-				var nextMarker = CurrentTasMovie.Markers.Next(selectionEnd);
 
-				int prev = prevMarker?.Frame ?? 0;
-				int next = nextMarker?.Frame ?? CurrentTasMovie.InputLogLength;
-
-				TasView1.DeselectAll();
-				for (int i = prev; i < next; i++)
+				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
-					TasView1.SelectRow(i, true);
-				}
+					var selectionEnd = tasView.SelectionEndIndex ?? 0;
+					var prevMarker = CurrentTasMovie.Markers.PreviousOrCurrent(selectionEnd);
+					var nextMarker = CurrentTasMovie.Markers.Next(selectionEnd);
 
-				SetSplicer();
-				TasView1.Refresh();
+					int prev = prevMarker?.Frame ?? 0;
+					int next = nextMarker?.Frame ?? CurrentTasMovie.InputLogLength;
+
+					tasView.DeselectAll();
+					for (int i = prev; i < next; i++)
+					{
+						tasView.SelectRow(i, true);
+					}
+
+					SetSplicer();
+					tasView.Refresh();
+				}
 			}
 		}
-
 		private void ReselectClipboardMenuItem_Click(object sender, EventArgs e)
 		{
-			TasView1.DeselectAll();
-			foreach (var item in _tasClipboard)
+			foreach (InputRoll tasView in TasViews)
 			{
-				TasView1.SelectRow(item.Frame, true);
-			}
+				if (tasView.Focused && tasView.AnyRowsSelected)
+				{
+					tasView.DeselectAll();
+					foreach (var item in _tasClipboard)
+					{
+						tasView.SelectRow(item.Frame, true);
+					}
 
-			SetSplicer();
-			TasView1.Refresh();
+					SetSplicer();
+					tasView.Refresh();
+				}
+			}
 		}
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView1.Focused && TasView1.AnyRowsSelected)
+			foreach (InputRoll tasView in TasViews)
 			{
-				_tasClipboard.Clear();
-				var list = TasView1.SelectedRows.ToArray();
-				var sb = new StringBuilder();
-
-				foreach (var index in list)
+				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
-					var input = CurrentTasMovie.GetInputState(index);
-					if (input == null)
+					_tasClipboard.Clear();
+					var list = tasView.SelectedRows.ToArray();
+					var sb = new StringBuilder();
+
+					foreach (var index in list)
 					{
-						break;
+						var input = CurrentTasMovie.GetInputState(index);
+						if (input == null)
+						{
+							break;
+						}
+
+						_tasClipboard.Add(new TasClipboardEntry(index, input));
+						var logEntry = Bk2LogEntryGenerator.GenerateLogEntry(input);
+						sb.AppendLine(Settings.CopyIncludesFrameNo ? $"{FrameToStringPadded(index)} {logEntry}" : logEntry);
 					}
 
-					_tasClipboard.Add(new TasClipboardEntry(index, input));
-					var logEntry = Bk2LogEntryGenerator.GenerateLogEntry(input);
-					sb.AppendLine(Settings.CopyIncludesFrameNo ? $"{FrameToStringPadded(index)} {logEntry}" : logEntry);
+					Clipboard.SetDataObject(sb.ToString());
+					SetSplicer();
 				}
 
-				Clipboard.SetDataObject(sb.ToString());
-				SetSplicer();
 			}
+
+
 		}
 
 		private void PasteMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView1.Focused && TasView1.AnyRowsSelected)
+			foreach (InputRoll tasView in TasViews)
 			{
-				// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
-				// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
-
-				// TODO: copy paste from PasteInsertMenuItem_Click!
-				IDataObject data = Clipboard.GetDataObject();
-				if (data != null && data.GetDataPresent(DataFormats.StringFormat))
+				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
-					string input = (string)data.GetData(DataFormats.StringFormat);
-					if (!string.IsNullOrWhiteSpace(input))
+					// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
+					// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
+
+					// TODO: copy paste from PasteInsertMenuItem_Click!
+					IDataObject data = Clipboard.GetDataObject();
+					if (data != null && data.GetDataPresent(DataFormats.StringFormat))
 					{
-						string[] lines = input.Split('\n');
-						if (lines.Length > 0)
+						string input = (string) data.GetData(DataFormats.StringFormat);
+						if (!string.IsNullOrWhiteSpace(input))
 						{
-							_tasClipboard.Clear();
-							int linesToPaste = lines.Length;
-							if (lines[lines.Length - 1].Length is 0) linesToPaste--;
-							for (int i = 0; i < linesToPaste; i++)
+							string[] lines = input.Split('\n');
+							if (lines.Length > 0)
 							{
-								var line = ControllerFromMnemonicStr(lines[i]);
-								if (line == null)
+								_tasClipboard.Clear();
+								int linesToPaste = lines.Length;
+								if (lines[lines.Length - 1].Length is 0) linesToPaste--;
+								for (int i = 0; i < linesToPaste; i++)
 								{
-									return;
+									var line = ControllerFromMnemonicStr(lines[i]);
+									if (line == null)
+									{
+										return;
+									}
+
+									_tasClipboard.Add(new TasClipboardEntry(i, line));
 								}
 
-								_tasClipboard.Add(new TasClipboardEntry(i, line));
-							}
+								var rollbackFrame = CurrentTasMovie.CopyOverInput(tasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState));
+								if (rollbackFrame > 0)
+								{
+									GoToLastEmulatedFrameIfNecessary(rollbackFrame);
+									DoAutoRestore();
+								}
 
-							var rollbackFrame = CurrentTasMovie.CopyOverInput(TasView1.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState));
-							if (rollbackFrame > 0)
-							{
-								GoToLastEmulatedFrameIfNecessary(rollbackFrame);
-								DoAutoRestore();
+								FullRefresh();
 							}
-
-							FullRefresh();
 						}
 					}
 				}
 			}
 		}
-
 		private void PasteInsertMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView1.Focused && TasView1.AnyRowsSelected)
+			foreach (InputRoll tasView in TasViews)
 			{
-				// copy paste from PasteMenuItem_Click!
-				IDataObject data = Clipboard.GetDataObject();
-				if (data != null && data.GetDataPresent(DataFormats.StringFormat))
+				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
-					string input = (string)data.GetData(DataFormats.StringFormat);
-					if (!string.IsNullOrWhiteSpace(input))
+					// copy paste from PasteMenuItem_Click!
+					IDataObject data = Clipboard.GetDataObject();
+					if (data != null && data.GetDataPresent(DataFormats.StringFormat))
 					{
-						string[] lines = input.Split('\n');
-						if (lines.Length > 0)
+						string input = (string) data.GetData(DataFormats.StringFormat);
+						if (!string.IsNullOrWhiteSpace(input))
 						{
-							_tasClipboard.Clear();
-							int linesToPaste = lines.Length;
-							if (lines[lines.Length - 1].Length is 0) linesToPaste--;
-							for (int i = 0; i < linesToPaste; i++)
+							string[] lines = input.Split('\n');
+							if (lines.Length > 0)
 							{
-								var line = ControllerFromMnemonicStr(lines[i]);
-								if (line == null)
+								_tasClipboard.Clear();
+								int linesToPaste = lines.Length;
+								if (lines[lines.Length - 1].Length is 0) linesToPaste--;
+								for (int i = 0; i < linesToPaste; i++)
 								{
-									return;
+									var line = ControllerFromMnemonicStr(lines[i]);
+									if (line == null)
+									{
+										return;
+									}
+
+									_tasClipboard.Add(new TasClipboardEntry(i, line));
 								}
 
-								_tasClipboard.Add(new TasClipboardEntry(i, line));
-							}
+								var selectionStart = TasView1.SelectionStartIndex;
+								var needsToRollback = selectionStart < Emulator.Frame;
+								CurrentTasMovie.InsertInput(selectionStart ?? 0, _tasClipboard.Select(static x => x.ControllerState));
+								if (needsToRollback)
+								{
+									GoToLastEmulatedFrameIfNecessary(selectionStart!.Value);
+									DoAutoRestore();
+								}
 
-							var selectionStart = TasView1.SelectionStartIndex;
-							var needsToRollback = selectionStart < Emulator.Frame;
-							CurrentTasMovie.InsertInput(selectionStart ?? 0, _tasClipboard.Select(static x => x.ControllerState));
-							if (needsToRollback)
-							{
-								GoToLastEmulatedFrameIfNecessary(selectionStart!.Value);
-								DoAutoRestore();
+								FullRefresh();
 							}
-
-							FullRefresh();
 						}
 					}
 				}
@@ -824,7 +850,7 @@ namespace BizHawk.Client.EmuHawk
 				Settings.AutosaveInterval = val;
 				if (val > 0)
 				{
-					_autosaveTimer.Interval = (int)val;
+					_autosaveTimer.Interval = (int) val;
 					_autosaveTimer.Start();
 				}
 			}
@@ -1030,24 +1056,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HideLagFramesX_Click(object sender, EventArgs e)
 		{
-			TasView1.LagFramesToHide = (int)((ToolStripMenuItem)sender).Tag;
+			TasView1.LagFramesToHide = (int) ((ToolStripMenuItem) sender).Tag;
 			MaybeFollowCursor();
 			RefreshDialog();
 		}
 
 		private void HideWasLagFramesMenuItem_Click(object sender, EventArgs e)
 			=> TasView1.HideWasLagFrames = !TasView1.HideWasLagFrames;
-		
+
 		private void AlwaysScrollMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView1.AlwaysScroll = Settings.FollowCursorAlwaysScroll = alwaysScrollToolStripMenuItem.Checked;
 		}
-		
+
 		private void ScrollToViewMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView1.ScrollMethod = Settings.FollowCursorScrollMethod = "near";
 		}
-		
+
 		private void ScrollToTopMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView1.ScrollMethod = Settings.FollowCursorScrollMethod = "top";
@@ -1123,7 +1149,7 @@ namespace BizHawk.Client.EmuHawk
 			int rowHeight = ColumnsSubMenu.Height + 4;
 			int maxRows = workingHeight / rowHeight;
 			int keyCount = columns.Count(c => c.Name.StartsWithOrdinal("Key "));
-			int keysMenusCount = (int)Math.Ceiling((double)keyCount / maxRows);
+			int keysMenusCount = (int) Math.Ceiling((double) keyCount / maxRows);
 
 			var keysMenus = new ToolStripMenuItem[keysMenusCount];
 
@@ -1152,13 +1178,13 @@ namespace BizHawk.Client.EmuHawk
 
 				menuItem.CheckedChanged += (o, ev) =>
 				{
-					ToolStripMenuItem sender = (ToolStripMenuItem)o;
-					TasView1.AllColumns.Find(c => c.Name == (string)sender.Tag).Visible = sender.Checked;
+					ToolStripMenuItem sender = (ToolStripMenuItem) o;
+					TasView1.AllColumns.Find(c => c.Name == (string) sender.Tag).Visible = sender.Checked;
 					TasView1.AllColumns.ColumnsChanged();
 					CurrentTasMovie.FlagChanges();
 					TasView1.Refresh();
 					ColumnsSubMenu.ShowDropDown();
-					((ToolStripMenuItem)sender.OwnerItem).ShowDropDown();
+					((ToolStripMenuItem) sender.OwnerItem).ShowDropDown();
 				};
 
 				if (column.Name.StartsWithOrdinal("Key "))
