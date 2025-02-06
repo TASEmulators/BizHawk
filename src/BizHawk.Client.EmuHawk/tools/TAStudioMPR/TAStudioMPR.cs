@@ -559,7 +559,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// clear all selections
-			TasView1.DeselectAll();
+
+			foreach (InputRoll tasView in TasViews)
+			{
+				tasView.DeselectAll();
+			}
+
 			BookMarkControlMPR.Restart();
 			MarkerControlMPR.Restart();
 
@@ -585,7 +590,11 @@ namespace BizHawk.Client.EmuHawk
 			if (success)
 			{
 				// clear all selections
-				TasView1.DeselectAll();
+				//TasView1.DeselectAll();
+				foreach (InputRoll tasView in TasViews)
+				{
+					tasView.DeselectAll();
+				}
 				BookMarkControlMPR.Restart();
 				MarkerControlMPR.Restart();
 				RefreshDialog();
@@ -871,7 +880,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTasViewRowCount()
 		{
-			TasView1.RowCount = CurrentTasMovie.InputLogLength + 1;
+			foreach (InputRoll tasView in TasViews)
+			{
+				tasView.RowCount = CurrentTasMovie.InputLogLength + 1;
+			}
+
 			_lastRefresh = Emulator.Frame;
 		}
 
@@ -1255,15 +1268,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetFontMenuItem_Click(object sender, EventArgs e)
 		{
-			using var fontDialog = new FontDialog
+			foreach (InputRoll tasView in TasViews)
 			{
-				ShowColor = false,
-				Font = TasView1.Font
-			};
-			if (fontDialog.ShowDialog() != DialogResult.Cancel)
-			{
-				TasView1.Font = TasViewFont = fontDialog.Font;
-				TasView1.Refresh();
+				using var fontDialog = new FontDialog
+				{
+					ShowColor = false,
+					Font = tasView.Font
+				};
+				if (fontDialog.ShowDialog() != DialogResult.Cancel)
+				{
+					tasView.Font = TasViewFont = fontDialog.Font;
+					tasView.Refresh();
+				}
 			}
 		}
 
