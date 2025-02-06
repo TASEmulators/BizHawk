@@ -74,5 +74,12 @@ namespace BizHawk.Common
 		[DllImport("kernel32.dll", ExactSpelling = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool IsWow64Process(IntPtr hProcess, [MarshalAs(UnmanagedType.Bool)] out bool Wow64Process);
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool SetDllDirectoryW(string lpPathName);
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+		public static extern int GetShortPathNameW(string lpszLongPath, char[] lpszShortPath, int cchBuffer);
 	}
 }
