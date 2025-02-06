@@ -178,7 +178,9 @@ namespace BizHawk.Client.EmuHawk
 			TasView2.InputPaintingMode = true;
 			TasView2.LetKeysModifySelection = true;
 			TasView2.Rotatable = true;
+			TasView2.ScrollMethod = "near";
 			TasView2.ScrollSpeed = 1;
+			
 
 			TasView2.QueryItemText += TasView_QueryItemText;
 			TasView2.QueryItemBkColor += TasView_QueryItemBkColor;
@@ -212,19 +214,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 			TasViews.Add(TasView2);
-			//}
-
-
+			
 			LastPositionFrame = -1;
 
 			BookMarkControlMPR.LoadedCallback = BranchLoaded;
 			BookMarkControlMPR.SavedCallback = BranchSaved;
 			BookMarkControlMPR.RemovedCallback = BranchRemoved;
-
-
 		}
-
-		//private void TasView2_RightMouseScrolled(object sender, MouseEventArgs e) => throw new NotImplementedException();
 
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
