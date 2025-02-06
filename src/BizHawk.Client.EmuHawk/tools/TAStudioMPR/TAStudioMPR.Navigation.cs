@@ -97,12 +97,12 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void SetVisibleFrame(int? frame = null)
 		{
-			if (TasView.AlwaysScroll && _leftButtonHeld)
+			if (TasView1.AlwaysScroll && _leftButtonHeld)
 			{
 				return;
 			}
 
-			TasView.ScrollToIndex(frame ?? Emulator.Frame);
+			TasView1.ScrollToIndex(frame ?? Emulator.Frame);
 		}
 
 		private void MaybeFollowCursor()

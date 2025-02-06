@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.TasSession.UpdateValues(Emulator.Frame, CurrentTasMovie.Branches.Current);
 			MaybeFollowCursor();
 
-			if (TasView.IsPartiallyVisible(Emulator.Frame) || TasView.IsPartiallyVisible(_lastRefresh))
+			if (TasView1.IsPartiallyVisible(Emulator.Frame) || TasView1.IsPartiallyVisible(_lastRefresh))
 			{
 				refreshNeeded = true;
 			}

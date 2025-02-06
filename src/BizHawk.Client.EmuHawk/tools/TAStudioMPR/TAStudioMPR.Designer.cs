@@ -151,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
             this.aboutToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.toolStripSeparator10 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.EnableTooltipsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-            this.TasView = new BizHawk.Client.EmuHawk.InputRoll();
+            this.TasView1 = new BizHawk.Client.EmuHawk.InputRoll();
             this.TasStatusStrip = new BizHawk.WinForms.Controls.StatusStripEx();
             this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
@@ -874,42 +874,43 @@ namespace BizHawk.Client.EmuHawk
             this.EnableTooltipsMenuItem.Enabled = false;
             this.EnableTooltipsMenuItem.Text = "&Enable Tooltips";
             // 
-            // TasView
+            // TasView1
             // 
-            this.TasView.AllowColumnReorder = false;
-            this.TasView.AllowColumnResize = false;
-            this.TasView.AllowMassNavigationShortcuts = false;
-            this.TasView.AllowRightClickSelection = false;
-            this.TasView.AlwaysScroll = false;
-            this.TasView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.TasView1.AllowColumnReorder = false;
+            this.TasView1.AllowColumnResize = false;
+            this.TasView1.AllowMassNavigationShortcuts = false;
+            this.TasView1.AllowRightClickSelection = false;
+            this.TasView1.AlwaysScroll = false;
+            this.TasView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TasView.CellHeightPadding = 0;
-            this.TasView.ChangeSelectionWhenPaging = false;
-            this.TasView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TasView.FullRowSelect = true;
-            this.TasView.HorizontalOrientation = false;
-            this.TasView.InputPaintingMode = true;
-            this.TasView.LetKeysModifySelection = true;
-            this.TasView.Location = new System.Drawing.Point(3, 20);
-            this.TasView.Name = "TasView";
-            this.TasView.Rotatable = true;
-            this.TasView.RowCount = 0;
-            this.TasView.ScrollSpeed = 1;
-            this.TasView.Size = new System.Drawing.Size(300, 550);
-            this.TasView.TabIndex = 1;
-            this.TasView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnClick);
-            this.TasView.ColumnRightClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnRightClick);
-            this.TasView.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
-            this.TasView.RightMouseScrolled += new BizHawk.Client.EmuHawk.InputRoll.RightMouseScrollEventHandler(this.TasView_MouseWheel);
-            this.TasView.ColumnReordered += new BizHawk.Client.EmuHawk.InputRoll.ColumnReorderedEventHandler(this.TasView_ColumnReordered);
-            this.TasView.CellDropped += new BizHawk.Client.EmuHawk.InputRoll.CellDroppedEvent(this.TasView_CellDropped);
-            this.TasView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TasView_KeyDown);
-            this.TasView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDoubleClick);
-            this.TasView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDown);
-            this.TasView.MouseEnter += new System.EventHandler(this.TasView_MouseEnter);
-            this.TasView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseMove);
-            this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseUp);
+            this.TasView1.CellHeightPadding = 0;
+            this.TasView1.ChangeSelectionWhenPaging = false;
+            this.TasView1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TasView1.FullRowSelect = true;
+            this.TasView1.HorizontalOrientation = false;
+            this.TasView1.InputPaintingMode = true;
+            this.TasView1.LetKeysModifySelection = true;
+            this.TasView1.Location = new System.Drawing.Point(3, 20);
+            this.TasView1.Name = "TasView1";
+            this.TasView1.Rotatable = true;
+            this.TasView1.RowCount = 0;
+            this.TasView1.ScrollSpeed = 1;
+            this.TasView1.Size = new System.Drawing.Size(300, 550);
+            this.TasView1.TabIndex = 1;
+            this.TasView1.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnClick);
+            this.TasView1.ColumnRightClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnRightClick);
+            this.TasView1.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
+            this.TasView1.RightMouseScrolled += new BizHawk.Client.EmuHawk.InputRoll.RightMouseScrollEventHandler(this.TasView_MouseWheel);
+            this.TasView1.ColumnReordered += new BizHawk.Client.EmuHawk.InputRoll.ColumnReorderedEventHandler(this.TasView_ColumnReordered);
+            this.TasView1.CellDropped += new BizHawk.Client.EmuHawk.InputRoll.CellDroppedEvent(this.TasView_CellDropped);
+            this.TasView1.Enter += new System.EventHandler(this.TasView1_Enter);
+            this.TasView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TasView_KeyDown);
+            this.TasView1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDoubleClick);
+            this.TasView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDown);
+            this.TasView1.MouseEnter += new System.EventHandler(this.TasView_MouseEnter);
+            this.TasView1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseMove);
+            this.TasView1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseUp);
             // 
             // TasStatusStrip
             // 
@@ -1151,7 +1152,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // MainVertialSplit.Panel1
             // 
-            this.MainVertialSplit.Panel1.Controls.Add(this.TasView);
+            this.MainVertialSplit.Panel1.Controls.Add(this.TasView1);
             // 
             // MainVertialSplit.Panel2
             // 
@@ -1209,7 +1210,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx EditSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ConfigSubMenu;
-		private InputRoll TasView;
+		private InputRoll TasView1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator3;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx InsertFrameMenuItem;
