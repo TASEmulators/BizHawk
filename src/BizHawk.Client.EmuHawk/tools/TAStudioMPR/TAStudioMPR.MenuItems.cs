@@ -569,7 +569,7 @@ namespace BizHawk.Client.EmuHawk
 					var rollBackFrame = TasView1.SelectionStartIndex ?? 0;
 
 					CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasView1.SelectionStartIndex}-{TasView1.SelectionEndIndex}");
-					foreach (int frame in TasView1.SelectedRows)
+					foreach (int frame in tasView.SelectedRows)
 					{
 						CurrentTasMovie.ClearFrame(frame);
 					}
