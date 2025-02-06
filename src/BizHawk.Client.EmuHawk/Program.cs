@@ -322,8 +322,6 @@ namespace BizHawk.Client.EmuHawk
 				// WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 				// The relevant initialization happened just before in "create IGL context".
 				// It isn't clear whether we need the earlier SetDllDirectory(), but I think we do.
-				// note: this is pasted instead of being put in a static method due to this initialization code being sensitive to things like that, and not wanting to cause it to break
-				// pasting should be safe (not affecting the jit order of things)
 				if (!Win32Imports.SetDllDirectoryW(dllDir))
 				{
 					MessageBox.Show(
