@@ -167,9 +167,9 @@ namespace BizHawk.Client.EmuHawk
 			TasView2.Width = 300;
 			TasView2.Height = 550;
 			TasView2.Location = new System.Drawing.Point(TasView1.Location.X + TasView1.Width + 10, 20);
-			TasView2.Anchor = ((System.Windows.Forms.AnchorStyles) ((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			TasView2.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 			| System.Windows.Forms.AnchorStyles.Left)
-			| System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right);
 
 			TasView2.QueryItemText += TasView_QueryItemText;
 			TasView2.QueryItemBkColor += TasView_QueryItemBkColor;
@@ -594,8 +594,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (success)
 			{
-				// clear all selections
-				//TasView1.DeselectAll();
+				// clear all selections				
 				foreach (InputRoll tasView in TasViews)
 				{
 					tasView.DeselectAll();
@@ -631,7 +630,10 @@ namespace BizHawk.Client.EmuHawk
 				UpdateWindowTitle();
 				if (CurrentTasMovie.InputRollSettings != null)
 				{
-					TasView1.LoadSettingsSerialized(CurrentTasMovie.InputRollSettings);
+					foreach (InputRoll tasView in TasViews)
+					{
+						tasView.LoadSettingsSerialized(CurrentTasMovie.InputRollSettings);
+					}
 				}
 				else
 				{
@@ -834,13 +836,27 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override string WindowTitleStatic => "TAStudio";
 
-		public IEnumerable<int> GetSelection() => TasView1.SelectedRows;
-
+		//wannabeshinobi: changed from lambda to function
+		public IEnumerable<int> GetSelection()
+		{
+			foreach (InputRoll tasView in TasViews)
+			{
+				if (tasView.Focused && tasView.AnyRowsSelected)
+				{
+					return tasView.SelectedRows;
+				}
+			}
+			return null; //something messed up
+		}
 		// Slow but guarantees the entire dialog refreshes
 		private void FullRefresh()
 		{
 			SetTasViewRowCount();
-			TasView1.Refresh(); // An extra refresh potentially but we need to guarantee
+			foreach (InputRoll tasView in TasViews)
+			{
+				tasView.Refresh(); // An extra refresh potentially but we need to guarantee
+			}
+
 			MarkerControlMPR.UpdateValues();
 			BookMarkControlMPR.UpdateValues();
 
@@ -877,9 +893,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RefreshForInputChange(int firstChangedFrame)
 		{
-			if (TasView1.IsPartiallyVisible(firstChangedFrame) || firstChangedFrame < TasView1.FirstVisibleRow)
+			foreach (InputRoll tasView in TasViews)
 			{
-				RefreshDialog();
+				if (tasView.IsPartiallyVisible(firstChangedFrame) || firstChangedFrame < tasView.FirstVisibleRow)
+				{
+					RefreshDialog();
+				}
 			}
 		}
 

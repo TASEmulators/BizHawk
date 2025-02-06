@@ -40,7 +40,13 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				_axisEditRow = value;
-				TasView1.SuspendHotkeys = AxisEditingMode;
+				foreach (InputRoll tasView in TasViews)
+				{
+					if (tasView.Focused && tasView.AnyRowsSelected)
+					{
+						tasView.SuspendHotkeys = AxisEditingMode;
+					}
+				}
 			}
 		}
 
