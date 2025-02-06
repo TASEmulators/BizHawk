@@ -171,6 +171,15 @@ namespace BizHawk.Client.EmuHawk
 			| System.Windows.Forms.AnchorStyles.Left)
 			| System.Windows.Forms.AnchorStyles.Right);
 
+			TasView2.CellHeightPadding = 0;
+			TasView2.ChangeSelectionWhenPaging = false;
+			TasView2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			TasView2.FullRowSelect = true;
+			TasView2.InputPaintingMode = true;
+			TasView2.LetKeysModifySelection = true;
+			TasView2.Rotatable = true;
+			TasView2.ScrollSpeed = 1;
+
 			TasView2.QueryItemText += TasView_QueryItemText;
 			TasView2.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView2.QueryRowBkColor += TasView_QueryRowBkColor;
@@ -190,7 +199,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView2.MouseEnter += TasView_MouseEnter;
 			TasView2.MouseMove += TasView_MouseMove;
 			TasView2.MouseUp += TasView_MouseUp;
-			TasView2.RightMouseScrolled += TasView2_RightMouseScrolled;
+			TasView2.RightMouseScrolled += TasView_MouseWheel;
 			TasView2.SelectedIndexChanged += TasView_SelectedIndexChanged;
 
 
@@ -215,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
-		private void TasView2_RightMouseScrolled(object sender, MouseEventArgs e) => throw new NotImplementedException();
+		//private void TasView2_RightMouseScrolled(object sender, MouseEventArgs e) => throw new NotImplementedException();
 
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
