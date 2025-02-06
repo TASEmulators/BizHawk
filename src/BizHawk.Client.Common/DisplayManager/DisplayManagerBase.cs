@@ -836,8 +836,6 @@ namespace BizHawk.Client.Common
 			filterProgram.GuiRenderer = _renderer;
 			filterProgram.GL = _gl;
 
-			filterProgram.ControlDpi = GetGraphicsControlDpi();
-
 			//setup the source image filter
 			var fInput = (SourceImage)filterProgram["input"];
 			fInput.Texture = videoTexture;
