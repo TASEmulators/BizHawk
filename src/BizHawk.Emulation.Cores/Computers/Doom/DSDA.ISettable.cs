@@ -261,6 +261,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(false)]
 			public bool PreventGameEnd { get; set; }
 
+			[DisplayName("Mouse Running Sensitivity")]
+			[Description("How fast the Doom player will run when using the mouse")]
+			[DefaultValue(10)]
+			public int MouseRunSensitivity { get; set; }
+
+			[DisplayName("Mouse Turning Sensitivity")]
+			[Description("How fast the Doom player will turn when using the mouse")]
+			[DefaultValue(1)]
+			public int MouseTurnSensitivity { get; set; }
+
 			public CInterface.InitSettings GetNativeSettings(GameInfo game)
 			{
 				return new CInterface.InitSettings
@@ -286,6 +296,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					_StrictMode = StrictMode ? 1 : 0,
 					_PreventLevelExit = PreventLevelExit ? 1 : 0,
 					_PreventGameEnd = PreventGameEnd ? 1 : 0
+					// MouseRunSensitivity is handled at Bizhawk level
+					// MouseTurnSensitivity is handled at Bizhawk level
 				};
 			}
 

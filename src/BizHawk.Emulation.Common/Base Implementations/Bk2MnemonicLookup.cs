@@ -897,7 +897,9 @@ namespace BizHawk.Emulation.Common
 				["Turning Speed"] = "T",
 				["Weapon Select"] = "W",
 				["Fly / Look"] = "L",
-				["Use Artifact"] = "U"
+				["Use Artifact"] = "U",
+				["Mouse Running"] = "mR",
+				["Mouse Turning"] = "mT"
 			},
 		};
 	}

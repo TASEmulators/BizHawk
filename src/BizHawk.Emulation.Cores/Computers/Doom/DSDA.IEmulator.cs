@@ -27,11 +27,31 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				player1Inputs._Action        = (_controllerDeck.ReadPort1(controller) & 0b00010) > 0 ? 1 : 0;
 				player1Inputs._AltWeapon     = (_controllerDeck.ReadPort1(controller) & 0b00100) > 0 ? 1 : 0;
 
+				// Handling mouse-driven running
+				int mouseRunningSpeed = _controllerDeck.ReadPot1(controller, 4);
+				if (_player1LastMouseRunningValue > MOUSE_NO_INPUT)
+				{
+					int mouseRunningDelta = _player1LastMouseRunningValue - mouseRunningSpeed;
+					player1Inputs._RunSpeed += mouseRunningDelta * _syncSettings.MouseRunSensitivity;
+					if (player1Inputs._RunSpeed > 50) player1Inputs._RunSpeed = 50;
+					if (player1Inputs._RunSpeed < -50) player1Inputs._RunSpeed = -50;
+				}
+				_player1LastMouseRunningValue = mouseRunningSpeed;
+
+				// Handling mouse-driven turning
+				int mouseTurningSpeed = _controllerDeck.ReadPot1(controller, 5);
+				if (_player1LastMouseTurningValue > MOUSE_NO_INPUT)
+				{
+					int mouseTurningDelta = _player1LastMouseTurningValue - mouseTurningSpeed;
+					player1Inputs._TurningSpeed += mouseTurningDelta * _syncSettings.MouseTurnSensitivity;
+				}
+				_player1LastMouseTurningValue = mouseTurningSpeed;
+
 				// Raven Games
 				if (_syncSettings.InputFormat == DoomControllerTypes.Heretic || _syncSettings.InputFormat == DoomControllerTypes.Hexen)
 				{
-				  player1Inputs._FlyLook = _controllerDeck.ReadPot1(controller, 4);
-				  player1Inputs._ArtifactUse = _controllerDeck.ReadPot1(controller, 5);
+				  player1Inputs._FlyLook = _controllerDeck.ReadPot1(controller, 6);
+				  player1Inputs._ArtifactUse = _controllerDeck.ReadPot1(controller, 7);
 				}
 				if (_syncSettings.InputFormat == DoomControllerTypes.Hexen)
 				{
@@ -49,6 +69,26 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				player2Inputs._Fire = (_controllerDeck.ReadPort2(controller) & 0b00001) > 0 ? 1 : 0;
 				player2Inputs._Action = (_controllerDeck.ReadPort2(controller) & 0b00010) > 0 ? 1 : 0;
 				player2Inputs._AltWeapon = (_controllerDeck.ReadPort2(controller) & 0b00100) > 0 ? 1 : 0;
+
+				// Handling mouse-driven running
+				int mouseRunningSpeed = _controllerDeck.ReadPot2(controller, 4);
+				if (_player2LastMouseRunningValue > MOUSE_NO_INPUT)
+				{
+					int mouseRunningDelta = _player2LastMouseRunningValue - mouseRunningSpeed;
+					player2Inputs._RunSpeed += mouseRunningDelta * _syncSettings.MouseRunSensitivity;
+					if (player2Inputs._RunSpeed > 50) player2Inputs._RunSpeed = 50;
+					if (player2Inputs._RunSpeed < -50) player2Inputs._RunSpeed = -50;
+				}
+				_player2LastMouseRunningValue = mouseRunningSpeed;
+
+				// Handling mouse-driven turning
+				int mouseTurningSpeed = _controllerDeck.ReadPot2(controller, 5);
+				if (_player2LastMouseTurningValue > MOUSE_NO_INPUT)
+				{
+					int mouseTurningDelta = _player2LastMouseTurningValue - mouseTurningSpeed;
+					player2Inputs._TurningSpeed += mouseTurningDelta * _syncSettings.MouseTurnSensitivity;
+				}
+				_player2LastMouseTurningValue = mouseTurningSpeed;
 
 				// Raven Games
 				if (_syncSettings.InputFormat == DoomControllerTypes.Heretic || _syncSettings.InputFormat == DoomControllerTypes.Hexen)
@@ -73,11 +113,31 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				player3Inputs._Action = (_controllerDeck.ReadPort3(controller) & 0b00010) > 0 ? 1 : 0;
 				player3Inputs._AltWeapon = (_controllerDeck.ReadPort3(controller) & 0b00100) > 0 ? 1 : 0;
 
+				// Handling mouse-driven running
+				int mouseRunningSpeed = _controllerDeck.ReadPot3(controller, 4);
+				if (_player3LastMouseRunningValue > MOUSE_NO_INPUT)
+				{
+					int mouseRunningDelta = _player3LastMouseRunningValue - mouseRunningSpeed;
+					player3Inputs._RunSpeed += mouseRunningDelta * _syncSettings.MouseRunSensitivity;
+					if (player3Inputs._RunSpeed > 50) player3Inputs._RunSpeed = 50;
+					if (player3Inputs._RunSpeed < -50) player3Inputs._RunSpeed = -50;
+				}
+				_player3LastMouseRunningValue = mouseRunningSpeed;
+
+				// Handling mouse-driven turning
+				int mouseTurningSpeed = _controllerDeck.ReadPot3(controller, 5);
+				if (_player3LastMouseTurningValue > MOUSE_NO_INPUT)
+				{
+					int mouseTurningDelta = _player3LastMouseTurningValue - mouseTurningSpeed;
+					player3Inputs._TurningSpeed += mouseTurningDelta * _syncSettings.MouseTurnSensitivity;
+				}
+				_player3LastMouseTurningValue = mouseTurningSpeed;
+
 				// Raven Games
 				if (_syncSettings.InputFormat == DoomControllerTypes.Heretic || _syncSettings.InputFormat == DoomControllerTypes.Hexen)
 				{
-					player3Inputs._FlyLook = _controllerDeck.ReadPot3(controller, 4);
-					player3Inputs._ArtifactUse = _controllerDeck.ReadPot3(controller, 5);
+					player3Inputs._FlyLook = _controllerDeck.ReadPot3(controller, 6);
+					player3Inputs._ArtifactUse = _controllerDeck.ReadPot3(controller, 7);
 				}
 				if (_syncSettings.InputFormat == DoomControllerTypes.Hexen)
 				{
@@ -95,6 +155,26 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				player4Inputs._Fire = (_controllerDeck.ReadPort4(controller) & 0b00001) > 0 ? 1 : 0;
 				player4Inputs._Action = (_controllerDeck.ReadPort4(controller) & 0b00010) > 0 ? 1 : 0;
 				player4Inputs._AltWeapon = (_controllerDeck.ReadPort4(controller) & 0b00100) > 0 ? 1 : 0;
+
+				// Handling mouse-driven running
+				int mouseRunningSpeed = _controllerDeck.ReadPot4(controller, 4);
+				if (_player4LastMouseRunningValue > MOUSE_NO_INPUT)
+				{
+					int mouseRunningDelta = _player4LastMouseRunningValue - mouseRunningSpeed;
+					player4Inputs._RunSpeed += mouseRunningDelta * _syncSettings.MouseRunSensitivity;
+					if (player4Inputs._RunSpeed > 50) player4Inputs._RunSpeed = 50;
+					if (player4Inputs._RunSpeed < -50) player4Inputs._RunSpeed = -50;
+				}
+				_player4LastMouseRunningValue = mouseRunningSpeed;
+
+				// Handling mouse-driven turning
+				int mouseTurningSpeed = _controllerDeck.ReadPot4(controller, 5);
+				if (_player4LastMouseTurningValue > MOUSE_NO_INPUT)
+				{
+					int mouseTurningDelta = _player4LastMouseTurningValue - mouseTurningSpeed;
+					player4Inputs._TurningSpeed += mouseTurningDelta * _syncSettings.MouseTurnSensitivity;
+				}
+				_player4LastMouseTurningValue = mouseTurningSpeed;
 
 				// Raven Games
 				if (_syncSettings.InputFormat == DoomControllerTypes.Heretic || _syncSettings.InputFormat == DoomControllerTypes.Hexen)

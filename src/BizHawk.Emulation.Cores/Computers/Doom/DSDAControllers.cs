@@ -37,6 +37,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				.AddAxis($"P{PortNum} Strafing Speed", (-127).RangeTo(127), 0)
 				.AddAxis($"P{PortNum} Turning Speed", (-128).RangeTo(128), 0)
 				.AddAxis($"P{PortNum} Weapon Select", (0).RangeTo(7), 0)
+				.AddAxis($"P{PortNum} Mouse Running", (-128).RangeTo(128), 0)
+				.AddAxis($"P{PortNum} Mouse Turning", (-128).RangeTo(128), 0)
 				.MakeImmutable();
 		}
 
@@ -152,6 +154,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				.AddAxis($"P{PortNum} Strafing Speed", (-127).RangeTo(127), 0)
 				.AddAxis($"P{PortNum} Turning Speed", (-128).RangeTo(128), 0)
 				.AddAxis($"P{PortNum} Weapon Select", (0).RangeTo(7), 0)
+				.AddAxis($"P{PortNum} Mouse Running", (-128).RangeTo(128), 0)
+				.AddAxis($"P{PortNum} Mouse Turning", (-128).RangeTo(128), 0)
 				.AddAxis($"P{PortNum} Fly / Look", (-7).RangeTo(7), 0)
 				.AddAxis($"P{PortNum} Use Artifact", (0).RangeTo(10), 0)
 				.MakeImmutable();
@@ -201,6 +205,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				.AddAxis($"P{PortNum} Strafing Speed", (-127).RangeTo(127), 0)
 				.AddAxis($"P{PortNum} Turning Speed", (-128).RangeTo(128), 0)
 				.AddAxis($"P{PortNum} Weapon Select", (0).RangeTo(4), 0)
+				.AddAxis($"P{PortNum} Mouse Running", (-128).RangeTo(128), 0)
+				.AddAxis($"P{PortNum} Mouse Turning", (-128).RangeTo(128), 0)
 				.AddAxis($"P{PortNum} Fly / Look", (-7).RangeTo(7), 0)
 				.AddAxis($"P{PortNum} Use Artifact", (0).RangeTo(33), 0)
 				.MakeImmutable();

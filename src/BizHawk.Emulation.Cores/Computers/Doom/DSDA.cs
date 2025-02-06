@@ -130,6 +130,17 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 		}
 
+		// Remembering mouse position
+		private const int MOUSE_NO_INPUT = -65535;
+		private int _player1LastMouseRunningValue = MOUSE_NO_INPUT;
+		private int _player1LastMouseTurningValue = MOUSE_NO_INPUT;
+		private int _player2LastMouseRunningValue = MOUSE_NO_INPUT;
+		private int _player2LastMouseTurningValue = MOUSE_NO_INPUT;
+		private int _player3LastMouseRunningValue = MOUSE_NO_INPUT;
+		private int _player3LastMouseTurningValue = MOUSE_NO_INPUT;
+		private int _player4LastMouseRunningValue = MOUSE_NO_INPUT;
+		private int _player4LastMouseTurningValue = MOUSE_NO_INPUT;
+
 		// IRegionable
 		public DisplayType Region { get; }
 
