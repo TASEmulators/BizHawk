@@ -824,7 +824,21 @@ namespace BizHawk.Emulation.Common
 				["Fire"] = 'F',
 				["Alt Weapon"] = 'X',
 				["Jump"] = 'J',
-				["End Player"] = 'E'
+				["End Player"] = 'E',
+				["Key Forward"] = 'f',
+				["Key Backward"] = 'b',
+				["Key Turn Left"] = 'l',
+				["Key Turn Right"] = 'r',
+				["Key Strafe Left"] = 'L',
+				["Key Strafe Right"] = 'R',
+				["Key Shift Run"] = 's',
+				["Key Weapon Select 1"] = '1',
+				["Key Weapon Select 2"] = '2',
+				["Key Weapon Select 3"] = '3',
+				["Key Weapon Select 4"] = '4',
+				["Key Weapon Select 5"] = '5',
+				["Key Weapon Select 6"] = '6',
+				["Key Weapon Select 7"] = '7',
 			},
 		};
 
