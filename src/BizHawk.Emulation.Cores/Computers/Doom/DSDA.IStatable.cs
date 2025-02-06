@@ -10,21 +10,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			_elf.LoadStateBinary(reader);
-			// other variables
-			_leftDifficultyToggled = reader.ReadBoolean();
-			_rightDifficultyToggled = reader.ReadBoolean();
-			Frame = reader.ReadInt32();
-			// any managed pointers that we sent to the core need to be resent now!
-			//Core.stella_set_input_callback(_inputCallback);
 			UpdateVideo();
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			_elf.SaveStateBinary(writer);
-			// other variables
-			writer.Write(_leftDifficultyToggled);
-			writer.Write(_rightDifficultyToggled);
 			writer.Write(Frame);
 		}
 	}

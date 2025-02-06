@@ -9,9 +9,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		private bool _leftDifficultyToggled;
-		private bool _rightDifficultyToggled;
-
 		public bool FrameAdvance(IController controller, bool renderVideo, bool renderAudio)
 		{
 			// Declaring inputs
