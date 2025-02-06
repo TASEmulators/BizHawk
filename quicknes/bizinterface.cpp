@@ -39,8 +39,7 @@ QN_EXPORT void qn_delete(quickerNES::Emu *e)
 
 QN_EXPORT const char *qn_loadines(quickerNES::Emu *e, const void *data, int length)
 {
-	e->load_ines((const uint8_t*)data);
-	return 0;
+	return e->load_ines((const uint8_t*)data);
 }
 
 QN_EXPORT const char *qn_set_sample_rate(quickerNES::Emu *e, int rate)
