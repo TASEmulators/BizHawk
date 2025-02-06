@@ -166,7 +166,11 @@ namespace BizHawk.Client.EmuHawk
 			TasView2.Parent = MainVertialSplit.Panel1;
 			TasView2.Width = 300;
 			TasView2.Height = 550;
-			TasView2.Location = new System.Drawing.Point(TasView1.Location.X + TasView1.Width + 10, 10);
+			TasView2.Location = new System.Drawing.Point(TasView1.Location.X + TasView1.Width + 10, 20);
+			TasView2.Anchor = ((System.Windows.Forms.AnchorStyles) ((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
+
 			TasView2.QueryItemText += TasView_QueryItemText;
 			TasView2.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView2.QueryRowBkColor += TasView_QueryRowBkColor;
@@ -1011,8 +1015,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetSplicer()
 		{
-			
-			foreach ( InputRoll tasView in TasViews)
+
+			foreach (InputRoll tasView in TasViews)
 			{
 				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
@@ -1022,8 +1026,8 @@ namespace BizHawk.Client.EmuHawk
 					SplicerStatusLabel.Text = temp;
 				}
 			}
-						// TODO: columns selected?
-		
+			// TODO: columns selected?
+
 		}
 
 		private void DoTriggeredAutoRestoreIfNeeded()
@@ -1053,70 +1057,84 @@ namespace BizHawk.Client.EmuHawk
 
 		public void InsertNumFrames(int insertionFrame, int numberOfFrames)
 		{
-			if (insertionFrame <= CurrentTasMovie.InputLogLength)
+			foreach (InputRoll tasView in TasViews)
 			{
-				var needsToRollback = TasView1.SelectionStartIndex < Emulator.Frame;
-
-				CurrentTasMovie.InsertEmptyFrame(insertionFrame, numberOfFrames);
-
-				if (needsToRollback)
+				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
-					GoToLastEmulatedFrameIfNecessary(insertionFrame);
-					DoAutoRestore();
-				}
-				else
-				{
-					RefreshForInputChange(insertionFrame);
+					if (insertionFrame <= CurrentTasMovie.InputLogLength)
+					{
+						var needsToRollback = tasView.SelectionStartIndex < Emulator.Frame;
+
+						CurrentTasMovie.InsertEmptyFrame(insertionFrame, numberOfFrames);
+
+						if (needsToRollback)
+						{
+							GoToLastEmulatedFrameIfNecessary(insertionFrame);
+							DoAutoRestore();
+						}
+						else
+						{
+							RefreshForInputChange(insertionFrame);
+						}
+					}
 				}
 			}
 		}
-
 		public void DeleteFrames(int beginningFrame, int numberOfFrames)
 		{
 			//var a = 
-
-			if (beginningFrame < CurrentTasMovie.InputLogLength)
+			foreach (InputRoll tasView in TasViews)
 			{
-				int[] framesToRemove = Enumerable.Range(beginningFrame, numberOfFrames).ToArray();
-				CurrentTasMovie.RemoveFrames(framesToRemove);
-				SetSplicer();
+				if (tasView.Focused && tasView.AnyRowsSelected)
+				{
+					if (beginningFrame < CurrentTasMovie.InputLogLength)
+					{
+						int[] framesToRemove = Enumerable.Range(beginningFrame, numberOfFrames).ToArray();
+						CurrentTasMovie.RemoveFrames(framesToRemove);
+						SetSplicer();
 
-				var needsToRollback = beginningFrame < Emulator.Frame;
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(beginningFrame);
-					DoAutoRestore();
-				}
-				else
-				{
-					RefreshForInputChange(beginningFrame);
+						var needsToRollback = beginningFrame < Emulator.Frame;
+						if (needsToRollback)
+						{
+							GoToLastEmulatedFrameIfNecessary(beginningFrame);
+							DoAutoRestore();
+						}
+						else
+						{
+							RefreshForInputChange(beginningFrame);
+						}
+					}
 				}
 			}
 		}
-
 		public void ClearFrames(int beginningFrame, int numberOfFrames)
 		{
-			if (beginningFrame < CurrentTasMovie.InputLogLength)
+			foreach (InputRoll tasView in TasViews)
 			{
-				var needsToRollback = TasView1.SelectionStartIndex < Emulator.Frame;
-				int last = Math.Min(beginningFrame + numberOfFrames, CurrentTasMovie.InputLogLength);
-				for (int i = beginningFrame; i < last; i++)
+				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
-					CurrentTasMovie.ClearFrame(i);
-				}
+					if (beginningFrame < CurrentTasMovie.InputLogLength)
+					{
+						var needsToRollback = tasView.SelectionStartIndex < Emulator.Frame;
+						int last = Math.Min(beginningFrame + numberOfFrames, CurrentTasMovie.InputLogLength);
+						for (int i = beginningFrame; i < last; i++)
+						{
+							CurrentTasMovie.ClearFrame(i);
+						}
 
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(beginningFrame);
-					DoAutoRestore();
-				}
-				else
-				{
-					RefreshForInputChange(beginningFrame);
+						if (needsToRollback)
+						{
+							GoToLastEmulatedFrameIfNecessary(beginningFrame);
+							DoAutoRestore();
+						}
+						else
+						{
+							RefreshForInputChange(beginningFrame);
+						}
+					}
 				}
 			}
 		}
-
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
 		{
 			if (!_initialized)
@@ -1160,8 +1178,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudio_MouseLeave(object sender, EventArgs e)
 		{
-			toolTip1.SetToolTip(TasView1, null);
-			DoTriggeredAutoRestoreIfNeeded();
+			foreach (InputRoll tasView in TasViews)
+			{
+				if (tasView.Focused && tasView.AnyRowsSelected)
+				{
+					toolTip1.SetToolTip(tasView, null);
+					DoTriggeredAutoRestoreIfNeeded();
+				}
+			}
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -1281,19 +1305,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (InputRoll tasView in TasViews)
 			{
-				using var fontDialog = new FontDialog
+				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
-					ShowColor = false,
-					Font = tasView.Font
-				};
-				if (fontDialog.ShowDialog() != DialogResult.Cancel)
-				{
-					tasView.Font = TasViewFont = fontDialog.Font;
-					tasView.Refresh();
+					using var fontDialog = new FontDialog
+					{
+						ShowColor = false,
+						Font = tasView.Font
+					};
+					if (fontDialog.ShowDialog() != DialogResult.Cancel)
+					{
+						tasView.Font = TasViewFont = fontDialog.Font;
+						tasView.Refresh();
+					}
 				}
 			}
 		}
-
 		private IMovieController ControllerFromMnemonicStr(string inputLogEntry)
 		{
 			try

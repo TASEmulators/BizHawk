@@ -518,95 +518,103 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CutMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView1.Focused && TasView1.AnyRowsSelected)
+			foreach (InputRoll tasView in TasViews)
 			{
-				var selectionStart = TasView1.SelectionStartIndex;
-				var needsToRollback = selectionStart < Emulator.Frame;
-				var rollBackFrame = selectionStart ?? 0;
-
-				_tasClipboard.Clear();
-				var list = TasView1.SelectedRows.ToArray();
-				var sb = new StringBuilder();
-
-				foreach (var index in list) // copy of CopyMenuItem_Click()
+				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
-					var input = CurrentTasMovie.GetInputState(index);
-					if (input == null)
+					var selectionStart = TasView1.SelectionStartIndex;
+					var needsToRollback = selectionStart < Emulator.Frame;
+					var rollBackFrame = selectionStart ?? 0;
+
+					_tasClipboard.Clear();
+					var list = TasView1.SelectedRows.ToArray();
+					var sb = new StringBuilder();
+
+					foreach (var index in list) // copy of CopyMenuItem_Click()
 					{
-						break;
+						var input = CurrentTasMovie.GetInputState(index);
+						if (input == null)
+						{
+							break;
+						}
+
+						_tasClipboard.Add(new TasClipboardEntry(index, input));
+						sb.AppendLine(Bk2LogEntryGenerator.GenerateLogEntry(input));
 					}
 
-					_tasClipboard.Add(new TasClipboardEntry(index, input));
-					sb.AppendLine(Bk2LogEntryGenerator.GenerateLogEntry(input));
+					Clipboard.SetDataObject(sb.ToString());
+					CurrentTasMovie.RemoveFrames(list);
+					SetSplicer();
+
+					if (needsToRollback)
+					{
+						GoToLastEmulatedFrameIfNecessary(rollBackFrame);
+						DoAutoRestore();
+					}
+
+					FullRefresh();
 				}
-
-				Clipboard.SetDataObject(sb.ToString());
-				CurrentTasMovie.RemoveFrames(list);
-				SetSplicer();
-
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					DoAutoRestore();
-				}
-
-				FullRefresh();
 			}
 		}
 
 		private void ClearFramesMenuItem_Click(object sender, EventArgs e)
 		{
 			//will have to get the current tasview 
-
-			if (TasView1.Focused && TasView1.AnyRowsSelected)
+			foreach (InputRoll tasView in TasViews)
 			{
-				var firstWithInput = FirstNonEmptySelectedFrame;
-				bool needsToRollback = firstWithInput.HasValue && firstWithInput < Emulator.Frame;
-				var rollBackFrame = TasView1.SelectionStartIndex ?? 0;
-
-				CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasView1.SelectionStartIndex}-{TasView1.SelectionEndIndex}");
-				foreach (int frame in TasView1.SelectedRows)
+				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
-					CurrentTasMovie.ClearFrame(frame);
+					var firstWithInput = FirstNonEmptySelectedFrame;
+					bool needsToRollback = firstWithInput.HasValue && firstWithInput < Emulator.Frame;
+					var rollBackFrame = TasView1.SelectionStartIndex ?? 0;
+
+					CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasView1.SelectionStartIndex}-{TasView1.SelectionEndIndex}");
+					foreach (int frame in TasView1.SelectedRows)
+					{
+						CurrentTasMovie.ClearFrame(frame);
+					}
+
+					CurrentTasMovie.ChangeLog.EndBatch();
+
+					if (needsToRollback)
+					{
+						GoToLastEmulatedFrameIfNecessary(rollBackFrame);
+						DoAutoRestore();
+					}
+
+					FullRefresh();
 				}
-
-				CurrentTasMovie.ChangeLog.EndBatch();
-
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					DoAutoRestore();
-				}
-
-				FullRefresh();
 			}
 		}
 
 		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView1.Focused && TasView1.AnyRowsSelected)
+			foreach (InputRoll tasView in TasViews)
 			{
-				var selectionStart = TasView1.SelectionStartIndex;
-				var needsToRollback = selectionStart < Emulator.Frame;
-				var rollBackFrame = selectionStart ?? 0;
-				if (rollBackFrame >= CurrentTasMovie.InputLogLength)
+				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
-					// Cannot delete non-existent frames
+					var selectionStart = TasView1.SelectionStartIndex;
+					var needsToRollback = selectionStart < Emulator.Frame;
+					var rollBackFrame = selectionStart ?? 0;
+					if (rollBackFrame >= CurrentTasMovie.InputLogLength)
+					{
+						// Cannot delete non-existent frames
+						FullRefresh();
+						return;
+					}
+
+					CurrentTasMovie.RemoveFrames(tasView.SelectedRows.ToArray());
+					SetTasViewRowCount();
+					SetSplicer();
+
+					if (needsToRollback)
+					{
+						GoToLastEmulatedFrameIfNecessary(rollBackFrame);
+						DoAutoRestore();
+					}
+
 					FullRefresh();
-					return;
 				}
-
-				CurrentTasMovie.RemoveFrames(TasView1.SelectedRows.ToArray());
-				SetTasViewRowCount();
-				SetSplicer();
-
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					DoAutoRestore();
-				}
-
-				FullRefresh();
 			}
 		}
 
@@ -626,19 +634,45 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneFramesXTimes(int timesToClone)
 		{
-			for (int i = 0; i < timesToClone; i++)
+			foreach (InputRoll tasView in TasViews)
 			{
-				if (TasView1.Focused && TasView1.AnyRowsSelected)
+				for (int i = 0; i < timesToClone; i++)
 				{
-					var framesToInsert = TasView1.SelectedRows;
-					var insertionFrame = Math.Min((TasView1.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
-					var needsToRollback = TasView1.SelectionStartIndex < Emulator.Frame;
+					if (tasView.Focused && tasView.AnyRowsSelected)
+					{
+						var framesToInsert = tasView.SelectedRows;
+						var insertionFrame = Math.Min((TasView1.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
+						var needsToRollback = TasView1.SelectionStartIndex < Emulator.Frame;
 
-					var inputLog = framesToInsert
-						.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
-						.ToList();
+						var inputLog = framesToInsert
+							.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
+							.ToList();
 
-					CurrentTasMovie.InsertInput(insertionFrame, inputLog);
+						CurrentTasMovie.InsertInput(insertionFrame, inputLog);
+
+						if (needsToRollback)
+						{
+							GoToLastEmulatedFrameIfNecessary(insertionFrame);
+							DoAutoRestore();
+						}
+
+						FullRefresh();
+					}
+				}
+			}
+		}
+
+		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
+		{
+			foreach (InputRoll tasView in TasViews)
+			{
+				if (tasView.Focused && tasView.AnyRowsSelected)
+				{
+					var selectionStart = TasView1.SelectionStartIndex;
+					var insertionFrame = selectionStart ?? 0;
+					var needsToRollback = selectionStart < Emulator.Frame;
+
+					CurrentTasMovie.InsertEmptyFrame(insertionFrame);
 
 					if (needsToRollback)
 					{
@@ -650,87 +684,88 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-
-		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
-		{
-			if (TasView1.Focused && TasView1.AnyRowsSelected)
-			{
-				var selectionStart = TasView1.SelectionStartIndex;
-				var insertionFrame = selectionStart ?? 0;
-				var needsToRollback = selectionStart < Emulator.Frame;
-
-				CurrentTasMovie.InsertEmptyFrame(insertionFrame);
-
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(insertionFrame);
-					DoAutoRestore();
-				}
-
-				FullRefresh();
-			}
-		}
-
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView1.Focused && TasView1.AnyRowsSelected)
+			foreach (InputRoll tasView in TasViews)
 			{
-				var insertionFrame = TasView1.SelectionStartIndex ?? 0;
-				using var framesPrompt = new FramesPrompt();
-				if (framesPrompt.ShowDialogOnScreen().IsOk())
+				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
-					InsertNumFrames(insertionFrame, framesPrompt.Frames);
+					var insertionFrame = TasView1.SelectionStartIndex ?? 0;
+					using var framesPrompt = new FramesPrompt();
+					if (framesPrompt.ShowDialogOnScreen().IsOk())
+					{
+						InsertNumFrames(insertionFrame, framesPrompt.Frames);
+					}
 				}
 			}
 		}
 
 		private void TruncateMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView1.Focused && TasView1.AnyRowsSelected)
+			foreach (InputRoll tasView in TasViews)
 			{
-				var rollbackFrame = TasView1.SelectionEndIndex ?? 0;
-				var needsToRollback = TasView1.SelectionStartIndex < Emulator.Frame;
-
-				CurrentTasMovie.Truncate(rollbackFrame);
-				MarkerControlMPR.MarkerInputRoll.TruncateSelection(CurrentTasMovie.Markers.Count - 1);
-
-				if (needsToRollback)
+				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
-					GoToFrame(rollbackFrame);
-				}
+					var rollbackFrame = tasView.SelectionEndIndex ?? 0;
+					var needsToRollback = tasView.SelectionStartIndex < Emulator.Frame;
 
-				FullRefresh();
+					CurrentTasMovie.Truncate(rollbackFrame);
+					MarkerControlMPR.MarkerInputRoll.TruncateSelection(CurrentTasMovie.Markers.Count - 1);
+
+					if (needsToRollback)
+					{
+						GoToFrame(rollbackFrame);
+					}
+
+					FullRefresh();
+				}
 			}
 		}
 
 		private void SetMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			var selectedRows = TasView1.SelectedRows.ToList();
-			if (selectedRows.Count > 50)
+			foreach (InputRoll tasView in TasViews)
 			{
-				var result = DialogController.ShowMessageBox2("Are you sure you want to add more than 50 markers?", "Add markers", EMsgBoxIcon.Question, useOKCancel: true);
-				if (!result)
+				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
-					return;
+					var selectedRows = tasView.SelectedRows.ToList();
+					if (selectedRows.Count > 50)
+					{
+						var result = DialogController.ShowMessageBox2("Are you sure you want to add more than 50 markers?", "Add markers", EMsgBoxIcon.Question, useOKCancel: true);
+						if (!result)
+						{
+							return;
+						}
+					}
+
+					foreach (var index in selectedRows)
+					{
+						MarkerControlMPR.AddMarker(index);
+					}
 				}
 			}
-
-			foreach (var index in selectedRows)
-			{
-				MarkerControlMPR.AddMarker(index);
-			}
 		}
-
 		private void SetMarkerWithTextMenuItem_Click(object sender, EventArgs e)
 		{
-			MarkerControlMPR.AddMarker(TasView1.AnyRowsSelected ? TasView1.FirstSelectedRowIndex : 0, true);
+			foreach (InputRoll tasView in TasViews)
+			{
+				if (tasView.Focused && tasView.AnyRowsSelected)
+				{
+					MarkerControlMPR.AddMarker(tasView.AnyRowsSelected ? tasView.FirstSelectedRowIndex : 0, true);
+				}
+			}
 		}
-
 		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			CurrentTasMovie.Markers.RemoveAll(m => TasView1.IsRowSelected(m.Frame));
-			MarkerControlMPR.UpdateMarkerCount();
-			RefreshDialog();
+			foreach (InputRoll tasView in TasViews)
+			{
+				if (tasView.Focused && tasView.AnyRowsSelected)
+				{
+					CurrentTasMovie.Markers.RemoveAll(m => tasView.IsRowSelected(m.Frame));
+					MarkerControlMPR.UpdateMarkerCount();
+					RefreshDialog();
+				}
+			}
 		}
 
 		private void ClearGreenzoneMenuItem_Click(object sender, EventArgs e)
