@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.IO;
+﻿using System.IO;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
