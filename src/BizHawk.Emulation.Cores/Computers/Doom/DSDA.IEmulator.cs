@@ -49,15 +49,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				_player1LastMouseTurningValue = mouseTurningSpeed;
 
 				// Raven Games
-				if (_syncSettings.InputFormat == DoomControllerTypes.Heretic || _syncSettings.InputFormat == DoomControllerTypes.Hexen)
+				if (_syncSettings.InputFormat is DoomControllerTypes.Heretic or DoomControllerTypes.Hexen)
 				{
 					player1Inputs._FlyLook = _controllerDeck.ReadPot1(controller, 6);
 					player1Inputs._ArtifactUse = _controllerDeck.ReadPot1(controller, 7);
-				}
-				if (_syncSettings.InputFormat == DoomControllerTypes.Hexen)
-				{
-					player1Inputs._Jump = (actionsBitfield & 0b01000) >> 3;
-					player1Inputs._EndPlayer = (actionsBitfield & 0b10000) >> 4;
+					if (_syncSettings.InputFormat is DoomControllerTypes.Hexen)
+					{
+						player1Inputs._Jump = (actionsBitfield & 0b01000) >> 3;
+						player1Inputs._EndPlayer = (actionsBitfield & 0b10000) >> 4;
+					}
 				}
 			}
 
@@ -93,15 +93,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				_player2LastMouseTurningValue = mouseTurningSpeed;
 
 				// Raven Games
-				if (_syncSettings.InputFormat == DoomControllerTypes.Heretic || _syncSettings.InputFormat == DoomControllerTypes.Hexen)
+				if (_syncSettings.InputFormat is DoomControllerTypes.Heretic or DoomControllerTypes.Hexen)
 				{
 					player2Inputs._FlyLook = _controllerDeck.ReadPot2(controller, 4);
 					player2Inputs._ArtifactUse = _controllerDeck.ReadPot2(controller, 5);
-				}
-				if (_syncSettings.InputFormat == DoomControllerTypes.Hexen)
-				{
-					player2Inputs._Jump = (actionsBitfield & 0b01000) >> 3;
-					player2Inputs._EndPlayer = (actionsBitfield & 0b10000) >> 4;
+					if (_syncSettings.InputFormat is DoomControllerTypes.Hexen)
+					{
+						player2Inputs._Jump = (actionsBitfield & 0b01000) >> 3;
+						player2Inputs._EndPlayer = (actionsBitfield & 0b10000) >> 4;
+					}
 				}
 			}
 
@@ -137,15 +137,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				_player3LastMouseTurningValue = mouseTurningSpeed;
 
 				// Raven Games
-				if (_syncSettings.InputFormat == DoomControllerTypes.Heretic || _syncSettings.InputFormat == DoomControllerTypes.Hexen)
+				if (_syncSettings.InputFormat is DoomControllerTypes.Heretic or DoomControllerTypes.Hexen)
 				{
 					player3Inputs._FlyLook = _controllerDeck.ReadPot3(controller, 6);
 					player3Inputs._ArtifactUse = _controllerDeck.ReadPot3(controller, 7);
-				}
-				if (_syncSettings.InputFormat == DoomControllerTypes.Hexen)
-				{
-					player3Inputs._Jump = (actionsBitfield & 0b01000) >> 3;
-					player3Inputs._EndPlayer = (actionsBitfield & 0b10000) >> 4;
+					if (_syncSettings.InputFormat is DoomControllerTypes.Hexen)
+					{
+						player3Inputs._Jump = (actionsBitfield & 0b01000) >> 3;
+						player3Inputs._EndPlayer = (actionsBitfield & 0b10000) >> 4;
+					}
 				}
 			}
 
@@ -181,15 +181,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				_player4LastMouseTurningValue = mouseTurningSpeed;
 
 				// Raven Games
-				if (_syncSettings.InputFormat == DoomControllerTypes.Heretic || _syncSettings.InputFormat == DoomControllerTypes.Hexen)
+				if (_syncSettings.InputFormat is DoomControllerTypes.Heretic or DoomControllerTypes.Hexen)
 				{
 					player4Inputs._FlyLook = _controllerDeck.ReadPot4(controller, 4);
 					player4Inputs._ArtifactUse = _controllerDeck.ReadPot4(controller, 5);
-				}
-				if (_syncSettings.InputFormat == DoomControllerTypes.Hexen)
-				{
-					player4Inputs._Jump = (actionsBitfield & 0b01000) >> 3;
-					player4Inputs._EndPlayer = (actionsBitfield & 0b10000) >> 4;
+					if (_syncSettings.InputFormat is DoomControllerTypes.Hexen)
+					{
+						player4Inputs._Jump = (actionsBitfield & 0b01000) >> 3;
+						player4Inputs._EndPlayer = (actionsBitfield & 0b10000) >> 4;
+					}
 				}
 			}
 

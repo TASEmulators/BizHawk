@@ -38,9 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			foreach (var wadFile in _wadFiles)
 			{
 				bool recognized = false;
-
-				// Check for IWAD
-				if (wadFile.RomData[0] == 'I' && wadFile.RomData[1] == 'W' && wadFile.RomData[2] == 'A' && wadFile.RomData[3] == 'D')
+				if (wadFile.RomData is [ (byte) 'I', (byte) 'W', (byte) 'A', (byte) 'D', .. ])
 				{
 					// Check not more than one IWAD is provided
 					if (foundIWAD) throw new Exception($"More than one IWAD provided. Trying to load '{wadFile.RomPath}', but IWAD '{IWADName}' was already provided");
@@ -48,13 +46,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					foundIWAD = true;
 					recognized = true;
 				}
-
-				// Check for PWAD
-				if (wadFile.RomData[0] == 'P' && wadFile.RomData[1] == 'W' && wadFile.RomData[2] == 'A' && wadFile.RomData[3] == 'D')
+				else if (wadFile.RomData is [ (byte) 'P', (byte) 'W', (byte) 'A', (byte) 'D', .. ])
 				{
 					recognized = true;
 				}
-
 				if (!recognized) throw new Exception($"Unrecognized WAD provided: '{wadFile.RomPath}' has non-standard header.");
 			}
 
