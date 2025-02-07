@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	// LMP file format: https://doomwiki.org/wiki/Demo#Technical_information
 	// In better detail, from archive.org: http://web.archive.org/web/20070630072856/http://demospecs.planetquake.gamespy.com/lmp/lmp.html
 	[ImporterFor("Doom", ".lmp")]
-	internal class LmpImport : MovieImporter
+	internal class DoomLmpImport : MovieImporter
 	{
 		private enum DemoFormat
 		{
