@@ -38,10 +38,10 @@ namespace BizHawk.Client.Common
 			DSDA.CompatibilityLevelEnum presumedCompatibilityLevel = DSDA.CompatibilityLevelEnum.C0;
 			if (signature > 102) // >1.2
 			{
-			   presumedFormat = DemoFormat.DoomPost12;
-			   if (signature < 109) presumedCompatibilityLevel = DSDA.CompatibilityLevelEnum.C1; // 1.666
-			   if (signature >= 109) presumedCompatibilityLevel = DSDA.CompatibilityLevelEnum.C2; // 1.9
-			   Console.WriteLine("Reading DOOM LMP demo version: {0}", signature);
+				presumedFormat = DemoFormat.DoomPost12;
+				if (signature < 109) presumedCompatibilityLevel = DSDA.CompatibilityLevelEnum.C1; // 1.666
+				if (signature >= 109) presumedCompatibilityLevel = DSDA.CompatibilityLevelEnum.C2; // 1.9
+				Console.WriteLine("Reading DOOM LMP demo version: {0}", signature);
 			}
 			else Console.WriteLine("Reading DOOM LMP demo version: <=1.12");
 

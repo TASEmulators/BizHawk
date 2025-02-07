@@ -19,13 +19,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			if (_syncSettings.Player1Present)
 			{
-				player1Inputs._RunSpeed      = _controllerDeck.ReadPot1(controller, 0);
+				player1Inputs._RunSpeed = _controllerDeck.ReadPot1(controller, 0);
 				player1Inputs._StrafingSpeed = _controllerDeck.ReadPot1(controller, 1);
-				player1Inputs._TurningSpeed  = _controllerDeck.ReadPot1(controller, 2);
-				player1Inputs._WeaponSelect  = _controllerDeck.ReadPot1(controller, 3);
-				player1Inputs._Fire          = (_controllerDeck.ReadPort1(controller) & 0b00001) > 0 ? 1 : 0;
-				player1Inputs._Action        = (_controllerDeck.ReadPort1(controller) & 0b00010) > 0 ? 1 : 0;
-				player1Inputs._AltWeapon     = (_controllerDeck.ReadPort1(controller) & 0b00100) > 0 ? 1 : 0;
+				player1Inputs._TurningSpeed = _controllerDeck.ReadPot1(controller, 2);
+				player1Inputs._WeaponSelect = _controllerDeck.ReadPot1(controller, 3);
+				player1Inputs._Fire = (_controllerDeck.ReadPort1(controller) & 0b00001) > 0 ? 1 : 0;
+				player1Inputs._Action = (_controllerDeck.ReadPort1(controller) & 0b00010) > 0 ? 1 : 0;
+				player1Inputs._AltWeapon = (_controllerDeck.ReadPort1(controller) & 0b00100) > 0 ? 1 : 0;
 
 				// Handling mouse-driven running
 				int mouseRunningSpeed = _controllerDeck.ReadPot1(controller, 4);
@@ -50,13 +50,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				// Raven Games
 				if (_syncSettings.InputFormat == DoomControllerTypes.Heretic || _syncSettings.InputFormat == DoomControllerTypes.Hexen)
 				{
-				  player1Inputs._FlyLook = _controllerDeck.ReadPot1(controller, 6);
-				  player1Inputs._ArtifactUse = _controllerDeck.ReadPot1(controller, 7);
+					player1Inputs._FlyLook = _controllerDeck.ReadPot1(controller, 6);
+					player1Inputs._ArtifactUse = _controllerDeck.ReadPot1(controller, 7);
 				}
 				if (_syncSettings.InputFormat == DoomControllerTypes.Hexen)
 				{
-				  player1Inputs._Jump = (_controllerDeck.ReadPort1(controller) & 0b01000) > 0 ? 1 : 0;
-				  player1Inputs._EndPlayer = (_controllerDeck.ReadPort1(controller) & 0b10000) > 0 ? 1 : 0;
+					player1Inputs._Jump = (_controllerDeck.ReadPort1(controller) & 0b01000) > 0 ? 1 : 0;
+					player1Inputs._EndPlayer = (_controllerDeck.ReadPort1(controller) & 0b10000) > 0 ? 1 : 0;
 				}
 			}
 

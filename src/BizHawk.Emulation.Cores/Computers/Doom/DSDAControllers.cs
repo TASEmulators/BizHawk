@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		{
 			byte result = 0;
 
-			if (c.IsPressed($"P{PortNum} Fire"))   { result |= 0b0001; }
+			if (c.IsPressed($"P{PortNum} Fire")) { result |= 0b0001; }
 			if (c.IsPressed($"P{PortNum} Action")) { result |= 0b0010; }
 			if (c.IsPressed($"P{PortNum} Alt Weapon")) { result |= 0b0100; }
 
@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				if (c.IsPressed($"P{PortNum} Key Forward"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? 50 : 25; 
+					x = c.IsPressed($"P{PortNum} Key Shift Run") ? 50 : 25;
 				}
 
 				if (c.IsPressed($"P{PortNum} Key Backward"))

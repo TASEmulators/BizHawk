@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 	[PortedCore(
 		name: CoreNames.DSDA,
 		author: "The DSDA Team",
-		portedVersion: "0.28.2 (fe0dfa0)", 
+		portedVersion: "0.28.2 (fe0dfa0)",
 		portedUrl: "https://github.com/kraflab/dsda-doom")]
 	[ServiceNotApplicable(typeof(ISaveRam))]
 	public partial class DSDA : IRomInfo
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 				// Check for IWAD
 				if (wadFile.RomData[0] == 'I' && wadFile.RomData[1] == 'W' && wadFile.RomData[2] == 'A' && wadFile.RomData[3] == 'D')
-				{   
+				{
 					// Check not more than one IWAD is provided
 					if (foundIWAD) throw new Exception($"More than one IWAD provided. Trying to load '{wadFile.RomPath}', but IWAD '{IWADName}' was already provided");
 					IWADName = wadFile.RomPath;
@@ -77,8 +77,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				SbrkHeapSizeKB = 64 * 1024, // This core loads quite a bunch of things on global mem -- reserve enough memory
 				SealedHeapSizeKB = 4 * 1024,
 				InvisibleHeapSizeKB = totalWadSizeKb + 4 * 1024, // Make sure there's enough space for the wads
-				PlainHeapSizeKB = 4 * 1024, 
-				MmapHeapSizeKB = 128 * 1024,  // Allow the game to malloc quite a lot of objects to support one of those big wads
+				PlainHeapSizeKB = 4 * 1024,
+				MmapHeapSizeKB = 128 * 1024, // Allow the game to malloc quite a lot of objects to support one of those big wads
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
