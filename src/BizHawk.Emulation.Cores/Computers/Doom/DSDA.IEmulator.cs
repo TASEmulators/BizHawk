@@ -23,9 +23,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				player1Inputs._StrafingSpeed = _controllerDeck.ReadPot1(controller, 1);
 				player1Inputs._TurningSpeed = _controllerDeck.ReadPot1(controller, 2);
 				player1Inputs._WeaponSelect = _controllerDeck.ReadPot1(controller, 3);
-				player1Inputs._Fire = (_controllerDeck.ReadPort1(controller) & 0b00001) > 0 ? 1 : 0;
-				player1Inputs._Action = (_controllerDeck.ReadPort1(controller) & 0b00010) > 0 ? 1 : 0;
-				player1Inputs._AltWeapon = (_controllerDeck.ReadPort1(controller) & 0b00100) > 0 ? 1 : 0;
+				var actionsBitfield = _controllerDeck.ReadPort1(controller);
+				player1Inputs._Fire = actionsBitfield & 0b00001;
+				player1Inputs._Action = (actionsBitfield & 0b00010) >> 1;
+				player1Inputs._AltWeapon = (actionsBitfield & 0b00100) >> 2;
 
 				// Handling mouse-driven running
 				int mouseRunningSpeed = _controllerDeck.ReadPot1(controller, 4);
@@ -55,8 +56,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 				if (_syncSettings.InputFormat == DoomControllerTypes.Hexen)
 				{
-					player1Inputs._Jump = (_controllerDeck.ReadPort1(controller) & 0b01000) > 0 ? 1 : 0;
-					player1Inputs._EndPlayer = (_controllerDeck.ReadPort1(controller) & 0b10000) > 0 ? 1 : 0;
+					player1Inputs._Jump = (actionsBitfield & 0b01000) >> 3;
+					player1Inputs._EndPlayer = (actionsBitfield & 0b10000) >> 4;
 				}
 			}
 
@@ -66,9 +67,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				player2Inputs._StrafingSpeed = _controllerDeck.ReadPot2(controller, 1);
 				player2Inputs._TurningSpeed = _controllerDeck.ReadPot2(controller, 2);
 				player2Inputs._WeaponSelect = _controllerDeck.ReadPot2(controller, 3);
-				player2Inputs._Fire = (_controllerDeck.ReadPort2(controller) & 0b00001) > 0 ? 1 : 0;
-				player2Inputs._Action = (_controllerDeck.ReadPort2(controller) & 0b00010) > 0 ? 1 : 0;
-				player2Inputs._AltWeapon = (_controllerDeck.ReadPort2(controller) & 0b00100) > 0 ? 1 : 0;
+				var actionsBitfield = _controllerDeck.ReadPort2(controller);
+				player2Inputs._Fire = actionsBitfield & 0b00001;
+				player2Inputs._Action = (actionsBitfield & 0b00010) >> 1;
+				player2Inputs._AltWeapon = (actionsBitfield & 0b00100) >> 2;
 
 				// Handling mouse-driven running
 				int mouseRunningSpeed = _controllerDeck.ReadPot2(controller, 4);
@@ -98,8 +100,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 				if (_syncSettings.InputFormat == DoomControllerTypes.Hexen)
 				{
-					player2Inputs._Jump = (_controllerDeck.ReadPort2(controller) & 0b01000) > 0 ? 1 : 0;
-					player2Inputs._EndPlayer = (_controllerDeck.ReadPort2(controller) & 0b10000) > 0 ? 1 : 0;
+					player2Inputs._Jump = (actionsBitfield & 0b01000) >> 3;
+					player2Inputs._EndPlayer = (actionsBitfield & 0b10000) >> 4;
 				}
 			}
 
@@ -109,9 +111,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				player3Inputs._StrafingSpeed = _controllerDeck.ReadPot3(controller, 1);
 				player3Inputs._TurningSpeed = _controllerDeck.ReadPot3(controller, 2);
 				player3Inputs._WeaponSelect = _controllerDeck.ReadPot3(controller, 3);
-				player3Inputs._Fire = (_controllerDeck.ReadPort3(controller) & 0b00001) > 0 ? 1 : 0;
-				player3Inputs._Action = (_controllerDeck.ReadPort3(controller) & 0b00010) > 0 ? 1 : 0;
-				player3Inputs._AltWeapon = (_controllerDeck.ReadPort3(controller) & 0b00100) > 0 ? 1 : 0;
+				var actionsBitfield = _controllerDeck.ReadPort3(controller);
+				player3Inputs._Fire = actionsBitfield & 0b00001;
+				player3Inputs._Action = (actionsBitfield & 0b00010) >> 1;
+				player3Inputs._AltWeapon = (actionsBitfield & 0b00100) >> 2;
 
 				// Handling mouse-driven running
 				int mouseRunningSpeed = _controllerDeck.ReadPot3(controller, 4);
@@ -141,8 +144,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 				if (_syncSettings.InputFormat == DoomControllerTypes.Hexen)
 				{
-					player3Inputs._Jump = (_controllerDeck.ReadPort3(controller) & 0b01000) > 0 ? 1 : 0;
-					player3Inputs._EndPlayer = (_controllerDeck.ReadPort3(controller) & 0b10000) > 0 ? 1 : 0;
+					player3Inputs._Jump = (actionsBitfield & 0b01000) >> 3;
+					player3Inputs._EndPlayer = (actionsBitfield & 0b10000) >> 4;
 				}
 			}
 
@@ -152,9 +155,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				player4Inputs._StrafingSpeed = _controllerDeck.ReadPot4(controller, 1);
 				player4Inputs._TurningSpeed = _controllerDeck.ReadPot4(controller, 2);
 				player4Inputs._WeaponSelect = _controllerDeck.ReadPot4(controller, 3);
-				player4Inputs._Fire = (_controllerDeck.ReadPort4(controller) & 0b00001) > 0 ? 1 : 0;
-				player4Inputs._Action = (_controllerDeck.ReadPort4(controller) & 0b00010) > 0 ? 1 : 0;
-				player4Inputs._AltWeapon = (_controllerDeck.ReadPort4(controller) & 0b00100) > 0 ? 1 : 0;
+				var actionsBitfield = _controllerDeck.ReadPort4(controller);
+				player4Inputs._Fire = actionsBitfield & 0b00001;
+				player4Inputs._Action = (actionsBitfield & 0b00010) >> 1;
+				player4Inputs._AltWeapon = (actionsBitfield & 0b00100) >> 2;
 
 				// Handling mouse-driven running
 				int mouseRunningSpeed = _controllerDeck.ReadPot4(controller, 4);
@@ -184,8 +188,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 				if (_syncSettings.InputFormat == DoomControllerTypes.Hexen)
 				{
-					player4Inputs._Jump = (_controllerDeck.ReadPort4(controller) & 0b01000) > 0 ? 1 : 0;
-					player4Inputs._EndPlayer = (_controllerDeck.ReadPort4(controller) & 0b10000) > 0 ? 1 : 0;
+					player4Inputs._Jump = (actionsBitfield & 0b01000) >> 3;
+					player4Inputs._EndPlayer = (actionsBitfield & 0b10000) >> 4;
 				}
 			}
 
