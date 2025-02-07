@@ -22,10 +22,6 @@ namespace BizHawk.Client.EmuHawk
 
 		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		private static extern bool SetDllDirectoryW(string lpPathName);
-
-		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool DeleteFileW(string lpFileName);
 
 		static Program()
@@ -59,18 +55,15 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			// this will look in subdirectory "dll" to load pinvoked stuff
-			var dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
-			_ = SetDllDirectoryW(dllDir);
-
 			try
 			{
-				// but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
+				// before we load anything from the dll dir, whack the MOTW from everything in that directory (that's a dll)
 				// otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
 				// some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
 				// We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
 				static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
-				var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
+				var dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
+				var todo = new Queue<DirectoryInfo>([ new DirectoryInfo(dllDir) ]);
 				while (todo.Count != 0)
 				{
 					var di = todo.Dequeue();
@@ -123,8 +116,52 @@ namespace BizHawk.Client.EmuHawk
 				return -1;
 			}
 
+			string dllDir = null;
 			if (!OSTailoredCode.IsUnixHost)
 			{
+				// this will look in subdirectory "dll" to load pinvoked stuff
+				// declared above to be re-used later on, see second SetDllDirectoryW call
+				dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
+
+				// windows prohibits a semicolon for SetDllDirectoryW, although such paths are fully valid otherwise
+				// presumingly windows internally has ; used as a path separator, like with PATH
+				// or perhaps this is just some legacy junk windows keeps around for backwards compatibility reasons
+				// we can possibly workaround this by using the "short path name" rather (but this isn't guaranteed to exist)
+				const string SEMICOLON_IN_DIR_MSG =
+					"EmuHawk requires no semicolons within its base directory! EmuHawk will now close.";
+
+				if (dllDir.ContainsOrdinal(';'))
+				{
+					var dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, null, 0);
+					if (dllShortPathLen == 0)
+					{
+						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
+						return -1;
+					}
+
+					var dllShortPathBuffer = new char[dllShortPathLen];
+					dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, dllShortPathBuffer, dllShortPathLen);
+					if (dllShortPathLen == 0)
+					{
+						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
+						return -1;
+					}
+
+					dllDir = new string(dllShortPathBuffer, 0, dllShortPathLen);
+					if (dllDir.ContainsOrdinal(';'))
+					{
+						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
+						return -1;
+					}
+				}
+
+				if (!Win32Imports.SetDllDirectoryW(dllDir))
+				{
+					MessageBox.Show(
+						$"SetDllDirectoryW failed with error code {Marshal.GetLastWin32Error()}, this is fatal. EmuHawk will now close.");
+					return -1;
+				}
+
 				// Check if we have the C++ VS2015-2022 redist all in one redist be installed
 				var p = OSTailoredCode.LinkedLibManager.LoadOrZero("vcruntime140_1.dll");
 				if (p != IntPtr.Zero)
@@ -285,10 +322,12 @@ namespace BizHawk.Client.EmuHawk
 				// WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 				// The relevant initialization happened just before in "create IGL context".
 				// It isn't clear whether we need the earlier SetDllDirectory(), but I think we do.
-				// note: this is pasted instead of being put in a static method due to this initialization code being sensitive to things like that, and not wanting to cause it to break
-				// pasting should be safe (not affecting the jit order of things)
-				var dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
-				_ = SetDllDirectoryW(dllDir);
+				if (!Win32Imports.SetDllDirectoryW(dllDir))
+				{
+					MessageBox.Show(
+						$"SetDllDirectoryW failed with error code {Marshal.GetLastWin32Error()}, this is fatal. EmuHawk will now close.");
+					return -1;
+				}
 			}
 
 			if (!initialConfig.SkipSuperuserPrivsCheck
