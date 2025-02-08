@@ -44,6 +44,7 @@
   (fetchNuGet { pname = "PolySharp"; version = "1.15.0"; sha256 = "0f15gnn3lqwzgfw2igpqynhichdwikbhxnj2a32xspxqjlwx8zww"; })
   (fetchNuGet { pname = "PowerShell"; version = "7.4.2"; sha256 = "17nrp0spddhmalbxy7m5s1926b597x7zl9d50il2w115y5cggbf0"; })
   (fetchNuGet { pname = "ppy.SDL2-CS"; version = "1.0.630-alpha"; sha256 = "0jrf70jrz976b49ac0ygfy9qph2w7fnbfrqv0g0x7hlpaip33ra8"; })
+  (fetchNuGet { pname = "Roslynator.Analyzers"; version = "4.12.11"; sha256 = "1zy3kggbfd1hq7jw9jxvp1f8gf2qyfwd3zlwk0dngcpag65d9gmh"; })
   (fetchNuGet { pname = "runtime.any.System.Runtime"; version = "4.3.0"; sha256 = "1cqh1sv3h5j7ixyb7axxbdkqx6cxy00p4np4j91kpm492rf4s25b"; })
   (fetchNuGet { pname = "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl"; version = "4.3.0"; sha256 = "16rnxzpk5dpbbl1x354yrlsbvwylrq456xzpsha1n9y3glnhyx9d"; })
   (fetchNuGet { pname = "runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl"; version = "4.3.0"; sha256 = "0hkg03sgm2wyq8nqk6dbm9jh5vcq57ry42lkqdmfklrw89lsmr59"; })
