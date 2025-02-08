@@ -284,9 +284,8 @@ namespace BizHawk.Client.EmuHawk
 			TasView2.Width = 300;
 			TasView2.Height = 550;
 			TasView2.Location = new System.Drawing.Point(TasView1.Location.X + TasView1.Width + 10, 20);
-			TasView2.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-			| System.Windows.Forms.AnchorStyles.Left)
-			| System.Windows.Forms.AnchorStyles.Right);
+			TasView2.Anchor = ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left);
 
 			TasView2.CellHeightPadding = 0;
 			TasView2.ChangeSelectionWhenPaging = false;
@@ -335,10 +334,9 @@ namespace BizHawk.Client.EmuHawk
 			TasView3.Parent = MainVertialSplit.Panel1;
 			TasView3.Width = 300;
 			TasView3.Height = 550;
-			TasView3.Location = new System.Drawing.Point(TasView1.Location.X + TasView1.Width + 10, 20);
-			TasView3.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-			| System.Windows.Forms.AnchorStyles.Left)
-			| System.Windows.Forms.AnchorStyles.Right);
+			TasView3.Location = new System.Drawing.Point(TasView2.Location.X + TasView2.Width + 10, 20);
+			TasView3.Anchor = ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left);
 
 			TasView3.CellHeightPadding = 0;
 			TasView3.ChangeSelectionWhenPaging = false;
