@@ -271,60 +271,53 @@ namespace BizHawk.Client.Common
 		{
 			frame = Math.Min(frame, Log.Count);
 
-			//insert it at end since the inputs have to shift
 
-			//damn this is disgusting.
+
+			//insert it at end since the inputs have to shift
 			Log.InsertRange(Log.Count, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
 
 			StringBuilder tempLog = new StringBuilder();
-			List<string > lines = new List<string>();
-			lines.Add(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController));
+			List<string> lines = new List<string>();
 			string framePrevious = string.Empty;
-			char[] frameNext;
-			//for (int i = Log.Count - 1; i >= frame; i--)
-			//{
-			//	if (Log[i - 1].Substring(startOffset, currentControlLength) == Log[i].Substring(startOffset, currentControlLength))
-			//	{
-			//		tempLog.AppendLine(Log[i]);
-			//		lines.Add(Log[i]);
-			//		//continue;
-			//	}
-			//	else
-			//	{
-			//		framePrevious = Log[i - 1];
-			//		frameNext = Log[i].ToCharArray();
-			//		for (int j = startOffset; j < startOffset + currentControlLength; j++)
-			//		{
-			//			frameNext[j] = framePrevious[j];
-			//		}
-			//		tempLog.AppendLine(new string(frameNext));
-			//		lines.Add(new string(frameNext));
-			//	}
-			//}
+			char[] frameNext = Log[frame].ToCharArray();
 
-			for (int i = frame ; i < Log.Count-1; i++)
+
+			//damn this is disgustingly lengthy.
+			//inserted empty controller first
+			for (int j = startOffset; j < startOffset + currentControlLength; j++)
 			{
-				if (Log[i].Substring(startOffset, currentControlLength) == Log[i+1].Substring(startOffset, currentControlLength))
-				{
-					tempLog.AppendLine(Log[i]);
-					lines.Add(Log[i]);
-					//continue;
-				}
-				else
-				{
-					framePrevious = Log[i];
-					frameNext = Log[i+1].ToCharArray();
-					for (int j = startOffset; j < startOffset + currentControlLength; j++)
-					{
-						frameNext[j] = framePrevious[j];
-					}
-					tempLog.AppendLine(new string(frameNext));
-					lines.Add(new string(frameNext));
-				}
+				frameNext[j] = '.';
 			}
 
-			//string a = Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController),count).ToString();
-		
+			lines.Add(new string(frameNext));
+
+			for (int i = frame; i < Log.Count; i++)
+			{
+				//do not assign characters from one frame to another if same
+				{
+					if (i + 1 == Log.Count)
+					{
+						lines.Add(Log[i]);
+						//continue;
+					}
+					//else if (Log[i].Substring(startOffset, currentControlLength) == Log[i + 1].Substring(startOffset, currentControlLength))
+					//{
+					//	lines.Add(Log[i]);
+					//}
+					else
+					{
+						//takes characters from the controller and shifts then, leaving other controllers alone.
+						framePrevious = Log[i];
+						frameNext = Log[i + 1].ToCharArray();
+						for (int j = startOffset; j < startOffset + currentControlLength; j++)
+						{
+							frameNext[j] = framePrevious[j];
+						}
+						lines.Add(new string(frameNext));
+					}
+				}
+			}
+			Log.RemoveRange(frame, Log.Count - frame );
 			Log.InsertRange(frame, lines);
 			//Log.InsertRange(frame, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
 
