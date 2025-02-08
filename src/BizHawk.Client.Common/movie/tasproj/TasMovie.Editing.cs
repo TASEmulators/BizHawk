@@ -317,7 +317,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
-			Log.RemoveRange(frame, Log.Count - frame );
+			Log.RemoveRange(frame, Log.Count - frame -1);
 			Log.InsertRange(frame, lines);
 			//Log.InsertRange(frame, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
 

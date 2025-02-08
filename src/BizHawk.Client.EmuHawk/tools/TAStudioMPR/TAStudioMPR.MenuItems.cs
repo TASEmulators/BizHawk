@@ -697,7 +697,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[i].Count;
 
-					var selectionStart = TasView1.SelectionStartIndex;
+					var selectionStart = TasViews[i].SelectionStartIndex;
 					var insertionFrame = selectionStart ?? 0;
 					var needsToRollback = selectionStart < Emulator.Frame;
 
