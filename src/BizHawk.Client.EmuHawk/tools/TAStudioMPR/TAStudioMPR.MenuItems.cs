@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Windows.Forms;
 
@@ -1191,165 +1192,165 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetUpToolStripColumns()
 		{
-				ColumnsSubMenu.DropDownItems.Clear();
+			ColumnsSubMenu.DropDownItems.Clear();
 
-				var columns = TasView1.AllColumns
-					.Where(static c => !string.IsNullOrWhiteSpace(c.Text) && c.Name is not "FrameColumn")
-					.ToList();
+			var columns = TasView1.AllColumns
+				.Where(static c => !string.IsNullOrWhiteSpace(c.Text) && c.Name is not "FrameColumn")
+				.ToList();
 
-				int workingHeight = Screen.FromControl(this).WorkingArea.Height;
-				int rowHeight = ColumnsSubMenu.Height + 4;
-				int maxRows = workingHeight / rowHeight;
-				int keyCount = columns.Count(c => c.Name.StartsWithOrdinal("Key "));
-				int keysMenusCount = (int) Math.Ceiling((double) keyCount / maxRows);
+			int workingHeight = Screen.FromControl(this).WorkingArea.Height;
+			int rowHeight = ColumnsSubMenu.Height + 4;
+			int maxRows = workingHeight / rowHeight;
+			int keyCount = columns.Count(c => c.Name.StartsWithOrdinal("Key "));
+			int keysMenusCount = (int) Math.Ceiling((double) keyCount / maxRows);
 
-				var keysMenus = new ToolStripMenuItem[keysMenusCount];
+			var keysMenus = new ToolStripMenuItem[keysMenusCount];
 
-				for (int i = 0; i < keysMenus.Length; i++)
+			for (int i = 0; i < keysMenus.Length; i++)
+			{
+				keysMenus[i] = new ToolStripMenuItem();
+			}
+
+			var playerMenus = new ToolStripMenuItem[Emulator.ControllerDefinition.PlayerCount + 1];
+			playerMenus[0] = ColumnsSubMenu;
+
+			for (int i = 1; i < playerMenus.Length; i++)
+			{
+				playerMenus[i] = new ToolStripMenuItem($"Player {i}");
+			}
+
+			foreach (var column in columns)
+			{
+				var menuItem = new ToolStripMenuItem
 				{
-					keysMenus[i] = new ToolStripMenuItem();
+					Text = $"{column.Text} ({column.Name})",
+					Checked = column.Visible,
+					CheckOnClick = true,
+					Tag = column.Name
+				};
+
+				menuItem.CheckedChanged += (o, ev) =>
+				{
+					ToolStripMenuItem sender = (ToolStripMenuItem) o;
+					TasView1.AllColumns.Find(c => c.Name == (string) sender.Tag).Visible = sender.Checked;
+					TasView1.AllColumns.ColumnsChanged();
+					CurrentTasMovie.FlagChanges();
+					TasView1.Refresh();
+					ColumnsSubMenu.ShowDropDown();
+					((ToolStripMenuItem) sender.OwnerItem).ShowDropDown();
+				};
+
+				if (column.Name.StartsWithOrdinal("Key "))
+				{
+					keysMenus
+						.First(m => m.DropDownItems.Count < maxRows)
+						.DropDownItems
+						.Add(menuItem);
 				}
-
-				var playerMenus = new ToolStripMenuItem[Emulator.ControllerDefinition.PlayerCount + 1];
-				playerMenus[0] = ColumnsSubMenu;
-
-				for (int i = 1; i < playerMenus.Length; i++)
+				else
 				{
-					playerMenus[i] = new ToolStripMenuItem($"Player {i}");
-				}
+					int player;
 
-				foreach (var column in columns)
-				{
-					var menuItem = new ToolStripMenuItem
+					if (column.Name.Length >= 2 && column.Name.StartsWith('P') && char.IsNumber(column.Name, 1))
 					{
-						Text = $"{column.Text} ({column.Name})",
-						Checked = column.Visible,
-						CheckOnClick = true,
-						Tag = column.Name
-					};
-
-					menuItem.CheckedChanged += (o, ev) =>
-					{
-						ToolStripMenuItem sender = (ToolStripMenuItem) o;
-						TasView1.AllColumns.Find(c => c.Name == (string) sender.Tag).Visible = sender.Checked;
-						TasView1.AllColumns.ColumnsChanged();
-						CurrentTasMovie.FlagChanges();
-						TasView1.Refresh();
-						ColumnsSubMenu.ShowDropDown();
-						((ToolStripMenuItem) sender.OwnerItem).ShowDropDown();
-					};
-
-					if (column.Name.StartsWithOrdinal("Key "))
-					{
-						keysMenus
-							.First(m => m.DropDownItems.Count < maxRows)
-							.DropDownItems
-							.Add(menuItem);
+						player = int.Parse(column.Name[1].ToString());
 					}
 					else
 					{
-						int player;
-
-						if (column.Name.Length >= 2 && column.Name.StartsWith('P') && char.IsNumber(column.Name, 1))
-						{
-							player = int.Parse(column.Name[1].ToString());
-						}
-						else
-						{
-							player = 0;
-						}
-
-						playerMenus[player].DropDownItems.Add(menuItem);
+						player = 0;
 					}
+
+					playerMenus[player].DropDownItems.Add(menuItem);
 				}
+			}
+
+			foreach (var menu in keysMenus)
+			{
+				string text = $"Keys ({menu.DropDownItems[0].Tag} - {menu.DropDownItems[menu.DropDownItems.Count - 1].Tag})";
+				menu.Text = text.Replace("Key ", "");
+				ColumnsSubMenu.DropDownItems.Add(menu);
+			}
+
+			for (int i = 1; i < playerMenus.Length; i++)
+			{
+				if (playerMenus[i].HasDropDownItems)
+				{
+					ColumnsSubMenu.DropDownItems.Add(playerMenus[i]);
+				}
+			}
+
+			for (int i = 1; i < playerMenus.Length; i++)
+			{
+				if (playerMenus[i].HasDropDownItems)
+				{
+					ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
+					break;
+				}
+			}
+
+			if (keysMenus.Length > 0)
+			{
+				var item = new ToolStripMenuItem("Show Keys")
+				{
+					CheckOnClick = true,
+					Checked = false
+				};
 
 				foreach (var menu in keysMenus)
 				{
-					string text = $"Keys ({menu.DropDownItems[0].Tag} - {menu.DropDownItems[menu.DropDownItems.Count - 1].Tag})";
-					menu.Text = text.Replace("Key ", "");
-					ColumnsSubMenu.DropDownItems.Add(menu);
-				}
-
-				for (int i = 1; i < playerMenus.Length; i++)
-				{
-					if (playerMenus[i].HasDropDownItems)
+					var dummyObject1 = menu;
+					item.CheckedChanged += (o, ev) =>
 					{
-						ColumnsSubMenu.DropDownItems.Add(playerMenus[i]);
-					}
-				}
+						foreach (ToolStripMenuItem menuItem in dummyObject1.DropDownItems)
+						{
+							menuItem.Checked = !menuItem.Checked;
+						}
 
-				for (int i = 1; i < playerMenus.Length; i++)
-				{
-					if (playerMenus[i].HasDropDownItems)
-					{
-						ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
-						break;
-					}
-				}
-
-				if (keysMenus.Length > 0)
-				{
-					var item = new ToolStripMenuItem("Show Keys")
-					{
-						CheckOnClick = true,
-						Checked = false
+						CurrentTasMovie.FlagChanges();
+						TasView1.AllColumns.ColumnsChanged();
+						TasView1.Refresh();
 					};
 
-					foreach (var menu in keysMenus)
-					{
-						var dummyObject1 = menu;
-						item.CheckedChanged += (o, ev) =>
-						{
-							foreach (ToolStripMenuItem menuItem in dummyObject1.DropDownItems)
-							{
-								menuItem.Checked = !menuItem.Checked;
-							}
-
-							CurrentTasMovie.FlagChanges();
-							TasView1.AllColumns.ColumnsChanged();
-							TasView1.Refresh();
-						};
-
-						ColumnsSubMenu.DropDownItems.Add(item);
-					}
-				}
-
-				for (int i = 1; i < playerMenus.Length; i++)
-				{
-					if (playerMenus[i].HasDropDownItems)
-					{
-						var item = new ToolStripMenuItem($"Show Player {i}")
-						{
-							CheckOnClick = true,
-							Checked = playerMenus[i].DropDownItems.OfType<ToolStripMenuItem>().Any(mi => mi.Checked)
-						};
-
-						ToolStripMenuItem dummyObject = playerMenus[i];
-						item.CheckedChanged += (o, ev) =>
-						{
-							// TODO: preserve underlying button checked state and make this a master visibility control
-							foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
-							{
-								menuItem.Checked = item.Checked;
-							}
-							dummyObject.Visible = item.Checked;
-
-							CurrentTasMovie.FlagChanges();
-							TasView1.AllColumns.ColumnsChanged();
-							TasView1.Refresh();
-						};
-
-						ColumnsSubMenu.DropDownItems.Add(item);
-					}
+					ColumnsSubMenu.DropDownItems.Add(item);
 				}
 			}
-		
+
+			for (int i = 1; i < playerMenus.Length; i++)
+			{
+				if (playerMenus[i].HasDropDownItems)
+				{
+					var item = new ToolStripMenuItem($"Show Player {i}")
+					{
+						CheckOnClick = true,
+						Checked = playerMenus[i].DropDownItems.OfType<ToolStripMenuItem>().Any(mi => mi.Checked)
+					};
+
+					ToolStripMenuItem dummyObject = playerMenus[i];
+					item.CheckedChanged += (o, ev) =>
+					{
+						// TODO: preserve underlying button checked state and make this a master visibility control
+						foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
+						{
+							menuItem.Checked = item.Checked;
+						}
+						dummyObject.Visible = item.Checked;
+
+						CurrentTasMovie.FlagChanges();
+						TasView1.AllColumns.ColumnsChanged();
+						TasView1.Refresh();
+					};
+
+					ColumnsSubMenu.DropDownItems.Add(item);
+				}
+			}
+		}
+
 		// ReSharper disable once UnusedMember.Local
 		[RestoreDefaults]
 		private void RestoreDefaults() //changed top three function order. test for bugs
-		{			
+		{
 			SetUpToolStripColumns();
-			for(int i=0; i < TasViews.Count;i++)
+			for (int i = 0; i < TasViews.Count; i++)
 			{
 				SetUpColumnsPerControl(i);
 				TasViews[i].Refresh();
@@ -1361,7 +1362,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RightClickMenu_Opened(object sender, EventArgs e)
 		{
-				if (TasView1.Focused && TasView1.AnyRowsSelected)
+			foreach (InputRoll tasView in TasViews)
+			{
+				if (tasView.Focused && tasView.AnyRowsSelected)
 				{
 					SetMarkersContextMenuItem.Enabled =
 					SelectBetweenMarkersContextMenuItem.Enabled =
@@ -1406,7 +1409,8 @@ namespace BizHawk.Client.EmuHawk
 					CloneXTimesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone # Times"];
 				}
 			}
-		
+		}
+
 		private void CancelSeekContextMenuItem_Click(object sender, EventArgs e)
 		{
 			MainForm.PauseOnFrame = null;
