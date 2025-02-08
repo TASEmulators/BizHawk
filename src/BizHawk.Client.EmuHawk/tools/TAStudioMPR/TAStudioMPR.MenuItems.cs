@@ -1361,8 +1361,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RightClickMenu_Opened(object sender, EventArgs e)
 		{
-			//foreach (InputRoll tasView in TasViews)
-			//{
 				if (TasView1.Focused && TasView1.AnyRowsSelected)
 				{
 					SetMarkersContextMenuItem.Enabled =
