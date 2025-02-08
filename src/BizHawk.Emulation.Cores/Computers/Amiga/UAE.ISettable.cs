@@ -264,6 +264,9 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 				switch (type)
 				{
+					case LibUAE.ControllerType.None:
+						AppendSetting($"joyport{port}=none");
+						break;
 					case LibUAE.ControllerType.Joystick:
 						AppendSetting($"joyport{port}mode=djoy");
 						break;

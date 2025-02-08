@@ -90,6 +90,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 		public enum ControllerType : int
 		{
+			None,
 			Joystick,
 			Mouse,
 			[Display(Name = "CD32 pad")]
