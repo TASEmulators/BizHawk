@@ -142,6 +142,118 @@ namespace BizHawk.Client.EmuHawk
 
 
 
+			//TasView1.QueryItemText += TasView_QueryItemText;
+			//TasView1.QueryItemBkColor += TasView_QueryItemBkColor;
+			//TasView1.QueryRowBkColor += TasView_QueryRowBkColor;
+			//TasView1.QueryItemIcon += TasView_QueryItemIcon;
+			//TasView1.QueryFrameLag += TasView_QueryFrameLag;
+			//TasView1.PointedCellChanged += TasView_PointedCellChanged;
+			//TasView1.MouseLeave += TAStudio_MouseLeave;
+			//TasView1.CellHovered += (_, e) =>
+			//{
+			//	if (e.NewCell.RowIndex is null)
+			//	{
+			//		toolTip1.Show(e.NewCell.Column!.Name, TasView1, PointToClient(Cursor.Position));
+			//	}
+			//};
+			//TasViews.Add(TasView1);
+
+
+			////get number of controllers MnemonicMapPlayerController
+
+
+
+
+			//try
+			//{
+			//	//var tasViewCount = MovieSession.MovieController.Definition.ControlsOrdered.Count;
+
+			//}
+			//catch (Exception)
+			//{
+
+			//	throw;
+			//}
+
+
+			////foreach (InputRoll tasView in TasViews)
+			////{
+			//InputRoll TasView2 = new InputRoll();
+			//TasView2.Name = "TasView2";
+			//TasView2.Parent = MainVertialSplit.Panel1;
+			//TasView2.Width = 300;
+			//TasView2.Height = 550;
+			//TasView2.Location = new System.Drawing.Point(TasView1.Location.X + TasView1.Width + 10, 20);
+			//TasView2.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			//| System.Windows.Forms.AnchorStyles.Left)
+			//| System.Windows.Forms.AnchorStyles.Right);
+
+			//TasView2.CellHeightPadding = 0;
+			//TasView2.ChangeSelectionWhenPaging = false;
+			//TasView2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			//TasView2.FullRowSelect = true;
+			//TasView2.InputPaintingMode = true;
+			//TasView2.LetKeysModifySelection = true;
+			//TasView2.Rotatable = true;
+			//TasView2.ScrollMethod = "near";
+			//TasView2.ScrollSpeed = 1;
+
+
+			//TasView2.QueryItemText += TasView_QueryItemText;
+			//TasView2.QueryItemBkColor += TasView_QueryItemBkColor;
+			//TasView2.QueryRowBkColor += TasView_QueryRowBkColor;
+			//TasView2.QueryItemIcon += TasView_QueryItemIcon;
+			//TasView2.QueryFrameLag += TasView_QueryFrameLag;
+			//TasView2.PointedCellChanged += TasView_PointedCellChanged;
+			//TasView2.MouseLeave += TAStudio_MouseLeave;
+
+
+			//TasView2.CellDropped += TasView_CellDropped;
+			//TasView2.ColumnClick += TasView_ColumnClick;
+			//TasView2.ColumnReordered += TasView_ColumnReordered;
+			//TasView2.ColumnRightClick += TasView_ColumnRightClick;
+			//TasView2.KeyDown += TasView_KeyDown;
+			//TasView2.MouseDoubleClick += TasView_MouseDoubleClick;
+			//TasView2.MouseDown += TasView_MouseDown;
+			//TasView2.MouseEnter += TasView_MouseEnter;
+			//TasView2.MouseMove += TasView_MouseMove;
+			//TasView2.MouseUp += TasView_MouseUp;
+			//TasView2.RightMouseScrolled += TasView_MouseWheel;
+			//TasView2.SelectedIndexChanged += TasView_SelectedIndexChanged;
+
+
+
+			//TasView2.CellHovered += (_, e) =>
+			//{
+			//	if (e.NewCell.RowIndex is null)
+			//	{
+			//		toolTip1.Show(e.NewCell.Column!.Name, TasView2, PointToClient(Cursor.Position));
+			//	}
+			//};
+			//TasViews.Add(TasView2);
+
+			LastPositionFrame = -1;
+
+			BookMarkControlMPR.LoadedCallback = BranchLoaded;
+			BookMarkControlMPR.SavedCallback = BranchSaved;
+			BookMarkControlMPR.RemovedCallback = BranchRemoved;
+		}
+
+		private void Tastudio_Load(object sender, EventArgs e)
+		{
+			var controlsOrderedCount = 1;
+			var players = 1;
+			try
+			{
+				players = this.Emulator.ControllerDefinition.PlayerCount;
+				controlsOrderedCount = this.Emulator.ControllerDefinition.ControlsOrdered.Count;
+			}
+			catch (Exception)
+			{
+
+				//throw;
+			}
+
 			TasView1.QueryItemText += TasView_QueryItemText;
 			TasView1.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView1.QueryRowBkColor += TasView_QueryRowBkColor;
@@ -157,6 +269,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 			TasViews.Add(TasView1);
+
+
+			//get number of controllers MnemonicMapPlayerController
+
+
 
 
 			//foreach (InputRoll tasView in TasViews)
@@ -180,7 +297,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView2.Rotatable = true;
 			TasView2.ScrollMethod = "near";
 			TasView2.ScrollSpeed = 1;
-			
+
 
 			TasView2.QueryItemText += TasView_QueryItemText;
 			TasView2.QueryItemBkColor += TasView_QueryItemBkColor;
@@ -204,8 +321,6 @@ namespace BizHawk.Client.EmuHawk
 			TasView2.RightMouseScrolled += TasView_MouseWheel;
 			TasView2.SelectedIndexChanged += TasView_SelectedIndexChanged;
 
-
-
 			TasView2.CellHovered += (_, e) =>
 			{
 				if (e.NewCell.RowIndex is null)
@@ -214,27 +329,71 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 			TasViews.Add(TasView2);
-			
-			LastPositionFrame = -1;
 
-			BookMarkControlMPR.LoadedCallback = BranchLoaded;
-			BookMarkControlMPR.SavedCallback = BranchSaved;
-			BookMarkControlMPR.RemovedCallback = BranchRemoved;
-		}
+			InputRoll TasView3 = new InputRoll();
+			TasView3.Name = "TasView3";
+			TasView3.Parent = MainVertialSplit.Panel1;
+			TasView3.Width = 300;
+			TasView3.Height = 550;
+			TasView3.Location = new System.Drawing.Point(TasView1.Location.X + TasView1.Width + 10, 20);
+			TasView3.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right);
 
-		private void Tastudio_Load(object sender, EventArgs e)
-		{
-			foreach (InputRoll tasView in TasViews)
+			TasView3.CellHeightPadding = 0;
+			TasView3.ChangeSelectionWhenPaging = false;
+			TasView3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			TasView3.FullRowSelect = true;
+			TasView3.InputPaintingMode = true;
+			TasView3.LetKeysModifySelection = true;
+			TasView3.Rotatable = true;
+			TasView3.ScrollMethod = "near";
+			TasView3.ScrollSpeed = 1;
+
+
+			TasView3.QueryItemText += TasView_QueryItemText;
+			TasView3.QueryItemBkColor += TasView_QueryItemBkColor;
+			TasView3.QueryRowBkColor += TasView_QueryRowBkColor;
+			TasView3.QueryItemIcon += TasView_QueryItemIcon;
+			TasView3.QueryFrameLag += TasView_QueryFrameLag;
+			TasView3.PointedCellChanged += TasView_PointedCellChanged;
+			TasView3.MouseLeave += TAStudio_MouseLeave;
+
+
+			TasView3.CellDropped += TasView_CellDropped;
+			TasView3.ColumnClick += TasView_ColumnClick;
+			TasView3.ColumnReordered += TasView_ColumnReordered;
+			TasView3.ColumnRightClick += TasView_ColumnRightClick;
+			TasView3.KeyDown += TasView_KeyDown;
+			TasView3.MouseDoubleClick += TasView_MouseDoubleClick;
+			TasView3.MouseDown += TasView_MouseDown;
+			TasView3.MouseEnter += TasView_MouseEnter;
+			TasView3.MouseMove += TasView_MouseMove;
+			TasView3.MouseUp += TasView_MouseUp;
+			TasView3.RightMouseScrolled += TasView_MouseWheel;
+			TasView3.SelectedIndexChanged += TasView_SelectedIndexChanged;
+
+			TasView3.CellHovered += (_, e) =>
 			{
-				if (!Engage())
+				if (e.NewCell.RowIndex is null)
 				{
-					Close();
-					return;
+					toolTip1.Show(e.NewCell.Column!.Name, TasView3, PointToClient(Cursor.Position));
 				}
+			};
+			TasViews.Add(TasView3);
 
-				if (tasView.Rotatable)
+			if (!Engage())
+			{
+				Close();
+				return;
+			}
+
+			for (int i = 0; i < TasViews.Count; i++)
+		{
+
+				if (TasViews[i].Rotatable)
 				{
-					RightClickMenu.Items.AddRange(tasView.GenerateContextMenuItems()
+					RightClickMenu.Items.AddRange(TasViews[i].GenerateContextMenuItems()
 						.ToArray());
 
 					RightClickMenu.Items
@@ -243,9 +402,9 @@ namespace BizHawk.Client.EmuHawk
 						.Click += (o, ov) => { CurrentTasMovie.FlagChanges(); };
 				}
 
-				tasView.ScrollSpeed = Settings.ScrollSpeed;
-				tasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
-				tasView.ScrollMethod = Settings.FollowCursorScrollMethod;
+				TasViews[i].ScrollSpeed = Settings.ScrollSpeed;
+				TasViews[i].AlwaysScroll = Settings.FollowCursorAlwaysScroll;
+				TasViews[i].ScrollMethod = Settings.FollowCursorScrollMethod;
 
 				_autosaveTimer = new Timer(components);
 				_autosaveTimer.Tick += AutosaveTimerEventProcessor;
@@ -263,7 +422,7 @@ namespace BizHawk.Client.EmuHawk
 					Settings.BranchMarkerSplitDistance,
 					_defaultBranchMarkerSplitDistance);
 
-				tasView.Font = TasViewFont;
+				TasViews[i].Font = TasViewFont;
 				RefreshDialog();
 				_initialized = true;
 			}
@@ -274,7 +433,7 @@ namespace BizHawk.Client.EmuHawk
 			return LoadFileWithFallback(Settings.RecentTas.MostRecent);
 		}
 
-		private bool Engage()
+		private bool Engage(int viewIndex = 0)
 		{
 			_engaged = false;
 			MainForm.PauseOnFrame = null;
@@ -468,6 +627,84 @@ namespace BizHawk.Client.EmuHawk
 				tasView.AllColumns.ColumnsChanged();
 			}
 		}
+		private void SetUpColumnsPerControl(int viewIndex)
+		{
+			InputRoll tasView = TasViews[viewIndex];
+			tasView.AllColumns.Clear();
+			tasView.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 18, type: ColumnType.Boolean, text: string.Empty));
+			tasView.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 60, text: "Frame#")
+			{
+				Rotatable = true,
+			});
+
+			//MovieSession.MovieController.Definition.ControlsOrdered
+			//var controls = MnemonicMap().ToArray()[viewIndex];
+
+			//viewIndex here is the same as the control group index
+			foreach ((string name, string mnemonic0, int maxLength) in MnemonicMapPlayerController(viewIndex))
+			{
+				var mnemonic = Emulator.SystemId is VSystemID.Raw.N64 && N64CButtonSuffixes.Any(name.EndsWithOrdinal)
+					? $"c{mnemonic0.ToUpperInvariant()}" // prepend 'c' to differentiate from L/R buttons -- this only affects the column headers
+					: mnemonic0;
+
+				var type = ControllerType.Axes.ContainsKey(name) ? ColumnType.Axis : ColumnType.Boolean;
+
+				tasView.AllColumns.Add(new(
+					name: name,
+					widthUnscaled: (maxLength * 6) + 14, // magic numbers reused in EditBranchTextPopUp() --feos // not since eb63fa5a9 (before 2.3.3) --yoshi
+					type: type,
+					text: mnemonic));
+			}
+
+			var columnsToHide = tasView.AllColumns
+				.Where(c =>
+					// todo: make a proper user editable list?
+					c.Name == "Power"
+					|| c.Name == "Reset"
+					|| c.Name == "Light Sensor"
+					|| c.Name == "Disc Select"
+					|| c.Name == "Disk Index"
+					|| c.Name == "Next Drive"
+					|| c.Name == "Next Slot"
+					|| c.Name == "Insert Disk"
+					|| c.Name == "Eject Disk"
+					|| c.Name.StartsWithOrdinal("Tilt")
+					|| c.Name.StartsWithOrdinal("Key ")
+					|| c.Name.StartsWithOrdinal("Open")
+					|| c.Name.StartsWithOrdinal("Close")
+					|| c.Name.EndsWithOrdinal("Tape")
+					|| c.Name.EndsWithOrdinal("Disk")
+					|| c.Name.EndsWithOrdinal("Block")
+					|| c.Name.EndsWithOrdinal("Status"));
+
+			if (Emulator.SystemId is VSystemID.Raw.N64)
+			{
+				var fakeAnalogControls = tasView.AllColumns
+					.Where(c =>
+						c.Name.EndsWithOrdinal("A Up")
+						|| c.Name.EndsWithOrdinal("A Down")
+						|| c.Name.EndsWithOrdinal("A Left")
+						|| c.Name.EndsWithOrdinal("A Right"));
+
+				columnsToHide = columnsToHide.Concat(fakeAnalogControls);
+			}
+
+			foreach (var column in columnsToHide)
+			{
+				column.Visible = false;
+			}
+
+			foreach (var column in tasView.VisibleColumns)
+			{
+				if (InputManager.StickyHoldController.IsSticky(column.Name) || InputManager.StickyAutofireController.IsSticky(column.Name))
+				{
+					column.Emphasis = true;
+				}
+			}
+
+			tasView.AllColumns.ColumnsChanged();
+
+		}
 		private void SetupCustomPatterns()
 		{
 			// custom autofire patterns to allow configuring a unique pattern for each button or axis
@@ -582,7 +819,7 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private bool StartNewTasMovie()
+		private bool StartNewTasMovie(int viewIndex = 0)
 		{
 			if (!AskSaveChanges())
 			{
@@ -595,7 +832,7 @@ namespace BizHawk.Client.EmuHawk
 			var tasMovie = (ITasMovie) MovieSession.Get(filename);
 			tasMovie.Author = Config.DefaultAuthor;
 
-			bool success = StartNewMovieWrapper(tasMovie, isNew: true);
+			bool success = StartNewMovieWrapper(tasMovie, isNew: true); //here controllers are set in MovieController
 
 			if (success)
 			{
@@ -642,7 +879,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					SetUpColumns();
+					for (int i = 0; i < TasViews.Count; i++)
+					{
+						SetUpColumnsPerControl(i);
+					}
 				}
 				SetUpToolStripColumns();
 				SetupCustomPatterns();
@@ -1381,6 +1621,32 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
+
+
+		private IEnumerable<(string Name, string Mnemonic, int MaxLength)> MnemonicMapPlayerController(int viewIndex)
+		{
+			if (MovieSession.MovieController.Definition.MnemonicsCache is null)
+				throw new InvalidOperationException("Can't build mnemonic map with empty mnemonics cache");
+
+			var playerControls = MovieSession.MovieController.Definition.ControlsOrdered[viewIndex];
+
+			//foreach (var playerControls in MovieSession.MovieController.Definition.ControlsOrdered)
+			//{
+			foreach ((string name, AxisSpec? axisSpec) in playerControls)
+			{
+				if (axisSpec.HasValue)
+				{
+					string mnemonic = Bk2MnemonicLookup.LookupAxis(name, MovieSession.Movie.SystemID);
+					yield return (name, mnemonic, Math.Max(mnemonic.Length, axisSpec.Value.MaxDigits));
+				}
+				else
+				{
+					yield return (name, MovieSession.MovieController.Definition.MnemonicsCache[name].ToString(), 1);
+				}
+			}
+			//}
+		}
+
 
 		private void TasView1_Enter(object sender, EventArgs e)
 		{

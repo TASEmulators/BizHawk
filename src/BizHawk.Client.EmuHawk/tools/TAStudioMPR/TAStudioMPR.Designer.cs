@@ -881,9 +881,8 @@ namespace BizHawk.Client.EmuHawk
             this.TasView1.AllowMassNavigationShortcuts = false;
             this.TasView1.AllowRightClickSelection = false;
             this.TasView1.AlwaysScroll = false;
-            this.TasView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.TasView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.TasView1.CellHeightPadding = 0;
             this.TasView1.ChangeSelectionWhenPaging = false;
             this.TasView1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1152,6 +1151,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // MainVertialSplit.Panel1
             // 
+            this.MainVertialSplit.Panel1.AutoScroll = true;
             this.MainVertialSplit.Panel1.Controls.Add(this.TasView1);
             // 
             // MainVertialSplit.Panel2
