@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Text;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
+using SharpCompress;
 
 namespace BizHawk.Client.Common
 {
@@ -197,7 +198,7 @@ namespace BizHawk.Client.Common
 
 			Changes = true;
 			InvalidateAfter(frame);
-			
+
 			ChangeLog.AddInsertInput(frame, inputLog.ToList(), $"Insert {inputLog.Count()} frame(s) at {frame}");
 		}
 
@@ -218,7 +219,7 @@ namespace BizHawk.Client.Common
 		{
 			int firstChangedFrame = -1;
 			ChangeLog.BeginNewBatch($"Copy Over Input: {frame}");
-			
+
 			var states = inputStates.ToList();
 
 			if (Log.Count < states.Count + frame)
@@ -257,6 +258,75 @@ namespace BizHawk.Client.Common
 			frame = Math.Min(frame, Log.Count);
 
 			Log.InsertRange(frame, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
+
+			ShiftBindedMarkers(frame, count);
+
+			Changes = true;
+			InvalidateAfter(frame);
+
+			ChangeLog.AddInsertFrames(frame, count, $"Insert {count} empty frame(s) at {frame}");
+		}
+
+		public void InsertEmptyFrameMPR(int frame, int startOffset, int currentControlLength, int count = 1)
+		{
+			frame = Math.Min(frame, Log.Count);
+
+			//insert it at end since the inputs have to shift
+
+			//damn this is disgusting.
+			Log.InsertRange(Log.Count, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
+
+			StringBuilder tempLog = new StringBuilder();
+			List<string > lines = new List<string>();
+			lines.Add(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController));
+			string framePrevious = string.Empty;
+			char[] frameNext;
+			//for (int i = Log.Count - 1; i >= frame; i--)
+			//{
+			//	if (Log[i - 1].Substring(startOffset, currentControlLength) == Log[i].Substring(startOffset, currentControlLength))
+			//	{
+			//		tempLog.AppendLine(Log[i]);
+			//		lines.Add(Log[i]);
+			//		//continue;
+			//	}
+			//	else
+			//	{
+			//		framePrevious = Log[i - 1];
+			//		frameNext = Log[i].ToCharArray();
+			//		for (int j = startOffset; j < startOffset + currentControlLength; j++)
+			//		{
+			//			frameNext[j] = framePrevious[j];
+			//		}
+			//		tempLog.AppendLine(new string(frameNext));
+			//		lines.Add(new string(frameNext));
+			//	}
+			//}
+
+			for (int i = frame ; i < Log.Count-1; i++)
+			{
+				if (Log[i].Substring(startOffset, currentControlLength) == Log[i+1].Substring(startOffset, currentControlLength))
+				{
+					tempLog.AppendLine(Log[i]);
+					lines.Add(Log[i]);
+					//continue;
+				}
+				else
+				{
+					framePrevious = Log[i];
+					frameNext = Log[i+1].ToCharArray();
+					for (int j = startOffset; j < startOffset + currentControlLength; j++)
+					{
+						frameNext[j] = framePrevious[j];
+					}
+					tempLog.AppendLine(new string(frameNext));
+					lines.Add(new string(frameNext));
+				}
+			}
+
+			//string a = Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController),count).ToString();
+		
+			Log.InsertRange(frame, lines);
+			//Log.InsertRange(frame, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
 
 			ShiftBindedMarkers(frame, count);
 
