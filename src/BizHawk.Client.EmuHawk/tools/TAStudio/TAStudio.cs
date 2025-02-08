@@ -148,6 +148,7 @@ namespace BizHawk.Client.EmuHawk
 			BookMarkControl.LoadedCallback = BranchLoaded;
 			BookMarkControl.SavedCallback = BranchSaved;
 			BookMarkControl.RemovedCallback = BranchRemoved;
+			BookMarkControl.LoadUndoneCallback = BranchLoadUndone;
 			TasView.MouseLeave += TAStudio_MouseLeave;
 			TasView.CellHovered += (_, e) =>
 			{

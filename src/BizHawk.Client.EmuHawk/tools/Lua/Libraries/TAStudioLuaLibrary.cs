@@ -592,5 +592,18 @@ namespace BizHawk.Client.EmuHawk
 				};
 			}
 		}
+
+		[LuaMethodExample("function LoadUndone()\r\nconsole.log(\"You did a branch load undo\")\r\nend\r\ntastudio.onbranchundoload(LoadUndone)")]
+		[LuaMethod("onbranchundoload", "called whenever a branch load is undone. luaf must be a function without parameters")]
+		public void OnBranchUndoLoad(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.BranchLoadUndoneCallback = () =>
+				{
+					luaf.Call(); 
+				};
+			}
+		}
 	}
 }

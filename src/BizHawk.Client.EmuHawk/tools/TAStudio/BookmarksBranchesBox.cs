@@ -37,6 +37,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public Action<int> RemovedCallback { get; set; }
 
+		public Action LoadUndoneCallback { get; set; }
+
 		public TAStudio Tastudio { get; set; }
 
 		public IDialogController DialogController => Tastudio.MainForm;
@@ -358,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_branchUndo == BranchUndo.Load)
 			{
 				LoadBranch(_backupBranch);
-				LoadedCallback?.Invoke(Branches.IndexOf(_backupBranch));
+				LoadUndoneCallback?.Invoke();
 				Tastudio.MainForm.AddOnScreenMessage("Branch Load canceled");
 			}
 			else if (_branchUndo == BranchUndo.Update)
