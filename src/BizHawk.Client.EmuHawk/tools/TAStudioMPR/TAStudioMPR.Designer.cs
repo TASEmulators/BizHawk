@@ -895,7 +895,7 @@ namespace BizHawk.Client.EmuHawk
             this.TasView1.Rotatable = true;
             this.TasView1.RowCount = 0;
             this.TasView1.ScrollSpeed = 1;
-            this.TasView1.Size = new System.Drawing.Size(300, 550);
+            this.TasView1.Size = new System.Drawing.Size(250, 550);
             this.TasView1.TabIndex = 1;
             this.TasView1.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnClick);
             this.TasView1.ColumnRightClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnRightClick);

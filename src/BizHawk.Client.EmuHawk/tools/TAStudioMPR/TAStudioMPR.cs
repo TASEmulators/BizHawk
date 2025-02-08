@@ -241,18 +241,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
-			var controlsOrderedCount = 1;
-			var players = 1;
-			try
-			{
-				players = this.Emulator.ControllerDefinition.PlayerCount;
-				controlsOrderedCount = this.Emulator.ControllerDefinition.ControlsOrdered.Count;
-			}
-			catch (Exception)
-			{
-
-				//throw;
-			}
 
 			TasView1.QueryItemText += TasView_QueryItemText;
 			TasView1.QueryItemBkColor += TasView_QueryItemBkColor;
@@ -385,20 +373,22 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 				return;
 			}
+			
+			if (TasViews[1].Rotatable)
+			{
+				RightClickMenu.Items.AddRange(TasViews[1].GenerateContextMenuItems()
+					.ToArray());
+
+				RightClickMenu.Items
+					.OfType<ToolStripMenuItem>()
+					.First(t => t.Name == "RotateMenuItem")
+					.Click += (o, ov) => { CurrentTasMovie.FlagChanges(); };
+			}
 
 			for (int i = 0; i < TasViews.Count; i++)
-		{
+			{
 
-				if (TasViews[i].Rotatable)
-				{
-					RightClickMenu.Items.AddRange(TasViews[i].GenerateContextMenuItems()
-						.ToArray());
 
-					RightClickMenu.Items
-						.OfType<ToolStripMenuItem>()
-						.First(t => t.Name == "RotateMenuItem")
-						.Click += (o, ov) => { CurrentTasMovie.FlagChanges(); };
-				}
 
 				TasViews[i].ScrollSpeed = Settings.ScrollSpeed;
 				TasViews[i].AlwaysScroll = Settings.FollowCursorAlwaysScroll;
@@ -868,11 +858,20 @@ namespace BizHawk.Client.EmuHawk
 				MarkerControlMPR.UpdateTextColumnWidth();
 				TastudioPlayMode();
 				UpdateWindowTitle();
+
+
 				if (CurrentTasMovie.InputRollSettings != null)
 				{
-					foreach (InputRoll tasView in TasViews)
+					//loads the same settings for all views
+					//foreach (InputRoll tasView in TasViews)
+					//{
+					//TasViews[1].LoadSettingsSerialized(CurrentTasMovie.InputRollSettings);
+					//}
+
+					for (int i = 0; i < TasViews.Count; i++)
 					{
-						tasView.LoadSettingsSerialized(CurrentTasMovie.InputRollSettings);
+						TasViews[i].LoadSettingsSerialized(CurrentTasMovie.InputRollSettings); //not sure if this is necessary with multiple InputRolls
+						SetUpColumnsPerControl(i);
 					}
 				}
 				else

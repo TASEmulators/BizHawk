@@ -1346,13 +1346,13 @@ namespace BizHawk.Client.EmuHawk
 		
 		// ReSharper disable once UnusedMember.Local
 		[RestoreDefaults]
-		private void RestoreDefaults()
-		{
-			SetUpColumns();
+		private void RestoreDefaults() //changed top three function order. test for bugs
+		{			
 			SetUpToolStripColumns();
-			foreach (InputRoll tasView in TasViews)
+			for(int i=0; i < TasViews.Count;i++)
 			{
-				tasView.Refresh();
+				SetUpColumnsPerControl(i);
+				TasViews[i].Refresh();
 			}
 			CurrentTasMovie.FlagChanges();
 			MainVertialSplit.SplitterDistance = _defaultMainSplitDistance;
