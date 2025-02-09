@@ -393,78 +393,143 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (InputRoll tasView in TasViews)
+			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
+
+			if (CurrentTasView.AnyRowsSelected)
 			{
-				if (tasView.Focused && tasView.AnyRowsSelected)
+				_tasClipboard.Clear();
+				var list = CurrentTasView.SelectedRows.ToArray();
+				var sb = new StringBuilder();
+
+				foreach (var index in list)
 				{
-					_tasClipboard.Clear();
-					var list = tasView.SelectedRows.ToArray();
-					var sb = new StringBuilder();
-
-					foreach (var index in list)
+					var input = CurrentTasMovie.GetInputState(index);
+					if (input == null)
 					{
-						var input = CurrentTasMovie.GetInputState(index);
-						if (input == null)
-						{
-							break;
-						}
-
-						_tasClipboard.Add(new TasClipboardEntry(index, input));
-						var logEntry = Bk2LogEntryGenerator.GenerateLogEntry(input);
-						sb.AppendLine(Settings.CopyIncludesFrameNo ? $"{FrameToStringPadded(index)} {logEntry}" : logEntry);
+						break;
 					}
 
-					Clipboard.SetDataObject(sb.ToString());
-					SetSplicer();
+					_tasClipboard.Add(new TasClipboardEntry(index, input));
+					var logEntry = Bk2LogEntryGenerator.GenerateLogEntry(input);
+					sb.AppendLine(Settings.CopyIncludesFrameNo ? $"{FrameToStringPadded(index)} {logEntry}" : logEntry);
 				}
 
+				Clipboard.SetDataObject(sb.ToString());
+				SetSplicer();
 			}
-
-
 		}
 
+		//private void PasteMenuItem_Click(object sender, EventArgs e)
+		//{
+		//	int tasViewIndex = TasViews.IndexOf(CurrentTasView);
+
+		//	if (CurrentTasView.AnyRowsSelected)
+		//	{
+		//		// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
+		//		// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
+
+		//		// TODO: copy paste from PasteInsertMenuItem_Click!
+		//		IDataObject data = Clipboard.GetDataObject();
+		//		if (data != null && data.GetDataPresent(DataFormats.StringFormat))
+		//		{
+		//			string input = (string) data.GetData(DataFormats.StringFormat);
+		//			if (!string.IsNullOrWhiteSpace(input))
+		//			{
+		//				string[] lines = input.Split('\n');
+		//				if (lines.Length > 0)
+		//				{
+		//					_tasClipboard.Clear();
+		//					int linesToPaste = lines.Length;
+		//					if (lines[lines.Length - 1].Length is 0) linesToPaste--;
+		//					for (int i = 0; i < linesToPaste; i++)
+		//					{
+		//						var line = ControllerFromMnemonicStr(lines[i]);
+		//						if (line == null)
+		//						{
+		//							return;
+		//						}
+
+		//						_tasClipboard.Add(new TasClipboardEntry(i, line));
+		//					}
+
+		//					var rollbackFrame = CurrentTasMovie.CopyOverInput(CurrentTasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState));
+		//					if (rollbackFrame > 0)
+		//					{
+		//						GoToLastEmulatedFrameIfNecessary(rollbackFrame);
+		//						DoAutoRestore();
+		//					}
+
+		//					FullRefresh();
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
 		private void PasteMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (InputRoll tasView in TasViews)
+			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
+
+			if (CurrentTasView.AnyRowsSelected)
 			{
-				if (tasView.Focused && tasView.AnyRowsSelected)
+				// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
+				// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
+
+				// TODO: copy paste from PasteInsertMenuItem_Click!
+				IDataObject data = Clipboard.GetDataObject();
+				if (data != null && data.GetDataPresent(DataFormats.StringFormat))
 				{
-					// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
-					// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
-
-					// TODO: copy paste from PasteInsertMenuItem_Click!
-					IDataObject data = Clipboard.GetDataObject();
-					if (data != null && data.GetDataPresent(DataFormats.StringFormat))
+					string input = (string) data.GetData(DataFormats.StringFormat);
+					if (!string.IsNullOrWhiteSpace(input))
 					{
-						string input = (string) data.GetData(DataFormats.StringFormat);
-						if (!string.IsNullOrWhiteSpace(input))
+						string[] lines = input.Split('\n');
+						if (lines.Length > 0)
 						{
-							string[] lines = input.Split('\n');
-							if (lines.Length > 0)
+							_tasClipboard.Clear();
+							int linesToPaste = lines.Length;
+							if (lines[lines.Length - 1].Length is 0) linesToPaste--;
+							for (int i = 0; i < linesToPaste; i++)
 							{
-								_tasClipboard.Clear();
-								int linesToPaste = lines.Length;
-								if (lines[lines.Length - 1].Length is 0) linesToPaste--;
-								for (int i = 0; i < linesToPaste; i++)
+								var line = ControllerFromMnemonicStr(lines[i]);
+								if (line == null)
 								{
-									var line = ControllerFromMnemonicStr(lines[i]);
-									if (line == null)
-									{
-										return;
-									}
-
-									_tasClipboard.Add(new TasClipboardEntry(i, line));
+									return;
 								}
 
-								var rollbackFrame = CurrentTasMovie.CopyOverInput(tasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState));
-								if (rollbackFrame > 0)
-								{
-									GoToLastEmulatedFrameIfNecessary(rollbackFrame);
-									DoAutoRestore();
-								}
-
-								FullRefresh();
+								_tasClipboard.Add(new TasClipboardEntry(i, line));
 							}
+
+
+							int startOffset = 1; //starts with "|" 
+							for (int k = 0; k < tasViewIndex; k++) //add up inputs to get start string offset
+							{
+								startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+								startOffset += 1; //add 1 for pipe
+							}
+							int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
+
+							var framesToInsert = CurrentTasView.SelectedRows;
+							var insertionFrame = Math.Min((CurrentTasView.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
+							var needsToRollback = CurrentTasView.SelectionStartIndex < Emulator.Frame;
+
+							var inputLog = framesToInsert
+								.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
+								.ToList();
+
+							//A clone operation will insert the selected stuff for currently selected frames.
+							//All the other inputs besides the current controls need to stay the same.
+							//the current controller group need to shift down with the clone.
+
+							//CurrentTasMovie.InsertInputMPR(insertionFrame, inputLog, startOffset, currentControlLength);
+							var rollbackFrame = CurrentTasMovie.CopyOverInputMPR(CurrentTasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState),  startOffset,  currentControlLength);
+							
+							
+							if (rollbackFrame > 0)
+							{
+								GoToLastEmulatedFrameIfNecessary(rollbackFrame);
+								DoAutoRestore();
+							}
+
+							FullRefresh();
 						}
 					}
 				}

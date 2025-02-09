@@ -417,8 +417,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public void InsertInputMPR(int frame, IEnumerable<string> inputLog, int startOffset, int currentControlLength)
-		{
-			
+		{			
 			//insert it at end since the inputs have to shift
 			Log.InsertRange(Log.Count, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), inputLog.Count()));
 
@@ -485,6 +484,44 @@ namespace BizHawk.Client.Common
 		}
 
 		public int CopyOverInput(int frame, IEnumerable<IController> inputStates)
+		{
+			int firstChangedFrame = -1;
+			ChangeLog.BeginNewBatch($"Copy Over Input: {frame}");
+
+			var states = inputStates.ToList();
+
+			if (Log.Count < states.Count + frame)
+			{
+				ExtendMovieForEdit(states.Count + frame - Log.Count);
+			}
+
+			ChangeLog.AddGeneralUndo(frame, frame + states.Count - 1, $"Copy Over Input: {frame}");
+
+			for (int i = 0; i < states.Count; i++)
+			{
+				if (Log.Count <= frame + i)
+				{
+					break;
+				}
+
+				var entry = Bk2LogEntryGenerator.GenerateLogEntry(states[i]);
+				if (firstChangedFrame == -1 && Log[frame + i] != entry)
+				{
+					firstChangedFrame = frame + i;
+				}
+
+				Log[frame + i] = entry;
+			}
+
+			ChangeLog.EndBatch();
+			Changes = true;
+			InvalidateAfter(frame);
+
+			ChangeLog.SetGeneralRedo();
+			return firstChangedFrame;
+		}
+
+		public int CopyOverInputMPR(int frame, IEnumerable<IController> inputStates, int startOffset, int currentControlLength)
 		{
 			int firstChangedFrame = -1;
 			ChangeLog.BeginNewBatch($"Copy Over Input: {frame}");

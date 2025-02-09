@@ -4,12 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.ComponentModel;
+using System.Runtime.Remoting.Channels;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.Properties;
+
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
-using System.Runtime.Remoting.Channels;
+
 
 namespace BizHawk.Client.EmuHawk
 {
