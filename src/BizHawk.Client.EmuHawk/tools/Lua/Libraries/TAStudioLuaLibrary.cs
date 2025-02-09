@@ -605,5 +605,18 @@ namespace BizHawk.Client.EmuHawk
 				};
 			}
 		}
+
+		[LuaMethodExample("function SaveUndone(index)\r\nconsole.log(\"You did a branch save undo for branch \"..index)\r\nend\r\ntastudio.onbranchundosave(SaveUndone)")]
+		[LuaMethod("onbranchundosave", "called whenever a branch save is undone. luaf must be a function that takes the integer branch index as a parameter")]
+		public void OnBranchUndoSave(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.BranchSaveUndoneCallback = index =>
+				{
+					luaf.Call(index); 
+				};
+			}
+		}
 	}
 }
