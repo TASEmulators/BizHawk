@@ -593,7 +593,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("function LoadUndone()\r\nconsole.log(\"You did a branch load undo\")\r\nend\r\ntastudio.onbranchundoload(LoadUndone)")]
+		[LuaMethodExample("function LoadUndone()\r\n\tconsole.log(\"You did a branch load undo\")\r\nend\r\ntastudio.onbranchundoload(LoadUndone)")]
 		[LuaMethod("onbranchundoload", "called whenever a branch load is undone. luaf must be a function without parameters")]
 		public void OnBranchUndoLoad(LuaFunction luaf)
 		{
@@ -606,7 +606,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("function SaveUndone(index)\r\nconsole.log(\"You did a branch save undo for branch \"..index)\r\nend\r\ntastudio.onbranchundosave(SaveUndone)")]
+		[LuaMethodExample("function SaveUndone(index)\r\n\tconsole.log(\"You did a branch save undo for branch \"..index)\r\nend\r\ntastudio.onbranchundosave(SaveUndone)")]
 		[LuaMethod("onbranchundosave", "called whenever a branch save is undone. luaf must be a function that takes the integer branch index as a parameter")]
 		public void OnBranchUndoSave(LuaFunction luaf)
 		{
@@ -619,7 +619,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("function RemoveUndone(index)\r\nconsole.log(\"You did a branch remove undo for branch \"..index)\r\nend\r\ntastudio.onbranchundoremove(RemoveUndone)")]
+		[LuaMethodExample("function RemoveUndone(index)\r\n\tconsole.log(\"You did a branch remove undo for branch \"..index)\r\nend\r\ntastudio.onbranchundoremove(RemoveUndone)")]
 		[LuaMethod("onbranchundoremove", "called whenever a branch removal is undone. luaf must be a function that takes the integer branch index as a parameter")]
 		public void OnBranchUndoREmove(LuaFunction luaf)
 		{
