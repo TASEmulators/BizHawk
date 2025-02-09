@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common
 				string noInput = Bk2LogEntryGenerator.EmptyEntry(Session.MovieController);
 				for (int i = Log.Count - 1; i >= frame; i--)
 				{
-					if(noInput == Log[i])
+					if (noInput == Log[i])
 					{
 						lastEmptyFrame = i;
 					}
@@ -108,7 +108,7 @@ namespace BizHawk.Client.Common
 				}
 				Changes = true;
 			}
-			
+
 			LagLog.RemoveFrom(frame);
 			TasStateManager.InvalidateAfter(frame);
 			GreenzoneInvalidated(frame);
@@ -417,7 +417,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public void InsertInputMPR(int frame, IEnumerable<string> inputLog, int startOffset, int currentControlLength)
-		{			
+		{
 			//insert it at end since the inputs have to shift
 			Log.InsertRange(Log.Count, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), inputLog.Count()));
 
@@ -428,7 +428,7 @@ namespace BizHawk.Client.Common
 			int addNewCount = inputLog.Count();
 			int index = 0;
 
-			
+
 			foreach (string newInputs in inputLog.ToList())
 			{
 				frameNext = Log[index + frame].ToCharArray();
@@ -532,9 +532,16 @@ namespace BizHawk.Client.Common
 			{
 				ExtendMovieForEdit(states.Count + frame - Log.Count);
 			}
+			int addNewCount = inputStates.Count();
+			//Log.InsertRange(Log.Count, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), addNewCount));
+
 
 			ChangeLog.AddGeneralUndo(frame, frame + states.Count - 1, $"Copy Over Input: {frame}");
 
+
+			char[] inputFrame;
+			char[] logFrame;
+			List<string> lines = new List<string>();
 			for (int i = 0; i < states.Count; i++)
 			{
 				if (Log.Count <= frame + i)
@@ -548,8 +555,27 @@ namespace BizHawk.Client.Common
 					firstChangedFrame = frame + i;
 				}
 
-				Log[frame + i] = entry;
+				logFrame = Log[frame + i].ToCharArray();
+				inputFrame = entry.ToCharArray();
+				for (int j = startOffset; j < startOffset + currentControlLength; j++)
+				{
+					logFrame[j] = inputFrame[j];
+				}
+				//.Add(new string(logFrame));
+
+				Log[frame + i] = new string(logFrame);
 			}
+			////do for rest for of movie
+			//for(int i=frame+addNewCount;i<Log.Count; i++)
+			//{
+			//	logFrame = Log[frame + i].ToCharArray();
+			//	inputFrame = entry.ToCharArray();
+			//	for (int j = startOffset; j < startOffset + currentControlLength; j++)
+			//	{
+			//		logFrame[j] = inputFrame[j];
+			//	}
+			//}
+
 
 			ChangeLog.EndBatch();
 			Changes = true;
