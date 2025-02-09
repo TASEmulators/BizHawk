@@ -95,6 +95,23 @@ namespace BizHawk.Client.Common
 			ChangeLog.SetGeneralRedo();
 		}
 
+		public void ClearFrameMPR(int frame, int startOffset, int currentControlLength)
+		{
+			ChangeLog.AddGeneralUndo(frame, frame, $"Clear Frame: {frame}");
+
+			char[] curFrame = Log[frame].ToCharArray();	
+			for (int j = startOffset; j < startOffset + currentControlLength; j++)
+			{
+				curFrame[j] = '.';
+			}
+
+			SetFrameAt(frame, new string(curFrame));
+			Changes = true;
+
+			InvalidateAfter(frame);
+			ChangeLog.SetGeneralRedo();
+		}
+
 		private void ShiftBindedMarkers(int frame, int offset)
 		{
 			if (BindMarkersToInput)
@@ -322,12 +339,7 @@ namespace BizHawk.Client.Common
 				$"Remove frames {removeStart}-{removeUpTo - 1}"
 			);
 		}
-
-		
-		//public void RemoveFrameMPR(int frame, int startOffset, int currentControlLength)
-		//{
-		//	RemoveFramesMPR(frame, frame + 1, startOffset, currentControlLength);
-		//}
+				
 
 		public void InsertInput(int frame, string inputState)
 		{
@@ -424,7 +436,7 @@ namespace BizHawk.Client.Common
 			string framePrevious = string.Empty;
 			char[] frameNext = Log[frame].ToCharArray();
 
-			//damn this is disgustingly lengthy.
+			
 			//inserted empty controller first
 			for (int j = startOffset; j < startOffset + currentControlLength; j++)
 			{

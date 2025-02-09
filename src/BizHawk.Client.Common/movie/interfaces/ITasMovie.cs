@@ -32,6 +32,8 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		void ClearFrame(int frame);
 
+		void ClearFrameMPR(int frame, int startOffset, int currentControlLength);
+
 		void GreenzoneCurrentFrame();
 		void ToggleBoolState(int frame, string buttonName);
 		void SetAxisState(int frame, string buttonName, int val);

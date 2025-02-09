@@ -561,18 +561,26 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearFramesMenuItem_Click(object sender, EventArgs e)
 		{
 			//will have to get the current tasview 
-			foreach (InputRoll tasView in TasViews)
+			for (int i = 0; i < TasViews.Count; i++)
 			{
-				if (tasView.Focused && tasView.AnyRowsSelected)
+				if (TasViews[i].Focused && TasViews[i].AnyRowsSelected) //moving out of for loop to only have the currently focused tasview cloned
 				{
+					int startOffset = 1; //starts with "|"
+					for (int k = 0; k < i; k++) //add up inputs to get start string offset
+					{
+						startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+						startOffset += 1; //add 1 for pipe
+					}
+					int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[i].Count;
+
 					var firstWithInput = FirstNonEmptySelectedFrame;
 					bool needsToRollback = firstWithInput.HasValue && firstWithInput < Emulator.Frame;
-					var rollBackFrame = TasView1.SelectionStartIndex ?? 0;
+					var rollBackFrame = TasViews[i].SelectionStartIndex ?? 0;
 
-					CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasView1.SelectionStartIndex}-{TasView1.SelectionEndIndex}");
-					foreach (int frame in tasView.SelectedRows)
+					CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasViews[i].SelectionStartIndex}-{TasViews[i].SelectionEndIndex}");
+					foreach (int frame in TasViews[i].SelectedRows)
 					{
-						CurrentTasMovie.ClearFrame(frame);
+						CurrentTasMovie.ClearFrameMPR(frame, startOffset, currentControlLength);
 					}
 
 					CurrentTasMovie.ChangeLog.EndBatch();
@@ -596,7 +604,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 
 					int startOffset = 1; //starts with "|"
-										 //for (int k = i; k >= 0; k--)
 					for (int k = 0; k < i; k++) //add up inputs to get start string offset
 					{
 						startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
@@ -615,7 +622,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					CurrentTasMovie.RemoveFramesMPR(TasViews[i].SelectedRows.ToArray(), startOffset,  currentControlLength);
+					CurrentTasMovie.RemoveFramesMPR(TasViews[i].SelectedRows.ToArray(), startOffset, currentControlLength);
 					SetTasViewRowCount();
 					SetSplicer();
 
