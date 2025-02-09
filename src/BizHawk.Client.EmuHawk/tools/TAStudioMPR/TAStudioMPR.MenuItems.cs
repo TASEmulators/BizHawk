@@ -649,48 +649,41 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneFramesXTimes(int timesToClone)
 		{
-			for (int i = 0; i < TasViews.Count; i++)
+			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
+
+			if (CurrentTasView.AnyRowsSelected)
 			{
-				if (TasViews[i].Focused && TasViews[i].AnyRowsSelected) //moving out of for loop to only have the currently focused tasview cloned
+				int startOffset = 1; //starts with "|" 
+				for (int k = 0; k < tasViewIndex; k++) //add up inputs to get start string offset
 				{
-					int startOffset = 1; //starts with "|"
-					for (int k = 0; k < i; k++) //add up inputs to get start string offset
-					{
-						startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
-						startOffset += 1; //add 1 for pipe
-					}
-					int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[i].Count;
+					startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+					startOffset += 1; //add 1 for pipe
+				}
+				int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
 
-					for (int j = 0; j < timesToClone; j++)
-					{
+				for (int j = 0; j < timesToClone; j++)
+				{
+					var framesToInsert = CurrentTasView.SelectedRows;
+					var insertionFrame = Math.Min((CurrentTasView.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
+					var needsToRollback = CurrentTasView.SelectionStartIndex < Emulator.Frame;
 
-						var framesToInsert = TasViews[i].SelectedRows;
-						var insertionFrame = Math.Min((TasView1.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
-						var needsToRollback = TasViews[i].SelectionStartIndex < Emulator.Frame;
-
-						var inputLog = framesToInsert
-							.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
-							.ToList();
-
-						//i don't know wtf i am doingn. come back after sleeping.
-						//i only want to clone the selected control group.
-						//A clone operation will insert the selected stuff AFTER the currently selected frames.
-						//All the other inputs besides the current controls need to stay the same.
-						//the current controller group need to shift down with the clone.
-						var inputLog2 = framesToInsert
-						.Select(frame => CurrentTasMovie.GetInputLogEntry(frame).Remove(startOffset, currentControlLength))
+					var inputLog = framesToInsert
+						.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
 						.ToList();
 
-						CurrentTasMovie.InsertInput(insertionFrame, inputLog);
+					//A clone operation will insert the selected stuff for currently selected frames.
+					//All the other inputs besides the current controls need to stay the same.
+					//the current controller group need to shift down with the clone.
 
-						if (needsToRollback)
-						{
-							GoToLastEmulatedFrameIfNecessary(insertionFrame);
-							DoAutoRestore();
-						}
+					CurrentTasMovie.InsertInputMPR(insertionFrame, inputLog, startOffset, currentControlLength);
 
-						FullRefresh();
+					if (needsToRollback)
+					{
+						GoToLastEmulatedFrameIfNecessary(insertionFrame);
+						DoAutoRestore();
 					}
+
+					FullRefresh();
 				}
 			}
 		}
@@ -766,7 +759,7 @@ namespace BizHawk.Client.EmuHawk
 				var rollbackFrame = CurrentTasView.SelectionEndIndex ?? 0;
 				var needsToRollback = CurrentTasView.SelectionStartIndex < Emulator.Frame;
 
-				CurrentTasMovie.TruncateFramesMPR(rollbackFrame,startOffset, currentControlLength);
+				CurrentTasMovie.TruncateFramesMPR(rollbackFrame, startOffset, currentControlLength);
 				MarkerControlMPR.MarkerInputRoll.TruncateSelection(CurrentTasMovie.Markers.Count - 1);
 
 				if (needsToRollback)

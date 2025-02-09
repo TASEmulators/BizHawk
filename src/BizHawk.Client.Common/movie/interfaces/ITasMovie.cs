@@ -43,6 +43,7 @@ namespace BizHawk.Client.Common
 		void InsertInput(int frame, string inputState);
 		void InsertInput(int frame, IEnumerable<string> inputLog);
 		void InsertInput(int frame, IEnumerable<IController> inputStates);
+		void InsertInputMPR(int frame, IEnumerable<string> inputLog, int startOffset, int currentControlLength);
 
 		void InsertEmptyFrameMPR(int frame, int startOffset, int currentControlLength, int count = 1);
 		void InsertEmptyFramesMPR(int frame, int startOffset, int currentControlLength, int count = 1);

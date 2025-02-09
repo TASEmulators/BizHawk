@@ -416,6 +416,61 @@ namespace BizHawk.Client.Common
 			ChangeLog.AddInsertInput(frame, inputLog.ToList(), $"Insert {inputLog.Count()} frame(s) at {frame}");
 		}
 
+		public void InsertInputMPR(int frame, IEnumerable<string> inputLog, int startOffset, int currentControlLength)
+		{
+			
+			//insert it at end since the inputs have to shift
+			Log.InsertRange(Log.Count, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), inputLog.Count()));
+
+			//StringBuilder tempLog = new StringBuilder();
+			List<string> lines = new List<string>();
+			string framePrevious = string.Empty;
+			char[] frameNext = Log[frame].ToCharArray();
+			int addNewCount = inputLog.Count();
+			int index = 0;
+
+			
+			foreach (string newInputs in inputLog.ToList())
+			{
+				frameNext = Log[index + frame].ToCharArray();
+
+				for (int j = startOffset; j < startOffset + currentControlLength; j++)
+				{
+					frameNext[j] = newInputs[j];
+				}
+				lines.Add(new string(frameNext));
+				index++;
+			}
+
+			for (int i = frame; i < Log.Count; i++)
+			{
+				if (i + addNewCount >= Log.Count)
+				{
+					break;
+				}
+				//takes characters from the controller and shifts then, leaving other controllers alone.
+				framePrevious = Log[i];
+				frameNext = Log[i + addNewCount].ToCharArray();
+				for (int j = startOffset; j < startOffset + currentControlLength; j++)
+				{
+					frameNext[j] = framePrevious[j];
+				}
+				lines.Add(new string(frameNext));
+
+			}
+
+			Log.RemoveRange(frame, Log.Count - frame);
+			Log.InsertRange(frame, lines);
+
+
+			ShiftBindedMarkers(frame, inputLog.Count());
+
+			Changes = true;
+			InvalidateAfter(frame);
+
+			ChangeLog.AddInsertInput(frame, inputLog.ToList(), $"Insert {inputLog.Count()} frame(s) at {frame}");
+		}
+
 		public void InsertInput(int frame, IEnumerable<IController> inputStates)
 		{
 			// ChangeLog is done in the InsertInput call.
