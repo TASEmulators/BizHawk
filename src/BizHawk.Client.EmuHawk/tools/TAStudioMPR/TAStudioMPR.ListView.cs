@@ -1223,6 +1223,7 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			SetSplicer();
+			CurrentTasView = sender as InputRoll;
 		}
 
 		public void AnalogIncrementByOne()

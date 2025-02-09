@@ -62,6 +62,7 @@ namespace BizHawk.Client.EmuHawk
 		public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
 
 		public List<InputRoll> TasViews = new List<InputRoll>();
+		public InputRoll CurrentTasView = new InputRoll(); //For various events. Set in TasView_SelectedIndexChanged
 		public class TAStudioSettingsMPR
 		{
 			public TAStudioSettingsMPR()

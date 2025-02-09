@@ -560,39 +560,37 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			//will have to get the current tasview 
-			for (int i = 0; i < TasViews.Count; i++)
+			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
+
+			if (CurrentTasView.AnyRowsSelected) //moving out of for loop to only have the currently focused tasview cloned
 			{
-				if (TasViews[i].Focused && TasViews[i].AnyRowsSelected) //moving out of for loop to only have the currently focused tasview cloned
+				int startOffset = 1; //starts with "|"
+				for (int k = 0; k < tasViewIndex; k++) //add up inputs to get start string offset
 				{
-					int startOffset = 1; //starts with "|"
-					for (int k = 0; k < i; k++) //add up inputs to get start string offset
-					{
-						startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
-						startOffset += 1; //add 1 for pipe
-					}
-					int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[i].Count;
-
-					var firstWithInput = FirstNonEmptySelectedFrame;
-					bool needsToRollback = firstWithInput.HasValue && firstWithInput < Emulator.Frame;
-					var rollBackFrame = TasViews[i].SelectionStartIndex ?? 0;
-
-					CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasViews[i].SelectionStartIndex}-{TasViews[i].SelectionEndIndex}");
-					foreach (int frame in TasViews[i].SelectedRows)
-					{
-						CurrentTasMovie.ClearFrameMPR(frame, startOffset, currentControlLength);
-					}
-
-					CurrentTasMovie.ChangeLog.EndBatch();
-
-					if (needsToRollback)
-					{
-						GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-						DoAutoRestore();
-					}
-
-					FullRefresh();
+					startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+					startOffset += 1; //add 1 for pipe
 				}
+				int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
+
+				var firstWithInput = FirstNonEmptySelectedFrame;
+				bool needsToRollback = firstWithInput.HasValue && firstWithInput < Emulator.Frame;
+				var rollBackFrame = TasViews[tasViewIndex].SelectionStartIndex ?? 0;
+
+				CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasViews[tasViewIndex].SelectionStartIndex}-{TasViews[tasViewIndex].SelectionEndIndex}");
+				foreach (int frame in TasViews[tasViewIndex].SelectedRows)
+				{
+					CurrentTasMovie.ClearFrameMPR(frame, startOffset, currentControlLength);
+				}
+
+				CurrentTasMovie.ChangeLog.EndBatch();
+
+				if (needsToRollback)
+				{
+					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
+					DoAutoRestore();
+				}
+
+				FullRefresh();
 			}
 		}
 
