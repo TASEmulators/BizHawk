@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 		void RemoveFrames(int removeStart, int removeUpTo);
 		void RemoveFramesMPR(ICollection<int> frames, int startOffset, int currentControlLength);
 
-		//void RemoveFrameMPR(int frame, int startOffset, int currentControlLength);
+		void TruncateFramesMPR(int frame, int startOffset, int currentControlLength);
 
 		void SetFrame(int frame, string source);
 

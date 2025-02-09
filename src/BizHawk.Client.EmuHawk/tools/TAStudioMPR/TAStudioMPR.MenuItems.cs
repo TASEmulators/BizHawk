@@ -654,7 +654,6 @@ namespace BizHawk.Client.EmuHawk
 				if (TasViews[i].Focused && TasViews[i].AnyRowsSelected) //moving out of for loop to only have the currently focused tasview cloned
 				{
 					int startOffset = 1; //starts with "|"
-										 //for (int k = i; k >= 0; k--)
 					for (int k = 0; k < i; k++) //add up inputs to get start string offset
 					{
 						startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
@@ -703,7 +702,6 @@ namespace BizHawk.Client.EmuHawk
 			if (CurrentTasView.AnyRowsSelected)
 			{
 				int startOffset = 1; //starts with "|"
-									 //for (int k = i; k >= 0; k--)
 				for (int k = 0; k < tasViewIndex; k++) //add up inputs to get start string offset
 				{
 					startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
@@ -734,6 +732,14 @@ namespace BizHawk.Client.EmuHawk
 
 			if (CurrentTasView.AnyRowsSelected)
 			{
+				int startOffset = 1; //starts with "|" 
+				for (int k = 0; k < tasViewIndex; k++) //add up inputs to get start string offset
+				{
+					startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+					startOffset += 1; //add 1 for pipe
+				}
+				int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
+
 				var insertionFrame = CurrentTasView.SelectionStartIndex ?? 0;
 				using var framesPrompt = new FramesPrompt();
 				if (framesPrompt.ShowDialogOnScreen().IsOk())
@@ -745,23 +751,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TruncateMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (InputRoll tasView in TasViews)
+			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
+
+			if (CurrentTasView.AnyRowsSelected)
 			{
-				if (tasView.Focused && tasView.AnyRowsSelected)
+				int startOffset = 1; //starts with "|"									 
+				for (int k = 0; k < tasViewIndex; k++) //add up inputs to get start string offset
 				{
-					var rollbackFrame = tasView.SelectionEndIndex ?? 0;
-					var needsToRollback = tasView.SelectionStartIndex < Emulator.Frame;
-
-					CurrentTasMovie.Truncate(rollbackFrame);
-					MarkerControlMPR.MarkerInputRoll.TruncateSelection(CurrentTasMovie.Markers.Count - 1);
-
-					if (needsToRollback)
-					{
-						GoToFrame(rollbackFrame);
-					}
-
-					FullRefresh();
+					startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+					startOffset += 1; //add 1 for pipe
 				}
+				int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
+
+				var rollbackFrame = CurrentTasView.SelectionEndIndex ?? 0;
+				var needsToRollback = CurrentTasView.SelectionStartIndex < Emulator.Frame;
+
+				CurrentTasMovie.TruncateFramesMPR(rollbackFrame,startOffset, currentControlLength);
+				MarkerControlMPR.MarkerInputRoll.TruncateSelection(CurrentTasMovie.Markers.Count - 1);
+
+				if (needsToRollback)
+				{
+					GoToFrame(rollbackFrame);
+				}
+
+				FullRefresh();
 			}
 		}
 

@@ -64,6 +64,63 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void TruncateFramesMPR(int frame, int startOffset, int currentControlLength)
+		{
+			bool endBatch = ChangeLog.BeginNewBatch($"Truncate Movie: {frame}", true);
+			ChangeLog.AddGeneralUndo(frame, InputLogLength - 1);
+
+			char[] curFrame;
+
+			//if (frame < Log.Count - 1)
+			//{
+			//	Changes = true;
+			//}
+
+			if (frame < Log.Count)
+			{
+				//clear inputs for that controller until end of movie.
+				for (int i = frame; i < Log.Count; i++)
+				{
+					curFrame = Log[i].ToCharArray();
+					for (int j = startOffset; j < startOffset + currentControlLength; j++)
+					{
+						curFrame[j] = '.';
+					}
+					SetFrameAt(i, new string(curFrame));
+				}
+
+
+				//Find last row with empty input
+				//Then remove Range then
+				int lastEmptyFrame = Log.Count - 1;
+				string noInput = Bk2LogEntryGenerator.EmptyEntry(Session.MovieController);
+				for (int i = Log.Count - 1; i >= frame; i--)
+				{
+					if(noInput == Log[i])
+					{
+						lastEmptyFrame = i;
+					}
+				}
+				//truncate if there is empty input across all controllers past the frame selected for truncation
+				if (lastEmptyFrame >= frame)
+				{
+					Log.RemoveRange(lastEmptyFrame, Log.Count - lastEmptyFrame);
+				}
+				Changes = true;
+			}
+			
+			LagLog.RemoveFrom(frame);
+			TasStateManager.InvalidateAfter(frame);
+			GreenzoneInvalidated(frame);
+			Markers.TruncateAt(frame);
+
+			ChangeLog.SetGeneralRedo();
+			if (endBatch)
+			{
+				ChangeLog.EndBatch();
+			}
+		}
+
 		public override void PokeFrame(int frame, IController source)
 		{
 			ChangeLog.AddGeneralUndo(frame, frame, $"Set Frame At: {frame}");
@@ -495,32 +552,31 @@ namespace BizHawk.Client.Common
 			List<string> lines = new List<string>();
 			string framePrevious = string.Empty;
 			char[] frameNext = Log[frame].ToCharArray();
-	
+
 			for (int i = 0; i < addNewCount; i++)
 			{
-					frameNext = Log[i + frame].ToCharArray();
-					for (int j = startOffset; j < startOffset + currentControlLength; j++)
-					{
-						frameNext[j] = '.';
-					}
-					lines.Add(new string(frameNext));
+				frameNext = Log[i + frame].ToCharArray();
+				for (int j = startOffset; j < startOffset + currentControlLength; j++)
+				{
+					frameNext[j] = '.';
+				}
+				lines.Add(new string(frameNext));
 			}
-	
+
 			for (int i = frame; i < Log.Count; i++)
 			{
-					if (i + addNewCount >= Log.Count)
-					{				
-
+				if (i + addNewCount >= Log.Count)
+				{
 					break;
-					}
-					//takes characters from the controller and shifts then, leaving other controllers alone.
-					framePrevious = Log[i];
-					frameNext = Log[i + addNewCount].ToCharArray();
-					for (int j = startOffset; j < startOffset + currentControlLength; j++)
-					{
-						frameNext[j] = framePrevious[j];
-					}
-					lines.Add(new string(frameNext));						
+				}
+				//takes characters from the controller and shifts then, leaving other controllers alone.
+				framePrevious = Log[i];
+				frameNext = Log[i + addNewCount].ToCharArray();
+				for (int j = startOffset; j < startOffset + currentControlLength; j++)
+				{
+					frameNext[j] = framePrevious[j];
+				}
+				lines.Add(new string(frameNext));
 
 			}
 			Log.RemoveRange(frame, Log.Count - frame);
