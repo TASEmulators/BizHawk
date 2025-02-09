@@ -31,12 +31,6 @@ namespace BizHawk.Client.EmuHawk
 			Load, Update, Text, Remove, None
 		}
 
-		public Action<int> LoadedCallback { get; set; }
-
-		public Action<int> SavedCallback { get; set; }
-
-		public Action<int> RemovedCallback { get; set; }
-
 		public TAStudio Tastudio { get; set; }
 
 		public IDialogController DialogController => Tastudio.MainForm;
@@ -227,7 +221,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AddBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Branch();
-			SavedCallback?.Invoke(Branches.Count - 1);
+			Tastudio.BranchSavedCallback?.Invoke(Branches.Count - 1);
 			Tastudio.MainForm.AddOnScreenMessage($"Added branch {Branches.Current + 1}");
 		}
 
@@ -235,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Branch();
 			EditBranchTextPopUp(Branches.Current);
-			SavedCallback?.Invoke(Branches.Count - 1);
+			Tastudio.BranchSavedCallback?.Invoke(Branches.Count - 1);
 			Tastudio.MainForm.AddOnScreenMessage($"Added branch {Branches.Current + 1}");
 		}
 
@@ -258,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!BranchView.AnyRowsSelected) return false; // why'd we do all that then
 
 			var success = LoadSelectedBranch();
-			LoadedCallback?.Invoke(BranchView.FirstSelectedRowIndex);
+			Tastudio.BranchLoadedCallback?.Invoke(BranchView.FirstSelectedRowIndex);
 			return success;
 		}
 
@@ -285,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 			Branches.Replace(SelectedBranch, branch);
 			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, new BufferedStatable(branch.CoreData));
 			Tastudio.RefreshDialog();
-			SavedCallback?.Invoke(Branches.Current);
+			Tastudio.BranchSavedCallback?.Invoke(Branches.Current);
 			Tastudio.MainForm.AddOnScreenMessage($"Saved branch {Branches.Current + 1}");
 		}
 
@@ -330,7 +324,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_backupBranch =  branches[index].Clone();
 				Branches.Remove(branches[index]);
-				RemovedCallback?.Invoke(index);
+				Tastudio.BranchRemovedCallback?.Invoke(index);
 				Tastudio.MainForm.AddOnScreenMessage($"Removed branch {index + 1}");
 
 				if (index == Branches.Current)
@@ -358,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_branchUndo == BranchUndo.Load)
 			{
 				LoadBranch(_backupBranch);
-				LoadedCallback?.Invoke(Branches.IndexOf(_backupBranch));
+				Tastudio.BranchLoadedCallback?.Invoke(Branches.IndexOf(_backupBranch));
 				Tastudio.MainForm.AddOnScreenMessage("Branch Load canceled");
 			}
 			else if (_branchUndo == BranchUndo.Update)
@@ -367,7 +361,7 @@ namespace BizHawk.Client.EmuHawk
 				if (branch != null)
 				{
 					Branches.Replace(branch, _backupBranch);
-					SavedCallback?.Invoke(Branches.IndexOf(_backupBranch));
+					Tastudio.BranchSavedCallback?.Invoke(Branches.IndexOf(_backupBranch));
 					Tastudio.MainForm.AddOnScreenMessage("Branch Update canceled");
 				}
 			}
@@ -385,7 +379,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Branches.Add(_backupBranch);
 				BranchView.RowCount = Branches.Count;
-				SavedCallback?.Invoke(Branches.IndexOf(_backupBranch));
+				Tastudio.BranchSavedCallback?.Invoke(Branches.IndexOf(_backupBranch));
 				Tastudio.MainForm.AddOnScreenMessage("Branch Removal canceled");
 			}
 
