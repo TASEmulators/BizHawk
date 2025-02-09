@@ -127,7 +127,6 @@ namespace BizHawk.Client.Common
 						var frame = framesToDelete[f];
 						if (frame - 1 != prevFrame)
 						{
-							f--;
 							break;
 						}
 						prevFrame = frame;
