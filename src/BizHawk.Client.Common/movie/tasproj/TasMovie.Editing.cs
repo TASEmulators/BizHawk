@@ -495,44 +495,21 @@ namespace BizHawk.Client.Common
 			List<string> lines = new List<string>();
 			string framePrevious = string.Empty;
 			char[] frameNext = Log[frame].ToCharArray();
-
-			//initial empty frames
-			//for (int i=0; i < addNewCount; i++)
-			//{
-			//	//inserted empty controller first
-			//	for (int j = startOffset; j < startOffset + currentControlLength; j++)
-			//	{
-			//		frameNext[j] = '.';
-			//	}
-			//	lines.Add(new string(frameNext));
-			//}				
-			
-			//this loops for number of empty frames to be added
-			//int tempEmptyFramesCount = addNewCount;	
+	
 			for (int i = 0; i < addNewCount; i++)
 			{
-				//if (tempEmptyFramesCount > 0)
-				//{
 					frameNext = Log[i + frame].ToCharArray();
 					for (int j = startOffset; j < startOffset + currentControlLength; j++)
 					{
 						frameNext[j] = '.';
 					}
 					lines.Add(new string(frameNext));
-					//tempEmptyFramesCount--;
-				//}
 			}
-
 	
 			for (int i = frame; i < Log.Count; i++)
 			{
-				//do not assign characters from one frame to another if same
-						
-				//else
-				//{
 					if (i + addNewCount >= Log.Count)
-					{
-					
+					{				
 
 					break;
 					}
@@ -543,15 +520,11 @@ namespace BizHawk.Client.Common
 					{
 						frameNext[j] = framePrevious[j];
 					}
-					lines.Add(new string(frameNext));
-				//}
-				
+					lines.Add(new string(frameNext));						
 
 			}
-			//Log.RemoveRange(frame, Log.Count - frame - 1);
 			Log.RemoveRange(frame, Log.Count - frame);
 			Log.InsertRange(frame, lines);
-			//Log.InsertRange(frame, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
 
 			ShiftBindedMarkers(frame, addNewCount);
 
