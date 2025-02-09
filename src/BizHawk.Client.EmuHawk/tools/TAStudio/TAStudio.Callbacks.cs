@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		public Action BranchLoadUndoneCallback { get; set; }
 		public Action<int> BranchUpdateUndoneCallback { get; set; }
 		public Action<int> BranchRemoveUndoneCallback { get; set; }
+		public Action<int, int> BranchesReorderedCallback { get; set; }
 
 		private void GreenzoneInvalidated(int index)
 		{
@@ -50,6 +51,11 @@ namespace BizHawk.Client.EmuHawk
 		private void BranchRemoveUndone(int index)
 		{
 			BranchRemoveUndoneCallback?.Invoke(index);
+		}
+
+		private void BranchesReordered(int oldIndex, int newIndex)
+		{
+			BranchesReorderedCallback?.Invoke(oldIndex, newIndex);
 		}
 	}
 }

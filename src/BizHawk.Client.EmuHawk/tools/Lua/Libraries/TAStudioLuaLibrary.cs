@@ -631,5 +631,18 @@ namespace BizHawk.Client.EmuHawk
 				};
 			}
 		}
+
+		[LuaMethodExample("function Reordered(oldindex, newindex)\r\n\tconsole.log(\"You reordered branches from \"..oldIndex..\" to \"..newIndex)\r\nend\r\ntastudio.onbranchesreorder(Reordered)")]
+		[LuaMethod("onbranchesreorder", "called whenever branches are reordered in the branches box. luaf must be a function that takes two integers for the branch indices as parameters")]
+		public void OnBranchesReorder(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.BranchesReorderedCallback = (oldIndex, newIndex) =>
+				{
+					luaf.Call(oldIndex, newIndex);
+				};
+			}
+		}
 	}
 }

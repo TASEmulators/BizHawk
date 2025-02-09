@@ -43,6 +43,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public Action<int> RemoveUndoneCallback { get; set; }
 
+		public Action<int, int> ReorderedCallback { get; set; }
+
 		public TAStudio Tastudio { get; set; }
 
 		public IDialogController DialogController => Tastudio.MainForm;
@@ -641,6 +643,7 @@ namespace BizHawk.Client.EmuHawk
 					: Branches[Branches.Current].Uuid;
 
 				Branches.Swap(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
+				ReorderedCallback?.Invoke(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
 				int newIndex = Branches.IndexOfHash(guid);
 				Branches.Current = newIndex;
 				Select(newIndex, true);
