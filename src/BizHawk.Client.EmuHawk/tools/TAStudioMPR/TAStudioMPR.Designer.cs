@@ -936,7 +936,7 @@ namespace BizHawk.Client.EmuHawk
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(545, 17);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(821, 17);
             this.toolStripStatusLabel2.Spring = true;
             // 
             // SplicerStatusLabel
@@ -1158,8 +1158,8 @@ namespace BizHawk.Client.EmuHawk
             // 
             this.MainVertialSplit.Panel2.Controls.Add(this.TasPlaybackBoxMPR);
             this.MainVertialSplit.Panel2.Controls.Add(this.BranchesMarkersSplit);
-            this.MainVertialSplit.Size = new System.Drawing.Size(783, 590);
-            this.MainVertialSplit.SplitterDistance = 571;
+            this.MainVertialSplit.Size = new System.Drawing.Size(1059, 590);
+            this.MainVertialSplit.SplitterDistance = 847;
             this.MainVertialSplit.TabIndex = 10;
             this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVerticalSplit_SplitterMoved);
             // 
@@ -1168,7 +1168,7 @@ namespace BizHawk.Client.EmuHawk
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(785, 638);
+            this.ClientSize = new System.Drawing.Size(1061, 638);
             this.Controls.Add(this.MainVertialSplit);
             this.Controls.Add(this.TasStatusStrip);
             this.Controls.Add(this.TASMenu);

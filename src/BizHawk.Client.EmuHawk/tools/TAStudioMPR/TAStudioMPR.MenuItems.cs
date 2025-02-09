@@ -1417,17 +1417,17 @@ namespace BizHawk.Client.EmuHawk
 					InsertFrameContextMenuItem.Enabled =
 					InsertNumFramesContextMenuItem.Enabled =
 					TruncateContextMenuItem.Enabled =
-					TasView1.AnyRowsSelected;
+					tasView.AnyRowsSelected;
 
 					pasteToolStripMenuItem.Enabled =
 						pasteInsertToolStripMenuItem.Enabled =
 						(Clipboard.GetDataObject()?.GetDataPresent(DataFormats.StringFormat) ?? false)
-						&& TasView1.AnyRowsSelected;
+						&& tasView.AnyRowsSelected;
 
-					var selectionIsSingleRow = TasView1.SelectedRows.CountIsExactly(1);
+					var selectionIsSingleRow = tasView.SelectedRows.CountIsExactly(1);
 					StartNewProjectFromNowMenuItem.Visible =
 						selectionIsSingleRow
-						&& TasView1.IsRowSelected(Emulator.Frame)
+						&& tasView.IsRowSelected(Emulator.Frame)
 						&& !CurrentTasMovie.StartsFromSaveRam;
 
 					StartANewProjectFromSaveRamMenuItem.Visible =
@@ -1436,9 +1436,9 @@ namespace BizHawk.Client.EmuHawk
 						&& !CurrentTasMovie.StartsFromSavestate;
 
 					StartFromNowSeparator.Visible = StartNewProjectFromNowMenuItem.Visible || StartANewProjectFromSaveRamMenuItem.Visible;
-					RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView1.IsRowSelected(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
+					RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => tasView.IsRowSelected(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
 					CancelSeekContextMenuItem.Enabled = MainForm.PauseOnFrame.HasValue;
-					BranchContextMenuItem.Visible = TasView1.CurrentCell?.RowIndex == Emulator.Frame;
+					BranchContextMenuItem.Visible = tasView.CurrentCell?.RowIndex == Emulator.Frame;
 
 					SelectBetweenMarkersContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Sel. bet. Markers"];
 					ClearContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"];
