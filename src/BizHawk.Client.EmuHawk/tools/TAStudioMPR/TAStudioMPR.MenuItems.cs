@@ -562,7 +562,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
 
-			if (CurrentTasView.AnyRowsSelected) //moving out of for loop to only have the currently focused tasview cloned
+			if (CurrentTasView.AnyRowsSelected)
 			{
 				int startOffset = 1; //starts with "|"
 				for (int k = 0; k < tasViewIndex; k++) //add up inputs to get start string offset
@@ -596,44 +596,42 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			for (int i = 0; i < TasViews.Count; i++)
+			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
+
+			if (CurrentTasView.AnyRowsSelected)
 			{
-				if (TasViews[i].Focused && TasViews[i].AnyRowsSelected) //moving out of for loop to only have the currently focused tasview cloned
+				int startOffset = 1; //starts with "|"
+				for (int k = 0; k < tasViewIndex; k++) //add up inputs to get start string offset
 				{
-
-					int startOffset = 1; //starts with "|"
-					for (int k = 0; k < i; k++) //add up inputs to get start string offset
-					{
-						startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
-						startOffset += 1; //add 1 for pipe
-					}
-					int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[i].Count;
-
-
-					var selectionStart = TasViews[i].SelectionStartIndex;
-					var needsToRollback = selectionStart < Emulator.Frame;
-					var rollBackFrame = selectionStart ?? 0;
-					if (rollBackFrame >= CurrentTasMovie.InputLogLength)
-					{
-						// Cannot delete non-existent frames
-						FullRefresh();
-						return;
-					}
-
-					CurrentTasMovie.RemoveFramesMPR(TasViews[i].SelectedRows.ToArray(), startOffset, currentControlLength);
-					SetTasViewRowCount();
-					SetSplicer();
-
-					if (needsToRollback)
-					{
-						GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-						DoAutoRestore();
-					}
-
-					FullRefresh();
+					startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+					startOffset += 1; //add 1 for pipe
 				}
+				int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
+
+				var selectionStart = CurrentTasView.SelectionStartIndex;
+				var needsToRollback = selectionStart < Emulator.Frame;
+				var rollBackFrame = selectionStart ?? 0;
+				if (rollBackFrame >= CurrentTasMovie.InputLogLength)
+				{
+					// Cannot delete non-existent frames
+					FullRefresh();
+					return;
+				}
+
+				CurrentTasMovie.RemoveFramesMPR(CurrentTasView.SelectedRows.ToArray(), startOffset, currentControlLength);
+				SetTasViewRowCount();
+				SetSplicer();
+
+				if (needsToRollback)
+				{
+					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
+					DoAutoRestore();
+				}
+
+				FullRefresh();
 			}
 		}
+
 
 		private void CloneFramesMenuItem_Click(object sender, EventArgs e)
 		{
@@ -700,48 +698,47 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			for (int i = 0; i < TasViews.Count; i++)
+			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
+
+			if (CurrentTasView.AnyRowsSelected)
 			{
-				if (TasViews[i].Focused && TasViews[i].AnyRowsSelected) //moving out of for loop to only have the currently focused tasview cloned
+				int startOffset = 1; //starts with "|"
+									 //for (int k = i; k >= 0; k--)
+				for (int k = 0; k < tasViewIndex; k++) //add up inputs to get start string offset
 				{
-					int startOffset = 1; //starts with "|"
-										 //for (int k = i; k >= 0; k--)
-					for (int k = 0; k < i; k++) //add up inputs to get start string offset
-					{
-						startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
-						startOffset += 1; //add 1 for pipe
-					}
-					int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[i].Count;
-
-					var selectionStart = TasViews[i].SelectionStartIndex;
-					var insertionFrame = selectionStart ?? 0;
-					var needsToRollback = selectionStart < Emulator.Frame;
-
-					CurrentTasMovie.InsertEmptyFrameMPR(insertionFrame, startOffset, currentControlLength);
-
-					if (needsToRollback)
-					{
-						GoToLastEmulatedFrameIfNecessary(insertionFrame);
-						DoAutoRestore();
-					}
-
-					FullRefresh();
+					startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+					startOffset += 1; //add 1 for pipe
 				}
+				int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
+
+				var selectionStart = CurrentTasView.SelectionStartIndex;
+				var insertionFrame = selectionStart ?? 0;
+				var needsToRollback = selectionStart < Emulator.Frame;
+
+				CurrentTasMovie.InsertEmptyFrameMPR(insertionFrame, startOffset, currentControlLength);
+
+				if (needsToRollback)
+				{
+					GoToLastEmulatedFrameIfNecessary(insertionFrame);
+					DoAutoRestore();
+				}
+
+				FullRefresh();
+
 			}
 
 		}
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (InputRoll tasView in TasViews)
+			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
+
+			if (CurrentTasView.AnyRowsSelected)
 			{
-				if (tasView.Focused && tasView.AnyRowsSelected)
+				var insertionFrame = CurrentTasView.SelectionStartIndex ?? 0;
+				using var framesPrompt = new FramesPrompt();
+				if (framesPrompt.ShowDialogOnScreen().IsOk())
 				{
-					var insertionFrame = TasView1.SelectionStartIndex ?? 0;
-					using var framesPrompt = new FramesPrompt();
-					if (framesPrompt.ShowDialogOnScreen().IsOk())
-					{
-						InsertNumFrames(insertionFrame, framesPrompt.Frames);
-					}
+					InsertNumFramesMPR(insertionFrame, framesPrompt.Frames);
 				}
 			}
 		}

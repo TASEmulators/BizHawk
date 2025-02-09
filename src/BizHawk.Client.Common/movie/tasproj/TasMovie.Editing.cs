@@ -482,6 +482,67 @@ namespace BizHawk.Client.Common
 
 			ChangeLog.AddInsertFrames(frame, count, $"Insert {count} empty frame(s) at {frame}");
 		}
+		
+		//For multiple Frame Inputs. Complex enough to have a separate func and make it faster.
+		public void InsertEmptyFramesMPR(int frame, int startOffset, int currentControlLength, int count = 1)
+		{
+			frame = Math.Min(frame, Log.Count);
+
+			//insert it at end since the inputs have to shift
+			Log.InsertRange(Log.Count, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
+
+			//StringBuilder tempLog = new StringBuilder();
+			List<string> lines = new List<string>();
+			string framePrevious = string.Empty;
+			char[] frameNext = Log[frame].ToCharArray();
+
+
+			//inserted empty controller first
+			for (int j = startOffset; j < startOffset + currentControlLength; j++)
+			{
+				frameNext[j] = '.';
+			}
+
+			lines.Add(new string(frameNext));
+
+			for (int i = frame; i < Log.Count; i++)
+			{
+				//do not assign characters from one frame to another if same
+				{
+					if (i + 1 == Log.Count)
+					{
+						lines.Add(Log[i]);
+						//continue;
+					}
+					//else if (Log[i].Substring(startOffset, currentControlLength) == Log[i + 1].Substring(startOffset, currentControlLength))
+					//{
+					//	lines.Add(Log[i]);
+					//}
+					else
+					{
+						//takes characters from the controller and shifts then, leaving other controllers alone.
+						framePrevious = Log[i];
+						frameNext = Log[i + 1].ToCharArray();
+						for (int j = startOffset; j < startOffset + currentControlLength; j++)
+						{
+							frameNext[j] = framePrevious[j];
+						}
+						lines.Add(new string(frameNext));
+					}
+				}
+			}
+			Log.RemoveRange(frame, Log.Count - frame - 1);
+			Log.InsertRange(frame, lines);
+			//Log.InsertRange(frame, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
+
+			ShiftBindedMarkers(frame, count);
+
+			Changes = true;
+			InvalidateAfter(frame);
+
+			ChangeLog.AddInsertFrames(frame, count, $"Insert {count} empty frame(s) at {frame}");
+		}
+
 
 		private void ExtendMovieForEdit(int numFrames)
 		{

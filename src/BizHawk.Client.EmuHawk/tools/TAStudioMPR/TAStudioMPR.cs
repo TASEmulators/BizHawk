@@ -278,7 +278,7 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 				return;
 			}
-			
+
 			if (TasViews[1].Rotatable)
 			{
 				RightClickMenu.Items.AddRange(TasViews[1].GenerateContextMenuItems()
@@ -1221,27 +1221,61 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void InsertNumFrames(int insertionFrame, int numberOfFrames)
+		//public void InsertNumFrames(int insertionFrame, int numberOfFrames)
+		//{
+		//	foreach (InputRoll tasView in TasViews)
+		//	{
+		//		if (tasView.Focused && tasView.AnyRowsSelected)
+		//		{
+		//			if (insertionFrame <= CurrentTasMovie.InputLogLength)
+		//			{
+		//				var needsToRollback = tasView.SelectionStartIndex < Emulator.Frame;
+
+		//				CurrentTasMovie.InsertEmptyFrame(insertionFrame, numberOfFrames);
+
+		//				if (needsToRollback)
+		//				{
+		//					GoToLastEmulatedFrameIfNecessary(insertionFrame);
+		//					DoAutoRestore();
+		//				}
+		//				else
+		//				{
+		//					RefreshForInputChange(insertionFrame);
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
+
+		public void InsertNumFramesMPR(int insertionFrame, int numberOfFrames)
 		{
-			foreach (InputRoll tasView in TasViews)
+			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
+
+			if (CurrentTasView.AnyRowsSelected)
 			{
-				if (tasView.Focused && tasView.AnyRowsSelected)
+				int startOffset = 1; //starts with "|"
+									 //for (int k = i; k >= 0; k--)
+				for (int k = 0; k < tasViewIndex; k++) //add up inputs to get start string offset
 				{
-					if (insertionFrame <= CurrentTasMovie.InputLogLength)
+					startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+					startOffset += 1; //add 1 for pipe
+				}
+				int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
+
+				if (insertionFrame <= CurrentTasMovie.InputLogLength)
+				{
+					var needsToRollback = CurrentTasView.SelectionStartIndex < Emulator.Frame;
+
+					CurrentTasMovie.InsertEmptyFramesMPR(insertionFrame, startOffset, currentControlLength, numberOfFrames);
+
+					if (needsToRollback)
 					{
-						var needsToRollback = tasView.SelectionStartIndex < Emulator.Frame;
-
-						CurrentTasMovie.InsertEmptyFrame(insertionFrame, numberOfFrames);
-
-						if (needsToRollback)
-						{
-							GoToLastEmulatedFrameIfNecessary(insertionFrame);
-							DoAutoRestore();
-						}
-						else
-						{
-							RefreshForInputChange(insertionFrame);
-						}
+						GoToLastEmulatedFrameIfNecessary(insertionFrame);
+						DoAutoRestore();
+					}
+					else
+					{
+						RefreshForInputChange(insertionFrame);
 					}
 				}
 			}
