@@ -179,55 +179,6 @@ namespace BizHawk.Client.Common
 						prevFrame = frame;
 					}
 
-
-					////StringBuilder tempLog = new StringBuilder();
-					//List<string> lines = new List<string>();
-					//char[] framePrevious = Log[prevFrame].ToCharArray();
-					//string frameNext = string.Empty;
-
-
-					//for (int i = startFrame; i < Log.Count; i++)
-					//{
-					//	//do not assign characters from one frame to another if same
-
-					//	if (i + 1 == Log.Count)
-					//	{
-					//		//add an blank section for that frame of the controller
-					//		framePrevious = Log[i].ToCharArray();
-					//		for (int j = startOffset; j < startOffset + currentControlLength; j++)
-					//		{
-					//			framePrevious[j] = '.';
-					//		}
-					//		lines.Add(new string(framePrevious));
-					//	}
-					//	//if (i + 1 == Log.Count)
-					//	//{
-					//	//	lines.Add(Log[i]);
-					//	//	//continue;
-					//	//}
-					//	//else if (Log[i].Substring(startOffset, currentControlLength) == Log[i + 1].Substring(startOffset, currentControlLength))
-					//	//{
-					//	//	lines.Add(Log[i]);
-					//	//}
-					//	else
-					//	{
-					//		//takes characters from the controller and shifts then, leaving other controllers alone.
-					//		framePrevious = Log[i].ToCharArray();
-					//		frameNext = Log[i + 1];
-					//		for (int j = startOffset; j < startOffset + currentControlLength; j++)
-					//		{
-					//			framePrevious[j] = frameNext[j];
-					//		}
-					//		lines.Add(new string(framePrevious));
-					//	}
-
-					//}
-					//replace from inital delete frame to end
-					//Log.RemoveRange(startFrame, Log.Count - startFrame); //check -1
-					//Log.InsertRange(startFrame, lines);
-
-
-
 					// Each block is logged as an individual ChangeLog entry
 					//RemoveFrames(startFrame - numDeleted, prevFrame + 1 - numDeleted);
 
@@ -280,7 +231,7 @@ namespace BizHawk.Client.Common
 			int removeNum = removeUpTo - removeStart;
 
 			//so this is a bit more complicated.  Here it will remove a range.
-			//if two frames to be deleted then need to get the chracters from the row two down from the startFrame.
+			//if two frames to be deleted then need to get the characters from the row two down from the startFrame.
 			//if beyond the range of the current Log.Count then just use empty inputs.
 			for (int i = removeStart; i < Log.Count; i++)
 			{
@@ -289,12 +240,6 @@ namespace BizHawk.Client.Common
 				if (i + removeNum >= Log.Count)
 				{
 					//add an blank section for that frame of the controller
-					//framePrevious = Log[i].ToCharArray();
-					//for (int j = startOffset; j < startOffset + currentControlLength; j++)
-					//{
-					//	framePrevious[j] = '.';
-					//}
-					//lines.Add(new string(framePrevious));
 					lines.Add(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController));
 				}				
 				else
