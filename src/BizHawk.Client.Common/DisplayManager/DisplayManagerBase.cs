@@ -156,27 +156,26 @@ namespace BizHawk.Client.Common
 		// rendering resources:
 		protected readonly IGL _gl;
 
-		private float _scale = 1;
 		private StringRenderer _theOneFont;
 		private StringRenderer Font
 		{
 			get
 			{
-				if (_theOneFont is not null) return _theOneFont;
-
-				float scale = GetGraphicsControlDpi() / 96f;
+				double scale = GlobalConfig.ScaleOSDWithSystemScale ? (double)GetGraphicsControlDpi() / DEFAULT_DPI : 1;
 				int fontSize = scale switch
 				{
-					< 1.25f => 16,
-					< 1.5f => 20,
+					< 1.25 => 16,
+					< 1.5 => 20,
 					< 2 => 25,
 					_ => 32,
 				};
-				_scale = fontSize / 16f;
 
-				using var fontInfo = ReflectionCache.EmbeddedResourceStream($"Resources.courier{fontSize}px.fnt");
-				using var tex = ReflectionCache.EmbeddedResourceStream($"Resources.courier{fontSize}px_0.png");
-				_theOneFont = new(_gl, fontInfo, tex);
+				if (_theOneFont?.LineHeight != fontSize)
+				{
+					using var fontInfo = ReflectionCache.EmbeddedResourceStream($"Resources.courier{fontSize}px.fnt");
+					using var tex = ReflectionCache.EmbeddedResourceStream($"Resources.courier{fontSize}px_0.png");
+					_theOneFont = new(_gl, fontInfo, tex);
+				}
 
 				return _theOneFont;
 			}
@@ -297,7 +296,7 @@ namespace BizHawk.Client.Common
 
 			var fPresent = new FinalPresentation(chainOutSize);
 			var fInput = new SourceImage(chainInSize);
-			var fOSD = new OSD(includeOSD, OSD, Font, _scale);
+			var fOSD = new OSD(includeOSD, OSD, Font, Font.LineHeight / 16f);
 
 			var chain = new FilterProgram();
 

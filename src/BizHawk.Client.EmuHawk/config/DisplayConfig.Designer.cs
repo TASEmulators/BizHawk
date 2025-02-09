@@ -103,6 +103,8 @@
 			this.cbStatusBarFullscreen = new System.Windows.Forms.CheckBox();
 			this.cbMenuFullscreen = new System.Windows.Forms.CheckBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.cbMainFormStayOnTop = new System.Windows.Forms.CheckBox();
+			this.cbMainFormSaveWindowPosition = new System.Windows.Forms.CheckBox();
 			this.lblFrameTypeWindowed = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.cbStatusBarWindowed = new System.Windows.Forms.CheckBox();
 			this.label9 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -111,8 +113,7 @@
 			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.cbMainFormSaveWindowPosition = new System.Windows.Forms.CheckBox();
-			this.cbMainFormStayOnTop = new System.Windows.Forms.CheckBox();
+			this.cbScaleOSD = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
@@ -211,7 +212,7 @@
 			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
 			this.tbScanlineIntensity.Maximum = 256;
 			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
-			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
+			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 45);
 			this.tbScanlineIntensity.TabIndex = 3;
 			this.tbScanlineIntensity.TickFrequency = 32;
 			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
@@ -466,6 +467,7 @@
 			// 
 			// tpAR
 			// 
+			this.tpAR.Controls.Add(this.cbScaleOSD);
 			this.tpAR.Controls.Add(this.groupBox6);
 			this.tpAR.Controls.Add(this.btnDefaults);
 			this.tpAR.Controls.Add(this.cbAutoPrescale);
@@ -650,7 +652,9 @@
 			// 
 			this.label13.Location = new System.Drawing.Point(45, 60);
 			this.label13.Name = "label13";
-			this.label13.Text = resources.GetString("label13.Text");
+			this.label13.Text = "Allow Tearing: Allows fullscreen to tear when VSync is disabled.\nThis is required" +
+    " for variable frame rate (VFR) monitors to properly work.\nFast forward performan" +
+    "ce might decrease with tearing allowed.";
 			this.label13.Click += new System.EventHandler(this.Label13_Click);
 			this.label13.DoubleClick += new System.EventHandler(this.Label13_Click);
 			// 
@@ -667,7 +671,8 @@
 			// 
 			this.label8.Location = new System.Drawing.Point(21, 30);
 			this.label8.Name = "label8";
-			this.label8.Text = " • Best compatibility\r\n • May have decreased performance for OpenGL-based cores (NDS, 3DS)\r\n";
+			this.label8.Text = " • Best compatibility\r\n • May have decreased performance for OpenGL-based cores (" +
+    "NDS, 3DS)\r\n";
 			// 
 			// rbD3D11
 			// 
@@ -675,7 +680,7 @@
 			this.rbD3D11.Checked = true;
 			this.rbD3D11.Location = new System.Drawing.Point(6, 10);
 			this.rbD3D11.Name = "rbD3D11";
-			this.rbD3D11.Size = new System.Drawing.Size(73, 17);
+			this.rbD3D11.Size = new System.Drawing.Size(79, 17);
 			this.rbD3D11.TabIndex = 19;
 			this.rbD3D11.TabStop = true;
 			this.rbD3D11.Text = "Direct3D11";
@@ -879,6 +884,26 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Windowed";
 			// 
+			// cbMainFormStayOnTop
+			// 
+			this.cbMainFormStayOnTop.AutoSize = true;
+			this.cbMainFormStayOnTop.Location = new System.Drawing.Point(9, 174);
+			this.cbMainFormStayOnTop.Name = "cbMainFormStayOnTop";
+			this.cbMainFormStayOnTop.Size = new System.Drawing.Size(84, 17);
+			this.cbMainFormStayOnTop.TabIndex = 27;
+			this.cbMainFormStayOnTop.Text = "Stay on Top";
+			this.cbMainFormStayOnTop.UseVisualStyleBackColor = true;
+			// 
+			// cbMainFormSaveWindowPosition
+			// 
+			this.cbMainFormSaveWindowPosition.AutoSize = true;
+			this.cbMainFormSaveWindowPosition.Location = new System.Drawing.Point(9, 150);
+			this.cbMainFormSaveWindowPosition.Name = "cbMainFormSaveWindowPosition";
+			this.cbMainFormSaveWindowPosition.Size = new System.Drawing.Size(133, 17);
+			this.cbMainFormSaveWindowPosition.TabIndex = 26;
+			this.cbMainFormSaveWindowPosition.Text = "Save Window Position";
+			this.cbMainFormSaveWindowPosition.UseVisualStyleBackColor = true;
+			// 
 			// lblFrameTypeWindowed
 			// 
 			this.lblFrameTypeWindowed.Location = new System.Drawing.Point(51, 17);
@@ -917,7 +942,7 @@
 			this.trackbarFrameSizeWindowed.Location = new System.Drawing.Point(6, 33);
 			this.trackbarFrameSizeWindowed.Maximum = 2;
 			this.trackbarFrameSizeWindowed.Name = "trackbarFrameSizeWindowed";
-			this.trackbarFrameSizeWindowed.Size = new System.Drawing.Size(99, 42);
+			this.trackbarFrameSizeWindowed.Size = new System.Drawing.Size(99, 45);
 			this.trackbarFrameSizeWindowed.TabIndex = 21;
 			this.trackbarFrameSizeWindowed.Value = 1;
 			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.TrackBarFrameSizeWindowed_ValueChanged);
@@ -943,27 +968,17 @@
 			this.linkLabel1.Text = "Documentation";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
 			// 
-			// cbMainFormSaveWindowPosition
+			// cbScaleOSD
 			// 
-			this.cbMainFormSaveWindowPosition.AutoSize = true;
-			this.cbMainFormSaveWindowPosition.Location = new System.Drawing.Point(9, 150);
-			this.cbMainFormSaveWindowPosition.Name = "cbMainFormSaveWindowPosition";
-			this.cbMainFormSaveWindowPosition.Size = new System.Drawing.Size(133, 17);
-			this.cbMainFormSaveWindowPosition.TabIndex = 26;
-			this.cbMainFormSaveWindowPosition.Text = "Save Window Position";
-			this.cbMainFormSaveWindowPosition.UseVisualStyleBackColor = true;
+			this.cbScaleOSD.AutoSize = true;
+			this.cbScaleOSD.Location = new System.Drawing.Point(218, 262);
+			this.cbScaleOSD.Name = "cbScaleOSD";
+			this.cbScaleOSD.Size = new System.Drawing.Size(184, 17);
+			this.cbScaleOSD.TabIndex = 21;
+			this.cbScaleOSD.Text = "Scale OSD text with system scale";
+			this.cbScaleOSD.UseVisualStyleBackColor = true;
 			// 
-			// cbMainFormStayOnTop
-			// 
-			this.cbMainFormStayOnTop.AutoSize = true;
-			this.cbMainFormStayOnTop.Location = new System.Drawing.Point(9, 174);
-			this.cbMainFormStayOnTop.Name = "cbMainFormStayOnTop";
-			this.cbMainFormStayOnTop.Size = new System.Drawing.Size(84, 17);
-			this.cbMainFormStayOnTop.TabIndex = 27;
-			this.cbMainFormStayOnTop.Text = "Stay on Top";
-			this.cbMainFormStayOnTop.UseVisualStyleBackColor = true;
-			// 
-			// DisplayConfigLite
+			// DisplayConfig
 			// 
 			this.AcceptButton = this.btnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -992,10 +1007,10 @@
 			this.groupBox6.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudPrescale)).EndInit();
 			this.tpDispMethod.ResumeLayout(false);
+			this.tpDispMethod.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.tpMisc.ResumeLayout(false);
-			this.tpMisc.PerformLayout();
 			this.flpStaticWindowTitles.ResumeLayout(false);
 			this.flpStaticWindowTitles.PerformLayout();
 			this.groupBox5.ResumeLayout(false);
@@ -1097,5 +1112,6 @@
 		private WinForms.Controls.LocLabelEx lblStaticWindowTitles;
 		private System.Windows.Forms.CheckBox cbMainFormStayOnTop;
 		private System.Windows.Forms.CheckBox cbMainFormSaveWindowPosition;
+		private System.Windows.Forms.CheckBox cbScaleOSD;
 	}
 }
