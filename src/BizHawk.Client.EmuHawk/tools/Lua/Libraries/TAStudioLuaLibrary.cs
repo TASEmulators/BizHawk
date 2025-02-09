@@ -401,6 +401,18 @@ namespace BizHawk.Client.EmuHawk
 				indexFrom: 0);
 		}
 
+		[LuaMethodExample("local branch = tastudio.getselectedbranch();")]
+		[LuaMethod("getselectedbranch", "gets the index of the first selected branch in the branches list")]
+		public int? GetSelectedBranch()
+		{
+			if (Engaged())
+			{
+				return Tastudio.GetSelectedBranch();
+			}
+
+			return null;
+		}
+
 		[LuaMethodExample("local nltasget = tastudio.getbranchinput( \"97021544-2454-4483-824f-47f75e7fcb6a\", 500 );")]
 		[LuaMethod("getbranchinput", "Gets the controller state of the given frame with the given branch identifier")]
 		public LuaTable GetBranchInput(string branchId, int frame)

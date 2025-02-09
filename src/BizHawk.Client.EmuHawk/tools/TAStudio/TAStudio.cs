@@ -440,6 +440,7 @@ namespace BizHawk.Client.EmuHawk
 		public void SelectAllExternal() => SelectAllMenuItem_Click(null, null);
 		public void ReselectClipboardExternal() => ReselectClipboardMenuItem_Click(null, null);
 
+		public int? GetSelectedBranch() => BookMarkControl.GetSelectedBranch();
 		public IMovieController GetBranchInput(string branchId, int frame)
 		{
 			var branch = CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid.ToString() == branchId);

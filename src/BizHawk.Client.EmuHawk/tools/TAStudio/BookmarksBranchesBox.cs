@@ -461,6 +461,11 @@ namespace BizHawk.Client.EmuHawk
 			RemoveBranchToolStripMenuItem_Click(null, null);
 		}
 
+		public int? GetSelectedBranch()
+		{
+			return BranchView.SelectionStartIndex;
+		}
+
 		public void SelectBranchExternal(int slot)
 		{
 			if (Tastudio.AxisEditingMode)
