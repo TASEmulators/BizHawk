@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
@@ -179,56 +180,61 @@ namespace BizHawk.Client.Common
 					}
 
 
-					//StringBuilder tempLog = new StringBuilder();
-					List<string> lines = new List<string>();
-					char[] framePrevious = Log[prevFrame].ToCharArray();
-					string frameNext = string.Empty;
+					////StringBuilder tempLog = new StringBuilder();
+					//List<string> lines = new List<string>();
+					//char[] framePrevious = Log[prevFrame].ToCharArray();
+					//string frameNext = string.Empty;
 
 
-					for (int i = startFrame; i < Log.Count; i++)
-					{
-						//do not assign characters from one frame to another if same
-						
-							if (i + 1 == Log.Count)
-							{
-							//add an blank section for that frame of the controller
-							framePrevious = Log[i].ToCharArray();
-							for (int j = startOffset; j < startOffset + currentControlLength; j++)
-								{
-									framePrevious[j] = '.';
-								}
-								lines.Add(new string(framePrevious));
-							}
-							//if (i + 1 == Log.Count)
-							//{
-							//	lines.Add(Log[i]);
-							//	//continue;
-							//}
-							//else if (Log[i].Substring(startOffset, currentControlLength) == Log[i + 1].Substring(startOffset, currentControlLength))
-							//{
-							//	lines.Add(Log[i]);
-							//}
-							else
-							{
-								//takes characters from the controller and shifts then, leaving other controllers alone.
-								framePrevious = Log[i].ToCharArray();
-								frameNext = Log[i + 1];
-								for (int j = startOffset; j < startOffset + currentControlLength; j++)
-								{
-									framePrevious[j] = frameNext[j];
-								}
-								lines.Add(new string(framePrevious));
-							}
-						
-					}
+					//for (int i = startFrame; i < Log.Count; i++)
+					//{
+					//	//do not assign characters from one frame to another if same
+
+					//	if (i + 1 == Log.Count)
+					//	{
+					//		//add an blank section for that frame of the controller
+					//		framePrevious = Log[i].ToCharArray();
+					//		for (int j = startOffset; j < startOffset + currentControlLength; j++)
+					//		{
+					//			framePrevious[j] = '.';
+					//		}
+					//		lines.Add(new string(framePrevious));
+					//	}
+					//	//if (i + 1 == Log.Count)
+					//	//{
+					//	//	lines.Add(Log[i]);
+					//	//	//continue;
+					//	//}
+					//	//else if (Log[i].Substring(startOffset, currentControlLength) == Log[i + 1].Substring(startOffset, currentControlLength))
+					//	//{
+					//	//	lines.Add(Log[i]);
+					//	//}
+					//	else
+					//	{
+					//		//takes characters from the controller and shifts then, leaving other controllers alone.
+					//		framePrevious = Log[i].ToCharArray();
+					//		frameNext = Log[i + 1];
+					//		for (int j = startOffset; j < startOffset + currentControlLength; j++)
+					//		{
+					//			framePrevious[j] = frameNext[j];
+					//		}
+					//		lines.Add(new string(framePrevious));
+					//	}
+
+					//}
 					//replace from inital delete frame to end
-					Log.RemoveRange(startFrame, Log.Count - startFrame); //check -1
-					Log.InsertRange(startFrame, lines);
+					//Log.RemoveRange(startFrame, Log.Count - startFrame); //check -1
+					//Log.InsertRange(startFrame, lines);
 
 
 
 					// Each block is logged as an individual ChangeLog entry
 					//RemoveFrames(startFrame - numDeleted, prevFrame + 1 - numDeleted);
+
+					//RemoveFramesMPR(startFrame - numDeleted >= 0 ? startFrame - numDeleted : 0, prevFrame + 1 - numDeleted, startOffset, currentControlLength);
+
+					RemoveFramesMPR(startFrame - numDeleted, prevFrame + 1 - numDeleted, startOffset, currentControlLength);
+
 					numDeleted += prevFrame + 1 - startFrame;
 				}
 			}
@@ -236,6 +242,95 @@ namespace BizHawk.Client.Common
 
 
 
+/// <summary>
+		/// Remove all frames between removeStart and removeUpTo (excluding removeUpTo).
+		/// </summary>
+		/// <param name="removeStart">The first frame to remove.</param>
+		/// <param name="removeUpTo">The frame after the last frame to remove.</param>
+		public void RemoveFramesMPR(int removeStart, int removeUpTo, int startOffset, int currentControlLength)
+		{
+			// Log.GetRange() might be preferrable, but Log's type complicates that.
+			string[] removedInputs = new string[removeUpTo - removeStart];
+			//Log.CopyTo(removeStart, removedInputs, 0, removedInputs.Length);
+
+			// Pre-process removed markers for the ChangeLog.
+			List<TasMovieMarker> removedMarkers = new List<TasMovieMarker>();
+			if (BindMarkersToInput)
+			{
+				bool wasRecording = ChangeLog.IsRecording;
+				ChangeLog.IsRecording = false;
+
+				// O(n^2) removal time, but removing many binded markers in a deleted section is probably rare.
+				removedMarkers = Markers.Where(m => m.Frame >= removeStart && m.Frame < removeUpTo).ToList();
+				foreach (var marker in removedMarkers)
+				{
+					Markers.Remove(marker);
+				}
+
+				ChangeLog.IsRecording = wasRecording;
+			}
+
+			//ok right here start doing the shuffle dance
+
+			//StringBuilder tempLog = new StringBuilder();
+			List<string> lines = new List<string>();
+			char[] framePrevious = Log[removeStart].ToCharArray();
+			string frameNext = string.Empty;
+
+			int removeNum = removeUpTo - removeStart;
+
+			//so this is a bit more complicated.  Here it will remove a range.
+			//if two frames to be deleted then need to get the chracters from the row two down from the startFrame.
+			//if beyond the range of the current Log.Count then just use empty inputs.
+			for (int i = removeStart; i < Log.Count; i++)
+			{
+				//do not assign characters from one frame to another if same
+
+				if (i + removeNum >= Log.Count)
+				{
+					//add an blank section for that frame of the controller
+					//framePrevious = Log[i].ToCharArray();
+					//for (int j = startOffset; j < startOffset + currentControlLength; j++)
+					//{
+					//	framePrevious[j] = '.';
+					//}
+					//lines.Add(new string(framePrevious));
+					lines.Add(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController));
+				}				
+				else
+				{
+					//takes characters from the controller and shifts then, leaving other controllers alone.
+					framePrevious = Log[i].ToCharArray();
+					frameNext = Log[i + removeNum];
+					for (int j = startOffset; j < startOffset + currentControlLength; j++)
+					{
+						framePrevious[j] = frameNext[j];
+					}
+					lines.Add(new string(framePrevious));
+				}
+
+			}
+
+			//replace from inital delete frame to end
+			Log.RemoveRange(removeStart, Log.Count - removeStart); //check -1
+			Log.InsertRange(removeStart, lines);
+
+			//og
+			//Log.RemoveRange(removeStart, removeUpTo - removeStart);
+
+			ShiftBindedMarkers(removeUpTo, removeStart - removeUpTo);
+
+			Changes = true;
+			InvalidateAfter(removeStart);
+
+			ChangeLog.AddRemoveFrames(
+				removeStart,
+				removeUpTo,
+				removedInputs.ToList(),
+				removedMarkers,
+				$"Remove frames {removeStart}-{removeUpTo - 1}"
+			);
+		}
 
 
 
@@ -283,89 +378,7 @@ namespace BizHawk.Client.Common
 			);
 		}
 
-		///// <summary>
-		///// Remove all frames between removeStart and removeUpTo (excluding removeUpTo).
-		///// </summary>
-		///// <param name="removeStart">The first frame to remove.</param>
-		///// <param name="removeUpTo">The frame after the last frame to remove.</param>
-		//public void RemoveFramesMPR(int removeStart, int removeUpTo, int startOffset, int currentControlLength)
-		//{
-		//	// Log.GetRange() might be preferrable, but Log's type complicates that.
-		//	string[] removedInputs = new string[removeUpTo - removeStart];
-		//	Log.CopyTo(removeStart, removedInputs, 0, removedInputs.Length);
-
-		//	// Pre-process removed markers for the ChangeLog.
-		//	List<TasMovieMarker> removedMarkers = new List<TasMovieMarker>();
-		//	if (BindMarkersToInput)
-		//	{
-		//		bool wasRecording = ChangeLog.IsRecording;
-		//		ChangeLog.IsRecording = false;
-
-		//		// O(n^2) removal time, but removing many binded markers in a deleted section is probably rare.
-		//		removedMarkers = Markers.Where(m => m.Frame >= removeStart && m.Frame < removeUpTo).ToList();
-		//		foreach (var marker in removedMarkers)
-		//		{
-		//			Markers.Remove(marker);
-		//		}
-
-		//		ChangeLog.IsRecording = wasRecording;
-		//	}
-
-		//	//ok right here start doing the shuffle dance
-
-		//	//StringBuilder tempLog = new StringBuilder();
-		//	List<string> lines = new List<string>();
-		//	char[] framePrevious = Log[removeStart].ToCharArray();
-		//	string frameNext = string.Empty;
-
-			
-		//	for (int i = removeStart; i < Log.Count; i++)
-		//	{
-		//		//do not assign characters from one frame to another if same
-		//		{
-		//			if (i + 1 == Log.Count)
-		//			{
-		//				lines.Add(Log[i]);
-		//				//continue;
-		//			}
-		//			else if (Log[i].Substring(startOffset, currentControlLength) == Log[i + 1].Substring(startOffset, currentControlLength))
-		//			{
-		//				lines.Add(Log[i]);
-		//			}
-		//			else
-		//			{
-		//				//takes characters from the controller and shifts then, leaving other controllers alone.
-		//				framePrevious = Log[i].ToCharArray();
-		//				frameNext = Log[i + 1];
-		//				for (int j = startOffset; j < startOffset + currentControlLength; j++)
-		//				{
-		//					framePrevious[j] = frameNext[j];
-		//				}
-		//				lines.Add(new string(framePrevious));
-		//			}
-		//		}
-		//	}
-		//	Log.RemoveRange(removeStart, Log.Count - removeStart-1); //check -1
-		//	Log.InsertRange(removeStart, lines);
-
-
-		//	//og
-		//	Log.RemoveRange(removeStart, removeUpTo - removeStart);
-
-		//	ShiftBindedMarkers(removeUpTo, removeStart - removeUpTo);
-
-		//	Changes = true;
-		//	InvalidateAfter(removeStart);
-
-		//	ChangeLog.AddRemoveFrames(
-		//		removeStart,
-		//		removeUpTo,
-		//		removedInputs.ToList(),
-		//		removedMarkers,
-		//		$"Remove frames {removeStart}-{removeUpTo - 1}"
-		//	);
-		//}
-
+		
 		//public void RemoveFrameMPR(int frame, int startOffset, int currentControlLength)
 		//{
 		//	RemoveFramesMPR(frame, frame + 1, startOffset, currentControlLength);
