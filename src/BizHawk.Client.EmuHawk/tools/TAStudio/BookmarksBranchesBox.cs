@@ -41,6 +41,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public Action<int> SaveUndoneCallback { get; set; }
 
+		public Action<int> RemoveUndoneCallback { get; set; }
+
 		public TAStudio Tastudio { get; set; }
 
 		public IDialogController DialogController => Tastudio.MainForm;
@@ -389,7 +391,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Branches.Add(_backupBranch);
 				BranchView.RowCount = Branches.Count;
-				SavedCallback?.Invoke(Branches.IndexOf(_backupBranch));
+				RemoveUndoneCallback?.Invoke(Branches.IndexOf(_backupBranch));
 				Tastudio.MainForm.AddOnScreenMessage("Branch Removal canceled");
 			}
 

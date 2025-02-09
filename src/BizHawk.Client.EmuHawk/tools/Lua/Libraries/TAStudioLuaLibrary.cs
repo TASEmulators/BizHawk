@@ -618,5 +618,18 @@ namespace BizHawk.Client.EmuHawk
 				};
 			}
 		}
+
+		[LuaMethodExample("function RemoveUndone(index)\r\nconsole.log(\"You did a branch remove undo for branch \"..index)\r\nend\r\ntastudio.onbranchundoremove(RemoveUndone)")]
+		[LuaMethod("onbranchundoremove", "called whenever a branch removal is undone. luaf must be a function that takes the integer branch index as a parameter")]
+		public void OnBranchUndoREmove(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.BranchRemoveUndoneCallback = index =>
+				{
+					luaf.Call(index);
+				};
+			}
+		}
 	}
 }
