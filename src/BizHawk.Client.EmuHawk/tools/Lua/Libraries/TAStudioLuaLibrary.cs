@@ -621,7 +621,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("function RemoveUndone(index)\r\n\tconsole.log(\"You did a branch remove undo for branch \"..index)\r\nend\r\ntastudio.onbranchundoremove(RemoveUndone)")]
 		[LuaMethod("onbranchundoremove", "called whenever a branch removal is undone. luaf must be a function that takes the integer branch index as a parameter")]
-		public void OnBranchUndoREmove(LuaFunction luaf)
+		public void OnBranchUndoRemove(LuaFunction luaf)
 		{
 			if (Engaged())
 			{
