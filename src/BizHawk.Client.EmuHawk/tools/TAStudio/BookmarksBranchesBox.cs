@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public Action LoadUndoneCallback { get; set; }
 
-		public Action<int> SaveUndoneCallback { get; set; }
+		public Action<int> UpdateUndoneCallback { get; set; }
 
 		public Action<int> RemoveUndoneCallback { get; set; }
 
@@ -373,7 +373,7 @@ namespace BizHawk.Client.EmuHawk
 				if (branch != null)
 				{
 					Branches.Replace(branch, _backupBranch);
-					SaveUndoneCallback?.Invoke(Branches.IndexOf(_backupBranch));
+					UpdateUndoneCallback?.Invoke(Branches.IndexOf(_backupBranch));
 					Tastudio.MainForm.AddOnScreenMessage("Branch Update canceled");
 				}
 			}

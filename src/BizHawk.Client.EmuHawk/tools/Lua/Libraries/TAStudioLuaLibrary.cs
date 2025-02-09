@@ -606,13 +606,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("function SaveUndone(index)\r\n\tconsole.log(\"You did a branch save undo for branch \"..index)\r\nend\r\ntastudio.onbranchundosave(SaveUndone)")]
-		[LuaMethod("onbranchundosave", "called whenever a branch save is undone. luaf must be a function that takes the integer branch index as a parameter")]
-		public void OnBranchUndoSave(LuaFunction luaf)
+		[LuaMethodExample("function UpdateUndone(index)\r\n\tconsole.log(\"You did a branch updaate undo for branch \"..index)\r\nend\r\ntastudio.onbranchundoupdate(UpdateUndone)")]
+		[LuaMethod("onbranchundoupdate", "called whenever a branch update is undone. luaf must be a function that takes the integer branch index as a parameter")]
+		public void OnBranchUndoUpdate(LuaFunction luaf)
 		{
 			if (Engaged())
 			{
-				Tastudio.BranchSaveUndoneCallback = index =>
+				Tastudio.BranchUpdateUndoneCallback = index =>
 				{
 					luaf.Call(index); 
 				};
