@@ -532,7 +532,9 @@ namespace BizHawk.Client.Common
 				//{
 					if (i + addNewCount >= Log.Count)
 					{
-						break;
+					
+
+					break;
 					}
 					//takes characters from the controller and shifts then, leaving other controllers alone.
 					framePrevious = Log[i];
@@ -547,7 +549,7 @@ namespace BizHawk.Client.Common
 
 			}
 			//Log.RemoveRange(frame, Log.Count - frame - 1);
-			Log.RemoveRange(frame, Log.Count - frame -1);
+			Log.RemoveRange(frame, Log.Count - frame);
 			Log.InsertRange(frame, lines);
 			//Log.InsertRange(frame, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
 
