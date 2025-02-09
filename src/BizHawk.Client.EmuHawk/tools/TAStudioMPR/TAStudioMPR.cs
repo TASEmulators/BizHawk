@@ -1274,17 +1274,25 @@ namespace BizHawk.Client.EmuHawk
 		}
 		public void ClearFrames(int beginningFrame, int numberOfFrames)
 		{
-			foreach (InputRoll tasView in TasViews)
+			for (int i = 0; i < TasViews.Count; i++)
 			{
-				if (tasView.Focused && tasView.AnyRowsSelected)
+				if (TasViews[i].Focused && TasViews[i].AnyRowsSelected) //moving out of for loop to only have the currently focused tasview cloned
 				{
 					if (beginningFrame < CurrentTasMovie.InputLogLength)
 					{
-						var needsToRollback = tasView.SelectionStartIndex < Emulator.Frame;
-						int last = Math.Min(beginningFrame + numberOfFrames, CurrentTasMovie.InputLogLength);
-						for (int i = beginningFrame; i < last; i++)
+						int startOffset = 1; //starts with "|"
+						for (int k = 0; k < i; k++) //add up inputs to get start string offset
 						{
-							CurrentTasMovie.ClearFrame(i);
+							startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+							startOffset += 1; //add 1 for pipe
+						}
+						int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[i].Count;
+
+						var needsToRollback = TasViews[i].SelectionStartIndex < Emulator.Frame;
+						int last = Math.Min(beginningFrame + numberOfFrames, CurrentTasMovie.InputLogLength);
+						foreach (int frame in TasViews[i].SelectedRows)
+						{
+							CurrentTasMovie.ClearFrameMPR(frame, startOffset, currentControlLength);
 						}
 
 						if (needsToRollback)
