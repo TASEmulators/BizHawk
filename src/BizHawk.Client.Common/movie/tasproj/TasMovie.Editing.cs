@@ -505,33 +505,35 @@ namespace BizHawk.Client.Common
 			//		frameNext[j] = '.';
 			//	}
 			//	lines.Add(new string(frameNext));
-			//}
-
-			int tempEmptyFramesCount = addNewCount;
-			for (int i = frame; i < Log.Count; i++)
+			//}				
+			
+			//this loops for number of empty frames to be added
+			//int tempEmptyFramesCount = addNewCount;	
+			for (int i = 0; i < addNewCount; i++)
 			{
-				//do not assign characters from one frame to another if same
-				if (tempEmptyFramesCount > 0)
-				{
-					frameNext = Log[i].ToCharArray();
+				//if (tempEmptyFramesCount > 0)
+				//{
+					frameNext = Log[i + frame].ToCharArray();
 					for (int j = startOffset; j < startOffset + currentControlLength; j++)
 					{
 						frameNext[j] = '.';
 					}
 					lines.Add(new string(frameNext));
-					tempEmptyFramesCount--;
-				}
-				if (i + addNewCount >= Log.Count)
-				{
-					//lines.Add(Log[i]);
-					//continue;
-				}
-				//else if (Log[i].Substring(startOffset, currentControlLength) == Log[i + 1].Substring(startOffset, currentControlLength))
-				//{
-				//	lines.Add(Log[i]);
+					//tempEmptyFramesCount--;
 				//}
-				else
-				{
+			}
+
+	
+			for (int i = frame; i < Log.Count; i++)
+			{
+				//do not assign characters from one frame to another if same
+						
+				//else
+				//{
+					if (i + addNewCount >= Log.Count)
+					{
+						break;
+					}
 					//takes characters from the controller and shifts then, leaving other controllers alone.
 					framePrevious = Log[i];
 					frameNext = Log[i + addNewCount].ToCharArray();
@@ -540,12 +542,12 @@ namespace BizHawk.Client.Common
 						frameNext[j] = framePrevious[j];
 					}
 					lines.Add(new string(frameNext));
-				}
+				//}
 				
 
 			}
 			//Log.RemoveRange(frame, Log.Count - frame - 1);
-			Log.RemoveRange(frame, Log.Count - frame );
+			Log.RemoveRange(frame, Log.Count - frame -1);
 			Log.InsertRange(frame, lines);
 			//Log.InsertRange(frame, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
 
