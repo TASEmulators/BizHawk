@@ -52,6 +52,10 @@ namespace BizHawk.Client.Common
 		void RemoveFrame(int frame);
 		void RemoveFrames(ICollection<int> frames);
 		void RemoveFrames(int removeStart, int removeUpTo);
+		void RemoveFramesMPR(ICollection<int> frames, int startOffset, int currentControlLength);
+
+		//void RemoveFrameMPR(int frame, int startOffset, int currentControlLength);
+
 		void SetFrame(int frame, string source);
 
 		void LoadBranch(TasBranch branch);

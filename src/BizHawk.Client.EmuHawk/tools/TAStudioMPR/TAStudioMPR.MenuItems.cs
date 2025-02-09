@@ -590,11 +590,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (InputRoll tasView in TasViews)
+			for (int i = 0; i < TasViews.Count; i++)
 			{
-				if (tasView.Focused && tasView.AnyRowsSelected)
+				if (TasViews[i].Focused && TasViews[i].AnyRowsSelected) //moving out of for loop to only have the currently focused tasview cloned
 				{
-					var selectionStart = TasView1.SelectionStartIndex;
+
+					int startOffset = 1; //starts with "|"
+										 //for (int k = i; k >= 0; k--)
+					for (int k = 0; k < i; k++) //add up inputs to get start string offset
+					{
+						startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+						startOffset += 1; //add 1 for pipe
+					}
+					int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[i].Count;
+
+
+					var selectionStart = TasViews[i].SelectionStartIndex;
 					var needsToRollback = selectionStart < Emulator.Frame;
 					var rollBackFrame = selectionStart ?? 0;
 					if (rollBackFrame >= CurrentTasMovie.InputLogLength)
@@ -604,7 +615,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					CurrentTasMovie.RemoveFrames(tasView.SelectedRows.ToArray());
+					CurrentTasMovie.RemoveFramesMPR(TasViews[i].SelectedRows.ToArray(), startOffset,  currentControlLength);
 					SetTasViewRowCount();
 					SetSplicer();
 
