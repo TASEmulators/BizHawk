@@ -37,6 +37,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public Action<int> RemovedCallback { get; set; }
 
+		public Action LoadUndoneCallback { get; set; }
+
+		public Action<int> UpdateUndoneCallback { get; set; }
+
+		public Action<int> RemoveUndoneCallback { get; set; }
+
+		public Action<int, int> ReorderedCallback { get; set; }
+
 		public TAStudio Tastudio { get; set; }
 
 		public IDialogController DialogController => Tastudio.MainForm;
@@ -358,7 +366,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_branchUndo == BranchUndo.Load)
 			{
 				LoadBranch(_backupBranch);
-				LoadedCallback?.Invoke(Branches.IndexOf(_backupBranch));
+				LoadUndoneCallback?.Invoke();
 				Tastudio.MainForm.AddOnScreenMessage("Branch Load canceled");
 			}
 			else if (_branchUndo == BranchUndo.Update)
@@ -367,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 				if (branch != null)
 				{
 					Branches.Replace(branch, _backupBranch);
-					SavedCallback?.Invoke(Branches.IndexOf(_backupBranch));
+					UpdateUndoneCallback?.Invoke(Branches.IndexOf(_backupBranch));
 					Tastudio.MainForm.AddOnScreenMessage("Branch Update canceled");
 				}
 			}
@@ -385,7 +393,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Branches.Add(_backupBranch);
 				BranchView.RowCount = Branches.Count;
-				SavedCallback?.Invoke(Branches.IndexOf(_backupBranch));
+				RemoveUndoneCallback?.Invoke(Branches.IndexOf(_backupBranch));
 				Tastudio.MainForm.AddOnScreenMessage("Branch Removal canceled");
 			}
 
@@ -451,6 +459,11 @@ namespace BizHawk.Client.EmuHawk
 		public void RemoveBranchExternal()
 		{
 			RemoveBranchToolStripMenuItem_Click(null, null);
+		}
+
+		public int? GetSelectedBranch()
+		{
+			return BranchView.SelectionStartIndex;
 		}
 
 		public void SelectBranchExternal(int slot)
@@ -635,6 +648,7 @@ namespace BizHawk.Client.EmuHawk
 					: Branches[Branches.Current].Uuid;
 
 				Branches.Swap(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
+				ReorderedCallback?.Invoke(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
 				int newIndex = Branches.IndexOfHash(guid);
 				Branches.Current = newIndex;
 				Select(newIndex, true);

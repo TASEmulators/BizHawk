@@ -401,6 +401,18 @@ namespace BizHawk.Client.EmuHawk
 				indexFrom: 0);
 		}
 
+		[LuaMethodExample("local branch = tastudio.getselectedbranch();")]
+		[LuaMethod("getselectedbranch", "gets the index of the first selected branch in the branches list")]
+		public int? GetSelectedBranch()
+		{
+			if (Engaged())
+			{
+				return Tastudio.GetSelectedBranch();
+			}
+
+			return null;
+		}
+
 		[LuaMethodExample("local nltasget = tastudio.getbranchinput( \"97021544-2454-4483-824f-47f75e7fcb6a\", 500 );")]
 		[LuaMethod("getbranchinput", "Gets the controller state of the given frame with the given branch identifier")]
 		public LuaTable GetBranchInput(string branchId, int frame)
@@ -589,6 +601,58 @@ namespace BizHawk.Client.EmuHawk
 				Tastudio.BranchRemovedCallback = index =>
 				{
 					luaf.Call(index);
+				};
+			}
+		}
+
+		[LuaMethodExample("function LoadUndone()\r\n\tconsole.log(\"You did a branch load undo\")\r\nend\r\ntastudio.onbranchundoload(LoadUndone)")]
+		[LuaMethod("onbranchundoload", "called whenever a branch load is undone. luaf must be a function without parameters")]
+		public void OnBranchUndoLoad(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.BranchLoadUndoneCallback = () =>
+				{
+					luaf.Call(); 
+				};
+			}
+		}
+
+		[LuaMethodExample("function UpdateUndone(index)\r\n\tconsole.log(\"You did a branch updaate undo for branch \"..index)\r\nend\r\ntastudio.onbranchundoupdate(UpdateUndone)")]
+		[LuaMethod("onbranchundoupdate", "called whenever a branch update is undone. luaf must be a function that takes the integer branch index as a parameter")]
+		public void OnBranchUndoUpdate(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.BranchUpdateUndoneCallback = index =>
+				{
+					luaf.Call(index); 
+				};
+			}
+		}
+
+		[LuaMethodExample("function RemoveUndone(index)\r\n\tconsole.log(\"You did a branch remove undo for branch \"..index)\r\nend\r\ntastudio.onbranchundoremove(RemoveUndone)")]
+		[LuaMethod("onbranchundoremove", "called whenever a branch removal is undone. luaf must be a function that takes the integer branch index as a parameter")]
+		public void OnBranchUndoRemove(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.BranchRemoveUndoneCallback = index =>
+				{
+					luaf.Call(index);
+				};
+			}
+		}
+
+		[LuaMethodExample("function Reordered(oldindex, newindex)\r\n\tconsole.log(\"You reordered branches from \"..oldIndex..\" to \"..newIndex)\r\nend\r\ntastudio.onbranchesreorder(Reordered)")]
+		[LuaMethod("onbranchesreorder", "called whenever branches are reordered in the branches box. luaf must be a function that takes two integers for the branch indices as parameters")]
+		public void OnBranchesReorder(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.BranchesReorderedCallback = (oldIndex, newIndex) =>
+				{
+					luaf.Call(oldIndex, newIndex);
 				};
 			}
 		}
