@@ -99,8 +99,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						if (!loadWadResult) throw new Exception($"Could not load WAD file: '{wadFile.RomPath}'");
 					}
 
-					var initResult = Core.dsda_init(_syncSettings.GetNativeSettings(lp.Game));
-
+					var initSettings = _syncSettings.GetNativeSettings(lp.Game);
+					var initResult = Core.dsda_init(ref initSettings);
 					if (!initResult) throw new Exception($"{nameof(Core.dsda_init)}() failed");
 
 					int fps = 35;

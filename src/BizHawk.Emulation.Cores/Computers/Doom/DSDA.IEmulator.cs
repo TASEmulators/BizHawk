@@ -198,7 +198,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			renderInfo._RenderAudio = renderAudio ? 1 : 0;
 			renderInfo._PlayerPointOfView = _settings.DisplayPlayer - 1;
 
-			Core.dsda_frame_advance(player1Inputs, player2Inputs, player3Inputs, player4Inputs, renderInfo);
+			Core.dsda_frame_advance(
+				ref player1Inputs,
+				ref player2Inputs,
+				ref player3Inputs,
+				ref player4Inputs,
+				ref renderInfo);
 
 			if (renderVideo)
 				UpdateVideo();
