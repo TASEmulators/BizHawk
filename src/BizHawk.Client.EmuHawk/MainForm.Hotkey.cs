@@ -460,21 +460,21 @@ namespace BizHawk.Client.EmuHawk
 					Tools.TAStudioMPR.SetVisibleFrame();
 					Tools.TAStudioMPR.RefreshDialog();
 					break;
-				//case "Toggle Follow Cursor (For MPR)":
-				//	if (!Tools.IsLoaded<TAStudioMPR>()) return false;
-				//	var playbackBox = Tools.TAStudioMPR.TasPlaybackBoxMPR;
-				//	playbackBox.FollowCursor = !playbackBox.FollowCursor;
-				//	break;
-				//case "Toggle Auto-Restore (For MPR)":
-				//	if (!Tools.IsLoaded<TAStudioMPR>()) return false;
-				//	var playbackBox1 = Tools.TAStudioMPR.TasPlaybackBoxMPR;
-				//	playbackBox1.AutoRestore = !playbackBox1.AutoRestore;
-				//	break;
-				//case "Toggle Turbo Seek (For MPR)":
-				//	if (!Tools.IsLoaded<TAStudioMPR>()) return false;
-				//	var playbackBox2 = Tools.TAStudioMPR.TasPlaybackBoxMPR;
-				//	playbackBox2.TurboSeek = !playbackBox2.TurboSeek;
-				//	break;
+				case "Toggle Follow Cursor (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					var playbackBox3 = Tools.TAStudioMPR.TasPlaybackBoxMPR;
+					playbackBox3.FollowCursor = !playbackBox3.FollowCursor;
+					break;
+				case "Toggle Auto-Restore (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					var playbackBox4 = Tools.TAStudioMPR.TasPlaybackBoxMPR;
+					playbackBox4.AutoRestore = !playbackBox4.AutoRestore;
+					break;
+				case "Toggle Turbo Seek (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					var playbackBox5 = Tools.TAStudioMPR.TasPlaybackBoxMPR;
+					playbackBox5.TurboSeek = !playbackBox5.TurboSeek;
+					break;
 				case "Undo (For MPR)":
 					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
 					Tools.TAStudioMPR.UndoExternal();
