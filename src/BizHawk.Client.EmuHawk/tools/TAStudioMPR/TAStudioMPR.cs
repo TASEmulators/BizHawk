@@ -152,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
-
+			this.Width = 1050;
 			TasView1.QueryItemText += TasView_QueryItemText;
 			TasView1.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView1.QueryRowBkColor += TasView_QueryRowBkColor;
@@ -294,9 +294,6 @@ namespace BizHawk.Client.EmuHawk
 
 			for (int i = 0; i < TasViews.Count; i++)
 			{
-
-
-
 				TasViews[i].ScrollSpeed = Settings.ScrollSpeed;
 				TasViews[i].AlwaysScroll = Settings.FollowCursorAlwaysScroll;
 				TasViews[i].ScrollMethod = Settings.FollowCursorScrollMethod;
