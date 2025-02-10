@@ -1649,11 +1649,5 @@ namespace BizHawk.Client.EmuHawk
 			}
 			//}
 		}
-
-
-		private void TasView1_Enter(object sender, EventArgs e)
-		{
-			var a = TasView1.Focused;
-		}
 	}
 }

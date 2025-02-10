@@ -903,7 +903,6 @@ namespace BizHawk.Client.EmuHawk
             this.TasView1.RightMouseScrolled += new BizHawk.Client.EmuHawk.InputRoll.RightMouseScrollEventHandler(this.TasView_MouseWheel);
             this.TasView1.ColumnReordered += new BizHawk.Client.EmuHawk.InputRoll.ColumnReorderedEventHandler(this.TasView_ColumnReordered);
             this.TasView1.CellDropped += new BizHawk.Client.EmuHawk.InputRoll.CellDroppedEvent(this.TasView_CellDropped);
-            this.TasView1.Enter += new System.EventHandler(this.TasView1_Enter);
             this.TasView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TasView_KeyDown);
             this.TasView1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDoubleClick);
             this.TasView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDown);
