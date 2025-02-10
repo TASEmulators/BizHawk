@@ -11,6 +11,7 @@ using BizHawk.Client.EmuHawk.Properties;
 
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
+using Silk.NET.OpenGL;
 
 
 namespace BizHawk.Client.EmuHawk
@@ -173,107 +174,166 @@ namespace BizHawk.Client.EmuHawk
 			//get number of controllers MnemonicMapPlayerController
 
 
+			int controllersCount = Emulator.ControllerDefinition.ControlsOrdered.Count;
+			var startLocation = new System.Drawing.Point(TasView1.Location.X + TasView1.Width + 10, 20);
 
+			//start from "2" since first TasView1 is already defined in designer.
+			for (int i = 2; i < controllersCount + 1; i++)
+			{
+				InputRoll tasView = new InputRoll();
+				tasView.Name = "TasView" + i.ToString();
+				tasView.Parent = MainVertialSplit.Panel1;
+				tasView.Width = 250;
+				tasView.Height = TasView1.Height;
+				tasView.Location = startLocation;
+				startLocation.X += tasView.Width + 10; //for next tasView
+
+				tasView.Anchor = ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+				| System.Windows.Forms.AnchorStyles.Left);
+
+				tasView.CellHeightPadding = 0;
+				tasView.ChangeSelectionWhenPaging = false;
+				tasView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+				tasView.FullRowSelect = true;
+				tasView.InputPaintingMode = true;
+				tasView.LetKeysModifySelection = true;
+				tasView.Rotatable = true;
+				tasView.ScrollMethod = "near";
+				tasView.ScrollSpeed = 1;
+
+				tasView.QueryItemText += TasView_QueryItemText;
+				tasView.QueryItemBkColor += TasView_QueryItemBkColor;
+				tasView.QueryRowBkColor += TasView_QueryRowBkColor;
+				tasView.QueryItemIcon += TasView_QueryItemIcon;
+				tasView.QueryFrameLag += TasView_QueryFrameLag;
+				tasView.PointedCellChanged += TasView_PointedCellChanged;
+				tasView.MouseLeave += TAStudio_MouseLeave;
+
+				tasView.CellDropped += TasView_CellDropped;
+				tasView.ColumnClick += TasView_ColumnClick;
+				tasView.ColumnReordered += TasView_ColumnReordered;
+				tasView.ColumnRightClick += TasView_ColumnRightClick;
+				tasView.KeyDown += TasView_KeyDown;
+				tasView.MouseDoubleClick += TasView_MouseDoubleClick;
+				tasView.MouseDown += TasView_MouseDown;
+				tasView.MouseEnter += TasView_MouseEnter;
+				tasView.MouseMove += TasView_MouseMove;
+				tasView.MouseUp += TasView_MouseUp;
+				tasView.RightMouseScrolled += TasView_MouseWheel;
+				tasView.SelectedIndexChanged += TasView_SelectedIndexChanged;
+
+				tasView.CellHovered += (_, e) =>
+				{
+					if (e.NewCell.RowIndex is null)
+					{
+						toolTip1.Show(e.NewCell.Column!.Name, tasView, PointToClient(Cursor.Position));
+					}
+				};
+				TasViews.Add(tasView);
+
+
+			}
+			var a = TasViews.Count;
 
 			//foreach (InputRoll tasView in TasViews)
 			//{
-			InputRoll TasView2 = new InputRoll();
-			TasView2.Name = "TasView2";
-			TasView2.Parent = MainVertialSplit.Panel1;
-			TasView2.Width = 250;
-			TasView2.Height = 550;
-			TasView2.Location = new System.Drawing.Point(TasView1.Location.X + TasView1.Width + 10, 20);
-			TasView2.Anchor = ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-			| System.Windows.Forms.AnchorStyles.Left);
+			//InputRoll TasView2 = new InputRoll();
+			//TasView2.Name = "TasView2";
+			//TasView2.Parent = MainVertialSplit.Panel1;
+			//TasView2.Width = 250;
+			//TasView2.Height = 550;
+			//TasView2.Location = new System.Drawing.Point(TasView1.Location.X + TasView1.Width + 10, 20);
+			//TasView2.Anchor = ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			//| System.Windows.Forms.AnchorStyles.Left);
 
-			TasView2.CellHeightPadding = 0;
-			TasView2.ChangeSelectionWhenPaging = false;
-			TasView2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-			TasView2.FullRowSelect = true;
-			TasView2.InputPaintingMode = true;
-			TasView2.LetKeysModifySelection = true;
-			TasView2.Rotatable = true;
-			TasView2.ScrollMethod = "near";
-			TasView2.ScrollSpeed = 1;
+			//TasView2.CellHeightPadding = 0;
+			//TasView2.ChangeSelectionWhenPaging = false;
+			//TasView2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			//TasView2.FullRowSelect = true;
+			//TasView2.InputPaintingMode = true;
+			//TasView2.LetKeysModifySelection = true;
+			//TasView2.Rotatable = true;
+			//TasView2.ScrollMethod = "near";
+			//TasView2.ScrollSpeed = 1;
 
-			TasView2.QueryItemText += TasView_QueryItemText;
-			TasView2.QueryItemBkColor += TasView_QueryItemBkColor;
-			TasView2.QueryRowBkColor += TasView_QueryRowBkColor;
-			TasView2.QueryItemIcon += TasView_QueryItemIcon;
-			TasView2.QueryFrameLag += TasView_QueryFrameLag;
-			TasView2.PointedCellChanged += TasView_PointedCellChanged;
-			TasView2.MouseLeave += TAStudio_MouseLeave;
+			//TasView2.QueryItemText += TasView_QueryItemText;
+			//TasView2.QueryItemBkColor += TasView_QueryItemBkColor;
+			//TasView2.QueryRowBkColor += TasView_QueryRowBkColor;
+			//TasView2.QueryItemIcon += TasView_QueryItemIcon;
+			//TasView2.QueryFrameLag += TasView_QueryFrameLag;
+			//TasView2.PointedCellChanged += TasView_PointedCellChanged;
+			//TasView2.MouseLeave += TAStudio_MouseLeave;
 
-			TasView2.CellDropped += TasView_CellDropped;
-			TasView2.ColumnClick += TasView_ColumnClick;
-			TasView2.ColumnReordered += TasView_ColumnReordered;
-			TasView2.ColumnRightClick += TasView_ColumnRightClick;
-			TasView2.KeyDown += TasView_KeyDown;
-			TasView2.MouseDoubleClick += TasView_MouseDoubleClick;
-			TasView2.MouseDown += TasView_MouseDown;
-			TasView2.MouseEnter += TasView_MouseEnter;
-			TasView2.MouseMove += TasView_MouseMove;
-			TasView2.MouseUp += TasView_MouseUp;
-			TasView2.RightMouseScrolled += TasView_MouseWheel;
-			TasView2.SelectedIndexChanged += TasView_SelectedIndexChanged;
+			//TasView2.CellDropped += TasView_CellDropped;
+			//TasView2.ColumnClick += TasView_ColumnClick;
+			//TasView2.ColumnReordered += TasView_ColumnReordered;
+			//TasView2.ColumnRightClick += TasView_ColumnRightClick;
+			//TasView2.KeyDown += TasView_KeyDown;
+			//TasView2.MouseDoubleClick += TasView_MouseDoubleClick;
+			//TasView2.MouseDown += TasView_MouseDown;
+			//TasView2.MouseEnter += TasView_MouseEnter;
+			//TasView2.MouseMove += TasView_MouseMove;
+			//TasView2.MouseUp += TasView_MouseUp;
+			//TasView2.RightMouseScrolled += TasView_MouseWheel;
+			//TasView2.SelectedIndexChanged += TasView_SelectedIndexChanged;
 
-			TasView2.CellHovered += (_, e) =>
-			{
-				if (e.NewCell.RowIndex is null)
-				{
-					toolTip1.Show(e.NewCell.Column!.Name, TasView2, PointToClient(Cursor.Position));
-				}
-			};
-			TasViews.Add(TasView2);
+			//TasView2.CellHovered += (_, e) =>
+			//{
+			//	if (e.NewCell.RowIndex is null)
+			//	{
+			//		toolTip1.Show(e.NewCell.Column!.Name, TasView2, PointToClient(Cursor.Position));
+			//	}
+			//};
+			//TasViews.Add(TasView2);
 
-			InputRoll TasView3 = new InputRoll();
-			TasView3.Name = "TasView3";
-			TasView3.Parent = MainVertialSplit.Panel1;
-			TasView3.Width = 250;
-			TasView3.Height = 550;
-			TasView3.Location = new System.Drawing.Point(TasView2.Location.X + TasView2.Width + 10, 20);
-			TasView3.Anchor = ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-			| System.Windows.Forms.AnchorStyles.Left);
+			//InputRoll TasView3 = new InputRoll();
+			//TasView3.Name = "TasView3";
+			//TasView3.Parent = MainVertialSplit.Panel1;
+			//TasView3.Width = 250;
+			//TasView3.Height = 550;
+			//TasView3.Location = new System.Drawing.Point(TasView2.Location.X + TasView2.Width + 10, 20);
+			//TasView3.Anchor = ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			//| System.Windows.Forms.AnchorStyles.Left);
 
-			TasView3.CellHeightPadding = 0;
-			TasView3.ChangeSelectionWhenPaging = false;
-			TasView3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-			TasView3.FullRowSelect = true;
-			TasView3.InputPaintingMode = true;
-			TasView3.LetKeysModifySelection = true;
-			TasView3.Rotatable = true;
-			TasView3.ScrollMethod = "near";
-			TasView3.ScrollSpeed = 1;
+			//TasView3.CellHeightPadding = 0;
+			//TasView3.ChangeSelectionWhenPaging = false;
+			//TasView3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			//TasView3.FullRowSelect = true;
+			//TasView3.InputPaintingMode = true;
+			//TasView3.LetKeysModifySelection = true;
+			//TasView3.Rotatable = true;
+			//TasView3.ScrollMethod = "near";
+			//TasView3.ScrollSpeed = 1;
 
-			TasView3.QueryItemText += TasView_QueryItemText;
-			TasView3.QueryItemBkColor += TasView_QueryItemBkColor;
-			TasView3.QueryRowBkColor += TasView_QueryRowBkColor;
-			TasView3.QueryItemIcon += TasView_QueryItemIcon;
-			TasView3.QueryFrameLag += TasView_QueryFrameLag;
-			TasView3.PointedCellChanged += TasView_PointedCellChanged;
-			TasView3.MouseLeave += TAStudio_MouseLeave;
+			//TasView3.QueryItemText += TasView_QueryItemText;
+			//TasView3.QueryItemBkColor += TasView_QueryItemBkColor;
+			//TasView3.QueryRowBkColor += TasView_QueryRowBkColor;
+			//TasView3.QueryItemIcon += TasView_QueryItemIcon;
+			//TasView3.QueryFrameLag += TasView_QueryFrameLag;
+			//TasView3.PointedCellChanged += TasView_PointedCellChanged;
+			//TasView3.MouseLeave += TAStudio_MouseLeave;
 
-			TasView3.CellDropped += TasView_CellDropped;
-			TasView3.ColumnClick += TasView_ColumnClick;
-			TasView3.ColumnReordered += TasView_ColumnReordered;
-			TasView3.ColumnRightClick += TasView_ColumnRightClick;
-			TasView3.KeyDown += TasView_KeyDown;
-			TasView3.MouseDoubleClick += TasView_MouseDoubleClick;
-			TasView3.MouseDown += TasView_MouseDown;
-			TasView3.MouseEnter += TasView_MouseEnter;
-			TasView3.MouseMove += TasView_MouseMove;
-			TasView3.MouseUp += TasView_MouseUp;
-			TasView3.RightMouseScrolled += TasView_MouseWheel;
-			TasView3.SelectedIndexChanged += TasView_SelectedIndexChanged;
+			//TasView3.CellDropped += TasView_CellDropped;
+			//TasView3.ColumnClick += TasView_ColumnClick;
+			//TasView3.ColumnReordered += TasView_ColumnReordered;
+			//TasView3.ColumnRightClick += TasView_ColumnRightClick;
+			//TasView3.KeyDown += TasView_KeyDown;
+			//TasView3.MouseDoubleClick += TasView_MouseDoubleClick;
+			//TasView3.MouseDown += TasView_MouseDown;
+			//TasView3.MouseEnter += TasView_MouseEnter;
+			//TasView3.MouseMove += TasView_MouseMove;
+			//TasView3.MouseUp += TasView_MouseUp;
+			//TasView3.RightMouseScrolled += TasView_MouseWheel;
+			//TasView3.SelectedIndexChanged += TasView_SelectedIndexChanged;
 
-			TasView3.CellHovered += (_, e) =>
-			{
-				if (e.NewCell.RowIndex is null)
-				{
-					toolTip1.Show(e.NewCell.Column!.Name, TasView3, PointToClient(Cursor.Position));
-				}
-			};
-			TasViews.Add(TasView3);
+			//TasView3.CellHovered += (_, e) =>
+			//{
+			//	if (e.NewCell.RowIndex is null)
+			//	{
+			//		toolTip1.Show(e.NewCell.Column!.Name, TasView3, PointToClient(Cursor.Position));
+			//	}
+			//};
+			//TasViews.Add(TasView3);
 
 			if (!Engage())
 			{
