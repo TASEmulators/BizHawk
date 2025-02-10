@@ -311,10 +311,14 @@ namespace BizHawk.Client.Common
 			{
 				//do not assign characters from one frame to another if same
 
-				if (i + removeNum >= Log.Count)
+				if (i + removeNum == Log.Count)
 				{
-					//add an blank section for that frame of the controller
-					lines.Add(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController));
+					
+					lines.Add(Log[i]);
+				}
+				else if (i + removeNum > Log.Count)
+				{//add an blank section for that frame of the controller
+					//lines.Add(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController));
 				}
 				else
 				{
