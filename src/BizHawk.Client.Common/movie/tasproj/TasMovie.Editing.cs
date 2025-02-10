@@ -331,7 +331,6 @@ namespace BizHawk.Client.Common
 					}
 					lines.Add(new string(framePrevious));
 				}
-
 			}
 
 			//replace from inital delete frame to end

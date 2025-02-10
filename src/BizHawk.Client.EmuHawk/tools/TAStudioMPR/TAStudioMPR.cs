@@ -227,9 +227,16 @@ namespace BizHawk.Client.EmuHawk
 						toolTip1.Show(e.NewCell.Column!.Name, tasView, PointToClient(Cursor.Position));
 					}
 				};
+				this.ConfigSubMenu.DropDownItems.Add(
+						new ToolStripMenuItem(
+						"Toggle Disable " + tasView.Name, 
+						null, 
+						disableTasViewToolStripMenuItem_Click)
+						);
 				TasViews.Add(tasView);
 			}
-			
+
+
 
 			if (!Engage())
 			{
@@ -722,12 +729,6 @@ namespace BizHawk.Client.EmuHawk
 
 				if (CurrentTasMovie.InputRollSettings != null)
 				{
-					//loads the same settings for all views
-					//foreach (InputRoll tasView in TasViews)
-					//{
-					//TasViews[1].LoadSettingsSerialized(CurrentTasMovie.InputRollSettings);
-					//}
-
 					for (int i = 0; i < TasViews.Count; i++)
 					{
 						TasViews[i].LoadSettingsSerialized(CurrentTasMovie.InputRollSettings); //not sure if this is necessary with multiple InputRolls
@@ -1546,10 +1547,13 @@ namespace BizHawk.Client.EmuHawk
 			//}
 		}
 
+		//experimental feature. See if this makes a difference at all.
 		private void disableTasViewToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			//TasViews[0].Enabled = false;
-			TasViews[0].Visible = false;
+			var tasViewToToggleDisable = sender.ToString().Substring(15);
+			InputRoll tasView = TasViews.Find(t => t.Name == tasViewToToggleDisable);
+			tasView.Enabled = !tasView.Enabled;
+			tasView.Visible = !tasView.Visible;
 		}
 	}
 }

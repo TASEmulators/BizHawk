@@ -111,6 +111,7 @@ namespace BizHawk.Client.EmuHawk
             this.setpToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.setCustomsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.SetFontMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.disableTasViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MetaSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.HeaderMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.StateHistorySettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -191,7 +192,6 @@ namespace BizHawk.Client.EmuHawk
             this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
             this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.disableTasViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TASMenu.SuspendLayout();
             this.TasStatusStrip.SuspendLayout();
             this.RightClickMenu.SuspendLayout();
@@ -649,6 +649,13 @@ namespace BizHawk.Client.EmuHawk
             // 
             this.SetFontMenuItem.Text = "Set Font";
             this.SetFontMenuItem.Click += new System.EventHandler(this.SetFontMenuItem_Click);
+            // 
+            // disableTasViewToolStripMenuItem
+            // 
+            this.disableTasViewToolStripMenuItem.Name = "disableTasViewToolStripMenuItem";
+            this.disableTasViewToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
+            this.disableTasViewToolStripMenuItem.Text = "Toggle Disable TasView1";
+            this.disableTasViewToolStripMenuItem.Click += new System.EventHandler(this.disableTasViewToolStripMenuItem_Click);
             // 
             // MetaSubMenu
             // 
@@ -1163,13 +1170,6 @@ namespace BizHawk.Client.EmuHawk
             this.MainVertialSplit.SplitterDistance = 847;
             this.MainVertialSplit.TabIndex = 10;
             this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVerticalSplit_SplitterMoved);
-            // 
-            // disableTasViewToolStripMenuItem
-            // 
-            this.disableTasViewToolStripMenuItem.Name = "disableTasViewToolStripMenuItem";
-            this.disableTasViewToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
-            this.disableTasViewToolStripMenuItem.Text = "Disable TasView";
-            this.disableTasViewToolStripMenuItem.Click += new System.EventHandler(this.disableTasViewToolStripMenuItem_Click);
             // 
             // TAStudioMPR
             // 
