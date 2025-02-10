@@ -185,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlaceMacroAtSelectionMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!TasView1.Focused && TasView1.AnyRowsSelected)
+			if (!CurrentTasView.Focused && CurrentTasView.AnyRowsSelected)
 			{
 				return;
 			}

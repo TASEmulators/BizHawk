@@ -191,6 +191,7 @@ namespace BizHawk.Client.EmuHawk
             this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
             this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.disableTasViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TASMenu.SuspendLayout();
             this.TasStatusStrip.SuspendLayout();
             this.RightClickMenu.SuspendLayout();
@@ -497,7 +498,8 @@ namespace BizHawk.Client.EmuHawk
             this.AutopauseAtEndOfMovieMenuItem,
             this.sepToolStripMenuItem,
             this.autoHoldFireToolStripMenuItem,
-            this.SetFontMenuItem});
+            this.SetFontMenuItem,
+            this.disableTasViewToolStripMenuItem});
             this.ConfigSubMenu.Text = "&Config";
             this.ConfigSubMenu.DropDownOpened += new System.EventHandler(this.ConfigSubMenu_DropDownOpened);
             // 
@@ -1162,6 +1164,13 @@ namespace BizHawk.Client.EmuHawk
             this.MainVertialSplit.TabIndex = 10;
             this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVerticalSplit_SplitterMoved);
             // 
+            // disableTasViewToolStripMenuItem
+            // 
+            this.disableTasViewToolStripMenuItem.Name = "disableTasViewToolStripMenuItem";
+            this.disableTasViewToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
+            this.disableTasViewToolStripMenuItem.Text = "Disable TasView";
+            this.disableTasViewToolStripMenuItem.Click += new System.EventHandler(this.disableTasViewToolStripMenuItem_Click);
+            // 
             // TAStudioMPR
             // 
             this.AllowDrop = true;
@@ -1360,5 +1369,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetFontMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CopyIncludesFrameNoMenuItem;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.ToolStripMenuItem disableTasViewToolStripMenuItem;
 	}
 }
