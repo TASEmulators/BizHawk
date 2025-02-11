@@ -577,7 +577,8 @@ namespace BizHawk.Client.Common
 			return firstChangedFrame;
 		}
 
-		public int CopyOverInputMPR(int frame, IEnumerable<IController> inputStates, int startOffset, int currentControlLength, int destStartOffset)
+	
+		public int CopyOverDestInputMPR(int frame, IEnumerable<string> inputStates, int startOffset, int currentControlLength, int destStartOffset)
 		{
 			int firstChangedFrame = -1;
 			ChangeLog.BeginNewBatch($"Copy Over Input: {frame}");
@@ -605,7 +606,8 @@ namespace BizHawk.Client.Common
 					break;
 				}
 
-				var entry = Bk2LogEntryGenerator.GenerateLogEntry(states[i]);
+				//var entry = Bk2LogEntryGenerator.GenerateLogEntry(states[i]);
+				var entry = states[i];
 				if (firstChangedFrame == -1 && Log[frame + i] != entry)
 				{
 					firstChangedFrame = frame + i;

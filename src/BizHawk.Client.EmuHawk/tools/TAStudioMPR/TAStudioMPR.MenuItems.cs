@@ -536,95 +536,59 @@ namespace BizHawk.Client.EmuHawk
 		private void PasteToDestMenuItem_Click(object sender, EventArgs e)
 		{
 			var tasViewSourceName = sender.ToString();
-			InputRoll source = TasViews.Find(t => t.Name == tasViewSourceName);
-			//var dest = TasViews.Find(t => t.ContainsFocus);
-			var tasViewSourceIndex = TasViews.IndexOf(source); //also used to identify controller controller			
+			InputRoll sourceTasView = TasViews.Find(t => t.Name == tasViewSourceName);
+			var tasViewSourceIndex = TasViews.IndexOf(sourceTasView); //also used to identify controller controller			
 
-			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
+			int tasViewDestIndex = TasViews.IndexOf(CurrentTasView);
 
-			if (CurrentTasView.AnyRowsSelected)
+			if (CurrentTasView.AnyRowsSelected && sourceTasView.AnyRowsSelected)
 			{
-				// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
-				// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
-
-				// TODO: copy paste from PasteInsertMenuItem_Click!
-				IDataObject data = Clipboard.GetDataObject();
-				if (data != null && data.GetDataPresent(DataFormats.StringFormat))
+				int startOffset = 1; //starts with "|" 
+				for (int k = 0; k < tasViewDestIndex; k++) //add up inputs to get start string offset
 				{
-					string input = (string) data.GetData(DataFormats.StringFormat);
-					if (!string.IsNullOrWhiteSpace(input))
-					{
-						string[] lines = input.Split('\n');
-						if (lines.Length > 0)
-						{
-							_tasClipboard.Clear();
-							int linesToPaste = lines.Length;
-							if (lines[lines.Length - 1].Length is 0) linesToPaste--;
-							for (int i = 0; i < linesToPaste; i++)
-							{
-								var line = ControllerFromMnemonicStr(lines[i]);
-								if (line == null)
-								{
-									return;
-								}
-
-								_tasClipboard.Add(new TasClipboardEntry(i, line));
-							}
-
-							int startOffset = 1; //starts with "|" 
-							for (int k = 0; k < tasViewIndex; k++) //add up inputs to get start string offset
-							{
-								startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
-								startOffset += 1; //add 1 for pipe
-							}
-							int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
-
-							var framesToInsert = CurrentTasView.SelectedRows;
-							var insertionFrame = Math.Min((CurrentTasView.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
-							var needsToRollback = CurrentTasView.SelectionStartIndex < Emulator.Frame;
-
-							var inputLog = framesToInsert
-								.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
-								.ToList();
-
-							var rollbackFrame = 0;
-							//CurrentTasMovie.InsertInputMPR(insertionFrame, inputLog, startOffset, currentControlLength);
-							if (tasViewIndex == tasViewSourceIndex)
-							{
-								rollbackFrame = CurrentTasMovie.CopyOverInputMPR(CurrentTasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState), startOffset, currentControlLength);
-							}
-							else
-							{
-								int sourceStartOffset = 1; //starts with "|" 
-								for (int k = 0; k < tasViewSourceIndex; k++) //add up inputs to get start string offset
-								{
-									sourceStartOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
-									sourceStartOffset += 1; //add 1 for pipe
-								}
-								int sourceCurrentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
-
-								if (currentControlLength != sourceCurrentControlLength)
-								{
-									throw new Exception("Cannot copy to another TasView where the number of inputs do not equal");
-									//return;
-								}
-
-								rollbackFrame = CurrentTasMovie.CopyOverInputMPR(CurrentTasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState),
-									startOffset,
-									currentControlLength,
-									sourceStartOffset);
-							}
-
-							if (rollbackFrame > 0)
-							{
-								GoToLastEmulatedFrameIfNecessary(rollbackFrame);
-								DoAutoRestore();
-							}
-
-							FullRefresh();
-						}
-					}
+					startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+					startOffset += 1; //add 1 for pipe
 				}
+				int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewDestIndex].Count;
+
+				var framesToInsert = sourceTasView.SelectedRows;
+				var insertionFrame = Math.Min((sourceTasView.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
+				var needsToRollback = sourceTasView.SelectionStartIndex < Emulator.Frame;
+
+				var inputLog = framesToInsert
+					.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
+					.ToList();
+
+				var rollbackFrame = 0;
+
+				int sourceStartOffset = 1; //starts with "|" 
+				for (int k = 0; k < tasViewSourceIndex; k++) //add up inputs to get start string offset
+				{
+					sourceStartOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+					sourceStartOffset += 1; //add 1 for pipe
+				}
+				int sourceCurrentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewDestIndex].Count;
+
+				if (Emulator.ControllerDefinition.ControlsOrdered[tasViewSourceIndex] != Emulator.ControllerDefinition.ControlsOrdered[tasViewDestIndex])
+				{
+					//("Cannot copy to another TasView where the controller definitions are not equal");
+					return;
+				}
+
+				rollbackFrame = CurrentTasMovie.CopyOverDestInputMPR(
+					CurrentTasView.SelectionStartIndex ?? 0,
+					inputLog,
+					startOffset,
+					currentControlLength,
+					sourceStartOffset);
+
+				if (rollbackFrame > 0)
+				{
+					GoToLastEmulatedFrameIfNecessary(rollbackFrame);
+					DoAutoRestore();
+				}
+
+				FullRefresh();
 			}
 		}
 
