@@ -211,13 +211,6 @@ namespace BizHawk.Client.Common
 					}
 
 
-
-
-
-
-
-
-
 					// Each block is logged as an individual ChangeLog entry
 					RemoveFrames(startFrame - numDeleted, prevFrame + 1 - numDeleted);
 					numDeleted += prevFrame + 1 - startFrame;
@@ -254,11 +247,8 @@ namespace BizHawk.Client.Common
 					}
 
 					// Each block is logged as an individual ChangeLog entry
-					//RemoveFrames(startFrame - numDeleted, prevFrame + 1 - numDeleted);
-
-					//RemoveFramesMPR(startFrame - numDeleted >= 0 ? startFrame - numDeleted : 0, prevFrame + 1 - numDeleted, startOffset, currentControlLength);
-
-					RemoveFramesMPR(startFrame - numDeleted, prevFrame + 1 - numDeleted, startOffset, currentControlLength);
+					RemoveFramesMPR(startFrame - numDeleted >= 0 ? startFrame - numDeleted : 0, prevFrame + 1 - numDeleted, startOffset, currentControlLength);
+					//RemoveFramesMPR(startFrame - numDeleted, prevFrame + 1 - numDeleted, startOffset, currentControlLength);
 
 					numDeleted += prevFrame + 1 - startFrame;
 				}
@@ -309,16 +299,15 @@ namespace BizHawk.Client.Common
 			//if beyond the range of the current Log.Count then just use empty inputs.
 			for (int i = removeStart; i < Log.Count; i++)
 			{
-				//do not assign characters from one frame to another if same
-
-				if (i + removeNum == Log.Count)
+				if (i + removeNum >= Log.Count)
 				{
-
-					lines.Add(Log[i]);
-				}
-				else if (i + removeNum > Log.Count)
-				{//add an blank section for that frame of the controller
-				 //lines.Add(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController));
+					//leave frames from other controllers but leave current one empty.
+					framePrevious = Log[i].ToCharArray();
+					for (int j = startOffset; j < startOffset + currentControlLength; j++)
+					{
+						framePrevious[j] = '.';
+					}
+					lines.Add(new string(framePrevious));
 				}
 				else
 				{
