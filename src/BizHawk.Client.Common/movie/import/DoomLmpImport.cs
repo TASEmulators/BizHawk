@@ -66,14 +66,14 @@ namespace BizHawk.Client.Common
 			syncSettings.InitialEpisode = episode;
 			syncSettings.InitialMap = map;
 			syncSettings.MultiplayerMode = (DSDA.MultiplayerModeEnum) multiplayerMode;
-			syncSettings.MonstersRespawn = monstersRespawn > 0;
-			syncSettings.FastMonsters = fastMonsters > 0;
-			syncSettings.NoMonsters = noMonsters > 0;
+			syncSettings.MonstersRespawn = monstersRespawn is not 0;
+			syncSettings.FastMonsters = fastMonsters is not 0;
+			syncSettings.NoMonsters = noMonsters is not 0;
 			settings.DisplayPlayer = displayPlayer;
-			syncSettings.Player1Present = player1Present > 0;
-			syncSettings.Player2Present = player2Present > 0;
-			syncSettings.Player3Present = player3Present > 0;
-			syncSettings.Player4Present = player4Present > 0;
+			syncSettings.Player1Present = player1Present is not 0;
+			syncSettings.Player2Present = player2Present is not 0;
+			syncSettings.Player3Present = player3Present is not 0;
+			syncSettings.Player4Present = player4Present is not 0;
 			syncSettings.CompatibilityMode = presumedCompatibilityLevel;
 
 			var doomController1 = new DoomController(1);
@@ -83,10 +83,10 @@ namespace BizHawk.Client.Common
 			bool isFinished = false;
 			while (!isFinished)
 			{
-				if (player1Present > 0) parsePlayer(controller, sr, 1);
-				if (player2Present > 0) parsePlayer(controller, sr, 2);
-				if (player3Present > 0) parsePlayer(controller, sr, 3);
-				if (player4Present > 0) parsePlayer(controller, sr, 4);
+				if (player1Present is not 0) parsePlayer(controller, sr, 1);
+				if (player2Present is not 0) parsePlayer(controller, sr, 2);
+				if (player3Present is not 0) parsePlayer(controller, sr, 3);
+				if (player4Present is not 0) parsePlayer(controller, sr, 4);
 
 				// Appending new frame
 				Result.Movie.AppendFrame(controller);
@@ -113,16 +113,16 @@ namespace BizHawk.Client.Common
 
 			byte specialValue = (byte) sr.ReadByte();
 
-			bool isFire = (specialValue & 0b00000001) > 0;
+			bool isFire = (specialValue & 0b00000001) is not 0;
 			controller[$"P{playerId} Fire"] = isFire;
 
-			bool isAction = (specialValue & 0b00000010) > 1;
+			bool isAction = (specialValue & 0b00000010) is not 0;
 			controller[$"P{playerId} Action"] = isAction;
 
 			byte weaponSelect = (byte) ((specialValue & 0b00011100) >> 2);
 			controller.AcceptNewAxis($"P{playerId} Weapon Select", weaponSelect);
 
-			bool altWeapon = (specialValue & 0b00100000) > 5;
+			bool altWeapon = (specialValue & 0b00100000) is not 0;
 			controller[$"P{playerId} Alt Weapon"] = altWeapon;
 		}
 	}
