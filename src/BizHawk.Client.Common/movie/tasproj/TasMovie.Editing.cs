@@ -577,7 +577,7 @@ namespace BizHawk.Client.Common
 			return firstChangedFrame;
 		}
 
-		public int CopyOverInputMPR(int frame, IEnumerable<IController> inputStates, int startOffset, int currentControlLength, int destStartOffset, int destCurrentControlLength)
+		public int CopyOverInputMPR(int frame, IEnumerable<IController> inputStates, int startOffset, int currentControlLength, int destStartOffset)
 		{
 			int firstChangedFrame = -1;
 			ChangeLog.BeginNewBatch($"Copy Over Input: {frame}");

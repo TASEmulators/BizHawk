@@ -535,10 +535,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PasteToDestMenuItem_Click(object sender, EventArgs e)
 		{
-			var tasViewDestName = sender.ToString();
-			InputRoll dest = TasViews.Find(t => t.Name == tasViewDestName);
+			var tasViewSourceName = sender.ToString();
+			InputRoll source = TasViews.Find(t => t.Name == tasViewSourceName);
 			//var dest = TasViews.Find(t => t.ContainsFocus);
-			var tasViewDestinationIndex = TasViews.IndexOf(dest); //also used to identify controller controller			
+			var tasViewSourceIndex = TasViews.IndexOf(source); //also used to identify controller controller			
 
 			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
 
@@ -589,21 +589,21 @@ namespace BizHawk.Client.EmuHawk
 
 							var rollbackFrame = 0;
 							//CurrentTasMovie.InsertInputMPR(insertionFrame, inputLog, startOffset, currentControlLength);
-							if (tasViewIndex == tasViewDestinationIndex)
+							if (tasViewIndex == tasViewSourceIndex)
 							{
 								rollbackFrame = CurrentTasMovie.CopyOverInputMPR(CurrentTasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState), startOffset, currentControlLength);
 							}
 							else
 							{
-								int destStartOffset = 1; //starts with "|" 
-								for (int k = 0; k < tasViewDestinationIndex; k++) //add up inputs to get start string offset
+								int sourceStartOffset = 1; //starts with "|" 
+								for (int k = 0; k < tasViewSourceIndex; k++) //add up inputs to get start string offset
 								{
-									destStartOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
-									destStartOffset += 1; //add 1 for pipe
+									sourceStartOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+									sourceStartOffset += 1; //add 1 for pipe
 								}
-								int destCurrentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
+								int sourceCurrentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
 
-								if (currentControlLength != destCurrentControlLength)
+								if (currentControlLength != sourceCurrentControlLength)
 								{
 									throw new Exception("Cannot copy to another TasView where the number of inputs do not equal");
 									//return;
@@ -612,8 +612,7 @@ namespace BizHawk.Client.EmuHawk
 								rollbackFrame = CurrentTasMovie.CopyOverInputMPR(CurrentTasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState),
 									startOffset,
 									currentControlLength,
-									destStartOffset,
-									destCurrentControlLength);
+									sourceStartOffset);
 							}
 
 							if (rollbackFrame > 0)
