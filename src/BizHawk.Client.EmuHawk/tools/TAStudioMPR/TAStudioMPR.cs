@@ -154,6 +154,9 @@ namespace BizHawk.Client.EmuHawk
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
 			this.Width = 1050;
+
+			TasView1.Width = Emulator.ControllerDefinition.ControlsOrdered[1].Count * 20 + 80;
+			//width has to be calculated and set after columns are created.
 			TasView1.QueryItemText += TasView_QueryItemText;
 			TasView1.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView1.QueryRowBkColor += TasView_QueryRowBkColor;
@@ -186,7 +189,8 @@ namespace BizHawk.Client.EmuHawk
 				InputRoll tasView = new InputRoll();
 				tasView.Name = "TasView" + i.ToString();
 				tasView.Parent = MainVertialSplit.Panel1;
-				tasView.Width = 250;
+				tasView.Width = Emulator.ControllerDefinition.ControlsOrdered[1].Count * 20 + 80;
+				//width has to be calculated and set after columns are created.
 				tasView.Height = TasView1.Height;
 				tasView.Location = startLocation;
 				startLocation.X += tasView.Width + 10; //for next tasView
@@ -376,6 +380,25 @@ namespace BizHawk.Client.EmuHawk
 			MovieSession.ReadOnly = true;
 			SetSplicer();
 
+			//var startLocation = new System.Drawing.Point(TasView1.Location.X + TasView1.Width + 10, 20);
+
+			//var startLocation = new System.Drawing.Point(0, 20);
+			//try setting the tasview sizes here
+			var lastTasViewWidth = 0;
+			var lastTasViewLocation = new System.Drawing.Point(0, 20);
+			foreach (InputRoll tasView in TasViews)
+			{
+				var width = 0;
+
+				foreach (var column in tasView.AllColumns)
+				{
+					width += column.Width;
+				}
+				tasView.Location = new System.Drawing.Point(lastTasViewLocation.X + lastTasViewWidth + 10, 20);
+				tasView.Width = width + 1;//padding
+				lastTasViewWidth = tasView.Width;
+				lastTasViewLocation = tasView.Location;
+			}
 			_engaged = true;
 			return true;
 		}
