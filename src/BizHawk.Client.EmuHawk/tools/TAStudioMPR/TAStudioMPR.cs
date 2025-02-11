@@ -419,81 +419,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly string[] N64CButtonSuffixes = { " C Up", " C Down", " C Left", " C Right" };
 
-		//private void SetUpColumns()
-		//{
-		//	foreach (InputRoll tasView in TasViews)
-		//	{
-		//		tasView.AllColumns.Clear();
-		//		tasView.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 18, type: ColumnType.Boolean, text: string.Empty));
-		//		tasView.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 60, text: "Frame#")
-		//		{
-		//			Rotatable = true,
-		//		});
-
-		//		foreach ((string name, string mnemonic0, int maxLength) in MnemonicMap())
-		//		{
-		//			var mnemonic = Emulator.SystemId is VSystemID.Raw.N64 && N64CButtonSuffixes.Any(name.EndsWithOrdinal)
-		//				? $"c{mnemonic0.ToUpperInvariant()}" // prepend 'c' to differentiate from L/R buttons -- this only affects the column headers
-		//				: mnemonic0;
-
-		//			var type = ControllerType.Axes.ContainsKey(name) ? ColumnType.Axis : ColumnType.Boolean;
-
-		//			tasView.AllColumns.Add(new(
-		//				name: name,
-		//				widthUnscaled: (maxLength * 6) + 14, // magic numbers reused in EditBranchTextPopUp() --feos // not since eb63fa5a9 (before 2.3.3) --yoshi
-		//				type: type,
-		//				text: mnemonic));
-		//		}
-
-		//		var columnsToHide = tasView.AllColumns
-		//			.Where(c =>
-		//				// todo: make a proper user editable list?
-		//				c.Name == "Power"
-		//				|| c.Name == "Reset"
-		//				|| c.Name == "Light Sensor"
-		//				|| c.Name == "Disc Select"
-		//				|| c.Name == "Disk Index"
-		//				|| c.Name == "Next Drive"
-		//				|| c.Name == "Next Slot"
-		//				|| c.Name == "Insert Disk"
-		//				|| c.Name == "Eject Disk"
-		//				|| c.Name.StartsWithOrdinal("Tilt")
-		//				|| c.Name.StartsWithOrdinal("Key ")
-		//				|| c.Name.StartsWithOrdinal("Open")
-		//				|| c.Name.StartsWithOrdinal("Close")
-		//				|| c.Name.EndsWithOrdinal("Tape")
-		//				|| c.Name.EndsWithOrdinal("Disk")
-		//				|| c.Name.EndsWithOrdinal("Block")
-		//				|| c.Name.EndsWithOrdinal("Status"));
-
-		//		if (Emulator.SystemId is VSystemID.Raw.N64)
-		//		{
-		//			var fakeAnalogControls = tasView.AllColumns
-		//				.Where(c =>
-		//					c.Name.EndsWithOrdinal("A Up")
-		//					|| c.Name.EndsWithOrdinal("A Down")
-		//					|| c.Name.EndsWithOrdinal("A Left")
-		//					|| c.Name.EndsWithOrdinal("A Right"));
-
-		//			columnsToHide = columnsToHide.Concat(fakeAnalogControls);
-		//		}
-
-		//		foreach (var column in columnsToHide)
-		//		{
-		//			column.Visible = false;
-		//		}
-
-		//		foreach (var column in tasView.VisibleColumns)
-		//		{
-		//			if (InputManager.StickyHoldController.IsSticky(column.Name) || InputManager.StickyAutofireController.IsSticky(column.Name))
-		//			{
-		//				column.Emphasis = true;
-		//			}
-		//		}
-
-		//		tasView.AllColumns.ColumnsChanged();
-		//	}
-		//}
 		private void SetUpColumnsPerControl(int viewIndex)
 		{
 			InputRoll tasView = TasViews[viewIndex];
@@ -951,7 +876,6 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override string WindowTitleStatic => "TAStudio";
 
-		//wannabeshinobi: changed from lambda to function
 		public IEnumerable<int> GetSelection()
 		{
 			foreach (InputRoll tasView in TasViews)
@@ -1251,27 +1175,22 @@ namespace BizHawk.Client.EmuHawk
 		public void DeleteFrames(int beginningFrame, int numberOfFrames)
 		{
 			//var a = 
-			foreach (InputRoll tasView in TasViews)
-			{
-				if (tasView.Focused && tasView.AnyRowsSelected)
-				{
-					if (beginningFrame < CurrentTasMovie.InputLogLength)
-					{
-						int[] framesToRemove = Enumerable.Range(beginningFrame, numberOfFrames).ToArray();
-						CurrentTasMovie.RemoveFrames(framesToRemove);
-						SetSplicer();
 
-						var needsToRollback = beginningFrame < Emulator.Frame;
-						if (needsToRollback)
-						{
-							GoToLastEmulatedFrameIfNecessary(beginningFrame);
-							DoAutoRestore();
-						}
-						else
-						{
-							RefreshForInputChange(beginningFrame);
-						}
-					}
+			if (beginningFrame < CurrentTasMovie.InputLogLength)
+			{
+				int[] framesToRemove = Enumerable.Range(beginningFrame, numberOfFrames).ToArray();
+				CurrentTasMovie.RemoveFrames(framesToRemove);
+				SetSplicer();
+
+				var needsToRollback = beginningFrame < Emulator.Frame;
+				if (needsToRollback)
+				{
+					GoToLastEmulatedFrameIfNecessary(beginningFrame);
+					DoAutoRestore();
+				}
+				else
+				{
+					RefreshForInputChange(beginningFrame);
 				}
 			}
 		}
@@ -1479,21 +1398,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetFontMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (InputRoll tasView in TasViews)
+
+
+			using var fontDialog = new FontDialog
 			{
-				if (tasView.Focused && tasView.AnyRowsSelected)
+				ShowColor = false,
+				Font = TasViews[1].Font
+			};
+			if (fontDialog.ShowDialog() != DialogResult.Cancel)
+			{
+				foreach (InputRoll tasView in TasViews)
 				{
-					using var fontDialog = new FontDialog
-					{
-						ShowColor = false,
-						Font = tasView.Font
-					};
-					if (fontDialog.ShowDialog() != DialogResult.Cancel)
-					{
-						tasView.Font = TasViewFont = fontDialog.Font;
-						tasView.Refresh();
-					}
+					tasView.Font = TasViewFont = fontDialog.Font;
+					tasView.Refresh();
 				}
+
 			}
 		}
 		private IMovieController ControllerFromMnemonicStr(string inputLogEntry)
