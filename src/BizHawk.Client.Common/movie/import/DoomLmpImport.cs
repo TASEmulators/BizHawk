@@ -76,17 +76,17 @@ namespace BizHawk.Client.Common
 			syncSettings.Player4Present = player4Present > 0;
 			syncSettings.CompatibilityMode = presumedCompatibilityLevel;
 
-			var doomController1 = new DoomController(0);
+			var doomController1 = new DoomController(1);
 			var controller = new SimpleController(doomController1.Definition);
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 
 			bool isFinished = false;
 			while (!isFinished)
 			{
-				if (player1Present > 0) parsePlayer(controller, sr, 0);
-				if (player2Present > 0) parsePlayer(controller, sr, 1);
-				if (player3Present > 0) parsePlayer(controller, sr, 2);
-				if (player4Present > 0) parsePlayer(controller, sr, 3);
+				if (player1Present > 0) parsePlayer(controller, sr, 1);
+				if (player2Present > 0) parsePlayer(controller, sr, 2);
+				if (player3Present > 0) parsePlayer(controller, sr, 3);
+				if (player4Present > 0) parsePlayer(controller, sr, 4);
 
 				// Appending new frame
 				Result.Movie.AppendFrame(controller);

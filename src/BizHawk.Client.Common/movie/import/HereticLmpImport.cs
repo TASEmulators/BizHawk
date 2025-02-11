@@ -49,17 +49,17 @@ namespace BizHawk.Client.Common
 			syncSettings.Player4Present = player4Present is not 0;
 			syncSettings.CompatibilityMode = DSDA.CompatibilityLevelEnum.C0;
 
-			var hereticController = new HereticController(0);
+			var hereticController = new HereticController(1);
 			var controller = new SimpleController(hereticController.Definition);
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 
 			bool isFinished = false;
 			while (!isFinished)
 			{
-				if (syncSettings.Player1Present) parsePlayer(controller, sr, 0);
-				if (syncSettings.Player2Present) parsePlayer(controller, sr, 1);
-				if (syncSettings.Player3Present) parsePlayer(controller, sr, 2);
-				if (syncSettings.Player4Present) parsePlayer(controller, sr, 3);
+				if (syncSettings.Player1Present) parsePlayer(controller, sr, 1);
+				if (syncSettings.Player2Present) parsePlayer(controller, sr, 2);
+				if (syncSettings.Player3Present) parsePlayer(controller, sr, 3);
+				if (syncSettings.Player4Present) parsePlayer(controller, sr, 4);
 
 				// Appending new frame
 				Result.Movie.AppendFrame(controller);
