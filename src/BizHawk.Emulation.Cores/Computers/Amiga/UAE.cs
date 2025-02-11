@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 				switch (_ports[port - 1])
 				{
-					case LibUAE.ControllerType.Joystick:
+					case LibUAE.ControllerType.DJoy:
 						{
 							foreach (var (name, button) in _joystickMap)
 							{
@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 							}
 							break;
 						}
-					case LibUAE.ControllerType.CD32_pad:
+					case LibUAE.ControllerType.CD32Joy:
 						{
 							foreach (var (name, button) in _cd32padMap)
 							{

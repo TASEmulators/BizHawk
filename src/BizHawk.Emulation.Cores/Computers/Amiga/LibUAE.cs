@@ -88,14 +88,32 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			public int MouseY;
 		}
 
+#if true
 		public enum ControllerType : int
 		{
-			None,
-			Joystick,
-			Mouse,
+			None = 0,
+			[Display(Name = "Joystick")]
+			DJoy = 1,
+			Mouse = 2,
 			[Display(Name = "CD32 pad")]
-			CD32_pad
+			CD32Joy = 3,
 		}
+#else //TODO matches upstream -- requires unmanaged change
+		public enum ControllerType : int
+		{
+			None = 0,
+			Mouse = 1,
+//			MouseNoWheel,
+			[Display(Name = "Joystick")]
+			DJoy = 3,
+//			Gamepad,
+//			AJoy,
+//			CDTVJoy,
+			[Display(Name = "CD32 pad")]
+			CD32Joy = 7,
+//			Lightpen,
+		}
+#endif
 
 		public enum DriveAction : int
 		{
