@@ -1398,8 +1398,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetFontMenuItem_Click(object sender, EventArgs e)
 		{
-
-
 			using var fontDialog = new FontDialog
 			{
 				ShowColor = false,
@@ -1412,7 +1410,6 @@ namespace BizHawk.Client.EmuHawk
 					tasView.Font = TasViewFont = fontDialog.Font;
 					tasView.Refresh();
 				}
-
 			}
 		}
 		private IMovieController ControllerFromMnemonicStr(string inputLogEntry)

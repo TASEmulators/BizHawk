@@ -332,11 +332,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DeselectMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (InputRoll tasView in TasViews)
-			{
-				tasView.DeselectAll();
-				tasView.Refresh();
-			}
+			CurrentTasView.DeselectAll();
+			CurrentTasView.Refresh();
 		}
 
 		/// <remarks>TODO merge w/ Deselect?</remarks>

@@ -344,7 +344,6 @@ namespace BizHawk.Client.Common
 		}
 
 
-
 		/// <summary>
 		/// Remove all frames between removeStart and removeUpTo (excluding removeUpTo).
 		/// </summary>
