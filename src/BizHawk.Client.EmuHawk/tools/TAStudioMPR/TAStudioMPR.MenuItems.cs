@@ -552,8 +552,8 @@ namespace BizHawk.Client.EmuHawk
 				int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewDestIndex].Count;
 
 				var framesToInsert = sourceTasView.SelectedRows;
-				var insertionFrame = Math.Min((sourceTasView.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
-				var needsToRollback = sourceTasView.SelectionStartIndex < Emulator.Frame;
+				var insertionFrame = Math.Min((CurrentTasView.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
+				var needsToRollback = CurrentTasView.SelectionStartIndex < Emulator.Frame;
 
 				var inputLog = framesToInsert
 					.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
@@ -569,7 +569,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				int sourceCurrentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewDestIndex].Count;
 
-				if (Emulator.ControllerDefinition.ControlsOrdered[tasViewSourceIndex] != Emulator.ControllerDefinition.ControlsOrdered[tasViewDestIndex])
+				if (Emulator.ControllerDefinition.ControlsOrdered[tasViewSourceIndex].Count != Emulator.ControllerDefinition.ControlsOrdered[tasViewDestIndex].Count)
 				{
 					//("Cannot copy to another TasView where the controller definitions are not equal");
 					return;

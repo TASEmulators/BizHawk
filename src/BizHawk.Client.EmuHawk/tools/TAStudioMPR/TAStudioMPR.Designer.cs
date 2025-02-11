@@ -188,11 +188,11 @@ namespace BizHawk.Client.EmuHawk
             this.StartFromNowSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.StartNewProjectFromNowMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.StartANewProjectFromSaveRamMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.pasteSelectedRowsFromToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BookMarkControlMPR = new BizHawk.Client.EmuHawk.BookmarksBranchesBoxMPR();
             this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
             this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.pasteSelectedRowsFromToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TASMenu.SuspendLayout();
             this.TasStatusStrip.SuspendLayout();
             this.RightClickMenu.SuspendLayout();
@@ -990,6 +990,7 @@ namespace BizHawk.Client.EmuHawk
             this.pasteToolStripMenuItem,
             this.pasteInsertToolStripMenuItem,
             this.cutToolStripMenuItem,
+            this.pasteSelectedRowsFromToolStripMenuItem,
             this.separateToolStripMenuItem,
             this.ClearContextMenuItem,
             this.DeleteFramesContextMenuItem,
@@ -1002,8 +1003,7 @@ namespace BizHawk.Client.EmuHawk
             this.BranchContextMenuItem,
             this.StartFromNowSeparator,
             this.StartNewProjectFromNowMenuItem,
-            this.StartANewProjectFromSaveRamMenuItem,
-            this.pasteSelectedRowsFromToolStripMenuItem});
+            this.StartANewProjectFromSaveRamMenuItem});
             this.RightClickMenu.Name = "RightClickMenu";
             this.RightClickMenu.Size = new System.Drawing.Size(253, 546);
             this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
@@ -1117,6 +1117,12 @@ namespace BizHawk.Client.EmuHawk
             this.StartANewProjectFromSaveRamMenuItem.Text = "Start a new project from SaveRam";
             this.StartANewProjectFromSaveRamMenuItem.Click += new System.EventHandler(this.StartANewProjectFromSaveRamMenuItem_Click);
             // 
+            // pasteSelectedRowsFromToolStripMenuItem
+            // 
+            this.pasteSelectedRowsFromToolStripMenuItem.Name = "pasteSelectedRowsFromToolStripMenuItem";
+            this.pasteSelectedRowsFromToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.pasteSelectedRowsFromToolStripMenuItem.Text = "Paste Selected Rows From";
+            // 
             // BookMarkControlMPR
             // 
             this.BookMarkControlMPR.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1172,12 +1178,6 @@ namespace BizHawk.Client.EmuHawk
             this.MainVertialSplit.SplitterDistance = 847;
             this.MainVertialSplit.TabIndex = 10;
             this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVerticalSplit_SplitterMoved);
-            // 
-            // pasteSelectedRowsFromToolStripMenuItem
-            // 
-            this.pasteSelectedRowsFromToolStripMenuItem.Name = "pasteSelectedRowsFromToolStripMenuItem";
-            this.pasteSelectedRowsFromToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
-            this.pasteSelectedRowsFromToolStripMenuItem.Text = "Paste Selected Rows From";
             // 
             // TAStudioMPR
             // 
