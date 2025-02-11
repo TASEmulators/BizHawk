@@ -639,46 +639,99 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		//private void CutMenuItem_Click(object sender, EventArgs e)
+		//{
+		//	foreach (InputRoll tasView in TasViews)
+		//	{
+		//		if (tasView.Focused && tasView.AnyRowsSelected)
+		//		{
+		//			var selectionStart = TasView1.SelectionStartIndex;
+		//			var needsToRollback = selectionStart < Emulator.Frame;
+		//			var rollBackFrame = selectionStart ?? 0;
+
+		//			_tasClipboard.Clear();
+		//			var list = TasView1.SelectedRows.ToArray();
+		//			var sb = new StringBuilder();
+
+		//			foreach (var index in list) // copy of CopyMenuItem_Click()
+		//			{
+		//				var input = CurrentTasMovie.GetInputState(index);
+		//				if (input == null)
+		//				{
+		//					break;
+		//				}
+
+		//				_tasClipboard.Add(new TasClipboardEntry(index, input));
+		//				sb.AppendLine(Bk2LogEntryGenerator.GenerateLogEntry(input));
+		//			}
+
+		//			Clipboard.SetDataObject(sb.ToString());
+		//			CurrentTasMovie.RemoveFrames(list);
+		//			SetSplicer();
+
+		//			if (needsToRollback)
+		//			{
+		//				GoToLastEmulatedFrameIfNecessary(rollBackFrame);
+		//				DoAutoRestore();
+		//			}
+
+		//			FullRefresh();
+		//		}
+		//	}
+		//}
+
 		private void CutMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (InputRoll tasView in TasViews)
+			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
+
+			if (CurrentTasView.AnyRowsSelected)
 			{
-				if (tasView.Focused && tasView.AnyRowsSelected)
+				int startOffset = 1; //starts with "|"
+				for (int k = 0; k < tasViewIndex; k++) //add up inputs to get start string offset
 				{
-					var selectionStart = TasView1.SelectionStartIndex;
-					var needsToRollback = selectionStart < Emulator.Frame;
-					var rollBackFrame = selectionStart ?? 0;
-
-					_tasClipboard.Clear();
-					var list = TasView1.SelectedRows.ToArray();
-					var sb = new StringBuilder();
-
-					foreach (var index in list) // copy of CopyMenuItem_Click()
-					{
-						var input = CurrentTasMovie.GetInputState(index);
-						if (input == null)
-						{
-							break;
-						}
-
-						_tasClipboard.Add(new TasClipboardEntry(index, input));
-						sb.AppendLine(Bk2LogEntryGenerator.GenerateLogEntry(input));
-					}
-
-					Clipboard.SetDataObject(sb.ToString());
-					CurrentTasMovie.RemoveFrames(list);
-					SetSplicer();
-
-					if (needsToRollback)
-					{
-						GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-						DoAutoRestore();
-					}
-
-					FullRefresh();
+					startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+					startOffset += 1; //add 1 for pipe
 				}
+				int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
+
+				var selectionStart = CurrentTasView.SelectionStartIndex;
+				var needsToRollback = selectionStart < Emulator.Frame;
+				var rollBackFrame = selectionStart ?? 0;
+
+				_tasClipboard.Clear();
+				var list = CurrentTasView.SelectedRows.ToArray();
+				var sb = new StringBuilder();
+
+				foreach (var index in list) // copy of CopyMenuItem_Click()
+				{
+					var input = CurrentTasMovie.GetInputState(index);
+					if (input == null)
+					{
+						break;
+					}
+
+					_tasClipboard.Add(new TasClipboardEntry(index, input));
+					sb.AppendLine(Bk2LogEntryGenerator.GenerateLogEntry(input));
+				}
+
+				Clipboard.SetDataObject(sb.ToString());
+				CurrentTasMovie.RemoveFramesMPR(CurrentTasView.SelectedRows.ToArray(), startOffset, currentControlLength);
+
+				//CurrentTasMovie.RemoveFrames(list);
+
+				SetSplicer();
+
+				if (needsToRollback)
+				{
+					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
+					DoAutoRestore();
+				}
+
+				FullRefresh();
 			}
 		}
+
+
 
 		private void ClearFramesMenuItem_Click(object sender, EventArgs e)
 		{
