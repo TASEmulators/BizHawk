@@ -1,4 +1,3 @@
-using System.IO;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
@@ -13,120 +12,74 @@ namespace BizHawk.Client.Common
 	{ 
 		protected override void RunImport()
 		{
-			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.DSDA;
-			var platform = VSystemID.Raw.Doom;
-			var settings = new DSDA.DoomSettings();
-			var syncSettings = new DSDA.DoomSyncSettings();
-
-			Result.Movie.SystemID = platform;
-
-			// Getting input file stream
 			var input = SourceFile.OpenRead().ReadAllBytes();
-			Stream sr = new MemoryStream(input);
-
-			// Parsing header
-			byte skillLevel = (byte)sr.ReadByte();
-			byte episode = (byte) sr.ReadByte();
-			byte map = (byte) sr.ReadByte();
-			byte player1Present = (byte) sr.ReadByte();
-			byte player1Class = (byte) sr.ReadByte();
-			byte player2Present = (byte) sr.ReadByte();
-			byte player2Class = (byte) sr.ReadByte();
-			byte player3Present = (byte) sr.ReadByte();
-			byte player3Class = (byte) sr.ReadByte();
-			byte player4Present = (byte) sr.ReadByte();
-			byte player4Class = (byte) sr.ReadByte();
-
-			// Players [5-8] ignored
-			byte player5Present = (byte) sr.ReadByte();
-			byte player5Class = (byte) sr.ReadByte();
-			byte player6Present = (byte) sr.ReadByte();
-			byte player6Class = (byte) sr.ReadByte();
-			byte player7Present = (byte) sr.ReadByte();
-			byte player7Class = (byte) sr.ReadByte();
-			byte playerPresent = (byte) sr.ReadByte();
-			byte player8Class = (byte) sr.ReadByte();
-
-			// Setting values
-			syncSettings.InputFormat = DoomControllerTypes.Hexen;
-			syncSettings.SkillLevel = (DSDA.SkillLevelEnum) (skillLevel+1);
-			syncSettings.InitialEpisode = episode;
-			syncSettings.InitialMap = map;
-			syncSettings.MultiplayerMode = DSDA.MultiplayerModeEnum.M0;
-			syncSettings.MonstersRespawn = false;
-			syncSettings.FastMonsters = false;
-			syncSettings.NoMonsters = false;
-			settings.DisplayPlayer = 0;
-			syncSettings.Player1Present = player1Present is not 0;
-			syncSettings.Player1Class = (DSDA.HexenClassEnum) player1Class;
-			syncSettings.Player2Present = player2Present is not 0;
-			syncSettings.Player2Class = (DSDA.HexenClassEnum) player2Class;
-			syncSettings.Player3Present = player3Present is not 0;
-			syncSettings.Player3Class = (DSDA.HexenClassEnum) player3Class;
-			syncSettings.Player4Present = player4Present is not 0;
-			syncSettings.Player4Class = (DSDA.HexenClassEnum) player4Class;
-			syncSettings.CompatibilityMode = DSDA.CompatibilityLevelEnum.C0;
+			var i = 0;
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.DSDA;
+			Result.Movie.SystemID = VSystemID.Raw.Doom;
+			DSDA.DoomSyncSettings syncSettings = new()
+			{
+				InputFormat = DoomControllerTypes.Hexen,
+				MultiplayerMode = DSDA.MultiplayerModeEnum.M0,
+				MonstersRespawn = false,
+				FastMonsters = false,
+				NoMonsters = false,
+				CompatibilityMode = DSDA.CompatibilityLevelEnum.C0,
+				SkillLevel = (DSDA.SkillLevelEnum) (1 + input[i++]),
+				InitialEpisode = input[i++],
+				InitialMap = input[i++],
+				Player1Present = input[i++] is not 0,
+				Player1Class = (DSDA.HexenClassEnum) input[i++],
+				Player2Present = input[i++] is not 0,
+				Player2Class = (DSDA.HexenClassEnum) input[i++],
+				Player3Present = input[i++] is not 0,
+				Player3Class = (DSDA.HexenClassEnum) input[i++],
+				Player4Present = input[i++] is not 0,
+				Player4Class = (DSDA.HexenClassEnum) input[i++],
+			};
+			_ = input[i++]; // player 5 isPresent
+			_ = input[i++]; // player 5 class
+			_ = input[i++]; // player 6 isPresent
+			_ = input[i++]; // player 6 class
+			_ = input[i++]; // player 7 isPresent
+			_ = input[i++]; // player 7 class
+			_ = input[i++]; // player 8 isPresent
+			_ = input[i++]; // player 8 class
+			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 
 			var hexenController = new HexenController(1);
 			var controller = new SimpleController(hexenController.Definition);
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
-
-			bool isFinished = false;
-			while (!isFinished)
+			void ParsePlayer(string playerPfx)
 			{
-				if (syncSettings.Player1Present) parsePlayer(controller, sr, 1);
-				if (syncSettings.Player2Present) parsePlayer(controller, sr, 2);
-				if (syncSettings.Player3Present) parsePlayer(controller, sr, 3);
-				if (syncSettings.Player4Present) parsePlayer(controller, sr, 4);
+				controller.AcceptNewAxis(playerPfx + "Run Speed", unchecked((sbyte) input[i++]));
 
-				// Appending new frame
-				Result.Movie.AppendFrame(controller);
+				controller.AcceptNewAxis(playerPfx + "Strafing Speed", unchecked((sbyte) input[i++]));
 
-				// Check termination
-				if (sr.Position >= sr.Length) throw new Exception("Reached end of input movie stream without finalization byte");
-				if (sr.ReadByte() == 0x80) isFinished = true;
-				sr.Seek(-1, SeekOrigin.Current);
+				controller.AcceptNewAxis(playerPfx + "Turning Speed", unchecked((sbyte) input[i++]));
+
+				var specialValue = input[i++];
+				controller[playerPfx + "Fire"] = (specialValue & 0b00000001) is not 0;
+				controller[playerPfx + "Action"] = (specialValue & 0b00000010) is not 0;
+				controller.AcceptNewAxis(playerPfx + "Weapon Select", (specialValue & 0b00011100) >> 2);
+				controller[playerPfx + "Alt Weapon"] = (specialValue & 0b00100000) is not 0;
+
+				controller.AcceptNewAxis(playerPfx + "Fly / Look", unchecked((sbyte) input[i++]));
+
+				var useArtifact = input[i++];
+				controller.AcceptNewAxis(playerPfx + "Use Artifact", useArtifact & 0b00111111);
+				controller[playerPfx + "End Player"] = (useArtifact & 0b01000000) is not 0;
+				controller[playerPfx + "Jump"] = (useArtifact & 0b10000000) is not 0;
 			}
-
-			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
-		}
-
-		private static void parsePlayer(SimpleController controller, Stream sr, int playerId)
-		{
-			sbyte runValue = (sbyte) sr.ReadByte();
-			controller.AcceptNewAxis($"P{playerId} Run Speed", runValue);
-
-			sbyte strafingValue = (sbyte) sr.ReadByte();
-			controller.AcceptNewAxis($"P{playerId} Strafing Speed", strafingValue);
-
-			sbyte turningValue = (sbyte) sr.ReadByte();
-			controller.AcceptNewAxis($"P{playerId} Turning Speed", turningValue);
-
-			byte specialValue = (byte) sr.ReadByte();
-
-			bool isFire = (specialValue & 0b00000001) is not 0;
-			controller[$"P{playerId} Fire"] = isFire;
-
-			bool isAction = (specialValue & 0b00000010) is not 0;
-			controller[$"P{playerId} Action"] = isAction;
-
-			byte weaponSelect = (byte) ((specialValue & 0b00011100) >> 2);
-			controller.AcceptNewAxis($"P{playerId} Weapon Select", weaponSelect);
-
-			bool altWeapon = (specialValue & 0b00100000) is not 0;
-			controller[$"P{playerId} Alt Weapon"] = altWeapon;
-
-			sbyte flylook = (sbyte) sr.ReadByte();
-			controller.AcceptNewAxis($"P{playerId} Fly / Look", flylook);
-
-			sbyte useArtifact = (sbyte) sr.ReadByte();
-			controller.AcceptNewAxis($"P{playerId} Use Artifact", useArtifact & 0b00111111);
-
-			bool isJump = (useArtifact & 0b10000000) is not 0;
-			controller[$"P{playerId} Jump"] = isJump;
-
-			bool isEndPlayer = (useArtifact & 0b01000000) is not 0;
-			controller[$"P{playerId} End Player"] = isEndPlayer;
+			do
+			{
+				if (syncSettings.Player1Present) ParsePlayer("P1 ");
+				if (syncSettings.Player2Present) ParsePlayer("P2 ");
+				if (syncSettings.Player3Present) ParsePlayer("P3 ");
+				if (syncSettings.Player4Present) ParsePlayer("P4 ");
+				Result.Movie.AppendFrame(controller);
+				if (i == input.Length) throw new Exception("Reached end of input movie stream without finalization byte");
+			}
+			while (input[i] is not 0x80);
 		}
 	}
 }
