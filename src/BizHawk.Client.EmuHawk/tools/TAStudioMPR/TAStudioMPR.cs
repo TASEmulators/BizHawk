@@ -168,10 +168,15 @@ namespace BizHawk.Client.EmuHawk
 					toolTip1.Show(e.NewCell.Column!.Name, TasView1, PointToClient(Cursor.Position));
 				}
 			};
+			this.pasteSelectedRowsFromToolStripMenuItem.DropDownItems.Add(
+				new ToolStripMenuItem(
+				TasView1.Name,
+				null,
+				PasteToDestMenuItem_Click)
+				);
 			TasViews.Add(TasView1);
 
 			//get number of controllers MnemonicMapPlayerController
-
 			int controllersCount = Emulator.ControllerDefinition.ControlsOrdered.Count;
 			var startLocation = new System.Drawing.Point(TasView1.Location.X + TasView1.Width + 10, 20);
 
@@ -229,10 +234,17 @@ namespace BizHawk.Client.EmuHawk
 				};
 				this.ConfigSubMenu.DropDownItems.Add(
 						new ToolStripMenuItem(
-						"Toggle Disable " + tasView.Name, 
-						null, 
+						"Toggle Disable " + tasView.Name,
+						null,
 						disableTasViewToolStripMenuItem_Click)
 						);
+				this.pasteSelectedRowsFromToolStripMenuItem.DropDownItems.Add(
+						new ToolStripMenuItem(
+						tasView.Name,
+						null,
+						PasteToDestMenuItem_Click)
+						);
+
 				TasViews.Add(tasView);
 			}
 

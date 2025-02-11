@@ -10,6 +10,7 @@ using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -498,6 +499,77 @@ namespace BizHawk.Client.EmuHawk
 								_tasClipboard.Add(new TasClipboardEntry(i, line));
 							}
 
+							int startOffset = 1; //starts with "|" 
+							for (int k = 0; k < tasViewIndex; k++) //add up inputs to get start string offset
+							{
+								startOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+								startOffset += 1; //add 1 for pipe
+							}
+							int currentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
+
+							var framesToInsert = CurrentTasView.SelectedRows;
+							var insertionFrame = Math.Min((CurrentTasView.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
+							var needsToRollback = CurrentTasView.SelectionStartIndex < Emulator.Frame;
+
+							var inputLog = framesToInsert
+								.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
+								.ToList();
+
+							var rollbackFrame = 0;
+							//CurrentTasMovie.InsertInputMPR(insertionFrame, inputLog, startOffset, currentControlLength);
+							rollbackFrame = CurrentTasMovie.CopyOverInputMPR(CurrentTasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState), startOffset, currentControlLength);
+
+
+							if (rollbackFrame > 0)
+							{
+								GoToLastEmulatedFrameIfNecessary(rollbackFrame);
+								DoAutoRestore();
+							}
+
+							FullRefresh();
+						}
+					}
+				}
+			}
+		}
+
+		private void PasteToDestMenuItem_Click(object sender, EventArgs e)
+		{
+			var tasViewDestName = sender.ToString();
+			InputRoll dest = TasViews.Find(t => t.Name == tasViewDestName);
+			//var dest = TasViews.Find(t => t.ContainsFocus);
+			var tasViewDestinationIndex = TasViews.IndexOf(dest); //also used to identify controller controller			
+
+			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
+
+			if (CurrentTasView.AnyRowsSelected)
+			{
+				// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
+				// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
+
+				// TODO: copy paste from PasteInsertMenuItem_Click!
+				IDataObject data = Clipboard.GetDataObject();
+				if (data != null && data.GetDataPresent(DataFormats.StringFormat))
+				{
+					string input = (string) data.GetData(DataFormats.StringFormat);
+					if (!string.IsNullOrWhiteSpace(input))
+					{
+						string[] lines = input.Split('\n');
+						if (lines.Length > 0)
+						{
+							_tasClipboard.Clear();
+							int linesToPaste = lines.Length;
+							if (lines[lines.Length - 1].Length is 0) linesToPaste--;
+							for (int i = 0; i < linesToPaste; i++)
+							{
+								var line = ControllerFromMnemonicStr(lines[i]);
+								if (line == null)
+								{
+									return;
+								}
+
+								_tasClipboard.Add(new TasClipboardEntry(i, line));
+							}
 
 							int startOffset = 1; //starts with "|" 
 							for (int k = 0; k < tasViewIndex; k++) //add up inputs to get start string offset
@@ -515,14 +587,35 @@ namespace BizHawk.Client.EmuHawk
 								.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
 								.ToList();
 
-							//A clone operation will insert the selected stuff for currently selected frames.
-							//All the other inputs besides the current controls need to stay the same.
-							//the current controller group need to shift down with the clone.
-
+							var rollbackFrame = 0;
 							//CurrentTasMovie.InsertInputMPR(insertionFrame, inputLog, startOffset, currentControlLength);
-							var rollbackFrame = CurrentTasMovie.CopyOverInputMPR(CurrentTasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState),  startOffset,  currentControlLength);
-							
-							
+							if (tasViewIndex == tasViewDestinationIndex)
+							{
+								rollbackFrame = CurrentTasMovie.CopyOverInputMPR(CurrentTasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState), startOffset, currentControlLength);
+							}
+							else
+							{
+								int destStartOffset = 1; //starts with "|" 
+								for (int k = 0; k < tasViewDestinationIndex; k++) //add up inputs to get start string offset
+								{
+									destStartOffset += Emulator.ControllerDefinition.ControlsOrdered[k].Count;
+									destStartOffset += 1; //add 1 for pipe
+								}
+								int destCurrentControlLength = Emulator.ControllerDefinition.ControlsOrdered[tasViewIndex].Count;
+
+								if (currentControlLength != destCurrentControlLength)
+								{
+									throw new Exception("Cannot copy to another TasView where the number of inputs do not equal");
+									//return;
+								}
+
+								rollbackFrame = CurrentTasMovie.CopyOverInputMPR(CurrentTasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState),
+									startOffset,
+									currentControlLength,
+									destStartOffset,
+									destCurrentControlLength);
+							}
+
 							if (rollbackFrame > 0)
 							{
 								GoToLastEmulatedFrameIfNecessary(rollbackFrame);
@@ -535,6 +628,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
+
 		private void PasteInsertMenuItem_Click(object sender, EventArgs e)
 		{
 			foreach (InputRoll tasView in TasViews)

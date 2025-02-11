@@ -192,6 +192,7 @@ namespace BizHawk.Client.EmuHawk
             this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
             this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.pasteSelectedRowsFromToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TASMenu.SuspendLayout();
             this.TasStatusStrip.SuspendLayout();
             this.RightClickMenu.SuspendLayout();
@@ -1001,9 +1002,10 @@ namespace BizHawk.Client.EmuHawk
             this.BranchContextMenuItem,
             this.StartFromNowSeparator,
             this.StartNewProjectFromNowMenuItem,
-            this.StartANewProjectFromSaveRamMenuItem});
+            this.StartANewProjectFromSaveRamMenuItem,
+            this.pasteSelectedRowsFromToolStripMenuItem});
             this.RightClickMenu.Name = "RightClickMenu";
-            this.RightClickMenu.Size = new System.Drawing.Size(253, 502);
+            this.RightClickMenu.Size = new System.Drawing.Size(253, 546);
             this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
             // 
             // SetMarkersContextMenuItem
@@ -1170,6 +1172,12 @@ namespace BizHawk.Client.EmuHawk
             this.MainVertialSplit.SplitterDistance = 847;
             this.MainVertialSplit.TabIndex = 10;
             this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVerticalSplit_SplitterMoved);
+            // 
+            // pasteSelectedRowsFromToolStripMenuItem
+            // 
+            this.pasteSelectedRowsFromToolStripMenuItem.Name = "pasteSelectedRowsFromToolStripMenuItem";
+            this.pasteSelectedRowsFromToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.pasteSelectedRowsFromToolStripMenuItem.Text = "Paste Selected Rows From";
             // 
             // TAStudioMPR
             // 
@@ -1370,5 +1378,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CopyIncludesFrameNoMenuItem;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.ToolStripMenuItem disableTasViewToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem pasteSelectedRowsFromToolStripMenuItem;
 	}
 }

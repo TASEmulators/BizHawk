@@ -53,6 +53,7 @@ namespace BizHawk.Client.Common
 		void InsertEmptyFrame(int frame, int count = 1);
 		int CopyOverInput(int frame, IEnumerable<IController> inputStates);
 		int CopyOverInputMPR(int frame, IEnumerable<IController> inputStates, int startOffset, int currentControlLength);
+		int CopyOverInputMPR(int frame, IEnumerable<IController> inputStates, int startOffset, int currentControlLength, int destStartOffset, int destCurrentControlLength);
 
 
 		void RemoveFrame(int frame);
