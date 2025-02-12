@@ -152,31 +152,6 @@ namespace BizHawk.Client.Common
 			Bind("TAStudio", "Analog Maximum", "Right");
 			Bind("TAStudio", "Analog Minimum", "Left");
 
-			//TAStudioMPR
-			Bind("TAStudioMPR", "Add Branch (For MPR)", "Alt+Insert");
-			Bind("TAStudioMPR", "Delete Branch (For MPR)", "Alt+Delete");
-			Bind("TAStudioMPR", "Show Cursor (For MPR)");
-			Bind("TAStudioMPR", "Toggle Follow Cursor (For MPR)", "Shift+F");
-			Bind("TAStudioMPR", "Toggle Auto-Restore (For MPR)", "Shift+R");
-			Bind("TAStudioMPR", "Toggle Turbo Seek (For MPR)", "Shift+S");
-			Bind("TAStudioMPR", "Undo (For MPR)", "Ctrl+Z"); // TODO: these are getting not unique enough
-			Bind("TAStudioMPR", "Redo (For MPR)", "Ctrl+Y");
-			Bind("TAStudioMPR", "Sel. bet. Markers (For MPR)", "Ctrl+A");
-			Bind("TAStudioMPR", "Select All (For MPR)", "Ctrl+Shift+A");
-			Bind("TAStudioMPR", "Reselect Clip. (For MPR)", "Ctrl+B");
-			Bind("TAStudioMPR", "Clear Frames (For MPR)", "Delete");
-			Bind("TAStudioMPR", "Delete Frames (For MPR)", "Ctrl+Delete");
-			Bind("TAStudioMPR", "Insert Frame (For MPR)", "Insert");
-			Bind("TAStudioMPR", "Insert # Frames (For MPR)", "Shift+Insert");
-			Bind("TAStudioMPR", "Clone Frames (For MPR)", "Ctrl+Insert");
-			Bind("TAStudioMPR", "Clone # Times (For MPR)", "Ctrl+Shift+Insert");
-			Bind("TAStudioMPR", "Analog Increment (For MPR)", "Up");
-			Bind("TAStudioMPR", "Analog Decrement (For MPR)", "Down");
-			Bind("TAStudioMPR", "Analog Incr. by 10 (For MPR)", "Shift+Up");
-			Bind("TAStudioMPR", "Analog Decr. by 10 (For MPR)", "Shift+Down");
-			Bind("TAStudioMPR", "Analog Maximum (For MPR)", "Right");
-			Bind("TAStudioMPR", "Analog Minimum (For MPR)", "Left");
-
 			Bind("SNES", "Toggle BG 1");
 			Bind("SNES", "Toggle BG 2");
 			Bind("SNES", "Toggle BG 3");

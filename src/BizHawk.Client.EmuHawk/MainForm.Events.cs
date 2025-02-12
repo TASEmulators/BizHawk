@@ -1125,23 +1125,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			Tools.Load<TAStudio>();
-		}
-
-		private void TAStudioMPRToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (!Emulator.CanPollInput())
-			{
-				ShowMessageBox(owner: null, "Current core does not support input polling. TAStudio can't be used.");
-				return;
-			}
-			const int DONT_PROMPT_BEFORE_FRAME = 2 * 60 * 60; // 2 min @ 60 fps
-			if (MovieSession.Movie.NotActive() && Emulator.Frame > DONT_PROMPT_BEFORE_FRAME // if playing casually (not recording) AND played for enough frames (prompting always would be annoying)...
-				&& !this.ModalMessageBox2("This will reload the rom without saving. Launch TAStudio anyway?", "Confirmation")) // ...AND user responds "No" to "Open TAStudio?", then cancel
-			{
-				return;
-			}
-			Tools.Load<TAStudioMPR>();
+			if (sender == TAStudioMPRToolStripMenuItem) Tools.Load<TAStudioMPR>();
+			else Tools.Load<TAStudio>();
 		}
 
 		private void HexEditorMenuItem_Click(object sender, EventArgs e)

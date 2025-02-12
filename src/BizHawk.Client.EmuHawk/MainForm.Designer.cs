@@ -1383,7 +1383,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TAStudioMPRToolStripMenuItem.Name = "TAStudioMPRToolStripMenuItem";
 			this.TAStudioMPRToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.TAStudioMPRToolStripMenuItem.Text = "TAStudioMPR";
-			this.TAStudioMPRToolStripMenuItem.Click += new System.EventHandler(this.TAStudioMPRToolStripMenuItem_Click);
+			this.TAStudioMPRToolStripMenuItem.Click += new System.EventHandler(this.TAStudioMenuItem_Click);
 			// 
 			// HexEditorMenuItem
 			// 
