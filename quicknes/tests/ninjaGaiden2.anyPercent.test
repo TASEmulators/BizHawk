@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Ninja Gaiden II - The Dark Sword of Chaos (U) [!].nes",
+  "Expected ROM SHA1": "B1796660E4A4CEFC72181D4BF4F97999BC048A77",
+  "Initial State File": "",
+  "Sequence File": "ninjaGaiden2.anyPercent.sol",
+  "Disable State Blocks": [ "SRAM", "CHRR", "NTAB", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

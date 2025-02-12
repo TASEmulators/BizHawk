@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Saiyuuki World (J).nes",
+  "Expected ROM SHA1": "C2F12D915A4D0B1FFDF8A64AE1092CE6A2D08770",
+  "Initial State File": "saiyuukiWorld.lastHalf.state",
+  "Sequence File": "saiyuukiWorld.lastHalf.sol",
+  "Disable State Blocks": [ ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": true,
+    "Max Differences": 7000,
+    "Use Zlib": true
+  }
+}

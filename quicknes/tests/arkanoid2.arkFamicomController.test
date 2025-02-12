@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Arkanoid II (J) [!].nes",
+  "Expected ROM SHA1": "79F9D3DA1904400832546216833978A2261313A5",
+  "Initial State File": "",
+  "Sequence File": "arkanoid2.arkFamicomController.sol", 
+  "Disable State Blocks": [ "SRAM", "CHRR", "NTAB", "SPRT", "MAPR", "CTRL", "APUR" ],
+  "Controller 1 Type": "ArkanoidFamicom",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

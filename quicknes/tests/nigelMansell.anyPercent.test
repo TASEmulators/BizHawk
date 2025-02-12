@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Nigel Mansell's World Championship Challenge (U) [!].nes",
+  "Expected ROM SHA1": "BBE5CF2DFA0B5422776A530D6F1B617238A8569F",
+  "Initial State File": "",
+  "Sequence File": "nigelMansell.anyPercent.sol",
+  "Disable State Blocks": [ "SRAM", "CHRR", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

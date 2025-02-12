@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Saint Seiya - Ougon Densetsu (J) [!].nes",
+  "Expected ROM SHA1": "3F3B499CF50386084E053BCA096AE8E52330CFAE",
+  "Initial State File": "",
+  "Sequence File": "saintSeiyaKanketsuHen.anyPercent.sol",
+  "Disable State Blocks": [ "SRAM", "CHRR", "NTAB", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

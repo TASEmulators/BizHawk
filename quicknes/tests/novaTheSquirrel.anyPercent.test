@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/nova.nes",
+  "Expected ROM SHA1": "B6B07EE76492ED475F39167C89B342353F999231",
+  "Initial State File": "",
+  "Sequence File": "novaTheSquirrel.anyPercent.sol",
+  "Disable State Blocks": [ "CHRR", "NTAB", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/R.C. Pro-Am II (U) [!].nes",
+  "Expected ROM SHA1": "8C68582BDAA32FBC8C7CD858991D4E00D3B1569C",
+  "Initial State File": "",
+  "Sequence File": "rcProAmII.race1.sol",
+  "Disable State Blocks": [ "SRAM", "NTAB", "SPRT", "CTRL", "APUR" ],
+  "Controller 1 Type": "FourScore1",
+  "Controller 2 Type": "FourScore2",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

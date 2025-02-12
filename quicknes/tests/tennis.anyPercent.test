@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Tennis (JU) [!].nes",
+  "Expected ROM SHA1": "80D99C035E6A5AB9718E413EC25CBE094F085962",
+  "Initial State File": "",
+  "Sequence File": "tennis.anyPercent.sol",
+  "Disable State Blocks": [ "SRAM", "CHRR", "NTAB", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}
