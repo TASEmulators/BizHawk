@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Linq;
 
 #pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
@@ -64,7 +63,7 @@ namespace BizHawk.Client.Common.cheats
 
 			var result = new DecodeResult
 			{
-				Size = code.First() switch
+				Size = code[0] switch
 				{
 					'0' => WatchSize.Byte,
 					'1' => WatchSize.Word,

@@ -108,6 +108,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
+			DisassembleMenuItem.Tag = CodeDataLogger.GetType().GetMethod(nameof(ICodeDataLogger.DisassembleCDL))!
+				.IsImplemented();
 			//don't try to recover the current CDL!
 			//even though it seems like it might be nice, it might get mixed up between games. even if we use CheckCDL. Switching games with the same memory map will be bad.
 			_cdl = null;
@@ -283,8 +285,8 @@ namespace BizHawk.Client.EmuHawk
 			SaveAsMenuItem.Enabled =
 				AppendMenuItem.Enabled =
 				ClearMenuItem.Enabled =
-				DisassembleMenuItem.Enabled =
 				_cdl != null;
+			DisassembleMenuItem.Enabled = _cdl is not null && /*core implements feature*/(bool) DisassembleMenuItem.Tag;
 
 			miAutoSave.Checked = CDLAutoSave;
 			miAutoStart.Checked = CDLAutoStart;

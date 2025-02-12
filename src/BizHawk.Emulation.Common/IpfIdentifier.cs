@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Common
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(_data, 0, 16);
 
-			if (!ident.Contains("CAPS", StringComparison.OrdinalIgnoreCase))
+			if (!ident.ContainsIgnoreCase("CAPS"))
 			{
 				// incorrect format
 				return;

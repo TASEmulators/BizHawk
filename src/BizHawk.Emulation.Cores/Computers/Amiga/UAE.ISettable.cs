@@ -261,19 +261,9 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				LibUAE.ControllerType type = port == 0
 					? settings.ControllerPort1
 					: settings.ControllerPort2;
-
-				switch (type)
-				{
-					case LibUAE.ControllerType.Joystick:
-						AppendSetting($"joyport{port}mode=djoy");
-						break;
-					case LibUAE.ControllerType.CD32_pad:
-						AppendSetting($"joyport{port}mode=cd32joy");
-						break;
-					case LibUAE.ControllerType.Mouse:
-						AppendSetting($"joyport{port}mode=mouse");
-						break;
-				}
+				AppendSetting(type is LibUAE.ControllerType.None
+					? $"joyport{port}=none"
+					: $"joyport{port}mode={type.ToString().ToLowerInvariant()}");
 			}
 		}
 
@@ -371,7 +361,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			[DisplayName("Controller port 2")]
 			[Description("")]
-			[DefaultValue(LibUAE.ControllerType.Joystick)]
+			[DefaultValue(LibUAE.ControllerType.DJoy)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public LibUAE.ControllerType ControllerPort2 { get; set; }
 

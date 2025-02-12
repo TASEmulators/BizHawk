@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				var line = sr.ReadLine();
 				if (line is null) break;
-				if (line == string.Empty) continue;
+				if (line.Length is 0) continue;
 				if (line.StartsWith('['))
 				{
 					currSection = new()
@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.DiscSystem
 					var parts = line.Split('=');
 					if (parts.Length != 2)
 						throw new CCDParseException("Malformed or unexpected CCD format: parsing item into two parts");
-					if (parts[0].ToUpperInvariant() == "FLAGS")
+					if ("FLAGS".EqualsIgnoreCase(parts[0]))
 					{
 						// flags are a space-separated collection of symbolic constants:
 						// https://www.gnu.org/software/ccd2cue/manual/html_node/FLAGS-_0028Compact-Disc-fields_0029.html#FLAGS-_0028Compact-Disc-fields_0029
@@ -212,7 +212,7 @@ namespace BizHawk.Emulation.DiscSystem
 						continue;
 					}
 					int val;
-					if (parts[1].StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+					if (parts[1].StartsWithIgnoreCase("0x"))
 						val = int.Parse(parts[1].Substring(2), NumberStyles.HexNumber);
 					else
 						val = int.Parse(parts[1]);

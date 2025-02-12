@@ -104,7 +104,8 @@
 		fi
 		${if profileManagedCalls == false then "" else ''printf "Will write profiling results to %s/*.mlpd\n" "$PWD"
 		''}${if bizhawkAssemblies.hawkSourceInfo.hasAssemblyResolveHandler then "" else ''export MONO_PATH="$BIZHAWK_HOME/dll/nlua:$BIZHAWK_HOME/dll"
-		''}${lib.optionalString (!debugPInvokes) "# "}export MONO_LOG_LEVEL=debug MONO_LOG_MASK=dll # pass `--arg debugPInvokes true` to nix-build to enable
+		''}export MONO_THREADS_SUSPEND=preemptive
+		${lib.optionalString (!debugPInvokes) "# "}export MONO_LOG_LEVEL=debug MONO_LOG_MASK=dll # pass `--arg debugPInvokes true` to nix-build to enable
 		${lib.optionalString debugDotnetHostCrashes "# "}export MONO_CRASH_NOFILE=1 # pass `--arg debugDotnetHostCrashes true` to nix-build to disable
 		if [ "$1" = '--mono-no-redirect' ]; then
 			printf "(passing --mono-no-redirect is no longer necessary)\n" >&2

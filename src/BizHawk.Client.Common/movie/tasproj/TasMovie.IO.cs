@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
 
 using BizHawk.Common.StringExtensions;
 
@@ -33,15 +32,12 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.ClientSettings, (TextWriter tw) => tw.Write(inputRollSettingsJson));
 			}
 
-			if (VerificationLog.Any())
+			if (VerificationLog.Count is not 0)
 			{
 				bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(VerificationLog.ToInputLog()));
 			}
 
-			if (Branches.Any())
-			{
-				Branches.Save(bs);
-			}
+			if (Branches.Count is not 0) Branches.Save(bs);
 
 			bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(JsonConvert.SerializeObject(TasSession)));
 

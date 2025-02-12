@@ -11,11 +11,11 @@ namespace BizHawk.Bizware.Graphics
 {
 	public class StringRenderer : IDisposable
 	{
-		public StringRenderer(IGL owner, Stream xml, params Stream[] textures)
+		public StringRenderer(IGL owner, Stream fontInfo, params Stream[] textures)
 		{
 			Owner = owner;
 			FontInfo = new();
-			FontInfo.LoadXml(xml);
+			FontInfo.LoadBinary(fontInfo);
 			
 			// load textures
 			for (var i = 0; i < FontInfo.Pages.Length; i++)
@@ -48,10 +48,10 @@ namespace BizHawk.Bizware.Graphics
 			TexturePages = null;
 		}
 
-		public SizeF Measure(string str, float scale)
+		public SizeF Measure(string str)
 		{
 			float x = 0;
-			float y = FontInfo.LineHeight * scale;
+			float y = FontInfo.LineHeight;
 			var ox = x;
 			var len = str.Length;
 
@@ -80,18 +80,18 @@ namespace BizHawk.Bizware.Graphics
 					}
 
 					x = 0;
-					y += FontInfo.LineHeight * scale;
+					y += FontInfo.LineHeight;
 					continue;
 				}
 
 				var bfc = FontInfo[c];
-				x += bfc.XAdvance * scale;
+				x += bfc.XAdvance;
 			}
 
 			return new(Math.Max(x, ox), y);
 		}
 
-		public void RenderString(IGuiRenderer renderer, float x, float y, string str, float scale)
+		public void RenderString(IGuiRenderer renderer, float x, float y, string str)
 		{
 			if (Owner != renderer.Owner)
 			{
@@ -121,19 +121,19 @@ namespace BizHawk.Bizware.Graphics
 				if (c == '\n')
 				{
 					x = ox;
-					y += FontInfo.LineHeight * scale;
+					y += FontInfo.LineHeight;
 					continue;
 				}
 
 				var bfc = FontInfo[c];
 				var tex = TexturePages[bfc.TexturePage];
-				var gx = x + bfc.XOffset * scale;
-				var gy = y + bfc.YOffset * scale;
+				var gx = x + bfc.XOffset;
+				var gy = y + bfc.YOffset;
 				var charTexCoords = CharTexCoords[bfc.Char];
-				renderer.DrawSubrect(tex, gx, gy, bfc.Width * scale, bfc.Height * scale,
+				renderer.DrawSubrect(tex, gx, gy, bfc.Width, bfc.Height,
 					charTexCoords.U0, charTexCoords.V0, charTexCoords.U1, charTexCoords.V1);
 
-				x += bfc.XAdvance * scale;
+				x += bfc.XAdvance;
 			}
 		}
 
@@ -142,6 +142,8 @@ namespace BizHawk.Bizware.Graphics
 		private readonly BitmapFont FontInfo;
 		private List<ITexture2D> TexturePages = [ ];
 		private readonly Dictionary<char, TexCoords> CharTexCoords = [ ];
+
+		public int LineHeight => FontInfo.LineHeight;
 
 		/// <remarks>TODO can this be a struct? it's only 16o and only used here, in the above dict</remarks>
 		private sealed record class TexCoords(float U0, float V0, float U1, float V1);

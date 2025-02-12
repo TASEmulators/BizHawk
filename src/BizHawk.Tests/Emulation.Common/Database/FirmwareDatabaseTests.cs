@@ -22,7 +22,9 @@ namespace BizHawk.Tests.Emulation.Common
 		public void CheckFormatOfHashes()
 		{
 			static void CustomAssert(string hash)
+#pragma warning disable CA1862 // testing whether it's all-caps
 				=> Assert.IsTrue(hash.Length == 40 && hash == hash.ToUpperInvariant() && hash.IsHex(), $"incorrectly formatted: {hash}");
+#pragma warning restore CA1862
 			foreach (var hash in FirmwareDatabase.FirmwareFilesByHash.Keys) CustomAssert(hash);
 			foreach (var fo in FirmwareDatabase.FirmwareOptions) CustomAssert(fo.Hash);
 		}

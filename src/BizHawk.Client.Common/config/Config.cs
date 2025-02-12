@@ -449,5 +449,7 @@ namespace BizHawk.Client.Common
 		public int AVWriterResizeWidth { get; set; } = 0;
 
 		public bool GCAdapterSupportEnabled { get; set; } = false;
+
+		public bool ScaleOSDWithSystemScale { get; set; } = true;
 	}
 }

@@ -1388,7 +1388,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var bb = Config.ScreenshotCaptureOsd ? CaptureOSD() : MakeScreenshotImage())
 			{
 				using var img = bb.ToSysdrawingBitmap();
-				if (Path.GetExtension(path).ToUpperInvariant() == ".JPG")
+				if (".JPG".EqualsIgnoreCase(Path.GetExtension(path)))
 				{
 					img.Save(fi.FullName, ImageFormat.Jpeg);
 				}
@@ -3116,15 +3116,8 @@ namespace BizHawk.Client.EmuHawk
 					if (PauseOnFrame.Value == Emulator.Frame)
 					{
 						PauseEmulator();
-						if (Tools.IsLoaded<TAStudio>())
-						{
-							Tools.TAStudio.StopSeeking();
-							HoldFrameAdvance = false;
-						}
-						else
-						{
-							PauseOnFrame = null;
-						}
+						if (Tools.IsLoaded<TAStudio>()) Tools.TAStudio.StopSeeking();
+						else PauseOnFrame = null;
 					}
 					else if (Tools.IsLoaded<TAStudio>()
 						&& Tools.TAStudio.LastPositionFrame == Emulator.Frame
@@ -3731,7 +3724,8 @@ namespace BizHawk.Client.EmuHawk
 					InputManager.SyncControls(Emulator, MovieSession, Config);
 					_multiDiskMode = false;
 
-					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && Emulator is not LibsnesCore)
+					if (oaOpenrom is not null && ".xml".EqualsIgnoreCase(Path.GetExtension(oaOpenrom.Path.Replace("|", "")))
+						&& Emulator is not LibsnesCore)
 					{
 						// this is a multi-disk bundler file
 						// determine the xml assets and create RomStatusDetails for all of them
@@ -4019,13 +4013,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var result = MovieImport.ImportFile(this, MovieSession, fn, Config);
 
-			if (result.Errors.Any())
+			if (result.Errors.Count is not 0)
 			{
 				ShowMessageBox(owner: null, string.Join("\n", result.Errors), "Conversion error", EMsgBoxIcon.Error);
 				return;
 			}
 
-			if (result.Warnings.Any())
+			if (result.Warnings.Count is not 0)
 			{
 				AddOnScreenMessage(result.Warnings.First()); // For now, just show the first warning
 			}
@@ -4501,7 +4495,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string SanitiseForFileDialog(string initDir)
 		{
-			if (Directory.Exists(initDir)) return initDir;
+			if (initDir.Length is 0 || Directory.Exists(initDir)) return initDir;
 #if DEBUG
 			throw new ArgumentException(
 				paramName: nameof(initDir),

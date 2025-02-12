@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.DiscSystem
 					return DiscType.Playdia;
 
 				if (sysId is "CDTV" or "AMIGA"
-					|| iso.Root.Children.Keys.Any(k => k.ToLowerInvariant().Contains("cd32")))
+					|| iso.Root.Children.Keys.Any(static k => k.ContainsIgnoreCase("cd32")))
 				{
 					return DiscType.Amiga;
 				}
@@ -452,7 +452,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private bool SectorContains(string s, int lba = 0)
 		{
 			var data = ReadDataSectorCached(lba);
-			return data != null && Encoding.ASCII.GetString(data).Contains(s, StringComparison.OrdinalIgnoreCase);
+			return data is not null && Encoding.ASCII.GetString(data).ContainsIgnoreCase(s);
 		}
 	}
 }

@@ -173,35 +173,23 @@ namespace BizHawk.Client.Common
 
 		public void RemoveFrames(ICollection<int> frames)
 		{
-			if (frames.Any())
+			if (frames.Count is not 0)
 			{
 				// Separate the given frames into contiguous blocks
 				// and process each block independently
 				List<int> framesToDelete = frames
 					.Where(fr => fr >= 0 && fr < InputLogLength)
 					.Order().ToList();
-				// f is the current index for framesToDelete
-				int f = 0;
-				int numDeleted = 0;
-				while (numDeleted != framesToDelete.Count)
-				{
-					int startFrame;
-					var prevFrame = startFrame = framesToDelete[f];
-					f++;
-					for (; f < framesToDelete.Count; f++)
-					{
-						var frame = framesToDelete[f];
-						if (frame - 1 != prevFrame)
-						{
-							f--;
-							break;
-						}
-						prevFrame = frame;
-					}
 
-					// Each block is logged as an individual ChangeLog entry
-					RemoveFrames(startFrame - numDeleted, prevFrame + 1 - numDeleted);
-					numDeleted += prevFrame + 1 - startFrame;
+				int alreadyDeleted = 0;
+				for (int i = 1; i <= framesToDelete.Count; i++)
+				{
+					if (i == framesToDelete.Count || framesToDelete[i] - framesToDelete[i - 1] != 1)
+					{
+						// Each block is logged as an individual ChangeLog entry
+						RemoveFrames(framesToDelete[alreadyDeleted] - alreadyDeleted, framesToDelete[i - 1] + 1 - alreadyDeleted);
+						alreadyDeleted = i;
+					}
 				}
 			}
 		}

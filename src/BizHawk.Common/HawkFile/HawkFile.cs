@@ -145,13 +145,11 @@ namespace BizHawk.Common
 						Exists = false;
 						return;
 					}
-					for (int i = 0, l = scanResults.Count; i < l; i++)
+					var i = scanResults.FindIndex(item => item.Name.EqualsIgnoreCase(autobind));
+					if (i >= 0)
 					{
-						if (string.Equals(scanResults[i].Name, autobind, StringComparison.OrdinalIgnoreCase))
-						{
-							BindArchiveMember(i);
-							return;
-						}
+						BindArchiveMember(i);
+						return;
 					}
 				}
 

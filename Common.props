@@ -41,6 +41,7 @@
 		<PackageReference Include="Menees.Analyzers" PrivateAssets="all" />
 		<PackageReference Include="Meziantou.Analyzer" PrivateAssets="all" />
 		<PackageReference Include="Nullable" PrivateAssets="all" />
+		<PackageReference Include="Roslynator.Analyzers" PrivateAssets="all" />
 		<PackageReference Include="StyleCop.Analyzers" PrivateAssets="all" />
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.Analyzer.dll" />
 		<GlobalAnalyzerConfigFiles Include="$(MSBuildProjectDirectory)/../../.global.editorconfig.ini" />

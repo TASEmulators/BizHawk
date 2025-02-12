@@ -36,8 +36,9 @@ namespace BizHawk.Client.EmuHawk
 			VersionLabel.Text = VersionInfo.GetFullVersionDetails();
 			DateLabel.Text = VersionInfo.ReleaseDate;
 			(linkLabel2.Text, linkLabel2.Tag) = VersionInfo.GetGitCommitLink();
-			foreach (var core in CoreInventory.Instance.SystemsFlat.Where(core => core.CoreAttr.Released)
-				.OrderByDescending(core => core.Name.ToLowerInvariant()))
+			foreach (var core in CoreInventory.Instance.SystemsFlat
+				.OrderBy(static core => core.CoreAttr.Released)
+				.ThenByDescending(static core => core.Name, StringComparer.OrdinalIgnoreCase))
 			{
 				CoreInfoPanel.Controls.Add(new BizBoxInfoControl(core.CoreAttr)
 				{

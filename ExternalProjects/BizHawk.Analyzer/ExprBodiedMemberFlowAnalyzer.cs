@@ -115,7 +115,9 @@ public sealed class ExprBodiedMemberFlowAnalyzer : DiagnosticAnalyzer
 						Fail();
 						return;
 					}
+#pragma warning disable BHI3102 // LINQ `Contains(char)` is fine here
 					var hasLineBreakAfterArrow = aecs.ArrowToken.HasTrailingTrivia && aecs.ArrowToken.TrailingTrivia.ToFullString().Contains('\n');
+#pragma warning restore BHI3102
 					if ((hasLineBreakAfterArrow ? '\n' : ' ') != expectedWhitespace.After) Fail();
 				},
 				SyntaxKind.ArrowExpressionClause);

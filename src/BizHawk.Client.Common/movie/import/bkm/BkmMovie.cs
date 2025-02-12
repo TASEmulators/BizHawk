@@ -57,13 +57,8 @@ namespace BizHawk.Client.Common
 
 				while ((line = sr.ReadLine()) != null)
 				{
-					if (line == "")
-					{
-					}
-					else if (Header.ParseLineFromFile(line))
-					{
-					}
-					else if (line.StartsWith('|'))
+					if (line.Length is 0 || Header.ParseLineFromFile(line)) continue;
+					if (line.StartsWith('|'))
 					{
 						_log.Add(line);
 					}

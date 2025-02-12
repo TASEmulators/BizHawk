@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
 
-			if (!ident.Contains("MV - CPC", StringComparison.OrdinalIgnoreCase))
+			if (!ident.ContainsIgnoreCase("MV - CPC"))
 			{
 				// incorrect format
 				return false;
@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
-			if (!ident.Contains("MV - CPC", StringComparison.OrdinalIgnoreCase))
+			if (!ident.ContainsIgnoreCase("MV - CPC"))
 			{
 				// incorrect format
 				return false;
