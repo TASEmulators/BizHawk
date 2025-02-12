@@ -196,7 +196,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveFramesMPR(ICollection<int> frames, int startOffset, int currentControlLength)
 		{
-			if (frames.Any())
+			if (frames.Count > 0)
 			{
 				// Separate the given frames into contiguous blocks
 				// and process each block independently
