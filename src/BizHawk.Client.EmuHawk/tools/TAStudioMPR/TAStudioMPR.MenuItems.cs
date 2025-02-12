@@ -1,16 +1,13 @@
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {

@@ -523,7 +523,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// autohold pattern with the maximum axis range as hold value (bit arbitrary)
 				var axisSpec = ControllerType.Axes[ControllerType.Axes[i]];
-				AxisPatterns[i] = new AutoPatternAxis([axisSpec.Range.EndInclusive]);
+				AxisPatterns[i] = new AutoPatternAxis([ axisSpec.Range.EndInclusive ]);
 			}
 		}
 
