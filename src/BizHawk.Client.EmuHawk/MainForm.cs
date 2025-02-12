@@ -4750,8 +4750,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private IRetroAchievements RA { get; set; }
 
-		
-
 		private void OpenRetroAchievements()
 		{
 			RA = RetroAchievements.CreateImpl(
