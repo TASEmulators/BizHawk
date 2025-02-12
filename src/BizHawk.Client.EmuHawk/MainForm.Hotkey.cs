@@ -446,6 +446,105 @@ namespace BizHawk.Client.EmuHawk
 					Tools.TAStudio.AnalogMin();
 					break;
 
+				// TAStudioMPR
+				case "Add Branch (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.AddBranchExternal();
+					break;
+				case "Delete Branch (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.RemoveBranchExternal();
+					break;
+				case "Show Cursor (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.SetVisibleFrame();
+					Tools.TAStudioMPR.RefreshDialog();
+					break;
+				case "Toggle Follow Cursor (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					var playbackBox3 = Tools.TAStudioMPR.TasPlaybackBoxMPR;
+					playbackBox3.FollowCursor = !playbackBox3.FollowCursor;
+					break;
+				case "Toggle Auto-Restore (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					var playbackBox4 = Tools.TAStudioMPR.TasPlaybackBoxMPR;
+					playbackBox4.AutoRestore = !playbackBox4.AutoRestore;
+					break;
+				case "Toggle Turbo Seek (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					var playbackBox5 = Tools.TAStudioMPR.TasPlaybackBoxMPR;
+					playbackBox5.TurboSeek = !playbackBox5.TurboSeek;
+					break;
+				case "Undo (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.UndoExternal();
+					break;
+				case "Redo (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.RedoExternal();
+					break;
+				case "Sel. bet. Markers (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.SelectBetweenMarkersExternal();
+					break;
+				case "Select All (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.SelectAllExternal();
+					break;
+				case "Reselect Clip. (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.ReselectClipboardExternal();
+					break;
+				case "Clear Frames (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.ClearFramesExternal();
+					break;
+				case "Insert Frame (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.InsertFrameExternal();
+					break;
+				case "Insert # Frames (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.InsertNumFramesExternal();
+					break;
+				case "Delete Frames (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.DeleteFramesExternal();
+					break;
+				case "Clone Frames (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.CloneFramesExternal();
+					break;
+				case "Clone # Times (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.CloneFramesXTimesExternal();
+					break;
+				case "Analog Increment (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.AnalogIncrementByOne();
+					break;
+				case "Analog Decrement (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.AnalogDecrementByOne();
+					break;
+				case "Analog Incr. by 10 (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.AnalogIncrementByTen();
+					break;
+				case "Analog Decr. by 10 (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.AnalogDecrementByTen();
+					break;
+				case "Analog Maximum (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.AnalogMax();
+					break;
+				case "Analog Minimum (For MPR)":
+					if (!Tools.IsLoaded<TAStudioMPR>()) return false;
+					Tools.TAStudioMPR.AnalogMin();
+					break;
+
+
 				// SNES
 				case "Toggle BG 1":
 					SNES_ToggleBg(1);
