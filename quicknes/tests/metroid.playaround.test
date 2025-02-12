@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Metroid (U) (PRG0) [!].nes",
+  "Expected ROM SHA1": "ECF39EC5A33E6A6F832F03E8FFC61C5D53F4F90B",
+  "Initial State File": "",
+  "Sequence File": "metroid.playaround.sol",
+  "Disable State Blocks": [ "CHRR", "NTAB", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

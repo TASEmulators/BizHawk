@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Galaga - Demons of Death (U) [!].nes",
+  "Expected ROM SHA1": "DA54C223D79FA59EB95437854B677CF69B5CAC8A",
+  "Initial State File": "",
+  "Sequence File": "galaga.anyPercent.sol",
+  "Disable State Blocks": [ "SRAM", "CHRR", "NTAB", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

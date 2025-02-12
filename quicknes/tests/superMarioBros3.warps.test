@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Super Mario Bros. 3 (U) (PRG0) [!].nes",
+  "Expected ROM SHA1": "A03E7E526E79DF222E048AE22214BCA2BC49C449",
+  "Initial State File": "",
+  "Sequence File": "superMarioBros3.warps.sol",
+  "Disable State Blocks": [ "CHRR", "NTAB", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

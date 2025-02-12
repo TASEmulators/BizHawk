@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Ivan 'Ironman' Stewart's Super Off Road (USA).nes",
+  "Expected ROM SHA1": "57919B685B55EE3ED3AD98FB1D25626B98BE7D39",
+  "Initial State File": "",
+  "Sequence File": "superOffroad.anyPercent.sol",
+  "Disable State Blocks": [ "SRAM", "CHRR", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

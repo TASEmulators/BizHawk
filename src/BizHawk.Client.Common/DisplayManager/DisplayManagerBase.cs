@@ -73,9 +73,6 @@ namespace BizHawk.Client.Common
 			}
 
 			{
-				using var xml = ReflectionCache.EmbeddedResourceStream("Resources.courier16px.fnt");
-				using var tex = ReflectionCache.EmbeddedResourceStream("Resources.courier16px_0.png");
-				_theOneFont = new(_gl, xml, tex);
 				using var gens = ReflectionCache.EmbeddedResourceStream("Resources.gens.ttf");
 				LoadCustomFont(gens);
 				using var fceux = ReflectionCache.EmbeddedResourceStream("Resources.fceux.ttf");
@@ -152,14 +149,37 @@ namespace BizHawk.Client.Common
 				s?.Dispose();
 			}
 
-			_theOneFont.Dispose();
+			_theOneFont?.Dispose();
 			_renderer.Dispose();
 		}
 
 		// rendering resources:
 		protected readonly IGL _gl;
 
-		private readonly StringRenderer _theOneFont;
+		private StringRenderer _theOneFont;
+		private StringRenderer Font
+		{
+			get
+			{
+				double scale = GlobalConfig.ScaleOSDWithSystemScale ? (double)GetGraphicsControlDpi() / DEFAULT_DPI : 1;
+				int fontSize = scale switch
+				{
+					< 1.25 => 16,
+					< 1.5 => 20,
+					< 2 => 25,
+					_ => 32,
+				};
+
+				if (_theOneFont?.LineHeight != fontSize)
+				{
+					using var fontInfo = ReflectionCache.EmbeddedResourceStream($"Resources.courier{fontSize}px.fnt");
+					using var tex = ReflectionCache.EmbeddedResourceStream($"Resources.courier{fontSize}px_0.png");
+					_theOneFont = new(_gl, fontInfo, tex);
+				}
+
+				return _theOneFont;
+			}
+		}
 
 		private readonly IGuiRenderer _renderer;
 
@@ -276,7 +296,7 @@ namespace BizHawk.Client.Common
 
 			var fPresent = new FinalPresentation(chainOutSize);
 			var fInput = new SourceImage(chainInSize);
-			var fOSD = new OSD(includeOSD, OSD, _theOneFont);
+			var fOSD = new OSD(includeOSD, OSD, Font, Font.LineHeight / 16f);
 
 			var chain = new FilterProgram();
 
@@ -814,8 +834,6 @@ namespace BizHawk.Client.Common
 			var filterProgram = BuildDefaultChain(chainInsize, chainOutsize, job.IncludeOSD, job.IncludeUserFilters);
 			filterProgram.GuiRenderer = _renderer;
 			filterProgram.GL = _gl;
-
-			filterProgram.ControlDpi = GetGraphicsControlDpi();
 
 			//setup the source image filter
 			var fInput = (SourceImage)filterProgram["input"];

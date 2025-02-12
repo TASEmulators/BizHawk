@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Castlevania III - Dracula's Curse (U) [!].nes",
+  "Expected ROM SHA1": "F91281D5D9CC26BCF6FB4DE2F5BE086BC633D49B",
+  "Initial State File": "",
+  "Sequence File": "castlevania3.playaround.sol",
+  "Disable State Blocks": [  ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		public MovieZone(IEmulator emulator, ToolManager tools, IMovieSession movieSession, int start, int length, string key = "")
 			: this(emulator, tools, movieSession)
 		{
-			if (key == "")
+			if (key.Length is 0)
 			{
 				key = Bk2LogEntryGenerator.GenerateLogKey(movieSession.MovieController.Definition);
 			}

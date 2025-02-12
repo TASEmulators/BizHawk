@@ -1,5 +1,5 @@
 using System.Globalization;
-using System.Linq;
+
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common
 				{
 					Result.Movie.Comments.Add(ParseHeader(line, "comment"));
 				}
-				else if (line.StartsWith("guid", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("guid"))
 				{
 					// We no longer care to keep this info
 				}
@@ -109,7 +109,7 @@ namespace BizHawk.Client.Common
 
 			if (sections.Length > 1)
 			{
-				var mnemonics = sections[1].Take(_buttons.Length).ToList();
+				var mnemonics = sections[1].AsSpan(start: 0, length: _buttons.Length);
 
 				controller["Right"] = mnemonics[0] != '.';
 				controller["Left"] = mnemonics[1] != '.';

@@ -12,6 +12,7 @@ using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
 using BizHawk.Emulation.Cores.Atari.Jaguar;
 using BizHawk.Emulation.Cores.Atari.Lynx;
+using BizHawk.Emulation.Cores.Atari.Stella;
 using BizHawk.Emulation.Cores.Calculators.Emu83;
 using BizHawk.Emulation.Cores.Calculators.TI83;
 using BizHawk.Emulation.Cores.ColecoVision;
@@ -1113,6 +1114,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			List<ToolStripItem> items = new();
+			// cores A-Z by value of `CoreAttribute.CoreName`
 
 			// A7800Hawk
 			var a7800HawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenA7800HawkGamepadSettingsDialog(GetSettingsAdapterFor<A7800Hawk>()));
@@ -1144,21 +1146,11 @@ namespace BizHawk.Client.EmuHawk
 			bsnesSubmenu.DropDownOpened += (_, _) => bsnesGamepadSettingsItem.Enabled = MovieSession.Movie.NotActive() || Emulator is not BsnesCore;
 			items.Add(bsnesSubmenu);
 
-			// SubBSNESv115+
-			var subBsnesGamepadSettingsItem = CreateSettingsItem("Controller Configuration...", (_, _) => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterFor<SubBsnesCore>()));
-			var subBsnesSettingsItem = CreateSettingsItem("Options...", (_, _) => OpenBSNESSettingsDialog(GetSettingsAdapterFor<SubBsnesCore>()));
-			var subBsnesSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.SubBsnes115, subBsnesGamepadSettingsItem, subBsnesSettingsItem);
-			subBsnesSubmenu.DropDownOpened += (_, _) => subBsnesGamepadSettingsItem.Enabled = MovieSession.Movie.NotActive() || Emulator is not SubBsnesCore;
-			items.Add(subBsnesSubmenu);
-
 			// C64Hawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.C64Hawk, CreateSettingsItem("Settings...", (_, _) => OpenC64HawkSettingsDialog())));
 
 			// ChannelFHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.ChannelFHawk, CreateGenericCoreConfigItem<ChannelF>(CoreNames.ChannelFHawk)));
-
-			// Encore
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Encore, CreateGenericCoreConfigItem<Encore>(CoreNames.Encore)));
 
 			// ColecoHawk
 			var colecoHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenColecoHawkGamepadSettingsDialog(GetSettingsAdapterFor<ColecoVision>()));
@@ -1188,6 +1180,9 @@ namespace BizHawk.Client.EmuHawk
 			// Emu83
 			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.Emu83, CreateSettingsItem("Palette...", (_, _) => OpenTI83PaletteSettingsDialog(GetSettingsAdapterFor<Emu83>()))));
 
+			// Encore
+			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Encore, CreateGenericCoreConfigItem<Encore>(CoreNames.Encore)));
+
 			// Faust
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Faust, CreateGenericNymaCoreConfigItem<Faust>(CoreNames.Faust, Faust.CachedSettingsInfo)));
 
@@ -1210,11 +1205,11 @@ namespace BizHawk.Client.EmuHawk
 			// GBHawkLink4x
 			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GBHawkLink4x, CreateGenericCoreConfigItem<GBHawkLink4x>(CoreNames.GBHawkLink4x)));
 
-			// GGHawkLink
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GGHawkLink, CreateGenericCoreConfigItem<GGHawkLink>(CoreNames.GGHawkLink)));
-
 			// Genplus-gx
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Gpgx, CreateGenericCoreConfigItem<GPGX>(CoreNames.Gpgx)));
+
+			// GGHawkLink
+			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GGHawkLink, CreateGenericCoreConfigItem<GGHawkLink>(CoreNames.GGHawkLink)));
 
 			// Handy
 			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Handy, CreateGenericCoreConfigItem<Lynx>(CoreNames.Handy))); // as Handy doesn't implement `ISettable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
@@ -1332,9 +1327,6 @@ namespace BizHawk.Client.EmuHawk
 			// PicoDrive
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.PicoDrive, CreateGenericCoreConfigItem<PicoDrive>(CoreNames.PicoDrive)));
 
-			// UAE
-			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.UAE, CreateGenericCoreConfigItem<UAE>(CoreNames.UAE)));
-
 			// QuickNes
 			var quickNesGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenQuickNesGamepadSettingsDialog(GetSettingsAdapterFor<QuickNES>()));
 			var quickNesSubmenu = CreateCoreSubmenu(
@@ -1362,6 +1354,16 @@ namespace BizHawk.Client.EmuHawk
 			// Snes9x
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Snes9X, CreateGenericCoreConfigItem<Snes9x>(CoreNames.Snes9X)));
 
+			// Stella
+			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Stella, CreateGenericCoreConfigItem<Stella>(CoreNames.Stella)));
+
+			// SubBSNESv115+
+			var subBsnesGamepadSettingsItem = CreateSettingsItem("Controller Configuration...", (_, _) => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterFor<SubBsnesCore>()));
+			var subBsnesSettingsItem = CreateSettingsItem("Options...", (_, _) => OpenBSNESSettingsDialog(GetSettingsAdapterFor<SubBsnesCore>()));
+			var subBsnesSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.SubBsnes115, subBsnesGamepadSettingsItem, subBsnesSettingsItem);
+			subBsnesSubmenu.DropDownOpened += (_, _) => subBsnesGamepadSettingsItem.Enabled = MovieSession.Movie.NotActive() || Emulator is not SubBsnesCore;
+			items.Add(subBsnesSubmenu);
+
 			// SubGBHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.SubGbHawk, CreateSettingsItem("Settings...", (_, _) => OpenSubGBHawkSettingsDialog())));
 
@@ -1386,17 +1388,20 @@ namespace BizHawk.Client.EmuHawk
 			};
 			items.Add(subNESHawkSubmenu);
 
+			// T. S. T.
+			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.TST, CreateGenericNymaCoreConfigItem<Tst>(CoreNames.TST, Tst.CachedSettingsInfo)));
+
 			// TI83Hawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.TI83Hawk, CreateSettingsItem("Palette...", (_, _) => OpenTI83PaletteSettingsDialog(GetSettingsAdapterFor<TI83>()))));
 
 			// TIC80
 			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.TIC80, CreateGenericCoreConfigItem<TIC80>(CoreNames.TIC80)));
 
-			// T. S. T.
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.TST, CreateGenericNymaCoreConfigItem<Tst>(CoreNames.TST, Tst.CachedSettingsInfo)));
-
 			// TurboNyma
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.TurboNyma, CreateGenericNymaCoreConfigItem<TurboNyma>(CoreNames.TurboNyma, TurboNyma.CachedSettingsInfo)));
+
+			// UAE
+			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.UAE, CreateGenericCoreConfigItem<UAE>(CoreNames.UAE)));
 
 			// uzem
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Uzem, CreateGenericCoreConfigItem<Uzem>(CoreNames.Uzem))); // as uzem doesn't implement `ISettable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour

@@ -1,0 +1,13 @@
+LuaJIT/
+SDL2/
+bin/
+build/
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.so.*
+*.dll
+*.exe
+hqnes

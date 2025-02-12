@@ -43,8 +43,8 @@ namespace BizHawk.Client.EmuHawk
 
 				var lastVisibleRow = firstVisibleRow + visibleRows;
 
-				var needsColumnRedraw = HorizontalOrientation || e.ClipRectangle.Y < ColumnHeight;
-				if (visibleColumns.Any() && needsColumnRedraw)
+				if (visibleColumns.Count is not 0
+					&& (HorizontalOrientation || e.ClipRectangle.Y < ColumnHeight))
 				{
 					DrawColumnBg(visibleColumns, e.ClipRectangle);
 					DrawColumnText(visibleColumns);
@@ -214,11 +214,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-
-			if (!visibleColumns.Any())
-			{
-				return;
-			}
+			if (visibleColumns.Count is 0) return;
 
 			int startRow = firstVisibleRow;
 			int range = Math.Min(lastVisibleRow, RowCount - 1) - startRow + 1;
@@ -342,7 +338,7 @@ namespace BizHawk.Client.EmuHawk
 					y += GetHColHeight(j);
 				}
 
-				if (visibleColumns.Any())
+				if (visibleColumns.Count is not 0)
 				{
 					_renderer.Line(1, y, MaxColumnWidth, y);
 				}
@@ -367,7 +363,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// Draw right most line
-				if (visibleColumns.Any())
+				if (visibleColumns.Count is not 0)
 				{
 					int right = TotalColWidth - _hBar.Value;
 					if (right <= rect.Left + rect.Width)
@@ -482,7 +478,7 @@ namespace BizHawk.Client.EmuHawk
 						_renderer.Line(x, y, x, rect.Height - 1);
 					}
 
-					if (visibleColumns.Any())
+					if (visibleColumns.Count is not 0)
 					{
 						int x = TotalColWidth - _hBar.Value;
 						_renderer.Line(x, y, x, rect.Height - 1);
@@ -496,10 +492,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (_selectedItems.Any())
-			{
-				DoSelectionBG(visibleColumns, rect);
-			}
+			if (_selectedItems.Count is not 0) DoSelectionBG(visibleColumns, rect);
 		}
 
 		private void DoSelectionBG(List<RollColumn> visibleColumns, Rectangle rect)
@@ -586,10 +579,7 @@ namespace BizHawk.Client.EmuHawk
 		// Calls QueryItemBkColor callback for all visible cells and fills in the background of those cells.
 		private void DoBackGroundCallback(List<RollColumn> visibleColumns, Rectangle rect, int firstVisibleRow, int lastVisibleRow)
 		{
-			if (!visibleColumns.Any())
-			{
-				return;
-			}
+			if (visibleColumns.Count is 0) return;
 
 			int startIndex = firstVisibleRow;
 			int range = Math.Min(lastVisibleRow, RowCount - 1) - startIndex + 1;

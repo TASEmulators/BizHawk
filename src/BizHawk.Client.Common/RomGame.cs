@@ -63,7 +63,9 @@ namespace BizHawk.Client.Common
 					NotInDatabase = true
 				};
 
+#pragma warning disable CA1862 // testing whether it's all-caps
 				if (!string.IsNullOrWhiteSpace(GameInfo.Name) && GameInfo.Name == GameInfo.Name.ToUpperInvariant())
+#pragma warning restore CA1862
 				{
 					GameInfo.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(GameInfo.Name.ToLowerInvariant());
 				}

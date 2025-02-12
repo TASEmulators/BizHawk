@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Super Mario Bros. (W) [!].nes",
+  "Expected ROM SHA1": "EA343F4E445A9050D4B4FBAC2C77D0693B1D0922",
+  "Initial State File": "",
+  "Sequence File": "superMarioBros.warpless.sol",
+  "Disable State Blocks": [ "SRAM", "CHRR", "NTAB", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

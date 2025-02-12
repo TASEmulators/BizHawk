@@ -18,7 +18,8 @@ res
 └─ rtc3test_artifact
 ```
 
-As with EmuHawk, the target framework and configuration for all the BizHawk project deps is dictated by this project. That means .NET Standard 2.0, or .NET 6 if the project supports it.
+Like when building EmuHawk, the target framework and configuration for all the BizHawk project deps is dictated by this project.
+That means .NET Standard 2.0 for most libraries, or else .NET Framework 4.8 (which you can override with e.g. `-p:TestProjTargetFrameworkOverride=net8.0`).
 To build and run the tests in `Release` configuration (or `Debug` if you need that for some reason):
 - On Linux, run `run_tests_release.sh` or `run_tests_debug.sh`.
 - On Windows, pass `-c Release` to `dotnet test` (must `cd` to this project). Omitting `-c` will use `Debug`.

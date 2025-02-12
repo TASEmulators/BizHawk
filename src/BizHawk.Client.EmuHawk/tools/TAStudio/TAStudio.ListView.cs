@@ -901,9 +901,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					// needed for AutoAdjustInput() when it removes was-lag frames
-					MainForm.HoldFrameAdvance = true;
-
 					GoToFrame(Emulator.Frame - notch);
 				}
 			}
@@ -1163,6 +1160,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					CurrentTasMovie.SetAxisState(i, _startAxisDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+					_triggerAutoRestore = true;
+					TastudioPlayMode(true);
+					RefreshDialog();
 				}
 
 				_drewAxis = true;
@@ -1314,7 +1314,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.Back)
 			{
-				if (_axisTypedValue == "") // Very first key press is backspace?
+				if (_axisTypedValue.Length is 0) // Very first key press is backspace?
 				{
 					_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 				}
@@ -1372,7 +1372,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (_axisTypedValue == "")
+				if (_axisTypedValue.Length is 0)
 				{
 					if (prevTyped != "")
 					{
@@ -1390,12 +1390,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				if (_extraAxisRows.Any())
+				foreach (int row in _extraAxisRows)
 				{
-					foreach (int row in _extraAxisRows)
-					{
-						CurrentTasMovie.SetAxisState(row, _axisEditColumn, value);
-					}
+					CurrentTasMovie.SetAxisState(row, _axisEditColumn, value);
 				}
 
 				if (value != prev) // Auto-restore

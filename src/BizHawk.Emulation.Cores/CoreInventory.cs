@@ -22,15 +22,6 @@ namespace BizHawk.Emulation.Cores
 
 		public class Core
 		{
-			private class RomGameFake : IRomAsset
-			{
-				public byte[] RomData { get; set; }
-				public byte[] FileData { get; set; }
-				public string Extension { get; set; }
-				public string RomPath { get; set; }
-				public GameInfo Game { get; set; }
-			}
-
 			// map parameter names to locations in the constructor
 			private readonly Dictionary<string, int> _paramMap = new Dictionary<string, int>();
 			// If true, this is a new style constructor that takes a CoreLoadParameters object

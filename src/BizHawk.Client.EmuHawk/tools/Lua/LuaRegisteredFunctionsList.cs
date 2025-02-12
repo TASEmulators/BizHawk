@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 			var indexes = FunctionView.SelectedIndices;
 			CallButton.Enabled = indexes.Count > 0;
 			RemoveButton.Enabled = indexes.Count > 0;
-			RemoveAllBtn.Enabled = _registeredFunctions.Any();
+			RemoveAllBtn.Enabled = _registeredFunctions.Count is not 0;
 		}
 
 		private void FunctionView_KeyDown(object sender, KeyEventArgs e)

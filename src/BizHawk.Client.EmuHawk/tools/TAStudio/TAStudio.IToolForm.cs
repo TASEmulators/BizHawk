@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			var refreshNeeded = false;
 			if (Settings.AutoadjustInput)
 			{
-				refreshNeeded = AutoAdjustInput();
+				//refreshNeeded = AutoAdjustInput();
 			}
 
 			CurrentTasMovie.TasSession.UpdateValues(Emulator.Frame, CurrentTasMovie.Branches.Current);

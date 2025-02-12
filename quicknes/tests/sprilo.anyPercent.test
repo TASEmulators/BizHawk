@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/sprilo.nes",
+  "Expected ROM SHA1": "6EC09B9B51320A536A786D3D4719432B714C5779",
+  "Initial State File": "",
+  "Sequence File": "sprilo.anyPercent.sol",
+  "Disable State Blocks": [ "SRAM", "CHRR", "NTAB", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": true,
+    "Max Differences": 300,
+    "Use Zlib": false
+  }
+}

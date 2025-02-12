@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Common
 						continue;
 
 					string str = Encoding.ASCII.GetString(s.SectorData, 0, s.SectorData.Length);
-					if (str.Contains("PLUS3DOS", StringComparison.OrdinalIgnoreCase))
+					if (str.ContainsIgnoreCase("PLUS3DOS"))
 					{
 						IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 						return;

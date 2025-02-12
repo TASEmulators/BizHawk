@@ -44,9 +44,9 @@ namespace BizHawk.Emulation.Common
 
 		private static void LoadDatabase_Escape(string line, bool inUser, bool silent)
 		{
-			if (!line.StartsWith("#include", StringComparison.InvariantCultureIgnoreCase)) return;
+			var isUserInclude = line.StartsWithIgnoreCase("#includeuser");
+			if (!isUserInclude && !line.StartsWithIgnoreCase("#include")) return;
 
-			var isUserInclude = line.StartsWith("#includeuser", StringComparison.InvariantCultureIgnoreCase);
 			var searchUser = inUser || isUserInclude;
 			line = line.Substring(isUserInclude ? 12 : 8).TrimStart();
 			var filename = Path.Combine(searchUser ? _userRoot : _bundledRoot, line);
@@ -487,7 +487,9 @@ namespace BizHawk.Emulation.Common
 			game.Name = Path.GetFileNameWithoutExtension(fileName)?.Replace('_', ' ');
 
 			// If filename is all-caps, then attempt to proper-case the title.
+#pragma warning disable CA1862 // testing whether it's all-caps
 			if (!string.IsNullOrWhiteSpace(game.Name) && game.Name == game.Name.ToUpperInvariant())
+#pragma warning restore CA1862
 			{
 				game.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(game.Name.ToLowerInvariant());
 			}

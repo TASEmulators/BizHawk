@@ -78,15 +78,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _currentDataBlockIndex = 0;
 		public int CurrentDataBlockIndex
 		{
-			get
-			{
-				if (DataBlocks.Any())
-				{
-					return _currentDataBlockIndex;
-				}
-
-				return -1;
-			}
+			get => DataBlocks.Count is 0 ? -1 : _currentDataBlockIndex;
 			set
 			{
 				if (value == _currentDataBlockIndex) { return; }

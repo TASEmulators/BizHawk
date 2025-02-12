@@ -85,11 +85,7 @@ namespace BizHawk.Client.Common
 		{
 			int index = IndexOf(old);
 			newBranch.Uuid = old.Uuid;
-			if (newBranch.UserText == "")
-			{
-				newBranch.UserText = old.UserText;
-			}
-
+			if (newBranch.UserText.Length is 0) newBranch.UserText = old.UserText;
 			this[index] = newBranch;
 			_movie.FlagChanges();
 		}

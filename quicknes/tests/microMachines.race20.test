@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Micro Machines (U).nes",
+  "Expected ROM SHA1": "EC7BB4D11AFA5A955010BB9A548C1460EAC08FE0",
+  "Initial State File": "microMachines.race20.state",
+  "Sequence File": "microMachines.race20.sol",
+  "Disable State Blocks": [ "SRAM", "CHRR", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": true, 
+    "Max Differences": 3100,
+    "Use Zlib": true
+  }
+}

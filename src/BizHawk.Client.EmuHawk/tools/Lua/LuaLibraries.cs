@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 						library: name,
 						libraryDescription: libraryDesc,
 						method,
-						suggestInREPL: false
+						suggestInREPL: instance != null
 					);
 					Docs.Add(libFunc);
 				}

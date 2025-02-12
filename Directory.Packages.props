@@ -1,6 +1,6 @@
 <Project>
 	<ItemGroup>
-		<PackageVersion Include="CommunityToolkit.HighPerformance" Version="8.3.2" />
+		<PackageVersion Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
 		<PackageVersion Include="Cyotek.Drawing.BitmapFont" Version="2.0.4" />
 		<PackageVersion Include="DotNetAnalyzers.DocumentationAnalyzers" Version="1.0.0-beta.59" />
 		<PackageVersion Include="Google.FlatBuffers" Version="23.5.26" /> <!-- last version with .NET Standard 2.0 support -->
@@ -9,7 +9,7 @@
 		<PackageVersion Include="Magick.NET-Q8-AnyCPU" Version="13.9.0" />
 		<PackageVersion Include="Menees.Analyzers" Version="3.2.2" />
 		<PackageVersion Include="Meziantou.Analyzer" Version="2.0.163" />
-		<PackageVersion Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+		<PackageVersion Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.8.0" />
@@ -18,12 +18,13 @@
 		<PackageVersion Include="Microsoft.Data.Sqlite.Core" Version="8.0.4" />
 		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
 		<PackageVersion Include="Microsoft.Win32.Registry" Version="5.0.0" />
-		<PackageVersion Include="MSTest" Version="3.4.3" />
+		<PackageVersion Include="MSTest" Version="3.7.1" />
 		<PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageVersion Include="Nullable" Version="1.3.1" />
-		<PackageVersion Include="PolySharp" Version="1.14.1" />
+		<PackageVersion Include="PolySharp" Version="1.15.0" />
 		<PackageVersion Include="ppy.SDL2-CS" Version="1.0.630-alpha" /> <!-- last version with .NET Standard 2.0 support -->
-		<PackageVersion Include="SharpCompress" Version="0.38.0" />
+		<PackageVersion Include="Roslynator.Analyzers" Version="4.12.11" />
+		<PackageVersion Include="SharpCompress" Version="0.39.0" />
 		<PackageVersion Include="Silk.NET.OpenAL" Version="2.21.0" />
 		<PackageVersion Include="Silk.NET.OpenAL.Extensions.Creative" Version="2.21.0" />
 		<PackageVersion Include="Silk.NET.OpenAL.Extensions.Enumeration" Version="2.21.0" />
@@ -37,11 +38,11 @@
 		<PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
 		<PackageVersion Include="System.Drawing.Common" Version="6.0.0" />
 		<PackageVersion Include="System.Drawing.Primitives" Version="4.3.0" />
-		<PackageVersion Include="System.Memory" Version="4.5.5" />
+		<PackageVersion Include="System.Memory" Version="4.6.0" />
 		<PackageVersion Include="System.Net.Http" Version="4.3.4" />
 		<PackageVersion Include="System.Reflection.Emit" Version="4.7.0" />
 		<PackageVersion Include="System.Resources.Extensions" Version="7.0.0" />
-		<PackageVersion Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+		<PackageVersion Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.0" />
 		<PackageVersion Include="System.Text.Json" Version="9.0.0" /> <!-- transitive dependency of Silk.NET; 8.0.0 generates build warnings -->
 		<PackageVersion Include="Vortice.Direct3D11" Version="2.4.2" /> <!-- last version with .NET Standard 2.0 support -->
 		<PackageVersion Include="Vortice.D3DCompiler" Version="2.4.2" /> <!-- last version with .NET Standard 2.0 support -->

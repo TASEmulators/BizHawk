@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Ninja Gaiden (U) [!].nes",
+  "Expected ROM SHA1": "CA513F841D75EFEB33BB8099FB02BEEB39F6BB9C",
+  "Initial State File": "",
+  "Sequence File": "ninjaGaiden.anyPercent.sol",
+  "Disable State Blocks": [ "SRAM", "CHRR", "NTAB", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

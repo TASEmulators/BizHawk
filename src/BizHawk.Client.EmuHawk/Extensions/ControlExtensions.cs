@@ -324,7 +324,7 @@ namespace BizHawk.Client.EmuHawk
 			=> !e.Alt && e.Control && e.Shift && e.KeyCode == key;
 
 		/// <summary>
-		/// Changes the description heigh area to match the rows needed for the largest description in the list
+		/// Changes the description height area to match the rows needed for the largest description in the list
 		/// </summary>
 		public static void AdjustDescriptionHeightToFit(this PropertyGrid grid)
 		{
@@ -349,8 +349,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var field = control.GetType().GetField("userSized", BindingFlags.Instance | BindingFlags.NonPublic);
 						field?.SetValue(control, true);
-						int height = (int)Graphics.FromHwnd(control.Handle).MeasureString(desc, control.Font, grid.Width).Height;
-						control.Height = Math.Max(20, height) + 16; // magic for now
+						using var label = new Label();
+						var maxSize = new Size(grid.Width - 9, 999999);
+						control.Height = label.Height + TextRenderer.MeasureText(desc, control.Font, maxSize, TextFormatFlags.WordBreak).Height;
 						return;
 					}
 				}

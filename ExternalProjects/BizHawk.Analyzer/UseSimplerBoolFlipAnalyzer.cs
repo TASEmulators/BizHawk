@@ -28,7 +28,6 @@ public sealed class UseSimplerBoolFlipAnalyzer : DiagnosticAnalyzer
 	{
 		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
 		context.EnableConcurrentExecution();
-		ISymbol? boolSym = null;
 		context.RegisterOperationAction(
 			oac =>
 			{
@@ -43,8 +42,7 @@ public sealed class UseSimplerBoolFlipAnalyzer : DiagnosticAnalyzer
 				}
 				var operation = (ICompoundAssignmentOperation) oac.Operation;
 				if (operation.OperatorKind is not BinaryOperatorKind.ExclusiveOr) return;
-				boolSym ??= oac.Compilation.GetTypeByMetadataName("System.Boolean")!;
-				if (!boolSym.Matches(operation.Type)) return;
+				if (operation.Type?.SpecialType is not SpecialType.System_Boolean) return;
 				if (operation.Value.Kind is not OperationKind.Literal) return;
 				var lhsOp = operation.Target;
 				bool lhsIsSimpleExpr;

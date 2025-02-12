@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 									if (term == ';' || term == '\0')
 									{
 										var fn = Encoding.ASCII.GetString(buf2048, index + 33, filename.Length);
-										if (filename.Equals(fn, StringComparison.OrdinalIgnoreCase))
+										if (filename.EqualsIgnoreCase(fn))
 										{
 											filesize = (buf2048[index + 13] << 24) | (buf2048[index + 12] << 16) | (buf2048[index + 11] << 8) | buf2048[index + 10];
 											return (buf2048[index + 4] << 16) | (buf2048[index + 3] << 8) | buf2048[index + 2];

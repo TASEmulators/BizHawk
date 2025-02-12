@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Ironsword - Wizards & Warriors II (U) [!].nes",
+  "Expected ROM SHA1": "97B79E432F62403FB9F877090850C41112A9A168",
+  "Initial State File": "",
+  "Sequence File": "ironSword.anyPercent.sol",
+  "Disable State Blocks": [ "SRAM", "CHRR", "NTAB", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": true,
+    "Max Differences": 1900,
+    "Use Zlib": true
+  }
+}

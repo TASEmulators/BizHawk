@@ -759,7 +759,7 @@ namespace BizHawk.Common
 			}
 		}
 
-		private ref partial struct ValueListBuilder<T>
+		private ref struct ValueListBuilder<T>
 		{
 			private Span<T> _span;
 			private T[]? _arrayFromPool;

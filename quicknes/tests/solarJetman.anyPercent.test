@@ -1,0 +1,17 @@
+{
+  "Rom File": "roms/Solar Jetman - Hunt for the Golden Warpship (U) [!].nes",
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Expected ROM SHA1": "872B91A2F7A2F635061EF43F79E7F7E9F59F5C50",
+  "Initial State File": "",
+  "Sequence File": "solarJetman.anyPercent.sol",
+  "Disable State Blocks": [ "SRAM", "CHRR", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

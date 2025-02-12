@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Castlevania (U) (PRG0) [!].nes",
+  "Expected ROM SHA1": "A31B8BD5B370A9103343C866F3C2B2998E889341",
+  "Initial State File": "",
+  "Sequence File": "castlevania1.pacifist.sol",
+  "Disable State Blocks": [ "SRAM", "CHRR", "NTAB", "SPRT", "CTRL" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

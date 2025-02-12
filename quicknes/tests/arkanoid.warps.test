@@ -1,0 +1,15 @@
+{
+  "Rom File": "roms/Arkanoid (U) [!].nes",
+  "Expected ROM SHA1": "B2B30C4F30DD853C215C17B0C67CFE63D61A3062",
+  "Initial State File": "",
+  "Sequence File": "arkanoid.warps.sol",
+  "Disable State Blocks": [ "SRAM", "CHRR", "NTAB", "SPRT", "MAPR", "CTRL", "APUR" ],
+  "Controller 1 Type": "Joypad",
+  "Controller 2 Type": "None",
+  "Differential Compression":
+  {
+    "Enabled": false,
+    "Max Differences": 2200,
+    "Use Zlib": true
+  }
+}

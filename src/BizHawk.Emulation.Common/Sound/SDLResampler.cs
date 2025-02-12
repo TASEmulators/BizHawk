@@ -1,7 +1,5 @@
 ﻿#nullable disable
 
-using System.Runtime.InteropServices;
-
 using static SDL2.SDL;
 
 #pragma warning disable BHI1007 // target-typed Exception TODO don't
@@ -49,23 +47,11 @@ namespace BizHawk.Emulation.Common
 			_input = input;
 		}
 
-		// SDL bindings don't have this for some reason :(
-		[DllImport("SDL2", CallingConvention = CallingConvention.Cdecl)]
-		private static extern int SDL_AudioStreamFlush(IntPtr stream);
-
 		/// <summary>change sampling rate on the fly</summary>
 		/// <param name="src_rate">sampling rate in by hz</param>
 		/// <param name="dst_rate">sampling rate out by hz</param>
 		public void ChangeRate(int src_rate, int dst_rate)
 		{
-			// force flush the stream, as we'll be destroying it to change the sample rate...
-			if (SDL_AudioStreamFlush(_stream) != 0)
-			{
-				throw new($"{nameof(SDL_AudioStreamFlush)} failed! SDL error: {SDL_GetError()}");
-			}
-
-			Flush();
-
 			SDL_FreeAudioStream(_stream);
 			_stream = SDL_NewAudioStream(AUDIO_S16SYS, 2, src_rate, AUDIO_S16SYS, 2, dst_rate);
 
@@ -172,6 +158,8 @@ namespace BizHawk.Emulation.Common
 
 		public void DiscardSamples()
 		{
+			SDL_AudioStreamClear(_stream);
+
 			_outNumSamps = 0;
 		}
 

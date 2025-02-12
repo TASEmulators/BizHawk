@@ -1,8 +1,11 @@
 namespace BizHawk.Analyzers;
 
+using System.Threading;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Operations;
 
 public static class RoslynUtils
 {
@@ -23,6 +26,12 @@ public static class RoslynUtils
 
 	public static ITypeSymbol? GetThrownExceptionType(this SemanticModel model, ThrowStatementSyntax tss)
 		=> model.GetThrownExceptionType(tss.Expression!);
+
+	public static TypeInfo GetTypeInfo(this SemanticModel model, IArgumentOperation argOp, CancellationToken cancellationToken)
+	{
+		var syn = argOp.Syntax;
+		return model.GetTypeInfo(syn is ArgumentSyntax argSyn ? argSyn.Expression : syn, cancellationToken);
+	}
 
 	public static bool Matches(this ISymbol expected, ISymbol? actual)
 		=> SymbolEqualityComparer.Default.Equals(expected, actual);

@@ -22,6 +22,11 @@ namespace BizHawk.Common.StringExtensions
 		public static bool Contains(this string haystack, string needle, StringComparison comparisonType)
 			=> haystack.IndexOf(needle, comparisonType) != -1;
 
+		/// <inheritdoc cref="EqualsIgnoreCase"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool ContainsIgnoreCase(this string haystack, string needle)
+			=> haystack.Contains(needle, StringComparison.OrdinalIgnoreCase);
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool ContainsOrdinal(this string haystack, char needle)
 			=> haystack.Contains(needle); // already ordinal
@@ -39,11 +44,23 @@ namespace BizHawk.Common.StringExtensions
 		public static bool EndsWithOrdinal(this string haystack, char needle)
 			=> haystack.EndsWith(needle); // already ordinal
 
+#pragma warning disable RS0030 // doc comment links to banned API
+		/// <summary>performs a non-localised but case-insensitive comparison</summary>
+		/// <remarks>
+		/// uses <see cref="StringComparison.OrdinalIgnoreCase"/>,
+		/// equivalent to <c>str.ToUpperInvariant().SequenceEqual(other.ToUpperInvariant())</c> per <see href="https://learn.microsoft.com/en-us/dotnet/api/system.stringcomparer.ordinalignorecase?view=netstandard-2.0#remarks">docs</see>;
+		/// whereas <see cref="StringComparison.InvariantCultureIgnoreCase"/> is different (for non-ASCII text)
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool EqualsIgnoreCase(this string str, string other)
+			=> str.Equals(other, StringComparison.OrdinalIgnoreCase);
+#pragma warning restore RS0030
+
 		/// <returns>
 		/// <see langword="true"/> if <paramref name="str"/> appears in <paramref name="options"/> (case-insensitive)
 		/// </returns>
-		public static bool In(this string str, params string[] options) =>
-			options.Any(opt => string.Equals(opt, str, StringComparison.OrdinalIgnoreCase));
+		public static bool In(this string str, params string[] options)
+			=> options.Any(str.EqualsIgnoreCase);
 
 		/// <returns>a copy of <paramref name="raw"/> with all characters outside <c>[0-9A-Za-z]</c> removed</returns>
 		public static string OnlyAlphanumeric(this string raw)
@@ -102,6 +119,11 @@ namespace BizHawk.Common.StringExtensions
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool StartsWith(this string str, char c)
 			=> str.Length >= 1 && str[0] == c;
+
+		/// <inheritdoc cref="EqualsIgnoreCase"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool StartsWithIgnoreCase(this string haystack, string needle)
+			=> haystack.StartsWith(needle, StringComparison.OrdinalIgnoreCase);
 
 		/// <returns>
 		/// the substring of <paramref name="str"/> after the first occurrence of <paramref name="delimiter"/>, or

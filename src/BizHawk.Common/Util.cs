@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
+using BizHawk.Common.StringExtensions;
+
 namespace BizHawk.Common
 {
 	public static unsafe class Util
@@ -110,7 +112,9 @@ namespace BizHawk.Common
 		/// <returns>all <see cref="Type">Types</see> with the name <paramref name="className"/></returns>
 		/// <remarks>adapted from https://stackoverflow.com/a/13727044/7467292</remarks>
 		public static IList<Type> GetTypeByName(string className) => AppDomain.CurrentDomain.GetAssemblies()
-			.SelectMany(asm => asm.GetTypesWithoutLoadErrors().Where(type => className.Equals(type.Name, StringComparison.OrdinalIgnoreCase))).ToList();
+			.SelectMany(static asm => asm.GetTypesWithoutLoadErrors())
+			.Where(type => type.Name.EqualsIgnoreCase(className))
+			.ToList();
 
 		/// <remarks>TODO replace this with GetTypes (i.e. the try block) when VB.NET dep is properly removed</remarks>
 		public static IEnumerable<Type> GetTypesWithoutLoadErrors(this Assembly assembly)

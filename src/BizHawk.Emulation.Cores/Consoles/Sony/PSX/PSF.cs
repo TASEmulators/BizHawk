@@ -41,8 +41,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						var tagstring = br.ReadStringFixedUtf8((int)(fs.Length - fs.Position)).Replace("\r\n", "\n");
 						foreach (var tag in tagstring.Split('\n', '\x0'))
 						{
-							if (tag.Trim() == "")
-								continue;
+							if (tag.Trim().Length is 0) continue;
 							int eq = tag.IndexOf('=');
 							if (eq != -1)
 								TagsDictionary[tag.Substring(0, eq)] = tag.Substring(eq + 1);

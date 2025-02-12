@@ -400,7 +400,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
 		{
 			var items = SelectedItems.ToList();
-			if (items.Any())
+			if (items.Count is not 0)
 			{
 				foreach (var item in items)
 				{
@@ -600,7 +600,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
 		{
 			var selected = SelectedCheats.ToList();
-			if (selected.Any())
+			if (selected.Count is not 0)
 			{
 				Tools.Load<HexEditor>();
 

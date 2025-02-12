@@ -31,8 +31,8 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrWhiteSpace(FilterBox.Text))
 			{
 				_filteredList = _functionList
-					.Where(f => $"{f.Library}.{f.Name}".Contains(FilterBox.Text, StringComparison.OrdinalIgnoreCase)
-						|| f.Description.Contains(FilterBox.Text, StringComparison.OrdinalIgnoreCase))
+					.Where(f => $"{f.Library}.{f.Name}".ContainsIgnoreCase(FilterBox.Text)
+						|| f.Description.ContainsIgnoreCase(FilterBox.Text))
 					.ToList();
 			}
 			else

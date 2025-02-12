@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// The +2 is almost identical to the 128k from an emulation point of view
 	/// There are just a few small changes in the ROMs
 	/// </summary>
-	public partial class ZX128Plus2 : ZX128
+	public sealed class ZX128Plus2 : ZX128
 	{
 		/// <summary>
 		/// Main constructor
