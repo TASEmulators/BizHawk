@@ -1339,7 +1339,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.Back)
 			{
-				if (_axisTypedValue == "") // Very first key press is backspace?
+				if (_axisTypedValue.Length is 0) // Very first key press is backspace?
 				{
 					_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 				}
@@ -1397,7 +1397,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (_axisTypedValue == "")
+				if (_axisTypedValue.Length is 0)
 				{
 					if (prevTyped != "")
 					{
@@ -1415,12 +1415,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				if (_extraAxisRows.Any())
+				foreach (int row in _extraAxisRows)
 				{
-					foreach (int row in _extraAxisRows)
-					{
-						CurrentTasMovie.SetAxisState(row, _axisEditColumn, value);
-					}
+					CurrentTasMovie.SetAxisState(row, _axisEditColumn, value);
 				}
 
 				if (value != prev) // Auto-restore
