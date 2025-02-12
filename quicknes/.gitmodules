@@ -1,6 +1,0 @@
-[submodule "source/quickNES/QuickNES_Core"]
-	path = source/quickNES/core
-	url = https://github.com/SergioMartin86/QuickNES_Core.git
-[submodule "source/jaffarCommon"]
-	path = extern/jaffarCommon
-	url = https://github.com/SergioMartin86/jaffarCommon.git
