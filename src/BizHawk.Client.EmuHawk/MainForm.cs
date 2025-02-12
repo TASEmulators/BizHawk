@@ -56,6 +56,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private const int WINDOW_SCALE_MAX = 10;
 
+		private readonly ToolStripMenuItemEx NullHawkVSysSubmenu = new() { Enabled = false, Text = "—" };
+
 		private void MainForm_Load(object sender, EventArgs e)
 		{	
 			UpdateWindowTitle();
@@ -163,6 +165,8 @@ namespace BizHawk.Client.EmuHawk
 					},
 					Text = "Core Settings",
 				});
+
+			MainformMenu.Items.Insert(MainformMenu.Items.IndexOf(ToolsSubMenu) + 1, NullHawkVSysSubmenu);
 
 			// Hide Status bar icons and general StatusBar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right
