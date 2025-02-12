@@ -154,9 +154,8 @@ namespace BizHawk.Client.EmuHawk
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
 			this.Width = 1050;
-
+			//width has to be calculated and set after columns are created, but without this it seems to not set correctly.
 			TasView1.Width = Emulator.ControllerDefinition.ControlsOrdered[1].Count * 20 + 80;
-			//width has to be calculated and set after columns are created.
 			TasView1.QueryItemText += TasView_QueryItemText;
 			TasView1.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView1.QueryRowBkColor += TasView_QueryRowBkColor;
@@ -189,8 +188,8 @@ namespace BizHawk.Client.EmuHawk
 				InputRoll tasView = new InputRoll();
 				tasView.Name = "TasView" + i.ToString();
 				tasView.Parent = MainVertialSplit.Panel1;
+				//width has to be calculated and set after columns are created, but without this it seems to not set correctly.
 				tasView.Width = Emulator.ControllerDefinition.ControlsOrdered[1].Count * 20 + 80;
-				//width has to be calculated and set after columns are created.
 				tasView.Height = TasView1.Height;
 				tasView.Location = startLocation;
 				startLocation.X += tasView.Width + 10; //for next tasView
@@ -248,10 +247,8 @@ namespace BizHawk.Client.EmuHawk
 						null,
 						PasteToDestMenuItem_Click)
 						);
-
 				TasViews.Add(tasView);
 			}
-
 
 
 			if (!Engage())
@@ -298,7 +295,6 @@ namespace BizHawk.Client.EmuHawk
 				_initialized = true;
 			}
 		}
-
 		private bool LoadMostRecentOrStartNew()
 		{
 			return LoadFileWithFallback(Settings.RecentTas.MostRecent);
@@ -380,10 +376,7 @@ namespace BizHawk.Client.EmuHawk
 			MovieSession.ReadOnly = true;
 			SetSplicer();
 
-			//var startLocation = new System.Drawing.Point(TasView1.Location.X + TasView1.Width + 10, 20);
-
-			//var startLocation = new System.Drawing.Point(0, 20);
-			//try setting the tasview sizes here
+			//Setting the tasview sizes here
 			var lastTasViewWidth = 0;
 			var lastTasViewLocation = new System.Drawing.Point(0, 20);
 			foreach (InputRoll tasView in TasViews)
@@ -451,9 +444,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Rotatable = true,
 			});
-
-			//MovieSession.MovieController.Definition.ControlsOrdered
-			//var controls = MnemonicMap().ToArray()[viewIndex];
 
 			//viewIndex here is the same as the control group index
 			foreach ((string name, string mnemonic0, int maxLength) in MnemonicMapPlayerController(viewIndex))
@@ -1136,32 +1126,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		//public void InsertNumFrames(int insertionFrame, int numberOfFrames)
-		//{
-		//	foreach (InputRoll tasView in TasViews)
-		//	{
-		//		if (tasView.Focused && tasView.AnyRowsSelected)
-		//		{
-		//			if (insertionFrame <= CurrentTasMovie.InputLogLength)
-		//			{
-		//				var needsToRollback = tasView.SelectionStartIndex < Emulator.Frame;
-
-		//				CurrentTasMovie.InsertEmptyFrame(insertionFrame, numberOfFrames);
-
-		//				if (needsToRollback)
-		//				{
-		//					GoToLastEmulatedFrameIfNecessary(insertionFrame);
-		//					DoAutoRestore();
-		//				}
-		//				else
-		//				{
-		//					RefreshForInputChange(insertionFrame);
-		//				}
-		//			}
-		//		}
-		//	}
-		//}
-
 		public void InsertNumFramesMPR(int insertionFrame, int numberOfFrames)
 		{
 			int tasViewIndex = TasViews.IndexOf(CurrentTasView);
@@ -1197,8 +1161,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 		public void DeleteFrames(int beginningFrame, int numberOfFrames)
 		{
-			//var a = 
-
 			if (beginningFrame < CurrentTasMovie.InputLogLength)
 			{
 				int[] framesToRemove = Enumerable.Range(beginningFrame, numberOfFrames).ToArray();
@@ -1472,7 +1434,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-
 
 		private IEnumerable<(string Name, string Mnemonic, int MaxLength)> MnemonicMapPlayerController(int viewIndex)
 		{

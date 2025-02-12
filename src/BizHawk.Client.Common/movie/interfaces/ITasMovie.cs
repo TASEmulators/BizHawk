@@ -40,21 +40,18 @@ namespace BizHawk.Client.Common
 		void SetAxisStates(int frame, int count, string buttonName, int val);
 		void SetBoolState(int frame, string buttonName, bool val);
 		void SetBoolStates(int frame, int count, string buttonName, bool val);
+
 		void InsertInput(int frame, string inputState);
 		void InsertInput(int frame, IEnumerable<string> inputLog);
 		void InsertInput(int frame, IEnumerable<IController> inputStates);
 		void InsertInputMPR(int frame, IEnumerable<string> inputLog, int startOffset, int currentControlLength);
-
 		void InsertEmptyFrameMPR(int frame, int startOffset, int currentControlLength, int count = 1);
 		void InsertEmptyFramesMPR(int frame, int startOffset, int currentControlLength, int count = 1);
-
-
-
 		void InsertEmptyFrame(int frame, int count = 1);
+
 		int CopyOverInput(int frame, IEnumerable<IController> inputStates);
 		int CopyOverInputMPR(int frame, IEnumerable<IController> inputStates, int startOffset, int currentControlLength);
 		int CopyOverDestInputMPR(int frame, IEnumerable<string> frames, int startOffset, int currentControlLength, int sourceStartOffset);
-
 
 		void RemoveFrame(int frame);
 		void RemoveFrames(ICollection<int> frames);

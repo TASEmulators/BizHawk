@@ -71,11 +71,6 @@ namespace BizHawk.Client.Common
 
 			char[] curFrame;
 
-			//if (frame < Log.Count - 1)
-			//{
-			//	Changes = true;
-			//}
-
 			if (frame < Log.Count)
 			{
 				//clear inputs for that controller until end of movie.
@@ -89,9 +84,7 @@ namespace BizHawk.Client.Common
 					SetFrameAt(i, new string(curFrame));
 				}
 
-
-				//Find last row with empty input
-				//Then remove Range then
+				//Find last row with empty inputThen remove range then insert range
 				int lastEmptyFrame = Log.Count - 1;
 				string noInput = Bk2LogEntryGenerator.EmptyEntry(Session.MovieController);
 				for (int i = Log.Count - 1; i >= frame; i--)
@@ -210,7 +203,6 @@ namespace BizHawk.Client.Common
 						prevFrame = frame;
 					}
 
-
 					// Each block is logged as an individual ChangeLog entry
 					RemoveFrames(startFrame - numDeleted, prevFrame + 1 - numDeleted);
 					numDeleted += prevFrame + 1 - startFrame;
@@ -248,8 +240,6 @@ namespace BizHawk.Client.Common
 
 					// Each block is logged as an individual ChangeLog entry
 					RemoveFramesMPR(startFrame - numDeleted >= 0 ? startFrame - numDeleted : 0, prevFrame + 1 - numDeleted, startOffset, currentControlLength);
-					//RemoveFramesMPR(startFrame - numDeleted, prevFrame + 1 - numDeleted, startOffset, currentControlLength);
-
 					numDeleted += prevFrame + 1 - startFrame;
 				}
 			}
@@ -266,7 +256,6 @@ namespace BizHawk.Client.Common
 		{
 			// Log.GetRange() might be preferrable, but Log's type complicates that.
 			string[] removedInputs = new string[removeUpTo - removeStart];
-			//Log.CopyTo(removeStart, removedInputs, 0, removedInputs.Length);
 
 			// Pre-process removed markers for the ChangeLog.
 			List<TasMovieMarker> removedMarkers = new List<TasMovieMarker>();
@@ -285,18 +274,12 @@ namespace BizHawk.Client.Common
 				ChangeLog.IsRecording = wasRecording;
 			}
 
-			//ok right here start doing the shuffle dance
-
-			//StringBuilder tempLog = new StringBuilder();
 			List<string> lines = new List<string>();
 			char[] framePrevious = Log[removeStart].ToCharArray();
 			string frameNext = string.Empty;
 
 			int removeNum = removeUpTo - removeStart;
 
-			//so this is a bit more complicated.  Here it will remove a range.
-			//if two frames to be deleted then need to get the characters from the row two down from the startFrame.
-			//if beyond the range of the current Log.Count then just use empty inputs.
 			for (int i = removeStart; i < Log.Count; i++)
 			{
 				if (i + removeNum >= Log.Count)
@@ -412,13 +395,11 @@ namespace BizHawk.Client.Common
 			//insert it at end since the inputs have to shift
 			Log.InsertRange(Log.Count, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), inputLog.Count()));
 
-			//StringBuilder tempLog = new StringBuilder();
 			List<string> lines = new List<string>();
 			string framePrevious = string.Empty;
 			char[] frameNext = Log[frame].ToCharArray();
 			int addNewCount = inputLog.Count();
 			int index = 0;
-
 
 			foreach (string newInputs in inputLog.ToList())
 			{
@@ -451,7 +432,6 @@ namespace BizHawk.Client.Common
 
 			Log.RemoveRange(frame, Log.Count - frame);
 			Log.InsertRange(frame, lines);
-
 
 			ShiftBindedMarkers(frame, inputLog.Count());
 
@@ -524,8 +504,6 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(states.Count + frame - Log.Count);
 			}
 			int addNewCount = inputStates.Count();
-			//Log.InsertRange(Log.Count, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), addNewCount));
-
 
 			ChangeLog.AddGeneralUndo(frame, frame + states.Count - 1, $"Copy Over Input: {frame}");
 
@@ -552,8 +530,6 @@ namespace BizHawk.Client.Common
 				{
 					logFrame[j] = inputFrame[j];
 				}
-				//.Add(new string(logFrame));
-
 				Log[frame + i] = new string(logFrame);
 			}
 
@@ -565,7 +541,6 @@ namespace BizHawk.Client.Common
 			return firstChangedFrame;
 		}
 
-	
 		public int CopyOverDestInputMPR(int frame, IEnumerable<string> inputStates, int startOffset, int currentControlLength, int destStartOffset)
 		{
 			int firstChangedFrame = -1;
@@ -578,7 +553,6 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(states.Count + frame - Log.Count);
 			}
 			int addNewCount = inputStates.Count();
-			//Log.InsertRange(Log.Count, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), addNewCount));
 
 			ChangeLog.AddGeneralUndo(frame, frame + states.Count - 1, $"Copy Over Input: {frame}");
 
@@ -586,7 +560,7 @@ namespace BizHawk.Client.Common
 			char[] logFrame;
 			List<string> lines = new List<string>();
 
-			int offsetDifference = destStartOffset - startOffset ; 
+			int offsetDifference = destStartOffset - startOffset;
 			for (int i = 0; i < states.Count; i++)
 			{
 				if (Log.Count <= frame + i)
@@ -594,7 +568,6 @@ namespace BizHawk.Client.Common
 					break;
 				}
 
-				//var entry = Bk2LogEntryGenerator.GenerateLogEntry(states[i]);
 				var entry = states[i];
 				if (firstChangedFrame == -1 && Log[frame + i] != entry)
 				{
@@ -605,10 +578,9 @@ namespace BizHawk.Client.Common
 				inputFrame = entry.ToCharArray();
 				for (int j = startOffset; j < startOffset + currentControlLength; j++)
 				{
-					logFrame[j] = inputFrame[j+offsetDifference];
+					logFrame[j] = inputFrame[j + offsetDifference];
 				}
-				//.Add(new string(logFrame));
- 
+
 				Log[frame + i] = new string(logFrame);
 			}
 
@@ -641,11 +613,9 @@ namespace BizHawk.Client.Common
 			//insert it at end since the inputs have to shift
 			Log.InsertRange(Log.Count, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
 
-			//StringBuilder tempLog = new StringBuilder();
 			List<string> lines = new List<string>();
 			string framePrevious = string.Empty;
 			char[] frameNext = Log[frame].ToCharArray();
-
 
 			//inserted empty controller first
 			for (int j = startOffset; j < startOffset + currentControlLength; j++)
@@ -657,17 +627,11 @@ namespace BizHawk.Client.Common
 
 			for (int i = frame; i < Log.Count; i++)
 			{
-				//do not assign characters from one frame to another if same
 				{
 					if (i + 1 == Log.Count)
 					{
 						lines.Add(Log[i]);
-						//continue;
 					}
-					//else if (Log[i].Substring(startOffset, currentControlLength) == Log[i + 1].Substring(startOffset, currentControlLength))
-					//{
-					//	lines.Add(Log[i]);
-					//}
 					else
 					{
 						//takes characters from the controller and shifts then, leaving other controllers alone.
@@ -683,7 +647,6 @@ namespace BizHawk.Client.Common
 			}
 			Log.RemoveRange(frame, Log.Count - frame - 1);
 			Log.InsertRange(frame, lines);
-			//Log.InsertRange(frame, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
 
 			ShiftBindedMarkers(frame, count);
 
@@ -701,7 +664,6 @@ namespace BizHawk.Client.Common
 			//insert it at end since the inputs have to shift
 			Log.InsertRange(Log.Count, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), addNewCount));
 
-			//StringBuilder tempLog = new StringBuilder();
 			List<string> lines = new List<string>();
 			string framePrevious = string.Empty;
 			char[] frameNext = Log[frame].ToCharArray();
