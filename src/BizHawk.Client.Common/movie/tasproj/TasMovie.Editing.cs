@@ -1,11 +1,7 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
-using SharpCompress;
 
 namespace BizHawk.Client.Common
 {

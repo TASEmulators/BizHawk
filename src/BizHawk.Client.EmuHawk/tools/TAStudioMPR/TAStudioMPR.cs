@@ -4,14 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.ComponentModel;
-using System.Runtime.Remoting.Channels;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.Properties;
-
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
-using Silk.NET.OpenGL;
 
 
 namespace BizHawk.Client.EmuHawk
@@ -199,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 
 				tasView.CellHeightPadding = 0;
 				tasView.ChangeSelectionWhenPaging = false;
-				tasView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+				tasView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
 				tasView.FullRowSelect = true;
 				tasView.InputPaintingMode = true;
 				tasView.LetKeysModifySelection = true;
@@ -530,7 +527,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		//check
 		/// <remarks>for Lua</remarks>
 		public void AddColumn(string name, string text, int widthUnscaled)
 			=> TasView1.AllColumns.Add(new(name: name, widthUnscaled: widthUnscaled, type: ColumnType.Text, text: text));
