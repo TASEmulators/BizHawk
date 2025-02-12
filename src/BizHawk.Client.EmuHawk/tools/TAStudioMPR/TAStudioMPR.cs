@@ -1436,6 +1436,9 @@ namespace BizHawk.Client.EmuHawk
 			if (MovieSession.MovieController.Definition.MnemonicsCache is null)
 				throw new InvalidOperationException("Can't build mnemonic map with empty mnemonics cache");
 
+			if (MovieSession.MovieController.Definition.ControlsOrdered.Count != TasViews.Count)
+				throw new InvalidOperationException("Number of Controllers has changed unexpectedly. Select desired Core, Reboot Core, and try again.");
+
 			var playerControls = MovieSession.MovieController.Definition.ControlsOrdered[viewIndex];
 
 			//foreach (var playerControls in MovieSession.MovieController.Definition.ControlsOrdered)
