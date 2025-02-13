@@ -872,8 +872,10 @@ namespace BizHawk.Client.EmuHawk
 
 				InputManager.ActiveController.LatchFromPhysical(finalHostController);
 
-				InputManager.ActiveController.ApplyAxisConstraints(
-					(Emulator is N64 && Config.N64UseCircularAnalogConstraint) ? "Natural Circle" : null);
+				if (Config.N64UseCircularAnalogConstraint)
+				{
+					InputManager.ActiveController.ApplyAxisConstraints("Natural Circle");
+				}
 
 				InputManager.ActiveController.OR_FromLogical(InputManager.ClickyVirtualPadController);
 				InputManager.AutoFireController.LatchFromPhysical(finalHostController);
