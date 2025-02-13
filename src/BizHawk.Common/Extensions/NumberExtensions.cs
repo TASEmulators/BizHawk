@@ -127,15 +127,20 @@ namespace BizHawk.Common.NumberExtensions
 			}
 		}
 
+		/// <returns>
+		/// <c>-1</c> when <paramref name="i"/> when is negative or <c>0</c>,
+		/// otherwise the (floor of the) base-10 logarithm of that value i.e. 1 less than the number of decimal digits
+		/// </returns>
 		public static int Log10(int i)
 		{
+			if (i <= 0) return -1;
 			var toReturn = 0;
-			while (i > 100)
+			while (i >= 100)
 			{
 				i /= 100;
 				toReturn += 2;
 			}
-			return i > 10 ? toReturn + 1 : toReturn;
+			return i >= 10 ? toReturn + 1 : toReturn;
 		}
 
 		/// <summary>
