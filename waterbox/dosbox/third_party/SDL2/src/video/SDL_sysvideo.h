@@ -29,7 +29,7 @@
 #include "SDL_thread.h"
 #include "SDL_metal.h"
 
-#include "SDL_vulkan_internal.h"
+//#include "SDL_vulkan_internal.h"
 
 /* The SDL video driver */
 
@@ -277,27 +277,27 @@ struct SDL_VideoDevice
     /*
      * OpenGL support
      */
-    int (*GL_LoadLibrary) (_THIS, const char *path);
-    void *(*GL_GetProcAddress) (_THIS, const char *proc);
-    void (*GL_UnloadLibrary) (_THIS);
-      SDL_GLContext(*GL_CreateContext) (_THIS, SDL_Window * window);
-    int (*GL_MakeCurrent) (_THIS, SDL_Window * window, SDL_GLContext context);
-    void (*GL_GetDrawableSize) (_THIS, SDL_Window * window, int *w, int *h);
-    int (*GL_SetSwapInterval) (_THIS, int interval);
-    int (*GL_GetSwapInterval) (_THIS);
-    int (*GL_SwapWindow) (_THIS, SDL_Window * window);
-    void (*GL_DeleteContext) (_THIS, SDL_GLContext context);
-    void (*GL_DefaultProfileConfig) (_THIS, int *mask, int *major, int *minor);
+    // int (*GL_LoadLibrary) (_THIS, const char *path);
+    // void *(*GL_GetProcAddress) (_THIS, const char *proc);
+    // void (*GL_UnloadLibrary) (_THIS);
+    //   SDL_GLContext(*GL_CreateContext) (_THIS, SDL_Window * window);
+    // int (*GL_MakeCurrent) (_THIS, SDL_Window * window, SDL_GLContext context);
+    // void (*GL_GetDrawableSize) (_THIS, SDL_Window * window, int *w, int *h);
+    // int (*GL_SetSwapInterval) (_THIS, int interval);
+    // int (*GL_GetSwapInterval) (_THIS);
+    // int (*GL_SwapWindow) (_THIS, SDL_Window * window);
+    // void (*GL_DeleteContext) (_THIS, SDL_GLContext context);
+    // void (*GL_DefaultProfileConfig) (_THIS, int *mask, int *major, int *minor);
 
     /* * * */
     /*
      * Vulkan support
      */
-    int (*Vulkan_LoadLibrary)(_THIS, const char *path);
-    void (*Vulkan_UnloadLibrary)(_THIS);
-    SDL_bool (*Vulkan_GetInstanceExtensions)(_THIS, SDL_Window *window, unsigned *count, const char **names);
-    SDL_bool (*Vulkan_CreateSurface)(_THIS, SDL_Window *window, VkInstance instance, VkSurfaceKHR *surface);
-    void (*Vulkan_GetDrawableSize)(_THIS, SDL_Window *window, int *w, int *h);
+    // int (*Vulkan_LoadLibrary)(_THIS, const char *path);
+    // void (*Vulkan_UnloadLibrary)(_THIS);
+    // SDL_bool (*Vulkan_GetInstanceExtensions)(_THIS, SDL_Window *window, unsigned *count, const char **names);
+    // SDL_bool (*Vulkan_CreateSurface)(_THIS, SDL_Window *window, VkInstance instance, VkSurfaceKHR *surface);
+    // void (*Vulkan_GetDrawableSize)(_THIS, SDL_Window *window, int *w, int *h);
 
     /* * * */
     /*
@@ -421,14 +421,14 @@ struct SDL_VideoDevice
 
     /* * * */
     /* Data used by the Vulkan drivers */
-    struct
-    {
-        PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
-        PFN_vkEnumerateInstanceExtensionProperties vkEnumerateInstanceExtensionProperties;
-        int loader_loaded;
-        char loader_path[256];
-        void *loader_handle;
-    } vulkan_config;
+    // struct
+    // {
+    //     PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
+    //     PFN_vkEnumerateInstanceExtensionProperties vkEnumerateInstanceExtensionProperties;
+    //     int loader_loaded;
+    //     char loader_path[256];
+    //     void *loader_handle;
+    // } vulkan_config;
 
     /* * * */
     /* Data private to this driver */

@@ -25,11 +25,11 @@
 #include "SDL_cpuinfo.h"
 
 #ifdef __ARM_NEON
-#define HAVE_NEON_INTRINSICS 1
+//#define HAVE_NEON_INTRINSICS 1
 #endif
 
 #ifdef __SSE2__
-#define HAVE_SSE2_INTRINSICS
+//#define HAVE_SSE2_INTRINSICS
 #endif
 
 #if defined(__x86_64__) && defined(HAVE_SSE2_INTRINSICS)

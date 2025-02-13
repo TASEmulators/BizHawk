@@ -9,6 +9,7 @@
 #include "SDL_cpuinfo.h"
 /*#include <x86intrin.h>*/
 
+#undef __SSE2__
 #ifdef __SSE2__
 
 /* SDL doesn't use these atm and compiling them adds seconds onto the build.  --ryan.

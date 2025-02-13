@@ -24,6 +24,7 @@
 #include "SDL_blit.h"
 #include "SDL_blit_copy.h"
 
+#undef __SSE__
 #ifdef __SSE__
 /* This assumes 16-byte aligned src and dst */
 static SDL_INLINE void SDL_memcpySSE(Uint8 *dst, const Uint8 *src, int len)
@@ -51,6 +52,7 @@ static SDL_INLINE void SDL_memcpySSE(Uint8 *dst, const Uint8 *src, int len)
 }
 #endif /* __SSE__ */
 
+#undef __MMX__
 #ifdef __MMX__
 #ifdef _MSC_VER
 #pragma warning(disable : 4799)

@@ -37,11 +37,11 @@
 #endif
 
 #ifdef __SSE__
-#define HAVE_SSE_INTRINSICS 1
+// #define HAVE_SSE_INTRINSICS 1
 #endif
 
 #ifdef __SSE3__
-#define HAVE_SSE3_INTRINSICS 1
+// #define HAVE_SSE3_INTRINSICS 1
 #endif
 
 #if defined(HAVE_IMMINTRIN_H) && !defined(SDL_DISABLE_IMMINTRIN_H)

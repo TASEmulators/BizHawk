@@ -167,6 +167,7 @@ static void BlitNto1SurfaceAlphaKey(SDL_BlitInfo *info)
     }
 }
 
+#undef __MMX__
 #ifdef __MMX__
 
 /* fast RGB888->(A)RGB888 blending with surface alpha=128 special case */

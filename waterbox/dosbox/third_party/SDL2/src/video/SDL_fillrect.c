@@ -24,6 +24,7 @@
 #include "SDL_blit.h"
 #include "SDL_cpuinfo.h"
 
+#undef __SSE__
 #ifdef __SSE__
 /* *INDENT-OFF* */ /* clang-format off */
 

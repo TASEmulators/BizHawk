@@ -27,6 +27,8 @@
 
 #include "yuv2rgb/yuv_rgb.h"
 
+#undef __SSE2__
+
 #define SDL_YUV_SD_THRESHOLD 576
 
 static SDL_YUV_CONVERSION_MODE SDL_YUV_ConversionMode = SDL_YUV_CONVERSION_BT601;
