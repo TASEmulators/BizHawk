@@ -89,11 +89,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			var dosbox = PreInit<LibDOSBox>(new WaterboxOptions
 			{
 				Filename = "dosbox.wbx",
-				SbrkHeapSizeKB = 1024,
+				SbrkHeapSizeKB = 1024 * 32,
 				SealedHeapSizeKB = 512,
 				InvisibleHeapSizeKB = 512,
-				PlainHeapSizeKB = 512,
-				MmapHeapSizeKB = 20 * 1024,
+				PlainHeapSizeKB = 1024 * 32,
+				MmapHeapSizeKB = 1024 * 32,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _ledCallback });
