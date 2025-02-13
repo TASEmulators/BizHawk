@@ -63,7 +63,11 @@ namespace BizHawk.Emulation.Common
 			void FirmwareAndOption(string hash, long size, string systemId, string id, string name, string desc)
 			{
 				Firmware(systemId, id, desc);
-				Option(systemId, id, File(hash, size, name, desc), FirmwareOptionStatus.Ideal);
+				Option(
+					systemId,
+					id,
+					File(hash, size, name, desc),
+					hash is SHA1Checksum.Dummy ? FirmwareOptionStatus.Unknown : FirmwareOptionStatus.Ideal);
 			}
 
 			void AddPatchAndMaybeReverse(FirmwarePatchOption fpo)

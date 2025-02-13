@@ -1441,6 +1441,7 @@ namespace BizHawk.Client.EmuHawk
 				var i = GenericCoreSubMenu.Text.IndexOf('&');
 				if (i != -1) AvailableAccelerators.Add(GenericCoreSubMenu.Text[i + 1]);
 			}
+			NullHawkVSysSubmenu.Visible = false;
 			GenericCoreSubMenu.Visible = false;
 			TI83SubMenu.Visible = false;
 			NESSubMenu.Visible = false;
@@ -1462,6 +1463,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (sysID)
 			{
 				case VSystemID.Raw.NULL:
+					NullHawkVSysSubmenu.Visible = true;
 					break;
 				case VSystemID.Raw.A78:
 					A7800SubMenu.Visible = true;
