@@ -1,18 +1,28 @@
 #include "bizhawk.hpp"
 #include "../libco/libco.h"
 
+extern int _main(int argc, char* argv[]);
+void runMain() { _main(0, nullptr); }
+cothread_t _emuCoroutine;
+cothread_t _driverCoroutine;
+
 ECL_EXPORT bool Init(int argc, char **argv)
 {
-	FILE* f = fopen("FloppyDisk0", "rb");
-	
-	if (f == NULL) return false;
-	else 
-	{
-		fseek(f, 0L, SEEK_END);
-        size_t size = ftell(f);
-		printf("File Size: %lu\n", size);
-		fclose(f);
-	}
+	// FILE* f = fopen("FloppyDisk0", "rb");
+	// 
+	// if (f == NULL) return false;
+	// else 
+	// {
+	// 	fseek(f, 0L, SEEK_END);
+ //        size_t size = ftell(f);
+	// 	printf("File Size: %lu\n", size);
+	// 	fclose(f);
+	// }
+
+	constexpr size_t stackSize = 4 * 1024 * 1024;
+	_emuCoroutine = co_create(stackSize, runMain);
+	_driverCoroutine = co_active();
+	co_switch(_emuCoroutine);
 
 	return true;
 }

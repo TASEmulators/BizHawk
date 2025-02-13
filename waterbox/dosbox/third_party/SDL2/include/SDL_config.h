@@ -269,7 +269,7 @@
 /* #undef SDL_EVENTS_DISABLED */
 #define SDL_FILE_DISABLED 1
 /* #undef SDL_JOYSTICK_DISABLED */
-/* #undef SDL_HAPTIC_DISABLED */
+#define SDL_HAPTIC_DISABLED
 /* #undef SDL_HIDAPI_DISABLED */
 #define SDL_SENSOR_DISABLED 1
 /* #undef SDL_LOADSO_DISABLED */
@@ -321,7 +321,7 @@
 /* #undef SDL_AUDIO_DRIVER_OS2 */
 
 /* Enable various input drivers */
-#define SDL_INPUT_LINUXEV 1
+/* #undef SDL_INPUT_LINUXEV 1 */
 /* #undef SDL_INPUT_FBSDKBIO */
 #define SDL_INPUT_LINUXKD 1
 /* #undef SDL_INPUT_WSCONS */
@@ -329,10 +329,10 @@
 /* #undef SDL_JOYSTICK_DINPUT */
 /* #undef SDL_JOYSTICK_WGI */
 /* #undef SDL_JOYSTICK_XINPUT */
-/* #undef SDL_JOYSTICK_DUMMY */
+#define SDL_JOYSTICK_DUMMY 1
 /* #undef SDL_JOYSTICK_IOKIT */
 /* #undef SDL_JOYSTICK_MFI */
-#define SDL_JOYSTICK_LINUX 1
+/* #undef SDL_JOYSTICK_LINUX */
 /* #undef SDL_JOYSTICK_ANDROID */
 /* #undef SDL_JOYSTICK_OS2 */
 /* #undef SDL_JOYSTICK_USBHID */

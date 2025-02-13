@@ -1,6 +1,7 @@
 CCFLAGS := 	-Ithird_party/SDL2/include \
 			-Ithird_party/SDL2/src/ \
 			-I. \
+			-Ithird_party/libco \
 			-Idosbox-x \
 			-Idosbox-x/include \
 			-Idosbox-x/src \
@@ -17,7 +18,7 @@ CCFLAGS := 	-Ithird_party/SDL2/include \
 			-Idosbox-x/src/hardware/snd_pc98/x11 \
 			-Idosbox-x/src/hardware/snd_pc98/sound/getsnd \
 			-Idosbox-x/src/hardware/snd_pc98/cbus \
-            -DSDL_BUILD_MAJOR_VERSION=2 \
+    -DSDL_BUILD_MAJOR_VERSION=2 \
 			-DSDL_BUILD_MINOR_VERSION=32 \
 			-DSDL_BUILD_MICRO_VERSION=0 \
 			-DMESA_EGL_NO_X11_HEADERS \
@@ -29,11 +30,11 @@ CCFLAGS := 	-Ithird_party/SDL2/include \
 			-D_POSIX_C_SOURCE=200809L \
 			-DRESDIR="/usr/share/dosbox-x" \
 			-Wno-deprecated-enum-enum-conversion \
-			-Wno-volatile \
 			-Wno-deprecated-declarations \
 			-DNDEBUG=1 \
 			-Wno-error=incompatible-pointer-types \
-			-Wno-unused-result 
+			-Wno-unused-result \
+			-D__LINUX__
 
 CXXFLAGS := $(CCFLAGS)
 LDFLAGS :=
@@ -41,6 +42,7 @@ LDFLAGS :=
 TARGET := dosbox.wbx
 
 SRCS = bizhawk.cpp \
+				third_party/libco/amd64.c \
 	   dosbox-x/src/dos/dos_devices.cpp \
 	   dosbox-x/src/dos/drive_physfs.cpp \
 	   dosbox-x/src/dos/dos_ioctl.cpp \
@@ -49,7 +51,6 @@ SRCS = bizhawk.cpp \
 	   dosbox-x/src/dos/dos_execute.cpp \
 	   dosbox-x/src/dos/dos_files.cpp \
 	   dosbox-x/src/dos/cdrom_image.cpp \
-	   dosbox-x/src/dos/cdrom_ioctl_linux.cpp \
 	   dosbox-x/src/dos/drive_local.cpp \
 	   dosbox-x/src/dos/drive_fat.cpp \
 	   dosbox-x/src/dos/dos_mscdex.cpp \
@@ -203,12 +204,6 @@ SRCS = bizhawk.cpp \
 	   dosbox-x/src/hardware/memory.cpp \
 	   dosbox-x/src/hardware/cmos.cpp \
 	   dosbox-x/src/hardware/voodoo_opengl.cpp \
-	   dosbox-x/src/hardware/parport/printer_charmaps.cpp \
-	   dosbox-x/src/hardware/parport/directlpt.cpp \
-	   dosbox-x/src/hardware/parport/parport.cpp \
-	   dosbox-x/src/hardware/parport/printer_redir.cpp \
-	   dosbox-x/src/hardware/parport/printer.cpp \
-	   dosbox-x/src/hardware/parport/filelpt.cpp \
 	   dosbox-x/src/hardware/vga_dac.cpp \
 	   dosbox-x/src/hardware/vga_gfx.cpp \
 	   dosbox-x/src/hardware/vga_crtc.cpp \
@@ -227,7 +222,6 @@ SRCS = bizhawk.cpp \
 	   dosbox-x/src/hardware/hardopl.cpp \
 	   dosbox-x/src/hardware/glide.cpp \
 	   dosbox-x/src/hardware/mpu401.cpp \
-	   dosbox-x/src/hardware/RetroWaveLib/RetroWave_DOSBoX.cpp \
 	   dosbox-x/src/hardware/dbopl.cpp \
 	   dosbox-x/src/hardware/tandy_sound.cpp \
 	   dosbox-x/src/hardware/keyboard.cpp \
@@ -291,6 +285,9 @@ SRCS = bizhawk.cpp \
 	   dosbox-x/src/hardware/reSID/wave6581_P_T.cpp \
 	   dosbox-x/src/hardware/reSID/wave8580__ST.cpp \
 	   dosbox-x/src/hardware/joystick.cpp \
+				dosbox-x/vs/sdl2/src/joystick/virtual/SDL_virtualjoystick.c \
+				dosbox-x/vs/sdl2/src/joystick/dummy/SDL_sysjoystick.c \
+				dosbox-x/src/hardware/parport/parport.cpp \
 	   dosbox-x/src/hardware/mixer.cpp \
 	   dosbox-x/src/hardware/voodoo.cpp \
 	   dosbox-x/src/hardware/sblaster.cpp \
@@ -344,14 +341,6 @@ SRCS = bizhawk.cpp \
 	   dosbox-x/src/output/output_tools.cpp \
 	   dosbox-x/src/fpu/fpu.cpp \
 	   dosbox-x/src/gui/zipcrc.c \
-	   dosbox-x/src/hardware/RetroWaveLib/Protocol/Serial.c \
-	   dosbox-x/src/hardware/RetroWaveLib/Board/MiniBlaster.c \
-	   dosbox-x/src/hardware/RetroWaveLib/Board/MasterGear.c \
-	   dosbox-x/src/hardware/RetroWaveLib/Board/OPL3.c \
-	   dosbox-x/src/hardware/RetroWaveLib/RetroWave.c \
-	   dosbox-x/src/hardware/RetroWaveLib/Platform/Win32_SerialPort.c \
-	   dosbox-x/src/hardware/RetroWaveLib/Platform/Linux_SPI.c \
-	   dosbox-x/src/hardware/RetroWaveLib/Platform/POSIX_SerialPort.c \
 	   dosbox-x/src/hardware/esfmu/esfm_registers.c \
 	   dosbox-x/src/hardware/esfmu/esfm.c \
 	   dosbox-x/src/hardware/imfc_rom.c \
@@ -603,12 +592,13 @@ SRCS = bizhawk.cpp \
 	   third_party/SDL2/src/events/SDL_windowevents.c \
 	   third_party/SDL2/src/events/imKStoUCS.c \
 	   third_party/SDL2/src/file/SDL_rwops.c \
-	   third_party/SDL2/src/haptic/SDL_haptic.c \
 	   third_party/SDL2/src/hidapi/SDL_hidapi.c \
 	   third_party/SDL2/src/joystick/SDL_gamecontroller.c \
 	   third_party/SDL2/src/joystick/SDL_joystick.c \
 	   third_party/SDL2/src/joystick/SDL_steam_virtual_gamepad.c \
 	   third_party/SDL2/src/joystick/controller_type.c \
+				third_party/SDL2/src/haptic/SDL_haptic.c \
+				third_party/SDL2/src/haptic/dummy/SDL_syshaptic.c \
 	   third_party/SDL2/src/libm/e_atan2.c \
 	   third_party/SDL2/src/libm/e_exp.c \
 	   third_party/SDL2/src/libm/e_fmod.c \
