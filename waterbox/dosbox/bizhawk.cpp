@@ -1,7 +1,19 @@
 #include "bizhawk.hpp"
+#include "../libco/libco.h"
 
 ECL_EXPORT bool Init(int argc, char **argv)
 {
+	FILE* f = fopen("FloppyDisk0", "rb");
+	
+	if (f == NULL) return false;
+	else 
+	{
+		fseek(f, 0L, SEEK_END);
+        size_t size = ftell(f);
+		printf("File Size: %lu\n", size);
+		fclose(f);
+	}
+
 	return true;
 }
 

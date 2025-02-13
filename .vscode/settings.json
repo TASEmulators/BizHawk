@@ -6,6 +6,9 @@
 	},
 	"files.associations": {
 		"*.jaffar": "json",
-		"__config": "cpp"
+		"__config": "cpp",
+		"sdl_dbus.h": "c",
+		"sdl_internal.h": "c",
+		"sdl_config.h": "c"
 	}
 }
