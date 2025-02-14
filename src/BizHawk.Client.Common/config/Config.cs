@@ -191,7 +191,7 @@ namespace BizHawk.Client.Common
 
 		public ClientProfile SelectedProfile { get; set; } = ClientProfile.Unknown;
 
-		// N64
+		// TODO: make this not N64-specific, it doesn't need to be
 		public bool N64UseCircularAnalogConstraint { get; set; } = true;
 
 		// Run-Control settings

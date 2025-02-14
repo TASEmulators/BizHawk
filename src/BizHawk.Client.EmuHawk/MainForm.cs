@@ -31,7 +31,6 @@ using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
-using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
@@ -55,6 +54,8 @@ namespace BizHawk.Client.EmuHawk
 		};
 
 		private const int WINDOW_SCALE_MAX = 10;
+
+		private readonly ToolStripMenuItemEx NullHawkVSysSubmenu = new() { Enabled = false, Text = "—" };
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{	
@@ -163,6 +164,8 @@ namespace BizHawk.Client.EmuHawk
 					},
 					Text = "Core Settings",
 				});
+
+			MainformMenu.Items.Insert(MainformMenu.Items.IndexOf(ToolsSubMenu) + 1, NullHawkVSysSubmenu);
 
 			// Hide Status bar icons and general StatusBar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right
@@ -868,8 +871,10 @@ namespace BizHawk.Client.EmuHawk
 
 				InputManager.ActiveController.LatchFromPhysical(finalHostController);
 
-				InputManager.ActiveController.ApplyAxisConstraints(
-					(Emulator is N64 && Config.N64UseCircularAnalogConstraint) ? "Natural Circle" : null);
+				if (Config.N64UseCircularAnalogConstraint)
+				{
+					InputManager.ActiveController.ApplyAxisConstraints("Natural Circle");
+				}
 
 				InputManager.ActiveController.OR_FromLogical(InputManager.ClickyVirtualPadController);
 				InputManager.AutoFireController.LatchFromPhysical(finalHostController);
