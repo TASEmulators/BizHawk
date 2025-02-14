@@ -277,6 +277,7 @@
 			0,
 			0,
 			0});
+			this.TargetFrameLengthNumeric.ValueChanged += new System.EventHandler(this.FrameLength_ValueChanged);
 			// 
 			// TargetRewindIntervalNumeric
 			// 
@@ -299,6 +300,7 @@
 			0,
 			0,
 			0});
+			this.TargetRewindIntervalNumeric.ValueChanged += new System.EventHandler(this.RewindInterval_ValueChanged);
 			// 
 			// EstTimeLabel
 			// 
@@ -550,6 +552,7 @@
 			this.TargetRewindIntervalRadioButton.TabStop = true;
 			this.TargetRewindIntervalRadioButton.Text = "Rewinds every fixed number of frames: ";
 			this.TargetRewindIntervalRadioButton.UseVisualStyleBackColor = true;
+			this.TargetRewindIntervalRadioButton.CheckedChanged += new System.EventHandler(this.RewindInterval_CheckedChanged);
 			// 
 			// RewindConfig
 			// 

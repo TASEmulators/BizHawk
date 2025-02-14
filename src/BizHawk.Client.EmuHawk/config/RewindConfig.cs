@@ -157,14 +157,23 @@ namespace BizHawk.Client.EmuHawk
 			double estFrames = 0.0;
 			var bufferSize = 1L << (int) BufferSizeUpDown.Value;
 			labelEx1.Text = bufferSize.ToString();
+			int calculatedRewindInterval = TargetRewindIntervalRadioButton.Checked ? (int) TargetRewindIntervalNumeric.Value : 1;
 			if (_avgStateSize is not 0UL)
 			{
 				bufferSize *= 1024 * 1024;
 				estFrames = bufferSize / (double) _avgStateSize;
+				if (TargetFrameLengthRadioButton.Checked)
+					calculatedRewindInterval = (int) Math.Ceiling((int) TargetFrameLengthNumeric.Value / estFrames);
 			}
 			ApproxFramesLabel.Text = $"{estFrames:n0} frames";
-			EstTimeLabel.Text = $"{estFrames / _framerate / 60.0:n} minutes";
+			EstTimeLabel.Text = $"{estFrames / _framerate / 60.0 * calculatedRewindInterval:n} minutes";
 		}
+
+		private void FrameLength_ValueChanged(object sender, EventArgs e) => CalculateEstimates();
+
+		private void RewindInterval_ValueChanged(object sender, EventArgs e) => CalculateEstimates();
+
+		private void RewindInterval_CheckedChanged(object sender, EventArgs e) => CalculateEstimates();
 
 		private void BufferSizeUpDown_ValueChanged(object sender, EventArgs e)
 		{
