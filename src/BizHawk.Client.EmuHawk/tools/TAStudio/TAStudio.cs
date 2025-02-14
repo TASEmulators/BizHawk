@@ -288,7 +288,6 @@ namespace BizHawk.Client.EmuHawk
 			// Attempts to load failed, abort
 			if (!success)
 			{
-				Disengage();
 				return false;
 			}
 
