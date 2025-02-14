@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BizHawk.Common
 {
@@ -14,11 +15,15 @@ namespace BizHawk.Common
 
 		public virtual bool IsReadOnly { get; } = false;
 
-		public SortedList() => _list = new List<T>();
+		protected SortedList(List<T> wrapped)
+			=> _list = wrapped;
+
+		public SortedList()
+			: this(new()) {}
 
 		public SortedList(IEnumerable<T> collection)
+			: this(new(collection))
 		{
-			_list = new List<T>(collection);
 			_list.Sort();
 		}
 
@@ -130,6 +135,12 @@ namespace BizHawk.Common
 				_list.RemoveRange(startIndex, _list.Count - startIndex);
 			}
 		}
+
+		public SortedList<T> Slice(int start, int length)
+			=> new(SliceImpl(start: start, length: length));
+
+		protected List<T> SliceImpl(int start, int length)
+			=> _list.Skip(start).Take(length).ToList();
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}
