@@ -302,9 +302,11 @@ namespace BizHawk.Common.CollectionExtensions
 			return str.Substring(startIndex: offset, length: length);
 		}
 
+#if !NET8_0_OR_GREATER
 		/// <summary>shallow clone</summary>
-		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> list)
+		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> list) where TKey : notnull
 			=> list.ToDictionary(static kvp => kvp.Key, static kvp => kvp.Value);
+#endif
 
 		public static bool IsSortedAsc<T>(this IReadOnlyList<T> list)
 			where T : IComparable<T>

@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+#if NET8_0_OR_GREATER
+using System.Linq;
+#endif
 
 using BizHawk.Common.CollectionExtensions;
 
