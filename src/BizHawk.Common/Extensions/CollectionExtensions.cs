@@ -165,10 +165,6 @@ namespace BizHawk.Common.CollectionExtensions
 		/// If the key is not present, returns default(TValue).
 		/// backported from .NET Core 2.0
 		/// </summary>
-		public static TValue? GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key)
-			=> dictionary.TryGetValue(key, out var found) ? found : default;
-
-		/// <inheritdoc cref="GetValueOrDefault{K,V}(IDictionary{K,V},K)"/>
 		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
 			=> dictionary.TryGetValue(key, out var found) ? found : default;
 
@@ -177,10 +173,6 @@ namespace BizHawk.Common.CollectionExtensions
 		/// If the key is not present, returns <paramref name="defaultValue"/>.
 		/// backported from .NET Core 2.0
 		/// </summary>
-		public static TValue? GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
-			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
-
-		/// <inheritdoc cref="GetValueOrDefault{K,V}(IDictionary{K,V},K,V)"/>
 		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
 			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
 #endif
