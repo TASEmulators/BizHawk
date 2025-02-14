@@ -48,6 +48,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					_ => throw new InvalidOperationException("Invalid system id")
 				};
 			}
+			PCRegisterName = SystemId is VSystemID.Raw.GEN ? "M68K PC" : "Z80 pc";
 
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
