@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 				FullnessLabel.Text = $"{fullnessRatio:P2}";
 				var stateCount = rewinder.Count;
 				RewindFramesUsedLabel.Text = stateCount.ToString();
-				_avgStateSize = stateCount is 0 ? 0UL : (ulong) Math.Round(rewinder.Size * fullnessRatio / stateCount);
+				_avgStateSize = stateCount is 0 ? (ulong) _statableCore.CloneSavestate().Length : (ulong) Math.Round(rewinder.Size * fullnessRatio / stateCount);
 			}
 			else
 			{
@@ -155,10 +155,10 @@ namespace BizHawk.Client.EmuHawk
 		private void CalculateEstimates()
 		{
 			double estFrames = 0.0;
+			var bufferSize = 1L << (int) BufferSizeUpDown.Value;
+			labelEx1.Text = bufferSize.ToString();
 			if (_avgStateSize is not 0UL)
 			{
-				var bufferSize = 1L << (int) BufferSizeUpDown.Value;
-				labelEx1.Text = bufferSize.ToString();
 				bufferSize *= 1024 * 1024;
 				estFrames = bufferSize / (double) _avgStateSize;
 			}
