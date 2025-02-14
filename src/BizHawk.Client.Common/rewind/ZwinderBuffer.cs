@@ -145,7 +145,7 @@ namespace BizHawk.Client.Common
 			var sizeRatio = Size / (float)_states[HeadStateIndex].Size;
 			var frameRatio = _targetFrameLength / sizeRatio;
 
-			var idealInterval = (int)Math.Round(frameRatio);
+			var idealInterval = (int)Math.Ceiling(frameRatio);
 			return Math.Max(idealInterval, 1);
 		}
 

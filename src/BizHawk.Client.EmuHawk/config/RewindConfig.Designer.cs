@@ -258,7 +258,7 @@
 			// 
 			// TargetFrameLengthNumeric
 			// 
-			this.TargetFrameLengthNumeric.Location = new System.Drawing.Point(146, 138);
+			this.TargetFrameLengthNumeric.Location = new System.Drawing.Point(236, 138);
 			this.TargetFrameLengthNumeric.Maximum = new decimal(new int[] {
 			500000,
 			0,
@@ -537,7 +537,7 @@
 			this.TargetFrameLengthRadioButton.Size = new System.Drawing.Size(125, 17);
 			this.TargetFrameLengthRadioButton.TabIndex = 48;
 			this.TargetFrameLengthRadioButton.TabStop = true;
-			this.TargetFrameLengthRadioButton.Text = "Desired frame length:";
+			this.TargetFrameLengthRadioButton.Text = "Desired minimum rewind range in frames:";
 			this.TargetFrameLengthRadioButton.UseVisualStyleBackColor = true;
 			// 
 			// TargetRewindIntervalRadioButton
