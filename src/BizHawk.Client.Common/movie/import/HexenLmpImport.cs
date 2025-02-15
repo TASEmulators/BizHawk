@@ -19,22 +19,22 @@ namespace BizHawk.Client.Common
 			DSDA.DoomSyncSettings syncSettings = new()
 			{
 				InputFormat = DoomControllerTypes.Hexen,
-				MultiplayerMode = DSDA.MultiplayerModeEnum.M0,
+				MultiplayerMode = DSDA.MultiplayerMode.M0,
 				MonstersRespawn = false,
 				FastMonsters = false,
 				NoMonsters = false,
-				CompatibilityMode = DSDA.CompatibilityLevelEnum.C0,
-				SkillLevel = (DSDA.SkillLevelEnum) (1 + input[i++]),
+				CompatibilityMode = DSDA.CompatibilityLevel.C0,
+				SkillLevel = (DSDA.SkillLevel) (1 + input[i++]),
 				InitialEpisode = input[i++],
 				InitialMap = input[i++],
 				Player1Present = input[i++] is not 0,
-				Player1Class = (DSDA.HexenClassEnum) input[i++],
+				Player1Class = (DSDA.HexenClass) input[i++],
 				Player2Present = input[i++] is not 0,
-				Player2Class = (DSDA.HexenClassEnum) input[i++],
+				Player2Class = (DSDA.HexenClass) input[i++],
 				Player3Present = input[i++] is not 0,
-				Player3Class = (DSDA.HexenClassEnum) input[i++],
+				Player3Class = (DSDA.HexenClass) input[i++],
 				Player4Present = input[i++] is not 0,
-				Player4Class = (DSDA.HexenClassEnum) input[i++],
+				Player4Class = (DSDA.HexenClass) input[i++],
 			};
 			_ = input[i++]; // player 5 isPresent
 			_ = input[i++]; // player 5 class

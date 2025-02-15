@@ -34,6 +34,7 @@ namespace BizHawk.Client.Common
 			// note: ChannelF II PAL timings might be slightly different...
 			["ChannelF_PAL"] = 15625.0 / 312.0, // 4000000 / (256 * 312)
 			["Coleco"] = 59.9227510135505,
+			["Doom"] = 35.0,
 			["FDS"] = 60.098813897440515532,
 			["FDS_PAL"] = 50.006977968268290849,
 			["GEN"] = 53693175 / (3420.0 * 262),

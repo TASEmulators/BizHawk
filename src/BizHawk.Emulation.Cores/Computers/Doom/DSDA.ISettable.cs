@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 {
 	public partial class DSDA : ISettable<DSDA.DoomSettings, DSDA.DoomSyncSettings>
 	{
-		public enum CompatibilityLevelEnum : int
+		public enum CompatibilityLevel : int
 		{
 			[Display(Name = "0 - Doom v1.2")]
 			C0 = 0,
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			C21 = 21
 		}
 
-		public enum SkillLevelEnum : int
+		public enum SkillLevel : int
 		{
 			[Display(Name = "1 - I'm too young to die")]
 			S1 = 1,
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		}
 
-		public enum MultiplayerModeEnum : int
+		public enum MultiplayerMode : int
 		{
 			[Display(Name = "0 - Single Player / Coop")]
 			M0 = 0,
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			M2 = 2
 		}
 
-		public enum HexenClassEnum : int
+		public enum HexenClass : int
 		{
 			[Display(Name = "Fighter")]
 			C1 = 1,
@@ -169,21 +169,21 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			[DisplayName("Compatibility Mode")]
 			[Description("The version of Doom or its ports that this movie is meant to emulate.")]
-			[DefaultValue(CompatibilityLevelEnum.C2)]
+			[DefaultValue(CompatibilityLevel.C2)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public CompatibilityLevelEnum CompatibilityMode { get; set; }
+			public CompatibilityLevel CompatibilityMode { get; set; }
 
 			[DisplayName("Skill Level")]
 			[Description("Establishes the general difficulty settings.")]
-			[DefaultValue(SkillLevelEnum.S4)]
+			[DefaultValue(SkillLevel.S4)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public SkillLevelEnum SkillLevel { get; set; }
+			public SkillLevel SkillLevel { get; set; }
 
 			[DisplayName("Multiplayer Mode")]
 			[Description("Indicates the multiplayer mode")]
-			[DefaultValue(MultiplayerModeEnum.M0)]
+			[DefaultValue(MultiplayerMode.M0)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public MultiplayerModeEnum MultiplayerMode { get; set; }
+			public MultiplayerMode MultiplayerMode { get; set; }
 
 			[DisplayName("Initial Episode")]
 			[Description("Selects the initial episode. Use '0' for non-episodic IWads (e.g., DOOM2)")]
@@ -219,27 +219,27 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			[DisplayName("Player 1 Hexen Class")]
 			[Description("The Hexen class to use for player 1. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClassEnum.C1)]
+			[DefaultValue(HexenClass.C1)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public HexenClassEnum Player1Class { get; set; }
+			public HexenClass Player1Class { get; set; }
 
 			[DisplayName("Player 2 Hexen Class")]
 			[Description("The Hexen class to use for player 2. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClassEnum.C1)]
+			[DefaultValue(HexenClass.C1)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public HexenClassEnum Player2Class { get; set; }
+			public HexenClass Player2Class { get; set; }
 
 			[DisplayName("Player 3 Hexen Class")]
 			[Description("The Hexen class to use for player 3. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClassEnum.C1)]
+			[DefaultValue(HexenClass.C1)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public HexenClassEnum Player3Class { get; set; }
+			public HexenClass Player3Class { get; set; }
 
 			[DisplayName("Player 4 Hexen Class")]
 			[Description("The Hexen class to use for player 4. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClassEnum.C1)]
+			[DefaultValue(HexenClass.C1)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public HexenClassEnum Player4Class { get; set; }
+			public HexenClass Player4Class { get; set; }
 
 			[DisplayName("Chain Episodes")]
 			[Description("Completing one episode leads to the next without interruption.")]

@@ -19,30 +19,30 @@ namespace BizHawk.Client.Common
 
 			// Try to decide game version based on signature
 			var signature = input[i];
-			DSDA.CompatibilityLevelEnum presumedCompatibilityLevel;
+			DSDA.CompatibilityLevel presumedCompatibilityLevel;
 			if (signature <= 102)
 			{
 				// there is no signature, the first byte is the skill level, so don't advance
 				Console.WriteLine("Reading DOOM LMP demo version: <=1.12");
-				presumedCompatibilityLevel = DSDA.CompatibilityLevelEnum.C0;
+				presumedCompatibilityLevel = DSDA.CompatibilityLevel.C0;
 			}
 			else
 			{
 				i++;
 				Console.WriteLine("Reading DOOM LMP demo version: {0}", signature);
 				presumedCompatibilityLevel = signature < 109
-					? DSDA.CompatibilityLevelEnum.C1 // 1.666
-					: DSDA.CompatibilityLevelEnum.C2; // 1.9
+					? DSDA.CompatibilityLevel.C1 // 1.666
+					: DSDA.CompatibilityLevel.C2; // 1.9
 			}
 
 			DSDA.DoomSyncSettings syncSettings = new()
 			{
 				InputFormat = DoomControllerTypes.Doom,
 				CompatibilityMode = presumedCompatibilityLevel,
-				SkillLevel = (DSDA.SkillLevelEnum) (1 + input[i++]),
+				SkillLevel = (DSDA.SkillLevel) (1 + input[i++]),
 				InitialEpisode = input[i++],
 				InitialMap = input[i++],
-				MultiplayerMode = (DSDA.MultiplayerModeEnum) input[i++],
+				MultiplayerMode = (DSDA.MultiplayerMode) input[i++],
 				MonstersRespawn = input[i++] is not 0,
 				FastMonsters = input[i++] is not 0,
 				NoMonsters = input[i++] is not 0,

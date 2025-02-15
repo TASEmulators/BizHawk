@@ -19,12 +19,12 @@ namespace BizHawk.Client.Common
 			DSDA.DoomSyncSettings syncSettings = new()
 			{
 				InputFormat = DoomControllerTypes.Heretic,
-				MultiplayerMode = DSDA.MultiplayerModeEnum.M0,
+				MultiplayerMode = DSDA.MultiplayerMode.M0,
 				MonstersRespawn = false,
 				FastMonsters = false,
 				NoMonsters = false,
-				CompatibilityMode = DSDA.CompatibilityLevelEnum.C0,
-				SkillLevel = (DSDA.SkillLevelEnum) (1 + input[i++]),
+				CompatibilityMode = DSDA.CompatibilityLevel.C0,
+				SkillLevel = (DSDA.SkillLevel) (1 + input[i++]),
 				InitialEpisode = input[i++],
 				InitialMap = input[i++],
 				Player1Present = input[i++] is not 0,
