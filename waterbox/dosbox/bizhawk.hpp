@@ -12,5 +12,5 @@
 
 typedef struct
 {
-	int value;
+	FrameInfo base;
 } MyFrameInfo;
