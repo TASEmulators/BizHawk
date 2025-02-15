@@ -232,7 +232,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 						List<ushort> s0 = new List<ushort>();
 						List<ushort> s1 = new List<ushort>();
-						List<byte> dData = new List<byte>();
 
 						uint initPulseLevel = 1;
 						int dCount = 1;
@@ -269,12 +268,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 								s1.Add(s);
 							}
 
-							for (int i = 0; i < Math.Ceiling((decimal)dCount / 8); i++)
-							{
-								var buff = b[pos++];
-								dData.Add(buff);
-							}
-
+							var dData = b.AsSpan(start: pos, length: (dCount + 7) >> 3/* == `ceil(dCount/8)` */);
+							pos += dData.Length;
 							foreach (var by in dData)
 							{
 								for (int i = 7; i >= 0; i--)
@@ -307,8 +302,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 								bLevel = !bLevel;
 								t.DataLevels.Add(bLevel);
 							}
-								
-							dData.Clear();
 						}
 
 						// convert to tape block

@@ -149,6 +149,36 @@ namespace BizHawk.Common.CollectionExtensions
 			return combined;
 		}
 
+		/// <returns>freshly-allocated array</returns>
+		public static T[] ConcatArrays<T>(/*params*/ IReadOnlyCollection<T[]> arrays)
+		{
+			var combinedLength = arrays.Sum(static a => a.Length); //TODO detect overflow
+			if (combinedLength is 0) return Array.Empty<T>();
+			var combined = new T[combinedLength];
+			var i = 0;
+			foreach (var arr in arrays)
+			{
+				arr.AsSpan().CopyTo(combined.AsSpan(start: i));
+				i += arr.Length;
+			}
+			return combined;
+		}
+
+		/// <returns>freshly-allocated array</returns>
+		public static T[] ConcatArrays<T>(/*params*/ IReadOnlyCollection<ArraySegment<T>> arrays)
+		{
+			var combinedLength = arrays.Sum(static a => a.Count); //TODO detect overflow
+			if (combinedLength is 0) return Array.Empty<T>();
+			var combined = new T[combinedLength];
+			var i = 0;
+			foreach (var arr in arrays)
+			{
+				arr.AsSpan().CopyTo(combined.AsSpan(start: i));
+				i += arr.Count;
+			}
+			return combined;
+		}
+
 		public static bool CountIsAtLeast<T>(this IEnumerable<T> collection, int n)
 			=> collection is ICollection countable
 				? countable.Count >= n

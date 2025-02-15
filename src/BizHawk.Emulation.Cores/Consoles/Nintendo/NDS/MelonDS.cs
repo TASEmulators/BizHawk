@@ -367,7 +367,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 		}
 
-		private static (ulong Full, uint Upper, uint Lower) GetDSiTitleId(IReadOnlyList<byte> file)
+		private static (ulong Full, uint Upper, uint Lower) GetDSiTitleId(ReadOnlySpan<byte> file)
 		{
 			ulong titleId = 0;
 			for (var i = 0; i < 8; i++)
