@@ -58,9 +58,9 @@ namespace BizHawk.Client.EmuHawk
 		private readonly ToolStripMenuItemEx NullHawkVSysSubmenu = new() { Enabled = false, Text = "—" };
 
 		private void MainForm_Load(object sender, EventArgs e)
-		{	
+		{
 			UpdateWindowTitle();
-			
+
 			{
 				for (int i = 1; i <= WINDOW_SCALE_MAX; i++)
 				{
@@ -503,8 +503,17 @@ namespace BizHawk.Client.EmuHawk
 				new MemoryMappedFiles(NetworkingTakeScreenshot, _argParser.MMFFilename),
 				_argParser.SocketAddress is var (socketIP, socketPort)
 					? new SocketServer(NetworkingTakeScreenshot, _argParser.SocketProtocol, socketIP, socketPort)
+					: null,
+
+				_argParser.WebSocketServerAddress is var (websocketServerIP, websocketServerPort)
+					? new WebSocketServer(System.Net.IPAddress.Parse(websocketServerIP), websocketServerPort)
 					: null
 			);
+			// TODO better place to put the start of the server?
+			if (NetworkingHelpers.WebSocketServer is not null)
+			{
+				_ = NetworkingHelpers.WebSocketServer.Start();
+			}
 
 			ExtToolManager = new(
 				Config,
@@ -1131,7 +1140,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public CheatCollection CheatList { get; }
 
-		public (HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets) NetworkingHelpers { get; }
+		public (HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets, WebSocketServer WebSocketServer) NetworkingHelpers { get; }
 
 		public IRewinder Rewinder { get; private set; }
 
