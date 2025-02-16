@@ -4,6 +4,8 @@
 #include <config.h>
 #include <sdlmain.h>
 #include <render.h>
+#include <keyboard.h>
+#include <set>
 
 extern int _main(int argc, char* argv[]);
 void runMain() { _main(0, nullptr); }
@@ -15,6 +17,10 @@ cothread_t _driverCoroutine;
 double ticksElapsed;
 uint32_t ticksElapsedInt;
 uint32_t _GetTicks() { return ticksElapsedInt; }
+
+std::set<KBD_KEYS> _prevPressedKeys;
+extern std::set<KBD_KEYS> _pressedKeys;
+extern std::set<KBD_KEYS> _heldKeys;
 
 ECL_EXPORT bool Init(int argc, char **argv)
 {
@@ -47,6 +53,19 @@ ECL_EXPORT bool Init(int argc, char **argv)
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
+ // Processing inputs
+	_pressedKeys.clear();
+	_heldKeys.clear();
+	for (size_t i = 0; i < KEY_COUNT; i++)
+	{
+		 auto key = (KBD_KEYS)i;
+			bool wasPressed = _prevPressedKeys.find(key) != _prevPressedKeys.end();
+
+		 if (f->Keys[i] > 0)  if (wasPressed == true)  _heldKeys.insert(key);
+			if (f->Keys[i] > 0)  if (wasPressed == false) _pressedKeys.insert(key);
+	}
+	_prevPressedKeys = _pressedKeys;
+ 
 	// Advancing timer
 	constexpr double ticksPerFrame = 1000.0 / __FPS__;
 	ticksElapsed += ticksPerFrame; // Miliseconds per frame
