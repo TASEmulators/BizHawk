@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
-
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Computers.DOS
@@ -89,18 +92,26 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			var dosbox = PreInit<LibDOSBox>(new WaterboxOptions
 			{
 				Filename = "dosbox.wbx",
-				SbrkHeapSizeKB = 1024 * 32,
-				SealedHeapSizeKB = 512,
-				InvisibleHeapSizeKB = 512,
-				PlainHeapSizeKB = 1024 * 32,
-				MmapHeapSizeKB = 1024 * 32,
+				SbrkHeapSizeKB = 4 * 1024 * 32,
+				SealedHeapSizeKB = 32 * 512,
+				InvisibleHeapSizeKB = 32 * 512,
+				PlainHeapSizeKB = 4 * 1024 * 32,
+				MmapHeapSizeKB = 4 * 1024 * 32,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _ledCallback });
 
+			// Adding default config file
+			// Getting dsda-doom.wad -- required by DSDA
+			var baseConfFile = Zstd.DecompressZstdStream(new MemoryStream(Resources.DOSBOX_BASE_CONF.Value)).ToArray();
+			_exe.AddReadonlyFile(baseConfFile, FileNames.DOSBOX_BASE_CONF);
+
 			for (var index = 0; index < lp.Roms.Count; index++)
 			{
 				var rom = lp.Roms[index];
+
+				Console.WriteLine("Adding ROM File: {0}", rom.RomPath);
+
 				_exe.AddReadonlyFile(rom.FileData, FileNames.FD + index);
 				if (index < _syncSettings.FloppyDrives)
 				{
@@ -350,6 +361,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		private static class FileNames
 		{
+			public const string DOSBOX_BASE_CONF = "dosbox-x.conf";
 			public const string FD = "FloppyDisk";
 			public const string CD = "CompactDisk";
 			public const string HD = "HardDrive";
