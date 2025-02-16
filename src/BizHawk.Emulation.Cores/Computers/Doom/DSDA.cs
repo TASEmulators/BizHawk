@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				SealedHeapSizeKB = 4 * 1024,
 				InvisibleHeapSizeKB = totalWadSizeKb + 4 * 1024, // Make sure there's enough space for the wads
 				PlainHeapSizeKB = 4 * 1024,
-				MmapHeapSizeKB = 128 * 1024, // Allow the game to malloc quite a lot of objects to support one of those big wads
+				MmapHeapSizeKB = 1024 * 1024 * 2, // Allow the game to malloc quite a lot of objects to support those big wads
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
