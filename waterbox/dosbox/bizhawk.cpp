@@ -6,6 +6,7 @@
 #include <render.h>
 #include <keyboard.h>
 #include <set>
+#include <third_party/jaffarCommon/include/jaffarCommon/file.hpp>
 
 extern int _main(int argc, char* argv[]);
 void runMain() { _main(0, nullptr); }
@@ -17,6 +18,7 @@ cothread_t _driverCoroutine;
 double ticksElapsed;
 uint32_t ticksElapsedInt;
 uint32_t _GetTicks() { return ticksElapsedInt; }
+jaffarCommon::file::MemoryFileDirectory _memfileDirectory;
 
 std::set<KBD_KEYS> _prevPressedKeys;
 extern std::set<KBD_KEYS> _pressedKeys;
@@ -24,6 +26,23 @@ extern std::set<KBD_KEYS> _releasedKeys;
 
 ECL_EXPORT bool Init(int argc, char **argv)
 {
+		// Loading entire floppy disk
+		std::string fp0FileName = "FloppyDisk0";
+		std::string floppyDisk0FileData;
+		bool        status = jaffarCommon::file::loadStringFromFile(floppyDisk0FileData, fp0FileName);
+		if (status == false) { fprintf(stderr, "Could not find/read from Floppy Disk 0 file: %s\n", fp0FileName.c_str()); return false; }
+
+		// Uploading file into the mem file directory
+		auto f = _memfileDirectory.fopen(fp0FileName, "w", floppyDisk0FileData.size());
+		if (f == NULL) { fprintf(stderr, "Could not open mem file: %s\n", fp0FileName.c_str()); return false; }
+
+		// Copying data into mem file
+		auto writtenBlocks = jaffarCommon::file::MemoryFile::fwrite(floppyDisk0FileData.data(), floppyDisk0FileData.size(), 1, f);
+		if (writtenBlocks != 1)  { fprintf(stderr, "Could not write data into mem file: %s\n", fp0FileName.c_str()); return false; }
+
+		// Closing mem file
+		_memfileDirectory.fclose(f);
+	
 	// FILE* f = fopen("FloppyDisk0", "rb");
 	// 
 	// if (f == NULL) return false;

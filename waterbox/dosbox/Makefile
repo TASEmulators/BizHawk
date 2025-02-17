@@ -34,9 +34,10 @@ CCFLAGS := 	-I. \
 			-DNDEBUG=1 \
 			-Wno-error=incompatible-pointer-types \
 			-Wno-unused-result \
-			-D__LINUX__
+			-D__LINUX__ \
+			-D__INLINE__=inline
 
-CXXFLAGS := $(CCFLAGS)
+CXXFLAGS := $(CCFLAGS) 	-std=c++20
 LDFLAGS :=
 
 TARGET := dosbox.wbx
