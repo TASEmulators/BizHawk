@@ -75,6 +75,15 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+#if BIZHAWKBUILD_SUPERHAWK
+			ToolStripMenuItemEx superHawkThrottleMenuItem = new() { Text = "SUPER·HAWK" };
+			superHawkThrottleMenuItem.Click += (_, _) => Config.SuperHawkThrottle = !Config.SuperHawkThrottle;
+			SpeedSkipSubMenu.DropDownItems.Insert(
+				SpeedSkipSubMenu.DropDownItems.IndexOf(MinimizeSkippingMenuItem),
+				superHawkThrottleMenuItem);
+			ConfigSubMenu.DropDownOpened += (_, _) => superHawkThrottleMenuItem.Checked = Config.SuperHawkThrottle;
+#endif
+
 			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
 			{
 				var submenu = new ToolStripMenuItem { Text = string.Join(" | ", appliesTo) };
@@ -2976,7 +2985,11 @@ namespace BizHawk.Client.EmuHawk
 				_frameAdvanceTimestamp = 0;
 			}
 
+#if BIZHAWKBUILD_SUPERHAWK
+			if (!EmulatorPaused && (!Config.SuperHawkThrottle || InputManager.ClientControls.AnyInputHeld))
+#else
 			if (!EmulatorPaused)
+#endif
 			{
 				runFrame = true;
 			}
