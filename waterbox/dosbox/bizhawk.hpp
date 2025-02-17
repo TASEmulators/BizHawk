@@ -10,7 +10,7 @@
 #include "emulibc.h"
 #include "waterboxcore.h"
 
-const int KEY_COUNT = 0x68;
+const int KEY_COUNT = 0x65;
 const int FILENAME_MAXLENGTH = 64;
 
 enum Axis
