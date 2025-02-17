@@ -267,6 +267,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void AddRange(IEnumerable<long> addresses, bool append)
 		{
+			using var @lock = Domain.EnterExit();
 			var list = _settings.Size switch
 			{
 				WatchSize.Byte => addresses.ToBytes(_settings),
@@ -276,6 +277,54 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			};
 
 			_watchList = (append ? _watchList.Concat(list) : list).ToArray();
+		}
+
+		public void ConvertTo(WatchSize size)
+		{
+			using var @lock = Domain.EnterExit();
+			var maxAddress = Domain.Size - (int)size;
+			var addresses = AllAddresses().Where(address => address <= maxAddress);
+			_watchList = size switch
+			{
+				WatchSize.Byte => addresses.ToBytes(_settings).ToArray(),
+				WatchSize.Word when _settings.CheckMisAligned => addresses.ToWords(_settings).ToArray(),
+				WatchSize.Word => addresses.Where(static address => address % 2 == 0).ToWords(_settings).ToArray(),
+				WatchSize.DWord when _settings.CheckMisAligned => addresses.ToDWords(_settings).ToArray(),
+				WatchSize.DWord => addresses.Where(static address => address % 4 == 0).ToDWords(_settings).ToArray(),
+				_ => _watchList
+			};
+
+			_settings.Size = size;
+		}
+
+		private IEnumerable<long> AllAddresses()
+		{
+			foreach (var watch in _watchList)
+			{
+				if (_settings.CheckMisAligned)
+				{
+					yield return watch.Address;
+				}
+				else
+				{
+					switch (_settings.Size)
+					{
+						case WatchSize.Word:
+							yield return watch.Address;
+							yield return watch.Address + 1;
+							break;
+						case WatchSize.DWord:
+							yield return watch.Address;
+							yield return watch.Address + 1;
+							yield return watch.Address + 2;
+							yield return watch.Address + 3;
+							break;
+						default:
+							yield return watch.Address;
+							break;
+					}
+				}
+			}
 		}
 
 		public void Sort(string column, bool reverse)
