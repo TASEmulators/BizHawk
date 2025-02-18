@@ -2922,7 +2922,6 @@ namespace BizHawk.Client.EmuHawk
 		private void StepRunLoop_Core(bool force = false)
 		{
 			var runFrame = false;
-			_runloopFrameAdvance = false;
 			var currentTimestamp = Stopwatch.GetTimestamp();
 
 			double frameAdvanceTimestampDeltaMs = (double)(currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
@@ -2946,14 +2945,21 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					PauseEmulator();
-					oldFrameAdvanceCondition = false;
 				}
 			}
 
-			if (oldFrameAdvanceCondition || FrameInch)
+			bool frameAdvance = oldFrameAdvanceCondition || FrameInch;
+			if (!frameAdvance && _runloopFrameAdvance && _runloopFrameProgress)
+			{
+				// handle release of frame advance
+				_runloopFrameProgress = false;
+				PauseEmulator();
+			}
+
+			_runloopFrameAdvance = frameAdvance;
+			if (frameAdvance)
 			{
 				FrameInch = false;
-				_runloopFrameAdvance = true;
 
 				// handle the initial trigger of a frame advance
 				if (_frameAdvanceTimestamp == 0)
@@ -2975,13 +2981,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				// handle release of frame advance: do we need to deactivate FrameProgress?
-				if (_runloopFrameProgress)
-				{
-					_runloopFrameProgress = false;
-					PauseEmulator();
-				}
-
 				_frameAdvanceTimestamp = 0;
 			}
 
@@ -2995,6 +2994,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			bool isRewinding = Rewind(ref runFrame, currentTimestamp, out var returnToRecording);
+			_runloopFrameProgress |= isRewinding;
 
 			float atten = 0;
 
