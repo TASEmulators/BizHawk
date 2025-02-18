@@ -88,3 +88,4 @@
 [submodule "waterbox/dsda/core"]
 	path = waterbox/dsda/core
 	url = https://github.com/TASEmulators/dsda-doom.git
+	branch = wbx

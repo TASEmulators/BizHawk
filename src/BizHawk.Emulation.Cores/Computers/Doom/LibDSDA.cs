@@ -6,6 +6,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 {
 	public abstract class CInterface
 	{
+		public enum MemoryArrayType : int
+		{
+			Things = 0,
+			Lines = 1,
+			Sectors = 2
+		}
+
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int load_archive_cb(string filename, IntPtr buffer, int maxsize);
 
@@ -85,5 +92,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			string fileName,
 			int fileSize,
 			load_archive_cb feload_archive_cb);
+		
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract byte dsda_read_memory_array(
+			MemoryArrayType type,
+			uint addr);
 	}
 }

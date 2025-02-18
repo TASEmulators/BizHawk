@@ -1,104 +1,4 @@
-#include <vector>
-#include <string>
-#include <cstdio>
-#include <cstdint>
 #include "BizhawkInterface.hxx"
-#include <d_player.h>
-#include <w_wad.h>
-
-extern "C"
-{
-  int headlessMain(int argc, char **argv);
-  void headlessRunSingleTick();
-  void headlessUpdateSounds(void);
-  void headlessClearTickCommand();
-  void headlessSetTickCommand(int playerId, int forwardSpeed, int strafingSpeed, int turningSpeed, int fire, int action, int weapon, int altWeapon, int lookfly, int artifact, int jump, int endPlayer);
-
-  // Video-related functions
-  void headlessUpdateVideo(void);
-  void* headlessGetVideoBuffer();
-  int headlessGetVideoPitch();
-  int headlessGetVideoWidth();
-  int headlessGetVideoHeight();
-  void headlessEnableVideoRendering();
-  void headlessDisableVideoRendering();
-  void headlessEnableAudioRendering();
-  void headlessDisableAudioRendering();
-  uint32_t* headlessGetPallette();
-
-  void headlessSetSaveStatePointer(void* savePtr, int saveStateSize);
-  size_t headlessGetEffectiveSaveSize();
-  void dsda_ArchiveAll(void);
-  void dsda_UnArchiveAll(void);
-  void headlessGetMapName(char* outString);
-  
-  void D_AddFile (const char *file, wad_source_t source, void* const buffer, const size_t size);
-  void AddIWAD(const char *iwad, void* const buffer, const size_t size); 
-  unsigned char * I_CaptureAudio (int* nsamples);
-  void I_InitSound(void);
-  void I_SetSoundCap (void);
-}
-
-// Players information
-extern "C" int enableOutput;
-extern "C" player_t players[MAX_MAXPLAYERS];
-extern "C" int preventLevelExit;
-extern "C" int preventGameEnd;
-extern "C" int reachedLevelExit;
-extern "C" int reachedGameEnd;
-extern "C" int gamemap;
-extern "C" int gametic;
-extern "C" dboolean playeringame[MAX_MAXPLAYERS];
-extern "C" int consoleplayer;
-extern "C" int displayplayer;
-extern "C" pclass_t PlayerClass[MAX_MAXPLAYERS];
-
-struct InitSettings
-{
-	int _Player1Present;
-	int _Player2Present;
-	int _Player3Present;
-	int _Player4Present;
-	int _CompatibilityMode;
-	int _SkillLevel;
-	int _MultiplayerMode;
-	int _InitialEpisode;
-	int _InitialMap;
-	int _Turbo;
-	int _FastMonsters;
-	int _MonstersRespawn;
-	int _NoMonsters;
-	int _Player1Class;
-	int _Player2Class;
-	int _Player3Class;
-	int _Player4Class;
-	int _ChainEpisodes;
-	int _StrictMode;
-	int _PreventLevelExit;
-	int _PreventGameEnd;
-} __attribute__((packed));
-
-struct PackedPlayerInput
-{
-	int _RunSpeed;
-	int _StrafingSpeed;
-	int _TurningSpeed;
-	int _WeaponSelect;
-	int _Fire;
-	int _Action;
-	int _AltWeapon;
-	int _FlyLook;
-	int _ArtifactUse;
-	int _Jump;
-	int _EndPlayer;
-} __attribute__((packed));
-
-struct PackedRenderInfo
-{
-	int _RenderVideo;
-	int _RenderAudio;
-	int _PlayerPointOfView;
-} __attribute__((packed));
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
 {
@@ -113,8 +13,6 @@ ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
 		*buffer = audioBuffer;
 }
 
-#define PALETTE_SIZE 256
-uint32_t _convertedPaletteBuffer[PALETTE_SIZE];
 ECL_EXPORT void dsda_get_video(int& w, int& h, int& pitch, uint8_t*& buffer, int& paletteSize, uint32_t*& paletteBuffer)
 {
 	buffer = (uint8_t*)headlessGetVideoBuffer();
@@ -421,4 +319,26 @@ ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY
 
   // Return 1 for all ok
   return 1;
+}
+
+// the Doom engine doesn't have traditional memory regions because it's not an emulator
+// but there's still useful data in memory that we can expose
+// so we turn it into artificial memory domains, one for each entity array
+// TODO: expose sectors and linedefs like xdre does (but better)
+ECL_EXPORT char dsda_read_memory_array(int type, unsigned int addr)
+{
+  char out_of_bounts = 0xFF;
+  char null_thing = 0x88;
+  int padded_size = 512; // sizeof(mobj_t) is 464 but we pad for nice representation
+  
+  if (addr >= numthings * padded_size) return out_of_bounts;
+  
+  int index = addr / padded_size;
+  int offset = addr % padded_size;
+  mobj_t *mobj = mobj_ptrs[index];
+  
+  if (mobj == NULL) return null_thing;
+  
+  char *data = (char *)mobj + offset;  
+  return *data;
 }
