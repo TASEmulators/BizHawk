@@ -315,7 +315,8 @@ namespace BizHawk.Client.EmuHawk
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
 			_dropdownDontfire = true;
-			SetSize(_settings.Size); // Calls NewSearch() automatically
+			SetSize(_settings.Size);
+			NewSearch();
 			_dropdownDontfire = false;
 			HardSetDisplayTypeDropDown(_settings.Type);
 		}
@@ -691,7 +692,12 @@ namespace BizHawk.Client.EmuHawk
 			DifferenceBox.ByteSize = size;
 			DifferentByBox.ByteSize = size;
 
-			NewSearch();
+			_searches.ConvertTo(_settings.Size);
+			_searches.SetType(_settings.Type);
+			UpdateList();
+			_searches.ClearHistory();
+
+			ToggleSearchDependentToolBarItems();
 		}
 
 		private void PopulateTypeDropDown()
@@ -812,7 +818,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveAddresses()
 		{
 			var indices = SelectedIndices.ToList();
-			if (indices.Any())
+			if (indices.Count is not 0)
 			{
 				SetRemovedMessage(indices.Count);
 				_searches.RemoveRange(indices);
@@ -865,7 +871,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AddToRamWatch()
 		{
 			var watches = SelectedWatches.ToList();
-			if (watches.Any())
+			if (watches.Count is not 0)
 			{
 				Tools.LoadRamWatch(true);
 				watches.ForEach(Tools.RamWatch.AddWatch);

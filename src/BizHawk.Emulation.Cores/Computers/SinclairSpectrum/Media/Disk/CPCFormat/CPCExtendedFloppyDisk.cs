@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
 
-			if (!ident.Contains("EXTENDED CPC DSK", StringComparison.OrdinalIgnoreCase))
+			if (!ident.ContainsIgnoreCase("EXTENDED CPC DSK"))
 			{
 				// incorrect format
 				return false;
@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
-			if (!ident.Contains("EXTENDED CPC DSK", StringComparison.OrdinalIgnoreCase))
+			if (!ident.ContainsIgnoreCase("EXTENDED CPC DSK"))
 			{
 				// incorrect format
 				return false;

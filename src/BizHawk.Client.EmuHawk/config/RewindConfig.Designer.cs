@@ -258,7 +258,7 @@
 			// 
 			// TargetFrameLengthNumeric
 			// 
-			this.TargetFrameLengthNumeric.Location = new System.Drawing.Point(146, 138);
+			this.TargetFrameLengthNumeric.Location = new System.Drawing.Point(236, 138);
 			this.TargetFrameLengthNumeric.Maximum = new decimal(new int[] {
 			500000,
 			0,
@@ -277,6 +277,7 @@
 			0,
 			0,
 			0});
+			this.TargetFrameLengthNumeric.ValueChanged += new System.EventHandler(this.FrameLength_ValueChanged);
 			// 
 			// TargetRewindIntervalNumeric
 			// 
@@ -299,6 +300,7 @@
 			0,
 			0,
 			0});
+			this.TargetRewindIntervalNumeric.ValueChanged += new System.EventHandler(this.RewindInterval_ValueChanged);
 			// 
 			// EstTimeLabel
 			// 
@@ -537,7 +539,7 @@
 			this.TargetFrameLengthRadioButton.Size = new System.Drawing.Size(125, 17);
 			this.TargetFrameLengthRadioButton.TabIndex = 48;
 			this.TargetFrameLengthRadioButton.TabStop = true;
-			this.TargetFrameLengthRadioButton.Text = "Desired frame length:";
+			this.TargetFrameLengthRadioButton.Text = "Desired minimum rewind range in frames:";
 			this.TargetFrameLengthRadioButton.UseVisualStyleBackColor = true;
 			// 
 			// TargetRewindIntervalRadioButton
@@ -550,6 +552,7 @@
 			this.TargetRewindIntervalRadioButton.TabStop = true;
 			this.TargetRewindIntervalRadioButton.Text = "Rewinds every fixed number of frames: ";
 			this.TargetRewindIntervalRadioButton.UseVisualStyleBackColor = true;
+			this.TargetRewindIntervalRadioButton.CheckedChanged += new System.EventHandler(this.RewindInterval_CheckedChanged);
 			// 
 			// RewindConfig
 			// 

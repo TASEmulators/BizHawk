@@ -9,6 +9,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -119,6 +120,25 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
+			ToolStripMenuItemEx goToFrameMenuItem = new()
+			{
+				ShortcutKeys = Keys.Control | Keys.G,
+				Text = "Go to Frame...",
+			};
+			goToFrameMenuItem.Click += (_, _) =>
+			{
+				MainForm.PauseEmulator();
+				using InputPrompt dialog = new()
+				{
+					Text = "Go to Frame",
+					Message = "Jump/Seek to frame index:",
+					TextInputType = InputPrompt.InputType.Unsigned,
+				};
+				if (this.ShowDialogWithTempMute(dialog).IsOk()) GoToFrame(int.Parse(dialog.PromptText));
+			};
+			EditSubMenu.DropDownItems.Insert(
+				EditSubMenu.DropDownItems.IndexOf(ReselectClipboardMenuItem) + 1,
+				goToFrameMenuItem);
 
 			RecentSubMenu.Image = Resources.Recent;
 			recentMacrosToolStripMenuItem.Image = Resources.Recent;
@@ -145,9 +165,6 @@ namespace BizHawk.Client.EmuHawk
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			LastPositionFrame = -1;
 
-			BookMarkControl.LoadedCallback = BranchLoaded;
-			BookMarkControl.SavedCallback = BranchSaved;
-			BookMarkControl.RemovedCallback = BranchRemoved;
 			TasView.MouseLeave += TAStudio_MouseLeave;
 			TasView.CellHovered += (_, e) =>
 			{
@@ -271,7 +288,6 @@ namespace BizHawk.Client.EmuHawk
 			// Attempts to load failed, abort
 			if (!success)
 			{
-				Disengage();
 				return false;
 			}
 
@@ -940,7 +956,8 @@ namespace BizHawk.Client.EmuHawk
 			// TODO: columns selected?
 			var selectedRowCount = TasView.SelectedRows.Count();
 			var temp = $"Selected: {selectedRowCount} {(selectedRowCount == 1 ? "frame" : "frames")}, States: {CurrentTasMovie.TasStateManager.Count}";
-			if (_tasClipboard.Any()) temp += $", Clipboard: {_tasClipboard.Count} {(_tasClipboard.Count == 1 ? "frame" : "frames")}";
+			var clipboardCount = _tasClipboard.Count;
+			if (clipboardCount is not 0) temp += $", Clipboard: {clipboardCount} {(clipboardCount is 1 ? "frame" : "frames")}";
 			SplicerStatusLabel.Text = temp;
 		}
 

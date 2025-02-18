@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Sockets;
 
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -191,7 +192,7 @@ namespace BizHawk.Client.Common
 					? ((string?, string?)?) null // don't bother
 					: (httpClientURIGET, httpClientURIPOST);
 
-			var audiosync = result.GetValueForOption(OptionAVDumpAudioSync)?.Equals("true", StringComparison.OrdinalIgnoreCase);
+			var audiosync = result.GetValueForOption(OptionAVDumpAudioSync)?.EqualsIgnoreCase("true");
 
 			List<(string Key, string Value)>? userdataUnparsedPairs = null;
 			if (result.GetValueForOption(OptionUserdataUnparsedPairs) is string list1)

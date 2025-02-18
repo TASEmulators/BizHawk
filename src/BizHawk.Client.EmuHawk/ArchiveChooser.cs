@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -33,9 +34,7 @@ namespace BizHawk.Client.EmuHawk
 				lvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				lvi.Text = item.Name;
 				long size = item.Size;
-				var extension = Path.GetExtension(item.Name);
-				if (extension != null && size % 1024 == 16 && extension.ToUpperInvariant() == ".NES")
-					size -= 16;
+				if (size % 1024 is 16 && Path.GetExtension(item.Name)?.EqualsIgnoreCase(".NES") is true) size -= 16;
 				lvi.SubItems[1].Text = Util.FormatFileSize(size);
 				_archiveItems.Add(lvi);
 			}

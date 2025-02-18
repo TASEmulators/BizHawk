@@ -48,6 +48,11 @@ namespace BizHawk.Client.Common
 
 		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new Dictionary<string, FeedbackBind>();
 
+#if BIZHAWKBUILD_SUPERHAWK
+		public bool AnyInputHeld
+			=> _buttons.ContainsValue(true) || _axes.Any(kvp => kvp.Value != _axisRanges[kvp.Key].Neutral);
+#endif
+
 		public bool this[string button] => IsPressed(button);
 
 		// Looks for bindings which are activated by the supplied physical button.

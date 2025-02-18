@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Cores
 	/// </summary>
 	public static class CoreNames
 	{
+		// cores A-Z by this value
 		public const string A7800Hawk = "A7800Hawk";
 		public const string Ares64 = "Ares64";
 		public const string Atari2600Hawk = "Atari2600Hawk";
@@ -40,14 +41,13 @@ namespace BizHawk.Emulation.Cores
 		public const string Mgba = "mGBA";
 		public const string MSXHawk = "MSXHawk";
 		public const string Mupen64Plus = "Mupen64Plus";
-		public const string NesHawk = "NesHawk";
 		public const string NeoPop = "NeoPop";
+		public const string NesHawk = "NesHawk";
 		public const string Nymashock = "Nymashock";
 		public const string O2Hawk = "O2Hawk";
 		public const string Octoshock = "Octoshock";
 		public const string PceHawk = "PCEHawk";
 		public const string PicoDrive = "PicoDrive";
-		public const string UAE = "UAE";
 		public const string QuickNes = "quickerNES";
 		public const string Sameboy = "SameBoy";
 		public const string Saturnus = "Saturnus";
@@ -57,10 +57,11 @@ namespace BizHawk.Emulation.Cores
 		public const string SubBsnes115 = "SubBSNESv115+";
 		public const string SubGbHawk = "SubGBHawk";
 		public const string SubNesHawk = "SubNESHawk";
+		public const string TST = "T. S. T.";
 		public const string TI83Hawk = "TI83Hawk";
 		public const string TIC80 = "TIC-80";
-		public const string TST = "T. S. T.";
 		public const string TurboNyma = "TurboNyma";
+		public const string UAE = "UAE";
 		public const string Uzem = "uzem";
 		public const string VectrexHawk = "VectrexHawk";
 		public const string Virtu = "Virtu";

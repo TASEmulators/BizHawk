@@ -220,6 +220,7 @@ namespace BizHawk.Client.EmuHawk
 				Emulator,
 				Game);
 
+			InputBox.AutoCompleteCustomSource.Clear();
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Where(static f => f.SuggestInREPL)
 				.Select(static f => $"{f.Library}.{f.Name}")
 				.ToArray());
@@ -605,7 +606,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
-			if (!LuaImp.ScriptList.Any()
+			if (LuaImp.ScriptList.Count is 0
 				|| LuaImp.IsUpdateSupressed
 				|| (MainForm.IsTurboing && !Config.RunLuaDuringTurbo))
 			{
@@ -804,9 +805,9 @@ namespace BizHawk.Client.EmuHawk
 				MoveDownMenuItem.Enabled =
 					LuaListView.AnyRowsSelected;
 
-			SelectAllMenuItem.Enabled = LuaImp.ScriptList.Any();
+			SelectAllMenuItem.Enabled = LuaImp.ScriptList.Count is not 0;
 			StopAllScriptsMenuItem.Enabled = LuaImp.ScriptList.Any(script => script.Enabled);
-			RegisteredFunctionsMenuItem.Enabled = LuaImp.RegisteredFunctions.Any();
+			RegisteredFunctionsMenuItem.Enabled = LuaImp.RegisteredFunctions.Count is not 0;
 		}
 
 		private void NewScriptMenuItem_Click(object sender, EventArgs e)
@@ -942,7 +943,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveScriptMenuItem_Click(object sender, EventArgs e)
 		{
 			var items = SelectedItems.ToList();
-			if (items.Any())
+			if (items.Count is not 0)
 			{
 				foreach (var item in items)
 				{
@@ -1068,7 +1069,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RegisteredFunctionsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (LuaImp.RegisteredFunctions.Any())
+			if (LuaImp.RegisteredFunctions.Count is not 0)
 			{
 				var alreadyOpen = false;
 				foreach (Form form in Application.OpenForms)
@@ -1197,20 +1198,15 @@ namespace BizHawk.Client.EmuHawk
 				ScriptContextSeparator.Visible =
 				LuaImp.ScriptList.Exists(file => file.Enabled);
 
-			ClearRegisteredFunctionsContextItem.Enabled =
-				LuaImp.RegisteredFunctions.Any();
+			ClearRegisteredFunctionsContextItem.Enabled = LuaImp.RegisteredFunctions.Count is not 0;
 		}
 
 		private void ConsoleContextMenu_Opening(object sender, CancelEventArgs e)
 		{
-			RegisteredFunctionsContextItem.Enabled = LuaImp.RegisteredFunctions.Any();
-			CopyContextItem.Enabled = OutputBox.SelectedText.Any();
-			ClearConsoleContextItem.Enabled =
-				SelectAllContextItem.Enabled =
-				OutputBox.Text.Any();
-
-			ClearRegisteredFunctionsLogContextItem.Enabled =
-				LuaImp.RegisteredFunctions.Any();
+			RegisteredFunctionsContextItem.Enabled = ClearRegisteredFunctionsLogContextItem.Enabled
+				= LuaImp.RegisteredFunctions.Count is not 0;
+			CopyContextItem.Enabled = OutputBox.SelectedText.Length is not 0;
+			ClearConsoleContextItem.Enabled = SelectAllContextItem.Enabled = OutputBox.Text.Length is not 0;
 		}
 
 		private void ClearConsoleContextItem_Click(object sender, EventArgs e)

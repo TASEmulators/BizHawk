@@ -1,5 +1,6 @@
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -32,16 +33,13 @@ namespace BizHawk.Client.Common
 			string line;
 			while ((line = sr.ReadLine()) != null)
 			{
-				if (line == "")
-				{
-					continue;
-				}
+				if (line.Length is 0) continue;
 
 				if (line[0] == '|')
 				{
 					ImportInputFrame(line);
 				}
-				else if (line.StartsWith("sub", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("sub"))
 				{
 					var subtitle = ImportTextSubtitle(line);
 
@@ -50,11 +48,11 @@ namespace BizHawk.Client.Common
 						Result.Movie.Subtitles.AddFromString(subtitle);
 					}
 				}
-				else if (line.StartsWith("emuversion", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("emuversion"))
 				{
 					Result.Movie.Comments.Add($"{EmulationOrigin} {emulator} version {ParseHeader(line, "emuVersion")}");
 				}
-				else if (line.StartsWith("version", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("version"))
 				{
 					string version = ParseHeader(line, "version");
 
@@ -67,15 +65,15 @@ namespace BizHawk.Client.Common
 						Result.Movie.Comments.Add($"{MovieOrigin} .fm2 version 3");
 					}
 				}
-				else if (line.StartsWith("romfilename", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("romfilename"))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "romFilename");
 				}
-				else if (line.StartsWith("cdgamename", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("cdgamename"))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "cdGameName");
 				}
-				else if (line.StartsWith("romchecksum", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("romchecksum"))
 				{
 					string blob = ParseHeader(line, "romChecksum");
 					byte[] md5 = DecodeBlob(blob);
@@ -88,19 +86,19 @@ namespace BizHawk.Client.Common
 						Result.Warnings.Add("Bad ROM checksum.");
 					}
 				}
-				else if (line.StartsWith("comment author", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("comment author"))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.Author] = ParseHeader(line, "comment author");
 				}
-				else if (line.StartsWith("rerecordcount", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("rerecordcount"))
 				{
 					Result.Movie.Rerecords = (ulong) (int.TryParse(ParseHeader(line, "rerecordCount"), out var rerecordCount) ? rerecordCount : default);
 				}
-				else if (line.StartsWith("guid", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("guid"))
 				{
 					// We no longer care to keep this info
 				}
-				else if (line.StartsWith("startsfromsavestate", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("startsfromsavestate"))
 				{
 					// If this movie starts from a savestate, we can't support it.
 					if (ParseHeader(line, "StartsFromSavestate") == "1")
@@ -109,11 +107,11 @@ namespace BizHawk.Client.Common
 						break;
 					}
 				}
-				else if (line.StartsWith("palflag", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("palflag"))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.Pal] = ParseHeader(line, "palFlag");
 				}
-				else if (line.StartsWith("port0", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("port0"))
 				{
 					if (!isFourScore && ParseHeader(line, "port0") == "1")
 					{
@@ -122,7 +120,7 @@ namespace BizHawk.Client.Common
 						_deck.ControllerDef.BuildMnemonicsCache(Result.Movie.SystemID);
 					}
 				}
-				else if (line.StartsWith("port1", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("port1"))
 				{
 					if (!isFourScore && ParseHeader(line, "port1") == "1")
 					{
@@ -131,14 +129,14 @@ namespace BizHawk.Client.Common
 						_deck.ControllerDef.BuildMnemonicsCache(Result.Movie.SystemID);
 					}
 				}
-				else if (line.StartsWith("port2", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("port2"))
 				{
 					if (ParseHeader(line, "port2") == "1")
 					{
 						Result.Warnings.Add("Famicom port detected but not yet supported, ignoring");
 					}
 				}
-				else if (line.StartsWith("fourscore", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("fourscore"))
 				{
 					isFourScore = ParseHeader(line, "fourscore") == "1";
 					if (isFourScore)
@@ -244,7 +242,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// base64
-			if (!blob.StartsWith("base64:", StringComparison.OrdinalIgnoreCase))
+			if (!blob.StartsWithIgnoreCase("base64:"))
 			{
 				return null;
 			}

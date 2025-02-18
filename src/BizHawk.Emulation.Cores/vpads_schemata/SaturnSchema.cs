@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores
 			foreach (var result in nyma.ActualPortData
 				.Where(r => r.Port.ShortName != "builtin"))
 			{
-				var num = int.Parse(result.Port.ShortName.Last().ToString());
+				var num = int.Parse(result.Port.ShortName[^1].ToString());
 				var device = result.Device.ShortName;
 				var schema = GenerateSchemaForPort(device, num, showMessageBox);
 				if (schema != null)

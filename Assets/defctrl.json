@@ -1117,6 +1117,32 @@
 				"GamepadPrefix": "X1 ",
 				"Prescale": 1.0
 			}
+		},
+		"Gameboy Controller": {
+			"Rumble": {
+				"Channels": "Left+Right",
+				"GamepadPrefix": "X1 ",
+				"Prescale": 1.0
+			}
+		},
+		"GBA Controller": {
+			"Rumble": {
+				"Channels": "Left+Right",
+				"GamepadPrefix": "X1 ",
+				"Prescale": 1.0
+			}
+		},
+		"PSX Front Panel": {
+			"P1 Rumble Left (strong)": {
+			  "Channels": "Left",
+			  "GamepadPrefix": "X1 ",
+			  "Prescale": 1.0
+			},
+			"P1 Rumble Right (weak)": {
+			  "Channels": "Right",
+			  "GamepadPrefix": "X1 ",
+			  "Prescale": 1.0
+			}
 		}
 	}
 }

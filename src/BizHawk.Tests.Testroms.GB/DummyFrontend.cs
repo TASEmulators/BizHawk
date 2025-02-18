@@ -132,6 +132,11 @@ namespace BizHawk.Tests.Testroms.GB
 				new(
 					Console.WriteLine,
 					(s, _) => Console.WriteLine(s),
+					s =>
+					{
+						Console.WriteLine(s);
+						return null; // "Cancel" since I don't think it's expected to hit this while running a testrom (only used in RomLoader at time of writing)... and if this is hit, hopefully cancelling causes the test to fail quickly
+					},
 					efp,
 					CoreComm.CorePreferencesFlags.None,
 					oglProvider: null!));

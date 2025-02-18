@@ -4,10 +4,10 @@ Jump to:
 	- [For any: .NET project](#for-any-net-project)
 - Projects
 	- [blip_buf](#blip_buf)
-	- [Encore](#encore)
 	- [Cygne](#cygne)
 	- [DiscoHawk](#discohawk)
 	- [EmuHawk](#emuhawk)
+	- [Encore](#encore)
 	- [Ext. tools](#ext-tools)
 	- [Handy](#handy)
 	- [HawkQuantizer](#hawkquantizer)
@@ -91,13 +91,6 @@ Uses C.
 
 
 
-## Encore
-> Build scripts for the (unmanaged side of the) Encore port.
-
-Uses C++.
-
-
-
 ## Cygne
 > The unmanaged side of the Cygne core from Mednafen.
 
@@ -132,6 +125,13 @@ There are also [various Analyzers](https://github.com/TASEmulators/BizHawk/wiki/
 In addition, not every style rule is currently enabled, so please make sure you use CRLF, tabs, and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) (but don't try to fix code you're not working on).
 
 There are additional test suites specifically for regression-testing cores—these are not included in the solution and need to be run manually. See [the base project's readme](https://github.com/TASEmulators/BizHawk/blob/master/src/BizHawk.Tests.Testroms.GB/readme.md) for details.
+
+
+
+## Encore
+> Build scripts for the (unmanaged side of the) Encore port.
+
+Uses C++.
 
 
 

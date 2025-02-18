@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -18,11 +19,7 @@ namespace BizHawk.Client.Common
 		/// Returns a value indicating whether or not there is an importer for the given extension
 		/// </summary>
 		public static bool IsValidMovieExtension(string extension)
-		{
-			return Importers
-				.Select(i => i.Value)
-				.Any(e => string.Equals(extension, e.Extension, StringComparison.OrdinalIgnoreCase));
-		}
+			=> Importers.Any(kvp => kvp.Value.Extension.EqualsIgnoreCase(extension));
 
 		public static readonly FilesystemFilterSet AvailableImporters = new FilesystemFilterSet(
 			Importers.Values.OrderBy(attr => attr.Emulator)
@@ -40,7 +37,7 @@ namespace BizHawk.Client.Common
 			Config config)
 		{
 			string ext = Path.GetExtension(path) ?? "";
-			var result = Importers.FirstOrNull(kvp => string.Equals(kvp.Value.Extension, ext, StringComparison.OrdinalIgnoreCase));
+			var result = Importers.FirstOrNull(kvp => kvp.Value.Extension.EqualsIgnoreCase(ext));
 			// Create a new instance of the importer class using the no-argument constructor
 			return result is { Key: var importerType }
 				&& importerType.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>()) is IMovieImport importer

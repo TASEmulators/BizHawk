@@ -1101,11 +1101,8 @@ namespace BizHawk.Client.EmuHawk
 			// BookMarkControl
 			// 
 			this.BookMarkControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.BookMarkControl.LoadedCallback = null;
 			this.BookMarkControl.Location = new System.Drawing.Point(0, 0);
 			this.BookMarkControl.Name = "BookMarkControl";
-			this.BookMarkControl.RemovedCallback = null;
-			this.BookMarkControl.SavedCallback = null;
 			this.BookMarkControl.Size = new System.Drawing.Size(200, 183);
 			this.BookMarkControl.TabIndex = 8;
 			this.BookMarkControl.Tastudio = null;

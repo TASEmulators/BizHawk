@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 
 using ISOParser;
 
@@ -488,7 +489,7 @@ namespace BizHawk.Emulation.DiscSystem
 						var (dir, fileNoExt, _) = aFile.MDSPath.SplitPathToDirFileAndExt();
 
 						if (f.FilenameOffset is 0
-							|| string.Equals(fileName, "*.mdf", StringComparison.OrdinalIgnoreCase))
+							|| "*.mdf".EqualsIgnoreCase(fileName))
 						{
 							fileName = $@"{dir}\{fileNoExt}.mdf";
 						}

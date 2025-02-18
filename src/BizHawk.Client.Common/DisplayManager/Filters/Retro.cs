@@ -26,11 +26,7 @@ namespace BizHawk.Client.Common.Filters
 			while (true)
 			{
 				var match = RxInclude.Match(content);
-				if (match.Value == string.Empty)
-				{
-					return content;
-				}
-
+				if (match.Value.Length is 0) return content;
 				var fname = match.Groups[4].Value;
 				fname = Path.Combine(baseDirectory,fname);
 				var includedContent = ResolveIncludes(File.ReadAllText(fname),Path.GetDirectoryName(fname));

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.Collections.Generic;
 using System.Diagnostics;
 
 using BizHawk.Common;
@@ -91,6 +92,11 @@ namespace BizHawk.Client.EmuHawk
 
 	public sealed class CellList : SortedList<Cell>
 	{
+		public CellList() {}
+
+		public CellList(IEnumerable<Cell> collection)
+			: base(collection) {}
+
 		/// <remarks>restore the distinctness invariant from <see cref="System.Collections.Generic.SortedSet{T}"/>; though I don't think we actually rely on it anywhere --yoshi</remarks>
 		public override void Add(Cell item)
 		{
@@ -117,6 +123,9 @@ namespace BizHawk.Client.EmuHawk
 			return i >= 0 && _list[i].RowIndex == rowIndex;
 		}
 #endif
+
+		public new CellList Slice(int start, int length)
+			=> new(SliceImpl(start: start, length: length));
 	}
 
 	public static class CellExtensions

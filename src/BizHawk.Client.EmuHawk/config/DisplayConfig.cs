@@ -51,6 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			checkPadInteger.Checked = _config.DispFixScaleInteger;
 			cbFullscreenHacks.Checked = _config.DispFullscreenHacks;
 			cbAutoPrescale.Checked = _config.DispAutoPrescale;
+			cbScaleOSD.Checked = _config.ScaleOSDWithSystemScale;
 
 			cbAllowTearing.Checked = _config.DispAllowTearing;
 
@@ -144,6 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.DispFixScaleInteger = checkPadInteger.Checked;
 			_config.DispFullscreenHacks = cbFullscreenHacks.Checked;
 			_config.DispAutoPrescale = cbAutoPrescale.Checked;
+			_config.ScaleOSDWithSystemScale = cbScaleOSD.Checked;
 			
 			_config.DispAllowTearing = cbAllowTearing.Checked;
 

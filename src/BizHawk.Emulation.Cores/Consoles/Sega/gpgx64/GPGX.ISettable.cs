@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Globalization;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using Newtonsoft.Json;
 
@@ -54,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (value?.GetType() == typeof(string))
 				{
 					var input = (string)value;
-					if (input.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+					if (input.StartsWithIgnoreCase("0x"))
 					{
 						input = input[2..];
 					}
@@ -89,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (value?.GetType() == typeof(string))
 				{
 					var input = (string)value;
-					if (input.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+					if (input.StartsWithIgnoreCase("0x"))
 					{
 						input = input[2..];
 					}

@@ -1,5 +1,5 @@
 using System.Globalization;
-using System.Linq;
+
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
@@ -11,6 +11,17 @@ namespace BizHawk.Client.Common
 	[ImporterFor("DeSmuME", ".dsm")]
 	internal class DsmImport : MovieImporter
 	{
+		[Flags]
+		private enum MovieCommand
+		{
+			MIC   = 1,
+			RESET = 2,
+			LID   = 4
+		}
+
+		private bool _lidOpen = true;
+		private int _countLid;
+
 		private static readonly ControllerDefinition DeSmuMEControllerDef = new ControllerDefinition("NDS Controller")
 		{
 			BoolButtons =
@@ -74,7 +85,7 @@ namespace BizHawk.Client.Common
 				{
 					Result.Movie.Comments.Add(ParseHeader(line, "comment"));
 				}
-				else if (line.StartsWith("guid", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("guid"))
 				{
 					// We no longer care to keep this info
 				}
@@ -109,7 +120,7 @@ namespace BizHawk.Client.Common
 
 			if (sections.Length > 1)
 			{
-				var mnemonics = sections[1].Take(_buttons.Length).ToList();
+				var mnemonics = sections[1].AsSpan(start: 0, length: _buttons.Length);
 
 				controller["Right"] = mnemonics[0] != '.';
 				controller["Left"] = mnemonics[1] != '.';
@@ -143,7 +154,30 @@ namespace BizHawk.Client.Common
 
 		private void ProcessCmd(string cmd, SimpleController controller)
 		{
-			// TODO
+			MovieCommand command = (MovieCommand) int.Parse(cmd);
+
+			controller["Microphone"] = command.HasFlag(MovieCommand.MIC);
+
+			bool hasPowerCommand = command.HasFlag(MovieCommand.RESET);
+			controller["Power"] = hasPowerCommand;
+			if (hasPowerCommand)
+			{
+				_lidOpen = true;
+				_countLid = 0;
+			}
+
+			bool hasLidCommand = command.HasFlag(MovieCommand.LID);
+			controller["LidClose"] = hasLidCommand && _lidOpen && _countLid == 0;
+			controller["LidOpen"] = hasLidCommand && !_lidOpen && _countLid == 0;
+			if (hasLidCommand && _countLid == 0)
+			{
+				_countLid = 30;
+				_lidOpen = !_lidOpen;
+			}
+			else if (_countLid > 0)
+			{
+				_countLid--;
+			}
 		}
 	}
 }

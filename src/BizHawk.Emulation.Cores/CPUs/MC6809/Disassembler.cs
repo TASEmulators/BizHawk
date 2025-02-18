@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Components.MC6809
@@ -787,49 +786,50 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 
 		public static string Disassemble(ushort addr, Func<ushort, byte> reader, out ushort size)
 		{
+			StringBuilder ret = new();
 			ushort origaddr = addr;
-			List<byte> bytes = new List<byte>();
-			bytes.Add(reader(addr++));
+			ret.AppendFormat("{0:X4}:  ", origaddr);
+			var opcode = reader(addr++);
+			ret.AppendFormat("{0:X2} ", opcode);
 
-			string result = table[bytes[0]];
-			if (bytes[0] == 0x10)
+			string result = table[opcode];
+			if (opcode is 0x10)
 			{
-				bytes.Add(reader(addr++));
-				result = table2[bytes[1]];
+				var opcode1 = reader(addr++);
+				ret.AppendFormat("{0:X2} ", opcode1);
+				result = table2[opcode1];
 			}
-
-			if (bytes[0] == 0x11)
+			else if (opcode is 0x11)
 			{
-				bytes.Add(reader(addr++));
-				result = table3[bytes[1]];
+				var opcode1 = reader(addr++);
+				ret.AppendFormat("{0:X2} ", opcode1);
+				result = table3[opcode1];
 			}
 
 			if (result.Contains("i8"))
 			{
 				byte d = reader(addr++);
-				bytes.Add(d);
+				ret.AppendFormat("{0:X2} ", d);
 				result = result.Replace("i8", string.Format("#{0:X2}h", d));
 			}
 			else if (result.Contains("i16"))
 			{
 				byte dhi = reader(addr++);
 				byte dlo = reader(addr++);
-				bytes.Add(dhi);
-				bytes.Add(dlo);
+				ret.AppendFormat("{0:X2} {1:X2} ", dhi, dlo);
 				result = result.Replace("i16", string.Format("#{0:X2}{1:X2}h", dhi, dlo));
 			}
 			else if (result.Contains("ex16"))
 			{
 				byte dhi = reader(addr++);
 				byte dlo = reader(addr++);
-				bytes.Add(dhi);
-				bytes.Add(dlo);
+				ret.AppendFormat("{0:X2} {1:X2} ", dhi, dlo);
 				result = result.Replace("ex16", "(" + string.Format("#{0:X2}{1:X2}h", dhi, dlo) + ")");
 			}
 			else if (result.Contains("ix16"))
 			{
 				byte d = reader(addr++);
-				bytes.Add(d);
+				ret.AppendFormat("{0:X2} ", d);
 
 				string temp_reg = "";
 
@@ -882,15 +882,14 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 								break;
 							case 0x8:
 								byte e = reader(addr++);
-								bytes.Add(e);
+								ret.AppendFormat("{0:X2} ", e);
 								result = result.Replace("ix16", "(" + temp_reg + " + ea)");
 								result = result.Replace("ea", string.Format("{0:X2}h", e));
 								break;
 							case 0x9:
 								byte f = reader(addr++);
-								bytes.Add(f);
 								byte g = reader(addr++);
-								bytes.Add(g);
+								ret.AppendFormat("{0:X2} {1:X2} ", f, g);
 								result = result.Replace("ix16", "(" + temp_reg + " + ea)");
 								result = result.Replace("ea", string.Format("{0:X2}{1:X2}h", f, g));
 								break;
@@ -903,16 +902,15 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 							case 0xC:
 								temp_reg = "PC";
 								byte h = reader(addr++);
-								bytes.Add(h);
+								ret.AppendFormat("{0:X2} ", h);
 								result = result.Replace("ix16", "(" + temp_reg + " + ea)");
 								result = result.Replace("ea", string.Format("{0:X2}h", h));
 								break;
 							case 0xD:
 								temp_reg = "PC";
 								byte i = reader(addr++);
-								bytes.Add(i);
 								byte j = reader(addr++);
-								bytes.Add(j);
+								ret.AppendFormat("{0:X2} {1:X2} ", i, j);
 								result = result.Replace("ix16", "(" + temp_reg + " + ea)");
 								result = result.Replace("ea", string.Format("{0:X2}{1:X2}h", i, j));
 								break;
@@ -923,9 +921,8 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 								if (((d >> 5) & 3) == 0)
 								{
 									byte k = reader(addr++);
-									bytes.Add(k);
 									byte l = reader(addr++);
-									bytes.Add(l);
+									ret.AppendFormat("{0:X2} {1:X2} ", k, l);
 									result = result.Replace("ix16", "(" + string.Format("{0:X2}{1:X2}h", k, l) + ")");
 								}
 								else
@@ -965,15 +962,14 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 								break;
 							case 0x8:
 								byte e = reader(addr++);
-								bytes.Add(e);
+								ret.AppendFormat("{0:X2} ", e);
 								result = result.Replace("ix16", temp_reg + " + ea");
 								result = result.Replace("ea", string.Format("{0:X2}h", e));
 								break;
 							case 0x9:
 								byte f = reader(addr++);
-								bytes.Add(f);
 								byte g = reader(addr++);
-								bytes.Add(g);
+								ret.AppendFormat("{0:X2} {1:X2} ", f, g);
 								result = result.Replace("ix16", temp_reg + " + ea");
 								result = result.Replace("ea", string.Format("{0:X2}{1:X2}h", f, g));
 								break;
@@ -986,16 +982,15 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 							case 0xC:
 								temp_reg = "PC";
 								byte h = reader(addr++);
-								bytes.Add(h);
+								ret.AppendFormat("{0:X2} ", h);
 								result = result.Replace("ix16", temp_reg + " + ea");
 								result = result.Replace("ea", string.Format("{0:X2}h", h));
 								break;
 							case 0xD:
 								temp_reg = "PC";
 								byte i = reader(addr++);
-								bytes.Add(i);
 								byte j = reader(addr++);
-								bytes.Add(j);
+								ret.AppendFormat("{0:X2} {1:X2} ", i, j);
 								result = result.Replace("ix16", temp_reg + " + ea");
 								result = result.Replace("ea", string.Format("{0:X2}{1:X2}h", i, j));
 								break;
@@ -1009,11 +1004,8 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 					}
 				}				
 			}
+			// else noop
 
-			StringBuilder ret = new StringBuilder();
-			ret.Append(string.Format("{0:X4}:  ", origaddr));
-			foreach (var b in bytes)
-				ret.Append(string.Format("{0:X2} ", b));
 			while (ret.Length < 22)
 				ret.Append(' ');
 			ret.Append(result);

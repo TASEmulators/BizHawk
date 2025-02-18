@@ -12,6 +12,9 @@ namespace BizHawk.Client.Common
 
 		private readonly Action Changed;
 
+		public int Count
+			=> _functions.Count;
+
 		public LuaFunctionList(Action onChanged) => Changed = onChanged;
 
 		public NamedLuaFunction this[string guid]

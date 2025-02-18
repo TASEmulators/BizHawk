@@ -217,13 +217,8 @@ namespace BizHawk.Client.EmuHawk
 			var tas = new List<int>();
 			for (var i = 0; i < indices.Count; i++)
 			{
-				foreach (var ext in MovieService.MovieExtensions)
-				{
-					if ($".{ext}".Equals(Path.GetExtension(_movieList[indices[i]].Filename), StringComparison.OrdinalIgnoreCase))
-					{
-						tas.Add(i);
-					}
-				}
+				var fileExt = Path.GetExtension(_movieList[indices[i]].Filename);
+				if (MovieService.MovieExtensions.Select(static s => $".{s}").Any(fileExt.EqualsIgnoreCase)) tas.Add(i);
 			}
 
 			if (tas.Count is 0)
@@ -452,8 +447,8 @@ namespace BizHawk.Client.EmuHawk
 			var framesItem = new ListViewItem("Frames");
 			framesItem.SubItems.Add(_movieList[firstIndex].FrameCount.ToString());
 			DetailsView.Items.Add(framesItem);
-			CommentsBtn.Enabled = _movieList[firstIndex].Comments.Any();
-			SubtitlesBtn.Enabled = _movieList[firstIndex].Subtitles.Any();
+			CommentsBtn.Enabled = _movieList[firstIndex].Comments.Count is not 0;
+			SubtitlesBtn.Enabled = _movieList[firstIndex].Subtitles.Count is not 0;
 		}
 
 		private void EditMenuItem_Click(object sender, EventArgs e)

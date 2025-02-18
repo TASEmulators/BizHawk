@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 using BizHawk.Emulation.Common;
 
@@ -180,9 +179,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		}
 
 		private void SetInputCallback()
-		{
-			BizSwan.bizswan_setbuttoncallback(Core, InputCallbacks.Any() ? ButtonCallbackD : null);
-		}
+			=> BizSwan.bizswan_setbuttoncallback(Core, InputCallbacks.Count is 0 ? null : ButtonCallbackD);
 
 		private void SetMemoryCallbacks()
 		{

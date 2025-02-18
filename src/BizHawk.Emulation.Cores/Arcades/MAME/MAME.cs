@@ -45,24 +45,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					$"Framerate:          { (float)VsyncNumerator / VsyncDenominator } " +
 					$"({ VsyncNumerator } / { VsyncDenominator })\r\n" +
 					$"Driver Source File: { _driverSourceFile.RemovePrefix("src")}\r\n\r\n" +
-					text + (text == "" ? "" : "\r\n") +
+					text + (text.Length is 0 ? string.Empty : "\r\n") +
 					string.Join("\r\n", _romHashes.Select(static r => $"{r.Value} - {r.Key}"));
 
-				if (text.Contains("imperfect", StringComparison.OrdinalIgnoreCase))
-				{
-					lp.Game.Status = RomStatus.Imperfect;
-				}
-
-				if (text.Contains("unemulated", StringComparison.OrdinalIgnoreCase))
-				{
-					lp.Game.Status = RomStatus.Unimplemented;
-				}
-
-				if (text.Contains("doesn't work", StringComparison.OrdinalIgnoreCase))
-				{
-					lp.Game.Status = RomStatus.NotWorking;
-				}
-
+				if (text.ContainsIgnoreCase("doesn't work")) lp.Game.Status = RomStatus.NotWorking;
+				else if (text.ContainsIgnoreCase("unemulated")) lp.Game.Status = RomStatus.Unimplemented;
+				else if (text.ContainsIgnoreCase("imperfect")) lp.Game.Status = RomStatus.Imperfect;
 			};
 
 			_exe = new(new()
@@ -255,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				_core.mame_coswitch();
 				_core.mame_lua_execute(MAMELuaCommand.Unpause);
 			}
-			else if (_loadFailure == string.Empty)
+			else if (_loadFailure.Length is 0)
 			{
 				_loadFailure = "Unknown load error occurred???";
 			}
@@ -263,7 +251,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			foreach (var rom in roms)
 			{
 				// only close non-chd files
-				if (rom.Extension.ToLowerInvariant() != ".chd")
+				if (!".chd".EqualsIgnoreCase(rom.Extension))
 				{
 					_exe.RemoveReadonlyFile(MakeFileName(rom));
 				}

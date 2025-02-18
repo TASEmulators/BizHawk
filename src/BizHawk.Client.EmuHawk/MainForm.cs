@@ -31,7 +31,6 @@ using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
-using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
@@ -56,6 +55,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private const int WINDOW_SCALE_MAX = 10;
 
+		private readonly ToolStripMenuItemEx NullHawkVSysSubmenu = new() { Enabled = false, Text = "—" };
+
 		private void MainForm_Load(object sender, EventArgs e)
 		{	
 			UpdateWindowTitle();
@@ -73,6 +74,15 @@ namespace BizHawk.Client.EmuHawk
 					WindowSizeSubMenu.DropDownItems.Insert(i - 1, temp);
 				}
 			}
+
+#if BIZHAWKBUILD_SUPERHAWK
+			ToolStripMenuItemEx superHawkThrottleMenuItem = new() { Text = "SUPER·HAWK" };
+			superHawkThrottleMenuItem.Click += (_, _) => Config.SuperHawkThrottle = !Config.SuperHawkThrottle;
+			SpeedSkipSubMenu.DropDownItems.Insert(
+				SpeedSkipSubMenu.DropDownItems.IndexOf(MinimizeSkippingMenuItem),
+				superHawkThrottleMenuItem);
+			ConfigSubMenu.DropDownOpened += (_, _) => superHawkThrottleMenuItem.Checked = Config.SuperHawkThrottle;
+#endif
 
 			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
 			{
@@ -163,6 +173,8 @@ namespace BizHawk.Client.EmuHawk
 					},
 					Text = "Core Settings",
 				});
+
+			MainformMenu.Items.Insert(MainformMenu.Items.IndexOf(ToolsSubMenu) + 1, NullHawkVSysSubmenu);
 
 			// Hide Status bar icons and general StatusBar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right
@@ -868,8 +880,10 @@ namespace BizHawk.Client.EmuHawk
 
 				InputManager.ActiveController.LatchFromPhysical(finalHostController);
 
-				InputManager.ActiveController.ApplyAxisConstraints(
-					(Emulator is N64 && Config.N64UseCircularAnalogConstraint) ? "Natural Circle" : null);
+				if (Config.N64UseCircularAnalogConstraint)
+				{
+					InputManager.ActiveController.ApplyAxisConstraints("Natural Circle");
+				}
 
 				InputManager.ActiveController.OR_FromLogical(InputManager.ClickyVirtualPadController);
 				InputManager.AutoFireController.LatchFromPhysical(finalHostController);
@@ -1388,7 +1402,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var bb = Config.ScreenshotCaptureOsd ? CaptureOSD() : MakeScreenshotImage())
 			{
 				using var img = bb.ToSysdrawingBitmap();
-				if (Path.GetExtension(path).ToUpperInvariant() == ".JPG")
+				if (".JPG".EqualsIgnoreCase(Path.GetExtension(path)))
 				{
 					img.Save(fi.FullName, ImageFormat.Jpeg);
 				}
@@ -2908,7 +2922,6 @@ namespace BizHawk.Client.EmuHawk
 		private void StepRunLoop_Core(bool force = false)
 		{
 			var runFrame = false;
-			_runloopFrameAdvance = false;
 			var currentTimestamp = Stopwatch.GetTimestamp();
 
 			double frameAdvanceTimestampDeltaMs = (double)(currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
@@ -2932,14 +2945,21 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					PauseEmulator();
-					oldFrameAdvanceCondition = false;
 				}
 			}
 
-			if (oldFrameAdvanceCondition || FrameInch)
+			bool frameAdvance = oldFrameAdvanceCondition || FrameInch;
+			if (!frameAdvance && _runloopFrameAdvance && _runloopFrameProgress)
+			{
+				// handle release of frame advance
+				_runloopFrameProgress = false;
+				PauseEmulator();
+			}
+
+			_runloopFrameAdvance = frameAdvance;
+			if (frameAdvance)
 			{
 				FrameInch = false;
-				_runloopFrameAdvance = true;
 
 				// handle the initial trigger of a frame advance
 				if (_frameAdvanceTimestamp == 0)
@@ -2961,22 +2981,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				// handle release of frame advance: do we need to deactivate FrameProgress?
-				if (_runloopFrameProgress)
-				{
-					_runloopFrameProgress = false;
-					PauseEmulator();
-				}
-
 				_frameAdvanceTimestamp = 0;
 			}
 
+#if BIZHAWKBUILD_SUPERHAWK
+			if (!EmulatorPaused && (!Config.SuperHawkThrottle || InputManager.ClientControls.AnyInputHeld))
+#else
 			if (!EmulatorPaused)
+#endif
 			{
 				runFrame = true;
 			}
 
 			bool isRewinding = Rewind(ref runFrame, currentTimestamp, out var returnToRecording);
+			_runloopFrameProgress |= isRewinding;
 
 			float atten = 0;
 
@@ -3724,7 +3742,8 @@ namespace BizHawk.Client.EmuHawk
 					InputManager.SyncControls(Emulator, MovieSession, Config);
 					_multiDiskMode = false;
 
-					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && Emulator is not LibsnesCore)
+					if (oaOpenrom is not null && ".xml".EqualsIgnoreCase(Path.GetExtension(oaOpenrom.Path.Replace("|", "")))
+						&& Emulator is not LibsnesCore)
 					{
 						// this is a multi-disk bundler file
 						// determine the xml assets and create RomStatusDetails for all of them
@@ -4012,13 +4031,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var result = MovieImport.ImportFile(this, MovieSession, fn, Config);
 
-			if (result.Errors.Any())
+			if (result.Errors.Count is not 0)
 			{
 				ShowMessageBox(owner: null, string.Join("\n", result.Errors), "Conversion error", EMsgBoxIcon.Error);
 				return;
 			}
 
-			if (result.Warnings.Any())
+			if (result.Warnings.Count is not 0)
 			{
 				AddOnScreenMessage(result.Warnings.First()); // For now, just show the first warning
 			}
