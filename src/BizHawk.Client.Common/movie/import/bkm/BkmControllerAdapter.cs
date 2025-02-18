@@ -100,7 +100,7 @@ namespace BizHawk.Client.Common
 					break;
 				case "SMS Controller":
 					SetFromMnemonic(mnemonic.AsSpan(1));
-					Force("Power", mnemonic[^3] == 'P');
+					Force("Pause", mnemonic[^3] == 'p');
 					Force("Reset", mnemonic[^2] == 'r');
 					break;
 				case "TI83 Controller":
