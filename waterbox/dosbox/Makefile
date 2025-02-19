@@ -2,6 +2,7 @@ CCFLAGS := 	-I. \
    -Idosbox-x/third_party/SDL2/include \
 			-Idosbox-x/third_party/SDL2/src/ \
 			-Idosbox-x/third_party/libco \
+			-Idosbox-x/third_party/jaffarCommon/include \
 			-Idosbox-x \
 			-Idosbox-x/include \
 			-Idosbox-x/src \

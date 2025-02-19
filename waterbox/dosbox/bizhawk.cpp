@@ -6,7 +6,7 @@
 #include <render.h>
 #include <keyboard.h>
 #include <set>
-#include <third_party/jaffarCommon/include/jaffarCommon/file.hpp>
+#include <jaffarCommon/file.hpp>
 
 extern int _main(int argc, char* argv[]);
 void runMain() { _main(0, nullptr); }
@@ -18,41 +18,63 @@ cothread_t _driverCoroutine;
 double ticksElapsed;
 uint32_t ticksElapsedInt;
 uint32_t _GetTicks() { return ticksElapsedInt; }
-jaffarCommon::file::MemoryFileDirectory _memfileDirectory;
+jaffarCommon::file::MemoryFileDirectory _memFileDirectory;
 
 std::set<KBD_KEYS> _prevPressedKeys;
 extern std::set<KBD_KEYS> _pressedKeys;
 extern std::set<KBD_KEYS> _releasedKeys;
 
-ECL_EXPORT bool Init(int argc, char **argv)
+bool loadFileIntoMemoryFileDirectory(const std::string& srcFile, const std::string& dstFile, const ssize_t dstSize = -1)
 {
-		// Loading entire floppy disk
-		std::string fp0FileName = "FloppyDisk0";
-		std::string floppyDisk0FileData;
-		bool        status = jaffarCommon::file::loadStringFromFile(floppyDisk0FileData, fp0FileName);
-		if (status == false) { fprintf(stderr, "Could not find/read from Floppy Disk 0 file: %s\n", fp0FileName.c_str()); return false; }
+		// Loading entire source file
+		std::string srcFileData;
+		bool        status = jaffarCommon::file::loadStringFromFile(srcFileData, srcFile);
+		if (status == false) { fprintf(stderr, "Could not find/read from file: %s\n", srcFile.c_str()); return false; }
 
 		// Uploading file into the mem file directory
-		auto f = _memfileDirectory.fopen(fp0FileName, "w", floppyDisk0FileData.size());
-		if (f == NULL) { fprintf(stderr, "Could not open mem file: %s\n", fp0FileName.c_str()); return false; }
+		auto f = _memFileDirectory.fopen(dstFile, "w");
+		if (f == NULL) { fprintf(stderr, "Could not open mem file for write: %s\n", dstFile.c_str()); return false; }
 
 		// Copying data into mem file
-		auto writtenBlocks = jaffarCommon::file::MemoryFile::fwrite(floppyDisk0FileData.data(), floppyDisk0FileData.size(), 1, f);
-		if (writtenBlocks != 1)  { fprintf(stderr, "Could not write data into mem file: %s\n", fp0FileName.c_str()); return false; }
+		auto writtenBlocks = jaffarCommon::file::MemoryFile::fwrite(srcFileData.data(), 1, srcFileData.size(), f);
+		if (writtenBlocks != srcFileData.size()) 
+		{ 
+			fprintf(stderr, "Could not write data into mem file: %s\n", dstFile.c_str());
+			_memFileDirectory.fclose(f);
+		 return false; 
+		}
+
+		// If required, resize dst file
+		if (dstSize >= 0)
+		{
+			 auto ret = f->resize(dstSize);
+				if (ret < 0) 
+				{
+					fprintf(stderr, "Could not resize mem file: %s\n", dstFile.c_str());
+					_memFileDirectory.fclose(f);
+					return false; 
+				}
+		} 
 
 		// Closing mem file
-		_memfileDirectory.fclose(f);
-	
-	// FILE* f = fopen("FloppyDisk0", "rb");
-	// 
-	// if (f == NULL) return false;
-	// else 
-	// {
-	// 	fseek(f, 0L, SEEK_END);
- //        size_t size = ftell(f);
-	// 	printf("File Size: %lu\n", size);
-	// 	fclose(f);
-	// }
+		_memFileDirectory.fclose(f);
+
+		return true;
+}
+
+ECL_EXPORT bool Init(int argc, char **argv)
+{
+	 // Loading HDD file into mem file directory
+		std::string hddSrcFile = "HardDiskDrive";
+		std::string hddDstFile = "HardDiskDrive.img";
+		size_t hddDstSize = 21411840;
+		printf("Creating hard disk drive mem file '%s' -> '%s' (%lu bytes)\n", hddSrcFile.c_str(), hddDstFile.c_str(), hddDstSize);
+ 	auto result = loadFileIntoMemoryFileDirectory(hddSrcFile, hddDstFile, hddDstSize);
+		if (result == false || _memFileDirectory.contains(hddDstFile) == false) 
+		{
+			fprintf(stderr, "Could not create hard disk drive mem file\n");
+			return false; 
+		}
 
 		// Setting dummy drivers for env variables
 		setenv("SDL_VIDEODRIVER", "dummy", 1);
@@ -62,6 +84,7 @@ ECL_EXPORT bool Init(int argc, char **argv)
 		ticksElapsed = 0.0;
 		ticksElapsedInt = 0;
 
+	printf("Starting DOSBox-x Coroutine...\n");
 	_driverCoroutine = co_active();
 	constexpr size_t stackSize = 4 * 1024 * 1024;
 	_emuCoroutine = co_create(stackSize, runMain);
