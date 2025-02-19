@@ -82,12 +82,6 @@ namespace BizHawk.Client.Common
 			else if (Movie.IsPlaying())
 			{
 				LatchInputToLog();
-				// if we're at the movie's end and the MovieEndAction is record, just continue recording in play mode
-				// TODO change to TAStudio check
-				if (Movie is ITasMovie && Movie.Emulator.Frame == Movie.FrameCount && Settings.MovieEndAction == MovieEndAction.Record)
-				{
-					Movie.RecordFrame(Movie.Emulator.Frame, MovieOut.Source);
-				}
 			}
 			else if (Movie.IsRecording())
 			{
@@ -96,16 +90,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void HandleFrameAfter()
+		public void HandleFrameAfter(bool ignoreMovieEndAction)
 		{
 			if (Movie is ITasMovie tasMovie)
 			{
 				tasMovie.GreenzoneCurrentFrame();
-				// TODO change to TAStudio check
-				if (Settings.MovieEndAction == MovieEndAction.Record) return;
 			}
 
-			if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.FrameCount)
+			if (!ignoreMovieEndAction && Movie.IsPlaying() && Movie.Emulator.Frame == Movie.FrameCount)
 			{
 				HandlePlaybackEnd();
 			}

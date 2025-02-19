@@ -34,7 +34,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 		private const string CursorColumnName = "CursorColumn";
 		private const string FrameColumnName = "FrameColumn";
-		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
 		private UndoHistoryForm _undoForm;
 		private Timer _autosaveTimer;
 
@@ -292,9 +291,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			MainForm.AddOnScreenMessage("TAStudio engaged");
-			_originalEndAction = Config.Movies.MovieEndAction;
 			MainForm.DisableRewind();
-			Config.Movies.MovieEndAction = MovieEndAction.Record;
 			MainForm.SetMainformMovieInfo();
 			MovieSession.ReadOnly = true;
 			SetSplicer();
@@ -673,7 +670,6 @@ namespace BizHawk.Client.EmuHawk
 			_engaged = false;
 			MainForm.PauseOnFrame = null;
 			MainForm.AddOnScreenMessage("TAStudio disengaged");
-			Config.Movies.MovieEndAction = _originalEndAction;
 			WantsToControlRewind = false;
 			MainForm.EnableRewind(true);
 			MainForm.SetMainformMovieInfo();

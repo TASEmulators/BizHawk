@@ -183,13 +183,6 @@ namespace BizHawk.Client.EmuHawk
 			MovieEndRecordMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Record;
 			MovieEndStopMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Stop;
 			MovieEndPauseMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Pause;
-
-			// Arguably an IControlMainForm property should be set here, but in reality only Tastudio is ever going to interfere with this logic
-			MovieEndFinishMenuItem.Enabled =
-			MovieEndRecordMenuItem.Enabled =
-			MovieEndStopMenuItem.Enabled =
-			MovieEndPauseMenuItem.Enabled =
-				!Tools.Has<TAStudio>();
 		}
 
 		private void AVSubMenu_DropDownOpened(object sender, EventArgs e)

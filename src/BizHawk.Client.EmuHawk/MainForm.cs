@@ -1118,6 +1118,7 @@ namespace BizHawk.Client.EmuHawk
 		private IControlMainform ToolControllingStopMovie => Tools.FirstOrNull<IControlMainform>(tool => tool.WantsToControlStopMovie);
 		private IControlMainform ToolControllingRestartMovie => Tools.FirstOrNull<IControlMainform>(tool => tool.WantsToControlRestartMovie);
 		private IControlMainform ToolControllingReadOnly => Tools.FirstOrNull<IControlMainform>(tool => tool.WantsToControlReadOnly);
+		private IControlMainform ToolBypassingMovieEndAction => Tools.FirstOrNull<IControlMainform>(tool => tool.WantsToBypassMovieEndAction);
 
 		private DisplayManager DisplayManager;
 
@@ -3081,7 +3082,7 @@ namespace BizHawk.Client.EmuHawk
 				bool render = !InvisibleEmulation && (!_throttle.skipNextFrame || _currAviWriter?.UsesVideo is true || atTurboSeekEnd);
 				bool newFrame = Emulator.FrameAdvance(InputManager.ControllerOutput, render, renderSound);
 
-				MovieSession.HandleFrameAfter();
+				MovieSession.HandleFrameAfter(ToolBypassingMovieEndAction is not null);
 
 				if (returnToRecording)
 				{
