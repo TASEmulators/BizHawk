@@ -115,6 +115,7 @@ namespace BizHawk.Client.Common
 
 		private Dictionary<string, int> TargetZoomFactors { get; set; } = new()
 		{
+			[VSystemID.Raw.Doom] = 1,
 			[VSystemID.Raw.GB] = 3,
 			[VSystemID.Raw.GBA] = 3,
 			[VSystemID.Raw.GBC] = 3,
@@ -203,6 +204,9 @@ namespace BizHawk.Client.Common
 		public bool Unthrottled { get; set; } = false;
 		public bool AutoMinimizeSkipping { get; set; } = true;
 		public bool VSyncThrottle { get; set; } = false;
+#if BIZHAWKBUILD_SUPERHAWK
+		public bool SuperHawkThrottle { get; set; } = false;
+#endif
 
 		public RewindConfig Rewind { get; set; } = new RewindConfig();
 

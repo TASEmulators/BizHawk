@@ -1,8 +1,9 @@
 ﻿using BizHawk.Common;
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.Common.movie.import
 {
-	// ReSharper disable once UnusedMember.Global
 	[ImporterFor("BizHawk", ".bkm")]
 	internal class BkmImport : MovieImporter
 	{
@@ -13,14 +14,19 @@ namespace BizHawk.Client.Common.movie.import
 
 			for (var i = 0; i < bkm.InputLogLength; i++)
 			{
-				// TODO: this is currently broken because Result.Movie.Emulator is no longer getting set,
-				// however using that was sketchy anyway because it relied on the currently loaded core for import
-				var input = bkm.GetInputState(i, Result.Movie.Emulator.ControllerDefinition, bkm.Header[HeaderKeys.Platform]);
+				var input = bkm.GetInputState(i, bkm.Header[HeaderKeys.Platform]);
 				Result.Movie.AppendFrame(input);
 			}
 
+			Result.Movie.LogKey = bkm.GenerateLogKey;
+
 			Result.Movie.HeaderEntries.Clear();
 			foreach (var (k, v) in bkm.Header) Result.Movie.HeaderEntries[k] = v;
+
+			// migrate some stuff, probably incomplete
+			if (Result.Movie.HeaderEntries[HeaderKeys.Core] is "QuickNes") Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.QuickNes;
+			if (Result.Movie.HeaderEntries[HeaderKeys.Core] is "EMU7800") Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.A7800Hawk;
+			if (Result.Movie.HeaderEntries[HeaderKeys.Platform] is "DGB") Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.GBL;
 
 			Result.Movie.SyncSettingsJson = bkm.SyncSettingsJson;
 

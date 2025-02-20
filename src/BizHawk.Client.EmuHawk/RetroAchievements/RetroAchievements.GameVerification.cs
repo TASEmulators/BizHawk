@@ -14,6 +14,8 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
 
+using CE = BizHawk.Common.CollectionExtensions.CollectionExtensions;
+
 #pragma warning disable BHI1007 // target-typed Exception TODO don't
 
 namespace BizHawk.Client.EmuHawk
@@ -38,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			var buf2048 = new byte[2048];
-			var buffer = new List<byte>();
+			List<ArraySegment<byte>> bitsToHash = new();
 
 			int FirstDataTrackLBA()
 			{
@@ -58,13 +60,13 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var slba = FirstDataTrackLBA();
 						dsr.ReadLBA_2048(slba + 1, buf2048, 0);
-						buffer.AddRange(new ArraySegment<byte>(buf2048, 128 - 22, 22));
+						bitsToHash.Add(new(buf2048, offset: 128 - 22, count: 22));
 						var bootSector = (buf2048[0] << 16) | (buf2048[1] << 8) | buf2048[2];
 						var numSectors = buf2048[3];
 						for (var i = 0; i < numSectors; i++)
 						{
 							dsr.ReadLBA_2048(slba + bootSector + i, buf2048, 0);
-							buffer.AddRange(buf2048);
+							bitsToHash.Add(new(buf2048));
 						}
 						break;
 					}
@@ -72,13 +74,13 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var slba = FirstDataTrackLBA();
 						dsr.ReadLBA_2048(slba + 1, buf2048, 0);
-						buffer.AddRange(new ArraySegment<byte>(buf2048, 0, 128));
+						bitsToHash.Add(new(buf2048, offset: 0, count: 128));
 						var bootSector = (buf2048[35] << 24) | (buf2048[34] << 16) | (buf2048[33] << 8) | buf2048[32];
 						var numSectors = (buf2048[39] << 24) | (buf2048[38] << 16) | (buf2048[37] << 8) | buf2048[36];
 						for (var i = 0; i < numSectors; i++)
 						{
 							dsr.ReadLBA_2048(slba + bootSector + i, buf2048, 0);
-							buffer.AddRange(buf2048);
+							bitsToHash.Add(new(buf2048));
 						}
 						break;
 					}
@@ -191,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 							exePath = exePath[index..endIndex];
 						}
 
-						buffer.AddRange(Encoding.ASCII.GetBytes(exePath));
+						bitsToHash.Add(new(Encoding.ASCII.GetBytes(exePath)));
 
 						// get sector for exe
 						sector = GetFileSector(exePath, out var exeSize);
@@ -204,13 +206,13 @@ namespace BizHawk.Client.EmuHawk
 							exeSize = ((buf2048[31] << 24) | (buf2048[30] << 16) | (buf2048[29] << 8) | buf2048[28]) + 2048;
 						}
 
-						buffer.AddRange(new ArraySegment<byte>(buf2048, 0, Math.Min(2048, exeSize)));
+						bitsToHash.Add(new(buf2048, offset: 0, count: Math.Min(2048, exeSize)));
 						exeSize -= 2048;
 
 						while (exeSize > 0)
 						{
 							dsr.ReadLBA_2048(sector++, buf2048, 0);
-							buffer.AddRange(new ArraySegment<byte>(buf2048, 0, Math.Min(2048, exeSize)));
+							bitsToHash.Add(new(buf2048, offset: 0, count: Math.Min(2048, exeSize)));
 							exeSize -= 2048;
 						}
 
@@ -219,7 +221,7 @@ namespace BizHawk.Client.EmuHawk
 				case ConsoleID.SegaCD:
 				case ConsoleID.Saturn:
 					dsr.ReadLBA_2048(0, buf2048, 0);
-					buffer.AddRange(new ArraySegment<byte>(buf2048, 0, 512));
+					bitsToHash.Add(new(buf2048, offset: 0, count: 512));
 					break;
 				case ConsoleID.JaguarCD:
 					var discHasher = new DiscHasher(disc);
@@ -230,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 					};
 			}
 
-			var hash = MD5Checksum.ComputeDigestHex(buffer.ToArray());
+			var hash = MD5Checksum.ComputeDigestHex(CE.ConcatArrays(bitsToHash));
 			return IdentifyHash(hash);
 		}
 

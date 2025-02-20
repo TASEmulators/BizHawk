@@ -39,6 +39,7 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.Arcade,
 				VSystemID.Raw.C64,
 				VSystemID.Raw.DOS,
+				VSystemID.Raw.Doom,
 				VSystemID.Raw.GBL,
 				VSystemID.Raw.GEN,
 				VSystemID.Raw.GGL,
@@ -341,6 +342,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MultiDiskBundler_Load(object sender, EventArgs e)
+		{
+
+		}
+
+		private void FileSelectorPanel_Paint(object sender, PaintEventArgs e)
 		{
 
 		}

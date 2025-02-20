@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
@@ -118,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				if (!sec.ContainsMultipleWeakSectors)
 				{
 					byte[] origData = sec.SectorData.ToArray();
-					List<byte> data = new List<byte>();
+					List<byte> data = new(); //TODO pretty sure the length and indices here are known in advance and this can just be an array --yoshi
 					for (int m = 0; m < 3; m++)
 					{
 						for (int i = 0; i < 512; i++)
@@ -442,7 +444,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             // we are going to create a total of 5 weak sector copies
             // keeping the original copy
             byte[] origData = sec.SectorData.ToArray();
-            List<byte> data = new List<byte>();
+            List<byte> data = new(); //TODO pretty sure the length and indices here are known in advance and this can just be an array --yoshi
             //Random rnd = new Random();
 
             for (int i = 0; i < 6; i++)
@@ -589,19 +591,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			/// (including any multiple weak/random data)
 			/// </summary>
 			public byte[] TrackSectorData
-			{
-				get
-				{
-					List<byte> list = new List<byte>();
-
-					foreach (var sec in Sectors)
-					{
-						list.AddRange(sec.ActualData);
-					}
-
-					return list.ToArray();
-				}
-			}
+				=> CollectionExtensions.ConcatArrays(Sectors.Select(static sec => sec.ActualData).ToArray());
 		}
 
 		public class Sector
@@ -652,15 +642,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						int size = 0x80 << SectorSize;
 						if (size > ActualDataByteLength)
 						{
-							List<byte> l = new List<byte>();
-							l.AddRange(SectorData);
-							for (int i = 0; i < size - ActualDataByteLength; i++)
-							{
-								//l.Add(SectorData[i]);
-								l.Add(SectorData[SectorData.Length - 1]);
-							}
-
-							return l.ToArray();
+							var buf = new byte[SectorData.Length + size - ActualDataByteLength];
+							SectorData.AsSpan().CopyTo(buf);
+//							SectorData.AsSpan(start: 0, length: buf.Length - SectorData.Length)
+//								.CopyTo(buf.AsSpan(start: SectorData.Length));
+							buf.AsSpan(start: SectorData.Length).Fill(SectorData[SectorData.Length - 1]);
+							return buf;
 						}
 						else
 						{

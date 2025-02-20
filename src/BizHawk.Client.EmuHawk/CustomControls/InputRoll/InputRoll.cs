@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly IControlRenderer _renderer;
 
-		private readonly CellList _selectedItems = new();
+		private CellList _selectedItems = new();
 
 		// scrollbar location(s) are calculated later (e.g. on resize)
 		private readonly VScrollBar _vBar = new VScrollBar { Visible = false };
@@ -269,10 +269,10 @@ namespace BizHawk.Client.EmuHawk
 
 					_rowCount = value;
 
-					//TODO replace this with a binary search + truncate
 					if (_selectedItems.LastOrDefault()?.RowIndex >= _rowCount)
 					{
-						_selectedItems.RemoveAll(i => i.RowIndex >= _rowCount);
+						var iLastToKeep = _selectedItems.LowerBoundBinarySearch(static c => c.RowIndex ?? -1, _rowCount);
+						_selectedItems = _selectedItems.Slice(start: 0, length: iLastToKeep + 1);
 					}
 
 					RecalculateScrollBars();

@@ -31,7 +31,7 @@ unsafe impl Sync for jit_descriptor {}
 
 #[no_mangle]
 #[inline(never)]
-extern fn __jit_debug_register_code() {}
+extern "C" fn __jit_debug_register_code() {}
 
 #[no_mangle]
 static mut __jit_debug_descriptor: jit_descriptor = jit_descriptor {

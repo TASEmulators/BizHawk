@@ -357,7 +357,11 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception ex)
 			{
 				text = "";
-				DialogController.ShowMessageBox($"oops\n{ex}");
+				DialogController.ShowMessageBox("Encountered unrecoverable error while drawing the input roll.\n" +
+					"The current movie will be closed without saving.\n" +
+					$"The exception was:\n\n{ex}", caption: "Failed to draw input roll");
+				TastudioStopMovie();
+				StartNewTasMovie();
 			}
 		}
 

@@ -73,6 +73,19 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 		}
 
 		[TestMethod]
+		public void TestConcatArrays()
+		{
+			Assert.IsTrue(
+				CE.ConcatArrays([ [ 1, 2 ], [ 3 ], [ ], [ 4, 5, 6 ] ])
+					.SequenceEqual([ 1, 2, 3, 4, 5, 6 ]),
+				"array");
+			Assert.IsTrue(
+				CE.ConcatArrays([ new ArraySegment<int>([ 1, 2 ]), new ArraySegment<int>([ 3 ]), [ ], new ArraySegment<int>([ 4, 5, 6 ]) ])
+					.SequenceEqual([ 1, 2, 3, 4, 5, 6 ]),
+				"ArraySegment");
+		}
+
+		[TestMethod]
 		public void TestLowerBoundBinarySearch()
 		{
 			List<string> a = new(new[] { "a", "abc", "abcde", "abcdef", "abcdefg" });

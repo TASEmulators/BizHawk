@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private LibDOSBox.ControllerType[] _ports { get; set; }
 		private static readonly (string Name, LibDOSBox.AllButtons Button)[] _joystickMap = CreateJoystickMap();
 		private static readonly (string Name, LibDOSBox.AllButtons Button)[] _cd32padMap = CreateCd32padMap();
-		private static readonly (string Name, LibDOSBox.UAEKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
+		private static readonly (string Name, LibDOSBox.DOSBoxKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
 
 		private static (string Name, LibDOSBox.AllButtons Value)[] CreateJoystickMap()
 		{
@@ -43,14 +43,14 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			return joystickMap.ToArray();
 		}
 
-		private static (string Name, LibDOSBox.UAEKeyboard Value)[] CreateKeyboardMap()
+		private static (string Name, LibDOSBox.DOSBoxKeyboard Value)[] CreateKeyboardMap()
 		{
-			var keyboardMap = new List<(string, LibDOSBox.UAEKeyboard)>();
+			var keyboardMap = new List<(string, LibDOSBox.DOSBoxKeyboard)>();
 			// ReSharper disable once LoopCanBeConvertedToQuery
-			foreach (var k in Enum.GetValues(typeof(LibDOSBox.UAEKeyboard)))
+			foreach (var k in Enum.GetValues(typeof(LibDOSBox.DOSBoxKeyboard)))
 			{
-				var name = Enum.GetName(typeof(LibDOSBox.UAEKeyboard), k)!.Replace('_', ' ');
-				keyboardMap.Add((name, (LibDOSBox.UAEKeyboard)k));
+				var name = Enum.GetName(typeof(LibDOSBox.DOSBoxKeyboard), k)!.Replace('_', ' ');
+				keyboardMap.Add((name, (LibDOSBox.DOSBoxKeyboard) k));
 			}
 
 			return keyboardMap.ToArray();

@@ -26,6 +26,23 @@ namespace BizHawk.Tests.Common.CustomCollections
 			Assert.IsTrue(list.Contains(11)); // `Contains` when `BinarySearch` returns non-negative
 		}
 
+		[TestMethod]
+		public void TestSortedListInsert()
+		{
+			SortedList<int> list = new([ 1, 4, 7 ]);
+			Assert.ThrowsException<NotSupportedException>(() => list.Insert(index: 3, item: 0), "setting [^0] (appending) out-of-order should throw");
+			list.Insert(index: 3, item: 10);
+			Assert.IsTrue(list.SequenceEqual([ 1, 4, 7, 10 ]), "expecting [ 1, 4, 7, 10 ]");
+			Assert.ThrowsException<NotSupportedException>(() => list.Insert(index: 3, item: 0), "setting [^1] out-of-order should throw");
+			list.Insert(index: 3, item: 9);
+			Assert.IsTrue(list.SequenceEqual([ 1, 4, 7, 9, 10 ]), "expecting [ 1, 4, 7, 9, 10 ]");
+			Assert.ThrowsException<NotSupportedException>(() => list.Insert(index: 1, item: 9), "setting [1] out-of-order should throw");
+			list.Insert(index: 1, item: 3);
+			Assert.IsTrue(list.SequenceEqual([ 1, 3, 4, 7, 9, 10 ]), "expecting [ 1, 3, 4, 7, 9, 10 ]");
+			Assert.ThrowsException<NotSupportedException>(() => list.Insert(index: 0, item: 9), "setting [0] out-of-order should throw");
+			list.Insert(index: 0, item: 0);
+			Assert.IsTrue(list.SequenceEqual([ 0, 1, 3, 4, 7, 9, 10 ]), "expecting [ 0, 1, 3, 4, 7, 9, 10 ]");
+		}
 
 		[TestMethod]
 		[DataRow(new[] {1, 5, 9, 10, 11, 12}, new[] {1, 5, 9}, 9)]
@@ -36,6 +53,22 @@ namespace BizHawk.Tests.Common.CustomCollections
 			var sortlist = new SortedList<int>(before);
 			sortlist.RemoveAfter(removeItem);
 			Assert.IsTrue(sortlist.ToArray().SequenceEqual(after));
+		}
+
+		[TestMethod]
+		public void TestSortedListSetIndexer()
+		{
+			SortedList<int> list = new([ 1, 3, 4 ]);
+			Assert.ThrowsException<NotSupportedException>(() => list[1] = 9, "setting [1] out-of-order should throw");
+			list[1] = 2;
+			Assert.IsTrue(list.SequenceEqual([ 1, 2, 4 ]), "expecting [ 1, 2, 4 ]");
+			Assert.ThrowsException<NotSupportedException>(() => list[0] = 9, "setting [0] out-of-order should throw");
+			list[0] = 0;
+			Assert.ThrowsException<NotSupportedException>(() => list[2] = 0, "setting [^1] out-of-order should throw");
+			list[2] = 9;
+			Assert.ThrowsException</*NotSupportedException*/ArgumentOutOfRangeException>(() => list[3] = 0, "setting [^0] (appending) out-of-order should throw");
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => list[3] = 10, "setting [^0] (appending) properly should throw"); // to match BCL `List<T>`
+			Assert.IsTrue(list.SequenceEqual([ 0, 2, 9 ]), "expecting [ 0, 2, 9 ]");
 		}
 	}
 }
