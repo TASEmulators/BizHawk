@@ -149,6 +149,36 @@ namespace BizHawk.Common.CollectionExtensions
 			return combined;
 		}
 
+		/// <returns>freshly-allocated array</returns>
+		public static T[] ConcatArrays<T>(/*params*/ IReadOnlyCollection<T[]> arrays)
+		{
+			var combinedLength = arrays.Sum(static a => a.Length); //TODO detect overflow
+			if (combinedLength is 0) return Array.Empty<T>();
+			var combined = new T[combinedLength];
+			var i = 0;
+			foreach (var arr in arrays)
+			{
+				arr.AsSpan().CopyTo(combined.AsSpan(start: i));
+				i += arr.Length;
+			}
+			return combined;
+		}
+
+		/// <returns>freshly-allocated array</returns>
+		public static T[] ConcatArrays<T>(/*params*/ IReadOnlyCollection<ArraySegment<T>> arrays)
+		{
+			var combinedLength = arrays.Sum(static a => a.Count); //TODO detect overflow
+			if (combinedLength is 0) return Array.Empty<T>();
+			var combined = new T[combinedLength];
+			var i = 0;
+			foreach (var arr in arrays)
+			{
+				arr.AsSpan().CopyTo(combined.AsSpan(start: i));
+				i += arr.Count;
+			}
+			return combined;
+		}
+
 		public static bool CountIsAtLeast<T>(this IEnumerable<T> collection, int n)
 			=> collection is ICollection countable
 				? countable.Count >= n
@@ -165,10 +195,6 @@ namespace BizHawk.Common.CollectionExtensions
 		/// If the key is not present, returns default(TValue).
 		/// backported from .NET Core 2.0
 		/// </summary>
-		public static TValue? GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key)
-			=> dictionary.TryGetValue(key, out var found) ? found : default;
-
-		/// <inheritdoc cref="GetValueOrDefault{K,V}(IDictionary{K,V},K)"/>
 		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
 			=> dictionary.TryGetValue(key, out var found) ? found : default;
 
@@ -177,10 +203,6 @@ namespace BizHawk.Common.CollectionExtensions
 		/// If the key is not present, returns <paramref name="defaultValue"/>.
 		/// backported from .NET Core 2.0
 		/// </summary>
-		public static TValue? GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
-			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
-
-		/// <inheritdoc cref="GetValueOrDefault{K,V}(IDictionary{K,V},K,V)"/>
 		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
 			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
 #endif
@@ -310,9 +332,11 @@ namespace BizHawk.Common.CollectionExtensions
 			return str.Substring(startIndex: offset, length: length);
 		}
 
+#if !NET8_0_OR_GREATER
 		/// <summary>shallow clone</summary>
-		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> list)
+		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> list) where TKey : notnull
 			=> list.ToDictionary(static kvp => kvp.Key, static kvp => kvp.Value);
+#endif
 
 		public static bool IsSortedAsc<T>(this IReadOnlyList<T> list)
 			where T : IComparable<T>

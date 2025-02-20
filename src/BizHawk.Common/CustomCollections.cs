@@ -1,26 +1,50 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BizHawk.Common
 {
-	public class SortedList<T> : ICollection<T>
+	public class SortedList<T> : IList<T>
 		where T : IComparable<T>
 	{
+		private const string ERR_MSG_OUT_OF_ORDER = "setting/inserting elements must preserve ordering";
+
 		protected readonly List<T> _list;
 
 		public virtual int Count => _list.Count;
 
 		public virtual bool IsReadOnly { get; } = false;
 
-		public SortedList() => _list = new List<T>();
+		protected SortedList(List<T> wrapped)
+			=> _list = wrapped;
+
+		public SortedList()
+			: this(new()) {}
 
 		public SortedList(IEnumerable<T> collection)
+			: this(new(collection))
 		{
-			_list = new List<T>(collection);
 			_list.Sort();
 		}
 
-		public virtual T this[int index] => _list[index];
+		public virtual T this[int index]
+		{
+			get => _list[index];
+			set
+			{
+				// NOT allowing appends, to match BCL `List<T>`
+				if (index < 0 || Count <= index) throw new ArgumentOutOfRangeException(paramName: nameof(index), index, message: $"index must be in 0..<{Count}");
+				if (Count is 0)
+				{
+					_list.Add(value);
+					return;
+				}
+				var willBeGeqPrevious = index is 0 || value.CompareTo(_list[index - 1]) >= 0;
+				var willBeLeqFollowing = index == Count - 1 || _list[index + 1].CompareTo(value) >= 0;
+				if (willBeGeqPrevious && willBeLeqFollowing) _list[index] = value;
+				else throw new NotSupportedException(ERR_MSG_OUT_OF_ORDER);
+			}
+		}
 
 		public virtual void Add(T item)
 		{
@@ -53,6 +77,21 @@ namespace BizHawk.Common
 		{
 			var i = _list.BinarySearch(item);
 			return i < 0 ? -1 : i;
+		}
+
+		public virtual void Insert(int index, T item)
+		{
+			// allowing appends per `IList<T>` docs
+			if (index < 0 || Count < index) throw new ArgumentOutOfRangeException(paramName: nameof(index), index, message: $"index must be in 0..{Count}");
+			if (Count is 0)
+			{
+				_list.Add(item);
+				return;
+			}
+			var willBeGeqPrevious = index is 0 || item.CompareTo(_list[index - 1]) >= 0;
+			var willBeLeqFollowing = index >= Count - 1 || _list[index].CompareTo(item) >= 0;
+			if (willBeGeqPrevious && willBeLeqFollowing) _list.Insert(index, item);
+			else throw new NotSupportedException(ERR_MSG_OUT_OF_ORDER);
 		}
 
 		public T LastOrDefault()
@@ -96,6 +135,12 @@ namespace BizHawk.Common
 				_list.RemoveRange(startIndex, _list.Count - startIndex);
 			}
 		}
+
+		public SortedList<T> Slice(int start, int length)
+			=> new(SliceImpl(start: start, length: length));
+
+		protected List<T> SliceImpl(int start, int length)
+			=> _list.Skip(start).Take(length).ToList();
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}

@@ -500,7 +500,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.QueryItemBgColorCallback = (index, name) => _th.SafeParseColor(luaf.Call(index, name)?[0]);
+				Tastudio.QueryItemBgColorCallback = (index, name) => _th.SafeParseColor(luaf.Call(index, name)?.FirstOrDefault());
 			}
 		}
 
@@ -523,7 +523,7 @@ namespace BizHawk.Client.EmuHawk
 				Tastudio.QueryItemIconCallback = (index, name) =>
 				{
 					var result = luaf.Call(index, name);
-					if (result?[0] != null)
+					if (result?.FirstOrDefault() is not null)
 					{
 						return _iconCache.GetValueOrPutNew1(result[0].ToString()).ToBitmap();
 					}

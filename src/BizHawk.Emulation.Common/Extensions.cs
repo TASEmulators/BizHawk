@@ -27,6 +27,7 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.Coleco] = "ColecoVision",
 			[VSystemID.Raw.DOS] = "DOS",
 			// DEBUG
+			[VSystemID.Raw.Doom] = "Doom",
 			[VSystemID.Raw.GBL] = "Game Boy Link",
 			[VSystemID.Raw.GB] = "GB",
 			[VSystemID.Raw.SGB] = "SGB",

@@ -2,25 +2,26 @@ using System.Collections.Generic;
 using System.IO;
 
 using BizHawk.Common.StringExtensions;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	internal class BkmMovie
 	{
+		private BkmControllerAdapter _adapter;
+
 		private readonly List<string> _log = new List<string>();
 		public BkmHeader Header { get; } = new BkmHeader();
 		public string Filename { get; set; } = "";
 		public bool Loaded { get; private set; }
 		public int InputLogLength => Loaded ? _log.Count : 0;
 
-		public BkmControllerAdapter GetInputState(int frame, ControllerDefinition definition, string sytemId)
+		public BkmControllerAdapter GetInputState(int frame, string sytemId)
 		{
 			if (frame < InputLogLength && frame >= 0)
 			{
-				var adapter = new BkmControllerAdapter(definition, sytemId);
-				adapter.SetControllersAsMnemonic(_log[frame]);
-				return adapter;
+				_adapter ??= new BkmControllerAdapter(sytemId);
+				_adapter.SetControllersAsMnemonic(_log[frame]);
+				return _adapter;
 			}
 
 			return null;
@@ -29,6 +30,8 @@ namespace BizHawk.Client.Common
 		public SubtitleList Subtitles => Header.Subtitles;
 
 		public IList<string> Comments => Header.Comments;
+
+		public string GenerateLogKey => Bk2LogEntryGenerator.GenerateLogKey(_adapter.Definition);
 
 		public string SyncSettingsJson
 		{

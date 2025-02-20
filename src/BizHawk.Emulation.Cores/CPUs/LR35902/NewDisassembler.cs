@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Components.LR35902
@@ -1041,51 +1040,52 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public static string Disassemble(ushort addr, Func<ushort, byte> reader, bool rgbds, out ushort size)
 		{
+			StringBuilder ret = new();
 			ushort origaddr = addr;
-			var bytes = new List<byte>
+			ret.AppendFormat("{0:X4}:  ", origaddr);
+			var opcode = reader(addr++);
+			ret.AppendFormat("{0:X2} ", opcode);
+			string result;
+			if (opcode is 0xCB)
 			{
-				reader(addr++)
-			};
-
-			string result = (rgbds ? rgbds_table : table)[bytes[0]];
-			if (bytes[0] == 0xcb)
-			{
-				bytes.Add(reader(addr++));
-				result = (rgbds ? rgbds_table : table)[bytes[1] + 256];
+				var opcode1 = reader(addr++);
+				ret.AppendFormat("{0:X2} ", opcode1);
+				result = (rgbds ? rgbds_table : table)[opcode1 + 256];
 			}
-
+			else
+			{
+				result = (rgbds ? rgbds_table : table)[opcode];
+			}
 			if (result.Contains("d8"))
 			{
 				byte d = reader(addr++);
-				bytes.Add(d);
+				ret.AppendFormat("{0:X2} ", d);
 				result = result.Replace("d8", rgbds ? $"${d:X2}" : $"#{d:X2}h");
 			}
 			else if (result.Contains("d16"))
 			{
 				byte dlo = reader(addr++);
 				byte dhi = reader(addr++);
-				bytes.Add(dlo);
-				bytes.Add(dhi);
+				ret.AppendFormat("{0:X2} {1:X2} ", dlo, dhi);
 				result = result.Replace("d16", rgbds ? $"${dhi:X2}{dlo:X2}" : $"#{dhi:X2}{dlo:X2}h");
 			}
 			else if (result.Contains("a16"))
 			{
 				byte dlo = reader(addr++);
 				byte dhi = reader(addr++);
-				bytes.Add(dlo);
-				bytes.Add(dhi);
+				ret.AppendFormat("{0:X2} {1:X2} ", dlo, dhi);
 				result = result.Replace("a16", rgbds ? $"${dhi:X2}{dlo:X2}" : $"#{dhi:X2}{dlo:X2}h");
 			}
 			else if (result.Contains("a8"))
 			{
 				byte d = reader(addr++);
-				bytes.Add(d);
+				ret.AppendFormat("{0:X2} ", d);
 				result = result.Replace("a8", rgbds ? $"$FF{d:X2}" : $"#FF{d:X2}h");
 			}
 			else if (result.Contains("r8"))
 			{
 				byte d = reader(addr++);
-				bytes.Add(d);
+				ret.AppendFormat("{0:X2} ", d);
 				int offs = d;
 				if (offs >= 128)
 					offs -= 256;
@@ -1095,15 +1095,12 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			else if (result.Contains("e8"))
 			{
 				byte d = reader(addr++);
-				bytes.Add(d);
+				ret.AppendFormat("{0:X2} ", d);
 				int offs = (d >= 128) ? (256 - d) : d;
 				string sign = (d >= 128) ? "-" : "";
 				result = result.Replace("e8", rgbds ? sign + $"${offs:X2}" : sign + $"{offs:X2}h");
 			}
-			var ret = new StringBuilder();
-			ret.Append($"{origaddr:X4}:  ");
-			foreach (var b in bytes)
-				ret.Append($"{b:X2} ");
+			// else noop
 			while (ret.Length < 17)
 				ret.Append(' ');
 			ret.Append(result);

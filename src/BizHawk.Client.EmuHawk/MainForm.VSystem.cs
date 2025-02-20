@@ -21,6 +21,7 @@ using BizHawk.Emulation.Cores.Computers.DOS;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
+using BizHawk.Emulation.Cores.Computers.Doom;
 using BizHawk.Emulation.Cores.Computers.MSX;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 using BizHawk.Emulation.Cores.Computers.TIC80;
@@ -1181,6 +1182,9 @@ namespace BizHawk.Client.EmuHawk
 			// DOSBox
 			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.DOSBox, CreateGenericCoreConfigItem<DOSBox>(CoreNames.DOSBox)));
 
+			// DSDA-Doom
+			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.DSDA, CreateGenericCoreConfigItem<DSDA>(CoreNames.DSDA)));
+
 			// Emu83
 			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.Emu83, CreateSettingsItem("Palette...", (_, _) => OpenTI83PaletteSettingsDialog(GetSettingsAdapterFor<Emu83>()))));
 
@@ -1523,6 +1527,24 @@ namespace BizHawk.Client.EmuHawk
 					DisplayDefaultCoreMenu();
 					break;
 			}
+		}
+
+		private void InitializeComponent()
+		{
+            this.SuspendLayout();
+            // 
+            // MainForm
+            // 
+            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Name = "MainForm";
+            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.ResumeLayout(false);
+
+		}
+
+		private void MainForm_Load(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

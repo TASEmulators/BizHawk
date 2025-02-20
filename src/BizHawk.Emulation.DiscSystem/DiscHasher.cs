@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -137,7 +138,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				const string _jaguarHeader = "ATARI APPROVED DATA HEADER ATRI";
 				const string _jaguarBSHeader = "TARA IPARPVODED TA AEHDAREA RT";
-				var buffer = new List<byte>();
+				List<ArraySegment<byte>> bitsToHash = new();
 				var buf2352 = new byte[2352];
 
 				// find the boot track header
@@ -199,7 +200,7 @@ namespace BizHawk.Emulation.DiscSystem
 					EndiannessUtils.MutatingByteSwap16(buf2352.AsSpan());
 				}
 
-				buffer.AddRange(new ArraySegment<byte>(buf2352, bootOff, Math.Min(2352 - bootOff, bootLen)));
+				bitsToHash.Add(new(buf2352, offset: bootOff, count: Math.Min(2352 - bootOff, bootLen)));
 				bootLen -= 2352 - bootOff;
 
 				while (bootLen > 0)
@@ -211,11 +212,11 @@ namespace BizHawk.Emulation.DiscSystem
 						EndiannessUtils.MutatingByteSwap16(buf2352.AsSpan());
 					}
 
-					buffer.AddRange(new ArraySegment<byte>(buf2352, 0, Math.Min(2352, bootLen)));
+					bitsToHash.Add(new(buf2352, offset: 0, count: Math.Min(2352, bootLen)));
 					bootLen -= 2352;
 				}
 
-				return MD5Checksum.ComputeDigestHex(buffer.ToArray());
+				return MD5Checksum.ComputeDigestHex(CollectionExtensions.ConcatArrays(bitsToHash));
 			}
 
 			var jaguarHash = HashJaguar(disc.Sessions[2].Tracks[1], dsr, false);

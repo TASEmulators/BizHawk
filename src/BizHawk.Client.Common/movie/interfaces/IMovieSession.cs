@@ -54,7 +54,7 @@ namespace BizHawk.Client.Common
 		IMovieController GenerateMovieController(ControllerDefinition definition = null, string logKey = null);
 
 		void HandleFrameBefore();
-		void HandleFrameAfter();
+		void HandleFrameAfter(bool ignoreMovieEndAction);
 		void HandleSaveState(TextWriter writer);
 
 		bool CheckSavestateTimeline(TextReader reader);

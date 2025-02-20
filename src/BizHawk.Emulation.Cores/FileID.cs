@@ -47,6 +47,9 @@ namespace BizHawk.Emulation.Cores
 		JAD, SBI,
 		M3U,
 
+		// Doom IWad/PWad File Types
+		WAD,
+
 		//audio codec formats
 		WAV, APE, MPC, FLAC,
 		MP3, //can't be ID'd very readily..
@@ -376,6 +379,9 @@ namespace BizHawk.Emulation.Cores
 			// DOS Floppy Disks
 			{ "IMA", new ExtensionInfo(FileIDType.DOS_FLOPPY, null ) },
 			{ "IMG", new ExtensionInfo(FileIDType.DOS_FLOPPY, null ) },
+			
+			// Doom IWad / PWad
+			{ "WAD", new ExtensionInfo(FileIDType.WAD, null ) },
 
 			//for now
 			{ "ROM", new ExtensionInfo(FileIDType.Multiple, null ) }, //could be MSX too

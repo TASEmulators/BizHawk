@@ -11,6 +11,17 @@ namespace BizHawk.Client.Common
 	[ImporterFor("DeSmuME", ".dsm")]
 	internal class DsmImport : MovieImporter
 	{
+		[Flags]
+		private enum MovieCommand
+		{
+			MIC   = 1,
+			RESET = 2,
+			LID   = 4
+		}
+
+		private bool _lidOpen = true;
+		private int _countLid;
+
 		private static readonly ControllerDefinition DeSmuMEControllerDef = new ControllerDefinition("NDS Controller")
 		{
 			BoolButtons =
@@ -143,7 +154,30 @@ namespace BizHawk.Client.Common
 
 		private void ProcessCmd(string cmd, SimpleController controller)
 		{
-			// TODO
+			MovieCommand command = (MovieCommand) int.Parse(cmd);
+
+			controller["Microphone"] = command.HasFlag(MovieCommand.MIC);
+
+			bool hasPowerCommand = command.HasFlag(MovieCommand.RESET);
+			controller["Power"] = hasPowerCommand;
+			if (hasPowerCommand)
+			{
+				_lidOpen = true;
+				_countLid = 0;
+			}
+
+			bool hasLidCommand = command.HasFlag(MovieCommand.LID);
+			controller["LidClose"] = hasLidCommand && _lidOpen && _countLid == 0;
+			controller["LidOpen"] = hasLidCommand && !_lidOpen && _countLid == 0;
+			if (hasLidCommand && _countLid == 0)
+			{
+				_countLid = 30;
+				_lidOpen = !_lidOpen;
+			}
+			else if (_countLid > 0)
+			{
+				_countLid--;
+			}
 		}
 	}
 }
