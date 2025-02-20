@@ -7,6 +7,7 @@
 #include <keyboard.h>
 #include <set>
 #include <jaffarCommon/file.hpp>
+#include <mixer.h>
 
 extern int _main(int argc, char* argv[]);
 void runMain() { _main(0, nullptr); }
@@ -23,6 +24,7 @@ jaffarCommon::file::MemoryFileDirectory _memFileDirectory;
 std::set<KBD_KEYS> _prevPressedKeys;
 extern std::set<KBD_KEYS> _pressedKeys;
 extern std::set<KBD_KEYS> _releasedKeys;
+std::vector<uint32_t> _audioSamples;
 
 bool loadFileIntoMemoryFileDirectory(const std::string& srcFile, const std::string& dstFile, const ssize_t dstSize = -1)
 {
@@ -120,7 +122,16 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	ticksElapsedInt = (uint32_t)std::floor(ticksElapsed);
 	// printf("Time Elapsed: %f / %u (delta: %f)\n", ticksElapsed,ticksElapsedInt,ticksPerFrame);
 
+ // Clearing audio sample buffer
+		_audioSamples.clear();
+
+	// Advance frame (jumping back into the game)
 	co_switch(_emuCoroutine);
+
+	// Checking audio sample count
+	size_t checksum = 0;
+	for (size_t i = 0; i < _audioSamples.size(); i++) checksum += _audioSamples[i];
+	printf("Audio samples: %lu - Checksum: %lu\n", _audioSamples.size(), checksum);
 
 	// printf("w: %u, h: %u, bytes: %p\n", sdl.surface->w, sdl.surface->h, sdl.surface->pixels);
 	f->base.Width = sdl.surface->w;
@@ -130,6 +141,10 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	// for (size_t i = 0; i < sdl.surface->w * sdl.surface->h * 4; i++) checksum += ((uint8_t*)sdl.surface->pixels)[i];
 	// printf("Video checksum: %lu\n", checksum);
 	memcpy(f->base.VideoBuffer, sdl.surface->pixels, f->base.Width * f->base.Height * 4);
+
+	// Setting audio buffer
+	f->base.SoundBuffer = (int16_t*)_audioSamples.data();
+	f->base.Samples  = _audioSamples.size();
 }
 
 uint8_t mainRAM[256];
