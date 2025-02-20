@@ -102,9 +102,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}, new Delegate[] { _ledCallback });
 
 			// Adding default config file
-			// Getting dsda-doom.wad -- required by DSDA
 			var baseConfFile = Zstd.DecompressZstdStream(new MemoryStream(Resources.DOSBOX_BASE_CONF.Value)).ToArray();
 			_exe.AddReadonlyFile(baseConfFile, FileNames.DOSBOX_BASE_CONF);
+
+			// Adding default HDD file
+			var hddImageFile = Zstd.DecompressZstdStream(new MemoryStream(Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value)).ToArray();
+			_exe.AddReadonlyFile(hddImageFile, FileNames.HD);
 
 			for (var index = 0; index < lp.Roms.Count; index++)
 			{
@@ -112,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 				Console.WriteLine("Adding ROM File: {0}", rom.RomPath);
 
-				_exe.AddReadonlyFile(rom.FileData, FileNames.FD + index);
+				_exe.AddReadonlyFile(rom.FileData, FileNames.FD + index + ".ima");
 				if (index < _syncSettings.FloppyDrives)
 				{
 					_driveSlots[index] = index;
@@ -364,7 +367,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public const string DOSBOX_BASE_CONF = "dosbox-x.conf";
 			public const string FD = "FloppyDisk";
 			public const string CD = "CompactDisk";
-			public const string HD = "HardDrive";
+			public const string HD = "HardDiskDrive";
 		}
 	}
 }
