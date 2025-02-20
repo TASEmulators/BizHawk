@@ -24,7 +24,7 @@ jaffarCommon::file::MemoryFileDirectory _memFileDirectory;
 std::set<KBD_KEYS> _prevPressedKeys;
 extern std::set<KBD_KEYS> _pressedKeys;
 extern std::set<KBD_KEYS> _releasedKeys;
-std::vector<uint32_t> _audioSamples;
+std::vector<int16_t> _audioSamples;
 
 bool loadFileIntoMemoryFileDirectory(const std::string& srcFile, const std::string& dstFile, const ssize_t dstSize = -1)
 {
@@ -143,8 +143,8 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	memcpy(f->base.VideoBuffer, sdl.surface->pixels, f->base.Width * f->base.Height * 4);
 
 	// Setting audio buffer
-	f->base.SoundBuffer = (int16_t*)_audioSamples.data();
-	f->base.Samples  = _audioSamples.size();
+	memcpy(f->base.SoundBuffer, _audioSamples.data(), _audioSamples.size() * sizeof(int16_t));
+	f->base.Samples  = _audioSamples.size() / 2;
 }
 
 uint8_t mainRAM[256];
