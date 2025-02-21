@@ -9,6 +9,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
+using static BizHawk.Emulation.Cores.Computers.DOS.LibDOSBox;
 
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
@@ -49,14 +50,22 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private readonly List<IRomAsset> _roms;
 		private const int _messageDuration = 4;
 		private const int _driveNullOrEmpty = -1;
-		private int[] _driveSlots;
 		private List<string> _args;
-		private int _currentDrive;
-		private int _currentSlot;
-		private bool _ejectPressed;
-		private bool _insertPressed;
-		private bool _nextSlotPressed;
-		private bool _nextDrivePressed;
+
+		// Drive management variables
+		private bool _nextFloppyDiskPressed = false;
+		private bool _nextCDROMPressed = false;
+		private bool _nextHardDiskDrivePressed = false;
+		private List<IRomAsset> _floppyDiskImageFiles = new List<IRomAsset>();
+		private List<IRomAsset> _CDROMDiskImageFiles = new List<IRomAsset>();
+		private List<IRomAsset> _hardDiskDriveImageFiles = new List<IRomAsset>();
+		private int _floppyDiskCount = 0;
+		private int _CDROMCount = 0;
+		private int _hardDiskDriveCount = 0;
+		private int _currentFloppyDisk = 0;
+		private int _currentCDROM = 0;
+		private int _currentHardDiskDrive = 0;
+
 		private int _correctedWidth;
 		private string _chipsetCompatible = "";
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
@@ -64,10 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public override int VirtualWidth => _correctedWidth;
 
 		// Image selection / swapping variables
-		private int _floppyDiskCount = 0;
-		private int _cdromCount = 0;
-		private int _currentFloppyDisk = 0;
-		private int _currentCDRom = 0;
+
 
 		private void LEDCallback()
 		{
@@ -88,7 +94,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				_syncSettings.ControllerPort1,
 				_syncSettings.ControllerPort2
 			];
-			_driveSlots = Enumerable.Repeat(_driveNullOrEmpty, LibDOSBox.MAX_FLOPPIES).ToArray();
 			DriveLightEnabled = _syncSettings.FloppyDrives > 0;
 
 			UpdateVideoStandard(true);
@@ -97,10 +102,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_ledCallback = LEDCallback;
 
 			// Parsing input files
-			var floppyDiskImageFiles = new List<IRomAsset>();
-			var CompactDiskImageFiles = new List<IRomAsset>();
-			var HardDiskDriveReadWriteImageFiles = new List<IRomAsset>();
-			var HardDiskReadOnlyDriveImageFiles = new List<IRomAsset>();
 			var ConfigFiles = new List<IRomAsset>();
 
 			// Parsing rom files
@@ -118,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 					file.RomPath.EndsWith(".nfd", StringComparison.OrdinalIgnoreCase) ||
 					file.RomPath.EndsWith(".d88", StringComparison.OrdinalIgnoreCase))
 				{
-					floppyDiskImageFiles.Add(file);
+					_floppyDiskImageFiles.Add(file);
 					recognized = true;
 				}
 
@@ -131,21 +132,18 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 					file.RomPath.EndsWith(".chf", StringComparison.OrdinalIgnoreCase))
 				{
 					Console.WriteLine("Added CDROM Image");
-					CompactDiskImageFiles.Add(file);
+					_CDROMDiskImageFiles.Add(file);
 					recognized = true;
 				}
 
-				// Checking for supported R/W Hard Disk Drive Image extensions
-				if (file.RomPath.EndsWith(".img", StringComparison.OrdinalIgnoreCase))
-					HardDiskDriveReadWriteImageFiles.Add(file);
-
-				// Checking for supported Read-Only Hard Disk Drive Image extensions
-				if (file.RomPath.EndsWith(".qcow2", StringComparison.OrdinalIgnoreCase) ||
+				// Checking for supported Hard Disk Drive Image extensions
+				if (file.RomPath.EndsWith(".img", StringComparison.OrdinalIgnoreCase) || // Only one with R/W capabilities
+				    file.RomPath.EndsWith(".qcow2", StringComparison.OrdinalIgnoreCase) ||
 					file.RomPath.EndsWith(".vhd", StringComparison.OrdinalIgnoreCase) ||
 					file.RomPath.EndsWith(".nhd", StringComparison.OrdinalIgnoreCase) ||
 					file.RomPath.EndsWith(".hdi", StringComparison.OrdinalIgnoreCase))
 				{
-					HardDiskReadOnlyDriveImageFiles.Add(file);
+					_hardDiskDriveImageFiles.Add(file);
 					recognized = true;
 				}
 
@@ -183,7 +181,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			////// Floppy disks: Mounting and appending mounting lines 
 			string floppyMountLine = "imgmount a ";
-			foreach (var file in floppyDiskImageFiles)
+			foreach (var file in _floppyDiskImageFiles)
 			{
 				string floppyNewName = FileNames.FD + _floppyDiskCount.ToString() + Path.GetExtension(file.RomPath);
 				_exe.AddReadonlyFile(file.FileData, floppyNewName);
@@ -194,15 +192,15 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			////// CD-ROMs: Mounting and appending mounting lines 
 			string cdromMountLine = "imgmount d ";
-			foreach (var file in CompactDiskImageFiles)
+			foreach (var file in _CDROMDiskImageFiles)
 			{
 				string typeExtension = Path.GetExtension(file.RomPath);
-				string cdromNewName = FileNames.CD + _cdromCount.ToString() + (typeExtension == ".dosbox-cdrom" ? ".iso" : typeExtension);
+				string cdromNewName = FileNames.CD + _CDROMCount.ToString() + (typeExtension == ".dosbox-cdrom" ? ".iso" : typeExtension);
 				_exe.AddReadonlyFile(file.FileData, cdromNewName);
 				cdromMountLine += cdromNewName + " ";
-				_cdromCount++;
+				_CDROMCount++;
 			}
-			if (_cdromCount > 0) configString += cdromMountLine + "\n";
+			if (_CDROMCount > 0) configString += cdromMountLine + "\n";
 
 			// Reconverting config to byte array
 			configData = Encoding.UTF8.GetBytes(configString);
@@ -259,7 +257,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 					Type = _ports[1],
 					Buttons = 0
 				},
-				Action = LibDOSBox.DriveAction.None
 			};
 
 			for (int port = 1; port <= 2; port++)
@@ -314,61 +311,52 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				}
 			}
 
-			if (controller.IsPressed(Inputs.InsertDisk))
+			fi.driveActions.insertFloppyDisk = -1;
+			fi.driveActions.insertCDROM = -1;
+			fi.driveActions.insertHardDiskDrive = -1;
+
+			if (_floppyDiskCount > 0)
 			{
-				if (!_insertPressed)
+				if (controller.IsPressed(Inputs.NextFloppyDisk))
 				{
-					fi.Action = LibDOSBox.DriveAction.InsertDisk;
-					unsafe
+					if (!_nextFloppyDiskPressed)
 					{
-						var str = FileNames.FD + _currentSlot;
-						fixed (char* filename = str)
-						{
-							fixed (byte* buffer = fi.Name.Buffer)
-							{
-								Encoding.ASCII.GetBytes(filename, str.Length, buffer, LibDOSBox.FILENAME_MAXLENGTH);
-							}
-						}
+						_currentFloppyDisk = (_currentFloppyDisk + 1) % _floppyDiskCount;
+						fi.driveActions.insertFloppyDisk = _currentFloppyDisk;
+						CoreComm.Notify($"Insterted FloppyDisk {_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])}  into drive A:", _messageDuration);
 					}
-					_driveSlots[_currentDrive] = _currentSlot;
-					CoreComm.Notify($"Insterted drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", _messageDuration);
 				}
 			}
 
-			if (controller.IsPressed(Inputs.NextSlot))
+			if (_CDROMCount > 0)
 			{
-				if (!_nextSlotPressed)
+				if (controller.IsPressed(Inputs.NextCDROM))
 				{
-					_currentSlot++;
-					_currentSlot %= _roms.Count;
-					var selectedFile = _roms[_currentSlot];
-					CoreComm.Notify($"Selected slot {_currentSlot}: {GetFullName(selectedFile)}", _messageDuration);
+					if (!_nextCDROMPressed)
+					{
+						_currentCDROM = (_currentCDROM + 1) % _CDROMCount;
+						fi.driveActions.insertCDROM = _currentCDROM;
+						CoreComm.Notify($"Insterted CDROM {_currentCDROM}: {GetFullName(_CDROMDiskImageFiles[_currentCDROM])}  into drive D:", _messageDuration);
+					}
 				}
 			}
 
-			if (controller.IsPressed(Inputs.NextDrive))
+			if (_hardDiskDriveCount > 0)
 			{
-				if (!_nextDrivePressed)
+				if (controller.IsPressed(Inputs.NextHardDiskDrive))
 				{
-					_currentDrive++;
-					_currentDrive %= _syncSettings.FloppyDrives;
-					string name = "";
-					if (_driveSlots[_currentDrive] == _driveNullOrEmpty)
+					if (!_nextHardDiskDrivePressed)
 					{
-						name = "empty";
+						_currentHardDiskDrive = (_currentHardDiskDrive + 1) % _hardDiskDriveCount;
+						fi.driveActions.insertHardDiskDrive = _currentHardDiskDrive;
+						CoreComm.Notify($"Insterted Hard Disk Drive {_currentHardDiskDrive}: {GetFullName(_hardDiskDriveImageFiles[_currentHardDiskDrive])} into drive C:", _messageDuration);
 					}
-					else
-					{
-						name = GetFullName(_roms[_driveSlots[_currentDrive]]);
-					}
-					CoreComm.Notify($"Selected drive FD{_currentDrive}: {name}", _messageDuration);
 				}
 			}
 
-			_insertPressed = controller.IsPressed(Inputs.InsertDisk);
-			_nextSlotPressed = controller.IsPressed(Inputs.NextSlot);
-			_nextDrivePressed = controller.IsPressed(Inputs.NextDrive);			
-			fi.CurrentDrive = _currentDrive;
+			_nextFloppyDiskPressed = controller.IsPressed(Inputs.NextFloppyDisk);
+			_nextCDROMPressed = controller.IsPressed(Inputs.NextCDROM);
+			_nextHardDiskDrivePressed = controller.IsPressed(Inputs.NextHardDiskDrive);
 
 			foreach (var (name, key) in _keyboardMap)
 			{
@@ -391,30 +379,22 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
 		{
-			writer.Write(_ejectPressed);
-			writer.Write(_insertPressed);
-			writer.Write(_nextSlotPressed);
-			writer.Write(_nextDrivePressed);
-			writer.Write(_currentDrive);
-			writer.Write(_currentSlot);
-			writer.Write(_driveSlots[0]);
-			writer.Write(_driveSlots[1]);
-			writer.Write(_driveSlots[2]);
-			writer.Write(_driveSlots[3]);
+			writer.Write(_nextFloppyDiskPressed);
+			writer.Write(_nextCDROMPressed);
+			writer.Write(_nextHardDiskDrivePressed);
+			writer.Write(_currentFloppyDisk);
+			writer.Write(_currentCDROM);
+			writer.Write(_currentHardDiskDrive);
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
-			_ejectPressed = reader.ReadBoolean();
-			_insertPressed = reader.ReadBoolean();
-			_nextSlotPressed = reader.ReadBoolean();
-			_nextDrivePressed = reader.ReadBoolean();
-			_currentDrive = reader.ReadInt32();
-			_currentSlot = reader.ReadInt32();
-			_driveSlots[0] = reader.ReadInt32();
-			_driveSlots[1] = reader.ReadInt32();
-			_driveSlots[2] = reader.ReadInt32();
-			_driveSlots[3] = reader.ReadInt32();
+			_nextFloppyDiskPressed = reader.ReadBoolean();
+			_nextCDROMPressed = reader.ReadBoolean();
+			_nextHardDiskDrivePressed = reader.ReadBoolean();
+			_currentFloppyDisk = reader.ReadInt32();
+			_currentCDROM = reader.ReadInt32();
+			_currentHardDiskDrive = reader.ReadInt32();
 		}
 
 		private void UpdateVideoStandard(bool initial)

@@ -72,13 +72,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			{
 				public unsafe fixed byte Buffer[KEY_COUNT];
 			}
-			public int CurrentDrive;
-			public DriveAction Action;
-			public FileName Name;
-			public struct FileName
-			{
-				public unsafe fixed byte Buffer[FILENAME_MAXLENGTH];
-			}
+			public DriveActions driveActions;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -117,11 +111,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		}
 #endif
 
-		public enum DriveAction : int
+		[StructLayout(LayoutKind.Sequential)]
+		public struct DriveActions
 		{
-			None,
-			EjectDisk,
-			InsertDisk
+			public int insertFloppyDisk;
+			public int insertCDROM;
+			public int insertHardDiskDrive;
 		}
 
 		[Flags]

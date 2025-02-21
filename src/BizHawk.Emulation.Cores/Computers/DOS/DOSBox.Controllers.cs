@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			controller.BoolButtons.AddRange(
 			[
-				Inputs.NextDrive, Inputs.NextSlot, Inputs.InsertDisk
+				Inputs.NextFloppyDisk, Inputs.NextCDROM, Inputs.NextHardDiskDrive
 			]);
 
 			foreach (var (name, _) in _keyboardMap)
@@ -123,9 +123,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public const string MouseMiddleButton = "Mouse Middle Button";
 			public const string MouseX = "Mouse X";
 			public const string MouseY = "Mouse Y";
-			public const string InsertDisk = "Insert Disk";
-			public const string NextDrive = "Next Drive";
-			public const string NextSlot = "Next Slot";
+			public const string NextFloppyDisk = "Next Floppy Disk";
+			public const string NextCDROM = "Next CDROM";
+			public const string NextHardDiskDrive = "Next HardDisk Drive";
 		}
 	}
 }
