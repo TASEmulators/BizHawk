@@ -909,7 +909,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using MovieHeaderEditor form = new(CurrentTasMovie, Config)
 			{
-				Owner = Owner,
+				Owner = this,
 				Location = this.ChildPointToScreen(TasView)
 			};
 			form.ShowDialogOnScreen();
@@ -923,7 +923,7 @@ namespace BizHawk.Client.EmuHawk
 				(s, k) => { CurrentTasMovie.TasStateManager.UpdateSettings(s, k); },
 				false)
 			{
-				Owner = Owner,
+				Owner = this,
 				Location = this.ChildPointToScreen(TasView)
 			};
 			form.ShowDialogOnScreen();
@@ -933,7 +933,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using EditCommentsForm form = new(CurrentTasMovie, false)
 			{
-				Owner = Owner,
+				Owner = this,
 				StartPosition = FormStartPosition.Manual,
 				Location = this.ChildPointToScreen(TasView)
 			};
@@ -948,7 +948,7 @@ namespace BizHawk.Client.EmuHawk
 				Config!.PathEntries,
 				readOnly: false)
 			{
-				Owner = Owner,
+				Owner = this,
 				StartPosition = FormStartPosition.Manual,
 				Location = this.ChildPointToScreen(TasView)
 			};
@@ -963,7 +963,7 @@ namespace BizHawk.Client.EmuHawk
 				(s, k) => { Config.Movies.DefaultTasStateManagerSettings = s; },
 				true)
 			{
-				Owner = Owner,
+				Owner = this,
 				Location = this.ChildPointToScreen(TasView)
 			};
 			form.ShowDialogOnScreen();
@@ -1085,7 +1085,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using TAStudioColorSettingsForm form = new(Palette, p => Settings.Palette = p)
 			{
-				Owner = Owner,
+				Owner = this,
 				StartPosition = FormStartPosition.Manual,
 				Location = this.ChildPointToScreen(TasView)
 			};
