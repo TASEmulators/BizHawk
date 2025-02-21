@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Properties;
@@ -62,6 +63,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		public override int VirtualWidth => _correctedWidth;
 
+		// Image selection / swapping variables
+		private int _floppyDiskCount = 0;
+		private int _cdromCount = 0;
+		private int _currentFloppyDisk = 0;
+		private int _currentCDRom = 0;
+
 		private void LEDCallback()
 		{
 			DriveLightOn = true;
@@ -89,6 +96,69 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
 			_ledCallback = LEDCallback;
 
+			// Parsing input files
+			var floppyDiskImageFiles = new List<IRomAsset>();
+			var CompactDiskImageFiles = new List<IRomAsset>();
+			var HardDiskDriveReadWriteImageFiles = new List<IRomAsset>();
+			var HardDiskReadOnlyDriveImageFiles = new List<IRomAsset>();
+			var ConfigFiles = new List<IRomAsset>();
+
+			// Parsing rom files
+			foreach (var file in _roms)
+			{
+				bool recognized = false;
+
+				// Checking for supported floppy disk extensions
+				if (file.RomPath.EndsWith(".ima", StringComparison.OrdinalIgnoreCase) ||
+					// file.RomPath.EndsWith(".img", StringComparison.OrdinalIgnoreCase) || // Reserving img for hard disk drive images
+					file.RomPath.EndsWith(".xdf", StringComparison.OrdinalIgnoreCase) ||
+					file.RomPath.EndsWith(".dmf", StringComparison.OrdinalIgnoreCase) ||
+					file.RomPath.EndsWith(".fdd", StringComparison.OrdinalIgnoreCase) ||
+					file.RomPath.EndsWith(".fdi", StringComparison.OrdinalIgnoreCase) ||
+					file.RomPath.EndsWith(".nfd", StringComparison.OrdinalIgnoreCase) ||
+					file.RomPath.EndsWith(".d88", StringComparison.OrdinalIgnoreCase))
+				{
+					floppyDiskImageFiles.Add(file);
+					recognized = true;
+				}
+
+				// Checking for supported CD-ROM extensions
+				if (file.RomPath.EndsWith(".iso", StringComparison.OrdinalIgnoreCase) ||
+					file.RomPath.EndsWith(".dosbox-cdrom", StringComparison.OrdinalIgnoreCase) || // Temporary to circumvent BK's detection of isos as discs (not roms)
+					file.RomPath.EndsWith(".cue", StringComparison.OrdinalIgnoreCase) || // Must be accompanied by a bin file
+					file.RomPath.EndsWith(".bin", StringComparison.OrdinalIgnoreCase) ||
+					file.RomPath.EndsWith(".mdf", StringComparison.OrdinalIgnoreCase) ||
+					file.RomPath.EndsWith(".chf", StringComparison.OrdinalIgnoreCase))
+				{
+					Console.WriteLine("Added CDROM Image");
+					CompactDiskImageFiles.Add(file);
+					recognized = true;
+				}
+
+				// Checking for supported R/W Hard Disk Drive Image extensions
+				if (file.RomPath.EndsWith(".img", StringComparison.OrdinalIgnoreCase))
+					HardDiskDriveReadWriteImageFiles.Add(file);
+
+				// Checking for supported Read-Only Hard Disk Drive Image extensions
+				if (file.RomPath.EndsWith(".qcow2", StringComparison.OrdinalIgnoreCase) ||
+					file.RomPath.EndsWith(".vhd", StringComparison.OrdinalIgnoreCase) ||
+					file.RomPath.EndsWith(".nhd", StringComparison.OrdinalIgnoreCase) ||
+					file.RomPath.EndsWith(".hdi", StringComparison.OrdinalIgnoreCase))
+				{
+					HardDiskReadOnlyDriveImageFiles.Add(file);
+					recognized = true;
+				}
+
+				// Checking for DOSBox-x config files
+				if (file.RomPath.EndsWith(".conf", StringComparison.OrdinalIgnoreCase))
+				{
+					ConfigFiles.Add(file);
+					recognized = true;
+				}
+
+				if (!recognized) throw new Exception($"Unrecognized input file provided: '{file.RomPath}'");
+			}
+
 			var dosbox = PreInit<LibDOSBox>(new WaterboxOptions
 			{
 				Filename = "dosbox.wbx",
@@ -101,39 +171,61 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _ledCallback });
 
-			// Adding default config file
-			var baseConfFile = Zstd.DecompressZstdStream(new MemoryStream(Resources.DOSBOX_BASE_CONF.Value)).ToArray();
-			_exe.AddReadonlyFile(baseConfFile, FileNames.DOSBOX_BASE_CONF);
+			// Getting base config file
+			IEnumerable<byte> configData = Zstd.DecompressZstdStream(new MemoryStream(Resources.DOSBOX_BASE_CONF.Value)).ToArray();
+
+			// Converting to string
+			var configString = Encoding.UTF8.GetString(configData.ToArray());
+
+			// Adding autoexec line
+			configString += "[autoexec]\n";
+			configString += "@echo off\n";
+
+			////// Floppy disks: Mounting and appending mounting lines 
+			string floppyMountLine = "imgmount a ";
+			foreach (var file in floppyDiskImageFiles)
+			{
+				string floppyNewName = FileNames.FD + _floppyDiskCount.ToString() + Path.GetExtension(file.RomPath);
+				_exe.AddReadonlyFile(file.FileData, floppyNewName);
+				floppyMountLine += floppyNewName + " ";
+				_floppyDiskCount++;
+			}
+			if (_floppyDiskCount > 0) configString += floppyMountLine + "\n";
+
+			////// CD-ROMs: Mounting and appending mounting lines 
+			string cdromMountLine = "imgmount d ";
+			foreach (var file in CompactDiskImageFiles)
+			{
+				string typeExtension = Path.GetExtension(file.RomPath);
+				string cdromNewName = FileNames.CD + _cdromCount.ToString() + (typeExtension == ".dosbox-cdrom" ? ".iso" : typeExtension);
+				_exe.AddReadonlyFile(file.FileData, cdromNewName);
+				cdromMountLine += cdromNewName + " ";
+				_cdromCount++;
+			}
+			if (_cdromCount > 0) configString += cdromMountLine + "\n";
+
+			// Reconverting config to byte array
+			configData = Encoding.UTF8.GetBytes(configString);
+
+			// Adding EOL
+			configString += "@echo on\n";
+			configString += "\n";
+
+			// Appending any additionaluser-provided config files
+			foreach (var file in ConfigFiles)
+			{
+				// Forcing a new line
+				configData = configData.Concat("\n"u8.ToArray());
+				configData = configData.Concat(file.FileData);
+			}
+
+			// Adding single config file to the wbx
+			_exe.AddReadonlyFile(configData.ToArray(), FileNames.DOSBOX_CONF);
+			 Console.WriteLine("Configuration: {0}", System.Text.Encoding.Default.GetString(configData.ToArray()));
 
 			// Adding default HDD file
 			var hddImageFile = Zstd.DecompressZstdStream(new MemoryStream(Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value)).ToArray();
 			_exe.AddReadonlyFile(hddImageFile, FileNames.HD);
-
-			for (var index = 0; index < lp.Roms.Count; index++)
-			{
-				var rom = lp.Roms[index];
-
-				Console.WriteLine("Adding ROM File: {0}", rom.RomPath);
-
-				_exe.AddReadonlyFile(rom.FileData, FileNames.FD + index + ".ima");
-				if (index < _syncSettings.FloppyDrives)
-				{
-					_driveSlots[index] = index;
-					AppendSetting($"floppy{index}={FileNames.FD}{index}");
-					AppendSetting($"floppy{index}type={(int) DriveType.DRV_35_DD}");
-					AppendSetting("floppy_write_protect=true");
-				}
-			}
-
-			//var (kickstartData, kickstartInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(
-			//	new(VSystemID.Raw.DOS, _chipsetCompatible),
-			//	"Firmware files are required!");
-			//_exe.AddReadonlyFile(kickstartData, kickstartInfo.Name);
-			//filesToRemove.Add(kickstartInfo.Name);
-			//_args.AddRange(
-			//[
-			//	"-r", kickstartInfo.Name
-			//]);
 
 			Console.WriteLine();
 			Console.WriteLine(string.Join(" ", _args));
@@ -222,23 +314,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				}
 			}
 
-			if (controller.IsPressed(Inputs.EjectDisk))
-			{
-				if (!_ejectPressed)
-				{
-					fi.Action = LibDOSBox.DriveAction.EjectDisk;
-					if (_driveSlots[_currentDrive] == _driveNullOrEmpty)
-					{
-						CoreComm.Notify($"Drive FD{_currentDrive} is already empty!", _messageDuration);
-					}
-					else
-					{
-						CoreComm.Notify($"Ejected drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", _messageDuration);
-						_driveSlots[_currentDrive] = _driveNullOrEmpty;
-					}
-				}
-			}
-			else if (controller.IsPressed(Inputs.InsertDisk))
+			if (controller.IsPressed(Inputs.InsertDisk))
 			{
 				if (!_insertPressed)
 				{
@@ -289,7 +365,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				}
 			}
 
-			_ejectPressed = controller.IsPressed(Inputs.EjectDisk);
 			_insertPressed = controller.IsPressed(Inputs.InsertDisk);
 			_nextSlotPressed = controller.IsPressed(Inputs.NextSlot);
 			_nextDrivePressed = controller.IsPressed(Inputs.NextDrive);			
@@ -364,7 +439,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		private static class FileNames
 		{
-			public const string DOSBOX_BASE_CONF = "dosbox-x.conf";
+			public const string DOSBOX_CONF = "dosbox-x.conf";
 			public const string FD = "FloppyDisk";
 			public const string CD = "CompactDisk";
 			public const string HD = "HardDiskDrive";
