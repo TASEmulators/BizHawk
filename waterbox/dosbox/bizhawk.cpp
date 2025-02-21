@@ -12,15 +12,17 @@
 extern int _main(int argc, char* argv[]);
 void runMain() { _main(0, nullptr); }
 extern void VGA_SetupDrawing(Bitu /*val*/);
+extern void swapInDrive(int drive, unsigned int position);
 cothread_t _emuCoroutine;
 cothread_t _driverCoroutine;
 
-#define __FPS__ 60
-double ticksElapsed;
-uint32_t ticksElapsedInt;
-uint32_t _GetTicks() { return ticksElapsedInt; }
-jaffarCommon::file::MemoryFileDirectory _memFileDirectory;
+#define __FPS__ 59.8260993957519531
+double ticksTarget;
+constexpr double ticksPerFrame = 1000.0 / __FPS__;
+uint32_t ticksElapsed;
+uint32_t _GetTicks() { return ticksElapsed; }
 
+jaffarCommon::file::MemoryFileDirectory _memFileDirectory;
 std::set<KBD_KEYS> _prevPressedKeys;
 extern std::set<KBD_KEYS> _pressedKeys;
 extern std::set<KBD_KEYS> _releasedKeys;
@@ -83,8 +85,8 @@ ECL_EXPORT bool Init(int argc, char **argv)
 		setenv("SDL_AUDIODRIVER", "dummy", 1);
 
 		// Setting timer
-		ticksElapsed = 0.0;
-		ticksElapsedInt = 0;
+		ticksTarget = 0.0;
+		ticksElapsed = 0;
 
 	printf("Starting DOSBox-x Coroutine...\n");
 	_driverCoroutine = co_active();
@@ -116,22 +118,45 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	}
 	_prevPressedKeys = newPressedKeys;
  
-	// Advancing timer
-	constexpr double ticksPerFrame = 1000.0 / __FPS__;
-	ticksElapsed += ticksPerFrame; // Miliseconds per frame
-	ticksElapsedInt = (uint32_t)std::floor(ticksElapsed);
-	// printf("Time Elapsed: %f / %u (delta: %f)\n", ticksElapsed,ticksElapsedInt,ticksPerFrame);
+	// Processing drive swapping
+	if (f->driveActions.insertFloppyDisk >= 0)
+	{
+		printf("Swapping to Floppy Disk: %d\n", f->driveActions.insertFloppyDisk);
+		swapInDrive(0, f->driveActions.insertFloppyDisk + 1); // 0 is A:
+	}
+	
+	if (f->driveActions.insertCDROM >= 0)
+	{
+		printf("Swapping to CDROM: %d\n", f->driveActions.insertCDROM);
+		swapInDrive(3, f->driveActions.insertFloppyDisk + 1); // 3 is D:
+	}
+
+	if (f->driveActions.insertHardDiskDrive >= 0)
+	{
+		printf("Swapping to Hard Disk Drive: %d\n", f->driveActions.insertHardDiskDrive);
+		swapInDrive(2, f->driveActions.insertHardDiskDrive + 1); // 3 is C:
+	}
 
  // Clearing audio sample buffer
 		_audioSamples.clear();
 
-	// Advance frame (jumping back into the game)
-	co_switch(_emuCoroutine);
+ // Increasing ticks target
+	ticksTarget += ticksPerFrame;
+	
+	// Advancing until the required tick target is met
+	while (ticksElapsed < (int)ticksTarget)
+	{
+		// Advance frame 1ms at a time for correct internal timing
+		ticksElapsed += 1;
+
+		// Jumping back into dosbox
+		co_switch(_emuCoroutine);
+	}
 
 	// Checking audio sample count
-	size_t checksum = 0;
-	for (size_t i = 0; i < _audioSamples.size(); i++) checksum += _audioSamples[i];
-	printf("Audio samples: %lu - Checksum: %lu\n", _audioSamples.size(), checksum);
+	// size_t checksum = 0;
+	// for (size_t i = 0; i < _audioSamples.size(); i++) checksum += _audioSamples[i];
+	// printf("Audio samples: %lu - Checksum: %lu\n", _audioSamples.size(), checksum);
 
 	// printf("w: %u, h: %u, bytes: %p\n", sdl.surface->w, sdl.surface->h, sdl.surface->pixels);
 	f->base.Width = sdl.surface->w;

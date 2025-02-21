@@ -92,11 +92,16 @@ typedef struct ControllerState
 
 typedef struct
 {
+		int insertFloppyDisk;
+		int insertCDROM;
+		int insertHardDiskDrive;
+} DriveActions;
+
+typedef struct
+{
 	FrameInfo base;
 	Controller Port1;
 	Controller Port2;
 	char Keys[KEY_COUNT];
-	int CurrentDrive;
-	int Action;
-	char FileName[FILENAME_MAXLENGTH];
+	DriveActions driveActions;
 } MyFrameInfo;
