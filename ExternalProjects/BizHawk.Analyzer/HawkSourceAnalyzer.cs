@@ -150,8 +150,8 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 					case QueryExpressionSyntax:
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoQueryExpression, snac.Node.GetLocation()));
 						break;
-					case RecordDeclarationSyntax rds:
-						if (!rds.ClassOrStructKeyword.ToFullString().Contains("class")) snac.ReportDiagnostic(Diagnostic.Create(DiagRecordImplicitlyRefType, rds.GetLocation()));
+					case RecordDeclarationSyntax rds when rds.ClassOrStructKeyword.ToString() is not "class": // `record struct`s don't use this kind
+						snac.ReportDiagnostic(Diagnostic.Create(DiagRecordImplicitlyRefType, rds.GetLocation()));
 						break;
 					case SwitchExpressionArmSyntax { WhenClause: null, Pattern: DiscardPatternSyntax, Expression: ThrowExpressionSyntax tes }:
 						var thrownExceptionType = snac.SemanticModel.GetThrownExceptionType(tes);

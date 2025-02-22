@@ -33,7 +33,8 @@ public sealed class UseNameofOperatorAnalyzer : DiagnosticAnalyzer
 			snac =>
 			{
 				memberInfoDotNameSym ??= snac.Compilation.GetTypeByMetadataName("System.Reflection.MemberInfo")!.GetMembers("Name")[0];
-				typeDotToStringSym ??= snac.Compilation.GetTypeByMetadataName("System.Type")!.GetMembers("ToString")[0];
+				typeDotToStringSym ??= snac.Compilation.GetTypeByMetadataName("System.Type")!
+					.GetMembers(WellKnownMemberNames.ObjectToString)[0];
 				var toes = (TypeOfExpressionSyntax) snac.Node;
 				switch (toes.Parent)
 				{

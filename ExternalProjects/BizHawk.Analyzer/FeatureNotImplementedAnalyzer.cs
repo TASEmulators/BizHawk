@@ -49,14 +49,13 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 							.Any(aSyn => featureNotImplementedAttrSym.Matches(snac.SemanticModel.GetTypeInfo(aSyn, snac.CancellationToken).Type));
 					void CheckBlockBody(BlockSyntax bs, Location location)
 					{
-						if (bs.Statements.Count is not 1) snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_DOES_NOT_THROW));
-						else if (bs.Statements[0] is not ThrowStatementSyntax tss) snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_DOES_NOT_THROW));
-						else MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tss), tss.GetLocation());
+						if (bs.Statements is [ ThrowStatementSyntax tss ]) MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tss), tss.GetLocation());
+						else snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_DOES_NOT_THROW));
 					}
 					void CheckExprBody(ArrowExpressionClauseSyntax aecs, Location location)
 					{
-						if (aecs.Expression is not ThrowExpressionSyntax tes) snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_DOES_NOT_THROW));
-						else MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tes), tes.GetLocation());
+						if (aecs.Expression is ThrowExpressionSyntax tes) MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tes), tes.GetLocation());
+						else snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_DOES_NOT_THROW));
 					}
 					void CheckAccessor(AccessorDeclarationSyntax ads)
 					{
