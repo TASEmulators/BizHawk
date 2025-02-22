@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
-
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Computers.Amiga;
+using static BizHawk.Emulation.Cores.Waterbox.NymaCore.NymaSettingsInfo;
 
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
@@ -34,6 +36,16 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			if (settings.EnableJoystick2)
 				foreach (var button in JoystickButtonCollection)
 					controller.BoolButtons.Add("P2 " + Inputs.Joystick + " " + button);
+
+			// Adding mouse inputs
+			if (settings.EnableMouse)
+			{
+				controller.BoolButtons.Add(Inputs.Mouse + " " + MouseInputs.LeftButton);
+				controller.BoolButtons.Add(Inputs.Mouse + " " + MouseInputs.MiddleButton);
+				controller.BoolButtons.Add(Inputs.Mouse + " " + MouseInputs.RightButton);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.XAxis, (0).RangeTo(LibDOSBox.SVGA_MAX_WIDTH), LibDOSBox.SVGA_MAX_WIDTH / 2);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.YAxis, (0).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT), LibDOSBox.SVGA_MAX_HEIGHT / 2);
+			}
 
 			// Adding drive management buttons
 			controller.BoolButtons.AddRange(
@@ -70,14 +82,19 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public const string Button2 = "Button2";
 		}
 
+		private static class MouseInputs
+		{
+			public const string LeftButton = "Left Button";
+			public const string RightButton = "Right Button";
+			public const string MiddleButton = "Middle Button";
+			public const string XAxis = "X Axis";
+			public const string YAxis = "Y Axis";
+		}
+
 		private static class Inputs
 		{
 			public const string Joystick = "Joystick";
-			public const string MouseLeftButton = "Mouse Left Button";
-			public const string MouseRightButton = "Mouse Right Button";
-			public const string MouseMiddleButton = "Mouse Middle Button";
-			public const string MouseX = "Mouse X";
-			public const string MouseY = "Mouse Y";
+			public const string Mouse = "Mouse";
 			public const string NextFloppyDisk = "Next Floppy Disk";
 			public const string NextCDROM = "Next CDROM";
 			public const string NextHardDiskDrive = "Next HardDisk Drive";
