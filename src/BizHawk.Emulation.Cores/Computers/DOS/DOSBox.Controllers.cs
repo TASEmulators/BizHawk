@@ -8,14 +8,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 {
 	public partial class DOSBox
 	{
-		private LibDOSBox.ControllerType[] _ports { get; set; }
 		private static readonly (string Name, LibDOSBox.AllButtons Button)[] _joystickMap = CreateJoystickMap();
 		private static readonly (string Name, LibDOSBox.DOSBoxKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
 
 		private static (string Name, LibDOSBox.AllButtons Value)[] CreateJoystickMap()
 		{
 			var joystickMap = new List<(string, LibDOSBox.AllButtons)>();
-			// ReSharper disable once LoopCanBeConvertedToQuery
 			foreach (var b in Enum.GetValues(typeof(LibDOSBox.AllButtons)))
 			{
 				if (((short)b & LibDOSBox.JoystickMask) == 0)
@@ -43,38 +41,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private static ControllerDefinition CreateControllerDefinition(SyncSettings settings)
 		{
 			var controller = new ControllerDefinition("Amiga Controller");
-
-			for (int port = 1; port <= 2; port++)
-			{
-				LibDOSBox.ControllerType type = port == 1
-					? settings.ControllerPort1
-					: settings.ControllerPort2;
-
-				switch (type)
-				{
-					case LibDOSBox.ControllerType.DJoy:
-						{
-							foreach (var (name, _) in _joystickMap)
-							{
-								controller.BoolButtons.Add($"P{port} {Inputs.Joystick} {name}");
-							}
-							break;
-						}
-					case LibDOSBox.ControllerType.Mouse:
-						{
-							controller.BoolButtons.AddRange(
-							[
-								$"P{port} {Inputs.MouseLeftButton}",
-								$"P{port} {Inputs.MouseMiddleButton}",
-								$"P{port} {Inputs.MouseRightButton}"
-							]);
-							controller
-								.AddAxis($"P{port} {Inputs.MouseX}", 0.RangeTo(LibDOSBox.SVGA_MAX_WIDTH), LibDOSBox.SVGA_MAX_WIDTH / 2)
-								.AddAxis($"P{port} {Inputs.MouseY}", 0.RangeTo(LibDOSBox.SVGA_MAX_HEIGHT), LibDOSBox.SVGA_MAX_HEIGHT / 2);
-							break;
-						}
-				}
-			}
 
 			controller.BoolButtons.AddRange(
 			[

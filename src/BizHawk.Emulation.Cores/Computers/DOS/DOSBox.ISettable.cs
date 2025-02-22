@@ -136,152 +136,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_800 = 800,
 			Turbo = 0
 		}
-
-		private void CreateArguments(SyncSettings settings)
-		{
-			_args = new List<string>
-			{
-				"uae",
-			};
-
-			switch(settings.MachineConfig)
-			{
-				case MachineConfig.A500_OCS_130_512K_512K:
-					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A500);
-					AppendSetting(new List<string>
-					{
-						"cpu_model=" + (int)CpuModel._68000,
-						"chipset=" + Chipset.OCS,
-						"chipset_compatible=" + _chipsetCompatible,
-						"chipmem_size=" + (int)ChipMemory.KB_512,
-						"bogomem_size=" + (int)SlowMemory.KB_512,
-						"fastmem_size=0",
-					});
-					EnableCycleExact();
-					break;
-				case MachineConfig.A600_ECS_205_2M:
-					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A600);
-					AppendSetting(new List<string>
-					{
-						"cpu_model=" + (int)CpuModel._68000,
-						"chipset=" + Chipset.ECS,
-						"chipset_compatible=" + _chipsetCompatible,
-						"chipmem_size=" + (int)ChipMemory.MB_2,
-						"bogomem_size=" + (int)SlowMemory.KB_0,
-						"fastmem_size=0",
-					});
-					EnableCycleExact();
-					break;
-				case MachineConfig.A1200_AGA_310_2M_8M:
-					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A1200);
-					AppendSetting(new List<string>
-					{
-						"cpu_model=" + (int)CpuModel._68020,
-						"chipset=" + Chipset.AGA,
-						"chipset_compatible=" + _chipsetCompatible,
-						"chipmem_size=" + (int)ChipMemory.MB_2,
-						"bogomem_size=" + (int)SlowMemory.KB_0,
-						"fastmem_size=0",
-					});
-					EnableCycleExact();
-					break;
-				case MachineConfig.A4000_AGA_310_2M_8M:
-					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A4000);
-					AppendSetting(new List<string>
-					{
-						"cpu_model=" + (int)CpuModel._68040,
-						"fpu_model=68040",
-						"mmu_model=68040",
-						"chipset=" + Chipset.AGA,
-						"chipset_compatible=" + _chipsetCompatible,
-						"chipmem_size=" + (int)ChipMemory.MB_2,
-						"bogomem_size=" + (int)SlowMemory.KB_0,
-						"fastmem_size=8",
-					});
-					break;
-			}
-
-			if (settings.CpuModel != CpuModel.Auto)
-			{
-				AppendSetting("cpu_model=" + (int)settings.CpuModel);
-
-				if (settings.CpuModel < CpuModel._68030)
-				{
-					EnableCycleExact();
-				}
-			}
-
-			if (settings.Chipset != Chipset.Auto)
-			{
-				AppendSetting("chipset=" + (int)settings.Chipset);
-			}
-
-			if (settings.ChipsetCompatible != ChipsetCompatible.Auto)
-			{
-				AppendSetting("chipset_compatible="
-					+ Enum.GetName(typeof(ChipsetCompatible), settings.ChipsetCompatible));
-			}
-
-			if (settings.ChipMemory != ChipMemory.Auto)
-			{
-				AppendSetting("chipmem_size=" + (int)settings.ChipMemory);
-			}
-
-			if (settings.SlowMemory != SlowMemory.Auto)
-			{
-				AppendSetting("bogomem_size=" + (int)settings.SlowMemory);
-			}
-
-			if (settings.FastMemory != LibDOSBox.FASTMEM_AUTO)
-			{
-				AppendSetting("fastmem_size=" + settings.FastMemory);
-			}
-
-			AppendSetting("input.mouse_speed=" + settings.MouseSpeed);
-			AppendSetting("sound_stereo_separation=" + settings.StereoSeparation / 10);
-
-			if (!DeterministicEmulation)
-			{
-				AppendSetting("floppy_speed=" + (int)settings.FloppySpeed);
-			}
-
-			for (int port = 0; port <= 1; port++)
-			{
-				LibDOSBox.ControllerType type = port == 0
-					? settings.ControllerPort1
-					: settings.ControllerPort2;
-				AppendSetting(type is LibDOSBox.ControllerType.None
-					? $"joyport{port}=none"
-					: $"joyport{port}mode={type.ToString().ToLowerInvariant()}");
-			}
-		}
-
-		private void EnableCycleExact()
-		{
-			AppendSetting(new List<string>
-			{
-				"cpu_compatible=true",
-				"cpu_cycle_exact=true",
-				"cpu_memory_cycle_exact=true",
-				"blitter_cycle_exact=true",
-			});
-		}
-
-		private void AppendSetting(List<string> settings)
-		{
-			foreach (var s in settings)
-			{
-				AppendSetting(s);
-			}
-		}
-
-		private void AppendSetting(string setting)
-		{
-			_args.AddRange(new List<string>
-			{
-				"-s", setting
-			});
-		}
 		
 		public object GetSettings() => null;
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
@@ -342,17 +196,15 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int FastMemory { get; set; }
 
-			[DisplayName("Controller port 1")]
+			[DisplayName("Enable Joystick 1")]
 			[Description("")]
-			[DefaultValue(LibDOSBox.ControllerType.Mouse)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public LibDOSBox.ControllerType ControllerPort1 { get; set; }
+			[DefaultValue(true)]
+			public bool EnableJoystick1 { get; set; }
 
-			[DisplayName("Controller port 2")]
+			[DisplayName("Enable Joystick 2")]
 			[Description("")]
-			[DefaultValue(LibDOSBox.ControllerType.DJoy)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public LibDOSBox.ControllerType ControllerPort2 { get; set; }
+			[DefaultValue(true)]
+			public bool EnableJoystick2 { get; set; }
 
 			[DisplayName("Mouse speed")]
 			[Description("Mouse speed in percents (1% - 1000%).  Adjust if there's mismatch between emulated and host mouse movement.  Note that maximum mouse movement is still 127 pixels due to Amiga hardware limitations.")]

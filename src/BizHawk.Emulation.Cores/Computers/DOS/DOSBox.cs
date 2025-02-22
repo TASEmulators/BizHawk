@@ -37,7 +37,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private readonly List<IRomAsset> _roms;
 		private const int _messageDuration = 4;
 		private const int _driveNullOrEmpty = -1;
-		private List<string> _args;
 
 		// Drive management variables
 		private bool _nextFloppyDiskPressed = false;
@@ -77,14 +76,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			DeterministicEmulation = lp.DeterministicEmulationRequested || _syncSettings.FloppySpeed is FloppySpeed._100;
 			var filesToRemove = new List<string>();
 
-			_ports = [
-				_syncSettings.ControllerPort1,
-				_syncSettings.ControllerPort2
-			];
-			DriveLightEnabled = _syncSettings.FloppyDrives > 0;
+			DriveLightEnabled = false;
 
 			UpdateVideoStandard(true);
-			CreateArguments(_syncSettings);
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
 			_ledCallback = LEDCallback;
 
@@ -212,11 +206,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			var hddImageFile = Zstd.DecompressZstdStream(new MemoryStream(Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value)).ToArray();
 			_exe.AddReadonlyFile(hddImageFile, FileNames.HD);
 
-			Console.WriteLine();
-			Console.WriteLine(string.Join(" ", _args));
-			Console.WriteLine();
 
-			if (!dosbox.Init(_args.Count, _args.ToArray()))
+			if (!dosbox.Init())
 				throw new InvalidOperationException("Core rejected the rom!");
 
 			foreach (var f in filesToRemove)
@@ -232,60 +223,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			DriveLightOn = false;
-			var fi = new LibDOSBox.FrameInfo
-			{
-				Port1 = new LibDOSBox.ControllerState
-				{
-					Type = _ports[0],
-					Buttons = 0
-				},
-				Port2 = new LibDOSBox.ControllerState
-				{
-					Type = _ports[1],
-					Buttons = 0
-				},
-			};
-
-			for (int port = 1; port <= 2; port++)
-			{
-				ref var currentPort = ref (port is 1 ? ref fi.Port1 : ref fi.Port2);
-
-				switch (_ports[port - 1])
-				{
-					case LibDOSBox.ControllerType.DJoy:
-						{
-							foreach (var (name, button) in _joystickMap)
-							{
-								if (controller.IsPressed($"P{port} {Inputs.Joystick} {name}"))
-								{
-									currentPort.Buttons |= button;
-								}
-							}
-							break;
-						}
-					case LibDOSBox.ControllerType.Mouse:
-						{
-							if (controller.IsPressed($"P{port} {Inputs.MouseLeftButton}"))
-							{
-								currentPort.Buttons |= LibDOSBox.AllButtons.Button_1;
-							}
-
-							if (controller.IsPressed($"P{port} {Inputs.MouseRightButton}"))
-							{
-								currentPort.Buttons |= LibDOSBox.AllButtons.Button_2;
-							}
-
-							if (controller.IsPressed($"P{port} {Inputs.MouseMiddleButton}"))
-							{
-								currentPort.Buttons |= LibDOSBox.AllButtons.Button_3;
-							}
-
-							currentPort.MouseX = controller.AxisValue($"P{port} {Inputs.MouseX}");
-							currentPort.MouseY = controller.AxisValue($"P{port} {Inputs.MouseY}");
-							break;
-						}
-				}
-			}
+			var fi = new LibDOSBox.FrameInfo();
 
 			fi.driveActions.insertFloppyDisk = -1;
 			fi.driveActions.insertCDROM = -1;

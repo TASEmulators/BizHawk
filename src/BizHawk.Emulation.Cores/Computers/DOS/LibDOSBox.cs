@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			| AllButtons.Button_3);
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract bool Init(int argc, string[] argv);
+		public abstract bool Init();
 
 		[BizImport(CC)]
 		public abstract void SetLEDCallback(EmptyCallback callback);
@@ -48,31 +48,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
-			public ControllerState Port1;
-			public ControllerState Port2;
 			public KeyBuffer Keys;
 			public struct KeyBuffer
 			{
 				public unsafe fixed byte Buffer[KEY_COUNT];
 			}
 			public DriveActions driveActions;
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct ControllerState
-		{
-			public ControllerType Type;
-			public AllButtons Buttons;
-			public int MouseX;
-			public int MouseY;
-		}
-
-		public enum ControllerType : int
-		{
-			None = 0,
-			[Display(Name = "Joystick")]
-			DJoy = 1,
-			Mouse = 2
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
