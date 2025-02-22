@@ -44,7 +44,7 @@ public sealed class FeatureNotImplementedAnalyzerTests
 				[FeatureNotImplemented] private static int I()
 					=> {|BHI3300:throw (new NotImplementedException())|};
 				// the "wat" cases (at least the ones that are reachable in practice)
-				{|BHI3300:[FeatureNotImplemented] private static int K {
+				{|BHI6660:[FeatureNotImplemented] private static int K {
 					get => default;
 					set => _ = value;
 				}|}

@@ -79,6 +79,34 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
+	public static readonly DiagnosticDescriptor DiagWTF = new(
+		id: "BHI6660",
+		title: "BizHawk.Analyzer ran into syntax which it doesn't understand/support",
+		messageFormat: "{0}",
+		category: "Usage",
+		defaultSeverity: DiagnosticSeverity.Warning,
+		isEnabledByDefault: true);
+
+#if true
+	public static OperationCanceledException ReportWTF(SyntaxNode location, OperationAnalysisContext ctx, string message)
+	{
+		ctx.ReportDiagnostic(Diagnostic.Create(DiagWTF, location.GetLocation(), message));
+		return new(ctx.CancellationToken);
+	}
+
+	public static OperationCanceledException ReportWTF(SyntaxNode location, SyntaxNodeAnalysisContext ctx, string message)
+	{
+		ctx.ReportDiagnostic(Diagnostic.Create(DiagWTF, location.GetLocation(), message));
+		return new(ctx.CancellationToken);
+	}
+#else // maybe move to something like this?
+	public static OperationCanceledException ReportWTF(SyntaxNode alien, string analyzerName, string disambig, SyntaxNodeAnalysisContext ctx)
+	{
+		ctx.ReportDiagnostic(Diagnostic.Create(DiagWTF, alien.GetLocation(), $"[{analyzerName}{disambig}] AST/model contained {alien.GetType().FullName} unexpectedly; Analyzer needs updating"));
+		return new(ctx.CancellationToken);
+	}
+#endif
+
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
 		DiagInterpStringIsDollarAt,
 		DiagListExprSpacing,
@@ -87,7 +115,8 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 		DiagNoDiscardingLocals,
 		DiagNoQueryExpression,
 		DiagRecordImplicitlyRefType,
-		DiagSwitchShouldThrowIOE);
+		DiagSwitchShouldThrowIOE,
+		DiagWTF);
 
 	public override void Initialize(AnalysisContext context)
 	{

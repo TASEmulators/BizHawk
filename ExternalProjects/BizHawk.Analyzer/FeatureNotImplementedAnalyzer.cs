@@ -12,7 +12,7 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 
 	private const string ERR_MSG_THROWS_WRONG_TYPE = "Incorrect exception type in [FeatureNotImplemented] method/prop body, should be NotImplementedException";
 
-	private const string ERR_MSG_UNEXPECTED_INCANTATION = "It seems [FeatureNotImplemented] should not be applied to whatever this is";
+	private const string ERR_MSG_UNEXPECTED_INCANTATION = $"[{nameof(FeatureNotImplementedAnalyzer)}] It seems [FeatureNotImplemented] should not be applied to whatever this is";
 
 	private static readonly DiagnosticDescriptor DiagShouldThrowNIE = new(
 		id: "BHI3300",
@@ -22,7 +22,8 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(DiagShouldThrowNIE);
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
+		= ImmutableArray.Create(HawkSourceAnalyzer.DiagWTF, DiagShouldThrowNIE);
 
 	public override void Initialize(AnalysisContext context)
 	{
@@ -36,8 +37,6 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 			initContext.RegisterSyntaxNodeAction(
 				snac =>
 				{
-					void Wat(Location location)
-						=> snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_UNEXPECTED_INCANTATION));
 					void MaybeReportFor(ITypeSymbol? thrownExceptionType, Location location)
 					{
 						if (thrownExceptionType is null) snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_METHOD_THROWS_UNKNOWN));
@@ -62,7 +61,7 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 						if (!IncludesFNIAttribute(ads.AttributeLists)) return;
 						if (ads.ExpressionBody is not null) CheckExprBody(ads.ExpressionBody, ads.GetLocation());
 						else if (ads.Body is not null) CheckBlockBody(ads.Body, ads.GetLocation());
-						else Wat(ads.GetLocation());
+						else HawkSourceAnalyzer.ReportWTF(ads, snac, message: ERR_MSG_UNEXPECTED_INCANTATION);
 					}
 					switch (snac.Node)
 					{
@@ -73,7 +72,7 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 							if (!IncludesFNIAttribute(mds.AttributeLists)) return;
 							if (mds.ExpressionBody is not null) CheckExprBody(mds.ExpressionBody, mds.GetLocation());
 							else if (mds.Body is not null) CheckBlockBody(mds.Body, mds.GetLocation());
-							else Wat(mds.GetLocation());
+							else HawkSourceAnalyzer.ReportWTF(mds, snac, message: ERR_MSG_UNEXPECTED_INCANTATION);
 							break;
 						case PropertyDeclarationSyntax pds:
 							if (pds.ExpressionBody is not null)
@@ -82,7 +81,7 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 							}
 							else
 							{
-								if (IncludesFNIAttribute(pds.AttributeLists)) Wat(pds.GetLocation());
+								if (IncludesFNIAttribute(pds.AttributeLists)) HawkSourceAnalyzer.ReportWTF(pds, snac, message: ERR_MSG_UNEXPECTED_INCANTATION);
 #if false // accessors will be checked separately
 								else foreach (var accessor in pds.AccessorList!.Accessors) CheckAccessor(accessor);
 #endif

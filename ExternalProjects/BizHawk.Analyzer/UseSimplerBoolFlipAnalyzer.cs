@@ -18,7 +18,8 @@ public sealed class UseSimplerBoolFlipAnalyzer : DiagnosticAnalyzer
 		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(DiagUseSimplerBoolFlip);
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
+		= ImmutableArray.Create(/*HawkSourceAnalyzer.DiagWTF,*/ DiagUseSimplerBoolFlip);
 
 	public override void Initialize(AnalysisContext context)
 	{
@@ -57,7 +58,7 @@ public sealed class UseSimplerBoolFlipAnalyzer : DiagnosticAnalyzer
 						lhsIsSimpleExpr = false;
 						break;
 					default:
-						oac.ReportDiagnostic(Diagnostic.Create(DiagUseSimplerBoolFlip, operation.Syntax.GetLocation(), $"Left-hand side of XOR-assign was of an unexpected kind: {lhsOp.GetType().FullName}"));
+						HawkSourceAnalyzer.ReportWTF(operation.Syntax, oac, message: $"[{nameof(UseSimplerBoolFlipAnalyzer)}] Left-hand side of XOR-assign was of an unexpected kind: {lhsOp.GetType().FullName}");
 						return;
 				}
 				oac.ReportDiagnostic(Diagnostic.Create(

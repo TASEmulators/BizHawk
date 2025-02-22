@@ -15,7 +15,8 @@ public sealed class NoTargetTypedThrowAnalyzer : DiagnosticAnalyzer
 		defaultSeverity: DiagnosticSeverity.Warning,
 		isEnabledByDefault: true);
 
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(DiagNoTargetTypedThrow);
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
+		= ImmutableArray.Create(/*HawkSourceAnalyzer.DiagWTF,*/ DiagNoTargetTypedThrow);
 
 	public override void Initialize(AnalysisContext context)
 	{
@@ -43,7 +44,7 @@ public sealed class NoTargetTypedThrowAnalyzer : DiagnosticAnalyzer
 						}
 						return;
 					default:
-						Fail($"Argument to throw expression was of an unexpected kind: {exceptionOp.GetType().FullName}");
+						HawkSourceAnalyzer.ReportWTF(exceptionOp.Syntax, oac, message: $"[{nameof(NoTargetTypedThrowAnalyzer)}] Argument to throw expression was of an unexpected kind: {exceptionOp.GetType().FullName}");
 						return;
 				}
 				Fail(ERR_MSG_IMPLICIT);

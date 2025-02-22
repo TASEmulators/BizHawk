@@ -14,7 +14,8 @@ public sealed class ExprBodiedMemberFlowAnalyzer : DiagnosticAnalyzer
 		defaultSeverity: DiagnosticSeverity.Warning,
 		isEnabledByDefault: true);
 
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(DiagExprBodiedMemberFlow);
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
+		= ImmutableArray.Create(/*HawkSourceAnalyzer.DiagWTF,*/ DiagExprBodiedMemberFlow);
 
 	public override void Initialize(AnalysisContext context)
 	{
@@ -32,7 +33,7 @@ public sealed class ExprBodiedMemberFlowAnalyzer : DiagnosticAnalyzer
 				var parent = aecs.Parent;
 				if (parent is null)
 				{
-					snac.ReportDiagnostic(Diagnostic.Create(DiagExprBodiedMemberFlow, aecs.GetLocation(), "Syntax node for expression-bodied member was orphaned?"));
+					HawkSourceAnalyzer.ReportWTF(aecs, snac, message: $"[{nameof(ExprBodiedMemberFlowAnalyzer)}] Syntax node for expression-bodied member was orphaned?");
 					return;
 				}
 				void Flag(string message)
@@ -67,7 +68,7 @@ public sealed class ExprBodiedMemberFlowAnalyzer : DiagnosticAnalyzer
 								kind = "event unsub";
 								break;
 							default:
-								Flag($"Expression-bodied accessor was of an unexpected kind: {ads.Parent!.Parent!.GetType().FullName}");
+								HawkSourceAnalyzer.ReportWTF(parent, snac, message: $"[{nameof(ExprBodiedMemberFlowAnalyzer)}] Expression-bodied accessor was of an unexpected kind: {ads.Parent!.Parent!.GetType().FullName}");
 								return;
 						}
 						break;
@@ -96,7 +97,7 @@ public sealed class ExprBodiedMemberFlowAnalyzer : DiagnosticAnalyzer
 						kind = "finalizer";
 						break;
 					default:
-						Flag($"Expression-bodied member was of an unexpected kind: {parent.GetType().FullName}");
+						HawkSourceAnalyzer.ReportWTF(parent, snac, message: $"[{nameof(ExprBodiedMemberFlowAnalyzer)}] Expression-bodied member was of an unexpected kind: {parent.GetType().FullName}");
 						return;
 				}
 				static string EscapeChar(char c)
