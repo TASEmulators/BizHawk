@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 
 		public LogicalButton LogicalButton;
 
-		public HostInputFocus Source;
+		public HostInputType Source;
 
 		public override string ToString() => $"{EventType}:{LogicalButton}";
 	}

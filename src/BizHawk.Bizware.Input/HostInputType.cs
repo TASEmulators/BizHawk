@@ -3,7 +3,7 @@
 namespace BizHawk.Bizware.Input
 {
 	[Flags]
-	public enum HostInputFocus
+	public enum HostInputType
 	{
 		None = 0,
 		Mouse = 1,

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+using BizHawk.Bizware.Input;
+
 namespace BizHawk.Client.Common
 {
 	/// <summary>for querying host input</summary>

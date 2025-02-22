@@ -18,10 +18,10 @@ namespace BizHawk.Client.EmuHawk
 		/// Why is this receiving a control, but actually using it as a Form (where the WantingMouseFocus is checked?)
 		/// Because later we might change it to work off the control, specifically, if a control is supplied (normally actually a Form will be supplied)
 		/// </summary>
-		public void ControlInputFocus(Control c, HostInputFocus types, bool wants)
+		public void ControlInputFocus(Control c, HostInputType types, bool wants)
 		{
-			if (types.HasFlag(HostInputFocus.Mouse) && wants) _wantingMouseFocus.Add(c);
-			if (types.HasFlag(HostInputFocus.Mouse) && !wants) _wantingMouseFocus.Remove(c);
+			if (types.HasFlag(HostInputType.Mouse) && wants) _wantingMouseFocus.Add(c);
+			if (types.HasFlag(HostInputType.Mouse) && !wants) _wantingMouseFocus.Remove(c);
 		}
 
 		private readonly HashSet<Control> _wantingMouseFocus = new HashSet<Control>();
@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 			["Shift"] = "LeftShift",
 		};
 
-		private void HandleButton(string button, bool newState, HostInputFocus source)
+		private void HandleButton(string button, bool newState, HostInputType source)
 		{
 			if (!(_currentConfig.MergeLAndRModifierKeys && ModifierKeyPreMap.TryGetValue(button, out var button1))) button1 = button;
 			var modIndex = _currentConfig.ModifierKeysEffective.IndexOf(button1);
@@ -135,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandleAxis(string axis, int newValue)
 		{
-			if (ShouldSwallow(MainFormInputAllowedCallback(false), HostInputFocus.Pad))
+			if (ShouldSwallow(MainFormInputAllowedCallback(false), HostInputType.Pad))
 				return;
 
 			if (_trackDeltas)
@@ -208,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 					//analyze keys
 					foreach (var ke in keyEvents)
 					{
-						HandleButton(DistinctKeyNameOverrides.GetName(ke.Key), ke.Pressed, HostInputFocus.Keyboard);
+						HandleButton(DistinctKeyNameOverrides.GetName(ke.Key), ke.Pressed, HostInputType.Keyboard);
 					}
 
 					lock (_axisValues)
@@ -234,11 +234,11 @@ namespace BizHawk.Client.EmuHawk
 							_axisValues["WMouse Y"] = mousePos.Y;
 
 							var mouseBtns = Control.MouseButtons;
-							HandleButton("WMouse L", (mouseBtns & MouseButtons.Left) != 0, HostInputFocus.Mouse);
-							HandleButton("WMouse M", (mouseBtns & MouseButtons.Middle) != 0, HostInputFocus.Mouse);
-							HandleButton("WMouse R", (mouseBtns & MouseButtons.Right) != 0, HostInputFocus.Mouse);
-							HandleButton("WMouse 1", (mouseBtns & MouseButtons.XButton1) != 0, HostInputFocus.Mouse);
-							HandleButton("WMouse 2", (mouseBtns & MouseButtons.XButton2) != 0, HostInputFocus.Mouse);
+							HandleButton("WMouse L", (mouseBtns & MouseButtons.Left) != 0, HostInputType.Mouse);
+							HandleButton("WMouse M", (mouseBtns & MouseButtons.Middle) != 0, HostInputType.Mouse);
+							HandleButton("WMouse R", (mouseBtns & MouseButtons.Right) != 0, HostInputType.Mouse);
+							HandleButton("WMouse 1", (mouseBtns & MouseButtons.XButton1) != 0, HostInputType.Mouse);
+							HandleButton("WMouse 2", (mouseBtns & MouseButtons.XButton2) != 0, HostInputType.Mouse);
 
 							// raw (relative) mouse input
 							_axisValues["RMouse X"] = mouseDeltaX;
@@ -282,9 +282,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static bool ShouldSwallow(AllowInput allowInput, HostInputFocus inputFocus)
+		private static bool ShouldSwallow(AllowInput allowInput, HostInputType inputFocus)
 		{
-			return allowInput == AllowInput.None || (allowInput == AllowInput.OnlyController && inputFocus != HostInputFocus.Pad);
+			return allowInput == AllowInput.None || (allowInput == AllowInput.OnlyController && inputFocus != HostInputType.Pad);
 		}
 
 		public void StartListeningForAxisEvents()

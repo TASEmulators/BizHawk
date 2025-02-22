@@ -1164,12 +1164,12 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnActivated(EventArgs e)
 		{
 			base.OnActivated(e);
-			Input.Instance.ControlInputFocus(this, HostInputFocus.Mouse, true);
+			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, true);
 		}
 
 		protected override void OnDeactivate(EventArgs e)
 		{
-			Input.Instance.ControlInputFocus(this, HostInputFocus.Mouse, false);
+			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, false);
 			base.OnDeactivate(e);
 		}
 

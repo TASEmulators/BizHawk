@@ -31,7 +31,7 @@ namespace BizHawk.Bizware.Input
 
 		public abstract void PreprocessHostGamepads();
 
-		public abstract void ProcessHostGamepads(Action<string?, bool, HostInputFocus> handleButton, Action<string?, int> handleAxis);
+		public abstract void ProcessHostGamepads(Action<string?, bool, HostInputType> handleButton, Action<string?, int> handleAxis);
 
 		public virtual IEnumerable<KeyEvent> ProcessHostKeyboards()
 		{

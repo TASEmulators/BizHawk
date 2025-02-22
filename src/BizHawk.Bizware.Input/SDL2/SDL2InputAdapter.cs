@@ -148,7 +148,7 @@ namespace BizHawk.Bizware.Input
 			DoSDLEventLoop();
 		}
 
-		public override void ProcessHostGamepads(Action<string?, bool, HostInputFocus> handleButton, Action<string?, int> handleAxis)
+		public override void ProcessHostGamepads(Action<string?, bool, HostInputType> handleButton, Action<string?, int> handleAxis)
 		{
 			if (!_isInit) return;
 
@@ -156,7 +156,7 @@ namespace BizHawk.Bizware.Input
 			{
 				foreach (var (ButtonName, GetIsPressed) in pad.ButtonGetters)
 				{
-					handleButton(pad.InputNamePrefix + ButtonName, GetIsPressed(), HostInputFocus.Pad);
+					handleButton(pad.InputNamePrefix + ButtonName, GetIsPressed(), HostInputType.Pad);
 				}
 
 				foreach (var (axisID, f) in pad.GetAxes())

@@ -20,7 +20,7 @@ namespace BizHawk.Bizware.Input
 
 		void PreprocessHostGamepads();
 
-		void ProcessHostGamepads(Action<string?, bool, HostInputFocus> handleButton, Action<string?, int> handleAxis);
+		void ProcessHostGamepads(Action<string?, bool, HostInputType> handleButton, Action<string?, int> handleAxis);
 
 		IEnumerable<KeyEvent> ProcessHostKeyboards();
 
