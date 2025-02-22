@@ -106,9 +106,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						"dsda",
 					};
 
-					_args.AddRange(["-skill", $"{(int)_syncSettings.SkillLevel}"]);
-					_args.AddRange(["-warp", $"{(int)_syncSettings.InitialEpisode}", $"{(int)_syncSettings.InitialMap}"]);
-					_args.AddRange(["-complevel", $"{(int)_syncSettings.CompatibilityMode}"]);
+					_args.AddRange([ "-skill", $"{(int) _syncSettings.SkillLevel}" ]);
+					_args.AddRange([ "-warp", $"{_syncSettings.InitialEpisode}", $"{_syncSettings.InitialMap}" ]);
+					_args.AddRange([ "-complevel", $"{(int) _syncSettings.CompatibilityMode}" ]);
 
 					ConditionalArg(!_syncSettings.StrictMode, "-tas");
 					ConditionalArg(_syncSettings.MonstersRespawn, "-respawn");
