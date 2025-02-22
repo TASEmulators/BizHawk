@@ -180,8 +180,8 @@ namespace BizHawk.Bizware.Input
 								static bool IsNormal(double d)
 								{
 									var bits = BitConverter.DoubleToInt64Bits(d);
-									bits &= 0x7FFFFFFFFFFFFFFF;
-									return (bits < 0x7FF0000000000000) && (bits != 0) && ((bits & 0x7FF0000000000000) == 0);
+									bits &= 0x7FFF_FFFF_FFFF_FFFF;
+									return (bits < 0x7FF0_0000_0000_0000) && (bits != 0) && ((bits & 0x7FF0_0000_0000_0000) == 0);
 								}
 
 								if (XIMaskIsSet(valuatorsMask, 0))
