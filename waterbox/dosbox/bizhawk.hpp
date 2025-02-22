@@ -16,7 +16,6 @@ typedef struct
 {
 		int insertFloppyDisk;
 		int insertCDROM;
-		int insertHardDiskDrive;
 } DriveActions;
 
 typedef struct

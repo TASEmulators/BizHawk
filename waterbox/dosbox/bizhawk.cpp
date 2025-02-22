@@ -73,18 +73,21 @@ bool loadFileIntoMemoryFileDirectory(const std::string& srcFile, const std::stri
 		return true;
 }
 
-ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled)
+ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, uint64_t writableHDDImageFileSize)
 {
-	 // Loading HDD file into mem file directory
-		std::string hddSrcFile = "HardDiskDrive";
-		std::string hddDstFile = "HardDiskDrive.img";
-		size_t hddDstSize = 21411840;
-		printf("Creating hard disk drive mem file '%s' -> '%s' (%lu bytes)\n", hddSrcFile.c_str(), hddDstFile.c_str(), hddDstSize);
- 	auto result = loadFileIntoMemoryFileDirectory(hddSrcFile, hddDstFile, hddDstSize);
-		if (result == false || _memFileDirectory.contains(hddDstFile) == false) 
-		{
-			fprintf(stderr, "Could not create hard disk drive mem file\n");
-			return false; 
+	 // If size is non-negative, we need to load the writable hard disk into memory
+		if (writableHDDImageFileSize == 0) printf("No writable hard disk drive selected.");
+		else	{
+			// Loading HDD file into mem file directory
+			std::string writableHDDSrcFile = "__WritableHardDiskDrive";
+			std::string writableHDDDstFile = "__WritableHardDiskDrive.img";
+			printf("Creating hard disk drive mem file '%s' -> '%s' (%lu bytes)\n", writableHDDSrcFile.c_str(), writableHDDDstFile.c_str(), writableHDDImageFileSize);
+			auto result = loadFileIntoMemoryFileDirectory(writableHDDSrcFile, writableHDDDstFile, writableHDDImageFileSize);
+			if (result == false || _memFileDirectory.contains(writableHDDDstFile) == false) 
+			{
+				fprintf(stderr, "Could not create hard disk drive mem file\n");
+				return false; 
+			}
 		}
 
 		// Setting dummy drivers for env variables
@@ -157,12 +160,6 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	{
 		printf("Swapping to CDROM: %d\n", f->driveActions.insertCDROM);
 		swapInDrive(3, f->driveActions.insertFloppyDisk + 1); // 3 is D:
-	}
-
-	if (f->driveActions.insertHardDiskDrive >= 0)
-	{
-		printf("Swapping to Hard Disk Drive: %d\n", f->driveActions.insertHardDiskDrive);
-		swapInDrive(2, f->driveActions.insertHardDiskDrive + 1); // 3 is C:
 	}
 
  // Processing joystick inputs
