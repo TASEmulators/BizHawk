@@ -100,7 +100,30 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					var initSettings = _syncSettings.GetNativeSettings(lp.Game);
-					var initResult = Core.dsda_init(ref initSettings);
+
+					_args = new List<string>
+					{
+						"dsda",
+					};
+
+					_args.AddRange(["-skill", $"{(int)_syncSettings.SkillLevel}"]);
+					_args.AddRange(["-warp", $"{(int)_syncSettings.InitialEpisode}", $"{(int)_syncSettings.InitialMap}"]);
+					_args.AddRange(["-complevel", $"{(int)_syncSettings.CompatibilityMode}"]);
+
+					ConditionalArg(!_syncSettings.StrictMode, "-tas");
+					ConditionalArg(_syncSettings.MonstersRespawn, "-respawn");
+					ConditionalArg(_syncSettings.NoMonsters, "-nomonsters");
+					ConditionalArg(_syncSettings.ChainEpisodes, "-chain_episodes");
+					ConditionalArg(_syncSettings.MultiplayerMode == MultiplayerMode.M1, "-deathmatch");
+					ConditionalArg(_syncSettings.MultiplayerMode == MultiplayerMode.M2, "-altdeath");
+					ConditionalArg(_syncSettings.Turbo > 0, $"-turbo {_syncSettings.Turbo}");
+					ConditionalArg((initSettings._Player1Present + initSettings._Player2Present + initSettings._Player3Present + initSettings._Player4Present) > 1, "-solo-net");
+
+					Console.WriteLine();
+					Console.WriteLine(string.Join(" ", _args));
+					Console.WriteLine();
+
+					var initResult = Core.dsda_init(ref initSettings, _args.Count, _args.ToArray());
 					if (!initResult) throw new Exception($"{nameof(Core.dsda_init)}() failed");
 
 					int fps = 35;
@@ -125,6 +148,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 		}
 
+		private void ConditionalArg(bool condition, string setting)
+		{
+			if (condition)
+			{
+				_args.Add(setting);
+			}
+		}
+
 		// Remembering mouse position
 		private const int MOUSE_NO_INPUT = -65535;
 		private int _player1LastMouseRunningValue = MOUSE_NO_INPUT;
@@ -135,6 +166,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private int _player3LastMouseTurningValue = MOUSE_NO_INPUT;
 		private int _player4LastMouseRunningValue = MOUSE_NO_INPUT;
 		private int _player4LastMouseTurningValue = MOUSE_NO_INPUT;
+		private List<string> _args;
 
 		// IRegionable
 		public DisplayType Region { get; }

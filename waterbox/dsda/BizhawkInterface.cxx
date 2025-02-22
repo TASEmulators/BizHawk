@@ -140,77 +140,8 @@ ECL_EXPORT void dsda_set_input_callback(ECL_ENTRY void (*fecb)(void))
 
 bool foundIWAD = false;
 
-ECL_EXPORT int dsda_init(struct InitSettings *settings)
+ECL_EXPORT int dsda_init(InitSettings *settings, int argc, char **argv)
 {
-  // Creating arguments
-  int argc = 0;
-  char** argv = (char**) alloc_invisible (sizeof(char*) * 512);
-  
-  bool _noMonsters = false;
-  bool _monstersRespawn = false;
-
-  // Specifying executable name
-  char arg0[] = "dsda";
-  argv[argc++] = arg0;
-
-  // Eliminating restrictions to TAS inputs
-  if (settings->_StrictMode == 0)
-  {
-	char arg2[] = "-tas";
-	argv[argc++] = arg2;
-  }
-  
-  // Specifying skill level
-  char arg3[] = "-skill";
-  argv[argc++] = arg3;
-  char argSkill[512];
-  sprintf(argSkill, "%d", settings->_SkillLevel);
-  argv[argc++] = argSkill;
-  
-  // Specifying episode and map
-  char arg4[] = "-warp";
-  argv[argc++] = arg4;
-  char argEpisode[512];
-  {
-  	sprintf(argEpisode, "%d", settings->_InitialEpisode);
-  	argv[argc++] = argEpisode;
-  }
-  char argMap[512];
-  sprintf(argMap, "%d", settings->_InitialMap);
-  argv[argc++] = argMap;
-  
-  // Specifying comp level
-  char arg5[] = "-complevel";
-  argv[argc++] = arg5;
-  char argCompatibilityLevel[512];
-  sprintf(argCompatibilityLevel, "%d", settings->_CompatibilityMode);
-  argv[argc++] = argCompatibilityLevel;
-  
-  // Specifying fast monsters
-  char arg6[] = "-fast";
-  if (settings->_FastMonsters == 1) argv[argc++] = arg6;
-  
-  // Specifying monsters respawn
-  char arg7[] = "-respawn";
-  if (settings->_MonstersRespawn == 1) argv[argc++] = arg7;
-  
-  // Specifying no monsters
-  char arg8[] = "-nomonsters";
-  if (settings->_NoMonsters == 1) argv[argc++] = arg8;
-
-  char arg9[] = "-chain_episodes";
-  if (settings->_ChainEpisodes == 1) argv[argc++] = arg9;
-
-  // Specifying Turbo
-  char arg10[] = "-turbo";
-  char argTurbo[512];
-  if (settings->_Turbo >= 0)
-  {
-	sprintf(argTurbo, "%d", settings->_Turbo);
-    argv[argc++] = arg10;
-	argv[argc++] = argTurbo;
-  } 
-
   printf("Passing arguments: \n");
   for (int i = 0; i < argc; i++) printf("%s ", argv[i]);
   printf("\n");
@@ -220,17 +151,6 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings)
   playeringame[1] = settings->_Player2Present;
   playeringame[2] = settings->_Player3Present;
   playeringame[3] = settings->_Player4Present;
-
-  // Getting player count
-  auto playerCount = settings->_Player1Present + settings->_Player2Present + settings->_Player3Present + settings->_Player4Present;
-  char arg12[] = "-solo-net";
-  if (playerCount > 1) argv[argc++] = arg12;
-
-  // Set multiplayer mode
-  char arg13[] = "-deathmatch";
-  if (settings->_MultiplayerMode == 1) argv[argc++] = arg13;
-  char arg14[] = "-altdeath";
-  if (settings->_MultiplayerMode == 2) argv[argc++] = arg14;
 
   // Handle class
   PlayerClass[0] = (pclass_t)settings->_Player1Class;
@@ -247,7 +167,7 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings)
   I_InitSound();
   printf("Audio Initialized\n");
 
-  // If, required prevent level exit and game end triggers
+  // If required, prevent level exit and game end triggers
   preventLevelExit = settings->_PreventLevelExit;
   preventGameEnd = settings->_PreventGameEnd;
 
