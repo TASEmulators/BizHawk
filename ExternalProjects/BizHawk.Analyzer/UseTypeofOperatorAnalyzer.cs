@@ -39,7 +39,7 @@ public sealed class UseTypeofOperatorAnalyzer : DiagnosticAnalyzer
 				var enclosingType = operation.SemanticModel!.GetDeclaredSymbol(
 					((CSharpSyntaxNode) operation.Syntax).EnclosingTypeDeclarationSyntax()!,
 					oac.CancellationToken)!;
-				oac.ReportDiagnostic(Diagnostic.Create(enclosingType.IsSealed ? DiagNoGetTypeOnThisSealed : DiagNoGetTypeOnThis, operation.Syntax.GetLocation(), enclosingType.Name));
+				(enclosingType.IsSealed ? DiagNoGetTypeOnThisSealed : DiagNoGetTypeOnThis).ReportAt(operation, oac, enclosingType.Name);
 			},
 			OperationKind.Invocation);
 	}

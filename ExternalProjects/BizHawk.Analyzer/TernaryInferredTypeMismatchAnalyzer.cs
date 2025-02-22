@@ -67,13 +67,7 @@ public sealed class TernaryInferredTypeMismatchAnalyzer : DiagnosticAnalyzer
 					else if (typeTernary.Matches(typeRHS)) flaggedOp = lhs;
 					message = $"ternary branches are converted to {typeTernary} before serialisation, possibly unintended";
 				}
-				oac.ReportDiagnostic(Diagnostic.Create(
-					DiagTernaryInferredTypeMismatch,
-					flaggedOp.Syntax.GetLocation(),
-					fatal ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-					additionalLocations: null,
-					properties: null,
-					messageArgs: message));
+				DiagTernaryInferredTypeMismatch.ReportAt(flaggedOp, fatal ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning, oac, message);
 			},
 			OperationKind.Conditional);
 	}

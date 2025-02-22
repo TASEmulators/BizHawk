@@ -42,22 +42,16 @@ public sealed class UseNameofOperatorAnalyzer : DiagnosticAnalyzer
 						case BinaryExpressionSyntax bes:
 							if ((ReferenceEquals(toes, bes.Left) ? bes.Right : bes.Left) is LiteralExpressionSyntax { Token.RawKind: (int) SyntaxKind.StringLiteralToken })
 							{
-								snac.ReportDiagnostic(Diagnostic.Create(DiagNoToStringOnType, toes.GetLocation(), toes.Type.GetText(), " in string concatenation"));
+								DiagNoToStringOnType.ReportAt(toes, snac, [ toes.Type.GetText(), " in string concatenation" ]);
 							}
 							break;
 						case InterpolationSyntax:
-							snac.ReportDiagnostic(Diagnostic.Create(DiagNoToStringOnType, toes.GetLocation(), toes.Type.GetText(), " in string interpolation"));
+							DiagNoToStringOnType.ReportAt(toes, snac, [ toes.Type.GetText(), " in string interpolation" ]);
 							break;
 						case MemberAccessExpressionSyntax maes1:
 							var accessed = snac.SemanticModel.GetSymbolInfo(maes1.Name, snac.CancellationToken).Symbol;
-							if (memberInfoDotNameSym.Matches(accessed))
-							{
-								snac.ReportDiagnostic(Diagnostic.Create(DiagUseNameof, maes1.GetLocation(), toes.Type.GetText()));
-							}
-							else if (typeDotToStringSym.Matches(accessed))
-							{
-								snac.ReportDiagnostic(Diagnostic.Create(DiagNoToStringOnType, maes1.GetLocation(), toes.Type.GetText(), ".ToString()"));
-							}
+							if (memberInfoDotNameSym.Matches(accessed)) DiagUseNameof.ReportAt(maes1, snac, [ toes.Type.GetText() ]);
+							else if (typeDotToStringSym.Matches(accessed)) DiagNoToStringOnType.ReportAt(maes1, snac, [ toes.Type.GetText(), ".ToString()" ]);
 							break;
 					}
 				},

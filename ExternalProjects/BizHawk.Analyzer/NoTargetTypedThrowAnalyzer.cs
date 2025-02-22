@@ -5,12 +5,10 @@ using System.Collections.Immutable;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class NoTargetTypedThrowAnalyzer : DiagnosticAnalyzer
 {
-	private const string ERR_MSG_IMPLICIT = "Specify `Exception` (or a more precise type) explicitly";
-
 	private static readonly DiagnosticDescriptor DiagNoTargetTypedThrow = new(
 		id: "BHI1007",
 		title: "Don't use target-typed new for throw expressions",
-		messageFormat: "{0}",
+		messageFormat: "Specify `Exception` (or a more precise type) explicitly",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Warning,
 		isEnabledByDefault: true);
@@ -27,8 +25,6 @@ public sealed class NoTargetTypedThrowAnalyzer : DiagnosticAnalyzer
 			{
 				var exceptionOp = ((IThrowOperation) oac.Operation).Exception;
 				if (exceptionOp is null) return; // re-`throw;`
-				void Fail(string message)
-					=> oac.ReportDiagnostic(Diagnostic.Create(DiagNoTargetTypedThrow, exceptionOp.Syntax.GetLocation(), message));
 				switch (exceptionOp.Kind)
 				{
 					case OperationKind.ObjectCreation:
@@ -44,10 +40,10 @@ public sealed class NoTargetTypedThrowAnalyzer : DiagnosticAnalyzer
 						}
 						return;
 					default:
-						HawkSourceAnalyzer.ReportWTF(exceptionOp.Syntax, oac, message: $"[{nameof(NoTargetTypedThrowAnalyzer)}] Argument to throw expression was of an unexpected kind: {exceptionOp.GetType().FullName}");
+						HawkSourceAnalyzer.ReportWTF(exceptionOp, oac, message: $"[{nameof(NoTargetTypedThrowAnalyzer)}] Argument to throw expression was of an unexpected kind: {exceptionOp.GetType().FullName}");
 						return;
 				}
-				Fail(ERR_MSG_IMPLICIT);
+				DiagNoTargetTypedThrow.ReportAt(exceptionOp, oac);
 			},
 			OperationKind.Throw);
 	}

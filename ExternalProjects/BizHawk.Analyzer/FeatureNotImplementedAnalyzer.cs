@@ -37,10 +37,10 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 			initContext.RegisterSyntaxNodeAction(
 				snac =>
 				{
-					void MaybeReportFor(ITypeSymbol? thrownExceptionType, Location location)
+					void MaybeReportFor(ITypeSymbol? thrownExceptionType, SyntaxNode location)
 					{
-						if (thrownExceptionType is null) snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_METHOD_THROWS_UNKNOWN));
-						else if (!notImplementedExceptionSym.Matches(thrownExceptionType)) snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_THROWS_WRONG_TYPE));
+						if (thrownExceptionType is null) DiagShouldThrowNIE.ReportAt(location, snac, ERR_MSG_METHOD_THROWS_UNKNOWN);
+						else if (!notImplementedExceptionSym.Matches(thrownExceptionType)) DiagShouldThrowNIE.ReportAt(location, snac, ERR_MSG_THROWS_WRONG_TYPE);
 						// else correct usage, do not flag
 					}
 					bool IncludesFNIAttribute(SyntaxList<AttributeListSyntax> mds)
@@ -48,13 +48,13 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 							.Any(aSyn => featureNotImplementedAttrSym.Matches(snac.SemanticModel.GetTypeInfo(aSyn, snac.CancellationToken).Type));
 					void CheckBlockBody(BlockSyntax bs, Location location)
 					{
-						if (bs.Statements is [ ThrowStatementSyntax tss ]) MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tss), tss.GetLocation());
-						else snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_DOES_NOT_THROW));
+						if (bs.Statements is [ ThrowStatementSyntax tss ]) MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tss), tss);
+						else DiagShouldThrowNIE.ReportAt(location, snac, [ ERR_MSG_DOES_NOT_THROW ]);
 					}
 					void CheckExprBody(ArrowExpressionClauseSyntax aecs, Location location)
 					{
-						if (aecs.Expression is ThrowExpressionSyntax tes) MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tes), tes.GetLocation());
-						else snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_DOES_NOT_THROW));
+						if (aecs.Expression is ThrowExpressionSyntax tes) MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tes), tes);
+						else DiagShouldThrowNIE.ReportAt(location, snac, [ ERR_MSG_DOES_NOT_THROW ]);
 					}
 					void CheckAccessor(AccessorDeclarationSyntax ads)
 					{

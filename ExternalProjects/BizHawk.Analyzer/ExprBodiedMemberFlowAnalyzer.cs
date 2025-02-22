@@ -36,8 +36,6 @@ public sealed class ExprBodiedMemberFlowAnalyzer : DiagnosticAnalyzer
 					HawkSourceAnalyzer.ReportWTF(aecs, snac, message: $"[{nameof(ExprBodiedMemberFlowAnalyzer)}] Syntax node for expression-bodied member was orphaned?");
 					return;
 				}
-				void Flag(string message)
-					=> snac.ReportDiagnostic(Diagnostic.Create(DiagExprBodiedMemberFlow, parent.GetLocation(), message));
 				switch (parent)
 				{
 					case MethodDeclarationSyntax:
@@ -103,7 +101,7 @@ public sealed class ExprBodiedMemberFlowAnalyzer : DiagnosticAnalyzer
 				static string EscapeChar(char c)
 					=> c is '\n' ? "\\n" : c.ToString();
 				void Fail()
-					=> Flag($"Whitespace around {kind} arrow syntax should be `{EscapeChar(expectedWhitespace.Before)}=>{EscapeChar(expectedWhitespace.After)}`");
+					=> DiagExprBodiedMemberFlow.ReportAt(parent, snac, $"Whitespace around {kind} arrow syntax should be `{EscapeChar(expectedWhitespace.Before)}=>{EscapeChar(expectedWhitespace.After)}`");
 				if ((aecs.ArrowToken.HasLeadingTrivia ? '\n' : ' ') != expectedWhitespace.Before)
 				{
 					Fail();

@@ -47,14 +47,12 @@ public sealed class AmbiguousMoneyToFloatConversionAnalyzer : DiagnosticAnalyzer
 				}
 				var conversionSyn = conversionOp.Syntax;
 				//TODO check the suggested methods are accessible (i.e. BizHawk.Common is referenced)
-				oac.ReportDiagnostic(Diagnostic.Create(
-					DiagAmbiguousMoneyToFloatConversion,
-					(conversionSyn.Parent?.Kind() is SyntaxKind.CheckedExpression or SyntaxKind.UncheckedExpression
+				DiagAmbiguousMoneyToFloatConversion.ReportAt(
+					conversionSyn.Parent?.Kind() is SyntaxKind.CheckedExpression or SyntaxKind.UncheckedExpression
 						? conversionSyn.Parent
-						: conversionSyn).GetLocation(),
-					conversionOp.IsChecked ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-					additionalLocations: null,
-					properties: null,
+						: conversionSyn,
+					isErrorSeverity: conversionOp.IsChecked,
+					oac,
 					messageArgs: isToDecimal
 						? [
 							$"new decimal({(isDoublePrecision ? "double" : "float")})", // "checked"
@@ -63,7 +61,7 @@ public sealed class AmbiguousMoneyToFloatConversionAnalyzer : DiagnosticAnalyzer
 						: [
 							$"decimal.{(isDoublePrecision ? "ConvertToF64" : "ConvertToF32")} ext. (from NumberExtensions)", // "checked"
 							$"static Decimal.{(isDoublePrecision ? "ToDouble" : "ToSingle")}", // "unchecked"
-						]));
+						]);
 			},
 			OperationKind.Conversion);
 	}

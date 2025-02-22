@@ -58,16 +58,10 @@ public sealed class UseSimplerBoolFlipAnalyzer : DiagnosticAnalyzer
 						lhsIsSimpleExpr = false;
 						break;
 					default:
-						HawkSourceAnalyzer.ReportWTF(operation.Syntax, oac, message: $"[{nameof(UseSimplerBoolFlipAnalyzer)}] Left-hand side of XOR-assign was of an unexpected kind: {lhsOp.GetType().FullName}");
+						HawkSourceAnalyzer.ReportWTF(operation, oac, message: $"[{nameof(UseSimplerBoolFlipAnalyzer)}] Left-hand side of XOR-assign was of an unexpected kind: {lhsOp.GetType().FullName}");
 						return;
 				}
-				oac.ReportDiagnostic(Diagnostic.Create(
-					DiagUseSimplerBoolFlip,
-					operation.Syntax.GetLocation(),
-					lhsIsSimpleExpr ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-					additionalLocations: null,
-					properties: null,
-					lhsIsSimpleExpr ? ERR_MSG_SIMPLE : ERR_MSG_COMPLEX));
+				DiagUseSimplerBoolFlip.ReportAt(operation, isErrorSeverity: lhsIsSimpleExpr, oac, lhsIsSimpleExpr ? ERR_MSG_SIMPLE : ERR_MSG_COMPLEX);
 			},
 			OperationKind.CompoundAssignment);
 	}
