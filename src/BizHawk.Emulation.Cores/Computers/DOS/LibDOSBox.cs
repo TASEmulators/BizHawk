@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled);
+		public abstract bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, ulong hardDiskDriveSize);
 
 		[BizImport(CC)]
 		public abstract void SetLEDCallback(EmptyCallback callback);
@@ -51,7 +51,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		{
 			public int insertFloppyDisk;
 			public int insertCDROM;
-			public int insertHardDiskDrive;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

@@ -23,6 +23,24 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Late90s,
 		}
 
+		public enum WriteableHardDiskOptions
+		{
+			None,
+			[Display(Name = "21Mb (FAT16)")]
+			FAT16_21Mb,
+			[Display(Name = "41Mb (FAT16)")]
+			FAT16_41Mb,
+			[Display(Name = "241Mb (FAT16)")]
+			FAT16_241Mb,
+			[Display(Name = "504Mb (FAT16)")]
+			FAT16_504Mb,
+			[Display(Name = "2014Mb (FAT16)")]
+			FAT16_2014Mb,
+			[Display(Name = "4091Mb (FAT32)")]
+			FAT32_4091Mb,
+		}
+
+
 		public object GetSettings() => null;
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
 
@@ -60,6 +78,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[Description("Determines whether a mouse will be plugged in")]
 			[DefaultValue(true)]
 			public bool EnableMouse { get; set; }
+
+			[DisplayName("Writeable Hard Disk Drive")]
+			[Description("Determines whether to mount an empty writable formatted hard disk in drive C:. This hard disk will be fully located in memory so make sure you have enough RAM available. Its contents can be saved and loaded as SaveRAM.")]
+			[DefaultValue(WriteableHardDiskOptions.FAT16_241Mb)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public WriteableHardDiskOptions WriteableHardDisk { get; set; }
 
 			public SyncSettings()
 				=> SettingsUtil.SetDefaultValues(this);

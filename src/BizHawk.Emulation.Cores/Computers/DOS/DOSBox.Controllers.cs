@@ -2,8 +2,6 @@
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Computers.Amiga;
-using static BizHawk.Emulation.Cores.Waterbox.NymaCore.NymaSettingsInfo;
 
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
@@ -50,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Adding drive management buttons
 			controller.BoolButtons.AddRange(
 			[
-				Inputs.NextFloppyDisk, Inputs.NextCDROM, Inputs.NextHardDiskDrive
+				Inputs.NextFloppyDisk, Inputs.NextCDROM
 			]);
 
 			foreach (var (name, _) in _keyboardMap)
@@ -97,7 +95,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public const string Mouse = "Mouse";
 			public const string NextFloppyDisk = "Next Floppy Disk";
 			public const string NextCDROM = "Next CDROM";
-			public const string NextHardDiskDrive = "Next HardDisk Drive";
 		}
 	}
 }
