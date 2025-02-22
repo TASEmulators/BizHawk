@@ -130,5 +130,8 @@ namespace BizHawk.Common
 		[DllImport("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics")]
 		[return: MarshalAs(UnmanagedType.U1)]
 		public static extern bool CGEventSourceKeyState(CGEventSourceStateID stateID, CGKeyCode key);
+
+		[DllImport("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics")]
+		public static extern void CGGetLastMouseDelta(out int deltaX, out int deltaY);
 	}
 }

@@ -3,7 +3,7 @@
 // ReSharper disable CommentTypo
 // ReSharper disable IdentifierTypo
 // ReSharper disable UnusedMember.Global
-namespace BizHawk.Client.Common
+namespace BizHawk.Bizware.Input
 {
 	/// <summary>values are one-to-one with <c>System.Windows.Input.Key</c> except <see cref="NumPadEnter"/> and <see cref="Unknown"/> which were added for this project</summary>
 	/// <remarks>copied from MIT-licensed WPF source: https://github.com/dotnet/wpf/blob/49bb41ad83abeb5ae22e4c59d0f43c1287acac00/src/Microsoft.DotNet.Wpf/src/WindowsBase/System/Windows/Input/Key.cs</remarks>

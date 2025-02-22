@@ -1,26 +1,28 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using BizHawk.Client.Common;
+
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 
+using static BizHawk.Common.XInput2Imports;
 using static BizHawk.Common.XlibImports;
 
 // a lot of this code is taken from OpenTK
 
 namespace BizHawk.Bizware.Input
 {
-	internal sealed class X11KeyInput : IKeyInput
+	internal sealed class X11KeyMouseInput : IKeyMouseInput
 	{
 		private IntPtr Display;
 		private readonly bool[] LastKeyState = new bool[256];
 		private readonly object LockObj = new();
 		private readonly DistinctKey[] KeyEnumMap = new DistinctKey[256];
+		private readonly bool _supportsXInput2;
+		private readonly int _xi2Opcode;
 
-		public X11KeyInput()
+		public X11KeyMouseInput()
 		{
 			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Linux)
 			{
@@ -32,24 +34,58 @@ namespace BizHawk.Bizware.Input
 			if (Display == IntPtr.Zero)
 			{
 				// There doesn't seem to be a convention for what exception type to throw in these situations. Can't use NRE. Well...
-//				_ = Unsafe.AsRef<X11.Display>()!; // hmm
+				// _ = Unsafe.AsRef<X11.Display>()!; // hmm
 				// InvalidOperationException doesn't match. Exception it is. --yoshi
 				throw new Exception("Could not open XDisplay");
 			}
 
-			using (new XLock(Display))
-			{
-				// check if we can use XKb
-				int major = 1, minor = 0;
-				var supportsXkb = XkbQueryExtension(Display, out _, out _, out _, ref major, ref minor);
+			// check if we can use XKb
+			int major = 1, minor = 0;
+			var supportsXkb = XkbQueryExtension(Display, out _, out _, out _, ref major, ref minor);
 
-				if (supportsXkb)
+			if (supportsXkb)
+			{
+				// we generally want this behavior
+				XkbSetDetectableAutoRepeat(Display, true, out _);
+			}
+
+			CreateKeyMap(supportsXkb);
+
+			_supportsXInput2 = XQueryExtension(Display, "XInputExtension", out _xi2Opcode, out _, out _);
+			if (_supportsXInput2)
+			{
+				try
 				{
-					// we generally want this behavior
-					XkbSetDetectableAutoRepeat(Display, true, out _);
+					(major, minor) = (2, 1);
+					if (XIQueryVersion(Display, ref major, ref minor) != 0
+						|| major * 100 + minor < 201)
+					{
+						_supportsXInput2 = false;
+					}
+				}
+				catch
+				{
+					// libXi.so.6 might not be present
+					_supportsXInput2 = false;
 				}
 
-				CreateKeyMap(supportsXkb);
+				if (_supportsXInput2)
+				{
+					Span<byte> maskBuf = stackalloc byte[((int)XIEvents.XI_LASTEVENT + 7) / 8];
+					maskBuf.Clear();
+					XISetMask(maskBuf, (int)XIEvents.XI_RawMotion);
+					unsafe
+					{
+						fixed (byte* maskBufPtr = maskBuf)
+						{
+							XIEventMask eventMask;
+							eventMask.deviceid = XIAllMasterDevices;
+							eventMask.mask = (IntPtr)maskBufPtr;
+							eventMask.mask_len = maskBuf.Length;
+							_ = XISelectEvents(Display, XDefaultRootWindow(Display), ref eventMask, 1);
+						}
+					}
+				}
 			}
 		}
 
@@ -65,23 +101,19 @@ namespace BizHawk.Bizware.Input
 			}
 		}
 
-		public unsafe IEnumerable<KeyEvent> Update(bool handleAltKbLayouts)
+		public unsafe IEnumerable<KeyEvent> UpdateKeyInputs(bool handleAltKbLayouts)
 		{
 			lock (LockObj)
 			{
 				// Can't update without a display connection
 				if (Display == IntPtr.Zero)
 				{
-					return Enumerable.Empty<KeyEvent>();
+					return [ ];
 				}
 
 				var keys = stackalloc byte[32];
-
-				using (new XLock(Display))
-				{
-					// this apparently always returns 1 no matter what?
-					_ = XQueryKeymap(Display, keys);
-				}
+				// this apparently always returns 1 no matter what?
+				_ = XQueryKeymap(Display, keys);
 
 				var keyEvents = new List<KeyEvent>();
 				for (var keycode = 0; keycode < 256; keycode++)
@@ -92,13 +124,93 @@ namespace BizHawk.Bizware.Input
 						var keystate = (keys[keycode >> 3] >> (keycode & 0x07) & 0x01) != 0;
 						if (LastKeyState[keycode] != keystate)
 						{
-							keyEvents.Add(new(key, pressed: keystate));
+							keyEvents.Add(new(key, Pressed: keystate));
 							LastKeyState[keycode] = keystate;
 						}
 					}
 				}
 
 				return keyEvents;
+			}
+		}
+
+		public (int DeltaX, int DeltaY) UpdateMouseInput()
+		{
+			lock (LockObj)
+			{
+				// Can't update without a display connection
+				if (Display == IntPtr.Zero)
+				{
+					return default;
+				}
+
+				// need XInput2 support for this
+				if (!_supportsXInput2)
+				{
+					return default;
+				}
+
+				(double mouseDeltaX, double mouseDeltaY) = (0, 0);
+				while (XPending(Display) > 0)
+				{
+					_ = XNextEvent(Display, out var evt);
+					if (evt.xcookie.type != XEventTypes.GenericEvent
+						|| evt.xcookie.extension != _xi2Opcode)
+					{
+						continue;
+					}
+
+					if (!XGetEventData(Display, ref evt.xcookie))
+					{
+						continue;
+					}
+
+					if ((XIEvents)evt.xcookie.evtype == XIEvents.XI_RawMotion)
+					{
+						unsafe
+						{
+							var xiRawEvent = (XIRawEvent*)evt.xcookie.data;
+							var valuatorsMask = new Span<byte>(xiRawEvent->valuators.mask, xiRawEvent->valuators.mask_len);
+							if (!valuatorsMask.IsEmpty)
+							{
+								var rawValueIndex = 0;
+
+								// not implemented until netcore / netstandard2.1
+								// copied from modern runtime
+								static bool IsNormal(double d)
+								{
+									var bits = BitConverter.DoubleToInt64Bits(d);
+									bits &= 0x7FFFFFFFFFFFFFFF;
+									return (bits < 0x7FF0000000000000) && (bits != 0) && ((bits & 0x7FF0000000000000) == 0);
+								}
+
+								if (XIMaskIsSet(valuatorsMask, 0))
+								{
+									var deltaX = xiRawEvent->raw_values[rawValueIndex];
+									if (IsNormal(deltaX))
+									{
+										mouseDeltaX += deltaX;
+									}
+
+									rawValueIndex++;
+								}
+
+								if (XIMaskIsSet(valuatorsMask, 1))
+								{
+									var deltaY = xiRawEvent->raw_values[rawValueIndex];
+									if (IsNormal(deltaY))
+									{
+										mouseDeltaY += deltaY;
+									}
+								}
+							}
+						}
+					}
+
+					_ = XFreeEventData(Display, ref evt.xcookie);
+				}
+
+				return ((int)mouseDeltaX, (int)mouseDeltaY);
 			}
 		}
 

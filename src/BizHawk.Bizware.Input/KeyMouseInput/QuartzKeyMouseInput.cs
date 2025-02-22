@@ -2,13 +2,11 @@
 
 using System.Collections.Generic;
 
-using BizHawk.Client.Common;
-
 using static BizHawk.Common.QuartzImports;
 
 namespace BizHawk.Bizware.Input
 {
-	internal sealed class QuartzKeyInput : IKeyInput
+	internal sealed class QuartzKeyMouseInput : IKeyMouseInput
 	{
 		private readonly bool[] LastKeyState = new bool[0x7F];
 
@@ -16,7 +14,7 @@ namespace BizHawk.Bizware.Input
 		{
 		}
 
-		public IEnumerable<KeyEvent> Update(bool handleAltKbLayouts)
+		public IEnumerable<KeyEvent> UpdateKeyInputs(bool handleAltKbLayouts)
 		{
 			var keyEvents = new List<KeyEvent>();
 			for (var keycode = 0; keycode < 0x7F; keycode++)
@@ -28,13 +26,20 @@ namespace BizHawk.Bizware.Input
 				{
 					if (KeyEnumMap.TryGetValue((CGKeyCode)keycode, out var key))
 					{
-						keyEvents.Add(new(key, pressed: keystate));
+						keyEvents.Add(new(key, Pressed: keystate));
 						LastKeyState[keycode] = keystate;
 					}
 				}
 			}
 
 			return keyEvents;
+		}
+
+		public (int DeltaX, int DeltaY) UpdateMouseInput()
+		{
+			// probably wrong, need to recheck when we actually get macos support
+			CGGetLastMouseDelta(out var deltaX, out var deltaY);
+			return (deltaX, deltaY);
 		}
 
 		private static readonly IReadOnlyDictionary<CGKeyCode, DistinctKey> KeyEnumMap = new Dictionary<CGKeyCode, DistinctKey>

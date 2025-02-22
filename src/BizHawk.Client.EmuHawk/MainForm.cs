@@ -15,6 +15,7 @@ using System.Security.Principal;
 using System.IO.Pipes;
 
 using BizHawk.Bizware.Graphics;
+using BizHawk.Bizware.Input;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
@@ -58,9 +59,9 @@ namespace BizHawk.Client.EmuHawk
 		private readonly ToolStripMenuItemEx NullHawkVSysSubmenu = new() { Enabled = false, Text = "—" };
 
 		private void MainForm_Load(object sender, EventArgs e)
-		{	
+		{
 			UpdateWindowTitle();
-			
+
 			{
 				for (int i = 1; i <= WINDOW_SCALE_MAX; i++)
 				{
@@ -1163,12 +1164,12 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnActivated(EventArgs e)
 		{
 			base.OnActivated(e);
-			Input.Instance.ControlInputFocus(this, ClientInputFocus.Mouse, true);
+			Input.Instance.ControlInputFocus(this, HostInputFocus.Mouse, true);
 		}
 
 		protected override void OnDeactivate(EventArgs e)
 		{
-			Input.Instance.ControlInputFocus(this, ClientInputFocus.Mouse, false);
+			Input.Instance.ControlInputFocus(this, HostInputFocus.Mouse, false);
 			base.OnDeactivate(e);
 		}
 
@@ -2801,8 +2802,6 @@ namespace BizHawk.Client.EmuHawk
 		// Alt key hacks
 		protected override void WndProc(ref Message m)
 		{
-			if (m.Msg == WmDeviceChange) Input.Instance.Adapter.ReInitGamepads(Handle);
-
 			// this is necessary to trap plain alt keypresses so that only our hotkey system gets them
 			if (m.Msg == 0x0112) // WM_SYSCOMMAND
 			{
