@@ -160,7 +160,20 @@ ECL_EXPORT int dsda_init(InitSettings *settings, int argc, char **argv)
 
   // Initializing DSDA core
   headlessMain(argc, argv);
-  printf("DSDA Initialized\n");
+  printf("DSDA Initialized\n");  
+
+	switch(compatibility_level) {
+	case prboom_6_compatibility:
+		longtics = 1;
+		break;
+	case mbf21_compatibility:
+		longtics = 1;
+		shorttics = !dsda_Flag(dsda_arg_longtics);
+		break;
+	default:
+		longtics = dsda_Flag(dsda_arg_longtics);
+		break;
+	}
 
   // Initializing audio
   I_SetSoundCap();

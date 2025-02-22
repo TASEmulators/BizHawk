@@ -100,29 +100,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					var initSettings = _syncSettings.GetNativeSettings(lp.Game);
-
-					_args = new List<string>
-					{
-						"dsda",
-					};
-
-					_args.AddRange([ "-skill", $"{(int) _syncSettings.SkillLevel}" ]);
-					_args.AddRange([ "-warp", $"{_syncSettings.InitialEpisode}", $"{_syncSettings.InitialMap}" ]);
-					_args.AddRange([ "-complevel", $"{(int) _syncSettings.CompatibilityMode}" ]);
-
-					ConditionalArg(!_syncSettings.StrictMode, "-tas");
-					ConditionalArg(_syncSettings.MonstersRespawn, "-respawn");
-					ConditionalArg(_syncSettings.NoMonsters, "-nomonsters");
-					ConditionalArg(_syncSettings.ChainEpisodes, "-chain_episodes");
-					ConditionalArg(_syncSettings.MultiplayerMode == MultiplayerMode.M1, "-deathmatch");
-					ConditionalArg(_syncSettings.MultiplayerMode == MultiplayerMode.M2, "-altdeath");
-					ConditionalArg(_syncSettings.Turbo > 0, $"-turbo {_syncSettings.Turbo}");
-					ConditionalArg((initSettings._Player1Present + initSettings._Player2Present + initSettings._Player3Present + initSettings._Player4Present) > 1, "-solo-net");
-
-					Console.WriteLine();
-					Console.WriteLine(string.Join(" ", _args));
-					Console.WriteLine();
-
+					CreateArguments(initSettings);
 					var initResult = Core.dsda_init(ref initSettings, _args.Count, _args.ToArray());
 					if (!initResult) throw new Exception($"{nameof(Core.dsda_init)}() failed");
 
@@ -146,6 +124,28 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				Dispose();
 				throw;
 			}
+		}
+
+		private void CreateArguments(CInterface.InitSettings initSettings)
+		{
+			_args = new List<string>
+			{
+				"dsda",
+			};
+
+			_args.AddRange([ "-skill", $"{(int)_syncSettings.SkillLevel}" ]);
+			_args.AddRange([ "-warp", $"{_syncSettings.InitialEpisode}", $"{_syncSettings.InitialMap}" ]);
+			_args.AddRange([ "-complevel", $"{(int)_syncSettings.CompatibilityMode}" ]);
+
+			ConditionalArg(!_syncSettings.StrictMode, "-tas");
+			ConditionalArg(_syncSettings.MonstersRespawn, "-respawn");
+			ConditionalArg(_syncSettings.NoMonsters, "-nomonsters");
+			ConditionalArg(_syncSettings.ChainEpisodes, "-chain_episodes");
+			ConditionalArg(_syncSettings.TurningResolution == TurningResolution.Longtics, "-longtics");
+			ConditionalArg(_syncSettings.MultiplayerMode == MultiplayerMode.Deathmatch, "-deathmatch");
+			ConditionalArg(_syncSettings.MultiplayerMode == MultiplayerMode.Altdeath, "-altdeath");
+			ConditionalArg(_syncSettings.Turbo > 0, $"-turbo {_syncSettings.Turbo}");
+			ConditionalArg((initSettings._Player1Present + initSettings._Player2Present + initSettings._Player3Present + initSettings._Player4Present) > 1, "-solo-net");
 		}
 
 		private void ConditionalArg(bool condition, string setting)

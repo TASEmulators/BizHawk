@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				.AddAxis($"P{PortNum} Turning Speed", (-128).RangeTo(127), 0)
 				.AddAxis($"P{PortNum} Weapon Select", (0).RangeTo(7), 0)
 				.AddAxis($"P{PortNum} Mouse Running", (-128).RangeTo(127), 0)
-				.AddAxis($"P{PortNum} Mouse Turning", (-128).RangeTo(127), 0)
+				.AddAxis($"P{PortNum} Mouse Turning", (-32768).RangeTo(32767), 0)
 				.MakeImmutable();
 		}
 
@@ -115,12 +115,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				if (c.IsPressed($"P{PortNum} Key Turn Left"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? 5 : 2;
+					x = c.IsPressed($"P{PortNum} Key Shift Run") ? 1280 : 320;
 				}
 
 				if (c.IsPressed($"P{PortNum} Key Turn Right"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? -5 : -2;
+					x = c.IsPressed($"P{PortNum} Key Shift Run") ? -1280 : -320;
 				}
 			}
 

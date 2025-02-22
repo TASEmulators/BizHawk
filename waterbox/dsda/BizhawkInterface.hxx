@@ -9,6 +9,10 @@
 #include "d_player.h"
 #include "w_wad.h"
 #include "p_mobj.h"
+#include "doomstat.h"
+#include "g_game.h"
+
+#include "dsda/args.h"
 
 extern "C"
 {
@@ -41,23 +45,18 @@ extern "C"
   unsigned char * I_CaptureAudio (int* nsamples);
   void I_InitSound(void);
   void I_SetSoundCap (void);
+
 }
 
 // Players information
 extern "C" int enableOutput;
-extern "C" player_t players[MAX_MAXPLAYERS];
 extern "C" int preventLevelExit;
 extern "C" int preventGameEnd;
 extern "C" int reachedLevelExit;
 extern "C" int reachedGameEnd;
-extern "C" int gamemap;
-extern "C" int gametic;
-extern "C" dboolean playeringame[MAX_MAXPLAYERS];
-extern "C" int consoleplayer;
-extern "C" int displayplayer;
-extern "C" pclass_t PlayerClass[MAX_MAXPLAYERS];
 extern int numthings;
 extern mobj_t **mobj_ptrs;
+extern dsda_arg_t arg_value[dsda_arg_count];
 
 #define PALETTE_SIZE 256
 uint32_t _convertedPaletteBuffer[PALETTE_SIZE];
@@ -104,3 +103,7 @@ struct PackedRenderInfo
 	int _RenderAudio;
 	int _PlayerPointOfView;
 } __attribute__((packed));
+
+dboolean dsda_Flag(dsda_arg_identifier_t id) {
+  return arg_value[id].found;
+}

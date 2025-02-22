@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 			DSDA.DoomSyncSettings syncSettings = new()
 			{
 				InputFormat = DoomControllerTypes.Heretic,
-				MultiplayerMode = DSDA.MultiplayerMode.M0,
+				MultiplayerMode = DSDA.MultiplayerMode.Single_Coop,
 				MonstersRespawn = false,
 				FastMonsters = false,
 				NoMonsters = false,

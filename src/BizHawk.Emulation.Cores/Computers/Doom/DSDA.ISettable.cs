@@ -63,27 +63,34 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			S4 = 4,
 			[Display(Name = "5 - Nightmare!")]
 			S5 = 5
+		}
 
+		public enum TurningResolution : int
+		{
+			[Display(Name = "16-bit integer (\"longtics\")")]
+			Longtics = 1,
+			[Display(Name = "8-bit integer (\"shorttics\")")]
+			Shorttics = 2,
 		}
 
 		public enum MultiplayerMode : int
 		{
 			[Display(Name = "0 - Single Player / Coop")]
-			M0 = 0,
+			Single_Coop = 0,
 			[Display(Name = "1 - Deathmatch")]
-			M1 = 1,
+			Deathmatch = 1,
 			[Display(Name = "2 - Altdeath")]
-			M2 = 2
+			Altdeath = 2
 		}
 
 		public enum HexenClass : int
 		{
-			[Display(Name = "Fighter")]
-			C1 = 1,
+			[Display(Name = "FighterFighter")]
+			Fighter = 1,
 			[Display(Name = "Cleric")]
-			C2 = 2,
+			Cleric = 2,
 			[Display(Name = "Mage")]
-			C3 = 3
+			Mage = 3
 		}
 
 		public const int TURBO_AUTO = -1;
@@ -181,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			[DisplayName("Multiplayer Mode")]
 			[Description("Indicates the multiplayer mode")]
-			[DefaultValue(MultiplayerMode.M0)]
+			[DefaultValue(MultiplayerMode.Single_Coop)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public MultiplayerMode MultiplayerMode { get; set; }
 
@@ -219,25 +226,25 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			[DisplayName("Player 1 Hexen Class")]
 			[Description("The Hexen class to use for player 1. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.C1)]
+			[DefaultValue(HexenClass.Fighter)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HexenClass Player1Class { get; set; }
 
 			[DisplayName("Player 2 Hexen Class")]
 			[Description("The Hexen class to use for player 2. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.C1)]
+			[DefaultValue(HexenClass.Fighter)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HexenClass Player2Class { get; set; }
 
 			[DisplayName("Player 3 Hexen Class")]
 			[Description("The Hexen class to use for player 3. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.C1)]
+			[DefaultValue(HexenClass.Fighter)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HexenClass Player3Class { get; set; }
 
 			[DisplayName("Player 4 Hexen Class")]
 			[Description("The Hexen class to use for player 4. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.C1)]
+			[DefaultValue(HexenClass.Fighter)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HexenClass Player4Class { get; set; }
 
@@ -250,6 +257,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[Description("Sets strict mode restrictions, preventing TAS-only inputs.")]
 			[DefaultValue(true)]
 			public bool StrictMode { get; set; }
+
+			[DisplayName("Auto Run")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool AutoRun { get; set; }
+
+			[DisplayName("Turning Resolution")]
+			[Description("\"shorttics\" refers to decreased turning resolution used for demos, whereas \"longtics\" refers to the regular turning resolution outside of a demo-recording environment.")]
+			[DefaultValue(TurningResolution.Longtics)]
+			public TurningResolution TurningResolution { get; set; }
 
 			[DisplayName("Prevent Level Exit")]
 			[Description("Level exit triggers won't have an effect. This is useful for debugging / optimizing / botting purposes.")]

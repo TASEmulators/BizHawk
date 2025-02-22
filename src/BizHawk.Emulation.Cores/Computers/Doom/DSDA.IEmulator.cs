@@ -45,6 +45,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				{
 					int mouseTurningDelta = _player1LastMouseTurningValue - mouseTurningSpeed;
 					player1Inputs._TurningSpeed += mouseTurningDelta * _syncSettings.MouseTurnSensitivity;
+					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
+					{
+						player1Inputs._TurningSpeed >>= 8;
+					}
 				}
 				_player1LastMouseTurningValue = mouseTurningSpeed;
 
@@ -89,6 +93,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				{
 					int mouseTurningDelta = _player2LastMouseTurningValue - mouseTurningSpeed;
 					player2Inputs._TurningSpeed += mouseTurningDelta * _syncSettings.MouseTurnSensitivity;
+					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
+					{
+						player2Inputs._TurningSpeed >>= 8;
+					}
 				}
 				_player2LastMouseTurningValue = mouseTurningSpeed;
 
@@ -133,6 +141,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				{
 					int mouseTurningDelta = _player3LastMouseTurningValue - mouseTurningSpeed;
 					player3Inputs._TurningSpeed += mouseTurningDelta * _syncSettings.MouseTurnSensitivity;
+					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
+					{
+						player3Inputs._TurningSpeed >>= 8;
+					}
 				}
 				_player3LastMouseTurningValue = mouseTurningSpeed;
 
@@ -177,6 +189,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				{
 					int mouseTurningDelta = _player4LastMouseTurningValue - mouseTurningSpeed;
 					player4Inputs._TurningSpeed += mouseTurningDelta * _syncSettings.MouseTurnSensitivity;
+					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
+					{
+						player4Inputs._TurningSpeed >>= 8;
+					}
 				}
 				_player4LastMouseTurningValue = mouseTurningSpeed;
 
