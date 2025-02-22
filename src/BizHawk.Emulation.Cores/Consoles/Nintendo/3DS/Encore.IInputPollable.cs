@@ -21,8 +21,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				}
 			}.AddXYPair("Circle Pad {0}", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0)
 			.AddXYPair("C-Stick {0}", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0)
-			.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(320), 160, 0.RangeTo(240), 120)
-			.AddXYPair("Tilt {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(320), 160, 0.RangeTo(240), 120)
+			.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(319), 160, 0.RangeTo(239), 120)
+			.AddXYPair("Tilt {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(319), 160, 0.RangeTo(239), 120)
 			.MakeImmutable();
 
 		private bool GetButtonCallback(LibEncore.Buttons button) => button switch
