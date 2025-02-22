@@ -1287,29 +1287,44 @@ namespace BizHawk.Client.EmuHawk
 				}
 			} // foreach event
 
-			//also handle axes
-			//we'll need to isolate the mouse coordinates so we can translate them
-			KeyValuePair<string, int>? mouseX = null, mouseY = null;
+			// also handle axes
+			// we'll need to isolate the mouse coordinates so we can translate them
+			int? mouseX = null, mouseY = null, mouseDeltaX = null, mouseDeltaY = null;
 			foreach (var f in Input.Instance.GetAxisValues())
 			{
 				if (f.Key == "WMouse X")
-					mouseX = f;
+					mouseX = f.Value;
 				else if (f.Key == "WMouse Y")
-					mouseY = f;
+					mouseY = f.Value;
+				else if (f.Key == "RMouse X")
+					mouseDeltaX = f.Value;
+				else if (f.Key == "RMouse Y")
+					mouseDeltaY = f.Value;
 				else finalHostController.AcceptNewAxis(f.Key, f.Value);
 			}
 
-			//if we found mouse coordinates (and why wouldn't we?) then translate them now
-			//NOTE: these must go together, because in the case of screen rotation, X and Y are transformed together
-			if(mouseX != null && mouseY != null)
+			// if we found mouse coordinates (and why wouldn't we?) then translate them now
+			// NOTE: these must go together, because in the case of screen rotation, X and Y are transformed together
+			if (mouseX != null && mouseY != null)
 			{
-				var p = DisplayManager.UntransformPoint(new Point(mouseX.Value.Value, mouseY.Value.Value));
-				float x = p.X / (float)_currentVideoProvider.BufferWidth;
-				float y = p.Y / (float)_currentVideoProvider.BufferHeight;
+				var p = DisplayManager.UntransformPoint(new Point(mouseX.Value, mouseY.Value));
+				var x = p.X / (float)_currentVideoProvider.BufferWidth;
+				var y = p.Y / (float)_currentVideoProvider.BufferHeight;
 				finalHostController.AcceptNewAxis("WMouse X", (int) ((x * 20000) - 10000));
 				finalHostController.AcceptNewAxis("WMouse Y", (int) ((y * 20000) - 10000));
 			}
 
+			if (mouseDeltaX != null && mouseDeltaY != null)
+			{
+				var mouseSensitivity = Config.RelativeMouseSensitivity / 100.0f;
+				var x = mouseDeltaX.Value * mouseSensitivity;
+				var y = mouseDeltaY.Value * mouseSensitivity;
+				const int MAX_REL_MOUSE_RANGE = 120; // arbitrary
+				x = Math.Min(Math.Max(x, -MAX_REL_MOUSE_RANGE), MAX_REL_MOUSE_RANGE) / MAX_REL_MOUSE_RANGE;
+				y = Math.Min(Math.Max(y, -MAX_REL_MOUSE_RANGE), MAX_REL_MOUSE_RANGE) / MAX_REL_MOUSE_RANGE;
+				finalHostController.AcceptNewAxis("RMouse X", (int)(x * 10000));
+				finalHostController.AcceptNewAxis("RMouse Y", (int)(y * 10000));
+			}
 		}
 
 		public bool RebootCore()

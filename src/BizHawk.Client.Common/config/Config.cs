@@ -431,7 +431,7 @@ namespace BizHawk.Client.Common
 		public int OSDMessageDuration { get; set; } = 2;
 
 		public Queue<string> RecentCores { get; set; } = new();
-		
+
 		public Dictionary<string, string> TrustedExtTools { get; set; } = new();
 
 		// RetroAchievements settings
@@ -455,5 +455,7 @@ namespace BizHawk.Client.Common
 		public bool GCAdapterSupportEnabled { get; set; } = false;
 
 		public bool ScaleOSDWithSystemScale { get; set; } = true;
+
+		public int RelativeMouseSensitivity { get; set; } = 100;
 	}
 }

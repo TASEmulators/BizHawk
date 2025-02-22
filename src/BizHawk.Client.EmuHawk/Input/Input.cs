@@ -180,7 +180,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			lock (_axisValues)
 			{
-				return _axisValues.ToArray();
+				var ret = _axisValues.ToArray();
+				// since these are deltas, we'll want to reset them once the mainform grabs them
+				_axisValues["RMouse X"] = 0;
+				_axisValues["RMouse Y"] = 0;
+				return ret;
 			}
 		}
 
@@ -241,8 +245,8 @@ namespace BizHawk.Client.EmuHawk
 							HandleButton("WMouse 2", (mouseBtns & MouseButtons.XButton2) != 0, HostInputType.Mouse);
 
 							// raw (relative) mouse input
-							_axisValues["RMouse X"] = mouseDeltaX;
-							_axisValues["RMouse Y"] = mouseDeltaY;
+							_axisValues["RMouse X"] = mouseDeltaX + _axisValues.GetValueOrDefault("RMouse X");
+							_axisValues["RMouse Y"] = mouseDeltaY + _axisValues.GetValueOrDefault("RMouse Y");
 						}
 						else
 						{
