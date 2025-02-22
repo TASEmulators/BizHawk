@@ -8,6 +8,7 @@
 #include <set>
 #include <jaffarCommon/file.hpp>
 #include <mixer.h>
+#include <joystick.h>
 
 extern int _main(int argc, char* argv[]);
 void runMain() { _main(0, nullptr); }
@@ -67,7 +68,7 @@ bool loadFileIntoMemoryFileDirectory(const std::string& srcFile, const std::stri
 		return true;
 }
 
-ECL_EXPORT bool Init()
+ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled)
 {
 	 // Loading HDD file into mem file directory
 		std::string hddSrcFile = "HardDiskDrive";
@@ -95,12 +96,26 @@ ECL_EXPORT bool Init()
 	_emuCoroutine = co_create(stackSize, runMain);
 	co_switch(_emuCoroutine);
 
+ // Initializing joysticks
+ stick[0].enabled = joystick1Enabled;
+	stick[1].enabled = joystick2Enabled;
+
+	stick[0].xpos = 0.0;
+	stick[0].ypos = 0.0;
+	stick[0].button[0] = false;
+	stick[0].button[1] = false;
+
+	stick[1].xpos = 0.0;
+	stick[1].ypos = 0.0;
+	stick[1].button[0] = false;
+	stick[1].button[1] = false;
+
 	return true;
 }
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
- // Processing inputs
+ // Processing keyboard inputs
 	_releasedKeys.clear();
 	_pressedKeys.clear();
 
@@ -136,6 +151,31 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	{
 		printf("Swapping to Hard Disk Drive: %d\n", f->driveActions.insertHardDiskDrive);
 		swapInDrive(2, f->driveActions.insertHardDiskDrive + 1); // 3 is C:
+	}
+
+ // Processing joystick inputs
+	if (stick[0].enabled)
+	{
+		stick[0].xpos = 0.0;
+		stick[0].ypos = 0.0;
+		if (f->joy1.up)    stick[0].ypos = -1.0f;
+		if (f->joy1.down)  stick[0].ypos = 1.0f;
+		if (f->joy1.left)  stick[0].xpos = -1.0f;
+		if (f->joy1.right) stick[0].xpos = 1.0f;
+		stick[0].button[0] = f->joy1.button1;
+		stick[0].button[1] = f->joy1.button2;
+	}
+
+	if (stick[1].enabled)
+	{
+		stick[1].xpos = 0.0;
+		stick[1].ypos = 0.0;
+		if (f->joy2.up)    stick[1].ypos = -1.0f;
+		if (f->joy2.down)  stick[1].ypos = 1.0f;
+		if (f->joy2.left)  stick[1].xpos = -1.0f;
+		if (f->joy2.right) stick[1].xpos = 1.0f;
+		stick[1].button[0] = f->joy2.button1;
+		stick[1].button[1] = f->joy2.button2;
 	}
 
  // Clearing audio sample buffer
