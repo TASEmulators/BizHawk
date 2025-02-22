@@ -44,8 +44,7 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 						// else correct usage, do not flag
 					}
 					bool IncludesFNIAttribute(SyntaxList<AttributeListSyntax> mds)
-						=> mds.SelectMany(static als => als.Attributes)
-							.Any(aSyn => featureNotImplementedAttrSym.Matches(snac.SemanticModel.GetTypeInfo(aSyn, snac.CancellationToken).Type));
+						=> mds.Matching(featureNotImplementedAttrSym, snac).Any();
 					void CheckBlockBody(BlockSyntax bs, Location location)
 					{
 						if (bs.Statements is [ ThrowStatementSyntax tss ]) MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tss), tss);
