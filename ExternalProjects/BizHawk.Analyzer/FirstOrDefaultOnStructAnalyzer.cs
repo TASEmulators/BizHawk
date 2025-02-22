@@ -1,13 +1,7 @@
 ﻿namespace BizHawk.Analyzers;
 
-using System;
 using System.Collections.Immutable;
 using System.Linq;
-
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Operations;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class FirstOrDefaultOnStructAnalyzer : DiagnosticAnalyzer

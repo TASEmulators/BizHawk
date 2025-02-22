@@ -16,5 +16,7 @@
 		<EditorConfigFiles Include="$(MSBuildProjectDirectory)/../Analyzers.editorconfig" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
 		<Compile Include="$(MSBuildProjectDirectory)/../AnalyzersCommon/**/*.cs" />
+		<Using Include="Microsoft.CodeAnalysis;Microsoft.CodeAnalysis.CSharp;Microsoft.CodeAnalysis.CSharp.Syntax;Microsoft.CodeAnalysis.Diagnostics;Microsoft.CodeAnalysis.Operations;Microsoft.CodeAnalysis.Text" />
+		<Using Include="System" />
 	</ItemGroup>
 </Project>
