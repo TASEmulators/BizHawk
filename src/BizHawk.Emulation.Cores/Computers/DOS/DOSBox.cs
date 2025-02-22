@@ -150,8 +150,17 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _ledCallback });
 
+
 			// Getting base config file
-			IEnumerable<byte> configData = Zstd.DecompressZstdStream(new MemoryStream(Resources.DOSBOX_BASE_CONF.Value)).ToArray();
+			IEnumerable<byte> configData = [ ];
+			switch(_syncSettings.ConfigurationPreset)
+			{
+				case ConfigurationPreset.Early80s: configData = new MemoryStream(Resources.DOSBOX_CONF_EARLY80S.Value).ToArray(); break;
+				case ConfigurationPreset.Late80s:  configData = new MemoryStream(Resources.DOSBOX_CONF_LATE80S.Value).ToArray(); break;
+				case ConfigurationPreset.Early90s: configData = new MemoryStream(Resources.DOSBOX_CONF_EARLY90S.Value).ToArray(); break;
+				case ConfigurationPreset.Mid90s:   configData = new MemoryStream(Resources.DOSBOX_CONF_MID90S.Value).ToArray(); break;
+				case ConfigurationPreset.Late90s:  configData = new MemoryStream(Resources.DOSBOX_CONF_LATE90S.Value).ToArray(); break;
+			}
 
 			// Converting to string
 			var configString = Encoding.UTF8.GetString(configData.ToArray());

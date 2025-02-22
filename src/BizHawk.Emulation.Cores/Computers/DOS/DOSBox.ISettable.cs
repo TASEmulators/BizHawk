@@ -9,17 +9,18 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 {
 	public partial class DOSBox : ISettable<object, DOSBox.SyncSettings>
 	{
-		public enum MachineConfig
+		public enum ConfigurationPreset
 		{
-			[Display(Name = "A500 OCS KS1.3 512K 512K")]
-			A500_OCS_130_512K_512K,
-			[Display(Name = "A600 ECS KS2.05 2M")]
-			A600_ECS_205_2M,
-			[Display(Name = "A1200 AGA KS3.1 2M 8M")]
-			A1200_AGA_310_2M_8M,
-			[Display(Name = "A4000 AGA KS3.1 2M 8M")]
-			A4000_AGA_310_2M_8M,
-		//	CD32
+			[Display(Name = "Early 80s")]
+			Early80s,
+			[Display(Name = "Late 80s")]
+			Late80s,
+			[Display(Name = "Early 90s")]
+			Early90s,
+			[Display(Name = "Mid 90s")]
+			Mid90s,
+			[Display(Name = "Late 90s")]
+			Late90s,
 		}
 
 		public enum CpuModel
@@ -154,11 +155,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		[CoreSettings]
 		public class SyncSettings
 		{
-			[DisplayName("Machine configuration")]
-			[Description("")]
-			[DefaultValue(MachineConfig.A500_OCS_130_512K_512K)]
+			[DisplayName("Configuration Preset")]
+			[Description("Establishes a base configuration for DOSBox roughly corresponding to the selected era.")]
+			[DefaultValue(ConfigurationPreset.Early90s)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public MachineConfig MachineConfig { get; set; }
+			public ConfigurationPreset ConfigurationPreset { get; set; }
 
 			[DisplayName("CPU model")]
 			[Description("Overrides machine configuration.")]
