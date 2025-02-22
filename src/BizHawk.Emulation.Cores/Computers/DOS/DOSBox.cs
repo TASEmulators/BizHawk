@@ -21,27 +21,14 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		isReleased: true)]
 	public partial class DOSBox : WaterboxCore
 	{
-		private static readonly Configuration ConfigPAL = new Configuration
+		private static readonly Configuration DefaultConfig = new Configuration
 		{
 			SystemId = VSystemID.Raw.DOS,
 			MaxSamples = 8 * 1024,
-			DefaultWidth = LibDOSBox.PAL_WIDTH,
-			DefaultHeight = LibDOSBox.PAL_HEIGHT,
-			MaxWidth = LibDOSBox.PAL_WIDTH,
-			MaxHeight = LibDOSBox.PAL_HEIGHT,
-			DefaultFpsNumerator = LibDOSBox.VIDEO_NUMERATOR_PAL,
-			DefaultFpsDenominator = LibDOSBox.VIDEO_DENOMINATOR_PAL
-		};
-
-		private static readonly Configuration ConfigNTSC = new Configuration
-		{
-			SystemId = VSystemID.Raw.DOS,
-			MaxSamples = 8 * 1024,
-			DefaultWidth = LibDOSBox.NTSC_WIDTH,
-			DefaultHeight = LibDOSBox.NTSC_HEIGHT,
-			// games never switch region, and video dumping won't be happy, but amiga can still do it
-			MaxWidth = LibDOSBox.PAL_WIDTH,
-			MaxHeight = LibDOSBox.PAL_HEIGHT,
+			DefaultWidth = LibDOSBox.VGA_MAX_WIDTH,
+			DefaultHeight = LibDOSBox.VGA_MAX_HEIGHT,
+			MaxWidth = LibDOSBox.SVGA_MAX_WIDTH,
+			MaxHeight = LibDOSBox.SVGA_MAX_HEIGHT,
 			DefaultFpsNumerator = LibDOSBox.VIDEO_NUMERATOR_NTSC,
 			DefaultFpsDenominator = LibDOSBox.VIDEO_DENOMINATOR_NTSC
 		};
@@ -81,8 +68,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		}
 
 		[CoreConstructor(VSystemID.Raw.DOS)]
-		public DOSBox(CoreLoadParameters<object, UAESyncSettings> lp)
-			: base(lp.Comm, lp.SyncSettings?.Region is VideoStandard.NTSC ? ConfigNTSC : ConfigPAL)
+		public DOSBox(CoreLoadParameters<object, SyncSettings> lp)
+			: base(lp.Comm, DefaultConfig)
 		{
 			_roms = lp.Roms;
 			_syncSettings = lp.SyncSettings ?? new();
@@ -388,22 +375,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		private void UpdateVideoStandard(bool initial)
 		{
-			var ntsc = initial
-				? _syncSettings.Region is VideoStandard.NTSC
-				: BufferHeight == LibDOSBox.NTSC_HEIGHT;
-
-			if (ntsc)
-			{
-				_correctedWidth = LibDOSBox.PAL_WIDTH * 6 / 7;
-				VsyncNumerator = LibDOSBox.VIDEO_NUMERATOR_NTSC;
-				VsyncDenominator = LibDOSBox.VIDEO_DENOMINATOR_NTSC;
-			}
-			else
-			{
-				_correctedWidth = LibDOSBox.PAL_WIDTH;
+				_correctedWidth = LibDOSBox.SVGA_MAX_WIDTH;
 				VsyncNumerator = LibDOSBox.VIDEO_NUMERATOR_PAL;
 				VsyncDenominator = LibDOSBox.VIDEO_DENOMINATOR_PAL;
-			}
 		}
 
 		private static class FileNames

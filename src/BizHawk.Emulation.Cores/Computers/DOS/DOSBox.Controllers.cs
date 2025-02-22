@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			return keyboardMap.ToArray();
 		}
 
-		private static ControllerDefinition CreateControllerDefinition(UAESyncSettings settings)
+		private static ControllerDefinition CreateControllerDefinition(SyncSettings settings)
 		{
 			var controller = new ControllerDefinition("Amiga Controller");
 
@@ -69,8 +69,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 								$"P{port} {Inputs.MouseRightButton}"
 							]);
 							controller
-								.AddAxis($"P{port} {Inputs.MouseX}", 0.RangeTo(LibDOSBox.PAL_WIDTH), LibDOSBox.PAL_WIDTH / 2)
-								.AddAxis($"P{port} {Inputs.MouseY}", 0.RangeTo(LibDOSBox.PAL_HEIGHT), LibDOSBox.PAL_HEIGHT / 2);
+								.AddAxis($"P{port} {Inputs.MouseX}", 0.RangeTo(LibDOSBox.SVGA_MAX_WIDTH), LibDOSBox.SVGA_MAX_WIDTH / 2)
+								.AddAxis($"P{port} {Inputs.MouseY}", 0.RangeTo(LibDOSBox.SVGA_MAX_HEIGHT), LibDOSBox.SVGA_MAX_HEIGHT / 2);
 							break;
 						}
 				}

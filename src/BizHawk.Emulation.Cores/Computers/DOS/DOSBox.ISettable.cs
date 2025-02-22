@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
-	public partial class DOSBox : ISettable<object, DOSBox.UAESyncSettings>
+	public partial class DOSBox : ISettable<object, DOSBox.SyncSettings>
 	{
 		public enum MachineConfig
 		{
@@ -58,12 +58,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			ECS,
 			AGA,
 			Auto
-		}
-
-		public enum VideoStandard
-		{
-			PAL,
-			NTSC
 		}
 
 		public enum ChipMemory
@@ -143,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Turbo = 0
 		}
 
-		private void CreateArguments(UAESyncSettings settings)
+		private void CreateArguments(SyncSettings settings)
 		{
 			_args = new List<string>
 			{
@@ -243,11 +237,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				AppendSetting("fastmem_size=" + settings.FastMemory);
 			}
 
-			if (settings.Region == VideoStandard.NTSC)
-			{
-				AppendSetting("ntsc=true");
-			}
-
 			AppendSetting("input.mouse_speed=" + settings.MouseSpeed);
 			AppendSetting("sound_stereo_separation=" + settings.StereoSeparation / 10);
 
@@ -297,19 +286,19 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public object GetSettings() => null;
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
 
-		private UAESyncSettings _syncSettings;
-		public UAESyncSettings GetSyncSettings()
+		private SyncSettings _syncSettings;
+		public SyncSettings GetSyncSettings()
 			=> _syncSettings.Clone();
 
-		public PutSettingsDirtyBits PutSyncSettings(UAESyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
 		{
-			var ret = UAESyncSettings.NeedsReboot(_syncSettings, o);
+			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		[CoreSettings]
-		public class UAESyncSettings
+		public class SyncSettings
 		{
 			[DisplayName("Machine configuration")]
 			[Description("")]
@@ -386,24 +375,19 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int FloppyDrives { get; set; }
 
-			[DisplayName("Video standard")]
-			[Description("Determines resolution and framerate.")]
-			[DefaultValue(VideoStandard.PAL)]
-			public VideoStandard Region { get; set; }
-
 			[DisplayName("Floppy drive speed")]
 			[Description("Default speed is 300RPM.  'Turbo' removes disk rotation emulation.  This is a speedhack, not available for movies.")]
 			[DefaultValue(FloppySpeed._100)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public FloppySpeed FloppySpeed { get; set; }
 
-			public UAESyncSettings()
+			public SyncSettings()
 				=> SettingsUtil.SetDefaultValues(this);
 
-			public UAESyncSettings Clone()
-				=> (UAESyncSettings)MemberwiseClone();
+			public SyncSettings Clone()
+				=> (SyncSettings)MemberwiseClone();
 
-			public static bool NeedsReboot(UAESyncSettings x, UAESyncSettings y)
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
 				=> !DeepEquality.DeepEquals(x, y);
 		}
 	}

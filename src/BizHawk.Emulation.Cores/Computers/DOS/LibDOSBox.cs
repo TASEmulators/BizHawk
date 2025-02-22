@@ -9,16 +9,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 	public abstract class LibDOSBox : LibWaterboxCore
 	{
 
-		public const int PAL_WIDTH = 720;
-		public const int NTSC_WIDTH = PAL_WIDTH;
-		// the core renders 576 which is what libretro displays
-		// but default window height is 568 in original PUAE and WinUAE
-		// this lets us hide a black line and a weird artifact that our A600 config has there
-		public const int PAL_HEIGHT = 574;
-		// WinUAE displays 484 lines for NTSC
-		// but libretro port only renders 482 and then only displays 480
-		public const int NTSC_HEIGHT = 482;
-		// libretro defines PUAE_VIDEO_HZ_PAL as 49.9204101562500000f
+		public const int VGA_MAX_WIDTH = 640;
+		public const int VGA_MAX_HEIGHT = 480;
+		public const int SVGA_MAX_WIDTH = 800;
+		public const int SVGA_MAX_HEIGHT = 600;
+
 		public const int VIDEO_NUMERATOR_PAL = 102237;
 		public const int VIDEO_DENOMINATOR_PAL = 2048;
 		// libretro defines PUAE_VIDEO_HZ_NTSC as 59.8260993957519531f
@@ -43,19 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			| AllButtons.Button_1
 			| AllButtons.Button_2
 			| AllButtons.Button_3);
-		public const short Cd32padMask =
-			(short) (AllButtons.Up
-			| AllButtons.Down
-			| AllButtons.Left
-			| AllButtons.Right
-			| AllButtons.Play
-			| AllButtons.Rewind
-			| AllButtons.Forward
-			| AllButtons.Green
-			| AllButtons.Yellow
-			| AllButtons.Red
 
-			| AllButtons.Blue);
 		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init(int argc, string[] argv);
 
