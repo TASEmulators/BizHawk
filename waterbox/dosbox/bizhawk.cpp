@@ -9,6 +9,7 @@
 #include <jaffarCommon/file.hpp>
 #include <mixer.h>
 #include <joystick.h>
+#include <mouse.h>
 
 extern int _main(int argc, char* argv[]);
 void runMain() { _main(0, nullptr); }
@@ -29,6 +30,10 @@ std::set<KBD_KEYS> _prevPressedKeys;
 extern std::set<KBD_KEYS> _pressedKeys;
 extern std::set<KBD_KEYS> _releasedKeys;
 std::vector<int16_t> _audioSamples;
+
+MouseInput _prevMouse;
+#define MOUSE_MAX_X 800
+#define MOUSE_MAX_Y 600
 
 bool loadFileIntoMemoryFileDirectory(const std::string& srcFile, const std::string& dstFile, const ssize_t dstSize = -1)
 {
@@ -110,6 +115,13 @@ ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEna
 	stick[1].button[0] = false;
 	stick[1].button[1] = false;
 
+ // Initializing mouse
+	_prevMouse.posX = 0;
+	_prevMouse.posY = 0;
+	_prevMouse.leftButton = 0;
+	_prevMouse.middleButton = 0;
+	_prevMouse.rightButton = 0;
+
 	return true;
 }
 
@@ -177,6 +189,25 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 		stick[1].button[0] = f->joy2.button1;
 		stick[1].button[1] = f->joy2.button2;
 	}
+
+	// Processing mouse inputs
+	if (f->mouse.posX != _prevMouse.posX || f->mouse.posY != _prevMouse.posY)
+	{
+		mouse.x = (double)mouse.min_x + ((double) f->mouse.posX / (double)MOUSE_MAX_X) * (double)mouse.max_x;
+		mouse.y = (double)mouse.min_y + ((double) f->mouse.posY / (double)MOUSE_MAX_Y) * (double)mouse.max_y;
+		Mouse_AddEvent(MOUSE_HAS_MOVED);
+	}
+
+	_prevMouse.posX = f->mouse.posX;
+	_prevMouse.posY = f->mouse.posY;
+
+	if (_prevMouse.leftButton == 0 && f->mouse.leftButton == 1)	{ Mouse_ButtonPressed(0); _prevMouse.leftButton = 1; }
+	if (_prevMouse.middleButton == 0 && f->mouse.middleButton == 1)	{ Mouse_ButtonPressed(2); _prevMouse.middleButton = 1; }
+	if (_prevMouse.rightButton == 0 && f->mouse.rightButton == 1)	{ Mouse_ButtonPressed(1);  _prevMouse.rightButton = 1; }
+
+	if (_prevMouse.leftButton == 1 && f->mouse.leftButton == 0)	{ Mouse_ButtonReleased(0); _prevMouse.leftButton = 0; }
+	if (_prevMouse.middleButton == 1 && f->mouse.middleButton == 0)	{ Mouse_ButtonReleased(2); _prevMouse.middleButton = 0; }
+	if (_prevMouse.rightButton == 1 && f->mouse.rightButton == 0)	{ Mouse_ButtonReleased(1); _prevMouse.rightButton = 0; }
 
  // Clearing audio sample buffer
 		_audioSamples.clear();

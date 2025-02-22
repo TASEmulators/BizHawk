@@ -31,9 +31,19 @@ typedef struct
 
 typedef struct
 {
+	int posX;
+	int posY;
+	int leftButton;
+	int middleButton;
+	int rightButton;
+} MouseInput;
+
+typedef struct
+{
 	FrameInfo base;
 	char Keys[KEY_COUNT];
 	DriveActions driveActions;
 	JoystickButtons joy1;
 	JoystickButtons joy2;
+	MouseInput mouse;
 } MyFrameInfo;
