@@ -714,6 +714,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"6A01FB7F185A45BAA21CC1EEDEB945CACA1C4D92", // Battle City (VS) [p1][!]
 			"D9B1B87204E025A637821A0168475E1209CE0C8A", // Top Gun (VS)
 			"4D5C2BF0B8EAA1690182D692A02BE1CC871481F4", // Punch-Out!! (E) (VS)
+			"3356604FC7F9A0E797266DDF75BED409B73996EC", // Super Mario All Stars NES ("2017") by infidelity on RHDN
+			"1739219B2D45C1BED0F1D4FA3E4E405985D564DC", // Super Mario All-Stars NES (crt_v10-15-17) by infidelity on RHDN
+			"E47FAE77EF57A5D2C8FB34C9EF38AC50B0B9FE7F", // Super Mario All-Stars NES (emu_v10-15-17) by infidelity on RHDN
 		};
 	}
 }
