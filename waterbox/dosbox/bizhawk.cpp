@@ -21,6 +21,7 @@ double ticksTarget;
 constexpr double ticksPerFrame = 1000.0 / __FPS__;
 uint32_t ticksElapsed;
 uint32_t _GetTicks() { return ticksElapsed; }
+void _Delay(uint32_t ticks) { ticksElapsed += ticks; 	co_switch(_driverCoroutine); }
 
 jaffarCommon::file::MemoryFileDirectory _memFileDirectory;
 std::set<KBD_KEYS> _prevPressedKeys;
@@ -66,7 +67,7 @@ bool loadFileIntoMemoryFileDirectory(const std::string& srcFile, const std::stri
 		return true;
 }
 
-ECL_EXPORT bool Init(int argc, char **argv)
+ECL_EXPORT bool Init()
 {
 	 // Loading HDD file into mem file directory
 		std::string hddSrcFile = "HardDiskDrive";
