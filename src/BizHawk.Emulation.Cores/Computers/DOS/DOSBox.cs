@@ -1,15 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using BizHawk.Common;
-using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Properties;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Waterbox;
-using static BizHawk.Emulation.Cores.Computers.DOS.LibDOSBox;
 
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
@@ -72,9 +69,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		{
 			_roms = lp.Roms;
 			_syncSettings = lp.SyncSettings ?? new();
-			_syncSettings.FloppyDrives = Math.Min(LibDOSBox.MAX_FLOPPIES, _syncSettings.FloppyDrives);
-			DeterministicEmulation = lp.DeterministicEmulationRequested || _syncSettings.FloppySpeed is FloppySpeed._100;
-			var filesToRemove = new List<string>();
 
 			DriveLightEnabled = false;
 
@@ -164,6 +158,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			// Converting to string
 			var configString = Encoding.UTF8.GetString(configData.ToArray());
+			configString += "\n";
+
+			// Adding joystick configuration
+			configString += "[joystick]\n";
+			if (_syncSettings.EnableJoystick1 || _syncSettings.EnableJoystick2) configString += "joysticktype = 2axis\n";
+			else configString += "joysticktype = none\n";
 
 			// Adding autoexec line
 			configString += "[autoexec]\n";
@@ -199,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			configString += "@echo on\n";
 			configString += "\n";
 
-			// Appending any additionaluser-provided config files
+			/////// Appending any additional user-provided config files
 			foreach (var file in ConfigFiles)
 			{
 				// Forcing a new line
@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				configData = configData.Concat(file.FileData);
 			}
 
-			// Adding single config file to the wbx
+			/////////////// Finalization: Adding single config file to the wbx
 			_exe.AddReadonlyFile(configData.ToArray(), FileNames.DOSBOX_CONF);
 			 Console.WriteLine("Configuration: {0}", System.Text.Encoding.Default.GetString(configData.ToArray()));
 
@@ -215,14 +215,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			var hddImageFile = Zstd.DecompressZstdStream(new MemoryStream(Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value)).ToArray();
 			_exe.AddReadonlyFile(hddImageFile, FileNames.HD);
 
-
-			if (!dosbox.Init())
+			if (!dosbox.Init(_syncSettings.EnableJoystick1, _syncSettings.EnableJoystick2, _syncSettings.EnableMouse))
 				throw new InvalidOperationException("Core rejected the rom!");
-
-			foreach (var f in filesToRemove)
-			{
-				_exe.RemoveReadonlyFile(f);
-			}
 
 			PostInit();
 
@@ -237,6 +231,21 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			fi.driveActions.insertFloppyDisk = -1;
 			fi.driveActions.insertCDROM = -1;
 			fi.driveActions.insertHardDiskDrive = -1;
+
+			// Setting joystick inputs
+			fi.joystick1.up      = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Up) ? 1 : 0;
+			fi.joystick1.down    = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Down) ? 1 : 0;
+			fi.joystick1.left    = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Left) ? 1 : 0;
+			fi.joystick1.right   = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Right) ? 1 : 0;
+			fi.joystick1.button1 = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Button1) ? 1 : 0;
+			fi.joystick1.button2 = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Button2) ? 1 : 0;
+
+			fi.joystick2.up      = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Up) ? 1 : 0;
+			fi.joystick2.down    = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Down) ? 1 : 0;
+			fi.joystick2.left    = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Left) ? 1 : 0;
+			fi.joystick2.right   = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Right) ? 1 : 0;
+			fi.joystick2.button1 = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Button1) ? 1 : 0;
+			fi.joystick2.button2 = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Button2) ? 1 : 0;
 
 			if (_floppyDiskCount > 0)
 			{

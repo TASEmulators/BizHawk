@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
@@ -8,22 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 {
 	public partial class DOSBox
 	{
-		private static readonly (string Name, LibDOSBox.AllButtons Button)[] _joystickMap = CreateJoystickMap();
 		private static readonly (string Name, LibDOSBox.DOSBoxKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
-
-		private static (string Name, LibDOSBox.AllButtons Value)[] CreateJoystickMap()
-		{
-			var joystickMap = new List<(string, LibDOSBox.AllButtons)>();
-			foreach (var b in Enum.GetValues(typeof(LibDOSBox.AllButtons)))
-			{
-				if (((short)b & LibDOSBox.JoystickMask) == 0)
-					continue;
-
-				var name = Enum.GetName(typeof(LibDOSBox.AllButtons), b)!.Replace('_', ' ');
-				joystickMap.Add((name, (LibDOSBox.AllButtons)b));
-			}
-			return joystickMap.ToArray();
-		}
 
 		private static (string Name, LibDOSBox.DOSBoxKeyboard Value)[] CreateKeyboardMap()
 		{
@@ -40,8 +24,18 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		private static ControllerDefinition CreateControllerDefinition(SyncSettings settings)
 		{
-			var controller = new ControllerDefinition("Amiga Controller");
+			var controller = new ControllerDefinition("DOSBox Controller");
 
+			// Adding joystick buttons
+			if (settings.EnableJoystick1)
+				foreach (var button in JoystickButtonCollection)
+					controller.BoolButtons.Add("P1 " + Inputs.Joystick + " " + button);
+
+			if (settings.EnableJoystick2)
+				foreach (var button in JoystickButtonCollection)
+					controller.BoolButtons.Add("P2 " + Inputs.Joystick + " " + button);
+
+			// Adding drive management buttons
 			controller.BoolButtons.AddRange(
 			[
 				Inputs.NextFloppyDisk, Inputs.NextCDROM, Inputs.NextHardDiskDrive
@@ -54,6 +48,26 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}
 
 			return controller.MakeImmutable();
+		}
+
+		private static string[] JoystickButtonCollection =
+		[
+			JoystickButtons.Up,
+			JoystickButtons.Down,
+			JoystickButtons.Left,
+			JoystickButtons.Right,
+			JoystickButtons.Button1,
+			JoystickButtons.Button2
+		];
+
+		private static class JoystickButtons
+		{
+			public const string Up = "Up";
+			public const string Down = "Down";
+			public const string Left = "Left";
+			public const string Right = "Right";
+			public const string Button1 = "Button1";
+			public const string Button2 = "Button2";
 		}
 
 		private static class Inputs
