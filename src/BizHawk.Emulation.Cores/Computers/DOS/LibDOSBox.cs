@@ -43,6 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public DriveActions driveActions;
 			public JoystickButtons joystick1;
 			public JoystickButtons joystick2;
+			public MouseInput mouse;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -63,6 +64,16 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public int button1;
 			public int button2;
 		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct MouseInput
+		{
+			public int posX;
+			public int posY;
+			public int leftButton;
+			public int middleButton;
+			public int rightButton;
+		};
 
 		// Follows enumeration in DOSBox-x
 		// DOSBox-x/source/base/core/include/keyboard.h

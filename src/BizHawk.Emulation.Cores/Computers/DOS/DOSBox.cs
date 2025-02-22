@@ -247,6 +247,13 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			fi.joystick2.button1 = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Button1) ? 1 : 0;
 			fi.joystick2.button2 = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Button2) ? 1 : 0;
 
+			// Setting mouse inputs
+			fi.mouse.posX = _syncSettings.EnableMouse ? controller.AxisValue(Inputs.Mouse + " " + MouseInputs.XAxis) : 0;
+			fi.mouse.posY = _syncSettings.EnableMouse ? controller.AxisValue(Inputs.Mouse + " " + MouseInputs.YAxis) : 0;
+			fi.mouse.leftButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.LeftButton) ? 1 : 0;
+			fi.mouse.middleButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.MiddleButton) ? 1 : 0;
+			fi.mouse.rightButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.RightButton) ? 1 : 0;
+
 			if (_floppyDiskCount > 0)
 			{
 				if (controller.IsPressed(Inputs.NextFloppyDisk))
