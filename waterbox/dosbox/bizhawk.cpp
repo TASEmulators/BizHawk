@@ -66,7 +66,7 @@ bool loadFileIntoMemoryFileDirectory(const std::string& srcFile, const std::stri
 		return true;
 }
 
-ECL_EXPORT bool Init(int argc, char **argv)
+ECL_EXPORT bool Init()
 {
 	 // Loading HDD file into mem file directory
 		std::string hddSrcFile = "HardDiskDrive";
