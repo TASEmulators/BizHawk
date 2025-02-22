@@ -276,17 +276,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 							}
 							break;
 						}
-					case LibDOSBox.ControllerType.CD32Joy:
-						{
-							foreach (var (name, button) in _cd32padMap)
-							{
-								if (controller.IsPressed($"P{port} {Inputs.Cd32Pad} {name}"))
-								{
-									currentPort.Buttons |= button;
-								}
-							}
-							break;
-						}
 					case LibDOSBox.ControllerType.Mouse:
 						{
 							if (controller.IsPressed($"P{port} {Inputs.MouseLeftButton}"))

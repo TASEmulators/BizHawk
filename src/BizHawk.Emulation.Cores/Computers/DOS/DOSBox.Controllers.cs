@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 	{
 		private LibDOSBox.ControllerType[] _ports { get; set; }
 		private static readonly (string Name, LibDOSBox.AllButtons Button)[] _joystickMap = CreateJoystickMap();
-		private static readonly (string Name, LibDOSBox.AllButtons Button)[] _cd32padMap = CreateCd32padMap();
 		private static readonly (string Name, LibDOSBox.DOSBoxKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
 
 		private static (string Name, LibDOSBox.AllButtons Value)[] CreateJoystickMap()
@@ -20,21 +19,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			foreach (var b in Enum.GetValues(typeof(LibDOSBox.AllButtons)))
 			{
 				if (((short)b & LibDOSBox.JoystickMask) == 0)
-					continue;
-
-				var name = Enum.GetName(typeof(LibDOSBox.AllButtons), b)!.Replace('_', ' ');
-				joystickMap.Add((name, (LibDOSBox.AllButtons)b));
-			}
-			return joystickMap.ToArray();
-		}
-
-		private static (string Name, LibDOSBox.AllButtons Value)[] CreateCd32padMap()
-		{
-			var joystickMap = new List<(string, LibDOSBox.AllButtons)>();
-			// ReSharper disable once LoopCanBeConvertedToQuery
-			foreach (var b in Enum.GetValues(typeof(LibDOSBox.AllButtons)))
-			{
-				if (((short)b & LibDOSBox.Cd32padMask) == 0)
 					continue;
 
 				var name = Enum.GetName(typeof(LibDOSBox.AllButtons), b)!.Replace('_', ' ');
@@ -76,14 +60,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 							}
 							break;
 						}
-					case LibDOSBox.ControllerType.CD32Joy:
-						{
-							foreach (var (name, _) in _cd32padMap)
-							{
-								controller.BoolButtons.Add($"P{port} {Inputs.Cd32Pad} {name}");
-							}
-							break;
-						}
 					case LibDOSBox.ControllerType.Mouse:
 						{
 							controller.BoolButtons.AddRange(
@@ -117,7 +93,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private static class Inputs
 		{
 			public const string Joystick = "Joystick";
-			public const string Cd32Pad = "CD32 pad";
 			public const string MouseLeftButton = "Mouse Left Button";
 			public const string MouseRightButton = "Mouse Right Button";
 			public const string MouseMiddleButton = "Mouse Middle Button";

@@ -84,32 +84,13 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public int MouseY;
 		}
 
-#if true
 		public enum ControllerType : int
 		{
 			None = 0,
 			[Display(Name = "Joystick")]
 			DJoy = 1,
-			Mouse = 2,
-			[Display(Name = "CD32 pad")]
-			CD32Joy = 3,
+			Mouse = 2
 		}
-#else //TODO matches upstream -- requires unmanaged change
-		public enum ControllerType : int
-		{
-			None = 0,
-			Mouse = 1,
-//			MouseNoWheel,
-			[Display(Name = "Joystick")]
-			DJoy = 3,
-//			Gamepad,
-//			AJoy,
-//			CDTVJoy,
-			[Display(Name = "CD32 pad")]
-			CD32Joy = 7,
-//			Lightpen,
-		}
-#endif
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct DriveActions
