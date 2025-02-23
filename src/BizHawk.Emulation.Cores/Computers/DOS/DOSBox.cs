@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				ConfigurationPreset.Early90s => Resources.DOSBOX_CONF_EARLY90S.Value,
 				ConfigurationPreset.Mid90s => Resources.DOSBOX_CONF_MID90S.Value,
 				ConfigurationPreset.Late90s => Resources.DOSBOX_CONF_LATE90S.Value,
-				_ => []
+				_ => [ ]
 			});
 			configString += "\n";
 
