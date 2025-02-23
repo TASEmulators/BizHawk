@@ -35,7 +35,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		// Drive management variables
 		private bool _nextFloppyDiskPressed = false;
 		private bool _nextCDROMPressed = false;
-		private bool _nextHardDiskDrivePressed = false;
 		private List<IRomAsset> _floppyDiskImageFiles = new List<IRomAsset>();
 		private List<IRomAsset> _CDROMDiskImageFiles = new List<IRomAsset>();
 		private int _floppyDiskCount = 0;
