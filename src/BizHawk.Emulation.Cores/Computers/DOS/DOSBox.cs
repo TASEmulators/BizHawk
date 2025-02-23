@@ -111,18 +111,15 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}, new Delegate[] { });
 
 			// Getting base config file
-			IEnumerable<byte> configData = [ ];
-			switch (_syncSettings.ConfigurationPreset)
+			var configString = Encoding.UTF8.GetString(_syncSettings.ConfigurationPreset switch
 			{
-				case ConfigurationPreset.Early80s: configData = new MemoryStream(Resources.DOSBOX_CONF_EARLY80S.Value).ToArray(); break;
-				case ConfigurationPreset.Late80s: configData = new MemoryStream(Resources.DOSBOX_CONF_LATE80S.Value).ToArray(); break;
-				case ConfigurationPreset.Early90s: configData = new MemoryStream(Resources.DOSBOX_CONF_EARLY90S.Value).ToArray(); break;
-				case ConfigurationPreset.Mid90s: configData = new MemoryStream(Resources.DOSBOX_CONF_MID90S.Value).ToArray(); break;
-				case ConfigurationPreset.Late90s: configData = new MemoryStream(Resources.DOSBOX_CONF_LATE90S.Value).ToArray(); break;
-			}
-
-			// Converting to string
-			var configString = Encoding.UTF8.GetString(configData.ToArray());
+				ConfigurationPreset.Early80s => Resources.DOSBOX_CONF_EARLY80S.Value,
+				ConfigurationPreset.Late80s => Resources.DOSBOX_CONF_LATE80S.Value,
+				ConfigurationPreset.Early90s => Resources.DOSBOX_CONF_EARLY90S.Value,
+				ConfigurationPreset.Mid90s => Resources.DOSBOX_CONF_MID90S.Value,
+				ConfigurationPreset.Late90s => Resources.DOSBOX_CONF_LATE90S.Value,
+				_ => []
+			});
 			configString += "\n";
 
 			// Adding joystick configuration
@@ -205,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			/////////////// Configuration End: Adding single config file to the wbx
 
 			// Reconverting config to byte array
-			configData = Encoding.UTF8.GetBytes(configString);
+			IEnumerable<byte> configData = Encoding.UTF8.GetBytes(configString);
 
 			// Adding EOL
 			configString += "@echo on\n";
