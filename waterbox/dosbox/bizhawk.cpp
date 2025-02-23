@@ -73,6 +73,10 @@ bool loadFileIntoMemoryFileDirectory(const std::string& srcFile, const std::stri
 		return true;
 }
 
+// Drive activity monitoring
+bool _driveUsed = false;
+ECL_EXPORT bool getDriveActivityFlag() { return _driveUsed; }
+
 // SRAM Management
 constexpr char writableHDDSrcFile[] = "__WritableHardDiskDrive";
 constexpr char writableHDDDstFile[] = "__WritableHardDiskDrive.img";
@@ -138,6 +142,9 @@ ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEna
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
+	// Clearing drive use flag
+	_driveUsed = false;
+
  // Processing keyboard inputs
 	_releasedKeys.clear();
 	_pressedKeys.clear();
