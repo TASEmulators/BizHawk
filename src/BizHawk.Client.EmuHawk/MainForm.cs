@@ -968,7 +968,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_x11Display != IntPtr.Zero)
 				{
-					XlibImports.XCloseDisplay(_x11Display);
+					_ = XlibImports.XCloseDisplay(_x11Display);
 					_x11Display = IntPtr.Zero;
 				}
 			}
