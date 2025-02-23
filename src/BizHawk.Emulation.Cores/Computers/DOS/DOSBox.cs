@@ -30,11 +30,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			DefaultFpsNumerator = LibDOSBox.VIDEO_NUMERATOR_NTSC,
 			DefaultFpsDenominator = LibDOSBox.VIDEO_DENOMINATOR_NTSC
 		};
-		
-		private readonly LibWaterboxCore.EmptyCallback _ledCallback;
+
 		private readonly List<IRomAsset> _roms;
 		private const int _messageDuration = 4;
-		private const int _driveNullOrEmpty = -1;
 
 		// Drive management variables
 		private bool _nextFloppyDiskPressed = false;
@@ -46,20 +44,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private int _CDROMCount = 0;
 		private int _currentFloppyDisk = 0;
 		private int _currentCDROM = 0;
-		private int _correctedWidth;
-		private string _chipsetCompatible = "";
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
 
-		public override int VirtualWidth => _correctedWidth;
+		public override int VirtualWidth => LibDOSBox.SVGA_MAX_WIDTH;
 		private LibDOSBox _libDOSBox;
 
 		// Image selection / swapping variables
-
-
-		private void LEDCallback()
-		{
-			DriveLightOn = true;
-		}
 
 		[CoreConstructor(VSystemID.Raw.DOS)]
 		public DOSBox(CoreLoadParameters<object, SyncSettings> lp)
@@ -68,11 +58,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_roms = lp.Roms;
 			_syncSettings = lp.SyncSettings ?? new();
 
+			VsyncNumerator = LibDOSBox.VIDEO_NUMERATOR_PAL;
+			VsyncDenominator = LibDOSBox.VIDEO_DENOMINATOR_PAL;
 			DriveLightEnabled = false;
-
-			UpdateVideoStandard(true);
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
-			_ledCallback = LEDCallback;
 
 			// Parsing input files
 			var ConfigFiles = new List<IRomAsset>();
@@ -140,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				MmapHeapSizeKB = 4 * 1024 * 32 + (uint) (writableHDDImageFileSize / 1024ul),
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { _ledCallback });
+			}, new Delegate[] { });
 
 			// Getting base config file
 			IEnumerable<byte> configData = [];
@@ -260,7 +249,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			PostInit();
 
-			//dosbox.SetLEDCallback(_syncSettings.FloppyDrives > 0 ? _ledCallback : null);
+			DriveLightEnabled = false;
+			if (_syncSettings.WriteableHardDisk != WriteableHardDiskOptions.None) DriveLightEnabled = true;
+			if (_floppyDiskCount > 0) DriveLightEnabled = true;
+			if (_CDROMCount > 0) DriveLightEnabled = true;
 		}
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
@@ -338,7 +330,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		protected override void FrameAdvancePost()
 		{
-			UpdateVideoStandard(false);
+			DriveLightOn = _libDOSBox.getDriveActivityFlag();
 		}
 
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
@@ -355,13 +347,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_nextCDROMPressed = reader.ReadBoolean();
 			_currentFloppyDisk = reader.ReadInt32();
 			_currentCDROM = reader.ReadInt32();
-		}
-
-		private void UpdateVideoStandard(bool initial)
-		{
-				_correctedWidth = LibDOSBox.SVGA_MAX_WIDTH;
-				VsyncNumerator = LibDOSBox.VIDEO_NUMERATOR_PAL;
-				VsyncDenominator = LibDOSBox.VIDEO_DENOMINATOR_PAL;
 		}
 
 		private static class FileNames

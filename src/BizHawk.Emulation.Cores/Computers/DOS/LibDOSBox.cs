@@ -42,8 +42,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		[BizImport(CC, Compatibility = true)]
 		public abstract void set_sram(IntPtr sramBuffer);
 
-		[BizImport(CC)]
-		public abstract void SetLEDCallback(EmptyCallback callback);
+		[BizImport(CC, Compatibility = true)]
+		public abstract bool getDriveActivityFlag();
 
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
