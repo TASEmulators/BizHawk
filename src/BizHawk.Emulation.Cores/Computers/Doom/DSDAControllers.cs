@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			"Strafe Left",
 			"Strafe Right",
 			"Run",
+			"Automap",
 			"Weapon Select 1",
 			"Weapon Select 2",
 			"Weapon Select 3",
@@ -74,6 +75,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			if (c.IsPressed($"P{PortNum} Fire")) { result |= 0b0001; }
 			if (c.IsPressed($"P{PortNum} Use")) { result |= 0b0010; }
 			if (c.IsPressed($"P{PortNum} Alt Weapon")) { result |= 0b0100; }
+			if (c.IsPressed($"P{PortNum} Automap")) { result |= 0b1000; }
 
 			return result;
 		}
