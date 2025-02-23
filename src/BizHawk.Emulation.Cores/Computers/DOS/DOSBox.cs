@@ -66,36 +66,28 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Parsing rom files
 			foreach (var file in _roms)
 			{
+				var ext = file.RomPath.Substring(startIndex: file.RomPath.LastIndexOf('.')).ToLowerInvariant();
 				bool recognized = false;
 
 				// Checking for supported floppy disk extensions
-				if (file.RomPath.EndsWith(".ima", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".img", StringComparison.OrdinalIgnoreCase) || 
-					file.RomPath.EndsWith(".xdf", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".dmf", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".fdd", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".fdi", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".nfd", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".d88", StringComparison.OrdinalIgnoreCase))
+				if (ext is "ima" or "img" or "xdf" or "dmf" or "fdd" or "fdi" or "nfd" or "d88")
 				{
 					_floppyDiskImageFiles.Add(file);
 					recognized = true;
 				}
-
 				// Checking for supported CD-ROM extensions
-				if (file.RomPath.EndsWith(".dosbox-iso", StringComparison.OrdinalIgnoreCase) || // Temporary to circumvent BK's detection of isos as discs (not roms)
-					file.RomPath.EndsWith(".dosbox-cue", StringComparison.OrdinalIgnoreCase) || // Must be accompanied by a bin file
-					file.RomPath.EndsWith(".dosbox-bin", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".dosbox-mdf", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".dosbox-chf", StringComparison.OrdinalIgnoreCase))
+				else if (ext is "dosbox-iso" // Temporary to circumvent BK's detection of isos as discs (not roms)
+					or "dosbox-cue" // Must be accompanied by a bin file
+					or "dosbox-bin"
+					or "dosbox-mdf"
+					or "dosbox-chf")
 				{
 					Console.WriteLine("Added CDROM Image");
 					_CDROMDiskImageFiles.Add(file);
 					recognized = true;
 				}
-
 				// Checking for DOSBox-x config files
-				if (file.RomPath.EndsWith(".conf", StringComparison.OrdinalIgnoreCase))
+				else if (ext is "conf")
 				{
 					ConfigFiles.Add(file);
 					recognized = true;
