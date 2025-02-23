@@ -5,9 +5,7 @@ using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Waterbox;
-using Jellyfish.Virtu;
 
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
@@ -132,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}, new Delegate[] { });
 
 			// Getting base config file
-			IEnumerable<byte> configData = [];
+			IEnumerable<byte> configData = [ ];
 			switch (_syncSettings.ConfigurationPreset)
 			{
 				case ConfigurationPreset.Early80s: configData = new MemoryStream(Resources.DOSBOX_CONF_EARLY80S.Value).ToArray(); break;

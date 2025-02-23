@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -85,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public int leftButton;
 			public int middleButton;
 			public int rightButton;
-		};
+		}
 
 		// Follows enumeration in DOSBox-x
 		// DOSBox-x/source/base/core/include/keyboard.h
