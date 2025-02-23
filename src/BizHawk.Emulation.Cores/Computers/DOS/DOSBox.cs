@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		name: CoreNames.DOSBox,
 		author: "Jonathan Campbell et al.",
 		portedVersion: "2025.02.01 (324193b)",
-		portedUrl: "https://github.com/TASEmulators/dosbox-x",
-		isReleased: true)]
+		portedUrl: "https://github.com/joncampbell123/dosbox-x",
+		isReleased: false)]
 	public partial class DOSBox : WaterboxCore
 	{
 		private static readonly Configuration DefaultConfig = new Configuration
