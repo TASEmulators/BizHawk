@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			_cachedSettingsInfo ??= SettingsInfo.Clone();
 		}
 
-		public new bool SaveRamModified
+		public override bool SaveRamModified
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			}
 		}
 
-		public new byte[] CloneSaveRam(bool clearDirty)
+		public override byte[] CloneSaveRam(bool clearDirty)
 		{
 			_exe.AddTransientFile(Array.Empty<byte>(), "SAV:flash");
 
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			return _exe.RemoveTransientFile("SAV:flash");
 		}
 
-		public new void StoreSaveRam(byte[] data)
+		public override void StoreSaveRam(byte[] data)
 		{
 			_exe.AddTransientFile(data, "SAV:flash");
 			if (!_neopop.PutSaveRam())

@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private WaterboxMemoryDomain[] _saveramAreas;
 		private int _saveramSize;
 
-		public unsafe bool SaveRamModified
+		public virtual unsafe bool SaveRamModified
 		{
 			get
 			{
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public byte[] CloneSaveRam(bool clearDirty)
+		public virtual byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (_saveramSize == 0)
 				return null;
@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public void StoreSaveRam(byte[] data)
+		public virtual void StoreSaveRam(byte[] data)
 		{
 			// Checking if the size of the SaveRAM provided coincides with that expected. This is important for cores whose SaveRAM size can vary depending on their configuration.
 			if (data.Length != _saveramSize)

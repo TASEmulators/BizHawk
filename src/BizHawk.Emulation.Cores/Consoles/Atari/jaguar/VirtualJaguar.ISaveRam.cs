@@ -6,9 +6,9 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 	{
 		private readonly int _saveRamSize;
 
-		public new bool SaveRamModified => _saveRamSize > 0 && _core.SaveRamIsDirty();
+		public override bool SaveRamModified => _saveRamSize > 0 && _core.SaveRamIsDirty();
 
-		public new byte[] CloneSaveRam(bool clearDirty)
+		public override byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (_saveRamSize == 0)
 			{
@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			return ret;
 		}
 
-		public new void StoreSaveRam(byte[] data)
+		public override void StoreSaveRam(byte[] data)
 		{
 			if (_saveRamSize > 0)
 			{
