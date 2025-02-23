@@ -97,20 +97,21 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		private DoomSettings _settings;
 		private DoomSyncSettings _syncSettings;
+		private DoomSyncSettings _finalSyncSettings;
 
 		public DoomSettings GetSettings()
 			=> _settings.Clone();
 
 		public DoomSyncSettings GetSyncSettings()
-			=> _syncSettings.Clone();
+			=> _finalSyncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(object o)
 			=> PutSettingsDirtyBits.None;
 
 		public PutSettingsDirtyBits PutSyncSettings(DoomSyncSettings o)
 		{
-			var ret = DoomSyncSettings.NeedsReboot(_syncSettings, o);
-			_syncSettings = o;
+			var ret = DoomSyncSettings.NeedsReboot(_finalSyncSettings, o);
+			_finalSyncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
