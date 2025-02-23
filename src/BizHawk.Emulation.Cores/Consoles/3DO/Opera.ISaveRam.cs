@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 {
 	public partial class Opera : ISaveRam
 	{
-		public new bool SaveRamModified
+		public override bool SaveRamModified
 		{
 			get
 			{
@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 			}
 		}
 
-		public new byte[] CloneSaveRam()
+		public override byte[] CloneSaveRam()
 		{
 			var sramSize = _libOpera.get_sram_size();
 			Console.WriteLine("SRAM Size {0}", sramSize);
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 			return sramArray;
 		}
 
-		public new void StoreSaveRam(byte[] data)
+		public override void StoreSaveRam(byte[] data)
 		{
 			unsafe
 			{
