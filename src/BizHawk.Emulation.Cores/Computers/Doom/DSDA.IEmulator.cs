@@ -77,11 +77,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					if (controller.IsPressed($"P{i + 1} Turn Left")) players[i]._TurningSpeed = turnSpeed;
 
 					// mouse-driven running
-					players[i]._RunSpeed -= (int)((float)potReaders[i](controller, 4) * (float)_syncSettings.MouseRunSensitivity / 6.0);
+					players[i]._RunSpeed -= (int)(potReaders[i](controller, 4) * _syncSettings.MouseRunSensitivity / 6.0);
 					players[i]._RunSpeed = players[i]._RunSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
 					// mouse-driven turning
-					players[i]._TurningSpeed -= (int)((float)potReaders[i](controller, 5) * (float)_syncSettings.MouseTurnSensitivity / 300.0);
+					players[i]._TurningSpeed -= (int)(potReaders[i](controller, 5) * _syncSettings.MouseTurnSensitivity / 300.0);
 					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
 					{
 						players[i]._TurningSpeed >>= 8;
