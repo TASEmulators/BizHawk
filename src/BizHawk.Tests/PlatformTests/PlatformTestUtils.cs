@@ -1,4 +1,6 @@
+#if !SKIP_PLATFORM_TESTS
 using BizHawk.Common;
+#endif
 
 namespace BizHawk.Tests
 {
