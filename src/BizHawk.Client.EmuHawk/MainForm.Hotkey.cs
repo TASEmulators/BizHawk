@@ -149,6 +149,9 @@ namespace BizHawk.Client.EmuHawk
 				case "Accept Background Input":
 					ToggleBackgroundInput();
 					break;
+				case "Capture Mouse":
+					ToggleCaptureMouse();
+					break;
 
 				// Save States
 				case "Save State 1":

@@ -856,6 +856,8 @@ namespace BizHawk.Client.EmuHawk
 				return _exitCode;
 			}
 
+			LockMouse(Config.CaptureMouse);
+
 			// incantation required to get the program reliably on top of the console window
 			// we might want it in ToggleFullscreen later, but here, it needs to happen regardless
 			BringToFront();
@@ -2313,7 +2315,7 @@ namespace BizHawk.Client.EmuHawk
 				|| Math.Abs(_lastMouseAutoHidePos.X - mousePos.X) > 5
 				|| Math.Abs(_lastMouseAutoHidePos.Y - mousePos.Y) > 5;
 
-			if (!shouldUpdateCursor)
+			if (!shouldUpdateCursor || Config.CaptureMouse)
 			{
 				return;
 			}
@@ -2801,6 +2803,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Config.AcceptBackgroundInput = !Config.AcceptBackgroundInput;
 			AddOnScreenMessage($"Background Input {(Config.AcceptBackgroundInput ? "enabled" : "disabled")}");
+		}
+
+		private void ToggleCaptureMouse()
+		{
+			Config.CaptureMouse = !Config.CaptureMouse;
+			LockMouse(Config.CaptureMouse);
+			AddOnScreenMessage($"Capture Mouse {(Config.CaptureMouse ? "enabled" : "disabled")}");
 		}
 
 		private void VsyncMessage()
@@ -4826,10 +4835,16 @@ namespace BizHawk.Client.EmuHawk
 				var fbLocation = Point.Subtract(Bounds.Location, new(PointToClient(Location)));
 				fbLocation.Offset(_presentationPanel.Control.Location);
 				Cursor.Clip = new(fbLocation, _presentationPanel.Control.Size);
+				Cursor.Hide();
+				_presentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
+				_cursorHidden = true;
 			}
 			else
 			{
 				Cursor.Clip = Rectangle.Empty;
+				Cursor.Show();
+				_presentationPanel.Control.Cursor = Cursors.Default;
+				_cursorHidden = false;
 			}
 
 			// Cursor.Clip is a no-op on Linux, so we need this too
