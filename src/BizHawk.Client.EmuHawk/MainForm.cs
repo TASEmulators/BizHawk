@@ -962,6 +962,15 @@ namespace BizHawk.Client.EmuHawk
 				SingleInstanceDispose();
 			}
 
+			if (OSTailoredCode.IsUnixHost)
+			{
+				if (_x11Display != IntPtr.Zero)
+				{
+					XlibImports.XCloseDisplay(_x11Display);
+					_x11Display = IntPtr.Zero;
+				}
+			}
+
 			base.Dispose(disposing);
 		}
 
@@ -4806,6 +4815,51 @@ namespace BizHawk.Client.EmuHawk
 				});
 
 			RA?.Restart();
+		}
+
+		private IntPtr _x11Display;
+
+		public void LockMouse(bool wantLock)
+		{
+			if (wantLock)
+			{
+				var fbLocation = Point.Subtract(Bounds.Location, new(PointToClient(Location)));
+				fbLocation.Offset(_presentationPanel.Control.Location);
+				Cursor.Clip = new(fbLocation, _presentationPanel.Control.Size);
+			}
+			else
+			{
+				Cursor.Clip = Rectangle.Empty;
+			}
+
+			// Cursor.Clip is a no-op on Linux, so we need this too
+			if (OSTailoredCode.IsUnixHost)
+			{
+				if (_x11Display == IntPtr.Zero)
+				{
+					_x11Display = XlibImports.XOpenDisplay(null);
+				}
+
+				if (wantLock)
+				{
+					const XlibImports.EventMask eventMask = XlibImports.EventMask.ButtonPressMask | XlibImports.EventMask.ButtonMotionMask
+						| XlibImports.EventMask.ButtonReleaseMask | XlibImports.EventMask.PointerMotionMask
+						| XlibImports.EventMask.PointerMotionHintMask | XlibImports.EventMask.LeaveWindowMask;
+					var grabResult = XlibImports.XGrabPointer(_x11Display, Handle, false, eventMask,
+						XlibImports.GrabMode.Async, XlibImports.GrabMode.Async, Handle, IntPtr.Zero, XlibImports.CurrentTime);
+					if (grabResult == XlibImports.GrabResult.AlreadyGrabbed)
+					{
+						// try to grab again after releasing whatever current active grab
+						_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime);
+						_ = XlibImports.XGrabPointer(_x11Display, Handle, false, eventMask,
+							XlibImports.GrabMode.Async, XlibImports.GrabMode.Async, Handle, IntPtr.Zero, XlibImports.CurrentTime);
+					}
+				}
+				else
+				{
+					_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime);
+				}
+			}
 		}
 	}
 }

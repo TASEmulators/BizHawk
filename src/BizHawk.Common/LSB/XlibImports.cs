@@ -138,6 +138,62 @@ namespace BizHawk.Common
 		[DllImport(XLIB)]
 		public static extern int XFreeEventData(IntPtr display, ref XGenericEventCookie cookie);
 
+		[Flags]
+		public enum EventMask : uint
+		{
+			NoEventMask = 0,
+			KeyPressMask = 1 << 0,
+			KeyReleaseMask = 1 << 1,
+			ButtonPressMask = 1 << 2,
+			ButtonReleaseMask = 1 << 3,
+			EnterWindowMask = 1 << 4,
+			LeaveWindowMask = 1 << 5,
+			PointerMotionMask = 1 << 6,
+			PointerMotionHintMask = 1 << 7,
+			Button1MotionMask = 1 << 8,
+			Button2MotionMask = 1 << 9,
+			Button3MotionMask = 1 << 10,
+			Button4MotionMask = 1 << 11,
+			Button5MotionMask = 1 << 12,
+			ButtonMotionMask = 1 << 13,
+			KeymapStateMask = 1 << 14,
+			ExposureMask = 1 << 15,
+			VisibilityChangeMask = 1 << 16,
+			StructureNotifyMask = 1 << 17,
+			ResizeRedirectMask = 1 << 18,
+			SubstructureNotifyMask = 1 << 19,
+			SubstructureRedirectMask= 1 << 20,
+			FocusChangeMask = 1 << 21,
+			PropertyChangeMask = 1 << 22,
+			ColormapChangeMask = 1 << 23,
+			OwnerGrabButtonMask = 1 << 24
+		}
+
+		public enum GrabMode : int
+		{
+			Sync = 0,
+			Async = 1,
+		}
+
+		// special Time
+		public const uint CurrentTime = 0;
+
+		public enum GrabResult : int
+		{
+			GrabSuccess = 0,
+			AlreadyGrabbed = 1,
+			GrabInvalidTime = 2,
+			GrabNotViewable = 3,
+			GrabFrozen = 4,
+		}
+
+		[DllImport(XLIB)]
+		public static extern GrabResult XGrabPointer(IntPtr display, IntPtr grab_window, [MarshalAs(UnmanagedType.Bool)] bool owner_events,
+			EventMask event_mask, GrabMode pointer_mode, GrabMode keyboard_mode, IntPtr confine_to, IntPtr cursor, nuint time);
+
+		[DllImport(XLIB)]
+		public static extern int XUngrabPointer(IntPtr display, nuint time);
+
 		[DllImport(XLIB)]
 		public static extern unsafe int XQueryKeymap(IntPtr display, byte* keys_return);
 
