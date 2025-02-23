@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 {
 	public partial class DOSBox : ISaveRam
 	{
-		public new bool SaveRamModified
+		public override bool SaveRamModified
 		{
 			get
 			{
@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}
 		}
 
-		public new byte[] CloneSaveRam()
+		public override byte[] CloneSaveRam()
 		{
 			var sramSize = _libDOSBox.get_sram_size();
 			Console.WriteLine("SRAM Size {0}", sramSize);
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			return sramArray;
 		}
 
-		public new void StoreSaveRam(byte[] data)
+		public override void StoreSaveRam(byte[] data)
 		{
 			unsafe
 			{
