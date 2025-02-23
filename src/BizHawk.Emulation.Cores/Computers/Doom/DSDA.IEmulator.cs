@@ -58,28 +58,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					players[i]._AltWeapon = (actionsBitfield & 0b00100) >> 2;
 
 					// Handling mouse-driven running
-					int mouseRunningSpeed = potReaders[i](controller, 4);
-					if (_lastMouseRunningValues[i] > MOUSE_NO_INPUT)
-					{
-						int mouseRunningDelta = _lastMouseRunningValues[i] - mouseRunningSpeed;
-						players[i]._RunSpeed += mouseRunningDelta * _syncSettings.MouseRunSensitivity;
-						if (players[i]._RunSpeed > 50) players[i]._RunSpeed = 50;
-						if (players[i]._RunSpeed < -50) players[i]._RunSpeed = -50;
-					}
-					_lastMouseRunningValues[i] = mouseRunningSpeed;
+					players[i]._RunSpeed -= (int)((float)potReaders[i](controller, 4) * (float)_syncSettings.MouseRunSensitivity / 6.0);
+					if (players[i]._RunSpeed > 50) players[i]._RunSpeed = 50;
+					if (players[i]._RunSpeed < -50) players[i]._RunSpeed = -50;
 
 					// Handling mouse-driven turning
-					int mouseTurningSpeed = potReaders[i](controller, 5);
-					if (_lastMouseTurningValues[i] > MOUSE_NO_INPUT)
+					players[i]._TurningSpeed -= (int)((float)potReaders[i](controller, 5) * (float)_syncSettings.MouseTurnSensitivity / 300.0);
+					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
 					{
-						int mouseTurningDelta = _lastMouseTurningValues[i] - mouseTurningSpeed;
-						players[i]._TurningSpeed += mouseTurningDelta * _syncSettings.MouseTurnSensitivity;
-						if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
-						{
-							players[i]._TurningSpeed >>= 8;
-						}
+						players[i]._TurningSpeed >>= 8;
 					}
-					_lastMouseTurningValues[i] = mouseTurningSpeed;
 
 					// Raven Games
 					if (_syncSettings.InputFormat is DoomControllerTypes.Heretic or DoomControllerTypes.Hexen)

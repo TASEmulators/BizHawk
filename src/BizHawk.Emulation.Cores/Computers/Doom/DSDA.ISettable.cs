@@ -279,15 +279,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(false)]
 			public bool PreventGameEnd { get; set; }
 
-			[DisplayName("Mouse Running Sensitivity")]
-			[Description("How fast the Doom player will run when using the mouse")]
+			[DisplayName("Mouse Horizontal Sensitivity")]
+			[Description("How fast the Doom player will turn when using the mouse.")]
 			[DefaultValue(10)]
-			public int MouseRunSensitivity { get; set; }
-
-			[DisplayName("Mouse Turning Sensitivity")]
-			[Description("How fast the Doom player will turn when using the mouse")]
-			[DefaultValue(1)]
 			public int MouseTurnSensitivity { get; set; }
+
+			[DisplayName("Mouse Vertical Sensitivity")]
+			[Description("How fast the Doom player will run when using the mouse.")]
+			[DefaultValue(1)]
+			public int MouseRunSensitivity { get; set; }
 
 			public CInterface.InitSettings GetNativeSettings(GameInfo game)
 			{
