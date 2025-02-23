@@ -381,7 +381,7 @@ namespace BizHawk.Emulation.Cores
 			{ "G64", new ExtensionInfo(FileIDType.C64, null ) },
 			{ "CRT", new ExtensionInfo(FileIDType.C64, null ) },
 			{ "NIB", new ExtensionInfo(FileIDType.C64, null ) }, //not supported yet
-
+			
 			// Doom IWad / PWad
 			{ "WAD", new ExtensionInfo(FileIDType.WAD, null ) },
 
