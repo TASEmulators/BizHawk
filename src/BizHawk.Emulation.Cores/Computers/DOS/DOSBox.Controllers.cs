@@ -76,8 +76,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public const string Down = "Down";
 			public const string Left = "Left";
 			public const string Right = "Right";
-			public const string Button1 = "Button1";
-			public const string Button2 = "Button2";
+			public const string Button1 = "Button 1";
+			public const string Button2 = "Button 2";
 		}
 
 		private static class MouseInputs

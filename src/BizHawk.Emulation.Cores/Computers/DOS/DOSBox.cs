@@ -7,6 +7,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Waterbox;
+using Jellyfish.Virtu;
 
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
@@ -210,7 +211,21 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				_exe.AddReadonlyFile(writableHDDImageData, FileNames.WHD);
 				configString += "imgmount c " + FileNames.WHD + ".img\n";
 			}
-			
+
+			//// CPU (core) configuration
+			configString += "[cpu]\n";
+			if (_syncSettings.CPUCycles != -1) configString += $"cycles = {_syncSettings.CPUCycles}";
+			if (_syncSettings.CPUCycles != -1) configString += $"cycles = {_syncSettings.CPUCycles}";
+
+
+			//// DOSBox-x configuration
+			configString += "[dosbox]\n";
+			if (_syncSettings.MachineType != MachineType.Auto)
+			{
+				var machineName = Enum.GetName(typeof(MachineType), _syncSettings.MachineType)!.Replace('P', '+');
+				configString += $"machine = {machineName}\n";
+			}
+
 
 			/////////////// Configuration End: Adding single config file to the wbx
 

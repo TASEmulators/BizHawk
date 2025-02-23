@@ -40,6 +40,60 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			FAT32_4091Mb,
 		}
 
+		public enum MachineType
+		{
+			Auto,
+			mda,
+			cga,
+			cga_mono,
+			cga_rgb,
+			cga_composite,
+			cga_composite2,
+			hercules,
+			hercules_plus,
+			hercules_incolor,
+			hercules_color,
+			tandy,
+			pcjr,
+			pcjr_composite,
+			pcjr_composite2,
+			amstrad,
+			ega,
+			ega200,
+			jega,
+			mcga,
+			vgaonly,
+			svga_s3,
+			svga_s386c928,
+			svga_s3vision864,
+			svga_s3vision868,
+			svga_s3vision964,
+			svga_s3vision968,
+			svga_s3trio32,
+			svga_s3trio64,
+			svga_s3trio64vP,
+			svga_s3virge,
+			svga_s3virgevx,
+			svga_et3000,
+			svga_et4000,
+			svga_paradise,
+			vesa_nolfb,
+			vesa_oldvbe,
+			vesa_oldvbe10,
+			pc98,
+			pc9801,
+			pc9821,
+			svga_ati_egavgawonder,
+			svga_ati_vgawonder,
+			svga_ati_vgawonderplus,
+			svga_ati_vgawonderxl,
+			svga_ati_vgawonderxl24,
+			svga_ati_mach8,
+			svga_ati_mach32,
+			svga_ati_mach64,
+			fm_towns
+		}
+
 
 		public object GetSettings() => null;
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
@@ -84,6 +138,16 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[DefaultValue(WriteableHardDiskOptions.FAT16_241Mb)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public WriteableHardDiskOptions WriteableHardDisk { get; set; }
+
+			[DisplayName("CPU Cycles")]
+			[Description("How many CPU cycles to emulate per ms. Default: -1, to keep the one included in the configuration preset.")]
+			[DefaultValue(-1)]
+			public int CPUCycles { get; set; }
+
+			[DisplayName("Machine Type")]
+			[Description("Chooses the machine type (CPU/GPU) to emulate. Auto uses the configuration preset's default.")]
+			[DefaultValue(MachineType.Auto)]
+			public MachineType MachineType { get; set; }
 
 			public SyncSettings()
 				=> SettingsUtil.SetDefaultValues(this);

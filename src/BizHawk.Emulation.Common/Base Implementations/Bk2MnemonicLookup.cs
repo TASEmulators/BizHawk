@@ -805,6 +805,17 @@ namespace BizHawk.Emulation.Common
 			},
 			[VSystemID.Raw.DOS] = new()
 			{
+				["Joystick Button 1"] = '1',
+				["Joystick Button 2"] = '2',
+				["Joystick Up"] = 'U',
+				["Joystick Down"] = 'D',
+				["Joystick Left"] = 'L',
+				["Joystick Right"] = 'R',
+				["Mouse Left Button"] = 'l',
+				["Mouse Middle Button"] = 'm',
+				["Mouse Right Button"] = 'r',
+				["Next Floppy Disk"] = '>',
+				["Next CDROM"] = '>',
 				["1"] = '1',
 				["2"] = '2',
 				["3"] = '3',
