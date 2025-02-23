@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
 
 		public override int VirtualWidth => _correctedWidth;
+		private LibDOSBox _libDOSBox;
 
 		// Image selection / swapping variables
 
@@ -129,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				_ => 0
 			};
 
-			var dosbox = PreInit<LibDOSBox>(new WaterboxOptions
+			_libDOSBox = PreInit<LibDOSBox>(new WaterboxOptions
 			{
 				Filename = "dosbox.wbx",
 				SbrkHeapSizeKB = 4 * 1024 * 32,
@@ -254,7 +255,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Console.WriteLine("Configuration: {0}", System.Text.Encoding.Default.GetString(configData.ToArray()));
 
 			////////////// Initializing Core
-			if (!dosbox.Init(_syncSettings.EnableJoystick1, _syncSettings.EnableJoystick2, _syncSettings.EnableMouse, writableHDDImageFileSize))
+			if (!_libDOSBox.Init(_syncSettings.EnableJoystick1, _syncSettings.EnableJoystick2, _syncSettings.EnableMouse, writableHDDImageFileSize))
 				throw new InvalidOperationException("Core rejected the rom!");
 
 			PostInit();
