@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Common;
+﻿using BizHawk.Common.NumberExtensions;
+using BizHawk.Emulation.Common;
 using static BizHawk.Emulation.Cores.Computers.Doom.CInterface;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
@@ -47,27 +48,38 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				if ((playersPresent & (1 << i)) is not 0)
 				{
+					int speedIndex = Convert.ToInt32(controller.IsPressed($"P{i+1} Run")); // todo: xor depending on autorun
+
+					// initial axis read
 					players[i]._RunSpeed = potReaders[i](controller, 0);
 					players[i]._StrafingSpeed = potReaders[i](controller, 1);
 					players[i]._TurningSpeed = potReaders[i](controller, 2);
 					players[i]._WeaponSelect = potReaders[i](controller, 3);
 
-					var actionsBitfield = portReaders[i](controller);
-					players[i]._Fire = actionsBitfield & 0b00001;
-					players[i]._Action = (actionsBitfield & 0b00010) >> 1;
-					players[i]._AltWeapon = (actionsBitfield & 0b00100) >> 2;
+					// override axis based on movement buttons
+					if (controller.IsPressed($"P{i+1} Forward")) players[i]._RunSpeed = _runSpeeds[speedIndex];
+					if (controller.IsPressed($"P{i+1} Backward")) players[i]._RunSpeed = -_runSpeeds[speedIndex];
+					if (controller.IsPressed($"P{i+1} Strafe Right")) players[i]._StrafingSpeed = _strafeSpeeds[speedIndex];
+					if (controller.IsPressed($"P{i+1} Strafe Left")) players[i]._StrafingSpeed = -_strafeSpeeds[speedIndex];
+					if (controller.IsPressed($"P{i+1} Turn Right")) players[i]._TurningSpeed = -_turnSpeeds[speedIndex];
+					if (controller.IsPressed($"P{i+1} Turn Left")) players[i]._TurningSpeed = _turnSpeeds[speedIndex];
 
-					// Handling mouse-driven running
+					// mouse-driven running
 					players[i]._RunSpeed -= (int)((float)potReaders[i](controller, 4) * (float)_syncSettings.MouseRunSensitivity / 6.0);
-					if (players[i]._RunSpeed > 50) players[i]._RunSpeed = 50;
-					if (players[i]._RunSpeed < -50) players[i]._RunSpeed = -50;
+					players[i]._RunSpeed = players[i]._RunSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
-					// Handling mouse-driven turning
+					// mouse-driven turning
 					players[i]._TurningSpeed -= (int)((float)potReaders[i](controller, 5) * (float)_syncSettings.MouseTurnSensitivity / 300.0);
 					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
 					{
 						players[i]._TurningSpeed >>= 8;
 					}
+
+					// bool buttons
+					var actionsBitfield = portReaders[i](controller);
+					players[i]._Fire = actionsBitfield & 0b00001;
+					players[i]._Action = (actionsBitfield & 0b00010) >> 1;
+					players[i]._AltWeapon = (actionsBitfield & 0b00100) >> 2;
 
 					// Raven Games
 					if (_syncSettings.InputFormat is DoomControllerTypes.Heretic or DoomControllerTypes.Hexen)

@@ -156,26 +156,20 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 		}
 
-		private int[] _turnHeld = [ 0, 0, 0, 0 ];
-		private List<string> _args;
-
-		// IRegionable
-		public DisplayType Region { get; }
-
-		// IRomInfo
-		public string RomDetails { get; }
-
 		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
 		private readonly CInterface.load_archive_cb _loadCallback;
-
 		private readonly string _dsdaWadFileName = "dsda-doom.wad";
 		private readonly byte[] _dsdaWadFileData;
-		private List<IRomAsset> _wadFiles;
-		
 		private readonly CInterface Core;
 		private readonly WaterboxHost _elf;
-
 		private readonly DoomControllerDeck _controllerDeck;
+		private readonly int[] _runSpeeds = [ 25, 50 ];
+		private readonly int[] _strafeSpeeds = [ 24, 40 ];
+		private readonly int[] _turnSpeeds = [ 640, 1280, 320 ];
+
+		private int[] _turnHeld = [ 0, 0, 0, 0 ];
+		private List<string> _args;
+		private List<IRomAsset> _wadFiles;
 
 		/// <summary>
 		/// core callback for file loading
@@ -237,5 +231,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				throw new InvalidOperationException($"Unknown error processing file '{filename}'");
 			}
 		}
+
+		// IRegionable
+		public DisplayType Region { get; }
+
+		// IRomInfo
+		public string RomDetails { get; }
 	}
 }

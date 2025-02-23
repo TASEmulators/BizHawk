@@ -82,48 +82,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		{
 			int x = c.AxisValue(Definition.Axes[pot]);
 
-			// Handling running keys overriding axes values
-			if (Definition.Axes[pot] == $"P{PortNum} Run Speed")
-			{
-				if (c.IsPressed($"P{PortNum} Forward"))
-				{
-					x = c.IsPressed($"P{PortNum} Run") ? 50 : 25;
-				}
-
-				if (c.IsPressed($"P{PortNum} Backward"))
-				{
-					x = c.IsPressed($"P{PortNum} Run") ? -50 : -25;
-				}
-			}
-
-			// Handling strafing keys overriding axes values
-			if (Definition.Axes[pot] == $"P{PortNum} Strafing Speed")
-			{
-				if (c.IsPressed($"P{PortNum} Strafe Right"))
-				{
-					x = c.IsPressed($"P{PortNum} Run") ? 40 : 24;
-				}
-
-				if (c.IsPressed($"P{PortNum} Strafe Left"))
-				{
-					x = c.IsPressed($"P{PortNum} Run") ? -40 : -24;
-				}
-			}
-
-			// Handling turning keys overriding axes values
-			if (Definition.Axes[pot] == $"P{PortNum} Turning Speed")
-			{
-				if (c.IsPressed($"P{PortNum} Turn Left"))
-				{
-					x = c.IsPressed($"P{PortNum} Run") ? 1280 : 320;
-				}
-
-				if (c.IsPressed($"P{PortNum} Turn Right"))
-				{
-					x = c.IsPressed($"P{PortNum} Run") ? -1280 : -320;
-				}
-			}
-
 			// Handling weapon select keys overriding axes values
 			if (Definition.Axes[pot] == $"P{PortNum} Weapon Select")
 			{
