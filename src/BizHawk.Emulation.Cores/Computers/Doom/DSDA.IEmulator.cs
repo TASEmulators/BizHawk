@@ -50,19 +50,31 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				{
 					int speedIndex = Convert.ToInt32(controller.IsPressed($"P{i+1} Run")); // todo: xor depending on autorun
 
+					int turnSpeed = 0;
+					// lower speed for tapping turn buttons
+					if (controller.IsPressed($"P{i + 1} Turn Right") || controller.IsPressed($"P{i + 1} Turn Left"))
+					{
+						_turnHeld[i]++;
+						turnSpeed = _turnHeld[i] < 6 ? _turnSpeeds[2] : _turnSpeeds[speedIndex];
+					}
+					else
+					{
+						_turnHeld[i] = 0;
+					}
+
 					// initial axis read
 					players[i]._RunSpeed = potReaders[i](controller, 0);
 					players[i]._StrafingSpeed = potReaders[i](controller, 1);
 					players[i]._TurningSpeed = potReaders[i](controller, 2);
 					players[i]._WeaponSelect = potReaders[i](controller, 3);
 
-					// override axis based on movement buttons
+					// override axis based on movement buttons (turning is reversed upstream)
 					if (controller.IsPressed($"P{i+1} Forward")) players[i]._RunSpeed = _runSpeeds[speedIndex];
 					if (controller.IsPressed($"P{i+1} Backward")) players[i]._RunSpeed = -_runSpeeds[speedIndex];
 					if (controller.IsPressed($"P{i+1} Strafe Right")) players[i]._StrafingSpeed = _strafeSpeeds[speedIndex];
 					if (controller.IsPressed($"P{i+1} Strafe Left")) players[i]._StrafingSpeed = -_strafeSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i+1} Turn Right")) players[i]._TurningSpeed = -_turnSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i+1} Turn Left")) players[i]._TurningSpeed = _turnSpeeds[speedIndex];
+					if (controller.IsPressed($"P{i + 1} Turn Right")) players[i]._TurningSpeed = -turnSpeed;
+					if (controller.IsPressed($"P{i + 1} Turn Left")) players[i]._TurningSpeed = turnSpeed;
 
 					// mouse-driven running
 					players[i]._RunSpeed -= (int)((float)potReaders[i](controller, 4) * (float)_syncSettings.MouseRunSensitivity / 6.0);
