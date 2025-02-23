@@ -156,20 +156,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 		}
 
-		// Remembering mouse position
-		private const int MOUSE_NO_INPUT = -65535;
-		private int[] _lastMouseRunningValues = [
-			MOUSE_NO_INPUT,
-			MOUSE_NO_INPUT,
-			MOUSE_NO_INPUT,
-			MOUSE_NO_INPUT
-		];
-		private int[] _lastMouseTurningValues = [
-			MOUSE_NO_INPUT,
-			MOUSE_NO_INPUT,
-			MOUSE_NO_INPUT,
-			MOUSE_NO_INPUT
-		];
+		private int[] _turnHeld = [ 0, 0, 0, 0 ];
 		private List<string> _args;
 
 		// IRegionable
