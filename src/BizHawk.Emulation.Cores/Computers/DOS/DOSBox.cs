@@ -96,12 +96,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				}
 
 				// Checking for supported CD-ROM extensions
-				if (file.RomPath.EndsWith(".iso", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".dosbox-cdrom", StringComparison.OrdinalIgnoreCase) || // Temporary to circumvent BK's detection of isos as discs (not roms)
-					file.RomPath.EndsWith(".cue", StringComparison.OrdinalIgnoreCase) || // Must be accompanied by a bin file
-					file.RomPath.EndsWith(".bin", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".mdf", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".chf", StringComparison.OrdinalIgnoreCase))
+				if (file.RomPath.EndsWith(".dosbox-iso", StringComparison.OrdinalIgnoreCase) || // Temporary to circumvent BK's detection of isos as discs (not roms)
+					file.RomPath.EndsWith(".dosbox-cue", StringComparison.OrdinalIgnoreCase) || // Must be accompanied by a bin file
+					file.RomPath.EndsWith(".dosbox-bin", StringComparison.OrdinalIgnoreCase) ||
+					file.RomPath.EndsWith(".dosbox-mdf", StringComparison.OrdinalIgnoreCase) ||
+					file.RomPath.EndsWith(".dosbox-chf", StringComparison.OrdinalIgnoreCase))
 				{
 					Console.WriteLine("Added CDROM Image");
 					_CDROMDiskImageFiles.Add(file);
@@ -182,7 +181,14 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			foreach (var file in _CDROMDiskImageFiles)
 			{
 				string typeExtension = Path.GetExtension(file.RomPath);
-				string cdromNewName = FileNames.CD + _CDROMCount.ToString() + (typeExtension == ".dosbox-cdrom" ? ".iso" : typeExtension);
+
+				// Hack to avoid these CD-ROM images from being considered IDiscAssets
+				if (typeExtension == ".dosbox-iso") typeExtension = ".iso";
+				if (typeExtension == ".dosbox-bin") typeExtension = ".bin";
+				if (typeExtension == ".dosbox-cue") typeExtension = ".cue";
+				if (typeExtension == ".dosbox-mdf") typeExtension = ".mdf";
+				if (typeExtension == ".dosbox-chf") typeExtension = ".chf";
+				string cdromNewName = FileNames.CD + _CDROMCount.ToString() + typeExtension;
 				_exe.AddReadonlyFile(file.FileData, cdromNewName);
 				cdromMountLine += cdromNewName + " ";
 				_CDROMCount++;
