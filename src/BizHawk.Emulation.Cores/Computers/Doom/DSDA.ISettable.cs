@@ -257,14 +257,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[Description("Sets strict mode restrictions, preventing TAS-only inputs.")]
 			[DefaultValue(true)]
 			public bool StrictMode { get; set; }
-
+			/*
 			[DisplayName("Auto Run")]
 			[Description("")]
 			[DefaultValue(true)]
 			public bool AutoRun { get; set; }
-
+			*/
 			[DisplayName("Turning Resolution")]
-			[Description("\"shorttics\" refers to decreased turning resolution used for demos, whereas \"longtics\" refers to the regular turning resolution outside of a demo-recording environment.")]
+			[Description("\"Shorttics\" refers to decreased turning resolution used for demos. \"Longtics\" refers to the regular turning resolution outside of a demo-recording environment.")]
 			[DefaultValue(TurningResolution.Longtics)]
 			public TurningResolution TurningResolution { get; set; }
 

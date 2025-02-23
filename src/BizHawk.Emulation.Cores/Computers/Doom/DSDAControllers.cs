@@ -49,22 +49,22 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private static readonly string[] BaseDefinition =
 		[
 			"Fire",
-			"Action",
+			"Use",
 			"Alt Weapon",
-			"Key Forward",
-			"Key Backward",
-			"Key Turn Left",
-			"Key Turn Right",
-			"Key Strafe Left",
-			"Key Strafe Right",
-			"Key Shift Run",
-			"Key Weapon Select 1",
-			"Key Weapon Select 2",
-			"Key Weapon Select 3",
-			"Key Weapon Select 4",
-			"Key Weapon Select 5",
-			"Key Weapon Select 6",
-			"Key Weapon Select 7",
+			"Forward",
+			"Backward",
+			"Turn Left",
+			"Turn Right",
+			"Strafe Left",
+			"Strafe Right",
+			"Run",
+			"Weapon Select 1",
+			"Weapon Select 2",
+			"Weapon Select 3",
+			"Weapon Select 4",
+			"Weapon Select 5",
+			"Weapon Select 6",
+			"Weapon Select 7",
 		];
 
 		public byte Read(IController c)
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			byte result = 0;
 
 			if (c.IsPressed($"P{PortNum} Fire")) { result |= 0b0001; }
-			if (c.IsPressed($"P{PortNum} Action")) { result |= 0b0010; }
+			if (c.IsPressed($"P{PortNum} Use")) { result |= 0b0010; }
 			if (c.IsPressed($"P{PortNum} Alt Weapon")) { result |= 0b0100; }
 
 			return result;
@@ -85,55 +85,55 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			// Handling running keys overriding axes values
 			if (Definition.Axes[pot] == $"P{PortNum} Run Speed")
 			{
-				if (c.IsPressed($"P{PortNum} Key Forward"))
+				if (c.IsPressed($"P{PortNum} Forward"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? 50 : 25;
+					x = c.IsPressed($"P{PortNum} Run") ? 50 : 25;
 				}
 
-				if (c.IsPressed($"P{PortNum} Key Backward"))
+				if (c.IsPressed($"P{PortNum} Backward"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? -50 : -25;
+					x = c.IsPressed($"P{PortNum} Run") ? -50 : -25;
 				}
 			}
 
 			// Handling strafing keys overriding axes values
 			if (Definition.Axes[pot] == $"P{PortNum} Strafing Speed")
 			{
-				if (c.IsPressed($"P{PortNum} Key Strafe Right"))
+				if (c.IsPressed($"P{PortNum} Strafe Right"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? 40 : 24;
+					x = c.IsPressed($"P{PortNum} Run") ? 40 : 24;
 				}
 
-				if (c.IsPressed($"P{PortNum} Key Strafe Left"))
+				if (c.IsPressed($"P{PortNum} Strafe Left"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? -40 : -24;
+					x = c.IsPressed($"P{PortNum} Run") ? -40 : -24;
 				}
 			}
 
 			// Handling turning keys overriding axes values
 			if (Definition.Axes[pot] == $"P{PortNum} Turning Speed")
 			{
-				if (c.IsPressed($"P{PortNum} Key Turn Left"))
+				if (c.IsPressed($"P{PortNum} Turn Left"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? 1280 : 320;
+					x = c.IsPressed($"P{PortNum} Run") ? 1280 : 320;
 				}
 
-				if (c.IsPressed($"P{PortNum} Key Turn Right"))
+				if (c.IsPressed($"P{PortNum} Turn Right"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? -1280 : -320;
+					x = c.IsPressed($"P{PortNum} Run") ? -1280 : -320;
 				}
 			}
 
 			// Handling weapon select keys overriding axes values
 			if (Definition.Axes[pot] == $"P{PortNum} Weapon Select")
 			{
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 1")) x = 1;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 2")) x = 2;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 3")) x = 3;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 4")) x = 4;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 5")) x = 5;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 6")) x = 6;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 7")) x = 7;
+				if (c.IsPressed($"P{PortNum} Weapon Select 1")) x = 1;
+				if (c.IsPressed($"P{PortNum} Weapon Select 2")) x = 2;
+				if (c.IsPressed($"P{PortNum} Weapon Select 3")) x = 3;
+				if (c.IsPressed($"P{PortNum} Weapon Select 4")) x = 4;
+				if (c.IsPressed($"P{PortNum} Weapon Select 5")) x = 5;
+				if (c.IsPressed($"P{PortNum} Weapon Select 6")) x = 6;
+				if (c.IsPressed($"P{PortNum} Weapon Select 7")) x = 7;
 			}
 
 			return x;
@@ -168,22 +168,22 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private static readonly string[] BaseDefinition =
 		[
 			"Fire",
-			"Action",
+			"Use",
 			"Alt Weapon",
-			"Key Forward",
-			"Key Backward",
-			"Key Turn Left",
-			"Key Turn Right",
-			"Key Strafe Left",
-			"Key Strafe Right",
-			"Key Shift Run",
-			"Key Weapon Select 1",
-			"Key Weapon Select 2",
-			"Key Weapon Select 3",
-			"Key Weapon Select 4",
-			"Key Weapon Select 5",
-			"Key Weapon Select 6",
-			"Key Weapon Select 7",
+			"Forward",
+			"Backward",
+			"Turn Left",
+			"Turn Right",
+			"Strafe Left",
+			"Strafe Right",
+			"Run",
+			"Weapon Select 1",
+			"Weapon Select 2",
+			"Weapon Select 3",
+			"Weapon Select 4",
+			"Weapon Select 5",
+			"Weapon Select 6",
+			"Weapon Select 7",
 		];
 
 		public byte Read(IController c)
@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			byte result = 0;
 
 			if (c.IsPressed($"P{PortNum} Fire")) { result |= 0b0001; }
-			if (c.IsPressed($"P{PortNum} Action")) { result |= 0b0010; }
+			if (c.IsPressed($"P{PortNum} Use")) { result |= 0b0010; }
 			if (c.IsPressed($"P{PortNum} Alt Weapon")) { result |= 0b0100; }
 
 			return result;
@@ -204,55 +204,55 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			// Handling running keys overriding axes values
 			if (Definition.Axes[pot] == $"P{PortNum} Run Speed")
 			{
-				if (c.IsPressed($"P{PortNum} Key Forward"))
+				if (c.IsPressed($"P{PortNum} Forward"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? 50 : 25;
+					x = c.IsPressed($"P{PortNum} Run") ? 50 : 25;
 				}
 
-				if (c.IsPressed($"P{PortNum} Key Backward"))
+				if (c.IsPressed($"P{PortNum} Backward"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? -50 : -25;
+					x = c.IsPressed($"P{PortNum} Run") ? -50 : -25;
 				}
 			}
 
 			// Handling strafing keys overriding axes values
 			if (Definition.Axes[pot] == $"P{PortNum} Strafing Speed")
 			{
-				if (c.IsPressed($"P{PortNum} Key Strafe Right"))
+				if (c.IsPressed($"P{PortNum} Strafe Right"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? 40 : 24;
+					x = c.IsPressed($"P{PortNum} Run") ? 40 : 24;
 				}
 
-				if (c.IsPressed($"P{PortNum} Key Strafe Left"))
+				if (c.IsPressed($"P{PortNum} Strafe Left"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? -40 : -24;
+					x = c.IsPressed($"P{PortNum} Run") ? -40 : -24;
 				}
 			}
 
 			// Handling turning keys overriding axes values
 			if (Definition.Axes[pot] == $"P{PortNum} Turning Speed")
 			{
-				if (c.IsPressed($"P{PortNum} Key Turn Left"))
+				if (c.IsPressed($"P{PortNum} Turn Left"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? 5 : 2;
+					x = c.IsPressed($"P{PortNum} Run") ? 5 : 2;
 				}
 
-				if (c.IsPressed($"P{PortNum} Key Turn Right"))
+				if (c.IsPressed($"P{PortNum} Turn Right"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? -5 : -2;
+					x = c.IsPressed($"P{PortNum} Run") ? -5 : -2;
 				}
 			}
 
 			// Handling weapon select keys overriding axes values
 			if (Definition.Axes[pot] == $"P{PortNum} Weapon Select")
 			{
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 1")) x = 1;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 2")) x = 2;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 3")) x = 3;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 4")) x = 4;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 5")) x = 5;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 6")) x = 6;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 7")) x = 7;
+				if (c.IsPressed($"P{PortNum} Weapon Select 1")) x = 1;
+				if (c.IsPressed($"P{PortNum} Weapon Select 2")) x = 2;
+				if (c.IsPressed($"P{PortNum} Weapon Select 3")) x = 3;
+				if (c.IsPressed($"P{PortNum} Weapon Select 4")) x = 4;
+				if (c.IsPressed($"P{PortNum} Weapon Select 5")) x = 5;
+				if (c.IsPressed($"P{PortNum} Weapon Select 6")) x = 6;
+				if (c.IsPressed($"P{PortNum} Weapon Select 7")) x = 7;
 			}
 
 			return x;
@@ -287,21 +287,21 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private static readonly string[] BaseDefinition =
 		[
 			"Fire",
-			"Action",
+			"Use",
 			"Alt Weapon",
 			"Jump",
 			"End Player",
-			"Key Forward",
-			"Key Backward",
-			"Key Turn Left",
-			"Key Turn Right",
-			"Key Strafe Left",
-			"Key Strafe Right",
-			"Key Shift Run",
-			"Key Weapon Select 1",
-			"Key Weapon Select 2",
-			"Key Weapon Select 3",
-			"Key Weapon Select 4"
+			"Forward",
+			"Backward",
+			"Turn Left",
+			"Turn Right",
+			"Strafe Left",
+			"Strafe Right",
+			"Run",
+			"Weapon Select 1",
+			"Weapon Select 2",
+			"Weapon Select 3",
+			"Weapon Select 4"
 		];
 
 		public byte Read(IController c)
@@ -309,7 +309,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			byte result = 0;
 
 			if (c.IsPressed($"P{PortNum} Fire")) { result |= 0b00001; }
-			if (c.IsPressed($"P{PortNum} Action")) { result |= 0b00010; }
+			if (c.IsPressed($"P{PortNum} Use")) { result |= 0b00010; }
 			if (c.IsPressed($"P{PortNum} Alt Weapon")) { result |= 0b00100; }
 			if (c.IsPressed($"P{PortNum} Jump")) { result |= 0b01000; }
 			if (c.IsPressed($"P{PortNum} End Player")) { result |= 0b10000; }
@@ -324,52 +324,52 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			// Handling running keys overriding axes values
 			if (Definition.Axes[pot] == $"P{PortNum} Run Speed")
 			{
-				if (c.IsPressed($"P{PortNum} Key Forward"))
+				if (c.IsPressed($"P{PortNum} Forward"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? 50 : 25;
+					x = c.IsPressed($"P{PortNum} Run") ? 50 : 25;
 				}
 
-				if (c.IsPressed($"P{PortNum} Key Backward"))
+				if (c.IsPressed($"P{PortNum} Backward"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? -50 : -25;
+					x = c.IsPressed($"P{PortNum} Run") ? -50 : -25;
 				}
 			}
 
 			// Handling strafing keys overriding axes values
 			if (Definition.Axes[pot] == $"P{PortNum} Strafing Speed")
 			{
-				if (c.IsPressed($"P{PortNum} Key Strafe Right"))
+				if (c.IsPressed($"P{PortNum} Strafe Right"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? 40 : 24;
+					x = c.IsPressed($"P{PortNum} Run") ? 40 : 24;
 				}
 
-				if (c.IsPressed($"P{PortNum} Key Strafe Left"))
+				if (c.IsPressed($"P{PortNum} Strafe Left"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? -40 : -24;
+					x = c.IsPressed($"P{PortNum} Run") ? -40 : -24;
 				}
 			}
 
 			// Handling turning keys overriding axes values
 			if (Definition.Axes[pot] == $"P{PortNum} Turning Speed")
 			{
-				if (c.IsPressed($"P{PortNum} Key Turn Left"))
+				if (c.IsPressed($"P{PortNum} Turn Left"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? 5 : 2;
+					x = c.IsPressed($"P{PortNum} Run") ? 5 : 2;
 				}
 
-				if (c.IsPressed($"P{PortNum} Key Turn Right"))
+				if (c.IsPressed($"P{PortNum} Turn Right"))
 				{
-					x = c.IsPressed($"P{PortNum} Key Shift Run") ? -5 : -2;
+					x = c.IsPressed($"P{PortNum} Run") ? -5 : -2;
 				}
 			}
 
 			// Handling weapon select keys overriding axes values
 			if (Definition.Axes[pot] == $"P{PortNum} Weapon Select")
 			{
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 1")) x = 1;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 2")) x = 2;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 3")) x = 3;
-				if (c.IsPressed($"P{PortNum} Key Weapon Select 4")) x = 4;
+				if (c.IsPressed($"P{PortNum} Weapon Select 1")) x = 1;
+				if (c.IsPressed($"P{PortNum} Weapon Select 2")) x = 2;
+				if (c.IsPressed($"P{PortNum} Weapon Select 3")) x = 3;
+				if (c.IsPressed($"P{PortNum} Weapon Select 4")) x = 4;
 			}
 
 			return x;
