@@ -96,17 +96,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				if (!recognized) throw new Exception($"Unrecognized input file provided: '{file.RomPath}'");
 			}
 
-			// These are the actual size in bytes for each hdd selection
-			ulong writableHDDImageFileSize = _syncSettings.WriteableHardDisk switch
-			{
-				WriteableHardDiskOptions.FAT16_21Mb => 21411840,
-				WriteableHardDiskOptions.FAT16_41Mb => 42823680,
-				WriteableHardDiskOptions.FAT16_241Mb => 252370944,
-				WriteableHardDiskOptions.FAT16_504Mb => 527966208,
-				WriteableHardDiskOptions.FAT16_2014Mb => 2111864832,
-				WriteableHardDiskOptions.FAT32_4091Mb => 4289725440,
-				_ => 0
-			};
+			var writableHDDImageFileSize = (ulong) _syncSettings.WriteableHardDisk;
 
 			_libDOSBox = PreInit<LibDOSBox>(new WaterboxOptions
 			{

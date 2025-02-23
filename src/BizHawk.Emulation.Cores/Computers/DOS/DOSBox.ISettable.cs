@@ -22,21 +22,22 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Late90s,
 		}
 
-		public enum WriteableHardDiskOptions
+		/// <remarks>values are the actual size in bytes for each hdd selection</remarks>
+		public enum WriteableHardDiskOptions : ulong
 		{
-			None,
+			None = 0UL,
 			[Display(Name = "21Mb (FAT16)")]
-			FAT16_21Mb,
+			FAT16_21Mb = 21411840UL,
 			[Display(Name = "41Mb (FAT16)")]
-			FAT16_41Mb,
+			FAT16_41Mb = 42823680UL,
 			[Display(Name = "241Mb (FAT16)")]
-			FAT16_241Mb,
+			FAT16_241Mb = 252370944UL,
 			[Display(Name = "504Mb (FAT16)")]
-			FAT16_504Mb,
+			FAT16_504Mb = 527966208UL,
 			[Display(Name = "2014Mb (FAT16)")]
-			FAT16_2014Mb,
+			FAT16_2014Mb = 2111864832UL,
 			[Display(Name = "4091Mb (FAT32)")]
-			FAT32_4091Mb,
+			FAT32_4091Mb = 4289725440UL,
 		}
 
 		public enum MachineType
