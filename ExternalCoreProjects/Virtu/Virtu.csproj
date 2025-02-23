@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
+		<RunStyleCop>true</RunStyleCop>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 	<Import Project="$(ProjectDir)../../Common.props" />

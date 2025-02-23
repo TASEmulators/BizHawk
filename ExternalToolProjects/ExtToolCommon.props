@@ -1,4 +1,7 @@
 <Project>
+	<PropertyGroup>
+		<RunStyleCop>true</RunStyleCop>
+	</PropertyGroup>
 	<Import Project="../Common.props" />
 	<ItemGroup>
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)/../src/Menees.Analyzers.Settings.xml" />
