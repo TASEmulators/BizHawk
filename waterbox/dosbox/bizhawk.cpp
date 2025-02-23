@@ -73,15 +73,23 @@ bool loadFileIntoMemoryFileDirectory(const std::string& srcFile, const std::stri
 		return true;
 }
 
+// SRAM Management
+constexpr char writableHDDSrcFile[] = "__WritableHardDiskDrive";
+constexpr char writableHDDDstFile[] = "__WritableHardDiskDrive.img";
+bool _sram_changed = false;
+ECL_EXPORT bool sram_changed() { return _sram_changed; }
+ECL_EXPORT int get_sram_size() { return (int)_memFileDirectory.getFileSize(writableHDDDstFile); }
+ECL_EXPORT uint8_t* get_sram_buffer() { return _memFileDirectory.getFileBuffer(writableHDDDstFile); }
+ECL_EXPORT void get_sram(uint8_t* sramBuffer) {	memcpy(sramBuffer, get_sram_buffer(), get_sram_size()); }
+ECL_EXPORT void set_sram(uint8_t* sramBuffer) {	memcpy(get_sram_buffer(), sramBuffer, get_sram_size()); }
+
 ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, uint64_t writableHDDImageFileSize)
 {
 	 // If size is non-negative, we need to load the writable hard disk into memory
 		if (writableHDDImageFileSize == 0) printf("No writable hard disk drive selected.");
 		else	{
 			// Loading HDD file into mem file directory
-			std::string writableHDDSrcFile = "__WritableHardDiskDrive";
-			std::string writableHDDDstFile = "__WritableHardDiskDrive.img";
-			printf("Creating hard disk drive mem file '%s' -> '%s' (%lu bytes)\n", writableHDDSrcFile.c_str(), writableHDDDstFile.c_str(), writableHDDImageFileSize);
+			printf("Creating hard disk drive mem file '%s' -> '%s' (%lu bytes)\n", writableHDDSrcFile, writableHDDDstFile, writableHDDImageFileSize);
 			auto result = loadFileIntoMemoryFileDirectory(writableHDDSrcFile, writableHDDDstFile, writableHDDImageFileSize);
 			if (result == false || _memFileDirectory.contains(writableHDDDstFile) == false) 
 			{
