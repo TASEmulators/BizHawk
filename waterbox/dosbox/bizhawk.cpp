@@ -10,6 +10,8 @@
 #include <mixer.h>
 #include <joystick.h>
 #include <mouse.h>
+#include <vga.h>
+#include <mem.h>
 
 extern int _main(int argc, char* argv[]);
 void runMain() { _main(0, nullptr); }
@@ -256,15 +258,58 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	f->base.Samples  = _audioSamples.size() / 2;
 }
 
-uint8_t mainRAM[256];
+#define DOS_CONVENTIONAL_MEMORY_SIZE 640 * 1024
+#define DOS_UPPER_MEMORY_SIZE 384 * 1024
+#define DOS_LOWER_MEMORY_SIZE DOS_CONVENTIONAL_MEMORY_SIZE + DOS_UPPER_MEMORY_SIZE
+
 
 ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 {
-	m[0].Data  = mainRAM;
-	m[0].Name  = "Main RAM";
-	m[0].Size  = 256;
-	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
+	int memAreaIdx = 0;
 
+	m[memAreaIdx].Data  = MemBase;
+	m[memAreaIdx].Name  = "Conventional Memory";
+	m[memAreaIdx].Size  = DOS_CONVENTIONAL_MEMORY_SIZE;
+	m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
+	memAreaIdx++;
+
+	m[memAreaIdx].Data  = &MemBase[DOS_CONVENTIONAL_MEMORY_SIZE];
+	m[memAreaIdx].Name  = "Upper Memory Area";
+	m[memAreaIdx].Size  = DOS_UPPER_MEMORY_SIZE;
+	m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+	memAreaIdx++;
+
+	int highMemSize = MemSize - DOS_LOWER_MEMORY_SIZE;
+	if (highMemSize > 0)
+	{
+		m[memAreaIdx].Data  = &MemBase[DOS_LOWER_MEMORY_SIZE];
+		m[memAreaIdx].Name  = "Extended Memory";
+		m[memAreaIdx].Size  = MemSize - DOS_LOWER_MEMORY_SIZE;
+		m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+		memAreaIdx++;
+	}
+
+	m[memAreaIdx].Data  = MemBase;
+	m[memAreaIdx].Name  = "Physical RAM";
+	m[memAreaIdx].Size  = MemSize;
+	m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+	memAreaIdx++;
+
+	m[memAreaIdx].Data  = vga.mem.linear;
+	m[memAreaIdx].Name  = "Video RAM";
+	m[memAreaIdx].Size  = vga.mem.memsize;
+	m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+	memAreaIdx++;
+	
+	size_t sramSize = get_sram_size();
+	if (sramSize > 0)
+	{
+		m[memAreaIdx].Data  = get_sram_buffer();
+		m[memAreaIdx].Name  = "Writeable HDD (SaveRAM)";
+		m[memAreaIdx].Size  = sramSize;
+		m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+		memAreaIdx++;
+	}
 }
 
 void (*LEDCallback)();
