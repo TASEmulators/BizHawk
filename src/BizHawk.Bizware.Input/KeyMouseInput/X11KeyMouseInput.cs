@@ -52,38 +52,42 @@ namespace BizHawk.Bizware.Input
 			CreateKeyMap(supportsXkb);
 
 			_supportsXInput2 = XQueryExtension(Display, "XInputExtension", out _xi2Opcode, out _, out _);
-			if (_supportsXInput2)
+			if (!_supportsXInput2)
 			{
-				try
+				Console.Error.WriteLine("XInput2 is unsupported, relative mouse input will not work");
+				return;
+			}
+
+			try
+			{
+				(major, minor) = (2, 1);
+				if (XIQueryVersion(Display, ref major, ref minor) != 0
+					|| major * 100 + minor < 201)
 				{
-					(major, minor) = (2, 1);
-					if (XIQueryVersion(Display, ref major, ref minor) != 0
-						|| major * 100 + minor < 201)
-					{
-						_supportsXInput2 = false;
-					}
-				}
-				catch
-				{
-					// libXi.so.6 might not be present
+					Console.Error.WriteLine("XInput2 version is not at least 2.1, relative mouse input will not work");
 					_supportsXInput2 = false;
 				}
+			}
+			catch
+			{
+				Console.Error.WriteLine("libXi.so.6 is not present, relative mouse input will not work");
+				_supportsXInput2 = false;
+			}
 
-				if (_supportsXInput2)
+			if (_supportsXInput2)
+			{
+				Span<byte> maskBuf = stackalloc byte[((int)XIEvents.XI_LASTEVENT + 7) / 8];
+				maskBuf.Clear();
+				XISetMask(maskBuf, (int)XIEvents.XI_RawMotion);
+				unsafe
 				{
-					Span<byte> maskBuf = stackalloc byte[((int)XIEvents.XI_LASTEVENT + 7) / 8];
-					maskBuf.Clear();
-					XISetMask(maskBuf, (int)XIEvents.XI_RawMotion);
-					unsafe
+					fixed (byte* maskBufPtr = maskBuf)
 					{
-						fixed (byte* maskBufPtr = maskBuf)
-						{
-							XIEventMask eventMask;
-							eventMask.deviceid = XIAllMasterDevices;
-							eventMask.mask = (IntPtr)maskBufPtr;
-							eventMask.mask_len = maskBuf.Length;
-							_ = XISelectEvents(Display, XDefaultRootWindow(Display), ref eventMask, 1);
-						}
+						XIEventMask eventMask;
+						eventMask.deviceid = XIAllMasterDevices;
+						eventMask.mask = (IntPtr)maskBufPtr;
+						eventMask.mask_len = maskBuf.Length;
+						_ = XISelectEvents(Display, XDefaultRootWindow(Display), ref eventMask, 1);
 					}
 				}
 			}

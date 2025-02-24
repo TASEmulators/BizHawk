@@ -856,7 +856,7 @@ namespace BizHawk.Client.EmuHawk
 				return _exitCode;
 			}
 
-			LockMouse(Config.CaptureMouse);
+			CaptureMouse(Config.CaptureMouse);
 
 			// incantation required to get the program reliably on top of the console window
 			// we might want it in ToggleFullscreen later, but here, it needs to happen regardless
@@ -968,6 +968,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_x11Display != IntPtr.Zero)
 				{
+					for (var i = 0; i < 4; i++)
+					{
+						if (_pointerBarriers[i] != IntPtr.Zero)
+						{
+							XfixesImports.XFixesDestroyPointerBarrier(_x11Display, _pointerBarriers[i]);
+							_pointerBarriers[i] = IntPtr.Zero;
+						}
+					}
+
 					_ = XlibImports.XCloseDisplay(_x11Display);
 					_x11Display = IntPtr.Zero;
 				}
@@ -2808,7 +2817,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ToggleCaptureMouse()
 		{
 			Config.CaptureMouse = !Config.CaptureMouse;
-			LockMouse(Config.CaptureMouse);
+			CaptureMouse(Config.CaptureMouse);
 			AddOnScreenMessage($"Capture Mouse {(Config.CaptureMouse ? "enabled" : "disabled")}");
 		}
 
@@ -4827,8 +4836,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private IntPtr _x11Display;
+		private bool _hasXFixes;
+		private readonly IntPtr[] _pointerBarriers = new IntPtr[4];
 
-		public void LockMouse(bool wantLock)
+		private void CaptureMouse(bool wantLock)
 		{
 			if (wantLock)
 			{
@@ -4853,27 +4864,98 @@ namespace BizHawk.Client.EmuHawk
 				if (_x11Display == IntPtr.Zero)
 				{
 					_x11Display = XlibImports.XOpenDisplay(null);
+					_hasXFixes = XlibImports.XQueryExtension(_x11Display, "XFIXES", out _, out _, out _);
+					if (!_hasXFixes)
+					{
+						Console.Error.WriteLine("XFixes is unsupported, mouse capture will not lock the mouse cursor");
+						return;
+					}
+
+					try
+					{
+						var (major, minor) = (5, 0);
+						if (XfixesImports.XFixesQueryVersion(_x11Display, ref major, ref minor) != 0
+							|| major * 100 + minor < 500)
+						{
+							Console.Error.WriteLine("XFixes version is not at least 5.0, mouse capture will not lock the mouse cursor");
+							_hasXFixes = false;
+						}
+					}
+					catch
+					{
+						Console.Error.WriteLine("libXfixes.so.3 is not present, mouse capture will not lock the mouse cursor");
+						_hasXFixes = false;
+					}
+				}
+
+				if (_hasXFixes)
+				{
+					if (wantLock)
+					{
+						var fbLocation = Point.Subtract(Bounds.Location, new(PointToClient(Location)));
+						fbLocation.Offset(_presentationPanel.Control.Location);
+						var barrierRect = new Rectangle(fbLocation, _presentationPanel.Control.Size);
+
+						// each line of the barrier rect must be a separate barrier object 
+
+						// left barrier
+						_pointerBarriers[0] = XfixesImports.XFixesCreatePointerBarrier(
+							_x11Display, Handle, barrierRect.X, barrierRect.Y, barrierRect.X, barrierRect.Bottom,
+							XfixesImports.BarrierDirection.BarrierPositiveX, 0, IntPtr.Zero);
+						// top barrier
+						_pointerBarriers[1] = XfixesImports.XFixesCreatePointerBarrier(
+							_x11Display, Handle, barrierRect.X, barrierRect.Y, barrierRect.Right, barrierRect.Y,
+							XfixesImports.BarrierDirection.BarrierPositiveY, 0, IntPtr.Zero);
+						// right barrier
+						_pointerBarriers[2] = XfixesImports.XFixesCreatePointerBarrier(
+							_x11Display, Handle, barrierRect.Right, barrierRect.Y, barrierRect.Right, barrierRect.Bottom,
+							XfixesImports.BarrierDirection.BarrierNegativeX, 0, IntPtr.Zero);
+						// bottom barrier
+						_pointerBarriers[3] = XfixesImports.XFixesCreatePointerBarrier(
+							_x11Display, Handle, barrierRect.X, barrierRect.Bottom, barrierRect.Right, barrierRect.Bottom,
+							XfixesImports.BarrierDirection.BarrierNegativeY, 0, IntPtr.Zero);
+					}
+					else
+					{
+						for (var i = 0; i < 4; i++)
+						{
+							if (_pointerBarriers[i] != IntPtr.Zero)
+							{
+								XfixesImports.XFixesDestroyPointerBarrier(_x11Display, _pointerBarriers[i]);
+								_pointerBarriers[i] = IntPtr.Zero;
+							}
+						}
+					}
+				}
+#if false
+				if (_x11Display == IntPtr.Zero)
+				{
+					_x11Display = XlibImports.XOpenDisplay(null);
 				}
 
 				if (wantLock)
 				{
 					const XlibImports.EventMask eventMask = XlibImports.EventMask.ButtonPressMask | XlibImports.EventMask.ButtonMotionMask
-						| XlibImports.EventMask.ButtonReleaseMask | XlibImports.EventMask.PointerMotionMask
-						| XlibImports.EventMask.PointerMotionHintMask | XlibImports.EventMask.LeaveWindowMask;
-					var grabResult = XlibImports.XGrabPointer(_x11Display, Handle, false, eventMask,
-						XlibImports.GrabMode.Async, XlibImports.GrabMode.Async, Handle, IntPtr.Zero, XlibImports.CurrentTime);
+						| XlibImports.EventMask.ButtonReleaseMask | XlibImports.EventMask.PointerMotionMask | XlibImports.EventMask.PointerMotionHintMask
+						| XlibImports.EventMask.EnterWindowMask | XlibImports.EventMask.LeaveWindowMask | XlibImports.EventMask.FocusChangeMask;
+					var grabResult = XlibImports.XGrabPointer(_x11Display, _presentationPanel.Control.Handle, false, eventMask,
+						XlibImports.GrabMode.Async, XlibImports.GrabMode.Async, _presentationPanel.Control.Handle, IntPtr.Zero, XlibImports.CurrentTime);
 					if (grabResult == XlibImports.GrabResult.AlreadyGrabbed)
 					{
 						// try to grab again after releasing whatever current active grab
 						_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime);
-						_ = XlibImports.XGrabPointer(_x11Display, Handle, false, eventMask,
-							XlibImports.GrabMode.Async, XlibImports.GrabMode.Async, Handle, IntPtr.Zero, XlibImports.CurrentTime);
+						_ = XlibImports.XGrabPointer(_x11Display, _presentationPanel.Control.Handle, false, eventMask,
+							XlibImports.GrabMode.Async, XlibImports.GrabMode.Async, _presentationPanel.Control.Handle, IntPtr.Zero, XlibImports.CurrentTime);
 					}
 				}
 				else
 				{
+					// always returns 1
 					_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime);
+					_ = XlibImports.XCloseDisplay(_x11Display);
+					_x11Display = IntPtr.Zero;
 				}
+#endif
 			}
 		}
 	}
