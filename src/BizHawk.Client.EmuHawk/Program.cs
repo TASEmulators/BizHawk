@@ -112,8 +112,8 @@ namespace BizHawk.Client.EmuHawk
 					WinForms.Controls.ReflectionCache.AsmVersion,
 				}.Any(asmVer => asmVer != thisAsmVer))
 			{
-				//MessageBox.Show("One or more of the BizHawk.* assemblies have the wrong version!\n(Did you attempt to update by overwriting an existing install?)");
-				//return -1;
+				MessageBox.Show("One or more of the BizHawk.* assemblies have the wrong version!\n(Did you attempt to update by overwriting an existing install?)");
+				return -1;
 			}
 
 			string dllDir = null;
