@@ -52,6 +52,7 @@ namespace BizHawk.Client.Common
 			syncSettings.Player2Present = input[i++] is not 0;
 			syncSettings.Player3Present = input[i++] is not 0;
 			syncSettings.Player4Present = input[i++] is not 0;
+			syncSettings.TurningResolution = DSDA.TurningResolution.Shorttics;
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 
 			var doomController1 = new DoomController(1);

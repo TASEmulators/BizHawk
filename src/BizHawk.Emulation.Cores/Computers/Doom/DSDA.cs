@@ -26,7 +26,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			ServiceProvider = ser;
 			_finalSyncSettings = _syncSettings = lp.SyncSettings ?? new DoomSyncSettings();
 			_settings = lp.Settings ?? new DoomSettings();
-			_controllerDeck = new DoomControllerDeck(_syncSettings.InputFormat, _syncSettings.Player1Present, _syncSettings.Player2Present, _syncSettings.Player3Present, _syncSettings.Player4Present);
+			_controllerDeck = new DoomControllerDeck(
+				_syncSettings.InputFormat,
+				_syncSettings.Player1Present,
+				_syncSettings.Player2Present,
+				_syncSettings.Player3Present,
+				_syncSettings.Player4Present,
+				_syncSettings.TurningResolution == TurningResolution.Longtics);
 			_loadCallback = LoadCallback;
 
 			// Gathering information for the rest of the wads

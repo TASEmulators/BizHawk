@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 	public class DoomController : IPort
 	{
-		public DoomController(int portNum)
+		public DoomController(int portNum, bool longtics)
 		{
 			PortNum = portNum;
 			Definition = new ControllerDefinition("Doom Input Format")
@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				.AddAxis($"P{PortNum} Turning Speed", (-128).RangeTo(127), 0)
 				.AddAxis($"P{PortNum} Weapon Select", (0).RangeTo(7), 0)
 				.AddAxis($"P{PortNum} Mouse Running", (-128).RangeTo(127), 0)
-				.AddAxis($"P{PortNum} Mouse Turning", (-32768).RangeTo(32767), 0)
+				.AddAxis($"P{PortNum} Mouse Turning", (longtics ? -32768 : -128).RangeTo(longtics ? 32767 : 127), 0)
 				.MakeImmutable();
 		}
 
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 	public class HereticController : IPort
 	{
-		public HereticController(int portNum)
+		public HereticController(int portNum, bool longtics)
 		{
 			PortNum = portNum;
 			Definition = new ControllerDefinition("Heretic Input Format")
@@ -221,7 +221,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 	public class HexenController : IPort
 	{
-		public HexenController(int portNum)
+		public HexenController(int portNum, bool longtics)
 		{
 			PortNum = portNum;
 			Definition = new ControllerDefinition("Hexen Input Format")

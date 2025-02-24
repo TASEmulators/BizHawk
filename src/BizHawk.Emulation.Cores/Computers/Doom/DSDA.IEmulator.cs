@@ -81,10 +81,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					players[i]._RunSpeed = players[i]._RunSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
 					// mouse-driven turning
-					players[i]._TurningSpeed -= (int)(potReaders[i](controller, 5) * _syncSettings.MouseTurnSensitivity / 300.0);
-					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
+					players[i]._TurningSpeed -= potReaders[i](controller, 5) * _syncSettings.MouseTurnSensitivity;
+					// todo: check how the core calculates these
+					if (_syncSettings.TurningResolution == TurningResolution.Longtics)
 					{
-						players[i]._TurningSpeed >>= 8;
+						players[i]._TurningSpeed = (int) (players[i]._TurningSpeed / 256.0);
+					}
+					else
+					{
+						players[i]._TurningSpeed = (int) (players[i]._TurningSpeed / 10.0);
 					}
 
 					// bool buttons
