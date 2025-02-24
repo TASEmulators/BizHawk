@@ -26,8 +26,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			DefaultHeight = LibDOSBox.VGA_MAX_HEIGHT,
 			MaxWidth = LibDOSBox.SVGA_MAX_WIDTH,
 			MaxHeight = LibDOSBox.SVGA_MAX_HEIGHT,
-			DefaultFpsNumerator = LibDOSBox.VIDEO_NUMERATOR_NTSC,
-			DefaultFpsDenominator = LibDOSBox.VIDEO_DENOMINATOR_NTSC
+			DefaultFpsNumerator = LibDOSBox.VIDEO_NUMERATOR_DOS,
+			DefaultFpsDenominator = LibDOSBox.VIDEO_DENOMINATOR_DOS
 		};
 
 		private readonly List<IRomAsset> _roms;
@@ -56,8 +56,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_roms = lp.Roms;
 			_syncSettings = lp.SyncSettings ?? new();
 
-			VsyncNumerator = LibDOSBox.VIDEO_NUMERATOR_PAL;
-			VsyncDenominator = LibDOSBox.VIDEO_DENOMINATOR_PAL;
+			VsyncNumerator = LibDOSBox.VIDEO_NUMERATOR_DOS;
+			VsyncDenominator = LibDOSBox.VIDEO_DENOMINATOR_DOS;
 			DriveLightEnabled = false;
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
 
@@ -261,7 +261,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			fi.mouse.middleButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.MiddleButton) ? 1 : 0;
 			fi.mouse.rightButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.RightButton) ? 1 : 0;
 
-			if (_floppyDiskCount > 0)
+			if (_floppyDiskCount > 1)
 			{
 				if (controller.IsPressed(Inputs.NextFloppyDisk))
 				{
@@ -274,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				}
 			}
 
-			if (_CDROMCount > 0)
+			if (_CDROMCount > 1)
 			{
 				if (controller.IsPressed(Inputs.NextCDROM))
 				{
