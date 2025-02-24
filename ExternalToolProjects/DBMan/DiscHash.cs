@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Collections.Generic;
 
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.DBManTool
@@ -24,7 +25,7 @@ namespace BizHawk.DBManTool
 				dpCurr = dpTodo.Dequeue();
 				Parallel.ForEach(new DirectoryInfo(dpCurr).GetFiles(), (fi) =>
 				{
-					if (fi.Extension.ToUpperInvariant() == extUppercaseWithDot)
+					if (extUppercaseWithDot.EqualsIgnoreCase(fi.Extension))
 						lock (ret)
 							ret.Add(fi.FullName);
 				});
@@ -59,7 +60,7 @@ namespace BizHawk.DBManTool
 			var done = new HashSet<string>();
 			foreach (var line in File.ReadAllLines(fpOutfile))
 			{
-				if (line.Trim() == "") continue;
+				if (string.IsNullOrWhiteSpace(line)) continue;
 				var parts = line.Split(new[] { "//" }, StringSplitOptions.None);
 				done.Add(parts[1]);
 			}
