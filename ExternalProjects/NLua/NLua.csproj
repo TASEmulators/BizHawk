@@ -22,7 +22,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<NoWarn>$(NoWarn);IDE0005;SA1514;SA1614;SA1616</NoWarn>
+		<NoWarn>$(NoWarn);BHI1300;IDE0005;SA1514;SA1614;SA1616</NoWarn>
 		<Nullable>disable</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>

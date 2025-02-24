@@ -87,7 +87,11 @@ namespace NLua.Native
 			}
 
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
+#pragma warning disable CA1862 // suggests `string.Contains(string, StringComparison)` even though that's not available with this target
+#pragma warning disable RCS1155 // ditto
 			    RuntimeInformation.OSDescription.ToUpperInvariant().Contains("BSD"))
+#pragma warning restore RCS1155
+#pragma warning restore CA1862
 			{
 				return new LibcNativeLibraryLoader();
 			}
@@ -107,7 +111,11 @@ namespace NLua.Native
 			// we can safely use lua 5.3 for our purposes, hope the
 			// user's distro provides at least lua 5.3!
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ||
+#pragma warning disable CA1862 // suggests `string.Contains(string, StringComparison)` even though that's not available with this target
+#pragma warning disable RCS1155 // ditto
 			    RuntimeInformation.OSDescription.ToUpperInvariant().Contains("BSD"))
+#pragma warning restore RCS1155
+#pragma warning restore CA1862
 			{
 				return new[]
 				{
