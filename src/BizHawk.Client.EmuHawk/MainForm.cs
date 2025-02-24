@@ -4839,9 +4839,19 @@ namespace BizHawk.Client.EmuHawk
 		private bool _hasXFixes;
 		private readonly IntPtr[] _pointerBarriers = new IntPtr[4];
 
-		private void CaptureMouse(bool wantLock)
+#if false
+		private delegate void CaptureWithConfineDelegate(Control control, Control confineWindow);
+
+		private static readonly Lazy<CaptureWithConfineDelegate> _captureWithConfine = new(() =>
 		{
-			if (wantLock)
+			var mi = typeof(Control).GetMethod("CaptureWithConfine", BindingFlags.Instance | BindingFlags.NonPublic);
+			return (CaptureWithConfineDelegate)Delegate.CreateDelegate(typeof(CaptureWithConfineDelegate), mi!);
+		});
+#endif
+
+		private void CaptureMouse(bool wantCapture)
+		{
+			if (wantCapture)
 			{
 				var fbLocation = Point.Subtract(Bounds.Location, new(PointToClient(Location)));
 				fbLocation.Offset(_presentationPanel.Control.Location);
@@ -4861,6 +4871,7 @@ namespace BizHawk.Client.EmuHawk
 			// Cursor.Clip is a no-op on Linux, so we need this too
 			if (OSTailoredCode.IsUnixHost)
 			{
+#if true
 				if (_x11Display == IntPtr.Zero)
 				{
 					_x11Display = XlibImports.XOpenDisplay(null);
@@ -4893,7 +4904,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (_hasXFixes)
 				{
-					if (wantLock)
+					if (wantCapture)
 					{
 						var fbLocation = Point.Subtract(Bounds.Location, new(PointToClient(Location)));
 						fbLocation.Offset(_presentationPanel.Control.Location);
@@ -4921,6 +4932,12 @@ namespace BizHawk.Client.EmuHawk
 						_pointerBarriers[3] = XfixesImports.XFixesCreatePointerBarrier(
 							_x11Display, Handle, screenRect.X, barrierRect.Bottom, screenRect.Right, barrierRect.Bottom,
 							XfixesImports.BarrierDirection.BarrierNegativeY, 0, IntPtr.Zero);
+
+						// after creating pointer barriers, warp our cursor over to the presentation panel
+						_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime); // just in case someone else has grabbed the pointer
+						_ = XlibImports.XGrabPointer(_x11Display, Handle, false, 0,
+							XlibImports.GrabMode.Async, XlibImports.GrabMode.Async, _presentationPanel.Control.Handle, IntPtr.Zero, XlibImports.CurrentTime);
+						_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime);
 					}
 					else
 					{
@@ -4933,25 +4950,29 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 					}
+
+					_ = XlibImports.XFlush(_x11Display);
 				}
-#if false
+#elif false
+				// approach just using XGrabPointer
+				// (doesn't work, Mono won't respond to mouse buttons for whatever reason)
 				if (_x11Display == IntPtr.Zero)
 				{
 					_x11Display = XlibImports.XOpenDisplay(null);
 				}
 
-				if (wantLock)
+				if (wantCapture)
 				{
 					const XlibImports.EventMask eventMask = XlibImports.EventMask.ButtonPressMask | XlibImports.EventMask.ButtonMotionMask
 						| XlibImports.EventMask.ButtonReleaseMask | XlibImports.EventMask.PointerMotionMask | XlibImports.EventMask.PointerMotionHintMask
 						| XlibImports.EventMask.EnterWindowMask | XlibImports.EventMask.LeaveWindowMask | XlibImports.EventMask.FocusChangeMask;
-					var grabResult = XlibImports.XGrabPointer(_x11Display, _presentationPanel.Control.Handle, false, eventMask,
+					var grabResult = XlibImports.XGrabPointer(_x11Display, Handle, false, eventMask,
 						XlibImports.GrabMode.Async, XlibImports.GrabMode.Async, _presentationPanel.Control.Handle, IntPtr.Zero, XlibImports.CurrentTime);
 					if (grabResult == XlibImports.GrabResult.AlreadyGrabbed)
 					{
 						// try to grab again after releasing whatever current active grab
 						_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime);
-						_ = XlibImports.XGrabPointer(_x11Display, _presentationPanel.Control.Handle, false, eventMask,
+						_ = XlibImports.XGrabPointer(_x11Display, Handle, false, eventMask,
 							XlibImports.GrabMode.Async, XlibImports.GrabMode.Async, _presentationPanel.Control.Handle, IntPtr.Zero, XlibImports.CurrentTime);
 					}
 				}
@@ -4959,8 +4980,20 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// always returns 1
 					_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime);
-					_ = XlibImports.XCloseDisplay(_x11Display);
-					_x11Display = IntPtr.Zero;
+				}
+
+				_ = XlibImports.XFlush(_x11Display);
+#else
+				// approach using internal Mono function that ends up just using XGrabPointer
+				// (doesn't work either, while Mono does respond to mouse buttons, it ends up being able to respond to the top menu bar somehow)
+				// (also interacting with other windows (e.g. right click menu) cancels the capture)
+				if (wantCapture)
+				{
+					_captureWithConfine.Value(this, _presentationPanel.Control);
+				}
+				else
+				{
+					Capture = false;
 				}
 #endif
 			}

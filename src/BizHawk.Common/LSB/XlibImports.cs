@@ -77,6 +77,9 @@ namespace BizHawk.Common
 		public static extern IntPtr XDefaultRootWindow(IntPtr display);
 
 		[DllImport(XLIB)]
+		public static extern int XFlush(IntPtr display);
+
+		[DllImport(XLIB)]
 		public static extern int XPending(IntPtr display);
 
 		public enum XEventTypes : int
