@@ -14,6 +14,7 @@ namespace BizHawk.Common
 		[Flags]
 		public enum BarrierDirection : int
 		{
+			BarrierNone = 0,
 			BarrierPositiveX = 1 << 0,
 			BarrierPositiveY = 1 << 1,
 			BarrierNegativeX = 1 << 2,

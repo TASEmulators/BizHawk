@@ -630,8 +630,8 @@ namespace BizHawk.Common
 			public nuint time;
 			public int x, y;
 			public int x_root, y_root;
-			public int state;
-			public int keycode;
+			public uint state;
+			public uint keycode;
 			[MarshalAs(UnmanagedType.Bool)]
 			public bool same_screen;
 		}
@@ -707,12 +707,13 @@ namespace BizHawk.Common
 		public static extern unsafe XkbDescRec* XkbAllocKeyboard(IntPtr display);
 
 		[DllImport(XLIB)]
-		public static extern unsafe void XkbFreeKeyboard(XkbDescRec* xkb, int which, [MarshalAs(UnmanagedType.Bool)] bool free_all);
+		public static extern unsafe void XkbFreeKeyboard(XkbDescRec* xkb, uint which, [MarshalAs(UnmanagedType.Bool)] bool free_all);
 
 		[DllImport(XLIB)]
 		public static extern unsafe Status XkbGetNames(IntPtr display, uint which, XkbDescRec* xkb);
 
 		[DllImport(XLIB)]
-		public static extern Keysym XkbKeycodeToKeysym(IntPtr display, int keycode, int group, int level);
+		[return: MarshalAs(UnmanagedType.SysUInt)]
+		public static extern Keysym XkbKeycodeToKeysym(IntPtr display, uint keycode, int group, int level);
 	}
 }

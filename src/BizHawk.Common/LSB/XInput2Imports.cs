@@ -88,7 +88,7 @@ namespace BizHawk.Common
 		{
 			public int type;
 			public nuint serial;
-			public int send_event;
+			public int send_event; // Bool
 			public IntPtr display;
 			public int extension;
 			public int evtype;

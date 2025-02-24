@@ -293,7 +293,7 @@ namespace BizHawk.Bizware.Input
 				}
 			}
 
-			for (var i = 0; i < KeyEnumMap.Length; i++)
+			for (uint i = 0; i < KeyEnumMap.Length; i++)
 			{
 				if (KeyEnumMap[i] == DistinctKey.Unknown)
 				{
