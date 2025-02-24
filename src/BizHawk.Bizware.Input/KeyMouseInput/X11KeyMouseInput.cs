@@ -184,19 +184,10 @@ namespace BizHawk.Bizware.Input
 							{
 								var rawValueIndex = 0;
 
-								// not implemented until netcore / netstandard2.1
-								// copied from modern runtime
-								static bool IsNormal(double d)
-								{
-									var bits = BitConverter.DoubleToInt64Bits(d);
-									bits &= 0x7FFF_FFFF_FFFF_FFFF;
-									return (bits < 0x7FF0_0000_0000_0000) && (bits != 0) && ((bits & 0x7FF0_0000_0000_0000) == 0);
-								}
-
 								if (XIMaskIsSet(valuatorsMask, 0))
 								{
 									var deltaX = xiRawEvent->raw_values[rawValueIndex];
-									if (IsNormal(deltaX))
+									if (!double.IsInfinity(deltaX) && !double.IsNaN(deltaX))
 									{
 										mouseDeltaX += deltaX;
 									}
@@ -207,7 +198,7 @@ namespace BizHawk.Bizware.Input
 								if (XIMaskIsSet(valuatorsMask, 1))
 								{
 									var deltaY = xiRawEvent->raw_values[rawValueIndex];
-									if (IsNormal(deltaY))
+									if (!double.IsInfinity(deltaY) && !double.IsNaN(deltaY))
 									{
 										mouseDeltaY += deltaY;
 									}

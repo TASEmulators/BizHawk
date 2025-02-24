@@ -4899,23 +4899,27 @@ namespace BizHawk.Client.EmuHawk
 						fbLocation.Offset(_presentationPanel.Control.Location);
 						var barrierRect = new Rectangle(fbLocation, _presentationPanel.Control.Size);
 
-						// each line of the barrier rect must be a separate barrier object 
+						// each line of the barrier rect must be a separate barrier object
+						// also, the lines should span the entire screen, to avoid the cursor escaping at the corner
+
+						var mfScreen = Screen.FromControl(this);
+						var screenRect = mfScreen.Bounds;
 
 						// left barrier
 						_pointerBarriers[0] = XfixesImports.XFixesCreatePointerBarrier(
-							_x11Display, Handle, barrierRect.X, barrierRect.Y, barrierRect.X, barrierRect.Bottom,
+							_x11Display, Handle, barrierRect.X, screenRect.Y, barrierRect.X, screenRect.Bottom,
 							XfixesImports.BarrierDirection.BarrierPositiveX, 0, IntPtr.Zero);
 						// top barrier
 						_pointerBarriers[1] = XfixesImports.XFixesCreatePointerBarrier(
-							_x11Display, Handle, barrierRect.X, barrierRect.Y, barrierRect.Right, barrierRect.Y,
+							_x11Display, Handle, screenRect.X, barrierRect.Y, screenRect.Right, barrierRect.Y,
 							XfixesImports.BarrierDirection.BarrierPositiveY, 0, IntPtr.Zero);
 						// right barrier
 						_pointerBarriers[2] = XfixesImports.XFixesCreatePointerBarrier(
-							_x11Display, Handle, barrierRect.Right, barrierRect.Y, barrierRect.Right, barrierRect.Bottom,
+							_x11Display, Handle, barrierRect.Right, screenRect.Y, barrierRect.Right, screenRect.Bottom,
 							XfixesImports.BarrierDirection.BarrierNegativeX, 0, IntPtr.Zero);
 						// bottom barrier
 						_pointerBarriers[3] = XfixesImports.XFixesCreatePointerBarrier(
-							_x11Display, Handle, barrierRect.X, barrierRect.Bottom, barrierRect.Right, barrierRect.Bottom,
+							_x11Display, Handle, screenRect.X, barrierRect.Bottom, screenRect.Right, barrierRect.Bottom,
 							XfixesImports.BarrierDirection.BarrierNegativeY, 0, IntPtr.Zero);
 					}
 					else
