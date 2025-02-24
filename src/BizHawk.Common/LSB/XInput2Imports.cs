@@ -7,7 +7,7 @@ namespace BizHawk.Common
 		private const string XI2 = "libXi.so.6";
 
 		[DllImport(XI2)]
-		public static extern int XIQueryVersion(IntPtr display, ref int major_version_inout, ref int minor_version_inout);
+		public static extern XlibImports.Status XIQueryVersion(IntPtr display, ref int major_version_inout, ref int minor_version_inout);
 
 		public enum XIEvents
 		{
@@ -64,8 +64,16 @@ namespace BizHawk.Common
 			public IntPtr mask;
 		}
 
+		// weird status XISelectEvents uses...
+		public enum XIStatus : int
+		{
+			Success = 0,
+			NoSuchExtension = 1,
+			MiscError = -1,
+		}
+
 		[DllImport(XI2)]
-		public static extern int XISelectEvents(IntPtr display, IntPtr win, ref XIEventMask masks, int num_masks);
+		public static extern XIStatus XISelectEvents(IntPtr display, IntPtr win, ref XIEventMask masks, int num_masks);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public unsafe struct XIValuatorState

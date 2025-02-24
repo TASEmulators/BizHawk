@@ -61,10 +61,15 @@ namespace BizHawk.Bizware.Input
 			try
 			{
 				(major, minor) = (2, 1);
-				if (XIQueryVersion(Display, ref major, ref minor) != 0
-					|| major * 100 + minor < 201)
+				var queryVersionStatus = XIQueryVersion(Display, ref major, ref minor);
+				if (queryVersionStatus != Status.Success)
 				{
-					Console.Error.WriteLine("XInput2 version is not at least 2.1, relative mouse input will not work");
+					Console.Error.WriteLine($"Failed to query XInput2 version (got {queryVersionStatus}), relative mouse input will not work");
+					_supportsXInput2 = false;
+				}
+				else if (major * 100 + minor < 201)
+				{
+					Console.Error.WriteLine($"XInput2 version is not at least 2.1 (got {major}.{minor}), relative mouse input will not work");
 					_supportsXInput2 = false;
 				}
 			}
@@ -211,7 +216,7 @@ namespace BizHawk.Bizware.Input
 						}
 					}
 
-					_ = XFreeEventData(Display, ref evt.xcookie);
+					XFreeEventData(Display, ref evt.xcookie);
 				}
 
 				return ((int)mouseDeltaX, (int)mouseDeltaY);
@@ -230,65 +235,67 @@ namespace BizHawk.Bizware.Input
 				var keyboard = XkbAllocKeyboard(Display);
 				if (keyboard != null)
 				{
-					_ = XkbGetNames(Display, 0x3FF, keyboard);
-					var names = Marshal.PtrToStructure<XkbNamesRec>(keyboard->names);
-
-					for (int i = keyboard->min_key_code; i <= keyboard->max_key_code; i++)
+					if (XkbGetNames(Display, 0x3FF, keyboard) == Status.Success)
 					{
-						var name = new string(names.keys[i].name, 0, 4);
-						var key = name switch
-						{
-							"TLDE" => DistinctKey.OemTilde,
-							"AE01" => DistinctKey.D1,
-							"AE02" => DistinctKey.D2,
-							"AE03" => DistinctKey.D3,
-							"AE04" => DistinctKey.D4,
-							"AE05" => DistinctKey.D5,
-							"AE06" => DistinctKey.D6,
-							"AE07" => DistinctKey.D7,
-							"AE08" => DistinctKey.D8,
-							"AE09" => DistinctKey.D9,
-							"AE10" => DistinctKey.D0,
-							"AE11" => DistinctKey.OemMinus,
-							"AE12" => DistinctKey.OemPlus,
-							"AD01" => DistinctKey.Q,
-							"AD02" => DistinctKey.W,
-							"AD03" => DistinctKey.E,
-							"AD04" => DistinctKey.R,
-							"AD05" => DistinctKey.T,
-							"AD06" => DistinctKey.Y,
-							"AD07" => DistinctKey.U,
-							"AD08" => DistinctKey.I,
-							"AD09" => DistinctKey.O,
-							"AD10" => DistinctKey.P,
-							"AD11" => DistinctKey.OemOpenBrackets,
-							"AD12" => DistinctKey.OemCloseBrackets,
-							"AC01" => DistinctKey.A,
-							"AC02" => DistinctKey.S,
-							"AC03" => DistinctKey.D,
-							"AC04" => DistinctKey.F,
-							"AC05" => DistinctKey.G,
-							"AC06" => DistinctKey.H,
-							"AC07" => DistinctKey.J,
-							"AC08" => DistinctKey.K,
-							"AC09" => DistinctKey.L,
-							"AC10" => DistinctKey.OemSemicolon,
-							"AC11" => DistinctKey.OemQuotes,
-							"AB01" => DistinctKey.Z,
-							"AB02" => DistinctKey.X,
-							"AB03" => DistinctKey.C,
-							"AB04" => DistinctKey.V,
-							"AB05" => DistinctKey.B,
-							"AB06" => DistinctKey.N,
-							"AB07" => DistinctKey.M,
-							"AB08" => DistinctKey.OemComma,
-							"AB09" => DistinctKey.OemPeriod,
-							"AB10" => DistinctKey.OemQuestion,
-							"BKSL" => DistinctKey.OemPipe,
-							_ => DistinctKey.Unknown,
-						};
+						var names = Marshal.PtrToStructure<XkbNamesRec>(keyboard->names);
 
-						KeyEnumMap[i] = key;
+						for (int i = keyboard->min_key_code; i <= keyboard->max_key_code; i++)
+						{
+							var name = new string(names.keys[i].name, 0, 4);
+							var key = name switch
+							{
+								"TLDE" => DistinctKey.OemTilde,
+								"AE01" => DistinctKey.D1,
+								"AE02" => DistinctKey.D2,
+								"AE03" => DistinctKey.D3,
+								"AE04" => DistinctKey.D4,
+								"AE05" => DistinctKey.D5,
+								"AE06" => DistinctKey.D6,
+								"AE07" => DistinctKey.D7,
+								"AE08" => DistinctKey.D8,
+								"AE09" => DistinctKey.D9,
+								"AE10" => DistinctKey.D0,
+								"AE11" => DistinctKey.OemMinus,
+								"AE12" => DistinctKey.OemPlus,
+								"AD01" => DistinctKey.Q,
+								"AD02" => DistinctKey.W,
+								"AD03" => DistinctKey.E,
+								"AD04" => DistinctKey.R,
+								"AD05" => DistinctKey.T,
+								"AD06" => DistinctKey.Y,
+								"AD07" => DistinctKey.U,
+								"AD08" => DistinctKey.I,
+								"AD09" => DistinctKey.O,
+								"AD10" => DistinctKey.P,
+								"AD11" => DistinctKey.OemOpenBrackets,
+								"AD12" => DistinctKey.OemCloseBrackets,
+								"AC01" => DistinctKey.A,
+								"AC02" => DistinctKey.S,
+								"AC03" => DistinctKey.D,
+								"AC04" => DistinctKey.F,
+								"AC05" => DistinctKey.G,
+								"AC06" => DistinctKey.H,
+								"AC07" => DistinctKey.J,
+								"AC08" => DistinctKey.K,
+								"AC09" => DistinctKey.L,
+								"AC10" => DistinctKey.OemSemicolon,
+								"AC11" => DistinctKey.OemQuotes,
+								"AB01" => DistinctKey.Z,
+								"AB02" => DistinctKey.X,
+								"AB03" => DistinctKey.C,
+								"AB04" => DistinctKey.V,
+								"AB05" => DistinctKey.B,
+								"AB06" => DistinctKey.N,
+								"AB07" => DistinctKey.M,
+								"AB08" => DistinctKey.OemComma,
+								"AB09" => DistinctKey.OemPeriod,
+								"AB10" => DistinctKey.OemQuestion,
+								"BKSL" => DistinctKey.OemPipe,
+								_ => DistinctKey.Unknown,
+							};
+
+							KeyEnumMap[i] = key;
+						}
 					}
 
 					XkbFreeKeyboard(keyboard, 0, true);

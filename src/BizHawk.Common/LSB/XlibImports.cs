@@ -47,6 +47,28 @@ namespace BizHawk.Common
 			}
 		}
 
+		public enum Status : int
+		{
+			Success = 0,
+			BadRequest = 1,
+			BadValue = 2,
+			BadWindow = 3,
+			BadPixmap = 4,
+			BadAtom = 5,
+			BadCursor = 6,
+			BadFont = 7,
+			BadMatch = 8,
+			BadDrawable = 9,
+			BadAccess = 10,
+			BadAlloc = 11,
+			BadColor = 12,
+			BadGC = 13,
+			BadIDChoice = 14,
+			BadName = 15,
+			BadLength = 16,
+			BadImplementation = 17
+		}
+
 		[DllImport(XLIB)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool XQueryExtension(IntPtr display, string name, out int major_opcode_return, out int first_event_return, out int first_error_return);
@@ -136,7 +158,7 @@ namespace BizHawk.Common
 		public static extern bool XGetEventData(IntPtr display, ref XGenericEventCookie cookie);
 
 		[DllImport(XLIB)]
-		public static extern int XFreeEventData(IntPtr display, ref XGenericEventCookie cookie);
+		public static extern void XFreeEventData(IntPtr display, ref XGenericEventCookie cookie);
 
 		[Flags]
 		public enum EventMask : uint
@@ -685,7 +707,7 @@ namespace BizHawk.Common
 		public static extern unsafe void XkbFreeKeyboard(XkbDescRec* xkb, int which, [MarshalAs(UnmanagedType.Bool)] bool free_all);
 
 		[DllImport(XLIB)]
-		public static extern unsafe int XkbGetNames(IntPtr display, uint which, XkbDescRec* xkb);
+		public static extern unsafe Status XkbGetNames(IntPtr display, uint which, XkbDescRec* xkb);
 
 		[DllImport(XLIB)]
 		public static extern Keysym XkbKeycodeToKeysym(IntPtr display, int keycode, int group, int level);

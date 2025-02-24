@@ -4873,11 +4873,14 @@ namespace BizHawk.Client.EmuHawk
 
 					try
 					{
-						var (major, minor) = (5, 0);
-						if (XfixesImports.XFixesQueryVersion(_x11Display, ref major, ref minor) != 0
-							|| major * 100 + minor < 500)
+						if (!XfixesImports.XFixesQueryVersion(_x11Display, out var major, out var minor))
 						{
-							Console.Error.WriteLine("XFixes version is not at least 5.0, mouse capture will not lock the mouse cursor");
+							Console.Error.WriteLine("Failed to query XFixes version, mouse capture will not lock the mouse cursor");
+							_hasXFixes = false;
+						}
+						else if (major * 100 + minor < 500)
+						{
+							Console.Error.WriteLine($"XFixes version is not at least 5.0 (got {major}.{minor}), mouse capture will not lock the mouse cursor");
 							_hasXFixes = false;
 						}
 					}

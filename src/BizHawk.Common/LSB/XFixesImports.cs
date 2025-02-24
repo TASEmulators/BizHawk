@@ -6,8 +6,10 @@ namespace BizHawk.Common
 	{
 		private const string XFIXES = "libXfixes.so.3";
 
+		// docs claims this returns Status, actually returns Bool (1 is success, 0 is failure)
 		[DllImport(XFIXES)]
-		public static extern int XFixesQueryVersion(IntPtr display, ref int major_version_inout, ref int minor_version_inout);
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool XFixesQueryVersion(IntPtr display, out int major_version_return, out int minor_version_return);
 
 		[Flags]
 		public enum BarrierDirection : int
