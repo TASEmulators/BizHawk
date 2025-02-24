@@ -187,7 +187,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			//// CPU (core) configuration
 			configString += "[cpu]\n";
 			if (_syncSettings.CPUCycles != -1) configString += $"cycles = {_syncSettings.CPUCycles}";
-			if (_syncSettings.CPUCycles != -1) configString += $"cycles = {_syncSettings.CPUCycles}";
 
 
 			//// DOSBox-x configuration
