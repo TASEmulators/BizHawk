@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -66,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Parsing rom files
 			foreach (var file in _roms)
 			{
-				var ext = file.RomPath.Substring(startIndex: file.RomPath.LastIndexOf('.')).ToLowerInvariant();
+				var ext = file.RomPath.Substring(startIndex: file.RomPath.LastIndexOf('.')).ToLowerInvariant().RemovePrefix('.');
 				bool recognized = false;
 
 				// Checking for supported floppy disk extensions
