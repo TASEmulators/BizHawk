@@ -31,10 +31,11 @@ namespace BizHawk.Client.Common
 				Player2Present = input[i++] is not 0,
 				Player3Present = input[i++] is not 0,
 				Player4Present = input[i++] is not 0,
+				TurningResolution = DSDA.TurningResolution.Shorttics,
 			};
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 
-			var hereticController = new HereticController(1);
+			var hereticController = new HereticController(1, false);
 			var controller = new SimpleController(hereticController.Definition);
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 			void ParsePlayer(string playerPfx)

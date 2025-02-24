@@ -67,9 +67,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		public enum TurningResolution : int
 		{
-			[Display(Name = "16-bit integer (\"longtics\")")]
+			[Display(Name = "16 bits (longtics)")]
 			Longtics = 1,
-			[Display(Name = "8-bit integer (\"shorttics\")")]
+			[Display(Name = "8 bits (shorttics)")]
 			Shorttics = 2,
 		}
 
@@ -267,6 +267,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DisplayName("Turning Resolution")]
 			[Description("\"Shorttics\" refers to decreased turning resolution used for demos. \"Longtics\" refers to the regular turning resolution outside of a demo-recording environment.")]
 			[DefaultValue(TurningResolution.Longtics)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public TurningResolution TurningResolution { get; set; }
 
 			[DisplayName("Prevent Level Exit")]

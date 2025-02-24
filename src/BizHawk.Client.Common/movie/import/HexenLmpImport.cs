@@ -35,6 +35,7 @@ namespace BizHawk.Client.Common
 				Player3Class = (DSDA.HexenClass) input[i++],
 				Player4Present = input[i++] is not 0,
 				Player4Class = (DSDA.HexenClass) input[i++],
+				TurningResolution = DSDA.TurningResolution.Shorttics,
 			};
 			_ = input[i++]; // player 5 isPresent
 			_ = input[i++]; // player 5 class
@@ -46,7 +47,7 @@ namespace BizHawk.Client.Common
 			_ = input[i++]; // player 8 class
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 
-			var hexenController = new HexenController(1);
+			var hexenController = new HexenController(1, false);
 			var controller = new SimpleController(hexenController.Definition);
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 			void ParsePlayer(string playerPfx)

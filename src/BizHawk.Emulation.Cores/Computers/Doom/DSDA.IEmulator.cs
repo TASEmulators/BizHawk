@@ -87,10 +87,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					{
 						players[i]._TurningSpeed = (int) (players[i]._TurningSpeed / 256.0);
 					}
-					else
-					{
-						players[i]._TurningSpeed = (int) (players[i]._TurningSpeed / 10.0);
-					}
 
 					// bool buttons
 					var actionsBitfield = portReaders[i](controller);
