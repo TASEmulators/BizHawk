@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BizHawk.Common;
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
