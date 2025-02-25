@@ -6,7 +6,6 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
-using static BizHawk.Emulation.Cores.Computers.DOS.DOSBox;
 
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
