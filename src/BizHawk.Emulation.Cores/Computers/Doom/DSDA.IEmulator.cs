@@ -48,7 +48,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				if ((playersPresent & (1 << i)) is not 0)
 				{
-					int speedIndex = Convert.ToInt32(controller.IsPressed($"P{i+1} Run")); // todo: xor depending on autorun
+					int speedIndex = Convert.ToInt32(controller.IsPressed($"P{i+1} Run")
+						|| _syncSettings.AlwaysRun);
 
 					int turnSpeed = 0;
 					// lower speed for tapping turn buttons

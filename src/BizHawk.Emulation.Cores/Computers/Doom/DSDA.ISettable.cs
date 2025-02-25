@@ -258,12 +258,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[Description("Sets strict mode restrictions, preventing TAS-only inputs.")]
 			[DefaultValue(true)]
 			public bool StrictMode { get; set; }
-			/*
-			[DisplayName("Auto Run")]
-			[Description("")]
+			
+			[DisplayName("Always Run")]
+			[Description("Toggles whether the player is permanently in the running state, without the slower walking speed available. This emulates a bug in vanilla Doom: setting the joystick run button to an invalid high number causes the game to always have it enabled.")]
 			[DefaultValue(true)]
-			public bool AutoRun { get; set; }
-			*/
+			public bool AlwaysRun { get; set; }
+			
 			[DisplayName("Turning Resolution")]
 			[Description("\"Shorttics\" refers to decreased turning resolution used for demos. \"Longtics\" refers to the regular turning resolution outside of a demo-recording environment.")]
 			[DefaultValue(TurningResolution.Longtics)]
