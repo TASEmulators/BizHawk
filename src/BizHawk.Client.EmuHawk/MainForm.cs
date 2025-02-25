@@ -538,6 +538,7 @@ namespace BizHawk.Client.EmuHawk
 			ResizeBegin += (o, e) =>
 			{
 				_inResizeLoop = true;
+
 				if (!OSTailoredCode.IsUnixHost)
 				{
 					Sound?.StopSound();
@@ -551,14 +552,27 @@ namespace BizHawk.Client.EmuHawk
 				_inResizeLoop = false;
 				UpdateWindowTitle();
 
-				if (_presentationPanel != null)
-				{
-					_presentationPanel.Resized = true;
-				}
-
 				if (!OSTailoredCode.IsUnixHost)
 				{
 					Sound?.StartSound();
+				}
+			};
+
+			_presentationPanel.Control.Move += (_, _) =>
+			{
+				if (Config.CaptureMouse)
+				{
+					CaptureMouse(false);
+					CaptureMouse(true);
+				}
+			};
+
+			_presentationPanel.Control.Resize += (_, _) =>
+			{
+				if (Config.CaptureMouse)
+				{
+					CaptureMouse(false);
+					CaptureMouse(true);
 				}
 			};
 
@@ -961,6 +975,7 @@ namespace BizHawk.Client.EmuHawk
 			if (disposing)
 			{
 				components?.Dispose();
+				_presentationPanel?.Dispose();
 				SingleInstanceDispose();
 			}
 
@@ -1185,11 +1200,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			base.OnActivated(e);
 			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, true);
+
+			if (Config.CaptureMouse)
+			{
+				CaptureMouse(false);
+				CaptureMouse(true);
+			}
 		}
 
 		protected override void OnDeactivate(EventArgs e)
 		{
 			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, false);
+
+			if (Config.CaptureMouse)
+			{
+				CaptureMouse(false);
+			}
+
 			base.OnDeactivate(e);
 		}
 
@@ -1492,7 +1519,6 @@ namespace BizHawk.Client.EmuHawk
 				// Change size
 				Size = new Size(lastComputedSize.Width + borderWidth, lastComputedSize.Height + borderHeight);
 				PerformLayout();
-				_presentationPanel.Resized = true;
 
 				// Is window off the screen at this size?
 				if (!area.Contains(Bounds))
@@ -1511,6 +1537,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+
 			DoPresentationPanelResize();
 			DoPresentationPanelResize();
 		}
@@ -1588,8 +1615,6 @@ namespace BizHawk.Client.EmuHawk
 				SynchChrome();
 				WindowState = FormWindowState.Maximized; // be sure to do this after setting the chrome, otherwise it wont work fully
 				ResumeLayout();
-
-				_presentationPanel.Resized = true;
 			}
 			else
 			{
@@ -4859,6 +4884,7 @@ namespace BizHawk.Client.EmuHawk
 				Cursor.Hide();
 				_presentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
 				_cursorHidden = true;
+				BringToFront();
 			}
 			else
 			{
@@ -4904,6 +4930,15 @@ namespace BizHawk.Client.EmuHawk
 
 				if (_hasXFixes)
 				{
+					for (var i = 0; i < 4; i++)
+					{
+						if (_pointerBarriers[i] != IntPtr.Zero)
+						{
+							XfixesImports.XFixesDestroyPointerBarrier(_x11Display, _pointerBarriers[i]);
+							_pointerBarriers[i] = IntPtr.Zero;
+						}
+					}
+
 					if (wantCapture)
 					{
 						var fbLocation = Point.Subtract(Bounds.Location, new(PointToClient(Location)));
@@ -4939,17 +4974,6 @@ namespace BizHawk.Client.EmuHawk
 							XlibImports.GrabMode.Async, XlibImports.GrabMode.Async, _presentationPanel.Control.Handle, IntPtr.Zero, XlibImports.CurrentTime);
 						_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime);
 					}
-					else
-					{
-						for (var i = 0; i < 4; i++)
-						{
-							if (_pointerBarriers[i] != IntPtr.Zero)
-							{
-								XfixesImports.XFixesDestroyPointerBarrier(_x11Display, _pointerBarriers[i]);
-								_pointerBarriers[i] = IntPtr.Zero;
-							}
-						}
-					}
 
 					_ = XlibImports.XFlush(_x11Display);
 				}
@@ -4961,25 +4985,16 @@ namespace BizHawk.Client.EmuHawk
 					_x11Display = XlibImports.XOpenDisplay(null);
 				}
 
+				// always returns 1
+				_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime);
+
 				if (wantCapture)
 				{
 					const XlibImports.EventMask eventMask = XlibImports.EventMask.ButtonPressMask | XlibImports.EventMask.ButtonMotionMask
 						| XlibImports.EventMask.ButtonReleaseMask | XlibImports.EventMask.PointerMotionMask | XlibImports.EventMask.PointerMotionHintMask
 						| XlibImports.EventMask.EnterWindowMask | XlibImports.EventMask.LeaveWindowMask | XlibImports.EventMask.FocusChangeMask;
-					var grabResult = XlibImports.XGrabPointer(_x11Display, Handle, false, eventMask,
-						XlibImports.GrabMode.Async, XlibImports.GrabMode.Async, _presentationPanel.Control.Handle, IntPtr.Zero, XlibImports.CurrentTime);
-					if (grabResult == XlibImports.GrabResult.AlreadyGrabbed)
-					{
-						// try to grab again after releasing whatever current active grab
-						_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime);
-						_ = XlibImports.XGrabPointer(_x11Display, Handle, false, eventMask,
-							XlibImports.GrabMode.Async, XlibImports.GrabMode.Async, _presentationPanel.Control.Handle, IntPtr.Zero, XlibImports.CurrentTime);
-					}
-				}
-				else
-				{
-					// always returns 1
-					_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime);
+					_ = XlibImports.XGrabPointer(_x11Display, Handle, false, eventMask, XlibImports.GrabMode.Async,
+							XlibImports.GrabMode.Async, _presentationPanel.Control.Handle, IntPtr.Zero, XlibImports.CurrentTime);
 				}
 
 				_ = XlibImports.XFlush(_x11Display);
