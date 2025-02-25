@@ -40,7 +40,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int _WeaponSelect;
 			public int _Fire;
 			public int _Action;
-			public int _AltWeapon;
 			public int _Automap;
 
 			// Hexen + Heretic (Raven Games)

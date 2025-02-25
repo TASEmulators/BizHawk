@@ -50,7 +50,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[
 			"Fire",
 			"Use",
-			"Alt Weapon",
 			"Forward",
 			"Backward",
 			"Turn Left",
@@ -74,8 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			if (c.IsPressed($"P{PortNum} Fire")) { result |= 0b0001; }
 			if (c.IsPressed($"P{PortNum} Use")) { result |= 0b0010; }
-			if (c.IsPressed($"P{PortNum} Alt Weapon")) { result |= 0b0100; }
-			if (c.IsPressed($"P{PortNum} Automap")) { result |= 0b1000; }
+			if (c.IsPressed($"P{PortNum} Automap")) { result |= 0b0100; }
 
 			return result;
 		}
@@ -129,7 +127,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[
 			"Fire",
 			"Use",
-			"Alt Weapon",
 			"Forward",
 			"Backward",
 			"Turn Left",
@@ -152,7 +149,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			if (c.IsPressed($"P{PortNum} Fire")) { result |= 0b0001; }
 			if (c.IsPressed($"P{PortNum} Use")) { result |= 0b0010; }
-			if (c.IsPressed($"P{PortNum} Alt Weapon")) { result |= 0b0100; }
 
 			return result;
 		}
@@ -270,7 +266,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			if (c.IsPressed($"P{PortNum} Fire")) { result |= 0b00001; }
 			if (c.IsPressed($"P{PortNum} Use")) { result |= 0b00010; }
-			if (c.IsPressed($"P{PortNum} Alt Weapon")) { result |= 0b00100; }
 			if (c.IsPressed($"P{PortNum} Jump")) { result |= 0b01000; }
 			if (c.IsPressed($"P{PortNum} End Player")) { result |= 0b10000; }
 

@@ -93,8 +93,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					var actionsBitfield = portReaders[i](controller);
 					players[i]._Fire = actionsBitfield & 0b00001;
 					players[i]._Action = (actionsBitfield & 0b00010) >> 1;
-					players[i]._AltWeapon = (actionsBitfield & 0b00100) >> 2;
-					players[i]._Automap = (actionsBitfield & 0b01000) >> 3;
+					players[i]._Automap = (actionsBitfield & 0b00100) >> 2;
 
 					// Raven Games
 					if (_syncSettings.InputFormat is DoomControllerTypes.Heretic or DoomControllerTypes.Hexen)

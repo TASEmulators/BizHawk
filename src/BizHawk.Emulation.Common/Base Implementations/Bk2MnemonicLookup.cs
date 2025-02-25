@@ -820,7 +820,6 @@ namespace BizHawk.Emulation.Common
 			},
 			[VSystemID.Raw.Doom] = new()
 			{
-				["Alt Weapon"] = 'X',
 				["Backward"] = 'v',
 				["End Player"] = 'E',
 				["Fire"] = 'F',

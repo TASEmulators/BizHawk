@@ -20,7 +20,7 @@ extern "C"
   void headlessRunSingleTick();
   void headlessUpdateSounds(void);
   void headlessClearTickCommand();
-  void headlessSetTickCommand(int playerId, int forwardSpeed, int strafingSpeed, int turningSpeed, int fire, int action, int weapon, int altWeapon, int automap, int lookfly, int artifact, int jump, int endPlayer);
+  void headlessSetTickCommand(int playerId, int forwardSpeed, int strafingSpeed, int turningSpeed, int fire, int action, int weapon, int automap, int lookfly, int artifact, int jump, int endPlayer);
 
   // Video-related functions
   void headlessUpdateVideo(void);
@@ -89,7 +89,6 @@ struct PackedPlayerInput
 	int _WeaponSelect;
 	int _Fire;
 	int _Action;
-	int _AltWeapon;
 	int _Automap;
 	int _FlyLook;
 	int _ArtifactUse;
