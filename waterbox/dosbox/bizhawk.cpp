@@ -20,7 +20,7 @@ extern void swapInDrive(int drive, unsigned int position);
 cothread_t _emuCoroutine;
 cothread_t _driverCoroutine;
 
-#define __FPS__ 59.8260993957519531
+#define __FPS__ 70
 double ticksTarget;
 constexpr double ticksPerFrame = 1000.0 / __FPS__;
 uint32_t ticksElapsed;
@@ -230,14 +230,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	ticksTarget += ticksPerFrame;
 	
 	// Advancing until the required tick target is met
-	while (ticksElapsed < (int)ticksTarget)
-	{
-		// Advance frame 1ms at a time for correct internal timing
-		ticksElapsed += 1;
-
-		// Jumping back into dosbox
-		co_switch(_emuCoroutine);
-	}
+	while (ticksElapsed < (int)ticksTarget)	co_switch(_emuCoroutine);
 
 	// Checking audio sample count
 	// size_t checksum = 0;
