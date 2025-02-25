@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public const int SVGA_MAX_WIDTH = 800;
 		public const int SVGA_MAX_HEIGHT = 600;
 
-		public const int VIDEO_NUMERATOR_DOS = 300000000;
+		public const int VIDEO_NUMERATOR_DOS = 350000000;
 		public const int VIDEO_DENOMINATOR_DOS = 5000000;
 
 		public const int FASTMEM_AUTO = -1;

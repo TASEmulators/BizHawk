@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BizHawk.Common;
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -67,28 +66,28 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Parsing rom files
 			foreach (var file in _roms)
 			{
-				var ext = file.RomPath.Substring(startIndex: file.RomPath.LastIndexOf('.')).ToLowerInvariant().RemovePrefix('.');
+				var ext = Path.GetExtension(file.RomPath);
 				bool recognized = false;
 
 				// Checking for supported floppy disk extensions
-				if (ext is "ima" or "img" or "xdf" or "dmf" or "fdd" or "fdi" or "nfd" or "d88")
+				if (ext is ".ima" or ".img" or ".xdf" or ".dmf" or ".fdd" or ".fdi" or ".nfd" or ".d88")
 				{
 					_floppyDiskImageFiles.Add(file);
 					recognized = true;
 				}
 				// Checking for supported CD-ROM extensions
-				else if (ext is "dosbox-iso" // Temporary to circumvent BK's detection of isos as discs (not roms)
-					or "dosbox-cue" // Must be accompanied by a bin file
-					or "dosbox-bin"
-					or "dosbox-mdf"
-					or "dosbox-chf")
+				else if (ext is ".dosbox-iso" // Temporary to circumvent BK's detection of isos as discs (not roms)
+					or ".dosbox-cue" // Must be accompanied by a bin file
+					or ".dosbox-bin"
+					or ".dosbox-mdf"
+					or ".dosbox-chf")
 				{
 					Console.WriteLine("Added CDROM Image");
 					_CDROMDiskImageFiles.Add(file);
 					recognized = true;
 				}
 				// Checking for DOSBox-x config files
-				else if (ext is "conf")
+				else if (ext is ".conf")
 				{
 					ConfigFiles.Add(file);
 					recognized = true;
@@ -112,7 +111,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}, new Delegate[] { });
 
 			// Getting base config file
-			var configString = Encoding.UTF8.GetString(_syncSettings.ConfigurationPreset switch
+			var configString = Encoding.UTF8.GetString(Resources.DOSBOX_CONF_BASE.Value);
+			configString += "\n";
+
+			// Getting selected machine preset config file
+			configString += Encoding.UTF8.GetString(_syncSettings.ConfigurationPreset switch
 			{
 				ConfigurationPreset.Early80s => Resources.DOSBOX_CONF_EARLY80S.Value,
 				ConfigurationPreset.Late80s => Resources.DOSBOX_CONF_LATE80S.Value,
@@ -163,8 +166,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			if (_CDROMCount > 0) configString += cdromMountLine + "\n";
 
 			//// Hard Disk mounting
-
-			// Config file
 
 
 			if (_syncSettings.WriteableHardDisk != WriteableHardDiskOptions.None)
@@ -220,6 +221,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Console.WriteLine("Configuration: {0}", System.Text.Encoding.Default.GetString(configData.ToArray()));
 
 			////////////// Initializing Core
+			Console.WriteLine("HARD DISK SIZE: {0}", writableHDDImageFileSize);
 			if (!_libDOSBox.Init(_syncSettings.EnableJoystick1, _syncSettings.EnableJoystick2, _syncSettings.EnableMouse, writableHDDImageFileSize))
 				throw new InvalidOperationException("Core rejected the rom!");
 
