@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using BizHawk.Common.StringExtensions;
-using static BizHawk.Common.XlibImports;
 
 namespace BizHawk.Emulation.Common
 {

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -14,11 +13,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public const int SVGA_MAX_WIDTH = 800;
 		public const int SVGA_MAX_HEIGHT = 600;
 
-		public const int VIDEO_NUMERATOR_PAL = 102237;
-		public const int VIDEO_DENOMINATOR_PAL = 2048;
-		// libretro defines PUAE_VIDEO_HZ_NTSC as 59.8260993957519531f
-		public const int VIDEO_NUMERATOR_NTSC = 299130497;
-		public const int VIDEO_DENOMINATOR_NTSC = 5000000;
+		public const int VIDEO_NUMERATOR_DOS = 300000000;
+		public const int VIDEO_DENOMINATOR_DOS = 5000000;
 
 		public const int FASTMEM_AUTO = -1;
 		public const int MAX_FLOPPIES = 4;
@@ -85,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public int leftButton;
 			public int middleButton;
 			public int rightButton;
-		};
+		}
 
 		// Follows enumeration in DOSBox-x
 		// DOSBox-x/source/base/core/include/keyboard.h

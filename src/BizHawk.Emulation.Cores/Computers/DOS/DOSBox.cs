@@ -3,11 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Waterbox;
-using Jellyfish.Virtu;
 
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
@@ -15,8 +14,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		name: CoreNames.DOSBox,
 		author: "Jonathan Campbell et al.",
 		portedVersion: "2025.02.01 (324193b)",
-		portedUrl: "https://github.com/TASEmulators/dosbox-x",
-		isReleased: true)]
+		portedUrl: "https://github.com/joncampbell123/dosbox-x",
+		isReleased: false)]
 	public partial class DOSBox : WaterboxCore
 	{
 		private static readonly Configuration DefaultConfig = new Configuration
@@ -27,8 +26,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			DefaultHeight = LibDOSBox.VGA_MAX_HEIGHT,
 			MaxWidth = LibDOSBox.SVGA_MAX_WIDTH,
 			MaxHeight = LibDOSBox.SVGA_MAX_HEIGHT,
-			DefaultFpsNumerator = LibDOSBox.VIDEO_NUMERATOR_NTSC,
-			DefaultFpsDenominator = LibDOSBox.VIDEO_DENOMINATOR_NTSC
+			DefaultFpsNumerator = LibDOSBox.VIDEO_NUMERATOR_DOS,
+			DefaultFpsDenominator = LibDOSBox.VIDEO_DENOMINATOR_DOS
 		};
 
 		private readonly List<IRomAsset> _roms;
@@ -37,7 +36,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		// Drive management variables
 		private bool _nextFloppyDiskPressed = false;
 		private bool _nextCDROMPressed = false;
-		private bool _nextHardDiskDrivePressed = false;
 		private List<IRomAsset> _floppyDiskImageFiles = new List<IRomAsset>();
 		private List<IRomAsset> _CDROMDiskImageFiles = new List<IRomAsset>();
 		private int _floppyDiskCount = 0;
@@ -58,8 +56,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_roms = lp.Roms;
 			_syncSettings = lp.SyncSettings ?? new();
 
-			VsyncNumerator = LibDOSBox.VIDEO_NUMERATOR_PAL;
-			VsyncDenominator = LibDOSBox.VIDEO_DENOMINATOR_PAL;
+			VsyncNumerator = LibDOSBox.VIDEO_NUMERATOR_DOS;
+			VsyncDenominator = LibDOSBox.VIDEO_DENOMINATOR_DOS;
 			DriveLightEnabled = false;
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
 
@@ -69,36 +67,28 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Parsing rom files
 			foreach (var file in _roms)
 			{
+				var ext = file.RomPath.Substring(startIndex: file.RomPath.LastIndexOf('.')).ToLowerInvariant().RemovePrefix('.');
 				bool recognized = false;
 
 				// Checking for supported floppy disk extensions
-				if (file.RomPath.EndsWith(".ima", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".img", StringComparison.OrdinalIgnoreCase) || 
-					file.RomPath.EndsWith(".xdf", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".dmf", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".fdd", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".fdi", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".nfd", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".d88", StringComparison.OrdinalIgnoreCase))
+				if (ext is "ima" or "img" or "xdf" or "dmf" or "fdd" or "fdi" or "nfd" or "d88")
 				{
 					_floppyDiskImageFiles.Add(file);
 					recognized = true;
 				}
-
 				// Checking for supported CD-ROM extensions
-				if (file.RomPath.EndsWith(".dosbox-iso", StringComparison.OrdinalIgnoreCase) || // Temporary to circumvent BK's detection of isos as discs (not roms)
-					file.RomPath.EndsWith(".dosbox-cue", StringComparison.OrdinalIgnoreCase) || // Must be accompanied by a bin file
-					file.RomPath.EndsWith(".dosbox-bin", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".dosbox-mdf", StringComparison.OrdinalIgnoreCase) ||
-					file.RomPath.EndsWith(".dosbox-chf", StringComparison.OrdinalIgnoreCase))
+				else if (ext is "dosbox-iso" // Temporary to circumvent BK's detection of isos as discs (not roms)
+					or "dosbox-cue" // Must be accompanied by a bin file
+					or "dosbox-bin"
+					or "dosbox-mdf"
+					or "dosbox-chf")
 				{
 					Console.WriteLine("Added CDROM Image");
 					_CDROMDiskImageFiles.Add(file);
 					recognized = true;
 				}
-
 				// Checking for DOSBox-x config files
-				if (file.RomPath.EndsWith(".conf", StringComparison.OrdinalIgnoreCase))
+				else if (ext is "conf")
 				{
 					ConfigFiles.Add(file);
 					recognized = true;
@@ -107,17 +97,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				if (!recognized) throw new Exception($"Unrecognized input file provided: '{file.RomPath}'");
 			}
 
-			// These are the actual size in bytes for each hdd selection
-			ulong writableHDDImageFileSize = _syncSettings.WriteableHardDisk switch
-			{
-				WriteableHardDiskOptions.FAT16_21Mb => 21411840,
-				WriteableHardDiskOptions.FAT16_41Mb => 42823680,
-				WriteableHardDiskOptions.FAT16_241Mb => 252370944,
-				WriteableHardDiskOptions.FAT16_504Mb => 527966208,
-				WriteableHardDiskOptions.FAT16_2014Mb => 2111864832,
-				WriteableHardDiskOptions.FAT32_4091Mb => 4289725440,
-				_ => 0
-			};
+			var writableHDDImageFileSize = (ulong) _syncSettings.WriteableHardDisk;
 
 			_libDOSBox = PreInit<LibDOSBox>(new WaterboxOptions
 			{
@@ -132,18 +112,15 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}, new Delegate[] { });
 
 			// Getting base config file
-			IEnumerable<byte> configData = [];
-			switch (_syncSettings.ConfigurationPreset)
+			var configString = Encoding.UTF8.GetString(_syncSettings.ConfigurationPreset switch
 			{
-				case ConfigurationPreset.Early80s: configData = new MemoryStream(Resources.DOSBOX_CONF_EARLY80S.Value).ToArray(); break;
-				case ConfigurationPreset.Late80s: configData = new MemoryStream(Resources.DOSBOX_CONF_LATE80S.Value).ToArray(); break;
-				case ConfigurationPreset.Early90s: configData = new MemoryStream(Resources.DOSBOX_CONF_EARLY90S.Value).ToArray(); break;
-				case ConfigurationPreset.Mid90s: configData = new MemoryStream(Resources.DOSBOX_CONF_MID90S.Value).ToArray(); break;
-				case ConfigurationPreset.Late90s: configData = new MemoryStream(Resources.DOSBOX_CONF_LATE90S.Value).ToArray(); break;
-			}
-
-			// Converting to string
-			var configString = Encoding.UTF8.GetString(configData.ToArray());
+				ConfigurationPreset.Early80s => Resources.DOSBOX_CONF_EARLY80S.Value,
+				ConfigurationPreset.Late80s => Resources.DOSBOX_CONF_LATE80S.Value,
+				ConfigurationPreset.Early90s => Resources.DOSBOX_CONF_EARLY90S.Value,
+				ConfigurationPreset.Mid90s => Resources.DOSBOX_CONF_MID90S.Value,
+				ConfigurationPreset.Late90s => Resources.DOSBOX_CONF_LATE90S.Value,
+				_ => [ ]
+			});
 			configString += "\n";
 
 			// Adding joystick configuration
@@ -211,7 +188,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			//// CPU (core) configuration
 			configString += "[cpu]\n";
 			if (_syncSettings.CPUCycles != -1) configString += $"cycles = {_syncSettings.CPUCycles}";
-			if (_syncSettings.CPUCycles != -1) configString += $"cycles = {_syncSettings.CPUCycles}";
 
 
 			//// DOSBox-x configuration
@@ -226,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			/////////////// Configuration End: Adding single config file to the wbx
 
 			// Reconverting config to byte array
-			configData = Encoding.UTF8.GetBytes(configString);
+			IEnumerable<byte> configData = Encoding.UTF8.GetBytes(configString);
 
 			// Adding EOL
 			configString += "@echo on\n";
@@ -285,7 +261,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			fi.mouse.middleButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.MiddleButton) ? 1 : 0;
 			fi.mouse.rightButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.RightButton) ? 1 : 0;
 
-			if (_floppyDiskCount > 0)
+			if (_floppyDiskCount > 1)
 			{
 				if (controller.IsPressed(Inputs.NextFloppyDisk))
 				{
@@ -298,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				}
 			}
 
-			if (_CDROMCount > 0)
+			if (_CDROMCount > 1)
 			{
 				if (controller.IsPressed(Inputs.NextCDROM))
 				{

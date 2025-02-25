@@ -17,10 +17,10 @@ using BizHawk.Emulation.Cores.Calculators.Emu83;
 using BizHawk.Emulation.Cores.Calculators.TI83;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Computers.Amiga;
-using BizHawk.Emulation.Cores.Computers.DOS;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
+using BizHawk.Emulation.Cores.Computers.DOS;
 using BizHawk.Emulation.Cores.Computers.Doom;
 using BizHawk.Emulation.Cores.Computers.MSX;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
@@ -1528,6 +1528,5 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 		}
-
 	}
 }

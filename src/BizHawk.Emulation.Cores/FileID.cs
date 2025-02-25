@@ -57,14 +57,14 @@ namespace BizHawk.Emulation.Cores
 		//misc disc-related files:
 		ECM,
 
-	    // DOS Floppy Disk Images
+		// DOS Floppy Disk Images
 		DOS_FLOPPY,
 
-	    // DOS CD-ROM 
+		// DOS CD-ROM
 		DOS_CDROM,
 
 		// DOSBox-x Configuration File (can be provided as complementary configuration)
-		DOS_CONFIG_FILE
+		DOS_CONFIG_FILE,
 	}
 
 	public class FileIDResult
@@ -381,29 +381,29 @@ namespace BizHawk.Emulation.Cores
 			{ "G64", new ExtensionInfo(FileIDType.C64, null ) },
 			{ "CRT", new ExtensionInfo(FileIDType.C64, null ) },
 			{ "NIB", new ExtensionInfo(FileIDType.C64, null ) }, //not supported yet
-
-			// DOS Floppy Disks
-			{ "IMA", new ExtensionInfo(FileIDType.DOS_FLOPPY, null ) },
-			{ "IMG", new ExtensionInfo(FileIDType.DOS_FLOPPY, null ) },
-			{ "XDF", new ExtensionInfo(FileIDType.DOS_FLOPPY, null ) },
-			{ "DMF", new ExtensionInfo(FileIDType.DOS_FLOPPY, null ) },
-			{ "FDD", new ExtensionInfo(FileIDType.DOS_FLOPPY, null ) },
-			{ "FDI", new ExtensionInfo(FileIDType.DOS_FLOPPY, null ) },
-			{ "NDF", new ExtensionInfo(FileIDType.DOS_FLOPPY, null ) },
-			{ "D88", new ExtensionInfo(FileIDType.DOS_FLOPPY, null ) },
-
-			// DOS CD-ROMS (modified extensions to bypass BK's disc loader)
-			{ "DOSBOX-ISO", new ExtensionInfo(FileIDType.DOS_CDROM, null ) },
-			{ "DOSBOX-CUE", new ExtensionInfo(FileIDType.DOS_CDROM, null ) },
-			{ "DOSBOX-BIN", new ExtensionInfo(FileIDType.DOS_CDROM, null ) },
-			{ "DOSBOX-MDF", new ExtensionInfo(FileIDType.DOS_CDROM, null ) },
-			{ "DOSBOX-CHF", new ExtensionInfo(FileIDType.DOS_CDROM, null ) },
-
-			// DOSBox-X Configuration File
-			{ "CONF", new ExtensionInfo(FileIDType.DOS_CONFIG_FILE, null ) },
-
+			
 			// Doom IWad / PWad
 			{ "WAD", new ExtensionInfo(FileIDType.WAD, null ) },
+
+			// DOS Floppy Disks
+			{ "IMA", new(FileIDType.DOS_FLOPPY, null) },
+			{ "IMG", new(FileIDType.DOS_FLOPPY, null) },
+			{ "XDF", new(FileIDType.DOS_FLOPPY, null) },
+			{ "DMF", new(FileIDType.DOS_FLOPPY, null) },
+			{ "FDD", new(FileIDType.DOS_FLOPPY, null) },
+			{ "FDI", new(FileIDType.DOS_FLOPPY, null) },
+			{ "NDF", new(FileIDType.DOS_FLOPPY, null) },
+			{ "D88", new(FileIDType.DOS_FLOPPY, null) },
+
+			// DOS CD-ROMS (modified extensions to bypass BK's disc loader)
+			{ "DOSBOX-ISO", new(FileIDType.DOS_CDROM, null) },
+			{ "DOSBOX-CUE", new(FileIDType.DOS_CDROM, null) },
+			{ "DOSBOX-BIN", new(FileIDType.DOS_CDROM, null) },
+			{ "DOSBOX-MDF", new(FileIDType.DOS_CDROM, null) },
+			{ "DOSBOX-CHF", new(FileIDType.DOS_CDROM, null) },
+
+			// DOSBox-X Configuration File
+			{ "CONF", new(FileIDType.DOS_CONFIG_FILE, null) },
 
 			//for now
 			{ "ROM", new ExtensionInfo(FileIDType.Multiple, null ) }, //could be MSX too
