@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Properties {
 		internal static readonly Lazy<byte[]> CPC_OS_6128_ROM = new(() => ReadEmbeddedByteArray("CPC_OS_6128.ROM.zst"));
 		internal static readonly Lazy<byte[]> DOSBOX_CONF_BASE = new(() => ReadEmbeddedByteArray("dosbox-x.base.conf"));
 		internal static readonly Lazy<byte[]> DOSBOX_CONF_EARLY80S = new(() => ReadEmbeddedByteArray("dosbox-x.early80s.conf"));
+		internal static readonly Lazy<byte[]> DOSBOX_CONF_MID80S = new(() => ReadEmbeddedByteArray("dosbox-x.mid80s.conf"));
 		internal static readonly Lazy<byte[]> DOSBOX_CONF_LATE80S = new(() => ReadEmbeddedByteArray("dosbox-x.late80s.conf"));
 		internal static readonly Lazy<byte[]> DOSBOX_CONF_EARLY90S = new(() => ReadEmbeddedByteArray("dosbox-x.early90s.conf"));
 		internal static readonly Lazy<byte[]> DOSBOX_CONF_MID90S = new(() => ReadEmbeddedByteArray("dosbox-x.mid90s.conf"));

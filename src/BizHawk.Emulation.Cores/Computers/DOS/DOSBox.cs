@@ -3,10 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BizHawk.Common;
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
+using static BizHawk.Emulation.Cores.Computers.DOS.DOSBox;
 
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
@@ -119,6 +119,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			configString += Encoding.UTF8.GetString(_syncSettings.ConfigurationPreset switch
 			{
 				ConfigurationPreset.Early80s => Resources.DOSBOX_CONF_EARLY80S.Value,
+				ConfigurationPreset.Mid80s => Resources.DOSBOX_CONF_MID80S.Value,
 				ConfigurationPreset.Late80s => Resources.DOSBOX_CONF_LATE80S.Value,
 				ConfigurationPreset.Early90s => Resources.DOSBOX_CONF_EARLY90S.Value,
 				ConfigurationPreset.Mid90s => Resources.DOSBOX_CONF_MID90S.Value,
@@ -131,6 +132,23 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			configString += "[joystick]\n";
 			if (_syncSettings.EnableJoystick1 || _syncSettings.EnableJoystick2) configString += "joysticktype = 2axis\n";
 			else configString += "joysticktype = none\n";
+
+			// Adding PC Speaker
+			configString += "[speaker]\n";
+			if (_syncSettings.PCSpeaker != PCSpeaker.Auto) configString += $"pcspeaker = {_syncSettings.PCSpeaker}\n";
+			configString += "\n";
+
+			// Adding sound blaser configuration
+			configString += "[sblaster]\n";
+			if (_syncSettings.SoundBlasterModel != SoundBlasterModel.Auto) configString += $"sbtype = {_syncSettings.SoundBlasterModel}\n";
+			if (_syncSettings.SoundBlasterIRQ != -1) configString += $"irq = {_syncSettings.SoundBlasterIRQ}\n";
+			configString += "\n";
+
+
+			// Adding memory size configuration
+			configString += "[dosbox]\n";
+			if (_syncSettings.RAMSize != -1) configString += $"memsize = {_syncSettings.RAMSize}\n";
+			configString += "\n";
 
 			// Adding autoexec line
 			configString += "[autoexec]\n";
@@ -222,7 +240,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Console.WriteLine("Configuration: {0}", System.Text.Encoding.Default.GetString(configData.ToArray()));
 
 			////////////// Initializing Core
-			Console.WriteLine("HARD DISK SIZE: {0}", writableHDDImageFileSize);
 			if (!_libDOSBox.Init(_syncSettings.EnableJoystick1, _syncSettings.EnableJoystick2, _syncSettings.EnableMouse, writableHDDImageFileSize))
 				throw new InvalidOperationException("Core rejected the rom!");
 
