@@ -54,15 +54,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public enum SkillLevel : int
 		{
 			[Display(Name = "1 - I'm too young to die")]
-			S1 = 1,
+			ITYTD = 1,
 			[Display(Name = "2 - Hey, not too rough")]
-			S2 = 2,
+			HNTR = 2,
 			[Display(Name = "3 - Hurt me plenty")]
-			S3 = 3,
+			HMP = 3,
 			[Display(Name = "4 - Ultra-Violence")]
-			S4 = 4,
+			UV = 4,
 			[Display(Name = "5 - Nightmare!")]
-			S5 = 5
+			NM = 5
 		}
 
 		public enum TurningResolution : int
@@ -183,7 +183,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			[DisplayName("Skill Level")]
 			[Description("Establishes the general difficulty settings.")]
-			[DefaultValue(SkillLevel.S4)]
+			[DefaultValue(SkillLevel.UV)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SkillLevel SkillLevel { get; set; }
 
@@ -211,12 +211,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int Turbo { get; set; }
 
 			[DisplayName("Fast Monsters")]
-			[Description("Makes monsters move and attack much faster (overriden to true when playing Nightmare! difficulty)")]
+			[Description("Makes monsters move and attack much faster (forced to true when playing Nightmare! difficulty)")]
 			[DefaultValue(false)]
 			public bool FastMonsters { get; set; }
 
 			[DisplayName("Monsters Respawn")]
-			[Description("Makes monsters respawn shortly after dying (overriden to true when playing Nightmare! difficulty)")]
+			[Description("Makes monsters respawn shortly after dying (forced to true when playing Nightmare! difficulty)")]
 			[DefaultValue(false)]
 			public bool MonstersRespawn { get; set; }
 
