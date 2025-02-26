@@ -11,10 +11,9 @@ CCFLAGS := \
 	-Wno-switch \
 	-Wno-pointer-sign \
 	-Wno-sign-compare \
-	-Wno-stringop-overflow \
-	-Wno-format-truncation \
 	-Wno-unused-but-set-variable \
-	-Wno-unused-variable 
+	-Wno-unused-variable \
+	-Wno-deprecated-non-prototype
 
 CXXFLAGS := \
     -I. \
@@ -29,8 +28,6 @@ CXXFLAGS := \
 	-Wno-switch \
 	-Wno-pointer-sign \
 	-Wno-sign-compare \
-	-Wno-stringop-overflow \
-	-Wno-format-truncation \
 	-Wno-unused-but-set-variable \
 	-Wno-unused-variable 
 
