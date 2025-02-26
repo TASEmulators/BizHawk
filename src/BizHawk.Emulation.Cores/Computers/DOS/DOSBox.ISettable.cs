@@ -10,18 +10,26 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 	{
 		public enum ConfigurationPreset
 		{
-			[Display(Name = "Early 80s")]
-			Early80s,
-			[Display(Name = "Mid 80s")]
-			Mid80s,
-			[Display(Name = "Late 80s")]
-			Late80s,
-			[Display(Name = "Early 90s")]
-			Early90s,
-			[Display(Name = "Mid 90s")]
-			Mid90s,
-			[Display(Name = "Late 90s")]
-			Late90s,
+			[Display(Name = "[1981] IBM XT 5150 (4.77Mhz, 256kb RAM, Monochrome, PC Speaker)")]
+			_1981_IBM_5150,
+			[Display(Name = "[1983] IBM XT 5160 (4.77Mhz, 640kb RAM, CGA, PC Speaker)")]
+			_1983_IBM_5160,
+			[Display(Name = "[1986] IBM XT 286 5162-286 (6Mhz, 640kb RAM, EGA, PC Speaker)")]
+			_1986_IBM_5162,
+			[Display(Name = "[1987] IBM PS/2 25 (8Mhz, 640kb RAM, MCGA, Game Blaster)")]
+			_1987_IBM_PS2_25,
+			[Display(Name = "[1990] IBM PS/2 25 286 (10Mhz, 4Mb RAM, VGA, Sound Blaster 1)")]
+			_1990_IBM_PS2_25_286,
+			[Display(Name = "[1991] IBM PS/2 25 386 (25Mhz, 6Mb RAM, VGA, Sound Blaster 2)")]
+			_1991_IBM_PS2_25_386,
+			[Display(Name = "[1993] IBM PS/2 53 SLC2 486 (50Mhz, 64Mb RAM, SVGA, Sound Blaster Pro 2)")]
+			_1993_IBM_PS2_53_SLC2_486,
+			[Display(Name = "[1994] IBM PS/2 76i SLC2 486 (100Mhz, 64Mb RAM, SVGA, Sound Blaster 16)")]
+			_1994_IBM_PS2_76i_SLC2_486,
+			[Display(Name = "[1997] IBM Aptiva 2140 (233Mhz, 96Mb RAM, SVGA + 3D Support, Sound Blaster 16)")]
+			_1997_IBM_APTIVA_2140,
+			[Display(Name = "[1999] IBM Thinkpad 240 (300Mhz, 128Mb, SVGA + 3D Support , Sound Blaster 16) ")]
+			_1999_IBM_THINKPAD_240,
 		}
 
 		/// <remarks>values are the actual size in bytes for each hdd selection</remarks>
@@ -195,8 +203,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public class SyncSettings
 		{
 			[DisplayName("Configuration Preset")]
-			[Description("Establishes a base configuration for DOSBox roughly corresponding to the selected era.")]
-			[DefaultValue(ConfigurationPreset.Early90s)]
+			[Description("Establishes a base configuration for DOSBox roughly corresponding to the selected computer model.")]
+			[DefaultValue(ConfigurationPreset._1993_IBM_PS2_53_SLC2_486)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ConfigurationPreset ConfigurationPreset { get; set; }
 

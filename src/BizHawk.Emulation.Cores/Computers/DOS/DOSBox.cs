@@ -101,11 +101,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_libDOSBox = PreInit<LibDOSBox>(new WaterboxOptions
 			{
 				Filename = "dosbox.wbx",
-				SbrkHeapSizeKB = 4 * 1024 * 32,
-				SealedHeapSizeKB = 32 * 512,
-				InvisibleHeapSizeKB = 32 * 512,
-				PlainHeapSizeKB = 4 * 1024 * 32,
-				MmapHeapSizeKB = 4 * 1024 * 32 + (uint) (writableHDDImageFileSize / 1024ul),
+				SbrkHeapSizeKB = 4 * 1024,
+				SealedHeapSizeKB = 1024,
+				InvisibleHeapSizeKB = 1024,
+				PlainHeapSizeKB = 1024,
+				MmapHeapSizeKB = 256 * 1024 + (uint) (writableHDDImageFileSize / 1024ul),
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { });
@@ -117,12 +117,16 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Getting selected machine preset config file
 			configString += Encoding.UTF8.GetString(_syncSettings.ConfigurationPreset switch
 			{
-				ConfigurationPreset.Early80s => Resources.DOSBOX_CONF_EARLY80S.Value,
-				ConfigurationPreset.Mid80s => Resources.DOSBOX_CONF_MID80S.Value,
-				ConfigurationPreset.Late80s => Resources.DOSBOX_CONF_LATE80S.Value,
-				ConfigurationPreset.Early90s => Resources.DOSBOX_CONF_EARLY90S.Value,
-				ConfigurationPreset.Mid90s => Resources.DOSBOX_CONF_MID90S.Value,
-				ConfigurationPreset.Late90s => Resources.DOSBOX_CONF_LATE90S.Value,
+				ConfigurationPreset._1981_IBM_5150                    => Resources.DOSBOX_CONF_1981_IBM_5150.Value,
+				ConfigurationPreset._1983_IBM_5160                    => Resources.DOSBOX_CONF_1983_IBM_5160.Value,
+				ConfigurationPreset._1986_IBM_5162                    => Resources.DOSBOX_CONF_1986_IBM_5162.Value,
+				ConfigurationPreset._1987_IBM_PS2_25                  => Resources.DOSBOX_CONF_1987_IBM_PS2_25.Value,
+				ConfigurationPreset._1990_IBM_PS2_25_286              => Resources.DOSBOX_CONF_1990_IBM_PS2_25_286.Value,
+				ConfigurationPreset._1991_IBM_PS2_25_386              => Resources.DOSBOX_CONF_1991_IBM_PS2_25_386.Value,
+				ConfigurationPreset._1993_IBM_PS2_53_SLC2_486         => Resources.DOSBOX_CONF_1993_IBM_PS2_53_SLC2_486.Value,
+				ConfigurationPreset._1994_IBM_PS2_76i_SLC2_486        => Resources.DOSBOX_CONF_1994_IBM_PS2_76i_SLC2_486.Value,
+				ConfigurationPreset._1997_IBM_APTIVA_2140             => Resources.DOSBOX_CONF_1997_IBM_APTIVA_2140.Value,
+				ConfigurationPreset._1999_IBM_THINKPAD_240            => Resources.DOSBOX_CONF_1999_IBM_THINKPAD_240.Value,
 				_ => [ ]
 			});
 			configString += "\n";
