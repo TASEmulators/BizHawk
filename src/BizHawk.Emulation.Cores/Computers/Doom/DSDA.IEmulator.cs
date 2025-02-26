@@ -78,15 +78,17 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					if (controller.IsPressed($"P{i + 1} Turn Left")) players[i]._TurningSpeed = turnSpeed;
 
 					// mouse-driven running
-					players[i]._RunSpeed -= (int)(potReaders[i](controller, 4) * _syncSettings.MouseRunSensitivity / 6.0);
+					// divider matches the core
+					players[i]._RunSpeed -= (int)(potReaders[i](controller, 4) * _syncSettings.MouseRunSensitivity / 8.0);
 					players[i]._RunSpeed = players[i]._RunSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
 					// mouse-driven turning
-					players[i]._TurningSpeed -= potReaders[i](controller, 5) * _syncSettings.MouseTurnSensitivity;
-					// todo: check how the core calculates these
-					if (_syncSettings.TurningResolution == TurningResolution.Longtics)
+					// divider recalibrates minimal mouse movement to be 1 (requires global setting)
+					players[i]._TurningSpeed -= (int)(potReaders[i](controller, 5) * _syncSettings.MouseTurnSensitivity / 272.0);
+					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
 					{
-						players[i]._TurningSpeed = (int) (players[i]._TurningSpeed / 256.0);
+						// calc matches the core
+						players[i]._TurningSpeed = ((players[i]._TurningSpeed << 8) + 128) >> 8;
 					}
 
 					// bool buttons
