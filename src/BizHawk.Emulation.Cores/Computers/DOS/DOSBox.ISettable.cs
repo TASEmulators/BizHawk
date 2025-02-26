@@ -203,7 +203,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public class SyncSettings
 		{
 			[DisplayName("Configuration Preset")]
-			[Description("Establishes a base configuration for DOSBox roughly corresponding to the selected computer model.")]
+			[Description("Establishes a base configuration for DOSBox roughly corresponding to the selected computer model. We recommend choosing a model that is roughly of the same year or above of the game / tool you plan to run. More modern models may require more CPU power to emulate.")]
 			[DefaultValue(ConfigurationPreset._1993_IBM_PS2_53_SLC2_486)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ConfigurationPreset ConfigurationPreset { get; set; }
