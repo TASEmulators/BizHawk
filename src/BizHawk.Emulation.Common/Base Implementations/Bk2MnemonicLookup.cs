@@ -814,7 +814,7 @@ namespace BizHawk.Emulation.Common
 				["Mouse Middle Button"] = 'm',
 				["Mouse Right Button"] = 'r',
 				["Next Floppy Disk"] = '>',
-				["Next CDROM"] = '>',
+				["Next CDROM"] = '}',
 				["1"] = '1',
 				["2"] = '2',
 				["3"] = '3',
